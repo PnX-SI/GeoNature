@@ -18,14 +18,11 @@ INSERT INTO t_actions(code_action, description_action) VALUES
     ('D', 'Action de supprimer')
 ;
 
-
-
 INSERT INTO bib_filters_type(code_filter_type, description_filter_type) VALUES
     ('SCOPE', 'Filtre de type portée'),
     ('SENSITIVITY', 'Filtre de type sensibilité'),
     ('GEOGRAPHIC', 'Filtre de type géographique')
 ;
-
 
 INSERT INTO t_filters (code_filter, description_filter, id_filter_type)
 SELECT '0', 'Aucune donnée', id_filter_type
@@ -47,10 +44,10 @@ SELECT '3', 'Toutes les données', id_filter_type
 FROM bib_filters_type
 WHERE code_filter_type = 'SCOPE';
 
-INSERT INTO t_objects(code_object, description_object) VALUES (
+INSERT INTO t_objects(code_object, description_object) VALUES 
     ('ALL', 'Représente tous les objets d''un module'),
     ('TDatasets', 'Objet dataset')
-);
+;
 
 INSERT INTO cor_object_module (id_object, id_module)
 SELECT id_object, t.id_module

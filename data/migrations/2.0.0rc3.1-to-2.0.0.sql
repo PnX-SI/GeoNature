@@ -459,33 +459,6 @@ $BODY$
 
 
 
--- Utilisateurs.cor_app_privileges vers gn_persmissions.cor_role_action_filter_module_object
-
-INSERT INTO gn_permissions.cor_role_action_filter_module_object (id_role, id_action, id_filter, id_module, id_object)
-SELECT 
-id_role,
-CASE 
-  WHEN id_tag_action =  11 THEN 1
-  WHEN id_tag_action =  12 THEN 2
-  WHEN id_tag_action =  13 THEN 3
-  WHEN id_tag_action =  14 THEN 4
-  WHEN id_tag_action =  15 THEN 5
-  WHEN id_tag_action =  16 THEN 6
-END AS id_action
-,
-CASE 
-  WHEN id_tag_object = 20 THEN 1
-  WHEN id_tag_object = 21 THEN 2
-  WHEN id_tag_object = 22 THEN 3
-  WHEN id_tag_object = 23 THEN 4
-END AS id_filter,
-id_application,
-1
-FROM save.cor_app_privileges
-WHERE id_application = 3;
-
-
-
 
 -- Creation de GN_PERMISSIONS
 
@@ -584,21 +557,7 @@ ALTER TABLE ONLY gn_permissions.cor_role_action_filter_module_object
 ALTER TABLE ONLY gn_permissions.cor_role_action_filter_module_object
   ADD CONSTRAINT  fk_cor_r_a_f_m_o_id_object FOREIGN KEY (id_object) REFERENCES gn_permissions.t_objects(id_object) ON UPDATE CASCADE;
 
-
-
-
-
-
-
-
-
 -- migration utilisateurs vers gn_permissions:
-
-
-
-
-
-
 
 -- Vue permettant de retourner les utilisateurs et leur CRUVED pour chaque modules GeoNature
 CREATE OR REPLACE VIEW gn_permissions.v_users_permissions AS 
@@ -745,3 +704,83 @@ DECLARE
 $BODY$
  LANGUAGE plpgsql IMMUTABLE
  COST 100;
+
+----------
+-- DATA --
+----------
+
+
+INSERT INTO gn_permissions.t_actions(code_action, description_action) VALUES
+    ('C', 'Action de créer'),
+    ('R', 'Action de lire'),
+    ('U', 'Action de mettre à jour'),
+    ('V', 'Action de valider'),
+    ('E', 'Action d''exporter'),
+    ('D', 'Action de supprimer')
+;
+
+INSERT INTO gn_permissions.bib_filters_type(code_filter_type, description_filter_type) VALUES
+    ('SCOPE', 'Filtre de type portée'),
+    ('SENSITIVITY', 'Filtre de type sensibilité'),
+    ('GEOGRAPHIC', 'Filtre de type géographique')
+;
+
+INSERT INTO gn_permissions.t_filters (code_filter, description_filter, id_filter_type)
+SELECT '0', 'Aucune donnée', id_filter_type
+FROM gn_permissions.bib_filters_type
+WHERE code_filter_type = 'SCOPE';
+
+INSERT INTO gn_permissions.t_filters (code_filter, description_filter, id_filter_type)
+SELECT '1', 'Mes données', id_filter_type
+FROM gn_permissions.bib_filters_type
+WHERE code_filter_type = 'SCOPE';
+
+INSERT INTO gn_permissions.t_filters (code_filter, description_filter, id_filter_type)
+SELECT '2', 'Les données de mon organisme', id_filter_type
+FROM gn_permissions.bib_filters_type
+WHERE code_filter_type = 'SCOPE';
+
+INSERT INTO gn_permissions.t_filters (code_filter, description_filter, id_filter_type)
+SELECT '3', 'Toutes les données', id_filter_type
+FROM gn_permissions.bib_filters_type
+WHERE code_filter_type = 'SCOPE';
+
+INSERT INTO gn_permissions.t_objects(code_object, description_object) VALUES 
+    ('ALL', 'Représente tous les objets d''un module'),
+    ('TDatasets', 'Objet dataset')
+;
+
+INSERT INTO gn_permissions.cor_object_module (id_object, id_module)
+SELECT id_object, t.id_module
+FROM gn_permissions.t_objects, gn_commons.t_modules t
+WHERE code_object = 'TDatasets' AND t.module_code = 'OCCTAX';
+
+INSERT INTO gn_permissions.cor_object_module (id_object, id_module)
+SELECT id_object, t.id_module
+FROM gn_permissions.t_objects, gn_commons.t_modules t
+WHERE code_object = 'TDatasets' AND t.module_code = 'ADMIN';
+
+-- Utilisateurs.cor_app_privileges vers gn_persmissions.cor_role_action_filter_module_object
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object (id_role, id_action, id_filter, id_module, id_object)
+SELECT 
+id_role,
+CASE 
+  WHEN id_tag_action =  11 THEN 1
+  WHEN id_tag_action =  12 THEN 2
+  WHEN id_tag_action =  13 THEN 3
+  WHEN id_tag_action =  14 THEN 4
+  WHEN id_tag_action =  15 THEN 5
+  WHEN id_tag_action =  16 THEN 6
+END AS id_action
+,
+CASE 
+  WHEN id_tag_object = 20 THEN 1
+  WHEN id_tag_object = 21 THEN 2
+  WHEN id_tag_object = 22 THEN 3
+  WHEN id_tag_object = 23 THEN 4
+END AS id_filter,
+id_application,
+1
+FROM save.cor_app_privileges
+WHERE id_application = 3;
