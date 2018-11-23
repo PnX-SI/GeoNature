@@ -4,7 +4,7 @@ from geonature.utils.utilssqlalchemy import json_resp
 from geonature.utils.env import get_id_module
 
 # import des fonctions utiles depuis le sous-module d'authentification
-from pypnusershub import routes as fnauth
+from geonature.core.permissions import decorators as permissions
 from geonature.core.permissions.tools import get_or_fetch_user_cruved
 
 blueprint = Blueprint('<MY_MODULE_NAME>', __name__)
@@ -21,7 +21,7 @@ def get_view():
 
 # Exemple d'une route protégée le CRUVED du sous module d'authentification
 @blueprint.route('/test_cruved', methods=['GET'])
-@fnauth.check_auth_cruved('R', True, module_code='MY_MODULE_CODE')
+@permissions.check_cruved_scope('R', module_code="MY_MODULE_CODE")
 @json_resp
 def get_sensitive_view(info_role):
     # Récupérer l'id de l'utilisateur qui demande la route
@@ -33,8 +33,7 @@ def get_sensitive_view(info_role):
     user_cruved = get_or_fetch_user_cruved(
         session=session,
         id_role=info_role.id_role,
-        id_application=ID_MODULE,
-        id_application_parent=current_app.config['ID_APPLICATION_GEONATURE']
+        module_code='MY_MODULE_CODE',
     )
     q = DB.session.query(MySQLAModel)
     data = q.all()
