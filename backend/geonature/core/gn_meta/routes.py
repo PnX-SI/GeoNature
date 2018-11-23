@@ -22,7 +22,7 @@ from geonature.core.gn_meta.repositories import (
     get_af_cruved
 )
 from geonature.utils.utilssqlalchemy import json_resp
-from geonature.core.permissions import decorators as permissions
+from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_meta import mtd_utils
 from geonature.utils.errors import GeonatureApiError
 
@@ -110,7 +110,7 @@ def post_dataset(info_role):
     if info_role.code_filter == '0':
         raise InsufficientRightsError(
             ('User "{}" cannot "{}" a dataser')
-            .format(info_role.id_role, info_role.tag_action_code),
+            .format(info_role.id_role, info_role.code_action),
             403
         )
 
@@ -159,7 +159,7 @@ def post_acquisition_framework(info_role):
     if info_role.code_filter == '0':
         raise InsufficientRightsError(
             ('User "{}" cannot "{}" a dataser')
-            .format(info_role.id_role, info_role.tag_action_code),
+            .format(info_role.id_role, info_role.code_action),
             403
         )
     data = dict(request.get_json())

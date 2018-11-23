@@ -7,7 +7,7 @@ from flask import redirect, request, Response, current_app, g, Response
 
 from functools import wraps
 
-from geonature.core.permissions.tools import get_user_permissions, get_user_from_token_and_raise
+from geonature.core.gn_permissions.tools import get_user_permissions, get_user_from_token_and_raise
 
 def check_cruved_scope(
     action,

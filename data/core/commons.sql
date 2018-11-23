@@ -265,15 +265,15 @@ COST 100;
 --USAGE
 --SELECT gn_commons.role_is_group(1);
 
-CREATE OR REPLACE FUNCTION get_id_module_byname(mymodule text)
+CREATE OR REPLACE FUNCTION get_id_module_bycode(mymodule text)
   RETURNS integer AS
 $BODY$
 DECLARE
 	theidmodule integer;
 BEGIN
-  --Retrouver l'id du module par son nom. L'id_module est le même que l'id_application correspondant dans utilisateurs.t_applications
+  --Retrouver l'id du module par son code
   SELECT INTO theidmodule id_module FROM gn_commons.t_modules
-	WHERE "module_name" ILIKE mymodule;
+	WHERE "module_code" ILIKE mymodule;
   RETURN theidmodule;
 END;
 $BODY$

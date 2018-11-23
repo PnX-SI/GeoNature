@@ -108,17 +108,6 @@ def filter_query_all_filters(model, q, filters, user, allowed_datasets):
         - allowed datasets (List<int>): an array of ID dataset where the users have autorization
 
     """
-
-    # from geonature.core.users.models import UserRigth
-
-    # user = UserRigth(
-    #     id_role=user.id_role,
-    #     code_action='3',
-    #     tag_action_code="R",
-    #     id_organisme=user.id_organisme,
-    #     nom_role='Administrateur',
-    #     prenom_role='test'
-    # )
     q = filter_query_with_cruved(model, q, user, allowed_datasets)
 
     if 'observers' in filters:

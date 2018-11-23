@@ -9,8 +9,8 @@ from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_commons.models import TModules, TParameters
 from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import json_resp
-from geonature.core.permissions import decorators as permissions
-from geonature.core.permissions.tools import cruved_scope_for_user_in_module
+from geonature.core.gn_permissions import decorators as permissions
+from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 
 routes = Blueprint('gn_commons', __name__)
 

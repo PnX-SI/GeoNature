@@ -15,7 +15,7 @@ from pypnusershub.db.tools import (
     UnreadableAccessRightsError
 ) 
 
-from geonature.core.permissions.models import VUsersPermissions
+from geonature.core.gn_permissions.models import VUsersPermissions
 from geonature.utils.env import DB
 
 log = logging.getLogger(__name__)

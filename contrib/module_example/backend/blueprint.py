@@ -4,8 +4,8 @@ from geonature.utils.utilssqlalchemy import json_resp
 from geonature.utils.env import get_id_module
 
 # import des fonctions utiles depuis le sous-module d'authentification
-from geonature.core.permissions import decorators as permissions
-from geonature.core.permissions.tools import get_or_fetch_user_cruved
+from geonature.core.gn_permissions import decorators as permissions
+from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
 
 blueprint = Blueprint('<MY_MODULE_NAME>', __name__)
 

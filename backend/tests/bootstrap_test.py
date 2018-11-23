@@ -42,7 +42,6 @@ def get_token(client, login="admin", password="admin"):
         'login': login,
         'password': password,
         'id_application': current_app.config['ID_APPLICATION_GEONATURE'],
-        'with_cruved': True
     }
     response = client.post(
         url_for('auth.login'),

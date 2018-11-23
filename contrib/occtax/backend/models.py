@@ -69,7 +69,7 @@ class ReleveModel(DB.Model):
 
         raise InsufficientRightsError(
             ('User "{}" cannot "{}" this current releve')
-            .format(user.id_role, user.tag_action_code),
+            .format(user.id_role, user.code_action),
             403
         )
 
