@@ -475,7 +475,7 @@ params :
             # Récupérer l'id de l'utilisateur qui demande la route
             id_role = info_role.id_role
             # Récupérer la portée autorisée à l'utilisateur pour l'action 'R' (read)
-            read_scope = info_role.code_action
+            read_scope = info_role.code_filter
             #récupérer le CRUVED complet de l'utilisateur courant
             user_cruved = get_or_fetch_user_cruved(
                     session=session,

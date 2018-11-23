@@ -25,7 +25,8 @@ def user_from_token(token, secret_key=None):
 
     try:
         s = Serializer(current_app.config['SECRET_KEY'])
-        return s.loads(token)
+        user = s.loads(token)
+        return user
         
     except SignatureExpired:
         raise AccessRightsExpiredError("Token expired")
@@ -34,16 +35,17 @@ def user_from_token(token, secret_key=None):
         raise UnreadableAccessRightsError('Token BadSignature', 403)
 
 def get_user_from_token_and_raise(
-    token,
+    request,
     secret_key=None,
     redirect_on_expiration=None,
-    redirect_on_invalid_token=None,
+    redirect_on_invalid_token=None
 ):
     """
     Deserialize the token
     catch excetpion and return appropriate Response(403, 302 ...)
     """
     try:
+        token = request.cookies['token']
         return user_from_token(token, secret_key)
 
     except AccessRightsExpiredError:

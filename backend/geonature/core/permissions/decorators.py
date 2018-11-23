@@ -3,7 +3,7 @@ Decorators to protects routes with permissions
 '''
 import json
 
-from flask import redirect, request, Response, current_app, g
+from flask import redirect, request, Response, current_app, g, Response
 
 from functools import wraps
 
@@ -20,11 +20,15 @@ def check_cruved_scope(
         @wraps(fn)
         def __check_cruved_scope(*args, **kwargs):
             user = get_user_from_token_and_raise(
-                request.cookies['token'],
+                request,
                 action,
                 redirect_on_expiration,
                 redirect_on_invalid_token,
             )
+            # If user is Response: its a token issue
+            # return the appropriate Response from get_user_from_token_and_raise
+            if isinstance(user, Response):
+                return user
 
             if get_role:
                 user_permissions = get_user_permissions(

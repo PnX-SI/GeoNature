@@ -23,5 +23,5 @@ class VUsersPermissions(DB.Model):
         return """VUsersPermissions
             role='{}' action='{}' filter='{}' module='{}' filter_type='{}'>""".format(
             self.id_role, self.code_action,
-            self.code_action, self.module_code, self.code_filter_type
+            self.code_filter, self.module_code, self.code_filter_type
         )

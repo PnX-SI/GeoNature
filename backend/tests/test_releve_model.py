@@ -39,7 +39,7 @@ user_admin = {
     'id_role': 1,
     'id_organisme': 1,
     'tag_action_code': 'R',
-    'code_action': '3',
+    'code_filter': '3',
     'id_application': 3
 }
 
@@ -47,8 +47,8 @@ user_admin = {
 user_agent = {
     'id_role': 2,
     'id_organisme': -1,
-    'tag_action_code': 'R',
-    'code_action': '2',
+    'code_action': 'R',
+    'code_filter': '2',
     'id_application': 3
 }
 
@@ -56,8 +56,8 @@ user_agent = {
 user_low = {
     'id_role': 125,
     'id_organisme': -1,
-    'tag_action_code': 'R',
-    'code_action': '1',
+    'code_action': 'R',
+    'code_filter': '1',
     'id_application': 3
 }
 
