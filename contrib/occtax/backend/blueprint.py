@@ -224,6 +224,7 @@ def getViewReleveList(info_role):
 
     """
     print(info_role)
+    print(info_role.code_filter)
     releveRepository = ReleveRepository(VReleveList)
     q = releveRepository.get_filtered_query(info_role)
 
@@ -248,7 +249,6 @@ def getViewReleveList(info_role):
         session=session,
         id_role=info_role.id_role,
         module_code='OCCTAX',
-        id_application_parent=current_app.config['ID_APPLICATION_GEONATURE']
     )
     featureCollection = []
     for n in data:
@@ -330,14 +330,13 @@ def insertOrUpdateOneReleve(info_role):
             session=session,
             id_role=info_role.id_role,
             module_code='OCCTAX',
-            id_application_parent=current_app.config['ID_APPLICATION_GEONATURE']
         )
-        update_data_scope = user_cruved['U']
+        update_code_filter = user_cruved['U']
         # info_role.code_action = update_data_scope
         user = UserRigth(
             id_role=info_role.id_role,
-            code_action=update_data_scope,
-            tag_action_code="U",
+            code_filter=update_code_filter,
+            code_action="U",
             id_organisme=info_role.id_organisme
         )
         releve = releveRepository.update(releve, user, shape)
@@ -345,7 +344,7 @@ def insertOrUpdateOneReleve(info_role):
     else:
         # set id_digitiser
         releve.id_digitiser = info_role.id_role
-        if info_role.code_action in ('0', '1', '2'):
+        if info_role.code_filter in ('0', '1', '2'):
             # Check if user can add a releve in the current dataset
             allowed = releve.user_is_in_dataset_actor(info_role)
             if not allowed:

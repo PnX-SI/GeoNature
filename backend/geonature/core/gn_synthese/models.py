@@ -78,12 +78,12 @@ class SyntheseCruved(DB.Model):
             params:
                 user: object from TRole
         """
-        if self.user_is_allowed_to(user, user.code_action, user_datasets):
+        if self.user_is_allowed_to(user, user.code_filter, user_datasets):
             return self
 
         raise InsufficientRightsError(
             ('User "{}" cannot "{}" this current releve')
-            .format(user.id_role, user.tag_action_code),
+            .format(user.id_role, user.code_action),
             403
         )
 
