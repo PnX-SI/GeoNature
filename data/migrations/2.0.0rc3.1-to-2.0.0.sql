@@ -33,7 +33,7 @@ COST 100;
 --USAGE
 --SELECT gn_commons.role_is_group(1);
 
-CREATE OR REPLACE FUNCTION gn_commons.get_id_module_byname(mymodule text)
+CREATE OR REPLACE FUNCTION gn_commons.get_id_module_bycode(mymodule text)
   RETURNS integer AS
 $BODY$
 DECLARE
@@ -41,7 +41,7 @@ DECLARE
 BEGIN
   --Retrouver l'id du module par son nom. L'id_module est le même que l'id_application correspondant dans utilisateurs.t_applications
   SELECT INTO theidmodule id_module FROM gn_commons.t_modules
-	WHERE "module_name" ILIKE mymodule;
+	WHERE "module_code" ILIKE mymodule;
   RETURN theidmodule;
 END;
 $BODY$
@@ -101,10 +101,12 @@ SELECT pg_catalog.setval('gn_commons.t_modules_id_module_seq', (SELECT MAX(id_mo
 ALTER TABLE gn_commons.t_modules ALTER COLUMN module_code SET NOT NULL;
 
 -- Insertion du module parent: GEONATURE
-INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend) VALUES
-('GEONATURE', 'GeoNature', '', 'Module parent de tous les modules sur lequel on peut associer un CRUVED.
+INSERT INTO gn_commons.t_modules(id_module, module_code, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend) VALUES
+SELECT id_application, 'GEONATURE', 'GeoNature', '', 'Module parent de tous les modules sur lequel on peut associer un CRUVED.
 NB: mettre active_frontend et active_backend à false pour qu''il ne s''affiche pas dans la barre latérale des modules',
-'geonature', '', '', FALSE, FALSE);
+'geonature', '', '', FALSE, FALSE
+FROM utilisateurs.t_application WHERE code_application = 'GN'
+;
 
 
 --------
@@ -133,7 +135,7 @@ ALTER TABLE ONLY gn_synthese.synthese
     ADD CONSTRAINT fk_synthese_id_module FOREIGN KEY (id_module) REFERENCES utilisateurs.t_applications(id_application) ON UPDATE CASCADE;
 
 UPDATE gn_synthese.synthese 
-SET id_module = (SELECT gn_commons.get_id_module_byname('occtax'))
+SET id_module = (SELECT gn_commons.get_id_module_bycode('OCCTAX'))
 WHERE id_source = (SELECT id_source FROM gn_synthese.t_sources WHERE name_source = 'Occtax' LIMIT 1);
 --Si vous avez insérer des données provenant d'une autre source que occtax, 
 --vous devez gérer vous même le champ id_module des enregistrements correspondants.
@@ -329,7 +331,7 @@ SELECT INTO releve * FROM pr_occtax.t_releves_occtax rel WHERE occurrence.id_rel
 SELECT INTO id_source s.id_source FROM gn_synthese.t_sources s WHERE name_source ILIKE 'occtax';
 
 -- Récupération de l'id_module
-SELECT INTO id_module gn_commons.get_id_module_byname('occtax');
+SELECT INTO id_module gn_commons.get_id_module_bycode('OCCTAX');
 
 -- Récupération du status de validation du counting dans la table t_validation
 SELECT INTO validation v.*, CONCAT(r.nom_role, r.prenom_role) as validator_full_name
@@ -782,5 +784,6 @@ CASE
 END AS id_filter,
 id_application,
 1
-FROM save.cor_app_privileges
-WHERE id_application = 3;
+FROM save.cor_app_privileges cor
+JOIN utilisateurs.t_applications app ON app.id_application = cor.id_application
+WHERE app.code_application = 'GN';

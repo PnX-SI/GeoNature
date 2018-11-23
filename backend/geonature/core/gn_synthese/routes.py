@@ -31,7 +31,7 @@ from geonature.core.gn_synthese.utils import query as synthese_query
 
 from geonature.core.gn_meta.models import TDatasets
 
-from geonature.core.permissions import decorators as permissions
+from geonature.core.gn_permissions import decorators as permissions
 
 from geonature.utils.utilssqlalchemy import (
     to_csv_resp, to_json_resp,

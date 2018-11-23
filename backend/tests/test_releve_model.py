@@ -10,7 +10,7 @@ from flask import session
 
 from geonature.core.users.models import UserRigth
 from geonature.utils.errors import InsufficientRightsError
-from geonature.core.permissions.tools import get_or_fetch_user_cruved
+from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
 
 from .bootstrap_test import app
 
@@ -38,9 +38,8 @@ valide_occ_tax_releve = {
 user_admin = {
     'id_role': 1,
     'id_organisme': 1,
-    'tag_action_code': 'R',
+    'code_action': 'R',
     'code_filter': '3',
-    'id_application': 3
 }
 
 # has only right on dataset 2
@@ -49,7 +48,6 @@ user_agent = {
     'id_organisme': -1,
     'code_action': 'R',
     'code_filter': '2',
-    'id_application': 3
 }
 
 # can see only its data
@@ -58,7 +56,6 @@ user_low = {
     'id_organisme': -1,
     'code_action': 'R',
     'code_filter': '1',
-    'id_application': 3
 }
 
 
@@ -140,8 +137,7 @@ class TestReleveModel:
         user_cruved = get_or_fetch_user_cruved(
             session=session,
             id_role=user_hight.id_role,
-            id_application=6,
-            id_application_parent=3
+            module_code='OCCTAX'
         )
         cruved = {'R': '3', 'E': '3', 'C': '3', 'V': '3', 'D': '3', 'U': '3'}
 

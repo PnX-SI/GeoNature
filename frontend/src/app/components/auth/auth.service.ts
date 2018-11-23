@@ -113,7 +113,7 @@ export class AuthService {
       this.router.navigate(['/login']);
     }
     // call the logout route to delete the session
-    this._http.get<any>(`${AppConfig.API_ENDPOINT}/auth/logout_cruved`).subscribe(() => {});
+    this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_auth/logout_cruved`).subscribe(() => {});
   }
 
   isAuthenticated(): boolean {

@@ -458,7 +458,7 @@ params :
 
         from flask import Blueprint
         from pypnusershub.routes import check_auth_cruved
-        from geonature.core.permissions.tools import get_or_fetch_user_cruved
+        from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
         from geonature.utils.utilssqlalchemy import json_resp
 
         blueprint = Blueprint(__name__)
@@ -480,8 +480,7 @@ params :
             user_cruved = get_or_fetch_user_cruved(
                     session=session,
                     id_role=info_role.id_role,
-                    id_application=ID_MODULE,
-                    id_application_parent=current_app.config['ID_APPLICATION_GEONATURE']
+                    module_code=MY_MODULE_CODE,
             )
             return {'result': 'id_role = {}'.format(info_role.id_role)}
 

@@ -46,8 +46,8 @@ from geonature.utils.utilssqlalchemy import (
 from geonature.utils.errors import GeonatureApiError
 from geonature.core.users.models import UserRigth
 from geonature.core.gn_meta.models import TDatasets, CorDatasetActor
-from geonature.core.permissions import decorators as permissions
-from geonature.core.permissions.tools import get_or_fetch_user_cruved
+from geonature.core.gn_permissions import decorators as permissions
+from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
 
 blueprint = Blueprint('pr_occtax', __name__)
 log = logging.getLogger(__name__)
@@ -223,8 +223,6 @@ def getViewReleveList(info_role):
 
 
     """
-    print(info_role)
-    print(info_role.code_filter)
     releveRepository = ReleveRepository(VReleveList)
     q = releveRepository.get_filtered_query(info_role)
 

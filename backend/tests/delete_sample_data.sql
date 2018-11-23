@@ -6,4 +6,6 @@ TRUNCATE gn_meta.t_datasets CASCADE;
 
 TRUNCATE gn_meta.t_acquisition_frameworks CASCADE;
 
-TRUNCATE utilisateurs.cor_app_privileges CASCADE;
+TRUNCATE gn_permissions.cor_role_action_filter_module_object CASCADE;
+
+TRUNCATE utilisateurs.cor_role_app_profil CASCADE;

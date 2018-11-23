@@ -122,7 +122,7 @@ SELECT INTO releve * FROM pr_occtax.t_releves_occtax rel WHERE occurrence.id_rel
 SELECT INTO id_source s.id_source FROM gn_synthese.t_sources s WHERE name_source ILIKE 'occtax';
 
 -- Récupération de l'id_module
-SELECT INTO id_module gn_commons.get_id_module_byname('occtax');
+SELECT INTO id_module gn_commons.get_id_module_bycode('OCCTAX');
 
 -- Récupération du status de validation du counting dans la table t_validation
 SELECT INTO validation v.*, CONCAT(r.nom_role, r.prenom_role) as validator_full_name

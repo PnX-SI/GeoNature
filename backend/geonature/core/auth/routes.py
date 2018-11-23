@@ -6,10 +6,12 @@
 import datetime
 import xmltodict
 import logging
+from copy import copy
+
 
 from flask import (
     Blueprint, request, make_response,
-    redirect, current_app, jsonify, render_template
+    redirect, current_app, jsonify, render_template, session, Response
 )
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
@@ -18,17 +20,20 @@ from geonature.utils import utilsrequests
 from geonature.utils.errors import CasAuthentificationError
 
 
-routes = Blueprint('auth_cas', __name__, template_folder="templates")
+routes = Blueprint('gn_auth', __name__, template_folder="templates")
 log = logging.getLogger()
 gunicorn_error_logger = logging.getLogger('gunicorn.error')
 
 
-@routes.route('/login', methods=['GET', 'POST'])
+@routes.route('/login_cas', methods=['GET', 'POST'])
 def loginCas():
+    """
+        Login route with the INPN CAS
+    """
     config_cas = current_app.config['CAS']
     params = request.args
     if 'ticket' in params:
-        base_url = current_app.config['API_ENDPOINT'] + "/auth_cas/login"
+        base_url = current_app.config['API_ENDPOINT'] + "/gn_auth/login_cas"
         url_validate = "{url}?ticket={ticket}&service={service}".format(
             url=config_cas['CAS_URL_VALIDATION'],
             ticket=params['ticket'],
@@ -157,3 +162,19 @@ def loginCas():
                 url_geonature=current_app.config['URL_APPLICATION']
             )
     return jsonify({'message': 'Authentification error'}, 500)
+
+
+
+
+
+@routes.route('/logout_cruved', methods=['GET'])
+def logout_cruved():
+    """
+    Route to logout with cruved
+    To avoid multiples server call, we store the cruved in the session
+    when the user logout we need clear the session to get the new cruved session
+    """
+    copy_session_key = copy(session)
+    for key in copy_session_key:
+        session.pop(key)
+    return Response('Logout', 200)
