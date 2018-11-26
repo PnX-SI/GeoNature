@@ -83,6 +83,7 @@ Activer le mode ``ssl`` et ``redirect`` puis redémarrer Apache :
 
     sudo a2enmod ssl
     sudo a2enmod redirect
+    sudo a2enmod headers
     sudo apachectl restart
 
 Les fichiers de configuration des sites GeoNature, TaxHub et UsersHub ne sont pas à modifier. Il seront automatiquement associés à la configuration HTTPS.
