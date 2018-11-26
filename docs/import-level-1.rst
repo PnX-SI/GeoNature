@@ -86,7 +86,7 @@ Insertion des données dans la Synthèse
   last_action
   )
    SELECT
-	uuid_generate_v4(),
+	uuid_generate_v4(), -- Attention, ne générez un UUID_SINP pour chaque obs que si vous êtes surs qu'elles n'en ont pas déjà un
 	2 AS id_source,
 	3 AS id_dataset,
 	CASE

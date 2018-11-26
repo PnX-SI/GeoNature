@@ -2,9 +2,11 @@ from flask import Blueprint, request
 
 from geonature.utils.env import DB
 from geonature.core.users.models import (
-    VUserslistForallMenu, TRoles,
+    VUserslistForallMenu,
     BibOrganismes, CorRole
 )
+from pypnusershub.db.models import User
+
 from geonature.utils.utilssqlalchemy import json_resp
 
 routes = Blueprint('users', __name__)
@@ -42,7 +44,7 @@ def get_role(id_role):
         Retourne le détail d'un role
     '''
     user = DB.session.query(
-        TRoles
+        User
     ).filter_by(id_role=id_role).one()
     return user.as_dict()
 
@@ -58,9 +60,9 @@ def insert_role(user=None):
         data = user
     else:
         data = dict(request.get_json())
-    user = TRoles(**data)
+    user = User(**data)
     if user.id_role is not None:
-        exist_user = DB.session.query(TRoles).get(user.id_role)
+        exist_user = DB.session.query(User).get(user.id_role)
         if exist_user:
             DB.session.merge(user)
         else:
@@ -126,8 +128,11 @@ def get_roles():
     '''
         Retourne tous les roles
     '''
-    users = DB.session.query(TRoles).all()
-    return [user.as_dict() for user in users]
+    params = request.args
+    q = DB.session.query(User)
+    if 'group' in params:
+        q = q.filter(User.groupe == params['group'])
+    return [user.as_dict() for user in q.all()]
 
 
 @routes.route('/organisms', methods=['GET'])

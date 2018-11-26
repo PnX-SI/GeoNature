@@ -11,7 +11,7 @@ from geonature.utils.utilssqlalchemy import (
 )
 from geonature.utils.env import DB
 from geonature.utils.errors import InsufficientRightsError
-from geonature.core.users.models import TRoles
+from pypnusershub.db.models import User
 from geonature.core.gn_meta.models import TDatasets
 
 
@@ -37,7 +37,7 @@ class ReleveModel(DB.Model):
             peu ou non agir sur une donnée
         """
         # Si l'utilisateur n'a pas de droit d'accès aux données
-        if level not in ('1', '2', '3'):
+        if level == '0' or level not in ('1', '2', '3'):
             return False
 
         # Si l'utilisateur à le droit d'accéder à toutes les données
@@ -200,19 +200,23 @@ class TRelevesOccurrence(ReleveModel):
     )
 
     observers = DB.relationship(
-        'TRoles',
+        User,
         secondary=corRoleRelevesOccurrence,
         primaryjoin=(
             corRoleRelevesOccurrence.c.id_releve_occtax == id_releve_occtax
         ),
-        secondaryjoin=(corRoleRelevesOccurrence.c.id_role == TRoles.id_role),
+        secondaryjoin=(corRoleRelevesOccurrence.c.id_role == User.id_role),
         foreign_keys=[
             corRoleRelevesOccurrence.c.id_releve_occtax,
             corRoleRelevesOccurrence.c.id_role
         ]
     )
 
-    digitiser = relationship("TRoles", foreign_keys=[id_digitiser])
+    digitiser = relationship(
+        User,
+        primaryjoin=(User.id_role == id_digitiser
+        ),
+        foreign_keys=[id_digitiser])
 
     def get_geofeature(self, recursif=True):
         return self.as_geofeature('geom_4326', 'id_releve_occtax', recursif)
@@ -242,12 +246,12 @@ class VReleveOccurrence(ReleveModel):
     leaflet_popup = DB.Column(DB.Unicode)
     observateurs = DB.Column(DB.Unicode)
     observers = DB.relationship(
-        'TRoles',
+        User,
         secondary=corRoleRelevesOccurrence,
         primaryjoin=(
             corRoleRelevesOccurrence.c.id_releve_occtax == id_releve_occtax
         ),
-        secondaryjoin=(corRoleRelevesOccurrence.c.id_role == TRoles.id_role),
+        secondaryjoin=(corRoleRelevesOccurrence.c.id_role == User.id_role),
         foreign_keys=[
             corRoleRelevesOccurrence.c.id_releve_occtax,
             corRoleRelevesOccurrence.c.id_role
@@ -282,12 +286,12 @@ class VReleveList(ReleveModel):
     observateurs = DB.Column(DB.Unicode)
     dataset_name = DB.Column(DB.Unicode)
     observers = DB.relationship(
-        'TRoles',
+        User,
         secondary=corRoleRelevesOccurrence,
         primaryjoin=(
             corRoleRelevesOccurrence.c.id_releve_occtax == id_releve_occtax
         ),
-        secondaryjoin=(corRoleRelevesOccurrence.c.id_role == TRoles.id_role),
+        secondaryjoin=(corRoleRelevesOccurrence.c.id_role == User.id_role),
         foreign_keys=[
             corRoleRelevesOccurrence.c.id_releve_occtax,
             corRoleRelevesOccurrence.c.id_role

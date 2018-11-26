@@ -120,8 +120,10 @@ then
     echo "--------------------" &>> var/log/install_db.log
     echo "" &>> var/log/install_db.log
     wget https://raw.githubusercontent.com/PnEcrins/UsersHub/$usershub_release/data/usershub.sql -P /tmp/usershub
+    wget https://raw.githubusercontent.com/PnEcrins/UsersHub/$usershub_release/data/usershub-data.sql -P /tmp/usershub
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/usershub/usershub.sql  &>> var/log/install_db.log
-
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/usershub/usershub-data.sql &>>  &>> var/log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/utilisateurs/adds_for_usershub.sql &>>  &>> var/log/install_db.log
 
     echo "Download and extract taxref file..."
 
@@ -217,6 +219,15 @@ then
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/nomenclatures/data_nomenclatures.sql  &>> var/log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/nomenclatures/data_nomenclatures_taxonomie.sql  &>> var/log/install_db.log
 
+    echo "Creating 'commons' schema..."
+    echo "" &>> var/log/install_db.log
+    echo "" &>> var/log/install_db.log
+    echo "--------------------" &>> var/log/install_db.log
+    echo "Creating 'commons' schema" &>> var/log/install_db.log
+    echo "--------------------" &>> var/log/install_db.log
+    echo "" &>> var/log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/commons.sql  &>> var/log/install_db.log
+
     echo "Creating 'meta' schema..."
     echo "" &>> var/log/install_db.log
     echo "" &>> var/log/install_db.log
@@ -309,16 +320,6 @@ then
             sudo -n -u postgres -s psql -d $db_name -c "REINDEX INDEX ref_geo.index_dem_vector_geom;" &>> var/log/install_db.log
         fi
     fi
-
-
-    echo "Creating 'commons' schema..."
-    echo "" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "Creating 'commons' schema" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/commons.sql  &>> var/log/install_db.log
 
     echo "Creating 'imports' schema..."
     echo "" &>> var/log/install_db.log

@@ -65,26 +65,27 @@ def build_geonature_front(rebuild_sass=False):
     subprocess.call(['npm', 'run', 'build'], cwd=str(ROOT_DIR / 'frontend'))
 
 
-def frontend_routes_templating():
+def frontend_routes_templating(app=None):
+    if not app:
+        app = get_app_for_cmd(with_external_mods=False)
     log.info('Generating frontend routing')
     from geonature.utils.env import list_frontend_enabled_modules
-    from geonature.core.gn_commons.models import TModules
     with open(
         str(ROOT_DIR / 'frontend/src/app/routing/app-routing.module.ts.sample'),
         'r'
     ) as input_file:
         template = Template(input_file.read())
         routes = []
-        for conf, manifest in list_frontend_enabled_modules():
-            location = Path(GN_EXTERNAL_MODULE / manifest['module_name'])
+        for url_path, module_name in list_frontend_enabled_modules(app):
+            location = Path(GN_EXTERNAL_MODULE / module_name)
             # test if module have frontend
             if (location / 'frontend').is_dir():
-                path = conf['api_url'].lstrip('/')
+                path = url_path.lstrip('/')
                 location = '{}/{}#GeonatureModule'.format(
                     location.resolve(), GN_MODULE_FE_FILE
                 )
                 routes.append(
-                    {'path': path, 'location': location, 'module_name': manifest['module_name']}
+                    {'path': path, 'location': location, 'module_name': module_name}
                 )
 
             # TODO test if two modules with the same name is okay for Angular
@@ -126,9 +127,10 @@ def create_frontend_config(conf_file):
     log.info("...%s\n", MSG_OK)
 
 
-def update_app_configuration(conf_file, build=True):
+def update_app_configuration(conf_file, build=True, prod=True):
     log.info('Update app configuration')
-    subprocess.call(['sudo', 'supervisorctl', 'reload'])
+    if prod:
+        subprocess.call(['sudo', 'supervisorctl', 'reload'])
     create_frontend_config(conf_file)
     if build:
         subprocess.call(['npm', 'run', 'build'], cwd=str(ROOT_DIR / 'frontend'))

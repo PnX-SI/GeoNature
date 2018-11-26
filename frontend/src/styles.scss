@@ -224,3 +224,25 @@ li.no-bullet {
 .box-shadow {
   box-shadow: 4px 5px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
+
+.disabled {
+  cursor: not-allowed !important;
+}
+
+[disabled] {
+  cursor: not-allowed !important;
+}
+
+.form-control.is-invalid {
+  border-color: 1px solid #ced4da !important;
+}
+
+.ng-invalid,
+.custom-invalid {
+  border-left: 5px solid #ff0000 !important;
+  
+}
+
+.no-box-shadow {
+  box-shadow: none !important;
+}

@@ -55,7 +55,7 @@ Les applications suivantes seront installées :
 - `TaxHub <https://github.com/PnX-SI/TaxHub>`_ qui pilote le schéma ``taxonomie``
 - `UsersHub <https://github.com/PnEcrins/UsersHub>`_ qui pilote le schéma ``utilisateurs`` (le paramètre ``install_usershub_app`` du fichier de configuration ``install_all.ini`` permet de désactiver l'installation de l'application. Il est cependant recommandé d'installer l'application pour disposer d'une interface pour gérer les utilisateurs dans GeoNature)
 
-Si vous disposez déjà de Taxhub ou de UsersHub sur un autre serveur ou une autre base de données et que vous souhaitez installer simplement GeoNature, veuillez suivre cette `documentation <https://github.com/PnX-SI/GeoNature/blob/install_all/docs/installation_standalone.rst>`_
+Si vous disposez déjà de Taxhub ou de UsersHub sur un autre serveur ou une autre base de données et que vous souhaitez installer simplement GeoNature, veuillez suivre la documentation INSTALLATION AUTONOME.
 
 Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur linux ``root``.
 
@@ -165,14 +165,14 @@ Vous pouvez vous connecter avec l'utilisateur intégré par défaut (admin/admin
 
 :Note:
 
-    Ne prenez pas en compte les messages de UsersHub indiqués à la fin de l'installation. Ce sont des restes d'anciennes vers de UsersHub et GeoNature V1.
+    Pour en savoir plus TaxHub, sa configuration et son utilisation, reportez-vous à sa documentation : https://taxhub.readthedocs.io. Idem pour UsersHub et sa documentation : https://usershub.readthedocs.io
     
 :Note:
 
     * **GeoNature-atlas** : Comme dans la V1, le script ``install_all.sh`` permettra d'installer automatiquement GeoNature-atlas (en option)
     * Une première version de GeoNature-atlas compatible avec GeoNature V2 est disponible dans sa branche ``develop`` : https://github.com/PnEcrins/GeoNature-atlas/issues/162
     * Suivez la procédure d'installation classique de GeoNature-atlas mais exécutez le script ``install_db_gn2.sh`` à la place de ``install_db.sh``
-    * Vous pouvez utiliser le schéma ``ref_geo`` de GeoNature pour votre territoire, les communes et les mailles, si vous les avez intégré dans ``ref_geo.l_areas`` au prélable.
+    * Vous pouvez utiliser le schéma ``ref_geo`` de GeoNature pour votre territoire, les communes et les mailles, si vous les avez intégré dans ``ref_geo.l_areas`` au préalable.
     
 :Note:
 
@@ -199,7 +199,11 @@ Installation d'un module GeoNature
 
 L'installation de GeoNature n'est livrée qu'avec les schémas de base de données et les modules du coeur (NB : le module Occurrence de Taxon - Occtax - est fourni par défaut). Pour ajouter un gn_module externe, il est nécessaire de l'installer :
 
-Rendez-vous dans le répertoire ``backend`` de GeoNature et activez le virtualenv pour rendre disponible les commandes GeoNature :
+**1.** Téléchargez le module depuis son dépôt Github puis dézippez-le.
+
+**2.** Renseignez l'éventuel fichier ``config/settings.ini`` du module.
+
+**3.** Installez le module. Rendez-vous dans le répertoire ``backend`` de GeoNature et activez le virtualenv pour rendre disponible les commandes GeoNature :
 
 ::
 
@@ -226,3 +230,5 @@ Cette commande éxecute les actions suivantes :
 - Vérification de la conformité des paramètres utilisateurs
 - Génération du routing Angular pour le frontend
 - Re-build du frontend pour une mise en production
+
+**4.** Complétez l'éventuelle configuration du module (``config/conf_gn_module.toml``) à partir des paramètres présents dans ``config/conf_gn_module.toml.example`` dont vous pouvez surcoucher les valeurs par défaut. Puis relancez la mise à jour de la configuration (depuis le répertoire ``geonature/backend`` et une fois dans le venv (``source venv/bin/activate``) : ``geonature update_module_configuration nom_du_module``)

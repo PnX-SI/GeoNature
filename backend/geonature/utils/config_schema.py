@@ -4,13 +4,14 @@
 
 import os
 
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, validates_schema, ValidationError
 from marshmallow.validate import OneOf, Regexp
 from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_EXPORT_COLUMNS,
     DEFAULT_LIST_COLUMN,
     DEFAULT_COLUMNS_API_SYNTHESE
 )
+from geonature.utils.env import (GEONATURE_VERSION)
 
 
 class CasUserSchemaConf(Schema):
@@ -45,6 +46,8 @@ class CasSchemaConf(Schema):
 
 class BddConfig(Schema):
     id_area_type_municipality = fields.Integer(missing=25)
+    ID_USER_SOCLE_1 = fields.Integer(missing=8)
+    ID_USER_SOCLE_2 = fields.Integer(missing=6)
 
 
 class RightsSchemaConf(Schema):
@@ -79,7 +82,7 @@ class GnPySchemaConf(Schema):
     SESSION_TYPE = fields.String(missing='filesystem')
     SECRET_KEY = fields.String(required=True)
     # le cookie expire toute les 30 minutes par défaut
-    COOKIE_EXPIRATION = fields.Integer(missing=108000)
+    COOKIE_EXPIRATION = fields.Integer(missing=1800)
     COOKIE_AUTORENEW = fields.Boolean(missing=True)
     TRAP_ALL_EXCEPTIONS = fields.Boolean(missing=False)
 
@@ -129,17 +132,24 @@ class Synthese(Schema):
     # Nombre des "dernières observations" affiché à l'arrive sur la synthese
     NB_LAST_OBS = fields.Integer(missing=100)
 
+
+# On met la valeur par défaut de DISCONECT_AFTER_INACTIVITY inferieure à COOKIE_EXPIRATION
+cookie_expiration = GnPySchemaConf().load({}).data.get('COOKIE_EXPIRATION')
+
 # class a utiliser pour les paramètres que l'on veut passer au frontend
 
 
 class GnGeneralSchemaConf(Schema):
     appName = fields.String(missing='GeoNature2')
+    GEONATURE_VERSION = fields.String(missing=GEONATURE_VERSION.strip())
     DEFAULT_LANGUAGE = fields.String(missing='fr')
     PASS_METHOD = fields.String(
         missing='hash',
         validate=OneOf(['hash', 'md5'])
     )
     DEBUG = fields.Boolean(missing=False)
+    # period d'inactivité en second après laquelle on deconnect: defaut 20 secondes
+    INACTIVITY_PERIOD_DISCONECT = fields.Integer(missing=cookie_expiration, default=1200)
     URL_APPLICATION = fields.Url(required=True)
     API_ENDPOINT = fields.Url(required=True)
     API_TAXHUB = fields.Url(required=True)
@@ -155,6 +165,16 @@ class GnGeneralSchemaConf(Schema):
     ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS = fields.Boolean(missing=True)
     BDD = fields.Nested(BddConfig, missing=dict())
 
+    @validates_schema
+    def validate_inactivity_seconde(self, data):
+        if data['INACTIVITY_PERIOD_DISCONECT'] + 20 <= cookie_expiration:
+            raise ValidationError(
+                """
+                Parameters INACTIVITY_PERIOD_DISCONECT must be at least 20 seconds
+                lesser than COOKIE_EXPIRATION
+                """
+            )
+
 
 class ManifestSchemaConf(Schema):
     package_format_version = fields.String(required=True)
@@ -168,8 +188,3 @@ class ManifestSchemaConf(Schema):
 class ManifestSchemaProdConf(Schema):
     # module_path = fields.String(required=True)
     module_name = fields.String(required=True)
-
-
-class GnModuleProdConf(Schema):
-    api_url = fields.String(required=True)
-    id_application = fields.Integer(required=True)

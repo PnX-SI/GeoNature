@@ -5,21 +5,25 @@ OS_NAME=$ID
 OS_VERSION=$VERSION_ID
 OS_BITS="$(getconf LONG_BIT)"
 
-# test the server architecture
+# Test the server architecture
 if [ !"$OS_BITS" == "64" ]; then
-   echo "Geonature must be installed on a 64-bits operating system ; your is $OS_BITS-bits" 1>&2
+   echo "GeoNature must be installed on a 64-bits operating system ; your is $OS_BITS-bits" 1>&2
    exit 1
 fi
 
-# format my_url to set a / at the end
-if [ "${my_url: -1}" != '/' ] 
+# Format my_url to set a / at the end
+if [ "${my_url: -1}" != '/' ]
 then
 my_url=$my_url/
 fi
 
+# Remove http:// and remove final / from $my_url to create $my_domain
+# No more used actually but can be useful if we want to create a Servername in Apache configuration
+my_domain=$(echo $my_url | sed -r 's|^.*\/\/(.*)$|\1|')
+my_domain=$(echo $my_domain | sed s'/.$//')
 
-# Check os and versions
-if [ "$OS_NAME" != "debian" ] && [ "$OS_NAME" != "ubuntu" ] 
+# Check OS and versions
+if [ "$OS_NAME" != "debian" ] && [ "$OS_NAME" != "ubuntu" ]
 then
     echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour les distributions Debian et Ubuntu\e[0m" >&2
     exit 1
@@ -27,7 +31,7 @@ fi
 
 if [ "$OS_VERSION" != "8" ] && [ "$OS_VERSION" != "9" ] && [ "$OS_VERSION" != "18.04" ] && [ "$OS_VERSION" != "16.04" ]
 then
-    echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour Debian 8/9 et ubuntu 16.04/18.04\e[0m" >&2
+    echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour Debian 8/9 et Ubuntu 16.04/18.04\e[0m" >&2
     exit 1
 fi
 
@@ -38,8 +42,7 @@ if [ "$(id -u)" == "0" ]; then
    exit 1
 fi
 
-
-
+# Create log folder if it don't already exists
 if [ ! -d 'var' ]
 then
   mkdir var
@@ -60,7 +63,7 @@ touch  var/log/install_app.log
 echo "############### Installation des paquets systèmes ###############"&>>  var/log/install_app.log
 
 
-# Modification de la locale
+# Updating language locale
 sudo apt-get install -y locales
 sudo sed -i "s/# $my_local/$my_local/g" /etc/locale.gen
 sudo locale-gen $my_local
@@ -69,13 +72,13 @@ echo "export LANG=$my_local" >> ~/.bashrc
 echo "export LANGUAGE=$my_local" >> ~/.bashrc
 source ~/.bashrc
 
-# Installation de l'environnement nécessaire à GeoNature et TaxHub
+# Installing required environment for GeoNature and TaxHub
 echo "Installation de l'environnement logiciel..."
 
-sudo apt-get -y install ntpdate 2> var/log/install_app.log 
-sudo ntpdate-debian &>>  var/log/install_app.log 2> var/log/install_app.log 
-sudo apt-get install -y curl unzip git &>>  var/log/install_app.log 2> var/log/install_app.log 
-sudo apt-get install -y apache2 libapache2-mod-wsgi libapache2-mod-perl2 2> var/log/install_app.log 
+sudo apt-get -y install ntpdate 2> var/log/install_app.log
+sudo ntpdate-debian &>>  var/log/install_app.log 2> var/log/install_app.log
+sudo apt-get install -y curl unzip git &>>  var/log/install_app.log 2> var/log/install_app.log
+sudo apt-get install -y apache2 libapache2-mod-wsgi libapache2-mod-perl2 2> var/log/install_app.log
 sudo apt-get install -y postgresql 2> var/log/install_app.log
 sudo apt-get install -y postgresql-contrib
 if [ "$OS_VERSION" == "9" ]
@@ -85,34 +88,34 @@ then
 fi
 if [ "$OS_VERSION" == "8" ]
 then
-    sudo apt-get install -y postgresql-server-dev-9.4 2> var/log/install_app.log 
+    sudo apt-get install -y postgresql-server-dev-9.4 2> var/log/install_app.log
     sudo apt install -y postgis-2.3 postgis 2> var/log/install_app.log
 fi
 
 if [ "$OS_VERSION" == "18.04" ]
 then
-    sudo apt-get install -y postgresql-server-dev-10 2> var/log/install_app.log 
+    sudo apt-get install -y postgresql-server-dev-10 2> var/log/install_app.log
     sudo apt install -y postgis 2> var/log/install_app.log
 fi
 
 if [ "$OS_VERSION" == "16.04" ]
 then
     sudo apt-get install -y libatlas3-base
-    sudo apt-get install -y postgresql-server-dev-9.5  2> var/log/install_app.log 
+    sudo apt-get install -y postgresql-server-dev-9.5  2> var/log/install_app.log
     sudo apt install -y postgis postgis postgresql-9.5-postgis-2.2 2> var/log/install_app.log
 fi
 sudo sed -e "s/datestyle =.*$/datestyle = 'ISO, DMY'/g" -i /etc/postgresql/*/main/postgresql.conf
 sudo service postgresql restart
 
-sudo apt-get install -y python3 2> var/log/install_app.log 
-sudo apt-get install -y python3-dev 2> var/log/install_app.log 
-sudo apt-get install -y python3-setuptools 2> var/log/install_app.log 
-sudo apt-get install -y python-pip 2> var/log/install_app.log 
-sudo apt-get install -y libpq-dev 2> var/log/install_app.log 
-sudo apt-get install -y libgdal-dev 2> var/log/install_app.log 
-sudo apt-get install -y python-gdal 2> var/log/install_app.log 
-sudo apt-get install -y python-virtualenv 2> var/log/install_app.log 
-sudo apt-get install -y build-essential 2> var/log/install_app.log 
+sudo apt-get install -y python3 2> var/log/install_app.log
+sudo apt-get install -y python3-dev 2> var/log/install_app.log
+sudo apt-get install -y python3-setuptools 2> var/log/install_app.log
+sudo apt-get install -y python-pip 2> var/log/install_app.log
+sudo apt-get install -y libpq-dev 2> var/log/install_app.log
+sudo apt-get install -y libgdal-dev 2> var/log/install_app.log
+sudo apt-get install -y python-gdal 2> var/log/install_app.log
+sudo apt-get install -y python-virtualenv 2> var/log/install_app.log
+sudo apt-get install -y build-essential 2> var/log/install_app.log
 sudo pip install --upgrade pip virtualenv virtualenvwrapper 2> var/log/install_app.log
 
 if [ "$OS_VERSION" == "9" ]
@@ -122,7 +125,7 @@ then
     fi
 if [ "$OS_VERSION" == "8" ]
 then
-    sudo apt-get install -y npm 2> var/log/install_app.log 
+    sudo apt-get install -y npm 2> var/log/install_app.log
 fi
 
 if [ "$OS_VERSION" == "16.04" ] || [ "$OS_VERSION" == "18.04" ]
@@ -131,24 +134,24 @@ then
     sudo apt-get install -y npm
 fi
 
-sudo apt-get install -y supervisor 2> var/log/install_app.log 
+sudo apt-get install -y supervisor 2> var/log/install_app.log
 
 # To make opencv (TaxHub) work on Debian 8
-sudo apt-get install -y libsm6 libxrender1 libfontconfig1 2> var/log/install_app.log 
-sudo apt-get install -y python-qt4 2> var/log/install_app.log 
+sudo apt-get install -y libsm6 libxrender1 libfontconfig1 2> var/log/install_app.log
+sudo apt-get install -y python-qt4 2> var/log/install_app.log
 
-# Création de l'utilisateur PostgreSQL
+# Creating PostgreSQL user
 echo "Création de l'utilisateur PostgreSQL..."
 sudo -n -u postgres -s psql -c "CREATE ROLE $user_pg WITH LOGIN PASSWORD '$user_pg_pass';"
 
-# Configuration Apache
+# Apache configuration
 sudo sh -c 'echo "ServerName localhost" >> /etc/apache2/apache2.conf'
 sudo a2enmod rewrite
 sudo a2dismod mod_pyth
 sudo a2enmod wsgi
 sudo apache2ctl restart
 
-# Installation de GeoNature avec l'utilisateur courant
+# Installing GeoNature with current user
 echo "Téléchargement et installation de GeoNature ..."
 cd /tmp
 wget https://github.com/PnX-SI/GeoNature/archive/$geonature_release.zip
@@ -159,7 +162,7 @@ sudo chown `whoami` /home/`whoami`/geonature/
 
 cd /home/`whoami`/geonature
 
-# Configuration des settings de GeoNature
+# Updating GeoNature settings
 cp config/settings.ini.sample config/settings.ini
 echo "Installation de la base de données et configuration de l'application GeoNature ..."
 my_url="${my_url//\//\\/}"
@@ -181,23 +184,23 @@ sed -i "s/https_key_path=.*$/https_key_path=$https_key_path/g" config/settings.i
 
 
 cd install/
-# Installation de la base de données GeoNature
+# Installation of GeoNature database
 ./install_db.sh
 
-# Installation et configuration de l'application GeoNature
+# Installation and configuration of GeoNature application
 ./install_app.sh
 
 cd ../
 
-# Configuration Apache de Geonature
+# Apache configuration of GeoNature
 sudo touch /etc/apache2/sites-available/geonature.conf
 
 sudo sh -c 'echo "# Configuration GeoNature" >> /etc/apache2/sites-available/geonature.conf'
 conf="Alias /geonature /home/`whoami`/geonature/frontend/dist"
-echo $conf | sudo tee -a /etc/apache2/sites-available/geonature.conf 
+echo $conf | sudo tee -a /etc/apache2/sites-available/geonature.conf
 sudo sh -c 'echo  $conf>> /etc/apache2/sites-available/geonature.conf'
 conf="<Directory /home/`whoami`/geonature/frontend/dist>"
-echo $conf | sudo tee -a /etc/apache2/sites-available/geonature.conf 
+echo $conf | sudo tee -a /etc/apache2/sites-available/geonature.conf
 sudo sh -c 'echo  "Require all granted">> /etc/apache2/sites-available/geonature.conf'
 sudo sh -c 'echo  "</Directory>">> /etc/apache2/sites-available/geonature.conf'
 # Conf Apache du backend de GeoNature
@@ -209,18 +212,18 @@ sudo sh -c '#FIN Configuration GeoNature 2>" >> /etc/apache2/sites-available/geo
 
 sudo a2ensite geonature
 
-# Configuration Apache de la page de maintenance de GeoNature
+# Apache configuration of GeoNature maintenance page
 sudo touch /etc/apache2/sites-available/geonature_maintenance.conf
 
 conf="Alias /geonature /home/`whoami`/geonature/frontend/src/app/maintenance"
-echo $conf | sudo tee -a /etc/apache2/sites-available/geonature_maintenance.conf 
+echo $conf | sudo tee -a /etc/apache2/sites-available/geonature_maintenance.conf
 sudo sh -c 'echo  $conf>> /etc/apache2/sites-available/geonature_maintenance.conf'
 conf="<Directory /home/`whoami`/geonature/frontend/src/app/maintenance>"
-echo $conf | sudo tee -a /etc/apache2/sites-available/geonature_maintenance.conf 
+echo $conf | sudo tee -a /etc/apache2/sites-available/geonature_maintenance.conf
 sudo sh -c 'echo  "Require all granted">> /etc/apache2/sites-available/geonature_maintenance.conf'
 sudo sh -c 'echo  "</Directory>">> /etc/apache2/sites-available/geonature_maintenance.conf'
 
-# Installation de TaxHub avec l'utilisateur courant
+# Installing TaxHub with current user
 echo "Téléchargement et installation de TaxHub ..."
 cd /tmp
 wget https://github.com/PnX-SI/TaxHub/archive/$taxhub_release.zip
@@ -230,7 +233,7 @@ mv TaxHub-$taxhub_release /home/`whoami`/taxhub/
 sudo chown -R `whoami` /home/`whoami`/taxhub/
 cd /home/`whoami`/taxhub
 
-# Configuration des settings de TaxHub
+# Setting configuration of TaxHub
 echo "Configuration de l'application TaxHub ..."
 cp settings.ini.sample settings.ini
 sed -i "s/drop_apps_db=.*$/drop_apps_db=false/g" settings.ini
@@ -249,18 +252,16 @@ sed -i "s/enable_https=.*$/enable_https=$enable_https/g" settings.ini
 sed -i "s/https_cert_path=.*$/https_cert_path=$enable_https/g" settings.ini
 sed -i "s/https_key_path=.*$/https_key_path=$enable_https/g" settings.ini
 
-# Configuration Apache de TaxHub
+# Apache configuration of TaxHub
 sudo touch /etc/apache2/sites-available/taxhub.conf
 sudo sh -c 'echo "# Configuration TaxHub" >> /etc/apache2/sites-available/taxhub.conf'
-sudo sh -c 'echo "RewriteEngine  on" >> /etc/apache2/sites-available/taxhub.conf'
-sudo sh -c 'echo "RewriteRule    \"taxhub$\"  \"taxhub/\"  [R]" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "<Location /taxhub>" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "ProxyPass  http://127.0.0.1:5000 retry=0" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:5000" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "#FIN Configuration TaxHub" >> /etc/apache2/sites-available/taxhub.conf'
 
-# Création des fichiers systèmes liés à Taxhub
+# Creation of system files used by TaxHub
 . create_sys_dir.sh
 create_sys_dir
 
@@ -268,19 +269,19 @@ sudo a2ensite taxhub
 sudo a2enmod proxy
 sudo a2enmod proxy_http
 
-# Script d'installation de TaxHub
+# Installation og TaxHub
 ./install_app.sh
 
-# Installation et configuration de l'application UsersHub (si activée)
+# Installation and configuration of UsersHub application (if activated)
 if [ "$install_usershub_app" = true ]; then
     echo "Installation de l'application Usershub"
     os_version=$(cat /etc/os-release |grep VERSION_ID)
-    # Sur Debian 9 : php7. Sur Debian 8 : php5
-    if [ "$OS_VERSION" == "9" ] 
+    # On Debian 9 : PHP7. On Debian 8 : PHP5
+    if [ "$OS_VERSION" == "9" ]
     then
-        sudo apt-get install -y php7.0 libapache2-mod-php7.0 libapache2-mod-php7.0 php7.0-pgsql php7.0-gd 2> var/log/install_app.log 
+        sudo apt-get install -y php7.0 libapache2-mod-php7.0 libapache2-mod-php7.0 php7.0-pgsql php7.0-gd 2> var/log/install_app.log
     else
-        sudo apt-get install -y php5 libapache2-mod-php5 libapache2-mod-php5 php5-pgsql php5-gd 2> var/log/install_app.log 
+        sudo apt-get install -y php5 libapache2-mod-php5 libapache2-mod-php5 php5-pgsql php5-gd 2> var/log/install_app.log
     fi
     cd /tmp
     wget https://github.com/PnEcrins/UsersHub/archive/$usershub_release.zip
@@ -296,10 +297,10 @@ if [ "$install_usershub_app" = true ]; then
     sed -i "s/user_pg=.*$/user_pg=$user_pg/g" config/settings.ini
     sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_pg_pass/g" config/settings.ini
 
-    # Script d'installation de UsersHub
+    # Installation of UsersHub application
     ./install_app.sh
-    
-    # Conf Apache de UsersHub
+
+    # Apache configuration of UsersHub
     sudo touch /etc/apache2/sites-available/usershub.conf
     sudo sh -c 'echo  "#Configuration usershub">> /etc/apache2/sites-available/usershub.conf'
     conf="Alias /usershub /home/`whoami`/usershub/web"

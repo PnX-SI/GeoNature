@@ -2,12 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import 'rxjs/add/operator/toPromise';
 import { AppConfig } from '../../../conf/app.config';
-import { Observable } from 'rxjs/Rx';
 import { Taxon } from './taxonomy/taxonomy.component';
 
 @Injectable()
 export class DataFormService {
-  constructor(private _http: HttpClient) { }
+  constructor(private _http: HttpClient) {}
 
   getNomenclature(
     codeNomenclatureType: string,
@@ -191,11 +190,23 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/organisms`);
   }
 
-  getRoles() {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/roles`);
+  getRoles(params?: any) {
+    let queryString: HttpParams = new HttpParams();
+    // tslint:disable-next-line:forin
+    for (let key in params) {
+      if (params[key] !== null) {
+        queryString = queryString.set(key, params[key]);
+      }
+    }
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/roles`, { params: queryString } );
   }
 
   getDataset(id) {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/dataset/${id}`);
   }
+
+  getModulesList() {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/modules`);
+  }
+
 }

@@ -2,11 +2,18 @@
     Fonctions permettant de lire un fichier yml de configuration
     et de le parser
 '''
+
+from sqlalchemy.orm.exc import NoResultFound
+
 from pypnnomenclature.repository import (
     get_nomenclature_list_formated,
     get_nomenclature_id_term
 )
+from pypnusershub.db.models import Application
+
+from geonature.utils.env import DB
 from geonature.utils.utilstoml import load_toml
+from geonature.utils.errors import GeonatureApiError
 
 from geonature.core.gn_commons.repositories import get_table_location_id
 
@@ -33,6 +40,14 @@ def find_field_config(config_data):
         for ckey in config_data:
             if ckey == 'fields':
                 config_data[ckey] = parse_field(config_data[ckey])
+
+            elif ckey == 'appId':
+                # Cas particulier qui permet de passer
+                #       du nom d'une application à son identifiant
+                # TODO se baser sur un code_application 
+                #       qui serait unique et non modifiable
+                config_data[ckey] = get_app_id(config_data[ckey])
+
             elif isinstance(config_data[ckey], list):
                 for idx, val in enumerate(config_data[ckey]):
                     config_data[ckey][idx] = find_field_config(val)
@@ -80,7 +95,22 @@ def parse_field(fieldlist):
 
     return fieldlist
 
-
+def get_app_id(app_name):
+    '''
+        Retourne l'identifiant d'une application 
+        à partir de son nom
+    '''
+    try:
+        app_id = (
+            DB.session.query(Application.id_application)
+            .filter_by(nom_application = str(app_name)).one()
+        )
+        return app_id
+    
+    except NoResultFound:
+        raise GeonatureApiError(
+            message="app {} not found".format(app_name)
+        )
 def format_nomenclature_list(params):
     '''
         Mise en forme des listes de valeurs de façon à assurer une

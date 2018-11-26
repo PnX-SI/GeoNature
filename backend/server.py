@@ -43,12 +43,15 @@ def get_app(config, _app=None, with_external_mods=True):
 
     # Bind app to DB
     DB.init_app(app)
+    
+    # Bind DB to app config
+    app.config['DB'] = DB
 
     with app.app_context():
         from geonature.utils.logs import mail_handler
         if app.config['MAILERROR']['MAIL_ON_ERROR']:
             logging.getLogger().addHandler(mail_handler)
-        DB.create_all()
+        #DB.create_all()
 
         from pypnusershub.routes import routes
         app.register_blueprint(routes, url_prefix='/auth')
@@ -97,9 +100,5 @@ def get_app(config, _app=None, with_external_mods=True):
                     module.backend.blueprint.blueprint,
                     url_prefix=conf['api_url']
                 )
-                #chargement de la configuration du module dans le blueprint.config
-                module.backend.blueprint.blueprint.config = conf
-                app.config[manifest['module_name']] = conf
-
         _app = app
     return app

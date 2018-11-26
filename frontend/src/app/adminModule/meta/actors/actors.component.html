@@ -2,30 +2,38 @@
 <div *ngFor="let form of parentFormArray.controls; let i=index;">
   <h5> </h5>
   <!-- Organismes -->
-  <pnx-multiselect [values]="organisms" [parentFormControl]="form.controls.organisms" [keyLabel]="'nom_organisme'" keyValue="id_organisme"
-    [label]="'Organisme'" [bindAllItem]="true">
-  </pnx-multiselect>
+  <small> Organisme </small>
+  <div class="input-group">
+    <select class="form-control form-control-sm" [disableControl]="disabled" [formControl]="form.controls.id_organism">
+        <option [ngValue]="null"></option>
+      <option *ngFor="let org of organisms" [ngValue]="org.id_organisme" >
+        {{org.nom_organisme}} </option>
+    </select>
+    <button type="button" class="btn btn-outline-shadow btn-sm" data-toggle="collapse"
+    [attr.data-target]="'#collapse'+i">
+    <i class="fa fa-cog" aria-hidden="true"></i>
+    </button>
+  </div>
 
-  <!-- Role -->
-
-  <pnx-multiselect [values]="roles" [parentFormControl]="form.controls.roles" [keyLabel]="'nom_complet'" keyValue="id_role"
-    [label]="'Personne ou groupe'" [bindAllItem]="true" >
-  </pnx-multiselect>
-
+  <div class="collapse" [attr.id]="'collapse'+i">
+    <small> Un jeu de données ou un cadre d'acquisition peut être rattaché à un organisme  <b> et/ou </b> à une personne </small>
+    <small> Personne </small>
+    <div class="input-group">
+      <select class="form-control form-control-sm" [disableControl]="disabled" [formControl]="form.controls.id_role">
+        <option [ngValue]="null"></option>
+        <option *ngFor="let role of roles" [ngValue]="role.id_role">
+          {{role.nom_complet}} </option>
+      </select>
+    </div>
+  </div>
 
   <pnx-nomenclature label="Type de role" [parentFormControl]="form.controls.id_nomenclature_actor_role" codeNomenclatureType="ROLE_ACTEUR">
   </pnx-nomenclature>
 
   <button *ngIf="i != 0" class="btn btn-sm btn-danger margin-top-sm" (click)="deleteFormArray(i)">
     <i class="fa fa-trash" aria-hidden="true"></i>
-
-
   </button>
   <hr>
 
 </div>
 
-<button class="btn btn-primary btn-sm margin-top-sm" (click)="addFormArray()">
-  <i class="fa fa-plus"></i>
-
-</button>

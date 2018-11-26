@@ -75,6 +75,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
           const radius = this._currentDraw.getRadius();
           geojson.properties.radius = radius;
         }
+        this.mapservice.justLoaded = false;
         this.layerDrawed.emit(geojson);
       }
     });
@@ -84,6 +85,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       let geojson = this.mapservice.releveFeatureGroup.toGeoJSON();
       geojson = (geojson as any).features[0];
       // output
+      this.mapservice.justLoaded = false;
       this.layerDrawed.emit(geojson);
     });
 

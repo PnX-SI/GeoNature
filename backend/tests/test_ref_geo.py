@@ -1,6 +1,6 @@
 import pytest
 
-from flask import url_for
+from flask import url_for, current_app
 
 from .bootstrap_test import app, post_json, json_of_response
 
@@ -18,7 +18,6 @@ class TestRefGeo:
 
         assert response.status_code == 200
         data = json_of_response(response)
-        assert data['municipality'][0]['area_name'] == 'Villaz'
         assert data.get('altitude') is not None
 
     def test_area_intersection(self):
@@ -30,7 +29,8 @@ class TestRefGeo:
 
         assert response.status_code == 200
         data = json_of_response(response)
-        assert data['101']['areas'][0]['area_name'] == 'Villaz'
+        id_municipality = current_app.config['BDD']['id_area_type_municipality']
+        assert data[str(id_municipality)]['areas'][0]['area_name'] == 'Villaz'
 
     def test_municipalities(self):
         query_string = {'nom_com': 'Villaz'}

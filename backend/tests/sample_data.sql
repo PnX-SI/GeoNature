@@ -27,18 +27,18 @@ INSERT INTO gn_meta.cor_acquisition_framework_objectif (id_acquisition_framework
 ;
 
 INSERT INTO gn_meta.cor_acquisition_framework_actor (id_cafa, id_acquisition_framework, id_role, id_organism, id_nomenclature_actor_role) VALUES
-(1, 1, NULL, 2, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
-,(2, 1, NULL, 2, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '7'))
-,(3, 1, NULL, 2, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6'))
+(1, 1, NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
+,(2, 1, NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '7'))
+,(3, 1, NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6'))
 ;
 SELECT pg_catalog.setval('gn_meta.cor_acquisition_framework_actor_id_cafa_seq', (SELECT max(id_cafa)+1 FROM gn_meta.cor_acquisition_framework_actor), true);
 
 INSERT INTO gn_meta.cor_dataset_actor (id_cda, id_dataset, id_role, id_organism, id_nomenclature_actor_role) VALUES
-(1, 1, NULL, 2, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
-,(2, 1, NULL, 2, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6'))
+(1, 1, NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
+,(2, 1, NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6'))
 ,(3, 1, 3, NULL, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
-,(4, 2, NULL, 2, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '5'))
-,(5, 2, NULL, 2, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
+,(4, 2, NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '5'))
+,(5, 2, NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
 ,(7, 2, NULL, -1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
 ;
 SELECT pg_catalog.setval('gn_meta.cor_dataset_actor_id_cda_seq', (SELECT max(id_cda)+1 FROM gn_meta.cor_dataset_actor), true);
@@ -48,7 +48,54 @@ SELECT pg_catalog.setval('gn_meta.cor_dataset_actor_id_cda_seq', (SELECT max(id_
 UPDATE utilisateurs.t_roles SET pass_plus = '$2y$13$TMuRXgvIg6/aAez0lXLLFu0lyPk4m8N55NDhvLoUHh/Ar3rFzjFT.' WHERE id_role IN (2,3);
 -- Ajout d'un utilisateurs partenaire avec comme cruved R=1
 INSERT INTO utilisateurs.cor_app_privileges(id_tag_action, id_tag_object, id_application, id_role) VALUES
-(12,21,14,3);
+(12,21,3,3);
+
+-- Reset original privileges
+INSERT INTO utilisateurs.cor_app_privileges (id_tag_action, id_tag_object, id_application, id_role) VALUES
+--Administrateur sur UsersHub et TaxHub / Non utilisé
+(6,23,1,1)
+,(6,23,2,1)
+--- Groupe administrateur sur UsersHub et TaxHub / Non utilisé
+,(6,23,1,9)
+,(6,23,2,9)
+--Administrateur sur GeoNature
+,(11, 23, 3, 1)
+,(12, 23, 3, 1)
+,(13, 23, 3, 1)
+,(14, 23, 3, 1)
+,(15, 23, 3, 1)
+,(16, 23, 3, 1)
+--- Groupe administrateur sur GeoNature
+,(11, 23, 3, 9)
+,(12, 23, 3, 9)
+,(13, 23, 3, 9)
+,(14, 23, 3, 9)
+,(15, 23, 3, 9)
+,(16, 23, 3, 9)
+--Validateur général sur tout GeoNature
+,(14, 23, 3, 5)
+--Validateur pour son organisme sur Occtax
+--,(14, 22, 4, 4) -- Droits Occtax supprimés car c'est l'installation du module qui créé l'application
+--CRUVED du groupe en poste sur tout GeoNature
+,(11, 23, 3, 7)
+,(12, 22, 3, 7)
+,(13, 21, 3, 7)
+,(15, 22, 3, 7)
+,(16, 21, 3, 7)
+--Groupe bureau d''étude socle 2 sur tout GeoNature
+,(11, 23, 3, 6)
+,(12, 22, 3, 6)
+,(13, 21, 3, 6)
+,(15, 22, 3, 6)
+,(16, 21, 3, 6)
+--Groupe bureau d''étude socle 1 sur tout GeoNature
+,(11, 23, 3, 8)
+,(12, 21, 3, 8)
+,(13, 21, 3, 8)
+,(15, 21, 3, 8)
+,(16, 21, 3, 8)
+;
+
 
 INSERT INTO gn_meta.cor_dataset_territory (id_dataset, id_nomenclature_territory, territory_desc) VALUES
 (1, ref_nomenclatures.get_id_nomenclature('TERRITOIRE', 'METROP') ,'Territoire du parc national des Ecrins et de ses environs immédiats')
@@ -154,6 +201,8 @@ VALUES
   'Troisieme test'
   );
 
+SELECT pg_catalog.setval('pr_occtax.t_occurrences_occtax_id_occurrence_occtax_seq', (SELECT max(id_occurrence_occtax)+1 FROM pr_occtax.t_occurrences_occtax), true);
+
 
 INSERT INTO pr_occtax.cor_role_releves_occtax (id_releve_occtax, id_role) VALUES
 (1,1)
@@ -221,3 +270,6 @@ INSERT INTO  pr_occtax.cor_counting_occtax (
     1
   )
 ;
+
+
+SELECT pg_catalog.setval('pr_occtax.cor_counting_occtax_id_counting_occtax_seq', (SELECT max(id_counting_occtax)+1 FROM pr_occtax.cor_counting_occtax), true);

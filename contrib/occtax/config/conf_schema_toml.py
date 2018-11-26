@@ -1,5 +1,7 @@
 '''
    Spécification du schéma toml des paramètres de configurations
+   Fichier spécifiant les types des paramètres et leurs valeurs par défaut
+   Fichier à ne pas modifier. Paramètres surcouchables dans config/config_gn_module.tml
 '''
 
 from marshmallow import Schema, fields
@@ -75,11 +77,16 @@ default_columns_export = [
   "altMin",
   "cdNom",
   "cdRef",
-  "dateDet",
+  "versionTAXREF",
+  "datedet",
   "comment",
   "dSPublique",
+  "jddMetadonneeDEEId",
   "statSource",
+  "diffusionNiveauPrecision",
   "idOrigine",
+  "jddCode",
+  "jddId",
   "refBiblio",
   "obsMeth",
   "ocEtatBio",
@@ -93,6 +100,7 @@ default_columns_export = [
   "preuvNum",
   "preuvNoNum",
   "obsCtx",
+  "obsDescr",
   "permIdGrp",
   "methGrp",
   "typGrp",
@@ -123,7 +131,7 @@ Vous vous apprêtez à télécharger les données de la <b>recherche courante. <
 class GnModuleSchemaConf(Schema):
     form_fields = fields.Nested(FormConfig, missing=dict())
     observers_txt = fields.Boolean(missing=False)
-    export_view_name = fields.String(missing='export_occtax_dlb')
+    export_view_name = fields.String(missing='export_occtax_sinp')
     export_geom_columns_name = fields.String(missing="geom_4326")
     export_id_column_name = fields.String(missing="permId")
     export_srid = fields.Integer(missing=4326)

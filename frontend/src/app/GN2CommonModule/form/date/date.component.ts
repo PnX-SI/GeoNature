@@ -8,9 +8,16 @@ import {
   OnDestroy
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { NgbDateParserFormatter, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs/Subscription';
 import { NgbDateFRParserFormatter } from './ngb-date-custom-parser-formatter';
+
+
+export interface DateStruc {
+  day: number;
+  month: number;
+  year: number;
+}
 
 @Component({
   selector: 'pnx-date',
@@ -25,12 +32,12 @@ export class DateComponent implements OnInit, OnDestroy {
   @Input() label: string;
   @Input() disabled: boolean;
   @Input() parentFormControl: FormControl;
-  @Input() defaultDate: NgbDateStruct;
+  @Input() defaultDate: DateStruc;
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
   dynamicId;
   public changeSub: Subscription;
-  public today: NgbDateStruct;
+  public today: DateStruc;
   constructor(myElement: ElementRef, private _dateParser: NgbDateParserFormatter) {
     this.elementRef = myElement;
   }

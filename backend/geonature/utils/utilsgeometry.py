@@ -25,8 +25,9 @@ FIONA_MAPPING = {
     'unicode': 'str',
     'varchar': 'str',
     'integer': 'int',
+    'bigint': 'int',
     'float': 'float',
-    'boolean': 'str'
+    'boolean': 'str',
 }
 
 

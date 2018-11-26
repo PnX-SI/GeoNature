@@ -1,5 +1,8 @@
-<div>
-  <div class="card line-height-sm" [class.disabled]="fs.disabled">
+<div *ngIf="fs.disabled" id="overlay" [class.disabled-form]="fs.disabled" (click)="fs.formDisabled()">
+</div>
+
+<div id="form">
+  <div class="card line-height-sm">
     <h5 class="card-header" [class.disabled]="fs.disabled">
       <i class="fa fa-pencil" aria-hidden="true"></i>
       <b>{{ 'Releve.Releve' | translate }} </b>
@@ -23,8 +26,6 @@
           (click)="fs.toggleOccurrence();">
           <i class="fa fa-plus" aria-hidden="true"></i>
           {{ 'Releve.AddTaxonOnReleve' | translate }}
-
-
         </button>
         <button *ngIf="fs.showOccurrence" type="button" class="btn btn-primary btn-sm toggle-btn" (click)="fs.toggleOccurrence(); fs.cancelOccurrence()">
           <i class="fa fa-minus" aria-hidden="true"></i>
@@ -52,7 +53,7 @@
           <!-- COUNTING -->
           <!-- <button type="button" class="btn btn-primary btn-sm" >
 
-                </button> -->
+                  </button> -->
         </div>
         <div class="collapse" id="collapseCounting">
           <div *ngFor="let counting of fs.nbCounting; let i = index">
@@ -85,15 +86,16 @@
 
 
   <div class=center>
-    <button class="btn btn-danger" routerLink="/occtax"> {{ 'Cancel' | translate }} </button>
+    <button class="btn btn-danger" (click)="fs.disabled = true;" routerLink="/occtax"> {{ 'Cancel' | translate }}
+    </button>
     <button class="btn btn-success" [disabled]="(
-        fs.releveForm.invalid
-        || fs.taxonsList == 0 
-        || fs.countingForm.invalid
-        || fs.showOccurrence
-        || (fs.showOccurrence && fs.occurrenceForm.invalid )
-        || disabledAfterPost
-        )"
+          fs.releveForm.invalid
+          || fs.taxonsList == 0 
+          || fs.countingForm.invalid
+          || fs.showOccurrence
+          || (fs.showOccurrence && fs.occurrenceForm.invalid )
+          || disabledAfterPost
+          )"
       (click)="submitData()">
       <i class="fa fa-floppy-o" aria-hidden="true"></i>
       {{ 'Releve.SaveReleve' | translate }}

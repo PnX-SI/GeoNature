@@ -15,6 +15,7 @@ Parc national des Cevennes
 --------------------------
 
 * Amandine Sahl
+* Frédéric Fidon
 
 .. image:: http://geonature.fr/img/logo-pnc.jpg
     :target: http://www.cevennes-parcnational.fr
@@ -22,10 +23,14 @@ Parc national des Cevennes
 Contributeurs
 -------------
 
-* Quang Pham
-* Claire Lagaye
-* Xavier Arbez
+* Quang Pham (Parc national des Ecrins)
+* Claire Lagaye (Parc national de la Vanoise)
+* Xavier Arbez (Parc naturel régional du Pilat)
 * Kevin Samuel
-* Donovan Maillard
-* Khanh-Chau Nguyen
-* Etienne Trimaille
+* Donovan Maillard (Flavia)
+* Khanh-Chau Nguyen (Parc national des Ecrins)
+* Etienne Trimaille (Parc national de Guadeloupe))
+* Fred Cloitre (LPO Ardèche)
+* Richard Vergely (Parc national des Ecrins)
+* Sylvain Montagner (Parc naturel régional de Normandie-Maine)
+* Patrick Kappeler (Natural Solutions)

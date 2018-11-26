@@ -39,6 +39,47 @@ AS $$
   END;
 $$;
 
+CREATE OR REPLACE FUNCTION get_ids_synthese_for_user_action(myuser integer, myaction text)
+  RETURNS integer[] AS
+$BODY$
+-- The fonction return a array of id_synthese for the given id_role and CRUVED action
+-- USAGE : SELECT gn_synthese.get_ids_synthese_for_user_action(1,'U');
+DECLARE
+  idssynthese integer[];
+BEGIN
+WITH apps_avalaible AS(
+	SELECT id_application, max(tag_object_code) AS portee FROM (
+	  SELECT a.id_application, v.tag_object_code
+	  FROM utilisateurs.t_applications a
+	  JOIN utilisateurs.v_usersaction_forall_gn_modules v ON a.id_parent = v.id_application
+	  WHERE id_role = myuser
+	  AND tag_action_code = myaction
+	  UNION
+	  SELECT id_application, tag_object_code
+	  FROM utilisateurs.v_usersaction_forall_gn_modules
+	  WHERE id_role = myuser
+	  AND tag_action_code = myaction
+	) a
+	GROUP BY id_application
+)
+SELECT INTO idssynthese array_agg(DISTINCT s.id_synthese)
+FROM gn_synthese.synthese s
+LEFT JOIN gn_synthese.cor_observer_synthese cos ON cos.id_synthese = s.id_synthese
+LEFT JOIN gn_meta.cor_dataset_actor cda ON cda.id_dataset = s.id_dataset
+--JOIN apps_avalaible a ON a.id_application = s.id_module
+WHERE s.id_module IN (SELECT id_application FROM apps_avalaible WHERE portee = 3::text)
+OR (cda.id_organism = (SELECT id_organisme FROM utilisateurs.t_roles WHERE id_role = myuser) AND s.id_module IN (SELECT id_application FROM apps_avalaible WHERE portee = 2::text))
+OR (s.id_digitiser = myuser AND s.id_module IN (SELECT id_application FROM apps_avalaible WHERE portee = 1::text))
+OR (cos.id_role = myuser AND s.id_module IN (SELECT id_application FROM apps_avalaible WHERE portee = 1::text))
+OR (cda.id_role = myuser AND s.id_module IN (SELECT id_application FROM apps_avalaible WHERE portee = 1::text))
+;
+
+RETURN idssynthese;
+END;
+$BODY$
+  LANGUAGE plpgsql IMMUTABLE
+  COST 100;
+
 CREATE OR REPLACE FUNCTION fct_trig_insert_in_cor_area_synthese()
   RETURNS trigger AS
   $BODY$
@@ -106,6 +147,7 @@ CREATE TABLE t_sources (
     desc_source text,
     entity_source_pk_field character varying(255),
     url_source character varying(255),
+    validable boolean NOT NULL DEFAULT true,
     meta_create_date timestamp without time zone DEFAULT now(),
     meta_update_date timestamp without time zone DEFAULT now()
 );
@@ -116,6 +158,7 @@ CREATE TABLE synthese (
     unique_id_sinp uuid,
     unique_id_sinp_grp uuid,
     id_source integer,
+    id_module integer,
     entity_source_pk_value character varying,
     id_dataset integer,
     id_nomenclature_geo_object_nature integer DEFAULT get_default_nomenclature_value('NAT_OBJ_GEO'),
@@ -172,6 +215,10 @@ CREATE TABLE synthese (
     CONSTRAINT enforce_srid_the_geom_point CHECK ((public.st_srid(the_geom_point) = 4326))
 );
 COMMENT ON TABLE synthese IS 'Table de synthèse destinée à recevoir les données de tous les protocoles. Pour consultation uniquement';
+COMMENT ON COLUMN gn_synthese.synthese.id_source
+  IS 'Permet d''identifier la localisation de l''enregistrement correspondant dans les schémas et tables de la base';
+COMMENT ON COLUMN gn_synthese.synthese.id_module
+  IS 'Permet d''identifier le module qui a permis la création de l''enregistrement. Ce champ est en lien avec utilisateurs.t_applications et permet de gérer le CRUVED grace à la table utilisateurs.cor_app_privileges';
 
 CREATE SEQUENCE synthese_id_synthese_seq
     START WITH 1
@@ -262,6 +309,9 @@ ALTER TABLE ONLY synthese
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_source FOREIGN KEY (id_source) REFERENCES t_sources(id_source) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_module FOREIGN KEY (id_module) REFERENCES utilisateurs.t_applications(id_application) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_cd_nom FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
@@ -788,6 +838,7 @@ CREATE VIEW gn_synthese.v_synthese_for_export AS
     the_geom_4326,
     the_geom_point,
     the_geom_local,
+    st_astext(the_geom_4326) AS wkt,
     date_min,
     date_max,
     validator ,

@@ -4,7 +4,7 @@ OS_BITS="$(getconf LONG_BIT)"
 
 # test the server architecture
 if [ !"$OS_BITS" == "64" ]; then
-   echo "Geonature must be installed on a 64-bits operating system ; your is $OS_BITS-bits" 1>&2
+   echo "GeoNature must be installed on a 64-bits operating system ; your is $OS_BITS-bits" 1>&2
    exit 1
 fi
 
@@ -105,7 +105,7 @@ fi
 
 echo "Activation du virtual env..."
 source venv/bin/activate
-echo "Installation des dépendances python..."
+echo "Installation des dépendances Python..."
 pip install --upgrade pip
 pip install -r requirements.txt
 if [[ $MODE == "dev" ]]

@@ -97,7 +97,7 @@ Données SIG :
 """""""""""""
 
 - Le schéma ``ref_geo`` permet de gérer les données SIG (zonages, communes, MNT...) de manière centralisée, potentiellement partagé avec d'autres BDD
-- Il contient une table des zonages, des types de zonages, des communes, des grilles (mailles) et un MNT vectorisé (https://github.com/PnX-SI/GeoNature/issues/235)
+- Il contient une table des zonages, des types de zonages, des communes, des grilles (mailles) et un MNT raster ou vectorisé (https://github.com/PnX-SI/GeoNature/issues/235)
 - La fonction ``ref_geo.fct_get_area_intersection`` permet de renvoyer les zonages intersectés par une observation en fournissant sa géométrie
 - La fonction ``ref_geo.fct_get_altitude_intersection`` permet de renvoyer l'altitude min et max d'une observation en fournissant sa géométrie
 - L'intersection d'une observation avec les zonages sont stockés au niveau de la synthèse (``gn_synthese.cor_area_synthese``) et pas de la donnée source pour alléger et simplifier leur gestion
@@ -427,9 +427,24 @@ Sauvegarde
 
 * Sauvegarde de la base de données :
 
-  ::
+Les sauvegardes de la BDD sont à faire avec l'utilisateur ``postgres``. Commencer par créer un répertoire et lui donner des droits sur le répertoire où seront faites les sauvegardes.
 
-    pg_dump -Fc geonature2db  > <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-geonaturedb.backup
+::
+
+    # Créer le répertoire pour stocker les sauvegardes
+    mkdir /home/`whoami`/backup
+    # Ajouter l'utilisateur postgres au groupe de l'utilisateur linux courant pour qu'il ait les droits d'écrire dans les mêmes répertoires
+    sudo adduser postgres `whoami`
+
+Connectez-vous avec l'utilisateur linux ``postgres`` pour lancer une sauvegarde de la BDD :
+
+::
+
+    sudo su postgres
+    pg_dump -Fc geonature2db  > backup/`date +%Y-%m-%d-%H:%M`-geonaturedb.backup
+    exit
+
+Si la sauvegarde ne se fait pas, c'est qu'il faut revoir les droits du répertoire où sont faites les sauvegardes pour que l'utilisateur ``postgres`` puisse y écrire
 
 Opération à faire régulièrement grâce à une tâche cron.
 
@@ -464,7 +479,7 @@ Restauration
 
 * Restauration de la base de données :
 
-  - Créer une base de données vierge (on part du principe que la de données ``geonature2db`` n'existe pas ou plus). Sinon adaptez le nom de la BDD et également la configuration de connexion de l'application à la BDD dans ``<GEONATURE_DIRECTORY>/config/geonature_config.toml``
+  - Créer une base de données vierge (on part du principe que la base de données ``geonature2db`` n'existe pas ou plus). Sinon adaptez le nom de la BDD et également la configuration de connexion de l'application à la BDD dans ``<GEONATURE_DIRECTORY>/config/geonature_config.toml``
 
     ::
 
@@ -506,6 +521,75 @@ Restauration
     npm run build
     sudo supervisorctl reload
 
+Customisation
+-------------
+
+Intégrer son logo
+"""""""""""""""""
+
+Le logo affiché dans la barre de navigation de GeoNature peut être modifié dans le répertoire ``geonature/frontend/src/custom/images``. Remplacez alors le fichier ``logo_structure.png`` par votre propre logo, en conservant ce nom pour le nouveau fichier. 
+
+Relancez la construction de l’interface :
+
+::
+
+    cd /home/`whoami`/geonature/frontend
+    npm run build
+
+
+Customiser le contenu
+"""""""""""""""""""""
+
+* Customiser le contenu de la page d’introduction :
+
+Le texte d'introduction et le titre de la page d'Accueil de GeoNature peuvent être modifiés à tout moment, sans réinstallation de l'application. Il en est de même pour le bouton d’accès à la synthèse.
+
+Il suffit pour cela de mettre à jour le fichier ``introduction.component.html``, situé dans le répertoire ``geonature/frontend/src/custom/components/introduction``. 
+
+Afin que ces modifications soient prises en compte dans l'interface, il est nécessaire de relancer les commandes suivantes :
+
+::
+
+    cd /home/`whoami`/geonature/frontend
+    npm run build
+
+
+* Customiser le contenu du pied de page :
+
+Le pied de page peut être customisé de la même manière, en renseignant le fichier ``footer.component.html``, situé dans le répertoire ``geonature/frontend/src/custom/components/footer``
+
+De la même manière, il est nécessaire de relancer les commandes suivantes pour que les modifications soient prises en compte :
+
+::
+
+    cd /home/`whoami`/geonature/frontend
+    npm run build
+    
+    
+Customiser l'aspect esthétique
+""""""""""""""""""""""""""""""
+
+Les couleurs de textes, couleurs de fonds, forme des boutons etc peuvent être adaptés en renseignant le fichier ``custom.scss``, situé dans le répertoire ``geonature/frontend/src/custom``. 
+
+Pour remplacer la couleur de fond du bandeau de navigation par une image, on peut par exemple apporter la modification suivante :
+
+::
+
+    html body pnx-root pnx-nav-home mat-sidenav-container.sidenav-container.mat-drawer-container.mat-sidenav-container mat-sidenav-content.mat-drawer-content.mat-sidenav-content mat-toolbar#app-toolbar.row.mat-toolbar
+   {
+      background :
+      url(bandeau_test.jpg)
+   }
+
+Dans ce cas, l’image ``bandeau_test.jpg`` doit se trouver dans le répertoire ``>geonature/frontend/src`` .
+
+Comme pour la modification des contenus, il est nécessaire de relancer la commande suivante pour que les modifications soient prises en compte :
+
+::
+
+    cd /home/`whoami`/geonature/frontend
+    npm run build
+
 
 Intégrer des données
 --------------------
@@ -515,9 +599,9 @@ Référentiel géographique
 
 GeoNature est fourni avec des données géographiques de base sur la métropôle (MNT national à 250m et communes de métropôle).
 
-Si vous souhaitez modifier le MNT pour mettre celui de votre territoire : 
+**1.** Si vous souhaitez modifier le MNT pour mettre celui de votre territoire : 
 
-* Videz le contenu de la table ``ref_geo.dem_vector``
+* Videz le contenu des tables ``ref_geo.dem`` et éventuellement ``ref_geo.dem_vector``
 * Uploadez le fichier du MNT sur le serveur
 * Suivez la procédure de chargement du MNT en l'adaptant : https://github.com/PnX-SI/GeoNature/blob/master/install/install_db.sh#L295-L299
 
@@ -552,7 +636,7 @@ Si vous souhaitez vectoriser le raster MNT pour de meilleures performances lors 
 
 Si ``ref_geo.dem_vector`` est remplie, cette table est utilisée pour le calcul de l'altitude à la place de la table ``ref_geo.dem``
 
-Si vous souhaitez modifier ou ajouter des zonages administratifs, réglementaires ou naturels : 
+**2.** Si vous souhaitez modifier ou ajouter des zonages administratifs, réglementaires ou naturels : 
 
 * Vérifiez que leur type existe dans la table ``ref_geo.bib_areas_types``, sinon ajoutez-les
 * Ajoutez vos zonages dans la table ``ref_geo.l_areas`` en faisant bien référence à un ``id_type`` de ``ref_geo.bib_areas_types``. Vous pouvez faire cela en SQL ou en faisant des copier/coller de vos zonages directement dans QGIS
@@ -580,6 +664,8 @@ Nous présenterons ici la première solution qui est privilégiée pour disposer
 Pour des exemples plus précis, illustrées et commentées, vous pouvez consulter les 2 exemples d'import dans cette documentation.
 
 Vous pouvez aussi vous inspirer des exemples avancés de migration des données de GeoNature V1 vers GeoNature V2 : https://github.com/PnX-SI/GeoNature/tree/master/data/migrations/v1tov2
+
+Import depuis SICEN (ObsOcc) : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/sicen ou import continu : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/generic
 
 Module OCCTAX
 -------------

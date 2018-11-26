@@ -40,7 +40,10 @@
   </div>
 
 
-  <div *ngIf="downloading" class="telechargement">{{message}}
-    <p> <ngb-progressbar  [type]="type" [value]="progress$ | async" [striped]="true" [animated]="animated"></ngb-progressbar></p>
+  <div *ngIf="_dataService.isDownloading" class="telechargement card" style="margin-top: 30px;">
+    <div class="card-body text-{{bstype}}" >
+      {{message}}
+      <img *ngIf="animated" src="assets/images/Spinner.gif" alt="Chargement..." height="40" width="40">
+    </div>
   </div>
 </div>

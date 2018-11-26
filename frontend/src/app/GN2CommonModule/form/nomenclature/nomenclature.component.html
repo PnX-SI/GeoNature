@@ -1,6 +1,7 @@
 <div *ngIf="multiSelect; else elseBlock">
   <pnx-multiselect [values]="labels" [parentFormControl]="parentFormControl" keyLabel="label_default" [keyValue]="keyValue"
-     [label]="label" debounceTime="500" [searchBar]="searchBar" [disabled]="disabled" (onSearch)="filterItems($event)" [bindAllItem]="bindAllItem">
+    [label]="label" debounceTime="500" [searchBar]="searchBar" [disabled]="disabled" (onSearch)="filterItems($event)"
+    [bindAllItem]="bindAllItem">
   </pnx-multiselect>
 </div>
 
@@ -8,8 +9,9 @@
 
   <small> {{label}} </small>
   <div class="input-group">
-    <select [ngClass]="{'is-invalid' : parentFormControl.invalid}" class="form-control form-control-sm" [disableControl]="disabled" [formControl]="parentFormControl">
-      <option *ngFor="let label of labels" [ngValue]="label[keyValue]" [title]="label[definitionLang]"> {{label[labelLang]}} </option>
+    <select class="form-control form-control-sm" [disableControl]="disabled" [formControl]="parentFormControl">
+      <option *ngFor="let label of labels" [ngValue]="label[keyValue]" [title]="label[definitionLang]">
+        {{label[labelLang]}} </option>
     </select>
   </div>
 </ng-template>

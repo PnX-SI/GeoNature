@@ -1,33 +1,41 @@
-<div class="row row-0 card">
+<div class="container">
+    <button class="btn btn-secondary" routerLink="/admin">  <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
+    </button>
+    <h3>Liste des jeux de données</h3>
+    <div class="form-group ">
+      <input class="form-control form-control-sm"
+        type="text" name="" id="" placeholder="Rechercher" (keyup)='updateFilter($event)'>
+    </div>    
+    <ngx-datatable
+      #table 
+      class="material striped no-box-shadow" 
+      [rows]="datasets"
+      [columnMode]="'standard'"
+      [headerHeight]="35"
+      [footerHeight]="40"
+      [rowHeight]="40"
+      [draggable]="false"
+      [count]="datasets.length"
+      [limit]="15">
 
-    <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 padding-sm">
-        <div class="card-body">
-          <h3>Liste des jeux de données</h3>
-          <table class="table table-striped">
-            <thead>
-              <td>ID</td>
-              <td>Nom</td>
-              <td>Description</td>
 
-            </thead>
-            <tr *ngFor="let dataset of datasets">
-              <td>
-                {{dataset.id_dataset}}
-              </td>
-              <td>
-                {{dataset.dataset_name}}
-              </td>
-              <td>
-                  {{dataset.dataset_decription}}
-              </td>
-              <td class="clickable" (click)="datasetEdit(dataset.id_dataset)"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i></td>
-            </tr>
+      <ngx-datatable-column [width]="60">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <span class="clickable" (click)="datasetEdit(row.id_dataset)"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i> </span>
+          </ng-template>
+      </ngx-datatable-column>
+  
+      <ngx-datatable-column name="Id" prop="id_dataset" [width]="80">
+        </ngx-datatable-column>
 
-          </table>
-      </div>
-    </div>
+      <ngx-datatable-column name="Nom du JDD" prop="dataset_name" width="450">
+      </ngx-datatable-column>
+
+      <ngx-datatable-column name="Description" prop="dataset_desc" width="500">
+      </ngx-datatable-column>
+
+
+    </ngx-datatable>
+    <button [disabled]="adminStoreService.currentModule?.cruved.C === '0'" routerLink="/admin/dataset" class="btn btn-primary margin-top-sm"> Ajouter un jeu de données </button>
+
 </div>
-<button routerLink="/admin/dataset" class="btn btn-primary margin-top-sm"> Ajouter un jeu de données </button>
-
-
-

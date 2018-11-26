@@ -1,32 +1,42 @@
-<div class="row row-0 card">
+<div class="container">
+  <button class="btn btn-secondary" routerLink="/admin">  <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
+  </button>
 
-  <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 padding-sm">
-    <div class="card-body">
-      <h3>Liste des cadres d'acquisitions</h3>
-      <table class="table table-striped">
-        <thead>
+  <h3>Liste des cadres d'acquisition</h3>
+  <div class="form-group ">
+    <input class="form-control form-control-sm"
+      type="text" name="" id="" placeholder="Rechercher" (keyup)='updateFilter($event)'>
+  </div>   
+  <ngx-datatable
+  #table 
+  class="material striped no-box-shadow" 
+  [rows]="acquisitionFrameworks"
+  [columnMode]="'standard'"
+  [headerHeight]="35"
+  [footerHeight]="40"
+  [rowHeight]="40"
+  [draggable]="false"
+  [count]="acquisitionFrameworks.length"
+  [limit]="15">
 
-          <td> <b>ID </b> </td>
-          <td> <b> Nom</b> </td>
-          <td> <b> Description</b> </td>
 
-        </thead>
-        <tr *ngFor="let af of acquisitionFrameworks">
-          <td>
-            {{af.id_acquisition_framework}}
-          </td>
-          <td>
-            {{af.acquisition_framework_name}}
-          </td>
-          <td>
-            {{af.acquisition_framework_desc}}
-          </td>
-          <td class="clickable" (click)="afEdit(af.id_acquisition_framework)"> <i class="fa fa-pencil-square-o"
-              aria-hidden="true"></i></td>
-        </tr>
+  <ngx-datatable-column [width]="60">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <span class="clickable" (click)="afEdit(row.id_acquisition_framework)"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i> </span>
+      </ng-template>
+  </ngx-datatable-column>
 
-      </table>
-    </div>
+  <ngx-datatable-column name="Id" prop="id_acquisition_framework" [width]="80">
+    </ngx-datatable-column>
+
+  <ngx-datatable-column name="Nom du JDD" prop="acquisition_framework_name" width="450">
+  </ngx-datatable-column>
+
+  <ngx-datatable-column name="Description" prop="acquisition_framework_desc" width="500">
+  </ngx-datatable-column>
+
+
+</ngx-datatable>
+  <button [disabled]="adminStoreService.currentModule?.cruved.C === '0'" routerLink="/admin/af" class="btn btn-primary margin-top-sm"> Ajouter un cadre d'acquisition </button>
   </div>
-</div>
-<button routerLink="/admin/af" class="btn btn-primary margin-top-sm"> Ajouter un cadre d'acquisition </button>
+

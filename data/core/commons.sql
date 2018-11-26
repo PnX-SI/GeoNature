@@ -179,6 +179,23 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
+
+CREATE OR REPLACE FUNCTION fct_trg_update_synthese_validation_status()
+    RETURNS trigger AS
+$BODY$
+-- This trigger function update validation informations in corresponding row in synthese table
+BEGIN
+  UPDATE gn_synthese.synthese 
+  SET id_nomenclature_valid_status = NEW.id_nomenclature_valid_status,
+  validation_comment = NEW.validation_comment,
+  validator = (SELECT nom_role || ' ' || prenom_role FROM utilisateurs.t_roles WHERE id_role = NEW.id_validator)::text
+  WHERE unique_id_sinp = NEW.uuid_attached_row;
+RETURN NEW;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
 CREATE OR REPLACE FUNCTION get_default_parameter(myparamname text, myidorganisme integer DEFAULT 0)
   RETURNS text AS
 $BODY$
@@ -232,6 +249,37 @@ END IF;
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION role_is_group(myidrole integer)
+  RETURNS boolean AS
+$BODY$
+DECLARE
+	is_group boolean;
+BEGIN
+  SELECT INTO is_group groupe FROM utilisateurs.t_roles
+	WHERE id_role = myidrole;
+  RETURN is_group;
+END;
+$BODY$
+LANGUAGE plpgsql VOLATILE
+COST 100;
+--USAGE
+--SELECT gn_commons.role_is_group(1);
+
+CREATE OR REPLACE FUNCTION get_id_module_byname(mymodule text)
+  RETURNS integer AS
+$BODY$
+DECLARE
+	theidmodule integer;
+BEGIN
+  --Retrouver l'id du module par son nom. L'id_module est le même que l'id_application correspondant dans utilisateurs.t_applications
+  SELECT INTO theidmodule id_module FROM gn_commons.t_modules
+	WHERE "module_name" ILIKE mymodule;
+  RETURN theidmodule;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
 
 -------------
 --TABLES--
@@ -284,7 +332,7 @@ CREATE TABLE t_medias
   unique_id_media uuid NOT NULL DEFAULT public.uuid_generate_v4(),
   id_nomenclature_media_type integer NOT NULL,
   id_table_location integer NOT NULL,
-  uuid_attached_row uuid NOT NULL,
+  uuid_attached_row uuid,
   title_fr character varying(255),
   title_en character varying(255),
   title_it character varying(255),
@@ -320,6 +368,7 @@ CREATE TABLE t_validations
   id_table_location integer NOT NULL,
   uuid_attached_row uuid NOT NULL,
   id_nomenclature_valid_status integer, --DEFAULT get_default_nomenclature_value(101),
+  validation_auto boolean NOT NULL DEFAULT true,
   id_validator integer,
   validation_comment text,
   validation_date timestamp without time zone
@@ -480,6 +529,12 @@ CREATE TRIGGER tri_log_changes_t_medias
   ON t_medias
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
+
+CREATE TRIGGER tri_insert_synthese_update_validation_status
+  AFTER INSERT
+  ON t_validations
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_commons.fct_trg_update_synthese_validation_status();
 
 
 ---------

@@ -37,10 +37,10 @@ valide_occ_tax_releve = {
 
 user_admin = {
     'id_role': 1,
-    'id_organisme': 2,
+    'id_organisme': 1,
     'tag_action_code': 'R',
     'tag_object_code': '3',
-    'id_application': 14
+    'id_application': 3
 }
 
 # has only right on dataset 2
@@ -49,7 +49,7 @@ user_agent = {
     'id_organisme': -1,
     'tag_action_code': 'R',
     'tag_object_code': '2',
-    'id_application': 14
+    'id_application': 3
 }
 
 # can see only its data
@@ -58,7 +58,7 @@ user_low = {
     'id_organisme': -1,
     'tag_action_code': 'R',
     'tag_object_code': '1',
-    'id_application': 14
+    'id_application': 3
 }
 
 
@@ -140,8 +140,8 @@ class TestReleveModel:
         user_cruved = get_or_fetch_user_cruved(
             session=session,
             id_role=user_hight.id_role,
-            id_application=16,
-            id_application_parent=14
+            id_application=6,
+            id_application_parent=3
         )
         cruved = {'R': '3', 'E': '3', 'C': '3', 'V': '3', 'D': '3', 'U': '3'}
 

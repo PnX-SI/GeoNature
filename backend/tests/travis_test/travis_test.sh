@@ -5,8 +5,6 @@ sudo mkdir /etc/geonature
 sudo mkdir /etc/geonature/mods-enabled
 sudo mkdir /etc/geonature/mods-available
 
-mkdir $TRAVIS_BUILD_DIR/frontend/src/external_assets
-
 sudo sed -i "s/SQLALCHEMY_DATABASE_URI = .*$/SQLALCHEMY_DATABASE_URI = \"postgresql:\/\/$db_user:$db_pass@test.ecrins-parcnational.net:5432\/$db_name\"/" $TRAVIS_BUILD_DIR/backend/tests/travis_test/geonature_config_tests.toml
 
 sudo cp $TRAVIS_BUILD_DIR/backend/tests/travis_test/geonature_config_tests.toml $TRAVIS_BUILD_DIR/config/geonature_config.toml

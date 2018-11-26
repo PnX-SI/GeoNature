@@ -22,12 +22,8 @@ export class MapService {
   private _isEditingMarker = new Subject<boolean>();
   public isMarkerEditing$: Observable<any> = this._isEditingMarker.asObservable();
   public layerGroup: any;
-  originStyle = {
-    color: '#3388ff',
-    fill: true,
-    fillOpacity: 0.2,
-    weight: 3
-  };
+  public justLoaded = true;
+
   selectedStyle = {
     color: '#ff0000',
     weight: 3
@@ -100,7 +96,9 @@ export class MapService {
   }
 
   setGeojsonCoord(geojsonCoord) {
-    this._geojsonCoord.next(geojsonCoord);
+    if (!this.justLoaded) {
+      this._geojsonCoord.next(geojsonCoord);
+    }
   }
 
   setEditingMarker(isEditing) {
@@ -152,7 +150,21 @@ export class MapService {
 
   createGeojson(geojson, onEachFeature?): GeoJSON {
     return L.geoJSON(geojson, {
-      style: this.originStyle as any,
+      style: (feature) => {
+        switch (feature.geometry.type) {
+          // No color nor opacity for linestrings
+          case 'LineString': return {
+            color: '#3388ff',
+            weight: 3
+          };
+          default: return {
+            color: '#3388ff',
+            fill: true,
+            fillOpacity: 0.2,
+            weight: 3
+          };
+        }
+      },
       pointToLayer: (feature, latlng) => {
         return L.circleMarker(latlng);
       },

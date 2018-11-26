@@ -93,7 +93,7 @@ export class OcctaxFormService {
       properties: this._fb.group({
         id_releve_occtax: null,
         id_dataset: [null, Validators.required],
-        id_digitiser: this.currentUser.id_role,
+        id_digitiser: null,
         date_min: [null, Validators.required],
         date_max: [null, Validators.required],
         hour_min: [

@@ -19,7 +19,7 @@ COOKIE_EXPIRATION = 7200
 COOKIE_AUTORENEW = true
 TRAP_ALL_EXCEPTIONS = false
 # code EPSG des geom local de la BDD
-LOCAL_SRID = 
+LOCAL_SRID = 2154
 
 # MTD
 XML_NAMESPACE = "{http://inpn.mnhn.fr/mtd}"
@@ -44,6 +44,8 @@ CAS_URL_VALIDATION = 'https://preprod-inpn.mnhn.fr/auth/serviceValidate'
 
 [BDD]
 id_area_type_municipality = 25
+ID_USER_SOCLE_1 = 8
+ID_USER_SOCLE_2 = 6
 
 [RIGHTS]
     NOTHING = 0

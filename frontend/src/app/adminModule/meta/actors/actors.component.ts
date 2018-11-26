@@ -17,7 +17,7 @@ export class ActorComponent implements OnInit {
     this._dfs.getOrganisms().subscribe(data => {
       this.organisms = data;
     });
-    this._dfs.getRoles().subscribe(data => {
+    this._dfs.getRoles({'group': false}).subscribe(data => {
       this.roles = data;
     });
   }
