@@ -60,7 +60,7 @@ FROM t_objects, gn_commons.t_modules t
 WHERE code_object = 'TDatasets' AND t.module_code = 'ADMIN';
 
 
-INSERT INTO cor_role_action_filter_module_object 
+INSERT INTO cor_role_action_filter_module_object VALUES
     -- Admin: C:3, R:3, U:3, V:3, E:3, D:3 sur GeoNature
     (1, 1, 4, 3, 1),
     (1, 2, 4, 3, 1),
