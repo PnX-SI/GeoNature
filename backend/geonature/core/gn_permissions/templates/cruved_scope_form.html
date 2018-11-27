@@ -1,0 +1,55 @@
+<html>
+
+<body>
+    <h3>Hello</h3>
+
+<table>
+    <thead>
+        <th>Aucune donnée</th>        
+        <th>Mes données</th>
+        <th>Les données de mon organismes</th> 
+        <th>Toutes les données</th>
+    </thead>
+        <tr>
+                {% for subfield in form.create_scope %}
+                    <td> {{ subfield }}</td>
+                {% endfor %}
+                
+        </tr>
+                <tr>
+                {% for subfield in form.read_scope %}
+                    <td>{{ subfield }}</td>
+                {% endfor %}
+                </tr>
+                
+                <tr>
+                {% for subfield in form.update_scope %}
+                    <td>{{ subfield }}</td>
+                {% endfor %}
+                </tr>
+                
+                <tr>
+                {% for subfield in form.validate_scope %}
+                    <td>{{ subfield }}</td>
+                {% endfor %}
+                </tr>
+                
+                <tr>
+                {% for subfield in form.export_scope %}
+                    <td>{{ subfield }}</td>
+                {% endfor %}
+                </tr>
+                
+                <tr>
+                {% for subfield in form.delete_scope %}
+                    <td>{{ subfield }}</td>
+                {% endfor %}
+                </tr>
+</table>
+
+
+</body>
+</html>
+
+
+
