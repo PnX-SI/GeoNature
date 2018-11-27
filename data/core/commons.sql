@@ -490,10 +490,6 @@ ALTER TABLE ONLY t_history_actions
 --ALTER TABLE ONLY t_history_actions
     --ADD CONSTRAINT fk_t_history_actions_t_roles FOREIGN KEY (id_digitiser) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
-ALTER TABLE ONLY t_modules
-  ADD CONSTRAINT fk_t_modules_utilisateurs_t_applications FOREIGN KEY (id_module) REFERENCES utilisateurs.t_applications (id_application) ON UPDATE CASCADE;
-
-
 ---------------
 --CONSTRAINTS--
 ---------------
@@ -593,8 +589,3 @@ INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module
 ;
 
 --insertion du module de gestion du backoffice dans utilisateurs.t_application et gn_commons.t_modules
-
-
-INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend)
-SELECT id_application ,'admin', 'Admin', 'fa-cog', 'Backoffice de GeoNature', 'admin', '_self', '', 'true', 'true'
-FROM utilisateurs.t_applications WHERE nom_application = 'admin';
