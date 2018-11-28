@@ -39,7 +39,7 @@ $BODY$
 DECLARE
 	theidmodule integer;
 BEGIN
-  --Retrouver l'id du module par son nom. L'id_module est le même que l'id_application correspondant dans utilisateurs.t_applications
+  --Retrouver l'id du module par son nomcode.
   SELECT INTO theidmodule id_module FROM gn_commons.t_modules
 	WHERE "module_code" ILIKE mymodule;
   RETURN theidmodule;
@@ -102,10 +102,7 @@ ALTER TABLE gn_commons.t_modules ALTER COLUMN module_code SET NOT NULL;
 
 -- Insertion du module parent: GEONATURE
 INSERT INTO gn_commons.t_modules(id_module, module_code, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend) VALUES
-SELECT id_application, 'GEONATURE', 'GeoNature', '', 'Module parent de tous les modules sur lequel on peut associer un CRUVED.
-NB: mettre active_frontend et active_backend à false pour qu''il ne s''affiche pas dans la barre latérale des modules',
-'geonature', '', '', FALSE, FALSE
-FROM utilisateurs.t_application WHERE code_application = 'GN'
+(0, 'GEONATURE', 'GeoNature', '', 'Module parent de tous les modules sur lequel on peut associer un CRUVED. NB: mettre active_frontend et active_backend à false pour qu''il ne s''affiche pas dans la barre latérale des modules', '/geonature', '', '', FALSE, FALSE)
 ;
 
 
@@ -132,7 +129,7 @@ COMMENT ON COLUMN gn_synthese.synthese.id_source
   IS 'Permet d''identifier la localisation de l''enregistrement correspondant dans les schémas et tables de la base';
 
 ALTER TABLE ONLY gn_synthese.synthese
-    ADD CONSTRAINT fk_synthese_id_module FOREIGN KEY (id_module) REFERENCES utilisateurs.t_applications(id_application) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_synthese_id_module FOREIGN KEY (id_module) REFERENCES gn_commons.t_modules(id_module) ON UPDATE CASCADE;
 
 UPDATE gn_synthese.synthese 
 SET id_module = (SELECT gn_commons.get_id_module_bycode('OCCTAX'))
@@ -478,12 +475,14 @@ CREATE TABLE gn_permissions.t_actions(
 CREATE TABLE gn_permissions.bib_filters_type(
     id_filter_type serial NOT NULL,
     code_filter_type character varying(50) NOT NULL,
+    label_filter_type character varying(255) NOT NULL,
     description_filter_type text
 );
 
 CREATE TABLE gn_permissions.t_filters(
     id_filter serial NOT NULL,
-    code_filter character varying(50) NOT NULL,
+    label_filter character varying(255) NOT NULL,
+    value_filter text NOT NULL,
     description_filter text,
     id_filter_type integer NOT NULL
 );
@@ -564,7 +563,7 @@ ALTER TABLE ONLY gn_permissions.cor_role_action_filter_module_object
 -- Vue permettant de retourner les utilisateurs et leur CRUVED pour chaque modules GeoNature
 CREATE OR REPLACE VIEW gn_permissions.v_users_permissions AS 
  WITH
- p_user_tag AS (
+ p_user_permission AS (
   SELECT 
   u.id_role,
   u.nom_role,
@@ -591,15 +590,12 @@ CREATE OR REPLACE VIEW gn_permissions.v_users_permissions AS
   FROM utilisateurs.t_roles u
   JOIN utilisateurs.cor_roles g ON g.id_role_utilisateur = u.id_role OR g.id_role_groupe=u.id_role
   JOIN gn_permissions.cor_role_action_filter_module_object c_1 ON c_1.id_role = g.id_role_groupe
-  WHERE (g.id_role_groupe IN (
-      SELECT DISTINCT cor_roles.id_role_groupe
-      FROM utilisateurs.cor_roles
-      )
+  WHERE (g.id_role_groupe IN (SELECT DISTINCT cor_roles.id_role_groupe FROM utilisateurs.cor_roles)
   )
  ),
  all_user_permission AS (
   SELECT *
-  FROM p_user_tag
+  FROM p_user_permission
   UNION
   SELECT *
   FROM p_groupe_permission
@@ -616,7 +612,7 @@ CREATE OR REPLACE VIEW gn_permissions.v_users_permissions AS
   v.id_action,
   v.id_filter,
   actions.code_action,
-  filters.code_filter,
+  filters.value_filter,
   filter_type.code_filter_type,
   filter_type.id_filter_type
  FROM all_user_permission v
@@ -649,7 +645,7 @@ $BODY$
  IF myactioncode IN (
   SELECT code_action
   FROM gn_permissions.v_users_permissions
-  WHERE id_role = myuser AND module_code = mycodemodule AND code_action = myactioncode  AND code_filter::int >= myscope AND code_filter_type = 'SCOPE') THEN
+  WHERE id_role = myuser AND module_code = mycodemodule AND code_action = myactioncode  AND value_filter::int >= myscope AND code_filter_type = 'SCOPE') THEN
  RETURN true;
  END IF;
  RETURN false;
@@ -671,7 +667,7 @@ DECLARE
 -- USAGE : SELECT gn_permissions.user_max_accessible_data_level_in_module(requested_userid,requested_actionid,requested_moduleid);
 -- SAMPLE :SELECT gn_permissions.user_max_accessible_data_level_in_module(2,'U','GEONATURE');
  BEGIN
- SELECT max(code_filter::int) INTO themaxscopelevel
+ SELECT max(value_filter::int) INTO themaxscopelevel
   FROM gn_permissions.v_users_permissions
   WHERE id_role = myuser AND module_code = mymodulecode AND code_action = myactioncode;
  RETURN themaxscopelevel;
@@ -697,7 +693,7 @@ DECLARE
  BEGIN
   SELECT array_to_json(array_agg(row)) INTO thecruved
   FROM (
-  SELECT code_action AS action, max(code_filter::int) AS level
+  SELECT code_action AS action, max(value_filter::int) AS level
   FROM gn_permissions.v_users_permissions
   WHERE id_role = myuser AND module_code = mymodulecode AND code_filter_type = 'SCOPE'
   GROUP BY code_action) row;
@@ -721,29 +717,29 @@ INSERT INTO gn_permissions.t_actions(code_action, description_action) VALUES
     ('D', 'Action de supprimer')
 ;
 
-INSERT INTO gn_permissions.bib_filters_type(code_filter_type, description_filter_type) VALUES
-    ('SCOPE', 'Filtre de type portée'),
-    ('SENSITIVITY', 'Filtre de type sensibilité'),
-    ('GEOGRAPHIC', 'Filtre de type géographique')
+INSERT INTO gn_permissions.bib_filters_type(code_filter_type, label_filter_type, description_filter_type) VALUES
+    ('SCOPE', 'Filtre de type portée','Filtre de type portée'),
+    ('SENSITIVITY', 'Filtre de type sensibilité', 'Filtre de type sensibilité'),
+    ('GEOGRAPHIC', 'Filtre de type géographique', 'Filtre de type géographique')
 ;
 
-INSERT INTO gn_permissions.t_filters (code_filter, description_filter, id_filter_type)
-SELECT '0', 'Aucune donnée', id_filter_type
+INSERT INTO gn_permissions.t_filters (value_filter, label_filter, description_filter, id_filter_type)
+SELECT '0', 'Aucune donnée', 'Aucune donnée', id_filter_type
 FROM gn_permissions.bib_filters_type
 WHERE code_filter_type = 'SCOPE';
 
-INSERT INTO gn_permissions.t_filters (code_filter, description_filter, id_filter_type)
-SELECT '1', 'Mes données', id_filter_type
+INSERT INTO gn_permissions.t_filters (value_filter, label_filter, description_filter, id_filter_type)
+SELECT '1', 'Mes données','Mes données', id_filter_type
 FROM gn_permissions.bib_filters_type
 WHERE code_filter_type = 'SCOPE';
 
-INSERT INTO gn_permissions.t_filters (code_filter, description_filter, id_filter_type)
-SELECT '2', 'Les données de mon organisme', id_filter_type
+INSERT INTO gn_permissions.t_filters (value_filter, label_filter, description_filter, id_filter_type)
+SELECT '2', 'Les données de mon organisme', 'Les données de mon organisme', id_filter_type
 FROM gn_permissions.bib_filters_type
 WHERE code_filter_type = 'SCOPE';
 
-INSERT INTO gn_permissions.t_filters (code_filter, description_filter, id_filter_type)
-SELECT '3', 'Toutes les données', id_filter_type
+INSERT INTO gn_permissions.t_filters (value_filter, label_filter, description_filter, id_filter_type)
+SELECT '3', 'Toutes les données', 'Toutes les données', id_filter_type
 FROM gn_permissions.bib_filters_type
 WHERE code_filter_type = 'SCOPE';
 
@@ -782,7 +778,7 @@ CASE
   WHEN id_tag_object = 22 THEN 3
   WHEN id_tag_object = 23 THEN 4
 END AS id_filter,
-id_application,
+cor.id_application,
 1
 FROM save.cor_app_privileges cor
 JOIN utilisateurs.t_applications app ON app.id_application = cor.id_application

@@ -18,30 +18,30 @@ INSERT INTO t_actions(code_action, description_action) VALUES
     ('D', 'Action de supprimer')
 ;
 
-INSERT INTO bib_filters_type(code_filter_type, description_filter_type) VALUES
-    ('SCOPE', 'Filtre de type portée'),
-    ('SENSITIVITY', 'Filtre de type sensibilité'),
-    ('GEOGRAPHIC', 'Filtre de type géographique')
+INSERT INTO bib_filters_type(code_filter_type, label_filter_type, description_filter_type) VALUES
+    ('SCOPE', 'Filtre de type portée','Filtre de type portée'),
+    ('SENSITIVITY', 'Filtre de type sensibilité', 'Filtre de type sensibilité'),
+    ('GEOGRAPHIC', 'Filtre de type géographique', 'Filtre de type géographique')
 ;
 
-INSERT INTO t_filters (code_filter, description_filter, id_filter_type)
-SELECT '0', 'Aucune donnée', id_filter_type
-FROM bib_filters_type
+INSERT INTO t_filters (value_filter, label_filter, description_filter, id_filter_type)
+SELECT '0', 'Aucune donnée', 'Aucune donnée', id_filter_type
+FROM gn_permissions.bib_filters_type
 WHERE code_filter_type = 'SCOPE';
 
-INSERT INTO t_filters (code_filter, description_filter, id_filter_type)
-SELECT '1', 'Mes données', id_filter_type
-FROM bib_filters_type
+INSERT INTO t_filters (value_filter, label_filter, description_filter, id_filter_type)
+SELECT '1', 'Mes données','Mes données', id_filter_type
+FROM gn_permissions.bib_filters_type
 WHERE code_filter_type = 'SCOPE';
 
-INSERT INTO t_filters (code_filter, description_filter, id_filter_type)
-SELECT '2', 'Les données de mon organisme', id_filter_type
-FROM bib_filters_type
+INSERT INTO t_filters (value_filter, label_filter, description_filter, id_filter_type)
+SELECT '2', 'Les données de mon organisme', 'Les données de mon organisme', id_filter_type
+FROM gn_permissions.bib_filters_type
 WHERE code_filter_type = 'SCOPE';
 
-INSERT INTO t_filters (code_filter, description_filter, id_filter_type)
-SELECT '3', 'Toutes les données', id_filter_type
-FROM bib_filters_type
+INSERT INTO t_filters (value_filter, label_filter, description_filter, id_filter_type)
+SELECT '3', 'Toutes les données', 'Toutes les données', id_filter_type
+FROM gn_permissions.bib_filters_type
 WHERE code_filter_type = 'SCOPE';
 
 INSERT INTO t_objects(code_object, description_object) VALUES 
@@ -50,14 +50,9 @@ INSERT INTO t_objects(code_object, description_object) VALUES
 ;
 
 INSERT INTO cor_object_module (id_object, id_module)
-SELECT id_object, t.id_module
-FROM t_objects, gn_commons.t_modules t
-WHERE code_object = 'TDatasets' AND t.module_code = 'OCCTAX';
-
-INSERT INTO cor_object_module (id_object, id_module)
-SELECT id_object, t.id_module
-FROM t_objects, gn_commons.t_modules t
-WHERE code_object = 'TDatasets' AND t.module_code = 'ADMIN';
+SELECT o.id_object, t.id_module
+FROM gn_permissions.t_objects o, gn_commons.t_modules t
+WHERE o.code_object = 'TDatasets' AND t.module_code = 'ADMIN';
 
 
 INSERT INTO cor_role_action_filter_module_object VALUES

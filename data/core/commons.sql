@@ -546,6 +546,17 @@ INSERT INTO t_parameters (id_organism, parameter_name, parameter_desc, parameter
 ,(0,'annee_ref_commune', 'Année du référentiel géographique des communes utilisé', '2017', NULL)
 ;
 
+-- insertion du module parent à tous: GeoNature
+INSERT INTO gn_commons.t_modules(id_module, module_code, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend) VALUES
+(0 'GEONATURE', 'GeoNature', '', 'Module parent de tous les modules sur lequel on peut associer un CRUVED. NB: mettre active_frontend et active_backend à false pour qu''il ne s''affiche pas dans la barre latérale des modules', '/geonature', '', '', FALSE, FALSE)
+;
+-- insertion du module Admin
+INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend) VALUES
+('ADMIN', 'Admin', 'fa-cog', 'Backoffice de GeoNature', 'admin', '_self', 'Administration des métadonnées et des nomenclatures', TRUE, FALSE)
+;
+
+--insertion du module de gestion du backoffice dans utilisateurs.t_application et gn_commons.t_modules
+
 
 ---------
 --VIEWS--
@@ -581,11 +592,3 @@ LEFT OUTER JOIN delete_a d ON i.uuid_attached_row = d.uuid_attached_row;
 ----------
 -- DATA --
 ----------
--- insertion du module parent à tous: GeoNature
-
-INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend) VALUES
-('GEONATURE', 'GeoNature', '', 'Module parent de tous les modules sur lequel on peut associer un CRUVED. NB: mettre active_frontend et active_backend à false pour qu''il ne s''affiche pas dans la barre latérale des modules', '/geonature', '', '', FALSE, FALSE),
-('ADMIN', 'Admin', 'fa-cog', 'Backoffice de GeoNature', 'admin', '_self', 'Administration des métadonnées et des nomenclatures', TRUE, FALSE)
-;
-
---insertion du module de gestion du backoffice dans utilisateurs.t_application et gn_commons.t_modules

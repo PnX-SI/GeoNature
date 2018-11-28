@@ -31,7 +31,7 @@ $BODY$
  IF myactioncode IN (
   SELECT code_action
   FROM gn_permissions.v_users_permissions
-  WHERE id_role = myuser AND module_code = mycodemodule AND code_action = myactioncode  AND code_filter::int >= myscope AND code_filter_type = 'SCOPE') THEN
+  WHERE id_role = myuser AND module_code = mycodemodule AND code_action = myactioncode  AND value_filter::int >= myscope AND code_filter_type = 'SCOPE') THEN
  RETURN true;
  END IF;
  RETURN false;
@@ -54,7 +54,7 @@ DECLARE
 -- USAGE : SELECT gn_permissions.user_max_accessible_data_level_in_module(requested_userid,requested_actionid,requested_moduleid);
 -- SAMPLE :SELECT gn_permissions.user_max_accessible_data_level_in_module(2,'U','GEONATURE');
  BEGIN
- SELECT max(code_filter::int) INTO themaxscopelevel
+ SELECT max(value_filter::int) INTO themaxscopelevel
   FROM gn_permissions.v_users_permissions
   WHERE id_role = myuser AND module_code = mymodulecode AND code_action = myactioncode;
  RETURN themaxscopelevel;
@@ -78,7 +78,7 @@ DECLARE
  BEGIN
   SELECT array_to_json(array_agg(row)) INTO thecruved
   FROM (
-  SELECT code_action AS action, max(code_filter::int) AS level
+  SELECT code_action AS action, max(value_filter::int) AS level
   FROM gn_permissions.v_users_permissions
   WHERE id_role = myuser AND module_code = mymodulecode AND code_filter_type = 'SCOPE'
   GROUP BY code_action) row;
@@ -101,12 +101,14 @@ CREATE TABLE t_actions(
 CREATE TABLE bib_filters_type(
     id_filter_type serial NOT NULL,
     code_filter_type character varying(50) NOT NULL,
+    label_filter_type character varying(255) NOT NULL,
     description_filter_type text
 );
 
 CREATE TABLE t_filters(
     id_filter serial NOT NULL,
-    code_filter character varying(50) NOT NULL,
+    label_filter character varying(255) NOT NULL,
+    value_filter text NOT NULL,
     description_filter text,
     id_filter_type integer NOT NULL
 );
@@ -191,7 +193,7 @@ ALTER TABLE ONLY cor_role_action_filter_module_object
 
 CREATE OR REPLACE VIEW gn_permissions.v_users_permissions AS 
  WITH
- p_user_tag AS (
+ p_user_permission AS (
   SELECT 
   u.id_role,
   u.nom_role,
@@ -226,7 +228,7 @@ CREATE OR REPLACE VIEW gn_permissions.v_users_permissions AS
  ),
  all_user_permission AS (
   SELECT *
-  FROM p_user_tag
+  FROM p_user_permission
   UNION
   SELECT *
   FROM p_groupe_permission
@@ -243,7 +245,7 @@ CREATE OR REPLACE VIEW gn_permissions.v_users_permissions AS
   v.id_action,
   v.id_filter,
   actions.code_action,
-  filters.code_filter,
+  filters.value_filter,
   filter_type.code_filter_type,
   filter_type.id_filter_type
  FROM all_user_permission v
