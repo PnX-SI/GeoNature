@@ -39,7 +39,7 @@ user_admin = {
     'id_role': 1,
     'id_organisme': 1,
     'code_action': 'R',
-    'code_filter': '3',
+    'value_filter': '3',
 }
 
 # has only right on dataset 2
@@ -47,7 +47,7 @@ user_agent = {
     'id_role': 2,
     'id_organisme': -1,
     'code_action': 'R',
-    'code_filter': '2',
+    'value_filter': '2',
 }
 
 # can see only its data
@@ -55,7 +55,7 @@ user_low = {
     'id_role': 125,
     'id_organisme': -1,
     'code_action': 'R',
-    'code_filter': '1',
+    'value_filter': '1',
 }
 
 

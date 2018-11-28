@@ -24,7 +24,7 @@ class VUsersPermissions(DB.Model):
     id_action = DB.Column(DB.Integer, primary_key=True)
     id_filter = DB.Column(DB.Integer, primary_key=True)
     code_action = DB.Column(DB.Unicode)
-    code_filter = DB.Column(DB.Unicode)
+    value_filter = DB.Column(DB.Unicode)
     code_filter_type = DB.Column(DB.Unicode)
     id_filter_type = DB.Column(DB.Integer)
 
@@ -32,7 +32,7 @@ class VUsersPermissions(DB.Model):
         return """VUsersPermissions
             role='{}' action='{}' filter='{}' module='{}' filter_type='{}'>""".format(
             self.id_role, self.code_action,
-            self.code_filter, self.module_code, self.code_filter_type
+            self.value_filter, self.module_code, self.code_filter_type
         )
 
 @serializable
@@ -48,7 +48,8 @@ class TFilters(DB.Model):
     __tablename__ = 't_filters'
     __table_args__ = {'schema': 'gn_permissions'}
     id_filter = DB.Column(DB.Integer, primary_key=True)
-    code_filter = DB.Column(DB.Unicode)
+    value_filter = DB.Column(DB.Unicode)
+    label_filter = DB.Column(DB.Unicode)
     description_filter = DB.Column(DB.Unicode)
     id_filter_type = DB.Column(DB.Integer)
 

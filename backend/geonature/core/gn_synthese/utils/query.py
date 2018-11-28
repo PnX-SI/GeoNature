@@ -18,7 +18,7 @@ def filter_query_with_cruved(model, q, user, allowed_datasets):
     """
     Filter the query with the cruved authorization of a user
     """
-    if user.code_filter in ('1', '2'):
+    if user.value_filter in ('1', '2'):
         q = q.outerjoin(CorObserverSynthese, CorObserverSynthese.id_synthese == model.id_synthese)
         ors_filters = [
             CorObserverSynthese.id_role == user.id_role,
@@ -30,9 +30,9 @@ def filter_query_with_cruved(model, q, user, allowed_datasets):
             ors_filters.append(model.observers.ilike(user_fullname1))
             ors_filters.append(model.observers.ilike(user_fullname2))
 
-        if user.code_filter == '1':
+        if user.value_filter == '1':
             q = q.filter(or_(*ors_filters))
-        elif user.code_filter == '2':
+        elif user.value_filter == '2':
             ors_filters.append(
                 model.id_dataset.in_(allowed_datasets)
             )

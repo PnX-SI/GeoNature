@@ -27,7 +27,7 @@ def get_sensitive_view(info_role):
     # Récupérer l'id de l'utilisateur qui demande la route
     id_role = info_role.id_role
     # Récupérer la portée autorisée à l'utilisateur pour l'acton 'R' (read)
-    read_scope = info_role.code_filter
+    read_scope = info_role.value_filter
 
     #récupérer le CRUVED complet de l'utilisateur courant
     user_cruved = get_or_fetch_user_cruved(

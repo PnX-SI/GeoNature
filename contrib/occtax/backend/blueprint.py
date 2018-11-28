@@ -333,7 +333,7 @@ def insertOrUpdateOneReleve(info_role):
         # info_role.code_action = update_data_scope
         user = UserRigth(
             id_role=info_role.id_role,
-            code_filter=update_code_filter,
+            value_filter=update_code_filter,
             code_action="U",
             id_organisme=info_role.id_organisme
         )
@@ -342,7 +342,7 @@ def insertOrUpdateOneReleve(info_role):
     else:
         # set id_digitiser
         releve.id_digitiser = info_role.id_role
-        if info_role.code_filter in ('0', '1', '2'):
+        if info_role.value_filter in ('0', '1', '2'):
             # Check if user can add a releve in the current dataset
             allowed = releve.user_is_in_dataset_actor(info_role)
             if not allowed:

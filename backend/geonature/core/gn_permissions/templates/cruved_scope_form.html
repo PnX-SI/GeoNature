@@ -1,55 +1,78 @@
 <html>
-
-<body>
-    <h3>Hello</h3>
-
-<table>
-    <thead>
-        <th>Aucune donnée</th>        
-        <th>Mes données</th>
-        <th>Les données de mon organismes</th> 
-        <th>Toutes les données</th>
-    </thead>
-        <tr>
-                {% for subfield in form.create_scope %}
-                    <td> {{ subfield }}</td>
-                {% endfor %}
-                
-        </tr>
-                <tr>
-                {% for subfield in form.read_scope %}
-                    <td>{{ subfield }}</td>
-                {% endfor %}
-                </tr>
-                
-                <tr>
-                {% for subfield in form.update_scope %}
-                    <td>{{ subfield }}</td>
-                {% endfor %}
-                </tr>
-                
-                <tr>
-                {% for subfield in form.validate_scope %}
-                    <td>{{ subfield }}</td>
-                {% endfor %}
-                </tr>
-                
-                <tr>
-                {% for subfield in form.export_scope %}
-                    <td>{{ subfield }}</td>
-                {% endfor %}
-                </tr>
-                
-                <tr>
-                {% for subfield in form.delete_scope %}
-                    <td>{{ subfield }}</td>
-                {% endfor %}
-                </tr>
-</table>
+  <body>
+    <header>
+      <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.css')
 
 
-</body>
+
+
+
+      }}"" />
+      <style>
+        td,
+        th {
+          text-align: center;
+        }
+      </style>
+    </header>
+    <h3>Cruved</h3>
+    <div class="container">
+      <table class="table table-striped">
+        <thead>
+          <th></th>
+          <th>Aucune donnée</th>
+          <th>Mes données</th>
+          <th>Les données de mon organisme</th>
+          <th>Toutes les données</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Créer - Create</td>
+            {% for subfield in form.create_scope %}
+            <td>{{ subfield }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <td>Lire - Read</td>
+            {% for subfield in form.read_scope %}
+            <td>{{ subfield }}</td>
+            {% endfor %}
+          </tr>
+
+          <tr>
+            <td>Mettre à jour - Update</td>
+
+            {% for subfield in form.update_scope %}
+            <td>{{ subfield }}</td>
+            {% endfor %}
+          </tr>
+
+          <tr>
+            <td>Valider - Validate</td>
+
+            {% for subfield in form.validate_scope %}
+            <td>{{ subfield }}</td>
+            {% endfor %}
+          </tr>
+
+          <tr>
+            <td>Export - Export</td>
+
+            {% for subfield in form.export_scope %}
+            <td>{{ subfield }}</td>
+            {% endfor %}
+          </tr>
+
+          <tr>
+            <td>Supprmier - Delete</td>
+            {% for subfield in form.delete_scope %}
+            <td>{{ subfield }}</td>
+            {% endfor %}
+          </tr>
+        </tbody>
+      </table>
+
+      {{form.submit(class="form-control btn-success")}}
+    </div>
+  </body>
 </html>
-
-
-

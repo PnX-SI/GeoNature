@@ -145,7 +145,7 @@ def cruved_scope_for_user_in_module(
 
     q = DB.session.query(
         VUsersPermissions.code_action,
-        func.max(VUsersPermissions.code_filter)
+        func.max(VUsersPermissions.value_filter)
     ).distinct(VUsersPermissions.code_action).filter(
         VUsersPermissions.id_role == id_role
     ).filter(

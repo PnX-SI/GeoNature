@@ -14,3 +14,4 @@ class CruvedScope(FlaskForm):
     validate_scope = RadioField('validate_scope')
     export_scope = RadioField('edit_scope')
     delete_scope = RadioField('delete_scope')
+    submit = SubmitField('Valider')
