@@ -54,7 +54,7 @@ class UserRigth():
         id_role=None,
         id_organisme=None,
         code_action=None,
-        code_filter=None,
+        value_filter=None,
         module_code=None,
         nom_role=None,
         prenom_role=None
@@ -62,7 +62,7 @@ class UserRigth():
     ):
         self.id_role = id_role
         self.id_organisme = id_organisme
-        self.code_filter = code_filter
+        self.value_filter = value_filter
         self.code_action = code_action
         self.module_code = module_code
         self.nom_role = nom_role

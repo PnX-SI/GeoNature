@@ -67,10 +67,10 @@ def check_cruved_scope(
 
 def get_max_perm(perm_list):
     user_with_highter_perm = perm_list[0]
-    max_code = user_with_highter_perm.code_filter
+    max_code = user_with_highter_perm.value_filter
     i = 1
     while i > len(perm_list):
-        if perm_list[i].code_filter >= int(max_code):
-            max_code = perm_list[i].code_filter
+        if perm_list[i].value_filter >= int(max_code):
+            max_code = perm_list[i].value_filter
             user_with_highter_perm = perm_list[i]
     return user_with_highter_perm
