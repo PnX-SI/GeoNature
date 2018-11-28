@@ -1131,12 +1131,18 @@ INSERT INTO pr_occtax.defaults_nomenclatures_value (mnemonique_type, id_organism
 
 ;
 
--- @TODO fait dans l'install du schéma utilisateurs - a trancher
 
--- INSERT INTO utilisateurs.t_menus (nom_menu, desc_menu, id_application) VALUES
--- ('Occtax observateur', 'Liste des observateurs du module Occtax de GeoNature', 
--- (SELECT id_application FROM utilisateurs.t_applications WHERE nom_application = 'GeoNature') )
--- ;
+INSERT INTO utilisateurs.t_listes (code_liste, nom_liste, desc_liste)
+VALUES('obsocctax','Observateurs Occtax','Liste des observateurs du module Occtax');
+
+INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module_desc, module_path, module_target, active_frontend, active_backend) VALUES
+('OCCTAX', 'Occtax', 'fa-puzzle-piece', 'Application observations occasionnelles ', 'occtax', '_self', TRUE, TRUE)
+;
 
 INSERT INTO gn_synthese.t_sources ( name_source, desc_source, entity_source_pk_field, url_source)
  VALUES ('Occtax', 'Données issues du module Occtax', 'pr_occtax.cor_counting_occtax.id_counting_occtax', '#/occtax/info/id_counting');
+
+INSERT INTO gn_permissions.cor_object_module (id_object, id_module)
+SELECT o.id_object, t.id_module
+FROM gn_permissions.t_objects o, gn_commons.t_modules t
+WHERE o.code_object = 'TDatasets' AND t.module_code = 'OCCTAX';
