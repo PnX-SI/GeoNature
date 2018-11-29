@@ -84,9 +84,30 @@
             </tr>
           </tbody>
         </table>
-
         {{form.submit(class="form-control btn-success")}}
       </form>
+
+      <h5>Editer le CRUVED par objet </h5> 
+      <div class="card card-body" style="flex-direction: inherit !important;">
+        <table>
+          {% for object in module_objects %}
+          <tr>
+            <td>
+                {{object.code_object}}
+            </td>
+            <td>
+                <a href="{{ url_for('gn_permissions_backoffice.permission_form', id_module=module.id_module, id_role=user.id_role, id_object=object.id_object) }}">
+                    <button class="btn btn-primary">
+                      Edit
+                    </button>
+                    </a>            
+            </td>
+          </tr>
+            
+          {% endfor %}
+        </table>
+      </div>
+
     </div>
   </body>
 </html>

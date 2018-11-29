@@ -44,11 +44,11 @@
               <td style="padding-right:30px;">
                   - {{groupe.nom_role}}
               </td>
-                <td>
-                    <a href="{{ url_for('gn_permissions_backoffice.user_cruved' ,id_role=groupe.id_role)}}">
-                        <button class="btn btn-sm btn-primary"> Voir CRUVED <i class="fa fa-pencil" aria-hidden="true"></i></button>
-                    </a>
-                </td>
+              <td>
+                  <a href="{{ url_for('gn_permissions_backoffice.user_cruved' ,id_role=groupe.id_role)}}">
+                      <button class="btn btn-sm btn-primary"> Voir CRUVED <i class="fa fa-pencil" aria-hidden="true"></i></button>
+                  </a>
+              </td>
 
             </tr>
             {% endfor %}
