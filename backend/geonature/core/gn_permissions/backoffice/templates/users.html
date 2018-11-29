@@ -15,11 +15,17 @@
     <div class="container">
         <h3> Liste des roles</h3>
 
+        {% with messages = get_flashed_messages() %} {% if messages %} {% for
+          message in messages %}
+          <div class="alert alert-success" role="alert">{{ message }}</div>
+          {% endfor %} {% endif %} {% endwith %} {% block body %}{% endblock %}
+
         <table class="table table-striped">
             <thead>
               <th>Id role</th>
               <th>Nom role</th>
               <th>Prenom role</th>
+              <th>Nb CRUVED</th>
               <th></th>
             </thead>
             <tbody>
@@ -28,6 +34,7 @@
                 <td>{{ user.id_role }}</td>
                 <td>{{ user.nom_role }}</td>
                 <td>{{ user.prenom_role if user.prenom_role }}</td>
+                <td> <b> {{user.nb_cruved}}</b>  </td>
                 <td>
                   <a href="{{ url_for('gn_permissions_backoffice.user_cruved' ,id_role=user.id_role)}}">
                     <button class="btn btn-primary"> Edit <i class="fa fa-pencil" aria-hidden="true"></i></button>
@@ -39,6 +46,15 @@
             </tbody>
           </table>
     </div>
+
+    <script>
+      var alertEl = document.getElementsByClassName('alert-success');
+      console.log(alertEl)
+      for (var i = 0; i < alertEl.length; i++) {
+        console.log(alertEl[i]); //second console output
+        alertEl[i].
+    }
+    </script>
 
   </body>
 

@@ -138,12 +138,19 @@ def cruved_scope_for_user_in_module(
     get_id=False
 ):
     """
-    Return the user cruved for an application
-    if no cruved for an app, the cruved parent module is taken
+    get the user cruved for a module
+    if no cruved for a module, the cruved parent module is taken
     Child app cruved alway overright parent module cruved 
-
-    get_id: if true return the id_scope for each action
+    Params:
+        - id_role(int)
+        - module_code(str)
+        - get_id(bool): if true return the id_scope for each action
             if false return the filter_value foe each action
+    Return a tupple 
+    - index 0: the cruved as a dict : {'C': 0, 'R': 2 ...}
+    - index 1: a boolean which say if its an herited cruved
+
+
     """
     ors = [VUsersPermissions.module_code == 'GEONATURE']
 
@@ -188,17 +195,19 @@ def cruved_scope_for_user_in_module(
     # update cruved with child module if action exist, otherwise take geonature cruved
     update_cruved = {}
     cruved = ['C', 'R', 'U', 'V', 'E', 'D']
+    herited = False
     for action in cruved:
         if action in module_cruved:
             update_cruved[action] = module_cruved[action]
         elif action in parent_cruved:
             update_cruved[action] = parent_cruved[action]
+            herited = True
         else:
-                if get_id:
-                    update_cruved[action] = id_scope_no_data
-                else:
-                    update_cruved[action] = '0'
-    return update_cruved
+            if get_id:
+                update_cruved[action] = id_scope_no_data
+            else:
+                update_cruved[action] = '0'
+    return update_cruved, herited
 
 
 
@@ -218,7 +227,7 @@ def get_or_fetch_user_cruved(
         user_cruved = cruved_scope_for_user_in_module(
             id_role=id_role,
             module_code=module_code,
-        )
+        )[0]
         session[module_code] = {}
         session[module_code]['user_cruved'] = user_cruved
     return user_cruved

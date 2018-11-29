@@ -15,18 +15,48 @@
         {% for mod in modules %}
         <tr>
           <td>{{ mod.module_code }}</td>
-          <td>{{ mod.module_cruved }}</td>
+          <td>{{ mod.module_cruved[0] }}</td>
+          <td> 
+          {% if mod.module_cruved[1] %}
+           Hérité du module parent GeoNature
+          {% endif %}
+          </td>
           <td>
-            <a  href="{{ url_for('gn_permissions_backoffice.permission_form', id_module=mod.id_module, id_role=user.id_role) }}">
+            <a href="{{ url_for('gn_permissions_backoffice.permission_form', id_module=mod.id_module, id_role=user.id_role) }}">
             <button class="btn btn-primary">
               Edit
             </button>
             </a>
           </td>
         </tr>
-      
         {% endfor %}
       </table>
+
+
+      {% if groupes|length > 0 %}
+      <div class="alert alert-primary" role="alert">
+          <p>
+              L'utilisateur <b> {{user.nom_role}} {{user.prenom_role if user.prenom_role}} </b> appartient aux groupe(s) suivant(s): 
+          </p>
+          <table>
+            {% for groupe in groupes %}
+            <tr>
+              <td style="padding-right:30px;">
+                  - {{groupe.nom_role}}
+              </td>
+                <td>
+                    <a href="{{ url_for('gn_permissions_backoffice.user_cruved' ,id_role=groupe.id_role)}}">
+                        <button class="btn btn-sm btn-primary"> Voir CRUVED <i class="fa fa-pencil" aria-hidden="true"></i></button>
+                    </a>
+                </td>
+
+            </tr>
+            {% endfor %}
+          </table>
+
+      </div>
+
+      {% endif %}
   </div>
 
 </body>
