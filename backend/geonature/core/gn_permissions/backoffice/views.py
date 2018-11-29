@@ -22,7 +22,7 @@ routes = Blueprint('gn_permissions_backoffice', __name__, template_folder='templ
 def permission_form(id_module, id_role, id_object=1):
     form = None
     module = DB.session.query(TModules).get(id_module)
-    # get module object to set specific Cruved
+    # get module associed objects to set specific Cruved
     module_objects = DB.session.query(TObjects).join(
         CorObjectModule, CorObjectModule.id_object == TObjects.id_object
     ).filter(
@@ -34,10 +34,8 @@ def permission_form(id_module, id_role, id_object=1):
         form = CruvedScopeForm(**cruved)
  
         # get the real cruved of user to set a warning
-        real_cruved = DB.session.query(CorRoleActionFilterModuleObject).filter(
-            CorRoleActionFilterModuleObject.id_module == id_module
-        ).filter(
-            CorRoleActionFilterModuleObject.id_role == id_role
+        real_cruved = DB.session.query(CorRoleActionFilterModuleObject).filter_by(
+            **{'id_module':id_module, 'id_role': id_role, 'id_object': id_object
         ).all()
         if len(real_cruved) == 0:
             flash(
