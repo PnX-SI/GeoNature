@@ -27,7 +27,7 @@ def get_cruved(info_role):
     cruved = cruved_scope_for_user_in_module(
         id_role=info_role.id_role,
         module_code=request.args.get('module_code', None),
-    )
+    )[0]
     return Response(json.dumps(cruved), 200)
 
 

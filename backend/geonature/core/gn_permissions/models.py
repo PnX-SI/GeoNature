@@ -13,7 +13,7 @@ from geonature.core.gn_commons.models import TModules
 
 @serializable
 class VUsersPermissions(DB.Model):
-    __tablename__ = 'v_users_permissions'
+    __tablename__ = 'v_roles_permissions'
     __table_args__ = {'schema': 'gn_permissions'}
     id_role = DB.Column(DB.Integer, primary_key=True)
     nom_role = DB.Column(DB.Unicode)
@@ -87,7 +87,6 @@ class CorRoleActionFilterModuleObject(DB.Model):
     id_filter = DB.Column(
         DB.Integer,
         ForeignKey('gn_permissions.t_filters.id_filter'),
-        primary_key=True
     )
     id_module = DB.Column(
         DB.Integer, 
