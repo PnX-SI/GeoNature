@@ -149,3 +149,27 @@ Pour que ces modifications soient prises en compte, lancer les commandes suivant
 	deactivate
 
 Les applications sont désormais accessibles sur votre domaine sécurisé!
+
+Correction des fonds de carte
+-----------------------------
+
+Pour que l'application GeoNature soit pleinement sécurisée et reconnue comme tel par les navigateurs, elle ne doit pas avoir de "contenu mixte" (c'est-à-dire utiliser des ressources qui ne sont, elles-mêmes, pas sécurisées). Il est alors utile de configurer les fonds de carte avec une adresse https et non pas http. Pour régler ce point, modifier le fichier ``geonature/frontend/src/conf/map.config.ts`` et remplacez l'URL des couches comme suit :
+
+::
+        export const MAP_CONFIG = {
+          BASEMAP: [
+            {name: 'OpenStreetMap',
+            layer: 'https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+            attribution: '&copy OpenStreetMap'
+            },
+            {name: 'OpenTopoMap',
+            layer: 'https://a.tile.opentopomap.org/{z}/{x}/{y}.png',
+            attribution:  '© OpenTopoMap'
+            },
+            {name: 'GoogleSatellite',
+             layer: 'https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+             subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+             attribution: '© GoogleMap'
+          }
+          ],
+        }
