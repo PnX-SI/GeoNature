@@ -9,7 +9,7 @@ from geonature.utils.env import DB
 
 
 
-class CruvedScope(FlaskForm):
+class CruvedScopeForm(FlaskForm):
     """
     Forms to manage cruved scope permissions
     """
@@ -37,3 +37,10 @@ class CruvedScope(FlaskForm):
         self.V.choices = scope_choices
         self.E.choices = scope_choices
         self.D.choices = scope_choices
+    
+    def __init__(self, *args, **kwargs):
+        super(CruvedScopeForm, self).__init__(*args, **kwargs)
+        print('LAAAAAAAAA')
+        self.init_choices()
+        print(self.C.choices)
+        
