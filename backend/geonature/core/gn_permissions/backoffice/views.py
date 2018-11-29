@@ -8,7 +8,7 @@ from geonature.core.gn_permissions.backoffice.forms import CruvedScopeForm
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from geonature.core.gn_permissions.models import(
     TFilters, BibFiltersType, TActions,
-    CorRoleActionFilterModuleObject
+    CorRoleActionFilterModuleObject, TObjects, CorObjectModule
 )
 from geonature.core.users.models import CorRole
 from geonature.core.gn_commons.models import TModules
@@ -17,10 +17,17 @@ from pypnusershub.db.models import User
 
 routes = Blueprint('gn_permissions_backoffice', __name__, template_folder='templates')
 
+@routes.route('cruved_form/module/<int:id_module>/role/<int:id_role>/<int:id_object>', methods=["GET", "POST"])
 @routes.route('cruved_form/module/<int:id_module>/role/<int:id_role>', methods=["GET", "POST"])
-def permission_form(id_module, id_role):
+def permission_form(id_module, id_role, id_object=1):
     form = None
     module = DB.session.query(TModules).get(id_module)
+    # get module object to set specific Cruved
+    module_objects = DB.session.query(TObjects).join(
+        CorObjectModule, CorObjectModule.id_object == TObjects.id_object
+    ).filter(
+        CorObjectModule.id_module == id_module
+    ).all()
     user = DB.session.query(User).get(id_role)
     if request.method == 'GET':
         cruved, herited = cruved_scope_for_user_in_module(id_role, module.module_code, get_id=True)
@@ -41,6 +48,7 @@ def permission_form(id_module, id_role):
             form=form,
             user=user,
             module=module,
+            module_objects=module_objects,
             config=current_app.config
         )
 
@@ -56,7 +64,7 @@ def permission_form(id_module, id_role):
                     'id_role': id_role,
                     'id_action': id_action,
                     'id_module': id_module,
-                    'id_object': 1
+                    'id_object': id_object
                 }
                 # check if a row already exist for a module, a role and an action
                 instance = DB.session.query(
@@ -74,7 +82,7 @@ def permission_form(id_module, id_role):
                         id_action=id_action,
                         id_filter = int(form.data[code_action]),
                         id_module=id_module,
-                        id_object=1
+                        id_object=id_object
                     )
                     DB.session.add(permission_row)
                 DB.session.commit()
