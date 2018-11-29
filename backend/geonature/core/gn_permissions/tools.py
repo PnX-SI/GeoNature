@@ -135,7 +135,7 @@ def get_user_permissions(user, code_action, code_filter_type, module_code=None):
 def cruved_scope_for_user_in_module(
     id_role=None,
     module_code=None,
-    object_code
+    object_code= 'ALL'
     get_id=False
 ):
     """
