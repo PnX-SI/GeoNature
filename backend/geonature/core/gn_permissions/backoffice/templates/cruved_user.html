@@ -1,19 +1,39 @@
-<h3>{{ user.nom_role }} {{ user.prenom_role }}</h3>
+<html>
+    {% include "librairies.html" %}      
 
-<table>
-  {% for mod in modules %}
-  <tr>
-    <td>{{ mod.module_code }}</td>
-    <td>{{ mod.module_cruved }}</td>
-    <td>
-      <button>
-        <a
-          href="{{ url_for('gn_permissions_backoffice.permission_form', id_module=mod.id_module, id_role=user.id_role) }}"
-          >Edit</a
-        >
-      </button>
-    </td>
-  </tr>
+<body>
+    {% include "nav-bar.html" %}    
 
-  {% endfor %}
-</table>
+  <div class="container">
+      {% if user.group %}
+        <h5> CRUVED du groupe {{user.nom_role}} </h5>
+      {% else %}
+        <h5> CRUVED de l'utilisateur {{user.nom_role}} {{user.prenom_role if user.prenom_role}}</h5>
+      {% endif %}
+
+      <table class="table table-striped">
+        {% for mod in modules %}
+        <tr>
+          <td>{{ mod.module_code }}</td>
+          <td>{{ mod.module_cruved }}</td>
+          <td>
+            <a  href="{{ url_for('gn_permissions_backoffice.permission_form', id_module=mod.id_module, id_role=user.id_role) }}">
+            <button class="btn btn-primary">
+              Edit
+            </button>
+            </a>
+          </td>
+        </tr>
+      
+        {% endfor %}
+      </table>
+  </div>
+
+</body>
+
+
+
+
+</html>
+
+

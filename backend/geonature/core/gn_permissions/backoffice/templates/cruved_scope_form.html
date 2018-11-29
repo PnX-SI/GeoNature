@@ -1,21 +1,26 @@
 <html>
-  <body>
-    <header>
-      <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.css')
-
-
-
-
-      }}"" />
-      <style>
+    {% include "librairies.html" %}    
+    <style>
         td,
         th {
           text-align: center;
         }
       </style>
-    </header>
-    <h3>Cruved</h3>
+  <body>
+      {% include "nav-bar.html" %}    
+
     <div class="container">
+
+    {% if user.group %}
+        <h5> CRUVED du groupe {{user.nom_role}} pour le module {{module.module_label}} </h5>
+    {% else %}
+        <h5> CRUVED de l'utilisateur {{user.nom_role}} {{user.prenom_role}} pour le module {{module.module_label}}</h5>
+    {% endif %}
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for
+      message in messages %}
+      <div class="alert alert-warning" role="alert">{{ message }}</div>
+      {% endfor %} {% endif %} {% endwith %} {% block body %}{% endblock %}
+
       <form action="" method="POST">
         {{ form.csrf_token }} {{ form.hidden_tag() }}
         <table class="table table-striped">

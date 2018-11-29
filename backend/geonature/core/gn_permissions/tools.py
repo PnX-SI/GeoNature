@@ -15,7 +15,7 @@ from pypnusershub.db.tools import (
     UnreadableAccessRightsError
 ) 
 
-from geonature.core.gn_permissions.models import VUsersPermissions
+from geonature.core.gn_permissions.models import VUsersPermissions, TFilters
 from geonature.utils.env import DB
 
 log = logging.getLogger(__name__)
@@ -135,17 +135,22 @@ def get_user_permissions(user, code_action, code_filter_type, module_code=None):
 def cruved_scope_for_user_in_module(
     id_role=None,
     module_code=None,
+    get_id=False
 ):
     """
     Return the user cruved for an application
     if no cruved for an app, the cruved parent module is taken
     Child app cruved alway overright parent module cruved 
+
+    get_id: if true return the id_scope for each action
+            if false return the filter_value foe each action
     """
     ors = [VUsersPermissions.module_code == 'GEONATURE']
 
     q = DB.session.query(
         VUsersPermissions.code_action,
-        func.max(VUsersPermissions.value_filter)
+        func.max(VUsersPermissions.value_filter),
+        func.max(VUsersPermissions.id_filter)
     ).distinct(VUsersPermissions.code_action).filter(
         VUsersPermissions.id_role == id_role
     ).filter(
@@ -153,18 +158,33 @@ def cruved_scope_for_user_in_module(
     ).group_by(VUsersPermissions.code_action)
 
     # get max scope cruved for module GEONATURE
-    parent_cruved = {
-        action_scope[0]: action_scope[1]
-        for action_scope in q.filter(VUsersPermissions.module_code.ilike('GEONATURE')).all() 
-    }
+    parent_cruved_data = q.filter(VUsersPermissions.module_code.ilike('GEONATURE')).all() 
+    parent_cruved = {}
+    # build a dict like {'C':'0', 'R':'2' ...} if get_id = False or
+    # {'C': 1, 'R':3 ...} if get_id = True
+    for action_scope in parent_cruved_data:
+        if get_id:
+            parent_cruved[action_scope[0]] = action_scope[2]
+        else:
+            parent_cruved[action_scope[0]] = action_scope[1]
+
     # get max scope cruved for module passed in parameter
-    module_cruved = {}
+    
     if module_code:
-        module_cruved = {
-            action_scope[0]: action_scope[1]
-            for action_scope in q.filter(VUsersPermissions.module_code.ilike(module_code)).all()
-        }
+        module_cruved = {}
+        module_cruved_data = q.filter(VUsersPermissions.module_code.ilike(module_code)).all()
+        # build a dict like {'C':'0', 'R':'2' ...} if get_id = False or
+        # {'C': 1, 'R':3 ...} if get_id = True
+        # for the module 
+        for action_scope in module_cruved_data:
+            if get_id:
+                module_cruved[action_scope[0]] = action_scope[2]
+            else:
+                module_cruved[action_scope[0]] = action_scope[1]
         
+    # get the id for code 0
+    if get_id:
+        id_scope_no_data = DB.session.query(TFilters.id_filter).filter(TFilters.value_filter == '0').one()[0]
     # update cruved with child module if action exist, otherwise take geonature cruved
     update_cruved = {}
     cruved = ['C', 'R', 'U', 'V', 'E', 'D']
@@ -174,7 +194,10 @@ def cruved_scope_for_user_in_module(
         elif action in parent_cruved:
             update_cruved[action] = parent_cruved[action]
         else:
-            update_cruved[action] = '0'
+                if get_id:
+                    update_cruved[action] = id_scope_no_data
+                else:
+                    update_cruved[action] = '0'
     return update_cruved
 
 
