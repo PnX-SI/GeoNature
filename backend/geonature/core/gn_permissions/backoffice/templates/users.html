@@ -39,6 +39,10 @@
                   <a href="{{ url_for('gn_permissions_backoffice.user_cruved' ,id_role=user.id_role)}}">
                     <button class="btn btn-primary"> Edit <i class="fa fa-pencil" aria-hidden="true"></i></button>
                   </a>
+
+                  <a href="{{ url_for('gn_permissions_backoffice.user_other_permissions' ,id_role=user.id_role)}}">
+                    <button class="btn btn-primary"> Edit <i class="fa fa-pencil" aria-hidden="true"></i></button>
+                  </a>
                 </td>
               </tr>
       
@@ -46,15 +50,6 @@
             </tbody>
           </table>
     </div>
-
-    <script>
-      var alertEl = document.getElementsByClassName('alert-success');
-      console.log(alertEl)
-      for (var i = 0; i < alertEl.length; i++) {
-        console.log(alertEl[i]); //second console output
-        alertEl[i].
-    }
-    </script>
 
   </body>
 

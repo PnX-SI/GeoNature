@@ -192,7 +192,7 @@ ADD CONSTRAINT pk_cor_object_module PRIMARY KEY
 
 ALTER TABLE ONLY cor_role_action_filter_module_object
 ADD CONSTRAINT pk_cor_r_a_f_m_o PRIMARY KEY
-(id_role, id_action, id_module, id_object);
+(id_role, id_action, id_module, id_filter, id_object);
 
 
 ---------------
@@ -322,7 +322,9 @@ SELECT v.id_role,
     v.id_action,
     v.id_filter,
     actions.code_action,
+    actions.description_action,
     filters.value_filter,
+    filters.label_filter,
     filter_type.code_filter_type,
     filter_type.id_filter_type
 FROM all_user_permission v
