@@ -4,7 +4,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, HiddenField, SelectField, RadioField,SelectMultipleField, widgets, Form
 from wtforms.validators import DataRequired, Email
 
-from geonature.core.gn_permissions.models import TFilters, BibFiltersType
+from geonature.core.gn_permissions.models import TFilters, BibFiltersType, TActions
 from geonature.utils.env import DB
 
 
@@ -43,3 +43,19 @@ class CruvedScopeForm(FlaskForm):
         self.init_choices()
         print(self.C.choices)
         
+
+
+class OtherPermissionsForm(FlaskForm):
+    action = SelectField(
+        'action',
+        choices=[(id_action, description_action) for DB.session.query(TActions).all()]
+    )
+    filters = SelectField(
+        'filtres',
+        choices=[
+            (id_filter, label_filter) 
+            for DB.session.query(TFilters).filter(TFilters.id_filter_type == 4).all()
+        ]
+    )
+
+    #TODO overigth init to take a id_filter_type

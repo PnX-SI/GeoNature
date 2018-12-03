@@ -170,3 +170,31 @@ def user_other_permissions(id_role):
         filter_types=filter_types,
         permissions=permissions
     )
+
+
+
+@routes.route('/other_permissions_form/<id_role>/filter_type/<id_filterr_type>', methods=["GET", "POST"])
+def other_permissions_form(id_role, id_filter_type):
+    """
+    Form to define permisisons for a user expect SCOPE permissions
+    """
+    user = DB.session.query(User).get(id_role).as_dict()
+    filter_type = DB.session.query(BibFiltersType).get(id_filter_type)
+
+    permissions = DB.session.query(VUsersPermissions).filter(
+        VUsersPermissions.id_filter_type == id_filter_type
+    ).filter(
+        VUsersPermissions.id_role == id_role
+    ).order_by(
+        VUsersPermissions.code_filter_type
+    ).all()
+
+    filter_types = DB.session.query(BibFiltersType).filter(
+        BibFiltersType.code_filter_type != 'SCOPE'
+    )
+
+    return render_template(
+        'user_other_permissions.html',
+        filter_types=filter_types,
+        permissions=permissions
+    )
