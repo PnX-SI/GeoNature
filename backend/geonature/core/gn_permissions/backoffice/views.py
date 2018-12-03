@@ -12,6 +12,8 @@ from geonature.core.gn_permissions.models import(
 )
 from geonature.core.users.models import CorRole
 from geonature.core.gn_commons.models import TModules
+from geonature.core.gn_permissions import decorators as permissions
+
 
 from pypnusershub.db.models import User
 
@@ -19,7 +21,9 @@ routes = Blueprint('gn_permissions_backoffice', __name__, template_folder='templ
 
 @routes.route('cruved_form/module/<int:id_module>/role/<int:id_role>/<int:id_object>', methods=["GET", "POST"])
 @routes.route('cruved_form/module/<int:id_module>/role/<int:id_role>', methods=["GET", "POST"])
-def permission_form(id_module, id_role, id_object=1):
+@permissions.check_cruved_scope('R', True, object_code='PERMISSIONS')
+def permission_form(info_role, id_module, id_role, id_object=1):
+    print(info_role)
     form = None
     module = DB.session.query(TModules).get(id_module)
     # get module associed objects to set specific Cruved
@@ -35,11 +39,14 @@ def permission_form(id_module, id_role, id_object=1):
  
         # get the real cruved of user to set a warning
         real_cruved = DB.session.query(CorRoleActionFilterModuleObject).filter_by(
-            **{'id_module':id_module, 'id_role': id_role, 'id_object': id_object
+            **{'id_module':id_module, 'id_role': id_role, 'id_object': id_object}
         ).all()
         if len(real_cruved) == 0:
             flash(
-                "Attention ce role n'a pas encore de CRUVED. Celui-ci lui est hérité de son groupe et/ou du module parent GEONATURE"
+                """
+                Attention ce role n'a pas encore de CRUVED dans ce module. 
+                Celui-ci lui est hérité de son groupe et/ou du module parent GEONATURE
+                """
             )
         return render_template(
             'cruved_scope_form.html',
