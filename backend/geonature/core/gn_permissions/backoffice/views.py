@@ -8,7 +8,7 @@ from geonature.core.gn_permissions.backoffice.forms import CruvedScopeForm
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from geonature.core.gn_permissions.models import(
     TFilters, BibFiltersType, TActions,
-    CorRoleActionFilterModuleObject, TObjects, CorObjectModule
+    CorRoleActionFilterModuleObject, TObjects, CorObjectModule, VUsersPermissions
 )
 from geonature.core.users.models import CorRole
 from geonature.core.gn_commons.models import TModules
@@ -143,4 +143,30 @@ def user_cruved(id_role):
         groupes=[groupe.role.as_dict() for groupe in groupes_data],
         modules=modules,
         config=current_app.config
+    )
+
+
+@routes.route('/user_other_permissions/<id_role>', methods=["GET"])
+def user_other_permissions(id_role):
+    """
+    Get all the permissions define for a user expect SCOPE permissions
+    """
+    user = DB.session.query(User).get(id_role).as_dict()
+
+    permissions = DB.session.query(VUsersPermissions).filter(
+        VUsersPermissions.code_filter_type != 'SCOPE'
+    ).filter(
+        VUsersPermissions.id_role == id_role
+    ).order_by(
+        VUsersPermissions.code_filter_type
+    ).all()
+
+    filter_types = DB.session.query(BibFiltersType).filter(
+        BibFiltersType.code_filter_type != 'SCOPE'
+    )
+
+    return render_template(
+        'user_other_permissions.html',
+        filter_types=filter_types,
+        permissions=permissions
     )

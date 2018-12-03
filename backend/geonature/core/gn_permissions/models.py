@@ -23,8 +23,11 @@ class VUsersPermissions(DB.Model):
     module_code = DB.Column(DB.Unicode)
     code_object = DB.Column(DB.Unicode)
     id_action = DB.Column(DB.Integer, primary_key=True)
+    description_action = DB.Column(DB.Unicode)
     id_filter = DB.Column(DB.Integer, primary_key=True)
+    label_filter = DB.Column(DB.Integer, primary_key=True)
     code_action = DB.Column(DB.Unicode)
+    description_action = DB.Column(DB.Unicode)
     value_filter = DB.Column(DB.Unicode)
     code_filter_type = DB.Column(DB.Unicode)
     id_filter_type = DB.Column(DB.Integer)
@@ -42,6 +45,7 @@ class BibFiltersType(DB.Model):
     __table_args__ = {'schema': 'gn_permissions'}
     id_filter_type = DB.Column(DB.Integer, primary_key=True)
     code_filter_type = DB.Column(DB.Unicode)
+    label_filter_type = DB.Column(DB.Unicode)
     description_filter_type = DB.Column(DB.Unicode)
 
 @serializable
