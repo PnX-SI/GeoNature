@@ -4,7 +4,7 @@ Models of gn_permissions schema
 
 
 from sqlalchemy import ForeignKey
-
+from sqlalchemy.sql import select
 from geonature.utils.utilssqlalchemy import serializable
 from geonature.utils.env import DB
 
@@ -97,7 +97,8 @@ class CorRoleActionFilterModuleObject(DB.Model):
     id_object = DB.Column(
         DB.Integer, 
         ForeignKey('gn_permissions.t_objects.id_object'),
-        primary_key=True
+        primary_key=True,
+        default=select([TObjects.id_object]).where(TObjects.code_object=='ALL')
     )
 
     role = DB.relationship(
