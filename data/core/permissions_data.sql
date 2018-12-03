@@ -64,7 +64,15 @@ INSERT INTO t_objects
     (code_object, description_object)
 VALUES
     ('ALL', 'Représente tous les objets d''un module'),
-    ('TDatasets', 'Objet dataset')
+    ('METADATA', 'Gestion du backoffice des métadonnées'),
+    ('PERMISSIONS', 'Gestion du backoffice du CRUVED et des permissions')
+;
+
+INSERT INTO cor_object_module
+    (id_object, id_module)
+VALUES
+    (2, 4),
+    (3, 4)
 ;
 
 INSERT INTO cor_object_module
@@ -112,5 +120,19 @@ VALUES
     (8, 3, 2, 3, 1),
     (8, 4, 2, 3, 1),
     (8, 5, 2, 3, 1),
-    (8, 6, 2, 3, 1)
+    (8, 6, 2, 3, 1),
+    -- ADMIN peut gérer les permissions du backoffice
+    (9, 1, 4, 4, 3),
+    (9, 2, 4, 4, 3),
+    (9, 3, 4, 4, 3),
+    (9, 4, 4, 4, 3),
+    (9, 5, 4, 4, 3),
+    (9, 6, 4, 4, 3),
+    -- ADMIN peut gérer les métadonnées du backoffice
+    (9, 1, 4, 4, 2),
+    (9, 2, 4, 4, 2),
+    (9, 3, 4, 4, 2),
+    (9, 4, 4, 4, 2),
+    (9, 5, 4, 4, 2),
+    (9, 6, 4, 4, 2)
 ;

@@ -102,6 +102,16 @@ $BODY$
  LANGUAGE plpgsql IMMUTABLE
  COST 100;
 
+
+CREATE OR REPLACE FUNCTION get_id_object
+(mycodeobject varchar)
+  RETURNS int LANGUAGE SQL AS
+$$ 
+SELECT id_object
+FROM gn_permissions.t_objects
+WHERE code_object = mycodeobject;
+$$;
+
 ---------
 --TABLE--
 ---------
@@ -152,7 +162,7 @@ CREATE TABLE cor_role_action_filter_module_object
     id_action integer NOT NULL,
     id_filter integer NOT NULL,
     id_module integer NOT NULL,
-    id_object integer NOT NULL
+    id_object integer NOT NULL DEFAULT gn_permissions.get_id_object('ALL')
 );
 
 
@@ -253,7 +263,8 @@ WITH
             u.id_organisme,
             c_1.id_action,
             c_1.id_filter,
-            c_1.id_module
+            c_1.id_module,
+            c_1.id_object
         FROM utilisateurs.t_roles u
             JOIN gn_permissions.cor_role_action_filter_module_object c_1 ON c_1.id_role = u.id_role
         WHERE u.groupe = false
@@ -268,7 +279,8 @@ WITH
             u.id_organisme,
             c_1.id_action,
             c_1.id_filter,
-            c_1.id_module
+            c_1.id_module,
+            c_1.id_object
         FROM utilisateurs.t_roles u
             JOIN utilisateurs.cor_roles g ON g.id_role_utilisateur = u.id_role OR g.id_role_groupe = u.id_role
             JOIN gn_permissions.cor_role_action_filter_module_object c_1 ON c_1.id_role = g.id_role_groupe
@@ -285,7 +297,8 @@ WITH
                 p_user_permission.id_organisme,
                 p_user_permission.id_action,
                 p_user_permission.id_filter,
-                p_user_permission.id_module
+                p_user_permission.id_module,
+                p_user_permission.id_object
             FROM p_user_permission
         UNION
             SELECT p_groupe_permission.id_role,
@@ -295,7 +308,8 @@ WITH
                 p_groupe_permission.id_organisme,
                 p_groupe_permission.id_action,
                 p_groupe_permission.id_filter,
-                p_groupe_permission.id_module
+                p_groupe_permission.id_module,
+                p_groupe_permission.id_object
             FROM p_groupe_permission
     )
 SELECT v.id_role,
@@ -304,6 +318,7 @@ SELECT v.id_role,
     v.id_organisme,
     v.id_module,
     modules.module_code,
+    obj.code_object,
     v.id_action,
     v.id_filter,
     actions.code_action,
@@ -313,5 +328,6 @@ SELECT v.id_role,
 FROM all_user_permission v
     JOIN gn_permissions.t_actions actions ON actions.id_action = v.id_action
     JOIN gn_permissions.t_filters filters ON filters.id_filter = v.id_filter
+    JOIN gn_permissions.t_objects obj ON obj.id_object = v.id_object
     JOIN gn_permissions.bib_filters_type filter_type ON filters.id_filter_type = filter_type.id_filter_type
     JOIN gn_commons.t_modules modules ON modules.id_module = v.id_module;
