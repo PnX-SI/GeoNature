@@ -94,8 +94,10 @@ def get_user_from_token_and_raise(
 
 def get_user_permissions(user, code_action, code_filter_type, module_code=None, code_object=None):
     """
-        Get all the filters code of a user (could be multiples)
-        for an action, a module and a filter_type
+        Get all the permissions of a user for an action, a module (or an object) and a filter_type
+        Users permissions could be multiples because of user's group. The view mapped by VUsersPermissions does not take the
+        max because some filter type could be not quantitative
+        
         Parameters:
             user(dict)
             code_action(str): <C,R,U,V,E,D>
