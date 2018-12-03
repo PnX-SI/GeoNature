@@ -13,6 +13,7 @@ def check_cruved_scope(
     action,
     get_role=False,
     module_code=None,
+    object_code=None,
     redirect_on_expiration=None,
     redirect_on_invalid_token=None,
 ):
@@ -35,26 +36,32 @@ def check_cruved_scope(
                     user,
                     action,
                     'SCOPE',
-                    module_code
+                    module_code,
+                    object_code
                 )
-                # loop on user permissions
-                # return the module permission if exist
-                # otherwise return GEONATURE permission
-                module_permissions = []
-                geonature_permission = []
-                # user_permissions is a array of at least 1 permission
-                # get the user from the first element of the array
-                user_with_highter_perm = None
-                for user_permission in user_permissions:
-                    if user_permission.module_code == module_code:
-                        module_permissions.append(user_permission)
-                    else:
-                        geonature_permission.append(user_permission)
-                # take the max of the different permissions
-                if len(module_permissions) == 0:
-                    user_with_highter_perm = get_max_perm(geonature_permission)
+                # if object_code no heritage
+                if object_code:
+                    user_with_highter_perm = get_max_perm(user_permissions)
                 else:
-                    user_with_highter_perm = get_max_perm(module_permissions)
+                    # else
+                    # loop on user permissions
+                    # return the module permission if exist
+                    # otherwise return GEONATURE permission
+                    module_permissions = []
+                    geonature_permission = []
+                    # user_permissions is a array of at least 1 permission
+                    # get the user from the first element of the array
+                    user_with_highter_perm = None
+                    for user_permission in user_permissions:
+                        if user_permission.module_code == module_code:
+                            module_permissions.append(user_permission)
+                        else:
+                            geonature_permission.append(user_permission)
+                    # take the max of the different permissions
+                    if len(module_permissions) == 0:
+                        user_with_highter_perm = get_max_perm(geonature_permission)
+                    else:
+                        user_with_highter_perm = get_max_perm(module_permissions)
             
                 kwargs['info_role'] = user_with_highter_perm
 

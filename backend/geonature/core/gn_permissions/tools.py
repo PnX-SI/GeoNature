@@ -92,7 +92,7 @@ def get_user_from_token_and_raise(
 
 
 
-def get_user_permissions(user, code_action, code_filter_type, module_code=None):
+def get_user_permissions(user, code_action, code_filter_type, module_code=None, code_object=None):
     """
         Get all the filters code of a user (could be multiples)
         for an action, a module and a filter_type
@@ -101,6 +101,7 @@ def get_user_permissions(user, code_action, code_filter_type, module_code=None):
             code_action(str): <C,R,U,V,E,D>
             code_filter_type(str): <SCOPE, GEOGRAPHIC ...>
             module_code(str): 'GEONATURE', 'OCCTAX'
+            code_object(str): 'PERMISSIONS', 'DATASET' (table gn_permissions.t_oject)
         Return:
             Array<VUsersPermissions>
     """
@@ -115,27 +116,34 @@ def get_user_permissions(user, code_action, code_filter_type, module_code=None):
         .filter(VUsersPermissions.code_action == code_action)
         .filter(VUsersPermissions.code_filter_type == code_filter_type)
     )
-    module_code_for_error = 'GEONATURE'
-    if module_code:
-        ors.append(VUsersPermissions.module_code.ilike(module_code))
-        module_code_for_error = module_code
-    
-    user_cruved = q.filter(sa.or_(*ors)).all()
+    # if code_object we take only autorization of this object
+    # no heritage from GeoNature
+    if code_object:
+        user_cruved = q.filter(VUsersPermissions.code_object == code_object).all()
+        object_for_error = code_object
+    # else: heritage cruved of the module or from GeoNature
+    else:
+        object_for_error = 'GEONATURE'
+        if module_code:
+            ors.append(VUsersPermissions.module_code.ilike(module_code))
+            object_for_error = module_code
+        
+        user_cruved = q.filter(sa.or_(*ors)).all()
 
     try:
         assert len(user_cruved) > 0
         return user_cruved
     except AssertionError:
         raise InsufficientRightsError(
-            'User "{}" cannot "{}" in module/app "{}"'.format(
-                id_role, code_action, module_code_for_error
+            'User "{}" cannot "{}" in module/app/object "{}"'.format(
+                id_role, code_action, object_for_error
             )
         )
 
 def cruved_scope_for_user_in_module(
     id_role=None,
     module_code=None,
-    object_code= 'ALL'
+    object_code= 'ALL',
     get_id=False
 ):
     """
@@ -161,6 +169,8 @@ def cruved_scope_for_user_in_module(
         VUsersPermissions.id_role == id_role
     ).filter(
         VUsersPermissions.code_filter_type == 'SCOPE'
+    ).filter(
+        VUsersPermissions.code_object == object_code
     ).group_by(VUsersPermissions.code_action)
 
     # get max scope cruved for module GEONATURE
@@ -214,6 +224,7 @@ def get_or_fetch_user_cruved(
     session=None,
     id_role=None,
     module_code=None,
+    object_code= 'ALL'
 ):
     """
         Check if the cruved is in the session
@@ -226,6 +237,7 @@ def get_or_fetch_user_cruved(
         user_cruved = cruved_scope_for_user_in_module(
             id_role=id_role,
             module_code=module_code,
+            object_code=object_code
         )[0]
         session[module_code] = {}
         session[module_code]['user_cruved'] = user_cruved

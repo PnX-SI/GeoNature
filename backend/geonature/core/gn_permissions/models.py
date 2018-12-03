@@ -21,6 +21,7 @@ class VUsersPermissions(DB.Model):
     id_organisme = DB.Column(DB.Integer)
     id_module = DB.Column(DB.Integer, primary_key=True)
     module_code = DB.Column(DB.Unicode)
+    code_object = DB.Column(DB.Unicode)
     id_action = DB.Column(DB.Integer, primary_key=True)
     id_filter = DB.Column(DB.Integer, primary_key=True)
     code_action = DB.Column(DB.Unicode)
@@ -30,9 +31,9 @@ class VUsersPermissions(DB.Model):
 
     def __repr__(self):
         return """VUsersPermissions
-            role='{}' action='{}' filter='{}' module='{}' filter_type='{}'>""".format(
+            role='{}' action='{}' filter='{}' module='{}' filter_type='{}' object='{} >""".format(
             self.id_role, self.code_action,
-            self.value_filter, self.module_code, self.code_filter_type
+            self.value_filter, self.module_code, self.code_filter_type, self.code_object
         )
 
 @serializable
