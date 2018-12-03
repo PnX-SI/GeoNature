@@ -40,7 +40,6 @@ class CruvedScopeForm(FlaskForm):
     
     def __init__(self, *args, **kwargs):
         super(CruvedScopeForm, self).__init__(*args, **kwargs)
-        print('LAAAAAAAAA')
         self.init_choices()
         print(self.C.choices)
         

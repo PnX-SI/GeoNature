@@ -28,7 +28,7 @@ def get_modules(info_role):
         app_cruved = cruved_scope_for_user_in_module(
             id_role=info_role.id_role,
             module_code=mod.module_code,
-        )
+        )[0]
         if app_cruved['R'] != '0':
             module = mod.as_dict()
             module['cruved'] = app_cruved

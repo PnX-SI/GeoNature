@@ -19,13 +19,15 @@ from pypnusershub.db.models import User
 
 routes = Blueprint('gn_permissions_backoffice', __name__, template_folder='templates')
 
-@routes.route('cruved_form/module/<int:id_module>/role/<int:id_role>/<int:id_object>', methods=["GET", "POST"])
+@routes.route('cruved_form/module/<int:id_module>/role/<int:id_role>/object/<int:id_object>', methods=["GET", "POST"])
 @routes.route('cruved_form/module/<int:id_module>/role/<int:id_role>', methods=["GET", "POST"])
 @permissions.check_cruved_scope('R', True, object_code='PERMISSIONS')
-def permission_form(info_role, id_module, id_role, id_object=1):
-    print(info_role)
+def permission_form(info_role, id_module, id_role, id_object=None):
     form = None
     module = DB.session.query(TModules).get(id_module)
+    object_instance = None
+    if id_object:
+        object_instance = DB.session.query(TObjects).get(id_object)
     # get module associed objects to set specific Cruved
     module_objects = DB.session.query(TObjects).join(
         CorObjectModule, CorObjectModule.id_object == TObjects.id_object
@@ -41,7 +43,7 @@ def permission_form(info_role, id_module, id_role, id_object=1):
         real_cruved = DB.session.query(CorRoleActionFilterModuleObject).filter_by(
             **{'id_module':id_module, 'id_role': id_role, 'id_object': id_object}
         ).all()
-        if len(real_cruved) == 0:
+        if len(real_cruved) == 0 and not module.module_code == 'ADMIN':
             flash(
                 """
                 Attention ce role n'a pas encore de CRUVED dans ce module. 
@@ -53,6 +55,7 @@ def permission_form(info_role, id_module, id_role, id_object=1):
             form=form,
             user=user,
             module=module,
+            object_instance=object_instance,
             module_objects=module_objects,
             config=current_app.config
         )
@@ -124,10 +127,16 @@ def users():
 @routes.route('/user_cruved/<id_role>', methods=["GET", "POST"])
 def user_cruved(id_role):
     user = DB.session.query(User).get(id_role).as_dict()
-    modules = [module.as_dict() for module in DB.session.query(TModules).all()]
+    modules_data =  DB.session.query(TModules).all()
     groupes_data = DB.session.query(CorRole).filter(CorRole.id_role_utilisateur==id_role).all()
-    for module in modules:
-        module['module_cruved'] = cruved_scope_for_user_in_module(id_role, module['module_code'])
+    modules = []
+    for module in modules_data:
+        module = module.as_dict()
+        if module['module_code'] == 'ADMIN':
+            module['module_cruved'] = ('-', False)
+        else:
+            module['module_cruved'] = cruved_scope_for_user_in_module(id_role, module['module_code'])
+        modules.append(module)
     return render_template(
         'cruved_user.html',
         user=user,

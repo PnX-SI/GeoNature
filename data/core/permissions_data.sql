@@ -65,7 +65,7 @@ INSERT INTO t_objects
 VALUES
     ('ALL', 'Représente tous les objets d''un module'),
     ('METADATA', 'Gestion du backoffice des métadonnées'),
-    ('PERMISSIONS', 'Gestion du backoffice du CRUVED et des permissions')
+    ('PERMISSIONS', 'Gestion du backoffice des permissions')
 ;
 
 INSERT INTO cor_object_module
