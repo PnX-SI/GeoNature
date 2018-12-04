@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql import func
 
 from geonature.utils.env import DB 
-from geonature.core.gn_permissions.backoffice.forms import CruvedScopeForm
+from geonature.core.gn_permissions.backoffice.forms import CruvedScopeForm, OtherPermissionsForm
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from geonature.core.gn_permissions.models import(
     TFilters, BibFiltersType, TActions,
@@ -79,6 +79,12 @@ def permission_form(info_role, id_module, id_role, id_object=None):
                     CorRoleActionFilterModuleObject
                 ).filter_by(
                         **privilege
+                ).join(
+                    TFilters, TFilters == CorRoleActionFilterModuleObject.id_filter
+                ).join(
+                    BibFiltersType, BibFiltersType.id_filter_type == TFilters.id_filter
+                ).filter(
+                    BibFiltersType.code_filter_type == 'SCOPE'
                 ).first()
                 # if already exist update the id_filter
                 if instance:
@@ -102,7 +108,7 @@ def permission_form(info_role, id_module, id_role, id_object=None):
 
 
 
-@routes.route('/users', methods=["GET", "POST"])
+@routes.route('/users', methods=["GET"])
 def users():
     
     data = DB.session.query(
@@ -167,34 +173,45 @@ def user_other_permissions(id_role):
 
     return render_template(
         'user_other_permissions.html',
+        user=user,
         filter_types=filter_types,
         permissions=permissions
     )
 
 
-
-@routes.route('/other_permissions_form/<id_role>/filter_type/<id_filterr_type>', methods=["GET", "POST"])
-def other_permissions_form(id_role, id_filter_type):
+@routes.route(
+    '/other_permissions_form/id_permission/<int:id_permission>/user/<int:id_role>/filter_type/<int:id_filter_type>', methods=["GET", "POST"]
+)
+@routes.route('/other_permissions_form/user/<int:id_role>/filter_type/<int:id_filter_type>', methods=["GET", "POST"])
+def other_permissions_form(id_role, id_filter_type, id_permission=None, id_object=None):
     """
     Form to define permisisons for a user expect SCOPE permissions
     """
+    form = OtherPermissionsForm(id_filter_type, **{'id_permission': id_permission})
+    print(form.data)
     user = DB.session.query(User).get(id_role).as_dict()
     filter_type = DB.session.query(BibFiltersType).get(id_filter_type)
 
-    permissions = DB.session.query(VUsersPermissions).filter(
-        VUsersPermissions.id_filter_type == id_filter_type
-    ).filter(
-        VUsersPermissions.id_role == id_role
-    ).order_by(
-        VUsersPermissions.code_filter_type
-    ).all()
+    if request.method == 'POST' and form.validate_on_submit():
+        permInstance = CorRoleActionFilterModuleObject(
+            id_role=id_role,
+            id_action=int(form.data['action']),
+            id_filter=int(form.data['filter']),
+            id_module=int(form.data['module']),
+            id_object=id_object
+        )
+        if form.id_permission:
+            DB.session.merge(permInstance)
+        else:
+            DB.session.add(permInstance)
+        DB.session.commit()
+        
 
-    filter_types = DB.session.query(BibFiltersType).filter(
-        BibFiltersType.code_filter_type != 'SCOPE'
-    )
+        #redirect
 
     return render_template(
-        'user_other_permissions.html',
-        filter_types=filter_types,
-        permissions=permissions
+        'other_permissions_form.html',
+        user=user,
+        form=form,
+        filter_type=filter_type,
     )

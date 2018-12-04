@@ -17,6 +17,16 @@
             <td> {{perm.description_action}} </td>
             <td> {{perm.label_filter}} </td>
             <td> {{perm.value_filter}} </td>
+            <td>
+              <a href="{{ url_for(
+                'gn_permissions_backoffice.other_permissions_form' ,
+                id_role=user.id_role,
+                id_filter_type=perm.id_filter_type,
+                id_permission=perm.id_permission
+                )}}">
+                  <button class="btn btn-sm btn-primary"> Editer </button> </li>
+              </a>
+            </td>
           </tr>
           {% endfor %}
         </tbody>
@@ -24,7 +34,10 @@
         
       {% for filter_type in filter_types %}
         <ul>
-          <li> {{filter_type.label_filter_type}}  <button class="btn btn-sm btn-primary"> Ajouter </button> </li>
+          <li> {{filter_type.label_filter_type}}  
+            <a href="{{ url_for('gn_permissions_backoffice.other_permissions_form' ,id_role=user.id_role, id_filter_type=filter_type.id_filter_type)}}">
+              <button class="btn btn-sm btn-primary"> Ajouter </button> </li>
+            </a>
         </ul>
       {% endfor %}
 </body>

@@ -5,6 +5,7 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, Hidde
 from wtforms.validators import DataRequired, Email
 
 from geonature.core.gn_permissions.models import TFilters, BibFiltersType, TActions
+from geonature.core.gn_commons.models import TModules
 from geonature.utils.env import DB
 
 
@@ -46,16 +47,24 @@ class CruvedScopeForm(FlaskForm):
 
 
 class OtherPermissionsForm(FlaskForm):
+    id_permission = HiddenField('id_permission')
+    module = SelectField(
+        'action',
+        choices=[(str(mod.id_module), mod.module_label) for mod in DB.session.query(TModules).all()]
+    )
     action = SelectField(
         'action',
-        choices=[(id_action, description_action) for DB.session.query(TActions).all()]
+        choices=[(str(act.id_action), act.description_action) for act in DB.session.query(TActions).all()]
     )
-    filters = SelectField(
-        'filtres',
-        choices=[
-            (id_filter, label_filter) 
-            for DB.session.query(TFilters).filter(TFilters.id_filter_type == 4).all()
-        ]
+    filter = SelectField(
+        'filtre',
     )
+    submit = SubmitField('Valider')
 
-    #TODO overigth init to take a id_filter_type
+    def __init__(self, id_filter_type, *args, **kwargs):
+        super(OtherPermissionsForm, self).__init__(*args, **kwargs)
+        # id_filter_type = args[0]
+        self.filter.choices = [
+            (str(filt.id_filter), filt.label_filter)
+            for filt in DB.session.query(TFilters).filter(TFilters.id_filter_type == id_filter_type).all()
+        ]

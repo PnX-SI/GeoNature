@@ -158,6 +158,7 @@ CREATE TABLE cor_object_module
 
 CREATE TABLE cor_role_action_filter_module_object
 (
+    id_permission serial NOT NULL,
     id_role integer NOT NULL,
     id_action integer NOT NULL,
     id_filter integer NOT NULL,
@@ -192,7 +193,7 @@ ADD CONSTRAINT pk_cor_object_module PRIMARY KEY
 
 ALTER TABLE ONLY cor_role_action_filter_module_object
 ADD CONSTRAINT pk_cor_r_a_f_m_o PRIMARY KEY
-(id_role, id_action, id_module, id_filter, id_object);
+(id_permission);
 
 
 ---------------
@@ -264,7 +265,8 @@ WITH
             c_1.id_action,
             c_1.id_filter,
             c_1.id_module,
-            c_1.id_object
+            c_1.id_object,
+            c_1.id_permission
         FROM utilisateurs.t_roles u
             JOIN gn_permissions.cor_role_action_filter_module_object c_1 ON c_1.id_role = u.id_role
         WHERE u.groupe = false
@@ -280,7 +282,8 @@ WITH
             c_1.id_action,
             c_1.id_filter,
             c_1.id_module,
-            c_1.id_object
+            c_1.id_object,
+            c_1.id_permission
         FROM utilisateurs.t_roles u
             JOIN utilisateurs.cor_roles g ON g.id_role_utilisateur = u.id_role OR g.id_role_groupe = u.id_role
             JOIN gn_permissions.cor_role_action_filter_module_object c_1 ON c_1.id_role = g.id_role_groupe
@@ -298,7 +301,8 @@ WITH
                 p_user_permission.id_action,
                 p_user_permission.id_filter,
                 p_user_permission.id_module,
-                p_user_permission.id_object
+                p_user_permission.id_object,
+                p_user_permission.id_permission
             FROM p_user_permission
         UNION
             SELECT p_groupe_permission.id_role,
@@ -309,7 +313,8 @@ WITH
                 p_groupe_permission.id_action,
                 p_groupe_permission.id_filter,
                 p_groupe_permission.id_module,
-                p_groupe_permission.id_object
+                p_groupe_permission.id_object,
+                p_groupe_permission.id_permission
             FROM p_groupe_permission
     )
 SELECT v.id_role,
@@ -326,7 +331,8 @@ SELECT v.id_role,
     filters.value_filter,
     filters.label_filter,
     filter_type.code_filter_type,
-    filter_type.id_filter_type
+    filter_type.id_filter_type,
+    v.id_permission
 FROM all_user_permission v
     JOIN gn_permissions.t_actions actions ON actions.id_action = v.id_action
     JOIN gn_permissions.t_filters filters ON filters.id_filter = v.id_filter
