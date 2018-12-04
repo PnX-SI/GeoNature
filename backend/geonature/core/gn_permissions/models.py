@@ -31,6 +31,7 @@ class VUsersPermissions(DB.Model):
     value_filter = DB.Column(DB.Unicode)
     code_filter_type = DB.Column(DB.Unicode)
     id_filter_type = DB.Column(DB.Integer)
+    id_permission=DB.Column(DB.Integer)
 
     def __repr__(self):
         return """VUsersPermissions
@@ -134,6 +135,37 @@ class CorRoleActionFilterModuleObject(DB.Model):
         primaryjoin=(TObjects.id_object == id_object),
         foreign_keys=[id_object]       
     )
+
+    def is_permission_already_exist(
+        self,
+        id_role,
+        id_action,
+        id_module,
+        id_filter_type,
+        id_object=1,
+    ):
+        """ 
+            Tell if a permission exist for a user, an action, a module and a filter_type
+            Return:
+                A CorRoleActionFilterModuleObject if exist or None
+        """
+        privilege = {
+            'id_role': id_role,
+            'id_action': id_action,
+            'id_module': id_module,
+            'id_object': id_object
+        }
+        return DB.session.query(
+                    CorRoleActionFilterModuleObject
+                ).filter_by(
+                        **privilege
+                ).join(
+                    TFilters, TFilters == CorRoleActionFilterModuleObject.id_filter
+                ).join(
+                    BibFiltersType, BibFiltersType.id_filter_type == TFilters.id_filter
+                ).filter(
+                    BibFiltersType.id_filter_type == id_filter_type
+                ).first()
 
  
 
