@@ -20,20 +20,21 @@ SET default_with_oids
 INSERT INTO t_actions
     (code_action, description_action)
 VALUES
-    ('C', 'Action de créer'),
-    ('R', 'Action de lire'),
-    ('U', 'Action de mettre à jour'),
-    ('V', 'Action de valider'),
-    ('E', 'Action d''exporter'),
-    ('D', 'Action de supprimer')
+    ('C', 'Action de créer (C)'),
+    ('R', 'Action de lire (R)'),
+    ('U', 'Action de mettre à jour (U)'),
+    ('V', 'Action de valider (V)'),
+    ('E', 'Action d''exporter (E)'),
+    ('D', 'Action de supprimer (D)')
 ;
 
 INSERT INTO bib_filters_type
     (code_filter_type, label_filter_type, description_filter_type)
 VALUES
-    ('SCOPE', 'Filtre de type portée', 'Filtre de type portée'),
-    ('SENSITIVITY', 'Filtre de type sensibilité', 'Filtre de type sensibilité'),
-    ('GEOGRAPHIC', 'Filtre de type géographique', 'Filtre de type géographique')
+    ('SCOPE', 'Permissions de type portée', 'Filtre de type portée'),
+    ('SENSITIVITY', 'Permissions de type sensibilité', 'Permission de type sensibilité'),
+    ('GEOGRAPHIC', 'Permisisons de type géographique', 'Ajouter des des id_area séparé par des virgules'),
+    ('TAXONOMIC', 'Permisisons de type taxonomique', 'Ajouter des des cd_nom séparé par des virgules')
 ;
 
 INSERT INTO t_filters
@@ -59,6 +60,14 @@ INSERT INTO t_filters
 SELECT '3', 'Toutes les données', 'Toutes les données', id_filter_type
 FROM gn_permissions.bib_filters_type
 WHERE code_filter_type = 'SCOPE';
+
+INSERT INTO t_filters
+    (value_filter, label_filter, description_filter, id_filter_type)
+VALUES
+    ('61098', 'Les bouqueutins', 'Filtre taxonomique sur les bouquetins', 4),
+    ('DONNEE_DEGRADE', 'Données dégradées', 'Filtre qui dégrade/floute les données à l''utilisateur', 2),
+    ('DONNEE_PRECISE', 'Données précise', 'Filtre qui garanti une précision max de la donnée à l''utilisateur', 3)
+;
 
 INSERT INTO t_objects
     (code_object, description_object)

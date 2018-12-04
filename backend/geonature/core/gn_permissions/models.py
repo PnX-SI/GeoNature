@@ -80,15 +80,14 @@ class TObjects(DB.Model):
 class CorRoleActionFilterModuleObject(DB.Model):
     __tablename__ = 'cor_role_action_filter_module_object'
     __table_args__ = {'schema': 'gn_permissions'}
+    id_permission = DB.Column(DB.Integer, primary_key=True)
     id_role = DB.Column(
         DB.Integer,
         ForeignKey('utilisateurs.t_roles.id_role'),
-        primary_key=True
     )    
     id_action = DB.Column(
         DB.Integer,
         ForeignKey('gn_permissions.t_actions.id_action'),
-        primary_key=True
     )
     id_filter = DB.Column(
         DB.Integer,
@@ -97,12 +96,10 @@ class CorRoleActionFilterModuleObject(DB.Model):
     id_module = DB.Column(
         DB.Integer, 
         ForeignKey('gn_commons.t_modules.id_module'),
-        primary_key=True
     )
     id_object = DB.Column(
         DB.Integer, 
         ForeignKey('gn_permissions.t_objects.id_object'),
-        primary_key=True,
         default=select([TObjects.id_object]).where(TObjects.code_object=='ALL')
     )
 

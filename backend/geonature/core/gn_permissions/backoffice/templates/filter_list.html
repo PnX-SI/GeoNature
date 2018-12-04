@@ -1,0 +1,57 @@
+
+<html>
+        {% include "librairies.html" %}     
+    
+    <body>
+        {% include "nav-bar.html" %}
+        <div class="container">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success" role="alert">{{ message }}</div>
+            {% endfor %}
+         {% endif %}
+        {% endwith %}
+            <h3> Filtre du type {{filter_type.label_filter_type}} </h3>
+            <small> {{filter_type.description_filter_type}} </small>
+            <table class="table table striped">
+                <thead>
+                    <th> Label </th>
+                    <th> Decription </th>
+
+                    <th> Valeurs </th>
+
+                </thead>
+                {% for filter in filters %}
+                <tr>
+                    <td>
+                        {{filter.label_filter}}
+
+                    </td>
+                    <td>
+                        {{filter.description_filter}}
+                    </td>
+                    <td>
+                        {{filter.value_filter}}
+
+                    </td>
+
+                    <td>
+                        <a href="{{ url_for(
+                            'gn_permissions_backoffice.filter_form',
+                            id_filter_type=filter_type.id_filter_type,
+                            id_filter=filter.id_filter
+                            )}}">
+                            <button class="btn btn-primary"> Edit </button>
+                        </a>
+                    </td>
+
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+    </body>
+
+
+</html>

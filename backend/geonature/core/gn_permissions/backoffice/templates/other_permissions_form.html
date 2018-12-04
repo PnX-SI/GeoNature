@@ -11,7 +11,6 @@
                 <form action=""" method="POST">
                         {{ form.csrf_token }} {{ form.hidden_tag() }}
                     <div class="form-group">
-                          {{form.id_permission}}
                           {{form.module(class="form-control")}}
                           {{form.action(class="form-control")}}
                           {{form.filter(class="form-control")}}
