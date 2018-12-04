@@ -3,6 +3,8 @@ from flask_wtf import FlaskForm
 
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, HiddenField, SelectField, RadioField,SelectMultipleField, widgets, Form
 from wtforms.validators import DataRequired, Email
+from wtforms.widgets import TextArea
+
 
 from geonature.core.gn_permissions.models import TFilters, BibFiltersType, TActions
 from geonature.core.gn_commons.models import TModules
@@ -42,12 +44,10 @@ class CruvedScopeForm(FlaskForm):
     def __init__(self, *args, **kwargs):
         super(CruvedScopeForm, self).__init__(*args, **kwargs)
         self.init_choices()
-        print(self.C.choices)
         
 
 
 class OtherPermissionsForm(FlaskForm):
-    id_permission = HiddenField('id_permission')
     module = SelectField(
         'action',
         choices=[(str(mod.id_module), mod.module_label) for mod in DB.session.query(TModules).all()]
@@ -68,3 +68,20 @@ class OtherPermissionsForm(FlaskForm):
             (str(filt.id_filter), filt.label_filter)
             for filt in DB.session.query(TFilters).filter(TFilters.id_filter_type == id_filter_type).all()
         ]
+
+
+class FilterForm(FlaskForm):
+    label_filter = StringField(
+        'Label',
+        validators=[DataRequired()]
+    )
+    value_filter = StringField(
+        'Valeur du filtre',
+        validators=[DataRequired()]
+    )
+    description_filter = StringField(
+        'Descrition',
+        validators=[DataRequired()],
+        widget=TextArea()
+    )
+    submit = SubmitField('Valider')

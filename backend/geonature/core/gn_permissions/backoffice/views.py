@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql import func
 
 from geonature.utils.env import DB 
-from geonature.core.gn_permissions.backoffice.forms import CruvedScopeForm, OtherPermissionsForm
+from geonature.core.gn_permissions.backoffice.forms import CruvedScopeForm, OtherPermissionsForm, FilterForm
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from geonature.core.gn_permissions.models import(
     TFilters, BibFiltersType, TActions,
@@ -164,7 +164,8 @@ def user_other_permissions(id_role):
     ).filter(
         VUsersPermissions.id_role == id_role
     ).order_by(
-        VUsersPermissions.code_filter_type
+        VUsersPermissions.module_code,
+        VUsersPermissions.code_filter_type,
     ).all()
 
     filter_types = DB.session.query(BibFiltersType).filter(
@@ -188,7 +189,6 @@ def other_permissions_form(id_role, id_filter_type, id_permission=None, id_objec
     Form to define permisisons for a user expect SCOPE permissions
     """
     form = OtherPermissionsForm(id_filter_type, **{'id_permission': id_permission})
-    print(form.data)
     user = DB.session.query(User).get(id_role).as_dict()
     filter_type = DB.session.query(BibFiltersType).get(id_filter_type)
 
@@ -200,18 +200,62 @@ def other_permissions_form(id_role, id_filter_type, id_permission=None, id_objec
             id_module=int(form.data['module']),
             id_object=id_object
         )
-        if form.id_permission:
+        if id_permission:
             DB.session.merge(permInstance)
         else:
             DB.session.add(permInstance)
         DB.session.commit()
         
-
-        #redirect
+        return redirect(url_for('gn_permissions_backoffice.user_other_permissions', id_role=id_role))
 
     return render_template(
         'other_permissions_form.html',
         user=user,
         form=form,
         filter_type=filter_type,
+    )
+@routes.route('/filter_form/id_filter_type/<int:id_filter_type>/id_filter/<int:id_filter>', methods=['GET', 'POST'])
+@routes.route('/filter_form/id_filter_type/<int:id_filter_type>', methods=['GET', 'POST'])
+def filter_form(id_filter_type, id_filter=None):
+    form = FilterForm(request.form)
+    filter_type = DB.session.query(BibFiltersType).get(id_filter_type)
+    # if id_filter: its an edit, preload the form
+    if id_filter:
+        filter_value = DB.session.query(TFilters).get(id_filter).as_dict()
+        form = FilterForm(**filter_value)
+    else:
+        form = FilterForm()
+    if request.method == 'POST' and form.validate_on_submit():
+        filter_instance = TFilters(
+            id_filter=id_filter,
+            label_filter=form.data['label_filter'],
+            value_filter=form.data['value_filter'],
+            description_filter=form.data['description_filter'],
+            id_filter_type=id_filter_type
+        )
+        if id_filter:
+            DB.session.merge(filter_instance)
+            flash('Filtre édité avec succès')
+
+        else:
+            DB.session.add(filter_instance)
+            flash('Filtre ajouté avec succès')
+        DB.session.commit()
+        return redirect(url_for('gn_permissions_backoffice.filter_list', id_filter_type=id_filter_type))
+    return render_template(
+        'filter_form.html',
+        form=form,
+        filter_type=filter_type
+    )
+
+
+
+@routes.route('/filter_list/id_filter_type/<int:id_filter_type>', methods=['GET'])
+def filter_list(id_filter_type):
+    filters = DB.session.query(TFilters).filter(TFilters.id_filter_type == id_filter_type)
+    filter_type = DB.session.query(BibFiltersType).get(id_filter_type)
+    return render_template(
+        'filter_list.html',
+        filters=filters,
+        filter_type=filter_type
     )
