@@ -17,6 +17,7 @@ def app():
     config = load_config(config_path)
     app = server.get_app(config)
     app.config['TESTING'] = True
+    app.config['WTF_CSRF_ENABLED'] = False
     return app
 
 
