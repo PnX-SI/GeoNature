@@ -33,8 +33,8 @@ INSERT INTO bib_filters_type
 VALUES
     ('SCOPE', 'Permissions de type portée', 'Filtre de type portée'),
     ('SENSITIVITY', 'Permissions de type sensibilité', 'Permission de type sensibilité'),
-    ('GEOGRAPHIC', 'Permisisons de type géographique', 'Ajouter des des id_area séparé par des virgules'),
-    ('TAXONOMIC', 'Permisisons de type taxonomique', 'Ajouter des des cd_nom séparé par des virgules')
+    ('GEOGRAPHIC', 'Permissions de type géographique', 'Ajouter des id_area séparés par des virgules'),
+    ('TAXONOMIC', 'Permissions de type taxonomique', 'Ajouter des cd_nom séparés par des virgules')
 ;
 
 INSERT INTO t_filters
@@ -64,9 +64,9 @@ WHERE code_filter_type = 'SCOPE';
 INSERT INTO t_filters
     (value_filter, label_filter, description_filter, id_filter_type)
 VALUES
-    ('61098', 'Les bouqueutins', 'Filtre taxonomique sur les bouquetins', 4),
-    ('DONNEE_DEGRADE', 'Données dégradées', 'Filtre qui dégrade/floute les données à l''utilisateur', 2),
-    ('DONNEE_PRECISE', 'Données précise', 'Filtre qui garanti une précision max de la donnée à l''utilisateur', 3)
+    ('61098', 'Les bouquetins', 'Filtre taxonomique sur les bouquetins', 4),
+    ('DONNEES_DEGRADEES', 'Données dégradées', 'Filtre pour afficher les données sensibles dégradées/floutées à l''utilisateur', 2),
+    ('DONNEES_PRECISES', 'Données précises', 'Filtre qui affiche les données sensibles  précises à l''utilisateur', 3)
 ;
 
 INSERT INTO t_objects
@@ -100,7 +100,7 @@ INSERT INTO cor_role_action_filter_module_object
     id_object
     )
 VALUES
-    -- groupe Admin
+    -- Groupe Admin
     (9, 1, 4, 3, 1),
     (9, 2, 4, 3, 1),
     (9, 3, 4, 3, 1),
