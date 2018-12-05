@@ -368,6 +368,7 @@ CREATE TABLE t_validations
   id_table_location integer NOT NULL,
   uuid_attached_row uuid NOT NULL,
   id_nomenclature_valid_status integer, --DEFAULT get_default_nomenclature_value(101),
+  validation_auto boolean NOT NULL DEFAULT true,
   id_validator integer,
   validation_comment text,
   validation_date timestamp without time zone

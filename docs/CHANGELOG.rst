@@ -27,11 +27,18 @@ CHANGELOG
 * Simplification de la configuration des gn_modules
 * Occtax : ordonnancement des observation par date #467
 * Suppression des warnings lors du build du frontend
+* Correction de l'installation des modules GeoNature
+* Ajout d'un message quand on n'a pas accès à une donnée d'un module
+* Affichage du nom du module dans le Header (#398)
+* Correction des outils cartographiques dans Occtax
+* Correction complémentaire des styles des lignes sans remplissage (#458)
+* MaplistService : correction du zoom sur les polygones et polylignes
 
 **Note de version**
 
 * MAJ BDD GN (update...)
 * MAJ BDD sous-modules
+* Evolution pour les sous-modules >> Utiliser instance DB de GN pour lancer scripts (#498) et ne plus avoir d'id_application dans la conf du module + Utilisation du CRUVED
 
 2.0.0-rc.3.1 (2018-10-21)
 -------------------------
