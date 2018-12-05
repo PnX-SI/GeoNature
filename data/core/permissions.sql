@@ -112,6 +112,51 @@ FROM gn_permissions.t_objects
 WHERE code_object = mycodeobject;
 $$;
 
+CREATE OR REPLACE FUNCTION gn_permissions.does_user_have_already_scope_filter(
+    myidrole integer,
+    myidaction integer,
+    myidfilter integer,
+    myidmodule integer,
+    myidobject integer)
+  RETURNS boolean AS
+$BODY$
+-- Check if a role has already a SCOPE permission for an action/module/object
+-- use in constraint to force not set multiple scope permission on the same action/module/object
+DECLARE 
+the_code_filter_type character varying;
+BEGIN
+ SELECT INTO the_code_filter_type bib.code_filter_type
+ FROM gn_permissions.t_filters f
+ JOIN gn_permissions.bib_filters_type bib ON bib.id_filter_type = f.id_filter_type
+ WHERE f.id_filter = myidfilter
+;
+-- if the filter type is NOT SCOPE, its OK to set multiple permissions
+IF the_code_filter_type != 'SCOPE' THEN 
+RETURN FALSE;
+-- if the new filter is 'SCOPE TYPE', check if there is not already a permission for this
+-- action/module/object/role
+ELSE
+RETURN EXISTS
+(
+SELECT perm.id_permission
+FROM gn_permissions.cor_role_action_filter_module_object perm
+JOIN gn_permissions.t_filters f ON f.id_filter = perm.id_filter
+JOIN gn_permissions.bib_filters_type bib ON bib.id_filter_type = f.id_filter_type AND bib.code_filter_type = 'SCOPE' 
+WHERE id_role=myidrole AND id_action=myidaction AND id_module=myidmodule AND id_object=myidobject
+
+);
+END IF;
+
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+
+
+
+
+
 ---------
 --TABLE--
 ---------
@@ -245,6 +290,16 @@ ADD CONSTRAINT  fk_cor_r_a_f_m_o_id_object FOREIGN KEY
 (id_object) ON
 UPDATE CASCADE;
 
+----------------
+-- CONSTRAINT --
+----------------
+ALTER TABLE ONLY gn_permissions.cor_role_action_filter_module_object
+ADD CONSTRAINT check_no_multiple_scope_permission_for_same_action CHECK
+(
+    NOT gn_permissions.does_user_have_already_scope_filter(
+    id_role, id_action, id_filter, id_module, id_object
+    )
+);
 
 
 
