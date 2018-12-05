@@ -8,7 +8,7 @@ from sqlalchemy.sql import text
 from geonature.utils.env import DB
 
 from pypnnomenclature.models import TNomenclatures
-from geonature.utils.errors import InsufficientRightsError
+from pypnusershub.db.tools import InsufficientRightsError
 
 from geonature.core.gn_meta.models import (
     TDatasets,
