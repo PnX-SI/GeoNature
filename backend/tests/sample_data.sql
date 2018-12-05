@@ -59,7 +59,15 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_acti
 
 
 -- Reset original privileges
-INSERT INTO gn_permissions.cor_role_action_filter_module_object VALUES
+INSERT INTO gn_permissions.cor_role_action_filter_module_object
+    (
+    id_role,
+    id_action,
+    id_filter,
+    id_module,
+    id_object
+    ) 
+    VALUES
     -- Admin: C:3, R:3, U:3, V:3, E:3, D:3 sur GeoNature
     (1, 1, 4, 3, 1),
     (1, 2, 4, 3, 1),
@@ -96,7 +104,21 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object VALUES
     (8, 3, 2, 3, 1),
     (8, 4, 2, 3, 1),
     (8, 5, 2, 3, 1),
-    (8, 6, 2, 3, 1)
+    (8, 6, 2, 3, 1),
+    -- ADMIN peut gérer les permissions du backoffice
+    (9, 1, 4, 4, 3),
+    (9, 2, 4, 4, 3),
+    (9, 3, 4, 4, 3),
+    (9, 4, 4, 4, 3),
+    (9, 5, 4, 4, 3),
+    (9, 6, 4, 4, 3),
+    -- ADMIN peut gérer les métadonnées du backoffice
+    (9, 1, 4, 4, 2),
+    (9, 2, 4, 4, 2),
+    (9, 3, 4, 4, 2),
+    (9, 4, 4, 4, 2),
+    (9, 5, 4, 4, 2),
+    (9, 6, 4, 4, 2)
 ;
 
 

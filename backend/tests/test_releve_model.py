@@ -9,7 +9,7 @@ import requests
 from flask import session
 
 from geonature.core.users.models import UserRigth
-from geonature.utils.errors import InsufficientRightsError
+from pypnusershub.db.tools import InsufficientRightsError
 from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
 
 from .bootstrap_test import app

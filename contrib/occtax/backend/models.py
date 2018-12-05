@@ -10,7 +10,7 @@ from geonature.utils.utilssqlalchemy import (
     serializable, geoserializable
 )
 from geonature.utils.env import DB
-from geonature.utils.errors import InsufficientRightsError
+from pypnusershub.db.tools import InsufficientRightsError
 from pypnusershub.db.models import User
 from geonature.core.gn_meta.models import TDatasets
 

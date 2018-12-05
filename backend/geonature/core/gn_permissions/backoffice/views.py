@@ -28,6 +28,8 @@ def permission_form(info_role, id_module, id_role, id_object=None):
     object_instance = None
     if id_object:
         object_instance = DB.session.query(TObjects).get(id_object)
+    else:
+        object_instance = DB.session.query(TObjects).filter_by(code_object='ALL').first()
     # get module associed objects to set specific Cruved
     module_objects = DB.session.query(TObjects).join(
         CorObjectModule, CorObjectModule.id_object == TObjects.id_object
@@ -41,7 +43,7 @@ def permission_form(info_role, id_module, id_role, id_object=None):
  
         # get the real cruved of user to set a warning
         real_cruved = DB.session.query(CorRoleActionFilterModuleObject).filter_by(
-            **{'id_module':id_module, 'id_role': id_role, 'id_object': id_object}
+            id_module=id_module, id_role=id_role, id_object=object_instance.id_object
         ).all()
         if len(real_cruved) == 0 and not module.module_code == 'ADMIN':
             flash(
@@ -57,6 +59,7 @@ def permission_form(info_role, id_module, id_role, id_object=None):
             module=module,
             object_instance=object_instance,
             module_objects=module_objects,
+            id_object=id_object,
             config=current_app.config
         )
 
@@ -72,31 +75,32 @@ def permission_form(info_role, id_module, id_role, id_object=None):
                     'id_role': id_role,
                     'id_action': id_action,
                     'id_module': id_module,
-                    'id_object': id_object
+                    'id_object': object_instance.id_object
                 }
                 # check if a row already exist for a module, a role and an action
-                instance = DB.session.query(
+                # force to not set several filter for the same role-action-module-object
+                permission_instance = DB.session.query(
                     CorRoleActionFilterModuleObject
                 ).filter_by(
                         **privilege
                 ).join(
-                    TFilters, TFilters == CorRoleActionFilterModuleObject.id_filter
+                    TFilters, TFilters.id_filter == CorRoleActionFilterModuleObject.id_filter
                 ).join(
-                    BibFiltersType, BibFiltersType.id_filter_type == TFilters.id_filter
+                    BibFiltersType, BibFiltersType.id_filter_type == TFilters.id_filter_type
                 ).filter(
                     BibFiltersType.code_filter_type == 'SCOPE'
                 ).first()
                 # if already exist update the id_filter
-                if instance:
-                    instance.id_filter = int(form.data[code_action])
-                    DB.session.merge(instance)
+                if permission_instance:
+                    permission_instance.id_filter = int(form.data[code_action])
+                    DB.session.merge(permission_instance)
                 else:
                     permission_row = CorRoleActionFilterModuleObject(
                         id_role=id_role,
                         id_action=id_action,
                         id_filter = int(form.data[code_action]),
                         id_module=id_module,
-                        id_object=id_object
+                        id_object=object_instance.id_object
                     )
                     DB.session.add(permission_row)
                 DB.session.commit()
@@ -110,7 +114,6 @@ def permission_form(info_role, id_module, id_role, id_object=None):
 
 @routes.route('/users', methods=["GET"])
 def users():
-    
     data = DB.session.query(
         User,
         func.count(CorRoleActionFilterModuleObject.id_role)
