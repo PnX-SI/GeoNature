@@ -145,6 +145,7 @@ npm install
 
 # lien symbolique vers le dossier static du backend (pour le backoffice)
 ln -s ${BASE_DIR}/frontend/node_modules ${BASE_DIR}/backend/static
+
 # Creation du dossier des assets externes
 mkdir src/external_assets
 
