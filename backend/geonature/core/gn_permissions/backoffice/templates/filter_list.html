@@ -42,8 +42,16 @@
                             id_filter_type=filter_type.id_filter_type,
                             id_filter=filter.id_filter
                             )}}">
-                            <button class="btn btn-primary"> Edit </button>
+                            <button class="btn btn-primary"> Editer </button>
                         </a>
+                    </td>
+                    <td>
+                        <form action="{{ url_for(
+                            'gn_permissions_backoffice.delete_filter',
+                            id_filter=filter.id_filter
+                            )}}" method="POST">
+                            <input class="btn btn-danger" type="submit" value="Supprimer">
+                        </form>
                     </td>
 
                 </tr>

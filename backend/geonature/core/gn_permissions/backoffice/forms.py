@@ -50,7 +50,7 @@ class CruvedScopeForm(FlaskForm):
 class OtherPermissionsForm(FlaskForm):
     module = SelectField(
         'action',
-        choices=[(str(mod.id_module), mod.module_label) for mod in DB.session.query(TModules).all()]
+        choices=[(str(mod.id_module), mod.module_label) for mod in DB.session.query(TModules).order_by(TModules.module_label).all()]
     )
     action = SelectField(
         'action',

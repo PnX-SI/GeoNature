@@ -554,3 +554,7 @@ def export(info_role):
             error=message,
             redirect=current_app.config['URL_APPLICATION']+"/#/occtax"
         )
+
+
+
+
