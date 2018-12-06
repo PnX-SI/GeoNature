@@ -1,15 +1,15 @@
 export const MAP_CONFIG = {
   BASEMAP: [
     {name: 'OpenStreetMap',
-    layer: 'http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+    layer: '//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
     attribution: '&copy OpenStreetMap'
     },
     {name: 'OpenTopoMap',
-    layer: 'http://a.tile.opentopomap.org/{z}/{x}/{y}.png',
+    layer: '//a.tile.opentopomap.org/{z}/{x}/{y}.png',
     attribution:  '© OpenTopoMap'
     },
     {name: 'GoogleSatellite',
-     layer: 'http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+     layer: '//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
      subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
      attribution: '© GoogleMap'
   }

@@ -70,6 +70,12 @@ CREATE TRIGGER tri_insert_synthese_update_validation_status
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_update_synthese_validation_status();
 
+ALTER TABLE gn_commons.t_validations ADD COLUMN validation_auto boolean;
+ALTER TABLE gn_commons.t_validations ALTER COLUMN validation_auto SET DEFAULT true;
+COMMENT ON COLUMN gn_commons.t_validations.validation_auto IS 'Définir si la validation est manuelle ou automatique';
+UPDATE gn_commons.t_validations SET validation_auto = true;
+ALTER TABLE gn_commons.t_validations ALTER COLUMN validation_auto SET NOT NULL;
+
 
 ALTER TABLE gn_commons.t_modules ADD COLUMN module_code character varying(50);
 
@@ -136,6 +142,12 @@ SET id_module = (SELECT gn_commons.get_id_module_bycode('OCCTAX'))
 WHERE id_source = (SELECT id_source FROM gn_synthese.t_sources WHERE name_source = 'Occtax' LIMIT 1);
 --Si vous avez insérer des données provenant d'une autre source que occtax, 
 --vous devez gérer vous même le champ id_module des enregistrements correspondants.
+
+ALTER TABLE gn_synthese.t_sources ADD COLUMN validable boolean;
+ALTER TABLE gn_synthese.t_sources ALTER COLUMN validable SET DEFAULT true;
+COMMENT ON COLUMN gn_synthese.t_sources.validable IS 'Définir si la validation des données d''une source est possile ou non';
+UPDATE gn_synthese.t_sources SET validable = true;
+ALTER TABLE gn_synthese.t_sources ALTER COLUMN validable SET NOT NULL;
 
 CREATE OR REPLACE FUNCTION gn_synthese.get_ids_synthese_for_user_action(myuser integer, myaction text)
   RETURNS integer[] AS
