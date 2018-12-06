@@ -147,6 +147,7 @@ CREATE TABLE t_sources (
     desc_source text,
     entity_source_pk_field character varying(255),
     url_source character varying(255),
+    validable boolean NOT NULL DEFAULT true,
     meta_create_date timestamp without time zone DEFAULT now(),
     meta_update_date timestamp without time zone DEFAULT now()
 );
