@@ -65,8 +65,9 @@ INSERT INTO t_filters
     (value_filter, label_filter, description_filter, id_filter_type)
 VALUES
     ('61098', 'Les bouquetins', 'Filtre taxonomique sur les bouquetins', 4),
+    ('185961', 'Les Oiseaux', 'Filtre taxonomique sur les oiseaux - classe Aves', 4),
     ('DONNEES_DEGRADEES', 'Données dégradées', 'Filtre pour afficher les données sensibles dégradées/floutées à l''utilisateur', 2),
-    ('DONNEES_PRECISES', 'Données précises', 'Filtre qui affiche les données sensibles  précises à l''utilisateur', 3)
+    ('DONNEES_PRECISES', 'Données précises', 'Filtre qui affiche les données sensibles  précises à l''utilisateur', 2)
 ;
 
 INSERT INTO t_objects

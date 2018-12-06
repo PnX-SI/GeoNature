@@ -1,7 +1,8 @@
 from flask import request, render_template, Blueprint, flash, current_app, redirect, url_for
 
-from sqlalchemy.exc import IntegrityError 
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.sql import func
+
 
 from geonature.utils.env import DB 
 from geonature.core.gn_permissions.backoffice.forms import CruvedScopeForm, OtherPermissionsForm, FilterForm
@@ -133,14 +134,18 @@ def users():
     return render_template('users.html',users=users, config=current_app.config)
 
 
-@routes.route('/user_cruved/<id_role>', methods=["GET", "POST"])
+@routes.route('/user_cruved/<id_role>', methods=["GET"])
 def user_cruved(id_role):
+    """
+    Get all scope CRUVED (with heritage) for a user in all modules
+    """
     user = DB.session.query(User).get(id_role).as_dict()
     modules_data =  DB.session.query(TModules).all()
     groupes_data = DB.session.query(CorRole).filter(CorRole.id_role_utilisateur==id_role).all()
     modules = []
     for module in modules_data:
         module = module.as_dict()
+        # do not display cruved for module admin because its set on sub object
         if module['module_code'] == 'ADMIN':
             module['module_cruved'] = ('-', False)
         else:
@@ -187,21 +192,30 @@ def user_other_permissions(id_role):
     '/other_permissions_form/id_permission/<int:id_permission>/user/<int:id_role>/filter_type/<int:id_filter_type>', methods=["GET", "POST"]
 )
 @routes.route('/other_permissions_form/user/<int:id_role>/filter_type/<int:id_filter_type>', methods=["GET", "POST"])
-def other_permissions_form(id_role, id_filter_type, id_permission=None, id_object=None):
+def other_permissions_form(id_role, id_filter_type, id_permission=None):
     """
     Form to define permisisons for a user expect SCOPE permissions
     """
-    form = OtherPermissionsForm(id_filter_type, **{'id_permission': id_permission})
+    if id_permission:
+        perm = DB.session.query(CorRoleActionFilterModuleObject).get(id_permission)
+        form = OtherPermissionsForm(
+            id_filter_type,
+            action=perm.id_action,
+            filter=perm.id_filter,
+            module=perm.id_module
+        )
+    else:
+        form = OtherPermissionsForm(id_filter_type)
     user = DB.session.query(User).get(id_role).as_dict()
     filter_type = DB.session.query(BibFiltersType).get(id_filter_type)
-
+    
     if request.method == 'POST' and form.validate_on_submit():
         permInstance = CorRoleActionFilterModuleObject(
+            id_permission=id_permission,
             id_role=id_role,
             id_action=int(form.data['action']),
             id_filter=int(form.data['filter']),
             id_module=int(form.data['module']),
-            id_object=id_object
         )
         if id_permission:
             DB.session.merge(permInstance)
@@ -217,10 +231,11 @@ def other_permissions_form(id_role, id_filter_type, id_permission=None, id_objec
         form=form,
         filter_type=filter_type,
     )
+
+
 @routes.route('/filter_form/id_filter_type/<int:id_filter_type>/id_filter/<int:id_filter>', methods=['GET', 'POST'])
 @routes.route('/filter_form/id_filter_type/<int:id_filter_type>', methods=['GET', 'POST'])
 def filter_form(id_filter_type, id_filter=None):
-    form = FilterForm(request.form)
     filter_type = DB.session.query(BibFiltersType).get(id_filter_type)
     # if id_filter: its an edit, preload the form
     if id_filter:
@@ -239,7 +254,6 @@ def filter_form(id_filter_type, id_filter=None):
         if id_filter:
             DB.session.merge(filter_instance)
             flash('Filtre édité avec succès')
-
         else:
             DB.session.add(filter_instance)
             flash('Filtre ajouté avec succès')
@@ -261,4 +275,17 @@ def filter_list(id_filter_type):
         'filter_list.html',
         filters=filters,
         filter_type=filter_type
+    )
+
+
+
+@routes.route('/filter/<id_filter>', methods=['POST'])
+def delete_filter(id_filter):
+    my_filter = DB.session.query(TFilters).get(id_filter)
+    DB.session.delete(my_filter)
+    DB.session.commit()
+    flash('Filtre supprimé avec succès')
+    return redirect(url_for(
+        'gn_permissions_backoffice.filter_list', id_filter_type=my_filter.id_filter_type
+        )
     )
