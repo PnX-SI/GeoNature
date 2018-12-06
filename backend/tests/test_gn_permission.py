@@ -49,7 +49,7 @@ class TestGnPermissions():
             url_for(
                 'gn_permissions_backoffice.permission_form',
                 id_role=1,
-                id_module=3,
+                id_module=0,
                 id_object=None
             )
         )
@@ -67,7 +67,7 @@ class TestGnPermissions():
                 url_for(
                     'gn_permissions_backoffice.permission_form',
                     id_role=1,
-                    id_module=3,
+                    id_module=0,
                     id_object=None
             )
         )
@@ -91,7 +91,7 @@ class TestGnPermissions():
             url_for(
                 'gn_permissions_backoffice.permission_form',
                 id_role=9,
-                id_module=3,
+                id_module=0,
                 id_object=None
             ),
             data=data,
@@ -155,7 +155,7 @@ class TestGnPermissions():
             Test post/update a permission (no scope)
         '''
         valid_data = {
-            'module':'3',
+            'module':'0',
             'action': '1',
             'filter': '5'
         }
@@ -185,7 +185,7 @@ class TestGnPermissions():
 
         # test wrong parameter in form
         wrong_data = {
-            'module':'3',
+            'module':'0',
             'action': '1',
             'filter': 'truc'
         }
@@ -205,7 +205,7 @@ class TestGnPermissions():
 
         # change action and filter
         update_data = {
-            'module':'3',
+            'module':'0',
             'action': '2',
             'filter': '6'
         }

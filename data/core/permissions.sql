@@ -211,6 +211,12 @@ CREATE TABLE cor_role_action_filter_module_object
     id_object integer NOT NULL DEFAULT gn_permissions.get_id_object('ALL')
 );
 
+CREATE TABLE cor_filter_type_module
+(
+    id_filter_type integer NOT NULL,
+    id_module integer NOT NULL
+);
+
 
 ---------------
 --PRIMARY KEY--
@@ -239,6 +245,10 @@ ADD CONSTRAINT pk_cor_object_module PRIMARY KEY
 ALTER TABLE ONLY cor_role_action_filter_module_object
 ADD CONSTRAINT pk_cor_r_a_f_m_o PRIMARY KEY
 (id_permission);
+
+ALTER TABLE ONLY cor_filter_type_module
+ADD CONSTRAINT pk_cor_filter_module PRIMARY KEY
+(id_filter_type, id_module);
 
 
 ---------------
@@ -288,6 +298,20 @@ ALTER TABLE ONLY cor_role_action_filter_module_object
 ADD CONSTRAINT  fk_cor_r_a_f_m_o_id_object FOREIGN KEY
 (id_object) REFERENCES t_objects
 (id_object) ON
+UPDATE CASCADE;
+
+
+ALTER TABLE ONLY cor_filter_type_module
+ADD CONSTRAINT  fk_cor_filter_module_id_filter FOREIGN KEY
+(id_filter_type) REFERENCES bib_filters_type
+(id_filter_type) ON
+UPDATE CASCADE;
+
+
+ALTER TABLE ONLY cor_filter_type_module
+ADD CONSTRAINT  fk_cor_filter_module_id_module FOREIGN KEY
+(id_module) REFERENCES gn_commons.t_modules
+(id_module) ON
 UPDATE CASCADE;
 
 

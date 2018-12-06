@@ -535,6 +535,18 @@ CREATE TRIGGER tri_insert_synthese_update_validation_status
 ---------
 --DATAS--
 ---------
+
+INSERT INTO utilisateurs.t_applications (code_application, nom_application, desc_application, id_parent) VALUES 
+('GEONATURE', 'GeoNature', 'Application GeoNature.', NULL)
+;
+
+-- Faire en sorte qu'Admin puisse se connecter à GeoNature
+INSERT INTO utilisateurs.cor_role_app_profil 
+SELECT 9, app.id_application, prof.id_profil
+FROM utilisateurs.t_applications app, utilisateurs.t_profils prof
+WHERE code_application = 'GEONATURE' AND prof.code_profil = '1';
+
+
 -- On ne défini pas d'id pour la PK, la séquence s'en charge
 INSERT INTO bib_tables_location (table_desc, schema_name, table_name, pk_field, uuid_field_name) VALUES
 ('Regroupement de tous les médias de GeoNature', 'gn_commons', 't_medias', 'id_media', 'unique_id_media')
@@ -548,14 +560,13 @@ INSERT INTO t_parameters (id_organism, parameter_name, parameter_desc, parameter
 
 -- insertion du module parent à tous: GeoNature
 INSERT INTO gn_commons.t_modules(id_module, module_code, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend) VALUES
-(0 'GEONATURE', 'GeoNature', '', 'Module parent de tous les modules sur lequel on peut associer un CRUVED. NB: mettre active_frontend et active_backend à false pour qu''il ne s''affiche pas dans la barre latérale des modules', '/geonature', '', '', FALSE, FALSE)
+(0, 'GEONATURE', 'GeoNature', '', 'Module parent de tous les modules sur lequel on peut associer un CRUVED. NB: mettre active_frontend et active_backend à false pour qu''il ne s''affiche pas dans la barre latérale des modules', '/geonature', '', '', FALSE, FALSE)
 ;
 -- insertion du module Admin
 INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend) VALUES
 ('ADMIN', 'Admin', 'fa-cog', 'Backoffice de GeoNature', 'admin', '_self', 'Administration des métadonnées et des nomenclatures', TRUE, FALSE)
 ;
 
---insertion du module de gestion du backoffice dans utilisateurs.t_application et gn_commons.t_modules
 
 
 ---------
@@ -588,7 +599,3 @@ SELECT
 FROM insert_a i
 LEFT OUTER JOIN last_update_a u ON i.uuid_attached_row = u.uuid_attached_row
 LEFT OUTER JOIN delete_a d ON i.uuid_attached_row = d.uuid_attached_row;
-
-----------
--- DATA --
-----------
