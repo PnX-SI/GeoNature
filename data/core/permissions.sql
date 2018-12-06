@@ -112,48 +112,48 @@ FROM gn_permissions.t_objects
 WHERE code_object = mycodeobject;
 $$;
 
-CREATE OR REPLACE FUNCTION gn_permissions.does_user_have_already_scope_filter(
-    myidrole integer,
-    myidaction integer,
-    myidfilter integer,
-    myidmodule integer,
-    myidobject integer)
-  RETURNS boolean AS
+CREATE OR REPLACE FUNCTION gn_permissions.fct_tri_does_user_have_already_scope_filter()
+  RETURNS trigger AS
 $BODY$
 -- Check if a role has already a SCOPE permission for an action/module/object
 -- use in constraint to force not set multiple scope permission on the same action/module/object
 DECLARE 
 the_code_filter_type character varying;
+the_nb_permission integer;
 BEGIN
  SELECT INTO the_code_filter_type bib.code_filter_type
  FROM gn_permissions.t_filters f
  JOIN gn_permissions.bib_filters_type bib ON bib.id_filter_type = f.id_filter_type
- WHERE f.id_filter = myidfilter
+ WHERE f.id_filter = NEW.id_filter
 ;
 -- if the filter type is NOT SCOPE, its OK to set multiple permissions
 IF the_code_filter_type != 'SCOPE' THEN 
-RETURN FALSE;
+RETURN NEW;
 -- if the new filter is 'SCOPE TYPE', check if there is not already a permission for this
 -- action/module/object/role
 ELSE
-RETURN EXISTS
-(
-SELECT perm.id_permission
-FROM gn_permissions.cor_role_action_filter_module_object perm
-JOIN gn_permissions.t_filters f ON f.id_filter = perm.id_filter
-JOIN gn_permissions.bib_filters_type bib ON bib.id_filter_type = f.id_filter_type AND bib.code_filter_type = 'SCOPE' 
-WHERE id_role=myidrole AND id_action=myidaction AND id_module=myidmodule AND id_object=myidobject
+    SELECT INTO the_nb_permission count(perm.id_permission)
+    FROM gn_permissions.cor_role_action_filter_module_object perm
+    JOIN gn_permissions.t_filters f ON f.id_filter = perm.id_filter
+    JOIN gn_permissions.bib_filters_type bib ON bib.id_filter_type = f.id_filter_type AND bib.code_filter_type = 'SCOPE' 
+    WHERE id_role=NEW.id_role AND id_action=NEW.id_action AND id_module=NEW.id_module AND id_object=NEW.id_object;
 
-);
+ -- if its an insert 0 row must be present, if its an update 1 row must be present
+  IF(TG_OP = 'INSERT' AND the_nb_permission = 0) OR (TG_OP = 'UPDATE' AND the_nb_permission = 1) THEN
+        RETURN NEW;
+    END IF;
+    BEGIN
+        RAISE EXCEPTION 'ATTENTION: il existe déjà un enregistrement de type SCOPE pour le role % l''action % sur le module % et l''objet % . Il est interdit de définit plusieurs portées à un role pour le même action sur un module et un objet', NEW.id_role, NEW.id_action, NEW.id_module, NEW.id_object ;
+    END;
+  
+
 END IF;
 
 END;
+
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-
-
-
 
 
 
@@ -290,18 +290,6 @@ ADD CONSTRAINT  fk_cor_r_a_f_m_o_id_object FOREIGN KEY
 (id_object) ON
 UPDATE CASCADE;
 
-----------------
--- CONSTRAINT --
-----------------
-ALTER TABLE ONLY gn_permissions.cor_role_action_filter_module_object
-ADD CONSTRAINT check_no_multiple_scope_permission_for_same_action CHECK
-(
-    NOT gn_permissions.does_user_have_already_scope_filter(
-    id_role, id_action, id_filter, id_module, id_object
-    )
-);
-
-
 
 -----------
 -- VIEWS --
@@ -394,3 +382,17 @@ FROM all_user_permission v
     JOIN gn_permissions.t_objects obj ON obj.id_object = v.id_object
     JOIN gn_permissions.bib_filters_type filter_type ON filters.id_filter_type = filter_type.id_filter_type
     JOIN gn_commons.t_modules modules ON modules.id_module = v.id_module;
+
+
+
+---------------
+-- TRIGGERS ---
+---------------
+
+DROP TRIGGER IF EXISTS tri_check_no_multiple_scope_perm ON gn_permissions.cor_role_action_filter_module_object;
+CREATE TRIGGER tri_check_no_multiple_scope_perm
+  BEFORE INSERT OR UPDATE
+  ON gn_permissions.cor_role_action_filter_module_object
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_permissions.fct_tri_does_user_have_already_scope_filter();
+
