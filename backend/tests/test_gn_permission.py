@@ -15,6 +15,8 @@ class TestGnPermissions():
         '''
             Test get page with all roles 
         '''
+        token = get_token(self.client)
+        self.client.set_cookie('/', 'token', token)
         response = self.client.get(
             url_for('gn_permissions_backoffice.users')
         )
@@ -27,6 +29,8 @@ class TestGnPermissions():
         '''
             Test get page with all cruved of a user
         '''
+        token = get_token(self.client)
+        self.client.set_cookie('/', 'token', token)
         response = self.client.get(
             url_for(
                 'gn_permissions_backoffice.user_cruved',
@@ -124,7 +128,8 @@ class TestGnPermissions():
         '''
             Test of view who return the user cruved in all modules
         '''
-
+        token = get_token(self.client)
+        self.client.set_cookie('/', 'token', token)
         response = self.client.get(
             url_for(
                 'gn_permissions_backoffice.user_cruved',
@@ -139,7 +144,8 @@ class TestGnPermissions():
         '''
             Test of view who return the user permissions expect SCOPE
         '''
-
+        token = get_token(self.client)
+        self.client.set_cookie('/', 'token', token)
         response = self.client.get(
             url_for(
                 'gn_permissions_backoffice.user_other_permissions',
@@ -154,6 +160,8 @@ class TestGnPermissions():
         '''
             Test post/update a permission (no scope)
         '''
+        token = get_token(self.client)
+        self.client.set_cookie('/', 'token', token)
         valid_data = {
             'module':'0',
             'action': '1',
@@ -245,6 +253,8 @@ class TestGnPermissions():
             'value_filter': '212',
             'description_filter': 'Filtre de validation des sonneurs'
         }
+        token = get_token(self.client)
+        self.client.set_cookie('/', 'token', token)
 
         response = self.client.post(
             url_for(
@@ -298,6 +308,8 @@ class TestGnPermissions():
 
 
     def test_get_filters_list(self):
+        token = get_token(self.client)
+        self.client.set_cookie('/', 'token', token)
         response = self.client.get(
             url_for(
                 'gn_permissions_backoffice.filter_list',
@@ -307,6 +319,8 @@ class TestGnPermissions():
         assert response.status_code == 200
 
     def test_delete_filter(self):
+        token = get_token(self.client)
+        self.client.set_cookie('/', 'token', token)
         # add a fake filter
         new_filter = TFilters(
             id_filter=500,

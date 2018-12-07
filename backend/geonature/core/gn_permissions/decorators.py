@@ -41,11 +41,11 @@ def check_cruved_scope(
                 redirect_on_expiration,
                 redirect_on_invalid_token,
             )
-            # If user is Response: its a token issue
+            # If user not a dict: its a token issue
             # return the appropriate Response from get_user_from_token_and_raise
-            if isinstance(user, Response):
+            if not isinstance(user, dict):
                 return user
-
+            user_with_highter_perm = None
             if get_role:
                 user_permissions = get_user_permissions(
                     user,
@@ -66,7 +66,6 @@ def check_cruved_scope(
                     geonature_permission = []
                     # user_permissions is a array of at least 1 permission
                     # get the user from the first element of the array
-                    user_with_highter_perm = None
                     for user_permission in user_permissions:
                         if user_permission.module_code == module_code:
                             module_permissions.append(user_permission)
