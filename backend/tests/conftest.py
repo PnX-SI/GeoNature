@@ -21,8 +21,6 @@ def pytest_sessionstart(session):
     execute_script('delete_sample_data.sql')
     execute_script('sample_data.sql')
 
-def pytest_sessionfinish(session, exitstatus):
-    execute_script('delete_sample_data.sql')
 
 
 

@@ -23,7 +23,13 @@ routes = Blueprint('gn_permissions_backoffice', __name__, template_folder='templ
 
 @routes.route('cruved_form/module/<int:id_module>/role/<int:id_role>/object/<int:id_object>', methods=["GET", "POST"])
 @routes.route('cruved_form/module/<int:id_module>/role/<int:id_role>', methods=["GET", "POST"])
-@permissions.check_cruved_scope('R', True, object_code='PERMISSIONS')
+@permissions.check_cruved_scope(
+    'R',
+    True,
+    object_code='PERMISSIONS',
+    redirect_on_expiration=current_app.config['URL_APPLICATION']+'/login',
+    redirect_on_invalid_token=current_app.config['URL_APPLICATION']+'/login'
+)
 def permission_form(info_role, id_module, id_role, id_object=None):
     form = None
     module = DB.session.query(TModules).get(id_module)
@@ -115,7 +121,13 @@ def permission_form(info_role, id_module, id_role, id_object=None):
 
 
 @routes.route('/users', methods=["GET"])
-@permissions.check_cruved_scope('R', True, object_code='PERMISSIONS')
+@permissions.check_cruved_scope(
+    'R',
+    True,
+    object_code='PERMISSIONS',
+    redirect_on_expiration=current_app.config['URL_APPLICATION']+'/login',
+    redirect_on_invalid_token=current_app.config['URL_APPLICATION']+'/login'
+)
 def users(info_role):
     q = DB.session.query(
         User,
@@ -148,6 +160,12 @@ def users(info_role):
 
 
 @routes.route('/user_cruved/<id_role>', methods=["GET"])
+@permissions.check_cruved_scope(
+    'R',
+    object_code='PERMISSIONS',
+    redirect_on_expiration=current_app.config['URL_APPLICATION']+'/login',
+    redirect_on_invalid_token=current_app.config['URL_APPLICATION']+'/login'    
+)
 def user_cruved(id_role):
     """
     Get all scope CRUVED (with heritage) for a user in all modules
@@ -174,6 +192,12 @@ def user_cruved(id_role):
 
 
 @routes.route('/user_other_permissions/<id_role>', methods=["GET"])
+@permissions.check_cruved_scope(
+    'R',
+    object_code='PERMISSIONS',
+    redirect_on_expiration=current_app.config['URL_APPLICATION']+'/login',
+    redirect_on_invalid_token=current_app.config['URL_APPLICATION']+'/login'    
+)
 def user_other_permissions(id_role):
     """
     Get all the permissions define for a user expect SCOPE permissions
@@ -205,6 +229,12 @@ def user_other_permissions(id_role):
     '/other_permissions_form/id_permission/<int:id_permission>/user/<int:id_role>/filter_type/<int:id_filter_type>', methods=["GET", "POST"]
 )
 @routes.route('/other_permissions_form/user/<int:id_role>/filter_type/<int:id_filter_type>', methods=["GET", "POST"])
+@permissions.check_cruved_scope(
+    'R',
+    object_code='PERMISSIONS',
+    redirect_on_expiration=current_app.config['URL_APPLICATION']+'/login',
+    redirect_on_invalid_token=current_app.config['URL_APPLICATION']+'/login'    
+)
 def other_permissions_form(id_role, id_filter_type, id_permission=None):
     """
     Form to define permisisons for a user expect SCOPE permissions
@@ -223,6 +253,7 @@ def other_permissions_form(id_role, id_filter_type, id_permission=None):
     filter_type = DB.session.query(BibFiltersType).get(id_filter_type)
     
     if request.method == 'POST' and form.validate_on_submit():
+        
         permInstance = CorRoleActionFilterModuleObject(
             id_permission=id_permission,
             id_role=id_role,
@@ -248,6 +279,12 @@ def other_permissions_form(id_role, id_filter_type, id_permission=None):
 
 @routes.route('/filter_form/id_filter_type/<int:id_filter_type>/id_filter/<int:id_filter>', methods=['GET', 'POST'])
 @routes.route('/filter_form/id_filter_type/<int:id_filter_type>', methods=['GET', 'POST'])
+@permissions.check_cruved_scope(
+    'R',
+    object_code='PERMISSIONS',
+    redirect_on_expiration=current_app.config['URL_APPLICATION']+'/login',
+    redirect_on_invalid_token=current_app.config['URL_APPLICATION']+'/login'    
+)
 def filter_form(id_filter_type, id_filter=None):
     filter_type = DB.session.query(BibFiltersType).get(id_filter_type)
     # if id_filter: its an edit, preload the form
@@ -281,6 +318,12 @@ def filter_form(id_filter_type, id_filter=None):
 
 
 @routes.route('/filter_list/id_filter_type/<int:id_filter_type>', methods=['GET'])
+@permissions.check_cruved_scope(
+    'R',
+    object_code='PERMISSIONS',
+    redirect_on_expiration=current_app.config['URL_APPLICATION']+'/login',
+    redirect_on_invalid_token=current_app.config['URL_APPLICATION']+'/login'    
+)
 def filter_list(id_filter_type):
     filters = DB.session.query(TFilters).filter(TFilters.id_filter_type == id_filter_type)
     filter_type = DB.session.query(BibFiltersType).get(id_filter_type)
@@ -293,6 +336,12 @@ def filter_list(id_filter_type):
 
 
 @routes.route('/filter/<id_filter>', methods=['POST'])
+@permissions.check_cruved_scope(
+    'D',
+    object_code='PERMISSIONS',
+    redirect_on_expiration=current_app.config['URL_APPLICATION']+'/login',
+    redirect_on_invalid_token=current_app.config['URL_APPLICATION']+'/login'    
+)
 def delete_filter(id_filter):
     my_filter = DB.session.query(TFilters).get(id_filter)
     DB.session.delete(my_filter)
