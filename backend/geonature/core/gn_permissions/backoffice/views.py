@@ -11,6 +11,7 @@ from geonature.core.gn_permissions.models import(
     TFilters, BibFiltersType, TActions,
     CorRoleActionFilterModuleObject, TObjects, CorObjectModule, VUsersPermissions
 )
+from geonature.core.users.models import BibOrganismes
 from geonature.core.users.models import CorRole
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions import decorators as permissions
@@ -114,8 +115,9 @@ def permission_form(info_role, id_module, id_role, id_object=None):
 
 
 @routes.route('/users', methods=["GET"])
-def users():
-    data = DB.session.query(
+@permissions.check_cruved_scope('R', True, object_code='PERMISSIONS')
+def users(info_role):
+    q = DB.session.query(
         User,
         func.count(CorRoleActionFilterModuleObject.id_role)
     ).outerjoin(
@@ -125,7 +127,18 @@ def users():
     ).order_by(
         User.groupe.desc(),
         User.nom_role.asc()
-    ).all()
+    )
+
+    # filter with cruved auth
+    if info_role.value_filter == '2':
+        q = q.join(
+            BibOrganismes, BibOrganismes.id_organisme == info_role.id_organisme
+        ).filter(BibOrganismes == info_role.id_organisme)
+    elif info_role.value_filter == '1':
+        q = q.filter(User.id_role == info_role.id_role)
+    
+    data = q.all()
+
     users = []
     for user in data:
         user_dict = user[0].as_dict()
