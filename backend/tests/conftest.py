@@ -18,6 +18,7 @@ def pytest_sessionstart(session):
     ctx.push()
     
     # setup test data
+    execute_script('delete_sample_data.sql')
     execute_script('sample_data.sql')
 
 def pytest_sessionfinish(session, exitstatus):
