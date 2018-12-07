@@ -83,7 +83,8 @@ export class AuthService {
           this.loginError = false;
           this.router.navigate(['']);
         },
-        error => {
+        // error callback
+        () => {
           this.loginError = true;
         }
       );

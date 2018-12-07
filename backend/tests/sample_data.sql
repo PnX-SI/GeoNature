@@ -47,6 +47,11 @@ SELECT pg_catalog.setval('gn_meta.cor_dataset_actor_id_cda_seq', (SELECT max(id_
 -- Utilisateurs
 UPDATE utilisateurs.t_roles SET pass_plus = '$2y$13$TMuRXgvIg6/aAez0lXLLFu0lyPk4m8N55NDhvLoUHh/Ar3rFzjFT.' WHERE id_role IN (2,3);
 
+-- Ajout d'un utiliseur 'socle 1' avec l'id 10
+DELETE FROM utilisateurs.t_roles WHERE id_role=10;
+INSERT INTO utilisateurs.t_roles(id_role, groupe, nom_role) VALUES
+(10, TRUE, 'groupe_socle_1');
+
 -- Ajout des utilisateurs agent et admin
 INSERT INTO utilisateurs.cor_role_app_profil VALUES
   (1,3,6),
@@ -69,56 +74,52 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object
     ) 
     VALUES
     -- Admin: C:3, R:3, U:3, V:3, E:3, D:3 sur GeoNature
-    (1, 1, 4, 3, 1),
-    (1, 2, 4, 3, 1),
-    (1, 3, 4, 3, 1),
-    (1, 4, 4, 3, 1),
-    (1, 5, 4, 3, 1),
-    (1, 6, 4, 3, 1),
+    (1, 1, 4, 0, 1),
+    (1, 2, 4, 0, 1),
+    (1, 3, 4, 0, 1),
+    (1, 4, 4, 0, 1),
+    (1, 5, 4, 0, 1),
+    (1, 6, 4, 0, 1),
     -- groupe Admin
-    (9, 1, 4, 3, 1),
-    (9, 2, 4, 3, 1),
-    (9, 3, 4, 3, 1),
-    (9, 4, 4, 3, 1),
-    (9, 5, 4, 3, 1),
-    (9, 6, 4, 3, 1),
+    (9, 1, 4, 0, 1),
+    (9, 2, 4, 0, 1),
+    (9, 3, 4, 0, 1),
+    (9, 4, 4, 0, 1),
+    (9, 5, 4, 0, 1),
+    (9, 6, 4, 0, 1),
     --Validateur général sur tout GeoNature
-    (5, 4, 4, 3, 1 ),
+    (5, 4, 4, 0, 1 ),
     --CRUVED du groupe en poste (id=7) sur tout GeoNature 
-    (7, 1, 4, 3, 1),
-    (7, 2, 3, 3, 1),
-    (7, 3, 2, 3, 1),
-    (7, 4, 1, 3, 1),
-    (7, 5, 3, 3, 1),
-    (7, 6, 2, 3, 1),
-    --Groupe bureau d''étude socle 2 sur tout GeoNature
-    (6, 1, 4, 3, 1),
-    (6, 2, 3, 3, 1),
-    (6, 3, 2, 3, 1),
-    (6, 4, 1, 3, 1),
-    (6, 5, 3, 3, 1),
-    (6, 6, 2, 3, 1),
-    --Groupe bureau d''étude socle 1 sur tout GeoNature
-    (8, 1, 4, 3, 1),
-    (8, 2, 2, 3, 1),
-    (8, 3, 2, 3, 1),
-    (8, 4, 2, 3, 1),
-    (8, 5, 2, 3, 1),
-    (8, 6, 2, 3, 1),
+    (7, 1, 4, 0, 1),
+    (7, 2, 3, 0, 1),
+    (7, 3, 2, 0, 1),
+    (7, 4, 1, 0, 1),
+    (7, 5, 3, 0, 1),
+    (7, 6, 2, 0, 1),
+    -- socle 1 peut agir que sur ses données
+    (10, 1, 2, 0, 1),
+    (10, 2, 2, 0, 1),
+    (10, 3, 2, 0, 1),
+    (10, 4, 2, 0, 1),
+    (10, 5, 2, 0, 1),
+    (10, 6, 2, 0, 1),
+    -- partenaire avec cruved de 1
+    (3, 2, 2, 0, 1),
     -- ADMIN peut gérer les permissions du backoffice
-    (9, 1, 4, 4, 3),
-    (9, 2, 4, 4, 3),
-    (9, 3, 4, 4, 3),
-    (9, 4, 4, 4, 3),
-    (9, 5, 4, 4, 3),
-    (9, 6, 4, 4, 3),
+    (9, 1, 4, 1, 3),
+    (9, 2, 4, 1, 3),
+    (9, 3, 4, 1, 3),
+    (9, 4, 4, 1, 3),
+    (9, 5, 4, 1, 3),
+    (9, 6, 4, 1, 3),
     -- ADMIN peut gérer les métadonnées du backoffice
-    (9, 1, 4, 4, 2),
-    (9, 2, 4, 4, 2),
-    (9, 3, 4, 4, 2),
-    (9, 4, 4, 4, 2),
-    (9, 5, 4, 4, 2),
-    (9, 6, 4, 4, 2)
+    (9, 1, 4, 1, 2),
+    (9, 2, 4, 1, 2),
+    (9, 3, 4, 1, 2),
+    (9, 4, 4, 1, 2),
+    (9, 5, 4, 1, 2),
+    (9, 6, 4, 1, 2)
+  
 ;
 
 

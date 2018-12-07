@@ -78,7 +78,7 @@ export class OcctaxMapFormComponent
         this.occtaxService.getOneReleve(this.id).subscribe(
           data => {
             //test if observers exist.
-            //Case when some releves was create with 'observers_txt : true' and others with 'observers_txt : false'
+            //Case when some releves were create with 'observers_txt : true' and others with 'observers_txt : false'
             //if this case comes up with 'observers_txt : false', the form is load with an empty 'observers' input
             //indeed, the application can not make the correspondence between an observer_txt and an id_role
             if (data.releve.properties.observers) {
@@ -177,16 +177,17 @@ export class OcctaxMapFormComponent
             this._router.navigate(["/occtax"]);
           }
         ); // end subscribe
-        // if not edition mode, zoom to the previous releve bounding-box
       } else {
-        if (this.fs.previousBoundingBox) {
-          this._ms.map.fitBounds(this.fs.previousBoundingBox, { maxZoom: 20 });
-        }
+        // if (this.fs.previousBoundingBox) {
+        //   this._ms.map.fitBounds(this.fs.previousBoundingBox, { maxZoom: 20 });
+        // }
         // set digitiser as default observers only if occtaxconfig set observers_txt parameter to false
         if (!this.occtaxConfig.observers_txt) {
+          const currentUser = this._authService.getCurrentUser();
           this.fs.releveForm.patchValue({
             properties: {
-              observers: [this._authService.getCurrentUser()]
+              observers: [currentUser],
+              id_digitiser: currentUser.id_role
             }
           });
         }

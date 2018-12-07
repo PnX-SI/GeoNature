@@ -161,8 +161,6 @@ def cruved_scope_for_user_in_module(
     - index 0: the cruved as a dict : {'C': 0, 'R': 2 ...}
     - index 1: a boolean which say if its an herited cruved
     """
-    ors = [VUsersPermissions.module_code == 'GEONATURE']
-
     q = DB.session.query(
         VUsersPermissions.code_action,
         func.max(VUsersPermissions.value_filter),
@@ -176,7 +174,7 @@ def cruved_scope_for_user_in_module(
     ).group_by(VUsersPermissions.code_action)
 
     # get max scope cruved for module GEONATURE
-    parent_cruved_data = q.filter(VUsersPermissions.module_code.ilike('GEONATURE')).all() 
+    parent_cruved_data = q.filter(VUsersPermissions.module_code.ilike('GEONATURE')).all()
     parent_cruved = {}
     # build a dict like {'C':'0', 'R':'2' ...} if get_id = False or
     # {'C': 1, 'R':3 ...} if get_id = True
@@ -187,7 +185,6 @@ def cruved_scope_for_user_in_module(
             parent_cruved[action_scope[0]] = action_scope[1]
 
     # get max scope cruved for module passed in parameter
-    
     if module_code:
         module_cruved = {}
         module_cruved_data = q.filter(VUsersPermissions.module_code.ilike(module_code)).all()

@@ -17,8 +17,6 @@ def get_datasets_cruved(info_role, params):
         Return the datasets filtered with cruved
     """
     q = DB.session.query(TDatasets)
-
-
     # filters with cruved
     if info_role.value_filter == '2':
         q = q.join(
@@ -68,6 +66,9 @@ def get_datasets_cruved(info_role, params):
                 raise GeonatureApiError(message=testT)
             q = q.filter(col == params[param])
 
+    
+    print(q)
+    print(info_role.value_filter)
     data = q.all()
     return [d.as_dict(True) for d in data]
 

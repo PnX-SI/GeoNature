@@ -558,3 +558,10 @@ def export(info_role):
 
 
 
+@blueprint.route('/test', methods=['GET'])
+def test():
+    test = cruved_scope_for_user_in_module(
+        id_role=1,
+        module_code='OCCTAX'
+    )
+    return 'LAAAA'

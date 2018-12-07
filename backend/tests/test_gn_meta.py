@@ -30,6 +30,7 @@ class TestGnMeta:
         CRUVED right = 3
         """
         token = get_token(self.client)
+        self.client.set_cookie('/', 'token', token)
         response = self.client.get(url_for('gn_meta.get_datasets'))
         assert response.status_code == 200
 
@@ -42,6 +43,7 @@ class TestGnMeta:
         CRUVED = 2
         """
         token = get_token(self.client, login="agent", password="admin")
+        self.client.set_cookie('/', 'token', token)
         response = self.client.get(url_for('gn_meta.get_datasets'))
         dataset_list = json_of_response(response)
         assert (
@@ -56,6 +58,7 @@ class TestGnMeta:
         CRUVED = 1
         """
         token = get_token(self.client, login="partenaire", password="admin")
+        self.client.set_cookie('/', 'token', token)
         response = self.client.get(url_for('gn_meta.get_datasets'))
         dataset_list = json_of_response(response)
         assert (
@@ -89,7 +92,8 @@ class TestGnMeta:
         assert resp.status_code == 200
 
         resp = users.insert_role(user)
-        users.insert_in_cor_role(current_app.config['BDD']['ID_USER_SOCLE_1'], user['id_role'])
+        # id_role 10 = id_socle 1 in test
+        users.insert_in_cor_role(10, user['id_role'])
         assert resp.status_code == 200
 
         jdds = post_jdd_from_user(id_user=10991, id_organism=104)
