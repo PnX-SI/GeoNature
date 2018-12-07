@@ -1131,9 +1131,15 @@ INSERT INTO pr_occtax.defaults_nomenclatures_value (mnemonique_type, id_organism
 
 ;
 
-
+-- Creation d'une liste 'observateur occtax'
 INSERT INTO utilisateurs.t_listes (code_liste, nom_liste, desc_liste)
 VALUES('obsocctax','Observateurs Occtax','Liste des observateurs du module Occtax');
+
+-- Ajout de l'utilsateur admin dans la liste
+INSERT INTO utilisateurs.cor_role_liste 
+SELECT id_liste, 1
+FROM utilisateurs.t_listes
+WHERE code_liste = 'obsocctax';
 
 INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module_desc, module_path, module_target, active_frontend, active_backend) VALUES
 ('OCCTAX', 'Occtax', 'fa-puzzle-piece', 'Application observations occasionnelles ', 'occtax', '_self', TRUE, TRUE)

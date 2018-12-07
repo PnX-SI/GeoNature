@@ -10,7 +10,7 @@ from flask import session
 
 from geonature.core.users.models import UserRigth
 from pypnusershub.db.tools import InsufficientRightsError
-from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
+from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 
 from .bootstrap_test import app
 
@@ -134,14 +134,14 @@ class TestReleveModel:
         user_hight = UserRigth(**user_admin)
         releveInstance = VReleveList(**valide_occ_tax_releve)
 
-        user_cruved = get_or_fetch_user_cruved(
-            session=session,
-            id_role=user_hight.id_role,
+        user_cruved, herited = cruved_scope_for_user_in_module(
+           id_role=user_hight.id_role,
             module_code='OCCTAX'
         )
         cruved = {'R': '3', 'E': '3', 'C': '3', 'V': '3', 'D': '3', 'U': '3'}
 
         assert cruved == user_cruved
+        assert herited == True
 
         releve_cruved = releveInstance.get_releve_cruved(user_hight, cruved)
 
