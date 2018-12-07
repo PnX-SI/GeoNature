@@ -65,12 +65,6 @@ log = logging.getLogger(__name__)
     required=False,
     default=True
 )
-@click.option(
-    '--module_id',
-    type=int,
-    required=False,
-    default=None
-)
 def install_gn_module(module_path, url, conf_file, build):
     """
         Installation d'un module gn
@@ -108,7 +102,7 @@ def install_gn_module(module_path, url, conf_file, build):
                 check_codefile_validity(module_path, module_code)
 
                 # Installation du module
-                run_install_gn_module(app, module_path, module_code, url)
+                run_install_gn_module(app, module_path)
 
                 # copie dans external mods:
                 copy_in_external_mods(module_path, module_code.lower())
@@ -118,7 +112,7 @@ def install_gn_module(module_path, url, conf_file, build):
                     module_path, module_code.lower()
                 )
                 # ajout du module dans la table gn_commons.t_modules
-                add_application_db(module_code, url, enable_frontend)
+                add_application_db(app, module_code, url, enable_frontend)
                 
                 # Enregistrement de la config du module
                 gn_module_register_config(module_code.lower())
@@ -151,18 +145,7 @@ def run_install_gn_module(app, module_path):
             install_db.py
             install_app.py
     '''
-    #   configs
-    try:
-        from conf_schema_toml import GnModuleSchemaConf
-        load_and_validate_toml(
-            Path(module_path) / "config/conf_gn_module.toml",
-            GnModuleSchemaConf
-        )
-    except ImportError:
-        log.info('No specific config file')
-        pass
 
-    #   requirements
     gn_module_import_requirements(module_path)
 
     #   ENV
