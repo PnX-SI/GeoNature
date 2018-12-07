@@ -31,6 +31,7 @@ routes = Blueprint('gn_permissions_backoffice', __name__, template_folder='templ
     redirect_on_invalid_token=current_app.config['URL_APPLICATION']+'/login'
 )
 def permission_form(info_role, id_module, id_role, id_object=None):
+    #TODO: check post permissions
     form = None
     module = DB.session.query(TModules).get(id_module)
     object_instance = None
@@ -286,6 +287,7 @@ def other_permissions_form(id_role, id_filter_type, id_permission=None):
     redirect_on_invalid_token=current_app.config['URL_APPLICATION']+'/login'    
 )
 def filter_form(id_filter_type, id_filter=None):
+    #TODO: check post permissions
     filter_type = DB.session.query(BibFiltersType).get(id_filter_type)
     # if id_filter: its an edit, preload the form
     if id_filter:
