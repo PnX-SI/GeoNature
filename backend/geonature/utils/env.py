@@ -149,7 +149,6 @@ def import_requirements(req_file):
             if pip.main(["install", req]) == 1:
                 raise Exception('Package {} not installed'.format(req))
 
-
 def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
     """
         Get all the module enabled from gn_commons.t_modules
@@ -185,8 +184,7 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
                 module_parent_dir = str(module_path.parent)
                 module_import_name = "{}.config.conf_schema_toml".format(module_path.name)
                 sys.path.insert(0, module_parent_dir)
-                module = __import__(module_import_name, globals=globals())
-
+                module = __import__(module_import_name)
                 # get and validate the module config
                 class GnModuleSchemaProdConf(
                         module.config.conf_schema_toml.GnModuleSchemaConf,
@@ -206,7 +204,7 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
                 python_module_name = "{}.backend.blueprint".format(module_path.name)
                 module_blueprint = __import__(python_module_name, globals=globals())
                 # register the confif in bluprint.config
-                module_blueprint.backend.blueprint.blueprint.config = update_module_config
+                module.backend.blueprint.blueprint.config = update_module_config
                 sys.path.pop(0)
 
                 yield update_module_config, conf_manifest, module_blueprint
