@@ -48,11 +48,11 @@
     {% endif %}
         
       <h5> Type de permissions disponibles </h5>
-      <table class="table">
+      <table class="table table-striped">
 
         {% for filter_type in filter_types %}
-          <tr>
-            <td> {{filter_type.label_filter_type}}  </td>
+          <tr> 
+            <td> <b> {{filter_type.label_filter_type}} </b>  </td>
             <td> 
                 <a href="{{ url_for('gn_permissions_backoffice.other_permissions_form' ,id_role=user.id_role, id_filter_type=filter_type.id_filter_type)}}">
                     <button class="btn btn-sm btn-primary"> Ajouter des permissions </button> </li>

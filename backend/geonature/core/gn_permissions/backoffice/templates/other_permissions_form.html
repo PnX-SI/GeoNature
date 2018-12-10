@@ -11,8 +11,15 @@
                 <form action=""" method="POST">
                         {{ form.csrf_token }} {{ form.hidden_tag() }}
                     <div class="form-group">
+                        <label for=""> Module</label>
                           {{form.module(class="form-control")}}
+                    </div>
+                    <div class="form-group">
+                        <label for=""> Action</label>
                           {{form.action(class="form-control")}}
+                    </div>
+                    <div class="form-group">
+                        <label for=""> Filtre</label>
                           {{form.filter(class="form-control")}}
                     </div>
 

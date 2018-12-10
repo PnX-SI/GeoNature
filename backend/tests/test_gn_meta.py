@@ -29,7 +29,7 @@ class TestGnMeta:
         API to get datasets with CRUVED authorization
         CRUVED right = 3
         """
-        token = get_token(self.client)
+        token = get_token(self.client, login="admin", password="admin")
         self.client.set_cookie('/', 'token', token)
         response = self.client.get(url_for('gn_meta.get_datasets'))
         assert response.status_code == 200
