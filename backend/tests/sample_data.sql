@@ -197,8 +197,8 @@ VALUES
     ref_nomenclatures.get_id_nomenclature('DEE_FLOU', 'NON'),
     'Gil D',
     ref_nomenclatures.get_id_nomenclature('METH_DETERMIN', '2'),
-    351,
-    'Grenouille rousse',
+    713776,
+    'Trichopria Ashmead, 1893',
     'Taxref V9.0',
     '',
     '',
@@ -299,3 +299,11 @@ INSERT INTO  pr_occtax.cor_counting_occtax (
 
 
 SELECT pg_catalog.setval('pr_occtax.cor_counting_occtax_id_counting_occtax_seq', (SELECT max(id_counting_occtax)+1 FROM pr_occtax.cor_counting_occtax), true);
+
+
+
+-- Pour la synthese
+
+-- insertion d'un attribut sur taxon pour test de la recherche par attrs
+
+INSERT INTO taxonomie.cor_taxon_attribut VALUES (102, 'eau', 209902);

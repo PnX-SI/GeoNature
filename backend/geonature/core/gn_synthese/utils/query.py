@@ -69,7 +69,7 @@ def filter_taxonomy(model, q, filters):
             TaxrefLR.id_categorie_france.in_(filters.pop('taxonomy_lr'))
         ).subquery('sub_query_lr')
         # est-ce qu'il faut pas filtrer sur le cd_ ref ?
-        # quid des protection définit à rand superieur de la saisie ?
+        # quid des protection définit à rang superieur de la saisie ?
         q = q.filter(model.cd_nom.in_(sub_query_lr))
 
     aliased_cor_taxon_attr = {}
@@ -125,14 +125,6 @@ def filter_query_all_filters(model, q, filters, user, allowed_datasets):
             model.id_acquisition_framework == TAcquisitionFramework.id_acquisition_framework
         )
         q = q.filter(TAcquisitionFramework.id_acquisition_framework.in_(filters.pop('id_acquisition_frameworks')))
-
-    if 'municipalities' in filters:
-        q = q.filter(
-            model.id_municipality.in_(
-                [com for com in filters['municipalities']]
-            )
-        )
-        filters.pop('municipalities')
 
     if 'geoIntersection' in filters:
         # Insersect with the geom send from the map
