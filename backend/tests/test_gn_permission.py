@@ -1,16 +1,115 @@
 import pytest
 
 
-from flask import url_for, current_app, request
+from flask import url_for, current_app, request, Response
 
+from pypnusershub.db.tools import (
+    InsufficientRightsError,
+    AccessRightsExpiredError, 
+    UnreadableAccessRightsError
+) 
 from .bootstrap_test import app, json_of_response, get_token
 from pypnusershub.db.tools import InsufficientRightsError
 from geonature.core.gn_permissions.models import VUsersPermissions, TFilters, CorRoleActionFilterModuleObject
 from geonature.utils.env import DB
 
 
+from geonature.core.gn_permissions.tools import(
+    get_user_permissions, user_from_token, get_user_from_token_and_raise,
+    cruved_scope_for_user_in_module
+) 
+from geonature.core.gn_permissions.models import VUsersPermissions
+
 @pytest.mark.usefixtures('client_class')
-class TestGnPermissions():
+class TestGnPermissionsTools():
+    """ Test of gn_permissions tools functions"""
+    def test_user_from_token(self):
+        with pytest.raises(UnreadableAccessRightsError): 
+            resp = user_from_token('lapojfdzpijdspiv')
+        
+        token = get_token(self.client)
+        user = user_from_token(token)
+        assert isinstance(user, dict)
+        assert user['nom_role'] == 'Administrateur'
+
+
+    def test_user_from_token_and_raise_fail(self):
+        # set a fake cookie
+        self.client.set_cookie('/', 'token', 'fake cookie')
+        resp = get_user_from_token_and_raise(request)
+        assert isinstance(resp, Response)
+        assert resp.status_code == 403
+
+    def test_get_user_permissions(self):
+        # set a real cookie
+        token = get_token(self.client, login="admin", password="admin")
+        self.client.set_cookie('/', 'token', token)
+        # fake request to set cookie
+        response = self.client.get(
+            url_for(
+                'gn_permissions_backoffice.filter_list',
+                id_filter_type=4,
+            )
+        )
+        resp = get_user_from_token_and_raise(request)
+        assert isinstance(resp, dict)
+
+
+    def test_get_user_permissions(self):
+        """
+            Test get_user_permissions
+        """
+        user_ok = {'id_role': 1, 'nom_role': 'Administrateur'}
+        perm = get_user_permissions(
+            user_ok,
+            code_action='C',
+            code_filter_type='SCOPE'
+        )
+        assert isinstance(perm, list)
+        assert perm[0].value_filter == '3'
+
+        fake_user = {'id_role': 220, 'nom_role': 'Administrateur'}
+
+        with pytest.raises(InsufficientRightsError):
+            perm = get_user_permissions(
+                fake_user,
+                code_action='C',
+                code_filter_type='SCOPE'
+            )
+    
+        # with code_object
+        perm = get_user_permissions(
+            user_ok,
+            code_action='C',
+            code_filter_type='SCOPE',
+            code_object='PERMISSIONS'
+        )
+        assert isinstance(perm, list)
+        assert perm[0].value_filter == '3'
+
+    def test_cruved_scope_for_user_in_module(self):
+        # get cruved for geonature
+        cruved, herited = cruved_scope_for_user_in_module(
+            id_role=9,
+            module_code='GEONATURE'
+        )
+        assert herited == False
+        assert cruved == {'C': '3', 'R': '3', 'U': '3', 'V':'3', 'E':'3', 'D': '3'}
+
+        cruved, herited = cruved_scope_for_user_in_module(
+            id_role=9,
+            module_code='GEONATURE',
+            get_id=True
+        )
+
+        assert herited == False
+        assert cruved == {'C': '4', 'R': '4', 'U': '4', 'V':'4', 'E':'4', 'D': '4'}
+
+
+
+
+@pytest.mark.usefixtures('client_class')
+class TestGnPermissionsView():
     def test_get_users(self):
         '''
             Test get page with all roles 
@@ -338,5 +437,4 @@ class TestGnPermissions():
             )
         )
         assert response.status_code == 302
-
 

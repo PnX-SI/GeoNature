@@ -63,15 +63,13 @@ def get_user_from_token_and_raise(
             res = Response('Forbidden', 403)
         return res
     except KeyError as e:
-        if 'token' not in e.args:
-            raise
         if redirect_on_expiration:
             return redirect(redirect_on_expiration, code=302)
         return Response('No token', 403)
 
     except UnreadableAccessRightsError:
         log.info('Invalid Token : BadSignature')
-        # invalid token,
+        # invalid token
         if redirect_on_invalid_token:
             res = redirect(redirect_on_invalid_token, code=302)
         else:
@@ -156,8 +154,8 @@ def cruved_scope_for_user_in_module(
         - id_role(int)
         - module_code(str)
         - get_id(bool): if true return the id_scope for each action
-            if false return the filter_value foe each action
-    Return a tupple 
+            if false return the filter_value for each action
+    Return a tuple 
     - index 0: the cruved as a dict : {'C': 0, 'R': 2 ...}
     - index 1: a boolean which say if its an herited cruved
     """
@@ -185,9 +183,10 @@ def cruved_scope_for_user_in_module(
             parent_cruved[action_scope[0]] = action_scope[1]
 
     # get max scope cruved for module passed in parameter
+    module_cruved = {}
     if module_code:
-        module_cruved = {}
         module_cruved_data = q.filter(VUsersPermissions.module_code.ilike(module_code)).all()
+        
         # build a dict like {'C':'0', 'R':'2' ...} if get_id = False or
         # {'C': 1, 'R':3 ...} if get_id = True
         # for the module 
