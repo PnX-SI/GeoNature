@@ -1,5 +1,9 @@
+from sqlalchemy import ForeignKey
+
 from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import serializable
+
+from pypnusershub.db.models import User
 
 
 @serializable
@@ -30,13 +34,22 @@ class BibOrganismes(DB.Model):
 class CorRole(DB.Model):
     __tablename__ = 'cor_roles'
     __table_args__ = {'schema': 'utilisateurs'}
-    id_role_groupe = DB.Column(DB.Integer, primary_key=True)
+    id_role_groupe = DB.Column(
+        DB.Integer,
+        ForeignKey('utilisateurs.t_roles.id_role'),
+        primary_key=True
+    )
     id_role_utilisateur = DB.Column(DB.Integer, primary_key=True)
+    role = DB.relationship(
+        User,
+        primaryjoin=(User.id_role == id_role_groupe),
+        foreign_keys=[id_role_groupe]       
+    )
+
 
     def __init__(self, id_group, id_role):
         self.id_role_groupe = id_group
         self.id_role_utilisateur = id_role
-
 
 @serializable
 class TApplications(DB.Model):
@@ -53,17 +66,17 @@ class UserRigth():
         self,
         id_role=None,
         id_organisme=None,
-        tag_action_code=None,
-        tag_object_code=None,
-        id_application=None,
+        code_action=None,
+        value_filter=None,
+        module_code=None,
         nom_role=None,
         prenom_role=None
 
     ):
         self.id_role = id_role
         self.id_organisme = id_organisme
-        self.tag_action_code = tag_action_code
-        self.tag_object_code = tag_object_code
-        self.id_application = id_application
+        self.value_filter = value_filter
+        self.code_action = code_action
+        self.module_code = module_code
         self.nom_role = nom_role
         self.prenom_role = prenom_role

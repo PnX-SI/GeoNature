@@ -1,6 +1,8 @@
 import logging
 
-from flask import current_app, jsonify
+from flask import current_app, jsonify, Response
+
+from pypnusershub.db.tools import InsufficientRightsError
 
 from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import json_resp
@@ -33,4 +35,13 @@ def geonature_api_error(error):
     DB.session.rollback()
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
+    return response
+
+
+@current_app.errorhandler(InsufficientRightsError)
+def geonature_api_error(error):
+    gunicorn_error_logger.info(error)
+    DB.session.rollback()
+    response = jsonify(str(error))
+    response.status_code = 403
     return response

@@ -4,7 +4,7 @@ from flask import url_for, session, Response, request
 from .bootstrap_test import app, releve_data, post_json, json_of_response, get_token
 from cookies import Cookie
 
-from geonature.utils.errors import InsufficientRightsError
+from pypnusershub.db.tools import InsufficientRightsError
 
 
 @pytest.mark.usefixtures('client_class')

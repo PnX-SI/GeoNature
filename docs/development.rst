@@ -136,7 +136,7 @@ Pour les utiliser à l'interieur du module, utiliser la syntaxe suivante :
 
 ::
 
-    <img src="external_assets/<MY_MODULE_NAME>/afb.png">
+    <img src="external_assets/<MY_MODULE_CODE>/afb.png">
 
 Exemple pour le module de validation :
 
@@ -458,7 +458,7 @@ params :
 
         from flask import Blueprint
         from pypnusershub.routes import check_auth_cruved
-        from pypnusershub.db.tools import get_or_fetch_user_cruved
+        from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
         from geonature.utils.utilssqlalchemy import json_resp
 
         blueprint = Blueprint(__name__)
@@ -475,13 +475,12 @@ params :
             # Récupérer l'id de l'utilisateur qui demande la route
             id_role = info_role.id_role
             # Récupérer la portée autorisée à l'utilisateur pour l'action 'R' (read)
-            read_scope = info_role.tag_object_code
+            read_scope = info_role.value_filter
             #récupérer le CRUVED complet de l'utilisateur courant
             user_cruved = get_or_fetch_user_cruved(
                     session=session,
                     id_role=info_role.id_role,
-                    id_application=ID_MODULE,
-                    id_application_parent=current_app.config['ID_APPLICATION_GEONATURE']
+                    module_code=MY_MODULE_CODE,
             )
             return {'result': 'id_role = {}'.format(info_role.id_role)}
 

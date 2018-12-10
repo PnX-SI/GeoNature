@@ -60,6 +60,12 @@ def get_app(config, _app=None, with_external_mods=True):
         app.register_blueprint(routes, url_prefix='/nomenclatures')
         from pypnnomenclature.admin import admin
 
+        from geonature.core.gn_permissions.routes import routes
+        app.register_blueprint(routes, url_prefix='/permissions')
+
+        from geonature.core.gn_permissions.backoffice.views import routes
+        app.register_blueprint(routes, url_prefix='/permissions_backoffice')
+
         from geonature.core.routes import routes
         app.register_blueprint(routes, url_prefix='')
 
@@ -79,7 +85,7 @@ def get_app(config, _app=None, with_external_mods=True):
         app.register_blueprint(routes, url_prefix='/exports')
 
         from geonature.core.auth.routes import routes
-        app.register_blueprint(routes, url_prefix='/auth_cas')
+        app.register_blueprint(routes, url_prefix='/gn_auth')
 
         from geonature.core.gn_monitoring.routes import routes
         app.register_blueprint(routes, url_prefix='/gn_monitoring')

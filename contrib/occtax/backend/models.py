@@ -10,7 +10,7 @@ from geonature.utils.utilssqlalchemy import (
     serializable, geoserializable
 )
 from geonature.utils.env import DB
-from geonature.utils.errors import InsufficientRightsError
+from pypnusershub.db.tools import InsufficientRightsError
 from pypnusershub.db.models import User
 from geonature.core.gn_meta.models import TDatasets
 
@@ -64,12 +64,12 @@ class ReleveModel(DB.Model):
             params:
                 user: object from TRole
         """
-        if self.user_is_allowed_to(user, user.tag_object_code):
+        if self.user_is_allowed_to(user, user.value_filter):
             return self
 
         raise InsufficientRightsError(
             ('User "{}" cannot "{}" this current releve')
-            .format(user.id_role, user.tag_action_code),
+            .format(user.id_role, user.code_action),
             403
         )
 

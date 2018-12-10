@@ -149,7 +149,6 @@ def import_requirements(req_file):
             if pip.main(["install", req]) == 1:
                 raise Exception('Package {} not installed'.format(req))
 
-
 def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
     """
         Get all the module enabled from gn_commons.t_modules
@@ -163,8 +162,8 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
         module_info = {}
         enabled_modules_name = []
         for mod in modules:
-            enabled_modules_name.append(mod.module_name)
-            module_info[mod.module_name] = {
+            enabled_modules_name.append(mod.module_code)
+            module_info[mod.module_code] = {
                 'id_module': mod.id_module,
                 'id_application':mod.id_module,
                 'api_url': '/'+ mod.module_path.replace(" ", "")
@@ -177,16 +176,15 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
                 str(f / 'manifest.toml'),
                 ManifestSchemaProdConf
             )
-            module_name = conf_manifest['module_name']
-            if module_name in enabled_modules_name:
+            module_code = conf_manifest['module_code']
+            if module_code in enabled_modules_name:
 
                 # import du module dans le sys.path
-                module_path = Path(GN_EXTERNAL_MODULE / module_name)
+                module_path = Path(GN_EXTERNAL_MODULE / module_code.lower())
                 module_parent_dir = str(module_path.parent)
                 module_import_name = "{}.config.conf_schema_toml".format(module_path.name)
                 sys.path.insert(0, module_parent_dir)
-                module = __import__(module_import_name, globals=globals())
-
+                module = __import__(module_import_name)
                 # get and validate the module config
                 class GnModuleSchemaProdConf(
                         module.config.conf_schema_toml.GnModuleSchemaConf,
@@ -198,15 +196,15 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
                 )
 
                 # add id_module and url_path to the module config
-                update_module_config = dict(conf_module, **module_info.get(module_name))
+                update_module_config = dict(conf_module, **module_info.get(module_code))
                 # register the module conf in the app config
-                app.config[module_name] = update_module_config        
+                app.config[module_code] = update_module_config        
 
                 # import the blueprint
-                module_name = "{}.backend.blueprint".format(module_path.name)
-                module_blueprint = __import__(module_name, globals=globals())
+                python_module_name = "{}.backend.blueprint".format(module_path.name)
+                module_blueprint = __import__(python_module_name, globals=globals())
                 # register the confif in bluprint.config
-                module_blueprint.backend.blueprint.blueprint.config = update_module_config
+                module.backend.blueprint.blueprint.config = update_module_config
                 sys.path.pop(0)
 
                 yield update_module_config, conf_manifest, module_blueprint
@@ -223,14 +221,4 @@ def list_frontend_enabled_modules(app, mod_path=GN_EXTERNAL_MODULE):
             TModules.active_frontend == True
         ).all()
         for mod in enabled_modules:
-            yield mod.module_path.replace(" ", ""), mod.module_name
-
-
-def get_id_module(app, module_name):
-    # return the id_module
-    # don't raise an exeption to avoid error on install of the module
-    # will cause an error if a string is returned later in the program
-    try:
-        return app.config[module_name]['id_module']
-    except KeyError:
-        return "Impossible de récupérer l'id du module"
+            yield mod.module_path.replace(" ", ""), mod.module_code
