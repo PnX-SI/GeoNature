@@ -1,7 +1,4 @@
-import os
 import datetime
-import json
-import psycopg2
 import logging
 
 from flask import(
@@ -17,11 +14,15 @@ from flask import(
 )
 from sqlalchemy import or_, func, distinct
 from sqlalchemy.orm.exc import NoResultFound
-
 from geojson import FeatureCollection
+from shapely.geometry import asShape
+from geoalchemy2.shape import from_shape
 
 
 from geonature.utils.env import DB, ROOT_DIR
+from pypnusershub.db.models import User
+from pypnusershub.db.tools import InsufficientRightsError
+
 from geonature.utils import filemanager
 from .models import (
     TRelevesOccurrence,
@@ -41,34 +42,18 @@ from geonature.utils.utilssqlalchemy import (
     GenericTable,
     to_json_resp,
     to_csv_resp,
-    serializeQueryTest
 )
-
 from geonature.utils.errors import GeonatureApiError
-from geonature.utils.env import get_id_module
-
 from geonature.core.users.models import UserRigth
-from pypnusershub.db.models import User
 from geonature.core.gn_meta.models import TDatasets, CorDatasetActor
-from pypnusershub.db.tools import (
-    InsufficientRightsError,
-    get_or_fetch_user_cruved,
-)
-from pypnusershub import routes as fnauth
-
-
-from geojson import FeatureCollection
-from shapely.geometry import asShape
-from geoalchemy2.shape import from_shape
+from geonature.core.gn_permissions import decorators as permissions
+from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
 
 blueprint = Blueprint('pr_occtax', __name__)
 log = logging.getLogger(__name__)
 
-
-ID_MODULE = get_id_module(current_app, 'occtax')
-
 @blueprint.route('/releves', methods=['GET'])
-@fnauth.check_auth_cruved('R', True, id_app=ID_MODULE)
+@permissions.check_cruved_scope('R', True, module_code="OCCTAX")
 @json_resp
 def getReleves(info_role):
     releve_repository = ReleveRepository(TRelevesOccurrence)
@@ -77,12 +62,11 @@ def getReleves(info_role):
 
 
 @blueprint.route('/occurrences', methods=['GET'])
-@fnauth.check_auth_cruved('R', id_app=ID_MODULE)
+@permissions.check_cruved_scope('R', module_code="OCCTAX")
 @json_resp
 def getOccurrences():
     q = DB.session.query(TOccurrencesOccurrence)
     data = q.all()
-
     return ([n.as_dict() for n in data])
 
 
@@ -110,12 +94,11 @@ def getOneCounting(id_counting):
         return None
     counting = data[0].as_dict()
     counting['id_releve'] = data[1]
-
     return counting
 
 
 @blueprint.route('/releve/<int:id_releve>', methods=['GET'])
-@fnauth.check_auth_cruved('R', True, id_app=ID_MODULE)
+@permissions.check_cruved_scope('R', True, module_code="OCCTAX")
 @json_resp
 def getOneReleve(id_releve, info_role):
     releve_repository = ReleveRepository(TRelevesOccurrence)
@@ -123,8 +106,7 @@ def getOneReleve(id_releve, info_role):
     user_cruved = get_or_fetch_user_cruved(
         session=session,
         id_role=info_role.id_role,
-        id_application=ID_MODULE,
-        id_application_parent=current_app.config['ID_APPLICATION_GEONATURE']
+        module_code='OCCTAX',
     )
     releve_cruved = data.get_releve_cruved(info_role, user_cruved)
     return {
@@ -134,11 +116,7 @@ def getOneReleve(id_releve, info_role):
 
 
 @blueprint.route('/vreleveocctax', methods=['GET'])
-@fnauth.check_auth_cruved(
-    'R',
-    True,
-    id_app=ID_MODULE,
-)
+@permissions.check_cruved_scope('R', True, module_code="OCCTAX")
 @json_resp
 def getViewReleveOccurrence(info_role):
     releve_repository = ReleveRepository(VReleveOccurrence)
@@ -181,7 +159,7 @@ def getViewReleveOccurrence(info_role):
     user_cruved = get_or_fetch_user_cruved(
         session=session,
         id_role=info_role.id_role,
-        id_application=ID_MODULE,
+        module_code='OCCTAX',
         id_application_parent=current_app.config['ID_APPLICATION_GEONATURE']
     )
     featureCollection = []
@@ -201,11 +179,7 @@ def getViewReleveOccurrence(info_role):
 
 
 @blueprint.route('/vreleve', methods=['GET'])
-@fnauth.check_auth_cruved(
-    'R',
-    True,
-    id_app=ID_MODULE
-)
+@permissions.check_cruved_scope('R', True, module_code="OCCTAX")
 @json_resp
 def getViewReleveList(info_role):
     """
@@ -272,8 +246,7 @@ def getViewReleveList(info_role):
     user_cruved = get_or_fetch_user_cruved(
         session=session,
         id_role=info_role.id_role,
-        id_application=ID_MODULE,
-        id_application_parent=current_app.config['ID_APPLICATION_GEONATURE']
+        module_code='OCCTAX',
     )
     featureCollection = []
     for n in data:
@@ -291,7 +264,7 @@ def getViewReleveList(info_role):
 
 
 @blueprint.route('/releve', methods=['POST'])
-@fnauth.check_auth_cruved('C', True, id_app=ID_MODULE)
+@permissions.check_cruved_scope('C', True, module_code="OCCTAX")
 @json_resp
 def insertOrUpdateOneReleve(info_role):
     releveRepository = ReleveRepository(TRelevesOccurrence)
@@ -354,15 +327,14 @@ def insertOrUpdateOneReleve(info_role):
         user_cruved = get_or_fetch_user_cruved(
             session=session,
             id_role=info_role.id_role,
-            id_application=ID_MODULE,
-            id_application_parent=current_app.config['ID_APPLICATION_GEONATURE']
+            module_code='OCCTAX',
         )
-        update_data_scope = user_cruved['U']
-        # info_role.tag_object_code = update_data_scope
+        update_code_filter = user_cruved['U']
+        # info_role.code_action = update_data_scope
         user = UserRigth(
             id_role=info_role.id_role,
-            tag_object_code=update_data_scope,
-            tag_action_code="U",
+            value_filter=update_code_filter,
+            code_action="U",
             id_organisme=info_role.id_organisme
         )
         releve = releveRepository.update(releve, user, shape)
@@ -370,7 +342,7 @@ def insertOrUpdateOneReleve(info_role):
     else:
         # set id_digitiser
         releve.id_digitiser = info_role.id_role
-        if info_role.tag_object_code in ('0', '1', '2'):
+        if info_role.value_filter in ('0', '1', '2'):
             # Check if user can add a releve in the current dataset
             allowed = releve.user_is_in_dataset_actor(info_role)
             if not allowed:
@@ -387,7 +359,7 @@ def insertOrUpdateOneReleve(info_role):
 
 
 @blueprint.route('/releve/<int:id_releve>', methods=['DELETE'])
-@fnauth.check_auth_cruved('D', True, id_app=ID_MODULE)
+@permissions.check_cruved_scope('D', True, module_code="OCCTAX")
 @json_resp
 def deleteOneReleve(id_releve, info_role):
     """Suppression d'une données d'un relevé et des occurences associés
@@ -406,7 +378,7 @@ def deleteOneReleve(id_releve, info_role):
 
 
 @blueprint.route('/releve/occurrence/<int:id_occ>', methods=['DELETE'])
-@fnauth.check_auth_cruved('D', id_app=ID_MODULE)
+@permissions.check_cruved_scope('D', module_code="OCCTAX")
 @json_resp
 def deleteOneOccurence(id_occ):
     """Suppression d'une données d'occurrence et des dénombrements associés
@@ -440,7 +412,7 @@ def deleteOneOccurence(id_occ):
 
 
 @blueprint.route('/releve/occurrence_counting/<int:id_count>', methods=['DELETE'])
-@fnauth.check_auth_cruved('D', id_app=ID_MODULE)
+@permissions.check_cruved_scope('R', module_code="OCCTAX")
 @json_resp
 def deleteOneOccurenceCounting(id_count):
     """Suppression d'une données de dénombrement
@@ -511,10 +483,10 @@ def getDefaultNomenclatures():
 
 
 @blueprint.route('/export', methods=['GET'])
-@fnauth.check_auth_cruved(
+@permissions.check_cruved_scope(
     'E',
     True,
-    id_app=ID_MODULE,
+    module_code="OCCTAX",
     redirect_on_expiration=current_app.config.get('URL_APPLICATION')
 )
 def export(info_role):
@@ -583,7 +555,13 @@ def export(info_role):
             redirect=current_app.config['URL_APPLICATION']+"/#/occtax"
         )
 
+
+
+
 @blueprint.route('/test', methods=['GET'])
 def test():
-    print(blueprint.config['id_application'])
-    return 'la'
+    test = cruved_scope_for_user_in_module(
+        id_role=1,
+        module_code='OCCTAX'
+    )
+    return 'LAAAA'

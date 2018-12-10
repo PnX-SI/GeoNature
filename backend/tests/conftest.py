@@ -22,6 +22,9 @@ def pytest_sessionstart(session):
     execute_script('sample_data.sql')
 
 
+
+
+
 def execute_script(file_name):
     """ 
         Execute a script to set or delete sample data before test

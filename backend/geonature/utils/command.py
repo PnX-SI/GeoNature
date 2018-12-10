@@ -76,8 +76,8 @@ def frontend_routes_templating(app=None):
     ) as input_file:
         template = Template(input_file.read())
         routes = []
-        for url_path, module_name in list_frontend_enabled_modules(app):
-            location = Path(GN_EXTERNAL_MODULE / module_name)
+        for url_path, module_code in list_frontend_enabled_modules(app):
+            location = Path(GN_EXTERNAL_MODULE / module_code.lower())
             # test if module have frontend
             if (location / 'frontend').is_dir():
                 path = url_path.lstrip('/')
@@ -85,7 +85,7 @@ def frontend_routes_templating(app=None):
                     location.resolve(), GN_MODULE_FE_FILE
                 )
                 routes.append(
-                    {'path': path, 'location': location, 'module_name': module_name}
+                    {'path': path, 'location': location, 'module_code': module_code}
                 )
 
             # TODO test if two modules with the same name is okay for Angular

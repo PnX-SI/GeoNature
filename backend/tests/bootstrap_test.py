@@ -17,6 +17,7 @@ def app():
     config = load_config(config_path)
     app = server.get_app(config)
     app.config['TESTING'] = True
+    app.config['WTF_CSRF_ENABLED'] = False
     return app
 
 
@@ -42,7 +43,6 @@ def get_token(client, login="admin", password="admin"):
         'login': login,
         'password': password,
         'id_application': current_app.config['ID_APPLICATION_GEONATURE'],
-        'with_cruved': True
     }
     response = client.post(
         url_for('auth.login'),

@@ -65,19 +65,12 @@ log = logging.getLogger(__name__)
     required=False,
     default=True
 )
-@click.option(
-    '--module_id',
-    type=int,
-    required=False,
-    default=None
-)
-def install_gn_module(module_path, url, conf_file, build, module_id):
+def install_gn_module(module_path, url, conf_file, build):
     """
         Installation d'un module gn
     """
     from geonature.core.gn_commons.models import TModules
     # Installation du module
-    module_name = ''
     try:
         # Vérification que le chemin module path soit correct
         if not Path(module_path).is_dir():
@@ -92,10 +85,10 @@ def install_gn_module(module_path, url, conf_file, build, module_id):
 
             #   Vérification de la version de geonature par rapport au manifest
             try:
-                module_name = check_manifest(module_path)
+                module_code = check_manifest(module_path)
                 # Vérification que le module n'est pas déjà activé
                 mod = DB.session.query(TModules).filter(
-                    TModules.module_name == module_name
+                    TModules.module_code == module_code
                 ).one()
 
             except NoResultFound:
@@ -106,52 +99,44 @@ def install_gn_module(module_path, url, conf_file, build, module_id):
                 #   installation
                 #   front end
                 #   backend
-                check_codefile_validity(module_path, module_name)
+                check_codefile_validity(module_path, module_code)
 
                 # Installation du module
-                run_install_gn_module(app, module_path, module_name, url)
-
-                # ajout du module dans la table utilisateurs.t_application and gn_commons.t_modules
-                module_id = add_application_db(module_name, url, module_id)
+                run_install_gn_module(app, module_path)
 
                 # copie dans external mods:
-                copy_in_external_mods(module_path, module_name)
-
-                # Enregistrement de la config du module
-                gn_module_register_config(module_name, url, module_id)
+                copy_in_external_mods(module_path, module_code.lower())
 
                 # creation du lien symbolique des assets externes
-                frontend = create_external_assets_symlink(
-                    module_path, module_name
+                enable_frontend = create_external_assets_symlink(
+                    module_path, module_code.lower()
                 )
+                # ajout du module dans la table gn_commons.t_modules
+                add_application_db(app, module_code, url, enable_frontend)
+                
+                # Enregistrement de la config du module
+                gn_module_register_config(module_code.lower())
 
-                if frontend:
+                if enable_frontend:
                     # generation du du routing du frontend
                     frontend_routes_templating(app)
                     # generation du fichier de configuration du frontend
-                    create_module_config(app, module_name, module_path, build=False)
-                else:
-                    module = DB.session.query(TModules).filter(
-                        TModules.id_module == module_id
-                    ).one()
-                    module.active_frontend = False
-                    DB.session.add(module)
-                    DB.session.commit()
+                    create_module_config(app, module_code.lower(), module_path, build=False)
 
-                if build and frontend:
+                if build and enable_frontend:
                     # Rebuild the frontend
                     build_geonature_front(rebuild_sass=True)
             else:
-                raise GeoNatureError('The module {} is already installed, but maybe not activated'.format(module_name))  # noqa
+                raise GeoNatureError('The module {} is already installed, but maybe not activated'.format(module_code))  # noqa
 
     except (GNModuleInstallError, GeoNatureError) as ex:
         log.critical((
             "\n\n\033[91mError while installing GN module '{}'\033[0m.The process returned:\n\t{}"
-        ).format(module_name, ex))
+        ).format(module_code, ex))
         sys.exit(1)
 
 
-def run_install_gn_module(app, module_path, module_name, url):
+def run_install_gn_module(app, module_path):
     '''
         Installation du module en executant :
             configurations
@@ -160,18 +145,7 @@ def run_install_gn_module(app, module_path, module_name, url):
             install_db.py
             install_app.py
     '''
-    #   configs
-    try:
-        from conf_schema_toml import GnModuleSchemaConf
-        load_and_validate_toml(
-            Path(module_path) / "config/conf_gn_module.toml",
-            GnModuleSchemaConf
-        )
-    except ImportError:
-        log.info('No specific config file')
-        pass
 
-    #   requirements
     gn_module_import_requirements(module_path)
 
     #   ENV
@@ -195,7 +169,6 @@ def run_install_gn_module(app, module_path, module_name, url):
             # TODO: try to make it executable
             # TODO: change exception type
             # TODO: make error message
-            # TODO: change print to log
             raise GNModuleInstallError(
                 "File {} not excecutable".format(str(gn_file))
             )
@@ -222,8 +195,8 @@ def run_install_gn_module(app, module_path, module_name, url):
     default=True
 )
 @main.command()
-@click.argument('module_name')
-def activate_gn_module(module_name, frontend, backend):
+@click.argument('module_code')
+def activate_gn_module(module_code, frontend, backend):
     """
         Active un module gn installé
 
@@ -235,7 +208,7 @@ def activate_gn_module(module_name, frontend, backend):
 
     """
     # TODO vérifier que l'utilisateur est root ou du groupe geonature
-    gn_module_activate(module_name, frontend, backend)
+    gn_module_activate(module_code.upper(), frontend, backend)
 
 
 @click.option(
@@ -251,8 +224,8 @@ def activate_gn_module(module_name, frontend, backend):
     default=True
 )
 @main.command()
-@click.argument('module_name')
-def deactivate_gn_module(module_name, frontend, backend):
+@click.argument('module_code')
+def deactivate_gn_module(module_code, frontend, backend):
     """
         Desactive un module gn activé
 
@@ -265,11 +238,11 @@ def deactivate_gn_module(module_name, frontend, backend):
 
     """
     # TODO vérifier que l'utilisateur est root ou du groupe geonature
-    gn_module_deactivate(module_name, frontend, backend)
+    gn_module_deactivate(module_code.upper(), frontend, backend)
 
 
 @main.command()
-@click.argument('module_name')
+@click.argument('module_code')
 @click.option(
     '--build',
     type=bool,
@@ -282,7 +255,7 @@ def deactivate_gn_module(module_name, frontend, backend):
     required=False,
     default=True
 )
-def update_module_configuration(module_name, build, prod):
+def update_module_configuration(module_code, build, prod):
     """
         Génère la config frontend d'un module
 
@@ -296,4 +269,4 @@ def update_module_configuration(module_name, build, prod):
     if prod:
         subprocess.call(['sudo', 'supervisorctl', 'reload'])
     app = get_app_for_cmd(with_external_mods=False)
-    create_module_config(app, module_name, build=build)
+    create_module_config(app, module_code.lower(), build=build)

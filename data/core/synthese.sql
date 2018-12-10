@@ -311,7 +311,7 @@ ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_source FOREIGN KEY (id_source) REFERENCES t_sources(id_source) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_id_module FOREIGN KEY (id_module) REFERENCES utilisateurs.t_applications(id_application) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_synthese_id_module FOREIGN KEY (id_module) REFERENCES gn_commons.t_modules(id_module) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_cd_nom FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
@@ -929,12 +929,6 @@ CREATE TRIGGER trg_refresh_taxons_forautocomplete
 --DATA--
 --------
 
--- insertion dans utilisateurs.t_applications et gn_commons.t_modules
-INSERT INTO utilisateurs.t_applications (nom_application, desc_application, id_parent)
-SELECT 'synthese', 'Application synthese de GeoNature', id_application
-FROM utilisateurs.t_applications WHERE nom_application = 'GeoNature';
-
-INSERT INTO gn_commons.t_modules (id_module, module_name, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend)
-SELECT id_application ,'synthese', 'Synthese', 'fa-search', 'Application synthese', 'synthese', '_self', '', 'true', 'true'
-FROM utilisateurs.t_applications WHERE nom_application = 'synthese';
+INSERT INTO gn_commons.t_modules (module_code, module_label, module_picto, module_desc, module_path, module_target, active_frontend, active_backend) VALUES
+('synthese', 'SYNTHESE', 'fa-search', 'Application synthese', '/synthese', '_self', 'true', 'true');
 

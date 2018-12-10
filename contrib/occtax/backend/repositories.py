@@ -66,7 +66,7 @@ class ReleveRepository():
 
     def filter_query_with_autorization(self, user):
         q = DB.session.query(self.model)
-        if user.tag_object_code == '2':
+        if user.value_filter == '2':
             allowed_datasets = TDatasets.get_user_datasets(user)
             q = q.filter(
                 or_(
@@ -75,7 +75,7 @@ class ReleveRepository():
                     self.model.id_digitiser == user.id_role
                 )
             )
-        elif user.tag_object_code == '1':
+        elif user.value_filter == '1':
             q = q.filter(
                 or_(
                     self.model.observers.any(id_role=user.id_role),
@@ -90,10 +90,10 @@ class ReleveRepository():
         from a generic_table (a view)
         """
         q = DB.session.query(self.model.tableDef)
-        if user.tag_object_code in ('1', '2'):
+        if user.value_filter in ('1', '2'):
             q = q.outerjoin(corRoleRelevesOccurrence, self.model.tableDef.columns.id_releve_occtax ==
                             corRoleRelevesOccurrence.columns.id_releve_occtax)
-            if user.tag_object_code == '2':
+            if user.value_filter == '2':
                 allowed_datasets = TDatasets.get_user_datasets(user)
                 q = q.filter(
                     or_(
@@ -102,7 +102,7 @@ class ReleveRepository():
                         self.model.tableDef.columns.id_digitiser == user.id_role
                     )
                 )
-            elif user.tag_object_code == '1':
+            elif user.value_filter == '1':
                 q = q.filter(
                     or_(
                         corRoleRelevesOccurrence.columns.id_role == user.id_role,

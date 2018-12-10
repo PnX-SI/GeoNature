@@ -46,54 +46,80 @@ SELECT pg_catalog.setval('gn_meta.cor_dataset_actor_id_cda_seq', (SELECT max(id_
 
 -- Utilisateurs
 UPDATE utilisateurs.t_roles SET pass_plus = '$2y$13$TMuRXgvIg6/aAez0lXLLFu0lyPk4m8N55NDhvLoUHh/Ar3rFzjFT.' WHERE id_role IN (2,3);
+
+-- Ajout d'un utiliseur 'socle 1' avec l'id 10
+DELETE FROM utilisateurs.t_roles WHERE id_role=10;
+INSERT INTO utilisateurs.t_roles(id_role, groupe, nom_role) VALUES
+(10, TRUE, 'groupe_socle_1');
+
+-- Ajout des utilisateurs agent et admin
+INSERT INTO utilisateurs.cor_role_app_profil VALUES
+  (1,3,6),
+  (2,3,6),
+  (3,3,6)
+;
 -- Ajout d'un utilisateurs partenaire avec comme cruved R=1
-INSERT INTO utilisateurs.cor_app_privileges(id_tag_action, id_tag_object, id_application, id_role) VALUES
-(12,21,3,3);
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action, id_filter, id_module, id_object) VALUES
+(3,2,2,3,1);
+
 
 -- Reset original privileges
-INSERT INTO utilisateurs.cor_app_privileges (id_tag_action, id_tag_object, id_application, id_role) VALUES
---Administrateur sur UsersHub et TaxHub / Non utilisé
-(6,23,1,1)
-,(6,23,2,1)
---- Groupe administrateur sur UsersHub et TaxHub / Non utilisé
-,(6,23,1,9)
-,(6,23,2,9)
---Administrateur sur GeoNature
-,(11, 23, 3, 1)
-,(12, 23, 3, 1)
-,(13, 23, 3, 1)
-,(14, 23, 3, 1)
-,(15, 23, 3, 1)
-,(16, 23, 3, 1)
---- Groupe administrateur sur GeoNature
-,(11, 23, 3, 9)
-,(12, 23, 3, 9)
-,(13, 23, 3, 9)
-,(14, 23, 3, 9)
-,(15, 23, 3, 9)
-,(16, 23, 3, 9)
---Validateur général sur tout GeoNature
-,(14, 23, 3, 5)
---Validateur pour son organisme sur Occtax
---,(14, 22, 4, 4) -- Droits Occtax supprimés car c'est l'installation du module qui créé l'application
---CRUVED du groupe en poste sur tout GeoNature
-,(11, 23, 3, 7)
-,(12, 22, 3, 7)
-,(13, 21, 3, 7)
-,(15, 22, 3, 7)
-,(16, 21, 3, 7)
---Groupe bureau d''étude socle 2 sur tout GeoNature
-,(11, 23, 3, 6)
-,(12, 22, 3, 6)
-,(13, 21, 3, 6)
-,(15, 22, 3, 6)
-,(16, 21, 3, 6)
---Groupe bureau d''étude socle 1 sur tout GeoNature
-,(11, 23, 3, 8)
-,(12, 21, 3, 8)
-,(13, 21, 3, 8)
-,(15, 21, 3, 8)
-,(16, 21, 3, 8)
+INSERT INTO gn_permissions.cor_role_action_filter_module_object
+    (
+    id_role,
+    id_action,
+    id_filter,
+    id_module,
+    id_object
+    ) 
+    VALUES
+    -- Admin: C:3, R:3, U:3, V:3, E:3, D:3 sur GeoNature
+    (1, 1, 4, 0, 1),
+    (1, 2, 4, 0, 1),
+    (1, 3, 4, 0, 1),
+    (1, 4, 4, 0, 1),
+    (1, 5, 4, 0, 1),
+    (1, 6, 4, 0, 1),
+    -- groupe Admin
+    (9, 1, 4, 0, 1),
+    (9, 2, 4, 0, 1),
+    (9, 3, 4, 0, 1),
+    (9, 4, 4, 0, 1),
+    (9, 5, 4, 0, 1),
+    (9, 6, 4, 0, 1),
+    --Validateur général sur tout GeoNature
+    (5, 4, 4, 0, 1 ),
+    --CRUVED du groupe en poste (id=7) sur tout GeoNature 
+    (7, 1, 4, 0, 1),
+    (7, 2, 3, 0, 1),
+    (7, 3, 2, 0, 1),
+    (7, 4, 1, 0, 1),
+    (7, 5, 3, 0, 1),
+    (7, 6, 2, 0, 1),
+    -- socle 1 peut agir que sur ses données
+    (10, 1, 2, 0, 1),
+    (10, 2, 2, 0, 1),
+    (10, 3, 2, 0, 1),
+    (10, 4, 2, 0, 1),
+    (10, 5, 2, 0, 1),
+    (10, 6, 2, 0, 1),
+    -- partenaire avec cruved de 1
+    (3, 2, 2, 0, 1),
+    -- ADMIN peut gérer les permissions du backoffice
+    (9, 1, 4, 1, 3),
+    (9, 2, 4, 1, 3),
+    (9, 3, 4, 1, 3),
+    (9, 4, 4, 1, 3),
+    (9, 5, 4, 1, 3),
+    (9, 6, 4, 1, 3),
+    -- ADMIN peut gérer les métadonnées du backoffice
+    (9, 1, 4, 1, 2),
+    (9, 2, 4, 1, 2),
+    (9, 3, 4, 1, 2),
+    (9, 4, 4, 1, 2),
+    (9, 5, 4, 1, 2),
+    (9, 6, 4, 1, 2)
+  
 ;
 
 

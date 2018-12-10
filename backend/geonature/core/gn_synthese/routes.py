@@ -31,7 +31,7 @@ from geonature.core.gn_synthese.utils import query as synthese_query
 
 from geonature.core.gn_meta.models import TDatasets
 
-from pypnusershub import routes as fnauth
+from geonature.core.gn_permissions import decorators as permissions
 
 from geonature.utils.utilssqlalchemy import (
     to_csv_resp, to_json_resp,
@@ -105,7 +105,7 @@ def getDefaultsNomenclatures():
 
 
 @routes.route('', methods=['GET'])
-@fnauth.check_auth_cruved('R', True)
+@permissions.check_cruved_scope('R', True, module_code='SYNTHESE')
 @json_resp
 def get_synthese(info_role):
     """
@@ -163,7 +163,7 @@ def get_one_synthese(id_synthese):
 
 
 @routes.route('/<id_synthese>', methods=['DELETE'])
-@fnauth.check_auth_cruved('D', True)
+@permissions.check_cruved_scope('D', True, module_code='SYNTHESE')
 @json_resp
 def delete_synthese(info_role, id_synthese):
     synthese_obs = DB.session.query(Synthese).get(id_synthese)
@@ -195,7 +195,7 @@ def delete_synthese(info_role, id_synthese):
 
 
 @routes.route('/export', methods=['GET'])
-@fnauth.check_auth_cruved('E', True)
+@permissions.check_cruved_scope('E', True, module_code='SYNTHESE')
 def export(info_role):
     filters = dict(request.args)
     if 'limit' in filters:
@@ -263,7 +263,7 @@ def export(info_role):
 
 
 @routes.route('/statuts', methods=['GET'])
-@fnauth.check_auth_cruved('E', True)
+@permissions.check_cruved_scope('E', True, module_code='SYNTHESE')
 def get_status(info_role):
     """
     Route to get all the protection status of a synthese search

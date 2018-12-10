@@ -9,8 +9,8 @@ import requests
 from flask import session
 
 from geonature.core.users.models import UserRigth
-from geonature.utils.errors import InsufficientRightsError
-from pypnusershub.db.tools import get_or_fetch_user_cruved
+from pypnusershub.db.tools import InsufficientRightsError
+from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 
 from .bootstrap_test import app
 
@@ -38,27 +38,24 @@ valide_occ_tax_releve = {
 user_admin = {
     'id_role': 1,
     'id_organisme': 1,
-    'tag_action_code': 'R',
-    'tag_object_code': '3',
-    'id_application': 3
+    'code_action': 'R',
+    'value_filter': '3',
 }
 
 # has only right on dataset 2
 user_agent = {
     'id_role': 2,
     'id_organisme': -1,
-    'tag_action_code': 'R',
-    'tag_object_code': '2',
-    'id_application': 3
+    'code_action': 'R',
+    'value_filter': '2',
 }
 
 # can see only its data
 user_low = {
     'id_role': 125,
     'id_organisme': -1,
-    'tag_action_code': 'R',
-    'tag_object_code': '1',
-    'id_application': 3
+    'code_action': 'R',
+    'value_filter': '1',
 }
 
 
@@ -137,15 +134,14 @@ class TestReleveModel:
         user_hight = UserRigth(**user_admin)
         releveInstance = VReleveList(**valide_occ_tax_releve)
 
-        user_cruved = get_or_fetch_user_cruved(
-            session=session,
-            id_role=user_hight.id_role,
-            id_application=6,
-            id_application_parent=3
+        user_cruved, herited = cruved_scope_for_user_in_module(
+           id_role=user_hight.id_role,
+            module_code='OCCTAX'
         )
         cruved = {'R': '3', 'E': '3', 'C': '3', 'V': '3', 'D': '3', 'U': '3'}
 
         assert cruved == user_cruved
+        assert herited == True
 
         releve_cruved = releveInstance.get_releve_cruved(user_hight, cruved)
 

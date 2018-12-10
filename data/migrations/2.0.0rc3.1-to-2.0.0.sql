@@ -33,15 +33,15 @@ COST 100;
 --USAGE
 --SELECT gn_commons.role_is_group(1);
 
-CREATE OR REPLACE FUNCTION gn_commons.get_id_module_byname(mymodule text)
+CREATE OR REPLACE FUNCTION gn_commons.get_id_module_bycode(mymodule text)
   RETURNS integer AS
 $BODY$
 DECLARE
 	theidmodule integer;
 BEGIN
-  --Retrouver l'id du module par son nom. L'id_module est le même que l'id_application correspondant dans utilisateurs.t_applications
+  --Retrouver l'id du module par son nomcode.
   SELECT INTO theidmodule id_module FROM gn_commons.t_modules
-	WHERE "module_name" ILIKE mymodule;
+	WHERE "module_code" ILIKE mymodule;
   RETURN theidmodule;
 END;
 $BODY$
@@ -77,6 +77,41 @@ UPDATE gn_commons.t_validations SET validation_auto = true;
 ALTER TABLE gn_commons.t_validations ALTER COLUMN validation_auto SET NOT NULL;
 
 
+ALTER TABLE gn_commons.t_modules ADD COLUMN module_code character varying(50);
+
+-- UPDATE colonne module_code
+UPDATE gn_commons.t_modules SET module_code = 'OCCTAX' WHERE module_name ILIKE 'occtax'; 
+UPDATE gn_commons.t_modules SET module_code = 'ADMIN' WHERE module_name ILIKE 'admin'; 
+UPDATE gn_commons.t_modules SET module_code = 'EXPORTS' WHERE module_name ILIKE 'exports'; 
+UPDATE gn_commons.t_modules SET module_code = 'VALIDATION' WHERE module_name ILIKE 'gn_module_validation'; 
+UPDATE gn_commons.t_modules SET module_code = 'SFT' WHERE module_name ILIKE 'suivi_flore_territoire'; 
+UPDATE gn_commons.t_modules SET module_code = 'SUIVI_OEDIC' WHERE module_name ILIKE 'suivi_oedic'; 
+UPDATE gn_commons.t_modules SET module_code = 'SUIVI_CHIRO' WHERE module_name ILIKE 'suivi_chiro'; 
+UPDATE gn_commons.t_modules SET module_code = 'SYNTHESE' WHERE module_name ILIKE 'synthese'; 
+
+ALTER TABLE gn_commons.t_modules DROP COLUMN module_name;
+ALTER TABLE gn_commons.t_modules DROP CONSTRAINT fk_t_modules_utilisateurs_t_applications;
+
+
+CREATE SEQUENCE gn_commons.t_modules_id_module_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE gn_commons.t_modules_id_module_seq OWNED BY gn_commons.t_modules.id_module;
+ALTER TABLE ONLY gn_commons.t_modules ALTER COLUMN id_module SET DEFAULT nextval('gn_commons.t_modules_id_module_seq'::regclass);
+
+SELECT pg_catalog.setval('gn_commons.t_modules_id_module_seq', (SELECT MAX(id_module + 1) FROM gn_commons.t_modules), TRUE);
+
+ALTER TABLE gn_commons.t_modules ALTER COLUMN module_code SET NOT NULL;
+
+-- Insertion du module parent: GEONATURE
+INSERT INTO gn_commons.t_modules(id_module, module_code, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend) VALUES
+(0, 'GEONATURE', 'GeoNature', '', 'Module parent de tous les modules sur lequel on peut associer un CRUVED. NB: mettre active_frontend et active_backend à false pour qu''il ne s''affiche pas dans la barre latérale des modules', '/geonature', '', '', FALSE, FALSE)
+;
+
+
 --------
 --META--
 --------
@@ -100,10 +135,10 @@ COMMENT ON COLUMN gn_synthese.synthese.id_source
   IS 'Permet d''identifier la localisation de l''enregistrement correspondant dans les schémas et tables de la base';
 
 ALTER TABLE ONLY gn_synthese.synthese
-    ADD CONSTRAINT fk_synthese_id_module FOREIGN KEY (id_module) REFERENCES utilisateurs.t_applications(id_application) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_synthese_id_module FOREIGN KEY (id_module) REFERENCES gn_commons.t_modules(id_module) ON UPDATE CASCADE;
 
 UPDATE gn_synthese.synthese 
-SET id_module = (SELECT gn_commons.get_id_module_byname('occtax'))
+SET id_module = (SELECT gn_commons.get_id_module_bycode('OCCTAX'))
 WHERE id_source = (SELECT id_source FROM gn_synthese.t_sources WHERE name_source = 'Occtax' LIMIT 1);
 --Si vous avez insérer des données provenant d'une autre source que occtax, 
 --vous devez gérer vous même le champ id_module des enregistrements correspondants.
@@ -305,7 +340,7 @@ SELECT INTO releve * FROM pr_occtax.t_releves_occtax rel WHERE occurrence.id_rel
 SELECT INTO id_source s.id_source FROM gn_synthese.t_sources s WHERE name_source ILIKE 'occtax';
 
 -- Récupération de l'id_module
-SELECT INTO id_module gn_commons.get_id_module_byname('occtax');
+SELECT INTO id_module gn_commons.get_id_module_bycode('OCCTAX');
 
 -- Récupération du status de validation du counting dans la table t_validation
 SELECT INTO validation v.*, CONCAT(r.nom_role, r.prenom_role) as validator_full_name
@@ -432,3 +467,331 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+
+
+
+
+-- Creation de GN_PERMISSIONS
+
+CREATE SCHEMA gn_permissions;
+---------
+--TABLE--
+---------
+
+CREATE TABLE gn_permissions.t_actions(
+    id_action serial NOT NULL,
+    code_action character varying(50) NOT NULL,
+    description_action text
+);
+
+CREATE TABLE gn_permissions.bib_filters_type(
+    id_filter_type serial NOT NULL,
+    code_filter_type character varying(50) NOT NULL,
+    label_filter_type character varying(255) NOT NULL,
+    description_filter_type text
+);
+
+CREATE TABLE gn_permissions.t_filters(
+    id_filter serial NOT NULL,
+    label_filter character varying(255) NOT NULL,
+    value_filter text NOT NULL,
+    description_filter text,
+    id_filter_type integer NOT NULL
+);
+
+CREATE TABLE gn_permissions.t_objects(
+    id_object serial NOT NULL,
+    code_object character varying(50) NOT NULL,
+    description_object text
+);
+
+-- un objet peut être utilisé dans plusieurs modules
+-- ex: TDataset en lecture dans occtax, admin ...
+CREATE TABLE gn_permissions.cor_object_module(
+    id_cor_object_module serial NOT NULL,
+    id_object integer NOT NULL,
+    id_module integer NOT NULL
+);
+
+CREATE TABLE gn_permissions.cor_role_action_filter_module_object(
+    id_role integer NOT NULL,
+    id_action integer NOT NULL,
+    id_filter integer NOT NULL,
+    id_module integer NOT NULL,
+    id_object integer NOT NULL
+);
+
+
+---------------
+--PRIMARY KEY--
+---------------
+
+ALTER TABLE ONLY gn_permissions.t_actions
+    ADD CONSTRAINT pk_t_actions PRIMARY KEY (id_action);
+
+ALTER TABLE ONLY gn_permissions.t_filters
+    ADD CONSTRAINT pk_t_filters PRIMARY KEY (id_filter);
+
+ALTER TABLE ONLY gn_permissions.bib_filters_type
+    ADD CONSTRAINT pk_bib_filters_type PRIMARY KEY (id_filter_type);
+
+ALTER TABLE ONLY gn_permissions.t_objects
+    ADD CONSTRAINT pk_t_objects PRIMARY KEY (id_object);
+
+ALTER TABLE ONLY gn_permissions.cor_object_module
+    ADD CONSTRAINT pk_cor_object_module PRIMARY KEY (id_cor_object_module);
+
+ALTER TABLE ONLY gn_permissions.cor_role_action_filter_module_object
+    ADD CONSTRAINT pk_cor_r_a_f_m_o PRIMARY KEY (id_role, id_action, id_filter, id_module, id_object);
+
+
+---------------
+--FOREIGN KEY--
+---------------
+
+ALTER TABLE ONLY gn_permissions.t_filters
+  ADD CONSTRAINT  fk_t_filters_id_filter_type FOREIGN KEY (id_filter_type) REFERENCES gn_permissions.bib_filters_type(id_filter_type) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY gn_permissions.cor_object_module
+  ADD CONSTRAINT  fk_cor_object_module_id_module FOREIGN KEY (id_module) REFERENCES gn_commons.t_modules(id_module) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY gn_permissions.cor_object_module
+  ADD CONSTRAINT  fk_cor_object_module_id_object FOREIGN KEY (id_object) REFERENCES gn_permissions.t_objects(id_object) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY gn_permissions.cor_role_action_filter_module_object
+  ADD CONSTRAINT  fk_cor_r_a_f_m_o_id_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY gn_permissions.cor_role_action_filter_module_object
+  ADD CONSTRAINT  fk_cor_r_a_f_m_o_id_action FOREIGN KEY (id_action) REFERENCES gn_permissions.t_actions(id_action) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY gn_permissions.cor_role_action_filter_module_object
+  ADD CONSTRAINT  fk_cor_r_a_f_m_o_id_filter FOREIGN KEY (id_filter) REFERENCES gn_permissions.t_filters(id_filter) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY gn_permissions.cor_role_action_filter_module_object
+  ADD CONSTRAINT  fk_cor_r_a_f_m_o_id_object FOREIGN KEY (id_object) REFERENCES gn_permissions.t_objects(id_object) ON UPDATE CASCADE;
+
+-- migration utilisateurs vers gn_permissions:
+
+-- Vue permettant de retourner les utilisateurs et leur CRUVED pour chaque modules GeoNature
+CREATE OR REPLACE VIEW gn_permissions.v_users_permissions AS 
+ WITH
+ p_user_permission AS (
+  SELECT 
+  u.id_role,
+  u.nom_role,
+  u.prenom_role,
+  u.groupe,
+  u.id_organisme,
+  c_1.id_action,
+  c_1.id_filter,
+  c_1.id_module
+  FROM utilisateurs.t_roles u
+  JOIN gn_permissions.cor_role_action_filter_module_object c_1 ON c_1.id_role = u.id_role
+  WHERE u.groupe = false
+ ),
+ p_groupe_permission AS (
+  SELECT 
+  u.id_role,
+  u.nom_role,
+  u.prenom_role,
+  u.groupe,
+  u.id_organisme,
+  c_1.id_action,
+  c_1.id_filter,
+  c_1.id_module
+  FROM utilisateurs.t_roles u
+  JOIN utilisateurs.cor_roles g ON g.id_role_utilisateur = u.id_role OR g.id_role_groupe=u.id_role
+  JOIN gn_permissions.cor_role_action_filter_module_object c_1 ON c_1.id_role = g.id_role_groupe
+  WHERE (g.id_role_groupe IN (SELECT DISTINCT cor_roles.id_role_groupe FROM utilisateurs.cor_roles)
+  )
+ ),
+ all_user_permission AS (
+  SELECT *
+  FROM p_user_permission
+  UNION
+  SELECT *
+  FROM p_groupe_permission
+)
+-- end with
+-- main query
+ SELECT 
+  v.id_role,
+  v.nom_role,
+  v.prenom_role,
+  v.id_organisme,
+  v.id_module,
+  modules.module_code,
+  v.id_action,
+  v.id_filter,
+  actions.code_action,
+  filters.value_filter,
+  filter_type.code_filter_type,
+  filter_type.id_filter_type
+ FROM all_user_permission v
+ JOIN gn_permissions.t_actions actions ON actions.id_action = v.id_action
+ JOIN gn_permissions.t_filters filters ON filters.id_filter = v.id_filter
+ JOIN gn_permissions.bib_filters_type filter_type ON filters.id_filter_type = filter_type.id_filter_type
+ JOIN gn_commons.t_modules modules ON modules.id_module = v.id_module
+ WHERE v.groupe = false;
+
+
+DROP FUNCTION utilisateurs.can_user_do_in_module(integer, integer, integer, integer);
+DROP FUNCTION utilisateurs.can_user_do_in_module(integer, integer, character varying, integer);
+DROP FUNCTION utilisateurs.user_max_accessible_data_level_in_module(integer, integer, integer);
+DROP FUNCTION utilisateurs.user_max_accessible_data_level_in_module(integer, character varying, integer);
+DROP FUNCTION utilisateurs.find_all_modules_childs(integer);
+
+CREATE OR REPLACE FUNCTION gn_permissions.does_user_have_scope_permission(
+ myuser integer,
+ mycodemodule character varying,
+ myactioncode character varying,
+ myscope integer
+)
+ RETURNS boolean AS
+$BODY$
+-- the function say if the given user can do the requested action in the requested module with its scope level
+-- warning: NO heritage between parent and child module
+-- USAGE : SELECT gn_persmissions.does_user_have_scope_permission(requested_userid,requested_actionid,requested_module_code,requested_scope);
+-- SAMPLE : SELECT gn_permissions.does_user_have_scope_permission(2,'OCCTAX','R',3);
+ BEGIN
+ IF myactioncode IN (
+  SELECT code_action
+  FROM gn_permissions.v_users_permissions
+  WHERE id_role = myuser AND module_code = mycodemodule AND code_action = myactioncode  AND value_filter::int >= myscope AND code_filter_type = 'SCOPE') THEN
+ RETURN true;
+ END IF;
+ RETURN false;
+ END;
+$BODY$
+ LANGUAGE plpgsql IMMUTABLE
+ COST 100;
+
+
+CREATE OR REPLACE FUNCTION gn_permissions.user_max_accessible_data_level_in_module(
+ myuser integer,
+ myactioncode character varying,
+ mymodulecode character varying)
+ RETURNS integer AS
+$BODY$
+DECLARE
+ themaxscopelevel integer;
+-- the function return the max accessible extend of data the given user can access in the requested module
+-- USAGE : SELECT gn_permissions.user_max_accessible_data_level_in_module(requested_userid,requested_actionid,requested_moduleid);
+-- SAMPLE :SELECT gn_permissions.user_max_accessible_data_level_in_module(2,'U','GEONATURE');
+ BEGIN
+ SELECT max(value_filter::int) INTO themaxscopelevel
+  FROM gn_permissions.v_users_permissions
+  WHERE id_role = myuser AND module_code = mymodulecode AND code_action = myactioncode;
+ RETURN themaxscopelevel;
+ END;
+$BODY$
+ LANGUAGE plpgsql IMMUTABLE
+ COST 100;
+
+
+
+CREATE OR REPLACE FUNCTION gn_permissions.cruved_for_user_in_module(
+ myuser integer,
+ mymodulecode character varying
+)
+ RETURNS json AS
+$BODY$
+-- the function return user's CRUVED in the requested module
+-- warning: the function not return the parent CRUVED but only the module cruved - no heritage
+-- USAGE : SELECT utilisateurs.cruved_for_user_in_module(requested_userid,requested_moduleid);
+-- SAMPLE : SELECT utilisateurs.cruved_for_user_in_module(2,3);
+DECLARE
+ thecruved json;
+ BEGIN
+  SELECT array_to_json(array_agg(row)) INTO thecruved
+  FROM (
+  SELECT code_action AS action, max(value_filter::int) AS level
+  FROM gn_permissions.v_users_permissions
+  WHERE id_role = myuser AND module_code = mymodulecode AND code_filter_type = 'SCOPE'
+  GROUP BY code_action) row;
+ RETURN thecruved;
+ END;
+$BODY$
+ LANGUAGE plpgsql IMMUTABLE
+ COST 100;
+
+----------
+-- DATA --
+----------
+
+
+INSERT INTO gn_permissions.t_actions(code_action, description_action) VALUES
+    ('C', 'Action de créer'),
+    ('R', 'Action de lire'),
+    ('U', 'Action de mettre à jour'),
+    ('V', 'Action de valider'),
+    ('E', 'Action d''exporter'),
+    ('D', 'Action de supprimer')
+;
+
+INSERT INTO gn_permissions.bib_filters_type(code_filter_type, label_filter_type, description_filter_type) VALUES
+    ('SCOPE', 'Filtre de type portée','Filtre de type portée'),
+    ('SENSITIVITY', 'Filtre de type sensibilité', 'Filtre de type sensibilité'),
+    ('GEOGRAPHIC', 'Filtre de type géographique', 'Filtre de type géographique')
+;
+
+INSERT INTO gn_permissions.t_filters (value_filter, label_filter, description_filter, id_filter_type)
+SELECT '0', 'Aucune donnée', 'Aucune donnée', id_filter_type
+FROM gn_permissions.bib_filters_type
+WHERE code_filter_type = 'SCOPE';
+
+INSERT INTO gn_permissions.t_filters (value_filter, label_filter, description_filter, id_filter_type)
+SELECT '1', 'Mes données','Mes données', id_filter_type
+FROM gn_permissions.bib_filters_type
+WHERE code_filter_type = 'SCOPE';
+
+INSERT INTO gn_permissions.t_filters (value_filter, label_filter, description_filter, id_filter_type)
+SELECT '2', 'Les données de mon organisme', 'Les données de mon organisme', id_filter_type
+FROM gn_permissions.bib_filters_type
+WHERE code_filter_type = 'SCOPE';
+
+INSERT INTO gn_permissions.t_filters (value_filter, label_filter, description_filter, id_filter_type)
+SELECT '3', 'Toutes les données', 'Toutes les données', id_filter_type
+FROM gn_permissions.bib_filters_type
+WHERE code_filter_type = 'SCOPE';
+
+INSERT INTO gn_permissions.t_objects(code_object, description_object) VALUES 
+    ('ALL', 'Représente tous les objets d''un module'),
+    ('TDatasets', 'Objet dataset')
+;
+
+INSERT INTO gn_permissions.cor_object_module (id_object, id_module)
+SELECT id_object, t.id_module
+FROM gn_permissions.t_objects, gn_commons.t_modules t
+WHERE code_object = 'TDatasets' AND t.module_code = 'OCCTAX';
+
+INSERT INTO gn_permissions.cor_object_module (id_object, id_module)
+SELECT id_object, t.id_module
+FROM gn_permissions.t_objects, gn_commons.t_modules t
+WHERE code_object = 'TDatasets' AND t.module_code = 'ADMIN';
+
+-- Utilisateurs.cor_app_privileges vers gn_persmissions.cor_role_action_filter_module_object
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object (id_role, id_action, id_filter, id_module, id_object)
+SELECT 
+id_role,
+CASE 
+  WHEN id_tag_action =  11 THEN 1
+  WHEN id_tag_action =  12 THEN 2
+  WHEN id_tag_action =  13 THEN 3
+  WHEN id_tag_action =  14 THEN 4
+  WHEN id_tag_action =  15 THEN 5
+  WHEN id_tag_action =  16 THEN 6
+END AS id_action
+,
+CASE 
+  WHEN id_tag_object = 20 THEN 1
+  WHEN id_tag_object = 21 THEN 2
+  WHEN id_tag_object = 22 THEN 3
+  WHEN id_tag_object = 23 THEN 4
+END AS id_filter,
+cor.id_application,
+1
+FROM save.cor_app_privileges cor
+JOIN utilisateurs.t_applications app ON app.id_application = cor.id_application
+WHERE app.code_application = 'GN';

@@ -122,7 +122,7 @@ SELECT INTO releve * FROM pr_occtax.t_releves_occtax rel WHERE occurrence.id_rel
 SELECT INTO id_source s.id_source FROM gn_synthese.t_sources s WHERE name_source ILIKE 'occtax';
 
 -- Récupération de l'id_module
-SELECT INTO id_module gn_commons.get_id_module_byname('occtax');
+SELECT INTO id_module gn_commons.get_id_module_bycode('OCCTAX');
 
 -- Récupération du status de validation du counting dans la table t_validation
 SELECT INTO validation v.*, CONCAT(r.nom_role, r.prenom_role) as validator_full_name
@@ -1131,12 +1131,24 @@ INSERT INTO pr_occtax.defaults_nomenclatures_value (mnemonique_type, id_organism
 
 ;
 
--- @TODO fait dans l'install du schéma utilisateurs - a trancher
+-- Creation d'une liste 'observateur occtax'
+INSERT INTO utilisateurs.t_listes (code_liste, nom_liste, desc_liste)
+VALUES('obsocctax','Observateurs Occtax','Liste des observateurs du module Occtax');
 
--- INSERT INTO utilisateurs.t_menus (nom_menu, desc_menu, id_application) VALUES
--- ('Occtax observateur', 'Liste des observateurs du module Occtax de GeoNature', 
--- (SELECT id_application FROM utilisateurs.t_applications WHERE nom_application = 'GeoNature') )
--- ;
+-- Ajout de l'utilsateur admin dans la liste
+INSERT INTO utilisateurs.cor_role_liste 
+SELECT id_liste, 1
+FROM utilisateurs.t_listes
+WHERE code_liste = 'obsocctax';
+
+INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module_desc, module_path, module_target, active_frontend, active_backend) VALUES
+('OCCTAX', 'Occtax', 'fa-puzzle-piece', 'Application observations occasionnelles ', 'occtax', '_self', TRUE, TRUE)
+;
 
 INSERT INTO gn_synthese.t_sources ( name_source, desc_source, entity_source_pk_field, url_source)
  VALUES ('Occtax', 'Données issues du module Occtax', 'pr_occtax.cor_counting_occtax.id_counting_occtax', '#/occtax/info/id_counting');
+
+INSERT INTO gn_permissions.cor_object_module (id_object, id_module)
+SELECT o.id_object, t.id_module
+FROM gn_permissions.t_objects o, gn_commons.t_modules t
+WHERE o.code_object = 'TDatasets' AND t.module_code = 'OCCTAX';
