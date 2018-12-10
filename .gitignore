@@ -6,7 +6,7 @@ config/geonature_config.toml
 
 log/*
 .vscode/
-/backend/venv/*
+**/node_modules/
 geonature_config.toml
 external_assets/
 external_modules/*
@@ -19,6 +19,8 @@ config.py
 backend/static/medias/*
 backend/static/shapefiles/*
 backend/static/configs/*
+backend/node_modules
+
 backend/run.py
 
 .vscode

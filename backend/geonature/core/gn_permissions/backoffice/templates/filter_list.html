@@ -57,6 +57,10 @@
                 </tr>
                 {% endfor %}
             </table>
+
+            <a href="{{ url_for('gn_permissions_backoffice.filter_form', id_filter_type=filter_type.id_filter_type)}}">
+                    <button class="btn btn-sm btn-success"> Ajouter un filtre </button> </li>
+            </a>
         </div>
 
     </body>
