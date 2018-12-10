@@ -17,6 +17,8 @@ def get_datasets_cruved(info_role, params):
         Return the datasets filtered with cruved
     """
     q = DB.session.query(TDatasets)
+    print('LAAAAAAAAAAAAAAAAAAAAAAAA')
+    print(info_role.value_filter)
     # filters with cruved
     if info_role.value_filter == '2':
         q = q.join(
