@@ -103,7 +103,7 @@ class TestGnPermissionsTools():
         )
 
         assert herited == False
-        assert cruved == {'C': '4', 'R': '4', 'U': '4', 'V':'4', 'E':'4', 'D': '4'}
+        assert cruved == {'C': 4, 'R': 4, 'U': 4, 'V':4, 'E':4, 'D': 4}
 
 
 
