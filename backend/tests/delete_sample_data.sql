@@ -11,3 +11,5 @@ TRUNCATE gn_permissions.cor_role_action_filter_module_object CASCADE;
 TRUNCATE gn_synthese.synthese CASCADE;
 
 TRUNCATE utilisateurs.cor_role_app_profil CASCADE;
+
+TRUNCATE taxonomie.cor_taxon_attribut;

@@ -240,7 +240,7 @@ class CorAreaSynthese(DB.Model):
 class DefaultsNomenclaturesValue(DB.Model):
     __tablename__ = 'defaults_nomenclatures_value'
     __table_args__ = {'schema': 'gn_synthese'}
-    id_type = DB.Column(DB.Integer, primary_key=True)
+    mnemonique_type = DB.Column(DB.Integer, primary_key=True)
     id_organism = DB.Column(DB.Integer, primary_key=True)
     regne = DB.Column(DB.Unicode, primary_key=True)
     group2_inpn = DB.Column(DB.Unicode, primary_key=True)
