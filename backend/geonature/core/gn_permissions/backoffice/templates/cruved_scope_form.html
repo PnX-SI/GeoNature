@@ -99,11 +99,10 @@
 
       {% endif %}
       
-      <!-- If I am on a object page -->
-      {% if id_object %}
-      <h5>Editer le CRUVED par objet </h5> 
       <!-- If my module has sub-objects -->
       {% if  module_objects | length > 0  %}
+      <h5>Editer le CRUVED par objet </h5> 
+
       <div class="card card-body" style="flex-direction: inherit !important;">
         <table>
           {% for object in module_objects %}
@@ -123,7 +122,6 @@
           {% endfor %}
         </table>
       </div>
-      {% endif %}
       {% endif %}
 
     </div>

@@ -40,11 +40,13 @@ def permission_form(info_role, id_module, id_role, id_object=None):
     else:
         object_instance = DB.session.query(TObjects).filter_by(code_object='ALL').first()
     # get module associed objects to set specific Cruved
-    module_objects = DB.session.query(TObjects).join(
-        CorObjectModule, CorObjectModule.id_object == TObjects.id_object
-    ).filter(
-        CorObjectModule.id_module == id_module
-    ).all()
+    module_objects = [] 
+    if not id_object:
+        module_objects = DB.session.query(TObjects).join(
+            CorObjectModule, CorObjectModule.id_object == TObjects.id_object
+        ).filter(
+            CorObjectModule.id_module == id_module
+        ).all()
     user = DB.session.query(User).get(id_role)
     if request.method == 'GET':
         cruved, herited = cruved_scope_for_user_in_module(id_role, module.module_code, get_id=True)
