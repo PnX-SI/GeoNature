@@ -152,7 +152,7 @@ class TestGnPermissionsView():
             url_for(
                 'gn_permissions_backoffice.permission_form',
                 id_role=1,
-                id_module=4,
+                id_module=1,
                 id_object=None
             )
         )
