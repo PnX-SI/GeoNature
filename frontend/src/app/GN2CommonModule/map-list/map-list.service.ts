@@ -43,7 +43,8 @@ export class MapListService {
 
   selectedStyle = {
     color: '#ff0000',
-    weight: 3
+    weight: 3,
+    fill: true
   };
   constructor(
     private _http: HttpClient,
@@ -194,28 +195,31 @@ export class MapListService {
 
   toggleStyle(selectedLayer) {
     // togle the style of selected layer
+
     if (this.selectedLayer !== undefined) {
+      this.originStyle.fill =
+        this.selectedLayer.feature.geometry.type === 'LineString' ? false : true;
       this.selectedLayer.setStyle(this.originStyle);
       this.selectedLayer.closePopup();
     }
     this.selectedLayer = selectedLayer;
+    this.selectedStyle.fill =
+      this.selectedLayer.feature.geometry.type === 'LineString' ? false : true;
     this.selectedLayer.setStyle(this.selectedStyle);
   }
 
   zoomOnSelectedLayer(map, layer) {
-    const zoom = map.getZoom();
-    // latlng is different between polygons and point
-    let latlng;
-
     if (layer instanceof L.Polygon || layer instanceof L.Polyline) {
-      latlng = (layer as any)._bounds._northEast;
+      map.fitBounds((layer as any)._bounds);
     } else {
+      let latlng;
+      const zoom = map.getZoom();
       latlng = layer._latlng;
-    }
-    if (zoom >= 12) {
-      map.setView(latlng, zoom);
-    } else {
-      map.setView(latlng, 12);
+      if (zoom >= 12) {
+        map.setView(latlng, zoom);
+      } else {
+        map.setView(latlng, 12);
+      }
     }
   }
 

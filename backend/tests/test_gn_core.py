@@ -36,14 +36,14 @@ class TestAPICore:
 
     def test_gn_core_generic_view(self):
         query_string = {
-            'cd_nom':18437,
-            'ilike_patrimonial':'o'
+            'cd_nom':60612,
+            'ilike_lb_nom':'Ly'
         }
         response = self.client.get(
           url_for(
             'core.get_generic_view',
-            view_schema='taxonomie',
-            view_name='v_bibtaxon_attributs_animalia'
+            view_schema='gn_synthese',
+            view_name='v_synthese_for_web_app'
           ),
           query_string=query_string
         )

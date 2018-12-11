@@ -17,10 +17,8 @@ def get_datasets_cruved(info_role, params):
         Return the datasets filtered with cruved
     """
     q = DB.session.query(TDatasets)
-
-
     # filters with cruved
-    if info_role.tag_object_code == '2':
+    if info_role.value_filter == '2':
         q = q.join(
             CorDatasetActor,
             CorDatasetActor.id_dataset == TDatasets.id_dataset
@@ -37,7 +35,7 @@ def get_datasets_cruved(info_role, params):
                     CorDatasetActor.id_role == info_role.id_role
                 )
             )
-    elif info_role.tag_object_code == '1':
+    elif info_role.value_filter == '1':
         q = q.join(
             CorDatasetActor,
             CorDatasetActor.id_dataset == TDatasets.id_dataset
@@ -77,7 +75,7 @@ def get_af_cruved(info_role):
         Return the datasets filtered with cruved
     """
     q = DB.session.query(TAcquisitionFramework)
-    if info_role.tag_object_code == '2':
+    if info_role.value_filter == '2':
         q = q.join(
             CorAcquisitionFrameworkActor,
             CorAcquisitionFrameworkActor.id_acquisition_framework == TAcquisitionFramework.id_acquisition_framework
@@ -94,7 +92,7 @@ def get_af_cruved(info_role):
                     CorAcquisitionFrameworkActor.id_role == info_role.id_role
                 )
             )
-    elif info_role.tag_object_code == '1':
+    elif info_role.value_filter == '1':
         q = q.join(
             CorAcquisitionFrameworkActor,
             CorAcquisitionFrameworkActor.id_acquisition_framework == TAcquisitionFramework.id_acquisition_framework

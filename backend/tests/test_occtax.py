@@ -4,7 +4,7 @@ from flask import url_for, session, Response, request
 from .bootstrap_test import app, releve_data, post_json, json_of_response, get_token
 from cookies import Cookie
 
-from geonature.utils.errors import InsufficientRightsError
+from pypnusershub.db.tools import InsufficientRightsError
 
 
 @pytest.mark.usefixtures('client_class')
@@ -70,7 +70,7 @@ class TestApiModulePrOcctax:
         self.client.set_cookie('/', 'token', token)
 
         response = self.client.get(
-            url_for('pr_occtax.export_sinp')
+            url_for('pr_occtax.export')
         )
 
         assert response.status_code == 200

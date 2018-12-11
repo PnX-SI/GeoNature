@@ -1,16 +1,17 @@
-import { Component, OnInit, OnDestroy, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
-import { OcctaxService } from "../services/occtax.service";
+import { OcctaxDataService } from "../services/occtax-data.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ModuleConfig } from "../module.config";
 import { TaxonomyComponent } from "@geonature_common/form/taxonomy/taxonomy.component";
 import { FormGroup, FormBuilder } from "@angular/forms";
-import { DynamicFormGeneratorComponent } from "@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component";
+import { GenericFormGeneratorComponent } from "@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { FILTERSLIST } from "./filters-list";
 import { AppConfig } from "@geonature_config/app.config";
+import { GlobalSubService } from "@geonature/services/global-sub.service";
 
 @Component({
   selector: "pnx-occtax-map-list",
@@ -19,6 +20,7 @@ import { AppConfig } from "@geonature_config/app.config";
   providers: [MapListService]
 })
 export class OcctaxMapListComponent implements OnInit {
+  public userCruved = {};
   public displayColumns: Array<any>;
   public availableColumns: Array<any>;
   public pathEdit: string;
@@ -40,16 +42,17 @@ export class OcctaxMapListComponent implements OnInit {
   @ViewChild(TaxonomyComponent)
   public taxonomyComponent: TaxonomyComponent;
   @ViewChild("dynamicForm")
-  public dynamicForm: DynamicFormGeneratorComponent;
+  public dynamicForm: GenericFormGeneratorComponent;
 
   constructor(
     private mapListService: MapListService,
-    private _occtaxService: OcctaxService,
+    private _occtaxService: OcctaxDataService,
     private _commonService: CommonService,
     private _router: Router,
     public ngbModal: NgbModal,
     private _fb: FormBuilder,
-    private _dateParser: NgbDateParserFormatter
+    private _dateParser: NgbDateParserFormatter,
+    public globalSub: GlobalSubService
   ) {}
 
   ngOnInit() {
@@ -63,6 +66,13 @@ export class OcctaxMapListComponent implements OnInit {
       date_low: null,
       municipality: null
     });
+
+    // get user cruved
+    this.globalSub.currentModuleSub
+      .filter(mod => mod !== undefined)
+      .subscribe(mod => {
+        this.userCruved = mod.cruved;
+      });
 
     this.occtaxConfig = ModuleConfig;
 
@@ -204,17 +214,13 @@ export class OcctaxMapListComponent implements OnInit {
   }
 
   downloadData(format) {
+    let queryString = this.mapListService.urlQuery.delete("limit");
+    queryString = queryString.delete("offset");
     const url = `${
       AppConfig.API_ENDPOINT
-    }/occtax/export?${this.mapListService.urlQuery.toString()}&format=${format}`;
+    }/occtax/export?${queryString.toString()}&format=${format}`;
 
     document.location.href = url;
-  }
-
-  onChangeFilterOps(col) {
-    // reset url query
-    this.mapListService.urlQuery.delete(this.mapListService.colSelected.prop);
-    this.mapListService.colSelected = col; // change filter selected
   }
 
   isChecked(col) {

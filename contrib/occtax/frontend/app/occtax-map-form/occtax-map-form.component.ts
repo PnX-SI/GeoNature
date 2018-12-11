@@ -14,10 +14,9 @@ import { Subscription } from "rxjs/Subscription";
 import { ModuleConfig } from "../module.config";
 import { OcctaxFormService } from "./form/occtax-form.service";
 import { CommonService } from "@geonature_common/service/common.service";
-import { OcctaxService } from "../services/occtax.service";
+import { OcctaxDataService } from "../services/occtax-data.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { MarkerComponent } from "@geonature_common/map/marker/marker.component";
-import { LeafletDrawComponent } from "@geonature_common/map/leaflet-draw/leaflet-draw.component";
 import { AuthService } from "@geonature/components/auth/auth.service";
 
 @Component({
@@ -33,9 +32,7 @@ export class OcctaxMapFormComponent
   public id: number;
   @ViewChild(MarkerComponent)
   public markerComponent: MarkerComponent;
-  @ViewChild(LeafletDrawComponent)
-  public leafletDrawComponent: LeafletDrawComponent;
-  
+
   public occtaxConfig = ModuleConfig;
   constructor(
     private _ms: MapService,
@@ -43,7 +40,7 @@ export class OcctaxMapFormComponent
     private _router: Router,
     private _commonService: CommonService,
     public fs: OcctaxFormService,
-    private occtaxService: OcctaxService,
+    private occtaxService: OcctaxDataService,
     private _dfs: DataFormService,
     private _authService: AuthService
   ) {}
@@ -51,6 +48,11 @@ export class OcctaxMapFormComponent
   ngOnInit() {
     // overight the leaflet draw object to set options
     // examples: enable circle =>  leafletDrawOption.draw.circle = true;
+    leafletDrawOption.draw.circle = false;
+    leafletDrawOption.draw.rectangle = false;
+    leafletDrawOption.draw.marker = false;
+    leafletDrawOption.draw.polyline = true;
+    leafletDrawOption.edit.remove = false;
     this.leafletDrawOptions = leafletDrawOption;
 
     // refresh the forms
@@ -75,8 +77,8 @@ export class OcctaxMapFormComponent
         // load one releve
         this.occtaxService.getOneReleve(this.id).subscribe(
           data => {
-            //test if observers exist. 
-            //Case when some releves was create with 'observers_txt : true' and others with 'observers_txt : false'
+            //test if observers exist.
+            //Case when some releves were create with 'observers_txt : true' and others with 'observers_txt : false'
             //if this case comes up with 'observers_txt : false', the form is load with an empty 'observers' input
             //indeed, the application can not make the correspondence between an observer_txt and an id_role
             if (data.releve.properties.observers) {
@@ -161,34 +163,31 @@ export class OcctaxMapFormComponent
             }
 
             this.fs.releveForm.patchValue({ geometry: data.releve.geometry });
-
-            // activation of the output of markerComponent and leafletDraw to set altitude
-            this.markerComponent.markerChanged.subscribe(geojson => {
-              this._ms.setGeojsonCoord(geojson);
-            });
-
-            this.leafletDrawComponent.layerDrawed.subscribe(geojson => {
-              this._ms.setGeojsonCoord(geojson);
-            });
           },
           error => {
-            this._commonService.translateToaster(
-              "error",
-              "Releve.DoesNotExist"
-            );
+            if (error.status === 403) {
+              this._commonService.translateToaster("error", "NotAllowed");
+            } else if (error.status === 404) {
+              this._commonService.translateToaster(
+                "error",
+                "Releve.DoesNotExist"
+              );
+            }
+
             this._router.navigate(["/occtax"]);
           }
         ); // end subscribe
-        // if not edition mode, zoom to the previous releve bounding-box
       } else {
-        if (this.fs.previousBoundingBox) {
-          this._ms.map.fitBounds(this.fs.previousBoundingBox, { maxZoom: 20 });
-        }
+        // if (this.fs.previousBoundingBox) {
+        //   this._ms.map.fitBounds(this.fs.previousBoundingBox, { maxZoom: 20 });
+        // }
         // set digitiser as default observers only if occtaxconfig set observers_txt parameter to false
         if (!this.occtaxConfig.observers_txt) {
+          const currentUser = this._authService.getCurrentUser();
           this.fs.releveForm.patchValue({
-            properties: { 
-              observers: [this._authService.getCurrentUser()]
+            properties: {
+              observers: [currentUser],
+              id_digitiser: currentUser.id_role
             }
           });
         }

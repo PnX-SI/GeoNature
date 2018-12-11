@@ -65,6 +65,10 @@ fi
 cd $myrootpath/$currentdir/frontend
 npm install
 
+# lien symbolique vers le dossier static du backend (pour le backoffice)
+ln -s $myrootpath/$currentdir/frontend/node_modules $myrootpath/$currentdir/backend/static
+
+
 cd $myrootpath/$currentdir/backend
 
 if [ -d 'venv/' ]

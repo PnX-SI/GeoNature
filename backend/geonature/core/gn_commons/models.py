@@ -33,7 +33,7 @@ class TModules(DB.Model):
         DB.Integer,
         primary_key=True
     )
-    module_name = DB.Column(DB.Unicode)
+    module_code = DB.Column(DB.Unicode)
     module_label = DB.Column(DB.Unicode)
     module_picto = DB.Column(DB.Unicode)
     module_desc = DB.Column(DB.Unicode)

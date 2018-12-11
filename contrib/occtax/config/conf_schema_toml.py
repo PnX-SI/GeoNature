@@ -100,6 +100,7 @@ default_columns_export = [
   "preuvNum",
   "preuvNoNum",
   "obsCtx",
+  "obsDescr",
   "permIdGrp",
   "methGrp",
   "typGrp",
