@@ -924,6 +924,27 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object (id_role, id_act
 
 
 
+-- Prévention des doublons
+DELETE 
+FROM utilisateurs.cor_role_app_profil cor WHERE id_application = (
+SELECT id_application FROM save.t_applications WHERE nom_application ilike 'geonature'
+);
+
+
+DO
+$$
+BEGIN
+-- insertion des utilisateurs qui avaient des droits dans cor_app_privilege dans cor_role_app_profil
+INSERT INTO utilisateurs.cor_role_app_profil
+SELECT DISTINCT id_role, app.id_application, 1
+FROM save.cor_app_privileges cor
+JOIN utilisateurs.t_applications app ON app.id_application = cor.id_application
+WHERE nom_application ILIKE 'geonature';
+END
+$$;
+
+
+
 -- ADMIN peut gérer les permissions du backoffice
 INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
 SELECT 9, 1, 4, id_module, id_object
@@ -986,6 +1007,15 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_acti
 SELECT 9, 6, 4, id_module, id_object
 FROM gn_commons.t_modules, gn_permissions.t_objects
 WHERE module_code = 'ADMIN' AND code_object = 'METADATA';
+
+
+-- suppression des modules GeoNature de la table t_applications
+DELETE
+FROM utilisateurs.t_applications
+WHERE id_parent = (
+    SELECT id_application FROM utilisateurs.t_applications
+    WHERE nom_application ILIKE 'geonature'
+);
 
 
 ---------------
