@@ -875,7 +875,7 @@ SELECT '3', 'Toutes les données', 'Toutes les données', id_filter_type
 FROM gn_permissions.bib_filters_type
 WHERE code_filter_type = 'SCOPE';
 
-INSERT INTO t_objects
+INSERT INTO gn_permissions.t_objects
     (code_object, description_object)
 VALUES
     ('ALL', 'Représente tous les objets d''un module'),
@@ -883,13 +883,13 @@ VALUES
     ('PERMISSIONS', 'Gestion du backoffice des permissions')
 ;
 
-INSERT INTO cor_object_module
+INSERT INTO gn_permissions.cor_object_module
     (id_object, id_module)
 SELECT 2, id_module
 FROM gn_commons.t_modules
 WHERE module_code ILIKE 'ADMIN';
 
-INSERT INTO cor_object_module
+INSERT INTO gn_permissions.cor_object_module
     (id_object, id_module)
 SELECT 3, id_module
 FROM gn_commons.t_modules
