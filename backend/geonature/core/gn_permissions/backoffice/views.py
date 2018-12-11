@@ -35,18 +35,26 @@ def permission_form(info_role, id_module, id_role, id_object=None):
     form = None
     module = DB.session.query(TModules).get(id_module)
     object_instance = None
+    module_objects = [] 
+
     if id_object:
         object_instance = DB.session.query(TObjects).get(id_object)
     else:
         object_instance = DB.session.query(TObjects).filter_by(code_object='ALL').first()
-    # get module associed objects to set specific Cruved
-    module_objects = [] 
-    if not id_object:
+        # get module associed objects to set specific Cruved
         module_objects = DB.session.query(TObjects).join(
             CorObjectModule, CorObjectModule.id_object == TObjects.id_object
         ).filter(
             CorObjectModule.id_module == id_module
         ).all()
+        # get cruved of objects
+        for obj in module_objects:
+            cruved = cruved_scope_for_user_in_module(
+                id_role=id_role,
+                module_code=module.module_code,
+                object_code=obj.code_object
+            )
+
     user = DB.session.query(User).get(id_role)
     if request.method == 'GET':
         cruved, herited = cruved_scope_for_user_in_module(id_role, module.module_code, get_id=True)
@@ -176,14 +184,24 @@ def user_cruved(id_role):
     user = DB.session.query(User).get(id_role).as_dict()
     modules_data =  DB.session.query(TModules).all()
     groupes_data = DB.session.query(CorRole).filter(CorRole.id_role_utilisateur==id_role).all()
+    actions_label = {}
+    for action in DB.session.query(TActions).all():
+        actions_label[action.code_action] = action.description_action
     modules = []
     for module in modules_data:
         module = module.as_dict()
         # do not display cruved for module admin because its set on sub object
         if module['module_code'] == 'ADMIN':
-            module['module_cruved'] = ('-', False)
+            module['module_cruved'] = ('', False)
         else:
-            module['module_cruved'] = cruved_scope_for_user_in_module(id_role, module['module_code'])
+            cruved, herited = cruved_scope_for_user_in_module(id_role, module['module_code'])
+            cruved_beautiful = []
+            for key, value in cruved.items():
+                temp = {}
+                temp['key'] = actions_label.get(key)
+                temp['label'] = value
+                cruved_beautiful.append(temp)
+            module['module_cruved'] = (cruved_beautiful, herited)
         modules.append(module)
     return render_template(
         'cruved_user.html',

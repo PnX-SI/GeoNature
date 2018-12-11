@@ -140,10 +140,25 @@ def get_user_permissions(user, code_action, code_filter_type, module_code=None, 
             )
         )
 
+
+def build_cruved(cruved, get_id):
+    '''
+        function utils to build a dict like {'C':'3', 'R':'2'}...
+        from VUsersPermissions
+    '''
+    cruved_dict = {}
+    for action_scope in cruved:
+        if get_id:
+            cruved_dict[action_scope[0]] = action_scope[2]
+        else:
+            cruved_dict[action_scope[0]] = action_scope[1]
+    return cruved_dict
+
+
 def cruved_scope_for_user_in_module(
     id_role=None,
     module_code=None,
-    object_code= 'ALL',
+    object_code='ALL',
     get_id=False
 ):
     """
@@ -171,24 +186,32 @@ def cruved_scope_for_user_in_module(
         VUsersPermissions.code_object == object_code
     ).group_by(VUsersPermissions.code_action)
 
+    cruved_actions = ['C', 'R', 'U', 'V', 'E', 'D']
+    # if object not ALL, no heritage
+    if object_code != 'ALL':
+        object_cruved = q.all()
+
+        cruved_dict = build_cruved(object_cruved, get_id)
+        update_cruved = {}
+        for action in cruved_actions:
+            if action in cruved_dict:
+                update_cruved[action] = cruved_dict[action]
+            else:
+                update_cruved[action] = '0'
+        return update_cruved
+
     # get max scope cruved for module GEONATURE
     parent_cruved_data = q.filter(VUsersPermissions.module_code.ilike('GEONATURE')).all()
     parent_cruved = {}
     # build a dict like {'C':'0', 'R':'2' ...} if get_id = False or
     # {'C': 1, 'R':3 ...} if get_id = True
-    for action_scope in parent_cruved_data:
-        if get_id:
-            parent_cruved[action_scope[0]] = action_scope[2]
-        else:
-            parent_cruved[action_scope[0]] = action_scope[1]
+    parent_cruved = build_cruved(parent_cruved_data, get_id)
 
     # get max scope cruved for module passed in parameter
     module_cruved = {}
     if module_code:
         module_cruved_data = q.filter(VUsersPermissions.module_code.ilike(module_code)).all()
-        
-        # build a dict like {'C':'0', 'R':'2' ...} if get_id = False or
-        # {'C': 1, 'R':3 ...} if get_id = True
+        module_cruved = build_cruved(module_cruved_data, get_id)
         # for the module 
         for action_scope in module_cruved_data:
             if get_id:
@@ -201,9 +224,8 @@ def cruved_scope_for_user_in_module(
         id_scope_no_data = DB.session.query(TFilters.id_filter).filter(TFilters.value_filter == '0').one()[0]
     # update cruved with child module if action exist, otherwise take geonature cruved
     update_cruved = {}
-    cruved = ['C', 'R', 'U', 'V', 'E', 'D']
     herited = False
-    for action in cruved:
+    for action in cruved_actions:
         if action in module_cruved:
             update_cruved[action] = module_cruved[action]
         elif action in parent_cruved:

@@ -15,7 +15,15 @@
         {% for mod in modules %}
         <tr>
           <td>{{ mod.module_code }}</td>
-          <td>{{ mod.module_cruved[0] }}</td>
+          <td>
+          {% if mod.module_cruved[0] | length > 0 %}
+            {% for cruved in mod.module_cruved[0] %}
+            <ul>
+              <li>{{ cruved.key }} : <b> {{ cruved.label }}</b>  </li>
+            </ul>
+
+            {% endfor %}
+          {% endif %}
           <td> 
           {% if mod.module_cruved[1] %}
            Hérité du module parent GeoNature
