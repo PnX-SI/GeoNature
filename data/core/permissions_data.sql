@@ -85,13 +85,6 @@ VALUES
     (3, 1)
 ;
 
-INSERT INTO cor_object_module
-    (id_object, id_module)
-SELECT o.id_object, t.id_module
-FROM gn_permissions.t_objects o, gn_commons.t_modules t
-WHERE o.code_object = 'TDatasets' AND t.module_code = 'ADMIN';
-
-
 INSERT INTO cor_role_action_filter_module_object
     (
     id_role,

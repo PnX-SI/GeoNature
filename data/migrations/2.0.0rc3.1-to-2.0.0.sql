@@ -107,8 +107,10 @@ SELECT pg_catalog.setval('gn_commons.t_modules_id_module_seq', (SELECT MAX(id_mo
 ALTER TABLE gn_commons.t_modules ALTER COLUMN module_code SET NOT NULL;
 
 -- Insertion du module parent: GEONATURE
-INSERT INTO gn_commons.t_modules(id_module, module_code, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend) VALUES
-(0, 'GEONATURE', 'GeoNature', '', 'Module parent de tous les modules sur lequel on peut associer un CRUVED. NB: mettre active_frontend et active_backend à false pour qu''il ne s''affiche pas dans la barre latérale des modules', '/geonature', '', '', FALSE, FALSE)
+INSERT INTO gn_commons.t_modules(id_module, module_code, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend) 
+SELECT id_application, 'GEONATURE', 'GeoNature', '', 'Module parent de tous les modules sur lequel on peut associer un CRUVED. NB: mettre active_frontend et active_backend à false pour qu''il ne s''affiche pas dans la barre latérale des modules', '/geonature', '', '', FALSE, FALSE
+FROM utilisateurs.t_applications
+WHERE code_application = 'GN'
 ;
 
 
@@ -137,7 +139,7 @@ BEGIN
 
     ALTER TABLE ONLY gn_meta.cor_dataset_actor
         ADD CONSTRAINT check_id_role_not_group CHECK (NOT gn_commons.role_is_group(id_role));
-    '
+    ';
   END;
 $$;
 
@@ -873,46 +875,117 @@ SELECT '3', 'Toutes les données', 'Toutes les données', id_filter_type
 FROM gn_permissions.bib_filters_type
 WHERE code_filter_type = 'SCOPE';
 
-INSERT INTO gn_permissions.t_objects(code_object, description_object) VALUES 
+INSERT INTO t_objects
+    (code_object, description_object)
+VALUES
     ('ALL', 'Représente tous les objets d''un module'),
-    ('TDatasets', 'Objet dataset')
+    ('METADATA', 'Gestion du backoffice des métadonnées'),
+    ('PERMISSIONS', 'Gestion du backoffice des permissions')
 ;
 
-INSERT INTO gn_permissions.cor_object_module (id_object, id_module)
-SELECT id_object, t.id_module
-FROM gn_permissions.t_objects, gn_commons.t_modules t
-WHERE code_object = 'TDatasets' AND t.module_code = 'OCCTAX';
+INSERT INTO cor_object_module
+    (id_object, id_module)
+SELECT 2, id_module
+FROM gn_commons.t_modules
+WHERE module_code ILIKE 'ADMIN';
 
-INSERT INTO gn_permissions.cor_object_module (id_object, id_module)
-SELECT id_object, t.id_module
-FROM gn_permissions.t_objects, gn_commons.t_modules t
-WHERE code_object = 'TDatasets' AND t.module_code = 'ADMIN';
+INSERT INTO cor_object_module
+    (id_object, id_module)
+SELECT 3, id_module
+FROM gn_commons.t_modules
+WHERE module_code ILIKE 'ADMIN';
+
 
 -- Utilisateurs.cor_app_privileges vers gn_persmissions.cor_role_action_filter_module_object
-
 INSERT INTO gn_permissions.cor_role_action_filter_module_object (id_role, id_action, id_filter, id_module, id_object)
-SELECT 
-id_role,
-CASE 
-  WHEN id_tag_action =  11 THEN 1
-  WHEN id_tag_action =  12 THEN 2
-  WHEN id_tag_action =  13 THEN 3
-  WHEN id_tag_action =  14 THEN 4
-  WHEN id_tag_action =  15 THEN 5
-  WHEN id_tag_action =  16 THEN 6
-END AS id_action
-,
-CASE 
-  WHEN id_tag_object = 20 THEN 1
-  WHEN id_tag_object = 21 THEN 2
-  WHEN id_tag_object = 22 THEN 3
-  WHEN id_tag_object = 23 THEN 4
-END AS id_filter,
-cor.id_application,
-1
-FROM save.cor_app_privileges cor
-JOIN utilisateurs.t_applications app ON app.id_application = cor.id_application
-WHERE app.code_application = 'GN';
+    SELECT 
+    id_role,
+    CASE 
+    WHEN id_tag_action =  11 THEN 1
+    WHEN id_tag_action =  12 THEN 2
+    WHEN id_tag_action =  13 THEN 3
+    WHEN id_tag_action =  14 THEN 4
+    WHEN id_tag_action =  15 THEN 5
+    WHEN id_tag_action =  16 THEN 6
+    END AS id_action
+    ,
+    CASE 
+    WHEN id_tag_object = 20 THEN 1
+    WHEN id_tag_object = 21 THEN 2
+    WHEN id_tag_object = 22 THEN 3
+    WHEN id_tag_object = 23 THEN 4
+    END AS id_filter,
+    cor.id_application,
+    1
+    FROM save.cor_app_privileges cor
+    JOIN utilisateurs.t_applications app ON app.id_application = cor.id_application
+    WHERE nom_application ilike 'geonature' OR nom_application ILIKE 'occtax'
+;
+
+
+
+-- ADMIN peut gérer les permissions du backoffice
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 9, 1, 4, id_module, id_object
+FROM gn_commons.t_modules, gn_permissions.t_objects
+WHERE module_code = 'ADMIN' AND code_object = 'PERMISSIONS';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 9, 2, 4, id_module, id_object
+FROM gn_commons.t_modules, gn_permissions.t_objects
+WHERE module_code = 'ADMIN' AND code_object = 'PERMISSIONS';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 9, 3, 4, id_module, id_object
+FROM gn_commons.t_modules, gn_permissions.t_objects
+WHERE module_code = 'ADMIN' AND code_object = 'PERMISSIONS';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 9, 4, 4, id_module, id_object
+FROM gn_commons.t_modules, gn_permissions.t_objects
+WHERE module_code = 'ADMIN' AND code_object = 'PERMISSIONS';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 9, 5, 4, id_module, id_object
+FROM gn_commons.t_modules, gn_permissions.t_objects
+WHERE module_code = 'ADMIN' AND code_object = 'PERMISSIONS';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 9, 6, 4, id_module, id_object
+FROM gn_commons.t_modules, gn_permissions.t_objects
+WHERE module_code = 'ADMIN' AND code_object = 'PERMISSIONS';
+
+
+-- ADMIN peut gérer les métadonnées du backoffice
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 9, 1, 4, id_module, id_object
+FROM gn_commons.t_modules, gn_permissions.t_objects
+WHERE module_code = 'ADMIN' AND code_object = 'METADATA';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 9, 2, 4, id_module, id_object
+FROM gn_commons.t_modules, gn_permissions.t_objects
+WHERE module_code = 'ADMIN' AND code_object = 'METADATA';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 9, 3, 4, id_module, id_object
+FROM gn_commons.t_modules, gn_permissions.t_objects
+WHERE module_code = 'ADMIN' AND code_object = 'METADATA';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 9, 4, 4, id_module, id_object
+FROM gn_commons.t_modules, gn_permissions.t_objects
+WHERE module_code = 'ADMIN' AND code_object = 'METADATA';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 9, 5, 4, id_module, id_object
+FROM gn_commons.t_modules, gn_permissions.t_objects
+WHERE module_code = 'ADMIN' AND code_object = 'METADATA';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 9, 6, 4, id_module, id_object
+FROM gn_commons.t_modules, gn_permissions.t_objects
+WHERE module_code = 'ADMIN' AND code_object = 'METADATA';
 
 
 ---------------
