@@ -152,11 +152,12 @@ class TestGnPermissionsView():
             url_for(
                 'gn_permissions_backoffice.permission_form',
                 id_role=1,
-                id_module=0,
+                id_module=4,
                 id_object=None
             )
         )
         assert response.status_code == 200
+        assert b'Editer le CRUVED par objet' in response.data
 
     def test_get_cruved_scope_form_not_allowed(self):
         '''
