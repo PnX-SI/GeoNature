@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class ModuleService {
   public modules: Array<any>;
 
   constructor(private _api: DataFormService) {
-    this._api.getModulesList().subscribe(data => {
+    this._api.getModulesList(['GEONATURE']).subscribe(data => {
       this.modules = data;
       this.setModulesLocalStorage(data);
     });

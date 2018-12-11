@@ -22,7 +22,11 @@ def get_modules(info_role):
     '''
     Return the allowed modules of user from its cruved
     '''
-    modules = DB.session.query(TModules).all()
+    params = dict(request.args)
+    q = DB.session.query(TModules)
+    if 'exclude' in params: 
+        q = q.filter(TModules.module_code.notin_(params['exclude']))
+    modules = q.all()
     allowed_modules = []
     for mod in modules:
         app_cruved = cruved_scope_for_user_in_module(
