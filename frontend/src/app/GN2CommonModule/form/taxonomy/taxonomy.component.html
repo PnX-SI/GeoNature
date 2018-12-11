@@ -22,10 +22,9 @@
 </div>
 <small> {{label}} </small>
 <div class="input-group">
-  <input type="text" [ngClass]="{'is-invalid' : parentFormControl.invalid}" class="form-control form-control-sm "
-    [ngClass]="{'loading' : isLoading && parentFormControl.value?.length >= 3}" id="taxonInput" [formControl]="parentFormControl"
-    [disableControl]="disabled" [ngbTypeahead]="searchTaxon" [inputFormatter]="formatter" [resultTemplate]="rt"
-    (selectItem)="taxonSelected($event)" />
+  <input type="text" class="form-control form-control-sm " [ngClass]="{'loading' : isLoading && parentFormControl.value?.length >= 3}"
+    id="taxonInput" [formControl]="parentFormControl" [disableControl]="disabled" [ngbTypeahead]="searchTaxon"
+    [inputFormatter]="formatter" [resultTemplate]="rt" (selectItem)="taxonSelected($event)" />
   <div class="input-group-append">
     <button class="btn btn-sm btn-outline-shadow" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false"
       aria-controls="collapseExample">

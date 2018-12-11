@@ -8,6 +8,7 @@ from sqlalchemy.sql import text
 from geonature.utils.env import DB
 
 from pypnnomenclature.models import TNomenclatures
+from pypnusershub.db.tools import InsufficientRightsError
 
 from geonature.core.gn_meta.models import (
     TDatasets,
@@ -15,12 +16,13 @@ from geonature.core.gn_meta.models import (
     CorAcquisitionFrameworkActor, CorAcquisitionFrameworkObjectif,
     CorAcquisitionFrameworkVoletSINP
 )
+from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_meta.repositories import (
     get_datasets_cruved,
     get_af_cruved
 )
-from pypnusershub import routes as fnauth
 from geonature.utils.utilssqlalchemy import json_resp
+from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_meta import mtd_utils
 from geonature.utils.errors import GeonatureApiError
 
@@ -30,6 +32,8 @@ routes = Blueprint('gn_meta', __name__)
 log = logging.getLogger()
 gunicorn_error_logger = logging.getLogger('gunicorn.error')
 
+
+ID_MODULE = DB.session.query(TModules.id_module).filter(TModules.module_code == 'ADMIN').one()[0]
 
 @routes.route('/list/datasets', methods=['GET'])
 @json_resp
@@ -41,9 +45,10 @@ def get_datasets_list():
         d.as_dict(columns=('id_dataset', 'dataset_name')) for d in data
     ]
 
-
+#TODO: quel cruved on recupère sur une route comme celle là
+# celui du module admin (meta) ou celui de geonature (route utilisé dans tous les modules...)
 @routes.route('/datasets', methods=['GET'])
-@fnauth.check_auth_cruved('R', True)
+@permissions.check_cruved_scope('R', True)
 @json_resp
 def get_datasets(info_role):
     """
@@ -67,10 +72,13 @@ def get_datasets(info_role):
             log.error(e)
             with_mtd_error = True
     params = dict(request.args)
-    datasets = {'data': get_datasets_cruved(info_role, params)}
+    datasets = get_datasets_cruved(info_role, params)
+    datasets_resp = {'data': datasets}
     if with_mtd_error:
-        datasets['with_mtd_errors'] = True
-    return datasets
+        datasets_resp['with_mtd_errors'] = True
+    if not datasets:
+        return datasets_resp, 404
+    return datasets_resp
 
 
 @routes.route('/dataset/<id_dataset>', methods=['GET'])
@@ -96,8 +104,16 @@ def get_dataset(id_dataset):
 
 
 @routes.route('/dataset', methods=['POST'])
+@permissions.check_cruved_scope('C', True, module_code="ADMIN")
 @json_resp
-def post_dataset():
+def post_dataset(info_role):
+    if info_role.value_filter == '0':
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" a dataser')
+            .format(info_role.id_role, info_role.code_action),
+            403
+        )
+
     data = dict(request.get_json())
     cor_dataset_actor = data.pop('cor_dataset_actor')
 
@@ -115,7 +131,7 @@ def post_dataset():
 
 
 @routes.route('/acquisition_frameworks', methods=['GET'])
-@fnauth.check_auth_cruved('R', True)
+@permissions.check_cruved_scope('R', True)
 @json_resp
 def get_acquisition_frameworks(info_role):
     """
@@ -137,8 +153,15 @@ def get_acquisition_framework(id_acquisition_framework):
 
 
 @routes.route('/acquisition_framework', methods=['POST'])
+@permissions.check_cruved_scope('C', True, module_code="ADMIN")
 @json_resp
-def post_acquisition_framework():
+def post_acquisition_framework(info_role):
+    if info_role.value_filter == '0':
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" a dataser')
+            .format(info_role.id_role, info_role.code_action),
+            403
+        )
     data = dict(request.get_json())
 
     cor_af_actor = data.pop('cor_af_actor')

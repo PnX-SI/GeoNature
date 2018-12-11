@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date-parser-formatter';
+import { FormService } from '@geonature_common/form/form.service';
 
 @Component({
   selector: 'pnx-af-form',
@@ -25,6 +26,7 @@ export class AfFormComponent implements OnInit {
     private _fb: FormBuilder,
     private _dfs: DataFormService,
     private _formService: MetadataFormService,
+    private _gnFormService: FormService,
     private _commonService: CommonService,
     private _route: ActivatedRoute,
     private _api: HttpClient,
@@ -45,7 +47,7 @@ export class AfFormComponent implements OnInit {
       this.acquisitionFrameworks = data;
     });
     this.afForm = this._fb.group({
-      id_acquisition_framework:null,
+      id_acquisition_framework: null,
       acquisition_framework_name: [null, Validators.required],
       acquisition_framework_desc: [null, Validators.required],
       id_nomenclature_territorial_level: [null, Validators.required],
@@ -63,81 +65,61 @@ export class AfFormComponent implements OnInit {
     });
 
     this.cor_af_actor = this._fb.array([]);
-    this.cor_af_actor.push(this._formService.generateCorDatasetActorForm());
+    this.cor_af_actor.push(this._formService.generateCorAfActorForm());
+
+    this.afForm.setValidators([
+      this._gnFormService.dateValidator(
+        this.afForm.get('acquisition_framework_start_date'),
+        this.afForm.get('acquisition_framework_end_date')
+      )
+    ]);
   }
 
   getAf(id_af) {
     this._dfs.getAcquisitionFramework(id_af).subscribe(data => {
       this.af = data;
-      data.acquisition_framework_start_date = this._dateParser.parse(data.acquisition_framework_start_date);
-      data.acquisition_framework_end_date = this._dateParser.parse(data.acquisition_framework_end_date);
+      data.acquisition_framework_start_date = this._dateParser.parse(
+        data.acquisition_framework_start_date
+      );
+      data.acquisition_framework_end_date = this._dateParser.parse(
+        data.acquisition_framework_end_date
+      );
       this.afForm.patchValue(data);
       data.cor_af_actor.forEach((cor, index) => {
-        const roles = data.cor_af_actor[index].role ? [data.cor_af_actor[index].role] : null;
-        const organisms = data.cor_af_actor[index].organism
-          ? [data.cor_af_actor[index].organism]
-          : null;
-        const formData = {
-          id_nomenclature_actor_role: cor.id_nomenclature_actor_role,
-          organisms: organisms,
-          roles: roles
-        };
         if (index === 0) {
-          this.cor_af_actor.controls[index].patchValue(formData);
+          this.cor_af_actor.controls[index].patchValue(cor);
         } else {
-          const formCor = this._formService.generateCorDatasetActorForm();
+          const formCor = this._formService.generateCorAfActorForm();
           this.cor_af_actor.push(formCor);
           //hack pour attendre que le template soit rendu avant de mettre les valeurs au formulaire
           setTimeout(() => {
-            this.cor_af_actor.controls[index].patchValue(formData);
+            this.cor_af_actor.controls[index].patchValue(cor);
           }, 2000);
         }
       });
     });
   }
 
+  addFormArray(): void {
+    this.cor_af_actor.push(this._formService.generateCorAfActorForm());
+  }
   postAf() {
     const cor_af_actor = JSON.parse(JSON.stringify(this.cor_af_actor.value));
     const af = Object.assign({}, this.afForm.value);
 
     const update_cor_af_actor = [];
-    let formValid = true;
+    this._formService.formValid = true;
     cor_af_actor.forEach(element => {
-      if (element.organisms) {
-        element.organisms.forEach(org => {
-          const corOrg = {
-            id_nomenclature_actor_role: element.id_nomenclature_actor_role,
-            id_organism: org.id_organisme
-          };
-          update_cor_af_actor.push(corOrg);
-        });
-      }
-      if (element.roles) {
-        element.roles.forEach(role => {
-          const corRole = {
-            id_nomenclature_actor_role: element.id_nomenclature_actor_role,
-            id_role: role.id_role
-          };
-          update_cor_af_actor.push(corRole);
-        });
-      }
-
-      if (update_cor_af_actor.length === 0) {
-        formValid = false;
-        this._toaster.error(
-          'Veuillez spécifier un organisme ou une personne pour chaque acteur du JDD',
-          '',
-          { positionClass: 'toast-top-center' }
-        );
-      }
+      update_cor_af_actor.push(element);
+      this._formService.checkFormValidity(element);
     });
 
     // format objectifs
-    af.cor_objectifs.map(obj => obj.id_nomenclature);
+    af.cor_objectifs = af.cor_objectifs.map(obj => obj.id_nomenclature);
     // format volets
-    af.cor_volets_sinp.map(obj => obj.id_nomenclature);
+    af.cor_volets_sinp = af.cor_volets_sinp.map(obj => obj.id_nomenclature);
 
-    if (formValid) {
+    if (this._formService.formValid) {
       af.acquisition_framework_start_date = this._dateParser.format(
         af.acquisition_framework_start_date
       );
@@ -149,13 +131,18 @@ export class AfFormComponent implements OnInit {
       }
 
       af['cor_af_actor'] = update_cor_af_actor;
+      console.log(af);
       this._api.post<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework`, af).subscribe(
         data => {
           this._router.navigate(['/admin/afs']);
           this._commonService.translateToaster('success', 'MetaData.AFadded');
         },
         error => {
-          this._commonService.translateToaster('error', 'ErrorMessage');
+          if (error.status === 403) {
+            this._commonService.translateToaster('error', 'NotAllowed');
+          } else {
+            this._commonService.translateToaster('error', 'ErrorMessage');
+          }
         }
       );
     }

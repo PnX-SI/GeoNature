@@ -1,13 +1,11 @@
 <pnx-map height="94vh" class="map-card">
-    <!-- <pnx-leaflet-draw [options]="leafletDrawOptions" (layerDrawed)="sendGeoInfo($event)"> </pnx-leaflet-draw> -->
-    <pnx-geojson
-        [geojson]="inputSyntheseData"
-        [onEachFeature]="onEachFeature.bind(this)"
-    ></pnx-geojson>
-    <pnx-leaflet-draw
+  <pnx-geojson [geojson]="inputSyntheseData" [onEachFeature]="onEachFeature.bind(this)">
+  </pnx-geojson>
+  <pnx-leaflet-draw
     [options]="leafletDrawOptions"
     [zoomLevel]="1"
     (layerDrawed)="bindGeojsonForm($event)"
-    (layerDeleted)="deleteControlValue()" >
-</pnx-leaflet-draw>
+    (layerDeleted)="deleteControlValue()"
+  >
+  </pnx-leaflet-draw>
 </pnx-map>

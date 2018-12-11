@@ -55,16 +55,34 @@ Désolé pour les relations complexes entre tables...
 Gestion des droits :
 """"""""""""""""""""
 
-La gestion des droits est centralisée dans UsersHub. Dans la version 1 de GeoNature, il était possible d'attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour étendre les possibilités d'attribution de droits et les rendre plus génériques. 
+L'accès des utilisateurs à l'application GeoNature est gérée de manière centralisée dans UserHub. 
 
-Pour cela un système d'étiquettes (``utilisateurs.t_tags``) a été mis en place. Il permet d'attribuer des étiquettes génériques à des rôles (utilisateurs ou groupes d'utilisateurs). 
+La gestion des droits (permissions), spécifique à GeoNature, est elle gérée dans un module GeoNature dédié. Dans la version 1 de GeoNature, il était possible d'attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour étendre les possibilités d'attribution de droits et les rendre plus génériques. 
 
-- Dans GeoNature V2 cela permet d'attribuer des actions possibles à un rôle sur une portée dans une application ou un module (définis dans ``utilisateurs.cor_app_privileges``).
+La gestion des droits dans GeoNature, comme dans beaucoup d'application, est liée à des actions (Create / Read / Update / Delete aka CRUD). Pour les besoins  métiers de l'application nous avons rajouté deux actions : "Valider" et "Exporter", ce qui donne le CRUVED: Create / Read / Update / Validate / Export / Delete.
+
+Sur ces actions, on va pouvoir appliquer des filtres de manière générique.
+Le filtre le plus courant est celui de la "portée". On autorise des actions à un utilisateur sur une portée: "ses données", "les données de son organisme", "toutes les données".
+Exemple: 
+- Utilisateur 1 peut effectuer l'action "DELETE" sur la portée "SES DONNEES"
+- Utilisateur admin peut effectuer l'action "UPDATE" sur la portée "TOUTES LES DONNEES"
+
+Un autre filtre possible est celui de la sensibilité / dégradation des données:
+Exemple:
+- Utilisateur 1 peut effectuer l'action "READ" sur "LES DONNES DEGRADES"
+- Utilisateur admin peut effectuer l'action "READ" sur "LES DONNES PRECISES"
+
+Enfin ces permissions vont pouvoir s'attribuer à l'ensemble de l'application GeoNature et/ou à un module.
+On a donc le quatriptique: Un utilisateur / Une action / un filtre / un module 
+
+
+Récapitulatif:
+- Dans GeoNature V2 on peut attribuer à une role des actions possibles, sur lesquels on peut ajouter des filtres, dans un module ou sur toute l'application GeoNature (définis dans ``gn_permissions.cor_role_action_filter_module_object``).
 - 6 actions sont possibles dans GeoNature : Create / Read / Update / Validate / Export / Delete (aka CRUVED).
-- 3 portées de ces actions sont possibles : Mes données / Les données de mon organisme / Toutes les données.
-- Une vue permet de retourner toutes les actions, leur portée et leur module de GeoNature pour tous les rôles (``utilisateurs.v_usersaction_forall_gn_modules``)
-- Des fonctions PostgreSQL ont aussi été intégrées pour faciliter la récupération de ces informations (``utilisateurs.cruved_for_user_in_module``, ``utilisateurs.can_user_do_in_module``, ...)
-- Une hiérarchie a été rendue possible entre applications et entre organismes pour permettre un système d'héritage
+- Différents type de filtres existent. Le plus courant est le filtre de type "SCOPE" (portée): 3 portée sont attribuables à des actions: Mes données / Les données de mon organisme / Toutes les données.
+- Une vue permet de retourner toutes les actions, leur filtres et leur modules de GeoNature pour tous les rôles (``gn_permissions.v_users_permissions``)
+- Des fonctions PostgreSQL ont aussi été intégrées pour faciliter la récupération de ces informations (``gn_permissions.cruved_for_user_in_module``, ``gn_permissions.does_user_have_scope_permission``, ...)
+- Les permissions attribuées à un module surchargent les permission attribuées sur l'ensemble de l'application par un mécanisme d'héritage. Par défaut et en l'absence de permissions, tous les modules héritent des permissions de GeoNature.
 - Si un utilisateur n'a aucune action possible sur un module, alors il ne lui sera pas affiché et il ne pourra pas y accéder
 - Il est aussi possible de ne pas utiliser UsersHub pour gérer les utilisateurs et de connecter GeoNature à un CAS (voir configuration). Actuellement ce paramétrage est fonctionnel en se connectant au CAS de l'INPN (MNHN)
 
@@ -427,7 +445,7 @@ Sauvegarde
 
 * Sauvegarde de la base de données :
 
-Les sauvegardes de la BDD sont à faire avec l'utilisateur ``postgres``. Commencer par créer un répertoire et lui donner des droits sur le répertoire où seront fait les sauvegardes.
+Les sauvegardes de la BDD sont à faire avec l'utilisateur ``postgres``. Commencer par créer un répertoire et lui donner des droits sur le répertoire où seront faites les sauvegardes.
 
 ::
 

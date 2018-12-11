@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from flask import url_for
+from flask import url_for, current_app
 from cookies import Cookie
 
 import server
@@ -17,6 +17,7 @@ def app():
     config = load_config(config_path)
     app = server.get_app(config)
     app.config['TESTING'] = True
+    app.config['WTF_CSRF_ENABLED'] = False
     return app
 
 
@@ -41,8 +42,7 @@ def get_token(client, login="admin", password="admin"):
     data = {
         'login': login,
         'password': password,
-        'id_application': 14,
-        'with_cruved': True
+        'id_application': current_app.config['ID_APPLICATION_GEONATURE'],
     }
     response = client.post(
         url_for('auth.login'),
@@ -116,7 +116,6 @@ def releve_data(client):
                     "non_digital_proof": None,
                     "id_nomenclature_exist_proof": default_nomenclatures['PREUVE_EXIST'],
                     "cd_nom": 67111,
-                    "id_nomenclature_diffusion_level": default_nomenclatures['NIV_PRECIS'],
                     "sample_number_proof": None,
                     "determiner": None
                 }

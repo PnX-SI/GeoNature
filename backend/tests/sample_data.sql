@@ -27,18 +27,18 @@ INSERT INTO gn_meta.cor_acquisition_framework_objectif (id_acquisition_framework
 ;
 
 INSERT INTO gn_meta.cor_acquisition_framework_actor (id_cafa, id_acquisition_framework, id_role, id_organism, id_nomenclature_actor_role) VALUES
-(1, 1, NULL, 2, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
-,(2, 1, NULL, 2, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '7'))
-,(3, 1, NULL, 2, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6'))
+(1, 1, NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
+,(2, 1, NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '7'))
+,(3, 1, NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6'))
 ;
 SELECT pg_catalog.setval('gn_meta.cor_acquisition_framework_actor_id_cafa_seq', (SELECT max(id_cafa)+1 FROM gn_meta.cor_acquisition_framework_actor), true);
 
 INSERT INTO gn_meta.cor_dataset_actor (id_cda, id_dataset, id_role, id_organism, id_nomenclature_actor_role) VALUES
-(1, 1, NULL, 2, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
-,(2, 1, NULL, 2, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6'))
+(1, 1, NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
+,(2, 1, NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6'))
 ,(3, 1, 3, NULL, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
-,(4, 2, NULL, 2, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '5'))
-,(5, 2, NULL, 2, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
+,(4, 2, NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '5'))
+,(5, 2, NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
 ,(7, 2, NULL, -1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
 ;
 SELECT pg_catalog.setval('gn_meta.cor_dataset_actor_id_cda_seq', (SELECT max(id_cda)+1 FROM gn_meta.cor_dataset_actor), true);
@@ -46,9 +46,82 @@ SELECT pg_catalog.setval('gn_meta.cor_dataset_actor_id_cda_seq', (SELECT max(id_
 
 -- Utilisateurs
 UPDATE utilisateurs.t_roles SET pass_plus = '$2y$13$TMuRXgvIg6/aAez0lXLLFu0lyPk4m8N55NDhvLoUHh/Ar3rFzjFT.' WHERE id_role IN (2,3);
+
+-- Ajout d'un utiliseur 'socle 1' avec l'id 10
+DELETE FROM utilisateurs.t_roles WHERE id_role=10;
+INSERT INTO utilisateurs.t_roles(id_role, groupe, nom_role) VALUES
+(10, TRUE, 'groupe_socle_1');
+
+-- Ajout des utilisateurs agent et admin
+INSERT INTO utilisateurs.cor_role_app_profil VALUES
+  (1,3,6),
+  (2,3,6),
+  (3,3,6)
+;
 -- Ajout d'un utilisateurs partenaire avec comme cruved R=1
-INSERT INTO utilisateurs.cor_app_privileges(id_tag_action, id_tag_object, id_application, id_role) VALUES
-(12,21,14,3);
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action, id_filter, id_module, id_object) VALUES
+(3,2,2,3,1);
+
+
+-- Reset original privileges
+INSERT INTO gn_permissions.cor_role_action_filter_module_object
+    (
+    id_role,
+    id_action,
+    id_filter,
+    id_module,
+    id_object
+    ) 
+    VALUES
+    -- Admin: C:3, R:3, U:3, V:3, E:3, D:3 sur GeoNature
+    (1, 1, 4, 0, 1),
+    (1, 2, 4, 0, 1),
+    (1, 3, 4, 0, 1),
+    (1, 4, 4, 0, 1),
+    (1, 5, 4, 0, 1),
+    (1, 6, 4, 0, 1),
+    -- groupe Admin
+    (9, 1, 4, 0, 1),
+    (9, 2, 4, 0, 1),
+    (9, 3, 4, 0, 1),
+    (9, 4, 4, 0, 1),
+    (9, 5, 4, 0, 1),
+    (9, 6, 4, 0, 1),
+    --Validateur général sur tout GeoNature
+    (5, 4, 4, 0, 1 ),
+    --CRUVED du groupe en poste (id=7) sur tout GeoNature 
+    (7, 1, 4, 0, 1),
+    (7, 2, 3, 0, 1),
+    (7, 3, 2, 0, 1),
+    (7, 4, 1, 0, 1),
+    (7, 5, 3, 0, 1),
+    (7, 6, 2, 0, 1),
+    -- socle 1 peut agir que sur ses données
+    (10, 1, 2, 0, 1),
+    (10, 2, 2, 0, 1),
+    (10, 3, 2, 0, 1),
+    (10, 4, 2, 0, 1),
+    (10, 5, 2, 0, 1),
+    (10, 6, 2, 0, 1),
+    -- partenaire avec cruved de 1
+    (3, 2, 2, 0, 1),
+    -- ADMIN peut gérer les permissions du backoffice
+    (9, 1, 4, 1, 3),
+    (9, 2, 4, 1, 3),
+    (9, 3, 4, 1, 3),
+    (9, 4, 4, 1, 3),
+    (9, 5, 4, 1, 3),
+    (9, 6, 4, 1, 3),
+    -- ADMIN peut gérer les métadonnées du backoffice
+    (9, 1, 4, 1, 2),
+    (9, 2, 4, 1, 2),
+    (9, 3, 4, 1, 2),
+    (9, 4, 4, 1, 2),
+    (9, 5, 4, 1, 2),
+    (9, 6, 4, 1, 2)
+  
+;
+
 
 INSERT INTO gn_meta.cor_dataset_territory (id_dataset, id_nomenclature_territory, territory_desc) VALUES
 (1, ref_nomenclatures.get_id_nomenclature('TERRITOIRE', 'METROP') ,'Territoire du parc national des Ecrins et de ses environs immédiats')
@@ -124,8 +197,8 @@ VALUES
     ref_nomenclatures.get_id_nomenclature('DEE_FLOU', 'NON'),
     'Gil D',
     ref_nomenclatures.get_id_nomenclature('METH_DETERMIN', '2'),
-    351,
-    'Grenouille rousse',
+    713776,
+    'Trichopria Ashmead, 1893',
     'Taxref V9.0',
     '',
     '',
@@ -153,6 +226,8 @@ VALUES
   'Poils de plumes',
   'Troisieme test'
   );
+
+SELECT pg_catalog.setval('pr_occtax.t_occurrences_occtax_id_occurrence_occtax_seq', (SELECT max(id_occurrence_occtax)+1 FROM pr_occtax.t_occurrences_occtax), true);
 
 
 INSERT INTO pr_occtax.cor_role_releves_occtax (id_releve_occtax, id_role) VALUES
@@ -221,3 +296,14 @@ INSERT INTO  pr_occtax.cor_counting_occtax (
     1
   )
 ;
+
+
+SELECT pg_catalog.setval('pr_occtax.cor_counting_occtax_id_counting_occtax_seq', (SELECT max(id_counting_occtax)+1 FROM pr_occtax.cor_counting_occtax), true);
+
+
+
+-- Pour la synthese
+
+-- insertion d'un attribut sur taxon pour test de la recherche par attrs
+
+INSERT INTO taxonomie.cor_taxon_attribut VALUES (102, 'eau', 209902);

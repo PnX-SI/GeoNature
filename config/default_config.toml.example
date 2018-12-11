@@ -19,7 +19,7 @@ COOKIE_EXPIRATION = 7200
 COOKIE_AUTORENEW = true
 TRAP_ALL_EXCEPTIONS = false
 # code EPSG des geom local de la BDD
-LOCAL_SRID = 
+LOCAL_SRID = 2154
 
 # MTD
 XML_NAMESPACE = "{http://inpn.mnhn.fr/mtd}"
@@ -44,6 +44,8 @@ CAS_URL_VALIDATION = 'https://preprod-inpn.mnhn.fr/auth/serviceValidate'
 
 [BDD]
 id_area_type_municipality = 25
+ID_USER_SOCLE_1 = 8
+ID_USER_SOCLE_2 = 6
 
 [RIGHTS]
     NOTHING = 0
@@ -104,46 +106,43 @@ MULTILINGUAL = false
     NB_MAX_OBS_EXPORT = 40000
     # Champs à afficher dans l'export
     [EXPORT_COLUMNS]
-        [EXPORT_COLUMNS.SYNTHESE_COLUMNS] = [
-        'id_synthese',
-        'unique_id_sinp',
-        'date_min',
-        'date_max',
-        'observers',
-        'altitude_min',
-        'altitude_max',
-        'count_min',
-        'count_max',
-        'sample_number_proof',
-        'digital_proof',
-        'non_digital_proof',
-        'comments'
-        ]
-        [EXPORT_COLUMNS.NOMENCLATURE_COLUMNS] = [
-            'nat_obj_geo',
-            'grp_typ',
-            'obs_method',
-            'obs_technique',
-            'bio_status',
-            'bio_condition',
-            'naturalness',
-            'exist_proof',
-            'valid_status',
-            'diffusion_level',
-            'life_stage',
-            'sex',
-            'obj_count',
-            'type_count',
-            'sensitivity',
-            'observation_status',
-            'blurring',
-            'source_status',
-            'info_geo_type',
-            'determination_method'
-        ]
-        [EXPORT_COLUMNS.TAXONOMIC_COLUMNS] = [
-            'cd_nom',
-            'cd_ref',
-            'nom_valide'
-        ]
+        id_synthese = "idSyn" 
+        unique_id_sinp = "idUnique" 
+        date_min = "dateMin" 
+        date_max = "dateMax" 
+        observers = "observers" 
+        altitude_min = "altMin" 
+        altitude_max = "altMax" 
+        count_min = "NbMin" 
+        count_max = "nbMax" 
+        sample_number_proof = "EchanPreuv" 
+        digital_proof = "PreuvNum" 
+        non_digital_proof = "PreuvNoNum" 
+        comments = "comment" 
+        nat_obj_geo = "natObjGeo" 
+        grp_typ = "methGrp" 
+        obs_method = "obsMeth" 
+        obs_technique = "obsTech" 
+        bio_status = "ocEtatBio" 
+        bio_condition = "ocStatBio" 
+        naturalness = "ocNat" 
+        exist_proof = "preuveOui" 
+        valid_status = "validStat" 
+        diffusion_level = "nivDiffusi" 
+        life_stage = "ocStade" 
+        sex = "ocSex" 
+        obj_count = "objDenbr" 
+        type_count = "typDenbr" 
+        sensitivity = "sensibilit" 
+        observation_status = "statutObs" 
+        blurring = "floutage" 
+        source_status = "statutSour" 
+        info_geo_type = "typeGeom" 
+        determination_method = "methDeterm" 
+        dataset_name = "JDD" 
+        cd_nom = "cdNom" 
+        cd_ref = "cdRef" 
+        nom_valide = "nomValide" 
+        wkt = "WKT"
+
 

@@ -9,14 +9,14 @@ from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_commons.models import TModules, TParameters
 from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import json_resp
-from pypnusershub import routes as fnauth
-from pypnusershub.db.tools import cruved_for_user_in_app
+from geonature.core.gn_permissions import decorators as permissions
+from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 
 routes = Blueprint('gn_commons', __name__)
 
 
 @routes.route('/modules', methods=['GET'])
-@fnauth.check_auth_cruved('R', True)
+@permissions.check_cruved_scope('R', True)
 @json_resp
 def get_modules(info_role):
     '''
@@ -25,13 +25,13 @@ def get_modules(info_role):
     modules = DB.session.query(TModules).all()
     allowed_modules = []
     for mod in modules:
-        app_cruved = cruved_for_user_in_app(
+        app_cruved = cruved_scope_for_user_in_module(
             id_role=info_role.id_role,
-            id_application=mod.id_module,
-            id_application_parent=current_app.config['ID_APPLICATION_GEONATURE']
-        )
+            module_code=mod.module_code,
+        )[0]
         if app_cruved['R'] != '0':
             module = mod.as_dict()
+            module['cruved'] = app_cruved
             if mod.active_frontend:
                 module['module_url'] = '{}/#/{}'.format(
                     current_app.config['URL_APPLICATION'],

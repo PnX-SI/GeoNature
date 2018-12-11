@@ -9,7 +9,9 @@ from pypnnomenclature.models import TNomenclatures
 
 from geonature.utils.utilssqlalchemy import serializable
 from geonature.utils.env import DB
-from geonature.core.users.models import TRoles, BibOrganismes
+from geonature.core.users.models import BibOrganismes
+from pypnusershub.db.models import User
+
 
 
 class CorAcquisitionFrameworkObjectif(DB.Model):
@@ -60,9 +62,6 @@ class CorAcquisitionFrameworkActor(DB.Model):
         ForeignKey('utilisateurs.bib_organismes.id_organisme')
     )
     id_nomenclature_actor_role = DB.Column(DB.Integer)
-    role = relationship("TRoles", foreign_keys=[id_role])
-    organism = relationship("BibOrganismes", foreign_keys=[id_organism])
-
 
 @serializable
 class CorDatasetActor(DB.Model):
@@ -83,7 +82,13 @@ class CorDatasetActor(DB.Model):
     )
 
     id_nomenclature_actor_role = DB.Column(DB.Integer)
-    role = relationship("TRoles", foreign_keys=[id_role])
+    role = DB.relationship(
+        User,
+        primaryjoin=(
+            User.id_role == id_role
+        ),
+        foreign_keys=[id_role]
+    )
     organism = relationship("BibOrganismes", foreign_keys=[id_organism])
 
 
@@ -141,7 +146,7 @@ class TDatasets(DB.Model):
     cor_dataset_actor = relationship(
         CorDatasetActor,
         lazy='select',
-        cascade="save-update, delete, delete-orphan"
+        cascade="save-update, merge, delete, delete-orphan"
     )
 
     @staticmethod
@@ -216,7 +221,7 @@ class TAcquisitionFramework(DB.Model):
     cor_af_actor = relationship(
         CorAcquisitionFrameworkActor,
         lazy='select',
-        cascade="save-update, delete, delete-orphan"
+        cascade="save-update, merge, delete, delete-orphan"
     )
 
     cor_objectifs = DB.relationship(

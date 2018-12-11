@@ -33,3 +33,4 @@ Contributeurs
 * Fred Cloitre (LPO Ardèche)
 * Richard Vergely (Parc national des Ecrins)
 * Sylvain Montagner (Parc naturel régional de Normandie-Maine)
+* Patrick Kappeler (Natural Solutions)

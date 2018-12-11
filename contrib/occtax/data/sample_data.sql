@@ -317,3 +317,6 @@ INSERT INTO  pr_occtax.cor_counting_occtax (
     1
   )
 ;
+
+
+SELECT pg_catalog.setval('pr_occtax.cor_counting_occtax_id_counting_occtax_seq', (SELECT max(id_counting_occtax)+1 FROM pr_occtax.cor_counting_occtax), true);

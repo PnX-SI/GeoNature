@@ -1,6 +1,6 @@
 import pytest
 
-from flask import url_for
+from flask import url_for, current_app
 
 from .bootstrap_test import app, post_json, json_of_response, get_token
 
@@ -29,7 +29,8 @@ class TestGnMeta:
         API to get datasets with CRUVED authorization
         CRUVED right = 3
         """
-        token = get_token(self.client)
+        token = get_token(self.client, login="admin", password="admin")
+        self.client.set_cookie('/', 'token', token)
         response = self.client.get(url_for('gn_meta.get_datasets'))
         assert response.status_code == 200
 
@@ -42,6 +43,7 @@ class TestGnMeta:
         CRUVED = 2
         """
         token = get_token(self.client, login="agent", password="admin")
+        self.client.set_cookie('/', 'token', token)
         response = self.client.get(url_for('gn_meta.get_datasets'))
         dataset_list = json_of_response(response)
         assert (
@@ -56,6 +58,7 @@ class TestGnMeta:
         CRUVED = 1
         """
         token = get_token(self.client, login="partenaire", password="admin")
+        self.client.set_cookie('/', 'token', token)
         response = self.client.get(url_for('gn_meta.get_datasets'))
         dataset_list = json_of_response(response)
         assert (
@@ -89,7 +92,8 @@ class TestGnMeta:
         assert resp.status_code == 200
 
         resp = users.insert_role(user)
-        users.insert_in_cor_role(20003, user['id_role'])
+        # id_role 10 = id_socle 1 in test
+        users.insert_in_cor_role(10, user['id_role'])
         assert resp.status_code == 200
 
         jdds = post_jdd_from_user(id_user=10991, id_organism=104)

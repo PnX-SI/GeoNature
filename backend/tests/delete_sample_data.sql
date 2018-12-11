@@ -6,5 +6,10 @@ TRUNCATE gn_meta.t_datasets CASCADE;
 
 TRUNCATE gn_meta.t_acquisition_frameworks CASCADE;
 
+TRUNCATE gn_permissions.cor_role_action_filter_module_object CASCADE;
 
-DELETE FROM utilisateurs.cor_app_privileges WHERE id_role = 3;
+TRUNCATE gn_synthese.synthese CASCADE;
+
+TRUNCATE utilisateurs.cor_role_app_profil CASCADE;
+
+TRUNCATE taxonomie.cor_taxon_attribut;

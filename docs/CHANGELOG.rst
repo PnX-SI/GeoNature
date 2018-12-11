@@ -7,8 +7,38 @@ CHANGELOG
 
 **Corrections**
 
-*
+* Correction de l'id_digitiser lors de la mise à jour #481
+* Corrections multiples de la prise en compte du CRUVED #496
+* Deconnexion apres inactivité de l'utilisateur #490
+* Suppression des heures au niveau des dates de l'export occtax #485
+* Correction du message d'erreur quand on n'a pas de JDD #479
+* Correction du champs commentaire dans les exports d'Occtax séparé entre relevé et occurrence #478
+* Correction des paramètres de la fonction ``GenericQuery.build_query_filter()`` (merci @patkap)
+* Correction de l'administration des métadonnées #466 #420
+* Métadonnées (JDD et CA) : ne pas afficher les utilisateurs qui sont des groupes dans les acteurs
+* Ajout d'un champs dans la Synthèse permettant de stocker de quel module provient une occurrence et fonctions SQL associées #412
+* Amélioration du style des champs obligatoires
+* Améliorations mineures de l'ergonomie d'Occtax
+* Correction du spinner qui tournait en boucle lors de l'export CSV de la Synthèse #451
+* Correction des tests automatisés
+* Amélioration des performances des intersections avec les zonages de ``ref_geo.l_areas``
+* Diverses autres corrections et améliorations mineures
+* Complément de la documentation de développement
+* Simplification de la configuration des gn_modules
+* Occtax : ordonnancement des observation par date #467
+* Suppression des warnings lors du build du frontend
+* Correction de l'installation des modules GeoNature
+* Ajout d'un message quand on n'a pas accès à une donnée d'un module
+* Affichage du nom du module dans le Header (#398)
+* Correction des outils cartographiques dans Occtax
+* Correction complémentaire des styles des lignes sans remplissage (#458)
+* MaplistService : correction du zoom sur les polygones et polylignes
 
+**Note de version**
+
+* MAJ BDD GN (update...)
+* MAJ BDD sous-modules
+* Evolution pour les sous-modules >> Utiliser instance DB de GN pour lancer scripts (#498) et ne plus avoir d'id_application dans la conf du module + Utilisation du CRUVED
 
 2.0.0-rc.3.1 (2018-10-21)
 -------------------------

@@ -14,6 +14,7 @@ import { ChartModule } from 'angular2-chartjs';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ToastrModule } from 'ngx-toastr';
+import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 
 // Modules
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
@@ -34,12 +35,13 @@ import { IntroductionComponent } from '../custom/components/introduction/introdu
 // Service
 import { AppConfig } from '../conf/app.config';
 import { AuthService } from './components/auth/auth.service';
-import { SideNavService } from './components/sidenav-items/sidenav.service';
-import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { CookieService } from 'ng2-cookies';
 import { AuthGuard, ModuleGuardService } from '@geonature/routing/routes-guards.service';
+import { ModuleService } from './services/module.service';
+import { SideNavService } from './components/sidenav-items/sidenav-service';
 
 import { MyCustomInterceptor } from './services/http.interceptor';
+import { GlobalSubService } from './services/global-sub.service';
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -52,6 +54,7 @@ export function HttpLoaderFactory(http: Http) {
     HttpClientModule,
     BrowserAnimationsModule,
     FlexLayoutModule,
+    NgIdleKeepaliveModule.forRoot(),
     routing,
     ChartModule,
     ToastrModule.forRoot(),
@@ -77,10 +80,12 @@ export function HttpLoaderFactory(http: Http) {
   providers: [
     AuthService,
     AuthGuard,
-    SideNavService,
+    ModuleService,
+    GlobalSubService,
     CookieService,
     HttpClient,
     ModuleGuardService,
+    SideNavService,
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

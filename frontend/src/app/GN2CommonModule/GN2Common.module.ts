@@ -12,12 +12,6 @@ import {
 
 import { Http } from '@angular/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-  HttpClientModule,
-  HttpClient,
-  HttpClientXsrfModule,
-  HTTP_INTERCEPTORS
-} from '@angular/common/http';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AutoCompleteModule } from 'primeng/primeng';
@@ -64,6 +58,7 @@ import { MapListService } from './map-list/map-list.service';
 import { CommonService } from './service/common.service';
 import { FormService } from './form/form.service';
 import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
+import { DataService } from './service/data.service';
 
 // add all rxjs operators
 import 'rxjs/Rx';
@@ -125,7 +120,8 @@ export function HttpLoaderFactory(http: Http) {
     CommonService,
     FormService,
     DynamicFormService,
-    NgbDatePeriodParserFormatter
+    NgbDatePeriodParserFormatter,
+    DataService
   ],
   exports: [
     MunicipalitiesComponent,
