@@ -103,14 +103,17 @@ $BODY$
  COST 100;
 
 
-CREATE OR REPLACE FUNCTION get_id_object
-(mycodeobject varchar)
-  RETURNS int LANGUAGE SQL AS
-$$ 
-SELECT id_object
+CREATE OR REPLACE FUNCTION gn_permissions.get_id_object (mycodeobject character varying)
+  RETURNS int AS
+$BODY$
+BEGIN
+RETURN (SELECT id_object
 FROM gn_permissions.t_objects
-WHERE code_object = mycodeobject;
-$$;
+WHERE code_object = mycodeobject);
+END;
+$BODY$
+ LANGUAGE plpgsql IMMUTABLE
+ COST 100;
 
 CREATE OR REPLACE FUNCTION gn_permissions.fct_tri_does_user_have_already_scope_filter()
   RETURNS trigger AS
