@@ -141,7 +141,7 @@ def get_user_permissions(user, code_action, code_filter_type, module_code=None, 
         )
 
 
-def build_cruved(cruved, get_id):
+def build_cruved_dict(cruved, get_id):
     '''
         function utils to build a dict like {'C':'3', 'R':'2'}...
         from VUsersPermissions
@@ -153,6 +153,23 @@ def build_cruved(cruved, get_id):
         else:
             cruved_dict[action_scope[0]] = action_scope[1]
     return cruved_dict
+
+def beautifulize_cruved(actions, cruved):
+    """
+    Build more readable the cruved dict with the actions label
+    Params:
+        actions: dict action {'C': 'Action de créer'}
+        cruved: dict of cruved
+    Return:
+        Array<dict> [{'label': 'Action de Lire', 'value': '3'}]
+    """
+    cruved_beautiful = []
+    for key, value in cruved.items():
+        temp = {}
+        temp['label'] = actions.get(key)
+        temp['value'] = value
+        cruved_beautiful.append(temp)
+    return cruved_beautiful
 
 
 def cruved_scope_for_user_in_module(
@@ -191,27 +208,27 @@ def cruved_scope_for_user_in_module(
     if object_code != 'ALL':
         object_cruved = q.all()
 
-        cruved_dict = build_cruved(object_cruved, get_id)
+        cruved_dict = build_cruved_dict(object_cruved, get_id)
         update_cruved = {}
         for action in cruved_actions:
             if action in cruved_dict:
                 update_cruved[action] = cruved_dict[action]
             else:
                 update_cruved[action] = '0'
-        return update_cruved
+        return update_cruved, False
 
     # get max scope cruved for module GEONATURE
     parent_cruved_data = q.filter(VUsersPermissions.module_code.ilike('GEONATURE')).all()
     parent_cruved = {}
     # build a dict like {'C':'0', 'R':'2' ...} if get_id = False or
     # {'C': 1, 'R':3 ...} if get_id = True
-    parent_cruved = build_cruved(parent_cruved_data, get_id)
+    parent_cruved = build_cruved_dict(parent_cruved_data, get_id)
 
     # get max scope cruved for module passed in parameter
     module_cruved = {}
     if module_code:
         module_cruved_data = q.filter(VUsersPermissions.module_code.ilike(module_code)).all()
-        module_cruved = build_cruved(module_cruved_data, get_id)
+        module_cruved = build_cruved_dict(module_cruved_data, get_id)
         # for the module 
         for action_scope in module_cruved_data:
             if get_id:
