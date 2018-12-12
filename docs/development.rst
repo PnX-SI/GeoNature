@@ -411,7 +411,7 @@ Vérification des droits des utilisateurs
 
 
 Décorateur pour les routes : vérifie les droits de l'utilisateur et le redirige en cas de niveau insuffisant ou d'informations de session erronés
-(deprecated) Privilegier `check_auth_cruved`
+(deprecated) Privilegier `check_cruved_scope`
 
 params :
 
@@ -442,7 +442,7 @@ params :
 
 
 
-- ``pypnusershub.routes.check_auth_cruved``
+- ``geonature.core.gn_permissions.decorators.check_cruved_scope``
 
 Décorateur pour les routes : Vérifie les droits de l'utilisateur à effectuer une action sur la donnée et le redirige en cas de niveau insuffisant ou d'informations de session erronées
 
@@ -450,26 +450,28 @@ params :
 
 * action <str:['C','R','U','V','E','D']> type d'action effectuée par la route (Create, Read, Update, Validate, Export, Delete)
 * get_role <bool:False>: si True, ajoute l'id utilisateur aux kwargs de la vue
-* redirect_on_expiration <str:None> : identifiant de vue  sur laquelle rediriger l'utilisateur en cas d'expiration de sa session
-* redirect_on_invalid_token <str:None> : identifiant de vue sur laquelle rediriger l'utilisateur en cas d'informations de session invalides
+* module_code: <str:None>: Code du module (gn_commons.t_modules) sur lequel on veut récupérer le CRUVED. Si ce paramètre n'est pas passer on vérifie le cruved de GeoNature
+* redirect_on_expiration <str:None> : identifiant de vue ou URL sur laquelle rediriger l'utilisateur en cas d'expiration de sa session
+* redirect_on_invalid_token <str:None> : identifiant de vue ou URL sur laquelle rediriger l'utilisateur en cas d'informations de session invalides
 
 
     ::
 
         from flask import Blueprint
-        from pypnusershub.routes import check_auth_cruved
         from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
         from geonature.utils.utilssqlalchemy import json_resp
+        from geonature.core.gn_permissions import decorators as permissions
 
         blueprint = Blueprint(__name__)
 
         @blueprint.route('/mysensibleview', methods=['GET'])
-        @check_auth_cruved(
+        @permissions.check_cruved_scope(
                 'R',
                 True,
+                module_code="OCCTAX"
                 redirect_on_expiration='my_reconnexion_handler',
                 redirect_on_invalid_token='my_affreux_pirate_handler'
-                )
+        )
         @json_resp
         def my_sensible_view(info_role):
             # Récupérer l'id de l'utilisateur qui demande la route
@@ -486,25 +488,37 @@ params :
 
 
 
-- ``pypnusershub.routes.db.tools.cruved_for_user_in_app``
+- ``geonature.core.gn_permissions.tools.cruved_scope_for_user_in_module``
 
 
-Fonction qui retourne le cruved d'un utilisateur pour une application donnée.
-Si aucun cruved n'est définit pour l'application, c'est celui de l'application mère qui est retourné.
-Le cruved de l'application enfant surcharge toujours celui de l'application mère.
+
+Fonction qui retourne le cruved d'un utilisateur pour un module et/ou un objet donné.
+Si aucun cruved n'est définit pour le module, c'est celui de GeoNature qui est retourné, sinon 0.
+Le cruved de du module enfant surcharge toujours celui du module parent.
+Le cruved sur les objets n'est lui pas hérité du module parent.
 
 params :
 * id_role <integer:None>
-* id_application: id du module surlequel on veut avoir le cruved
-* id_application_parent: id l'application parent du module
+* module_code <str:None>: code du module surlequel on veut avoir le cruved
+* object_code <str:'ALL'> : code de l'objet surlequel on veut avoir le cruved
+* get_id <boolean: False>: retourne l'id_filter et non le code_filter si True
 
-Valeur retournée : <dict> {'C': '1', 'R':'2', 'U': '1', 'V':'2', 'E':'3', 'D': '3'}
+Valeur retournée : tuple 
+A l'indice 0 du tuple: <dict{str:str}> ou <dict{str:int}>, boolean) {'C': '1', 'R':'2', 'U': '1', 'V':'2', 'E':'3', 'D': '3'}
+ ou {'C': 2, 'R':3, 'U': 4, 'V':1, 'E':2, 'D': 2} si ``get_id=True``
+A l'indice 1 du tuple: un booléan spécifiant si le cruved est hérité depuis un module parent ou non.
 
     ::
 
     from pypnusershub.db.tools import cruved_for_user_in_app
 
-    cruved = cruved_for_user_in_app(id_role=5, id_application=18, id_application_parent=14)
+    # recuperer le cruved de l'utilisateur 1 dans le module OCCTAX
+    cruved, herited = cruved_scope_for_user_in_module(
+            id_role=1
+            module_code='OCCTAX
+    )
+    # recupérer le cruved de l'utilisateur 1 sur GeoNature
+    cruved, herited = cruved_scope_for_user_in_module(id_role=1)
 
 
 Développement Frontend
