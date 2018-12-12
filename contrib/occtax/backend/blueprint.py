@@ -554,14 +554,3 @@ def export(info_role):
             error=message,
             redirect=current_app.config['URL_APPLICATION']+"/#/occtax"
         )
-
-
-
-
-@blueprint.route('/test', methods=['GET'])
-def test():
-    test = cruved_scope_for_user_in_module(
-        id_role=1,
-        module_code='OCCTAX'
-    )
-    return 'LAAAA'

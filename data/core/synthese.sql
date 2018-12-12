@@ -930,5 +930,5 @@ CREATE TRIGGER trg_refresh_taxons_forautocomplete
 --------
 
 INSERT INTO gn_commons.t_modules (module_code, module_label, module_picto, module_desc, module_path, module_target, active_frontend, active_backend) VALUES
-('synthese', 'SYNTHESE', 'fa-search', 'Application synthese', '/synthese', '_self', 'true', 'true');
+('SYNTHESE', 'Synthese', 'fa-search', 'Application synthese', '/synthese', '_self', 'true', 'true');
 

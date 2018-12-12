@@ -119,6 +119,13 @@ VALUES
     (7, 4, 1, 1, 1),
     (7, 5, 1, 1, 1),
     (7, 6, 1, 1, 1),
+    -- Groupe en admin a tous les droits sur l'admin
+    (9, 1, 4, 1, 1),
+    (9, 2, 4, 1, 1),
+    (9, 3, 4, 1, 1),
+    (9, 4, 4, 1, 1),
+    (9, 5, 4, 1, 1),
+    (9, 6, 4, 1, 1),
     -- ADMIN peut gérer les permissions du backoffice
     (9, 1, 4, 1, 3),
     (9, 2, 4, 1, 3),
