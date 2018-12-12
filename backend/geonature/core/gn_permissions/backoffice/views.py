@@ -43,7 +43,12 @@ def permission_form(info_role, id_module, id_role, id_object=None):
 
     user = DB.session.query(User).get(id_role)
     if request.method == 'GET':
-        cruved, herited = cruved_scope_for_user_in_module(id_role, module.module_code, get_id=True)
+        cruved, herited = cruved_scope_for_user_in_module(
+            id_role=id_role,
+            module_code=module.module_code,
+            object_code=object_instance.code_object,
+            get_id=True
+        )
         form = CruvedScopeForm(**cruved)
         # get the real cruved of user to set a warning
         real_cruved = DB.session.query(CorRoleActionFilterModuleObject).filter_by(
@@ -193,13 +198,11 @@ def user_cruved(id_role):
         module['module_objects'] = module_objects_as_dict
 
         # do not display cruved for module which have objects
-        if len(module['module_objects']) > 0:
-            module['module_cruved'] = ('', False)
-        else:
-            cruved, herited = cruved_scope_for_user_in_module(id_role, module['module_code'])
-            cruved_beautiful = beautifulize_cruved(actions_label, cruved)
-            #print(cruved_beautiful)
-            module['module_cruved'] = (cruved_beautiful, herited)
+
+        cruved, herited = cruved_scope_for_user_in_module(id_role, module['module_code'])
+        cruved_beautiful = beautifulize_cruved(actions_label, cruved)
+        #print(cruved_beautiful)
+        module['module_cruved'] = (cruved_beautiful, herited)
         modules.append(module)
     return render_template(
         'cruved_user.html',

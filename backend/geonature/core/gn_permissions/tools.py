@@ -144,7 +144,7 @@ def get_user_permissions(user, code_action, code_filter_type, module_code=None, 
 def build_cruved_dict(cruved, get_id):
     '''
         function utils to build a dict like {'C':'3', 'R':'2'}...
-        from VUsersPermissions
+        from Array<VUsersPermissions>
     '''
     cruved_dict = {}
     for action_scope in cruved:

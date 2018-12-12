@@ -62,13 +62,11 @@
           {% endif %}
           </td>
           <td>
-            {% if mod.module_objects | length == 0 %}
               <a href="{{ url_for('gn_permissions_backoffice.permission_form', id_module=mod.id_module, id_role=user.id_role) }}">
               <button class="btn btn-primary">
                 Edit <span class="fa fa-pencil" aria-hidden="true"></span> 
               </button>
               </a>
-            {% endif %}
           </td>
         </tr>
         {% endfor %}
@@ -78,7 +76,8 @@
       {% if groupes|length > 0 %}
       <div class="alert alert-primary" role="alert">
           <p>
-              L'utilisateur <b> {{user.nom_role}} {{user.prenom_role if user.prenom_role}} </b> appartient aux groupe(s) suivant(s): 
+              L'utilisateur <b> {{user.nom_role}} {{user.prenom_role if user.prenom_role}} </b> appartient aux groupe(s) suivant(s). <br>
+              Son CRUVED peut-être surchargé par celui des groupes auxquels il appartient
           </p>
           <table>
             {% for groupe in groupes %}
