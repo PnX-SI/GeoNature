@@ -71,16 +71,9 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object
     id_filter,
     id_module,
     id_object
-    ) 
-    VALUES
-    -- Admin: C:3, R:3, U:3, V:3, E:3, D:3 sur GeoNature
-    (1, 1, 4, 0, 1),
-    (1, 2, 4, 0, 1),
-    (1, 3, 4, 0, 1),
-    (1, 4, 4, 0, 1),
-    (1, 5, 4, 0, 1),
-    (1, 6, 4, 0, 1),
-    -- groupe Admin
+    )
+VALUES
+    -- Groupe Admin
     (9, 1, 4, 0, 1),
     (9, 2, 4, 0, 1),
     (9, 3, 4, 0, 1),
@@ -96,15 +89,13 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object
     (7, 4, 1, 0, 1),
     (7, 5, 3, 0, 1),
     (7, 6, 2, 0, 1),
-    -- socle 1 peut agir que sur ses données
-    (10, 1, 2, 0, 1),
-    (10, 2, 2, 0, 1),
-    (10, 3, 2, 0, 1),
-    (10, 4, 2, 0, 1),
-    (10, 5, 2, 0, 1),
-    (10, 6, 2, 0, 1),
-    -- partenaire avec cruved de 1
-    (3, 2, 2, 0, 1),
+    -- Groupe en poste ,'a pas accès à l'admin
+    (7, 1, 1, 1, 1),
+    (7, 2, 1, 1, 1),
+    (7, 3, 1, 1, 1),
+    (7, 4, 1, 1, 1),
+    (7, 5, 1, 1, 1),
+    (7, 6, 1, 1, 1),
     -- ADMIN peut gérer les permissions du backoffice
     (9, 1, 4, 1, 3),
     (9, 2, 4, 1, 3),
@@ -118,10 +109,15 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object
     (9, 3, 4, 1, 2),
     (9, 4, 4, 1, 2),
     (9, 5, 4, 1, 2),
-    (9, 6, 4, 1, 2)
-  
+    (9, 6, 4, 1, 2),
+    -- ADMIN peut gérer les nomenclatures du backoffice
+    (9, 1, 4, 1, 4),
+    (9, 2, 4, 1, 4),
+    (9, 3, 4, 1, 4),
+    (9, 4, 4, 1, 4),
+    (9, 5, 4, 1, 4),
+    (9, 6, 4, 1, 4)
 ;
-
 
 INSERT INTO gn_meta.cor_dataset_territory (id_dataset, id_nomenclature_territory, territory_desc) VALUES
 (1, ref_nomenclatures.get_id_nomenclature('TERRITOIRE', 'METROP') ,'Territoire du parc national des Ecrins et de ses environs immédiats')
