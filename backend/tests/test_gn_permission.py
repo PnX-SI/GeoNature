@@ -157,7 +157,6 @@ class TestGnPermissionsView():
             )
         )
         assert response.status_code == 200
-        assert b'Editer le CRUVED par objet' in response.data
 
     def test_get_cruved_scope_form_not_allowed(self):
         '''

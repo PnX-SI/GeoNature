@@ -18,7 +18,7 @@ data/migrations/v1tov2/v1_compat.log
 config.py
 backend/static/medias/*
 backend/static/shapefiles/*
-backend/static/node_modules/
+backend/static/node_modules
 backend/static/configs/*
 
 backend/run.py
