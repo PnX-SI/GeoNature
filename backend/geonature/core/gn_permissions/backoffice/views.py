@@ -40,13 +40,6 @@ def permission_form(info_role, id_module, id_role, id_object=None):
         object_instance = DB.session.query(TObjects).get(id_object)
     else:
         object_instance = DB.session.query(TObjects).filter_by(code_object='ALL').first()
-        # get module associed objects to set specific Cruved
-        module_objects = DB.session.query(TObjects).join(
-            CorObjectModule, CorObjectModule.id_object == TObjects.id_object
-        ).filter(
-            CorObjectModule.id_module == id_module
-        ).all()
-        # get all actions
 
     user = DB.session.query(User).get(id_role)
     if request.method == 'GET':
@@ -69,7 +62,6 @@ def permission_form(info_role, id_module, id_role, id_object=None):
             user=user,
             module=module,
             object_instance=object_instance,
-            module_objects=module_objects,
             id_object=id_object,
             config=current_app.config
         )
