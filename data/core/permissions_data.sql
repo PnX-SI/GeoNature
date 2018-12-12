@@ -75,14 +75,16 @@ INSERT INTO t_objects
 VALUES
     ('ALL', 'Représente tous les objets d''un module'),
     ('METADATA', 'Gestion du backoffice des métadonnées'),
-    ('PERMISSIONS', 'Gestion du backoffice des permissions')
+    ('PERMISSIONS', 'Gestion du backoffice des permissions'),
+    ('NOMENCLATURES', 'Gestion du backoffice des nomenclatures')
 ;
 
 INSERT INTO cor_object_module
     (id_object, id_module)
 VALUES
     (2, 1),
-    (3, 1)
+    (3, 1),
+    (4, 1)
 ;
 
 INSERT INTO cor_role_action_filter_module_object
@@ -110,6 +112,13 @@ VALUES
     (7, 4, 1, 0, 1),
     (7, 5, 3, 0, 1),
     (7, 6, 2, 0, 1),
+    -- Groupe en poste ,n'a pas accès à l'admin
+    (7, 1, 1, 1, 1),
+    (7, 2, 1, 1, 1),
+    (7, 3, 1, 1, 1),
+    (7, 4, 1, 1, 1),
+    (7, 5, 1, 1, 1),
+    (7, 6, 1, 1, 1),
     -- ADMIN peut gérer les permissions du backoffice
     (9, 1, 4, 1, 3),
     (9, 2, 4, 1, 3),
@@ -123,6 +132,13 @@ VALUES
     (9, 3, 4, 1, 2),
     (9, 4, 4, 1, 2),
     (9, 5, 4, 1, 2),
-    (9, 6, 4, 1, 2)
+    (9, 6, 4, 1, 2),
+    -- ADMIN peut gérer les nomenclatures du backoffice
+    (9, 1, 4, 1, 4),
+    (9, 2, 4, 1, 4),
+    (9, 3, 4, 1, 4),
+    (9, 4, 4, 1, 4),
+    (9, 5, 4, 1, 4),
+    (9, 6, 4, 1, 4)
 ;
 
