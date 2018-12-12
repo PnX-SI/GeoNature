@@ -14,27 +14,61 @@
       <table class="table table-striped">
         {% for mod in modules %}
         <tr>
-          <td>{{ mod.module_code }}</td>
           <td>
-          {% if mod.module_cruved[0] | length > 0 %}
+            
+            {{ mod.module_code }}
+            {% if mod.module_objects | length > 0 %}
+            <br>
+            <button onclick="toogleClass()" class="btn btn-secondary" style="margin:10px" type="button" data-toggle="collapse" data-target="#collapseExample-{{loop.index}}" aria-expanded="false" aria-controls="collapseExample">
+                Objects du module <span id="toggle-btn"  class="fa fa-chevron-right" aria-hidden="true"></span>
+
+            </button>
+            <div class="collapse" id="collapseExample-{{loop.index}}">
+                {% for obj in mod.module_objects %}
+                <div class="card card-body" style="margin:10px">
+                    {{ obj.code_object }}
+                    <small> {{obj.description_object}} </small>
+                    <br>
+
+                    {% for action in obj.cruved %}
+                      <ul>
+                        <li>
+                          {{action.label}}: {{ action.value }}
+                        </li>
+                      </ul>
+                    {% endfor %}
+                    <a href="{{ url_for('gn_permissions_backoffice.permission_form', id_module=mod.id_module, id_role=user.id_role, id_object=obj.id_object) }}">
+                        <button class="btn btn-primary">
+                          Edit <span id="toggle-btn" class="fa fa-pencil" aria-hidden="true"></span> 
+                        </button>
+                    </a>
+                  </div>
+
+                  {% endfor %}
+              </div>
+            {% endif %}
+          
+          </td>
+          <td>
             {% for cruved in mod.module_cruved[0] %}
             <ul>
-              <li>{{ cruved.key }} : <b> {{ cruved.label }}</b>  </li>
+              <li>{{ cruved.label }} : <b> {{ cruved.value }}</b>  </li>
             </ul>
 
             {% endfor %}
-          {% endif %}
           <td> 
           {% if mod.module_cruved[1] %}
            Hérité du module parent GeoNature
           {% endif %}
           </td>
           <td>
-            <a href="{{ url_for('gn_permissions_backoffice.permission_form', id_module=mod.id_module, id_role=user.id_role) }}">
-            <button class="btn btn-primary">
-              Edit
-            </button>
-            </a>
+            {% if mod.module_objects | length == 0 %}
+              <a href="{{ url_for('gn_permissions_backoffice.permission_form', id_module=mod.id_module, id_role=user.id_role) }}">
+              <button class="btn btn-primary">
+                Edit <span id="toggle-btn" class="fa fa-pencil" aria-hidden="true"></span> 
+              </button>
+              </a>
+            {% endif %}
           </td>
         </tr>
         {% endfor %}
@@ -54,7 +88,7 @@
               </td>
               <td>
                   <a href="{{ url_for('gn_permissions_backoffice.user_cruved' ,id_role=groupe.id_role)}}">
-                      <button class="btn btn-sm btn-primary"> Voir CRUVED <i class="fa fa-pencil" aria-hidden="true"></i></button>
+                      <button class="btn btn-sm btn-primary"> Voir CRUVED <i class="fa fa-eye" aria-hidden="true"></i></button>
                   </a>
               </td>
 
@@ -66,6 +100,15 @@
 
       {% endif %}
   </div>
+
+
+  <script>
+
+      var toogleClass = function (){
+         $('#toggle-btn').toggleClass('fa-chevron-down' , 'fa-chevron-right');
+       }
+   
+     </script>
 
 </body>
 

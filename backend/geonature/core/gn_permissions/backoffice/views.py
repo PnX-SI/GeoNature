@@ -6,7 +6,7 @@ from sqlalchemy.sql import func
 
 from geonature.utils.env import DB 
 from geonature.core.gn_permissions.backoffice.forms import CruvedScopeForm, OtherPermissionsForm, FilterForm
-from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
+from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module, beautifulize_cruved
 from geonature.core.gn_permissions.models import(
     TFilters, BibFiltersType, TActions,
     CorRoleActionFilterModuleObject, TObjects, CorObjectModule, VUsersPermissions
@@ -36,7 +36,6 @@ def permission_form(info_role, id_module, id_role, id_object=None):
     module = DB.session.query(TModules).get(id_module)
     object_instance = None
     module_objects = [] 
-
     if id_object:
         object_instance = DB.session.query(TObjects).get(id_object)
     else:
@@ -47,19 +46,12 @@ def permission_form(info_role, id_module, id_role, id_object=None):
         ).filter(
             CorObjectModule.id_module == id_module
         ).all()
-        # get cruved of objects
-        for obj in module_objects:
-            cruved = cruved_scope_for_user_in_module(
-                id_role=id_role,
-                module_code=module.module_code,
-                object_code=obj.code_object
-            )
+        # get all actions
 
     user = DB.session.query(User).get(id_role)
     if request.method == 'GET':
         cruved, herited = cruved_scope_for_user_in_module(id_role, module.module_code, get_id=True)
         form = CruvedScopeForm(**cruved)
- 
         # get the real cruved of user to set a warning
         real_cruved = DB.session.query(CorRoleActionFilterModuleObject).filter_by(
             id_module=id_module, id_role=id_role, id_object=object_instance.id_object
@@ -151,7 +143,6 @@ def users(info_role):
         User.groupe.desc(),
         User.nom_role.asc()
     )
-
     # filter with cruved auth
     if info_role.value_filter == '2':
         q = q.join(
@@ -190,17 +181,32 @@ def user_cruved(id_role):
     modules = []
     for module in modules_data:
         module = module.as_dict()
-        # do not display cruved for module admin because its set on sub object
-        if module['module_code'] == 'ADMIN':
+        # for each module get its related object
+        module_objects = DB.session.query(TObjects).join(
+            CorObjectModule, CorObjectModule.id_object == TObjects.id_object
+        ).filter_by(id_module=module['id_module']).all()
+        # get cruved for all object
+
+        module_objects_as_dict = []
+        for _object in module_objects:
+            object_as_dict = _object.as_dict()
+            object_cruved, herited = cruved_scope_for_user_in_module(
+                id_role=id_role,
+                module_code=module['module_code'],
+                object_code=_object.code_object
+            )
+            object_as_dict['cruved'] = beautifulize_cruved(actions_label, object_cruved) 
+            module_objects_as_dict.append(object_as_dict)
+
+        module['module_objects'] = module_objects_as_dict
+
+        # do not display cruved for module which have objects
+        if len(module['module_objects']) > 0:
             module['module_cruved'] = ('', False)
         else:
             cruved, herited = cruved_scope_for_user_in_module(id_role, module['module_code'])
-            cruved_beautiful = []
-            for key, value in cruved.items():
-                temp = {}
-                temp['key'] = actions_label.get(key)
-                temp['label'] = value
-                cruved_beautiful.append(temp)
+            cruved_beautiful = beautifulize_cruved(actions_label, cruved)
+            #print(cruved_beautiful)
             module['module_cruved'] = (cruved_beautiful, herited)
         modules.append(module)
     return render_template(
