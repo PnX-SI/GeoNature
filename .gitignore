@@ -18,8 +18,8 @@ data/migrations/v1tov2/v1_compat.log
 config.py
 backend/static/medias/*
 backend/static/shapefiles/*
+backend/static/node_modules/
 backend/static/configs/*
-backend/node_modules
 
 backend/run.py
 
@@ -27,9 +27,6 @@ backend/run.py
 
 *.perm
 *.pem
-
-# JS
-**/node_modules/
 
 
 # Byte-compiled / optimized / DLL files
