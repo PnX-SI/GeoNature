@@ -63,6 +63,29 @@ class CorAcquisitionFrameworkActor(DB.Model):
     )
     id_nomenclature_actor_role = DB.Column(DB.Integer)
 
+    @staticmethod
+    def get_actor(id_acquisition_framework, id_nomenclature_actor_role, id_role=None, id_organism=None):
+        """
+            Get CorAcquisitionFrameworkActor from id_dataset, id_actor, and id_role or id_organism.
+            if no object return None
+        """
+        try:
+            if id_role is None:
+                return DB.session.query(CorAcquisitionFrameworkActor).filter_by(
+                    id_acquisition_framework=id_acquisition_framework,
+                    id_organism=id_organism,
+                    id_nomenclature_actor_role=id_nomenclature_actor_role
+                ).one()
+            elif id_organism is None:
+                return DB.session.query(CorAcquisitionFrameworkActor).filter_by(
+                    id_acquisition_framework=id_acquisition_framework,
+                    id_role=id_role,
+                    id_nomenclature_actor_role=id_nomenclature_actor_role
+                ).one()
+        except exc.NoResultFound:
+            return None
+
+
 @serializable
 class CorDatasetActor(DB.Model):
     __tablename__ = 'cor_dataset_actor'
@@ -90,6 +113,29 @@ class CorDatasetActor(DB.Model):
         foreign_keys=[id_role]
     )
     organism = relationship("BibOrganismes", foreign_keys=[id_organism])
+
+    @staticmethod
+    def get_actor(id_dataset, id_nomenclature_actor_role, id_role=None, id_organism=None):
+        """
+            Get CorDatasetActor from id_dataset, id_actor, and id_role or id_organism.
+            if no object return None
+        """
+        try:
+            if id_role is None:
+                return DB.session.query(CorDatasetActor).filter_by(
+                    id_dataset=id_dataset,
+                    id_organism=id_organism,
+                    id_nomenclature_actor_role=id_nomenclature_actor_role
+                ).one()
+            elif id_organism is None:
+                return DB.session.query(CorDatasetActor).filter_by(
+                    id_dataset=id_dataset,
+                    id_role=id_role,
+                    id_nomenclature_actor_role=id_nomenclature_actor_role
+                ).one()
+        except exc.NoResultFound:
+            return None
+
 
 
 @serializable
@@ -263,4 +309,6 @@ class TAcquisitionFramework(DB.Model):
         ).filter(
             TAcquisitionFramework.unique_acquisition_framework_id == uuid_af
         ).first()
+        if a_f:
+            return a_f[0]
         return a_f
