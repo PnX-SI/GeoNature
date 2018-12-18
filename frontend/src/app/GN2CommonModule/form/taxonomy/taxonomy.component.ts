@@ -98,11 +98,11 @@ export class TaxonomyComponent implements OnInit {
 
   searchTaxon = (text$: Observable<string>) =>
     text$
-      .do(search_name => (this.isLoading = true))
+      .do(() => (this.isLoading = true))
       .debounceTime(400)
       .distinctUntilChanged()
       .switchMap(search_name => {
-        if (search_name.length >= this.charNumber && search_name.length <= 20) {
+        if (search_name.length >= this.charNumber) {
           return this._dfService
             .autocompleteTaxon(this.apiEndPoint, search_name, {
               regne: this.regneControl.value,
