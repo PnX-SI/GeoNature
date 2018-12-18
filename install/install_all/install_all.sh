@@ -153,7 +153,6 @@ sudo apache2ctl restart
 
 # Installing GeoNature with current user
 echo "Téléchargement et installation de GeoNature ..."
-cd /tmp
 wget https://github.com/PnX-SI/GeoNature/archive/$geonature_release.zip
 unzip $geonature_release.zip
 rm $geonature_release.zip
@@ -225,7 +224,6 @@ sudo sh -c 'echo  "</Directory>">> /etc/apache2/sites-available/geonature_mainte
 
 # Installing TaxHub with current user
 echo "Téléchargement et installation de TaxHub ..."
-cd /tmp
 wget https://github.com/PnX-SI/TaxHub/archive/$taxhub_release.zip
 unzip $taxhub_release.zip
 rm $taxhub_release.zip
@@ -283,7 +281,6 @@ if [ "$install_usershub_app" = true ]; then
     else
         sudo apt-get install -y php5 libapache2-mod-php5 libapache2-mod-php5 php5-pgsql php5-gd 2> var/log/install_app.log
     fi
-    cd /tmp
     wget https://github.com/PnEcrins/UsersHub/archive/$usershub_release.zip
     unzip $usershub_release.zip
     rm $usershub_release.zip
@@ -313,5 +310,8 @@ if [ "$install_usershub_app" = true ]; then
 fi
 
 sudo apache2ctl restart
+cd ~
+echo "Cleaning files..."
+    rm *.zip
 
 echo "L'installation est OK!"
