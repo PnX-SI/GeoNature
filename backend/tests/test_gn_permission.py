@@ -10,7 +10,11 @@ from pypnusershub.db.tools import (
 ) 
 from .bootstrap_test import app, json_of_response, get_token
 from pypnusershub.db.tools import InsufficientRightsError
-from geonature.core.gn_permissions.models import VUsersPermissions, TFilters, CorRoleActionFilterModuleObject
+from geonature.core.gn_permissions.models import (
+    VUsersPermissions, TFilters, CorRoleActionFilterModuleObject,
+    BibFiltersType, TObjects
+) 
+from geonature.core.gn_commons.models import TModules
 from geonature.utils.env import DB
 
 
@@ -193,7 +197,7 @@ class TestGnPermissionsView():
         response = self.client.post(
             url_for(
                 'gn_permissions_backoffice.permission_form',
-                id_role=9,
+                id_role=15,
                 id_module=0,
                 id_object=None
             ),
@@ -205,14 +209,11 @@ class TestGnPermissionsView():
         permissions = DB.session.query(
             VUsersPermissions
         ).filter_by(
-            id_role=9,
+            id_role=15,
             module_code='GEONATURE',
             code_object='ALL',
             code_filter_type='SCOPE'
         ).all()
-
-        # check no multiple permission per action
-        assert len(permissions) == 6
         cruved_dict = {perm.code_action: perm.value_filter for perm in permissions}
         assert cruved_dict['C'] == '3'
         assert cruved_dict['R'] == '2'
@@ -220,6 +221,9 @@ class TestGnPermissionsView():
         assert cruved_dict['V'] == '3'
         assert cruved_dict['E'] == '1'
         assert cruved_dict['D'] == '2'
+
+        # check no multiple permission per action        
+        assert len(permissions) == 6
 
 
         

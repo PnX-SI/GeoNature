@@ -20,12 +20,12 @@ SET default_with_oids
 INSERT INTO t_actions
     (code_action, description_action)
 VALUES
-    ('C', 'Action de créer (C)'),
-    ('R', 'Action de lire (R)'),
-    ('U', 'Action de mettre à jour (U)'),
-    ('V', 'Action de valider (V)'),
-    ('E', 'Action d''exporter (E)'),
-    ('D', 'Action de supprimer (D)')
+    ('C', 'Créer (C)'),
+    ('R', 'Lire (R)'),
+    ('U', 'Mettre à jour (U)'),
+    ('V', 'Valider (V)'),
+    ('E', 'Exporter (E)'),
+    ('D', 'Supprimer (D)')
 ;
 
 INSERT INTO bib_filters_type
