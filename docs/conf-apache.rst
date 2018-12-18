@@ -1,19 +1,19 @@
-Configuration Apache et sous-domaines
-=====================================
+Configuration Apache
+====================
 
-La présente documentation décrit les configurations apache des différentes applications, dans le cas où chaque application possède son propre sous-domaine, avec ou sans utilisation de la certification HTTPS. 
+La présente documentation décrit les configurations Apache des différentes applications, dans le cas où chaque application possède son propre sous-domaine, avec ou sans utilisation de la certification HTTPS. 
+
 Les sous-domaines doivent préalablement être déclarés dans la zone DNS du serveur.
 
 
 **Configuration de sous-domaines sans https**
 
-
-Mise à jour des configurations apache
+Mise à jour des configurations Apache
 -------------------------------------
 
-Afin de rendre chaque application disponible sur un sous-domaine qui lui est propre, adapter la configuration apache des différentes applications comme suit :
+Afin de rendre chaque application disponible sur un sous-domaine qui lui est propre, adapter la configuration Apache des différentes applications comme suit :
 
-Pour TaxHub, modifier le fichier de configuration apache ``/etc/apache2/sites-available/taxhub.conf`` et remplacer son contenu par :
+Pour TaxHub, modifier le fichier de configuration Apache ``/etc/apache2/sites-available/taxhub.conf`` et remplacer son contenu par :
 
 :: 
 	
@@ -26,14 +26,14 @@ Pour TaxHub, modifier le fichier de configuration apache ``/etc/apache2/sites-av
 			ProxyPassReverse http://127.0.0.1:5000/
 		</Location>
 	</VirtualHost>
-	# Fin de configuration de TaxHub
+    # Fin de configuration de TaxHub
 
 
-Pour UsersHub, modifier le fichier de configuration apache ``/etc/apache2/sites-available/usershub.conf`` et remplacer son contenu par :
+Pour UsersHub, modifier le fichier de configuration Apache ``/etc/apache2/sites-available/usershub.conf`` et remplacer son contenu par :
 
 ::
 	
-    # Configuration Usershub sur sous-domaine
+    # Configuration UsersHub sur sous-domaine
 	<VirtualHost *:80>
 		ServerName usershub.mondomaine.fr
 		DocumentRoot /home/geonatureadmin/usershub/web
@@ -43,7 +43,7 @@ Pour UsersHub, modifier le fichier de configuration apache ``/etc/apache2/sites-
 			Require all granted
 		</Directory>
 	</VirtualHost>
-	# Fin de configuration de UsersHub
+    # Fin de configuration de UsersHub
 
 
 Pour GeoNature, modifier le fichier de configuration apache ``/etc/apache2/sites-available/geonature.conf`` et remplacer son contenu par : 
@@ -64,14 +64,14 @@ Pour GeoNature, modifier le fichier de configuration apache ``/etc/apache2/sites
 			ProxyPassReverse  http://127.0.0.1:8000
 		</Location>
 	</VirtualHost>
-	# Fin de configuration de GeoNature
+    # Fin de configuration de GeoNature
 
 
 Pensez à modifier également ``/etc/apache2/sites-available/geonature_maintenance.conf`` pour le mode maintenance.
 
 
-Prise en compte des nouvelles configurations apache
----------------------------------------------------
+Application des nouvelles configurations Apache
+-----------------------------------------------
 
 Activer les modules ``ssl``, ``headers`` et ``rewrite`` puis redémarrer Apache :
 
@@ -86,7 +86,7 @@ Activer les modules ``ssl``, ``headers`` et ``rewrite`` puis redémarrer Apache�
 Mise à jour de l'application GeoNature
 --------------------------------------
 
-Il est également nécessaire de mettre à jour le fichier de configuration geonature_config.toml situé dans le répertoire ``geonature/config``
+Il est également nécessaire de mettre à jour le fichier de configuration ``geonature_config.toml`` situé dans le répertoire ``config``
 
 :: 
 	
@@ -95,14 +95,14 @@ Il est également nécessaire de mettre à jour le fichier de configuration geon
 	API_TAXHUB = 'http://taxhub.mondomaine.fr/api'
 
 
-Pour que ces modifications soient prises en compte, lancer les commandes suivantes dans le répertoire ``geonature/backend`` :
+Pour que ces modifications soient prises en compte, lancer les commandes suivantes depuis le répertoire ``geonature/backend`` :
 
 ::
 	
     cd geonature/backend
-	source venv/bin/activate
-	geonature update_configuration
-	deactivate
+    source venv/bin/activate
+    geonature update_configuration
+    deactivate
 
 
 Les applications sont désormais accessibles sur leurs sous-domaines respectifs !
@@ -117,7 +117,7 @@ Pour voir la procédure de certification dans son ensemble, consulter la documen
 Certifier chaque sous-domaine
 -----------------------------
 
-Une fois cerbot installé, il faut produire un certificat pour chacun des sous-domaines créés. Lancer la commande suivant pour générer des certificats et des clés pour l’ensemble des noms de domaines que vous souhaitez mettre en HTTPS.
+Une fois cerbot installé, il faut produire un certificat pour chacun des sous-domaines créés. Lancer la commande suivante pour générer des certificats et des clés pour l’ensemble des noms de domaines que vous souhaitez mettre en HTTPS.
 
 ::
   
@@ -136,7 +136,7 @@ Une fois cerbot installé, il faut produire un certificat pour chacun des sous-d
 Les certificats obtenus se trouvent dans les dossiers ``/etc/letsencrypt/live/geonature.mondomaine.fr/``, ``/etc/letsencrypt/live/taxhub.mondomaine.fr/`` et ``/etc/letsencrypt/live/usershub.mondomaine.fr/``.
 
 
-Mettre à jour les configurations apache de chaque application
+Mettre à jour les configurations Apache de chaque application
 -------------------------------------------------------------
 
 Les fichiers de configuration Apache des différentes applications ainsi que la configuration de l'application GeoNature doivent être mis à jour en conséquence. Dans chaque configuration, le premier VirtualHost (``*:80``) sert à faire la redirection du http vers le https. Le second (``*:443``) est la configuration du https. Pensez à remplacer "mondomaine" et les chemins des fichiers de certification SSLCertificate.  
@@ -289,7 +289,7 @@ Modifier le fichier de configuration de UsersHub ``/etc/apache2/sites-available/
 	#FIN configuration UsersHub
 
 
-Prise en compte des nouvelles configurations apache
+Prise en compte des nouvelles configurations Apache
 ---------------------------------------------------
 
 Activer les modules ``ssl``, ``headers`` et ``rewrite`` puis redémarrer Apache :
@@ -312,7 +312,7 @@ Il est nécessaire de mettre à jour le fichier de configuration geonature_confi
 :: 
 	
     cd geonature/config
-	nano geonature_config.toml
+    nano geonature_config.toml
 
 
 Modifier les éléments suivants : 
@@ -320,17 +320,17 @@ Modifier les éléments suivants :
 :: 
 	
     URL_APPLICATION = 'https://geonature.mondomaine.fr'
-	API_ENDPOINT = 'https://geonature.mondomaine.fr/api'
-	API_TAXHUB = 'https://taxhub.mondomaine.fr/api'
+    API_ENDPOINT = 'https://geonature.mondomaine.fr/api'
+    API_TAXHUB = 'https://taxhub.mondomaine.fr/api'
 
 
-Pour que ces modifications soient prises en compte, lancer les commandes suivantes dans le répertoire ``geonature/backend`` :
+Pour que ces modifications soient prises en compte, lancer les commandes suivantes depuis le répertoire ``geonature/backend`` :
 
 ::
 	
     cd geonature/backend
-	source venv/bin/activate
-	geonature update_configuration
-	deactivate
+    source venv/bin/activate
+    geonature update_configuration
+    deactivate
 
-Les applications sont désormais accessibles sur leurs sous-domaines respectifs, tous certifiés https ! (il peut être nécessaire de vider le cache du navigateur)
+Les applications sont désormais accessibles sur leurs sous-domaines respectifs, tous certifiés https ! (Il peut être nécessaire de vider le cache du navigateur).
