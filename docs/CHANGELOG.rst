@@ -5,6 +5,13 @@ CHANGELOG
 2.0.0-rc.4 (unreleased)
 -----------------------
 
+**Nouveautés**
+
+* Intégration de la gestion du CRUVED dans GeoNature via la création d'un backoffice dédié
+* Mise en place d'un système de permissions plus fin par module et par objet
+* Mise en place d'un mécanimse générique pour la gestion des permissions via des filtres: filtre de type portée (SCOPE), taxonomique, géographique etc...
+
+
 **Corrections**
 
 * Correction de l'id_digitiser lors de la mise à jour #481
@@ -26,6 +33,7 @@ CHANGELOG
 * Complément de la documentation de développement
 * Simplification de la configuration des gn_modules
 * Occtax : ordonnancement des observation par date #467
+* Occtax: Remplissage automatique de l'heure_max à partir de l'heure_min
 * Suppression des warnings lors du build du frontend
 * Correction de l'installation des modules GeoNature
 * Ajout d'un message quand on n'a pas accès à une donnée d'un module
@@ -33,6 +41,10 @@ CHANGELOG
 * Correction des outils cartographiques dans Occtax
 * Correction complémentaire des styles des lignes sans remplissage (#458)
 * MaplistService : correction du zoom sur les polygones et polylignes
+* Composant Areas et Municipalities: remise à zéro de la liste déroulante quand on efface la recherche ou remet à jour les filtre
+* Composant Taxonomy: la recherche autocompleté est lancé même si on tape plus de 20 caractères. Le nombre de résultat renvoyé est désormais parametrable
+* Limitaiton du nombre de connexion à la BDD en partageant l'instance ``DB`` avec les sous-modules
+* Installation: on utilise plus le répertoire /tmp du système pour des questions de droits
 
 **Note de version**
 
@@ -59,7 +71,6 @@ CHANGELOG
 2.0.0-rc.3 (2018-10-18)
 -----------------------
 
-**Nouveautés**
 
 * Possibilité d'utiliser le MNT en raster ou en vecteur dans la BDD (+ doc MNT) #439 (merci @mathieubossaert)
 * INSTALL_ALL - gestion du format date du serveur PostgreSQL (#435)
