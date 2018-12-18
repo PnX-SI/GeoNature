@@ -307,6 +307,6 @@ def get_autocomplete_taxons_synthese():
         VMTaxonsSyntheseAutocomplete.cd_nom ==
         VMTaxonsSyntheseAutocomplete.cd_ref
     ))
-
+    limit = request.args.get('limit', 20)
     data = q.limit(20).all()
     return [d.as_dict() for d in data]

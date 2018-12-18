@@ -114,6 +114,8 @@ class Synthese(Schema):
     LIST_COLUMNS_FRONTEND = fields.List(fields.Dict, missing=DEFAULT_LIST_COLUMN)
     EXPORT_COLUMNS = fields.Dict(missing=DEFAULT_EXPORT_COLUMNS)
     EXPORT_FORMAT = fields.List(fields.String(), missing=['csv', 'geojson', 'shapefile'])
+    # Nombre de résultat à afficher pour la rechercher autocompleté de taxon
+    TAXON_RESULT_NUMBER = fields.Integer(missing=20)
     # Liste des id attributs Taxhub à afficher sur la fiche détaile de la synthese
     # et sur les filtres taxonomiques avancés
     ID_ATTRIBUT_TAXHUB = fields.List(fields.Integer(), missing=[101, 102])

@@ -87,6 +87,9 @@ MULTILINGUAL = false
         { prop = "observateurs", name = "Observateurs" },
         { prop = "dataset_name", name = "Jeu de données" }
     ]
+    
+    # Nombre de résultat à afficher pour la rechercher autocompleté de taxon
+    TAXON_RESULT_NUMBER = 20
 
     # id_attribut taxhub pour l'affichage dans la modale du détail d'une observation et dans les filtres taxonomique avancés
     ID_ATTRIBUT_TAXHUB = [1, 2]

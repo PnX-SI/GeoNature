@@ -44,6 +44,8 @@ id_observers_list = 1
 
 # id of the taxon list -- taxonomie.bib_listes. Use for the taxonomy search in the occtax forml
 id_taxon_list = 100
+# number of results in the autocomplete taxon search
+taxon_result_number = 20
 
 # Add a validation rule between Proof fields. If true, fulfil at least one proof in the form
 digital_proof_validator = true
