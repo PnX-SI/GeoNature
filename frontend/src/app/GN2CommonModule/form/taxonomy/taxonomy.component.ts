@@ -44,10 +44,11 @@ export class TaxonomyComponent implements OnInit {
   @Input() label: string;
   // api endpoint for the automplete ressource
   @Input() apiEndPoint: string;
+  // id of the taxon list from taxhub
   @Input() idList: string;
   @Input() charNumber: number;
-  @Input() listLength: number;
-  @Input() refresh: Function;
+  // number of typeahead results
+  @Input() listLength = 20;
   searchString: any;
   filteredTaxons: any;
   regnes = new Array();
@@ -106,7 +107,8 @@ export class TaxonomyComponent implements OnInit {
           return this._dfService
             .autocompleteTaxon(this.apiEndPoint, search_name, {
               regne: this.regneControl.value,
-              group2_inpn: this.groupControl.value
+              group2_inpn: this.groupControl.value,
+              limit: this.listLength.toString()
             })
             .catch(err => {
               if (err.status_code === 500) {
@@ -122,7 +124,7 @@ export class TaxonomyComponent implements OnInit {
       .map(response => {
         this.noResult = response.length === 0;
         this.isLoading = false;
-        return response.slice(0, this.listLength);
+        return response;
       });
 
   refreshAllInput() {
