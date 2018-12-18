@@ -35,7 +35,6 @@ shapely==1.5.16
 six==1.11.0
 sqlalchemy==1.1.13
 toml==0.9.4
-urllib3==1.22
 werkzeug==0.14.1
 xmltodict==0.11.0
 geog==0.0.2
