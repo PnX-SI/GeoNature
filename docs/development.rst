@@ -93,7 +93,7 @@ Voici la structure minimale que le module doit comporter (voir le dossier `contr
   - ``manifest.toml`` : fichier de description du module (nom, version du module, version de GeoNature compatible)
   - ``conf_gn_module.toml`` : fichier de configuration de l'application (livré en version sample)
   - ``conf_schema_toml.py`` : schéma 'marshmallow' (https://marshmallow.readthedocs.io/en/latest/) du fichier de configuration (permet de s'assurer la conformité des paramètres renseignés par l'utilisateur). Ce fichier doit contenir une classe ``GnModuleSchemaConf`` dans laquelle toutes les configurations sont synchronisées.
-  - ``install_gn_module.py`` : script python lançant les commandes relatives à l'installation du module (Base de données, ...). Ce fichier doit comprendre une fonction ``gnmodule_install_app(gn_db, gn_app)`` qui est utilisée pour installer le module (Voir l'`exemple du module validation <https://github.com/PnX-SI/gn_module_validation/blob/master/install_gn_module.py>`__)
+  - ``install_gn_module.py`` : script python lançant les commandes relatives à l'installation du module (Base de données, ...). Ce fichier doit comprendre une fonction ``gnmodule_install_app(gn_db, gn_app)`` qui est utilisée pour installer le module (Voir l'`exemple du module CMR <https://github.com/PnX-SI/gn_module_cmr/blob/master/install_gn_module.py>`__)
  
 
 - La racine du module comportera les dossiers suivants :
