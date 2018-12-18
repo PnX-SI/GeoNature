@@ -62,24 +62,60 @@ export class ReleveComponent implements OnInit, OnDestroy {
     };
 
     this.autoCompleteDate();
+
+    // autcomplete hourmax + set null when empty
+    (this.releveForm.controls
+      .properties as FormGroup).controls.hour_min.valueChanges
+      .filter(value => value != null)
+      .subscribe(value => {
+        if (value.length == 0)
+          (this.releveForm.controls
+            .properties as FormGroup).controls.hour_min.reset();
+        else if (
+          // autcomplete only if hour max is empty or invalid
+            (this.releveForm.controls
+              .properties as FormGroup).controls.hour_max.invalid || 
+              this.releveForm.value.properties.hour_max == null
+        ) {
+        (this.releveForm.controls
+          .properties as FormGroup).controls.hour_max.patchValue(value);
+        //}
+      });
+
+    // set hour_max = hour_min to prevent date_max<date_min
+    (this.releveForm.controls
+      .properties as FormGroup).controls.hour_max.valueChanges
+      .filter(value => value != null)
+      .subscribe(value => {
+        if (value.length == 0)
+          (this.releveForm.controls
+            .properties as FormGroup).controls.hour_max.reset();
+      });
   } // END INIT
 
   autoCompleteDate() {
     // date max autocomplete
-    (this.releveForm.controls.properties as FormGroup)
-      .controls.date_min.valueChanges.subscribe(
-        newvalue => {
-          //Get mindate and maxdate value before mindate change
-          let oldmindate = (this.releveForm.controls.properties as FormGroup).value['date_min'];
-          let oldmaxdate = (this.releveForm.controls.properties as FormGroup).value['date_max'];
-          //Compare the dates before the change of the datemin. If datemin and datemax were equal, maintain this equality
-          //If they don't, do nothing
-          //oldmaxdate and oldmindate are objects. Strigify it for a right comparison
-          if (oldmindate){
-            if (JSON.stringify(oldmaxdate) == JSON.stringify(oldmindate) || oldmaxdate == null) {
-              this.releveForm.controls.properties.patchValue({ date_max: newvalue })
-            }
-          };
+    (this.releveForm.controls
+      .properties as FormGroup).controls.date_min.valueChanges.subscribe(
+      newvalue => {
+        //Get mindate and maxdate value before mindate change
+        let oldmindate = (this.releveForm.controls.properties as FormGroup)
+          .value["date_min"];
+        let oldmaxdate = (this.releveForm.controls.properties as FormGroup)
+          .value["date_max"];
+        //Compare the dates before the change of the datemin. If datemin and datemax were equal, maintain this equality
+        //If they don't, do nothing
+        //oldmaxdate and oldmindate are objects. Strigify it for a right comparison
+        if (oldmindate) {
+          if (
+            JSON.stringify(oldmaxdate) == JSON.stringify(oldmindate) ||
+            oldmaxdate == null
+          ) {
+            this.releveForm.controls.properties.patchValue({
+              date_max: newvalue
+            });
+          }
+        }
       }
     );
   }
