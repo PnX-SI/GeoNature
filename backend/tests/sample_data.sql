@@ -55,7 +55,7 @@ INSERT INTO utilisateurs.t_roles(id_role, groupe, nom_role) VALUES
 -- ajout d'un utilisateur pour le test des permissions
 DELETE FROM utilisateurs.t_roles WHERE id_role=15;
 INSERT INTO utilisateurs.t_roles(id_role, groupe, nom_role) VALUES
-(15, FALSE, 'test_gn_petrmissions');
+(15, FALSE, 'test_gn_permissions');
 
 -- Ajout des utilisateurs agent et admin
 INSERT INTO utilisateurs.cor_role_app_profil VALUES
