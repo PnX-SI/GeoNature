@@ -8,10 +8,9 @@ fi
 
 . ../../config/settings.ini
 
-if [ ! -d '/tmp/geonature/' ]
+if [ ! -d 'tmp' ]
 then
-  mkdir /tmp/geonature
-  chmod -R 775 /tmp/geonature
+  mkdir tmp
 fi
 
 echo "Create occtax schema..."
@@ -19,9 +18,9 @@ echo "--------------------" &> ../../var/log/install_occtax_schema.log
 echo "Create occtax schema" &>> ../../var/log/install_occtax_schema.log
 echo "--------------------" &>> ../../var/log/install_occtax_schema.log
 echo "" &>> ../../var/log/install_occtax_schema.log
-cp data/occtax.sql /tmp/geonature/occtax.sql
-sudo sed -i "s/MYLOCALSRID/$srid_local/g" /tmp/geonature/occtax.sql
-export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/geonature/occtax.sql  &>> ../../var/log/install_occtax_schema.log
+cp data/occtax.sql tmp/occtax.sql
+sudo sed -i "s/MYLOCALSRID/$srid_local/g" tmp/occtax.sql
+export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/occtax.sql  &>> ../../var/log/install_occtax_schema.log
 
 echo "Create export occtax view(s)..."
 echo "--------------------" &>> ../../var/log/install_occtax_schema.log
@@ -46,4 +45,4 @@ if $add_sample_data
 fi
 
 echo "Cleaning files..."
-    rm /tmp/geonature/*.sql
+    rm tmp/*.sql
