@@ -1,15 +1,6 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  EventEmitter,
-  Output,
-  AfterViewInit,
-  OnChanges
-} from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, OnChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { id } from '@swimlane/ngx-datatable/release/utils';
 
 @Component({
   selector: 'pnx-multiselect',
