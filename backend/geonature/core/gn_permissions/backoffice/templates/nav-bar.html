@@ -9,8 +9,14 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
+                        <a class="nav-link" href="{{ config.URL_APPLICATION }}/#/admin">
+                                Accueil admin
+                        </a>
+                        
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('gn_permissions_backoffice.users') }}">
-                            Backoffice de gestion des permissions
+                            Liste des roles
                     </a>
                    
                 </li>
