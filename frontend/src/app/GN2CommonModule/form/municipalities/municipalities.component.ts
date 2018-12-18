@@ -12,6 +12,7 @@ import { CommonService } from '@geonature_common/service/common.service';
 })
 export class MunicipalitiesComponent implements OnInit {
   public municipalities: Array<any>;
+  public cachedMunicipalities: Array<any>;
   public searchControl = new FormControl();
   @Input() parentFormControl: FormControl;
   @Input() label: string;
@@ -25,10 +26,11 @@ export class MunicipalitiesComponent implements OnInit {
   ngOnInit() {
     this._dfs.getMunicipalities().subscribe(data => {
       this.municipalities = data;
+      this.cachedMunicipalities = data;
     });
   }
   refreshMunicipalities(municipality) {
-    if (municipality) {
+    if (municipality && municipality.length >= 2) {
       this._dfs.getMunicipalities(municipality).subscribe(
         data => {
           this.municipalities = data;
@@ -42,6 +44,8 @@ export class MunicipalitiesComponent implements OnInit {
           }
         }
       );
+    } else if (!municipality) {
+      this.municipalities = this.cachedMunicipalities;
     }
   }
 }
