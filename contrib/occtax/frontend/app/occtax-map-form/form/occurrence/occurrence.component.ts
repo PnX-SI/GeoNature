@@ -1,8 +1,6 @@
 import {
   Component,
   OnInit,
-  OnChanges,
-  AfterContentInit,
   AfterViewInit,
   Input,
   ViewEncapsulation,
