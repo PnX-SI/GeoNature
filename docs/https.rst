@@ -1,7 +1,7 @@
 HTTPS
 =====
 
-La présente documentation décrit la procédure de certification HTTPS et l'adaptation de la configuration apache par défaut du serveur, sans utilisation de sous-domaine. Pour la mise en place de sous-domaines, voir la documentation "Configuration apache et sous-domaines".
+La présente documentation décrit la procédure de certification HTTPS et l'adaptation de la configuration Apache par défaut du serveur, sans utilisation de sous-domaine. Pour la mise en place de sous-domaines, voir la documentation "Configuration Apache".
 
 
 **Mise en place du  HTTPS**
@@ -66,7 +66,7 @@ Ajouter une tache automatique (Cron) pour renouveler une fois par semaine le cer
 
 **Mise à jour de la configuration apache du serveur**
 
-Afin que apache prenne en compte la certification (redirection de http vers https), vous il faut modifier la configuration apache par défault du serveur : ``/etc/apache2/sites-available/000-default.conf``
+Afin que Apache prenne en compte la certification (redirection de http vers https), il faut modifier la configuration Apache par défaut du serveur : ``/etc/apache2/sites-available/000-default.conf``
 
 
 :: 
@@ -104,7 +104,7 @@ Afin que apache prenne en compte la certification (redirection de http vers http
 	</VirtualHost>
 
 
-Prise en compte des nouvelles configurations apache
+Prise en compte des nouvelles configurations Apache
 ---------------------------------------------------
 
 Activer les modules ``ssl``, ``headers`` et ``rewrite`` puis redémarrer Apache :
@@ -116,18 +116,18 @@ Activer les modules ``ssl``, ``headers`` et ``rewrite`` puis redémarrer Apache�
     sudo a2enmod headers
     sudo apachectl restart
 
-Les fichiers de configuration des sites TaxHub et UsersHub ne sont pas à modifier, ils seront automatiquement associés à la configuration HTTPS. En revanche, la configuration de geonature doit être mise à jour.
+Les fichiers de configuration des sites TaxHub et UsersHub ne sont pas à modifier, ils seront automatiquement associés à la configuration HTTPS. En revanche, la configuration de GeoNature doit être mise à jour.
 
 
 Configuration de l'application GeoNature
 ----------------------------------------
 
-Il est nécessaire de mettre à jour le fichier de configuration geonature_config.toml situé dans le répertoire ``geonature/config`` :
+Il est nécessaire de mettre à jour le fichier de configuration ``geonature_config.toml`` situé dans le répertoire ``geonature/config`` :
 
 :: 
 	
   cd geonature/config
-	nano geonature_config.toml
+  nano geonature_config.toml
 
 
 Modifier les éléments suivants : 
@@ -135,17 +135,17 @@ Modifier les éléments suivants :
 :: 
 	
   URL_APPLICATION = 'https://mondomaine.fr/geonature'
-	API_ENDPOINT = 'https://mondomaine.fr/geonature/api'
-	API_TAXHUB = 'https://mondomaine.fr/taxhub/api'
+  API_ENDPOINT = 'https://mondomaine.fr/geonature/api'
+  API_TAXHUB = 'https://mondomaine.fr/taxhub/api'
 
 
-Pour que ces modifications soient prises en compte, lancer les commandes suivantes dans le répertoire ``geonature/backend`` :
+Pour que ces modifications soient prises en compte, lancer les commandes suivantes depuis le répertoire ``geonature/backend`` :
 
 ::
 	
   cd geonature/backend
-	source venv/bin/activate
-	geonature update_configuration
-	deactivate
+  source venv/bin/activate
+  geonature update_configuration
+  deactivate
 
-Les applications sont désormais accessibles sur votre domaine sécurisé!
+Les applications sont désormais accessibles sur votre domaine sécurisé en HTTPS !
