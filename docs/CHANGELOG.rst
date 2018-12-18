@@ -7,10 +7,9 @@ CHANGELOG
 
 **Nouveautés**
 
-* Intégration de la gestion du CRUVED dans GeoNature via la création d'un backoffice dédié
-* Mise en place d'un système de permissions plus fin par module et par objet
-* Mise en place d'un mécanimse générique pour la gestion des permissions via des filtres: filtre de type portée (SCOPE), taxonomique, géographique etc...
-
+* Intégration de la gestion du CRUVED dans la BDD de GeoNature, géré via la création d'un backoffice dédié (#517)
+* Mise en place d'un système de permissions plus fin par module et par objet (#517)
+* Mise en place d'un mécanimse générique pour la gestion des permissions via des filtres : filtre de type portée (SCOPE), taxonomique, géographique etc... (#517)
 
 **Corrections**
 
@@ -33,7 +32,7 @@ CHANGELOG
 * Complément de la documentation de développement
 * Simplification de la configuration des gn_modules
 * Occtax : ordonnancement des observation par date #467
-* Occtax: Remplissage automatique de l'heure_max à partir de l'heure_min
+* Occtax : Remplissage automatique de l'heure_max à partir de l'heure_min #522
 * Suppression des warnings lors du build du frontend
 * Correction de l'installation des modules GeoNature
 * Ajout d'un message quand on n'a pas accès à une donnée d'un module
@@ -41,16 +40,17 @@ CHANGELOG
 * Correction des outils cartographiques dans Occtax
 * Correction complémentaire des styles des lignes sans remplissage (#458)
 * MaplistService : correction du zoom sur les polygones et polylignes
-* Composant Areas et Municipalities: remise à zéro de la liste déroulante quand on efface la recherche ou remet à jour les filtre
-* Composant Taxonomy: la recherche autocompleté est lancé même si on tape plus de 20 caractères. Le nombre de résultat renvoyé est désormais parametrable
-* Limitaiton du nombre de connexion à la BDD en partageant l'instance ``DB`` avec les sous-modules
-* Installation: on utilise plus le répertoire /tmp du système pour des questions de droits
+* Composant Areas et Municipalities : remise à zéro de la liste déroulante quand on efface la recherche ou remet à jour les filtres
+* Composant Taxonomy : la recherche autocompletée est lancée même si on tape plus de 20 caractères. Le nombre de résultat renvoyé est désormais paramétrable (#518)
+* Limitation du nombre de connexions à la BDD en partageant l'instance ``DB`` avec les sous-modules
+* Installation : on n'utilise plus le répertoire ``/tmp`` du système pour des questions de droits #503
 
 **Note de version**
 
 * MAJ BDD GN (update...)
 * MAJ BDD sous-modules
 * Evolution pour les sous-modules >> Utiliser instance DB de GN pour lancer scripts (#498) et ne plus avoir d'id_application dans la conf du module + Utilisation du CRUVED
+* Conséquences de l'intégration du CRUVED. Sur les modules GN
 
 2.0.0-rc.3.1 (2018-10-21)
 -------------------------
