@@ -52,6 +52,11 @@ DELETE FROM utilisateurs.t_roles WHERE id_role=10;
 INSERT INTO utilisateurs.t_roles(id_role, groupe, nom_role) VALUES
 (10, TRUE, 'groupe_socle_1');
 
+-- ajout d'un utilisateur pour le test des permissions
+DELETE FROM utilisateurs.t_roles WHERE id_role=15;
+INSERT INTO utilisateurs.t_roles(id_role, groupe, nom_role) VALUES
+(15, FALSE, 'test_gn_petrmissions');
+
 -- Ajout des utilisateurs agent et admin
 INSERT INTO utilisateurs.cor_role_app_profil VALUES
   (1,3,6),
@@ -59,8 +64,6 @@ INSERT INTO utilisateurs.cor_role_app_profil VALUES
   (3,3,6)
 ;
 -- Ajout d'un utilisateurs partenaire avec comme cruved R=1
-INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action, id_filter, id_module, id_object) VALUES
-(3,2,2,3,1);
 
 
 -- Reset original privileges
@@ -123,7 +126,9 @@ VALUES
     (9, 3, 4, 1, 4),
     (9, 4, 4, 1, 4),
     (9, 5, 4, 1, 4),
-    (9, 6, 4, 1, 4)
+    (9, 6, 4, 1, 4),
+    -- partenaire peut lire sur geonature
+    (3, 2, 2, 0, 1);
 ;
 
 INSERT INTO gn_meta.cor_dataset_territory (id_dataset, id_nomenclature_territory, territory_desc) VALUES
