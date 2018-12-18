@@ -31,7 +31,6 @@ export class AreasComponent implements OnInit {
       this._dfs.getAreas(this.idType, area_name).subscribe(
         data => {
           this.areas = data;
-          console.log(data);
         },
         err => {
           if (err.status === 404) {

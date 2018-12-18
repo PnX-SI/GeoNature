@@ -45,6 +45,7 @@
     "jquery": "^3.2.1",
     "leaflet": "1.0.3",
     "leaflet-draw": "^0.4.12",
+    "leaflet-filelayer": "^1.2.0",
     "ng2-cookies": "^1.0.12",
     "ngx-bootstrap": "^1.7.1",
     "ngx-toastr": "^5.3.1",
@@ -53,6 +54,7 @@
     "rxjs": "^5.1.0",
     "tether": "^1.4.0",
     "to-regex": "^3.0.2",
+    "togeojson": "^0.16.0",
     "wellknown": "^0.5.0",
     "zone.js": "^0.8.14"
   },
