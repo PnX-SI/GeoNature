@@ -44,7 +44,8 @@ export class SyntheseSearchComponent implements OnInit {
     this._storeService.taxonTreeState = {};
 
     // remove layers draw in the map
-    this.mapService.removeAllLayers(this.mapService.map, this.mapService.releveFeatureGroup);
+    this.mapService.removeAllLayers(this.mapService.map, this.mapService.leafletDrawFeatureGroup);
+    this.mapService.removeAllLayers(this.mapService.map, this.mapService.fileLayerFeatureGroup);
   }
 
   openModal() {

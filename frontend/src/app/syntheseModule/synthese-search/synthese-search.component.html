@@ -79,7 +79,6 @@
 
       <fieldset>
         <legend> Ou ?</legend>
-        <!-- <pnx-municipalities label="Communes" [searchBar]="true" [parentFormControl]="formService.searchForm.controls.municipalities"></pnx-municipalities> -->
 
         <div *ngIf="formService.formBuilded">
           <div *ngFor="let area of AppConfig.SYNTHESE.AREA_FILTERS; let i = index;">
@@ -134,7 +133,7 @@
 
   </div>
 
-  <!-- {{formService.searchForm.value | json}} -->
+  {{formService.searchForm.value | json}}
 
 
 </div>
