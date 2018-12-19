@@ -3,8 +3,9 @@ Routes of the gn_permissions blueprint
 '''
 
 import json
+from copy import copy
 
-from flask import Blueprint, request, Response, render_template
+from flask import Blueprint, request, Response, render_template, session
 
 from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import json_resp
@@ -70,5 +71,18 @@ def get_cruved(info_role):
         modules_with_cruved.append(mod_as_dict)
 
     return modules_with_cruved
+
+
+@routes.route('/logout_cruved', methods=['GET'])
+def logout():
+    """	
+    Route to logout with cruved
+    To avoid multiples server call, we store the cruved in the session	
+     when the user logout we need clear the session to get the new cruved session	
+     """	
+    copy_session_key = copy(session)	
+    for key in copy_session_key:	
+        session.pop(key)
+    return Response('Logout', 200)
 
 
