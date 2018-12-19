@@ -5,6 +5,7 @@ import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs';
 
 import * as L from 'leaflet';
+import { Control } from 'leaflet';
 import { MAP_CONFIG } from '../../../conf/map.config';
 import { CommonService } from '../service/common.service';
 
@@ -15,7 +16,8 @@ export class MapService {
   private currentLayer: GeoJSON;
   public marker: Marker;
   public editingMarker = true;
-  public releveFeatureGroup: FeatureGroup;
+  public leafletDrawFeatureGroup: FeatureGroup;
+  public fileLayerFeatureGroup: FeatureGroup;
   public modalContent: any;
   private _geojsonCoord = new Subject<any>();
   public gettingGeojson$: Observable<any> = this._geojsonCoord.asObservable();
@@ -39,9 +41,14 @@ export class MapService {
     return this.map;
   }
 
-  initializeReleveFeatureGroup() {
-    this.releveFeatureGroup = new L.FeatureGroup();
-    this.map.addLayer(this.releveFeatureGroup);
+  initializeLeafletDrawFeatureGroup() {
+    this.leafletDrawFeatureGroup = new L.FeatureGroup();
+    this.map.addLayer(this.leafletDrawFeatureGroup);
+  }
+
+  initializefileLayerFeatureGroup() {
+    this.fileLayerFeatureGroup = new L.FeatureGroup();
+    this.map.addLayer(this.fileLayerFeatureGroup);
   }
 
   search(address: string) {
@@ -150,19 +157,21 @@ export class MapService {
 
   createGeojson(geojson, onEachFeature?): GeoJSON {
     return L.geoJSON(geojson, {
-      style: (feature) => {
+      style: feature => {
         switch (feature.geometry.type) {
           // No color nor opacity for linestrings
-          case 'LineString': return {
-            color: '#3388ff',
-            weight: 3
-          };
-          default: return {
-            color: '#3388ff',
-            fill: true,
-            fillOpacity: 0.2,
-            weight: 3
-          };
+          case 'LineString':
+            return {
+              color: '#3388ff',
+              weight: 3
+            };
+          default:
+            return {
+              color: '#3388ff',
+              fill: true,
+              fillOpacity: 0.2,
+              weight: 3
+            };
         }
       },
       pointToLayer: (feature, latlng) => {
@@ -211,20 +220,20 @@ export class MapService {
           return L.latLng(point[1], point[0]);
         });
         layer = L.polyline(myLatLong);
-        this.releveFeatureGroup.addLayer(layer);
+        this.leafletDrawFeatureGroup.addLayer(layer);
       }
       if (data.geometry.type === 'Polygon') {
         const myLatLong = coordinates[0].map(point => {
           return L.latLng(point[1], point[0]);
         });
         layer = L.polygon(myLatLong);
-        this.releveFeatureGroup.addLayer(layer);
+        this.leafletDrawFeatureGroup.addLayer(layer);
       }
       this.map.fitBounds(layer.getBounds());
       // disable point event on the map
       this.setEditingMarker(false);
       // send observable
-      let geojson = this.releveFeatureGroup.toGeoJSON();
+      let geojson = this.leafletDrawFeatureGroup.toGeoJSON();
       geojson = (geojson as any).features[0];
       this.setGeojsonCoord(geojson);
     }

@@ -34,7 +34,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
 
   enableLeafletDraw() {
     this.options.edit['featureGroup'] = this.drawnItems;
-    this.options.edit['featureGroup'] = this.mapservice.releveFeatureGroup;
+    this.options.edit['featureGroup'] = this.mapservice.leafletDrawFeatureGroup;
     const drawControl = new this._Le.Control.Draw(this.options);
     this.map.addControl(drawControl);
 
@@ -42,9 +42,12 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       if (this.map.getZoom() < this.zoomLevel) {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
       }
+
+      // remove eventual filelayer layers
+      this.mapservice.removeAllLayers(this.map, this.mapservice.fileLayerFeatureGroup);
       // remove the current draw
       if (this._currentDraw !== null) {
-        this.mapservice.removeAllLayers(this.map, this.mapservice.releveFeatureGroup);
+        this.mapservice.removeAllLayers(this.map, this.mapservice.leafletDrawFeatureGroup);
       }
       // remove the current marker
       const markerLegend = document.getElementById('markerLegend');
@@ -66,8 +69,8 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       } else {
         this._currentDraw = (e as any).layer.setStyle(this.mapservice.selectedStyle);
         const layerType = (e as any).layerType;
-        this.mapservice.releveFeatureGroup.addLayer(this._currentDraw);
-        let geojson: any = this.mapservice.releveFeatureGroup.toGeoJSON();
+        this.mapservice.leafletDrawFeatureGroup.addLayer(this._currentDraw);
+        let geojson: any = this.mapservice.leafletDrawFeatureGroup.toGeoJSON();
 
         geojson = geojson.features[0];
         // output
@@ -82,7 +85,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
 
     // on draw edited
     this.mapservice.map.on('draw:edited', e => {
-      let geojson = this.mapservice.releveFeatureGroup.toGeoJSON();
+      let geojson = this.mapservice.leafletDrawFeatureGroup.toGeoJSON();
       geojson = (geojson as any).features[0];
       // output
       this.mapservice.justLoaded = false;
@@ -102,20 +105,20 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
         return L.latLng(point[1], point[0]);
       });
       layer = L.polyline(myLatLong);
-      this.mapservice.releveFeatureGroup.addLayer(layer);
+      this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
     }
     if (geojson.type === 'Polygon') {
       const myLatLong = geojson.coordinates[0].map(point => {
         return L.latLng(point[1], point[0]);
       });
       layer = L.polygon(myLatLong);
-      this.mapservice.releveFeatureGroup.addLayer(layer);
+      this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
     }
     this.mapservice.map.fitBounds(layer.getBounds());
     // disable point event on the map
     this.mapservice.setEditingMarker(false);
     // send observable
-    let new_geojson = this.mapservice.releveFeatureGroup.toGeoJSON();
+    let new_geojson = this.mapservice.leafletDrawFeatureGroup.toGeoJSON();
     new_geojson = (new_geojson as any).features[0];
     this.mapservice.setGeojsonCoord(new_geojson);
   }

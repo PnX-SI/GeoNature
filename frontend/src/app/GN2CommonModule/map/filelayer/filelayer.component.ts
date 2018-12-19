@@ -1,37 +1,48 @@
-import { Component, OnInit, Output, EventEmitter, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Output,
+  Input,
+  EventEmitter,
+  AfterViewInit,
+  OnChanges
+} from '@angular/core';
 import { MapService } from '../map.service';
 import { Map } from 'leaflet';
 import * as L from 'leaflet';
 import * as ToGeojson from 'togeojson';
 import * as FileLayer from 'leaflet-filelayer';
-import 'leaflet';
+import { CommonService } from '@geonature_common/service/common.service';
+
 @Component({
   selector: 'pnx-leaflet-filelayer',
   templateUrl: './filelayer.component.html'
 })
-export class LeafletFileLayerComponent implements OnInit, AfterViewInit {
+export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChanges {
   public map: Map;
   public Le: any;
-  public layer: any;
-  public onLoad = new EventEmitter<any>();
-  constructor(public mapService: MapService) {}
+  public previousLayer: any;
+  public fileLayerControl: L.Control;
+  // input to detect a new layer on the map
+  // when this input change -> delete the layer
+  @Input() removeLayer: any;
+  @Output() onLoad = new EventEmitter<any>();
+  constructor(public mapService: MapService, private _commonService: CommonService) {}
 
   ngOnInit() {}
 
   ngAfterViewInit() {
+    this.mapService.initializefileLayerFeatureGroup();
     this.map = this.mapService.getMap();
+
     FileLayer(null, L, ToGeojson);
-    const fileLayerControl = (L.Control as any)
+    (L.Control as any).FileLayerLoad.LABEL =
+      '<img class="icon" width="15" src="assets/images/folder.svg" alt="file icon"/>';
+    this.fileLayerControl = (L.Control as any)
       .fileLayerLoad({
-        // Allows you to use a customized version of L.geoJson.
-        // For example if you are using the Proj4Leaflet leaflet plugin,
-        // you can pass L.Proj.geoJson and load the files into the
-        // L.Proj.GeoJson instead of the L.geoJson.
         layer: (L as any).geoJson,
-        // See http://leafletjs.com/reference.html#geojson-options
-        layerOptions: { style: { color: 'red' } },
         // Add to map after loading (default: true) ?
-        addToMap: true,
+        addToMap: false,
         // File size limit in kb (default: 1024) ?
         fileSizeLimit: 1024,
         // Restrict accepted file formats (default: .geojson, .json, .kml, and .gpx) ?
@@ -39,18 +50,73 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit {
       })
       .addTo(this.map);
 
-    fileLayerControl.loader.on('data:loaded', function(event) {
+    // event on load success
+    (this.fileLayerControl as any).loader.on('data:loaded', event => {
+      // remove layer from leaflet draw
+      this.mapService.removeAllLayers(this.mapService.map, this.mapService.leafletDrawFeatureGroup);
+      // remove the previous layer loaded via file layer
+      this.mapService.removeAllLayers(this.mapService.map, this.mapService.fileLayerFeatureGroup);
+      let currentFeature;
+
+      const geojsonArray = [];
+      // loop on layers to set them on the map via the fileLayerFeatureGroup
       // tslint:disable-next-line:forin
-      for (let layer in event.layer._layers) {
+      for (let _layer in event.layer._layers) {
         // emit the geometry as an output
-        this.onLoad.emit(event.layer._layers[layer]['feature']);
+        currentFeature = event.layer._layers[_layer]['feature'];
+        geojsonArray.push(currentFeature);
+
+        // create a geojson with the name on over
+        const newLayer = L.geoJSON(currentFeature, {
+          pointToLayer: (feature, latlng) => {
+            return L.circleMarker(latlng);
+          },
+          onEachFeature: (feature, layer) => {
+            let propertiesContent = '';
+            // loop on properties dict to build the popup
+            // tslint:disable-next-line:forin
+            for (let prop in currentFeature.properties) {
+              propertiesContent +=
+                '<b>' + prop + '</b> : ' + currentFeature.properties[prop] + ' ' + '<br>';
+            }
+            if (propertiesContent.length > 0) {
+              layer.bindPopup(propertiesContent);
+            }
+            layer.on('mouseover', e => {
+              layer.openPopup();
+            });
+            layer.on('mouseout', e => {
+              layer.closePopup();
+            });
+          },
+          style: { color: 'green' }
+        });
+        // add the layers to the feature groupe
+        this.mapService.fileLayerFeatureGroup.addLayer(newLayer);
+
+        this.onLoad.emit(geojsonArray);
       }
-      this.onLoad.emit(event.layer);
       // remove the previous layer of the map
-      if (this.layer) {
-        fileLayerControl._map.removeLayer(this.layer);
+      if (this.previousLayer) {
+        this.map.removeLayer(this.previousLayer);
       }
-      this.layer = event.layer;
+      this.previousLayer = event.layer;
     });
+
+    // event on load fail
+
+    (this.fileLayerControl as any).loader.on('data:error', error => {
+      this._commonService.translateToaster('error', 'ErrorMessage');
+      console.error(error);
+    });
+  }
+
+  ngOnChanges(changes) {
+    if (changes && changes.removeLayer && changes.removeLayer.currentValue) {
+      if (this.previousLayer) {
+        // when this input change -> delete the layer because an other layer has been loaded
+        this.map.removeLayer(this.previousLayer);
+      }
+    }
   }
 }
