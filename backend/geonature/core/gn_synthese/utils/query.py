@@ -128,13 +128,18 @@ def filter_query_all_filters(model, q, filters, user, allowed_datasets):
 
     if 'geoIntersection' in filters:
         # Insersect with the geom send from the map
-        geom_wkt = loads(request.args['geoIntersection'])
-        # if the geom is a circle
-        if 'radius' in filters:
-            radius = filters.pop('radius')[0]
-            geom_wkt = circle_from_point(geom_wkt, float(radius))
-        geom_wkb = from_shape(geom_wkt, srid=4326)
-        q = q.filter(model.the_geom_4326.ST_Intersects(geom_wkb))
+        ors = []
+        for str_wkt in filters['geoIntersection']:
+            # if the geom is a circle
+            if 'radius' in filters:
+                radius = filters.pop('radius')[0]
+                wkt = circle_from_point(wkt, float(radius))
+            else:
+                wkt = loads(str_wkt)
+            geom_wkb = from_shape(wkt, srid=4326)
+            ors.append(model.the_geom_4326.ST_Intersects(geom_wkb))
+
+        q = q.filter(or_(*ors))
         filters.pop('geoIntersection')
 
     if 'period_start' in filters and 'period_end' in filters:
