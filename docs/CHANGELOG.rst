@@ -54,6 +54,8 @@ CHANGELOG
 * MAJ BDD sous-modules
 * Evolution pour les sous-modules >> Utiliser instance DB de GN pour lancer scripts (#498) et ne plus avoir d'id_application dans la conf du module + Utilisation du CRUVED
 * Conséquences de l'intégration du CRUVED. Sur les modules GN
+* SQL MAJ BDD GN et https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.2.2to1.2.3.sql
+* Version de TH et UH à mettre à jour obligatoirement ? Avant ?
 
 2.0.0-rc.3.1 (2018-10-21)
 -------------------------
