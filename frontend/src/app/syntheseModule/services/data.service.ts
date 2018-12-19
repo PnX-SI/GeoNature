@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import {
   HttpClient,
   HttpParams,
-  HttpEvent,
   HttpHeaders,
-  HttpRequest,
   HttpEventType,
   HttpErrorResponse
 } from '@angular/common/http';
@@ -34,11 +32,14 @@ export class DataService {
     let queryUrl = new HttpParams();
     for (let key in params) {
       if (isArray(params[key])) {
-        queryUrl = queryUrl.set(key, params[key]);
+        params[key].forEach(value => {
+          queryUrl = queryUrl.append(key, value);
+        });
       } else {
         queryUrl = queryUrl.set(key, params[key]);
       }
     }
+    console.log(queryUrl.toString());
     return queryUrl;
   }
   getSyntheseData(params) {
@@ -77,7 +78,7 @@ export class DataService {
     const subscription = source.subscribe(
       event => {
         if (event.type === HttpEventType.Response) {
-            this._blob = new Blob([event.body], { type: event.headers.get('Content-Type') });
+          this._blob = new Blob([event.body], { type: event.headers.get('Content-Type') });
         }
       },
       (e: HttpErrorResponse) => {
