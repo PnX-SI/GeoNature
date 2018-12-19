@@ -70,16 +70,9 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
         this._currentDraw = (e as any).layer.setStyle(this.mapservice.searchStyle);
         const layerType = (e as any).layerType;
         this.mapservice.leafletDrawFeatureGroup.addLayer(this._currentDraw);
-        let geojson: any = this.mapservice.leafletDrawFeatureGroup.toGeoJSON();
-
-        geojson = geojson.features[0];
-        // output
-        if (layerType === 'circle') {
-          const radius = this._currentDraw.getRadius();
-          geojson.properties.radius = radius;
-        }
-        this.mapservice.justLoaded = false;
+        const geojson = this.getGeojsonFromFeatureGroup(layerType);
         this.layerDrawed.emit(geojson);
+        this.mapservice.justLoaded = false;
       }
     });
 
@@ -89,13 +82,33 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       geojson = (geojson as any).features[0];
       // output
       this.mapservice.justLoaded = false;
+
       this.layerDrawed.emit(geojson);
     });
 
     // on layer deleted
-    this.map.on(this._Le.Draw.Event.DELETED, e => {
+    this.map.on(this._Le.Draw.Event.DELETESTART, e => {
       this.layerDeleted.emit();
     });
+
+    this.map.on(this._Le.Draw.Event.DELETESTOP, e => {
+      const layerType = (e as any).layerType;
+      const geojson = this.getGeojsonFromFeatureGroup(layerType);
+      if (geojson) {
+        this.layerDrawed.emit(geojson);
+      }
+    });
+  }
+
+  getGeojsonFromFeatureGroup(layerType) {
+    let geojson: any = this.mapservice.leafletDrawFeatureGroup.toGeoJSON();
+    geojson = geojson.features[0];
+
+    if (layerType === 'circle') {
+      const radius = this._currentDraw.getRadius();
+      geojson.properties.radius = radius;
+    }
+    return geojson;
   }
 
   loadDrawfromGeoJson(geojson) {
