@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, ValidatorFn } from '@angular/forms';
 import { AppConfig } from '@geonature_config/app.config';
-import { stringify } from 'wellknown';
+import { stringify as toWKT } from 'wellknown';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date-parser-formatter';
 import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
 import { DYNAMIC_FORM_DEF } from './dynamycFormConfig';
+import { isArray } from 'util';
 
 @Injectable()
 export class SyntheseFormService {
@@ -28,7 +29,6 @@ export class SyntheseFormService {
       date_max: null,
       period_start: null,
       period_end: null,
-      municipalities: null,
       geoIntersection: null,
       radius: null,
       taxonomy_lr: null,
@@ -63,6 +63,8 @@ export class SyntheseFormService {
   }
 
   formatParams() {
+    // function which take parameters from the form and format them correctly
+    // before build url query string
     const params = Object.assign({}, this.searchForm.value);
     const updatedParams = {};
     // tslint:disable-next-line:forin
@@ -75,7 +77,16 @@ export class SyntheseFormService {
       ) {
         updatedParams[key] = this._periodFormatter.format(params[key]);
       } else if (key === 'geoIntersection' && params['geoIntersection']) {
-        updatedParams['geoIntersection'] = stringify(params['geoIntersection']);
+        const wktArray = [];
+        // if geointersection is an array of geojson (from filelayer) convert each one in WKT
+        if (isArray(params['geoIntersection'])) {
+          params['geoIntersection'].forEach(geojson => {
+            wktArray.push(toWKT(geojson));
+          });
+          updatedParams['geoIntersection'] = wktArray;
+        } else {
+          updatedParams['geoIntersection'] = toWKT(params['geoIntersection']);
+        }
       } else if (params[key]) {
         // if its an Array push only if > 0
         if (Array.isArray(params[key]) && params[key].length > 0) {

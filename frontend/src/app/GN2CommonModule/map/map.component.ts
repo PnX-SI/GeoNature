@@ -51,24 +51,6 @@ export class MapComponent implements OnInit {
     this.map = map;
     (map as any)._onResize();
 
-    // (L.Control as any)
-    //   .fileLayerLoad({
-    //     // Allows you to use a customized version of L.geoJson.
-    //     // For example if you are using the Proj4Leaflet leaflet plugin,
-    //     // you can pass L.Proj.geoJson and load the files into the
-    //     // L.Proj.GeoJson instead of the L.geoJson.
-    //     layer: (L as any).geoJson,
-    //     // See http://leafletjs.com/reference.html#geojson-options
-    //     layerOptions: { style: { color: 'red' } },
-    //     // Add to map after loading (default: true) ?
-    //     addToMap: true,
-    //     // File size limit in kb (default: 1024) ?
-    //     fileSizeLimit: 1024,
-    //     // Restrict accepted file formats (default: .geojson, .json, .kml, and .gpx) ?
-    //     formats: ['.geojson', '.kml']
-    //   })
-    //   .addTo(this.map);
-
     L.control.zoom({ position: 'topright' }).addTo(map);
     const baseControl = {};
     MAP_CONFIG.BASEMAP.forEach((basemap, index) => {
@@ -84,6 +66,6 @@ export class MapComponent implements OnInit {
     L.control.scale().addTo(map);
 
     this.mapService.setMap(map);
-    this.mapService.initializeReleveFeatureGroup();
+    this.mapService.initializeLeafletDrawFeatureGroup();
   }
 }
