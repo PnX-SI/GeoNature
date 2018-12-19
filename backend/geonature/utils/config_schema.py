@@ -81,8 +81,8 @@ class GnPySchemaConf(Schema):
     SQLALCHEMY_TRACK_MODIFICATIONS = fields.Boolean(missing=False)
     SESSION_TYPE = fields.String(missing='filesystem')
     SECRET_KEY = fields.String(required=True)
-    # le cookie expire toute les 30 minutes par défaut
-    COOKIE_EXPIRATION = fields.Integer(missing=1800)
+    # le cookie expire toute les 7 jours par défaut
+    COOKIE_EXPIRATION = fields.Integer(missing=3600 * 24 * 7)
     COOKIE_AUTORENEW = fields.Boolean(missing=True)
     TRAP_ALL_EXCEPTIONS = fields.Boolean(missing=False)
 
@@ -150,8 +150,6 @@ class GnGeneralSchemaConf(Schema):
         validate=OneOf(['hash', 'md5'])
     )
     DEBUG = fields.Boolean(missing=False)
-    # period d'inactivité en second après laquelle on deconnect: defaut 20 secondes
-    INACTIVITY_PERIOD_DISCONECT = fields.Integer(missing=cookie_expiration, default=1200)
     URL_APPLICATION = fields.Url(required=True)
     API_ENDPOINT = fields.Url(required=True)
     API_TAXHUB = fields.Url(required=True)
@@ -167,15 +165,6 @@ class GnGeneralSchemaConf(Schema):
     ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS = fields.Boolean(missing=True)
     BDD = fields.Nested(BddConfig, missing=dict())
 
-    @validates_schema
-    def validate_inactivity_seconde(self, data):
-        if data['INACTIVITY_PERIOD_DISCONECT'] + 20 <= cookie_expiration:
-            raise ValidationError(
-                """
-                Parameters INACTIVITY_PERIOD_DISCONECT must be at least 20 seconds
-                lesser than COOKIE_EXPIRATION
-                """
-            )
 
 
 class ManifestSchemaConf(Schema):
