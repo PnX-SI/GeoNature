@@ -120,20 +120,4 @@ export class AuthService {
   isAuthenticated(): boolean {
     return this._cookie.get('token') !== null;
   }
-
-  activateIdle() {
-    this._idle.setIdle(1);
-    this._idle.setTimeout(AppConfig.INACTIVITY_PERIOD_DISCONECT);
-    this._idle.setInterrupts(DEFAULT_INTERRUPTSOURCES);
-
-    this._idle.onTimeout.subscribe(() => {
-      this.logout();
-    });
-
-    this.resetIdle();
-  }
-
-  resetIdle() {
-    this._idle.watch();
-  }
 }

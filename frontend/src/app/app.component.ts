@@ -10,8 +10,5 @@ import { AuthService } from '@geonature/components/auth/auth.service';
 export class AppComponent implements OnInit {
   constructor(private _authService: AuthService) {}
 
-  ngOnInit() {
-    // activate idle to disconect the user when long passivity
-    this._authService.activateIdle();
-  }
+  ngOnInit() {}
 }
