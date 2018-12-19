@@ -31,6 +31,10 @@ export class MapService {
     weight: 3
   };
 
+  searchStyle = {
+    color: 'green'
+  };
+
   constructor(private http: Http, private _commonService: CommonService) {}
 
   setMap(map) {

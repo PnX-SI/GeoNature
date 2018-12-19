@@ -89,7 +89,7 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
               layer.closePopup();
             });
           },
-          style: { color: 'green' }
+          style: this.mapService.searchStyle
         });
         // add the layers to the feature groupe
         this.mapService.fileLayerFeatureGroup.addLayer(newLayer);
