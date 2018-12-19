@@ -10,29 +10,30 @@ CHANGELOG
 * Intégration de la gestion du CRUVED dans la BDD de GeoNature, géré via la création d'un backoffice dédié (#517)
 * Mise en place d'un système de permissions plus fin par module et par objet (#517)
 * Mise en place d'un mécanimse générique pour la gestion des permissions via des filtres : filtre de type portée (SCOPE), taxonomique, géographique etc... (#517)
+* Ajout du composant Leaflet.FileLayers dans le module Synthèse pour pouvoir charger un GeoJSON, un GPS ou KML sur la carte comme géométrie de recherche (#256)
 
 **Corrections**
 
-* Correction de l'id_digitiser lors de la mise à jour #481
-* Corrections multiples de la prise en compte du CRUVED #496
-* Deconnexion apres inactivité de l'utilisateur #490
-* Suppression des heures au niveau des dates de l'export occtax #485
-* Correction du message d'erreur quand on n'a pas de JDD #479
-* Correction du champs commentaire dans les exports d'Occtax séparé entre relevé et occurrence #478
-* Correction des paramètres de la fonction ``GenericQuery.build_query_filter()`` (merci @patkap)
-* Correction de l'administration des métadonnées #466 #420
+* Correction de l'id_digitiser lors de la mise à jour (#481)
+* Corrections multiples de la prise en compte du CRUVED (#496)
+* Deconnexion apres inactivité de l'utilisateur (#490)
+* Suppression des heures au niveau des dates de l'export occtax (#485)
+* Correction du message d'erreur quand on n'a pas de JDD (#479)
+* Correction du champs commentaire dans les exports d'Occtax séparé entre relevé et occurrence (#478)
+* Correction des paramètres de la fonction ``GenericQuery.build_query_filter()`` (par @patkap)
+* Correction de l'administration des métadonnées (#466 #420)
 * Métadonnées (JDD et CA) : ne pas afficher les utilisateurs qui sont des groupes dans les acteurs
-* Ajout d'un champs dans la Synthèse permettant de stocker de quel module provient une occurrence et fonctions SQL associées #412
+* Ajout d'un champs dans la Synthèse permettant de stocker de quel module provient une occurrence et fonctions SQL associées (#412)
 * Amélioration du style des champs obligatoires
 * Améliorations mineures de l'ergonomie d'Occtax
-* Correction du spinner qui tournait en boucle lors de l'export CSV de la Synthèse #451
+* Correction du spinner qui tournait en boucle lors de l'export CSV de la Synthèse (#451)
 * Correction des tests automatisés
 * Amélioration des performances des intersections avec les zonages de ``ref_geo.l_areas``
 * Diverses autres corrections et améliorations mineures
 * Complément de la documentation de développement
 * Simplification de la configuration des gn_modules
-* Occtax : ordonnancement des observation par date #467
-* Occtax : Remplissage automatique de l'heure_max à partir de l'heure_min #522
+* Occtax : ordonnancement des observation par date (#467)
+* Occtax : Remplissage automatique de l'heure_max à partir de l'heure_min (#522)
 * Suppression des warnings lors du build du frontend
 * Correction de l'installation des modules GeoNature
 * Ajout d'un message quand on n'a pas accès à une donnée d'un module
@@ -43,7 +44,9 @@ CHANGELOG
 * Composant Areas et Municipalities : remise à zéro de la liste déroulante quand on efface la recherche ou remet à jour les filtres
 * Composant Taxonomy : la recherche autocompletée est lancée même si on tape plus de 20 caractères. Le nombre de résultat renvoyé est désormais paramétrable (#518)
 * Limitation du nombre de connexions à la BDD en partageant l'instance ``DB`` avec les sous-modules
-* Installation : on n'utilise plus le répertoire ``/tmp`` du système pour des questions de droits #503
+* Installation : on n'utilise plus le répertoire ``/tmp`` du système pour des questions de droits (#503)
+* Nouvel exemple d'import de données historiques vers GeoNature V2 : https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/2018-12-csv-vers-synthese-FLAVIA.sql (par @DonovanMaillard)
+* Complément de la documentation HTTPS et ajout d'une documentation Apache (par @DonovanMaillard, @RomainBaghi et @lpofredc)
 
 **Note de version**
 
