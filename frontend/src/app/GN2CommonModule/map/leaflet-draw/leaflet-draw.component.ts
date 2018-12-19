@@ -67,7 +67,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
         this.layerDrawed.emit({ geojson: null });
       } else {
-        this._currentDraw = (e as any).layer.setStyle(this.mapservice.selectedStyle);
+        this._currentDraw = (e as any).layer.setStyle(this.mapservice.searchStyle);
         const layerType = (e as any).layerType;
         this.mapservice.leafletDrawFeatureGroup.addLayer(this._currentDraw);
         let geojson: any = this.mapservice.leafletDrawFeatureGroup.toGeoJSON();
