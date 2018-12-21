@@ -273,14 +273,7 @@ sudo a2enmod proxy_http
 # Installation and configuration of UsersHub application (if activated)
 if [ "$install_usershub_app" = true ]; then
     echo "Installation de l'application Usershub"
-    os_version=$(cat /etc/os-release |grep VERSION_ID)
-    # On Debian 9 : PHP7. On Debian 8 : PHP5
-    if [ "$OS_VERSION" == "9" ]
-    then
-        sudo apt-get install -y php7.0 libapache2-mod-php7.0 libapache2-mod-php7.0 php7.0-pgsql php7.0-gd 2> var/log/install_app.log
-    else
-        sudo apt-get install -y php5 libapache2-mod-php5 libapache2-mod-php5 php5-pgsql php5-gd 2> var/log/install_app.log
-    fi
+
     wget https://github.com/PnEcrins/UsersHub/archive/$usershub_release.zip
     unzip $usershub_release.zip
     rm $usershub_release.zip
@@ -293,19 +286,19 @@ if [ "$install_usershub_app" = true ]; then
     sed -i "s/db_name=.*$/db_name=$geonaturedb_name/g" config/settings.ini
     sed -i "s/user_pg=.*$/user_pg=$user_pg/g" config/settings.ini
     sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_pg_pass/g" config/settings.ini
+    sed -i 's#url_application=.*#url_application='$my_url'/usershub#g' config/settings.ini
 
     # Installation of UsersHub application
     ./install_app.sh
 
     # Apache configuration of UsersHub
     sudo touch /etc/apache2/sites-available/usershub.conf
-    sudo sh -c 'echo  "#Configuration usershub">> /etc/apache2/sites-available/usershub.conf'
-    conf="Alias /usershub /home/`whoami`/usershub/web"
-    echo $conf | sudo tee -a /etc/apache2/sites-available/usershub.conf 
-    conf="<Directory /home/`whoami`/usershub/web>"
-    echo $conf | sudo tee -a /etc/apache2/sites-available/usershub.conf
-    sudo sh -c 'echo  "Require all granted">> /etc/apache2/sites-available/usershub.conf'
-    sudo sh -c 'echo  "</Directory>">> /etc/apache2/sites-available/usershub.conf'
+    sudo sh -c 'echo "# Configuration Usershub" >> /etc/apache2/sites-available/usershub.conf'
+    sudo sh -c 'echo "<Location /usershub>" >> /etc/apache2/sites-available/usershub.conf'
+    sudo sh -c 'echo "ProxyPass  http://127.0.0.1:5001 retry=0" >> /etc/apache2/sites-available/usershub.conf'
+    sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:5001" >> /etc/apache2/sites-available/usershub.conf'
+    sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/usershub.conf'
+    sudo sh -c 'echo "#FIN Configuration Usershub" >> /etc/apache2/sites-available/usershub.conf'
     sudo a2ensite usershub
 fi
 
