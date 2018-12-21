@@ -11,7 +11,7 @@
 ################################################################################
 
 https://github.com/PnX-SI/UsersHub-authentification-module/archive/develop.zip
-https://github.com/PnX-SI/Nomenclature-api-module/archive/develop.zip
+https://github.com/PnX-SI/Nomenclature-api-module/archive/1.2.3.zip
 chardet==3.0.4
 click==6.7
 flask-cors==3.0.3
@@ -30,7 +30,7 @@ packaging==16.8
 psycopg2==2.7.5
 pyparsing==2.2.0
 python-dateutil==2.6.1
-requests==2.20.0
+requests==2.21.0
 shapely==1.5.16
 six==1.11.0
 sqlalchemy==1.1.13

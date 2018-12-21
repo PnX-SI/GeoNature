@@ -31,10 +31,10 @@ VALUES
 INSERT INTO bib_filters_type
     (code_filter_type, label_filter_type, description_filter_type)
 VALUES
-    ('SCOPE', 'Permissions de type portée', 'Filtre de type portée'),
-    ('SENSITIVITY', 'Permissions de type sensibilité', 'Permission de type sensibilité'),
-    ('GEOGRAPHIC', 'Permissions de type géographique', 'Ajouter des id_area séparés par des virgules'),
-    ('TAXONOMIC', 'Permissions de type taxonomique', 'Ajouter des cd_nom séparés par des virgules')
+    ('SCOPE', 'Permissions de type Portée', 'Filtre de type Portée'),
+    ('SENSITIVITY', 'Permissions de type Sensibilité', 'Permission de type Sensibilité'),
+    ('GEOGRAPHIC', 'Permissions de type Géographique', 'Ajouter des id_area séparés par des virgules'),
+    ('TAXONOMIC', 'Permissions de type Taxonomique', 'Ajouter des cd_nom séparés par des virgules')
 ;
 
 INSERT INTO t_filters
@@ -65,7 +65,7 @@ INSERT INTO t_filters
     (value_filter, label_filter, description_filter, id_filter_type)
 VALUES
     ('61098', 'Les bouquetins', 'Filtre taxonomique sur les bouquetins', 4),
-    ('185961', 'Les Oiseaux', 'Filtre taxonomique sur les oiseaux - classe Aves', 4),
+    ('185961', 'Les oiseaux', 'Filtre taxonomique sur les oiseaux - classe Aves', 4),
     ('DONNEES_DEGRADEES', 'Données dégradées', 'Filtre pour afficher les données sensibles dégradées/floutées à l''utilisateur', 2),
     ('DONNEES_PRECISES', 'Données précises', 'Filtre qui affiche les données sensibles  précises à l''utilisateur', 2)
 ;
@@ -112,7 +112,7 @@ VALUES
     (7, 4, 1, 0, 1),
     (7, 5, 3, 0, 1),
     (7, 6, 2, 0, 1),
-    -- Groupe en poste ,n'a pas accès à l'admin
+    -- Groupe en poste, n'a pas accès à l'admin
     (7, 1, 1, 1, 1),
     (7, 2, 1, 1, 1),
     (7, 3, 1, 1, 1),
@@ -126,21 +126,21 @@ VALUES
     (9, 4, 4, 1, 1),
     (9, 5, 4, 1, 1),
     (9, 6, 4, 1, 1),
-    -- ADMIN peut gérer les permissions du backoffice
+    -- ADMIN peut gérer les permissions depuis le backoffice
     (9, 1, 4, 1, 3),
     (9, 2, 4, 1, 3),
     (9, 3, 4, 1, 3),
     (9, 4, 4, 1, 3),
     (9, 5, 4, 1, 3),
     (9, 6, 4, 1, 3),
-    -- ADMIN peut gérer les métadonnées du backoffice
+    -- ADMIN peut gérer les métadonnées depuis le backoffice
     (9, 1, 4, 1, 2),
     (9, 2, 4, 1, 2),
     (9, 3, 4, 1, 2),
     (9, 4, 4, 1, 2),
     (9, 5, 4, 1, 2),
     (9, 6, 4, 1, 2),
-    -- ADMIN peut gérer les nomenclatures du backoffice
+    -- ADMIN peut gérer les nomenclatures depuis le backoffice
     (9, 1, 4, 1, 4),
     (9, 2, 4, 1, 4),
     (9, 3, 4, 1, 4),
