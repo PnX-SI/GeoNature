@@ -10,7 +10,7 @@ CHANGELOG
 * Intégration de la gestion du CRUVED dans la BDD de GeoNature, géré via la création d'un backoffice dédié (#517)
 * Mise en place d'un système de permissions plus fin par module et par objet (#517)
 * Mise en place d'un mécanimse générique pour la gestion des permissions via des filtres : filtre de type portée (SCOPE), taxonomique, géographique etc... (#517)
-* Ajout du composant Leaflet.FileLayers dans le module Synthèse pour pouvoir charger un GeoJSON, un GPS ou KML sur la carte comme géométrie de recherche (#256)
+* Ajout du composant Leaflet.FileLayer dans le module Synthèse pour pouvoir charger un GeoJSON, un GPS ou KML sur la carte comme géométrie de recherche (#256)
 
 **Corrections**
 
@@ -47,6 +47,7 @@ CHANGELOG
 * Installation : on n'utilise plus le répertoire ``/tmp`` du système pour des questions de droits (#503)
 * Nouvel exemple d'import de données historiques vers GeoNature V2 : https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/2018-12-csv-vers-synthese-FLAVIA.sql (par @DonovanMaillard)
 * Complément de la documentation HTTPS et ajout d'une documentation Apache (par @DonovanMaillard, @RomainBaghi et @lpofredc)
+* Installation : utilisation d'un répertoire ``tmp`` local et non plus au niveau système pour limiter les problèmes de droits (#503)
 
 **Note de version**
 
@@ -54,6 +55,8 @@ CHANGELOG
 * MAJ BDD sous-modules
 * Evolution pour les sous-modules >> Utiliser instance DB de GN pour lancer scripts (#498) et ne plus avoir d'id_application dans la conf du module + Utilisation du CRUVED
 * Conséquences de l'intégration du CRUVED. Sur les modules GN
+* SQL MAJ BDD GN et https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.2.2to1.2.3.sql
+* Version de TH et UH à mettre à jour obligatoirement ? Avant ?
 
 2.0.0-rc.3.1 (2018-10-21)
 -------------------------
