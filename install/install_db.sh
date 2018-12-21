@@ -9,7 +9,7 @@ then
 fi
 
 cd ../
-# Make sure only root can run our script
+# Make sure root cannot run our script
 if [ "$(id -u)" == "0" ]; then
    echo "This script must NOT be run as root" 1>&2
    exit 1
