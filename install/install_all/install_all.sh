@@ -192,6 +192,9 @@ cd install/
 cd ../
 
 # Apache configuration of GeoNature
+if [ -f  /etc/apache2/sites-available/geonature.conf ]; then
+  rm  /etc/apache2/sites-available/geonature.conf
+fi
 sudo touch /etc/apache2/sites-available/geonature.conf
 
 sudo sh -c 'echo "# Configuration GeoNature" >> /etc/apache2/sites-available/geonature.conf'
@@ -212,6 +215,9 @@ sudo sh -c '#FIN Configuration GeoNature 2>" >> /etc/apache2/sites-available/geo
 sudo a2ensite geonature
 
 # Apache configuration of GeoNature maintenance page
+if [ -f  /etc/apache2/sites-available/geonature_maintenance.conf ]; then
+  sudo rm  /etc/apache2/sites-available/geonature_maintenance.conf
+fi
 sudo touch /etc/apache2/sites-available/geonature_maintenance.conf
 
 conf="Alias /geonature /home/`whoami`/geonature/frontend/src/app/maintenance"
@@ -251,6 +257,9 @@ sed -i "s/https_cert_path=.*$/https_cert_path=$enable_https/g" settings.ini
 sed -i "s/https_key_path=.*$/https_key_path=$enable_https/g" settings.ini
 
 # Apache configuration of TaxHub
+if [ -f  /etc/apache2/sites-available/taxhub.conf ]; then
+  sudo rm  /etc/apache2/sites-available/taxhub.conf
+fi
 sudo touch /etc/apache2/sites-available/taxhub.conf
 sudo sh -c 'echo "# Configuration TaxHub" >> /etc/apache2/sites-available/taxhub.conf'
 sudo sh -c 'echo "<Location /taxhub>" >> /etc/apache2/sites-available/taxhub.conf'
@@ -292,6 +301,9 @@ if [ "$install_usershub_app" = true ]; then
     ./install_app.sh
 
     # Apache configuration of UsersHub
+    if [ -f  /etc/apache2/sites-available/usershub.conf ]; then
+        sudo rm /etc/apache2/sites-available/usershub.conf
+    fi
     sudo touch /etc/apache2/sites-available/usershub.conf
     sudo sh -c 'echo "# Configuration Usershub" >> /etc/apache2/sites-available/usershub.conf'
     sudo sh -c 'echo "<Location /usershub>" >> /etc/apache2/sites-available/usershub.conf'
