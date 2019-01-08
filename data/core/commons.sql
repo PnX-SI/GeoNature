@@ -537,17 +537,6 @@ CREATE TRIGGER tri_insert_synthese_update_validation_status
 --DATAS--
 ---------
 
-INSERT INTO utilisateurs.t_applications (code_application, nom_application, desc_application, id_parent) VALUES 
-('GEONATURE', 'GeoNature', 'Application GeoNature.', NULL)
-;
-
--- Faire en sorte qu'Admin puisse se connecter à GeoNature
-INSERT INTO utilisateurs.cor_role_app_profil 
-SELECT 9, app.id_application, prof.id_profil
-FROM utilisateurs.t_applications app, utilisateurs.t_profils prof
-WHERE code_application = 'GEONATURE' AND prof.code_profil = '1';
-
-
 -- On ne défini pas d'id pour la PK, la séquence s'en charge
 INSERT INTO bib_tables_location (table_desc, schema_name, table_name, pk_field, uuid_field_name) VALUES
 ('Regroupement de tous les médias de GeoNature', 'gn_commons', 't_medias', 'id_media', 'unique_id_media')
