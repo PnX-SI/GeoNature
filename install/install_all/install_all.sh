@@ -143,6 +143,8 @@ sudo apt-get install -y python-qt4 2> var/log/install_app.log
 # Creating PostgreSQL user
 echo "Création de l'utilisateur PostgreSQL..."
 sudo -n -u postgres -s psql -c "CREATE ROLE $user_pg WITH LOGIN PASSWORD '$user_pg_pass';"
+#restart postgresql if we launch twice the script
+sudo service postgresql restart
 
 # Apache configuration
 sudo sh -c 'echo "ServerName localhost" >> /etc/apache2/apache2.conf'
