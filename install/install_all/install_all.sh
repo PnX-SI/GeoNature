@@ -297,7 +297,7 @@ if [ "$install_usershub_app" = true ]; then
     sed -i "s/db_name=.*$/db_name=$geonaturedb_name/g" config/settings.ini
     sed -i "s/user_pg=.*$/user_pg=$user_pg/g" config/settings.ini
     sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_pg_pass/g" config/settings.ini
-    sed -i 's#url_application=.*#url_application='$my_url'/usershub#g' config/settings.ini
+    sed -i 's#url_application=.*#url_application='$my_url'usershub#g' config/settings.ini
 
     # Installation of UsersHub application
     ./install_app.sh
