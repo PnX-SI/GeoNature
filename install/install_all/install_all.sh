@@ -193,7 +193,7 @@ cd ../
 
 # Apache configuration of GeoNature
 if [ -f  /etc/apache2/sites-available/geonature.conf ]; then
-  rm  /etc/apache2/sites-available/geonature.conf
+  sudo rm  /etc/apache2/sites-available/geonature.conf
 fi
 sudo touch /etc/apache2/sites-available/geonature.conf
 
