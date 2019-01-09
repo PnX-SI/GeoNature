@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, OnDestroy } from "@angular/core";
-import { FormControl, FormGroup, FormArray, Validators } from "@angular/forms";
+import { FormGroup} from "@angular/forms";
 import { Subscription } from "rxjs/Subscription";
 import { MapService } from "@geonature_common/map/map.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
