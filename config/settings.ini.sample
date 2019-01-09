@@ -65,7 +65,7 @@ usershub_release=uhv2
 taxhub_release=develop
 
 # Définir dans quelle version du sous-module des nomenclatures (release, branche ou tag) prendre le code SQL permettant la création du schéma 'ref_nomenclatures' de la base de données GeoNature
-nomenclature_release=1.2.2
+nomenclature_release=1.2.3
 
 
 #Configuration python
