@@ -942,8 +942,39 @@ SELECT 9, 6, 4, id_module, id_object
 FROM gn_commons.t_modules, gn_permissions.t_objects
 WHERE module_code = 'ADMIN' AND code_object = 'NOMENCLATURES';
 
--- 
 
+-- Groupe en poste, n'a pas accès à l'admin
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 7, 1, 1, id_module, 1
+FROM gn_commons.t_modules
+WHERE module_code = 'ADMIN';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 7, 2, 1, id_module, 1
+FROM gn_commons.t_modules
+WHERE module_code = 'ADMIN';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 7, 3, 1, id_module, 1
+FROM gn_commons.t_modules
+WHERE module_code = 'ADMIN';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 7, 4, 1, id_module, 1
+FROM gn_commons.t_modules
+WHERE module_code = 'ADMIN';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 7, 5, 1, id_module, 1
+FROM gn_commons.t_modules
+WHERE module_code = 'ADMIN';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 7, 6, 1, id_module, 1
+FROM gn_commons.t_modules
+WHERE module_code = 'ADMIN';
+
+-- 
 -- suppression des modules GeoNature de la table t_applications
 DELETE
 FROM utilisateurs.t_applications
