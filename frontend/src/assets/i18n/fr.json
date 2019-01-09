@@ -25,6 +25,7 @@
   "Delete": "Supprimer",
   "NotAllowed": "Vous n'avez pas les droits pour effectuer cette action",
   "LoginError": "Identifiant ou mot de passe incorrect",
+  "Downloading": "Téléchargement en cours",
   "DownloadData": "Télécharger les données",
   "DownloadOverflow":
     "Le nombre d'élément est trop important pour être téléchargé, veuillez affiner votre recherche ou contacter votre administrateur",
@@ -43,11 +44,11 @@
     "NoJDD": "Aucun jeu de données n'a été trouvé, contactez votre administrateur",
     "NoJDDMTD":
       "Aucun jeu de données n'a été trouvé, veuillez d'abord les saisir dans l'application MTD",
-      "Datasetadded": "Jeu de donnée ajouté avec succès",
-      "AFadded": "Cadre d'acquisition ajouté avec succès",
-      "Programs": "Programmes",
-      "Datasets": "Jeux de données",
-      "AcquisitionFramework": "Cadre d'acquisition"
+    "Datasetadded": "Jeu de donnée ajouté avec succès",
+    "AFadded": "Cadre d'acquisition ajouté avec succès",
+    "Programs": "Programmes",
+    "Datasets": "Jeux de données",
+    "AcquisitionFramework": "Cadre d'acquisition"
   },
   "Form": {
     "RefreshFilters": "Rafraichir les filtres",
