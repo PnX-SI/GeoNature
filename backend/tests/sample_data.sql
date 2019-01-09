@@ -92,7 +92,7 @@ VALUES
     (7, 4, 1, 0, 1),
     (7, 5, 3, 0, 1),
     (7, 6, 2, 0, 1),
-    -- Groupe en poste ,n'a pas accès à l'admin
+    -- Groupe en poste, n'a pas accès à l'admin
     (7, 1, 1, 1, 1),
     (7, 2, 1, 1, 1),
     (7, 3, 1, 1, 1),
@@ -106,21 +106,21 @@ VALUES
     (9, 4, 4, 1, 1),
     (9, 5, 4, 1, 1),
     (9, 6, 4, 1, 1),
-    -- ADMIN peut gérer les permissions du backoffice
+    -- Groupe ADMIN peut gérer les permissions depuis le backoffice
     (9, 1, 4, 1, 3),
     (9, 2, 4, 1, 3),
     (9, 3, 4, 1, 3),
     (9, 4, 4, 1, 3),
     (9, 5, 4, 1, 3),
     (9, 6, 4, 1, 3),
-    -- ADMIN peut gérer les métadonnées du backoffice
+    -- Groupe ADMIN peut gérer les métadonnées depuis le backoffice
     (9, 1, 4, 1, 2),
     (9, 2, 4, 1, 2),
     (9, 3, 4, 1, 2),
     (9, 4, 4, 1, 2),
     (9, 5, 4, 1, 2),
     (9, 6, 4, 1, 2),
-    -- ADMIN peut gérer les nomenclatures du backoffice
+    -- Groupe ADMIN peut gérer les nomenclatures depuis le backoffice
     (9, 1, 4, 1, 4),
     (9, 2, 4, 1, 4),
     (9, 3, 4, 1, 4),
