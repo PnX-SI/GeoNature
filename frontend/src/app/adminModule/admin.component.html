@@ -3,7 +3,9 @@
     <h3 class="underlined main-color"> Backoffice GeoNature </h3>
   </div>
 
-  <div class="card-body" *ngIf="adminStoreService?.moduleCruved?.module_objects?.METADATA.cruved.C != '0'">
+  <div class="card-body" *ngIf="adminStoreService?.moduleCruved?.module_objects.METADATA != '0' &&
+  adminStoreService?.moduleCruved?.module_objects?.METADATA?.cruved?.C != '0'
+  ">
     <h5 class="underlined second-color"> Administration des métadonnées</h5>
 
     <li class="no-bullet">
@@ -17,7 +19,9 @@
 
   </div>
 
-  <div class="card-body" *ngIf="adminStoreService?.moduleCruved?.module_objects?.NOMENCLATURES.cruved.C != '0'">
+  <div class="card-body" *ngIf="adminStoreService?.moduleCruved?.module_objects.NOMENCLATURES &&
+  adminStoreService?.moduleCruved?.module_objects?.NOMENCLATURES?.cruved?.C != '0'
+  ">
     <h5 class="underlined second-color"> Administration des nomenclatures</h5>
 
     <li class="no-bullet">
@@ -30,7 +34,8 @@
 
   </div>
 
-  <div class="card-body" *ngIf="adminStoreService?.moduleCruved?.module_objects?.PERMISSIONS.cruved.C != '0'">
+  <div class="card-body" *ngIf="adminStoreService?.moduleCruved?.module_objects?.PERMISSIONS && 
+  adminStoreService?.moduleCruved?.module_objects?.PERMISSIONS?.cruved?.C != '0'">
     <h5 class="underlined second-color"> Administration des permissions (CRUVED)</h5>
 
     <li class="no-bullet">

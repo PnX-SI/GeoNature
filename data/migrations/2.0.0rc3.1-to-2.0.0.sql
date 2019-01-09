@@ -226,112 +226,6 @@ UPDATE ref_geo.l_areas SET geom = ST_SetSRID(geom, 2154);
 ----------
 --OCCTAX--
 ----------
-CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS 
- SELECT ccc.unique_id_sinp_occtax AS "permId",
-    ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_observation_status) AS "statObs",
-    occ.nom_cite AS "nomCite",
-    rel.date_min::date AS "dateDebut",
-    rel.date_max::date AS "dateFin",
-    rel.hour_min AS "heureDebut",
-    rel.hour_max AS "heureFin",
-    rel.altitude_max AS "altMax",
-    rel.altitude_min AS "altMin",
-    occ.cd_nom AS "cdNom",
-    taxonomie.find_cdref(occ.cd_nom) AS "cdRef",
-    gn_commons.get_default_parameter('taxref_version'::text, NULL::integer) AS "versionTAXREF",
-    rel.date_min AS datedet,
-    'NSP'::text AS "dSPublique",
-    d.unique_dataset_id AS "jddMetadonneeDEEId",
-    ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_source_status) AS "statSource",
-    '0'::text AS "diffusionNiveauPrecision",
-    ccc.unique_id_sinp_occtax AS "idOrigine",
-    d.dataset_name AS "jddCode",
-    d.unique_dataset_id AS "jddId",
-    NULL::text AS "refBiblio",
-    ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_obs_meth) AS "obsMeth",
-    ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_bio_condition) AS "ocEtatBio",
-    COALESCE(ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_naturalness), '0'::text::character varying) AS "ocNat",
-    ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_sex) AS "ocSex",
-    ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_life_stage) AS "ocStade",
-    '0'::text AS "ocBiogeo",
-    COALESCE(ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_bio_status), '0'::text::character varying) AS "ocStatBio",
-    COALESCE(ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_exist_proof), '0'::text::character varying) AS "preuveOui",
-    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_determination_method, 'fr'::character varying) AS "ocMethDet",
-    occ.digital_proof AS "preuvNum",
-    occ.non_digital_proof AS "preuvNoNum",
-    rel.comment AS "obsCtx",
-    occ.comment as "obsDescr",
-    rel.unique_id_sinp_grp AS "permIdGrp",
-    'Relevé'::text AS "methGrp",
-    'OBS'::text AS "typGrp",
-    ccc.count_max AS "denbrMax",
-    ccc.count_min AS "denbrMin",
-    ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_obj_count) AS "objDenbr",
-    ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_type_count) AS "typDenbr",
-    COALESCE(string_agg(DISTINCT (r.nom_role::text || ' '::text || r.prenom_role::text), ','::text), rel.observers_txt::text) AS "obsId",
-    COALESCE(string_agg(DISTINCT o.nom_organisme::text, ','::text), 'NSP'::text) AS "obsNomOrg",
-    COALESCE(occ.determiner, 'Inconnu'::character varying) AS "detId",
-    'NSP'::text AS "detNomOrg",
-    'NSP'::text AS "orgGestDat",
-    rel.geom_4326,
-    st_astext(rel.geom_4326) AS "WKT",
-    'In'::text AS "natObjGeo"
-   FROM pr_occtax.t_releves_occtax rel
-     LEFT JOIN pr_occtax.t_occurrences_occtax occ ON rel.id_releve_occtax = occ.id_releve_occtax
-     LEFT JOIN pr_occtax.cor_counting_occtax ccc ON ccc.id_occurrence_occtax = occ.id_occurrence_occtax
-     LEFT JOIN taxonomie.taxref tax ON tax.cd_nom = occ.cd_nom
-     LEFT JOIN gn_meta.t_datasets d ON d.id_dataset = rel.id_dataset
-     LEFT JOIN pr_occtax.cor_role_releves_occtax cr ON cr.id_releve_occtax = rel.id_releve_occtax
-     LEFT JOIN utilisateurs.t_roles r ON r.id_role = cr.id_role
-     LEFT JOIN utilisateurs.bib_organismes o ON o.id_organisme = r.id_organisme
-  GROUP BY 
-    ccc.unique_id_sinp_occtax
-    ,d.unique_dataset_id
-    , occ.id_nomenclature_bio_condition
-    , occ.id_nomenclature_naturalness
-    , ccc.id_nomenclature_sex
-    , ccc.id_nomenclature_life_stage
-    , occ.id_nomenclature_bio_status
-    , occ.id_nomenclature_exist_proof
-    , occ.id_nomenclature_determination_method
-    , rel.unique_id_sinp_grp
-    , d.id_nomenclature_source_status
-    , occ.id_nomenclature_blurring
-    , occ.id_nomenclature_diffusion_level
-    , occ.nom_cite
-    , rel.date_min
-    , rel.date_max
-    , rel.hour_min
-    , rel.hour_max
-    , rel.altitude_max
-    , rel.altitude_min
-    , occ.cd_nom
-    , occ.id_nomenclature_observation_status
-    , taxonomie.find_cdref(occ.cd_nom)
-    , gn_commons.get_default_parameter('taxref_version'::text, NULL::integer)
-    , rel.comment
-    , rel.id_dataset
-    , ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_source_status)
-    , ccc.id_counting_occtax
-    , d.dataset_name
-    , occ.determiner
-    , occ.comment
-    , ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_obs_meth)
-    , ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_bio_condition)
-    , ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_naturalness)
-    , ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_sex)
-    , ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_life_stage)
-    , ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_bio_status)
-    , ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_exist_proof)
-    , ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_determination_method)
-    , occ.digital_proof
-    , occ.non_digital_proof
-    , ccc.count_max
-    , ccc.count_min
-    , ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_obj_count)
-    , ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_type_count)
-    , rel.observers_txt
-    , rel.geom_4326;
 
 CREATE OR REPLACE FUNCTION pr_occtax.insert_in_synthese(my_id_counting integer)
   RETURNS integer[] AS
@@ -880,9 +774,11 @@ INSERT INTO gn_permissions.t_objects
 VALUES
     ('ALL', 'Représente tous les objets d''un module'),
     ('METADATA', 'Gestion du backoffice des métadonnées'),
-    ('PERMISSIONS', 'Gestion du backoffice des permissions')
+    ('PERMISSIONS', 'Gestion du backoffice des permissions'),
+    ('NOMENCLATURES', 'Gestion du backoffice des nomenclature')
 ;
 
+-- objets du module ADMIN
 INSERT INTO gn_permissions.cor_object_module
     (id_object, id_module)
 SELECT 2, id_module
@@ -892,6 +788,12 @@ WHERE module_code ILIKE 'ADMIN';
 INSERT INTO gn_permissions.cor_object_module
     (id_object, id_module)
 SELECT 3, id_module
+FROM gn_commons.t_modules
+WHERE module_code ILIKE 'ADMIN';
+
+INSERT INTO gn_permissions.cor_object_module
+    (id_object, id_module)
+SELECT 4, id_module
 FROM gn_commons.t_modules
 WHERE module_code ILIKE 'ADMIN';
 
@@ -927,7 +829,7 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object (id_role, id_act
 -- Prévention des doublons
 DELETE 
 FROM utilisateurs.cor_role_app_profil cor WHERE id_application = (
-SELECT id_application FROM save.t_applications WHERE nom_application ilike 'geonature'
+SELECT id_application FROM utilisateurs.t_applications WHERE nom_application ilike 'geonature'
 );
 
 
@@ -945,7 +847,7 @@ $$;
 
 
 
--- ADMIN peut gérer les permissions du backoffice
+-- GROUPE ADMIN peut gérer les permissions du backoffice
 INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
 SELECT 9, 1, 4, id_module, id_object
 FROM gn_commons.t_modules, gn_permissions.t_objects
@@ -977,7 +879,7 @@ FROM gn_commons.t_modules, gn_permissions.t_objects
 WHERE module_code = 'ADMIN' AND code_object = 'PERMISSIONS';
 
 
--- ADMIN peut gérer les métadonnées du backoffice
+-- GROUPE ADMIN peut gérer les métadonnées du backoffice
 INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
 SELECT 9, 1, 4, id_module, id_object
 FROM gn_commons.t_modules, gn_permissions.t_objects
@@ -1008,6 +910,39 @@ SELECT 9, 6, 4, id_module, id_object
 FROM gn_commons.t_modules, gn_permissions.t_objects
 WHERE module_code = 'ADMIN' AND code_object = 'METADATA';
 
+
+-- GROUPE ADMIN peut gérer les nomenclatures
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 9, 1, 4, id_module, id_object
+FROM gn_commons.t_modules, gn_permissions.t_objects
+WHERE module_code = 'ADMIN' AND code_object = 'NOMENCLATURES';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 9, 2, 4, id_module, id_object
+FROM gn_commons.t_modules, gn_permissions.t_objects
+WHERE module_code = 'ADMIN' AND code_object = 'NOMENCLATURES';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 9, 3, 4, id_module, id_object
+FROM gn_commons.t_modules, gn_permissions.t_objects
+WHERE module_code = 'ADMIN' AND code_object = 'NOMENCLATURES';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 9, 4, 4, id_module, id_object
+FROM gn_commons.t_modules, gn_permissions.t_objects
+WHERE module_code = 'ADMIN' AND code_object = 'NOMENCLATURES';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 9, 5, 4, id_module, id_object
+FROM gn_commons.t_modules, gn_permissions.t_objects
+WHERE module_code = 'ADMIN' AND code_object = 'NOMENCLATURES';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 9, 6, 4, id_module, id_object
+FROM gn_commons.t_modules, gn_permissions.t_objects
+WHERE module_code = 'ADMIN' AND code_object = 'NOMENCLATURES';
+
+-- 
 
 -- suppression des modules GeoNature de la table t_applications
 DELETE
@@ -1029,3 +964,244 @@ CREATE TRIGGER tri_check_no_multiple_scope_perm
   FOR EACH ROW
   EXECUTE PROCEDURE gn_permissions.fct_tri_does_user_have_already_scope_filter();
 
+
+
+
+
+--- Ref nomenclatures
+
+CREATE OR REPLACE FUNCTION ref_nomenclatures.get_nomenclature_label(
+    myidnomenclature integer DEFAULT NULL::integer,
+    mylanguage character varying DEFAULT 'fr'::character varying)
+  RETURNS character varying AS
+$BODY$
+--Function which return the label from the id_nomenclature and the language
+DECLARE
+	labelfield character varying;
+	thelabel character varying;
+  BEGIN
+  labelfield = 'label_'||mylanguage;
+  EXECUTE format( ' SELECT  %s
+  FROM ref_nomenclatures.t_nomenclatures n
+  WHERE id_nomenclature = $1',labelfield)INTO thelabel USING myidnomenclature;
+return thelabel;
+  END;
+$BODY$
+  LANGUAGE plpgsql IMMUTABLE
+  COST 100;
+
+--suppression d'une fonction doublon (même signature que celle ci-dessus du fait de la valeur par défault transmise)
+DROP FUNCTION ref_nomenclatures.get_nomenclature_label(myidnomenclature integer) CASCADE;
+
+-- recréation des vue impaactées :
+
+CREATE OR REPLACE VIEW gn_synthese.v_synthese_decode_nomenclatures AS
+SELECT
+s.id_synthese,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_geo_object_nature) AS nat_obj_geo,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_grp_typ) AS grp_typ,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_obs_meth) AS obs_method,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_obs_technique) AS obs_technique,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_bio_status) AS bio_status,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_bio_condition) AS bio_condition,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_naturalness) AS naturalness,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_exist_proof) AS exist_proof ,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_valid_status) AS valid_status,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_diffusion_level) AS diffusion_level,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_life_stage) AS life_stage,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_sex) AS sex,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_obj_count) AS obj_count,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_type_count) AS type_count,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_sensitivity) AS sensitivity,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_observation_status) AS observation_status,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_blurring) AS blurring,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_source_status) AS source_status,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_info_geo_type) AS info_geo_type,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_determination_method) AS determination_method
+FROM gn_synthese.synthese s;
+
+
+
+CREATE VIEW gn_synthese.v_synthese_for_export AS
+   SELECT
+    s.id_synthese,
+    unique_id_sinp,
+    unique_id_sinp_grp,
+    s.id_source ,
+    entity_source_pk_value ,
+    count_min ,
+    count_max ,
+    nom_cite ,
+    meta_v_taxref ,
+    sample_number_proof ,
+    digital_proof ,
+    non_digital_proof ,
+    altitude_min ,
+    altitude_max ,
+    the_geom_4326,
+    the_geom_point,
+    the_geom_local,
+    st_astext(the_geom_4326) AS wkt,
+    date_min,
+    date_max,
+    validator ,
+    validation_comment ,
+    observers ,
+    id_digitiser,
+    determiner ,
+    comments ,
+    meta_validation_date,
+    s.meta_create_date,
+    s.meta_update_date,
+    last_action,
+    d.id_dataset,
+    d.dataset_name,
+    d.id_acquisition_framework,
+    deco.nat_obj_geo,
+    deco.grp_typ,
+    deco.obs_method,
+    deco.obs_technique,
+    deco.bio_status,
+    deco.bio_condition,
+    deco.naturalness,
+    deco.exist_proof,
+    deco.valid_status,
+    deco.diffusion_level,
+    deco.life_stage,
+    deco.sex,
+    deco.obj_count,
+    deco.type_count,
+    deco.sensitivity,
+    deco.observation_status,
+    deco.blurring,
+    deco.source_status,
+    sources.name_source,
+    sources.url_source,
+    t.cd_nom,
+    t.cd_ref,
+    t.nom_valide,
+    t.nom_vern
+  FROM gn_synthese.synthese s
+  JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
+  JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
+  JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source
+  JOIN gn_synthese.v_synthese_decode_nomenclatures deco ON deco.id_synthese = s.id_synthese
+  ;
+
+
+
+CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS 
+ SELECT ccc.unique_id_sinp_occtax AS "permId",
+    ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_observation_status) AS "statObs",
+    occ.nom_cite AS "nomCite",
+    rel.date_min::date AS "dateDebut",
+    rel.date_max::date AS "dateFin",
+    rel.hour_min AS "heureDebut",
+    rel.hour_max AS "heureFin",
+    rel.altitude_max AS "altMax",
+    rel.altitude_min AS "altMin",
+    occ.cd_nom AS "cdNom",
+    taxonomie.find_cdref(occ.cd_nom) AS "cdRef",
+    gn_commons.get_default_parameter('taxref_version'::text, NULL::integer) AS "versionTAXREF",
+    rel.date_min AS datedet,
+    'NSP'::text AS "dSPublique",
+    d.unique_dataset_id AS "jddMetadonneeDEEId",
+    ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_source_status) AS "statSource",
+    '0'::text AS "diffusionNiveauPrecision",
+    ccc.unique_id_sinp_occtax AS "idOrigine",
+    d.dataset_name AS "jddCode",
+    d.unique_dataset_id AS "jddId",
+    NULL::text AS "refBiblio",
+    ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_obs_meth) AS "obsMeth",
+    ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_bio_condition) AS "ocEtatBio",
+    COALESCE(ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_naturalness), '0'::text::character varying) AS "ocNat",
+    ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_sex) AS "ocSex",
+    ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_life_stage) AS "ocStade",
+    '0'::text AS "ocBiogeo",
+    COALESCE(ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_bio_status), '0'::text::character varying) AS "ocStatBio",
+    COALESCE(ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_exist_proof), '0'::text::character varying) AS "preuveOui",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_determination_method, 'fr'::character varying) AS "ocMethDet",
+    occ.digital_proof AS "preuvNum",
+    occ.non_digital_proof AS "preuvNoNum",
+    rel.comment AS "obsCtx",
+    occ.comment as "obsDescr",
+    rel.unique_id_sinp_grp AS "permIdGrp",
+    'Relevé'::text AS "methGrp",
+    'OBS'::text AS "typGrp",
+    ccc.count_max AS "denbrMax",
+    ccc.count_min AS "denbrMin",
+    ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_obj_count) AS "objDenbr",
+    ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_type_count) AS "typDenbr",
+    COALESCE(string_agg(DISTINCT (r.nom_role::text || ' '::text || r.prenom_role::text), ','::text), rel.observers_txt::text) AS "obsId",
+    COALESCE(string_agg(DISTINCT o.nom_organisme::text, ','::text), 'NSP'::text) AS "obsNomOrg",
+    COALESCE(occ.determiner, 'Inconnu'::character varying) AS "detId",
+    'NSP'::text AS "detNomOrg",
+    'NSP'::text AS "orgGestDat",
+    st_astext(rel.geom_4326) AS "WKT",
+    'In'::text AS "natObjGeo",
+    rel.date_min,
+    rel.date_max,
+    rel.id_dataset,
+    rel.id_releve_occtax,
+    occ.id_occurrence_occtax,
+    rel.id_digitiser,
+    rel.geom_4326
+   FROM pr_occtax.t_releves_occtax rel
+     LEFT JOIN pr_occtax.t_occurrences_occtax occ ON rel.id_releve_occtax = occ.id_releve_occtax
+     LEFT JOIN pr_occtax.cor_counting_occtax ccc ON ccc.id_occurrence_occtax = occ.id_occurrence_occtax
+     LEFT JOIN taxonomie.taxref tax ON tax.cd_nom = occ.cd_nom
+     LEFT JOIN gn_meta.t_datasets d ON d.id_dataset = rel.id_dataset
+     LEFT JOIN pr_occtax.cor_role_releves_occtax cr ON cr.id_releve_occtax = rel.id_releve_occtax
+     LEFT JOIN utilisateurs.t_roles r ON r.id_role = cr.id_role
+     LEFT JOIN utilisateurs.bib_organismes o ON o.id_organisme = r.id_organisme
+  GROUP BY 
+    ccc.unique_id_sinp_occtax
+    , d.unique_dataset_id
+    , occ.id_occurrence_occtax
+    , occ.id_nomenclature_bio_condition
+    , occ.id_nomenclature_naturalness
+    , ccc.id_nomenclature_sex
+    , ccc.id_nomenclature_life_stage
+    , occ.id_nomenclature_bio_status
+    , occ.id_nomenclature_exist_proof
+    , occ.id_nomenclature_determination_method
+    , rel.unique_id_sinp_grp
+    , d.id_nomenclature_source_status
+    , occ.id_nomenclature_blurring
+    , occ.id_nomenclature_diffusion_level
+    , occ.nom_cite
+    , rel.id_releve_occtax
+    , rel.date_min
+    , rel.date_max
+    , rel.hour_min
+    , rel.hour_max
+    , rel.altitude_max
+    , rel.altitude_min
+    , rel.id_digitiser
+    , occ.cd_nom
+    , occ.id_nomenclature_observation_status
+    , taxonomie.find_cdref(occ.cd_nom)
+    , gn_commons.get_default_parameter('taxref_version'::text, NULL::integer)
+    , rel.comment
+    , rel.id_dataset
+    , ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_source_status)
+    , ccc.id_counting_occtax
+    , d.dataset_name
+    , occ.determiner
+    , occ.comment
+    , ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_obs_meth)
+    , ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_bio_condition)
+    , ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_naturalness)
+    , ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_sex)
+    , ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_life_stage)
+    , ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_bio_status)
+    , ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_exist_proof)
+    , ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_determination_method)
+    , occ.digital_proof
+    , occ.non_digital_proof
+    , ccc.count_max
+    , ccc.count_min
+    , ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_obj_count)
+    , ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_type_count)
+    , rel.observers_txt
+    , rel.geom_4326;
