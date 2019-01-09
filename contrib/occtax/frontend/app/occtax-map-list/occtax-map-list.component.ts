@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, OnDestroy, ViewChild } from "@angular/core";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
 import { CommonService } from "@geonature_common/service/common.service";
@@ -12,6 +12,7 @@ import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { FILTERSLIST } from "./filters-list";
 import { AppConfig } from "@geonature_config/app.config";
 import { GlobalSubService } from "@geonature/services/global-sub.service";
+import { Subscription } from "rxjs/Subscription";
 
 @Component({
   selector: "pnx-occtax-map-list",
@@ -19,7 +20,7 @@ import { GlobalSubService } from "@geonature/services/global-sub.service";
   styleUrls: ["./occtax-map-list.component.scss"],
   providers: [MapListService]
 })
-export class OcctaxMapListComponent implements OnInit {
+export class OcctaxMapListComponent implements OnInit, OnDestroy {
   public userCruved = {};
   public displayColumns: Array<any>;
   public availableColumns: Array<any>;
@@ -31,6 +32,7 @@ export class OcctaxMapListComponent implements OnInit {
   public formsDefinition = FILTERSLIST;
   public dynamicFormGroup: FormGroup;
   public formsSelected = [];
+  public moduleSub: Subscription;
   // provisoire
   public tableMessages = {
     emptyMessage: "Aucune observation à afficher",
@@ -68,8 +70,9 @@ export class OcctaxMapListComponent implements OnInit {
     });
 
     // get user cruved
-    this.globalSub.currentModuleSub
-      .filter(mod => mod !== undefined)
+    this.moduleSub = this.globalSub.currentModuleSub
+      // filter undefined or null
+      .filter(mod => mod)
       .subscribe(mod => {
         this.userCruved = mod.cruved;
       });
@@ -232,5 +235,9 @@ export class OcctaxMapListComponent implements OnInit {
       i = i + 1;
     }
     return i === this.mapListService.displayColumns.length ? false : true;
+  }
+
+  ngOnDestroy() {
+    this.moduleSub.unsubscribe();
   }
 }
