@@ -52,11 +52,12 @@ CHANGELOG
 
 **Note de version**
 
-* MAJ BDD GN (update...)
-* MAJ BDD sous-modules ? Rien cote UH-auth. Nomenclatures https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.2.2to1.2.3.sql
-* Evolution pour les GN-modules et développeurs (optionnel) >> Utiliser instance DB de GN pour lancer scripts install (#498) et ne plus avoir d'id_application dans la conf du module + Utilisation du CRUVED
-* Conséquences de l'intégration du CRUVED. Sur les modules GN. Adaptations à indiquer ?
-* Version de TH et UH à mettre à jour obligatoirement ? Optionnel ? Avant ? et leur SQL de MAJ ?
+Si vous effectuez une migration de GeoNature RC4 vers cette nouvelle version, il est necessaire d'avoir installé Usershub v2 au préalable. Suivez donc cette documentation (LIEN) avant de procedeer à la monté de version de GeoNature.
+
+* Exécutez l'update de la BDD GeoNature (data/migrations/2.0.0rc3.1-to-2.0.0rc4.sql)
+* Evolution pour les GN-modules et développeurs (optionnel) >> Utiliser instance DB de GN pour lancer scripts install (#498) et ne plus avoir d'id_application dans la conf du module.
+* Pour les développeur de GN-Modules: la getion des permission a été revu et est désormais internalisé dans GeoNature (voir https://geonature.readthedocs.io/fr/develop/development.html#developpement-backend), il est donc necessaire d'utiliser les nouveaux décorateurs décrit dans la doc pour récupérer le CRUVED.
+
 
 2.0.0-rc.3.1 (2018-10-21)
 -------------------------
