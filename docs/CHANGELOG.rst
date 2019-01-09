@@ -48,15 +48,15 @@ CHANGELOG
 * Nouvel exemple d'import de données historiques vers GeoNature V2 : https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/2018-12-csv-vers-synthese-FLAVIA.sql (par @DonovanMaillard)
 * Complément de la documentation HTTPS et ajout d'une documentation Apache (par @DonovanMaillard, @RomainBaghi et @lpofredc)
 * Installation : utilisation d'un répertoire ``tmp`` local et non plus au niveau système pour limiter les problèmes de droits (#503)
+* Evolution du template exemple de GN-module pour utiliser l'instance DB et les nouveaux décorateurs de permissions (CRUVED)
 
 **Note de version**
 
 * MAJ BDD GN (update...)
-* MAJ BDD sous-modules
-* Evolution pour les sous-modules >> Utiliser instance DB de GN pour lancer scripts (#498) et ne plus avoir d'id_application dans la conf du module + Utilisation du CRUVED
-* Conséquences de l'intégration du CRUVED. Sur les modules GN
-* SQL MAJ BDD GN et https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.2.2to1.2.3.sql
-* Version de TH et UH à mettre à jour obligatoirement ? Avant ?
+* MAJ BDD sous-modules ? Rien cote UH-auth. Nomenclatures https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.2.2to1.2.3.sql
+* Evolution pour les GN-modules et développeurs (optionnel) >> Utiliser instance DB de GN pour lancer scripts install (#498) et ne plus avoir d'id_application dans la conf du module + Utilisation du CRUVED
+* Conséquences de l'intégration du CRUVED. Sur les modules GN. Adaptations à indiquer ?
+* Version de TH et UH à mettre à jour obligatoirement ? Optionnel ? Avant ? et leur SQL de MAJ ?
 
 2.0.0-rc.3.1 (2018-10-21)
 -------------------------
