@@ -546,6 +546,12 @@ CREATE INDEX i_synthese_the_geom_point ON synthese USING gist (the_geom_point);
 CREATE UNIQUE INDEX i_unique_cd_ref_vm_min_max_for_taxons ON gn_synthese.vm_min_max_for_taxons USING btree (cd_ref);
 --REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.vm_min_max_for_taxons;
 
+CREATE INDEX i_taxons_synthese_autocomplete_cd_nom
+  ON taxons_synthese_autocomplete (cd_nom ASC NULLS LAST);
+
+CREATE INDEX i_tri_taxons_synthese_autocomplete_search_name 
+  ON taxons_synthese_autocomplete USING GIST (search_name gist_trgm_ops);
+
 -------------
 --FUNCTIONS--
 -------------

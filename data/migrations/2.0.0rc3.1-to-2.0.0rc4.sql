@@ -995,3 +995,12 @@ CREATE TRIGGER tri_check_no_multiple_scope_perm
   FOR EACH ROW
   EXECUTE PROCEDURE gn_permissions.fct_tri_does_user_have_already_scope_filter();
 
+
+
+-- Mise en place du trigrammes
+
+CREATE INDEX i_taxons_synthese_autocomplete_cd_nom
+  ON gn_synthese.taxons_synthese_autocomplete (cd_nom ASC NULLS LAST);
+
+CREATE INDEX i_tri_taxons_synthese_autocomplete_search_name 
+  ON gn_synthese.taxons_synthese_autocomplete USING GIST (search_name gist_trgm_ops);
