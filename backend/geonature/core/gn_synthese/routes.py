@@ -287,14 +287,29 @@ def get_taxon_tree():
 @routes.route('/taxons_autocomplete', methods=['GET'])
 @json_resp
 def get_autocomplete_taxons_synthese():
+    """
+        Route utilisée pour les autocompletes de la synthese (basé
+        sur tous les taxon présent dans la synthese)
+        La requête SQL utilise l'algorithme 
+        des trigrames pour améliorer la pertinence des résultats
 
-    search_name = request.args.get('search_name')
-    q = DB.session.query(VMTaxonsSyntheseAutocomplete)
-    if search_name:
-        search_name = search_name.replace(' ', '%')
-        q = q.filter(
-            VMTaxonsSyntheseAutocomplete.search_name.ilike(search_name+"%")
-        )
+        params GET:
+            - search_name : nom recherché. Recherche basé sur la fonction
+                ilike de sql avec un remplacement des espaces par %
+            - regne : filtre sur le regne INPN
+            - group2_inpn : filtre sur le groupe 2 de l'INPN
+    """
+    search_name = request.args.get('search_name', '')
+    q = DB.session.query(
+        VMTaxonsSyntheseAutocomplete,
+        func.similarity(
+            VMTaxonsSyntheseAutocomplete.search_name, search_name
+        ).label('idx_trgm')
+    )
+    search_name = search_name.replace(' ', '%')
+    q = q.filter(
+        VMTaxonsSyntheseAutocomplete.search_name.ilike('%'+search_name+"%")
+    )
     regne = request.args.get('regne')
     if regne:
         q = q.filter(VMTaxonsSyntheseAutocomplete.regne == regne)
@@ -308,5 +323,5 @@ def get_autocomplete_taxons_synthese():
         VMTaxonsSyntheseAutocomplete.cd_ref
     ))
     limit = request.args.get('limit', 20)
-    data = q.limit(20).all()
-    return [d.as_dict() for d in data]
+    data = q.order_by(desc('idx_trgm')).limit(20).all()
+    return [d[0].as_dict() for d in data]

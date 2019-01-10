@@ -11,6 +11,7 @@ CHANGELOG
 * Mise en place d'un système de permissions plus fin par module et par objet (#517)
 * Mise en place d'un mécanimse générique pour la gestion des permissions via des filtres : filtre de type portée (SCOPE), taxonomique, géographique etc... (#517)
 * Ajout du composant Leaflet.FileLayer dans le module Synthèse pour pouvoir charger un GeoJSON, un GPS ou KML sur la carte comme géométrie de recherche (#256)
+* Ajout et utilisation de l'extension PostgreSQL ``pg_tgrm`` permettant d'améliorer l'API d'autocomplétion de taxon dans la synthese, en utilisant l'algortihme des trigrammes
 
 **Corrections**
 
@@ -52,7 +53,11 @@ CHANGELOG
 
 **Note de version**
 
-Si vous effectuez une migration de GeoNature RC4 vers cette nouvelle version, il est necessaire d'avoir installé Usershub v2 au préalable. Suivez donc cette documentation (LIEN) avant de procedeer à la monté de version de GeoNature.
+Si vous effectuez une migration de GeoNature RC4 vers cette nouvelle version, il est necessaire d'avoir installé Usershub v2 au préalable. Suivez donc cette documentation (https://github.com/PnEcrins/UsersHub/releases) avant de procedeer à la monté de version de GeoNature.
+* Executer la commande suivante pour ajouter l'extension ``pg_trgm``, en replaçant la variable ``$db_name`` par le nom de votre BDD 
+::
+
+	sudo -n -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
 
 * Exécutez l'update de la BDD GeoNature (data/migrations/2.0.0rc3.1-to-2.0.0rc4.sql)
 * Evolution pour les GN-modules et développeurs (optionnel) >> Utiliser instance DB de GN pour lancer scripts install (#498) et ne plus avoir d'id_application dans la conf du module.
