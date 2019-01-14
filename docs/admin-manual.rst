@@ -542,22 +542,21 @@ Restauration
 Customisation
 -------------
 
-La customisation de l'application necessite de relancer la compilation du frontend à chaque modification. Cette opération étant relativement longue, une solution alternative (mais avancé) consiste à passer le frontend de manière temporaire en mode 'developement'.
+La customisation de l'application nécessite de relancer la compilation du frontend à chaque modification. Cette opération étant relativement longue, une solution alternative (mais avancée) consiste à passer le frontend de manière temporaire en mode 'developpement'.
 
-Pour cela executer la commande suivante depuis le répertoire ``frontend``
+Pour cela exécuter la commande suivante depuis le répertoire ``frontend``
 
 ::
 
     npm run start -- --host=0.0.0.0 --disable-host-check
 
-L'application est désormais disponible sur une serveur de développement à la même addresse que précedemment, mais sur le port 4200. http://test.geonature.fr/geonature:4200
+L'application est désormais disponible sur une serveur de développement à la même addresse que précedemment, mais sur le port 4200 : http://test.geonature.fr/geonature:4200
 
-Modifier la variable ``URL_APPLICATION`` dans le fichier ``geonature_config.toml`` en mettant l'adresse ci dessus et relancer l'application ( ``sudo supervisorctl restart geonature2``)
+Modifier la variable ``URL_APPLICATION`` dans le fichier ``geonature_config.toml`` en mettant l'adresse ci-dessus et relancer l'application (``sudo supervisorctl restart geonature2``)
 
+A chaque modification d'un fichier du frontend, une compilation rapide est relancée et votre navigateur se rafraichit automatiquement en intégrant les dernières modifications.
 
-A chaque modification d'un fichier du frontend, une compilation rapide est relancé et votre navigateur se raffrachi automatiquement en intégrant les dernières modification.
-
-Une fois les modifications terminées. Rééditer le fichier ``geonature_config.toml`` pour remettre l'URL précedente, relancez l'application ( ``sudo supervisorctl restart geonature2``), puis relancez la compliation du frontend (``npm run start``).
+Une fois les modifications terminées, rémodifier le fichier ``geonature_config.toml`` pour remettre l'URL initiale, relancez l'application (``sudo supervisorctl restart geonature2``), puis relancez la compliation du frontend (``npm run start``).
 
 Si la manipulation vous parait compliquée, vous pouvez suivre la documentation qui suit, qui fait relancer la compilation du frontend à chaque modification.
 
