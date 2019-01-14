@@ -5,8 +5,9 @@
   <body>
       {% include "nav-bar.html" %}    
     <div class="container">
-
-      <h3> Ajouter un filtre de type {{filter_type.label_filter_type}} </h3>
+        <h5>  {{'Editer' if id_filter else 'Ajouter'}} un filtre  </h5>
+      <h3>{{filter_type.label_filter_type}} </h3>
+      
       <form action="", method="POST">
         
           {{ form.csrf_token }} {{ form.hidden_tag() }}

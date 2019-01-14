@@ -80,7 +80,7 @@ class FilterForm(FlaskForm):
         validators=[DataRequired()]
     )
     description_filter = StringField(
-        'Descrition',
+        'Description',
         validators=[DataRequired()],
         widget=TextArea()
     )
