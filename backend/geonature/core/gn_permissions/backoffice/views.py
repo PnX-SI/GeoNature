@@ -2,6 +2,7 @@ from flask import request, render_template, Blueprint, flash, current_app, redir
 
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.sql import func
+from sqlalchemy import or_
 
 
 from geonature.utils.env import DB 
@@ -12,12 +13,12 @@ from geonature.core.gn_permissions.models import(
     CorRoleActionFilterModuleObject, TObjects, CorObjectModule, VUsersPermissions
 )
 from geonature.core.users.models import BibOrganismes
-from geonature.core.users.models import CorRole
+from geonature.core.users.models import CorRole, CorRoleAppProfil
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions import decorators as permissions
 
 
-from pypnusershub.db.models import User, AppUser
+from pypnusershub.db.models import User, AppRole
 
 routes = Blueprint('gn_permissions_backoffice', __name__, template_folder='templates')
 
@@ -135,23 +136,19 @@ def users(info_role):
     Link to edit cruved and other permissions
     Only display user which have profil in GeoNature and active user
     '''
+
     q = DB.session.query(
-        User,
+        AppRole,
         func.count(CorRoleActionFilterModuleObject.id_role)
     ).outerjoin(
-        CorRoleActionFilterModuleObject, CorRoleActionFilterModuleObject.id_role == User.id_role
-    ).join(
-        AppUser,
-        AppUser.id_role == User.id_role
+        CorRoleActionFilterModuleObject, CorRoleActionFilterModuleObject.id_role == AppRole.id_role
     ).filter(
-        AppUser.id_application == current_app.config['ID_APPLICATION_GEONATURE']
-    ).filter(
-        User.active == True
+        AppRole.id_application == current_app.config['ID_APPLICATION_GEONATURE']
     ).group_by(
-        User
+        AppRole
     ).order_by(
-        User.groupe.desc(),
-        User.nom_role.asc()
+        AppRole.groupe.desc(),
+        AppRole.nom_role.asc()
     )
     # filter with cruved auth
     if info_role.value_filter == '2':
@@ -169,6 +166,7 @@ def users(info_role):
         user_dict['nb_cruved'] = user[1]
         users.append(user_dict)
     return render_template('users.html',users=users, config=current_app.config)
+    return 'la'
 
 
 @routes.route('/user_cruved/<id_role>', methods=["GET"])
