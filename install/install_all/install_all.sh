@@ -317,8 +317,6 @@ if [ "$install_usershub_app" = true ]; then
 fi
 
 sudo apache2ctl restart
-cd ~
-echo "Cleaning files..."
-    rm *.zip
 
-echo "L'installation est OK!"
+
+echo "L'installation est terminée!"
