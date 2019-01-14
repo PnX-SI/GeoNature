@@ -13,7 +13,7 @@ from geonature.core.gn_permissions.models import(
     CorRoleActionFilterModuleObject, TObjects, CorObjectModule, VUsersPermissions
 )
 from geonature.core.users.models import BibOrganismes
-from geonature.core.users.models import CorRole, CorRoleAppProfil
+from geonature.core.users.models import CorRole
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions import decorators as permissions
 
@@ -346,7 +346,8 @@ def filter_form(id_filter_type, id_filter=None):
     return render_template(
         'filter_form.html',
         form=form,
-        filter_type=filter_type
+        filter_type=filter_type,
+        id_filter=id_filter
     )
 
 
