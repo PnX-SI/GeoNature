@@ -71,7 +71,6 @@ class UserRigth():
         module_code=None,
         nom_role=None,
         prenom_role=None
-
     ):
         self.id_role = id_role
         self.id_organisme = id_organisme

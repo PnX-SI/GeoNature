@@ -17,7 +17,7 @@ from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions import decorators as permissions
 
 
-from pypnusershub.db.models import User
+from pypnusershub.db.models import User, AppUser
 
 routes = Blueprint('gn_permissions_backoffice', __name__, template_folder='templates')
 
@@ -130,11 +130,23 @@ def permission_form(info_role, id_module, id_role, id_object=None):
     redirect_on_invalid_token=current_app.config['URL_APPLICATION']+'/#/login'
 )
 def users(info_role):
+    '''
+    Render a list with all users with their number of cruved
+    Link to edit cruved and other permissions
+    Only display user which have profil in GeoNature and active user
+    '''
     q = DB.session.query(
         User,
         func.count(CorRoleActionFilterModuleObject.id_role)
     ).outerjoin(
         CorRoleActionFilterModuleObject, CorRoleActionFilterModuleObject.id_role == User.id_role
+    ).join(
+        AppUser,
+        AppUser.id_role == User.id_role
+    ).filter(
+        AppUser.id_application == current_app.config['ID_APPLICATION_GEONATURE']
+    ).filter(
+        User.active == True
     ).group_by(
         User
     ).order_by(
