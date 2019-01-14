@@ -7,11 +7,15 @@ CHANGELOG
 
 **Nouveautés**
 
-* Intégration de la gestion du CRUVED dans la BDD de GeoNature, géré via la création d'un backoffice dédié (#517)
+* Intégration de la gestion des permissions (CRUVED) dans la BDD de GeoNature, géré via une interface d'administration dédié (#517)
 * Mise en place d'un système de permissions plus fin par module et par objet (#517)
 * Mise en place d'un mécanimse générique pour la gestion des permissions via des filtres : filtre de type portée (SCOPE), taxonomique, géographique etc... (#517)
+* Compatibilité avec UsersHub version 2
+* L'administration des permissions ne propose que les rôles qui sont actif et qui ont un profil dans GeoNature
 * Ajout du composant Leaflet.FileLayer dans le module Synthèse pour pouvoir charger un GeoJSON, un GPS ou KML sur la carte comme géométrie de recherche (#256)
-* Ajout et utilisation de l'extension PostgreSQL ``pg_tgrm`` permettant d'améliorer l'API d'autocomplétion de taxon dans la synthese, en utilisant l'algortihme des trigrammes
+* Ajout et utilisation de l'extension PostgreSQL ``pg_tgrm`` permettant d'améliorer l'API d'autocomplétion de taxon dans la synthèse, en utilisant l'algortihme des trigrammes (http://si.ecrins-parcnational.com/blog/2019-01-fuzzy-search-taxons.html)
+* Nouvel exemple d'import de données historiques vers GeoNature V2 : https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/2018-12-csv-vers-synthese-FLAVIA.sql (par @DonovanMaillard)
+* Complément de la documentation HTTPS et ajout d'une documentation Apache (par @DonovanMaillard, @RomainBaghi et @lpofredc)
 
 **Corrections**
 
@@ -30,7 +34,6 @@ CHANGELOG
 * Correction du spinner qui tournait en boucle lors de l'export CSV de la Synthèse (#451)
 * Correction des tests automatisés
 * Amélioration des performances des intersections avec les zonages de ``ref_geo.l_areas``
-* Diverses autres corrections et améliorations mineures
 * Complément de la documentation de développement
 * Simplification de la configuration des gn_modules
 * Occtax : ordonnancement des observation par date (#467)
@@ -45,23 +48,20 @@ CHANGELOG
 * Composant Areas et Municipalities : remise à zéro de la liste déroulante quand on efface la recherche ou remet à jour les filtres
 * Composant Taxonomy : la recherche autocompletée est lancée même si on tape plus de 20 caractères. Le nombre de résultat renvoyé est désormais paramétrable (#518)
 * Limitation du nombre de connexions à la BDD en partageant l'instance ``DB`` avec les sous-modules
-* Installation : on n'utilise plus le répertoire ``/tmp`` du système pour des questions de droits (#503)
-* Nouvel exemple d'import de données historiques vers GeoNature V2 : https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/2018-12-csv-vers-synthese-FLAVIA.sql (par @DonovanMaillard)
-* Complément de la documentation HTTPS et ajout d'une documentation Apache (par @DonovanMaillard, @RomainBaghi et @lpofredc)
 * Installation : utilisation d'un répertoire ``tmp`` local et non plus au niveau système pour limiter les problèmes de droits (#503)
-* Evolution du template exemple de GN-module pour utiliser l'instance DB et les nouveaux décorateurs de permissions (CRUVED)
+* Evolution du template d'exemple de module GeoNature (https://github.com/PnX-SI/GeoNature/tree/master/contrib/module_example) pour utiliser l'instance DB et utiliser les nouveaux décorateurs de permissions (CRUVED)
 
 **Note de version**
 
-Si vous effectuez une migration de GeoNature RC4 vers cette nouvelle version, il est necessaire d'avoir installé Usershub v2 au préalable. Suivez donc cette documentation (https://github.com/PnEcrins/UsersHub/releases) avant de procedeer à la monté de version de GeoNature.
-* Executer la commande suivante pour ajouter l'extension ``pg_trgm``, en replaçant la variable ``$db_name`` par le nom de votre BDD 
-::
+* Si vous effectuez une migration de GeoNature RC3 vers cette nouvelle version, il est nécessaire d'avoir installé UsersHub v2 au préalable. Suivez donc cette documentation (https://github.com/PnEcrins/UsersHub/releases) avant de procéder à la montée de version de UsersHub.
+* Exécuter la commande suivante pour ajouter l'extension ``pg_trgm``, en remplaçant la variable ``$db_name`` par le nom de votre BDD : ``sudo -n -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"``
+* Exécutez la mise à jour de la BDD GeoNature (``data/migrations/2.0.0rc3.1-to-2.0.0rc4.sql``)
 
-	sudo -n -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
+**Note développeurs**
 
-* Exécutez l'update de la BDD GeoNature (data/migrations/2.0.0rc3.1-to-2.0.0rc4.sql)
-* Evolution pour les GN-modules et développeurs (optionnel) >> Utiliser instance DB de GN pour lancer scripts install (#498) et ne plus avoir d'id_application dans la conf du module.
-* Pour les développeur de GN-Modules: la getion des permission a été revu et est désormais internalisé dans GeoNature (voir https://geonature.readthedocs.io/fr/develop/development.html#developpement-backend), il est donc necessaire d'utiliser les nouveaux décorateurs décrit dans la doc pour récupérer le CRUVED.
+* Vous pouvez faire évoluer les modules GeoNature en utilisant l'instance ``DB`` de GeoNature pour lancer les scripts d'installation (#498)
+* Il n'est plus nécéssaire de définir un ``id_application`` dans la configuration des modules GeoNature.
+* La gestion des permissions a été revue et est désormais internalisée dans GeoNature (voir https://geonature.readthedocs.io/fr/develop/development.html#developpement-backend), il est donc necessaire d'utiliser les nouveaux décorateurs décrit dans la doc pour récupérer le CRUVED.
 
 
 2.0.0-rc.3.1 (2018-10-21)
