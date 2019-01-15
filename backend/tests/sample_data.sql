@@ -61,7 +61,9 @@ INSERT INTO utilisateurs.t_roles(id_role, groupe, nom_role) VALUES
 INSERT INTO utilisateurs.cor_role_app_profil VALUES
   (1,3,6),
   (2,3,6),
-  (3,3,6)
+  (3,3,6),
+  (7,3,6),
+  (9,3,6)
 ;
 -- Ajout d'un utilisateurs partenaire avec comme cruved R=1
 
