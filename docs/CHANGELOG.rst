@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-2.0.0-rc.4 (unreleased)
+2.0.0-rc.4 (2019-01-15)
 -----------------------
 
 **Nouveautés**
@@ -57,6 +57,7 @@ CHANGELOG
 * Exécuter la commande suivante pour ajouter l'extension ``pg_trgm``, en remplaçant la variable ``$db_name`` par le nom de votre BDD : ``sudo -n -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"``
 * Mettez à jour TaxHub en version 1.6.0 pour bénéficier de l'amélioration de la recherche taxonomique dans tous les modules
 * Exécutez la mise à jour de la BDD GeoNature (``data/migrations/2.0.0rc3.1-to-2.0.0rc4.sql``)
+* Suivez ensuite la procédure classique de mise à jour de GeoNature (https://geonature.readthedocs.io/fr/latest/installation-standalone.html#mise-a-jour-de-l-application)
 
 **Note développeurs**
 
