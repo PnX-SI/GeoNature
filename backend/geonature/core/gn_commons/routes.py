@@ -25,7 +25,7 @@ def get_modules(info_role):
     params = dict(request.args)
     q = DB.session.query(TModules)
     if 'exclude' in params: 
-        q = q.filter(TModules.module_code.notin_([params['exclude']]))
+        q = q.filter(TModules.module_code.notin_((params['exclude'])))
     modules = q.all()
     allowed_modules = []
     for mod in modules:
