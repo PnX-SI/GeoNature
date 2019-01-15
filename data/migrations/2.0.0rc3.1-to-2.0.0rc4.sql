@@ -530,14 +530,6 @@ $BODY$
   COST 100;
 
 
-DROP FUNCTION utilisateurs.can_user_do_in_module(integer, integer, integer, integer);
-DROP FUNCTION utilisateurs.can_user_do_in_module(integer, integer, character varying, integer);
-DROP FUNCTION utilisateurs.user_max_accessible_data_level_in_module(integer, integer, integer);
-DROP FUNCTION utilisateurs.user_max_accessible_data_level_in_module(integer, character varying, integer);
-DROP FUNCTION utilisateurs.find_all_modules_childs(integer);
-
-
-
 ---------
 --TABLE--
 ---------
