@@ -278,7 +278,7 @@ sudo a2ensite taxhub
 sudo a2enmod proxy
 sudo a2enmod proxy_http
 
-# Installation og TaxHub
+# Installation of TaxHub
 ./install_app.sh
 
 # Installation and configuration of UsersHub application (if activated)
