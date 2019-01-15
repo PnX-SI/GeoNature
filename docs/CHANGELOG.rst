@@ -13,7 +13,7 @@ CHANGELOG
 * Compatibilité avec UsersHub version 2
 * L'administration des permissions ne propose que les rôles qui sont actif et qui ont un profil dans GeoNature
 * Ajout du composant Leaflet.FileLayer dans le module Synthèse pour pouvoir charger un GeoJSON, un GPS ou KML sur la carte comme géométrie de recherche (#256)
-* Ajout et utilisation de l'extension PostgreSQL ``pg_tgrm`` permettant d'améliorer l'API d'autocomplétion de taxon dans la synthèse, en utilisant l'algortihme des trigrammes (http://si.ecrins-parcnational.com/blog/2019-01-fuzzy-search-taxons.html)
+* Ajout et utilisation de l'extension PostgreSQL ``pg_tgrm`` permettant d'améliorer l'API d'autocomplétion de taxon dans la synthèse, en utilisant l'algorithme des trigrammes (http://si.ecrins-parcnational.com/blog/2019-01-fuzzy-search-taxons.html), fonctionnel aussi dans les autres modules si vous mettez à jour TaxHub en version 1.6.0.
 * Nouvel exemple d'import de données historiques vers GeoNature V2 : https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/2018-12-csv-vers-synthese-FLAVIA.sql (par @DonovanMaillard)
 * Complément de la documentation HTTPS et ajout d'une documentation Apache (par @DonovanMaillard, @RomainBaghi et @lpofredc)
 
@@ -55,6 +55,7 @@ CHANGELOG
 
 * Si vous effectuez une migration de GeoNature RC3 vers cette nouvelle version, il est nécessaire d'avoir installé UsersHub v2 au préalable. Suivez donc cette documentation (https://github.com/PnEcrins/UsersHub/releases) avant de procéder à la montée de version de UsersHub.
 * Exécuter la commande suivante pour ajouter l'extension ``pg_trgm``, en remplaçant la variable ``$db_name`` par le nom de votre BDD : ``sudo -n -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"``
+* Mettez à jour TaxHub en version 1.6.0 pour bénéficier de l'amélioration de la recherche taxonomique dans tous les modules
 * Exécutez la mise à jour de la BDD GeoNature (``data/migrations/2.0.0rc3.1-to-2.0.0rc4.sql``)
 
 **Note développeurs**
