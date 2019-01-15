@@ -847,6 +847,39 @@ $$;
 
 
 
+
+-- GROUPE ADMIN acceder à l'admin
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 9, 1, 4, id_module, 1
+FROM gn_commons.t_modules
+WHERE module_code = 'ADMIN';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 9, 2, 4, id_module, 1
+FROM gn_commons.t_modules
+WHERE module_code = 'ADMIN';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 9, 3, 4, id_module, 1
+FROM gn_commons.t_modules
+WHERE module_code = 'ADMIN';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 9, 4, 4, id_module, 1
+FROM gn_commons.t_modules
+WHERE module_code = 'ADMIN';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 9, 5, 4, id_module, 1
+FROM gn_commons.t_modules
+WHERE module_code = 'ADMIN';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
+SELECT 9, 6, 4, id_module, 1
+FROM gn_commons.t_modules
+WHERE module_code = 'ADMIN';
+
+
 -- GROUPE ADMIN peut gérer les permissions du backoffice
 INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module, id_object)
 SELECT 9, 1, 4, id_module, id_object
