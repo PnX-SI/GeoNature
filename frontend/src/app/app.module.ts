@@ -14,7 +14,6 @@ import { ChartModule } from 'angular2-chartjs';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ToastrModule } from 'ngx-toastr';
-import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 
 // Modules
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
@@ -54,7 +53,6 @@ export function HttpLoaderFactory(http: Http) {
     HttpClientModule,
     BrowserAnimationsModule,
     FlexLayoutModule,
-    NgIdleKeepaliveModule.forRoot(),
     routing,
     ChartModule,
     ToastrModule.forRoot(),
