@@ -9,6 +9,11 @@ CHANGELOG
 
 *
 
+**A voir**
+
+- V2 : Pour plus de détails sur les évolutions apportées, consultez les détails des versions RC (Release Candidate)
+- BDDv1toV2 : Script SQL de MAJ structure BDD global ou passer les RC ? + Script migration des données à adapter
+
 2.0.0-rc.4 (2019-01-15)
 -----------------------
 
