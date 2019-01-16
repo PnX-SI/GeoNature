@@ -5,7 +5,6 @@ import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { HttpClient } from '@angular/common/http';
 import { AppConfig } from '../../../conf/app.config';
 import { CookieService } from 'ng2-cookies';
-import { Idle, DEFAULT_INTERRUPTSOURCES } from '@ng-idle/core';
 
 export interface User {
   user_login: string;
@@ -28,7 +27,6 @@ export class AuthService {
     private router: Router,
     private _http: HttpClient,
     private _cookie: CookieService,
-    private _idle: Idle
   ) {}
 
   setCurrentUser(user) {
