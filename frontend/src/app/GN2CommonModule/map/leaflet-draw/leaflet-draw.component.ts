@@ -44,7 +44,9 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       }
 
       // remove eventual filelayer layers
-      this.mapservice.removeAllLayers(this.map, this.mapservice.fileLayerFeatureGroup);
+      if (this.mapservice.fileLayerFeatureGroup) {
+        this.mapservice.removeAllLayers(this.map, this.mapservice.fileLayerFeatureGroup);
+      }
       // remove the current draw
       if (this._currentDraw !== null) {
         this.mapservice.removeAllLayers(this.map, this.mapservice.leafletDrawFeatureGroup);
