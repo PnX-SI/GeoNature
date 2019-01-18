@@ -1,4 +1,4 @@
-Configuration Apache
+CONFIGURATION APACHE
 ====================
 
 La présente documentation décrit les configurations Apache des différentes applications, dans le cas où chaque application possède son propre sous-domaine, avec ou sans utilisation de la certification HTTPS. 

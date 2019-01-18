@@ -107,7 +107,7 @@ Insertion des données dans la Synthèse
 	dateobs::date,
 	observateurs,
 	remarques,
-	'I' AS last_action
+	'I' AS last_action -- code de la dernière action effectuée: Valeurs possibiles 'I': insert, 'U': update
    FROM gn_imports.obs_faune_2008_2010
    ORDER BY dateobs
   ;

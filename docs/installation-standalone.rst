@@ -210,7 +210,9 @@ La mise à jour de GeoNature consiste à télécharger sa nouvelle version dans 
     mv GeoNature-X.Y.Z /home/`whoami`/geonature/
     cd geonature
 
-* Suivez les éventuelles notes de version décrites ici : https://github.com/PnX-SI/GeoNature/releases. Sauf mentions contraires dans les notes de version, vous pouvez sauter des versions mais en suivant bien les différentes notes de versions et notamment les scripts de mise à jour de la base de données à exécuter successivement. 
+* Suivez les éventuelles notes de version décrites ici : https://github.com/PnX-SI/GeoNature/releases. Sauf mentions contraires dans les notes de version, vous pouvez sauter des versions mais en suivant bien les différentes notes de versions et notamment les scripts de mise à jour de la base de données à exécuter successivement.
+
+* Si vous devez aussi mettre à jour TaxHub et/ou UsersHub, suivez leurs notes de versions mais aussi leur documentation (https://usershub.readthedocs.io et https://taxhub.readthedocs.io).
 
 * Lancez le script de ``migration.sh`` à la racine du dossier ``geonature``:
 
