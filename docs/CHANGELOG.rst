@@ -2,7 +2,19 @@
 CHANGELOG
 =========
 
-2.0.0-rc.4 (unreleased)
+2.0.0-rc.5 (unreleased)
+-----------------------
+
+**Corrections**
+
+*
+
+**A voir**
+
+- V2 : Pour plus de détails sur les évolutions apportées, consultez les détails des versions RC (Release Candidate)
+- BDDv1toV2 : Script SQL de MAJ structure BDD global ou passer les RC ? + Script migration des données à adapter
+
+2.0.0-rc.4 (2019-01-15)
 -----------------------
 
 **Nouveautés**
@@ -53,10 +65,11 @@ CHANGELOG
 
 **Note de version**
 
-* Si vous effectuez une migration de GeoNature RC3 vers cette nouvelle version, il est nécessaire d'avoir installé UsersHub v2 au préalable. Suivez donc cette documentation (https://github.com/PnEcrins/UsersHub/releases) avant de procéder à la montée de version de UsersHub.
+* Si vous effectuez une migration de GeoNature RC3 vers cette nouvelle version, il est nécessaire d'avoir installé UsersHub version 2.x au préalable. Suivez donc sa documentation (https://github.com/PnEcrins/UsersHub/releases) avant de procéder à la montée de version de GeoNature.
 * Exécuter la commande suivante pour ajouter l'extension ``pg_trgm``, en remplaçant la variable ``$db_name`` par le nom de votre BDD : ``sudo -n -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"``
 * Mettez à jour TaxHub en version 1.6.0 pour bénéficier de l'amélioration de la recherche taxonomique dans tous les modules
 * Exécutez la mise à jour de la BDD GeoNature (``data/migrations/2.0.0rc3.1-to-2.0.0rc4.sql``)
+* Suivez ensuite la procédure classique de mise à jour de GeoNature (https://geonature.readthedocs.io/fr/latest/installation-standalone.html#mise-a-jour-de-l-application)
 
 **Note développeurs**
 

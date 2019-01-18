@@ -94,8 +94,9 @@ def get_max_perm(perm_list):
     user_with_highter_perm = perm_list[0]
     max_code = user_with_highter_perm.value_filter
     i = 1
-    while i > len(perm_list):
-        if perm_list[i].value_filter >= int(max_code):
+    while i < len(perm_list):
+        if int(perm_list[i].value_filter) >= int(max_code):
             max_code = perm_list[i].value_filter
             user_with_highter_perm = perm_list[i]
+        i = i + 1
     return user_with_highter_perm
