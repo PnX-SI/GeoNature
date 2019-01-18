@@ -260,16 +260,6 @@
       "resolved": "https://registry.npmjs.org/@ng-bootstrap/ng-bootstrap/-/ng-bootstrap-1.0.0-beta.3.tgz",
       "integrity": "sha1-wf3Y1yf1SDC21HDA2fn8MtRUlPk="
     },
-    "@ng-idle/core": {
-      "version": "2.0.0-beta.12",
-      "resolved": "https://registry.npmjs.org/@ng-idle/core/-/core-2.0.0-beta.12.tgz",
-      "integrity": "sha1-aTEI/TnBbaxtRvXya9HOhLEAgJ4="
-    },
-    "@ng-idle/keepalive": {
-      "version": "2.0.0-beta.12",
-      "resolved": "https://registry.npmjs.org/@ng-idle/keepalive/-/keepalive-2.0.0-beta.12.tgz",
-      "integrity": "sha1-hUi5umaEIJQzFABj5ujnUQM/UiI="
-    },
     "@ngtools/json-schema": {
       "version": "1.1.0",
       "resolved": "https://registry.npmjs.org/@ngtools/json-schema/-/json-schema-1.1.0.tgz",
