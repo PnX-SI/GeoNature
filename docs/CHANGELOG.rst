@@ -10,6 +10,7 @@ CHANGELOG
 - V2 : Pour plus de détails sur les évolutions apportées, consultez les détails des versions RC (Release Candidate)
 - BDDv1toV2 : Script SQL de MAJ structure BDD global ou passer les RC ? + Script migration des données à adapter
 
+
 2.0.0-rc.4.1 (2019-01-21)
 -------------------------
 
@@ -23,6 +24,8 @@ CHANGELOG
 **Note de version**
 
 * Sortie de versions correctives de UsersHub (2.0.2 - https://github.com/PnEcrins/UsersHub/releases) et TaxHub (1.6.1 - https://github.com/PnX-SI/TaxHub/releases) à appliquer aussi
+* Vous pouvez vous référer à la documentation globale de mise à jour de GeoNature RC3 vers RC4 par @DonovanMaillard (https://github.com/PnX-SI/GeoNature/blob/master/docs/update-all-RC3-to-RC4.rst)
+
 
 2.0.0-rc.4 (2019-01-15)
 -----------------------
