@@ -375,6 +375,7 @@ def create_module_config(app, module_code, mod_path=None, build=True):
         # set id_module and module_code
         config_module['ID_MODULE'] = module_object.id_module
         config_module['MODULE_CODE'] = module_object.module_code
+        config_module['URL_MODULE'] = module_object.module_path
 
         frontend_config_path = os.path.join(mod_path, 'frontend/app/module.config.ts')  # noqa
         try:
