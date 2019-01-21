@@ -106,6 +106,11 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     }
   }
 
+  dateComparator(a: Date, b: Date) {
+    if (a < b) return -1;
+    if (a > b) return 1;
+  }
+
   backToModule(url_source, id_pk_source) {
     const link = document.createElement('a');
     link.target = '_blank';
