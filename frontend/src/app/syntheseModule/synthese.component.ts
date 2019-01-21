@@ -64,23 +64,15 @@ export class SyntheseComponent implements OnInit {
     // }
   }
 
-  formatDate(unformatedDate) {
-    const date = new Date(unformatedDate);
-    //return date.toLocaleDateString('en-EN');
-    console.log(date);
-    //return `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
-    return date;
-  }
-
   customColumns(feature) {
     // function pass to the LoadTableData maplist service function to format date
     // on the table
     // must return a feature
     if (feature.properties.date_min) {
-      feature.properties.date_min = this.formatDate(feature.properties.date_min);
+      feature.properties.date_min = new Date(feature.properties.date_min);
     }
     if (feature.properties.date_max) {
-      feature.properties.date_max = this.formatDate(feature.properties.date_max);
+      feature.properties.date_max = new Date(feature.properties.date_max);
     }
     return feature;
   }

@@ -107,10 +107,8 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   }
 
   dateComparator(a: Date, b: Date) {
-    if (a instanceof Date && b instanceof Date) {
-      if (a < b) return -1;
-      if (a > b) return 1;
-    }
+    if (a < b) return -1;
+    if (a > b) return 1;
   }
 
   backToModule(url_source, id_pk_source) {
