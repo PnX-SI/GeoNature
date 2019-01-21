@@ -44,11 +44,9 @@ export class ModalDownloadComponent implements OnInit {
   ) {
     this.downloadProgress$ = <BehaviorSubject<number>>new BehaviorSubject(0.0);
     this.downloadProgress$.subscribe(state => {
-      console.log('mon state', state);
       if (state === 100) {
         this.done();
         this.endLoad = true;
-        console.log('print ', this.message);
       }
     });
   }

@@ -39,7 +39,6 @@ export class OcctaxFormComponent implements OnInit {
 
     // remove disabled form on geom selected
     this.fs.releveForm.controls.geometry.valueChanges.subscribe(data => {
-      console.log("chaaaaaaaanges");
       this.fs.disabled = false;
     });
   } // end ngOnInit
