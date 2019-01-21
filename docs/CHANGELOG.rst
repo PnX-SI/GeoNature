@@ -20,6 +20,10 @@ CHANGELOG
 * Utilisation du paramètre ``ID_APP`` au niveau de l'application
 * Corrections mineures diverses
 
+**Note de version**
+
+* Sortie de versions correctives de UsersHub (2.0.2 - https://github.com/PnEcrins/UsersHub/releases) et TaxHub (1.6.1 - https://github.com/PnX-SI/TaxHub/releases) à appliquer aussi
+
 2.0.0-rc.4 (2019-01-15)
 -----------------------
 
