@@ -44,8 +44,10 @@ def get_app(config, _app=None, with_external_mods=True):
     # Bind app to DB
     DB.init_app(app)
     
-    # Bind DB to app config
+    # pass parameters to the usershub authenfication sub-module, DONT CHANGE THIS
     app.config['DB'] = DB
+    # pass the ID_APP to the submodule to avoid token conflict between app on the same server
+    app.config['ID_APP'] = app.config['ID_APPLICATION_GEONATURE']
 
     with app.app_context():
         from geonature.utils.logs import mail_handler
