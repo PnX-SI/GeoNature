@@ -131,7 +131,6 @@ export class AfFormComponent implements OnInit {
       }
 
       af['cor_af_actor'] = update_cor_af_actor;
-      console.log(af);
       this._api.post<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework`, af).subscribe(
         data => {
           this._router.navigate(['/admin/afs']);

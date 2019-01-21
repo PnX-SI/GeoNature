@@ -39,7 +39,6 @@ export class DataService {
         queryUrl = queryUrl.set(key, params[key]);
       }
     }
-    console.log(queryUrl.toString());
     return queryUrl;
   }
   getSyntheseData(params) {
