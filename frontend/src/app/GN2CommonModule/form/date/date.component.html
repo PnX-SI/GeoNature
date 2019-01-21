@@ -1,7 +1,7 @@
 <small> {{label}} </small>
 <div class="input-group">
   <input class="form-control form-control-sm" ngbDatepicker #d1="ngbDatepicker" [formControl]="parentFormControl"
-    [disableControl]="disabled" [maxDate]="today" (click)="d1.toggle(); openDatepicker(d1)">
+    [disableControl]="disabled" [maxDate]="today" [minDate]="{year: 1735, month: 1, day: 1}" (click)="d1.toggle(); openDatepicker(d1)">
   <div class="input-group-append">
     <button class="btn btn-sm btn-outline-shadow" (click)="d1.toggle(); openDatepicker(d1)" type="button">
       <i class="fa fa-calendar" aria-hidden="true"></i>
