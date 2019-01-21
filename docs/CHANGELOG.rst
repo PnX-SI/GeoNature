@@ -2,17 +2,23 @@
 CHANGELOG
 =========
 
-2.0.0-rc.5 (unreleased)
------------------------
-
-**Corrections**
-
-*
+2.0.0 (unreleased)
+------------------
 
 **A voir**
 
 - V2 : Pour plus de détails sur les évolutions apportées, consultez les détails des versions RC (Release Candidate)
 - BDDv1toV2 : Script SQL de MAJ structure BDD global ou passer les RC ? + Script migration des données à adapter
+
+2.0.0-rc.4.1 (2019-01-21)
+-------------------------
+
+**Corrections**
+
+* Mise à jour des paquets du frontend (#538)
+* Correction d'un conflit entre Marker et Leaflet-draw
+* Utilisation du paramètre ``ID_APP`` au niveau de l'application
+* Corrections mineures diverses
 
 2.0.0-rc.4 (2019-01-15)
 -----------------------
