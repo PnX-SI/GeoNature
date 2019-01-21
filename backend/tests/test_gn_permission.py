@@ -22,6 +22,7 @@ from geonature.core.gn_permissions.tools import(
     get_user_permissions, user_from_token, get_user_from_token_and_raise,
     cruved_scope_for_user_in_module
 ) 
+from geonature.core.gn_permissions.decorators import get_max_perm
 from geonature.core.gn_permissions.models import VUsersPermissions
 
 @pytest.mark.usefixtures('client_class')
@@ -64,32 +65,41 @@ class TestGnPermissionsTools():
             Test get_user_permissions
         """
         user_ok = {'id_role': 1, 'nom_role': 'Administrateur'}
-        perm = get_user_permissions(
+        perms = get_user_permissions(
             user_ok,
             code_action='C',
             code_filter_type='SCOPE'
         )
-        assert isinstance(perm, list)
-        assert perm[0].value_filter == '3'
+        assert isinstance(perms, list)
+        assert get_max_perm(perms).value_filter == '3'
 
         fake_user = {'id_role': 220, 'nom_role': 'Administrateur'}
 
         with pytest.raises(InsufficientRightsError):
-            perm = get_user_permissions(
+            perms = get_user_permissions(
                 fake_user,
                 code_action='C',
                 code_filter_type='SCOPE'
             )
-    
+        # with module code 
+        perms = get_user_permissions(
+            user_ok,
+            code_action='C',
+            code_filter_type='SCOPE',
+            module_code='ADMIN'
+        )
+        max_perm = get_max_perm(perms)
+        assert max_perm.value_filter == '3'
+
         # with code_object
-        perm = get_user_permissions(
+        perms = get_user_permissions(
             user_ok,
             code_action='C',
             code_filter_type='SCOPE',
             code_object='PERMISSIONS'
         )
-        assert isinstance(perm, list)
-        assert perm[0].value_filter == '3'
+        assert isinstance(perms, list)
+        assert get_max_perm(perms).value_filter == '3'
 
     def test_cruved_scope_for_user_in_module(self):
         # get cruved for geonature
