@@ -66,7 +66,10 @@ export class SyntheseComponent implements OnInit {
 
   formatDate(unformatedDate) {
     const date = new Date(unformatedDate);
-    return date.toLocaleDateString('fr-FR');
+    //return date.toLocaleDateString('en-EN');
+    console.log(date);
+    //return `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
+    return date;
   }
 
   customColumns(feature) {
