@@ -2,7 +2,7 @@
 MAJ Globale RC3->RC4
 ====================
 
-Janvier 2019 - Par @donovanmaillard. Indicatif, se référer aux documentations officielles et notes de version.
+Janvier 2019 - Par @DonovanMaillard. Indicatif, se référer aux documentations officielles et notes de version.
 
 **************************
 Installation de UsersHub 2
