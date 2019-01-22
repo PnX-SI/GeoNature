@@ -164,9 +164,9 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
         for mod in modules:
             enabled_modules_name.append(mod.module_code)
             module_info[mod.module_code] = {
-                'id_module': mod.id_module,
-                'id_application':mod.id_module,
-                'api_url': '/'+ mod.module_path.replace(" ", "")
+                'ID_MODULE': mod.id_module,
+                'MODULE_URL': '/'+ mod.module_path.replace(" ", ""),
+                'MODULE_CODE': mod.module_code
             }
     # iter over external_modules dir
     #   and import only modules which are enabled
