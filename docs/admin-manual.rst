@@ -697,11 +697,14 @@ Nous présenterons ici la première solution qui est privilégiée pour disposer
 * Intégrer les données dans ces tables (avec les fonctions de ``gn_imports``, avec QGIS ou pgAdmin).
 * Pour alimenter la Synthèse à partir des tables sources, vous pouvez mettre en place des triggers (en s'inspirant de ceux de OccTax) ou bien faire une requête spécifique si les données sources ne sont plus amenées à évoluer.
 
-Pour des exemples plus précis, illustrées et commentées, vous pouvez consulter les 2 exemples d'import dans cette documentation.
+Pour des exemples plus précis, illustrées et commentées, vous pouvez consulter les 2 exemples d'import dans cette documentation (Import niveau et Import niveau 2).
 
 Vous pouvez aussi vous inspirer des exemples avancés de migration des données de GeoNature V1 vers GeoNature V2 : https://github.com/PnX-SI/GeoNature/tree/master/data/migrations/v1tov2
 
-Import depuis SICEN (ObsOcc) : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/sicen ou import continu : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/generic
+* Import depuis SICEN (ObsOcc) : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/sicen
+* Import depuis SERENA : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/serena
+* Import continu : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/generic
+* Import d'un CSV historique (Flavia) : https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/2018-12-csv-vers-synthese-FLAVIA.sql
 
 Module OCCTAX
 -------------
