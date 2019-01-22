@@ -15,7 +15,7 @@ CHANGELOG
 
 **Note de version**
 
-* Depuis la version 2.0.0-rc.4, on ne stocke plus les modules de GeoNature dans ``utilisateurs.t_applications``. On ne peut donc plus associer les sites de suivi de ``gn_monitoring`` à des applications. Le mécanisme est remplacé par une association des sites de suivi aux modules. La création de la nouvelle table est automatisée mais pas la migration des données existantes de ``gn_monitoring.cor_site_application`` vers ``gn_monitoring.cor_site_module``, à faire manuellement.
+* Depuis la version 2.0.0-rc.4, on ne stocke plus les modules de GeoNature dans ``utilisateurs.t_applications``. On ne peut donc plus associer les sites de suivi de ``gn_monitoring`` à des applications, utilisé par les modules de suivi (Flore, habitat, chiro). Le mécanisme est remplacé par une association des sites de suivi aux modules. La création de la nouvelle table est automatisée mais pas la migration des données existantes de ``gn_monitoring.cor_site_application`` vers ``gn_monitoring.cor_site_module``, à faire manuellement.
 
 **A voir**
 
