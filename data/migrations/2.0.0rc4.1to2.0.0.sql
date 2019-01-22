@@ -1,4 +1,4 @@
--- Depuis la version 2.0.0-rc.4, on ne stocke plus les modules de GeoNature dans utilisateurs.t_applications
+-- Depuis la version 2.0.0-rc.4, on ne stocke plus les modules de GeoNature dans utilisateurs.t_applications, utilisé par les modules de suivi (Flore, habitat, chiro)
 -- On ne peut donc plus associer les sites de suivi de gn_monitoring à des applications
 -- Le mécanisme est remplacé par une association des sites de suivi aux modules
 
