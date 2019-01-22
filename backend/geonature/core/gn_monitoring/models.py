@@ -36,8 +36,8 @@ corVisitObserver = DB.Table(
     )
 )
 
-corSiteApplication = DB.Table(
-    'cor_site_application',
+corSiteModule = DB.Table(
+    'cor_site_module',
     DB.MetaData(schema='gn_monitoring'),
     DB.Column(
         'id_base_site',
@@ -46,9 +46,9 @@ corSiteApplication = DB.Table(
         primary_key=True
     ),
     DB.Column(
-        'id_application',
+        'id_module',
         DB.Integer,
-        ForeignKey('utilisateurs.t_applications.id_application'),
+        ForeignKey('gn_commons.t_modules.id_module'),
         primary_key=True
     )
 )
@@ -165,16 +165,16 @@ class TBaseSites(DB.Model):
     applications = DB.relationship(
         'TApplications',
         lazy='select',
-        secondary=corSiteApplication,
+        secondary=corSiteModule,
         primaryjoin=(
-            corSiteApplication.c.id_base_site == id_base_site
+            corSiteModule.c.id_base_site == id_base_site
         ),
         secondaryjoin=(
-            corSiteApplication.c.id_application == TApplications.id_application
+            corSiteModule.c.id_module == TApplications.id_application
         ),
         foreign_keys=[
-            corSiteApplication.c.id_base_site,
-            corSiteApplication.c.id_application
+            corSiteModule.c.id_base_site,
+            corSiteModule.c.id_module
         ]
     )
 
