@@ -330,7 +330,6 @@ def add_application_db(app, module_code, url, enable_frontend):
             module = DB.session.query(TModules).filter(
                 TModules.module_code == module_code
             ).one()
-        # remove '/' before url_path if exist
         except NoResultFound:
             new_module = TModules(
                 module_code=module_code,
@@ -376,7 +375,7 @@ def create_module_config(app, module_code, mod_path=None, build=True):
         # set id_module and module_code
         config_module['ID_MODULE'] = module_object.id_module
         config_module['MODULE_CODE'] = module_object.module_code
-        config_module['MODULE_URL'] = module_object.module_path
+        config_module['MODULE_URL'] = module_object.module_path.replace(' ', '')
 
         frontend_config_path = os.path.join(mod_path, 'frontend/app/module.config.ts')  # noqa
         try:
