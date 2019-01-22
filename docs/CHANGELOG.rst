@@ -5,6 +5,18 @@ CHANGELOG
 2.0.0 (unreleased)
 ------------------
 
+**Corrections**
+
+* Synthèse - Correction et amélioration de la gestion des dates (#540)
+* Amélioration des tests automatisés
+* Correction et complément ds scripts d'installation des modules GeoNature
+* Remplacement de ``gn_monitoring.cor_site_application`` par ``gn_monitoring.cor_site_module``
+* Ajout d'une documentation de migration de données Serena vers GeoNature (https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/serena) par @xavyeah39
+
+**Note de version**
+
+* Depuis la version 2.0.0-rc.4, on ne stocke plus les modules de GeoNature dans ``utilisateurs.t_applications``. On ne peut donc plus associer les sites de suivi de ``gn_monitoring`` à des applications. Le mécanisme est remplacé par une association des sites de suivi aux modules. La création de la nouvelle table est automatisée mais pas la migration des données existantes de ``gn_monitoring.cor_site_application`` vers ``gn_monitoring.cor_site_module``, à faire manuellement.
+
 **A voir**
 
 - V2 : Pour plus de détails sur les évolutions apportées, consultez les détails des versions RC (Release Candidate)
