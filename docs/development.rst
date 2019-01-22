@@ -132,6 +132,16 @@ Lancer ``npm init`` pour initialiser le module.
 
 - Les fichiers d'assets sont à ranger dans le dossier ``assets`` du frontend. Angular-cli impose cependant que tous les assets soient dans le répertoire mère de l'application (celui de GeoNature). Un lien symbolique est créé à l'installation du module pour faire entre le dossier d'assets du module et celui de Geonature.
 
+- Utiliser node_modules présent dans GeoNature
+
+Pour utiliser des librairies déjà installé dans GeoNature, utilisezs la synthaxe suivante:
+
+::
+
+        import { TreeModule } from "@librairies/angular-tree-component";
+
+L'alias `@librairies` pointe en effet vers le repertoire des node_modules de GeoNature
+
 Pour les utiliser à l'interieur du module, utiliser la syntaxe suivante :
 
 ::
@@ -145,6 +155,8 @@ Exemple pour le module de validation :
     <img src="external_assets/<gn_module_validation>/afb.png">
 
 - Installer le linter ``tslint`` dans son éditeur de texte (TODO: définir un style à utiliser) 
+
+
 
 Backend
 *******
