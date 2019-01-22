@@ -45,9 +45,9 @@ CREATE TABLE cor_visit_observer
   id_role integer NOT NULL
 );
 
-CREATE TABLE cor_site_application (
+CREATE TABLE cor_site_module (
   id_base_site integer NOT NULL,
-  id_application integer NOT NULL
+  id_module integer NOT NULL
 );
 
 CREATE TABLE cor_site_area (
@@ -68,8 +68,8 @@ ALTER TABLE ONLY t_base_visits
 ALTER TABLE ONLY cor_visit_observer
     ADD CONSTRAINT pk_cor_visit_observer PRIMARY KEY (id_base_visit, id_role);
 
-ALTER TABLE ONLY cor_site_application
-    ADD CONSTRAINT pk_cor_site_application PRIMARY KEY (id_base_site, id_application);
+ALTER TABLE ONLY cor_site_module
+    ADD CONSTRAINT pk_cor_site_module PRIMARY KEY (id_base_site, id_module);
 
 ALTER TABLE ONLY cor_site_area
     ADD CONSTRAINT pk_cor_site_area PRIMARY KEY (id_base_site, id_area);
@@ -102,13 +102,11 @@ ALTER TABLE ONLY cor_visit_observer
   ADD CONSTRAINT fk_cor_visit_observer_id_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles (id_role) ON UPDATE CASCADE;
 
 
-ALTER TABLE ONLY cor_site_application
-  ADD CONSTRAINT fk_cor_site_application_id_base_site FOREIGN KEY (id_base_site) REFERENCES t_base_sites (id_base_site) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY cor_site_module
+  ADD CONSTRAINT fk_cor_site_module_id_base_site FOREIGN KEY (id_base_site) REFERENCES gn_monitoring.t_base_sites (id_base_site) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE ONLY cor_site_application
-  ADD CONSTRAINT fk_cor_site_application_id_application FOREIGN KEY (id_application) REFERENCES utilisateurs.t_applications (id_application);
-
-
+ALTER TABLE ONLY cor_site_module
+  ADD CONSTRAINT fk_cor_site_module_id_module FOREIGN KEY (id_module) REFERENCES gn_commons.t_modules (id_module);
 ALTER TABLE ONLY cor_site_area
   ADD CONSTRAINT fk_cor_site_area_id_base_site FOREIGN KEY (id_base_site) REFERENCES t_base_sites (id_base_site) ON UPDATE CASCADE ON DELETE CASCADE;
 
