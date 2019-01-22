@@ -263,6 +263,7 @@ Pour configurer GeoNature, actuellement il y a :
 
 - Une configuration pour l'installation : ``config/settings.ini``
 - Une configuration globale de l'application : ``<GEONATURE_DIRECTORY>/config/geonature_config.toml`` (générée lors de l'installation de GeoNature)
+- Une configuration pour les modules cartographiques (changement des fonds de carte et niveau de zoom): ``<GEONATURE_DIRECTORY>/frontend/src/conf.map.config.ts``
 - Une configuration par module : ``<GEONATURE_DIRECTORY>/external_modules/<nom_module>/config/conf_gn_module.toml`` (générée lors de l'instalation d'un module)
 - Une table ``gn_commons.t_parameters`` pour des paramètres gérés dans la BDD
 

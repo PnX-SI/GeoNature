@@ -11,3 +11,22 @@ SECRET_KEY = 'super secret key'
 LOCAL_SRID = 2154
 
 DEFAULT_LANGUAGE='fr'
+
+
+####################################################################################
+###### Remplir les sections à partir du modèle default_config.toml.example #########
+####################################################################################
+
+# configuration liés aux ID de BDD
+[BDD]
+
+# configuration générale du frontend
+[FRONTEND]
+
+# mise en place d'un système d'erreur par email
+[MAILERROR]
+
+# configuration de la synthese
+[SYNTHESE]
+    # colonne des exports de la synthese
+    [EXPORT_COLUMNS]
