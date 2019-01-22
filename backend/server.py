@@ -106,7 +106,7 @@ def get_app(config, _app=None, with_external_mods=True):
             for conf, manifest, module in list_and_import_gn_modules(app):
                 app.register_blueprint(
                     module.backend.blueprint.blueprint,
-                    url_prefix=conf['api_url']
+                    url_prefix=conf['MODULE_URL']
                 )
         _app = app
     return app

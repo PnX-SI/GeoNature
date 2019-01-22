@@ -56,7 +56,7 @@ def check_gn_module_file(module_path):
 def check_manifest(module_path):
     '''
         Verification de la version de geonature par rapport au manifest
-        Retourne le nom du module
+        Retourne le code du module
     '''
     log.info("checking manifest")
     configs_py = utilstoml.load_and_validate_toml(
@@ -317,12 +317,13 @@ def add_application_db(app, module_code, url, enable_frontend):
     from geonature.core.gn_commons.models import TModules
     app_conf = load_config(DEFAULT_CONFIG_FILE)
     id_application_geonature = app_conf['ID_APPLICATION_GEONATURE']
+    # remove / at the end and at the beginning
     if url[0] == '/':
         url = url[1:]
     if url[-1:] == '/':
         url = url[:-1]
     # remove white space
-    url.replace(" ", "")
+    url = url.replace(" ", "")
     with app.app_context():
         # try to write in gn_commons.t_module if not exist
         try:
@@ -375,7 +376,7 @@ def create_module_config(app, module_code, mod_path=None, build=True):
         # set id_module and module_code
         config_module['ID_MODULE'] = module_object.id_module
         config_module['MODULE_CODE'] = module_object.module_code
-        config_module['URL_MODULE'] = module_object.module_path
+        config_module['MODULE_URL'] = module_object.module_path
 
         frontend_config_path = os.path.join(mod_path, 'frontend/app/module.config.ts')  # noqa
         try:

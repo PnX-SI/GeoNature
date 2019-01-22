@@ -80,16 +80,17 @@ def install_gn_module(module_path, url, conf_file, build):
         with app.app_context():
             sys.path.append(module_path)
             # Vérification de la conformité du module
-            #   Vérification de la présence de certain fichiers
+            # Vérification de la présence de certain fichiers
             check_gn_module_file(module_path)
-
-            #   Vérification de la version de geonature par rapport au manifest
+            # Vérification de la version de geonature par rapport au manifest
+            module_code = None
+            module_code = check_manifest(module_path)
             try:
-                module_code = check_manifest(module_path)
                 # Vérification que le module n'est pas déjà activé
                 mod = DB.session.query(TModules).filter(
                     TModules.module_code == module_code
                 ).one()
+
 
             except NoResultFound:
                 # Si le module n'est pas déjà dans la table gn_commons.t_modules, on l'installe
