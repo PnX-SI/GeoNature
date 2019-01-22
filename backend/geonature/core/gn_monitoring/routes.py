@@ -4,7 +4,7 @@ from geojson import FeatureCollection
 
 from geonature.utils.env import DB
 from geonature.core.gn_monitoring.models import (
-    TBaseSites, corSiteArea, corSiteApplication
+    TBaseSites, corSiteArea, corSiteModule
 )
 from geonature.core.ref_geo.models import LAreas
 from geonature.utils.utilssqlalchemy import json_resp, get_geojson_feature
@@ -112,10 +112,10 @@ def get_site_areas(id_site):
         q = q.filter(LAreas.id_type == params['id_area_type'])
     if 'id_module' in params:
         q = q.join(
-            corSiteApplication,
-            corSiteApplication.c.id_base_site == id_site
+            corSiteModule,
+            corSiteModule.c.id_base_site == id_site
         ).filter(
-            corSiteApplication.c.id_application == params['id_module']
+            corSiteModule.c.id_module == params['id_module']
         )
 
     data = q.all()
