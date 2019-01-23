@@ -5,22 +5,49 @@ CHANGELOG
 2.0.0 (unreleased)
 ------------------
 
+**A voir**
+
+- V2 : Pour plus de détails sur les évolutions apportées, consultez les détails des versions RC (Release Candidate)
+- BDDv1toV2 : Script SQL de MAJ structure BDD global ou passer les RC ? + Script migration des données à adapter
+
+
+2.0.0-rc.4.2 (2019-01-23)
+-------------------------
+
+**Nouveautés**
+
+* Mise en place de logs rotatifs pour éviter de surcharger le serveur
+* Centralisation des logs applicatifs dans le dossier ``var/log/gn_errors.log`` de GeoNature
+
 **Corrections**
 
 * Synthèse - Correction et amélioration de la gestion des dates (#540)
 * Amélioration des tests automatisés
 * Correction et complément ds scripts d'installation des modules GeoNature
 * Remplacement de ``gn_monitoring.cor_site_application`` par ``gn_monitoring.cor_site_module``
+* Complément des documentations de customisation, d'administration et de développement
 * Ajout d'une documentation de migration de données Serena vers GeoNature (https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/serena) par @xavyeah39
 
 **Note de version**
 
-* Depuis la version 2.0.0-rc.4, on ne stocke plus les modules de GeoNature dans ``utilisateurs.t_applications``. On ne peut donc plus associer les sites de suivi de ``gn_monitoring`` à des applications, utilisé par les modules de suivi (Flore, habitat, chiro). Le mécanisme est remplacé par une association des sites de suivi aux modules. La création de la nouvelle table est automatisée mais pas la migration des données existantes de ``gn_monitoring.cor_site_application`` vers ``gn_monitoring.cor_site_module``, à faire manuellement.
+* Vous pouvez passer directement à cette version, mais en suivant les notes des versions intermédiaires
+* Exécutez la mise à jour de la BDD GeoNature (``data/migrations/2.0.0rc4.1to2.0.0rc4.2.sql``)
+* Depuis la version 2.0.0-rc.4, on ne stocke plus les modules de GeoNature dans ``utilisateurs.t_applications``. On ne peut donc plus associer les sites de suivi de ``gn_monitoring`` à des applications, utilisé par les modules de suivi (Flore, habitat, chiro). Le mécanisme est remplacé par une association des sites de suivi aux modules. La création de la nouvelle table est automatisée (``data/migrations/2.0.0rc4.1to2.0.0rc4.2.sql``), mais pas la migration des éventuelles données existantes de ``gn_monitoring.cor_site_application`` vers ``gn_monitoring.cor_site_module``, à faire manuellement.
+* Afin que les logs de l'application soient tous écrits au même endroit, modifier le fichier ``geonature-service.conf`` (``sudo nano /etc/supervisor/conf.d/geonature-service.conf``). A la ligne ``stdout_logfile``, remplacer la ligne existante par ``stdout_logfile = /home/<MON_USER>/geonature/var/log/gn_errors.log`` (en remplaçant <MON_USER> par votre utilisateur linux).
+* Vous pouvez également mettre en place un système de logs rotatifs (système permettant d'archiver les fichiers de logs afin qu'ils ne surchargent pas le serveur - conseillé si votre serveur a une capacité disque limitée). Créer le fichier suivant ``sudo nano /etc/logrotate.d/geonature`` puis copiez les lignes suivantes dans le fichier nouvellement créé (en remplaçant <MON_USER> par votre utilisateur linux)
 
-**A voir**
+  ::
 
-- V2 : Pour plus de détails sur les évolutions apportées, consultez les détails des versions RC (Release Candidate)
-- BDDv1toV2 : Script SQL de MAJ structure BDD global ou passer les RC ? + Script migration des données à adapter
+    /home/<MON_USER>/geonature/var/log/*.log {
+    daily
+    rotate 8
+    size 100M
+    create
+    compress
+    }
+
+  Exécutez ensuite la commande ``sudo logrotate -f /etc/logrotate.conf``
+* Suivez ensuite la procédure classique de mise à jour de GeoNature (https://geonature.readthedocs.io/fr/latest/installation-standalone.html#mise-a-jour-de-l-application)
 
 
 2.0.0-rc.4.1 (2019-01-21)
@@ -121,7 +148,6 @@ CHANGELOG
 
 2.0.0-rc.3 (2018-10-18)
 -----------------------
-
 
 * Possibilité d'utiliser le MNT en raster ou en vecteur dans la BDD (+ doc MNT) #439 (merci @mathieubossaert)
 * INSTALL_ALL - gestion du format date du serveur PostgreSQL (#435)
