@@ -1,5 +1,5 @@
 <div class="container">
-    <button class="btn btn-secondary" routerLink="/admin">  <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
+    <button class="btn btn-secondary" routerLink="/metadata">  <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
     </button>
     <h3>Liste des jeux de données</h3>
     <div class="form-group ">
@@ -36,6 +36,6 @@
 
 
     </ngx-datatable>
-    <button [disabled]="adminStoreService.currentModule?.cruved.C === '0'" routerLink="/admin/dataset" class="btn btn-primary margin-top-sm"> Ajouter un jeu de données </button>
+    <button [disabled]="cruvedStore.cruved?.METADATA?.cruved.C === '0'" routerLink="/metadata/dataset" class="btn btn-primary margin-top-sm"> Ajouter un jeu de données </button>
 
 </div>

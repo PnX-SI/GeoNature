@@ -59,7 +59,6 @@ import { MapListService } from './map-list/map-list.service';
 import { CommonService } from './service/common.service';
 import { FormService } from './form/form.service';
 import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
-import { DataService } from './service/data.service';
 
 // add all rxjs operators
 import 'rxjs/Rx';
@@ -122,8 +121,7 @@ export function HttpLoaderFactory(http: Http) {
     CommonService,
     FormService,
     DynamicFormService,
-    NgbDatePeriodParserFormatter,
-    DataService
+    NgbDatePeriodParserFormatter
   ],
   exports: [
     MunicipalitiesComponent,

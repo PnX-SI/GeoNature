@@ -23,6 +23,7 @@ const defaultRoutes: Routes = [
         {% endfor %}
       { path: '', component: HomeContentComponent },
       { path: 'synthese',data: { module_code: 'synthese' }, canActivate: [ModuleGuardService], loadChildren: '@geonature/syntheseModule/synthese.module#SyntheseModule'},
+      { path: 'metadata',data: { module_code: 'metadata' }, canActivate: [ModuleGuardService], loadChildren: '@geonature/metadataModule/metadata.module#MetadataModule'},
       { path: 'exports',  loadChildren: '@geonature/exportsModule/exports.module#ExportsModule'},
       {
         path: 'admin',
