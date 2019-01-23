@@ -722,9 +722,11 @@ Si vous l'avez supprimé, lancez les commandes suivantes depuis le repertoire ``
 Configuration du module
 """""""""""""""""""""""
 
-Le fichier de configuration du module se trouve ici : ``<GEONATURE_DIRECTORY>/external_modules/occtax/conf_gn_module.toml``.
+Le fichier de configuration du module se trouve ici : ``<GEONATURE_DIRECTORY>/external_modules/occtax/config/conf_gn_module.toml``.
 
-Pour voir l'ensemble des variables de configuration du module ainsi que leurs valeurs par défaut, ouvrir le fichier ``/home/<mon_user>/geonature/external_modules/occtax/config/conf_gn_module.toml``.
+Pour voir l'ensemble des variables de configuration disponibles du module ainsi que leurs valeurs par défaut, ouvrir le fichier ``/home/<mon_user>/geonature/external_modules/occtax/config/conf_gn_module.toml.example``.
+
+Les surcouches de configuration doivent être faites dans le fichier ``conf_gn_module.toml``, en ne modifiant jamais le fichier ``conf_gn_module.toml.example``.
 
 Après toute modification de la configuration d'un module, il faut regénérer le fichier de configuration du frontend comme expliqué ici : `Configuration d'un gn_module`_
 
@@ -780,7 +782,7 @@ Modifier le champ Observateurs
 Par défaut le champ ``Observateurs`` est une liste déroulante qui pointe vers une liste du schéma ``utilisateurs``.
 Il est possible de passer ce champ en texte libre en mettant à ``true`` la variable ``observers_txt``.
 
-Le paramètre ``id_observers_list`` permet de changer la liste d'observateurs proposée dans le formulaire. Vous pouvez modifier le numéro de liste du module ou modifier le contenu de la liste dans UsersHub (``utilisateurs.t_menus`` et ``utilisateurs.cor_role_menu``)
+Le paramètre ``id_observers_list`` permet de changer la liste d'observateurs proposée dans le formulaire. Vous pouvez modifier le numéro de liste du module ou modifier le contenu de la liste dans UsersHub (``utilisateurs.t_listes`` et ``utilisateurs.cor_role_liste``)
 
 Par défaut, l'ensemble des observateurs de la liste 9 (observateurs faune/flore) sont affichés.
 
@@ -859,6 +861,7 @@ Il est possible de contraindre la saisie de la géométrie d'un relevé sur la c
 Par défaut :
 
 ::
+
     # Zoom level on the map from which you can add point/line/polygon
     releve_map_zoom_level = 6
 
@@ -867,6 +870,7 @@ Il suffit de modifier la valeur qui correspond au niveau de zoom sur la carte.
 Par exemple, pour contraindre la saisie à l'affichage de la carte IGN au 1/25000e :
 
 ::
+
     releve_map_zoom_level = 15
 
 
