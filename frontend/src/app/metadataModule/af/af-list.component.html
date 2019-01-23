@@ -1,5 +1,5 @@
 <div class="container">
-  <button class="btn btn-secondary" routerLink="/admin">  <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
+  <button class="btn btn-secondary" routerLink="/metadata">  <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
   </button>
 
   <h3>Liste des cadres d'acquisition</h3>
@@ -37,6 +37,6 @@
 
 
 </ngx-datatable>
-  <button [disabled]="adminStoreService.currentModule?.cruved.C === '0'" routerLink="/admin/af" class="btn btn-primary margin-top-sm"> Ajouter un cadre d'acquisition </button>
+  <button [disabled]="cruvedStore.cruved?.METADATA?.cruved.C === '0'" routerLink="/metadata/af" class="btn btn-primary margin-top-sm"> Ajouter un cadre d'acquisition </button>
   </div>
 

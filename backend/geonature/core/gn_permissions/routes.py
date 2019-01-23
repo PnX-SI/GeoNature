@@ -40,7 +40,7 @@ def get_cruved(info_role):
 
     # for each modules get its cruved
     # then get its related object and their cruved
-    modules_with_cruved = []
+    modules_with_cruved = {}
     for mod in modules:
         mod_as_dict = mod.as_dict()
         # get mod objects
@@ -68,7 +68,7 @@ def get_cruved(info_role):
 
             mod_as_dict['module_objects'] = module_objects_as_dict
 
-        modules_with_cruved.append(mod_as_dict)
+        modules_with_cruved[mod_as_dict['module_code']] = mod_as_dict
 
     return modules_with_cruved
 
@@ -80,7 +80,7 @@ def logout():
     To avoid multiples server call, we store the cruved in the session	
      when the user logout we need clear the session to get the new cruved session	
      """	
-    copy_session_key = copy(session)	
+    copy_session_key = copy(session)
     for key in copy_session_key:	
         session.pop(key)
     return Response('Logout', 200)

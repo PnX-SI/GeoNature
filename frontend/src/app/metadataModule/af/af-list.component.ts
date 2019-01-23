@@ -2,8 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { Router } from '@angular/router';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
-import { AdminStoreService } from '../../services/admin-store.service';
-
+import { CruvedStoreService } from '../../services/cruved-store.service';
 
 @Component({
   selector: 'pnx-af-list',
@@ -14,7 +13,11 @@ export class AfListComponent implements OnInit {
   public temp = [];
   @ViewChild(DatatableComponent) table: DatatableComponent;
 
-  constructor(private _dfs: DataFormService, private _router: Router, public adminStoreService: AdminStoreService) { }
+  constructor(
+    private _dfs: DataFormService,
+    private _router: Router,
+    public cruvedStore: CruvedStoreService
+  ) {}
 
   ngOnInit() {
     this._dfs.getAcquisitionFrameworks().subscribe(data => {
