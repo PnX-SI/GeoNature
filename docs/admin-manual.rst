@@ -55,28 +55,34 @@ Désolé pour les relations complexes entre tables...
 Gestion des droits :
 """"""""""""""""""""
 
-L'accès des utilisateurs à l'application GeoNature est gérée de manière centralisée dans UserHub. 
+L'accès des utilisateurs à l'application GeoNature est gérée de manière centralisée dans UsersHub. 
 
 La gestion des droits (permissions), spécifique à GeoNature, est elle gérée dans un module GeoNature dédié. Dans la version 1 de GeoNature, il était possible d'attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour étendre les possibilités d'attribution de droits et les rendre plus génériques. 
 
 La gestion des droits dans GeoNature, comme dans beaucoup d'application, est liée à des actions (Create / Read / Update / Delete aka CRUD). Pour les besoins  métiers de l'application nous avons rajouté deux actions : "Valider" et "Exporter", ce qui donne le CRUVED: Create / Read / Update / Validate / Export / Delete.
 
 Sur ces actions, on va pouvoir appliquer des filtres de manière générique.
-Le filtre le plus courant est celui de la "portée". On autorise des actions à un utilisateur sur une portée: "ses données", "les données de son organisme", "toutes les données".
-Exemple: 
+
+Le filtre le plus courant est celui de la "portée". On autorise des actions à un utilisateur sur une portée : "ses données", "les données de son organisme", "toutes les données".
+
+Exemple : 
+
 - Utilisateur 1 peut effectuer l'action "DELETE" sur la portée "SES DONNEES"
 - Utilisateur admin peut effectuer l'action "UPDATE" sur la portée "TOUTES LES DONNEES"
 
-Un autre filtre possible est celui de la sensibilité / dégradation des données:
-Exemple:
+Un autre filtre possible est celui de la sensibilité / dégradation des données :
+
+Exemple :
+
 - Utilisateur 1 peut effectuer l'action "READ" sur "LES DONNES DEGRADES"
 - Utilisateur admin peut effectuer l'action "READ" sur "LES DONNES PRECISES"
 
 Enfin ces permissions vont pouvoir s'attribuer à l'ensemble de l'application GeoNature et/ou à un module.
-On a donc le quatriptique: Un utilisateur / Une action / un filtre / un module 
 
+On a donc le quatriptique : Un utilisateur / Une action / un filtre / un module 
 
-Récapitulatif:
+Récapitulatif :
+
 - Dans GeoNature V2 on peut attribuer à une role des actions possibles, sur lesquels on peut ajouter des filtres, dans un module ou sur toute l'application GeoNature (définis dans ``gn_permissions.cor_role_action_filter_module_object``).
 - 6 actions sont possibles dans GeoNature : Create / Read / Update / Validate / Export / Delete (aka CRUVED).
 - Différents type de filtres existent. Le plus courant est le filtre de type "SCOPE" (portée): 3 portée sont attribuables à des actions: Mes données / Les données de mon organisme / Toutes les données.
@@ -734,9 +740,13 @@ Si vous l'avez supprimé, lancez les commandes suivantes depuis le repertoire ``
 Configuration du module
 """""""""""""""""""""""
 
-Le fichier de configuration du module se trouve ici : ``<GEONATURE_DIRECTORY>/external_modules/occtax/conf_gn_module.toml``.
+Le fichier de configuration du module se trouve ici : ``<GEONATURE_DIRECTORY>/external_modules/occtax/config/conf_gn_module.toml``.
 
-Pour voir l'ensemble des variables de configuration du module ainsi que leurs valeurs par défaut, ouvrir le fichier ``/home/<mon_user>/geonature/external_modules/occtax/config/conf_gn_module.toml``.
+Pour voir l'ensemble des variables de configuration disponibles du module ainsi que leurs valeurs par défaut, ouvrir le fichier ``/home/<mon_user>/geonature/external_modules/occtax/config/conf_gn_module.toml.example``.
+
+Les surcouches de configuration doivent être faites dans le fichier ``conf_gn_module.toml``, en ne modifiant jamais le fichier ``conf_gn_module.toml.example``.
+
+Après toute modification de la configuration d'un module, il faut regénérer le fichier de configuration du frontend comme expliqué ici : `Configuration d'un gn_module`_
 
 Afficher/masquer des champs du formulaire
 *****************************************
@@ -790,7 +800,7 @@ Modifier le champ Observateurs
 Par défaut le champ ``Observateurs`` est une liste déroulante qui pointe vers une liste du schéma ``utilisateurs``.
 Il est possible de passer ce champ en texte libre en mettant à ``true`` la variable ``observers_txt``.
 
-Le paramètre ``id_observers_list`` permet de changer la liste d'observateurs proposée dans le formulaire. Vous pouvez modifier le numéro de liste du module ou modifier le contenu de la liste dans UsersHub (``utilisateurs.t_menus`` et ``utilisateurs.cor_role_menu``)
+Le paramètre ``id_observers_list`` permet de changer la liste d'observateurs proposée dans le formulaire. Vous pouvez modifier le numéro de liste du module ou modifier le contenu de la liste dans UsersHub (``utilisateurs.t_listes`` et ``utilisateurs.cor_role_liste``)
 
 Par défaut, l'ensemble des observateurs de la liste 9 (observateurs faune/flore) sont affichés.
 
@@ -860,6 +870,27 @@ Par défaut :
     ]
 
 Voir la vue ``occtax.v_releve_list`` pour voir les champs disponibles.
+
+Ajouter une contrainte d'échelle de saisie sur la carte
+*******************************************************
+
+Il est possible de contraindre la saisie de la géométrie d'un relevé sur la carte par un seuil d'échelle minimum avec le paramètre ``releve_map_zoom_level``.
+
+Par défaut :
+
+::
+
+    # Zoom level on the map from which you can add point/line/polygon
+    releve_map_zoom_level = 6
+
+
+Il suffit de modifier la valeur qui correspond au niveau de zoom sur la carte.
+Par exemple, pour contraindre la saisie à l'affichage de la carte IGN au 1/25000e :
+
+::
+
+    releve_map_zoom_level = 15
+
 
 Gestion des exports
 """""""""""""""""""
