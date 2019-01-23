@@ -726,6 +726,8 @@ Le fichier de configuration du module se trouve ici : ``<GEONATURE_DIRECTORY>/ex
 
 Pour voir l'ensemble des variables de configuration du module ainsi que leurs valeurs par défaut, ouvrir le fichier ``/home/<mon_user>/geonature/external_modules/occtax/config/conf_gn_module.toml``.
 
+Après toute modification de la configuration d'un module, il faut regénérer le fichier de configuration du frontend comme expliqué ici : `Configuration d'un gn_module`_
+
 Afficher/masquer des champs du formulaire
 *****************************************
 
@@ -848,6 +850,25 @@ Par défaut :
     ]
 
 Voir la vue ``occtax.v_releve_list`` pour voir les champs disponibles.
+
+Ajouter une contrainte d'échelle de saisie sur la carte
+*******************************************************
+
+Il est possible de contraindre la saisie de la géométrie d'un relevé sur la carte par un seuil d'échelle minimum avec le paramètre ``releve_map_zoom_level``.
+
+Par défaut :
+
+::
+    # Zoom level on the map from which you can add point/line/polygon
+    releve_map_zoom_level = 6
+
+
+Il suffit de modifier la valeur qui correspond au niveau de zoom sur la carte.
+Par exemple, pour contraindre la saisie à l'affichage de la carte IGN au 1/25000e :
+
+::
+    releve_map_zoom_level = 15
+
 
 Gestion des exports
 """""""""""""""""""
