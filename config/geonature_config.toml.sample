@@ -1,4 +1,6 @@
+#############################################
 # GeoNature backend global configuration file
+#############################################
 
 # Database
 SQLALCHEMY_DATABASE_URI = "postgresql://monuser:monpassachanger@localhost:5432/mabase"
@@ -6,27 +8,31 @@ URL_APPLICATION = 'http://url.com/geonature'
 API_ENDPOINT = 'http://url.com/geonature/api'
 API_TAXHUB = 'http://url.com/taxhub/api'
 
+# Remplacer par une clé alétoire complexe
 SECRET_KEY = 'super secret key'
 
+# Code EPSG des geométries dans la BDD
 LOCAL_SRID = 2154
 
+# Langue principale par défaut
 DEFAULT_LANGUAGE='fr'
 
 
-####################################################################################
-###### Remplir les sections à partir du modèle default_config.toml.example #########
-####################################################################################
+#######################################################################################
+###### Si vous souhaitez surcoucher certains paramètres,
+###### compléter les sections ci-dessous à partir du modèle default_config.toml.example
+#######################################################################################
 
-# configuration liés aux ID de BDD
+# Configuration liée aux ID de BDD
 [BDD]
 
-# configuration générale du frontend
+# Configuration générale du frontend
 [FRONTEND]
 
-# mise en place d'un système d'erreur par email
+# Mise en place d'un système d'erreur par email
 [MAILERROR]
 
-# configuration de la synthese
+# Configuration de la Synthese
 [SYNTHESE]
     # colonne des exports de la synthese
     [EXPORT_COLUMNS]
