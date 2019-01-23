@@ -1,0 +1,7 @@
+APP_PATH/var/log/*.log {
+    daily
+    rotate 8
+    size 100M
+    create
+    compress
+}
