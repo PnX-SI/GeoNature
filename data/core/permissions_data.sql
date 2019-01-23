@@ -74,7 +74,6 @@ INSERT INTO t_objects
     (code_object, description_object)
 VALUES
     ('ALL', 'Représente tous les objets d''un module'),
-    ('METADATA', 'Gestion du backoffice des métadonnées'),
     ('PERMISSIONS', 'Gestion du backoffice des permissions'),
     ('NOMENCLATURES', 'Gestion du backoffice des nomenclatures')
 ;
@@ -112,6 +111,20 @@ VALUES
     (7, 4, 1, 0, 1),
     (7, 5, 3, 0, 1),
     (7, 6, 2, 0, 1),
+    -- Groupe admin a tous les droit dans METADATA
+    (9, 1, 4, 2, 1),
+    (9, 2, 4, 2, 1),
+    (9, 3, 4, 2, 1),
+    (9, 4, 4, 2, 1),
+    (9, 5, 4, 2, 1),
+    (9, 6, 4, 2, 1),
+    -- Groupe en poste pas acces a dans METADATA
+    (7, 1, 1, 2, 1),
+    (7, 2, 1, 2, 1),
+    (7, 3, 1, 2, 1),
+    (7, 4, 1, 2, 1),
+    (7, 5, 1, 2, 1),
+    (7, 6, 1, 2, 1),
     -- Groupe en poste, n'a pas accès à l'admin
     (7, 1, 1, 1, 1),
     (7, 2, 1, 1, 1),
@@ -127,13 +140,6 @@ VALUES
     (9, 5, 4, 1, 1),
     (9, 6, 4, 1, 1),
     -- Groupe ADMIN peut gérer les permissions depuis le backoffice
-    (9, 1, 4, 1, 3),
-    (9, 2, 4, 1, 3),
-    (9, 3, 4, 1, 3),
-    (9, 4, 4, 1, 3),
-    (9, 5, 4, 1, 3),
-    (9, 6, 4, 1, 3),
-    -- Groupe ADMIN peut gérer les métadonnées depuis le backoffice
     (9, 1, 4, 1, 2),
     (9, 2, 4, 1, 2),
     (9, 3, 4, 1, 2),
@@ -141,11 +147,11 @@ VALUES
     (9, 5, 4, 1, 2),
     (9, 6, 4, 1, 2),
     -- Groupe ADMIN peut gérer les nomenclatures depuis le backoffice
-    (9, 1, 4, 1, 4),
-    (9, 2, 4, 1, 4),
-    (9, 3, 4, 1, 4),
-    (9, 4, 4, 1, 4),
-    (9, 5, 4, 1, 4),
-    (9, 6, 4, 1, 4)
+    (9, 1, 4, 1, 3),
+    (9, 2, 4, 1, 3),
+    (9, 3, 4, 1, 3),
+    (9, 4, 4, 1, 3),
+    (9, 5, 4, 1, 3),
+    (9, 6, 4, 1, 3)
 ;
 
