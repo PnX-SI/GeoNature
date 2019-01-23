@@ -9,11 +9,11 @@ from pypnnomenclature.repository import (
     get_nomenclature_list_formated,
     get_nomenclature_id_term
 )
-from pypnusershub.db.models import Application
 
 from geonature.utils.env import DB
 from geonature.utils.utilstoml import load_toml
 from geonature.utils.errors import GeonatureApiError
+from geonature.core.gn_commons.models import TModules
 
 from geonature.core.gn_commons.repositories import get_table_location_id
 
@@ -95,21 +95,21 @@ def parse_field(fieldlist):
 
     return fieldlist
 
-def get_app_id(app_name):
+def get_app_id(module_code):
     '''
-        Retourne l'identifiant d'une application 
-        à partir de son nom
+        Retourne l'identifiant d'un module 
+        à partir de son code
     '''
     try:
-        app_id = (
-            DB.session.query(Application.id_application)
-            .filter_by(nom_application = str(app_name)).one()
+        mod_id = (
+            DB.session.query(TModules.id_module)
+            .filter_by(module_code = str(module_code)).one()
         )
-        return app_id
+        return mod_id
     
     except NoResultFound:
         raise GeonatureApiError(
-            message="app {} not found".format(app_name)
+            message="module {} not found".format(module_code)
         )
 def format_nomenclature_list(params):
     '''
