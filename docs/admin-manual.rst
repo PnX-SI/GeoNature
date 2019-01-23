@@ -551,7 +551,7 @@ Pour cela exécuter la commande suivante depuis le répertoire ``frontend``
 
     npm run start -- --host=0.0.0.0 --disable-host-check
 
-L'application est désormais disponible sur une serveur de développement à la même addresse que précedemment, mais sur le port 4200 : http://test.geonature.fr/geonature:4200
+L'application est désormais disponible sur une serveur de développement à la même addresse que précedemment, mais sur le port 4200 : http://test.geonature.fr:4200
 
 Modifier la variable ``URL_APPLICATION`` dans le fichier ``geonature_config.toml`` en mettant l'adresse ci-dessus et relancer l'application (``sudo supervisorctl restart geonature2``)
 
