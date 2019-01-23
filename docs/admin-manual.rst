@@ -559,11 +559,11 @@ Pour cela exécuter la commande suivante depuis le répertoire ``frontend``
 
 L'application est désormais disponible sur une serveur de développement à la même addresse que précedemment, mais sur le port 4200 : http://test.geonature.fr:4200
 
-Modifier la variable ``URL_APPLICATION`` dans le fichier ``geonature_config.toml`` en mettant l'adresse ci-dessus et relancer l'application (``sudo supervisorctl restart geonature2``)
+Ouvrez un nouveau terminal (pour laisser tourner le serveur de développement), puis modifier la variable ``URL_APPLICATION`` dans le fichier ``geonature_config.toml`` en mettant l'adresse ci-dessus et relancer l'application (``sudo supervisorctl restart geonature2``)
 
 A chaque modification d'un fichier du frontend, une compilation rapide est relancée et votre navigateur se rafraichit automatiquement en intégrant les dernières modifications.
 
-Une fois les modifications terminées, rémodifier le fichier ``geonature_config.toml`` pour remettre l'URL initiale, relancez l'application (``sudo supervisorctl restart geonature2``), puis relancez la compliation du frontend (``npm run start``).
+Une fois les modifications terminées, remodifier le fichier ``geonature_config.toml`` pour remettre l'URL initiale, relancez l'application (``sudo supervisorctl restart geonature2``), puis relancez la compliation du frontend (``npm run build``). Faites enfin un ``ctrl+c`` dans le terminal ou le frontend a été lancé pour stopper le serveur de développement.
 
 Si la manipulation vous parait compliquée, vous pouvez suivre la documentation qui suit, qui fait relancer la compilation du frontend à chaque modification.
 
