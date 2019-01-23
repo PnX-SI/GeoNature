@@ -15,4 +15,4 @@ source $FLASKDIR/$venv_dir/bin/activate
 cd $FLASKDIR
 
 # Start your gunicorn
-exec gunicorn  wsgi:app --error-log $APP_DIR/var/log/gn_errors.log --pid="${app_name}.pid" -w "${gun_num_workers}"  -b "${gun_host}:${gun_port}"  -n "${app_name}"
+exec gunicorn  wsgi:app --pid="${app_name}.pid" -w "${gun_num_workers}"  -b "${gun_host}:${gun_port}"  -n "${app_name}"
