@@ -77,9 +77,7 @@ def frontend_routes_templating(app=None):
         template = Template(input_file.read())
         routes = []
         for url_path, module_code in list_frontend_enabled_modules(app):
-            print('LAAAAAAAAAa')
             location = Path(GN_EXTERNAL_MODULE / module_code.lower())
-            print(location)
 
             # test if module have frontend
             if (location / 'frontend').is_dir():
