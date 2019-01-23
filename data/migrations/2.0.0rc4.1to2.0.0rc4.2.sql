@@ -1,4 +1,5 @@
--- Depuis la version 2.0.0-rc.4, on ne stocke plus les modules de GeoNature dans utilisateurs.t_applications, utilisé par les modules de suivi (Flore, habitat, chiro)
+-- Depuis la version 2.0.0-rc.4, on ne stocke plus les modules de GeoNature dans utilisateurs.t_applications, 
+-- utilisé par les modules de suivi (Flore, habitat, chiro)
 -- On ne peut donc plus associer les sites de suivi de gn_monitoring à des applications
 -- Le mécanisme est remplacé par une association des sites de suivi aux modules
 
@@ -16,7 +17,8 @@ ALTER TABLE ONLY gn_monitoring.cor_site_module
 ALTER TABLE ONLY gn_monitoring.cor_site_module
   ADD CONSTRAINT fk_cor_site_module_id_module FOREIGN KEY (id_module) REFERENCES gn_commons.t_modules (id_module);
 
--- Récupération des données gérée au cas par cas
--- Si vous aviez des données dans la table gn_monitoring.cor_site_application, il est nécessaire de les migrer manuellement dans gn_monitoring.cor_site_module
+-- Récupération des données à gérer au cas par cas
+-- Si vous aviez des données dans la table gn_monitoring.cor_site_application, 
+-- il est nécessaire de les migrer manuellement dans gn_monitoring.cor_site_module
 
--- Supprimer l'ancienne table gn_monitoring.cor_site_application dans la prochaine release
+-- TODO : Supprimer l'ancienne table gn_monitoring.cor_site_application dans la prochaine release
