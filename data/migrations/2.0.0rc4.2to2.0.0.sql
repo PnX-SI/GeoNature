@@ -30,11 +30,6 @@ SELECT id_role, id_action, id_filter, mod_metadata.id_module
 FROM gn_permissions.cor_role_action_filter_module_object cor, mod_admin, obj, mod_metadata
 WHERE cor.id_module = mod_admin.id_module AND cor.id_object = obj.id_object;
 
--- suppression relation cor_object_module 
-DELETE FROM gn_permissions.cor_object_module WHERE id_object = (
-    SELECT id_object FROM gn_permissions.t_objects WHERE code_object = 'METADATA'
-);
-
 -- suppression des permissions de l'objet metadata inutiles
 DELETE 
 FROM gn_permissions.cor_role_action_filter_module_object
@@ -43,3 +38,43 @@ WHERE id_object = (
 ) AND id_module = (
     SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'ADMIN'
 );
+
+
+-- suppression relation cor_object_module 
+DELETE FROM gn_permissions.cor_object_module WHERE id_object = (
+    SELECT id_object FROM gn_permissions.t_objects WHERE code_object = 'METADATA'
+);
+
+-- supression de l'objet metadata
+DELETE FROM gn_permissions.t_objects where code_object = 'METADATA'
+
+-- Droit limité pour le groupe en poste pour le module METADATA
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module)
+SELECT 7, 1, 1, id_module
+FROM gn_commons.t_modules
+WHERE module_code = 'METADATA';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module)
+SELECT 7, 2, 3, id_module
+FROM gn_commons.t_modules
+WHERE module_code = 'METADATA';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module)
+SELECT 7, 3, 1, id_module
+FROM gn_commons.t_modules
+WHERE module_code = 'METADATA';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module)
+SELECT 7, 4, 1, id_module
+FROM gn_commons.t_modules
+WHERE module_code = 'METADATA';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module)
+SELECT 7, 5, 3, id_module
+FROM gn_commons.t_modules
+WHERE module_code = 'METADATA';
+
+INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module)
+SELECT 7, 6, 1, id_module
+FROM gn_commons.t_modules
+WHERE module_code = 'METADATA';
