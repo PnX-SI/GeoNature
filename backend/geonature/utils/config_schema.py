@@ -97,6 +97,8 @@ class GnPySchemaConf(Schema):
 class GnFrontEndConf(Schema):
     PROD_MOD = fields.Boolean(missing=True)
     DISPLAY_FOOTER = fields.Boolean(missing=True)
+    DISPLAY_STAT_BLOC = fields.Boolean(missing=True)
+    DISPLAY_MAP_LAST_OBS = fields.Boolean(missing=True)
     MULTILINGUAL = fields.Boolean(missing=False)
 
 

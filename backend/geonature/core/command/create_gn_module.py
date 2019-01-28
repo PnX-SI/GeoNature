@@ -91,7 +91,6 @@ def install_gn_module(module_path, url, conf_file, build):
                     TModules.module_code == module_code
                 ).one()
 
-
             except NoResultFound:
                 # Si le module n'est pas déjà dans la table gn_commons.t_modules, on l'installe
                 # sinon on leve une execption et on arrête la commande

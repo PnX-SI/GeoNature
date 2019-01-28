@@ -104,7 +104,7 @@ md-sidenav-layout /deep/ .md-sidenav-content {
 }
 
 .underlined {
-  border-bottom: 3px solid black !important;
+  border-bottom: 2px solid black !important;
   display: inline-block;
   padding-bottom: 10px;
   padding-top: 5px;
@@ -240,9 +240,119 @@ li.no-bullet {
 .ng-invalid,
 .custom-invalid {
   border-left: 5px solid #ff0000 !important;
-  
 }
 
 .no-box-shadow {
   box-shadow: none !important;
+}
+
+// panel
+.panel-container {
+  padding-top: 20px;
+}
+.panel {
+  margin-bottom: 20px;
+  background-color: #fff;
+  border: 1px solid transparent;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.no-padding {
+  padding: 0;
+  margin: 0;
+}
+
+.panel-widget {
+  padding: 10px 0;
+  position: relative;
+  box-shadow: none;
+  border-radius: 0;
+  background: none;
+  text-align: center;
+  color: #333;
+}
+
+.panel-widget .text-muted {
+  margin-top: -6px;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 0.8em;
+}
+
+.panel-widget .large {
+  color: #373b45;
+  font-size: 3em;
+}
+
+.panel-heading {
+  padding: 10px 15px;
+  border-bottom: 1px solid transparent;
+  font-size: 20px;
+  font-weight: 300;
+  letter-spacing: 0.025em;
+  height: 60px;
+  line-height: 38px;
+}
+
+.title-spaced {
+  font-size: 20px;
+  font-weight: 300;
+  letter-spacing: 0.025em;
+  height: 60px;
+  line-height: 38px;
+}
+.falsy-btn {
+  padding-right: 5px;
+  padding-left: 5px;
+  border-color: black;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.panel-body {
+  padding: 15px;
+}
+
+.panel-default .panel-heading {
+  background: #fff;
+  border-bottom: 1px solid #e9ecf2;
+  color: #444444;
+}
+
+.panel-default > .panel-heading {
+  color: #333;
+  border-color: #ddd;
+}
+
+.text-muted {
+  color: #c5c7cc;
+}
+
+.fa-xl {
+  font-size: 2em;
+}
+
+.large {
+  font-size: 2em;
+}
+
+.color-blue {
+  color: #30a5ff;
+}
+
+.color-orange {
+  color: #ffb53e;
+}
+
+.color-teal {
+  color: #1ebfae;
+}
+
+.color-red {
+  color: #f9243f;
+}
+
+.float-right {
+  float: right;
 }
