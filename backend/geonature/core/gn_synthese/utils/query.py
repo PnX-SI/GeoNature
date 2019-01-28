@@ -131,6 +131,7 @@ def filter_query_all_filters(model, q, filters, user, allowed_datasets):
             # if the geom is a circle
             if 'radius' in filters:
                 radius = filters.pop('radius')[0]
+                wkt = loads(str_wkt)
                 wkt = circle_from_point(wkt, float(radius))
             else:
                 wkt = loads(str_wkt)
