@@ -101,7 +101,8 @@ def get_synthese(info_role):
         return synthese row(s) filtered by form params
         Params must have same synthese fields names
     """
-    filters = dict(request.args)
+    # change all args in a list of value
+    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
     if 'limit' in filters:
         result_limit = filters.pop('limit')[0]
     else:
@@ -155,7 +156,9 @@ def get_one_synthese(id_synthese):
 @routes.route('/export', methods=['GET'])
 @permissions.check_cruved_scope('E', True, module_code='SYNTHESE')
 def export(info_role):
-    filters = dict(request.args)
+    # change all args in a list of value
+    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
+        
     if 'limit' in filters:
         result_limit = filters.pop('limit')[0]
     else:

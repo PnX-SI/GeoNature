@@ -115,13 +115,6 @@ VALUES
     (9, 4, 4, 1, 3),
     (9, 5, 4, 1, 3),
     (9, 6, 4, 1, 3),
-    -- Groupe ADMIN peut gérer les métadonnées depuis le backoffice
-    (9, 1, 4, 1, 2),
-    (9, 2, 4, 1, 2),
-    (9, 3, 4, 1, 2),
-    (9, 4, 4, 1, 2),
-    (9, 5, 4, 1, 2),
-    (9, 6, 4, 1, 2),
     -- Groupe ADMIN peut gérer les nomenclatures depuis le backoffice
     (9, 1, 4, 1, 4),
     (9, 2, 4, 1, 4),
