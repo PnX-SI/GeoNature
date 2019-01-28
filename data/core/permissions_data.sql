@@ -118,12 +118,12 @@ VALUES
     (9, 4, 4, 2, 1),
     (9, 5, 4, 2, 1),
     (9, 6, 4, 2, 1),
-    -- Groupe en poste pas acces a dans METADATA
+    -- Groupe en poste acces limité a dans METADATA
     (7, 1, 1, 2, 1),
-    (7, 2, 1, 2, 1),
+    (7, 2, 3, 2, 1),
     (7, 3, 1, 2, 1),
     (7, 4, 1, 2, 1),
-    (7, 5, 1, 2, 1),
+    (7, 5, 3, 2, 1),
     (7, 6, 1, 2, 1),
     -- Groupe en poste, n'a pas accès à l'admin
     (7, 1, 1, 1, 1),
