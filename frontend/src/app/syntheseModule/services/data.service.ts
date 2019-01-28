@@ -42,9 +42,13 @@ export class DataService {
     return queryUrl;
   }
   getSyntheseData(params) {
-    return this._api.get<GeoJSON>(`${AppConfig.API_ENDPOINT}/synthese`, {
+    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese`, {
       params: this.buildQueryUrl(params)
     });
+  }
+
+  getSyntheseGeneralStat() {
+    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/general_stats`);
   }
 
   getOneSyntheseObservation(id_synthese) {

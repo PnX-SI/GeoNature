@@ -60,12 +60,16 @@ ID_USER_SOCLE_2 = 6
 
 # Front end configuration
 [FRONTEND]
-# passe le frontend en mode production (message de la console moins parlant en développement)
-PROD_MOD = false
-# Affiche me composant 'custom/components/footer' sur la page d'accueil
-DISPLAY_FOOTER = false
-# Passe le frontend en mode multilingue
-MULTILINGUAL = false
+    # passe le frontend en mode production (message de la console moins parlant en développement)
+    PROD_MOD = false
+    # Affiche le composant 'custom/components/footer' sur la page d'accueil
+    DISPLAY_FOOTER = false
+    # Affiche un bloc ce stat sur la page d'accueil
+    DISPLAY_STAT_BLOC = true
+    # Affiche la carte des 100 obs sur la page d'accueil
+    DISPLAY_MAP_LAST_OBS = true
+    # Passe le frontend en mode multilingue
+    MULTILINGUAL = false
 
 [MAILERROR]
     MAIL_ON_ERROR = false

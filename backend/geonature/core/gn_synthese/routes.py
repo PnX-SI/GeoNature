@@ -325,3 +325,31 @@ def get_autocomplete_taxons_synthese():
     limit = request.args.get('limit', 20)
     data = q.order_by(desc('idx_trgm')).limit(20).all()
     return [d[0].as_dict() for d in data]
+
+
+@routes.route('/general_stats', methods=['GET'])
+@permissions.check_cruved_scope('R', True)
+@json_resp
+def general_stats(info_role):
+    '''
+    Return stats about synthese
+        - nb of observations
+        - nb of distinct species
+        - nb of distinct observer
+        - nb ob datasers
+    '''
+    allowed_datasets = TDatasets.get_user_datasets(info_role)
+    q = DB.session.query(
+            func.count(Synthese.id_dataset),
+            func.count(func.distinct(Synthese.cd_nom)),
+            func.count(func.distinct(Synthese.observers))
+        )
+    q = synthese_query.filter_query_with_cruved(Synthese, q, info_role, allowed_datasets)
+    data = q.one()
+    data = {
+        'nb_data': data[0],
+        'nb_species': data[1],
+        'nb_observers': data[2],
+        'nb_dataset': len(allowed_datasets)
+    }
+    return data
