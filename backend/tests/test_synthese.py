@@ -60,6 +60,19 @@ class TestSynthese:
         data = json_of_response(response)
         assert len(data['data']['features']) >= 2
 
+        # test geometry filter with circle radius
+        query_string = {
+            'geoIntersection': 'POINT (6.121788024902345 45.06794388950998)',
+            'radius': '83883.94104436478'
+        }
+
+        response = self.client.get(
+            url_for('gn_synthese.get_synthese'),
+            query_string=query_string
+        )
+        data = json_of_response(response)
+        assert len(data['data']['features']) >= 2
+
     def test_get_synthese_data_cruved(self):
         # test cruved
         token = get_token(self.client, login="partenaire", password="admin")
