@@ -23,11 +23,7 @@ export class AuthService {
   toastrConfig: ToastrConfig;
   loginError: boolean;
   public isLoading = false;
-  constructor(
-    private router: Router,
-    private _http: HttpClient,
-    private _cookie: CookieService,
-  ) {}
+  constructor(private router: Router, private _http: HttpClient, private _cookie: CookieService) {}
 
   setCurrentUser(user) {
     localStorage.setItem('current_user', JSON.stringify(user));
@@ -113,6 +109,8 @@ export class AuthService {
     }
     // call the logout route to delete the session
     this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_auth/logout_cruved`).subscribe(() => {});
+    // refresh the page to refresh all the shared service
+    location.reload();
   }
 
   isAuthenticated(): boolean {

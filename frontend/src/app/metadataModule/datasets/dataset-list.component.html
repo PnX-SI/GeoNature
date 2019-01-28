@@ -21,7 +21,9 @@
 
       <ngx-datatable-column [width]="60">
           <ng-template let-row="row" ngx-datatable-cell-template>
-            <span class="clickable" (click)="datasetEdit(row.id_dataset)"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i> </span>
+              <button class="clickable btn btn-sm btn-primary" style="margin-top: -5px;" [disabled]="cruvedStore.cruved?.METADATA?.cruved.U === '0'" [routerLink]="['/metadata/dataset', row.id_dataset]" > 
+                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+              </button>
           </ng-template>
       </ngx-datatable-column>
   

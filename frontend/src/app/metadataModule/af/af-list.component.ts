@@ -26,10 +26,6 @@ export class AfListComponent implements OnInit {
     });
   }
 
-  afEdit(id_af) {
-    this._router.navigate(['admin/af', id_af]);
-  }
-
   updateFilter(event) {
     const val = event.target.value.toLowerCase();
 
