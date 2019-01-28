@@ -50,14 +50,12 @@ def filter_taxonomy(model, q, filters):
         -Tuple: the SQLAlchemy query and the filter dictionnary
     """
     if 'cd_ref' in filters:
-        # find all cd_nom where cd_ref = filter['cd_ref']
         sub_query_synonym = DB.session.query(
             Taxref.cd_nom
         ).filter(
             Taxref.cd_ref.in_(filters.pop('cd_ref'))
         ).subquery('sub_query_synonym')
         q = q.filter(model.cd_nom.in_(sub_query_synonym))
-
     if 'taxonomy_group2_inpn' in filters:
         q = q.filter(Taxref.group2_inpn.in_(filters.pop('taxonomy_group2_inpn')))
 
