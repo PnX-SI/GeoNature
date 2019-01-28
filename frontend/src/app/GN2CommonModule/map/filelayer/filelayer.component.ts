@@ -13,6 +13,7 @@ import * as L from 'leaflet';
 import * as ToGeojson from 'togeojson';
 import * as FileLayer from 'leaflet-filelayer';
 import { CommonService } from '@geonature_common/service/common.service';
+import { style } from '@angular/animations';
 
 @Component({
   selector: 'pnx-leaflet-filelayer',
@@ -27,6 +28,8 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
   // when this input change -> delete the layer
   @Input() removeLayer: any;
   @Input() editMode = false;
+  // style of the layers
+  @Input() style;
   @Output() onLoad = new EventEmitter<any>();
   constructor(public mapService: MapService, private _commonService: CommonService) {}
 
@@ -56,7 +59,13 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
     // event on load success
     (this.fileLayerControl as any).loader.on('data:loaded', event => {
       // remove layer from leaflet draw
-      this.mapService.removeAllLayers(this.mapService.map, this.mapService.leafletDrawFeatureGroup);
+      // if edit mode we don't remove the layer previously drawed with leaflet draw
+      if (!this.editMode) {
+        this.mapService.removeAllLayers(
+          this.mapService.map,
+          this.mapService.leafletDrawFeatureGroup
+        );
+      }
       // remove the previous layer loaded via file layer
       this.mapService.removeAllLayers(this.mapService.map, this.mapService.fileLayerFeatureGroup);
       let currentFeature;
@@ -92,7 +101,7 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
               layer.closePopup();
             });
           },
-          style: this.mapService.searchStyle
+          style: this.style || this.mapService.searchStyle
         });
         // add the layers to the feature groupe
         this.mapService.fileLayerFeatureGroup.addLayer(newLayer);
