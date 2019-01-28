@@ -26,6 +26,7 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
   // input to detect a new layer on the map
   // when this input change -> delete the layer
   @Input() removeLayer: any;
+  @Input() editMode = false;
   @Output() onLoad = new EventEmitter<any>();
   constructor(public mapService: MapService, private _commonService: CommonService) {}
 
@@ -34,6 +35,8 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
   ngAfterViewInit() {
     this.mapService.initializefileLayerFeatureGroup();
     this.map = this.mapService.getMap();
+    // set mapService fileLayerEditionMode parameters from the input
+    this.mapService.fileLayerEditionMode = this.editMode;
 
     FileLayer(null, L, ToGeojson);
     (L.Control as any).FileLayerLoad.LABEL =

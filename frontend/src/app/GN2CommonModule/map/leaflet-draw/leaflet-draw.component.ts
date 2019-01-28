@@ -42,10 +42,13 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       if (this.map.getZoom() < this.zoomLevel) {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
       }
-
       // remove eventual filelayer layers
       if (this.mapservice.fileLayerFeatureGroup) {
-        this.mapservice.removeAllLayers(this.map, this.mapservice.fileLayerFeatureGroup);
+        // delete only if fileLayerEditionMode = false
+        // if true we let the filelayer layer to draw it
+        if (!this.mapservice.fileLayerEditionMode) {
+          this.mapservice.removeAllLayers(this.map, this.mapservice.fileLayerFeatureGroup);
+        }
       }
       // remove the current draw
       if (this._currentDraw !== null) {
