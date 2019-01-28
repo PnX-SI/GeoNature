@@ -312,7 +312,7 @@ def create_external_assets_symlink(module_path, module_code):
 
 
 def add_application_db(app, module_code, url, enable_frontend):
-    log.info('Register the module in t_application ... \n')
+    log.info('Register the module in gn_commons.t_modules ... \n')
     from geonature.core.users.models import TApplications
     from geonature.core.gn_commons.models import TModules
     app_conf = load_config(DEFAULT_CONFIG_FILE)

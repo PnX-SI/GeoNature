@@ -9,6 +9,7 @@ CHANGELOG
 
 - V2 : Pour plus de détails sur les évolutions apportées, consultez les détails des versions RC (Release Candidate)
 - BDDv1toV2 : Script SQL de MAJ structure BDD global ou passer les RC ? + Script migration des données à adapter
+- Migration METADATA comme un module à part. La migration prévoit de mettre un CRUVED au groupe_admin et groupe_en_poste pour le nouveau module METADATA. Le groupes nouvellement créé par les administrateur et n'ayant de CRUVED pour l'objet METADATA (du module admin), se retrouve avec le CRUVED hérité de GeoNature. Prévoir de changer le CRUVED de ces groupes pour le nouveau module METADATA.
 
 
 2.0.0-rc.4.2 (2019-01-23)
