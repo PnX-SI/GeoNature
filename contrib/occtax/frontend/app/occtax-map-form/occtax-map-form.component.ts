@@ -32,6 +32,7 @@ export class OcctaxMapFormComponent
   public id: number;
   @ViewChild(MarkerComponent)
   public markerComponent: MarkerComponent;
+  public firstFileLayerMessage = true;
 
   public occtaxConfig = ModuleConfig;
   constructor(
@@ -193,6 +194,14 @@ export class OcctaxMapFormComponent
         }
       }
     });
+  }
+
+  // display help toaster for filelayer
+  infoMessageFileLayer() {
+    if (this.firstFileLayerMessage) {
+      this._commonService.translateToaster("info", "Map.FileLayerInfoMessage");
+    }
+    this.firstFileLayerMessage = false;
   }
 
   sendGeoInfo(geojson) {

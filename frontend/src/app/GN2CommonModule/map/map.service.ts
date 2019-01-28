@@ -18,6 +18,8 @@ export class MapService {
   public editingMarker = true;
   public leafletDrawFeatureGroup: FeatureGroup;
   public fileLayerFeatureGroup: FeatureGroup;
+  // boolean to control if we delete filelyaer layer when leaflet draw start
+  public fileLayerEditionMode = false;
   public modalContent: any;
   private _geojsonCoord = new Subject<any>();
   public gettingGeojson$: Observable<any> = this._geojsonCoord.asObservable();

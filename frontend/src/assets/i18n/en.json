@@ -61,7 +61,8 @@
     "AddPoint": "Locate observation (point)",
     "AddLine": "Locate observation (line)",
     "AddPolygon": "Locate observation (polygon)",
-    "ZoomWarning": "Inappropriate scale, zoom more "
+    "ZoomWarning": "Inappropriate scale, zoom more ",
+    "FileLayerInfoMessage": "Click on the point of your releve or draw it with the drawing tools"
   },
   "Releve": {
     "Releve": "Relevé",
