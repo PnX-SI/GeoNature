@@ -35,4 +35,4 @@ DEFAULT_LANGUAGE='fr'
 # Configuration de la Synthese
 [SYNTHESE]
     # colonne des exports de la synthese
-    [EXPORT_COLUMNS]
+    [SYNTHESE.EXPORT_COLUMNS]
