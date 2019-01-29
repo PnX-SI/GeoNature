@@ -63,7 +63,8 @@
     "AddPolygon": "Locate observation (polygon)",
     "ZoomWarning": "Inappropriate scale, zoom more ",
     "FileLayerInfoMessage":
-      "Right click on the shape to select your current releve. Selected layer are in red. Right click to display the layer info"
+      "Right click on the shape to select your current releve. Selected layer are in red. Right click to display the layer info",
+    "FileLayerInfoSynthese": "Right click on the shape to display info"
   },
   "Releve": {
     "Releve": "Relevé",

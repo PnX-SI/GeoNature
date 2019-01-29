@@ -12,8 +12,7 @@ import { Map } from 'leaflet';
 import * as L from 'leaflet';
 import * as ToGeojson from 'togeojson';
 import * as FileLayer from 'leaflet-filelayer';
-import { CommonService } from '@geonature_common/service/common.service';
-import { style } from '@angular/animations';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'pnx-leaflet-filelayer',
@@ -34,7 +33,7 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
   // style of the layers
   @Input() style;
   @Output() onLoad = new EventEmitter<any>();
-  constructor(public mapService: MapService, private _commonService: CommonService) {}
+  constructor(public mapService: MapService, private _toasterService: ToastrService) {}
 
   ngOnInit() {
     this.style = this.style || this.mapService.searchStyle;
@@ -135,7 +134,11 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
     // event on load fail
 
     (this.fileLayerControl as any).loader.on('data:error', error => {
-      this._commonService.translateToaster('error', 'ErrorMessage');
+      this._toasterService.error(error.error.message, "Erreur d'import", {
+        positionClass: 'toast-top-center',
+        tapToDismiss: true,
+        timeOut: 3000
+      });
       console.error(error);
     });
   }
