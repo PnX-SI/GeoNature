@@ -82,11 +82,9 @@ WHERE module_code = 'METADATA';
 
 -- Update taxons_synthese_autocomplete
 
-UPDATE gn_synthese.taxons_synthese_autocomplete
-SET search_name = concat(n.nom_francais, ' =  <i> ', t.nom_valide, '</i>', ' - [', t.id_rang, ' - ', t.cd_nom , ']' )
+SELECT concat(aut.search_name,  ' - [', t.id_rang, ' - ', t.cd_nom , ']' )
 FROM gn_synthese.taxons_synthese_autocomplete aut
-JOIN taxonomie.taxref t ON aut.cd_nom = t.cd_nom
-JOIN taxonomie.bib_noms n ON n.cd_nom = t.cd_nom;
+JOIN taxonomie.taxref t ON aut.cd_nom = t.cd_nom;
 
 CREATE OR REPLACE FUNCTION gn_synthese.fct_trg_refresh_taxons_forautocomplete()
   RETURNS trigger AS
