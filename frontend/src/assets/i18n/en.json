@@ -62,7 +62,8 @@
     "AddLine": "Locate observation (line)",
     "AddPolygon": "Locate observation (polygon)",
     "ZoomWarning": "Inappropriate scale, zoom more ",
-    "FileLayerInfoMessage": "Click on the point of your releve or draw it with the drawing tools"
+    "FileLayerInfoMessage":
+      "Right click on the shape to select your current releve. Selected layer are in red. Right click to display the layer info"
   },
   "Releve": {
     "Releve": "Relevé",

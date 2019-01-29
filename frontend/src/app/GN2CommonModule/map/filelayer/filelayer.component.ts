@@ -22,7 +22,10 @@ import { style } from '@angular/animations';
 export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChanges {
   public map: Map;
   public Le: any;
+  // previous layer loaded with filelayer
   public previousLayer: any;
+  // previous layer selectionned with right click on a filelayer layer
+  public previousCurrentLayer: any;
   public fileLayerControl: L.Control;
   // input to detect a new layer on the map
   // when this input change -> delete the layer
@@ -33,7 +36,9 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
   @Output() onLoad = new EventEmitter<any>();
   constructor(public mapService: MapService, private _commonService: CommonService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.style = this.style || this.mapService.searchStyle;
+  }
 
   ngAfterViewInit() {
     this.mapService.initializefileLayerFeatureGroup();
@@ -49,8 +54,8 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
         layer: (L as any).geoJson,
         // Add to map after loading (default: true) ?
         addToMap: false,
-        // File size limit in kb (default: 1024) ?
-        fileSizeLimit: 1024,
+        // File size limit in kb (default: 10024) ?
+        fileSizeLimit: 10024,
         // Restrict accepted file formats (default: .geojson, .json, .kml, and .gpx) ?
         formats: ['.gpx', '.geojson', '.kml']
       })
@@ -59,13 +64,9 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
     // event on load success
     (this.fileLayerControl as any).loader.on('data:loaded', event => {
       // remove layer from leaflet draw
-      // if edit mode we don't remove the layer previously drawed with leaflet draw
-      if (!this.editMode) {
-        this.mapService.removeAllLayers(
-          this.mapService.map,
-          this.mapService.leafletDrawFeatureGroup
-        );
-      }
+      this.mapService.removeAllLayers(this.mapService.map, this.mapService.leafletDrawFeatureGroup);
+      // set marker editing OFF
+      this.mapService.setEditingMarker(false);
       // remove the previous layer loaded via file layer
       this.mapService.removeAllLayers(this.mapService.map, this.mapService.fileLayerFeatureGroup);
       let currentFeature;
@@ -94,14 +95,30 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
             if (propertiesContent.length > 0) {
               layer.bindPopup(propertiesContent);
             }
-            layer.on('mouseover', e => {
+            // on right click display popup
+            layer.on('contextmenu', e => {
               layer.openPopup();
             });
-            layer.on('mouseout', e => {
-              layer.closePopup();
-            });
+
+            // on click on a layer, change the color of the layer
+            if (this.editMode) {
+              layer.on('click', e => {
+                layer.closePopup();
+                if (this.previousCurrentLayer) {
+                  this.previousCurrentLayer.setStyle(this.style);
+                }
+                (layer as any).setStyle(this.mapService.searchStyle);
+                this.previousCurrentLayer = layer;
+                // remove marker eventually
+                if (this.mapService.marker) {
+                  this.mapService.marker.remove();
+                }
+                // sent geojson observable
+                this.mapService.setGeojsonCoord((layer as any).feature);
+              });
+            }
           },
-          style: this.style || this.mapService.searchStyle
+          style: this.style
         });
         // add the layers to the feature groupe
         this.mapService.fileLayerFeatureGroup.addLayer(newLayer);
@@ -122,6 +139,8 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
       console.error(error);
     });
   }
+
+  setNewLayerFromClick(layer) {}
 
   ngOnChanges(changes) {
     if (changes && changes.removeLayer && changes.removeLayer.currentValue) {

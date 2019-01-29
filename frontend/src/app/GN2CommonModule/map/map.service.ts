@@ -34,7 +34,7 @@ export class MapService {
   };
 
   searchStyle = {
-    color: 'green'
+    color: 'red'
   };
 
   constructor(private http: Http, private _commonService: CommonService) {}
@@ -109,12 +109,17 @@ export class MapService {
   }
 
   setGeojsonCoord(geojsonCoord) {
+    console.log(geojsonCoord);
     if (!this.justLoaded) {
       this._geojsonCoord.next(geojsonCoord);
     }
   }
 
-  setEditingMarker(isEditing) {
+  /**
+   * Function who disable marker editing (click event and control) mode via an observable
+   * @param isEditing : boolean
+   */
+  setEditingMarker(isEditing: boolean): void {
     this._isEditingMarker.next(isEditing);
   }
 
