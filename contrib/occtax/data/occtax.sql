@@ -1137,7 +1137,7 @@ VALUES('obsocctax','Observateurs Occtax','Liste des observateurs du module Occta
 
 -- Ajout de l'utilsateur admin dans la liste
 INSERT INTO utilisateurs.cor_role_liste 
-SELECT id_liste, 1
+SELECT id_liste, 7
 FROM utilisateurs.t_listes
 WHERE code_liste = 'obsocctax';
 
