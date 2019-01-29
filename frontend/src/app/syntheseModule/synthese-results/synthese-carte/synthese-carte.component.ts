@@ -4,6 +4,7 @@ import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { MapService } from '@geonature_common/map/map.service';
 import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
 import { SyntheseFormService } from '../../services/form.service';
+import { CommonService } from '@geonature_common/service/common.service';
 
 @Component({
   selector: 'pnx-synthese-carte',
@@ -14,11 +15,13 @@ import { SyntheseFormService } from '../../services/form.service';
 export class SyntheseCarteComponent implements OnInit, AfterViewInit {
   public leafletDrawOptions = leafletDrawOption;
   public currentLeafletDrawCoord: any;
+  public firstFileLayerMessage = true;
   @Input() inputSyntheseData: GeoJSON;
   constructor(
     public mapListService: MapListService,
     private _ms: MapService,
-    public formService: SyntheseFormService
+    public formService: SyntheseFormService,
+    private _commonService: CommonService
   ) {}
 
   ngOnInit() {
@@ -53,8 +56,13 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit {
     this.currentLeafletDrawCoord = geojson;
   }
 
-  bindGeojsonFormFromFileLayer(geojson) {
+  onFileLayerLoaded(geojson) {
     this.formService.searchForm.controls.geoIntersection.setValue(geojson);
+
+    if (this.firstFileLayerMessage) {
+      this._commonService.translateToaster('success', 'Map.FileLayerInfoSynthese');
+    }
+    this.firstFileLayerMessage = false;
   }
 
   deleteControlValue() {
