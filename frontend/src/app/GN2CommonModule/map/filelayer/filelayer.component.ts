@@ -91,27 +91,23 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
               propertiesContent +=
                 '<b>' + prop + '</b> : ' + currentFeature.properties[prop] + ' ' + '<br>';
             }
-            if (propertiesContent.length > 0) {
-              layer.bindPopup(propertiesContent);
-            }
-            // on right click display popup
+
+            //on right click display popup
             layer.on('contextmenu', e => {
-              layer.openPopup();
+              if (propertiesContent.length > 0) {
+                layer.bindPopup(propertiesContent);
+                layer.openPopup();
+              }
             });
 
             // on click on a layer, change the color of the layer
             if (this.editMode) {
               layer.on('click', e => {
-                layer.closePopup();
                 if (this.previousCurrentLayer) {
                   this.previousCurrentLayer.setStyle(this.style);
                 }
-                (layer as any).setStyle(this.mapService.searchStyle);
+                (layer as any).setStyle({ color: 'red' });
                 this.previousCurrentLayer = layer;
-                // remove marker eventually
-                if (this.mapService.marker) {
-                  this.mapService.marker.remove();
-                }
                 // sent geojson observable
                 this.mapService.setGeojsonCoord((layer as any).feature);
               });

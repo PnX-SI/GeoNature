@@ -34,7 +34,7 @@ export class MapService {
   };
 
   searchStyle = {
-    color: 'red'
+    color: 'green'
   };
 
   constructor(private http: Http, private _commonService: CommonService) {}
