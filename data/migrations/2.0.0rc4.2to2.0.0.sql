@@ -82,43 +82,11 @@ WHERE module_code = 'METADATA';
 
 -- Update taxons_synthese_autocomplete
 
-DROP TABLE gn_synthese.taxons_synthese_autocomplete;
-
-CREATE TABLE gn_synthese.taxons_synthese_autocomplete AS
-SELECT t.cd_nom,
-  t.cd_ref,
-  t.search_name,
-  t.nom_valide,
-  t.lb_nom,
-  t.regne,
-  t.group2_inpn
-FROM (
-  SELECT t_1.cd_nom,
-        t_1.cd_ref,
-        concat(t_1.lb_nom, ' =  <i> ', t_1.nom_valide, '</i>', ' - [', t_1.id_rang, ' - ', t_1.cd_nom , ']' ) AS search_name,
-        t_1.nom_valide,
-        t_1.lb_nom,
-        t_1.regne,
-        t_1.group2_inpn
-  FROM taxonomie.taxref t_1
-
-  UNION
-  SELECT t_1.cd_nom,
-        t_1.cd_ref,
-        concat(t_1.nom_vern, ' =  <i> ', t_1.nom_valide, '</i>', ' - [', t_1.id_rang, ' - ', t_1.cd_nom , ']' ) AS search_name,
-        t_1.nom_valide,
-        t_1.lb_nom,
-        t_1.regne,
-        t_1.group2_inpn
-  FROM taxonomie.taxref t_1
-  WHERE t_1.nom_vern IS NOT NULL AND t_1.cd_nom = t_1.cd_ref
-) t
-  WHERE t.cd_nom IN (SELECT DISTINCT cd_nom FROM gn_synthese.synthese);
-
-  COMMENT ON TABLE gn_synthese.taxons_synthese_autocomplete.taxons_synthese_autocomplete
-     IS 'Table construite à partir d''une requete sur la base et mise à jour via le trigger trg_refresh_taxons_forautocomplete de la table gn_synthese';
-
-
+UPDATE gn_synthese.taxons_synthese_autocomplete
+SET search_name = concat(n.nom_francais, ' =  <i> ', t.nom_valide, '</i>', ' - [', t.id_rang, ' - ', t.cd_nom , ']' )
+FROM gn_synthese.taxons_synthese_autocomplete aut
+JOIN taxonomie.taxref t ON aut.cd_nom = t.cd_nom
+JOIN taxonomie.bib_noms n ON n.cd_nom = t.cd_nom;
 
 CREATE OR REPLACE FUNCTION gn_synthese.fct_trg_refresh_taxons_forautocomplete()
   RETURNS trigger AS
