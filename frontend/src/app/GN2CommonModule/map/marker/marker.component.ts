@@ -102,6 +102,7 @@ export class MarkerComponent implements OnInit, OnChanges {
       }
     } else {
       this.mapservice.removeAllLayers(this.map, this.mapservice.leafletDrawFeatureGroup);
+      this.mapservice.removeAllLayers(this.map, this.mapservice.fileLayerFeatureGroup);
       this.enableMarkerOnClick();
     }
   }
