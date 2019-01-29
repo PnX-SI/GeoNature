@@ -259,7 +259,7 @@ SELECT t.cd_nom,
 FROM (
   SELECT t_1.cd_nom,
         t_1.cd_ref,
-        concat(t_1.lb_nom, ' =  <i> ', t_1.nom_valide, '</i>' ) AS search_name,
+        concat(t_1.lb_nom, ' =  <i> ', t_1.nom_valide, '</i>', ' - [', t_1.id_rang, ' - ', t_1.cd_nom , ']' ) AS search_name,
         t_1.nom_valide,
         t_1.lb_nom,
         t_1.regne,
@@ -269,7 +269,7 @@ FROM (
   UNION
   SELECT t_1.cd_nom,
         t_1.cd_ref,
-        concat(t_1.nom_vern, ' =  <i> ', t_1.nom_valide, '</i>' ) AS search_name,
+        concat(t_1.nom_vern, ' =  <i> ', t_1.nom_valide, '</i>', ' - [', t_1.id_rang, ' - ', t_1.cd_nom , ']' ) AS search_name,
         t_1.nom_valide,
         t_1.lb_nom,
         t_1.regne,
@@ -635,7 +635,7 @@ $BODY$
       INSERT INTO gn_synthese.taxons_synthese_autocomplete
       SELECT t.cd_nom,
               t.cd_ref,
-          concat(t.lb_nom, ' = <i>', t.nom_valide, '</i>') AS search_name,
+          concat(t.lb_nom, ' = <i>', t.nom_valide, '</i>', ' - [', t.id_rang, ' - ', t.cd_nom , ']') AS search_name,
           t.nom_valide,
           t.lb_nom,
           t.regne,
@@ -644,7 +644,7 @@ $BODY$
       INSERT INTO gn_synthese.taxons_synthese_autocomplete
       SELECT t.cd_nom,
         t.cd_ref,
-        concat(t.nom_vern, ' =  <i> ', t.nom_valide, '</i>' ) AS search_name,
+        concat(t.nom_vern, ' =  <i> ', t.nom_valide, '</i>', ' - [', t.id_rang, ' - ', t.cd_nom , ']' ) AS search_name,
         t.nom_valide,
         t.lb_nom,
         t.regne,
