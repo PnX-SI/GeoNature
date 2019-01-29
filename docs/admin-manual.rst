@@ -931,8 +931,101 @@ La gestion des droits (CRUVED) se fait module par module. Cependant si on ne red
 
 Pour ne pas afficher le module Occtax à un utilisateur où à un groupe, il faut lui mettre l'action Read (R) à 0.
 
-Cette manipulation se fait dans la table (``utilisateurs.cor_ap_privileges``), où ``id_tag_action`` correspond à l'id du tag d'une action (CRUVED), et ``id_tag_object`` à l'id du tag de la portée pour chaque action (0,1,2,3). Voir la table ``utilisateurs.t_tags`` pour identifier la correspondance entre les tags et les actions, ainsi que les portées.
+L'administration des droits des utilisateurs pour le module Occtax se fait dans le backoffice de gestion des permissions de GeoNature.
 
-La correspondance entre ``id_tag_action``, ``id_tag_object``, ``id_application`` et ``id_role`` donnera les droits d'une personne ou d'un groupe pour une application (ou module) donnée.
 
-L'administration des droits des utilisateurs se fera bientôt dans une nouvelle version de UsersHub qui prendra en compte ce nouveau mécanisme du CRUVED.
+Module SYNTHESE
+---------------
+
+Le module Synthèse est un module du coeur de GeoNature, fourni par défault lors de l'installation.
+
+Configuration
+""""""""""""""
+
+L'ensemble des paramètre de configuration du module se trouve dans le fichier général de configuration de GeoNautre ``config/geonature_config.toml`` puisqu'il s'agit d'un module du coeur.
+
+- Modifier les filtres géographiques disponible par défaut dans l'interface de recherche.
+
+Editer la variable ``AREA_FILTERS`` en y ajoutant le label et l'ID du type d'entité géographique que vous souhaité rajouté. Voir table ``ref_geo.bib_areas_types``. Dans l'exemple on ajoute le type ZNIEFF1. Attention, les entités géographique corespondante au type 3, doivent également être présentes dans la table ``ref_geo.l_areas``
+::
+
+    [SYNTHESE]
+        # Liste des entités géographiques sur lesquels les filtres
+        # géographiques de la synthese s'appuient (id_area = id de l'entité géo, table ref_geo.bib_areas_types)
+        AREA_FILTERS = [
+            { label = "Communes", id_type = 25 },
+            { label = "ZNIEFF1", id_type = 3 },
+        ]
+
+
+- Configurer les champs de ses exports
+
+Les exports (CSV, GeoJson, Shapefile) sont basés sur la vue ``gn_synthese.v_synthese_for_export``. Ne pas modifier cette vue pour garantir le fonctionnement des filtres est des exports. Il est cependant possible de désactiver des colonnes ou de les renommer.
+
+Pour cela éditez la variable ``[SYNTHESE.EXPORT_COLUMNS]``. Enlevez la ligne de la colonne que vous souhaitez désactiver, ou renommer la 2ème partie de la ligne pour renommer une colonne. Ex: pour renommer le champs ``count_min``, editez la ligne de la manière suivante: ``count_min = "NombMax" ``. Les colonnes de plus de 10 caractères seront tronqués dans le fichier shapefile.
+
+[SYNTHESE.EXPORT_COLUMNS]
+    id_synthese = "idSyn" 
+    unique_id_sinp = "idUnique" 
+    date_min = "dateMin" 
+    date_max = "dateMax" 
+    observers = "observers" 
+    altitude_min = "altMin" 
+    altitude_max = "altMax" 
+    count_min = "NbMin" 
+    count_max = "nbMax" 
+    sample_number_proof = "EchanPreuv" 
+    digital_proof = "PreuvNum" 
+    non_digital_proof = "PreuvNoNum" 
+    comments = "comment" 
+    nat_obj_geo = "natObjGeo" 
+    grp_typ = "methGrp" 
+    obs_method = "obsMeth" 
+    obs_technique = "obsTech" 
+    bio_status = "ocEtatBio" 
+    bio_condition = "ocStatBio" 
+    naturalness = "ocNat" 
+    exist_proof = "preuveOui" 
+    valid_status = "validStat" 
+    diffusion_level = "nivDiffusi" 
+    life_stage = "ocStade" 
+    sex = "ocSex" 
+    obj_count = "objDenbr" 
+    type_count = "typDenbr" 
+    sensitivity = "sensibilit" 
+    observation_status = "statutObs" 
+    blurring = "floutage" 
+    source_status = "statutSour" 
+    info_geo_type = "typeGeom" 
+    determination_method = "methDeterm" 
+    dataset_name = "JDD" 
+    cd_nom = "cdNom" 
+    cd_ref = "cdRef" 
+    nom_valide = "nomValide" 
+    wkt = "WKT"
+
+
+- Configurer les seuils du nombre de données pour la recherche et les exports
+
+Par défault et pour des questions de performances (du navigateur et du serveur) on limite à 10 000 le nombre de résultat affiché sur la carte et à 40 000 le nombre d'observations dans les exports.
+Ces seuils sont éditables respectivement par les variables ``NB_MAX_OBS_MAP`` ``NB_MAX_OBS_EXPORT``
+::
+
+    [SYNTHESE]
+        # Nombre d'observation maximum à afficher sur la carte après une recherche
+        NB_MAX_OBS_MAP = 10000
+        # Nombre max d'observation dans les exports
+        NB_MAX_OBS_EXPORT = 40000
+
+- Désactiver des filtres génériques 
+
+L'interface de recherche de la synthèse permet de filtrer sur l'ensemble des nomenclatures de la table ``gn_synthese``, il est cependant possible de désactiver les filtres de certains champs.
+Editez la variable ``EXCLUDED_COLUMNS``
+
+::
+
+    [SYNTHESE]
+        EXCLUDED_COLUMNS = ['non_digital_proof'] # pour enlever le filtre 'preuve non numérique'
+
+
+D'autres élements sont paramètrables dans le module synthese. La liste complète est disponible dans le fichier ``config/geonature_config.toml`` rubrique ``SYNTHESE``
