@@ -103,7 +103,6 @@ occurrence RECORD;
 releve RECORD;
 id_source integer;
 id_module integer;
-validation RECORD;
 id_nomenclature_source_status integer;
 myobservers RECORD;
 id_role_loop integer;
@@ -124,11 +123,6 @@ SELECT INTO id_source s.id_source FROM gn_synthese.t_sources s WHERE name_source
 -- Récupération de l'id_module
 SELECT INTO id_module gn_commons.get_id_module_bycode('OCCTAX');
 
--- Récupération du status de validation du counting dans la table t_validation
-SELECT INTO validation v.*, CONCAT(r.nom_role, r.prenom_role) as validator_full_name
-FROM gn_commons.t_validations v
-LEFT JOIN utilisateurs.t_roles r ON v.id_validator = r.id_role
-WHERE uuid_attached_row = new_count.unique_id_sinp_occtax;
 
 -- Récupération du status_source depuis le JDD
 SELECT INTO id_nomenclature_source_status d.id_nomenclature_source_status FROM gn_meta.t_datasets d WHERE id_dataset = releve.id_dataset;
@@ -156,7 +150,6 @@ id_nomenclature_bio_status,
 id_nomenclature_bio_condition,
 id_nomenclature_naturalness,
 id_nomenclature_exist_proof,
-id_nomenclature_valid_status,
 id_nomenclature_diffusion_level,
 id_nomenclature_life_stage,
 id_nomenclature_sex,
@@ -181,8 +174,6 @@ the_geom_point,
 the_geom_local,
 date_min,
 date_max,
-validator,
-validation_comment,
 observers,
 determiner,
 id_digitiser,
@@ -206,8 +197,6 @@ VALUES(
   occurrence.id_nomenclature_bio_condition,
   occurrence.id_nomenclature_naturalness,
   occurrence.id_nomenclature_exist_proof,
-    -- statut de validation récupérer à partir de gn_commons.t_validations
-  validation.id_nomenclature_valid_status,
   occurrence.id_nomenclature_diffusion_level,
   new_count.id_nomenclature_life_stage,
   new_count.id_nomenclature_sex,
@@ -234,8 +223,6 @@ VALUES(
   releve.geom_local,
   (to_char(releve.date_min, 'DD/MM/YYYY') || ' ' || COALESCE(to_char(releve.hour_min, 'HH24:MI:SS'),'00:00:00'))::timestamp,
   (to_char(releve.date_max, 'DD/MM/YYYY') || ' ' || COALESCE(to_char(releve.hour_max, 'HH24:MI:SS'),'00:00:00'))::timestamp,
-  validation.validator_full_name,
-  validation.validation_comment,
   COALESCE (myobservers.observers_name, releve.observers_txt),
   occurrence.determiner,
   releve.id_digitiser,
