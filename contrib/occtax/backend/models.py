@@ -1,14 +1,17 @@
 
 from flask import current_app
 from sqlalchemy import ForeignKey
-from sqlalchemy.sql import select, func
+from sqlalchemy.sql import select, func, and_
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 from geoalchemy2 import Geometry
 
+from pypnnomenclature.models import TNomenclatures
+
 from geonature.utils.utilssqlalchemy import (
     serializable, geoserializable
 )
+from geonature.core.gn_commons.models import TValidations
 from geonature.utils.env import DB
 from pypnusershub.db.tools import InsufficientRightsError
 from pypnusershub.db.models import User
@@ -116,6 +119,7 @@ class CorCountingOccurrence(DB.Model):
     __tablename__ = 'cor_counting_occtax'
     __table_args__ = {'schema': 'pr_occtax'}
     id_counting_occtax = DB.Column(DB.Integer, primary_key=True)
+    unique_id_sinp_occtax = DB.Column(UUID(as_uuid=True))
     id_occurrence_occtax = DB.Column(
         DB.Integer,
         ForeignKey('pr_occtax.t_occurrences_occtax.id_occurrence_occtax')
@@ -126,6 +130,22 @@ class CorCountingOccurrence(DB.Model):
     id_nomenclature_type_count = DB.Column(DB.Integer)
     count_min = DB.Column(DB.Integer)
     count_max = DB.Column(DB.Integer)
+    # get all validation history
+    # validations = relationship(
+    #     TValidations, 
+    #     secondary=TNomenclatures.__table__,
+    #     lazy='select',
+    #     primaryjoin=(
+    #         unique_id_sinp_occtax == TValidations.uuid_attached_row
+    #     ),
+    #     secondaryjoin=(TValidations.id_nomenclature_valid_status == TNomenclatures.id_nomenclature),
+    #     foreign_keys=[
+    #         TValidations.uuid_attached_row,
+    #         TValidations.id_nomenclature_valid_status
+    #     ]
+    # )
+    # nomenclature_valid
+
 
 
 @serializable

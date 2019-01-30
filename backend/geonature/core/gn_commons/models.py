@@ -94,3 +94,22 @@ class TParameters(DB.Model):
     parameter_desc = DB.Column(DB.Unicode)
     parameter_value = DB.Column(DB.Unicode)
     parameter_extra_value = DB.Column(DB.Unicode)
+
+
+@serializable
+class TValidations(DB.Model):
+    __tablename__ = 't_validations'
+    __table_args__ = {'schema': 'gn_commons', 'extend_existing': True}
+
+    id_validation = DB.Column(
+        DB.Integer,
+        primary_key=True
+    )
+    id_table_location = DB.Column(DB.Integer)
+    uuid_attached_row = DB.Column(UUID(as_uuid=True))
+    id_nomenclature_valid_status = DB.Column(DB.Integer)
+    id_validator = DB.Column(DB.Integer)
+    validation_comment = DB.Column(DB.Unicode)
+    validation_date = DB.Column(DB.DateTime)
+    validation_auto = DB.Column(DB.Boolean)
+

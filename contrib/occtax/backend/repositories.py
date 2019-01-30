@@ -1,9 +1,12 @@
 from sqlalchemy import or_
 from werkzeug.exceptions import NotFound
+from sqlalchemy.sql import func, and_
+from sqlalchemy.orm.exc import NoResultFound
+from pypnnomenclature.models import TNomenclatures
 
 from geonature.utils.env import DB
 from geonature.core.gn_meta.models import TDatasets
-
+from geonature.core.gn_commons.models import TValidations
 from geonature.utils.utilssqlalchemy import testDataType
 from geonature.utils.errors import GeonatureApiError
 from .utils import get_nomenclature_filters
@@ -27,17 +30,46 @@ class ReleveRepository():
         self.model = model
 
     def get_one(self, id_releve, info_user):
-        """Return one releve
+        """ Get one releve model if allowed
         params:
          - id_releve: integer
          - info_user: TRole object model
+        
+        Return: 
+            Tuple(the releve model, the releve as geojson)
         """
         releve = DB.session.query(self.model).get(id_releve)
         if not releve:
             raise NotFound(
                 'The releve "{}" does not exist'.format(id_releve)
             )
-        return releve.get_releve_if_allowed(info_user)
+        # check if the user is autorized
+        releve = releve.get_releve_if_allowed(info_user)
+        rel_as_geojson = releve.get_geofeature()
+        # add the last validation status
+        for occ in rel_as_geojson['properties']['t_occurrences_occtax']:
+            for count in occ['cor_counting_occtax']:
+                last_validation_sub_query = DB.session.query(
+                    func.max(TValidations.validation_date)
+                ).subquery('last_validation_sub_query')
+                try:
+                    validation_status = DB.session.query(
+                        TValidations, TNomenclatures.label_default
+                        ).join(
+                            TNomenclatures, TNomenclatures.id_nomenclature == TValidations.id_nomenclature_valid_status
+                        ).filter(
+                            and_(
+                                TValidations.uuid_attached_row == count['unique_id_sinp_occtax'],
+                                TValidations.validation_date == last_validation_sub_query
+                            )
+                        ).one()
+                except NoResultFound:
+                    pass
+                validation_as_dict = validation_status[0].as_dict()
+                validation_as_dict['validation_label'] = validation_status[1]
+                count['validation_status'] = validation_as_dict
+
+        return releve, rel_as_geojson
 
     def update(self, releve, info_user, geom):
         """ Update the current releve if allowed

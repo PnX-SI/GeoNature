@@ -101,16 +101,19 @@ def getOneCounting(id_counting):
 @permissions.check_cruved_scope('R', True, module_code="OCCTAX")
 @json_resp
 def getOneReleve(id_releve, info_role):
+    '''
+    Get one releve
+    '''
     releve_repository = ReleveRepository(TRelevesOccurrence)
-    data = releve_repository.get_one(id_releve, info_role)
+    releve_model, releve_geojson = releve_repository.get_one(id_releve, info_role)
     user_cruved = get_or_fetch_user_cruved(
         session=session,
         id_role=info_role.id_role,
-        module_code='OCCTAX',
+        module_code='OCCTAX'
     )
-    releve_cruved = data.get_releve_cruved(info_role, user_cruved)
+    releve_cruved = releve_model.get_releve_cruved(info_role, user_cruved)
     return {
-        'releve': data.get_geofeature(),
+        'releve': releve_geojson,
         'cruved': releve_cruved
     }
 
