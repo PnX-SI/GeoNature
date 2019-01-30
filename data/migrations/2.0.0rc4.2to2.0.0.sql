@@ -312,3 +312,8 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+
+
+-- suppression de la nomenclature par défault validation inutilisée dans occtax
+DELETE FROM pr_occtax.defaults_nomenclatures_value
+WHERE mnemonique_type = 'STATUT_VALID';

@@ -42,7 +42,6 @@ class FormConfig(Schema):
     type_count = fields.Boolean(missing=True)
     count_min = fields.Boolean(missing=True)
     count_max = fields.Boolean(missing=True)
-    validation_status = fields.Boolean(missing=False)
 
 
 default_map_list_conf = [
