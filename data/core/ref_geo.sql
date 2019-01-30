@@ -101,7 +101,7 @@ ALTER TABLE l_areas ALTER COLUMN geom SET STORAGE EXTERNAL;
 CREATE TABLE li_municipalities (
     id_municipality character varying(25) NOT NULL,
     id_area integer NOT NULL,
-    status character varying(22),
+    status character varying(50),
     insee_com character varying(5),
     nom_com character varying(50),
     insee_arr character varying(2),
