@@ -290,13 +290,13 @@ then
         echo "Insert default French municipalities (IGN admin-express)" &>> var/log/install_db.log
         echo "--------------------" &>> var/log/install_db.log
         echo "" &>> var/log/install_db.log
-        if [ ! -f 'tmp/geonature/communes_fr_admin_express_2017-06.zip' ]
+        if [ ! -f 'tmp/geonature/communes_fr_admin_express_2019-01.zip' ]
         then
-            wget  --cache=off http://geonature.fr/data/ign/communes_fr_admin_express_2017-06.zip -P tmp/geonature
+            wget  --cache=off http://geonature.fr/data/ign/communes_fr_admin_express_2019-01.zip -P tmp/geonature
         else
-            echo "tmp/geonature/communes_fr_admin_express_2017-06.zip already exist"
+            echo "tmp/geonature/communes_fr_admin_express_2019-01.zip already exist"
         fi
-        unzip tmp/geonature/communes_fr_admin_express_2017-06.zip -d tmp/geonature
+        unzip tmp/geonature/communes_fr_admin_express_2019-01.zip -d tmp/geonature
         sudo -n -u postgres -s psql -d $db_name -f tmp/geonature/fr_municipalities.sql &>> var/log/install_db.log
         echo "" &>> var/log/install_db.log
         echo "Restore $user_pg owner" &>> var/log/install_db.log
