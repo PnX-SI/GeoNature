@@ -42,6 +42,8 @@ Schéma simplifié de la BDD :
 - En bleu, les schémas des protocoles et sources de données
 - En vert, les schémas des applications pouvant interagir avec le coeur de GeoNature
 
+Depuis la version 2.0.0-rc.4, il faut noter que les droits (CRUVED) ont été retirés du schéma ``utilisateurs`` (``ref_users``) de UsersHub pour l'intégrer dans GeoNature dans un schéma ``gn_permissions``, à ajouter en rose.
+
 Modèle simplifié de la BDD (2017-12-15) : 
 
 .. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2017-12-15-GN2-MCD-simplifie.jpg
@@ -57,9 +59,9 @@ Gestion des droits :
 
 L'accès des utilisateurs à l'application GeoNature est gérée de manière centralisée dans UsersHub. 
 
-La gestion des droits (permissions), spécifique à GeoNature, est elle gérée dans un module GeoNature dédié. Dans la version 1 de GeoNature, il était possible d'attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour étendre les possibilités d'attribution de droits et les rendre plus génériques. 
+La gestion des droits (permissions), spécifique à GeoNature, est gérée dans un schém et un module de GeoNature dédié. Dans la version 1 de GeoNature, il était possible d'attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour étendre les possibilités d'attribution de droits et les rendre plus génériques. 
 
-La gestion des droits dans GeoNature, comme dans beaucoup d'application, est liée à des actions (Create / Read / Update / Delete aka CRUD). Pour les besoins  métiers de l'application nous avons rajouté deux actions : "Valider" et "Exporter", ce qui donne le CRUVED: Create / Read / Update / Validate / Export / Delete.
+La gestion des droits dans GeoNature, comme dans beaucoup d'applications, est liée à des actions (Create / Read / Update / Delete aka CRUD). Pour les besoins  métiers de l'application nous avons rajouté deux actions : "Valider" et "Exporter", ce qui donne le CRUVED : Create / Read / Update / Validate / Export / Delete.
 
 Sur ces actions, on va pouvoir appliquer des filtres de manière générique.
 
@@ -68,7 +70,7 @@ Le filtre le plus courant est celui de la "portée". On autorise des actions à 
 Exemple : 
 
 - Utilisateur 1 peut effectuer l'action "DELETE" sur la portée "SES DONNEES"
-- Utilisateur admin peut effectuer l'action "UPDATE" sur la portée "TOUTES LES DONNEES"
+- Utilisateur Admin peut effectuer l'action "UPDATE" sur la portée "TOUTES LES DONNEES"
 
 Un autre filtre possible est celui de la sensibilité / dégradation des données :
 
@@ -85,7 +87,7 @@ Récapitulatif :
 
 - Dans GeoNature V2 on peut attribuer à une role des actions possibles, sur lesquels on peut ajouter des filtres, dans un module ou sur toute l'application GeoNature (définis dans ``gn_permissions.cor_role_action_filter_module_object``).
 - 6 actions sont possibles dans GeoNature : Create / Read / Update / Validate / Export / Delete (aka CRUVED).
-- Différents type de filtres existent. Le plus courant est le filtre de type "SCOPE" (portée): 3 portée sont attribuables à des actions: Mes données / Les données de mon organisme / Toutes les données.
+- Différents types de filtre existent. Le plus courant est le filtre de type "SCOPE" (portée) : 3 portée sont attribuables à des actions: Mes données / Les données de mon organisme / Toutes les données.
 - Une vue permet de retourner toutes les actions, leur filtres et leur modules de GeoNature pour tous les rôles (``gn_permissions.v_users_permissions``)
 - Des fonctions PostgreSQL ont aussi été intégrées pour faciliter la récupération de ces informations (``gn_permissions.cruved_for_user_in_module``, ``gn_permissions.does_user_have_scope_permission``, ...)
 - Les permissions attribuées à un module surchargent les permission attribuées sur l'ensemble de l'application par un mécanisme d'héritage. Par défaut et en l'absence de permissions, tous les modules héritent des permissions de GeoNature.
@@ -94,15 +96,18 @@ Récapitulatif :
 
 .. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/schema_cruved.png
 
+A noter que toutes les actions et toutes les portées n'ont pas été implémentées dans tous les modules. Elles le sont en fonction des besoins de chaque module. 
+
+TODO : Lister les permissions implémentées dans chaque module.
 
 Nomenclatures :
 """""""""""""""
 
-- Toutes les listes déroulantes sont gérées dans une table générique ``ref_nomenclatures.t_nomenclatures``
+- Toutes les valeurs des listes déroulantes sont gérées dans une table générique ``ref_nomenclatures.t_nomenclatures``
 - Elles s'appuient sur les nomenclatures du SINP (http://standards-sinp.mnhn.fr/nomenclature/) qui peuvent être désactivées ou completées
-- Chaque nomenclature est associée à un type et une vue par type de nomenclature a été ajoutée pour simplifier leur usage 
+- Chaque nomenclature est associée à un type, et une vue par type de nomenclature a été ajoutée pour simplifier leur usage 
 - Ces nomenclatures sont gérées dans un sous-module pour pouvoir les réutiliser (ainsi que leur mécanisme) dans d'autres applications : https://github.com/PnX-SI/Nomenclature-api-module/
-- Les id des nomenclatures et des types de nomenclature sont des serial et ne sont pas prédéfinis lors de l'installation, ni utilisées en dur dans le code des applications. En effet, les nomenclatures peuvent varier en fonction des structures. On utilise le cd_nomenclature et le mnémonique du type de nomenclature pour retrouver dynamiquement l'id_nomenclature d'une nomenclature. C'est cependant cet id qu'on stocke au niveau des données pour garantir l'intégrité référentielle
+- Les identifiants des nomenclatures et des types de nomenclature sont des serials (entiers auto-incrémentés) et ne sont pas prédéfinis lors de l'installation, ni utilisées en dur dans le code des applications. En effet, les nomenclatures peuvent varier en fonction des structures. On utilise le ``cd_nomenclature`` et le ``mnémonique`` du type de nomenclature pour retrouver dynamiquement l'``id_nomenclature`` d'une nomenclature. C'est cependant cet identifiant qu'on stocke au niveau des données pour garantir l'intégrité référentielle
 - Chaque nomenclature peut être associée à un règne ou un group2inpn (``ref_nomenclatures.cor_taxref_nomenclature``) pour proposer des nomenclatures correspondants à un taxon
 - Les valeurs par défaut sont définies dans chaque module
 - Pour OccTax c'est dans ``pr_occtax.defaults_nomenclatures_value``. Elles peuvent être définies pour chaque type de nomenclature ainsi que par organisme, règne et/ou group2inpn
@@ -245,8 +250,29 @@ La base de données contient de nombreuses fonctions.
   --Function to return id_nomenclature depending on observation sensitivity
   --USAGE : SELECT ref_nomenclatures.calculate_sensitivity(240,21);
 
+TODO : A compléter... A voir si on mentionne les triggers ou pas...
 
-A compléter... A voir si on mentionne les triggers ou pas...
+Tables transversales :
+""""""""""""""""""""""
+
+GeoNature contient aussi des tables de stockage transversales qui peuvent être utilisées par tous les modules. C'est le cas pour la validation, l'historisation des modifications et médias. 
+
+Cela permet de ne pas avoir à mettre en place des tables et mécanismes dans chaque module, mais de s'appuyer sur un stockage, des fonctions et développements factorisés, centralisés et partagés.
+
+Voir https://github.com/PnX-SI/GeoNature/issues/339
+
+Triggers vers la synthèse : 
+"""""""""""""""""""""""""""
+
+Voir ceux mis en place de Occtax vers Synthèse.
+
+Cheminement d'une donnée Occtax :
+
+-> Formulaire Occtax
+  -> Ecriture dans la table ``cor_counting_occtax`` et génération d'un nouvel UUID 
+    -> Trigger d'écriture dans la table verticale ``t_validations`` à partir de la valeur par défaut de la nomenclature de validation (``gn_common.ref_nomenclatures.defaults_nomenclatures_value``)
+      -> Trigger d'écriture d'Occtax vers la synthese (on ne maitrise pas l'ordre de ces 2 triggers qui sont lancés en même temps)
+        -> Trigger de rapatriement du dernier statut de validation de la table verticale vers la synthese.
 
 Modularité
 ----------
