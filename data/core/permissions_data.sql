@@ -82,8 +82,7 @@ INSERT INTO cor_object_module
     (id_object, id_module)
 VALUES
     (2, 1),
-    (3, 1),
-    (4, 1)
+    (3, 1)
 ;
 
 INSERT INTO cor_role_action_filter_module_object
