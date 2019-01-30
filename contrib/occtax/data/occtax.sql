@@ -537,6 +537,10 @@ ALTER TABLE t_occurrences_occtax
 ALTER TABLE t_occurrences_occtax
   ADD CONSTRAINT check_t_occurrences_occtax_determination_method CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_determination_method,'METH_DETERMIN')) NOT VALID;
 
+
+ALTER TABLE ONLY cor_counting_occtax
+    ADD CONSTRAINT unique_id_sinp_occtax_unique UNIQUE (unique_id_sinp_occtax);
+
 ALTER TABLE cor_counting_occtax
   ADD CONSTRAINT check_cor_counting_occtax_life_stage CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_life_stage,'STADE_VIE')) NOT VALID;
 

@@ -155,3 +155,12 @@ ALTER TABLE ref_geo.li_grids
   ADD CONSTRAINT fk_li_grids_id_area FOREIGN KEY (id_area)
       REFERENCES ref_geo.l_areas (id_area) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+-- Contrainte unique sur UUID en synthese et occtax
+
+ALTER TABLE ONLY gn_synthese.synthese
+    ADD CONSTRAINT unique_id_sinp_unique UNIQUE (unique_id_sinp);
+
+ALTER TABLE ONLY pr_occtax.cor_counting_occtax
+    ADD CONSTRAINT unique_id_sinp_occtax_unique UNIQUE (unique_id_sinp_occtax);
