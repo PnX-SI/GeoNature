@@ -111,12 +111,5 @@ export const FILTERSLIST = [
     attribut_name: "id_nomenclature_type_count",
     code_nomenclature_type: "TYP_DENBR",
     required: false
-  },
-  {
-    type_widget: "nomenclature",
-    attribut_label: "Statut de validation",
-    attribut_name: "id_nomenclature_valid_status",
-    code_nomenclature_type: "STATUT_VALID",
-    required: false
   }
 ];

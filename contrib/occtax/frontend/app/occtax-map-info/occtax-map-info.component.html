@@ -232,14 +232,9 @@
                         [disableControl]="disabled">
                     </div>
                   </div>
-                </div>
-                <div class="form-group row row-0">
-                  <div *ngIf="occtaxConfig.form_fields.type_count" class="col-xs-12 col-sm-12 col-md-12 col-lg-5 col-counting padding-sm">
-                    <pnx-nomenclature #typeDenombrement label="{{ 'Counting.ValidationStatus' | translate }}"
-                      [parentFormControl]="countingFormArray.controls[index].controls.id_nomenclature_valid_status"
-                      codeNomenclatureType="STATUT_VALID" [disabled]="disabled">
-                    </pnx-nomenclature>
-                  </div>
+
+                  {{'Counting.ValidationStatus' | translate}}: {{counting?.validation_status?.validation_label}}
+
                 </div>
                 <hr>
               </div>
