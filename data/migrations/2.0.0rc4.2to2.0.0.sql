@@ -138,3 +138,20 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+
+
+
+-- DELETE cascade sur ref_geo
+ALTER TABLE ref_geo.li_municipalities DROP CONSTRAINT fk_li_municipalities_id_area;
+
+ALTER TABLE ref_geo.li_municipalities
+  ADD CONSTRAINT fk_li_municipalities_id_area FOREIGN KEY (id_area)
+      REFERENCES ref_geo.l_areas (id_area) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ref_geo.li_grids DROP CONSTRAINT fk_li_grids_id_area;
+
+ALTER TABLE ref_geo.li_grids
+  ADD CONSTRAINT fk_li_grids_id_area FOREIGN KEY (id_area)
+      REFERENCES ref_geo.l_areas (id_area) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE;
