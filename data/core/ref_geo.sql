@@ -177,12 +177,16 @@ ALTER TABLE ONLY dem_vector
 ALTER TABLE ONLY l_areas
     ADD CONSTRAINT fk_l_areas_id_type FOREIGN KEY (id_type) REFERENCES bib_areas_types(id_type) ON UPDATE CASCADE;
 
-ALTER TABLE ONLY li_municipalities
-    ADD CONSTRAINT fk_li_municipalities_id_area FOREIGN KEY (id_area) REFERENCES l_areas(id_area) ON UPDATE CASCADE;
+ALTER TABLE ref_geo.li_municipalities
+  ADD CONSTRAINT fk_li_municipalities_id_area FOREIGN KEY (id_area)
+      REFERENCES ref_geo.l_areas (id_area) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE ONLY li_grids
-    ADD CONSTRAINT fk_li_grids_id_area FOREIGN KEY (id_area) REFERENCES l_areas(id_area) ON UPDATE CASCADE;
 
+ALTER TABLE ref_geo.li_grids
+  ADD CONSTRAINT fk_li_grids_id_area FOREIGN KEY (id_area)
+      REFERENCES ref_geo.l_areas (id_area) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE;
 
 ---------
 --INDEX--
