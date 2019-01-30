@@ -1,4 +1,4 @@
-APP_PATH/var/log/*.log {
+APP_PATH/var/log/gn_errors.log {
     daily
     rotate 8
     size 100M
