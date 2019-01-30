@@ -47,6 +47,17 @@ Pour sortir une nouvelle version de GeoNature :
 - Faites la release (https://github.com/PnX-SI/GeoNature/releases) en la taguant ``X.Y.Z`` (sans ``v`` devant) et en copiant le contenu du Changelog
 - Dans la branche ``develop``, modifiez le fichier ``VERSION`` en ``X.Y.Z.dev0`` et pareil dans le fichier ``docs/CHANGELOG.rst``
 
+BDD
+----
+
+- Mette à jour le ref_geo à partir des données IGN scan express
+
+        - Télécharger le dernier millesime: http://professionnels.ign.fr/adminexpress
+        - Intégrer le fichier shape dans la base grâce à QGIS dans une table nommée ``ref_geo.temp_fr_municipalities``
+        - Générer le SQL de création de la table:  ``pg_dump --table=ref_geo.temp_fr_municipalities  --column-inserts -U <MON_USER> -h <MON_HOST> -d <MA_BASE> > fr_municipalities.sql``. Le fichier en sortie doit s'appeler ``fr_municipalities.sql``
+        - Zipper le fichier SQL et le mettre sur le serveur geonature.fr/data 
+        - Corriger le script ``install_db.sh`` pour récupérer le nouveau fichier zippé
+
 Pratiques
 ---------
 
