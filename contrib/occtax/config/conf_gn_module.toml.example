@@ -35,7 +35,6 @@
     type_count = true
     count_min = true
     count_max = true
-    validation_status = false
 
 # Switch the form input in free text input (true) or in select input (false)
 observers_txt = false

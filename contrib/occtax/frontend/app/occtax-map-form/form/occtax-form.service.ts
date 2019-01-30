@@ -199,10 +199,7 @@ export class OcctaxFormService {
           Validators.required,
           Validators.pattern("[1-9]+[0-9]*")
         ])
-      ],
-      id_nomenclature_valid_status: null,
-      id_validator: null,
-      validation_comment: null
+      ]
     });
     countForm.setValidators([this.countingValidator]);
     return countForm;
