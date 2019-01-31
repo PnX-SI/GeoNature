@@ -96,10 +96,12 @@ class TParameters(DB.Model):
     parameter_extra_value = DB.Column(DB.Unicode)
 
 
+
+
 @serializable
-class TValidations(DB.Model):
-    __tablename__ = 't_validations'
-    __table_args__ = {'schema': 'gn_commons', 'extend_existing': True}
+class VLastestValidation(DB.Model):
+    __tablename__ = 'v_lastest_validation'
+    __table_args__ = {'schema': 'gn_commons'}
 
     id_validation = DB.Column(
         DB.Integer,
@@ -112,4 +114,4 @@ class TValidations(DB.Model):
     validation_comment = DB.Column(DB.Unicode)
     validation_date = DB.Column(DB.DateTime)
     validation_auto = DB.Column(DB.Boolean)
-
+    label_default = DB.Column(DB.Unicode)

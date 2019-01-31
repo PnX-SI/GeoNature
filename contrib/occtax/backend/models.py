@@ -11,7 +11,6 @@ from pypnnomenclature.models import TNomenclatures
 from geonature.utils.utilssqlalchemy import (
     serializable, geoserializable
 )
-from geonature.core.gn_commons.models import TValidations
 from geonature.utils.env import DB
 from pypnusershub.db.tools import InsufficientRightsError
 from pypnusershub.db.models import User
@@ -133,21 +132,6 @@ class CorCountingOccurrence(DB.Model):
     id_nomenclature_type_count = DB.Column(DB.Integer)
     count_min = DB.Column(DB.Integer)
     count_max = DB.Column(DB.Integer)
-    # get all validation history
-    # validations = relationship(
-    #     TValidations, 
-    #     secondary=TNomenclatures.__table__,
-    #     lazy='select',
-    #     primaryjoin=(
-    #         unique_id_sinp_occtax == TValidations.uuid_attached_row
-    #     ),
-    #     secondaryjoin=(TValidations.id_nomenclature_valid_status == TNomenclatures.id_nomenclature),
-    #     foreign_keys=[
-    #         TValidations.uuid_attached_row,
-    #         TValidations.id_nomenclature_valid_status
-    #     ]
-    # )
-    # nomenclature_valid
 
 
 
