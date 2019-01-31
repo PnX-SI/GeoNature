@@ -119,7 +119,10 @@ class CorCountingOccurrence(DB.Model):
     __tablename__ = 'cor_counting_occtax'
     __table_args__ = {'schema': 'pr_occtax'}
     id_counting_occtax = DB.Column(DB.Integer, primary_key=True)
-    unique_id_sinp_occtax = DB.Column(UUID(as_uuid=True))
+    unique_id_sinp_occtax = DB.Column(
+        UUID(as_uuid=True),
+        default=select([func.uuid_generate_v4()])
+    )
     id_occurrence_occtax = DB.Column(
         DB.Integer,
         ForeignKey('pr_occtax.t_occurrences_occtax.id_occurrence_occtax')
