@@ -64,7 +64,7 @@ class ReleveRepository():
                             )
                         ).one()
                 except NoResultFound:
-                    pass
+                    return releve, rel_as_geojson
                 validation_as_dict = validation_status[0].as_dict()
                 validation_as_dict['validation_label'] = validation_status[1]
                 count['validation_status'] = validation_as_dict
