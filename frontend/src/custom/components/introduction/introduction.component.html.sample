@@ -2,40 +2,27 @@
 
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 padding-sm">
 
-    <div class="card">
-      <div class="card-body">
-        <h2 class="underlined main-color"> Bienvenue dans GeoNature V2 </h2>
-
-        <p>
-          Cette zone permet d'afficher un message aux utilisateurs, configurable pour le modifier régulièrement ou le
-          masquer.
-        </p>
-        <p>
-
-        </p>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+         Bienvenue dans GeoNature V2
       </div>
+
+      <div class="panel-body">
+          <p>
+              Cette zone permet d'afficher un message aux utilisateurs, configurable pour le modifier régulièrement ou le
+              masquer.
+            </p>
+            <p>
+    
+            </p>
+      </div>
+
     </div>
   </div>
 </div>
 
-<div class="row row-0">
-  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 padding-sm">
-
-    <div class="card">
-      <div class="card-body">
-        <h3 class="underlined"> Les 100 dernières observations</h3>
-
-        <button type="button" routerLink="/synthese" class="btn btn-outline-success" id="explore" style="margin-left:15px">
-          Explorer la Synthese
-        </button>
 
 
-        <pnx-map class="map-card" height="50vh">
-          <pnx-geojson [geojson]="lastObs" [onEachFeature]="onEachFeature.bind(this)"> </pnx-geojson>
-        </pnx-map>
-      </div>
-    </div>
-  </div>
 
 
-</div>
+
