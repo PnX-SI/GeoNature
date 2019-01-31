@@ -126,6 +126,10 @@ def install_gn_module(module_path, url, conf_file, build):
                 if build and enable_frontend:
                     # Rebuild the frontend
                     build_geonature_front(rebuild_sass=True)
+                
+                #finally restart geonature backend via supervisor
+                subprocess.call(['sudo', 'supervisorctl', 'restart', 'geonature2'])
+
             else:
                 raise GeoNatureError('The module {} is already installed, but maybe not activated'.format(module_code))  # noqa
 
