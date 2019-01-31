@@ -5,8 +5,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from pypnnomenclature.models import TNomenclatures
 
 from geonature.utils.env import DB
-from geonature.core.gn_meta.models import TDatasets
-from geonature.core.gn_commons.models import TValidations
+from geonature.core.gn_commons.models import VLastestValidation
 from geonature.utils.utilssqlalchemy import testDataType
 from geonature.utils.errors import GeonatureApiError
 from .utils import get_nomenclature_filters
@@ -49,25 +48,15 @@ class ReleveRepository():
         # add the last validation status
         for occ in rel_as_geojson['properties']['t_occurrences_occtax']:
             for count in occ['cor_counting_occtax']:
-                last_validation_sub_query = DB.session.query(
-                    func.max(TValidations.validation_date)
-                ).subquery('last_validation_sub_query')
                 try:
                     validation_status = DB.session.query(
-                        TValidations, TNomenclatures.label_default
-                        ).join(
-                            TNomenclatures, TNomenclatures.id_nomenclature == TValidations.id_nomenclature_valid_status
-                        ).filter(
-                            and_(
-                                TValidations.uuid_attached_row == count['unique_id_sinp_occtax'],
-                                TValidations.validation_date == last_validation_sub_query
-                            )
-                        ).one()
+                        VLastestValidation
+                    ).filter(
+                        VLastestValidation.uuid_attached_row == count['unique_id_sinp_occtax'],
+                    ).one()
                 except NoResultFound:
                     return releve, rel_as_geojson
-                validation_as_dict = validation_status[0].as_dict()
-                validation_as_dict['validation_label'] = validation_status[1]
-                count['validation_status'] = validation_as_dict
+                count['validation_status'] = validation_status.as_dict()
 
         return releve, rel_as_geojson
 
