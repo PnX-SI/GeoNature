@@ -93,7 +93,6 @@ def releve_data(client):
                     "digital_proof": None,
                     "cor_counting_occtax": [
                         {
-                            "unique_id_sinp_occtax": "10f937db-54e1-409d-915d-b8c85055fa32",
                             "count_min": 1,
                             "validation_comment": None,
                             "id_nomenclature_life_stage": 2,
