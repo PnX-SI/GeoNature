@@ -7,7 +7,8 @@ import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'pnx-login',
-  templateUrl: 'login.component.html'
+  templateUrl: 'login.component.html',
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
   public casLogin: boolean;
