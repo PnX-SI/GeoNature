@@ -1,22 +1,46 @@
-<div *ngIf="!casLogin" class="wrapper" style="width:25%; margin: 5% 0px 0px 35%; text-align: center;">
-    <h3> GeoNature </h3>
-    <div class="panel" style="padding: 20px">
-    <form (ngSubmit)="register(userForm.value)" #userForm="ngForm">
-       <div class="form-group inner-addon right-addon">
-        <i class="fa fa-user"></i>
-         <input type="text" class="form-control" name="username" placeholder="Identifiant" ngModel>
-       </div>
-       <div class="form-group inner-addon right-addon">
-         <i class="fa fa-lock"></i>
-         <input type="password" name="password" class="form-control" placeholder="Mot de passe" ngModel>
-       </div>
-       <input type="submit" class="btn btn-success" value="Connexion">
-    </form>
-    <p *ngIf="_authService.loginError" class="alert alert-danger" role="alert" style="margin-top:5px;">
-        <strong> {{'LoginError' | translate }} </strong>
-    </p>
-    <img *ngIf="_authService.isLoading" src="assets/images/Spinner.gif" 
-        alt="Chargement..." 
-        height="40" 
-        width="40">
+<div id="login-body">
+    <div *ngIf="!casLogin" class="container">
+        <div class="row">
+          <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+              <div class="panel panel-default panel-signin" style="padding: 20px">
+                  <div class="panel-heading">
+                      GEONATURE
+                  </div>
+                  <div class="panel-body ">
+                    <form (ngSubmit)="register(userForm.value)" #userForm="ngForm">
+                        <!-- <div class="form-group inner-addon right-addon">
+                            <i class="fa fa-user"></i>
+                            <input type="text" class="form-control" name="username" placeholder="Identifiant" ngModel>
+                        </div> -->
+                        <div class="form-group">
+                            <!-- <span class='addon icon-profil'></span> -->
+                            <i class="addon fa fa-user"></i>
+                            <input type="text" id="login" class="form-control" name="username" ngModel placeholder="Identifiant"
+                              autofocus>
+                          </div>
+                        <div class="form-group">
+                            <i class=" addon fa fa-lock"></i>
+                            <input type="password" name="password" class="form-control" placeholder="Mot de passe" ngModel>
+                        </div>
+                        <button class="btn btn-lg btn-success btn-block text-uppercase" type="submit">Se connecter</button>
+          
+                        <!-- <input type="submit" class="btn btn-success" value="Connexion"> -->
+                    </form>
+                    <p *ngIf="_authService.loginError" class="alert alert-danger" role="alert" style="margin-top:5px;">
+                        <strong> {{'LoginError' | translate }} </strong>
+                    </p>
+                    <img style="margin-left: 40%;" *ngIf="_authService.isLoading" src="assets/images/Spinner.gif" 
+                        alt="Chargement..." 
+                        height="60" 
+                        width="60">
+                  </div>
+              </div>
+          </div>
+    
+        </div>
+    
+
+    </div>
 </div>
+
+
