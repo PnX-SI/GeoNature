@@ -148,7 +148,7 @@ nvm install 8.1.1
 
 echo " ############"
 echo "Installation des paquets npm"
-npm install
+npm install --only=prod
 
 # lien symbolique vers le dossier static du backend (pour le backoffice)
 ln -s ${BASE_DIR}/frontend/node_modules ${BASE_DIR}/backend/static
