@@ -56,7 +56,8 @@
   "Form": {
     "RefreshFilters": "Rafraichir les filtres",
     "AdvancedFilters": "Filtres avancés",
-    "OtherFilters": "Autres filtres"
+    "OtherFilters": "Autres filtres",
+    "Organism": "Organisme"
   },
   "List": {
     "Columns": "Colonnes",

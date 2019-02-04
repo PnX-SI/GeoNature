@@ -6,6 +6,7 @@ import { AppConfig } from '@geonature_config/app.config';
 import { MapService } from '@geonature_common/map/map.service';
 import { TaxonAdvancedModalComponent } from './taxon-advanced/taxon-advanced.component';
 import { TaxonAdvancedStoreService } from './taxon-advanced/taxon-advanced-store.service';
+import { DataFormService } from '@geonature_common/form/data-form.service';
 
 @Component({
   selector: 'pnx-synthese-search',
@@ -15,6 +16,7 @@ import { TaxonAdvancedStoreService } from './taxon-advanced/taxon-advanced-store
 })
 export class SyntheseSearchComponent implements OnInit {
   public AppConfig = AppConfig;
+  public organisms: any;
 
   public taxonApiEndPoint = `${AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
   @Output() searchClicked = new EventEmitter();
@@ -23,10 +25,17 @@ export class SyntheseSearchComponent implements OnInit {
     public formService: SyntheseFormService,
     public ngbModal: NgbModal,
     public mapService: MapService,
-    private _storeService: TaxonAdvancedStoreService
+    private _storeService: TaxonAdvancedStoreService,
+    private _api: DataFormService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    // get organisms:
+    this._api.getOrganismsDatasets().subscribe(data => {
+      console.log(data);
+      this.organisms = data;
+    });
+  }
 
   onSubmitForm() {
     // mark as dirty to avoid set limit=100 when download

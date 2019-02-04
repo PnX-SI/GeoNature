@@ -12,7 +12,7 @@ from geonature.core.gn_meta.models import (
 )
 
 
-def get_datasets_cruved(info_role, params):
+def get_datasets_cruved(info_role, params=dict()):
     """
         Return the datasets filtered with cruved
     """
