@@ -1,23 +1,25 @@
+
 <div class="collapse" id="collapseExample">
-  <div class="well well-sm well-margin">
-    <div class="row ">
-      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-        <small class="font-sm">Règne:</small>
-        <select [formControl]="regneControl" class="form-control form-control-sm">
-          <option *ngFor="let regne of regnes" [value]="regne">{{ regne }}</option>
-        </select>
-      </div>
-      <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-        <div *ngIf="regneControl.value !== null">
-          <small class="font-sm">Groupe:</small>
-          <select [formControl]="groupControl" class="form-control form-control-sm" id="sel1" placeholder="Taxonomiques">
-            <option class="clickable" *ngFor="let group2 of regnesAndGroup[regneControl.value]" [value]="group2">{{
-              group2 }}</option>
-          </select>
+    
+    <div class="well well-sm well-margin">
+        <div class="row ">
+          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <small class="font-sm">Règne:</small>
+            <select [formControl]="regneControl" class="form-control form-control-sm">
+              <option *ngFor="let regne of regnes" [value]="regne">{{ regne }}</option>
+            </select>
+          </div>
+          <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+            <div *ngIf="regneControl.value !== null">
+              <small class="font-sm">Groupe:</small>
+              <select [formControl]="groupControl" class="form-control form-control-sm" id="sel1" placeholder="Taxonomiques">
+                <option class="clickable" *ngFor="let group2 of regnesAndGroup[regneControl.value]" [value]="group2">{{
+                  group2 }}</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
 
 </div>
 <small> {{label}} </small>
@@ -25,9 +27,9 @@
   <input type="text" class="form-control form-control-sm " [ngClass]="{'loading' : isLoading && parentFormControl.value?.length >= 3}"
     id="taxonInput" [formControl]="parentFormControl" [disableControl]="disabled" [ngbTypeahead]="searchTaxon"
     [inputFormatter]="formatter" [resultTemplate]="rt" (selectItem)="taxonSelected($event)" />
-  <div class="input-group-append">
+  <div class="input-group-append" *ngIf="displayAdvancedFilters">
     <button class="btn btn-sm btn-outline-shadow" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false"
-      aria-controls="collapseExample">
+      aria-controls="collapseExample" matTooltip="Filtrer les taxons proposés à l'autocompletion  par règne et groupe INPN">
       <i class="fa fa-filter" aria-hidden="true"></i>
     </button>
   </div>
