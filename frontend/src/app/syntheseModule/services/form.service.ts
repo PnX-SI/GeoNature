@@ -23,7 +23,7 @@ export class SyntheseFormService {
     this.searchForm = this._fb.group({
       cd_nom: null,
       observers: null,
-      organism: null,
+      organisms: null,
       id_dataset: null,
       id_acquisition_frameworks: null,
       date_min: null,

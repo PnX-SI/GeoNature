@@ -11,7 +11,7 @@ from geonature.core.gn_synthese.models import (
     Synthese, CorObserverSynthese, TSources,
     CorAreaSynthese
 )
-from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
+from geonature.core.gn_meta.models import TAcquisitionFramework, CorDatasetActor
 
 
 def filter_query_with_cruved(model, q, user, allowed_datasets):
@@ -110,6 +110,13 @@ def filter_query_all_filters(model, q, filters, user, allowed_datasets):
 
     if 'observers' in filters:
         q = q.filter(model.observers.ilike('%'+filters.pop('observers')[0]+'%'))
+    
+    if 'organisms' in filters:
+        q = q.join(
+            CorDatasetActor, CorDatasetActor.id_dataset == model.id_dataset
+        ).filter(
+            CorDatasetActor.id_organism.in_(filters.pop('organisms'))
+        )
 
     if 'date_min' in filters:
         q = q.filter(model.date_min >= filters.pop('date_min')[0])

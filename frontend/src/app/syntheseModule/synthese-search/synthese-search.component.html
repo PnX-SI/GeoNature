@@ -1,7 +1,5 @@
-<div class="relative">
   <div class="card search-wrapper">
-    <div class="absolute">
-      <fieldset class="absolute">
+      <fieldset >
         <legend> Quoi ?</legend>
         <pnx-taxonomy label="{{'Taxon.Taxon' | translate }} " [parentFormControl]="formService.searchForm.controls.cd_nom"
           [idList]="500" [charNumber]="3" [listLength]="AppConfig.SYNTHESE.TAXON_RESULT_NUMBER" [apiEndPoint]="taxonApiEndPoint" (onChange)=formService.getCurrentTaxon($event)>
@@ -99,7 +97,7 @@
         </pnx-observers-text>
 
         
-        <pnx-multiselect [values]="organisms" [parentFormControl]="formService.searchForm.controls.organism" keyLabel="nom_organisme" keyValue="id_organisme"
+        <pnx-multiselect [values]="organisms" [parentFormControl]="formService.searchForm.controls.organisms" keyLabel="nom_organisme" keyValue="id_organisme"
         [label]="'Form.Organism' | translate" debounceTime="500" [searchBar]="false"
         [disabled]="disabled">
       </pnx-multiselect>
@@ -123,19 +121,15 @@
       </fieldset>
 
 
-      <!-- <pre>form value: <br>{{formService.searchForm.controls.period_start.valid | json}}</pre> -->
-      <div class="card-body">
-        <div class="search-btn">
-          <button (click)="refreshFilters()" class="btn btn-sm btn-danger" matTooltip="{{ 'Form.RefreshFilters' | translate }}">
-            <i class="fa fa-trash-o"></i>
-          </button>
-          <button class="btn btn-sm btn-success" (click)="onSubmitForm()">Rechercher</button>
-        </div>
+      <!-- <pre>form value: <br>{{formService.searchForm.value | json}}</pre> -->
 
-      </div>
 
-    </div>
 
   </div>
 
-</div>
+  <div class="search-btn">
+      <button (click)="refreshFilters()" class="btn btn-sm btn-danger box-shadow" matTooltip="{{ 'Form.RefreshFilters' | translate }}">
+        <i class="fa fa-trash-o"></i>
+      </button>
+      <button class="btn btn-sm btn-success box-shadow" (click)="onSubmitForm()">Rechercher</button>
+    </div>
