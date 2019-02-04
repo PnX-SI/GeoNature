@@ -32,7 +32,6 @@ export class SyntheseSearchComponent implements OnInit {
   ngOnInit() {
     // get organisms:
     this._api.getOrganismsDatasets().subscribe(data => {
-      console.log(data);
       this.organisms = data;
     });
   }
