@@ -18,24 +18,10 @@
           (Taxonomie)
         </button>
 
-        <button class="btn btn-xs btn-outline-secondary advanced" data-toggle="collapse" data-target="#OccAdvanved"
-          aria-expanded="false" aria-controls="OccAdvanved">
-          Avancé (Occurrence de taxon)
-        </button>
         <br>
         <span *ngIf="formService.selectedCdRefFromTree.length > 0">
           <b> {{formService.selectedCdRefFromTree.length}} taxons séléctionnés</b>
         </span>
-
-        <div class="collapse advanced" id="OccAdvanved">
-          <div class="card card-body padding-sm">
-            <small> Sélectionner un filtre </small>
-            <pnx-dynamic-form-generator [formGroup]="formService.searchForm" [formsDefinition]="formService.dynamycFormDef">
-            </pnx-dynamic-form-generator>
-
-          </div>
-        </div>
-
 
       </fieldset>
 
@@ -120,10 +106,15 @@
 
       </fieldset>
 
+      <fieldset>
+          <legend> Filtres avancés </legend>
+              <small> Ajouter un filtre </small>
+              <pnx-dynamic-form-generator [formGroup]="formService.searchForm" [formsDefinition]="formService.dynamycFormDef">
+              </pnx-dynamic-form-generator>  
+        </fieldset>
+
 
       <!-- <pre>form value: <br>{{formService.searchForm.value | json}}</pre> -->
-
-
 
   </div>
 
