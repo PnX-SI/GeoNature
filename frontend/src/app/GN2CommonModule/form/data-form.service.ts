@@ -190,6 +190,10 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/organisms`);
   }
 
+  getOrganismsDatasets() {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/organisms_dataset_actor`);
+  }
+
   getRoles(params?: any) {
     let queryString: HttpParams = new HttpParams();
     // tslint:disable-next-line:forin

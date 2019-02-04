@@ -8,7 +8,6 @@ import { CommonService } from '@geonature_common/service/common.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { MetadataFormService } from '../services/metadata-form.service';
 
-
 @Component({
   selector: 'pnx-datasets-form',
   templateUrl: './dataset-form.component.html',
@@ -33,7 +32,7 @@ export class DatasetFormComponent implements OnInit {
     private _commonService: CommonService,
     private _dfs: DataFormService,
     private _formService: MetadataFormService
-  ) { }
+  ) {}
 
   ngOnInit() {
     // get the id from the route
@@ -45,7 +44,7 @@ export class DatasetFormComponent implements OnInit {
     });
     this.datasetForm = this._fb.group({
       id_acquisition_framework: [null, Validators.required],
-      id_dataset:null,
+      id_dataset: null,
       dataset_name: [null, Validators.required],
       dataset_shortname: [null, Validators.required],
       dataset_desc: [null, Validators.required],
@@ -69,16 +68,12 @@ export class DatasetFormComponent implements OnInit {
       this.acquisitionFrameworks = data;
     });
 
-
     this.cor_dataset_actor_array.push(this._formService.generateCorDatasetActorForm());
   }
-
-
 
   addFormArray(): void {
     this.cor_dataset_actor_array.push(this._formService.generateCorDatasetActorForm());
   }
-
 
   getDataset(id) {
     // on edition mode
@@ -109,8 +104,7 @@ export class DatasetFormComponent implements OnInit {
     cor_dataset_actor_array.forEach(element => {
       update_cor_dataset_actor.push(element);
       this._formService.checkFormValidity(element);
-
-  });
+    });
 
     if (this._formService.formValid) {
       const dataset = Object.assign(this.datasetForm.value, {});
@@ -118,18 +112,17 @@ export class DatasetFormComponent implements OnInit {
       dataset['cor_dataset_actor'] = update_cor_dataset_actor;
       this._api.post<any>(`${AppConfig.API_ENDPOINT}/meta/dataset`, dataset).subscribe(
         data => {
-          this._router.navigate(['/admin/datasets']);
+          this._router.navigate(['/metadata/datasets']);
           this._commonService.translateToaster('success', 'MetaData.Datasetadded');
         },
         error => {
           if (error.status === 403) {
             this._commonService.translateToaster('error', 'NotAllowed');
-           }else {
-             this._commonService.translateToaster('error', 'ErrorMessage');
-           }
+          } else {
+            this._commonService.translateToaster('error', 'ErrorMessage');
+          }
         }
       );
     }
-
   }
 }

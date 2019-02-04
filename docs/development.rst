@@ -672,7 +672,10 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
                 Nombre de résultat affiché (obligatoire)
 
                 *Type*: ``number``
-        
+        :``displayAdvancedFilters``:
+                Afficher ou non les filtres par regne et groupe INPN qui controle l'autocomplétion
+
+                *Type*: ``boolean``        
         **Valeur retourné par le FormControl**:
 
         Taxon séléctionné. *Type*: any
