@@ -49,6 +49,8 @@ export class TaxonomyComponent implements OnInit {
   @Input() charNumber: number;
   // number of typeahead results
   @Input() listLength = 20;
+  // display the kindow and group filter
+  @Input() displayAdvancedFilters = false;
   searchString: any;
   filteredTaxons: any;
   regnes = new Array();
@@ -64,22 +66,26 @@ export class TaxonomyComponent implements OnInit {
   constructor(private _dfService: DataFormService, private _commonService: CommonService) {}
 
   ngOnInit() {
-    this.parentFormControl.valueChanges
-      .filter(value => value !== null && value.length === 0)
-      .subscribe(value => {
-        this.onDelete.emit();
-        this.showResultList = false;
-      });
     // set default to apiEndPoint for retrocompatibility
     this.apiEndPoint =
       this.apiEndPoint || `${AppConfig.API_TAXHUB}/taxref/allnamebylist/${this.idList}`;
-    // get regne and group2
-    this._dfService.getRegneAndGroup2Inpn().subscribe(data => {
-      this.regnesAndGroup = data;
-      for (let regne in data) {
-        this.regnes.push(regne);
-      }
-    });
+
+    if (this.displayAdvancedFilters) {
+      this.parentFormControl.valueChanges
+        .filter(value => value !== null && value.length === 0)
+        .subscribe(value => {
+          this.onDelete.emit();
+          this.showResultList = false;
+        });
+
+      // get regne and group2
+      this._dfService.getRegneAndGroup2Inpn().subscribe(data => {
+        this.regnesAndGroup = data;
+        for (let regne in data) {
+          this.regnes.push(regne);
+        }
+      });
+    }
 
     // put group to null if regne = null
     this.regneControl.valueChanges.subscribe(value => {
