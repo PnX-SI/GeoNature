@@ -8,6 +8,10 @@ from geonature.core.users.models import (
 from pypnusershub.db.models import User
 
 from geonature.utils.utilssqlalchemy import json_resp
+from geonature.core.gn_permissions import decorators as permissions
+from geonature.core.gn_meta.models import CorDatasetActor
+from geonature.core.gn_meta.repositories import get_datasets_cruved
+
 
 routes = Blueprint('users', __name__)
 
@@ -142,4 +146,26 @@ def get_organismes():
         Retourne tous les organismes
     '''
     organisms = DB.session.query(BibOrganismes).all()
+    return [organism.as_dict() for organism in organisms]
+
+
+@routes.route('/organisms_dataset_actor', methods=['GET'])
+@permissions.check_cruved_scope('R', True)
+@json_resp
+def get_organismes_jdd(info_role):
+    '''
+        Retourne tous les organismes qui sont acteurs dans un JDD
+        et dont l'utilisateur a des droit sur ce JDD (via son CRUVED)
+    '''
+
+    datasets = [dataset['id_dataset'] for dataset in get_datasets_cruved(info_role)]
+    organisms = DB.session.query(
+        BibOrganismes
+    ).join(
+        CorDatasetActor, BibOrganismes.id_organisme == CorDatasetActor.id_organism
+    ).filter(
+        CorDatasetActor.id_dataset.in_(datasets)
+    ).distinct(
+        BibOrganismes.id_organisme
+    ).all()
     return [organism.as_dict() for organism in organisms]

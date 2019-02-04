@@ -98,6 +98,11 @@
         <pnx-observers-text label=" {{'Releve.Observer' | translate }} " [parentFormControl]="formService.searchForm.controls.observers">
         </pnx-observers-text>
 
+        
+        <pnx-multiselect [values]="organisms" [parentFormControl]="formService.searchForm.controls.organism" keyLabel="nom_organisme" keyValue="id_organisme"
+        [label]="'Form.Organism' | translate" debounceTime="500" [searchBar]="false"
+        [disabled]="disabled">
+      </pnx-multiselect>
         <!-- TODO: Organisme -->
       </fieldset>
 
