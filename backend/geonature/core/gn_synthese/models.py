@@ -396,9 +396,6 @@ class VSyntheseForWebApp(DB.Model):
     id_nomenclature_source_status = DB.Column(DB.Integer)
     name_source = DB.Column(DB.Unicode)
     url_source = DB.Column(DB.Unicode)
-    acteurs = DB.Column(DB.Unicode)
-    x_centroid = DB.Column(DB.Float)
-    y_centroid = DB.Column(DB.Float)
 
     def get_geofeature(self, recursif=False, columns=()):
         return self.as_geofeature(
@@ -521,6 +518,9 @@ class VSyntheseForExport(DB.Model):
     source_status = DB.Column(DB.Unicode)
     name_source = DB.Column(DB.Unicode)
     url_source = DB.Column(DB.Unicode)
+    actors = DB.Column(DB.Unicode)
+    x_centroid = DB.Column(DB.Float)
+    y_centroid = DB.Column(DB.Float)
 
     def get_geofeature_ordered(self):
         return self.as_geofeature_ordered("the_geom_4326", "id_synthese")

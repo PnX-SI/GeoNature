@@ -463,8 +463,8 @@ CREATE VIEW gn_synthese.v_synthese_for_export AS
            nomencl.label_default
         )
       ),
-      ','
-   ) AS acteurs,
+      ', '
+   ) AS actors,
   ST_X(ST_TRANSFORM(the_geom_point, 2154)) AS x_centroid,
   ST_Y(ST_TRANSFORM(the_geom_point, 2154)) AS y_centroid
   FROM gn_synthese.synthese s
