@@ -87,18 +87,6 @@ class CorTaxonAttribut(DB.Model):
     def __repr__(self):
         return '<CorTaxonAttribut %r>' % self.valeur_attribut
 
-class BibNoms(DB.Model):
-    __tablename__ = 'bib_noms'
-    __table_args__ = {'schema': 'taxonomie'}
-    id_nom = DB.Column(DB.Integer, primary_key=True)
-    cd_nom = DB.Column(
-        DB.Integer,
-        nullable=True
-    )
-    cd_ref = DB.Column(DB.Integer)
-    nom_francais = DB.Column(DB.Unicode)
-    comments = DB.Column(DB.Unicode)
-
 
 class TaxrefLR(DB.Model):
     __tablename__ = 'taxref_liste_rouge_fr'
