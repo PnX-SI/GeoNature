@@ -7,23 +7,22 @@ from .bootstrap_test import app, post_json, json_of_response, get_token
 from geonature.core.users import routes as users
 
 
-@pytest.mark.usefixtures('client_class')
+@pytest.mark.usefixtures("client_class")
 class TestGnMeta:
     def test_list_datasets(self):
         """
         Api to get all datasets
         """
-        #token = get_token(self.client)
-        response = self.client.get(url_for('gn_meta.get_datasets_list'))
+        # token = get_token(self.client)
+        response = self.client.get(url_for("gn_meta.get_datasets_list"))
         assert response.status_code == 200
 
     def test_one_dataset(self):
         """
         API to get one dataset from id_dataset
         """
-        response = self.client.get(url_for('gn_meta.get_dataset', id_dataset=1))
+        response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=1))
         assert response.status_code == 200
-
 
     def test_dataset_cruved_2(self):
         """
@@ -31,13 +30,13 @@ class TestGnMeta:
         CRUVED = 2
         """
         token = get_token(self.client, login="agent", password="admin")
-        self.client.set_cookie('/', 'token', token)
-        response = self.client.get(url_for('gn_meta.get_datasets'))
+        self.client.set_cookie("/", "token", token)
+        response = self.client.get(url_for("gn_meta.get_datasets"))
         dataset_list = json_of_response(response)
         assert (
-            response.status_code == 200 and
-            len(dataset_list['data']) == 1 and
-            dataset_list['data'][0]['id_dataset'] == 2
+            response.status_code == 200
+            and len(dataset_list["data"]) == 1
+            and dataset_list["data"][0]["id_dataset"] == 2
         )
 
     def test_dataset_cruved_1(self):
@@ -46,17 +45,21 @@ class TestGnMeta:
         CRUVED = 1
         """
         token = get_token(self.client, login="partenaire", password="admin")
-        self.client.set_cookie('/', 'token', token)
-        response = self.client.get(url_for('gn_meta.get_datasets'))
+        self.client.set_cookie("/", "token", token)
+        response = self.client.get(url_for("gn_meta.get_datasets"))
         dataset_list = json_of_response(response)
         assert (
-            response.status_code == 200 and
-            len(dataset_list['data']) == 1 and
-            dataset_list['data'][0]['id_dataset'] == 1
+            response.status_code == 200
+            and len(dataset_list["data"]) == 1
+            and dataset_list["data"][0]["id_dataset"] == 1
         )
 
     def test_mtd_interraction(self):
-        from geonature.core.gn_meta.mtd_utils import post_jdd_from_user, get_jdd_by_user_id, parse_jdd_xml
+        from geonature.core.gn_meta.mtd_utils import (
+            post_jdd_from_user,
+            get_jdd_by_user_id,
+            parse_jdd_xml,
+        )
 
         """
         Test du web service MTD
@@ -66,22 +69,19 @@ class TestGnMeta:
         """
         user = {
             "id_role": 10991,
-            "identifiant": 'test.mtd',
-            "nom_role": 'test_mtd',
-            "prenom_role": 'test_mtd',
+            "identifiant": "test.mtd",
+            "nom_role": "test_mtd",
+            "prenom_role": "test_mtd",
             "id_organisme": 104,
         }
 
-        organism = {
-            "id_organisme": 104,
-            "nom_organisme": 'test'
-        }
+        organism = {"id_organisme": 104, "nom_organisme": "test"}
         resp = users.insert_organism(organism)
         assert resp.status_code == 200
 
         resp = users.insert_role(user)
         # id_role 10 = id_socle 1 in test
-        users.insert_in_cor_role(10, user['id_role'])
+        users.insert_in_cor_role(10, user["id_role"])
         assert resp.status_code == 200
 
         jdds = post_jdd_from_user(id_user=10991, id_organism=104)

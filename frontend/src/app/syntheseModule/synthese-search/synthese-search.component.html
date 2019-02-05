@@ -83,7 +83,7 @@
         </pnx-observers-text>
 
         
-        <pnx-multiselect [values]="organisms" [parentFormControl]="formService.searchForm.controls.organisms" keyLabel="nom_organisme" keyValue="id_organisme"
+        <pnx-multiselect [values]="organisms" [parentFormControl]="formService.searchForm.controls.id_organism" keyLabel="nom_organisme" keyValue="id_organisme"
         [label]="'Form.Organism' | translate" debounceTime="500" [searchBar]="false"
         [disabled]="disabled">
       </pnx-multiselect>
@@ -94,12 +94,12 @@
       <fieldset>
         <legend> Comment ?</legend>
 
-        <pnx-acquisition-frameworks [multiSelect]='true' [displayAll]="true" [parentFormControl]="formService.searchForm.controls.id_acquisition_frameworks"
+        <pnx-acquisition-frameworks [multiSelect]='true' [displayAll]="true" [parentFormControl]="formService.searchForm.controls.id_acquisition_framework"
           label="{{ 'MetaData.AcquisitionFramework' | translate}}">
         </pnx-acquisition-frameworks>
 
 
-        <pnx-datasets [displayOnlyActive]="false" [idAcquisitionFrameworks]="formService.searchForm.controls.id_acquisition_frameworks.value"
+        <pnx-datasets [displayOnlyActive]="false" [idAcquisitionFrameworks]="formService.searchForm.controls.id_acquisition_framework.value"
           [multiSelect]='true' [displayAll]="true" [parentFormControl]="formService.searchForm.controls.id_dataset"
           label="{{ 'MetaData.Datasets' | translate}}">
         </pnx-datasets>
