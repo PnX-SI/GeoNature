@@ -898,7 +898,8 @@ CREATE VIEW gn_synthese.v_synthese_for_export AS
       ', '
    ) AS actors,
   ST_X(ST_TRANSFORM(the_geom_point, MYLOCALSRID)) AS x_centroid,
-  ST_Y(ST_TRANSFORM(the_geom_point, MYLOCALSRID)) AS y_centroid
+  ST_Y(ST_TRANSFORM(the_geom_point, MYLOCALSRID)) AS y_centroid,
+  s.meta_update_date AS last_update_date
   FROM gn_synthese.synthese s
   JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
   JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
@@ -967,7 +968,8 @@ CREATE VIEW gn_synthese.v_synthese_for_export AS
     t.nom_valide,
     t.nom_vern,
     x_centroid,
-    y_centroid
+    y_centroid,
+    last_update_date
   ;
 ------------
 --TRIGGERS--

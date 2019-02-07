@@ -42,6 +42,7 @@ DEFAULT_EXPORT_COLUMNS = {
     "nom_valide": "nomValide",
     "wkt": "WKT",
     "actors": "acteurs",
+    "last_update_date": "lastUpdate",
 }
 
 
