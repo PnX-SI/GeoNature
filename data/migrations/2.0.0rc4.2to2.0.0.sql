@@ -395,7 +395,6 @@ JOIN ( SELECT val_max.uuid_attached_row,
 
 -- ajout de 2 champs commentaires dans la synthese
 
-ALTER TABLE gn_synthese.synthese DROP COLUMN comments CASCADE;
 ALTER TABLE gn_synthese.synthese ADD COLUMN comment_context text;
 ALTER TABLE gn_synthese.synthese ADD COLUMN comment_description text;
 
@@ -404,7 +403,18 @@ COMMENT ON COLUMN gn_synthese.synthese.comment_context
 COMMENT ON COLUMN gn_synthese.synthese.comment_description
   IS 'Commentaire de l''occurrence';
 
--- Modification de la vue export en synthese
+-- migration de l'ancien champs comments dans les nouveaux
+UPDATE gn_synthese.synthese
+SET comment_context = split_part(comments, '/', 1);
+
+UPDATE gn_synthese.synthese
+SET comment_description = split_part(comments, '/', 2);
+
+
+ALTER TABLE gn_synthese.synthese DROP COLUMN comments CASCADE;
+
+
+-- Recréation et adaptation des vues suite au drop cascade comments
 -- ajout acteur + x_centroid et y_centroid + date_update
 
 CREATE VIEW gn_synthese.v_synthese_for_export AS
@@ -619,3 +629,223 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
      JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
      JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source;
+
+
+-- MAJ des triggers occtax lié à la modif du champ commentaire
+-- Fonction utilisée pour les triggers vers synthese
+CREATE OR REPLACE FUNCTION gn_synthese.insert_in_synthese(my_id_counting integer)
+  RETURNS integer[] AS
+$BODY$
+DECLARE
+new_count RECORD;
+occurrence RECORD;
+releve RECORD;
+id_source integer;
+id_module integer;
+id_nomenclature_source_status integer;
+myobservers RECORD;
+id_role_loop integer;
+
+BEGIN
+--recupération du counting à partir de son ID
+SELECT INTO new_count * FROM pr_occtax.cor_counting_occtax WHERE id_counting_occtax = my_id_counting;
+
+-- Récupération de l'occurrence
+SELECT INTO occurrence * FROM pr_occtax.t_occurrences_occtax occ WHERE occ.id_occurrence_occtax = new_count.id_occurrence_occtax;
+
+-- Récupération du relevé
+SELECT INTO releve * FROM pr_occtax.t_releves_occtax rel WHERE occurrence.id_releve_occtax = rel.id_releve_occtax;
+
+-- Récupération de la source
+SELECT INTO id_source s.id_source FROM gn_synthese.t_sources s WHERE name_source ILIKE 'occtax';
+
+-- Récupération de l'id_module
+SELECT INTO id_module gn_commons.get_id_module_bycode('OCCTAX');
+
+
+-- Récupération du status_source depuis le JDD
+SELECT INTO id_nomenclature_source_status d.id_nomenclature_source_status FROM gn_meta.t_datasets d WHERE id_dataset = releve.id_dataset;
+
+--Récupération et formatage des observateurs
+SELECT INTO myobservers array_to_string(array_agg(rol.nom_role || ' ' || rol.prenom_role), ', ') AS observers_name,
+array_agg(rol.id_role) AS observers_id
+FROM pr_occtax.cor_role_releves_occtax cor
+JOIN utilisateurs.t_roles rol ON rol.id_role = cor.id_role
+WHERE cor.id_releve_occtax = releve.id_releve_occtax;
+
+-- insertion dans la synthese
+INSERT INTO gn_synthese.synthese (
+unique_id_sinp,
+unique_id_sinp_grp,
+id_source,
+entity_source_pk_value,
+id_dataset,
+id_module,
+id_nomenclature_geo_object_nature,
+id_nomenclature_grp_typ,
+id_nomenclature_obs_meth,
+id_nomenclature_obs_technique,
+id_nomenclature_bio_status,
+id_nomenclature_bio_condition,
+id_nomenclature_naturalness,
+id_nomenclature_exist_proof,
+id_nomenclature_diffusion_level,
+id_nomenclature_life_stage,
+id_nomenclature_sex,
+id_nomenclature_obj_count,
+id_nomenclature_type_count,
+id_nomenclature_observation_status,
+id_nomenclature_blurring,
+id_nomenclature_source_status,
+id_nomenclature_info_geo_type,
+count_min,
+count_max,
+cd_nom,
+nom_cite,
+meta_v_taxref,
+sample_number_proof,
+digital_proof,
+non_digital_proof,
+altitude_min,
+altitude_max,
+the_geom_4326,
+the_geom_point,
+the_geom_local,
+date_min,
+date_max,
+observers,
+determiner,
+id_digitiser,
+id_nomenclature_determination_method,
+comment_context,
+comment_description,
+last_action
+)
+VALUES(
+  new_count.unique_id_sinp_occtax,
+  releve.unique_id_sinp_grp,
+  id_source,
+  new_count.id_counting_occtax,
+  releve.id_dataset,
+  id_module,
+  --nature de l'objet geo: id_nomenclature_geo_object_nature Le taxon observé est présent quelque part dans l'objet géographique - NSP par défault
+  pr_occtax.get_default_nomenclature_value('NAT_OBJ_GEO'),
+  releve.id_nomenclature_grp_typ,
+  occurrence.id_nomenclature_obs_meth,
+  releve.id_nomenclature_obs_technique,
+  occurrence.id_nomenclature_bio_status,
+  occurrence.id_nomenclature_bio_condition,
+  occurrence.id_nomenclature_naturalness,
+  occurrence.id_nomenclature_exist_proof,
+  occurrence.id_nomenclature_diffusion_level,
+  new_count.id_nomenclature_life_stage,
+  new_count.id_nomenclature_sex,
+  new_count.id_nomenclature_obj_count,
+  new_count.id_nomenclature_type_count,
+  occurrence.id_nomenclature_observation_status,
+  occurrence.id_nomenclature_blurring,
+  -- status_source récupéré depuis le JDD
+  id_nomenclature_source_status,
+  -- id_nomenclature_info_geo_type: type de rattachement = géoréferencement
+  ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO', '1')	,
+  new_count.count_min,
+  new_count.count_max,
+  occurrence.cd_nom,
+  occurrence.nom_cite,
+  occurrence.meta_v_taxref,
+  occurrence.sample_number_proof,
+  occurrence.digital_proof,
+  occurrence.non_digital_proof,
+  releve.altitude_min,
+  releve.altitude_max,
+  releve.geom_4326,
+  ST_CENTROID(releve.geom_4326),
+  releve.geom_local,
+  (to_char(releve.date_min, 'DD/MM/YYYY') || ' ' || COALESCE(to_char(releve.hour_min, 'HH24:MI:SS'),'00:00:00'))::timestamp,
+  (to_char(releve.date_max, 'DD/MM/YYYY') || ' ' || COALESCE(to_char(releve.hour_max, 'HH24:MI:SS'),'00:00:00'))::timestamp,
+  COALESCE (myobservers.observers_name, releve.observers_txt),
+  occurrence.determiner,
+  releve.id_digitiser,
+  occurrence.id_nomenclature_determination_method,
+  releve.comment,
+  occurrence.comment,
+  'I'
+);
+
+  RETURN myobservers.observers_id ;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+
+CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_synthese_update_occ()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+BEGIN
+  UPDATE gn_synthese.synthese SET
+    id_nomenclature_obs_meth = NEW.id_nomenclature_obs_meth,
+    id_nomenclature_bio_condition = NEW.id_nomenclature_bio_condition,
+    id_nomenclature_bio_status = NEW.id_nomenclature_bio_status,
+    id_nomenclature_naturalness = NEW.id_nomenclature_naturalness,
+    id_nomenclature_exist_proof = NEW.id_nomenclature_exist_proof,
+    id_nomenclature_diffusion_level = NEW.id_nomenclature_diffusion_level,
+    id_nomenclature_observation_status = NEW.id_nomenclature_observation_status,
+    id_nomenclature_blurring = NEW.id_nomenclature_blurring,
+    id_nomenclature_source_status = NEW.id_nomenclature_source_status,
+    determiner = NEW.determiner,
+    id_nomenclature_determination_method = NEW.id_nomenclature_determination_method,
+    cd_nom = NEW.cd_nom,
+    nom_cite = NEW.nom_cite,
+    meta_v_taxref = NEW.meta_v_taxref,
+    sample_number_proof = NEW.sample_number_proof,
+    digital_proof = NEW.digital_proof,
+    non_digital_proof = NEW.non_digital_proof,
+    comment_description = NEW.comment,
+    last_action = 'U'
+  WHERE unique_id_sinp IN (SELECT unique_id_sinp_occtax FROM pr_occtax.cor_counting_occtax WHERE id_occurrence_occtax = NEW.id_occurrence_occtax);
+  RETURN NULL;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+
+-- UPDATE Releve
+CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_synthese_update_releve()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+  myobservers text;
+BEGIN
+  --calcul de l'observateur. On privilégie le ou les observateur(s) de cor_role_releves_occtax
+  --Récupération et formatage des observateurs
+  SELECT INTO myobservers array_to_string(array_agg(rol.nom_role || ' ' || rol.prenom_role), ', ')
+  FROM pr_occtax.cor_role_releves_occtax cor
+  JOIN utilisateurs.t_roles rol ON rol.id_role = cor.id_role
+  WHERE cor.id_releve_occtax = NEW.id_releve_occtax;
+  IF myobservers IS NULL THEN
+    myobservers = NEW.observers_txt;
+  END IF;
+  --mise à jour en synthese des informations correspondant au relevé uniquement
+  UPDATE gn_synthese.synthese SET
+      id_dataset = NEW.id_dataset,
+      observers = myobservers,
+      id_digitiser = NEW.id_digitiser,
+      id_nomenclature_obs_technique = NEW.id_nomenclature_obs_technique,
+      id_nomenclature_grp_typ = NEW.id_nomenclature_grp_typ,
+      date_min = (to_char(NEW.date_min, 'DD/MM/YYYY') || ' ' || COALESCE(to_char(NEW.hour_min, 'HH24:MI:SS'),'00:00:00'))::timestamp,
+      date_max = (to_char(NEW.date_max, 'DD/MM/YYYY') || ' ' || COALESCE(to_char(NEW.hour_max, 'HH24:MI:SS'),'00:00:00'))::timestamp, 
+      altitude_min = NEW.altitude_min,
+      altitude_max = NEW.altitude_max,
+      the_geom_4326 = NEW.geom_4326,
+      the_geom_point = ST_CENTROID(NEW.geom_4326),
+      last_action = 'U',
+      comment_context = NEW.comment
+  WHERE unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer)));
+  RETURN NULL;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
