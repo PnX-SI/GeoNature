@@ -458,6 +458,7 @@ class VSyntheseForExport(DB.Model):
     actors = DB.Column(DB.Unicode)
     x_centroid = DB.Column(DB.Float)
     y_centroid = DB.Column(DB.Float)
+    last_update_date = DB.Column(DB.DateTime)
 
     def get_geofeature_ordered(self):
         return self.as_geofeature_ordered("the_geom_4326", "id_synthese")
