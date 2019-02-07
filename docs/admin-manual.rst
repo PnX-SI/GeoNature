@@ -536,16 +536,17 @@ Restauration
 
     ::
 
-        sudo -n -u postgres -s createdb -O theo geonature2db
+        sudo -n -u postgres -s createdb -O <MON_USER> geonature2db
         sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS postgis;"
         sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS hstore;"
         sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';"
         sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
+        sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
         
   - Restaurer la BDD à partir du backup
 
     ::
-
+        sudo su postgres
         pg_restore -d geonature2db <MY_BACKUP_DIRECTORY_PATH>/201803150917-geonaturedb.backup
 
 * Restauration de la configuration et de la customisation :
