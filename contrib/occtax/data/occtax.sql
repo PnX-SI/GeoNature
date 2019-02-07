@@ -178,7 +178,8 @@ observers,
 determiner,
 id_digitiser,
 id_nomenclature_determination_method,
-comments,
+comment_context,
+comment_description,
 last_action
 )
 VALUES(
@@ -227,7 +228,8 @@ VALUES(
   occurrence.determiner,
   releve.id_digitiser,
   occurrence.id_nomenclature_determination_method,
-  CONCAT(COALESCE('Relevé : '||releve.comment || ' / ', NULL ), COALESCE('Occurrence : '||occurrence.comment, NULL)),
+  releve.comment,
+  occurrence.comment,
   'I'
 );
 
@@ -690,12 +692,7 @@ CREATE OR REPLACE FUNCTION fct_tri_synthese_update_occ()
   RETURNS trigger AS
 $BODY$
 DECLARE
-  releve RECORD;
 BEGIN
-  -- récupération du releve pour le commentaire à concatener
-  SELECT INTO releve * FROM pr_occtax.t_releves_occtax WHERE id_releve_occtax = NEW.id_releve_occtax;
-  IF releve.comment = '' THEN releve.comment = NULL; END IF;
-  IF NEW.comment = '' THEN NEW.comment = NULL; END IF;
   UPDATE gn_synthese.synthese SET
     id_nomenclature_obs_meth = NEW.id_nomenclature_obs_meth,
     id_nomenclature_bio_condition = NEW.id_nomenclature_bio_condition,
@@ -714,7 +711,7 @@ BEGIN
     sample_number_proof = NEW.sample_number_proof,
     digital_proof = NEW.digital_proof,
     non_digital_proof = NEW.non_digital_proof,
-    comments  = CONCAT(COALESCE('Relevé : '||releve.comment || ' / ', NULL ), COALESCE('Occurrence: '||NEW.comment, NULL)),
+    comment_description = NEW.comment,
     last_action = 'U'
   WHERE unique_id_sinp IN (SELECT unique_id_sinp_occtax FROM pr_occtax.cor_counting_occtax WHERE id_occurrence_occtax = NEW.id_occurrence_occtax);
   RETURN NULL;
@@ -763,7 +760,6 @@ CREATE OR REPLACE FUNCTION fct_tri_synthese_update_releve()
   RETURNS trigger AS
 $BODY$
 DECLARE
-  theoccurrence RECORD;
   myobservers text;
 BEGIN
   --calcul de l'observateur. On privilégie le ou les observateur(s) de cor_role_releves_occtax
@@ -788,18 +784,9 @@ BEGIN
       altitude_max = NEW.altitude_max,
       the_geom_4326 = NEW.geom_4326,
       the_geom_point = ST_CENTROID(NEW.geom_4326),
-      last_action = 'U'
+      last_action = 'U',
+      comment_context = NEW.comment
   WHERE unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer)));
-  -- récupération de l'occurrence pour le releve et mise à jour des commentaires avec celui de l'occurence seulement si le commentaire à changé
-  IF NEW.comment = '' THEN NEW.comment = NULL; END IF;
-  IF(NEW.comment IS DISTINCT FROM OLD.comment) THEN
-      FOR theoccurrence IN SELECT * FROM pr_occtax.t_occurrences_occtax WHERE id_releve_occtax = NEW.id_releve_occtax
-      LOOP
-          UPDATE gn_synthese.synthese SET
-                comments = CONCAT(COALESCE('Relevé : '||NEW.comment || ' / ', NULL ), COALESCE('Occurrence: '||theoccurrence.comment, NULL))
-          WHERE unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer)));
-      END LOOP;
-  END IF;
   RETURN NULL;
 END;
 $BODY$
