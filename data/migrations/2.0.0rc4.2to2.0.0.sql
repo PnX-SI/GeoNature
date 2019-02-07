@@ -567,7 +567,7 @@ CREATE VIEW gn_synthese.v_synthese_for_export AS
 
 
 
-CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS 
+CREATE OR REPLACE VIEW pr_occtax.v_synthese_for_web_app AS 
  SELECT s.id_synthese,
     s.unique_id_sinp,
     s.unique_id_sinp_grp,
@@ -633,7 +633,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
 
 -- MAJ des triggers occtax lié à la modif du champ commentaire
 -- Fonction utilisée pour les triggers vers synthese
-CREATE OR REPLACE FUNCTION gn_synthese.insert_in_synthese(my_id_counting integer)
+CREATE OR REPLACE FUNCTION pr_occtax.insert_in_synthese(my_id_counting integer)
   RETURNS integer[] AS
 $BODY$
 DECLARE
@@ -779,7 +779,7 @@ $BODY$
   COST 100;
 
 
-CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_synthese_update_occ()
+CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_occ()
   RETURNS trigger AS
 $BODY$
 DECLARE
@@ -813,7 +813,7 @@ $BODY$
 
 
 -- UPDATE Releve
-CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_synthese_update_releve()
+CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_releve()
   RETURNS trigger AS
 $BODY$
 DECLARE
