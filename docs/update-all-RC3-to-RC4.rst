@@ -47,7 +47,7 @@ Installation de UsersHub 2
 
 ::
 
-    sudo nano /etc/apache2/sites-available/usershub
+    sudo nano /etc/apache2/sites-available/usershub.conf
 
 
 ::
