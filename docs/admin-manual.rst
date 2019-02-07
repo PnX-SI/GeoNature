@@ -486,6 +486,8 @@ Les sauvegardes de la BDD sont à faire avec l'utilisateur ``postgres``. Commenc
     mkdir /home/`whoami`/backup
     # Ajouter l'utilisateur postgres au groupe de l'utilisateur linux courant pour qu'il ait les droits d'écrire dans les mêmes répertoires
     sudo adduser postgres `whoami`
+    # ajout de droit aux groupes de l'utilisateur courant sur le répertoire `backup`
+    chmod g+rwx /home/`whoami`/backup
 
 Connectez-vous avec l'utilisateur linux ``postgres`` pour lancer une sauvegarde de la BDD :
 
