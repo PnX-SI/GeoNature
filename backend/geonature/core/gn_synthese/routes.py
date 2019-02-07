@@ -56,7 +56,6 @@ log = logging.getLogger()
 def get_sources():
     q = DB.session.query(TSources)
     data = q.all()
-
     return [n.as_dict() for n in data]
 
 
@@ -352,7 +351,7 @@ def general_stats(info_role):
         - nb of observations
         - nb of distinct species
         - nb of distinct observer
-        - nb ob datasers
+        - nb ob datasets
     """
     allowed_datasets = TDatasets.get_user_datasets(info_role)
     q = DB.session.query(
