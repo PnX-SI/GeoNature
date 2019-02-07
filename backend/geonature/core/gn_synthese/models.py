@@ -251,69 +251,6 @@ class DefaultsNomenclaturesValue(DB.Model):
 
 
 @serializable
-@geoserializable
-class SyntheseOneRecord(DB.Model):
-    __tablename__ = "synthese"
-    __table_args__ = {"schema": "gn_synthese", "extend_existing": True}
-    id_synthese = DB.Column(DB.Integer, primary_key=True)
-    id_source = DB.Column(DB.Integer)
-    unique_id_sinp = DB.Column(UUID(as_uuid=True))
-    entity_source_pk_value = DB.Column(DB.Integer)
-    id_dataset = DB.Column(DB.Integer)
-    count_min = DB.Column(DB.Integer)
-    count_max = DB.Column(DB.Integer)
-    cd_nom = DB.Column(DB.Integer)
-    nom_cite = DB.Column(DB.Unicode)
-    sample_number_proof = DB.Column(DB.Unicode)
-    digital_proof = DB.Column(DB.Unicode)
-    non_digital_proof = DB.Column(DB.Unicode)
-    altitude_min = DB.Column(DB.Integer)
-    altitude_max = DB.Column(DB.Integer)
-    the_geom_point = DB.Column(Geometry("GEOMETRY", 4326))
-    the_geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
-    date_min = DB.Column(DB.DateTime)
-    date_max = DB.Column(DB.DateTime)
-    observers = DB.Column(DB.Unicode)
-    determiner = DB.Column(DB.Unicode)
-    comments = DB.Column(DB.Unicode)
-    occurrence_detail = DB.relationship(
-        "VSyntheseDecodeNomenclatures",
-        primaryjoin=(VSyntheseDecodeNomenclatures.id_synthese == id_synthese),
-        foreign_keys=[id_synthese],
-    )
-    source = DB.relationship(
-        "TSources",
-        primaryjoin=(TSources.id_source == id_source),
-        foreign_keys=[id_source],
-    )
-    areas = DB.relationship(
-        "LAreas",
-        secondary=corAreaSynthese,
-        primaryjoin=(corAreaSynthese.c.id_synthese == id_synthese),
-        secondaryjoin=(corAreaSynthese.c.id_area == LAreas.id_area),
-        foreign_keys=[corAreaSynthese.c.id_synthese, corAreaSynthese.c.id_area],
-    )
-    dataset = DB.relationship(
-        "TDatasets",
-        primaryjoin=(TDatasets.id_dataset == id_dataset),
-        foreign_keys=[id_dataset],
-    )
-    acquisition_framework = DB.relationship(
-        "TAcquisitionFramework",
-        uselist=False,
-        secondary=TDatasets.__table__,
-        primaryjoin=(TDatasets.id_dataset == id_dataset),
-        secondaryjoin=(
-            TDatasets.id_acquisition_framework
-            == TAcquisitionFramework.id_acquisition_framework
-        ),
-    )
-
-    def get_geofeature(self, recursif=False):
-        return self.as_geofeature("the_geom_4326", "id_synthese", recursif)
-
-
-@serializable
 class VMTaxonsSyntheseAutocomplete(DB.Model):
     __tablename__ = "taxons_synthese_autocomplete"
     __table_args__ = {"schema": "gn_synthese"}
@@ -525,3 +462,36 @@ class VSyntheseForExport(DB.Model):
     def get_geofeature_ordered(self):
         return self.as_geofeature_ordered("the_geom_4326", "id_synthese")
 
+
+@serializable
+@geoserializable
+class SyntheseOneRecord(VSyntheseForExport):
+    """
+    Model for display details information about one synthese observation
+    Herited from VSyntheseForExport model for all decoded nomenclatures
+    """
+
+    __tablename__ = "v_synthese_for_export"
+    __table_args__ = {"schema": "gn_synthese", "extend_existing": True}
+    source = DB.relationship(
+        "TSources",
+        primaryjoin=(TSources.id_source == VSyntheseForExport.id_source),
+        foreign_keys=[VSyntheseForExport.id_source],
+    )
+    areas = DB.relationship(
+        "LAreas",
+        secondary=corAreaSynthese,
+        primaryjoin=(corAreaSynthese.c.id_synthese == VSyntheseForExport.id_synthese),
+        secondaryjoin=(corAreaSynthese.c.id_area == LAreas.id_area),
+        foreign_keys=[corAreaSynthese.c.id_synthese, corAreaSynthese.c.id_area],
+    )
+    acquisition_framework = DB.relationship(
+        "TAcquisitionFramework",
+        uselist=False,
+        secondary=TDatasets.__table__,
+        primaryjoin=(TDatasets.id_dataset == VSyntheseForExport.id_dataset),
+        secondaryjoin=(
+            TDatasets.id_acquisition_framework
+            == TAcquisitionFramework.id_acquisition_framework
+        ),
+    )
