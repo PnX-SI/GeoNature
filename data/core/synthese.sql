@@ -201,7 +201,8 @@ CREATE TABLE synthese (
     determiner character varying(1000),
     id_digitiser integer,
     id_nomenclature_determination_method integer DEFAULT gn_synthese.get_default_nomenclature_value('METH_DETERMIN'),
-    comments text,
+    comment_context text,
+    comment_description text,
     meta_validation_date timestamp without time zone,
     meta_create_date timestamp without time zone DEFAULT now(),
     meta_update_date timestamp without time zone DEFAULT now(),
@@ -219,6 +220,10 @@ COMMENT ON COLUMN gn_synthese.synthese.id_source
   IS 'Permet d''identifier la localisation de l''enregistrement correspondant dans les schémas et tables de la base';
 COMMENT ON COLUMN gn_synthese.synthese.id_module
   IS 'Permet d''identifier le module qui a permis la création de l''enregistrement. Ce champ est en lien avec utilisateurs.t_applications et permet de gérer le CRUVED grace à la table utilisateurs.cor_app_privileges';
+COMMENT ON COLUMN gn_synthese.synthese.comment_context
+  IS 'Commentaire du releve (ou regroupement)';
+COMMENT ON COLUMN gn_synthese.synthese.comment_description
+  IS 'Commentaire de l''occurrence';
 
 CREATE SEQUENCE synthese_id_synthese_seq
     START WITH 1
