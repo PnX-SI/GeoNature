@@ -5,7 +5,7 @@ import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs';
 
 import * as L from 'leaflet';
-import { Control } from 'leaflet';
+import 'leaflet.markercluster';
 import { MAP_CONFIG } from '../../../conf/map.config';
 import { CommonService } from '../service/common.service';
 
@@ -166,8 +166,8 @@ export class MapService {
     });
   }
 
-  createGeojson(geojson, onEachFeature?): GeoJSON {
-    return L.geoJSON(geojson, {
+  createGeojson(geojson, asCluster: boolean, onEachFeature?): GeoJSON {
+    const geojsonLayer = L.geoJSON(geojson, {
       style: feature => {
         switch (feature.geometry.type) {
           // No color nor opacity for linestrings
@@ -190,6 +190,10 @@ export class MapService {
       },
       onEachFeature: onEachFeature
     });
+    if (asCluster) {
+      return (L as any).markerClusterGroup().addLayer(geojsonLayer);
+    }
+    return geojsonLayer;
   }
 
   removeAllLayers(map, featureGroup) {
