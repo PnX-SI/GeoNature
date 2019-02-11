@@ -432,7 +432,8 @@ CREATE TABLE t_modules(
   module_target character(10),
   module_comment text,
   active_frontend boolean NOT NULL,
-  active_backend boolean NOT NULL
+  active_backend boolean NOT NULL,
+  module_doc_url character varying(255)
 );
 COMMENT ON COLUMN t_modules.id_module IS 'PK mais aussi FK vers la table "utilisateurs.t_applications". ATTENTION de ne pas utiliser l''identifiant d''une application existante dans cette table et qui ne serait pas un module de GeoNature';
 COMMENT ON COLUMN t_modules.module_target IS 'Value = NULL ou "blank". On peux ainsi référencer des modules externes et les ouvrir dans un nouvel onglet.';
@@ -544,7 +545,7 @@ INSERT INTO bib_tables_location (table_desc, schema_name, table_name, pk_field, 
 
 INSERT INTO t_parameters (id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value) VALUES
 (0,'taxref_version','Version du référentiel taxonomique','Taxref V11.0',NULL)
-,(0,'local_srid','Valeur du SRID local','2154',NULL)
+,(0,'local_srid','Valeur du SRID local', MYLOCALSRID,NULL)
 ,(0,'annee_ref_commune', 'Année du référentiel géographique des communes utilisé', '2017', NULL)
 ;
 

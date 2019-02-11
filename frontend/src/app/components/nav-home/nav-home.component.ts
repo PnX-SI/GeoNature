@@ -1,4 +1,4 @@
-import { Component, NgModule, OnInit, OnDestroy, Inject, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
@@ -20,6 +20,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
   public currentUser: User;
   public appConfig: any;
+  public currentDocUrl: string;
   @ViewChild('sidenav') public sidenav: MatSidenav;
 
   constructor(
@@ -44,9 +45,11 @@ export class NavHomeComponent implements OnInit, OnDestroy {
         this.translate.use(locale);
       }
     });
+    // subscribe to currentModuleSub event to set the current module name in the navbar
     this._globalSub.currentModuleSub.subscribe(module => {
       if (module) {
         this.moduleName = module.module_label;
+        this.currentDocUrl = module.module_doc_url;
       } else {
         this.moduleName = 'Accueil';
       }
