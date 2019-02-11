@@ -219,6 +219,10 @@ export class DataFormService {
     });
   }
 
+  getModuleByCodeName(module_code) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/modules/${module_code}`);
+  }
+
   getCruved(modules_code?: Array<string>) {
     let queryString: HttpParams = new HttpParams();
     if (modules_code) {

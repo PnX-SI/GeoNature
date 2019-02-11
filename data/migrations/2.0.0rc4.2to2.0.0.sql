@@ -705,3 +705,16 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+
+
+
+-- Add column 'module_doc_url' on t_modules tables
+
+ALTER TABLE gn_commons.t_modules ADD COLUMN module_doc_url character varying(255);
+
+UPDATE gn_commons.t_modules 
+SET module_doc_url = 'https://geonature.readthedocs.io/fr/latest/';
+
+UPDATE gn_commons.t_modules 
+SET module_doc_url = 'https://geonature.readthedocs.io/fr/latest/user-manual.html#occtax'
+WHERE module_code ILIKE 'OCCTAX';

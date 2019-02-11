@@ -3,11 +3,17 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
 
 @Injectable()
 export class ModuleService {
+  // all active modules
   public modules: Array<any>;
+  // all modules exepted GEONATURE, for sidebar display
+  public displayedModules: Array<any>;
 
   constructor(private _api: DataFormService) {
-    this._api.getModulesList(['GEONATURE']).subscribe(data => {
+    this._api.getModulesList([]).subscribe(data => {
       this.modules = data;
+      this.displayedModules = data.filter(mod => {
+        return mod.module_code.toLowerCase() !== 'geonature';
+      });
       this.setModulesLocalStorage(data);
     });
   }

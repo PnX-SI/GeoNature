@@ -1,8 +1,11 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AppConfig } from '../../../conf/app.config';
 import { MapService } from '@geonature_common/map/map.service';
 import { SideNavService } from '../sidenav-items/sidenav-service';
 import { DataService } from '@geonature/syntheseModule/services/data.service';
+import { GlobalSubService } from '../../services/global-sub.service';
+import { DataFormService } from '@geonature_common/form/data-form.service';
+import { ModuleService } from '../../services/module.service';
 
 @Component({
   selector: 'pnx-home-content',
@@ -16,7 +19,13 @@ export class HomeContentComponent implements OnInit {
   public lastObs: any;
   public generalStat: any;
 
-  constructor(private _SideNavService: SideNavService, private _syntheseApi: DataService) {}
+  constructor(
+    private _SideNavService: SideNavService,
+    private _syntheseApi: DataService,
+    private _globalSub: GlobalSubService,
+    private _api: DataFormService,
+    private _moduleService: ModuleService
+  ) {}
 
   ngOnInit() {
     this._SideNavService.sidenav.open();
@@ -29,6 +38,18 @@ export class HomeContentComponent implements OnInit {
     this._syntheseApi.getSyntheseGeneralStat().subscribe(result => {
       this.generalStat = result;
     });
+
+    // get module home if not already in localstorage
+    if (!localStorage.getItem('modules')) {
+      this._api.getModuleByCodeName('GEONATURE').subscribe(module => {
+        module['module_label'] = 'Accueil';
+        // emit the currentModule event
+        this._globalSub.currentModuleSubject.next(module);
+      });
+    } else {
+      // emit the currentModule event
+      this._globalSub.currentModuleSubject.next(this._moduleService.getModule('GEONATURE'));
+    }
   }
 
   onEachFeature(feature, layer) {
