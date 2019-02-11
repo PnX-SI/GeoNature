@@ -966,16 +966,17 @@ L'administration des droits des utilisateurs pour le module Occtax se fait dans 
 Module SYNTHESE
 ---------------
 
-Le module Synthèse est un module du coeur de GeoNature, fourni par défault lors de l'installation.
+Le module Synthèse est un module du coeur de GeoNature, fourni par défaut lors de l'installation.
 
 Configuration
 """"""""""""""
 
-L'ensemble des paramètre de configuration du module se trouve dans le fichier général de configuration de GeoNautre ``config/geonature_config.toml`` puisqu'il s'agit d'un module du coeur.
+L'ensemble des paramètres de configuration du module se trouve dans le fichier général de configuration de GeoNature ``config/geonature_config.toml`` puisqu'il s'agit d'un module du coeur.
 
-- Modifier les filtres géographiques disponible par défaut dans l'interface de recherche.
+- Modifier les filtres géographiques disponibles par défaut dans l'interface de recherche.
 
-Editer la variable ``AREA_FILTERS`` en y ajoutant le label et l'ID du type d'entité géographique que vous souhaité rajouté. Voir table ``ref_geo.bib_areas_types``. Dans l'exemple on ajoute le type ZNIEFF1. Attention, les entités géographique corespondante au type 3, doivent également être présentes dans la table ``ref_geo.l_areas``
+Editer la variable ``AREA_FILTERS`` en y ajoutant le label et l'ID du type d'entité géographique que vous souhaitez rajouter. Voir table ``ref_geo.bib_areas_types``. Dans l'exemple on ajoute le type ZNIEFF1. Attention, les entités géographiques correspondantes au type 3, doivent également être présentes dans la table ``ref_geo.l_areas``
+
 ::
 
     [SYNTHESE]
@@ -989,55 +990,59 @@ Editer la variable ``AREA_FILTERS`` en y ajoutant le label et l'ID du type d'ent
 
 - Configurer les champs de ses exports
 
-Les exports (CSV, GeoJson, Shapefile) sont basés sur la vue ``gn_synthese.v_synthese_for_export``. Ne pas modifier cette vue pour garantir le fonctionnement des filtres est des exports. Il est cependant possible de désactiver des colonnes ou de les renommer.
+Les exports (CSV, GeoJson, Shapefile) sont basés sur la vue ``gn_synthese.v_synthese_for_export``. Ne pas modifier cette vue pour garantir le fonctionnement des filtres et des exports. Il est cependant possible de désactiver des colonnes ou de les renommer.
 
-Pour cela éditez la variable ``[SYNTHESE.EXPORT_COLUMNS]``. Enlevez la ligne de la colonne que vous souhaitez désactiver, ou renommer la 2ème partie de la ligne pour renommer une colonne. Ex: pour renommer le champs ``count_min``, editez la ligne de la manière suivante: ``count_min = "NombMax" ``. Les colonnes de plus de 10 caractères seront tronqués dans le fichier shapefile.
+Pour cela éditez la variable ``[SYNTHESE.EXPORT_COLUMNS]``. Enlevez la ligne de la colonne que vous souhaitez désactiver, ou renommer la 2ème partie de la ligne pour renommer une colonne. Ex : pour renommer le champs ``count_min``, modifiez la ligne de la manière suivante : ``count_min = "NombMax"``. Les noms de colonne de plus de 10 caractères seront tronqués dans le fichier shapefile.
 
-[SYNTHESE.EXPORT_COLUMNS]
-    id_synthese = "idSyn" 
-    unique_id_sinp = "idUnique" 
-    date_min = "dateMin" 
-    date_max = "dateMax" 
-    observers = "observers" 
-    altitude_min = "altMin" 
-    altitude_max = "altMax" 
-    count_min = "NbMin" 
-    count_max = "nbMax" 
-    sample_number_proof = "EchanPreuv" 
-    digital_proof = "PreuvNum" 
-    non_digital_proof = "PreuvNoNum" 
-    comments = "comment" 
-    nat_obj_geo = "natObjGeo" 
-    grp_typ = "methGrp" 
-    obs_method = "obsMeth" 
-    obs_technique = "obsTech" 
-    bio_status = "ocEtatBio" 
-    bio_condition = "ocStatBio" 
-    naturalness = "ocNat" 
-    exist_proof = "preuveOui" 
-    valid_status = "validStat" 
-    diffusion_level = "nivDiffusi" 
-    life_stage = "ocStade" 
-    sex = "ocSex" 
-    obj_count = "objDenbr" 
-    type_count = "typDenbr" 
-    sensitivity = "sensibilit" 
-    observation_status = "statutObs" 
-    blurring = "floutage" 
-    source_status = "statutSour" 
-    info_geo_type = "typeGeom" 
-    determination_method = "methDeterm" 
-    dataset_name = "JDD" 
-    cd_nom = "cdNom" 
-    cd_ref = "cdRef" 
-    nom_valide = "nomValide" 
-    wkt = "WKT"
+::
+
+    [SYNTHESE.EXPORT_COLUMNS]
+        id_synthese = "idSyn" 
+        unique_id_sinp = "idUnique" 
+        date_min = "dateMin" 
+        date_max = "dateMax" 
+        observers = "observers" 
+        altitude_min = "altMin" 
+        altitude_max = "altMax" 
+        count_min = "NbMin" 
+        count_max = "nbMax" 
+        sample_number_proof = "EchanPreuv" 
+        digital_proof = "PreuvNum" 
+        non_digital_proof = "PreuvNoNum" 
+        comments = "comment" 
+        nat_obj_geo = "natObjGeo" 
+        grp_typ = "methGrp" 
+        obs_method = "obsMeth" 
+        obs_technique = "obsTech" 
+        bio_status = "ocEtatBio" 
+        bio_condition = "ocStatBio" 
+        naturalness = "ocNat" 
+        exist_proof = "preuveOui" 
+        valid_status = "validStat" 
+        diffusion_level = "nivDiffusi" 
+        life_stage = "ocStade" 
+        sex = "ocSex" 
+        obj_count = "objDenbr" 
+        type_count = "typDenbr" 
+        sensitivity = "sensibilit" 
+        observation_status = "statutObs" 
+        blurring = "floutage" 
+        source_status = "statutSour" 
+        info_geo_type = "typeGeom" 
+        determination_method = "methDeterm" 
+        dataset_name = "JDD" 
+        cd_nom = "cdNom" 
+        cd_ref = "cdRef" 
+        nom_valide = "nomValide" 
+        wkt = "WKT"
 
 
 - Configurer les seuils du nombre de données pour la recherche et les exports
 
-Par défault et pour des questions de performances (du navigateur et du serveur) on limite à 10 000 le nombre de résultat affiché sur la carte et à 40 000 le nombre d'observations dans les exports.
-Ces seuils sont éditables respectivement par les variables ``NB_MAX_OBS_MAP`` ``NB_MAX_OBS_EXPORT``
+Par défaut et pour des questions de performance (du navigateur et du serveur) on limite à 10000 le nombre de résultat affiché sur la carte et à 40000 le nombre d'observations dans les exports.
+
+Ces seuils sont éditables respectivement par les variables ``NB_MAX_OBS_MAP`` et ``NB_MAX_OBS_EXPORT`` :
+
 ::
 
     [SYNTHESE]
@@ -1049,7 +1054,8 @@ Ces seuils sont éditables respectivement par les variables ``NB_MAX_OBS_MAP`` `
 - Désactiver des filtres génériques 
 
 L'interface de recherche de la synthèse permet de filtrer sur l'ensemble des nomenclatures de la table ``gn_synthese``, il est cependant possible de désactiver les filtres de certains champs.
-Editez la variable ``EXCLUDED_COLUMNS``
+
+Modifiez la variable ``EXCLUDED_COLUMNS``
 
 ::
 
@@ -1057,4 +1063,4 @@ Editez la variable ``EXCLUDED_COLUMNS``
         EXCLUDED_COLUMNS = ['non_digital_proof'] # pour enlever le filtre 'preuve non numérique'
 
 
-D'autres élements sont paramètrables dans le module synthese. La liste complète est disponible dans le fichier ``config/geonature_config.toml`` rubrique ``SYNTHESE``
+D'autres élements sont paramètrables dans le module synthese. La liste complète est disponible dans le fichier ``config/geonature_config.toml`` rubrique ``SYNTHESE``.
