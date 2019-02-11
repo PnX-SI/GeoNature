@@ -259,7 +259,9 @@ then
     echo "Creating 'commons' schema" &>> var/log/install_db.log
     echo "--------------------" &>> var/log/install_db.log
     echo "" &>> var/log/install_db.log
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/commons.sql  &>> var/log/install_db.log
+    cp data/core/commons.sql tmp/geonature/commons.sql
+    sudo sed -i "s/MYLOCALSRID/$srid_local/g" tmp/geonature/commons.sql
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/geonature/commons.sql  &>> var/log/install_db.log
 
     echo "Creating 'meta' schema..."
     echo "" &>> var/log/install_db.log
