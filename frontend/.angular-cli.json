@@ -7,12 +7,7 @@
     {
       "root": "src",
       "outDir": "dist",
-      "assets": [
-        "assets",
-        "custom",
-        "favicon.ico",
-        "external_assets"
-      ],
+      "assets": ["assets", "custom", "favicon.ico", "external_assets"],
       "index": "index.html",
       "main": "main.ts",
       "polyfills": "polyfills.ts",
@@ -33,7 +28,9 @@
         "../node_modules/@swimlane/ngx-datatable/release/assets/icons.css",
         "styles.scss",
         "../node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
-        "../node_modules/angular-tree-component/dist/angular-tree-component.css"
+        "../node_modules/angular-tree-component/dist/angular-tree-component.css",
+        "../node_modules/leaflet.markercluster/dist/MarkerCluster.css",
+        "../node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css"
       ],
       "scripts": [
         "../node_modules/popper.js/dist/umd/popper.min.js",
@@ -41,7 +38,8 @@
         "../node_modules/chart.js/dist/Chart.min.js",
         "../node_modules/bootstrap/dist/js/bootstrap.min.js",
         "../node_modules/leaflet/dist/leaflet.js",
-        "../node_modules/leaflet-draw/dist/leaflet.draw.js"
+        "../node_modules/leaflet-draw/dist/leaflet.draw.js",
+        "../node_modules/leaflet.markercluster/dist/leaflet.markercluster.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {
@@ -76,8 +74,7 @@
   },
   "defaults": {
     "styleExt": "scss",
-    "component": {
-    }
+    "component": {}
   },
   "warnings": {
     "typescriptMismatch": false

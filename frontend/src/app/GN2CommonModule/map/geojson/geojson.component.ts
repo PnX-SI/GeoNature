@@ -17,6 +17,8 @@ export class GeojsonComponent implements OnInit, OnChanges {
   @Input() geojson: any;
   @Input() onEachFeature: any;
   @Input() style: any;
+  // display the geojsons as cluster or not
+  @Input() asCluster = false;
   public geojsonCharged = new Subject<any>();
   public currentGeoJson$: Observable<L.Layer> = this.geojsonCharged.asObservable();
 
@@ -27,7 +29,11 @@ export class GeojsonComponent implements OnInit, OnChanges {
   }
 
   loadGeojson(geojson) {
-    this.currentGeojson = this.mapservice.createGeojson(geojson, this.onEachFeature);
+    this.currentGeojson = this.mapservice.createGeojson(
+      geojson,
+      this.asCluster,
+      this.onEachFeature
+    );
     this.geojsonCharged.next(this.currentGeojson);
     this.mapservice.layerGroup = new L.LayerGroup();
     this.mapservice.map.addLayer(this.mapservice.layerGroup);
