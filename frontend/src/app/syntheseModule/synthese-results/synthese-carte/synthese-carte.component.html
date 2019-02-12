@@ -1,5 +1,5 @@
 <pnx-map height="94vh" class="map-card">
-  <pnx-geojson [geojson]="inputSyntheseData" [asCluster]='true' [onEachFeature]="onEachFeature.bind(this)">
+  <pnx-geojson [geojson]="inputSyntheseData" [asCluster]='SYNTHESE_CONFIG.ENABLE_LEAFLET_CLUSTER' [onEachFeature]="onEachFeature.bind(this)">
   </pnx-geojson>
   <pnx-leaflet-filelayer
    (onLoad)="onFileLayerLoaded($event)"

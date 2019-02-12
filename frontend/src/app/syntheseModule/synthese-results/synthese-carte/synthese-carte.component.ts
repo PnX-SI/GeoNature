@@ -5,6 +5,7 @@ import { MapService } from '@geonature_common/map/map.service';
 import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
 import { SyntheseFormService } from '../../services/form.service';
 import { CommonService } from '@geonature_common/service/common.service';
+import { AppConfig } from '@geonature_config/app.config';
 
 @Component({
   selector: 'pnx-synthese-carte',
@@ -16,6 +17,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit {
   public leafletDrawOptions = leafletDrawOption;
   public currentLeafletDrawCoord: any;
   public firstFileLayerMessage = true;
+  public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
   @Input() inputSyntheseData: GeoJSON;
   constructor(
     public mapListService: MapListService,
