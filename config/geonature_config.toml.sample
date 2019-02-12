@@ -36,3 +36,6 @@ DEFAULT_LANGUAGE='fr'
 [SYNTHESE]
     # colonne des exports de la synthese
     [SYNTHESE.EXPORT_COLUMNS]
+
+# Configuration cartographique
+[MAPCONFIG]

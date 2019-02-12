@@ -139,11 +139,11 @@ ID_USER_SOCLE_2 = 6
     # si false, passez le NB_MAX_OBS_MAP à 10000 pour des question de performances des navigateurs
     ENABLE_LEAFLET_CLUSTER = true
     # Nombre d'observation maximum à afficher sur la carte après une recherche
-    NB_MAX_OBS_MAP = 10000
+    NB_MAX_OBS_MAP = 50000
     # Nombre des dernières observations affichées par défaut quand on arrive sur la synthese 
     NB_LAST_OBS = 100
     # Nombre max d'observation dans les exports
-    NB_MAX_OBS_EXPORT = 40000
+    NB_MAX_OBS_EXPORT = 50000
     # Champs à afficher dans l'export
     [SYNTHESE.EXPORT_COLUMNS]
         id_synthese = "idSyn" 
