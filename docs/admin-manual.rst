@@ -295,7 +295,6 @@ Pour configurer GeoNature, actuellement il y a :
 
 - Une configuration pour l'installation : ``config/settings.ini``
 - Une configuration globale de l'application : ``<GEONATURE_DIRECTORY>/config/geonature_config.toml`` (générée lors de l'installation de GeoNature)
-- Une configuration pour les modules cartographiques (changement des fonds de carte et niveau de zoom): ``<GEONATURE_DIRECTORY>/frontend/src/conf.map.config.ts``
 - Une configuration par module : ``<GEONATURE_DIRECTORY>/external_modules/<nom_module>/config/conf_gn_module.toml`` (générée lors de l'instalation d'un module)
 - Une table ``gn_commons.t_parameters`` pour des paramètres gérés dans la BDD
 
@@ -1039,9 +1038,11 @@ Pour cela éditez la variable ``[SYNTHESE.EXPORT_COLUMNS]``. Enlevez la ligne de
 
 - Configurer les seuils du nombre de données pour la recherche et les exports
 
-Par défaut et pour des questions de performance (du navigateur et du serveur) on limite à 10000 le nombre de résultat affiché sur la carte et à 40000 le nombre d'observations dans les exports.
+Par défaut et pour des questions de performance (du navigateur et du serveur) on limite à 50000 le nombre de résultat affiché sur la carte etle nombre d'observations dans les exports.
 
 Ces seuils sont éditables respectivement par les variables ``NB_MAX_OBS_MAP`` et ``NB_MAX_OBS_EXPORT`` :
+
+Le mode cluster activé par défaut peut être désactivé via le paramètre ``ENABLE_LEAFLET_CLUSTER`` Dans ce cas ci, il est conseillé de repassé le paramètre `NB_MAX_OBS_MAP` à 10000.
 
 ::
 

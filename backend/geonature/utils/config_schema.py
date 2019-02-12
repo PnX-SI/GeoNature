@@ -132,7 +132,7 @@ class Synthese(Schema):
     # clusteriser les layers sur la carte
     ENABLE_LEAFLET_CLUSTER = fields.Boolean(missing=True)
     # Nombre max d'observation dans les exports
-    NB_MAX_OBS_EXPORT = fields.Integer(missing=40000)
+    NB_MAX_OBS_EXPORT = fields.Integer(missing=50000)
     # Nombre des "dernières observations" affiché à l'arrive sur la synthese
     NB_LAST_OBS = fields.Integer(missing=100)
 
