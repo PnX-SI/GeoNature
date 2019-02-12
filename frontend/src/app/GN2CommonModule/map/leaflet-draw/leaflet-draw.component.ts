@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
-import { Map, FeatureGroup, GeoJSON } from 'leaflet';
+import { Map, GeoJSON } from 'leaflet';
 import { MapService } from '../map.service';
-import { MAP_CONFIG } from '../../../../conf/map.config';
+import { AppConfig } from '@geonature_config/app.config';
 import { CommonService } from '../../service/common.service';
 import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
 
@@ -20,7 +20,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   // coordinates of the entity to draw
   @Input() geojson: GeoJSON;
   @Input() options = leafletDrawOption;
-  @Input() zoomLevel = MAP_CONFIG.ZOOM_LEVEL_RELEVE;
+  @Input() zoomLevel = AppConfig.MAPCONFIG.ZOOM_LEVEL_RELEVE;
   @Output() layerDrawed = new EventEmitter<any>();
   @Output() layerDeleted = new EventEmitter<any>();
 
