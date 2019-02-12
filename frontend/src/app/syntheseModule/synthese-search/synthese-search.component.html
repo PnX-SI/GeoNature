@@ -65,9 +65,9 @@
         <legend> Ou ?</legend>
 
         <div *ngIf="formService.formBuilded">
-          <div *ngFor="let area of AppConfig.SYNTHESE.AREA_FILTERS; let i = index;">
+          <div *ngFor="let area of areaFilters; let i = index;">
             {{areas}}
-            <pnx-areas [searchBar]="true" [parentFormControl]="area.control" [label]="area.label" [idType]="area.id_type">
+            <pnx-areas [searchBar]="true" [parentFormControl]="area.control" [label]="area.label" [idTypes]="area.id_type_array">
             </pnx-areas>
           </div>
         </div>

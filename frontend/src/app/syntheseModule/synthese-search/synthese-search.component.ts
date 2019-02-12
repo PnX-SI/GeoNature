@@ -17,6 +17,7 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
 export class SyntheseSearchComponent implements OnInit {
   public AppConfig = AppConfig;
   public organisms: any;
+  public areaFilters: Array<any>;
 
   public taxonApiEndPoint = `${AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
   @Output() searchClicked = new EventEmitter();
@@ -33,6 +34,16 @@ export class SyntheseSearchComponent implements OnInit {
     // get organisms:
     this._api.getOrganismsDatasets().subscribe(data => {
       this.organisms = data;
+    });
+
+    // format areas filter
+    this.areaFilters = AppConfig.SYNTHESE.AREA_FILTERS.map(area => {
+      if (typeof area.id_type === 'number') {
+        area['id_type_array'] = [area.id_type];
+      } else {
+        area['id_type_array'] = area.id_type;
+      }
+      return area;
     });
   }
 

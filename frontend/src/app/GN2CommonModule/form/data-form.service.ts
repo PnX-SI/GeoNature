@@ -164,12 +164,12 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/geo/municipalities`, { params: params });
   }
 
-  getAreas(id_type?, area_name?) {
+  getAreas(area_type_list: Array<number>, area_name?) {
     let params: HttpParams = new HttpParams();
 
-    if (id_type) {
-      params = params.set('id_type', id_type);
-    }
+    area_type_list.forEach(id_type => {
+      params = params.append('id_type', id_type.toString());
+    });
 
     if (area_name) {
       params = params.set('area_name', area_name);

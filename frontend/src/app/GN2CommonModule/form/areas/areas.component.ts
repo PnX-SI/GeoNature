@@ -10,7 +10,7 @@ import { CommonService } from '@geonature_common/service/common.service';
 export class AreasComponent implements OnInit {
   public areas: any;
   public cachedAreas: any;
-  @Input() idType: number; // Areas id_type
+  @Input() idTypes: Array<number>; // Areas id_type
   @Input() label: string;
   @Input() searchBar = false;
   @Input() parentFormControl: FormControl;
@@ -19,7 +19,7 @@ export class AreasComponent implements OnInit {
   constructor(private _dfs: DataFormService, private _commonService: CommonService) {}
 
   ngOnInit() {
-    this._dfs.getAreas(this.idType).subscribe(data => {
+    this._dfs.getAreas(this.idTypes).subscribe(data => {
       this.cachedAreas = data;
       this.areas = data;
     });
@@ -28,7 +28,7 @@ export class AreasComponent implements OnInit {
   refreshAreas(area_name) {
     // refresh area API call only when area_name >= 2 character
     if (area_name && area_name.length >= 2) {
-      this._dfs.getAreas(this.idType, area_name).subscribe(
+      this._dfs.getAreas(this.idTypes, area_name).subscribe(
         data => {
           this.areas = data;
         },
