@@ -80,12 +80,29 @@ ID_USER_SOCLE_2 = 6
     MAIL_PASS = 'email to'
     MAIL_TO = 'email to'
 
+# map configuration
+[MAPCONFIG]
+    BASEMAP = [
+        {"name" = "OpenStreetMap", "layer" = "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png", "attribution" = "&copy OpenStreetMap"},
+        {"name"= "OpenTopoMap", "layer" = "//a.tile.opentopomap.org/{z}/{x}/{y}.png", "attribution" = "© OpenTopoMap"},
+        {"name" = "GoogleSatellite", "layer" = "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}","subdomains" = ["mt0", "mt1", "mt2", "mt3"],"attribution" = "© GoogleMap"}
+    ]
+    CENTER = [46.52863469527167, 2.43896484375]
+    # Zoom par défaut
+    ZOOM_LEVEL = 6
+    # Zoom à partir duquel on peut pointer un releve
+    ZOOM_LEVEL_RELEVE = 15
+    # zoom appliqué sur la carte lorsque l'on clique sur une liste
+    ZOOM_ON_CLICK = 16
+
+    
+
 # Synthese configuration
 [SYNTHESE]
     # Liste des entités géographiques sur lesquels les filtres
     # géographiques de la synthese s'appuient (id_area = id de l'entité géo, table ref_geo.bib_areas_types)
     AREA_FILTERS = [
-        { label = "Communes", id_type = 25 },
+        { label = "Communes", id_type = 25 }
     ]
     # Colonne renvoyé par l'API de la synthèse par défaut
     COLUMNS_API_SYNTHESE_WEB_APP = [

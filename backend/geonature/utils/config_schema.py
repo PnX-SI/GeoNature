@@ -1,6 +1,6 @@
-'''
+"""
     Description des options de configuration
-'''
+"""
 
 import os
 
@@ -9,36 +9,26 @@ from marshmallow.validate import OneOf, Regexp
 from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_EXPORT_COLUMNS,
     DEFAULT_LIST_COLUMN,
-    DEFAULT_COLUMNS_API_SYNTHESE
+    DEFAULT_COLUMNS_API_SYNTHESE,
 )
-from geonature.utils.env import (GEONATURE_VERSION)
+from geonature.utils.env import GEONATURE_VERSION
 
 
 class CasUserSchemaConf(Schema):
-    URL = fields.Url(
-        missing='https://inpn.mnhn.fr/authentication/information'
-    )
-    ID = fields.String(
-        missing='mon_id'
-    )
-    PASSWORD = fields.String(
-        missing='mon_pass'
-    )
+    URL = fields.Url(missing="https://inpn.mnhn.fr/authentication/information")
+    ID = fields.String(missing="mon_id")
+    PASSWORD = fields.String(missing="mon_pass")
 
 
 class CasFrontend(Schema):
-    CAS_AUTHENTIFICATION = fields.Boolean(missing='false')
-    CAS_URL_LOGIN = fields.Url(
-        missing='https://preprod-inpn.mnhn.fr/auth/login'
-    )
-    CAS_URL_LOGOUT = fields.Url(
-        missing='https://preprod-inpn.mnhn.fr/auth/logout'
-    )
+    CAS_AUTHENTIFICATION = fields.Boolean(missing="false")
+    CAS_URL_LOGIN = fields.Url(missing="https://preprod-inpn.mnhn.fr/auth/login")
+    CAS_URL_LOGOUT = fields.Url(missing="https://preprod-inpn.mnhn.fr/auth/logout")
 
 
 class CasSchemaConf(Schema):
     CAS_URL_VALIDATION = fields.String(
-        missing='https://preprod-inpn.mnhn.fr/auth/serviceValidate'
+        missing="https://preprod-inpn.mnhn.fr/auth/serviceValidate"
     )
     CAS_USER_WS = fields.Nested(CasUserSchemaConf, missing=dict())
     USERS_CAN_SEE_ORGANISM_DATA = fields.Boolean(missing=False)
@@ -72,23 +62,25 @@ class GnPySchemaConf(Schema):
     SQLALCHEMY_DATABASE_URI = fields.String(
         required=True,
         validate=Regexp(
-            '^postgresql:\/\/.*:.*@[^:]+:\w+\/\w+$',
+            "^postgresql:\/\/.*:.*@[^:]+:\w+\/\w+$",
             0,
             """Database uri is invalid ex:
-             postgresql://monuser:monpass@server:port/db_name"""
-        )
+             postgresql://monuser:monpass@server:port/db_name""",
+        ),
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = fields.Boolean(missing=False)
-    SESSION_TYPE = fields.String(missing='filesystem')
+    SESSION_TYPE = fields.String(missing="filesystem")
     SECRET_KEY = fields.String(required=True)
     # le cookie expire toute les 7 jours par défaut
     COOKIE_EXPIRATION = fields.Integer(missing=3600 * 24 * 7)
     COOKIE_AUTORENEW = fields.Boolean(missing=True)
     TRAP_ALL_EXCEPTIONS = fields.Boolean(missing=False)
 
-    UPLOAD_FOLDER = fields.String(missing='static/medias')
+    UPLOAD_FOLDER = fields.String(missing="static/medias")
     BASE_DIR = fields.String(
-        missing=os.path.dirname(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+        missing=os.path.dirname(
+            os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
+        )
     )
     MAILERROR = fields.Nested(MailErrorConf, missing=dict())
     CAS = fields.Nested(CasSchemaConf, missing=dict())
@@ -102,20 +94,26 @@ class GnFrontEndConf(Schema):
     MULTILINGUAL = fields.Boolean(missing=False)
 
 
-id_municipality = BddConfig().load({}).data.get('id_area_type_municipality')
+id_municipality = BddConfig().load({}).data.get("id_area_type_municipality")
 
 
 class Synthese(Schema):
-    AREA_FILTERS = fields.List(fields.Dict, missing=[{"label": "Communes", "id_type": id_municipality}])
+    AREA_FILTERS = fields.List(
+        fields.Dict, missing=[{"label": "Communes", "id_type": id_municipality}]
+    )
     # Listes des champs renvoyés par l'API synthese '/synthese'
     # Si on veut afficher des champs personnalisés dans le frontend (paramètre LIST_COLUMNS_FRONTEND) il faut
     # d'abbord s'assurer que ces champs sont bien renvoyé par l'API !
     # Champs disponibles: tous ceux de la vue 'v_synthese_for_web_app
-    COLUMNS_API_SYNTHESE_WEB_APP = fields.List(fields.String, missing=DEFAULT_COLUMNS_API_SYNTHESE)
+    COLUMNS_API_SYNTHESE_WEB_APP = fields.List(
+        fields.String, missing=DEFAULT_COLUMNS_API_SYNTHESE
+    )
     # Colonnes affichées sur la liste des résultats de la sytnthese
     LIST_COLUMNS_FRONTEND = fields.List(fields.Dict, missing=DEFAULT_LIST_COLUMN)
     EXPORT_COLUMNS = fields.Dict(missing=DEFAULT_EXPORT_COLUMNS)
-    EXPORT_FORMAT = fields.List(fields.String(), missing=['csv', 'geojson', 'shapefile'])
+    EXPORT_FORMAT = fields.List(
+        fields.String(), missing=["csv", "geojson", "shapefile"]
+    )
     # Nombre de résultat à afficher pour la rechercher autocompleté de taxon
     TAXON_RESULT_NUMBER = fields.Integer(missing=20)
     # Liste des id attributs Taxhub à afficher sur la fiche détaile de la synthese
@@ -138,19 +136,46 @@ class Synthese(Schema):
 
 
 # On met la valeur par défaut de DISCONECT_AFTER_INACTIVITY inferieure à COOKIE_EXPIRATION
-cookie_expiration = GnPySchemaConf().load({}).data.get('COOKIE_EXPIRATION')
+cookie_expiration = GnPySchemaConf().load({}).data.get("COOKIE_EXPIRATION")
+
+
+# Map configuration
+BASEMAP = [
+    {
+        "name": "OpenStreetMap",
+        "layer": "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+        "attribution": "&copy OpenStreetMap",
+    },
+    {
+        "name": "OpenTopoMap",
+        "layer": "//a.tile.opentopomap.org/{z}/{x}/{y}.png",
+        "attribution": "© OpenTopoMap",
+    },
+    {
+        "name": "GoogleSatellite",
+        "layer": "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+        "subdomains": ["mt0", "mt1", "mt2", "mt3"],
+        "attribution": "© GoogleMap",
+    },
+]
+
+
+class MapConfig(Schema):
+    BASEMAP = fields.List(fields.Dict, missing=BASEMAP)
+    CENTER = fields.List(fields.Integer, missing=[46.52863469527167, 2.43896484375])
+    ZOOM_LEVEL = fields.Integer(missing=6)
+    ZOOM_LEVEL_RELEVE = fields.Integer(missing=15)
+    # zoom appliqué sur la carte lorsque l'on clique sur une liste
+    # ne s'applique qu'aux points
+    ZOOM_ON_CLICK = fields.Integer(missing=16)
+
 
 # class a utiliser pour les paramètres que l'on veut passer au frontend
-
-
 class GnGeneralSchemaConf(Schema):
-    appName = fields.String(missing='GeoNature2')
+    appName = fields.String(missing="GeoNature2")
     GEONATURE_VERSION = fields.String(missing=GEONATURE_VERSION.strip())
-    DEFAULT_LANGUAGE = fields.String(missing='fr')
-    PASS_METHOD = fields.String(
-        missing='hash',
-        validate=OneOf(['hash', 'md5'])
-    )
+    DEFAULT_LANGUAGE = fields.String(missing="fr")
+    PASS_METHOD = fields.String(missing="hash", validate=OneOf(["hash", "md5"]))
     DEBUG = fields.Boolean(missing=False)
     URL_APPLICATION = fields.Url(required=True)
     API_ENDPOINT = fields.Url(required=True)
@@ -163,10 +188,10 @@ class GnGeneralSchemaConf(Schema):
     RIGHTS = fields.Nested(RightsSchemaConf, missing=dict())
     FRONTEND = fields.Nested(GnFrontEndConf, missing=dict())
     SYNTHESE = fields.Nested(Synthese, missing=dict())
+    MAPCONFIG = fields.Nested(MapConfig, missing=dict())
     # Ajoute la surchouche 'taxonomique' sur l'API nomenclature
     ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS = fields.Boolean(missing=True)
     BDD = fields.Nested(BddConfig, missing=dict())
-
 
 
 class ManifestSchemaConf(Schema):

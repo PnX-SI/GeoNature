@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { MAP_CONFIG } from '../../../conf/map.config';
+import { AppConfig } from '@geonature_config/app.config';
 import { CommonService } from '../service/common.service';
 
 @Injectable()
@@ -213,7 +213,7 @@ export class MapService {
       };
       this.setGeojsonCoord(geojson);
       this.marker.on('moveend', (event: MouseEvent) => {
-        if (this.map.getZoom() < MAP_CONFIG.ZOOM_LEVEL_RELEVE) {
+        if (this.map.getZoom() < AppConfig.MAPCONFIG.ZOOM_LEVEL_RELEVE) {
           this._commonService.translateToaster('warning', 'Map.ZoomWarning');
         } else {
           markerCoord = this.marker.getLatLng();
