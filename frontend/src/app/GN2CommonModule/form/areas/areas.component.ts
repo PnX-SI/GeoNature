@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { DataFormService } from '../data-form.service';
 import { FormControl } from '@angular/forms';
 import { CommonService } from '@geonature_common/service/common.service';
+import { AppConfig } from '@geonature_config/app.config';
 
 @Component({
   selector: 'pnx-areas',
@@ -21,8 +22,22 @@ export class AreasComponent implements OnInit {
   ngOnInit() {
     this._dfs.getAreas(this.idTypes).subscribe(data => {
       this.cachedAreas = data;
-      this.areas = data;
+      this.formatAreas(data);
     });
+  }
+  /**
+   * Set the departement number if the id_type is municipalities
+   * @param data
+   */
+  formatAreas(data) {
+    if (data.length > 0 && data[0]['id_type'] === AppConfig.BDD.id_area_type_municipality) {
+      this.areas = data.map(element => {
+        element['area_name'] = `${element['area_name']} (${element.area_code.substr(0, 2)}) `;
+        return element;
+      });
+    } else {
+      this.areas = data;
+    }
   }
 
   refreshAreas(area_name) {
@@ -30,7 +45,7 @@ export class AreasComponent implements OnInit {
     if (area_name && area_name.length >= 2) {
       this._dfs.getAreas(this.idTypes, area_name).subscribe(
         data => {
-          this.areas = data;
+          this.formatAreas(data);
         },
         err => {
           if (err.status === 404) {
