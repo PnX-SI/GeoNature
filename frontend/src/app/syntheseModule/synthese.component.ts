@@ -50,18 +50,12 @@ export class SyntheseComponent implements OnInit {
     );
   }
   ngOnInit() {
-    const initialData = { limit: AppConfig.SYNTHESE.NB_LAST_OBS };
-    this.loadAndStoreData(initialData);
+    const initialFilter = { limit: AppConfig.SYNTHESE.NB_LAST_OBS };
+    this.loadAndStoreData(initialFilter);
   }
 
   mooveButton() {
     this.searchBarHidden = !this.searchBarHidden;
-    // const test = document.getElementById('sidebar');
-    // if (test.classList.contains('show')) {
-    //   this.marginButton = 0;
-    // } else {
-    //   this.marginButton = 248;
-    // }
   }
 
   customColumns(feature) {

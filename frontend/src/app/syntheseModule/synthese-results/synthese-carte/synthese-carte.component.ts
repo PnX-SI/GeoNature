@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, OnChanges } from '@angular/core';
 import { GeoJSON } from 'leaflet';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { MapService } from '@geonature_common/map/map.service';
@@ -6,6 +6,7 @@ import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
 import { SyntheseFormService } from '../../services/form.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { AppConfig } from '@geonature_config/app.config';
+import * as L from 'leaflet';
 
 @Component({
   selector: 'pnx-synthese-carte',
@@ -13,11 +14,28 @@ import { AppConfig } from '@geonature_config/app.config';
   styleUrls: ['synthese-carte.component.scss'],
   providers: []
 })
-export class SyntheseCarteComponent implements OnInit, AfterViewInit {
+export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges {
   public leafletDrawOptions = leafletDrawOption;
   public currentLeafletDrawCoord: any;
   public firstFileLayerMessage = true;
   public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
+  // set a new featureGroup - cluster or not depending of the synthese config
+  public cluserOrSimpleFeatureGroup = AppConfig.SYNTHESE.ENABLE_LEAFLET_CLUSTER
+    ? (L as any).markerClusterGroup()
+    : new L.FeatureGroup();
+
+  originStyle = {
+    color: '#3388ff',
+    fill: false,
+    weight: 3
+  };
+
+  selectedStyle = {
+    color: '#ff0000',
+    weight: 3,
+    fill: false
+  };
+
   @Input() inputSyntheseData: GeoJSON;
   constructor(
     public mapListService: MapListService,
@@ -35,16 +53,34 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     // event from the list
-    this.mapListService.onTableClick(this._ms.getMap());
+    // On table click, change style layer and zoom
+    this.mapListService.onTableClick$.subscribe(id => {
+      const selectedLayer = this.mapListService.layerDict[id];
+      this.toggleStyle(selectedLayer);
+      this.mapListService.zoomOnSelectedLayer(this._ms.map, selectedLayer);
+    });
+
+    // add the featureGroup to the map
+    this.cluserOrSimpleFeatureGroup.addTo(this._ms.map);
   }
 
-  onEachFeature(feature, layer) {
+  // redefine toggle style from mapListSerice because we don't use geojson component here for perf reasons
+  toggleStyle(selectedLayer) {
+    // togle the style of selected layer
+    if (this.mapListService.selectedLayer !== undefined) {
+      this.mapListService.selectedLayer.setStyle(this.originStyle);
+    }
+    this.mapListService.selectedLayer = selectedLayer;
+    this.mapListService.selectedLayer.setStyle(this.selectedStyle);
+  }
+
+  eventOnEachFeature(feature, layer) {
     // event from the map
     this.mapListService.layerDict[feature.id] = layer;
     layer.on({
       click: e => {
         // toggle style
-        this.mapListService.toggleStyle(layer);
+        this.toggleStyle(layer);
         // observable
         this.mapListService.mapSelected.next(feature.id);
       }
@@ -70,5 +106,56 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit {
   deleteControlValue() {
     this.formService.searchForm.controls.geoIntersection.reset();
     this.formService.searchForm.controls.radius.reset();
+  }
+
+  setStyle(layer) {
+    layer.setStyle({
+      color: '#3388ff',
+      weight: 3,
+      fill: false
+    });
+  }
+
+  ngOnChanges(change) {
+    // on change delete the previous layer and load the new ones from the geojson data send by the API
+    // here we don't use geojson component for performance reasons
+    if (this._ms.map) {
+      // remove the whole featureGroup to avoid iterate over all its layer
+      this._ms.map.removeLayer(this.cluserOrSimpleFeatureGroup);
+    }
+    if (change && change.inputSyntheseData.currentValue) {
+      // regenerate the featuregroup
+      this.cluserOrSimpleFeatureGroup = AppConfig.SYNTHESE.ENABLE_LEAFLET_CLUSTER
+        ? (L as any).markerClusterGroup()
+        : new L.FeatureGroup();
+
+      change.inputSyntheseData.currentValue.features.forEach(element => {
+        if (element.geometry.type === 'Point') {
+          const latLng = L.latLng(element.geometry.coordinates[1], element.geometry.coordinates[0]);
+          const marker = L.circleMarker(latLng);
+          this.setStyle(marker);
+          this.eventOnEachFeature(element, marker);
+          this.cluserOrSimpleFeatureGroup.addLayer(marker);
+        } else if (element.geometry.type === 'Polygon') {
+          const myLatLong = element.geometry.coordinates[0].map(point => {
+            return L.latLng(point[1], point[0]);
+          });
+          const layer = L.polygon(myLatLong);
+          this.setStyle(layer);
+          this.eventOnEachFeature(element, layer);
+          this.cluserOrSimpleFeatureGroup.addLayer(layer);
+        } else {
+          // its a LineStrinbg
+          const myLatLong = element.geometry.coordinates.map(point => {
+            return L.latLng(point[1], point[0]);
+          });
+          const layer = L.polyline(myLatLong);
+          this.setStyle(layer);
+          this.eventOnEachFeature(element, layer);
+          this.cluserOrSimpleFeatureGroup.addLayer(layer);
+        }
+      });
+      this._ms.map.addLayer(this.cluserOrSimpleFeatureGroup);
+    }
   }
 }

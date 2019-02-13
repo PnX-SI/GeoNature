@@ -34,7 +34,6 @@ export class MapComponent implements OnInit {
   }
 
   initialize() {
-    const baseMaps = this.baseMaps || AppConfig.MAPCONFIG.BASEMAP;
     const zoom = this.zoom || AppConfig.MAPCONFIG.ZOOM_LEVEL;
     let center: LatLngExpression;
     if (this.center !== undefined) {
@@ -46,7 +45,8 @@ export class MapComponent implements OnInit {
     const map = L.map('map', {
       zoomControl: false,
       center: center,
-      zoom: zoom
+      zoom: zoom,
+      preferCanvas: true
     });
     this.map = map;
     (map as any)._onResize();

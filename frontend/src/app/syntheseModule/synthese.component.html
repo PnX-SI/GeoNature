@@ -1,29 +1,13 @@
-<div id="cover-spin" *ngIf="!searchService.dataLoaded"></div>
+<div id="cover-spin" *ngIf="!searchService.dataLoaded"> 
+<h3>{{searchService.dataLoaded}} </h3>
+</div>
 
-
-<!-- <div class="row row-0 background-topo">
-  <div class="col-sm-12 col-md-2 padding-sm">
-    <pnx-synthese-search (searchClicked)="loadAndStoreData($event)"></pnx-synthese-search>
-  </div>
-  <div class="col-sm-12 col-md-10 padding-sm">
-    <div class="row row-0">
-      <div class="col-sm-12 col-md-7 padding-sm">
-        <pnx-synthese-carte [inputSyntheseData]="_mapListService.geojsonData"></pnx-synthese-carte>
-      </div>
-      <div class="col-sm-12 col-md-5 padding-sm">
-        <pnx-synthese-list [inputSyntheseData]="_mapListService.tableData"></pnx-synthese-list>
-      </div>
-    </div>
-  </div>
-</div> -->
 
 <div class="wrapper">
-    <!-- Sidebar  -->
     <nav #navBar id="sidebar" class="collapse show">
         <pnx-synthese-search (searchClicked)="loadAndStoreData($event)"></pnx-synthese-search>
     </nav>
 
-    <!-- Page Content  -->
     <div class="row row-sm page-content">
         <button #buttonToggle
         [style.left.px]="marginButton"
@@ -44,5 +28,8 @@
 
 
 </div>
+
+
+<h3>{{searchService.dataLoaded |json}} </h3>
 
 
