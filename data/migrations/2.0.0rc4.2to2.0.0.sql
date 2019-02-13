@@ -475,6 +475,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
     s.id_nomenclature_observation_status,
     s.id_nomenclature_blurring,
     s.id_nomenclature_source_status,
+    s.id_nomenclature_determination_method,
     sources.name_source,
     sources.url_source,
     t.cd_nom,
