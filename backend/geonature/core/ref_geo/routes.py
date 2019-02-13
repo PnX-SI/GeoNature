@@ -148,7 +148,7 @@ def get_areas():
         q = q.filter(LAreas.id_type.in_(params["id_type"]))
 
     if "area_name" in params:
-        q = q.filter(LAreas.area_name.ilike("{}%".format(params.get("area_name")[0])))
+        q = q.filter(LAreas.area_name.ilike("%{}%".format(params.get("area_name")[0])))
 
     limit = int(params.get("limit")[0]) if params.get("limit") else 100
 
