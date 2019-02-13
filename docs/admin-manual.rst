@@ -545,6 +545,7 @@ Restauration
   - Restaurer la BDD à partir du backup
 
     ::
+    
         sudo su postgres
         pg_restore -d geonature2db <MY_BACKUP_DIRECTORY_PATH>/201803150917-geonaturedb.backup
 

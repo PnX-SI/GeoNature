@@ -174,6 +174,7 @@ class Synthese(DB.Model):
         DB.Integer,
         ForeignKey("gn_synthese.v_synthese_decode_nomenclatures.id_synthese"),
         primary_key=True,
+        autoincrement=True,
     )
     unique_id_sinp = DB.Column(UUID(as_uuid=True))
     unique_id_sinp_grp = DB.Column(UUID(as_uuid=True))
