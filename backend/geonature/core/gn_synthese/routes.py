@@ -100,6 +100,7 @@ def get_synthese(info_role):
         return synthese row(s) filtered by form params
         Params must have same synthese fields names
     """
+
     # change all args in a list of value
     filters = {key: request.args.getlist(key) for key, value in request.args.items()}
     if "limit" in filters:
@@ -115,7 +116,6 @@ def get_synthese(info_role):
         VSyntheseForWebApp, q, filters, info_role, allowed_datasets
     )
     q = q.order_by(VSyntheseForWebApp.date_min.desc())
-    nb_total = 0
 
     data = q.limit(result_limit)
     columns = (
@@ -131,8 +131,9 @@ def get_synthese(info_role):
         features.append(feature)
     return {
         "data": FeatureCollection(features),
-        "nb_obs_limited": nb_total == current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"],
-        "nb_total": nb_total,
+        "nb_obs_limited": len(features)
+        == current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"],
+        "nb_total": len(features),
     }
 
 
@@ -370,3 +371,4 @@ def general_stats(info_role):
         "nb_dataset": len(allowed_datasets),
     }
     return data
+
