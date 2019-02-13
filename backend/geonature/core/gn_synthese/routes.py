@@ -99,52 +99,52 @@ def current_milli_time():
     return time.time()
 
 
-@routes.route("", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
-@json_resp
-def get_synthese(info_role):
-    """
-        return synthese row(s) filtered by form params
-        Params must have same synthese fields names
-    """
-    start_time = current_milli_time()
-    print(start_time)
-    # change all args in a list of value
-    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
-    if "limit" in filters:
-        result_limit = filters.pop("limit")[0]
-    else:
-        result_limit = current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
+# @routes.route("", methods=["GET"])
+# @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
+# @json_resp
+# def get_synthese(info_role):
+#     """
+#         return synthese row(s) filtered by form params
+#         Params must have same synthese fields names
+#     """
+#     start_time = current_milli_time()
+#     print(start_time)
+#     # change all args in a list of value
+#     filters = {key: request.args.getlist(key) for key, value in request.args.items()}
+#     if "limit" in filters:
+#         result_limit = filters.pop("limit")[0]
+#     else:
+#         result_limit = current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
 
-    allowed_datasets = TDatasets.get_user_datasets(info_role)
+#     allowed_datasets = TDatasets.get_user_datasets(info_role)
 
-    q = DB.session.query(VSyntheseForWebApp)
+#     q = DB.session.query(VSyntheseForWebApp)
 
-    q = synthese_query.filter_query_all_filters(
-        VSyntheseForWebApp, q, filters, info_role, allowed_datasets
-    )
-    q = q.order_by(VSyntheseForWebApp.date_min.desc())
+#     q = synthese_query.filter_query_all_filters(
+#         VSyntheseForWebApp, q, filters, info_role, allowed_datasets
+#     )
+#     q = q.order_by(VSyntheseForWebApp.date_min.desc())
 
-    data = q.limit(result_limit)
-    columns = (
-        current_app.config["SYNTHESE"]["COLUMNS_API_SYNTHESE_WEB_APP"]
-        + MANDATORY_COLUMNS
-    )
-    features = []
-    for d in data:
-        feature = d.get_geofeature(columns=columns)
-        feature["properties"]["nom_vern_or_lb_nom"] = (
-            d.lb_nom if d.nom_vern is None else d.nom_vern
-        )
-        features.append(feature)
-    print("ALL DONE")
-    print(current_milli_time() - start_time)
-    return {
-        "data": FeatureCollection(features),
-        "nb_obs_limited": len(features)
-        == current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"],
-        "nb_total": len(features),
-    }
+#     data = q.limit(result_limit)
+#     columns = (
+#         current_app.config["SYNTHESE"]["COLUMNS_API_SYNTHESE_WEB_APP"]
+#         + MANDATORY_COLUMNS
+#     )
+#     features = []
+#     for d in data:
+#         feature = d.get_geofeature(columns=columns)
+#         feature["properties"]["nom_vern_or_lb_nom"] = (
+#             d.lb_nom if d.nom_vern is None else d.nom_vern
+#         )
+#         features.append(feature)
+#     print("ALL DONE")
+#     print(current_milli_time() - start_time)
+#     return {
+#         "data": FeatureCollection(features),
+#         "nb_obs_limited": len(features)
+#         == current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"],
+#         "nb_total": len(features),
+#     }
 
 
 #     test = q.all()
@@ -401,9 +401,10 @@ def general_stats(info_role):
 
 from geoalchemy2.shape import to_shape
 from geonature.utils.utilssqlalchemy import get_geojson_feature
+from sqlalchemy import select
+import ast
 
-
-@routes.route("/test", methods=["GET"])
+@routes.route("", methods=["GET"])
 @json_resp
 def test():
     print("START")
@@ -417,6 +418,7 @@ def test():
             VSyntheseForWebApp.st_asgeojson,
             VSyntheseForWebApp.observers,
             VSyntheseForWebApp.dataset_name,
+            VSyntheseForWebApp.url_source,
         ]
     ).limit(50000)
     # s = s.where(Synthese.id_synthese == 1205678)
@@ -426,12 +428,13 @@ def test():
     print(current_milli_time() - start)
     for r in result:
         temp = {
-            "id_synthese": r["id_synthese"],
-            "date": str(r["date_min"]),
-            "taxon": r["nom_vern"] if r["nom_vern"] else r["lb_nom"],
-            "geom": ast.literal_eval(r["st_asgeojson"]),
-            "dataset": r["dataset_name"],
+            "id": r["id_synthese"],
+            "date_min": str(r["date_min"]),
+            "nom_vern_or_lb_nom": r["nom_vern"] if r["nom_vern"] else r["lb_nom"],
+            "geometry": ast.literal_eval(r["st_asgeojson"]),
+            "dataset_name": r["dataset_name"],
             "observers": r["observers"],
+            "url_source": r["url_source"]
         }
         formated_result.append(temp)
     print("DONE boucle")
@@ -439,7 +442,14 @@ def test():
     # return [r[0] for r in result]
     print("DONE")
     print(current_milli_time() - start)
-    return formated_result
+    return {
+            'data': formated_result,
+            "nb_total": len(formated_result),
+            "nb_obs_limited": len(formated_result)
+            == current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"],
+            "nb_total": len(formated_result)
+        }
+
 
 
 @routes.route("/test2", methods=["GET"])
