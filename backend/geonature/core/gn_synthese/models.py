@@ -336,6 +336,7 @@ class VSyntheseForWebApp(DB.Model):
     id_nomenclature_source_status = DB.Column(DB.Integer)
     name_source = DB.Column(DB.Unicode)
     url_source = DB.Column(DB.Unicode)
+    st_asgeojson = DB.Column(DB.Unicode)
 
     def get_geofeature(self, recursif=False, columns=()):
         return self.as_geofeature(

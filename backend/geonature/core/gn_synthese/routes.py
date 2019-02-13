@@ -92,6 +92,13 @@ def getDefaultsNomenclatures():
     return {d[0]: d[1] for d in data}
 
 
+import time
+
+
+def current_milli_time():
+    return time.time()
+
+
 @routes.route("", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
 @json_resp
@@ -100,7 +107,8 @@ def get_synthese(info_role):
         return synthese row(s) filtered by form params
         Params must have same synthese fields names
     """
-
+    start_time = current_milli_time()
+    print(start_time)
     # change all args in a list of value
     filters = {key: request.args.getlist(key) for key, value in request.args.items()}
     if "limit" in filters:
@@ -129,12 +137,30 @@ def get_synthese(info_role):
             d.lb_nom if d.nom_vern is None else d.nom_vern
         )
         features.append(feature)
+    print("ALL DONE")
+    print(current_milli_time() - start_time)
     return {
         "data": FeatureCollection(features),
         "nb_obs_limited": len(features)
         == current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"],
         "nb_total": len(features),
     }
+
+
+#     test = q.all()
+#     req = """
+# SELECT * FROM gn_synthese.v_synthese_for_web_app
+#     """
+#     resp = DB.engine.execute(req)
+#     print("DONE")
+#     print(current_milli_time() - start_time)
+#     # print(len(test))
+#     data_resp = []
+#     for r in resp:
+#         data_resp.append({"id_synthese": r[0]})
+#     print("BOUCLE DONE")
+#     print(current_milli_time() - start_time)
+#     return data_resp
 
 
 @routes.route("/vsynthese/<id_synthese>", methods=["GET"])
@@ -371,4 +397,78 @@ def general_stats(info_role):
         "nb_dataset": len(allowed_datasets),
     }
     return data
+
+
+from geoalchemy2.shape import to_shape
+from geonature.utils.utilssqlalchemy import get_geojson_feature
+
+
+@routes.route("/test", methods=["GET"])
+@json_resp
+def test():
+    print("START")
+    start = current_milli_time()
+    s = select(
+        [
+            VSyntheseForWebApp.id_synthese,
+            VSyntheseForWebApp.date_min,
+            VSyntheseForWebApp.lb_nom,
+            VSyntheseForWebApp.nom_vern,
+            VSyntheseForWebApp.st_asgeojson,
+            VSyntheseForWebApp.observers,
+            VSyntheseForWebApp.dataset_name,
+        ]
+    ).limit(50000)
+    # s = s.where(Synthese.id_synthese == 1205678)
+    result = DB.engine.execute(s)
+    formated_result = []
+    print("DONE REQ")
+    print(current_milli_time() - start)
+    for r in result:
+        temp = {
+            "id_synthese": r["id_synthese"],
+            "date": str(r["date_min"]),
+            "taxon": r["nom_vern"] if r["nom_vern"] else r["lb_nom"],
+            "geom": ast.literal_eval(r["st_asgeojson"]),
+            "dataset": r["dataset_name"],
+            "observers": r["observers"],
+        }
+        formated_result.append(temp)
+    print("DONE boucle")
+    print(current_milli_time() - start)
+    # return [r[0] for r in result]
+    print("DONE")
+    print(current_milli_time() - start)
+    return formated_result
+
+
+@routes.route("/test2", methods=["GET"])
+@json_resp
+def test2():
+
+    print("START")
+    start = current_milli_time()
+    data = DB.session.query(VSyntheseForExport).limit(50000)
+    # q = text("SELECT id_synthese, observers FROM gn_synthese.synthese LIMIT 100")
+    # q.where(Synthese.id_synthese == 1276806)
+    # print(dir(q))
+    # stmt = stmt.columns(Synthese.id_synthese)
+    # res = DB.engine.execute(stmt)
+    # print(res)
+    # for r in res:
+    #     print(r)
+    columns = (
+        current_app.config["SYNTHESE"]["COLUMNS_API_SYNTHESE_WEB_APP"]
+        + MANDATORY_COLUMNS
+    )
+    features = []
+    for d in data:
+        feature = d.get_geofeature(columns=columns)
+        feature["properties"]["nom_vern_or_lb_nom"] = (
+            d.lb_nom if d.nom_vern is None else d.nom_vern
+        )
+        features.append(feature)
+    print("DONE")
+    print(current_milli_time() - start)
+    return "features"
 
