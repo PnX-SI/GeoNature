@@ -350,24 +350,38 @@ def synthese_export_serialization(cls):
     (fonctions utilisees pour les exports) et qui redefinit le nom des colonnes tel qu'ils sont nommes en configuration
     """
     EXPORT_COLUMNS = current_app.config["SYNTHESE"]["EXPORT_COLUMNS"]
-    default_columns = [key for key, value in EXPORT_COLUMNS.items()]
-    cls_db_columns = [
-        (
-            db_col.key,
-            SERIALIZERS.get(db_col.type.__class__.__name__.lower(), lambda x: x),
-        )
-        for db_col in cls.__mapper__.c
-        if not db_col.type.__class__.__name__ == "Geometry"
-        and db_col.key in default_columns
-    ]
+    # tab of cls attributes from EXPORT COLUMNS
+    formated_default_columns = [key for key, value in EXPORT_COLUMNS.items()]
 
-    cls.db_cols = [
-        db_col for db_col in cls.__mapper__.c if db_col.key in default_columns
-    ]
+    # list of tuple (class attribute, serializer)
+    cls_db_cols_and_serializer = []
+    # list of attributes of the class which are in the synthese export cnfig
+    # use for generate shapefiles
+    cls.db_cols = []
+    for key in formated_default_columns:
+        # get the cls attribut:
+        try:
+            # get the class atribut from the syntese export config
+            cls_attri = getattr(cls, key)
+            # add in serialiser list
+            if not cls_attri.type.__class__.__name__ == "Geometry":
+                cls_db_cols_and_serializer.append(
+                    (
+                        cls_attri.key,
+                        SERIALIZERS.get(
+                            cls_attri.type.__class__.__name__.lower(), lambda x: x
+                        ),
+                    )
+                )
+            # add in cls.db_cols
+            cls.db_cols.append(cls_attri)
+        # execpt if the attribute does not exist
+        except AttributeError:
+            pass
 
     def serialize_order_fn(self):
         order_dict = OrderedDict()
-        for item, _serializer in cls_db_columns:
+        for item, _serializer in cls_db_cols_and_serializer:
             order_dict.update(
                 {EXPORT_COLUMNS.get(item): _serializer(getattr(self, item))}
             )
@@ -457,6 +471,8 @@ class VSyntheseForExport(DB.Model):
     observation_status = DB.Column(DB.Unicode)
     blurring = DB.Column(DB.Unicode)
     source_status = DB.Column(DB.Unicode)
+    info_geo_type = DB.Column(DB.Unicode)
+    determination_method = DB.Column(DB.Unicode)
     name_source = DB.Column(DB.Unicode)
     url_source = DB.Column(DB.Unicode)
     actors = DB.Column(DB.Unicode)
