@@ -22,7 +22,7 @@ export class SyntheseComponent implements OnInit {
     private _commonService: CommonService,
     private _modalService: NgbModal,
     private _fs: SyntheseFormService
-  ) {}
+  ) { }
 
   loadAndStoreData(formParams) {
     this.searchService.dataLoaded = false;
@@ -37,8 +37,9 @@ export class SyntheseComponent implements OnInit {
           modalRef.componentInstance.tooManyObs = true;
         }
         this._mapListService.geojsonData = result['data'];
-        this._mapListService.loadTableData(result['data'], this.customColumns.bind(this));
-        this._mapListService.idName = 'id_synthese';
+        this._mapListService.tableData = result['data']
+        //this._mapListService.loadTableData(result['data'], this.customColumns.bind(this));
+        this._mapListService.idName = 'id';
         this.searchService.dataLoaded = true;
       },
       error => {

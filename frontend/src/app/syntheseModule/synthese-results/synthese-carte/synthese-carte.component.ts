@@ -42,7 +42,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
     private _ms: MapService,
     public formService: SyntheseFormService,
     private _commonService: CommonService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.leafletDrawOptions.draw.rectangle = true;
@@ -74,15 +74,16 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
     this.mapListService.selectedLayer.setStyle(this.selectedStyle);
   }
 
-  eventOnEachFeature(feature, layer) {
+  eventOnEachFeature(id: number, layer): void {
     // event from the map
-    this.mapListService.layerDict[feature.id] = layer;
+    this.mapListService.layerDict[id] = layer;
     layer.on({
       click: e => {
         // toggle style
         this.toggleStyle(layer);
         // observable
-        this.mapListService.mapSelected.next(feature.id);
+        console.log('yes', id)
+        this.mapListService.mapSelected.next(id);
       }
     });
   }
@@ -129,12 +130,12 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
         ? (L as any).markerClusterGroup()
         : new L.FeatureGroup();
 
-      change.inputSyntheseData.currentValue.features.forEach(element => {
+      change.inputSyntheseData.currentValue.forEach(element => {
         if (element.geometry.type === 'Point') {
           const latLng = L.latLng(element.geometry.coordinates[1], element.geometry.coordinates[0]);
           const marker = L.circleMarker(latLng);
           this.setStyle(marker);
-          this.eventOnEachFeature(element, marker);
+          this.eventOnEachFeature(element.id, marker);
           this.cluserOrSimpleFeatureGroup.addLayer(marker);
         } else if (element.geometry.type === 'Polygon') {
           const myLatLong = element.geometry.coordinates[0].map(point => {
