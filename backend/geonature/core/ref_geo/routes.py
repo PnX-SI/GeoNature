@@ -141,7 +141,6 @@ def get_areas():
     # change all args in a list of value
     params = {key: request.args.getlist(key) for key, value in request.args.items()}
 
-    print(params.get("limit"))
     q = DB.session.query(LAreas).order_by(LAreas.area_name.asc())
 
     if "id_type" in params:
