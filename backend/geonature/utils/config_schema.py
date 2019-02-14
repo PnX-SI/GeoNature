@@ -118,7 +118,7 @@ class Synthese(Schema):
     TAXON_RESULT_NUMBER = fields.Integer(missing=20)
     # Liste des id attributs Taxhub à afficher sur la fiche détaile de la synthese
     # et sur les filtres taxonomiques avancés
-    ID_ATTRIBUT_TAXHUB = fields.List(fields.Integer(), missing=[101, 102])
+    ID_ATTRIBUT_TAXHUB = fields.List(fields.Integer(), missing=[102, 103])
     # nom des colonnes de la table gn_synthese.synthese que l'on veux retirer des filres dynamiques
     # et de la modale d'information détaillée d'une observation
     # example = "[non_digital_proof]"
@@ -169,7 +169,7 @@ class MapConfig(Schema):
     ZOOM_LEVEL_RELEVE = fields.Integer(missing=15)
     # zoom appliqué sur la carte lorsque l'on clique sur une liste
     # ne s'applique qu'aux points
-    ZOOM_ON_CLICK = fields.Integer(missing=16)
+    ZOOM_ON_CLICK = fields.Integer(missing=18)
 
 
 # class a utiliser pour les paramètres que l'on veut passer au frontend
