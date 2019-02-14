@@ -29,6 +29,8 @@ from geonature.core.taxonomie.models import (
     TaxrefProtectionEspeces,
 )
 from geonature.core.gn_synthese.utils import query as synthese_query
+from geonature.core.gn_synthese.utils import query_select_sqla as synthese_query_select
+from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 from geonature.core.gn_meta.models import TDatasets
 
@@ -404,12 +406,28 @@ from geonature.utils.utilssqlalchemy import get_geojson_feature
 from sqlalchemy import select
 import ast
 
+from geonature.core.taxonomie.models import Taxref, CorTaxonAttribut, TaxrefLR
+from geonature.core.gn_synthese.models import (
+    Synthese,
+    CorObserverSynthese,
+    TSources,
+    CorAreaSynthese,
+)
+from geonature.core.gn_meta.models import TAcquisitionFramework, CorDatasetActor
+
+
 @routes.route("", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
 @json_resp
-def test():
+def test(info_role):
     print("START")
     start = current_milli_time()
-    s = select(
+    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
+    if "limit" in filters:
+        result_limit = filters.pop("limit")[0]
+    else:
+        result_limit = current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
+    query = select(
         [
             VSyntheseForWebApp.id_synthese,
             VSyntheseForWebApp.date_min,
@@ -420,12 +438,35 @@ def test():
             VSyntheseForWebApp.dataset_name,
             VSyntheseForWebApp.url_source,
         ]
-    ).limit(50000)
-    # s = s.where(Synthese.id_synthese == 1205678)
-    result = DB.engine.execute(s)
+    ).limit(result_limit)
+    synthese_query_class = SyntheseQuery(query, filters)
+    allowed_datasets = TDatasets.get_user_datasets(info_role)
+
+    synthese_query_class.filter_query_with_cruved(info_role, allowed_datasets)
+    # test, filters, joined_table = synthese_query_select.filter_taxonomy(
+    #     VSyntheseForWebApp, query, filters, joined_table
+    # )
+    synthese_query_class.filter_taxonomy()
+    synthese_query_class.filter_other_filters()
+    # print(synthese_query_class.query)
+    # print(synthese_query_class.query_joins)
+    # query = query.select_from(
+    #     VSyntheseForWebApp.__table__.join(
+    #         CorObserverSynthese,
+    #         VSyntheseForWebApp.id_synthese == CorObserverSynthese.id_synthese,
+    #     ).join(Taxref, VSyntheseForWebApp.cd_nom == Taxref.cd_nom)
+    # )
+    print()
+    # check if there are join to do
+    if synthese_query_class.query_joins is not None:
+        synthese_query_class.query = synthese_query_class.query.select_from(
+            synthese_query_class.query_joins
+        )
+
+    print("QUERYYYYY")
+    print(synthese_query_class.query)
+    result = DB.engine.execute(synthese_query_class.query.limit(result_limit))
     formated_result = []
-    print("DONE REQ")
-    print(current_milli_time() - start)
     for r in result:
         temp = {
             "id": r["id_synthese"],
@@ -434,7 +475,7 @@ def test():
             "geometry": ast.literal_eval(r["st_asgeojson"]),
             "dataset_name": r["dataset_name"],
             "observers": r["observers"],
-            "url_source": r["url_source"]
+            "url_source": r["url_source"],
         }
         formated_result.append(temp)
     print("DONE boucle")
@@ -443,13 +484,12 @@ def test():
     print("DONE")
     print(current_milli_time() - start)
     return {
-            'data': formated_result,
-            "nb_total": len(formated_result),
-            "nb_obs_limited": len(formated_result)
-            == current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"],
-            "nb_total": len(formated_result)
-        }
-
+        "data": formated_result,
+        "nb_total": len(formated_result),
+        "nb_obs_limited": len(formated_result)
+        == current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"],
+        "nb_total": len(formated_result),
+    }
 
 
 @routes.route("/test2", methods=["GET"])
