@@ -110,7 +110,7 @@ class Synthese(Schema):
     )
     # Colonnes affichées sur la liste des résultats de la sytnthese
     LIST_COLUMNS_FRONTEND = fields.List(fields.Dict, missing=DEFAULT_LIST_COLUMN)
-    EXPORT_COLUMNS = fields.Dict(missing=DEFAULT_EXPORT_COLUMNS)
+    EXPORT_COLUMNS = fields.List(fields.String(), missing=DEFAULT_EXPORT_COLUMNS)
     EXPORT_FORMAT = fields.List(
         fields.String(), missing=["csv", "geojson", "shapefile"]
     )

@@ -42,7 +42,7 @@ export class DataService {
     return queryUrl;
   }
   getSyntheseData(params) {
-    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese`, {
+    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/for_web`, {
       params: this.buildQueryUrl(params)
     });
   }
@@ -69,10 +69,13 @@ export class DataService {
     return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/taxons_tree`);
   }
 
-  downloadData(url: string, format: string, queryString: HttpParams, filename: string) {
+  downloadData(idSyntheseList: Array<number>, format: string) {
     this.isDownloading = true;
-    const source = this._api.get(`${url}?${queryString.toString()}`, {
-      headers: new HttpHeaders().set('Content-Type', `${FormatMapMime.get(format)}`),
+    const queryString = new HttpParams().set('export_format', format);
+
+    const source = this._api.post(`${AppConfig.API_ENDPOINT}/synthese/export`, idSyntheseList, {
+      params: queryString,
+      headers: new HttpHeaders().set('Content-Type', 'application/json'),
       observe: 'events',
       responseType: 'blob',
       reportProgress: true
@@ -95,11 +98,12 @@ export class DataService {
         // FIXME: const DATE_FORMAT, FILENAME_FORMAT
         // FIXME: (format, mimetype, extension)
         const extension = format === 'shapefile' ? '.zip' : format;
-        this.saveBlob(this._blob, `${filename}${date.toISOString()}.${extension}`);
+        this.saveBlob(this._blob, `lalala${date.toISOString()}.${extension}`);
         subscription.unsubscribe();
       }
     );
   }
+
   saveBlob(blob, filename) {
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);

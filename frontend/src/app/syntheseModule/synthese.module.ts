@@ -7,6 +7,7 @@ import { SyntheseListComponent } from './synthese-results/synthese-list/synthese
 import { SyntheseCarteComponent } from './synthese-results/synthese-carte/synthese-carte.component';
 import { SyntheseSearchComponent } from './synthese-search/synthese-search.component';
 import { DataService } from './services/data.service';
+import { SyntheseStoreService } from './services/store.service';
 import { SyntheseFormService } from './services/form.service';
 import { MapService } from '@geonature_common/map/map.service';
 import { TreeModule } from 'angular-tree-component';
@@ -28,13 +29,18 @@ const routes: Routes = [{ path: '', component: SyntheseComponent }];
     SyntheseModalDownloadComponent,
     ModalInfoObsComponent
   ],
-  entryComponents: [TaxonAdvancedModalComponent, SyntheseModalDownloadComponent, ModalInfoObsComponent],
+  entryComponents: [
+    TaxonAdvancedModalComponent,
+    SyntheseModalDownloadComponent,
+    ModalInfoObsComponent
+  ],
   providers: [
     DataService,
     SyntheseFormService,
     MapService,
     DynamicFormService,
-    TaxonAdvancedStoreService
+    TaxonAdvancedStoreService,
+    SyntheseStoreService
   ]
 })
-export class SyntheseModule { }
+export class SyntheseModule {}

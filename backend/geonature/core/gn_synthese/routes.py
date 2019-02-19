@@ -1,9 +1,11 @@
 import logging
 import datetime
+import ast
+
 from collections import OrderedDict
 
 from flask import Blueprint, request, current_app, send_from_directory, render_template
-from sqlalchemy import distinct, func, desc
+from sqlalchemy import distinct, func, desc, select
 from sqlalchemy.orm import exc
 from sqlalchemy.sql import text
 from geojson import FeatureCollection
@@ -11,6 +13,8 @@ from geojson import FeatureCollection
 
 from geonature.utils import filemanager
 from geonature.utils.env import DB, ROOT_DIR
+from geonature.utils.errors import GeonatureApiError
+
 from geonature.utils.utilsgeometry import FionaShapeService
 
 from geonature.core.gn_synthese.models import (
@@ -20,7 +24,6 @@ from geonature.core.gn_synthese.models import (
     SyntheseOneRecord,
     VMTaxonsSyntheseAutocomplete,
     VSyntheseForWebApp,
-    VSyntheseForExport,
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from geonature.core.taxonomie.models import (
@@ -101,68 +104,49 @@ def current_milli_time():
     return time.time()
 
 
-# @routes.route("", methods=["GET"])
-# @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
-# @json_resp
-# def get_synthese(info_role):
-#     """
-#         return synthese row(s) filtered by form params
-#         Params must have same synthese fields names
-#     """
-#     start_time = current_milli_time()
-#     print(start_time)
-#     # change all args in a list of value
-#     filters = {key: request.args.getlist(key) for key, value in request.args.items()}
-#     if "limit" in filters:
-#         result_limit = filters.pop("limit")[0]
-#     else:
-#         result_limit = current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
+@routes.route("", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
+@json_resp
+def get_synthese(info_role):
+    """
+        return synthese row(s) filtered by form params
+        Params must have same synthese fields names
+        NOT USE ANY MORE FOR PERFORMANCE ISSUES
+    """
+    # change all args in a list of value
+    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
+    if "limit" in filters:
+        result_limit = filters.pop("limit")[0]
+    else:
+        result_limit = current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
 
-#     allowed_datasets = TDatasets.get_user_datasets(info_role)
+    allowed_datasets = TDatasets.get_user_datasets(info_role)
 
-#     q = DB.session.query(VSyntheseForWebApp)
+    q = DB.session.query(VSyntheseForWebApp)
 
-#     q = synthese_query.filter_query_all_filters(
-#         VSyntheseForWebApp, q, filters, info_role, allowed_datasets
-#     )
-#     q = q.order_by(VSyntheseForWebApp.date_min.desc())
+    q = synthese_query.filter_query_all_filters(
+        VSyntheseForWebApp, q, filters, info_role, allowed_datasets
+    )
+    q = q.order_by(VSyntheseForWebApp.date_min.desc())
 
-#     data = q.limit(result_limit)
-#     columns = (
-#         current_app.config["SYNTHESE"]["COLUMNS_API_SYNTHESE_WEB_APP"]
-#         + MANDATORY_COLUMNS
-#     )
-#     features = []
-#     for d in data:
-#         feature = d.get_geofeature(columns=columns)
-#         feature["properties"]["nom_vern_or_lb_nom"] = (
-#             d.lb_nom if d.nom_vern is None else d.nom_vern
-#         )
-#         features.append(feature)
-#     print("ALL DONE")
-#     print(current_milli_time() - start_time)
-#     return {
-#         "data": FeatureCollection(features),
-#         "nb_obs_limited": len(features)
-#         == current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"],
-#         "nb_total": len(features),
-#     }
-
-
-#     test = q.all()
-#     req = """
-# SELECT * FROM gn_synthese.v_synthese_for_web_app
-#     """
-#     resp = DB.engine.execute(req)
-#     print("DONE")
-#     print(current_milli_time() - start_time)
-#     # print(len(test))
-#     data_resp = []
-#     for r in resp:
-#         data_resp.append({"id_synthese": r[0]})
-#     print("BOUCLE DONE")
-#     print(current_milli_time() - start_time)
-#     return data_resp
+    data = q.limit(result_limit)
+    columns = (
+        current_app.config["SYNTHESE"]["COLUMNS_API_SYNTHESE_WEB_APP"]
+        + MANDATORY_COLUMNS
+    )
+    features = []
+    for d in data:
+        feature = d.get_geofeature(columns=columns)
+        feature["properties"]["nom_vern_or_lb_nom"] = (
+            d.lb_nom if d.nom_vern is None else d.nom_vern
+        )
+        features.append(feature)
+    return {
+        "data": FeatureCollection(features),
+        "nb_obs_limited": len(features)
+        == current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"],
+        "nb_total": len(features),
+    }
 
 
 @routes.route("/vsynthese/<id_synthese>", methods=["GET"])
@@ -181,72 +165,6 @@ def get_one_synthese(id_synthese):
         return data.as_dict(True)
     except exc.NoResultFound:
         return None
-
-
-@routes.route("/export", methods=["GET"])
-@permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
-def export(info_role):
-    # change all args in a list of value
-    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
-
-    if "limit" in filters:
-        result_limit = filters.pop("limit")[0]
-    else:
-        result_limit = current_app.config["SYNTHESE"]["NB_MAX_OBS_EXPORT"]
-
-    export_format = filters.pop("export_format")[0]
-    allowed_datasets = TDatasets.get_user_datasets(info_role)
-
-    q = DB.session.query(VSyntheseForExport)
-    q = synthese_query.filter_query_all_filters(
-        VSyntheseForExport, q, filters, info_role, allowed_datasets
-    )
-
-    q = q.order_by(VSyntheseForExport.date_min.desc())
-    data = q.limit(result_limit)
-
-    file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
-    file_name = filemanager.removeDisallowedFilenameChars(file_name)
-
-    if export_format == "csv":
-        formated_data = [d.as_dict_ordered() for d in data]
-        return to_csv_resp(
-            file_name,
-            formated_data,
-            separator=";",
-            columns=[
-                value
-                for key, value in current_app.config["SYNTHESE"][
-                    "EXPORT_COLUMNS"
-                ].items()
-            ],
-        )
-
-    elif export_format == "geojson":
-        formated_data = [d.get_geofeature_ordered() for d in data]
-        results = FeatureCollection(formated_data)
-        return to_json_resp(results, as_file=True, filename=file_name, indent=4)
-    else:
-        filemanager.delete_recursively(
-            str(ROOT_DIR / "backend/static/shapefiles"), excluded_files=[".gitkeep"]
-        )
-
-        dir_path = str(ROOT_DIR / "backend/static/shapefiles")
-        FionaShapeService.create_shapes_struct(
-            db_cols=VSyntheseForExport.db_cols,
-            srid=current_app.config["LOCAL_SRID"],
-            dir_path=dir_path,
-            file_name=file_name,
-            col_mapping=current_app.config["SYNTHESE"]["EXPORT_COLUMNS"],
-        )
-        for row in data:
-            geom = row.the_geom_local
-            row_as_dict = row.as_dict_ordered()
-            FionaShapeService.create_feature(row_as_dict, geom)
-
-        FionaShapeService.save_and_zip_shapefiles()
-
-        return send_from_directory(dir_path, file_name + ".zip", as_attachment=True)
 
 
 @routes.route("/statuts", methods=["GET"])
@@ -401,26 +319,13 @@ def general_stats(info_role):
     return data
 
 
-from geoalchemy2.shape import to_shape
-from geonature.utils.utilssqlalchemy import get_geojson_feature
-from sqlalchemy import select
-import ast
-
-from geonature.core.taxonomie.models import Taxref, CorTaxonAttribut, TaxrefLR
-from geonature.core.gn_synthese.models import (
-    Synthese,
-    CorObserverSynthese,
-    TSources,
-    CorAreaSynthese,
-)
-from geonature.core.gn_meta.models import TAcquisitionFramework, CorDatasetActor
-
-
-@routes.route("", methods=["GET"])
+@routes.route("/for_web", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
 @json_resp
-def test(info_role):
-    print("START")
+def synthese_for_web(info_role):
+    """
+        Optimized route for serve data to the frontend with all filters
+    """
     start = current_milli_time()
     filters = {key: request.args.getlist(key) for key, value in request.args.items()}
     if "limit" in filters:
@@ -438,33 +343,21 @@ def test(info_role):
             VSyntheseForWebApp.dataset_name,
             VSyntheseForWebApp.url_source,
         ]
-    ).limit(result_limit)
-    synthese_query_class = SyntheseQuery(query, filters)
+    )
+    synthese_query_class = SyntheseQuery(VSyntheseForWebApp, query, filters)
     allowed_datasets = TDatasets.get_user_datasets(info_role)
 
     synthese_query_class.filter_query_with_cruved(info_role, allowed_datasets)
-    # test, filters, joined_table = synthese_query_select.filter_taxonomy(
-    #     VSyntheseForWebApp, query, filters, joined_table
-    # )
+
     synthese_query_class.filter_taxonomy()
     synthese_query_class.filter_other_filters()
-    # print(synthese_query_class.query)
-    # print(synthese_query_class.query_joins)
-    # query = query.select_from(
-    #     VSyntheseForWebApp.__table__.join(
-    #         CorObserverSynthese,
-    #         VSyntheseForWebApp.id_synthese == CorObserverSynthese.id_synthese,
-    #     ).join(Taxref, VSyntheseForWebApp.cd_nom == Taxref.cd_nom)
-    # )
-    print()
+
     # check if there are join to do
     if synthese_query_class.query_joins is not None:
         synthese_query_class.query = synthese_query_class.query.select_from(
             synthese_query_class.query_joins
         )
 
-    print("QUERYYYYY")
-    print(synthese_query_class.query)
     result = DB.engine.execute(synthese_query_class.query.limit(result_limit))
     formated_result = []
     for r in result:
@@ -478,47 +371,100 @@ def test(info_role):
             "url_source": r["url_source"],
         }
         formated_result.append(temp)
-    print("DONE boucle")
-    print(current_milli_time() - start)
-    # return [r[0] for r in result]
-    print("DONE")
-    print(current_milli_time() - start)
     return {
         "data": formated_result,
         "nb_total": len(formated_result),
         "nb_obs_limited": len(formated_result)
         == current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"],
-        "nb_total": len(formated_result),
     }
 
 
-@routes.route("/test2", methods=["GET"])
-@json_resp
-def test2():
-
-    print("START")
+@routes.route("/export", methods=["POST"])
+# @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
+def export_test():
     start = current_milli_time()
-    data = DB.session.query(VSyntheseForExport).limit(50000)
-    # q = text("SELECT id_synthese, observers FROM gn_synthese.synthese LIMIT 100")
-    # q.where(Synthese.id_synthese == 1276806)
-    # print(dir(q))
-    # stmt = stmt.columns(Synthese.id_synthese)
-    # res = DB.engine.execute(stmt)
-    # print(res)
-    # for r in res:
-    #     print(r)
-    columns = (
-        current_app.config["SYNTHESE"]["COLUMNS_API_SYNTHESE_WEB_APP"]
-        + MANDATORY_COLUMNS
-    )
-    features = []
-    for d in data:
-        feature = d.get_geofeature(columns=columns)
-        feature["properties"]["nom_vern_or_lb_nom"] = (
-            d.lb_nom if d.nom_vern is None else d.nom_vern
+    params = request.args
+    # set default to csv
+    export_format = "csv"
+    if "export_format" in params:
+        export_format = params["export_format"]
+        if params["export_format"] == "geojson":
+            export_view = GenericTable(
+                "v_synthese_for_export", "gn_synthese", "the_geom_local", 2154
+            )
+        else:
+            export_view = GenericTable(
+                "v_synthese_for_export", "gn_synthese", "the_geom_local", 2154
+            )
+    else:
+        export_view = GenericTable(
+            "v_synthese_for_export", "gn_synthese", "the_geom_local", 2154
         )
-        features.append(feature)
-    print("DONE")
-    print(current_milli_time() - start)
-    return "features"
 
+    # get list of id synthese from POST
+    id_list = request.get_json()
+
+    db_cols_for_shape = []
+    columns_to_serialize = []
+    # loop over synthese config to get the columns for export
+    for db_col in export_view.db_cols:
+        if db_col.key in current_app.config["SYNTHESE"]["EXPORT_COLUMNS"]:
+            db_cols_for_shape.append(db_col)
+            columns_to_serialize.append(db_col.key)
+
+    q = (
+        DB.session.query(export_view.tableDef)
+        .filter(export_view.tableDef.columns.idSynthese.in_(id_list))
+        .filter(export_view.tableDef.columns.jddId.in_([1, 2]))
+    )
+
+    results = q.limit(current_app.config["SYNTHESE"]["NB_MAX_OBS_EXPORT"])
+
+    file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
+    file_name = filemanager.removeDisallowedFilenameChars(file_name)
+
+    # columns = [db_col.key for db_col in export_view.db_cols]
+
+    if export_format == "csv":
+        formated_data = [
+            export_view.as_dict(d, columns=columns_to_serialize) for d in results
+        ]
+        return to_csv_resp(
+            file_name, formated_data, separator=";", columns=columns_to_serialize
+        )
+
+    elif export_format == "geojson":
+        formated_data = []
+        for r in results:
+            geojson = ast.literal_eval(r.geojson)
+            geojson["properties"] = export_view.as_dict(r, columns=columns_to_serialize)
+            formated_data.append(geojson)
+        results = FeatureCollection(formated_data)
+        return to_json_resp(results, as_file=True, filename=file_name, indent=4)
+    else:
+        try:
+            filemanager.delete_recursively(
+                str(ROOT_DIR / "backend/static/shapefiles"), excluded_files=[".gitkeep"]
+            )
+
+            dir_path = str(ROOT_DIR / "backend/static/shapefiles")
+
+            export_view.as_shape(
+                db_cols=db_cols_for_shape,
+                data=results,
+                geojson_col="geojson_local",
+                dir_path=dir_path,
+                file_name=file_name,
+            )
+            print("END SERIALIZ")
+            print(current_milli_time() - start)
+            return send_from_directory(dir_path, file_name + ".zip", as_attachment=True)
+
+        except GeonatureApiError as e:
+            message = str(e)
+
+        return render_template(
+            "error.html",
+            error=message,
+            redirect=current_app.config["URL_APPLICATION"] + "/#/synthese",
+        )
