@@ -833,156 +833,107 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
      JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source;
 
-
-CREATE VIEW gn_synthese.v_synthese_for_export AS
-   SELECT
-    s.id_synthese,
-    unique_id_sinp,
-    unique_id_sinp_grp,
-    s.id_source ,
-    entity_source_pk_value ,
-    count_min ,
-    count_max ,
-    nom_cite ,
-    meta_v_taxref ,
-    sample_number_proof ,
-    digital_proof ,
-    non_digital_proof ,
-    altitude_min ,
-    altitude_max ,
-    the_geom_4326,
-    the_geom_point,
-    the_geom_local,
-    st_astext(the_geom_4326) AS wkt,
-    date_min,
-    date_max,
-    validator ,
-    validation_comment ,
-    observers,
-    id_digitiser,
-    determiner ,
-    comment_context,
-    comment_description,
-    meta_validation_date,
-    s.meta_create_date,
-    s.meta_update_date,
-    last_action,
-    d.id_dataset,
-    d.dataset_name,
-    d.id_acquisition_framework,
-    deco.nat_obj_geo,
-    deco.grp_typ,
-    deco.obs_method,
-    deco.obs_technique,
-    deco.bio_status,
-    deco.bio_condition,
-    deco.naturalness,
-    deco.exist_proof,
-    deco.valid_status,
-    deco.diffusion_level,
-    deco.life_stage,
-    deco.sex,
-    deco.obj_count,
-    deco.type_count,
-    deco.sensitivity,
-    deco.observation_status,
-    deco.blurring,
-    deco.source_status,
-    deco.info_geo_type,
-    deco.determination_method,
-    sources.name_source,
-    sources.url_source,
-    t.cd_nom,
-    t.cd_ref,
-    t.nom_valide,
-    t.nom_vern,
-    string_agg(
-     DISTINCT(
-        CONCAT(
-          COALESCE(orga.nom_organisme, roles.nom_role || ' ' || roles.prenom_role),
-           ': ' ,
-           nomencl.label_default
+CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS 
+ WITH deco AS (
+         SELECT s_1.id_synthese,
+            n1.label_default AS "ObjGeoTyp",
+            n2.label_default AS "methGrp",
+            n3.label_default AS "obsMeth",
+            n4.label_default AS "obsTech",
+            n5.label_default AS "ocEtatBio",
+            n6.label_default AS "ocStatBio",
+            n7.label_default AS "ocNat",
+            n8.label_default AS "preuveOui",
+            n9.label_default AS "difNivPrec",
+            n10.label_default AS "ocStade",
+            n11.label_default AS "ocSex",
+            n12.label_default AS "objDenbr",
+            n13.label_default AS "denbrTyp",
+            n14.label_default AS "sensiNiv",
+            n15.label_default AS "statObs",
+            n16.label_default AS "dEEFlou",
+            n17.label_default AS "statSource",
+            n18.label_default AS "typInfGeo",
+            n19.label_default AS "ocMethDet"
+           FROM gn_synthese.synthese s_1
+             JOIN ref_nomenclatures.t_nomenclatures n1 ON s_1.id_nomenclature_geo_object_nature = n1.id_nomenclature
+             JOIN ref_nomenclatures.t_nomenclatures n2 ON s_1.id_nomenclature_grp_typ = n2.id_nomenclature
+             JOIN ref_nomenclatures.t_nomenclatures n3 ON s_1.id_nomenclature_obs_meth = n3.id_nomenclature
+             JOIN ref_nomenclatures.t_nomenclatures n4 ON s_1.id_nomenclature_obs_technique = n4.id_nomenclature
+             JOIN ref_nomenclatures.t_nomenclatures n5 ON s_1.id_nomenclature_bio_status = n5.id_nomenclature
+             JOIN ref_nomenclatures.t_nomenclatures n6 ON s_1.id_nomenclature_bio_condition = n6.id_nomenclature
+             JOIN ref_nomenclatures.t_nomenclatures n7 ON s_1.id_nomenclature_naturalness = n7.id_nomenclature
+             JOIN ref_nomenclatures.t_nomenclatures n8 ON s_1.id_nomenclature_exist_proof = n8.id_nomenclature
+             JOIN ref_nomenclatures.t_nomenclatures n9 ON s_1.id_nomenclature_diffusion_level = n9.id_nomenclature
+             JOIN ref_nomenclatures.t_nomenclatures n10 ON s_1.id_nomenclature_life_stage = n10.id_nomenclature
+             JOIN ref_nomenclatures.t_nomenclatures n11 ON s_1.id_nomenclature_sex = n11.id_nomenclature
+             JOIN ref_nomenclatures.t_nomenclatures n12 ON s_1.id_nomenclature_obj_count = n12.id_nomenclature
+             JOIN ref_nomenclatures.t_nomenclatures n13 ON s_1.id_nomenclature_type_count = n13.id_nomenclature
+             JOIN ref_nomenclatures.t_nomenclatures n14 ON s_1.id_nomenclature_sensitivity = n14.id_nomenclature
+             JOIN ref_nomenclatures.t_nomenclatures n15 ON s_1.id_nomenclature_observation_status = n15.id_nomenclature
+             JOIN ref_nomenclatures.t_nomenclatures n16 ON s_1.id_nomenclature_blurring = n16.id_nomenclature
+             JOIN ref_nomenclatures.t_nomenclatures n17 ON s_1.id_nomenclature_source_status = n17.id_nomenclature
+             JOIN ref_nomenclatures.t_nomenclatures n18 ON s_1.id_nomenclature_info_geo_type = n18.id_nomenclature
+             JOIN ref_nomenclatures.t_nomenclatures n19 ON s_1.id_nomenclature_determination_method = n19.id_nomenclature
         )
-      ),
-      ', '
-   ) AS actors,
-  ST_X(ST_TRANSFORM(the_geom_point, MYLOCALSRID)) AS x_centroid,
-  ST_Y(ST_TRANSFORM(the_geom_point, MYLOCALSRID)) AS y_centroid,
-  s.meta_update_date AS last_update_date
-  FROM gn_synthese.synthese s
-  JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
-  JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
-  JOIN gn_meta.cor_dataset_actor act ON act.id_dataset = d.id_dataset
-  JOIN ref_nomenclatures.t_nomenclatures nomencl on nomencl.id_nomenclature = act.id_nomenclature_actor_role
-  LEFT JOIN utilisateurs.bib_organismes orga ON orga.id_organisme = act.id_organism
-  LEFT JOIN utilisateurs.t_roles roles ON roles.id_role = act.id_role
-  JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source
-  JOIN gn_synthese.v_synthese_decode_nomenclatures deco ON deco.id_synthese = s.id_synthese
-  GROUP BY
-      s.id_synthese,
-    unique_id_sinp,
-    unique_id_sinp_grp,
-    s.id_source ,
-    entity_source_pk_value ,
-    count_min ,
-    count_max ,
-    nom_cite ,
-    meta_v_taxref ,
-    sample_number_proof ,
-    digital_proof ,
-    non_digital_proof ,
-    altitude_min ,
-    altitude_max ,
-    the_geom_4326,
-    the_geom_point,
-    the_geom_local,
-    wkt,
-    date_min,
-    date_max,
-    validator ,
-    validation_comment ,
-    observers ,
-    id_digitiser,
-    determiner ,
-    comment_context,
-    comment_description,
-    meta_validation_date,
+ SELECT s.id_synthese AS "idSynthese",
+    s.unique_id_sinp AS "permId",
+    s.unique_id_sinp_grp AS "permIdGrp",
+    s.count_min AS "denbrMin",
+    s.count_max AS "denbrMax",
+    s.meta_v_taxref AS "vTAXREF",
+    s.sample_number_proof AS "sampleNumb",
+    s.digital_proof AS "preuvNum",
+    s.non_digital_proof AS "preuvNoNum",
+    s.altitude_min AS "altMin",
+    s.altitude_max AS "altMax",
+    s.the_geom_4326,
+    s.the_geom_point,
+    s.the_geom_local,
+    st_astext(s.the_geom_4326) AS wkt,
+    s.date_min AS "dateDebut",
+    s.date_max AS "dateFin",
+    s.validator AS validateur,
+    s.observers AS observer,
+    s.determiner AS detminer,
+    s.comment_context AS "obsCtx",
+    s.comment_description AS "obsDescr",
     s.meta_create_date,
     s.meta_update_date,
-    last_action,
-    d.id_dataset,
-    d.dataset_name,
+    d.id_dataset AS "jddId",
+    d.dataset_name AS "jddCode",
     d.id_acquisition_framework,
-    deco.nat_obj_geo,
-    deco.grp_typ,
-    deco.obs_method,
-    deco.obs_technique,
-    deco.bio_status,
-    deco.bio_condition,
-    deco.naturalness,
-    deco.exist_proof,
-    deco.valid_status,
-    deco.diffusion_level,
-    deco.life_stage,
-    deco.sex,
-    deco.obj_count,
-    deco.type_count,
-    deco.sensitivity,
-    deco.observation_status,
-    deco.blurring,
-    deco.source_status,
-    deco.info_geo_type,
-    deco.determination_method,
-    sources.name_source,
-    sources.url_source,
-    t.cd_nom,
-    t.cd_ref,
-    t.nom_valide,
-    t.nom_vern,
-    x_centroid,
-    y_centroid,
-    last_update_date 
-  ;
+    t.cd_nom AS "cdNom",
+    t.cd_ref AS "cdRef",
+    s.nom_cite AS "nomCite",
+    st_x(st_transform(s.the_geom_point, MYLOCALSRID)) AS x_centroid,
+    st_y(st_transform(s.the_geom_point, MYLOCALSRID)) AS y_centroid,
+    COALESCE(s.meta_update_date, s.meta_create_date) AS lastact,
+    st_asgeojson(s.the_geom_4326) AS geojson,
+    st_asgeojson(st_transform(s.the_geom_4326, MYLOCALSRID)) AS geojson_local
+    deco."ObjGeoTyp",
+    deco."methGrp",
+    deco."obsMeth",
+    deco."obsTech",
+    deco."ocEtatBio",
+    deco."ocNat",
+    deco."preuveOui",
+    deco."difNivPrec",
+    deco."ocStade",
+    deco."ocSex",
+    deco."objDenbr",
+    deco."denbrTyp",
+    deco."sensiNiv",
+    deco."statObs",
+    deco."dEEFlou",
+    deco."statSource",
+    deco."typInfGeo"
+   FROM gn_synthese.synthese s
+     JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
+     JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
+     JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source
+     JOIN deco ON deco.id_synthese = s.id_synthese;
+
 
 ------------
 --TRIGGERS--

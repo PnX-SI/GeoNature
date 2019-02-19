@@ -344,6 +344,7 @@ class VSyntheseForWebApp(DB.Model):
         )
 
 
+# Non utilisé - laissé pour exemple d'une sérialisation ordonnée
 def synthese_export_serialization(cls):
     """
     Décorateur qui definit une serialisation particuliere pour la vue v_synthese_for_export
@@ -407,103 +408,32 @@ def synthese_export_serialization(cls):
     return cls
 
 
-@synthese_export_serialization
-class VSyntheseForExport(DB.Model):
-    __tablename__ = "v_synthese_for_export"
-    __table_args__ = {"schema": "gn_synthese"}
+@serializable
+@geoserializable
+class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
+    """
+    Model for display details information about one synthese observation
+    Herited from VSyntheseDecodeNomenclatures model for all decoded nomenclatures
+    """
 
+    __tablename__ = "synthese"
+    __table_args__ = {"schema": "gn_synthese", "extend_existing": True}
     id_synthese = DB.Column(
         DB.Integer,
         ForeignKey("gn_synthese.v_synthese_decode_nomenclatures.id_synthese"),
         primary_key=True,
     )
-    unique_id_sinp = DB.Column(UUID(as_uuid=True))
-    unique_id_sinp_grp = DB.Column(UUID(as_uuid=True))
     id_source = DB.Column(DB.Integer)
-    entity_source_pk_value = DB.Column(DB.Integer)
     id_dataset = DB.Column(DB.Integer)
-    dataset_name = DB.Column(DB.Integer)
-    id_acquisition_framework = DB.Column(DB.Integer)
-    count_min = DB.Column(DB.Integer)
-    count_max = DB.Column(DB.Integer)
-    cd_nom = DB.Column(DB.Integer)
-    cd_ref = DB.Column(DB.Unicode)
-    nom_cite = DB.Column(DB.Unicode)
-    nom_valide = DB.Column(DB.Unicode)
-    nom_vern = DB.Column(DB.Unicode)
-    meta_v_taxref = DB.Column(DB.Unicode)
-    sample_number_proof = DB.Column(DB.Unicode)
-    digital_proof = DB.Column(DB.Unicode)
-    non_digital_proof = DB.Column(DB.Unicode)
-    altitude_min = DB.Column(DB.Unicode)
-    altitude_max = DB.Column(DB.Unicode)
-    the_geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
-    the_geom_point = DB.Column(Geometry("GEOMETRY", 4326))
-    the_geom_local = DB.Column(Geometry("GEOMETRY", 2154))
-    wkt = DB.Column(DB.Unicode)
-    date_min = DB.Column(DB.DateTime)
-    date_max = DB.Column(DB.DateTime)
-    validator = DB.Column(DB.Unicode)
-    validation_comment = DB.Column(DB.Unicode)
-    observers = DB.Column(DB.Unicode)
-    determiner = DB.Column(DB.Unicode)
-    id_digitiser = DB.Column(DB.Integer)
-    comment_context = DB.Column(DB.Unicode)
-    comment_description = DB.Column(DB.Unicode)
-    meta_validation_date = DB.Column(DB.DateTime)
-    meta_create_date = DB.Column(DB.DateTime)
-    meta_update_date = DB.Column(DB.DateTime)
-    last_action = DB.Column(DB.Unicode)
-    nat_obj_geo = DB.Column(DB.Unicode)
-    grp_typ = DB.Column(DB.Unicode)
-    obs_method = DB.Column(DB.Unicode)
-    obs_technique = DB.Column(DB.Unicode)
-    bio_status = DB.Column(DB.Unicode)
-    bio_condition = DB.Column(DB.Unicode)
-    naturalness = DB.Column(DB.Unicode)
-    exist_proof = DB.Column(DB.Unicode)
-    valid_status = DB.Column(DB.Unicode)
-    diffusion_level = DB.Column(DB.Unicode)
-    life_stage = DB.Column(DB.Unicode)
-    sex = DB.Column(DB.Unicode)
-    obj_count = DB.Column(DB.Unicode)
-    type_count = DB.Column(DB.Unicode)
-    sensitivity = DB.Column(DB.Unicode)
-    observation_status = DB.Column(DB.Unicode)
-    blurring = DB.Column(DB.Unicode)
-    source_status = DB.Column(DB.Unicode)
-    info_geo_type = DB.Column(DB.Unicode)
-    determination_method = DB.Column(DB.Unicode)
-    name_source = DB.Column(DB.Unicode)
-    url_source = DB.Column(DB.Unicode)
-    actors = DB.Column(DB.Unicode)
-    x_centroid = DB.Column(DB.Float)
-    y_centroid = DB.Column(DB.Float)
-    last_update_date = DB.Column(DB.DateTime)
-
-    def get_geofeature_ordered(self):
-        return self.as_geofeature_ordered("the_geom_4326", "id_synthese")
-
-
-@serializable
-@geoserializable
-class SyntheseOneRecord(VSyntheseForExport):
-    """
-    Model for display details information about one synthese observation
-    Herited from VSyntheseForExport model for all decoded nomenclatures
-    """
-
-    __tablename__ = "v_synthese_for_export"
-    __table_args__ = {"schema": "gn_synthese", "extend_existing": True}
     source = DB.relationship(
         "TSources",
-        primaryjoin=(TSources.id_source == VSyntheseForExport.id_source),
-        foreign_keys=[VSyntheseForExport.id_source],
+        primaryjoin=(TSources.id_source == id_source),
+        foreign_keys=[id_source],
     )
     areas = DB.relationship(
         "LAreas",
         secondary=corAreaSynthese,
-        primaryjoin=(corAreaSynthese.c.id_synthese == VSyntheseForExport.id_synthese),
+        primaryjoin=(corAreaSynthese.c.id_synthese == id_synthese),
         secondaryjoin=(corAreaSynthese.c.id_area == LAreas.id_area),
         foreign_keys=[corAreaSynthese.c.id_synthese, corAreaSynthese.c.id_area],
     )
@@ -511,9 +441,10 @@ class SyntheseOneRecord(VSyntheseForExport):
         "TAcquisitionFramework",
         uselist=False,
         secondary=TDatasets.__table__,
-        primaryjoin=(TDatasets.id_dataset == VSyntheseForExport.id_dataset),
+        primaryjoin=(TDatasets.id_dataset == id_dataset),
         secondaryjoin=(
             TDatasets.id_acquisition_framework
             == TAcquisitionFramework.id_acquisition_framework
         ),
     )
+
