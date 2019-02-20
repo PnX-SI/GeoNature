@@ -23,7 +23,17 @@ export class SyntheseModalDownloadComponent implements OnInit {
 
   ngOnInit() {}
 
-  downloadData(format) {
-    this._dataService.downloadData(this._storeService.idSyntheseList, format);
+  downloadObservations(format) {
+    this._dataService.downloadObservations(this._storeService.idSyntheseList, format);
+  }
+
+  downloadStatusOrMetadata(url, filename) {
+    this.queryString = this.queryString.delete('limit');
+    this._dataService.downloadStatusOrMetadata(
+      `${AppConfig.API_ENDPOINT}/${url}`,
+      'csv',
+      this.queryString,
+      filename
+    );
   }
 }

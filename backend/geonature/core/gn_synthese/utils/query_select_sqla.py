@@ -18,12 +18,23 @@ from geonature.core.gn_synthese.models import (
     TSources,
     CorAreaSynthese,
 )
-from geonature.core.gn_meta.models import TAcquisitionFramework, CorDatasetActor
+from geonature.core.gn_meta.models import (
+    TAcquisitionFramework,
+    CorDatasetActor,
+    TDatasets,
+)
 
 
 class SyntheseQuery:
     """
         class for building synthese query and manage join
+
+        Attributes:
+            query: SQLA select object
+            filters: dict of query string filters
+            model: a SQLA model
+            _already_joined_table: (private) a list of already joined table. Auto build with 'add_join' method
+            query_joins = SQLA Join object
     """
 
     def __init__(self, model, query, filters):
@@ -61,10 +72,11 @@ class SyntheseQuery:
                 # push the joined table in _already_joined_table list
                 self._already_joined_table.append(right_table)
 
-    def filter_query_with_cruved(self, user, allowed_datasets):
+    def filter_query_with_cruved(self, user):
         """
         Filter the query with the cruved authorization of a user
         """
+        allowed_datasets = TDatasets.get_user_datasets(user)
         if user.value_filter in ("1", "2"):
             self.add_join(
                 CorObserverSynthese,
@@ -231,3 +243,17 @@ class SyntheseQuery:
             else:
                 col = getattr(self.model.__table__.columns, colname)
                 self.query = self.query.where(col.in_(value))
+
+    def filter_query_all_filters(self, user):
+        """
+            Hight level function to manage query with all filters
+        """
+
+        self.filter_query_with_cruved(user)
+
+        self.filter_taxonomy()
+        self.filter_other_filters()
+
+        if self.query_joins is not None:
+            self.query = self.query.select_from(self.query_joins)
+        return self.query

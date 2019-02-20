@@ -111,6 +111,11 @@ class Synthese(Schema):
     # Colonnes affichées sur la liste des résultats de la sytnthese
     LIST_COLUMNS_FRONTEND = fields.List(fields.Dict, missing=DEFAULT_LIST_COLUMN)
     EXPORT_COLUMNS = fields.List(fields.String(), missing=DEFAULT_EXPORT_COLUMNS)
+    # Certaines colonnes sont obligatoires pour effectuer les filtres CRUVED
+    EXPORT_ID_SYNTHESE_COL = fields.String(missing="idSynthese")
+    EXPORT_ID_DATASET_COL = fields.String(missing="jddId")
+    EXPORT_ID_DIGITISER_COL = fields.String(missing="id_digitiser")
+    EXPORT_OBSERVERS_COL = fields.String(missing="observer")
     EXPORT_FORMAT = fields.List(
         fields.String(), missing=["csv", "geojson", "shapefile"]
     )

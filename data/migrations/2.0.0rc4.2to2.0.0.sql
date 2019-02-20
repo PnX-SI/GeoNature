@@ -325,14 +325,12 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     s.non_digital_proof AS "preuvNoNum",
     s.altitude_min AS "altMin",
     s.altitude_max AS "altMax",
-    s.the_geom_4326,
-    s.the_geom_point,
-    s.the_geom_local,
     st_astext(s.the_geom_4326) AS wkt,
     s.date_min AS "dateDebut",
     s.date_max AS "dateFin",
     s.validator AS validateur,
     s.observers AS observer,
+    s.id_digitiser AS id_digitiser,
     s.determiner AS detminer,
     s.comment_context AS "obsCtx",
     s.comment_description AS "obsDescr",
@@ -344,11 +342,11 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     t.cd_nom AS "cdNom",
     t.cd_ref AS "cdRef",
     s.nom_cite AS "nomCite",
-    st_x(st_transform(s.the_geom_point, MYLOCALSRID)) AS x_centroid,
-    st_y(st_transform(s.the_geom_point, MYLOCALSRID)) AS y_centroid,
+    st_x(st_transform(s.the_geom_point, 2154)) AS x_centroid,
+    st_y(st_transform(s.the_geom_point, 2154)) AS y_centroid,
     COALESCE(s.meta_update_date, s.meta_create_date) AS lastact,
     st_asgeojson(s.the_geom_4326) AS geojson,
-    st_asgeojson(st_transform(s.the_geom_4326, MYLOCALSRID)) AS geojson_local,
+    st_asgeojson(st_transform(s.the_geom_4326, 2154)) AS geojson_local,
     deco."ObjGeoTyp",
     deco."methGrp",
     deco."obsMeth",
@@ -372,6 +370,30 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
      JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source
      JOIN deco ON deco.id_synthese = s.id_synthese;
 
+
+
+
+CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS 
+ WITH count_nb_obs AS (
+         SELECT count(*) AS nb_obs,
+            synthese.id_dataset
+           FROM gn_synthese.synthese
+          GROUP BY synthese.id_dataset
+        )
+ SELECT d.dataset_name AS jeu_donnees,
+    d.id_dataset AS jdd_id,
+    d.unique_dataset_id AS jdd_uuid,
+    af.acquisition_framework_name AS cadre_acquisition,
+    string_agg(DISTINCT concat(COALESCE(orga.nom_organisme, ((roles.nom_role::text || ' '::text) || roles.prenom_role::text)::character varying), ': ', nomencl.label_default), ' | '::text) AS acteurs,
+    count_nb_obs.nb_obs AS nombre_obs
+   FROM gn_meta.t_datasets d
+     JOIN gn_meta.t_acquisition_frameworks af ON af.id_acquisition_framework = d.id_acquisition_framework
+     JOIN gn_meta.cor_dataset_actor act ON act.id_dataset = d.id_dataset
+     JOIN ref_nomenclatures.t_nomenclatures nomencl ON nomencl.id_nomenclature = act.id_nomenclature_actor_role
+     LEFT JOIN utilisateurs.bib_organismes orga ON orga.id_organisme = act.id_organism
+     LEFT JOIN utilisateurs.t_roles roles ON roles.id_role = act.id_role
+     JOIN count_nb_obs ON count_nb_obs.id_dataset = d.id_dataset
+  GROUP BY d.id_dataset, d.unique_dataset_id, d.dataset_name, af.acquisition_framework_name, count_nb_obs.nb_obs;
 
 
 
