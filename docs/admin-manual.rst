@@ -682,7 +682,7 @@ GeoNature est fourni avec des données géographiques de base sur la métropôle
 **1.** Si vous souhaitez modifier le MNT pour mettre celui de votre territoire : 
 
 * Videz le contenu des tables ``ref_geo.dem`` et éventuellement ``ref_geo.dem_vector``
-* Uploadez le fichier du MNT sur le serveur
+* Uploadez le(s) fichier(s) du MNT sur le serveur
 * Suivez la procédure de chargement du MNT en l'adaptant : https://github.com/PnX-SI/GeoNature/blob/master/install/install_db.sh#L295-L299
 
 *TODO : Procédure à améliorer et simplifier : https://github.com/PnX-SI/GeoNature/issues/235*
@@ -698,7 +698,7 @@ Suppression du MNT par défaut (adapter le nom de la base de données : MYDBNAME
     sudo -n -u postgres -s psql -d MYDBNAME -c "TRUNCATE TABLE ref_geo.dem;"
     sudo -n -u postgres -s psql -d MYDBNAME -c "TRUNCATE TABLE ref_geo.dem_vector;"
 
-Placer votre propre fichier MNT dans le répertoire ``/tmp/geonature`` (adapter le nom du fichier et son chemin ainsi que les paramètres en majuscule). Ou télécharger le MNT par défaut.
+Placer votre propre fichier MNT ou vos différents fichiers "dalles" dans le répertoire ``/tmp/geonature`` (adapter le nom du fichier et son chemin ainsi que les paramètres en majuscule). Ou télécharger le MNT par défaut.
 
 ::
 
@@ -706,6 +706,11 @@ Placer votre propre fichier MNT dans le répertoire ``/tmp/geonature`` (adapter 
     unzip /tmp/geonature/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -d /tmp/geonature
     export PGPASSWORD=MYUSERPGPASS;raster2pgsql -s MYSRID -c -C -I -M -d -t 5x5 /tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc ref_geo.dem|psql -h localhost -U MYPGUSER -d MYDBNAME
     sudo -n -u postgres -s psql -d MYDBNAME -c "REINDEX INDEX ref_geo.dem_st_convexhull_idx;"
+  
+Si votre MNT source est constitué de plusieurs fichiers (dalles), assurez vous que toutes vos dalles ont le même système de projection et le même format de fichier (tiff, asc, ou img par exemple). Après avoir chargé vos fichiers dans ``tmp/geonature``, vous pouvez lancer la commande ``export`` en remplacant le nom des fichiers par *.asc :
+
+::
+     export PGPASSWORD=MYUSERPGPASS;raster2pgsql -s MYSRID -c -C -I -M -d -t 5x5 /tmp/geonature/*.asc ref_geo.dem|psql -h localhost -U MYPGUSER -d MYDBNAME
 
 Si vous souhaitez vectoriser le raster MNT pour de meilleures performances lors des calculs en masse de l'altitude à partir de la localisation des observations, vous pouvez le faire en lançant les commandes ci-dessous. Sachez que cela prendra du temps et beaucoup d'espace disque (2.8Go supplémentaires environ pour le fichier DEM France à 250m).
 
