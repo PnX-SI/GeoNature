@@ -31,11 +31,9 @@ export class TaxonAdvancedStoreService {
 
     // get taxhub attributes
     this._dataService.getTaxhubBibAttributes().subscribe(attrs => {
-      console.log('LAAAAAAAAAAAAA');
       // display only the taxhub attributes set in the config
       this.taxhubAttributes = attrs
         .filter(attr => {
-          console.log(attr);
           return AppConfig.SYNTHESE.ID_ATTRIBUT_TAXHUB.indexOf(attr.id_attribut) !== -1;
         })
         .map(attr => {
