@@ -236,7 +236,7 @@ def export_web(info_role):
     cruved = cruved_scope_for_user_in_module(info_role.id_role, module_code="SYNTHESE")[
         0
     ]
-    if cruved["R"] >= cruved["E"]:
+    if cruved["R"] > cruved["E"]:
         # filter on cruved specifying the column
         # id_dataset, id_synthese, id_digitiser and observer in the v_synthese_for_export_view
         q = synthese_query.filter_query_with_cruved(
@@ -251,7 +251,6 @@ def export_web(info_role):
             ],
             with_generic_table=True,
         )
-
     results = q.limit(current_app.config["SYNTHESE"]["NB_MAX_OBS_EXPORT"])
 
     file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
