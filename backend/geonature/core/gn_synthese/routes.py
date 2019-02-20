@@ -72,7 +72,7 @@ def current_milli_time():
 @routes.route("/for_web", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
 @json_resp
-def synthese_for_web(info_role):
+def get_observations_for_web(info_role):
     """
         Optimized route for serve data to the frontend with all filters
         Parameters:
@@ -189,7 +189,7 @@ def get_one_synthese(id_synthese):
 
 @routes.route("/export_observations", methods=["POST"])
 @permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
-def export_web(info_role):
+def export_observations_web(info_role):
     """
         Optimized route for observations web export
         This view is customisable by the administrator
@@ -303,7 +303,7 @@ def export_web(info_role):
 
 @routes.route("/export_metadata", methods=["GET"])
 @permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
-def metadata(info_role):
+def export_metadata(info_role):
     """
         Route to export the metadata in CSV
         The table synthese is join with gn_synthese.v_metadata_for_export
@@ -336,7 +336,7 @@ def metadata(info_role):
 
 @routes.route("/export_statuts", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
-def get_status(info_role):
+def export_status(info_role):
     """
     Route to get all the protection status of a synthese search
     Parameters:
