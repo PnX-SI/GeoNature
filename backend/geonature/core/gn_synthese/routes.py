@@ -90,6 +90,7 @@ def get_observations_for_web(info_role):
             VSyntheseForWebApp.id_synthese,
             VSyntheseForWebApp.date_min,
             VSyntheseForWebApp.lb_nom,
+            VSyntheseForWebApp.cd_nom,
             VSyntheseForWebApp.nom_vern,
             VSyntheseForWebApp.st_asgeojson,
             VSyntheseForWebApp.observers,
@@ -106,6 +107,7 @@ def get_observations_for_web(info_role):
         temp = {
             "id": r["id_synthese"],
             "date_min": str(r["date_min"]),
+            "cd_nom": r["cd_nom"],
             "nom_vern_or_lb_nom": r["nom_vern"] if r["nom_vern"] else r["lb_nom"],
             "geometry": ast.literal_eval(r["st_asgeojson"]),
             "dataset_name": r["dataset_name"],
@@ -171,13 +173,20 @@ def get_one_synthese(id_synthese):
         Retourne un enregistrement de la synthese
         avec les nomenclatures décodées pour la webapp
     """
-
-    q = DB.session.query(SyntheseOneRecord).filter(
-        SyntheseOneRecord.id_synthese == id_synthese
+    metadata_view = GenericTable("v_metadata_for_export", "gn_synthese", None)
+    q = (
+        DB.session.query(SyntheseOneRecord, metadata_view.tableDef.columns.acteurs)
+        .filter(SyntheseOneRecord.id_synthese == id_synthese)
+        .join(
+            metadata_view.tableDef,
+            metadata_view.tableDef.columns.jdd_id == SyntheseOneRecord.id_dataset,
+        )
     )
     try:
         data = q.one()
-        return data.as_dict(True)
+        synthese_as_dict = data[0].as_dict(True)
+        synthese_as_dict["actors"] = data[1]
+        return synthese_as_dict
     except exc.NoResultFound:
         return None
 
@@ -443,9 +452,7 @@ def general_stats(info_role):
         func.count(func.distinct(Synthese.cd_nom)),
         func.count(func.distinct(Synthese.observers)),
     )
-    q = synthese_query.filter_query_with_cruved(
-        Synthese, q, info_role, allowed_datasets
-    )
+    q = synthese_query.filter_query_with_cruved(Synthese, q, info_role)
     data = q.one()
     data = {
         "nb_data": data[0],

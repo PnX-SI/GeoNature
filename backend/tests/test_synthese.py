@@ -34,7 +34,11 @@ class TestSynthese:
         )
         data = json_of_response(response)
         assert len(data["data"]) == 1
-        assert data["data"][0]["nom_vern_or_lb_nom"] == "Ashmeadopria"
+        # clés obligatoire pour le fonctionnement du front
+        assert "lb_nom" in data["data"][0]
+        assert "id" in data["data"][0]
+        assert data["data"][0]["cd_nom"] == 713776
+
         assert response.status_code == 200
 
         # test geometry filters
@@ -125,5 +129,21 @@ class TestSynthese:
         self.client.set_cookie("/", "token", token)
 
         response = self.client.get(url_for("gn_synthese.export_metadata"))
+
+        assert response.status_code == 200
+
+    def test_general_stat(self):
+        token = get_token(self.client)
+        self.client.set_cookie("/", "token", token)
+
+        response = self.client.get(url_for("gn_synthese.general_stats"))
+
+        assert response.status_code == 200
+
+    def test_get_one_synthese_reccord(self):
+        token = get_token(self.client)
+        self.client.set_cookie("/", "token", token)
+
+        response = self.client.get(url_for("gn_synthese.get_one_synthese"))
 
         assert response.status_code == 200
