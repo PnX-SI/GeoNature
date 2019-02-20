@@ -45,10 +45,10 @@ def filter_query_with_cruved(
         model_id_syn_col = getattr(model_temp, id_synthese_column)
         model_id_dataset_column = getattr(model_temp, id_dataset_column)
         model_observers_column = getattr(model_temp, observers_column)
-        model_id_digitiser_column = getattr(model_temp, observers_column)
+        model_id_digitiser_column = getattr(model_temp, id_digitiser_column)
     except AttributeError as e:
         raise GeonatureApiError(
-            """the {model} {e}
+            """the {model} table     does not have a column {e}
              If you change the {model} table, please edit your synthese config (cf EXPORT_***_COL)
             """.format(
                 e=e, model=model
