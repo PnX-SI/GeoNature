@@ -4,13 +4,15 @@ import {
   HttpParams,
   HttpHeaders,
   HttpEventType,
-  HttpErrorResponse
+  HttpErrorResponse,
+  HttpEvent
 } from '@angular/common/http';
 import { GeoJSON } from 'leaflet';
 import { AppConfig } from '@geonature_config/app.config';
 import { isArray } from 'util';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { CommonService } from '@geonature_common/service/common.service';
+import { Observable } from 'rxjs';
 
 export const FormatMapMime = new Map([
   ['csv', 'text/csv'],
@@ -55,32 +57,46 @@ export class DataService {
     return this._api.get<GeoJSON>(`${AppConfig.API_ENDPOINT}/synthese/vsynthese/${id_synthese}`);
   }
 
-  deleteOneSyntheseObservation(id_synthese) {
-    return this._api.delete<any>(`${AppConfig.API_ENDPOINT}/synthese/${id_synthese}`);
-  }
-
-  exportData(params) {
-    return this._api.get<GeoJSON>(`${AppConfig.API_ENDPOINT}/synthese/export`, {
-      params: this.buildQueryUrl(params)
-    });
-  }
-
   getTaxonTree() {
     return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/taxons_tree`);
   }
 
-  downloadData(idSyntheseList: Array<number>, format: string) {
+  downloadObservations(idSyntheseList: Array<number>, format: string) {
     this.isDownloading = true;
     const queryString = new HttpParams().set('export_format', format);
 
-    const source = this._api.post(`${AppConfig.API_ENDPOINT}/synthese/export`, idSyntheseList, {
-      params: queryString,
-      headers: new HttpHeaders().set('Content-Type', 'application/json'),
+    const source = this._api.post(
+      `${AppConfig.API_ENDPOINT}/synthese/export_observations`,
+      idSyntheseList,
+      {
+        params: queryString,
+        headers: new HttpHeaders().set('Content-Type', 'application/json'),
+        observe: 'events',
+        responseType: 'blob',
+        reportProgress: true
+      }
+    );
+
+    this.subscribeAndDownload(source, 'synthese_observations', format);
+  }
+
+  downloadStatusOrMetadata(url: string, format: string, queryString: HttpParams, filename: string) {
+    this.isDownloading = true;
+    const source = this._api.get(`${url}?${queryString.toString()}`, {
+      headers: new HttpHeaders().set('Content-Type', `${FormatMapMime.get(format)}`),
       observe: 'events',
       responseType: 'blob',
       reportProgress: true
     });
 
+    this.subscribeAndDownload(source, filename, format);
+  }
+
+  subscribeAndDownload(
+    source: Observable<HttpEvent<Blob>>,
+    fileName: string,
+    format: string
+  ): void {
     const subscription = source.subscribe(
       event => {
         if (event.type === HttpEventType.Response) {
@@ -95,10 +111,8 @@ export class DataService {
       () => {
         this.isDownloading = false;
         const date = new Date();
-        // FIXME: const DATE_FORMAT, FILENAME_FORMAT
-        // FIXME: (format, mimetype, extension)
         const extension = format === 'shapefile' ? '.zip' : format;
-        this.saveBlob(this._blob, `lalala${date.toISOString()}.${extension}`);
+        this.saveBlob(this._blob, `${fileName}_${date.toISOString()}.${extension}`);
         subscription.unsubscribe();
       }
     );

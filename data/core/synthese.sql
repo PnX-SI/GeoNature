@@ -910,7 +910,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     st_y(st_transform(s.the_geom_point, MYLOCALSRID)) AS y_centroid,
     COALESCE(s.meta_update_date, s.meta_create_date) AS lastact,
     st_asgeojson(s.the_geom_4326) AS geojson,
-    st_asgeojson(st_transform(s.the_geom_4326, MYLOCALSRID)) AS geojson_local
+    st_asgeojson(st_transform(s.the_geom_4326, MYLOCALSRID)) AS geojson_local,
     deco."ObjGeoTyp",
     deco."methGrp",
     deco."obsMeth",

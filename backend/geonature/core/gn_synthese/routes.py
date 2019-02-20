@@ -38,14 +38,15 @@ from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from geonature.core.gn_meta.models import TDatasets
 
 from geonature.core.gn_permissions import decorators as permissions
+from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 
 from geonature.utils.utilssqlalchemy import (
     to_csv_resp,
     to_json_resp,
     json_resp,
     GenericTable,
+    csv_resp,
 )
-
 
 # debug
 # current_app.config['SQLALCHEMY_ECHO'] = True
@@ -56,52 +57,68 @@ routes = Blueprint("gn_synthese", __name__)
 log = logging.getLogger()
 
 
-@routes.route("/sources", methods=["GET"])
-@json_resp
-def get_sources():
-    q = DB.session.query(TSources)
-    data = q.all()
-    return [n.as_dict() for n in data]
-
-
-@routes.route("/defaultsNomenclatures", methods=["GET"])
-@json_resp
-def getDefaultsNomenclatures():
-    params = request.args
-    group2_inpn = "0"
-    regne = "0"
-    organism = 0
-    if "group2_inpn" in params:
-        group2_inpn = params["group2_inpn"]
-    if "regne" in params:
-        regne = params["regne"]
-    if "organism" in params:
-        organism = params["organism"]
-    types = request.args.getlist("mnemonique_type")
-
-    q = DB.session.query(
-        distinct(DefaultsNomenclaturesValue.mnemonique_type),
-        func.gn_synthese.get_default_nomenclature_value(
-            DefaultsNomenclaturesValue.mnemonique_type, organism, regne, group2_inpn
-        ),
-    )
-    if len(types) > 0:
-        q = q.filter(DefaultsNomenclaturesValue.mnemonique_type.in_(tuple(types)))
-    try:
-        data = q.all()
-    except Exception:
-        DB.session.rollback()
-        raise
-    if not data:
-        return {"message": "not found"}, 404
-    return {d[0]: d[1] for d in data}
-
-
 import time
 
 
 def current_milli_time():
     return time.time()
+
+
+############################################
+########### GET OBSERVATIONS  ##############
+############################################
+
+
+@routes.route("/for_web", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
+@json_resp
+def synthese_for_web(info_role):
+    """
+        Optimized route for serve data to the frontend with all filters
+        Parameters:
+            - GET : all the fields of the view v_synthese_for_export
+        Return:
+            Array of dict (with geojson key)
+    """
+    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
+    if "limit" in filters:
+        result_limit = filters.pop("limit")[0]
+    else:
+        result_limit = current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
+    query = select(
+        [
+            VSyntheseForWebApp.id_synthese,
+            VSyntheseForWebApp.date_min,
+            VSyntheseForWebApp.lb_nom,
+            VSyntheseForWebApp.nom_vern,
+            VSyntheseForWebApp.st_asgeojson,
+            VSyntheseForWebApp.observers,
+            VSyntheseForWebApp.dataset_name,
+            VSyntheseForWebApp.url_source,
+        ]
+    )
+    synthese_query_class = SyntheseQuery(VSyntheseForWebApp, query, filters)
+    synthese_query_class.filter_query_all_filters(info_role)
+
+    result = DB.engine.execute(synthese_query_class.query.limit(result_limit))
+    formated_result = []
+    for r in result:
+        temp = {
+            "id": r["id_synthese"],
+            "date_min": str(r["date_min"]),
+            "nom_vern_or_lb_nom": r["nom_vern"] if r["nom_vern"] else r["lb_nom"],
+            "geometry": ast.literal_eval(r["st_asgeojson"]),
+            "dataset_name": r["dataset_name"],
+            "observers": r["observers"],
+            "url_source": r["url_source"],
+        }
+        formated_result.append(temp)
+    return {
+        "data": formated_result,
+        "nb_total": len(formated_result),
+        "nb_obs_limited": len(formated_result)
+        == current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"],
+    }
 
 
 @routes.route("", methods=["GET"])
@@ -120,12 +137,10 @@ def get_synthese(info_role):
     else:
         result_limit = current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
 
-    allowed_datasets = TDatasets.get_user_datasets(info_role)
-
     q = DB.session.query(VSyntheseForWebApp)
 
     q = synthese_query.filter_query_all_filters(
-        VSyntheseForWebApp, q, filters, info_role, allowed_datasets
+        VSyntheseForWebApp, q, filters, info_role
     )
     q = q.order_by(VSyntheseForWebApp.date_min.desc())
 
@@ -167,53 +182,221 @@ def get_one_synthese(id_synthese):
         return None
 
 
-@routes.route("/statuts", methods=["GET"])
+################################
+########### EXPORTS ############
+################################
+
+
+@routes.route("/export_observations", methods=["POST"])
 @permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
+def export_web(info_role):
+    """
+        Optimized route for observations web export
+        This view is customisable by the administrator
+        Some columns arer mandatory: id_sythese, geojson and geojson_local to generate the exported files
+
+        Parameters :
+            Via POST: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
+            Via GET: 'export_format' str<'csv', 'geojson', 'shapefiles'>
+
+    """
+    params = request.args
+    # set default to csv
+    export_format = "csv"
+    if "export_format" in params:
+        export_format = params["export_format"]
+        if params["export_format"] == "geojson":
+            export_view = GenericTable(
+                "v_synthese_for_export", "gn_synthese", "the_geom_local", 2154
+            )
+        else:
+            export_view = GenericTable(
+                "v_synthese_for_export", "gn_synthese", "the_geom_local", 2154
+            )
+    else:
+        export_view = GenericTable(
+            "v_synthese_for_export", "gn_synthese", "the_geom_local", 2154
+        )
+
+    # get list of id synthese from POST
+    id_list = request.get_json()
+
+    db_cols_for_shape = []
+    columns_to_serialize = []
+    # loop over synthese config to get the columns for export
+    for db_col in export_view.db_cols:
+        if db_col.key in current_app.config["SYNTHESE"]["EXPORT_COLUMNS"]:
+            db_cols_for_shape.append(db_col)
+            columns_to_serialize.append(db_col.key)
+
+    q = DB.session.query(export_view.tableDef).filter(
+        export_view.tableDef.columns.idSynthese.in_(id_list)
+    )
+    # check R and E CRUVED to know if we filter with cruved
+    cruved = cruved_scope_for_user_in_module(info_role.id_role, module_code="SYNTHESE")[
+        0
+    ]
+    if cruved["R"] >= cruved["E"]:
+        # filter on cruved specifying the column
+        # id_dataset, id_synthese, id_digitiser and observer in the v_synthese_for_export_view
+        q = synthese_query.filter_query_with_cruved(
+            export_view.tableDef,
+            q,
+            info_role,
+            id_synthese_column=current_app.config["SYNTHESE"]["EXPORT_ID_SYNTHESE_COL"],
+            id_dataset_column=current_app.config["SYNTHESE"]["EXPORT_ID_DATASET_COL"],
+            observers_column=current_app.config["SYNTHESE"]["EXPORT_OBSERVERS_COL"],
+            id_digitiser_column=current_app.config["SYNTHESE"][
+                "EXPORT_ID_DIGITISER_COL"
+            ],
+            with_generic_table=True,
+        )
+
+    results = q.limit(current_app.config["SYNTHESE"]["NB_MAX_OBS_EXPORT"])
+
+    file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
+    file_name = filemanager.removeDisallowedFilenameChars(file_name)
+
+    # columns = [db_col.key for db_col in export_view.db_cols]
+
+    if export_format == "csv":
+        formated_data = [
+            export_view.as_dict(d, columns=columns_to_serialize) for d in results
+        ]
+        return to_csv_resp(
+            file_name, formated_data, separator=";", columns=columns_to_serialize
+        )
+
+    elif export_format == "geojson":
+        formated_data = []
+        for r in results:
+            geojson = ast.literal_eval(r.geojson)
+            geojson["properties"] = export_view.as_dict(r, columns=columns_to_serialize)
+            formated_data.append(geojson)
+        results = FeatureCollection(formated_data)
+        return to_json_resp(results, as_file=True, filename=file_name, indent=4)
+    else:
+        try:
+            filemanager.delete_recursively(
+                str(ROOT_DIR / "backend/static/shapefiles"), excluded_files=[".gitkeep"]
+            )
+
+            dir_path = str(ROOT_DIR / "backend/static/shapefiles")
+
+            export_view.as_shape(
+                db_cols=db_cols_for_shape,
+                data=results,
+                geojson_col="geojson_local",
+                dir_path=dir_path,
+                file_name=file_name,
+            )
+            return send_from_directory(dir_path, file_name + ".zip", as_attachment=True)
+
+        except GeonatureApiError as e:
+            message = str(e)
+
+        return render_template(
+            "error.html",
+            error=message,
+            redirect=current_app.config["URL_APPLICATION"] + "/#/synthese",
+        )
+
+
+@routes.route("/export_metadata", methods=["GET"])
+@permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
+def metadata(info_role):
+    """
+        Route to export the metadata in CSV
+        The table synthese is join with gn_synthese.v_metadata_for_export
+        The column jdd_id is mandatory in the view gn_synthese.v_metadata_for_export
+
+        Parameters :
+            Via POST: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
+    """
+    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
+
+    metadata_view = GenericTable("v_metadata_for_export", "gn_synthese", None)
+    q = DB.session.query(
+        distinct(VSyntheseForWebApp.id_dataset), metadata_view.tableDef
+    ).join(
+        metadata_view.tableDef,
+        metadata_view.tableDef.columns.jdd_id == VSyntheseForWebApp.id_dataset,
+    )
+
+    q = synthese_query.filter_query_all_filters(
+        VSyntheseForWebApp, q, filters, info_role
+    )
+
+    return to_csv_resp(
+        datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S"),
+        data=[metadata_view.as_dict(d) for d in q.all()],
+        separator=";",
+        columns=[db_col.key for db_col in metadata_view.tableDef.columns],
+    )
+
+
+@routes.route("/export_statuts", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
 def get_status(info_role):
     """
     Route to get all the protection status of a synthese search
+    Parameters:
+        - HTTP-GET: the same that the /synthese endpoint (all the filter in web app)
+    Get the CRUVED from 'R' action because we don't give observations X/Y but only statuts
+    and to be constistant with the data displayed in the web interface
     """
+    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
 
-    filters = dict(request.args)
-
-    q = (
-        DB.session.query(
-            distinct(VSyntheseForWebApp.cd_nom), Taxref, TaxrefProtectionArticles
-        )
-        .join(Taxref, Taxref.cd_nom == VSyntheseForWebApp.cd_nom)
-        .join(
-            TaxrefProtectionEspeces,
-            TaxrefProtectionEspeces.cd_nom == VSyntheseForWebApp.cd_nom,
-        )
-        .join(
-            TaxrefProtectionArticles,
-            TaxrefProtectionArticles.cd_protection
-            == TaxrefProtectionEspeces.cd_protection,
-        )
+    # initalize the select object
+    q = select(
+        [
+            distinct(VSyntheseForWebApp.cd_nom),
+            Taxref.nom_complet,
+            Taxref.cd_ref,
+            Taxref.nom_vern,
+            TaxrefProtectionArticles.type_protection,
+            TaxrefProtectionArticles.article,
+            TaxrefProtectionArticles.intitule,
+            TaxrefProtectionArticles.arrete,
+            TaxrefProtectionArticles.date_arrete,
+            TaxrefProtectionArticles.url,
+        ]
     )
 
-    allowed_datasets = TDatasets.get_user_datasets(info_role)
-    q = synthese_query.filter_query_all_filters(
-        VSyntheseForWebApp, q, filters, info_role, allowed_datasets
+    synthese_query_class = SyntheseQuery(VSyntheseForWebApp, q, filters)
+
+    # add join
+    synthese_query_class.add_join(Taxref, Taxref.cd_nom, VSyntheseForWebApp.cd_nom)
+    synthese_query_class.add_join(
+        TaxrefProtectionEspeces,
+        TaxrefProtectionEspeces.cd_nom,
+        VSyntheseForWebApp.cd_nom,
     )
-    data = q.all()
+    synthese_query_class.add_join(
+        TaxrefProtectionArticles,
+        TaxrefProtectionArticles.cd_protection,
+        TaxrefProtectionEspeces.cd_protection,
+    )
+
+    # filter with all get params
+    q = synthese_query_class.filter_query_all_filters(info_role)
+
+    data = DB.engine.execute(q)
 
     protection_status = []
     for d in data:
-        taxon = d[1].as_dict()
-        protection = d[2].as_dict()
         row = OrderedDict(
             [
-                ("nom_complet", taxon["nom_complet"]),
-                ("nom_vern", taxon["nom_vern"]),
-                ("cd_nom", taxon["cd_nom"]),
-                ("cd_ref", taxon["cd_ref"]),
-                ("type_protection", protection["type_protection"]),
-                ("article", protection["article"]),
-                ("intitule", protection["intitule"]),
-                ("arrete", protection["arrete"]),
-                ("date_arrete", protection["date_arrete"]),
-                ("url", protection["url"]),
+                ("nom_complet", d["nom_complet"]),
+                ("nom_vern", d["nom_vern"]),
+                ("cd_nom", d["cd_nom"]),
+                ("cd_ref", d["cd_ref"]),
+                ("type_protection", d["type_protection"]),
+                ("article", d["article"]),
+                ("intitule", d["intitule"]),
+                ("arrete", d["arrete"]),
+                ("date_arrete", d["date_arrete"]),
+                ("url", d["url"]),
             ]
         )
         protection_status.append(row)
@@ -231,10 +414,47 @@ def get_status(info_role):
         "url",
     ]
 
-    file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
     return to_csv_resp(
-        file_name, protection_status, separator=";", columns=export_columns
+        datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S"),
+        protection_status,
+        separator=";",
+        columns=export_columns,
     )
+
+
+######################################
+########### OTHERS ROUTES ############
+######################################
+
+
+@routes.route("/general_stats", methods=["GET"])
+@permissions.check_cruved_scope("R", True)
+@json_resp
+def general_stats(info_role):
+    """
+    Return stats about synthese
+        - nb of observations
+        - nb of distinct species
+        - nb of distinct observer
+        - nb ob datasets
+    """
+    allowed_datasets = TDatasets.get_user_datasets(info_role)
+    q = DB.session.query(
+        func.count(Synthese.id_dataset),
+        func.count(func.distinct(Synthese.cd_nom)),
+        func.count(func.distinct(Synthese.observers)),
+    )
+    q = synthese_query.filter_query_with_cruved(
+        Synthese, q, info_role, allowed_datasets
+    )
+    data = q.one()
+    data = {
+        "nb_data": data[0],
+        "nb_species": data[1],
+        "nb_observers": data[2],
+        "nb_dataset": len(allowed_datasets),
+    }
+    return data
 
 
 @routes.route("/taxons_tree", methods=["GET"])
@@ -289,182 +509,54 @@ def get_autocomplete_taxons_synthese():
     return [d[0].as_dict() for d in data]
 
 
-@routes.route("/general_stats", methods=["GET"])
-@permissions.check_cruved_scope("R", True)
+@routes.route("/sources", methods=["GET"])
 @json_resp
-def general_stats(info_role):
+def get_sources():
     """
-    Return stats about synthese
-        - nb of observations
-        - nb of distinct species
-        - nb of distinct observer
-        - nb ob datasets
+        Get all sources
     """
-    allowed_datasets = TDatasets.get_user_datasets(info_role)
-    q = DB.session.query(
-        func.count(Synthese.id_dataset),
-        func.count(func.distinct(Synthese.cd_nom)),
-        func.count(func.distinct(Synthese.observers)),
-    )
-    q = synthese_query.filter_query_with_cruved(
-        Synthese, q, info_role, allowed_datasets
-    )
-    data = q.one()
-    data = {
-        "nb_data": data[0],
-        "nb_species": data[1],
-        "nb_observers": data[2],
-        "nb_dataset": len(allowed_datasets),
-    }
-    return data
+    q = DB.session.query(TSources)
+    data = q.all()
+    return [n.as_dict() for n in data]
 
 
-@routes.route("/for_web", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
+@routes.route("/defaultsNomenclatures", methods=["GET"])
 @json_resp
-def synthese_for_web(info_role):
+def getDefaultsNomenclatures():
     """
-        Optimized route for serve data to the frontend with all filters
+        Get default nomenclatures
+        
+        Parameters:
+            GET: 
+                - group2_inpn (str)
+                - regne (str)
+                - organism (integer)
     """
-    start = current_milli_time()
-    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
-    if "limit" in filters:
-        result_limit = filters.pop("limit")[0]
-    else:
-        result_limit = current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
-    query = select(
-        [
-            VSyntheseForWebApp.id_synthese,
-            VSyntheseForWebApp.date_min,
-            VSyntheseForWebApp.lb_nom,
-            VSyntheseForWebApp.nom_vern,
-            VSyntheseForWebApp.st_asgeojson,
-            VSyntheseForWebApp.observers,
-            VSyntheseForWebApp.dataset_name,
-            VSyntheseForWebApp.url_source,
-        ]
-    )
-    synthese_query_class = SyntheseQuery(VSyntheseForWebApp, query, filters)
-    allowed_datasets = TDatasets.get_user_datasets(info_role)
-
-    synthese_query_class.filter_query_with_cruved(info_role, allowed_datasets)
-
-    synthese_query_class.filter_taxonomy()
-    synthese_query_class.filter_other_filters()
-
-    # check if there are join to do
-    if synthese_query_class.query_joins is not None:
-        synthese_query_class.query = synthese_query_class.query.select_from(
-            synthese_query_class.query_joins
-        )
-
-    result = DB.engine.execute(synthese_query_class.query.limit(result_limit))
-    formated_result = []
-    for r in result:
-        temp = {
-            "id": r["id_synthese"],
-            "date_min": str(r["date_min"]),
-            "nom_vern_or_lb_nom": r["nom_vern"] if r["nom_vern"] else r["lb_nom"],
-            "geometry": ast.literal_eval(r["st_asgeojson"]),
-            "dataset_name": r["dataset_name"],
-            "observers": r["observers"],
-            "url_source": r["url_source"],
-        }
-        formated_result.append(temp)
-    return {
-        "data": formated_result,
-        "nb_total": len(formated_result),
-        "nb_obs_limited": len(formated_result)
-        == current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"],
-    }
-
-
-@routes.route("/export", methods=["POST"])
-# @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
-def export_test():
-    start = current_milli_time()
     params = request.args
-    # set default to csv
-    export_format = "csv"
-    if "export_format" in params:
-        export_format = params["export_format"]
-        if params["export_format"] == "geojson":
-            export_view = GenericTable(
-                "v_synthese_for_export", "gn_synthese", "the_geom_local", 2154
-            )
-        else:
-            export_view = GenericTable(
-                "v_synthese_for_export", "gn_synthese", "the_geom_local", 2154
-            )
-    else:
-        export_view = GenericTable(
-            "v_synthese_for_export", "gn_synthese", "the_geom_local", 2154
-        )
+    group2_inpn = "0"
+    regne = "0"
+    organism = 0
+    if "group2_inpn" in params:
+        group2_inpn = params["group2_inpn"]
+    if "regne" in params:
+        regne = params["regne"]
+    if "organism" in params:
+        organism = params["organism"]
+    types = request.args.getlist("mnemonique_type")
 
-    # get list of id synthese from POST
-    id_list = request.get_json()
-
-    db_cols_for_shape = []
-    columns_to_serialize = []
-    # loop over synthese config to get the columns for export
-    for db_col in export_view.db_cols:
-        if db_col.key in current_app.config["SYNTHESE"]["EXPORT_COLUMNS"]:
-            db_cols_for_shape.append(db_col)
-            columns_to_serialize.append(db_col.key)
-
-    q = (
-        DB.session.query(export_view.tableDef)
-        .filter(export_view.tableDef.columns.idSynthese.in_(id_list))
-        .filter(export_view.tableDef.columns.jddId.in_([1, 2]))
+    q = DB.session.query(
+        distinct(DefaultsNomenclaturesValue.mnemonique_type),
+        func.gn_synthese.get_default_nomenclature_value(
+            DefaultsNomenclaturesValue.mnemonique_type, organism, regne, group2_inpn
+        ),
     )
-
-    results = q.limit(current_app.config["SYNTHESE"]["NB_MAX_OBS_EXPORT"])
-
-    file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
-    file_name = filemanager.removeDisallowedFilenameChars(file_name)
-
-    # columns = [db_col.key for db_col in export_view.db_cols]
-
-    if export_format == "csv":
-        formated_data = [
-            export_view.as_dict(d, columns=columns_to_serialize) for d in results
-        ]
-        return to_csv_resp(
-            file_name, formated_data, separator=";", columns=columns_to_serialize
-        )
-
-    elif export_format == "geojson":
-        formated_data = []
-        for r in results:
-            geojson = ast.literal_eval(r.geojson)
-            geojson["properties"] = export_view.as_dict(r, columns=columns_to_serialize)
-            formated_data.append(geojson)
-        results = FeatureCollection(formated_data)
-        return to_json_resp(results, as_file=True, filename=file_name, indent=4)
-    else:
-        try:
-            filemanager.delete_recursively(
-                str(ROOT_DIR / "backend/static/shapefiles"), excluded_files=[".gitkeep"]
-            )
-
-            dir_path = str(ROOT_DIR / "backend/static/shapefiles")
-
-            export_view.as_shape(
-                db_cols=db_cols_for_shape,
-                data=results,
-                geojson_col="geojson_local",
-                dir_path=dir_path,
-                file_name=file_name,
-            )
-            print("END SERIALIZ")
-            print(current_milli_time() - start)
-            return send_from_directory(dir_path, file_name + ".zip", as_attachment=True)
-
-        except GeonatureApiError as e:
-            message = str(e)
-
-        return render_template(
-            "error.html",
-            error=message,
-            redirect=current_app.config["URL_APPLICATION"] + "/#/synthese",
-        )
+    if len(types) > 0:
+        q = q.filter(DefaultsNomenclaturesValue.mnemonique_type.in_(tuple(types)))
+    try:
+        data = q.all()
+    except Exception:
+        DB.session.rollback()
+        raise
+    if not data:
+        return {"message": "not found"}, 404
+    return {d[0]: d[1] for d in data}
