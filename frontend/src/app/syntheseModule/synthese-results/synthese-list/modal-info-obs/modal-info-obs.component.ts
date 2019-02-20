@@ -25,11 +25,11 @@ export class ModalInfoObsComponent implements OnInit {
   }
 
   loadOneSyntheseReleve(oneObsSynthese) {
-    this._dataService.getOneSyntheseObservation(oneObsSynthese.id_synthese).subscribe(data => {
+    this._dataService.getOneSyntheseObservation(oneObsSynthese.id).subscribe(data => {
       this.selectedObs = data;
       this.selectedObs['municipalities'] = [];
       this.selectedObs['other_areas'] = [];
-      this.selectedObs['actors'] = this.selectedObs['actors'].split(',');
+      this.selectedObs['actors'] = this.selectedObs['actors'].split('|');
       this.selectedObs.areas.forEach(area => {
         if (area.id_type === AppConfig.BDD.id_area_type_municipality) {
           this.selectedObs['municipalities'].push(area);

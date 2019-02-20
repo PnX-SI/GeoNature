@@ -29,7 +29,7 @@
           <a class="dropdown-item" (click)="changeLanguage('cn')" href="#">{{ 'Languages.Chinese' | translate }}</a>
         </div>
       </div>
-      <a *ngIf="currentDocUrl" [href]="currentDocUrl" target="_blank"> <mat-icon class="clickable toolbar-rigth" matTooltip="Documentation">library_books</mat-icon></a> 
+      <a [href]="currentDocUrl" target="_blank"> <mat-icon class="clickable toolbar-rigth" matTooltip="Documentation">library_books</mat-icon></a> 
 
       <mat-icon class="clickable toolbar-rigth" (click)="_authService.logout()" matTooltip="{{ 'LogOut' | translate }}">exit_to_app</mat-icon>
 

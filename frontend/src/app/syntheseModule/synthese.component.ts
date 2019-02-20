@@ -4,6 +4,7 @@ import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SyntheseFormService } from './services/form.service';
+import { SyntheseStoreService } from './services/store.service';
 import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
 import { AppConfig } from '@geonature_config/app.config';
 
@@ -21,7 +22,8 @@ export class SyntheseComponent implements OnInit {
     private _mapListService: MapListService,
     private _commonService: CommonService,
     private _modalService: NgbModal,
-    private _fs: SyntheseFormService
+    private _fs: SyntheseFormService,
+    private _syntheseStore: SyntheseStoreService
   ) {}
 
   loadAndStoreData(formParams) {
@@ -37,9 +39,13 @@ export class SyntheseComponent implements OnInit {
           modalRef.componentInstance.tooManyObs = true;
         }
         this._mapListService.geojsonData = result['data'];
-        this._mapListService.loadTableData(result['data'], this.customColumns.bind(this));
-        this._mapListService.idName = 'id_synthese';
+        this._mapListService.tableData = result['data'];
+        //this._mapListService.loadTableData(result['data'], this.customColumns.bind(this));
+        this._mapListService.idName = 'id';
         this.searchService.dataLoaded = true;
+        this._syntheseStore.idSyntheseList = result['data'].map(row => {
+          return row['id'];
+        });
       },
       error => {
         this.searchService.dataLoaded = true;

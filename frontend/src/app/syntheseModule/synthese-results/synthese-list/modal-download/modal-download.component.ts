@@ -3,6 +3,7 @@ import { AppConfig } from '@geonature_config/app.config';
 import { HttpParams } from '@angular/common/http';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { DataService } from '../../../services/data.service';
+import { SyntheseStoreService } from '../../../services/store.service';
 
 @Component({
   selector: 'pnx-synthese-modal-download',
@@ -14,21 +15,25 @@ export class SyntheseModalDownloadComponent implements OnInit {
   @Input() queryString: HttpParams;
   @Input() tooManyObs = false;
 
-  constructor(public activeModal: NgbActiveModal, private _dataService: DataService) { }
+  constructor(
+    public activeModal: NgbActiveModal,
+    private _dataService: DataService,
+    private _storeService: SyntheseStoreService
+  ) {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
-
-
-  downloadData(format) {
-    const downloadURL = this.queryString.set('export_format', format);
-    const url = `${AppConfig.API_ENDPOINT}/synthese/export`;
-    this._dataService.downloadData(url, format, downloadURL, 'export_synthese_observations');
+  downloadObservations(format) {
+    this._dataService.downloadObservations(this._storeService.idSyntheseList, format);
   }
 
-  downloadStatus() {
+  downloadStatusOrMetadata(url, filename) {
     this.queryString = this.queryString.delete('limit');
-    const url = `${AppConfig.API_ENDPOINT}/synthese/statuts`;
-    this._dataService.downloadData(url, 'csv', this.queryString, 'export_synthese_statuts');
+    this._dataService.downloadStatusOrMetadata(
+      `${AppConfig.API_ENDPOINT}/${url}`,
+      'csv',
+      this.queryString,
+      filename
+    );
   }
 }
