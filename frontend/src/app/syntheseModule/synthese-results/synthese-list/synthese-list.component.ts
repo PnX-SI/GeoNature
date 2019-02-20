@@ -63,7 +63,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
       const integerId = parseInt(id);
       let i;
       for (i = 0; i < this.mapListService.tableData.length; i++) {
-        if (this.mapListService.tableData[i]['id_synthese'] === integerId) {
+        if (this.mapListService.tableData[i]['id'] === integerId) {
           this.mapListService.selectedRow.push(this.mapListService.tableData[i]);
           break;
         }
@@ -89,26 +89,9 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     this.rowNumber = Math.trunc(event.target.innerHeight / 37);
   }
 
-  toggleExpandRow(row) {
-    // if click twice on same row
-    if (this.previousRow && this.previousRow === row) {
-      this.table.rowDetail.toggleExpandRow(this.previousRow);
-      this.previousRow = null;
-      // if click on new row when expanded already activated
-    } else if (this.previousRow) {
-      this.table.rowDetail.toggleExpandRow(this.previousRow);
-      this.table.rowDetail.toggleExpandRow(row);
-      this.previousRow = row;
-      // if its first time
-    } else {
-      this.table.rowDetail.toggleExpandRow(row);
-      this.previousRow = row;
-    }
-  }
-
   dateComparator(a: Date, b: Date) {
-    if (a < b) return -1;
-    if (a > b) return 1;
+    if (new Date(a) < new Date(b)) return -1;
+    if (new Date(a) > new Date(b)) return 1;
   }
 
   backToModule(url_source, id_pk_source) {
@@ -119,22 +102,6 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     document.body.appendChild(link);
     link.click();
     link.remove();
-  }
-
-  onDeleteObservation(id_synthese) {
-    this._ds.deleteOneSyntheseObservation(id_synthese).subscribe(
-      data => {
-        this.mapListService.deleteObsFront(id_synthese);
-        this._commonService.translateToaster('success', 'Synthese.DeleteSuccess');
-      },
-      error => {
-        if (error.status === 403) {
-          this._commonService.translateToaster('error', 'NotAllowed');
-        } else {
-          this._commonService.translateToaster('error', 'ErrorMessage');
-        }
-      }
-    );
   }
 
   getQueryString(): HttpParams {

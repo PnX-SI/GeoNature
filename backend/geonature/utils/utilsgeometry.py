@@ -1,4 +1,4 @@
-import datetime
+import datetime, ast
 
 from collections import OrderedDict
 
@@ -16,22 +16,25 @@ from geonature.utils.errors import GeonatureApiError
 # Creation des shapefiles avec la librairies fiona
 
 FIONA_MAPPING = {
-    'date': 'str',
-    'datetime': 'str',
-    'time': 'str',
-    'timestamp': 'str',
-    'uuid': 'str',
-    'text': 'str',
-    'unicode': 'str',
-    'varchar': 'str',
-    'integer': 'int',
-    'bigint': 'int',
-    'float': 'float',
-    'boolean': 'str',
+    "date": "str",
+    "datetime": "str",
+    "time": "str",
+    "timestamp": "str",
+    "uuid": "str",
+    "text": "str",
+    "unicode": "str",
+    "varchar": "str",
+    "char": "str",
+    "integer": "int",
+    "bigint": "int",
+    "float": "float",
+    "boolean": "str",
+    "double_precision": "float",
+    "uuid": "str",
 }
 
 
-class FionaShapeService():
+class FionaShapeService:
     """
     Service to create shapefiles from sqlalchemy models
 
@@ -66,24 +69,30 @@ class FionaShapeService():
         shp_properties = OrderedDict()
         if col_mapping:
             for db_col in db_cols:
-                if not db_col.type.__class__.__name__ == 'Geometry':
-                    shp_properties.update({
-                        col_mapping.get(db_col.key): FIONA_MAPPING.get(
-                            db_col.type.__class__.__name__.lower())
-                    })
+                if not db_col.type.__class__.__name__ == "Geometry":
+                    shp_properties.update(
+                        {
+                            col_mapping.get(db_col.key): FIONA_MAPPING.get(
+                                db_col.type.__class__.__name__.lower()
+                            )
+                        }
+                    )
                     cls.columns.append(col_mapping.get(db_col.key))
         else:
             for db_col in db_cols:
-                if not db_col.type.__class__.__name__ == 'Geometry':
-                    shp_properties.update({
-                        db_col.key: FIONA_MAPPING.get(
-                            db_col.type.__class__.__name__.lower())
-                    })
+                if not db_col.type.__class__.__name__ == "Geometry":
+                    shp_properties.update(
+                        {
+                            db_col.key: FIONA_MAPPING.get(
+                                db_col.type.__class__.__name__.lower()
+                            )
+                        }
+                    )
                     cls.columns.append(db_col.key)
 
-        cls.polygon_schema = {'geometry': 'MultiPolygon', 'properties': shp_properties, }
-        cls.point_schema = {'geometry': 'Point', 'properties': shp_properties, }
-        cls.polyline_schema = {'geometry': 'LineString', 'properties': shp_properties}
+        cls.polygon_schema = {"geometry": "MultiPolygon", "properties": shp_properties}
+        cls.point_schema = {"geometry": "Point", "properties": shp_properties}
+        cls.polyline_schema = {"geometry": "LineString", "properties": shp_properties}
 
         cls.file_point = cls.dir_path + "/POINT_" + cls.file_name
         cls.file_poly = cls.dir_path + "/POLYGON_" + cls.file_name
@@ -92,9 +101,19 @@ class FionaShapeService():
         cls.point_feature = False
         cls.polygon_feature = False
         cls.polyline_feature = False
-        cls.point_shape = fiona.open(cls.file_point, 'w', 'ESRI Shapefile', cls.point_schema, crs=cls.source_crs)
-        cls.polygone_shape = fiona.open(cls.file_poly, 'w', 'ESRI Shapefile', cls.polygon_schema, crs=cls.source_crs)
-        cls.polyline_shape = fiona.open(cls.file_line, 'w', 'ESRI Shapefile', cls.polyline_schema, crs=cls.source_crs)
+        cls.point_shape = fiona.open(
+            cls.file_point, "w", "ESRI Shapefile", cls.point_schema, crs=cls.source_crs
+        )
+        cls.polygone_shape = fiona.open(
+            cls.file_poly, "w", "ESRI Shapefile", cls.polygon_schema, crs=cls.source_crs
+        )
+        cls.polyline_shape = fiona.open(
+            cls.file_line,
+            "w",
+            "ESRI Shapefile",
+            cls.polyline_schema,
+            crs=cls.source_crs,
+        )
 
     @classmethod
     def create_feature(cls, data, geom):
@@ -113,51 +132,79 @@ class FionaShapeService():
         try:
             geom_wkt = to_shape(geom)
             geom_geojson = mapping(geom_wkt)
-            feature = {'geometry': geom_geojson, 'properties': data}
-            if isinstance(geom_wkt, Point):
-                cls.point_shape.write(feature)
-                cls.point_feature = True
-            elif isinstance(geom_wkt, Polygon) or isinstance(geom_wkt, MultiPolygon):
-                cls.polygone_shape.write(feature)
-                cls.polygon_feature = True
-            else:
-                cls.polyline_shape.write(feature)
-                cls.polyline_feature = True
+            feature = {"geometry": geom_geojson, "properties": data}
+            cls.write_a_feature(feature, geom_wkt)
         except AssertionError:
             cls.close_files()
-            raise GeonatureApiError('Cannot create a shapefile record whithout a Geometry')
+            raise GeonatureApiError(
+                "Cannot create a shapefile record whithout a Geometry"
+            )
         except Exception as e:
             cls.close_files()
             raise GeonatureApiError(e)
 
     @classmethod
-    def create_features_generic(cls, view, data, geom_col):
+    def create_features_generic(cls, view, data, geom_col, geojson_col=None):
         """
         Create the features of the shapefiles by serializing the datas from a GenericTable (non mapped table)
 
         Parameters:
             view (GenericTable): the GenericTable object
             data (list): Array of SQLA model
-            geom_col (str): name of the geometry column of the SQLA Model
+            geom_col (str): name of the WKB geometry column of the SQLA Model
+            geojson_col (str): name of the geojson column if present. If None create the geojson from geom_col with shapely
+                               for performance reason its better to use geojson_col rather than geom_col
 
         Returns:
             void
 
         """
-        for d in data:
-            geom = getattr(d, geom_col)
-            geom_wkt = to_shape(geom)
-            geom_geojson = mapping(geom_wkt)
-            feature = {'geometry': geom_geojson, 'properties': view.as_dict(d, columns=cls.columns)}
-            if isinstance(geom_wkt, Point):
-                cls.point_shape.write(feature)
-                cls.point_feature = True
-            elif isinstance(geom_wkt, Polygon) or isinstance(geom_wkt, MultiPolygon):
-                cls.polygone_shape.write(feature)
-                cls.polygon_feature = True
-            else:
-                cls.polyline_shape.write(feature)
-                cls.polyline_feature = True
+        # if the geojson col is not given
+        # build it with shapely via the WKB col
+        if geojson_col is None:
+            for d in data:
+                geom = getattr(d, geom_col)
+                geom_wkt = to_shape(geom)
+                geom_geojson = mapping(geom_wkt)
+                feature = {
+                    "geometry": geom_geojson,
+                    "properties": view.as_dict(d, columns=cls.columns),
+                }
+                cls.write_a_feature(feature, geom_wkt)
+        else:
+            for d in data:
+                geom_geojson = ast.literal_eval(getattr(d, geojson_col))
+                feature = {
+                    "geometry": geom_geojson,
+                    "properties": view.as_dict(d, columns=cls.columns),
+                }
+                if geom_geojson["type"] == "Point":
+                    cls.point_shape.write(feature)
+                    cls.point_feature = True
+                elif (
+                    geom_geojson["type"] == "Polygon"
+                    or geom_geojson["type"] == "MultiPolygon"
+                ):
+                    cls.polygone_shape.write(feature)
+                    cls.polygon_feature = True
+                else:
+                    cls.polyline_shape.write(feature)
+                    cls.polyline_feature = True
+
+    @classmethod
+    def write_a_feature(cls, feature, geom_wkt):
+        """
+            write a feature by checking the type of the shape given
+        """
+        if isinstance(geom_wkt, Point):
+            cls.point_shape.write(feature)
+            cls.point_feature = True
+        elif isinstance(geom_wkt, Polygon) or isinstance(geom_wkt, MultiPolygon):
+            cls.polygone_shape.write(feature)
+            cls.polygon_feature = True
+        else:
+            cls.polyline_shape.write(feature)
+            cls.polyline_feature = True
 
     @classmethod
     def save_and_zip_shapefiles(cls):
@@ -172,27 +219,27 @@ class FionaShapeService():
 
         format_to_save = []
         if cls.point_feature:
-            format_to_save = ['POINT']
+            format_to_save = ["POINT"]
         if cls.polygon_feature:
-            format_to_save.append('POLYGON')
+            format_to_save.append("POLYGON")
         if cls.polyline_feature:
-            format_to_save.append('POLYLINE')
+            format_to_save.append("POLYLINE")
 
-        zip_path = cls.dir_path + '/' + cls.file_name + '.zip'
-        zp_file = zipfile.ZipFile(zip_path, mode='w')
+        zip_path = cls.dir_path + "/" + cls.file_name + ".zip"
+        zp_file = zipfile.ZipFile(zip_path, mode="w")
 
         for shape_format in format_to_save:
-            final_file_name = cls.dir_path + '/' + shape_format + "_" + cls.file_name
-            final_file_name = '{dir_path}/{shape_format}_{file_name}/{shape_format}_{file_name}'.format(
+            final_file_name = cls.dir_path + "/" + shape_format + "_" + cls.file_name
+            final_file_name = "{dir_path}/{shape_format}_{file_name}/{shape_format}_{file_name}".format(
                 dir_path=cls.dir_path,
                 shape_format=shape_format,
-                file_name=cls.file_name
+                file_name=cls.file_name,
             )
             extentions = ("dbf", "shx", "shp", "prj")
             for ext in extentions:
                 zp_file.write(
                     final_file_name + "." + ext,
-                    shape_format + "_" + cls.file_name + "." + ext
+                    shape_format + "_" + cls.file_name + "." + ext,
                 )
         zp_file.close()
 
@@ -203,24 +250,33 @@ class FionaShapeService():
         cls.polyline_shape.close()
 
 
-def create_shapes_generic(view, srid, db_cols, data, dir_path, file_name, geom_col):
+def create_shapes_generic(
+    view, srid, db_cols, data, dir_path, file_name, geom_col, geojson_col
+):
     FionaShapeService.create_shapes_struct(db_cols, srid, dir_path, file_name)
-    FionaShapeService.create_features_generic(view, data, geom_col)
+    FionaShapeService.create_features_generic(view, data, geom_col, geojson_col)
     FionaShapeService.save_and_zip_shapefiles()
 
 
 def shapeserializable(cls):
-
     @classmethod
     def to_shape_fn(
-            cls, geom_col=None, srid=None, data=None,
-            dir_path=None, file_name=None, columns=None
+        cls,
+        geom_col=None,
+        geojson_col=None,
+        srid=None,
+        data=None,
+        dir_path=None,
+        file_name=None,
+        columns=None,
     ):
         """
         Class method to create 3 shapes from datas
         Parameters
 
         geom_col (string): name of the geometry column 
+        geojson_col (str): name of the geojson column if present. If None create the geojson from geom_col with shapely
+                            for performance reason its better to use geojson_col rather than geom_col
         data (list): list of datas 
         file_name (string): 
         columns (list): columns to be serialize
@@ -231,18 +287,17 @@ def shapeserializable(cls):
         if not data:
             data = []
 
-        file_name = file_name or datetime.datetime.now().strftime('%Y_%m_%d_%Hh%Mm%S')
+        file_name = file_name or datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
 
         if columns:
-            db_cols = [db_col for db_col in db_col in cls.__mapper__.c if db_col.key in columns]
+            db_cols = [
+                db_col for db_col in db_col in cls.__mapper__.c if db_col.key in columns
+            ]
         else:
             db_cols = cls.__mapper__.c
 
         FionaShapeService.create_shapes_struct(
-            db_cols=db_cols,
-            dir_path=dir_path,
-            file_name=file_name,
-            srid=srid
+            db_cols=db_cols, dir_path=dir_path, file_name=file_name, srid=srid
         )
         for d in data:
             d = d.as_dict(columns)

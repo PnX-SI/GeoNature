@@ -12,32 +12,67 @@ from geonature.core.gn_synthese.models import (
     CorObserverSynthese,
     TSources,
     CorAreaSynthese,
+    TDatasets,
 )
 from geonature.core.gn_meta.models import TAcquisitionFramework, CorDatasetActor
+from geonature.utils.errors import GeonatureApiError
 
 
-def filter_query_with_cruved(model, q, user, allowed_datasets):
+def filter_query_with_cruved(
+    model,
+    q,
+    user,
+    id_synthese_column="id_synthese",
+    id_dataset_column="id_dataset",
+    observers_column="observers",
+    id_digitiser_column="id_digitiser",
+    with_generic_table=False,
+):
     """
     Filter the query with the cruved authorization of a user
+
+    Returns: 
+        - A SQLA Query object
     """
+    # if with geniric table , the column are located in model.columns, else in model
+    if with_generic_table:
+        model_temp = model.columns
+    else:
+        model_temp = model
+    allowed_datasets = TDatasets.get_user_datasets(user)
+    # get the mandatory column
+    try:
+        model_id_syn_col = getattr(model_temp, id_synthese_column)
+        model_id_dataset_column = getattr(model_temp, id_dataset_column)
+        model_observers_column = getattr(model_temp, observers_column)
+        model_id_digitiser_column = getattr(model_temp, id_digitiser_column)
+    except AttributeError as e:
+        raise GeonatureApiError(
+            """the {model} table     does not have a column {e}
+             If you change the {model} table, please edit your synthese config (cf EXPORT_***_COL)
+            """.format(
+                e=e, model=model
+            )
+        )
+
     if user.value_filter in ("1", "2"):
         q = q.outerjoin(
-            CorObserverSynthese, CorObserverSynthese.id_synthese == model.id_synthese
+            CorObserverSynthese, CorObserverSynthese.id_synthese == model_id_syn_col
         )
         ors_filters = [
             CorObserverSynthese.id_role == user.id_role,
-            model.id_digitiser == user.id_role,
+            model_id_digitiser_column == user.id_role,
         ]
         if current_app.config["SYNTHESE"]["CRUVED_SEARCH_WITH_OBSERVER_AS_TXT"]:
             user_fullname1 = user.nom_role + " " + user.prenom_role + "%"
             user_fullname2 = user.prenom_role + " " + user.nom_role + "%"
-            ors_filters.append(model.observers.ilike(user_fullname1))
-            ors_filters.append(model.observers.ilike(user_fullname2))
+            ors_filters.append(model_observers_column.ilike(user_fullname1))
+            ors_filters.append(model_observers_column.ilike(user_fullname2))
 
         if user.value_filter == "1":
             q = q.filter(or_(*ors_filters))
         elif user.value_filter == "2":
-            ors_filters.append(model.id_dataset.in_(allowed_datasets))
+            ors_filters.append(model_id_dataset_column.in_(allowed_datasets))
             q = q.filter(or_(*ors_filters))
     return q
 
@@ -103,7 +138,7 @@ def filter_taxonomy(model, q, filters):
     return q, filters
 
 
-def filter_query_all_filters(model, q, filters, user, allowed_datasets):
+def filter_query_all_filters(model, q, filters, user):
     """
     Return a query filtered with the cruved and all
     the filters available in the synthese form
@@ -114,7 +149,7 @@ def filter_query_all_filters(model, q, filters, user, allowed_datasets):
         - allowed datasets (List<int>): an array of ID dataset where the users have autorization
 
     """
-    q = filter_query_with_cruved(model, q, user, allowed_datasets)
+    q = filter_query_with_cruved(model, q, user)
 
     if "observers" in filters:
         q = q.filter(model.observers.ilike("%" + filters.pop("observers")[0] + "%"))

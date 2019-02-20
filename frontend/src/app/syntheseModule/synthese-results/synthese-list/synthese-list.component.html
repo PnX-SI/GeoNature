@@ -48,19 +48,6 @@
 
 
 
-<ng-template #modalConfirm let-c="close " let-d="dismiss ">
-  <div class="modal-header ">
-    <h5 class="modal-title " id="exampleModalLabel "> {{'Releve.Delete' | translate }} {{
-      mapListService.selectedRow[0][mapListService.idName]}}
-      ?
-    </h5>
-  </div>
-  <div class="modal-body ">
-    <button type="button " class="btn btn-default " (click)="c() "> {{'Cancel' | translate}} </button>
-    <button type="button " class="btn btn-danger " (click)="c(); onDeleteObservation(mapListService.selectedRow[0].id_synthese) ">
-      {{'Delete' | translate }} </button>
-  </div>
-</ng-template>
 
 <button type="button" class="btn btn-primary btn-sm box-shadow" id="download-btn" (click)="openDownloadModal()">
   <i class="fa fa-download" aria-hidden="true"> </i>
