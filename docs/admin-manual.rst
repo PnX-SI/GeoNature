@@ -59,31 +59,31 @@ Gestion des droits :
 
 L'accès des utilisateurs à l'application GeoNature est gérée de manière centralisée dans UsersHub. 
 
-La gestion des droits (permissions), spécifique à GeoNature, est gérée dans un schém et un module de GeoNature dédié. Dans la version 1 de GeoNature, il était possible d'attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour étendre les possibilités d'attribution de droits et les rendre plus génériques. 
+La gestion des droits (permissions), spécifique à GeoNature, est gérée dans un schéma (``gn_permissions``) et un module de GeoNature dédié. Dans la version 1 de GeoNature, il était possible d'attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour étendre les possibilités d'attribution de droits et les rendre plus génériques. 
 
 La gestion des droits dans GeoNature, comme dans beaucoup d'applications, est liée à des actions (Create / Read / Update / Delete aka CRUD). Pour les besoins  métiers de l'application nous avons rajouté deux actions : "Valider" et "Exporter", ce qui donne le CRUVED : Create / Read / Update / Validate / Export / Delete.
 
 Sur ces actions, on va pouvoir appliquer des filtres de manière générique.
 
-Le filtre le plus courant est celui de la "portée". On autorise des actions à un utilisateur sur une portée : "ses données", "les données de son organisme", "toutes les données".
+Le filtre le plus courant est celui de la "portée". On autorise des actions à un utilisateur sur une portée : "Ses données", "Les données de son organisme", "Toutes les données".
 
 Exemple : 
 
 - Utilisateur 1 peut effectuer l'action "DELETE" sur la portée "SES DONNEES"
 - Utilisateur Admin peut effectuer l'action "UPDATE" sur la portée "TOUTES LES DONNEES"
 
-Un autre filtre possible est celui de la sensibilité / dégradation des données :
+Les autres filtres possibles sont liés à la précisions des données, les groupes taxonomiques ou des entités géographiques :
 
 Exemple :
 
-- Utilisateur 1 peut effectuer l'action "READ" sur "LES DONNES DEGRADES"
+- Utilisateur 1 peut effectuer l'action "READ" sur "LES DONNES DEGRADEES"
 - Utilisateur admin peut effectuer l'action "READ" sur "LES DONNES PRECISES"
 
 Enfin ces permissions vont pouvoir s'attribuer à l'ensemble de l'application GeoNature et/ou à un module.
 
-On a donc le quatriptique : Un utilisateur / Une action / un filtre / un module 
+On a donc le quatriptique : Un utilisateur / Une action / Un filtre / Un module 
 
-Il n'est pour l'instant pas possible d'attribuer des permissions différentes en fonction du groupe taxonomique ou du secteur géographique. Le modèle de données prévoit toutefois cette possibilité qui pourra être implémentée des les versions futures de l'application.
+Pour l'instant les filtres de type groupe taxonomique, précisions et géographique existent dans la base de données mais ne sont pas implémentées au niveau de l'application GeoNature, donc ils n'ont aucun effet.
 
 Récapitulatif :
 
@@ -691,7 +691,7 @@ GeoNature est fourni avec des données géographiques de base sur la métropôle
 
 
 
-Si vous n'avez pas choisi d'intégrer le raster MNT national à 250m lors de l'installation ou que vous souhaitez le remplacer, voici les commandes qui vous permettront de le faire.
+Si vous n'avez pas choisi d'intégrer le raster MNT national à 250m fourni par défaut lors de l'installation ou que vous souhaitez le remplacer, voici les commandes qui vous permettront de le faire.
 
 Suppression du MNT par défaut (adapter le nom de la base de données : MYDBNAME).
 
@@ -700,7 +700,9 @@ Suppression du MNT par défaut (adapter le nom de la base de données : MYDBNAME
     sudo -n -u postgres -s psql -d MYDBNAME -c "TRUNCATE TABLE ref_geo.dem;"
     sudo -n -u postgres -s psql -d MYDBNAME -c "TRUNCATE TABLE ref_geo.dem_vector;"
 
-Placer votre propre fichier MNT ou vos différents fichiers "dalles" dans le répertoire ``/tmp/geonature`` (adapter le nom du fichier et son chemin ainsi que les paramètres en majuscule). Ou télécharger le MNT par défaut.
+Placer votre propre fichier MNT (ou vos différents fichiers "dalles") dans le répertoire ``/tmp/geonature`` (adapter le nom du fichier et son chemin ainsi que les paramètres en majuscule). 
+
+Pour utiliser celui proposé par défaut :
 
 ::
 
@@ -709,10 +711,11 @@ Placer votre propre fichier MNT ou vos différents fichiers "dalles" dans le ré
     export PGPASSWORD=MYUSERPGPASS;raster2pgsql -s MYSRID -c -C -I -M -d -t 5x5 /tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc ref_geo.dem|psql -h localhost -U MYPGUSER -d MYDBNAME
     sudo -n -u postgres -s psql -d MYDBNAME -c "REINDEX INDEX ref_geo.dem_st_convexhull_idx;"
   
-Si votre MNT source est constitué de plusieurs fichiers (dalles), assurez vous que toutes vos dalles ont le même système de projection et le même format de fichier (tiff, asc, ou img par exemple). Après avoir chargé vos fichiers dans ``tmp/geonature``, vous pouvez lancer la commande ``export`` en remplacant le nom des fichiers par *.asc :
+Si votre MNT source est constitué de plusieurs fichiers (dalles), assurez vous que toutes vos dalles ont le même système de projection et le même format de fichier (tiff, asc, ou img par exemple). Après avoir chargé vos fichiers dans ``tmp/geonature`` (par exemple), vous pouvez lancer la commande ``export`` en remplacant le nom des fichiers par *.asc :
 
 ::
-     export PGPASSWORD=MYUSERPGPASS;raster2pgsql -s MYSRID -c -C -I -M -d -t 5x5 /tmp/geonature/*.asc ref_geo.dem|psql -h localhost -U MYPGUSER -d MYDBNAME
+
+    export PGPASSWORD=MYUSERPGPASS;raster2pgsql -s MYSRID -c -C -I -M -d -t 5x5 /tmp/geonature/*.asc ref_geo.dem|psql -h localhost -U MYPGUSER -d MYDBNAME
 
 Si vous souhaitez vectoriser le raster MNT pour de meilleures performances lors des calculs en masse de l'altitude à partir de la localisation des observations, vous pouvez le faire en lançant les commandes ci-dessous. Sachez que cela prendra du temps et beaucoup d'espace disque (2.8Go supplémentaires environ pour le fichier DEM France à 250m).
 
