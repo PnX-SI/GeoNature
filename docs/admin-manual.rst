@@ -83,6 +83,8 @@ Enfin ces permissions vont pouvoir s'attribuer à l'ensemble de l'application Ge
 
 On a donc le quatriptique : Un utilisateur / Une action / un filtre / un module 
 
+Il n'est pour l'instant pas possible d'attribuer des permissions différentes en fonction du groupe taxonomique ou du secteur géographique. Le modèle de données prévoit toutefois cette possibilité qui pourra être implémentée des les versions futures de l'application.
+
 Récapitulatif :
 
 - Dans GeoNature V2 on peut attribuer à une role des actions possibles, sur lesquels on peut ajouter des filtres, dans un module ou sur toute l'application GeoNature (définis dans ``gn_permissions.cor_role_action_filter_module_object``).
