@@ -49,7 +49,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     private _fs: SyntheseFormService,
     public sanitizer: DomSanitizer,
     public ref: ChangeDetectorRef
-  ) { }
+  ) {}
 
   ngOnInit() {
     // get wiewport height to set the number of rows in the tabl
@@ -89,7 +89,6 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     this.rowNumber = Math.trunc(event.target.innerHeight / 37);
   }
 
-
   dateComparator(a: Date, b: Date) {
     if (new Date(a) < new Date(b)) return -1;
     if (new Date(a) > new Date(b)) return 1;
@@ -103,22 +102,6 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     document.body.appendChild(link);
     link.click();
     link.remove();
-  }
-
-  onDeleteObservation(id_synthese) {
-    this._ds.deleteOneSyntheseObservation(id_synthese).subscribe(
-      data => {
-        this.mapListService.deleteObsFront(id_synthese);
-        this._commonService.translateToaster('success', 'Synthese.DeleteSuccess');
-      },
-      error => {
-        if (error.status === 403) {
-          this._commonService.translateToaster('error', 'NotAllowed');
-        } else {
-          this._commonService.translateToaster('error', 'ErrorMessage');
-        }
-      }
-    );
   }
 
   getQueryString(): HttpParams {
