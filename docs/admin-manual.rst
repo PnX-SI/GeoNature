@@ -1003,10 +1003,9 @@ Editer la variable ``AREA_FILTERS`` en y ajoutant le label et l'ID du type d'ent
     Dans tous les exports, l'ordre et le nom des colonnes sont basés sur la vue servant l'export. Il est possible de les modifier en éditant le SQL des vues en respectant bien les consignes ci-dessous. 
 
     - Export des observations
+
         Les exports (CSV, GeoJson, Shapefile) sont basés sur la vue ``gn_synthese.v_synthese_for_export``.
-
         Il est possible de masquer des champs présents dans les exports. Pour cela éditez la variable ``[SYNTHESE.EXPORT_COLUMNS]``. Enlevez la ligne de la colonne que vous souhaitez désactiver, ou renommer la 2ème partie de la ligne pour renommer une colonne. Ex : pour renommer le champs ``count_min``, modifiez la ligne de la manière suivante : ``count_min = "NombMax"``. Les noms de colonne de plus de 10 caractères seront tronqués dans le fichier shapefile.
-
 
         ::
 
@@ -1052,8 +1051,11 @@ Editer la variable ``AREA_FILTERS`` en y ajoutant le label et l'ID du type d'ent
 
 
         Il est également possible de personnaliser ses exports en éditant le SQL de la vue ``gn_synthese.v_synthese_for_export`` (niveau SQL et administration GeoNature avancé).
+        
         Attention, certains champs sont cependant obligatoires pour assurer la réalisation des fichiers d'export (csv, geojson et shapefile) et des filtres CRUVED.
+        
         La vue doit OBLIGATOIREMENT contenir les champs:
+
         - geojson_4326
         - geojson_local
         - idSynthese,

@@ -75,8 +75,8 @@ ORDER BY id_regne, id_embranchement, id_classe, id_ordre, id_famille;
 
 -- Migration du metadata comme un module à part
 
-INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module_desc, module_path, module_target, active_frontend, active_backend) VALUES
-('METADATA', 'Metadonnées', 'fa-book', 'Module de gestion des métadonnées', 'metadata', '_self', TRUE, TRUE)
+INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module_desc, module_path, module_target, active_frontend, active_backend, module_doc_url) VALUES
+('METADATA', 'Metadonnées', 'fa-book', 'Module de gestion des métadonnées', 'metadata', '_self', TRUE, TRUE, 'https://geonature.readthedocs.io/fr/latest/user-manual.html#metadonnees')
 ;
 
 -- migration des permission dans le nouveau module
@@ -697,10 +697,7 @@ UPDATE gn_commons.t_modules
 SET module_doc_url = 'https://geonature.readthedocs.io/fr/latest/user-manual.html#occtax'
 WHERE module_code ILIKE 'OCCTAX';
 
-UPDATE gn_commons.t_modules 
-SET module_doc_url = 'https://geonature.readthedocs.io/fr/latest/user-manual.html#metadonnes'
-WHERE module_code ILIKE 'METADATA';
 
 UPDATE gn_commons.t_modules 
 SET module_doc_url = 'https://geonature.readthedocs.io/fr/latest/user-manual.html#admin'
-WHERE module_code ILIKE 'METADATA';
+WHERE module_code ILIKE 'ADMIN';
