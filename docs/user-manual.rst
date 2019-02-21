@@ -264,9 +264,13 @@ Il permet aussi d'afficher la fiche détaillée de chaque occurrence et de reven
 Admin
 -----
 
-Ce module permet de gérer les métadonnées (Cadres d'acquisition et jeux de données), basées sur le standard Métadonnées du SINP
-(http://standards-sinp.mnhn.fr/category/standards/metadonnees/).
-
-Il permet aussi de gérer les nomenclatures (typologies et vocabulaires) utilisées dans les différents modules de GeoNature
+Il permet aussi de gérer les permissions (CRUVED et autres filtres) et les nomenclatures (typologies et vocabulaires) utilisées dans les différents modules de GeoNature
 
 .. image :: http://geonature.fr/docs/img/user-manual/2018-09-geonature-admin.gif
+
+
+Metadonnées
+-----------
+
+Ce module permet de gérer les métadonnées (Cadres d'acquisition et jeux de données), basées sur le standard Métadonnées du SINP
+(http://standards-sinp.mnhn.fr/category/standards/metadonnees/).
