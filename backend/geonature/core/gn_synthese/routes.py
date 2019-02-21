@@ -212,20 +212,14 @@ def export_observations_web(info_role):
     params = request.args
     # set default to csv
     export_format = "csv"
+    export_view = GenericTable(
+        "v_synthese_for_export",
+        "gn_synthese",
+        "the_geom_local",
+        current_app.config["LOCAL_SRID"],
+    )
     if "export_format" in params:
         export_format = params["export_format"]
-        if params["export_format"] == "geojson":
-            export_view = GenericTable(
-                "v_synthese_for_export", "gn_synthese", "the_geom_local", 2154
-            )
-        else:
-            export_view = GenericTable(
-                "v_synthese_for_export", "gn_synthese", "the_geom_local", 2154
-            )
-    else:
-        export_view = GenericTable(
-            "v_synthese_for_export", "gn_synthese", "the_geom_local", 2154
-        )
 
     # get list of id synthese from POST
     id_list = request.get_json()
@@ -278,7 +272,9 @@ def export_observations_web(info_role):
     elif export_format == "geojson":
         formated_data = []
         for r in results:
-            geojson = ast.literal_eval(r.geojson)
+            geojson = ast.literal_eval(
+                getattr(r, current_app.config["SYNTHESE"]["EXPORT_GEOJSON_4326_COL"])
+            )
             geojson["properties"] = export_view.as_dict(r, columns=columns_to_serialize)
             formated_data.append(geojson)
         results = FeatureCollection(formated_data)
@@ -294,7 +290,7 @@ def export_observations_web(info_role):
             export_view.as_shape(
                 db_cols=db_cols_for_shape,
                 data=results,
-                geojson_col="geojson_local",
+                geojson_col=current_app.config["SYNTHESE"]["EXPORT_GEOJSON_LOCAL_COL"],
                 dir_path=dir_path,
                 file_name=file_name,
             )
@@ -328,7 +324,11 @@ def export_metadata(info_role):
         distinct(VSyntheseForWebApp.id_dataset), metadata_view.tableDef
     ).join(
         metadata_view.tableDef,
-        metadata_view.tableDef.columns.jdd_id == VSyntheseForWebApp.id_dataset,
+        getattr(
+            metadata_view.tableDef.columns,
+            current_app.config["SYNTHESE"]["EXPORT_METADATA_ID_DATASET_COL"],
+        )
+        == VSyntheseForWebApp.id_dataset,
     )
 
     q = synthese_query.filter_query_all_filters(

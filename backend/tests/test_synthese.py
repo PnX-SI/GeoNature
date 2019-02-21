@@ -35,7 +35,7 @@ class TestSynthese:
         data = json_of_response(response)
         assert len(data["data"]) == 1
         # clés obligatoire pour le fonctionnement du front
-        assert "lb_nom" in data["data"][0]
+        assert "cd_nom" in data["data"][0]
         assert "id" in data["data"][0]
         assert data["data"][0]["cd_nom"] == 713776
 
@@ -144,6 +144,8 @@ class TestSynthese:
         token = get_token(self.client)
         self.client.set_cookie("/", "token", token)
 
-        response = self.client.get(url_for("gn_synthese.get_one_synthese"))
+        response = self.client.get(
+            url_for("gn_synthese.get_one_synthese", id_synthese=2)
+        )
 
         assert response.status_code == 200

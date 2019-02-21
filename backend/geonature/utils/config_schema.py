@@ -116,6 +116,9 @@ class Synthese(Schema):
     EXPORT_ID_DATASET_COL = fields.String(missing="jddId")
     EXPORT_ID_DIGITISER_COL = fields.String(missing="id_digitiser")
     EXPORT_OBSERVERS_COL = fields.String(missing="observer")
+    EXPORT_GEOJSON_4326_COL = fields.String(missing="geojson_4326")
+    EXPORT_GEOJSON_LOCAL_COL = fields.String(missing="geojson_local")
+    EXPORT_METADATA_ID_DATASET_COL = fields.String(missing="jdd_id")
     EXPORT_FORMAT = fields.List(
         fields.String(), missing=["csv", "geojson", "shapefile"]
     )
