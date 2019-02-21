@@ -47,11 +47,8 @@ export class SyntheseFormService {
     });
     // init the dynamic form with the user parameters
     // remove the filters which are in AppConfig.SYNTHESE.EXCLUDED_COLUMNS
-    // sort alphabetical
     this.dynamycFormDef = DYNAMIC_FORM_DEF.filter(formDef => {
       return AppConfig.SYNTHESE.EXCLUDED_COLUMNS.indexOf(formDef.attribut_name) === -1;
-    }).sort((a, b) => {
-      return a.attribut_label.localeCompare(b.attribut_label);
     });
     this.formBuilded = true;
   }

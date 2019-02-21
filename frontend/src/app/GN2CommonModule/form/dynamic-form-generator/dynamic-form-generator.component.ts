@@ -13,11 +13,14 @@ export class GenericFormGeneratorComponent implements OnInit {
   @Input() formsDefinition: Array<any>;
   @Input() selectLabel: string;
   public formsSelected = [];
-  constructor(private _dynformService: DynamicFormService) { }
+  constructor(private _dynformService: DynamicFormService) {}
 
   ngOnInit() {
     this.selectControl.valueChanges.filter(value => value !== null).subscribe(formDef => {
       this.addFormControl(formDef);
+    });
+    this.formsDefinition.sort((a, b) => {
+      return a.attribut_label.localeCompare(b.attribut_label);
     });
   }
 
