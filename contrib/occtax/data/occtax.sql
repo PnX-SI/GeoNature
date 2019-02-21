@@ -1115,9 +1115,6 @@ SELECT id_liste, 7
 FROM utilisateurs.t_listes
 WHERE code_liste = 'obsocctax';
 
-INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module_desc, module_path, module_target, active_frontend, active_backend) VALUES
-('OCCTAX', 'Occtax', 'fa-puzzle-piece', 'Application observations occasionnelles ', 'occtax', '_self', TRUE, TRUE)
-;
 
 INSERT INTO gn_synthese.t_sources ( name_source, desc_source, entity_source_pk_field, url_source)
  VALUES ('Occtax', 'Données issues du module Occtax', 'pr_occtax.cor_counting_occtax.id_counting_occtax', '#/occtax/info/id_counting');
