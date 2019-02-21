@@ -691,8 +691,16 @@ $BODY$
 ALTER TABLE gn_commons.t_modules ADD COLUMN module_doc_url character varying(255);
 
 UPDATE gn_commons.t_modules 
-SET module_doc_url = 'https://geonature.readthedocs.io/fr/latest/';
+SET module_doc_url = 'https://geonature.readthedocs.io/fr/latest/user-manual.html';
 
 UPDATE gn_commons.t_modules 
 SET module_doc_url = 'https://geonature.readthedocs.io/fr/latest/user-manual.html#occtax'
 WHERE module_code ILIKE 'OCCTAX';
+
+UPDATE gn_commons.t_modules 
+SET module_doc_url = 'https://geonature.readthedocs.io/fr/latest/user-manual.html#metadonnes'
+WHERE module_code ILIKE 'METADATA';
+
+UPDATE gn_commons.t_modules 
+SET module_doc_url = 'https://geonature.readthedocs.io/fr/latest/user-manual.html#admin'
+WHERE module_code ILIKE 'METADATA';

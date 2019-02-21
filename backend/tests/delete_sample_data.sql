@@ -15,5 +15,5 @@ TRUNCATE utilisateurs.cor_role_app_profil CASCADE;
 TRUNCATE taxonomie.cor_taxon_attribut;
 
 -- set the serial of synthese to 0
-SELECT pg_catalog.setval('gn_synthese.synthese_id_synthese_seq', 0, true);
+SELECT pg_catalog.setval('gn_synthese.synthese_id_synthese_seq', 1, true);
 
