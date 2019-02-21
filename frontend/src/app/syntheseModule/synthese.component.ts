@@ -55,6 +55,7 @@ export class SyntheseComponent implements OnInit {
       }
     );
   }
+
   ngOnInit() {
     const initialFilter = { limit: AppConfig.SYNTHESE.NB_LAST_OBS };
     this.loadAndStoreData(initialFilter);
@@ -62,18 +63,5 @@ export class SyntheseComponent implements OnInit {
 
   mooveButton() {
     this.searchBarHidden = !this.searchBarHidden;
-  }
-
-  customColumns(feature) {
-    // function pass to the LoadTableData maplist service function to format date
-    // on the table
-    // must return a feature
-    if (feature.properties.date_min) {
-      feature.properties.date_min = new Date(feature.properties.date_min);
-    }
-    if (feature.properties.date_max) {
-      feature.properties.date_max = new Date(feature.properties.date_max);
-    }
-    return feature;
   }
 }

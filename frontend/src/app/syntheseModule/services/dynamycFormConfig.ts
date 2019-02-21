@@ -154,9 +154,9 @@ export const DYNAMIC_FORM_DEF = [
   },
   {
     type_widget: 'nomenclature',
-    attribut_label: 'Sensibilité',
+    attribut_label: "Type d'information géographique",
     attribut_name: 'id_nomenclature_sensitivity',
-    code_nomenclature_type: 'id_nomenclature_info_geo_type',
+    code_nomenclature_type: 'TYP_INF_GEO',
     required: false,
     multi_select: true
   },
@@ -169,7 +169,7 @@ export const DYNAMIC_FORM_DEF = [
   {
     type_widget: 'text',
     attribut_label: 'Preuve non numérique',
-    attribut_name: 'c',
+    attribut_name: 'non_digital_proof',
     required: false
   }
 ];
