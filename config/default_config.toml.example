@@ -104,16 +104,9 @@ ID_USER_SOCLE_2 = 6
     AREA_FILTERS = [
         { label = "Communes", id_type = 25 }
     ]
-    # Colonne renvoyé par l'API de la synthèse par défaut
-    COLUMNS_API_SYNTHESE_WEB_APP = [
-      'id_synthese',
-      'date_min',
-      'observers',
-      'nom_valide',
-      'dataset_name'
-    ]
+
     # Colonne à afficher par défaut sur la liste des resultats de la synthese
-    # 'prop' corespond au nom de la colonne tel qu'il est écrit en BDD (gn_synthese.v_synthese_for_web_app)
+    # choisir le champ 'prop' parmis les colonnes suivante (id_synthese, date_min,lb_nom, cd_nom, nom_vern, st_asgeojson, observers, dataset_name, url_source)
     
     LIST_COLUMNS_FRONTEND = [
         { prop = "nom_vern_or_lb_nom", name = "Taxon" },
@@ -144,6 +137,15 @@ ID_USER_SOCLE_2 = 6
     NB_LAST_OBS = 100
     # Nombre max d'observation dans les exports
     NB_MAX_OBS_EXPORT = 50000
+    # Nom des colonnes obligatoires de la vue ``gn_synthese.v_synthese_for_export``
+    EXPORT_ID_SYNTHESE_COL = fields.String(missing="idSynthese")
+    EXPORT_ID_DATASET_COL = fields.String(missing="jddId")
+    EXPORT_ID_DIGITISER_COL = fields.String(missing="id_digitiser")
+    EXPORT_OBSERVERS_COL = fields.String(missing="observer")
+    EXPORT_GEOJSON_4326_COL = fields.String(missing="geojson_4326")
+    EXPORT_GEOJSON_LOCAL_COL = fields.String(missing="geojson_local")
+    # Nom de la colonne id_dataset de la vue ``gn_synthese.v_metadata_for_export``
+    EXPORT_METADATA_ID_DATASET_COL = fields.String(missing="jdd_id")
     # Champs à afficher dans l'export
     [SYNTHESE.EXPORT_COLUMNS]
         id_synthese = "idSyn" 

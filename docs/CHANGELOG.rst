@@ -13,6 +13,7 @@ CHANGELOG
 - Les personnes ayant configurer leur fichier app.config.ts devront le récpercuter dans geonature_config.toml
 - Pull request sur le module validation sur le changement du composant ``pnx-areas`` (possibilité d'afficher plusieurs type d'area dans le composant)
 - Le fichier 'introduction.component.html' a été modifié (la carte des 100 dernière obs n'y figure plus). Lors d'une migration il faut sauvegarder ce fichier pour ne pas perdre les eventuelles modification faites pars l'administrateur. Ce fichier sera supprimé et recréé à partir du sample.
+- Supprimer la variable COLUMNS_API_SYNTHESE_WEB_APP si elle a été ajouté dans le fichier ``geonature_config.toml``
 
 **Nouveautés**
 
@@ -21,6 +22,10 @@ CHANGELOG
 * Synthese: possibilité de grouper plusieurs type d'aire dans le composant ``pnx-areas``
 * Design de la page de login
 * Intégration d'un bloc stat sur la page d'accueil
+* Ajout d'un export métadonnées dans la synthese
+* Centralisation de la configuration cartographique dans le fichier ``geonature_config.toml``
+* Cartographie: zoom sur l'emprise des résultats après une recherche
+* Migration de la gestion des métadonnées dans un module à part : 'METADATA'
 
 
 
@@ -29,6 +34,7 @@ CHANGELOG
 * Synthese: correction lié aux filtres multiples et au filtre géographique de type cercle
 * Centralisation de la configuration cartographique dans la configuration globale de GeoNature
 * Gains de performances en synthese
+* Ajout contrainte DELETE CASCADE entre ``ref_geo.li_municialities`` ``ref_geo.l_areas``
 
 2.0.0-rc.4.2 (2019-01-23)
 -------------------------

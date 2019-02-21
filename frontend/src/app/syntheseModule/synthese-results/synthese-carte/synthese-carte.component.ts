@@ -42,7 +42,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
     private _ms: MapService,
     public formService: SyntheseFormService,
     private _commonService: CommonService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.leafletDrawOptions.draw.rectangle = true;
@@ -82,7 +82,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
         // toggle style
         this.toggleStyle(layer);
         // observable
-        console.log('yes', id)
+        console.log('yes', id);
         this.mapListService.mapSelected.next(id);
       }
     });
@@ -157,6 +157,10 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
         }
       });
       this._ms.map.addLayer(this.cluserOrSimpleFeatureGroup);
+      // zoom on extend after first search
+      if (change.inputSyntheseData.previousValue !== undefined) {
+        this._ms.map.fitBounds(this.cluserOrSimpleFeatureGroup.getBounds());
+      }
     }
   }
 }

@@ -34,7 +34,7 @@ export class GeojsonComponent implements OnInit, OnChanges {
       this.onEachFeature
     );
     this.geojsonCharged.next(this.currentGeojson);
-    this.mapservice.layerGroup = new L.LayerGroup();
+    this.mapservice.layerGroup = new L.FeatureGroup();
     this.mapservice.map.addLayer(this.mapservice.layerGroup);
     this.mapservice.layerGroup.addLayer(this.currentGeojson);
   }
@@ -45,6 +45,10 @@ export class GeojsonComponent implements OnInit, OnChanges {
         this.mapservice.map.removeLayer(this.currentGeojson);
       }
       this.loadGeojson(changes.geojson.currentValue);
+      // zoom on layer extend after fisrt search
+      if (changes.geojson.previousValue !== undefined) {
+        this.map.fitBounds(this.mapservice.layerGroup.getBounds());
+      }
     }
   }
 }

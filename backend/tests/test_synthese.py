@@ -37,6 +37,7 @@ class TestSynthese:
         # clés obligatoire pour le fonctionnement du front
         assert "cd_nom" in data["data"][0]
         assert "id" in data["data"][0]
+        assert "url_source" in data["data"][0]
         assert data["data"][0]["cd_nom"] == 713776
 
         assert response.status_code == 200
