@@ -97,7 +97,7 @@ def get_observations_for_web(info_role):
             VSyntheseForWebApp.dataset_name,
             VSyntheseForWebApp.url_source,
         ]
-    )
+    ).order_by(VSyntheseForWebApp.date_min.desc())
     synthese_query_class = SyntheseQuery(VSyntheseForWebApp, query, filters)
     synthese_query_class.filter_query_all_filters(info_role)
 
