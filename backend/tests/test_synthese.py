@@ -33,12 +33,12 @@ class TestSynthese:
             url_for("gn_synthese.get_observations_for_web"), query_string=query_string
         )
         data = json_of_response(response)
-        assert len(data["data"]) == 1
+        assert len(data["data"]["features"]) == 1
         # clés obligatoire pour le fonctionnement du front
-        assert "cd_nom" in data["data"][0]
-        assert "id" in data["data"][0]
-        assert "url_source" in data["data"][0]
-        assert data["data"][0]["cd_nom"] == 713776
+        assert "cd_nom" in data["data"]["features"][0]["properties"]
+        assert "id" in data["data"]["features"][0]["properties"]
+        assert "url_source" in data["data"]["features"][0]["properties"]
+        assert data["data"]["features"][0]["properties"]["cd_nom"] == 713776
 
         assert response.status_code == 200
 
@@ -84,7 +84,7 @@ class TestSynthese:
         response = self.client.get(url_for("gn_synthese.get_observations_for_web"))
         data = json_of_response(response)
 
-        assert len(data["data"]) == 0
+        assert len(data["data"]["features"]) == 0
         assert response.status_code == 200
 
     def test_export(self):

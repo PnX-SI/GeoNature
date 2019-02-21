@@ -102,23 +102,24 @@ def get_observations_for_web(info_role):
     synthese_query_class.filter_query_all_filters(info_role)
 
     result = DB.engine.execute(synthese_query_class.query.limit(result_limit))
-    formated_result = []
+    geojson_features = []
     for r in result:
-        temp = {
+        properties = {
             "id": r["id_synthese"],
             "date_min": str(r["date_min"]),
             "cd_nom": r["cd_nom"],
             "nom_vern_or_lb_nom": r["nom_vern"] if r["nom_vern"] else r["lb_nom"],
-            "geometry": ast.literal_eval(r["st_asgeojson"]),
             "dataset_name": r["dataset_name"],
             "observers": r["observers"],
             "url_source": r["url_source"],
         }
-        formated_result.append(temp)
+        geojson = ast.literal_eval(r["st_asgeojson"])
+        geojson["properties"] = properties
+        geojson_features.append(geojson)
     return {
-        "data": formated_result,
-        "nb_total": len(formated_result),
-        "nb_obs_limited": len(formated_result)
+        "data": FeatureCollection(geojson_features),
+        "nb_total": len(geojson_features),
+        "nb_obs_limited": len(geojson_features)
         == current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"],
     }
 

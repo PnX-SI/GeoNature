@@ -230,15 +230,23 @@ export class MapListService {
 
   loadTableData(data, customCallBack?) {
     this.tableData = [];
-    data.features.forEach(feature => {
-      let newFeature = null;
-      if (customCallBack) {
-        newFeature = customCallBack(feature);
-      } else {
+    if (customCallBack) {
+      data.features.forEach(feature => {
+        let newFeature = null;
+        if (customCallBack) {
+          newFeature = customCallBack(feature);
+        } else {
+          newFeature = this.deFaultCustomColumns(feature);
+        }
+        this.tableData.push(newFeature.properties);
+      });
+    } else {
+      data.features.forEach(feature => {
+        let newFeature = null;
         newFeature = this.deFaultCustomColumns(feature);
-      }
-      this.tableData.push(newFeature.properties);
-    });
+        this.tableData.push(newFeature.properties);
+      });
+    }
   }
 }
 

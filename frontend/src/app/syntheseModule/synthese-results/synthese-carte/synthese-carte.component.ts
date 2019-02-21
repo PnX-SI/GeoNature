@@ -130,15 +130,15 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
         ? (L as any).markerClusterGroup()
         : new L.FeatureGroup();
 
-      change.inputSyntheseData.currentValue.forEach(element => {
-        if (element.geometry.type === 'Point') {
-          const latLng = L.latLng(element.geometry.coordinates[1], element.geometry.coordinates[0]);
+      change.inputSyntheseData.currentValue.features.forEach(element => {
+        if (element.type === 'Point') {
+          const latLng = L.latLng(element.coordinates[1], element.coordinates[0]);
           const marker = L.circleMarker(latLng);
           this.setStyle(marker);
           this.eventOnEachFeature(element.id, marker);
           this.cluserOrSimpleFeatureGroup.addLayer(marker);
-        } else if (element.geometry.type === 'Polygon') {
-          const myLatLong = element.geometry.coordinates[0].map(point => {
+        } else if (element.type === 'Polygon') {
+          const myLatLong = element.coordinates[0].map(point => {
             return L.latLng(point[1], point[0]);
           });
           const layer = L.polygon(myLatLong);
@@ -147,7 +147,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
           this.cluserOrSimpleFeatureGroup.addLayer(layer);
         } else {
           // its a LineStrinbg
-          const myLatLong = element.geometry.coordinates.map(point => {
+          const myLatLong = element.coordinates.map(point => {
             return L.latLng(point[1], point[0]);
           });
           const layer = L.polyline(myLatLong);
