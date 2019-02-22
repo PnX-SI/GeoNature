@@ -983,7 +983,7 @@ Configuration
 
 L'ensemble des paramètres de configuration du module se trouve dans le fichier général de configuration de GeoNature ``config/geonature_config.toml`` puisqu'il s'agit d'un module du coeur.
 
-* Modifier les filtres géographiques disponibles par défaut dans l'interface de recherche.
+**1.** Modifier les filtres géographiques disponibles par défaut dans l'interface de recherche.
 
 Editer la variable ``AREA_FILTERS`` en y ajoutant le label et l'ID du type d'entité géographique que vous souhaitez rajouter. Voir table ``ref_geo.bib_areas_types``. Dans l'exemple on ajoute le type ZNIEFF1 (``id_type = 3``). Attention, dans ce cas les entités géographiques correspondantes au type 3, doivent également être présentes dans la table ``ref_geo.l_areas``. 
 
@@ -999,7 +999,7 @@ Editer la variable ``AREA_FILTERS`` en y ajoutant le label et l'ID du type d'ent
 
 Il est aussi possible de passer plusieurs ``id_types`` regroupés dans un même filtre géographique (exemple : ``{ label = "Zonages réglementaires", id_type = [22, 23] }``).
 
-* Configurer les champs des exports
+**2.** Configurer les champs des exports
 
 Dans tous les exports, l'ordre et le nom des colonnes sont basés sur la vue servant l'export. Il est possible de les modifier en éditant le SQL des vues en respectant bien les consignes ci-dessous. 
 
@@ -1085,8 +1085,7 @@ Un champs est cependant obligatoire dans la vue : ``jdd_id`` (qui corespond à l
         
 Cet export n'est pas basé sur une vue, il n'est donc pas possible de l'adapter.
 
-
-* Configurer les seuils du nombre de données pour la recherche et les exports
+**3.** Configurer les seuils du nombre de données pour la recherche et les exports
 
 Par défaut et pour des questions de performance (du navigateur et du serveur) on limite à 50000 le nombre de résultat affiché sur la carte et le nombre d'observations dans les exports.
 
@@ -1102,7 +1101,7 @@ Le mode cluster activé par défaut peut être désactivé via le paramètre ``E
         # Nombre max d'observation dans les exports
         NB_MAX_OBS_EXPORT = 40000
 
-* Désactiver des filtres génériques 
+**4.** Désactiver des filtres génériques 
 
 L'interface de recherche de la synthèse permet de filtrer sur l'ensemble des nomenclatures de la table ``gn_synthese``, il est cependant possible de désactiver les filtres de certains champs.
 
