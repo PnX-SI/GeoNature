@@ -19,6 +19,7 @@ from geonature.utils.env import DB
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
 from geonature.core.ref_geo.models import LAreas
 from geonature.core.ref_geo.models import LiMunicipalities
+from geonature.core.gn_commons.models import THistoryActions, TValidations
 from pypnusershub.db.tools import InsufficientRightsError
 
 
@@ -423,6 +424,7 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
         ForeignKey("gn_synthese.v_synthese_decode_nomenclatures.id_synthese"),
         primary_key=True,
     )
+    unique_id_sinp = DB.Column(UUID(as_uuid=True))
     id_source = DB.Column(DB.Integer)
     id_dataset = DB.Column(DB.Integer)
     source = DB.relationship(
@@ -446,5 +448,11 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
             TDatasets.id_acquisition_framework
             == TAcquisitionFramework.id_acquisition_framework
         ),
+    )
+    validations = DB.relationship(
+        "TValidations",
+        primaryjoin=(TValidations.uuid_attached_row == unique_id_sinp),
+        foreign_keys=[unique_id_sinp],
+        uselist=True
     )
 

@@ -6,6 +6,9 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.sql import select, func
 from sqlalchemy.dialects.postgresql import UUID
 
+from pypnnomenclature.models import TNomenclatures
+from pypnusershub.db.models import User
+
 from geonature.utils.utilssqlalchemy import serializable
 from geonature.utils.env import DB
 
@@ -102,3 +105,42 @@ class VLastestValidation(DB.Model):
     validation_date = DB.Column(DB.DateTime)
     validation_auto = DB.Column(DB.Boolean)
     label_default = DB.Column(DB.Unicode)
+
+@serializable
+class TValidations(DB.Model):
+    __tablename__ = "t_validations"
+    __table_args__ = {"schema": "gn_commons", "extend_existing":True}
+
+    id_validation = DB.Column(DB.Integer, primary_key=True)
+    id_table_location = DB.Column(DB.Integer)
+    uuid_attached_row = DB.Column(UUID(as_uuid=True))
+    id_nomenclature_valid_status = DB.Column(DB.Integer)
+    id_validator = DB.Column(DB.Integer)
+    validation_auto = DB.Column(DB.Boolean)
+    validation_comment = DB.Column(DB.Unicode)
+    validation_date = DB.Column(DB.DateTime)
+    validation_auto = DB.Column(DB.Boolean)
+    validation_label = DB.relationship(
+        TNomenclatures,
+        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_valid_status),
+        foreign_keys=[id_nomenclature_valid_status]
+    )
+    validator_role = DB.relationship(
+        User,
+        primaryjoin=(User.id_role == id_validator),
+        foreign_keys=[id_validator]
+    )
+
+
+
+@serializable
+class THistoryActions(DB.Model):
+    __tablename__ = "t_history_actions"
+    __table_args__ = {"schema": "gn_commons"}
+
+    id_history_action = DB.Column(DB.Integer, primary_key=True)
+    id_table_location = DB.Column(DB.Integer)
+    uuid_attached_row = DB.Column(UUID(as_uuid=True))
+    operation_type = DB.Column(DB.Unicode)
+    operation_date = DB.Column(DB.DateTime)
+    table_content = DB.Column(DB.Unicode)
