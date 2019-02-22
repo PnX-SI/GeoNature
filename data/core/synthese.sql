@@ -785,6 +785,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
     s.altitude_min,
     s.altitude_max,
     s.the_geom_4326,
+    st_asgeojson(the_geom_4326),
     s.date_min,
     s.date_max,
     s.validator,
