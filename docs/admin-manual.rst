@@ -983,9 +983,9 @@ Configuration
 
 L'ensemble des paramètres de configuration du module se trouve dans le fichier général de configuration de GeoNature ``config/geonature_config.toml`` puisqu'il s'agit d'un module du coeur.
 
-- Modifier les filtres géographiques disponibles par défaut dans l'interface de recherche.
+* Modifier les filtres géographiques disponibles par défaut dans l'interface de recherche.
 
-Editer la variable ``AREA_FILTERS`` en y ajoutant le label et l'ID du type d'entité géographique que vous souhaitez rajouter. Voir table ``ref_geo.bib_areas_types``. Dans l'exemple on ajoute le type ZNIEFF1. Attention, les entités géographiques correspondantes au type 3, doivent également être présentes dans la table ``ref_geo.l_areas``
+Editer la variable ``AREA_FILTERS`` en y ajoutant le label et l'ID du type d'entité géographique que vous souhaitez rajouter. Voir table ``ref_geo.bib_areas_types``. Dans l'exemple on ajoute le type ZNIEFF1 (``id_type = 3``). Attention, dans ce cas les entités géographiques correspondantes au type 3, doivent également être présentes dans la table ``ref_geo.l_areas``. 
 
 ::
 
@@ -997,19 +997,23 @@ Editer la variable ``AREA_FILTERS`` en y ajoutant le label et l'ID du type d'ent
             { label = "ZNIEFF1", id_type = 3 },
         ]
 
+Il est aussi possible de passer plusieurs ``id_types`` regroupés dans un même filtre géographique (exemple : ``{ label = "Zonages réglementaires", id_type = [22, 23] }``).
 
-- Configurer les champs de ses exports
+* Configurer les champs des exports
 
-    Dans tous les exports, l'ordre et le nom des colonnes sont basés sur la vue servant l'export. Il est possible de les modifier en éditant le SQL des vues en respectant bien les consignes ci-dessous. 
+Dans tous les exports, l'ordre et le nom des colonnes sont basés sur la vue servant l'export. Il est possible de les modifier en éditant le SQL des vues en respectant bien les consignes ci-dessous. 
 
-    - Export des observations
+**Export des observations**
 
-        Les exports (CSV, GeoJson, Shapefile) sont basés sur la vue ``gn_synthese.v_synthese_for_export``.
-        Il est possible de masquer des champs présents dans les exports. Pour cela éditez la variable ``[SYNTHESE.EXPORT_COLUMNS]``. Enlevez la ligne de la colonne que vous souhaitez désactiver, ou renommer la 2ème partie de la ligne pour renommer une colonne. Ex : pour renommer le champs ``count_min``, modifiez la ligne de la manière suivante : ``count_min = "NombMax"``. Les noms de colonne de plus de 10 caractères seront tronqués dans le fichier shapefile.
+Les exports (CSV, GeoJson, Shapefile) sont basés sur la vue ``gn_synthese.v_synthese_for_export``.
+        
+Il est possible de masquer des champs présents dans les exports. Pour cela éditez la variable ``[SYNTHESE.EXPORT_COLUMNS]``.
+     
+Enlevez la ligne de la colonne que vous souhaitez désactiver, ou renommer la 2ème partie de la ligne pour renommer une colonne. Ex : pour renommer le champs ``count_min``, modifiez la ligne de la manière suivante : ``count_min = "NombMax"``. Les noms de colonne de plus de 10 caractères seront tronqués dans le fichier shapefile.
 
-        ::
+::
 
-            [SYNTHESE.EXPORT_COLUMNS]
+    [SYNTHESE.EXPORT_COLUMNS]
                 id_synthese = "idSyn" 
                 unique_id_sinp = "idUnique" 
                 date_min = "dateMin" 
@@ -1050,45 +1054,45 @@ Editer la variable ``AREA_FILTERS`` en y ajoutant le label et l'ID du type d'ent
                 wkt = "WKT"
 
 
-        Il est également possible de personnaliser ses exports en éditant le SQL de la vue ``gn_synthese.v_synthese_for_export`` (niveau SQL et administration GeoNature avancé).
+Il est également possible de personnaliser ses exports en éditant le SQL de la vue ``gn_synthese.v_synthese_for_export`` (niveau SQL et administration GeoNature avancé).
         
-        Attention, certains champs sont cependant obligatoires pour assurer la réalisation des fichiers d'export (csv, geojson et shapefile) et des filtres CRUVED.
+Attention, certains champs sont cependant obligatoires pour assurer la réalisation des fichiers d'export (csv, geojson et shapefile) et des filtres CRUVED.
         
-        La vue doit OBLIGATOIREMENT contenir les champs:
+La vue doit OBLIGATOIREMENT contenir les champs :
 
-        - geojson_4326
-        - geojson_local
-        - idSynthese,
-        - jddId (l'ID du jeu de données)
-        - id_digitiser
-        - observer
+- geojson_4326
+- geojson_local
+- idSynthese,
+- jddId (l'ID du jeu de données)
+- id_digitiser
+- observer
 
-        Ces champs doivent impérativement être présent dans la vue, mais ne seront pas necessairement dans le fichier d'export si ils ne figurent pas dans la variable ``[SYNTHESE.EXPORT_COLUMNS]``. De manière générale, preferez rajoutez des champs plutôt que d'en enlever !
+Ces champs doivent impérativement être présents dans la vue, mais ne seront pas nécessairement dans le fichier d'export si ils ne figurent pas dans la variable ``[SYNTHESE.EXPORT_COLUMNS]``. De manière générale, préférez rajouter des champs plutôt que d'en enlever !
 
-        Le nom de ces champs peuvent cependant être renommé. Dans ce cas, editez le fichier ``geonature_config.toml``, section ``SYNTHESE`` parmis les variables suivantes (``EXPORT_ID_SYNTHESE_COL, EXPORT_ID_DATASET_COL, EXPORT_ID_DIGITISER_COL, EXPORT_OBSERVERS_COL, EXPORT_GEOJSON_4326_COL, EXPORT_GEOJSON_LOCAL_COL``)
+Le nom de ces champs peuvent cependant être modifié. Dans ce cas, modifiez le fichier ``geonature_config.toml``, section ``SYNTHESE`` parmis les variables suivantes (``EXPORT_ID_SYNTHESE_COL, EXPORT_ID_DATASET_COL, EXPORT_ID_DIGITISER_COL, EXPORT_OBSERVERS_COL, EXPORT_GEOJSON_4326_COL, EXPORT_GEOJSON_LOCAL_COL``)
 
-        NB: Lorsqu'on effectue une recherche dans la synthese, on interroge la vue ``gn_synthese.v_synthese_for_web_app``. L'interface web passe ensuite une liste d'``id_synthese`` à la vue ``gn_synthese.v_synthese_for_export``correspondant à la recherche précedemment effectuée (ce qui permet à cette seconde vue d'être totalement modifiable).
-        La vue ``gn_synthese.v_synthese_for_web_app`` est taillée pour l'interface web, il ne faut donc PAS la modifier. 
+NB: Lorsqu'on effectue une recherche dans la synthèse, on interroge la vue ``gn_synthese.v_synthese_for_web_app``. L'interface web passe ensuite une liste d'``id_synthese`` à la vue ``gn_synthese.v_synthese_for_export``correspondant à la recherche précedemment effectuée (ce qui permet à cette seconde vue d'être totalement modifiable).
 
-    - Export des métadonnées
+La vue ``gn_synthese.v_synthese_for_web_app`` est taillée pour l'interface web, il ne faut donc PAS la modifier. 
 
-        En plus des observations brutes, il est possible d'effectuer un export des métadonnées associées à ses observations. L'export est au format CSV et est construit à partir de la table ``gn_synthese.v_metadata_for_export``. Vous pouvez éditer le SQL de création de cette vue pour customiser votre export (niveau SQL avancé).
-        Un champs est cependant obligatoire dans la vue: ``jdd_id`` (qui corespond à l'id du JDD de la table ``gn_meta.t_datasets``). Le nom de ce champs est modifiable. Si vous le modifiez, éditez la variable ``EXPORT_METADATA_ID_DATASET_COL``. 
+**Export des métadonnées**
 
+En plus des observations brutes, il est possible d'effectuer un export des métadonnées associées à ses observations. L'export est au format CSV et est construit à partir de la table ``gn_synthese.v_metadata_for_export``. Vous pouvez modifier le SQL de création de cette vue pour customiser votre export (niveau SQL avancé).
 
-    - Export des statuts taxonomiques (reglemetations)
+Un champs est cependant obligatoire dans la vue : ``jdd_id`` (qui corespond à l'id du JDD de la table ``gn_meta.t_datasets``). Le nom de ce champs est modifiable. Si vous le modifiez, éditez la variable ``EXPORT_METADATA_ID_DATASET_COL``. 
+
+**Export des statuts taxonomiques (réglementations)**
         
-        Cet export n'est pas basé sur une vue, il n'est donc pas possible de l'éditer.
+Cet export n'est pas basé sur une vue, il n'est donc pas possible de l'adapter.
 
 
+* Configurer les seuils du nombre de données pour la recherche et les exports
 
-- Configurer les seuils du nombre de données pour la recherche et les exports
+Par défaut et pour des questions de performance (du navigateur et du serveur) on limite à 50000 le nombre de résultat affiché sur la carte et le nombre d'observations dans les exports.
 
-Par défaut et pour des questions de performance (du navigateur et du serveur) on limite à 50000 le nombre de résultat affiché sur la carte etle nombre d'observations dans les exports.
+Ces seuils sont modifiables respectivement par les variables ``NB_MAX_OBS_MAP`` et ``NB_MAX_OBS_EXPORT`` :
 
-Ces seuils sont éditables respectivement par les variables ``NB_MAX_OBS_MAP`` et ``NB_MAX_OBS_EXPORT`` :
-
-Le mode cluster activé par défaut peut être désactivé via le paramètre ``ENABLE_LEAFLET_CLUSTER`` Dans ce cas ci, il est conseillé de repassé le paramètre `NB_MAX_OBS_MAP` à 10000.
+Le mode cluster activé par défaut peut être désactivé via le paramètre ``ENABLE_LEAFLET_CLUSTER``. Dans ce cas, il est conseillé de repasser le paramètre `NB_MAX_OBS_MAP` à 10000.
 
 ::
 
@@ -1098,7 +1102,7 @@ Le mode cluster activé par défaut peut être désactivé via le paramètre ``E
         # Nombre max d'observation dans les exports
         NB_MAX_OBS_EXPORT = 40000
 
-- Désactiver des filtres génériques 
+* Désactiver des filtres génériques 
 
 L'interface de recherche de la synthèse permet de filtrer sur l'ensemble des nomenclatures de la table ``gn_synthese``, il est cependant possible de désactiver les filtres de certains champs.
 
