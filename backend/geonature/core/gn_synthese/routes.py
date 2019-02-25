@@ -96,6 +96,7 @@ def get_observations_for_web(info_role):
             VSyntheseForWebApp.observers,
             VSyntheseForWebApp.dataset_name,
             VSyntheseForWebApp.url_source,
+            VSyntheseForWebApp.entity_source_pk_value,
         ]
     ).order_by(VSyntheseForWebApp.date_min.desc())
     synthese_query_class = SyntheseQuery(VSyntheseForWebApp, query, filters)
@@ -112,6 +113,7 @@ def get_observations_for_web(info_role):
             "dataset_name": r["dataset_name"],
             "observers": r["observers"],
             "url_source": r["url_source"],
+            "entity_source_pk_value": r["entity_source_pk_value"],
         }
         geojson = ast.literal_eval(r["st_asgeojson"])
         geojson["properties"] = properties
