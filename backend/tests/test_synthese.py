@@ -38,6 +38,7 @@ class TestSynthese:
         assert "cd_nom" in data["data"]["features"][0]["properties"]
         assert "id" in data["data"]["features"][0]["properties"]
         assert "url_source" in data["data"]["features"][0]["properties"]
+        assert "entity_source_pk_value" in data["data"]["features"][0]["properties"]
         assert data["data"]["features"][0]["properties"]["cd_nom"] == 713776
 
         assert response.status_code == 200
