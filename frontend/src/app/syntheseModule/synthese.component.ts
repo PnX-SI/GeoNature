@@ -11,7 +11,8 @@ import { AppConfig } from '@geonature_config/app.config';
 @Component({
   selector: 'pnx-synthese',
   styleUrls: ['synthese.component.scss'],
-  templateUrl: 'synthese.component.html'
+  templateUrl: 'synthese.component.html',
+  providers: [MapListService]
 })
 export class SyntheseComponent implements OnInit {
   public searchBarHidden = false;
