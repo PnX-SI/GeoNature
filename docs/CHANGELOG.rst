@@ -14,6 +14,7 @@ CHANGELOG
 - Pull request sur le module validation sur le changement du composant ``pnx-areas`` (possibilité d'afficher plusieurs type d'area dans le composant)
 - Le fichier 'introduction.component.html' a été modifié (la carte des 100 dernière obs n'y figure plus). Lors d'une migration il faut sauvegarder ce fichier pour ne pas perdre les eventuelles modification faites pars l'administrateur. Ce fichier sera supprimé et recréé à partir du sample.
 - Supprimer la variable COLUMNS_API_SYNTHESE_WEB_APP si elle a été ajouté dans le fichier ``geonature_config.toml``
+- Supprimer la variable [SYNTHESE.EXPORT_COLUMNS] du fichier geonature_config.toml et geonature_config.toml.sample (changement de format du schéma Marshmallow sur cette variable). 
 
 **Nouveautés**
 
