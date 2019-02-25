@@ -56,6 +56,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
     // On table click, change style layer and zoom
     this.mapListService.onTableClick$.subscribe(id => {
       const selectedLayer = this.mapListService.layerDict[id];
+      //selectedLayer.bringToFront();
       this.toggleStyle(selectedLayer);
       this.mapListService.zoomOnSelectedLayer(this._ms.map, selectedLayer);
     });
@@ -81,8 +82,6 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
       click: e => {
         // toggle style
         this.toggleStyle(layer);
-        // observable
-        console.log('yes', id);
         this.mapListService.mapSelected.next(id);
       }
     });
@@ -135,7 +134,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
           const latLng = L.latLng(element.coordinates[1], element.coordinates[0]);
           const marker = L.circleMarker(latLng);
           this.setStyle(marker);
-          this.eventOnEachFeature(element.id, marker);
+          this.eventOnEachFeature(element.properties.id, marker);
           this.cluserOrSimpleFeatureGroup.addLayer(marker);
         } else if (element.type === 'Polygon') {
           const myLatLong = element.coordinates[0].map(point => {
@@ -143,7 +142,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
           });
           const layer = L.polygon(myLatLong);
           this.setStyle(layer);
-          this.eventOnEachFeature(element, layer);
+          this.eventOnEachFeature(element.properties.id, layer);
           this.cluserOrSimpleFeatureGroup.addLayer(layer);
         } else {
           // its a LineStrinbg
@@ -152,7 +151,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
           });
           const layer = L.polyline(myLatLong);
           this.setStyle(layer);
-          this.eventOnEachFeature(element, layer);
+          this.eventOnEachFeature(element.properties.id, layer);
           this.cluserOrSimpleFeatureGroup.addLayer(layer);
         }
       });
