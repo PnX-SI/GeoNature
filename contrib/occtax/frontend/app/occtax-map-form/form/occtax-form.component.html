@@ -22,12 +22,18 @@
       <i class="fa fa-paw" aria-hidden="true"></i>
       Taxon
       <span>
-        <button [disabled]="fs.disabled" *ngIf="!fs.showOccurrence" type="button" class="btn btn-primary btn-sm toggle-btn"
+          <button *ngIf="fs.showOccurrence" class="btn btn-primary toggle-btn btn-sm" [disabled]="fs.occurrenceForm.invalid || fs.countingForm.invalid"
+          (click)="fs.addOccurrence(fs.indexOccurrence)">
+          <i id="check" class="fa fa-check toggle-btn" aria-hidden="true"></i>
+
+          {{ 'Taxon.ValidateTaxon' | translate }}
+        </button>
+        <button [disabled]="fs.disabled" *ngIf="!fs.showOccurrence" type="button" class="btn btn-sm btn-primary toggle-btn cancel-or-add"
           (click)="fs.toggleOccurrence();">
           <i class="fa fa-plus" aria-hidden="true"></i>
           {{ 'Releve.AddTaxonOnReleve' | translate }}
         </button>
-        <button *ngIf="fs.showOccurrence" type="button" class="btn btn-primary btn-sm toggle-btn" (click)="fs.toggleOccurrence(); fs.cancelOccurrence()">
+        <button *ngIf="fs.showOccurrence" type="button" class="btn btn-sm btn-danger toggle-btn cancel-or-add" (click)="fs.toggleOccurrence(); fs.cancelOccurrence()">
           <i class="fa fa-minus" aria-hidden="true"></i>
           {{ 'Releve.CancelTaxon' | translate }}
 
