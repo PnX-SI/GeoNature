@@ -190,14 +190,14 @@ export class OcctaxFormService {
         1,
         Validators.compose([
           Validators.required,
-          Validators.pattern("[1-9]+[0-9]*")
+          Validators.pattern("[0-9]+[0-9]*")
         ])
       ],
       count_max: [
         1,
         Validators.compose([
           Validators.required,
-          Validators.pattern("[1-9]+[0-9]*")
+          Validators.pattern("[0-9]+[0-9]*")
         ])
       ]
     });
