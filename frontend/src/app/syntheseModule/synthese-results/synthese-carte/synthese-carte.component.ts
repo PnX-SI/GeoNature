@@ -33,7 +33,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
   selectedStyle = {
     color: '#ff0000',
     weight: 3,
-    fill: false
+    fill: true
   };
 
   @Input() inputSyntheseData: GeoJSON;
@@ -158,7 +158,12 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
       this._ms.map.addLayer(this.cluserOrSimpleFeatureGroup);
       // zoom on extend after first search
       if (change.inputSyntheseData.previousValue !== undefined) {
-        this._ms.map.fitBounds(this.cluserOrSimpleFeatureGroup.getBounds());
+        try {
+          // try to fit bound on layer. catch error if no layer in feature group
+          this._ms.map.fitBounds(this.cluserOrSimpleFeatureGroup.getBounds());
+        } catch (error) {
+          console.log('no layer in feature group');
+        }
       }
     }
   }
