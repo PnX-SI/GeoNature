@@ -47,7 +47,14 @@ export class GeojsonComponent implements OnInit, OnChanges {
       this.loadGeojson(changes.geojson.currentValue);
       // zoom on layer extend after fisrt search
       if (changes.geojson.previousValue !== undefined) {
-        this.map.fitBounds(this.mapservice.layerGroup.getBounds());
+        // try to fit bound on layer. catch error if no layer in feature group
+
+        try {
+          this.map.fitBounds(this.mapservice.layerGroup.getBounds());
+        } catch (error) {
+          console.log('no layer in featuregroup');
+        }
+        //
       }
     }
   }
