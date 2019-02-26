@@ -3,9 +3,16 @@ import { MapService } from './map.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Map, LatLngExpression } from 'leaflet';
 import { AppConfig } from '@geonature_config/app.config';
+import { Http } from '@angular/http';
 import * as L from 'leaflet';
+import { CommonService } from '../service/common.service';
 
 import 'leaflet-draw';
+import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { of } from 'rxjs/observable/of';
+import { catchError, debounceTime, distinctUntilChanged, tap, switchMap } from 'rxjs/operators';
+
 @Component({
   selector: 'pnx-map',
   templateUrl: './map.component.html',
@@ -16,9 +23,17 @@ export class MapComponent implements OnInit {
   @Input() center: Array<number>;
   @Input() zoom: number;
   @Input() height: string;
+  @Input() searchBar = true;
   searchLocation: string;
+  public searching = false;
+  public searchFailed = false;
+  public locationControl = new FormControl();
   public map: Map;
-  constructor(private mapService: MapService, private modalService: NgbModal) {
+  constructor(
+    private mapService: MapService,
+    private _commonService: CommonService,
+    private _http: Http
+  ) {
     this.searchLocation = '';
   }
 
@@ -26,11 +41,41 @@ export class MapComponent implements OnInit {
     this.initialize();
   }
 
-  gotoLocation() {
-    if (!this.searchLocation) {
-      return;
-    }
-    this.mapService.search(this.searchLocation);
+  searchNominatim(search) {
+    return this._http
+      .get(
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+          search
+        )}&format=json&limit=10&polygon_geojson=1`,
+        { withCredentials: false }
+      )
+      .map(res => {
+        console.log(res.json());
+        return res.json();
+      });
+  }
+
+  search = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      tap(() => (this.searching = true)),
+      switchMap(term =>
+        this.searchNominatim(term).pipe(
+          tap(() => (this.searchFailed = false)),
+          catchError(() => {
+            this._commonService.translateToaster('Warning', 'Map.LocationError');
+
+            return of([]);
+          })
+        )
+      ),
+      tap(() => (this.searching = false))
+    );
+
+  onResultSelected(nomatimObject) {
+    const geojson = L.geoJSON(nomatimObject.item.geojson);
+    this.map.fitBounds(geojson.getBounds());
   }
 
   initialize() {
@@ -67,5 +112,9 @@ export class MapComponent implements OnInit {
 
     this.mapService.setMap(map);
     this.mapService.initializeLeafletDrawFeatureGroup();
+  }
+
+  formatter(nominatim) {
+    return nominatim.display_name;
   }
 }

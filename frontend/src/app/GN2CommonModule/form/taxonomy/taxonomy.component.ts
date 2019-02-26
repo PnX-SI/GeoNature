@@ -3,7 +3,6 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { DataFormService } from '../data-form.service';
 import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
-import { error } from 'util';
 import { of } from 'rxjs/observable/of';
 import { CommonService } from '@geonature_common/service/common.service';
 import { AppConfig } from '@geonature_config/app.config';

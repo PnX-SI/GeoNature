@@ -57,59 +57,7 @@ export class MapService {
     this.map.addLayer(this.fileLayerFeatureGroup);
   }
 
-  search(address: string) {
-    let results = [];
-    this.http
-      .get(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
-          address
-        )}&format=json&limit=1&polygon_geojson=1`
-      )
-      .subscribe(
-        res => {
-          results = res.json();
-          results = results.filter(result => {
-            this.gotoLocation(result.geojson);
-          });
-        },
-        error => {
-          this._commonService.translateToaster('Warning', 'Map.LocationError');
-        }
-      );
-  }
-
-  gotoLocation(geometry) {
-    const style: any = {
-      weight: 3,
-      fillOpacity: 0
-    };
-    this.clear();
-    const featureCollection: GeoJSON.FeatureCollection<any> = {
-      type: 'FeatureCollection',
-      features: [
-        {
-          type: 'Feature',
-          geometry: geometry,
-          properties: {}
-        }
-      ]
-    };
-    this.currentLayer = L.geoJSON(featureCollection, {
-      style: style
-    }).addTo(this.map);
-    this.map.fitBounds(this.currentLayer.getBounds());
-  }
-
-  // clear the marker when search
-  clear() {
-    if (this.currentLayer) {
-      this.map.removeLayer(this.currentLayer);
-      this.currentLayer = undefined;
-    }
-  }
-
   setGeojsonCoord(geojsonCoord) {
-    console.log(geojsonCoord);
     if (!this.justLoaded) {
       this._geojsonCoord.next(geojsonCoord);
     }
@@ -153,6 +101,27 @@ export class MapService {
       }
     });
     return LayerControl;
+  }
+
+  addSearchBar() {
+    const control = L.Control.extend({
+      options: {
+        position: 'topright'
+      },
+      onAdd: map => {
+        const customLegend = L.DomUtil.create(
+          'input',
+          'leaflet-bar leaflet-control leaflet-control-custom'
+        );
+        // customLegend.onclick = () => {
+        //   if (func) {
+        //     func();
+        //   }
+        // };
+        return customLegend;
+      }
+    });
+    return control;
   }
 
   createMarker(x, y, isDraggable) {
