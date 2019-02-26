@@ -73,6 +73,23 @@ FROM (
 ORDER BY id_regne, id_embranchement, id_classe, id_ordre, id_famille;
 
 
+
+-- Add column 'module_doc_url' on t_modules tables
+
+ALTER TABLE gn_commons.t_modules ADD COLUMN module_doc_url character varying(255);
+
+UPDATE gn_commons.t_modules 
+SET module_doc_url = 'https://geonature.readthedocs.io/fr/latest/user-manual.html';
+
+UPDATE gn_commons.t_modules 
+SET module_doc_url = 'https://geonature.readthedocs.io/fr/latest/user-manual.html#occtax'
+WHERE module_code ILIKE 'OCCTAX';
+
+
+UPDATE gn_commons.t_modules 
+SET module_doc_url = 'https://geonature.readthedocs.io/fr/latest/user-manual.html#admin'
+WHERE module_code ILIKE 'ADMIN';
+
 -- Migration du metadata comme un module à part
 
 INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module_desc, module_path, module_target, active_frontend, active_backend, module_doc_url) VALUES
@@ -121,45 +138,49 @@ DELETE FROM gn_permissions.cor_object_module WHERE id_object = (
 );
 
 -- supression de l'objet metadata
-DELETE FROM gn_permissions.t_objects where code_object = 'METADATA'
+DELETE FROM gn_permissions.t_objects where code_object = 'METADATA';
 
--- Droit limité pour le groupe en poste pour le module METADATA
-INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module)
-SELECT 7, 1, 1, id_module
-FROM gn_commons.t_modules
-WHERE module_code = 'METADATA';
+DO $$
+BEGIN
+    -- Droit limité pour le groupe en poste pour le module METADATA
+    INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module)
+    SELECT 7, 1, 1, id_module
+    FROM gn_commons.t_modules
+    WHERE module_code = 'METADATA';
 
-INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module)
-SELECT 7, 2, 3, id_module
-FROM gn_commons.t_modules
-WHERE module_code = 'METADATA';
+    INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module)
+    SELECT 7, 2, 3, id_module
+    FROM gn_commons.t_modules
+    WHERE module_code = 'METADATA';
 
-INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module)
-SELECT 7, 3, 1, id_module
-FROM gn_commons.t_modules
-WHERE module_code = 'METADATA';
+    INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module)
+    SELECT 7, 3, 1, id_module
+    FROM gn_commons.t_modules
+    WHERE module_code = 'METADATA';
 
-INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module)
-SELECT 7, 4, 1, id_module
-FROM gn_commons.t_modules
-WHERE module_code = 'METADATA';
+    INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module)
+    SELECT 7, 4, 1, id_module
+    FROM gn_commons.t_modules
+    WHERE module_code = 'METADATA';
 
-INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module)
-SELECT 7, 5, 3, id_module
-FROM gn_commons.t_modules
-WHERE module_code = 'METADATA';
+    INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module)
+    SELECT 7, 5, 3, id_module
+    FROM gn_commons.t_modules
+    WHERE module_code = 'METADATA';
 
-INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module)
-SELECT 7, 6, 1, id_module
-FROM gn_commons.t_modules
-WHERE module_code = 'METADATA';
+    INSERT INTO gn_permissions.cor_role_action_filter_module_object(id_role, id_action,id_filter,id_module)
+    SELECT 7, 6, 1, id_module
+    FROM gn_commons.t_modules
+    WHERE module_code = 'METADATA';
+
+  EXCEPTION WHEN OTHERS THEN
+
+      RAISE NOTICE 'Permissions déjà existante';
+  END;
+$$;
 
 
 -- Update taxons_synthese_autocomplete
-
-SELECT concat(aut.search_name,  ' - [', t.id_rang, ' - ', t.cd_nom , ']' )
-FROM gn_synthese.taxons_synthese_autocomplete aut
-JOIN taxonomie.taxref t ON aut.cd_nom = t.cd_nom;
 
 CREATE OR REPLACE FUNCTION gn_synthese.fct_trg_refresh_taxons_forautocomplete()
   RETURNS trigger AS
@@ -243,7 +264,7 @@ JOIN ( SELECT val_max.uuid_attached_row,
            FROM gn_commons.t_validations val_max
           GROUP BY val_max.uuid_attached_row) v2 ON val.validation_date = v2.max AND v2.uuid_attached_row = val.uuid_attached_row
 
-)
+);
 
 
 -- ajout de 2 champs commentaires dans la synthese
@@ -686,19 +707,15 @@ $BODY$
   COST 100;
 
 
+-- Modification de a contrainte sur count_min et max pour permettre l'occurrence d'absence
 
--- Add column 'module_doc_url' on t_modules tables
+ALTER TABLE pr_occtax.cor_counting_occtax DROP CONSTRAINT check_cor_counting_occtax_count_min;
 
-ALTER TABLE gn_commons.t_modules ADD COLUMN module_doc_url character varying(255);
-
-UPDATE gn_commons.t_modules 
-SET module_doc_url = 'https://geonature.readthedocs.io/fr/latest/user-manual.html';
-
-UPDATE gn_commons.t_modules 
-SET module_doc_url = 'https://geonature.readthedocs.io/fr/latest/user-manual.html#occtax'
-WHERE module_code ILIKE 'OCCTAX';
+ALTER TABLE pr_occtax.cor_counting_occtax
+  ADD CONSTRAINT check_cor_counting_occtax_count_min CHECK (count_min >= 0);
 
 
-UPDATE gn_commons.t_modules 
-SET module_doc_url = 'https://geonature.readthedocs.io/fr/latest/user-manual.html#admin'
-WHERE module_code ILIKE 'ADMIN';
+ALTER TABLE pr_occtax.cor_counting_occtax DROP CONSTRAINT check_cor_counting_occtax_count_max;
+
+ALTER TABLE pr_occtax.cor_counting_occtax
+  ADD CONSTRAINT check_cor_counting_occtax_count_max CHECK (count_max >= count_min AND count_max >= 0);
