@@ -12,7 +12,8 @@ CHANGELOG
 - Migration METADATA comme un module à part. La migration prévoit de mettre un CRUVED au groupe_admin et groupe_en_poste pour le nouveau module METADATA. Le groupes nouvellement créé par les administrateur et n'ayant de CRUVED pour l'objet METADATA (du module admin), se retrouve avec le CRUVED hérité de GeoNature. Prévoir de changer le CRUVED de ces groupes pour le nouveau module METADATA.
 - Les personnes ayant configurer leur fichier app.config.ts devront le récpercuter dans geonature_config.toml
 - Pull request sur le module validation sur le changement du composant ``pnx-areas`` (possibilité d'afficher plusieurs type d'area dans le composant)
-- Le fichier 'introduction.component.html' a été modifié (la carte des 100 dernière obs n'y figure plus). Lors d'une migration il faut sauvegarder ce fichier pour ne pas perdre les eventuelles modification faites pars l'administrateur. Ce fichier sera supprimé et recréé à partir du sample.
+- Le fichier 'introduction.component.html' a été modifié (la carte des 100 dernière obs n'y figure plus). Tout supprimer à partir de la ligne 21. Puis relancer un build
+
 - Supprimer la variable COLUMNS_API_SYNTHESE_WEB_APP si elle a été ajouté dans le fichier ``geonature_config.toml``
 - Supprimer la variable [SYNTHESE.EXPORT_COLUMNS] du fichier geonature_config.toml et geonature_config.toml.sample (changement de format du schéma Marshmallow sur cette variable). 
 
@@ -36,6 +37,7 @@ CHANGELOG
 * Centralisation de la configuration cartographique dans la configuration globale de GeoNature
 * Gains de performances en synthese
 * Ajout contrainte DELETE CASCADE entre ``ref_geo.li_municialities`` ``ref_geo.l_areas``
+* Occtax: possibilité de rentré un dénombrement égal à 0 (cas des occurrences d'absence)
 
 2.0.0-rc.4.2 (2019-01-23)
 -------------------------
