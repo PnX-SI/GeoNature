@@ -1079,7 +1079,10 @@ La vue ``gn_synthese.v_synthese_for_web_app`` est taillée pour l'interface web,
 
 En plus des observations brutes, il est possible d'effectuer un export des métadonnées associées à ses observations. L'export est au format CSV et est construit à partir de la table ``gn_synthese.v_metadata_for_export``. Vous pouvez modifier le SQL de création de cette vue pour customiser votre export (niveau SQL avancé).
 
-Un champs est cependant obligatoire dans la vue : ``jdd_id`` (qui corespond à l'id du JDD de la table ``gn_meta.t_datasets``). Le nom de ce champs est modifiable. Si vous le modifiez, éditez la variable ``EXPORT_METADATA_ID_DATASET_COL``. 
+Deux champs sont cependant obligatoire dans la vue : 
+
+- ``jdd_id`` (qui corespond à l'id du JDD de la table ``gn_meta.t_datasets``). Le nom de ce champs est modifiable. Si vous le modifiez, éditez la variable ``EXPORT_METADATA_ID_DATASET_COL``. 
+- ``acteurs``:  Le nom de ce champs est modifiable. Si vous le modifiez, éditez la variable 
 
 **Export des statuts taxonomiques (réglementations)**
         
