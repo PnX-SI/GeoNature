@@ -178,11 +178,21 @@ def get_one_synthese(id_synthese):
     """
     metadata_view = GenericTable("v_metadata_for_export", "gn_synthese", None)
     q = (
-        DB.session.query(SyntheseOneRecord, metadata_view.tableDef.columns.acteurs)
+        DB.session.query(
+            SyntheseOneRecord,
+            getattr(
+                metadata_view.tableDef.columns,
+                current_app.config["SYNTHESE"]["EXPORT_METADATA_ACTOR_COL"],
+            ),
+        )
         .filter(SyntheseOneRecord.id_synthese == id_synthese)
         .join(
             metadata_view.tableDef,
-            metadata_view.tableDef.columns.jdd_id == SyntheseOneRecord.id_dataset,
+            getattr(
+                metadata_view.tableDef.columns,
+                current_app.config["SYNTHESE"]["EXPORT_METADATA_ID_DATASET_COL"],
+            )
+            == SyntheseOneRecord.id_dataset,
         )
     )
     try:

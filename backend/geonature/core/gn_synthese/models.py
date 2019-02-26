@@ -439,6 +439,11 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
         secondaryjoin=(corAreaSynthese.c.id_area == LAreas.id_area),
         foreign_keys=[corAreaSynthese.c.id_synthese, corAreaSynthese.c.id_area],
     )
+    datasets = DB.relationship(
+        "TDatasets",
+        primaryjoin=(TDatasets.id_dataset == id_dataset),
+        foreign_keys=[id_dataset],
+    )
     acquisition_framework = DB.relationship(
         "TAcquisitionFramework",
         uselist=False,
@@ -453,6 +458,6 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
         "TValidations",
         primaryjoin=(TValidations.uuid_attached_row == unique_id_sinp),
         foreign_keys=[unique_id_sinp],
-        uselist=True
+        uselist=True,
     )
 
