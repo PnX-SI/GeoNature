@@ -179,9 +179,12 @@ export class OcctaxMapFormComponent
           }
         ); // end subscribe
       } else {
-        // if (this.fs.previousBoundingBox) {
-        //   this._ms.map.fitBounds(this.fs.previousBoundingBox, { maxZoom: 20 });
-        // }
+        if (this.fs.previousCenter && this.fs.previousZoomLevel) {
+          this._ms.map.setView(
+            this.fs.previousCenter,
+            this.fs.previousZoomLevel
+          );
+        }
         // set digitiser as default observers only if occtaxconfig set observers_txt parameter to false
         if (!this.occtaxConfig.observers_txt) {
           const currentUser = this._authService.getCurrentUser();
