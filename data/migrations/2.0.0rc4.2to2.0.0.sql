@@ -292,6 +292,7 @@ ALTER TABLE gn_synthese.synthese DROP COLUMN comments CASCADE;
 -- ajout acteur + x_centroid et y_centroid + date_update
 -- on n'utilise plus la vue v_decoded_nomenclature pour des questions de perfs
 
+
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS 
  WITH deco AS (
          SELECT s_1.id_synthese,
@@ -366,8 +367,8 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     st_x(st_transform(s.the_geom_point, 2154)) AS x_centroid,
     st_y(st_transform(s.the_geom_point, 2154)) AS y_centroid,
     COALESCE(s.meta_update_date, s.meta_create_date) AS lastact,
-    st_asgeojson(s.the_geom_4326) AS geojson,
-    st_asgeojson(st_transform(s.the_geom_4326, 2154)) AS geojson_local,
+    st_asgeojson(s.the_geom_4326) AS geojson_4326,
+    st_asgeojson(s.the_geom_local) AS geojson_local,
     deco."ObjGeoTyp",
     deco."methGrp",
     deco."obsMeth",
@@ -482,6 +483,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
      JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
      JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source;
+
 
 
 -- MAJ des triggers occtax lié à la modif du champ commentaire
