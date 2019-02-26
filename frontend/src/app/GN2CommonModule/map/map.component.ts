@@ -49,10 +49,7 @@ export class MapComponent implements OnInit {
         )}&format=json&limit=10&polygon_geojson=1`,
         { withCredentials: false }
       )
-      .map(res => {
-        console.log(res.json());
-        return res.json();
-      });
+      .map(res => res.json());
   }
 
   search = (text$: Observable<string>) =>

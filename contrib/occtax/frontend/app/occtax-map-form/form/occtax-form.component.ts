@@ -7,7 +7,6 @@ import { Router } from "@angular/router";
 import * as L from "leaflet";
 import { OcctaxDataService } from "../../services/occtax-data.service";
 import { MapService } from "@geonature_common/map/map.service";
-import { AuthService } from "@geonature/components/auth/auth.service";
 
 @Component({
   selector: "pnx-occtax-form",
@@ -25,8 +24,7 @@ export class OcctaxFormComponent implements OnInit {
     private toastr: ToastrService,
     private router: Router,
     private _commonService: CommonService,
-    private _mapService: MapService,
-    private _authService: AuthService
+    private _mapService: MapService
   ) {}
 
   ngOnInit() {
@@ -107,8 +105,10 @@ export class OcctaxFormComponent implements OnInit {
         this.fs.occurrenceForm = this.fs.initOccurenceForm();
         this.fs.patchDefaultNomenclatureOccurrence(this.fs.defaultValues);
         this.fs.countingForm = this.fs.initCountingArray();
-        // save the current zoom
-        this.fs.previousBoundingBox = this._mapService.map.getBounds();
+        // save the current center and zoom to set the map on next form
+        this.fs.previousCenter = this._mapService.map.getCenter();
+        this.fs.previousZoomLevel = this._mapService.map.getZoom();
+
         this.fs.taxonsList = [];
         this.fs.indexOccurrence = 0;
         this.fs.disabled = true;

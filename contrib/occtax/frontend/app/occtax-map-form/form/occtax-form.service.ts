@@ -23,7 +23,8 @@ import { CommonService } from "@geonature_common/service/common.service";
 export class OcctaxFormService {
   public markerCoordinates: Array<any>;
   public geojsonCoordinates: GeoJSON;
-  public previousBoundingBox: any;
+  public previousCenter: any;
+  public previousZoomLevel: any;
   public currentTaxon: Taxon;
   public indexCounting: number;
   public nbCounting: Array<string>;
