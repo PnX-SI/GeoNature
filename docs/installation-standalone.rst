@@ -83,6 +83,7 @@ Installation de l'application
   ::
 
     unzip X.Y.Z.zip
+    rm X.Y.Z.zip
 
 * Renommer le répertoire de l'application puis placez-vous dedans : 
 
