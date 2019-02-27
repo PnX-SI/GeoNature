@@ -720,3 +720,8 @@ ALTER TABLE pr_occtax.cor_counting_occtax DROP CONSTRAINT check_cor_counting_occ
 
 ALTER TABLE pr_occtax.cor_counting_occtax
   ADD CONSTRAINT check_cor_counting_occtax_count_max CHECK (count_max >= count_min AND count_max >= 0);
+
+
+-- suppression de la valeur par défault pour la sensibilité
+DELETE FROM gn_synthese.defaults_nomenclatures_value
+WHERE mnemonique_type = 'SENSIBILITE';
