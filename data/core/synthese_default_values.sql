@@ -24,7 +24,6 @@ INSERT INTO defaults_nomenclatures_value (mnemonique_type, id_organism, regne, g
 ,('DEE_FLOU',0,0,0,ref_nomenclatures.get_id_nomenclature('DEE_FLOU','NON'))
 ,('TYP_GRP',0,0,0,ref_nomenclatures.get_id_nomenclature('TYP_GRP','NSP'))
 ,('TECHNIQUE_OBS',0,0,0,ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS','133'))
-,('SENSIBILITE',0,0,0,ref_nomenclatures.get_id_nomenclature('SENSIBILITE','0'))
 ,('STATUT_SOURCE',0,0,0,ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE','NSP'))
 ,('METH_DETERMIN',0,0,0,ref_nomenclatures.get_id_nomenclature('METH_DETERMIN','1'))
 ;
