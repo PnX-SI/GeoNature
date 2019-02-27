@@ -43,14 +43,15 @@ CHANGELOG
 
 Veuillez bien lire ces quelques consignes avant de vous lancez dans la migration.
 
-* Les personnes ayant configuré leur fichier map.config.ts devront le récpercuter dans ``geonature_config.toml`` (voir ``geonature_config.toml.example`` section ``[MAPCONFIG]``) suite à la centralisation des configuration cartographique.
-* La configuration des exports du module synthèse a été modifié (voir https://geonature.readthedocs.io/fr/latest/admin-manual.html#module-synthese) Si vous avez ajouté la variable ``[SYNTHESE.EXPORT_COLUMNS]`` dans le fichier ``geonature_config.toml`` veuillez la supprimer puis la réadapter à partir de l'exemple dans le fichier ``geonature_config.toml.example``.
-* Supprimer la variable COLUMNS_API_SYNTHESE_WEB_APP si elle a été ajouté dans le fichier ``geonature_config.toml``
+* Les personnes ayant configuré leur fichier map.config.ts devront le récpercuter dans ``geonature_config.toml`` suite à la centralisation des configuration cartographique (voir https://github.com/PnX-SI/GeoNature/blob/2.0.0/config/default_config.toml.example section ``[MAPCONFIG]``).
+* La configuration des exports du module synthèse a été modifié (voir https://geonature.readthedocs.io/fr/latest/admin-manual.html#module-synthese) Supprimer la variable``[SYNTHESE.EXPORT_COLUMNS]`` dans le fichier ``geonature_config.toml``. Voir l'exemple dans le fichier (voir https://github.com/PnX-SI/GeoNature/blob/2.0.0/config/default_config.toml.example section) pour configurer les exports.
+* Supprimer la variable ``COLUMNS_API_SYNTHESE_WEB_APP`` si elle a été ajouté dans le fichier ``geonature_config.toml``
 * Pour simplifier son édition, le template personalisable de la page d'accueil (``frontend/src/custom/components/introduction/introduction.component.html``) a été modifié (la carte des 100 dernière obs n'y figure plus). Veuillez supprimer tout ce qui se situe la ligne 21 dans ce fichier. 
-* Le backoffice ce gestion des métadonnées est dorenavant un module GeoNature à part. Le script migration prévoit de mettre un CRUVED au groupe_admin et groupe_en_poste pour le nouveau module METADATA. Le groupes nouvellement créé par les administrateur et n'ayant de CRUVED pour l'objet METADATA (du module admin), se retrouve avec le CRUVED hérité de GeoNature. L'administrateuer devra changer lui même le CRUVED de ces groupes pour le nouveau module METADATA.
 
 
 * Executer le script de migration SQL: https://github.com/PnX-SI/GeoNature/blob/2.0.0/data/migrations/2.0.0rc4.2to2.0.0.sql
+
+* Le backoffice ce gestion des métadonnées est dorenavant un module GeoNature à part. Le script migration précédemment lancé prévoit de mettre un CRUVED au groupe_admin et groupe_en_poste pour le nouveau module METADATA. Le groupes nouvellement créé par les administrateur et n'ayant de CRUVED pour l'objet METADATA (du module admin), se retrouve avec le CRUVED hérité de GeoNature. L'administrateuer devra changer lui même le CRUVED de ces groupes pour le nouveau module METADATA via le backoffice des permissions.
 
 * Suivez ensuite la procédure classique de mise à jour de GeoNature (https://geonature.readthedocs.io/fr/latest/installation-standalone.html#mise-a-jour-de-l-application)
 

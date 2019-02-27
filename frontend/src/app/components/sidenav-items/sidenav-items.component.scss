@@ -1,10 +1,12 @@
 .appnav {
   margin-top: 10px;
+  max-height: 60vh;
+  overflow: auto;
 }
 
 .logo {
-    margin-bottom: 0px;
-    padding: 40px 40px 10px 30px;
+  margin-bottom: 0px;
+  padding: 40px 40px 10px 30px;
 }
 
 .navbar-footer {
@@ -14,13 +16,12 @@
   font-size: 11px;
 }
 
-.picto{
+.picto {
   font-size: 25px;
   padding-right: 10px;
-  width: 35px;;
+  width: 35px;
 }
 
-
-.module-name{
+.module-name {
   margin-top: 3px;
 }
