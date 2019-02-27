@@ -17,6 +17,8 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   private _currentDraw: any;
   private _Le: any;
   public drawnItems: any;
+  // save the current layer type because the edite event do not send it...
+  public currentLayerType: string;
   // coordinates of the entity to draw
   @Input() geojson: GeoJSON;
   @Input() options = leafletDrawOption;
@@ -74,21 +76,23 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
         this.layerDrawed.emit({ geojson: null });
       } else {
         this._currentDraw = (e as any).layer.setStyle(this.mapservice.searchStyle);
-        const layerType = (e as any).layerType;
+        this.currentLayerType = (e as any).layerType;
         this.mapservice.leafletDrawFeatureGroup.addLayer(this._currentDraw);
-        const geojson = this.getGeojsonFromFeatureGroup(layerType);
+        const geojson = this.getGeojsonFromFeatureGroup(this.currentLayerType);
         this.mapservice.justLoaded = false;
         this.layerDrawed.emit(geojson);
       }
     });
 
     // on draw edited
-    this.mapservice.map.on('draw:edited', e => {
-      let geojson = this.mapservice.leafletDrawFeatureGroup.toGeoJSON();
-      geojson = (geojson as any).features[0];
+    this.mapservice.map.on(this._Le.Draw.Event.EDITED, e => {
       // output
       this.mapservice.justLoaded = false;
 
+      const geojson = this.getGeojsonFromFeatureGroup(this.currentLayerType);
+      if (geojson) {
+        this.layerDrawed.emit(geojson);
+      }
       this.layerDrawed.emit(geojson);
     });
 
@@ -98,8 +102,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     });
 
     this.map.on(this._Le.Draw.Event.DELETESTOP, e => {
-      const layerType = (e as any).layerType;
-      const geojson = this.getGeojsonFromFeatureGroup(layerType);
+      const geojson = this.getGeojsonFromFeatureGroup(this.currentLayerType);
       if (geojson) {
         this.layerDrawed.emit(geojson);
       }
