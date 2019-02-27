@@ -1007,52 +1007,59 @@ Dans tous les exports, l'ordre et le nom des colonnes sont basés sur la vue ser
 
 Les exports (CSV, GeoJson, Shapefile) sont basés sur la vue ``gn_synthese.v_synthese_for_export``.
         
-Il est possible de masquer des champs présents dans les exports. Pour cela éditez la variable ``[SYNTHESE.EXPORT_COLUMNS]``.
+Il est possible de masquer des champs présents dans les exports. Pour cela éditez la variable ``EXPORT_COLUMNS``.
      
-Enlevez la ligne de la colonne que vous souhaitez désactiver, ou renommer la 2ème partie de la ligne pour renommer une colonne. Ex : pour renommer le champs ``count_min``, modifiez la ligne de la manière suivante : ``count_min = "NombMax"``. Les noms de colonne de plus de 10 caractères seront tronqués dans le fichier shapefile.
+Enlevez la ligne de la colonne que vous souhaitez désactiver. Les noms de colonne de plus de 10 caractères seront tronqués dans le fichier shapefile.
 
 ::
 
-    [SYNTHESE.EXPORT_COLUMNS]
-                id_synthese = "idSyn" 
-                unique_id_sinp = "idUnique" 
-                date_min = "dateMin" 
-                date_max = "dateMax" 
-                observers = "observers" 
-                altitude_min = "altMin" 
-                altitude_max = "altMax" 
-                count_min = "NbMin" 
-                count_max = "nbMax" 
-                sample_number_proof = "EchanPreuv" 
-                digital_proof = "PreuvNum" 
-                non_digital_proof = "PreuvNoNum" 
-                comments = "comment" 
-                nat_obj_geo = "natObjGeo" 
-                grp_typ = "methGrp" 
-                obs_method = "obsMeth" 
-                obs_technique = "obsTech" 
-                bio_status = "ocEtatBio" 
-                bio_condition = "ocStatBio" 
-                naturalness = "ocNat" 
-                exist_proof = "preuveOui" 
-                valid_status = "validStat" 
-                diffusion_level = "nivDiffusi" 
-                life_stage = "ocStade" 
-                sex = "ocSex" 
-                obj_count = "objDenbr" 
-                type_count = "typDenbr" 
-                sensitivity = "sensibilit" 
-                observation_status = "statutObs" 
-                blurring = "floutage" 
-                source_status = "statutSour" 
-                info_geo_type = "typeGeom" 
-                determination_method = "methDeterm" 
-                dataset_name = "JDD" 
-                cd_nom = "cdNom" 
-                cd_ref = "cdRef" 
-                nom_valide = "nomValide" 
-                wkt = "WKT"
-
+    [SYNTHESE]
+        EXPORT_COLUMNS   = [
+            "idSynthese",
+            "permId",
+            "permIdGrp",
+            "dateDebut",
+            "dateFin",
+            "observer",
+            "altMin",
+            "altMax",
+            "denbrMin",
+            "denbrMax",
+            "EchanPreuv",
+            "PreuvNum",
+            "PreuvNoNum",
+            "obsCtx",
+            "obsDescr",
+            "ObjGeoTyp",
+            "methGrp",
+            "obsMeth",
+            "ocEtatBio",
+            "ocStatBio",
+            "ocNat",
+            "preuveOui",
+            "validStat",
+            "difNivPrec",
+            "ocStade",
+            "ocSex",
+            "objDenbr",
+            "denbrTyp",
+            "sensiNiv",
+            "statObs",
+            "dEEFlou",
+            "statSource",
+            "typInfGeo",
+            "methDeterm",
+            "jddCode",
+            "cdNom",
+            "cdRef",
+            "nomCite",
+            "vTAXREF",
+            "wkt",
+            "lastAction",
+            "validateur"
+        ]
+.. note::
+    L'entête ``[SYNTHESE]`` au dessus ``EXPORT_COLUMNS`` indique simplement que cette variable appartient au bloc de configuration de la synthese. Ne pas rajouter l'entête à chaque paramètre de la synthese mais une seule fois au dessus de toutes les variables de configuration du module.
 
 Il est également possible de personnaliser ses exports en éditant le SQL de la vue ``gn_synthese.v_synthese_for_export`` (niveau SQL et administration GeoNature avancé).
         
@@ -1067,7 +1074,7 @@ La vue doit OBLIGATOIREMENT contenir les champs :
 - id_digitiser
 - observer
 
-Ces champs doivent impérativement être présents dans la vue, mais ne seront pas nécessairement dans le fichier d'export si ils ne figurent pas dans la variable ``[SYNTHESE.EXPORT_COLUMNS]``. De manière générale, préférez rajouter des champs plutôt que d'en enlever !
+Ces champs doivent impérativement être présents dans la vue, mais ne seront pas nécessairement dans le fichier d'export si ils ne figurent pas dans la variable ``EXPORT_COLUMNS``. De manière générale, préférez rajouter des champs plutôt que d'en enlever !
 
 Le nom de ces champs peuvent cependant être modifié. Dans ce cas, modifiez le fichier ``geonature_config.toml``, section ``SYNTHESE`` parmis les variables suivantes (``EXPORT_ID_SYNTHESE_COL, EXPORT_ID_DATASET_COL, EXPORT_ID_DIGITISER_COL, EXPORT_OBSERVERS_COL, EXPORT_GEOJSON_4326_COL, EXPORT_GEOJSON_LOCAL_COL``)
 
@@ -1082,7 +1089,7 @@ En plus des observations brutes, il est possible d'effectuer un export des méta
 Deux champs sont cependant obligatoire dans la vue : 
 
 - ``jdd_id`` (qui corespond à l'id du JDD de la table ``gn_meta.t_datasets``). Le nom de ce champs est modifiable. Si vous le modifiez, éditez la variable ``EXPORT_METADATA_ID_DATASET_COL``. 
-- ``acteurs``:  Le nom de ce champs est modifiable. Si vous le modifiez, éditez la variable 
+- ``acteurs``:  Le nom de ce champs est modifiable. Si vous le modifiez, éditez la variable ``EXPORT_METADATA_ACTOR_COL``
 
 **Export des statuts taxonomiques (réglementations)**
         

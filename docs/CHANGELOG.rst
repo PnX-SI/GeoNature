@@ -9,18 +9,13 @@ CHANGELOG
 
 - V2 : Pour plus de détails sur les évolutions apportées, consultez les détails des versions RC (Release Candidate)
 - BDDv1toV2 : Script SQL de MAJ structure BDD global ou passer les RC ? + Script migration des données à adapter
-- Migration METADATA comme un module à part. La migration prévoit de mettre un CRUVED au groupe_admin et groupe_en_poste pour le nouveau module METADATA. Le groupes nouvellement créé par les administrateur et n'ayant de CRUVED pour l'objet METADATA (du module admin), se retrouve avec le CRUVED hérité de GeoNature. Prévoir de changer le CRUVED de ces groupes pour le nouveau module METADATA.
-- Les personnes ayant configurer leur fichier app.config.ts devront le récpercuter dans geonature_config.toml
-- Pull request sur le module validation sur le changement du composant ``pnx-areas`` (possibilité d'afficher plusieurs type d'area dans le composant)
-- Le fichier 'introduction.component.html' a été modifié (la carte des 100 dernière obs n'y figure plus). Tout supprimer à partir de la ligne 21. Puis relancer un build
 
-- Supprimer la variable COLUMNS_API_SYNTHESE_WEB_APP si elle a été ajouté dans le fichier ``geonature_config.toml``
-- Supprimer la variable [SYNTHESE.EXPORT_COLUMNS] du fichier geonature_config.toml et geonature_config.toml.sample (changement de format du schéma Marshmallow sur cette variable). 
 
 **Nouveautés**
 
 * Possibilité de charger un fichier (GPX, GeoJson ou KML) pour la saisie dans le module Occtax
-* Intégration du plugin leaflet markerCluster
+* Ajout d'un moteur de recherche de lieu (basé sur Openstreetmap Nominatim) sur les modules cartographiques
+* Intégration du plugin leaflet markerCluster permettant d'afficher d'avantage d'observations sur les carte et de gérer leurs superposition 
 * Synthese: possibilité de grouper plusieurs type d'aire dans le composant ``pnx-areas``
 * Design de la page de login
 * Intégration d'un bloc stat sur la page d'accueil
@@ -31,6 +26,7 @@ CHANGELOG
 
 
 
+
 **Correction**
 
 * Synthese: correction lié aux filtres multiples et au filtre géographique de type cercle
@@ -38,6 +34,27 @@ CHANGELOG
 * Gains de performances en synthese
 * Ajout contrainte DELETE CASCADE entre ``ref_geo.li_municialities`` ``ref_geo.l_areas``
 * Occtax: possibilité de rentré un dénombrement égal à 0 (cas des occurrences d'absence)
+* Occtax: retour à l'emprise cartographique précedente lorsqu'on enchaine les relevés
+
+
+
+
+* Notes de version
+
+Veuillez bien lire ces quelques consignes avant de vous lancez dans la migration.
+
+* Les personnes ayant configuré leur fichier map.config.ts devront le récpercuter dans ``geonature_config.toml`` (voir ``geonature_config.toml.example`` section ``[MAPCONFIG]``) suite à la centralisation des configuration cartographique.
+* La configuration des exports du module synthèse a été modifié (voir https://geonature.readthedocs.io/fr/latest/admin-manual.html#module-synthese) Si vous avez ajouté la variable ``[SYNTHESE.EXPORT_COLUMNS]`` dans le fichier ``geonature_config.toml`` veuillez la supprimer puis la réadapter à partir de l'exemple dans le fichier ``geonature_config.toml.example``.
+* Supprimer la variable COLUMNS_API_SYNTHESE_WEB_APP si elle a été ajouté dans le fichier ``geonature_config.toml``
+* Pour simplifier son édition, le template personalisable de la page d'accueil (``frontend/src/custom/components/introduction/introduction.component.html``) a été modifié (la carte des 100 dernière obs n'y figure plus). Veuillez supprimer tout ce qui se situe la ligne 21 dans ce fichier. 
+* Le backoffice ce gestion des métadonnées est dorenavant un module GeoNature à part. Le script migration prévoit de mettre un CRUVED au groupe_admin et groupe_en_poste pour le nouveau module METADATA. Le groupes nouvellement créé par les administrateur et n'ayant de CRUVED pour l'objet METADATA (du module admin), se retrouve avec le CRUVED hérité de GeoNature. L'administrateuer devra changer lui même le CRUVED de ces groupes pour le nouveau module METADATA.
+
+
+* Executer le script de migration SQL: https://github.com/PnX-SI/GeoNature/blob/2.0.0/data/migrations/2.0.0rc4.2to2.0.0.sql
+
+* Suivez ensuite la procédure classique de mise à jour de GeoNature (https://geonature.readthedocs.io/fr/latest/installation-standalone.html#mise-a-jour-de-l-application)
+
+
 
 2.0.0-rc.4.2 (2019-01-23)
 -------------------------
