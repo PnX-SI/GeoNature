@@ -522,7 +522,9 @@ def export(info_role):
         results = FeatureCollection(
             [export_view.as_geofeature(d, columns=export_columns) for d in data]
         )
-        return to_json_resp(results, as_file=True, filename=file_name, indent=4)
+        return to_json_resp(
+            results, as_file=True, filename=file_name, indent=4, extension="geojson"
+        )
     else:
         try:
             filemanager.delete_recursively(
@@ -532,7 +534,6 @@ def export(info_role):
                 db_col for db_col in export_view.db_cols if db_col.key in export_columns
             ]
             dir_path = str(ROOT_DIR / "backend/static/shapefiles")
-            print(db_cols)
             export_view.as_shape(
                 db_cols=db_cols, data=data, dir_path=dir_path, file_name=file_name
             )
