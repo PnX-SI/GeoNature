@@ -540,10 +540,10 @@ ALTER TABLE cor_counting_occtax
   ADD CONSTRAINT check_cor_counting_occtax_type_count CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_type_count,'TYP_DENBR')) NOT VALID;
 
 ALTER TABLE cor_counting_occtax
-    ADD CONSTRAINT check_cor_counting_occtax_count_min CHECK (count_min > 0);
+    ADD CONSTRAINT check_cor_counting_occtax_count_min CHECK (count_min >= 0);
 
 ALTER TABLE cor_counting_occtax
-    ADD CONSTRAINT check_cor_counting_occtax_count_max CHECK (count_max >= count_min AND count_max > 0);
+    ADD CONSTRAINT check_cor_counting_occtax_count_max CHECK (count_max >= count_min AND count_max >= 0);
 
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT check_pr_occtax_defaults_nomenclatures_value_is_nomenclature_in_type CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature, mnemonique_type)) NOT VALID;
