@@ -1,7 +1,6 @@
 <div class="row row-0">
     <div class="col-sm-12 col-md-7 padding-sm map-content">
         <pnx-map height="94vh" class="map-card">
-            <pnx-gps (markerChanged)="sendGeoInfo($event)"> </pnx-gps>
             <pnx-marker [coordinates]="fs.markerCoordinates" [zoomLevel]="occtaxConfig.releve_map_zoom_level"
                 (markerChanged)="sendGeoInfo($event)">
             </pnx-marker>
