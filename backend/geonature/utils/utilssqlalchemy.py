@@ -419,7 +419,9 @@ def json_resp(fn):
     return _json_resp
 
 
-def to_json_resp(res, status=200, filename=None, as_file=False, indent=None):
+def to_json_resp(
+    res, status=200, filename=None, as_file=False, indent=None, extension="json"
+):
     if not res:
         status = 404
         res = {"message": "not found"}
@@ -429,7 +431,9 @@ def to_json_resp(res, status=200, filename=None, as_file=False, indent=None):
         headers = Headers()
         headers.add("Content-Type", "application/json")
         headers.add(
-            "Content-Disposition", "attachment", filename="export_%s.json" % filename
+            "Content-Disposition",
+            "attachment",
+            filename="export_{}.{}".format(filename, extension),
         )
 
     return Response(
