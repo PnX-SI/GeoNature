@@ -8,7 +8,7 @@ from flask import Blueprint, request, current_app, send_from_directory, render_t
 from sqlalchemy import distinct, func, desc, select
 from sqlalchemy.orm import exc
 from sqlalchemy.sql import text
-from geojson import FeatureCollection
+from geojson import FeatureCollection, Feature
 
 
 from geonature.utils import filemanager
@@ -283,14 +283,17 @@ def export_observations_web(info_role):
         )
 
     elif export_format == "geojson":
-        formated_data = []
+        features = []
         for r in results:
-            geojson = ast.literal_eval(
+            geometry = ast.literal_eval(
                 getattr(r, current_app.config["SYNTHESE"]["EXPORT_GEOJSON_4326_COL"])
             )
-            geojson["properties"] = export_view.as_dict(r, columns=columns_to_serialize)
-            formated_data.append(geojson)
-        results = FeatureCollection(formated_data)
+            feature = Feature(
+                geometry=geometry,
+                properties=export_view.as_dict(r, columns=columns_to_serialize),
+            )
+            features.append(feature)
+        results = FeatureCollection(features)
         return to_json_resp(results, as_file=True, filename=file_name, indent=4)
     else:
         try:
