@@ -22,7 +22,7 @@ CHANGELOG
 * Intégration d'un bloc stat sur la page d'accueil
 * Ajout d'un export des métadonnées dans la synthèse
 * Centralisation de la configuration cartographique dans la configuration globale de GeoNature (``geonature_config.toml``)
-* Cartographie : zoom sur l'emprise des résultats après une recherche dans la Synthèse
+* Cartographie : zoom sur l'emprise des résultats après une recherche
 * Migration de la gestion des métadonnées dans un module à part : 'METADATA' (#550)
 * Export vue synthèse customisable (voir doc)
 * Lien vers doc par module (customisables dans ``gn_commons.t_modules``) (#556)
@@ -30,6 +30,7 @@ CHANGELOG
 * Ajout du rang taxonomique et du cd_nom après les noms de taxons dans la recherche taxonomique (#549)
 * Mise à jour des communes fournies lors de l'installation (IGN admin express 2019) (#537)
 * Synthèse : Ajout du filtre par organisme (#531), affichage des acteurs dans les fiches détail et les exports
+* Synthese: possibilité de filtrer dans les listes déroulantes des jeux de données et cadres d'acquisition
 * Filtre de la recherche taxonomique par règne et groupe INPN retiré des formulaires de recherche (#531)
 * Suppression du champ validation dans le schéma de BDD Occtax car cette information est stockée dans la table verticale ``gn_commons.t_validations`` + affichage du statut de validation dans les fiches Occtax et Synthèse
 * Ajout d'une vue ``gn_commons.v_lastest_validation`` pour faciliter la récupération du dernier statut de validation d'une observation
@@ -43,6 +44,7 @@ CHANGELOG
 * Ajout d'une contrainte DELETE CASCADE entre ``ref_geo.li_municialities`` et ``ref_geo.l_areas`` (#554)
 * Occtax: possibilité de rentrer un dénombrement égal à 0 (cas des occurrences d'absence)
 * Occtax: retour à l'emprise cartographique précédente lorsqu'on enchaine les relevés (#570)
+* Occtax: correction de l'automplissage du champ 'hour_max' lors de l'édition d'un relevé
 * Divers compléments de la documentation (merci @jbdesbas, @xavyeah39 et @DonovanMaillard)
 * Ajout de contraintes d'unicité sur les UUID_SINP pour empêcher les doublons (#536)
 * Corrections et compléments des tests automatiques
