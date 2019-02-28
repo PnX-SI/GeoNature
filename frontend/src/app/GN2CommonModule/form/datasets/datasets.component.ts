@@ -20,6 +20,7 @@ import { CommonService } from '../../service/common.service';
 })
 export class DatasetsComponent extends GenericFormComponent implements OnInit, OnChanges, DoCheck {
   public dataSets: any;
+  public savedDatasets: Array<any>;
   public iterableDiffer: IterableDiffer<any>;
   @Input() idAcquisitionFrameworks: Array<number> = [];
   @Input() idAcquisitionFramework: number;
@@ -46,6 +47,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
     this._dfs.getDatasets(params).subscribe(
       res => {
         this.dataSets = res.data;
+        this.savedDatasets = res.data;
         if (res['with_mtd_errors']) {
           this._commonService.translateToaster('error', 'MetaData.JddErrorMTD');
         }
@@ -62,6 +64,10 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
         }
       }
     );
+  }
+
+  filterItems(event) {
+    this.dataSets = super.filterItems(event, this.savedDatasets, 'dataset_shortname');
   }
 
   ngOnChanges(changes) {

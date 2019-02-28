@@ -42,6 +42,17 @@ export class GenericFormComponent implements OnInit, AfterViewInit, OnDestroy {
       });
   }
 
+  filterItems(event, savedItems, itemKey) {
+    if (this.searchBar && event) {
+      return savedItems.filter(el => {
+        const isIn = el[itemKey].toUpperCase().indexOf(event.toUpperCase());
+        return isIn !== -1;
+      });
+    } else {
+      return savedItems;
+    }
+  }
+
   ngOnDestroy() {
     this.sub.unsubscribe();
   }
