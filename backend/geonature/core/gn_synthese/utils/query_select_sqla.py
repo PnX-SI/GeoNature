@@ -174,12 +174,15 @@ class SyntheseQuery:
             )
 
         if "id_organism" in self.filters:
-            self.add_join(
-                CorDatasetActor, CorDatasetActor.id_dataset, self.model.id_dataset
+            datasets = (
+                DB.session.query(CorDatasetActor.id_dataset)
+                .filter(
+                    CorDatasetActor.id_organism.in_(self.filters.pop("id_organism"))
+                )
+                .all()
             )
-            self.query = self.query.where(
-                CorDatasetActor.id_organism.in_(self.filters.pop("id_organism"))
-            )
+            formated_datasets = [d[0] for d in datasets]
+            self.query = self.query.where(self.model.id_dataset.in_(formated_datasets))
 
         if "date_min" in self.filters:
             self.query = self.query.where(

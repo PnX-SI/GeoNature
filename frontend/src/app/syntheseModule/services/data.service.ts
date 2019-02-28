@@ -111,7 +111,7 @@ export class DataService {
       () => {
         this.isDownloading = false;
         const date = new Date();
-        const extension = format === 'shapefile' ? '.zip' : format;
+        const extension = format === 'shapefile' ? 'zip' : format;
         this.saveBlob(this._blob, `${fileName}_${date.toISOString()}.${extension}`);
         subscription.unsubscribe();
       }

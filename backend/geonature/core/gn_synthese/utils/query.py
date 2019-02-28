@@ -155,9 +155,13 @@ def filter_query_all_filters(model, q, filters, user):
         q = q.filter(model.observers.ilike("%" + filters.pop("observers")[0] + "%"))
 
     if "id_organism" in filters:
-        q = q.join(
-            CorDatasetActor, CorDatasetActor.id_dataset == model.id_dataset
-        ).filter(CorDatasetActor.id_organism.in_(filters.pop("id_organism")))
+        id_datasets = (
+            DB.session.query(CorDatasetActor.id_dataset)
+            .filter(CorDatasetActor.id_organism.in_(filters.pop("id_organism")))
+            .all()
+        )
+        formated_datasets = [d[0] for d in id_datasets]
+        q = q.filter(model.id_dataset.in_(formated_datasets))
 
     if "date_min" in filters:
         q = q.filter(model.date_min >= filters.pop("date_min")[0])
