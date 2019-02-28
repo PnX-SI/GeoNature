@@ -13,7 +13,8 @@ import { CommonService } from "@geonature_common/service/common.service";
 @Component({
   selector: "pnx-occtax-map-info",
   templateUrl: "occtax-map-info.component.html",
-  styleUrls: ["./occtax-map-info.component.scss"]
+  styleUrls: ["./occtax-map-info.component.scss"],
+  providers: [OcctaxFormService]
 })
 export class OcctaxMapInfoComponent implements OnInit {
   private _sub: Subscription;
@@ -109,13 +110,9 @@ export class OcctaxMapInfoComponent implements OnInit {
           });
         },
         error => {
-          if(error.status === 403) {
-            this._commonService.translateToaster(
-              "error",
-              "NotAllowed"
-            );
-          }
-          else if(error.status === 404) {
+          if (error.status === 403) {
+            this._commonService.translateToaster("error", "NotAllowed");
+          } else if (error.status === 404) {
             this._commonService.translateToaster(
               "error",
               "Releve.DoesNotExist"
@@ -123,8 +120,8 @@ export class OcctaxMapInfoComponent implements OnInit {
           }
 
           this._router.navigate(["/occtax"]);
-        });
-        
+        }
+      );
     }
   }
 
