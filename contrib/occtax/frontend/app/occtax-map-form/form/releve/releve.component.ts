@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, OnDestroy } from "@angular/core";
-import { FormGroup} from "@angular/forms";
+import { FormGroup } from "@angular/forms";
 import { Subscription } from "rxjs/Subscription";
 import { MapService } from "@geonature_common/map/map.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
@@ -68,18 +68,21 @@ export class ReleveComponent implements OnInit, OnDestroy {
       .properties as FormGroup).controls.hour_min.valueChanges
       .filter(value => value != null)
       .subscribe(value => {
+        
         if (value.length == 0)
           (this.releveForm.controls
             .properties as FormGroup).controls.hour_min.reset();
         else if (
           // autcomplete only if hour max is empty or invalid
             (this.releveForm.controls
-              .properties as FormGroup).controls.hour_max.invalid || 
+              .properties as FormGroup).controls.hour_max.invalid ||
               this.releveForm.value.properties.hour_max == null
         ) {
-        (this.releveForm.controls
-          .properties as FormGroup).controls.hour_max.patchValue(value);
-        //}
+          if(! this.fs.currentHourMax) {
+            // autcomplete hour max only if currentHourMax is null
+            (this.releveForm.controls
+              .properties as FormGroup).controls.hour_max.patchValue(value);
+          }
       });
 
     // set hour_max = hour_min to prevent date_max<date_min
@@ -87,6 +90,7 @@ export class ReleveComponent implements OnInit, OnDestroy {
       .properties as FormGroup).controls.hour_max.valueChanges
       .filter(value => value != null)
       .subscribe(value => {
+
         if (value.length == 0)
           (this.releveForm.controls
             .properties as FormGroup).controls.hour_max.reset();
@@ -103,6 +107,7 @@ export class ReleveComponent implements OnInit, OnDestroy {
           .value["date_min"];
         let oldmaxdate = (this.releveForm.controls.properties as FormGroup)
           .value["date_max"];
+                    
         //Compare the dates before the change of the datemin. If datemin and datemax were equal, maintain this equality
         //If they don't, do nothing
         //oldmaxdate and oldmindate are objects. Strigify it for a right comparison

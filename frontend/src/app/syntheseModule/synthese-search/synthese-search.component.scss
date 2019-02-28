@@ -63,7 +63,7 @@ legend {
 }
 
 .search-btn {
-  padding: 10px;
+  padding: 2px;
   float: right;
 }
 
@@ -74,10 +74,6 @@ legend {
 
 .relative {
   position: relative;
-}
-
-.absolute {
-  //position: absolute;
 }
 
 :host /deep/ ngb-typeahead-window > button > span {

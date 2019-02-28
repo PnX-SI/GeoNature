@@ -109,10 +109,12 @@ export class OcctaxFormComponent implements OnInit {
         this.fs.previousCenter = this._mapService.map.getCenter();
         this.fs.previousZoomLevel = this._mapService.map.getZoom();
 
+        // reset the service value
         this.fs.taxonsList = [];
         this.fs.indexOccurrence = 0;
         this.fs.disabled = true;
         this.fs.showCounting = false;
+        this.fs.currentHourMax = null;
         // redirect
         this.router.navigate(["/occtax"]);
       },
