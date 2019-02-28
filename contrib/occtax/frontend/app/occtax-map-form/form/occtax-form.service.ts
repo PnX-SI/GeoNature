@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import {
-  FormControl,
   FormBuilder,
   FormGroup,
   FormArray,
@@ -11,8 +10,7 @@ import { GeoJSON } from "leaflet";
 
 import { AppConfig } from "@geonature_config/app.config";
 import { HttpClient, HttpParams } from "@angular/common/http";
-import { DataFormService } from "@geonature_common/form/data-form.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { ModuleConfig } from "../../module.config";
 import { AuthService, User } from "@geonature/components/auth/auth.service";
 import { FormService } from "@geonature_common/form/form.service";
@@ -40,6 +38,7 @@ export class OcctaxFormService {
   public userReleveRigth: any;
   public savedOccurrenceData: any;
   public savedCurrentTaxon: any;
+  public currentHourMax: string;
 
   public releveForm: FormGroup;
   public occurrenceForm: FormGroup;
@@ -50,7 +49,6 @@ export class OcctaxFormService {
   constructor(
     private _fb: FormBuilder,
     private _http: HttpClient,
-    private _dfs: DataFormService,
     private _router: Router,
     private _auth: AuthService,
     private _formService: FormService,
@@ -62,6 +60,7 @@ export class OcctaxFormService {
     this.showOccurrence = false;
     this.showCounting = false;
     this.isEdintingOccurrence = false;
+    this.currentHourMax = null;
 
     this._router.events.subscribe(value => {
       this.isEdintingOccurrence = false;

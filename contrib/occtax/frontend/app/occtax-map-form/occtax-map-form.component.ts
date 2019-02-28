@@ -23,7 +23,8 @@ import { AuthService } from "@geonature/components/auth/auth.service";
   selector: "pnx-occtax-map-form",
   templateUrl: "./occtax-map-form.component.html",
   styleUrls: ["./occtax-map-form.component.scss"],
-  providers: [MapService]
+  // important to provide a new instance of OcctaxFormService to réinitialize it
+  providers: [MapService, OcctaxFormService]
 })
 export class OcctaxMapFormComponent
   implements OnInit, OnDestroy, AfterViewInit {
@@ -92,29 +93,27 @@ export class OcctaxMapFormComponent
             }
 
             // pre fill the form
-            this.fs.releveForm.patchValue({
-              properties: data.releve.properties
-            });
 
-            (this.fs.releveForm.controls.properties as FormGroup).patchValue({
-              date_min: this.fs.formatDate(data.releve.properties.date_min)
-            });
-            (this.fs.releveForm.controls.properties as FormGroup).patchValue({
-              date_max: this.fs.formatDate(data.releve.properties.date_max)
-            });
-            const hour_min =
+            data.releve.properties.hour_min =
               data.releve.properties.hour_min === "None"
                 ? null
                 : data.releve.properties.hour_min;
-            const hour_max =
+
+            data.releve.properties.hour_max =
               data.releve.properties.hour_max === "None"
                 ? null
                 : data.releve.properties.hour_max;
-            (this.fs.releveForm.controls.properties as FormGroup).patchValue({
-              hour_min: hour_min
-            });
-            (this.fs.releveForm.controls.properties as FormGroup).patchValue({
-              hour_max: hour_max
+            this.fs.currentHourMax = data.releve.properties.hour_max;
+
+            data.releve.properties.date_min = this.fs.formatDate(
+              data.releve.properties.date_min
+            );
+            data.releve.properties.date_max = this.fs.formatDate(
+              data.releve.properties.date_max
+            );
+
+            this.fs.releveForm.patchValue({
+              properties: data.releve.properties
             });
 
             const orderedCdNomList = [];

@@ -4,7 +4,7 @@ import { FormGroup } from '@angular/forms/src/model';
 
 @Injectable()
 export class FormService {
-  constructor() { }
+  constructor() {}
 
   dateValidator(dateMinControl: AbstractControl, dateMaxControl: AbstractControl): ValidatorFn {
     return (formGroup: FormGroup): { [key: string]: boolean } => {
@@ -29,7 +29,7 @@ export class FormService {
     return (formGroup: FormGroup): { [key: string]: boolean } => {
       const altMin = altiMinControl.value;
       const altMax = altMaxControl.value;
-      if (altMin && altMax && (altMin > altMax)) {
+      if (altMin && altMax && altMin > altMax) {
         return {
           invalidAlt: true
         };
@@ -54,8 +54,8 @@ export class FormService {
       );
       return invalidHour
         ? {
-          invalidHour: true
-        }
+            invalidHour: true
+          }
         : null;
     };
   }
@@ -71,7 +71,10 @@ export class FormService {
     const dateMin = dateMinControl.value;
     const dateMax = dateMaxControl.value;
     // if hour min et pas hour max => set error
-    if (hourMin && hourMax) {
+    if (hourMin && !hourMax) {
+      return true;
+      // if hour min et hour max => check validity
+    } else if (hourMin && hourMax) {
       const formatedHourMin = hourMin.split(':').map(h => parseInt(h));
       const formatedHourMax = hourMax.split(':').map(h => parseInt(h));
       const formatedDateMin = new Date(dateMin.year, dateMin.month, dateMin.day);
