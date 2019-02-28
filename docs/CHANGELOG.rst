@@ -2,22 +2,26 @@
 CHANGELOG
 =========
 
-2.0.0 (unreleased)
+2.0.0 (2019-02-28)
 ------------------
 
-**A voir**
+La version 2 de GeoNature est une refonte complète de l'application.
 
-- V2 : Pour plus de détails sur les évolutions apportées, consultez les détails des versions RC (Release Candidate)
-- BDDv1toV2 : Script SQL de MAJ structure BDD global ou passer les RC ? + Script migration des données à adapter
-- Perfs Synthèse ??? #560
-- Vous pouvez mettre à jour TaxHub (en version XXX) et UsersHub (en version XXX) pour bénéficier de leurs évolutions et corrections
+* Refonte technologique en migrant de PHP/Symfony/ExtJS/Openlayers à Python3/Flask/Angular4/Leaflet
+* Refonte de l'architecture du code pour rendre GeoNature plus générique et modulaire
+* Refonte de la base de données pour la rendre plus standardisée, plus générique et modulaire
+* Refonte ergonomique pour moderniser l'application
+
+.. image :: http://geonature.fr/img/gn-login.jpg
+
+Pour plus de détails sur les évolutions apportées dans la version 2, consultez les détails des versions RC (Release Candidate) ci-dessous.
 
 **Nouveautés**
 
 * Possibilité de charger un fichier (GPX, GeoJson ou KML) sur la carte pour la saisie dans le module Occtax (#256)
 * Ajout d'un moteur de recherche de lieu (basé sur l'API OpenStreetMap Nominatim) sur les modules cartographiques (#476)
 * Intégration du plugin leaflet markerCluster permettant d'afficher d'avantage d'observations sur les cartes et de gérer leurs superposition (#559)
-* Synthese : possibilité de grouper plusieurs types de zonages dans le composant ``pnx-areas``
+* Synthèse : possibilité de grouper plusieurs types de zonages dans le composant ``pnx-areas``
 * Design de la page de login
 * Intégration d'un bloc stat sur la page d'accueil
 * Ajout d'un export des métadonnées dans la synthèse
@@ -36,15 +40,16 @@ CHANGELOG
 * Ajout d'une vue ``gn_commons.v_lastest_validation`` pour faciliter la récupération du dernier statut de validation d'une observation
 * Suppression de toutes les références à ``taxonomie.bib_noms`` en vue de le supprimer de TaxHub
 * Séparation des commentaires sur l'observation et sur le contexte (relevé) dans la Synthèse et simplification des triggers de Occtax vers Synthèse (#478)
+* Nouveau logo GeoNature (#346)
 
 **Corrections**
 
-* Synthèse: correction liée aux filtres multiples et aux filtres géographiques de type cercle
 * Améliorations importantes des performances de la synthèse (#560)
-* Ajout d'une contrainte DELETE CASCADE entre ``ref_geo.li_municialities`` et ``ref_geo.l_areas`` (#554)
-* Occtax: possibilité de rentrer un dénombrement égal à 0 (cas des occurrences d'absence)
-* Occtax: retour à l'emprise cartographique précédente lorsqu'on enchaine les relevés (#570)
-* Occtax: correction de l'automplissage du champ 'hour_max' lors de l'édition d'un relevé
+* Synthèse : correction liée aux filtres multiples et aux filtres géographiques de type cercle
+* Ajout d'une contrainte ``DELETE CASCADE`` entre ``ref_geo.li_municialities`` et ``ref_geo.l_areas`` (#554)
+* Occtax : possibilité de saisir un dénombrement égal à 0 (cas des occurrences d'absence)
+* Occtax : retour à l'emprise cartographique précédente lorsqu'on enchaine les relevés (#570)
+* Occtax : correction de l'automplissage du champ ``hour_max`` lors de l'édition d'un relevé
 * Divers compléments de la documentation (merci @jbdesbas, @xavyeah39 et @DonovanMaillard)
 * Ajout de contraintes d'unicité sur les UUID_SINP pour empêcher les doublons (#536)
 * Corrections et compléments des tests automatiques
@@ -52,16 +57,28 @@ CHANGELOG
 
 **Notes de version**
 
+**1.** Pour les utilisateurs utilisant la version 1 de GeoNature : 
+
+Il ne s'agit pas de mettre à jour GeoNature mais d'en installer une nouvelle version. En effet, il s'agit d'une refonte complète. 
+
+* Sauvegarder toutes ses données car l'opération est complexe et non-automatisée
+* Passer à la dernière version 1 de GeoNature (1.9.1)
+* Passer aux dernières versions de UsersHub et TaxHub
+* Installer GeoNature standalone ou refaire une installation complète
+* Adaptez les scripts présents dans ``/data/migrations/v1tov2`` et exécutez-les pas à pas. Attention ces scripts ont été faits pour la version 2.0.0-rc.1 et sont donc à ajuster, tester, compléter et adapter à votre contexte
+
+**2.** Pour les utilisateurs utilisant une version RC de GeoNature 2 : 
+
 Veuillez bien lire ces quelques consignes avant de vous lancer dans la migration.
 
-* Vous pouvez passer directement à cette version, mais en suivant les notes des versions intermédiaires
-* Les personnes ayant configuré leur fichier ``map.config.ts`` devront le récpercuter dans ``geonature_config.toml`` suite à la centralisation de la configuration cartographique (voir https://github.com/PnX-SI/GeoNature/blob/2.0.0/config/default_config.toml.example section ``[MAPCONFIG]``)
-* La configuration des exports du module synthèse a été modifié (voir https://geonature.readthedocs.io/fr/latest/admin-manual.html#module-synthese) Supprimer la variable``[SYNTHESE.EXPORT_COLUMNS]`` dans le fichier ``geonature_config.toml``. Voir l'exemple dans le fichier (voir https://github.com/PnX-SI/GeoNature/blob/2.0.0/config/default_config.toml.example section) pour configurer les exports
-* Supprimer la variable ``COLUMNS_API_SYNTHESE_WEB_APP`` si elle a été ajoutée dans le fichier ``geonature_config.toml``
-* Pour simplifier son édition, le template personalisable de la page d'accueil (``frontend/src/custom/components/introduction/introduction.component.html``) a été modifié (la carte des 100 dernière observations n'y figure plus). Veuillez supprimer tout ce qui se situe à partir de la ligne 21 (``<div class="row row-0">``) dans ce fichier. 
-* Exécuter le script de migration SQL: https://github.com/PnX-SI/GeoNature/blob/2.0.0/data/migrations/2.0.0rc4.2to2.0.0.sql
-* Le backoffice de gestion des métadonnées est dorenavant un module GeoNature à part. Le script migration précédemment lancé prévoit de mettre un CRUVED au groupe_admin et groupe_en_poste pour le nouveau module METADATA. Les groupes nouvellement créés par les administrateurs et n'ayant de CRUVED pour l'objet METADATA (du module admin), se retrouvent avec le CRUVED hérité de GeoNature. L'administrateur devra changer lui-même le CRUVED de ces groupes pour le nouveau module METADATA via le backoffice des permissions.
-* Suivez ensuite la procédure classique de mise à jour de GeoNature (https://geonature.readthedocs.io/fr/latest/installation-standalone.html#mise-a-jour-de-l-application)
+* Vous pouvez passer directement à cette version, mais en suivant les notes des versions intermédiaires.
+* Les personnes ayant configuré leur fichier ``map.config.ts`` devront le répercuter dans ``geonature_config.toml``, suite à la centralisation de la configuration cartographique (voir https://github.com/PnX-SI/GeoNature/blob/2.0.0/config/default_config.toml.example section ``[MAPCONFIG]``).
+* La configuration des exports du module synthèse a été modifiée (voir https://geonature.readthedocs.io/fr/latest/admin-manual.html#module-synthese). Supprimer la variable``[SYNTHESE.EXPORT_COLUMNS]`` dans le fichier ``geonature_config.toml``. Voir l'exemple dans le fichier (voir https://github.com/PnX-SI/GeoNature/blob/2.0.0/config/default_config.toml.example section) pour configurer les exports.
+* Supprimer la variable ``COLUMNS_API_SYNTHESE_WEB_APP`` si elle a été ajoutée dans le fichier ``geonature_config.toml``.
+* Pour simplifier son édition, le template personalisable de la page d'accueil (``frontend/src/custom/components/introduction/introduction.component.html``) a été modifié (la carte des 100 dernière observations n'y figure plus). Veuillez supprimer tout ce qui se situe à partir de la ligne 21 (``<div class="row row-0">``) dans ce fichier.
+* Exécuter le script de migration SQL: https://github.com/PnX-SI/GeoNature/blob/2.0.0/data/migrations/2.0.0rc4.2to2.0.0.sql.
+* Le backoffice de gestion des métadonnées est dorénavant un module GeoNature à part. Le script migration précédemment lancé prévoit de mettre un CRUVED au groupe_admin et groupe_en_poste pour le nouveau module METADATA. Les groupes nouvellement créés par les administrateurs et n'ayant de CRUVED pour l'objet METADATA (du module Admin), se retrouvent avec le CRUVED hérité de GeoNature. L'administrateur devra changer lui-même le CRUVED de ces groupes pour le nouveau module METADATA via le backoffice des permissions.
+* Suivez ensuite la procédure classique de mise à jour de GeoNature (https://geonature.readthedocs.io/fr/latest/installation-standalone.html#mise-a-jour-de-l-application).
 
 
 2.0.0-rc.4.2 (2019-01-23)
