@@ -106,7 +106,7 @@ ID_USER_SOCLE_2 = 6
     ]
 
     # Colonne à afficher par défaut sur la liste des resultats de la synthese
-    # choisir le champ 'prop' parmis les colonnes suivante (id_synthese, date_min,lb_nom, cd_nom, nom_vern, st_asgeojson, observers, dataset_name, url_source)
+    # choisir le champ 'prop' parmis les colonnes suivante (id_synthese, date_min, cd_nom, lb_nom, nom_vern_or_lb_nom, st_asgeojson, observers, dataset_name, url_source)
     
     LIST_COLUMNS_FRONTEND = [
         { prop = "nom_vern_or_lb_nom", name = "Taxon" },
