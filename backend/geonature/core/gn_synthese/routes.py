@@ -110,6 +110,7 @@ def get_observations_for_web(info_role):
             "date_min": str(r["date_min"]),
             "cd_nom": r["cd_nom"],
             "nom_vern_or_lb_nom": r["nom_vern"] if r["nom_vern"] else r["lb_nom"],
+            "lb_nom": r["lb_nom"],
             "dataset_name": r["dataset_name"],
             "observers": r["observers"],
             "url_source": r["url_source"],
