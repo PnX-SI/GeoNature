@@ -813,7 +813,7 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object (id_role, id_act
     1
     FROM save.cor_app_privileges cor
     JOIN utilisateurs.t_applications app ON app.id_application = cor.id_application
-    WHERE nom_application ilike 'geonature' OR nom_application ILIKE 'occtax'
+    WHERE nom_application ilike 'geonature' OR nom_application ilike 'application geonature' OR nom_application ILIKE 'occtax'
 ;
 
 
