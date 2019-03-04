@@ -1109,6 +1109,7 @@ COST 100;
 ------------
 
 
+DROP TRIGGER IF EXISTS tri_insert_default_validation_status ON pr_occtax.cor_counting_occtax;
 CREATE TRIGGER tri_insert_default_validation_status
   AFTER INSERT
   ON pr_occtax.cor_counting_occtax
