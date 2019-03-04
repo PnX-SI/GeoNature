@@ -833,7 +833,7 @@ INSERT INTO utilisateurs.cor_role_app_profil
 SELECT DISTINCT id_role, app.id_application, 1
 FROM save.cor_app_privileges cor
 JOIN utilisateurs.t_applications app ON app.id_application = cor.id_application
-WHERE nom_application ILIKE 'geonature';
+WHERE nom_application ILIKE 'geonature' OR nom_application = 'application geonature';
 END
 $$;
 
