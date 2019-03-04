@@ -107,6 +107,8 @@ CASE
   WHEN module_name='admin' THEN 'admin'
   WHEN module_name='suivi_chiro' THEN 'suivi_chiro'
   WHEN module_name='suivi_flore_territoire' THEN 'suivi_flore_territoire'
+  WHEN module_name='synthese' THEN 'synthese'
+
 END;
 
 
