@@ -1005,7 +1005,7 @@ DELETE
 FROM utilisateurs.t_applications
 WHERE id_parent = (
     SELECT id_application FROM utilisateurs.t_applications
-    WHERE nom_application ILIKE 'geonature'
+    WHERE nom_application ILIKE 'geonature' or nom_application ilike 'application geonature'
 );
 
 
