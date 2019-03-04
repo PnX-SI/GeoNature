@@ -1116,35 +1116,41 @@ CREATE TRIGGER tri_insert_default_validation_status
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_add_default_validation_status();
 
+DROP TRIGGER IF EXISTS tri_log_changes_cor_counting_occtax ON pr_occtax.cor_counting_occtax;
 CREATE TRIGGER tri_log_changes_cor_counting_occtax
   AFTER INSERT OR UPDATE OR DELETE
   ON pr_occtax.cor_counting_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
 
+DROP TRIGGER IF EXISTS tri_log_changes_t_occurrences_occtax ON pr_occtax.t_occurrences_occtax;
 CREATE TRIGGER tri_log_changes_t_occurrences_occtax
   AFTER INSERT OR UPDATE OR DELETE
   ON pr_occtax.t_occurrences_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
 
+DROP TRIGGER IF EXISTS tri_log_changes_t_releves_occtax ON pr_occtax.t_releves_occtax;
 CREATE TRIGGER tri_log_changes_t_releves_occtax
   AFTER INSERT OR UPDATE OR DELETE
   ON pr_occtax.t_releves_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
 
+DROP TRIGGER IF EXISTS tri_log_changes_cor_role_releves_occtax ON pr_occtax.cor_role_releves_occtax;
 CREATE TRIGGER tri_log_changes_cor_role_releves_occtax
   AFTER INSERT OR UPDATE OR DELETE
   ON pr_occtax.cor_role_releves_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
 
+DROP TRIGGER IF EXISTS tri_calculate_geom_local ON pr_occtax.t_releves_occtax;
 CREATE TRIGGER tri_calculate_geom_local
   BEFORE INSERT OR UPDATE
   ON pr_occtax.t_releves_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE ref_geo.fct_trg_calculate_geom_local('geom_4326', 'geom_local');
+
 
   -- triggers vers la synthese
 
