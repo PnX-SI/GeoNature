@@ -1421,8 +1421,8 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_dlb AS
 -- ASSOCIATED DATA--
 --------------------
 
-INSERT INTO gn_synthese.t_sources ( name_source, desc_source, entity_source_pk_field, url_source, groupe_source, active)
- VALUES ('Occtax', 'Données issues du module Occtax', 'pr_occtax.cor_counting_occtax.id_counting_occtax', '#/occtax/info/id_counting', 'CONTACT', True);
+INSERT INTO gn_synthese.t_sources ( name_source, desc_source, entity_source_pk_field, url_source)
+ VALUES ('Occtax', 'Données issues du module Occtax', 'pr_occtax.cor_counting_occtax.id_counting_occtax', '#/occtax/info/id_counting');
  
 INSERT INTO pr_occtax.defaults_nomenclatures_value (mnemonique_type, id_organism, regne, group2_inpn, id_nomenclature) VALUES
 ('NAT_OBJ_GEO',0, 0, 0,  ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO', 'NSP'));
