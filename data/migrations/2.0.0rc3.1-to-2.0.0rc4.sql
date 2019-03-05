@@ -821,7 +821,7 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object (id_role, id_act
 -- Prévention des doublons
 DELETE 
 FROM utilisateurs.cor_role_app_profil cor WHERE id_application = (
-SELECT id_application FROM utilisateurs.t_applications WHERE nom_application ilike 'geonature'
+SELECT id_application FROM utilisateurs.t_applications WHERE nom_application ilike 'geonature' OR nom_application ilike 'application geonature'
 );
 
 
