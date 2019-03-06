@@ -173,7 +173,7 @@ BASEMAP = [
 
 class MapConfig(Schema):
     BASEMAP = fields.List(fields.Dict, missing=BASEMAP)
-    CENTER = fields.List(fields.Integer, missing=[46.52863469527167, 2.43896484375])
+    CENTER = fields.List(fields.Float, missing=[46.52863469527167, 2.43896484375])
     ZOOM_LEVEL = fields.Integer(missing=6)
     ZOOM_LEVEL_RELEVE = fields.Integer(missing=15)
     # zoom appliqué sur la carte lorsque l'on clique sur une liste
