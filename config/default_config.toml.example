@@ -87,6 +87,7 @@ ID_USER_SOCLE_2 = 6
         {"name"= "OpenTopoMap", "layer" = "//a.tile.opentopomap.org/{z}/{x}/{y}.png", "attribution" = "© OpenTopoMap"},
         {"name" = "GoogleSatellite", "layer" = "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}","subdomains" = ["mt0", "mt1", "mt2", "mt3"],"attribution" = "© GoogleMap"}
     ]
+    # Attention: les coordonnées sont au format [Y, X] - cf leaflet configuration (https://leafletjs.com/reference-1.4.0.html#latlng-l-latlng)
     CENTER = [46.52863469527167, 2.43896484375]
     # Zoom par défaut
     ZOOM_LEVEL = 6
