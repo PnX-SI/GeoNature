@@ -85,23 +85,26 @@ def get_observations_for_web(info_role):
         result_limit = filters.pop("limit")[0]
     else:
         result_limit = current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
-    query = select(
-        [
-            VSyntheseForWebApp.id_synthese,
-            VSyntheseForWebApp.date_min,
-            VSyntheseForWebApp.lb_nom,
-            VSyntheseForWebApp.cd_nom,
-            VSyntheseForWebApp.nom_vern,
-            VSyntheseForWebApp.st_asgeojson,
-            VSyntheseForWebApp.observers,
-            VSyntheseForWebApp.dataset_name,
-            VSyntheseForWebApp.url_source,
-            VSyntheseForWebApp.entity_source_pk_value,
-        ]
-    ).order_by(VSyntheseForWebApp.date_min.desc())
+    query = (
+        select(
+            [
+                VSyntheseForWebApp.id_synthese,
+                VSyntheseForWebApp.date_min,
+                VSyntheseForWebApp.lb_nom,
+                VSyntheseForWebApp.cd_nom,
+                VSyntheseForWebApp.nom_vern,
+                VSyntheseForWebApp.st_asgeojson,
+                VSyntheseForWebApp.observers,
+                VSyntheseForWebApp.dataset_name,
+                VSyntheseForWebApp.url_source,
+                VSyntheseForWebApp.entity_source_pk_value,
+            ]
+        )
+        .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
+        .order_by(VSyntheseForWebApp.date_min.desc())
+    )
     synthese_query_class = SyntheseQuery(VSyntheseForWebApp, query, filters)
     synthese_query_class.filter_query_all_filters(info_role)
-
     result = DB.engine.execute(synthese_query_class.query.limit(result_limit))
     geojson_features = []
     for r in result:
