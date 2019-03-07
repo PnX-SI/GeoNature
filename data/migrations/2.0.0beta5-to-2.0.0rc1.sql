@@ -574,19 +574,18 @@ END $$;
 -----------------------
 -----FUNCTIONS----------
 -----------------------
-CREATE OR REPLACE FUNCTION pr_occtax.get_id_counting_from_id_releve(my_id_releve integer)
-  RETURNS integer[] AS
+CREATE OR REPLACE FUNCTION get_unique_id_sinp_from_id_releve(my_id_releve integer)
+  RETURNS uuid[] AS
 $BODY$
--- Function which return the id_countings in an array (table pr_occtax.cor_counting_occtax) from the id_releve(integer)
-DECLARE the_array_id_counting integer[];
-
+-- Function which return the unique_id_sinp_occtax in an array (table pr_occtax.cor_counting_occtax) from the id_releve(integer)
+DECLARE the_array_uuid_sinp uuid[];
 BEGIN
-SELECT INTO the_array_id_counting array_agg(counting.id_counting_occtax)
-FROM pr_occtax.t_releves_occtax rel
-JOIN pr_occtax.t_occurrences_occtax occ ON occ.id_releve_occtax = rel.id_releve_occtax
-JOIN pr_occtax.cor_counting_occtax counting ON counting.id_occurrence_occtax = occ.id_occurrence_occtax
+SELECT INTO the_array_uuid_sinp array_agg(counting.unique_id_sinp_occtax)
+FROM pr_occtax.cor_counting_occtax counting
+JOIN pr_occtax.t_occurrences_occtax occ ON occ.id_occurrence_occtax = counting.id_occurrence_occtax
+JOIN pr_occtax.t_releves_occtax rel ON rel.id_releve_occtax = occ.id_releve_occtax
 WHERE rel.id_releve_occtax = my_id_releve;
-RETURN the_array_id_counting;
+RETURN the_array_uuid_sinp;
 END;
 $BODY$
   LANGUAGE plpgsql IMMUTABLE
