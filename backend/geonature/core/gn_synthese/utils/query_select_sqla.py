@@ -45,11 +45,16 @@ class SyntheseQuery:
         self._already_joined_table = []
         self.query_joins = None
 
-    def add_join(self, right_table, right_column, left_column):
+    def add_join(self, right_table, right_column, left_column, join_type="right"):
         if self.first:
-            self.query_joins = self.model.__table__.join(
-                right_table, left_column == right_column
-            )
+            if join_type == "right":
+                self.query_joins = self.model.__table__.join(
+                    right_table, left_column == right_column
+                )
+            else:
+                self.query_joins = self.model.__table__.outerjoin(
+                    right_table, left_column == right_column
+                )
             self.first = False
             self._already_joined_table.append(right_table)
         else:
@@ -82,6 +87,7 @@ class SyntheseQuery:
                 CorObserverSynthese,
                 CorObserverSynthese.id_synthese,
                 self.model.id_synthese,
+                join_type="left",
             )
 
             ors_filters = [
