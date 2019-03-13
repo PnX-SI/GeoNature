@@ -314,7 +314,7 @@ def insertOrUpdateOneReleve(info_role):
             if not getattr(TOccurrencesOccurrence, att, False):
                 occ.pop(att)
         # pop the id if None. otherwise DB.merge is not OK
-        if occ["id_occurrence_occtax"] is None:
+        if "id_occurrence_occtax" in occ and occ["id_occurrence_occtax"] is None:
             occ.pop("id_occurrence_occtax")
         occtax = TOccurrencesOccurrence(**occ)
 
@@ -326,7 +326,7 @@ def insertOrUpdateOneReleve(info_role):
                 if not getattr(CorCountingOccurrence, att, False):
                     cnt.pop(att)
             # pop the id if None. otherwise DB.merge is not OK
-            if cnt["id_counting_occtax"] is None:
+            if "id_counting_occtax" in cnt and cnt["id_counting_occtax"] is None:
                 cnt.pop("id_counting_occtax")
             countingOccurrence = CorCountingOccurrence(**cnt)
             occtax.cor_counting_occtax.append(countingOccurrence)
