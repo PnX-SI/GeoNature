@@ -267,17 +267,20 @@ def getViewReleveList(info_role):
     }
 
 
+# current_app.config["SQLALCHEMY_ECHO"] = True
+
+
 @blueprint.route("/releve", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="OCCTAX")
 @json_resp
 def insertOrUpdateOneReleve(info_role):
     releveRepository = ReleveRepository(TRelevesOccurrence)
     data = dict(request.get_json())
-
+    occurrences_occtax = None
     if "t_occurrences_occtax" in data["properties"]:
         occurrences_occtax = data["properties"]["t_occurrences_occtax"]
         data["properties"].pop("t_occurrences_occtax")
-
+    observersList = None
     if "observers" in data["properties"]:
         observersList = data["properties"]["observers"]
         data["properties"].pop("observers")
@@ -300,7 +303,7 @@ def insertOrUpdateOneReleve(info_role):
 
     for occ in occurrences_occtax:
         cor_counting_occtax = []
-        if occ["cor_counting_occtax"]:
+        if "cor_counting_occtax" in occ:
             cor_counting_occtax = occ["cor_counting_occtax"]
             occ.pop("cor_counting_occtax")
 
@@ -310,16 +313,21 @@ def insertOrUpdateOneReleve(info_role):
         for att in attliste:
             if not getattr(TOccurrencesOccurrence, att, False):
                 occ.pop(att)
-
+        # pop the id if None. otherwise DB.merge is not OK
+        if occ["id_occurrence_occtax"] is None:
+            occ.pop("id_occurrence_occtax")
         occtax = TOccurrencesOccurrence(**occ)
+
         for cnt in cor_counting_occtax:
             # Test et suppression
-            #   des propriétés inexistantes de CorCountingOccurrence
+            # des propriétés inexistantes de CorCountingOccurrence
             attliste = [k for k in cnt]
             for att in attliste:
                 if not getattr(CorCountingOccurrence, att, False):
                     cnt.pop(att)
-
+            # pop the id if None. otherwise DB.merge is not OK
+            if cnt["id_counting_occtax"] is None:
+                cnt.pop("id_counting_occtax")
             countingOccurrence = CorCountingOccurrence(**cnt)
             occtax.cor_counting_occtax.append(countingOccurrence)
         releve.t_occurrences_occtax.append(occtax)
@@ -354,7 +362,6 @@ def insertOrUpdateOneReleve(info_role):
                     403,
                 )
         DB.session.add(releve)
-
     DB.session.commit()
     DB.session.flush()
 
