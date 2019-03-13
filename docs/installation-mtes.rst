@@ -53,18 +53,36 @@ Lancer le script pour effectuer automatiquement la configuration de l'applicatio
 
 ``/home/<my_user>/geonature/install/install_all/configuration_mtes.sh``
 
-Il est cependant possible de modifier ces configuraitons. Le fichier ``/home/<my_user>/geonature/config/default_config.toml.example`` liste l'ensemble des variables de configuration disponibles ainsi que leurs valeurs par défaut. 
+Il est cependant possible de modifier ces configurations. Le fichier ``/home/<my_user>/geonature/config/default_config.toml.example`` liste l'ensemble des variables de configuration disponibles ainsi que leurs valeurs par défaut. 
 
 Editer le fichier de configuration de GeoNature pour surcoucher ces variables :
 
 ::
 
-        sudo nano /etc/geonature/geonature_config.toml`
+        sudo nano /home/<MON_USER>/geonature/config/geonature_config.toml`
 
 Ci-dessous, les paramètres de configuration pour l'instance de production.
 
-Configuration des URLS
-***********************
+
+
+Configuration globale de l'application
+**************************************
+
+# code EPSG de la projection de la base
+LOCAL_SRID = '2154'
+
+DEFAULT_LANGUAGE='fr'
+
+# url de l'application métadonnée
+MTD_API_ENDPOINT = 'http://inpn.mnhn.fr/mtd'
+
+# Nom de l'application sur la page d'acceuil
+appName = 'Depôt légal de biodiviersité - saisie'
+
+ID_APPLICATION_GEONATURE = 14
+
+Configuration des URLS pour le CAS
+***********************************
 
 Les URLS doivent correspondre aux informations renseignées dans la configuration Apache et au Load Balancer. Elle ne doivent pas contenir de ``/`` final.
 
@@ -89,6 +107,16 @@ Mettre un clé secrète personnalisée
     
     SECRET_KEY = '<MA_CLE_CRYPTEE>'
 
+
+Configuration BDD lié à la connexion au CAS
+*******************************************
+
+[BDD]
+    # id du groupe dans lequel tous les utilisateurs connectés sont ajoutés 
+    # (seul le socle 1 - droit minimum - est utilisé pour l'instance de production)
+    ID_USER_SOCLE_1 = 20001
+    ID_USER_SOCLE_2 = 20003
+
 Connexion au CAS INPN - gestion centralisée des utilisateurs
 ***********************************************************
 
@@ -98,16 +126,20 @@ NB : pour la pré-prod, utiliser ``https://preprod-inpn.mnhn.fr``
 
 ::
 
-  [CAS]
-      CAS_AUTHENTIFICATION = true
-      CAS_URL_LOGIN = 'https://inpn.mnhn.fr/auth/login'
-      CAS_URL_LOGOUT = 'https://inpn.mnhn.fr/auth/logout'
-      CAS_URL_VALIDATION = 'https://inpn.mnhn.fr/auth/serviceValidate'
-      USERS_CAN_SEE_ORGANISM_DATA = false
-      [CAS.CAS_USER_WS]
-          URL = 'https://inpn.mnhn.fr/authentication/information'
-          ID = '<THE_INPN_LOGIN>'
-          PASSWORD = '<THE_INPN_PASSWORD>'
+[CAS_PUBLIC]
+    CAS_AUTHENTIFICATION = true
+    CAS_URL_LOGIN = 'https://inpn.mnhn.fr/auth/login'
+    CAS_URL_LOGOUT = 'https://inpn.mnhn.fr/auth/logout'
+
+[CAS]
+    CAS_URL_VALIDATION = 'https://inpn.mnhn.fr/auth/serviceValidate'
+    # est ce que les utilisateurs connecté peuvent voir les donées de leur organisme
+    USERS_CAN_SEE_ORGANISM_DATA = false
+
+[CAS.CAS_USER_WS]
+    URL = 'https://inpn.mnhn.fr/authentication/information'
+    ID = '<THE_INPN_LOGIN>'
+    PASSWORD = '<THE_INPN_PASSWORD>'
 
 Configuration du frontend
 **************************
@@ -116,13 +148,34 @@ Pour l'instance de pré-prod, rajouter "instance de démo" à la variable ``appN
 
 ::
 
-    # Nom de l'application sur la page d'acceuil
-    appName = 'Depôt légal de biodiviersité - saisie'
     [FRONTEND]
         # Compilation du fronend en mode production
         PROD_MOD = true
         # Affichage du footer sur la page d'acceuil
         DISPLAY_FOOTER = true
+        # affiche la carte des dernières observations basées sur la synthese
+        DISPLAY_MAP_LAST_OBS = false
+        # afficheafficher un bloc de stat basé sur la synthese
+        DISPLAY_STAT_BLOC = false
+
+
+Configuration de la cartographie
+********************************
+
+[MAPCONFIG]
+    BASEMAP = [
+        {"name" = "IGN-topo", "layer" = "https://wxs.ign.fr/i53afxeajwaokg3gxzzhn8un/geoportail/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=GEOGRAP$
+        {"name"= "IGN-Scan Express", "layer" = "https://wxs.ign.fr/i53afxeajwaokg3gxzzhn8un/geoportail/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=$
+        {"name" = "IGN-Ortho", "layer" = "https://wxs.ign.fr/i53afxeajwaokg3gxzzhn8un/geoportail/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ORTHOI$
+    ]
+    # Attention: les coordonnées sont au format [Y, X] - cf leaflet configuration (https://leafletjs.com/reference-1.4.0.html#latlng-l-latlng)
+    CENTER = [46.52863469527167, 2.43896484375]
+    # Zoom par défaut
+    ZOOM_LEVEL = 6
+    # Zoom à partir duquel on peut pointer un releve
+    ZOOM_LEVEL_RELEVE = 15
+
+
 
 Après chaque modification du fichier de configuration, lancez les commandes suivantes pour mettre à jour l'application (l'opération peut être longue car il s'agit de la recompilation du frontend).
 
@@ -135,20 +188,82 @@ Depuis le répertoire ``backend`` de GeoNature
     deactivate
 
 
-Configuration de la cartographie
-********************************
-
-Pour l'instance nationale, l'application est fournie avec des fonds de carte IGN (Topo, Scan-Express et Orto).
-
-Pour modifier cette configuration par défaut, éditer le fichier de configuration cartographique ``frontend/src/conf/map.config.ts``, puis recompiler le frontend (depuis le repertoire ``frontend``, lancer ``npm run build``).
-
-
 Configuration du module Occurrence de taxon: OCCTAX
 ***************************************************
 
 Le fichier de configuration du module Occtax se trouve dans le fichier ``<GEONATURE_DIRECTORY>/external_modules/occtax/config/conf_gn_module.toml``.
 
 Le script de configuration spécifique de l'instance nationale remplit ce fichier avec les bonnes configuration.
+
+Voici la configuration fournie pour l'instance de production:
+
+::
+    api_url = '/occtax'
+
+    # message sur la modale des export pour préciser les consignes pour GINCO
+    export_message = "<p> <b> Attention: </b> </br> Vous vous apprêtez à télécharger les données de la <b>recherche courante.</b> </br> Pour n'exporter qu'un <b>$
+
+    # format disponible pour l'export
+    export_available_format = ['csv', 'geojson']
+
+    # passage du champ observateur du formulaire de saisi en mode 'saisie libre'
+    observers_txt = true
+
+    # identifiant de la liste des taxon proposé dans le formulaire (voir table taxonomie.bib_listes et taxonomie.cor_nom_liste)
+    id_taxon_list = 500
+
+    # niveau de zoom à partir duquel on peut saisir un relevé sur la carte
+    releve_map_zoom_level = 15
+
+    # colonnes de la vue pr_occtax.export_occtax_sinp à exporter pour GINCO dépot légal
+    export_columns =  [
+        "permId",
+        "statObs",
+        "nomCite",
+        "dateDebut",
+        "dateFin",
+        "heureDebut",
+        "heureFin",
+        "altMax",
+        "altMin",
+        "cdNom",
+        "cdRef",
+        "dateDet",
+        "comment",
+        "dSPublique",
+        "statSource",
+        "idOrigine",
+        "refBiblio",
+        "obsMeth",
+        "ocEtatBio",
+        "ocNat",
+        "ocSex",
+        "ocStade",
+        "ocBiogeo",
+        "ocStatBio",
+        "preuveOui",
+        "ocMethDet",
+        "preuvNum",
+        "preuvNoNum",
+        "obsCtx",
+        "permIdGrp",
+        "methGrp",
+        "typGrp",
+        "denbrMax",
+        "denbrMin",
+        "objDenbr",
+        "typDenbr",
+        "obsId",
+        "obsNomOrg",
+        "detId",
+        "detNomOrg",
+        "orgGestDat",
+        "WKT",
+        "natObjGeo"
+        ]
+
+
+
 
 Le fichier ``<GEONATURE_DIRECTORY>/external_modules/occtax/config/conf_gn_module.toml.example`` liste l'ensemble des variables de configuration du module Occtax ainsi que leurs valeurs par défault.
 
@@ -161,6 +276,8 @@ Depuis le répertoire ``backend`` de GeoNature
     source venv/bin/activate
     geonature update_module_configuration occtax
     deactivate
+
+
 
 Pour plus d'information sur la configuration du module Occtax, voir la documentation concernant le module (https://github.com/PnX-SI/GeoNature/blob/develop/docs/admin-manual.rst#module-occtax).
 
@@ -208,3 +325,81 @@ https://xxxxx/cadre/export/xml/GetRecordById?id=<UUID>
 - Pour remplir cette table on ne prend pas les infos renvoyés par le XML JDD sous l’intitulé « Acteur » puisque l’ID_Organisme ou l’ID_Acteur n’est pas renseigné. (Dans la table ``gn_meta.cor_dataset_actor``, il faut obligatoirement un ID).
 
 - La question de la suppresion de JDD et des CA n’est pas résolue. Si un JDD est supprimé dans MTD, qu’est-ce qu’on fait des données associées a celui-ci dans GeoNature ? 
+
+
+Module Synthese
+---------------
+
+Sur l'instance DEPOPBIO le module synthese a été désactivé en mettant un CRUVED à 0 au groupe socle 1 et socle 2 pour le module.
+
+:: 
+
+    INSERT INTO gn_permissions.cor_role_action_filter_module_object
+    (
+    id_role,
+    id_action,
+    id_filter,
+    id_module,
+    id_object
+    )
+VALUES
+    -- synthese pour socle 1
+    (20003, 1, 1, 17, 1),
+    (20003, 2, 1, 17, 1),
+    (20003, 3, 1, 17, 1),
+    (20003, 4, 1, 17, 1),
+    (20003, 5, 1, 17, 1),
+    (20003, 6, 1, 17, 1),
+   -- synthese socle 2
+    (20001, 1, 1, 17, 1),
+    (20001, 2, 1, 17, 1),
+    (20001, 3, 1, 17, 1),
+    (20001, 4, 1, 17, 1),
+    (20001, 5, 1, 17, 1),
+    (20001, 6, 1, 17, 1),
+  -- admin socle 2
+    (20003, 1, 1, 19, 1),
+    (20003, 2, 1, 19, 1),
+    (20003, 3, 1, 19, 1),
+    (20003, 4, 1, 19, 1),
+    (20003, 5, 1, 19, 1),
+    (20003, 6, 1, 19, 1),
+  -- admin socle 2
+    (20001, 1, 1, 19, 1),
+    (20001, 2, 1, 19, 1),
+    (20001, 3, 1, 19, 1),
+    (20001, 4, 1, 19, 1),
+    (20001, 5, 1, 19, 1),
+    (20001, 6, 1, 19, 1),
+  -- meta socle 2
+    (20003, 1, 1, 20, 1),
+    (20003, 2, 1, 20, 1),
+    (20003, 3, 1, 20, 1),
+    (20003, 4, 1, 20, 1),
+    (20003, 5, 1, 20, 1),
+    (20003, 6, 1, 20, 1),
+  -- meta socle 2
+    (20001, 1, 1, 20, 1),
+    (20001, 2, 1, 20, 1),
+    (20001, 3, 1, 20, 1),
+    (20001, 4, 1, 20, 1),
+    (20001, 5, 1, 20, 1),
+    (20001, 6, 1, 20, 1)
+  ;
+
+
+Les triggers d'insertion du module Occtax vers le module Synthese on également été désactiver.
+
+
+::
+
+
+    ALTER TABLE pr_occtax.t_releves_occtax DISABLE TRIGGER tri_update_synthese_t_releve_occtax;
+    ALTER TABLE pr_occtax.t_releves_occtax DISABLE TRIGGER tri_delete_synthese_t_releve_occtax;
+
+    ALTER TABLE pr_occtax.t_occurrences_occtax DISABLE TRIGGER tri_update_synthese_t_occurrence_occtax;
+    ALTER TABLE pr_occtax.t_occurrences_occtax DISABLE TRIGGER tri_delete_synthese_t_occurrence_occtax;
+
+    ALTER TABLE pr_occtax.cor_counting_occtax DISABLE TRIGGER tri_insert_synthese_cor_counting_occtax;
+    ALTER TABLE pr_occtax.cor_counting_occtax DISABLE TRIGGER tri_update_synthese_cor_counting_occtax;
+    ALTER TABLE pr_occtax.cor_counting_occtax DISABLE TRIGGER tri_delete_synthese_cor_counting_occtax;

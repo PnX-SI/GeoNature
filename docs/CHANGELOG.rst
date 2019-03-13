@@ -14,6 +14,7 @@ CHANGELOG
 * Configuration carto: correction du bug d'arrondissement des coordonnées géographiques
 * Récréation de la vue ``pr_occtax.export_occtax_sinp`` qui avait été supprimé pour lors de la migration RC3 vers RC4
 * Correction ajout rang et cd_nom sur l'autocomplete de la synthese, absent dans le script de migration
+* DEPOBIO: Correction de la déconnexion au CAS INPN
 
 2.0.0 (2019-02-28)
 ------------------
