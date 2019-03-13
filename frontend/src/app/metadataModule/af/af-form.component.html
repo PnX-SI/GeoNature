@@ -38,7 +38,7 @@
       
               <small>Cadre d'acquisition parent </small>
               <div class="input-group">
-                <select [disableControl]="!afForm.value.is_parent" class="form-control form-control-sm" [formControl]="afForm.controls.acquisition_framework_parent_id">
+                <select [disableControl]="afForm.value.is_parent" class="form-control form-control-sm" [formControl]="afForm.controls.acquisition_framework_parent_id">
                   <option [ngValue]="null"></option>
                   <option *ngFor="let ac of acquisitionFrameworks" [ngValue]="ac.id_acquisition_framework">
                     {{ac.acquisition_framework_name}}

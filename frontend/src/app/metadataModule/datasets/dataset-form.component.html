@@ -20,18 +20,29 @@
                 </select>
               </div>
       
-      
               <small>Nom du JDD </small>
-              <div class="input-group ">
-                <input class="form-control form-control-sm"
-                  type="text" name="" id="" [formControl]="datasetForm.controls.dataset_name">
+              <div class="form-group">
+                  <div class="input-group">
+                      <input class="form-control form-control-sm"
+                        type="text" name="" id="" [formControl]="datasetForm.controls.dataset_name">
+                    </div>
+                <small *ngIf="datasetForm.controls.dataset_name.errors?.maxlength" class="error" style="color:red">
+                  Le nom du JDD doit être inférieur ou égal à 150 caractères
+                </small>
               </div>
       
               <small>Nom court du JDD </small>
-              <div class="input-group">
-                <input class="form-control form-control-sm"
-                  type="text" name="" id="" [formControl]="datasetForm.controls.dataset_shortname">
+              <div class="form-group">
+                  <div class="input-group">
+                      <input class="form-control form-control-sm"
+                        type="text" name="" id="" [formControl]="datasetForm.controls.dataset_shortname">
+      
+                    </div>
+                <small *ngIf="datasetForm.controls.dataset_shortname.errors?.maxlength" class="error" style="color:red">
+                  Le nom court du JDD doit être inférieur ou égal à 30 caractères
+                </small>
               </div>
+
               <small>Description</small>
               <div class="input-group">
                 <input class="form-control form-control-sm"
@@ -53,7 +64,7 @@
                 </small>
               </div>
               
-            <pnx-nomenclature label="Type de donnée" [parentFormControl]="datasetForm.controls.id_nomenclature_data_type"
+            <pnx-nomenclature label="Type de données" [parentFormControl]="datasetForm.controls.id_nomenclature_data_type"
               codeNomenclatureType="DATA_TYP">
             </pnx-nomenclature>
 

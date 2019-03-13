@@ -45,8 +45,11 @@ export class DatasetFormComponent implements OnInit {
     this.datasetForm = this._fb.group({
       id_acquisition_framework: [null, Validators.required],
       id_dataset: null,
-      dataset_name: [null, Validators.required],
-      dataset_shortname: [null, Validators.required],
+      dataset_name: [null, Validators.compose([Validators.required, Validators.maxLength(150)])],
+      dataset_shortname: [
+        null,
+        Validators.compose([Validators.required, Validators.maxLength(30)])
+      ],
       dataset_desc: [null, Validators.required],
       id_nomenclature_data_type: [null, Validators.required],
       keywords: null,

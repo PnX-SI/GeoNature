@@ -12,43 +12,46 @@ from pypnusershub.db.tools import InsufficientRightsError
 
 from geonature.core.gn_meta.models import (
     TDatasets,
-    CorDatasetActor, TAcquisitionFramework,
-    CorAcquisitionFrameworkActor, CorAcquisitionFrameworkObjectif,
-    CorAcquisitionFrameworkVoletSINP
+    CorDatasetActor,
+    TAcquisitionFramework,
+    CorAcquisitionFrameworkActor,
+    CorAcquisitionFrameworkObjectif,
+    CorAcquisitionFrameworkVoletSINP,
 )
 from geonature.core.gn_commons.models import TModules
-from geonature.core.gn_meta.repositories import (
-    get_datasets_cruved,
-    get_af_cruved
-)
+from geonature.core.gn_meta.repositories import get_datasets_cruved, get_af_cruved
 from geonature.utils.utilssqlalchemy import json_resp
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_meta import mtd_utils
 from geonature.utils.errors import GeonatureApiError
 
-routes = Blueprint('gn_meta', __name__)
+routes = Blueprint("gn_meta", __name__)
 
 # get the root logger
 log = logging.getLogger()
-gunicorn_error_logger = logging.getLogger('gunicorn.error')
+gunicorn_error_logger = logging.getLogger("gunicorn.error")
 
 
-ID_MODULE = DB.session.query(TModules.id_module).filter(TModules.module_code == 'ADMIN').one()[0]
+ID_MODULE = (
+    DB.session.query(TModules.id_module)
+    .filter(TModules.module_code == "ADMIN")
+    .one()[0]
+)
 
-@routes.route('/list/datasets', methods=['GET'])
+
+@routes.route("/list/datasets", methods=["GET"])
 @json_resp
 def get_datasets_list():
     q = DB.session.query(TDatasets)
     data = q.all()
 
-    return [
-        d.as_dict(columns=('id_dataset', 'dataset_name')) for d in data
-    ]
+    return [d.as_dict(columns=("id_dataset", "dataset_name")) for d in data]
 
-#TODO: quel cruved on recupère sur une route comme celle là
+
+# TODO: quel cruved on recupère sur une route comme celle là
 # celui du module admin (meta) ou celui de geonature (route utilisé dans tous les modules...)
-@routes.route('/datasets', methods=['GET'])
-@permissions.check_cruved_scope('R', True)
+@routes.route("/datasets", methods=["GET"])
+@permissions.check_cruved_scope("R", True)
 @json_resp
 def get_datasets(info_role):
     """
@@ -60,12 +63,11 @@ def get_datasets(info_role):
 
     """
     with_mtd_error = False
-    if current_app.config['CAS_PUBLIC']['CAS_AUTHENTIFICATION']:
+    if current_app.config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
         # synchronise the CA and JDD from the MTD WS
         try:
             mtd_utils.post_jdd_from_user(
-                id_user=info_role.id_role,
-                id_organism=info_role.id_organisme
+                id_user=info_role.id_role, id_organism=info_role.id_organisme
             )
         except Exception as e:
             gunicorn_error_logger.info(e)
@@ -73,15 +75,15 @@ def get_datasets(info_role):
             with_mtd_error = True
     params = dict(request.args)
     datasets = get_datasets_cruved(info_role, params)
-    datasets_resp = {'data': datasets}
+    datasets_resp = {"data": datasets}
     if with_mtd_error:
-        datasets_resp['with_mtd_errors'] = True
+        datasets_resp["with_mtd_errors"] = True
     if not datasets:
         return datasets_resp, 404
     return datasets_resp
 
 
-@routes.route('/dataset/<id_dataset>', methods=['GET'])
+@routes.route("/dataset/<id_dataset>", methods=["GET"])
 @json_resp
 def get_dataset(id_dataset):
     """
@@ -98,28 +100,32 @@ def get_dataset(id_dataset):
             organisms.append(None)
     i = 0
     for o in organisms:
-        dataset['cor_dataset_actor'][i]['organism'] = o
+        dataset["cor_dataset_actor"][i]["organism"] = o
         i = i + 1
     return dataset
 
 
-@routes.route('/dataset', methods=['POST'])
-@permissions.check_cruved_scope('C', True, module_code="ADMIN")
+@routes.route("/dataset", methods=["POST"])
+@permissions.check_cruved_scope("C", True, module_code="ADMIN")
 @json_resp
 def post_dataset(info_role):
-    if info_role.value_filter == '0':
+    if info_role.value_filter == "0":
         raise InsufficientRightsError(
-            ('User "{}" cannot "{}" a dataser')
-            .format(info_role.id_role, info_role.code_action),
-            403
+            ('User "{}" cannot "{}" a dataser').format(
+                info_role.id_role, info_role.code_action
+            ),
+            403,
         )
 
     data = dict(request.get_json())
-    cor_dataset_actor = data.pop('cor_dataset_actor')
+    cor_dataset_actor = data.pop("cor_dataset_actor")
 
     dataset = TDatasets(**data)
 
     for cor in cor_dataset_actor:
+        # remove id_cda if None otherwise merge no working well
+        if cor["id_cda"] is None:
+            cor.pop("id_cda")
         dataset.cor_dataset_actor.append(CorDatasetActor(**cor))
 
     if dataset.id_dataset:
@@ -130,8 +136,8 @@ def post_dataset(info_role):
     return dataset.as_dict(True)
 
 
-@routes.route('/acquisition_frameworks', methods=['GET'])
-@permissions.check_cruved_scope('R', True)
+@routes.route("/acquisition_frameworks", methods=["GET"])
+@permissions.check_cruved_scope("R", True)
 @json_resp
 def get_acquisition_frameworks(info_role):
     """
@@ -140,7 +146,7 @@ def get_acquisition_frameworks(info_role):
     return get_af_cruved(info_role)
 
 
-@routes.route('/acquisition_framework/<id_acquisition_framework>', methods=['GET'])
+@routes.route("/acquisition_framework/<id_acquisition_framework>", methods=["GET"])
 @json_resp
 def get_acquisition_framework(id_acquisition_framework):
     """
@@ -152,38 +158,46 @@ def get_acquisition_framework(id_acquisition_framework):
     return None
 
 
-@routes.route('/acquisition_framework', methods=['POST'])
-@permissions.check_cruved_scope('C', True, module_code="ADMIN")
+@routes.route("/acquisition_framework", methods=["POST"])
+@permissions.check_cruved_scope("C", True, module_code="ADMIN")
 @json_resp
 def post_acquisition_framework(info_role):
-    if info_role.value_filter == '0':
+    if info_role.value_filter == "0":
         raise InsufficientRightsError(
-            ('User "{}" cannot "{}" a dataser')
-            .format(info_role.id_role, info_role.code_action),
-            403
+            ('User "{}" cannot "{}" a dataser').format(
+                info_role.id_role, info_role.code_action
+            ),
+            403,
         )
     data = dict(request.get_json())
 
-    cor_af_actor = data.pop('cor_af_actor')
-    cor_objectifs = data.pop('cor_objectifs')
-    cor_volets_sinp = data.pop('cor_volets_sinp')
+    cor_af_actor = data.pop("cor_af_actor")
+    cor_objectifs = data.pop("cor_objectifs")
+    cor_volets_sinp = data.pop("cor_volets_sinp")
 
     af = TAcquisitionFramework(**data)
 
     for cor in cor_af_actor:
+        # remove id_cda if None otherwise merge no working well
+        if cor["id_cafa"] is None:
+            cor.pop("id_cafa")
         af.cor_af_actor.append(CorAcquisitionFrameworkActor(**cor))
 
     if cor_objectifs is not None:
-        objectif_nom = DB.session.query(TNomenclatures).filter(
-            TNomenclatures.id_nomenclature.in_(cor_objectifs)
-        ).all()
+        objectif_nom = (
+            DB.session.query(TNomenclatures)
+            .filter(TNomenclatures.id_nomenclature.in_(cor_objectifs))
+            .all()
+        )
         for obj in objectif_nom:
             af.cor_objectifs.append(obj)
 
     if cor_volets_sinp is not None:
-        volet_nom = DB.session.query(TNomenclatures).filter(
-            TNomenclatures.id_nomenclature.in_(cor_volets_sinp)
-        ).all()
+        volet_nom = (
+            DB.session.query(TNomenclatures)
+            .filter(TNomenclatures.id_nomenclature.in_(cor_volets_sinp))
+            .all()
+        )
         for volet in volet_nom:
             af.cor_volets_sinp.append(volet)
     if af.id_acquisition_framework:
@@ -195,11 +209,9 @@ def post_acquisition_framework(info_role):
 
 
 def get_cd_nomenclature(id_type, cd_nomenclature):
-    query = 'SELECT ref_nomenclatures.get_id_nomenclature(:id_type, :cd_n)'
+    query = "SELECT ref_nomenclatures.get_id_nomenclature(:id_type, :cd_n)"
     result = DB.engine.execute(
-        text(query),
-        id_type=id_type,
-        cd_n=cd_nomenclature
+        text(query), id_type=id_type, cd_n=cd_nomenclature
     ).first()
     value = None
     if len(result) >= 1:
@@ -207,23 +219,19 @@ def get_cd_nomenclature(id_type, cd_nomenclature):
     return value
 
 
-@routes.route('/aquisition_framework_mtd/<uuid_af>', methods=['POST'])
+@routes.route("/aquisition_framework_mtd/<uuid_af>", methods=["POST"])
 @json_resp
 def post_acquisition_framework_mtd(uuid=None, id_user=None, id_organism=None):
     """ Post an acquisition framwork from MTD XML"""
     return mtd_utils.post_acquisition_framework(
-        uuid=uuid,
-        id_user=id_user,
-        id_organism=id_organism
+        uuid=uuid, id_user=id_user, id_organism=id_organism
     )
 
 
-@routes.route('/dataset_mtd/<id_user>', methods=['POST'])
-@routes.route('/dataset_mtd/<id_user>/<id_organism>', methods=['POST'])
+@routes.route("/dataset_mtd/<id_user>", methods=["POST"])
+@routes.route("/dataset_mtd/<id_user>/<id_organism>", methods=["POST"])
 @json_resp
 def post_jdd_from_user_id(id_user=None, id_organism=None):
     """ Post a jdd from the mtd XML"""
-    return mtd_utils.post_jdd_from_user(
-        id_user=id_user,
-        id_organism=id_organism
-    )
+    return mtd_utils.post_jdd_from_user(id_user=id_user, id_organism=id_organism)
+
