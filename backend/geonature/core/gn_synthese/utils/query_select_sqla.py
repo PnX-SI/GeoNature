@@ -1,7 +1,7 @@
 """
 Filter the query of synthese using SQLA expression language and 'select' object 
 https://docs.sqlalchemy.org/en/latest/core/tutorial.html#selecting
-Not returning model object but tuple, but much more efficiebt
+much more efficient
 """
 from flask import current_app, request
 from sqlalchemy import func, or_, and_, select, join

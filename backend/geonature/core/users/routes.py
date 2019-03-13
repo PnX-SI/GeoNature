@@ -1,10 +1,7 @@
 from flask import Blueprint, request
 
 from geonature.utils.env import DB
-from geonature.core.users.models import (
-    VUserslistForallMenu,
-    BibOrganismes, CorRole
-)
+from geonature.core.users.models import VUserslistForallMenu, BibOrganismes, CorRole
 from pypnusershub.db.models import User
 
 from geonature.utils.utilssqlalchemy import json_resp
@@ -13,53 +10,50 @@ from geonature.core.gn_meta.models import CorDatasetActor
 from geonature.core.gn_meta.repositories import get_datasets_cruved
 
 
-routes = Blueprint('users', __name__)
+routes = Blueprint("users", __name__)
 
 
-@routes.route('/menu/<int:id_menu>', methods=['GET'])
+@routes.route("/menu/<int:id_menu>", methods=["GET"])
 @json_resp
 def getRolesByMenuId(id_menu):
-    '''
+    """
         Retourne la liste des roles associés à un menu
 
         Parameters
         ----------
          - nom_complet : début du nom complet du role
-    '''
-    q = DB.session.query(
-        VUserslistForallMenu
-    ).filter_by(id_menu=id_menu)
+    """
+    q = DB.session.query(VUserslistForallMenu).filter_by(id_menu=id_menu)
 
     parameters = request.args
-    if parameters.get('nom_complet'):
+    if parameters.get("nom_complet"):
         q = q.filter(
             VUserslistForallMenu.nom_complet.ilike(
-                '{}%'.format(parameters.get('nom_complet'))
+                "{}%".format(parameters.get("nom_complet"))
             )
         )
     data = q.order_by(VUserslistForallMenu.nom_complet.asc()).all()
     return [n.as_dict() for n in data]
 
 
-@routes.route('/role/<int:id_role>', methods=['GET'])
+@routes.route("/role/<int:id_role>", methods=["GET"])
 @json_resp
 def get_role(id_role):
-    '''
+    """
         Retourne le détail d'un role
-    '''
-    user = DB.session.query(
-        User
-    ).filter_by(id_role=id_role).one()
+    """
+    user = DB.session.query(User).filter_by(id_role=id_role).one()
     return user.as_dict()
 
 
-@routes.route('/role', methods=['POST'])
+@routes.route("/role", methods=["POST"])
 @json_resp
 def insert_role(user=None):
-    '''
+    """
         Insert un role
         @TODO : Ne devrait pas être là mais dans UserHub
-    '''
+        Utilisé dans l'authentification du CAS INPN
+    """
     if user:
         data = user
     else:
@@ -78,36 +72,35 @@ def insert_role(user=None):
     return user.as_dict()
 
 
-@routes.route('/cor_role', methods=['POST'])
+@routes.route("/cor_role", methods=["POST"])
 @json_resp
 def insert_in_cor_role(id_group=None, id_user=None):
-    '''
+    """
         Insert une correspondante role groupe
         c-a-d permet d'attacher un role à un groupe
        # TODO ajouter test sur les POST de données
-    '''
-    exist_user = DB.session.query(
-        CorRole
-    ).filter(
-        CorRole.id_role_groupe == id_group
-    ).filter(
-        CorRole.id_role_utilisateur == id_user
-    ).all()
+    """
+    exist_user = (
+        DB.session.query(CorRole)
+        .filter(CorRole.id_role_groupe == id_group)
+        .filter(CorRole.id_role_utilisateur == id_user)
+        .all()
+    )
     if not exist_user:
         cor_role = CorRole(id_group, id_user)
         DB.session.add(cor_role)
         DB.session.commit()
         DB.session.flush()
         return cor_role.as_dict()
-    return {'message': 'cor already exists'}, 500
+    return {"message": "cor already exists"}, 500
 
 
-@routes.route('/organism', methods=['POST'])
+@routes.route("/organism", methods=["POST"])
 @json_resp
 def insert_organism(organism):
-    '''
+    """
         Insert un organisme
-    '''
+    """
     if organism is not None:
         data = organism
     else:
@@ -126,46 +119,46 @@ def insert_organism(organism):
     return organism.as_dict()
 
 
-@routes.route('/roles', methods=['GET'])
+@routes.route("/roles", methods=["GET"])
 @json_resp
 def get_roles():
-    '''
+    """
         Retourne tous les roles
-    '''
+    """
     params = request.args
     q = DB.session.query(User)
-    if 'group' in params:
-        q = q.filter(User.groupe == params['group'])
+    if "group" in params:
+        q = q.filter(User.groupe == params["group"])
     return [user.as_dict() for user in q.all()]
 
 
-@routes.route('/organisms', methods=['GET'])
+@routes.route("/organisms", methods=["GET"])
 @json_resp
 def get_organismes():
-    '''
+    """
         Retourne tous les organismes
-    '''
+    """
     organisms = DB.session.query(BibOrganismes).all()
     return [organism.as_dict() for organism in organisms]
 
 
-@routes.route('/organisms_dataset_actor', methods=['GET'])
-@permissions.check_cruved_scope('R', True)
+@routes.route("/organisms_dataset_actor", methods=["GET"])
+@permissions.check_cruved_scope("R", True)
 @json_resp
 def get_organismes_jdd(info_role):
-    '''
+    """
         Retourne tous les organismes qui sont acteurs dans un JDD
         et dont l'utilisateur a des droit sur ce JDD (via son CRUVED)
-    '''
+    """
 
-    datasets = [dataset['id_dataset'] for dataset in get_datasets_cruved(info_role)]
-    organisms = DB.session.query(
-        BibOrganismes
-    ).join(
-        CorDatasetActor, BibOrganismes.id_organisme == CorDatasetActor.id_organism
-    ).filter(
-        CorDatasetActor.id_dataset.in_(datasets)
-    ).distinct(
-        BibOrganismes.id_organisme
-    ).all()
+    datasets = [dataset["id_dataset"] for dataset in get_datasets_cruved(info_role)]
+    organisms = (
+        DB.session.query(BibOrganismes)
+        .join(
+            CorDatasetActor, BibOrganismes.id_organisme == CorDatasetActor.id_organism
+        )
+        .filter(CorDatasetActor.id_dataset.in_(datasets))
+        .distinct(BibOrganismes.id_organisme)
+        .all()
+    )
     return [organism.as_dict() for organism in organisms]

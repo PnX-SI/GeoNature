@@ -351,7 +351,7 @@ CREATE SEQUENCE cor_counting_occtax_id_counting_occtax_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE cor_counting_occtax_id_counting_occtax_seq OWNED BY t_occurrences_occtax.id_occurrence_occtax;
+ALTER SEQUENCE cor_counting_occtax_id_counting_occtax_seq OWNED BY cor_counting_occtax.id_counting_occtax;
 ALTER TABLE ONLY cor_counting_occtax ALTER COLUMN id_counting_occtax SET DEFAULT nextval('cor_counting_occtax_id_counting_occtax_seq'::regclass);
 SELECT pg_catalog.setval('cor_counting_occtax_id_counting_occtax_seq', 1, false);
 

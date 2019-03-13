@@ -7,24 +7,24 @@ SET client_min_messages = warning;
 
 SET search_path = public;
 
+DROP VIEW pr_occtax.export_occtax_sinp;
 CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS 
  SELECT ccc.unique_id_sinp_occtax AS "permId",
     ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_observation_status) AS "statObs",
     occ.nom_cite AS "nomCite",
-    rel.date_min::date AS "dateDebut",
-    rel.date_max::date AS "dateFin",
+    to_char(rel.date_min, 'DD/MM/YYYY'::text) AS "dateDebut",
+    to_char(rel.date_max, 'DD/MM/YYYY'::text) AS "dateFin",
     rel.hour_min AS "heureDebut",
     rel.hour_max AS "heureFin",
     rel.altitude_max AS "altMax",
     rel.altitude_min AS "altMin",
     occ.cd_nom AS "cdNom",
     taxonomie.find_cdref(occ.cd_nom) AS "cdRef",
-    gn_commons.get_default_parameter('taxref_version'::text, NULL::integer) AS "versionTAXREF",
-    rel.date_min AS datedet,
+    gn_commons.get_default_parameter('taxref_version'::text, NULL::integer) AS "vTAXREF",
     'NSP'::text AS "dSPublique",
-    d.unique_dataset_id AS "jddMetadonneeDEEId",
+    d.unique_dataset_id AS "jddMetaId",
     ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_source_status) AS "statSource",
-    '0'::text AS "diffusionNiveauPrecision",
+    '0'::text AS "difNivPrec",
     ccc.unique_id_sinp_occtax AS "idOrigine",
     d.dataset_name AS "jddCode",
     d.unique_dataset_id AS "jddId",
@@ -41,7 +41,7 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     occ.digital_proof AS "preuvNum",
     occ.non_digital_proof AS "preuvNoNum",
     rel.comment AS "obsCtx",
-    occ.comment as "obsDescr",
+    occ.comment AS "obsDescr",
     rel.unique_id_sinp_grp AS "permIdGrp",
     'Relevé'::text AS "methGrp",
     'OBS'::text AS "typGrp",
@@ -49,7 +49,7 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     ccc.count_min AS "denbrMin",
     ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_obj_count) AS "objDenbr",
     ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_type_count) AS "typDenbr",
-    COALESCE(string_agg(DISTINCT (r.nom_role::text || ' '::text || r.prenom_role::text), ','::text), rel.observers_txt::text) AS "obsId",
+    COALESCE(string_agg(DISTINCT (r.nom_role::text || ' '::text) || r.prenom_role::text, ','::text), rel.observers_txt::text) AS "obsId",
     COALESCE(string_agg(DISTINCT o.nom_organisme::text, ','::text), 'NSP'::text) AS "obsNomOrg",
     COALESCE(occ.determiner, 'Inconnu'::character varying) AS "detId",
     'NSP'::text AS "detNomOrg",
@@ -71,55 +71,6 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
      LEFT JOIN pr_occtax.cor_role_releves_occtax cr ON cr.id_releve_occtax = rel.id_releve_occtax
      LEFT JOIN utilisateurs.t_roles r ON r.id_role = cr.id_role
      LEFT JOIN utilisateurs.bib_organismes o ON o.id_organisme = r.id_organisme
-  GROUP BY 
-    ccc.unique_id_sinp_occtax
-    , d.unique_dataset_id
-    , occ.id_occurrence_occtax
-    , occ.id_nomenclature_bio_condition
-    , occ.id_nomenclature_naturalness
-    , ccc.id_nomenclature_sex
-    , ccc.id_nomenclature_life_stage
-    , occ.id_nomenclature_bio_status
-    , occ.id_nomenclature_exist_proof
-    , occ.id_nomenclature_determination_method
-    , rel.unique_id_sinp_grp
-    , d.id_nomenclature_source_status
-    , occ.id_nomenclature_blurring
-    , occ.id_nomenclature_diffusion_level
-    , occ.nom_cite
-    , rel.id_releve_occtax
-    , rel.date_min
-    , rel.date_max
-    , rel.hour_min
-    , rel.hour_max
-    , rel.altitude_max
-    , rel.altitude_min
-    , rel.id_digitiser
-    , occ.cd_nom
-    , occ.id_nomenclature_observation_status
-    , taxonomie.find_cdref(occ.cd_nom)
-    , gn_commons.get_default_parameter('taxref_version'::text, NULL::integer)
-    , rel.comment
-    , rel.id_dataset
-    , ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_source_status)
-    , ccc.id_counting_occtax
-    , d.dataset_name
-    , occ.determiner
-    , occ.comment
-    , ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_obs_meth)
-    , ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_bio_condition)
-    , ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_naturalness)
-    , ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_sex)
-    , ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_life_stage)
-    , ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_bio_status)
-    , ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_exist_proof)
-    , ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_determination_method)
-    , occ.digital_proof
-    , occ.non_digital_proof
-    , ccc.count_max
-    , ccc.count_min
-    , ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_obj_count)
-    , ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_type_count)
-    , rel.observers_txt
-    , rel.geom_4326;
+  GROUP BY ccc.unique_id_sinp_occtax, d.unique_dataset_id, occ.id_occurrence_occtax, occ.id_nomenclature_bio_condition, occ.id_nomenclature_naturalness, ccc.id_nomenclature_sex, ccc.id_nomenclature_life_stage, occ.id_nomenclature_bio_status, occ.id_nomenclature_exist_proof, occ.id_nomenclature_determination_method, rel.unique_id_sinp_grp, d.id_nomenclature_source_status, occ.id_nomenclature_blurring, occ.id_nomenclature_diffusion_level, occ.nom_cite, rel.id_releve_occtax, rel.date_min, rel.date_max, rel.hour_min, rel.hour_max, rel.altitude_max, rel.altitude_min, rel.id_digitiser, occ.cd_nom, occ.id_nomenclature_observation_status, (taxonomie.find_cdref(occ.cd_nom)), (gn_commons.get_default_parameter('taxref_version'::text, NULL::integer)), rel.comment, rel.id_dataset, (ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_source_status)), ccc.id_counting_occtax, d.dataset_name, occ.determiner, occ.comment, (ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_obs_meth)), (ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_bio_condition)), (ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_naturalness)), (ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_sex)), (ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_life_stage)), (ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_bio_status)), (ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_exist_proof)), (ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_determination_method)), occ.digital_proof, occ.non_digital_proof, ccc.count_max, ccc.count_min, (ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_obj_count)), (ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_type_count)), rel.observers_txt, rel.geom_4326;
+
 
