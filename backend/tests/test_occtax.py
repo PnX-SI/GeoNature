@@ -38,19 +38,46 @@ class TestApiModulePrOcctax:
         update_data["properties"]["comment"] = "Super MODIIFF"
         update_data["properties"]["observers"] = [1]
 
+        update_data["properties"]["observers"] = [1]
+
+        # insert with to new occurrences
+        for i in range(2):
+            # put an ID = None to reproduce the MERGE bug
+            temp = update_data["properties"]["t_occurrences_occtax"][0]
+            temp["id_occurrence_occtax"] = None
+            for count in temp["cor_counting_occtax"]:
+                count["id_occurrence_occtax"] = None
+
+            update_data["properties"]["t_occurrences_occtax"].append(temp)
+
         response = post_json(
             self.client, url_for("pr_occtax.insertOrUpdateOneReleve"), update_data
         )
 
         assert response.status_code == 200
 
-        resp_data = json_of_response(response)
-        assert resp_data["properties"]["comment"] == "Super MODIIFF"
+        resp_data_update = json_of_response(response)
 
+        assert resp_data_update["properties"]["comment"] == "Super MODIIFF"
+
+        # get the releve
+        response = self.client.get(
+            url_for(
+                "pr_occtax.getOneReleve",
+                id_releve=resp_data_update["properties"]["id_releve_occtax"],
+            )
+        )
+        resp_data_update = json_of_response(response)
+
+        assert "releve" in resp_data_update
+        # check that the 3 occurrences are heres
+        assert (
+            len(resp_data_update["releve"]["properties"]["t_occurrences_occtax"]) == 3
+        )
         response = self.client.delete(
             url_for(
                 "pr_occtax.deleteOneReleve",
-                id_releve=resp_data["properties"]["id_releve_occtax"],
+                id_releve=resp_data_update["releve"]["properties"]["id_releve_occtax"],
             )
         )
 
