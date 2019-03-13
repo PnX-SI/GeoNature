@@ -1,16 +1,13 @@
-
 from flask import current_app
 from sqlalchemy import ForeignKey
 from sqlalchemy.sql import select, func, and_
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects.postgresql import UUID
 from geoalchemy2 import Geometry
 
 from pypnnomenclature.models import TNomenclatures
 
-from geonature.utils.utilssqlalchemy import (
-    serializable, geoserializable
-)
+from geonature.utils.utilssqlalchemy import serializable, geoserializable
 from geonature.utils.env import DB
 from pypnusershub.db.tools import InsufficientRightsError
 from pypnusershub.db.models import User
@@ -39,11 +36,11 @@ class ReleveModel(DB.Model):
             peu ou non agir sur une donnée
         """
         # Si l'utilisateur n'a pas de droit d'accès aux données
-        if level == '0' or level not in ('1', '2', '3'):
+        if level == "0" or level not in ("1", "2", "3"):
             return False
 
         # Si l'utilisateur à le droit d'accéder à toutes les données
-        if level == '3':
+        if level == "3":
             return True
 
         # Si l'utilisateur est propriétaire de la données
@@ -53,10 +50,7 @@ class ReleveModel(DB.Model):
         # Si l'utilisateur appartient à un organisme
         # qui a un droit sur la données et
         # que son niveau d'accès est 2 ou 3
-        if (
-            self.user_is_in_dataset_actor(user) and
-            level in ('2', '3')
-        ):
+        if self.user_is_in_dataset_actor(user) and level in ("2", "3"):
             return True
         return False
 
@@ -70,9 +64,10 @@ class ReleveModel(DB.Model):
             return self
 
         raise InsufficientRightsError(
-            ('User "{}" cannot "{}" this current releve')
-            .format(user.id_role, user.code_action),
-            403
+            ('User "{}" cannot "{}" this current releve').format(
+                user.id_role, user.code_action
+            ),
+            403,
         )
 
     def get_releve_cruved(self, user, user_cruved):
@@ -90,41 +85,39 @@ class ReleveModel(DB.Model):
 
 
 corRoleRelevesOccurrence = DB.Table(
-    'cor_role_releves_occtax',
-    DB.MetaData(schema='pr_occtax'),
+    "cor_role_releves_occtax",
+    DB.MetaData(schema="pr_occtax"),
     DB.Column(
-        'unique_id_cor_role_releve',
+        "unique_id_cor_role_releve",
         UUID(as_uuid=True),
         default=select([func.uuid_generate_v4()]),
-        primary_key=True
+        primary_key=True,
     ),
     DB.Column(
-        'id_releve_occtax',
+        "id_releve_occtax",
         DB.Integer,
-        ForeignKey('pr_occtax.t_releves_occtax.id_releve_occtax'),
-        primary_key=False
+        ForeignKey("pr_occtax.t_releves_occtax.id_releve_occtax"),
+        primary_key=False,
     ),
     DB.Column(
-        'id_role',
+        "id_role",
         DB.Integer,
-        ForeignKey('utilisateurs.t_roles.id_role'),
-        primary_key=False
-    )
+        ForeignKey("utilisateurs.t_roles.id_role"),
+        primary_key=False,
+    ),
 )
 
 
 @serializable
 class CorCountingOccurrence(DB.Model):
-    __tablename__ = 'cor_counting_occtax'
-    __table_args__ = {'schema': 'pr_occtax'}
+    __tablename__ = "cor_counting_occtax"
+    __table_args__ = {"schema": "pr_occtax"}
     id_counting_occtax = DB.Column(DB.Integer, primary_key=True)
     unique_id_sinp_occtax = DB.Column(
-        UUID(as_uuid=True),
-        default=select([func.uuid_generate_v4()])
+        UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
     )
     id_occurrence_occtax = DB.Column(
-        DB.Integer,
-        ForeignKey('pr_occtax.t_occurrences_occtax.id_occurrence_occtax')
+        DB.Integer, ForeignKey("pr_occtax.t_occurrences_occtax.id_occurrence_occtax")
     )
     id_nomenclature_life_stage = DB.Column(DB.Integer)
     id_nomenclature_sex = DB.Column(DB.Integer)
@@ -134,15 +127,13 @@ class CorCountingOccurrence(DB.Model):
     count_max = DB.Column(DB.Integer)
 
 
-
 @serializable
 class TOccurrencesOccurrence(DB.Model):
-    __tablename__ = 't_occurrences_occtax'
-    __table_args__ = {'schema': 'pr_occtax'}
+    __tablename__ = "t_occurrences_occtax"
+    __table_args__ = {"schema": "pr_occtax"}
     id_occurrence_occtax = DB.Column(DB.Integer, primary_key=True)
     id_releve_occtax = DB.Column(
-        DB.Integer,
-        ForeignKey('pr_occtax.t_releves_occtax.id_releve_occtax')
+        DB.Integer, ForeignKey("pr_occtax.t_releves_occtax.id_releve_occtax")
     )
     id_nomenclature_obs_meth = DB.Column(DB.Integer)
     id_nomenclature_bio_condition = DB.Column(DB.Integer)
@@ -159,7 +150,7 @@ class TOccurrencesOccurrence(DB.Model):
     nom_cite = DB.Column(DB.Unicode)
     meta_v_taxref = DB.Column(
         DB.Unicode,
-        default=select([func.gn_commons.get_default_parameter('taxref_version')])
+        default=select([func.gn_commons.get_default_parameter("taxref_version")]),
     )
     sample_number_proof = DB.Column(DB.Unicode)
     digital_proof = DB.Column(DB.Unicode)
@@ -168,22 +159,20 @@ class TOccurrencesOccurrence(DB.Model):
 
     cor_counting_occtax = relationship(
         "CorCountingOccurrence",
-        lazy='joined',
-        cascade="all, delete-orphan"
+        lazy="joined",
+        cascade="all,delete-orphan",
+        uselist=True,
     )
 
 
 @serializable
 @geoserializable
 class TRelevesOccurrence(ReleveModel):
-    __tablename__ = 't_releves_occtax'
-    __table_args__ = {'schema': 'pr_occtax'}
+    __tablename__ = "t_releves_occtax"
+    __table_args__ = {"schema": "pr_occtax"}
     id_releve_occtax = DB.Column(DB.Integer, primary_key=True)
     id_dataset = DB.Column(DB.Integer)
-    id_digitiser = DB.Column(
-        DB.Integer,
-        ForeignKey('utilisateurs.t_roles.id_role')
-    )
+    id_digitiser = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
     id_nomenclature_grp_typ = DB.Column(DB.Integer)
     observers_txt = DB.Column(DB.Unicode)
     date_min = DB.Column(DB.DateTime)
@@ -195,45 +184,37 @@ class TRelevesOccurrence(ReleveModel):
     id_nomenclature_obs_technique = DB.Column(DB.Integer)
     meta_device_entry = DB.Column(DB.Unicode)
     comment = DB.Column(DB.Unicode)
-    geom_4326 = DB.Column(Geometry('GEOMETRY', 4326))
-    geom_local = DB.Column(
-        Geometry('GEOMETRY', current_app.config['LOCAL_SRID'])
-    )
+    geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
+    geom_local = DB.Column(Geometry("GEOMETRY", current_app.config["LOCAL_SRID"]))
 
     t_occurrences_occtax = relationship(
-        "TOccurrencesOccurrence",
-        lazy='joined',
-        cascade="all,delete-orphan"
+        "TOccurrencesOccurrence", lazy="joined", cascade="all, delete-orphan"
     )
 
     observers = DB.relationship(
         User,
         secondary=corRoleRelevesOccurrence,
-        primaryjoin=(
-            corRoleRelevesOccurrence.c.id_releve_occtax == id_releve_occtax
-        ),
+        primaryjoin=(corRoleRelevesOccurrence.c.id_releve_occtax == id_releve_occtax),
         secondaryjoin=(corRoleRelevesOccurrence.c.id_role == User.id_role),
         foreign_keys=[
             corRoleRelevesOccurrence.c.id_releve_occtax,
-            corRoleRelevesOccurrence.c.id_role
-        ]
+            corRoleRelevesOccurrence.c.id_role,
+        ],
     )
 
     digitiser = relationship(
-        User,
-        primaryjoin=(User.id_role == id_digitiser
-        ),
-        foreign_keys=[id_digitiser])
+        User, primaryjoin=(User.id_role == id_digitiser), foreign_keys=[id_digitiser]
+    )
 
     def get_geofeature(self, recursif=True):
-        return self.as_geofeature('geom_4326', 'id_releve_occtax', recursif)
+        return self.as_geofeature("geom_4326", "id_releve_occtax", recursif)
 
 
 @serializable
 @geoserializable
 class VReleveOccurrence(ReleveModel):
-    __tablename__ = 'v_releve_occtax'
-    __table_args__ = {'schema': 'pr_occtax'}
+    __tablename__ = "v_releve_occtax"
+    __table_args__ = {"schema": "pr_occtax"}
     id_releve_occtax = DB.Column(DB.Integer)
     id_dataset = DB.Column(DB.Integer)
     id_digitiser = DB.Column(DB.Integer)
@@ -243,7 +224,7 @@ class VReleveOccurrence(ReleveModel):
     altitude_max = DB.Column(DB.Integer)
     meta_device_entry = DB.Column(DB.Unicode)
     comment = DB.Column(DB.Unicode)
-    geom_4326 = DB.Column(Geometry('GEOMETRY', 4326))
+    geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
     id_occurrence_occtax = DB.Column(DB.Integer, primary_key=True)
     cd_nom = DB.Column(DB.Integer)
     nom_cite = DB.Column(DB.Unicode)
@@ -255,29 +236,23 @@ class VReleveOccurrence(ReleveModel):
     observers = DB.relationship(
         User,
         secondary=corRoleRelevesOccurrence,
-        primaryjoin=(
-            corRoleRelevesOccurrence.c.id_releve_occtax == id_releve_occtax
-        ),
+        primaryjoin=(corRoleRelevesOccurrence.c.id_releve_occtax == id_releve_occtax),
         secondaryjoin=(corRoleRelevesOccurrence.c.id_role == User.id_role),
         foreign_keys=[
             corRoleRelevesOccurrence.c.id_releve_occtax,
-            corRoleRelevesOccurrence.c.id_role
-        ]
+            corRoleRelevesOccurrence.c.id_role,
+        ],
     )
 
     def get_geofeature(self, recursif=True):
-        return self.as_geofeature(
-            'geom_4326',
-            'id_occurrence_occtax',
-            recursif
-        )
+        return self.as_geofeature("geom_4326", "id_occurrence_occtax", recursif)
 
 
 @serializable
 @geoserializable
 class VReleveList(ReleveModel):
-    __tablename__ = 'v_releve_list'
-    __table_args__ = {'schema': 'pr_occtax'}
+    __tablename__ = "v_releve_list"
+    __table_args__ = {"schema": "pr_occtax"}
     id_releve_occtax = DB.Column(DB.Integer, primary_key=True)
     id_dataset = DB.Column(DB.Integer)
     id_digitiser = DB.Column(DB.Integer)
@@ -287,7 +262,7 @@ class VReleveList(ReleveModel):
     altitude_max = DB.Column(DB.Integer)
     meta_device_entry = DB.Column(DB.Unicode)
     comment = DB.Column(DB.Unicode)
-    geom_4326 = DB.Column(Geometry('GEOMETRY', 4326))
+    geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
     taxons = DB.Column(DB.Unicode)
     leaflet_popup = DB.Column(DB.Unicode)
     observateurs = DB.Column(DB.Unicode)
@@ -295,25 +270,23 @@ class VReleveList(ReleveModel):
     observers = DB.relationship(
         User,
         secondary=corRoleRelevesOccurrence,
-        primaryjoin=(
-            corRoleRelevesOccurrence.c.id_releve_occtax == id_releve_occtax
-        ),
+        primaryjoin=(corRoleRelevesOccurrence.c.id_releve_occtax == id_releve_occtax),
         secondaryjoin=(corRoleRelevesOccurrence.c.id_role == User.id_role),
         foreign_keys=[
             corRoleRelevesOccurrence.c.id_releve_occtax,
-            corRoleRelevesOccurrence.c.id_role
-        ]
+            corRoleRelevesOccurrence.c.id_role,
+        ],
     )
 
     def get_geofeature(self, recursif=True):
 
-        return self.as_geofeature('geom_4326', 'id_releve_occtax', recursif)
+        return self.as_geofeature("geom_4326", "id_releve_occtax", recursif)
 
 
 @serializable
 class DefaultNomenclaturesValue(DB.Model):
-    __tablename__ = 'defaults_nomenclatures_value'
-    __table_args__ = {'schema': 'pr_occtax'}
+    __tablename__ = "defaults_nomenclatures_value"
+    __table_args__ = {"schema": "pr_occtax"}
     mnemonique_type = DB.Column(DB.Integer, primary_key=True)
     id_organism = DB.Column(DB.Integer, primary_key=True)
     id_nomenclature = DB.Column(DB.Integer, primary_key=True)
