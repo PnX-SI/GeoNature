@@ -18,6 +18,11 @@ SET search_path = ref_geo, pg_catalog;
 -------------
 CREATE OR REPLACE FUNCTION ref_geo.fct_trg_calculate_geom_local()
   RETURNS trigger AS
+-- trigger qui reprojete une geom a partir d'une geom source fournie et l'insert dans le NEW
+-- en prenant le parametre local_srid de la table t_parameters
+-- 1er param: nom de la colonne source
+-- 2eme param: nom de la colonne a reprojeter
+-- utiliser pour calculer les geom_local à partir des geom_4326
 $BODY$
 DECLARE
 	the4326geomcol text := quote_ident(TG_ARGV[0]);
@@ -26,16 +31,12 @@ DECLARE
         thegeomlocalvalue public.geometry;
         thegeomchange boolean;
 BEGIN
-	-- Test si la geom a été modifiée
-	EXECUTE FORMAT(
-		'SELECT ST_EQUALS($1.%I, $1.%I)', the4326geomcol, thelocalgeomcol
-		) INTO thegeomchange USING NEW;
-	-- si insertion ou geom modifiée, on calcule la geom locale
-	IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NOT thegeomchange )) THEN
+	-- si c'est un insert ou que c'est un UPDATE ET que le geom_4326 a été modifié
+	IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NOT ST_EQUALS(hstore(OLD)-> the4326geomcol, hstore(NEW)-> the4326geomcol)  )) THEN
 		--récupérer le srid local
 		SELECT INTO thelocalsrid parameter_value::int FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid';
 		EXECUTE FORMAT ('SELECT ST_TRANSFORM($1.%I, $2)',the4326geomcol) INTO thegeomlocalvalue USING NEW, thelocalsrid;
-        -- insertion dans le NEW de la geom transformée
+                -- insertion dans le NEW de la geom transformée
 		NEW := NEW#= hstore(thelocalgeomcol, thegeomlocalvalue);
 	END IF;
   RETURN NEW;
@@ -43,6 +44,7 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+
 
 
 ----------------------
