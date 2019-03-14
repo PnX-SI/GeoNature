@@ -574,7 +574,8 @@ END $$;
 -----------------------
 -----FUNCTIONS----------
 -----------------------
-CREATE OR REPLACE FUNCTION get_unique_id_sinp_from_id_releve(my_id_releve integer)
+DROP FUNCTION IF EXISTS pr_occtax.get_unique_id_sinp_from_id_releve(my_id_releve integer);                                                                               
+CREATE OR REPLACE FUNCTION pr_occtax.get_unique_id_sinp_from_id_releve(my_id_releve integer)
   RETURNS uuid[] AS
 $BODY$
 -- Function which return the unique_id_sinp_occtax in an array (table pr_occtax.cor_counting_occtax) from the id_releve(integer)
