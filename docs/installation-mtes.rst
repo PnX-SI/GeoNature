@@ -114,8 +114,8 @@ Configuration BDD lié à la connexion au CAS
 [BDD]
     # id du groupe dans lequel tous les utilisateurs connectés sont ajoutés 
     # (seul le socle 1 - droit minimum - est utilisé pour l'instance de production)
-    ID_USER_SOCLE_1 = 20001
-    ID_USER_SOCLE_2 = 20003
+    ID_USER_SOCLE_1 = 20003
+    ID_USER_SOCLE_2 = 20001
 
 Connexion au CAS INPN - gestion centralisée des utilisateurs
 ***********************************************************
