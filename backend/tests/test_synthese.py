@@ -88,6 +88,20 @@ class TestSynthese:
         assert len(data["data"]["features"]) == 0
         assert response.status_code == 200
 
+    def test_filter_cor_observers(self):
+        """
+            Test avec un cruved R2 qui join sur cor_synthese_observers
+        """
+        token = get_token(self.client, login="test_cruved_r2", password="admin")
+        self.client.set_cookie("/", "token", token)
+        response = self.client.get(url_for("gn_synthese.get_observations_for_web"))
+        data = json_of_response(response)
+
+        # le résultat doit être supérieur ou égal à 2
+        assert len(data["data"]["features"]) != 0
+        # le requete doit etre OK marlgré la geom NULL
+        assert response.status_code == 200
+
     def test_export(self):
         token = get_token(self.client, login="admin", password="admin")
         self.client.set_cookie("/", "token", token)
