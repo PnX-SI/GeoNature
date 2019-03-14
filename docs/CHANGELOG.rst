@@ -16,6 +16,8 @@ CHANGELOG
 * Correction ajout rang et cd_nom sur l'autocomplete de la synthese, absent dans le script de migration
 * DEPOBIO: Correction de la déconnexion au CAS INPN
 * Occtax et Metadata: correction lors de la mise à jour d'un élement (Merge mal géré par SQLAlchemy lorsqu'on pas une valeur NULL)
+* Composant 'jeu de données": repassage au nom "long"
+* Amélioration du style du composant multiselect
 
 2.0.0 (2019-02-28)
 ------------------
