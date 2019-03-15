@@ -6,6 +6,9 @@ CHANGELOG
 2.0.1 (unreleased)
 ------------------
 
+** Nouveautés**
+
+* Développement: ajout d'une fonction de génération dynamique de requête SQL (avec vérification et cast des types)
 
 **Corrections**
 
@@ -18,6 +21,7 @@ CHANGELOG
 * Occtax et Metadata: correction lors de la mise à jour d'un élement (Merge mal géré par SQLAlchemy lorsqu'on pas une valeur NULL)
 * Composant 'jeu de données": repassage au nom "long"
 * Amélioration du style du composant multiselect
+* Metadata: formulaire cadre d'acquisition - listage uniquement des cadres d'acquisition parent pour ne pas avoir de cadres d'acquisition imbriqués
 
 2.0.0 (2019-02-28)
 ------------------

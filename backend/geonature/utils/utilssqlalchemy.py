@@ -22,6 +22,11 @@ from geonature.utils.utilsgeometry import create_shapes_generic
 
 
 def testDataType(value, sqlType, paramName):
+    """
+        Test the type of a filter
+        #TODO: antipatern: should raise something which can be exect by the function which use it
+        # and not return the error
+    """
     if sqlType == DB.Integer or isinstance(sqlType, (DB.Integer)):
         try:
             int(value)
@@ -38,6 +43,48 @@ def testDataType(value, sqlType, paramName):
         except Exception as e:
             return "{0} must be an date (yyyy-mm-dd)".format(paramName)
     return None
+
+
+def test_type_and_generate_query(param_name, value, model, q):
+    """
+        Generate a query with the filter given, checking the params is the good type of the columns, and formmatting it
+        Params:
+            - param_name (str): the name of the column
+            - value (any): the value of the filter
+            - model (SQLA model)
+            - q (SQLA Query)
+    """
+    # check the attribut exist in the model
+    try:
+        col = getattr(model, param_name)
+    except AttributeError as error:
+        raise GeonatureApiError(str(error))
+    sql_type = col.type
+    if sql_type == DB.Integer or isinstance(sql_type, (DB.Integer)):
+        try:
+            return q.filter(col == int(value))
+        except Exception as e:
+            raise GeonatureApiError("{0} must be an integer".format(param_name))
+    if sql_type == DB.Numeric or isinstance(sql_type, (DB.Numeric)):
+        try:
+            return q.filter(col == float(value))
+        except Exception as e:
+            raise GeonatureApiError(
+                "{0} must be an float (decimal separator .)".format(param_name)
+            )
+    if sql_type == DB.DateTime or isinstance(sql_type, (DB.Date, DB.DateTime)):
+        try:
+            return q.filter(col == parser.parse(value))
+        except Exception as e:
+            raise GeonatureApiError(
+                "{0} must be an date (yyyy-mm-dd)".format(param_name)
+            )
+
+    if sql_type == DB.Boolean or isinstance(sql_type, DB.Boolean):
+        try:
+            return q.filter(col.is_(bool(value)))
+        except Exception:
+            raise GeonatureApiError("{0} must be a boolean".format(param_name))
 
 
 def get_geojson_feature(wkb):
