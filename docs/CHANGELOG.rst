@@ -6,22 +6,31 @@ CHANGELOG
 2.0.1 (unreleased)
 ------------------
 
-** Nouveautés**
+**Nouveautés**
 
-* Développement: ajout d'une fonction de génération dynamique de requête SQL (avec vérification et cast des types)
+* Développement : ajout d'une fonction de génération dynamique de requête SQL (avec vérification et cast des types)
 
 **Corrections**
 
-* Synthese: correction du filtre CRUVED pour les portées 1 et 2 sur le route ``synthese/for_web``
-* Synthese: correction du bug lorsque la géométrie est null 
-* Configuration carto: correction du bug d'arrondissement des coordonnées géographiques
-* Récréation de la vue ``pr_occtax.export_occtax_sinp`` qui avait été supprimé pour lors de la migration RC3 vers RC4
+* Synthese : correction du filtre CRUVED pour les portées 1 et 2 sur la route ``synthese/for_web`` (#584)
+* Synthese : correction du bug lorsque la géométrie est null (#580)
+* Configuration carto : correction du bug d'arrondissement des coordonnées géographiques (#582)
+* Correction du trigger de calcul de la geom locale
+* Récréation de la vue ``pr_occtax.export_occtax_sinp`` qui avait été supprimée lors de la migration RC3 vers RC4
+* Correction de la vue ``pr_occtax.v_releve_list``
 * Correction ajout rang et cd_nom sur l'autocomplete de la synthese, absent dans le script de migration
-* DEPOBIO: Correction de la déconnexion au CAS INPN
-* Occtax et Metadata: correction lors de la mise à jour d'un élement (Merge mal géré par SQLAlchemy lorsqu'on pas une valeur NULL)
-* Composant 'jeu de données": repassage au nom "long"
+* DEPOBIO : Correction de la déconnexion au CAS INPN
+* Occtax et Metadata: correction lors de la mise à jour d'un élement (Merge mal géré par SQLAlchemy lorsqu'on n'a pas une valeur NULL) (#588)
+* Composant "jeu de données" : retour à l'affichage du nom long (#588)
 * Amélioration du style du composant multiselect
-* Metadata: formulaire cadre d'acquisition - listage uniquement des cadres d'acquisition parent pour ne pas avoir de cadres d'acquisition imbriqués
+* Metadata : formulaire cadre d'acquisition - listage uniquement des cadres d'acquisition parent pour ne pas avoir de cadres d'acquisition imbriqués
+* Ajouts de tests automatisés complémentaires
+
+**Notes de version**
+
+* Vous pouvez passer directement à cette version, mais en suivant les notes des versions intermédiaires
+* Exécuter le script de migration SQL ``data/migrations/2.0.0to2.0.1.sql``
+* Suivez ensuite la procédure classique de mise à jour de GeoNature (https://geonature.readthedocs.io/fr/latest/installation-standalone.html#mise-a-jour-de-l-application)
 
 2.0.0 (2019-02-28)
 ------------------
