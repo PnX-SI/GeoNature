@@ -202,6 +202,7 @@ La mise à jour de GeoNature consiste à télécharger sa nouvelle version dans 
 
     wget https://github.com/PnX-SI/GeoNature/archive/X.Y.Z.zip
     unzip X.Y.Z.zip
+    rm X.Y.Z.zip
 
 * Renommer l'ancien repertoire de l'application, ainsi que le nouveau :
 
