@@ -25,7 +25,7 @@ echo "OK, let's migrate GeoNature version..."
 cp $myrootpath/geonature_old/config/settings.ini config/settings.ini
 cp $myrootpath/geonature_old/config/geonature_config.toml config/geonature_config.toml
 cp -r $myrootpath/geonature_old/frontend/src/custom/* frontend/src/custom/
-cp $myrootpath/geonature_old/frontend/src/favicon.ico
+cp $myrootpath/geonature_old/frontend/src/favicon.ico frontend/src/favicon.ico
 cp -r $myrootpath/geonature_old/external_modules/* external_modules
 # On supprime le lien symbolique qui pointe vers geonature_old/contrib/occtax
 rm -r external_modules/occtax
