@@ -107,6 +107,8 @@ CASE
   WHEN module_name='admin' THEN 'admin'
   WHEN module_name='suivi_chiro' THEN 'suivi_chiro'
   WHEN module_name='suivi_flore_territoire' THEN 'suivi_flore_territoire'
+  WHEN module_name='synthese' THEN 'synthese'
+
 END;
 
 
@@ -572,19 +574,19 @@ END $$;
 -----------------------
 -----FUNCTIONS----------
 -----------------------
-CREATE OR REPLACE FUNCTION pr_occtax.get_id_counting_from_id_releve(my_id_releve integer)
-  RETURNS integer[] AS
+DROP FUNCTION IF EXISTS pr_occtax.get_unique_id_sinp_from_id_releve(my_id_releve integer);                                                                               
+CREATE OR REPLACE FUNCTION pr_occtax.get_unique_id_sinp_from_id_releve(my_id_releve integer)
+  RETURNS uuid[] AS
 $BODY$
--- Function which return the id_countings in an array (table pr_occtax.cor_counting_occtax) from the id_releve(integer)
-DECLARE the_array_id_counting integer[];
-
+-- Function which return the unique_id_sinp_occtax in an array (table pr_occtax.cor_counting_occtax) from the id_releve(integer)
+DECLARE the_array_uuid_sinp uuid[];
 BEGIN
-SELECT INTO the_array_id_counting array_agg(counting.id_counting_occtax)
-FROM pr_occtax.t_releves_occtax rel
-JOIN pr_occtax.t_occurrences_occtax occ ON occ.id_releve_occtax = rel.id_releve_occtax
-JOIN pr_occtax.cor_counting_occtax counting ON counting.id_occurrence_occtax = occ.id_occurrence_occtax
+SELECT INTO the_array_uuid_sinp array_agg(counting.unique_id_sinp_occtax)
+FROM pr_occtax.cor_counting_occtax counting
+JOIN pr_occtax.t_occurrences_occtax occ ON occ.id_occurrence_occtax = counting.id_occurrence_occtax
+JOIN pr_occtax.t_releves_occtax rel ON rel.id_releve_occtax = occ.id_releve_occtax
 WHERE rel.id_releve_occtax = my_id_releve;
-RETURN the_array_id_counting;
+RETURN the_array_uuid_sinp;
 END;
 $BODY$
   LANGUAGE plpgsql IMMUTABLE
@@ -1109,41 +1111,48 @@ COST 100;
 ------------
 
 
+DROP TRIGGER IF EXISTS tri_insert_default_validation_status ON pr_occtax.cor_counting_occtax;
 CREATE TRIGGER tri_insert_default_validation_status
   AFTER INSERT
   ON pr_occtax.cor_counting_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_add_default_validation_status();
 
+DROP TRIGGER IF EXISTS tri_log_changes_cor_counting_occtax ON pr_occtax.cor_counting_occtax;
 CREATE TRIGGER tri_log_changes_cor_counting_occtax
   AFTER INSERT OR UPDATE OR DELETE
   ON pr_occtax.cor_counting_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
 
+DROP TRIGGER IF EXISTS tri_log_changes_t_occurrences_occtax ON pr_occtax.t_occurrences_occtax;
 CREATE TRIGGER tri_log_changes_t_occurrences_occtax
   AFTER INSERT OR UPDATE OR DELETE
   ON pr_occtax.t_occurrences_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
 
+DROP TRIGGER IF EXISTS tri_log_changes_t_releves_occtax ON pr_occtax.t_releves_occtax;
 CREATE TRIGGER tri_log_changes_t_releves_occtax
   AFTER INSERT OR UPDATE OR DELETE
   ON pr_occtax.t_releves_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
 
+DROP TRIGGER IF EXISTS tri_log_changes_cor_role_releves_occtax ON pr_occtax.cor_role_releves_occtax;
 CREATE TRIGGER tri_log_changes_cor_role_releves_occtax
   AFTER INSERT OR UPDATE OR DELETE
   ON pr_occtax.cor_role_releves_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
 
+DROP TRIGGER IF EXISTS tri_calculate_geom_local ON pr_occtax.t_releves_occtax;
 CREATE TRIGGER tri_calculate_geom_local
   BEFORE INSERT OR UPDATE
   ON pr_occtax.t_releves_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE ref_geo.fct_trg_calculate_geom_local('geom_4326', 'geom_local');
+
 
   -- triggers vers la synthese
 
