@@ -143,7 +143,8 @@ def get_acquisition_frameworks(info_role):
     """
     Retourne tous les cadres d'acquisition filtrés avec le cruved
     """
-    return get_af_cruved(info_role)
+    params = request.args
+    return get_af_cruved(info_role, params)
 
 
 @routes.route("/acquisition_framework/<id_acquisition_framework>", methods=["GET"])

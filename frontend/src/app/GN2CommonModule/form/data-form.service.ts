@@ -178,8 +178,19 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/geo/areas`, { params: params });
   }
 
-  getAcquisitionFrameworks() {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks`);
+  getAcquisitionFrameworks(params?: any) {
+    let queryString: HttpParams = new HttpParams();
+    if (params) {
+      // tslint:disable-next-line:forin
+      for (let key in params) {
+        if (params[key] !== null) {
+          queryString = queryString.set(key, params[key]);
+        }
+      }
+    }
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks`, {
+      params: queryString
+    });
   }
 
   getAcquisitionFramework(id_af) {

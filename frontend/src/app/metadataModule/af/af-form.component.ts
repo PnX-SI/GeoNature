@@ -42,8 +42,8 @@ export class AfFormComponent implements OnInit {
         this.getAf(this.id_af);
       }
     });
-
-    this._dfs.getAcquisitionFrameworks().subscribe(data => {
+    // get acquisistion frameworks parent
+    this._dfs.getAcquisitionFrameworks({ is_parent: 'true' }).subscribe(data => {
       this.acquisitionFrameworks = data;
     });
     this.afForm = this._fb.group({
