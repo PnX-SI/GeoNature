@@ -1,6 +1,7 @@
 ############################################################
 # Liste des paramètres et de leurs valeurs par défaut, 
 # surcouchables dans le fichier config/geonature_config.toml
+/!\ Les paramètres qui ne sont pas dans une section (entre crochets) doivent être au début du fichier
 ############################################################
 
 # Database
