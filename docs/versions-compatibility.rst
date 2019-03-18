@@ -3,8 +3,8 @@ COMPATIBILITE
 
 Compatibilité des versions de GeoNature
 
-GeoNature2 2.0.1
-----------------
+GeoNature 2.0.1
+---------------
 
 +------------------------+-----------+
 | Application / Module   | Version   |
@@ -21,8 +21,8 @@ GeoNature2 2.0.1
 +------------------------+-----------+ 
 
 
-GeoNature2 2.0.0
-----------------
+GeoNature 2.0.0
+---------------
 
 +------------------------+-----------+
 | Application / Module   | Version   |
