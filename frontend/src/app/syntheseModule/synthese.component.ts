@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { DataService } from './services/data.service';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { CommonService } from '@geonature_common/service/common.service';
@@ -7,6 +7,7 @@ import { SyntheseFormService } from './services/form.service';
 import { SyntheseStoreService } from './services/store.service';
 import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
 import { AppConfig } from '@geonature_config/app.config';
+import { ToastrService, ToastrConfig } from 'ngx-toastr';
 
 @Component({
   selector: 'pnx-synthese',
@@ -17,6 +18,8 @@ import { AppConfig } from '@geonature_config/app.config';
 export class SyntheseComponent implements OnInit {
   public searchBarHidden = false;
   public marginButton: number;
+  public firstLoad = true;
+  public CONFIG = AppConfig;
 
   constructor(
     public searchService: DataService,
@@ -24,7 +27,8 @@ export class SyntheseComponent implements OnInit {
     private _commonService: CommonService,
     private _modalService: NgbModal,
     private _fs: SyntheseFormService,
-    private _syntheseStore: SyntheseStoreService
+    private _syntheseStore: SyntheseStoreService,
+    private _toasterService: ToastrService
   ) {}
 
   loadAndStoreData(formParams) {
@@ -56,6 +60,19 @@ export class SyntheseComponent implements OnInit {
         }
       }
     );
+    if (this.firstLoad) {
+      //toaster
+      this._toasterService.info(
+        `Les ${AppConfig.SYNTHESE.NB_LAST_OBS} dernières observations de la synthèse`,
+        '',
+        {
+          positionClass: 'toast-top-center',
+          tapToDismiss: true,
+          timeOut: 5000
+        }
+      );
+    }
+    this.firstLoad = false;
   }
 
   ngOnInit() {
@@ -65,5 +82,9 @@ export class SyntheseComponent implements OnInit {
 
   mooveButton() {
     this.searchBarHidden = !this.searchBarHidden;
+  }
+
+  closeInfo(infoAlert: HTMLElement) {
+    infoAlert.hidden = true;
   }
 }
