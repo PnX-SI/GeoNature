@@ -169,3 +169,13 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS
      LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
      LEFT JOIN gn_meta.t_datasets dataset ON dataset.id_dataset = rel.id_dataset
   GROUP BY dataset.dataset_name, rel.id_releve_occtax, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.meta_device_entry;
+
+
+UPDATE gn_synthese.defaults_nomenclatures_value d 
+SET id_nomenclature = (
+  SELECT id_nomenclature
+  FROM ref_nomenclatures.t_nomenclatures nom
+  JOIN ref_nomenclatures.bib_nomenclatures_types bib ON bib.id_type = nom.id_type
+  WHERE bib.mnemonique = 'STATUT_OBS' AND nom.cd_nomenclature = 'Pr'
+)
+WHERE mnemonique_type = 'STATUT_OBS';
