@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+2.0.2 (unreleased)
+------------------
+
+**Corrections**
+
+*
+
 2.0.1 (2019-03-18)
 ------------------
 
@@ -23,7 +30,7 @@ CHANGELOG
 * Correction ajout rang et cd_nom sur l'autocomplete de la synthese, absent dans le script de migration
 * DEPOBIO : Correction de la déconnexion au CAS INPN
 * Occtax et Metadata: correction lors de la mise à jour d'un élement (Merge mal géré par SQLAlchemy lorsqu'on n'a pas une valeur NULL) (#588)
-* Composant "jeu de données" : retour à l'affichage du nom long (#588)
+* Composant "jeu de données" : retour à l'affichage du nom long (#583)
 * Amélioration du style du composant multiselect
 * Metadata : formulaire cadre d'acquisition - listage uniquement des cadres d'acquisition parent pour ne pas avoir de cadres d'acquisition imbriqués
 * Ajouts de tests automatisés complémentaires
