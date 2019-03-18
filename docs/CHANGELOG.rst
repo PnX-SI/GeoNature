@@ -2,8 +2,7 @@
 CHANGELOG
 =========
 
-
-2.0.1 (unreleased)
+2.0.1 (2019-03-18)
 ------------------
 
 **Nouveautés**
@@ -19,7 +18,7 @@ CHANGELOG
 * Synthese : Correction de la valeur par défaut de la nomenclature ``STATUT_OBS`` (``Présent`` au lieu de ``NSP``)
 * Configuration carto : correction du bug d'arrondissement des coordonnées géographiques (#582)
 * Correction du trigger de calcul de la geom locale
-* Récréation de la vue ``pr_occtax.export_occtax_sinp`` qui avait été supprimée lors de la migration RC3 vers RC4
+* Recréation de la vue ``pr_occtax.export_occtax_sinp`` qui avait été supprimée lors de la migration RC3 vers RC4
 * Correction de la vue ``pr_occtax.v_releve_list``
 * Correction ajout rang et cd_nom sur l'autocomplete de la synthese, absent dans le script de migration
 * DEPOBIO : Correction de la déconnexion au CAS INPN
@@ -32,7 +31,8 @@ CHANGELOG
 **Notes de version**
 
 * Vous pouvez passer directement à cette version, mais en suivant les notes des versions intermédiaires
-* Exécuter le script de migration SQL ``data/migrations/2.0.0to2.0.1.sql``
+* Exécuter le script de migration SQL du sous-module Nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module/blob/1.2.4/data/update1.2.3to1.2.4.sql)
+* Exécuter le script de migration SQL de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.0.0to2.0.1.sql)
 * Suivez ensuite la procédure classique de mise à jour de GeoNature (https://geonature.readthedocs.io/fr/latest/installation-standalone.html#mise-a-jour-de-l-application)
 
 2.0.0 (2019-02-28)
