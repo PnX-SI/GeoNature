@@ -9,11 +9,14 @@ CHANGELOG
 **Nouveautés**
 
 * Développement : ajout d'une fonction de génération dynamique de requête SQL (avec vérification et cast des types)
+* Synthese : Ajout d'un message indiquant que le module affiche les dernières observations par défaut
 
 **Corrections**
 
 * Synthese : correction du filtre CRUVED pour les portées 1 et 2 sur la route ``synthese/for_web`` (#584)
 * Synthese : correction du bug lorsque la géométrie est null (#580)
+* Synthese : Correction de la redirection vers le module de saisie (#586)
+* Synthese : Correction de la valeur par défaut de la nomenclature ``STATUT_OBS`` (``Présent`` au lieu de ``NSP``)
 * Configuration carto : correction du bug d'arrondissement des coordonnées géographiques (#582)
 * Correction du trigger de calcul de la geom locale
 * Récréation de la vue ``pr_occtax.export_occtax_sinp`` qui avait été supprimée lors de la migration RC3 vers RC4
