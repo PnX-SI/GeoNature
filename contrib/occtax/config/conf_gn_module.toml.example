@@ -1,40 +1,6 @@
 # ----------- OCCTAX AVAILABLE AND DEFAULT PARAMETER ------------
-# Don't change this file. You can override parameters defautl values in conf_gn_module.toml file
-
-# ------------- FORM PARAMETER ---------------
-
-# Allow to hide or display some fields. If hidden, database default value is used
-[form_fields]
-    date_min = true
-    date_max = true
-    hour_min = true
-    hour_max = true
-    altitude_min = true
-    altitude_max = true
-    obs_technique = true
-    group_type = true
-    comment_releve = true
-    obs_method = true
-    bio_condition = true
-    bio_status = true
-    naturalness = true
-    exist_proof = true
-    observation_status = true
-    diffusion_level = false
-    blurring = false
-    determiner = true
-    determination_method = true
-    sample_number_proof = true
-    digital_proof = true
-    non_digital_proof = true
-    source_status = false
-    comment_occ = true
-    life_stage = true
-    sex = true
-    obj_count = true
-    type_count = true
-    count_min = true
-    count_max = true
+# You can override parameters defautl values in conf_gn_module.toml file
+# /!\ All parameters which are not in a section (between []) must be AT THE TOP OF THE FILE
 
 # Switch the form input in free text input (true) or in select input (false)
 observers_txt = false
@@ -151,3 +117,39 @@ export_columns =  [
   "WKT",
   "natObjGeo"
  ]
+
+
+# ------------- FORM PARAMETER ---------------
+
+# Allow to hide or display some fields. If hidden, database default value is used
+[form_fields]
+    date_min = true
+    date_max = true
+    hour_min = true
+    hour_max = true
+    altitude_min = true
+    altitude_max = true
+    obs_technique = true
+    group_type = true
+    comment_releve = true
+    obs_method = true
+    bio_condition = true
+    bio_status = true
+    naturalness = true
+    exist_proof = true
+    observation_status = true
+    diffusion_level = false
+    blurring = false
+    determiner = true
+    determination_method = true
+    sample_number_proof = true
+    digital_proof = true
+    non_digital_proof = true
+    source_status = false
+    comment_occ = true
+    life_stage = true
+    sex = true
+    obj_count = true
+    type_count = true
+    count_min = true
+    count_max = true
