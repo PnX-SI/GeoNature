@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { FormControl, FormArray, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
 
 @Injectable()
 export class DynamicFormService {
-  constructor() { }
+  constructor() {}
 
   toFormGroup(formsDef: Array<any>) {
     let group: any = {};
@@ -20,10 +20,11 @@ export class DynamicFormService {
         ? new FormControl([], Validators.required)
         : new FormControl([]);
     } else {
-      abstractForm = formDef.obligatoire
+      abstractForm = formDef.required
         ? new FormControl(formDef.value || null, Validators.required)
         : new FormControl(formDef.value || null);
     }
+
     return abstractForm;
   }
 
