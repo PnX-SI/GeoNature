@@ -9,7 +9,7 @@ import { DynamicFormService } from './dynamic-form.service';
 })
 export class GenericFormGeneratorComponent implements OnInit {
   public selectControl = new FormControl();
-  @Input() formGroup: FormGroup;
+  @Input() myFormGroup: FormGroup;
   @Input() formsDefinition: Array<any>;
   @Input() selectLabel: string;
   public formsSelected = [];
@@ -28,7 +28,7 @@ export class GenericFormGeneratorComponent implements OnInit {
     const formDef = this.formsSelected[i];
     this.formsSelected.splice(i, 1);
     this.formsDefinition.push(formDef);
-    this.formGroup.removeControl(formDef.attribut_name);
+    this.myFormGroup.removeControl(formDef.attribut_name);
     this.selectControl.setValue(null);
   }
 
@@ -37,6 +37,6 @@ export class GenericFormGeneratorComponent implements OnInit {
     this.formsDefinition = this.formsDefinition.filter(form => {
       return form.attribut_name !== formDef.attribut_name;
     });
-    this._dynformService.addNewControl(formDef, this.formGroup);
+    this._dynformService.addNewControl(formDef, this.myFormGroup);
   }
 }

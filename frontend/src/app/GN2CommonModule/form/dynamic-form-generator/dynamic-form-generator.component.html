@@ -11,7 +11,7 @@
     <div class="dynamic-form padding-sm" *ngFor="let formDef of formsSelected; let i = index" >
         <pnx-dynamic-form
         [formDef]="formDef"
-        [form]="formGroup"
+        [form]="myFormGroup"
         >
       </pnx-dynamic-form>
     <i class="fa fa-trash-o clickable trash-btn" (click)="removeFormControl(i)" aria-hidden="true"></i>
