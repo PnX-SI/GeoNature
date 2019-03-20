@@ -166,9 +166,11 @@ export class MapService {
   }
 
   removeAllLayers(map, featureGroup) {
-    featureGroup.eachLayer(layer => {
-      featureGroup.removeLayer(layer);
-    });
+    if (featureGroup) {
+      featureGroup.eachLayer(layer => {
+        featureGroup.removeLayer(layer);
+      });
+    }
   }
 
   loadGeometryReleve(data, isDraggable) {
