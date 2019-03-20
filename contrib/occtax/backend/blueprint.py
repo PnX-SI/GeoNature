@@ -267,9 +267,6 @@ def getViewReleveList(info_role):
     }
 
 
-# current_app.config["SQLALCHEMY_ECHO"] = True
-
-
 @blueprint.route("/releve", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="OCCTAX")
 @json_resp

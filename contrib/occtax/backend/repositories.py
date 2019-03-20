@@ -215,9 +215,9 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False):
             CorDatasetActor, CorDatasetActor.id_dataset == mappedView.id_dataset
         ).filter(CorDatasetActor.id_actor == int(params.pop("organism")))
 
-    if "observateurs" in params:
-        observers_query = "%{}%".format(params.pop("observateurs"))
-        q = q.filter(mappedView.observateurs.ilike(observers_query))
+    if "observers_txt" in params:
+        observers_query = "%{}%".format(params.pop("observers_txt"))
+        q = q.filter(mappedView.observers_txt.ilike(observers_query))
 
     if from_generic_table:
         table_columns = mappedView
@@ -278,16 +278,9 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False):
     if "orderby" in params:
         if params.get("orderby") in mappedView.__table__.columns:
             orderCol = getattr(mappedView.__table__.columns, params["orderby"])
-        # else:
-        #     orderCol = getattr(
-        #         mappedView.__table__.columns,
-        #         'occ_meta_create_date'
-        #     )
-
         if "order" in params:
             if params["order"] == "desc":
                 orderCol = orderCol.desc()
-
         q = q.order_by(orderCol)
 
     return q
