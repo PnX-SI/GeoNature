@@ -1,20 +1,62 @@
-<div class="card card-page center-in-div">
-  <div class="card-header">
-    <h3 class="underlined main-color"> Metadonnées </h3>
-  </div>
+<div class="container-fluid">
+  <div class="card card-page">
+    <div class="card-header">
+      <h3 class="underlined main-color"> Catalogue des jeux de données </h3>
+    </div>
 
+    <div class="card-body">
+      <div class="row">
+        <div class="form-group col-sm-7">
+          <input class="form-control form-control-sm"
+            type="text" name="" id="" placeholder="Rechercher" (keyup)='updateSearchbar($event)'>
+        </div>  
+      </div>
+      <div>Liste des cadres d'acquisition et des jeux de données associés</div>
+      <mat-accordion >
+        <ng-container *ngFor="let af of tempAF; let idx = index">
+          <mat-expansion-panel *ngIf="isDisplayed(idx)">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <a *ngIf="_cruvedStore.cruved?.METADATA?.cruved.U !== '0'"
+                  class="bt-edit" 
+                  title="Editer le cadre d'acquisition"
+                  [routerLink]="['/metadata/af', af.id_acquisition_framework]" >
+                  <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                </a>
+                {{ af.acquisition_framework_name | uppercase }}
+              </mat-panel-title>
+              <mat-panel-description *ngIf="af.acquisition_framework_name != af.acquisition_framework_desc">
+                {{ af.acquisition_framework_desc }}
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <mat-list>
+              <ng-container *ngFor="let ds of af.datasetsTemp; let last = last">
+                <mat-list-item>
+                  <a *ngIf="_cruvedStore.cruved?.METADATA?.cruved.U !== '0'"
+                    class="bt-edit" 
+                    title="Editer le jeu de données"
+                    [routerLink]="['/metadata/dataset', ds.id_dataset]" >
+                    <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                  </a>
+                  <span>↳ {{ ds.dataset_name }}</span>
+                </mat-list-item>
+                <mat-divider *ngIf="!last"></mat-divider>
+              </ng-container>
+            </mat-list>
+          </mat-expansion-panel>
+        </ng-container>
+      </mat-accordion>
+      <mat-paginator
+                    [length]="tempAF.length"
+                    [pageSize]="pageSize"
+                    [pageSizeOptions]="pageSizeOptions"
+                    (page)="changePaginator($event)">
+      </mat-paginator>
 
-  <div class="card-body">
-          
-        <li class="no-bullet">
-          <h5 routerLink="/metadata/afs" class="btn btn-primary"> Cadres d'acquisition <i class="fa fa-pencil-square-o"
-              aria-hidden="true"></i></h5>
-        </li>
-        <li class="no-bullet">
-          <h5 routerLink="/metadata/datasets" class="btn btn-primary"> Jeu de données <i class="fa fa-pencil-square-o"
-              aria-hidden="true"></i></h5>
-        </li>
-    
+      <div>
+        <a *ngIf="_cruvedStore.cruved?.METADATA?.cruved.C !== '0'" routerLink="/metadata/af" class="btn btn-primary btn-sm margin-top-sm"> Ajouter un cadre d'acquisition </a>
+        <a *ngIf="_cruvedStore.cruved?.METADATA?.cruved.C !== '0'" routerLink="/metadata/dataset" class="btn btn-primary btn-sm margin-top-sm"> Ajouter un jeu de données </a>
+      </div>
+    </div>
   </div>
 </div>
-
