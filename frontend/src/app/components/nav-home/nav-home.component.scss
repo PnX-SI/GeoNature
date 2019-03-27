@@ -1,9 +1,16 @@
+@import '../../../conf/names_variables.scss';
+@import '../../../custom/custom.scss';
+
 #documentation_link {
   color: black !important;
 }
 
 .toolbar-icon {
   padding: 0 15px;
+}
+
+#app-toolbar {
+  background-color: $navbar-color;
 }
 
 .appnav {
