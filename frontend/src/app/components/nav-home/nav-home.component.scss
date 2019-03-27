@@ -46,3 +46,16 @@ mat-icon {
 .dropdown-item .fa {
   margin-right: 12px;
 }
+
+.toolbar-button {
+  background-color: $navbar-color !important;
+  color: $navbar-text-button-color !important;
+}
+
+.menu-button {
+  margin-right: 10px;
+}
+
+.menu-button mat-icon.menu-icon {
+  margin: 0;
+}
