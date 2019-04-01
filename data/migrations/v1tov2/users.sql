@@ -335,3 +335,13 @@ CREATE OR REPLACE VIEW utilisateurs.v_observateurs AS
              JOIN utilisateurs.t_roles r_1 ON r_1.id_role = crm.id_role AND crm.id_menu = 5 AND r_1.groupe = false AND r_1.active = true))
   ORDER BY (r.nom_role::text || ' '::text) || r.prenom_role::text, r.id_role;
 
+
+
+-- Droit d'accès à GeoNature pour le groupe en poste PNE
+
+INSERT INTO utilisateurs.cor_role_app_profil
+SELECT id_role, app.id_application, 1
+FROM utilisateurs.t_roles t, utilisateurs.t_applications app
+WHERE t.nom_role = 'GP_En poste au PNE' AND app.code_application = 'GN';
+
+
