@@ -71,7 +71,7 @@ SELECT
   email_organisme,
   id_organisme,
   uuid_organisme,
-  id_parent FROM migratetov2.bib_organismes WHERE id_organisme NOT IN (SELECT id_organisme FROM utilisateurs.bib_organismes);
+  id_parent FROM v1_compat.bib_organismes WHERE id_organisme NOT IN (SELECT id_organisme FROM utilisateurs.bib_organismes);
 
 
 INSERT INTO utilisateurs.bib_unites(
@@ -92,7 +92,7 @@ SELECT
   tel_unite,
   fax_unite,
   email_unite,
-  id_unite FROM migratetov2.bib_unites WHERE id_unite NOT IN (SELECT id_unite FROM utilisateurs.bib_unites);
+  id_unite FROM v1_compat.bib_unites WHERE id_unite NOT IN (SELECT id_unite FROM utilisateurs.bib_unites);
 
 
 -- creation uuid si NULL
@@ -137,28 +137,28 @@ SELECT
     date_update,
     uuid_role,
     pass_plus
- FROM migratetov2.t_roles WHERE id_role NOT IN(SELECT id_role FROM utilisateurs.t_roles);
+ FROM v1_compat.t_roles WHERE id_role NOT IN(SELECT id_role FROM utilisateurs.t_roles);
 
 
 INSERT INTO utilisateurs.cor_roles (id_role_groupe, id_role_utilisateur)
-SELECT * FROM migratetov2.cor_roles;
+SELECT * FROM v1_compat.cor_roles;
 
 INSERT INTO utilisateurs.t_applications (id_application, nom_application, desc_application,code_application, id_parent)
-SELECT id_application, nom_application, desc_application, code_application, id_parent FROM migratetov2.t_applications
+SELECT id_application, nom_application, desc_application, code_application, id_parent FROM v1_compat.t_applications
 WHERE id_application NOT in (SELECT id_application FROM utilisateurs.t_applications);
 
 INSERT INTO utilisateurs.t_listes(id_liste, code_liste, nom_liste, desc_liste)
-SELECT * FROM migratetov2.t_listes;
+SELECT * FROM v1_compat.t_listes;
 
 INSERT INTO utilisateurs.cor_role_liste (id_role, id_liste)
-SELECT * FROM migratetov2.cor_role_liste;
+SELECT * FROM v1_compat.cor_role_liste;
 
 INSERT INTO utilisateurs.cor_profil_for_app (id_profil, id_application)
-SELECT * FROM migratetov2.cor_profil_for_app;
+SELECT * FROM v1_compat.cor_profil_for_app;
 
 
 INSERT INTO utilisateurs.cor_role_app_profil (id_role, id_application, id_profil)
-SELECT * FROM migratetov2.cor_role_app_profil;
+SELECT * FROM v1_compat.cor_role_app_profil;
 
 
 -- vue
