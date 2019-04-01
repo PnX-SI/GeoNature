@@ -1,0 +1,12 @@
+#duplicate this file to migrate2v2.ini and adapt it with your context.
+
+#GEONATURE1 DATABASE CONNEXION
+geonature1host=localhost
+geonature1port=5432
+geonature1db=geonature2db
+geonature1user=geonatuser
+geonature1userpass=monpassachanger
+
+#SQL SCHEMA
+#import "utilisateurs" schema content
+importusers=true
