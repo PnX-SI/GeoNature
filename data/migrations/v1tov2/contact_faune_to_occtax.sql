@@ -67,15 +67,6 @@ SELECT
 FROM v1_compat.vm_t_fiches_cf cf
 LEFT JOIN n24 ON cf.id_lot = n24.pk_source;
 
--- observateurs 
-INSERT INTO pr_occtax.cor_role_releves_occtax
-SELECT 
-uuid_generate_v4() AS unique_id_cor_role_releve,
-id_cf AS id_releve_occtax,
-id_role AS id_role
-FROM v1_compat.cor_role_fiche_cf
-
-
 INSERT INTO pr_occtax.t_occurrences_occtax(
             id_occurrence_occtax,
             unique_id_occurence_occtax, 
@@ -203,6 +194,8 @@ ai AS count_max
 FROM v1_compat.vm_t_releves_cf cf
 WHERE ai > 0;
 
+
+
 -- sexe et age indeterminé
 INSERT INTO pr_occtax.cor_counting_occtax(
             unique_id_sinp_occtax, 
@@ -225,6 +218,30 @@ sai AS count_min,
 sai AS count_max
 FROM v1_compat.vm_t_releves_cf cf
 WHERE sai > 0;
+
+-- non adulte
+INSERT INTO pr_occtax.cor_counting_occtax(
+            unique_id_sinp_occtax, 
+            id_occurrence_occtax, 
+            id_nomenclature_life_stage, 
+            id_nomenclature_sex, 
+            id_nomenclature_obj_count, 
+            id_nomenclature_type_count, 
+            count_min, 
+            count_max
+        )
+SELECT 
+uuid_generate_v4() AS unique_id_sinp_occtax,
+id_releve_cf AS id_occurrence_occtax,
+ref_nomenclatures.get_id_nomenclature('STADE_VIE', '3'),
+ref_nomenclatures.get_id_nomenclature('SEXE', '0'),
+ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
+ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'NSP'),
+na AS count_min,
+na AS count_max
+FROM v1_compat.vm_t_releves_cf cf
+WHERE na > 0;
+
 
 -- jeune
 INSERT INTO pr_occtax.cor_counting_occtax(
@@ -277,3 +294,11 @@ ALTER TABLE pr_occtax.t_releves_occtax ENABLE TRIGGER USER;
 -- mettre à jour le serial
 SELECT pg_catalog.setval('pr_occtax.cor_counting_occtax_id_counting_occtax_seq', (SELECT max(id_counting_occtax)+1 FROM pr_occtax.cor_counting_occtax), true);
 
+
+-- observateurs 
+INSERT INTO pr_occtax.cor_role_releves_occtax
+SELECT 
+uuid_generate_v4() AS unique_id_cor_role_releve,
+id_cf AS id_releve_occtax,
+id_role AS id_role
+FROM v1_compat.cor_role_fiche_cf

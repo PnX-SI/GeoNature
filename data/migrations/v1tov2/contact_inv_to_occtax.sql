@@ -1,3 +1,14 @@
+DROP FOREIGN TABLE v1_compat.v_nomade_classes;
+IMPORT FOREIGN SCHEMA contactinv FROM SERVER geonature1server INTO v1_compat;
+
+--create de vues métérialisées pour des raisons de performances
+CREATE MATERIALIZED VIEW v1_compat.t_fiches_inv AS
+SELECT * FROM v1_compat.vm_t_fiches_inv;
+CREATE MATERIALIZED VIEW v1_compat.t_releves_inv AS
+SELECT * FROM v1_compat.vm_t_releves_inv;
+
+
+
 CREATE TABLE v1_compat.cor_critere_contactinv_v1_to_v2 (
 	pk_source integer,
 	entity_source character varying(100),
@@ -75,18 +86,8 @@ INSERT INTO pr_occtax.t_releves_occtax(
     the_geom_local AS geom_local,
     ST_TRANSFORM(the_geom_local, 4326) AS geom_4326,
     50 AS precision
-    FROM v1_compat.t_fiches_inv
+    FROM v1_compat.vm_t_fiches_inv
 ;
-
--- observateurs
-INSERT INTO pr_occtax.cor_role_releves_occtax
-SELECT 
-uuid_generate_v4() AS unique_id_cor_role_releve,
-id_inv AS id_releve_occtax,
-id_role AS id_role
-FROM v1_compat.cor_role_fiche_inv
-
-
 
 INSERT INTO pr_occtax.t_occurrences_occtax(
             id_occurrence_occtax,
@@ -137,7 +138,7 @@ INSERT INTO pr_occtax.t_occurrences_occtax(
     NULL AS digital_proof, 
     NULL AS non_digital_proof,
     inv.commentaire AS comment
-    FROM v1_compat.t_releves_inv inv
+    FROM v1_compat.vm_t_releves_inv inv
     LEFT JOIN n14 ON n14.pk_source =  inv.id_critere_inv
     LEFT JOIN n7 ON n7.pk_source =  inv.id_critere_inv
     LEFT JOIN n13 ON n13.pk_source =  inv.id_critere_inv
@@ -165,7 +166,7 @@ ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
 ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'NSP'),
 am AS count_min,
 am AS count_max
-FROM v1_compat.t_releves_inv inv
+FROM v1_compat.vm_t_releves_inv inv
 WHERE am > 0;
 
 -- adulte femelle
@@ -188,7 +189,7 @@ ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
 ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'NSP'),
 af AS count_min,
 af AS count_max
-FROM v1_compat.t_releves_inv inv
+FROM v1_compat.vm_t_releves_inv inv
 WHERE af > 0;
 
 -- adulte indeterminé
@@ -211,7 +212,7 @@ ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
 ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'NSP'),
 ai AS count_min,
 ai AS count_max
-FROM v1_compat.t_releves_inv inv
+FROM v1_compat.vm_t_releves_inv inv
 WHERE ai > 0;
 
 -- non adulte
@@ -234,7 +235,7 @@ ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
 ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'NSP'),
 na AS count_min,
 na AS count_max
-FROM v1_compat.t_releves_inv inv
+FROM v1_compat.vm_t_releves_inv inv
 WHERE na > 0;
 
 -- jeune
@@ -257,5 +258,14 @@ ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
 ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'NSP'),
 jeune AS count_min,
 jeune AS count_max
-FROM v1_compat.t_releves_inv inv
+FROM v1_compat.vm_t_releves_inv inv
 WHERE jeune > 0;
+
+
+-- observateurs
+INSERT INTO pr_occtax.cor_role_releves_occtax
+SELECT 
+uuid_generate_v4() AS unique_id_cor_role_releve,
+id_inv AS id_releve_occtax,
+id_role AS id_role
+FROM v1_compat.cor_role_fiche_inv
