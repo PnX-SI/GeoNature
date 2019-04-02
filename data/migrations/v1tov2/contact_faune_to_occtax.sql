@@ -1,3 +1,15 @@
+
+DROP FOREIGN TABLE v1_compat.v_nomade_classes;
+IMPORT FOREIGN SCHEMA contactfaune FROM SERVER geonature1server INTO v1_compat;
+
+--create de vues métérialisées pour des raisons de performances
+CREATE MATERIALIZED VIEW v1_compat.vm_t_fiches_cf AS
+SELECT * FROM v1_compat.t_fiches_cf;
+CREATE MATERIALIZED VIEW v1_compat.vm_t_releves_cf AS
+SELECT * FROM v1_compat.t_releves_cf;
+
+
+--TODO : réactiver les triggers en prod
 ALTER TABLE pr_occtax.t_releves_occtax DISABLE TRIGGER USER;
 
 CREATE TABLE v1_compat.cor_critere_contactfaune_v1_to_v2 (
@@ -53,7 +65,7 @@ SELECT
     the_geom_local AS geom_local,
     ST_TRANSFORM(the_geom_local, 4326) AS geom_4326,
     50 AS precision
-FROM v1_compat.t_fiches_cf cf
+FROM v1_compat.vm_t_fiches_cf cf
 LEFT JOIN n24 ON cf.id_lot = n24.pk_source;
 
 
@@ -108,7 +120,7 @@ INSERT INTO pr_occtax.t_occurrences_occtax(
     NULL AS digital_proof, 
     NULL AS non_digital_proof,
     cf.commentaire AS comment
-    FROM v1_compat.t_releves_cf cf
+    FROM v1_compat.vm_t_releves_cf cf
     LEFT JOIN n14 ON n14.pk_source =  cf.id_critere_cf
     LEFT JOIN n7 ON n7.pk_source =  cf.id_critere_cf
     LEFT JOIN n13 ON n13.pk_source =  cf.id_critere_cf
@@ -136,7 +148,7 @@ ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
 ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'NSP'),
 am AS count_min,
 am AS count_max
-FROM v1_compat.t_releves_cf cf
+FROM v1_compat.vm_t_releves_cf cf
 WHERE am > 0;
 
 -- adulte femelle
@@ -159,7 +171,7 @@ ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
 ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'NSP'),
 af AS count_min,
 af AS count_max
-FROM v1_compat.t_releves_cf cf
+FROM v1_compat.vm_t_releves_cf cf
 WHERE af > 0;
 
 -- adulte indeterminé
@@ -182,7 +194,7 @@ ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
 ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'NSP'),
 ai AS count_min,
 ai AS count_max
-FROM v1_compat.t_releves_cf cf
+FROM v1_compat.vm_t_releves_cf cf
 WHERE ai > 0;
 
 -- sexe et age indeterminé
@@ -205,7 +217,7 @@ ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
 ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'NSP'),
 sai AS count_min,
 sai AS count_max
-FROM v1_compat.t_releves_cf cf
+FROM v1_compat.vm_t_releves_cf cf
 WHERE sai > 0;
 
 -- jeune
@@ -228,7 +240,7 @@ ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
 ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'NSP'),
 jeune AS count_min,
 jeune AS count_max
-FROM v1_compat.t_releves_cf cf
+FROM v1_compat.vm_t_releves_cf cf
 WHERE jeune > 0;
 
 INSERT INTO pr_occtax.cor_counting_occtax(
@@ -250,7 +262,7 @@ ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
 ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'NSP'),
 yearling AS count_min,
 yearling AS count_max
-FROM v1_compat.t_releves_cf cf
+FROM v1_compat.vm_t_releves_cf cf
 WHERE yearling > 0;
 
 
@@ -258,3 +270,4 @@ ALTER TABLE pr_occtax.t_releves_occtax ENABLE TRIGGER USER;
 
 -- mettre à jour le serial
 SELECT pg_catalog.setval('pr_occtax.cor_counting_occtax_id_counting_occtax_seq', (SELECT max(id_counting_occtax)+1 FROM pr_occtax.cor_counting_occtax), true);
+
