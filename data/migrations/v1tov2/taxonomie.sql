@@ -92,7 +92,8 @@ SELECT cd_nom,
     sous_famille,
     tribu,
     url 
-FROM v1_compat.taxref WHERE cd_nom = 1000000;--temp PNE
+FROM v1_compat.taxref 
+WHERE cd_nom < 0 OR cd_nom IN(887246,905267);
 --FROM v1_compat.taxref WHERE cd_nom NOT IN(SELECT cd_nom FROM taxonomie.taxref);
 
 INSERT INTO taxonomie.bib_noms (id_nom, cd_nom, cd_ref, nom_francais, comments)

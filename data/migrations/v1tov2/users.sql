@@ -18,11 +18,8 @@ ADD COLUMN id_unite INTEGER;
 
 
 TRUNCATE utilisateurs.t_roles CASCADE;
---NOTICE:  truncate cascades to table "cor_role_menu"
 --NOTICE:  truncate cascades to table "cor_roles"
 --NOTICE:  truncate cascades to table "cor_role_droit_application"
---NOTICE:  truncate cascades to table "cor_role_tag"
---NOTICE:  truncate cascades to table "cor_app_privileges"
 --NOTICE:  truncate cascades to table "cor_acquisition_framework_actor"
 --NOTICE:  truncate cascades to table "cor_dataset_actor"
 --NOTICE:  truncate cascades to table "t_validations"
@@ -32,7 +29,6 @@ TRUNCATE utilisateurs.t_roles CASCADE;
 --NOTICE:  truncate cascades to table "cor_visit_observer"
 --NOTICE:  truncate cascades to table "t_releves_occtax"
 --NOTICE:  truncate cascades to table "cor_role_releves_occtax"
---NOTICE:  truncate cascades to table "cor_role_fiche_cf"
 --NOTICE:  truncate cascades to table "cor_area_synthese"
 --NOTICE:  truncate cascades to table "cor_site_application"
 --NOTICE:  truncate cascades to table "cor_site_area"
@@ -46,6 +42,14 @@ TRUNCATE utilisateurs.t_applications CASCADE;
 --NOTICE:  truncate cascades to table "cor_profil_for_app"
 --NOTICE:  truncate cascades to table "cor_role_app_profil"
 --NOTICE:  truncate cascades to table "cor_application_nomenclature"
+TRUNCATE utilisateurs.cor_role_app_profil CASCADE;
+TRUNCATE utilisateurs.bib_unites CASCADE;
+TRUNCATE utilisateurs.bib_organismes CASCADE;
+TRUNCATE utilisateurs.cor_profil_for_app CASCADE;
+TRUNCATE utilisateurs.cor_role_liste CASCADE;
+TRUNCATE utilisateurs.cor_roles CASCADE;
+
+
 DELETE FROM utilisateurs.bib_organismes WHERE id_organisme > 0;
 
 -- récupérer les données
@@ -92,7 +96,9 @@ SELECT
   tel_unite,
   fax_unite,
   email_unite,
-  id_unite FROM v1_compat.bib_unites WHERE id_unite NOT IN (SELECT id_unite FROM utilisateurs.bib_unites);
+  id_unite 
+FROM v1_compat.bib_unites 
+WHERE id_unite NOT IN (SELECT id_unite FROM utilisateurs.bib_unites);
 
 INSERT INTO utilisateurs.t_roles (
     groupe,
@@ -135,7 +141,7 @@ SELECT
 
 -- creation uuid si NULL
 UPDATE utilisateurs.t_roles
-SET uuid_role = uuid_generate_v4()()
+SET uuid_role = uuid_generate_v4()
 WHERE uuid_role IS NULL;
 
 INSERT INTO utilisateurs.cor_roles (id_role_groupe, id_role_utilisateur)

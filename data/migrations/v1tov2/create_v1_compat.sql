@@ -6,21 +6,21 @@ COMMENT ON SCHEMA v1_compat IS 'schéma contenant des objets permettant une comp
 CREATE SCHEMA gn_synchronomade;
 COMMENT ON SCHEMA gn_synchronomade IS 'schéma contenant les erreurs de synchronisation et permettant une compatibilité temporaire avec les outils mobiles de la V1';
 
---On importe ici le schéma V1 synthese pour faire les correspondances nécessaires
+--On importe ici les schémas V1 meta et synthese pour faire les correspondances nécessaires
 IMPORT FOREIGN SCHEMA synthese FROM SERVER geonature1server INTO v1_compat;
+IMPORT FOREIGN SCHEMA meta FROM SERVER geonature1server INTO v1_compat;
 
-SET search_path = v1_compat, public, pg_catalog;
+--SET search_path = v1_compat, public, pg_catalog;
 
-CREATE TABLE cor_boolean
+CREATE TABLE v1_compat.cor_boolean
 (
   expression character varying(25) NOT NULL,
   bool boolean NOT NULL
 );
 
-INSERT INTO cor_boolean VALUES('oui',true);
-INSERT INTO cor_boolean VALUES('non',false);
+INSERT INTO v1_compat.cor_boolean VALUES('oui',true);
+INSERT INTO v1_compat.cor_boolean VALUES('non',false);
 
-DROP TABLE IF EXISTS v1_compat.cor_synthese_v1_to_v2;
 CREATE TABLE v1_compat.cor_synthese_v1_to_v2 (
 	pk_source integer,
 	entity_source character varying(100),
@@ -70,8 +70,8 @@ SELECT
   id_source, 
   nom_source, 
   desc_source, 
-  'historique.' || db_schema || '_' || db_table || '.' || db_field AS entity_source_pk_field,
-FROM v1_compat.bib_sources
+  'historique.' || db_schema || '_' || db_table || '.' || db_field AS entity_source_pk_field
+FROM v1_compat.bib_sources;
 
 -----------------------------------------------
 --ETABLIR LES CORESPONDANCES DE NOMENCLATURES--
@@ -80,7 +80,14 @@ FROM v1_compat.bib_sources
 --NATURE DE L'OBJET GEOGRAPHIQUE NAT_OBJ_GEO
 --ne sait pas
 INSERT INTO v1_compat.cor_synthese_v1_to_v2 (pk_source, entity_source, field_source, entity_target, field_target, id_type_nomenclature_cible, id_nomenclature_cible)
-SELECT id_precision, 'v1_compat.t_precisions' AS entity_source, 'id_precision' as entity_source, 'gn_synthese.synthese' AS entity_target, 'id_nomenclature_geo_object_nature' AS field_target, 3 AS id_type_nomenclature_cible, ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO','NSP') AS id_nomenclature_cible 
+SELECT 
+    id_precision, 
+    'v1_compat.t_precisions' AS entity_source, 
+    'id_precision' as entity_source, 
+    'gn_synthese.synthese' AS entity_target, 
+    'id_nomenclature_geo_object_nature' AS field_target, 
+    3 AS id_type_nomenclature_cible, 
+    ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO','NSP') AS id_nomenclature_cible 
 FROM v1_compat.t_precisions;
 --stationnel
 UPDATE v1_compat.cor_synthese_v1_to_v2
