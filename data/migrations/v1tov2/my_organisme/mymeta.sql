@@ -29,7 +29,7 @@ UPDATE gn_meta.t_datasets SET id_nomenclature_dataset_objectif = ref_nomenclatur
 UPDATE gn_meta.t_datasets SET id_nomenclature_dataset_objectif = ref_nomenclatures.get_id_nomenclature('JDD_OBJECTIFS','3.5') WHERE id_dataset IN (44); --"Inventaires généralisés & exploration""
 UPDATE gn_meta.t_datasets SET id_nomenclature_dataset_objectif = ref_nomenclatures.get_id_nomenclature('JDD_OBJECTIFS','3.5') WHERE id_dataset >= 25 AND id_dataset <= 42; --"Inventaires généralisés & exploration""
 UPDATE gn_meta.t_datasets SET id_nomenclature_dataset_objectif = ref_nomenclatures.get_id_nomenclature('JDD_OBJECTIFS','3.5') WHERE id_dataset >= 48 AND id_dataset <= 58; --"Inventaires généralisés & exploration""
-UPDATE gn_meta.t_datasets SET id_nomenclature_dataset_objectif = ref_nomenclatures.get_id_nomenclature('JDD_OBJECTIFS','3.5') WHERE IN (60,61,62,64,65,80,88,89); --"Inventaires généralisés & exploration""
+UPDATE gn_meta.t_datasets SET id_nomenclature_dataset_objectif = ref_nomenclatures.get_id_nomenclature('JDD_OBJECTIFS','3.5') WHERE id_dataset IN (60,61,62,64,65,80,88,89); --"Inventaires généralisés & exploration""
 --PNE : id_nomenclature_collecting_method ; Même si les jeux de données peuvent comporter des méthodes de collectes mixtes, tous les lots sont considérés comme "Observation directe : Vue, écoute, olfactive, tactile"
 --PNE : id_nomenclature_data_origin (données privées, publiques)
 UPDATE gn_meta.t_datasets SET id_nomenclature_data_origin = ref_nomenclatures.get_id_nomenclature('DS_PUBLIQUE','Pr') WHERE id_dataset IN (13,23,24,47,73,111); --"Privés"
