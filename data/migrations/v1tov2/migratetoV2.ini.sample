@@ -9,4 +9,10 @@ geonature1userpass=monpassachanger
 
 #SQL SCHEMA
 #import "utilisateurs" schema content
-importusers=true
+import_users=true
+#import "taxonomie" schema content
+import_taxonomie=true
+#import "meta" schema content
+import_metadata=true
+#import "synthese" schema content
+import_synthese=true
