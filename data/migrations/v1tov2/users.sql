@@ -44,7 +44,7 @@ TRUNCATE utilisateurs.t_applications CASCADE;
 --NOTICE:  truncate cascades to table "cor_application_nomenclature"
 TRUNCATE utilisateurs.cor_role_app_profil CASCADE;
 TRUNCATE utilisateurs.bib_unites CASCADE;
-TRUNCATE utilisateurs.bib_organismes CASCADE;
+DELETE FROM utilisateurs.bib_organismes WHERE id_organisme != 0;
 TRUNCATE utilisateurs.cor_profil_for_app CASCADE;
 TRUNCATE utilisateurs.cor_role_liste CASCADE;
 TRUNCATE utilisateurs.cor_roles CASCADE;
