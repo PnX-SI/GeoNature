@@ -1,5 +1,4 @@
 ALTER TABLE pr_occtax.t_releves_occtax DISABLE TRIGGER USER;
-ALTER TABLE pr_occtax.t_occurrences_occtax DISABLE TRIGGER USER;
 
 CREATE TABLE v1_compat.cor_critere_contactfaune_v1_to_v2 (
 	pk_source integer,
@@ -19,6 +18,7 @@ FROM v1_compat.cor_synthese_v1_to_v2
 WHERE entity_source = 'v1_compat.bib_criteres_synthese' AND pk_source < 100 ;
 
 UPDATE v1_compat.cor_critere_contactfaune_v1_to_v2 SET entity_target = 'pr_occtax.t_occurrences_occtax';
+
 
 
 INSERT INTO pr_occtax.t_releves_occtax(
@@ -43,19 +43,18 @@ SELECT
     id_cf AS id_releve_occtax,
     uuid_generate_v4() AS unique_id_sinp_grp,
     id_lot AS id_dataset,
-    ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS','000000') AS id_nomenclature_obs_technique,
-    COALESCE(n24.id_nomenclature_cible, ref_nomenclatures.get_id_nomenclature('TYP_GRP','NSP')) 
-    dateobs AS date_min 
-    dateobs AS date_max
+    ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS','133') AS id_nomenclature_obs_technique,
+    COALESCE(n24.id_nomenclature_cible, ref_nomenclatures.get_id_nomenclature('TYP_GRP','NSP')) ,
+    dateobs AS date_min,
+    dateobs AS date_max,
     altitude_retenue AS altitude_min,
     altitude_retenue AS altitude_max,
     saisie_initiale AS meta_device_entry, 
-    the_geom_local AS geom_local
+    the_geom_local AS geom_local,
     ST_TRANSFORM(the_geom_local, 4326) AS geom_4326,
     50 AS precision
 FROM v1_compat.t_fiches_cf cf
 LEFT JOIN n24 ON cf.id_lot = n24.pk_source;
-
 
 
 
@@ -85,14 +84,14 @@ INSERT INTO pr_occtax.t_occurrences_occtax(
     WITH 
     n14 AS (SELECT * FROM v1_compat.cor_critere_contactfaune_v1_to_v2 WHERE id_type_nomenclature_cible = 14) ,
     n7 AS (SELECT * FROM v1_compat.cor_critere_contactfaune_v1_to_v2 WHERE id_type_nomenclature_cible = 7),
-    n13 AS (SELECT * FROM v1_compat.cor_critere_contactfaune_v1_to_v2 WHERE id_type_nomenclature_cible = 13),
+    n13 AS (SELECT * FROM v1_compat.cor_critere_contactfaune_v1_to_v2 WHERE id_type_nomenclature_cible = 13)
     SELECT
     id_releve_cf AS id_occurrence_occtax,
     uuid_generate_v4() AS unique_id_occurence_occtax,
     id_cf AS id_releve_occtax,
-    COALESCE(n24.id_nomenclature_cible, ref_nomenclatures.get_id_nomenclature('METH_OBS','21')) AS id_nomenclature_obs_meth,
+    COALESCE(n14.id_nomenclature_cible, ref_nomenclatures.get_id_nomenclature('METH_OBS','21')) AS id_nomenclature_obs_meth,
     COALESCE(n7.id_nomenclature_cible, ref_nomenclatures.get_id_nomenclature('ETA_BIO','0')) AS id_nomenclature_bio_condition,
-    COALESCE(n24.id_nomenclature_cible, ref_nomenclatures.get_id_nomenclature('STATUT_BIO','1')) AS id_nomenclature_bio_status,
+    COALESCE(n13.id_nomenclature_cible, ref_nomenclatures.get_id_nomenclature('STATUT_BIO','1')) AS id_nomenclature_bio_status,
     ref_nomenclatures.get_id_nomenclature('NATURALITE','1') AS id_nomenclature_naturalness,
     ref_nomenclatures.get_id_nomenclature('PREUVE_EXIST','2') AS id_nomenclature_exist_proof,
     ref_nomenclatures.get_id_nomenclature('NIV_PRECIS','5') AS id_nomenclature_diffusion_level,
@@ -108,9 +107,154 @@ INSERT INTO pr_occtax.t_occurrences_occtax(
     NULL AS sample_number_proof,
     NULL AS digital_proof, 
     NULL AS non_digital_proof,
-    commentaire AS comment
+    cf.commentaire AS comment
     FROM v1_compat.t_releves_cf cf
-    LEFT JOIN n14 ON n24.pk_source =  cf.id_critere_cf
+    LEFT JOIN n14 ON n14.pk_source =  cf.id_critere_cf
     LEFT JOIN n7 ON n7.pk_source =  cf.id_critere_cf
     LEFT JOIN n13 ON n13.pk_source =  cf.id_critere_cf
     JOIN taxonomie.bib_noms bib_noms ON bib_noms.id_nom = cf.id_nom;
+
+
+-- insertion denombrement
+-- adulte male
+INSERT INTO pr_occtax.cor_counting_occtax(
+            unique_id_sinp_occtax, 
+            id_occurrence_occtax, 
+            id_nomenclature_life_stage, 
+            id_nomenclature_sex, 
+            id_nomenclature_obj_count, 
+            id_nomenclature_type_count, 
+            count_min, 
+            count_max
+        )
+SELECT 
+uuid_generate_v4() AS unique_id_sinp_occtax,
+id_releve_cf AS id_occurrence_occtax,
+ref_nomenclatures.get_id_nomenclature('STADE_VIE', '2'),
+ref_nomenclatures.get_id_nomenclature('SEXE', '3'),
+ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
+ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'NSP'),
+am AS count_min,
+am AS count_max
+FROM v1_compat.t_releves_cf cf
+WHERE am > 0;
+
+-- adulte femelle
+INSERT INTO pr_occtax.cor_counting_occtax(
+            unique_id_sinp_occtax, 
+            id_occurrence_occtax, 
+            id_nomenclature_life_stage, 
+            id_nomenclature_sex, 
+            id_nomenclature_obj_count, 
+            id_nomenclature_type_count, 
+            count_min, 
+            count_max
+        )
+SELECT 
+uuid_generate_v4() AS unique_id_sinp_occtax,
+id_releve_cf AS id_occurrence_occtax,
+ref_nomenclatures.get_id_nomenclature('STADE_VIE', '2'),
+ref_nomenclatures.get_id_nomenclature('SEXE', '2'),
+ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
+ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'NSP'),
+af AS count_min,
+af AS count_max
+FROM v1_compat.t_releves_cf cf
+WHERE af > 0;
+
+-- adulte indeterminé
+INSERT INTO pr_occtax.cor_counting_occtax(
+            unique_id_sinp_occtax, 
+            id_occurrence_occtax, 
+            id_nomenclature_life_stage, 
+            id_nomenclature_sex, 
+            id_nomenclature_obj_count, 
+            id_nomenclature_type_count, 
+            count_min, 
+            count_max
+        )
+SELECT 
+uuid_generate_v4() AS unique_id_sinp_occtax,
+id_releve_cf AS id_occurrence_occtax,
+ref_nomenclatures.get_id_nomenclature('STADE_VIE', '2'),
+ref_nomenclatures.get_id_nomenclature('SEXE', '0'),
+ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
+ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'NSP'),
+ai AS count_min,
+ai AS count_max
+FROM v1_compat.t_releves_cf cf
+WHERE ai > 0;
+
+-- sexe et age indeterminé
+INSERT INTO pr_occtax.cor_counting_occtax(
+            unique_id_sinp_occtax, 
+            id_occurrence_occtax, 
+            id_nomenclature_life_stage, 
+            id_nomenclature_sex, 
+            id_nomenclature_obj_count, 
+            id_nomenclature_type_count, 
+            count_min, 
+            count_max
+        )
+SELECT 
+uuid_generate_v4() AS unique_id_sinp_occtax,
+id_releve_cf AS id_occurrence_occtax,
+ref_nomenclatures.get_id_nomenclature('STADE_VIE', '0'),
+ref_nomenclatures.get_id_nomenclature('SEXE', '0'),
+ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
+ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'NSP'),
+sai AS count_min,
+sai AS count_max
+FROM v1_compat.t_releves_cf cf
+WHERE sai > 0;
+
+-- jeune
+INSERT INTO pr_occtax.cor_counting_occtax(
+            unique_id_sinp_occtax, 
+            id_occurrence_occtax, 
+            id_nomenclature_life_stage, 
+            id_nomenclature_sex, 
+            id_nomenclature_obj_count, 
+            id_nomenclature_type_count, 
+            count_min, 
+            count_max
+        )
+SELECT 
+uuid_generate_v4() AS unique_id_sinp_occtax,
+id_releve_cf AS id_occurrence_occtax,
+ref_nomenclatures.get_id_nomenclature('STADE_VIE', '3'),
+ref_nomenclatures.get_id_nomenclature('SEXE', '0'),
+ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
+ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'NSP'),
+jeune AS count_min,
+jeune AS count_max
+FROM v1_compat.t_releves_cf cf
+WHERE jeune > 0;
+
+INSERT INTO pr_occtax.cor_counting_occtax(
+            unique_id_sinp_occtax, 
+            id_occurrence_occtax, 
+            id_nomenclature_life_stage, 
+            id_nomenclature_sex, 
+            id_nomenclature_obj_count, 
+            id_nomenclature_type_count, 
+            count_min, 
+            count_max
+        )
+SELECT 
+uuid_generate_v4() AS unique_id_sinp_occtax,
+id_releve_cf AS id_occurrence_occtax,
+ref_nomenclatures.get_id_nomenclature('STADE_VIE', '4'),
+ref_nomenclatures.get_id_nomenclature('SEXE', '0'),
+ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
+ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'NSP'),
+yearling AS count_min,
+yearling AS count_max
+FROM v1_compat.t_releves_cf cf
+WHERE yearling > 0;
+
+
+ALTER TABLE pr_occtax.t_releves_occtax ENABLE TRIGGER USER;
+
+-- mettre à jour le serial
+SELECT pg_catalog.setval('pr_occtax.cor_counting_occtax_id_counting_occtax_seq', (SELECT max(id_counting_occtax)+1 FROM pr_occtax.cor_counting_occtax), true);
