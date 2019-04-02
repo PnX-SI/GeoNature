@@ -1,11 +1,5 @@
 -- Droit d'accès à GeoNature pour le groupe en poste PNE
 
-INSERT INTO utilisateurs.cor_role_app_profil
-SELECT id_role, app.id_application, 1
-FROM utilisateurs.t_roles t, utilisateurs.t_applications app
-WHERE t.nom_role = 'GP_En poste au PNE' AND app.code_application = 'GN';
-
-
 CREATE OR REPLACE VIEW utilisateurs.v_droit_appli_cbna AS 
  SELECT DISTINCT r.groupe,
     r.id_role,

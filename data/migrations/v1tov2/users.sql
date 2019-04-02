@@ -250,4 +250,9 @@ CREATE OR REPLACE VIEW utilisateurs.v_observateurs AS
 
 
 
-
+-- Droit d'accès a GeoNature
+INSERT INTO utilisateurs.cor_role_app_profil
+SELECT cor.id_role, app.id_application, 1
+FROM v1_compat.cor_role_droit_application cor
+JOIN v1_compat.t_applications app ON app.id_application = cor.id_application
+WHERE app.code_application = 'GN' AND cor.id_droit >= 1

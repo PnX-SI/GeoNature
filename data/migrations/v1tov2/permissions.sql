@@ -1,19 +1,19 @@
 CREATE TABLE temp_droit_6 AS (
     SELECT cor.id_role
-    FROM migratetov2.cor_role_droit_application cor 
-    JOIN migratetov2.t_applications app ON app.id_application = cor.id_application
+    FROM v1_compat.cor_role_droit_application cor 
+    JOIN v1_compat.t_applications app ON app.id_application = cor.id_application
     WHERE app.code_application = 'GN' AND id_droit = 6
 );
 CREATE TABLE temp_droit_2 AS (
     SELECT cor.id_role
-    FROM migratetov2.cor_role_droit_application cor
-    JOIN migratetov2.t_applications app ON app.id_application = cor.id_application
+    FROM v1_compat.cor_role_droit_application cor
+    JOIN v1_compat.t_applications app ON app.id_application = cor.id_application
     WHERE app.code_application = 'GN' AND cor.id_droit = 2
 );
 CREATE TABLE temp_droit_1 AS (
     SELECT cor.id_role
-    FROM migratetov2.cor_role_droit_application cor
-    JOIN migratetov2.t_applications app ON app.id_application = cor.id_application
+    FROM v1_compat.cor_role_droit_application cor
+    JOIN v1_compat.t_applications app ON app.id_application = cor.id_application
     WHERE app.code_application = 'GN' AND cor.id_droit = 1
 );
 
