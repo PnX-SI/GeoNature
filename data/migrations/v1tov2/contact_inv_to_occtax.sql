@@ -2,10 +2,11 @@ DROP FOREIGN TABLE v1_compat.v_nomade_classes;
 IMPORT FOREIGN SCHEMA contactinv FROM SERVER geonature1server INTO v1_compat;
 
 --create de vues métérialisées pour des raisons de performances
-CREATE MATERIALIZED VIEW v1_compat.t_fiches_inv AS
-SELECT * FROM v1_compat.vm_t_fiches_inv;
-CREATE MATERIALIZED VIEW v1_compat.t_releves_inv AS
-SELECT * FROM v1_compat.vm_t_releves_inv;
+-- TODO: faire un update sur id_inv en prenant le max de la table t_releve_occtax
+CREATE MATERIALIZED VIEW v1_compat.vm_t_fiches_inv AS
+SELECT * FROM v1_compat.t_fiches_inv;
+CREATE MATERIALIZED VIEW v1_compat.vm_t_releves_inv AS
+SELECT * FROM v1_compat.t_releves_inv;
 
 
 
@@ -22,7 +23,7 @@ CREATE TABLE v1_compat.cor_critere_contactinv_v1_to_v2 (
 
 -- methode d'observation - defaut inconnu
 INSERT INTO v1_compat.cor_critere_contactinv_v1_to_v2 (pk_source, entity_source, field_source, entity_target, field_target, id_type_nomenclature_cible, id_nomenclature_cible)
-SELECT id_critere_synthese, 'v1_compat.bib_criteres_inv' AS entity_source, 'id_critere_inv' as entity_source, 'pr_occtax.t_occurrence_occtax' AS entity_target, 'id_nomenclature_obs_meth' AS field_target, 14 AS id_type_nomenclature_cible, ref_nomenclatures.get_id_nomenclature('METH_OBS','21') AS id_nomenclature_cible 
+SELECT id_critere_inv, 'v1_compat.bib_criteres_inv' AS entity_source, 'id_critere_inv' as entity_source, 'pr_occtax.t_occurrence_occtax' AS entity_target, 'id_nomenclature_obs_meth' AS field_target, 14 AS id_type_nomenclature_cible, ref_nomenclatures.get_id_nomenclature('METH_OBS','21') AS id_nomenclature_cible 
 FROM v1_compat.bib_criteres_inv;
 
 -- methode d'observation - vu
@@ -34,9 +35,8 @@ AND entity_source = 'v1_compat.bib_criteres_inv' AND field_source = 'id_critere_
 -- statut bio: toujours inconnu
 
 -- etat bio - default: NSP
-
 INSERT INTO v1_compat.cor_critere_contactinv_v1_to_v2 (pk_source, entity_source, field_source, entity_target, field_target, id_type_nomenclature_cible, id_nomenclature_cible)
-SELECT id_critere_synthese, 'v1_compat.bib_criteres_inv' AS entity_source, 'id_critere_inv' as entity_source, 'pr_occtax.t_occurrence_occtax' AS entity_target, 'id_nomenclature_bio_condition' AS field_target, 7 AS id_type_nomenclature_cible, ref_nomenclatures.get_id_nomenclature('ETA_BIO','0') AS id_nomenclature_cible 
+SELECT id_critere_inv, 'v1_compat.bib_criteres_inv' AS entity_source, 'id_critere_inv' as entity_source, 'pr_occtax.t_occurrence_occtax' AS entity_target, 'id_nomenclature_bio_condition' AS field_target, 7 AS id_type_nomenclature_cible, ref_nomenclatures.get_id_nomenclature('ETA_BIO','0') AS id_nomenclature_cible 
 FROM v1_compat.bib_criteres_inv;
 
 -- vivant
@@ -56,7 +56,6 @@ INSERT INTO pr_occtax.t_releves_occtax(
             id_releve_occtax, 
             unique_id_sinp_grp, 
             id_dataset, 
-            id_digitiser, 
             id_nomenclature_obs_technique, 
             id_nomenclature_grp_typ, 
             date_min, 
@@ -78,8 +77,8 @@ INSERT INTO pr_occtax.t_releves_occtax(
     ref_nomenclatures.get_id_nomenclature('TYP_GRP','NSP') AS id_nomenclature_grp_typ,
     dateobs AS date_min,
     dateobs AS date_max,
-    heure AS hour_min,
-    heure AS hour_max,
+    make_interval(hours:= heure, mins := 00)::time AS hour_min,
+    make_interval(hours:= heure, mins := 00)::time AS hour_max,
     altitude_retenue AS altitude_min,
     altitude_retenue AS altitude_max,
     saisie_initiale AS meta_device_entry,
