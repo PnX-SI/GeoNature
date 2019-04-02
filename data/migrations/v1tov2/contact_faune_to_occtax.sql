@@ -11,6 +11,13 @@ SELECT * FROM v1_compat.t_releves_cf;
 
 --TODO : réactiver les triggers en prod
 ALTER TABLE pr_occtax.t_releves_occtax DISABLE TRIGGER USER;
+ALTER TABLE pr_occtax.t_occurrences_occtax DISABLE TRIGGER tri_log_changes_t_occurrences_occtax;
+ALTER TABLE pr_occtax.cor_counting_occtax DISABLE TRIGGER tri_log_changes_cor_counting_occtax;
+ALTER TABLE pr_occtax.cor_role_releves_occtax DISABLE TRIGGER tri_log_changes_cor_role_releves_occtax;
+ALTER TABLE pr_occtax.cor_role_releves_occtax DISABLE TRIGGER tri_insert_synthese_cor_role_releves_occtax;
+ALTER TABLE gn_synthese.cor_observer_synthese DISABLE TRIGGER trg_maj_synthese_observers_txt;
+
+tri_log_changes_cor_role_releves_occtax
 
 CREATE TABLE v1_compat.cor_critere_contactfaune_v1_to_v2 (
 	pk_source integer,
@@ -288,9 +295,6 @@ yearling AS count_max
 FROM v1_compat.vm_t_releves_cf cf
 WHERE yearling > 0;
 
-
-ALTER TABLE pr_occtax.t_releves_occtax ENABLE TRIGGER USER;
-
 -- mettre à jour le serial
 SELECT pg_catalog.setval('pr_occtax.cor_counting_occtax_id_counting_occtax_seq', (SELECT max(id_counting_occtax)+1 FROM pr_occtax.cor_counting_occtax), true);
 
@@ -301,4 +305,21 @@ SELECT
 uuid_generate_v4() AS unique_id_cor_role_releve,
 id_cf AS id_releve_occtax,
 id_role AS id_role
-FROM v1_compat.cor_role_fiche_cf
+FROM v1_compat.cor_role_fiche_cf;
+--correspondance observateurs en synthese (joue l'action à la place du tri_insert_synthese_cor_role_releves_occtax)
+INSERT INTO gn_synthese.cor_observer_synthese(id_synthese, id_role) 
+SELECT s.id_synthese, cro.id_role 
+FROM gn_synthese.synthese s
+JOIN pr_occtax.cor_counting_occtax cco ON cco.id_counting_occtax::varchar = s.entity_source_pk_value
+JOIN pr_occtax.t_occurrences_occtax oo ON oo.id_occurrence_occtax = cco.id_occurrence_occtax
+JOIN pr_occtax.t_releves_occtax r ON r.id_releve_occtax = oo.id_releve_occtax
+JOIN pr_occtax.cor_role_releves_occtax cro ON cro.id_releve_occtax = r.id_releve_occtax
+WHERE s.id_dataset IN(4,15);
+--TODO : refaire le travail du trigger trg_maj_synthese_observers_txt sur gn_synthese.cor_observer_synthese
+
+ALTER TABLE pr_occtax.t_releves_occtax ENABLE TRIGGER USER;
+ALTER TABLE pr_occtax.t_occurrences_occtax ENABLE TRIGGER tri_log_changes_t_occurrences_occtax;
+ALTER TABLE pr_occtax.cor_counting_occtax ENABLE TRIGGER tri_log_changes_cor_counting_occtax;
+ALTER TABLE pr_occtax.cor_role_releves_occtax ENABLE TRIGGER tri_log_changes_cor_role_releves_occtax;
+ALTER TABLE pr_occtax.cor_role_releves_occtax ENABLE TRIGGER tri_insert_synthese_cor_role_releves_occtax;
+ALTER TABLE gn_synthese.cor_observer_synthese ENABLE TRIGGER trg_maj_synthese_observers_txt;
