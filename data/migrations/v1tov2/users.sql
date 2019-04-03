@@ -257,8 +257,17 @@ CREATE OR REPLACE VIEW utilisateurs.v_observateurs AS
 
 
 -- Droit d'accès a GeoNature
+
+-- Suppression des droits de l'application GeoNature
+DELETE FROM utilisateurs.cor_role_app_profil
+WHERE id_application = (
+  SELECT id_application FROM utilisateurs.t_applications
+  WHERE code_application = 'GN'
+  );
+
+-- recréation avec les droit 1
 INSERT INTO utilisateurs.cor_role_app_profil
 SELECT cor.id_role, app.id_application, 1
 FROM v1_compat.cor_role_droit_application cor
 JOIN v1_compat.t_applications app ON app.id_application = cor.id_application
-WHERE app.code_application = 'GN' AND cor.id_droit >= 1
+WHERE app.code_application = 'GN' AND cor.id_droit >= 1;
