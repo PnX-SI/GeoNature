@@ -1,14 +1,74 @@
 DROP FOREIGN TABLE v1_compat.v_nomade_classes;
+DROP FOREIGN TABLE v1_compat.cor_message_taxon;
+DROP FOREIGN TABLE v1_compat.log_colors;
+DROP FOREIGN TABLE v1_compat.log_colors_day;
+
 IMPORT FOREIGN SCHEMA contactinv FROM SERVER geonature1server INTO v1_compat;
+
+ALTER TABLE pr_occtax.t_releves_occtax DISABLE TRIGGER USER;
+ALTER TABLE pr_occtax.t_occurrences_occtax DISABLE TRIGGER tri_log_changes_t_occurrences_occtax;
+ALTER TABLE pr_occtax.cor_counting_occtax DISABLE TRIGGER tri_log_changes_cor_counting_occtax;
+ALTER TABLE pr_occtax.cor_role_releves_occtax DISABLE TRIGGER tri_log_changes_cor_role_releves_occtax;
+ALTER TABLE pr_occtax.cor_role_releves_occtax DISABLE TRIGGER tri_insert_synthese_cor_role_releves_occtax;
+ALTER TABLE gn_synthese.cor_observer_synthese DISABLE TRIGGER trg_maj_synthese_observers_txt;
+
 
 --create de vues métérialisées pour des raisons de performances
 -- TODO: faire un update sur id_inv en prenant le max de la table t_releve_occtax
 CREATE MATERIALIZED VIEW v1_compat.vm_t_fiches_inv AS
-SELECT * FROM v1_compat.t_fiches_inv;
+WITH temp AS (
+SELECT  max(id_releve_occtax) AS max_id
+ FROM pr_occtax.t_releves_occtax
+)
+SELECT
+ temp.max_id + id_inv AS id_inv, 
+ insee, 
+ dateobs, 
+ heure, 
+ altitude_saisie, 
+ altitude_sig, 
+ altitude_retenue, 
+ date_insert, 
+ date_update, 
+ supprime, 
+ pdop, 
+ saisie_initiale, 
+ id_organisme, 
+ srid_dessin, 
+ id_protocole, 
+ id_lot, 
+ the_geom_3857, 
+ id_milieu_inv, 
+ the_geom_local
+ FROM v1_compat.t_fiches_inv, temp;
+
 CREATE MATERIALIZED VIEW v1_compat.vm_t_releves_inv AS
-SELECT * FROM v1_compat.t_releves_inv;
-
-
+WITH temp AS (
+SELECT  max(id_occurrence_occtax) AS max_id
+ FROM pr_occtax.t_occurrences_occtax 
+),
+temp2 AS (
+SELECT  max(id_releve_occtax) AS max_id
+ FROM pr_occtax.t_releves_occtax        
+)
+SELECT
+ temp.max_id + id_releve_inv AS id_releve_inv, 
+ temp2.max_id + id_inv AS id_inv, 
+ id_nom, 
+ id_critere_inv, 
+ am, 
+ af, 
+ ai, 
+ na, 
+cd_ref_origine, 
+nom_taxon_saisi, 
+commentaire, 
+determinateur, 
+supprime, 
+prelevement,
+gid, 
+diffusable
+FROM v1_compat.t_releves_inv, temp, temp2;
 
 CREATE TABLE v1_compat.cor_critere_contactinv_v1_to_v2 (
 	pk_source integer,
@@ -23,7 +83,7 @@ CREATE TABLE v1_compat.cor_critere_contactinv_v1_to_v2 (
 
 -- methode d'observation - defaut inconnu
 INSERT INTO v1_compat.cor_critere_contactinv_v1_to_v2 (pk_source, entity_source, field_source, entity_target, field_target, id_type_nomenclature_cible, id_nomenclature_cible)
-SELECT id_critere_inv, 'v1_compat.bib_criteres_inv' AS entity_source, 'id_critere_inv' as entity_source, 'pr_occtax.t_occurrence_occtax' AS entity_target, 'id_nomenclature_obs_meth' AS field_target, 14 AS id_type_nomenclature_cible, ref_nomenclatures.get_id_nomenclature('METH_OBS','21') AS id_nomenclature_cible 
+SELECT id_critere_inv, 'v1_compat.bib_criteres_inv' AS entity_source, 'id_critere_inv' as field_source, 'pr_occtax.t_occurrence_occtax' AS entity_target, 'id_nomenclature_obs_meth' AS field_target, 14 AS id_type_nomenclature_cible, ref_nomenclatures.get_id_nomenclature('METH_OBS','21') AS id_nomenclature_cible 
 FROM v1_compat.bib_criteres_inv;
 
 -- methode d'observation - vu
@@ -36,7 +96,7 @@ AND entity_source = 'v1_compat.bib_criteres_inv' AND field_source = 'id_critere_
 
 -- etat bio - default: NSP
 INSERT INTO v1_compat.cor_critere_contactinv_v1_to_v2 (pk_source, entity_source, field_source, entity_target, field_target, id_type_nomenclature_cible, id_nomenclature_cible)
-SELECT id_critere_inv, 'v1_compat.bib_criteres_inv' AS entity_source, 'id_critere_inv' as entity_source, 'pr_occtax.t_occurrence_occtax' AS entity_target, 'id_nomenclature_bio_condition' AS field_target, 7 AS id_type_nomenclature_cible, ref_nomenclatures.get_id_nomenclature('ETA_BIO','0') AS id_nomenclature_cible 
+SELECT id_critere_inv, 'v1_compat.bib_criteres_inv' AS entity_source, 'id_critere_inv' as field_source, 'pr_occtax.t_occurrence_occtax' AS entity_target, 'id_nomenclature_bio_condition' AS field_target, 7 AS id_type_nomenclature_cible, ref_nomenclatures.get_id_nomenclature('ETA_BIO','0') AS id_nomenclature_cible 
 FROM v1_compat.bib_criteres_inv;
 
 -- vivant
@@ -113,7 +173,7 @@ INSERT INTO pr_occtax.t_occurrences_occtax(
         )
     WITH 
     n14 AS (SELECT * FROM v1_compat.cor_critere_contactinv_v1_to_v2 WHERE id_type_nomenclature_cible = 14) ,
-    n7 AS (SELECT * FROM v1_compat.cor_critere_contactinv_v1_to_v2 WHERE id_type_nomenclature_cible = 7),
+    n7 AS (SELECT * FROM v1_compat.cor_critere_contactinv_v1_to_v2 WHERE id_type_nomenclature_cible = 7)
     SELECT
     id_releve_inv AS id_occurrence_occtax,
     uuid_generate_v4() AS unique_id_occurence_occtax,
@@ -140,8 +200,8 @@ INSERT INTO pr_occtax.t_occurrences_occtax(
     FROM v1_compat.vm_t_releves_inv inv
     LEFT JOIN n14 ON n14.pk_source =  inv.id_critere_inv
     LEFT JOIN n7 ON n7.pk_source =  inv.id_critere_inv
-    LEFT JOIN n13 ON n13.pk_source =  inv.id_critere_inv
-    JOIN taxonomie.bib_noms bib_noms ON bib_noms.id_nom = inv.id_nom;
+    JOIN taxonomie.bib_noms bib_noms ON bib_noms.id_nom = inv.id_nom
+;
 
 
 -- insertion denombrement
@@ -158,7 +218,7 @@ INSERT INTO pr_occtax.cor_counting_occtax(
         )
 SELECT 
 uuid_generate_v4() AS unique_id_sinp_occtax,
-id_inv AS id_occurrence_occtax,
+id_releve_inv AS id_occurrence_occtax,
 ref_nomenclatures.get_id_nomenclature('STADE_VIE', '2'),
 ref_nomenclatures.get_id_nomenclature('SEXE', '3'),
 ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
@@ -237,29 +297,6 @@ na AS count_max
 FROM v1_compat.vm_t_releves_inv inv
 WHERE na > 0;
 
--- jeune
-INSERT INTO pr_occtax.cor_counting_occtax(
-            unique_id_sinp_occtax, 
-            id_occurrence_occtax, 
-            id_nomenclature_life_stage, 
-            id_nomenclature_sex, 
-            id_nomenclature_obj_count, 
-            id_nomenclature_type_count, 
-            count_min, 
-            count_max
-        )
-SELECT 
-uuid_generate_v4() AS unique_id_sinp_occtax,
-id_releve_inv AS id_occurrence_occtax,
-ref_nomenclatures.get_id_nomenclature('STADE_VIE', '3'),
-ref_nomenclatures.get_id_nomenclature('SEXE', '0'),
-ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
-ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'NSP'),
-jeune AS count_min,
-jeune AS count_max
-FROM v1_compat.vm_t_releves_inv inv
-WHERE jeune > 0;
-
 
 -- observateurs
 INSERT INTO pr_occtax.cor_role_releves_occtax
@@ -267,4 +304,36 @@ SELECT
 uuid_generate_v4() AS unique_id_cor_role_releve,
 id_inv AS id_releve_occtax,
 id_role AS id_role
-FROM v1_compat.cor_role_fiche_inv
+FROM v1_compat.cor_role_fiche_inv;
+
+--correspondance observateurs en synthese, jouer l'action à la place du tri_insert_synthese_cor_role_releves_occtax
+INSERT INTO gn_synthese.cor_observer_synthese(id_synthese, id_role) 
+SELECT s.id_synthese, cro.id_role 
+FROM gn_synthese.synthese s
+JOIN pr_occtax.cor_counting_occtax cco ON cco.id_counting_occtax::varchar = s.entity_source_pk_value
+JOIN pr_occtax.t_occurrences_occtax oo ON oo.id_occurrence_occtax = cco.id_occurrence_occtax
+JOIN pr_occtax.t_releves_occtax r ON r.id_releve_occtax = oo.id_releve_occtax
+JOIN pr_occtax.cor_role_releves_occtax cro ON cro.id_releve_occtax = r.id_releve_occtax
+WHERE s.id_dataset  = 14;
+--observers_as_txt en synthese jouer l'action du trigger trg_maj_synthese_observers_txt
+WITH synthese_observers AS (
+  SELECT c.id_synthese, array_to_string(array_agg(r.nom_role || ' ' || r.prenom_role), ', ') AS theobservers
+  FROM utilisateurs.t_roles r
+  JOIN gn_synthese.cor_observer_synthese c ON c.id_role = r.id_role
+  GROUP BY id_synthese
+)
+UPDATE gn_synthese.synthese
+SET observers = so.theobservers
+FROM synthese_observers so
+WHERE gn_synthese.synthese.id_synthese = so.id_synthese;
+
+ALTER TABLE pr_occtax.t_releves_occtax ENABLE TRIGGER USER;
+ALTER TABLE pr_occtax.t_occurrences_occtax ENABLE TRIGGER tri_log_changes_t_occurrences_occtax;
+ALTER TABLE pr_occtax.cor_counting_occtax ENABLE TRIGGER tri_log_changes_cor_counting_occtax;
+ALTER TABLE pr_occtax.cor_role_releves_occtax ENABLE TRIGGER tri_log_changes_cor_role_releves_occtax;
+ALTER TABLE pr_occtax.cor_role_releves_occtax ENABLE TRIGGER tri_insert_synthese_cor_role_releves_occtax;
+ALTER TABLE gn_synthese.cor_observer_synthese ENABLE TRIGGER trg_maj_synthese_observers_txt;
+
+-- Suppression des VM
+DROP MATERIALIZED VIEW v1_compat.vm_t_fiches_inv;
+DROP MATERIALIZED VIEW v1_compat.vm_t_releves_inv;
