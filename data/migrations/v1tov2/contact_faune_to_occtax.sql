@@ -8,7 +8,7 @@ SELECT * FROM v1_compat.t_fiches_cf;
 CREATE MATERIALIZED VIEW v1_compat.vm_t_releves_cf AS
 SELECT * FROM v1_compat.t_releves_cf;
 CREATE MATERIALIZED VIEW v1_compat.vm_cor_role_fiche_cf AS
-SELECT * FROM v1_compat.t_releves_cf;
+SELECT * FROM v1_compat.cor_role_fiche_cf;
 
 
 --TODO : réactiver les triggers en prod

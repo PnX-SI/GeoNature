@@ -70,6 +70,19 @@ gid,
 diffusable
 FROM v1_compat.t_releves_inv, temp, temp2;
 
+-- vm cor_role
+CREATE MATERIALIZED VIEW v1_compat.vm_cor_role_fiche_inv AS
+WITH temp AS (
+SELECT  max(id_releve_occtax) AS max_id
+ FROM pr_occtax.t_releves_occtax
+)
+SELECT 
+temp.max_id + id_cflore AS id_inv,
+id_role
+FROM v1_compat.cor_role_fiche_inv, temp;
+
+
+
 CREATE TABLE v1_compat.cor_critere_contactinv_v1_to_v2 (
 	pk_source integer,
 	entity_source character varying(100),
@@ -304,7 +317,7 @@ SELECT
 uuid_generate_v4() AS unique_id_cor_role_releve,
 id_inv AS id_releve_occtax,
 id_role AS id_role
-FROM v1_compat.cor_role_fiche_inv;
+FROM v1_compat.vm_cor_role_fiche_inv;
 
 --correspondance observateurs en synthese, jouer l'action à la place du tri_insert_synthese_cor_role_releves_occtax
 INSERT INTO gn_synthese.cor_observer_synthese(id_synthese, id_role) 
