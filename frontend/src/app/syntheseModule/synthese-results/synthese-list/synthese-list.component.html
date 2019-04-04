@@ -49,10 +49,17 @@
 
 
 
-<button type="button" class="btn btn-primary btn-sm box-shadow" id="download-btn" (click)="openDownloadModal()">
+<button 
+  type="button" 
+  class="btn btn-primary btn-sm box-shadow" 
+  id="download-btn" 
+  (click)="openDownloadModal()"
+  [disabled]="_cruvedStore.cruved?.SYNTHESE?.cruved?.E == '0'"
+  >
   <i class="fa fa-download" aria-hidden="true"> </i>
   Téléchargement
 </button>
+
 
 <!-- <pnx-modal-download [pathDownload]="exportRoute " [queryString]="queyrStringDownload " [exportFormat]="SYNTHESE_CONFIG.EXPORT_FORMAT "
   (buttonClicked)="setQueryString() ">
