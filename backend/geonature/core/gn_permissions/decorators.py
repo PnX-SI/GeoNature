@@ -1,13 +1,19 @@
-'''
+"""
 Decorators to protects routes with permissions
-'''
+"""
 import json
 
 from flask import redirect, request, Response, current_app, g, Response
 
 from functools import wraps
 
-from geonature.core.gn_permissions.tools import get_user_permissions, get_user_from_token_and_raise
+from pypnusershub.db.tools import InsufficientRightsError
+
+from geonature.core.gn_permissions.tools import (
+    get_user_permissions,
+    get_user_from_token_and_raise,
+)
+
 
 def check_cruved_scope(
     action,
@@ -32,14 +38,12 @@ def check_cruved_scope(
         redirect_on_expiration(string): url where we redirect on token expiration
         redirect_on_invalid_token(string): url where we redirect on token invalid token
     """
+
     def _check_cruved_scope(fn):
         @wraps(fn)
         def __check_cruved_scope(*args, **kwargs):
             user = get_user_from_token_and_raise(
-                request,
-                action,
-                redirect_on_expiration,
-                redirect_on_invalid_token,
+                request, action, redirect_on_expiration, redirect_on_invalid_token
             )
             # If user not a dict: its a token issue
             # return the appropriate Response from get_user_from_token_and_raise
@@ -48,11 +52,7 @@ def check_cruved_scope(
             user_with_highter_perm = None
             if get_role:
                 user_permissions = get_user_permissions(
-                    user,
-                    action,
-                    'SCOPE',
-                    module_code,
-                    object_code
+                    user, action, "SCOPE", module_code, object_code
                 )
                 # if object_code no heritage
                 if object_code:
@@ -76,21 +76,30 @@ def check_cruved_scope(
                         user_with_highter_perm = get_max_perm(geonature_permission)
                     else:
                         user_with_highter_perm = get_max_perm(module_permissions)
-            
-                kwargs['info_role'] = user_with_highter_perm
 
+                kwargs["info_role"] = user_with_highter_perm
+            if user_with_highter_perm.value_filter == "0":
+                raise InsufficientRightsError(
+                    ('User "{}" cannot "{}" in {}').format(
+                        user_with_highter_perm.id_role,
+                        user_with_highter_perm.code_action,
+                        user_with_highter_perm.module_code,
+                    ),
+                    403,
+                )
             g.user = user_with_highter_perm
             return fn(*args, **kwargs)
+
         return __check_cruved_scope
+
     return _check_cruved_scope
 
 
-
 def get_max_perm(perm_list):
-    '''
+    """
         Return the max filter_code from a list of VUsersPermissions instance
         get_user_permissions return a list of VUsersPermissions from its group or himself
-    '''
+    """
     user_with_highter_perm = perm_list[0]
     max_code = user_with_highter_perm.value_filter
     i = 1
