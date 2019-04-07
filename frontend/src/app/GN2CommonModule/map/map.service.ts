@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { Map, GeoJSON, Layer, FeatureGroup, Marker, LatLng } from 'leaflet';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs';
@@ -37,7 +37,7 @@ export class MapService {
     color: 'green'
   };
 
-  constructor(private http: Http, private _commonService: CommonService) {}
+  constructor(private http: HttpClient, private _commonService: CommonService) {}
 
   setMap(map) {
     this.map = map;

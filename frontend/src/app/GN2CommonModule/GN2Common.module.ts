@@ -10,7 +10,7 @@ import {
   MatToolbarModule
 } from '@angular/material';
 
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -64,7 +64,7 @@ import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-da
 import 'rxjs/Rx';
 import { MultiSelectComponent } from './form/multiselect/multiselect.component';
 
-export function HttpLoaderFactory(http: Http) {
+export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 

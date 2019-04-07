@@ -3,7 +3,7 @@ import { MapService } from './map.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Map, LatLngExpression } from 'leaflet';
 import { AppConfig } from '@geonature_config/app.config';
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import * as L from 'leaflet';
 import { CommonService } from '../service/common.service';
 
@@ -32,7 +32,7 @@ export class MapComponent implements OnInit {
   constructor(
     private mapService: MapService,
     private _commonService: CommonService,
-    private _http: Http
+    private _http: HttpClient
   ) {
     this.searchLocation = '';
   }
