@@ -25,7 +25,7 @@ export class MapListComponent implements OnInit, AfterViewInit {
   @Input() idName: string;
 
 
-  constructor(private _ms: MapService, private mapListService: MapListService) {
+  constructor(private _ms: MapService, public mapListService: MapListService) {
   }
 
   ngOnInit() {

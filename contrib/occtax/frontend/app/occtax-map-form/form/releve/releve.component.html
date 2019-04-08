@@ -24,7 +24,10 @@
   </div>
   <div class="row row-0">
     <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
-      <pnx-datasets label="{{ 'MetaData.Datasets' | translate }}" [parentFormControl]="releveForm.controls.properties.controls.id_dataset"
+      <!-- TODO pnx-datasets label="{{ 'MetaData.Datasets' | translate }}" [parentFormControl]="releveForm.controls.properties.controls.id_dataset"
+        [disabled]="fs.disabled">
+      </pnx-datasets-->
+      <pnx-datasets label="{{ 'MetaData.Datasets' | translate }}" [parentFormControl]="releveForm.controls.id_dataset"
         [disabled]="fs.disabled">
       </pnx-datasets>
     </div>
@@ -134,7 +137,8 @@
   <div class="row row-0 collapse" id="collapseContexteCommentaire">
     <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 padding-0">
       <div class="form-group">
-        <textarea [formControl]="releveForm.controls.properties.controls.comment" class="form-control" rows="2" id="commentaire"></textarea>
+        <!-- TODO textarea [formControl]="releveForm.controls.properties.controls.comment" class="form-control" rows="2" id="commentaire"></textarea-->
+        <textarea [formControl]="releveForm.controls.comment" class="form-control" rows="2" id="commentaire"></textarea>
       </div>
     </div>
   </div>

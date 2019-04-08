@@ -10,7 +10,10 @@ import {
 import { FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
-@Component({})
+@Component({
+  selector: 'pnx-generic-form',
+  template: ''
+})
 export class GenericFormComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() parentFormControl: FormControl;
   @Input() label: string;

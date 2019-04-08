@@ -23,7 +23,7 @@ export class SyntheseComponent implements OnInit {
 
   constructor(
     public searchService: DataService,
-    private _mapListService: MapListService,
+    public _mapListService: MapListService,
     private _commonService: CommonService,
     private _modalService: NgbModal,
     private _fs: SyntheseFormService,

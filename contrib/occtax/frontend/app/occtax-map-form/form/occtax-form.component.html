@@ -96,7 +96,7 @@
     </button>
     <button class="btn btn-success" [disabled]="(
           fs.releveForm.invalid
-          || fs.taxonsList == 0 
+          || !fs.taxonsList.length
           || fs.countingForm.invalid
           || fs.showOccurrence
           || (fs.showOccurrence && fs.occurrenceForm.invalid )

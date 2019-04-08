@@ -46,12 +46,18 @@
 
         <div class="row row-sm">
           <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-0">
-            <pnx-datasets label="{{ 'MetaData.Datasets' | translate }}" [parentFormControl]="releveForm.controls.properties.controls.id_dataset"
+            <!-- TODO pnx-datasets label="{{ 'MetaData.Datasets' | translate }}" [parentFormControl]="releveForm.controls.properties.controls.id_dataset"
+              appId="14" [disabled]=disabled>
+            </pnx-datasets-->
+            <pnx-datasets label="{{ 'MetaData.Datasets' | translate }}" [parentFormControl]="releveForm.controls.id_dataset"
               appId="14" [disabled]=disabled>
             </pnx-datasets>
           </div>
           <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
-            <pnx-nomenclature label="{{ 'Releve.ObsTechnique' | translate }}" [parentFormControl]="releveForm.controls.properties.controls.id_nomenclature_obs_technique"
+            <!-- TODO pnx-nomenclature label="{{ 'Releve.ObsTechnique' | translate }}" [parentFormControl]="releveForm.controls.properties.controls.id_nomenclature_obs_technique"
+              codeNomenclatureType="TECHNIQUE_OBS" [disabled]=disabled>
+            </pnx-nomenclature-->
+            <pnx-nomenclature label="{{ 'Releve.ObsTechnique' | translate }}" [parentFormControl]="releveForm.controls.id_nomenclature_obs_technique"
               codeNomenclatureType="TECHNIQUE_OBS" [disabled]=disabled>
             </pnx-nomenclature>
           </div>
@@ -178,10 +184,10 @@
                 </div>
               </div>
               <div class="row row-0" id="row-commentaire">
-                <div *ngIf="occtaxConfig.form_fields.comment" class="col-xs-12 col-sm-12 col-md-12 col-lg-6 padding-sm">
+                <div *ngIf="occtaxConfig.form_fields.comment_releve" class="col-xs-12 col-sm-12 col-md-12 col-lg-6 padding-sm">
                   <div class="input-group">
                     <input [disableControl]="disabled" placeholder="{{ 'Releve.Comment' | translate }}" class="form-control"
-                      [formControl]="occurrenceForm.controls.comment" type="text">
+                      [formControl]="occurrenceForm.controls.comment_releve" type="text">
                   </div>
                 </div>
               </div>

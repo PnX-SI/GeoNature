@@ -13,7 +13,7 @@ export class AdminComponent implements OnInit {
     '/nomenclatures/admin/bibnomenclaturestypesadmin/';
 
   URL_BACKOFFICE_PERM = AppConfig.API_ENDPOINT + '/permissions_backoffice/users';
-  constructor(private _cruvedStore: CruvedStoreService) {}
+  constructor(public _cruvedStore: CruvedStoreService) {}
 
   ngOnInit() {}
 }

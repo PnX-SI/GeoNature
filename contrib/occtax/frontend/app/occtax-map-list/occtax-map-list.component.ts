@@ -4,6 +4,7 @@ import { OcctaxDataService } from "../services/occtax-data.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { DatatableComponent } from '@swimlane/ngx-datatable/release';
 import { ModuleConfig } from "../module.config";
 import { TaxonomyComponent } from "@geonature_common/form/taxonomy/taxonomy.component";
 import { FormGroup, FormBuilder } from "@angular/forms";
@@ -21,7 +22,7 @@ import { Subscription } from "rxjs/Subscription";
   providers: [MapListService]
 })
 export class OcctaxMapListComponent implements OnInit, OnDestroy {
-  public userCruved = {};
+  public userCruved: any;
   public displayColumns: Array<any>;
   public availableColumns: Array<any>;
   public pathEdit: string;
@@ -45,9 +46,11 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
   public taxonomyComponent: TaxonomyComponent;
   @ViewChild("dynamicForm")
   public dynamicForm: GenericFormGeneratorComponent;
+  @ViewChild(DatatableComponent) 
+  table: DatatableComponent;
 
   constructor(
-    private mapListService: MapListService,
+    public mapListService: MapListService,
     private _occtaxService: OcctaxDataService,
     private _commonService: CommonService,
     private _router: Router,

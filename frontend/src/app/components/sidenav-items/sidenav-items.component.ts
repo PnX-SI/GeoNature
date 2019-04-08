@@ -20,7 +20,7 @@ export class SidenavItemsComponent implements OnInit {
   constructor(
     public globalSub: GlobalSubService,
     public moduleService: ModuleService,
-    private _sidenavService: SideNavService
+    public _sidenavService: SideNavService
   ) {}
   ngOnInit() {
     this.home_page = { module_url: '/', module_label: 'Accueil', module_picto: 'fa-home', id: '1' };

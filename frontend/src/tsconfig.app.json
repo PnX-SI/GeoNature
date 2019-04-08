@@ -5,10 +5,24 @@
     "module": "es2015",
     "baseUrl": "",
     "types": [
+      "node"
     ]
   },
+  "include": [
+    "main.ts",
+    "polyfills.ts",
+    "*.d.ts",
+    "**/*"
+  
+    ,"/home/geonatureadmin/geonature/external_modules/occtax/frontend/app/*.ts"
+    ,"/home/geonatureadmin/geonature/external_modules/occtax/frontend/app/**/*.ts"
+  
+  ],
   "exclude": [
     "test.ts",
     "**/*.spec.ts"
-  ]
+  
+    ,"/home/geonatureadmin/geonature/external_modules/occtax/frontend/app/**/*.spec.ts"
+  
+  ],
 }

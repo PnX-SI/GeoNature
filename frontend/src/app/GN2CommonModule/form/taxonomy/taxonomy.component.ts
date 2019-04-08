@@ -7,12 +7,12 @@ import { CommonService } from '@geonature_common/service/common.service';
 import { AppConfig } from '@geonature_config/app.config';
 
 export interface Taxon {
-  search_name: string;
-  nom_valide: string;
-  group2_inpn: string;
-  regne: string;
-  lb_nom: string;
-  cd_nom: number;
+  search_name?: string;
+  nom_valide?: string;
+  group2_inpn?: string;
+  regne?: string;
+  lb_nom?: string;
+  cd_nom?: number;
   cd_ref?: number;
   cd_sup?: number;
   cd_taxsup?: number;

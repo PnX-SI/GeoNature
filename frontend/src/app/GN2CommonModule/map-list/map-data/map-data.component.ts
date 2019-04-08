@@ -25,7 +25,7 @@ export class MapDataComponent implements OnInit {
   rows = []; // rows in data table
 
   constructor(
-    private mapListService: MapListService,
+    public mapListService: MapListService,
     public ngbModal: NgbModal,
     private _commonService: CommonService
   ) {

@@ -50,7 +50,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     private _fs: SyntheseFormService,
     public sanitizer: DomSanitizer,
     public ref: ChangeDetectorRef,
-    private _cruvedStore: CruvedStoreService
+    public _cruvedStore: CruvedStoreService
   ) {}
 
   ngOnInit() {
