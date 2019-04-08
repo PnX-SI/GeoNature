@@ -7,7 +7,8 @@ CHANGELOG
 
 **Corrections**
 
-*
+* Correction de la vérification du CRUVED lorsque get_role = False
+* Correction affichage des MultiPoint sur la synthese
 
 2.0.1 (2019-03-18)
 ------------------

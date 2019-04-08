@@ -17,3 +17,6 @@ TRUNCATE taxonomie.cor_taxon_attribut;
 -- set the serial of synthese to 0
 SELECT pg_catalog.setval('gn_synthese.synthese_id_synthese_seq', 1, true);
 
+-- remove custom filters from gn_permissions.t_filters
+DELETE FROM gn_permissions.t_filters WHERE id_filter = 500;
+
