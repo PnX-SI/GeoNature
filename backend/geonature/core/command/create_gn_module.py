@@ -103,7 +103,9 @@ def install_gn_module(module_path, url, conf_file, build):
                 gn_module_register_config(module_code.lower())
 
                 if enable_frontend:
-                    # generation du du routing du frontend
+                    # generation du fichier tsconfig.app.json
+                    tsconfig_app_templating(app)
+                    # generation du routing du frontend
                     frontend_routes_templating(app)
                     # generation du fichier de configuration du frontend
                     create_module_config(

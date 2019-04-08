@@ -6,14 +6,7 @@ import {TranslateService} from '@ngx-translate/core';
 export class CommonService {
   toastrConfig: ToastrConfig;
 
-  constructor(private toastrService: ToastrService,
-    private translate: TranslateService) {
-      this.toastrConfig = {
-        positionClass: 'toast-top-center',
-        tapToDismiss: true,
-        timeOut: 3000
-    };
-    }
+  constructor(private toastrService: ToastrService, private translate: TranslateService) {}
 
     translateToaster(messageType: string, messageValue: string): void {
       this.translate.get(messageValue, {value: messageValue})

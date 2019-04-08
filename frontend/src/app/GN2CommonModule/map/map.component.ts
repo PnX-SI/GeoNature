@@ -10,7 +10,7 @@ import { CommonService } from '../service/common.service';
 import 'leaflet-draw';
 import { FormControl } from '@angular/forms';
 import { Observable ,  of } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, tap, switchMap } from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, tap, switchMap, map } from 'rxjs/operators';
 
 @Component({
   selector: 'pnx-map',
@@ -48,7 +48,9 @@ export class MapComponent implements OnInit {
         )}&format=json&limit=10&polygon_geojson=1`,
         { withCredentials: false }
       )
-      .map(res => res.json());
+      .pipe(
+        map(res => res) //plus besoin de retourner res.json() depuis angular5
+       );
   }
 
   search = (text$: Observable<string>) =>

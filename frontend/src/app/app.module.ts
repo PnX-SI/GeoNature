@@ -54,7 +54,11 @@ export function HttpLoaderFactory(http: HttpClient) {
     FlexLayoutModule,
     routing,
     ChartModule,
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot({
+      positionClass: 'toast-top-center',
+      tapToDismiss: true,
+      timeOut: 3000
+    }),
     GN2CommonModule,
     TranslateModule.forRoot({
       loader: {

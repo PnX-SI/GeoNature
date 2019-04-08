@@ -24,6 +24,7 @@ from geonature.utils.command import (
     create_frontend_config,
     frontend_routes_templating,
     tsconfig_templating,
+    tsconfig_app_templating,
     update_app_configuration
 )
 
@@ -107,6 +108,7 @@ def generate_frontend_config(conf_file, build):
         log.info('Config successfully updated')
     except FileNotFoundError:
         log.warning("file {} doesn't exists".format(conf_file))
+
 
 
 @main.command()
@@ -196,6 +198,14 @@ def generate_frontend_tsconfig():
         Génere tsconfig du frontend
     """
     tsconfig_templating()
+
+
+@main.command()
+def generate_frontend_tsconfig_app():
+    """
+        Génere tsconfig.app du frontend/src
+    """
+    tsconfig_app_templating()
 
 
 @main.command()

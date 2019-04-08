@@ -52,6 +52,7 @@
     "popper.js": "^1.15.0",
     "primeng": "^7.1.0",
     "rxjs": "^6.4.0",
+    "rxjs-compat": "^6.4.0",
     "tether": "^1.4.5",
     "to-regex": "^3.0.2",
     "togeojson": "^0.16.0",
@@ -80,6 +81,6 @@
     "protractor": "~5.4.2",
     "ts-node": "~8.0.3",
     "tslint": "~5.15.0",
-    "typescript": "^3.2.2"
+    "typescript": "3.2.2"
   }
 }
