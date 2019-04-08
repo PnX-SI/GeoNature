@@ -2,8 +2,7 @@ import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { Map } from 'leaflet';
 import { MapService } from '../map.service';
 import * as L from 'leaflet';
-import { Observable } from 'rxjs';
-import { Subject } from 'rxjs/Subject';
+import { Observable ,  Subject } from 'rxjs';
 
 @Component({
   selector: 'pnx-geojson',

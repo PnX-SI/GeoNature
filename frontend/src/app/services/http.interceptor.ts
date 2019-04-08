@@ -1,6 +1,7 @@
+
+import {throwError as observableThrowError,  Observable } from 'rxjs';
 import { Injectable, Injector } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
 import { AuthService } from '@geonature/components/auth/auth.service';
 import { Router } from '@angular/router';
 
@@ -36,7 +37,7 @@ export class MyCustomInterceptor implements HttpInterceptor {
     // and intercept error
     return next.handle(customReq).catch((err: any) => {
       this.handleError(err);
-      return Observable.throw(err);
+      return observableThrowError(err);
     });
   }
 }

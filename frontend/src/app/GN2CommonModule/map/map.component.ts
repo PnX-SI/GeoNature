@@ -9,8 +9,7 @@ import { CommonService } from '../service/common.service';
 
 import 'leaflet-draw';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { of } from 'rxjs/observable/of';
+import { Observable ,  of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, tap, switchMap } from 'rxjs/operators';
 
 @Component({

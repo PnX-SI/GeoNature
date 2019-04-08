@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Map, GeoJSON, Layer, FeatureGroup, Marker, LatLng } from 'leaflet';
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs';
+import { Subject ,  Observable } from 'rxjs';
 
 import * as L from 'leaflet';
 import 'leaflet.markercluster';

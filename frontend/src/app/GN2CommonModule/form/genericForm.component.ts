@@ -8,7 +8,7 @@ import {
   OnDestroy
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 @Component({})
 export class GenericFormComponent implements OnInit, AfterViewInit, OnDestroy {
