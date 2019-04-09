@@ -34,7 +34,6 @@ export class OcctaxFormComponent implements OnInit {
     this.fs.taxonsList = [];
     this.fs.indexOccurrence = 0;
     this.fs.editionMode = false;
-console.log(this.fs);
     // remove disabled form on geom selected
     this.fs.releveForm.controls.geometry.valueChanges.subscribe(data => {
       this.fs.disabled = false;
