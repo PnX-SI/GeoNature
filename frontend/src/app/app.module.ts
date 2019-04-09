@@ -1,6 +1,7 @@
 // Angular core
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { Observable, of } from 'rxjs';
 
 import { HttpClientModule, HttpClient, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
@@ -11,7 +12,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { ChartModule } from 'angular2-chartjs';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { ToastrModule } from 'ngx-toastr';
+import { ToastrModule, ToastrService, Toast } from 'ngx-toastr';
 
 // Modules
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
@@ -40,15 +41,26 @@ import { SideNavService } from './components/sidenav-items/sidenav-service';
 
 import { MyCustomInterceptor } from './services/http.interceptor';
 import { GlobalSubService } from './services/global-sub.service';
-// AoT requires an exported function for factories
-export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+
+import * as contentCn from '../assets/i18n/cn.json';
+import * as contentEn from '../assets/i18n/en.json';
+import * as contentFr from '../assets/i18n/fr.json';
+
+const TRANSLATIONS = {
+  cn: contentCn,
+  en: contentEn,
+  fr: contentFr
+};
+
+export class TranslateUniversalLoader implements TranslateLoader {
+  getTranslation(lang: string): Observable<any> {
+    return of(TRANSLATIONS[lang].default);
+  }
 }
 
 @NgModule({
   imports: [
     BrowserModule,
-    HttpClientModule,
     HttpClientModule,
     BrowserAnimationsModule,
     FlexLayoutModule,
@@ -63,8 +75,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
+        useClass: TranslateUniversalLoader
       }
     })
   ],
@@ -82,6 +93,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     AuthService,
     AuthGuard,
     ModuleService,
+    ToastrService,
     GlobalSubService,
     CookieService,
     HttpClient,

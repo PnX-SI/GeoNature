@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { CommonService } from "@geonature_common/service/common.service";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
-import { ToastrService } from "ngx-toastr";
+import { ToastrService, ToastrConfig } from "ngx-toastr";
 import { OcctaxFormService } from "./occtax-form.service";
 import { Router } from "@angular/router";
 import * as L from "leaflet";
@@ -97,9 +97,7 @@ export class OcctaxFormComponent implements OnInit {
     this._cfs.postOcctax(finalForm).subscribe(
       () => {
         this.disabledAfterPost = false;
-        this.toastr.success("Relevé enregistré", "", {
-          positionClass: "toast-top-center"
-        });
+        this.toastr.success("Relevé enregistré", "");
         // resert the forms
         this.fs.releveForm = this.fs.initReleveForm();
         this.fs.occurrenceForm = this.fs.initOccurenceForm();

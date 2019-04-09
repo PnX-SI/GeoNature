@@ -28,7 +28,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, GN2CommonModule, RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild(routes), GN2CommonModule, CommonModule],
   declarations: [
     OcctaxMapFormComponent,
     OcctaxFormComponent,
