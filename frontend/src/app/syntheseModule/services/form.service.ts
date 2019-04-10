@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, ValidatorFn } from '@angular/forms';
 import { AppConfig } from '@geonature_config/app.config';
 import { stringify as toWKT } from 'wellknown';
-import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date-parser-formatter';
-/** TODO import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter'; **/
+import { /** TODO NgbDatepickerConfig, **/ NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter'; 
 import { DYNAMIC_FORM_DEF } from './dynamycFormConfig';
 import { isArray } from 'util';
 
@@ -16,9 +16,9 @@ export class SyntheseFormService {
   public dynamycFormDef: Array<any>;
 
   constructor(
-    private _fb: FormBuilder
-/** TODO    private _dateParser: NgbDateParserFormatter,
-    private _periodFormatter: NgbDatePeriodParserFormatter **/
+    private _fb: FormBuilder,
+    private _dateParser: NgbDateParserFormatter,
+    private _periodFormatter: NgbDatePeriodParserFormatter 
   ) {
     this.searchForm = this._fb.group({
       cd_nom: null,
@@ -69,14 +69,16 @@ export class SyntheseFormService {
     const params = Object.assign({}, this.searchForm.value);
     const updatedParams = {};
     // tslint:disable-next-line:forin
+ console.log(params);
     for (let key in params) {
       if ((key === 'date_min' && params.date_min) || (key === 'date_max' && params.date_max)) {
-/** TODO        updatedParams[key] = this._dateParser.format(params[key]); **/
+console.log(this._dateParser.format(params[key]));
+//        updatedParams[key] = this._dateParser.format(params[key]); **/
       } else if (
         (key === 'period_end' && params.period_end) ||
         (key === 'period_start' && params.period_start)
       ) {
-/** TODO        updatedParams[key] = this._periodFormatter.format(params[key]); **/
+//        updatedParams[key] = this._periodFormatter.format(params[key]); **/
       } else if (key === 'geoIntersection' && params['geoIntersection']) {
         const wktArray = [];
         // if geointersection is an array of geojson (from filelayer) convert each one in WKT
