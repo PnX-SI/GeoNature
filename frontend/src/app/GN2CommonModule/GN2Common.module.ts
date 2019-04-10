@@ -47,11 +47,11 @@ import { AreasComponent } from '@geonature_common/form/areas/areas.component';
 import { AcquisitionFrameworksComponent } from '@geonature_common/form/acquisition-frameworks/acquisition-frameworks.component';
 import { ModalDownloadComponent } from '@geonature_common/others/modal-download/modal-download.component';
 import { PeriodComponent } from '@geonature_common/form/date/period.component';
-import { NgbDateFRParserFormatter } from '@geonature/providers/ngb-date-fr-parser-formatter';
+
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
-// pipe
 
+// pipe
 import { ReadablePropertiePipe } from './pipe/readable-propertie.pipe';
 
 // Service
@@ -120,8 +120,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     CommonService,
     FormService,
     DynamicFormService,
-    NgbDatePeriodParserFormatter,
-    {provide: NgbDateParserFormatter, useClass: NgbDateFRParserFormatter}
+    NgbDatePeriodParserFormatter
   ],
   exports: [
     MunicipalitiesComponent,

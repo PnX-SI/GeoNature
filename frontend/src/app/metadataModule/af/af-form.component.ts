@@ -7,8 +7,7 @@ import { AppConfig } from '@geonature_config/app.config';
 import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { Router, ActivatedRoute } from '@angular/router';
-//import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date-parser-formatter';
-/** TODO **/
+import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { FormService } from '@geonature_common/form/form.service';
 
 @Component({
@@ -33,7 +32,7 @@ export class AfFormComponent implements OnInit {
     private _api: HttpClient,
     private _router: Router,
     private _toaster: ToastrService,
-/** TODO    private _dateParser: NgbDateParserFormatter **/
+    private _dateParser: NgbDateParserFormatter
   ) {}
 
   ngOnInit() {
@@ -79,12 +78,12 @@ export class AfFormComponent implements OnInit {
   getAf(id_af) {
     this._dfs.getAcquisitionFramework(id_af).subscribe(data => {
       this.af = data;
-/** TODO      data.acquisition_framework_start_date = this._dateParser.parse(
+      data.acquisition_framework_start_date = this._dateParser.parse(
         data.acquisition_framework_start_date
       );
       data.acquisition_framework_end_date = this._dateParser.parse(
         data.acquisition_framework_end_date
-      );*/
+      );
       this.afForm.patchValue(data);
       data.cor_af_actor.forEach((cor, index) => {
         if (index === 0) {
@@ -121,7 +120,7 @@ export class AfFormComponent implements OnInit {
     af.cor_volets_sinp = af.cor_volets_sinp.map(obj => obj.id_nomenclature);
 
     if (this._formService.formValid) {
-/** TODO      af.acquisition_framework_start_date = this._dateParser.format(
+      af.acquisition_framework_start_date = this._dateParser.format(
         af.acquisition_framework_start_date
       );
 
@@ -129,7 +128,7 @@ export class AfFormComponent implements OnInit {
         af.acquisition_framework_end_date = this._dateParser.format(
           af.acquisition_framework_end_date
         );
-      }*/
+      }
 
       af['cor_af_actor'] = update_cor_af_actor;
       this._api.post<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework`, af).subscribe(

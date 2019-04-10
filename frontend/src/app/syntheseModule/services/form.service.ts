@@ -69,16 +69,15 @@ export class SyntheseFormService {
     const params = Object.assign({}, this.searchForm.value);
     const updatedParams = {};
     // tslint:disable-next-line:forin
- console.log(params);
     for (let key in params) {
       if ((key === 'date_min' && params.date_min) || (key === 'date_max' && params.date_max)) {
-console.log(this._dateParser.format(params[key]));
-//        updatedParams[key] = this._dateParser.format(params[key]); **/
+        updatedParams[key] = this._dateParser.format(params[key]);
       } else if (
         (key === 'period_end' && params.period_end) ||
         (key === 'period_start' && params.period_start)
       ) {
-//        updatedParams[key] = this._periodFormatter.format(params[key]); **/
+        console.log(this._periodFormatter.format(params[key]));
+        updatedParams[key] = this._periodFormatter.format(params[key]);
       } else if (key === 'geoIntersection' && params['geoIntersection']) {
         const wktArray = [];
         // if geointersection is an array of geojson (from filelayer) convert each one in WKT
