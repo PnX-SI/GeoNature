@@ -1,7 +1,6 @@
 // Angular core
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { Observable, of } from 'rxjs';
 
 import { HttpClientModule, HttpClient, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
@@ -42,20 +41,8 @@ import { SideNavService } from './components/sidenav-items/sidenav-service';
 import { MyCustomInterceptor } from './services/http.interceptor';
 import { GlobalSubService } from './services/global-sub.service';
 
-import * as contentCn from '../assets/i18n/cn.json';
-import * as contentEn from '../assets/i18n/en.json';
-import * as contentFr from '../assets/i18n/fr.json';
-
-const TRANSLATIONS = {
-  cn: contentCn,
-  en: contentEn,
-  fr: contentFr
-};
-
-export class TranslateUniversalLoader implements TranslateLoader {
-  getTranslation(lang: string): Observable<any> {
-    return of(TRANSLATIONS[lang].default);
-  }
+export function createTranslateLoader(http: HttpClient) {
+    return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
 @NgModule({
@@ -74,8 +61,9 @@ export class TranslateUniversalLoader implements TranslateLoader {
     GN2CommonModule,
     TranslateModule.forRoot({
       loader: {
-        provide: TranslateLoader,
-        useClass: TranslateUniversalLoader
+          provide: TranslateLoader,
+          useFactory: (createTranslateLoader),
+          deps: [HttpClient]
       }
     })
   ],

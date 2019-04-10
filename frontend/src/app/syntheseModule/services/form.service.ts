@@ -76,7 +76,6 @@ export class SyntheseFormService {
         (key === 'period_end' && params.period_end) ||
         (key === 'period_start' && params.period_start)
       ) {
-        console.log(this._periodFormatter.format(params[key]));
         updatedParams[key] = this._periodFormatter.format(params[key]);
       } else if (key === 'geoIntersection' && params['geoIntersection']) {
         const wktArray = [];

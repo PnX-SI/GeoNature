@@ -10,7 +10,6 @@ export class MyCustomInterceptor implements HttpInterceptor {
   constructor(public inj: Injector, public router: Router) {}
 
   private handleError(error: Response | any) {
-    console.log(error);
     let errMsg: string;
     if (error instanceof Response) {
       const body = error.json() || '';
