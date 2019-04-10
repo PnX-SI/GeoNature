@@ -50,35 +50,39 @@ def check_cruved_scope(
             if not isinstance(user, dict):
                 return user
             user_with_highter_perm = None
-            if get_role:
-                user_permissions = get_user_permissions(
-                    user, action, "SCOPE", module_code, object_code
-                )
-                # if object_code no heritage
-                if object_code:
-                    user_with_highter_perm = get_max_perm(user_permissions)
-                else:
-                    # else
-                    # loop on user permissions
-                    # return the module permission if exist
-                    # otherwise return GEONATURE permission
-                    module_permissions = []
-                    geonature_permission = []
-                    # user_permissions is a array of at least 1 permission
-                    # get the user from the first element of the array
-                    for user_permission in user_permissions:
-                        if user_permission.module_code == module_code:
-                            module_permissions.append(user_permission)
-                        else:
-                            geonature_permission.append(user_permission)
-                    # take the max of the different permissions
-                    if len(module_permissions) == 0:
-                        user_with_highter_perm = get_max_perm(geonature_permission)
+            user_permissions = get_user_permissions(
+                user, action, "SCOPE", module_code, object_code
+            )
+            # if object_code no heritage
+            if object_code:
+                user_with_highter_perm = get_max_perm(user_permissions)
+            else:
+                # else
+                # loop on user permissions
+                # return the module permission if exist
+                # otherwise return GEONATURE permission
+                module_permissions = []
+                geonature_permission = []
+                # user_permissions is a array of at least 1 permission
+                # get the user from the first element of the array
+                for user_permission in user_permissions:
+                    if user_permission.module_code == module_code:
+                        module_permissions.append(user_permission)
                     else:
-                        user_with_highter_perm = get_max_perm(module_permissions)
-
+                        geonature_permission.append(user_permission)
+                # take the max of the different permissions
+                if len(module_permissions) == 0:
+                    user_with_highter_perm = get_max_perm(geonature_permission)
+                else:
+                    user_with_highter_perm = get_max_perm(module_permissions)
+            # if get_role = True : set info_role as kwargs
+            if get_role:
                 kwargs["info_role"] = user_with_highter_perm
-            if user_with_highter_perm.value_filter == "0":
+            # if no perm or perm = 0 -> raise 403
+            if user_with_highter_perm is None or (
+                user_with_highter_perm is not None
+                and user_with_highter_perm.value_filter == "0"
+            ):
                 raise InsufficientRightsError(
                     ('User "{}" cannot "{}" in {}').format(
                         user_with_highter_perm.id_role,
