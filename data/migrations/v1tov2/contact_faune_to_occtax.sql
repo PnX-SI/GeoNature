@@ -7,6 +7,8 @@ CREATE MATERIALIZED VIEW v1_compat.vm_t_fiches_cf AS
 SELECT * FROM v1_compat.t_fiches_cf;
 CREATE MATERIALIZED VIEW v1_compat.vm_t_releves_cf AS
 SELECT * FROM v1_compat.t_releves_cf;
+CREATE MATERIALIZED VIEW v1_compat.vm_cor_role_fiche_cf AS
+SELECT * FROM v1_compat.cor_role_fiche_cf;
 
 
 --TODO : réactiver les triggers en prod
@@ -294,7 +296,8 @@ FROM v1_compat.vm_t_releves_cf cf
 WHERE yearling > 0;
 
 -- mettre à jour le serial
-SELECT pg_catalog.setval('pr_occtax.cor_counting_occtax_id_counting_occtax_seq', (SELECT max(id_counting_occtax)+1 FROM pr_occtax.cor_counting_occtax), true);
+SELECT pg_catalog.setval('pr_occtax.t_occurrences_occtax_id_occurrence_occtax_seq', (SELECT max(id_occurrence_occtax)+1 FROM pr_occtax.t_occurrences_occtax), true);
+SELECT pg_catalog.setval('pr_occtax.t_releves_occtax_id_releve_occtax_seq', (SELECT max(id_releve_occtax)+1 FROM pr_occtax.t_releves_occtax), true);
 
 
 -- observateurs 
@@ -303,7 +306,7 @@ SELECT
 uuid_generate_v4() AS unique_id_cor_role_releve,
 id_cf AS id_releve_occtax,
 id_role AS id_role
-FROM v1_compat.cor_role_fiche_cf;
+FROM v1_compat.vm_cor_role_fiche_cf;
 --correspondance observateurs en synthese, jouer l'action à la place du tri_insert_synthese_cor_role_releves_occtax
 INSERT INTO gn_synthese.cor_observer_synthese(id_synthese, id_role) 
 SELECT s.id_synthese, cro.id_role 
@@ -331,3 +334,7 @@ ALTER TABLE pr_occtax.cor_counting_occtax ENABLE TRIGGER tri_log_changes_cor_cou
 ALTER TABLE pr_occtax.cor_role_releves_occtax ENABLE TRIGGER tri_log_changes_cor_role_releves_occtax;
 ALTER TABLE pr_occtax.cor_role_releves_occtax ENABLE TRIGGER tri_insert_synthese_cor_role_releves_occtax;
 ALTER TABLE gn_synthese.cor_observer_synthese ENABLE TRIGGER trg_maj_synthese_observers_txt;
+
+
+
+-- TODO Données sans dénombrement (af, am etc = 0)

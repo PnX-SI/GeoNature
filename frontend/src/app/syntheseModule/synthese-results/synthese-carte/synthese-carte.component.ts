@@ -130,12 +130,18 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
         : new L.FeatureGroup();
 
       change.inputSyntheseData.currentValue.features.forEach(element => {
-        if (element.type === 'Point') {
-          const latLng = L.latLng(element.coordinates[1], element.coordinates[0]);
-          const marker = L.circleMarker(latLng);
-          this.setStyle(marker);
-          this.eventOnEachFeature(element.properties.id, marker);
-          this.cluserOrSimpleFeatureGroup.addLayer(marker);
+        if (element.type === 'Point' || element.type === 'MultiPoint') {
+          let coordinates = element.coordinates;
+          if (element.type === 'Point') {
+            coordinates = [coordinates];
+          }
+          for (var coo of coordinates) {
+            const latLng = L.latLng(coo[1], coo[0]);
+            const marker = L.circleMarker(latLng);
+            this.setStyle(marker);
+            this.eventOnEachFeature(element.properties.id, marker);
+            this.cluserOrSimpleFeatureGroup.addLayer(marker);
+          }
         } else if (element.type === 'Polygon') {
           const myLatLong = element.coordinates[0].map(point => {
             return L.latLng(point[1], point[0]);
