@@ -4,37 +4,33 @@ import {
   Input,
   Output,
   EventEmitter,
-  OnChanges,
-  DoCheck,
   IterableDiffers,
   IterableDiffer
 } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { DataFormService } from '../data-form.service';
 import { AppConfig } from '../../../../conf/app.config';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 import { CommonService } from '../../service/common.service';
-import { Select2OptionData } from 'ng-select2';
 
 @Component({
   selector: 'pnx-datasets',
   templateUrl: 'datasets.component.html'
 })
-export class DatasetsComponent extends GenericFormComponent implements OnInit, OnChanges, DoCheck {
-  public dataSets: Observable<Array<Select2OptionData>>;
-  public savedDatasets: Array<any>;
-  public iterableDiffer: IterableDiffer<any>;
+export class DatasetsComponent extends GenericFormComponent implements OnInit {
+  public dataSets: Observable<any>;
   @Input() idAcquisitionFrameworks: Array<number> = [];
   @Input() idAcquisitionFramework: number;
   @Input() bindAllItem: false;
   @Input() displayOnlyActive = true;
+  public disabledControl: boolean = false;
   constructor(
     private _dfs: DataFormService,
     private _commonService: CommonService,
     private _iterableDiffers: IterableDiffers
   ) {
     super();
-    this.iterableDiffer = this._iterableDiffers.find([]).create(null);
   }
 
   ngOnInit() {
@@ -46,55 +42,27 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
     if (this.displayOnlyActive) {
       params['active'] = true;
     }
-    this._dfs.getDatasets(params).subscribe(
-      res => {
-        this.dataSets = res.data;
-        this.savedDatasets = res.data;
-        if (res['with_mtd_errors']) {
-          this._commonService.translateToaster('error', 'MetaData.JddErrorMTD');
-        }
-      },
-      error => {
-        if (error.status === 500) {
-          this._commonService.translateToaster('error', 'MetaData.JddError');
-        } else if (error.status === 404) {
-          if (AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
-            this._commonService.translateToaster('warning', 'MetaData.NoJDDMTD');
-          } else {
-            this._commonService.translateToaster('warning', 'MetaData.NoJDD');
-          }
-        }
-      }
-    );
-  }
-
-  filterItems(event) {
-    this.dataSets = super.filterItems(event, this.savedDatasets, 'dataset_shortname');
-  }
-
-  ngOnChanges(changes) {
-    // detetch change on input idAcquisitionFramework
-    // (the number, if the AFcomponent is not multiSelect) to reload datasets
-    if (
-      changes['idAcquisitionFramework'] &&
-      changes['idAcquisitionFramework'].currentValue !== undefined
-    ) {
-      const params = { id_acquisition_framework: changes['idAcquisitionFramework'].currentValue };
-      this.getDatasets(params);
-    }
-  }
-
-  ngDoCheck() {
-    // detetch change on input idAcquisitionFrameworks (the array of id_af) to reload datasets
-    // because its an array we have to detect change on value not on reference
-    const changes = this.iterableDiffer.diff(this.idAcquisitionFrameworks);
-    if (changes) {
-      const idAcquisitionFrameworks = [];
-      changes.forEachItem(it => {
-        idAcquisitionFrameworks.push(it.item);
-      });
-      const params = { id_acquisition_frameworks: idAcquisitionFrameworks };
-      this.getDatasets(params);
-    }
+    this.dataSets = this._dfs
+                          .getDatasets(params)
+                          .pipe(
+                            map(
+                              res => {
+                                if (res['with_mtd_errors']) {
+                                  this._commonService.translateToaster('error', 'MetaData.JddErrorMTD');
+                                }
+                                return res.data;
+                              },
+                              error => {
+                                if (error.status === 500) {
+                                  this._commonService.translateToaster('error', 'MetaData.JddError');
+                                } else if (error.status === 404) {
+                                  if (AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
+                                    this._commonService.translateToaster('warning', 'MetaData.NoJDDMTD');
+                                  } else {
+                                    this._commonService.translateToaster('warning', 'MetaData.NoJDD');
+                                  }
+                                }
+                              })
+                          );
   }
 }

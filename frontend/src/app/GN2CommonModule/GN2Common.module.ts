@@ -66,6 +66,7 @@ import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-da
 // add all rxjs operators
 import 'rxjs/Rx';
 import { MultiSelectComponent } from './form/multiselect/multiselect.component';
+import { Select2Component } from './form/select2/select2.component';
 
 @NgModule({
   imports: [
@@ -107,6 +108,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     DynamicFormComponent,
     MunicipalitiesComponent,
     MultiSelectComponent,
+    Select2Component,
     GenericFormGeneratorComponent,
     GenericFormComponent,
     AreasComponent,
@@ -160,6 +162,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MapListGenericFiltersComponent,
     ObserversTextComponent,
     MultiSelectComponent,
+    Select2Component,
     GenericFormGeneratorComponent,
     GenericFormComponent,
     AreasComponent,
