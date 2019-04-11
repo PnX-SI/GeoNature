@@ -15,6 +15,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { NgbModule, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { AutoCompleteModule } from 'primeng/primeng';
+import { NgSelect2Module } from 'ng-select2';
 
 // Components
 import { NomenclatureComponent } from './form/nomenclature/nomenclature.component';
@@ -79,6 +80,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     FormsModule,
     ReactiveFormsModule,
     NgxDatatableModule,
+    NgSelect2Module,
     TranslateModule.forChild(),
     NgbModule.forRoot(),
     AutoCompleteModule
@@ -152,6 +154,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MatListModule,
     MatToolbarModule,
     NgxDatatableModule,
+    NgSelect2Module,
     NgbModule,
     TranslateModule,
     MapListGenericFiltersComponent,

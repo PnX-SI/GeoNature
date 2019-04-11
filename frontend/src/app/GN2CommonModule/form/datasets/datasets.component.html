@@ -7,10 +7,10 @@
 
 <ng-template #elseBlock>
   <small> {{ label }} </small>
-  <div class="input-group">
-    <select class="form-control form-control-sm" id="dataset-form " [formControl]="parentFormControl" [disableControl]="disabled">
-      <option *ngIf="displayAll" [ngValue]="null"> Tous </option>
-      <option *ngFor="let dataSet of dataSets" [ngValue]="dataSet.id_dataset">{{ dataSet.dataset_name }}</option>
-    </select>
+  <div>
+    <ng-select2 [data]="dataSets" id="dataset-form " [formControl]="parentFormControl" [disableControl]="disabled">
+      <!--option *ngIf="displayAll" [ngValue]="null"> Tous </option>
+      <option *ngFor="let dataSet of dataSets" [ngValue]="dataSet.id_dataset">{{ dataSet.dataset_name }}</option-->
+    </ng-select2>
   </div>
 </ng-template>

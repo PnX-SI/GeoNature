@@ -9,17 +9,19 @@ import {
   IterableDiffers,
   IterableDiffer
 } from '@angular/core';
+import { Observable } from 'rxjs';
 import { DataFormService } from '../data-form.service';
 import { AppConfig } from '../../../../conf/app.config';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 import { CommonService } from '../../service/common.service';
+import { Select2OptionData } from 'ng-select2';
 
 @Component({
   selector: 'pnx-datasets',
   templateUrl: 'datasets.component.html'
 })
 export class DatasetsComponent extends GenericFormComponent implements OnInit, OnChanges, DoCheck {
-  public dataSets: any;
+  public dataSets: Observable<Array<Select2OptionData>>;
   public savedDatasets: Array<any>;
   public iterableDiffer: IterableDiffer<any>;
   @Input() idAcquisitionFrameworks: Array<number> = [];

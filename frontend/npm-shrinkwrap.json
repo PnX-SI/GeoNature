@@ -4532,7 +4532,6 @@
       "version": "3.3.29",
       "resolved": "https://registry.npmjs.org/@types/jquery/-/jquery-3.3.29.tgz",
       "integrity": "sha512-FhJvBninYD36v3k6c+bVk1DSZwh7B5Dpb/Pyk3HKVsiohn0nhbefZZ+3JXbWQhFyt0MxSl2jRDdGQPHeOHFXrQ==",
-      "dev": true,
       "requires": {
         "@types/sizzle": "*"
       }
@@ -4573,6 +4572,20 @@
       "integrity": "sha1-vShOV8hPEyXacCur/IKlMoGQwMU=",
       "dev": true
     },
+    "@types/requirejs": {
+      "version": "2.1.31",
+      "resolved": "https://registry.npmjs.org/@types/requirejs/-/requirejs-2.1.31.tgz",
+      "integrity": "sha512-b2soeyuU76rMbcRJ4e0hEl0tbMhFwZeTC0VZnfuWlfGlk6BwWNsev6kFu/twKABPX29wkX84wU2o+cEJoXsiTw=="
+    },
+    "@types/select2": {
+      "version": "4.0.48",
+      "resolved": "https://registry.npmjs.org/@types/select2/-/select2-4.0.48.tgz",
+      "integrity": "sha512-C1cUbfwKBqlO+/3OWQKMajA4D/d5SvI9rSGoXCa7FQI9B1p1iRqZzetkfpGPY44BP1Y8emHL17rdUJYZEyzN+Q==",
+      "requires": {
+        "@types/jquery": "*",
+        "@types/requirejs": "*"
+      }
+    },
     "@types/selenium-webdriver": {
       "version": "3.0.16",
       "resolved": "https://registry.npmjs.org/@types/selenium-webdriver/-/selenium-webdriver-3.0.16.tgz",
@@ -4582,8 +4595,7 @@
     "@types/sizzle": {
       "version": "2.3.2",
       "resolved": "https://registry.npmjs.org/@types/sizzle/-/sizzle-2.3.2.tgz",
-      "integrity": "sha512-7EJYyKTL7tFR8+gDbB6Wwz/arpGa0Mywk1TJbNzKzHtzbwVmY4HR9WqS5VV7dsBUKQmPNr192jHr/VpBluj/hg==",
-      "dev": true
+      "integrity": "sha512-7EJYyKTL7tFR8+gDbB6Wwz/arpGa0Mywk1TJbNzKzHtzbwVmY4HR9WqS5VV7dsBUKQmPNr192jHr/VpBluj/hg=="
     },
     "@types/source-list-map": {
       "version": "0.1.2",
@@ -4891,6 +4903,11 @@
       "resolved": "https://registry.npmjs.org/ajv-keywords/-/ajv-keywords-3.4.0.tgz",
       "integrity": "sha512-aUjdRFISbuFOl0EIZc+9e4FfZp0bDZgAdOOf30bJmw8VM9v84SHyVyxDfbWxpGYbdZD/9XoKxfHVNmxPkhwyGw==",
       "dev": true
+    },
+    "almond": {
+      "version": "0.3.3",
+      "resolved": "https://registry.npmjs.org/almond/-/almond-0.3.3.tgz",
+      "integrity": "sha1-oOfJWsdiTWQXtElLHmi/9pMWiiA="
     },
     "amdefine": {
       "version": "1.0.1",
@@ -9773,6 +9790,11 @@
       "resolved": "https://registry.npmjs.org/jquery/-/jquery-3.3.1.tgz",
       "integrity": "sha512-Ubldcmxp5np52/ENotGxlLe6aGMvmF4R8S6tZjsP6Knsaxd/xp3Zrh50cG93lR6nPXyUFwzN3ZSOQI0wRJNdGg=="
     },
+    "jquery-mousewheel": {
+      "version": "3.1.13",
+      "resolved": "https://registry.npmjs.org/jquery-mousewheel/-/jquery-mousewheel-3.1.13.tgz",
+      "integrity": "sha1-BvAzXxbjU6aV5yBr9QUDy1I6buU="
+    },
     "js-base64": {
       "version": "2.5.1",
       "resolved": "https://registry.npmjs.org/js-base64/-/js-base64-2.5.1.tgz",
@@ -10723,6 +10745,14 @@
       "resolved": "https://registry.npmjs.org/neo-async/-/neo-async-2.6.0.tgz",
       "integrity": "sha512-MFh0d/Wa7vkKO3Y3LlacqAEeHK0mckVqzDieUKTT+KGxi+zIpeVsFxymkIiRpbpDziHc290Xr9A1O4Om7otoRA==",
       "dev": true
+    },
+    "ng-select2": {
+      "version": "1.0.8",
+      "resolved": "https://registry.npmjs.org/ng-select2/-/ng-select2-1.0.8.tgz",
+      "integrity": "sha512-cMonV4RMKmJGw4MSuTJumLDDaZao3r8slGu53GlrdyOSAEMsrjuHKeWQxMlcBFTAqiSwImugYPulfZSXPmlO2w==",
+      "requires": {
+        "tslib": "^1.9.0"
+      }
     },
     "ng2-cookies": {
       "version": "1.0.12",
@@ -12698,6 +12728,15 @@
       "resolved": "https://registry.npmjs.org/select-hose/-/select-hose-2.0.0.tgz",
       "integrity": "sha1-Yl2GWPhlr0Psliv8N2o3NZpJlMo=",
       "dev": true
+    },
+    "select2": {
+      "version": "4.0.5",
+      "resolved": "https://registry.npmjs.org/select2/-/select2-4.0.5.tgz",
+      "integrity": "sha1-eqxQaSVhmFs007guxV4ib4lg1Ao=",
+      "requires": {
+        "almond": "~0.3.1",
+        "jquery-mousewheel": "~3.1.13"
+      }
     },
     "selenium-webdriver": {
       "version": "3.6.0",
