@@ -1,28 +1,41 @@
-===================
-Dashboard GeoNature
-===================
+Fichiers relatifs à l'installation
+==================================
 
-Module GeoNature permettant d'afficher des graphiques et cartes de synthèse des données présentes dans une instance GeoNature (nombre de données par année, nombre de taxons observés par année, observations par maille, par commune...).
+* ``manifest.tml`` (obligatoire) : Fichier contenant la description du module (nom, version de GeoNature supportée ...)
+* ``install_env.sh`` : Installation des paquets Debian
+* ``install_gn_module.py`` : Installation du module :
 
-Il ne s'agit pas d'un outil d'analyse statistique des données et ne vise donc pas à remplacer des outils comme R ou QGIS.
+  * commandes SQL
+  * extra commandes python
+  * ce fichier doit contenir la méthode suivante : ``gnmodule_install_app(gn_db, gn_app)``
+* ``requirements.txt`` : Liste des paquets Python
+* ``config/conf_schema_toml.py`` : Schéma Marshmallow de spécification des paramètres du module
+* ``config/conf_gn_module.toml.sample`` : Fichier de configuration du module
 
-Installation
-============
 
-* Installez GeoNature (https://github.com/PnX-SI/GeoNature)
-* Téléchargez la dernière version stable du module (``wget https://github.com/PnX-SI/gn_module_dashboard/archive/X.Y.Z.zip``) dans ``/home/myuser/``
-* Dézippez la dans ``/home/myuser/`` (``unzip X.Y.Z.zip``)
-* Créez et adaptez le fichier ``config/settings.ini`` à partir de ``config/settings.ini.sample`` (``cp config/settings.ini.sample config/settings.ini``)
-* Data ?
-* Placez-vous dans le répertoire ``backend`` de GeoNature et lancez les commandes ``source venv/bin/activate`` puis ``geonature install_gn_module <mon_chemin_absolu_vers_le_module> <url_relative_du_module>`` (exemple ``geonature install_gn_module /home/`whoami`/gn_module_dashboard-X.Y.Z /gn_dashboard``)
-* Complétez la configuration du module (``config/conf_gn_module.toml`` à partir des paramètres présents dans ``config/conf_gn_module.toml.example`` dont vous pouvez surcoucher les valeurs par défaut. Puis relancez la mise à jour de la configuration (depuis le répertoire ``geonature/backend`` et une fois dans le venv (``source venv/bin/activate``) : ``geonature update_module_configuration gn_dashboard``)
-* Vous pouvez sortir du venv en lançant la commande ``deactivate``
+Fichiers relatifs au bon fonctionnement du module
+=================================================
 
-Licence
-=======
+Backend
+-------
 
-* OpenSource - GPL-3.0
-* Copyleft 2019 - Parc National des Écrins
+Si votre module comporte des routes, il doit comporter le fichier suivant : ``backend/blueprint.py``
+avec une variable ``blueprint`` qui contient toutes les routes
 
-.. image:: http://geonature.fr/img/logo-pne.jpg
-    :target: http://www.ecrins-parcnational.fr
+::
+
+    blueprint = Blueprint('gn_module_validation', __name__)
+
+
+Frontend
+--------
+
+Le dossier ``frontend`` comprend les élements suivants :
+
+- le dossier ``app`` comprend le code typescript du module
+
+     Il doit inclure le "module Angular racine", celui-ci doit impérativement s'appeler ``gnModule.module.ts`` 
+
+- le dossier ``assets`` avec l'ensemble des médias (images, son).
+    
+- Un fichier ``package.json`` qui décrit l'ensemble des librairies JS nécessaires au module.
