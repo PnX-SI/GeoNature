@@ -46,23 +46,17 @@
 
         <div class="row row-sm">
           <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-0">
-            <!-- TODO pnx-datasets label="{{ 'MetaData.Datasets' | translate }}" [parentFormControl]="releveForm.controls.properties.controls.id_dataset"
-              appId="14" [disabled]=disabled>
-            </pnx-datasets-->
-            <pnx-datasets label="{{ 'MetaData.Datasets' | translate }}" [parentFormControl]="releveForm.controls.id_dataset"
+            <pnx-datasets label="{{ 'MetaData.Datasets' | translate }}" [parentFormControl]="releveForm.get('properties').get('id_dataset')"
               appId="14" [disabled]=disabled>
             </pnx-datasets>
           </div>
           <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
-            <!-- TODO pnx-nomenclature label="{{ 'Releve.ObsTechnique' | translate }}" [parentFormControl]="releveForm.controls.properties.controls.id_nomenclature_obs_technique"
-              codeNomenclatureType="TECHNIQUE_OBS" [disabled]=disabled>
-            </pnx-nomenclature-->
-            <pnx-nomenclature label="{{ 'Releve.ObsTechnique' | translate }}" [parentFormControl]="releveForm.controls.id_nomenclature_obs_technique"
+            <pnx-nomenclature label="{{ 'Releve.ObsTechnique' | translate }}" [parentFormControl]="releveForm.get('properties').get('id_nomenclature_obs_technique')"
               codeNomenclatureType="TECHNIQUE_OBS" [disabled]=disabled>
             </pnx-nomenclature>
           </div>
           <div *ngIf="occtaxConfig.form_fields.group_type" class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm">
-            <pnx-nomenclature label="{{ 'Releve.GroupType' | translate }}" [parentFormControl]="releveForm.controls.properties.controls.id_nomenclature_grp_typ"
+            <pnx-nomenclature label="{{ 'Releve.GroupType' | translate }}" [parentFormControl]="releveForm.get('properties').get('id_nomenclature_grp_typ')"
               codeNomenclatureType="TYP_GRP" [disabled]="disabled">
             </pnx-nomenclature>
           </div>
@@ -108,17 +102,17 @@
             <div class="tab-pane active" id="occurrence" role="tabpanel">
               <div class="row row-sm">
                 <div *ngIf="occtaxConfig.form_fields.observation_status" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-                  <pnx-nomenclature label="{{ 'Taxon.ObservationStatus' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_observation_status"
+                  <pnx-nomenclature label="{{ 'Taxon.ObservationStatus' | translate }}" [parentFormControl]="occurrenceForm.get('id_nomenclature_observation_status')"
                     codeNomenclatureType="STATUT_OBS" [disabled]="disabled">
                   </pnx-nomenclature>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-                  <pnx-nomenclature label="{{ 'Taxon.ObsMethod' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_obs_meth"
+                  <pnx-nomenclature label="{{ 'Taxon.ObsMethod' | translate }}" [parentFormControl]="occurrenceForm.get('id_nomenclature_obs_meth')"
                     codeNomenclatureType="METH_OBS" [disabled]="disabled">
                   </pnx-nomenclature>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-                  <pnx-nomenclature label="{{ 'Taxon.BiologicalCondition' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_condition"
+                  <pnx-nomenclature label="{{ 'Taxon.BiologicalCondition' | translate }}" [parentFormControl]="occurrenceForm.get('id_nomenclature_bio_condition')"
                     codeNomenclatureType="ETA_BIO" [disabled]="disabled">
                   </pnx-nomenclature>
                 </div>
@@ -127,17 +121,17 @@
 
               <div class="row row-sm">
                 <div *ngIf="occtaxConfig.form_fields.determination_method" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-                  <pnx-nomenclature label="{{ 'Taxon.DeterminationMethod' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_determination_method"
+                  <pnx-nomenclature label="{{ 'Taxon.DeterminationMethod' | translate }}" [parentFormControl]="occurrenceForm.get('id_nomenclature_determination_method')"
                     codeNomenclatureType="METH_DETERMIN" [disabled]="disabled">
                   </pnx-nomenclature>
                 </div>
                 <div *ngIf="occtaxConfig.form_fields.bio_status" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-                  <pnx-nomenclature label="{{ 'Taxon.BiologicalStatus' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_status"
+                  <pnx-nomenclature label="{{ 'Taxon.BiologicalStatus' | translate }}" [parentFormControl]="occurrenceForm.get('id_nomenclature_bio_status')"
                     codeNomenclatureType="STATUT_BIO" [disabled]="disabled">
                   </pnx-nomenclature>
                 </div>
                 <div *ngIf="occtaxConfig.form_fields.naturalness" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-                  <pnx-nomenclature label="{{ 'Taxon.Naturalness' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_naturalness"
+                  <pnx-nomenclature label="{{ 'Taxon.Naturalness' | translate }}" [parentFormControl]="occurrenceForm.get('id_nomenclature_naturalness')"
                     codeNomenclatureType="NATURALITE" [disabled]="disabled">
                   </pnx-nomenclature>
                 </div>
@@ -146,21 +140,21 @@
 
               <div class="row row-sm">
                 <div *ngIf="occtaxConfig.form_fields.exist_proof" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-                  <pnx-nomenclature label="{{ 'Taxon.ExistProof' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_exist_proof"
+                  <pnx-nomenclature label="{{ 'Taxon.ExistProof' | translate }}" [parentFormControl]="occurrenceForm.get('id_nomenclature_exist_proof')"
                     codeNomenclatureType="PREUVE_EXIST" [disabled]="disabled">
                   </pnx-nomenclature>
                 </div>
                 <div *ngIf="occtaxConfig.form_fields.digital_proof" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
                   <small> {{ 'Taxon.DigitalProof' | translate }} </small>
                   <div class="input-group">
-                    <input [disableControl]="disabled" class="form-control form-control-sm" [formControl]="occurrenceForm.controls.digital_proof"
+                    <input [disableControl]="disabled" class="form-control form-control-sm" [formControl]="occurrenceForm.get('digital_proof')"
                       type="text">
                   </div>
                 </div>
                 <div *ngIf="occtaxConfig.form_fields.non_digital_proof" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
                   <small> {{ 'Taxon.NonDigitalProof' | translate }} </small>
                   <div class="input-group">
-                    <input [disableControl]="disabled" class="form-control form-control-sm" [formControl]="occurrenceForm.controls.non_digital_proof"
+                    <input [disableControl]="disabled" class="form-control form-control-sm" [formControl]="occurrenceForm.get('non_digital_proof')"
                       type="text">
                   </div>
                 </div>
@@ -168,26 +162,26 @@
 
               <div class="row row-sm">
                 <div *ngIf="occtaxConfig.form_fields.diffusion_level" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-                  <pnx-nomenclature label="{{ 'Taxon.DiffusionLevel' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_diffusion_level"
+                  <pnx-nomenclature label="{{ 'Taxon.DiffusionLevel' | translate }}" [parentFormControl]="occurrenceForm.get('id_nomenclature_diffusion_level')"
                     codeNomenclatureType="NIV_PRECIS" [disabled]="disabled">
                   </pnx-nomenclature>
                 </div>
                 <div *ngIf="occtaxConfig.form_fields.blurring" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-                  <pnx-nomenclature label="{{ 'Taxon.Blurring' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_blurring"
+                  <pnx-nomenclature label="{{ 'Taxon.Blurring' | translate }}" [parentFormControl]="occurrenceForm.get('id_nomenclature_blurring')"
                     codeNomenclatureType="DEE_FLOU" [disabled]="disabled">
                   </pnx-nomenclature>
                 </div>
                 <div *ngIf="occtaxConfig.form_fields.source_status" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-                  <pnx-nomenclature label="{{ 'Taxon.StatusSource' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_source_status"
+                  <pnx-nomenclature label="{{ 'Taxon.StatusSource' | translate }}" [parentFormControl]="occurrenceForm.get('id_nomenclature_source_status')"
                     codeNomenclatureType="STATUT_SOURCE" [disabled]="disabled">
                   </pnx-nomenclature>
                 </div>
               </div>
               <div class="row row-0" id="row-commentaire">
-                <div *ngIf="occtaxConfig.form_fields.comment_releve" class="col-xs-12 col-sm-12 col-md-12 col-lg-6 padding-sm">
+                <div *ngIf="occtaxConfig.form_fields.comment" class="col-xs-12 col-sm-12 col-md-12 col-lg-6 padding-sm">
                   <div class="input-group">
-                    <input [disableControl]="disabled" placeholder="{{ 'Releve.Comment' | translate }}" class="form-control"
-                      [formControl]="occurrenceForm.controls.comment_releve" type="text">
+                    <input [disableControl]="disabled" placeholder="{{ 'Taxon.Comment' | translate }}" class="form-control"
+                      [formControl]="occurrenceForm.get('comment')" type="text">
                   </div>
                 </div>
               </div>
@@ -201,17 +195,17 @@
               <div *ngFor="let counting of selectedOccurrence?.cor_counting_occtax; let index = index">
                 <div class="row row-sm">
                   <div *ngIf="occtaxConfig.form_fields.life_stage" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm col-counting">
-                    <pnx-nomenclature label="{{ 'Counting.LifeStage' | translate }}" [parentFormControl]="countingFormArray.controls[index].controls.id_nomenclature_life_stage"
+                    <pnx-nomenclature label="{{ 'Counting.LifeStage' | translate }}" [parentFormControl]="countingFormArray.controls[index].get('id_nomenclature_life_stage')"
                       codeNomenclatureType="STADE_VIE" [disabled]="disabled">
                     </pnx-nomenclature>
                   </div>
                   <div *ngIf="occtaxConfig.form_fields.sex" class="col-xs-12 col-sm-12 col-md-12 col-lg-3 padding-sm col-counting">
-                    <pnx-nomenclature label="{{ 'Counting.Sex' | translate }}" [parentFormControl]="countingFormArray.controls[index].controls.id_nomenclature_sex"
+                    <pnx-nomenclature label="{{ 'Counting.Sex' | translate }}" [parentFormControl]="countingFormArray.controls[index].get('id_nomenclature_sex')"
                       codeNomenclatureType="SEXE" [disabled]="disabled">
                     </pnx-nomenclature>
                   </div>
                   <div *ngIf="occtaxConfig.form_fields.obj_count" class="col-xs-12 col-sm-12 col-md-12 col-lg-5 padding-sm col-counting">
-                    <pnx-nomenclature label="{{ 'Counting.CountingObject' | translate }}" [parentFormControl]="countingFormArray.controls[index].controls.id_nomenclature_obj_count"
+                    <pnx-nomenclature label="{{ 'Counting.CountingObject' | translate }}" [parentFormControl]="countingFormArray.controls[index].get('id_nomenclature_obj_count')"
                       codeNomenclatureType="OBJ_DENBR" [disabled]="disabled">
                     </pnx-nomenclature>
                   </div>
@@ -251,24 +245,3 @@
     </div>
 
 
-    <ng-template #modalDelete let-d="dismiss" let-c="close">
-
-      <div class="modal-header">
-        <h4 class="modal-title pull-left">Suppression</h4>
-        <button type="button" class="close pull-right" aria-label="Close" (click)="c()">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p>
-          Attention vous vous apprêtez à supprimer un releve qui comporte
-          {{releve?.properties.t_occurrences_occtax.length}} occurrence(s) de taxon(s) et {{nbCounting}}
-          dénombrement(s).
-        </p>
-        <button type="button" (click)="c()" class="btn btn-secondary">Annuler</button>
-
-        <button type="button" (click)="deleteReleve(modalDelete); c()" class="btn btn-danger">Supprimer</button>
-      </div>
-
-
-    </ng-template>
