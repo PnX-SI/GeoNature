@@ -42,6 +42,7 @@ UPDATE gn_meta.t_datasets SET id_nomenclature_source_status = ref_nomenclatures.
 ----------------------------------------------------
 --ROLE DES ACTEURS POUR LES CADRES D'ACQUISITION PNE
 ----------------------------------------------------
+--nommenclature id_type = 109
 --PNE "Contact principal" : Adapter le id_organism ci-dessous
 INSERT INTO gn_meta.cor_acquisition_framework_actor (id_acquisition_framework, id_role, id_organism, id_nomenclature_actor_role)
 SELECT id_acquisition_framework, null AS id_role, 2 as id_organisme, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','1') AS id_nomenclature_actor_role
@@ -54,24 +55,45 @@ FROM gn_meta.t_acquisition_frameworks;
 INSERT INTO gn_meta.cor_acquisition_framework_actor (id_acquisition_framework, id_role, id_organism, id_nomenclature_actor_role)
 SELECT id_acquisition_framework, null AS id_role, 2 as id_organisme, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','8') AS id_nomenclature_actor_role
 FROM gn_meta.t_acquisition_frameworks;
+--PNE : "Producteurs"
+INSERT INTO gn_meta.cor_acquisition_framework_actor (id_acquisition_framework, id_role, id_organism, id_nomenclature_actor_role)
+SELECT id_acquisition_framework, null AS id_role, 2 as id_organisme, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6') AS id_nomenclature_actor_role
+FROM gn_meta.t_acquisition_frameworks
+WHERE id_acquisition_framework IN(1,2,3,4,5,6,7,8,9,10,11,15,104,105,106,108,109);
+--PNE : "Maître d'ouvrage"
+INSERT INTO gn_meta.cor_acquisition_framework_actor (id_acquisition_framework, id_role, id_organism, id_nomenclature_actor_role)
+SELECT id_acquisition_framework, null AS id_role, 2 as id_organisme, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','3') AS id_nomenclature_actor_role
+FROM gn_meta.t_acquisition_frameworks
+WHERE id_acquisition_framework IN(13,18,200);
+--PNE : "Maître d'oeuvre"
+INSERT INTO gn_meta.cor_acquisition_framework_actor (id_acquisition_framework, id_role, id_organism, id_nomenclature_actor_role)
+SELECT id_acquisition_framework, null AS id_role, 2 as id_organisme, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','4') AS id_nomenclature_actor_role
+FROM gn_meta.t_acquisition_frameworks
+WHERE id_acquisition_framework IN(17,9,10,8,3);
 --PNE "Fournisseur du jeu de données"
 INSERT INTO gn_meta.cor_acquisition_framework_actor (id_acquisition_framework, id_role, id_organism, id_nomenclature_actor_role) VALUES
 (107, NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','5'))
-,(14, NULL, 99, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','5'))
-,(16, NULL, 99, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','5'))
-,(12, NULL, 99, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','5'));
+,(107, NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(111, NULL, 101, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','5'))
+,(111, NULL, 101, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+;
+--TODO : ce travail n'a été fait que pour les organismes. Il reste à faire pour les individus.
 
---PNE OBECTIFS SCIENTIFIQUES DES CADRES D'ACQUISITION : id_nomenclature_objectif
+
+-----------------------------------------------------
+--PNE OBECTIFS SCIENTIFIQUES DES CADRES D'ACQUISITION
+-----------------------------------------------------
+-- id_nomenclature_objectif id_type = 108
 --"Inventaire logique espace"
 INSERT INTO gn_meta.cor_acquisition_framework_objectif (id_acquisition_framework, id_nomenclature_objectif)
 SELECT id_acquisition_framework, ref_nomenclatures.get_id_nomenclature('CA_OBJECTIFS','3') AS id_nomenclature_actor_role
 FROM gn_meta.t_acquisition_frameworks
-WHERE id_acquisition_framework IN(1,2,3,9,11,13,14,15,16,104,105,106,107,108,109,110,111,200);
+WHERE id_acquisition_framework IN(1,2,3,9,11,13,14,15,16,17,18,104,105,106,107,108,109,110,111,200);
 --"Inventaire espèce"
 INSERT INTO gn_meta.cor_acquisition_framework_objectif (id_acquisition_framework, id_nomenclature_objectif)
 SELECT id_acquisition_framework, ref_nomenclatures.get_id_nomenclature('CA_OBJECTIFS','1') AS id_nomenclature_actor_role
 FROM gn_meta.t_acquisition_frameworks
-WHERE id_acquisition_framework IN(3,4,5,9,10,105);
+WHERE id_acquisition_framework IN(3,4,5,9,10,19,105);
 --"Evolution temporelle"
 INSERT INTO gn_meta.cor_acquisition_framework_objectif (id_acquisition_framework, id_nomenclature_objectif)
 SELECT id_acquisition_framework, ref_nomenclatures.get_id_nomenclature('CA_OBJECTIFS','5') AS id_nomenclature_actor_role
@@ -81,25 +103,40 @@ WHERE id_acquisition_framework IN(4,5,6,7,8,10,104);
 INSERT INTO gn_meta.cor_acquisition_framework_objectif (id_acquisition_framework, id_nomenclature_objectif)
 SELECT id_acquisition_framework, ref_nomenclatures.get_id_nomenclature('CA_OBJECTIFS','7') AS id_nomenclature_actor_role
 FROM gn_meta.t_acquisition_frameworks
-WHERE id_acquisition_framework IN(12,14,16,107,111);
+WHERE id_acquisition_framework IN(12,14,16,19,107,111);
 
---PNE VOLET SINP : = Terre, mer, paysage ; terre pour tous les CA du PNE
+-----------------------------------------
+--PNE VOLET SINP DES CADRES D'ACQUISITION
+-----------------------------------------
+--Terre, mer, paysage ; terre pour tous les CA du PNE
 DELETE FROM gn_meta.cor_acquisition_framework_voletsinp;
 INSERT INTO gn_meta.cor_acquisition_framework_voletsinp (id_acquisition_framework, id_nomenclature_voletsinp)
 SELECT id_acquisition_framework, ref_nomenclatures.get_id_nomenclature('VOLET_SINP','1') AS id_nomenclature_voletsinp
 FROM gn_meta.t_acquisition_frameworks;
 
---ROLE DES ACTEURS POUR LES JEUX DE DONNEES ; 
+
+-------------------------------------------
+--ROLE DES ACTEURS POUR LES JEUX DE DONNEES
+-------------------------------------------
 --PNE "Contact principal" : Adapter le id_organism ci-dessous
 INSERT INTO gn_meta.cor_dataset_actor (id_dataset, id_role, id_organism, id_nomenclature_actor_role)
 SELECT id_dataset, null AS id_role, 2 as id_organisme, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','1') AS id_nomenclature_actor_role
+FROM gn_meta.t_datasets;
+--PNE "Point de contact base de données de production" : Adapter le id_organism ci-dessous
+INSERT INTO gn_meta.cor_dataset_actor (id_dataset, id_role, id_organism, id_nomenclature_actor_role)
+SELECT id_dataset, null AS id_role, 2 as id_organisme, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','7') AS id_nomenclature_actor_role
+FROM gn_meta.t_datasets;
+--PNE "Point de contact pour les métadonnées" : Adapter le id_organism ci-dessous
+INSERT INTO gn_meta.cor_dataset_actor (id_dataset, id_role, id_organism, id_nomenclature_actor_role)
+SELECT id_dataset, null AS id_role, 2 as id_organisme, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','8') AS id_nomenclature_actor_role
 FROM gn_meta.t_datasets;
 
 --PNE "Producteur du jeu de données = PNE"
 INSERT INTO gn_meta.cor_dataset_actor (id_dataset, id_role, id_organism, id_nomenclature_actor_role)
 SELECT id_dataset, null AS id_role, 2 as id_organisme, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6') AS id_nomenclature_actor_role
 FROM gn_meta.t_datasets
-WHERE id_dataset NOT IN (13,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,107,111);
+WHERE id_dataset IN(1,2,3,4,5,6,7,8,9,10,11,12,14,15,16,17,18,19,20,21,22,59,65,66,76,77,78,79,84,86,88,89,104,105,106,108,109,110,112,200)
+--PNE "autres producteurs"
 INSERT INTO gn_meta.cor_dataset_actor (id_dataset, id_role, id_organism, id_nomenclature_actor_role) VALUES
 (13,507,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
 ,(24,null,1002,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
@@ -132,6 +169,53 @@ INSERT INTO gn_meta.cor_dataset_actor (id_dataset, id_role, id_organism, id_nome
 ,(52,null,2,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
 ,(53,null,2,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
 ,(54,null,110,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(56,1269,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(57,1360,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(58,1352,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(60,1319,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(61,1241,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(62,1352,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(63,1371,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(63,1306,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(64,1269,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(64,1272,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(65,1354,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','4'))
+,(66,null,1003,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','4'))
+,(67,1374,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(67,1374,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','4'))
+,(68,1354,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','4'))
+,(69,1374,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(69,1376,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(69,1374,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','4'))
+,(70,1270,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(71,1270,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(72,1272,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(73,1278,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(75,1272,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(87,1272,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(76,1208,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(77,1296,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','5'))
+,(78,null,1004,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','5'))
+,(79,1168,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(80,1239,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(81,1371,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(82,1204,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(82,1374,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(83,1391,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','5'))
+,(84,1391,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(85,1394,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(85,1386,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(85,1393,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(85,1396,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(85,1395,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(85,1241,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(85,1399,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(85,1397,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(85,1398,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(85,1392,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(86,1208,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(88,1239,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
+,(89,1167,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','4'))
 ,(107,null,1,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
 ,(111,null,101,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','6'))
 ;
@@ -140,7 +224,7 @@ INSERT INTO gn_meta.cor_dataset_actor (id_dataset, id_role, id_organism, id_nome
 INSERT INTO gn_meta.cor_dataset_actor (id_dataset, id_role, id_organism, id_nomenclature_actor_role)
 SELECT id_dataset, null AS id_role, 2 as id_organisme, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','7') AS id_nomenclature_actor_role
 FROM gn_meta.t_datasets
-WHERE id_dataset NOT IN (24,27,40,47,50,54,107,111);
+WHERE id_dataset NOT IN (24,27,40,45,46,47,50,54,107,111);
 INSERT INTO gn_meta.cor_dataset_actor (id_dataset, id_role, id_organism, id_nomenclature_actor_role) VALUES
 (107,null,1,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','7'))
 ,(111,null,101,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','7'))
@@ -150,6 +234,14 @@ INSERT INTO gn_meta.cor_dataset_actor (id_dataset, id_role, id_organism, id_nome
 ,(27,null,110,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','7'))
 ,(47,null,1001,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','7'))
 ,(24,null,1002,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','7'))
+,(45,1270,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','7'))
+,(46,1272,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','7'))
+,(70,1270,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','7'))
+,(71,1270,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','7'))
+,(72,1272,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','7'))
+,(75,1272,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','7'))
+,(87,1272,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','7'))
+,(73,1378,null,ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR','7'))
 ;
 
 --PNE : "Point de contact pour les métadonnées"
@@ -161,3 +253,10 @@ FROM gn_meta.t_datasets;
 INSERT INTO gn_meta.cor_dataset_territory (id_dataset,id_nomenclature_territory, territory_desc)
 SELECT id_dataset, ref_nomenclatures.get_id_nomenclature('TERRITOIRE','METROP') AS id_nomenclature_territory, 'Territoire du parc national des Ecrins et des communes environnantes' AS territory_desc
 FROM gn_meta.t_datasets;
+
+--PNE LIEN ENTRE PROCOLE ET JEU DE DONNEES : TODO, COMPLEXE ATTENTE Campanule ou à faire en interface par les thématiciens???
+--INSERT INTO gn_meta.cor_dataset_protocol (id_dataset, id_protocol) VALUES
+--(1, 140)
+
+--PNE les publications ne sont pas traitées (notion absente dans GN1)
+--gn_meta.sinp_datatype_publications & gn_meta.cor_acquisition_framework_publication

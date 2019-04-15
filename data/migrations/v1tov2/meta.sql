@@ -94,14 +94,3 @@ SELECT DISTINCT
 FROM v1_compat.bib_lots;
 --WHERE id_lot NOT IN (SELECT DISTINCT id_lot FROM v1_compat.vm_syntheseff);
 SELECT setval('gn_meta.t_datasets_id_dataset_seq', (SELECT max(id_dataset)+1 FROM gn_meta.t_datasets), true);
-
-
-
-
-
---PNE LIEN ENTRE PROCOLE ET JEU DE DONNEES : TODO, COMPLEXE ATTENTE Campanule ???
---INSERT INTO gn_meta.cor_dataset_protocol (id_dataset, id_protocol) VALUES
---(1, 140)
-
---PNE les publications ne sont pas traitées (notion absente dans GN1)
---gn_meta.sinp_datatype_publications & gn_meta.cor_acquisition_framework_publication
