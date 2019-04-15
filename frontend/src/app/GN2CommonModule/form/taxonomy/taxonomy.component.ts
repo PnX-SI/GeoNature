@@ -68,14 +68,14 @@ export class TaxonomyComponent implements OnInit {
     this.apiEndPoint =
       this.apiEndPoint || `${AppConfig.API_TAXHUB}/taxref/allnamebylist/${this.idList}`;
 
-    if (this.displayAdvancedFilters) {
+    
       this.parentFormControl.valueChanges
         .filter(value => value !== null && value.length === 0)
         .subscribe(value => {
           this.onDelete.emit();
           this.showResultList = false;
         });
-
+    if (this.displayAdvancedFilters) {
       // get regne and group2
       this._dfService.getRegneAndGroup2Inpn().subscribe(data => {
         this.regnesAndGroup = data;
