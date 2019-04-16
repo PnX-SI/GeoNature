@@ -17,11 +17,11 @@ import { Subscription } from 'rxjs';
 export class GenericFormComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() parentFormControl: FormControl;
   @Input() label: string;
-  @Input() disabled: false;
+  @Input() disabled: boolean = false;
   @Input() debounceTime: number;
-  @Input() multiSelect: false;
-  @Input() searchBar: false;
-  @Input() displayAll: false; // param to display the field 'all' in the list, default at false
+  @Input() multiSelect: boolean = false;
+  @Input() searchBar: boolean = false;
+  @Input() displayAll: boolean = false; // param to display the field 'all' in the list, default at false
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
   public sub: Subscription;

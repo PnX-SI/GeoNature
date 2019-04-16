@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { DataFormService } from '../data-form.service';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'pnx-observers',
@@ -10,7 +11,7 @@ import { Observable } from 'rxjs';
   encapsulation: ViewEncapsulation.None
 })
 export class ObserversComponent implements OnInit {
-  filteredObservers: Array<any>;
+  observersCache: Array<any>;
   @Input() idMenu: number;
   @Input() label: string;
   // Disable the input: default to false
@@ -20,28 +21,37 @@ export class ObserversComponent implements OnInit {
   @Input() bindAllItem = false;
   // search bar default to true
   @Input() searchBar = true;
-  @Output() onChange = new EventEmitter<any>();
-  @Output() onDelete = new EventEmitter<any>();
-  public searchControl = new FormControl();
-  public observers: Array<any>;
-  public selectedObservers = [];
+
+  public observers: Observable<Array<any>>;
+  public select2Value: Observable<string[]>;
 
   constructor(private _dfService: DataFormService) {}
 
   ngOnInit() {
-    this._dfService.getObservers(this.idMenu).subscribe(data => {
-      this.observers = data;
-      this.filteredObservers = data;
-    });
+    this.observers = this._dfService
+                          .getObservers(this.idMenu)
+                          .pipe(
+                            map(data => {
+                              this.observersCache = data;
+                              return data;
+                            })
+                          );
+    this.select2Value = this.parentFormControl
+                            .valueChanges
+                            .pipe(
+                              map(
+                                (res: Array<any>) => {
+                                  return res.map(val => val['id_role'].toString())
+                              })
+                            ); 
   }
 
-  filterObservers(event) {
-    if (event !== null) {
-      this.filteredObservers = this.observers.filter(obs => {
-        return obs.nom_complet.toLowerCase().indexOf(event.toLowerCase()) === 0;
-      });
-    } else {
-      this.filteredObservers = this.observers;
-    }
+  /**
+  *  permet de convertir le tableau de valeur renvoyé par le select2 en observaters Object
+  **/
+  onChange(value) {
+    this.parentFormControl.setValue(
+      this.observersCache.filter(obs => value.includes(obs.id_role.toString()))
+    );
   }
 }

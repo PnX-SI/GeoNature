@@ -24,7 +24,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit {
   @Input() idAcquisitionFramework: number;
   @Input() bindAllItem: false;
   @Input() displayOnlyActive = true;
-  public disabledControl: boolean = false;
+
   constructor(
     private _dfs: DataFormService,
     private _commonService: CommonService,

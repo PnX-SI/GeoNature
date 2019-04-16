@@ -1,4 +1,11 @@
-<pnx-multiselect [values]="filteredObservers" [parentFormControl]="parentFormControl" [keyLabel]="'nom_complet'"
-  keyValue="id_role" [label]="label" debounceTime="500" (onSearch)="filterObservers($event)" [disabled]="disabled"
-  [bindAllItem]="bindAllItem" [searchBar]="searchBar">
-</pnx-multiselect>
+<pnx-select2 
+  [values]="observers" 
+  [keyLabel]="'nom_complet'" 
+  [keyValue]="'id_role'" 
+  [label]="label"
+  [placeholder]="'Observateur(s)'"
+  [multiple]="true"
+  [select2Val]="select2Value"
+  [disabledSelect2]="disabled"
+  (onChange)="onChange($event)">
+</pnx-select2>

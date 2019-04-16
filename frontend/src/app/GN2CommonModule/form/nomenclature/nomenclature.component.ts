@@ -7,6 +7,8 @@ import {
   SimpleChanges,
   ViewEncapsulation
 } from '@angular/core';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { DataFormService } from '../data-form.service';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
@@ -20,7 +22,7 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
 })
 export class NomenclatureComponent extends GenericFormComponent
   implements OnInit, OnChanges, OnDestroy {
-  public labels: Array<any>;
+  public labels: Observable<Array<any>>;
   public labelLang: string;
   public definitionLang: string;
   public subscription: Subscription;
@@ -28,6 +30,7 @@ export class NomenclatureComponent extends GenericFormComponent
   public currentCdNomenclature = 'null';
   public currentIdNomenclature: number;
   public savedLabels;
+  public reloadData: BehaviorSubject<boolean> = new BehaviorSubject(false);
   @Input() codeNomenclatureType: string;
   @Input() regne: string;
   @Input() group2Inpn: string;
@@ -53,24 +56,28 @@ export class NomenclatureComponent extends GenericFormComponent
     this.valueSubscription = this.parentFormControl.valueChanges.subscribe(id => {
       this.currentIdNomenclature = id;
       const self = this;
-      if (this.labels) {
-        this.labels.forEach(label => {
-          if (this.currentIdNomenclature === label.id_nomenclature) {
-            self.currentCdNomenclature = label.cd_nomenclature;
+      this.labels.subscribe(
+        labels => {
+          if (labels) {
+            labels.forEach(label => {
+              if (this.currentIdNomenclature === label.id_nomenclature) {
+                self.currentCdNomenclature = label.cd_nomenclature;
+              }
+            })
           }
-        });
-      }
+        }
+      );
     });
   }
 
   getCdNomenclature() {
     let cdNomenclature;
     if (this.labels) {
-      this.labels.forEach(label => {
+/*      this.labels.forEach(label => {
         if (this.currentIdNomenclature === label.id_nomenclature) {
           cdNomenclature = label.cd_nomenclature;
         }
-      });
+      });*/
       return cdNomenclature;
     }
   }
@@ -79,6 +86,7 @@ export class NomenclatureComponent extends GenericFormComponent
     // if change regne => change groupe2inpn also
     if (changes.regne !== undefined && !changes.regne.firstChange) {
       this.initLabels();
+      this.reloadData.next(true);
     }
     // if only change groupe2inpn
     if (
@@ -87,17 +95,17 @@ export class NomenclatureComponent extends GenericFormComponent
       !changes.group2Inpn.firstChange
     ) {
       this.initLabels();
+      this.reloadData.next(true);
     }
   }
 
   initLabels() {
     const filters = { orderby: 'label_default' };
-    this._dfService
-      .getNomenclature(this.codeNomenclatureType, this.regne, this.group2Inpn, filters)
-      .subscribe(data => {
-        this.labels = data.values;
-        this.savedLabels = data.values;
-      });
+    this.labels = this._dfService
+                      .getNomenclature(this.codeNomenclatureType, this.regne, this.group2Inpn, filters)
+                      .pipe(
+                        map(data => data.values)
+                      );
   }
 
   ngOnDestroy() {

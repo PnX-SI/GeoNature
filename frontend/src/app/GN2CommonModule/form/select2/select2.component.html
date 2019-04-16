@@ -1,7 +1,8 @@
 <small> {{label }} </small>
 <ng-select2 [data]="select2Data"
             [options]="options"
-            [width]="500"
+            [disabled]="disabledSelect2"
             [placeholder]="placeholder"
-            [formControl]="parentFormControl">
+            [formControl]="parentFormControl"
+            (valueChanged)="onSelect($event.value)">
 </ng-select2>

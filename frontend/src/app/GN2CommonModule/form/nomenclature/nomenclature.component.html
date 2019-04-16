@@ -1,17 +1,11 @@
-<div *ngIf="multiSelect; else elseBlock">
-  <pnx-multiselect [values]="labels" [parentFormControl]="parentFormControl" keyLabel="label_default" [keyValue]="keyValue"
-    [label]="label" debounceTime="500" [searchBar]="searchBar" [disabled]="disabled" (onSearch)="filterItems($event)"
-    [bindAllItem]="bindAllItem">
-  </pnx-multiselect>
-</div>
-
-<ng-template #elseBlock>
-
-  <small> {{label}} </small>
-  <div class="input-group">
-    <select class="form-control form-control-sm" [disableControl]="disabled" [formControl]="parentFormControl">
-      <option *ngFor="let label of labels" [ngValue]="label[keyValue]" [title]="label[definitionLang]">
-        {{label[labelLang]}} </option>
-    </select>
-  </div>
-</ng-template>
+<pnx-select2 
+  [values]="labels" 
+  [keyLabel]="labelLang" 
+  [keyValue]="keyValue"
+  [label]="label"
+  [placeholder]="label"
+  [multiple]="multiSelect"
+  [reloadData]="reloadData"
+  [parentFormControl]="parentFormControl" 
+  [disabledSelect2]="disabled">
+</pnx-select2>
