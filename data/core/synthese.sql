@@ -80,63 +80,58 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-CREATE OR REPLACE FUNCTION fct_trig_insert_in_cor_area_synthese()
-  RETURNS trigger AS
-  $BODY$
+
+CREATE OR REPLACE FUNCTION gn_synthese.color_taxon(cd_nom integer, maxdateobs timestamp) RETURNS text
+    LANGUAGE plpgsql
+    AS $$
+  --fonction permettant de renvoyer la couleur d'un taxon à partir de la dernière date d'observation 
   DECLARE
-  id_area_loop integer;
-  geom_change boolean;
+  color text;
   BEGIN
-  geom_change = false;
-  IF(TG_OP = 'UPDATE') THEN
-	SELECT INTO geom_change ST_EQUALS(OLD.geom_local, NEW.geom_local);
-  END IF;
+	IF (date_part('day', (now() - maxdateobs))) < 365  THEN color = 'gray';
+	ELSE color = 'red';
+	END IF;
 
-  IF (geom_change) THEN
-	DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = NEW.id_synthese;
-  END IF;
-
-  -- intersection avec toutes les areas et écriture dans cor_area_synthese
-    IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NOT geom_change )) THEN
-      INSERT INTO gn_synthese.cor_area_synthese (id_synthese, id_area)
-      SELECT s.id_synthese, a.id_area
-      FROM ref_geo.l_areas a
-      JOIN gn_synthese.synthese s ON ST_INTERSECTS(s.the_geom_local, a.geom)
-      WHERE s.id_synthese = NEW.id_synthese;
-
-    END IF;
-  RETURN NEW;
+	return color;
   END;
-  $BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
+$$;
 
-CREATE OR REPLACE FUNCTION fct_tri_maj_observers_txt()
-  RETURNS trigger AS
-$BODY$
-DECLARE
-  theobservers text;
-  theidsynthese integer;
-BEGIN
-  IF (TG_OP = 'UPDATE') OR (TG_OP = 'INSERT') THEN
-    theidsynthese = NEW.id_synthese; 
-  END IF;
-  IF (TG_OP = 'DELETE') THEN
-    theidsynthese = OLD.id_synthese;
-  END IF;
-  --Construire le texte pour le champ observers de la synthese
-  SELECT INTO theobservers array_to_string(array_agg(r.nom_role || ' ' || r.prenom_role), ', ')
-  FROM utilisateurs.t_roles r
-  WHERE r.id_role IN(SELECT id_role FROM gn_synthese.cor_observer_synthese WHERE id_synthese = theidsynthese);
-  --mise à jour du champ observers dans la table synthese
-  UPDATE gn_synthese.synthese 
-  SET observers = theobservers
-  WHERE id_synthese =  theidsynthese;
-RETURN NULL;
+
+CREATE OR REPLACE FUNCTION gn_synthese.calcul_cor_area_taxon(my_id_area integer, my_cd_nom integer) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+  -- on supprime cor_area_taxon et recree à chaque fois
+  -- cela evite de regarder dans cor_area_taxon s'il y a deja une ligne, de faire un + 1  ou -1 sur nb_obs etc...
+  DELETE FROM gn_synthese.cor_area_taxon WHERE cd_nom = my_cd_nom AND id_area = my_id_area;
+-- puis on réinsert
+-- on récupère la dernière date de l'obs dans l'aire concernée depuis cor_area_synthese et synthese
+	INSERT INTO gn_synthese.cor_area_taxon (id_area, cd_nom, last_date, color, nb_obs)
+	SELECT id_area, s.cd_nom,  max(s.date_min) AS last_date, gn_synthese.color_taxon(s.cd_nom, max(s.date_min)) AS color, count(s.id_synthese) AS nb_obs
+	FROM gn_synthese.cor_area_synthese cor
+  JOIN gn_synthese.synthese s ON s.id_synthese = cor.id_synthese
+	WHERE s.cd_nom = my_cd_nom
+	AND id_area = my_id_area
+  GROUP BY id_area, s.cd_nom
+  ;
+  END;
+$$;
+
+CREATE OR REPLACE FUNCTION gn_synthese.delete_and_insert_area_taxon(my_cd_nom integer, my_id_area integer[]) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+BEGIN 
+  -- supprime dans cor_area_taxon
+  DELETE FROM gn_synthese.cor_area_taxon WHERE cd_nom = my_cd_nom AND id_area = ANY (my_id_area);
+  -- réinsertion et calcul
+  INSERT INTO gn_synthese.cor_area_taxon (cd_nom, nb_obs, id_area, last_date, color)
+  SELECT s.cd_nom, count(s.id_synthese), cor.id_area,  max(s.date_min), gn_synthese.color_taxon(s.cd_nom, max(s.date_min))  
+  FROM gn_synthese.cor_area_synthese cor
+  JOIN gn_synthese.synthese s ON s.id_synthese = cor.id_synthese
+  WHERE id_area = ANY (my_id_area) AND s.cd_nom = my_cd_nom
+  GROUP BY cor.id_area, s.cd_nom;
 END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
+$$;
 
 ------------------------
 --TABLES AND SEQUENCES--
@@ -236,7 +231,8 @@ ALTER TABLE ONLY synthese ALTER COLUMN id_synthese SET DEFAULT nextval('synthese
 
 CREATE TABLE cor_area_synthese (
     id_synthese integer,
-    id_area integer
+    id_area integer,
+    cd_nom integer
 );
 
 CREATE TABLE cor_observer_synthese
@@ -251,6 +247,14 @@ CREATE TABLE defaults_nomenclatures_value (
     regne character varying(20) NOT NULL DEFAULT '0',
     group2_inpn character varying(255) NOT NULL DEFAULT '0',
     id_nomenclature integer NOT NULL
+);
+
+CREATE TABLE gn_synthese.cor_area_taxon (
+  cd_nom integer NOT NULL,
+  id_area integer NOT NULL, 
+  nb_obs integer NOT NULL, 
+  last_date timestamp without time zone NOT NULL, 
+  color character varying(20) NOT NULL
 );
 
 CREATE TABLE gn_synthese.taxons_synthese_autocomplete AS
@@ -304,6 +308,8 @@ ALTER TABLE ONLY cor_observer_synthese ADD CONSTRAINT pk_cor_observer_synthese P
 
 ALTER TABLE ONLY taxons_synthese_autocomplete ADD CONSTRAINT pk_taxons_synthese_autocomplete PRIMARY KEY (cd_nom, search_name);
 
+ALTER TABLE cor_area_taxon
+  ADD CONSTRAINT pk_cor_area_taxon PRIMARY KEY (id_area, cd_nom);
 
 
 ---------------
@@ -383,7 +389,10 @@ ALTER TABLE ONLY synthese
 
 
 ALTER TABLE ONLY cor_area_synthese
-    ADD CONSTRAINT fk_cor_area_synthese_id_synthese FOREIGN KEY (id_synthese) REFERENCES synthese(id_synthese) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT fk_cor_area_synthese_id_synthese FOREIGN KEY (id_synthese) REFERENCES synthese(id_synthese) ON UPDATE CASCADE ON DELETE NO ACTION;
+
+ALTER TABLE ONLY cor_area_synthese
+    ADD CONSTRAINT fk_cor_area_synthese_cd_nom FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY cor_area_synthese
     ADD CONSTRAINT fk_cor_area_synthese_id_area FOREIGN KEY (id_area) REFERENCES ref_geo.l_areas(id_area) ON UPDATE CASCADE;
@@ -402,6 +411,15 @@ ALTER TABLE ONLY cor_observer_synthese
 
 ALTER TABLE ONLY taxons_synthese_autocomplete
     ADD CONSTRAINT fk_taxons_synthese_autocomplete FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
+
+ALTER TABLE cor_area_taxon
+  ADD CONSTRAINT fk_cor_area_taxon_cd_nom FOREIGN KEY (cd_nom)
+      REFERENCES taxonomie.taxref (cd_nom) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE cor_area_taxon
+  ADD CONSTRAINT fk_cor_area_taxon_id_area FOREIGN KEY (id_area)
+      REFERENCES ref_geo.l_areas (id_area) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE NO ACTION;
 
 --------------
 --CONSTRAINS--
@@ -597,6 +615,34 @@ $BODY$
 ----------------------
 --FUNCTIONS TRIGGERS--
 ----------------------
+
+CREATE OR REPLACE FUNCTION fct_tri_maj_observers_txt()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+  theobservers text;
+  theidsynthese integer;
+BEGIN
+  IF (TG_OP = 'UPDATE') OR (TG_OP = 'INSERT') THEN
+    theidsynthese = NEW.id_synthese; 
+  END IF;
+  IF (TG_OP = 'DELETE') THEN
+    theidsynthese = OLD.id_synthese;
+  END IF;
+  --Construire le texte pour le champ observers de la synthese
+  SELECT INTO theobservers array_to_string(array_agg(r.nom_role || ' ' || r.prenom_role), ', ')
+  FROM utilisateurs.t_roles r
+  WHERE r.id_role IN(SELECT id_role FROM gn_synthese.cor_observer_synthese WHERE id_synthese = theidsynthese);
+  --mise à jour du champ observers dans la table synthese
+  UPDATE gn_synthese.synthese 
+  SET observers = theobservers
+  WHERE id_synthese =  theidsynthese;
+RETURN NULL;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
 CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese()
   RETURNS trigger AS
 $BODY$
@@ -616,8 +662,9 @@ $BODY$
   -- intersection avec toutes les areas et écriture dans cor_area_synthese
     IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND geom_change )) THEN
       INSERT INTO gn_synthese.cor_area_synthese SELECT
-	      s.id_synthese,
-        a.id_area
+	      s.id_synthese AS id_synthese,
+        a.id_area AS id_area,
+        s.cd_nom AS cd_nom
         FROM ref_geo.l_areas a
         JOIN gn_synthese.synthese s ON ST_INTERSECTS(s.the_geom_local, a.geom)
         WHERE s.id_synthese = NEW.id_synthese;
@@ -665,6 +712,86 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+
+-- trigger insertion ou update sur cor_area_syntese - déclenché après insert ou update sur cor_area_synthese
+CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_maj_cor_unite_taxon() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE the_cd_nom integer;
+BEGIN
+    SELECT cd_nom INTO the_cd_nom FROM gn_synthese.synthese WHERE id_synthese = NEW.id_synthese;
+  -- on supprime cor_area_taxon et recree à chaque fois
+    -- cela evite de regarder dans cor_area_taxon s'il y a deja une ligne, de faire un + 1  ou -1 sur nb_obs etc...
+    IF (TG_OP = 'INSERT') THEN
+      DELETE FROM gn_synthese.cor_area_taxon WHERE cd_nom = the_cd_nom AND id_area IN (NEW.id_area);
+    ELSE
+      DELETE FROM gn_synthese.cor_area_taxon WHERE cd_nom = the_cd_nom AND id_area IN (NEW.id_area, OLD.id_area);
+    END IF;
+    -- puis on réinsert
+    -- on récupère la dernière date de l'obs dans l'aire concernée depuis cor_area_synthese et synthese
+    INSERT INTO gn_synthese.cor_area_taxon (id_area, cd_nom, last_date, color, nb_obs)
+    SELECT id_area, s.cd_nom,  max(s.date_min) AS last_date, gn_synthese.color_taxon(s.cd_nom, max(s.date_min)) AS color, count(s.id_synthese) AS nb_obs
+    FROM gn_synthese.cor_area_synthese cor
+    JOIN gn_synthese.synthese s ON s.id_synthese = cor.id_synthese
+    WHERE s.cd_nom = the_cd_nom AND id_area = NEW.id_area
+    GROUP BY id_area, s.cd_nom;
+    RETURN NULL;
+END;
+$$;
+
+
+-- trigger de suppression depuis la synthese
+-- suppression dans cor_area_taxon
+-- recalcule des aires
+-- suppression dans cor_area_synthese
+-- déclenché en BEFORE DELETE
+CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_manage_area_synth_and_taxon() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    the_id_areas int[];
+BEGIN 
+   -- on récupère tous les aires intersectées par l'id_synthese concerné
+    SELECT array_agg(id_area) INTO the_id_areas
+    FROM gn_synthese.cor_area_synthese
+    WHERE id_synthese = OLD.id_synthese;
+    -- DELETE AND INSERT sur cor_area_taxon: evite de faire un count sur nb_obs
+    DELETE FROM gn_synthese.cor_area_taxon WHERE cd_nom = OLD.cd_nom AND id_area = ANY (the_id_areas);
+    -- on réinsert dans cor_area_synthese en recalculant les max, nb_obs et couleur pour chaque aire
+    INSERT INTO gn_synthese.cor_area_taxon (cd_nom, nb_obs, id_area, last_date, color)
+    SELECT s.cd_nom, count(s.id_synthese), cor.id_area,  max(s.date_min), gn_synthese.color_taxon(s.cd_nom, max(s.date_min))  
+    FROM gn_synthese.cor_area_synthese cor
+    JOIN gn_synthese.synthese s ON s.id_synthese = cor.id_synthese
+    -- on ne prend pas l'OLD.synthese car c'est un trigger BEFORE DELETE
+    WHERE id_area = ANY (the_id_areas) AND s.cd_nom = OLD.cd_nom AND s.id_synthese != OLD.id_synthese
+    GROUP BY cor.id_area, s.cd_nom;
+    -- suppression dans cor_area_synthese si tg_op = DELETE
+    DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = OLD.id_synthese;
+    RETURN OLD;
+END;
+$$;
+
+-- trigger update sur le cd_nom dans la synthese vers cor_area_taxon
+CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_update_cd_nom() RETURNS trigger
+    LANGUAGE plpgsql
+  AS $$
+DECLARE
+    the_id_areas int[];
+BEGIN 
+   -- on récupère tous les aires intersectées par l'id_synthese concerné
+    SELECT array_agg(id_area) INTO the_id_areas
+    FROM gn_synthese.cor_area_synthese
+    WHERE id_synthese = OLD.id_synthese;
+
+    -- recalcul pour l'ancien taxon
+    PERFORM(gn_synthese.delete_and_insert_area_taxon(OLD.cd_nom, the_id_areas));
+    -- recalcul pour le nouveau taxon
+    PERFORM(gn_synthese.delete_and_insert_area_taxon(NEW.cd_nom, the_id_areas));
+    
+  RETURN OLD;
+END;
+$$;
+
 
 ---------
 --VIEWS--
@@ -975,11 +1102,10 @@ CREATE TRIGGER tri_meta_dates_t_sources
   EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
 CREATE TRIGGER trg_maj_synthese_observers_txt
-AFTER INSERT OR UPDATE OR DELETE
-ON cor_observer_synthese
-FOR EACH ROW
-EXECUTE PROCEDURE gn_synthese.fct_tri_maj_observers_txt();
-
+  AFTER INSERT OR UPDATE OR DELETE
+  ON cor_observer_synthese
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_synthese.fct_tri_maj_observers_txt();
 
 -- A RAJOUTER QUAND LA FONCTION TRIGGER SERA FONCTIONELLE
 -- CREATE TRIGGER tri_refresh_vm_min_max_for_taxons
@@ -999,6 +1125,27 @@ CREATE TRIGGER trg_refresh_taxons_forautocomplete
   ON gn_synthese.synthese
   FOR EACH ROW
   EXECUTE PROCEDURE gn_synthese.fct_trg_refresh_taxons_forautocomplete();
+
+-- trigger insertion ou update sur cor_area_syntese - déclenché après insert ou update sur cor_area_synthese
+CREATE TRIGGER tri_maj_cor_area_taxon 
+AFTER INSERT OR UPDATE 
+ON gn_synthese.cor_area_synthese 
+FOR EACH ROW 
+EXECUTE PROCEDURE gn_synthese.fct_tri_maj_cor_unite_taxon();
+
+-- trigger suppression dans la synthese
+CREATE TRIGGER tri_del_area_synt_maj_corarea_tax
+  BEFORE DELETE
+  ON gn_synthese.synthese
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_synthese.fct_tri_manage_area_synth_and_taxon();
+
+-- trigger update cd_nom dans la synthese
+CREATE TRIGGER tri_update_cor_area_taxon_update_cd_nom
+  AFTER UPDATE OF cd_nom
+  ON gn_synthese.synthese
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_synthese.fct_tri_update_cd_nom();
 
 --------
 --DATA--
