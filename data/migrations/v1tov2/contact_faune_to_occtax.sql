@@ -201,8 +201,6 @@ ai AS count_max
 FROM v1_compat.vm_t_releves_cf cf
 WHERE ai > 0;
 
-
-
 -- sexe et age indeterminé
 INSERT INTO pr_occtax.cor_counting_occtax(
             unique_id_sinp_occtax, 
@@ -273,6 +271,7 @@ jeune AS count_max
 FROM v1_compat.vm_t_releves_cf cf
 WHERE jeune > 0;
 
+-- yearling
 INSERT INTO pr_occtax.cor_counting_occtax(
             unique_id_sinp_occtax, 
             id_occurrence_occtax, 
@@ -307,6 +306,8 @@ uuid_generate_v4() AS unique_id_cor_role_releve,
 id_cf AS id_releve_occtax,
 id_role AS id_role
 FROM v1_compat.vm_cor_role_fiche_cf;
+
+--TODO Déplacer cette partie pour ne la jouer qu'une fois les 3 schéma cf, inv et cflore importés
 --correspondance observateurs en synthese, jouer l'action à la place du tri_insert_synthese_cor_role_releves_occtax
 INSERT INTO gn_synthese.cor_observer_synthese(id_synthese, id_role) 
 SELECT s.id_synthese, cro.id_role 
@@ -335,6 +336,5 @@ ALTER TABLE pr_occtax.cor_role_releves_occtax ENABLE TRIGGER tri_log_changes_cor
 ALTER TABLE pr_occtax.cor_role_releves_occtax ENABLE TRIGGER tri_insert_synthese_cor_role_releves_occtax;
 ALTER TABLE gn_synthese.cor_observer_synthese ENABLE TRIGGER trg_maj_synthese_observers_txt;
 
-
-
+-- TODO Gérer les id_datasets PNE dans ce script non générique
 -- TODO Données sans dénombrement (af, am etc = 0)
