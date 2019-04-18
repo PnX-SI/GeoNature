@@ -77,11 +77,9 @@ SELECT  max(id_releve_occtax) AS max_id
  FROM pr_occtax.t_releves_occtax
 )
 SELECT 
-temp.max_id + id_cflore AS id_inv,
+temp.max_id + id_inv AS id_inv,
 id_role
 FROM v1_compat.cor_role_fiche_inv, temp;
-
-
 
 CREATE TABLE v1_compat.cor_critere_contactinv_v1_to_v2 (
 	pk_source integer,
