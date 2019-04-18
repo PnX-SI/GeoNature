@@ -39,7 +39,14 @@ then
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f meta.sql  &>> ../../../var/log/migratetov2.log
 fi
 
-#schema gn_meta
+# ref_geo
+if $import_ref_geo
+then
+    echo "Get meta synthese content from geontauredb1"
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f ref_geo.sql  &>> ../../../var/log/migratetov2.log
+fi
+
+#schema gn_synthese
 if $import_synthese
 then
     echo "Get meta synthese content from geontauredb1"
