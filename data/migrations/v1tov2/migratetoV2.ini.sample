@@ -16,3 +16,11 @@ import_taxonomie=true
 import_metadata=true
 #import "synthese" schema content
 import_synthese=true
+#import "layers" schema content to ref_geo
+import_ref_geo=true
+#import "contactfaune" schema content
+import_contactfaune=true
+#import "contactflore" schema content
+import_contactflore=true
+#import "contactinv" schema content
+import_contactinv=true

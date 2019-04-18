@@ -245,3 +245,24 @@
     </div>
 
 
+    <ng-template #modalDelete let-d="dismiss" let-c="close">
+
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">Suppression</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="c()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Attention vous vous apprêtez à supprimer un releve qui comporte
+          {{releve?.properties.t_occurrences_occtax.length}} occurrence(s) de taxon(s) et {{nbCounting}}
+          dénombrement(s).
+        </p>
+        <button type="button" (click)="c()" class="btn btn-secondary">Annuler</button>
+
+        <button type="button" (click)="deleteReleve(modalDelete); c()" class="btn btn-danger">Supprimer</button>
+      </div>
+
+
+    </ng-template>
