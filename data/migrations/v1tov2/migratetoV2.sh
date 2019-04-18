@@ -20,7 +20,7 @@ echo "Create v1_compat schema and architecture"
 #schema utilisateurs
 if $import_users
 then
-    echo "Get utilisateurs schema content from geontauredb1"
+    echo "Get utilisateurs schema content from geonaturedb1"
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f users.sql  &>> ../../../var/log/migratetov2.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f permissions.sql  &>> ../../../var/log/migratetov2.log
 fi
@@ -28,24 +28,51 @@ fi
 #schema taxonomie
 if $import_taxonomie
 then
-    echo "Get taxonomie schema content from geontauredb1"
+    echo "Get taxonomie schema content from geonaturedb1"
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f taxonomie.sql  &>> ../../../var/log/migratetov2.log
 fi
 
 #schema gn_meta
 if $import_metadata
 then
-    echo "Get meta schema content from geontauredb1"
+    echo "Get meta schema content from geonaturedb1"
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f meta.sql  &>> ../../../var/log/migratetov2.log
 fi
 
-#schema gn_meta
-if $import_synthese
+# ref_geo
+if $import_ref_geo
 then
     echo "Get meta synthese content from geontauredb1"
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f synthese.sql  &>> ../../../var/log/migratetov2.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f ref_geo.sql  &>> ../../../var/log/migratetov2.log
 fi
 
+#schema pr_occtax
+if $import_contactfaune
+then
+    echo "Get contactfaune content from geonaturedb1"
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f contact_faune_to_occtax.sql  &>> ../../../var/log/migratetov2.log
+fi
+
+#schema pr_occtax
+if $import_contactinv
+then
+    echo "Get contactinv content from geonaturedb1"
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f contact_inv_to_occtax.sql  &>> ../../../var/log/migratetov2.log
+fi
+
+#schema pr_occtax
+if $import_contactflore
+then
+    echo "Get contactflore content from geonaturedb1"
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f contact_flore_to_occtax.sql  &>> ../../../var/log/migratetov2.log
+fi
+
+#schema gn_synthese
+if $import_synthese
+then
+    echo "Get synthese content from geonaturedb1"
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f synthese.sql  &>> ../../../var/log/migratetov2.log
+fi
 
 # echo "Maintenant tu dois t'inspirer du script migratetov2.sql qui a été écrit pour le PNE."
 # echo "ce script établi des correspondances bib_programmes <-> t_acquisition_frameworks, bib_lots <-> t_datasets, bib_criteres_synthese et nomenclatures."
