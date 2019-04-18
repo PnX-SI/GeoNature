@@ -13,7 +13,7 @@ CREATE TABLE gn_synchronomade.erreurs_flora
   id serial NOT NULL,
   json text,
   date_import date,
-  CONSTRAINT erreurs_occtax_pkey PRIMARY KEY (id)
+  CONSTRAINT erreurs_florapkey PRIMARY KEY (id)
 )
 
 
