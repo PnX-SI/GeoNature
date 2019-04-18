@@ -39,6 +39,7 @@ then
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f meta.sql  &>> ../../../var/log/migratetov2.log
 fi
 
+<<<<<<< HEAD
 #schema pr_occtax
 if $import_contactfaune
 then
@@ -61,6 +62,15 @@ then
 fi
 
 
+=======
+# ref_geo
+if $import_ref_geo
+then
+    echo "Get meta synthese content from geontauredb1"
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f ref_geo.sql  &>> ../../../var/log/migratetov2.log
+fi
+
+>>>>>>> 66b49cc5c84ccaf2ad34053577c828b95b4d3557
 #schema gn_synthese
 if $import_synthese
 then

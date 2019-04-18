@@ -57,8 +57,8 @@ CREATE TABLE gn_synthese.cor_area_taxon (
 INSERT INTO gn_synthese.cor_area_taxon (cd_nom, id_area, nb_obs, last_date, color)
    SELECT
    DISTINCT(s.cd_nom) AS cd_nom,
-   count(s.id_synthese) AS nb_obs, 
    cor.id_area AS id_area, 
+   count(s.id_synthese) AS nb_obs, 
    max(s.date_min) AS last_date, 
    gn_synthese.color_taxon(s.cd_nom, max(s.date_min)) AS color
    FROM gn_synthese.cor_area_synthese cor
