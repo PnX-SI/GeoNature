@@ -1,9 +1,9 @@
-import { Component, Input, OnInit, ViewChild, OnChanges } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, OnChanges, Injectable } from '@angular/core';
 import { MapService } from './map.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Map, LatLngExpression } from 'leaflet';
 import { AppConfig } from '@geonature_config/app.config';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import * as L from 'leaflet';
 import { CommonService } from '../service/common.service';
 
@@ -12,10 +12,38 @@ import { FormControl } from '@angular/forms';
 import { Observable ,  of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, tap, switchMap, map } from 'rxjs/operators';
 
+
+const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search';
+const PARAMS = new HttpParams({
+  fromObject: {
+    format: 'json',
+    limit: '10',
+    polygon_geojson: '1'
+  }
+});
+
+@Injectable()
+export class NominatimService {
+  constructor(private http: HttpClient) {}
+
+  search(term: string) {
+    if (term === '') {
+      return of([]);
+    }
+
+    return this.http
+      .get(NOMINATIM_URL, {params: PARAMS.set('q', term)}).pipe(
+        map((res: Response) => res)
+      );
+  }
+}
+
+
 @Component({
   selector: 'pnx-map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss']
+  styleUrls: ['./map.component.scss'],
+  providers: [NominatimService]
 })
 export class MapComponent implements OnInit {
   @Input() baseMaps: any;
@@ -31,7 +59,8 @@ export class MapComponent implements OnInit {
   constructor(
     private mapService: MapService,
     private _commonService: CommonService,
-    private _http: HttpClient
+    private _http: HttpClient,
+    private _nominatim: NominatimService
   ) {
     this.searchLocation = '';
   }
@@ -40,35 +69,21 @@ export class MapComponent implements OnInit {
     this.initialize();
   }
 
-  searchNominatim(search) {
-    return this._http
-      .get(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
-          search
-        )}&format=json&limit=10&polygon_geojson=1`,
-        { withCredentials: false }
-      )
-      .pipe(
-        map(res => res) //plus besoin de retourner res.json() depuis angular5
-       );
-  }
-
   search = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      tap(() => (this.searching = true)),
+      tap(() => this.searching = true),
       switchMap(term =>
-        this.searchNominatim(term).pipe(
-          tap(() => (this.searchFailed = false)),
+        this._nominatim.search(term).pipe(
+          tap(() => this.searchFailed = false),
           catchError(() => {
             this._commonService.translateToaster('Warning', 'Map.LocationError');
-
+            this.searchFailed = true;
             return of([]);
-          })
-        )
+          }))
       ),
-      tap(() => (this.searching = false))
+      tap(() => this.searching = false)
     );
 
   onResultSelected(nomatimObject) {
