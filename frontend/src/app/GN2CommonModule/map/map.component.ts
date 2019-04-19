@@ -33,7 +33,7 @@ export class NominatimService {
 
     return this.http
       .get(NOMINATIM_URL, {params: PARAMS.set('q', term)}).pipe(
-        map((res: Response) => res)
+        map(res => res)
       );
   }
 }
