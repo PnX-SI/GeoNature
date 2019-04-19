@@ -1,11 +1,9 @@
-<pnx-select2 
-  [values]="dataSets" 
-  [keyLabel]="'dataset_name'" 
-  [keyValue]="'id_dataset'"
-  [label]="label"
-  [placeholder]="'Jeux de données'"
-  [multiple]="multiSelect"
-  [parentFormControl]="parentFormControl" 
-  [disabledSelect2]="disabled"
-  id="dataset-form" >
-</pnx-select2>
+<small> {{label }} </small>
+<ng-select class="pnx"
+		[items]="dataSets | async"
+		bindLabel="dataset_name"
+		bindValue="id_dataset"
+		placeholder="Jeux de données"
+		[virtualScroll]="true"
+		[formControl]="parentFormControl">
+</ng-select>

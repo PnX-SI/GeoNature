@@ -15,7 +15,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { NgbModule, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { AutoCompleteModule } from 'primeng/primeng';
-import { NgSelect2Module } from 'ng-select2';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 // Components
 import { NomenclatureComponent } from './form/nomenclature/nomenclature.component';
@@ -66,7 +66,6 @@ import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-da
 // add all rxjs operators
 import 'rxjs/Rx';
 import { MultiSelectComponent } from './form/multiselect/multiselect.component';
-import { Select2Component } from './form/select2/select2.component';
 
 @NgModule({
   imports: [
@@ -81,7 +80,7 @@ import { Select2Component } from './form/select2/select2.component';
     FormsModule,
     ReactiveFormsModule,
     NgxDatatableModule,
-    NgSelect2Module,
+    NgSelectModule,
     TranslateModule.forChild(),
     NgbModule.forRoot(),
     AutoCompleteModule
@@ -108,7 +107,6 @@ import { Select2Component } from './form/select2/select2.component';
     DynamicFormComponent,
     MunicipalitiesComponent,
     MultiSelectComponent,
-    Select2Component,
     GenericFormGeneratorComponent,
     GenericFormComponent,
     AreasComponent,
@@ -156,13 +154,12 @@ import { Select2Component } from './form/select2/select2.component';
     MatListModule,
     MatToolbarModule,
     NgxDatatableModule,
-    NgSelect2Module,
+    NgSelectModule,
     NgbModule,
     TranslateModule,
     MapListGenericFiltersComponent,
     ObserversTextComponent,
     MultiSelectComponent,
-    Select2Component,
     GenericFormGeneratorComponent,
     GenericFormComponent,
     AreasComponent,

@@ -1,11 +1,9 @@
-<pnx-select2 
-  [values]="labels" 
-  [keyLabel]="labelLang" 
-  [keyValue]="keyValue"
-  [label]="label"
-  [placeholder]="label"
-  [multiple]="multiSelect"
-  [reloadData]="reloadData"
-  [parentFormControl]="parentFormControl" 
-  [disabledSelect2]="disabled">
-</pnx-select2>
+<small> {{label }} </small>
+<ng-select class="pnx"
+		[items]="labels | async"
+		[bindLabel]="labelLang"
+		[bindValue]="keyValue"
+		[placeholder]="label"
+		[virtualScroll]="true"
+		[formControl]="parentFormControl">
+</ng-select>

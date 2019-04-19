@@ -29,13 +29,11 @@ export class NomenclatureComponent extends GenericFormComponent
   public valueSubscription: Subscription;
   public currentCdNomenclature = 'null';
   public currentIdNomenclature: number;
-  public savedLabels;
-  public reloadData: BehaviorSubject<boolean> = new BehaviorSubject(false);
   @Input() codeNomenclatureType: string;
   @Input() regne: string;
   @Input() group2Inpn: string;
   @Input() keyValue;
-  @Input() bindAllItem: false;
+  @Input() bindAllItem: boolean = false;
   constructor(private _dfService: DataFormService, private _translate: TranslateService) {
     super();
   }
@@ -86,7 +84,6 @@ export class NomenclatureComponent extends GenericFormComponent
     // if change regne => change groupe2inpn also
     if (changes.regne !== undefined && !changes.regne.firstChange) {
       this.initLabels();
-      this.reloadData.next(true);
     }
     // if only change groupe2inpn
     if (
@@ -95,7 +92,6 @@ export class NomenclatureComponent extends GenericFormComponent
       !changes.group2Inpn.firstChange
     ) {
       this.initLabels();
-      this.reloadData.next(true);
     }
   }
 
@@ -111,14 +107,5 @@ export class NomenclatureComponent extends GenericFormComponent
   ngOnDestroy() {
     this.subscription.unsubscribe();
     this.valueSubscription.unsubscribe();
-  }
-
-  filterItems(event) {
-    if (this.searchBar && event) {
-      this.labels = this.savedLabels.filter(el => {
-        const isIn = el.label_default.toUpperCase().indexOf(event.toUpperCase());
-        return isIn !== -1;
-      });
-    }
   }
 }

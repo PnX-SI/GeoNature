@@ -1,11 +1,9 @@
-<pnx-select2 
-  [values]="observers" 
-  [keyLabel]="'nom_complet'" 
-  [keyValue]="'id_role'" 
-  [label]="label"
-  [placeholder]="'Observateur(s)'"
-  [multiple]="true"
-  [select2Val]="select2Value"
-  [disabledSelect2]="disabled"
-  (onChange)="onChange($event)">
-</pnx-select2>
+<small> {{label }} </small>
+<ng-select class="pnx"
+		[items]="observers | async"
+		bindLabel="nom_complet"
+		[multiple]="true"
+		placeholder="Observateur(s)"
+		[virtualScroll]="true"
+		[formControl]="parentFormControl">
+</ng-select>
