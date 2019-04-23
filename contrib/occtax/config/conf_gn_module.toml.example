@@ -118,6 +118,11 @@ export_columns =  [
   "natObjGeo"
  ]
 
+# afficher l'outil pour pointer un marker à partir des coordonnées X/Y
+ENABLE_GPS_TOOL = true
+# Activer l'outil leaflet draw qui permet de charger des fichier GPS, GeoJSON, et KML
+ENABLE_UPLOAD_TOOL = true
+
 
 # ------------- FORM PARAMETER ---------------
 

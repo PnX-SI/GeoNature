@@ -8,11 +8,13 @@
                 (layerDrawed)="sendGeoInfo($event)">
             </pnx-leaflet-draw>
             <pnx-leaflet-filelayer
+              *ngIf="occtaxConfig.ENABLE_UPLOAD_TOOL"
               [editMode]="true"
               (onLoad)="infoMessageFileLayer($event)"
               [style]="{'color': 'green'}"
             ></pnx-leaflet-filelayer>  
 
+            <pnx-gps *ngIf="occtaxConfig.ENABLE_GPS_TOOL" (markerChanged)="sendGeoInfo($event)"> </pnx-gps>
         </pnx-map>
     </div>
     <div class="col-sm-12 col-md-5 padding-0 form">
