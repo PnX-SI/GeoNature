@@ -79,21 +79,24 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
         this.currentLayerType = (e as any).layerType;
         this.mapservice.leafletDrawFeatureGroup.addLayer(this._currentDraw);
         const geojson = this.getGeojsonFromFeatureGroup(this.currentLayerType);
-        this.mapservice.justLoaded = false;
+        // set firLayerFromMap = false because we just draw a layer
+        // the boolean change MUST be before the output fire (emit)
+        this.mapservice.firstLayerFromMap = false;
         this.layerDrawed.emit(geojson);
+
       }
     });
 
     // on draw edited
     this.mapservice.map.on(this._Le.Draw.Event.EDITED, e => {
       // output
-      this.mapservice.justLoaded = false;
-
       const geojson = this.getGeojsonFromFeatureGroup(this.currentLayerType);
-      if (geojson) {
-        this.layerDrawed.emit(geojson);
-      }
+      // set firLayerFromMap = false because we just edit a layer
+      // the boolean change MUST be before the output fire (emit)
+      this.mapservice.firstLayerFromMap = false;
       this.layerDrawed.emit(geojson);
+
+
     });
 
     // on layer deleted
