@@ -1,14 +1,5 @@
 IMPORT FOREIGN SCHEMA layers FROM SERVER geonature1server INTO v1_compat;
 
--- unité geo en premier
-INSERT INTO ref_geo.l_areas(
-            id_type, area_name, area_code, geom, centroid)
-SELECT 
-(SELECT id_type FROM ref_geo.bib_areas_types WHERE type_code = 'UG') AS id_type, id_unite_geo::text, id_unite_geo, the_geom, ST_Centroid(the_geom)
-FROM v1_compat.l_unites_geo;
-
--- TODO: communes géré par myrefgeo
-
 
 -- aire d'adhesion
 INSERT INTO ref_geo.l_areas(

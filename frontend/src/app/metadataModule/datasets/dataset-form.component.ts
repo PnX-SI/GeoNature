@@ -53,8 +53,8 @@ export class DatasetFormComponent implements OnInit {
       dataset_desc: [null, Validators.required],
       id_nomenclature_data_type: [null, Validators.required],
       keywords: null,
-      marine_domain: true,
-      terrestrial_domain: false,
+      terrestrial_domain: true,
+      marine_domain: false,
       id_nomenclature_dataset_objectif: [null, Validators.required],
       //TODO bouding-box
       id_nomenclature_collecting_method: [null, Validators.required],

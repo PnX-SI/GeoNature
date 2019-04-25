@@ -8,7 +8,6 @@ import { SideNavService } from './sidenav-service';
   selector: 'pnx-sidenav-items',
   templateUrl: './sidenav-items.component.html',
   styleUrls: ['./sidenav-items.component.scss'],
-  providers: [ModuleService]
 })
 export class SidenavItemsComponent implements OnInit {
   public nav = [{}];

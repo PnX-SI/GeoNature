@@ -26,7 +26,7 @@ export class ReleveComponent implements OnInit, OnDestroy {
   public today: DateStruc;
   public areasIntersected = new Array();
   public occtaxConfig: any;
-  private geojsonSubscription$: Subscription;
+  private geojsonSubscription$: Subscription; 
 
   constructor(
     private _ms: MapService,
@@ -41,6 +41,8 @@ export class ReleveComponent implements OnInit, OnDestroy {
     this.geojsonSubscription$ = this._ms.gettingGeojson$.subscribe(geojson => {
       this.releveForm.patchValue({ geometry: geojson.geometry });
       this.geojson = geojson;
+      
+        
       // get to geo info from API
       this._dfs.getGeoInfo(geojson).subscribe(res => {
         this.releveForm.controls.properties.patchValue({
@@ -48,6 +50,7 @@ export class ReleveComponent implements OnInit, OnDestroy {
           altitude_max: res.altitude.altitude_max
         });
       });
+
       this._dfs.getFormatedGeoIntersection(geojson).subscribe(res => {
         this.areasIntersected = res;
       });

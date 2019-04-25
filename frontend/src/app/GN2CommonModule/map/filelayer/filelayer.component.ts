@@ -139,8 +139,6 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
     });
   }
 
-  setNewLayerFromClick(layer) {}
-
   ngOnChanges(changes) {
     if (changes && changes.removeLayer && changes.removeLayer.currentValue) {
       if (this.previousLayer) {

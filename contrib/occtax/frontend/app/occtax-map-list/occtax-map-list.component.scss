@@ -14,16 +14,30 @@
 }
 
 #search-btn {
-  position: absolute;
-  right: 1%;
-  top: 25%;
   height: 35px;
   font-size: 15px;
+  margin-top: 20px;
+  margin-left: 3px;
 }
 
 #download-btn {
   margin-top: 5px;
   padding: 5px;
+}
+
+#add-btn-map{
+  font-size: 18px;
+  position: absolute;
+  right: 10px;
+}
+
+#filter-btn {
+  font-size: 18px;
+}
+
+#row-navbar{
+  padding-top: 5px;
+  padding-left: 10px;
 }
 
 #add-btn {

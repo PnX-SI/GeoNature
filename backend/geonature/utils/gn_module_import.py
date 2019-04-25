@@ -315,7 +315,7 @@ def create_external_assets_symlink(module_path, module_code):
     return True
 
 
-def add_application_db(app, module_code, url, enable_frontend):
+def add_application_db(app, module_code, url, enable_frontend, enable_backend):
     log.info("Register the module in gn_commons.t_modules ... \n")
     from geonature.core.users.models import TApplications
     from geonature.core.gn_commons.models import TModules
@@ -345,7 +345,7 @@ def add_application_db(app, module_code, url, enable_frontend):
                 module_target="_self",
                 module_picto="fa-puzzle-piece",
                 active_frontend=enable_frontend,
-                active_backend=True,
+                active_backend=enable_backend,
             )
             DB.session.add(new_module)
             DB.session.commit()

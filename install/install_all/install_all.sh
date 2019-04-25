@@ -114,7 +114,7 @@ sudo apt-get install -y python-pip 2> var/log/install_app.log
 sudo apt-get install -y libpq-dev 2> var/log/install_app.log
 sudo apt-get install -y libgdal-dev 2> var/log/install_app.log
 sudo apt-get install -y python-gdal 2> var/log/install_app.log
-sudo apt-get install -y python-virtualenv 2> var/log/install_app.log
+sudo apt-get install -y python3-virtualenv virtualenv 2> var/log/install_app.log
 sudo apt-get install -y build-essential 2> var/log/install_app.log
 sudo pip install --upgrade pip virtualenv virtualenvwrapper 2> var/log/install_app.log
 

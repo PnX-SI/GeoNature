@@ -48,7 +48,8 @@ log = logging.getLogger(__name__)
 @click.argument("url")  # url de l'api
 @click.option("--conf-file", required=False, default=DEFAULT_CONFIG_FILE)
 @click.option("--build", type=bool, required=False, default=True)
-def install_gn_module(module_path, url, conf_file, build):
+@click.option("--enable_backend", type=bool, required=False, default=True)
+def install_gn_module(module_path, url, conf_file, build, enable_backend):
     """
         Installation d'un module gn
     """
@@ -97,7 +98,9 @@ def install_gn_module(module_path, url, conf_file, build):
                     module_path, module_code.lower()
                 )
                 # ajout du module dans la table gn_commons.t_modules
-                add_application_db(app, module_code, url, enable_frontend)
+                add_application_db(
+                    app, module_code, url, enable_frontend, enable_backend
+                )
 
                 # Enregistrement de la config du module
                 gn_module_register_config(module_code.lower())
