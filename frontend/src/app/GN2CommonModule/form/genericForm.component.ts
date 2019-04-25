@@ -29,11 +29,11 @@ export class GenericFormComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor() {}
 
   ngOnInit() {
-    this.disabled ? this.parentFormControl.enable() : this.parentFormControl.disable();
     this.debounceTime = this.debounceTime || 0;
   }
 
   ngAfterViewInit() {
+    this.disabled ? this.parentFormControl.enable() : this.parentFormControl.disable();
     this.sub = this.parentFormControl.valueChanges
       .distinctUntilChanged()
       .debounceTime(this.debounceTime)
