@@ -25,7 +25,10 @@ export class MapService {
   private _isEditingMarker = new Subject<boolean>();
   public isMarkerEditing$: Observable<any> = this._isEditingMarker.asObservable();
   public layerGroup: any;
-  public justLoaded = true;
+  // boolean to control if gettingGeojsonCoord$ observable is fire
+  // this observable must be fired only after a map event
+  // not from data sended by API (to avoid recalculate altitude for exemple)
+  public firstLayerFromMap = true;
 
   selectedStyle = {
     color: '#ff0000',
@@ -57,7 +60,7 @@ export class MapService {
   }
 
   setGeojsonCoord(geojsonCoord) {
-    if (!this.justLoaded) {
+    if (!this.firstLayerFromMap) {
       this._geojsonCoord.next(geojsonCoord);
     }
   }

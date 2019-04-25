@@ -1,63 +1,77 @@
 <div class="card" id="specific-filter">
   <!-- SPECFIC FILTERS -->
-  <div class="row row-sm">
-    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
-      <pnx-taxonomy label="{{ 'Taxon.Taxon' | translate }}" [parentFormControl]="dynamicFormGroup.controls.cd_nom"
-        [idList]="occtaxConfig.id_taxon_list" [charNumber]="3" [listLength]="20">
-      </pnx-taxonomy>
-    </div>
-    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
-      <div *ngIf="occtaxConfig.observers_txt; else elseBlock">
-        <pnx-observers-text [parentFormControl]="dynamicFormGroup.controls.observers_txt">
-        </pnx-observers-text>
-      </div>
-      <ng-template #elseBlock>
-        <pnx-observers [parentFormControl]="dynamicFormGroup.controls.observers" [idMenu]="occtaxConfig.id_observers_list"
-          label="{{ 'Releve.Observers' | translate }}">
-        </pnx-observers>
-      </ng-template>
-    </div>
-    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
-      <pnx-datasets [displayAll]="true" label="{{ 'Releve.Dataset' | translate }}" [parentFormControl]="dynamicFormGroup.controls.id_dataset"
-        appId="14">
-      </pnx-datasets>
-    </div>
-    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 padding-sm">
-      <pnx-date label="{{ 'Releve.MinDate' | translate }} " [parentFormControl]="dynamicFormGroup.controls.date_low">
-      </pnx-date>
-    </div>
-
-    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 padding-sm">
-      <pnx-date label="{{ 'Releve.MaxDate' | translate }} " [parentFormControl]="dynamicFormGroup.controls.date_up">
-      </pnx-date>
-    </div>
-
-    <button class="btn btn-outline-shadow actions" (click)="refreshFilters()" matTooltip="{{ 'Form.RefreshFilters' | translate }}">
-      <i id="refresh-filter" class="fa fa-trash-o clickable action" aria-hidden="true">
-      </i>
+  <div class="row row-sm" id="row-navbar">
+    <button 
+      [disabled]="userCruved?.C == '0'"
+      id="add-btn-map" 
+      class="btn btn-outline-success"
+      (click)="onAddReleve()"> 
+      <i class="fa fa-plus-circle" aria-hidden="true"> </i> {{ 'Releve.AddReleve' | translate }}
     </button>
-
-
-    <button class="btn btn-outline-shadow actions" (click)="toggleAdvancedFilters()" matTooltip="{{ 'Form.AdvancedFilters' | translate }}">
-      <i class="fa fa-filter" aria-hidden="true"></i>
-    </button>
-
-    <svg *ngIf="dynamicForm?.formsSelected.length > 0" height="40" width="10">
-      <circle cx="5" cy="30" r="3" stroke="red" stroke-width="0" fill="red" />
-    </svg>
-
-
-    <button id="search-btn" class="btn btn-primary" (click)="searchData()">
-      {{ 'Search' | translate }}
-      <i class="fa fa-search" aria-hidden="true"></i>
+    <button class="btn btn-outline-primary"
+      id="filter-btn"
+      data-toggle="collapse"
+      data-target="#collapseAvance">
+        Filtrer <i class="fa fa-sliders" aria-hidden="true"></i>
     </button>
   </div>
+      <div class="collapse" id="collapseAvance">
+        <div class="row row-sm">
+          <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
+              <pnx-taxonomy label="{{ 'Taxon.Taxon' | translate }}" [parentFormControl]="dynamicFormGroup.controls.cd_nom"
+                [idList]="occtaxConfig.id_taxon_list" [charNumber]="3" [listLength]="20">
+              </pnx-taxonomy>
+            </div>
+            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
+              <div *ngIf="occtaxConfig.observers_txt; else elseBlock">
+                <pnx-observers-text [parentFormControl]="dynamicFormGroup.controls.observers_txt">
+                </pnx-observers-text>
+              </div>
+              <ng-template #elseBlock>
+                <pnx-observers [parentFormControl]="dynamicFormGroup.controls.observers" [idMenu]="occtaxConfig.id_observers_list"
+                  label="{{ 'Releve.Observers' | translate }}">
+                </pnx-observers>
+              </ng-template>
+            </div>
+            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
+              <pnx-datasets [displayAll]="true" label="{{ 'Releve.Dataset' | translate }}" [parentFormControl]="dynamicFormGroup.controls.id_dataset"
+                appId="14">
+              </pnx-datasets>
+            </div>
+            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 padding-sm">
+              <pnx-date label="{{ 'Releve.MinDate' | translate }} " [parentFormControl]="dynamicFormGroup.controls.date_low">
+              </pnx-date>
+            </div>
+        
+            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 padding-sm">
+              <pnx-date label="{{ 'Releve.MaxDate' | translate }} " [parentFormControl]="dynamicFormGroup.controls.date_up">
+              </pnx-date>
+            </div>
+        
+            <button class="btn btn-outline-shadow actions" (click)="refreshFilters()" matTooltip="{{ 'Form.RefreshFilters' | translate }}">
+              <i id="refresh-filter" class="fa fa-trash-o clickable action" aria-hidden="true">
+              </i>
+            </button>
+        
+        
+            <button class="btn btn-outline-shadow actions" (click)="toggleAdvancedFilters()" matTooltip="{{ 'Form.AdvancedFilters' | translate }}">
+              <i class="fa fa-filter" aria-hidden="true"></i>
+            </button>
+        
+            <svg *ngIf="dynamicForm?.formsSelected.length > 0" height="40" width="10">
+              <circle cx="5" cy="30" r="3" stroke="red" stroke-width="0" fill="red" />
+            </svg>
+            <button id="search-btn" class="btn btn-primary" (click)="searchData()">
+                {{ 'Search' | translate }}
+                <i class="fa fa-search" aria-hidden="true"></i>
+              </button>
+      </div>
+  </div>
+  
   <div [hidden]="!advandedFilterOpen" id="collapse-settings">
     <pnx-dynamic-form-generator #dynamicForm selectLabel="Autres Critères" [myFormGroup]="dynamicFormGroup"
       [formsDefinition]="formsDefinition">
     </pnx-dynamic-form-generator>
-
-
   </div>
   <!-- END SPECIFIC FILTERS -->
 </div>
@@ -140,9 +154,6 @@
       <i class="fa fa-download" aria-hidden="true">
       </i>
       <small> {{ 'DownloadData' | translate }} </small>
-    </button>
-    <button [disabled]="userCruved?.C == '0'" id="add-btn" type="button" class="btn btn-success box-shadow" (click)="onAddReleve()">
-      <i class="fa fa-plus-circle" aria-hidden="true"> </i> {{ 'Releve.AddReleve' | translate }}
     </button>
 
     <!-- MODAL COLUMNS -->

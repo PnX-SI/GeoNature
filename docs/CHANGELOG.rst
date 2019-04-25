@@ -5,6 +5,10 @@ CHANGELOG
 2.0.2 (unreleased)
 ------------------
 
+** Nouveautés **
+
+* Ajout du mécanimse du calcul des couleur par taxon
+
 **Corrections**
 
 * Correction de la vérification du CRUVED lorsque get_role = False

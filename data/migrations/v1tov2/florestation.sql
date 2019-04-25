@@ -275,6 +275,18 @@ INSERT INTO v1_florestation.cor_fs_observateur SELECT * FROM v1_compat.cor_fs_ob
 INSERT INTO v1_florestation.cor_fs_microrelief SELECT * FROM v1_compat.cor_fs_microrelief;
 INSERT INTO v1_florestation.cor_fs_delphine SELECT * FROM v1_compat.cor_fs_delphine;
 
+
+--SET UUID FOR SYNTHESE
+ALTER TABLE v1_florestation.t_stations_fs ADD COLUMN unique_id_sinp_grp uuid;
+UPDATE v1_florestation.t_stations_fs SET unique_id_sinp_grp = uuid_generate_v4();
+ALTER TABLE v1_florestation.t_stations_fs ALTER COLUMN unique_id_sinp_grp SET NOT NULL;
+ALTER TABLE v1_florestation.t_stations_fs ALTER COLUMN unique_id_sinp_grp SET DEFAULT uuid_generate_v4();
+
+ALTER TABLE v1_florestation.cor_fs_taxon ADD COLUMN unique_id_sinp_fs uuid;
+UPDATE v1_florestation.cor_fs_taxon SET unique_id_sinp_fs = uuid_generate_v4();
+ALTER TABLE v1_florestation.cor_fs_taxon ALTER COLUMN unique_id_sinp_fs SET NOT NULL;
+ALTER TABLE v1_florestation.cor_fs_taxon ALTER COLUMN unique_id_sinp_fs SET DEFAULT uuid_generate_v4();
+
 --VIEWS--
 CREATE VIEW v1_florestation.v_florestation_all AS
  SELECT cor.id_station_cd_nom AS indexbidon,
@@ -314,6 +326,78 @@ CREATE VIEW v1_florestation.v_taxons_fs AS
            FROM taxonomie.cor_nom_liste
           WHERE (cor_nom_liste.id_liste = 500))) AND (cnl.id_liste = ANY (ARRAY[305, 306, 307, 308])));
 
+CREATE OR REPLACE VIEW v1_florestation.v_export_fs_all AS 
+ SELECT DISTINCT s.id_station,
+    s.id_sophie,
+    s.dateobs,
+    s.info_acces,
+    s.complet_partiel,
+    s.meso_longitudinal,
+    s.meso_lateral,
+    s.canopee,
+    s.ligneux_hauts,
+    s.ligneux_bas,
+    s.ligneux_tbas,
+    s.herbaces,
+    s.mousses,
+    s.litiere,
+    s.remarques,
+    s.altitude_retenue AS altitude,
+    s.pdop,
+    s.validation AS relue,
+    t.nom_complet AS taxon,
+    o.observateurs,
+    p.nom_programme_fs,
+    mr.microreliefs,
+    d.delphines,
+    e.nom_exposition,
+    su.nom_support,
+    h.nom_homogene,
+    g.nom_surface,
+    com.nom_com AS nomcommune,
+    --se.nom_secteur,
+    cft.herb,
+    cft.inf_1m,
+    cft.de_1_4m,
+    cft.sup_4m,
+    cft.taxon_saisi,
+    z.nom_complet AS taxon_ref,
+    z.nom_complet AS taxon_complet,
+    st_x(s.the_geom_local) AS x_local,
+    st_y(s.the_geom_local) AS y_local
+   FROM v1_florestation.t_stations_fs s
+     LEFT JOIN v1_florestation.cor_fs_taxon cft ON cft.id_station = s.id_station
+     LEFT JOIN taxonomie.taxref t ON t.cd_nom = cft.cd_nom
+     LEFT JOIN ( SELECT taxref.cd_nom,
+            taxref.nom_complet
+           FROM taxonomie.taxref
+          WHERE (taxref.cd_nom IN ( SELECT DISTINCT t_1.cd_ref
+                   FROM taxonomie.taxref t_1
+                     JOIN v1_florestation.cor_fs_taxon c ON c.cd_nom = t_1.cd_nom))) z ON z.cd_nom = t.cd_ref
+     LEFT JOIN v1_florestation.cor_fs_observateur cfo ON s.id_station = cfo.id_station
+     LEFT JOIN v1_florestation.bib_programmes_fs p ON p.id_programme_fs = s.id_programme_fs
+     LEFT JOIN v1_florestation.bib_expositions e ON e.id_exposition = s.id_exposition
+     LEFT JOIN v1_florestation.bib_supports su ON su.id_support = s.id_support
+     LEFT JOIN v1_florestation.bib_homogenes h ON h.id_homogene = s.id_homogene
+     LEFT JOIN v1_florestation.bib_surfaces g ON g.id_surface = s.id_surface
+     LEFT JOIN ref_geo.li_municipalities com ON com.insee_com = s.insee
+     --LEFT JOIN ref_geo.l_areas se ON se.id_area = com.id_secteur
+     LEFT JOIN ( SELECT c.id_station,
+            array_to_string(array_agg((r.prenom_role::text || ' '::text) || r.nom_role::text), ', '::text) AS observateurs
+           FROM v1_florestation.cor_fs_observateur c
+             JOIN utilisateurs.t_roles r ON r.id_role = c.id_role
+          GROUP BY c.id_station) o ON o.id_station = s.id_station
+     LEFT JOIN ( SELECT c.id_station,
+            array_to_string(array_agg((c.id_microrelief || ' '::text) || m.nom_microrelief::text), ', '::text) AS microreliefs
+           FROM v1_florestation.cor_fs_microrelief c
+             JOIN v1_florestation.bib_microreliefs m ON m.id_microrelief = c.id_microrelief
+          GROUP BY c.id_station) mr ON mr.id_station = s.id_station
+     LEFT JOIN ( SELECT c.id_station,
+            array_to_string(array_agg(c.id_delphine), ', '::text) AS delphines
+           FROM v1_florestation.cor_fs_delphine c
+          GROUP BY c.id_station) d ON d.id_station = s.id_station
+  WHERE s.supprime = false AND cft.supprime = false
+  ORDER BY s.dateobs;
 
 --FUNCTIONS--
 CREATE FUNCTION v1_florestation.application_rang_sp(id integer) RETURNS integer
@@ -352,18 +436,6 @@ CREATE FUNCTION v1_florestation.application_rang_sp(id integer) RETURNS integer
   END;
 $$;
 
-CREATE FUNCTION v1_florestation.delete_synthese_cor_fs_taxon() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
---il n'y a pas de trigger delete sur la table t_stations_fs parce qu'il un delete cascade dans la fk id_station de cor_fs_taxon
---donc si on supprime la station, on supprime sa ou ces taxons relevés et donc ce trigger sera déclanché et fera le ménage dans la table synthese
-BEGIN
-        --on fait le delete dans synthese --TODO : adapter
-        DELETE FROM gn_synthese.synthese WHERE id_source = 105 AND id_fiche_source = CAST(old.gid AS VARCHAR(25));
-	RETURN old; 			
-END;
-$$;
-
 CREATE FUNCTION v1_florestation.etiquette_utm(mongeom public.geometry) RETURNS character
     LANGUAGE plpgsql
     AS $$
@@ -387,6 +459,21 @@ END IF;
 RETURN monetiquette;
 END;
 $$;
+
+
+--FUNCTIONS TRIGGER--
+CREATE OR REPLACE FUNCTION v1_florestation.delete_synthese_cor_fs_taxon() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+--il n'y a pas de trigger delete sur la table t_stations_fs parce qu'il un delete cascade dans la fk id_station de cor_fs_taxon
+--donc si on supprime la station, on supprime sa ou ces taxons relevés et donc ce trigger sera déclanché et fera le ménage dans la table synthese
+BEGIN
+        --on fait le delete dans synthese --TODO : adapter
+        DELETE FROM gn_synthese.synthese WHERE id_source = 105 AND entity_source_pk_value = old.gid::character varying;
+	RETURN old; 			
+END;
+$$;
+--TODO id_source = 105 = PNE
 
 CREATE FUNCTION v1_florestation.florestation_insert() RETURNS trigger
     LANGUAGE plpgsql
@@ -427,7 +514,7 @@ IF (old.the_geom_local is null AND old.the_geom_3857 is null) THEN
 		new.srid_dessin = 3857;
     END IF;
     -- on calcul la commune...
-    SELECT area_code INTO theinsee FROM (SELECT ref_geo.fct_get_area_intersection(new.the_geom_local,101) LIMIT 1) c;
+    SELECT area_code INTO theinsee FROM (SELECT ref_geo.fct_get_area_intersection(new.the_geom_local,25) LIMIT 1) c;
     new.insee = theinsee;-- mise à jour du code insee
     -- on calcul l'altitude
     SELECT altitude_min INTO thealtitude FROM (SELECT ref_geo.fct_get_altitude_intersection(new.the_geom_local) LIMIT 1) a;
@@ -455,7 +542,7 @@ IF (old.the_geom_local is NOT NULL OR old.the_geom_3857 is NOT NULL) THEN
         END IF;
     END IF;
     -- on calcul la commune...
-    SELECT area_code INTO theinsee FROM (SELECT ref_geo.fct_get_area_intersection(new.the_geom_local,101) LIMIT 1) c;
+    SELECT area_code INTO theinsee FROM (SELECT ref_geo.fct_get_area_intersection(new.the_geom_local,25) LIMIT 1) c;
     new.insee = theinsee;-- mise à jour du code insee
     -- on calcul l'altitude
     SELECT altitude_min INTO thealtitude FROM (SELECT ref_geo.fct_get_altitude_intersection(new.the_geom_local) LIMIT 1) a;
@@ -481,15 +568,15 @@ new.date_update= 'now';	 -- mise a jour de date insert
 RETURN new; -- return new procède à l'insertion de la donnée dans PG avec les nouvelles valeures.			
 END;
 $$;
+--TODO vérifier l'ID type d'area pour les communes ou utiliser le code
 
 --TODO gérer cor_observer_synthese
-CREATE OR REPLACE FUNCTION v1_florestation.insert_synthese_cor_fs_taxon() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
+CREATE OR REPLACE FUNCTION v1_florestation.insert_synthese_cor_fs_taxon()
+  RETURNS trigger AS
+$BODY$
 DECLARE
     fiche RECORD;
     theobservers character varying(255);
-    thenomcite character varying(1000);
     thetaxrefversion text;
     thevalidationstatus integer;
 BEGIN
@@ -501,8 +588,6 @@ BEGIN
     JOIN utilisateurs.t_roles r ON r.id_role = c.id_role
     JOIN v1_florestation.t_stations_fs s ON s.id_station = c.id_station
     WHERE c.id_station = new.id_station;
-    --récuperation du nom_cite
-    SELECT nom_complet INTO thenomcite FROM v1_florestation.v_taxons_fs WHERE cd_nom = new.cd_nom;
     --Récupération de la version taxref
     SELECT parameter_value INTO thetaxrefversion FROM gn_commons.t_parameters WHERE parameter_name = 'taxref_version';
     --Récupération du statut de validation
@@ -514,6 +599,8 @@ BEGIN
     -- MAJ de la synthese
     INSERT INTO gn_synthese.synthese
     (
+      unique_id_sinp,
+      unique_id_sinp_grp,
       id_source,
       entity_source_pk_value,
       id_dataset,
@@ -549,12 +636,14 @@ BEGIN
       date_max,
       observers,
       determiner,
-      comments,
+      comment_context,
       last_action
     )
     VALUES
     ( 
-      105, 
+      new.unique_id_sinp_fs,
+      fiche.unique_id_sinp_grp,
+      105, --TODO 105 = PNE
       new.gid,
       fiche.id_lot,
       ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO','St'),
@@ -578,13 +667,13 @@ BEGIN
       -1,--count_min
       -1,--count_max
       new.cd_nom,
-      thenomcite,
+      COALESCE(new.taxon_saisi,'non disponible'),
       thetaxrefversion,
       fiche.altitude_retenue,--altitude_min
       fiche.altitude_retenue,--altitude_max
       public.st_transform(fiche.the_geom_3857,4326),
-      fiche.the_geom_local,
       public.st_transform(fiche.the_geom_3857,4326),
+      fiche.the_geom_local,
       fiche.dateobs,--date_min
       fiche.dateobs,--date_max
       theobservers,--observers
@@ -594,15 +683,19 @@ BEGIN
     );
 RETURN NEW;       
 END;
-$$;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
---TODO gérer cor_observer_synthese
-CREATE FUNCTION v1_florestation.update_synthese_cor_fs_observateur() RETURNS trigger
+
+CREATE OR REPLACE FUNCTION v1_florestation.update_synthese_cor_fs_observateur() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE 
     myreleve RECORD;
     theobservers character varying(255);
+    theidsynthese integer;
+    thesql text;
 BEGIN
     --Récupération de la liste des observateurs 
     --ici on va mettre à jour l'enregistrement dans synthese autant de fois qu'on insert dans cette table
@@ -619,20 +712,58 @@ BEGIN
             observers = theobservers,
             last_action = 'u'
         WHERE id_source = 105 AND entity_source_pk_value = myreleve.gid::character varying;
+	-- on met à jour les observateurs dans gn_synthese.cor_observer_synthese
+        SELECT INTO theidsynthese id_synthese FROM gn_synthese.synthese WHERE id_source = 105 AND entity_source_pk_value = myreleve.gid::character varying;
+	thesql = format(
+		'INSERT INTO gn_synthese.cor_observer_synthese (id_synthese, id_role) VALUES(%L, %L)'
+		,theidsynthese, new.id_role);
+	EXECUTE thesql;
     END LOOP;
   RETURN NEW;       
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION v1_florestation.delete_cor_observer_synthese() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE 
+    myreleve RECORD;
+    theobservers character varying(255);
+    theidsynthese integer;
+    thesql text;
+BEGIN
+    --Récupération de la liste des observateurs 
+    --ici on va mettre à jour l'enregistrement dans synthese autant de fois qu'on delete dans cette table
+    SELECT INTO theobservers array_to_string(array_agg(r.nom_role || ' ' || r.prenom_role), ', ') AS observateurs 
+    FROM v1_florestation.cor_fs_observateur c
+    JOIN utilisateurs.t_roles r ON r.id_role = c.id_role
+    JOIN v1_florestation.t_stations_fs s ON s.id_station = c.id_station
+    WHERE c.id_station = old.id_station;
+    --on boucle sur tous les enregistrements de la station
+    FOR myreleve IN SELECT gid FROM v1_florestation.cor_fs_taxon WHERE id_station = old.id_station  LOOP
+        --on fait le update du champ observateurs dans synthese
+        UPDATE gn_synthese.synthese 
+        SET 
+            observers = theobservers,
+            last_action = 'u'
+        WHERE id_source = 105 AND entity_source_pk_value = myreleve.gid::character varying;
+	-- on met à jour les observateurs dans gn_synthese.cor_observer_synthese
+        SELECT INTO theidsynthese id_synthese FROM gn_synthese.synthese WHERE id_source = 105 AND entity_source_pk_value = myreleve.gid::character varying;
+	DELETE FROM gn_synthese.cor_observer_synthese WHERE id_synthese = theidsynthese AND id_role = old.id_role;
+    END LOOP;
+  RETURN OLD;       
+END;
+$$;
+--TODO 105 = PNE
 
---TODO : gérer le supprime = false
-CREATE FUNCTION v1_florestation.update_synthese_cor_fs_taxon() RETURNS trigger
+CREATE OR REPLACE FUNCTION v1_florestation.update_synthese_cor_fs_taxon() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
 --On ne fait qq chose que si l'un des champs de la table cor_fs_taxon concerné dans synthese a changé
 IF (
         new.id_station <> old.id_station 
+        OR new.unique_id_sinp_fs <> old.unique_id_sinp_fs 
         OR new.gid <> old.gid 
         OR new.cd_nom <> old.cd_nom 
         OR new.supprime <> old.supprime 
@@ -640,10 +771,19 @@ IF (
     --on fait le update dans synthese
     UPDATE gn_synthese.synthese 
     SET 
+	unique_id_sinp = new.unique_id_sinp_fs,
 	entity_source_pk_value = new.gid,
 	cd_nom = new.cd_nom,
 	last_action = 'u'
     WHERE id_source = 105 AND entity_source_pk_value = old.gid::character varying;
+END IF;
+IF (new.supprime = true) THEN
+    --on delete dans la synthese
+    DELETE FROM gn_synthese.synthese 
+    WHERE id_source = 105 AND entity_source_pk_value = old.gid::character varying;
+END IF;
+IF (new.supprime = false) THEN
+    RAISE NOTICE 'Attention cette action n''insert pas le taxon réactivé en synthese. Cette action doit être faite manuellement.'; 
 END IF;
 RETURN NEW; 			
 END;
@@ -656,41 +796,41 @@ DECLARE
     monreleve RECORD;
     thevalidationstatus integer;
 BEGIN
-FOR monreleve IN SELECT gid, cd_nom FROM v1_florestation.cor_fs_taxon WHERE id_station = new.id_station  LOOP
-    --On ne fait qq chose que si l'un des champs de la table t_stations_fs concerné dans synthese a changé
-    IF (
-            new.id_station <> old.id_station 
-            OR ((new.remarques <> old.remarques) OR (new.remarques is null and old.remarques is NOT NULL) OR (new.remarques is NOT NULL and old.remarques is null))
-            OR ((NOT ST_EQUALS(old.the_geom_local, new.the_geom_local)) OR (new.the_geom_local is null and old.the_geom_local is NOT NULL) OR (new.the_geom_local is NOT NULL and old.the_geom_local is null))
-            OR ((new.dateobs <> old.dateobs) OR (new.dateobs is null and old.dateobs is NOT NULL) OR (new.dateobs is NOT NULL and old.dateobs is null))
-            OR ((new.altitude_retenue <> old.altitude_retenue) OR (new.altitude_retenue is null and old.altitude_retenue is NOT NULL) OR (new.altitude_retenue is NOT NULL and old.altitude_retenue is null))
-	    OR ((new.validation <> old.validation) OR (new.validation is null and old.validation is NOT NULL) OR (new.validation is NOT NULL and old.validation is null))
-            
-        ) THEN
+--On ne fait qq chose que si l'un des champs de la table t_stations_fs concerné dans synthese a changé
+IF (
+        new.id_station <> old.id_station 
+        OR new.unique_id_sinp_grp <> old.unique_id_sinp_grp 
+        OR ((new.remarques <> old.remarques) OR (new.remarques is null and old.remarques is NOT NULL) OR (new.remarques is NOT NULL and old.remarques is null))
+        OR ((NOT ST_EQUALS(old.the_geom_local, new.the_geom_local)) OR (new.the_geom_local is null and old.the_geom_local is NOT NULL) OR (new.the_geom_local is NOT NULL and old.the_geom_local is null))
+        OR ((new.dateobs <> old.dateobs) OR (new.dateobs is null and old.dateobs is NOT NULL) OR (new.dateobs is NOT NULL and old.dateobs is null))
+        OR ((new.altitude_retenue <> old.altitude_retenue) OR (new.altitude_retenue is null and old.altitude_retenue is NOT NULL) OR (new.altitude_retenue is NOT NULL and old.altitude_retenue is null))
+	OR ((new.validation <> old.validation) OR (new.validation is null and old.validation is NOT NULL) OR (new.validation is NOT NULL and old.validation is null))
+) THEN
         --Récupération du statut de validation
 	IF (new.validation==true) THEN 
 		SELECT ref_nomenclatures.get_id_nomenclature('STATUT_VALID','1') INTO thevalidationstatus;
 	ELSE
 		SELECT ref_nomenclatures.get_id_nomenclature('STATUT_VALID','2') INTO thevalidationstatus;
 	END IF;
-        --on fait le update dans synthese
-        UPDATE gn_synthese.synthese 
-        SET 
-	    id_nomenclature_valid_status = thevalidationstatus,
-            date_min = new.dateobs,
-            date_max = new.dateobs,
-            altitude_min = new.altitude_retenue,
-            altitude_max = new.altitude_retenue,
-            comments = new.remarques,
-            last_action = 'u',
-            the_geom_4326 = public.st_transform(new.the_geom_3857,4326),
-            the_geom_local = new.the_geom_local,
-            the_geom_point = public.st_transform(new.the_geom_3857,4326)
-            --diffusable usage ou pas
-        WHERE id_source = 105 AND entity_source_pk_value = old.gid::character varying;
-    END IF;
-END LOOP;
-	RETURN NEW; 
+	FOR monreleve IN SELECT gid, cd_nom FROM v1_florestation.cor_fs_taxon WHERE id_station = new.id_station  LOOP
+		--on fait le update dans synthese
+		UPDATE gn_synthese.synthese 
+		SET 
+		  id_nomenclature_valid_status = thevalidationstatus,
+		  unique_id_sinp_grp = new.unique_id_sinp_grp,
+		  date_min = new.dateobs,
+		  date_max = new.dateobs,
+		  altitude_min = new.altitude_retenue,
+		  altitude_max = new.altitude_retenue,
+		  comment_context = new.remarques,
+		  last_action = 'u',
+		  the_geom_4326 = public.st_transform(new.the_geom_3857,4326),
+		  the_geom_local = new.the_geom_local,
+		  the_geom_point = public.st_transform(new.the_geom_3857,4326)
+		WHERE id_source = 105 AND entity_source_pk_value = monreleve.gid::character varying;
+	END LOOP;
+END IF;
+RETURN NEW; 
 END;
 $$;
 
@@ -707,5 +847,105 @@ CREATE TRIGGER tri_update BEFORE UPDATE ON v1_florestation.t_stations_fs FOR EAC
 
 CREATE TRIGGER tri_update_synthese_cor_fs_taxon AFTER UPDATE ON v1_florestation.cor_fs_taxon FOR EACH ROW EXECUTE PROCEDURE v1_florestation.update_synthese_cor_fs_taxon();
 
+CREATE TRIGGER tri_delete_synthese_cor_fs_observateur AFTER DELETE ON v1_florestation.cor_fs_observateur FOR EACH ROW EXECUTE PROCEDURE v1_florestation.delete_cor_observer_synthese();
+
 CREATE TRIGGER tri_update_synthese_stations_fs AFTER UPDATE ON v1_florestation.t_stations_fs FOR EACH ROW EXECUTE PROCEDURE v1_florestation.update_synthese_stations_fs();
 
+
+--insert into gn_synthese.synthese
+INSERT INTO gn_synthese.synthese
+    (
+      unique_id_sinp,
+      unique_id_sinp_grp,
+      id_source,
+      entity_source_pk_value,
+      id_dataset,
+      id_nomenclature_geo_object_nature,
+      id_nomenclature_grp_typ,
+      id_nomenclature_obs_meth,
+      id_nomenclature_bio_status,
+      id_nomenclature_bio_condition,
+      id_nomenclature_naturalness,
+      id_nomenclature_exist_proof,
+      id_nomenclature_valid_status,
+      id_nomenclature_diffusion_level,
+      id_nomenclature_life_stage,
+      id_nomenclature_sex,
+      id_nomenclature_obj_count,
+      id_nomenclature_type_count,
+      id_nomenclature_sensitivity,
+      id_nomenclature_observation_status,
+      id_nomenclature_blurring,
+      id_nomenclature_source_status,
+      id_nomenclature_info_geo_type,
+      count_min,
+      count_max,
+      cd_nom,
+      nom_cite,
+      meta_v_taxref,
+      altitude_min,
+      altitude_max,
+      the_geom_4326,
+      the_geom_point,
+      the_geom_local,
+      date_min,
+      date_max,
+      observers,
+      determiner,
+      comment_context,
+      last_action
+    )
+    SELECT
+      cft.unique_id_sinp_fs,
+      s.unique_id_sinp_grp,
+      105, --TODO 105 = PNE
+      cft.gid,
+      s.id_lot,
+      ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO','St'),
+      ref_nomenclatures.get_id_nomenclature('TYP_GRP','INVSTA'),
+      ref_nomenclatures.get_id_nomenclature('METH_OBS','0'),
+      ref_nomenclatures.get_id_nomenclature('STATUT_BIO','12'),
+      ref_nomenclatures.get_id_nomenclature('ETA_BIO','2'),
+      ref_nomenclatures.get_id_nomenclature('NATURALITE','1'),
+      ref_nomenclatures.get_id_nomenclature('PREUVE_EXIST','2'),
+      CASE WHEN s.validation = true THEN ref_nomenclatures.get_id_nomenclature('STATUT_VALID','1')
+      ELSE ref_nomenclatures.get_id_nomenclature('STATUT_VALID','2')
+      END,
+      ref_nomenclatures.get_id_nomenclature('NIV_PRECIS','5'),
+      ref_nomenclatures.get_id_nomenclature('STADE_VIE','1'),
+      ref_nomenclatures.get_id_nomenclature('SEXE','6'),
+      ref_nomenclatures.get_id_nomenclature('OBJ_DENBR','NSP'),
+      ref_nomenclatures.get_id_nomenclature('TYP_DENBR','NSP'),
+      NULL,--todo sensitivity
+      ref_nomenclatures.get_id_nomenclature('STATUT_OBS','Pr'),
+      ref_nomenclatures.get_id_nomenclature('DEE_FLOU','NON'),
+      ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE','Te'),
+      ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO','1'),
+      -1,--count_min
+      -1,--count_max
+      cft.cd_nom,
+      COALESCE(cft.taxon_saisi,'non disponible'),
+      'Taxref V11.0',
+      s.altitude_retenue,--altitude_min
+      s.altitude_retenue,--altitude_max
+      public.st_transform(s.the_geom_3857,4326),
+      public.st_transform(s.the_geom_3857,4326),
+      s.the_geom_local,
+      s.dateobs,--date_min
+      s.dateobs,--date_max
+      o.observateurs,--observers
+      o.observateurs,--determiner
+      s.remarques,
+      'c'
+    FROM v1_florestation.t_stations_fs s
+    JOIN v1_florestation.cor_fs_taxon cft ON cft.id_station = s.id_station
+    JOIN (SELECT c.id_station, array_to_string(array_agg(r.nom_role || ' ' || r.prenom_role), ', ') AS observateurs 
+    FROM v1_florestation.cor_fs_observateur c
+    JOIN utilisateurs.t_roles r ON r.id_role = c.id_role
+    JOIN v1_florestation.t_stations_fs s ON s.id_station = c.id_station
+    GROUP BY c.id_station) o ON o.id_station = s.id_station
+    WHERE s.supprime = false AND cft.supprime = false;
+
+
+-- TODO Vérifier que le champ secteur de la vue v1_florestation.v_export_fs_all n'est pas utilisé dans l'appli  symfony florestation
+-- Globalement vérifier l'usage des schémas layers (devient ref_geo), meta (devient gn_meta) dans l'appli symfony

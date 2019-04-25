@@ -5,8 +5,6 @@ import {
   ViewChild,
   AfterViewInit
 } from "@angular/core";
-import { FormGroup } from "@angular/forms";
-
 import { MapService } from "@geonature_common/map/map.service";
 import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
 import { ActivatedRoute, Router } from "@angular/router";

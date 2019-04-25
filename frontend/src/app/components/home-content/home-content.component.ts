@@ -30,14 +30,18 @@ export class HomeContentComponent implements OnInit {
   ngOnInit() {
     this._SideNavService.sidenav.open();
     this.appConfig = AppConfig;
+    if (AppConfig.FRONTEND.DISPLAY_MAP_LAST_OBS){
+      this._syntheseApi.getSyntheseData({ limit: 100 }).subscribe(result => {
+        this.lastObs = result.data;
+      });
+    }
+    if (AppConfig.FRONTEND.DISPLAY_STAT_BLOC){
+      // get general stats
+      this._syntheseApi.getSyntheseGeneralStat().subscribe(result => {
+        this.generalStat = result;
+      });
+    }
 
-    this._syntheseApi.getSyntheseData({ limit: 100 }).subscribe(result => {
-      this.lastObs = result.data;
-    });
-    // get general stats
-    this._syntheseApi.getSyntheseGeneralStat().subscribe(result => {
-      this.generalStat = result;
-    });
 
     // get module home if not already in localstorage
     if (!localStorage.getItem('modules')) {

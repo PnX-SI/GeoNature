@@ -8,7 +8,7 @@ export class ModuleService {
   // all modules exepted GEONATURE, for sidebar display
   public displayedModules: Array<any>;
 
-  constructor(private _api: DataFormService) {
+  constructor(private _api: DataFormService) {    
     this._api.getModulesList([]).subscribe(data => {
       this.modules = data;
       this.displayedModules = data.filter(mod => {
