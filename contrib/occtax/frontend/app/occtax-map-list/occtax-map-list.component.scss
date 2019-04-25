@@ -13,6 +13,9 @@
   //padding: 0px;
 }
 
+.action-btn {
+  font-size: 18px;
+}
 #search-btn {
   height: 35px;
   font-size: 15px;
@@ -25,26 +28,9 @@
   padding: 5px;
 }
 
-#add-btn-map{
-  font-size: 18px;
-  position: absolute;
-  right: 10px;
-}
-
-#filter-btn {
-  font-size: 18px;
-}
-
-#row-navbar{
+#row-navbar {
   padding-top: 5px;
   padding-left: 10px;
-}
-
-#add-btn {
-  float: right;
-  margin-top: 5px;
-  margin-right: 5px;
-  padding: 5px;
 }
 
 #refresh-filter {
