@@ -51,31 +51,31 @@ export class OccurrenceComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     document.getElementById("taxonInput").focus();
 
-    this.occurrenceForm.controls.id_nomenclature_exist_proof.valueChanges.subscribe(
+    this.occurrenceForm.get('id_nomenclature_exist_proof').valueChanges.subscribe(
       value => {
         // if exist proof is No or undefined => set error on both
         if (this.existProof.currentCdNomenclature !== "1" || value === null) {
-          this.occurrenceForm.controls.digital_proof.setValue(null);
-          this.occurrenceForm.controls.non_digital_proof.setValue(null);
-          this.occurrenceForm.controls.digital_proof.disable();
-          this.occurrenceForm.controls.non_digital_proof.disable();
+          this.occurrenceForm.get('digital_proof').setValue(null);
+          this.occurrenceForm.get('non_digital_proof').setValue(null);
+          this.occurrenceForm.get('digital_proof').disable();
+          this.occurrenceForm.get('non_digital_proof').disable();
         } else {
-          this.occurrenceForm.controls.digital_proof.enable();
-          this.occurrenceForm.controls.non_digital_proof.enable();
+          this.occurrenceForm.get('digital_proof').enable();
+          this.occurrenceForm.get('non_digital_proof').enable();
           if (
             this.occurrenceForm.value.digital_proof === null &&
             this.occurrenceForm.value.non_digital_proof === null
           ) {
             // digital proof must begin with 'http, https'...
             if (ModuleConfig.digital_proof_validator) {
-              this.occurrenceForm.controls.digital_proof.setValidators(
+              this.occurrenceForm.get('digital_proof').setValidators(
                 this.validateDigitalProof
               );
             }
-            this.occurrenceForm.controls.digital_proof.setErrors({
+            this.occurrenceForm.get('digital_proof').setErrors({
               incorrect: true
             });
-            this.occurrenceForm.controls.non_digital_proof.setErrors({
+            this.occurrenceForm.get('non_digital_proof').setErrors({
               incorrect: true
             });
           }
@@ -83,54 +83,54 @@ export class OccurrenceComponent implements OnInit, AfterViewInit {
       }
     );
 
-    this.occurrenceForm.controls.digital_proof.valueChanges
+    this.occurrenceForm.get('digital_proof').valueChanges
       .filter(value => value !== null)
       .subscribe(value => {
         // set validator if it has been removed
         if (ModuleConfig.digital_proof_validator) {
-          this.occurrenceForm.controls.digital_proof.setValidators(
+          this.occurrenceForm.get('digital_proof').setValidators(
             this.validateDigitalProof
           );
         }
         // if length = 0 set to null
         if (value.length === 0) {
-          this.occurrenceForm.controls.digital_proof.setValue(null);
+          this.occurrenceForm.get('digital_proof').setValue(null);
         }
         if (this.occurrenceForm.value.non_digital_proof === null) {
-          this.occurrenceForm.controls.non_digital_proof.updateValueAndValidity();
+          this.occurrenceForm.get('non_digital_proof').updateValueAndValidity();
         }
         if (
           value.length === 0 &&
           this.occurrenceForm.value.non_digital_proof === null
         ) {
-          this.occurrenceForm.controls.digital_proof.setErrors({
+          this.occurrenceForm.get('digital_proof').setErrors({
             incorrect: true
           });
-          this.occurrenceForm.controls.non_digital_proof.setErrors({
+          this.occurrenceForm.get('non_digital_proof').setErrors({
             incorrect: true
           });
         }
       });
 
-    this.occurrenceForm.controls.non_digital_proof.valueChanges
+    this.occurrenceForm.get('non_digital_proof').valueChanges
       .filter(value => value !== null)
       .subscribe(value => {
         // if length = 0 set to null
         if (value.length === 0) {
-          this.occurrenceForm.controls.non_digital_proof.setValue(null);
+          this.occurrenceForm.get('non_digital_proof').setValue(null);
         }
         if (this.occurrenceForm.value.digital_proof === null) {
-          this.occurrenceForm.controls.digital_proof.clearValidators();
-          this.occurrenceForm.controls.digital_proof.updateValueAndValidity();
+          this.occurrenceForm.get('digital_proof').clearValidators();
+          this.occurrenceForm.get('digital_proof').updateValueAndValidity();
         }
         if (
           value.length === 0 &&
           this.occurrenceForm.value.digital_proof === null
         ) {
-          this.occurrenceForm.controls.digital_proof.setErrors({
+          this.occurrenceForm.get('digital_proof').setErrors({
             incorrect: true
           });
-          this.occurrenceForm.controls.non_digital_proof.setErrors({
+          this.occurrenceForm.get('non_digital_proof').setErrors({
             incorrect: true
           });
         }
