@@ -28,14 +28,22 @@
                 </pnx-observers-text>
               </div>
               <ng-template #elseBlock>
-                <pnx-observers class="auto" [parentFormControl]="dynamicFormGroup.controls.observers" [idMenu]="occtaxConfig.id_observers_list"
-                  label="{{ 'Releve.Observers' | translate }}">
+                <pnx-observers 
+                    class="auto" 
+                    [parentFormControl]="dynamicFormGroup.controls.observers" 
+                    [idMenu]="occtaxConfig.id_observers_list"
+                    [multiSelect]="true" 
+                    label="{{ 'Releve.Observers' | translate }}">
                 </pnx-observers>
               </ng-template>
             </div>
             <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
-              <pnx-datasets class="auto" [displayAll]="true" label="{{ 'Releve.Dataset' | translate }}" [parentFormControl]="dynamicFormGroup.controls.id_dataset"
-                appId="14">
+              <pnx-datasets 
+                  class="auto" 
+                  [displayAll]="true" 
+                  label="{{ 'Releve.Dataset' | translate }}" 
+                  [parentFormControl]="dynamicFormGroup.controls.id_dataset"
+                  appId="14">
               </pnx-datasets>
             </div>
             <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 padding-sm">

@@ -4,6 +4,8 @@
 		bindLabel="dataset_name"
 		bindValue="id_dataset"
 		placeholder="Jeux de données"
+		[multiple]="multiSelect"
+		[clearable]="clearable"
 		[virtualScroll]="true"
 		[formControl]="parentFormControl">
 </ng-select>
