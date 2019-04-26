@@ -1,9 +1,12 @@
 <small> {{label }} </small>
-<ng-select class="pnx"
+<ng-select [ngClass]="class"
 		[items]="labels | async"
 		[bindLabel]="labelLang"
 		[bindValue]="keyValue"
 		[placeholder]="label"
 		[virtualScroll]="true"
 		[formControl]="parentFormControl">
+	<ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+        <div matTooltip="{{item[labelLang]}}"><span class="pre-wrap">{{item[labelLang]}}</span></div>
+    </ng-template>
 </ng-select>

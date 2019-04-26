@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { DataFormService } from '../data-form.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 
 @Component({
   selector: 'pnx-observers',
@@ -10,24 +10,17 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./observers.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class ObserversComponent implements OnInit {
+export class ObserversComponent extends GenericFormComponent {
   @Input() idMenu: number;
-  @Input() label: string;
-  // Disable the input: default to false
-  @Input() disabled = false;
-  @Input() parentFormControl: FormControl;
-  // display the value 'Tous' on the value list - default = false
   @Input() bindAllItem = false;
-  // search bar default to true
-  @Input() searchBar = true;
 
   public observers: Observable<Array<any>>;
 
-  constructor(private _dfService: DataFormService) {}
+  constructor(private _dfService: DataFormService) {
+    super();
+  }
 
   ngOnInit() {
-    this.disabled ? this.parentFormControl.enable() : this.parentFormControl.disable();
-
     this.observers = this._dfService
                           .getObservers(this.idMenu)
                           .pipe(

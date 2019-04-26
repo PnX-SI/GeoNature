@@ -2,16 +2,17 @@
   <div class=" row row-0">
     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
       <div *ngIf="!occtaxConfig.observers_txt; else elseBlock">
+        <div class="form-group">
         <pnx-observers [parentFormControl]="releveForm.get('properties').get('observers')" [idMenu]="occtaxConfig.id_observers_list"
-          [disabled]="fs.disabled" label="{{ 'Releve.Observers' | translate }}" [disabled]="fs.disabled" [bindAllItem]="true">
+          [disabled]="fs.disabled" label="{{ 'Releve.Observers' | translate }}" [multiSelect]="true" class="sm" [bindAllItem]="true">
         </pnx-observers>
+        </div>
       </div>
       <ng-template #elseBlock>
         <pnx-observers-text [parentFormControl]="releveForm.get('properties').get('observers_txt')" [disabled]="fs.disabled">
         </pnx-observers-text>
       </ng-template>
     </div>
-
     <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 padding-sm taxon-list">
       <img *ngIf="fs.editionMode && !fs.isEdintingOccurrence && fs.taxonsList.length === 0" src="assets/images/Spinner.gif"
         alt="Chargement..." height="40" width="40">
@@ -24,7 +25,7 @@
   </div>
   <div class="row row-0">
     <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
-      <pnx-datasets label="{{ 'MetaData.Datasets' | translate }}" [parentFormControl]="releveForm.get('properties').get('id_dataset')"
+      <pnx-datasets class="sm" label="{{ 'MetaData.Datasets' | translate }}" [parentFormControl]="releveForm.get('properties').get('id_dataset')"
         [disabled]="fs.disabled">
       </pnx-datasets>
     </div>
@@ -111,13 +112,13 @@
   <div class="row row-0">
 
     <div *ngIf="occtaxConfig.form_fields.obs_technique" class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm">
-      <pnx-nomenclature label="{{ 'Releve.ObsTechnique' | translate }}" [parentFormControl]="releveForm.get('properties').get('id_nomenclature_obs_technique')"
+      <pnx-nomenclature class="sm" label="{{ 'Releve.ObsTechnique' | translate }}" [parentFormControl]="releveForm.get('properties').get('id_nomenclature_obs_technique')"
         codeNomenclatureType="TECHNIQUE_OBS" [disabled]="fs.disabled">
       </pnx-nomenclature>
     </div>
 
     <div *ngIf="occtaxConfig.form_fields.group_type" class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm">
-      <pnx-nomenclature label="{{ 'Releve.GroupType' | translate }}" [parentFormControl]="releveForm.get('properties').get('id_nomenclature_grp_typ')"
+      <pnx-nomenclature class="sm" label="{{ 'Releve.GroupType' | translate }}" [parentFormControl]="releveForm.get('properties').get('id_nomenclature_grp_typ')"
         codeNomenclatureType="TYP_GRP" [disabled]="fs.disabled">
       </pnx-nomenclature>
     </div>

@@ -28,7 +28,6 @@
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/font-awesome/css/font-awesome.min.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/select2/dist/css/select2.min.css",
               "node_modules/leaflet/dist/leaflet.css",
               "node_modules/ngx-toastr/toastr.css",
               "node_modules/leaflet-draw/dist/leaflet.draw.css",
@@ -46,7 +45,6 @@
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/chart.js/dist/Chart.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.min.js",
-              "node_modules/select2/dist/js/select2.min.js",
               "node_modules/leaflet/dist/leaflet.js",
               "node_modules/leaflet-draw/dist/leaflet.draw.js",
               "node_modules/leaflet.markercluster/dist/leaflet.markercluster.js"

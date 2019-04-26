@@ -9,17 +9,17 @@
   </div>
   <div class="row row-0">
     <div *ngIf="occtaxConfig.form_fields.observation_status" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-      <pnx-nomenclature label="{{ 'Taxon.ObservationStatus' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_observation_status"
+      <pnx-nomenclature class="sm" label="{{ 'Taxon.ObservationStatus' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_observation_status"
         codeNomenclatureType="STATUT_OBS">
       </pnx-nomenclature>
     </div>
     <div *ngIf="occtaxConfig.form_fields.obs_method" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-      <pnx-nomenclature label="{{ 'Taxon.ObsMethod' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_obs_meth"
+      <pnx-nomenclature class="sm" label="{{ 'Taxon.ObsMethod' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_obs_meth"
         codeNomenclatureType="METH_OBS" [regne]="fs.currentTaxon.regne" [group2Inpn]="fs.currentTaxon.group2_inpn">
       </pnx-nomenclature>
     </div>
     <div *ngIf="occtaxConfig.form_fields.bio_condition" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-      <pnx-nomenclature label="{{ 'Taxon.BiologicalCondition' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_condition"
+      <pnx-nomenclature class="sm" label="{{ 'Taxon.BiologicalCondition' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_condition"
         codeNomenclatureType="ETA_BIO" [regne]="fs.currentTaxon.regne" [group2Inpn]="fs.currentTaxon.group2_inpn">
       </pnx-nomenclature>
     </div>
@@ -37,17 +37,17 @@
   <div class="collapse" id="collapseAvance">
     <div class="row row-0">
       <div *ngIf="occtaxConfig.form_fields.determination_method" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-        <pnx-nomenclature label="{{ 'Taxon.DeterminationMethod' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_determination_method"
+        <pnx-nomenclature class="sm" label="{{ 'Taxon.DeterminationMethod' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_determination_method"
           codeNomenclatureType="METH_DETERMIN" [regne]="fs.currentTaxon.regne" [group2Inpn]="fs.currentTaxon.group2_inpn">
         </pnx-nomenclature>
       </div>
       <div *ngIf="occtaxConfig.form_fields.bio_status" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-        <pnx-nomenclature label="{{ 'Taxon.BiologicalStatus' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_status"
+        <pnx-nomenclature class="sm" label="{{ 'Taxon.BiologicalStatus' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_bio_status"
           codeNomenclatureType="STATUT_BIO" [regne]="fs.currentTaxon.regne" [group2Inpn]="fs.currentTaxon.group2_inpn">
         </pnx-nomenclature>
       </div>
       <div *ngIf="occtaxConfig.form_fields.naturalness" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-        <pnx-nomenclature label="{{ 'Taxon.Naturalness' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_naturalness"
+        <pnx-nomenclature class="sm" label="{{ 'Taxon.Naturalness' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_naturalness"
           codeNomenclatureType="NATURALITE" [regne]="fs.currentTaxon.regne" [group2Inpn]="fs.currentTaxon.group2_inpn">
         </pnx-nomenclature>
       </div>
@@ -62,7 +62,7 @@
 
     <div class="row row-0">
       <div *ngIf="occtaxConfig.form_fields.exist_proof" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-        <pnx-nomenclature label="{{ 'Taxon.ExistProof' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_exist_proof"
+        <pnx-nomenclature class="sm" label="{{ 'Taxon.ExistProof' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_exist_proof"
           codeNomenclatureType="PREUVE_EXIST" [regne]="fs.currentTaxon.regne" [group2Inpn]="fs.currentTaxon.group2_inpn"
           (getCdNomenclature)="getCdNomencl($event)" #existProof>
         </pnx-nomenclature>
@@ -87,17 +87,17 @@
     </div>
     <div class="row row-0">
       <div *ngIf="occtaxConfig.form_fields.diffusion_level" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-        <pnx-nomenclature label="{{ 'Taxon.DiffusionLevel' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_diffusion_level"
+        <pnx-nomenclature class="sm" label="{{ 'Taxon.DiffusionLevel' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_diffusion_level"
           codeNomenclatureType="NIV_PRECIS">
         </pnx-nomenclature>
       </div>
       <div *ngIf="occtaxConfig.form_fields.blurring" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-        <pnx-nomenclature label="{{ 'Taxon.Blurring' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_blurring"
+        <pnx-nomenclature class="sm" label="{{ 'Taxon.Blurring' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_blurring"
           codeNomenclatureType="DEE_FLOU">
         </pnx-nomenclature>
       </div>
       <div *ngIf="occtaxConfig.form_fields.source_status" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-        <pnx-nomenclature label="{{ 'Taxon.StatusSource' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_source_status"
+        <pnx-nomenclature class="sm" label="{{ 'Taxon.StatusSource' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_source_status"
           codeNomenclatureType="STATUT_SOURCE">
         </pnx-nomenclature>
       </div>

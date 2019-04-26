@@ -360,50 +360,40 @@ li.no-bullet {
   float: right;
 }
 
-.ng-select.pnx, 
-.ng-select.pnx .ng-select-container  {            
-  min-height: 26px;
-  box-sizing: border-box;
+.ng-select .ng-dropdown-panel {
+  z-index: 3001;
 }
-
-.ng-select.pnx.ng-select-single, 
-.ng-select.pnx.ng-select-single  .ng-select-container  {            
-  height: 26px;
+.ng-select.sm,
+.ng-select.sm .ng-select-container,
+.ng-select.auto,
+.ng-select.auto .ng-select-container {
+  min-height: 0px;
 }
-
-.ng-select.pnx .ng-value-container,
-.ng-select.pnx .ng-value-container .ng-input  {            
-  padding-left: 3px;
-  position: initial;
+.ng-select.sm .ng-select-container { height: 24px; }
+.ng-select.auto .ng-select-container { height: calc(1.5em + .5rem); }
+.ng-select.sm.ng-select-multiple .ng-select-container,         
+.ng-select.auto.ng-select-multiple .ng-select-container {            
+    height: auto;
 }
-
-.ng-select.pnx .ng-option {
+.ng-select.sm .ng-option,
+.ng-select.auto .ng-option {
   font-size: 12px;
 }
-/*
-.ng-select.pnx.ng-select-single.ng-touched .ng-select-container .ng-clear-wrapper > span,
-.ng-select.pnx.ng-select-single.ng-pristine.ng-select-opened .ng-select-container .ng-clear-wrapper > span,
-.ng-select.pnx.ng-select-single.ng-pristine.ng-select-focused .ng-select-container .ng-clear-wrapper > span {
-  vertical-align: -13px;
+.ng-select.sm .ng-placeholder,
+.ng-select.auto .ng-placeholder {
+  font-size: 12px;
+  top: initial!important;
 }
-.ng-select.pnx.ng-select-single.ng-touched .ng-select-container .ng-arrow-wrapper > span,
-.ng-select.pnx.ng-select-single.ng-pristine.ng-select-opened .ng-select-container .ng-arrow-wrapper > span,
-.ng-select.pnx.ng-select-single.ng-pristine.ng-select-focused .ng-select-container .ng-arrow-wrapper > span {
-  vertical-align: -10px;
-}*/
-.ng-select.pnx.ng-select-single .ng-value-container .ng-value,
-.ng-select.pnx.ng-select-single .ng-value-container .ng-placeholder {
+.ng-select.sm .ng-value,
+.ng-select.auto .ng-value {
   font-size: 12px;
 }
-
-.ng-select.pnx.ng-select-single.ng-touched .ng-value-container .ng-value,
-.ng-select.pnx.ng-select-single.ng-pristine.ng-select-opened .ng-value-container .ng-value,
-.ng-select.pnx.ng-select-single.ng-touched .ng-value-container .ng-placeholder,
-.ng-select.pnx.ng-select-single.ng-pristine.ng-select-opened .ng-value-container .ng-placeholder,
-.ng-select.pnx.ng-select-single.ng-pristine.ng-select-focused .ng-value-container .ng-placeholder {
-  margin-top: 5px;
+.ng-select.sm.ng-select-single .ng-select-container .ng-value-container .ng-input,
+.ng-select.auto.ng-select-single .ng-select-container .ng-value-container .ng-input {
+  top: 50%;
+  transform: translateY(-50%);
 }
-
-.ng-select.pnx.ng-select-multiple .ng-select-container .ng-value-container .ng-value {
-  margin-bottom: 0px;
-} 
+.ng-select.sm .ng-input input,
+.ng-select.auto .ng-input input {
+  font-size: 13px;
+}
