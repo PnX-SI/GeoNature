@@ -22,8 +22,6 @@ export class MarkerComponent implements OnInit, OnChanges {
     this.zoomLevel = this.zoomLevel || AppConfig.MAPCONFIG.ZOOM_LEVEL_RELEVE;
     this.setMarkerLegend();
     this.enableMarkerOnClick();
-    console.log('on init');
-    console.log(this.mapservice.firstLayerFromMap);
 
     
     this.mapservice.isMarkerEditing$.subscribe(isEditing => {

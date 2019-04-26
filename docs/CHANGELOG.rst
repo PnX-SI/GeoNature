@@ -7,12 +7,15 @@ CHANGELOG
 
 ** Nouveautés **
 
-* Ajout du mécanimse du calcul des couleur par taxon
+* Ajout du mécanimse du calcul des couleurs par taxon
+* Amélioration de l'ergonomie sur le map/list d'Occtax
 
 **Corrections**
 
 * Correction de la vérification du CRUVED lorsque get_role = False
 * Correction affichage des MultiPoint sur la synthese
+* Retour du composant GPS permettant de charger un marker à partir des coordonnées X et y
+
 
 2.0.1 (2019-03-18)
 ------------------

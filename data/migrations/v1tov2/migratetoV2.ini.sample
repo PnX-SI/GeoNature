@@ -24,5 +24,7 @@ import_contactflore=true
 import_contactinv=true
 #import "florestation" schema content
 import_florestation=true
+#import "florepatri" schema content
+import_florepatri=true
 #import "synthese" schema content
 import_synthese=true

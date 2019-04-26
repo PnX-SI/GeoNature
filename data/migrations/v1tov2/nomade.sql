@@ -29,6 +29,7 @@ CREATE OR REPLACE VIEW gn_synchronomade.v_nomade_cor_area_taxon AS
    FROM gn_synthese.cor_area_taxon cor
     JOIN taxonomie.bib_noms b ON cor.cd_nom = b.cd_nom
     JOIN ref_geo.l_areas l ON l.id_area = cor.id_area
-    WHERE l.id_type = 24;
+    WHERE l.id_type = (SELECT id_type FROM ref_geo.bib_areas_types WHERE type_code = 'UG');
+
 
 -- TODO: import de la table public.v_mobile_recherche dans gn_synchronomade.v_mobile_recherche
