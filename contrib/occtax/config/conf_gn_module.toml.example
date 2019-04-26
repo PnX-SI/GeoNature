@@ -24,9 +24,9 @@ releve_map_zoom_level = 6
 
 # Columns which are default display in the list
 default_maplist_columns = [
-    { prop = "taxons", name = "Taxon" },
-    { prop = "date_min", name = "Date début" },
-    { prop = "observateurs", name = "Observateurs" },
+    { prop = "taxons", name = "Taxon(s)" },
+    { prop = "date_min", name = "Date début", max_width = "100" },
+    { prop = "observateurs", name = "Observateur(s)" },
     { prop = "dataset_name", name = "Jeu de données" }
 ]
 
@@ -120,7 +120,7 @@ export_columns =  [
 
 # afficher l'outil pour pointer un marker à partir des coordonnées X/Y
 ENABLE_GPS_TOOL = true
-# Activer l'outil leaflet draw qui permet de charger des fichier GPS, GeoJSON, et KML
+# Activer l'outil leaflet filelayer qui permet de charger des fichier GPS, GeoJSON, et KML
 ENABLE_UPLOAD_TOOL = true
 
 

@@ -108,11 +108,6 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
     this.advandedFilterOpen = !this.advandedFilterOpen;
   }
 
-  dateComparator(a: Date, b: Date) {
-    if (a < b) return -1;
-    if (a > b) return 1;
-  }
-
   closeAdvancedFilters() {
     this.advandedFilterOpen = false;
   }

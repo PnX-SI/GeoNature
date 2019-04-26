@@ -74,6 +74,13 @@ then
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f florestation.sql  &>> ../../../var/log/migratetov2.log
 fi
 
+#schema v1_florepatri
+if $import_florepatri
+then
+    echo "Get florepatri content from geonaturedb1"
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f florepatri.sql  &>> ../../../var/log/migratetov2.log
+fi
+
 #schema gn_synthese
 if $import_synthese
 then

@@ -1,21 +1,23 @@
 <div class="card" id="specific-filter">
   <!-- SPECFIC FILTERS -->
   <div class="row row-sm" id="row-navbar">
-    <button 
-      [disabled]="userCruved?.C == '0'"
-      id="add-btn-map" 
-      class="btn btn-outline-success"
-      (click)="onAddReleve()"> 
-      <i class="fa fa-plus-circle" aria-hidden="true"> </i> {{ 'Releve.AddReleve' | translate }}
-    </button>
-    <button class="btn btn-outline-primary"
-      id="filter-btn"
-      data-toggle="collapse"
-      data-target="#collapseAvance">
-        Filtrer <i class="fa fa-sliders" aria-hidden="true"></i>
-    </button>
+    <div class="ml-auto mr-3 action-btn">
+      <button class="btn btn-outline-primary"
+        data-toggle="collapse"
+        data-target="#collapseAvance">
+          Filtrer <i class="fa fa-sliders" aria-hidden="true"></i>
+      </button>
+      <button 
+        [disabled]="userCruved?.C == '0'"
+        class="btn btn-outline-success"
+        (click)="onAddReleve()"> 
+        <i class="fa fa-plus-circle" aria-hidden="true"> </i> {{ 'Releve.AddReleve' | translate }}
+      </button>
+
+    </div>
+
   </div>
-      <div class="collapse" id="collapseAvance">
+    <div class="collapse" id="collapseAvance">
         <div class="row row-sm">
           <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
               <pnx-taxonomy label="{{ 'Taxon.Taxon' | translate }}" [parentFormControl]="dynamicFormGroup.controls.cd_nom"
@@ -89,7 +91,7 @@
 
   <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 padding-sm">
     <!-- MAP -->
-    <pnx-map-list [idName]="idName" height="85vh">
+    <pnx-map-list [idName]="idName" height="89vh">
     </pnx-map-list>
   </div>
   <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 padding-sm tab-container">
@@ -136,29 +138,36 @@
 
 
       <!-- DATA COLOMNS -->
-      <span *ngFor="let col of mapListService.displayColumns" >
-        <!-- custom columns for date in order to format them and order them -->
-          <span *ngIf="col.prop == 'date_max' || col.prop == 'date_min'; else notDate">
-              <ngx-datatable-column
-                [comparator]="dateComparator"
-                [maxWidth]="col.max_width" 
-                [name]='col.name' 
-                [prop]='col.prop' 
-                [sortable]="true">
-                  <ng-template let-row="row" ngx-datatable-cell-template>
-                    {{row[col.prop] | date:'dd-MM-yyyy'}}
+      <ng-container *ngFor="let col of mapListService.displayColumns" >
+          <ngx-datatable-column [ngSwitch]="col.prop"
+            [maxWidth]="col.max_width" 
+            [name]='col.name' 
+            [prop]='col.prop' 
+            [sortable]="true">
+              <ng-template *ngSwitchCase="'date_min'" let-row="row" ngx-datatable-cell-template [matTooltip]>
+                {{row[col.prop] | date:'dd-MM-yyyy'}}
+              </ng-template>
+              <ng-template *ngSwitchCase="'taxons'" let-row="row" ngx-datatable-cell-template >
+                 <span [matTooltip]="row.taxons" matTooltipPosition="left">
+                    <span class='badge badge-dark'> {{row.nb_occ}} </span> {{row.taxons}}
+                 </span> 
+              </ng-template>
+              <ng-template *ngSwitchCase="'observateurs'" let-row="row" ngx-datatable-cell-template>
+                  <span [matTooltip]="row.observateurs" matTooltipPosition="left">
+                    <span class='badge badge-dark'> {{row.nb_observer}} </span> {{row.observateurs}}
+                  </span>
+                </ng-template>
+                <ng-template *ngSwitchDefault let-row="row" ngx-datatable-cell-template>
+                    <span [matTooltip]="row[col.prop]" matTooltipPosition="left">
+                        {{row[col.prop]}}
+                    </span>
                   </ng-template>
-              </ngx-datatable-column>
-          </span>
-          <ng-template #notDate>
-              <ngx-datatable-column  [name]="col.name " [prop]="col.prop">
-            </ngx-datatable-column>
-        </ng-template>
+          </ngx-datatable-column>
 
-      </span>
+      </ng-container>
+
     </ngx-datatable>
-    <button id="download-btn" class="btn btn-primary box-shadow" (click)="openModalDownload($event, modalDownload)"
-      matTooltip="">
+    <button id="download-btn" class="btn btn-primary box-shadow" (click)="openModalDownload($event, modalDownload)">
       <i class="fa fa-download" aria-hidden="true">
       </i>
       <small> {{ 'DownloadData' | translate }} </small>
