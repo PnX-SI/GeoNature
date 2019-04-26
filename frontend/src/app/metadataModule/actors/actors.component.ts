@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormArray } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 
 @Component({
@@ -9,21 +11,32 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
 
 export class ActorComponent implements OnInit {
   @Input() parentFormArray: FormArray;
-  public organisms: Array<any>;
-  public roles: Array<any>;
+  public organisms: Observable<Array<any>>;
+  public roles: Observable<Array<any>>;
   constructor(private _dfs: DataFormService) { }
 
   ngOnInit() {
-    this._dfs.getOrganisms().subscribe(data => {
-      this.organisms = data;
-    });
-    this._dfs.getRoles({'group': false}).subscribe(data => {
-      this.roles = data;
-    });
+    this.getOrganisms();
+    this.getRoles();
   }
   deleteFormArray(i) {
     this.parentFormArray.removeAt(i);
   }
 
+  getOrganisms(){
+    this.organisms = this._dfs
+                          .getOrganisms()
+                          .pipe(
+                            map(data => data)
+                          );
+  }
+
+  getRoles(){
+    this.roles = this._dfs
+                          .getRoles({'group': false})
+                          .pipe(
+                            map(data => data)
+                          );
+  }
 
 }

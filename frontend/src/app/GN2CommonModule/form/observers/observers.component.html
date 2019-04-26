@@ -2,6 +2,7 @@
 <ng-select [ngClass]="class"
 		[items]="observers | async"
 		bindLabel="nom_complet"
+		[bindValue]="bindValue"
 		[multiple]="multiSelect"
 		[clearable]="clearable"
 		placeholder="Observateur(s)"

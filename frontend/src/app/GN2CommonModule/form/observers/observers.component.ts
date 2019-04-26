@@ -13,6 +13,7 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
 export class ObserversComponent extends GenericFormComponent {
   @Input() idMenu: number;
   @Input() bindAllItem = false;
+  @Input() bindValue: string = null;
 
   public observers: Observable<Array<any>>;
 

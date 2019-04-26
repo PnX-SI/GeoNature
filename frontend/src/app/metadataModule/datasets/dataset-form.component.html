@@ -11,28 +11,27 @@
       
   
               <small>Cadre d'acquisition </small>
-              <div class="input-group">
-                <!-- TODO select class="form-control form-control-sm"
-                  [disableControl]="disabled" [formControl]="datasetForm.controls.id_acquisition_framework">
-                  <option *ngFor="let ac of acquisitionFrameworks" [ngValue]="ac.id_acquisition_framework">
-                    {{ac.acquisition_framework_name}}
-                  </option>
-                </select-->
-                <select class="form-control form-control-sm"
-                  [disableControl]="'disabled'" [formControl]="datasetForm.controls.id_acquisition_framework">
-                  <option *ngFor="let ac of acquisitionFrameworks" [ngValue]="ac.id_acquisition_framework">
-                    {{ac.acquisition_framework_name}}
-                  </option>
-                </select>
-              </div>
+              <ng-select 
+                class="auto"
+                [items]="acquisitionFrameworks | async"
+                bindLabel="acquisition_framework_name"
+                bindValue="id_acquisition_framework"
+                [disabled]="disabled"
+                placeholder="Cadres d'acquisition"
+                [virtualScroll]="true"
+                [formControl]="datasetForm.get('id_acquisition_framework')">
+                <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+                  <div matTooltip="{{item.acquisition_framework_name}}"><span class="pre-wrap">{{item.acquisition_framework_name}}</span></div>
+                </ng-template>
+              </ng-select>
       
               <small>Nom du JDD </small>
               <div class="form-group">
                   <div class="input-group">
                       <input class="form-control form-control-sm"
-                        type="text" name="" id="" [formControl]="datasetForm.controls.dataset_name">
+                        type="text" name="" id="" [formControl]="datasetForm.get('dataset_name')">
                     </div>
-                <small *ngIf="datasetForm.controls.dataset_name.errors?.maxlength" class="error" style="color:red">
+                <small *ngIf="datasetForm.get('dataset_name').errors?.maxlength" class="error" style="color:red">
                   Le nom du JDD doit être inférieur ou égal à 150 caractères
                 </small>
               </div>
@@ -41,10 +40,10 @@
               <div class="form-group">
                   <div class="input-group">
                       <input class="form-control form-control-sm"
-                        type="text" name="" id="" [formControl]="datasetForm.controls.dataset_shortname">
+                        type="text" name="" id="" [formControl]="datasetForm.get('dataset_shortname')">
       
                     </div>
-                <small *ngIf="datasetForm.controls.dataset_shortname.errors?.maxlength" class="error" style="color:red">
+                <small *ngIf="datasetForm.get('dataset_shortname').errors?.maxlength" class="error" style="color:red">
                   Le nom court du JDD doit être inférieur ou égal à 30 caractères
                 </small>
               </div>
@@ -52,49 +51,67 @@
               <small>Description</small>
               <div class="input-group">
                 <input class="form-control form-control-sm"
-                  type="text" name="" id="" [formControl]="datasetForm.controls.dataset_desc">
+                  type="text" name="" id="" [formControl]="datasetForm.get('dataset_desc')">
               </div>
       
               <small>Domaine</small>
               <div class="form-check" padding-lg>
-                <input [formControl]="datasetForm.controls.terrestrial_domain" class="" type="checkbox" name="domaine" id="terrestre"
+                <input [formControl]="datasetForm.get('terrestrial_domain')" class="" type="checkbox" name="domaine" id="terrestre"
                   value="true">
                 <small class="" for="terrestre">
                   Domaine terrestre
                 </small>
               </div>
               <div class="form-check">
-                <input [formControl]="datasetForm.controls.marine_domain" type="checkbox" name="domaine" id="marin">
+                <input [formControl]="datasetForm.get('marine_domain')" type="checkbox" name="domaine" id="marin">
                 <small class="" for="marin">
                   Domaine marin
                 </small>
               </div>
               
-            <pnx-nomenclature label="Type de données" [parentFormControl]="datasetForm.controls.id_nomenclature_data_type"
-              codeNomenclatureType="DATA_TYP">
-            </pnx-nomenclature>
+              <pnx-nomenclature 
+                  class="auto"
+                  label="Type de données" 
+                  [parentFormControl]="datasetForm.get('id_nomenclature_data_type')"
+                  codeNomenclatureType="DATA_TYP">
+              </pnx-nomenclature>
 
-              <pnx-nomenclature label="Objectif" [parentFormControl]="datasetForm.controls.id_nomenclature_dataset_objectif"
-                codeNomenclatureType="JDD_OBJECTIFS">
+              <pnx-nomenclature 
+                  class="auto"
+                  label="Objectif" 
+                  [parentFormControl]="datasetForm.get('id_nomenclature_dataset_objectif')"
+                  codeNomenclatureType="JDD_OBJECTIFS">
               </pnx-nomenclature>
       
-              <pnx-nomenclature label="Méthode de collècte" [parentFormControl]="datasetForm.controls.id_nomenclature_collecting_method"
-                codeNomenclatureType="METHO_RECUEIL">
+              <pnx-nomenclature 
+                  class="auto"
+                  label="Méthode de collècte" 
+                  [parentFormControl]="datasetForm.get('id_nomenclature_collecting_method')"
+                  codeNomenclatureType="METHO_RECUEIL">
               </pnx-nomenclature>
       
-              <pnx-nomenclature label="Origine des données" [parentFormControl]="datasetForm.controls.id_nomenclature_data_origin"
-                codeNomenclatureType="DS_PUBLIQUE">
+              <pnx-nomenclature 
+                  class="auto"
+                  label="Origine des données" 
+                  [parentFormControl]="datasetForm.get('id_nomenclature_data_origin')"
+                  codeNomenclatureType="DS_PUBLIQUE">
               </pnx-nomenclature>
       
-              <pnx-nomenclature label="Statut source" [parentFormControl]="datasetForm.controls.id_nomenclature_source_status"
-                codeNomenclatureType="STATUT_SOURCE">
+              <pnx-nomenclature 
+                  class="auto"
+                  label="Statut source" 
+                  [parentFormControl]="datasetForm.get('id_nomenclature_source_status')"
+                  codeNomenclatureType="STATUT_SOURCE">
               </pnx-nomenclature>
       
-              <pnx-nomenclature label="Type de ressource" [parentFormControl]="datasetForm.controls.id_nomenclature_resource_type"
-                codeNomenclatureType="RESOURCE_TYP">
+              <pnx-nomenclature
+                  class="auto"
+                  label="Type de ressource" 
+                  [parentFormControl]="datasetForm.get('id_nomenclature_resource_type')"
+                  codeNomenclatureType="RESOURCE_TYP">
               </pnx-nomenclature>
       
-              <input [formControl]="datasetForm.controls.active" type="checkbox" name="active" id="active" [value]="true">
+              <input [formControl]="datasetForm.get('active')" type="checkbox" name="active" id="active" [value]="true">
               <small class="" for="active">
                 Actif
               </small>

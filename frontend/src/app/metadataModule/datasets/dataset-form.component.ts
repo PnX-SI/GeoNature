@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { AppConfig } from '@geonature_config/app.config';
 import { FormArray } from '@angular/forms/src/model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -67,15 +69,20 @@ export class DatasetFormComponent implements OnInit {
 
     this.cor_dataset_actor_array = this._fb.array([]);
 
-    this._dfs.getAcquisitionFrameworks().subscribe(data => {
-      this.acquisitionFrameworks = data;
-    });
+    this.getAF();
 
     this.cor_dataset_actor_array.push(this._formService.generateCorDatasetActorForm());
   }
 
   addFormArray(): void {
     this.cor_dataset_actor_array.push(this._formService.generateCorDatasetActorForm());
+  }
+
+  getAF() {
+    this.acquisitionFrameworks = this._dfs.getAcquisitionFrameworks()
+                                          .pipe(
+                                            map(data => data)
+                                          );
   }
 
   getDataset(id) {
