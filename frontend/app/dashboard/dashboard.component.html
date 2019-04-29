@@ -1,0 +1,16 @@
+<h3> It works !</h3>
+
+
+<pnx-map height="85vh">
+    <pnx-marker (markerChanged)="test($event)" ></pnx-marker>
+    <pnx-geojson [geojson]="myCommunes" [onEachFeature]="showData"></pnx-geojson>
+</pnx-map>
+
+<pnx-taxonomy [parentFormControl]="taxonControl" [charNumber]="3" [idList]="500" label="lalal">
+
+</pnx-taxonomy>
+
+<button> nb obs</button>
+<button (click)= "changeMap()"> nb taxon</button>
+
+{{taxonControl.value |json}}
