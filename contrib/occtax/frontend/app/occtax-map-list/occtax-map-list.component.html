@@ -136,7 +136,7 @@
             [name]='col.name' 
             [prop]='col.prop' 
             [sortable]="true">
-              <ng-template *ngSwitchCase="'date_min'" let-row="row" ngx-datatable-cell-template [matTooltip]>
+              <ng-template *ngSwitchCase="'date_min'" let-row="row" ngx-datatable-cell-template>
                 {{row[col.prop] | date:'dd-MM-yyyy'}}
               </ng-template>
               <ng-template *ngSwitchCase="'taxons'" let-row="row" ngx-datatable-cell-template >
