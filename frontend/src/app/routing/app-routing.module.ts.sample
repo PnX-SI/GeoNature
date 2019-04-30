@@ -31,6 +31,7 @@ const defaultRoutes: Routes = [
         canActivate: [ModuleGuardService],
         data: { module_code: 'admin' }
       },
+      { path: 'user',data: { module_code: 'user' }, canActivate: [ModuleGuardService], loadChildren: '@geonature/userModule/user.module#UserModule'},
 
       { path: '**',  component: PageNotFoundComponent },
      ] },
