@@ -211,3 +211,9 @@ CREATE TRIGGER tri_update_cor_area_taxon_update_cd_nom
   ON gn_synthese.synthese
   FOR EACH ROW
   EXECUTE PROCEDURE gn_synthese.fct_tri_update_cd_nom();
+
+
+-- Ajout type maille 5k
+
+INSERT INTO ref_geo.bib_areas_types (type_name, type_code, type_desc, ref_name, ref_version) VALUES
+('Mailles5*5', 'M5', 'Type maille INPN 5*5km', NULL,NULL);
