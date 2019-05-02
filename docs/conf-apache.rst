@@ -29,19 +29,17 @@ Pour TaxHub, modifier le fichier de configuration Apache ``/etc/apache2/sites-av
     # Fin de configuration de TaxHub
 
 
-Pour UsersHub, modifier le fichier de configuration Apache ``/etc/apache2/sites-available/usershub.conf`` et remplacer son contenu par :
+Pour UsersHub (versions 2.x), modifier le fichier de configuration Apache ``/etc/apache2/sites-available/usershub.conf`` et remplacer son contenu par :
 
 ::
 	
     # Configuration UsersHub sur sous-domaine
 	<VirtualHost *:80>
 		ServerName usershub.mondomaine.fr
-		DocumentRoot /home/geonatureadmin/usershub/web
-
-		<Directory /home/geonatureadmin/usershub/web>
-			AllowOverride All
-			Require all granted
-		</Directory>
+		<Location />
+	                ProxyPass http://127.0.0.1:5001/
+	                ProxyPassReverse http://127.0.0.1:5001/
+	        </Location>
 	</VirtualHost>
     # Fin de configuration de UsersHub
 
