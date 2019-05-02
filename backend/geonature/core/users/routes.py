@@ -71,6 +71,15 @@ def insert_role(user=None):
     DB.session.flush()
     return user.as_dict()
 
+@routes.route("/role_test", methods=["GET"])
+@permissions.check_cruved_scope("R", True)
+@json_resp
+def update_role(info_role):
+    """
+        Modifie le role de l'utilisateur du token en cours
+    """
+    return info_role.id_role
+
 
 @routes.route("/cor_role", methods=["POST"])
 @json_resp

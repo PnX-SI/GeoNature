@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { AppConfig } from '@geonature_config/app.config';
 import { AuthService, User } from '@geonature/components/auth/auth.service';
 import { Role, RoleFormService} from './services/form.service';
+import { UserDataService} from './services/user-data.service';
 
 @Component({
   selector: 'pnx-user',
@@ -18,7 +19,8 @@ export class UserComponent implements OnInit {
 
   constructor(
   	private authService: AuthService,
-  	private roleFormService: RoleFormService
+  	private roleFormService: RoleFormService,
+  	private userService: UserDataService
   ) {}
 
   ngOnInit() {
@@ -33,6 +35,7 @@ export class UserComponent implements OnInit {
 	save() {
 		if (this.form.valid) {
 			console.log(this.form.value);
+			this.userService.put(this.form.value).subscribe(res => console.log(res));
 		}
 	}
 
