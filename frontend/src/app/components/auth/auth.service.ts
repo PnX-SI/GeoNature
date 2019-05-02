@@ -8,7 +8,7 @@ import { CookieService } from 'ng2-cookies';
 
 export interface User {
   user_login: string;
-  id_role: string;
+  id_role: number;
   id_organisme: string;
   prenom_role?: string;
   nom_role?: string;

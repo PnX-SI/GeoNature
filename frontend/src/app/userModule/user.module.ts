@@ -4,6 +4,11 @@ import { Routes, RouterModule } from '@angular/router';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 //Components
 import { UserComponent } from './user.component'
+//Services
+import { 
+	RoleFormService,
+	UserDataService 
+} from './services'
 
 const routes: Routes = [{ path: '', component: UserComponent }];
 
@@ -13,7 +18,8 @@ const routes: Routes = [{ path: '', component: UserComponent }];
     UserComponent
   ],
   providers: [
-    
+  	UserDataService,
+    RoleFormService
   ]
 })
 export class UserModule {}
