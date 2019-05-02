@@ -1,7 +1,6 @@
 #!/bin/bash
 currentdir=${PWD##*/}
 parentdir="$(dirname "$(pwd)")"
-
 if [ $currentdir != 'install' ]
 then
     echo 'Please run the script from the install directory'
@@ -307,11 +306,41 @@ then
         echo "" &>> var/log/install_db.log
         echo "Insert data in l_areas and li_municipalities tables" &>> var/log/install_db.log
         echo "--------------------" &>> var/log/install_db.log
-        export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/ref_geo_data.sql  &>> var/log/install_db.log
+        export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/ref_geo_municipalities.sql  &>> var/log/install_db.log
         echo "" &>> var/log/install_db.log
         echo "Drop french municipalities temp table" &>> var/log/install_db.log
         echo "--------------------" &>> var/log/install_db.log
         sudo -n -u postgres -s psql -d $db_name -c "DROP TABLE ref_geo.temp_fr_municipalities;" &>> var/log/install_db.log
+    fi
+
+    if $install_grid_layers
+    then
+        echo "Insert INPN grids"
+        echo "" &>> var/log/install_db.log
+        echo "" &>> var/log/install_db.log
+        echo "--------------------" &>> var/log/install_db.log
+        echo "Insert INPN grids" &>> var/log/install_db.log
+        echo "--------------------" &>> var/log/install_db.log
+        echo "" &>> var/log/install_db.log
+        if [ ! -f 'tmp/geonature/inpn_grids.zip' ]
+        then
+            wget  --cache=off https://geonature.fr/data/inpn/layers/2019/inpn_grids.zip -P tmp/geonature
+        else
+            echo "tmp/geonature/inpn_grids.zip already exist"
+        fi
+        unzip tmp/geonature/inpn_grids.zip -d tmp/geonature
+        echo "Insert grid layers... (This may take a few minutes)"
+        sudo -n -u postgres -s psql -d $db_name -f tmp/geonature/inpn_grids.sql &>> var/log/install_db.log
+        echo "" &>> var/log/install_db.log
+        echo "Restore $user_pg owner" &>> var/log/install_db.log
+        echo "--------------------" &>> var/log/install_db.log
+        sudo -n -u postgres -s psql -d $db_name -c "ALTER TABLE ref_geo.temp_grids_1 OWNER TO $user_pg;" &>> var/log/install_db.log
+        sudo -n -u postgres -s psql -d $db_name -c "ALTER TABLE ref_geo.temp_grids_5 OWNER TO $user_pg;" &>> var/log/install_db.log
+        sudo -n -u postgres -s psql -d $db_name -c "ALTER TABLE ref_geo.temp_grids_10 OWNER TO $user_pg;" &>> var/log/install_db.log
+        echo "" &>> var/log/install_db.log
+        echo "Insert data in l_areas and li_grids tables" &>> var/log/install_db.log
+        echo "--------------------" &>> var/log/install_db.log
+        export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/ref_geo_grids.sql  &>> var/log/install_db.log
     fi
 
     if $install_default_dem
@@ -443,7 +472,6 @@ then
         wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata_taxons_example.sql -P tmp/taxhub
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/taxhub/taxhubdata_taxons_example.sql  &>> var/log/install_db.log
 
-    
     fi
 
     if $install_default_dem
@@ -453,13 +481,13 @@ then
     fi
 
     # Mise en place du cron pour recalculer les couleurs des taxons
-    # si le fichier est déja désampler, on ne refait pas le cron
-    if [ ! -f $my_current_geonature_directory/install/calculate_color_cron.sh ]
+    # si le fichier est déja désamplé, on ne refait pas le cron
+    if [ ! -f $parentdir/install/calculate_color_cron.sh ]
         then
-        cp $my_current_geonature_directory/install/calculate_color_cron.sh.sample $my_current_geonature_directory/install/calculate_color_cron.sh
-        sed -i "s%GEONATURE_PATH%${my_current_geonature_directory}%" $my_current_geonature_directory/install/calculate_color_cron.sh
+        cp $parentdir/install/calculate_color_cron.sh.sample $parentdir/install/calculate_color_cron.sh
+        sed -i "s%GEONATURE_PATH%${parentdir}%" $parentdir/install/calculate_color_cron.sh
         # cron toute les nuit à 00:00
-        (crontab -l 2>/dev/null; echo "00 00 * * * $my_current_geonature_directory/install/calculate_color_cron.sh") | crontab -
+        (crontab -l 2>/dev/null; echo "00 00 * * * $parentdir/install/calculate_color_cron.sh") | crontab -
     fi
 fi
 
