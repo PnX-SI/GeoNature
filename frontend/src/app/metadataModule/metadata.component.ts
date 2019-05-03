@@ -26,6 +26,8 @@ export class MetadataPaginator extends MatPaginatorIntl {
   ]
 })
 export class MetadataComponent implements OnInit {
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   
   datasets = [];
   acquisitionFrameworks = [];
@@ -99,13 +101,20 @@ export class MetadataComponent implements OnInit {
 	  				//si un cadre matche on affiche tout ses JDD
 	  				af.datasetsTemp = af.datasets;
 	  				return true;
-	  			}
-	  			//Sinon on on filtre les JDD qui matchent eventuellement.
-	  			af.datasetsTemp = af.datasets.filter(ds=>ds.dataset_name.toLowerCase().indexOf(this.researchTerm) !== -1);
-	  			return af.datasetsTemp.length ;
-	  		}
-  		}
-  	)
+	  			} 
+
+          //Sinon on on filtre les JDD qui matchent eventuellement.
+          if (af.datasets) {
+            af.datasetsTemp = af.datasets.filter(ds=>ds.dataset_name.toLowerCase().indexOf(this.researchTerm) !== -1);
+            return af.datasetsTemp.length;
+          }
+          return false;
+        }
+      }
+    )
+    //retour à la premiere page du tableau pour voir les résultats
+    this.paginator.pageIndex = 0;
+    this.activePage = 0;
   }
 
   isDisplayed(idx: number) {
