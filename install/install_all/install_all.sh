@@ -286,7 +286,7 @@ sudo a2enmod proxy_http
 if [ "$install_usershub_app" = true ]; then
     echo "Installation de l'application Usershub"
 
-    wget https://github.com/PnEcrins/UsersHub/archive/$usershub_release.zip
+    wget https://github.com/PnX-SI/UsersHub/archive/$usershub_release.zip
     unzip $usershub_release.zip
     rm $usershub_release.zip
     mv UsersHub-$usershub_release /home/`whoami`/usershub/
