@@ -9,6 +9,7 @@ CHANGELOG
 
 * Ajout du mécanimse du calcul des couleurs par taxon
 * Amélioration de l'ergonomie sur le map/list d'Occtax
+* Les mailles INPN (1,5,10km) sont fournies à l'installation (paramètre)
 
 **Corrections**
 

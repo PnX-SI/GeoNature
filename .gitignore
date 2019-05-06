@@ -15,6 +15,7 @@ var/
 data/migrations/v1tov2/old/v1_compat.ini
 data/migrations/v1tov2/old/v1_compat.log
 data/migrations/v1tov2/migratetoV2.ini
+install/calculate_color_cron.sh
 
 config.py
 backend/static/medias/*

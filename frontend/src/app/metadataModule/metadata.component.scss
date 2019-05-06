@@ -1,0 +1,26 @@
+.mat-expansion-panel-header.mat-expanded {
+	background-color: #f7f7f7!important;
+}
+
+.mat-expansion-panel-header-title {
+    color: #03738C;
+}
+
+.mat-expansion-panel-header-description {
+
+}
+
+.mat-paginator {
+	margin-top: 5px;
+	justify-content: flex-start;
+}
+
+.bt-edit {
+	font-size: 22px;
+    margin-right: 8px;
+    display: flex;
+}
+
+.bt-edit:hover {
+	text-decoration: none;
+}
