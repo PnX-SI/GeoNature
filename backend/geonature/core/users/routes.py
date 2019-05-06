@@ -1,8 +1,11 @@
-from flask import Blueprint, request
+import requests
+
+from flask import Blueprint, request, current_app, Response
 
 from geonature.utils.env import DB
 from geonature.core.users.models import VUserslistForallMenu, BibOrganismes, CorRole
 from pypnusershub.db.models import User
+from pypnusershub.routes_register import bp as user_api, req_json_or_text
 
 from geonature.utils.utilssqlalchemy import json_resp
 from geonature.core.gn_permissions import decorators as permissions
@@ -11,6 +14,8 @@ from geonature.core.gn_meta.repositories import get_datasets_cruved
 
 
 routes = Blueprint("users", __name__)
+s = requests.Session()
+config = current_app.config
 
 
 @routes.route("/menu/<int:id_menu>", methods=["GET"])
@@ -71,14 +76,32 @@ def insert_role(user=None):
     DB.session.flush()
     return user.as_dict()
 
-@routes.route("/role_test", methods=["GET"])
+@routes.route("/role", methods=["PUT"])
 @permissions.check_cruved_scope("R", True)
 @json_resp
 def update_role(info_role):
     """
         Modifie le role de l'utilisateur du token en cours
     """
-    return info_role.id_role
+    data = dict(request.get_json())
+
+    user = DB.session.query(User).get(info_role.id_role)
+
+    if user is None:
+        return {"message": "Droit insuffisant"}, 403
+
+    attliste = [k for k in data]
+    for att in attliste:
+        if not getattr(User, att, False):
+            data.pop(att)
+
+    for key, value in data.items():
+        setattr(user, key, value)
+
+    DB.session.merge(user)
+    DB.session.commit()
+    DB.session.flush()
+    return user.as_dict()
 
 
 @routes.route("/cor_role", methods=["POST"])

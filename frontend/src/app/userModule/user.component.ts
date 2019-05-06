@@ -25,7 +25,6 @@ export class UserComponent implements OnInit {
 
   ngOnInit() {
   	this.form = this.getForm(this.authService.getCurrentUser().id_role);
-  	console.log(this.form);
   }
 
   getForm(role: number): FormGroup {
@@ -34,8 +33,8 @@ export class UserComponent implements OnInit {
 
 	save() {
 		if (this.form.valid) {
-			console.log(this.form.value);
-			this.userService.put(this.form.value).subscribe(res => console.log(res));
+			this.userService.put(this.form.value)
+            .subscribe(res => this.form.disable());
 		}
 	}
 

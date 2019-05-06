@@ -25,10 +25,9 @@ export class UserDataService {
   }
 
   put(role: Role): Observable<Role> {
-    console.log("put");
-    const options = JSON.stringify(role);
+    const options = role;
     return this._http
-            .get<any>(`${AppConfig.API_ENDPOINT}/users/role_test`)
+            .put<any>(`${AppConfig.API_ENDPOINT}/users/role`, options)
             .pipe(
                 map((res: Role) => { 
                   return res;
