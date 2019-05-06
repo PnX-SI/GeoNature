@@ -7,7 +7,9 @@ import {
   MatTooltipModule,
   MatListModule,
   MatIconModule,
-  MatToolbarModule
+  MatToolbarModule,
+  MatExpansionModule,
+  MatPaginatorModule
 } from '@angular/material';
 
 import { Http } from '@angular/http';
@@ -78,6 +80,8 @@ export function HttpLoaderFactory(http: Http) {
     MatCardModule,
     MatListModule,
     MatToolbarModule,
+    MatExpansionModule,
+    MatPaginatorModule,
     FormsModule,
     ReactiveFormsModule,
     NgxDatatableModule,
@@ -152,6 +156,8 @@ export function HttpLoaderFactory(http: Http) {
     MatCardModule,
     MatListModule,
     MatToolbarModule,
+    MatExpansionModule,
+    MatPaginatorModule,
     NgxDatatableModule,
     NgbModule,
     TranslateModule,
