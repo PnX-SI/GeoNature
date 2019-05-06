@@ -123,7 +123,8 @@ La commande ``install_app.sh`` comporte deux paramètres optionnels qui doivent 
 
 ::
 
-    ./install_app.sh
+    touch var/log/install_app.log
+    ./install_app.sh | tee install_all.log
 
 Pendant l'installation, vous serez invité à fournir le mot de passe ``sudo`` de votre utilisateur linux.
 

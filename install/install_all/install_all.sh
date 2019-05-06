@@ -42,25 +42,8 @@ if [ "$(id -u)" == "0" ]; then
    exit 1
 fi
 
-# Create log folder if it don't already exists
-if [ ! -d 'var' ]
-then
-  mkdir var
-  chmod -R 775 var
-fi
 
-if [ ! -d 'var/log' ]
-then
-  mkdir var/log
-  chmod -R 775 var/log/
-fi
-
-if [ -f  var/log/install_app.log ]; then
-  rm  var/log/install_app.log
-fi
-touch  var/log/install_app.log
-
-echo "############### Installation des paquets systèmes ###############"&>>  var/log/install_app.log
+echo "############### Installation des paquets systèmes ###############"
 
 
 # Updating language locale
@@ -75,48 +58,48 @@ source ~/.bashrc
 # Installing required environment for GeoNature and TaxHub
 echo "Installation de l'environnement logiciel..."
 
-sudo apt-get -y install ntpdate 2> var/log/install_app.log
-sudo ntpdate-debian &>>  var/log/install_app.log 2> var/log/install_app.log
-sudo apt-get install -y curl unzip git &>>  var/log/install_app.log 2> var/log/install_app.log
-sudo apt-get install -y apache2 libapache2-mod-wsgi libapache2-mod-perl2 2> var/log/install_app.log
-sudo apt-get install -y postgresql 2> var/log/install_app.log
+sudo apt-get -y install ntpdate 
+sudo ntpdate-debian 
+sudo apt-get install -y curl unzip git 
+sudo apt-get install -y apache2 libapache2-mod-wsgi libapache2-mod-perl2 
+sudo apt-get install -y postgresql 
 sudo apt-get install -y postgresql-contrib
 if [ "$OS_VERSION" == "9" ]
 then
-    sudo apt-get install -y postgresql-server-dev-9.6 2> var/log/install_app.log
-    sudo apt install -y postgis-2.3 postgis postgresql-9.6-postgis-2.3 2> var/log/install_app.log
+    sudo apt-get install -y postgresql-server-dev-9.6 
+    sudo apt install -y postgis-2.3 postgis postgresql-9.6-postgis-2.3 
 fi
 if [ "$OS_VERSION" == "8" ]
 then
-    sudo apt-get install -y postgresql-server-dev-9.4 2> var/log/install_app.log
-    sudo apt install -y postgis-2.3 postgis 2> var/log/install_app.log
+    sudo apt-get install -y postgresql-server-dev-9.4 
+    sudo apt install -y postgis-2.3 postgis 
 fi
 
 if [ "$OS_VERSION" == "18.04" ]
 then
-    sudo apt-get install -y postgresql-server-dev-10 2> var/log/install_app.log
-    sudo apt install -y postgis 2> var/log/install_app.log
+    sudo apt-get install -y postgresql-server-dev-10 
+    sudo apt install -y postgis 
 fi
 
 if [ "$OS_VERSION" == "16.04" ]
 then
     sudo apt-get install -y libatlas3-base
-    sudo apt-get install -y postgresql-server-dev-9.5  2> var/log/install_app.log
-    sudo apt install -y postgis postgis postgresql-9.5-postgis-2.2 2> var/log/install_app.log
+    sudo apt-get install -y postgresql-server-dev-9.5  
+    sudo apt install -y postgis postgis postgresql-9.5-postgis-2.2 
 fi
 sudo sed -e "s/datestyle =.*$/datestyle = 'ISO, DMY'/g" -i /etc/postgresql/*/main/postgresql.conf
 sudo service postgresql restart
 
-sudo apt-get install -y python3 2> var/log/install_app.log
-sudo apt-get install -y python3-dev 2> var/log/install_app.log
-sudo apt-get install -y python3-setuptools 2> var/log/install_app.log
-sudo apt-get install -y python-pip 2> var/log/install_app.log
-sudo apt-get install -y libpq-dev 2> var/log/install_app.log
-sudo apt-get install -y libgdal-dev 2> var/log/install_app.log
-sudo apt-get install -y python-gdal 2> var/log/install_app.log
-sudo apt-get install -y python3-virtualenv virtualenv 2> var/log/install_app.log
-sudo apt-get install -y build-essential 2> var/log/install_app.log
-sudo pip install --upgrade pip virtualenv virtualenvwrapper 2> var/log/install_app.log
+sudo apt-get install -y python3 
+sudo apt-get install -y python3-dev 
+sudo apt-get install -y python3-setuptools 
+sudo apt-get install -y python-pip 
+sudo apt-get install -y libpq-dev 
+sudo apt-get install -y libgdal-dev 
+sudo apt-get install -y python-gdal 
+sudo apt-get install -y python3-virtualenv virtualenv 
+sudo apt-get install -y build-essential 
+sudo pip install --upgrade pip virtualenv virtualenvwrapper 
 
 if [ "$OS_VERSION" == "9" ]
 then
@@ -125,7 +108,7 @@ then
     fi
 if [ "$OS_VERSION" == "8" ]
 then
-    sudo apt-get install -y npm 2> var/log/install_app.log
+    sudo apt-get install -y npm 
 fi
 
 if [ "$OS_VERSION" == "16.04" ] || [ "$OS_VERSION" == "18.04" ]
@@ -134,11 +117,11 @@ then
     sudo apt-get install -y npm
 fi
 
-sudo apt-get install -y supervisor 2> var/log/install_app.log
+sudo apt-get install -y supervisor 
 
 # To make opencv (TaxHub) work on Debian 8
-sudo apt-get install -y libsm6 libxrender1 libfontconfig1 2> var/log/install_app.log
-sudo apt-get install -y python-qt4 2> var/log/install_app.log
+sudo apt-get install -y libsm6 libxrender1 libfontconfig1 
+sudo apt-get install -y python-qt4 
 
 # Creating PostgreSQL user
 echo "Création de l'utilisateur PostgreSQL..."
