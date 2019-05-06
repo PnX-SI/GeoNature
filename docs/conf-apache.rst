@@ -37,9 +37,9 @@ Pour UsersHub (versions 2.x), modifier le fichier de configuration Apache ``/etc
 	<VirtualHost *:80>
 		ServerName usershub.mondomaine.fr
 		<Location />
-	                ProxyPass http://127.0.0.1:5001/
-	                ProxyPassReverse http://127.0.0.1:5001/
-	        </Location>
+			ProxyPass http://127.0.0.1:5001/
+			ProxyPassReverse http://127.0.0.1:5001/
+	    </Location>
 	</VirtualHost>
     # Fin de configuration de UsersHub
 
@@ -262,15 +262,14 @@ Modifier le fichier de configuration de UsersHub ``/etc/apache2/sites-available/
 	</VirtualHost>
 
 	<VirtualHost *:443>
-	        ServerName usershub.mondomaine.fr
+	    ServerName usershub.mondomaine.fr
 
-	        DocumentRoot /home/geonatureadmin/usershub/web/
-
-	        <Directory /home/geonatureadmin/usershub/web/ >
-	                AllowOverride All
-	                Options -Indexes
-					Require all granted
-	        </Directory>
+		# Configuration uhv2
+		<Location />
+			ProxyPass  http://127.0.0.1:5001/ retry=0
+			ProxyPassReverse  http://127.0.0.1:5001/
+		</Location>
+		#FIN Configuration uhv2
 
 	    SSLEngine on
 	    SSLCertificateFile /etc/letsencrypt/live/usershub.mondomaine.fr/cert.pem
