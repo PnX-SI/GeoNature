@@ -12,9 +12,9 @@
         </div>  
       </div>
       <div>Liste des cadres d'acquisition et des jeux de données associés</div>
-      <mat-accordion >
+      <mat-accordion [multi]="true">
         <ng-container *ngFor="let af of tempAF; let idx = index">
-          <mat-expansion-panel *ngIf="isDisplayed(idx)">
+          <mat-expansion-panel *ngIf="isDisplayed(idx)" [expanded]="expandAccordions">
             <mat-expansion-panel-header>
               <mat-panel-title>
                 <a *ngIf="_cruvedStore.cruved?.METADATA?.cruved.U !== '0'"
@@ -26,7 +26,7 @@
                 {{ af.acquisition_framework_name | uppercase }}
               </mat-panel-title>
               <mat-panel-description *ngIf="af.acquisition_framework_name != af.acquisition_framework_desc">
-                {{ af.acquisition_framework_desc }}
+                {{ af.acquisition_framework_desc }} 
               </mat-panel-description>
             </mat-expansion-panel-header>
             <mat-list>
