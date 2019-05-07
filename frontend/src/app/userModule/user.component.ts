@@ -9,12 +9,10 @@ import { UserDataService} from './services/user-data.service';
 @Component({
   selector: 'pnx-user',
   templateUrl: './user.component.html',
-  /*styleUrls: ['./user.component.scss'],*/
-  providers: []
+  styleUrls: ['./user.component.scss']
 })
 export class UserComponent implements OnInit {
 
-	role: Role = null;
 	form: FormGroup;
 
   constructor(
@@ -24,7 +22,11 @@ export class UserComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-  	this.form = this.getForm(this.authService.getCurrentUser().id_role);
+    this.initForm();
+  }
+
+  initForm() {
+    this.form = this.getForm(this.authService.getCurrentUser().id_role);
   }
 
   getForm(role: number): FormGroup {
@@ -33,9 +35,14 @@ export class UserComponent implements OnInit {
 
 	save() {
 		if (this.form.valid) {
-			this.userService.put(this.form.value)
+			this.userService.putRole(this.form.value)
             .subscribe(res => this.form.disable());
 		}
 	}
+
+  cancel() {
+    this.initForm();
+    this.form.disable();
+  }
 
 }

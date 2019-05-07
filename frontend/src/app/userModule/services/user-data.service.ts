@@ -24,10 +24,21 @@ export class UserDataService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/roles`, { params: queryString });
   }
 
-  put(role: Role): Observable<Role> {
+  putRole(role: Role): Observable<Role> {
     const options = role;
     return this._http
             .put<any>(`${AppConfig.API_ENDPOINT}/users/role`, options)
+            .pipe(
+                map((res: Role) => { 
+                  return res;
+                })
+               );
+  }
+
+  putPassword(role: Role): Observable<any> {
+    const options = role;
+    return this._http
+            .put<any>(`${AppConfig.API_ENDPOINT}/users/password`, options)
             .pipe(
                 map((res: Role) => { 
                   return res;

@@ -1,11 +1,11 @@
 import requests
 
-from flask import Blueprint, request, current_app, Response
+from flask import Blueprint, request, current_app, Response, jsonify
 
 from geonature.utils.env import DB
 from geonature.core.users.models import VUserslistForallMenu, BibOrganismes, CorRole
 from pypnusershub.db.models import User
-from pypnusershub.routes_register import bp as user_api, req_json_or_text
+from pypnusershub.routes_register import bp as user_api
 
 from geonature.utils.utilssqlalchemy import json_resp
 from geonature.core.gn_permissions import decorators as permissions
@@ -95,14 +95,56 @@ def update_role(info_role):
         if not getattr(User, att, False):
             data.pop(att)
 
+    black_list_att_update = [
+        'active', 
+        'date_insert', 
+        'date_update', 
+        'groupe', 
+        'id_organisme', 
+        'id_role', 
+        'pass_plus', 
+        'pn', 
+        'uuid_role'
+    ]
     for key, value in data.items():
-        setattr(user, key, value)
+        if key not in black_list_att_update:
+            setattr(user, key, value)
 
     DB.session.merge(user)
     DB.session.commit()
     DB.session.flush()
     return user.as_dict()
 
+
+@routes.route("/password", methods=["PUT"])
+@permissions.check_cruved_scope("R", True)
+def update_password(info_role):
+    """
+        Modifie le role de l'utilisateur du token en cours
+        Fait appel à l'API UsersHub
+    """
+    s = requests.Session()
+    data = request.get_json()
+    user = DB.session.query(User).get(info_role.id_role)
+    
+    if user is None:
+        return jsonify({"msg": "Droit insuffisant"}), 403
+
+    #Vérification du password initiale du role
+    if not user.check_password(data.get('init_password', None)):
+        return jsonify({"msg": "Le mot de passe initial est invalide"}), 400
+
+    #recuperation du token usershub API
+    token = s.post(url=config['API_ENDPOINT'] + "/pypn/register/post_usershub/create_cor_role_token", json={'email': user.email}).json()
+
+    data['token']  = token['token']
+    r = s.post(url=config['API_ENDPOINT'] + "/pypn/register/post_usershub/change_password", json=data)
+
+    if r.status_code != 200:
+        return jsonify({"msg": "Erreur serveur"}), 500
+
+    return jsonify({"msg": "Mot de passe modifié avec succès"}), 200
+    
 
 @routes.route("/cor_role", methods=["POST"])
 @json_resp

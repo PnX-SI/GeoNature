@@ -21,7 +21,7 @@ export class RoleFormService {
   private role: BehaviorSubject<Role> = new BehaviorSubject(null);
   private roleForm: FormGroup;
 
-  constructor(private _fb: FormBuilder, private dataService: DataFormService) {
+  constructor(private fb: FormBuilder, private dataService: DataFormService) {
     this.setForm();
   }
 
@@ -33,7 +33,7 @@ export class RoleFormService {
   }
 
   private setForm() {
-    this.roleForm = this._fb.group({
+    this.roleForm = this.fb.group({
       identifiant: ['', Validators.required],
       nom_role: ['', Validators.required],
       prenom_role: ['', Validators.required],
@@ -46,25 +46,4 @@ export class RoleFormService {
   private getRole(role: number) {
     this.dataService.getRole(role).subscribe(res => {this.roleForm.patchValue(res)});
   }
-
-  addPassword() {
-    this.roleForm.addControl('pass_plus', this._fb.control('', Validators.required));
-    this.roleForm.addControl('pass_plus_confirmation', this._fb.control('', [Validators.required, similarValidator('pass_plus')]));
-  }
-
-}
-
-
-export function similarValidator(compared: string): ValidatorFn {
-  return (control: AbstractControl): { [key: string]: any } => {
-    const valeur = control.value
-    const group = control.parent;
-    let valid = false;
-    if (group) {
-      const comparedValue = group.controls[compared].value;
-      valid = comparedValue == valeur ? true : false;
-    }
-
-    return valid ? null : { 'similarError': { valeur } };
-  };
 }

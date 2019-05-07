@@ -110,6 +110,9 @@ def get_app(config, _app=None, with_external_mods=True):
 
         app.register_blueprint(routes, url_prefix="/gn_commons")
 
+        from pypnusershub import routes_register
+        app.register_blueprint(routes_register.bp, url_prefix='/pypn/register')
+
         # errors
         from geonature.core.errors import routes
 

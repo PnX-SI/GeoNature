@@ -168,5 +168,6 @@
     "DeleteSuccess": "Observation supprimée avec succès",
     "PeriodError":
       "Le champs 'periode début' ET 'periode fin' doivent être remplit si vous souhaitez faire une recherche par période"
-  }
+  },
+  "MyAccount": "Mon compte"
 }

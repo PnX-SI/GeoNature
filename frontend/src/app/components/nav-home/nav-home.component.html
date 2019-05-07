@@ -19,7 +19,22 @@
         <h3> {{appConfig.appName}}</h3>
       </span>
       <span class="toolbar-spacer"></span>
-      <span style="font-size:15px" class="toolbar-rigth"> {{currentUser?.user_login}} </span>
+
+      <button 
+        class="btn btn-sm toolbar-rigth"
+        matTooltip="Ouvrir le menu" 
+        data-toggle="dropdown" 
+        aria-haspopup="true" 
+        aria-expanded="false">
+        {{currentUser?.user_login}}
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" routerLink="/user">
+          <i class="fa fa-user" aria-hidden="true"> </i> {{ 'MyAccount' | translate }}
+        </a>
+      </div>
+
+
       <div *ngIf="appConfig.FRONTEND.MULTILINGUAL" class="dropdown">
         <mat-icon class="clickable toolbar-rigth" matTooltip="{{ 'Language' | translate }}" id="dropdownMenuButton"
           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">language</mat-icon>

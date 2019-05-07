@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, Inject, ViewChild } from '@angular/core';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
@@ -13,7 +14,13 @@ import { GlobalSubService } from '../../services/global-sub.service';
   selector: 'pnx-nav-home',
   templateUrl: './nav-home.component.html',
   styleUrls: ['./nav-home.component.scss'],
-  providers: [{ provide: AppConfig, useValue: AppConfig }]
+  /*animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0', display: 'none'})),
+      state('expanded', style({height: '*', top: '60px'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ]*/
 })
 export class NavHomeComponent implements OnInit, OnDestroy {
   public moduleName = 'Accueil';
