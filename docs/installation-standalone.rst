@@ -124,7 +124,7 @@ La commande ``install_app.sh`` comporte deux paramètres optionnels qui doivent 
 ::
 
     touch var/log/install_app.log
-    ./install_app.sh | tee install_all.log
+    ./install_app.sh 2>&1 | tee install_all.log
 
 Pendant l'installation, vous serez invité à fournir le mot de passe ``sudo`` de votre utilisateur linux.
 
@@ -175,8 +175,8 @@ Rendez vous dans le répertoire téléchargé et dézippé, puis "désamplez" le
 
 Lancer le script d'installation de l'application:
 ::
-
-    ./install_app.sh
+    touch var/log/install_app.log
+    ./install_app.sh 2>&1 | tee install_all.log
 
 Suite à l'execution de ce script, l'application Taxhub a été lancé automatiquement par le superviseur et est disponible à l'adresse ``127.0.0.1:5000`` (et l'API, à ``127.0.0.1:5000//api``)
 
