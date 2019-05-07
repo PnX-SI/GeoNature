@@ -13,14 +13,7 @@ import { GlobalSubService } from '../../services/global-sub.service';
 @Component({
   selector: 'pnx-nav-home',
   templateUrl: './nav-home.component.html',
-  styleUrls: ['./nav-home.component.scss'],
-  /*animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({height: '0px', minHeight: '0', display: 'none'})),
-      state('expanded', style({height: '*', top: '60px'})),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ]*/
+  styleUrls: ['./nav-home.component.scss']
 })
 export class NavHomeComponent implements OnInit, OnDestroy {
   public moduleName = 'Accueil';
