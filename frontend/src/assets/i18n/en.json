@@ -161,5 +161,6 @@
   "Synthese": {
     "DeleteObs": "Supprimer l'observations"
   },
-  "MyAccount": "My account"
+  "MyAccount": "My account",
+  "CreateAccount": "Create an account"
 }

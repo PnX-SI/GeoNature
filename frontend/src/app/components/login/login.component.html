@@ -29,6 +29,11 @@
                     <p *ngIf="_authService.loginError" class="alert alert-danger" role="alert" style="margin-top:5px;">
                         <strong> {{'LoginError' | translate }} </strong>
                     </p>
+
+                    <div class="inscription">
+                      <a routerLink="/inscription">{{ 'CreateAccount' | translate }}</a>
+                    </div>
+
                     <img style="margin-left: 40%;" *ngIf="_authService.isLoading" src="assets/images/Spinner.gif" 
                         alt="Chargement..." 
                         height="60" 

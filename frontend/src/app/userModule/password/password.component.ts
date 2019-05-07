@@ -7,7 +7,7 @@ import { UserDataService} from '../services/user-data.service';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
 
 @Component({
-  selector: 'pnx-user',
+  selector: 'pnx-user-password',
   templateUrl: './password.component.html',
   styleUrls: ['./password.component.scss']
 })

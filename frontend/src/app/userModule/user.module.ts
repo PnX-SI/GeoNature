@@ -12,8 +12,8 @@ import {
 } from './services'
 
 const routes: Routes = [
-        { path: '', component: UserComponent }
-        , {path: 'password', component: PasswordComponent}
+        { path: '', component: UserComponent },
+        { path: 'password', component: PasswordComponent }
       ];
 
 @NgModule({

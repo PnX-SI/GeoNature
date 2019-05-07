@@ -169,5 +169,6 @@
     "PeriodError":
       "Le champs 'periode début' ET 'periode fin' doivent être remplit si vous souhaitez faire une recherche par période"
   },
-  "MyAccount": "Mon compte"
+  "MyAccount": "Mon compte",
+  "CreateAccount": "Créer un compte"
 }
