@@ -92,7 +92,7 @@ class TParameters(DB.Model):
 
 
 @serializable
-class VLastestValidation(DB.Model):
+class VLastestValidations(DB.Model):
     __tablename__ = "v_lastest_validation"
     __table_args__ = {"schema": "gn_commons"}
 
@@ -106,10 +106,11 @@ class VLastestValidation(DB.Model):
     validation_auto = DB.Column(DB.Boolean)
     label_default = DB.Column(DB.Unicode)
 
+
 @serializable
 class TValidations(DB.Model):
     __tablename__ = "t_validations"
-    __table_args__ = {"schema": "gn_commons", "extend_existing":True}
+    __table_args__ = {"schema": "gn_commons"}
 
     id_validation = DB.Column(DB.Integer, primary_key=True)
     id_table_location = DB.Column(DB.Integer)
@@ -123,14 +124,30 @@ class TValidations(DB.Model):
     validation_label = DB.relationship(
         TNomenclatures,
         primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_valid_status),
-        foreign_keys=[id_nomenclature_valid_status]
+        foreign_keys=[id_nomenclature_valid_status],
     )
     validator_role = DB.relationship(
-        User,
-        primaryjoin=(User.id_role == id_validator),
-        foreign_keys=[id_validator]
+        User, primaryjoin=(User.id_role == id_validator), foreign_keys=[id_validator]
     )
 
+    def __init__(
+        self,
+        id_validation,
+        id_table_location,
+        uuid_attached_row,
+        id_nomenclature_valid_status,
+        id_validator,
+        validation_comment,
+        validation_date,
+        validation_auto,
+    ):
+        self.id_table_location = id_table_location
+        self.uuid_attached_row = uuid_attached_row
+        self.id_nomenclature_valid_status = id_nomenclature_valid_status
+        self.id_validator = id_validator
+        self.validation_comment = validation_comment
+        self.validation_date = validation_date
+        self.validation_auto = validation_auto
 
 
 @serializable

@@ -1,0 +1,31 @@
+##########################
+# Database configuration #
+##########################
+
+# PostgreSQL host
+db_host=localhost
+
+# PostgreSQL port
+db_port=5432
+
+# GeoNature database name
+db_name=geonature2db
+
+# GeoNature database owner username
+user_pg=geonatadmin
+
+# GeoNature database owner password
+user_pg_pass=my_password
+
+# Insert sample data (ZP and grids on PnEcrins)
+insert_sample_data=true
+
+###########################
+# Data SRID configuration #
+###########################
+
+# GeoNature local SRID
+srid_local=2154
+
+# World SRID (Don't change it)
+srid_world=4326

@@ -1,0 +1,14 @@
+{
+  "name": "gn_module_validation",
+  "version": "1.0.0",
+  "description": "\"module geonature permettant de modifier les statuts de validations des observations\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "angular-tree-component": "^7.2.1"
+  }
+}

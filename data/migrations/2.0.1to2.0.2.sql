@@ -217,3 +217,80 @@ CREATE TRIGGER tri_update_cor_area_taxon_update_cd_nom
 
 INSERT INTO ref_geo.bib_areas_types (type_name, type_code, type_desc, ref_name, ref_version) VALUES
 ('Mailles5*5', 'M5', 'Type maille INPN 5*5km', NULL,NULL);
+
+
+
+-- Intégration du SQL validation dans le coeur
+
+DROP VIEW gn_commons.v_lastest_validation;
+
+CREATE OR REPLACE VIEW gn_commons.v_latest_validations AS 
+ SELECT v1.id_synthese,
+    v1.unique_id_sinp,
+    v1.unique_id_sinp_grp,
+    v1.id_source,
+    v1.entity_source_pk_value,
+    v1.count_min,
+    v1.count_max,
+    v1.nom_cite,
+    v1.meta_v_taxref,
+    v1.sample_number_proof,
+    v1.digital_proof,
+    v1.non_digital_proof,
+    v1.altitude_min,
+    v1.altitude_max,
+    v1.the_geom_4326,
+    v1.date_min,
+    v1.date_max,
+    v1.validator,
+    v1.observers,
+    v1.id_digitiser,
+    v1.determiner,
+    v1.comment_context,
+    v1.comment_description,
+    v1.meta_validation_date,
+    v1.meta_create_date,
+    v1.meta_update_date,
+    v1.last_action,
+    v1.id_dataset,
+    v1.dataset_name,
+    v1.id_acquisition_framework,
+    v1.id_nomenclature_geo_object_nature,
+    v1.id_nomenclature_info_geo_type,
+    v1.id_nomenclature_grp_typ,
+    v1.id_nomenclature_obs_meth,
+    v1.id_nomenclature_obs_technique,
+    v1.id_nomenclature_bio_status,
+    v1.id_nomenclature_bio_condition,
+    v1.id_nomenclature_naturalness,
+    v1.id_nomenclature_exist_proof,
+    v1.id_nomenclature_diffusion_level,
+    v1.id_nomenclature_life_stage,
+    v1.id_nomenclature_sex,
+    v1.id_nomenclature_obj_count,
+    v1.id_nomenclature_type_count,
+    v1.id_nomenclature_sensitivity,
+    v1.id_nomenclature_observation_status,
+    v1.id_nomenclature_blurring,
+    v1.id_nomenclature_source_status,
+    v1.name_source,
+    v1.url_source,
+    v1.cd_nom,
+    v1.cd_ref,
+    v1.nom_valide,
+    v1.lb_nom,
+    v1.nom_vern,
+    v1.id_validation,
+    v1.id_table_location,
+    v1.uuid_attached_row,
+    v1.id_nomenclature_valid_status,
+    v1.id_validator,
+    v1.validation_comment,
+    v1.validation_date,
+    v1.validation_auto,
+    v1.mnemonique
+   FROM gn_commons.v_validations_for_web_app v1
+     JOIN ( SELECT v_validations_for_web_app.id_synthese,
+            max(v_validations_for_web_app.validation_date) AS max
+           FROM gn_commons.v_validations_for_web_app
+          GROUP BY v_validations_for_web_app.id_synthese) v2 ON v1.validation_date = v2.max AND v1.id_synthese = v2.id_synthese;

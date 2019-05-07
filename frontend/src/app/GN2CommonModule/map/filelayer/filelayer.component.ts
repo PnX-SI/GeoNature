@@ -60,8 +60,14 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
       })
       .addTo(this.map);
 
+    (this.fileLayerControl as any).loader.on('data:loading', event => {
+      console.log('LAAAAAAAAAAA');
+    });
+    // la
     // event on load success
     (this.fileLayerControl as any).loader.on('data:loaded', event => {
+      console.log('data loadddd');
+
       // remove layer from leaflet draw
       this.mapService.removeAllLayers(this.mapService.map, this.mapService.leafletDrawFeatureGroup);
       // set marker editing OFF

@@ -12,6 +12,7 @@ from geojson import Feature
 from werkzeug.exceptions import NotFound
 
 from pypnnomenclature.models import TNomenclatures
+from pypnusershub.db.models import User
 
 from geonature.utils.utilssqlalchemy import serializable, geoserializable, SERIALIZERS
 from geonature.utils.utilsgeometry import shapeserializable
@@ -453,6 +454,14 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
             TDatasets.id_acquisition_framework
             == TAcquisitionFramework.id_acquisition_framework
         ),
+    )
+
+    cor_observers = DB.relationship(
+        "User",
+        uselist=True,
+        secondary=CorObserverSynthese.__table__,
+        primaryjoin=(CorObserverSynthese.id_synthese == id_synthese),
+        secondaryjoin=(User.id_role == CorObserverSynthese.id_role),
     )
     validations = DB.relationship(
         "TValidations",
