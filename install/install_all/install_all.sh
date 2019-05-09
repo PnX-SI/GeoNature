@@ -163,9 +163,8 @@ sed -i "s/vectorise_dem=.*$/vectorise_dem=$vectorise_dem/g" config/settings.ini
 sed -i "s/add_sample_data=.*$/add_sample_data=$add_sample_data/g" config/settings.ini
 sed -i "s/usershub_release=.*$/usershub_release=$usershub_release/g" config/settings.ini
 sed -i "s/taxhub_release=.*$/taxhub_release=$taxhub_release/g" config/settings.ini
-sed -i "s/enable_https=.*$/enable_https=$enable_https/g" config/settings.ini
-sed -i "s/https_cert_path=.*$/https_cert_path=$https_cert_path/g" config/settings.ini
-sed -i "s/https_key_path=.*$/https_key_path=$https_key_path/g" config/settings.ini
+sed -i "s/taxhub_release=.*$/taxhub_release=$taxhub_release/g" config/settings.ini
+sed -i "s/install_module_validation=.*$/install_module_validation=$install_module_validation/g" config/settings.ini
 
 
 cd install/
