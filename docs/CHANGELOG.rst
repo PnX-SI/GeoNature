@@ -16,6 +16,7 @@ CHANGELOG
 * Correction de la vérification du CRUVED lorsque get_role = False
 * Correction affichage des MultiPoint sur la synthese
 * Retour du composant GPS permettant de charger un marker à partir des coordonnées X et y
+* Correction lors d'import de fichier GPX avec une information sur l'altitude
 
 
 2.0.1 (2019-03-18)
