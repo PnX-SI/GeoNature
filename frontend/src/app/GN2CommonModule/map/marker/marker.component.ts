@@ -15,7 +15,7 @@ export class MarkerComponent implements OnInit, OnChanges {
   @Input() coordinates: Array<any>;
   @Input() zoomLevel: number;
   @Output() markerChanged = new EventEmitter<any>();
-  constructor(public mapservice: MapService, private _commonService: CommonService) {}
+  constructor(public mapservice: MapService, private _commonService: CommonService) { }
 
   ngOnInit() {
     this.map = this.mapservice.map;
@@ -23,9 +23,9 @@ export class MarkerComponent implements OnInit, OnChanges {
     this.setMarkerLegend();
     this.enableMarkerOnClick();
 
-    
+
     this.mapservice.isMarkerEditing$.subscribe(isEditing => {
-      this.toggleEditing();
+      this.toggleEditing(isEditing);
     });
   }
 
@@ -41,7 +41,7 @@ export class MarkerComponent implements OnInit, OnChanges {
     document.getElementById('markerLegend').style.backgroundColor = '#c8c8cc';
     L.DomEvent.disableClickPropagation(document.getElementById('markerLegend'));
     document.getElementById('markerLegend').onclick = () => {
-      this.toggleEditing();
+      this.toggleEditing(true);
     };
   }
 
@@ -67,7 +67,8 @@ export class MarkerComponent implements OnInit, OnChanges {
       this.mapservice.marker = this.mapservice.createMarker(x, y, true).addTo(this.map);
       this.markerMoveEvent(this.mapservice.marker);
     }
-    // observable if map click
+    // observable to send geojson
+    this.mapservice.firstLayerFromMap = false;
     this.markerChanged.emit(this.markerToGeojson(this.mapservice.marker.getLatLng()));
   }
 
@@ -89,8 +90,12 @@ export class MarkerComponent implements OnInit, OnChanges {
     });
   }
 
-  toggleEditing() {
-    this.mapservice.editingMarker = !this.mapservice.editingMarker;
+  toggleEditing(enable?: boolean) {
+    if (enable !== undefined) {
+      this.mapservice.editingMarker = enable
+    } else {
+      this.mapservice.editingMarker = !this.mapservice.editingMarker;
+    }
     document.getElementById('markerLegend').style.backgroundColor = this.mapservice.editingMarker
       ? '#c8c8cc'
       : 'white';
