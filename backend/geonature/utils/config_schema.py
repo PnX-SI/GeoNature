@@ -5,7 +5,7 @@
 import os
 
 from marshmallow import Schema, fields, validates_schema, ValidationError
-from marshmallow.validate import OneOf, Regexp
+from marshmallow.validate import OneOf, Regexp, Email
 from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_EXPORT_COLUMNS,
     DEFAULT_LIST_COLUMN,
@@ -191,7 +191,6 @@ class GnGeneralSchemaConf(Schema):
     URL_APPLICATION = fields.Url(required=True)
     API_ENDPOINT = fields.Url(required=True)
     API_TAXHUB = fields.Url(required=True)
-    URL_USERHUB = fields.Url(required=False)
     ADMIN_APPLICATION_LOGIN = fields.String(required=False)
     ADMIN_APPLICATION_PASSWORD = fields.String(required=False)
     ADMIN_APPLICATION_MAIL = fields.String(required=False)
@@ -207,6 +206,30 @@ class GnGeneralSchemaConf(Schema):
     # Ajoute la surchouche 'taxonomique' sur l'API nomenclature
     ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS = fields.Boolean(missing=True)
     BDD = fields.Nested(BddConfig, missing=dict())
+    # config liée à l'incription
+    ENABLE_SIGN_UP = fields.Boolean(missing=False)
+    URL_USERHUB = fields.Url(required=False)
+    ADMIN_APPLICATION_LOGIN = fields.String(required=False)
+    ADMIN_APPLICATION_PASSWORD = fields.String(required=False)
+    ADMIN_APPLICATION_MAIL = fields.String(required=False, validate=Email(error='Email invalide'))
+
+    @validates_schema
+    def validate_enable_sign_up(self, data):
+        #si CAS_PUBLIC = true and ENABLE_SIGN_UP = true
+        if data.get('CAS_PUBLIC').get('CAS_AUTHENTIFICATION') and data.get('ENABLE_SIGN_UP', False):
+            raise ValidationError('CAS_PUBLIC et ENABLE_SIGN_UP ne peuvent être activés ensemble', 'ENABLE_SIGN_UP')
+        elif data.get('ENABLE_SIGN_UP', False):
+            if data.get('URL_USERHUB', None) is None:
+                raise ValidationError('URL_USERHUB est necessaire si ENABLE_SIGN_UP=True', 'URL_USERHUB')
+
+            if data.get('ADMIN_APPLICATION_LOGIN', None) is None:
+                raise ValidationError('ADMIN_APPLICATION_LOGIN est necessaire si ENABLE_SIGN_UP=True', 'ADMIN_APPLICATION_LOGIN')
+
+            if data.get('ADMIN_APPLICATION_PASSWORD', None) is None:
+                raise ValidationError('ADMIN_APPLICATION_PASSWORD est necessaire si ENABLE_SIGN_UP=True', 'ADMIN_APPLICATION_PASSWORD')
+
+            if data.get('ADMIN_APPLICATION_MAIL', None) is None:
+                raise ValidationError('ADMIN_APPLICATION_MAIL est necessaire si ENABLE_SIGN_UP=True', 'ADMIN_APPLICATION_MAIL')
 
 
 class ManifestSchemaConf(Schema):

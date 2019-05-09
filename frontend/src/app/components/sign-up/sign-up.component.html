@@ -138,6 +138,7 @@
                 <button 
                   type="button" 
                   class="btn btn-success"
+                  [disabled]="!form.valid"
                   (click)="save()">S'inscrire</button>
               </div>
             </form>

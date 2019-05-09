@@ -1,6 +1,7 @@
 import { Router } from '@angular/router';
 //import * as firebase from 'firebase';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { HttpClient } from '@angular/common/http';
 import { AppConfig } from '../../../conf/app.config';
@@ -84,19 +85,10 @@ export class AuthService {
       );
   }
 
-  signupUser(data: any) {  
-    this._http
-      .post<any>(`${AppConfig.API_ENDPOINT}/auth/login`, data)
-      .finally(() => (this.isLoading = false))
-      .subscribe(
-        data => {
-          
-        },
-        // error callback
-        () => {
-          this.loginError = true;
-        }
-      );
+  signupUser(data: any): Observable<any> {  
+    const options = data;
+    return this._http
+      .post<any>(`${AppConfig.API_ENDPOINT}/user/inscription`, options);
   }
 
   decodeObjectCookies(val) {

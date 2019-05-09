@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { AppConfig } from '@geonature_config/app.config';
 import { UserDataService} from '../services/user-data.service';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
+import { similarValidator } from '@geonature/services/validators';
 
 @Component({
   selector: 'pnx-user-password',
@@ -35,7 +36,6 @@ export class PasswordComponent implements OnInit {
   }
 
 	save() {
-    console.log("save");
 		if (this.form.valid) {
 			this.userService
             .putPassword(this.form.value)
@@ -53,7 +53,6 @@ export class PasswordComponent implements OnInit {
                 this.router.navigate(['/user']);
               },
               error => {
-                console.log(error);
                 this._toasterService.error(
                   error.error.msg,
                   '',
@@ -67,24 +66,4 @@ export class PasswordComponent implements OnInit {
             );
 		}
 	}
-
-  console() {
-    console.log(this.form)
-  }
-
-}
-
-
-export function similarValidator(compared: string): ValidatorFn {
-  return (control: AbstractControl): { [key: string]: any } => {
-    const valeur = control.value
-    const group = control.parent;
-    let valid = false;
-    if (group) {
-      const comparedValue = group.controls[compared].value;
-      valid = comparedValue == valeur ? true : false;
-    }
-
-    return valid ? null : { 'similarError': { valeur } };
-  };
 }

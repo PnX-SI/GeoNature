@@ -30,7 +30,8 @@
                         <strong> {{'LoginError' | translate }} </strong>
                     </p>
 
-                    <div class="inscription">
+                    <!-- TODO div class="inscription" *ngIf="AppConfig.ENABLE_SIGN_UP"-->
+                    <div class="inscription" *ngIf="">
                       <a routerLink="/inscription">{{ 'CreateAccount' | translate }}</a>
                     </div>
 

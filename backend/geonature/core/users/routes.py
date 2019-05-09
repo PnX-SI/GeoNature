@@ -76,6 +76,34 @@ def insert_role(user=None):
     DB.session.flush()
     return user.as_dict()
 
+
+@routes.route("/inscription", methods=["POST"])
+@json_resp
+def inscription(user=None):
+    """
+        Inscrit un user à partir de l'interface geonature
+        Fonctionne selon l'autorisation 'ENABLE_SIGN_UP' dans la config.
+        Fait appel à l'API UsersHub
+    """
+    if (not config.ENABLE_SIGN_UP):
+        return {"message": "Page introuvable"}, 404
+
+    data = dict(request.get_json())
+
+    user = User(**data)
+    if user.id_role is not None:
+        exist_user = DB.session.query(User).get(user.id_role)
+        if exist_user:
+            DB.session.merge(user)
+        else:
+            DB.session.add(user)
+    else:
+        DB.session.add(user)
+    DB.session.commit()
+    DB.session.flush()
+    return user.as_dict()
+
+
 @routes.route("/role", methods=["PUT"])
 @permissions.check_cruved_scope("R", True)
 @json_resp

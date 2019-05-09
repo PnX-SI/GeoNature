@@ -27,6 +27,15 @@ TRAP_ALL_EXCEPTIONS = false
 # code EPSG des geom local de la BDD
 LOCAL_SRID = 2154
 
+# Sign Up
+ENABLE_SIGN_UP = false
+URL_USERHUB = "http://127.0.0.1:5001"
+
+# Administrateur de mon application
+ADMIN_APPLICATION_LOGIN = "login_admin_usershub"
+ADMIN_APPLICATION_PASSWORD = "password_admin_usershub"
+ADMIN_APPLICATION_MAIL = "email_admin_usershub"
+
 # MTD
 XML_NAMESPACE = "{http://inpn.mnhn.fr/mtd}"
 MTD_API_ENDPOINT = "https://preprod-inpn.mnhn.fr/mtd"

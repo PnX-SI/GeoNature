@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { AppConfig } from '@geonature_config/app.config';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { AuthService } from '../auth/auth.service';
+import { similarValidator } from '@geonature/services/validators';
 
 @Component({
   selector: 'pnx-signup',
@@ -17,10 +18,14 @@ export class SignUpComponent implements OnInit {
 
   constructor(
   	private fb: FormBuilder,
-    private _authService: AuthService
+    private _authService: AuthService,
+    private _router: Router,
   ) {
-    //if (AppConfig.CAS_PUBLIC.)
-
+    /* TODO
+    if (!AppConfig.ENABLE_SIGN_UP) {
+      this._router.navigate(['/login']);
+    }
+    */
   }
 
   ngOnInit() {
@@ -34,13 +39,22 @@ export class SignUpComponent implements OnInit {
 			identifiant: ['', Validators.required],
 			email: ['', [Validators.pattern('^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$'), Validators.required]],
   		password: ['', Validators.required],
-			password_confirmation: ['', Validators.required],
+			password_confirmation: ['', [Validators.required, similarValidator('password')]],
 			remarques: ['', null],
 			organisme: ['', null]
     });
   }
 
   save() {
-  	
+  	if (this.form.valid) {
+      this._authService.signupUser(this.form.value)
+            .subscribe(
+              data => {
+                console.log(data);
+              },
+              // error callback
+              error => { console.log(error); }
+            );
+    }
   }
 }
