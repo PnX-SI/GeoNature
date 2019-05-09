@@ -25,7 +25,7 @@ export class OcctaxFormComponent implements OnInit {
     private router: Router,
     private _commonService: CommonService,
     private _mapService: MapService
-  ) {}
+  ) { }
 
   ngOnInit() {
     // set show occurrence to false:
@@ -101,13 +101,8 @@ export class OcctaxFormComponent implements OnInit {
           positionClass: "toast-top-center"
         });
         // resert the forms
-        this.fs.releveForm = this.fs.initReleveForm();
-        this.fs.occurrenceForm = this.fs.initOccurenceForm();
+        this.fs.releveForm.reset();
         this.fs.patchDefaultNomenclatureOccurrence(this.fs.defaultValues);
-        this.fs.countingForm = this.fs.initCountingArray();
-        // save the current center and zoom to set the map on next form
-        this.fs.previousCenter = this._mapService.map.getCenter();
-        this.fs.previousZoomLevel = this._mapService.map.getZoom();
 
         // reset the service value
         this.fs.taxonsList = [];
@@ -115,8 +110,21 @@ export class OcctaxFormComponent implements OnInit {
         this.fs.disabled = true;
         this.fs.showCounting = false;
         this.fs.currentHourMax = null;
-        // redirect
-        this.router.navigate(["/occtax"]);
+        if (this.fs.stayOnFormInterface.value) {
+          // prefil the form with the previous releve
+          delete saveForm['geometry']
+          saveForm['properties']['t_occurrences_occtax'] = []
+          this.fs.releveForm.patchValue(saveForm);
+        }
+        else {
+          // redirect
+          this.router.navigate(["/occtax"]);
+        }
+        // reset carto
+        this._mapService.setEditingMarker(false);
+        // reset default marker mode
+        this._mapService.setEditingMarker(true);
+
       },
       error => {
         if (error.status === 403) {
