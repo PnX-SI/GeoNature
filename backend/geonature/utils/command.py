@@ -120,6 +120,11 @@ def create_frontend_config(conf_file):
     log.info('Generating configuration')
     configs_gn = load_and_validate_toml(conf_file, GnGeneralSchemaConf)
 
+    #clé NE DEVANT PAS se trouver dans la config du frontend
+    black_list=['ADMIN_APPLICATION_LOGIN', 'ADMIN_APPLICATION_PASSWORD', 'ADMIN_APPLICATION_MAIL']
+    for key in black_list:
+        configs_gn.pop(key)
+
     with open(
         str(ROOT_DIR / 'frontend/src/conf/app.config.ts'), 'w'
     ) as outputfile:
