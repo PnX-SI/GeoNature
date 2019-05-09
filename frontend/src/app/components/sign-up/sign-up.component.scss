@@ -1,5 +1,5 @@
 .panel {
-  margin-top: 25%;
+  margin-top: 10px;
 }
 
 .panel-signin {
@@ -21,7 +21,7 @@
   background-color: #1d21249e;
   border: 1px solid #55585a;
   position: relative;
-  padding-left: 32px !important;
+  padding-left: 15px !important;
   border-radius: 0px !important;
 }
 
@@ -69,15 +69,15 @@
 }
 
 #login-body {
-  height: 100vh;
   background: url(../../../custom/images/login_background.jpg) center 10% no-repeat;
   background-size: cover;
 }
 
-.inscription {
-  margin-top: 10px;
-  color: #fff;
-}
-.inscription a {
-  color: inherit; 
+form.ng-invalid { border-left-style: none!important; }
+small {color: red}
+
+form h5 {
+  text-decoration: underline;
+  margin-top: 30px;
+  font-size: 1.1em;
 }

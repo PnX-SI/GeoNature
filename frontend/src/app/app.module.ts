@@ -25,7 +25,7 @@ import { HomeContentComponent } from './components/home-content/home-content.com
 import { SidenavItemsComponent } from './components/sidenav-items/sidenav-items.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { LoginComponent } from './components/login/login.component';
-import { SignInComponent } from './components/sign-in/sign-in.component';
+import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { NavHomeComponent } from './components/nav-home/nav-home.component';
 
 // Custom component (footer, presentation etc...)
@@ -73,7 +73,7 @@ export function HttpLoaderFactory(http: Http) {
     SidenavItemsComponent,
     PageNotFoundComponent,
     LoginComponent,
-    SignInComponent,
+    SignUpComponent,
     NavHomeComponent,
     FooterComponent,
     IntroductionComponent

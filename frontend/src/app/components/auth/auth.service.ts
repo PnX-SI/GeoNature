@@ -84,6 +84,21 @@ export class AuthService {
       );
   }
 
+  signupUser(data: any) {  
+    this._http
+      .post<any>(`${AppConfig.API_ENDPOINT}/auth/login`, data)
+      .finally(() => (this.isLoading = false))
+      .subscribe(
+        data => {
+          
+        },
+        // error callback
+        () => {
+          this.loginError = true;
+        }
+      );
+  }
+
   decodeObjectCookies(val) {
     if (val.indexOf('\\') === -1) {
       return val; // not encoded
