@@ -24,7 +24,7 @@ export class ReleveComponent implements OnInit, OnDestroy {
   public dataSets: any;
   public geoInfo: any;
   public showTime: boolean = false;
-  public today: DateStruc;
+  public today: DateStruc = null;
   public areasIntersected = new Array();
   public occtaxConfig: any;
   private geojsonSubscription$: Subscription;
@@ -58,12 +58,15 @@ export class ReleveComponent implements OnInit, OnDestroy {
     });
 
     // set today for the datepicker limit
-    const today = new Date();
-    this.today = {
-      year: today.getFullYear(),
-      month: today.getMonth() + 1,
-      day: today.getDate()
-    };
+    if (ModuleConfig.DATE_FORM_WITH_TODAY) {
+      const today = new Date();
+      this.today = {
+        year: today.getFullYear(),
+        month: today.getMonth() + 1,
+        day: today.getDate()
+      };
+    }
+
 
     this.autoCompleteDate();
 

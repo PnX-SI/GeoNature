@@ -155,4 +155,5 @@ class GnModuleSchemaConf(Schema):
     MAX_EXPORT_NUMBER = fields.Integer(missing=50000)
     ENABLE_GPS_TOOL = fields.Boolean(missing=True)
     ENABLE_UPLOAD_TOOL = fields.Boolean(missing=True)
+    DATE_FORM_WITH_TODAY = fields.Boolean(missing=True)
 

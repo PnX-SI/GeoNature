@@ -16,6 +16,8 @@ taxon_result_number = 20
 # Add a validation rule between Proof fields. If true, fulfil at least one proof in the form
 digital_proof_validator = true
 
+# set default form date picker with the date of today
+DATE_FORM_WITH_TODAY = true
 
 # -------- MAPLIST PARAMETER ------------
 

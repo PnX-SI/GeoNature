@@ -32,7 +32,7 @@ export class DateComponent implements OnInit, OnDestroy {
   @Input() label: string;
   @Input() disabled: boolean;
   @Input() parentFormControl: FormControl;
-  @Input() defaultDate: DateStruc;
+  @Input() defaultToday = true;
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
   dynamicId;
@@ -43,9 +43,10 @@ export class DateComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+
     const today = new Date();
     this.today = { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate() };
-    if (this.defaultDate) {
+    if (this.defaultToday) {
       this.parentFormControl.setValue(this.today);
     }
 
