@@ -23,7 +23,6 @@ export class MarkerComponent implements OnInit, OnChanges {
     this.setMarkerLegend();
     this.enableMarkerOnClick();
 
-
     this.mapservice.isMarkerEditing$.subscribe(isEditing => {
       this.toggleEditing(isEditing);
     });
@@ -69,6 +68,7 @@ export class MarkerComponent implements OnInit, OnChanges {
     }
     // observable to send geojson
     this.mapservice.firstLayerFromMap = false;
+
     this.markerChanged.emit(this.markerToGeojson(this.mapservice.marker.getLatLng()));
   }
 
@@ -90,12 +90,9 @@ export class MarkerComponent implements OnInit, OnChanges {
     });
   }
 
-  toggleEditing(enable?: boolean) {
-    if (enable !== undefined) {
-      this.mapservice.editingMarker = enable
-    } else {
-      this.mapservice.editingMarker = !this.mapservice.editingMarker;
-    }
+  toggleEditing(enable: boolean) {
+    this.mapservice.editingMarker = enable;
+
     document.getElementById('markerLegend').style.backgroundColor = this.mapservice.editingMarker
       ? '#c8c8cc'
       : 'white';

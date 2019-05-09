@@ -9,8 +9,9 @@ import {
   MatIconModule,
   MatToolbarModule,
   MatExpansionModule,
-  MatPaginatorModule
+  MatPaginatorModule,
 } from '@angular/material';
+
 
 import { Http } from '@angular/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -170,4 +171,4 @@ export function HttpLoaderFactory(http: Http) {
     PeriodComponent
   ]
 })
-export class GN2CommonModule {}
+export class GN2CommonModule { }

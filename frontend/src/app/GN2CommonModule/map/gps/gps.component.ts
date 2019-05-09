@@ -40,7 +40,6 @@ export class GPSComponent extends MarkerComponent implements OnInit {
     // remove the previous layer loaded via file layer
     this.mapService.removeAllLayers(this.mapService.map, this.mapService.fileLayerFeatureGroup);
     // zoom on layer
-
     this._mapListServive.zoomOnSelectedLayer(this.mapService.map, this.mapService.marker);
   }
 }
