@@ -15,6 +15,7 @@ CHANGELOG
 * Les mailles INPN (1, 5, 10km) sont intégrées à l'installation (paramètre)
 * Statistiques de l'accueil - Paramètre permettant de les désactiver (#599)
 * Occtax - Date par défaut paramétrable (#351)
+* Support des géometries multi (MultiPoint, MultiPolygon, MultiLine) dans la synthèse (#609)
 
 **Corrections**
 
@@ -22,7 +23,7 @@ CHANGELOG
 * Masquer l'export du module Synthèse si son CRUVED est défini à 0 (#608)
 * Correction de la vérification du CRUVED du module METADONNEES (#601)
 * Correction de la vérification du CRUVED lorsque get_role = False
-* Correction affichage des Multi-points dans la synthèse (#609)
+
 * Occtax - Retour du composant GPS permettant de charger un marker à partir de coordonnées X et Y (#624)
 * Correction lors d'import de fichier GPX ayant une altitude (#631)
 * Occtax - Correction du filtre Observateur texte libre (#598)
