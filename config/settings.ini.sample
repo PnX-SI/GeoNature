@@ -36,9 +36,12 @@ srid_local=2154
 # availaible language value : fr
 default_language=fr
 
-# Permet l'installation des couches SIG nécessaires - communes, zones à statut, etc..
+# Permet l'installation des couches SIG des communes
 # Seules les couches de métropole en 2154 sont fournies (false conseillé hors métropole)
 install_sig_layers=true
+
+# Installe les grilles INPN (1, 5 et 10km)
+install_grid_layer=true
 
 # Install default French DEM (Mainland France only - BD alti 250m))
 install_default_dem=true

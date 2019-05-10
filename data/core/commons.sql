@@ -590,15 +590,3 @@ SELECT
 FROM insert_a i
 LEFT OUTER JOIN last_update_a u ON i.uuid_attached_row = u.uuid_attached_row
 LEFT OUTER JOIN delete_a d ON i.uuid_attached_row = d.uuid_attached_row;
-
-
-CREATE VIEW gn_commons.v_lastest_validation AS (
-  SELECT val.*, nom.label_default
-   FROM gn_commons.t_validations val
-   JOIN ref_nomenclatures.t_nomenclatures nom ON nom.id_nomenclature = val.id_nomenclature_valid_status
-JOIN ( SELECT val_max.uuid_attached_row,
-            max(val_max.validation_date) AS max
-           FROM gn_commons.t_validations val_max
-          GROUP BY val_max.uuid_attached_row) v2 ON val.validation_date = v2.max AND v2.uuid_attached_row = val.uuid_attached_row
-
-)

@@ -156,11 +156,6 @@ ln -s ${BASE_DIR}/frontend/node_modules ${BASE_DIR}/backend/static
 # Creation du dossier des assets externes
 mkdir src/external_assets
 
-# Creation du map config
-if [ ! -f src/conf/map.config.ts ]; then
-  cp src/conf/map.config.ts.sample src/conf/map.config.ts
-fi
-
 # Copy the custom components
 echo "Création des fichiers de customisation du frontend..."
 if [ ! -f src/custom/custom.scss ]; then
@@ -195,6 +190,12 @@ my_current_geonature_directory=$(pwd)
 # Installation du module Occtax
 source backend/venv/bin/activate
 geonature install_gn_module $my_current_geonature_directory/contrib/occtax /occtax --build=false
+
+if $install_module_validation 
+then
+  geonature install_gn_module $my_current_geonature_directory/contrib/gn_module_validation /validation --build=false
+fi
+
 
 if [[ $MODE != "dev" ]]
 then

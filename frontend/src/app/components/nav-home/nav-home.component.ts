@@ -29,11 +29,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     public _sideNavService: SideNavService,
     private _location: Location,
     private _globalSub: GlobalSubService
-  ) {
-    translate.addLangs(['en', 'fr', 'cn']);
-    translate.setDefaultLang(AppConfig.DEFAULT_LANGUAGE);
-    translate.use(AppConfig.DEFAULT_LANGUAGE);
-  }
+  ) {}
 
   ngOnInit() {
     this.appConfig = AppConfig;

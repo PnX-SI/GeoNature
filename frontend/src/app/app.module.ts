@@ -30,7 +30,6 @@ import { FooterComponent } from '../custom/components/footer/footer.component';
 import { IntroductionComponent } from '../custom/components/introduction/introduction.component';
 
 // Service
-import { AppConfig } from '../conf/app.config';
 import { AuthService } from './components/auth/auth.service';
 import { CookieService } from 'ng2-cookies';
 import { AuthGuard, ModuleGuardService } from '@geonature/routing/routes-guards.service';
@@ -92,4 +91,4 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

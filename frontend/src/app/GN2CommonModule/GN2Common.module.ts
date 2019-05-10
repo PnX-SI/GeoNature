@@ -7,7 +7,9 @@ import {
   MatTooltipModule,
   MatListModule,
   MatIconModule,
-  MatToolbarModule
+  MatToolbarModule,
+  MatExpansionModule,
+  MatPaginatorModule,
 } from '@angular/material';
 
 import { HttpClient } from '@angular/common/http';
@@ -76,6 +78,8 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MatCardModule,
     MatListModule,
     MatToolbarModule,
+    MatExpansionModule,
+    MatPaginatorModule,
     FormsModule,
     ReactiveFormsModule,
     NgxDatatableModule,
@@ -151,6 +155,8 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MatCardModule,
     MatListModule,
     MatToolbarModule,
+    MatExpansionModule,
+    MatPaginatorModule,
     NgxDatatableModule,
     NgbModule,
     TranslateModule,
@@ -164,4 +170,4 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     PeriodComponent
   ]
 })
-export class GN2CommonModule {}
+export class GN2CommonModule { }

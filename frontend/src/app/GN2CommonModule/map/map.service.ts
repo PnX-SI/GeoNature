@@ -39,7 +39,7 @@ export class MapService {
     color: 'green'
   };
 
-  constructor(private http: HttpClient, private _commonService: CommonService) {}
+  constructor(private http: HttpClient, private _commonService: CommonService) { }
 
   setMap(map) {
     this.map = map;
@@ -173,6 +173,16 @@ export class MapService {
         featureGroup.removeLayer(layer);
       });
     }
+  }
+  removeLayerFeatureGroups(featureGroups: Array<any>) {
+    featureGroups.forEach(featureGroup => {
+      if (featureGroup) {
+        featureGroup.eachLayer(layer => {
+          featureGroup.removeLayer(layer);
+        });
+      }
+    });
+
   }
 
   loadGeometryReleve(data, isDraggable) {

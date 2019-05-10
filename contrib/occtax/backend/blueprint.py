@@ -20,6 +20,7 @@ from geoalchemy2.shape import from_shape
 
 
 from geonature.utils.env import DB, ROOT_DIR
+from geonature.utils.utilsgeometry import remove_third_dimension
 from pypnusershub.db.models import User
 from pypnusershub.db.tools import InsufficientRightsError
 
@@ -289,9 +290,9 @@ def insertOrUpdateOneReleve(info_role):
             data["properties"].pop(att)
 
     releve = TRelevesOccurrence(**data["properties"])
-
     shape = asShape(data["geometry"])
-    releve.geom_4326 = from_shape(shape, srid=4326)
+    two_dimension_geom = remove_third_dimension(shape)
+    releve.geom_4326 = from_shape(two_dimension_geom, srid=4326)
 
     if observersList is not None:
         observers = DB.session.query(User).filter(User.id_role.in_(observersList)).all()
