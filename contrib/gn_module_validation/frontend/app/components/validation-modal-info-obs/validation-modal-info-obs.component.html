@@ -2,19 +2,16 @@
 <div class="modal-header">
 
   <div id="title">
-    <h5 class="main-color "> {{ selectedObsTaxonDetail?.nom_vern }} - {{ selectedObsTaxonDetail?.nom_valide }} </h5>
-
-  <div id="inpn">
-
-    <a target="_blank " href="https://inpn.mnhn.fr/espece/cd_nom/{{ selectedObsTaxonDetail?.cd_nom }} ">
-      <button type="button"  *ngIf="oneObsSynthese?.url_source" class="btn btn-light">
-        Voir la fiche INPN du taxon
-      </button>
-    </a>
+      <h5 class="main-color "> {{ selectedObsTaxonDetail?.nom_vern }} - {{ selectedObsTaxonDetail?.nom_valide }} </h5>
+      <div id="inpn">
+        <a target="_blank " href="https://inpn.mnhn.fr/espece/cd_nom/{{ selectedObsTaxonDetail?.cd_nom }} ">
+          <button type="button"  *ngIf="oneObsSynthese?.url_source" class="btn btn-light">
+            Voir la fiche INPN du taxon
+          </button>
+        </a>
+      </div>
 
   </div>
-
-</div>
 
   <button type="button" class="close" aria-label="Close" (click)="closeModal()">
       <span aria-hidden="true">&times;</span>
@@ -78,9 +75,8 @@
             <span *ngFor="let observers of selectedObs?.cor_observers; let i = index">
               {{ observers.email}} <span *ngIf="i != selectedObs?.cor_observers.length -1">, </span>
             </span>
-            <button> <a href="{{mailto}}"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>
+            <button> <a href="{{mailto}}"><i class="fa fa-envelope-o" aria-hidden="true"></i></a> </button>
           )
-          </span>
           </span>
           <br>
 
@@ -91,11 +87,6 @@
             <b> Date : </b>{{selectedObs?.date_min}}
           </ng-template>
           <br>
-
-        </span>
-
-  <p></p>
-
 
   <mat-tab-group>
 
@@ -117,7 +108,8 @@
             <td width="20%"> <span class="validationCircle" [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.id_status].color}"><i class="material-icons" id="auto" style="font-size: 13px;padding-top: 3px;padding-left:1px;" *ngIf="row.typeValidation == 'True'">computer</i></span>
               <div class="statusName">
                 {{statusNames[row.id_status]}}
-              </div> </td>
+              </div> 
+            </td>
             <td width="20%"> <span> {{row.validator}} </span> </td>
             <td> {{row.comment}} </td>
           </tr>
@@ -348,20 +340,17 @@
   </mat-tab-group>
 
 
-<!--<div class="modal-footer justify-content-between">-->
-<div class="modal-footer">
+  <!--<div class="modal-footer justify-content-between">-->
+  <div class="modal-footer">
 
-    <div id="navigButtons">
-        <button [disabled]="!isPrevButtonValid" class="btn btn-sm" (click)="decreaseObs()">
-          <i class="material-icons">navigate_before</i>
-        </button>
-    
-        <button [disabled]="!isNextButtonValid" class="btn btn-sm" (click)="increaseObs()">
-          <i class="material-icons">navigate_next</i>
-        </button>
-    </div>
+      <div id="navigButtons">
+          <button [disabled]="!isPrevButtonValid" class="btn btn-sm" (click)="decreaseObs()">
+            <i class="material-icons">navigate_before</i>
+          </button>
+      
+          <button [disabled]="!isNextButtonValid" class="btn btn-sm" (click)="increaseObs()">
+            <i class="material-icons">navigate_next</i>
+          </button>
+      </div>
 
-</div>
-
-
-</div>
+  </div>
