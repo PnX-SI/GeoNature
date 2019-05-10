@@ -470,3 +470,17 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
         uselist=True,
     )
 
+
+@serializable
+class CorAreaTaxon(DB.Model):
+    __tablename__ = "cor_area_taxon"
+    __table_args__ = {"schema": "gn_synthese"}
+    cd_nom = DB.Column(
+        DB.Integer(), ForeignKey("taxonomie.taxref.cd_nom"), primary_key=True
+    )
+    id_area = DB.Column(
+        DB.Integer(), ForeignKey("ref_geo.l_area.id_area"), primary_key=True
+    )
+    nb_obs = DB.Column(DB.Integer())
+    last_date = DB.Column(DB.DateTime())
+    color = DB.Column(DB.Unicode())
