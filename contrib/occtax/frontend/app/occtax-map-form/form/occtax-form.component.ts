@@ -25,7 +25,7 @@ export class OcctaxFormComponent implements OnInit {
     private router: Router,
     private _commonService: CommonService,
     private _mapService: MapService
-  ) { }
+  ) {}
 
   ngOnInit() {
     // set show occurrence to false:
@@ -93,6 +93,8 @@ export class OcctaxFormComponent implements OnInit {
     }
     // disable button
     this.disabledAfterPost = true;
+    console.log(JSON.stringify(finalForm));
+
     // Post
     this._cfs.postOcctax(finalForm).subscribe(
       () => {
@@ -112,11 +114,13 @@ export class OcctaxFormComponent implements OnInit {
         this.fs.currentHourMax = null;
         if (this.fs.stayOnFormInterface.value) {
           // prefil the form with the previous releve
-          delete saveForm['geometry']
-          saveForm['properties']['t_occurrences_occtax'] = []
+          delete saveForm["geometry"];
+          saveForm["properties"]["t_occurrences_occtax"] = [];
+          // delete comment input
+          delete saveForm["properties"]["comment"];
+          saveForm["properties"]["t_occurrences_occtax"] = [];
           this.fs.releveForm.patchValue(saveForm);
-        }
-        else {
+        } else {
           // redirect
           this.router.navigate(["/occtax"]);
         }
@@ -124,7 +128,6 @@ export class OcctaxFormComponent implements OnInit {
         this._mapService.setEditingMarker(false);
         // reset default marker mode
         this._mapService.setEditingMarker(true);
-
       },
       error => {
         if (error.status === 403) {
