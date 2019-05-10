@@ -88,7 +88,7 @@ export class AuthService {
   signupUser(data: any): Observable<any> {  
     const options = data;
     return this._http
-      .post<any>(`${AppConfig.API_ENDPOINT}/user/inscription`, options);
+      .post<any>(`${AppConfig.API_ENDPOINT}/users/inscription`, options);
   }
 
   decodeObjectCookies(val) {

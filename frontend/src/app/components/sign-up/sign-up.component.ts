@@ -34,18 +34,20 @@ export class SignUpComponent implements OnInit {
 
   createForm() {
   	this.form = this.fb.group({
-			nom_role: ['', Validators.required],
-			prenom_role: ['', Validators.required],
-			identifiant: ['', Validators.required],
-			email: ['', [Validators.pattern('^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$'), Validators.required]],
-  		password: ['', Validators.required],
-			password_confirmation: ['', [Validators.required, similarValidator('password')]],
-			remarques: ['', null],
-			organisme: ['', null]
+			nom_role: ['bob', Validators.required],
+			prenom_role: ['dylan', Validators.required],
+			identifiant: ['bob.dylan', Validators.required],
+			email: ['jbrieuclp@gmail.com', [Validators.pattern('^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$'), Validators.required]],
+  		password: ['test', Validators.required],
+			password_confirmation: ['test', [Validators.required, similarValidator('password')]],
+			remarques: ['remaques', null],
+			organisme: ['organisme', null]
     });
   }
 
   save() {
+    console.log("submit");
+    console.log(this.form.value);
   	if (this.form.valid) {
       this._authService.signupUser(this.form.value)
             .subscribe(
