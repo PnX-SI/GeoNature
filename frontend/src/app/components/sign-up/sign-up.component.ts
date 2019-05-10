@@ -40,7 +40,7 @@ export class SignUpComponent implements OnInit {
   		password: ['', Validators.required],
 			password_confirmation: ['', [Validators.required, similarValidator('password')]],
 			remarques: ['', null],
-			organisme: ['', null]
+      organisme: ['', null]
     });
   }
 
