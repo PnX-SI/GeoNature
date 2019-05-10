@@ -2,10 +2,13 @@
 <ng-select [ngClass]="class"
 		[items]="dataSets | async"
 		bindLabel="dataset_name"
-		bindValue="id_dataset"
+		[bindValue]="bindValue"
 		placeholder="Jeux de données"
 		[multiple]="multiSelect"
 		[clearable]="clearable"
 		[virtualScroll]="true"
 		[formControl]="parentFormControl">
+	<ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+        <div matTooltip="{{item.dataset_name}}"><span class="pre-wrap">{{item.dataset_name}}</span></div>
+    </ng-template>
 </ng-select>
