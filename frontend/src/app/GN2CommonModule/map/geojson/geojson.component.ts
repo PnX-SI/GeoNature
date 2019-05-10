@@ -15,12 +15,14 @@ export class GeojsonComponent implements OnInit, OnChanges {
   @Input() geojson: any;
   @Input() onEachFeature: any;
   @Input() style: any;
+  // zoom on geojson extend
+  @Input() zoomOnLayer = true;
   // display the geojsons as cluster or not
   @Input() asCluster = false;
   public geojsonCharged = new Subject<any>();
   public currentGeoJson$: Observable<L.Layer> = this.geojsonCharged.asObservable();
 
-  constructor(public mapservice: MapService) {}
+  constructor(public mapservice: MapService) { }
 
   ngOnInit() {
     this.map = this.mapservice.map;
@@ -45,7 +47,7 @@ export class GeojsonComponent implements OnInit, OnChanges {
       }
       this.loadGeojson(changes.geojson.currentValue);
       // zoom on layer extend after fisrt search
-      if (changes.geojson.previousValue !== undefined) {
+      if (changes.geojson.previousValue !== undefined && this.zoomOnLayer) {
         // try to fit bound on layer. catch error if no layer in feature group
 
         try {

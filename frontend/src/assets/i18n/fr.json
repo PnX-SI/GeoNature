@@ -27,8 +27,7 @@
   "LoginError": "Identifiant ou mot de passe incorrect",
   "Downloading": "Téléchargement en cours",
   "DownloadData": "Télécharger les données",
-  "DownloadOverflow":
-    "Le nombre d'élément est trop important pour être téléchargé, veuillez affiner votre recherche ou contacter votre administrateur",
+  "DownloadOverflow": "Le nombre d'élément est trop important pour être téléchargé, veuillez affiner votre recherche ou contacter votre administrateur",
   "AllItems": "Tous",
   "Map": {
     "SearchLocation": "Rechercher un lieu",
@@ -37,16 +36,14 @@
     "AddLine": "Localisez l'observation (ligne)",
     "AddPolygon": "Localisez l'observation (polygone)",
     "ZoomWarning": "Echelle de saisie inadaptée, veuillez zoomer davantage pour pointer le relevé",
-    "FileLayerInfoMessage":
-      "Cliquer sur la couche (point/ligne/polygone) pour en faire le pointage de votre releve. La couche selectionné apparait en rouge sur la carte. Clic droit pour afficher les infos de la couche ",
+    "FileLayerInfoMessage": "Cliquer sur la couche (point/ligne/polygone) pour en faire le pointage de votre releve. La couche selectionné apparait en rouge sur la carte. Clic droit pour afficher les infos de la couche ",
     "FileLayerInfoSynthese": "Fichier importé. Clic droit sur une couche pour afficher ses infos"
   },
   "MetaData": {
     "JddError": "Erreur lors de la récupération des jeux de données",
     "JddErrorMTD": "Error lors de la récupération des JDD via l'application MTD",
     "NoJDD": "Aucun jeu de données n'a été trouvé, contactez votre administrateur",
-    "NoJDDMTD":
-      "Aucun jeu de données n'a été trouvé, veuillez d'abord les saisir dans l'application MTD",
+    "NoJDDMTD": "Aucun jeu de données n'a été trouvé, veuillez d'abord les saisir dans l'application MTD",
     "Datasetadded": "Jeu de donnée ajouté avec succès",
     "AFadded": "Cadre d'acquisition ajouté avec succès",
     "Programs": "Programmes",
@@ -101,7 +98,8 @@
     "CancelTaxon": "Annuler la saisie du taxon",
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire",
     "GroupType": "Type de regroupement",
-    "DoesNotExist": "Ce relevé n'existe pas"
+    "DoesNotExist": "Ce relevé n'existe pas",
+    "StayOnFormInterface": "Enchainer les relevés sans retourner à l'interface carte/liste"
   },
   "Taxon": {
     "ObservedTaxon": "Taxon(s) observé(s)",
@@ -133,8 +131,7 @@
     "DiffusionLevel": "Niveau de diffusion",
     "ObservationStatus": "Statut d'observation",
     "Blurring": "Floutage",
-    "CurrentlyEditing":
-      "Veuillez enregistrer le taxon en cours d'édition avant d'en éditer un nouveau",
+    "CurrentlyEditing": "Veuillez enregistrer le taxon en cours d'édition avant d'en éditer un nouveau",
     "NoTaxonFound": "Aucun taxon trouvé pour cette recherche",
     "ExistProofValidation": "Ce champs doit débuter par 'http://', 'https://', ou 'ftp://'",
     "StatusSource": "Statut source"
@@ -157,17 +154,14 @@
   "Geo": {
     "Municipalities": "Communes"
   },
-  "IntroMessage":
-    "Bienvenue dans le module CONTACT. Il permet de saisir des observations selon le standard Occurrences de taxon du SINP.",
+  "IntroMessage": "Bienvenue dans le module CONTACT. Il permet de saisir des observations selon le standard Occurrences de taxon du SINP.",
   "ErrorMessage": "Une erreur s'est produite",
-
   "Export": {
     "ExportModuleName": "Module d'export des données"
   },
   "Synthese": {
     "DeleteObs": "Supprimer l'observations",
     "DeleteSuccess": "Observation supprimée avec succès",
-    "PeriodError":
-      "Le champs 'periode début' ET 'periode fin' doivent être remplit si vous souhaitez faire une recherche par période"
+    "PeriodError": "Le champs 'periode début' ET 'periode fin' doivent être remplit si vous souhaitez faire une recherche par période"
   }
 }

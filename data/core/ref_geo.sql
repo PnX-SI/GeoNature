@@ -368,6 +368,7 @@ INSERT INTO bib_areas_types (type_name, type_code, type_desc, ref_name, ref_vers
 ('Communes', 'COM', 'Type commune', 'IGN admin_express',2017),
 ('Départements', 'DEP', 'Type département', 'IGN admin_express',2017),
 ('Mailles10*10', 'M10', 'Type maille INPN 10*10km', NULL,NULL),
+('Mailles5*10', 'M5', 'Type maille INPN 5*5km', NULL,NULL),
 ('Mailles1*1', 'M1', 'Type maille INPN 1*1km', NULL,NULL),
 ('Secteurs', 'SEC', NULL, NULL,NULL),
 ('Massifs', 'MAS', NULL, NULL,NULL),

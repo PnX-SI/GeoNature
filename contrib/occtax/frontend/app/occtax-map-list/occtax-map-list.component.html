@@ -144,7 +144,7 @@
             [name]='col.name' 
             [prop]='col.prop' 
             [sortable]="true">
-              <ng-template *ngSwitchCase="'date_min'" let-row="row" ngx-datatable-cell-template [matTooltip]>
+              <ng-template *ngSwitchCase="'date_min'" let-row="row" ngx-datatable-cell-template>
                 {{row[col.prop] | date:'dd-MM-yyyy'}}
               </ng-template>
               <ng-template *ngSwitchCase="'taxons'" let-row="row" ngx-datatable-cell-template >
@@ -167,7 +167,7 @@
       </ng-container>
 
     </ngx-datatable>
-    <button id="download-btn" class="btn btn-primary box-shadow" (click)="openModalDownload($event, modalDownload)">
+    <button id="download-btn" class="btn btn-primary box-shadow" (click)="openModalDownload($event, modalDownload)" matTooltip="">
       <i class="fa fa-download" aria-hidden="true">
       </i>
       <small> {{ 'DownloadData' | translate }} </small>

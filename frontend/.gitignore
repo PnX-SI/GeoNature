@@ -11,8 +11,6 @@ src/app/routing/app-routing.module.ts
 #tsconfig
 tsconfig.json
 
-# map config
-src/conf/map.config.ts
 
 # custom components
 src/custom/components/footer/footer.component.ts

@@ -1,0 +1,356 @@
+<!-- MODAL HEADER -->
+<div class="modal-header">
+
+  <div id="title">
+      <h5 class="main-color "> {{ selectedObsTaxonDetail?.nom_vern }} - {{ selectedObsTaxonDetail?.nom_valide }} </h5>
+      <div id="inpn">
+        <a target="_blank " href="https://inpn.mnhn.fr/espece/cd_nom/{{ selectedObsTaxonDetail?.cd_nom }} ">
+          <button type="button"  *ngIf="oneObsSynthese?.url_source" class="btn btn-light">
+            Voir la fiche INPN du taxon
+          </button>
+        </a>
+      </div>
+
+  </div>
+
+  <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+  </button>
+
+</div>
+
+<!-- MODAL BODY -->
+
+<div class="modal-body">
+
+  <p></p>
+
+        <span class="font-xs">
+
+          <div *ngIf="edit" id="statusChange">
+
+            <br>
+
+            <form [formGroup]="statusForm">
+
+              <span *ngFor="let id of statusKeys" id="validButtons">
+              <!-- Formulaire pour le choix des standards et des formats de téléchargement des fichiers -->
+                <label *ngIf="VALIDATION_CONFIG.STATUS_INFO[id].cat !== 'notassessed'" [ngStyle]="{'background-color': VALIDATION_CONFIG.STATUS_INFO[id].color}" role="button"  class="btn btn-success btn-sm box-shadow waves-effect" aria-pressed="true">
+                  <input type="radio" formControlName="statut" value="{{id}}">
+                  {{statusNames[id]}}</label>
+
+                <label *ngIf="VALIDATION_CONFIG.STATUS_INFO[id].cat === 'notassessed'" [ngStyle]="{'background-color': VALIDATION_CONFIG.STATUS_INFO[id].color}" role="button" class="btn btn-success btn-sm box-shadow" aria-pressed="true">
+                  <input type="radio" formControlName="statut" value="{{id}}">
+                  {{statusNames[id]}}</label>
+              </span>
+
+              <div class="md-form mb-0" style="padding-top:5px;">
+                <span> Commentaire : </span>
+                <textarea type="text" rows="1" class="form-control md-textarea" formControlName="comment"> </textarea>
+              </div>
+
+            </form>
+
+            <div style="padding-top:5px;">
+              <button class="btn btn-sm btn-light" type="submit" data-dismiss="modal" (click)="cancel()">Annuler</button>
+              <button id="saveButton" (click)="onSubmit(statusForm.value)" data-toggle="modal" value="Enregistrer" type="button" [disabled]="!this.statusForm.valid" class="btn btn-sm btn-success" data-dismiss="modal" #required>
+
+                Enregistrer
+              </button>
+            </div>
+
+            <br>
+
+          </div>
+
+          <p></p>
+          <b> Statut de validation actuel : </b> {{selectedObs?.valid_status}}
+          <button class="edit btn btn-sm btn-primary"(click)="getStatusNames()" [disabled]=edit>
+            <i class="material-icons" id="modify"> edit </i> modifier le statut de validation
+          </button>
+          <br>
+          <b> Observation de : </b> {{selectedObs?.observers}} 
+          <span *ngIf="selectedObs?.cor_observers.length > 0">
+            (
+            <span *ngFor="let observers of selectedObs?.cor_observers; let i = index">
+              {{ observers.email}} <span *ngIf="i != selectedObs?.cor_observers.length -1">, </span>
+            </span>
+            <button> <a href="{{mailto}}"><i class="fa fa-envelope-o" aria-hidden="true"></i></a> </button>
+          )
+          </span>
+          <br>
+
+          <span *ngIf="selectedObs?.date_min != selectedObs?.date_max; else elseBlock">
+            <b> Date : </b>{{selectedObs?.date_min}} -> {{selectedObs?.date_max}}
+          </span>
+          <ng-template #elseBlock>
+            <b> Date : </b>{{selectedObs?.date_min}}
+          </ng-template>
+          <br>
+
+  <mat-tab-group>
+
+    <mat-tab label="Historique">
+      <table class="font-xs table table-striped table-sm">
+
+        <thead>
+          <tr>
+            <th class="table_date"> Date de validation </th>
+            <th class="table_status"> Statut </th>
+            <th class="table_comment"> Validateur </th>
+            <th class="table_comment"> Commentaire </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let row of validationHistory">
+            <td width="15%"> {{row.date}} </td>
+            <td width="20%"> <span class="validationCircle" [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.id_status].color}"><i class="material-icons" id="auto" style="font-size: 13px;padding-top: 3px;padding-left:1px;" *ngIf="row.typeValidation == 'True'">computer</i></span>
+              <div class="statusName">
+                {{statusNames[row.id_status]}}
+              </div> 
+            </td>
+            <td width="20%"> <span> {{row.validator}} </span> </td>
+            <td> {{row.comment}} </td>
+          </tr>
+        </tbody>
+
+      </table>
+    </mat-tab>
+
+    <mat-tab label="Observation">
+      <table class="font-xs table table-striped table-sm">
+        <tr>
+          <td> Statut de l'observation </td>
+          <td> {{selectedObs?.observation_status}} </td>
+        </tr>
+        <tr>
+          <td> Technique d'observation </td>
+          <td> {{selectedObs?.obs_technique}} </td>
+        </tr>
+        <tr>
+          <td> Méthode d'observation </td>
+          <td> {{selectedObs?.obs_method}} </td>
+        </tr>
+        <tr>
+          <td> Etat biologique </td>
+          <td> {{selectedObs?.bio_condition}} </td>
+        </tr>
+
+        <tr>
+          <td> Statut biologique </td>
+          <td> {{selectedObs?.bio_status}} </td>
+        </tr>
+
+        <tr>
+          <td> Sexe </td>
+          <td> {{selectedObs?.sex}} </td>
+        </tr>
+        <tr>
+          <td> Stade de vie </td>
+          <td> {{selectedObs?.life_stage}} </td>
+        </tr>
+        <tr>
+          <td> Denombrement min </td>
+          <td> {{selectedObs?.count_min}} </td>
+        </tr>
+        <tr>
+          <td> Denombrement max </td>
+          <td> {{selectedObs?.count_max}} </td>
+        </tr>
+        <tr>
+          <td> Type de dénombrement </td>
+          <td> {{selectedObs?.type_count}} </td>
+        </tr>
+        <tr>
+          <td> Objet du dénombrement </td>
+          <td> {{selectedObs?.obj_count}} </td>
+        </tr>
+        <tr>
+        <tr>
+          <td> Naturalité </td>
+          <td> {{selectedObs?.naturalness}} </td>
+        </tr>
+
+        <tr>
+          <td> Commentaire </td>
+          <td> {{selectedObs?.comments}} </td>
+        </tr>
+
+        <tr>
+          <td> Determinateur </td>
+          <td> {{selectedObs?.determiner}} </td>
+        </tr>
+        <tr>
+          <td> Preuve d'existance </td>
+          <td> {{selectedObs?.exist_proof}} </td>
+        </tr>
+        <tr>
+          <td> Preuve numérique </td>
+          <td> {{selectedObs?.digital_proof}} </td>
+        </tr>
+        <tr>
+          <td> Preuve non numérique </td>
+          <td> {{selectedObs?.non_digital_proof}} </td>
+        </tr>
+        <tr>
+          <td> Echantillon de preuve </td>
+          <td> {{selectedObs?.sample_number_proof}} </td>
+        </tr>
+        <tr>
+
+        <tr>
+          <td> Type de regroupement </td>
+          <td> {{selectedObs?.grp_typ}} </td>
+        </tr>
+
+        <tr>
+          <td> Source de la donnée </td>
+          <td> {{selectedObs?.source_status}} </td>
+        </tr>
+
+        <tr>
+          <td> Sensibilité </td>
+          <td> {{selectedObs?.sensitivity}} </td>
+        </tr>
+        <tr>
+          <td> Niveau de diffusion </td>
+          <td> {{selectedObs?.diffusion_level}} </td>
+        </tr>
+        <tr>
+          <td> Nature de l'objet géographique </td>
+          <td> {{selectedObs?.nat_obj_geo}} </td>
+        </tr>
+        <tr>
+          <td> Floutage </td>
+          <td> {{selectedObs?.blurring}} </td>
+        </tr>
+        <tr>
+          <td> Identifiant unique SINP </td>
+          <td> {{selectedObs?.unique_id_sinp}} </td>
+        </tr>
+      </table>
+    </mat-tab>
+
+    <mat-tab label="Géographie">
+      <table class="font-xs table table-striped table-sm">
+
+        <tr>
+          <td>
+            <b> Commune(s) </b>
+          </td>
+          <td>
+            <li *ngFor="let mun of selectedObs?.municipalities; let i = index">
+            {{ mun.area_name}}
+            </li>
+          </td>
+        </tr>
+
+        <tr *ngIf="selectedObs?.other_areas.length > 0 ; let i = index">
+          <td>
+            <b>Autres espaces concernés par l'observation</b>
+          </td>
+          <td> <span *ngFor="let area of selectedObs?.other_areas; let i = index">
+            {{ area.area_name}} <span *ngIf="i !== selectedObs?.municipalities.length -1"> - </span>
+          </span> </td>
+        </tr>
+
+        <tr>
+          <td>
+            <b>Altitude</b>
+          </td>
+          <td>
+            {{selectedObs?.altitude_min}} m - {{selectedObs?.altitude_max}} m
+          </td>
+        </tr>
+
+        <tr *ngIf="selectedObs?.areas> 0" >
+          <td>
+            <b>Autres espaces concernés par l'observation</b>
+          </td>
+          <td>
+            <li *ngFor="let area of selectedObs?.areas"> {{area.area_name}} </li>
+          </td>
+        </tr>
+
+      </table>
+  </mat-tab>
+
+
+    <mat-tab label="Taxonomie">
+      <table class="font-xs table table-striped table-sm">
+
+        <tr>
+          <td>
+            <b>Groupe taxonomique </b>
+          </td>
+          <td> {{ selectedObsTaxonDetail?.classe }} </td>
+        </tr>
+        <tr>
+          <td>
+            <b>Ordre</b>
+          </td>
+          <td> {{ selectedObsTaxonDetail?.ordre }} </td>
+        </tr>
+        <tr>
+          <td>
+            <b> Famille</b>
+          </td>
+          <td> {{ selectedObsTaxonDetail?.famille }} </td>
+        </tr>
+      </table>
+
+      <h5 class="main-color"> Attribut(s) Taxonomique(s) locaux : </h5>
+      <table class="table table-striped table-sm">
+        <tr class="font-xs" *ngFor="let attr of selectObsTaxonInfo?.attributs">
+          <td> <b>{{attr.label_attribut}} </b> </td>
+          <td> {{attr.valeur_attribut}} </td>
+        </tr>
+      </table>
+    </mat-tab>
+
+    <mat-tab label="Sources">
+      <table class="font-xs table table-striped table-sm">
+        <tr>
+          <td> Jeu de données </td>
+          <td> {{selectedObs?.datasets.dataset_name}} </td>
+        </tr>
+        <tr>
+          <td> Cadre d'acquisition </td>
+          <td> {{selectedObs?.acquisition_framework.acquisition_framework_name}} </td>
+        </tr>
+        <tr>
+          <td> Module de provenance </td>
+          <td> {{selectedObs?.source.name_source}} </td>
+        </tr>
+      </table>
+    </mat-tab>
+
+    <mat-tab label="Réglementations">
+      <table class="font-xs table table-striped table-sm">
+
+        <tr *ngFor="let arrete of selectedObsTaxonDetail?.statuts_protection">
+          <td>
+            <a [href]="arrete.url"> {{arrete.intitule}} </a>
+          </td>
+        </tr>
+      </table>
+    </mat-tab>
+
+  </mat-tab-group>
+
+
+  <!--<div class="modal-footer justify-content-between">-->
+  <div class="modal-footer">
+
+      <div id="navigButtons">
+          <button [disabled]="!isPrevButtonValid" class="btn btn-sm" (click)="decreaseObs()">
+            <i class="material-icons">navigate_before</i>
+          </button>
+      
+          <button [disabled]="!isNextButtonValid" class="btn btn-sm" (click)="increaseObs()">
+            <i class="material-icons">navigate_next</i>
+          </button>
+      </div>
+
+  </div>

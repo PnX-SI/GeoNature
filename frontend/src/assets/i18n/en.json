@@ -27,8 +27,7 @@
   "LoginError": "Login or password incorrect",
   "DownloadData": "Download data",
   "Downloading": "Downloading",
-  "DownloadOverflow":
-    "The number of items is too important to be downloaded, please modify your request or contact your administrator",
+  "DownloadOverflow": "The number of items is too important to be downloaded, please modify your request or contact your administrator",
   "AllItems": "all",
   "MapList": {
     "InvalidTypeError": "Invalid type error",
@@ -63,8 +62,7 @@
     "AddLine": "Locate observation (line)",
     "AddPolygon": "Locate observation (polygon)",
     "ZoomWarning": "Inappropriate scale, zoom more ",
-    "FileLayerInfoMessage":
-      "Right click on the shape to select your current releve. Selected layer are in red. Right click to display the layer info",
+    "FileLayerInfoMessage": "Right click on the shape to select your current releve. Selected layer are in red. Right click to display the layer info",
     "FileLayerInfoSynthese": "Right click on the shape to display info"
   },
   "Releve": {
@@ -98,7 +96,8 @@
     "CancelTaxon": "Cancel this taxon",
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte",
     "GroupType": "Grouping type",
-    "DoesNotExist": "This releve does not exist"
+    "DoesNotExist": "This releve does not exist",
+    "StayOnFormInterface": "Stay on form interface"
   },
   "Taxon": {
     "ObservedTaxon": "Observed taxon",
@@ -153,8 +152,7 @@
   "Geo": {
     "Municipalities": "Cities"
   },
-  "IntroMessage":
-    "Welcome in CONTACT module. It allows to record observations based on SINP Taxon Occurrencies standard.",
+  "IntroMessage": "Welcome in CONTACT module. It allows to record observations based on SINP Taxon Occurrencies standard.",
   "ErrorMessage": "Game over",
   "Export": {
     "ExportModuleName": "Export module"

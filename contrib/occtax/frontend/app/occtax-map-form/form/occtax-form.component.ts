@@ -92,19 +92,16 @@ export class OcctaxFormComponent implements OnInit {
     }
     // disable button
     this.disabledAfterPost = true;
+    console.log(JSON.stringify(finalForm));
+
     // Post
     this._cfs.postOcctax(finalForm).subscribe(
       () => {
         this.disabledAfterPost = false;
 /** TODO Bug ToastConfig       this.toastr.success("Relevé enregistré", ""); */
         // resert the forms
-        this.fs.releveForm = this.fs.initReleveForm();
-        this.fs.occurrenceForm = this.fs.initOccurenceForm();
+        this.fs.releveForm.reset();
         this.fs.patchDefaultNomenclatureOccurrence(this.fs.defaultValues);
-        this.fs.countingForm = this.fs.initCountingArray();
-        // save the current center and zoom to set the map on next form
-        this.fs.previousCenter = this._mapService.map.getCenter();
-        this.fs.previousZoomLevel = this._mapService.map.getZoom();
 
         // reset the service value
         this.fs.taxonsList = [];
@@ -112,8 +109,22 @@ export class OcctaxFormComponent implements OnInit {
         this.fs.disabled = true;
         this.fs.showCounting = false;
         this.fs.currentHourMax = null;
-        // redirect
-        this.router.navigate(["/occtax"]);
+        if (this.fs.stayOnFormInterface.value) {
+          // prefil the form with the previous releve
+          delete saveForm["geometry"];
+          saveForm["properties"]["t_occurrences_occtax"] = [];
+          // delete comment input
+          delete saveForm["properties"]["comment"];
+          saveForm["properties"]["t_occurrences_occtax"] = [];
+          this.fs.releveForm.patchValue(saveForm);
+        } else {
+          // redirect
+          this.router.navigate(["/occtax"]);
+        }
+        // reset carto
+        this._mapService.setEditingMarker(false);
+        // reset default marker mode
+        this._mapService.setEditingMarker(true);
       },
       error => {
         if (error.status === 403) {
