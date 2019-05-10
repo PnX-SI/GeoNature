@@ -11,9 +11,11 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+  enable_sign_up: boolean = false;
   public casLogin: boolean;
   constructor(private _authService: AuthService) {
     this.casLogin = AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION;
+    this.enable_sign_up = AppConfig['ENABLE_SIGN_UP'] || false;
   }
 
   ngOnInit() {

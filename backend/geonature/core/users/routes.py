@@ -1,15 +1,16 @@
 import requests
 
-from flask import Blueprint, request, current_app, Response, jsonify
+from flask import Blueprint, request, current_app, Response, jsonify, redirect
 
 from geonature.utils.env import DB
 from geonature.core.users.models import VUserslistForallMenu, BibOrganismes, CorRole
 from pypnusershub.db.models import User
+from pypnusershub.db.models_register import TempUser
 from pypnusershub.routes_register import bp as user_api
 
 from geonature.utils.utilssqlalchemy import json_resp
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_meta.models import CorDatasetActor
+from geonature.core.gn_meta.models import CorDatasetActor, TDatasets
 from geonature.core.gn_meta.repositories import get_datasets_cruved
 
 
@@ -78,30 +79,47 @@ def insert_role(user=None):
 
 
 @routes.route("/inscription", methods=["POST"])
-@json_resp
-def inscription(user=None):
+def inscription():
     """
         Inscrit un user à partir de l'interface geonature
         Fonctionne selon l'autorisation 'ENABLE_SIGN_UP' dans la config.
         Fait appel à l'API UsersHub
     """
-    if (not config.ENABLE_SIGN_UP):
-        return {"message": "Page introuvable"}, 404
+    #test des droits
+    if (not config.get('ENABLE_SIGN_UP', False)):
+        return jsonify({"message": "Page introuvable"}), 404
 
-    data = dict(request.get_json())
+    data = request.get_json()
+    #ajout des valeurs non présentes dans le form
+    data['groupe'] = False
+    data['url_confirmation'] = config['API_ENDPOINT'] + "/users/confirmation"
 
-    user = User(**data)
-    if user.id_role is not None:
-        exist_user = DB.session.query(User).get(user.id_role)
-        if exist_user:
-            DB.session.merge(user)
-        else:
-            DB.session.add(user)
-    else:
-        DB.session.add(user)
-    DB.session.commit()
-    DB.session.flush()
-    return user.as_dict()
+    r = s.post(url=config['API_ENDPOINT'] + "/pypn/register/post_usershub/create_temp_user", json=data)
+
+    return Response(r), r.status_code
+
+
+@routes.route("/confirmation", methods=["GET"])
+def confirmation():
+    """
+        Confirmation du mail
+        Fait appel à l'API UsersHub
+    """
+    #test des droits
+    if (not config.get('ENABLE_SIGN_UP', False)):
+        return jsonify({"message": "Page introuvable"}), 404
+
+    token = request.args.get('token', None)
+    if token is None:
+        return jsonify({"message": "Token introuvable"}), 404
+
+    data = {"token": token, "id_application": config['ID_APPLICATION_GEONATURE']}
+
+    r = s.post(url=config['API_ENDPOINT'] + "/pypn/register/post_usershub/valid_temp_user", json=data)
+    if r.status_code != 200:
+        return Response(r), r.status_code
+
+    return redirect(config['URL_APPLICATION'], code=302)
 
 
 @routes.route("/role", methods=["PUT"])
@@ -123,6 +141,7 @@ def update_role(info_role):
         if not getattr(User, att, False):
             data.pop(att)
 
+    #liste des attributs qui ne doivent pas être modifiable par l'user
     black_list_att_update = [
         'active', 
         'date_insert', 
@@ -151,7 +170,6 @@ def update_password(info_role):
         Modifie le role de l'utilisateur du token en cours
         Fait appel à l'API UsersHub
     """
-    s = requests.Session()
     data = request.get_json()
     user = DB.session.query(User).get(info_role.id_role)
     
@@ -165,10 +183,11 @@ def update_password(info_role):
     #recuperation du token usershub API
     token = s.post(url=config['API_ENDPOINT'] + "/pypn/register/post_usershub/create_cor_role_token", json={'email': user.email}).json()
 
-    data['token']  = token['token']
+    data['token'] = token['token']
     r = s.post(url=config['API_ENDPOINT'] + "/pypn/register/post_usershub/change_password", json=data)
 
     if r.status_code != 200:
+        #comme concerne le password, on explicite pas le message
         return jsonify({"msg": "Erreur serveur"}), 500
 
     return jsonify({"msg": "Mot de passe modifié avec succès"}), 200

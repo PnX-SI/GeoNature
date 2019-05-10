@@ -20,12 +20,11 @@ export class SignUpComponent implements OnInit {
   	private fb: FormBuilder,
     private _authService: AuthService,
     private _router: Router,
+    private _toasterService: ToastrService
   ) {
-    /* TODO
-    if (!AppConfig.ENABLE_SIGN_UP) {
+    if (!(AppConfig['ENABLE_SIGN_UP'] || false)) {
       this._router.navigate(['/login']);
     }
-    */
   }
 
   ngOnInit() {
@@ -49,11 +48,30 @@ export class SignUpComponent implements OnInit {
   	if (this.form.valid) {
       this._authService.signupUser(this.form.value)
             .subscribe(
-              data => {
-                console.log(data);
+              res => {
+                this._toasterService.info(
+                  res.msg,
+                  '',
+                  {
+                    positionClass: 'toast-top-center',
+                    tapToDismiss: true,
+                    timeOut: 5000
+                  }
+                );
+                this._router.navigate(['/login']);
               },
               // error callback
-              error => { console.log(error); }
+              error => { 
+                this._toasterService.error(
+                  error.error.msg,
+                  '',
+                  {
+                    positionClass: 'toast-top-center',
+                    tapToDismiss: true,
+                    timeOut: 5000
+                  }
+                );
+              }
             );
     }
   }

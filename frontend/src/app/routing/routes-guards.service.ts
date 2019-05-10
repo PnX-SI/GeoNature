@@ -67,10 +67,17 @@ export class AuthGuard implements CanActivate, CanActivateChild {
 }
 
 @Injectable()
-export class SignInGuard implements CanActivate {
-  constructor() {}
+export class SignUpGuard implements CanActivate {
+  constructor(
+    private _router: Router
+  ) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    return !AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION;
+    if (AppConfig['ENABLE_SIGN_UP'] || false) {
+      return true;
+    } else {
+      this._router.navigate(['/login']);
+      return false;
+    }
   }
 }

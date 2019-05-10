@@ -36,7 +36,7 @@ import { IntroductionComponent } from '../custom/components/introduction/introdu
 import { AppConfig } from '../conf/app.config';
 import { AuthService } from './components/auth/auth.service';
 import { CookieService } from 'ng2-cookies';
-import { AuthGuard, ModuleGuardService, SignInGuard } from '@geonature/routing/routes-guards.service';
+import { AuthGuard, ModuleGuardService, SignUpGuard } from '@geonature/routing/routes-guards.service';
 import { ModuleService } from './services/module.service';
 import { CruvedStoreService } from './services/cruved-store.service';
 import { SideNavService } from './components/sidenav-items/sidenav-service';
@@ -86,7 +86,7 @@ export function HttpLoaderFactory(http: Http) {
     CookieService,
     HttpClient,
     ModuleGuardService,
-    SignInGuard,
+    SignUpGuard,
     SideNavService,
     CruvedStoreService,
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true }
