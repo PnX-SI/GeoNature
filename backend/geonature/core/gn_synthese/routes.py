@@ -599,7 +599,7 @@ def get_color_taxon():
     Parameters: 
         GET:
             - code_area_type (str): Type area code (ref_geo.bib_areas_types.type_code)
-            - id_type (int): Id of area (ref_geo.l_areas.id_area)
+            - id_area (int): Id of area (ref_geo.l_areas.id_area)
             - cd_nom (int): Code taxon (taxonomie.taxref.cd_nom)
             Those three parameters can be multiples
     Returns: Array<dict<CorAreaTaxon>>
