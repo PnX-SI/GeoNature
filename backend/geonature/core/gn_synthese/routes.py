@@ -24,6 +24,7 @@ from geonature.core.gn_synthese.models import (
     SyntheseOneRecord,
     VMTaxonsSyntheseAutocomplete,
     VSyntheseForWebApp,
+    CorAreaTaxon,
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from geonature.core.taxonomie.models import (
@@ -31,6 +32,7 @@ from geonature.core.taxonomie.models import (
     TaxrefProtectionArticles,
     TaxrefProtectionEspeces,
 )
+from geonature.core.ref_geo.models import LAreas, BibAreasTypes
 from geonature.core.gn_synthese.utils import query as synthese_query
 from geonature.core.gn_synthese.utils import query_select_sqla as synthese_query_select
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
@@ -202,6 +204,7 @@ def get_one_synthese(id_synthese):
     try:
         data = q.one()
         synthese_as_dict = data[0].as_dict(True)
+        print(synthese_as_dict)
         synthese_as_dict["actors"] = data[1]
         return synthese_as_dict
     except exc.NoResultFound:
@@ -586,3 +589,36 @@ def getDefaultsNomenclatures():
     if not data:
         return {"message": "not found"}, 404
     return {d[0]: d[1] for d in data}
+
+
+@routes.route("/color_taxon", methods=["GET"])
+@json_resp
+def get_color_taxon():
+    """
+    Get color of taxon in areas (table synthese.cor_area_taxon)
+    Parameters: 
+        GET:
+            - code_area_type (str): Type area code (ref_geo.bib_areas_types.type_code)
+            - id_area (int): Id of area (ref_geo.l_areas.id_area)
+            - cd_nom (int): Code taxon (taxonomie.taxref.cd_nom)
+            Those three parameters can be multiples
+    Returns: Array<dict<CorAreaTaxon>>
+    """
+    params = request.args
+    id_areas_type = params.getlist("code_area_type")
+    cd_noms = params.getlist("cd_nom")
+    id_areas = params.getlist("id_area")
+    q = DB.session.query(CorAreaTaxon)
+    if len(id_areas_type) > 0:
+        q = q.join(LAreas, LAreas.id_area == CorAreaTaxon.id_area).join(
+            BibAreasTypes, BibAreasTypes.id_type == LAreas.id_type
+        )
+        q = q.filter(BibAreasTypes.type_code.in_(tuple(id_areas_type)))
+    if len(id_areas) > 0:
+        # check if the join already done on l_areas
+        if not LAreas in [mapper.class_ for mapper in q._join_entities]:
+            q = q.join(LAreas, LAreas.id_area == CorAreaTaxon.id_area)
+        q = q.filter(LAreas.id_area.in_(tuple(id_areas)))
+    if len(cd_noms) > 0:
+        q = q.filter(CorAreaTaxon.cd_nom.in_(tuple(cd_noms)))
+    return [d.as_dict() for d in q.all()]

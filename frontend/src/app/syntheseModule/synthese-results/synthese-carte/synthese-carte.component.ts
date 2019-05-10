@@ -116,6 +116,16 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
     });
   }
 
+  coordsToLatLng(coordinates) {
+    return new L.LatLng(coordinates[1], coordinates[0]);
+  }
+
+  setStyleEventAndAdd(layer, id) {
+    this.setStyle(layer);
+    this.eventOnEachFeature(id, layer);
+    this.cluserOrSimpleFeatureGroup.addLayer(layer);
+  }
+
   ngOnChanges(change) {
     // on change delete the previous layer and load the new ones from the geojson data send by the API
     // here we don't use geojson component for performance reasons
@@ -129,36 +139,29 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
         ? (L as any).markerClusterGroup()
         : new L.FeatureGroup();
 
-      change.inputSyntheseData.currentValue.features.forEach(element => {
-        if (element.type === 'Point' || element.type === 'MultiPoint') {
-          let coordinates = element.coordinates;
-          if (element.type === 'Point') {
-            coordinates = [coordinates];
+      change.inputSyntheseData.currentValue.features.forEach(geojson => {
+        // we don't create a generic function for setStyle and event on each layer to avoid
+        // a if on possible milion of point (with multipoint we must set the event on each point)
+        if (geojson.type == 'Point' || geojson.type == 'MultiPoint') {
+          if (geojson.type == 'Point') {
+            geojson.coordinates = [geojson.coordinates];
           }
-          for (var coo of coordinates) {
-            const latLng = L.latLng(coo[1], coo[0]);
-            const marker = L.circleMarker(latLng);
-            this.setStyle(marker);
-            this.eventOnEachFeature(element.properties.id, marker);
-            this.cluserOrSimpleFeatureGroup.addLayer(marker);
+          for (let i = 0; i < geojson.coordinates.length; i++) {
+            const latLng = L.GeoJSON.coordsToLatLng(geojson.coordinates[i]);
+            this.setStyleEventAndAdd(L.circleMarker(latLng), geojson.properties.id);
           }
-        } else if (element.type === 'Polygon') {
-          const myLatLong = element.coordinates[0].map(point => {
-            return L.latLng(point[1], point[0]);
-          });
-          const layer = L.polygon(myLatLong);
-          this.setStyle(layer);
-          this.eventOnEachFeature(element.properties.id, layer);
-          this.cluserOrSimpleFeatureGroup.addLayer(layer);
-        } else {
-          // its a LineStrinbg
-          const myLatLong = element.coordinates.map(point => {
-            return L.latLng(point[1], point[0]);
-          });
-          const layer = L.polyline(myLatLong);
-          this.setStyle(layer);
-          this.eventOnEachFeature(element.properties.id, layer);
-          this.cluserOrSimpleFeatureGroup.addLayer(layer);
+        } else if (geojson.type == 'Polygon' || geojson.type == 'MultiPolygon') {
+          const latLng = L.GeoJSON.coordsToLatLngs(
+            geojson.coordinates,
+            geojson.type === 'Polygon' ? 1 : 2
+          );
+          this.setStyleEventAndAdd(new L.Polygon(latLng), geojson.properties.id);
+        } else if (geojson.type == 'LineString' || geojson.type == 'MultiLineString') {
+          const latLng = L.GeoJSON.coordsToLatLngs(
+            geojson.coordinates,
+            geojson.type === 'LineString' ? 0 : 1
+          );
+          this.setStyleEventAndAdd(new L.Polyline(latLng), geojson.properties.id);
         }
       });
       this._ms.map.addLayer(this.cluserOrSimpleFeatureGroup);

@@ -1,0 +1,23 @@
+
+<button *ngIf="showDefinitions" type="button" id="showDef" class="btn btn-sm btn-light box-shadow" (click)="getDefinitions()">Masquer les définitions des statuts</button>
+<button *ngIf="!showDefinitions" type="button" id="hideDef" class="btn btn-sm btn-light box-shadow" (click)="getDefinitions()">Afficher les définitions des statuts</button>
+
+<p></p>
+
+<table *ngIf="showDefinitions">
+
+  <thead>
+    <tr>
+      <th class="table_status"> Statut </th>
+      <th class="table_definition"> Définition </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let def of definitions">
+      <td  [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[def.status_id].color}"> {{def.status}} </td>
+      <td> {{def.definition}} </td>
+    </tr>
+  </tbody>
+
+</table>

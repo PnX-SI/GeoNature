@@ -2,21 +2,45 @@
 CHANGELOG
 =========
 
-2.0.2 (unreleased)
+2.1.0 (unreleased)
 ------------------
 
-** Nouveautés **
+**Nouveautés**
 
-* Ajout du mécanimse du calcul des couleurs par taxon
-* Amélioration de l'ergonomie sur le map/list d'Occtax
-* Les mailles INPN (1,5,10km) sont fournies à l'installation (paramètre)
+* Intégration du module Validation dans GeoNature
+* Occtax - Possibilité d'enchainer les saisies de relevés et de garder les informations du relevé (#633)
+* Occtax - Amélioration de l'ergonomie de l'interface MapList pour clarifier la recherche et l'ajout d'un relevé + ajout compteur (#467)
+* Révision de l'interface du module Métadonnées, listant les cadres d'acquisition et leurs jeux de données (par @jbrieuclp)
+* Ajout d'un mécanimse du calcul des taxons observés par zonage géographique (#617)
+* Les mailles INPN (1, 5, 10km) sont intégrées à l'installation (paramètre)
+* Statistiques de l'accueil - Paramètre permettant de les désactiver (#599)
+* Occtax - Date par défaut paramétrable (#351)
+* Support des géometries multi (MultiPoint, MultiPolygon, MultiLine) dans la synthèse (#609)
 
 **Corrections**
 
+* Révision complète des scripts de migration de GeoNature v1 à v2 (``data/migrations/v1tov2``)
+* Masquer l'export du module Synthèse si son CRUVED est défini à 0 (#608)
+* Correction de la vérification du CRUVED du module METADONNEES (#601)
 * Correction de la vérification du CRUVED lorsque get_role = False
-* Correction affichage des MultiPoint sur la synthese
-* Retour du composant GPS permettant de charger un marker à partir des coordonnées X et y
 
+* Occtax - Retour du composant GPS permettant de charger un marker à partir de coordonnées X et Y (#624)
+* Correction lors d'import de fichier GPX ayant une altitude (#631)
+* Occtax - Correction du filtre Observateur texte libre (#598)
+* Métadonnées - Inversion des domaines terrestre/marin (par @xavyeah39)
+* Mise à jour de sécurité de Jinja2 et SQLAlchemy
+
+**Autres**
+
+* Evolution de l'API de GeoNature-mobile pour la rendre compatible avec le module Occtax de GeoNature v2 (https://github.com/PnEcrins/GeoNature-mobile-webapi/tree/compat_gn2)
+
+**Notes de version**
+
+* Vous pouvez passer directement à cette version, mais en suivant les notes des versions intermédiaires
+* Exécuter le script de migration SQL de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.0.1to2.1.0.sql)
+* Suivez ensuite la procédure classique de mise à jour de GeoNature (https://geonature.readthedocs.io/fr/latest/installation-standalone.html#mise-a-jour-de-l-application)
+* Installer le module VALIDATION
+* Intégrer les mailles ?
 
 2.0.1 (2019-03-18)
 ------------------

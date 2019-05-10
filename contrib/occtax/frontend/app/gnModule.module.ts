@@ -12,8 +12,11 @@ import { TaxonsListComponent } from "./occtax-map-form/form/taxons-list/taxons-l
 import { OcctaxMapListComponent } from "./occtax-map-list/occtax-map-list.component";
 import { OcctaxMapInfoComponent } from "./occtax-map-info/occtax-map-info.component";
 // Service
-import { OcctaxFormService } from "./occtax-map-form/form/occtax-form.service";
 import { OcctaxDataService } from "./services/occtax-data.service";
+
+import {
+  MatSlideToggleModule
+} from '@angular/material';
 
 const routes: Routes = [
   { path: "", component: OcctaxMapListComponent },
@@ -28,7 +31,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, GN2CommonModule, RouterModule.forChild(routes)],
+  imports: [CommonModule, GN2CommonModule, RouterModule.forChild(routes), MatSlideToggleModule],
   declarations: [
     OcctaxMapFormComponent,
     OcctaxFormComponent,
@@ -42,4 +45,4 @@ const routes: Routes = [
   providers: [OcctaxDataService],
   bootstrap: [OcctaxMapFormComponent]
 })
-export class GeonatureModule {}
+export class GeonatureModule { }

@@ -5,7 +5,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from pypnnomenclature.models import TNomenclatures
 
 from geonature.utils.env import DB
-from geonature.core.gn_commons.models import VLastestValidation
+from geonature.core.gn_commons.models import VLatestValidations
 from geonature.utils.utilssqlalchemy import testDataType
 from geonature.utils.errors import GeonatureApiError
 from .utils import get_nomenclature_filters
@@ -48,9 +48,9 @@ class ReleveRepository:
             for count in occ.get("cor_counting_occtax", []):
                 try:
                     validation_status = (
-                        DB.session.query(VLastestValidation)
+                        DB.session.query(VLatestValidations)
                         .filter(
-                            VLastestValidation.uuid_attached_row
+                            VLatestValidations.uuid_attached_row
                             == count["unique_id_sinp_occtax"]
                         )
                         .one()

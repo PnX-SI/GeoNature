@@ -1,0 +1,97 @@
+<!--Table-->
+<ngx-datatable (window:resize)="onResize($event)" #table class="material striped margin-top-xs table-size expandable"
+  [rows]="mapListService.tableData" [columns]="VALIDATION_CONFIG.LIST_COLUMNS_FRONTEND" [columnMode]="'force'"
+  [headerHeight]="50" [footerHeight]="35" [selected]="mapListService.selectedRow" [selectionType]="'multiClick'" [count]="mapListService.tableData.length"
+  [limit]="rowNumber" [rowClass]="getRowClass" (select)="mapListService.onRowSelect($event)" (activate)="onActivate($event, modal)">
+
+  <ngx-datatable-row-detail rowHeight="100">
+     </ngx-datatable-row-detail>
+
+
+  <!-- DATA COLOMNS -->
+  <ngx-datatable-column [checkboxable]="true" [maxWidth]="10"></ngx-datatable-column>
+
+  <ngx-datatable-column maxWidth="5">
+
+    <ng-template let-column="column" ngx-datatable-header-template>
+      <span></span>
+    </ng-template>
+
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <div class="modified_data">
+        <span *ngIf="row.meta_update_date > row.validation_date">
+          <i class="material-icons">warning</i>
+        </span>
+        <span [ngStyle]="{'background': 'white'}" *ngIf="row.meta_update_date > row.validation_date" class="modif_data">{{modif_text}}</span>
+      </div>
+      </ng-template>
+  
+    </ngx-datatable-column>
+
+  <ngx-datatable-column *ngFor="let col of VALIDATION_CONFIG.LIST_COLUMNS_FRONTEND" name="{{col.name}}" prop="{{col.prop}}"
+    maxWidth="{{col.max_width}}">
+    <ng-template *ngIf="col.prop === 'id_nomenclature_valid_status'" let-row="row" ngx-datatable-cell-template>
+      <div class="statusContent"> <span class="validationCircle" [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.id_nomenclature_valid_status].color}"><i class="material-icons">{{row.validation_auto}}</i></span>
+        <div [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.id_nomenclature_valid_status].color}" class="statusName">
+          <span>{{statusNames[row.id_nomenclature_valid_status]}}</span><span *ngIf="row.validation_auto"> (automatique)</span>
+        </div>
+      </div>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column maxWidth="60">
+    <ng-template let-column="column" ngx-datatable-header-template>
+      <span>Détails</span>
+    </ng-template>
+     <ng-template let-row="row" ngx-datatable-cell-template>
+        <button #ValidationModalInfoObs id="details" type="button" (click)="openInfoModal(row)" class="btn btn-info fa fa-info-circle" title="details">
+        </button>
+     </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-footer>
+     <ng-template
+       ngx-datatable-footer-template
+       let-rowCount="rowCount"
+       let-pageSize="pageSize"
+       let-selectedCount="selectedCount",
+       let-curPage="curPage",
+       let-offset="offset">
+      <button type="button" (click)="this.selectAll()" class="btn btn-success btn-sm ml-3"> Tout sélectionner</button>
+      <span> ' ' </span>
+      <button type="button" (click)="this.deselectAll()" class="btn btn-success btn-sm"> Tout désélectionner</button>
+
+       <datatable-pager
+         [pagerLeftArrowIcon]="'datatable-icon-left'"
+         [pagerRightArrowIcon]="'datatable-icon-right'"
+         [pagerPreviousIcon]="'datatable-icon-prev'"
+         [pagerNextIcon]="'datatable-icon-skip'"
+         [page]="curPage"
+         [size]="pageSize"
+         [count]="rowCount"
+         [hidden]="!((rowCount / pageSize) > 0)"
+         (change)="handlePageChange($event)"
+         (change)="table.onFooterPage($event)">
+         >
+       </datatable-pager>
+
+     </ng-template>
+
+   </ngx-datatable-footer>
+
+</ngx-datatable>
+
+<!-- MODAL FOR VALIDATION -->
+<pnx-validation-popup [selectedPages]="selectedPages" [currentPage]="npage" 
+  [nbTotalObservation]="nbTotalObservation" [observations]="selectedObs" 
+  [status_keys]="statusKeys" [status_names]="statusNames" 
+  (valStatus)="onStatusChange($event)" (valDate)="onValidationDateChange($event)">
+</pnx-validation-popup>
+
+<!-- MODAL INFO OBS -->
+<ng-template #ValidationModalInfoObs let-c="close " let-d="dismiss">
+
+  <pnx-validation-modal-info-obs></pnx-validation-modal-info-obs>
+
+</ng-template>
+

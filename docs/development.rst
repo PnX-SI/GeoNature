@@ -50,13 +50,13 @@ Pour sortir une nouvelle version de GeoNature :
 BDD
 ----
 
-- Mette à jour le ref_geo à partir des données IGN scan express
+- Mettre à jour le ``ref_geo`` à partir des données IGN scan express :
 
-        - Télécharger le dernier millesime: http://professionnels.ign.fr/adminexpress
-        - Intégrer le fichier shape dans la base grâce à QGIS dans une table nommée ``ref_geo.temp_fr_municipalities``
-        - Générer le SQL de création de la table:  ``pg_dump --table=ref_geo.temp_fr_municipalities  --column-inserts -U <MON_USER> -h <MON_HOST> -d <MA_BASE> > fr_municipalities.sql``. Le fichier en sortie doit s'appeler ``fr_municipalities.sql``
-        - Zipper le fichier SQL et le mettre sur le serveur geonature.fr/data 
-        - Corriger le script ``install_db.sh`` pour récupérer le nouveau fichier zippé
+  - Télécharger le dernier millesime: http://professionnels.ign.fr/adminexpress
+  - Intégrer le fichier Shape dans la BDD grâce à QGIS dans une table nommée ``ref_geo.temp_fr_municipalities``
+  - Générer le SQL de création de la table : ``pg_dump --table=ref_geo.temp_fr_municipalities --column-inserts -U <MON_USER> -h <MON_HOST> -d <MA_BASE> > fr_municipalities.sql``. Le fichier en sortie doit s'appeler ``fr_municipalities.sql``
+  - Zipper le fichier SQL et le mettre sur le serveur http://geonature.fr/data 
+  - Adapter le script ``install_db.sh`` pour récupérer le nouveau fichier zippé
 
 Pratiques
 ---------
@@ -145,11 +145,11 @@ Lancer ``npm init`` pour initialiser le module.
 
 - Utiliser node_modules présent dans GeoNature
 
-Pour utiliser des librairies déjà installé dans GeoNature, utilisezs la synthaxe suivante:
+Pour utiliser des librairies déjà installées dans GeoNature, utilisez la syntaxe suivante :
 
 ::
 
-        import { TreeModule } from "@librairies/angular-tree-component";
+    import { TreeModule } from "@librairies/angular-tree-component";
 
 L'alias `@librairies` pointe en effet vers le repertoire des node_modules de GeoNature
 
@@ -215,7 +215,7 @@ Développement Backend
 Démarrage du serveur de dev backend
 """""""""""""""""""""""""""""""""""
 
-    ::
+::
 
     (venv)...$ geonature dev_back
 
@@ -229,10 +229,9 @@ Session sqlalchemy
 - ``geonature.utils.env.DB``
 
 
-Fournit l'instance de connexion SQLAlchemy
+Fournit l'instance de connexion SQLAlchemy Python 
 
-
-Python ::
+::
 
     from geonature.utils.env import DB
 
@@ -245,10 +244,12 @@ Serialisation des modèles
 
 - ``geonature.utils.utilssqlalchemy.serializable``
 
-Décorateur pour les modèles SQLA : Ajoute une méthode as_dict qui retourne un dictionnaire des données de l'objet sérialisable json
+Décorateur pour les modèles SQLA : Ajoute une méthode ``as_dict`` qui retourne un dictionnaire des données de l'objet sérialisable json
 
 
-Fichier définition modèle ::
+Fichier définition modèle 
+
+::
 
     from geonature.utils.env import DB
     from geonature.utils.utilssqlalchemy import serializable
@@ -259,7 +260,9 @@ Fichier définition modèle ::
         ...
 
 
-Fichier utilisation modele ::
+Fichier utilisation modele 
+
+::
 
     instance = DB.session.query(MyModel).get(1)
     result = instance.as_dict()
@@ -272,7 +275,9 @@ Fichier utilisation modele ::
 Décorateur pour les modèles SQLA : Ajoute une méthode as_geofeature qui retourne un dictionnaire serialisable sous forme de Feature geojson.
 
 
-Fichier définition modèle ::
+Fichier définition modèle 
+
+::
 
     from geonature.utils.env import DB
     from geonature.utils.utilssqlalchemy import geoserializable
@@ -283,19 +288,23 @@ Fichier définition modèle ::
         ...
 
 
-Fichier utilisation modele ::
+Fichier utilisation modele 
+
+::
 
     instance = DB.session.query(MyModel).get(1)
     result = instance.as_geofeature()
 
 - ``geonature.utils.utilsgeometry.shapeserializable``
 
-Décorateur pour les modèles SQLA:
+Décorateur pour les modèles SQLA :
 
 - Ajoute une méthode ``as_list`` qui retourne l'objet sous forme de tableau (utilisé pour créer des shapefiles)
 - Ajoute une méthode de classe ``to_shape`` qui crée des shapefiles à partir des données passées en paramètre 
 
-Fichier définition modèle ::
+Fichier définition modèle 
+
+::
 
     from geonature.utils.env import DB
     from geonature.utils.utilsgeometry import shapeserializable
@@ -306,8 +315,9 @@ Fichier définition modèle ::
         ...
 
 
-Fichier utilisation modele ::
+Fichier utilisation modele 
 
+::
 
     # utilisation de as_shape()
     data = DB.session.query(MyShapeserializableClass).all()
@@ -321,15 +331,15 @@ Fichier utilisation modele ::
 
 - ``geonature.utils.utilsgeometry.FionaShapeService``
 
-Classe utilitaire pour crer des shapefiles.
+Classe utilitaire pour créer des shapefiles.
 
-La classe contient 3 méthode de classe:
+La classe contient 3 méthodes de classe :
 
-- FionaShapeService.create_shapes_struct(): crée la structure de 3 shapefiles (point, ligne, polygone) à partir des colonens et de la geom passé en paramètre
+- FionaShapeService.create_shapes_struct() : crée la structure de 3 shapefiles (point, ligne, polygone) à partir des colonens et de la geométrie passée en paramètre
 
-- FionaShapeService.create_feature(): ajoute un enregistrement aux shapefiles
+- FionaShapeService.create_feature() : ajoute un enregistrement aux shapefiles
 
-- FionaShapeService.save_and_zip_shapefiles(): sauvegarde et zip les shapefiles qui ont au moin un enregistrement
+- FionaShapeService.save_and_zip_shapefiles() : sauvegarde et zip les shapefiles qui ont au moins un enregistrement
 
 ::
 
@@ -356,7 +366,9 @@ Décorateur pour les routes : les données renvoyées par la route sont automati
 S'insère entre le décorateur de route flask et la signature de fonction
 
 
-Fichier routes ::
+Fichier routes 
+
+::
 
     from flask import Blueprint
     from geonature.utils.utilssqlalchemy import json_resp
@@ -385,39 +397,43 @@ TODO
 Utilisation de la configuration
 """""""""""""""""""""""""""""""
 
-La configuration globale de l'application est controlée par le fichier ``config/geonature_config.toml`` qui contient un nombre limité de paramètre. De nombreux paramètres sont néammoins passés à l'application via un schéma Marshmallow (voir fichier ``backend/geonature/utils/config_schema.py).
-Dans l'application flask, l'ensemble des paramètres de configuration sont utilisables via le dictionnaire ``config`` de l'application Flask:
+La configuration globale de l'application est controlée par le fichier ``config/geonature_config.toml`` qui contient un nombre limité de paramètres. De nombreux paramètres sont néammoins passés à l'application via un schéma Marshmallow (voir fichier ``backend/geonature/utils/config_schema.py``).
 
-    ::
+Dans l'application flask, l'ensemble des paramètres de configuration sont utilisables via le dictionnaire ``config`` de l'application Flask :
 
-        from flask import current_app
-        MY_PARAMETER = current_app.config['MY_PARAMETER']
+::
+
+    from flask import current_app
+    MY_PARAMETER = current_app.config['MY_PARAMETER']
 
 Chaque module GeoNature dispose de son propre fichier de configuration, (``module/config/cong_gn_module.toml``) contrôlé de la même manière par un schéma Marshmallow (``module/config/conf_schema_toml.py``).
 Pour récupérer la configuration du module dans l'application Flask, il existe deux méthodes:
 
 Dans le fichier ``blueprint.py``: 
-    ::
+
+::
+
         # Methode 1: 
 
         from flask import current_app
         MY_MODULE_PARAMETER = current_app.config['MY_MODULE_NAME']['MY_PARAMETER]
-        # ou MY_MODULE_NAME est le nom du module tel qu'il est définit dans le fichier ``manifest.toml`` et la table ``gn_commons.t_modules``
+        # ou MY_MODULE_NAME est le nom du module tel qu'il est défini dans le fichier ``manifest.toml`` et la table ``gn_commons.t_modules``
 
         #Méthode 2
         MY_MODULE_PARAMETER = blueprint.config['MY_MODULE_PARAMETER']
 
-Il peut-être utile de récupérer l'ID du module GeoNature (notamment pour des questions droits). De la même manière que précédement, à l'interieur d'une route, on peut récupérer l'ID du module ce la manière suivante:
+Il peut-être utile de récupérer l'ID du module GeoNature (notamment pour des questions droits). De la même manière que précédement, à l'interieur d'une route, on peut récupérer l'ID du module de la manière suivante :
 
-    ::
+::
 
         ID_MODULE = blueprint.config['ID_MODULE']
         # ou
         ID_MODULE = current_app.config['MODULE_NAME']['ID_MODULE']
 
-Si on souhaite récupérer l'ID du module en dehors du contexte d'une route, il faut utiliser la méthode suivante:
+Si on souhaite récupérer l'ID du module en dehors du contexte d'une route, il faut utiliser la méthode suivante :
 
-    ::
+::
+        
         from geonature.utils.env import get_id_module
         ID_MODULE = get_id_module(current_app, 'occtax')
 
@@ -429,7 +445,6 @@ Authentification avec pypnusershub
 Vérification des droits des utilisateurs
 ****************************************
 
-
 - ``pypnusershub.routes.check_auth``
 
 
@@ -438,13 +453,12 @@ Décorateur pour les routes : vérifie les droits de l'utilisateur et le redirig
 
 params :
 
-* level <int>: niveau de droits requis pour accéder à la vue
-* get_role <bool:False>: si True, ajoute l'id utilisateur aux kwargs de la vue
+* level <int> : niveau de droits requis pour accéder à la vue
+* get_role <bool:False> : si True, ajoute l'id utilisateur aux kwargs de la vue
 * redirect_on_expiration <str:None> : identifiant de vue  sur laquelle rediriger l'utilisateur en cas d'expiration de sa session
 * redirect_on_invalid_token <str:None> : identifiant de vue sur laquelle rediriger l'utilisateur en cas d'informations de session invalides
 
-
-    ::
+::
 
         from flask import Blueprint
         from pypnusershub.routes import check_auth
@@ -477,8 +491,7 @@ params :
 * redirect_on_expiration <str:None> : identifiant de vue ou URL sur laquelle rediriger l'utilisateur en cas d'expiration de sa session
 * redirect_on_invalid_token <str:None> : identifiant de vue ou URL sur laquelle rediriger l'utilisateur en cas d'informations de session invalides
 
-
-    ::
+::
 
         from flask import Blueprint
         from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
@@ -509,29 +522,27 @@ params :
             )
             return {'result': 'id_role = {}'.format(info_role.id_role)}
 
-
-
 - ``geonature.core.gn_permissions.tools.cruved_scope_for_user_in_module``
 
-
-
-Fonction qui retourne le cruved d'un utilisateur pour un module et/ou un objet donné.
-Si aucun cruved n'est définit pour le module, c'est celui de GeoNature qui est retourné, sinon 0.
-Le cruved de du module enfant surcharge toujours celui du module parent.
-Le cruved sur les objets n'est lui pas hérité du module parent.
+* Fonction qui retourne le CRUVED d'un utilisateur pour un module et/ou un objet donné.
+* Si aucun CRUVED n'est défini pour le module, c'est celui de GeoNature qui est retourné, sinon 0.
+* Le CRUVED du module enfant surcharge toujours celui du module parent.
+* Le CRUVED sur les objets n'est pas hérité du module parent.
 
 params :
+
 * id_role <integer:None>
-* module_code <str:None>: code du module surlequel on veut avoir le cruved
-* object_code <str:'ALL'> : code de l'objet surlequel on veut avoir le cruved
-* get_id <boolean: False>: retourne l'id_filter et non le code_filter si True
+* module_code <str:None>: code du module sur lequel on veut avoir le CRUVED
+* object_code <str:'ALL'> : code de l'objet sur lequel on veut avoir le CRUVED
+* get_id <boolean: False> : retourne l'id_filter et non le code_filter si True
 
 Valeur retournée : tuple 
-A l'indice 0 du tuple: <dict{str:str}> ou <dict{str:int}>, boolean) {'C': '1', 'R':'2', 'U': '1', 'V':'2', 'E':'3', 'D': '3'}
- ou {'C': 2, 'R':3, 'U': 4, 'V':1, 'E':2, 'D': 2} si ``get_id=True``
-A l'indice 1 du tuple: un booléan spécifiant si le cruved est hérité depuis un module parent ou non.
 
-    ::
+A l'indice 0 du tuple: <dict{str:str}> ou <dict{str:int}>, boolean) {'C': '1', 'R':'2', 'U': '1', 'V':'2', 'E':'3', 'D': '3'} ou {'C': 2, 'R':3, 'U': 4, 'V':1, 'E':2, 'D': 2} si ``get_id=True``
+ 
+A l'indice 1 du tuple: un booléan spécifiant si le CRUVED est hérité depuis un module parent ou non.
+
+::
 
     from pypnusershub.db.tools import cruved_for_user_in_app
 
@@ -558,8 +569,10 @@ Ce gn_module peut s'appuyer sur une série de composants génériques intégrés
 
 **Les composants génériques**
 ------------------------------
+
 1. Les composants formulaires
 """"""""""""""""""""""""""""""
+
 Les composants décrits ci-dessous sont intégrés dans le coeur de GeoNature et permettent aux développeurs de simplifier la mise en place de formulaires. Ces composants générent des balises HTML de type ``input`` ou ``select`` et seront souvent réutilisés dans les différents module de GeoNature.
 
 *Input et Output communs* :
