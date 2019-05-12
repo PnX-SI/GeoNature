@@ -7,7 +7,7 @@ CHANGELOG
 
 **Nouveautés**
 
-* Intégration du module Validation dans GeoNature
+* Intégration du module Validation dans GeoNature (développé par @JulienCorny, financé par @sig-pnrnm)
 * Occtax - Possibilité d'enchainer les saisies de relevés et de garder les informations du relevé (#633)
 * Occtax - Amélioration de l'ergonomie de l'interface MapList pour clarifier la recherche et l'ajout d'un relevé + ajout compteur (#467)
 * Révision de l'interface du module Métadonnées, listant les cadres d'acquisition et leurs jeux de données (par @jbrieuclp)
@@ -23,7 +23,7 @@ CHANGELOG
 * Masquer l'export du module Synthèse si son CRUVED est défini à 0 (#608)
 * Correction de la vérification du CRUVED du module METADONNEES (#601)
 * Correction de la vérification du CRUVED lorsque get_role = False
-
+* Correction de la traduction sur la page de connexion (par @jbrieuclp)
 * Occtax - Retour du composant GPS permettant de charger un marker à partir de coordonnées X et Y (#624)
 * Correction lors d'import de fichier GPX ayant une altitude (#631)
 * Occtax - Correction du filtre Observateur texte libre (#598)
