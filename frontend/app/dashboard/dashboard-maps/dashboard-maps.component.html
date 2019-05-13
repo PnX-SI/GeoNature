@@ -1,0 +1,60 @@
+<div class="row row-sm">
+    <div class="col-md-9 padding-sm">
+        <pnx-map height="65vh">
+            <!-- <pnx-marker (markerChanged)="test($event)"></pnx-marker> -->
+            <pnx-geojson [geojson]="background" [onEachFeature]="defineBackground.bind(this)"></pnx-geojson>
+            <pnx-geojson [geojson]="myCommunes" [onEachFeature]="showData.bind(this)"></pnx-geojson>
+        </pnx-map>
+    </div>
+    <div class="col-md-3 padding-sm">
+        <div class="card" style="height:44rem">
+            <h5 class="card-header white-text" style="text-align:center; color:white">Filtres</h5>
+            <div class="card-body">
+                <div id="buttons">
+                    <div class="row row-sm">
+                        <div class="col-md-6 padding-sm">
+                            <button class="btn btn-block btn-info" (click)= "changeMapToObs()"> <B>Nombre d'observations</B> </button>
+                        </div>
+                        <div class="col-md-6 padding-sm">
+                            <button class="btn btn-block btn-info" (click)= "changeMapToTax()"> <B>Nombre de taxons</B> </button>
+                        </div>
+                    </div><br/>
+                    <div class="row row-sm">
+                        <div class="col-md-6 padding-sm">
+                            <button class="btn btn-block btn-secondary" (click)= "changeMapToCommunes()"> <B>Communes</B> </button>
+                        </div>
+                        <div class="col-md-6 padding-sm">
+                            <button class="btn btn-block btn-secondary" (click)= "changeMapToMailles()"> <B>Mailles</B> </button>
+                        </div>
+                    </div>
+                </div><br/><br/>
+                <div id="filters">           
+                    <form (ngSubmit)="refreshData()" [formGroup]="mapForm">
+                        <div class="form-group row">
+                            <div class="col">
+                                <label class="col-form-label"><b> Année min </b></label>
+                                <input class="form-control form-control-sm" type="text" formControlName="yearMin">
+                            </div>
+                            <div class="col">
+                                <label class="col-form-label"><b> Année max </b></label>
+                                <input class="form-control form-control-sm" type="text" formControlName="yearMax">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label"><b> Nombre de classes </b></label>
+                            <input class="form-control form-control-sm" formControlName="nbClasses">
+                        </div><br/>
+                        <div class="row justify-content-md-center">
+                            <div class="col-md-4">
+                                <button class="btn btn-outline-success btn-block" type="submit">Valider</button>
+                            </div>
+                        </div>
+                    </form>
+                </div><br/>
+                <div class="card">
+                    <p> Nombre d'observations: {{currentNb}} </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

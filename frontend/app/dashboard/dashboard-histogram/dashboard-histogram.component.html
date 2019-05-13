@@ -1,0 +1,22 @@
+<div class="row row-sm">
+    <div class="col-md-2 padding-sm">
+        <div class="card" style="height:47rem">
+            <h5 class="card-header" style="text-align:center; color:white">Filtres</h5>
+            <div class="card-body">
+                <h5>Taxons</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10 padding-sm">
+        <div style="display: block">
+            <canvas baseChart
+                    [datasets]="barChartData"
+                    [labels]="barChartLabels"
+                    [options]="barChartOptions"
+                    [colors]="barChartColors"
+                    [legend]="barChartLegend"
+                    [chartType]="barChartType">
+            </canvas>
+        </div>
+    </div>
+</div>

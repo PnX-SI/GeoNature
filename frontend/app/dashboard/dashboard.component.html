@@ -1,16 +1,23 @@
-<h3> It works !</h3>
+<br/>
+<div class="container-fluid">
+    <div class="card">
+        <h5 class="card-header" style="text-align:center"><b>Synthèse par année</b></h5>
+    </div><br/>
+    <div id="dashboard-histogram">
+        <dashboard-histogram></dashboard-histogram>
+    </div><br/>
 
+    <div class="card">
+            <h5 class="card-header" style="text-align:center"><b>Synthèse par entité géographique</b></h5>
+        </div><br/>
+    <div id="dashboard-maps">
+        <dashboard-maps></dashboard-maps>
+    </div><br/>
 
-<pnx-map height="85vh">
-    <pnx-marker (markerChanged)="test($event)" ></pnx-marker>
-    <pnx-geojson [geojson]="myCommunes" [onEachFeature]="showData"></pnx-geojson>
-</pnx-map>
-
-<pnx-taxonomy [parentFormControl]="taxonControl" [charNumber]="3" [idList]="500" label="lalal">
-
-</pnx-taxonomy>
-
-<button> nb obs</button>
-<button (click)= "changeMap()"> nb taxon</button>
-
-{{taxonControl.value |json}}
+    <div class="card">
+            <h5 class="card-header" style="text-align:center"><b>Synthèse par niveau taxonomique</b></h5>
+        </div><br/>
+    <div id="dashboard-pie-chart">
+        <dashboard-pie-chart></dashboard-pie-chart>
+    </div><br/>
+</div>

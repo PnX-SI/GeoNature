@@ -1,0 +1,39 @@
+<div class="row row-sm">
+    <div class="col-md-2 padding-sm">
+        <div class="card" style="height:48rem; width:22rem">
+            <h5 class="card-header" style="text-align:center; color:white">Filtres</h5>
+            <div class="card-body">
+                <div id="filters">           
+                    <form (ngSubmit)="refreshData()" [formGroup]="pieChartForm">
+                        <div class="form-group row">
+                            <div class="col">
+                                <label class="col-form-label"><b> Année min </b></label>
+                                <input class="form-control form-control-sm" type="text" formControlName="yearMin">
+                            </div>
+                            <div class="col">
+                                <label class="col-form-label"><b> Année max </b></label>
+                                <input class="form-control form-control-sm" type="text" formControlName="yearMax">
+                            </div>
+                        </div><br/>
+                        <div class="row justify-content-md-center">
+                            <div class="col-md-4">
+                                <button class="btn btn-outline-success btn-block" type="submit">Valider</button>
+                            </div>
+                        </div>
+                    </form>
+                </div><br/>
+                <h5>Niveau de taxonomie</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10 padding-sm">
+        <div style="display: block">
+            <canvas baseChart
+                    [data]="pieChartData"
+                    [labels]="pieChartLabels"
+                    [chartType]="pieChartType"
+                    [colors]="pieChartColors">
+            </canvas>
+        </div>
+    </div>
+</div>
