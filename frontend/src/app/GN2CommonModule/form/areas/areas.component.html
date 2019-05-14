@@ -1,12 +1,14 @@
 <small> {{ label }} </small>
 <ng-select [ngClass]="class"
-		[items]="areas"
+		[items]="areas | async"
 		bindLabel="area_name"
 		bindValue="id_area"
 		[placeholder]="label"
 		[multiple]="true"
 		[clearable]="clearable"
 		[virtualScroll]="true"
+		[typeahead]="areas_input$"
+		[loading]="loading"
 		[formControl]="parentFormControl">
 	<ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
         <div matTooltip="{{item.area_name}}"><span class="pre-wrap">{{item.area_name}}</span></div>
