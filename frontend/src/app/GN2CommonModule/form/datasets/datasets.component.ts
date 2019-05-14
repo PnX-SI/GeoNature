@@ -50,7 +50,9 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit {
                                 if (res['with_mtd_errors']) {
                                   this._commonService.translateToaster('error', 'MetaData.JddErrorMTD');
                                 }
-                                return res.data;
+
+                                const c = new Intl.Collator();
+                                return res.data.sort((a,b)=> c.compare(a.dataset_name, b.dataset_name));
                               },
                               error => {
                                 if (error.status === 500) {

@@ -33,7 +33,7 @@
 
         </div>
         <div class="row row-sm">
-          <pnx-date label="Date max" [parentFormControl]="formService.searchForm.controls.date_max">>
+          <pnx-date label="Date max" [parentFormControl]="formService.searchForm.controls.date_max">
           </pnx-date>
         </div>
 
@@ -45,11 +45,11 @@
         <div class="collapse " id="collapsePeriod">
           <div class="row row-sm">
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
-              <pnx-period class="form-sm" label="Periode début" [parentFormControl]="formService.searchForm.controls.period_start">>
+              <pnx-period class="form-sm" label="Periode début" [parentFormControl]="formService.searchForm.controls.period_start">
               </pnx-period>
             </div>
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
-              <pnx-period label="Periode fin" [parentFormControl]="formService.searchForm.controls.period_end">>
+              <pnx-period label="Periode fin" [parentFormControl]="formService.searchForm.controls.period_end">
               </pnx-period>
             </div>
             <small *ngIf="formService.searchForm.errors?.invalidPeriod" class="error" style="color:rgb(18, 32, 155)">
@@ -66,7 +66,11 @@
         <div *ngIf="formService.formBuilded">
           <div *ngFor="let area of areaFilters; let i = index;">
             {{areas}}
-            <pnx-areas [searchBar]="true" [parentFormControl]="area.control" [label]="area.label" [idTypes]="area.id_type_array">
+            <pnx-areas 
+              class="sm" 
+              [parentFormControl]="area.control" 
+              [label]="area.label" 
+              [idTypes]="area.id_type_array">
             </pnx-areas>
           </div>
         </div>
@@ -92,13 +96,19 @@
       <fieldset>
         <legend> Comment ?</legend>
 
-        <pnx-acquisition-frameworks [multiSelect]='true' [displayAll]="true" [searchBar]="true" [parentFormControl]="formService.searchForm.controls.id_acquisition_framework"
-          label="{{ 'MetaData.AcquisitionFramework' | translate}}" >
+        <pnx-acquisition-frameworks 
+          class="sm"
+          [multiSelect]='true' 
+          [parentFormControl]="formService.searchForm.controls.id_acquisition_framework"
+          label="{{ 'MetaData.AcquisitionFramework' | translate}}">
         </pnx-acquisition-frameworks>
 
 
-        <pnx-datasets [displayOnlyActive]="false" [idAcquisitionFrameworks]="formService.searchForm.controls.id_acquisition_framework.value"
-          [multiSelect]='true' [displayAll]="true" [searchBar]="true" [parentFormControl]="formService.searchForm.controls.id_dataset"
+        <pnx-datasets 
+          class="sm"
+          [idAcquisitionFrameworks]="formService.searchForm.controls.id_acquisition_framework.value"
+          [multiSelect]='true' 
+          [parentFormControl]="formService.searchForm.controls.id_dataset"
           label="{{ 'MetaData.Datasets' | translate}}" >
         </pnx-datasets>
 

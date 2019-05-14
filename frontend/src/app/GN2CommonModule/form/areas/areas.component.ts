@@ -2,22 +2,24 @@ import { Component, OnInit, Input } from '@angular/core';
 import { DataFormService } from '../data-form.service';
 import { FormControl } from '@angular/forms';
 import { CommonService } from '@geonature_common/service/common.service';
+import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 import { AppConfig } from '@geonature_config/app.config';
 
 @Component({
   selector: 'pnx-areas',
   templateUrl: 'areas.component.html'
 })
-export class AreasComponent implements OnInit {
+export class AreasComponent extends GenericFormComponent implements OnInit {
   public areas: any;
   public cachedAreas: any;
   @Input() idTypes: Array<number>; // Areas id_type
-  @Input() label: string;
-  @Input() searchBar = false;
-  @Input() parentFormControl: FormControl;
-  @Input() bindAllItem: false;
-  @Input() debounceTime: number;
-  constructor(private _dfs: DataFormService, private _commonService: CommonService) {}
+
+  constructor(
+    private _dfs: DataFormService, 
+    private _commonService: CommonService
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this._dfs.getAreas(this.idTypes).subscribe(data => {
