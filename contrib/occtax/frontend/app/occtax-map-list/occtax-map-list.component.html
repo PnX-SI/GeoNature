@@ -130,29 +130,36 @@
 
 
       <!-- DATA COLOMNS -->
-      <span *ngFor="let col of mapListService.displayColumns" >
-        <!-- custom columns for date in order to format them and order them -->
-          <span *ngIf="col.prop == 'date_max' || col.prop == 'date_min'; else notDate">
-              <ngx-datatable-column
-                [comparator]="dateComparator"
-                [maxWidth]="col.max_width" 
-                [name]='col.name' 
-                [prop]='col.prop' 
-                [sortable]="true">
-                  <ng-template let-row="row" ngx-datatable-cell-template>
-                    {{row[col.prop] | date:'dd-MM-yyyy'}}
+      <ng-container *ngFor="let col of mapListService.displayColumns" >
+          <ngx-datatable-column [ngSwitch]="col.prop"
+            [maxWidth]="col.max_width" 
+            [name]='col.name' 
+            [prop]='col.prop' 
+            [sortable]="true">
+              <ng-template *ngSwitchCase="'date_min'" let-row="row" ngx-datatable-cell-template>
+                {{row[col.prop] | date:'dd-MM-yyyy'}}
+              </ng-template>
+              <ng-template *ngSwitchCase="'taxons'" let-row="row" ngx-datatable-cell-template >
+                 <span [matTooltip]="row.taxons" matTooltipPosition="left">
+                    <span class='badge badge-dark'> {{row.nb_occ}} </span> {{row.taxons}}
+                 </span> 
+              </ng-template>
+              <ng-template *ngSwitchCase="'observateurs'" let-row="row" ngx-datatable-cell-template>
+                  <span [matTooltip]="row.observateurs" matTooltipPosition="left">
+                    <span class='badge badge-dark'> {{row.nb_observer}} </span> {{row.observateurs}}
+                  </span>
+                </ng-template>
+                <ng-template *ngSwitchDefault let-row="row" ngx-datatable-cell-template>
+                    <span [matTooltip]="row[col.prop]" matTooltipPosition="left">
+                        {{row[col.prop]}}
+                    </span>
                   </ng-template>
-              </ngx-datatable-column>
-          </span>
-          <ng-template #notDate>
-              <ngx-datatable-column  [name]="col.name " [prop]="col.prop">
-            </ngx-datatable-column>
-        </ng-template>
+          </ngx-datatable-column>
 
-      </span>
+      </ng-container>
+
     </ngx-datatable>
-    <button id="download-btn" class="btn btn-primary box-shadow" (click)="openModalDownload($event, modalDownload)"
-      matTooltip="">
+    <button id="download-btn" class="btn btn-primary box-shadow" (click)="openModalDownload($event, modalDownload)">
       <i class="fa fa-download" aria-hidden="true">
       </i>
       <small> {{ 'DownloadData' | translate }} </small>

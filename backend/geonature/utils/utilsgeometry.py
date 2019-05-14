@@ -9,7 +9,7 @@ import fiona
 
 from fiona.crs import from_epsg
 from geoalchemy2.shape import to_shape
-from shapely.geometry import Point, Polygon, MultiPolygon, mapping
+from shapely.geometry import *
 
 from geonature.utils.errors import GeonatureApiError
 
@@ -322,3 +322,82 @@ def circle_from_point(point, radius, nb_point=20):
     angles = np.linspace(0, 360, nb_point)
     polygon = geog.propagate(point, angles, radius)
     return Polygon(polygon)
+
+
+def convert_to_2d(geojson):
+    """
+    Convert a geojson 3d in 2d
+    """
+    # if its a Linestring, Polygon etc...
+    if geojson["coordinates"][0] is list:
+        two_d_coordinates = [[coord[0], coord[1]] for coord in geojson["coordinates"]]
+    else:
+        two_d_coordinates = [geojson["coordinates"][0], geojson["coordinates"][1]]
+
+    geojson["coordinates"] = two_d_coordinates
+
+
+def remove_third_dimension(geom):
+    if not geom.has_z:
+        print(geom.has_z)
+        return geom
+
+    if isinstance(geom, Polygon):
+        exterior = geom.exterior
+        new_exterior = remove_third_dimension(exterior)
+
+        interiors = geom.interiors
+        new_interiors = []
+        for int in interiors:
+            new_interiors.append(remove_third_dimension(int))
+
+        return Polygon(new_exterior, new_interiors)
+
+    elif isinstance(geom, LinearRing):
+        return LinearRing([xy[0:2] for xy in list(geom.coords)])
+
+    elif isinstance(geom, LineString):
+        return LineString([xy[0:2] for xy in list(geom.coords)])
+
+    elif isinstance(geom, Point):
+        return Point([xy[0:2] for xy in list(geom.coords)])
+
+    elif isinstance(geom, MultiPoint):
+        points = list(geom.geoms)
+        new_points = []
+        for point in points:
+            new_points.append(remove_third_dimension(point))
+
+        return MultiPoint(new_points)
+
+    elif isinstance(geom, MultiLineString):
+        lines = list(geom.geoms)
+        new_lines = []
+        for line in lines:
+            new_lines.append(remove_third_dimension(line))
+
+        return MultiLineString(new_lines)
+
+    elif isinstance(geom, MultiPolygon):
+        pols = list(geom.geoms)
+
+        new_pols = []
+        for pol in pols:
+            new_pols.append(remove_third_dimension(pol))
+
+        return MultiPolygon(new_pols)
+
+    elif isinstance(geom, GeometryCollection):
+        geoms = list(geom.geoms)
+
+        new_geoms = []
+        for geom in geoms:
+            new_geoms.append(remove_third_dimension(geom))
+
+        return GeometryCollection(new_geoms)
+
+    else:
+        raise RuntimeError(
+            "Currently this type of geometry is not supported: {}".format(type(geom))
+        )
+

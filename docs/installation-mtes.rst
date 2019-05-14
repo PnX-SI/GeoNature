@@ -108,10 +108,12 @@ Mettre un clé secrète personnalisée
     SECRET_KEY = '<MA_CLE_CRYPTEE>'
 
 
-Configuration BDD lié à la connexion au CAS
+Configuration BDD liée à la connexion au CAS
 *******************************************
 
-[BDD]
+::
+    
+    [BDD]
     # id du groupe dans lequel tous les utilisateurs connectés sont ajoutés 
     # (seul le socle 1 - droit minimum - est utilisé pour l'instance de production)
     ID_USER_SOCLE_1 = 20003
@@ -126,17 +128,17 @@ NB : pour la pré-prod, utiliser ``https://preprod-inpn.mnhn.fr``
 
 ::
 
-[CAS_PUBLIC]
+    [CAS_PUBLIC]
     CAS_AUTHENTIFICATION = true
     CAS_URL_LOGIN = 'https://inpn.mnhn.fr/auth/login'
     CAS_URL_LOGOUT = 'https://inpn.mnhn.fr/auth/logout'
 
-[CAS]
+    [CAS]
     CAS_URL_VALIDATION = 'https://inpn.mnhn.fr/auth/serviceValidate'
     # est ce que les utilisateurs connecté peuvent voir les donées de leur organisme
     USERS_CAN_SEE_ORGANISM_DATA = false
 
-[CAS.CAS_USER_WS]
+    [CAS.CAS_USER_WS]
     URL = 'https://inpn.mnhn.fr/authentication/information'
     ID = '<THE_INPN_LOGIN>'
     PASSWORD = '<THE_INPN_PASSWORD>'
@@ -162,7 +164,9 @@ Pour l'instance de pré-prod, rajouter "instance de démo" à la variable ``appN
 Configuration de la cartographie
 ********************************
 
-[MAPCONFIG]
+::
+
+    [MAPCONFIG]
     BASEMAP = [
         {"name" = "IGN-topo", "layer" = "https://wxs.ign.fr/i53afxeajwaokg3gxzzhn8un/geoportail/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=GEOGRAP$
         {"name"= "IGN-Scan Express", "layer" = "https://wxs.ign.fr/i53afxeajwaokg3gxzzhn8un/geoportail/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=$
@@ -198,6 +202,7 @@ Le script de configuration spécifique de l'instance nationale remplit ce fichie
 Voici la configuration fournie pour l'instance de production:
 
 ::
+
     api_url = '/occtax'
 
     # message sur la modale des export pour préciser les consignes pour GINCO
@@ -263,8 +268,6 @@ Voici la configuration fournie pour l'instance de production:
         ]
 
 
-
-
 Le fichier ``<GEONATURE_DIRECTORY>/external_modules/occtax/config/conf_gn_module.toml.example`` liste l'ensemble des variables de configuration du module Occtax ainsi que leurs valeurs par défault.
 
 Après chaque modification du fichier de configuration, lancez les commandes suivantes pour mettre à jour l'application (l'opération peut être longue car il s'agit de la recompilation du frontend).
@@ -276,7 +279,6 @@ Depuis le répertoire ``backend`` de GeoNature
     source venv/bin/activate
     geonature update_module_configuration occtax
     deactivate
-
 
 
 Pour plus d'information sur la configuration du module Occtax, voir la documentation concernant le module (https://github.com/PnX-SI/GeoNature/blob/develop/docs/admin-manual.rst#module-occtax).
@@ -342,7 +344,7 @@ Sur l'instance DEPOPBIO le module synthese a été désactivé en mettant un CRU
     id_module,
     id_object
     )
-VALUES
+    VALUES
     -- synthese pour socle 1
     (20003, 1, 1, 17, 1),
     (20003, 2, 1, 17, 1),
@@ -388,7 +390,7 @@ VALUES
   ;
 
 
-Les triggers d'insertion du module Occtax vers le module Synthese on également été désactiver.
+Les triggers d'insertion du module Occtax vers le module Synthese ont également été désactivés.
 
 
 ::

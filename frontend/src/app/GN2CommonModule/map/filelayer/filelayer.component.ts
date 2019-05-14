@@ -33,7 +33,7 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
   // style of the layers
   @Input() style;
   @Output() onLoad = new EventEmitter<any>();
-  constructor(public mapService: MapService, private _toasterService: ToastrService) {}
+  constructor(public mapService: MapService, private _toasterService: ToastrService) { }
 
   ngOnInit() {
     this.style = this.style || this.mapService.searchStyle;
@@ -60,8 +60,10 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
       })
       .addTo(this.map);
 
+    // la
     // event on load success
     (this.fileLayerControl as any).loader.on('data:loaded', event => {
+
       // remove layer from leaflet draw
       this.mapService.removeAllLayers(this.mapService.map, this.mapService.leafletDrawFeatureGroup);
       // set marker editing OFF
@@ -108,7 +110,9 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
                 }
                 (layer as any).setStyle({ color: 'red' });
                 this.previousCurrentLayer = layer;
+
                 // sent geojson observable
+                this.mapService.firstLayerFromMap = false;
                 this.mapService.setGeojsonCoord((layer as any).feature);
               });
             }

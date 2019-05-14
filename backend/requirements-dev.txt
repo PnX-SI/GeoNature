@@ -27,7 +27,7 @@ imagesize==0.7.1
 ipdb==0.10.3
 ipython-genutils==0.2.0
 ipython==5.5.0
-jinja2==2.10
+jinja2==2.10.1
 markupsafe==1.0
 mccabe==0.6.1
 mypy==0.560
