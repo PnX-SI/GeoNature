@@ -16,8 +16,10 @@ export class DashboardPieChartComponent implements OnInit {
   
   public myDataRegne: Array<any>;
   public pieChartLabels = [];
+  public pieChartLabelsTest = [];
   public pieChartType = 'doughnut';
   public pieChartData = [];
+  public pieChartDataTest = [];
   public pieChartColors = [
     { backgroundColor: ["#ff9800", "#8bc34a"] } 
   ];
@@ -36,9 +38,8 @@ export class DashboardPieChartComponent implements OnInit {
     this.dataService.getDataRegne().subscribe(
       (data) => {
         console.log(data);
-        this.myDataRegne=data;
         //Création des variables qui seront paramètres du bar chart
-        this.myDataRegne.forEach(
+        data.forEach(
           (elt) => {
             this.pieChartLabels.push(elt[0]);
             this.pieChartData.push(elt[1]);
@@ -51,25 +52,15 @@ export class DashboardPieChartComponent implements OnInit {
     console.log(this.pieChartData);
   }
 
-  // refreshData() {
-  //   this.dataService.getDataRegne(this.pieChartForm.value).subscribe(
-  //     (data) => {
-  //       this.myDataRegne=data;
-  //     }
-  //   );
-  //   console.log(this.pieChartLabels);
-  //   console.log(this.pieChartData);
-  // }
-
   // Rafraichissement des données en fonction des filtres renseignés par l'utilisateur
   refreshData() {
-    this.pieChartLabels = [];
-    this.pieChartData = [];
     this.dataService.getDataRegne(this.pieChartForm.value).subscribe(
       (data) => {
-        this.myDataRegne=data;
+        console.log(data);
+        this.pieChartLabels = [];
+        this.pieChartData = [];
         //Re-création des variables qui seront paramètres du bar chart
-        this.myDataRegne.forEach(
+        data.forEach(
           (elt) => {
             this.pieChartLabels.push(elt[0]);
             this.pieChartData.push(elt[1]);
@@ -78,7 +69,8 @@ export class DashboardPieChartComponent implements OnInit {
         this.chart.chart.update();
       }
     );
-    console.log(this.myDataRegne)
+    console.log(this.pieChartLabels);
+    console.log(this.pieChartData);
   }
 
 }

@@ -27,7 +27,7 @@ def get_communes_stat():
         VSyntheseCommunes.area_name,
         VSyntheseCommunes.geom_area_4326,
         func.sum(VSyntheseCommunes.nb_obs),
-        func.sum(VSyntheseCommunes.nb_taxons),
+        func.sum(VSyntheseCommunes.nb_taxons)
     ).group_by(VSyntheseCommunes.area_name, VSyntheseCommunes.geom_area_4326)
     if 'yearMax' in params:
         q = q.filter(VSyntheseCommunes.year <= params['yearMax'])
@@ -85,5 +85,5 @@ def get_regne_stat():
     if 'yearMax' in params:
         q = q.filter(func.date_part('year', VSynthese.date_min) <= params['yearMax'])
     if 'yearMin' in params:
-        q = q.filter(func.date_part('year', VSynthese.date_min) >= params['yearMin'])
+        q = q.filter(func.date_part('year', VSynthese.date_max) >= params['yearMin'])
     return q.all()

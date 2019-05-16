@@ -1,5 +1,11 @@
 <div class="row row-sm">
     <div class="col-md-9 padding-sm">
+        <div class="card-absolute">
+            <h5> {{ intro }} </h5>      
+            <h5><b><p> {{ currentCommune }} </p></b></h5>
+            <p> {{ currentNbObs }} </p>
+            <p> {{ currentNbTax }} </p>        
+        </div>
         <pnx-map height="65vh">
             <!-- <pnx-marker (markerChanged)="test($event)"></pnx-marker> -->
             <pnx-geojson [geojson]="background" [onEachFeature]="defineBackground.bind(this)"></pnx-geojson>
@@ -13,10 +19,10 @@
                 <div id="buttons">
                     <div class="row row-sm">
                         <div class="col-md-6 padding-sm">
-                            <button class="btn btn-block btn-info" (click)= "changeMapToObs()"> <B>Nombre d'observations</B> </button>
+                            <button class="btn btn-block btn-bordeaux" (click)= "changeMapToObs()"> <B>Nombre d'observations</B> </button>
                         </div>
                         <div class="col-md-6 padding-sm">
-                            <button class="btn btn-block btn-info" (click)= "changeMapToTax()"> <B>Nombre de taxons</B> </button>
+                            <button class="btn btn-block btn-water" (click)= "changeMapToTax()"> <B>Nombre de taxons</B> </button>
                         </div>
                     </div><br/>
                     <div class="row row-sm">
@@ -51,9 +57,7 @@
                         </div>
                     </form>
                 </div><br/>
-                <div class="card">
-                    <p> Nombre d'observations: {{currentNb}} </p>
-                </div>
+                
             </div>
         </div>
     </div>

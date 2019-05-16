@@ -1,13 +1,76 @@
 .card {
   background-color: white;
-  border-color: rgb(150,150,150);
+  border-color: rgb(150, 150, 150);
 }
 
 .card-header {
-  background-color: rgba(62, 69, 81, 0.7);
+  background: radial-gradient(circle at top left, rgba(62, 69, 81, 0.7), #e0e0e0);
+  width: 100%;
+  height: 50px;
 }
 
-
-.leaflet-controle-title {
+.card-absolute {
+  position: absolute;
+  top: 1em;
+  left: 1em;
   z-index: 1000;
+  padding: 10px 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-color: rgb(255, 255, 255);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
 }
+
+.card-absolute h5 {
+  margin: 0 0 5px;
+  color: #424242;
+}
+
+::ng-deep .divLegend {
+  z-index: 1000;
+  padding: 10px 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-color: rgb(255, 255, 255);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+}
+
+::ng-deep .divLegend i {
+  width: 18px;
+  height: 18px;
+  float: left;
+  margin-right: 10px;
+  opacity: 0.9;
+}
+
+.btn-bordeaux { 
+  color: #ffffff; 
+  background-color: rgba(159, 5, 63, 0.8); 
+  border-color: #FFFFFF; 
+} 
+
+.btn-bordeaux:hover, 
+.btn-bordeaux:focus, 
+.btn-bordeaux:active, 
+.btn-bordeaux.active, 
+.open .dropdown-toggle.btn-bordeaux { 
+  color: #ffffff; 
+  background-color: #85074A; 
+  border-color: #85074A; 
+} 
+
+.btn-water { 
+  color: #ffffff; 
+  background-color: rgba(0, 128, 128, 0.8); 
+  border-color: #FFFFFF; 
+}
+
+.btn-water:hover, 
+.btn-water:focus, 
+.btn-water:active, 
+.btn-water.active, 
+.open .dropdown-toggle.btn-water { 
+  color: #ffffff; 
+  background-color: #076366; 
+  border-color: #076366; 
+} 
