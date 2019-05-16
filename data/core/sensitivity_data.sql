@@ -107,3 +107,6 @@ UPDATE  gn_sensitivity.t_sensitivity_rules SET enable = FALSE;
 UPDATE  gn_sensitivity.t_sensitivity_rules SET enable = TRUE 
 WHERE id_territory='TERFXFR';
 
+
+DROP TABLE gn_sensitivity.liste_taxons_sensibles;
+DROP TABLE gn_sensitivity.zonages_sensibilite;
