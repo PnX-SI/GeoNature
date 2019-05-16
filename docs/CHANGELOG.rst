@@ -5,7 +5,7 @@ CHANGELOG
 2.1.0 (unreleased)
 ------------------
 
-**Nouveautés**
+**🚀 Nouveautés**
 
 * Intégration du module Validation dans GeoNature (développé par @JulienCorny, financé par @sig-pnrnm)
 * Occtax - Possibilité d'enchainer les saisies de relevés et de garder les informations du relevé (#633)
@@ -17,7 +17,7 @@ CHANGELOG
 * Occtax - Date par défaut paramétrable (#351)
 * Support des géometries multi (MultiPoint, MultiPolygon, MultiLine) dans la synthèse (#609)
 
-**Corrections**
+**🐛 Corrections**
 
 * Révision complète des scripts de migration de GeoNature v1 à v2 (``data/migrations/v1tov2``)
 * Masquer l'export du module Synthèse si son CRUVED est défini à 0 (#608)
@@ -30,11 +30,11 @@ CHANGELOG
 * Métadonnées - Inversion des domaines terrestre/marin (par @xavyeah39)
 * Mise à jour de sécurité de Jinja2 et SQLAlchemy
 
-**Autres**
+**🏅 Autres**
 
 * Evolution de l'API de GeoNature-mobile pour la rendre compatible avec le module Occtax de GeoNature v2 (https://github.com/PnEcrins/GeoNature-mobile-webapi/tree/compat_gn2)
 
-**Notes de version**
+**⚠️ Notes de version**
 
 * Vous pouvez passer directement à cette version, mais en suivant les notes des versions intermédiaires
 * Exécuter le script de migration SQL de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.0.1to2.1.0.sql)
@@ -45,12 +45,12 @@ CHANGELOG
 2.0.1 (2019-03-18)
 ------------------
 
-**Nouveautés**
+**🚀 Nouveautés**
 
 * Développement : ajout d'une fonction de génération dynamique de requête SQL (avec vérification et cast des types)
 * Synthese : Ajout d'un message indiquant que le module affiche les dernières observations par défaut
 
-**Corrections**
+**🐛 Corrections**
 
 * Synthese : correction du filtre CRUVED pour les portées 1 et 2 sur la route ``synthese/for_web`` (#584)
 * Synthese : correction du bug lorsque la géométrie est null (#580)
@@ -68,7 +68,7 @@ CHANGELOG
 * Metadata : formulaire cadre d'acquisition - listage uniquement des cadres d'acquisition parent pour ne pas avoir de cadres d'acquisition imbriqués
 * Ajouts de tests automatisés complémentaires
 
-**Notes de version**
+**⚠️ Notes de version**
 
 * Vous pouvez passer directement à cette version, mais en suivant les notes des versions intermédiaires
 * Exécuter le script de migration SQL du sous-module Nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module/blob/1.2.4/data/update1.2.3to1.2.4.sql)
