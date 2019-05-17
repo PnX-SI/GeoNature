@@ -27,7 +27,7 @@ export class NomenclatureComponent extends GenericFormComponent
   public definitionLang: string;
   public subscription: Subscription;
   public valueSubscription: Subscription;
-  public currentCdNomenclature = 'null';
+  public _currentCdNomenclature: Array<any> = null;
   public currentIdNomenclature: number;
   @Input() codeNomenclatureType: string;
   @Input() regne: string;
@@ -53,31 +53,20 @@ export class NomenclatureComponent extends GenericFormComponent
     // set cdNomenclature
     this.valueSubscription = this.parentFormControl.valueChanges.subscribe(id => {
       this.currentIdNomenclature = id;
-      const self = this;
-      this.labels.subscribe(
-        labels => {
-          if (labels) {
-            labels.forEach(label => {
-              if (this.currentIdNomenclature === label.id_nomenclature) {
-                self.currentCdNomenclature = label.cd_nomenclature;
-              }
-            })
-          }
-        }
-      );
     });
   }
 
-  getCdNomenclature() {
-    let cdNomenclature;
-    if (this.labels) {
-/*      this.labels.forEach(label => {
-        if (this.currentIdNomenclature === label.id_nomenclature) {
-          cdNomenclature = label.cd_nomenclature;
-        }
-      });*/
-      return cdNomenclature;
+  get currentCdNomenclature(): string {
+    for (var i = 0; i < this._currentCdNomenclature.length; i++) {
+      if (this.currentIdNomenclature === this._currentCdNomenclature[i]['id_nomenclature']) {
+        return this._currentCdNomenclature[i]['cd_nomenclature'];
+      }
     }
+    return null;
+  }
+
+  getCdNomenclature():string {
+    return this.currentCdNomenclature;
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -101,7 +90,10 @@ export class NomenclatureComponent extends GenericFormComponent
     this.labels = this._dfService
                       .getNomenclature(this.codeNomenclatureType, this.regne, this.group2Inpn, filters)
                       .pipe(
-                        map(data => data.values)
+                        map(data => {
+                          this._currentCdNomenclature = data.values;
+                          return data.values;
+                        })
                       );
   }
 

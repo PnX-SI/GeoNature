@@ -1,6 +1,7 @@
     <div class="row row-0 row-counting">
       <div *ngIf="occtaxConfig.form_fields.life_stage" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 col-counting padding-sm">
           <pnx-nomenclature
+            class="sm" 
             label="{{ 'Counting.LifeStage' | translate }}" 
             [parentFormControl]="formArray.controls[index].controls.id_nomenclature_life_stage"
             codeNomenclatureType="STADE_VIE" 
@@ -10,6 +11,7 @@
       </div>
       <div *ngIf="occtaxConfig.form_fields.sex" class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-counting padding-sm">
             <pnx-nomenclature
+              class="sm" 
               label="{{ 'Counting.Sex' | translate }}"
               [parentFormControl]="formArray.controls[index].controls.id_nomenclature_sex"
               codeNomenclatureType="SEXE" 
@@ -19,6 +21,7 @@
       </div>
       <div *ngIf="occtaxConfig.form_fields.obj_count" class="col-xs-12 col-sm-12 col-md-12 col-lg-5 col-counting padding-sm">
             <pnx-nomenclature 
+              class="sm" 
               label="{{ 'Counting.CountingObject' | translate }}"
               [parentFormControl]="formArray.controls[index].controls.id_nomenclature_obj_count"
               codeNomenclatureType="OBJ_DENBR" 
@@ -31,6 +34,7 @@
     <div class="form-group row row-0">
         <div *ngIf="occtaxConfig.form_fields.type_count" class="col-xs-12 col-sm-12 col-md-12 col-lg-5 col-counting padding-sm">
             <pnx-nomenclature
+              class="sm" 
               #typeDenombrement
               label="{{ 'Counting.CountingType' | translate }}"
               [parentFormControl]="formArray.controls[index].controls.id_nomenclature_type_count"

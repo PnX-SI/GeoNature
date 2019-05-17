@@ -64,7 +64,7 @@
       <div *ngIf="occtaxConfig.form_fields.exist_proof" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
         <pnx-nomenclature class="sm" label="{{ 'Taxon.ExistProof' | translate }}" [parentFormControl]="occurrenceForm.get('id_nomenclature_exist_proof')"
           codeNomenclatureType="PREUVE_EXIST" [regne]="fs.currentTaxon.regne" [group2Inpn]="fs.currentTaxon.group2_inpn"
-          (getCdNomenclature)="getCdNomencl($event)" #existProof>
+          (getCdNomenclature)="getCdNomenclature()" #existProof>
         </pnx-nomenclature>
       </div>
       <div *ngIf="occtaxConfig.form_fields.digital_proof" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
