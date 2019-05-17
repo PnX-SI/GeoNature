@@ -30,8 +30,9 @@ FROM '/tmp/geonature/181201_referentiel_donnes_sensibles.csv' DELIMITER ',' CSV 
 -- ## Import des données dans le modèle 
 
 INSERT INTO gn_sensitivity.t_sensitivity_rules(
-            id_sensitivity, cd_nom,nom_cite, id_nomenclature_sensitivity, sensitivity_duration,
-            sensitivity_territory, id_territory, source, comments, date_min, date_max )
+    id_sensitivity, cd_nom,nom_cite, id_nomenclature_sensitivity, sensitivity_duration,
+    sensitivity_territory, id_territory, source, comments, date_min, date_max
+)
 SELECT 
    cd_sens, cd_nom, nom_cite, ref_nomenclatures.get_id_nomenclature('SENSIBILITE', codage), COALESCE(duree, 10000), 
     perimetre, cd_sig, 'Compilation national',
