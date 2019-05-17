@@ -24,22 +24,6 @@ CREATE TABLE gn_sensitivity.liste_taxons_sensibles
 COPY gn_sensitivity.liste_taxons_sensibles 
 FROM '/tmp/geonature/181201_referentiel_donnes_sensibles.csv' DELIMITER ',' CSV HEADER;
 
------ 
--- Import données zonage de sensibilité du languedoc roussillon
-
-
--- Au préalable importer les données géographique => scripts SQL
-
-
-INSERT INTO ref_geo.bib_areas_types(type_name, type_code, type_desc, ref_name)
-    VALUES ('Zone sensibilité', 'SENSIBILITY', 'Zone de sensibilité particulière défini par le sipn', 'sensibilité SIPN');
-    
-INSERT INTO ref_geo.l_areas(id_type, area_name, area_code, geom, centroid, source, comment)
-SELECT DISTINCT type.id_type, lib_zone, 'ZONE_SENSIBILITE_' || cd_nom as area_code, z.geom, st_centroid(z.geom) as centroid, source, 
-    CONCAT('cd_nom : ' || cd_nom, ' nom_vernac: '|| nom_vernac,' nom_latin: '|| nom_latin) as comment
-FROM gn_sensitivity.zonages_sensibilite z, 
-(SELECT id_type FROM ref_geo.bib_areas_types WHERE type_code='SENSIBILITY') type;
-
 
 
 -- #################################################
@@ -80,25 +64,6 @@ JOIN ref_geo.l_areas
 ON REPLACE(id_territory, 'INSEED', '') = area_code AND  id_type = (SELECT id_type FROM ref_geo.bib_areas_types  WHERE type_code ='DEP')
 WHERE id_territory LIKE 'INSEED%' ;
 
-
--- Import des données LR avec des périmètres spécifiques
-DELETE FROM gn_sensitivity.cor_sensitivity_area
-WHERE id_sensitivity IN (
-SELECT DISTINCT id_sensitivity
-FROM ref_geo.l_areas
-JOIN   gn_sensitivity.t_sensitivity_rules l
-ON taxonomie.find_cdref(REPLACE(area_code, 'ZONE_SENSIBILITE_','')::int) = taxonomie.find_cdref(l.cd_nom)
-WHERE  id_type = (SELECT id_type FROM ref_geo.bib_areas_types  WHERE type_code ='SENSIBILITY')
-AND  id_territory = 'INSEER91'
-);
-
-INSERT INTO gn_sensitivity.cor_sensitivity_area
-SELECT DISTINCT id_sensitivity, id_area
-FROM ref_geo.l_areas
-JOIN   gn_sensitivity.t_sensitivity_rules l
-ON taxonomie.find_cdref(REPLACE(area_code, 'ZONE_SENSIBILITE_','')::int) = taxonomie.find_cdref(l.cd_nom)
-WHERE  id_type = (SELECT id_type FROM ref_geo.bib_areas_types  WHERE type_code ='SENSIBILITY')
-AND  id_territory = 'INSEER91';
 
 
 -- Activation des règles

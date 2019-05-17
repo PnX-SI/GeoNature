@@ -454,9 +454,7 @@ then
     echo "--------------------" &>> var/log/install_db.log
     echo "Insert 'gn_sensitivity' data" &>> var/log/install_db.log
     echo "--------------------" &>> var/log/install_db.log
-    wget --cache=off https://geonature.fr/data/inpn/sensitivity/zone_sensibilite.sql -P /tmp/geonature
     wget --cache=off https://geonature.fr/data/inpn/sensitivity/181201_referentiel_donnes_sensibles.csv -P /tmp/geonature
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /tmp/geonature/zone_sensibilite.sql  &>> var/log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/sensitivity_data.sql  &>> var/log/install_db.log
 
 

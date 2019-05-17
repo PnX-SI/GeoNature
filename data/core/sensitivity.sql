@@ -15,7 +15,7 @@ CREATE TABLE gn_sensitivity.t_sensitivity_rules
   date_min date,
   date_max date,
   source character varying(250),
-  enable boolean DEFAULT true,
+  active boolean DEFAULT true,
   comments character varying(500),
   meta_create_date timestamp without time zone DEFAULT now(),
   meta_update_date timestamp without time zone,
@@ -29,7 +29,7 @@ CREATE TABLE gn_sensitivity.t_sensitivity_rules
   CONSTRAINT check_t_sensitivity_rules_niv_precis CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_sensitivity, 'SENSIBILITE'::character varying))
 );
 COMMENT ON TABLE gn_sensitivity.t_sensitivity_rules
-  IS 'List of sensibility rules per taxon. Compilation of national and regional list. If you whant to disable one ou several rules you can set false to enable.';
+  IS 'List of sensitivity rules per taxon. Compilation of national and regional list. If you whant to disable one ou several rules you can set false to enable.';
 
 -- Trigger: tri_meta_dates_change_t_sensitivity_rules on gn_sensitivity.t_sensitivity_rules
 
@@ -104,8 +104,7 @@ INSERT INTO gn_sensitivity.cor_sensitivity_area_type VALUES
 
 --- Fonction calcul de la sensibilité
 
-CREATE OR REPLACE FUNCTION gn_synthese.get_id_nomenclature_sensitivity(
-	my_id_obs varchar,
+CREATE OR REPLACE FUNCTION gn_sensitivity.get_id_nomenclature_sensitivity(
 	my_date_obs date,
 	my_cd_ref int,
 	my_geom geometry,
@@ -178,15 +177,14 @@ $BODY$
 
 -- Table permettant de stocker la sensibilité d'une donnée issue de la synthèse
 CREATE TABLE gn_sensitivity.cor_sensitivity_synthese  (
-    id_synthese int NOT NULL,
+    uuid_attached_row uuid NOT NULL,
     id_nomenclature_sensitivity int NOT NULL,
-    type_classement varchar(250) NOT NULL DEFAULT ('auto'),
+    computation_auto BOOLEAN NOT NULL (TRUE),
+    id_digitizer integer,
+    sensitivity_comment text,
     meta_create_date timestamp,
     meta_update_date timestamp,
-    CONSTRAINT cor_sensitivity_synthese_pk PRIMARY KEY (id_synthese, id_nomenclature_sensitivity),
-    CONSTRAINT cor_sensitivity_synthese_id_synthese_fkey FOREIGN KEY (id_synthese)
-      REFERENCES gn_synthese.synthese (id_synthese) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
+    CONSTRAINT cor_sensitivity_synthese_pk PRIMARY KEY (uuid_attached_row, id_nomenclature_sensitivity),
     CONSTRAINT cor_sensitivity_synthese_id_nomenclature_sensitivity_fkey FOREIGN KEY (id_nomenclature_sensitivity)
       REFERENCES ref_nomenclatures.t_nomenclatures (id_nomenclature) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
@@ -201,6 +199,7 @@ $BODY$
 BEGIN
     UPDATE gn_synthese.synthese SET id_nomenclature_sensitivity = NEW.id_nomenclature_sensitivity
     WHERE id_synthese = NEW.id_synthese;
+    RETURN NEW;
 END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
@@ -212,13 +211,14 @@ $BODY$
 BEGIN
     UPDATE gn_synthese.synthese SET id_nomenclature_sensitivity = gn_synthese.get_default_nomenclature_value('SENSIBILITE'::character varying)
     WHERE id_synthese = OLD.id_synthese;
+    RETURN OLD;
 END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
 
-CREATE TRIGGER tri_delete_id_sensitivity_synthese
+CREATE TRIGGER tri_maj_id_sensitivity_synthese
   AFTER INSERT OR UPDATE
   ON gn_sensitivity.cor_sensitivity_synthese
   FOR EACH ROW
