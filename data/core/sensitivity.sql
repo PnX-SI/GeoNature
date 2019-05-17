@@ -122,7 +122,7 @@ BEGIN
         FROM gn_sensitivity.t_sensitivity_rules s
         JOIN gn_sensitivity.cor_sensitivity_criteria c USING(id_sensitivity)
         WHERE taxonomie.find_cdref(cd_nom) = my_cd_ref
-            AND enable = TRUE
+            AND active = TRUE
     ) THEN
         -- Si le critère est remplis
         niv_precis := (
@@ -132,7 +132,7 @@ BEGIN
             JOIN (SELECT * FROM jsonb_each_text(my_criterias)) a
             ON c.id_criteria = a.value::int
             WHERE taxonomie.find_cdref(cd_nom) = my_cd_ref
-                AND enable = TRUE
+                AND active = TRUE
             LIMIT 1
         );
 
@@ -150,7 +150,7 @@ BEGIN
 		FROM gn_sensitivity.t_sensitivity_rules s
 		LEFT OUTER JOIN gn_sensitivity.cor_sensitivity_area  USING(id_sensitivity)
 		LEFT OUTER JOIN ref_geo.l_areas l USING(id_area)
-		WHERE s.enable=true
+		WHERE s.active=true
 	)s
 	WHERE my_cd_ref = s.cd_ref
 		AND (st_intersects(st_transform(my_geom, 2154), s.geom) OR s.geom IS NULL) -- paramètre géographique
@@ -179,7 +179,7 @@ $BODY$
 CREATE TABLE gn_sensitivity.cor_sensitivity_synthese  (
     uuid_attached_row uuid NOT NULL,
     id_nomenclature_sensitivity int NOT NULL,
-    computation_auto BOOLEAN NOT NULL (TRUE),
+    computation_auto BOOLEAN NOT NULL DEFAULT (TRUE),
     id_digitizer integer,
     sensitivity_comment text,
     meta_create_date timestamp,

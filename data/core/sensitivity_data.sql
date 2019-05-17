@@ -68,10 +68,9 @@ WHERE id_territory LIKE 'INSEED%' ;
 
 -- Activation des règles
 
-UPDATE  gn_sensitivity.t_sensitivity_rules SET enable = FALSE;
-UPDATE  gn_sensitivity.t_sensitivity_rules SET enable = TRUE 
+UPDATE  gn_sensitivity.t_sensitivity_rules SET active = FALSE;
+UPDATE  gn_sensitivity.t_sensitivity_rules SET active = TRUE 
 WHERE id_territory='TERFXFR';
 
 
 DROP TABLE gn_sensitivity.liste_taxons_sensibles;
-DROP TABLE gn_sensitivity.zonages_sensibilite;
