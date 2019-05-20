@@ -10,6 +10,8 @@ from geonature.utils.env import DB
 
 from .models import VSyntheseCommunes
 from .models import VSynthese
+from .models import VRegne
+from .models import VPhylum
 
 # # import des fonctions utiles depuis le sous-module d'authentification
 # from geonature.core.gn_permissions import decorators as permissions
@@ -27,12 +29,37 @@ def get_communes_stat():
         VSyntheseCommunes.area_name,
         VSyntheseCommunes.geom_area_4326,
         func.sum(VSyntheseCommunes.nb_obs),
+        #VSyntheseCommunes.nb_obs,
         func.sum(VSyntheseCommunes.nb_taxons)
+        #VSyntheseCommunes.nb_taxons)
     ).group_by(VSyntheseCommunes.area_name, VSyntheseCommunes.geom_area_4326)
+    q = q.filter(VSyntheseCommunes.geom_area_4326 != None)
+    # if ('yearMax' not in params) and ('yearMin' not in params) :
+    #     q = q.filter(VSyntheseCommunes.year == None)
     if 'yearMax' in params:
         q = q.filter(VSyntheseCommunes.year <= params['yearMax'])
     if 'yearMin' in params:
         q = q.filter(VSyntheseCommunes.year >= params['yearMin'])
+    # if 'regne' not in params:
+    #     q = q.filter(VSyntheseCommunes.regne == None)
+    if ('selectedRegne' in params) and (params['selectedRegne'] != ""):
+        q = q.filter(VSyntheseCommunes.regne == params['selectedRegne'])
+    # if 'phylum' not in params:
+    #     q = q.filter(VSyntheseCommunes.phylum == None)
+    if ('selectedPhylum' in params) and (params['selectedPhylum'] != ""):
+        q = q.filter(VSyntheseCommunes.phylum == params['selectedPhylum'])
+    # if 'classe' not in params:
+    #     q = q.filter(VSyntheseCommunes.classe == None)
+    if 'classe' in params:
+        q = q.filter(VSyntheseCommunes.classe == params['classe'])
+    # if 'ordre' not in params:
+    #     q = q.filter(VSyntheseCommunes.ordre == None)
+    # if 'ordre' in params:
+    #     q = q.filter(VSyntheseCommunes.ordre == params['ordre'])
+    # if 'famille' not in params:
+    #     q = q.filter(VSyntheseCommunes.famille == None)
+    # if 'famille' in params:
+    #     q = q.filter(VSyntheseCommunes.famille == params['famille'])
     data = q.all()
 
     geojson_features = []
@@ -74,9 +101,9 @@ def get_synthese_stat():
 
 
 # vm_synthese
-@blueprint.route("/regne", methods=["GET"])
+@blueprint.route("/regne_data", methods=["GET"])
 @json_resp
-def get_regne_stat():
+def get_regne_data():
     params = request.args
     q = DB.session.query(
         VSynthese.regne,
@@ -86,4 +113,23 @@ def get_regne_stat():
         q = q.filter(func.date_part('year', VSynthese.date_min) <= params['yearMax'])
     if 'yearMin' in params:
         q = q.filter(func.date_part('year', VSynthese.date_max) >= params['yearMin'])
+    return q.all()
+
+
+# v_regnes
+@blueprint.route("/regnes", methods=["GET"])
+@json_resp
+def get_regne_name():
+    #params = request.args
+    q = DB.session.query(VRegne.regne).order_by(VRegne.regne)
+    q = q.filter(VRegne.regne != None)
+    return q.all()
+
+# v_phylum
+@blueprint.route("/phylum", methods=["GET"])
+@json_resp
+def get_phylum_name():
+    #params = request.args
+    q = DB.session.query(VPhylum.phylum).order_by(VPhylum.phylum)
+    q = q.filter(VPhylum.phylum != None)
     return q.all()

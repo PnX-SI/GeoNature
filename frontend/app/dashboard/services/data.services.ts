@@ -38,7 +38,15 @@ export class DataService {
                 }                 
             }
         }
-        return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/regne",{params: queryString})
+        return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/regne_data",{params: queryString})
+    }
+
+    getNameRegne() {
+        return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/regnes")
+    }
+
+    getNamePhylum() {
+        return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/phylum")
     }
 
 }

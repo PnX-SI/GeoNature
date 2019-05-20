@@ -37,7 +37,7 @@ export class DashboardPieChartComponent implements OnInit {
     // Accès aux données de la BDD GeoNature 
     this.dataService.getDataRegne().subscribe(
       (data) => {
-        console.log(data);
+        // console.log(data);
         //Création des variables qui seront paramètres du bar chart
         data.forEach(
           (elt) => {
@@ -48,15 +48,15 @@ export class DashboardPieChartComponent implements OnInit {
         this.chart.chart.update();
       }
     );
-    console.log(this.pieChartLabels);
-    console.log(this.pieChartData);
+    // console.log(this.pieChartLabels);
+    // console.log(this.pieChartData);
   }
 
   // Rafraichissement des données en fonction des filtres renseignés par l'utilisateur
   refreshData() {
     this.dataService.getDataRegne(this.pieChartForm.value).subscribe(
       (data) => {
-        console.log(data);
+        // console.log(data);
         this.pieChartLabels = [];
         this.pieChartData = [];
         //Re-création des variables qui seront paramètres du bar chart
@@ -69,8 +69,8 @@ export class DashboardPieChartComponent implements OnInit {
         this.chart.chart.update();
       }
     );
-    console.log(this.pieChartLabels);
-    console.log(this.pieChartData);
+    // console.log(this.pieChartLabels);
+    // console.log(this.pieChartData);
   }
 
 }

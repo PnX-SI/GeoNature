@@ -15,6 +15,11 @@ class VSyntheseCommunes(DB.Model):
     nb_obs = DB.Column(DB.Integer)
     nb_taxons = DB.Column(DB.Integer)
     year = DB.Column(DB.Integer)
+    regne = DB.Column(DB.Unicode)
+    phylum = DB.Column(DB.Unicode)
+    classe = DB.Column(DB.Unicode)
+    # ordre = DB.Column(DB.Unicode)
+    # famille = DB.Column(DB.Unicode)
 
 @serializable
 class VSynthese(DB.Model):
@@ -45,5 +50,17 @@ class VSynthese(DB.Model):
     lat = DB.Column(DB.Unicode)
     date_min = DB.Column(DB.DateTime)
     date_max = DB.Column(DB.DateTime)
+
+@serializable
+class VRegne(DB.Model):
+    __tablename__ = "v_regnes"
+    __table_args__ = {"schema": "gn_dashboard"}
+    regne = DB.Column(DB.Unicode, primary_key=True)
+
+@serializable
+class VPhylum(DB.Model):
+    __tablename__ = "v_phylum"
+    __table_args__ = {"schema": "gn_dashboard"}
+    phylum = DB.Column(DB.Unicode, primary_key=True)
 
 

@@ -44,22 +44,25 @@ export class DashboardMapsComponent implements OnInit, AfterViewInit {
   public legend: any;
   public divLegendObs: any;
   public divLegendTax: any;
-  public intro = "Placez la souris sur une commune";
+  public introLegend = "Placez la souris sur une commune";
   public currentMap: any;
   public currentCommune: any;
   public currentNbObs: any;
   public currentNbTax: any;
-  public currentNbClasses: any;
-  mapForm: FormGroup;
 
-  public test: any;
+  public regnes = [];
+  public phylum = [];
+
+  mapForm: FormGroup;
 
   constructor(public dataService: DataService, public fb: FormBuilder, public mapService: MapService) {
     // Déclaration du formulaire contenant les filtres de la carte
     this.mapForm = fb.group({
       nbClasses: fb.control(null),
       yearMin: fb.control(null),
-      yearMax: fb.control(null)
+      yearMax: fb.control(null),
+      selectedRegne: fb.control(null),
+      selectedPhylum: fb.control(null)
     });
 
     // Initialisation des variables formant la légende
@@ -76,21 +79,40 @@ export class DashboardMapsComponent implements OnInit, AfterViewInit {
     for(var i=0; i<gradesTax.length; i++) {
       this.divLegendTax.innerHTML += '<i style="background:' + this.getColorTax(gradesTax[i]+1) + '"></i>' + gradesTax[i] + (gradesTax[i+1] ? '&ndash;' + gradesTax[i + 1] + '<br>' : '+');
     }
-
   }
 
   ngOnInit() {
     // Initialisation de la fonction "showData"
     this.showData = this.onEachFeatureNbObs;
-    // Accès aux données de la BDD GeoNature 
+    // Accès aux données de synthèse de la BDD GeoNature 
     this.dataService.getCommunes().subscribe(
       (data) => {
+        console.log(data);
         this.myCommunes=data;
         this.background=data;
       }
     );
+    // Accès aux noms des différents règnes de la BDD GeoNature
+    this.dataService.getNameRegne().subscribe(
+      (data) => {
+        data.forEach(
+          (elt) => {
+            this.regnes.push(elt[0]);
+          }
+        );
+      }
+    );
+    // Accès aux noms des différents phylum de la BDD GeoNature
+    this.dataService.getNamePhylum().subscribe(
+      (data) => {
+        data.forEach(
+          (elt) => {
+            this.phylum.push(elt[0]);
+          }
+        );
+      }
+    );
     this.currentMap = 1;
-    console.log(this.mapForm.value.nbClasses);
   }
 
   ngAfterViewInit(){
@@ -170,6 +192,7 @@ export class DashboardMapsComponent implements OnInit, AfterViewInit {
   // Rafraichissement des données en fonction des filtres renseignés par l'utilisateur
   refreshData() {
     console.log(this.mapForm.value.nbClasses);
+    console.log(this.mapForm.value.selectedRegne);
     this.dataService.getCommunes(this.mapForm.value).subscribe(
       (data) => {
         this.myCommunes=data;
@@ -254,7 +277,7 @@ export class DashboardMapsComponent implements OnInit, AfterViewInit {
       fillOpacity: 1
     });
     layer.bringToFront();
-    this.intro = null;
+    this.introLegend = null;
     this.currentCommune = layer.feature.geometry.properties.area_name;
     if (this.currentMap == 1) {
       this.currentNbObs = "Nombre d'observations : " + layer.feature.geometry.properties.nb_obs;
@@ -274,7 +297,7 @@ export class DashboardMapsComponent implements OnInit, AfterViewInit {
       fillOpacity: 1
     });
     layer.bringToFront();
-    this.intro = null;
+    this.introLegend = null;
     this.currentCommune = layer.feature.geometry.properties.area_name;
     if (this.currentMap == 1) {
       this.currentNbObs = "Nombre d'observations : 0";
@@ -287,7 +310,7 @@ export class DashboardMapsComponent implements OnInit, AfterViewInit {
   // Réinitialiser l'aspect de la commune lorsque la souris n'est plus dessus
   resetHighlight(e) {
     const layer = e.target;
-    this.intro = "Placez la souris sur une commune";
+    this.introLegend = "Placez la souris sur une commune";
     this.currentCommune = null;
     this.currentNbObs = null;
     this.currentNbTax = null;

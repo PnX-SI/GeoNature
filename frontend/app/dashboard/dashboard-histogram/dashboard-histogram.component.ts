@@ -73,7 +73,7 @@ export class DashboardHistogramComponent implements OnInit {
     // Accès aux données de la BDD GeoNature 
     this.dataService.getDataSynthese().subscribe(
       (data) => {
-        console.log(data);
+        // console.log(data);
         this.myDataSynthese=data;
         // Création des variables qui seront paramètres du bar chart
         this.myDataSynthese.forEach(
@@ -86,9 +86,9 @@ export class DashboardHistogramComponent implements OnInit {
         this.chart.chart.update();
       }
     );
-    console.log(this.barChartLabels);
-    console.log(this.barChartData[0]["data"]);
-    console.log(this.barChartData[1]["data"]);
+    // console.log(this.barChartLabels);
+    // console.log(this.barChartData[0]["data"]);
+    // console.log(this.barChartData[1]["data"]);
   }
 
 }

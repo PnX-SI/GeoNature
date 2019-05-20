@@ -1,7 +1,7 @@
 <div class="row row-sm">
     <div class="col-md-9 padding-sm">
         <div class="card-absolute">
-            <h5> {{ intro }} </h5>      
+            <h5> {{ introLegend }} </h5>      
             <h5><b><p> {{ currentCommune }} </p></b></h5>
             <p> {{ currentNbObs }} </p>
             <p> {{ currentNbTax }} </p>        
@@ -33,7 +33,7 @@
                             <button class="btn btn-block btn-secondary" (click)= "changeMapToMailles()"> <B>Mailles</B> </button>
                         </div>
                     </div>
-                </div><br/><br/>
+                </div><br/>
                 <div id="filters">           
                     <form (ngSubmit)="refreshData()" [formGroup]="mapForm">
                         <div class="form-group row">
@@ -49,15 +49,29 @@
                         <div class="form-group">
                             <label class="col-form-label"><b> Nombre de classes </b></label>
                             <input class="form-control form-control-sm" formControlName="nbClasses">
-                        </div><br/>
+                        </div>
+                        <div class="form-group"> 
+                            <label class="col-form-label"><b> Règne </b></label>                           
+                            <select class="form-control form-control-sm" [disableControl]="disabled" formControlName="selectedRegne">
+                                <option> </option>
+                                <option *ngFor="let regne of regnes" [ngValue]="regne"> {{ regne }} </option>
+                            </select>                              
+                        </div>
+                        <div class="form-group"> 
+                            <label class="col-form-label"><b> Phylum </b></label>                           
+                            <select class="form-control form-control-sm" [disableControl]="disabled" formControlName="selectedPhylum">
+                                <option> </option>
+                                <option *ngFor="let phylumElt of phylum" [ngValue]="phylumElt"> {{ phylumElt }} </option>
+                            </select>                              
+                        </div>
+                        <br/>
                         <div class="row justify-content-md-center">
                             <div class="col-md-4">
                                 <button class="btn btn-outline-success btn-block" type="submit">Valider</button>
                             </div>
                         </div>
                     </form>
-                </div><br/>
-                
+                </div><br/>                
             </div>
         </div>
     </div>
