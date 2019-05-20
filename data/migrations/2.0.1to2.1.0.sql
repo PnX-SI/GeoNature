@@ -29,7 +29,7 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS
 
 -- pas d'action sur delete entre synthese et cor_area_synthese
 ALTER TABLE ONLY gn_synthese.cor_area_synthese
-    DROP CONSTRAINT fk_cor_area_synthese_id_synthese,
+    DROP CONSTRAINT IF EXISTS fk_cor_area_synthese_id_synthese,
     ADD CONSTRAINT fk_cor_area_synthese_id_synthese FOREIGN KEY (id_synthese) REFERENCES gn_synthese.synthese(id_synthese) ON DELETE NO ACTION;
 
 
