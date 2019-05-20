@@ -6,48 +6,98 @@
       " [attr.for]="formDef.attribut_name">{{formDef.attribut_label}}</small>
   <div [ngSwitch]="formDef.type_widget">
 
-    <input class="form-control form-control-sm" *ngSwitchCase="'text'" [formControl]="form.controls['attribut_name'].control" [id]="formDef.attribut_name"
+    <input 
+      class="form-control form-control-sm" 
+      *ngSwitchCase="'text'" 
+      [formControl]="form.get(formDef.attribut_name)" 
+      [id]="formDef.attribut_name"
       type="text">
 
-    <select *ngSwitchCase="'select'" class="form-control" [id]="formDef.attribut_name" [formControl]="form.controls['attribut_name'].control">
+    <select 
+      *ngSwitchCase="'select'" 
+      class="form-control" 
+      [id]="formDef.attribut_name" 
+      [formControl]="form.get(formDef.attribut_name)">
       <option *ngFor="let val of formDef.values" [value]="val">{{val}}</option>
     </select>
 
-    <pnx-nomenclature *ngSwitchCase="'nomenclature'" class="sm" [label]=formDef.attribut_label [parentFormControl]="form.controls[formDef.attribut_name]" [codeNomenclatureType]="formDef.code_nomenclature_type"
+    <pnx-nomenclature 
+      *ngSwitchCase="'nomenclature'" 
+      class="sm" 
+      [label]=formDef.attribut_label 
+      [parentFormControl]="form.get(formDef.attribut_name)" 
+      [codeNomenclatureType]="formDef.code_nomenclature_type"
       [multiSelect]="formDef.multi_select" [keyValue]="formDef.key_value">
     </pnx-nomenclature>
 
     <div *ngSwitchCase="'checkbox'">
       <label *ngFor="let val of formDef.values">
-        <input type="checkbox" [name]="formDef.attribut_name" [value]="val" [formControl]="form.controls['attribut_name'].control" (change)="onCheckChange($event, form.controls[formDef.attribut_name])">        {{val}}
+        <input 
+          type="checkbox" 
+          [name]="formDef.attribut_name" 
+          [value]="val" 
+          [formControl]="form.get(formDef.attribut_name)" 
+          (change)="onCheckChange($event, form.get(formDef.attribut_name))"> {{val}}
       </label>
     </div>
 
     <div *ngSwitchCase="'radio'">
       <label *ngFor="let val of formDef.values">
-        <input (click)="onRadioChange(val, form.controls[formDef.attribut_name])" type="radio" [name]="formDef.attribut_name" [value]="val"
-          [formControl]="form.controls['attribut_name'].control"> {{val}}
+        <input 
+          (click)="onRadioChange(val, form.get(formDef.attribut_name))" 
+          type="radio" 
+          [name]="formDef.attribut_name" 
+          [value]="val"
+          [formControl]="form.get(formDef.attribut_name)"> {{val}}
       </label>
     </div>
 
-    <pnx-taxonomy *ngSwitchCase="'taxonomy'" [label]="formDef.attribut_label" [parentFormControl]="form.controls[formDef.attribut_name]" [idList]="formDef.idComponent"
-      [charNumber]="3" [listLength]="20">
+    <pnx-taxonomy 
+      *ngSwitchCase="'taxonomy'" 
+      [label]="formDef.attribut_label"
+      [parentFormControl]="form.get(formDef.attribut_name)"
+      [idList]="formDef.idComponent"
+      [charNumber]="3" 
+      [listLength]="20">
     </pnx-taxonomy>
 
-    <pnx-datasets *ngSwitchCase="'dataset'" class="sm" [label]="formDef.attribut_label" [parentFormControl]="form.controls[formDef.attribut_name]" [multiSelect]="formDef.multi_select">
+    <pnx-datasets 
+      *ngSwitchCase="'dataset'" 
+      class="sm" 
+      [label]="formDef.attribut_label" 
+      [parentFormControl]="form.get(formDef.attribut_name)" 
+      [multiSelect]="formDef.multi_select">
     </pnx-datasets>
 
-    <pnx-observers *ngSwitchCase="'observers'" class="sm" [label]="formDef.attribut_label" [parentFormControl]="form.controls[formDef.attribut_name]" [idMenu]="formDef.idComponent">
+    <pnx-observers 
+      *ngSwitchCase="'observers'" 
+      class="sm" 
+      [label]="formDef.attribut_label" 
+      [parentFormControl]="form.get(formDef.attribut_name)" 
+      [idMenu]="formDef.idComponent">
     </pnx-observers>
 
-    <pnx-date *ngSwitchCase="'date'" [label]="formDef.attribut_label" [parentFormControl]="form.controls[formDef.attribut_name]">
+    <pnx-date 
+      *ngSwitchCase="'date'"
+      [label]="formDef.attribut_label" 
+      [parentFormControl]="form.get(formDef.attribut_name)">
     </pnx-date>
 
-    <pnx-municipalities *ngSwitchCase="'municipalities'" [label]="formDef.attribut_label" [parentFormControl]="form.controls[formDef.attribut_name]">
+    <pnx-municipalities 
+      *ngSwitchCase="'municipalities'" 
+      [label]="formDef.attribut_label" 
+      [parentFormControl]="form.get(formDef.attribut_name)">
     </pnx-municipalities>
 
-    <pnx-multiselect *ngSwitchCase="'multiselect'" class="sm" [values]="formDef.values" [parentFormControl]="form.controls[formDef.attribut_name]" keyLabel="value" keyValue="value"
-    [label]="formDef.attribut_label"  [searchBar]="false">
+    <pnx-multiselect 
+      *ngSwitchCase="'multiselect'" 
+      class="sm" 
+      [values]="formDef.values" 
+      [parentFormControl]="form.get(formDef.attribut_name)" 
+      keyLabel="value" 
+      keyValue="value"
+      [label]="formDef.attribut_label" 
+      [searchBar]="false">
     </pnx-multiselect>
   </div>
 

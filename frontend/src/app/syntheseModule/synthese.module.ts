@@ -19,7 +19,7 @@ import { ModalInfoObsComponent } from './synthese-results/synthese-list/modal-in
 const routes: Routes = [{ path: '', component: SyntheseComponent }];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes), GN2CommonModule, CommonModule, TreeModule],
+  imports: [RouterModule.forChild(routes), GN2CommonModule, CommonModule, TreeModule.forRoot()],
   declarations: [
     SyntheseComponent,
     SyntheseListComponent,

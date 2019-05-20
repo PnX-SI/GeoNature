@@ -3,7 +3,6 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { TreeNode, TreeComponent, IActionMapping } from 'angular-tree-component';
 import { SyntheseFormService } from '../../services/form.service';
-import { DynamicFormService } from '@geonature_common/form/dynamic-form/dynamic-form.service';
 import { FormGroup } from '@angular/forms';
 import { TaxonAdvancedStoreService } from './taxon-advanced-store.service';
 import { AppConfig } from '@geonature_config/app.config';
@@ -11,7 +10,6 @@ import { AppConfig } from '@geonature_config/app.config';
 @Component({
   selector: 'pnx-taxon-advanced',
   templateUrl: './taxon-advanced.component.html',
-  providers: [DynamicFormService],
   styleUrls: ['./taxon-advanced.component.scss']
 })
 export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {

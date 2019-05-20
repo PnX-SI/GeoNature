@@ -34,14 +34,14 @@
 
 
 
-  <pnx-multiselect [values]="storeService.taxonomyLR" [parentFormControl]="formService.searchForm.controls.taxonomy_lr"
+  <pnx-multiselect [values]="storeService.taxonomyLR" [parentFormControl]="formService.searchForm.get('taxonomy_lr')"
     keyLabel="nom_categorie_lr" keyValue="id_categorie_france" label="Liste rouge UICN">
   </pnx-multiselect>
-  <pnx-multiselect [values]="storeService.taxonomyHab" [parentFormControl]="formService.searchForm.controls.taxonomy_id_hab"
+  <pnx-multiselect [values]="storeService.taxonomyHab" [parentFormControl]="formService.searchForm.get('taxonomy_id_hab')"
     keyLabel="nom_habitat" keyValue="id_habitat" label="Habitat">
   </pnx-multiselect>
 
-  <pnx-multiselect [values]="storeService.taxonomyGroup2Inpn" [parentFormControl]="formService.searchForm.controls.taxonomy_group2_inpn"
+  <pnx-multiselect [values]="storeService.taxonomyGroup2Inpn" [parentFormControl]="formService.searchForm.get('taxonomy_group2_inpn')"
     keyLabel="value" keyValue="value" label="Groupe 2 INPN">
   </pnx-multiselect>
 
