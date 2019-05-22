@@ -117,7 +117,7 @@ def password_recovery():
     user = DB.session.query(User).filter_by(identifiant=identifiant).one()
 
     data = {"email": user.email, 
-            "url_confirmation": config['URL_APPLICATION'] + "/new-password"}
+            "url_confirmation": config['URL_APPLICATION'] + "/#/new-password"}
 
     r = s.post(url=config['API_ENDPOINT'] + "/pypn/register/post_usershub/password_recovery", json=data)
 
