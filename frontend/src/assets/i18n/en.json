@@ -160,5 +160,7 @@
     "DeleteObs": "Supprimer l'observations"
   },
   "MyAccount": "My account",
-  "CreateAccount": "Create an account"
+  "CreateAccount": "Create an account",
+  "ForgetPassword": "Forgot password?",
+  "ForgotLogin": "Forgot login?"
 }

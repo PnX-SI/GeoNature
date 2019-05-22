@@ -55,7 +55,7 @@ export class SignUpComponent implements OnInit {
                   {
                     positionClass: 'toast-top-center',
                     tapToDismiss: true,
-                    timeOut: 5000
+                    timeOut: 10000
                   }
                 );
                 this._router.navigate(['/login']);

@@ -78,6 +78,52 @@ def insert_role(user=None):
     return user.as_dict()
 
 
+@routes.route("/login/recovery", methods=["POST"])
+def login_recovery():
+    """
+        Inscrit un user à partir de l'interface geonature
+        Fonctionne selon l'autorisation 'ENABLE_SIGN_UP' dans la config.
+        Fait appel à l'API UsersHub
+    """
+    #test des droits
+    if (not config.get('ENABLE_SIGN_UP', False)):
+        return jsonify({"msg": "Page introuvable"}), 404
+    
+    data = request.get_json()
+
+    r = s.post(url=config['API_ENDPOINT'] + "/pypn/register/post_usershub/login_recovery", json=data)
+
+    return Response(r), r.status_code
+
+
+@routes.route("/password/recovery", methods=["POST"])
+def password_recovery():
+    """
+        Inscrit un user à partir de l'interface geonature
+        Fonctionne selon l'autorisation 'ENABLE_SIGN_UP' dans la config.
+        Fait appel à l'API UsersHub
+    """
+    #test des droits
+    if (not config.get('ENABLE_SIGN_UP', False)):
+        return jsonify({"msg": "Page introuvable"}), 404
+
+    data = request.get_json()
+
+    identifiant = data.get('identifiant', None)
+
+    if not identifiant:
+        return {'msg': "Login inconnu"}, 400
+    
+    user = DB.session.query(User).filter_by(identifiant=identifiant).one()
+
+    data = {"email": user.email, 
+            "url_confirmation": config['URL_APPLICATION'] + "/new-password"}
+
+    r = s.post(url=config['API_ENDPOINT'] + "/pypn/register/post_usershub/password_recovery", json=data)
+
+    return Response(r), r.status_code
+    
+
 @routes.route("/inscription", methods=["POST"])
 def inscription():
     """
@@ -163,34 +209,61 @@ def update_role(info_role):
     return user.as_dict()
 
 
-@routes.route("/password", methods=["PUT"])
-@permissions.check_cruved_scope("R", True)
-def update_password(info_role):
+def set_change_password(data):
+    if not data.get('password', None) or not data.get('password_confirmation', None) or not data.get('token', None):
+        return {"msg": "Erreur serveur"}, 500
+
+    r = s.post(url=config['API_ENDPOINT'] + "/pypn/register/post_usershub/change_password", json=data)
+
+    if r.status_code != 200:
+        #comme concerne le password, on explicite pas le message
+        return {"msg": "Erreur serveur"}, 500
+
+    return {"msg": "Mot de passe modifié avec succès"}, 200
+
+
+@routes.route("/password/change", methods=["POST"])
+@json_resp
+def change_password():
     """
-        Modifie le role de l'utilisateur du token en cours
+        Modifie le mot de passe de l'utilisateur du token
         Fait appel à l'API UsersHub
     """
+    if (not config.get('ENABLE_SIGN_UP', False)):
+        return {"message": "Page introuvable"}, 404
+
+    data = request.get_json()
+    
+    return set_change_password(data)
+
+
+@routes.route("/password", methods=["PUT"])
+@permissions.check_cruved_scope("R", True)
+@json_resp
+def update_password(info_role):
+    """
+        Modifie le mot de passe de l'utilisateur connecté
+        Fait appel à l'API UsersHub
+    """
+    if (not config.get('ENABLE_SIGN_UP', False)):
+        return {"message": "Page introuvable"}, 404
+
     data = request.get_json()
     user = DB.session.query(User).get(info_role.id_role)
     
     if user is None:
-        return jsonify({"msg": "Droit insuffisant"}), 403
+        return {"msg": "Droit insuffisant"}, 403
 
     #Vérification du password initiale du role
     if not user.check_password(data.get('init_password', None)):
-        return jsonify({"msg": "Le mot de passe initial est invalide"}), 400
+        return {"msg": "Le mot de passe initial est invalide"}, 400
 
     #recuperation du token usershub API
     token = s.post(url=config['API_ENDPOINT'] + "/pypn/register/post_usershub/create_cor_role_token", json={'email': user.email}).json()
 
     data['token'] = token['token']
-    r = s.post(url=config['API_ENDPOINT'] + "/pypn/register/post_usershub/change_password", json=data)
-
-    if r.status_code != 200:
-        #comme concerne le password, on explicite pas le message
-        return jsonify({"msg": "Erreur serveur"}), 500
-
-    return jsonify({"msg": "Mot de passe modifié avec succès"}), 200
+    
+    return set_change_password(data)
     
 
 @routes.route("/cor_role", methods=["POST"])

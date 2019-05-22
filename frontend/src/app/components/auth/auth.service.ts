@@ -6,6 +6,7 @@ import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { HttpClient } from '@angular/common/http';
 import { AppConfig } from '../../../conf/app.config';
 import { CookieService } from 'ng2-cookies';
+import 'rxjs/add/operator/delay';
 
 export interface User {
   user_login: string;
@@ -54,15 +55,35 @@ export class AuthService {
     return response;
   }
 
-  signinUser(username: string, password: string) {
+  checkUserExist(username: string): Observable<any> {
+    const options = {
+      identifiant: username,
+      id_application: AppConfig.ID_APPLICATION_GEONATURE
+    };
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/auth/login/check`, options);
+  }
+
+  loginRecovery(data: any): Observable<any> {
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/users/login/recovery`, data);
+  }
+
+  passwordRecovery(data: any): Observable<any> {
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/users/password/recovery`, data);
+  }
+
+  passwordChange(data: any): Observable<any> {
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/users/password/change`, data);
+  }
+
+  signinUser(user: any) {
     this.isLoading = true;
-    const user = {
-      login: username,
-      password: password,
+    const options = {
+      login: user.identifiant,
+      password: user.password,
       id_application: AppConfig.ID_APPLICATION_GEONATURE
     };
     this._http
-      .post<any>(`${AppConfig.API_ENDPOINT}/auth/login`, user)
+      .post<any>(`${AppConfig.API_ENDPOINT}/auth/login`, options)
       .finally(() => (this.isLoading = false))
       .subscribe(
         data => {

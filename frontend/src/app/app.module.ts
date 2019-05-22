@@ -26,6 +26,7 @@ import { SidenavItemsComponent } from './components/sidenav-items/sidenav-items.
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { LoginComponent } from './components/login/login.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
+import { NewPasswordComponent } from './components/new-password/new-password.component';
 import { NavHomeComponent } from './components/nav-home/nav-home.component';
 
 // Custom component (footer, presentation etc...)
@@ -73,6 +74,7 @@ export function HttpLoaderFactory(http: Http) {
     PageNotFoundComponent,
     LoginComponent,
     SignUpComponent,
+    NewPasswordComponent,
     NavHomeComponent,
     FooterComponent,
     IntroductionComponent
