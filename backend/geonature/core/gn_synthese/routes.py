@@ -204,7 +204,6 @@ def get_one_synthese(id_synthese):
     try:
         data = q.one()
         synthese_as_dict = data[0].as_dict(True)
-        print(synthese_as_dict)
         synthese_as_dict["actors"] = data[1]
         return synthese_as_dict
     except exc.NoResultFound:

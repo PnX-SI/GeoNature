@@ -339,7 +339,6 @@ def convert_to_2d(geojson):
 
 def remove_third_dimension(geom):
     if not geom.has_z:
-        print(geom.has_z)
         return geom
 
     if isinstance(geom, Polygon):
