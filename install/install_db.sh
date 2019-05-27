@@ -407,6 +407,11 @@ then
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/geonature/synthese.sql  &>> var/log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/synthese_default_values.sql  &>> var/log/install_db.log
 
+    echo "--------------------" &>> var/log/install_db.log
+    echo "Creating commons view depending of synthese" &>> var/log/install_db.log
+    echo "--------------------" &>> var/log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/commons_synthese.sql  &>> var/log/install_db.log
+
     echo "Creating 'exports' schema..."
     echo "" &>> var/log/install_db.log
     echo "" &>> var/log/install_db.log
