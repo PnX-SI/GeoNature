@@ -37,7 +37,7 @@ export class MapListService {
 
   originStyle = {
     color: '#3388ff',
-    fill: true,
+    fill: false,
     fillOpacity: 0.2,
     weight: 3
   };
@@ -199,29 +199,26 @@ export class MapListService {
 
     if (this.selectedLayer !== undefined) {
       this.originStyle.fill =
-        this.selectedLayer.feature.geometry.type === 'LineString' ? false : true;
+        this.selectedLayer.feature.geometry.type === 'LineString' ||
+        this.selectedLayer.feature.geometry.type === 'MultiLineString'
+          ? false
+          : true;
       this.selectedLayer.setStyle(this.originStyle);
       this.selectedLayer.closePopup();
     }
     this.selectedLayer = selectedLayer;
+
     this.selectedStyle.fill =
-      this.selectedLayer.feature.geometry.type === 'LineString' ? false : true;
+      this.selectedLayer.feature.geometry.type === 'LineString' ||
+      this.selectedLayer.feature.geometry.type === 'MultiLineString'
+        ? false
+        : true;
     this.selectedLayer.setStyle(this.selectedStyle);
   }
 
   zoomOnSelectedLayer(map, layer) {
-    if (layer instanceof L.Polygon || layer instanceof L.Polyline) {
-      map.fitBounds((layer as any)._bounds);
-    } else {
-      let latlng;
-      const zoom = map.getZoom();
-      latlng = layer._latlng;
-      if (zoom >= 12) {
-        map.setView(latlng, zoom);
-      } else {
-        map.setView(latlng, 16);
-      }
-    }
+    const geojson = new L.GeoJSON(layer.feature);
+    map.fitBounds(geojson.getBounds());
   }
 
   deFaultCustomColumns(feature) {
