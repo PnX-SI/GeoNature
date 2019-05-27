@@ -111,7 +111,7 @@ export class OcctaxFormService {
         altitude_min: null,
         altitude_max: null,
         meta_device_entry: "web",
-        comment_releve: null,
+        comment: null,
         id_nomenclature_obs_technique: [null, Validators.required],
         observers: [
           null,
