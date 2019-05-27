@@ -1077,7 +1077,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS
 CREATE OR REPLACE VIEW gn_synthese.v_color_taxon_area AS
 SELECT cd_nom, id_area, nb_obs, last_date,
  CASE 
-  WHEN date_part('day', (now() - last_date)) < 365 THEN 'gray'
+  WHEN date_part('day', (now() - last_date)) < 365 THEN 'grey'
   ELSE 'red'
  END as color
 FROM gn_synthese.cor_area_taxon;
