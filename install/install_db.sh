@@ -496,17 +496,6 @@ then
         sudo rm tmp/geonature/IGNF_BDALTIr_2-0_ASC_250M_LAMB93_IGN69_FRANCE.html
     fi
 
-    # Mise en place du cron pour recalculer les couleurs des taxons
-    # si le fichier est déja désamplé, on ne refait pas le cron
-    if [ ! -f $parentdir/install/calculate_color_cron.sh ]
-        then
-        # creation du fichier de log du calcul des couleurs
-        touch $parentdir/var/log/color_log.log
-        cp $parentdir/install/calculate_color_cron.sh.sample $parentdir/install/calculate_color_cron.sh
-        sed -i "s%GEONATURE_PATH%${parentdir}%" $parentdir/install/calculate_color_cron.sh
-        # cron toute les nuit à 00:00
-        (crontab -l 2>/dev/null; echo "00 00 * * * $parentdir/install/calculate_color_cron.sh") | crontab -
-    fi
 fi
 
 # Suppression des fichiers : on ne conserve que les fichiers compressés
