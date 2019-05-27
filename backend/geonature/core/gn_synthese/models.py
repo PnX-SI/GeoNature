@@ -473,7 +473,7 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
 
 @serializable
 class CorAreaTaxon(DB.Model):
-    __tablename__ = "cor_area_taxon"
+    __tablename__ = "v_color_taxon_area"
     __table_args__ = {"schema": "gn_synthese"}
     cd_nom = DB.Column(
         DB.Integer(), ForeignKey("taxonomie.taxref.cd_nom"), primary_key=True
