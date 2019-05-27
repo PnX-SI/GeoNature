@@ -472,7 +472,7 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
 
 
 @serializable
-class CorAreaTaxon(DB.Model):
+class VColorAreaTaxon(DB.Model):
     __tablename__ = "v_color_taxon_area"
     __table_args__ = {"schema": "gn_synthese"}
     cd_nom = DB.Column(
