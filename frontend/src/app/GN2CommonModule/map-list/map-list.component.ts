@@ -1,12 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  OnChanges,
-  Output,
-  EventEmitter,
-  AfterViewInit
-} from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
 import { MapService } from '../map/map.service';
 import { MapListService } from '../map-list/map-list.service';
 import { GeoJSON, Layer } from 'leaflet';
@@ -49,8 +41,6 @@ export class MapListComponent implements OnInit, AfterViewInit {
     layer.setStyle(this.mapListService.originStyle);
     layer.on({
       click: e => {
-        console.log('click');
-
         // toggle style
         this.mapListService.toggleStyle(layer);
         // observable

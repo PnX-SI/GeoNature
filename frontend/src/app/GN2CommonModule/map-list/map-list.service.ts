@@ -198,11 +198,6 @@ export class MapListService {
     // togle the style of selected layer
 
     if (this.selectedLayer !== undefined) {
-      this.originStyle.fill =
-        this.selectedLayer.feature.geometry.type === 'LineString' ||
-        this.selectedLayer.feature.geometry.type === 'MultiLineString'
-          ? false
-          : true;
       this.selectedLayer.setStyle(this.originStyle);
       this.selectedLayer.closePopup();
     }
@@ -217,8 +212,33 @@ export class MapListService {
   }
 
   zoomOnSelectedLayer(map, layer) {
-    const geojson = new L.GeoJSON(layer.feature);
-    map.fitBounds(geojson.getBounds());
+    if (layer instanceof L.Polygon || layer instanceof L.Polyline) {
+      map.fitBounds((layer as any)._bounds);
+    } else {
+      let latlng;
+      const zoom = map.getZoom();
+      // if its a multipoint
+      if (!layer._latlng) {
+        map.fitBounds(new L.GeoJSON(layer.feature).getBounds());
+      } else {
+        latlng = layer._latlng;
+        if (zoom >= 12) {
+          map.setView(latlng, zoom);
+        } else {
+          map.setView(latlng, 16);
+        }
+      }
+    }
+  }
+
+  /**
+   * Use in synthese where layer are not GeoJson but PolyLigne, Polygon ...
+   * @param map
+   * @param layer
+   */
+  zoomOnSelectedLayerNotGeojson(map, layer) {
+    if (layer) {
+    }
   }
 
   deFaultCustomColumns(feature) {
