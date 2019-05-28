@@ -1,5 +1,6 @@
 from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
+from flask import current_app
 
 from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import serializable
@@ -30,7 +31,7 @@ class LAreas(DB.Model):
     id_type = DB.Column(DB.Integer, ForeignKey("ref_geo.bib_areas_types.id_type"))
     area_name = DB.Column(DB.Unicode)
     area_code = DB.Column(DB.Unicode)
-    geom = DB.Column(Geometry("GEOMETRY", 2154))
+    geom = DB.Column(Geometry("GEOMETRY", current_app.config["LOCAL_SRID"]))
     source = DB.Column(DB.Unicode)
     geom = DB.Column(Geometry("GEOMETRY", 4326))
     area_type = DB.relationship("BibAreasTypes", lazy="select")
