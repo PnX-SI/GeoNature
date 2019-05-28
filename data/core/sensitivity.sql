@@ -150,7 +150,6 @@ BEGIN
         FROM gn_sensitivity.t_sensitivity_rules_cd_ref s
         WHERE s.cd_ref = my_cd_ref
     ) THEN
-        RAISE NOTICE '% NOT cd_ref', my_cd_ref;
         return niv_precis_null;
     END IF;
 
@@ -161,7 +160,6 @@ BEGIN
         WHERE s.cd_ref = my_cd_ref 
         AND (date_part('year', CURRENT_TIMESTAMP) - sensitivity_duration) <= date_part('year', my_date_obs)
     ) THEN
-        RAISE NOTICE '% NOT durée de validité de la règle', my_cd_ref;
         return niv_precis_null;
     END IF;
 
@@ -172,7 +170,6 @@ BEGIN
         WHERE s.cd_ref = my_cd_ref 
         AND (to_char(my_date_obs, 'MMDD') between to_char(s.date_min, 'MMDD') and to_char(s.date_max, 'MMDD') )
     ) THEN
-        RAISE NOTICE '% NOT période d''observation', my_cd_ref;
         return niv_precis_null;
     END IF;
     
@@ -195,7 +192,6 @@ BEGIN
             LIMIT 1
         );
         IF niv_precis IS NULL THEN
-            RAISE NOTICE 'NOT critère';
             niv_precis := (SELECT ref_nomenclatures.get_id_nomenclature('SENSIBILITE'::text, '0'::text));
             return niv_precis;
         END IF;
