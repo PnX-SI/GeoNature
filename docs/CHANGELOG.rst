@@ -31,7 +31,7 @@ CHANGELOG
 * Occtax - Correction du filtre Observateur texte libre (#598)
 * Métadonnées - Inversion des domaines terrestre/marin (par @xavyeah39)
 * Mise à jour de sécurité de Jinja2 et SQLAlchemy
-* Synthese: affichages des zonages intersectés dans un onglet séparé
+* Synthese: affichages des zonages intersectés dans un onglet séparé (#579)
 
 **⭐️ Autres**
 
@@ -46,7 +46,6 @@ CHANGELOG
 * Comment intégrer les mailles si on fait une MAJ ?
 * Scripts de migration liés à la sensibilité (#284) + expliquer le fonctionnement plus précis dans le ticket
 
-**TODO avant release** : Faire le paramètre pour ne pas afficher certains zonages dans la fiche Synthèse, du fait de l'ajout des mailles (#579)
 
 2.0.1 (2019-03-18)
 ------------------
