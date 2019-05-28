@@ -16,7 +16,8 @@ CHANGELOG
 * Les mailles INPN (1, 5, 10km) sont intégrées à l'installation (paramètre)
 * Statistiques de l'accueil - Paramètre permettant de les désactiver (#599)
 * Occtax - Date par défaut paramétrable (#351)
-* Support des géometries multi (MultiPoint, MultiPolygon, MultiLine) dans la synthèse (#609)
+* Support des géometries multi (MultiPoint, MultiPolygon, MultiLine) dans la synthèse et Occtax (#609)
+* Nouveau design du module de gestion des metadonnées (PR de @jbrieuclp)
 
 **🐛 Corrections**
 
@@ -30,6 +31,7 @@ CHANGELOG
 * Occtax - Correction du filtre Observateur texte libre (#598)
 * Métadonnées - Inversion des domaines terrestre/marin (par @xavyeah39)
 * Mise à jour de sécurité de Jinja2 et SQLAlchemy
+* Synthese: affichages des zonages intersectés dans un onglet séparé
 
 **⭐️ Autres**
 
