@@ -12,7 +12,7 @@ CHANGELOG
 * Occtax - Possibilité d'enchainer les saisies de relevés et de garder les informations du relevé (#633)
 * Occtax - Amélioration de l'ergonomie de l'interface MapList pour clarifier la recherche et l'ajout d'un relevé + ajout compteur (#467)
 * Révision de l'interface du module Métadonnées, listant les cadres d'acquisition et leurs jeux de données (par @jbrieuclp)
-* Ajout d'un mécanimse du calcul des taxons observés par zonage géographique (#617)
+* Ajout d'un mécanisme du calcul des taxons observés par zonage géographique (#617)
 * Les mailles INPN (1, 5, 10km) sont intégrées à l'installation (avec un paramètre)
 * Statistiques de la page d'accueil - Ajout d'un paramètre permettant de les désactiver (#599)
 * Occtax - Date par défaut paramétrable (#351)
@@ -36,35 +36,34 @@ CHANGELOG
 
 * Vous pouvez passer directement à cette version, mais en suivant les notes des versions intermédiaires
 * Suivez ensuite la procédure classique de mise à jour de GeoNature (https://geonature.readthedocs.io/fr/latest/installation-standalone.html#mise-a-jour-de-l-application)
-* Lancer le script de migration SQL:
-La nouvelle version de GeoNature intègre les mailles INPN (1, 5, 10km) dans le réferentiel géographique. Si vous ne souhaitez pas les installer, lancer le script ci dessous en passant le paramètre "no-grid"
+* Lancer le script de migration SQL :
 
-    ::
-        cd /home/`whoami`/geonature/data/migrations
-        # avec les mailles
-        ./2.0.1to2.1.1.sh 
-        # sans les mailles:
-        # ./2.0.1to2.1.1.sh no-grid
+  Cette nouvelle version de GeoNature intègre les mailles INPN (1, 5, 10km) dans le réferentiel géographique. Si vous ne souhaitez pas les installer, lancer le script ci dessous en passant le paramètre ``no-grid``
 
-* Installer le module VALIDATION si vous le souhaitez:
-    Se placer dans le virtualenv GeoNature
-    ::
+  ::
 
-        cd /home/`whoami`/geonature/backend
-        source venv/bin/activate
+    cd /home/`whoami`/geonature/data/migrations
+    # avec les mailles
+    ./2.0.1to2.1.1.sh 
+    # sans les mailles:
+    # ./2.0.1to2.1.1.sh no-grid
 
-    Lancer la commande d'installation du module
-    ::
+* Installer le module VALIDATION si vous le souhaitez :
 
-        geonature install_gn_module /home/`whoami`/geonature/contrib/gn_module_validation/ /validation
+  Se placer dans le virtualenv GeoNature
+
+  ::
+
+    cd /home/`whoami`/geonature/backend
+    source venv/bin/activate
+
+  Lancer la commande d'installation du module
+
+  ::
+
+    geonature install_gn_module /home/`whoami`/geonature/contrib/gn_module_validation/ /validation
+    deactivate
     
-
-    ::
-
-
-* Scripts de migration liés à la sensibilité (#284) + expliquer le fonctionnement plus précis dans le ticket
-
-
 2.0.1 (2019-03-18)
 ------------------
 
