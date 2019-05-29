@@ -57,6 +57,11 @@ vectorise_dem=false
 # Insert sample data (available only in Mainland France with srid_local=2154 ; false otherwise)
 add_sample_data=true
 
+#### Modules GeoNature ####
+
+# Installer le module validation
+install_module_validation=true
+
 
 # Taxonomy, Users and Nomenclatures configuration
 #################################################
