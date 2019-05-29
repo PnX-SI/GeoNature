@@ -8,16 +8,16 @@ CHANGELOG
 **🚀 Nouveautés**
 
 * Intégration du module Validation dans GeoNature (développé par @JulienCorny, financé par @sig-pnrnm)
-* Calcul automatique de la sensibilité des occurrences de taxon (#284)
+* Ajout de tables, règles et fonctions permettant de calculer la sensibilité des occurrences de taxon de la synthèse (#284)
 * Occtax - Possibilité d'enchainer les saisies de relevés et de garder les informations du relevé (#633)
 * Occtax - Amélioration de l'ergonomie de l'interface MapList pour clarifier la recherche et l'ajout d'un relevé + ajout compteur (#467)
 * Révision de l'interface du module Métadonnées, listant les cadres d'acquisition et leurs jeux de données (par @jbrieuclp)
 * Ajout d'un mécanimse du calcul des taxons observés par zonage géographique (#617)
-* Les mailles INPN (1, 5, 10km) sont intégrées à l'installation (paramètre)
-* Statistiques de l'accueil - Paramètre permettant de les désactiver (#599)
+* Les mailles INPN (1, 5, 10km) sont intégrées à l'installation (avec un paramètre)
+* Statistiques de la page d'accueil - Ajout d'un paramètre permettant de les désactiver (#599)
 * Occtax - Date par défaut paramétrable (#351)
-* Support des géometries multi (MultiPoint, MultiPolygon, MultiLine) dans la synthèse et Occtax (#609)
-* Nouveau design du module de gestion des metadonnées (PR de @jbrieuclp)
+* Support des géometries multiples (MultiPoint, MultiPolygone, MultiLigne) dans la synthèse et Occtax (#609)
+* Synthese - Affichage des zonages intersectés dans un onglet séparé (#579)
 
 **🐛 Corrections**
 
@@ -31,11 +31,6 @@ CHANGELOG
 * Occtax - Correction du filtre Observateur texte libre (#598)
 * Métadonnées - Inversion des domaines terrestre/marin (par @xavyeah39)
 * Mise à jour de sécurité de Jinja2 et SQLAlchemy
-* Synthese: affichages des zonages intersectés dans un onglet séparé (#579)
-
-**⭐️ Autres**
-
-* Evolution de l'API de GeoNature-mobile pour la rendre compatible avec le module Occtax de GeoNature v2 (https://github.com/PnEcrins/GeoNature-mobile-webapi/tree/compat_gn2)
 
 **⚠️ Notes de version**
 
