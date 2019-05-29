@@ -20,7 +20,7 @@ fi
 mkdir -p /tmp/geonature
 
 echo "Upgrade database schema"
-export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/migration/2.0.1to2.1.0.sql &> var/log/migration_2.0.1_to_2.1.0.log
+export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/migrations/2.0.1to2.1.0.sql &> var/log/migration_2.0.1_to_2.1.0.log
 
 echo "Creating 'gn_sensitivity' schema"
 export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/sensitivity.sql &>> var/log/migration_2.0.1_to_2.1.0.log
