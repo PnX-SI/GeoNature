@@ -284,3 +284,9 @@ JOIN
 	FROM gn_commons.v_validations_for_web_app
 	GROUP BY id_synthese
 ) v2 on v1.validation_date = v2.max AND v1.id_synthese = v2.id_synthese;
+
+
+-- mailles 5*5 et non 5*10
+
+UPDATE ref_geo.bib_areas_types
+SET type_name = 'Mailles5*5' WHERE type_code = ref_geo.get_id_area_type('M5')
