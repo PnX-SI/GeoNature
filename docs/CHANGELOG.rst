@@ -35,10 +35,33 @@ CHANGELOG
 **⚠️ Notes de version**
 
 * Vous pouvez passer directement à cette version, mais en suivant les notes des versions intermédiaires
-* Exécuter le script de migration SQL de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.0.1to2.1.0.sql)
 * Suivez ensuite la procédure classique de mise à jour de GeoNature (https://geonature.readthedocs.io/fr/latest/installation-standalone.html#mise-a-jour-de-l-application)
-* Installer le module VALIDATION
-* Comment intégrer les mailles si on fait une MAJ ?
+* Lancer le script de migration SQL:
+La nouvelle version de GeoNature intègre les mailles INPN (1, 5, 10km) dans le réferentiel géographique. Si vous ne souhaitez pas les installer, lancer le script ci dessous en passant le paramètre "no-grid"
+
+    ::
+        cd /home/`whoami`/geonature/data/migration
+        # avec les mailles
+        ./2.0.1to2.1.1.sh 
+        # sans les mailles:
+        # ./2.0.1to2.1.1.sh no-grid
+
+* Installer le module VALIDATION si vous le souhaitez:
+    Se placer dans le virtualenv GeoNature
+    ::
+
+        cd /home/`whoami`/geonature/backend
+        source venv/bin/activate
+
+    Lancer la commande d'installationdu module
+    ::
+
+        geonature install_gn_module /home/`whoami`/geonature/contrib/gn_module_validation/ /validation
+    
+
+    ::
+
+
 * Scripts de migration liés à la sensibilité (#284) + expliquer le fonctionnement plus précis dans le ticket
 
 
