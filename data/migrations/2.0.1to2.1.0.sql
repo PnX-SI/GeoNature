@@ -1,5 +1,6 @@
 DROP VIEW IF EXISTS pr_occtax.v_releve_list;
 
+-- ajout du count obs et taxon pour chaque relevé
 CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS 
  SELECT rel.id_releve_occtax,
     rel.id_dataset,
@@ -54,7 +55,7 @@ INSERT INTO gn_synthese.cor_area_taxon (cd_nom, id_area, nb_obs, last_date)
    DISTINCT(s.cd_nom) AS cd_nom,
    cor.id_area AS id_area, 
    count(s.id_synthese) AS nb_obs, 
-   max(s.date_min) AS last_date, 
+   max(s.date_min) AS last_date
    FROM gn_synthese.cor_area_synthese cor
    JOIN gn_synthese.synthese s ON s.id_synthese = cor.id_synthese
    GROUP BY s.cd_nom, cor.id_area;
@@ -82,7 +83,7 @@ DECLARE the_cd_nom integer;
 BEGIN
     SELECT cd_nom INTO the_cd_nom FROM gn_synthese.synthese WHERE id_synthese = NEW.id_synthese;
   -- on supprime cor_area_taxon et recree à chaque fois
-    -- cela evite de regarder dans cor_area_taxon s'il y a deja une ligne, de faire un + 1  ou -1 sur nb_obs etc...
+  -- cela evite de regarder dans cor_area_taxon s'il y a deja une ligne, de faire un + 1  ou -1 sur nb_obs etc...
     IF (TG_OP = 'INSERT') THEN
       DELETE FROM gn_synthese.cor_area_taxon WHERE cd_nom = the_cd_nom AND id_area IN (NEW.id_area);
     ELSE
@@ -284,9 +285,3 @@ JOIN
 	FROM gn_commons.v_validations_for_web_app
 	GROUP BY id_synthese
 ) v2 on v1.validation_date = v2.max AND v1.id_synthese = v2.id_synthese;
-
-
--- mailles 5*5 et non 5*10
-
-UPDATE ref_geo.bib_areas_types
-SET type_name = 'Mailles5*5' WHERE type_code = ref_geo.get_id_area_type('M5')
