@@ -1,0 +1,32 @@
+*~
+__pycache__
+*.py[cod]
+instance/
+.webassets-cache
+node_modules
+*.swp
+.tags*
+venv*
+tmp_*
+*.sublime-project
+*.sublime-workspace
+.idea
+.vscode*
+.ropeproject
+.spyderproject
+.spyproject
+.ipynb_checkpoints
+.flake8
+.pylintrc
+
+# instance tunable
+config/settings.ini
+
+# generated/updated with geonature commands
+config/conf_gn_module.toml
+frontend/app/module.config.ts
+conf_gn_module.toml
+module.config.ts
+
+# logs
+var/

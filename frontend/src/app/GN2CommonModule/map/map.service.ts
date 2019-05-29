@@ -26,10 +26,20 @@ export class MapService {
   private _isEditingMarker = new Subject<boolean>();
   public isMarkerEditing$: Observable<any> = this._isEditingMarker.asObservable();
   public layerGroup: any;
-  public justLoaded = true;
+  // boolean to control if gettingGeojsonCoord$ observable is fire
+  // this observable must be fired only after a map event
+  // not from data sended by API (to avoid recalculate altitude for exemple)
+  public firstLayerFromMap = true;
 
   selectedStyle = {
     color: '#ff0000',
+    weight: 3
+  };
+
+  originStyle = {
+    color: '#3388ff',
+    fill: false,
+    fillOpacity: 0.2,
     weight: 3
   };
 
@@ -58,7 +68,7 @@ export class MapService {
   }
 
   setGeojsonCoord(geojsonCoord) {
-    if (!this.justLoaded) {
+    if (!this.firstLayerFromMap) {
       this._geojsonCoord.next(geojsonCoord);
     }
   }
@@ -166,8 +176,19 @@ export class MapService {
   }
 
   removeAllLayers(map, featureGroup) {
-    featureGroup.eachLayer(layer => {
-      featureGroup.removeLayer(layer);
+    if (featureGroup) {
+      featureGroup.eachLayer(layer => {
+        featureGroup.removeLayer(layer);
+      });
+    }
+  }
+  removeLayerFeatureGroups(featureGroups: Array<any>) {
+    featureGroups.forEach(featureGroup => {
+      if (featureGroup) {
+        featureGroup.eachLayer(layer => {
+          featureGroup.removeLayer(layer);
+        });
+      }
     });
   }
 

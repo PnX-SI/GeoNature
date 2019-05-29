@@ -15,7 +15,6 @@
 
         </div>
         <button (click)="openModal($event, advancedTaxon)" class="btn btn-xs btn-outline-secondary advanced"> Avancé
-          (Taxonomie)
         </button>
 
         <br>
@@ -107,15 +106,11 @@
       </fieldset>
 
       <fieldset>
-          <legend> Filtres avancés </legend>
-              <small> Ajouter un filtre </small>
-              <pnx-dynamic-form-generator [formGroup]="formService.searchForm" [formsDefinition]="formService.dynamycFormDef">
-              </pnx-dynamic-form-generator>  
-        </fieldset>
-
-
-      <!-- <pre>form value: <br>{{formService.searchForm.value | json}}</pre> -->
-
+        <legend> Filtres avancés </legend>
+            <small> Ajouter un filtre </small>
+            <pnx-dynamic-form-generator [myFormGroup]="formService.searchForm" [formsDefinition]="formService.dynamycFormDef">
+            </pnx-dynamic-form-generator>  
+      </fieldset>
   </div>
 
   <div class="search-btn">
@@ -124,3 +119,6 @@
       </button>
       <button class="btn btn-sm btn-success box-shadow" (click)="onSubmitForm()">Rechercher</button>
     </div>
+
+
+    <!-- <pre>form value: <br>{{formService.searchForm.value | json}}</pre> -->

@@ -12,6 +12,7 @@ from geojson import Feature
 from werkzeug.exceptions import NotFound
 
 from pypnnomenclature.models import TNomenclatures
+from pypnusershub.db.models import User
 
 from geonature.utils.utilssqlalchemy import serializable, geoserializable, SERIALIZERS
 from geonature.utils.utilsgeometry import shapeserializable
@@ -212,7 +213,7 @@ class Synthese(DB.Model):
     altitude_max = DB.Column(DB.Unicode)
     the_geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
     the_geom_point = DB.Column(Geometry("GEOMETRY", 4326))
-    the_geom_local = DB.Column(Geometry("GEOMETRY", 2154))
+    the_geom_local = DB.Column(Geometry("GEOMETRY", current_app.config["LOCAL_SRID"]))
     date_min = DB.Column(DB.DateTime)
     date_max = DB.Column(DB.DateTime)
     validator = DB.Column(DB.Unicode)
@@ -454,6 +455,14 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
             == TAcquisitionFramework.id_acquisition_framework
         ),
     )
+
+    cor_observers = DB.relationship(
+        "User",
+        uselist=True,
+        secondary=CorObserverSynthese.__table__,
+        primaryjoin=(CorObserverSynthese.id_synthese == id_synthese),
+        secondaryjoin=(User.id_role == CorObserverSynthese.id_role),
+    )
     validations = DB.relationship(
         "TValidations",
         primaryjoin=(TValidations.uuid_attached_row == unique_id_sinp),
@@ -461,3 +470,17 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
         uselist=True,
     )
 
+
+@serializable
+class VColorAreaTaxon(DB.Model):
+    __tablename__ = "v_color_taxon_area"
+    __table_args__ = {"schema": "gn_synthese"}
+    cd_nom = DB.Column(
+        DB.Integer(), ForeignKey("taxonomie.taxref.cd_nom"), primary_key=True
+    )
+    id_area = DB.Column(
+        DB.Integer(), ForeignKey("ref_geo.l_area.id_area"), primary_key=True
+    )
+    nb_obs = DB.Column(DB.Integer())
+    last_date = DB.Column(DB.DateTime())
+    color = DB.Column(DB.Unicode())

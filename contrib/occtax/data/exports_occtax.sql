@@ -7,7 +7,6 @@ SET client_min_messages = warning;
 
 SET search_path = public;
 
-DROP VIEW pr_occtax.export_occtax_sinp;
 CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS 
  SELECT ccc.unique_id_sinp_occtax AS "permId",
     ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_observation_status) AS "statObs",

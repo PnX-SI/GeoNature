@@ -2,15 +2,77 @@
 CHANGELOG
 =========
 
+2.1.0 (unreleased)
+------------------
+
+**🚀 Nouveautés**
+
+* Intégration du module Validation dans GeoNature (développé par @JulienCorny, financé par @sig-pnrnm)
+* Ajout de tables, règles et fonctions permettant de calculer la sensibilité des occurrences de taxon de la synthèse (#284)
+* Occtax - Possibilité d'enchainer les saisies de relevés et de garder les informations du relevé (#633)
+* Occtax - Amélioration de l'ergonomie de l'interface MapList pour clarifier la recherche et l'ajout d'un relevé + ajout compteur (#467)
+* Révision de l'interface du module Métadonnées, listant les cadres d'acquisition et leurs jeux de données (par @jbrieuclp)
+* Ajout d'un mécanisme du calcul des taxons observés par zonage géographique (#617)
+* Les mailles INPN (1, 5, 10km) sont intégrées à l'installation (avec un paramètre)
+* Statistiques de la page d'accueil - Ajout d'un paramètre permettant de les désactiver (#599)
+* Occtax - Date par défaut paramétrable (#351)
+* Support des géometries multiples (MultiPoint, MultiPolygone, MultiLigne) dans la synthèse et Occtax (#609)
+* Synthese - Affichage des zonages intersectés dans un onglet séparé (#579)
+
+**🐛 Corrections**
+
+* Révision complète des scripts de migration de GeoNature v1 à v2 (``data/migrations/v1tov2``)
+* Masquer l'export du module Synthèse si son CRUVED est défini à 0 (#608)
+* Correction de la vérification du CRUVED du module METADONNEES (#601)
+* Correction de la vérification du CRUVED lorsque get_role = False
+* Correction de la traduction sur la page de connexion (par @jbrieuclp)
+* Occtax - Retour du composant GPS permettant de charger un marker à partir de coordonnées X et Y (#624)
+* Correction lors d'import de fichier GPX ayant une altitude (#631)
+* Occtax - Correction du filtre Observateur texte libre (#598)
+* Métadonnées - Inversion des domaines terrestre/marin (par @xavyeah39)
+* Mise à jour de sécurité de Jinja2 et SQLAlchemy
+
+**⚠️ Notes de version**
+
+* Vous pouvez passer directement à cette version, mais en suivant les notes des versions intermédiaires
+* Suivez ensuite la procédure classique de mise à jour de GeoNature (https://geonature.readthedocs.io/fr/latest/installation-standalone.html#mise-a-jour-de-l-application)
+* Lancer le script de migration SQL :
+
+  Cette nouvelle version de GeoNature intègre les mailles INPN (1, 5, 10km) dans le réferentiel géographique. Si vous ne souhaitez pas les installer, lancer le script ci dessous en passant le paramètre ``no-grid``
+
+  ::
+
+    cd /home/`whoami`/geonature/data/migrations
+    # avec les mailles
+    ./2.0.1to2.1.1.sh 
+    # sans les mailles:
+    # ./2.0.1to2.1.1.sh no-grid
+
+* Installer le module VALIDATION si vous le souhaitez :
+
+  Se placer dans le virtualenv de GeoNature
+
+  ::
+
+    cd /home/`whoami`/geonature/backend
+    source venv/bin/activate
+
+  Lancer la commande d'installation du module puis sortir du virtualenv
+
+  ::
+
+    geonature install_gn_module /home/`whoami`/geonature/contrib/gn_module_validation/ /validation
+    deactivate
+    
 2.0.1 (2019-03-18)
 ------------------
 
-**Nouveautés**
+**🚀 Nouveautés**
 
 * Développement : ajout d'une fonction de génération dynamique de requête SQL (avec vérification et cast des types)
 * Synthese : Ajout d'un message indiquant que le module affiche les dernières observations par défaut
 
-**Corrections**
+**🐛 Corrections**
 
 * Synthese : correction du filtre CRUVED pour les portées 1 et 2 sur la route ``synthese/for_web`` (#584)
 * Synthese : correction du bug lorsque la géométrie est null (#580)
@@ -23,12 +85,12 @@ CHANGELOG
 * Correction ajout rang et cd_nom sur l'autocomplete de la synthese, absent dans le script de migration
 * DEPOBIO : Correction de la déconnexion au CAS INPN
 * Occtax et Metadata: correction lors de la mise à jour d'un élement (Merge mal géré par SQLAlchemy lorsqu'on n'a pas une valeur NULL) (#588)
-* Composant "jeu de données" : retour à l'affichage du nom long (#588)
+* Composant "jeu de données" : retour à l'affichage du nom long (#583)
 * Amélioration du style du composant multiselect
 * Metadata : formulaire cadre d'acquisition - listage uniquement des cadres d'acquisition parent pour ne pas avoir de cadres d'acquisition imbriqués
 * Ajouts de tests automatisés complémentaires
 
-**Notes de version**
+**⚠️ Notes de version**
 
 * Vous pouvez passer directement à cette version, mais en suivant les notes des versions intermédiaires
 * Exécuter le script de migration SQL du sous-module Nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module/blob/1.2.4/data/update1.2.3to1.2.4.sql)

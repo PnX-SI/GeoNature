@@ -1,0 +1,92 @@
+#validatorButton {
+  float:right;
+  //background-color: #1976D2;
+  border: none;
+
+}
+
+#attention {
+  color: red;
+  padding-left: 20px;
+  padding-right: 10px;
+}
+
+label {
+  text-align:left;
+  color:#607D8B;
+}
+
+.btn {
+  border-color: #607D8B;
+}
+
+label:hover {
+  text-align:left;
+  color:#607D8B;
+}
+
+#nbObs {
+  font-size: 25px;
+}
+
+.modal-header {
+  color:white;
+  background-color:#8EAFD1;
+  border-color:#0E4175;
+  border-bottom-width: 1px;
+}
+
+.modal-content {
+  background-color: #EAEAEA;
+  border:none;
+  &.ng-invalid{
+    border-left: none !important;
+  }
+}
+
+.modal-body{
+  #validButtons:not(:last-child) label {
+    color : #fff;
+  }
+}
+
+.modal-footer {
+  //border-color:#0E4175;
+  //border-top-width: 1px;
+  color:white;
+  //background-color:#8EAFD1;
+}
+
+fieldset {
+  padding: 0.35em 0.625em 0.75em !important;
+  border: 1px solid silver !important;
+  margin: 0 2px !important;
+  border-radius: 3px;
+  border-color: rgb(85, 82, 82) !important;
+}
+
+legend {
+  width: auto;
+  font-size: inherit;
+}
+
+#def {
+  float: left;
+  width: 100%;
+}
+
+#hideDef{
+  width: 100%;
+}
+
+/* pnx-validation-popup{
+  position: absolute;
+    bottom: -28px;
+    right: 5px;
+}
+
+@media screen and (min-width: 1340px) {
+  pnx-validation-popup{
+    bottom: -8px;
+  }
+} */

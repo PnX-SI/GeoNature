@@ -17,11 +17,31 @@ class TestApiModulePrOcctax:
     headers = {"Content-Type": mimetype, "Accept": mimetype}
 
     def test_get_releves(self):
+        """
+        test get vreleve avec les filtres principaux
+        Route utilisé sur l'interface carte/list Occtax
+        
+        """
         token = get_token(self.client)
         self.client.set_cookie("/", "token", token)
-        response = self.client.get(url_for("pr_occtax.getReleves"))
+
+        response = self.client.get(
+            url_for("pr_occtax.getViewReleveList"),
+            query_string={
+                "observers_txt": "test",
+                "id_dataset": 1,
+                "date_low": "2016-02-01",
+                "cd_nom": 60612,
+                "observers": [1],
+            },
+        )
 
         assert response.status_code == 200
+        json_data = json_of_response(response)
+        assert len(json_data["items"]["features"]) == 1
+        assert (
+            json_data["items"]["features"][0]["properties"]["observers_txt"] == "test"
+        )
 
     def test_insert_update_delete_releves(self, releve_data):
         token = get_token(self.client)

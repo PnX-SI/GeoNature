@@ -32,19 +32,11 @@ log = logging.getLogger()
 gunicorn_error_logger = logging.getLogger("gunicorn.error")
 
 
-ID_MODULE = (
-    DB.session.query(TModules.id_module)
-    .filter(TModules.module_code == "ADMIN")
-    .one()[0]
-)
-
-
 @routes.route("/list/datasets", methods=["GET"])
 @json_resp
 def get_datasets_list():
     q = DB.session.query(TDatasets)
     data = q.all()
-
     return [d.as_dict(columns=("id_dataset", "dataset_name")) for d in data]
 
 
@@ -106,12 +98,12 @@ def get_dataset(id_dataset):
 
 
 @routes.route("/dataset", methods=["POST"])
-@permissions.check_cruved_scope("C", True, module_code="ADMIN")
+@permissions.check_cruved_scope("C", True, module_code="METADATA")
 @json_resp
 def post_dataset(info_role):
     if info_role.value_filter == "0":
         raise InsufficientRightsError(
-            ('User "{}" cannot "{}" a dataser').format(
+            ('User "{}" cannot "{}" a dataset').format(
                 info_role.id_role, info_role.code_action
             ),
             403,
@@ -160,12 +152,12 @@ def get_acquisition_framework(id_acquisition_framework):
 
 
 @routes.route("/acquisition_framework", methods=["POST"])
-@permissions.check_cruved_scope("C", True, module_code="ADMIN")
+@permissions.check_cruved_scope("C", True, module_code="METADATA")
 @json_resp
 def post_acquisition_framework(info_role):
     if info_role.value_filter == "0":
         raise InsufficientRightsError(
-            ('User "{}" cannot "{}" a dataser').format(
+            ('User "{}" cannot "{}" a dataset').format(
                 info_role.id_role, info_role.code_action
             ),
             403,

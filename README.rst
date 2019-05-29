@@ -35,7 +35,7 @@ Présentation de GeoNature sur http://geonature.fr et dans http://geonature.fr/d
 Modules et projets liés
 =======================
 
-* UsersHub (gestion des utilisateurs et de leurs droits) : https://github.com/PnEcrins/UsersHub
+* UsersHub (gestion des utilisateurs et de leurs droits) : https://github.com/PnX-SI/UsersHub
 * Sous-module d'authentification UsersHub : https://github.com/PnX-SI/UsersHub-authentification-module
 * TaxHub (gestion des taxons) : https://github.com/PnX-SI/TaxHub
 * Nomenclature API (gestion des nomenclatures) : https://github.com/PnX-SI/Nomenclature-api-module
@@ -53,7 +53,7 @@ Modules et projets liés
 Gestion des utilisateurs
 ========================
 
-La gestion des utilisateurs est déportée dans l'application UsersHub (https://github.com/PnEcrins/UsersHub).
+La gestion des utilisateurs est déportée dans l'application UsersHub (https://github.com/PnX-SI/UsersHub).
 Celle-ci permet de centraliser les utilisateurs et observateurs, de les ajouter dans un groupe et d'hériter directement de droits dans l'ensemble des applications (GeoNature, Faune, Flore, Geotrek, Police...).
 
 A chaque ajout ou modification dans l'application UsersHub sa base de données est mise à jour ainsi que tous les schémas ``utilisateurs`` des applications qui sont connectées à UsersHub. 

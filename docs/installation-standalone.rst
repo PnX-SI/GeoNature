@@ -33,24 +33,18 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
     apt-get update
     apt-get upgrade
 
-* Installer sudo :
+* Créer un utilisateur linux (nommé ``geonatureadmin`` dans notre cas) pour ne pas travailler en ``root`` :
 
-  ::
+::
 
-    apt-get install -y sudo ca-certificates
+    adduser geonatureadmin
 
-* Créer un utilisateur linux (nommé ``geonatureadmin`` dans notre cas) pour ne pas travailler en ``root`` (en lui donnant les droits sudo) :
+* Lui donner ensuite des droits ``sudo`` :
 
-  ::
+::
 
     adduser geonatureadmin sudo
 
-* L'ajouter aussi aux groupes ``www-data`` et ``root`` :
-
-  ::
-
-    usermod -g www-data geonatureadmin
-    usermod -a -G root geonatureadmin
 
 * Se reconnecter en SSH au serveur avec le nouvel utilisateur pour ne pas faire l'installation en ``root``. On ne se connectera plus en ``root``. Si besoin d'éxecuter des commandes avec des droits d'administrateur, on les précède de ``sudo``. Il est d'ailleurs possible renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec root. Voir https://docs.ovh.com/fr/vps/conseils-securisation-vps/ pour plus d'informations sur le sécurisation du serveur.
 
@@ -129,7 +123,8 @@ La commande ``install_app.sh`` comporte deux paramètres optionnels qui doivent 
 
 ::
 
-    ./install_app.sh
+    touch var/log/install_app.log
+    ./install_app.sh 2>&1 | tee install_all.log
 
 Pendant l'installation, vous serez invité à fournir le mot de passe ``sudo`` de votre utilisateur linux.
 
@@ -180,8 +175,8 @@ Rendez vous dans le répertoire téléchargé et dézippé, puis "désamplez" le
 
 Lancer le script d'installation de l'application:
 ::
-
-    ./install_app.sh
+    touch var/log/install_app.log
+    ./install_app.sh 2>&1 | tee install_all.log
 
 Suite à l'execution de ce script, l'application Taxhub a été lancé automatiquement par le superviseur et est disponible à l'adresse ``127.0.0.1:5000`` (et l'API, à ``127.0.0.1:5000//api``)
 

@@ -15,7 +15,7 @@ export class MarkerComponent implements OnInit, OnChanges {
   @Input() coordinates: Array<any>;
   @Input() zoomLevel: number;
   @Output() markerChanged = new EventEmitter<any>();
-  constructor(public mapservice: MapService, private _commonService: CommonService) {}
+  constructor(public mapservice: MapService, private _commonService: CommonService) { }
 
   ngOnInit() {
     this.map = this.mapservice.map;
@@ -24,7 +24,7 @@ export class MarkerComponent implements OnInit, OnChanges {
     this.enableMarkerOnClick();
 
     this.mapservice.isMarkerEditing$.subscribe(isEditing => {
-      this.toggleEditing();
+      this.toggleEditing(isEditing);
     });
   }
 
@@ -40,13 +40,14 @@ export class MarkerComponent implements OnInit, OnChanges {
     document.getElementById('markerLegend').style.backgroundColor = '#c8c8cc';
     L.DomEvent.disableClickPropagation(document.getElementById('markerLegend'));
     document.getElementById('markerLegend').onclick = () => {
-      this.toggleEditing();
+      this.toggleEditing(true);
     };
   }
 
   enableMarkerOnClick() {
     this.map.on('click', (e: any) => {
-      this.mapservice.justLoaded = false;
+      // the boolean change MUST be before the output fire (emit)
+      this.mapservice.firstLayerFromMap = false;
       // check zoom level
       if (this.map.getZoom() < this.zoomLevel) {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
@@ -65,9 +66,10 @@ export class MarkerComponent implements OnInit, OnChanges {
       this.mapservice.marker = this.mapservice.createMarker(x, y, true).addTo(this.map);
       this.markerMoveEvent(this.mapservice.marker);
     }
-    // observable if map click
+    // observable to send geojson
+    this.mapservice.firstLayerFromMap = false;
+
     this.markerChanged.emit(this.markerToGeojson(this.mapservice.marker.getLatLng()));
-    this.mapservice.justLoaded = false;
   }
 
   markerMoveEvent(marker: Marker) {
@@ -88,8 +90,9 @@ export class MarkerComponent implements OnInit, OnChanges {
     });
   }
 
-  toggleEditing() {
-    this.mapservice.editingMarker = !this.mapservice.editingMarker;
+  toggleEditing(enable: boolean) {
+    this.mapservice.editingMarker = enable;
+
     document.getElementById('markerLegend').style.backgroundColor = this.mapservice.editingMarker
       ? '#c8c8cc'
       : 'white';

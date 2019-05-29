@@ -1,7 +1,6 @@
 #!/bin/bash
 currentdir=${PWD##*/}
 parentdir="$(dirname "$(pwd)")"
-
 if [ $currentdir != 'install' ]
 then
     echo 'Please run the script from the install directory'
@@ -86,7 +85,7 @@ then
     echo "Creating GeoNature database" &>> var/log/install_db.log
     echo "--------------------" &>> var/log/install_db.log
     echo "" &>> var/log/install_db.log
-    sudo -n -u postgres -s createdb -O $user_pg $db_name
+    sudo -n -u postgres -s createdb -O $user_pg $db_name -T template0 -E UTF-8 -l $my_local
     echo "Adding PostGIS and PLPGSQL extensions..."
     echo "" &>> var/log/install_db.log
     echo "" &>> var/log/install_db.log
@@ -122,7 +121,7 @@ then
     echo "" &>> var/log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/public.sql  &>> var/log/install_db.log
 
-    if $install_usershub_schema
+    if [ "$install_usershub_schema" = true ];
      then
         echo "Getting and creating USERS schema (utilisateurs)..."
         echo "" &>> var/log/install_db.log
@@ -283,7 +282,7 @@ then
     sudo sed -i "s/MYLOCALSRID/$srid_local/g" tmp/geonature/ref_geo.sql
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/geonature/ref_geo.sql  &>> var/log/install_db.log
 
-    if $install_sig_layers
+    if [ "$install_sig_layers" = true ];
     then
         echo "Insert default French municipalities (IGN admin-express)"
         echo "" &>> var/log/install_db.log
@@ -307,14 +306,44 @@ then
         echo "" &>> var/log/install_db.log
         echo "Insert data in l_areas and li_municipalities tables" &>> var/log/install_db.log
         echo "--------------------" &>> var/log/install_db.log
-        export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/ref_geo_data.sql  &>> var/log/install_db.log
+        export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/ref_geo_municipalities.sql  &>> var/log/install_db.log
         echo "" &>> var/log/install_db.log
         echo "Drop french municipalities temp table" &>> var/log/install_db.log
         echo "--------------------" &>> var/log/install_db.log
         sudo -n -u postgres -s psql -d $db_name -c "DROP TABLE ref_geo.temp_fr_municipalities;" &>> var/log/install_db.log
     fi
 
-    if $install_default_dem
+    if [ "$install_grid_layer" = true ];
+    then
+        echo "Insert INPN grids"
+        echo "" &>> var/log/install_db.log
+        echo "" &>> var/log/install_db.log
+        echo "--------------------" &>> var/log/install_db.log
+        echo "Insert INPN grids" &>> var/log/install_db.log
+        echo "--------------------" &>> var/log/install_db.log
+        echo "" &>> var/log/install_db.log
+        if [ ! -f 'tmp/geonature/inpn_grids.zip' ]
+        then
+            wget  --cache=off https://geonature.fr/data/inpn/layers/2019/inpn_grids.zip -P tmp/geonature
+        else
+            echo "tmp/geonature/inpn_grids.zip already exist"
+        fi
+        unzip tmp/geonature/inpn_grids.zip -d tmp/geonature
+        echo "Insert grid layers... (This may take a few minutes)"
+        sudo -n -u postgres -s psql -d $db_name -f tmp/geonature/inpn_grids.sql &>> var/log/install_db.log
+        echo "" &>> var/log/install_db.log
+        echo "Restore $user_pg owner" &>> var/log/install_db.log
+        echo "--------------------" &>> var/log/install_db.log
+        sudo -n -u postgres -s psql -d $db_name -c "ALTER TABLE ref_geo.temp_grids_1 OWNER TO $user_pg;" &>> var/log/install_db.log
+        sudo -n -u postgres -s psql -d $db_name -c "ALTER TABLE ref_geo.temp_grids_5 OWNER TO $user_pg;" &>> var/log/install_db.log
+        sudo -n -u postgres -s psql -d $db_name -c "ALTER TABLE ref_geo.temp_grids_10 OWNER TO $user_pg;" &>> var/log/install_db.log
+        echo "" &>> var/log/install_db.log
+        echo "Insert data in l_areas and li_grids tables" &>> var/log/install_db.log
+        echo "--------------------" &>> var/log/install_db.log
+        export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/ref_geo_grids.sql  &>> var/log/install_db.log
+    fi
+
+    if  [ "$install_default_dem" = true ];
     then
         echo "Insert default French DEM (IGN 250m BD alti)"
         echo "" &>> var/log/install_db.log
@@ -334,7 +363,7 @@ then
         export PGPASSWORD=$user_pg_pass;raster2pgsql -s $srid_local -c -C -I -M -d -t 5x5 tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc ref_geo.dem|psql -h $db_host -U $user_pg -d $db_name  &>> var/log/install_db.log
     	#echo "Refresh DEM spatial index. This may take a few minutes..."
         sudo -n -u postgres -s psql -d $db_name -c "REINDEX INDEX ref_geo.dem_st_convexhull_idx;" &>> var/log/install_db.log
-        if $vectorise_dem 
+        if [ "$vectorise_dem" = true ];
         then
             echo "Vectorisation of DEM raster. This may take a few minutes..."
             echo "" &>> var/log/install_db.log
@@ -378,6 +407,11 @@ then
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/geonature/synthese.sql  &>> var/log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/synthese_default_values.sql  &>> var/log/install_db.log
 
+    echo "--------------------" &>> var/log/install_db.log
+    echo "Creating commons view depending of synthese" &>> var/log/install_db.log
+    echo "--------------------" &>> var/log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/commons_synthese.sql  &>> var/log/install_db.log
+
     echo "Creating 'exports' schema..."
     echo "" &>> var/log/install_db.log
     echo "" &>> var/log/install_db.log
@@ -412,9 +446,27 @@ then
     echo "--------------------" &>> var/log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/permissions_data.sql  &>> var/log/install_db.log
 
+    echo "Creating 'gn_sensitivity' schema"
+    echo "" &>> var/log/install_db.log
+    echo "" &>> var/log/install_db.log
+    echo "--------------------" &>> var/log/install_db.log
+    echo "Creating 'gn_sensitivity' schema" &>> var/log/install_db.log
+    echo "--------------------" &>> var/log/install_db.log
+    echo "" &>> var/log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/sensitivity.sql  &>> var/log/install_db.log
+    echo "" &>> var/log/install_db.log
+    echo "" &>> var/log/install_db.log
+    echo "--------------------" &>> var/log/install_db.log
+    echo "Insert 'gn_sensitivity' data" &>> var/log/install_db.log
+    echo "--------------------" &>> var/log/install_db.log
+    wget --cache=off https://geonature.fr/data/inpn/sensitivity/181201_referentiel_donnes_sensibles.csv -P tmp/geonature
+    cp data/core/sensitivity_data.sql tmp/geonature/sensitivity_data.sql
+    sed -i 's#'/tmp/geonature'#'$parentdir/tmp/geonature'#g' tmp/geonature/sensitivity_data.sql
+    sudo -n -u postgres -s psql -d $db_name -f tmp/geonature/sensitivity_data.sql &>> var/log/install_db.log
+
 
     #Installation des données exemples
-    if $add_sample_data
+    if [ "$add_sample_data" = true ];
     then
         echo "Inserting sample datasets..."
         echo "" &>> var/log/install_db.log
@@ -443,14 +495,14 @@ then
         wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata_taxons_example.sql -P tmp/taxhub
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/taxhub/taxhubdata_taxons_example.sql  &>> var/log/install_db.log
 
-    
     fi
 
-    if $install_default_dem
+    if [ "$install_default_dem" = true ];
     then
         sudo rm tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc
         sudo rm tmp/geonature/IGNF_BDALTIr_2-0_ASC_250M_LAMB93_IGN69_FRANCE.html
     fi
+
 fi
 
 # Suppression des fichiers : on ne conserve que les fichiers compressés

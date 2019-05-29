@@ -1,5 +1,5 @@
 <div class="container">
-    <button class="btn btn-secondary" routerLink="/metadata/datasets">  <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
+    <button class="btn btn-secondary" routerLink="/metadata">  <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
     </button>
     <div class=" row row-0 ">
         <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 padding-sm">
@@ -51,14 +51,14 @@
       
               <small>Domaine</small>
               <div class="form-check" padding-lg>
-                <input [formControl]="datasetForm.controls.marine_domain" class="" type="checkbox" name="domaine" id="terrestre"
+                <input [formControl]="datasetForm.controls.terrestrial_domain" class="" type="checkbox" name="domaine" id="terrestre"
                   value="true">
                 <small class="" for="terrestre">
                   Domaine terrestre
                 </small>
               </div>
               <div class="form-check">
-                <input [formControl]="datasetForm.controls.terrestrial_domain" type="checkbox" name="domaine" id="marin">
+                <input [formControl]="datasetForm.controls.marine_domain" type="checkbox" name="domaine" id="marin">
                 <small class="" for="marin">
                   Domaine marin
                 </small>

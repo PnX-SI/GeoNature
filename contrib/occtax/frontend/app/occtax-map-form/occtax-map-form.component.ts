@@ -5,8 +5,6 @@ import {
   ViewChild,
   AfterViewInit
 } from "@angular/core";
-import { FormGroup } from "@angular/forms";
-
 import { MapService } from "@geonature_common/map/map.service";
 import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -45,7 +43,7 @@ export class OcctaxMapFormComponent
     private occtaxService: OcctaxDataService,
     private _dfs: DataFormService,
     private _authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit() {
     // overight the leaflet draw object to set options
@@ -178,12 +176,6 @@ export class OcctaxMapFormComponent
           }
         ); // end subscribe
       } else {
-        if (this.fs.previousCenter && this.fs.previousZoomLevel) {
-          this._ms.map.setView(
-            this.fs.previousCenter,
-            this.fs.previousZoomLevel
-          );
-        }
         // set digitiser as default observers only if occtaxconfig set observers_txt parameter to false
         if (!this.occtaxConfig.observers_txt) {
           const currentUser = this._authService.getCurrentUser();

@@ -267,6 +267,9 @@ class VReleveList(ReleveModel):
     leaflet_popup = DB.Column(DB.Unicode)
     observateurs = DB.Column(DB.Unicode)
     dataset_name = DB.Column(DB.Unicode)
+    observers_txt = DB.Column(DB.Unicode)
+    nb_occ = DB.Column(DB.Integer)
+    nb_observer = DB.Column(DB.Integer)
     observers = DB.relationship(
         User,
         secondary=corRoleRelevesOccurrence,

@@ -5,7 +5,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from pypnnomenclature.models import TNomenclatures
 
 from geonature.utils.env import DB
-from geonature.core.gn_commons.models import VLastestValidation
+from geonature.core.gn_commons.models import VLatestValidations
 from geonature.utils.utilssqlalchemy import testDataType
 from geonature.utils.errors import GeonatureApiError
 from .utils import get_nomenclature_filters
@@ -48,17 +48,18 @@ class ReleveRepository:
             for count in occ.get("cor_counting_occtax", []):
                 try:
                     validation_status = (
-                        DB.session.query(VLastestValidation)
+                        DB.session.query(VLatestValidations)
                         .filter(
-                            VLastestValidation.uuid_attached_row
+                            VLatestValidations.uuid_attached_row
                             == count["unique_id_sinp_occtax"]
                         )
                         .one()
                     )
                 except NoResultFound:
                     return releve, rel_as_geojson
-                count["validation_status"] = validation_status.as_dict()
-
+                count["validation_status"] = validation_status.as_dict(
+                    columns=["mnemonique", "validation_date"]
+                )
         return releve, rel_as_geojson
 
     def update(self, releve, info_user, geom):
@@ -215,9 +216,9 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False):
             CorDatasetActor, CorDatasetActor.id_dataset == mappedView.id_dataset
         ).filter(CorDatasetActor.id_actor == int(params.pop("organism")))
 
-    if "observateurs" in params:
-        observers_query = "%{}%".format(params.pop("observateurs"))
-        q = q.filter(mappedView.observateurs.ilike(observers_query))
+    if "observers_txt" in params:
+        observers_query = "%{}%".format(params.pop("observers_txt"))
+        q = q.filter(mappedView.observers_txt.ilike(observers_query))
 
     if from_generic_table:
         table_columns = mappedView
@@ -278,16 +279,9 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False):
     if "orderby" in params:
         if params.get("orderby") in mappedView.__table__.columns:
             orderCol = getattr(mappedView.__table__.columns, params["orderby"])
-        # else:
-        #     orderCol = getattr(
-        #         mappedView.__table__.columns,
-        #         'occ_meta_create_date'
-        #     )
-
         if "order" in params:
             if params["order"] == "desc":
                 orderCol = orderCol.desc()
-
         q = q.order_by(orderCol)
 
     return q

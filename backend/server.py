@@ -10,6 +10,8 @@ from flask_cors import CORS
 
 from geonature.utils.env import DB, list_and_import_gn_modules
 
+from urllib.parse import urlparse, urlencode, ParseResult
+
 
 class ReverseProxied(object):
     def __init__(self, app, script_name=None, scheme=None, server=None):
@@ -40,6 +42,16 @@ def get_app(config, _app=None, with_external_mods=True):
         return _app
 
     app = Flask(__name__)
+    # set default client encoding for SQLAlchemy connection
+    parsed_url = urlparse(config["SQLALCHEMY_DATABASE_URI"])
+    config["SQLALCHEMY_DATABASE_URI"] = ParseResult(
+        parsed_url.scheme,
+        parsed_url.netloc,
+        parsed_url.path,
+        parsed_url.params,
+        urlencode({"client_encoding": "utf-8"}),
+        parsed_url.fragment,
+    ).geturl()
     app.config.update(config)
 
     # Bind app to DB

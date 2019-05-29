@@ -26,16 +26,7 @@
             <b> Date : </b>{{selectedObs?.date_min}}
           </ng-template>
           <br>
-          <b> Commune(s) </b> :
-          <span *ngFor="let mun of selectedObs?.municipalities; let i = index">
-            {{ mun.area_name}} <span *ngIf="i !== selectedObs?.municipalities.length -1"> - </span>
-          </span>
-          <br>
-          <b *ngIf="selectedObs?.other_areas.length > 0 ; let i = index"> Autres espaces concernés par l'observation :
-          </b>
-          <span *ngFor="let area of selectedObs?.other_areas; let i = index">
-            {{ area.area_name}} <span *ngIf="i !== selectedObs?.municipalities.length -1"> - </span>
-          </span>
+
           <b> Altitude</b> : {{selectedObs?.altitude_min}} m - {{selectedObs?.altitude_max}} m
           <br>
           <b> UUID observation : </b> {{selectedObs?.unique_id_sinp}}
@@ -57,6 +48,9 @@
   <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item">
         <a class="nav-link active" id="home-tab" data-toggle="tab" href="#infoObs" role="tab" aria-controls="home" aria-selected="true">Information observation</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#area" role="tab" aria-controls="profile" aria-selected="false">Zonages</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" id="profile-tab" data-toggle="tab" href="#historic" role="tab" aria-controls="profile" aria-selected="false">Historique de validation</a>
@@ -306,6 +300,37 @@
               </tbody>
         </table>
       </div>
+      <div class="tab-pane fade" id="area" role="tabpanel" aria-labelledby="profile-tab">
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                  <th class="table_date"> Type de zonage </th>
+                  <th class="table_comment"> Zones </th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let area_type of formatedAreas">
+                  <td>
+                    {{ area_type.area_type }}
+                  </td>
+                  <td>
+                      <span *ngFor="let area of area_type.areas; let index = index">
+                          {{area.area_name}}<span *ngIf="index < area_type.areas.length -1 ">,</span>
+                      </span>
+
+                  </td>
+                </tr>
+              </tbody>
+        </table>
+      </div>
+      <!-- <b> Commune(s) </b> :
+      <span *ngFor="let mun of selectedObs?.municipalities; let i = index">
+        {{ mun.area_name}} <span *ngIf="i !== selectedObs?.municipalities.length -1"> - </span>
+      </span>
+      <br> -->
+
     </div>
 
 

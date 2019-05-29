@@ -1,0 +1,30 @@
+
+* Unité géo
+    Pour que les id_unité géo correspondent au mbitiles présent sur les mobiles:
+    - ne pas insérer les communes lors de l'installation de la base gn2 add_sample_data = false
+    - intégrer en 1er les unité géo dans l_areas (faire par le script ref_geo.sql de migration)
+
+    Pour une base ou les communes sont déja intégrés:
+
+    -- on dégage la plage d'id utilisé par les unité geo (1-153) occupé par les communes
+    WITH max_id AS(
+    SELECT min(id_area) as max_id
+    FROM ref_geo.l_areas
+    )
+    UPDATE ref_geo.l_areas
+    SET id_area = id_area + max_id.id
+    WHERE id_area <= 153
+    FROM max_id
+
+    -- on réinsert en passant les id_unité
+    INSERT INTO ref_geo.l_areas(
+            id_area, id_type, area_name, area_code, geom, centroid)
+    SELECT 
+    id_unite_geo, (SELECT id_type FROM ref_geo.bib_areas_types WHERE type_code = 'UG') AS id_type, id_unite_geo::text, id_unite_geo, the_geom, ST_Centroid(the_geom)
+    FROM v1_compat.l_unites_geo;
+
+* Flore
+ - Necessite de dupliquer les schéma florepatri et florestation pour le fonctionnement des application mobile flore prioritaire et recherche flore
+ puis de recréer la vue public.v_mobile_recherche dans le schéma synchronomade (à moins qu'elle soit utilisé ailleurs ?)
+ - Réécrire les triggers vers la nouvelle synthese
+ - Vérifier que l'appli mobile arrive bien à écrire dans le nouveau schéma

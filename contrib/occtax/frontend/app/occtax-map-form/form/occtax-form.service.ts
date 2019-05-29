@@ -4,7 +4,8 @@ import {
   FormGroup,
   FormArray,
   Validators,
-  AbstractControl
+  AbstractControl,
+  FormControl
 } from "@angular/forms";
 import { GeoJSON } from "leaflet";
 
@@ -21,8 +22,6 @@ import { CommonService } from "@geonature_common/service/common.service";
 export class OcctaxFormService {
   public markerCoordinates: Array<any>;
   public geojsonCoordinates: GeoJSON;
-  public previousCenter: any;
-  public previousZoomLevel: any;
   public currentTaxon: Taxon;
   public indexCounting: number;
   public nbCounting: Array<string>;
@@ -45,6 +44,7 @@ export class OcctaxFormService {
   public countingForm: FormArray;
   public currentUser: User;
   public disabled = true;
+  public stayOnFormInterface = new FormControl(false);
 
   constructor(
     private _fb: FormBuilder,

@@ -13,12 +13,14 @@
   //padding: 0px;
 }
 
+.action-btn {
+  font-size: 18px;
+}
 #search-btn {
-  position: absolute;
-  right: 1%;
-  top: 25%;
   height: 35px;
   font-size: 15px;
+  margin-top: 20px;
+  margin-left: 3px;
 }
 
 #download-btn {
@@ -26,11 +28,9 @@
   padding: 5px;
 }
 
-#add-btn {
-  float: right;
-  margin-top: 5px;
-  margin-right: 5px;
-  padding: 5px;
+#row-navbar {
+  padding-top: 5px;
+  padding-left: 10px;
 }
 
 #refresh-filter {

@@ -1016,7 +1016,6 @@ CREATE TRIGGER tri_delete_synthese_cor_role_releves_occtax
 ------------
 
 -- Vue représentant l'ensemble des observations du protocole Occtax pour la représentation du module carte liste
-DROP VIEW IF EXISTS v_releve_occtax;
 CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
  SELECT rel.id_releve_occtax,
     rel.id_dataset,
@@ -1046,7 +1045,7 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
 
 
 -- Vue représentant l'ensemble des relevés du protocole occtax pour la représentation du module carte liste
-CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS
+CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS 
  SELECT rel.id_releve_occtax,
     rel.id_dataset,
     rel.id_digitiser,
@@ -1058,10 +1057,13 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS
     rel.comment,
     rel.geom_4326,
     rel."precision",
-   dataset.dataset_name,
+    rel.observers_txt,
+    dataset.dataset_name,
     string_agg(t.nom_valide::text, ','::text) AS taxons,
-    (((string_agg(t.nom_valide::text, ','::text) || '<br/>'::text) || rel.date_min::date) || '<br/>'::text) || COALESCE(string_agg(DISTINCT(obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text), rel.observers_txt::text) AS leaflet_popup,
-    COALESCE(string_agg(DISTINCT(obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text), rel.observers_txt::text) AS observateurs
+    (((string_agg(t.nom_valide::text, ','::text) || '<br/>'::text) || rel.date_min::date) || '<br/>'::text) || COALESCE(string_agg(DISTINCT (obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text), rel.observers_txt::text) AS leaflet_popup,
+    COALESCE(string_agg(DISTINCT (obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text), rel.observers_txt::text) AS observateurs,
+    count(DISTINCT(occ.id_occurrence_occtax)) AS nb_occ,
+    count(DISTINCT(obs.id_role)) as nb_observer
    FROM pr_occtax.t_releves_occtax rel
      LEFT JOIN pr_occtax.t_occurrences_occtax occ ON rel.id_releve_occtax = occ.id_releve_occtax
      LEFT JOIN taxonomie.taxref t ON occ.cd_nom = t.cd_nom

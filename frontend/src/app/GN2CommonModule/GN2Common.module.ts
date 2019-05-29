@@ -7,8 +7,11 @@ import {
   MatTooltipModule,
   MatListModule,
   MatIconModule,
-  MatToolbarModule
+  MatToolbarModule,
+  MatExpansionModule,
+  MatPaginatorModule,
 } from '@angular/material';
+
 
 import { Http } from '@angular/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -78,6 +81,8 @@ export function HttpLoaderFactory(http: Http) {
     MatCardModule,
     MatListModule,
     MatToolbarModule,
+    MatExpansionModule,
+    MatPaginatorModule,
     FormsModule,
     ReactiveFormsModule,
     NgxDatatableModule,
@@ -152,6 +157,8 @@ export function HttpLoaderFactory(http: Http) {
     MatCardModule,
     MatListModule,
     MatToolbarModule,
+    MatExpansionModule,
+    MatPaginatorModule,
     NgxDatatableModule,
     NgbModule,
     TranslateModule,
@@ -164,4 +171,4 @@ export function HttpLoaderFactory(http: Http) {
     PeriodComponent
   ]
 })
-export class GN2CommonModule {}
+export class GN2CommonModule { }
