@@ -50,14 +50,14 @@ CHANGELOG
 
 * Installer le module VALIDATION si vous le souhaitez :
 
-  Se placer dans le virtualenv GeoNature
+  Se placer dans le virtualenv de GeoNature
 
   ::
 
     cd /home/`whoami`/geonature/backend
     source venv/bin/activate
 
-  Lancer la commande d'installation du module
+  Lancer la commande d'installation du module puis sortir du virtualenv
 
   ::
 
