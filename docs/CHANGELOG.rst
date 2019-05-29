@@ -40,7 +40,7 @@ CHANGELOG
 La nouvelle version de GeoNature intègre les mailles INPN (1, 5, 10km) dans le réferentiel géographique. Si vous ne souhaitez pas les installer, lancer le script ci dessous en passant le paramètre "no-grid"
 
     ::
-        cd /home/`whoami`/geonature/data/migration
+        cd /home/`whoami`/geonature/data/migrations
         # avec les mailles
         ./2.0.1to2.1.1.sh 
         # sans les mailles:
@@ -53,7 +53,7 @@ La nouvelle version de GeoNature intègre les mailles INPN (1, 5, 10km) dans le 
         cd /home/`whoami`/geonature/backend
         source venv/bin/activate
 
-    Lancer la commande d'installationdu module
+    Lancer la commande d'installation du module
     ::
 
         geonature install_gn_module /home/`whoami`/geonature/contrib/gn_module_validation/ /validation

@@ -1,6 +1,9 @@
 
 currentdir=${PWD##*/}
 
+# faux sudo car sinon la commande "sudo -n -u" ne le demande pas
+sudo ls
+
 . ../../config/settings.ini
 
 touch ../../var/log/migration_2.0.1_to_2.1.0.log
