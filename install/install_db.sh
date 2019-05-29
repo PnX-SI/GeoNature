@@ -85,7 +85,7 @@ then
     echo "Creating GeoNature database" &>> var/log/install_db.log
     echo "--------------------" &>> var/log/install_db.log
     echo "" &>> var/log/install_db.log
-    sudo -n -u postgres -s createdb -O $user_pg $db_name
+    sudo -n -u postgres -s createdb -O $user_pg $db_name -T template0 -E UTF-8 -l $my_local
     echo "Adding PostGIS and PLPGSQL extensions..."
     echo "" &>> var/log/install_db.log
     echo "" &>> var/log/install_db.log

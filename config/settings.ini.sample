@@ -1,3 +1,8 @@
+# Langue du serveur
+# valeur possible : fr_FR.UTF-8, en_US.utf8 
+# locale -a pour voir la liste des locales disponible
+my_local=fr_FR.UTF-8
+
 # URL Configuration
 ###################
 
