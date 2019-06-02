@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-2.1.0 (2019-05-29)
+2.1.0 (2019-06-01)
 ------------------
 
 **🚀 Nouveautés**
@@ -30,6 +30,7 @@ CHANGELOG
 * Correction lors d'import de fichier GPX ayant une altitude (#631)
 * Occtax - Correction du filtre Observateur texte libre (#598)
 * Métadonnées - Inversion des domaines terrestre/marin (par @xavyeah39)
+* Métadonnées - Correction de l'édition des cadres d'acquisition (#654, par @DonovanMaillard)
 * Mise à jour de sécurité de Jinja2 et SQLAlchemy
 
 **⚠️ Notes de version**
