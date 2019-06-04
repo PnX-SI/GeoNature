@@ -6,7 +6,7 @@ Prérequis
 
 - Ressources minimum serveur :
 
-Un serveur Linux (Debian 8 ou 9 ou Ubuntu 16 ou 18 **architecture 64-bits**) disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.
+Un serveur Linux (Debian 8 ou 9 ou Ubuntu 16 ou 18 **architecture 64-bits**) disposant d’au moins de 4 Go RAM et de 20 Go d’espace disque.
 
 Le script global d'installation de GeoNature va aussi se charger d'installer les dépendances nécessaires : 
 

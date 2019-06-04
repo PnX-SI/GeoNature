@@ -122,8 +122,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
     this._dataService.getOneSyntheseObservation(oneObsSynthese.id_synthese)
       .subscribe(
         data => {
-          this.selectedObs = data;
-
+          this.selectedObs = data;          
           this.selectedObs['municipalities'] = [];
           this.selectedObs['other_areas'] = [];
           const date_min = new Date(this.selectedObs.date_min);
@@ -132,6 +131,8 @@ export class ValidationModalInfoObsComponent implements OnInit {
           this.selectedObs.date_max = date_max.toLocaleDateString('fr-FR');
           this.email = this.selectedObs.cor_observers.map(el => el.email).join();
           this.mailto = String("mailto:" + this.email);
+          console.log(this.selectedObs);
+          
         }
       );
 

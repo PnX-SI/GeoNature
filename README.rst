@@ -5,15 +5,13 @@ GeoNature
 .. image:: https://travis-ci.org/PnX-SI/GeoNature.svg?branch=develop
     :target: https://travis-ci.org/PnX-SI/GeoNature
 
-GeoNature V2 est en refonte complète de la BDD et changement de technologies : 
+GeoNature V2 est une refonte complète de la BDD et changement de technologies : 
 
 * Python
 * Flask
 * Leaflet
 * Angular 4
 * Bootstrap
-
-Pour en savoir plus sur le projet de refonte : https://github.com/PnX-SI/GeoNature/issues/168.
 
 Documentation sur https://geonature.readthedocs.io.
 
@@ -39,12 +37,17 @@ Modules et projets liés
 * Sous-module d'authentification UsersHub : https://github.com/PnX-SI/UsersHub-authentification-module
 * TaxHub (gestion des taxons) : https://github.com/PnX-SI/TaxHub
 * Nomenclature API (gestion des nomenclatures) : https://github.com/PnX-SI/Nomenclature-api-module
-* GeoNature-atlas (portail web de diffusion des observations) : https://github.com/PnEcrins/GeoNature-atlas
-* GeoNature-mobile (saisie mobile dans les protocoles de GeoNature) : https://github.com/PnEcrins/GeoNature-mobile
+* GeoNature-atlas (portail web de diffusion des observations) : https://github.com/PnX-SI/GeoNature-atlas
+* GeoNature-mobile (saisie mobile dans les protocoles de GeoNature v1) : https://github.com/PnEcrins/GeoNature-mobile
+* Occtax-mobile (saisie mobile dans le module Occtax) : https://github.com/PnX-SI/gn_mobile_occtax
 * GeoNature module Interopérabilité/export : https://github.com/PnX-SI/gn_module_export
+* GeoNature module Import : https://github.com/PnX-SI/gn_module_import
+* GeoNature module Dashboard : https://github.com/PnX-SI/gn_module_dashboard
 * GeoNature module Validation : https://github.com/PnX-SI/gn_module_validation
 * GeoNature module Suivi des habitats : https://github.com/PnX-SI/gn_module_suivi_habitat_territoire
+* GeoNature module Suivi des stations d'habitat : https://github.com/PnX-SI/gn_module_suivi_habitat_station
 * GeoNature module Suivi de la flore territoire : https://github.com/PnX-SI/gn_module_suivi_flore_territoire
+* Suivi-Flore-Territoire-mobile : https://github.com/PnX-SI/gn_mobile_sft
 * GeoNature module Suivi chiroptères : https://github.com/PnCevennes/gn_module_suivi_chiro
 * Protocoles de suivi (frontend) : https://github.com/PnCevennes/projet_suivis_frontend
 * GeoNature-citizen (portail de collecte citoyenne) : https://github.com/PnX-SI/GeoNature-citizen
@@ -79,7 +82,7 @@ Licence
 =======
 
 * OpenSource - GPL-3.0
-* Copyleft 2014-2018 - Parc National des Écrins - Parc national des Cévennes
+* Copyleft 2014-2019 - Parc National des Écrins - Parc national des Cévennes
 
 
 .. image:: http://geonature.fr/img/logo-pne.jpg

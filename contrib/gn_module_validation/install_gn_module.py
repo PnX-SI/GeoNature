@@ -20,13 +20,6 @@ def gnmodule_install_app(gn_db, gn_app):
     """
         Fonction principale permettant de réaliser les opérations d'installation du module :
     """
-    with gn_app.app_context():
-        table_sql = str(ROOT_DIR / "data/validation.sql")
-        try:
-            gn_db.session.execute(open(table_sql, "r").read())
-            gn_db.session.commit()
-        except Exception as e:
-            db_logger.error(e)
     # install frontend
     subprocess.call(["npm install"], cwd=str(ROOT_DIR / "frontend"), shell=True)
 

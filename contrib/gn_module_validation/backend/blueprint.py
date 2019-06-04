@@ -129,8 +129,6 @@ def get_statusNames(info_role):
 @json_resp
 def post_status(info_role, id_synthese):
     try:
-        # print('id_role = ', info_role.id_role)
-
         data = dict(request.get_json())
         validation_status = data["statut"]
         validation_comment = data["comment"]

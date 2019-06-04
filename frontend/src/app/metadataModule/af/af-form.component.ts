@@ -133,7 +133,7 @@ export class AfFormComponent implements OnInit {
       af['cor_af_actor'] = update_cor_af_actor;
       this._api.post<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework`, af).subscribe(
         data => {
-          this._router.navigate(['/metadata/afs']);
+          this._router.navigate(['/metadata']);
           this._commonService.translateToaster('success', 'MetaData.AFadded');
         },
         error => {

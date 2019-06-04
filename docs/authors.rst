@@ -34,3 +34,7 @@ Contributeurs
 * Richard Vergely (Parc national des Ecrins)
 * Sylvain Montagner (Parc naturel régional de Normandie-Maine)
 * Patrick Kappeler (Natural Solutions)
+* Julien Corny (Natural Solutions)
+* Jean-Brieuc Lehébel-Péron (Gretia)
+* Jean-Baptiste Desbas (Picardie Nature)
+* Sébastien Grimault

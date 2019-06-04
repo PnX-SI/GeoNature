@@ -36,11 +36,18 @@ export class MapService {
     weight: 3
   };
 
+  originStyle = {
+    color: '#3388ff',
+    fill: false,
+    fillOpacity: 0.2,
+    weight: 3
+  };
+
   searchStyle = {
     color: 'green'
   };
 
-  constructor(private http: Http, private _commonService: CommonService) { }
+  constructor(private http: Http, private _commonService: CommonService) {}
 
   setMap(map) {
     this.map = map;
@@ -183,7 +190,6 @@ export class MapService {
         });
       }
     });
-
   }
 
   loadGeometryReleve(data, isDraggable) {

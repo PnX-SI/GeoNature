@@ -95,7 +95,7 @@ class TParameters(DB.Model):
 @serializable
 @geoserializable
 class VLatestValidations(DB.Model):
-    __tablename__ = "v_latest_validation"
+    __tablename__ = "v_latest_validations_for_web_app"
     __table_args__ = {"schema": "gn_commons"}
 
     id_synthese = DB.Column(
