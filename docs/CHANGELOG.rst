@@ -2,21 +2,22 @@
 CHANGELOG
 =========
 
-2.1.0 (unreleased)
+2.1.0 (2019-06-01)
 ------------------
 
 **🚀 Nouveautés**
 
 * Intégration du module Validation dans GeoNature (développé par @JulienCorny, financé par @sig-pnrnm)
-* Calcul automatique de la sensibilité des occurrences de taxon (#284)
+* Ajout de tables, règles et fonctions permettant de calculer la sensibilité des occurrences de taxon de la synthèse (#284)
 * Occtax - Possibilité d'enchainer les saisies de relevés et de garder les informations du relevé (#633)
 * Occtax - Amélioration de l'ergonomie de l'interface MapList pour clarifier la recherche et l'ajout d'un relevé + ajout compteur (#467)
 * Révision de l'interface du module Métadonnées, listant les cadres d'acquisition et leurs jeux de données (par @jbrieuclp)
-* Ajout d'un mécanimse du calcul des taxons observés par zonage géographique (#617)
-* Les mailles INPN (1, 5, 10km) sont intégrées à l'installation (paramètre)
-* Statistiques de l'accueil - Paramètre permettant de les désactiver (#599)
+* Ajout d'un mécanisme du calcul des taxons observés par zonage géographique (#617)
+* Les mailles INPN (1, 5, 10km) sont intégrées à l'installation (avec un paramètre)
+* Statistiques de la page d'accueil - Ajout d'un paramètre permettant de les désactiver (#599)
 * Occtax - Date par défaut paramétrable (#351)
-* Support des géometries multi (MultiPoint, MultiPolygon, MultiLine) dans la synthèse (#609)
+* Support des géometries multiples (MultiPoint, MultiPolygone, MultiLigne) dans la synthèse et Occtax (#609)
+* Synthese - Affichage des zonages intersectés dans un onglet séparé (#579)
 
 **🐛 Corrections**
 
@@ -29,23 +30,41 @@ CHANGELOG
 * Correction lors d'import de fichier GPX ayant une altitude (#631)
 * Occtax - Correction du filtre Observateur texte libre (#598)
 * Métadonnées - Inversion des domaines terrestre/marin (par @xavyeah39)
+* Métadonnées - Correction de l'édition des cadres d'acquisition (#654, par @DonovanMaillard)
 * Mise à jour de sécurité de Jinja2 et SQLAlchemy
-
-**⭐️ Autres**
-
-* Evolution de l'API de GeoNature-mobile pour la rendre compatible avec le module Occtax de GeoNature v2 (https://github.com/PnEcrins/GeoNature-mobile-webapi/tree/compat_gn2)
 
 **⚠️ Notes de version**
 
 * Vous pouvez passer directement à cette version, mais en suivant les notes des versions intermédiaires
-* Exécuter le script de migration SQL de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.0.1to2.1.0.sql)
 * Suivez ensuite la procédure classique de mise à jour de GeoNature (https://geonature.readthedocs.io/fr/latest/installation-standalone.html#mise-a-jour-de-l-application)
-* Installer le module VALIDATION
-* Comment intégrer les mailles si on fait une MAJ ?
-* Scripts de migration liés à la sensibilité (#284) + expliquer le fonctionnement plus précis dans le ticket
+* Lancer le script de migration de la base de données :
 
-**TODO avant release** : Faire le paramètre pour ne pas afficher certains zonages dans la fiche Synthèse, du fait de l'ajout des mailles (#579)
+  Cette nouvelle version de GeoNature intègre les mailles INPN (1, 5, 10km) dans le réferentiel géographique. Si vous ne souhaitez pas les installer, lancer le script ci dessous en passant le paramètre ``no-grid``
 
+  ::
+
+    cd /home/`whoami`/geonature/data/migrations
+    # avec les mailles
+    ./2.0.1to2.1.0.sh 
+    # sans les mailles:
+    # ./2.0.1to2.1.0.sh no-grid
+
+* Installer le module VALIDATION si vous le souhaitez :
+
+  Se placer dans le virtualenv de GeoNature
+
+  ::
+
+    cd /home/`whoami`/geonature/backend
+    source venv/bin/activate
+
+  Lancer la commande d'installation du module puis sortir du virtualenv
+
+  ::
+
+    geonature install_gn_module /home/`whoami`/geonature/contrib/gn_module_validation/ /validation
+    deactivate
+    
 2.0.1 (2019-03-18)
 ------------------
 

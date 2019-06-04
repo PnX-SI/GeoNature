@@ -12,7 +12,6 @@ import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 import { NgbDateFRParserFormatter } from './ngb-date-custom-parser-formatter';
 
-
 export interface DateStruc {
   day: number;
   month: number;
@@ -32,7 +31,7 @@ export class DateComponent implements OnInit, OnDestroy {
   @Input() label: string;
   @Input() disabled: boolean;
   @Input() parentFormControl: FormControl;
-  @Input() defaultToday = true;
+  @Input() defaultToday = false;
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
   dynamicId;
@@ -43,7 +42,6 @@ export class DateComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-
     const today = new Date();
     this.today = { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate() };
     if (this.defaultToday) {

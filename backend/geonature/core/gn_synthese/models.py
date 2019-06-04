@@ -213,7 +213,7 @@ class Synthese(DB.Model):
     altitude_max = DB.Column(DB.Unicode)
     the_geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
     the_geom_point = DB.Column(Geometry("GEOMETRY", 4326))
-    the_geom_local = DB.Column(Geometry("GEOMETRY", 2154))
+    the_geom_local = DB.Column(Geometry("GEOMETRY", current_app.config["LOCAL_SRID"]))
     date_min = DB.Column(DB.DateTime)
     date_max = DB.Column(DB.DateTime)
     validator = DB.Column(DB.Unicode)
@@ -472,8 +472,8 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
 
 
 @serializable
-class CorAreaTaxon(DB.Model):
-    __tablename__ = "cor_area_taxon"
+class VColorAreaTaxon(DB.Model):
+    __tablename__ = "v_color_taxon_area"
     __table_args__ = {"schema": "gn_synthese"}
     cd_nom = DB.Column(
         DB.Integer(), ForeignKey("taxonomie.taxref.cd_nom"), primary_key=True

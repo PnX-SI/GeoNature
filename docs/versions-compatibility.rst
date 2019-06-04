@@ -3,7 +3,7 @@ COMPATIBILITE
 
 Compatibilité des versions de GeoNature
 
-GeoNature 2.0.1
+GeoNature 2.1.0
 ---------------
 
 +------------------------+-----------+
@@ -13,9 +13,9 @@ GeoNature 2.0.1
 +------------------------+-----------+ 
 | UsersHub               | 2.0.3     | 
 +------------------------+-----------+
-| Nomenclature-Api       | 1.2.4     | 
+| Nomenclature-Api       | 1.2.5     | 
 +------------------------+-----------+ 
-| Authentification-Api   | 1.3.2     | 
+| Authentification-Api   | 1.3.3     | 
 +------------------------+-----------+ 
 | Occtax                 | 1.0.0     | 
 +------------------------+-----------+ 

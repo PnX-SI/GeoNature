@@ -122,7 +122,7 @@ export class DatasetFormComponent implements OnInit {
       dataset['cor_dataset_actor'] = update_cor_dataset_actor;
       this._api.post<any>(`${AppConfig.API_ENDPOINT}/meta/dataset`, dataset).subscribe(
         data => {
-          this._router.navigate(['/metadata/datasets']);
+          this._router.navigate(['/metadata']);
           this._commonService.translateToaster('success', 'MetaData.Datasetadded');
         },
         error => {

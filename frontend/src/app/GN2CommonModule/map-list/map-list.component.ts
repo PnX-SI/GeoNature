@@ -1,22 +1,21 @@
-import { Component, OnInit, Input, OnChanges, Output, EventEmitter, AfterViewInit} from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
 import { MapService } from '../map/map.service';
-import {MapListService} from '../map-list/map-list.service';
+import { MapListService } from '../map-list/map-list.service';
 import { GeoJSON, Layer } from 'leaflet';
 
-
 export interface ColumnActions {
-    editColumn: boolean;
-    infoColumn: boolean;
-    deleteColumn: boolean;
-    validateColumn: boolean;
-    unValidateColumn: boolean;
-  }
+  editColumn: boolean;
+  infoColumn: boolean;
+  deleteColumn: boolean;
+  validateColumn: boolean;
+  unValidateColumn: boolean;
+}
 
 @Component({
   selector: 'pnx-map-list',
   templateUrl: './map-list.component.html',
   styleUrls: ['./map-list.component.scss'],
-  providers: [ MapService],
+  providers: [MapService]
 })
 export class MapListComponent implements OnInit, AfterViewInit {
   public layerDict: any;
@@ -25,8 +24,7 @@ export class MapListComponent implements OnInit, AfterViewInit {
   @Input() idName: string;
 
 
-  constructor(private _ms: MapService, public mapListService: MapListService) {
-  }
+  constructor(private _ms: MapService, public mapListService: MapListService) {}
 
   ngOnInit() {
     // set the idName in the service
@@ -41,8 +39,9 @@ export class MapListComponent implements OnInit, AfterViewInit {
   onEachFeature(feature, layer) {
     // event from the map
     this.mapListService.layerDict[feature.id] = layer;
+    layer.setStyle(this.mapListService.originStyle);
     layer.on({
-      click : (e) => {
+      click: e => {
         // toggle style
         this.mapListService.toggleStyle(layer);
         // observable
@@ -52,7 +51,4 @@ export class MapListComponent implements OnInit, AfterViewInit {
       }
     });
   }
-
-
-
 }

@@ -1,5 +1,6 @@
 DROP VIEW IF EXISTS pr_occtax.v_releve_list;
 
+-- ajout du count obs et taxon pour chaque relevé
 CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS 
  SELECT rel.id_releve_occtax,
     rel.id_dataset,
@@ -33,49 +34,28 @@ ALTER TABLE ONLY gn_synthese.cor_area_synthese
     ADD CONSTRAINT fk_cor_area_synthese_id_synthese FOREIGN KEY (id_synthese) REFERENCES gn_synthese.synthese(id_synthese) ON DELETE NO ACTION;
 
 
-CREATE OR REPLACE FUNCTION gn_synthese.color_taxon(maxdateobs timestamp) RETURNS text
-    LANGUAGE plpgsql
-    AS $$
-  --fonction permettant de renvoyer la couleur d'un taxon à partir de la dernière date d'observation 
-  DECLARE
-  color text;
-  BEGIN
-	IF (date_part('day', (now() - maxdateobs))) < 365  THEN color = 'gray';
-	ELSE color = 'red';
-	END IF;
-	return color;
-  END;
-$$;
-
-CREATE OR REPLACE FUNCTION gn_synthese.recalculate_taxon_color() RETURNS void
-    LANGUAGE plpgsql
-    AS $$
-    -- fonction qui supprime et recalcul les couleurs pour tous les taxons de la synthese
-BEGIN 
-  DELETE FROM gn_synthese.cor_area_taxon;
-  INSERT INTO gn_syntherse.cor_area_taxon (cd_nom, nb_obs, id_area, last_date, color)
-  SELECT s.cd_nom, max(date_min), count(s.id_synthese), id_area, gn_synthese.color_taxon(max(date_min))
-  FROM gn_synthese.synthese s
-  JOIN gn_synthese.cor_area_synthese ar ON ar.id_synthese = s.id_synthese
-  GROUP BY s.cd_nom, id_area;
-END;
-$$;
-
 CREATE TABLE gn_synthese.cor_area_taxon (
   cd_nom integer NOT NULL,
   id_area integer NOT NULL, 
   nb_obs integer NOT NULL, 
-  last_date timestamp without time zone NOT NULL, 
-  color character varying(20) NOT NULL
+  last_date timestamp without time zone NOT NULL
 );
 
-INSERT INTO gn_synthese.cor_area_taxon (cd_nom, id_area, nb_obs, last_date, color)
+-- vue couleur taxon
+CREATE OR REPLACE VIEW gn_synthese.v_color_taxon_area AS
+SELECT cd_nom, id_area, nb_obs, last_date,
+ CASE 
+  WHEN date_part('day', (now() - last_date)) < 365 THEN 'grey'
+  ELSE 'red'
+ END as color
+FROM gn_synthese.cor_area_taxon;
+
+INSERT INTO gn_synthese.cor_area_taxon (cd_nom, id_area, nb_obs, last_date)
    SELECT
    DISTINCT(s.cd_nom) AS cd_nom,
    cor.id_area AS id_area, 
    count(s.id_synthese) AS nb_obs, 
-   max(s.date_min) AS last_date, 
-   gn_synthese.color_taxon(max(s.date_min)) AS color
+   max(s.date_min) AS last_date
    FROM gn_synthese.cor_area_synthese cor
    JOIN gn_synthese.synthese s ON s.id_synthese = cor.id_synthese
    GROUP BY s.cd_nom, cor.id_area;
@@ -103,7 +83,7 @@ DECLARE the_cd_nom integer;
 BEGIN
     SELECT cd_nom INTO the_cd_nom FROM gn_synthese.synthese WHERE id_synthese = NEW.id_synthese;
   -- on supprime cor_area_taxon et recree à chaque fois
-    -- cela evite de regarder dans cor_area_taxon s'il y a deja une ligne, de faire un + 1  ou -1 sur nb_obs etc...
+  -- cela evite de regarder dans cor_area_taxon s'il y a deja une ligne, de faire un + 1  ou -1 sur nb_obs etc...
     IF (TG_OP = 'INSERT') THEN
       DELETE FROM gn_synthese.cor_area_taxon WHERE cd_nom = the_cd_nom AND id_area IN (NEW.id_area);
     ELSE
@@ -111,8 +91,8 @@ BEGIN
     END IF;
     -- puis on réinsert
     -- on récupère la dernière date de l'obs dans l'aire concernée depuis cor_area_synthese et synthese
-    INSERT INTO gn_synthese.cor_area_taxon (id_area, cd_nom, last_date, color, nb_obs)
-    SELECT id_area, s.cd_nom,  max(s.date_min) AS last_date, gn_synthese.color_taxon(max(s.date_min)) AS color, count(s.id_synthese) AS nb_obs
+    INSERT INTO gn_synthese.cor_area_taxon (id_area, cd_nom, last_date, nb_obs)
+    SELECT id_area, s.cd_nom,  max(s.date_min) AS last_date, count(s.id_synthese) AS nb_obs
     FROM gn_synthese.cor_area_synthese cor
     JOIN gn_synthese.synthese s ON s.id_synthese = cor.id_synthese
     WHERE s.cd_nom = the_cd_nom AND id_area = NEW.id_area
@@ -121,14 +101,13 @@ BEGIN
 END;
 $$;
 
-
 CREATE TRIGGER tri_maj_cor_area_taxon 
 AFTER INSERT OR UPDATE 
 ON gn_synthese.cor_area_synthese 
 FOR EACH ROW 
 EXECUTE PROCEDURE gn_synthese.fct_tri_maj_cor_unite_taxon();
 
--- trigger de suppression à partir de la synthese
+-- trigger de suppression depuis la synthese
 -- suppression dans cor_area_taxon
 -- recalcule des aires
 -- suppression dans cor_area_synthese
@@ -145,9 +124,9 @@ BEGIN
     WHERE id_synthese = OLD.id_synthese;
     -- DELETE AND INSERT sur cor_area_taxon: evite de faire un count sur nb_obs
     DELETE FROM gn_synthese.cor_area_taxon WHERE cd_nom = OLD.cd_nom AND id_area = ANY (the_id_areas);
-    -- on réinsert dans cor_area_synthese en recalculant les max, nb_obs et couleur pour chaque aire
-    INSERT INTO gn_synthese.cor_area_taxon (cd_nom, nb_obs, id_area, last_date, color)
-    SELECT s.cd_nom, count(s.id_synthese), cor.id_area,  max(s.date_min), gn_synthese.color_taxon(max(s.date_min))  
+    -- on réinsert dans cor_area_synthese en recalculant les max, nb_obs
+    INSERT INTO gn_synthese.cor_area_taxon (cd_nom, nb_obs, id_area, last_date)
+    SELECT s.cd_nom, count(s.id_synthese), cor.id_area,  max(s.date_min)
     FROM gn_synthese.cor_area_synthese cor
     JOIN gn_synthese.synthese s ON s.id_synthese = cor.id_synthese
     -- on ne prend pas l'OLD.synthese car c'est un trigger BEFORE DELETE
@@ -167,8 +146,8 @@ BEGIN
   -- supprime dans cor_area_taxon
   DELETE FROM gn_synthese.cor_area_taxon WHERE cd_nom = my_cd_nom AND id_area = ANY (my_id_area);
   -- réinsertion et calcul
-  INSERT INTO gn_synthese.cor_area_taxon (cd_nom, nb_obs, id_area, last_date, color)
-  SELECT s.cd_nom, count(s.id_synthese), cor.id_area,  max(s.date_min), gn_synthese.color_taxon(max(s.date_min))  
+  INSERT INTO gn_synthese.cor_area_taxon (cd_nom, nb_obs, id_area, last_date)
+  SELECT s.cd_nom, count(s.id_synthese), cor.id_area,  max(s.date_min)
   FROM gn_synthese.cor_area_synthese cor
   JOIN gn_synthese.synthese s ON s.id_synthese = cor.id_synthese
   WHERE id_area = ANY (my_id_area) AND s.cd_nom = my_cd_nom

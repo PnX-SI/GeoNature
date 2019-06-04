@@ -24,24 +24,24 @@ export class HomeContentComponent implements OnInit {
     private _syntheseApi: DataService,
     private _globalSub: GlobalSubService,
     private _api: DataFormService,
-    private _moduleService: ModuleService
+    private _moduleService: ModuleService,
+    private _mapService: MapService
   ) {}
 
   ngOnInit() {
     this._SideNavService.sidenav.open();
     this.appConfig = AppConfig;
-    if (AppConfig.FRONTEND.DISPLAY_MAP_LAST_OBS){
+    if (AppConfig.FRONTEND.DISPLAY_MAP_LAST_OBS) {
       this._syntheseApi.getSyntheseData({ limit: 100 }).subscribe(result => {
         this.lastObs = result.data;
       });
     }
-    if (AppConfig.FRONTEND.DISPLAY_STAT_BLOC){
+    if (AppConfig.FRONTEND.DISPLAY_STAT_BLOC) {
       // get general stats
       this._syntheseApi.getSyntheseGeneralStat().subscribe(result => {
         this.generalStat = result;
       });
     }
-
 
     // get module home if not already in localstorage
     if (!localStorage.getItem('modules')) {
@@ -57,6 +57,7 @@ export class HomeContentComponent implements OnInit {
   }
 
   onEachFeature(feature, layer) {
+    layer.setStyle(this._mapService.originStyle);
     // event from the map
     layer.on({
       click: () => {

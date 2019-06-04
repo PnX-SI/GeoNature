@@ -482,9 +482,8 @@ def to_json_resp(
             "attachment",
             filename="export_{}.{}".format(filename, extension),
         )
-
     return Response(
-        json.dumps(res, indent=indent),
+        json.dumps(res, ensure_ascii=False, indent=indent),
         status=status,
         mimetype="application/json",
         headers=headers,

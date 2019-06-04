@@ -35,6 +35,13 @@ export class MapService {
     weight: 3
   };
 
+  originStyle = {
+    color: '#3388ff',
+    fill: false,
+    fillOpacity: 0.2,
+    weight: 3
+  };
+
   searchStyle = {
     color: 'green'
   };
@@ -182,7 +189,6 @@ export class MapService {
         });
       }
     });
-
   }
 
   loadGeometryReleve(data, isDraggable) {

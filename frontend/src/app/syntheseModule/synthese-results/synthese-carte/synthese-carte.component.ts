@@ -33,7 +33,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
   selectedStyle = {
     color: '#ff0000',
     weight: 3,
-    fill: true
+    fill: false
   };
 
   @Input() inputSyntheseData: GeoJSON;

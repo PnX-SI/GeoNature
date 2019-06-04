@@ -154,7 +154,7 @@
               </ng-template>
               <ng-template *ngSwitchCase="'observateurs'" let-row="row" ngx-datatable-cell-template>
                   <span [matTooltip]="row.observateurs" matTooltipPosition="left">
-                    <span class='badge badge-dark'> {{row.nb_observer}} </span> {{row.observateurs}}
+                    <span *ngIf="!occtaxConfig.observers_txt" class='badge badge-dark'> {{row.nb_observer}} </span> {{row.observateurs}}
                   </span>
                 </ng-template>
                 <ng-template *ngSwitchDefault let-row="row" ngx-datatable-cell-template>
