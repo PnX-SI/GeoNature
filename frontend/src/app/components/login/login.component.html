@@ -38,12 +38,17 @@
                                 Ce login n'existe pas
                               </small>
                             </div>
-                            <div class="float-left forgot" *ngIf="enable_sign_up">
-                              <span (click)="login_recovery=true">{{ 'ForgotLogin' | translate }}</span>
+                            <div class="float-left " *ngIf="enable_sign_up">
+                              <div class="forgot" (click)="login_recovery=true">{{ 'ForgotLogin' | translate }}</div>
+                              <div class="inscription">
+                                <a routerLink="/inscription">{{ 'CreateAccount' | translate }}</a>
+                              </div>
                             </div>
+                            
                             <div class="text-right">
                               <button type="button" class="btn btn-lg btn-success text-uppercase" matStepperNext>Suivant</button>
                             </div>
+
                           </form>
                         </mat-step>
 
