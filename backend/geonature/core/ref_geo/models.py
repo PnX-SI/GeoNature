@@ -1,34 +1,19 @@
 from geoalchemy2 import Geometry
+from sqlalchemy import ForeignKey
+from flask import current_app
 
 from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import serializable
 
 from geonature.utils.env import DB
-from geonature.utils.utilssqlalchemy import (
-    serializable, geoserializable
-)
+from geonature.utils.utilssqlalchemy import serializable, geoserializable
 from geonature.utils.env import DB
-
-@serializable
-class LAreas(DB.Model):
-    __tablename__ = 'l_areas'
-    __table_args__ = {'schema': 'ref_geo'}
-    id_area = DB.Column(DB.Integer, primary_key=True)
-    id_type = DB.Column(DB.Integer)
-    area_name = DB.Column(DB.Unicode)
-    area_code = DB.Column(DB.Unicode)
-    geom = DB.Column(Geometry('GEOMETRY', 2154))
-    # centroid = DB.Column(Geometry('GEOMETRY', 2154))
-    source = DB.Column(DB.Unicode)
-    geom = DB.Column(Geometry('GEOMETRY', 4326))
-
-
 
 
 @serializable
 class BibAreasTypes(DB.Model):
-    __tablename__ = 'bib_areas_types'
-    __table_args__ = {'schema': 'ref_geo'}
+    __tablename__ = "bib_areas_types"
+    __table_args__ = {"schema": "ref_geo"}
     id_type = DB.Column(DB.Integer, primary_key=True)
     type_name = DB.Column(DB.Unicode)
     type_code = DB.Column(DB.Unicode)
@@ -39,9 +24,23 @@ class BibAreasTypes(DB.Model):
 
 
 @serializable
+class LAreas(DB.Model):
+    __tablename__ = "l_areas"
+    __table_args__ = {"schema": "ref_geo"}
+    id_area = DB.Column(DB.Integer, primary_key=True)
+    id_type = DB.Column(DB.Integer, ForeignKey("ref_geo.bib_areas_types.id_type"))
+    area_name = DB.Column(DB.Unicode)
+    area_code = DB.Column(DB.Unicode)
+    geom = DB.Column(Geometry("GEOMETRY", current_app.config["LOCAL_SRID"]))
+    source = DB.Column(DB.Unicode)
+    geom = DB.Column(Geometry("GEOMETRY", 4326))
+    area_type = DB.relationship("BibAreasTypes", lazy="select")
+
+
+@serializable
 class LiMunicipalities(DB.Model):
-    __tablename__ = 'li_municipalities'
-    __table_args__ = {'schema': 'ref_geo'}
+    __tablename__ = "li_municipalities"
+    __table_args__ = {"schema": "ref_geo"}
     id_municipality = DB.Column(DB.Integer, primary_key=True)
     id_area = DB.Column(DB.Integer)
     status = DB.Column(DB.Unicode)

@@ -85,7 +85,7 @@ then
     echo "Creating GeoNature database" &>> var/log/install_db.log
     echo "--------------------" &>> var/log/install_db.log
     echo "" &>> var/log/install_db.log
-    sudo -n -u postgres -s createdb -O $user_pg $db_name
+    sudo -n -u postgres -s createdb -O $user_pg $db_name -T template0 -E UTF-8 -l $my_local
     echo "Adding PostGIS and PLPGSQL extensions..."
     echo "" &>> var/log/install_db.log
     echo "" &>> var/log/install_db.log
@@ -121,7 +121,7 @@ then
     echo "" &>> var/log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/public.sql  &>> var/log/install_db.log
 
-    if $install_usershub_schema
+    if [ "$install_usershub_schema" = true ];
      then
         echo "Getting and creating USERS schema (utilisateurs)..."
         echo "" &>> var/log/install_db.log
@@ -282,7 +282,7 @@ then
     sudo sed -i "s/MYLOCALSRID/$srid_local/g" tmp/geonature/ref_geo.sql
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/geonature/ref_geo.sql  &>> var/log/install_db.log
 
-    if $install_sig_layers
+    if [ "$install_sig_layers" = true ];
     then
         echo "Insert default French municipalities (IGN admin-express)"
         echo "" &>> var/log/install_db.log
@@ -313,7 +313,7 @@ then
         sudo -n -u postgres -s psql -d $db_name -c "DROP TABLE ref_geo.temp_fr_municipalities;" &>> var/log/install_db.log
     fi
 
-    if $install_grid_layers
+    if [ "$install_grid_layer" = true ];
     then
         echo "Insert INPN grids"
         echo "" &>> var/log/install_db.log
@@ -343,7 +343,7 @@ then
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/ref_geo_grids.sql  &>> var/log/install_db.log
     fi
 
-    if $install_default_dem
+    if  [ "$install_default_dem" = true ];
     then
         echo "Insert default French DEM (IGN 250m BD alti)"
         echo "" &>> var/log/install_db.log
@@ -363,7 +363,7 @@ then
         export PGPASSWORD=$user_pg_pass;raster2pgsql -s $srid_local -c -C -I -M -d -t 5x5 tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc ref_geo.dem|psql -h $db_host -U $user_pg -d $db_name  &>> var/log/install_db.log
     	#echo "Refresh DEM spatial index. This may take a few minutes..."
         sudo -n -u postgres -s psql -d $db_name -c "REINDEX INDEX ref_geo.dem_st_convexhull_idx;" &>> var/log/install_db.log
-        if $vectorise_dem 
+        if [ "$vectorise_dem" = true ];
         then
             echo "Vectorisation of DEM raster. This may take a few minutes..."
             echo "" &>> var/log/install_db.log
@@ -406,6 +406,11 @@ then
     sudo sed -i "s/MYLOCALSRID/$srid_local/g" tmp/geonature/synthese.sql
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/geonature/synthese.sql  &>> var/log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/synthese_default_values.sql  &>> var/log/install_db.log
+
+    echo "--------------------" &>> var/log/install_db.log
+    echo "Creating commons view depending of synthese" &>> var/log/install_db.log
+    echo "--------------------" &>> var/log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/commons_synthese.sql  &>> var/log/install_db.log
 
     echo "Creating 'exports' schema..."
     echo "" &>> var/log/install_db.log
@@ -454,12 +459,14 @@ then
     echo "--------------------" &>> var/log/install_db.log
     echo "Insert 'gn_sensitivity' data" &>> var/log/install_db.log
     echo "--------------------" &>> var/log/install_db.log
-    wget --cache=off https://geonature.fr/data/inpn/sensitivity/181201_referentiel_donnes_sensibles.csv -P /tmp/geonature
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/sensitivity_data.sql  &>> var/log/install_db.log
+    wget --cache=off https://geonature.fr/data/inpn/sensitivity/181201_referentiel_donnes_sensibles.csv -P tmp/geonature
+    cp data/core/sensitivity_data.sql tmp/geonature/sensitivity_data.sql
+    sed -i 's#'/tmp/geonature'#'$parentdir/tmp/geonature'#g' tmp/geonature/sensitivity_data.sql
+    sudo -n -u postgres -s psql -d $db_name -f tmp/geonature/sensitivity_data.sql &>> var/log/install_db.log
 
 
     #Installation des données exemples
-    if $add_sample_data
+    if [ "$add_sample_data" = true ];
     then
         echo "Inserting sample datasets..."
         echo "" &>> var/log/install_db.log
@@ -490,23 +497,12 @@ then
 
     fi
 
-    if $install_default_dem
+    if [ "$install_default_dem" = true ];
     then
         sudo rm tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc
         sudo rm tmp/geonature/IGNF_BDALTIr_2-0_ASC_250M_LAMB93_IGN69_FRANCE.html
     fi
 
-    # Mise en place du cron pour recalculer les couleurs des taxons
-    # si le fichier est déja désamplé, on ne refait pas le cron
-    if [ ! -f $parentdir/install/calculate_color_cron.sh ]
-        then
-        # creation du fichier de log du calcul des couleurs
-        touch $parentdir/var/log/color_log.log
-        cp $parentdir/install/calculate_color_cron.sh.sample $parentdir/install/calculate_color_cron.sh
-        sed -i "s%GEONATURE_PATH%${parentdir}%" $parentdir/install/calculate_color_cron.sh
-        # cron toute les nuit à 00:00
-        (crontab -l 2>/dev/null; echo "00 00 * * * $parentdir/install/calculate_color_cron.sh") | crontab -
-    fi
 fi
 
 # Suppression des fichiers : on ne conserve que les fichiers compressés

@@ -36,7 +36,7 @@ export class MapListService {
 
   originStyle = {
     color: '#3388ff',
-    fill: true,
+    fill: false,
     fillOpacity: 0.2,
     weight: 3
   };
@@ -92,7 +92,7 @@ export class MapListService {
 
   onRowSelect(row) {
     // row can be an object from ngx-datatable or an integer
-    if (row instanceof Object) {
+    if (row instanceof Object && row.selected.length > 0) {
       this.tableSelected.next(row.selected[0][this.idName]);
     } else {
       this.tableSelected.next(row);
@@ -197,14 +197,16 @@ export class MapListService {
     // togle the style of selected layer
 
     if (this.selectedLayer !== undefined) {
-      this.originStyle.fill =
-        this.selectedLayer.feature.geometry.type === 'LineString' ? false : true;
       this.selectedLayer.setStyle(this.originStyle);
       this.selectedLayer.closePopup();
     }
     this.selectedLayer = selectedLayer;
+
     this.selectedStyle.fill =
-      this.selectedLayer.feature.geometry.type === 'LineString' ? false : true;
+      this.selectedLayer.feature.geometry.type === 'LineString' ||
+      this.selectedLayer.feature.geometry.type === 'MultiLineString'
+        ? false
+        : true;
     this.selectedLayer.setStyle(this.selectedStyle);
   }
 
@@ -214,12 +216,27 @@ export class MapListService {
     } else {
       let latlng;
       const zoom = map.getZoom();
-      latlng = layer._latlng;
-      if (zoom >= 12) {
-        map.setView(latlng, zoom);
+      // if its a multipoint
+      if (!layer._latlng) {
+        map.fitBounds(new L.GeoJSON(layer.feature).getBounds());
       } else {
-        map.setView(latlng, 16);
+        latlng = layer._latlng;
+        if (zoom >= 12) {
+          map.setView(latlng, zoom);
+        } else {
+          map.setView(latlng, 16);
+        }
       }
+    }
+  }
+
+  /**
+   * Use in synthese where layer are not GeoJson but PolyLigne, Polygon ...
+   * @param map
+   * @param layer
+   */
+  zoomOnSelectedLayerNotGeojson(map, layer) {
+    if (layer) {
     }
   }
 

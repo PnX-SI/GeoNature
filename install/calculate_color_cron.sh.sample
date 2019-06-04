@@ -1,9 +1,0 @@
-. GEONATURE_PATH/config/settings.ini
-
-
-if [ ! -f GEONATURE_PATH/var/log/color_taxons.log] 
-then
-  touch GEONATURE_PATH/var/log/color_taxons.log
-fi
-
-export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -c "PERFORM gn_synthese.recalculate_taxon_color()"  &>> GEONATURE_PATH/var/log/color_log.log

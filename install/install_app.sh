@@ -191,10 +191,10 @@ my_current_geonature_directory=$(pwd)
 source backend/venv/bin/activate
 geonature install_gn_module $my_current_geonature_directory/contrib/occtax /occtax --build=false
 
-if $install_module_validation 
-then
-  geonature install_gn_module $my_current_geonature_directory/contrib/gn_module_validation /validation --build=false
-fi
+if [ "$install_module_validation" = true ];
+  then
+    geonature install_gn_module $my_current_geonature_directory/contrib/gn_module_validation /validation --build=false
+  fi
 
 
 if [[ $MODE != "dev" ]]
