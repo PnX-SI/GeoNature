@@ -6,22 +6,6 @@ from geonature.utils.env import DB
 
 
 @serializable
-class VSyntheseCommunes(DB.Model):
-    __tablename__ = "vm_synthese_communes"
-    __table_args__ = {"schema": "gn_dashboard"}
-    area_name = DB.Column(DB.Unicode, primary_key=True)
-    geom_area_4326 = DB.Column(DB.Unicode)
-    id_type = DB.Column(DB.Unicode)
-    nb_obs = DB.Column(DB.Integer)
-    nb_taxons = DB.Column(DB.Integer)
-    year = DB.Column(DB.Integer)
-    regne = DB.Column(DB.Unicode)
-    phylum = DB.Column(DB.Unicode)
-    classe = DB.Column(DB.Unicode)
-    # ordre = DB.Column(DB.Unicode)
-    # famille = DB.Column(DB.Unicode)
-
-@serializable
 class VSynthese(DB.Model):
     __tablename__ = "vm_synthese"
     __table_args__ = {"schema": "gn_dashboard"}
@@ -41,9 +25,10 @@ class VSynthese(DB.Model):
     classe = DB.Column(DB.Unicode)
     ordre = DB.Column(DB.Unicode)
     famille = DB.Column(DB.Unicode)
-    sous_famille = DB.Column(DB.Unicode)
     lb_nom = DB.Column(DB.Unicode)
     nom_vern = DB.Column(DB.Unicode)
+    group1_inpn = DB.Column(DB.Unicode)
+    group2_inpn = DB.Column(DB.Unicode)
     altitude_min = DB.Column(DB.Integer)
     altitude_max = DB.Column(DB.Integer)
     lon = DB.Column(DB.Unicode)
@@ -52,15 +37,38 @@ class VSynthese(DB.Model):
     date_max = DB.Column(DB.DateTime)
 
 @serializable
-class VRegne(DB.Model):
-    __tablename__ = "v_regnes"
+class VSyntheseCommunes(DB.Model):
+    __tablename__ = "vm_synthese_communes"
     __table_args__ = {"schema": "gn_dashboard"}
-    regne = DB.Column(DB.Unicode, primary_key=True)
+    area_name = DB.Column(DB.Unicode, primary_key=True)
+    geom_area_4326 = DB.Column(DB.Unicode)
+    # id_type = DB.Column(DB.Unicode)
+    year = DB.Column(DB.Integer)
+    nb_obs = DB.Column(DB.Integer)
+    nb_taxons = DB.Column(DB.Integer)
+    regne = DB.Column(DB.Unicode)
+    phylum = DB.Column(DB.Unicode)
+    classe = DB.Column(DB.Unicode)
+    # ordre = DB.Column(DB.Unicode)
+    # famille = DB.Column(DB.Unicode)
 
 @serializable
-class VPhylum(DB.Model):
-    __tablename__ = "v_phylum"
+class VSyntheseCommunesINPN(DB.Model):
+    __tablename__ = "vm_synthese_communes_inpn"
     __table_args__ = {"schema": "gn_dashboard"}
-    phylum = DB.Column(DB.Unicode, primary_key=True)
+    area_name = DB.Column(DB.Unicode, primary_key=True)
+    geom_area_4326 = DB.Column(DB.Unicode)
+    year = DB.Column(DB.Integer)
+    nb_obs = DB.Column(DB.Integer)
+    nb_taxons = DB.Column(DB.Integer)    
+    group1_inpn = DB.Column(DB.Unicode)
+    group2_inpn = DB.Column(DB.Unicode)
+
+@serializable
+class VTaxonomie(DB.Model):
+    __tablename__ = "vm_taxonomie"
+    __table_args__ = {"schema": "gn_dashboard"}
+    level = DB.Column(DB.Unicode, primary_key=True)
+    name_taxon = DB.Column(DB.Unicode, primary_key=True)
 
 

@@ -13,7 +13,7 @@
   position: absolute;
   top: 1em;
   left: 1em;
-  z-index: 1000;
+  z-index: 300000;
   padding: 10px 10px;
   background-color: rgba(255, 255, 255, 0.8);
   border-color: rgb(255, 255, 255);
@@ -43,34 +43,50 @@
   opacity: 0.9;
 }
 
+.btn-outline-green {
+  color: #689f38;
+  background-color: #ffffff;
+  border-color: #689f38;
+}
+
+.btn-outline-green:hover {
+  color: #fff;
+  background-color: #689f38;
+  border-color: #689f38;
+}
+
+.btn-outline-green:focus, .btn-outline-green.focus {
+  box-shadow: 0 0 0 0.2rem #aed581;
+}
+
 .btn-bordeaux { 
   color: #ffffff; 
   background-color: rgba(159, 5, 63, 0.8); 
-  border-color: #FFFFFF; 
+  border-color: rgba(159, 5, 63, 0.8); 
 } 
 
-.btn-bordeaux:hover, 
-.btn-bordeaux:focus, 
-.btn-bordeaux:active, 
-.btn-bordeaux.active, 
-.open .dropdown-toggle.btn-bordeaux { 
+.btn-bordeaux:hover { 
   color: #ffffff; 
-  background-color: #85074A; 
-  border-color: #85074A; 
+  background-color: #711334; 
+  border-color: #711334; 
 } 
+
+.btn-bordeaux:focus, .btn-bordeaux.focus {
+  box-shadow: 0 0 0 0.2rem #DEBFCA;
+}
 
 .btn-water { 
   color: #ffffff; 
   background-color: rgba(0, 128, 128, 0.8); 
-  border-color: #FFFFFF; 
-}
-
-.btn-water:hover, 
-.btn-water:focus, 
-.btn-water:active, 
-.btn-water.active, 
-.open .dropdown-toggle.btn-water { 
-  color: #ffffff; 
-  background-color: #076366; 
-  border-color: #076366; 
+  border-color: rgba(0, 128, 128, 0.8); 
 } 
+
+.btn-water:hover { 
+  color: #ffffff; 
+  background-color: #225F5F; 
+  border-color: #225F5F; 
+} 
+
+.btn-water:focus, .btn-water.focus {
+  box-shadow: 0 0 0 0.2rem #C4D8D8;
+}

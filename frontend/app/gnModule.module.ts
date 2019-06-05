@@ -4,7 +4,8 @@ import { Routes, RouterModule } from "@angular/router";
 import { CommonModule } from '@angular/common';
 import { FormsModule } from "@angular/forms";
 import { ReactiveFormsModule } from "@angular/forms";
-import { ChartsModule } from "ng2-charts"
+import { ChartsModule } from "ng2-charts";
+import { NouisliderModule } from 'ng2-nouislider';
 // Components
 import { DashboardComponent } from "./dashboard/dashboard.component";
 import { DashboardMapsComponent } from "./dashboard/dashboard-maps/dashboard-maps.component";
@@ -23,7 +24,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [DashboardComponent, DashboardMapsComponent, DashboardHistogramComponent, DashboardPieChartComponent],
-  imports: [GN2CommonModule, RouterModule.forChild(routes), CommonModule, FormsModule, ReactiveFormsModule, ChartsModule],
+  imports: [GN2CommonModule, RouterModule.forChild(routes), CommonModule, FormsModule, ReactiveFormsModule, ChartsModule, NouisliderModule],
   providers: [DataService],
   bootstrap: [DashboardComponent]
 })

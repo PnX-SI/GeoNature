@@ -1,32 +1,44 @@
 <div class="row row-sm">
+
     <div class="col-md-2 padding-sm">
             <div class="heavy-rain-gradient color-block mb-3 mx-auto rounded-circle z-depth-1-half"></div>
         <div class="card" style="height:48rem; width:22rem">
             <h5 class="card-header" style="text-align:center; color:white">Filtres</h5>
             <div class="card-body">
+
                 <div id="filters">           
                     <form (ngSubmit)="refreshData()" [formGroup]="pieChartForm">
-                        <div class="form-group row">
-                            <div class="col">
-                                <label class="col-form-label"><b> Année min </b></label>
-                                <input class="form-control form-control-sm" type="text" formControlName="yearMin">
+                        <div class="form-group">
+                            <label class="col-form-label"><b> Période </b></label>
+                            <div class="row justify-content-md-center">
+                                <div class="col-md-11">
+                                    <nouislider class="nouislider" [connect]="true" [tooltips]="true" [min]="yearRange[0]" [max]="yearRange[1]" [step]="1" [formControl]="pieChartForm.controls.selectedYearRange"></nouislider>
+                                </div>
                             </div>
-                            <div class="col">
-                                <label class="col-form-label"><b> Année max </b></label>
-                                <input class="form-control form-control-sm" type="text" formControlName="yearMax">
-                            </div>
+                        </div><br/>
+                        <div class="form-group">
+                            <label class="col-form-label"><b> Niveau taxonomique </b></label>                           
+                            <select class="form-control form-control-sm" [disableControl]="disabled" formControlName="selectedFilter">
+                                <option> </option>
+                                <option> Groupe INPN 1 </option>
+                                <option> Groupe INPN 2 </option>
+                                <option> Règne </option>
+                                <option> Phylum </option>
+                                <option> Classe </option>
+                            </select> 
                         </div><br/>
                         <div class="row justify-content-md-center">
                             <div class="col-md-4">
-                                <button class="btn btn-outline-success btn-block" type="submit">Valider</button>
+                                <button class="btn btn-outline-green btn-block" type="submit">Valider</button>
                             </div>
                         </div>
                     </form>
-                </div><br/>
-                <h5>Niveau de taxonomie</h5>
+                </div>
+
             </div>
         </div>
     </div>
+
     <div class="col-md-10 padding-sm">
         <div style="display: block">
             <canvas baseChart
@@ -37,4 +49,5 @@
             </canvas>
         </div>
     </div>
+
 </div>
