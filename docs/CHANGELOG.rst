@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-2.1.0 (2019-05-29)
+2.1.0 (2019-06-01)
 ------------------
 
 **🚀 Nouveautés**
@@ -30,13 +30,14 @@ CHANGELOG
 * Correction lors d'import de fichier GPX ayant une altitude (#631)
 * Occtax - Correction du filtre Observateur texte libre (#598)
 * Métadonnées - Inversion des domaines terrestre/marin (par @xavyeah39)
+* Métadonnées - Correction de l'édition des cadres d'acquisition (#654, par @DonovanMaillard)
 * Mise à jour de sécurité de Jinja2 et SQLAlchemy
 
 **⚠️ Notes de version**
 
 * Vous pouvez passer directement à cette version, mais en suivant les notes des versions intermédiaires
 * Suivez ensuite la procédure classique de mise à jour de GeoNature (https://geonature.readthedocs.io/fr/latest/installation-standalone.html#mise-a-jour-de-l-application)
-* Lancer le script de migration SQL :
+* Lancer le script de migration de la base de données :
 
   Cette nouvelle version de GeoNature intègre les mailles INPN (1, 5, 10km) dans le réferentiel géographique. Si vous ne souhaitez pas les installer, lancer le script ci dessous en passant le paramètre ``no-grid``
 
@@ -44,9 +45,9 @@ CHANGELOG
 
     cd /home/`whoami`/geonature/data/migrations
     # avec les mailles
-    ./2.0.1to2.1.1.sh 
+    ./2.0.1to2.1.0.sh 
     # sans les mailles:
-    # ./2.0.1to2.1.1.sh no-grid
+    # ./2.0.1to2.1.0.sh no-grid
 
 * Installer le module VALIDATION si vous le souhaitez :
 
