@@ -58,6 +58,13 @@ log = logging.getLogger(__name__)
 @permissions.check_cruved_scope("R", True, module_code="OCCTAX")
 @json_resp
 def getReleves(info_role):
+    """
+    Get all releves - Not used in frontend
+
+    .. :quickref: Occtax;
+    
+    :returns: `Geojson<TReleves>`
+    """
     releve_repository = ReleveRepository(TRelevesOccurrence)
     data = releve_repository.get_all(info_role)
     return FeatureCollection([n.get_geofeature() for n in data])
@@ -67,6 +74,13 @@ def getReleves(info_role):
 @permissions.check_cruved_scope("R", module_code="OCCTAX")
 @json_resp
 def getOccurrences():
+    """
+    Get all Occurrences
+
+    .. :quickref: Occtax;
+
+    :returns: `dict<TOccurrencesOccurrence>`
+    """
     q = DB.session.query(TOccurrencesOccurrence)
     data = q.all()
     return [n.as_dict() for n in data]
@@ -76,13 +90,14 @@ def getOccurrences():
 @json_resp
 def getOneCounting(id_counting):
     """
-    Get a counting record, with its id_releve
+    Get one counting record, with its id_counting
 
-    Parameters:
-        id_counting(integer): the pr_occtax.cor_counting_occtax PK
+    .. :quickref: Occtax;
 
-    Returns:
-        json: a json representing a counting record
+    :param id_counting: the pr_occtax.cor_counting_occtax PK
+    :type id_counting: int
+    :returns: a dict representing a counting record
+    :rtype: dict<CorCountingOccurrence>
     """
     try:
         data = (
@@ -113,6 +128,13 @@ def getOneCounting(id_counting):
 def getOneReleve(id_releve, info_role):
     """
     Get one releve
+
+    .. :quickref: Occtax;
+
+    :param id_releve: the id releve from pr_occtax.t_releve_occtax
+    :type id_releve: int
+    :returns: Return a releve with its attached Cruved
+    :rtype: `dict{'releve':<TRelevesOccurrence>, 'cruved': Cruved}` 
     """
     releve_repository = ReleveRepository(TRelevesOccurrence)
     releve_model, releve_geojson = releve_repository.get_one(id_releve, info_role)
@@ -190,43 +212,38 @@ def getViewReleveOccurrence(info_role):
 @json_resp
 def getViewReleveList(info_role):
     """
-        Retour la liste résumé des relevés avec occurrences
+        Return the list of releves with all occurrences and counting
+
+        .. :quickref: Occtax; Get releves used for frontend map-list
 
 
-        Parameters
-        ----------
-        limit: int
-            Nombre max de résulats à retourner
-        offset: int
-            Numéro de la page à retourner
-        cd_nom: int
-            Filtrer les relevés avec des occurrences avec le taxon x
-        observers: int
-        date_up: date
-            Date minimum des relevés à retourner
-        date_low: date
-            Date maximum des relevés à retourner
-        date_eq: date
-            Date exacte des relevés à retourner
-        orderby: char
-            Nom du champ sur lequel baser l'ordonnancement
-        order: char (asc|desc)
-            Sens de l'ordonnancement
-        organism: int
-            id de l'organisme
-        [NomChampTableVReleveList]
+        :query int limit: Number max of results
+        :query int offset: Page number to return
+        :query int cd_nom: Filter with a taxon cd_nom (multiple)
+        :query int observers: Filter with a id_role (multiple)
+        :query date_up: Date min of a releve
+        :query date_low: Date max of a releve
+    
+
+        :query date date_eq: Exact date of a releve
+        :query str ordreby: Name of the field to execute order 
+        :query order (asc|desc): Way of the order
+        :query int organism: Id of the organism (multiple)
+        :query any name_of_columns: filter on any columns of the table
             Filtre sur le champ NomChampTableVReleveList
 
-        Returns
-        -------
-        json
-        {
-            'total': Nombre total de résultat,
-            'total_filtered': Nombre total de résultat après filtration ,
-            'page': Numéro de la page retournée,
-            'limit': Nombre de résultats,
-            'items': données au format GeoJson
-        }
+        **Returns:**
+
+        .. sourcecode:: http
+
+            {
+                'total': Number total of results,
+                'total_filtered': Number of results after filteer ,
+                'page': Page number,
+                'limit': Limit,
+                'items': data on GeoJson format
+            }
+
 
 
     """
@@ -272,6 +289,34 @@ def getViewReleveList(info_role):
 @permissions.check_cruved_scope("C", True, module_code="OCCTAX")
 @json_resp
 def insertOrUpdateOneReleve(info_role):
+    """
+    Post one Occtax data (Releve + Occurrence + Counting)
+
+    .. :quickref: Occtax; Post one Occtax data (Releve + Occurrence + Counting)
+
+    **Request JSON object:**
+
+    .. sourcecode:: http
+
+        {
+        "geometry":
+            {"type":"Point",
+            "coordinates":[0.9008789062500001,47.14489748555398]},
+            "properties":
+                {
+                "id_releve_occtax":null,"id_dataset":1,"id_digitiser":1,"date_min":"2019-05-09","date_max":"2019-05-09","hour_min":null,"hour_max":null,"altitude_min":null,"altitude_max":null,"meta_device_entry":"web","comment":null,"id_nomenclature_obs_technique":316,"observers":[1],"observers_txt":null,"id_nomenclature_grp_typ":132,
+                "t_occurrences_occtax":[{
+                    "id_releve_occtax":null,"id_occurrence_occtax":null,"id_nomenclature_obs_meth":41,"id_nomenclature_bio_condition":157,"id_nomenclature_bio_status":29,"id_nomenclature_naturalness":160,"id_nomenclature_exist_proof":81,"id_nomenclature_observation_status":88,"id_nomenclature_blurring":175,"id_nomenclature_source_status":75,"determiner":null,"id_nomenclature_determination_method":445,"cd_nom":67111,"nom_cite":"Ablette =  <i> Alburnus alburnus (Linnaeus, 1758)</i> - [ES - 67111]","meta_v_taxref":null,"sample_number_proof":null,"comment":null,
+                "cor_counting_occtax":[{
+                    "id_counting_occtax":null,"id_nomenclature_life_stage":1,"id_nomenclature_sex":171,"id_nomenclature_obj_count":146,"id_nomenclature_type_count":94,"id_occurrence_occtax":null,"count_min":1,"count_max":1   
+                    }]    
+                }]
+            }
+        }
+    
+    :returns: GeoJson<TRelevesOccurrence>
+    """
+
     releveRepository = ReleveRepository(TRelevesOccurrence)
     data = dict(request.get_json())
     occurrences_occtax = None
@@ -370,13 +415,11 @@ def insertOrUpdateOneReleve(info_role):
 @permissions.check_cruved_scope("D", True, module_code="OCCTAX")
 @json_resp
 def deleteOneReleve(id_releve, info_role):
-    """Suppression d'une données d'un relevé et des occurences associés
-      c-a-d un enregistrement de la table t_releves_occtax
+    """Delete one releve and its associated occurrences and counting
+    
+    .. :quickref: Occtax;
 
-    Parameters
-    ----------
-        id_releve: int
-            identifiant de l'enregistrement à supprimer
+    :params int id_releve: ID of the releve to delete
 
     """
     releveRepository = ReleveRepository(TRelevesOccurrence)
@@ -389,13 +432,11 @@ def deleteOneReleve(id_releve, info_role):
 @permissions.check_cruved_scope("D", module_code="OCCTAX")
 @json_resp
 def deleteOneOccurence(id_occ):
-    """Suppression d'une données d'occurrence et des dénombrements associés
-      c-a-d un enregistrement de la table t_occurrences_occtax
-
-    Parameters
-    ----------
-        id_occ: int
-            identifiant de l'enregistrement à supprimer
+    """Delete one occurrence and associated counting
+    
+    .. :quickref: Occtax;
+    
+    :params int id_occ: ID of the occurrence to delete
 
     """
     q = DB.session.query(TOccurrencesOccurrence)
@@ -423,14 +464,11 @@ def deleteOneOccurence(id_occ):
 @permissions.check_cruved_scope("R", module_code="OCCTAX")
 @json_resp
 def deleteOneOccurenceCounting(id_count):
-    """Suppression d'une données de dénombrement
-      c-a-d un enregistrement de la table cor_counting_occtax
-
-
-    Parameters
-    ----------
-        id_count: int
-            identifiant de l'enregistrement à supprimer
+    """Delete one counting
+    
+    .. :quickref: Occtax;
+    
+    :params int id_count: ID of the counting to delete
 
     """
     q = DB.session.query(CorCountingOccurrence)
@@ -457,6 +495,13 @@ def deleteOneOccurenceCounting(id_count):
 @blueprint.route("/defaultNomenclatures", methods=["GET"])
 @json_resp
 def getDefaultNomenclatures():
+    """Get default nomenclatures define in occtax module
+    
+    .. :quickref: Occtax;
+    
+    :returns: dict: {'MODULE_CODE': 'ID_NOMENCLATURE'}
+
+    """
     params = request.args
     group2_inpn = "0"
     regne = "0"
@@ -495,6 +540,13 @@ def getDefaultNomenclatures():
     redirect_on_expiration=current_app.config.get("URL_APPLICATION"),
 )
 def export(info_role):
+    """Export data from pr_occtax.export_occtax_sinp view (parameter)
+    
+    .. :quickref: Occtax; Export data from pr_occtax.export_occtax_sinp
+    
+    :query str format: format of the export ('csv', 'geojson', 'shapefile')
+
+    """
     export_view_name = blueprint.config["export_view_name"]
     export_geom_column = blueprint.config["export_geom_columns_name"]
     export_id_column_name = blueprint.config["export_id_column_name"]
