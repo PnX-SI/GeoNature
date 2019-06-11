@@ -14,9 +14,13 @@ install:
   - pip install -r requirements-dev.txt
   - cd tests/travis_test
   - ./travis_test.sh
-  - cd ../../
+  # install frontend
+  - cd ../../../frontend
+  - nvm install 9
+  - npm install --only=dev
 
 script:
+  - cd backend
   # - pytest
   - cd ../docs
   - make html
