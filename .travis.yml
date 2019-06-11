@@ -20,7 +20,7 @@ install:
   - npm install --only=dev
 
 script:
-  - cd backend
+  - cd ../backend
   # - pytest
   - cd ../docs
   - make html
