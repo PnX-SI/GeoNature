@@ -17,7 +17,7 @@ install:
   # install frontend
   - cd ../../../frontend
   - nvm install 9
-  - npm install --only=dev
+  - npm install
 
 script:
   -  # test backend
