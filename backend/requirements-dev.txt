@@ -69,3 +69,4 @@ virtualenv==15.1.0
 wcwidth==0.1.7
 cookies==2.2.1
 pytest-flask==0.10.0
+sphinx_rtd_theme==0.4.3

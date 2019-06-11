@@ -18,21 +18,3 @@ Bienvenue dans la documentation de GeoNature
    FAQ
    authors
    CHANGELOG
-
-
-API documentation
-------------------
-
-.. qrefflask:: geonature.utils.command:get_app_for_cmd()
-  :undoc-static:
-
-API Details
------------
-.. autoflask:: geonature.utils.command:get_app_for_cmd()
-  :undoc-static:
-
-
-
-
-
-

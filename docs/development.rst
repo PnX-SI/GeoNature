@@ -1102,6 +1102,20 @@ Ces composants peuvent être considérés comme des "dump components" ou "presen
 			</tr>
 		</table>
                 
+Documentation API Backend
+-------------------------
+
+Liste des routes
+""""""""""""""""
+
+.. qrefflask:: geonature.utils.command:get_app_for_cmd()
+  :undoc-static:
+
+Documentation des routes
+""""""""""""""""""""""""
+
+.. autoflask:: geonature.utils.command:get_app_for_cmd()
+  :undoc-static:
 
 Outils d'aide à la qualité du code
 ----------------------------------
