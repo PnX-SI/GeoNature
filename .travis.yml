@@ -17,7 +17,15 @@ install:
   - cd ../../
 
 script:
-  - pytest
+  # - pytest
+  - cd docs
+  - make html
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN # set in the Travis dashboard
+  local_dir: docs/build/html
 
 notifications:
   email:
