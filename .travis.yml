@@ -20,10 +20,15 @@ install:
   - npm install --only=dev
 
 script:
+  -  # test backend
   - cd ../backend
   # - pytest
+  # test frontend TODO
+  # génération de la doc
   - cd ../docs
   - make html
+  - cd ../frontend
+  - npm run compodoc
 
 # deploy github pages on commit on master
 deploy:
