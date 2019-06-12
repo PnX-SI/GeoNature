@@ -26,9 +26,9 @@ script:
   # génération de la doc
   - cd ../docs
   - make html
-  - cd ../frontend
   # create a repository for frontend doc
   - mkdir build/html/frontend
+  - cd ../frontend
   #- npm run build
   - npm run compodoc
 
