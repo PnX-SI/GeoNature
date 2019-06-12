@@ -2,6 +2,21 @@ import { Component, OnInit, Input, EventEmitter, Output, OnChanges } from '@angu
 import { FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * Ce composant permet d'afficher un input de type multiselect à partir d'une liste de valeurs passé en Input
+ *
+ * @example
+ * <pnx-multiselect
+ * [values]="organisms"
+ * [parentFormControl]="form.controls.organisms"
+ * [keyLabel]="'nom_organisme'"
+ * [keyValue]="'id_organisme"'
+ * [label]="'Organisme'"
+ * (onChange)="doWhatever($event)
+ * (onDelete)="deleteCallback($event)"
+ * (onSearch)="filterItems($event)">
+ * </pnx-multiselect>
+ */
 @Component({
   selector: 'pnx-multiselect',
   templateUrl: './multiselect.component.html',
@@ -14,13 +29,15 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   public savedValues = [];
 
   @Input() parentFormControl: FormControl;
-  // value of the dropddown
+  //** Valeurs à afficher dans la liste déroulante. Doit être un tableau de dictionnaire */
   @Input() values: Array<any>;
-  // key of the array of options for the input displaying
+  /**
+   * Clé du dictionnaire de valeur que le composant doit prendre pour l'affichage de la liste déroulante
+   */
   @Input() keyLabel: string;
-  // key of the array of options for the formControl value
+  /** Clé du dictionnaire que le composant doit passer au formControl */
   @Input() keyValue: string;
-  // Display all in the select list (set the control to null)
+  /**              Est-ce que le composant doit afficher l'item "tous" dans les options du select ?  */
   @Input() displayAll: boolean;
   // enable the search bar when dropdown
   @Input() searchBar: boolean;
@@ -28,6 +45,10 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   @Input() disabled: boolean;
   // label displayed above the input
   @Input() label: any;
+  /**
+   * Booléan qui permet de passer tout l'objet au formControl, et pas seulement une propriété de l'objet renvoyé par l'API. Facultatif, par défaut à ``false``, c'est alors l'attribut passé en Input ``keyValue`` qui est renvoyé au formControl.
+   * Lorsque l'on passe ``true`` à cet Input, l'Input ``keyValue`` devient inutile.
+   */
   @Input() bindAllItem: false;
   // time before the output are triggered
   @Input() debounceTime: number;
