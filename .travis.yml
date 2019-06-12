@@ -1,35 +1,34 @@
-matrix:
-  include:
-    - language: python
-      python:
-        - "3.5"
-      before_install:
-        - sudo apt-get install -y libgdal1-dev libgdal-dev
-        - sudo apt-get install -y python-gdal
+language: python
 
-      # install dependencies
-      install:
-        - cd backend
-        - pip install -r requirements.txt
-        - pip install -r requirements-dev.txt
-        - cd tests/travis_test
-        - ./travis_test.sh
+python:
+  - "3.5"
 
-      script:
-        -  # test backend
-        - cd ../backend
-        # - pytest
-        # génération de la doc
-        - cd ../docs
-        - make html
-    - language: node-js
-      node_js:
-        - "9.11.2"
-      install:
-        - cd ../frontend
-        - npm install
-      script:
-        - npm run compodoc
+before_install:
+  - sudo apt-get install -y libgdal1-dev libgdal-dev
+  - sudo apt-get install -y python-gdal
+
+# install dependencies
+install:
+  - cd backend
+  - pip install -r requirements-dev.txt
+  - cd tests/travis_test
+  - ./travis_test.sh
+  # install frontend
+  - cd ../../../frontend
+  - nvm install 9
+  - npm install
+
+script:
+  -  # test backend
+  - cd ../backend
+  # - pytest
+  # test frontend TODO
+  # génération de la doc
+  - cd ../docs
+  - make html
+  - cd ../frontend
+  #- npm run build
+  - npm run compodoc
 
 # deploy github pages on commit on master
 deploy:
