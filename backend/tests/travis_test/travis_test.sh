@@ -11,8 +11,10 @@ export PGPASSWORD=$db_pass;psql -U $db_user -h test.ecrins-parcnational.net -d $
 python ../../../geonature_cmd.py install_command
 
 geonature install_gn_module $TRAVIS_BUILD_DIR/contrib/occtax occtax --build=false
+
 geonature generate_frontend_tsconfig
-geonature generate_frontend_modules_route  
+geonature generate_frontend_modules_route
+geonature update_configuration --build=false
 
 
 

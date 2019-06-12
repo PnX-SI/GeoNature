@@ -28,6 +28,7 @@ script:
   - cd ../docs
   - make html
   - cd ../frontend
+  - npm run build
   - npm run compodoc
 
 # deploy github pages on commit on master
