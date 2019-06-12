@@ -256,13 +256,12 @@ CREATE TABLE gn_sensitivity.cor_sensitivity_synthese  (
         CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_sensitivity, 'SENSIBILITE'::character varying)) NOT VALID
 );
 
-
 CREATE OR REPLACE FUNCTION gn_sensitivity.fct_tri_maj_id_sensitivity_synthese()
   RETURNS trigger AS
 $BODY$
 BEGIN
     UPDATE gn_synthese.synthese SET id_nomenclature_sensitivity = NEW.id_nomenclature_sensitivity
-    WHERE id_synthese = NEW.id_synthese;
+    WHERE unique_id_sinp = NEW.uuid_attached_row;
     RETURN NEW;
 END;
 $BODY$
@@ -274,7 +273,7 @@ CREATE OR REPLACE FUNCTION gn_sensitivity.fct_tri_delete_id_sensitivity_synthese
 $BODY$
 BEGIN
     UPDATE gn_synthese.synthese SET id_nomenclature_sensitivity = gn_synthese.get_default_nomenclature_value('SENSIBILITE'::character varying)
-    WHERE id_synthese = OLD.id_synthese;
+    WHERE unique_id_sinp = OLD.uuid_attached_row;
     RETURN OLD;
 END;
 $BODY$
