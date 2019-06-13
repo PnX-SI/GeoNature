@@ -71,26 +71,32 @@ Développer et installer un gn_module
 
 GeoNature a été conçu pour fonctionner en briques modulaires.
 
-Chaque protocole, répondant à une question scientifique, est amené à avoir son propre module GeoNature comportant son modèle de base de données, son API et son interface utilisateur.
+Chaque protocole, répondant à une question scientifique, est amené à avoir son propre module GeoNature comportant son modèle de base de données (dans un schéma séparé), son API et son interface utilisateur.
 
 Les modules développés s'appuieront sur le coeur de GeoNature qui est constitué d'un ensemble de briques réutilisables.
 
-En base de données, le coeur de GeoNature est constitué de l'ensemble des référentiels (utilisateurs, taxonomique, géographique)
-et du schéma ``synthese`` regroupant l'ensemble données saisies dans les différents protocoles.
+En base de données, le coeur de GeoNature est constitué de l'ensemble des référentiels (utilisateurs, taxonomique, nomenclatures géographique)
+et du schéma ``synthese`` regroupant l'ensemble données saisies dans les différents protocoles (voir doc administrateur pour plus de détail sur le modèle de données).
 
-L'API du coeur (`voir doc <https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#api>`__) permet d'interroger les schémas de la base de données "coeur" de GeoNature.
+L'API du coeur permet d'interroger les schémas de la base de données "coeur" de GeoNature. Une documentation complète de l'API est disponible dans la rubrique DEVELOPPEMENT/Documentation API backend
 
-Du côté interface utilisateur, GeoNature met à disposition un ensemble de composants Angular réutilisables (`voir doc <https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#d%C3%A9veloppement-frontend>`__), pour l'affichage
-des cartes, des formulaires etc...
+Du côté interface utilisateur, GeoNature met à disposition un ensemble de composants Angular réutilisables (http://pnx-si.github.io/GeoNature/frontend/modules/GN2CommonModule.html
+), pour l'affichage des cartes, des formulaires etc...
 
 Développer un gn_module
 """""""""""""""""""""""
 
 Avant de développer un gn_module, assurez-vous d'avoir GeoNature bien installé sur votre machine (`voir doc <https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-standalone.rst>`__).
 
-Afin de pouvoir connecter ce module au "coeur", il est impératif de suivre une arborescence prédéfinie par l'équipe GeoNature.
+Afin de pouvoir connecter ce module au "coeur", il est impératif de suivre une arborescence prédéfinie par l'équipe GeoNature. 
+Un temmplate GitHub a été prévu à cet effet (https://github.com/PnX-SI/gn_module_template). Il est possible de créer un nouveau dépôt GitHub à partir de ce template, ou alors de copier/coller le contenu du dépôt dans un nouveau.
 
-Voici la structure minimale que le module doit comporter (voir le dossier `contrib <https://github.com/PnX-SI/GeoNature/tree/develop/contrib/module_example>`__ de GeoNature pour trouver un exemple) :
+Cette arborescence implique de développer le module dans les technologies du coeur de GeoNature à savoir :
+
+- Le backend est développé en Python grâce au framework Flask.
+- Le frontend est développé grâce au framework Angular (voir la version actuelle du coeur)
+
+GeoNature prévoit cependant l'intégration de module "externe" dont le frontend serait développé dans d'autres technologies. La gestion de l'intégration du module est à la charge du développeur.
 
 - Le module se placera dans un dossier à part du dossier "GeoNature" et portera le suffixe "gn_module"
 
@@ -111,8 +117,8 @@ Voici la structure minimale que le module doit comporter (voir le dossier `contr
 
   - ``backend`` : dossier comportant l'API du module utilisant un blueprint Flask
     
-    - Le fichier ``blueprint.py`` comprend les routes du module (ou instancie les nouveaux blueprints du module)
-    - Le fichier ``models.py`` comprend les modèles SQLAlchemy des tables du module.
+  - Le fichier ``blueprint.py`` comprend les routes du module (ou instancie les nouveaux blueprints du module)
+  - Le fichier ``models.py`` comprend les modèles SQLAlchemy des tables du module.
   
   - ``frontend`` : le dossier ``app`` comprend les fichiers typescript du module, et le dossier ``assets`` l'ensemble des médias (images, son).
 
@@ -121,6 +127,19 @@ Voici la structure minimale que le module doit comporter (voir le dossier `contr
     - A la racine du dossier ``frontend``, on retrouve également un fichier ``package.json`` qui décrit l'ensemble des librairies JS necessaires au module.
       
   - ``data`` : ce dossier comprenant les scripts SQL d'installation du module
+
+
+Le module est ensuite installable à la manière d'un plugin grâce à la commande ``geonature install_gn_module`` de la manière suivante:
+
+::
+
+    # se placer dans le répertoire backend de GeoNature
+    cd <GEONATURE_DIRECTORY>/backend
+    # activer le virtualenv python
+    source venv/bin/activate 
+    # lancer la commande d'installation 
+    geonature install_gn_module <CHEMIN_ABSOLU_DU_MODULE> <URL_API>
+    # example geonature install_gn_module /home/moi/gn_module_validation /validation
 
 
 Bonnes pratiques
@@ -555,6 +574,22 @@ A l'indice 1 du tuple: un booléan spécifiant si le CRUVED est hérité depuis 
     cruved, herited = cruved_scope_for_user_in_module(id_role=1)
 
 
+Documentation API Backend
+"""""""""""""""""""""""""
+
+Liste des routes
+*****************
+
+.. qrefflask:: geonature.utils.command:get_app_for_cmd(with_flask_admin=False)
+  :undoc-static:
+
+Documentation des routes
+************************
+
+.. autoflask:: geonature.utils.command:get_app_for_cmd()
+  :undoc-static:
+
+
 Développement Frontend
 ----------------------
 
@@ -688,20 +723,6 @@ Un ensemble de composant permattant de simplifier l'affichage des cartographies 
 			</tr>
 		</table>
                 
-Documentation API Backend
--------------------------
-
-Liste des routes
-""""""""""""""""
-
-.. qrefflask:: geonature.utils.command:get_app_for_cmd()
-  :undoc-static:
-
-Documentation des routes
-""""""""""""""""""""""""
-
-.. autoflask:: geonature.utils.command:get_app_for_cmd()
-  :undoc-static:
 
 Outils d'aide à la qualité du code
 ----------------------------------
