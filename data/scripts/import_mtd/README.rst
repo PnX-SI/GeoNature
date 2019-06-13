@@ -50,3 +50,10 @@ Execution du script
 ::
     
     python run_import_mtd.py > import_mtd.log
+
+
+N.B
+---
+
+Script rédigé par un novice... n'hésitez pas à contribuer et nettoyer le script!
+# TODO : ajouter un paramètre pour choisir la date de début par défaut des cadres et jdd lorsque l'information n'est pas renseignée à la source. 
