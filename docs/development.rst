@@ -586,7 +586,7 @@ Liste des routes
 Documentation des routes
 ************************
 
-.. autoflask:: geonature.utils.command:get_app_for_cmd()
+.. autoflask:: geonature.utils.command:get_app_for_cmd(with_flask_admin=False)
   :undoc-static:
 
 
