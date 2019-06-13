@@ -12,11 +12,11 @@ Installation de l'environnement Python
 - Pour être plus propre il est conseillé de créer un nouveau virtualenv et d'y installer les paquets Python
 
 ::
-	cd /home/'whoami'/geonature/data/scripts/import_mtd
-	virtualenv -p /usr/bin/python3 venv #Python 3 n'est pas requis
-	source venv/bin/activate
-	pip install psycopg2 requests
-	deactivate
+    cd /home/'whoami'/geonature/data/scripts/import_mtd
+    virtualenv -p /usr/bin/python3 venv #Python 3 n'est pas requis
+    source venv/bin/activate
+    pip install psycopg2 requests
+    deactivate
 
 
 Configuration du script
