@@ -1,24 +1,22 @@
-
 label {
-  text-align:left;
-  color:#607D8B;
+  text-align: left;
 }
 
 .btn {
-  border-color: #607D8B;
+  border-color: #607d8b;
 }
 
 label:hover {
-  text-align:left;
-  color:#607D8B;
+  text-align: left;
+  color: #607d8b;
 }
 
 #statusChange {
-  background-color: #EAEAEA;
+  background-color: #eaeaea;
 }
 
 #modify {
-  font-size: 18px; 
+  font-size: 18px;
 }
 
 .validationCircle {
@@ -27,7 +25,7 @@ label:hover {
   height: 20px;
   padding: 0px;
   //background: #00ff00;
-  color: 'black';
+  color: "black";
   border: 1px solid black;
   text-align: center;
   font: 15px Arial, sans-serif;
@@ -52,20 +50,20 @@ label:hover {
   z-index: 1;
 }
 // a confirmer
-.edit{
+.edit {
   display: flex;
 }
 
 .modal-body {
-  form{
+  form {
     #validButtons label {
-      color : #607D8B;
+      color: #607d8b;
     }
     #validButtons label.waves-effect {
-      color : #fff;
+      color: #fff;
     }
   }
-  #statusChange{
+  #statusChange {
     padding: 5px;
   }
   form.ng-invalid {

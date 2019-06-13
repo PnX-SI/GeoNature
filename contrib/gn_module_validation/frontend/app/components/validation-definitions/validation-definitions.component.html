@@ -15,7 +15,7 @@
 
   <tbody>
     <tr *ngFor="let def of definitions">
-      <td  [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[def.status_id].color}"> {{def.status}} </td>
+      <td  [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[def.cd_nomenclature]?.color}"> {{def.status}} </td>
       <td> {{def.definition}} </td>
     </tr>
   </tbody>

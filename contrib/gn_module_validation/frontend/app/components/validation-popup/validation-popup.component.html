@@ -2,13 +2,14 @@
 <p></p>
 <button type="button" id="validatorButton" class="btn btn-success box-shadow" [disabled]="!isAccess()" (click)="openVerticallyCentered(content)">Attribuer un statut de validation</button>
 
+
 <ng-template #content let-c="close" let-d="dismiss">
 
 <!-- Modal Validation Popup-->
 
       <!-- Modal content-->
 
-        <form [formGroup]="statusForm" class="modal-content">
+        <form class="modal-content">
 
 
             <div class="modal-header" style="justify-content: center" >
@@ -28,18 +29,14 @@
                 <legend> Choix du statut </legend>
 
                 <div>
-                    <span *ngFor="let id of status_keys" id="validButtons">
-                    <!-- Formulaire pour le choix des standards et des formats de téléchargement des fichiers -->
-                      <div *ngIf="VALIDATION_CONFIG.STATUS_INFO[id].cat !== 'assessable'"> </div>
-                      <div *ngIf="VALIDATION_CONFIG.STATUS_INFO[id].cat === 'notassessable'" style="padding-top:30px;"> </div>
+                    <span *ngFor="let item of validationStatus" id="validButtons">
   
-                      <label *ngIf="VALIDATION_CONFIG.STATUS_INFO[id].cat !== 'notassessed'" [ngStyle]="{'background-color': VALIDATION_CONFIG.STATUS_INFO[id].color}" role="button"  class="btn btn-success box-shadow waves-effect" aria-pressed="true">
-                        <input type="radio" formControlName="statut" value="{{id}}">
-                        {{status_names[id]}}</label>
-  
-                      <label *ngIf="VALIDATION_CONFIG.STATUS_INFO[id].cat === 'notassessed'" [ngStyle]="{'background-color': VALIDATION_CONFIG.STATUS_INFO[id].color}" role="button" class="btn btn-success box-shadow" aria-pressed="true">
-                        <input type="radio" formControlName="statut" value="{{id}}">
-                        {{status_names[id]}}</label>
+                      <label [ngStyle]="{'background-color': VALIDATION_CONFIG.STATUS_INFO[item.cd_nomenclature]?.color}" role="button" class="btn btn-success box-shadow" aria-pressed="true">
+                        <input (click)="setCurrentCdNomenclature(item)" type="radio" [formControl]="statusForm.controls.statut" value="{{item.id_nomenclature}}">
+                        {{item.mnemonique}}</label>
+
+
+
                     </span>
                   </div>
                 <br>
@@ -50,7 +47,7 @@
 
                 <div class="md-form mb-0" style="padding-top:30px;">
                   <span> Commentaire : </span>
-                  <textarea type="text" rows="1" class="form-control md-textarea" formControlName="comment"> </textarea>
+                  <textarea type="text" rows="1" class="form-control md-textarea" [formControl]="statusForm.controls.comment"> </textarea>
                 </div>
 
             </div>
@@ -61,7 +58,6 @@
             <!--<i class="material-icons">done</i> -->
             Enregistrer </button>
         </div>
-
       </form>
       
 </ng-template>

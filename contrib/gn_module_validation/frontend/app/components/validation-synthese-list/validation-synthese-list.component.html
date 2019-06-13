@@ -31,9 +31,10 @@
   <ngx-datatable-column *ngFor="let col of VALIDATION_CONFIG.LIST_COLUMNS_FRONTEND" name="{{col.name}}" prop="{{col.prop}}"
     maxWidth="{{col.max_width}}">
     <ng-template *ngIf="col.prop === 'id_nomenclature_valid_status'" let-row="row" ngx-datatable-cell-template>
-      <div class="statusContent"> <span class="validationCircle" [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.id_nomenclature_valid_status].color}"><i class="material-icons">{{row.validation_auto}}</i></span>
-        <div [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.id_nomenclature_valid_status].color}" class="statusName">
-          <span>{{statusNames[row.id_nomenclature_valid_status]}}</span><span *ngIf="row.validation_auto"> (automatique)</span>
+        <!-- VALIDATION_CONFIG.STATUS_INFO[row.cd_nomenclature_validation_status] -->
+      <div class="statusContent"> <span class="validationCircle" [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.cd_nomenclature_validation_status]?.color}"><i class="material-icons">{{row.validation_auto}}</i></span>
+        <div [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.cd_nomenclature_validation_status]?.color}" class="statusName">
+          <span>{{row.mnemonique}}</span><span *ngIf="row.validation_auto"> (automatique)</span>
         </div>
       </div>
     </ng-template>
@@ -48,6 +49,7 @@
         </button>
      </ng-template>
   </ngx-datatable-column>
+
 
   <ngx-datatable-footer>
      <ng-template
@@ -84,7 +86,7 @@
 <!-- MODAL FOR VALIDATION -->
 <pnx-validation-popup [selectedPages]="selectedPages" [currentPage]="npage" 
   [nbTotalObservation]="nbTotalObservation" [observations]="selectedObs" 
-  [status_keys]="statusKeys" [status_names]="statusNames" 
+  [validationStatus]="validationStatus"
   (valStatus)="onStatusChange($event)" (valDate)="onValidationDateChange($event)">
 </pnx-validation-popup>
 

@@ -20,7 +20,7 @@
                 <i [hidden]="searchBarHidden" class="fa fa-caret-left"></i>
                 <i [hidden]="!searchBarHidden" class="fa fa-caret-right"></i>
             </button>
-          <pnx-validation-synthese-list [inputSyntheseData]="_mapListService.tableData" [statusNames]="statusNames" [statusKeys]="statusKeys"></pnx-validation-synthese-list>
+          <pnx-validation-synthese-list [inputSyntheseData]="_mapListService.tableData" [validationStatus]="validationStatus"></pnx-validation-synthese-list>
 
           <!-- select only observations with awaiting validation status 
           <div id="awaitingObs" [formGroup]="awaitingForm">
