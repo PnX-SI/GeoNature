@@ -14,6 +14,7 @@ def getGeoInfo():
     """
     From a posted geojson, the route return the municipalities intersected
     and the altitude min/max
+    .. :quickref: Ref Geo;
     """
     data = dict(request.get_json())
     sql = text(
@@ -64,6 +65,7 @@ def getAreasIntersection():
     """
     From a posted geojson, the route return all the area intersected
     from l_areas
+    .. :quickref: Ref Geo;
     """
     data = dict(request.get_json())
 
@@ -117,6 +119,7 @@ def getAreasIntersection():
 def get_municipalities():
     """
     Return the municipalities
+    .. :quickref: Ref Geo;
     """
     parameters = request.args
 
@@ -137,6 +140,7 @@ def get_municipalities():
 def get_areas():
     """
         Return the areas of ref_geo.l_areas without geometry
+        .. :quickref: Ref Geo;
     """
     # change all args in a list of value
     params = {key: request.args.getlist(key) for key, value in request.args.items()}

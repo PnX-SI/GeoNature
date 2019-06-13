@@ -21,6 +21,8 @@ routes = Blueprint("gn_commons", __name__)
 def get_modules(info_role):
     """
     Return the allowed modules of user from its cruved
+    .. :quickref: Commons;
+    
     """
     params = request.args
     q = DB.session.query(TModules)
@@ -57,6 +59,7 @@ def get_module(module_code):
 def get_media(id_media):
     """
         Retourne un media
+        .. :quickref: Commons;
     """
     m = TMediaRepository(id_media=id_media).media
     if m:
@@ -70,6 +73,8 @@ def insert_or_update_media(id_media=None):
     """
         Insertion ou mise à jour d'un média
         avec prise en compte des fichiers joints
+
+        .. :quickref: Commons;
     """
     if request.files:
         file = request.files["file"]
@@ -95,6 +100,8 @@ def insert_or_update_media(id_media=None):
 def delete_media(id_media):
     """
         Suppression d'un media
+
+        .. :quickref: Commons;
     """
     TMediaRepository(id_media=id_media).delete()
     return {"resp": "media {} deleted".format(id_media)}
@@ -106,6 +113,10 @@ def delete_media(id_media):
 @routes.route("/list/parameters", methods=["GET"])
 @json_resp
 def get_parameters_list():
+    """
+    Get all parameters from gn_commons.t_parameters
+    .. :quickref: Commons;
+    """
     q = DB.session.query(TParameters)
     data = q.all()
 
