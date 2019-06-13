@@ -1,9 +1,32 @@
-
-
-
-Ce script permet d'importer les métadonnées à partir de leurs uuid en utilisant le webservice mtd de l'INPN.
+**Ce script permet d'importer les métadonnées à partir de leurs uuid en utilisant le webservice mtd de l'INPN.**
 Il permet de rappatrier dans une instance GeoNature les métadonnées correspondant à des données INPN qui 
 déjà importées dans la BDD GeoNature depuis un export INPN.  
+
+
+Fonctionnement général du script
+--------------------------------
+
+Les données exportées par l'INPN comprennent un certain nombre d'informations élémentaires d'échange. L'ensemble des métadonnées ne sont pas transmises pour des questions de simplicité des exports : seuls quelques champs de base dont les identifiants (uuid) des cadres d'acquisition et jeux de données sont communiqués. 
+
+Selon l'utilisation qui est faite des données naturalistes (analyse, rediffusion etc), il peut être nécessaire de posséder les métadonnées dans leur ensemble. Le but de ce script est donc de rapatrier dans une instance de GeoNature l'ensemble des métadonnées **correspondant à des données préalablement importées depuis l'INPN**. 
+
+Afin de récupérer ces informations, **le script s'appuie sur les UUID des cadres d'acquisition et jeux de données** auxquelles sont rattachées les différentes données naturalistes importées depuis l'INPN. Il collecte ensuite les fichiers XML correspondants sur le site de l'INPN, les découpe, et en extrait les informations nécessaires pour les intégrer à l'instance GeoNature locale. 
+
+**Le script permet, de cette manière** : 
+
+- *De créer et mettre à jour des cadres d'acquisition et jeux de données (libellé, description etc)*
+
+- *De créer et mettre à jour les publications et protocoles liés aux métadonées en question (voir référentiel)*
+
+- *De créer et mettre à jour, sur la base des UUID, les organismes acteurs des cadres d'acquisition et jeux de données importés*
+
+- *De créer et mettre à jour, sur la base de leurs noms+Prénom, les personnes acteurs des cadres et jeux de données importés*
+
+- *D'établir toutes les correspondances nécessaires pour GeoNature (objectifs, territoires, volet SINP, publications, protocoles, acteurs etc qui sont multiples pour un jeu de données ou un cadre donné).*
+
+
+Le script va créer, mais aussi supprimer et mettre à jour des données dans toutes les tables du schéma gn_meta, et dans les tables t_roles et bib_organismes du schéma utilisateurs. Il s'appuie également sur le schéma ref_nomenclatures (mais en simple lecture). 
+**Il est donc recommandé de faire une sauvegarde avant tout import de métadonnées** en cas de dysfonctionnement. 
 
 
 Installation de l'environnement Python
@@ -36,6 +59,8 @@ Configuration du script
 
 - Vous pouvez également choisir de conserver ou non les fichiers émis par le webservice de l'INPN sur votre serveur (dossier du script)
 
+
+
 Execution du script
 -------------------
 
@@ -52,8 +77,10 @@ Execution du script
     python run_import_mtd.py > import_mtd.log
 
 
+
+
 N.B
 ---
 
-Script rédigé par un novice... n'hésitez pas à contribuer et nettoyer le script!
+Script rédigé par un novice... n'hésitez pas à contribuer et le nettoyer!
 # TODO : ajouter un paramètre pour choisir la date de début par défaut des cadres et jdd lorsque l'information n'est pas renseignée à la source. 
