@@ -46,6 +46,9 @@ extensions = [
     "sphinxcontrib.autohttp.flaskqref",
 ]
 
+http_index_ignore_prefixes = ["/nomenclatures"]
+http_index_shortname = "api"
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 

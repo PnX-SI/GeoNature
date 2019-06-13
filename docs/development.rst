@@ -574,6 +574,22 @@ A l'indice 1 du tuple: un booléan spécifiant si le CRUVED est hérité depuis 
     cruved, herited = cruved_scope_for_user_in_module(id_role=1)
 
 
+Documentation API Backend
+"""""""""""""""""""""""""
+
+Liste des routes
+*****************
+
+.. qrefflask:: geonature.utils.command:get_app_for_cmd(with_flask_admin=False)
+  :undoc-static:
+
+Documentation des routes
+************************
+
+.. autoflask:: geonature.utils.command:get_app_for_cmd()
+  :undoc-static:
+
+
 Développement Frontend
 ----------------------
 
@@ -707,20 +723,6 @@ Un ensemble de composant permattant de simplifier l'affichage des cartographies 
 			</tr>
 		</table>
                 
-Documentation API Backend
--------------------------
-
-Liste des routes
-""""""""""""""""
-
-.. qrefflask:: geonature.utils.command:get_app_for_cmd()
-  :undoc-static:
-
-Documentation des routes
-""""""""""""""""""""""""
-
-.. autoflask:: geonature.utils.command:get_app_for_cmd()
-  :undoc-static:
 
 Outils d'aide à la qualité du code
 ----------------------------------
