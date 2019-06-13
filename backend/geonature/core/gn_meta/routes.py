@@ -47,12 +47,13 @@ def get_datasets_list():
 @json_resp
 def get_datasets(info_role):
     """
-    Retourne la liste des datasets
-    Parameters:
-        info_role(TRole)
-        active (boolean)
-        id_acquisition_framework (integer)
-
+    Get datasets list
+    .. :quickref: Metadata;
+    :param info_role: add with kwargs
+    :type info_role: TRole
+    :query boolean active: filter on active fiel
+    :query int id_acquisition_framework: get only dataset of given AF
+    :returns:  `dict{'data':list<TDatasets>, 'with_erros': <boolean>}`
     """
     with_mtd_error = False
     if current_app.config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
@@ -79,7 +80,11 @@ def get_datasets(info_role):
 @json_resp
 def get_dataset(id_dataset):
     """
-    Retourne un JDD à partir de son ID
+    Get one dataset
+    .. :quickref: Metadata;
+    :param id_dataset: the id_dataset
+    :param type: int
+    :returns: dict<TDataset>
     """
     data = DB.session.query(TDatasets).get(id_dataset)
     cor = data.cor_dataset_actor
@@ -101,6 +106,10 @@ def get_dataset(id_dataset):
 @permissions.check_cruved_scope("C", True, module_code="METADATA")
 @json_resp
 def post_dataset(info_role):
+    """
+    Post a dataset
+    .. :quickref: Metadata;
+    """
     if info_role.value_filter == "0":
         raise InsufficientRightsError(
             ('User "{}" cannot "{}" a dataset').format(
@@ -133,7 +142,8 @@ def post_dataset(info_role):
 @json_resp
 def get_acquisition_frameworks(info_role):
     """
-    Retourne tous les cadres d'acquisition filtrés avec le cruved
+    Get all AF with cruved filter
+    .. :quickref: Metadata;
     """
     params = request.args
     return get_af_cruved(info_role, params)
@@ -143,7 +153,10 @@ def get_acquisition_frameworks(info_role):
 @json_resp
 def get_acquisition_framework(id_acquisition_framework):
     """
-    Retourn un cadre d'acquisition à partir de son ID
+    Get on AF
+    .. :quickref: Metadata;
+    :param id_acquisition_framework: the id_acquisition_framework
+    :param type: int
     """
     af = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
     if af:
@@ -155,6 +168,10 @@ def get_acquisition_framework(id_acquisition_framework):
 @permissions.check_cruved_scope("C", True, module_code="METADATA")
 @json_resp
 def post_acquisition_framework(info_role):
+    """
+    Post a dataset
+    .. :quickref: Metadata;
+    """
     if info_role.value_filter == "0":
         raise InsufficientRightsError(
             ('User "{}" cannot "{}" a dataset').format(
@@ -215,7 +232,10 @@ def get_cd_nomenclature(id_type, cd_nomenclature):
 @routes.route("/aquisition_framework_mtd/<uuid_af>", methods=["POST"])
 @json_resp
 def post_acquisition_framework_mtd(uuid=None, id_user=None, id_organism=None):
-    """ Post an acquisition framwork from MTD XML"""
+    """ 
+    Post an acquisition framwork from MTD web service in XML
+    .. :quickref: Metadata;
+    """
     return mtd_utils.post_acquisition_framework(
         uuid=uuid, id_user=id_user, id_organism=id_organism
     )
@@ -225,6 +245,9 @@ def post_acquisition_framework_mtd(uuid=None, id_user=None, id_organism=None):
 @routes.route("/dataset_mtd/<id_user>/<id_organism>", methods=["POST"])
 @json_resp
 def post_jdd_from_user_id(id_user=None, id_organism=None):
-    """ Post a jdd from the mtd XML"""
+    """ 
+    Post a jdd from the mtd XML
+    .. :quickref: Metadata;
+    """
     return mtd_utils.post_jdd_from_user(id_user=id_user, id_organism=id_organism)
 
