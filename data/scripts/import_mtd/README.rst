@@ -78,6 +78,19 @@ Execution du script
 
 
 
+Rattachement des données importées à leurs métadonnées nouvellement créées
+--------------------------------------------------------------------------
+
+Les données sont rattachées à un jeu de données dans GeoNature par l'identifiant id_dataset, propre à chaque instance de GeoNature, et non pas l'uuid du jeu de données. 
+Après avoir récupéré les métadonnées de l'INPN qui correspondent à vos données, devrez réattribuer les données naturalistes à leur identifiant de jeu de données (id_dataset de GeoNature). En utilisant à la fois l'identifiant source de la donnée, et l'UUID de son jeu de données de rattachement fourni dans les exports de l'INPN, vous pourrez facilement réattribuer les données à l'id_dataset de leur jeu de données nouvellement créé dans votre instance. Le script suivant (à adapter à votre contexte) peut servir d'exemple :
+
+::
+     
+     UPDATE gn_synthese.synthese s
+     SET id_dataset=m.id_dataset
+     FROM gn_meta.t_datasets m, gn_imports.import_inpn i 
+     WHERE m.unique_dataset_id=i."IDENTIFIANT_SINP_JDD"::uuid AND s.id_source=4 AND s.entity_source_pk_value=i."IDENTIFIANT_INPN"
+
 
 N.B
 ---
