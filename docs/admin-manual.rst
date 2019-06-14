@@ -280,6 +280,8 @@ Cheminement d'une donnée Occtax :
 Triggers dans la synthèse : 
 """""""""""""""""""""""""""
 
+Version 2.1.0 de GeoNature
+
 .. image :: https://geonature.fr/docs/img/2019-06-triggers-gn_synthese.jpg
 
 **Table : synthese**
