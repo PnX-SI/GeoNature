@@ -47,10 +47,10 @@ export class ValidationSyntheseListComponent
   public npage;
 
   @Input() inputSyntheseData: GeoJSON;
-  @Input() statusNames: any;
-  @Input() statusKeys: any;
+  @Input() validationStatus: Array<any>;
   @ViewChild("table") table: DatatableComponent;
   @Output() pageChange: EventEmitter<number>;
+  public validationStatusAsDict: any;
 
   constructor(
     public mapListService: MapListService,
@@ -66,7 +66,6 @@ export class ValidationSyntheseListComponent
   ) {}
 
   ngOnInit() {
-    //console.log(this.VALIDATION_CONFIG.STATUS_INFO[318].color);
     // get wiewport height to set the number of rows in the tabl
     const h = document.documentElement.clientHeight;
     this.rowNumber = Math.trunc(h / 37);
@@ -112,29 +111,32 @@ export class ValidationSyntheseListComponent
     });
   }
 
-  getStatusNames() {
-    this._ds.getStatusNames().subscribe(
-      result => {
-        // get status names
-        this.statusNames = result;
-        this.statusKeys = Object.keys(this.VALIDATION_CONFIG.STATUS_INFO);
-      },
-      err => {
-        if (err.statusText === "Unknown Error") {
-          // show error message if no connexion
-          this.toastr.error(
-            "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connexion)"
-          );
-        } else {
-          // show error message if other server error
-          this.toastr.error(err.error);
-        }
-      },
-      () => {
-        this.deselectAll();
-      }
-    );
-  }
+  // getStatusNames() {
+  //   this._ds.getStatusNames().subscribe(
+  //     result => {
+  //       console.log(result);
+  //       // {0: "Root", 1: "Inconnu", 2: "Indéterminé", 3: "Adulte", 4: "Juvénile", 5: "Immature"}
+  //       // get status names
+  //       this.statusNames = result;
+  //       this.statusKeys = Object.keys(this.VALIDATION_CONFIG.STATUS_INFO);
+  //       console.log(this.statusKeys);
+  //     },
+  //     err => {
+  //       if (err.statusText === "Unknown Error") {
+  //         // show error message if no connexion
+  //         this.toastr.error(
+  //           "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connexion)"
+  //         );
+  //       } else {
+  //         // show error message if other server error
+  //         this.toastr.error(err.error);
+  //       }
+  //     },
+  //     () => {
+  //       this.deselectAll();
+  //     }
+  //   );
+  // }
 
   onTableClick() {
     this.setSelectedObs();
@@ -197,7 +199,6 @@ export class ValidationSyntheseListComponent
   }
 
   viewFitList(id_observations) {
-    console.log(id_observations);
     // create an empty featre group
     // and fill it with the selected layer to get bounds
     this.group = new FeatureGroup();
@@ -236,12 +237,12 @@ export class ValidationSyntheseListComponent
     }
   }
 
-  onStatusChange(status) {
-    //console.log('status change : ' + status);
+  onStatusChange(cd_nomenclature) {
     for (let obs in this.mapListService.selectedRow) {
       this.mapListService.selectedRow[obs][
-        "id_nomenclature_valid_status"
-      ] = status;
+        "cd_nomenclature_validation_status"
+      ] = cd_nomenclature;
+
       this.mapListService.selectedRow[obs]["validation_auto"] = "";
     }
     this.mapListService.selectedRow = [...this.mapListService.selectedRow];
@@ -279,8 +280,7 @@ export class ValidationSyntheseListComponent
       // reset page 0 when new data appear
       this.table.offset = 0;
     }
-    this.statusNames = [];
-    this.getStatusNames();
+    this.deselectAll();
   }
 
   openInfoModal(row) {
@@ -288,8 +288,9 @@ export class ValidationSyntheseListComponent
       size: "lg",
       windowClass: "large-modal"
     });
+
     modalRef.componentInstance.oneObsSynthese = row;
-    modalRef.componentInstance.statusNames = this.statusNames;
+    modalRef.componentInstance.validationStatus = this.validationStatus;
     modalRef.componentInstance.mapListService = this.mapListService;
     modalRef.componentInstance.modifiedStatus.subscribe(modifiedStatus => {
       for (let obs in this.mapListService.tableData) {

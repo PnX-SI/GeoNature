@@ -1,7 +1,7 @@
-'''
+"""
     Définition de routes "génériques"
     c-a-d pouvant servir à tous module
-'''
+"""
 
 import os
 import logging
@@ -12,46 +12,46 @@ from geojson import FeatureCollection
 
 from geonature.utils.env import DB
 from geonature.core.gn_monitoring.config_manager import generate_config
-from geonature.utils.utilssqlalchemy import (
-    json_resp, GenericQuery, testDataType
-)
+from geonature.utils.utilssqlalchemy import json_resp, GenericQuery, testDataType
 from geonature.utils.errors import GeonatureApiError
 
 
 # from pypnusershub import routes as fnauth
 
 
-routes = Blueprint('core', __name__)
+routes = Blueprint("core", __name__)
 
 # get the root logger
 log = logging.getLogger()
 
 
-@routes.route('/config', methods=['GET'])
+@routes.route("/config", methods=["GET"])
 def get_config():
-    '''
-        Retourne les fichiers de configuration en toml
-        après les avoir parsé
-    '''
-    app_name = request.args.get('app', 'base_app')
-    vue_name = request.args.getlist('vue')
+    """
+    Parse and return configuration files as toml 
+    .. :quickref: Generic;
+    """
+    app_name = request.args.get("app", "base_app")
+    vue_name = request.args.getlist("vue")
     if not vue_name:
-        vue_name = ['default']
-    filename = '{}.toml'.format(os.path.abspath(
-        os.path.join(
-            current_app.config['BASE_DIR'], 'static',
-            'configs', app_name, *vue_name
+        vue_name = ["default"]
+    filename = "{}.toml".format(
+        os.path.abspath(
+            os.path.join(
+                current_app.config["BASE_DIR"], "static", "configs", app_name, *vue_name
+            )
         )
-    ))
+    )
     config_file = generate_config(filename)
     return jsonify(config_file)
 
 
-@routes.route('/genericview/<view_schema>/<view_name>', methods=['GET'])
+@routes.route("/genericview/<view_schema>/<view_name>", methods=["GET"])
 @json_resp
 def get_generic_view(view_schema, view_name):
-    '''
+    """
         Service générique permettant de requeter une vue
+        .. :quickref: Generic;
 
         Parameters
         ----------
@@ -99,20 +99,18 @@ def get_generic_view(view_schema, view_name):
 
 
             order by : @TODO
-    '''
+    """
     parameters = request.args
 
-    limit = int(parameters.get('limit')) if parameters.get('limit') else 100
-    page = int(parameters.get('offset')) if parameters.get('offset') else 0
+    limit = int(parameters.get("limit")) if parameters.get("limit") else 100
+    page = int(parameters.get("offset")) if parameters.get("offset") else 0
 
     # Construction de la vue
     # @TODO créer un système de mise en cache des vues mappées
-    geom = parameters.get('geometry_field', None)
+    geom = parameters.get("geometry_field", None)
 
     results = GenericQuery(
-        DB.session,
-        view_name, view_schema, geom,
-        parameters, limit, page
+        DB.session, view_name, view_schema, geom, parameters, limit, page
     ).return_query()
 
     return results
