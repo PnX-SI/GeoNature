@@ -257,7 +257,7 @@ TODO : A compléter... A voir si on mentionne les triggers ou pas...
 Tables transversales :
 """"""""""""""""""""""
 
-GeoNature contient aussi des tables de stockage transversales qui peuvent être utilisées par tous les modules. C'est le cas pour la validation, l'historisation des modifications et médias. 
+GeoNature contient aussi des tables de stockage transversales qui peuvent être utilisées par tous les modules. C'est le cas pour la validation, la sensibilité, l'historisation des modifications et les médias. 
 
 Cela permet de ne pas avoir à mettre en place des tables et mécanismes dans chaque module, mais de s'appuyer sur un stockage, des fonctions et développements factorisés, centralisés et partagés.
 
@@ -270,11 +270,110 @@ Voir ceux mis en place de Occtax vers Synthèse.
 
 Cheminement d'une donnée Occtax :
 
--> Formulaire Occtax
-  -> Ecriture dans la table ``cor_counting_occtax`` et génération d'un nouvel UUID 
-    -> Trigger d'écriture dans la table verticale ``t_validations`` à partir de la valeur par défaut de la nomenclature de validation (``gn_common.ref_nomenclatures.defaults_nomenclatures_value``)
-      -> Trigger d'écriture d'Occtax vers la synthese (on ne maitrise pas l'ordre de ces 2 triggers qui sont lancés en même temps)
-        -> Trigger de rapatriement du dernier statut de validation de la table verticale vers la synthese.
+1. Formulaire Occtax
+2. Ecriture dans la table ``cor_counting_occtax`` et génération d'un nouvel UUID 
+3. Trigger d'écriture dans la table verticale ``t_validations`` à partir de la valeur par défaut de la nomenclature de validation (``gn_common.ref_nomenclatures.defaults_nomenclatures_value``)
+4. Trigger d'écriture d'Occtax vers la synthese (on ne maitrise pas l'ordre de ces 2 triggers qui sont lancés en même temps)
+5. Trigger de rapatriement du dernier statut de validation de la table verticale vers la synthese.
+        
+
+Triggers dans la synthèse : 
+"""""""""""""""""""""""""""
+
+Version 2.1.0 de GeoNature
+
+.. image :: https://geonature.fr/docs/img/2019-06-triggers-gn_synthese.jpg
+
+**Table : synthese**
+
+Table contenant l’ensemble des données.
+Respecte le standard Occurrence de taxon du SINP.
+
+* tri_meta_dates_change_synthese
+   
+  - BEFORE INSERT OR UPDATE
+  - Mise à jour des champs ``meta_create_date`` et ``meta_update_date``
+
+* trg_refresh_taxons_forautocomplete
+   
+  - AFTER INSERT OR UPDATE OF cd_nom OR DELETE
+  - Mise à jour de la table ``taxons_synthese_autocomplete``
+  - Actions :
+  
+    1. Si suppression ou update : suppression des enregistrements avec le cd_nom concerné dans la table ``gn_synthese.taxons_synthese_autocomplete auto``. *Si un cd_nom est présent dans plusieurs enregistrements, il sera supprimé également. Il manque un test pour savoir si la suppression doit ou non être activée.*
+    2. Insertion des informations taxonomiques du cd_nom concerné dans la table ``gn_synthese.taxons_synthese_autocomplete auto``
+
+* tri_insert_cor_area_synthese
+
+  - AFTER INSERT OR UPDATE OF the_geom_local
+  - Mise à jour de la table ``cor_area_synthese``
+  - Actions :
+  
+    1. Si update : suppression des enregistrements de la table ``gn_synthese.cor_area_synthese`` avec l'id_synthese concerné
+    2. Insertion des id_areas intersectant la géométrie de la synthèse dans ``gn_synthese.cor_area_synthese``. *Prise en compte de toutes les aires qu’elles soient ou non actives. Manque enable = true*
+
+* tri_del_area_synt_maj_corarea_tax
+
+  - BEFORE DELETE
+  - Mise à jour des tables ``cor_area_taxon`` et ``cor_area_synthese``
+  - Actions :
+    
+    1. Récupération de l’ensemble des aires intersectant la donnée de synthèse
+    2. Suppression des enregistrement de ``cor_area_taxon`` avec le cd_nom et les aires concernés
+    3. Insertion dans ``cor_area_taxon`` recalculant les max, nb_obs et couleur pour chaque aire pour l’ensemble des données avec les aires concernées et le cd_nom concerné ne correspondant pas à la donnée supprimée
+    4. Suppression des enregistrements de gn_synthese.cor_area_synthese
+    
+* tri_update_cor_area_taxon_update_cd_nom
+
+  - AFTER UPDATE OF cd_nom
+  - Mise à jour de la table cor_area_taxon
+  - Actions :
+  
+    1. Récupération de l’ensemble des aires intersectant la donnée de synthèse
+    2. Recalcul ``cor_area_taxon`` pour l’ancien cd_nom via fonction ``gn_synthese.delete_and_insert_area_taxon``
+    3. Recalcul ``cor_area_taxon`` pour le nouveau cd_nom via fonction ``gn_synthese.delete_and_insert_area_taxon``
+
+
+**Table : cor_area_synthese**
+
+Table contenant l’ensemble des id_areas intersectant les enregistrements de la synthèse
+
+* tri_maj_cor_area_taxon
+
+  - AFTER INSERT OR UPDATE
+  - Mise à jour des données de cor_area_taxon
+  - Actions :
+  
+    1. Récupération du cd_nom en lien avec l’enregistrement ``cor_area_synthese``
+    2. Suppression des données de ``cor_area_taxon`` avec le ``cd_nom`` et ``id_area`` concerné
+    3. Insertion des données dans ``cor_area_taxon`` en lien avec le ``cd_nom`` et ``id_area``
+
+**Table : cor_observer_synthese**
+
+* trg_maj_synthese_observers_txt
+
+  - AFTER INSERT OR UPDATE OR DELETE
+  - Mise à jour du champ ``observers`` de la table ``synthese``
+  - Actions :
+  
+    1. Construction de la valeur textuelle des observateurs
+    2. Mise à jour du champ observer de l’enregistrement de la table ``synthese``
+    
+**FONCTIONS**
+
+* delete_and_insert_area_taxon
+
+  - Fonction qui met à jour la table ``cor_area_taxon`` en fonction d’un ``cd_nom`` et d'une liste d'``id area``
+  - Actions :
+  
+    1. Suppression des enregistrement de la table ``cor_area_taxon`` avec le ``cd_nom`` et les ``id_area`` concernés
+    2. Insertion des données dans ``cor_area_taxon`` 
+
+* color_taxon
+
+  - Fonction qui associe une couleur à une durée
+  - *Passer les couleurs en paramètres : table  gn_commons.t_parameters ?*
+  - *Passer la fonction en immutable*
 
 Modularité
 ----------

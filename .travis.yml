@@ -14,10 +14,25 @@ install:
   - pip install -r requirements-dev.txt
   - cd tests/travis_test
   - ./travis_test.sh
-  - cd ../../
+  # install frontend
+  - cd ../../../frontend
+  - nvm install 9
+  - npm install --only=dev
 
 script:
-  - pytest
+  - cd ../backend
+  # - pytest
+  - cd ../docs
+  - make html
+
+# deploy github pages on commit on master
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN # set in the Travis dashboard
+  local_dir: docs/build/html
+  on:
+    branch: master
 
 notifications:
   email:

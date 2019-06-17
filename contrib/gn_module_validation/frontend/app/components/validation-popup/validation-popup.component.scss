@@ -1,8 +1,7 @@
 #validatorButton {
-  float:right;
+  float: right;
   //background-color: #1976D2;
   border: none;
-
 }
 
 #attention {
@@ -12,17 +11,17 @@
 }
 
 label {
-  text-align:left;
-  color:#607D8B;
+  text-align: left;
+  color: black;
 }
 
 .btn {
-  border-color: #607D8B;
+  border-color: #607d8b;
 }
 
 label:hover {
-  text-align:left;
-  color:#607D8B;
+  text-align: left;
+  color: #607d8b;
 }
 
 #nbObs {
@@ -30,30 +29,30 @@ label:hover {
 }
 
 .modal-header {
-  color:white;
-  background-color:#8EAFD1;
-  border-color:#0E4175;
+  color: white;
+  background-color: #8eafd1;
+  border-color: #0e4175;
   border-bottom-width: 1px;
 }
 
 .modal-content {
-  background-color: #EAEAEA;
-  border:none;
-  &.ng-invalid{
+  background-color: #eaeaea;
+  border: none;
+  &.ng-invalid {
     border-left: none !important;
   }
 }
 
-.modal-body{
-  #validButtons:not(:last-child) label {
-    color : #fff;
-  }
+.modal-body {
+  // #validButtons:not(:last-child) label {
+  //   color : #fff;
+  // }
 }
 
 .modal-footer {
   //border-color:#0E4175;
   //border-top-width: 1px;
-  color:white;
+  color: white;
   //background-color:#8EAFD1;
 }
 
@@ -75,7 +74,7 @@ legend {
   width: 100%;
 }
 
-#hideDef{
+#hideDef {
   width: 100%;
 }
 

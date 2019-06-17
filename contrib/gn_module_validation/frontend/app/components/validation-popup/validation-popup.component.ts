@@ -1,17 +1,13 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
-import { NgbModal, NgbActiveModal, ModalDismissReasons} from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import { ModuleConfig } from "../../module.config";
-import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import {  FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbDateParserFormatter, NgbModule, NgbdButtonsRadioreactive } from "@ng-bootstrap/ng-bootstrap";
 //import { FILTERSLIST } from "./filters-list";
 import { Router } from "@angular/router";
 import { DataService } from '../../services/data.service';
 import { ToastrService } from 'ngx-toastr';
-import { Observable } from 'rxjs';
-import { DatatableComponent } from '@swimlane/ngx-datatable';
-import { GeoJSON } from 'leaflet';
-import { ValidationDefinitionsComponent } from './validation-definitions/ValidationDefinitionsComponent';
 
 
 @Component({
@@ -20,7 +16,7 @@ import { ValidationDefinitionsComponent } from './validation-definitions/Validat
   styleUrls: ["./validation-popup.component.scss"],
   providers: [MapListService]
 })
-export class ValidationPopupComponent implements OnInit {
+export class ValidationPopupComponent {
 
   error: any;
   public modalRef:any;
@@ -32,13 +28,14 @@ export class ValidationPopupComponent implements OnInit {
   public plurielNbOffPage;
   public nbOffPage;
   public validationDate;
+  public currentCdNomenclature: string;
 
   @Input() observations : Array<number>;
   @Input() selectedPages : Array<number>;
   @Input() nbTotalObservation : number;
+  @Input() validationStatus: Array<any>;
   @Input() currentPage : any;
-  @Input() status_names : any;
-  @Input() status_keys : any;
+  @Input() validation : any;
   @Output() valStatus = new EventEmitter();
   @Output() valDate = new EventEmitter();
 
@@ -57,19 +54,15 @@ export class ValidationPopupComponent implements OnInit {
         comment : ['']
       });
     }
-
-
-  ngOnInit() {
-  }
   
 
   onSubmit(value) {
     // post validation status form ('statusForm') for one or several observation(s) to backend/routes
+    
     return this.dataService.postStatus(value, this.observations).toPromise()
     .then(
       data => {
         this.promiseResult = data as JSON;
-        //console.log('retour du post : ', this.promiseResult);
         return new Promise((resolve, reject) => {
             // show success message indicating the number of observation(s) with modified validation status
             this.toastr.success('Vous avez modifié le statut de validation de ' + this.observations.length + ' observation(s)');
@@ -107,9 +100,14 @@ export class ValidationPopupComponent implements OnInit {
     );
   }
 
+  setCurrentCdNomenclature(item) {
+    this.currentCdNomenclature = item.cd_nomenclature;
+
+  }
+
   update_status() {
-    // send valstatus value to validation-synthese-list component
-    this.valStatus.emit(this.statusForm.controls['statut'].value);
+    // send cd_nomenclature value to validation-synthese-list component
+    this.valStatus.emit(this.currentCdNomenclature);
   }
 
 
