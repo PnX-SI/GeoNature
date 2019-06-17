@@ -58,6 +58,9 @@ routes = Blueprint("gn_permissions_backoffice", __name__, template_folder="templ
     redirect_on_invalid_token=current_app.config["URL_APPLICATION"] + "/#/login",
 )
 def permission_form(info_role, id_module, id_role, id_object=None):
+    """
+    .. :quickref: View_Permission;
+    """
     # TODO: check post permissions
     form = None
     module = DB.session.query(TModules).get(id_module)
@@ -166,6 +169,7 @@ def permission_form(info_role, id_module, id_role, id_object=None):
 )
 def users(info_role):
     """
+    .. :quickref: View_Permission;
     Render a list with all users with their number of cruved
     Link to edit cruved and other permissions
     Only display user which have profil in GeoNature and active user
@@ -210,6 +214,7 @@ def users(info_role):
 )
 def user_cruved(id_role):
     """
+    .. :quickref: View_Permission;
     Get all scope CRUVED (with heritage) for a user in all modules
     """
     user = DB.session.query(User).get(id_role).as_dict()
@@ -272,6 +277,7 @@ def user_cruved(id_role):
 )
 def user_other_permissions(id_role):
     """
+    .. :quickref: View_Permission;
     Get all the permissions define for a user expect SCOPE permissions
     """
     user = DB.session.query(User).get(id_role).as_dict()
@@ -313,6 +319,7 @@ def user_other_permissions(id_role):
 def other_permissions_form(id_role, id_filter_type, id_permission=None):
     """
     Form to define permisisons for a user expect SCOPE permissions
+    .. :quickref: View_Permission;
     """
     if id_permission:
         perm = DB.session.query(CorRoleActionFilterModuleObject).get(id_permission)
@@ -365,6 +372,9 @@ def other_permissions_form(id_role, id_filter_type, id_permission=None):
     redirect_on_invalid_token=current_app.config["URL_APPLICATION"] + "/#/login",
 )
 def filter_form(id_filter_type, id_filter=None):
+    """
+    .. :quickref: View_Permission;
+    """
     # TODO: check post permissions
     filter_type = DB.session.query(BibFiltersType).get(id_filter_type)
     # if id_filter: its an edit, preload the form
@@ -406,6 +416,9 @@ def filter_form(id_filter_type, id_filter=None):
     redirect_on_invalid_token=current_app.config["URL_APPLICATION"] + "/#/login",
 )
 def filter_list(id_filter_type):
+    """
+    .. :quickref: View_Permission;
+    """
     filters = DB.session.query(TFilters).filter(
         TFilters.id_filter_type == id_filter_type
     )
@@ -421,6 +434,9 @@ def filter_list(id_filter_type):
     redirect_on_invalid_token=current_app.config["URL_APPLICATION"] + "/#/login",
 )
 def delete_filter(id_filter):
+    """
+    .. :quickref: View_Permission;
+    """
     my_filter = DB.session.query(TFilters).get(id_filter)
     DB.session.delete(my_filter)
     DB.session.commit()

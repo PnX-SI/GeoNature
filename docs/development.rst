@@ -71,26 +71,32 @@ Développer et installer un gn_module
 
 GeoNature a été conçu pour fonctionner en briques modulaires.
 
-Chaque protocole, répondant à une question scientifique, est amené à avoir son propre module GeoNature comportant son modèle de base de données, son API et son interface utilisateur.
+Chaque protocole, répondant à une question scientifique, est amené à avoir son propre module GeoNature comportant son modèle de base de données (dans un schéma séparé), son API et son interface utilisateur.
 
 Les modules développés s'appuieront sur le coeur de GeoNature qui est constitué d'un ensemble de briques réutilisables.
 
-En base de données, le coeur de GeoNature est constitué de l'ensemble des référentiels (utilisateurs, taxonomique, géographique)
-et du schéma ``synthese`` regroupant l'ensemble données saisies dans les différents protocoles.
+En base de données, le coeur de GeoNature est constitué de l'ensemble des référentiels (utilisateurs, taxonomique, nomenclatures géographique)
+et du schéma ``synthese`` regroupant l'ensemble données saisies dans les différents protocoles (voir doc administrateur pour plus de détail sur le modèle de données).
 
-L'API du coeur (`voir doc <https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#api>`__) permet d'interroger les schémas de la base de données "coeur" de GeoNature.
+L'API du coeur permet d'interroger les schémas de la base de données "coeur" de GeoNature. Une documentation complète de l'API est disponible dans la rubrique DEVELOPPEMENT/Documentation API backend
 
-Du côté interface utilisateur, GeoNature met à disposition un ensemble de composants Angular réutilisables (`voir doc <https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#d%C3%A9veloppement-frontend>`__), pour l'affichage
-des cartes, des formulaires etc...
+Du côté interface utilisateur, GeoNature met à disposition un ensemble de composants Angular réutilisables (http://pnx-si.github.io/GeoNature/frontend/modules/GN2CommonModule.html
+), pour l'affichage des cartes, des formulaires etc...
 
 Développer un gn_module
 """""""""""""""""""""""
 
 Avant de développer un gn_module, assurez-vous d'avoir GeoNature bien installé sur votre machine (`voir doc <https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-standalone.rst>`__).
 
-Afin de pouvoir connecter ce module au "coeur", il est impératif de suivre une arborescence prédéfinie par l'équipe GeoNature.
+Afin de pouvoir connecter ce module au "coeur", il est impératif de suivre une arborescence prédéfinie par l'équipe GeoNature. 
+Un temmplate GitHub a été prévu à cet effet (https://github.com/PnX-SI/gn_module_template). Il est possible de créer un nouveau dépôt GitHub à partir de ce template, ou alors de copier/coller le contenu du dépôt dans un nouveau.
 
-Voici la structure minimale que le module doit comporter (voir le dossier `contrib <https://github.com/PnX-SI/GeoNature/tree/develop/contrib/module_example>`__ de GeoNature pour trouver un exemple) :
+Cette arborescence implique de développer le module dans les technologies du coeur de GeoNature à savoir :
+
+- Le backend est développé en Python grâce au framework Flask.
+- Le frontend est développé grâce au framework Angular (voir la version actuelle du coeur)
+
+GeoNature prévoit cependant l'intégration de module "externe" dont le frontend serait développé dans d'autres technologies. La gestion de l'intégration du module est à la charge du développeur.
 
 - Le module se placera dans un dossier à part du dossier "GeoNature" et portera le suffixe "gn_module"
 
@@ -111,8 +117,8 @@ Voici la structure minimale que le module doit comporter (voir le dossier `contr
 
   - ``backend`` : dossier comportant l'API du module utilisant un blueprint Flask
     
-    - Le fichier ``blueprint.py`` comprend les routes du module (ou instancie les nouveaux blueprints du module)
-    - Le fichier ``models.py`` comprend les modèles SQLAlchemy des tables du module.
+  - Le fichier ``blueprint.py`` comprend les routes du module (ou instancie les nouveaux blueprints du module)
+  - Le fichier ``models.py`` comprend les modèles SQLAlchemy des tables du module.
   
   - ``frontend`` : le dossier ``app`` comprend les fichiers typescript du module, et le dossier ``assets`` l'ensemble des médias (images, son).
 
@@ -121,6 +127,19 @@ Voici la structure minimale que le module doit comporter (voir le dossier `contr
     - A la racine du dossier ``frontend``, on retrouve également un fichier ``package.json`` qui décrit l'ensemble des librairies JS necessaires au module.
       
   - ``data`` : ce dossier comprenant les scripts SQL d'installation du module
+
+
+Le module est ensuite installable à la manière d'un plugin grâce à la commande ``geonature install_gn_module`` de la manière suivante:
+
+::
+
+    # se placer dans le répertoire backend de GeoNature
+    cd <GEONATURE_DIRECTORY>/backend
+    # activer le virtualenv python
+    source venv/bin/activate 
+    # lancer la commande d'installation 
+    geonature install_gn_module <CHEMIN_ABSOLU_DU_MODULE> <URL_API>
+    # example geonature install_gn_module /home/moi/gn_module_validation /validation
 
 
 Bonnes pratiques
@@ -555,6 +574,22 @@ A l'indice 1 du tuple: un booléan spécifiant si le CRUVED est hérité depuis 
     cruved, herited = cruved_scope_for_user_in_module(id_role=1)
 
 
+Documentation API Backend
+"""""""""""""""""""""""""
+
+Liste des routes
+*****************
+
+.. qrefflask:: geonature.utils.command:get_app_for_cmd(with_flask_admin=False)
+  :undoc-static:
+
+Documentation des routes
+************************
+
+.. autoflask:: geonature.utils.command:get_app_for_cmd(with_flask_admin=False)
+  :undoc-static:
+
+
 Développement Frontend
 ----------------------
 
@@ -570,14 +605,13 @@ Ce gn_module peut s'appuyer sur une série de composants génériques intégrés
 **Les composants génériques**
 ------------------------------
 
-1. Les composants formulaires
-""""""""""""""""""""""""""""""
+Un ensemble de composants décrits ci-dessous sont intégrés dans le coeur de GeoNature et permettent aux développeurs de simplifier la mise en place de formulaires ou de bloc cartographiques. 
 
-Les composants décrits ci-dessous sont intégrés dans le coeur de GeoNature et permettent aux développeurs de simplifier la mise en place de formulaires. Ces composants générent des balises HTML de type ``input`` ou ``select`` et seront souvent réutilisés dans les différents module de GeoNature.
+Une documentation complète des composants générique est `disponible ici <http://pnx-si.github.io/GeoNature/frontend/modules/GN2CommonModule.html>`_
 
-*Input et Output communs* :
+NB: mes composants de type "formulaire" (balise `input` ou `select`) partagent une logique commune et ont des ``Inputs`` et des ``Outputs`` communs décrit ci dessous. (voir https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
 
-Ces composants partagent une logique commune et ont des ``Inputs`` et des ``Outputs`` communs (voir https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
+
 
 - Inputs
         - L'input ``parentFormControl`` de type ``FormControl`` (https://angular.io/api/forms/FormControl) permet de contrôler la logique et les valeurs du formulaire depuis l'extérieur du composant. Cet input est **obligatoire** pour le fonctionnement du composant.
@@ -604,420 +638,7 @@ Ces composants partagent une logique commune et ont des ``Inputs`` et des ``Outp
 
 Ces composants peuvent être considérés comme des "dump components" ou "presentation components", puisque que la logique de contrôle est déporté au composant parent qui l'accueil (https://blog.angular-university.io/angular-2-smart-components-vs-presentation-components-whats-the-difference-when-to-use-each-and-why/)
 
-- **NomenclatureComponent**
-        Ce composant permet de créer un "input" de type "select" ou "multiselect" à partir d'une liste d'items définie dans le référentiel de nomenclatures (thésaurus) de GeoNature (table ``ref_nomenclature.t_nomenclature``).
-
-        En mode "multiselect" (Input ``multiSelect=true``), une barre de recherche permet de filtrée les nomenclatures sur leur label.
-
-        **Selector**: ``pnx-nomenclature``
-
-        **Inputs**:
-
-        :``codeNomenclatureType``:
-                Mnémonique du type de nomenclature qui doit être affiché dans la liste déroulante. Table``ref_nomenclatures.bib_nomenclatures_types`` (obligatoire)
-                 
-                *Type*: ``string``
-
-        :``keyValue``:
-                Attribut de l'objet nomenclature renvoyé au formControl (facultatif, par défaut ``id_nomenclature``). Valeur possible: n'importequel attribut de l'objet ``nomenclature`` renvoyé par l'API (ex: ``cd_nomenclature``, ``label_default`` etc...
-                *Type*: ``string``
-
-        :``bindAllItem``:
-                Booléan qui permet de passer tout l'objet au formControl, et pas seulement une propriété de l'objet renvoyé par l'API. Facultatif, par défaut à ``false``, c'est alors l'attribut passé en Input ``keyValue`` qui est renvoyé au formControl. Lorsque l'on passe ``true`` à cet Input, l'Input ``keyValue```devient inutile.
-                *Type*: ``boolean``
-                 
-        :``regne``:
-                Permet de filter les items de nomenclature corespondant à un règne (facultatif)
-
-                *Type*: ``string``
-        :``group2Inpn``:
-                Permet de filter les items de nomenclature corespondant à un group2Inpn (facultatif)
-
-                *Type*: ``string``
-
-        **Valeur retourné par le FormControl**:
-
-        Dépend de la valeur passée à l'input ``keyValue`` (par défaut ``id_nomenclature`` donc ``number`` *Type*: any)
-        Si l'input ``multiSelect = true``, le FormControl est un tableau
-
-
-        NB: La table ``ref_nomenclatures.cor_taxref_nomenclature`` permet de faire corespondre des items de nomenclature à des groupe INPN et des règne. A chaque fois que ces deux derniers input sont modifiés, la liste des items est rechargée. Ce composant peut ainsi être couplé au composant taxonomy qui renvoie le regne et le groupe INPN de l'espèce saisie.
-
-        Exemple d'utilisation:
-        ::
-
-                <pnx-nomenclature
-                  [parentFormControl]="occtaxForm.controls.id_nomenclature_etat_bio"
-                  codeNomenclatureType="ETA_BIO"
-                  regne="Animalia"
-                  group2Inpn="Mammifères"
-                  >
-                </pnx-nomenclature>``
-
-                <pnx-nomenclature
-                  [parentFormControl]="occtaxForm.controls.id_nomenclature_etat_bio"
-                  codeNomenclatureType="ETA_BIO"
-                  [multiSelect]=true
-                  keyValue='cd_nomenclature'
-                  regne="Animalia"
-                  group2Inpn="Mammifères"
-                  >
-                </pnx-nomenclature>``
-
-
-- **TaxonomyComponent**
-        Ce composant permet de créer un "input" de type "typeahead" pour rechercher des taxons à partir d'une liste définit dans schéma taxonomie. Table ``taxonomie.bib_listes`` et ``taxonomie.cor_nom_listes``.
-
-        **Selector**: ``pnx-taxonomy``
-
-        **Inputs**:
-
-        :``idList``:
-                Id de la liste de taxon (obligatoire)
-
-                *Type*: ``number``
-        
-        :``charNumber``:
-                Nombre de charactere avant que la recherche AJAX soit lançé (obligatoire)
-
-                *Type*: ``number``
-        :``listLength``:
-                Nombre de résultat affiché (obligatoire)
-
-                *Type*: ``number``
-        :``displayAdvancedFilters``:
-                Afficher ou non les filtres par regne et groupe INPN qui controle l'autocomplétion
-
-                *Type*: ``boolean``        
-        **Valeur retourné par le FormControl**:
-
-        Taxon séléctionné. *Type*: any
-
-        ::
-
-                {
-                  "nom_valide": "Alburnus alburnus (Linnaeus, 1758)",
-                  "id_liste": 1001,
-                  "lb_nom": "Alburnus alburnus",
-                  "group2_inpn": "Poissons",
-                  "regne": "Animalia",
-                  "cd_nom": 67111,
-                  "search_name": "Ablette = Alburnus alburnus (Linnaeus, 1758)"
-                }
-
-
-- **DatasetComponent**
-        Ce composant permet de créer un "input" de type "select" ou "multiselect" affichant l'ensemble des jeux de données sur lesquels l'utilisateur connecté a des droits (table ``gn_meta.t_datasets`` et ``gn_meta.cor_dataset_actor``)
-
-        **Selector**: ``pnx-dataset``
-
-        **Inputs**:
-
-        :``multiSelect``:
-                Passe le composant du mode select à multiselect (facultatif)
-
-                *Type*: ``boolean`` défaut ``false``
-
-        :``displayAll``:
-                Est-ce que le composant doit afficher l'item "tous" dans les options du select ? (facultatif)
-
-                *Type*: ``boolean``
-
-        :``idAcquisitionFrameworks``:
-                Permet de filtrer les JDD en fonction d'un tableau d'ID cadre d'acqusition. A connecter avec le formControl du composant ``pnx-acquisition-framework``.  Utiliser cet Input lorsque le composant ``pnx-acquisition-framework`` est en mode multiselect.
-
-                *Type*: ``Array<number>``
-
-        :``idAcquisitionFramework``:
-                Permet de filtrer les JDD en fonction de l'ID cadre d'acqusition. A connecter avec le formControl du composant ``pnx-acquisition-framework``.  Utiliser cet Input lorsque le composant ``pnx-acquisition-framework`` est en mode select simple.
-
-                *Type*: ``number``
-        
-        :``bindAllItem``:
-                Booléan qui permet de passer tout l'objet au formControl, et pas seulement une propriété de l'objet renvoyé par l'API. Facultatif, par défaut à ``false``, c'est alors l'id_dataset qui est renvoyé au formControl.
-                *Type*: ``boolean``
-
-        :``displayOnlyActive``:
-                Booléan qui controle si on affiche seulement les JDD actifs ou également ceux qui sont inatif
-                *Type*: ``boolean`` defaut: ``true``
-        **Valeur retourné par le FormControl**:
-
-        En mode select simple: Id du dataset sélectionné: *Type*: number
- 
-        En mode multiselect: Tableau d'ID des datasets sélectionnés: *Type*: Array<number>
-
-        Exemple d'utilisation:
-        ::
-                
-                <pnx-datasets
-                  [idAcquisitionFrameworks]="formService.searchForm.controls.id_acquisition_frameworks.value" 
-                  [multiSelect]='true'
-                  [displayAll]="true" 
-                  [parentFormControl]="formService.searchForm.controls.id_dataset" 
-                  label="{{ 'MetaData.Datasets' | translate}}">
-                </pnx-datasets>
-
-
-- **AcquisitionFrameworksComposant**
-        Ce composant permet de créer un "input" de type "select" ou "multiselect" affichant l'ensemble des cadres d'acquisition sur lesquels l'utilisateur connecté a des droits (table ``gn_meta.t_acqusitions_framework`` et ``gn_meta.cor_acquisition_framework_actor``)
-
-        **Selector**: ``pnx-acqusitions-framework``
-
-        **Inputs**:
-
-        :``multiSelect``:
-                Passe le composant du mode select à multiselect (facultatif)
-
-                *Type*: ``boolean`` défaut ``false``
-        :``displayAll``:
-                Est-ce que le composant doit afficher l'item "tous" dans les options du select ? (facultatif)
-
-                *Type*: ``boolean``
-
-        :``bindAllItem``:
-                Booléan qui permet de passer tout l'objet au formControl, et pas seulement une propriété de l'objet renvoyé par l'API. Facultatif, par défaut à ``false``, c'est alors l'id_acquisition_frameworks qui est passé au formControl. Lorsque l'on passe ``true`` à cet Input, l'Input ``keyValue```devient inutile.
-                *Type*: ``boolean``
-
-        
-        **Valeur retourné par le FormControl**:
-
-        En mode select simple: Id du dataset sélectionné: *Type*: number
- 
-        En mode multiselect: Tableau d'ID des datasets sélectionnés: *Type*: Array<number>
-
-
-        Exemple d'utilisation:
-        ::
-
-                <pnx-acquisition-frameworks 
-                  [multiSelect]='true'
-                  [displayAll]="true" 
-                  [parentFormControl]="formService.searchForm.controls.id_acquisition_frameworks"
-                  label="{{ 'MetaData.AcquisitionFramework' | translate}}">
-                </pnx-acquisition-frameworks>
-
-- **DateComponent**
-        Ce composant permet de créer un input de type "datepicker". Crée à parti de https://github.com/ng-bootstrap/ng-bootstrap
-
-        **Selector**: ``pnx-date``
-
-        **Valeur retourné par le FormControl**:
-
-        Date sélectionnée: *Type*: any
-
-        ::
-
-                {
-                  "year": 2018,
-                  "month": 3,
-                   "day": 9
-                } 
-
-- **ObserversComponent**
-        Ce composant permet d'afficher un input de type "autocomplete" sur un liste d'observateur définit dans le schéma ``utilisateur.t_menus`` et ``utilisateurs.cor_role_menu``. Il permet de séléctionner plusieurs utilisateurs dans le même input.
-        Composant basé sur https://www.primefaces.org/primeng/#/autocomplete
-
-        **Selector**: ``pnx-observers``
-
-        **Inputs**:
-
-        :``idMenu``:
-                Id de la liste d'utilisateur (table ``utilisateur.t_menus``) (obligatoire)
-
-                *Type*: ``number``
-
-        :``bindAllItem``:
-                Booléan qui permet de passer tout l'objet au formControl, et pas seulement une propriété de l'objet renvoyé par l'API. Facultatif, par défaut à ``false``, c'est alors l'id_role qui est passé au formControl. Lorsque l'on passe ``true`` à cet Input, l'Input ``keyValue```devient inutile.
-                *Type*: ``boolean``
-        
-        **Valeur retourné par le FormControl**:
-
-        Observateur sélectionné: *Type*: any
-
-        ::
-
-                {
-                  "nom_complet": "ADMINISTRATEUR test",
-                  "nom_role": "Administrateur",
-                  "id_role": 1,
-                  "prenom_role": "test",
-                  "id_menu": 9
-                }
-
-        
-
-- **ObserversTextComponent**
-      Ce composant permet d'afficher un input de type "text" de saisi libre d'une observateur
-
-      **Selector**: ``pnx-observers-text``        
-
-      **Valeur retourné par le FormControl**:
-      
-      Valeur du champ. *Type*: string
-
-
-- **MultiSelectComponent**
-      Ce composant permet d'afficher un input de type multiselect à partir d'une liste de valeurs passé en Input
-
-      **Selector**: ``pnx-observers-text``
-
-      **Inputs**:
-
-      :``values``:
-              Valeurs à afficher dans la liste déroulante. Doit être un tableau de dictionnaire
-
-      *Type*: ``Array<any>`` *Obligatoire*
-
-      :``keyLabel``:
-              Clé du dictionnaire de valeur que le composant doit prendre pour l'affichage de la liste déroulante
-
-
-              Example, pour un input ``values =  [{'id':1, 'label': "mon item"}] ``, pour afficher "mon item", ``keyLabel`` doit valoir "label"
-
-      *Type*: ``string`` *Obligatoire*
-
-      :``keyValue``:
-          Clé du dictionnaire que le composant doit passer au formControl
-
-          Exemple, pour un input ``values =  [{'id':1, 'label': "mon item"}] ``, pour passer "1", ``keyValue`` doit valoir "id"
-
-      *Type*: ``string``
-
-      :``bindAllItem``:
-          Booléan qui permet de passer tout l'objet au formControl, et pas seulement une propriété de l'objet renvoyé par l'API. Facultatif, par défaut à ``false``, c'est alors l'attribut passé en Input ``keyValue`` qui est renvoyé au formControl. Lorsque l'on passe ``true`` à cet Input, l'Input ``keyValue`` devient inutile.
-
-      *Type*: ``boolean`` *Facultatif*  défaut ``false``
-
-      :``displayAll``:
-              Est-ce que le composant doit afficher l'item "tous" dans les options du select ? 
-
-      *Type*: ``boolean`` *Facultatif*  défaut ``false``
-
-      :``displayAll``:
-              Est-ce que le composant doit afficher une barre de recherche dans la liste déroulante? 
-
-      *Type*: ``boolean`` *Facultatif*  défaut ``false``
-
-      **Ouputs**:
-
-      :``onSearch``:
-              Renvoie la saisie de l'utilisateur dans la barre de recherche
-
-      
-      **Valeur retourné par le FormControl**:
-      
-      Valeur du champ. *Type*: Array<any>
-
-      **Exemple d'utilisation**
-
-        ::
-
-                <pnx-multiselect
-                 [values]="organisms" 
-                 [parentFormControl]="form.controls.organisms" 
-                 [keyLabel]="'nom_organisme'" 
-                 [keyValue]="'id_organisme"'
-                 [label]="'Organisme'"
-                 (onChange)="doWhatever($event)
-                 (onDelete)="deleteCallback($event)"
-                 (onSearch)="filterItems($event)">
-                </pnx-multiselect>
-
-
-
-2. Les composants cartographiques
-"""""""""""""""""""""""""""""""""
-
-- **MapComponent**
-        Ce composant affiche une carte Leaflet ainsi qu'un outil de recherche de lieux dits et d'adresses (basé sur l'API OpenStreetMap). 
-
-        **Selector**: ``pnx-map``
-
-        **Inputs**:
-
-        :``baseMaps``:
-                tableau de fonds de carte (Voir `example  <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/conf/map.config.ts.sample>`_)
-
-                *Type*: ``Array<any>``
-        :``center``:
-                coordonnées du centrage de la carte: [long,lat]
-
-                *Type*: ``Array<number>``
-        :``zoom``:
-                niveaux de zoom à l'initialisation de la carte
-
-                *Type*: ``number``
-
-        Dans ce composant les *inputs* sont facultatifs. Si ceux ci ne sont pas renseignés, ce sont les paramètres du `fichier de configuration de l'application  <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/conf/map.config.ts.sample>`_ qui seront appliqués. Si les *inputs* sont renseignés, ceux-ci surchagent les paramètres par défault. 
-
-        Exemple d'utilisation: ``<pnx-map [center]="center" [zoom]="zoom"> </pnx-map>`` Ici le niveau de zoom et le centrage sont modifiés, mais les fonds de carte restent ceux renseignés par défault.
-
-- **MarkerComponent**
-        Ce composant permet d'afficher un marker au clic sur la carte ainsi qu'un controleur permettant d'afficher/désafficher le marker. NB: Doit être utiliser à l'interieur d'une balise ``pnx-map``
-        
-        **Selector**: ``pnx-marker``
-
-        **Inputs**:
-
-        :``zoomLevel``:
-                Niveau de zoom à partir du quel on peut ajouter un marker sur la carte
-
-                *Type*: ``number``
-        
-        **Ouputs**:
-        
-        :``markerChanged``:
-                Output permettant de récupérer les coordonnées du marker quand celui-ci est déplacé. Retourne un geojson des coordonnées du marker
-
-- **LeafletDrawComponent**
-        Ce composant permet d'activer le `plugin leaflet-draw <https://github.com/Leaflet/Leaflet.draw>`_
-        
-        **Selector**: ``pnx-leaflet-draw``
-        
-        **Inputs**:
-        
-        :``options``:
-                Objet permettant de paramettrer le plugin et les différentes formes dessinables (point, ligne, cercle etc...)
-                
-                Par défault le fichier ``leaflet-draw.option.ts`` est passé au composant. Il est possible de surcharger l'objet pour activer/désactiver certaines formes. Voir `exemple <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/occtax/occtax-map-form/occtax-map-form.component.ts#L27>`_ 
-
-        :``zoomLevel``:
-                Niveau de zoom à partir du quel on peut dessiner sur la carte
-
-                *Type*: ``number``
-
-        **Output**
-        
-        :``layerDrawed``:
-                Output renvoyant le geojson de l'objet dessiné.
-        :``layerDeleted``:
-                Output renvoyant les layers sont supprimées.
-
-- **GPSComponent**
-        Affiche une modale permettant de renseigner les coordonnées d'une observation, puis affiche un marker à la position renseignée. Ce composant hérite du composant MarkerComponent: il dispose donc des mêmes inputs et outputs.
-        
-        **Selector**: ``pnx-gps``
-        
-- **GeojsonComponent**
-        Affiche sur la carte les geojson passé en *input*
-        
-        **Selector**: ``pnx-geojson``
-        
-        **Inputs**:
-        
-        :``geojson``:
-                Objet geojson à afficher sur la carte
-                
-                Type: ``GeoJSON``
-                
-        :``onEachFeature``:
-                Fonction permettant d'effectuer un traitement sur chaque layer du geojson (afficher une popup, définir un style etc...)
-                
-                Type: ``any``: fonction définit par la librairie leaflet: ``onEachFeature(feature, layer)``. `Voir doc leaflet <http://leafletjs.com/examples/geojson/>`_
-        :``style``: 
-                Fonction ou object définissant le style des layers du geojson
-                
-                Type: ``any`` `voir doc leaflet <http://leafletjs.com/examples/geojson/>`_
+Un ensemble de composant permattant de simplifier l'affichage des cartographies leaflet sont disponible. Notamment un composant "map-list" permettant de connecter une carte avec une liste d'objet décrit en détail ci dessous.
 
 - **MapListComponent**
 	Le composant MapList fournit une carte pouvant être synchronisé avec une liste. La liste, pouvant être spécifique à chaque module, elle n'est pas intégré dans le composant et est laissé à la responsabilité du développeur. Le service ``MapListService`` offre cependant des fonctions permettant facilement de synchroniser les deux éléments.

@@ -97,6 +97,8 @@ instance/
 
 # Sphinx documentation
 docs/_build/
+#frontend doc
+docs/frontend_doc
 
 # PyBuilder
 target/

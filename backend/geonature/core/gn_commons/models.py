@@ -167,6 +167,7 @@ class VLatestValidations(DB.Model):
     validation_date = DB.Column(DB.DateTime)
     validation_auto = DB.Column(DB.Boolean)
     mnemonique = DB.Column(DB.Unicode)
+    cd_nomenclature_validation_status = DB.Column(DB.Unicode)
 
     def get_geofeature(self, recursif=False, columns=()):
         return self.as_geofeature(

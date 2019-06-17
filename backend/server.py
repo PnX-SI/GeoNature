@@ -36,7 +36,7 @@ class ReverseProxied(object):
         return self.app(environ, start_response)
 
 
-def get_app(config, _app=None, with_external_mods=True):
+def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
     # Make sure app is a singleton
     if _app is not None:
         return _app
@@ -76,7 +76,8 @@ def get_app(config, _app=None, with_external_mods=True):
         from pypnnomenclature.routes import routes
 
         app.register_blueprint(routes, url_prefix="/nomenclatures")
-        from pypnnomenclature.admin import admin
+        if with_flask_admin:
+            from pypnnomenclature.admin import admin
 
         from geonature.core.gn_permissions.routes import routes
 

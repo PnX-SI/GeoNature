@@ -9,6 +9,7 @@
 # Do NOT edit it directly, use `pipenv install [-d]` to modify `Pipfile` and
 # `Pipfile.lock` and then regenerate `requirements*.txt`.
 ################################################################################
+-r requirements.txt
 
 alabaster==0.7.10
 attrs==17.4.0
@@ -57,7 +58,9 @@ simplegeneric==0.8.1
 six==1.11.0
 snowballstemmer==1.2.1
 sphinx==1.6.6
+sphinxcontrib-httpdomain==1.7.0
 sphinxcontrib-websupport==1.0.1
+sphinxcontrib-httpdomain==1.7.0
 traitlets==4.3.2
 typed-ast==1.1.0
 typing==3.6.2
@@ -66,3 +69,4 @@ virtualenv==15.1.0
 wcwidth==0.1.7
 cookies==2.2.1
 pytest-flask==0.10.0
+sphinx_rtd_theme==0.4.3

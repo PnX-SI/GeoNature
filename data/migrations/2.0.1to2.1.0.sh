@@ -1,5 +1,4 @@
-
-currentdir=${PWD##*/}
+#!/bin/bash
 
 # faux sudo car sinon la commande "sudo -n -u" ne le demande pas
 sudo ls
@@ -10,6 +9,7 @@ touch ../../var/log/migration_2.0.1_to_2.1.0.log
 
 # retour a la racine
 cd ../../
+currentdir=$PWD
 
 # Make sure root cannot run our script
 if [ "$(id -u)" == "0" ]; then
@@ -26,7 +26,10 @@ echo "Creating 'gn_sensitivity' schema"
 export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/sensitivity.sql &>> var/log/migration_2.0.1_to_2.1.0.log
 echo "Insert 'gn_sensitivity' data"
 wget --cache=off https://geonature.fr/data/inpn/sensitivity/181201_referentiel_donnes_sensibles.csv -P tmp/geonature
-sudo -n -u postgres -s psql -d $db_name -f data/core/sensitivity_data.sql &>> var/log/migration_2.0.1_to_2.1.0.log
+cp data/core/sensitivity_data.sql tmp/geonature/sensitivity_data.sql
+sed -i 's#'/tmp/geonature'#'$currentdir/tmp/geonature'#g' tmp/geonature/sensitivity_data.sql
+
+sudo -n -u postgres -s psql -d $db_name -f tmp/geonature/sensitivity_data.sql &>> var/log/migration_2.0.1_to_2.1.0.log
 
 
 # si no grid on exit

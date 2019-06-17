@@ -23,11 +23,12 @@ config = current_app.config
 @json_resp
 def getRolesByMenuId(id_menu):
     """
-        Retourne la liste des roles associés à un menu
+    Retourne la liste des roles associés à un menu
+    .. :quickref: User;
 
-        Parameters
-        ----------
-         - nom_complet : début du nom complet du role
+    :param id_menu: the id of user list (utilisateurs.bib_list)
+    :type id_menu: int
+    :query str nom_complet: begenning of complet name of the role
     """
     q = DB.session.query(VUserslistForallMenu).filter_by(id_menu=id_menu)
 
@@ -46,7 +47,10 @@ def getRolesByMenuId(id_menu):
 @json_resp
 def get_role(id_role):
     """
-        Retourne le détail d'un role
+    Get role detail
+    .. :quickref: User;
+    :param id_role: the id user
+    :type id_role: int
     """
     user = DB.session.query(User).filter_by(id_role=id_role).one()
     return user.as_dict()
@@ -57,6 +61,7 @@ def get_role(id_role):
 def insert_role(user=None):
     """
         Insert un role
+        .. :quickref: User;
         @TODO : Ne devrait pas être là mais dans UserHub
         Utilisé dans l'authentification du CAS INPN
     """
@@ -270,9 +275,13 @@ def update_password(info_role):
 @json_resp
 def insert_in_cor_role(id_group=None, id_user=None):
     """
-        Insert une correspondante role groupe
-        c-a-d permet d'attacher un role à un groupe
-       # TODO ajouter test sur les POST de données
+    Insert a user in a group
+    .. :quickref: User;
+    :param id_role: the id user
+    :type id_role: int    
+    :param id_group: the id group
+    :type id_group: int
+        # TODO ajouter test sur les POST de données
     """
     exist_user = (
         DB.session.query(CorRole)
@@ -293,7 +302,8 @@ def insert_in_cor_role(id_group=None, id_user=None):
 @json_resp
 def insert_organism(organism):
     """
-        Insert un organisme
+    Insert a organism
+    .. :quickref: User;
     """
     if organism is not None:
         data = organism
@@ -317,7 +327,8 @@ def insert_organism(organism):
 @json_resp
 def get_roles():
     """
-        Retourne tous les roles
+    Get all roles
+    .. :quickref: User;
     """
     params = request.args
     q = DB.session.query(User)
@@ -330,7 +341,8 @@ def get_roles():
 @json_resp
 def get_organismes():
     """
-        Retourne tous les organismes
+        Get all organisms
+        .. :quickref: User;
     """
     organisms = DB.session.query(BibOrganismes).all()
     return [organism.as_dict() for organism in organisms]
@@ -341,8 +353,9 @@ def get_organismes():
 @json_resp
 def get_organismes_jdd(info_role):
     """
-        Retourne tous les organismes qui sont acteurs dans un JDD
-        et dont l'utilisateur a des droit sur ce JDD (via son CRUVED)
+    Get all organisms and the JDD where there are actor and where 
+    the current user hase autorization with its cruved
+    .. :quickref: User;
     """
 
     datasets = [dataset["id_dataset"] for dataset in get_datasets_cruved(info_role)]

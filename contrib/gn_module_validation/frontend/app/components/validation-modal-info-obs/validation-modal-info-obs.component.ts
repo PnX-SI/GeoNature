@@ -131,7 +131,6 @@ export class ValidationModalInfoObsComponent implements OnInit {
           this.selectedObs.date_max = date_max.toLocaleDateString('fr-FR');
           this.email = this.selectedObs.cor_observers.map(el => el.email).join();
           this.mailto = String("mailto:" + this.email);
-          console.log(this.selectedObs);
           
         }
       );

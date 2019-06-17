@@ -9,7 +9,7 @@
     <input class="form-control form-control-sm" *ngSwitchCase="'text'" [formControl]="form.controls['attribut_name'].control" [id]="formDef.attribut_name"
       type="text">
 
-    <select *ngSwitchCase="'select'" class="form-control" [id]="formDef.attribut_name" [formControl]="form.controls['attribut_name'].control">
+    <select *ngSwitchCase="'select'" class="form-control" [id]="formDef.attribut_name" [formControl]="form.controls[formDef.attribut_name]">
       <option *ngFor="let val of formDef.values" [value]="val">{{val}}</option>
     </select>
 
@@ -19,14 +19,14 @@
 
     <div *ngSwitchCase="'checkbox'">
       <label *ngFor="let val of formDef.values">
-        <input type="checkbox" [name]="formDef.attribut_name" [value]="val" [formControl]="form.controls['attribut_name'].control" (change)="onCheckChange($event, form.controls[formDef.attribut_name])">        {{val}}
+        <input type="checkbox" [name]="formDef.attribut_name" [value]="val" [formControl]="form.controls[formDef.attribut_name]" (change)="onCheckChange($event, form.controls[formDef.attribut_name])">        {{val}}
       </label>
     </div>
 
     <div *ngSwitchCase="'radio'">
       <label *ngFor="let val of formDef.values">
         <input (click)="onRadioChange(val, form.controls[formDef.attribut_name])" type="radio" [name]="formDef.attribut_name" [value]="val"
-          [formControl]="form.controls['attribut_name'].control"> {{val}}
+          [formControl]="form.controls[formDef.attribut_name]"> {{val}}
       </label>
     </div>
 
