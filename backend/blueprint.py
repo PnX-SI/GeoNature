@@ -3,7 +3,7 @@ from flask import Blueprint, current_app, session, request
 from sqlalchemy.sql import func
 from geojson import FeatureCollection, Feature
 
-from sqlalchemy.sql.expression import label, distinct
+from sqlalchemy.sql.expression import label, distinct, case, asc, desc
 
 from geonature.utils.utilssqlalchemy import json_resp
 from geonature.utils.env import DB
@@ -43,6 +43,8 @@ def get_synthese_stat():
         q = q.filter(VSynthese.group2_inpn == params['selectedGroup2INPN'])
     if ('selectedGroup1INPN' in params) and (params['selectedGroup1INPN'] != ""):
         q = q.filter(VSynthese.group1_inpn == params['selectedGroup1INPN'])  
+    if ('selectedTaxon' in params) and (params['selectedTaxon'] != ""):
+        q = q.filter(VSynthese.cd_ref == params['selectedTaxon']) 
     return q.all()
 
     # Si on veut afficher tous les champs de la vue 
@@ -84,7 +86,7 @@ def get_communes_stat():
         q = q.filter(VSyntheseCommunes.phylum == params['selectedPhylum'])
     # if 'classe' not in params:
     #     q = q.filter(VSyntheseCommunes.classe == None)
-    if 'selectedClasse' in params and (params['selectedClasse'] != ""):
+    if ('selectedClasse') in params and (params['selectedClasse'] != ""):
         q = q.filter(VSyntheseCommunes.classe == params['selectedClasse'])
     # if 'ordre' not in params:
     #     q = q.filter(VSyntheseCommunes.ordre == None)
@@ -134,6 +136,47 @@ def get_communes_inpn_stat():
         geojson_features.append(geojson)
     return FeatureCollection(geojson_features)
 
+# vm_synthese
+@blueprint.route("/synthese_per_tax_level", methods=["GET"])
+@json_resp
+def get_synthese_per_tax_level_stat():
+    params = request.args
+    if ('selectedFilter' in params) and (params['selectedFilter'] == "Règne") :
+        q = DB.session.query(
+            func.coalesce(VSynthese.regne, "Not defined"),
+            func.count(VSynthese.id_synthese)
+        ).group_by(VSynthese.regne)
+    if ('selectedFilter' in params) and (params['selectedFilter'] == "Phylum") :
+        q = DB.session.query(
+            func.coalesce(VSynthese.phylum, "Not defined"),
+            func.count(VSynthese.id_synthese)
+        ).group_by(VSynthese.phylum)
+    if ('selectedFilter' in params) and (params['selectedFilter'] == "Classe") :
+        q = DB.session.query(
+            func.coalesce(VSynthese.classe, "Not defined"),
+            func.count(VSynthese.id_synthese)
+        ).group_by(VSynthese.classe)
+    if ('selectedFilter' in params) and (params['selectedFilter'] == "Ordre") :
+        q = DB.session.query(
+            func.coalesce(VSynthese.ordre, "Not defined"),
+            func.count(VSynthese.id_synthese)
+        ).group_by(VSynthese.ordre).order_by(VSynthese.ordre)
+    if ('selectedFilter' in params) and (params['selectedFilter'] == "Groupe INPN 1") :
+        q = DB.session.query(
+            func.coalesce(VSynthese.group1_inpn, "Not defined"),
+            func.count(VSynthese.id_synthese)
+        ).group_by(VSynthese.group1_inpn)
+    if ('selectedFilter' in params) and (params['selectedFilter'] == "Groupe INPN 2") :
+        q = DB.session.query(
+            func.coalesce(VSynthese.group2_inpn, "Not defined"),
+            func.count(VSynthese.id_synthese)
+        ).group_by(VSynthese.group2_inpn)
+    if 'selectedYearRange' in params:
+            q = q.filter(func.date_part('year', VSynthese.date_min) <= params['selectedYearRange'][5:9])
+            q = q.filter(func.date_part('year', VSynthese.date_max) >= params['selectedYearRange'][0:4])
+    return q.all()
+
+
 
 # vm_synthese
 @blueprint.route("/regne_data", methods=["GET"])
@@ -144,65 +187,6 @@ def get_regne_data():
         VSynthese.regne,
         func.count(VSynthese.id_synthese)
     ).group_by(VSynthese.regne)
-    if 'selectedYearRange' in params:
-        q = q.filter(func.date_part('year', VSynthese.date_min) <= params['selectedYearRange'][5:9])
-        q = q.filter(func.date_part('year', VSynthese.date_max) >= params['selectedYearRange'][0:4])
-    return q.all()
-
-
-# vm_synthese
-@blueprint.route("/phylum_data", methods=["GET"])
-@json_resp
-def get_phylum_data():
-    params = request.args
-    q = DB.session.query(
-        VSynthese.phylum,
-        func.count(VSynthese.id_synthese)
-    ).group_by(VSynthese.phylum)
-    if 'selectedYearRange' in params:
-        q = q.filter(func.date_part('year', VSynthese.date_min) <= params['selectedYearRange'][5:9])
-        q = q.filter(func.date_part('year', VSynthese.date_max) >= params['selectedYearRange'][0:4])
-    return q.all()
-
-
-# vm_synthese
-@blueprint.route("/classe_data", methods=["GET"])
-@json_resp
-def get_classe_data():
-    params = request.args
-    q = DB.session.query(
-        VSynthese.classe,
-        func.count(VSynthese.id_synthese)
-    ).group_by(VSynthese.classe)
-    if 'selectedYearRange' in params:
-        q = q.filter(func.date_part('year', VSynthese.date_min) <= params['selectedYearRange'][5:9])
-        q = q.filter(func.date_part('year', VSynthese.date_max) >= params['selectedYearRange'][0:4])
-    return q.all()
-
-
-# vm_synthese
-@blueprint.route("/group1_inpn_data", methods=["GET"])
-@json_resp
-def get_group1_inpn_data():
-    params = request.args
-    q = DB.session.query(
-        VSynthese.group1_inpn,
-        func.count(VSynthese.id_synthese)
-    ).group_by(VSynthese.group1_inpn)
-    if 'selectedYearRange' in params:
-        q = q.filter(func.date_part('year', VSynthese.date_min) <= params['selectedYearRange'][5:9])
-        q = q.filter(func.date_part('year', VSynthese.date_max) >= params['selectedYearRange'][0:4])
-    return q.all()
-
-# vm_synthese
-@blueprint.route("/group2_inpn_data", methods=["GET"])
-@json_resp
-def get_group2_inpn_data():
-    params = request.args
-    q = DB.session.query(
-        VSynthese.group2_inpn,
-        func.count(VSynthese.id_synthese)
-    ).group_by(VSynthese.group2_inpn)
     if 'selectedYearRange' in params:
         q = q.filter(func.date_part('year', VSynthese.date_min) <= params['selectedYearRange'][5:9])
         q = q.filter(func.date_part('year', VSynthese.date_max) >= params['selectedYearRange'][0:4])
@@ -225,7 +209,7 @@ def get_years():
 @json_resp
 def get_taxonomie():
     params = request.args
-    q = DB.session.query(VTaxonomie.name_taxon).order_by(VTaxonomie.name_taxon)
+    q = DB.session.query(VTaxonomie.name_taxon).order_by(case([(VTaxonomie.name_taxon=='Not defined', 1),], else_=0), VTaxonomie.name_taxon)
     if 'taxLevel' in params:
         q = q.filter(VTaxonomie.level == params['taxLevel'])
     return q.all()

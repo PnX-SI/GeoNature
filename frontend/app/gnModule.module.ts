@@ -6,6 +6,8 @@ import { FormsModule } from "@angular/forms";
 import { ReactiveFormsModule } from "@angular/forms";
 import { ChartsModule } from "ng2-charts";
 import { NouisliderModule } from 'ng2-nouislider';
+import "chartjs-plugin-labels";
+// import "chartjs-plugin-piechart-outlabels";
 // Components
 import { DashboardComponent } from "./dashboard/dashboard.component";
 import { DashboardMapsComponent } from "./dashboard/dashboard-maps/dashboard-maps.component";

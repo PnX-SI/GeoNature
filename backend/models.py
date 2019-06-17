@@ -68,7 +68,7 @@ class VSyntheseCommunesINPN(DB.Model):
 class VTaxonomie(DB.Model):
     __tablename__ = "vm_taxonomie"
     __table_args__ = {"schema": "gn_dashboard"}
-    level = DB.Column(DB.Unicode, primary_key=True)
+    level = DB.Column(DB.Unicode)
     name_taxon = DB.Column(DB.Unicode, primary_key=True)
 
 

@@ -19,6 +19,7 @@
             <h5 class="card-header white-text" style="text-align:center; color:white">Filtres</h5>
             <div class="card-body">
 
+                <br/>
                 <div id="buttons">
                     <div class="row row-sm">
                         <div class="col-md-6 padding-sm">
@@ -39,7 +40,7 @@
                 </div><br/><br/>
 
                 <div id="filters">           
-                    <form (ngSubmit)="refreshData()" [formGroup]="mapForm">
+                    <form [formGroup]="mapForm">
                         <div class="form-group"> 
                             <div class="input-group">
                                 <div class="input-group-prepend">
@@ -52,7 +53,7 @@
                             <label class="col-form-label"><b> Période </b></label>
                             <div class="row justify-content-md-center">
                                 <div class="col-md-11">
-                                    <nouislider class="nouislider" [connect]="true" [tooltips]="true" [min]="yearRange[0]" [max]="yearRange[1]" [step]="1" [formControl]="mapForm.controls.selectedYearRange"></nouislider>
+                                    <nouislider class="nouislider" [connect]="true" [tooltips]="true" [min]="yearRange[0]" [max]="yearRange[1]" [step]="1" [formControl]="mapForm.controls.selectedYearRange" (change)="getCurrentYearRange($event)"></nouislider>
                                 </div>
                             </div>
                         </div><br/><br/>                       
@@ -68,51 +69,59 @@
                                     <option> Classe </option>
                                     <option> Ordre </option>
                                     <option> Famille </option>
+                                    <option> Taxon </option>
                                 </select> 
                             </div>
                             <div class="col-md-6" id="group1_inpn_filter" *ngIf="filter === 'Groupe INPN 1'">
                                 <label class="col-form-label"> Groupe INPN 1 </label>                           
-                                <select class="form-control form-control-sm" formControlName="selectedGroup1INPN">
+                                <select class="form-control form-control-sm" formControlName="selectedGroup1INPN" (change)="getCurrentGroup1INPN($event)">
                                     <option> </option>
-                                    <option *ngFor="let group1_inpn of taxonomies['Groupe INPN 1']" [ngValue]="group1_inpn"> {{ group1_inpn }} </option>
+                                    <ng-container *ngFor="let group1_inpn of taxonomies['Groupe INPN 1']">
+                                        <option [ngValue]="group1_inpn" *ngIf="group1_inpn != 'Not defined'"> {{ group1_inpn }} </option>
+                                    </ng-container>
                                 </select> 
                             </div>
                             <div class="col-md-6" id="group2_inpn_filter" *ngIf="filter === 'Groupe INPN 2'">
                                 <label class="col-form-label"> Groupe INPN 2 </label>                           
-                                <select class="form-control form-control-sm" formControlName="selectedGroup2INPN">
+                                <select class="form-control form-control-sm" formControlName="selectedGroup2INPN" (change)="getCurrentGroup2INPN($event)">
                                     <option> </option>
-                                    <option *ngFor="let group2_inpn of taxonomies['Groupe INPN 2']" [ngValue]="group2_inpn"> {{ group2_inpn }} </option>
+                                    <ng-container *ngFor="let group2_inpn of taxonomies['Groupe INPN 2']">
+                                        <option [ngValue]="group2_inpn" *ngIf="group2_inpn != 'Not defined'"> {{ group2_inpn }} </option>
+                                    </ng-container>
                                 </select> 
                             </div>
                             <div class="col-md-6" id="regne_filter" *ngIf="filter === 'Règne'">
                                 <label class="col-form-label"> Règne </label>                           
-                                <select class="form-control form-control-sm" formControlName="selectedRegne">
+                                <select class="form-control form-control-sm" formControlName="selectedRegne" (change)="getCurrentRegne($event)">
                                     <option> </option>
-                                    <option *ngFor="let regne of taxonomies['Règne']" [ngValue]="regne"> {{ regne }} </option>
+                                    <ng-container *ngFor="let regne of taxonomies['Règne']">
+                                        <option [ngValue]="regne" *ngIf="regne != 'Not defined'"> {{ regne }} </option>
+                                    </ng-container>
                                 </select> 
                             </div>
                             <div class="col-md-6" id="phylum_filter" *ngIf="filter === 'Phylum'">
                                 <label class="col-form-label"> Phylum </label>                           
-                                <select class="form-control form-control-sm" formControlName="selectedPhylum">
+                                <select class="form-control form-control-sm" formControlName="selectedPhylum" (change)="getCurrentPhylum($event)">
                                     <option> </option>
-                                    <option *ngFor="let phylumElt of taxonomies['Phylum']" [ngValue]="phylumElt"> {{ phylumElt }} </option>
+                                    <ng-container *ngFor="let phylum of taxonomies['Phylum']">
+                                        <option [ngValue]="phylum" *ngIf="phylum != 'Not defined'"> {{ phylum }} </option>
+                                    </ng-container>
                                 </select> 
                             </div>
                             <div class="col-md-6" id="classe_filter" *ngIf="filter === 'Classe'">
                                 <label class="col-form-label"> Classe </label>                           
-                                <select class="form-control form-control-sm" formControlName="selectedClasse">
+                                <select class="form-control form-control-sm" formControlName="selectedClasse" (change)="getCurrentClasse($event)">
                                     <option> </option>
-                                    <option *ngFor="let classe of taxonomies['Classe']" [ngValue]="classe"> {{ classe }} </option>
+                                    <ng-container *ngFor="let classe of taxonomies['Classe']">
+                                        <option [ngValue]="classe" *ngIf="classe != 'Not defined'"> {{ classe }} </option>
+                                    </ng-container>
                                 </select> 
                             </div>
-                        </div><br/>
-                        <!-- {{mapForm.controls.taxon.value |json}} -->
-                        <pnx-taxonomy label="{{'Taxon.Taxon' | translate }} " [parentFormControl]="mapForm.controls.taxon"
-                            [idList]="500" [charNumber]="3" [listLength]="30" [apiEndPoint]="taxonApiEndPoint" (onChange)=formService.getCurrentTaxon($event)>
-                        </pnx-taxonomy><br/>
-                        <div class="row justify-content-md-center">
-                            <div class="col-md-3">
-                                <button class="btn btn-outline-green btn-block" type="submit">Valider</button>
+                            <div class="col-md-6" id="taxon_filter" *ngIf="filter === 'Taxon'">
+                                <label class="col-form-label"> Taxon </label>
+                                <pnx-taxonomy label="" [parentFormControl]="mapForm.controls.taxon"
+                                    [idList]="500" [charNumber]="3" [listLength]="30" [apiEndPoint]="taxonApiEndPoint" (onChange)="getCurrentTaxon($event)">
+                                </pnx-taxonomy>
                             </div>
                         </div>
                     </form>

@@ -31,17 +31,61 @@ CREATE MATERIALIZED VIEW gn_dashboard.vm_synthese AS
      JOIN taxonomie.taxref t ON s.cd_nom = t.cd_nom
 WITH DATA;
 
-
-CREATE MATERIALIZED VIEW gn_dashboard.vm_synthese_communes AS 
- SELECT row_number() OVER (ORDER BY a.area_name)::integer AS fid,
-    a.area_name,
+CREATE MATERIALIZED VIEW gn_dashboard.vm_synthese_communes_complete AS 
+ SELECT a.area_name,
     st_asgeojson(st_transform(a.geom, 4326)) AS geom_area_4326,
-    a.id_type,
     date_part('year'::text, s.date_min) AS year,
+    t.regne,
+    t.phylum,
+    t.group1_inpn,
+    t.classe,
+    t.group2_inpn,
+    t.ordre,
+    t.famille,
+    t.cd_ref,
     count(*) AS nb_obs,
     count(DISTINCT t.cd_ref) AS nb_taxons
    FROM gn_synthese.synthese s
      JOIN ref_geo.l_areas a ON st_intersects(s.the_geom_local, a.geom)
      JOIN taxonomie.taxref t ON s.cd_nom = t.cd_nom
-  GROUP BY a.area_name, (date_part('year'::text, s.date_min)), a.geom, a.id_type
+  WHERE a.id_type = 25
+  GROUP BY GROUPING SETS ((a.area_name, a.geom, (date_part('year'::text, s.date_min)), t.regne, t.phylum, t.group1_inpn, t.classe, t.group2_inpn, t.ordre, t.famille, t.cd_ref), (a.area_name, a.geom))
+  ORDER BY a.area_name, (date_part('year'::text, s.date_min)), t.regne, t.phylum, t.group1_inpn, t.classe, t.group2_inpn, t.ordre, t.famille, t.cd_ref
+WITH DATA;
+
+CREATE MATERIALIZED VIEW gn_dashboard.vm_taxonomie AS 
+ SELECT 'Règne'::text AS level,
+    COALESCE(vm_synthese.regne, 'Not defined'::character varying) AS name_taxon
+   FROM gn_dashboard.vm_synthese
+  GROUP BY vm_synthese.regne
+UNION ALL
+ SELECT 'Phylum'::text AS level,
+    COALESCE(vm_synthese.phylum, 'Not defined'::character varying) AS name_taxon
+   FROM gn_dashboard.vm_synthese
+  GROUP BY vm_synthese.phylum
+UNION ALL
+ SELECT 'Classe'::text AS level,
+    COALESCE(vm_synthese.classe, 'Not defined'::character varying) AS name_taxon
+   FROM gn_dashboard.vm_synthese
+  GROUP BY vm_synthese.classe
+UNION ALL
+ SELECT 'Ordre'::text AS level,
+    COALESCE(vm_synthese.ordre, 'Not defined'::character varying) AS name_taxon
+   FROM gn_dashboard.vm_synthese
+  GROUP BY vm_synthese.ordre
+UNION ALL
+ SELECT 'Famille'::text AS level,
+    COALESCE(vm_synthese.famille, 'Not defined'::character varying) AS name_taxon
+   FROM gn_dashboard.vm_synthese
+  GROUP BY vm_synthese.famille
+UNION ALL
+ SELECT 'Groupe INPN 1'::text AS level,
+    COALESCE(vm_synthese.group1_inpn, 'Not defined'::character varying) AS name_taxon
+   FROM gn_dashboard.vm_synthese
+  GROUP BY vm_synthese.group1_inpn
+UNION ALL
+ SELECT 'Groupe INPN 2'::text AS level,
+    COALESCE(vm_synthese.group2_inpn, 'Not defined'::character varying) AS name_taxon
+   FROM gn_dashboard.vm_synthese
+  GROUP BY vm_synthese.group2_inpn
 WITH DATA;

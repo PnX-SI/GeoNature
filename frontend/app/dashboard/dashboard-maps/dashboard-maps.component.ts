@@ -61,6 +61,8 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   @Input() taxonomies: any;
   @Input() years: any;
   public yearRange = [1980,2019];
+  
+  public filtersDict: { [filter: string]: any } = { };
 
   public taxonApiEndPoint = `${AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
 
@@ -68,14 +70,14 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     // Déclaration du formulaire contenant les filtres de la carte
     this.mapForm = fb.group({
       nbClasses: fb.control(null),
+      selectedYearRange: fb.control([1980,2019]),
       selectedFilter: fb.control(null),
       selectedRegne: fb.control(null),
       selectedPhylum: fb.control(null),
       selectedClasse: fb.control(null),
       selectedGroup1INPN: fb.control(null),
       selectedGroup2INPN: fb.control(null),
-      taxon: fb.control(null),
-      selectedYearRange: fb.control([1980,2019])
+      taxon: fb.control(null)
     });
 
     // Initialisation des variables formant la légende
@@ -99,11 +101,11 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     // Initialisation de la fonction "showData" (au chargement de la page, la carte affiche automatiquement le nombre d'observations)
     this.showData = this.onEachFeatureNbObs;
     // Accès aux données de synthèse de la BDD GeoNature 
-    this.dataService.getCommunes().subscribe(
+    this.dataService.getDataCommunes().subscribe(
       (data) => {
         // console.log(data);
-        this.myCommunes=data;
-        this.background=data;
+        this.myCommunes = data;
+        this.background = data;
       }
     );
     // Initialisation de la variable currentMap (au chargement de la page, la carte affiche automatiquement le nombre d'observations)
@@ -123,47 +125,6 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
       return this.divLegendObs;
     };
     this.legend.addTo(this.mapService.map);
-  //   this.legendControl =  (L as any).control();
-  //   this.legendControl.onAdd = (map) => {
-  //     this.divControl = L.DomUtil.create('div','leaflet-controle-title');
-  //     this.divControl.innerHTML = '<h3>Coucou</h3>';
-  //     //this.legendControl.update();
-  //     return this.divControl;
-  //   };
-  //   this.legendControl.update = (prop) => {
-  //     console.log(prop);      
-  //     this.divControl.innerHTML = "Nombre d'observations" + (prop ? '<b>' + prop.nb_taxon + '</b>' : 'Sélectionner une commune');
-  //     console.log(this.divControl);      
-  //   };
-  //   this.legendControl.addTo(this.mapService.map);
-  //   const LayerControl = L.Control.extend({
-  //     options: {
-  //       position: 'topleft'
-  //     },
-  //     onAdd: map => {
-  //       this.divControl = L.DomUtil.create(
-  //         'div',
-  //         'leaflet-bar leaflet-control leaflet-control-custom'
-  //       );
-  //       this.divControl.innerHTML = '<h3>Coucou</h3>';
-  //       return this.divControl;
-  //     },
-  //     update: prop => {
-  //       console.log(prop);
-  //       this.divControl.innerHTML = "Nombre d'observations" + (prop ? '<b>' + prop.nb_taxon + '</b>' : 'Sélectionner une commune');
-  //       console.log(this.divControl);
-  //     }
-  //   });
-  //   this.legendControl = new LayerControl();
-  //   console.log(this.legendControl);
-    
-  //   this.mapService.map.addControl(this.legendControl);
-  //   this.legendControl.onAdd(this.mapService.map);
-  //   const GPSLegend = this.mapService.addCustomLegend('topleft', 'GPSLegend');
-  //   GPSLegend.update = () => {
-  //     console.log('UPDATE')
-  //   }
-  //   this.mapService.map.addControl(new GPSLegend());
   }
 
   // Afficher les données relatives au nombre de taxons
@@ -191,39 +152,120 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   }
 
   // Rafraichissement des données en fonction des filtres renseignés par l'utilisateur
-  refreshData() {
-    console.log(this.mapForm.value);
-    // Si la requête concerne les groupes INPN 1 ou 2 ...
-    if ((this.mapForm.value.selectedGroup2INPN != null && this.mapForm.value.selectedGroup2INPN != "") || (this.mapForm.value.selectedGroup1INPN != null && this.mapForm.value.selectedGroup1INPN != "")) {
-      // console.log("getCommunesINPN");
-      // ... accès aux données de synthèse répondant à la requête avec la route "communes_inpn"
-      this.dataService.getCommunesINPN(this.mapForm.value).subscribe(
-        (data) => {
-          this.myCommunes=data;
-        }
-      );
-    }
-    // Sinon ...
-    else {
-      // console.log("getCommunes");
-      // ... accès aux données de synthèse répondant à la requête avec la route "communes"
-      this.dataService.getCommunes(this.mapForm.value).subscribe(
-        (data) => {
-          this.myCommunes=data;
-        }
-      );
-    }
-  }
   onTaxFilterChange(event){
     // Déterminer le type de filtre taxonomique qui a été sélectionné pour afficher la liste déroulante adéquate
     this.filter = event.target.value;
     // Réinitialiser l'ancien filtre qui a été sélectionné pour empêcher les erreurs de requête
-    this.mapForm.controls['selectedRegne'].reset();
-    this.mapForm.controls['selectedPhylum'].reset();
-    this.mapForm.controls['selectedClasse'].reset();
-    this.mapForm.controls['selectedGroup1INPN'].reset();
-    this.mapForm.controls['selectedGroup2INPN'].reset();
-    console.log(this.mapForm.value);
+    delete this.filtersDict['selectedGroup1INPN'];
+    this.mapForm.controls["selectedGroup1INPN"].reset();
+    delete this.filtersDict['selectedGroup2INPN'];
+    this.mapForm.controls["selectedGroup2INPN"].reset();
+    delete this.filtersDict['selectedRegne'];
+    this.mapForm.controls["selectedRegne"].reset();
+    delete this.filtersDict['selectedPhylum'];
+    this.mapForm.controls["selectedPhylum"].reset();
+    delete this.filtersDict['selectedClasse'];
+    this.mapForm.controls["selectedClasse"].reset();
+    console.log(this.filtersDict);
+    if (this.filter == "") {
+      this.dataService.getDataCommunes(this.filtersDict).subscribe(
+        (data) => {
+          this.myCommunes = data;
+        }
+      );
+    }
+  }
+  getCurrentYearRange(event){
+    this.filtersDict["selectedYearRange"] = event;
+    // Si le filtre Groupe INPN 1 ou le filtre Groupe INPN 2 n'est pas renseigné, on utilise la vm_synthese_communes
+    if ((this.filtersDict["selectedGroup1INPN"] && this.filtersDict["selectedGroup1INPN"] != "") || (this.filtersDict["selectedGroup2INPN"] && this.filtersDict["selectedGroup2INPN"] != "")) {
+      this.dataService.getDataCommunesINPN(this.filtersDict).subscribe(
+        (data) => {
+          this.myCommunes = data;
+        }
+      );
+    }
+    // Sinon, on utilise la vm_synthese_communes_inpn
+    else {
+      this.dataService.getDataCommunes(this.filtersDict).subscribe(
+        (data) => {
+          this.myCommunes = data;
+        }
+      );
+    }
+  }
+  getCurrentGroup1INPN(event){
+    var index = event.target.value.indexOf(':');
+    this.filtersDict["selectedGroup1INPN"] = event.target.value.substring(index+2,);
+    console.log(this.filtersDict);
+    // Si le filtre Groupe INPN 1 est sur "", on affiche les données d'origine
+    if (this.filtersDict["selectedGroup1INPN"] == "") {
+      this.dataService.getDataCommunes(this.filtersDict).subscribe(
+        (data) => {
+          this.myCommunes = data;
+        }
+      );
+    }
+    else {
+      this.dataService.getDataCommunesINPN(this.filtersDict).subscribe(
+        (data) => {
+          this.myCommunes = data;
+        }
+      );
+    }
+  }
+  getCurrentGroup2INPN(event){
+    var index = event.target.value.indexOf(':');
+    this.filtersDict["selectedGroup2INPN"] = event.target.value.substring(index+2,);
+    console.log(this.filtersDict);
+    // Si le filtre Groupe INPN 2 est sur "", on affiche les données d'origine
+    if (this.filtersDict["selectedGroup2INPN"] == "") {
+      this.dataService.getDataCommunes(this.filtersDict).subscribe(
+        (data) => {
+          this.myCommunes = data;
+        }
+      );
+    }
+    else {
+      this.dataService.getDataCommunesINPN(this.filtersDict).subscribe(
+        (data) => {
+          this.myCommunes = data;
+        }
+      );
+    }    
+  }
+  getCurrentRegne(event){
+    var index = event.target.value.indexOf(':');
+    this.filtersDict["selectedRegne"] = event.target.value.substring(index+2,);
+    console.log(this.filtersDict);
+    this.dataService.getDataCommunes(this.filtersDict).subscribe(
+      (data) => {
+        this.myCommunes = data;
+      }
+    );
+  }
+  getCurrentPhylum(event){
+    var index = event.target.value.indexOf(':');
+    this.filtersDict["selectedPhylum"] = event.target.value.substring(index+2,);
+    console.log(this.filtersDict);
+    this.dataService.getDataCommunes(this.filtersDict).subscribe(
+      (data) => {
+        this.myCommunes = data;
+      }
+    );
+  }
+  getCurrentClasse(event){
+    var index = event.target.value.indexOf(':');
+    this.filtersDict["selectedClasse"] = event.target.value.substring(index+2,);
+    console.log(this.filtersDict);
+    this.dataService.getDataCommunes(this.filtersDict).subscribe(
+      (data) => {
+        this.myCommunes = data;
+      }
+    );
+  }
+  getCurrentTaxon(event){
+    console.log(event.item.cd_ref);
   }
 
   // Communes grisées si pas de données concernant une certaine année
@@ -244,12 +286,6 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
       mouseout: this.resetHighlight.bind(this),
       click: this.zoomToFeature.bind(this)
     });
-    // layer.on('click', (e) => {
-    //   console.log(e);
-    //   console.log(e.target.feature.geometry.properties);      
-    //   this.legendControl.update(e.target.feature.geometry.properties)
-    //   this.currentNb = e.target.feature.geometry.properties.nb_obs;      
-    // })
   };
 
   // Paramètres de la carte relative au nombre de taxons

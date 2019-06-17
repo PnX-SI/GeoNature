@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 
 @Injectable()
 export class DataService {
@@ -17,7 +17,7 @@ export class DataService {
         return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/synthese",{params: queryString})
     }
     
-    getCommunes(params?) {
+    getDataCommunes(params?) {
         let queryString = new HttpParams();
         if (params) {
             for (const key in params) {
@@ -29,7 +29,7 @@ export class DataService {
         return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/communes",{params: queryString})
     }
 
-    getCommunesINPN(params?) {
+    getDataCommunesINPN(params?) {
         let queryString = new HttpParams();
         if (params) {
             for (const key in params) {
@@ -39,6 +39,18 @@ export class DataService {
             }
         }
         return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/communes_inpn",{params: queryString})
+    }
+
+    getDataSynthesePerTaxLevel(params?) {
+        let queryString = new HttpParams();
+        if (params) {
+            for (const key in params) {
+                if (params[key]) {
+                    queryString = queryString.set(key, params[key]);
+                }                 
+            }
+        }
+        return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/synthese_per_tax_level",{params: queryString})
     }
 
     getDataRegne(params?) {

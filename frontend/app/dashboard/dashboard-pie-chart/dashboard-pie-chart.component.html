@@ -12,25 +12,21 @@
                             <label class="col-form-label"><b> Période </b></label>
                             <div class="row justify-content-md-center">
                                 <div class="col-md-11">
-                                    <nouislider class="nouislider" [connect]="true" [tooltips]="true" [min]="yearRange[0]" [max]="yearRange[1]" [step]="1" [formControl]="pieChartForm.controls.selectedYearRange"></nouislider>
+                                    <nouislider class="nouislider" [connect]="true" [tooltips]="true" [min]="yearRange[0]" [max]="yearRange[1]" [step]="1" [formControl]="pieChartForm.controls.selectedYearRange" (change)="getCurrentYearRange($event)"></nouislider>
                                 </div>
                             </div>
                         </div><br/>
                         <div class="form-group">
                             <label class="col-form-label"><b> Niveau taxonomique </b></label>                           
-                            <select class="form-control form-control-sm" [disableControl]="disabled" formControlName="selectedFilter">
+                            <select class="form-control form-control-sm" [disableControl]="disabled" formControlName="selectedFilter" (change)="onTaxFilterChange($event)">
                                 <option> </option>
                                 <option> Groupe INPN 1 </option>
                                 <option> Groupe INPN 2 </option>
                                 <option> Règne </option>
                                 <option> Phylum </option>
                                 <option> Classe </option>
+                                <option> Ordre </option>
                             </select> 
-                        </div><br/>
-                        <div class="row justify-content-md-center">
-                            <div class="col-md-4">
-                                <button class="btn btn-outline-green btn-block" type="submit">Valider</button>
-                            </div>
                         </div>
                     </form>
                 </div>
@@ -40,12 +36,15 @@
     </div>
 
     <div class="col-md-10 padding-sm">
-        <div style="display: block">
-            <canvas baseChart
-                    [data]="pieChartData"
-                    [labels]="pieChartLabels"
-                    [chartType]="pieChartType"
-                    [colors]="pieChartColors">
+        <div id="chart-wrapper">
+            <canvas  baseChart
+                [data]="pieChartData"
+                [labels]="pieChartLabels"
+                [chartType]="pieChartType"
+                [colors]="pieChartColors"
+                [options]="pieChartOptions"
+                padding="20px"
+                >
             </canvas>
         </div>
     </div>
