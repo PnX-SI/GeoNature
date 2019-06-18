@@ -90,14 +90,14 @@ CREATE OR REPLACE VIEW gn_commons.v_validations_for_web_app AS
     v.validation_date,
     v.validation_auto,
     n.mnemonique,
-    n.cd_nomenclature AS cd_nomenclature_validation_status
+    n.cd_nomenclature AS cd_nomenclature_validation_status,
+    n.label_default
    FROM gn_synthese.synthese s
      JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
      JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source
-     JOIN gn_commons.t_validations v ON v.uuid_attached_row = s.unique_id_sinp
-     JOIN ref_nomenclatures.t_nomenclatures n ON n.id_nomenclature = v.id_nomenclature_valid_status;
-
+     LEFT JOIN gn_commons.t_validations v ON v.uuid_attached_row = s.unique_id_sinp
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n ON n.id_nomenclature = v.id_nomenclature_valid_status;
 
 CREATE OR REPLACE VIEW gn_commons.v_latest_validations_for_web_app AS 
  SELECT v1.id_synthese,
@@ -164,9 +164,10 @@ CREATE OR REPLACE VIEW gn_commons.v_latest_validations_for_web_app AS
     v1.validation_date,
     v1.validation_auto,
     v1.mnemonique,
-    v1.cd_nomenclature_validation_status
+    v1.cd_nomenclature_validation_status,
+    v1.label_default
    FROM gn_commons.v_validations_for_web_app v1
-     JOIN ( SELECT v_validations_for_web_app.id_synthese,
+     LEFT JOIN ( SELECT v_validations_for_web_app.id_synthese,
             max(v_validations_for_web_app.validation_date) AS max
            FROM gn_commons.v_validations_for_web_app
           GROUP BY v_validations_for_web_app.id_synthese) v2 ON v1.validation_date = v2.max AND v1.id_synthese = v2.id_synthese;

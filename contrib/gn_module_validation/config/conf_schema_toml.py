@@ -25,6 +25,7 @@ MANDATORY_COLUMNS = [
     "meta_update_date",
     "cd_nomenclature_validation_status",
     "mnemonique",
+    "label_default",
 ]
 
 # CONFIG MAP-LIST
@@ -37,7 +38,6 @@ DEFAULT_LIST_COLUMN = [
 ]
 
 # cd_nomenclature_valid_status used for validation module
-
 STATUS_INFO = {
     "0": {"cat": "notassessed", "color": "#FFFFFF"},  #  en attente de validation
     "1": {"cat": "assessable", "color": "#8BC34A"},  # certain tres problable
