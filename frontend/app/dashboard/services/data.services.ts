@@ -4,29 +4,29 @@ import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http'
 @Injectable()
 export class DataService {
     constructor(private httpClient: HttpClient) { }
-    
+
     getDataSynthese(params?) {
         let queryString = new HttpParams();
         if (params) {
             for (const key in params) {
                 if (params[key]) {
                     queryString = queryString.set(key, params[key]);
-                }                 
+                }
             }
         }
-        return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/synthese",{params: queryString})
+        return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/synthese", { params: queryString })
     }
-    
+
     getDataCommunes(params?) {
         let queryString = new HttpParams();
         if (params) {
             for (const key in params) {
                 if (params[key]) {
                     queryString = queryString.set(key, params[key]);
-                }                 
+                }
             }
         }
-        return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/communes",{params: queryString})
+        return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/communes", { params: queryString })
     }
 
     getDataCommunesINPN(params?) {
@@ -35,10 +35,10 @@ export class DataService {
             for (const key in params) {
                 if (params[key]) {
                     queryString = queryString.set(key, params[key]);
-                }                 
+                }
             }
         }
-        return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/communes_inpn",{params: queryString})
+        return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/communes_inpn", { params: queryString })
     }
 
     getDataSynthesePerTaxLevel(params?) {
@@ -47,70 +47,34 @@ export class DataService {
             for (const key in params) {
                 if (params[key]) {
                     queryString = queryString.set(key, params[key]);
-                }                 
+                }
             }
         }
-        return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/synthese_per_tax_level",{params: queryString})
+        return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/synthese_per_tax_level", { params: queryString })
     }
 
-    getDataRegne(params?) {
+    getDataFrameworks(params?) {
         let queryString = new HttpParams();
         if (params) {
             for (const key in params) {
                 if (params[key]) {
                     queryString = queryString.set(key, params[key]);
-                }                 
+                }
             }
         }
-        return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/regne_data",{params: queryString})
+        return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/frameworks", { params: queryString })
     }
 
-    getDataPhylum(params?) {
+    getFrameworksName(params?) {
         let queryString = new HttpParams();
         if (params) {
             for (const key in params) {
                 if (params[key]) {
                     queryString = queryString.set(key, params[key]);
-                }                 
+                }
             }
         }
-        return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/phylum_data",{params: queryString})
-    }
-
-    getDataClasse(params?) {
-        let queryString = new HttpParams();
-        if (params) {
-            for (const key in params) {
-                if (params[key]) {
-                    queryString = queryString.set(key, params[key]);
-                }                 
-            }
-        }
-        return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/classe_data",{params: queryString})
-    }
-
-    getDataGroup1INPN(params?) {
-        let queryString = new HttpParams();
-        if (params) {
-            for (const key in params) {
-                if (params[key]) {
-                    queryString = queryString.set(key, params[key]);
-                }                 
-            }
-        }
-        return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/group1_inpn_data",{params: queryString})
-    }
-
-    getDataGroup2INPN(params?) {
-        let queryString = new HttpParams();
-        if (params) {
-            for (const key in params) {
-                if (params[key]) {
-                    queryString = queryString.set(key, params[key]);
-                }                 
-            }
-        }
-        return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/group2_inpn_data",{params: queryString})
+        return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/frameworks_name", { params: queryString })
     }
 
     getTaxonomie(params?) {
@@ -119,14 +83,22 @@ export class DataService {
             for (const key in params) {
                 if (params[key]) {
                     queryString = queryString.set(key, params[key]);
-                }                 
+                }
             }
         }
-        return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/taxonomie",{params: queryString})
+        return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/taxonomie", { params: queryString })
     }
 
-    getYears() {
-        return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/years")
+    getYears(params?) {
+        let queryString = new HttpParams();
+        if (params) {
+            for (const key in params) {
+                if (params[key]) {
+                    queryString = queryString.set(key, params[key]);
+                }
+            }
+        }
+        return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/years", { params: queryString })
     }
 
 }

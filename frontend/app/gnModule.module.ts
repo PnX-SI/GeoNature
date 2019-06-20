@@ -4,6 +4,7 @@ import { Routes, RouterModule } from "@angular/router";
 import { CommonModule } from '@angular/common';
 import { FormsModule } from "@angular/forms";
 import { ReactiveFormsModule } from "@angular/forms";
+import { MatTabsModule } from '@angular/material/tabs';
 import { ChartsModule } from "ng2-charts";
 import { NouisliderModule } from 'ng2-nouislider';
 import "chartjs-plugin-labels";
@@ -13,6 +14,7 @@ import { DashboardComponent } from "./dashboard/dashboard.component";
 import { DashboardMapsComponent } from "./dashboard/dashboard-maps/dashboard-maps.component";
 import { DashboardHistogramComponent } from "./dashboard/dashboard-histogram/dashboard-histogram.component";
 import { DashboardPieChartComponent } from "./dashboard/dashboard-pie-chart/dashboard-pie-chart.component";
+import { DashboardLineChartComponent } from "./dashboard/dashboard-line-chart/dashboard-line-chart.component";
 // Services
 import { DataService } from "./dashboard/services/data.services"
 
@@ -21,13 +23,14 @@ const routes: Routes = [
   { path: "", component: DashboardComponent },
   { path: "maps", component: DashboardMapsComponent },
   { path: "histogram", component: DashboardHistogramComponent },
-  { path: "piechart", component: DashboardPieChartComponent }
+  { path: "piechart", component: DashboardPieChartComponent },
+  { path: "linechart", component: DashboardLineChartComponent }
 ];
 
 @NgModule({
-  declarations: [DashboardComponent, DashboardMapsComponent, DashboardHistogramComponent, DashboardPieChartComponent],
-  imports: [GN2CommonModule, RouterModule.forChild(routes), CommonModule, FormsModule, ReactiveFormsModule, ChartsModule, NouisliderModule],
+  declarations: [DashboardComponent, DashboardMapsComponent, DashboardHistogramComponent, DashboardPieChartComponent, DashboardLineChartComponent],
+  imports: [GN2CommonModule, RouterModule.forChild(routes), CommonModule, FormsModule, ReactiveFormsModule, MatTabsModule, ChartsModule, NouisliderModule],
   providers: [DataService],
   bootstrap: [DashboardComponent]
 })
-export class GeonatureModule {}
+export class GeonatureModule { }

@@ -14,7 +14,7 @@ import { DataService } from "../services/data.services";
 })
 
 export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit {
-  
+
   public background: Array<any>;
   public myCommunes: Array<any>;
   public showData: Function;
@@ -53,47 +53,44 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
 
   mapForm: FormGroup;
   public filter: any;
-  public regnes = [];
-  public phylum = [];
-  public classes = [];
-  public group1INPN = [];
-  public group2INPN = [];
   @Input() taxonomies: any;
   @Input() years: any;
-  public yearRange = [1980,2019];
-  
-  public filtersDict: { [filter: string]: any } = { };
+  public yearRange = [1980, 2019];
+  currentCdRef: any;
+  public filtersDict: any;
 
   public taxonApiEndPoint = `${AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
 
   constructor(public dataService: DataService, public fb: FormBuilder, public mapService: MapService) {
     // Déclaration du formulaire contenant les filtres de la carte
     this.mapForm = fb.group({
-      nbClasses: fb.control(null),
-      selectedYearRange: fb.control([1980,2019]),
+      // nbClasses: fb.control(null),
+      selectedYearRange: fb.control([1980, 2019]),
       selectedFilter: fb.control(null),
       selectedRegne: fb.control(null),
       selectedPhylum: fb.control(null),
       selectedClasse: fb.control(null),
+      selectedOrdre: fb.control(null),
+      selectedFamille: fb.control(null),
       selectedGroup1INPN: fb.control(null),
       selectedGroup2INPN: fb.control(null),
       taxon: fb.control(null)
     });
 
     // Initialisation des variables formant la légende
-      //// Légende concernant le nombre d'observations
+    //// Légende concernant le nombre d'observations
     this.divLegendObs = L.DomUtil.create('div', 'divLegend');
     this.divLegendObs.innerHTML += "<b>Nombre d'observations</b><br/>";
     const gradesObs = [0, 1000, 2000, 3000, 4000, 5000, 10000];
-    for(var i=0; i<gradesObs.length; i++) {
-      this.divLegendObs.innerHTML += '<i style="background:' + this.getColorObs(gradesObs[i]+1) + '"></i>' + gradesObs[i] + (gradesObs[i+1] ? '&ndash;' + gradesObs[i + 1] + '<br>' : '+');
+    for (var i = 0; i < gradesObs.length; i++) {
+      this.divLegendObs.innerHTML += '<i style="background:' + this.getColorObs(gradesObs[i] + 1) + '"></i>' + gradesObs[i] + (gradesObs[i + 1] ? '&ndash;' + gradesObs[i + 1] + '<br>' : '+');
     }
-      //// Légende concernant le nombre de taxons
+    //// Légende concernant le nombre de taxons
     this.divLegendTax = L.DomUtil.create('div', 'divLegend');
     this.divLegendTax.innerHTML += "<b>Nombre de taxons</b><br/>";
-    const gradesTax = [0, 300, 600, 900, 1200, 1500];
-    for(var i=0; i<gradesTax.length; i++) {
-      this.divLegendTax.innerHTML += '<i style="background:' + this.getColorTax(gradesTax[i]+1) + '"></i>' + gradesTax[i] + (gradesTax[i+1] ? '&ndash;' + gradesTax[i + 1] + '<br>' : '+');
+    const gradesTax = [0, 100, 200, 300, 400, 500, 600];
+    for (var i = 0; i < gradesTax.length; i++) {
+      this.divLegendTax.innerHTML += '<i style="background:' + this.getColorTax(gradesTax[i] + 1) + '"></i>' + gradesTax[i] + (gradesTax[i + 1] ? '&ndash;' + gradesTax[i + 1] + '<br>' : '+');
     }
   }
 
@@ -113,14 +110,15 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   }
 
   ngOnChanges(change) {
-    if(change.years && change.years.currentValue != undefined) {
+    // Récupération des années min et max présentes dans les données de synthèse de la BDD GeoNature
+    if (change.years && change.years.currentValue != undefined) {
       this.yearRange = change.years.currentValue;
-    }    
+    }
   }
 
-  ngAfterViewInit(){
+  ngAfterViewInit() {
     // Implémentation de la légende (au chargement de la page, la carte affiche automatiquement le nombre d'observations)
-    this.legend = (L as any).control({position: "bottomright"});
+    this.legend = (L as any).control({ position: "bottomright" });
     this.legend.onAdd = (map) => {
       return this.divLegendObs;
     };
@@ -128,7 +126,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   }
 
   // Afficher les données relatives au nombre de taxons
-  changeMapToTax() {   
+  changeMapToTax() {
     this.myCommunes = Object.assign({}, this.myCommunes);
     this.showData = this.onEachFeatureNbTax.bind(this);
     this.mapService.map.removeControl(this.legend);
@@ -140,7 +138,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   }
 
   // Afficher les données relatives au nombre d'observations
-  changeMapToObs() {   
+  changeMapToObs() {
     this.myCommunes = Object.assign({}, this.myCommunes);
     this.showData = this.onEachFeatureNbObs.bind(this);
     this.mapService.map.removeControl(this.legend);
@@ -152,125 +150,61 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   }
 
   // Rafraichissement des données en fonction des filtres renseignés par l'utilisateur
-  onTaxFilterChange(event){
+  onTaxFilterChange(event) {
     // Déterminer le type de filtre taxonomique qui a été sélectionné pour afficher la liste déroulante adéquate
     this.filter = event.target.value;
     // Réinitialiser l'ancien filtre qui a été sélectionné pour empêcher les erreurs de requête
-    delete this.filtersDict['selectedGroup1INPN'];
     this.mapForm.controls["selectedGroup1INPN"].reset();
-    delete this.filtersDict['selectedGroup2INPN'];
     this.mapForm.controls["selectedGroup2INPN"].reset();
-    delete this.filtersDict['selectedRegne'];
     this.mapForm.controls["selectedRegne"].reset();
-    delete this.filtersDict['selectedPhylum'];
     this.mapForm.controls["selectedPhylum"].reset();
-    delete this.filtersDict['selectedClasse'];
     this.mapForm.controls["selectedClasse"].reset();
-    console.log(this.filtersDict);
+    this.mapForm.controls["selectedOrdre"].reset();
+    this.mapForm.controls["selectedFamille"].reset();
+    this.mapForm.controls["taxon"].reset();
+    console.log(this.mapForm.value);
+    // Afficher les données d'origine si la valeur vaut ""
     if (this.filter == "") {
-      this.dataService.getDataCommunes(this.filtersDict).subscribe(
+      this.dataService.getDataCommunes(this.mapForm.value).subscribe(
         (data) => {
           this.myCommunes = data;
         }
       );
     }
   }
-  getCurrentYearRange(event){
-    this.filtersDict["selectedYearRange"] = event;
-    // Si le filtre Groupe INPN 1 ou le filtre Groupe INPN 2 n'est pas renseigné, on utilise la vm_synthese_communes
-    if ((this.filtersDict["selectedGroup1INPN"] && this.filtersDict["selectedGroup1INPN"] != "") || (this.filtersDict["selectedGroup2INPN"] && this.filtersDict["selectedGroup2INPN"] != "")) {
-      this.dataService.getDataCommunesINPN(this.filtersDict).subscribe(
-        (data) => {
-          this.myCommunes = data;
-        }
-      );
+  getCurrentParameters(event) {
+    // console.log(event);
+    console.log(this.filter);
+    console.log(this.mapForm.value);
+    // Copie des éléments du formulaire pour pouvoir y ajouter cd_ref s'il s'agit d'un filtre par taxon
+    this.filtersDict = Object.assign({}, this.mapForm.value);
+    // S'il s'agit d'une recherche de taxon...
+    if (this.filter == 'Taxon') {
+      if (event.item) {
+        // Récupération du cd_ref
+        var cd_ref = event.item.cd_ref;
+        // Enregistrement du cd_ref pour un potentiel changement de période concernant un taxon
+        this.currentCdRef = cd_ref;
+      }
+      else {
+        // Récupération du cd_ref pour un changement de période concernant un taxon
+        var cd_ref = this.currentCdRef;
+      }
+      // Ajout de cd_ref à la liste des paramètres de la requête
+      this.filtersDict["taxon"] = cd_ref;
     }
-    // Sinon, on utilise la vm_synthese_communes_inpn
-    else {
-      this.dataService.getDataCommunes(this.filtersDict).subscribe(
-        (data) => {
-          this.myCommunes = data;
-        }
-      );
-    }
-  }
-  getCurrentGroup1INPN(event){
-    var index = event.target.value.indexOf(':');
-    this.filtersDict["selectedGroup1INPN"] = event.target.value.substring(index+2,);
-    console.log(this.filtersDict);
-    // Si le filtre Groupe INPN 1 est sur "", on affiche les données d'origine
-    if (this.filtersDict["selectedGroup1INPN"] == "") {
-      this.dataService.getDataCommunes(this.filtersDict).subscribe(
-        (data) => {
-          this.myCommunes = data;
-        }
-      );
-    }
-    else {
-      this.dataService.getDataCommunesINPN(this.filtersDict).subscribe(
-        (data) => {
-          this.myCommunes = data;
-        }
-      );
-    }
-  }
-  getCurrentGroup2INPN(event){
-    var index = event.target.value.indexOf(':');
-    this.filtersDict["selectedGroup2INPN"] = event.target.value.substring(index+2,);
-    console.log(this.filtersDict);
-    // Si le filtre Groupe INPN 2 est sur "", on affiche les données d'origine
-    if (this.filtersDict["selectedGroup2INPN"] == "") {
-      this.dataService.getDataCommunes(this.filtersDict).subscribe(
-        (data) => {
-          this.myCommunes = data;
-        }
-      );
-    }
-    else {
-      this.dataService.getDataCommunesINPN(this.filtersDict).subscribe(
-        (data) => {
-          this.myCommunes = data;
-        }
-      );
-    }    
-  }
-  getCurrentRegne(event){
-    var index = event.target.value.indexOf(':');
-    this.filtersDict["selectedRegne"] = event.target.value.substring(index+2,);
-    console.log(this.filtersDict);
+    // console.log(this.filtersDict);
+    // Accès aux données de synthèse de la BDD GeoNature
     this.dataService.getDataCommunes(this.filtersDict).subscribe(
       (data) => {
         this.myCommunes = data;
       }
     );
-  }
-  getCurrentPhylum(event){
-    var index = event.target.value.indexOf(':');
-    this.filtersDict["selectedPhylum"] = event.target.value.substring(index+2,);
-    console.log(this.filtersDict);
-    this.dataService.getDataCommunes(this.filtersDict).subscribe(
-      (data) => {
-        this.myCommunes = data;
-      }
-    );
-  }
-  getCurrentClasse(event){
-    var index = event.target.value.indexOf(':');
-    this.filtersDict["selectedClasse"] = event.target.value.substring(index+2,);
-    console.log(this.filtersDict);
-    this.dataService.getDataCommunes(this.filtersDict).subscribe(
-      (data) => {
-        this.myCommunes = data;
-      }
-    );
-  }
-  getCurrentTaxon(event){
-    console.log(event.item.cd_ref);
   }
 
   // Communes grisées si pas de données concernant une certaine année
   defineBackground(feature, layer) {
-    layer.setStyle({fillColor: 'rgb(150, 150, 150)', color: 'rgb(255, 255, 255)', fillOpacity: 0.9});
+    layer.setStyle({ fillColor: 'rgb(150, 150, 150)', color: 'rgb(255, 255, 255)', fillOpacity: 0.9 });
     layer.on({
       mouseover: this.highlightFeatureBackground.bind(this),
       mouseout: this.resetHighlight.bind(this),
@@ -280,7 +214,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
 
   // Paramètres de la carte relative au nombre d'observations
   onEachFeatureNbObs(feature, layer) {
-    layer.setStyle({fillColor: this.getColorObs(feature.properties.nb_obs), color: this.initialBorderColor, fillOpacity: 0.9});   
+    layer.setStyle({ fillColor: this.getColorObs(feature.properties.nb_obs), color: this.initialBorderColor, fillOpacity: 0.9 });
     layer.on({
       mouseover: this.highlightFeature.bind(this),
       mouseout: this.resetHighlight.bind(this),
@@ -290,7 +224,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
 
   // Paramètres de la carte relative au nombre de taxons
   onEachFeatureNbTax(feature, layer) {
-    layer.setStyle({fillColor: this.getColorTax(feature.properties.nb_taxon), color: this.initialBorderColor, fillOpacity: 0.9});
+    layer.setStyle({ fillColor: this.getColorTax(feature.properties.nb_taxons), color: this.initialBorderColor, fillOpacity: 0.9 });
     layer.on({
       mouseover: this.highlightFeature.bind(this),
       mouseout: this.resetHighlight.bind(this),
@@ -301,35 +235,35 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   // Couleurs de la carte relative au nombre d'observations
   getColorObs(obs) {
     var nb_classes = 7;
-    if (this.mapForm.value.nbClasses) {
-      nb_classes = this.mapForm.value.nbClasses;
-    }
+    // if (this.mapForm.value.nbClasses) {
+    //   nb_classes = this.mapForm.value.nbClasses;
+    // }
     const gradesObs = [1000, 2000, 3000, 4000, 5000, 10000];
-    for (var i=0; i < nb_classes-1; i++) {
+    for (var i = 0; i < nb_classes - 1; i++) {
       if (obs < gradesObs[i]) {
         return this.obsColors[nb_classes][i];
       }
     }
-    return this.obsColors[nb_classes][nb_classes-1];
+    return this.obsColors[nb_classes][nb_classes - 1];
   }
 
   // Couleurs de la carte relative au nombre de taxons
   getColorTax(tax) {
-    var nb_classes = 6;
-    if (this.mapForm.value.nbClasses) {
-      nb_classes = this.mapForm.value.nbClasses;
-    }
-    const gradesTax = [300, 600, 900, 1200, 1500];
-    for (var i=0; i < nb_classes-1; i++) {
+    var nb_classes = 7;
+    // if (this.mapForm.value.nbClasses) {
+    //   nb_classes = this.mapForm.value.nbClasses;
+    // }
+    const gradesTax = [100, 200, 300, 400, 500, 600];
+    for (var i = 0; i < nb_classes - 1; i++) {
       if (tax < gradesTax[i]) {
         return this.taxColors[nb_classes][i];
       }
     }
-    return this.taxColors[nb_classes][nb_classes-1];
+    return this.taxColors[nb_classes][nb_classes - 1];
   }
 
   // Changer l'aspect de la commune lorsque la souris passe dessus
-  highlightFeature(e) {    
+  highlightFeature(e) {
     const layer = e.target;
     layer.setStyle({
       //color: this.selectedBorderColor,
@@ -344,12 +278,12 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
       this.currentNbObs = "Nombre d'observations : " + layer.feature.geometry.properties.nb_obs;
     }
     else if (this.currentMap == 2) {
-      this.currentNbTax = "Nombre de taxons : " + layer.feature.geometry.properties.nb_taxon; 
+      this.currentNbTax = "Nombre de taxons : " + layer.feature.geometry.properties.nb_taxons;
     }
   }
 
   // Changer l'aspect de la commune lorsque la souris passe dessus
-  highlightFeatureBackground(e) {    
+  highlightFeatureBackground(e) {
     const layer = e.target;
     layer.setStyle({
       //color: this.selectedBorderColor,
@@ -364,7 +298,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
       this.currentNbObs = "Nombre d'observations : 0";
     }
     else if (this.currentMap == 2) {
-      this.currentNbTax = "Nombre de taxons : 0"; 
+      this.currentNbTax = "Nombre de taxons : 0";
     }
   }
 

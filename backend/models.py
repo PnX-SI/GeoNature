@@ -36,33 +36,35 @@ class VSynthese(DB.Model):
     date_min = DB.Column(DB.DateTime)
     date_max = DB.Column(DB.DateTime)
 
-@serializable
-class VSyntheseCommunes(DB.Model):
-    __tablename__ = "vm_synthese_communes"
-    __table_args__ = {"schema": "gn_dashboard"}
-    area_name = DB.Column(DB.Unicode, primary_key=True)
-    geom_area_4326 = DB.Column(DB.Unicode)
-    # id_type = DB.Column(DB.Unicode)
-    year = DB.Column(DB.Integer)
-    nb_obs = DB.Column(DB.Integer)
-    nb_taxons = DB.Column(DB.Integer)
-    regne = DB.Column(DB.Unicode)
-    phylum = DB.Column(DB.Unicode)
-    classe = DB.Column(DB.Unicode)
-    # ordre = DB.Column(DB.Unicode)
-    # famille = DB.Column(DB.Unicode)
 
-@serializable
-class VSyntheseCommunesINPN(DB.Model):
-    __tablename__ = "vm_synthese_communes_inpn"
-    __table_args__ = {"schema": "gn_dashboard"}
-    area_name = DB.Column(DB.Unicode, primary_key=True)
-    geom_area_4326 = DB.Column(DB.Unicode)
-    year = DB.Column(DB.Integer)
-    nb_obs = DB.Column(DB.Integer)
-    nb_taxons = DB.Column(DB.Integer)    
-    group1_inpn = DB.Column(DB.Unicode)
-    group2_inpn = DB.Column(DB.Unicode)
+# @serializable
+# class VSyntheseCommunes(DB.Model):
+#     __tablename__ = "vm_synthese_communes"
+#     __table_args__ = {"schema": "gn_dashboard"}
+#     area_name = DB.Column(DB.Unicode, primary_key=True)
+#     geom_area_4326 = DB.Column(DB.Unicode)
+#     # id_type = DB.Column(DB.Unicode)
+#     year = DB.Column(DB.Integer)
+#     nb_obs = DB.Column(DB.Integer)
+#     nb_taxons = DB.Column(DB.Integer)
+#     regne = DB.Column(DB.Unicode)
+#     phylum = DB.Column(DB.Unicode)
+#     classe = DB.Column(DB.Unicode)
+#     # ordre = DB.Column(DB.Unicode)
+#     # famille = DB.Column(DB.Unicode)
+
+# @serializable
+# class VSyntheseCommunesINPN(DB.Model):
+#     __tablename__ = "vm_synthese_communes_inpn"
+#     __table_args__ = {"schema": "gn_dashboard"}
+#     area_name = DB.Column(DB.Unicode, primary_key=True)
+#     geom_area_4326 = DB.Column(DB.Unicode)
+#     year = DB.Column(DB.Integer)
+#     nb_obs = DB.Column(DB.Integer)
+#     nb_taxons = DB.Column(DB.Integer)
+#     group1_inpn = DB.Column(DB.Unicode)
+#     group2_inpn = DB.Column(DB.Unicode)
+
 
 @serializable
 class VTaxonomie(DB.Model):
@@ -71,4 +73,12 @@ class VTaxonomie(DB.Model):
     level = DB.Column(DB.Unicode)
     name_taxon = DB.Column(DB.Unicode, primary_key=True)
 
+
+@serializable
+class VFrameworks(DB.Model):
+    __tablename__ = "vm_synthese_frameworks"
+    __table_args__ = {"schema": "gn_dashboard"}
+    acquisition_framework_name = DB.Column(DB.Unicode, primary_key=True)
+    year = DB.Column(DB.Integer)
+    nb_obs = DB.Column(DB.Integer)
 

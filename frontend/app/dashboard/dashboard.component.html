@@ -1,23 +1,46 @@
-<br/>
+<br />
+<!-- <mat-tab-group>
+    <mat-tab label="Histogram">
+        <br />
+        <dashboard-histogram [taxonomies]="taxonomies"></dashboard-histogram>
+    </mat-tab>
+    <mat-tab label="Map">
+        <br />
+        <dashboard-maps [taxonomies]="taxonomies" [years]="years"></dashboard-maps>
+    </mat-tab>
+    <mat-tab label="Pie chart">
+        <br />
+        <dashboard-pie-chart [taxonomies]="taxonomies" [years]="years"></dashboard-pie-chart>
+    </mat-tab>
+</mat-tab-group> -->
+
+
 <div class="container-fluid">
     <div class="card">
         <h5 class="card-header" style="text-align:center"><b>Synthèse par année</b></h5>
-    </div><br/>
+    </div><br />
     <div id="dashboard-histogram">
         <dashboard-histogram [taxonomies]="taxonomies"></dashboard-histogram>
-    </div><br/>
+    </div><br />
 
     <div class="card">
-            <h5 class="card-header" style="text-align:center"><b>Synthèse par entité géographique</b></h5>
-        </div><br/>
+        <h5 class="card-header" style="text-align:center"><b>Synthèse par entité géographique</b></h5>
+    </div><br />
     <div id="dashboard-maps">
         <dashboard-maps [taxonomies]="taxonomies" [years]="years"></dashboard-maps>
-    </div><br/>
+    </div><br />
 
     <div class="card">
-            <h5 class="card-header" style="text-align:center"><b>Synthèse par niveau taxonomique</b></h5>
-        </div><br/>
+        <h5 class="card-header" style="text-align:center"><b>Synthèse par niveau taxonomique</b></h5>
+    </div><br />
     <div id="dashboard-pie-chart">
         <dashboard-pie-chart [taxonomies]="taxonomies" [years]="years"></dashboard-pie-chart>
-    </div><br/>
+    </div><br />
+
+    <div class="card">
+        <h5 class="card-header" style="text-align:center"><b>Synthèse par cadre d'acquisition</b></h5>
+    </div><br />
+    <div id="dashboard-line-chart">
+        <dashboard-line-chart></dashboard-line-chart>
+    </div><br />
 </div>

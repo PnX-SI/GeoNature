@@ -18,9 +18,9 @@ export class DashboardComponent implements OnInit {
   public familles = [];
   public group1INPN = [];
   public group2INPN = [];
-  public taxonomies: { [taxLevel: string]: any } = { };
+  public taxonomies: { [taxLevel: string]: any } = {};
   public years: any;
-  public taxLevel: { [taxLevel: string]: any } = { };
+  public taxLevel: { [taxLevel: string]: any } = {};
 
   constructor(title: Title, public dataService: DataService) {
     title.setTitle("GeoNature - Dashboard")
@@ -39,6 +39,7 @@ export class DashboardComponent implements OnInit {
       }
     );
     this.taxonomies["Règne"] = this.regnes;
+
     // Accès aux noms des différents phylum de la BDD GeoNature
     this.taxLevel["taxLevel"] = "Phylum";
     this.dataService.getTaxonomie(this.taxLevel).subscribe(
@@ -51,6 +52,7 @@ export class DashboardComponent implements OnInit {
       }
     );
     this.taxonomies["Phylum"] = this.phylum;
+
     // Accès aux noms des différentes classes de la BDD GeoNature
     this.taxLevel["taxLevel"] = "Classe";
     this.dataService.getTaxonomie(this.taxLevel).subscribe(
@@ -63,6 +65,7 @@ export class DashboardComponent implements OnInit {
       }
     );
     this.taxonomies["Classe"] = this.classes;
+
     // Accès aux noms des différents ordres de la BDD GeoNature
     this.taxLevel["taxLevel"] = "Ordre";
     this.dataService.getTaxonomie(this.taxLevel).subscribe(
@@ -75,6 +78,7 @@ export class DashboardComponent implements OnInit {
       }
     );
     this.taxonomies["Ordre"] = this.ordres;
+
     // Accès aux noms des différentes familles de la BDD GeoNature
     this.taxLevel["taxLevel"] = "Famille";
     this.dataService.getTaxonomie(this.taxLevel).subscribe(
@@ -87,6 +91,7 @@ export class DashboardComponent implements OnInit {
       }
     );
     this.taxonomies["Famille"] = this.familles;
+
     // Accès aux noms des différents groupes INPN de la BDD GeoNature
     this.taxLevel["taxLevel"] = "Groupe INPN 1";
     this.dataService.getTaxonomie(this.taxLevel).subscribe(
@@ -110,8 +115,9 @@ export class DashboardComponent implements OnInit {
       }
     );
     this.taxonomies["Groupe INPN 2"] = this.group2INPN;
+
     // Accès aux années extrêmes de la BDD
-    this.dataService.getYears().subscribe(
+    this.dataService.getYears({ type: "min-max" }).subscribe(
       (data) => {
         this.years = data[0];
       }
