@@ -335,7 +335,7 @@ class VSyntheseForWebApp(DB.Model):
     id_nomenclature_observation_status = DB.Column(DB.Integer)
     id_nomenclature_blurring = DB.Column(DB.Integer)
     id_nomenclature_source_status = DB.Column(DB.Integer)
-    id_nomenclature_source_status = DB.Column(DB.Integer)
+    id_nomenclature_valid_status = DB.Column(DB.Integer)
     name_source = DB.Column(DB.Unicode)
     url_source = DB.Column(DB.Unicode)
     st_asgeojson = DB.Column(DB.Unicode)

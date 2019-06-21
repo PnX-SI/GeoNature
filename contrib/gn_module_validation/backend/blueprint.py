@@ -21,6 +21,7 @@ from geonature.core.gn_synthese.models import (
     Synthese,
     TSources,
     VMTaxonsSyntheseAutocomplete,
+    VSyntheseForWebApp,
 )
 
 from geonature.core.gn_commons.models import BibTablesLocation
@@ -30,9 +31,9 @@ from .query import filter_query_all_filters
 from geonature.utils.env import DB
 
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_commons.models import TValidations, VLatestValidations
+from geonature.core.gn_commons.models import TValidations
 
-from .models import VValidationsForWebApp
+from .models import VValidationsForWebApp, VSyntheseValidation
 
 # from geonature.core.gn_synthese.utils import query as synthese_query
 
@@ -48,60 +49,72 @@ log = logging.getLogger()
 def get_synthese_data(info_role):
 
     """
-        return synthese and t_validations data filtered by form params
-        Params must have same synthese fields names
+    Return synthese and t_validations data filtered by form params
+    Params must have same synthese fields names
+
+    .. :quickref: Validation;
+
+    Parameters:
+    ------------
+    info_role (User): 
+        Information about the user asking the route. Auto add with kwargs
+    truc (int): 
+        essai
+    
+
+    Returns
+    -------
+    dict
+        test
+
     """
 
-    try:
-        filters = {
-            key: request.args.getlist(key) for key, value in request.args.items()
-        }
-        for key, value in filters.items():
-            if "," in value[0] and key != "geoIntersection":
-                filters[key] = value[0].split(",")
+    # try:
+    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
+    for key, value in filters.items():
+        if "," in value[0] and key != "geoIntersection":
+            filters[key] = value[0].split(",")
 
-        result_limit = blueprint.config["NB_MAX_OBS_MAP"]
+    result_limit = blueprint.config["NB_MAX_OBS_MAP"]
 
-        # allowed_datasets = TDatasets.get_user_datasets(info_role)
+    # allowed_datasets = TDatasets.get_user_datasets(info_role)
 
-        # pdb.set_trace()
+    # pdb.set_trace()
 
-        q = DB.session.query(VLatestValidations)
+    q = DB.session.query(VSyntheseValidation)
 
-        q = filter_query_all_filters(VLatestValidations, q, filters, info_role)
+    q = filter_query_all_filters(VSyntheseValidation, q, filters, info_role)
 
-        q = q.order_by(VLatestValidations.validation_date.desc())
+    q = q.order_by(VSyntheseValidation.date_min.desc())
 
-        nb_total = 0
+    nb_total = 0
 
-        data = q.limit(result_limit)
-        columns = (
-            blueprint.config["COLUMNS_API_VALIDATION_WEB_APP"]
-            + blueprint.config["MANDATORY_COLUMNS"]
+    data = q.limit(result_limit)
+    columns = (
+        blueprint.config["COLUMNS_API_VALIDATION_WEB_APP"]
+        + blueprint.config["MANDATORY_COLUMNS"]
+    )
+
+    features = []
+
+    for d in data:
+        feature = d.get_geofeature(columns=columns)
+        feature["properties"]["nom_vern_or_lb_nom"] = (
+            d.nom_vern if d.lb_nom is None else d.lb_nom
         )
+        features.append(feature)
 
-        features = []
-
-        # DB.session.execute(select([VLatestValidations.id_synthese])).fetchone()[0]
-
-        # DB.session.query(VLatestValidations).get(1).get_geofeature(columns=columns)
-        for d in data:
-            feature = d.get_geofeature(columns=columns)
-            feature["properties"]["nom_vern_or_lb_nom"] = (
-                d.nom_vern if d.lb_nom is None else d.lb_nom
-            )
-            features.append(feature)
-
-        return {
-            "data": FeatureCollection(features),
-            "nb_obs_limited": nb_total == blueprint.config["NB_MAX_OBS_MAP"],
-            "nb_total": nb_total,
-        }
-    except Exception:
-        return (
-            'INTERNAL SERVER ERROR ("get_synthese_data() error"): contactez l\'administrateur du site',
-            500,
-        )
+    return {
+        "data": FeatureCollection(features),
+        "nb_obs_limited": nb_total == blueprint.config["NB_MAX_OBS_MAP"],
+        "nb_total": nb_total,
+    }
+    # except Exception as e:
+    #     log.error(e)
+    #     return (
+    #         'INTERNAL SERVER ERROR ("get_synthese_data() error"): contactez l\'administrateur du site',
+    #         500,
+    #     )
 
 
 @blueprint.route("/statusNames", methods=["GET"])
@@ -306,30 +319,33 @@ def get_autocomplete_taxons_synthese():
     return [d.as_dict() for d in data]
 
 
-@blueprint.route("/history/<id_synthese>", methods=["GET"])
+@blueprint.route("/history/<uuid_attached_row>", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="VALIDATION")
 @json_resp
-def get_hist(info_role, id_synthese):
+def get_hist(info_role, uuid_attached_row):
 
     try:
-        q = DB.session.execute(
-            select(
-                [
-                    VValidationsForWebApp.id_nomenclature_valid_status,
-                    VValidationsForWebApp.validation_date,
-                    VValidationsForWebApp.validation_comment,
-                    VValidationsForWebApp.validator,
-                    VValidationsForWebApp.validation_auto,
-                    VValidationsForWebApp.label_default,
-                    VValidationsForWebApp.cd_nomenclature_validation_status,
-                ]
-            ).where(VValidationsForWebApp.id_synthese == id_synthese)
+        data = (
+            DB.session.query(
+                TValidations.id_nomenclature_valid_status,
+                TValidations.validation_date,
+                TValidations.validation_comment,
+                Synthese.validator,
+                TValidations.validation_auto,
+                TNomenclatures.label_default,
+                TNomenclatures.cd_nomenclature,
+            )
+            .join(
+                TNomenclatures,
+                TNomenclatures.id_nomenclature
+                == TValidations.id_nomenclature_valid_status,
+            )
+            .join(Synthese, Synthese.uuid_attached_row == TValidations.unique_id_sinp)
+            .all()
         )
 
-        q = q.fetchall()
-
         history = []
-        for row in q:
+        for row in data:
             line = {}
             line.update(
                 {
@@ -357,15 +373,15 @@ def get_hist(info_role, id_synthese):
 
 @blueprint.route("/date/<id>", methods=["GET"])
 @json_resp
-def get_validation_date(id):
+def get_validation_date(id_synthese):
     """
         Retourne la date de validation
         pour l'observation id_synthese
     """
     try:
         date = DB.session.execute(
-            select([VLatestValidations.validation_date]).where(
-                VLatestValidations.id_synthese == id
+            select([VSyntheseValidation.validation_date]).where(
+                VSyntheseValidation.id_synthese == id_synthese
             )
         ).fetchone()[0]
         return str(date)

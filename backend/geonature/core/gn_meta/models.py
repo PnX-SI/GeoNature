@@ -189,6 +189,7 @@ class TDatasets(DB.Model):
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
     active = DB.Column(DB.Boolean, default=True)
+    validable = DB.Column(DB.Boolean, default=True)
 
     cor_dataset_actor = relationship(
         CorDatasetActor,

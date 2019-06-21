@@ -590,3 +590,14 @@ SELECT
 FROM insert_a i
 LEFT OUTER JOIN last_update_a u ON i.uuid_attached_row = u.uuid_attached_row
 LEFT OUTER JOIN delete_a d ON i.uuid_attached_row = d.uuid_attached_row;
+
+-- vue latest validation
+CREATE VIEW gn_commons.latest_validation AS
+SELECT v.*
+FROM gn_commons.t_validations v
+INNER JOIN (
+SELECT uuid_attached_row, max(validation_date) as max_date
+FROM gn_commons.t_validations
+GROUP BY uuid_attached_row
+) last_val
+ON v.uuid_attached_row = last_val.uuid_attached_row AND v.validation_date = last_val.max_date

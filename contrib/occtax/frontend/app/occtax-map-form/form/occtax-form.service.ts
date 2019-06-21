@@ -295,6 +295,7 @@ export class OcctaxFormService {
     );
     this.showOccurrence = false;
     this.isEdintingOccurrence = false;
+    console.log(this.releveForm);
   }
 
   cancelOccurrence() {

@@ -66,7 +66,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
   ngOnInit() {
     this.id_synthese = this.oneObsSynthese.id_synthese;
     this.loadOneSyntheseReleve(this.oneObsSynthese);
-    this.loadValidationHistory(this.id_synthese);
+    this.loadValidationHistory(this.oneObsSynthese.unique_id_sinp);
 
 
     // get all id_synthese of the filtered observations:
@@ -158,8 +158,8 @@ export class ValidationModalInfoObsComponent implements OnInit {
       );
   }
 
-  loadValidationHistory(id) {
-    this._dataService.getValidationHistory(id)
+  loadValidationHistory(uuid) {
+    this._dataService.getValidationHistory(uuid)
       .subscribe(
         data => {
           this.validationHistory = data;

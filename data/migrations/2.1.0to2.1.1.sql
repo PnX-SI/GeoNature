@@ -23,9 +23,23 @@ $BODY$
   COST 100;
 
 
--- ajout du code nomenclature dans la vue validation
 
-CREATE OR REPLACE VIEW gn_commons.v_validations_for_web_app AS 
+-- ajout vue latest validation
+
+CREATE VIEW gn_commons.latest_validation AS
+SELECT v.*
+FROM gn_commons.t_validations v
+INNER JOIN (
+SELECT uuid_attached_row, max(validation_date) as max_date
+FROM gn_commons.t_validations
+GROUP BY uuid_attached_row
+) last_val
+ON v.uuid_attached_row = last_val.uuid_attached_row AND v.validation_date = last_val.max_date
+
+
+
+-- nouvelle vue pour le module validatio,
+CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS 
  SELECT s.id_synthese,
     s.unique_id_sinp,
     s.unique_id_sinp_grp,
@@ -74,8 +88,6 @@ CREATE OR REPLACE VIEW gn_commons.v_validations_for_web_app AS
     s.id_nomenclature_observation_status,
     s.id_nomenclature_blurring,
     s.id_nomenclature_source_status,
-    sources.name_source,
-    sources.url_source,
     t.cd_nom,
     t.cd_ref,
     t.nom_valide,
@@ -92,82 +104,27 @@ CREATE OR REPLACE VIEW gn_commons.v_validations_for_web_app AS
     n.mnemonique,
     n.cd_nomenclature AS cd_nomenclature_validation_status,
     n.label_default
+    latest_v.validation_auto
    FROM gn_synthese.synthese s
      JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
-     JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source
      LEFT JOIN gn_commons.t_validations v ON v.uuid_attached_row = s.unique_id_sinp
-     LEFT JOIN ref_nomenclatures.t_nomenclatures n ON n.id_nomenclature = v.id_nomenclature_valid_status;
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n ON n.id_nomenclature = v.id_nomenclature_valid_status
+     LEFT JOIN gn_commons.latest_validation latest_v ON latest.uuid_attached_row = unique_id_sinp
 
-CREATE OR REPLACE VIEW gn_commons.v_latest_validations_for_web_app AS 
- SELECT v1.id_synthese,
-    v1.unique_id_sinp,
-    v1.unique_id_sinp_grp,
-    v1.id_source,
-    v1.entity_source_pk_value,
-    v1.count_min,
-    v1.count_max,
-    v1.nom_cite,
-    v1.meta_v_taxref,
-    v1.sample_number_proof,
-    v1.digital_proof,
-    v1.non_digital_proof,
-    v1.altitude_min,
-    v1.altitude_max,
-    v1.the_geom_4326,
-    v1.date_min,
-    v1.date_max,
-    v1.validator,
-    v1.observers,
-    v1.id_digitiser,
-    v1.determiner,
-    v1.comment_context,
-    v1.comment_description,
-    v1.meta_validation_date,
-    v1.meta_create_date,
-    v1.meta_update_date,
-    v1.last_action,
-    v1.id_dataset,
-    v1.dataset_name,
-    v1.id_acquisition_framework,
-    v1.id_nomenclature_geo_object_nature,
-    v1.id_nomenclature_info_geo_type,
-    v1.id_nomenclature_grp_typ,
-    v1.id_nomenclature_obs_meth,
-    v1.id_nomenclature_obs_technique,
-    v1.id_nomenclature_bio_status,
-    v1.id_nomenclature_bio_condition,
-    v1.id_nomenclature_naturalness,
-    v1.id_nomenclature_exist_proof,
-    v1.id_nomenclature_diffusion_level,
-    v1.id_nomenclature_life_stage,
-    v1.id_nomenclature_sex,
-    v1.id_nomenclature_obj_count,
-    v1.id_nomenclature_type_count,
-    v1.id_nomenclature_sensitivity,
-    v1.id_nomenclature_observation_status,
-    v1.id_nomenclature_blurring,
-    v1.id_nomenclature_source_status,
-    v1.name_source,
-    v1.url_source,
-    v1.cd_nom,
-    v1.cd_ref,
-    v1.nom_valide,
-    v1.lb_nom,
-    v1.nom_vern,
-    v1.id_validation,
-    v1.id_table_location,
-    v1.uuid_attached_row,
-    v1.id_nomenclature_valid_status,
-    v1.id_validator,
-    v1.validation_comment,
-    v1.validation_date,
-    v1.validation_auto,
-    v1.mnemonique,
-    v1.cd_nomenclature_validation_status,
-    v1.label_default
-   FROM gn_commons.v_validations_for_web_app v1
-     LEFT JOIN ( SELECT v_validations_for_web_app.id_synthese,
-            max(v_validations_for_web_app.validation_date) AS max
-           FROM gn_commons.v_validations_for_web_app
-          GROUP BY v_validations_for_web_app.id_synthese) v2 ON v1.validation_date = v2.max AND v1.id_synthese = v2.id_synthese;
+COMMENT ON VIEW IS 'Vue utilisée pour le module validation. Prend l''id_nomenclature dans la table synthese ainsi que toutes les colonnes de la synthese pour les filtres. On JOIN sur la vue latest_validation pour voir si la validation est auto'
+
+
+-- ADD validable column in t_datasets
+
+ALTER TABLE gn_meta.t_datasets
+ADD COLUMN validable boolean DEFAULT true;
+
+UPDATE gn_meta.t_datasets SET validable = true;
+
+ALTER TABLE gn_meta.t_datasets
+DROP COLUMN default_validity;
+
+-- DROP FROM t_sources
+ALTER TABLE gn_synthese.t_sources
+DROP COLUMN validable;

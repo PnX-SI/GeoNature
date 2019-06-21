@@ -31,9 +31,9 @@ export class DataService {
     });
   }
 
-  getValidationHistory(id_synthese) {
+  getValidationHistory(uuid_attached_row) {
     return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/validation/history/${id_synthese}`,
+      `${AppConfig.API_ENDPOINT}/validation/history/${uuid_attached_row}`,
       {}
     );
   }
