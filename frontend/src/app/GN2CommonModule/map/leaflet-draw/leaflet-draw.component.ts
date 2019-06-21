@@ -1,17 +1,13 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
-import { Map } from 'leaflet';
+import { Map, GeoJSON } from 'leaflet';
 import { MapService } from '../map.service';
 import { AppConfig } from '@geonature_config/app.config';
 import { CommonService } from '../../service/common.service';
 import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
-import { GeoJSON } from 'togeojson';
 
 import 'leaflet-draw';
 import * as L from 'leaflet';
 
-/**
- * Ce composant permet d'activer le `plugin leaflet-draw <https://github.com/Leaflet/Leaflet.draw>`_
- */
 @Component({
   selector: 'pnx-leaflet-draw',
   templateUrl: 'leaflet-draw.component.html'
@@ -23,20 +19,14 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   public drawnItems: any;
   // save the current layer type because the edite event do not send it...
   public currentLayerType: string;
-  /** Coordonnées de l'entité à dessiner */
+  // coordinates of the entity to draw
   @Input() geojson: GeoJSON;
-  /**
-   *  Objet permettant de paramettrer le plugin et les différentes formes dessinables (point, ligne, cercle etc...)
-   *
-   * Par défault le fichier ``leaflet-draw.option.ts`` est passé au composant. Il est possible de surcharger l'objet pour activer/désactiver certaines formes. Voir `exemple <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/occtax/occtax-map-form/occtax-map-form.component.ts#L27>`_
-   */
   @Input() options = leafletDrawOption;
   @Input() zoomLevel = AppConfig.MAPCONFIG.ZOOM_LEVEL_RELEVE;
-  /** Niveau de zoom à partir du quel on peut dessiner sur la carte */
-  @Output() layerDrawed = new EventEmitter<GeoJSON>();
+  @Output() layerDrawed = new EventEmitter<any>();
   @Output() layerDeleted = new EventEmitter<any>();
 
-  constructor(public mapservice: MapService, private _commonService: CommonService) {}
+  constructor(public mapservice: MapService, private _commonService: CommonService) { }
 
   ngOnInit() {
     this.map = this.mapservice.map;
@@ -85,13 +75,17 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
         this.layerDrawed.emit({ geojson: null });
       } else {
-        this._currentDraw = (e as any).layer.setStyle(this.mapservice.searchStyle);
-        this.currentLayerType = (e as any).layerType;
+
+        this._currentDraw = (e as any).layer;
         this.mapservice.leafletDrawFeatureGroup.addLayer(this._currentDraw);
+
+        if ((e as any).layerType != 'marker') {
+          this._currentDraw = this._currentDraw.setStyle(this.mapservice.searchStyle);
+        }
+        this.currentLayerType = (e as any).layerType;
+
         const geojson = this.getGeojsonFromFeatureGroup(this.currentLayerType);
-        // set firLayerFromMap = false because we just draw a layer
-        // the boolean change MUST be before the output fire (emit)
-        this.mapservice.firstLayerFromMap = false;
+        this.mapservice.justLoaded = false;
         this.layerDrawed.emit(geojson);
       }
     });
@@ -99,10 +93,12 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     // on draw edited
     this.mapservice.map.on(this._Le.Draw.Event.EDITED, e => {
       // output
+      this.mapservice.justLoaded = false;
+
       const geojson = this.getGeojsonFromFeatureGroup(this.currentLayerType);
-      // set firLayerFromMap = false because we just edit a layer
-      // the boolean change MUST be before the output fire (emit)
-      this.mapservice.firstLayerFromMap = false;
+      if (geojson) {
+        this.layerDrawed.emit(geojson);
+      }
       this.layerDrawed.emit(geojson);
     });
 
@@ -130,34 +126,20 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     return geojson;
   }
 
-  // else if (geojson.type == 'Polygon' || geojson.type == 'MultiPolygon') {
-  //   const latLng = L.GeoJSON.coordsToLatLngs(
-  //     geojson.coordinates,
-  //     geojson.type === 'Polygon' ? 1 : 2
-  //   );
-  //   this.setStyleEventAndAdd(new L.Polygon(latLng), geojson.properties.id);
-  // } else if (geojson.type == 'LineString' || geojson.type == 'MultiLineString') {
-  //   const latLng = L.GeoJSON.coordsToLatLngs(
-  //     geojson.coordinates,
-  //     geojson.type === 'LineString' ? 0 : 1
-  //   );
-
   loadDrawfromGeoJson(geojson) {
     let layer;
-    if (geojson.type === 'LineString' || geojson.type == 'MultiLineString') {
-      const latLng = L.GeoJSON.coordsToLatLngs(
-        geojson.coordinates,
-        geojson.type === 'Polygon' ? 0 : 1
-      );
-      layer = L.polyline(latLng);
+    if (geojson.type === 'LineString') {
+      const myLatLong = geojson.coordinates.map(point => {
+        return L.latLng(point[1], point[0]);
+      });
+      layer = L.polyline(myLatLong);
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
     }
-    if (geojson.type === 'Polygon' || geojson.type == 'MultiPolygon') {
-      const latLng = L.GeoJSON.coordsToLatLngs(
-        geojson.coordinates,
-        geojson.type === 'LineString' ? 0 : 1
-      );
-      layer = L.polygon(latLng);
+    if (geojson.type === 'Polygon') {
+      const myLatLong = geojson.coordinates[0].map(point => {
+        return L.latLng(point[1], point[0]);
+      });
+      layer = L.polygon(myLatLong);
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
     }
     this.mapservice.map.fitBounds(layer.getBounds());
