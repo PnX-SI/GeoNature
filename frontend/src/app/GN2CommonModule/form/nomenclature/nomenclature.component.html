@@ -1,6 +1,7 @@
 <small> {{label }} </small>
 <ng-select [ngClass]="class"
 		[items]="labels | async"
+		[multiple]="multiSelect"
 		[bindLabel]="labelLang"
 		[bindValue]="keyValue"
 		[placeholder]="label"
