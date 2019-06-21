@@ -6,7 +6,7 @@
       <div id="inpn">
         <a target="_blank " href="https://inpn.mnhn.fr/espece/cd_nom/{{ selectedObsTaxonDetail?.cd_nom }} ">
           <button type="button"  *ngIf="oneObsSynthese?.url_source" class="btn btn-light">
-            Voir la fiche INPN du taxon
+            Voir la fiche INPN du taxon 
           </button>
         </a>
       </div>
@@ -31,23 +31,21 @@
 
             <br>
 
-            <form [formGroup]="statusForm">
+            <form >
+              <div>
+                <span *ngFor="let item of validationStatus" id="validButtons">
 
-              <span *ngFor="let id of statusKeys" id="validButtons">
-              <!-- Formulaire pour le choix des standards et des formats de téléchargement des fichiers -->
-                <label *ngIf="VALIDATION_CONFIG.STATUS_INFO[id].cat !== 'notassessed'" [ngStyle]="{'background-color': VALIDATION_CONFIG.STATUS_INFO[id].color}" role="button"  class="btn btn-success btn-sm box-shadow waves-effect" aria-pressed="true">
-                  <input type="radio" formControlName="statut" value="{{id}}">
-                  {{statusNames[id]}}</label>
-
-                <label *ngIf="VALIDATION_CONFIG.STATUS_INFO[id].cat === 'notassessed'" [ngStyle]="{'background-color': VALIDATION_CONFIG.STATUS_INFO[id].color}" role="button" class="btn btn-success btn-sm box-shadow" aria-pressed="true">
-                  <input type="radio" formControlName="statut" value="{{id}}">
-                  {{statusNames[id]}}</label>
-              </span>
+                  <label [ngStyle]="{'background-color': VALIDATION_CONFIG.STATUS_INFO[item.cd_nomenclature]?.color}" role="button" class="btn btn-success box-shadow" aria-pressed="true">
+                    <input (click)="setCurrentCdNomenclature(item)" type="radio" [formControl]="statusForm.controls.statut" value="{{item.id_nomenclature}}">
+                    {{item.mnemonique}}</label>
+                </span>
+              </div>
 
               <div class="md-form mb-0" style="padding-top:5px;">
                 <span> Commentaire : </span>
-                <textarea type="text" rows="1" class="form-control md-textarea" formControlName="comment"> </textarea>
+                <textarea type="text" rows="1" class="form-control md-textarea" [formControl]="statusForm.controls.comment"> </textarea>
               </div>
+
 
             </form>
 
@@ -64,7 +62,7 @@
           </div>
 
           <p></p>
-          <b> Statut de validation actuel : </b> {{selectedObs?.valid_status}}
+          <b> Statut de validation actuel : </b> <span *ngIf="!selectedObs?.valid_status"> En attente de validation </span> {{selectedObs?.valid_status}}
           <button class="edit btn btn-sm btn-primary"(click)="getStatusNames()" [disabled]=edit>
             <i class="material-icons" id="modify"> edit </i> modifier le statut de validation
           </button>
@@ -105,9 +103,9 @@
         <tbody>
           <tr *ngFor="let row of validationHistory">
             <td width="15%"> {{row.date}} </td>
-            <td width="20%"> <span class="validationCircle" [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.id_status].color}"><i class="material-icons" id="auto" style="font-size: 13px;padding-top: 3px;padding-left:1px;" *ngIf="row.typeValidation == 'True'">computer</i></span>
+            <td width="20%"> <span class="validationCircle" [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.cd_nomenclature]?.color}"><i class="material-icons" id="auto" style="font-size: 13px;padding-top: 3px;padding-left:1px;" *ngIf="row.typeValidation == 'True'">computer</i></span>
               <div class="statusName">
-                {{statusNames[row.id_status]}}
+                {{row.label_default}}
               </div> 
             </td>
             <td width="20%"> <span> {{row.validator}} </span> </td>

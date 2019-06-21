@@ -33,14 +33,13 @@ export class ValidationModalInfoObsComponent implements OnInit {
   public VALIDATION_CONFIG = ModuleConfig;
   public statusForm: FormGroup;
   public edit;
-  //public statusKeys2;
-  public statusKeys;
-  public statusNames;
+  public validationStatus;
   public MapListService;
   public email;
   public mailto: String;
   public showEmail;
   public validationDate;
+  public currentCdNomenclature;
 
 
   @Input() inputSyntheseData: GeoJSON;
@@ -96,12 +95,21 @@ export class ValidationModalInfoObsComponent implements OnInit {
     this.showEmail = false;
   }
 
+  setCurrentCdNomenclature(item){
+    this.currentCdNomenclature = item.cd_nomenclature;
+  }
+
   getStatusNames() {
     this._dataService.getStatusNames().subscribe(
       result => {
         // get status names
-        this.statusNames = result;
-        this.statusKeys = Object.keys(this.VALIDATION_CONFIG.STATUS_INFO);
+        this.validationStatus = result;
+        //this.validationStatus[0]
+        // order item
+        // put "en attente de la validation" at the end
+        this.validationStatus.push(this.validationStatus[0]);
+        // end remove it
+        this.validationStatus.shift();
       },
       err => {
         if (err.statusText === 'Unknown Error') {
@@ -297,7 +305,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
     // send valstatus value to validation-synthese-list component
     this.modifiedStatus.emit({
       id_synthese: this.id_synthese,
-      new_status: this.statusForm.controls['statut'].value
+      new_status: this.currentCdNomenclature;
     });
   }
 

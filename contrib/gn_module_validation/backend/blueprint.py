@@ -1,3 +1,4 @@
+import logging
 from flask import Blueprint, current_app, request
 
 from operator import itemgetter
@@ -38,6 +39,7 @@ from .models import VValidationsForWebApp
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
 blueprint = Blueprint("validation", __name__)
+log = logging.getLogger()
 
 
 @blueprint.route("", methods=["GET"])
@@ -54,9 +56,8 @@ def get_synthese_data(info_role):
         filters = {
             key: request.args.getlist(key) for key, value in request.args.items()
         }
-
         for key, value in filters.items():
-            if "," in value[0]:
+            if "," in value[0] and key != "geoIntersection":
                 filters[key] = value[0].split(",")
 
         result_limit = blueprint.config["NB_MAX_OBS_MAP"]
@@ -115,6 +116,7 @@ def get_statusNames(info_role):
                 BibNomenclaturesTypes.id_type == TNomenclatures.id_type,
             )
             .filter(BibNomenclaturesTypes.mnemonique == "STATUT_VALID")
+            .filter(TNomenclatures.active == True)
             .order_by(TNomenclatures.cd_nomenclature)
             .all()
         )
@@ -126,100 +128,102 @@ def get_statusNames(info_role):
             }
             for n in nomenclatures
         ]
-    except Exception:
+    except Exception as e:
+        log.error(e)
         return (
             'INTERNAL SERVER ERROR ("get_status_names() error"): contactez l\'administrateur du site',
             500,
         )
 
 
-@blueprint.route("/<id_synthese>", methods=["GET", "POST"])
+@blueprint.route("/<id_synthese>", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="VALIDATION")
 @json_resp
 def post_status(info_role, id_synthese):
-    # try:
-    data = dict(request.get_json())
-    validation_status = data["statut"]
-    validation_comment = data["comment"]
+    try:
+        data = dict(request.get_json())
+        validation_status = data["statut"]
+        validation_comment = data["comment"]
 
-    if validation_status == "":
-        return "Aucun statut de validation n'est sélectionné", 400
+        if validation_status == "":
+            return "Aucun statut de validation n'est sélectionné", 400
 
-    id_synthese = id_synthese.split(",")
+        id_synthese = id_synthese.split(",")
 
-    for id in id_synthese:
+        for id in id_synthese:
 
-        # t_validations.id_validation:
-        id_val = 1  # auto-incremented in t_validations
+            # t_validations.id_validation:
+            id_val = 1  # auto-incremented in t_validations
 
-        # t_validations.id_table_location:
-        # get id_source value of the observation in synthese table
-        synthese_id_source = select([Synthese.id_source]).where(
-            Synthese.id_synthese == int(id)
-        )
-        # get entity_source_pk_field value of the observation in TSources table with id_source value
-        entity_source_pk_field = DB.session.execute(
-            select([TSources.entity_source_pk_field]).where(
-                TSources.id_source == synthese_id_source
+            # t_validations.id_table_location:
+            # get id_source value of the observation in synthese table
+            synthese_id_source = select([Synthese.id_source]).where(
+                Synthese.id_synthese == int(id)
             )
-        ).fetchone()[0]
-        name_schema = str(entity_source_pk_field).split(".")[0]
-        name_table = str(entity_source_pk_field).split(".")[1]
-        # get id_table_location
-        id_table_loc = DB.session.query(
-            func.gn_commons.get_table_location_id(name_schema, name_table)
-        )
-        if DB.session.execute(id_table_loc).fetchone()[0] == None:
-            return (
-                "INTERNAL SERVER ERROR : no id_table_location / contactez l'administrateur du site",
-                500,
+            # get entity_source_pk_field value of the observation in TSources table with id_source value
+            entity_source_pk_field = DB.session.execute(
+                select([TSources.entity_source_pk_field]).where(
+                    TSources.id_source == synthese_id_source
+                )
+            ).fetchone()[0]
+            name_schema = str(entity_source_pk_field).split(".")[0]
+            name_table = str(entity_source_pk_field).split(".")[1]
+            # get id_table_location
+            id_table_loc = DB.session.query(
+                func.gn_commons.get_table_location_id(name_schema, name_table)
             )
-        # t_validations.uuid_attached_row:
-        uuid = DB.session.query(Synthese.unique_id_sinp).filter(
-            Synthese.id_synthese == int(id)
+            if DB.session.execute(id_table_loc).fetchone()[0] == None:
+                return (
+                    "INTERNAL SERVER ERROR : no id_table_location / contactez l'administrateur du site",
+                    500,
+                )
+            # t_validations.uuid_attached_row:
+            uuid = DB.session.query(Synthese.unique_id_sinp).filter(
+                Synthese.id_synthese == int(id)
+            )
+
+            # t_validations.id_nomenclature_valid_status:
+            id_nomenclature_status = DB.session.query(
+                TNomenclatures.id_nomenclature
+            ).filter(TNomenclatures.id_nomenclature == validation_status)
+
+            # t_validations.id_validator:
+            id_valdator = info_role.id_role
+
+            # t_validations.validation_comment
+            comment = validation_comment
+
+            # t_validations.validation_date
+            val_date = datetime.datetime.now()
+
+            # t_validations.validation_auto
+            val_auto = False
+
+            # insert values in t_validations
+            addValidation = TValidations(
+                id_val,
+                id_table_loc,
+                uuid,
+                id_nomenclature_status,
+                id_valdator,
+                comment,
+                val_date,
+                val_auto,
+            )
+
+            DB.session.add(addValidation)
+            DB.session.commit()
+
+        DB.session.close()
+
+        return data
+
+    except Exception as e:
+        log.error(e)
+        return (
+            'INTERNAL SERVER ERROR ("post_status() error"): contactez l\'administrateur du site',
+            500,
         )
-
-        # t_validations.id_nomenclature_valid_status:
-        id_nomenclature_status = DB.session.query(
-            TNomenclatures.id_nomenclature
-        ).filter(TNomenclatures.id_nomenclature == validation_status)
-
-        # t_validations.id_validator:
-        id_valdator = info_role.id_role
-
-        # t_validations.validation_comment
-        comment = validation_comment
-
-        # t_validations.validation_date
-        val_date = datetime.datetime.now()
-
-        # t_validations.validation_auto
-        val_auto = False
-
-        # insert values in t_validations
-        addValidation = TValidations(
-            id_val,
-            id_table_loc,
-            uuid,
-            id_nomenclature_status,
-            id_valdator,
-            comment,
-            val_date,
-            val_auto,
-        )
-
-        DB.session.add(addValidation)
-        DB.session.commit()
-
-    DB.session.close()
-
-    return data
-
-    # except Exception:
-    #     return (
-    #         'INTERNAL SERVER ERROR ("post_status() error"): contactez l\'administrateur du site',
-    #         500,
-    #     )
 
 
 @blueprint.route("/definitions", methods=["GET"])
@@ -256,6 +260,7 @@ def get_definitions(info_role):
                 BibNomenclaturesTypes.id_type == TNomenclatures.id_type,
             )
             .filter(BibNomenclaturesTypes.mnemonique == "STATUT_VALID")
+            .filter(TNomenclatures.active == True)
             .all()
         )
 
@@ -268,7 +273,8 @@ def get_definitions(info_role):
             }
             for n in nomenclatures
         ]
-    except Exception:
+    except Exception as e:
+        log.error(e)
         return (
             'INTERNAL SERVER ERROR ("get_definitions() error") : contactez l\'administrateur du site',
             500,
@@ -314,6 +320,8 @@ def get_hist(info_role, id_synthese):
                     VValidationsForWebApp.validation_comment,
                     VValidationsForWebApp.validator,
                     VValidationsForWebApp.validation_auto,
+                    VValidationsForWebApp.label_default,
+                    VValidationsForWebApp.cd_nomenclature_validation_status,
                 ]
             ).where(VValidationsForWebApp.id_synthese == id_synthese)
         )
@@ -330,6 +338,8 @@ def get_hist(info_role, id_synthese):
                     "comment": str(row[2]),
                     "validator": str(row[3]),
                     "typeValidation": str(row[4]),
+                    "label_default": str(row[5]),
+                    "cd_nomenclature": str(row[6]),
                 }
             )
             history.append(line)
@@ -337,7 +347,8 @@ def get_hist(info_role, id_synthese):
         history = sorted(history, key=itemgetter("date"), reverse=True)
         return history
 
-    except (Exception):
+    except (Exception) as e:
+        log.error(e)
         return (
             'INTERNAL SERVER ERROR ("get_hist() error"): contactez l\'administrateur du site',
             500,
@@ -358,7 +369,8 @@ def get_validation_date(id):
             )
         ).fetchone()[0]
         return str(date)
-    except (Exception):
+    except (Exception) as e:
+        log.error(e)
         return (
             'INTERNAL SERVER ERROR ("get_validation_date(id_synthese) error"): contactez l\'administrateur du site',
             500,

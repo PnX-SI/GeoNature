@@ -34,7 +34,7 @@
         <!-- VALIDATION_CONFIG.STATUS_INFO[row.cd_nomenclature_validation_status] -->
       <div class="statusContent"> <span class="validationCircle" [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.cd_nomenclature_validation_status]?.color}"><i class="material-icons">{{row.validation_auto}}</i></span>
         <div [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.cd_nomenclature_validation_status]?.color}" class="statusName">
-          <span>{{row.mnemonique}}</span><span *ngIf="row.validation_auto"> (automatique)</span>
+          <span>{{row.label_default}}</span><span *ngIf="row.validation_auto"> (automatique)</span>
         </div>
       </div>
     </ng-template>
