@@ -5,8 +5,7 @@ import { MapService } from "@geonature_common/map/map.service";
 import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
 import { DataService } from "../../services/data.service";
 import { ModuleConfig } from "../../module.config";
-
-//import { SyntheseFormService } from '../../services/form.service';
+import { FormService } from "../../services/form.service";
 
 @Component({
   selector: "pnx-validation-synthese-carte",
@@ -23,10 +22,14 @@ export class ValidationSyntheseCarteComponent implements OnInit {
   constructor(
     public mapListService: MapListService,
     private _ms: MapService,
-    private _ds: DataService
+    private _ds: DataService,
+    public formService: FormService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    leafletDrawOption.draw.circle = true;
+    leafletDrawOption.draw.rectangle = true;
+  }
 
   onEachFeature(feature, layer) {
     this.mapListService.layerDict[feature.id] = layer;
@@ -45,5 +48,19 @@ export class ValidationSyntheseCarteComponent implements OnInit {
         this.mapListService.mapSelected.next(feature.id);
       }
     });
+  }
+
+  bindGeojsonForm(geojson) {
+    this.formService.searchForm.controls.radius.setValue(
+      geojson.properties["radius"]
+    );
+    this.formService.searchForm.controls.geoIntersection.setValue(geojson);
+    // set the current coord of the geojson to remove layer from filelayer component via the input removeLayer
+    //this.currentLeafletDrawCoord = geojson;
+  }
+
+  deleteControlValue() {
+    this.formService.searchForm.controls.geoIntersection.reset();
+    this.formService.searchForm.controls.radius.reset();
   }
 }

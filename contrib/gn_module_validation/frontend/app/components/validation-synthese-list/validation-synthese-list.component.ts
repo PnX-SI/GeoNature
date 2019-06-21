@@ -298,7 +298,7 @@ export class ValidationSyntheseListComponent
           this.mapListService.tableData[obs].id_synthese ==
           modifiedStatus.id_synthese
         ) {
-          this.mapListService.tableData[obs].id_nomenclature_valid_status =
+          this.mapListService.tableData[obs].cd_nomenclature_validation_status =
             modifiedStatus.new_status;
           this.mapListService.tableData[obs].validation_auto = "";
         }

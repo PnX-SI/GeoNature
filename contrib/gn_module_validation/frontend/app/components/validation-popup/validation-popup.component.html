@@ -34,9 +34,6 @@
                       <label [ngStyle]="{'background-color': VALIDATION_CONFIG.STATUS_INFO[item.cd_nomenclature]?.color}" role="button" class="btn btn-success box-shadow" aria-pressed="true">
                         <input (click)="setCurrentCdNomenclature(item)" type="radio" [formControl]="statusForm.controls.statut" value="{{item.id_nomenclature}}">
                         {{item.mnemonique}}</label>
-
-
-
                     </span>
                   </div>
                 <br>
