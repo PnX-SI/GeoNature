@@ -254,8 +254,20 @@ class SyntheseQuery:
                 self.query = self.query.where(col.in_(value))
 
     def filter_query_all_filters(self, user):
-        """
-            Hight level function to manage query with all filters
+        """High level function to manage query with all filters.
+
+        Apply CRUVED, toxonomy and other filters.
+
+        Parameters
+        ----------
+        user: str
+            User filtered by CRUVED.
+        
+        Returns
+        -------
+        sqlalchemy.orm.query.Query.filter
+            Combined filter to apply.
+
         """
 
         self.filter_query_with_cruved(user)

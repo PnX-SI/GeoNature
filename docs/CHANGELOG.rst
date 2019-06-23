@@ -603,6 +603,7 @@ Il ne s'agit pas de mettre à jour GeoNature mais d'en installer une nouvelle ve
 Si vous mettez à jour votre GeoNature depuis une Beta4 : 
 
 * Téléchargez la beta5 et renommer les répertoires :
+
 ::
 
     cd /home/myuser
@@ -610,7 +611,9 @@ Si vous mettez à jour votre GeoNature depuis une Beta4 :
     unzip geonature2beta.zip
     mv /home/<mon_user>/geonature/ /home/<mon_user>/geonature_old/
     mv GeoNature-geonature2beta /home/<mon_user>/geonature/
+
 * Exécutez le script de migration ``install/migration/beta4tobeta5.sh`` depuis la racine de votre GeoNature :
+
 ::
 
     cd geonature
@@ -782,7 +785,7 @@ A noter aussi que cette version de GeoNature est compatible avec GeoNature-atlas
 * Création ou mise à jour des géométries compatible PostGIS 2.
 * Ajout du champ diffusable (oui/non) dans le formulaire web de saisie, uniquement pour ContactFaune et Mortalité (TODO : faire la même chose pour les autres protocoles).
 * Multi-projection : Les versions antérieures de GeoNature n'étaient compatibles qu'avec la projection Lambert 93 (srid: 2154). Cette version permet de choisir sa projection locale. Elle ajoute un paramètre ``srid_local`` dans le ``config/settings.ini`` et renomme tous les champs ``the_geom_2154`` en ``the_geom_local`` des tables "métier".
-Ce paramètre est notamment utilisé lors de la création de la base pour affecter le srid de la projection locale à tous les champs ``the_geom_local`` présents dans les tables de la base. Ce paramètre est également utilisé pour mettre en cohérence le système de projection local utilisé dans toutes les couches SIG présentes dans la base et les géométries stockées dans les champs ``the_geom_local`` des tables "métier". Le paramétrage du service WMS dans ``wms/wms.map`` est également pris en charge par le script d'installation de l'application.
+  Ce paramètre est notamment utilisé lors de la création de la base pour affecter le srid de la projection locale à tous les champs ``the_geom_local`` présents dans les tables de la base. Ce paramètre est également utilisé pour mettre en cohérence le système de projection local utilisé dans toutes les couches SIG présentes dans la base et les géométries stockées dans les champs ``the_geom_local`` des tables "métier". Le paramétrage du service WMS dans ``wms/wms.map`` est également pris en charge par le script d'installation de l'application.
 * Correction de l'installation de npm
 * Script ``install_all.sh`` mis à jour avec les nouvelles versions de GeoNature-atlas, de TaxHub et de UsersHub.
 
@@ -791,12 +794,9 @@ IMPORTANT : toutes les couches SIG insérées dans le schéma ``layers`` doivent
 **Notes de versions**
 
 * Vous pouvez ajouter les paramètres ``srid_local``, ``install_sig_layers`` et ``add_sample_data`` au fichier ``config/settings.ini`` en vous inspirant du fichier ``config/settings.ini.sample``. Toutefois ces paramètres ne sont utilisés que pour une nouvelle installation et notamment pour l'installation de la base.
-
 * Vous pouvez passer directement d'une 1.7.X à la 1.9.0, en prenant en compte les notes des différentes versions intermédiaires, notamment les scripts de mise à jour de la BDD ainsi que les éventuels nouveaux paramètres à ajouter. 
-
 * Si vous migrez depuis la version 1.8.3, exécutez le fichier SQL ``data/update_1.8.3to1.9.0.sql``. Comme GeoNature ne fonctionne jusque là que pour des structures de métropole, il est basé sur le fait que le champ ``the_geom_local`` reste en Lambert 93 (2154). Assurez-vous que le paramètre ``$srid_local`` dans ``lib/sfGeonatureConfig.php`` est égal à ``2154``.
-ATTENTION : ce script SQL renomme tous les champs ``the_geom_2154`` en ``the_geom_local`` de la BDD de GeoNature. Ceci affecte de nombreuses tables, de nombreux triggers et de nombreuses vues de la base. Le script n'intègre que les vues fournies par défaut. Si vous avez créé des vues spécifiques, notamment pour le module d'export, ou si vous avez modifié des vues fournies, vous devez adapter/compléter le script. Vous pouvez vous inspirer de son contenu.
-
+  ATTENTION : ce script SQL renomme tous les champs ``the_geom_2154`` en ``the_geom_local`` de la BDD de GeoNature. Ceci affecte de nombreuses tables, de nombreux triggers et de nombreuses vues de la base. Le script n'intègre que les vues fournies par défaut. Si vous avez créé des vues spécifiques, notamment pour le module d'export, ou si vous avez modifié des vues fournies, vous devez adapter/compléter le script. Vous pouvez vous inspirer de son contenu.
 * RAPPEL : Ceci affecte également la webapi des applications mobiles. Vous devez donc mettre à jour votre webapi si vous utilisez la saisie sur les applications mobiles. Une release de la webapi devrait sortir bientôt.
 
 

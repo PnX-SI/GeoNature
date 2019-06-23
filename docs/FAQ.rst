@@ -4,12 +4,10 @@ FAQ
 Problèmes liés au frontend
 --------------------------
 
-Message d'erreur lors de la compilation du frontend 
+Message d'erreur lors de la compilation du frontend
 """""""""""""""""""""""""""""""""""""""""""""""""""
 
 - **Probleme lié à Node-sass**::
-
-::
 
     at module.exports (/home/myuser/geonature2/frontend/node_modules/node-sass/lib/binding.js:15:13) at Object.<anonymous> (/home/myuser/geonature2/frontend/node_modules/node-sass/lib/index.js:14:35)
 

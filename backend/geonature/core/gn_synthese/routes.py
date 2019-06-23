@@ -1,54 +1,37 @@
-import logging
-import datetime
 import ast
-
+import datetime
+import logging
+import time
 from collections import OrderedDict
 
-from flask import Blueprint, request, current_app, send_from_directory, render_template
-from sqlalchemy import distinct, func, desc, select
-from sqlalchemy.orm import exc
-from sqlalchemy.sql import text
-from geojson import FeatureCollection, Feature
-
-
+from flask import (Blueprint, current_app, render_template, request,
+                   send_from_directory)
+from geojson import Feature, FeatureCollection
+from geonature.core.gn_meta.models import TDatasets
+from geonature.core.gn_permissions import decorators as permissions
+from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
+from geonature.core.gn_synthese.models import (DefaultsNomenclaturesValue,
+                                               Synthese, SyntheseOneRecord,
+                                               TSources, VColorAreaTaxon,
+                                               VMTaxonsSyntheseAutocomplete,
+                                               VSyntheseForWebApp)
+from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
+from geonature.core.gn_synthese.utils import query as synthese_query
+from geonature.core.gn_synthese.utils import \
+    query_select_sqla as synthese_query_select
+from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
+from geonature.core.ref_geo.models import BibAreasTypes, LAreas
+from geonature.core.taxonomie.models import (Taxref, TaxrefProtectionArticles,
+                                             TaxrefProtectionEspeces)
 from geonature.utils import filemanager
 from geonature.utils.env import DB, ROOT_DIR
 from geonature.utils.errors import GeonatureApiError
-
 from geonature.utils.utilsgeometry import FionaShapeService
-
-from geonature.core.gn_synthese.models import (
-    Synthese,
-    TSources,
-    DefaultsNomenclaturesValue,
-    SyntheseOneRecord,
-    VMTaxonsSyntheseAutocomplete,
-    VSyntheseForWebApp,
-    VColorAreaTaxon,
-)
-from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
-from geonature.core.taxonomie.models import (
-    Taxref,
-    TaxrefProtectionArticles,
-    TaxrefProtectionEspeces,
-)
-from geonature.core.ref_geo.models import LAreas, BibAreasTypes
-from geonature.core.gn_synthese.utils import query as synthese_query
-from geonature.core.gn_synthese.utils import query_select_sqla as synthese_query_select
-from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
-
-from geonature.core.gn_meta.models import TDatasets
-
-from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
-
-from geonature.utils.utilssqlalchemy import (
-    to_csv_resp,
-    to_json_resp,
-    json_resp,
-    GenericTable,
-    csv_resp,
-)
+from geonature.utils.utilssqlalchemy import (GenericTable, csv_resp, json_resp,
+                                             to_csv_resp, to_json_resp)
+from sqlalchemy import desc, distinct, func, select
+from sqlalchemy.orm import exc
+from sqlalchemy.sql import text
 
 # debug
 # current_app.config['SQLALCHEMY_ECHO'] = True
@@ -57,9 +40,6 @@ routes = Blueprint("gn_synthese", __name__)
 
 # get the root logger
 log = logging.getLogger()
-
-
-import time
 
 
 def current_milli_time():
@@ -75,11 +55,20 @@ def current_milli_time():
 @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
 @json_resp
 def get_observations_for_web(info_role):
-    """
-        Optimized route for serve data to the frontend with all filters
-        .. :quickref: Synthese;
-        :query: all the fields of the view v_synthese_for_export
-        :returns: Array of dict (with geojson key)
+    """Optimized route for serve data to the frontend with all filters.
+
+    .. :quickref: Synthese; Get filtered observations
+
+    Query filtered by all info_role filter, returning all the fields of the
+    view v_synthese_for_export.
+    It return a dict composed of the following::
+
+        'data' dict: Array of dict (with geojson key)
+        'nb_total' int: Number of observations
+        'nb_obs_limited' bool: Is number of observations capped
+
+    :parameter str info_role: Role used to get the associated filters 
+    :returns dict[dict, int, bool]: See description above
     """
     filters = {key: request.args.getlist(key) for key, value in request.args.items()}
     if "limit" in filters:
@@ -135,11 +124,17 @@ def get_observations_for_web(info_role):
 @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
 @json_resp
 def get_synthese(info_role):
-    """
-        Return synthese row(s) filtered by form params NOT USE ANY MORE FOR PERFORMANCE ISSUES
-        .. :quickref: Synthese;
-        Params must have same synthese fields names
-        
+    """Return synthese row(s) filtered by form params. NOT USED ANY MORE FOR PERFORMANCE ISSUES
+
+    .. :quickref: Synthese; Deprecated
+
+    .. deprecated:: 2?
+    Use :route: /for_web instead
+    
+    Params must have same synthese fields names
+
+    :parameter str info_role: Role used to get the associated filters 
+    :returns dict[dict, int, bool]: See description above
     """
     # change all args in a list of value
     filters = {key: request.args.getlist(key) for key, value in request.args.items()}
@@ -178,12 +173,17 @@ def get_synthese(info_role):
 @routes.route("/vsynthese/<id_synthese>", methods=["GET"])
 @json_resp
 def get_one_synthese(id_synthese):
-    """
-        Get one synthese record for web app with all decoded nomenclature
-        .. :quickref: Synthese;
+    """Get one synthese record for web app with all decoded nomenclature
 
-        :params id_synthese:
-        :type id_synthese: int
+    .. :quickref: Synthese; Get one synthese
+
+    It return a dict composed of the following::
+
+        'data' dict: Array of dict (with geojson key)
+        'nb_total' int: Number of observations
+        'nb_obs_limited' bool: Is number of observations capped
+
+    :param int id_synthese:Synthese to be queried
     """
     metadata_view = GenericTable("v_metadata_for_export", "gn_synthese", None)
     q = (
@@ -221,15 +221,16 @@ def get_one_synthese(id_synthese):
 @routes.route("/export_observations", methods=["POST"])
 @permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
 def export_observations_web(info_role):
-    """
-        Optimized route for observations web export
-        .. :quickref: Synthese;
-        This view is customisable by the administrator
-        Some columns arer mandatory: id_sythese, geojson and geojson_local to generate the exported files
-        
-        POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
-        
-        :query str export_format: str<'csv', 'geojson', 'shapefiles'>
+    """Optimized route for observations web export
+       
+    .. :quickref: Synthese;
+    
+    This view is customisable by the administrator
+    Some columns arer mandatory: id_sythese, geojson and geojson_local to generate the exported files
+    
+    POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
+    
+    :query str export_format: str<'csv', 'geojson', 'shapefiles'>
 
     """
     params = request.args
@@ -335,13 +336,14 @@ def export_observations_web(info_role):
 @routes.route("/export_metadata", methods=["GET"])
 @permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
 def export_metadata(info_role):
-    """
-        Route to export the metadata in CSV
-        .. :quickref: Synthese;
-        The table synthese is join with gn_synthese.v_metadata_for_export
-        The column jdd_id is mandatory in the view gn_synthese.v_metadata_for_export
+    """Route to export the metadata in CSV
 
-        POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
+    .. :quickref: Synthese;
+    
+    The table synthese is join with gn_synthese.v_metadata_for_export
+    The column jdd_id is mandatory in the view gn_synthese.v_metadata_for_export
+
+    POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
     """
     filters = {key: request.args.getlist(key) for key, value in request.args.items()}
 
@@ -372,13 +374,15 @@ def export_metadata(info_role):
 @routes.route("/export_statuts", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
 def export_status(info_role):
-    """
-    Route to get all the protection status of a synthese search
+    """Route to get all the protection status of a synthese search
+
     .. :quickref: Synthese;
-    Parameters:
-        - HTTP-GET: the same that the /synthese endpoint (all the filter in web app)
+    
     Get the CRUVED from 'R' action because we don't give observations X/Y but only statuts
     and to be constistant with the data displayed in the web interface
+
+    Parameters:
+        - HTTP-GET: the same that the /synthese endpoint (all the filter in web app)
     """
     filters = {key: request.args.getlist(key) for key, value in request.args.items()}
 
@@ -466,9 +470,10 @@ def export_status(info_role):
 @permissions.check_cruved_scope("R", True)
 @json_resp
 def general_stats(info_role):
-    """
+    """Return stats about synthese.
+
     .. :quickref: Synthese;
-    Return stats about synthese
+    
         - nb of observations
         - nb of distinct species
         - nb of distinct observer
@@ -494,8 +499,8 @@ def general_stats(info_role):
 @routes.route("/taxons_tree", methods=["GET"])
 @json_resp
 def get_taxon_tree():
-    """
-    Get taxon tree
+    """Get taxon tree
+
     .. :quickref: Synthese;
     """
     taxon_tree_table = GenericTable(
@@ -508,14 +513,15 @@ def get_taxon_tree():
 @routes.route("/taxons_autocomplete", methods=["GET"])
 @json_resp
 def get_autocomplete_taxons_synthese():
-    """
-        Autocomplete taxon for web search (based on all taxon in Synthese)
-        The request use trigram algorithm to get relevent results
-        .. :quickref: Synthese;
+    """Autocomplete taxon for web search (based on all taxon in Synthese)
 
-        :query str search_name: the search name (use sql ilike statement and puts "%" for spaces)
-        :query str regne: filter with kingdom
-        :query str group2_inpn : filter with INPN group 2
+    .. :quickref: Synthese;
+
+    The request use trigram algorithm to get relevent results
+
+    :query str search_name: the search name (use sql ilike statement and puts "%" for spaces)
+    :query str regne: filter with kingdom
+    :query str group2_inpn : filter with INPN group 2
     """
     search_name = request.args.get("search_name", "")
     q = DB.session.query(
@@ -547,9 +553,9 @@ def get_autocomplete_taxons_synthese():
 @routes.route("/sources", methods=["GET"])
 @json_resp
 def get_sources():
-    """
-        Get all sources
-        .. :quickref: Synthese;
+    """Get all sources.
+
+    .. :quickref: Synthese;
     """
     q = DB.session.query(TSources)
     data = q.all()
@@ -559,13 +565,13 @@ def get_sources():
 @routes.route("/defaultsNomenclatures", methods=["GET"])
 @json_resp
 def getDefaultsNomenclatures():
-    """
-        Get default nomenclatures
-        .. :quickref: Synthese;
+    """Get default nomenclatures
 
-        :query str group2_inpn:
-        :query str regne:
-        :query int organism:
+    .. :quickref: Synthese;
+
+    :query str group2_inpn:
+    :query str regne:
+    :query int organism:
     """
     params = request.args
     group2_inpn = "0"
@@ -600,14 +606,15 @@ def getDefaultsNomenclatures():
 @routes.route("/color_taxon", methods=["GET"])
 @json_resp
 def get_color_taxon():
-    """
-    Get color of taxon in areas (table synthese.cor_area_taxon)
+    """Get color of taxon in areas (table synthese.cor_area_taxon).
+
     .. :quickref: Synthese;
+    
     :query str code_area_type: Type area code (ref_geo.bib_areas_types.type_code)
     :query int id_area: Id of area (ref_geo.l_areas.id_area)
     :query int cd_nom: taxon code (taxonomie.taxref.cd_nom)
     Those three parameters can be multiples
-    Returns: Array<dict<VColorAreaTaxon>>
+    :returns: Array<dict<VColorAreaTaxon>>
     """
     params = request.args
     id_areas_type = params.getlist("code_area_type")
