@@ -31,6 +31,7 @@ CREATE MATERIALIZED VIEW gn_dashboard.vm_synthese AS
      JOIN taxonomie.taxref t ON s.cd_nom = t.cd_nom
 WITH DATA;
 
+
 CREATE MATERIALIZED VIEW gn_dashboard.vm_synthese_communes_complete AS 
  SELECT a.area_name,
     st_asgeojson(st_transform(a.geom, 4326)) AS geom_area_4326,
@@ -52,6 +53,19 @@ CREATE MATERIALIZED VIEW gn_dashboard.vm_synthese_communes_complete AS
   GROUP BY GROUPING SETS ((a.area_name, a.geom, (date_part('year'::text, s.date_min)), t.regne, t.phylum, t.group1_inpn, t.classe, t.group2_inpn, t.ordre, t.famille, t.cd_ref), (a.area_name, a.geom))
   ORDER BY a.area_name, (date_part('year'::text, s.date_min)), t.regne, t.phylum, t.group1_inpn, t.classe, t.group2_inpn, t.ordre, t.famille, t.cd_ref
 WITH DATA;
+
+
+CREATE MATERIALIZED VIEW gn_dashboard.vm_synthese_frameworks AS 
+ SELECT DISTINCT af.acquisition_framework_name,
+    date_part('year'::text, s.date_min) AS year,
+    count(*) AS nb_obs
+   FROM gn_synthese.synthese s
+     JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
+     JOIN gn_meta.t_acquisition_frameworks af ON af.id_acquisition_framework = d.id_acquisition_framework
+  GROUP BY af.acquisition_framework_name, (date_part('year'::text, s.date_min))
+  ORDER BY af.acquisition_framework_name, (date_part('year'::text, s.date_min))
+WITH DATA;
+
 
 CREATE MATERIALIZED VIEW gn_dashboard.vm_taxonomie AS 
  SELECT 'Règne'::text AS level,

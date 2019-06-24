@@ -60,7 +60,6 @@ def get_synthese_stat():
     # return [d.as_dict() for d in data]
 
 
-# vm_synthese_communes
 @blueprint.route("/communes", methods=["GET"])
 @json_resp
 def get_communes_stat():
@@ -208,14 +207,10 @@ def get_synthese_per_tax_level_stat():
             func.count(VSynthese.id_synthese),
         ).group_by(VSynthese.classe)
     if ("selectedFilter" in params) and (params["selectedFilter"] == "Ordre"):
-        q = (
-            DB.session.query(
-                func.coalesce(VSynthese.ordre, "Not defined"),
-                func.count(VSynthese.id_synthese),
-            )
-            .group_by(VSynthese.ordre)
-            .order_by(VSynthese.ordre)
-        )
+        q = DB.session.query(
+            func.coalesce(VSynthese.ordre, "Not defined"),
+            func.count(VSynthese.id_synthese),
+        ).group_by(VSynthese.ordre)
     if ("selectedFilter" in params) and (params["selectedFilter"] == "Groupe INPN 1"):
         q = DB.session.query(
             func.coalesce(VSynthese.group1_inpn, "Not defined"),
@@ -289,4 +284,31 @@ def get_taxonomie():
     if "taxLevel" in params:
         q = q.filter(VTaxonomie.level == params["taxLevel"])
     return q.all()
+
+
+@blueprint.route("/species", methods=["GET"])
+@json_resp
+def get_especes_stat():
+    params = request.args
+    q = DB.session.query(distinct(Taxref.cd_ref)).join(
+        Synthese, Synthese.cd_nom == Taxref.cd_nom
+    )
+    if "yearActual" in params:
+        q = q.filter(func.date_part("year", Synthese.date_min) == params["yearActual"])
+
+    p = DB.session.query(distinct(Taxref.cd_ref)).join(
+        Synthese, Synthese.cd_nom == Taxref.cd_nom
+    )
+    if "yearBefore" in params:
+        p = p.filter(func.date_part("year", Synthese.date_min) == params["yearBefore"])
+
+    w = q.intersect(p)
+    x = p.except_(q)
+    y = q.except_(p)
+    if ("type" in params) and (params["type"] == "Recontactees"):
+        return w.all()
+    if ("type" in params) and (params["type"] == "Non recontactees"):
+        return x.all()
+    if ("type" in params) and (params["type"] == "Nouvelles"):
+        return y.all()
 

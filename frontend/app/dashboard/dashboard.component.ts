@@ -22,6 +22,12 @@ export class DashboardComponent implements OnInit {
   public years: any;
   public taxLevel: { [taxLevel: string]: any } = {};
 
+  public showHistogram = true;
+  public showMap = true;
+  public showPieChart = true;
+  public showLineChart = true;
+  public showSpecies = true;
+
   constructor(title: Title, public dataService: DataService) {
     title.setTitle("GeoNature - Dashboard")
   }
@@ -123,6 +129,47 @@ export class DashboardComponent implements OnInit {
       }
     );
     // console.log(this.taxonomies);
+  }
+
+  hideHistogram(event) {
+    if (this.showHistogram == true) {
+      this.showHistogram = false;
+    }
+    else {
+      this.showHistogram = true;
+    }
+  }
+  hideMap(event) {
+    if (this.showMap == true) {
+      this.showMap = false;
+    }
+    else {
+      this.showMap = true;
+    }
+  }
+  hidePieChart(event) {
+    if (this.showPieChart == true) {
+      this.showPieChart = false;
+    }
+    else {
+      this.showPieChart = true;
+    }
+  }
+  hideLineChart(event) {
+    if (this.showLineChart == true) {
+      this.showLineChart = false;
+    }
+    else {
+      this.showLineChart = true;
+    }
+  }
+  hideSpecies(event) {
+    if (this.showSpecies == true) {
+      this.showSpecies = false;
+    }
+    else {
+      this.showSpecies = true;
+    }
   }
 
 }

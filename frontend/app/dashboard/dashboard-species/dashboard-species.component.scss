@@ -1,0 +1,24 @@
+.card {
+  background-color: white;
+  border-color: rgb(150,150,150);
+}
+
+.card-header {
+  background: radial-gradient(circle at top left, rgba(62, 69, 81, 0.7), #e0e0e0);
+}
+
+.btn-outline-green {
+  color: #689f38;
+  background-color: #ffffff;
+  border-color: #689f38;
+}
+
+.btn-outline-green:hover {
+  color: #fff;
+  background-color: #689f38;
+  border-color: #689f38;
+}
+
+.btn-outline-green:focus, .btn-outline-green.focus {
+  box-shadow: 0 0 0 0.2rem #aed581;
+}

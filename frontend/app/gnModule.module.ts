@@ -15,6 +15,7 @@ import { DashboardMapsComponent } from "./dashboard/dashboard-maps/dashboard-map
 import { DashboardHistogramComponent } from "./dashboard/dashboard-histogram/dashboard-histogram.component";
 import { DashboardPieChartComponent } from "./dashboard/dashboard-pie-chart/dashboard-pie-chart.component";
 import { DashboardLineChartComponent } from "./dashboard/dashboard-line-chart/dashboard-line-chart.component";
+import { DashboardSpeciesComponent } from "./dashboard/dashboard-species/dashboard-species.component";
 // Services
 import { DataService } from "./dashboard/services/data.services"
 
@@ -28,7 +29,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [DashboardComponent, DashboardMapsComponent, DashboardHistogramComponent, DashboardPieChartComponent, DashboardLineChartComponent],
+  declarations: [DashboardComponent, DashboardMapsComponent, DashboardHistogramComponent, DashboardPieChartComponent, DashboardLineChartComponent, DashboardSpeciesComponent],
   imports: [GN2CommonModule, RouterModule.forChild(routes), CommonModule, FormsModule, ReactiveFormsModule, MatTabsModule, ChartsModule, NouisliderModule],
   providers: [DataService],
   bootstrap: [DashboardComponent]

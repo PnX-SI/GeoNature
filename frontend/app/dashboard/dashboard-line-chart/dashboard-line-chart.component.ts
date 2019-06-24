@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { BaseChartDirective } from 'ng2-charts/ng2-charts';
 // Services
@@ -79,6 +79,66 @@ export class DashboardLineChartComponent implements OnInit {
     {
       backgroundColor: "rgba(190,195,77,0.7)",
       borderColor: "rgb(190,195,77)"
+    },
+    {
+      backgroundColor: "rgba(97,187,223,0.7)",
+      borderColor: "rgb(97,187,223)"
+    },
+    {
+      backgroundColor: "rgba(224,186,140,0.7)",
+      borderColor: "rgb(224,186,140)"
+    },
+    {
+      backgroundColor: "rgba(169,45,152,0.7)",
+      borderColor: "rgb(169,45,152)"
+    },
+    {
+      backgroundColor: "rgba(94, 207, 178,0.7)",
+      borderColor: "rgb(94, 207, 178)"
+    },
+    {
+      backgroundColor: "rgba(66,81,126,0.7)",
+      borderColor: "rgb(66,81,126)"
+    },
+    {
+      backgroundColor: "rgba(101,33,33,0.7)",
+      borderColor: "rgb(101,33,33)"
+    },
+    {
+      backgroundColor: "rgba(117,112,56,0.7)",
+      borderColor: "rgb(117,112,56)"
+    },
+    {
+      backgroundColor: "rgba(191,158,46,0.7)",
+      borderColor: "rgb(191,158,46)"
+    },
+    {
+      backgroundColor: "rgba(147,75,75,0.7)",
+      borderColor: "rgb(147,75,75)"
+    },
+    {
+      backgroundColor: "rgba(64,64,64,0.7)",
+      borderColor: "rgb(64,64,64)"
+    },
+    {
+      backgroundColor: "rgba(169,130,211,0.7)",
+      borderColor: "rgb(169,130,211)"
+    },
+    {
+      backgroundColor: "rgba(51,102,82,0.7)",
+      borderColor: "rgb(51,102,82)"
+    },
+    {
+      backgroundColor: "rgba(245,133,120,0.7)",
+      borderColor: "rgb(245,133,120)"
+    },
+    {
+      backgroundColor: "rgba(167,110,33,0.7)",
+      borderColor: "rgb(167,110,33)"
+    },
+    {
+      backgroundColor: "rgba(229,226,222,0.7)",
+      borderColor: "rgb(229,226,222)"
     }
   ];
   public lineChartColors = [];
@@ -107,9 +167,7 @@ export class DashboardLineChartComponent implements OnInit {
   };
   public lineChartLegend = true;
 
-  constructor(public dataService: DataService, public fb: FormBuilder) {
-
-  }
+  constructor(public dataService: DataService, public fb: FormBuilder) { }
 
   ngOnInit() {
     // Accès aux années distinctes présentes dans la BDD GeoNature
@@ -122,7 +180,7 @@ export class DashboardLineChartComponent implements OnInit {
             this.lineChartLabels.push(elt[0]);
           }
         );
-        console.log(this.lineChartLabels);
+        // console.log(this.lineChartLabels);
       }
     );
 
@@ -135,6 +193,7 @@ export class DashboardLineChartComponent implements OnInit {
             this.frameworksName.push(elt[0]);
           }
         );
+        // console.log(this.frameworksName);
         this.nbFrameworks = this.frameworksName.length;
         // Sélection du nombre de couleurs correspondant
         this.lineChartColors = this.colors.slice(0, this.nbFrameworks);
@@ -173,7 +232,7 @@ export class DashboardLineChartComponent implements OnInit {
             );
           }
         );
-        console.log(this.lineChartData);
+        // console.log(this.lineChartData);
         // console.log(this.chart);
       }
     );

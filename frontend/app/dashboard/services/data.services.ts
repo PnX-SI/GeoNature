@@ -77,6 +77,18 @@ export class DataService {
         return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/frameworks_name", { params: queryString })
     }
 
+    getSpecies(params?) {
+        let queryString = new HttpParams();
+        if (params) {
+            for (const key in params) {
+                if (params[key]) {
+                    queryString = queryString.set(key, params[key]);
+                }
+            }
+        }
+        return this.httpClient.get<any>("http://127.0.0.1:8000/dashboard/species", { params: queryString })
+    }
+
     getTaxonomie(params?) {
         let queryString = new HttpParams();
         if (params) {
