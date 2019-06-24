@@ -33,7 +33,7 @@ from geonature.utils.env import DB
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_commons.models import TValidations
 
-from .models import VValidationsForWebApp, VSyntheseValidation
+from .models import VSyntheseValidation
 
 # from geonature.core.gn_synthese.utils import query as synthese_query
 
@@ -153,90 +153,92 @@ def get_statusNames(info_role):
 @permissions.check_cruved_scope("C", True, module_code="VALIDATION")
 @json_resp
 def post_status(info_role, id_synthese):
-    try:
-        data = dict(request.get_json())
-        validation_status = data["statut"]
-        validation_comment = data["comment"]
+    # try:
+    data = dict(request.get_json())
+    id_validation_status = data["statut"]
+    validation_comment = data["comment"]
 
-        if validation_status == "":
-            return "Aucun statut de validation n'est sélectionné", 400
+    print(id_validation_status)
+    if id_validation_status == "":
+        return "Aucun statut de validation n'est sélectionné", 400
 
-        id_synthese = id_synthese.split(",")
+    id_synthese = id_synthese.split(",")
 
-        for id in id_synthese:
+    for id in id_synthese:
+        # t_validations.id_validation:
+        id_val = 1  # auto-incremented in t_validations
 
-            # t_validations.id_validation:
-            id_val = 1  # auto-incremented in t_validations
-
-            # t_validations.id_table_location:
-            # get id_source value of the observation in synthese table
-            synthese_id_source = select([Synthese.id_source]).where(
-                Synthese.id_synthese == int(id)
-            )
-            # get entity_source_pk_field value of the observation in TSources table with id_source value
-            entity_source_pk_field = DB.session.execute(
-                select([TSources.entity_source_pk_field]).where(
-                    TSources.id_source == synthese_id_source
-                )
-            ).fetchone()[0]
-            name_schema = str(entity_source_pk_field).split(".")[0]
-            name_table = str(entity_source_pk_field).split(".")[1]
-            # get id_table_location
-            id_table_loc = DB.session.query(
-                func.gn_commons.get_table_location_id(name_schema, name_table)
-            )
-            if DB.session.execute(id_table_loc).fetchone()[0] == None:
-                return (
-                    "INTERNAL SERVER ERROR : no id_table_location / contactez l'administrateur du site",
-                    500,
-                )
-            # t_validations.uuid_attached_row:
-            uuid = DB.session.query(Synthese.unique_id_sinp).filter(
-                Synthese.id_synthese == int(id)
-            )
-
-            # t_validations.id_nomenclature_valid_status:
-            id_nomenclature_status = DB.session.query(
-                TNomenclatures.id_nomenclature
-            ).filter(TNomenclatures.id_nomenclature == validation_status)
-
-            # t_validations.id_validator:
-            id_valdator = info_role.id_role
-
-            # t_validations.validation_comment
-            comment = validation_comment
-
-            # t_validations.validation_date
-            val_date = datetime.datetime.now()
-
-            # t_validations.validation_auto
-            val_auto = False
-
-            # insert values in t_validations
-            addValidation = TValidations(
-                id_val,
-                id_table_loc,
-                uuid,
-                id_nomenclature_status,
-                id_valdator,
-                comment,
-                val_date,
-                val_auto,
-            )
-
-            DB.session.add(addValidation)
-            DB.session.commit()
-
-        DB.session.close()
-
-        return data
-
-    except Exception as e:
-        log.error(e)
-        return (
-            'INTERNAL SERVER ERROR ("post_status() error"): contactez l\'administrateur du site',
-            500,
+        # t_validations.id_table_location:
+        # get id_source value of the observation in synthese table
+        synthese_id_source = select([Synthese.id_source]).where(
+            Synthese.id_synthese == int(id)
         )
+        # get entity_source_pk_field value of the observation in TSources table with id_source value
+
+        entity_source_pk_field = DB.session.execute(
+            select([TSources.entity_source_pk_field]).where(
+                TSources.id_source == synthese_id_source
+            )
+        ).fetchone()
+        if entity_source_pk_field is None:
+            return (
+                "INTERNAL SERVER ERROR : l'observation id_synthese {} n'a pas d'id_synthese et ne peux donc pas être validée".format(
+                    id
+                ),
+                500,
+            )
+
+        entity_source_pk_field = entity_source_pk_field[0]
+        name_schema = str(entity_source_pk_field).split(".")[0]
+        name_table = str(entity_source_pk_field).split(".")[1]
+        # get id_table_location
+        id_table_loc = DB.session.query(
+            func.gn_commons.get_table_location_id(name_schema, name_table)
+        )
+        if DB.session.execute(id_table_loc).fetchone()[0] == None:
+            return (
+                "INTERNAL SERVER ERROR : no id_table_location / contactez l'administrateur du site",
+                500,
+            )
+        # t_validations.uuid_attached_row:
+        uuid = DB.session.query(Synthese.unique_id_sinp).filter(
+            Synthese.id_synthese == int(id)
+        )
+
+        # t_validations.id_validator:
+        id_validator = info_role.id_role
+
+        # t_validations.validation_date
+        val_date = datetime.datetime.now()
+
+        # t_validations.validation_auto
+        val_auto = False
+
+        # insert values in t_validations
+        addValidation = TValidations(
+            id_val,
+            id_table_loc,
+            uuid,
+            id_validation_status,
+            id_validator,
+            validation_comment,
+            val_date,
+            val_auto,
+        )
+
+        DB.session.add(addValidation)
+        DB.session.commit()
+
+    DB.session.close()
+
+    return data
+
+    # except Exception as e:
+    # log.error(e)
+    # return (
+    #     'INTERNAL SERVER ERROR ("post_status() error"): contactez l\'administrateur du site',
+    #     500,
+    # )
 
 
 @blueprint.route("/definitions", methods=["GET"])
@@ -340,7 +342,8 @@ def get_hist(info_role, uuid_attached_row):
                 TNomenclatures.id_nomenclature
                 == TValidations.id_nomenclature_valid_status,
             )
-            .join(Synthese, Synthese.uuid_attached_row == TValidations.unique_id_sinp)
+            .join(Synthese, Synthese.unique_id_sinp == TValidations.uuid_attached_row)
+            .filter(TValidations.uuid_attached_row == uuid_attached_row)
             .all()
         )
 
@@ -371,24 +374,24 @@ def get_hist(info_role, uuid_attached_row):
         )
 
 
-@blueprint.route("/date/<id>", methods=["GET"])
+@blueprint.route("/date/<uuid>", methods=["GET"])
 @json_resp
-def get_validation_date(id_synthese):
+def get_validation_date(uuid):
     """
         Retourne la date de validation
-        pour l'observation id_synthese
+        pour l'observation uuid
     """
     try:
         date = DB.session.execute(
             select([VSyntheseValidation.validation_date]).where(
-                VSyntheseValidation.id_synthese == id_synthese
+                VSyntheseValidation.unique_id_sinp == uuid
             )
         ).fetchone()[0]
         return str(date)
     except (Exception) as e:
         log.error(e)
         return (
-            'INTERNAL SERVER ERROR ("get_validation_date(id_synthese) error"): contactez l\'administrateur du site',
+            'INTERNAL SERVER ERROR ("get_validation_date(uuid) error"): contactez l\'administrateur du site',
             500,
         )
 

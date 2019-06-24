@@ -10,6 +10,7 @@ import { stringify } from "wellknown";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap/datepicker/ngb-date-parser-formatter";
 import { NgbDatePeriodParserFormatter } from "@geonature_common/form/date/ngb-date-custom-parser-formatter";
 import { DYNAMIC_FORM_DEF } from "./dynamycFormConfig";
+import { DYNAMIC_FORM_DEF } from "@geonature/syntheseModule/services/dynamycFormConfig";
 
 @Injectable()
 export class FormService {

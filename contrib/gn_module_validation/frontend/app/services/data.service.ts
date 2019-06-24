@@ -49,9 +49,9 @@ export class DataService {
     );
   }
 
-  getValidationDate(id) {
+  getValidationDate(uuid) {
     return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/validation/date/${id}`
+      `${AppConfig.API_ENDPOINT}/validation/date/${uuid}`
     );
   }
 

@@ -68,7 +68,10 @@ export class ValidationPopupComponent {
             this.toastr.success('Vous avez modifié le statut de validation de ' + this.observations.length + ' observation(s)');
             // bind statut value with validation-synthese-list component
             this.update_status();
-            this.getValidationDate(this.observations[0]);
+            console.log(this.observations)
+            // emit the date of today in output to update the validation date on maplist
+            this.valDate.emit(new Date());
+            //this.getValidationDate(this.observations[0]);
             resolve('data updated');
         }
       })
@@ -161,8 +164,8 @@ export class ValidationPopupComponent {
     this.modalRef.close();
   }
 
-  getValidationDate(id) {
-    this.dataService.getValidationDate(id).subscribe(
+  getValidationDate(uuid) {
+    this.dataService.getValidationDate(uuid).subscribe(
       result => {
         // get status names
         this.validationDate = result;
@@ -177,6 +180,7 @@ export class ValidationPopupComponent {
         }
       },
       () => {
+        // emit date of today 
         this.valDate.emit(this.validationDate);
       }
     );

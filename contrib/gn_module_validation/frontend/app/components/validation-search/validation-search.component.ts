@@ -1,26 +1,10 @@
-import { Subscription } from "rxjs";
-import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
-  ViewChild
-} from "@angular/core";
-import { FormBuilder } from "@angular/forms";
+import { Component, OnInit, Output, EventEmitter } from "@angular/core";
 import { DataService } from "../../services/data.service";
 import { FormService } from "../../services/form.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { AppConfig } from "@geonature_config/app.config";
 import { MapService } from "@geonature_common/map/map.service";
-import {
-  TreeComponent,
-  TreeModel,
-  TreeNode,
-  TREE_ACTIONS,
-  IActionMapping,
-  ITreeOptions
-} from "angular-tree-component";
+
 import { ValidationTaxonAdvancedModalComponent } from "./validation-taxon-advanced/validation-taxon-advanced.component";
 import { ValidationTaxonAdvancedStoreService } from "./validation-taxon-advanced/validation-taxon-advanced-store.service";
 import { NomenclatureComponent } from "@geonature_common/form/nomenclature/nomenclature.component";

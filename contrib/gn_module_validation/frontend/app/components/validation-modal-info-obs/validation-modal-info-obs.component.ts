@@ -179,10 +179,12 @@ export class ValidationModalInfoObsComponent implements OnInit {
           }
         },
         err => {
-          console.log(err.error);
-          if (err.statusText === 'Unknown Error') {
+          console.log(err);
+          if(err.status == 404) {
+            this.toastr.warning('Aucun historique de validation')
+          } else if (err.statusText === 'Unknown Error') {
             // show error message if no connexion
-            this.toastr.error('ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connexion)');
+            this.toastr.error('ERROR: IMPsOSSIBLE TO CONNECT TO SERVER (check your connexion)');
           } else {
             // show error message if other server error
             this.toastr.error(err.error);
@@ -265,9 +267,9 @@ export class ValidationModalInfoObsComponent implements OnInit {
             // show success message indicating the number of observation(s) with modified validation status
             this.toastr.success('Nouveau statut de validation enregistré');
             this.update_status();
-            this.getValidationDate(this.id_synthese);
+            this.getValidationDate(this.oneObsSynthese.unique_id_sinp);
             this.loadOneSyntheseReleve(this.oneObsSynthese);
-            this.loadValidationHistory(this.id_synthese);
+            this.loadValidationHistory(this.oneObsSynthese.unique_id_sinp);
             // bind statut value with validation-synthese-list component
             this.statusForm.reset();
             resolve('data updated');
@@ -314,8 +316,8 @@ export class ValidationModalInfoObsComponent implements OnInit {
     this.edit = false;
   }
 
-  getValidationDate(id) {
-    this._dataService.getValidationDate(id).subscribe(
+  getValidationDate(uuid) {
+    this._dataService.getValidationDate(uuid).subscribe(
       result => {
         // get status names
         this.validationDate = result;
