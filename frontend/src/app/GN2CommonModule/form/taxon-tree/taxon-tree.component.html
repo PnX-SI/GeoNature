@@ -1,0 +1,10 @@
+<tree-root #tree (event)="catchEvent($event)" [state]="storeService.taxonTreeState" [nodes]="storeService.taxonTree"
+[options]="treeOptions">
+<ng-template #treeNodeTemplate let-node let-index="index">
+
+  <i *ngIf="!node.data.leaf" class="fa fa-folder-o" aria-hidden="true"></i>
+  <i *ngIf="node.data.leaf" class="fa fa-hand-o-right" aria-hidden="true"></i>
+
+  <span [ngClass]="node.data.classes">{{ node.data.name }}</span>
+</ng-template>
+</tree-root>

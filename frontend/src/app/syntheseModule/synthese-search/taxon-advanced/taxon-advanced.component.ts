@@ -37,7 +37,6 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
           if (!node.isExpanded) {
             node.toggleExpanded();
           }
-          this.expandNodeRecursively(node, 5);
         }
       }
     };
@@ -56,6 +55,7 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
 
   // Algo pour 'expand' tous les noeud fils recursivement à partir un noeud parent
   // depth : profondeur de l'arbre jusqu'ou on ouvre
+  // Non utilisée pour des raisons de performances
   expandNodeRecursively(node: TreeNode, depth: number): void {
     depth = depth - 1;
     if (node.children) {

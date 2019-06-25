@@ -42,6 +42,7 @@ export class FormService {
       taxonomy_lr: null,
       taxonomy_id_hab: null,
       taxonomy_group2_inpn: null
+      //cd_ref_parent: null
     });
 
     this.searchForm.setValidators([this.periodValidator()]);
@@ -74,6 +75,8 @@ export class FormService {
   }
 
   formatParams() {
+    console.log("formattttrt");
+
     const params = Object.assign({}, this.searchForm.value);
     const updatedParams = {};
     // tslint:disable-next-line:forin
@@ -101,15 +104,13 @@ export class FormService {
       }
     }
 
-    if (
-      this.selectedtaxonFromComponent.length > 0 ||
-      this.selectedCdRefFromTree.length > 0
-    ) {
-      // search on cd_ref to include synonyme from the synthese searchs
-      updatedParams["cd_ref"] = [
-        ...this.selectedtaxonFromComponent.map(taxon => taxon.cd_ref),
-        ...this.selectedCdRefFromTree
-      ];
+    if (this.selectedtaxonFromComponent.length > 0) {
+      updatedParams["cd_ref"] = this.selectedtaxonFromComponent.map(
+        taxon => taxon.cd_ref
+      );
+    }
+    if (this.selectedCdRefFromTree.length > 0) {
+      updatedParams["cd_ref_parent"] = this.selectedCdRefFromTree;
     }
 
     return updatedParams;

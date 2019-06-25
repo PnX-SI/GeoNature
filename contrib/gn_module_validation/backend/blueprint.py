@@ -174,7 +174,6 @@ def post_status(info_role, id_synthese):
             Synthese.id_synthese == int(id)
         )
         # get entity_source_pk_field value of the observation in TSources table with id_source value
-
         entity_source_pk_field = DB.session.execute(
             select([TSources.entity_source_pk_field]).where(
                 TSources.id_source == synthese_id_source
@@ -187,10 +186,16 @@ def post_status(info_role, id_synthese):
                 ),
                 500,
             )
-
         entity_source_pk_field = entity_source_pk_field[0]
-        name_schema = str(entity_source_pk_field).split(".")[0]
-        name_table = str(entity_source_pk_field).split(".")[1]
+        try:
+            name_schema = str(entity_source_pk_field).split(".")[0]
+            name_table = str(entity_source_pk_field).split(".")[1]
+        except IndexError:
+            return (
+                """INTERNAL SERVER ERROR : Le champ entity_pk_source de la table gn_commons.t_sources n'est pas remplie correctement
+                 contactez l'administrateur du site""",
+                500,
+            )
         # get id_table_location
         id_table_loc = DB.session.query(
             func.gn_commons.get_table_location_id(name_schema, name_table)
