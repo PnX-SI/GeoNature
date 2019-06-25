@@ -30,7 +30,6 @@ export class ValidationTaxonAdvancedModalComponent
   public taxhubAttributes: any;
   public attributForm: FormGroup;
   public formBuilded = false;
-  public isLoading = false;
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -41,14 +40,11 @@ export class ValidationTaxonAdvancedModalComponent
       mouse: {
         click: (tree, node, $event) => {},
         checkboxClick: (tree, node, $event) => {
-          this.isLoading = true;
           node.toggleSelected();
           if (!node.isExpanded) {
             node.toggleExpanded();
           }
-          this.isLoading = false;
           //this.expandNodeRecursively(node, 0);
-          //this.isLoading = false;
         }
       }
     };
@@ -69,7 +65,6 @@ export class ValidationTaxonAdvancedModalComponent
   // depth : profondeur de l'arbre jusqu'ou on ouvre
   // Non utilisée pour des raisons de performances
   expandNodeRecursively(node: TreeNode, depth: number): void {
-    this.isLoading = true;
     depth = depth - 1;
     if (node.children) {
       node.children.forEach(subNode => {

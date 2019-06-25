@@ -7,7 +7,6 @@
 <div class="modal-body">
   <div [hidden]="!VALIDATION_CONFIG.DISPLAY_TAXON_TREE">
     <small> Selectionner un ou plusieurs taxons à partir de la hierarchie taxonomique </small> <br>
-    ça charge: ??{{ isLoading |json}}
     <span *ngIf="isLoading"> Chargement... <img  src="assets/images/Spinner.gif" alt="Chargement..." height="40" width="40"> </span>
     <div class="card">
       <div class="card-body tree-wrapper">
