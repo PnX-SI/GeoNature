@@ -92,7 +92,7 @@ def filter_taxonomy(model, q, filters):
         # find all taxon child from cd_ref parent
         cd_ref_parent_int = list(map(lambda x: int(x), filters.pop("cd_ref_parent")))
         sql = text(
-            """SELECT DISTINCT cd_ref FROM taxonomie.find_all_taxons_childs(:id_parent)"""
+            """SELECT DISTINCT cd_ref FROM taxonomie.find_all_taxons_children(:id_parent)"""
         )
         result = DB.engine.execute(sql, id_parent=cd_ref_parent_int)
         if result:

@@ -124,7 +124,7 @@ class SyntheseQuery:
                 map(lambda x: int(x), self.filters.pop("cd_ref_parent"))
             )
             sql = text(
-                """SELECT DISTINCT cd_ref FROM taxonomie.find_all_taxons_childs(:id_parent)"""
+                """SELECT DISTINCT cd_ref FROM taxonomie.find_all_taxons_children(:id_parent)"""
             )
             result = DB.engine.execute(sql, id_parent=cd_ref_parent_int)
             if result:
