@@ -1,6 +1,6 @@
 import json
 from flask import Blueprint, current_app, session, request
-from sqlalchemy.sql import func, text
+from sqlalchemy.sql import func, text, select
 
 from geojson import FeatureCollection, Feature
 
@@ -65,20 +65,41 @@ def get_synthese_stat():
 @json_resp
 def get_communes_stat():
     params = request.args
+    # q = (
+    #     DB.session.query(
+    #         func.count(Synthese.id_synthese),
+    #         LAreas.area_name,
+    #         func.st_asgeojson(func.st_transform(LAreas.geom, 4326)),
+    #         func.count(distinct(Taxref.cd_ref)),
+    #     )
+    #     .join(CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese)
+    #     .join(LAreas, LAreas.id_area == CorAreaSynthese.id_area)
+    #     .join(Taxref, Taxref.cd_nom == Synthese.cd_nom)
+    #     .join(BibAreasTypes, BibAreasTypes.id_type == LAreas.id_type)
+    #     .group_by(LAreas.area_name, LAreas.geom)
+    #     .filter(BibAreasTypes.type_code == "COM")
+    # )
     q = (
-        DB.session.query(
-            func.count(Synthese.id_synthese),
-            LAreas.area_name,
-            func.st_asgeojson(func.st_transform(LAreas.geom, 4326)),
-            func.count(distinct(Taxref.cd_ref)),
+        select(
+            [
+                func.count(Synthese.id_synthese),
+                LAreas.area_name,
+                func.st_asgeojson(func.st_transform(LAreas.geom, 4326)),
+                func.count(distinct(Taxref.cd_ref)),
+            ]
         )
-        .join(CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese)
-        .join(LAreas, LAreas.id_area == CorAreaSynthese.id_area)
-        .join(Taxref, Taxref.cd_nom == Synthese.cd_nom)
-        .join(BibAreasTypes, BibAreasTypes.id_type == LAreas.id_type)
+        .select_from(
+            Synthese.__table__.join(
+                CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese
+            )
+            .join(LAreas, LAreas.id_area == CorAreaSynthese.id_area)
+            .join(Taxref, Taxref.cd_nom == Synthese.cd_nom)
+            .join(BibAreasTypes, BibAreasTypes.id_type == LAreas.id_type)
+        )
+        .where(BibAreasTypes.type_code == "COM")
         .group_by(LAreas.area_name, LAreas.geom)
-        .filter(BibAreasTypes.type_code == "COM")
     )
+
     if "selectedYearRange" in params:
         q = q.filter(
             func.date_part("year", Synthese.date_min)
@@ -104,7 +125,8 @@ def get_communes_stat():
         q = q.filter(Taxref.group1_inpn == params["selectedGroup1INPN"])
     if ("selectedGroup2INPN") in params and (params["selectedGroup2INPN"] != ""):
         q = q.filter(Taxref.group2_inpn == params["selectedGroup2INPN"])
-    data = q.all()
+    # data = q.all()
+    data = DB.engine.execute(q)
 
     geojson_features = []
     for d in data:
