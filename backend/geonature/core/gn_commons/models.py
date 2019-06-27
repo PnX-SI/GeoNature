@@ -98,7 +98,6 @@ class TValidations(DB.Model):
     __table_args__ = {"schema": "gn_commons"}
 
     id_validation = DB.Column(DB.Integer, primary_key=True)
-    id_table_location = DB.Column(DB.Integer)
     uuid_attached_row = DB.Column(UUID(as_uuid=True))
     id_nomenclature_valid_status = DB.Column(DB.Integer)
     id_validator = DB.Column(DB.Integer)
@@ -117,8 +116,6 @@ class TValidations(DB.Model):
 
     def __init__(
         self,
-        id_validation,
-        id_table_location,
         uuid_attached_row,
         id_nomenclature_valid_status,
         id_validator,
@@ -126,7 +123,6 @@ class TValidations(DB.Model):
         validation_date,
         validation_auto,
     ):
-        self.id_table_location = id_table_location
         self.uuid_attached_row = uuid_attached_row
         self.id_nomenclature_valid_status = id_nomenclature_valid_status
         self.id_validator = id_validator
@@ -141,7 +137,6 @@ class VLatestValidations(DB.Model):
     __tablename__ = "v_latest_validation"
     __table_args__ = {"schema": "gn_commons"}
     id_validation = DB.Column(DB.Integer, primary_key=True)
-    id_table_location = DB.Column(DB.Integer)
     uuid_attached_row = DB.Column(UUID(as_uuid=True))
     id_nomenclature_valid_status = DB.Column(DB.Integer)
     id_validator = DB.Column(DB.Integer)

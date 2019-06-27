@@ -40,19 +40,23 @@ DROP COLUMN validable;
 
 -- ajout vue latest validation
 
-CREATE VIEW gn_commons.v_latest_validation AS
-SELECT v.*
-FROM gn_commons.t_validations v
-INNER JOIN (
-SELECT uuid_attached_row, max(validation_date) as max_date
-FROM gn_commons.t_validations
-GROUP BY uuid_attached_row
-) last_val
-ON v.uuid_attached_row = last_val.uuid_attached_row AND v.validation_date = last_val.max_date
+DROP VIEW IF EXISTS gn_commons.v_synthese_validation_forwebapp;
+DROP VIEW IF EXISTS gn_commons.v_latest_validation;
+CREATE OR REPLACE VIEW gn_commons.v_latest_validation AS 
+ SELECT v.id_validation,
+    v.uuid_attached_row,
+    v.id_nomenclature_valid_status,
+    v.validation_auto,
+    v.id_validator,
+    v.validation_comment,
+    v.validation_date
+   FROM gn_commons.t_validations v
+     JOIN ( SELECT t_validations.uuid_attached_row,
+            max(t_validations.validation_date) AS max_date
+           FROM gn_commons.t_validations
+          GROUP BY t_validations.uuid_attached_row) last_val ON v.uuid_attached_row = last_val.uuid_attached_row AND v.validation_date = last_val.max_date;
 
 
-
--- nouvelle vue pour le module validatio,
 CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS 
  SELECT s.id_synthese,
     s.unique_id_sinp,
@@ -119,10 +123,13 @@ CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS
      LEFT JOIN gn_commons.t_validations v ON v.uuid_attached_row = s.unique_id_sinp
      LEFT JOIN ref_nomenclatures.t_nomenclatures n ON n.id_nomenclature = s.id_nomenclature_valid_status
      LEFT JOIN gn_commons.v_latest_validation latest_v ON latest_v.uuid_attached_row = s.unique_id_sinp
-     WHERE s.id_source IS NOT NULL AND d.validable = true;
-  ;
+  WHERE s.id_source IS NOT NULL AND d.validable = true;
+
+
 
 COMMENT ON VIEW gn_commons.v_synthese_validation_forwebapp  IS 'Vue utilisée pour le module validation. Prend l''id_nomenclature dans la table synthese ainsi que toutes les colonnes de la synthese pour les filtres. On JOIN sur la vue latest_validation pour voir si la validation est auto';
+
+ALTER TABLE gn_commons.t_validations DROP COLUMN id_table_location;
 
 
 DROP VIEW gn_commons.v_validations_for_web_app CASCADE;
