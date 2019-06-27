@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { AppConfig } from '@geonature_config/app.config';
-import { DataService } from '../../services/data.service';
-import { SyntheseFormService } from '../../services/form.service';
+import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
+import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form/dynamic-form.service';
 import { TreeModel } from 'angular-tree-component';
+import { AppConfig } from '@geonature_config/app.config';
 import { formatTaxonTree } from '@geonature_common/form/taxon-tree/taxon-tree.service';
 
 @Injectable()
 export class TaxonAdvancedStoreService {
+  public AppConfig = AppConfig;
   public taxonTree: any;
   public treeModel: TreeModel;
   public taxonTreeState: any;
@@ -20,12 +21,12 @@ export class TaxonAdvancedStoreService {
 
   constructor(
     private _dataService: DataFormService,
-    private _syntheseDateService: DataService,
+    private _validationDataService: SyntheseDataService,
     private _formService: SyntheseFormService,
     private _formGen: DynamicFormService
   ) {
     if (AppConfig.SYNTHESE.DISPLAY_TAXON_TREE) {
-      this._syntheseDateService.getTaxonTree().subscribe(data => {
+      this._validationDataService.getTaxonTree().subscribe(data => {
         this.taxonTree = formatTaxonTree(data);
       });
     }

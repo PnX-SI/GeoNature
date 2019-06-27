@@ -6,7 +6,7 @@ import {  FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbDateParserFormatter, NgbModule, NgbdButtonsRadioreactive } from "@ng-bootstrap/ng-bootstrap";
 //import { FILTERSLIST } from "./filters-list";
 import { Router } from "@angular/router";
-import { DataService } from '../../services/data.service';
+import { ValidationDataService } from "../../services/data.service";
 import { ToastrService } from 'ngx-toastr';
 
 
@@ -44,7 +44,7 @@ export class ValidationPopupComponent {
     private _dateParser: NgbDateParserFormatter,
     private _router: Router,
     private _fb: FormBuilder,
-    public dataService: DataService,
+    public dataService: ValidationDataService,
     private toastr: ToastrService,
     private mapListService: MapListService
     ) {
@@ -68,7 +68,6 @@ export class ValidationPopupComponent {
             this.toastr.success('Vous avez modifié le statut de validation de ' + this.observations.length + ' observation(s)');
             // bind statut value with validation-synthese-list component
             this.update_status();
-            console.log(this.observations)
             // emit the date of today in output to update the validation date on maplist
             this.valDate.emit(new Date());
             //this.getValidationDate(this.observations[0]);
@@ -89,7 +88,6 @@ export class ValidationPopupComponent {
     )
     .then(
       data => {
-        //console.log(data);
         return new Promise((resolve, reject) => {
           // close validation status popup
           this.closeModal();

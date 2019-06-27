@@ -1,14 +1,13 @@
-import { stringify } from 'wellknown';
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { DataService } from '../../services/data.service';
+import { ValidationDataService } from "../../services/data.service";
+import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { AppConfig } from '@geonature_config/app.config';
-import { MatTabsModule } from '@angular/material/tabs';
 import { ToastrService } from 'ngx-toastr';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { ModuleConfig } from "../../module.config";
-import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { NgbModal, NgbActiveModal, ModalDismissReasons } from "@ng-bootstrap/ng-bootstrap";
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'pnx-validation-modal-info-obs',
@@ -51,7 +50,8 @@ export class ValidationModalInfoObsComponent implements OnInit {
   constructor(
     public mapListService: MapListService,
     private _gnDataService: DataFormService,
-    private _dataService: DataService,
+    private _validatioDataService: ValidationDataService,
+    private _syntheseDataService: SyntheseDataService,
     public activeModal: NgbActiveModal,
     private toastr: ToastrService,
     private _fb: FormBuilder
@@ -100,7 +100,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
   }
 
   getStatusNames() {
-    this._dataService.getStatusNames().subscribe(
+    this._validatioDataService.getStatusNames().subscribe(
       result => {
         // get status names
         this.validationStatus = result;
@@ -127,7 +127,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
   }
 
   loadOneSyntheseReleve(oneObsSynthese) {
-    this._dataService.getOneSyntheseObservation(oneObsSynthese.id_synthese)
+    this._syntheseDataService.getOneSyntheseObservation(oneObsSynthese.id_synthese)
       .subscribe(
         data => {
           this.selectedObs = data;          
@@ -159,7 +159,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
   }
 
   loadValidationHistory(uuid) {
-    this._dataService.getValidationHistory(uuid)
+    this._validatioDataService.getValidationHistory(uuid)
       .subscribe(
         data => {
           this.validationHistory = data;
@@ -317,7 +317,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
   }
 
   getValidationDate(uuid) {
-    this._dataService.getValidationDate(uuid).subscribe(
+    this._validatioDataService.getValidationDate(uuid).subscribe(
       result => {
         // get status names
         this.validationDate = result;

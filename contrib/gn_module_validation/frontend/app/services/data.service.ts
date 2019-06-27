@@ -5,7 +5,7 @@ import { AppConfig } from "@geonature_config/app.config";
 import { CommonService } from "@geonature_common/service/common.service";
 
 @Injectable()
-export class DataService {
+export class ValidationDataService {
   public dataLoaded: Boolean = false;
 
   constructor(
