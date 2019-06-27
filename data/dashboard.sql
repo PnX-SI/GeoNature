@@ -27,8 +27,6 @@ CREATE MATERIALIZED VIEW gn_dashboard.vm_synthese AS
     t.url,
     s.altitude_min,
     s.altitude_max,
-    st_x(s.the_geom_4326) AS lon,
-    st_y(s.the_geom_4326) AS lat,
     s.date_min,
     s.date_max
    FROM gn_synthese.synthese s
