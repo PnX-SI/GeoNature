@@ -23,10 +23,24 @@ $BODY$
   COST 100;
 
 
+-- ADD validable column in t_datasets
+
+ALTER TABLE gn_meta.t_datasets
+ADD COLUMN validable boolean DEFAULT true;
+
+UPDATE gn_meta.t_datasets SET validable = true;
+
+ALTER TABLE gn_meta.t_datasets
+DROP COLUMN default_validity;
+
+-- DROP FROM t_sources
+ALTER TABLE gn_synthese.t_sources
+DROP COLUMN validable;
+
 
 -- ajout vue latest validation
 
-CREATE VIEW gn_commons.latest_validation AS
+CREATE VIEW gn_commons.v_latest_validation AS
 SELECT v.*
 FROM gn_commons.t_validations v
 INNER JOIN (
@@ -114,16 +128,3 @@ COMMENT ON VIEW gn_commons.v_synthese_validation_forwebapp  IS 'Vue utilisée po
 DROP VIEW gn_commons.v_validations_for_web_app CASCADE;
 
 
--- ADD validable column in t_datasets
-
-ALTER TABLE gn_meta.t_datasets
-ADD COLUMN validable boolean DEFAULT true;
-
-UPDATE gn_meta.t_datasets SET validable = true;
-
-ALTER TABLE gn_meta.t_datasets
-DROP COLUMN default_validity;
-
--- DROP FROM t_sources
-ALTER TABLE gn_synthese.t_sources
-DROP COLUMN validable;
