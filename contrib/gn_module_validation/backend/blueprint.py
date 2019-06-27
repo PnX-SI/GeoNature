@@ -239,11 +239,11 @@ def post_status(info_role, id_synthese):
         return data
 
     except Exception as e:
-    log.error(e)
-    return (
-        'INTERNAL SERVER ERROR ("post_status() error"): contactez l\'administrateur du site',
-        500,
-    )
+        log.error(e)
+        return (
+            'INTERNAL SERVER ERROR ("post_status() error"): contactez l\'administrateur du site',
+            500,
+        )
 
 
 @blueprint.route("/definitions", methods=["GET"])
