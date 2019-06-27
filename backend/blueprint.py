@@ -1,6 +1,7 @@
 import json
 from flask import Blueprint, current_app, session, request
-from sqlalchemy.sql import func
+from sqlalchemy.sql import func, text
+
 from geojson import FeatureCollection, Feature
 
 from sqlalchemy.sql.expression import label, distinct, case
@@ -238,20 +239,52 @@ def get_synthese_per_tax_level_stat():
 @json_resp
 def get_frameworks_stat():
     params = request.args
-    q = DB.session.query(VFrameworks.year, VFrameworks.nb_obs)
-    if "frameworkName" in params and (params["frameworkName"] != ""):
-        q = q.filter(VFrameworks.acquisition_framework_name == params["frameworkName"])
+    q = DB.session.query(
+        VFrameworks.acquisition_framework_name, VFrameworks.year, VFrameworks.nb_obs
+    )
     return q.all()
 
 
-# vm_synthese_frameworks
-@blueprint.route("/frameworks_name", methods=["GET"])
+@blueprint.route("/species", methods=["GET"])
 @json_resp
-def get_frameworks_name():
+def get_especes_stat():
     params = request.args
-    q = DB.session.query(distinct(VFrameworks.acquisition_framework_name)).order_by(
-        VFrameworks.acquisition_framework_name
+
+    sql = text(
+        """ WITH recontactees AS 
+            (SELECT DISTINCT cd_ref FROM gn_synthese.synthese s JOIN taxonomie.taxref t ON t.cd_nom=s.cd_nom WHERE date_part('year', date_min) < :selectedYear
+            INTERSECT
+            SELECT DISTINCT cd_ref FROM gn_synthese.synthese s JOIN taxonomie.taxref t ON t.cd_nom=s.cd_nom WHERE date_part('year', date_min) = :selectedYear), 
+            non_recontactees AS 
+            (SELECT DISTINCT cd_ref FROM gn_synthese.synthese s JOIN taxonomie.taxref t ON t.cd_nom=s.cd_nom WHERE date_part('year', date_min) < :selectedYear
+            EXCEPT
+            SELECT DISTINCT cd_ref FROM gn_synthese.synthese s JOIN taxonomie.taxref t ON t.cd_nom=s.cd_nom WHERE date_part('year', date_min) = :selectedYear),
+            nouvelles AS
+            (SELECT DISTINCT cd_ref FROM gn_synthese.synthese s JOIN taxonomie.taxref t ON t.cd_nom=s.cd_nom WHERE date_part('year', date_min) = :selectedYear
+            EXCEPT
+            SELECT DISTINCT cd_ref FROM gn_synthese.synthese s JOIN taxonomie.taxref t ON t.cd_nom=s.cd_nom WHERE date_part('year', date_min) < :selectedYear)
+
+            SELECT count(cd_ref) FROM recontactees
+            UNION ALL
+            SELECT count(cd_ref) FROM non_recontactees
+            UNION all 
+            SELECT count(cd_ref) FROM nouvelles """
     )
+    data = DB.engine.execute(sql, selectedYear=params["selectedYear"])
+    return [d[0] for d in data]
+
+
+# vm_taxonomie
+@blueprint.route("/taxonomie", methods=["GET"])
+@json_resp
+def get_taxonomie():
+    params = request.args
+    q = DB.session.query(VTaxonomie.name_taxon).order_by(
+        case([(VTaxonomie.name_taxon == "Not defined", 1)], else_=0),
+        VTaxonomie.name_taxon,
+    )
+    if "taxLevel" in params:
+        q = q.filter(VTaxonomie.level == params["taxLevel"])
     return q.all()
 
 
@@ -270,45 +303,4 @@ def get_years():
             func.max(func.date_part("year", VSynthese.date_min)),
         )
     return q.all()
-
-
-# vm_taxonomie
-@blueprint.route("/taxonomie", methods=["GET"])
-@json_resp
-def get_taxonomie():
-    params = request.args
-    q = DB.session.query(VTaxonomie.name_taxon).order_by(
-        case([(VTaxonomie.name_taxon == "Not defined", 1)], else_=0),
-        VTaxonomie.name_taxon,
-    )
-    if "taxLevel" in params:
-        q = q.filter(VTaxonomie.level == params["taxLevel"])
-    return q.all()
-
-
-@blueprint.route("/species", methods=["GET"])
-@json_resp
-def get_especes_stat():
-    params = request.args
-    q = DB.session.query(distinct(Taxref.cd_ref)).join(
-        Synthese, Synthese.cd_nom == Taxref.cd_nom
-    )
-    if "yearActual" in params:
-        q = q.filter(func.date_part("year", Synthese.date_min) == params["yearActual"])
-
-    p = DB.session.query(distinct(Taxref.cd_ref)).join(
-        Synthese, Synthese.cd_nom == Taxref.cd_nom
-    )
-    if "yearBefore" in params:
-        p = p.filter(func.date_part("year", Synthese.date_min) == params["yearBefore"])
-
-    w = q.intersect(p)
-    x = p.except_(q)
-    y = q.except_(p)
-    if ("type" in params) and (params["type"] == "Recontactees"):
-        return w.all()
-    if ("type" in params) and (params["type"] == "Non recontactees"):
-        return x.all()
-    if ("type" in params) and (params["type"] == "Nouvelles"):
-        return y.all()
 

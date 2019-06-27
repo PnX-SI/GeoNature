@@ -19,7 +19,8 @@ export class DashboardComponent implements OnInit {
   public group1INPN = [];
   public group2INPN = [];
   public taxonomies: { [taxLevel: string]: any } = {};
-  public years: any;
+  public yearsMinMax: any;
+  public distinctYears = [];
   public taxLevel: { [taxLevel: string]: any } = {};
 
   public showHistogram = true;
@@ -34,8 +35,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     // Accès aux noms des différents règnes de la BDD GeoNature
-    this.taxLevel["taxLevel"] = "Règne";
-    this.dataService.getTaxonomie(this.taxLevel).subscribe(
+    this.dataService.getTaxonomie({ taxLevel: 'Règne' }).subscribe(
       (data) => {
         data.forEach(
           (elt) => {
@@ -47,8 +47,7 @@ export class DashboardComponent implements OnInit {
     this.taxonomies["Règne"] = this.regnes;
 
     // Accès aux noms des différents phylum de la BDD GeoNature
-    this.taxLevel["taxLevel"] = "Phylum";
-    this.dataService.getTaxonomie(this.taxLevel).subscribe(
+    this.dataService.getTaxonomie({ taxLevel: 'Phylum' }).subscribe(
       (data) => {
         data.forEach(
           (elt) => {
@@ -60,8 +59,7 @@ export class DashboardComponent implements OnInit {
     this.taxonomies["Phylum"] = this.phylum;
 
     // Accès aux noms des différentes classes de la BDD GeoNature
-    this.taxLevel["taxLevel"] = "Classe";
-    this.dataService.getTaxonomie(this.taxLevel).subscribe(
+    this.dataService.getTaxonomie({ taxLevel: 'Classe' }).subscribe(
       (data) => {
         data.forEach(
           (elt) => {
@@ -73,8 +71,7 @@ export class DashboardComponent implements OnInit {
     this.taxonomies["Classe"] = this.classes;
 
     // Accès aux noms des différents ordres de la BDD GeoNature
-    this.taxLevel["taxLevel"] = "Ordre";
-    this.dataService.getTaxonomie(this.taxLevel).subscribe(
+    this.dataService.getTaxonomie({ taxLevel: 'Ordre' }).subscribe(
       (data) => {
         data.forEach(
           (elt) => {
@@ -86,8 +83,7 @@ export class DashboardComponent implements OnInit {
     this.taxonomies["Ordre"] = this.ordres;
 
     // Accès aux noms des différentes familles de la BDD GeoNature
-    this.taxLevel["taxLevel"] = "Famille";
-    this.dataService.getTaxonomie(this.taxLevel).subscribe(
+    this.dataService.getTaxonomie({ taxLevel: 'Famille' }).subscribe(
       (data) => {
         data.forEach(
           (elt) => {
@@ -99,8 +95,7 @@ export class DashboardComponent implements OnInit {
     this.taxonomies["Famille"] = this.familles;
 
     // Accès aux noms des différents groupes INPN de la BDD GeoNature
-    this.taxLevel["taxLevel"] = "Groupe INPN 1";
-    this.dataService.getTaxonomie(this.taxLevel).subscribe(
+    this.dataService.getTaxonomie({ taxLevel: 'Groupe INPN 1' }).subscribe(
       (data) => {
         data.forEach(
           (elt) => {
@@ -110,8 +105,7 @@ export class DashboardComponent implements OnInit {
       }
     );
     this.taxonomies["Groupe INPN 1"] = this.group1INPN;
-    this.taxLevel["taxLevel"] = "Groupe INPN 2";
-    this.dataService.getTaxonomie(this.taxLevel).subscribe(
+    this.dataService.getTaxonomie({ taxLevel: 'Groupe INPN 2' }).subscribe(
       (data) => {
         data.forEach(
           (elt) => {
@@ -125,7 +119,17 @@ export class DashboardComponent implements OnInit {
     // Accès aux années extrêmes de la BDD
     this.dataService.getYears({ type: "min-max" }).subscribe(
       (data) => {
-        this.years = data[0];
+        this.yearsMinMax = data[0];
+      }
+    );
+    // Accès aux années extrêmes de la BDD
+    this.dataService.getYears({ type: "distinct" }).subscribe(
+      (data) => {
+        data.forEach(
+          (elt) => {
+            this.distinctYears.push(elt[0]);
+          }
+        )
       }
     );
     // console.log(this.taxonomies);

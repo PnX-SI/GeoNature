@@ -71,7 +71,7 @@ export class DashboardPieChartComponent implements OnInit {
 
   pieChartForm: FormGroup;
   @Input() taxonomies: any;
-  @Input() years: any;
+  @Input() yearsMinMax: any;
   public yearRange = [1980, 2019];
 
   constructor(public dataService: DataService, public fb: FormBuilder) {
@@ -87,7 +87,7 @@ export class DashboardPieChartComponent implements OnInit {
     this.pieChartLabels = this.taxonomies["Règne"];
     // Par défaut, le pie chart s'affiche au niveau du règne
     this.pieChartForm.controls["selectedFilter"].setValue("Règne");
-    // Accès aux données de synthèse la BDD GeoNature
+    // Accès aux données de synthèse de la BDD GeoNature
     this.dataService.getDataSynthesePerTaxLevel(this.pieChartForm.value).subscribe(
       (data) => {
         //Remplissage de l'array des données, paramètre du pie chart
@@ -103,8 +103,8 @@ export class DashboardPieChartComponent implements OnInit {
 
   ngOnChanges(change) {
     // Récupération des années min et max présentes dans les données de synthèse de la BDD GeoNature
-    if (change.years && change.years.currentValue != undefined) {
-      this.yearRange = change.years.currentValue;
+    if (change.yearsMinMax && change.yearsMinMax.currentValue != undefined) {
+      this.yearRange = change.yearsMinMax.currentValue;
     }
   }
 

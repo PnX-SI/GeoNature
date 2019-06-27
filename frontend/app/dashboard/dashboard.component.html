@@ -45,7 +45,7 @@
         </div>
     </div><br />
     <div id="dashboard-maps" *ngIf="showMap">
-        <dashboard-maps [taxonomies]="taxonomies" [years]="years"></dashboard-maps>
+        <dashboard-maps [taxonomies]="taxonomies" [yearsMinMax]="yearsMinMax"></dashboard-maps>
     </div><br />
 
     <div class="card">
@@ -61,29 +61,30 @@
         </div>
     </div><br />
     <div id="dashboard-pie-chart" *ngIf="showPieChart">
-        <dashboard-pie-chart [taxonomies]="taxonomies" [years]="years"></dashboard-pie-chart>
+        <dashboard-pie-chart [taxonomies]="taxonomies" [yearsMinMax]="yearsMinMax"></dashboard-pie-chart>
     </div><br />
 
-    <div class="card">
+    <!-- <div class="card">
         <div class="row row-sm">
             <div class="col-sm-8 offset-sm-2 padding-sm">
                 <h5 class="card-header" style="text-align:center"><b>Synthèse par cadre d'acquisition</b></h5>
             </div>
             <div class="col-md-2 padding-sm" style="vertical-align:center">
                 <button id="hide-btn" class="btn btn-sm btn-secondary"
-                    (click)="hideLineChart($event)">Afficher/masquer</button>
-                <!-- <img src="../../assets/hide.png" width=100%> -->
-            </div>
+                    (click)="hideLineChart($event)">Afficher/masquer</button> -->
+    <!-- <img src="../../assets/hide.png" width=100%> -->
+    <!-- </div>
         </div>
     </div><br />
     <div id="dashboard-line-chart" *ngIf="showLineChart">
-        <dashboard-line-chart></dashboard-line-chart>
-    </div><br />
+        <dashboard-line-chart [distinctYears]="distinctYears"></dashboard-line-chart>
+    </div><br /> -->
 
     <div class="card">
         <div class="row row-sm">
             <div class="col-sm-8 offset-sm-2 padding-sm">
-                <h5 class="card-header" style="text-align:center"><b>Espèces recontactées</b></h5>
+                <h5 class="card-header" style="text-align:center"><b>Espèces recontactées, non recontactées et
+                        nouvelles</b></h5>
             </div>
             <div class="col-md-2 padding-sm" style="vertical-align:center">
                 <button id="hide-btn" class="btn btn-sm btn-secondary"
@@ -93,6 +94,6 @@
         </div>
     </div><br />
     <div id="dashboard-species" *ngIf="showSpecies">
-        <dashboard-species></dashboard-species>
+        <dashboard-species [distinctYears]="distinctYears"></dashboard-species>
     </div><br />
 </div>

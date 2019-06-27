@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { FormBuilder, FormGroup } from "@angular/forms";
+import { Component, OnInit, ViewChild, Input } from "@angular/core";
+import { FormBuilder } from "@angular/forms";
 import { BaseChartDirective } from 'ng2-charts/ng2-charts';
 // Services
 import { DataService } from "../services/data.services";
@@ -15,6 +15,7 @@ export class DashboardLineChartComponent implements OnInit {
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
   public frameworksName = [];
+  public adjustedData = [];
   public nbFrameworks: any;
   public lineChartType = 'line';
   public lineChartLabels = [];
@@ -167,9 +168,21 @@ export class DashboardLineChartComponent implements OnInit {
   };
   public lineChartLegend = true;
 
+  @Input() distinctYears: any;
+
   constructor(public dataService: DataService, public fb: FormBuilder) { }
 
   ngOnInit() {
+    // console.log(this.distinctYears);
+    // // Remplissage de l'array des labels, paramètre du line chart
+    // this.distinctYears.forEach(
+    //   (year) => {
+    //     console.log(year);
+    //     this.lineChartLabels.push(year);
+    //   }
+    // )
+    // console.log(this.lineChartLabels);
+
     // Accès aux années distinctes présentes dans la BDD GeoNature
     this.dataService.getYears({ type: "distinct" }).subscribe(
       (data) => {
@@ -184,59 +197,62 @@ export class DashboardLineChartComponent implements OnInit {
       }
     );
 
-    // Accès aux noms des différents cadres d'acquisition présents dans la BDD GeoNature
-    this.dataService.getFrameworksName().subscribe(
-      (data) => {
-        // Enregistrement des noms distincts de ces cadres d'acquisition
-        data.forEach(
-          (elt) => {
-            this.frameworksName.push(elt[0]);
-          }
-        );
-        // console.log(this.frameworksName);
-        this.nbFrameworks = this.frameworksName.length;
-        // Sélection du nombre de couleurs correspondant
-        this.lineChartColors = this.colors.slice(0, this.nbFrameworks);
-        // Pour chaque cadre d'acquisition...
-        this.frameworksName.forEach(
-          (elt) => {
-            // ... initialisation du dictionnaire qui va contenir les données le concernant
-            var lineChartDataTemp = { data: [], label: elt, fill: false };
-            // ... accès aux données
-            this.dataService.getDataFrameworks({ frameworkName: elt }).subscribe(
-              (data) => {
-                // console.log(data);
-                // Remplissage du dictionnaire, en tenant compte du fait qu'il peut n'y avoir aucune observation pour certains taxons
-                const dataLength = data.length;
-                var start = 0;
-                this.lineChartLabels.forEach(
-                  (year) => {
-                    var i = start;
-                    var keepGoing = true;
-                    while ((i < dataLength) && (keepGoing == true)) {
-                      if (year == data[i][0]) {
-                        lineChartDataTemp.data.push(data[i][1]);
-                        keepGoing = false;
-                        start = i + 1;
-                      }
-                      i += 1;
-                    }
-                    if (keepGoing == true) {
-                      lineChartDataTemp.data.push(0);
-                    }
-                  }
-                );
-                // Ajout du jeu de données (dictionnaire) à l'array des données, paramètre du line chart
-                this.lineChartData.push(lineChartDataTemp);
-              }
-            );
-          }
-        );
-        // console.log(this.lineChartData);
-        // console.log(this.chart);
-      }
+    // Accès aux données de synthèse de la BDD GeoNature
+    // this.dataService.getDataFrameworks().subscribe(
+    //   (data) => {
+    //     console.log(data);
+    //     var dataLength = data.length;
+    //     // this.frameworksName.push(data[0][0]);
+    //     for (var i = 1; i < dataLength; i++) {
+    //       if (data[i][0] != data[i - 1][0]) {
+    //         this.frameworksName.push(data[i][0])
+    //       }
+    //     }
+    //     // console.log(this.frameworksName);
+    //     var start = 0;
+    //     this.frameworksName.forEach(
+    //       (name) => {
+    //         var j = start;
+    //         while((j < dataLength) && (data[i][0] == name)) {
+
+    //         }
+
+    //       }
+    //     )
+
+
+
+
+    // this.dataService.getDataFrameworks({ frameworkName: elt }).subscribe(
+    //   (data) => {
+    //     // console.log(data);
+    //     // Remplissage du dictionnaire, en tenant compte du fait qu'il peut n'y avoir aucune observation pour certains taxons
+    //     const dataLength = data.length;
+    //     var start = 0;
+    //     this.lineChartLabels.forEach(
+    //       (year) => {
+    //         var i = start;
+    //         var keepGoing = true;
+    //         while ((i < dataLength) && (keepGoing == true)) {
+    //           if (year == data[i][0]) {
+    //             lineChartDataTemp.data.push(data[i][1]);
+    //             keepGoing = false;
+    //             start = i + 1;
+    //           }
+    //           i += 1;
+    //         }
+    //         if (keepGoing == true) {
+    //           lineChartDataTemp.data.push(0);
+    //         }
+    //       }
+    //     );
+    //     // Ajout du jeu de données (dictionnaire) à l'array des données, paramètre du line chart
+    //     this.lineChartData.push(lineChartDataTemp);
+    //   }
+    // );
+  }
     );
 
-  }
+}
 
 }

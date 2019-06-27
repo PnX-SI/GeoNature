@@ -1,3 +1,5 @@
+DROP SCHEMA if exists gn_dashboard cascade;
+
 CREATE SCHEMA gn_dashboard;
 
 CREATE MATERIALIZED VIEW gn_dashboard.vm_synthese AS 
@@ -18,6 +20,8 @@ CREATE MATERIALIZED VIEW gn_dashboard.vm_synthese AS
     t.ordre,
     t.famille,
     t.sous_famille,
+    t.group1_inpn,
+    t.group2_inpn,
     t.lb_nom,
     t.nom_vern,
     t.url,
@@ -32,27 +36,27 @@ CREATE MATERIALIZED VIEW gn_dashboard.vm_synthese AS
 WITH DATA;
 
 
-CREATE MATERIALIZED VIEW gn_dashboard.vm_synthese_communes_complete AS 
- SELECT a.area_name,
-    st_asgeojson(st_transform(a.geom, 4326)) AS geom_area_4326,
-    date_part('year'::text, s.date_min) AS year,
-    t.regne,
-    t.phylum,
-    t.group1_inpn,
-    t.classe,
-    t.group2_inpn,
-    t.ordre,
-    t.famille,
-    t.cd_ref,
-    count(*) AS nb_obs,
-    count(DISTINCT t.cd_ref) AS nb_taxons
-   FROM gn_synthese.synthese s
-     JOIN ref_geo.l_areas a ON st_intersects(s.the_geom_local, a.geom)
-     JOIN taxonomie.taxref t ON s.cd_nom = t.cd_nom
-  WHERE a.id_type = 25
-  GROUP BY GROUPING SETS ((a.area_name, a.geom, (date_part('year'::text, s.date_min)), t.regne, t.phylum, t.group1_inpn, t.classe, t.group2_inpn, t.ordre, t.famille, t.cd_ref), (a.area_name, a.geom))
-  ORDER BY a.area_name, (date_part('year'::text, s.date_min)), t.regne, t.phylum, t.group1_inpn, t.classe, t.group2_inpn, t.ordre, t.famille, t.cd_ref
-WITH DATA;
+-- CREATE MATERIALIZED VIEW gn_dashboard.vm_synthese_communes_complete AS 
+--  SELECT a.area_name,
+--     st_asgeojson(st_transform(a.geom, 4326)) AS geom_area_4326,
+--     date_part('year'::text, s.date_min) AS year,
+--     t.regne,
+--     t.phylum,
+--     t.group1_inpn,
+--     t.classe,
+--     t.group2_inpn,
+--     t.ordre,
+--     t.famille,
+--     t.cd_ref,
+--     count(*) AS nb_obs,
+--     count(DISTINCT t.cd_ref) AS nb_taxons
+--    FROM gn_synthese.synthese s
+--      JOIN ref_geo.l_areas a ON st_intersects(s.the_geom_local, a.geom)
+--      JOIN taxonomie.taxref t ON s.cd_nom = t.cd_nom
+--   WHERE a.id_type = 25
+--   GROUP BY GROUPING SETS ((a.area_name, a.geom, (date_part('year'::text, s.date_min)), t.regne, t.phylum, t.group1_inpn, t.classe, t.group2_inpn, t.ordre, t.famille, t.cd_ref), (a.area_name, a.geom))
+--   ORDER BY a.area_name, (date_part('year'::text, s.date_min)), t.regne, t.phylum, t.group1_inpn, t.classe, t.group2_inpn, t.ordre, t.famille, t.cd_ref
+-- WITH DATA;
 
 
 CREATE MATERIALIZED VIEW gn_dashboard.vm_synthese_frameworks AS 

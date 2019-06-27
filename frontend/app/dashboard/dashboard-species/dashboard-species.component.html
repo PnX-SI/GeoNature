@@ -6,33 +6,20 @@
             <h5 class="card-header" style="text-align:center; color:white">Filtres</h5>
             <div class="card-body">
 
-                <!-- <div id="filters">
-                    <form (ngSubmit)="refreshData()" [formGroup]="pieChartForm">
-                        <div class="form-group">
-                            <label class="col-form-label"><b> Période </b></label>
-                            <div class="row justify-content-md-center">
-                                <div class="col-md-11">
-                                    <nouislider class="nouislider" [connect]="true" [tooltips]="true"
-                                        [min]="yearRange[0]" [max]="yearRange[1]" [step]="1"
-                                        [formControl]="pieChartForm.controls.selectedYearRange"
-                                        (change)="getCurrentParameters($event)"></nouislider>
-                                </div>
-                            </div>
-                        </div><br />
-                        <div class="form-group">
-                            <label class="col-form-label"><b> Niveau taxonomique </b></label>
-                            <select class="form-control form-control-sm" [disableControl]="disabled"
-                                formControlName="selectedFilter" (change)="getCurrentParameters($event)">
-                                <option> Groupe INPN 1 </option>
-                                <option> Groupe INPN 2 </option>
-                                <option> Règne </option>
-                                <option> Phylum </option>
-                                <option> Classe </option>
-                                <option> Ordre </option>
+                <div id="filters">
+                    <form [formGroup]="speciesForm">
+                        <div class="form-group" id="years">
+                            <label class="col-form-label"> Année </label>
+                            <select class="form-control form-control-sm" formControlName="selectedYear"
+                                (change)="getCurrentYear($event)">
+                                <ng-container *ngFor="let year of distinctYears">
+                                    <option [ngValue]="year" *ngIf="year != distinctYears[0]">
+                                        {{ year }} </option>
+                                </ng-container>
                             </select>
                         </div>
                     </form>
-                </div> -->
+                </div>
 
             </div>
         </div>

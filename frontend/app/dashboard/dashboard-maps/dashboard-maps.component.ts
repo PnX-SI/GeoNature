@@ -54,7 +54,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   mapForm: FormGroup;
   public filter: any;
   @Input() taxonomies: any;
-  @Input() years: any;
+  @Input() yearsMinMax: any;
   public yearRange = [1980, 2019];
   currentCdRef: any;
   public filtersDict: any;
@@ -111,8 +111,8 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
 
   ngOnChanges(change) {
     // Récupération des années min et max présentes dans les données de synthèse de la BDD GeoNature
-    if (change.years && change.years.currentValue != undefined) {
-      this.yearRange = change.years.currentValue;
+    if (change.yearsMinMax && change.yearsMinMax.currentValue != undefined) {
+      this.yearRange = change.yearsMinMax.currentValue;
     }
   }
 
