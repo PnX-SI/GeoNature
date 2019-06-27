@@ -69,52 +69,52 @@ def get_synthese_data(info_role):
 
     """
 
-    # try:
-    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
-    for key, value in filters.items():
-        if "," in value[0] and key != "geoIntersection":
-            filters[key] = value[0].split(",")
+    try:
+        filters = {
+            key: request.args.getlist(key) for key, value in request.args.items()
+        }
+        for key, value in filters.items():
+            if "," in value[0] and key != "geoIntersection":
+                filters[key] = value[0].split(",")
 
-    result_limit = blueprint.config["NB_MAX_OBS_MAP"]
+        result_limit = blueprint.config["NB_MAX_OBS_MAP"]
 
-    # allowed_datasets = TDatasets.get_user_datasets(info_role)
+        # pdb.set_trace()
 
-    # pdb.set_trace()
+        q = DB.session.query(VSyntheseValidation)
 
-    q = DB.session.query(VSyntheseValidation)
+        q = filter_query_all_filters(VSyntheseValidation, q, filters, info_role)
 
-    q = filter_query_all_filters(VSyntheseValidation, q, filters, info_role)
+        q = q.order_by(VSyntheseValidation.date_min.desc())
 
-    q = q.order_by(VSyntheseValidation.date_min.desc())
+        nb_total = 0
 
-    nb_total = 0
-
-    data = q.limit(result_limit)
-    columns = (
-        blueprint.config["COLUMNS_API_VALIDATION_WEB_APP"]
-        + blueprint.config["MANDATORY_COLUMNS"]
-    )
-
-    features = []
-
-    for d in data:
-        feature = d.get_geofeature(columns=columns)
-        feature["properties"]["nom_vern_or_lb_nom"] = (
-            d.nom_vern if d.lb_nom is None else d.lb_nom
+        data = q.limit(result_limit)
+        columns = (
+            blueprint.config["COLUMNS_API_VALIDATION_WEB_APP"]
+            + blueprint.config["MANDATORY_COLUMNS"]
         )
-        features.append(feature)
 
-    return {
-        "data": FeatureCollection(features),
-        "nb_obs_limited": nb_total == blueprint.config["NB_MAX_OBS_MAP"],
-        "nb_total": nb_total,
-    }
-    # except Exception as e:
-    #     log.error(e)
-    #     return (
-    #         'INTERNAL SERVER ERROR ("get_synthese_data() error"): contactez l\'administrateur du site',
-    #         500,
-    #     )
+        features = []
+
+        for d in data:
+            feature = d.get_geofeature(columns=columns)
+            feature["properties"]["nom_vern_or_lb_nom"] = (
+                d.nom_vern if d.lb_nom is None else d.lb_nom
+            )
+            features.append(feature)
+
+        return {
+            "data": FeatureCollection(features),
+            "nb_obs_limited": nb_total == blueprint.config["NB_MAX_OBS_MAP"],
+            "nb_total": nb_total,
+        }
+    except Exception as e:
+        log.error(e)
+        return (
+            'INTERNAL SERVER ERROR ("get_synthese_data() error"): contactez l\'administrateur du site',
+            500,
+        )
 
 
 @blueprint.route("/statusNames", methods=["GET"])
@@ -153,97 +153,97 @@ def get_statusNames(info_role):
 @permissions.check_cruved_scope("C", True, module_code="VALIDATION")
 @json_resp
 def post_status(info_role, id_synthese):
-    # try:
-    data = dict(request.get_json())
-    id_validation_status = data["statut"]
-    validation_comment = data["comment"]
+    try:
+        data = dict(request.get_json())
+        id_validation_status = data["statut"]
+        validation_comment = data["comment"]
 
-    print(id_validation_status)
-    if id_validation_status == "":
-        return "Aucun statut de validation n'est sélectionné", 400
+        print(id_validation_status)
+        if id_validation_status == "":
+            return "Aucun statut de validation n'est sélectionné", 400
 
-    id_synthese = id_synthese.split(",")
+        id_synthese = id_synthese.split(",")
 
-    for id in id_synthese:
-        # t_validations.id_validation:
-        id_val = 1  # auto-incremented in t_validations
+        for id in id_synthese:
+            # t_validations.id_validation:
+            id_val = 1  # auto-incremented in t_validations
 
-        # t_validations.id_table_location:
-        # get id_source value of the observation in synthese table
-        synthese_id_source = select([Synthese.id_source]).where(
-            Synthese.id_synthese == int(id)
-        )
-        # get entity_source_pk_field value of the observation in TSources table with id_source value
-        entity_source_pk_field = DB.session.execute(
-            select([TSources.entity_source_pk_field]).where(
-                TSources.id_source == synthese_id_source
+            # t_validations.id_table_location:
+            # get id_source value of the observation in synthese table
+            synthese_id_source = select([Synthese.id_source]).where(
+                Synthese.id_synthese == int(id)
             )
-        ).fetchone()
-        if entity_source_pk_field is None:
-            return (
-                "INTERNAL SERVER ERROR : l'observation id_synthese {} n'a pas d'id_synthese et ne peux donc pas être validée".format(
-                    id
-                ),
-                500,
+            # get entity_source_pk_field value of the observation in TSources table with id_source value
+            entity_source_pk_field = DB.session.execute(
+                select([TSources.entity_source_pk_field]).where(
+                    TSources.id_source == synthese_id_source
+                )
+            ).fetchone()
+            if entity_source_pk_field is None:
+                return (
+                    "INTERNAL SERVER ERROR : l'observation id_synthese {} n'a pas d'id_synthese et ne peux donc pas être validée".format(
+                        id
+                    ),
+                    500,
+                )
+            entity_source_pk_field = entity_source_pk_field[0]
+            try:
+                name_schema = str(entity_source_pk_field).split(".")[0]
+                name_table = str(entity_source_pk_field).split(".")[1]
+            except IndexError:
+                return (
+                    """INTERNAL SERVER ERROR : Le champ entity_pk_source de la table gn_commons.t_sources n'est pas remplie correctement
+                    contactez l'administrateur du site""",
+                    500,
+                )
+            # get id_table_location
+            id_table_loc = DB.session.query(
+                func.gn_commons.get_table_location_id(name_schema, name_table)
             )
-        entity_source_pk_field = entity_source_pk_field[0]
-        try:
-            name_schema = str(entity_source_pk_field).split(".")[0]
-            name_table = str(entity_source_pk_field).split(".")[1]
-        except IndexError:
-            return (
-                """INTERNAL SERVER ERROR : Le champ entity_pk_source de la table gn_commons.t_sources n'est pas remplie correctement
-                 contactez l'administrateur du site""",
-                500,
+            if DB.session.execute(id_table_loc).fetchone()[0] == None:
+                return (
+                    "INTERNAL SERVER ERROR : no id_table_location / contactez l'administrateur du site",
+                    500,
+                )
+            # t_validations.uuid_attached_row:
+            uuid = DB.session.query(Synthese.unique_id_sinp).filter(
+                Synthese.id_synthese == int(id)
             )
-        # get id_table_location
-        id_table_loc = DB.session.query(
-            func.gn_commons.get_table_location_id(name_schema, name_table)
-        )
-        if DB.session.execute(id_table_loc).fetchone()[0] == None:
-            return (
-                "INTERNAL SERVER ERROR : no id_table_location / contactez l'administrateur du site",
-                500,
+
+            # t_validations.id_validator:
+            id_validator = info_role.id_role
+
+            # t_validations.validation_date
+            val_date = datetime.datetime.now()
+
+            # t_validations.validation_auto
+            val_auto = False
+
+            # insert values in t_validations
+            addValidation = TValidations(
+                id_val,
+                id_table_loc,
+                uuid,
+                id_validation_status,
+                id_validator,
+                validation_comment,
+                val_date,
+                val_auto,
             )
-        # t_validations.uuid_attached_row:
-        uuid = DB.session.query(Synthese.unique_id_sinp).filter(
-            Synthese.id_synthese == int(id)
-        )
 
-        # t_validations.id_validator:
-        id_validator = info_role.id_role
+            DB.session.add(addValidation)
+            DB.session.commit()
 
-        # t_validations.validation_date
-        val_date = datetime.datetime.now()
+        DB.session.close()
 
-        # t_validations.validation_auto
-        val_auto = False
+        return data
 
-        # insert values in t_validations
-        addValidation = TValidations(
-            id_val,
-            id_table_loc,
-            uuid,
-            id_validation_status,
-            id_validator,
-            validation_comment,
-            val_date,
-            val_auto,
-        )
-
-        DB.session.add(addValidation)
-        DB.session.commit()
-
-    DB.session.close()
-
-    return data
-
-    # except Exception as e:
-    # log.error(e)
-    # return (
-    #     'INTERNAL SERVER ERROR ("post_status() error"): contactez l\'administrateur du site',
-    #     500,
-    # )
+    except Exception as e:
+    log.error(e)
+    return (
+        'INTERNAL SERVER ERROR ("post_status() error"): contactez l\'administrateur du site',
+        500,
+    )
 
 
 @blueprint.route("/definitions", methods=["GET"])
