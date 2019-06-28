@@ -1,19 +1,20 @@
 <div class="row row-sm">
+
     <div class="col-md-2 padding-sm">
-        <div class="card" style="height:47rem">
+        <div class="card" style="height:100%">
             <h5 class="card-header" style="text-align:center; color:white">Filtres</h5>
             <div class="card-body">
 
                 <!-- <div id="buttons">
-                    <div class="row row-sm">
-                        <div class="col-md-6 padding-sm">
-                            <button class="btn btn-block btn-bordeaux" (click)= "changeHistToObs()"> <B>Nombre d'observations</B> </button>
+                        <div class="row row-sm">
+                            <div class="col-md-6 padding-sm">
+                                <button class="btn btn-block btn-bordeaux" (click)= "changeHistToObs()"> <B>Nombre d'observations</B> </button>
+                            </div>
+                            <div class="col-md-6 padding-sm">
+                                <button class="btn btn-block btn-water" (click)= "changeHistToTax()"> <B>Nombre de taxons</B> </button>
+                            </div>
                         </div>
-                        <div class="col-md-6 padding-sm">
-                            <button class="btn btn-block btn-water" (click)= "changeHistToTax()"> <B>Nombre de taxons</B> </button>
-                        </div>
-                    </div>
-                </div><br/> -->
+                    </div><br/> -->
 
                 <div id="filters">
                     <form [formGroup]="histForm">
@@ -70,7 +71,8 @@
                                 (change)="getCurrentTax($event)">
                                 <option> </option>
                                 <ng-container *ngFor="let phylum of taxonomies['Phylum']">
-                                    <option [ngValue]="phylum" *ngIf="phylum != 'Not defined'"> {{ phylum }} </option>
+                                    <option [ngValue]="phylum" *ngIf="phylum != 'Not defined'"> {{ phylum }}
+                                    </option>
                                 </ng-container>
                             </select>
                         </div>
@@ -80,7 +82,8 @@
                                 (change)="getCurrentTax($event)">
                                 <option> </option>
                                 <ng-container *ngFor="let classe of taxonomies['Classe']">
-                                    <option [ngValue]="classe" *ngIf="classe != 'Not defined'"> {{ classe }} </option>
+                                    <option [ngValue]="classe" *ngIf="classe != 'Not defined'"> {{ classe }}
+                                    </option>
                                 </ng-container>
                             </select>
                         </div>
@@ -118,6 +121,7 @@
             </div>
         </div>
     </div>
+
     <div class="col-md-10 padding-sm">
         <div style="display: block">
             <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
@@ -125,4 +129,5 @@
             </canvas>
         </div>
     </div>
+
 </div>

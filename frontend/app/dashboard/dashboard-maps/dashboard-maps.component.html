@@ -17,11 +17,10 @@
     </div>
 
     <div class="col-md-4 padding-sm">
-        <div class="card" style="height:44rem">
+        <div class="card" style="height:100%">
             <h5 class="card-header white-text" style="text-align:center; color:white">Filtres</h5>
             <div class="card-body">
 
-                <br />
                 <div id="buttons">
                     <div class="row row-sm">
                         <div class="col-md-6 padding-sm">
@@ -44,7 +43,7 @@
                             </button>
                         </div>
                     </div>
-                </div><br /><br />
+                </div><br />
 
                 <div id="filters">
                     <form [formGroup]="mapForm">
@@ -66,7 +65,7 @@
                                         (change)="getCurrentParameters($event)"></nouislider>
                                 </div>
                             </div>
-                        </div><br /><br />
+                        </div><br />
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <label class="col-form-label"><b> Type de filtre taxonomique </b></label>

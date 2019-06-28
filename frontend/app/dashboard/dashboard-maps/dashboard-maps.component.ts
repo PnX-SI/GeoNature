@@ -65,7 +65,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     // Déclaration du formulaire contenant les filtres de la carte
     this.mapForm = fb.group({
       // nbClasses: fb.control(null),
-      selectedYearRange: fb.control([1980, 2019]),
+      selectedYearRange: fb.control(this.yearRange),
       selectedFilter: fb.control(null),
       selectedRegne: fb.control(null),
       selectedPhylum: fb.control(null),

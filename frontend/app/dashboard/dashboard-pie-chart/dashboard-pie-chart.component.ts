@@ -77,7 +77,7 @@ export class DashboardPieChartComponent implements OnInit {
   constructor(public dataService: DataService, public fb: FormBuilder) {
     // Déclaration du formulaire contenant les filtres du pie chart
     this.pieChartForm = fb.group({
-      selectedYearRange: fb.control([1980, 2019]),
+      selectedYearRange: fb.control(this.yearRange),
       selectedFilter: fb.control(null)
     });
   }

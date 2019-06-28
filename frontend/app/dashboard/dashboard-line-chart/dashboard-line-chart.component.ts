@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { BaseChartDirective } from 'ng2-charts/ng2-charts';
 // Services
@@ -14,13 +14,12 @@ export class DashboardLineChartComponent implements OnInit {
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
-  public frameworksName = [];
-  public adjustedData = [];
   public nbFrameworks: any;
+  public adjustedData = [];
   public lineChartType = 'line';
   public lineChartLabels = [];
   public lineChartData = [];
-  public colors = [
+  public lineChartColors = [
     {
       backgroundColor: "rgba(217,146,30, 0.7)",
       borderColor: "rgb(217,146,30)"
@@ -142,7 +141,6 @@ export class DashboardLineChartComponent implements OnInit {
       borderColor: "rgb(229,226,222)"
     }
   ];
-  public lineChartColors = [];
   public lineChartOptions = {
     responsive: true,
     legend: {
@@ -168,21 +166,9 @@ export class DashboardLineChartComponent implements OnInit {
   };
   public lineChartLegend = true;
 
-  @Input() distinctYears: any;
-
   constructor(public dataService: DataService, public fb: FormBuilder) { }
 
   ngOnInit() {
-    // console.log(this.distinctYears);
-    // // Remplissage de l'array des labels, paramètre du line chart
-    // this.distinctYears.forEach(
-    //   (year) => {
-    //     console.log(year);
-    //     this.lineChartLabels.push(year);
-    //   }
-    // )
-    // console.log(this.lineChartLabels);
-
     // Accès aux années distinctes présentes dans la BDD GeoNature
     this.dataService.getYears({ type: "distinct" }).subscribe(
       (data) => {
@@ -194,65 +180,66 @@ export class DashboardLineChartComponent implements OnInit {
           }
         );
         // console.log(this.lineChartLabels);
+
+        // Accès aux données de synthèse de la BDD GeoNature
+        this.dataService.getDataFrameworks().subscribe(
+          (data) => {
+            // console.log(data);
+            var dataLength = data.length;
+            var firstElt = 0;
+            // On parcourt l'array des données renvoyées par l'API pour les séparer selon leur cadre d'acquisition
+            for (var i = 1; i < dataLength; i++) {
+              if (data[i][0] != data[i - 1][0]) {
+                var framework = data.slice(firstElt, i);
+                this.adjustedData.push(framework);
+                // console.log(framework);
+                var firstElt = i;
+              }
+              if (i == dataLength - 1) {
+                var framework = data.slice(firstElt, i + 1);
+                this.adjustedData.push(framework);
+                // console.log(framework);
+              }
+            }
+            // console.log(this.adjustedData);
+            this.nbFrameworks = this.adjustedData.length; // Nécessaire pour afficher le line chart (voir html)
+            // Initialisation de l'array des données à afficher, paramètre du line chart
+            var lineChartDataTemp = [];
+            // Remplissage de l'array des données en fonction du cadre d'acquisition, en tenant compte du fait qu'il peut n'y avoir aucune observation pour certaines années
+            this.adjustedData.forEach(
+              (framework) => {
+                // Initialisation du dictionnaire de données relatif à un cadre d'acquisition (à ajouter à l'array)
+                var frameworkDataTemp = { data: [], label: framework[0][0], fill: false };
+                var frameworkLength = framework.length;
+                var start = 0;
+                this.lineChartLabels.forEach(
+                  (year) => {
+                    var i = start;
+                    var keepGoing = true;
+                    while ((i < frameworkLength) && (keepGoing == true)) {
+                      if (year == framework[i][1]) {
+                        frameworkDataTemp.data.push(framework[i][2]);
+                        keepGoing = false;
+                        start = i + 1;
+                      }
+                      i += 1;
+                    }
+                    if (keepGoing == true) {
+                      frameworkDataTemp.data.push(0);
+                    }
+                  }
+                );
+                // Ajout du jeu de données (dictionnaire relatif à un cadre d'acquisition) à l'array des données, paramètre du line chart
+                lineChartDataTemp.push(frameworkDataTemp);
+                // console.log(lineChartDataTemp);
+              }
+            )
+            this.lineChartData = lineChartDataTemp;
+          }
+        );
       }
     );
 
-    // Accès aux données de synthèse de la BDD GeoNature
-    // this.dataService.getDataFrameworks().subscribe(
-    //   (data) => {
-    //     console.log(data);
-    //     var dataLength = data.length;
-    //     // this.frameworksName.push(data[0][0]);
-    //     for (var i = 1; i < dataLength; i++) {
-    //       if (data[i][0] != data[i - 1][0]) {
-    //         this.frameworksName.push(data[i][0])
-    //       }
-    //     }
-    //     // console.log(this.frameworksName);
-    //     var start = 0;
-    //     this.frameworksName.forEach(
-    //       (name) => {
-    //         var j = start;
-    //         while((j < dataLength) && (data[i][0] == name)) {
-
-    //         }
-
-    //       }
-    //     )
-
-
-
-
-    // this.dataService.getDataFrameworks({ frameworkName: elt }).subscribe(
-    //   (data) => {
-    //     // console.log(data);
-    //     // Remplissage du dictionnaire, en tenant compte du fait qu'il peut n'y avoir aucune observation pour certains taxons
-    //     const dataLength = data.length;
-    //     var start = 0;
-    //     this.lineChartLabels.forEach(
-    //       (year) => {
-    //         var i = start;
-    //         var keepGoing = true;
-    //         while ((i < dataLength) && (keepGoing == true)) {
-    //           if (year == data[i][0]) {
-    //             lineChartDataTemp.data.push(data[i][1]);
-    //             keepGoing = false;
-    //             start = i + 1;
-    //           }
-    //           i += 1;
-    //         }
-    //         if (keepGoing == true) {
-    //           lineChartDataTemp.data.push(0);
-    //         }
-    //       }
-    //     );
-    //     // Ajout du jeu de données (dictionnaire) à l'array des données, paramètre du line chart
-    //     this.lineChartData.push(lineChartDataTemp);
-    //   }
-    // );
   }
-    );
-
-}
 
 }
