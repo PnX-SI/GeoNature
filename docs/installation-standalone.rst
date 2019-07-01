@@ -164,6 +164,7 @@ Activer les modules suivants:
 
     sudo a2enmod rewrite
     sudo a2enmod proxy
+    sudo a2enmod proxy_http
 
 Activer la nouvelle configuration:
 
