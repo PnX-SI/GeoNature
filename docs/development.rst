@@ -104,7 +104,7 @@ modèle de données).
 
 L'API du coeur permet d'interroger les schémas de la base de données "coeur"
 de GeoNature. Une documentation complète de l'API est disponible dans la
-rubrique DEVELOPPEMENT/Documentation API backend
+rubrique 'Documentation API Backend'_.
 
 Du côté interface utilisateur, GeoNature met à disposition un ensemble de
 composants Angular réutilisables

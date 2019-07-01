@@ -55,20 +55,47 @@ def current_milli_time():
 @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
 @json_resp
 def get_observations_for_web(info_role):
-    """Optimized route for serve data to the frontend with all filters.
+    """Optimized route to serve data for the frontend with all filters.
 
     .. :quickref: Synthese; Get filtered observations
 
-    Query filtered by all info_role filter, returning all the fields of the
-    view v_synthese_for_export.
-    It return a dict composed of the following::
+    Query filtered by any filter, returning all the fields of the
+    view v_synthese_for_export::
 
-        'data' dict: Array of dict (with geojson key)
-        'nb_total' int: Number of observations
-        'nb_obs_limited' bool: Is number of observations capped
+        properties = {
+            "id": r["id_synthese"],
+            "date_min": str(r["date_min"]),
+            "cd_nom": r["cd_nom"],
+            "nom_vern_or_lb_nom": r["nom_vern"] if r["nom_vern"] else r["lb_nom"],
+            "lb_nom": r["lb_nom"],
+            "dataset_name": r["dataset_name"],
+            "observers": r["observers"],
+            "url_source": r["url_source"],
+            "entity_source_pk_value": r["entity_source_pk_value"],
+        }
+        geojson = ast.literal_eval(r["st_asgeojson"])
+        geojson["properties"] = properties
 
-    :parameter str info_role: Role used to get the associated filters 
-    :returns dict[dict, int, bool]: See description above
+    :param str info_role: Role used to get the associated filters, **TBC**
+    :qparam str limit: Limit number of synthese returned. Defaults to NB_MAX_OBS_MAP.
+    :qparam str cd_ref: Filter by TAXREF cd_ref attribute
+    :qparam str taxonomy_group2_inpn: Filter by TAXREF group2_inpn attribute
+    :qparam str taxonomy_id_hab: Filter by TAXREF id_habitat attribute
+    :qparam str taxonomy_lr: Filter by TAXREF cd_ref attribute
+    :qparam str taxhub_attribut*: Generig TAXREF filter, given attribute & value
+    :qparam str observers: Filter on observer
+    :qparam str id_organism: Filter on organism
+    :qparam str date_min: Start date
+    :qparam str date_max: End date
+    :qparam str id_acquisition_framework: *tbd*
+    :qparam str geoIntersection: Intersect with the geom send from the map
+    :qparam str period_start: *tbd*
+    :qparam str period_end: *tbd*
+    :qparam str area*: Generic filter on area
+    :qparam str *: Generic filter, given by colname & value 
+    :>jsonarr array data: Array of synthese with geojson key
+    :>jsonarr int nb_total: Number of observations
+    :>jsonarr bool nb_obs_limited: Is number of observations capped
     """
     filters = {key: request.args.getlist(key) for key, value in request.args.items()}
     if "limit" in filters:
