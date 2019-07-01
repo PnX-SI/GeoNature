@@ -114,7 +114,7 @@ Pendant l'installation, vous serez invité à fournir le mot de passe ``sudo`` d
 Installation de l'application
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Lancer le script d'installation de l'application (depuis le répertoir ``installl``):
+Lancer le script d'installation de l'application (depuis le répertoire ``install``):
 
 La commande ``install_app.sh`` comporte deux paramètres optionnels qui doivent être utilisés dans l'ordre :
 
@@ -137,6 +137,32 @@ Une fois l'installation terminée, lancer cette commande pour ajouter ``nvm`` da
 
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
+Configuration Apache
+^^^^^^^^^^^^^^^^^^^^
+
+Créer le fichier de configuration Apache de GeoNature
+
+``sudo nano /etc/apache2/sites-available/geonature.conf``
+
+Puis coller la configuration suivante:
+::
+    Alias /geonature /home/geonatureadmin/geonature/frontend/dist
+    <Directory /home/geonatureadmin/geonature/frontend/dist>
+      Require all granted
+    </Directory>
+    <Location /geonature/api>
+     ProxyPass http://127.0.0.1:8000
+     ProxyPassReverse  http://127.0.0.1:8000
+    </Location>
+
+Activer la nouvelle configuration:
+
+``sudo a2ensite geonature.conf``
+
+et redémarrer Apache:
+
+``sudo service apache2 restart``
 
 L'application est disponible à l'adresse suivante :
 
