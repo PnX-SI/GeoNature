@@ -146,7 +146,9 @@ Créer le fichier de configuration Apache de GeoNature
 ``sudo nano /etc/apache2/sites-available/geonature.conf``
 
 Puis coller la configuration suivante:
+
 ::
+
     Alias /geonature /home/geonatureadmin/geonature/frontend/dist
     <Directory /home/geonatureadmin/geonature/frontend/dist>
       Require all granted
@@ -155,6 +157,13 @@ Puis coller la configuration suivante:
      ProxyPass http://127.0.0.1:8000
      ProxyPassReverse  http://127.0.0.1:8000
     </Location>
+
+Activer les modules suivants:
+
+::
+
+    sudo a2enmod rewrite
+    sudo a2enmod proxy
 
 Activer la nouvelle configuration:
 
