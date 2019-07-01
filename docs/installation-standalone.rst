@@ -114,7 +114,7 @@ Pendant l'installation, vous serez invité à fournir le mot de passe ``sudo`` d
 Installation de l'application
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Lancer le script d'installation de l'application :
+Lancer le script d'installation de l'application (depuis le répertoir ``installl``):
 
 La commande ``install_app.sh`` comporte deux paramètres optionnels qui doivent être utilisés dans l'ordre :
 
@@ -124,8 +124,8 @@ La commande ``install_app.sh`` comporte deux paramètres optionnels qui doivent 
 
 ::
 
-    touch var/log/install_app.log
-    ./install_app.sh 2>&1 | tee install_all.log
+    touch ../var/log/install_app.log
+    ./install_app.sh 2>&1 | tee ../var/log/install_app.log
 
 Pendant l'installation, vous serez invité à fournir le mot de passe ``sudo`` de votre utilisateur linux.
 
