@@ -5,6 +5,7 @@ much more efficient
 """
 from flask import current_app, request
 from sqlalchemy import func, or_, and_, select, join
+from sqlalchemy.sql import text
 from sqlalchemy.orm import aliased
 from shapely.wkt import loads
 from geoalchemy2.shape import from_shape
@@ -115,9 +116,30 @@ class SyntheseQuery:
         Returns:
             -Tuple: the SQLAlchemy query and the filter dictionnary
         """
+        cd_ref_childs = []
+        if "cd_ref_parent" in self.filters:
+            print(self.filters["cd_ref_parent"])
+            # find all taxon child from cd_ref parent
+            cd_ref_parent_int = list(
+                map(lambda x: int(x), self.filters.pop("cd_ref_parent"))
+            )
+            sql = text(
+                """SELECT DISTINCT cd_ref FROM taxonomie.find_all_taxons_children(:id_parent)"""
+            )
+            result = DB.engine.execute(sql, id_parent=cd_ref_parent_int)
+            if result:
+                cd_ref_childs = [r[0] for r in result]
+
+        cd_ref_selected = []
         if "cd_ref" in self.filters:
+            cd_ref_selected = self.filters.pop("cd_ref")
+
+        # concat cd_ref child and just selected cd_ref
+        cd_ref_childs.extend(cd_ref_selected)
+
+        if len(cd_ref_childs) > 0:
             sub_query_synonym = select([Taxref.cd_nom]).where(
-                Taxref.cd_ref.in_(self.filters.pop("cd_ref"))
+                Taxref.cd_ref.in_(cd_ref_childs)
             )
             self.query = self.query.where(self.model.cd_nom.in_(sub_query_synonym))
         if "taxonomy_group2_inpn" in self.filters:

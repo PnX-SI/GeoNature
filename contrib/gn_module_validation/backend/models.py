@@ -7,8 +7,8 @@ from geoalchemy2 import Geometry
 
 @serializable
 @geoserializable
-class VValidationsForWebApp(DB.Model):
-    __tablename__ = "v_validations_for_web_app"
+class VSyntheseValidation(DB.Model):
+    __tablename__ = "v_synthese_validation_forwebapp"
     __table_args__ = {"schema": "gn_commons"}
 
     id_synthese = DB.Column(
@@ -69,19 +69,12 @@ class VValidationsForWebApp(DB.Model):
     id_nomenclature_blurring = DB.Column(DB.Integer)
     id_nomenclature_source_status = DB.Column(DB.Integer)
     id_nomenclature_source_status = DB.Column(DB.Integer)
-    name_source = DB.Column(DB.Unicode)
-    url_source = DB.Column(DB.Unicode)
-    id_validation = DB.Column(DB.Integer)
-    id_table_location = DB.Column(DB.Integer)
-    uuid_attached_row = DB.Column(UUID(as_uuid=True))
     id_nomenclature_valid_status = DB.Column(DB.Integer)
-    id_validator = DB.Column(DB.Integer)
-    validation_comment = DB.Column(DB.Unicode)
-    validation_date = DB.Column(DB.DateTime)
-    validation_auto = DB.Column(DB.Boolean)
     mnemonique = DB.Column(DB.Unicode)
-    label_default = DB.Column(DB.Unicode)
     cd_nomenclature_validation_status = DB.Column(DB.Unicode)
+    label_default = DB.Column(DB.Unicode)
+    validation_auto = DB.Column(DB.Boolean)
+    validation_date = DB.Column(DB.DateTime)
 
     def get_geofeature(self, recursif=False, columns=()):
         return self.as_geofeature(

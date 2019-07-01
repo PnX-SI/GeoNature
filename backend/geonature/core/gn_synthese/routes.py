@@ -634,3 +634,47 @@ def get_color_taxon():
     if len(cd_noms) > 0:
         q = q.filter(VColorAreaTaxon.cd_nom.in_(tuple(cd_noms)))
     return [d.as_dict() for d in q.all()]
+
+
+@routes.route("/test", methods=["GET"])
+@json_resp
+def test():
+    from shapely.geometry import asShape
+    from geoalchemy2.shape import from_shape
+    from shapely.geometry import Point
+    import random
+
+    s = DB.session.query(Synthese).get(86510)
+
+    s_as_dict = s.as_dict()
+    s_as_dict.pop("unique_id_sinp")
+    # wkt = asShape(s.the_geom_4326)
+    # print(wkt)
+    # releve.geom_4326 = from_shape(shape, srid=4326)
+
+    DB.session.query()
+    for i in range(4000):
+        new_point = Point(random.uniform(6.1, 7.5), random.uniform(44.0, 45.2))
+        wkb = from_shape(new_point, 4326)
+        s_as_dict["id_synthese"] = random.randint(1500, 9999999)
+
+        # with random cd_nom
+        random_cd_nom = DB.engine.execute(
+            """
+        SELECT cd_nom FROM taxonomie.bib_noms OFFSET random() * (select count(*) from taxonomie.bib_noms) limit 1 ;"""
+        )
+        cd_nom = None
+        for cd in random_cd_nom:
+            s_as_dict["cd_nom"] = cd[0]
+        new_synthese = Synthese(**s_as_dict)
+        new_synthese.the_geom_4326 = wkb
+
+        q = DB.session.add(new_synthese)
+        # DB.session.flush()
+        DB.session.commit()
+
+    # s = TSources(name_source="lalala")
+
+    DB.session.add(s)
+    DB.session.commit()
+    return "la"

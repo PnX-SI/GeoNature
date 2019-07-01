@@ -4,12 +4,11 @@ import {
   AfterViewInit,
   Input,
   ViewEncapsulation,
-  ContentChild,
   ViewChildren,
   ViewChild,
   QueryList
 } from "@angular/core";
-import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { FormControl, FormGroup } from "@angular/forms";
 import { OcctaxFormService } from "../occtax-form.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { NomenclatureComponent } from "@geonature_common/form/nomenclature/nomenclature.component";
