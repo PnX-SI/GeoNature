@@ -26,6 +26,7 @@ MANDATORY_COLUMNS = [
     "cd_nomenclature_validation_status",
     "mnemonique",
     "label_default",
+    "unique_id_sinp",
 ]
 
 # CONFIG MAP-LIST

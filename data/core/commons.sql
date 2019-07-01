@@ -364,8 +364,6 @@ SELECT pg_catalog.setval('t_medias_id_media_seq', 1, false);
 CREATE TABLE t_validations
 (
   id_validation integer NOT NULL,
-  --unique_id_validation uuid NOT NULL DEFAULT public.uuid_generate_v4(),
-  id_table_location integer NOT NULL,
   uuid_attached_row uuid NOT NULL,
   id_nomenclature_valid_status integer, --DEFAULT get_default_nomenclature_value(101),
   validation_auto boolean NOT NULL DEFAULT true,
@@ -374,7 +372,6 @@ CREATE TABLE t_validations
   validation_date timestamp without time zone
 );
 --COMMENT ON COLUMN t_validations.unique_id_validation IS 'Un uuid est nécessaire pour tracer l''historique des validations dans "tracked_objects_actions"';
-COMMENT ON COLUMN t_validations.id_table_location IS 'FK vers la table où se trouve l''enregistrement validé';
 COMMENT ON COLUMN t_validations.uuid_attached_row IS 'Uuid de l''enregistrement validé';
 COMMENT ON COLUMN t_validations.id_nomenclature_valid_status IS 'Correspondance nomenclature INPN = statut_valid (101)';
 COMMENT ON COLUMN t_validations.id_validator IS 'Fk vers l''id_role (utilisateurs.t_roles) du validateur';
@@ -479,9 +476,6 @@ ALTER TABLE ONLY t_medias
 
 ALTER TABLE ONLY t_validations
     ADD CONSTRAINT fk_t_validations_t_roles FOREIGN KEY (id_validator) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY t_validations
-  ADD CONSTRAINT fk_t_validations_bib_tables_location FOREIGN KEY (id_table_location) REFERENCES bib_tables_location (id_table_location) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_validations
     ADD CONSTRAINT fk_t_validations_valid_status FOREIGN KEY (id_nomenclature_valid_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
@@ -590,3 +584,15 @@ SELECT
 FROM insert_a i
 LEFT OUTER JOIN last_update_a u ON i.uuid_attached_row = u.uuid_attached_row
 LEFT OUTER JOIN delete_a d ON i.uuid_attached_row = d.uuid_attached_row;
+
+-- vue latest validation
+CREATE VIEW gn_commons.v_latest_validation AS
+SELECT v.*
+FROM gn_commons.t_validations v
+INNER JOIN (
+SELECT uuid_attached_row, max(validation_date) as max_date
+FROM gn_commons.t_validations
+GROUP BY uuid_attached_row
+) last_val
+ON v.uuid_attached_row = last_val.uuid_attached_row AND v.validation_date = last_val.max_date
+

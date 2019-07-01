@@ -1,34 +1,34 @@
-import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  AfterContentInit,
+  ViewChild
+} from '@angular/core';
+import { TreeModel } from 'angular-tree-component';
 import { TreeNode, TreeComponent, IActionMapping } from 'angular-tree-component';
-import { SyntheseFormService } from '../../services/form.service';
-import { DynamicFormService } from '@geonature_common/form/dynamic-form/dynamic-form.service';
-import { FormGroup } from '@angular/forms';
-import { TaxonAdvancedStoreService } from './taxon-advanced-store.service';
-import { AppConfig } from '@geonature_config/app.config';
 
+/** Generic component for display taxon tree. Not use yet */
 @Component({
-  selector: 'pnx-taxon-advanced',
-  templateUrl: './taxon-advanced.component.html',
-  providers: [DynamicFormService],
-  styleUrls: ['./taxon-advanced.component.scss']
+  selector: 'pnx-tree',
+  templateUrl: 'tree.component.html'
 })
-export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
-  @ViewChild('tree') treeComponent: TreeComponent;
-  public taxonsTree;
-  public treeOptions;
+export class TaxonTreeComponent implements OnInit, AfterContentInit {
   public selectedNodes = [];
   public expandedNodes = [];
-  public taxhubAttributes: any;
-  public attributForm: FormGroup;
-  public formBuilded = false;
-  public syntheseConfig = AppConfig.SYNTHESE;
-  constructor(
-    public activeModal: NgbActiveModal,
-    public formService: SyntheseFormService,
-    public storeService: TaxonAdvancedStoreService
-  ) {
+  public selectedCdRefFromTree = [];
+
+  @Input() taxonTreeState: any;
+  @Input() taxonTree: any;
+  @Input() treeModel: TreeModel;
+  @Input() treeOptions;
+  @Output() onReset = new EventEmitter<any>();
+  @Output() onEvent = new EventEmitter<any>();
+  @ViewChild('tree') treeComponent: TreeComponent;
+
+  constructor() {
     const actionMapping: IActionMapping = {
       mouse: {
         click: (tree, node, $event) => {},
@@ -49,8 +49,8 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
 
   ngOnInit() {
     // if the modal has already been open, reload the former state of the taxon tree
-    if (this.storeService.taxonTreeState) {
-      this.storeService.treeModel.setState(this.storeService.taxonTreeState);
+    if (this.taxonTreeState) {
+      this.treeModel.setState(this.taxonTreeState);
     }
   }
 
@@ -86,33 +86,25 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   }
 
   ngAfterContentInit() {
-    this.storeService.treeModel = this.treeComponent.treeModel;
+    this.treeModel = this.treeComponent.treeModel;
   }
 
   catchEvent(event) {
     if (event.eventName === 'select') {
       // push the cd_nom in taxonList
-      this.formService.selectedCdRefFromTree.push(event.node.data.id);
+      this.selectedCdRefFromTree.push(event.node.data.id);
     }
     if (event.eventName === 'deselect') {
       // remove cd_nom from taxonlist
-      this.formService.selectedCdRefFromTree.splice(
-        this.formService.selectedCdRefFromTree.indexOf(event.node.data.id),
-        1
-      );
+      this.selectedCdRefFromTree.splice(this.selectedCdRefFromTree.indexOf(event.node.data.id), 1);
     }
   }
 
   resetTree() {
-    this.storeService.treeModel.collapseAll();
-    this.storeService.treeModel.doForAll(node => {
+    this.treeModel.collapseAll();
+    this.treeModel.doForAll(node => {
       node.setIsSelected(false);
     });
-    this.formService.selectedCdRefFromTree = [];
-  }
-
-  onCloseModal() {
-    this.storeService.taxonTreeState = this.storeService.treeModel.getState();
-    this.activeModal.close();
+    this.selectedCdRefFromTree = [];
   }
 }

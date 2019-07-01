@@ -5,7 +5,7 @@ import { AppConfig } from "@geonature_config/app.config";
 import { CommonService } from "@geonature_common/service/common.service";
 
 @Injectable()
-export class DataService {
+export class ValidationDataService {
   public dataLoaded: Boolean = false;
 
   constructor(
@@ -31,9 +31,9 @@ export class DataService {
     });
   }
 
-  getValidationHistory(id_synthese) {
+  getValidationHistory(uuid_attached_row) {
     return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/validation/history/${id_synthese}`,
+      `${AppConfig.API_ENDPOINT}/validation/history/${uuid_attached_row}`,
       {}
     );
   }
@@ -49,9 +49,9 @@ export class DataService {
     );
   }
 
-  getValidationDate(id) {
+  getValidationDate(uuid) {
     return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/validation/date/${id}`
+      `${AppConfig.API_ENDPOINT}/validation/date/${uuid}`
     );
   }
 

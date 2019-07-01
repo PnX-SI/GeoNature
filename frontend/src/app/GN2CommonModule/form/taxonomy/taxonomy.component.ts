@@ -58,7 +58,6 @@ export class TaxonomyComponent implements OnInit {
   regnesAndGroup: any;
   noResult: boolean;
   isLoading = false;
-  showResultList = true;
   @Output() onChange = new EventEmitter<NgbTypeaheadSelectItemEvent>(); // renvoie l'evenement, le taxon est récupérable grâce à e.item
   @Output() onDelete = new EventEmitter<Taxon>();
 
@@ -69,13 +68,11 @@ export class TaxonomyComponent implements OnInit {
     this.apiEndPoint =
       this.apiEndPoint || `${AppConfig.API_TAXHUB}/taxref/allnamebylist/${this.idList}`;
 
-    
-      this.parentFormControl.valueChanges
-        .filter(value => value !== null && value.length === 0)
-        .subscribe(value => {
-          this.onDelete.emit();
-          this.showResultList = false;
-        });
+    this.parentFormControl.valueChanges
+      .filter(value => value !== null && value.length === 0)
+      .subscribe(value => {
+        this.onDelete.emit();
+      });
     if (this.displayAdvancedFilters) {
       // get regne and group2
       this._dfService.getRegneAndGroup2Inpn().subscribe(data => {

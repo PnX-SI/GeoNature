@@ -1,25 +1,21 @@
 import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModuleConfig } from '../../../module.config';
 import { TreeNode, TreeComponent, IActionMapping } from 'angular-tree-component';
-import { FormService } from '../../../services/form.service';
+import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form/dynamic-form.service';
 import { FormGroup } from '@angular/forms';
-import { ValidationTaxonAdvancedStoreService } from './validation-taxon-advanced-store.service';
-//import { AppConfig } from '@geonature_config/app.config';
+import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service';
+import { AppConfig } from '@geonature_config/app.config';
 
 @Component({
   selector: 'pnx-validation-taxon-advanced',
-  templateUrl: './validation-taxon-advanced.component.html',
+  templateUrl: './synthese-advanced-form.component.html',
   providers: [DynamicFormService],
-  styleUrls: ['./validation-taxon-advanced.component.scss']
+  styleUrls: ['./synthese-advanced-form.component.scss']
 })
-
-export class ValidationTaxonAdvancedModalComponent implements OnInit, AfterContentInit {
-
+export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   @ViewChild('tree') treeComponent: TreeComponent;
-
-  public VALIDATION_CONFIG = ModuleConfig;
+  public AppConfig = AppConfig;
   public taxonsTree;
   public treeOptions;
   public selectedNodes = [];
@@ -27,11 +23,13 @@ export class ValidationTaxonAdvancedModalComponent implements OnInit, AfterConte
   public taxhubAttributes: any;
   public attributForm: FormGroup;
   public formBuilded = false;
+  public queryString = { add_rank: true, rank_limit: 'GN' };
+  public showTree = false;
 
   constructor(
     public activeModal: NgbActiveModal,
-    public formService: FormService,
-    public storeService: ValidationTaxonAdvancedStoreService
+    public formService: SyntheseFormService,
+    public storeService: TaxonAdvancedStoreService
   ) {
     const actionMapping: IActionMapping = {
       mouse: {
@@ -41,7 +39,7 @@ export class ValidationTaxonAdvancedModalComponent implements OnInit, AfterConte
           if (!node.isExpanded) {
             node.toggleExpanded();
           }
-          this.expandNodeRecursively(node, 5);
+          //this.expandNodeRecursively(node, 0);
         }
       }
     };
@@ -58,8 +56,18 @@ export class ValidationTaxonAdvancedModalComponent implements OnInit, AfterConte
     }
   }
 
+  mapFunc(item) {
+    item['displayed_name'] = '<b>' + item.lb_nom + ' </b>  <small> (' + item.nom_rang + ')</small>';
+    return item;
+  }
+
+  toggleTree() {
+    this.showTree = !this.showTree;
+  }
+
   // Algo pour 'expand' tous les noeud fils recursivement à partir un noeud parent
   // depth : profondeur de l'arbre jusqu'ou on ouvre
+  // Non utilisée pour des raisons de performances
   expandNodeRecursively(node: TreeNode, depth: number): void {
     depth = depth - 1;
     if (node.children) {
@@ -72,6 +80,12 @@ export class ValidationTaxonAdvancedModalComponent implements OnInit, AfterConte
         }
       });
     }
+  }
+
+  onTaxonSelected($event) {
+    this.formService.selectedTaxonFromRankInput.push($event.item);
+    $event.preventDefault();
+    this.formService.searchForm.controls.taxon_rank.reset();
   }
 
   // algo recursif pour retrouver tout les cd_ref sélectionné à partir de l'arbre
@@ -118,5 +132,9 @@ export class ValidationTaxonAdvancedModalComponent implements OnInit, AfterConte
   onCloseModal() {
     this.storeService.taxonTreeState = this.storeService.treeModel.getState();
     this.activeModal.close();
+  }
+
+  formatter(item) {
+    return item.lb_nom;
   }
 }

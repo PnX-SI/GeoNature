@@ -1,18 +1,11 @@
-
-/*
-#awaitingObs {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-}
+// #awaitingObs {
+//   position: fixed;
+//   bottom: 0;
+//   width: 100%;
+// }
 
 .is-loading {
   display: none;
-}
-
-.background-topo {
-  background: url('../../assets/images/fond-topo.png');
-  background-size: 200px;
 }
 
 #cover-spin {
@@ -23,7 +16,7 @@
   top: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.39);
-  z-index: 9999;
+  z-index: 99999;
 }
 
 @-webkit-keyframes spin {
@@ -45,7 +38,7 @@
 }
 
 #cover-spin::after {
-  content: '';
+  content: "";
   display: block;
   position: absolute;
   left: 48%;
@@ -60,8 +53,6 @@
   -webkit-animation: spin 0.8s linear infinite;
   animation: spin 0.8s linear infinite;
 }
-
-
 
 @media (min-width: 1000px) {
   #sidebar {
@@ -123,7 +114,7 @@
   width: 100%;
 }
 
-a[data-toggle='collapse'] {
+a[data-toggle="collapse"] {
   position: relative;
 }
 
@@ -135,9 +126,7 @@ a[data-toggle='collapse'] {
   transform: translateY(-50%);
 }
 
-*/
-
-.middle{
+.middle {
   height: auto;
   display: flex;
   flex-direction: column;
@@ -148,16 +137,13 @@ a[data-toggle='collapse'] {
   }
 }
 
-.collapse:not(.show) ~ .last{
+.collapse:not(.show) ~ .last {
   min-width: 58% !important;
   max-width: 58% !important;
-
 }
 
-
-
 // TOGGLE SIDEBAR
-#sidebarCollapse{
+#sidebarCollapse {
   z-index: 10000;
   position: absolute;
   padding: 0px 5px;
@@ -226,7 +212,7 @@ a[data-toggle='collapse'] {
 .page-content {
   width: 100%;
 }
-a[data-toggle='collapse'] {
+a[data-toggle="collapse"] {
   position: relative;
 }
 .dropdown-toggle::after {
@@ -237,30 +223,31 @@ a[data-toggle='collapse'] {
   transform: translateY(-50%);
 }
 
-button:focus, button:active{
+button:focus,
+button:active {
   outline: none;
   box-shadow: none !important;
 }
 
-@media screen and (max-width: 1240px){
-  .ngx-datatable-footer  {
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-align: center;
-      -ms-flex-align: center;
-      align-items: center;
-      flex-wrap: wrap;
-      justify-content: center;
-      width: 100%;
-      height: auto;
+@media screen and (max-width: 1240px) {
+  .ngx-datatable-footer {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    height: auto;
   }
 }
 @media screen and (max-width: 770px) {
-  #sidebarCollapse{
+  #sidebarCollapse {
     display: none;
   }
-  .middle{
+  .middle {
     padding-left: 0px !important;
   }
   .relative {

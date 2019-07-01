@@ -2,6 +2,34 @@
 CHANGELOG
 =========
 
+
+2.2.0 (unreleased)
+
+**🚀 Nouveautés**
+
+* Factorisation du formulaire de recherche de la synthese (utilisé dans le module synthese et validation)
+* Ajout d'un composant de recherche taxonomique avancé basé sur les rang taxonomique (modules synthese et validation)
+
+  
+**🐛 Corrections**
+  
+  * Nombreuses corrections du module de validation (non utilisation des id_nomenclature, simplification des vues)
+
+
+**⚠️ Notes de version**
+
+ - Monter à Taxhub 1.6.3
+ - Passer le script de migration 2.1.1to2.2.0
+ - Lancer la commande de mise à jour de la configuration du module de validation
+
+   ::
+
+    cd /home/`whoami`/geonature/backend
+    source venv/bin/activate
+    geonature update_module_configuration validation
+
+    
+
 2.1.0 (2019-06-01)
 ------------------
 

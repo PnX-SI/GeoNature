@@ -187,8 +187,8 @@ CREATE TABLE t_datasets (
     id_nomenclature_data_origin integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value('DS_PUBLIQUE'),
     id_nomenclature_source_status integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value('STATUT_SOURCE'),
     id_nomenclature_resource_type integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value('RESOURCE_TYP'),
-    default_validity boolean,
     active boolean NOT NULL DEFAULT TRUE,
+    validable boolean DEFAULT TRUE,
     meta_create_date timestamp without time zone NOT NULL,
     meta_update_date timestamp without time zone
 );
