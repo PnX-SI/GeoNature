@@ -135,17 +135,24 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   loadDrawfromGeoJson(geojson) {
     let layer;
     if (geojson.type === 'LineString' || geojson.type == 'MultiLineString') {
+      console.log(geojson.type);
+      console.log(geojson.coordinates);
+
       const latLng = L.GeoJSON.coordsToLatLngs(
         geojson.coordinates,
-        geojson.type === 'Polygon' ? 0 : 1
+        geojson.type === 'LineString' ? 0 : 1
       );
+      console.log(latLng);
+
       layer = L.polyline(latLng);
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
     }
     if (geojson.type === 'Polygon' || geojson.type == 'MultiPolygon') {
+      console.log(geojson.type);
+
       const latLng = L.GeoJSON.coordsToLatLngs(
         geojson.coordinates,
-        geojson.type === 'LineString' ? 0 : 1
+        geojson.type === 'Polygon' ? 1 : 2
       );
       layer = L.polygon(latLng);
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
