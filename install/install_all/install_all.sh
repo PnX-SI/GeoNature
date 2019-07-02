@@ -64,6 +64,7 @@ sudo apt-get install -y curl unzip git
 sudo apt-get install -y apache2 libapache2-mod-wsgi libapache2-mod-perl2 
 sudo apt-get install -y postgresql 
 sudo apt-get install -y postgresql-contrib
+sudo apt-get install -y wget
 if [ "$OS_VERSION" == "9" ]
 then
     sudo apt-get install -y postgresql-server-dev-9.6 
