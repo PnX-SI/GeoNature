@@ -123,11 +123,12 @@ CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS
      LEFT JOIN gn_commons.t_validations v ON v.uuid_attached_row = s.unique_id_sinp
      LEFT JOIN ref_nomenclatures.t_nomenclatures n ON n.id_nomenclature = s.id_nomenclature_valid_status
      LEFT JOIN gn_commons.v_latest_validation latest_v ON latest_v.uuid_attached_row = s.unique_id_sinp
-  WHERE s.id_source IS NOT NULL AND d.validable = true;
-
-
+     WHERE d.validable = true;
+  ;
 
 COMMENT ON VIEW gn_commons.v_synthese_validation_forwebapp  IS 'Vue utilisée pour le module validation. Prend l''id_nomenclature dans la table synthese ainsi que toutes les colonnes de la synthese pour les filtres. On JOIN sur la vue latest_validation pour voir si la validation est auto';
+
+
 
 ALTER TABLE gn_commons.t_validations DROP COLUMN id_table_location;
 
@@ -135,3 +136,32 @@ ALTER TABLE gn_commons.t_validations DROP COLUMN id_table_location;
 DROP VIEW gn_commons.v_validations_for_web_app CASCADE;
 
 
+-- update fonction trigger validation
+CREATE OR REPLACE FUNCTION gn_commons.fct_trg_add_default_validation_status()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+	theschema text := quote_ident(TG_TABLE_SCHEMA);
+	thetable text := quote_ident(TG_TABLE_NAME);
+	theuuidfieldname character varying(50);
+	theuuid uuid;
+  thecomment text := 'auto = default value';
+BEGIN
+  --Retouver le nom du champ stockant l'uuid de l'enregistrement en cours de validation
+	SELECT INTO theuuidfieldname gn_commons.get_uuid_field_name(theschema,thetable);
+  --Récupérer l'uuid de l'enregistrement en cours de validation
+	EXECUTE format('SELECT $1.%I', theuuidfieldname) INTO theuuid USING NEW;
+  --Insertion du statut de validation et des informations associées dans t_validations
+  INSERT INTO gn_commons.t_validations (uuid_attached_row,id_nomenclature_valid_status,id_validator,validation_comment,validation_date)
+  VALUES(
+    theuuid,
+    ref_nomenclatures.get_default_nomenclature_value('STATUT_VALID'), --comme la fonction est générique, cette valeur par défaut doit exister et est la même pour tous les modules
+    null,
+    thecomment,
+    NOW()
+  );
+  RETURN NEW;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
