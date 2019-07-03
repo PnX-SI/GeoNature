@@ -4,6 +4,11 @@ import 'rxjs/add/operator/toPromise';
 import { AppConfig } from '../../../conf/app.config';
 import { Taxon } from './taxonomy/taxonomy.component';
 
+/** Interface for queryString parameters*/
+interface ParamsDict {
+  [key: string]: any;
+}
+
 @Injectable()
 export class DataFormService {
   constructor(private _http: HttpClient) {}
@@ -41,8 +46,12 @@ export class DataFormService {
     });
   }
 
-  getDatasets(params?) {
+  getDatasets(params?: ParamsDict, orderByName = true) {
     let queryString: HttpParams = new HttpParams();
+    if (orderByName) {
+      queryString = this.addOrderBy(queryString, 'dataset_name');
+    }
+
     if (params) {
       for (const key in params) {
         if (key === 'idOrganism') {
@@ -178,8 +187,16 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/geo/areas`, { params: params });
   }
 
-  getAcquisitionFrameworks(params?: any) {
+  /**
+   *
+   * @param params: dict of paramters
+   * @param orderByName :default true
+   */
+  getAcquisitionFrameworks(params?: ParamsDict, orderByName = true) {
     let queryString: HttpParams = new HttpParams();
+    if (orderByName) {
+      queryString = this.addOrderBy(queryString, 'acquisition_framework_name');
+    }
     if (params) {
       // tslint:disable-next-line:forin
       for (let key in params) {
@@ -197,16 +214,25 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}`);
   }
 
-  getOrganisms() {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/organisms`);
+  getOrganisms(orderByName = true) {
+    let queryString: HttpParams = new HttpParams();
+    if (orderByName) {
+      queryString = this.addOrderBy(queryString, 'nom_organisme');
+    }
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/organisms`, {
+      params: queryString
+    });
   }
 
   getOrganismsDatasets() {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/organisms_dataset_actor`);
   }
 
-  getRoles(params?: any) {
+  getRoles(params?: ParamsDict, orderByName = true) {
     let queryString: HttpParams = new HttpParams();
+    if (orderByName) {
+      queryString = this.addOrderBy(queryString, 'nom_role');
+    }
     // tslint:disable-next-line:forin
     for (let key in params) {
       if (params[key] !== null) {
@@ -244,5 +270,9 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/permissions/cruved`, {
       params: queryString
     });
+  }
+
+  addOrderBy(httpParam: HttpParams, order_column): HttpParams {
+    return httpParam.append('orderby', order_column);
   }
 }

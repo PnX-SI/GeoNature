@@ -1,3 +1,4 @@
+import logging
 from flask import Blueprint, request
 
 from geonature.utils.env import DB
@@ -11,6 +12,7 @@ from geonature.core.gn_meta.repositories import get_datasets_cruved
 
 
 routes = Blueprint("users", __name__)
+log = logging.getLogger()
 
 
 @routes.route("/menu/<int:id_menu>", methods=["GET"])
@@ -18,6 +20,7 @@ routes = Blueprint("users", __name__)
 def getRolesByMenuId(id_menu):
     """
     Retourne la liste des roles associés à un menu
+
     .. :quickref: User;
 
     :param id_menu: the id of user list (utilisateurs.bib_list)
@@ -42,7 +45,9 @@ def getRolesByMenuId(id_menu):
 def get_role(id_role):
     """
     Get role detail
+
     .. :quickref: User;
+
     :param id_role: the id user
     :type id_role: int
     """
@@ -55,7 +60,9 @@ def get_role(id_role):
 def insert_role(user=None):
     """
         Insert un role
+
         .. :quickref: User;
+
         @TODO : Ne devrait pas être là mais dans UserHub
         Utilisé dans l'authentification du CAS INPN
     """
@@ -82,7 +89,9 @@ def insert_role(user=None):
 def insert_in_cor_role(id_group=None, id_user=None):
     """
     Insert a user in a group
+
     .. :quickref: User;
+
     :param id_role: the id user
     :type id_role: int    
     :param id_group: the id group
@@ -109,6 +118,7 @@ def insert_in_cor_role(id_group=None, id_user=None):
 def insert_organism(organism):
     """
     Insert a organism
+
     .. :quickref: User;
     """
     if organism is not None:
@@ -134,12 +144,19 @@ def insert_organism(organism):
 def get_roles():
     """
     Get all roles
+
     .. :quickref: User;
     """
-    params = request.args
+    params = dict(request.args)
     q = DB.session.query(User)
     if "group" in params:
         q = q.filter(User.groupe == params["group"])
+    if "orderby" in params:
+        try:
+            order_col = getattr(User.__table__.columns, params.pop("orderby"))
+            q = q.order_by(order_col)
+        except AttributeError:
+            log.error("the attribute to order on does not exist")
     return [user.as_dict() for user in q.all()]
 
 
@@ -148,10 +165,18 @@ def get_roles():
 def get_organismes():
     """
         Get all organisms
+
         .. :quickref: User;
     """
-    organisms = DB.session.query(BibOrganismes).all()
-    return [organism.as_dict() for organism in organisms]
+    params = dict(request.args)
+    q = DB.session.query(BibOrganismes)
+    if "orderby" in params:
+        try:
+            order_col = getattr(BibOrganismes.__table__.columns, params.pop("orderby"))
+            q = q.order_by(order_col)
+        except AttributeError:
+            log.error("the attribute to order on does not exist")
+    return [organism.as_dict() for organism in q.all()]
 
 
 @routes.route("/organisms_dataset_actor", methods=["GET"])

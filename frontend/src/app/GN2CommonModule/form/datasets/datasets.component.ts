@@ -44,7 +44,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
     if (this.displayOnlyActive) {
       params['active'] = true;
     }
-    this._dfs.getDatasets(params).subscribe(
+    this._dfs.getDatasets().subscribe(
       res => {
         this.dataSets = res.data;
         this.savedDatasets = res.data;
