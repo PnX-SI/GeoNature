@@ -5,7 +5,9 @@ import {
   OnChanges,
   OnDestroy,
   SimpleChanges,
-  ViewEncapsulation
+  ViewEncapsulation,
+  Output,
+  EventEmitter
 } from '@angular/core';
 import { DataFormService } from '../data-form.service';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
@@ -33,6 +35,8 @@ export class NomenclatureComponent extends GenericFormComponent
   @Input() group2Inpn: string;
   @Input() keyValue;
   @Input() bindAllItem: false;
+  @Output() labelsLoaded = new EventEmitter<Array<any>>();
+
   constructor(private _dfService: DataFormService, private _translate: TranslateService) {
     super();
   }
@@ -97,6 +101,7 @@ export class NomenclatureComponent extends GenericFormComponent
       .subscribe(data => {
         this.labels = data.values;
         this.savedLabels = data.values;
+        this.labelsLoaded.emit(this.labels);
       });
   }
 
