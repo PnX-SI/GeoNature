@@ -1,5 +1,6 @@
 import logging
 from flask import Blueprint, request
+from sqlalchemy.sql import distinct
 
 from geonature.utils.env import DB
 from geonature.core.users.models import VUserslistForallMenu, BibOrganismes, CorRole
@@ -186,17 +187,25 @@ def get_organismes_jdd(info_role):
     """
     Get all organisms and the JDD where there are actor and where 
     the current user hase autorization with its cruved
+
     .. :quickref: User;
     """
+    params = dict(request.args)
 
     datasets = [dataset["id_dataset"] for dataset in get_datasets_cruved(info_role)]
-    organisms = (
+    q = (
         DB.session.query(BibOrganismes)
         .join(
             CorDatasetActor, BibOrganismes.id_organisme == CorDatasetActor.id_organism
         )
         .filter(CorDatasetActor.id_dataset.in_(datasets))
-        .distinct(BibOrganismes.id_organisme)
-        .all()
+        .distinct()
     )
-    return [organism.as_dict() for organism in organisms]
+    if "orderby" in params:
+        try:
+            order_col = getattr(BibOrganismes.__table__.columns, params.pop("orderby"))
+            q = q.order_by(order_col)
+        except AttributeError:
+            log.error("the attribute to order on does not exist")
+    return [organism.as_dict() for organism in q.all()]
+

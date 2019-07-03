@@ -224,8 +224,14 @@ export class DataFormService {
     });
   }
 
-  getOrganismsDatasets() {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/organisms_dataset_actor`);
+  getOrganismsDatasets(orderByName = true) {
+    let queryString: HttpParams = new HttpParams();
+    if (orderByName) {
+      queryString = this.addOrderBy(queryString, 'nom_organisme');
+    }
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/organisms_dataset_actor`, {
+      params: queryString
+    });
   }
 
   getRoles(params?: ParamsDict, orderByName = true) {
