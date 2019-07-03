@@ -48,6 +48,7 @@ export class OcctaxFormService {
   /** Display on not the control to stay on the form interface */
   public displayStayOnFormInterface = true;
 
+  public currentCdExistProot = null;
   public currentExistProofLabels = null;
 
   constructor(
@@ -197,7 +198,6 @@ export class OcctaxFormService {
   }
 
   proofValidator(occControl: FormGroup) {
-    console.log("changes");
     if (
       occControl.controls.id_nomenclature_exist_proof !== null &&
       this.currentExistProofLabels !== null
@@ -209,15 +209,30 @@ export class OcctaxFormService {
       );
       // si le type validation est = OUI et que les deux champs validation
       // sont pas remplis  (null ou legnth == 0)=> erreur
+      // prettier-ignore
       if (
         currentCD === "1" &&
-        (occControl.controls.digital_proof.value === null ||
-          (occControl.controls.digital_proof.value !== null &&
-            occControl.controls.digital_proof.value.length === 0 &&
-            occControl.controls.non_digital_proof.value === null) ||
-          (occControl.controls.non_digital_proof.value !== null &&
-            occControl.controls.non_digital_proof.value.length === 0))
+        (
+          ( 
+            occControl.controls.digital_proof.value === null
+            ||
+            (
+              occControl.controls.digital_proof.value !== null &&
+              occControl.controls.digital_proof.value.length === 0
+            )
+          )// false
+        &&
+          (
+            occControl.controls.non_digital_proof.value === null 
+            ||
+              (
+                occControl.controls.non_digital_proof.value !== null &&
+                occControl.controls.non_digital_proof.value.length === 0
+              )
+          )// true
+        )
       ) {
+
         return { noExistProofError: true };
       }
       // si les deux preuve sont pas NULL
