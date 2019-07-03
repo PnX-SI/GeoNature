@@ -86,10 +86,10 @@
         </div>
       </div>
       <small *ngIf="occurrenceForm.errors?.existproofError" class="error" style="color:red">
-        Les preuves d'existance ne peuvent être replis seulement si "preuve d'existence = Oui"
+        {{'Taxon.ExistproofError' |translate}}      
       </small>
       <small *ngIf="occurrenceForm.errors?.noExistProofError" class="error" style="color:red">
-        Si "preuve d'existence = Oui", un des deux champs de preuve doit être rempli
+        {{'Taxon.NoExistProofError' |translate}}
       </small>
 
     </div>

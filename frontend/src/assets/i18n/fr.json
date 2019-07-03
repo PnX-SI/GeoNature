@@ -134,7 +134,7 @@
     "NoTaxonFound": "Aucun taxon trouvé pour cette recherche",
     "ExistProofValidation": "Ce champs doit débuter par 'http://', 'https://', ou 'ftp://'",
     "NoExistProofError": "Si 'preuve d'existence = Oui', un des deux champs de preuve doit être rempli",
-    "ExistproofError": "Les preuves d'existance ne peuvent être replis seulement si 'preuve d'existence = Oui'",
+    "ExistproofError": "Les preuves d'existence ne peuvent être remplies seulement si 'preuve d'existence = Oui'",
     "StatusSource": "Statut source"
   },
   "Counting": {
