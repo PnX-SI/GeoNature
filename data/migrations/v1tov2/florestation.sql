@@ -853,98 +853,98 @@ CREATE TRIGGER tri_update_synthese_stations_fs AFTER UPDATE ON v1_florestation.t
 
 
 --insert into gn_synthese.synthese
-INSERT INTO gn_synthese.synthese
-    (
-      unique_id_sinp,
-      unique_id_sinp_grp,
-      id_source,
-      entity_source_pk_value,
-      id_dataset,
-      id_nomenclature_geo_object_nature,
-      id_nomenclature_grp_typ,
-      id_nomenclature_obs_meth,
-      id_nomenclature_bio_status,
-      id_nomenclature_bio_condition,
-      id_nomenclature_naturalness,
-      id_nomenclature_exist_proof,
-      id_nomenclature_valid_status,
-      id_nomenclature_diffusion_level,
-      id_nomenclature_life_stage,
-      id_nomenclature_sex,
-      id_nomenclature_obj_count,
-      id_nomenclature_type_count,
-      id_nomenclature_sensitivity,
-      id_nomenclature_observation_status,
-      id_nomenclature_blurring,
-      id_nomenclature_source_status,
-      id_nomenclature_info_geo_type,
-      count_min,
-      count_max,
-      cd_nom,
-      nom_cite,
-      meta_v_taxref,
-      altitude_min,
-      altitude_max,
-      the_geom_4326,
-      the_geom_point,
-      the_geom_local,
-      date_min,
-      date_max,
-      observers,
-      determiner,
-      comment_context,
-      last_action
-    )
-    SELECT
-      cft.unique_id_sinp_fs,
-      s.unique_id_sinp_grp,
-      105, --TODO 105 = PNE
-      cft.gid,
-      s.id_lot,
-      ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO','St'),
-      ref_nomenclatures.get_id_nomenclature('TYP_GRP','INVSTA'),
-      ref_nomenclatures.get_id_nomenclature('METH_OBS','0'),
-      ref_nomenclatures.get_id_nomenclature('STATUT_BIO','12'),
-      ref_nomenclatures.get_id_nomenclature('ETA_BIO','2'),
-      ref_nomenclatures.get_id_nomenclature('NATURALITE','1'),
-      ref_nomenclatures.get_id_nomenclature('PREUVE_EXIST','2'),
-      CASE WHEN s.validation = true THEN ref_nomenclatures.get_id_nomenclature('STATUT_VALID','1')
-      ELSE ref_nomenclatures.get_id_nomenclature('STATUT_VALID','2')
-      END,
-      ref_nomenclatures.get_id_nomenclature('NIV_PRECIS','5'),
-      ref_nomenclatures.get_id_nomenclature('STADE_VIE','1'),
-      ref_nomenclatures.get_id_nomenclature('SEXE','6'),
-      ref_nomenclatures.get_id_nomenclature('OBJ_DENBR','NSP'),
-      ref_nomenclatures.get_id_nomenclature('TYP_DENBR','NSP'),
-      NULL,--todo sensitivity
-      ref_nomenclatures.get_id_nomenclature('STATUT_OBS','Pr'),
-      ref_nomenclatures.get_id_nomenclature('DEE_FLOU','NON'),
-      ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE','Te'),
-      ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO','1'),
-      -1,--count_min
-      -1,--count_max
-      cft.cd_nom,
-      COALESCE(cft.taxon_saisi,'non disponible'),
-      'Taxref V11.0',
-      s.altitude_retenue,--altitude_min
-      s.altitude_retenue,--altitude_max
-      public.st_transform(s.the_geom_3857,4326),
-      public.st_transform(s.the_geom_3857,4326),
-      s.the_geom_local,
-      s.dateobs,--date_min
-      s.dateobs,--date_max
-      o.observateurs,--observers
-      o.observateurs,--determiner
-      s.remarques,
-      'c'
-    FROM v1_florestation.t_stations_fs s
-    JOIN v1_florestation.cor_fs_taxon cft ON cft.id_station = s.id_station
-    JOIN (SELECT c.id_station, array_to_string(array_agg(r.nom_role || ' ' || r.prenom_role), ', ') AS observateurs 
-    FROM v1_florestation.cor_fs_observateur c
-    JOIN utilisateurs.t_roles r ON r.id_role = c.id_role
-    JOIN v1_florestation.t_stations_fs s ON s.id_station = c.id_station
-    GROUP BY c.id_station) o ON o.id_station = s.id_station
-    WHERE s.supprime = false AND cft.supprime = false;
+-- INSERT INTO gn_synthese.synthese
+--     (
+--       unique_id_sinp,
+--       unique_id_sinp_grp,
+--       id_source,
+--       entity_source_pk_value,
+--       id_dataset,
+--       id_nomenclature_geo_object_nature,
+--       id_nomenclature_grp_typ,
+--       id_nomenclature_obs_meth,
+--       id_nomenclature_bio_status,
+--       id_nomenclature_bio_condition,
+--       id_nomenclature_naturalness,
+--       id_nomenclature_exist_proof,
+--       id_nomenclature_valid_status,
+--       id_nomenclature_diffusion_level,
+--       id_nomenclature_life_stage,
+--       id_nomenclature_sex,
+--       id_nomenclature_obj_count,
+--       id_nomenclature_type_count,
+--       id_nomenclature_sensitivity,
+--       id_nomenclature_observation_status,
+--       id_nomenclature_blurring,
+--       id_nomenclature_source_status,
+--       id_nomenclature_info_geo_type,
+--       count_min,
+--       count_max,
+--       cd_nom,
+--       nom_cite,
+--       meta_v_taxref,
+--       altitude_min,
+--       altitude_max,
+--       the_geom_4326,
+--       the_geom_point,
+--       the_geom_local,
+--       date_min,
+--       date_max,
+--       observers,
+--       determiner,
+--       comment_context,
+--       last_action
+--     )
+--     SELECT
+--       cft.unique_id_sinp_fs,
+--       s.unique_id_sinp_grp,
+--       105, --TODO 105 = PNE
+--       cft.gid,
+--       s.id_lot,
+--       ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO','St'),
+--       ref_nomenclatures.get_id_nomenclature('TYP_GRP','INVSTA'),
+--       ref_nomenclatures.get_id_nomenclature('METH_OBS','0'),
+--       ref_nomenclatures.get_id_nomenclature('STATUT_BIO','12'),
+--       ref_nomenclatures.get_id_nomenclature('ETA_BIO','2'),
+--       ref_nomenclatures.get_id_nomenclature('NATURALITE','1'),
+--       ref_nomenclatures.get_id_nomenclature('PREUVE_EXIST','2'),
+--       CASE WHEN s.validation = true THEN ref_nomenclatures.get_id_nomenclature('STATUT_VALID','1')
+--       ELSE ref_nomenclatures.get_id_nomenclature('STATUT_VALID','2')
+--       END,
+--       ref_nomenclatures.get_id_nomenclature('NIV_PRECIS','5'),
+--       ref_nomenclatures.get_id_nomenclature('STADE_VIE','1'),
+--       ref_nomenclatures.get_id_nomenclature('SEXE','6'),
+--       ref_nomenclatures.get_id_nomenclature('OBJ_DENBR','NSP'),
+--       ref_nomenclatures.get_id_nomenclature('TYP_DENBR','NSP'),
+--       NULL,--todo sensitivity
+--       ref_nomenclatures.get_id_nomenclature('STATUT_OBS','Pr'),
+--       ref_nomenclatures.get_id_nomenclature('DEE_FLOU','NON'),
+--       ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE','Te'),
+--       ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO','1'),
+--       -1,--count_min
+--       -1,--count_max
+--       cft.cd_nom,
+--       COALESCE(cft.taxon_saisi,'non disponible'),
+--       'Taxref V11.0',
+--       s.altitude_retenue,--altitude_min
+--       s.altitude_retenue,--altitude_max
+--       public.st_transform(s.the_geom_3857,4326),
+--       public.st_transform(s.the_geom_3857,4326),
+--       s.the_geom_local,
+--       s.dateobs,--date_min
+--       s.dateobs,--date_max
+--       o.observateurs,--observers
+--       o.observateurs,--determiner
+--       s.remarques,
+--       'c'
+--     FROM v1_florestation.t_stations_fs s
+--     JOIN v1_florestation.cor_fs_taxon cft ON cft.id_station = s.id_station
+--     JOIN (SELECT c.id_station, array_to_string(array_agg(r.nom_role || ' ' || r.prenom_role), ', ') AS observateurs 
+--     FROM v1_florestation.cor_fs_observateur c
+--     JOIN utilisateurs.t_roles r ON r.id_role = c.id_role
+--     JOIN v1_florestation.t_stations_fs s ON s.id_station = c.id_station
+--     GROUP BY c.id_station) o ON o.id_station = s.id_station
+--     WHERE s.supprime = false AND cft.supprime = false;
 
 
 -- TODO Vérifier que le champ secteur de la vue v1_florestation.v_export_fs_all n'est pas utilisé dans l'appli  symfony florestation
