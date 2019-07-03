@@ -6,7 +6,7 @@
       " [attr.for]="formDef.attribut_name">{{formDef.attribut_label}}</small>
   <div [ngSwitch]="formDef.type_widget">
 
-    <input class="form-control form-control-sm" *ngSwitchCase="'text'" [formControl]="form.controls['attribut_name'].control" [id]="formDef.attribut_name"
+    <input class="form-control form-control-sm" *ngSwitchCase="'text'" [formControl]="form.controls[formDef.attribut_name]" [id]="formDef.attribut_name"
       type="text">
 
     <select *ngSwitchCase="'select'" class="form-control" [id]="formDef.attribut_name" [formControl]="form.controls[formDef.attribut_name]">

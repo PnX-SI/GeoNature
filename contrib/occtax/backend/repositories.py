@@ -225,6 +225,26 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False):
     else:
         table_columns = mappedView.__table__.columns
 
+    join_with_t_occ = False
+    if "non_digital_proof" in params:
+        q = q.join(
+            TOccurrencesOccurrence,
+            mappedView.id_releve_occtax == TOccurrencesOccurrence.id_releve_occtax,
+        )
+        join_with_t_occ = True
+        q = q.filter(
+            TOccurrencesOccurrence.non_digital_proof == params.pop("non_digital_proof")
+        )
+    if "digital_proof" in params:
+        if not join_with_t_occ:
+            q = q.join(
+                TOccurrencesOccurrence,
+                mappedView.id_releve_occtax == TOccurrencesOccurrence.id_releve_occtax,
+            )
+        join_with_t_occ = True
+        q = q.filter(
+            TOccurrencesOccurrence.digital_proof == params.pop("digital_proof")
+        )
     # Generic Filters
     for param in params:
         if param in table_columns:
@@ -233,7 +253,6 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False):
             if testT:
                 raise GeonatureApiError(message=testT)
             q = q.filter(col == params[param])
-
     releve_filters, occurrence_filters, counting_filters = get_nomenclature_filters(
         params
     )
@@ -247,10 +266,11 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False):
             q = q.filter(col == params.pop(nomenclature))
 
     if len(occurrence_filters) > 0:
-        q = q.join(
-            TOccurrencesOccurrence,
-            mappedView.id_releve_occtax == TOccurrencesOccurrence.id_releve_occtax,
-        )
+        if not join_with_t_occ:
+            q = q.join(
+                TOccurrencesOccurrence,
+                mappedView.id_releve_occtax == TOccurrencesOccurrence.id_releve_occtax,
+            )
         for nomenclature in occurrence_filters:
             col = getattr(TOccurrencesOccurrence.__table__.columns, nomenclature)
             q = q.filter(col == params.pop(nomenclature))
