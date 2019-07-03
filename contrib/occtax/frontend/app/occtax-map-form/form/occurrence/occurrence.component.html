@@ -64,7 +64,7 @@
       <div *ngIf="occtaxConfig.form_fields.exist_proof" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
         <pnx-nomenclature label="{{ 'Taxon.ExistProof' | translate }}" [parentFormControl]="occurrenceForm.controls.id_nomenclature_exist_proof"
           codeNomenclatureType="PREUVE_EXIST" [regne]="fs.currentTaxon.regne" [group2Inpn]="fs.currentTaxon.group2_inpn"
-          (getCdNomenclature)="getCdNomencl($event)" #existProof>
+          (labelsLoaded)="getLabels($event)" #existProof>
         </pnx-nomenclature>
       </div>
       <div *ngIf="occtaxConfig.form_fields.digital_proof" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
@@ -73,7 +73,8 @@
           <input [ngClass]="{'is-invalid' : occurrenceForm.controls.digital_proof.invalid}" class="form-control form-control-sm"
             [formControl]="occurrenceForm.controls.digital_proof" type="text">
         </div>
-        <small class="red" *ngIf="occtaxConfig?.digital_proof_validator && occurrenceForm.controls.digital_proof.invalid">
+
+        <small class="red" *ngIf="occtaxConfig?.digital_proof_validator && occurrenceForm.errors?.invalidDigitalProof">
           {{ 'Taxon.ExistProofValidation' | translate }}
         </small>
       </div>
@@ -84,6 +85,13 @@
             [formControl]="occurrenceForm.controls.non_digital_proof" type="text">
         </div>
       </div>
+      <small *ngIf="occurrenceForm.errors?.existproofError" class="error" style="color:red">
+        Les preuves d'existance ne peuvent être replis seulement si "preuve d'existence = Oui"
+      </small>
+      <small *ngIf="occurrenceForm.errors?.noExistProofError" class="error" style="color:red">
+        Si "preuve d'existence = Oui", un des deux champs de preuve doit être rempli
+      </small>
+
     </div>
     <div class="row row-0">
       <div *ngIf="occtaxConfig.form_fields.diffusion_level" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">

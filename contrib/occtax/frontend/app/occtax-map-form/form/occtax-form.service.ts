@@ -48,6 +48,8 @@ export class OcctaxFormService {
   /** Display on not the control to stay on the form interface */
   public displayStayOnFormInterface = true;
 
+  public currentExistProofLabels = null;
+
   constructor(
     private _fb: FormBuilder,
     private _http: HttpClient,
@@ -166,8 +168,8 @@ export class OcctaxFormService {
       nom_cite: null,
       meta_v_taxref: null,
       sample_number_proof: null,
-      digital_proof: [{ value: null, disabled: true }],
-      non_digital_proof: [{ value: null, disabled: true }],
+      digital_proof: null,
+      non_digital_proof: null,
       comment: null,
       cor_counting_occtax: ""
     });
@@ -177,7 +179,73 @@ export class OcctaxFormService {
       Validators.required
     ]);
 
+    //occForm.controls.non_digital_proof.setValidators([this.proofValidator.bind(this)]);
+    occForm.setValidators([this.proofValidator.bind(this)]);
     return occForm;
+  }
+
+  getCurrentCD(labels, currentID) {
+    //currentCD = null;
+    let i = 0;
+    while (i < labels.length) {
+      if (labels[i].id_nomenclature == currentID) {
+        return labels[i].cd_nomenclature;
+      }
+      i++;
+    }
+    return null;
+  }
+
+  proofValidator(occControl: FormGroup) {
+    console.log("changes");
+    if (
+      occControl.controls.id_nomenclature_exist_proof !== null &&
+      this.currentExistProofLabels !== null
+    ) {
+      // on recupere le CD a partir de l'id
+      const currentCD = this.getCurrentCD(
+        this.currentExistProofLabels,
+        occControl.controls.id_nomenclature_exist_proof.value
+      );
+      // si le type validation est = OUI et que les deux champs validation
+      // sont pas remplis  (null ou legnth == 0)=> erreur
+      if (
+        currentCD === "1" &&
+        (occControl.controls.digital_proof.value === null ||
+          (occControl.controls.digital_proof.value !== null &&
+            occControl.controls.digital_proof.value.length === 0 &&
+            occControl.controls.non_digital_proof.value === null) ||
+          (occControl.controls.non_digital_proof.value !== null &&
+            occControl.controls.non_digital_proof.value.length === 0))
+      ) {
+        return { noExistProofError: true };
+      }
+      // si les deux preuve sont pas NULL
+      if (
+        (occControl.controls.digital_proof.value !== null &&
+          occControl.controls.digital_proof.value.length > 0) ||
+        (occControl.controls.non_digital_proof.value !== null &&
+          occControl.controls.non_digital_proof.value.length > 0)
+      ) {
+        // si preuve est different de oui on leve une erreur
+        if (currentCD !== "1") {
+          return { existproofError: true };
+        }
+        // si preuve = oui et que le validateur de la conf est activé et que preuve numerique est différent de http ...
+        else if (
+          occControl.controls.digital_proof.value !== null &&
+          occControl.controls.digital_proof.value.length > 0 &&
+          ModuleConfig.digital_proof_validator
+        ) {
+          let REGEX = new RegExp("^(http://|https://|ftp://){1}.+$");
+          return REGEX.test(occControl.controls.digital_proof.value)
+            ? null
+            : {
+                invalidDigitalProof: true
+              };
+        }
+      }
+    }
   }
 
   initCounting(): FormGroup {
