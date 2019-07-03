@@ -26,12 +26,21 @@ GeoNature utilise :
 - l'API du sous-module d'authentification de UsersHub (login/logout, récupération du CRUVED d'un utilisateur)
 - l'API de GeoNature (get, post, update des données des différents modules, métadonnées, intersections géographiques, exports...)
 
-Pour avoir des infos et la documentation de ces API, on utilise PostMan. Documentation API : https://documenter.getpostman.com/view/2640883/RWaPskTw
-
 .. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/api_services.png
 
 
-*@TODO : Doc API à mettre à jour*
+Liste des routes
+*****************
+
+.. qrefflask:: geonature.utils.command:get_app_for_cmd(with_flask_admin=False)
+  :undoc-static:
+
+Documentation des routes
+************************
+
+.. autoflask:: geonature.utils.command:get_app_for_cmd(with_flask_admin=False)
+  :undoc-static:
+
 
 Release
 -------
@@ -574,40 +583,24 @@ A l'indice 1 du tuple: un booléan spécifiant si le CRUVED est hérité depuis 
     cruved, herited = cruved_scope_for_user_in_module(id_role=1)
 
 
-Documentation API Backend
-"""""""""""""""""""""""""
-
-Liste des routes
-*****************
-
-.. qrefflask:: geonature.utils.command:get_app_for_cmd(with_flask_admin=False)
-  :undoc-static:
-
-Documentation des routes
-************************
-
-.. autoflask:: geonature.utils.command:get_app_for_cmd(with_flask_admin=False)
-  :undoc-static:
-
 
 Développement Frontend
 ----------------------
 
-Modules
-"""""""
 
-Bonnes pratiques :
+**Bonnes pratiques** :
 
-Chaque gn_module de GeoNature doit être un module Angular indépendant https://angular.io/guide/ngmodule. 
+	- Chaque gn_module de GeoNature doit être un module Angular indépendant https://angular.io/guide/ngmodule. 
 
-Ce gn_module peut s'appuyer sur une série de composants génériques intégrés dans le module GN2CommonModule et réutilisables dans n'importe quel module. 
+	- Ce gn_module peut s'appuyer sur une série de composants génériques intégrés dans le module GN2CommonModule et décrit ci-dessous 
 
 **Les composants génériques**
 ------------------------------
 
 Un ensemble de composants décrits ci-dessous sont intégrés dans le coeur de GeoNature et permettent aux développeurs de simplifier la mise en place de formulaires ou de bloc cartographiques. 
 
-Une documentation complète des composants générique est `disponible ici <http://pnx-si.github.io/GeoNature/frontend/modules/GN2CommonModule.html>`_
+Voir la `DOCUMENTATION COMPLETE <http://pnx-si.github.io/GeoNature/frontend/modules/GN2CommonModule.html>`_ sur les composants génériques. 
+
 
 NB: mes composants de type "formulaire" (balise `input` ou `select`) partagent une logique commune et ont des ``Inputs`` et des ``Outputs`` communs décrit ci dessous. (voir https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
 
