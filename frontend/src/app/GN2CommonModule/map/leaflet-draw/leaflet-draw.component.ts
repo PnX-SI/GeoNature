@@ -139,8 +139,6 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
         geojson.coordinates,
         geojson.type === 'LineString' ? 0 : 1
       );
-      console.log(latLng);
-
       layer = L.polyline(latLng);
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
     }

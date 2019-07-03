@@ -155,10 +155,10 @@ class ReleveRepository:
             Return a query object already filtered with
             the cruved authorization
         """
-        if not from_generic_table:
-            return self.filter_query_with_autorization(info_user)
-        else:
+        if from_generic_table:
             return self.filter_query_generic_table(info_user)
+        else:
+            return self.filter_query_with_autorization(info_user)
 
 
 def get_query_occtax_filters(args, mappedView, q, from_generic_table=False):
