@@ -1,5 +1,48 @@
--- Droit d'accès à GeoNature pour le groupe en poste PNE
+TRUNCATE utilisateurs.bib_unites CASCADE;
+-- recréer bib_unités et id_unite
+CREATE TABLE IF NOT EXISTS utilisateurs.bib_unites (
+    nom_unite character varying(50) NOT NULL,
+    adresse_unite character varying(128),
+    cp_unite character varying(5),
+    ville_unite character varying(100),
+    tel_unite character varying(14),
+    fax_unite character varying(14),
+    email_unite character varying(100),
+    id_unite integer NOT NULL
+);
 
+ALTER TABLE utilisateurs.t_roles 
+ADD COLUMN id_unite INTEGER;
+
+INSERT INTO utilisateurs.bib_unites(
+  nom_unite,
+  adresse_unite,
+  cp_unite,
+  ville_unite,
+  tel_unite,
+  fax_unite,
+  email_unite,
+  id_unite
+)
+SELECT   
+  nom_unite,
+  adresse_unite,
+  cp_unite,
+  ville_unite,
+  tel_unite,
+  fax_unite,
+  email_unite,
+  id_unite 
+FROM v1_compat.bib_unites 
+WHERE id_unite NOT IN (SELECT id_unite FROM utilisateurs.bib_unites);
+
+UPDATE utilisateurs.t_roles
+SET id_unite = vr.id_unite
+FROM v1_compat.t_roles vr
+WHERE utilisateurs.t_roles.id_unite = vr.id_role 
+--AND utilisateurs.t_roles.id_unite NOT IN(SELECT id_role FROM utilisateurs.t_roles);
+
+-- Droit d'accès à GeoNature pour le groupe en poste PNE
 CREATE OR REPLACE VIEW utilisateurs.v_droit_appli_cbna AS 
  SELECT DISTINCT r.groupe,
     r.id_role,
