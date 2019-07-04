@@ -148,7 +148,7 @@ def get_roles():
 
     .. :quickref: User;
     """
-    params = dict(request.args)
+    params = request.args.to_dict()
     q = DB.session.query(User)
     if "group" in params:
         q = q.filter(User.groupe == params["group"])
@@ -169,7 +169,7 @@ def get_organismes():
 
         .. :quickref: User;
     """
-    params = dict(request.args)
+    params = request.args.to_dict()
     q = DB.session.query(BibOrganismes)
     if "orderby" in params:
         try:
@@ -190,7 +190,7 @@ def get_organismes_jdd(info_role):
 
     .. :quickref: User;
     """
-    params = dict(request.args)
+    params = request.args.to_dict()
 
     datasets = [dataset["id_dataset"] for dataset in get_datasets_cruved(info_role)]
     q = (
