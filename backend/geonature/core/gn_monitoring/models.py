@@ -13,7 +13,7 @@ from geoalchemy2 import Geometry
 
 from geonature.utils.utilssqlalchemy import serializable, geoserializable
 from geonature.utils.env import DB
-from geonature.core.users.models import TApplications
+from geonature.core.gn_commons.models import TModules
 from pypnusershub.db.models import User
 
 
@@ -33,6 +33,7 @@ corVisitObserver = DB.Table(
         primary_key=True,
     ),
 )
+
 
 corSiteModule = DB.Table(
     "cor_site_module",
@@ -134,12 +135,12 @@ class TBaseSites(DB.Model):
         "TBaseVisits", lazy="select", cascade="all,delete-orphan"
     )
 
-    applications = DB.relationship(
-        "TApplications",
+    modules = DB.relationship(
+        "TModules",
         lazy="select",
         secondary=corSiteModule,
         primaryjoin=(corSiteModule.c.id_base_site == id_base_site),
-        secondaryjoin=(corSiteModule.c.id_module == TApplications.id_application),
+        secondaryjoin=(corSiteModule.c.id_module == TModules.id_module),
         foreign_keys=[corSiteModule.c.id_base_site, corSiteModule.c.id_module],
     )
 
