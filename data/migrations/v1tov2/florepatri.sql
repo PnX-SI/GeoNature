@@ -683,36 +683,16 @@ ALTER TABLE ONLY t_zprospection
 ALTER TABLE v1_florepatri.t_apresence ADD COLUMN diffusable boolean;
 ALTER TABLE v1_florepatri.t_apresence ALTER COLUMN diffusable SET DEFAULT true;
 
-INSERT INTO v1_florepatri.bib_comptages_methodo
-SELECT * FROM v1_compat.bib_comptages_methodo;
-
-INSERT INTO v1_florepatri.bib_frequences_methodo_new
-SELECT * FROM v1_compat.bib_frequences_methodo_new;
-
-INSERT INTO v1_florepatri.bib_pentes
-SELECT * FROM v1_compat.bib_pentes;
-
-INSERT INTO v1_florepatri.bib_perturbations
-SELECT * FROM v1_compat.bib_perturbations;
-
-INSERT INTO v1_florepatri.bib_phenologies
-SELECT * FROM v1_compat.bib_phenologies;
-
-INSERT INTO v1_florepatri.bib_physionomies
-SELECT * FROM v1_compat.bib_physionomies;
-
-INSERT INTO v1_florepatri.bib_rezo_ecrins
-SELECT * FROM v1_compat.bib_rezo_ecrins;
-
-INSERT INTO v1_florepatri.bib_statuts
-SELECT * FROM v1_compat.bib_statuts;
-
-INSERT INTO v1_florepatri.bib_taxons_fp
-SELECT * FROM v1_compat.bib_taxons_fp;
-
-INSERT INTO v1_florepatri.t_zprospection
-SELECT * FROM v1_compat.t_zprospection;
-
+INSERT INTO v1_florepatri.bib_comptages_methodo SELECT * FROM v1_compat.bib_comptages_methodo;
+INSERT INTO v1_florepatri.bib_frequences_methodo_new SELECT * FROM v1_compat.bib_frequences_methodo_new;
+INSERT INTO v1_florepatri.bib_pentes SELECT * FROM v1_compat.bib_pentes;
+INSERT INTO v1_florepatri.bib_perturbations SELECT * FROM v1_compat.bib_perturbations;
+INSERT INTO v1_florepatri.bib_phenologies SELECT * FROM v1_compat.bib_phenologies;
+INSERT INTO v1_florepatri.bib_physionomies SELECT * FROM v1_compat.bib_physionomies;
+INSERT INTO v1_florepatri.bib_rezo_ecrins SELECT * FROM v1_compat.bib_rezo_ecrins;
+INSERT INTO v1_florepatri.bib_statuts SELECT * FROM v1_compat.bib_statuts;
+INSERT INTO v1_florepatri.bib_taxons_fp SELECT * FROM v1_compat.bib_taxons_fp;
+INSERT INTO v1_florepatri.t_zprospection SELECT * FROM v1_compat.t_zprospection;
 INSERT INTO v1_florepatri.t_apresence
 SELECT 
   indexap,
@@ -746,24 +726,26 @@ SELECT
   total_steriles,
   total_fertiles
  FROM v1_compat.t_apresence;
+INSERT INTO v1_florepatri.cor_zp_obs SELECT * FROM v1_compat.cor_zp_obs;
+INSERT INTO v1_florepatri.cor_taxon_statut SELECT * FROM v1_compat.cor_taxon_statut;
+INSERT INTO v1_florepatri.cor_ap_physionomie SELECT * FROM v1_compat.cor_ap_physionomie;
+INSERT INTO v1_florepatri.cor_ap_perturb SELECT * FROM v1_compat.cor_ap_perturb;
 
-INSERT INTO v1_florepatri.cor_zp_obs
-SELECT * FROM v1_compat.cor_zp_obs;
+--SET UUID FOR SYNTHESE
+ALTER TABLE v1_florepatri.t_zprospection ADD COLUMN unique_id_sinp_grp uuid;
+UPDATE v1_florepatri.t_zprospection SET unique_id_sinp_grp = uuid_generate_v4();
+ALTER TABLE v1_florepatri.t_zprospection ALTER COLUMN unique_id_sinp_grp SET NOT NULL;
+ALTER TABLE v1_florepatri.t_zprospection ALTER COLUMN unique_id_sinp_grp SET DEFAULT uuid_generate_v4();
 
-INSERT INTO v1_florepatri.cor_taxon_statut
-SELECT * FROM v1_compat.cor_taxon_statut;
-
-INSERT INTO v1_florepatri.cor_ap_physionomie
-SELECT * FROM v1_compat.cor_ap_physionomie;
-
-INSERT INTO v1_florepatri.cor_ap_perturb
-SELECT * FROM v1_compat.cor_ap_perturb;
-
+ALTER TABLE v1_florepatri.t_apresence ADD COLUMN unique_id_sinp_fp uuid;
+UPDATE v1_florepatri.t_apresence SET unique_id_sinp_fp = uuid_generate_v4();
+ALTER TABLE v1_florepatri.t_apresence ALTER COLUMN unique_id_sinp_fp SET NOT NULL;
+ALTER TABLE v1_florepatri.t_apresence ALTER COLUMN unique_id_sinp_fp SET DEFAULT uuid_generate_v4();
 
 ------------
 --TRIGGERS--
 ------------
---function insert_ap
+-- Function insert_ap
 CREATE OR REPLACE FUNCTION v1_florepatri.insert_ap()
   RETURNS trigger AS
 $BODY$
@@ -827,7 +809,7 @@ $BODY$
 LANGUAGE plpgsql VOLATILE
 COST 100;
 
---function update_ap
+-- Function update_ap
 CREATE OR REPLACE FUNCTION v1_florepatri.update_ap()
   RETURNS trigger AS
 $BODY$
@@ -899,7 +881,7 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
---function insert_zp
+-- Function insert_zp
 CREATE OR REPLACE FUNCTION v1_florepatri.insert_zp()
   RETURNS trigger AS
 $BODY$
@@ -983,7 +965,7 @@ $BODY$
 LANGUAGE plpgsql VOLATILE
 COST 100;
 
-
+--Function update_zp
 CREATE OR REPLACE FUNCTION v1_florepatri.update_zp()
   RETURNS trigger AS
 $BODY$
@@ -1076,3 +1058,415 @@ END; --fin du trigger et
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+
+
+-- Function delete_synthese_ap
+CREATE OR REPLACE FUNCTION v1_florepatri.delete_synthese_ap()
+  RETURNS trigger AS
+$BODY$
+--il n'y a pas de trigger delete sur la table t_zprospection parce qu'il y a un delete cascade dans la fk indexzp de t_apresence
+--donc si on supprime la zp, on supprime sa ou ces ap et donc ce trigger sera déclanché et fera le ménage dans la table gn_synthese.synthese
+DECLARE 
+  mazp RECORD;
+BEGIN
+  --on fait le delete dans gn_synthese.synthese
+  DELETE FROM gn_synthese.synthese 
+  WHERE id_source = (SELECT id_source FROM gn_synthese.t_sources WHERE name_source ILIKE 'Flore prioritaire') 
+  AND entity_source_pk_value = CAST(old.indexap AS VARCHAR);
+	RETURN old; 			
+END;
+$BODY$
+LANGUAGE plpgsql VOLATILE
+COST 100;
+
+-- Function update_synthese_cor_zp_obs
+CREATE OR REPLACE FUNCTION v1_florepatri.update_synthese_cor_zp_obs()
+  RETURNS trigger AS
+$BODY$
+DECLARE 
+  mesap RECORD;
+  theidsynthese INTEGER;
+  theobservers VARCHAR;
+BEGIN
+  --Récupération de la liste des observateurs	
+  --ici on va mettre à jour l'enregistrement dans syntheseff autant de fois qu'on insert dans cette table
+	SELECT INTO theobservers array_to_string(array_agg(r.prenom_role || ' ' || r.nom_role), ', ') AS observateurs 
+  FROM v1_florepatri.cor_zp_obs c
+  JOIN utilisateurs.t_roles r ON r.id_role = c.codeobs
+  JOIN v1_florepatri.t_zprospection zp ON zp.indexzp = c.indexzp
+  WHERE c.indexzp = new.indexzp;
+  --on boucle sur tous les enregistrements de la zp
+  --si la zp est sans ap, la boucle ne se fait pas
+  FOR mesap IN SELECT ap.indexap FROM v1_florepatri.t_zprospection zp JOIN v1_florepatri.t_apresence ap ON ap.indexzp = zp.indexzp WHERE ap.indexzp = new.indexzp  LOOP
+    -- on récupére l'id_synthese
+    SELECT INTO theidsynthese id_synthese 
+    FROM gn_synthese.synthese
+    WHERE id_source = (SELECT id_source FROM gn_synthese.t_sources WHERE name_source ILIKE 'Flore prioritaire') 
+    AND entity_source_pk_value = CAST(mesap.indexap AS VARCHAR);
+    --on fait le update du champ observateurs dans syntheseff
+    UPDATE gn_synthese.synthese
+    SET 
+      observers = theobservers,
+      determiner = theobservers,
+      last_action = 'u'
+    WHERE id_synthese = theidsynthese;
+    INSERT INTO gn_synthese.cor_observer_synthese (id_synthese, id_role) VALUES(theidsynthese, new.codeobs);
+  END LOOP;
+	RETURN NEW; 			
+END;
+$BODY$
+LANGUAGE plpgsql VOLATILE
+COST 100;
+
+-- Function insert_synthese_ap
+CREATE OR REPLACE FUNCTION v1_florepatri.insert_synthese_ap()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+  thezp RECORD;
+  theobservers VARCHAR;
+  thegeompoint GEOMETRY;
+  thevalidationstatus INTEGER;
+  thecomptagemethodo INTEGER;
+  thestadevie INTEGER;
+  thetaxrefversion VARCHAR;
+  --theidprecision INTEGER;
+BEGIN
+  SELECT INTO thezp * FROM v1_florepatri.t_zprospection WHERE indexzp = new.indexzp;
+  --Récupération des données dans la table t_zprospection et de la liste des observateurs 
+  SELECT INTO theobservers array_to_string(array_agg(r.prenom_role || ' ' || r.nom_role), ', ') AS observateurs 
+  FROM v1_florepatri.cor_zp_obs c
+  JOIN utilisateurs.t_roles r ON r.id_role = c.codeobs
+  JOIN v1_florepatri.t_zprospection zp ON zp.indexzp = c.indexzp
+  WHERE c.indexzp = new.indexzp;
+  -- création du geom_point
+  IF st_isvalid(new.the_geom_3857) THEN 
+    thegeompoint = st_pointonsurface(new.the_geom_3857);
+  ELSE 
+    thegeompoint = public.ST_PointFromWKB(public.st_centroid(Box2D(new.the_geom_3857)),3857);
+  END IF;
+  --Récupération du statut de validation
+    IF (thezp.validation==true) THEN 
+	SELECT ref_nomenclatures.get_id_nomenclature('STATUT_VALID','1') INTO thevalidationstatus;
+    ELSE
+	SELECT ref_nomenclatures.get_id_nomenclature('STATUT_VALID','0') INTO thevalidationstatus;
+    END IF;
+  --Récupération de la méthode de comptage
+    IF (new.id_comptage_methodo==1) THEN 
+	    SELECT ref_nomenclatures.get_id_nomenclature('TYP_DENBR','Co') INTO thecomptagemethodo;
+    ELSIF (new.id_comptage_methodo==2) THEN
+	    SELECT ref_nomenclatures.get_id_nomenclature('TYP_DENBR','Ca') INTO thecomptagemethodo;
+    ELSE
+      SELECT ref_nomenclatures.get_id_nomenclature('TYP_DENBR','NSP') INTO thecomptagemethodo;
+    END IF;
+  --Récupération du stade de vie
+    IF (new.codepheno==1) THEN 
+	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','132') INTO thestadevie;
+    ELSIF (new.codepheno==2) THEN
+	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','128') INTO thestadevie;
+    ELSIF (new.codepheno==3) THEN
+	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','129') INTO thestadevie;
+    ELSIF (new.codepheno==4) THEN
+	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','127') INTO thestadevie;
+    ELSIF (new.codepheno==5) THEN
+	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','130') INTO thestadevie;
+    ELSIF (new.codepheno==6) THEN
+	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','132') INTO thestadevie;
+    ELSIF (new.codepheno==7) THEN
+	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','19') INTO thestadevie;
+    ELSIF (new.codepheno==8) THEN
+	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','131') INTO thestadevie;
+    ELSE
+      SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','0') INTO thestadevie;
+    END IF;
+    --Récupération de la version taxref
+    SELECT parameter_value INTO thetaxrefversion FROM gn_commons.t_parameters WHERE parameter_name = 'taxref_version';
+  -- récupération de la valeur de précision de la géométrie (absent de la V2 pour le moment)
+  -- IF st_geometrytype(new.the_geom_3857) = 'ST_Point' OR st_geometrytype(new.the_geom_3857) = 'ST_MultiPoint' THEN theidprecision = 1;
+  -- ELSIF st_geometrytype(new.the_geom_3857) = 'ST_LineString' OR st_geometrytype(new.the_geom_3857) = 'ST_MultiLineString' THEN theidprecision = 2;
+  -- ELSIF st_geometrytype(new.the_geom_3857) = 'ST_Polygone' OR st_geometrytype(new.the_geom_3857) = 'ST_MultiPolygon' THEN theidprecision = 3;
+  -- ELSE theidprecision = 12;
+  -- END IF;
+  -- MAJ de la table cor_unite_taxon, on commence par récupérer les zonnes à statuts à partir du pointage (table t_fiches_cf)
+  INSERT INTO gn_synthese.synthese
+    (
+      unique_id_sinp,
+      unique_id_sinp_grp,
+      id_source,
+      entity_source_pk_value,
+      id_dataset,
+      id_nomenclature_geo_object_nature,
+      id_nomenclature_grp_typ,
+      id_nomenclature_obs_meth,
+      id_nomenclature_bio_status,
+      id_nomenclature_bio_condition,
+      id_nomenclature_naturalness,
+      id_nomenclature_exist_proof,
+      id_nomenclature_valid_status,
+      id_nomenclature_diffusion_level,
+      id_nomenclature_life_stage,
+      id_nomenclature_sex,
+      id_nomenclature_obj_count,
+      id_nomenclature_type_count,
+      id_nomenclature_sensitivity,
+      id_nomenclature_observation_status,
+      id_nomenclature_blurring,
+      id_nomenclature_source_status,
+      id_nomenclature_info_geo_type,
+      count_min,
+      count_max,
+      cd_nom,
+      nom_cite,
+      meta_v_taxref,
+      altitude_min,
+      altitude_max,
+      the_geom_4326,
+      the_geom_point,
+      the_geom_local,
+      date_min,
+      date_max,
+      observers,
+      determiner,
+      comment_description,
+      last_action
+    )
+    VALUES
+    ( 
+      new.unique_id_sinp_fp,
+      thezp.unique_id_sinp_grp,
+      104, --TODO 104 = PNE
+      new.indexap,
+      thezp.id_lot,
+      ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO','In'),
+      ref_nomenclatures.get_id_nomenclature('TYP_GRP','OBS'),
+      ref_nomenclatures.get_id_nomenclature('METH_OBS','0'),
+      ref_nomenclatures.get_id_nomenclature('STATUT_BIO','12'),
+      ref_nomenclatures.get_id_nomenclature('ETA_BIO','2'),
+      ref_nomenclatures.get_id_nomenclature('NATURALITE','1'),
+      ref_nomenclatures.get_id_nomenclature('PREUVE_EXIST','2'),
+      thevalidationstatus,
+      ref_nomenclatures.get_id_nomenclature('NIV_PRECIS','5'),
+      thestadevie,
+      ref_nomenclatures.get_id_nomenclature('SEXE','6'),
+      ref_nomenclatures.get_id_nomenclature('OBJ_DENBR','NSP'),
+      thecomptagemethodo,
+      NULL,--todo sensitivity
+      ref_nomenclatures.get_id_nomenclature('STATUT_OBS','Pr'),
+      ref_nomenclatures.get_id_nomenclature('DEE_FLOU','NON'),
+      ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE','Te'),
+      ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO','1'),
+      new.total_steriles + new.total_fertiles,--count_min
+      new.total_steriles + new.total_fertiles,--count_max
+      thezp.cd_nom,
+      COALESCE(thezp.saisie_initiale,'non disponible'),
+      thetaxrefversion,
+      new.altitude_retenue,--altitude_min
+      new.altitude_retenue,--altitude_max
+      public.st_transform(new.the_geom_3857,4326),
+      thegeompoint,
+      new.the_geom_local,
+      thezp.dateobs,--date_min
+      thezp.dateobs,--date_max
+      theobservers,--observers
+      theobservers,--determiner
+      thezp.remarques,
+      'c'
+    );
+  RETURN NEW;       
+END;
+$BODY$
+LANGUAGE plpgsql VOLATILE
+COST 100;
+
+-- Function update_synthese_ap
+CREATE OR REPLACE FUNCTION v1_florepatri.update_synthese_ap()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+  thegeompoint geometry;
+  thecomptagemethodo INTEGER;
+  thestadevie INTEGER;
+  --theidprecision integer;
+BEGIN
+  --On ne fait qq chose que si l'un des champs de la table t_apresence concerné dans gn_synthese.synthese a changé
+  IF (
+    new.indexap <> old.indexap 
+    OR new.unique_id_sinp_fp <> old.unique_id_sinp_fp 
+    OR new.codepheno <> old.codepheno 
+    OR new.indexzp <> old.indexzp 
+    OR ((new.altitude_retenue <> old.altitude_retenue) OR (new.altitude_retenue is null and old.altitude_retenue is NOT NULL) OR (new.altitude_retenue is NOT NULL and old.altitude_retenue is null))
+    OR ((new.remarques <> old.remarques) OR (new.remarques is null and old.remarques is NOT NULL) OR (new.remarques is NOT NULL and old.remarques is null))
+    OR new.id_comptage_methodo <> old.id_comptage_methodo 
+    OR new.total_steriles <> old.total_steriles 
+    OR new.total_fertiles <> old.total_fertiles 
+    OR (NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) OR NOT public.st_equals(new.the_geom_local,old.the_geom_local))
+  ) THEN
+    -- création du geom_point
+    IF st_isvalid(new.the_geom_3857) THEN 
+      thegeompoint = st_pointonsurface(new.the_geom_3857);
+    ELSE 
+      thegeompoint = public.ST_PointFromWKB(public.st_centroid(Box2D(new.the_geom_3857)),4326);
+    END IF;
+    --Récupération de la méthode de comptage
+    IF (new.id_comptage_methodo==1) THEN 
+      SELECT ref_nomenclatures.get_id_nomenclature('TYP_DENBR','Co') INTO thecomptagemethodo;
+    ELSIF (new.id_comptage_methodo==2) THEN
+      SELECT ref_nomenclatures.get_id_nomenclature('TYP_DENBR','Ca') INTO thecomptagemethodo;
+    ELSE
+      SELECT ref_nomenclatures.get_id_nomenclature('TYP_DENBR','NSP') INTO thecomptagemethodo;
+    END IF;
+    --Récupération du stade de vie
+    IF (new.codepheno==1) THEN 
+	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','132') INTO thestadevie;
+    ELSIF (new.codepheno==2) THEN
+	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','128') INTO thestadevie;
+    ELSIF (new.codepheno==3) THEN
+	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','129') INTO thestadevie;
+    ELSIF (new.codepheno==4) THEN
+	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','127') INTO thestadevie;
+    ELSIF (new.codepheno==5) THEN
+	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','130') INTO thestadevie;
+    ELSIF (new.codepheno==6) THEN
+	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','132') INTO thestadevie;
+    ELSIF (new.codepheno==7) THEN
+	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','19') INTO thestadevie;
+    ELSIF (new.codepheno==8) THEN
+	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','131') INTO thestadevie;
+    ELSE
+      SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','0') INTO thestadevie;
+    END IF;
+    -- récupération de la valeur de précision de la géométrie
+    -- IF st_geometrytype(new.the_geom_3857) = 'ST_Point' OR st_geometrytype(new.the_geom_3857) = 'ST_MultiPoint' THEN theidprecision = 1;
+    -- ELSIF st_geometrytype(new.the_geom_3857) = 'ST_LineString' OR st_geometrytype(new.the_geom_3857) = 'ST_MultiLineString' THEN theidprecision = 2;
+    -- ELSIF st_geometrytype(new.the_geom_3857) = 'ST_Polygone' OR st_geometrytype(new.the_geom_3857) = 'ST_MultiPolygon' THEN theidprecision = 3;
+    -- ELSE theidprecision = 12;
+    -- END IF;
+    --on fait le update dans syntheseff
+    UPDATE gn_synthese.synthese
+    SET 
+      --id_precision = monidprecision,
+      entity_source_pk_value = new.indexap,
+      unique_id_sinp = new.unique_id_sinp_fp,
+      id_nomenclature_type_count = thecomptagemethodo,
+      id_nomenclature_life_stage = thestadevie,
+      altitude_min = new.altitude_retenue,
+      altitude_max = new.altitude_retenue,
+      count_min = new.total_steriles + new.total_fertiles,
+      count_max = new.total_steriles + new.total_fertiles,
+      comment_description = new.remarques,
+      last_action = 'u',
+      the_geom_4326 = public.ST_transform(new.the_geom_3857,4326),
+      the_geom_local = new.the_geom_local,
+      the_geom_point = thegeompoint
+    WHERE id_source = (SELECT id_source FROM gn_synthese.t_sources WHERE name_source ILIKE 'Flore prioritaire') 
+    AND entity_source_pk_value = CAST(old.indexap AS VARCHAR);
+  END IF;
+  IF (new.supprime <> old.supprime AND new.supprime == true) THEN
+    DELETE FROM gn_synthese.synthese 
+    WHERE id_source = (SELECT id_source FROM gn_synthese.t_sources WHERE name_source ILIKE 'Flore prioritaire') 
+    AND entity_source_pk_value = CAST(old.indexap AS VARCHAR);
+  ELSIF (new.supprime <> old.supprime AND new.supprime == false) THEN
+    RAISE EXCEPTION 'Recréer une aire de présence supprimée est impossible dans GeoNature 2. INDEXAP N° %', new.indexap USING HINT = 'Contactez un administrateur de la base de données';
+  END IF;
+  RETURN NEW;       
+END;
+$BODY$
+LANGUAGE plpgsql VOLATILE
+COST 100;
+
+CREATE OR REPLACE FUNCTION v1_florepatri.update_synthese_zp()
+  RETURNS trigger AS
+$BODY$
+DECLARE 
+  mesap RECORD;
+  thevalidationstatus INTEGER;
+BEGIN
+  FOR mesap IN SELECT ap.indexap FROM v1_florepatri.t_zprospection zp JOIN v1_florepatri.t_apresence ap ON ap.indexzp = zp.indexzp WHERE ap.indexzp = new.indexzp  LOOP
+    --On ne fait qq chose que si l'un des champs de la table t_zprospection concerné dans syntheseff a changé
+    IF (
+            new.indexzp <> old.indexzp 
+            OR new.validation <> old.validation 
+            OR ((new.cd_nom <> old.cd_nom) OR (new.cd_nom is null and old.cd_nom is NOT NULL) OR (new.cd_nom is NOT NULL and old.cd_nom is null))
+            OR ((new.taxon_saisi <> old.taxon_saisi) OR (new.taxon_saisi is null and old.taxon_saisi is NOT NULL) OR (new.taxon_saisi is NOT NULL and old.taxon_saisi is null))
+            OR ((new.id_organisme <> old.id_organisme) OR (new.id_organisme is null and old.id_organisme is NOT NULL) OR (new.id_organisme is NOT NULL and old.id_organisme is null))
+            OR ((new.dateobs <> old.dateobs) OR (new.dateobs is null and old.dateobs is NOT NULL) OR (new.dateobs is NOT NULL and old.dateobs is null))
+            OR new.supprime <> old.supprime 
+        ) THEN
+        --Récupération du statut de validation
+        IF (new.validation==true) THEN 
+          SELECT ref_nomenclatures.get_id_nomenclature('STATUT_VALID','1') INTO thevalidationstatus;
+        ELSE
+          SELECT ref_nomenclatures.get_id_nomenclature('STATUT_VALID','0') INTO thevalidationstatus;
+        END IF;
+        --on fait le update dans syntheseff
+        UPDATE synthese.syntheseff 
+        SET 
+          unique_id_sinp_grp = new.unique_id_sinp_grp,
+          cd_nom = new.cd_nom,
+          nom_cite = new.taxon_saisi,
+          id_nomenclature_valid_status = thevalidationstatus,
+          date_min = new.dateobs,
+          date_max = new.dateobs,
+          last_action = 'u'
+        WHERE id_source = (SELECT id_source FROM gn_synthese.t_sources WHERE name_source ILIKE 'Flore prioritaire') 
+        AND entity_source_pk_value = CAST(mesap.indexap AS VARCHAR);
+        IF(new.supprime <> old.supprime AND new.supprime == true) THEN
+          DELETE FROM gn_synthese.synthese 
+          WHERE id_source = (SELECT id_source FROM gn_synthese.t_sources WHERE name_source ILIKE 'Flore prioritaire') 
+          AND entity_source_pk_value = CAST(mesap.indexap AS VARCHAR);
+        ELSIF (new.supprime <> old.supprime AND new.supprime == false) THEN
+          RAISE EXCEPTION 'Recréer une aire de présence supprimée est impossible dans GeoNature 2. INDEXAP N° %', mesap.indexap USING HINT = 'Contactez un administrateur de la base de données';
+        END IF;
+    END IF;
+  END LOOP;
+	RETURN NEW; 			
+END;
+$BODY$
+LANGUAGE plpgsql VOLATILE
+COST 100;
+
+--Création des triggers
+CREATE TRIGGER tri_insert_synthese_cor_zp_obs AFTER INSERT ON v1_florepatri.cor_zp_obs FOR EACH ROW EXECUTE PROCEDURE v1_florepatri.update_synthese_cor_zp_obs();
+CREATE TRIGGER tri_delete_synthese_ap AFTER DELETE ON v1_florepatri.t_apresence FOR EACH ROW EXECUTE PROCEDURE v1_florepatri.delete_synthese_ap();
+CREATE TRIGGER tri_insert_ap BEFORE INSERT ON v1_florepatri.t_apresence FOR EACH ROW EXECUTE PROCEDURE v1_florepatri.insert_ap();
+CREATE TRIGGER tri_insert_synthese_ap AFTER INSERT ON v1_florepatri.t_apresence FOR EACH ROW EXECUTE PROCEDURE v1_florepatri.insert_synthese_ap();
+CREATE TRIGGER tri_update_ap BEFORE UPDATE ON v1_florepatri.t_apresence FOR EACH ROW EXECUTE PROCEDURE v1_florepatri.update_ap();
+CREATE TRIGGER tri_update_synthese_ap AFTER UPDATE ON v1_florepatri.t_apresence FOR EACH ROW EXECUTE PROCEDURE v1_florepatri.update_synthese_ap();
+CREATE TRIGGER tri_insert_zp BEFORE INSERT ON v1_florepatri.t_zprospection FOR EACH ROW EXECUTE PROCEDURE v1_florepatri.insert_zp();
+CREATE TRIGGER tri_update_synthese_zp AFTER UPDATE ON v1_florepatri.t_zprospection FOR EACH ROW EXECUTE PROCEDURE v1_florepatri.update_synthese_zp();
+CREATE TRIGGER tri_update_zp BEFORE UPDATE ON v1_florepatri.t_zprospection FOR EACH ROW EXECUTE PROCEDURE v1_florepatri.update_zp();
+
+-------------
+--LIENS GN2--
+-------------
+--Mise à jour des nomenclatures en prévision des évolutions SINP à venir
+INSERT INTO ref_nomenclatures.t_nomenclatures (id_type, cd_nomenclature, mnemonique, label_fr, label_default, definition_fr, definition_default,  source, statut, id_broader, hierarchy, meta_create_date, meta_update_date, active) VALUES
+(ref_nomenclatures.get_id_nomenclature_type('STADE_VIE'), '127', 'Pleine floraison', 'Pleine floraison', 'Pleine floraison', 'TODO.', 'TODO.', 'SINP', 'Non validé', 0, '010.127', '2019-07-04 16:00:0', '2019-07-04 16:00:0', true)
+,(ref_nomenclatures.get_id_nomenclature_type('STADE_VIE'), '128', 'Stade boutons floraux', 'Stade boutons floraux', 'Stade boutons floraux', 'TODO.', 'TODO.', 'SINP', 'Non validé', 0, '010.128', '2019-07-04 16:00:0', '2019-07-04 16:00:0', true)
+,(ref_nomenclatures.get_id_nomenclature_type('STADE_VIE'), '129', 'Début de floraison', 'Début de floraison', 'Début de floraison', 'TODO.', 'TODO.', 'SINP', 'Non validé', 0, '010.129', '2019-07-04 16:00:0', '2019-07-04 16:00:0', true)
+,(ref_nomenclatures.get_id_nomenclature_type('STADE_VIE'), '130', 'Fin de floraison, avec éventuellement maturation des fruits', 'Fin de floraison, avec éventuellement maturation des fruits', 'Fin de floraison, avec éventuellement maturation des fruits', 'TODO.', 'TODO.', 'SINP', 'Non validé', 0, '010.130', '2019-07-04 16:00:0', '2019-07-04 16:00:0', true)
+,(ref_nomenclatures.get_id_nomenclature_type('STADE_VIE'), '131', 'Stade végétatif', 'Stade végétatif', 'Stade végétatif', 'TODO.', 'TODO.', 'SINP', 'Non validé', 0, '010.131', '2019-07-04 16:00:0', '2019-07-04 16:00:0', true)
+,(ref_nomenclatures.get_id_nomenclature_type('STADE_VIE'), '132', 'Dissémination', 'Dissémination', 'Dissémination', 'TODO.', 'TODO.', 'SINP', 'Non validé', 0, '010.132', '2019-07-04 16:00:0', '2019-07-04 16:00:0', true)
+;
+UPDATE ref_nomenclatures.t_nomenclatures 
+SET 
+  mnemonique = 'Décrépitude', 
+  label_fr = 'Décrépitude', 
+  label_default = 'Décrépitude' 
+WHERE cd_nomenclature = '19' AND id_type = ref_nomenclatures.get_id_nomenclature_type('STADE_VIE');
+UPDATE ref_nomenclatures.t_nomenclatures 
+SET 
+  definition_fr = 'La graine déjà disséminée est la structure qui contient et protège l''embryon végétal.',
+  definition_default = 'La graine déjà disséminée est la structure qui contient et protège l''embryon végétal.'
+WHERE cd_nomenclature = '20' AND id_type = ref_nomenclatures.get_id_nomenclature_type('STADE_VIE');
+
+--suppression du terme PDA dans la liste des observateurs
+UPDATE utilisateurs.t_listes SET nom_liste = 'Observateurs flore prioritaire' WHERE nom_liste ILIKE 'PDA_observateurs';
+--Création du module
+INSERT INTO gn_commons.t_modules (module_code, module_label, module_picto, module_path, module_external_url, module_target, active_backend, active_frontend) 
+VALUES ('FP','Flore Prioritaire','fa-leaf-heart',NULL,'https://mondomaine.fr/pda','_blank', false, true);
+--gestion des permissions (TODO car cette requête ne fait rien)
+INSERT INTO gn_permissions.cor_object_module (id_object, id_module)
+SELECT o.id_object, t.id_module
+FROM gn_permissions.t_objects o, gn_commons.t_modules t
+WHERE o.code_object = 'TDatasets' AND t.module_code = 'FP';
