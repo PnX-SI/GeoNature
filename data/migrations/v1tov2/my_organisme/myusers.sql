@@ -37,9 +37,9 @@ FROM v1_compat.bib_unites
 WHERE id_unite NOT IN (SELECT id_unite FROM utilisateurs.bib_unites);
 
 UPDATE utilisateurs.t_roles
-SET id_unite = vr.id_unite
-FROM v1_compat.t_roles vr
-WHERE utilisateurs.t_roles.id_unite = vr.id_role 
+SET id_unite = v1_compat.t_roles.id_unite
+FROM v1_compat.t_roles
+WHERE utilisateurs.t_roles.id_role = v1_compat.t_roles.id_role ;
 --AND utilisateurs.t_roles.id_unite NOT IN(SELECT id_role FROM utilisateurs.t_roles);
 
 -- Droit d'accès à GeoNature pour le groupe en poste PNE

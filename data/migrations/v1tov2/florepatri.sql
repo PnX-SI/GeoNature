@@ -1,4 +1,7 @@
 
+DROP FOREIGN TABLE v1_compat.v_nomade_classes;
+IMPORT FOREIGN SCHEMA florepatri FROM SERVER geonature1server INTO v1_compat;
+
 CREATE SCHEMA v1_florepatri;
 
 SET statement_timeout = 0;
@@ -755,3 +758,321 @@ SELECT * FROM v1_compat.cor_ap_physionomie;
 
 INSERT INTO v1_florepatri.cor_ap_perturb
 SELECT * FROM v1_compat.cor_ap_perturb;
+
+
+------------
+--TRIGGERS--
+------------
+--function insert_ap
+CREATE OR REPLACE FUNCTION v1_florepatri.insert_ap()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+  moncentroide geometry;
+  theinsee character varying(25);
+  thealtitude integer;
+BEGIN
+  -- si l'aire de présence est deja dans la BDD alors le trigger retourne null (l'insertion de la ligne est annulée)
+  IF new.indexap in (SELECT indexap FROM v1_florepatri.t_apresence) THEN   
+    RETURN NULL;    
+  ELSE
+    -- gestion de la date insert, la date update prend aussi comme valeur cette premiere date insert
+    IF new.date_insert ISNULL THEN 
+      new.date_insert='now';
+    END IF;
+    IF new.date_update ISNULL THEN 
+      new.date_update='now';
+    END IF;
+    -- gestion des géometries selon l'outil de saisie :
+    -- Attention !!! La saisie sur le web réalise un insert sur qq données mais the_geom_3857 est "faussement inséré" par un update !!!
+    IF new.the_geom_3857 IS NOT NULL THEN -- saisie web avec the_geom_3857
+      new.the_geom_local = public.st_transform(new.the_geom_3857,2154);
+    ELSIF new.the_geom_local IS NOT NULL THEN  -- saisie avec outil nomade android avec the_geom_local
+      new.the_geom_3857 = public.st_transform(new.the_geom_local,3857);
+    END IF;
+    -- calcul de validité sur la base d'un double control (sur les deux polygones même si on a un seul champ topo_valid)
+    -- puis gestion des croisements SIG avec les layers altitude et communes en projection Lambert93
+    IF ST_isvalid(new.the_geom_local) AND ST_isvalid(new.the_geom_3857) THEN
+      new.topo_valid = 'true';
+      -- on calcul la commune...
+      SELECT area_code INTO theinsee FROM (SELECT ref_geo.fct_get_area_intersection(new.the_geom_local,25) LIMIT 1) c;
+      new.insee = theinsee;-- mise à jour du code insee
+      -- on calcul l'altitude
+      SELECT altitude_min INTO thealtitude FROM (SELECT ref_geo.fct_get_altitude_intersection(new.the_geom_local) LIMIT 1) a;
+      new.altitude_sig = thealtitude;-- mise à jour de l'altitude sig
+      IF new.altitude_saisie IS NULL OR new.altitude_saisie = 0 THEN-- mis à jour de l'altitude retenue
+        new.altitude_retenue = new.altitude_sig;
+      ELSE
+        new.altitude_retenue = new.altitude_saisie;
+      END IF;
+    ELSE
+      new.topo_valid = 'false';
+      moncentroide = ST_setsrid(public.st_centroid(Box2D(new.the_geom_local)),2154); -- calcul le centroid de la bbox pour les croisements SIG
+      -- on calcul la commune...
+      SELECT area_code INTO theinsee FROM (SELECT ref_geo.fct_get_area_intersection(moncentroide,25) LIMIT 1) c;
+      new.insee = theinsee;-- mise à jour du code insee
+      -- on calcul l'altitude
+      SELECT altitude_min INTO thealtitude FROM (SELECT ref_geo.fct_get_altitude_intersection(moncentroide) LIMIT 1) a;
+      new.altitude_sig = thealtitude;-- mise à jour de l'altitude sig
+      IF new.altitude_saisie IS NULL OR new.altitude_saisie = 0 THEN-- mis à jour de l'altitude retenue
+        new.altitude_retenue = new.altitude_sig;
+      ELSE
+        new.altitude_retenue = new.altitude_saisie;
+      END IF;
+    END IF;
+    RETURN NEW;
+  END IF;
+END;
+$BODY$
+LANGUAGE plpgsql VOLATILE
+COST 100;
+
+--function update_ap
+CREATE OR REPLACE FUNCTION v1_florepatri.update_ap()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+  moncentroide geometry;
+  theinsee character varying(25);
+  thealtitude integer;
+BEGIN
+-- gestion de la date update en cas de manip sql directement en base ou via l'appli web 
+  new.date_update='now';
+-----------------------------------------------------------------------------------------------------------------
+/*  section en attente : 
+on pourrait verifier le changement des 3 geom pour lancer les commandes de geometries
+car pour le moment on ne gere pas les 2 cas de changement sur le geom 2154 ou the geom
+code ci dessous a revoir car public.st_equals ne marche pas avec les objets invalid
+
+IF 
+    (NOT public.st_equals(new.the_geom_local,old.the_geom_local) OR (old.the_geom_local IS null AND new.the_geom_local IS NOT NULL))
+    OR (NOT public.st_equals(new.the_geom_3857,old.the_geom_3857)OR (old.the_geom_3857 IS null AND new.the_geom_3857 IS NOT NULL)) 
+THEN
+    IF NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) OR (old.the_geom_3857 IS null AND new.the_geom_3857 IS NOT NULL) THEN
+    new.the_geom_local = public.st_transform(new.the_geom_3857,2154);
+  ELSIF NOT public.st_equals(new.the_geom_local,old.the_geom_local) OR (old.the_geom_local IS null AND new.the_geom_local IS NOT NULL) THEN
+    new.the_geom_3857 = public.st_transform(new.the_geom_local,3857);
+  END IF;
+puis suite du THEN
+fin de section en attente */ 
+------------------------------------------------------------------------------------------------------
+-- gestion des infos relatives aux géométries
+-- ATTENTION : la saisie en web insert quelques données MAIS the_geom_3857 est "inséré" par une commande update !
+-- POUR LE MOMENT gestion des update dans l'appli web uniquement à partir du geom 3857
+  IF ST_NumGeometries(new.the_geom_3857)=1 THEN -- si le Multi objet renvoyé par le oueb ne contient qu'un objet
+    new.the_geom_3857 = ST_GeometryN(new.the_geom_3857, 1); -- alors on passe en objet simple ( multi vers single)
+  END IF;
+  new.the_geom_local = public.st_transform(new.the_geom_3857,2154);
+  -- calcul de validité sur la base d'un double control (sur les deux polygones même si on a un seul champ topo_valid)
+  -- puis gestion des croisements SIG avec les layers altitude et communes en projection Lambert93
+  IF ST_isvalid(new.the_geom_local) AND ST_isvalid(new.the_geom_3857) THEN
+    new.topo_valid = 'true';
+    -- on calcul la commune...
+    SELECT area_code INTO theinsee FROM (SELECT ref_geo.fct_get_area_intersection(new.the_geom_local,25) LIMIT 1) c;
+    new.insee = theinsee;-- mise à jour du code insee
+    -- on calcul l'altitude
+    SELECT altitude_min INTO thealtitude FROM (SELECT ref_geo.fct_get_altitude_intersection(new.the_geom_local) LIMIT 1) a;
+    new.altitude_sig = thealtitude;-- mise à jour de l'altitude sig
+    IF new.altitude_saisie IS NULL OR new.altitude_saisie = 0 THEN  -- mise à jour de l'altitude retenue
+      new.altitude_retenue = new.altitude_sig;
+    ELSE
+      new.altitude_retenue = new.altitude_saisie;
+    END IF;
+  ELSE
+    new.topo_valid = 'false';
+    moncentroide = ST_setsrid(public.st_centroid(Box2D(new.the_geom_local)),2154); -- calcul le centroid de la bbox pour les croisements SIG
+    -- on calcul la commune...
+    SELECT area_code INTO theinsee FROM (SELECT ref_geo.fct_get_area_intersection(moncentroide,25) LIMIT 1) c;
+    new.insee = theinsee;-- mise à jour du code insee
+    -- on calcul l'altitude
+    SELECT altitude_min INTO thealtitude FROM (SELECT ref_geo.fct_get_altitude_intersection(moncentroide) LIMIT 1) a;
+    new.altitude_sig = thealtitude;-- mise à jour de l'altitude sig
+    IF new.altitude_saisie IS NULL OR new.altitude_saisie = 0 THEN
+      new.altitude_retenue = new.altitude_sig;
+    ELSE
+      new.altitude_retenue = new.altitude_saisie;
+    END IF;
+  END IF;
+  RETURN NEW;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+--function insert_zp
+CREATE OR REPLACE FUNCTION v1_florepatri.insert_zp()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+  monsectfp integer;
+  macommune character(5);
+  moncentroide geometry;
+BEGIN
+  -- si la zone de prospection est deja dans la BDD alors le trigger retourne null
+  -- (l'insertion de la ligne est annulée et on passe a la donnée suivante).
+  IF new.indexzp in (SELECT indexzp FROM v1_florepatri.t_zprospection) THEN
+    RETURN NULL;
+  ELSE
+  -- gestion de la date insert, la date update prend aussi comme valeur cette premiere date insert
+    IF new.date_insert IS NULL THEN 
+        new.date_insert='now';
+    END IF;
+    IF new.date_update IS NULL THEN
+        new.date_update='now';
+    END IF;
+  -- gestion de la source des géometries selon l'outil de saisie :
+    IF new.saisie_initiale = 'nomade' THEN
+      new.srid_dessin = 2154;
+      new.the_geom_3857 = public.st_transform(new.the_geom_local,3857);
+    ELSIF new.saisie_initiale = 'web' THEN
+      new.srid_dessin = 3857;
+      -- attention : pas de calcul sur les geoemtry car "the_geom_3857" est inseré par le trigger update !!
+    ELSIF new.saisie_initiale IS NULL THEN
+      new.srid_dessin = 0; -- pas d'info sur le srid utilisé, cas possible des importations de couches SIG, il faudra gérer manuellement !
+    END IF;
+    -- début de calcul de validité sur la base d'un double control (sur les deux polygones même si on a un seul champ topo_valid)
+    -- puis calcul du geom_point_3857 (selon validité de the_geom_3857)
+    -- puis gestion des croisements SIG avec les layers secteur et communes en projection Lambert93
+    IF ST_isvalid(new.the_geom_local) AND ST_isvalid(new.the_geom_3857) THEN
+      new.topo_valid = 'true';
+      -- calcul du geom_point_3857 
+      new.geom_point_3857 = ST_pointonsurface(new.the_geom_3857); -- calcul du point pour le premier niveau de zoom appli web
+      -- croisement secteur (celui qui contient le plus de zp en surface)
+      SELECT INTO monsectfp ls.id_secteur 
+      FROM ref_geo.l_areas ls 
+      WHERE public.st_intersects(ls.geom, new.the_geom_local) AND ls.id_type = 30
+      ORDER BY public.ST_area(public.ST_intersection(ls.geom, new.the_geom_local)) DESC LIMIT 1;
+      -- croisement commune (celle qui contient le plus de zp en surface)
+      SELECT INTO macommune m.insee_com 
+      FROM ref_geo.l_areas lc 
+      JOIN ref_geo.l_municipalities m ON m.id_area = lc.id_area
+      WHERE public.st_intersects(lc.geom, new.the_geom_local) AND lc.id_type = 25
+      ORDER BY public.ST_area(public.ST_intersection(lc.geom, new.the_geom_local)) DESC LIMIT 1;
+    ELSE
+      new.topo_valid = 'false';
+      -- calcul du geom_point_3857
+      new.geom_point_3857 = ST_setsrid(public.st_centroid(Box2D(new.the_geom_3857)),3857);  -- calcul le centroid de la bbox pour premier niveau de zoom appli web
+      moncentroide = ST_setsrid(public.st_centroid(Box2D(new.the_geom_local)),2154); -- calcul le centroid de la bbox pour les croisements SIG
+      -- croisement secteur (celui qui contient moncentroide)
+      SELECT INTO monsectfp ls.id_secteur FROM ref_geo.l_areas ls WHERE public.st_intersects(ls.geom, moncentroide)
+      AND ls.id_type = 30
+      ORDER BY public.ST_area(public.ST_intersection(ls.geom, moncentroidel)) DESC LIMIT 1;
+      -- croisement commune (celle qui contient moncentroid)
+      SELECT INTO macommune m.insee_com FROM ref_geo.l_areas lc 
+      JOIN ref_geo.l_municipalities m ON m.id_area = lc.id_area
+      WHERE public.st_intersects(lc.geom, moncentroide)
+      AND lc.id_type = 25
+      ORDER BY public.ST_area(public.ST_intersection(lc.geom, moncentroide)) DESC LIMIT 1;
+    END IF;
+    new.insee = macommune;
+    IF monsectfp IS NULL THEN -- suite calcul secteur : si la requete sql renvoit null (cad pas d'intersection donc dessin hors zone)
+      new.id_secteur = 999; -- alors on met 999 (hors zone) en code secteur fp
+    ELSE
+      new.id_secteur = monsectfp; --sinon on met le code du secteur.
+    END IF;
+    -- calcul du geom_mixte_3857
+    IF public.ST_area(new.the_geom_3857) <10000 THEN -- calcul du point (ou de la surface si > 1 hectare) pour le second niveau de zoom appli web
+      new.geom_mixte_3857 = new.geom_point_3857;
+    ELSE
+      new.geom_mixte_3857 = new.the_geom_3857;
+    END IF; --fin de calcul
+    RETURN NEW; -- return des valeurs :
+  END IF;
+END;
+$BODY$
+LANGUAGE plpgsql VOLATILE
+COST 100;
+
+
+CREATE OR REPLACE FUNCTION v1_florepatri.update_zp()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+  monsectfp integer;
+  macommune character(5);
+  moncentroide geometry;
+BEGIN
+  -- gestion de la date update en cas de manip sql directement en base
+  new.date_update='now';
+  -- update en cas de passage du champ supprime = TRUE, alors on passe les aires de présence en supprime = TRUE
+  IF new.supprime = 't' THEN
+    UPDATE v1_florepatri.t_apresence SET supprime = 't' WHERE indexzp = old.indexzp; 
+  END IF;
+  -----------------------------------------------------------------------------------------------------------------
+  /*  section en attente : 
+  on pourrait verifier le changement des 3 geom pour lancer les commandes de geometries
+  car pour le moment on ne gere pas les 2 cas de changement sur le geom 2154 ou the geom
+  code ci dessous a revoir car public.st_equals ne marche pas avec les objets invalid
+  -- on verfie si 1 des 3 geom a changé
+  IF((old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) OR NOT public.st_equals(new.the_geom_3857,old.the_geom_3857))
+  OR ((old.the_geom_local is null AND new.the_geom_local is NOT NULL) OR NOT public.st_equals(new.the_geom_local,old.the_geom_local)) THEN
+
+  -- si oui on regarde lequel et on repercute les modif :
+    IF (old.the_geom_3857 is null AND new.the_geom_3857 is NOT NULL) OR NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) THEN
+      -- verif si on est en multipolygon ou pas : A FAIRE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      new.the_geom_local = public.st_transform(new.the_geom_3857,2154);
+      new.srid_dessin = 3857; 
+    ELSIF (old.the_geom_local is null AND new.the_geom_local is NOT NULL) OR NOT public.st_equals(new.the_geom_local,old.the_geom_local) THEN
+      new.the_geom_3857 = public.st_transform(new.the_geom_local,3857);
+      new.srid_dessin = 2154;
+    END IF;
+  puis suite du THEN...
+  fin de section en attente */ 
+  ------------------------------------------------------------------------------------------------------
+  ------ gestion des infos relatives aux géométries
+  ------ ATTENTION : la saisie en web insert quelques données MAIS the_geom_3857 est "faussement inséré" par une commande update !
+  ------ POUR LE MOMENT gestion des update dans l'appli web uniquement à partir du geom 3857
+  IF ST_NumGeometries(new.the_geom_3857)=1 THEN -- si le Multi objet renvoyé par le oueb ne contient qu'un objet
+    new.the_geom_3857 = ST_GeometryN(new.the_geom_3857, 1); -- alors on passe en objet simple ( multi vers single)
+  END IF;
+  new.the_geom_local = public.st_transform(new.the_geom_3857,2154);
+  new.srid_dessin = 3857;
+  -- 2) puis on calcul la validité des geom + on refait les calcul du geom_point_3857 + on refait les croisements SIG secteurs + communes ; c'est la même chose que lors d'un INSERT ( cf trigger insert_zp)
+  IF ST_isvalid(new.the_geom_local) AND ST_isvalid(new.the_geom_3857) THEN
+    new.topo_valid = 'true';
+    -- calcul du geom_point_3857 
+    new.geom_point_3857 = ST_pointonsurface(new.the_geom_3857); -- calcul du point pour le premier niveau de zoom appli web
+    -- croisement secteur (celui qui contient le plus de zp en surface)
+    SELECT INTO monsectfp ls.id_secteur 
+    FROM ref_geo.l_areas ls 
+    WHERE public.st_intersects(ls.geom, new.the_geom_local) AND ls.id_type = 30
+    ORDER BY public.ST_area(public.ST_intersection(ls.geom, new.the_geom_local)) DESC LIMIT 1;
+    -- croisement commune (celle qui contient le plus de zp en surface)
+    SELECT INTO macommune m.insee_com 
+    FROM ref_geo.l_areas lc 
+    JOIN ref_geo.l_municipalities m ON m.id_area = lc.id_area
+    WHERE public.st_intersects(lc.geom, new.the_geom_local) AND lc.id_type = 25
+    ORDER BY public.ST_area(public.ST_intersection(lc.geom, new.the_geom_local)) DESC LIMIT 1;
+  ELSE
+    new.topo_valid = 'false';
+    -- calcul du geom_point_3857
+    new.geom_point_3857 = ST_setsrid(public.st_centroid(Box2D(new.the_geom_3857)),3857);  -- calcul le centroid de la bbox pour premier niveau de zoom appli web
+    moncentroide = ST_setsrid(public.st_centroid(Box2D(new.the_geom_local)),2154); -- calcul le centroid de la bbox pour les croisements SIG
+    -- croisement secteur (celui qui contient moncentroide)
+    SELECT INTO monsectfp ls.id_secteur FROM ref_geo.l_areas ls WHERE public.st_intersects(ls.geom, moncentroide)
+    AND ls.id_type = 30
+    ORDER BY public.ST_area(public.ST_intersection(ls.geom, moncentroidel)) DESC LIMIT 1;
+    -- croisement commune (celle qui contient moncentroid)
+    SELECT INTO macommune m.insee_com FROM ref_geo.l_areas lc 
+    JOIN ref_geo.l_municipalities m ON m.id_area = lc.id_area
+    WHERE public.st_intersects(lc.geom, moncentroide)
+    AND lc.id_type = 25
+    ORDER BY public.ST_area(public.ST_intersection(lc.geom, moncentroide)) DESC LIMIT 1;
+  END IF;
+  new.insee = macommune;
+  IF monsectfp IS NULL THEN -- suite calcul secteur : si la requete sql renvoit null (cad pas d'intersection donc dessin hors zone)
+    new.id_secteur = 999; -- alors on met 999 (hors zone) en code secteur fp
+  ELSE
+    new.id_secteur = monsectfp; --sinon on met le code du secteur.
+  END IF;
+  ------ 3) puis calcul du geom_mixte_3857 ;c'est la même chose que lors d'un INSERT ( cf trigger insert_zp)
+  IF public.ST_area(new.the_geom_3857) <10000 THEN -- calcul du point (ou de la surface si > 1 hectare) pour le second niveau de zoom appli web
+    new.geom_mixte_3857 = new.geom_point_3857;
+  ELSE
+    new.geom_mixte_3857 = new.the_geom_3857;
+  END IF; --  fin du IF pour les traitemenst sur les geometries
+  RETURN NEW; --return des valeurs
+END; --fin du trigger et 
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
