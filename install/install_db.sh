@@ -459,9 +459,15 @@ then
     echo "--------------------" &>> var/log/install_db.log
     echo "Insert 'gn_sensitivity' data" &>> var/log/install_db.log
     echo "--------------------" &>> var/log/install_db.log
-    wget --cache=off https://geonature.fr/data/inpn/sensitivity/181201_referentiel_donnes_sensibles.csv -P tmp/geonature
+    if [ ! -f 'tmp/geonature/181201_referentiel_donnes_sensibles.csv' ]
+        then
+            wget --cache=off https://geonature.fr/data/inpn/sensitivity/181201_referentiel_donnes_sensibles.csv -P tmp/geonature
+        else
+            echo "tmp/geonature/181201_referentiel_donnes_sensibles.csv already exist"
+    fi
     cp data/core/sensitivity_data.sql tmp/geonature/sensitivity_data.sql
     sed -i 's#'/tmp/geonature'#'$parentdir/tmp/geonature'#g' tmp/geonature/sensitivity_data.sql
+    echo "Insert 'gn_sensitivity' data... (This may take a few minutes)"
     sudo -n -u postgres -s psql -d $db_name -f tmp/geonature/sensitivity_data.sql &>> var/log/install_db.log
 
 
