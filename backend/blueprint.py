@@ -9,7 +9,7 @@ from sqlalchemy.sql.expression import label, distinct, case
 from geonature.utils.utilssqlalchemy import json_resp
 from geonature.utils.env import DB
 
-from .models import VSynthese, VTaxonomie, VFrameworks
+from .models import VSynthese, VTaxonomie, VFrameworks, VGeomSimplified
 from geonature.core.gn_synthese.models import Synthese, CorAreaSynthese
 from geonature.core.ref_geo.models import LAreas, BibAreasTypes
 from geonature.core.taxonomie.models import Taxref
@@ -79,6 +79,7 @@ def get_communes_stat():
     #     .group_by(LAreas.area_name, LAreas.geom)
     #     .filter(BibAreasTypes.type_code == "COM")
     # )
+
     q = (
         select(
             [
@@ -100,31 +101,54 @@ def get_communes_stat():
         .group_by(LAreas.area_name, LAreas.geom)
     )
 
+    # q = (
+    #     select(
+    #         [
+    #             func.count(Synthese.id_synthese),
+    #             VGeomSimplified.area_name,
+    #             func.st_asgeojson(
+    #                 func.st_transform(VGeomSimplified.geom_simplified, 4326)
+    #             ),
+    #             func.count(distinct(Taxref.cd_ref)),
+    #         ]
+    #     )
+    #     .select_from(
+    #         Synthese.__table__.join(
+    #             CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese
+    #         )
+    #         .join(VGeomSimplified, VGeomSimplified.id_area == CorAreaSynthese.id_area)
+    #         .join(Taxref, Taxref.cd_nom == Synthese.cd_nom)
+    #         .join(BibAreasTypes, BibAreasTypes.id_type == VGeomSimplified.id_type)
+    #     )
+    #     .where(BibAreasTypes.type_code == "COM")
+    #     .group_by(VGeomSimplified.area_name, VGeomSimplified.geom_simplified)
+    # )
+
     if "selectedYearRange" in params:
-        q = q.filter(
+        q = q.where(
             func.date_part("year", Synthese.date_min)
             <= params["selectedYearRange"][5:9]
         )
-        q = q.filter(
+        q = q.where(
             func.date_part("year", Synthese.date_max)
             >= params["selectedYearRange"][0:4]
         )
     if ("selectedRegne" in params) and (params["selectedRegne"] != ""):
-        q = q.filter(Taxref.regne == params["selectedRegne"])
+        q = q.where(Taxref.regne == params["selectedRegne"])
     if ("selectedPhylum" in params) and (params["selectedPhylum"] != ""):
-        q = q.filter(Taxref.phylum == params["selectedPhylum"])
+        q = q.where(Taxref.phylum == params["selectedPhylum"])
     if ("selectedClasse") in params and (params["selectedClasse"] != ""):
-        q = q.filter(Taxref.classe == params["selectedClasse"])
+        q = q.where(Taxref.classe == params["selectedClasse"])
     if ("selectedOrdre") in params and (params["selectedOrdre"] != ""):
-        q = q.filter(Taxref.ordre == params["selectedOrdre"])
+        q = q.where(Taxref.ordre == params["selectedOrdre"])
     if ("selectedFamille") in params and (params["selectedFamille"] != ""):
-        q = q.filter(Taxref.famille == params["selectedFamille"])
+        q = q.where(Taxref.famille == params["selectedFamille"])
     if ("taxon") in params and (params["taxon"] != ""):
-        q = q.filter(Taxref.cd_ref == params["taxon"])
+        q = q.where(Taxref.cd_ref == params["taxon"])
     if ("selectedGroup1INPN") in params and (params["selectedGroup1INPN"] != ""):
-        q = q.filter(Taxref.group1_inpn == params["selectedGroup1INPN"])
+        q = q.where(Taxref.group1_inpn == params["selectedGroup1INPN"])
     if ("selectedGroup2INPN") in params and (params["selectedGroup2INPN"] != ""):
-        q = q.filter(Taxref.group2_inpn == params["selectedGroup2INPN"])
+        q = q.where(Taxref.group2_inpn == params["selectedGroup2INPN"])
     # data = q.all()
     data = DB.engine.execute(q)
 

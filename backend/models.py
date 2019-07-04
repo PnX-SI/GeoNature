@@ -82,3 +82,13 @@ class VFrameworks(DB.Model):
     year = DB.Column(DB.Integer)
     nb_obs = DB.Column(DB.Integer)
 
+
+@serializable
+class VGeomSimplified(DB.Model):
+    __tablename__ = "vm_geom_simplified"
+    __table_args__ = {"schema": "gn_dashboard"}
+    id_area = DB.Column(DB.Unicode, primary_key=True)
+    id_type = DB.Column(DB.Integer)
+    area_name = DB.Column(DB.Unicode)
+    geom_simplified = DB.Column(DB.Unicode)
+
