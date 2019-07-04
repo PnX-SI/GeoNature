@@ -68,7 +68,7 @@ def get_datasets(info_role):
             gunicorn_error_logger.info(e)
             log.error(e)
             with_mtd_error = True
-    params = dict(request.args)
+    params = request.args.to_dict()
     datasets = get_datasets_cruved(info_role, params)
     datasets_resp = {"data": datasets}
     if with_mtd_error:

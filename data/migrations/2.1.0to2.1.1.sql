@@ -38,10 +38,10 @@ ALTER TABLE gn_synthese.t_sources
 DROP COLUMN validable;
 
 
--- ajout vue latest validation
+DROP VIEW IF EXISTS gn_commons.v_latest_validations_for_web_app;
+DROP VIEW IF EXISTS gn_commons.v_validations_for_web_app;
 
-DROP VIEW IF EXISTS gn_commons.v_synthese_validation_forwebapp;
-DROP VIEW IF EXISTS gn_commons.v_latest_validation;
+-- ajout vue latest validation
 CREATE OR REPLACE VIEW gn_commons.v_latest_validation AS 
  SELECT v.id_validation,
     v.uuid_attached_row,
@@ -129,11 +129,10 @@ CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS
 COMMENT ON VIEW gn_commons.v_synthese_validation_forwebapp  IS 'Vue utilisée pour le module validation. Prend l''id_nomenclature dans la table synthese ainsi que toutes les colonnes de la synthese pour les filtres. On JOIN sur la vue latest_validation pour voir si la validation est auto';
 
 
-
+DROP VIEW gn_commons.v_validations_for_web_app CASCADE;
 ALTER TABLE gn_commons.t_validations DROP COLUMN id_table_location;
 
 
-DROP VIEW gn_commons.v_validations_for_web_app CASCADE;
 
 
 -- update fonction trigger validation

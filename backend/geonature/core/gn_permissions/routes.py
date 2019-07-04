@@ -34,7 +34,7 @@ def get_cruved(info_role):
     
     :returns: dict of the CRUVED
     """
-    params = dict(request.args)
+    params = request.args.to_dict()
 
     # get modules
     q = DB.session.query(TModules)

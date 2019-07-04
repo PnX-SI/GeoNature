@@ -109,7 +109,7 @@ def get_af_cruved(info_role, params={}):
             == TAcquisitionFramework.id_acquisition_framework,
         ).filter(CorAcquisitionFrameworkActor.id_role == info_role.id_role)
 
-    params = dict(params)
+    params = params.to_dict()
     if "orderby" in params:
         try:
             order_col = getattr(
