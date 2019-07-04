@@ -117,7 +117,7 @@ class ReleveRepository:
             q = q.outerjoin(
                 corRoleRelevesOccurrence,
                 self.model.tableDef.columns.id_releve_occtax
-                == corRoleRelevesOccurrence.columns.id_releve_occtax,
+                == corRoleRelevesOccurrence.id_releve_occtax,
             )
             if user.value_filter == "2":
                 allowed_datasets = TDatasets.get_user_datasets(user)
@@ -126,14 +126,14 @@ class ReleveRepository:
                         self.model.tableDef.columns.id_dataset.in_(
                             tuple(allowed_datasets)
                         ),
-                        corRoleRelevesOccurrence.columns.id_role == user.id_role,
+                        corRoleRelevesOccurrence.id_role == user.id_role,
                         self.model.tableDef.columns.id_digitiser == user.id_role,
                     )
                 )
             elif user.value_filter == "1":
                 q = q.filter(
                     or_(
-                        corRoleRelevesOccurrence.columns.id_role == user.id_role,
+                        corRoleRelevesOccurrence.id_role == user.id_role,
                         self.model.tableDef.columns.id_digitiser == user.id_role,
                     )
                 )
@@ -177,11 +177,8 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False):
     if "observers" in params:
         q = q.join(
             corRoleRelevesOccurrence,
-            corRoleRelevesOccurrence.columns.id_releve_occtax
-            == mappedView.id_releve_occtax,
-        ).filter(
-            corRoleRelevesOccurrence.columns.id_role.in_(args.getlist("observers"))
-        )
+            corRoleRelevesOccurrence.id_releve_occtax == mappedView.id_releve_occtax,
+        ).filter(corRoleRelevesOccurrence.id_role.in_(args.getlist("observers")))
         params.pop("observers")
 
     if "date_up" in params:
