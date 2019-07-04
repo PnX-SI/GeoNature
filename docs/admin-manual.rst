@@ -261,6 +261,8 @@ GeoNature contient aussi des tables de stockage transversales qui peuvent être 
 
 Cela permet de ne pas avoir à mettre en place des tables et mécanismes dans chaque module, mais de s'appuyer sur un stockage, des fonctions et développements factorisés, centralisés et partagés.
 
+Ces tables utilisent notamment le mécanisme des UUID (identifiant unique) pour retrouver les enregistrements. Depuis une table source (Occtax ou un autre module) on peut retrouver les enregistrments stockées dans les table transversale en utilisant un ``WHERE <TABLE_TRANSVERSALE>.uuid_attached_row = <MON_UUID_SOURCE>`` et ainsi retrouver l'historique de validation, les médias ou encore la sensibilité associé à une donnée.
+
 Voir https://github.com/PnX-SI/GeoNature/issues/339
 
 Triggers vers la synthèse : 
@@ -1224,3 +1226,20 @@ Modifiez la variable ``EXCLUDED_COLUMNS``
 
 
 D'autres élements sont paramètrables dans le module synthese. La liste complète est disponible dans le fichier ``config/geonature_config.toml`` rubrique ``SYNTHESE``.
+
+
+Module VALIDATION
+-----------------
+
+Le module VALIDATION, integré depuis la version 2.1.0 dans le coeur de GeoNature permet de valider des occurrences de taxon en s'appuyant sur les données présentes dans la SYNTHESE. Le module s'appuye sur le `standard Validation <http://www.naturefrance.fr/la-reunion/protocole-de-validation>`_ du SINP et sur ses `nomenclatures officiels <http://standards-sinp.mnhn.fr/nomenclature/80-niveaux-de-validation-validation-manuelle-ou-combinee-2018-05-14/>`_.
+
+Afin de valider une occurrence, celle-ci doit impérativement avoir un UUID. En effet, la validation est stockée en BDD dans la table transversale ``gn_commons.t_validations``  (`voir doc <admin-manual.html#tables-transversales>`_ ) qui impose la présence de cet UUID.
+
+La table ``gn_commons.t_validations`` contient l'ensemble de l'historique de validation des occurrences. Pour une même occurrence (identifiée par un UUID unique) on peut donc retrouver plusieurs lignes dans la table correspondant au différents status de validation attribués à cet occurrence dans le temps.
+
+La vue ``gn_commons.v_latest_validation`` permet elle de récupérer le dernier statut de validation d'une occurrence.
+
+NB: une donnée non présente dans la SYNTHESE, ne remontera pas dans l'interface du module VALIDATION. Cependant rien n'empêche un administrateur avancé d'utiliser la table de validation et son mécanisme pour des données qui ne serait pas en SYNTHESE (du moment que les données disposent d'un UUID).
+
+Au niveau de l'interface, le formulaire de recherche est commun avec le module SYNTHESE. Les paramètres de configuration du formulaire sont donc également partagés et administrable depuis le fichier `geonature_config.toml`, rubrique SYNTHESE.
+
