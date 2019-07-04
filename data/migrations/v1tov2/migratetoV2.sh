@@ -42,7 +42,7 @@ fi
 # ref_geo
 if $import_ref_geo
 then
-    echo "Get ref_geo content from geontauredb1"
+    echo "Get ref_geo content from geonaturedb1"
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f ref_geo.sql  &>> ../../../var/log/migratetov2.log
 fi
 
