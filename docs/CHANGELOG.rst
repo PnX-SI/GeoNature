@@ -2,43 +2,60 @@
 CHANGELOG
 =========
 
-
 2.2.0 (unreleased)
 
 **🚀 Nouveautés**
 
-  * Factorisation du formulaire de recherche de la synthese (utilisé dans le module synthese et validation)
-  * Ajout d'un composant de recherche taxonomique avancé basé sur les rangs taxonomiques (modules synthese et validation)
-  * Mise en place d'une documentation développeur automatique à partir des docstring, généré par Travis
-  * Amélioration de la documentation (trigger, installation, module validation)
-  * Ajout d'un champ ``validable`` sur la table ``gn_meta.t_datasets`` controlant la présence des données dans le module VALIDATION
-  * Ajout de tests sur les ajouts de JDD et CA
-
+* Compatibilité Debian 10
+* Factorisation du formulaire de recherche de la synthèse (utilisé dans le module synthese et validation)
+* Simplification du module de recherche avancé d'un taxon en le limitant à l'ordre (performances)
+* Ajout d'un composant de recherche taxonomique avancé basé sur les rangs taxonomiques (modules synthese et validation), basé sur la nouvelle fonction ``taxonomie.find_all_taxons_children`` ajoutée à TaxHub
+* Mise en place d'une documentation développeur automatique de l'API à partir des docstring et des composants frontend, générée par Travis et désormais accessible à l'adresse http://docs.geonature.fr (#673)
+* Amélioration de la documentation (triggers, installation, module validation)
+* Suppression du module d'exemple, remplacé par un template de module (https://github.com/PnX-SI/gn_module_template)
+* Ajout d'un champ ``validable`` sur la table ``gn_meta.t_datasets`` controlant les données présentes dans le module VALIDATION (https://github.com/PnX-SI/gn_module_validation/issues/31)
+* Lister toutes les données de la synthèse ayant un ``uuid_sinp`` dans le module validation, et plus seulement celles qui ont un enregistrement dans ``gn_commons.t_validations``
+* On ne liste plus les ``id_nomenclatures`` des types de validation à utiliser, dans la configuration du module. Mais on utilise toutes les nomenclatures activées du type de nomenclature ``STATUT_VALID``. (https://github.com/PnX-SI/gn_module_validation/issues/30)
+* Ajout de tests sur les ajouts de JDD et CA
+* Script d'import des métadonnées à partir du webservice MTD de l'INPN (@DonovanMaillard)
+* Complément, correction et compatibilité 2.1.0 des scripts de migration ``data/migrations/v1tov2``
   
 **🐛 Corrections**
   
-  * Nombreuses corrections du module de validation (non utilisation des id_nomenclature, simplification des vues et de la table t_validations)
-  * Ordonnancement de listes déroulantes (#685)
-  * Occtax: correction de l'édition d'un relevé à la géométrie de type Polyline
-  * Occtax: correction l'édition et du contrôle conditionnel des champs de "preuves" (preuve d'existence numérique / non numérique)
-  * Correction du composant ``dynamicForm`` sur les champ de type texte
-  * Désactivation du mode "enchainer les relevés" en mode édition
-
+* Nombreuses corrections du module de validation (non utilisation des id_nomenclature, simplification des vues et de la table ``gn_commons.t_validations``)
+* Ordonnancement de listes déroulantes (#685)
+* Occtax : correction de l'édition d'un relevé à la géométrie de type Polyline (#684)
+* Occtax : correction l'édition et du contrôle conditionnel des champs de "preuves" (preuve d'existence numérique / non numérique) (#679)
+* Occtax : correction du parametre ``DATE_FORM_WITH_TODAY`` non pris en compte (#670)
+* Correction du composant ``dynamicForm`` sur les champs de recherche de type texte (recherche sur Preuve numérique) (#530)
+* Désactivation du mode "enchainer les relevés" en mode édition (#699)
+* Fix de SQLalchemy 1.3.3 et jointure sur objet Table
+* Le trigger remplissant ``cor_area_synthese`` en intersectant ``gn_synthese.synthese`` avec ``ref_geo.l_areas`` ne prend plus que les zonages ayant le champs ``enabled=true``
+* Correction ``dict()`` et version de Python (par @jpm-cbna)
 
 **⚠️ Notes de version**
 
- - Monter à Taxhub 1.6.3
- - Passer le script de migration 2.1.1to2.2.0
- - Lancer la commande de mise à jour de la configuration du module de validation
- - Nouvel localisation de la doc
+* Passer TaxHub en version 1.6.3
+* Passer le script de migration ``data/2.1.1to2.2.0.sql``
+* Si vous aviez modifier les id_nomenclatures dans la surcouche de la configuration du module validation, supprimer les car on se base maintenant sur les cd_nomenclatures
+* Lancer la commande de mise à jour de la configuration du module de validation
+* Nouvelle localisation de la doc : http://docs.geonature.fr
 
-   ::
+::
 
-      cd /home/`whoami`/geonature/backend
-      source venv/bin/activate
-      geonature update_module_configuration validation
+    cd /home/`whoami`/geonature/backend
+    source venv/bin/activate
+    geonature update_module_configuration validation
 
-    
+**TODO**
+
+- Indiquer Debian 10 dans la doc ?
+- Indiquer template dans la doc DEV ?
+- Modifier version GN de data/migrations/v1tov2 ?
+- Commentaire des cd_nomenclature (style only ?) : https://github.com/PnX-SI/GeoNature/blob/develop/contrib/gn_module_validation/config/conf_schema_toml.py
+- Vérifier triggers et supprimer remarques traitées dans la doc triggers
+- Vérifier pour JBrieuc n'a pas eu le contenu des regles de sensibilité apres MAJ
+- Vérifier README du template et ajouter lien vers DOC dev et installation d'un module
 
 2.1.0 (2019-06-01)
 ------------------
