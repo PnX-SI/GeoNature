@@ -50,10 +50,13 @@ echo "############### Installation des paquets systèmes ###############"
 sudo apt-get install -y locales
 sudo sed -i "s/# $my_local/$my_local/g" /etc/locale.gen
 sudo locale-gen $my_local
-# on utilise tee pour executer dans la console et dans le fichier
 echo "export LC_ALL=$my_local" | tee -a ~/.bashrc
 echo "export LANG=$my_local" | tee -a ~/.bashrc
 echo "export LANGUAGE=$my_local" | tee -a >> ~/.bashrc
+# faire la même chose dans le script pour que la locale soit modifier à l'interieur du script
+export LC_ALL=$my_local
+export LANG=$my_local
+export LANGUAGE=$my_local
 source ~/.bashrc
 
 # Installing required environment for GeoNature and TaxHub
