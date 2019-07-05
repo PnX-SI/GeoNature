@@ -129,7 +129,6 @@ CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS
 COMMENT ON VIEW gn_commons.v_synthese_validation_forwebapp  IS 'Vue utilisée pour le module validation. Prend l''id_nomenclature dans la table synthese ainsi que toutes les colonnes de la synthese pour les filtres. On JOIN sur la vue latest_validation pour voir si la validation est auto';
 
 
-DROP VIEW gn_commons.v_validations_for_web_app CASCADE;
 ALTER TABLE gn_commons.t_validations DROP COLUMN id_table_location;
 
 
@@ -201,7 +200,7 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
--- suppression des aire de cor_area where enabled = false
+-- suppression des aires de cor_area where enabled = false
 DELETE FROM gn_synthese.cor_area_synthese WHERE id_area IN (
 SELECT s.id_area
 FROM gn_synthese.cor_area_synthese s
