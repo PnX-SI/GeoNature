@@ -8,7 +8,6 @@ import { ValidationDataService } from "./services/data.service";
 import { ValidationSyntheseCarteComponent } from "./components/validation-synthese-carte/validation-synthese-carte.component";
 import { ValidationPopupComponent } from "./components/validation-popup/validation-popup.component";
 import { ValidationDefinitionsComponent } from "./components/validation-definitions/validation-definitions.component";
-import { TreeModule } from "angular-tree-component";
 import { ValidationModalInfoObsComponent } from "./components/validation-modal-info-obs/validation-modal-info-obs.component";
 import { DynamicFormService } from "@geonature_common/form/dynamic-form/dynamic-form.service";
 import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthese-data.service";
@@ -34,7 +33,6 @@ const routes: Routes = [{ path: "", component: ValidationComponent }];
     GN2CommonModule,
     RouterModule.forChild(routes),
     CommonModule,
-    TreeModule,
     MatTabsModule
   ],
   entryComponents: [ValidationModalInfoObsComponent],
