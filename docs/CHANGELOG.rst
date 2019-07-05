@@ -7,13 +7,22 @@ CHANGELOG
 
 **🚀 Nouveautés**
 
-* Factorisation du formulaire de recherche de la synthese (utilisé dans le module synthese et validation)
-* Ajout d'un composant de recherche taxonomique avancé basé sur les rang taxonomique (modules synthese et validation)
+  * Factorisation du formulaire de recherche de la synthese (utilisé dans le module synthese et validation)
+  * Ajout d'un composant de recherche taxonomique avancé basé sur les rangs taxonomiques (modules synthese et validation)
+  * Mise en place d'une documentation développeur automatique à partir des docstring, généré par Travis
+  * Amélioration de la documentation (trigger, installation, module validation)
+  * Ajout d'un champ ``validable`` sur la table ``gn_meta.t_datasets`` controlant la présence des données dans le module VALIDATION
+  * Ajout de tests sur les ajouts de JDD et CA
 
   
 **🐛 Corrections**
   
-  * Nombreuses corrections du module de validation (non utilisation des id_nomenclature, simplification des vues)
+  * Nombreuses corrections du module de validation (non utilisation des id_nomenclature, simplification des vues et de la table t_validations)
+  * Ordonnancement de listes déroulantes (#685)
+  * Occtax: correction de l'édition d'un relevé à la géométrie de type Polyline
+  * Occtax: correction l'édition et du contrôle conditionnel des champs de "preuves" (preuve d'existence numérique / non numérique)
+  * Correction du composant ``dynamicForm`` sur les champ de type texte
+  * Désactivation du mode "enchainer les relevés" en mode édition
 
 
 **⚠️ Notes de version**
@@ -21,12 +30,13 @@ CHANGELOG
  - Monter à Taxhub 1.6.3
  - Passer le script de migration 2.1.1to2.2.0
  - Lancer la commande de mise à jour de la configuration du module de validation
+ - Nouvel localisation de la doc
 
    ::
 
-    cd /home/`whoami`/geonature/backend
-    source venv/bin/activate
-    geonature update_module_configuration validation
+      cd /home/`whoami`/geonature/backend
+      source venv/bin/activate
+      geonature update_module_configuration validation
 
     
 
