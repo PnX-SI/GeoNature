@@ -21,7 +21,7 @@ install:
 
 script:
   - cd ../backend
-  # - pytest
+  - pytest
   - cd ../docs
   - make html
 

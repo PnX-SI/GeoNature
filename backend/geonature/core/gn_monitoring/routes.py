@@ -76,7 +76,9 @@ def get_onelist_site(id_site):
 def get_site_areas(id_site):
     """
     Get areas of a site from cor_site_area as geojson
+
     .. :quickref: Monitoring;
+    
     :param id_module: int
     :type id_module: int
     :param id_area_type:

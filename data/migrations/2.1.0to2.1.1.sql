@@ -129,7 +129,6 @@ CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS
 COMMENT ON VIEW gn_commons.v_synthese_validation_forwebapp  IS 'Vue utilisée pour le module validation. Prend l''id_nomenclature dans la table synthese ainsi que toutes les colonnes de la synthese pour les filtres. On JOIN sur la vue latest_validation pour voir si la validation est auto';
 
 
-DROP VIEW gn_commons.v_validations_for_web_app CASCADE;
 ALTER TABLE gn_commons.t_validations DROP COLUMN id_table_location;
 
 
@@ -164,3 +163,47 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+
+
+
+-- update trigger synthese -> cor_area_synthese
+
+CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese()
+  RETURNS trigger AS
+$BODY$
+  DECLARE
+  id_area_loop integer;
+  geom_change boolean;
+  BEGIN
+  geom_change = false;
+  IF(TG_OP = 'UPDATE') THEN
+	SELECT INTO geom_change NOT ST_EQUALS(OLD.the_geom_local, NEW.the_geom_local);
+  END IF;
+
+  IF (geom_change) THEN
+	DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = NEW.id_synthese;
+  END IF;
+
+  -- intersection avec toutes les areas et écriture dans cor_area_synthese
+    IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND geom_change )) THEN
+      INSERT INTO gn_synthese.cor_area_synthese SELECT
+	      s.id_synthese AS id_synthese,
+        a.id_area AS id_area,
+        s.cd_nom AS cd_nom
+        FROM ref_geo.l_areas a
+        JOIN gn_synthese.synthese s ON ST_INTERSECTS(s.the_geom_local, a.geom)
+        WHERE s.id_synthese = NEW.id_synthese AND a.enable IS true;
+    END IF;
+  RETURN NULL;
+  END;
+  $BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+-- suppression des aires de cor_area where enabled = false
+DELETE FROM gn_synthese.cor_area_synthese WHERE id_area IN (
+SELECT s.id_area
+FROM gn_synthese.cor_area_synthese s
+JOIN ref_geo.l_areas a ON a.id_area = s.id_area
+WHERE a.enable IS false
+);

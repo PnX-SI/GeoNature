@@ -258,7 +258,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
 
   onSubmit(value) {
     // post validation status form ('statusForm') for the current observation
-    return this._dataService.postStatus(value, this.id_synthese).toPromise()
+    return this._validatioDataService.postStatus(value, this.id_synthese).toPromise()
       .then(
         data => {
           this.promiseResult = data as JSON;

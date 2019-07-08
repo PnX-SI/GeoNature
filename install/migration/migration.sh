@@ -63,7 +63,7 @@ fi
 
 
 cd $myrootpath/$currentdir/frontend
-npm install
+npm install --only=prod
 
 # lien symbolique vers le dossier static du backend (pour le backoffice)
 ln -s $myrootpath/$currentdir/frontend/node_modules $myrootpath/$currentdir/backend/static

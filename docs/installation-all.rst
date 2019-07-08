@@ -34,12 +34,6 @@ GeoNature se sert de flux internet externes durant son installation et son fonct
 - https://preprod-inpn.mnhn.fr/mtd
 - https://wxs.ign.fr/
 
-Configuration de la locale du serveur
-""""""""""""""""""""""""""""""""""""""
-
-Certains serveurs sont livrés sans "locale" (langue par défaut). Pour l'installation de GeoNature, il est necessaire de bien configurer la locale.
-
-Depuis l'utilisateur ``root``, exécuter la commande ``dpkg-reconfigure locales``. Une fenêtre s'affiche dans votre console. Dans la liste déroulante, sélectionnez ``fr_FR.UTF-8 UTF-8`` avec ``Espace``, puis cliquez sur OK. Une 2ème fenêtre s'affiche avec une liste de locale activées (``fr_FR.UTF-8`` doit être présent dans la liste), confirmez votre choix, en cliquant sur OK, puis attendez que la locale s'installe.
 
 
 Installation de l'application
@@ -120,9 +114,22 @@ Pour Debian 8 :
     usermod -g www-data geonatureadmin
 
 
-Se reconnecter en SSH au serveur avec le nouvel utilisateur pour ne pas faire l'installation en ``root``.
+* Configuration de la locale du serveur
 
-On ne se connectera plus en ``root``. Si besoin d'exécuter des commandes avec des droits d'administrateur, on les précède de ``sudo``.
+Certains serveurs sont livrés sans "locale" (langue par défaut). Pour l'installation de GeoNature, il est necessaire de bien configurer la locale.
+
+Exécuter la commande ``dpkg-reconfigure locales``. Une fenêtre s'affiche dans votre console. Dans la liste déroulante, sélectionnez ``fr_FR.UTF-8 UTF-8`` avec ``Espace``, puis cliquez sur OK. Une 2ème fenêtre s'affiche avec une liste de locale activées (``fr_FR.UTF-8`` doit être présent dans la liste), confirmez votre choix, en cliquant sur OK, puis attendez que la locale s'installe.
+
+Passer alors sur l'utilisateur ``geonatureadmin``: ``su geonatureadmin`` et executer ensuite ces commandes:
+
+::
+
+    export LC_ALL=fr_FR.UTF-8
+    export LANGUAGE=fr_FR.UTF-8
+    export LANG=fr_FR.UTF-8
+
+
+Pour la suite de la documentation et pour l'administration courante de GeoNature, **on n'utilisera plus jamais l'utilisateur ``root``** (utiliser `geonatureadmin` dans l'exemple de la documentation. ``su geonatureadmin`` pour change d'utilisateur). Si besoin d'exécuter des commandes avec des droits d'administrateur, on les précède de ``sudo``.
 
 Il est d'ailleurs possible de renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec ``root``.
 
