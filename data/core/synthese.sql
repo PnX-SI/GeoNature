@@ -682,10 +682,11 @@ $BODY$
           t.group2_inpn
       FROM taxonomie.taxref t WHERE cd_nom = NEW.cd_nom;
       --On insère une seule fois le nom_vern car il est le même pour tous les synonymes
-      SELECT INTO thenomvern cd_nom FROM gn_synthese.taxons_synthese_autocomplete a
+      SELECT INTO thenomvern t.cd_nom 
+      FROM gn_synthese.taxons_synthese_autocomplete a
       JOIN taxonomie.taxref t ON t.cd_nom = a.cd_nom
       WHERE a.cd_ref = taxonomie.find_cdref(NEW.cd_nom)
-      AND a.search_name ILIKE t.nom||'%';
+      AND a.search_name ILIKE t.nom_vern||'%';
       IF thenomvern IS NULL THEN
         INSERT INTO gn_synthese.taxons_synthese_autocomplete
         SELECT t.cd_nom,

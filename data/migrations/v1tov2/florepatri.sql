@@ -1,4 +1,5 @@
 
+SET search_path = public, pg_catalog;
 DROP FOREIGN TABLE v1_compat.v_nomade_classes;
 IMPORT FOREIGN SCHEMA florepatri FROM SERVER geonature1server INTO v1_compat;
 
@@ -20,7 +21,7 @@ DECLARE
 thetype varchar(18);
 montype varchar(15);
 BEGIN
-select st_geometrytype(mongeom) into thetype;
+select public.st_geometrytype(mongeom) into thetype;
 select
 	case 	when thetype= 'ST_Polygon'  then 'Polygon'
 		when thetype= 'ST_MultiPolygon' then 'Polygon'
@@ -686,7 +687,7 @@ CREATE OR REPLACE FUNCTION v1_florepatri.insert_ap()
   RETURNS trigger AS
 $BODY$
 DECLARE
-  moncentroide geometry;
+  moncentroide public.geometry;
   theinsee character varying(25);
   thealtitude integer;
 BEGIN
@@ -710,13 +711,13 @@ BEGIN
     END IF;
     -- calcul de validité sur la base d'un double control (sur les deux polygones même si on a un seul champ topo_valid)
     -- puis gestion des croisements SIG avec les layers altitude et communes en projection Lambert93
-    IF ST_isvalid(new.the_geom_local) AND ST_isvalid(new.the_geom_3857) THEN
+    IF public.ST_isvalid(new.the_geom_local) AND public.ST_isvalid(new.the_geom_3857) THEN
       new.topo_valid = 'true';
       -- on calcul la commune...
-      SELECT area_code INTO theinsee FROM (SELECT ref_geo.fct_get_area_intersection(new.the_geom_local,25) LIMIT 1) c;
+      SELECT INTO theinsee c.area_code FROM (SELECT * FROM ref_geo.fct_get_area_intersection(new.the_geom_local,25) LIMIT 1) c;
       new.insee = theinsee;-- mise à jour du code insee
       -- on calcul l'altitude
-      SELECT altitude_min INTO thealtitude FROM (SELECT ref_geo.fct_get_altitude_intersection(new.the_geom_local) LIMIT 1) a;
+      SELECT altitude_min INTO thealtitude FROM (SELECT * FROM ref_geo.fct_get_altitude_intersection(new.the_geom_local) LIMIT 1) a;
       new.altitude_sig = thealtitude;-- mise à jour de l'altitude sig
       IF new.altitude_saisie IS NULL OR new.altitude_saisie = 0 THEN-- mis à jour de l'altitude retenue
         new.altitude_retenue = new.altitude_sig;
@@ -725,12 +726,12 @@ BEGIN
       END IF;
     ELSE
       new.topo_valid = 'false';
-      moncentroide = ST_setsrid(public.st_centroid(Box2D(new.the_geom_local)),2154); -- calcul le centroid de la bbox pour les croisements SIG
+      moncentroide = public.ST_setsrid(public.st_centroid(public.box2d(new.the_geom_local)),2154); -- calcul le centroid de la bbox pour les croisements SIG
       -- on calcul la commune...
-      SELECT area_code INTO theinsee FROM (SELECT ref_geo.fct_get_area_intersection(moncentroide,25) LIMIT 1) c;
+      SELECT INTO theinsee c.area_code FROM (SELECT * FROM ref_geo.fct_get_area_intersection(moncentroide,25) LIMIT 1) c;
       new.insee = theinsee;-- mise à jour du code insee
       -- on calcul l'altitude
-      SELECT altitude_min INTO thealtitude FROM (SELECT ref_geo.fct_get_altitude_intersection(moncentroide) LIMIT 1) a;
+      SELECT altitude_min INTO thealtitude FROM (SELECT * FROM ref_geo.fct_get_altitude_intersection(moncentroide) LIMIT 1) a;
       new.altitude_sig = thealtitude;-- mise à jour de l'altitude sig
       IF new.altitude_saisie IS NULL OR new.altitude_saisie = 0 THEN-- mis à jour de l'altitude retenue
         new.altitude_retenue = new.altitude_sig;
@@ -750,7 +751,7 @@ CREATE OR REPLACE FUNCTION v1_florepatri.update_ap()
   RETURNS trigger AS
 $BODY$
 DECLARE
-  moncentroide geometry;
+  moncentroide public.geometry;
   theinsee character varying(25);
   thealtitude integer;
 BEGIN
@@ -777,19 +778,19 @@ fin de section en attente */
 -- gestion des infos relatives aux géométries
 -- ATTENTION : la saisie en web insert quelques données MAIS the_geom_3857 est "inséré" par une commande update !
 -- POUR LE MOMENT gestion des update dans l'appli web uniquement à partir du geom 3857
-  IF ST_NumGeometries(new.the_geom_3857)=1 THEN -- si le Multi objet renvoyé par le oueb ne contient qu'un objet
-    new.the_geom_3857 = ST_GeometryN(new.the_geom_3857, 1); -- alors on passe en objet simple ( multi vers single)
+  IF public.ST_NumGeometries(new.the_geom_3857)=1 THEN -- si le Multi objet renvoyé par le oueb ne contient qu'un objet
+    new.the_geom_3857 = public.ST_GeometryN(new.the_geom_3857, 1); -- alors on passe en objet simple ( multi vers single)
   END IF;
   new.the_geom_local = public.st_transform(new.the_geom_3857,2154);
   -- calcul de validité sur la base d'un double control (sur les deux polygones même si on a un seul champ topo_valid)
   -- puis gestion des croisements SIG avec les layers altitude et communes en projection Lambert93
-  IF ST_isvalid(new.the_geom_local) AND ST_isvalid(new.the_geom_3857) THEN
+  IF public.ST_isvalid(new.the_geom_local) AND public.ST_isvalid(new.the_geom_3857) THEN
     new.topo_valid = 'true';
     -- on calcul la commune...
-    SELECT area_code INTO theinsee FROM (SELECT ref_geo.fct_get_area_intersection(new.the_geom_local,25) LIMIT 1) c;
+    SELECT INTO theinsee c.area_code FROM (SELECT * FROM ref_geo.fct_get_area_intersection(new.the_geom_local,25) LIMIT 1) c;
     new.insee = theinsee;-- mise à jour du code insee
     -- on calcul l'altitude
-    SELECT altitude_min INTO thealtitude FROM (SELECT ref_geo.fct_get_altitude_intersection(new.the_geom_local) LIMIT 1) a;
+    SELECT altitude_min INTO thealtitude FROM (SELECT * FROM ref_geo.fct_get_altitude_intersection(new.the_geom_local) LIMIT 1) a;
     new.altitude_sig = thealtitude;-- mise à jour de l'altitude sig
     IF new.altitude_saisie IS NULL OR new.altitude_saisie = 0 THEN  -- mise à jour de l'altitude retenue
       new.altitude_retenue = new.altitude_sig;
@@ -798,12 +799,12 @@ fin de section en attente */
     END IF;
   ELSE
     new.topo_valid = 'false';
-    moncentroide = ST_setsrid(public.st_centroid(Box2D(new.the_geom_local)),2154); -- calcul le centroid de la bbox pour les croisements SIG
+    moncentroide = public.ST_setsrid(public.st_centroid(public.box2d(new.the_geom_local)),2154); -- calcul le centroid de la bbox pour les croisements SIG
     -- on calcul la commune...
-    SELECT area_code INTO theinsee FROM (SELECT ref_geo.fct_get_area_intersection(moncentroide,25) LIMIT 1) c;
+    SELECT INTO theinsee c.area_code FROM (SELECT * FROM ref_geo.fct_get_area_intersection(moncentroide,25) LIMIT 1) c;
     new.insee = theinsee;-- mise à jour du code insee
     -- on calcul l'altitude
-    SELECT altitude_min INTO thealtitude FROM (SELECT ref_geo.fct_get_altitude_intersection(moncentroide) LIMIT 1) a;
+    SELECT altitude_min INTO thealtitude FROM (SELECT * FROM ref_geo.fct_get_altitude_intersection(moncentroide) LIMIT 1) a;
     new.altitude_sig = thealtitude;-- mise à jour de l'altitude sig
     IF new.altitude_saisie IS NULL OR new.altitude_saisie = 0 THEN
       new.altitude_retenue = new.altitude_sig;
@@ -824,7 +825,7 @@ $BODY$
 DECLARE
   monsectfp integer;
   macommune character(5);
-  moncentroide geometry;
+  moncentroide public.geometry;
 BEGIN
   -- si la zone de prospection est deja dans la BDD alors le trigger retourne null
   -- (l'insertion de la ligne est annulée et on passe a la donnée suivante).
@@ -851,33 +852,36 @@ BEGIN
     -- début de calcul de validité sur la base d'un double control (sur les deux polygones même si on a un seul champ topo_valid)
     -- puis calcul du geom_point_3857 (selon validité de the_geom_3857)
     -- puis gestion des croisements SIG avec les layers secteur et communes en projection Lambert93
-    IF ST_isvalid(new.the_geom_local) AND ST_isvalid(new.the_geom_3857) THEN
+    IF public.ST_isvalid(new.the_geom_local) AND public.ST_isvalid(new.the_geom_3857) THEN
       new.topo_valid = 'true';
       -- calcul du geom_point_3857 
-      new.geom_point_3857 = ST_pointonsurface(new.the_geom_3857); -- calcul du point pour le premier niveau de zoom appli web
+      new.geom_point_3857 = public.ST_pointonsurface(new.the_geom_3857); -- calcul du point pour le premier niveau de zoom appli web
       -- croisement secteur (celui qui contient le plus de zp en surface)
-      SELECT INTO monsectfp ls.id_secteur 
+      SELECT INTO monsectfp ls.area_code::integer 
       FROM ref_geo.l_areas ls 
       WHERE public.st_intersects(ls.geom, new.the_geom_local) AND ls.id_type = 30
       ORDER BY public.ST_area(public.ST_intersection(ls.geom, new.the_geom_local)) DESC LIMIT 1;
       -- croisement commune (celle qui contient le plus de zp en surface)
       SELECT INTO macommune m.insee_com 
       FROM ref_geo.l_areas lc 
-      JOIN ref_geo.l_municipalities m ON m.id_area = lc.id_area
+      JOIN ref_geo.li_municipalities m ON m.id_area = lc.id_area
       WHERE public.st_intersects(lc.geom, new.the_geom_local) AND lc.id_type = 25
       ORDER BY public.ST_area(public.ST_intersection(lc.geom, new.the_geom_local)) DESC LIMIT 1;
     ELSE
       new.topo_valid = 'false';
       -- calcul du geom_point_3857
-      new.geom_point_3857 = ST_setsrid(public.st_centroid(Box2D(new.the_geom_3857)),3857);  -- calcul le centroid de la bbox pour premier niveau de zoom appli web
-      moncentroide = ST_setsrid(public.st_centroid(Box2D(new.the_geom_local)),2154); -- calcul le centroid de la bbox pour les croisements SIG
+      new.geom_point_3857 = public.ST_setsrid(public.st_centroid(public.box2d(new.the_geom_3857)),3857);  -- calcul le centroid de la bbox pour premier niveau de zoom appli web
+      moncentroide = public.ST_setsrid(public.st_centroid(public.box2d(new.the_geom_local)),2154); -- calcul le centroid de la bbox pour les croisements SIG
       -- croisement secteur (celui qui contient moncentroide)
-      SELECT INTO monsectfp ls.id_secteur FROM ref_geo.l_areas ls WHERE public.st_intersects(ls.geom, moncentroide)
+      SELECT INTO monsectfp ls.area_code::integer 
+      FROM ref_geo.l_areas ls 
+      WHERE public.st_intersects(ls.geom, moncentroide)
       AND ls.id_type = 30
-      ORDER BY public.ST_area(public.ST_intersection(ls.geom, moncentroidel)) DESC LIMIT 1;
+      ORDER BY public.ST_area(public.ST_intersection(ls.geom, moncentroide)) DESC LIMIT 1;
       -- croisement commune (celle qui contient moncentroid)
-      SELECT INTO macommune m.insee_com FROM ref_geo.l_areas lc 
-      JOIN ref_geo.l_municipalities m ON m.id_area = lc.id_area
+      SELECT INTO macommune m.insee_com 
+      FROM ref_geo.l_areas lc 
+      JOIN ref_geo.li_municipalities m ON m.id_area = lc.id_area
       WHERE public.st_intersects(lc.geom, moncentroide)
       AND lc.id_type = 25
       ORDER BY public.ST_area(public.ST_intersection(lc.geom, moncentroide)) DESC LIMIT 1;
@@ -908,7 +912,7 @@ $BODY$
 DECLARE
   monsectfp integer;
   macommune character(5);
-  moncentroide geometry;
+  moncentroide public.geometry;
 BEGIN
   -- gestion de la date update en cas de manip sql directement en base
   new.date_update='now';
@@ -940,39 +944,42 @@ BEGIN
   ------ gestion des infos relatives aux géométries
   ------ ATTENTION : la saisie en web insert quelques données MAIS the_geom_3857 est "faussement inséré" par une commande update !
   ------ POUR LE MOMENT gestion des update dans l'appli web uniquement à partir du geom 3857
-  IF ST_NumGeometries(new.the_geom_3857)=1 THEN -- si le Multi objet renvoyé par le oueb ne contient qu'un objet
-    new.the_geom_3857 = ST_GeometryN(new.the_geom_3857, 1); -- alors on passe en objet simple ( multi vers single)
+  IF public.ST_NumGeometries(new.the_geom_3857)=1 THEN -- si le Multi objet renvoyé par le oueb ne contient qu'un objet
+    new.the_geom_3857 = public.ST_GeometryN(new.the_geom_3857, 1); -- alors on passe en objet simple ( multi vers single)
   END IF;
   new.the_geom_local = public.st_transform(new.the_geom_3857,2154);
   new.srid_dessin = 3857;
   -- 2) puis on calcul la validité des geom + on refait les calcul du geom_point_3857 + on refait les croisements SIG secteurs + communes ; c'est la même chose que lors d'un INSERT ( cf trigger insert_zp)
-  IF ST_isvalid(new.the_geom_local) AND ST_isvalid(new.the_geom_3857) THEN
+  IF public.ST_isvalid(new.the_geom_local) AND public.ST_isvalid(new.the_geom_3857) THEN
     new.topo_valid = 'true';
     -- calcul du geom_point_3857 
-    new.geom_point_3857 = ST_pointonsurface(new.the_geom_3857); -- calcul du point pour le premier niveau de zoom appli web
+    new.geom_point_3857 = public.ST_pointonsurface(new.the_geom_3857); -- calcul du point pour le premier niveau de zoom appli web
     -- croisement secteur (celui qui contient le plus de zp en surface)
-    SELECT INTO monsectfp ls.id_secteur 
+    SELECT INTO monsectfp ls.area_code::integer 
     FROM ref_geo.l_areas ls 
     WHERE public.st_intersects(ls.geom, new.the_geom_local) AND ls.id_type = 30
     ORDER BY public.ST_area(public.ST_intersection(ls.geom, new.the_geom_local)) DESC LIMIT 1;
     -- croisement commune (celle qui contient le plus de zp en surface)
     SELECT INTO macommune m.insee_com 
     FROM ref_geo.l_areas lc 
-    JOIN ref_geo.l_municipalities m ON m.id_area = lc.id_area
+    JOIN ref_geo.li_municipalities m ON m.id_area = lc.id_area
     WHERE public.st_intersects(lc.geom, new.the_geom_local) AND lc.id_type = 25
     ORDER BY public.ST_area(public.ST_intersection(lc.geom, new.the_geom_local)) DESC LIMIT 1;
   ELSE
     new.topo_valid = 'false';
     -- calcul du geom_point_3857
-    new.geom_point_3857 = ST_setsrid(public.st_centroid(Box2D(new.the_geom_3857)),3857);  -- calcul le centroid de la bbox pour premier niveau de zoom appli web
-    moncentroide = ST_setsrid(public.st_centroid(Box2D(new.the_geom_local)),2154); -- calcul le centroid de la bbox pour les croisements SIG
+    new.geom_point_3857 = public.ST_setsrid(public.st_centroid(public.box2d(new.the_geom_3857)),3857);  -- calcul le centroid de la bbox pour premier niveau de zoom appli web
+    moncentroide = public.ST_setsrid(public.st_centroid(public.box2d(new.the_geom_local)),2154); -- calcul le centroid de la bbox pour les croisements SIG
     -- croisement secteur (celui qui contient moncentroide)
-    SELECT INTO monsectfp ls.id_secteur FROM ref_geo.l_areas ls WHERE public.st_intersects(ls.geom, moncentroide)
+    SELECT INTO monsectfp ls.area_code::integer  
+    FROM ref_geo.l_areas ls 
+    WHERE public.st_intersects(ls.geom, moncentroide)
     AND ls.id_type = 30
-    ORDER BY public.ST_area(public.ST_intersection(ls.geom, moncentroidel)) DESC LIMIT 1;
+    ORDER BY public.ST_area(public.ST_intersection(ls.geom, moncentroide)) DESC LIMIT 1;
     -- croisement commune (celle qui contient moncentroid)
-    SELECT INTO macommune m.insee_com FROM ref_geo.l_areas lc 
-    JOIN ref_geo.l_municipalities m ON m.id_area = lc.id_area
+    SELECT INTO macommune m.insee_com 
+    FROM ref_geo.l_areas lc 
+    JOIN ref_geo.li_municipalities m ON m.id_area = lc.id_area
     WHERE public.st_intersects(lc.geom, moncentroide)
     AND lc.id_type = 25
     ORDER BY public.ST_area(public.ST_intersection(lc.geom, moncentroide)) DESC LIMIT 1;
@@ -1025,7 +1032,7 @@ DECLARE
   theobservers VARCHAR;
 BEGIN
   --Récupération de la liste des observateurs	
-  --ici on va mettre à jour l'enregistrement dans syntheseff autant de fois qu'on insert dans cette table
+  --ici on va mettre à jour l'enregistrement dans synthese autant de fois qu'on insert dans cette table
 	SELECT INTO theobservers array_to_string(array_agg(r.prenom_role || ' ' || r.nom_role), ', ') AS observateurs 
   FROM v1_florepatri.cor_zp_obs c
   JOIN utilisateurs.t_roles r ON r.id_role = c.codeobs
@@ -1039,7 +1046,7 @@ BEGIN
     FROM gn_synthese.synthese
     WHERE id_source = (SELECT id_source FROM gn_synthese.t_sources WHERE name_source ILIKE 'Flore prioritaire') 
     AND entity_source_pk_value = CAST(mesap.indexap AS VARCHAR);
-    --on fait le update du champ observateurs dans syntheseff
+    --on fait le update du champ observateurs dans synthese
     UPDATE gn_synthese.synthese
     SET 
       observers = theobservers,
@@ -1061,7 +1068,7 @@ $BODY$
 DECLARE
   thezp RECORD;
   theobservers VARCHAR;
-  thegeompoint GEOMETRY;
+  thegeompoint public.geometry;
   thevalidationstatus INTEGER;
   thecomptagemethodo INTEGER;
   thestadevie INTEGER;
@@ -1076,41 +1083,41 @@ BEGIN
   JOIN v1_florepatri.t_zprospection zp ON zp.indexzp = c.indexzp
   WHERE c.indexzp = new.indexzp;
   -- création du geom_point
-  IF st_isvalid(new.the_geom_3857) THEN 
-    thegeompoint = st_pointonsurface(new.the_geom_3857);
+  IF public.ST_isvalid(new.the_geom_3857) THEN 
+    thegeompoint = public.ST_pointonsurface(new.the_geom_3857);
   ELSE 
-    thegeompoint = public.ST_PointFromWKB(public.st_centroid(Box2D(new.the_geom_3857)),3857);
+    thegeompoint = public.ST_PointFromWKB(public.st_centroid(public.box2d(new.the_geom_3857)),3857);
   END IF;
   --Récupération du statut de validation
-    IF (thezp.validation==true) THEN 
+    IF (thezp.validation) THEN 
 	SELECT ref_nomenclatures.get_id_nomenclature('STATUT_VALID','1') INTO thevalidationstatus;
     ELSE
 	SELECT ref_nomenclatures.get_id_nomenclature('STATUT_VALID','0') INTO thevalidationstatus;
     END IF;
   --Récupération de la méthode de comptage
-    IF (new.id_comptage_methodo==1) THEN 
+    IF (new.id_comptage_methodo=1) THEN 
 	    SELECT ref_nomenclatures.get_id_nomenclature('TYP_DENBR','Co') INTO thecomptagemethodo;
-    ELSIF (new.id_comptage_methodo==2) THEN
+    ELSIF (new.id_comptage_methodo=2) THEN
 	    SELECT ref_nomenclatures.get_id_nomenclature('TYP_DENBR','Ca') INTO thecomptagemethodo;
     ELSE
       SELECT ref_nomenclatures.get_id_nomenclature('TYP_DENBR','NSP') INTO thecomptagemethodo;
     END IF;
   --Récupération du stade de vie
-    IF (new.codepheno==1) THEN 
+    IF (new.codepheno=1) THEN 
 	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','132') INTO thestadevie;
-    ELSIF (new.codepheno==2) THEN
+    ELSIF (new.codepheno=2) THEN
 	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','128') INTO thestadevie;
-    ELSIF (new.codepheno==3) THEN
+    ELSIF (new.codepheno=3) THEN
 	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','129') INTO thestadevie;
-    ELSIF (new.codepheno==4) THEN
+    ELSIF (new.codepheno=4) THEN
 	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','127') INTO thestadevie;
-    ELSIF (new.codepheno==5) THEN
+    ELSIF (new.codepheno=5) THEN
 	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','130') INTO thestadevie;
-    ELSIF (new.codepheno==6) THEN
+    ELSIF (new.codepheno=6) THEN
 	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','132') INTO thestadevie;
-    ELSIF (new.codepheno==7) THEN
+    ELSIF (new.codepheno=7) THEN
 	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','19') INTO thestadevie;
-    ELSIF (new.codepheno==8) THEN
+    ELSIF (new.codepheno=8) THEN
 	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','131') INTO thestadevie;
     ELSE
       SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','0') INTO thestadevie;
@@ -1199,13 +1206,13 @@ BEGIN
       new.altitude_retenue,--altitude_min
       new.altitude_retenue,--altitude_max
       public.st_transform(new.the_geom_3857,4326),
-      thegeompoint,
+      public.st_transform(thegeompoint,4326),
       new.the_geom_local,
       thezp.dateobs,--date_min
       thezp.dateobs,--date_max
       theobservers,--observers
       theobservers,--determiner
-      thezp.remarques,
+      new.remarques,
       'c'
     );
   RETURN NEW;       
@@ -1219,7 +1226,7 @@ CREATE OR REPLACE FUNCTION v1_florepatri.update_synthese_ap()
   RETURNS trigger AS
 $BODY$
 DECLARE
-  thegeompoint geometry;
+  thegeompoint public.geometry;
   thecomptagemethodo INTEGER;
   thestadevie INTEGER;
   --theidprecision integer;
@@ -1238,35 +1245,35 @@ BEGIN
     OR (NOT public.st_equals(new.the_geom_3857,old.the_geom_3857) OR NOT public.st_equals(new.the_geom_local,old.the_geom_local))
   ) THEN
     -- création du geom_point
-    IF st_isvalid(new.the_geom_3857) THEN 
-      thegeompoint = st_pointonsurface(new.the_geom_3857);
+    IF public.ST_isvalid(new.the_geom_3857) THEN 
+      thegeompoint = public.ST_pointonsurface(new.the_geom_3857);
     ELSE 
-      thegeompoint = public.ST_PointFromWKB(public.st_centroid(Box2D(new.the_geom_3857)),4326);
+      thegeompoint = public.ST_PointFromWKB(public.st_centroid(public.box2d(new.the_geom_3857)),4326);
     END IF;
     --Récupération de la méthode de comptage
-    IF (new.id_comptage_methodo==1) THEN 
+    IF (new.id_comptage_methodo=1) THEN 
       SELECT ref_nomenclatures.get_id_nomenclature('TYP_DENBR','Co') INTO thecomptagemethodo;
-    ELSIF (new.id_comptage_methodo==2) THEN
+    ELSIF (new.id_comptage_methodo=2) THEN
       SELECT ref_nomenclatures.get_id_nomenclature('TYP_DENBR','Ca') INTO thecomptagemethodo;
     ELSE
       SELECT ref_nomenclatures.get_id_nomenclature('TYP_DENBR','NSP') INTO thecomptagemethodo;
     END IF;
     --Récupération du stade de vie
-    IF (new.codepheno==1) THEN 
+    IF (new.codepheno=1) THEN 
 	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','132') INTO thestadevie;
-    ELSIF (new.codepheno==2) THEN
+    ELSIF (new.codepheno=2) THEN
 	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','128') INTO thestadevie;
-    ELSIF (new.codepheno==3) THEN
+    ELSIF (new.codepheno=3) THEN
 	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','129') INTO thestadevie;
-    ELSIF (new.codepheno==4) THEN
+    ELSIF (new.codepheno=4) THEN
 	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','127') INTO thestadevie;
-    ELSIF (new.codepheno==5) THEN
+    ELSIF (new.codepheno=5) THEN
 	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','130') INTO thestadevie;
-    ELSIF (new.codepheno==6) THEN
+    ELSIF (new.codepheno=6) THEN
 	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','132') INTO thestadevie;
-    ELSIF (new.codepheno==7) THEN
+    ELSIF (new.codepheno=7) THEN
 	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','19') INTO thestadevie;
-    ELSIF (new.codepheno==8) THEN
+    ELSIF (new.codepheno=8) THEN
 	    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','131') INTO thestadevie;
     ELSE
       SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE','0') INTO thestadevie;
@@ -1277,7 +1284,7 @@ BEGIN
     -- ELSIF st_geometrytype(new.the_geom_3857) = 'ST_Polygone' OR st_geometrytype(new.the_geom_3857) = 'ST_MultiPolygon' THEN theidprecision = 3;
     -- ELSE theidprecision = 12;
     -- END IF;
-    --on fait le update dans syntheseff
+    --on fait le update dans synthese
     UPDATE gn_synthese.synthese
     SET 
       --id_precision = monidprecision,
@@ -1293,15 +1300,15 @@ BEGIN
       last_action = 'u',
       the_geom_4326 = public.ST_transform(new.the_geom_3857,4326),
       the_geom_local = new.the_geom_local,
-      the_geom_point = thegeompoint
+      the_geom_point = public.ST_transform(thegeompoint,4326)
     WHERE id_source = (SELECT id_source FROM gn_synthese.t_sources WHERE name_source ILIKE 'Flore prioritaire') 
     AND entity_source_pk_value = CAST(old.indexap AS VARCHAR);
   END IF;
-  IF (new.supprime <> old.supprime AND new.supprime == true) THEN
+  IF (new.supprime <> old.supprime AND new.supprime) THEN
     DELETE FROM gn_synthese.synthese 
     WHERE id_source = (SELECT id_source FROM gn_synthese.t_sources WHERE name_source ILIKE 'Flore prioritaire') 
     AND entity_source_pk_value = CAST(old.indexap AS VARCHAR);
-  ELSIF (new.supprime <> old.supprime AND new.supprime == false) THEN
+  ELSIF (new.supprime <> old.supprime AND new.supprime = false) THEN
     RAISE EXCEPTION 'Recréer une aire de présence supprimée est impossible dans GeoNature 2. INDEXAP N° %', new.indexap USING HINT = 'Contactez un administrateur de la base de données';
   END IF;
   RETURN NEW;       
@@ -1318,7 +1325,7 @@ DECLARE
   thevalidationstatus INTEGER;
 BEGIN
   FOR mesap IN SELECT ap.indexap FROM v1_florepatri.t_zprospection zp JOIN v1_florepatri.t_apresence ap ON ap.indexzp = zp.indexzp WHERE ap.indexzp = new.indexzp  LOOP
-    --On ne fait qq chose que si l'un des champs de la table t_zprospection concerné dans syntheseff a changé
+    --On ne fait qq chose que si l'un des champs de la table t_zprospection concerné dans synthese a changé
     IF (
             new.indexzp <> old.indexzp 
             OR new.validation <> old.validation 
@@ -1329,13 +1336,13 @@ BEGIN
             OR new.supprime <> old.supprime 
         ) THEN
         --Récupération du statut de validation
-        IF (new.validation==true) THEN 
+        IF (new.validation) THEN 
           SELECT ref_nomenclatures.get_id_nomenclature('STATUT_VALID','1') INTO thevalidationstatus;
         ELSE
           SELECT ref_nomenclatures.get_id_nomenclature('STATUT_VALID','0') INTO thevalidationstatus;
         END IF;
-        --on fait le update dans syntheseff
-        UPDATE synthese.syntheseff 
+        --on fait le update dans synthese
+        UPDATE gn_synthese.synthese 
         SET 
           unique_id_sinp_grp = new.unique_id_sinp_grp,
           cd_nom = new.cd_nom,
@@ -1346,11 +1353,11 @@ BEGIN
           last_action = 'u'
         WHERE id_source = (SELECT id_source FROM gn_synthese.t_sources WHERE name_source ILIKE 'Flore prioritaire') 
         AND entity_source_pk_value = CAST(mesap.indexap AS VARCHAR);
-        IF(new.supprime <> old.supprime AND new.supprime == true) THEN
+        IF(new.supprime <> old.supprime AND new.supprime) THEN
           DELETE FROM gn_synthese.synthese 
           WHERE id_source = (SELECT id_source FROM gn_synthese.t_sources WHERE name_source ILIKE 'Flore prioritaire') 
           AND entity_source_pk_value = CAST(mesap.indexap AS VARCHAR);
-        ELSIF (new.supprime <> old.supprime AND new.supprime == false) THEN
+        ELSIF (new.supprime <> old.supprime AND new.supprime = false) THEN
           RAISE EXCEPTION 'Recréer une aire de présence supprimée est impossible dans GeoNature 2. INDEXAP N° %', mesap.indexap USING HINT = 'Contactez un administrateur de la base de données';
         END IF;
     END IF;
@@ -1411,8 +1418,8 @@ WHERE o.code_object = 'TDatasets' AND t.module_code = 'FP';
 -------------------------------------
 --RECUPERATION DES DONNEES DE LA V1--
 -------------------------------------
-ALTER TABLE v1_florepatri.t_apresence ADD COLUMN diffusable boolean;
-ALTER TABLE v1_florepatri.t_apresence ALTER COLUMN diffusable SET DEFAULT true;
+-- ALTER TABLE v1_florepatri.t_apresence ADD COLUMN diffusable boolean;
+-- ALTER TABLE v1_florepatri.t_apresence ALTER COLUMN diffusable SET DEFAULT true;
 
 INSERT INTO v1_florepatri.bib_comptages_methodo SELECT * FROM v1_compat.bib_comptages_methodo;
 INSERT INTO v1_florepatri.bib_frequences_methodo_new SELECT * FROM v1_compat.bib_frequences_methodo_new;

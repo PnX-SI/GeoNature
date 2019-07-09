@@ -54,7 +54,8 @@ SELECT
   a.id_area,
   s.cd_nom
 FROM ref_geo.l_areas a
-JOIN gn_synthese.synthese s ON St_Intersects(s.the_geom_local, a.geom);
+JOIN gn_synthese.synthese s ON St_Intersects(s.the_geom_local, a.geom)
+WHERE a.enable = true;
 
 --Action du trigger tri_maj_cor_area_taxon
 --On vide la table cor_area_taxon

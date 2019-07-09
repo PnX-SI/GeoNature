@@ -230,10 +230,11 @@ $BODY$
           t.group2_inpn
       FROM taxonomie.taxref t WHERE cd_nom = NEW.cd_nom;
       --On insère une seule fois le nom_vern car il est le même pour tous les synonymes
-      SELECT INTO thenomvern cd_nom FROM gn_synthese.taxons_synthese_autocomplete a
+      SELECT INTO thenomvern t.cd_nom 
+      FROM gn_synthese.taxons_synthese_autocomplete a
       JOIN taxonomie.taxref t ON t.cd_nom = a.cd_nom
       WHERE a.cd_ref = taxonomie.find_cdref(NEW.cd_nom)
-      AND a.search_name ILIKE t.nom||'%';
+      AND a.search_name ILIKE t.nom_vern||'%';
       IF thenomvern IS NULL THEN
         INSERT INTO gn_synthese.taxons_synthese_autocomplete
         SELECT t.cd_nom,
@@ -251,3 +252,92 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+
+CREATE OR REPLACE FUNCTION ref_geo.fct_trg_calculate_geom_local()
+  RETURNS trigger AS
+-- trigger qui reprojete une geom a partir d'une geom source fournie et l'insert dans le NEW
+-- en prenant le parametre local_srid de la table t_parameters
+-- 1er param: nom de la colonne source
+-- 2eme param: nom de la colonne a reprojeter
+-- utiliser pour calculer les geom_local à partir des geom_4326
+$BODY$
+DECLARE
+	the4326geomcol text := quote_ident(TG_ARGV[0]);
+	thelocalgeomcol text := quote_ident(TG_ARGV[1]);
+        thelocalsrid int;
+        thegeomlocalvalue public.geometry;
+        thegeomchange boolean;
+BEGIN
+	-- si c'est un insert ou que c'est un UPDATE ET que le geom_4326 a été modifié
+	IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NOT public.ST_EQUALS(hstore(OLD)-> the4326geomcol, hstore(NEW)-> the4326geomcol)  )) THEN
+		--récupérer le srid local
+		SELECT INTO thelocalsrid parameter_value::int FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid';
+		EXECUTE FORMAT ('SELECT public.ST_TRANSFORM($1.%I, $2)',the4326geomcol) INTO thegeomlocalvalue USING NEW, thelocalsrid;
+                -- insertion dans le NEW de la geom transformée
+		NEW := NEW#= hstore(thelocalgeomcol, thegeomlocalvalue);
+	END IF;
+  RETURN NEW;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+CREATE OR REPLACE FUNCTION ref_geo.fct_get_area_intersection(
+    IN mygeom public.geometry,
+    IN myidtype integer DEFAULT NULL::integer)
+  RETURNS TABLE(id_area integer, id_type integer, area_code character varying, area_name character varying) AS
+$BODY$
+DECLARE
+  isrid int;
+BEGIN
+  SELECT gn_commons.get_default_parameter('local_srid', NULL) INTO isrid;
+  RETURN QUERY
+  WITH d  as (
+      SELECT public.st_transform(myGeom,isrid) geom_trans
+  )
+  SELECT a.id_area, a.id_type, a.area_code, a.area_name
+  FROM ref_geo.l_areas a, d
+  WHERE public.st_intersects(geom_trans, a.geom)
+    AND (myIdType IS NULL OR a.id_type = myIdType)
+    AND enable=true;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100
+  ROWS 1000;
+
+CREATE OR REPLACE FUNCTION ref_geo.fct_get_altitude_intersection(IN mygeom geometry)
+  RETURNS TABLE(altitude_min integer, altitude_max integer) AS
+$BODY$
+DECLARE
+    thesrid int;
+    is_vectorized int;
+BEGIN
+  SELECT gn_commons.get_default_parameter('local_srid', NULL) INTO thesrid;
+  SELECT COALESCE(gid, NULL) FROM ref_geo.dem_vector LIMIT 1 INTO is_vectorized;
+	
+  IF is_vectorized IS NULL THEN
+    -- Use dem
+    RETURN QUERY
+    SELECT min((altitude).val)::integer AS altitude_min, max((altitude).val)::integer AS altitude_max
+    FROM (
+	SELECT public.ST_DumpAsPolygons(public.ST_clip(rast, 1
+	, public.st_transform(myGeom,thesrid), true)) AS altitude
+	FROM ref_geo.dem AS altitude 
+	WHERE public.st_intersects(rast,public.st_transform(myGeom,thesrid))
+    ) AS a;		
+  -- Use dem_vector
+  ELSE
+    RETURN QUERY
+    WITH d  as (
+        SELECT public.st_transform(myGeom,thesrid) a
+     )
+    SELECT min(val)::int as altitude_min, max(val)::int as altitude_max
+    FROM ref_geo.dem_vector, d
+    WHERE public.st_intersects(a,geom);
+  END IF;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100
+  ROWS 1000;
