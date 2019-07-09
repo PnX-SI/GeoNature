@@ -677,70 +677,6 @@ ALTER TABLE ONLY t_zprospection
 --ALTER TABLE ONLY t_zprospection
     --ADD CONSTRAINT t_zprospection_id_secteur_fkey FOREIGN KEY (id_secteur) REFERENCES layers.l_secteurs(id_secteur) ON UPDATE CASCADE;
 
--------------------------------------
---RECUPERATION DES DONNEES DE LA V1--
--------------------------------------
-ALTER TABLE v1_florepatri.t_apresence ADD COLUMN diffusable boolean;
-ALTER TABLE v1_florepatri.t_apresence ALTER COLUMN diffusable SET DEFAULT true;
-
-INSERT INTO v1_florepatri.bib_comptages_methodo SELECT * FROM v1_compat.bib_comptages_methodo;
-INSERT INTO v1_florepatri.bib_frequences_methodo_new SELECT * FROM v1_compat.bib_frequences_methodo_new;
-INSERT INTO v1_florepatri.bib_pentes SELECT * FROM v1_compat.bib_pentes;
-INSERT INTO v1_florepatri.bib_perturbations SELECT * FROM v1_compat.bib_perturbations;
-INSERT INTO v1_florepatri.bib_phenologies SELECT * FROM v1_compat.bib_phenologies;
-INSERT INTO v1_florepatri.bib_physionomies SELECT * FROM v1_compat.bib_physionomies;
-INSERT INTO v1_florepatri.bib_rezo_ecrins SELECT * FROM v1_compat.bib_rezo_ecrins;
-INSERT INTO v1_florepatri.bib_statuts SELECT * FROM v1_compat.bib_statuts;
-INSERT INTO v1_florepatri.bib_taxons_fp SELECT * FROM v1_compat.bib_taxons_fp;
-INSERT INTO v1_florepatri.t_zprospection SELECT * FROM v1_compat.t_zprospection;
-INSERT INTO v1_florepatri.t_apresence
-SELECT 
-  indexap,
-  codepheno,
-  indexzp,
-  altitude_saisie,
-  surfaceap,
-  frequenceap,
-  date_insert,
-  date_update,
-  topo_valid,
-  supprime,
-  erreur_signalee,
-  diffusable,
-  altitude_sig,
-  altitude_retenue,
-  insee,
-  id_frequence_methodo_new ,
-  nb_transects_frequence,
-  nb_points_frequence,
-  nb_contacts_frequence ,
-  id_comptage_methodo,
-  nb_placettes_comptage,
-  surface_placette_comptage,
-  remarques,
-  the_geom_local,
-  the_geom_3857,
-  longueur_pas,
-  effectif_placettes_steriles,
-  effectif_placettes_fertiles,
-  total_steriles,
-  total_fertiles
- FROM v1_compat.t_apresence;
-INSERT INTO v1_florepatri.cor_zp_obs SELECT * FROM v1_compat.cor_zp_obs;
-INSERT INTO v1_florepatri.cor_taxon_statut SELECT * FROM v1_compat.cor_taxon_statut;
-INSERT INTO v1_florepatri.cor_ap_physionomie SELECT * FROM v1_compat.cor_ap_physionomie;
-INSERT INTO v1_florepatri.cor_ap_perturb SELECT * FROM v1_compat.cor_ap_perturb;
-
---SET UUID FOR SYNTHESE
-ALTER TABLE v1_florepatri.t_zprospection ADD COLUMN unique_id_sinp_grp uuid;
-UPDATE v1_florepatri.t_zprospection SET unique_id_sinp_grp = uuid_generate_v4();
-ALTER TABLE v1_florepatri.t_zprospection ALTER COLUMN unique_id_sinp_grp SET NOT NULL;
-ALTER TABLE v1_florepatri.t_zprospection ALTER COLUMN unique_id_sinp_grp SET DEFAULT uuid_generate_v4();
-
-ALTER TABLE v1_florepatri.t_apresence ADD COLUMN unique_id_sinp_fp uuid;
-UPDATE v1_florepatri.t_apresence SET unique_id_sinp_fp = uuid_generate_v4();
-ALTER TABLE v1_florepatri.t_apresence ALTER COLUMN unique_id_sinp_fp SET NOT NULL;
-ALTER TABLE v1_florepatri.t_apresence ALTER COLUMN unique_id_sinp_fp SET DEFAULT uuid_generate_v4();
 
 ------------
 --TRIGGERS--
@@ -1470,3 +1406,69 @@ INSERT INTO gn_permissions.cor_object_module (id_object, id_module)
 SELECT o.id_object, t.id_module
 FROM gn_permissions.t_objects o, gn_commons.t_modules t
 WHERE o.code_object = 'TDatasets' AND t.module_code = 'FP';
+
+
+-------------------------------------
+--RECUPERATION DES DONNEES DE LA V1--
+-------------------------------------
+ALTER TABLE v1_florepatri.t_apresence ADD COLUMN diffusable boolean;
+ALTER TABLE v1_florepatri.t_apresence ALTER COLUMN diffusable SET DEFAULT true;
+
+INSERT INTO v1_florepatri.bib_comptages_methodo SELECT * FROM v1_compat.bib_comptages_methodo;
+INSERT INTO v1_florepatri.bib_frequences_methodo_new SELECT * FROM v1_compat.bib_frequences_methodo_new;
+INSERT INTO v1_florepatri.bib_pentes SELECT * FROM v1_compat.bib_pentes;
+INSERT INTO v1_florepatri.bib_perturbations SELECT * FROM v1_compat.bib_perturbations;
+INSERT INTO v1_florepatri.bib_phenologies SELECT * FROM v1_compat.bib_phenologies;
+INSERT INTO v1_florepatri.bib_physionomies SELECT * FROM v1_compat.bib_physionomies;
+INSERT INTO v1_florepatri.bib_rezo_ecrins SELECT * FROM v1_compat.bib_rezo_ecrins;
+INSERT INTO v1_florepatri.bib_statuts SELECT * FROM v1_compat.bib_statuts;
+INSERT INTO v1_florepatri.bib_taxons_fp SELECT * FROM v1_compat.bib_taxons_fp;
+INSERT INTO v1_florepatri.t_zprospection SELECT * FROM v1_compat.t_zprospection;
+INSERT INTO v1_florepatri.t_apresence
+SELECT 
+  indexap,
+  codepheno,
+  indexzp,
+  altitude_saisie,
+  surfaceap,
+  frequenceap,
+  date_insert,
+  date_update,
+  topo_valid,
+  supprime,
+  erreur_signalee,
+  diffusable,
+  altitude_sig,
+  altitude_retenue,
+  insee,
+  id_frequence_methodo_new ,
+  nb_transects_frequence,
+  nb_points_frequence,
+  nb_contacts_frequence ,
+  id_comptage_methodo,
+  nb_placettes_comptage,
+  surface_placette_comptage,
+  remarques,
+  the_geom_local,
+  the_geom_3857,
+  longueur_pas,
+  effectif_placettes_steriles,
+  effectif_placettes_fertiles,
+  total_steriles,
+  total_fertiles
+ FROM v1_compat.t_apresence;
+INSERT INTO v1_florepatri.cor_zp_obs SELECT * FROM v1_compat.cor_zp_obs;
+INSERT INTO v1_florepatri.cor_taxon_statut SELECT * FROM v1_compat.cor_taxon_statut;
+INSERT INTO v1_florepatri.cor_ap_physionomie SELECT * FROM v1_compat.cor_ap_physionomie;
+INSERT INTO v1_florepatri.cor_ap_perturb SELECT * FROM v1_compat.cor_ap_perturb;
+
+--SET UUID FOR SYNTHESE
+ALTER TABLE v1_florepatri.t_zprospection ADD COLUMN unique_id_sinp_grp uuid;
+UPDATE v1_florepatri.t_zprospection SET unique_id_sinp_grp = public.uuid_generate_v4();
+ALTER TABLE v1_florepatri.t_zprospection ALTER COLUMN unique_id_sinp_grp SET NOT NULL;
+ALTER TABLE v1_florepatri.t_zprospection ALTER COLUMN unique_id_sinp_grp SET DEFAULT public.uuid_generate_v4();
+
+ALTER TABLE v1_florepatri.t_apresence ADD COLUMN unique_id_sinp_fp uuid;
+UPDATE v1_florepatri.t_apresence SET unique_id_sinp_fp = public.uuid_generate_v4();
+ALTER TABLE v1_florepatri.t_apresence ALTER COLUMN unique_id_sinp_fp SET NOT NULL;
+ALTER TABLE v1_florepatri.t_apresence ALTER COLUMN unique_id_sinp_fp SET DEFAULT public.uuid_generate_v4();
