@@ -664,8 +664,8 @@ CREATE OR REPLACE FUNCTION gn_synthese.fct_trg_refresh_taxons_forautocomplete()
   RETURNS trigger AS
 $BODY$
  DECLARE
+  thenomvern VARCHAR;
   BEGIN
-
     IF TG_OP in ('DELETE', 'TRUNCATE', 'UPDATE') AND OLD.cd_nom NOT IN (SELECT DISTINCT cd_nom FROM gn_synthese.synthese) THEN
         DELETE FROM gn_synthese.taxons_synthese_autocomplete auto
         WHERE auto.cd_nom = OLD.cd_nom;
@@ -680,16 +680,23 @@ $BODY$
           t.lb_nom,
           t.regne,
           t.group2_inpn
-      FROM taxonomie.taxref t  WHERE cd_nom = NEW.cd_nom;
-      INSERT INTO gn_synthese.taxons_synthese_autocomplete
-      SELECT t.cd_nom,
-        t.cd_ref,
-        concat(t.nom_vern, ' =  <i> ', t.nom_valide, '</i>', ' - [', t.id_rang, ' - ', t.cd_nom , ']' ) AS search_name,
-        t.nom_valide,
-        t.lb_nom,
-        t.regne,
-        t.group2_inpn
-      FROM taxonomie.taxref t  WHERE t.nom_vern IS NOT NULL AND cd_nom = NEW.cd_nom;
+      FROM taxonomie.taxref t WHERE cd_nom = NEW.cd_nom;
+      --On insère une seule fois le nom_vern car il est le même pour tous les synonymes
+      SELECT INTO thenomvern cd_nom FROM gn_synthese.taxons_synthese_autocomplete a
+      JOIN taxonomie.taxref t ON t.cd_nom = a.cd_nom
+      WHERE a.cd_ref = taxonomie.find_cdref(NEW.cd_nom)
+      AND a.search_name ILIKE t.nom||'%';
+      IF thenomvern IS NULL THEN
+        INSERT INTO gn_synthese.taxons_synthese_autocomplete
+        SELECT t.cd_nom,
+          t.cd_ref,
+          concat(t.nom_vern, ' =  <i> ', t.nom_valide, '</i>', ' - [', t.id_rang, ' - ', t.cd_nom , ']' ) AS search_name,
+          t.nom_valide,
+          t.lb_nom,
+          t.regne,
+          t.group2_inpn
+        FROM taxonomie.taxref t WHERE t.nom_vern IS NOT NULL AND cd_nom = NEW.cd_nom;
+      END IF;
     END IF;
   RETURN NULL;
   END;
