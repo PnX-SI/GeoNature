@@ -505,7 +505,7 @@ s as (
 ,loc AS (
   SELECT cd_ref,
 	count(*) AS nbobs,
-	ST_Transform(ST_SetSRID(box2d(st_extent(s.the_geom_local))::geometry,MYLOCALSRID), 4326) AS bbox4326
+	public.ST_Transform(public.ST_SetSRID(public.box2d(public.ST_extent(s.the_geom_local))::geometry,MYLOCALSRID), 4326) AS bbox4326
   FROM  s
   GROUP BY cd_ref
 )
@@ -636,7 +636,7 @@ $BODY$
   BEGIN
   geom_change = false;
   IF(TG_OP = 'UPDATE') THEN
-	SELECT INTO geom_change NOT ST_EQUALS(OLD.the_geom_local, NEW.the_geom_local);
+	SELECT INTO geom_change NOT public.ST_EQUALS(OLD.the_geom_local, NEW.the_geom_local);
   END IF;
 
   IF (geom_change) THEN
@@ -650,7 +650,7 @@ $BODY$
         a.id_area AS id_area,
         s.cd_nom AS cd_nom
         FROM ref_geo.l_areas a
-        JOIN gn_synthese.synthese s ON ST_INTERSECTS(s.the_geom_local, a.geom)
+        JOIN gn_synthese.synthese s ON public.ST_INTERSECTS(s.the_geom_local, a.geom)
         WHERE s.id_synthese = NEW.id_synthese AND a.enable IS true;
     END IF;
   RETURN NULL;
@@ -888,7 +888,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
     s.altitude_min,
     s.altitude_max,
     s.the_geom_4326,
-    st_asgeojson(the_geom_4326),
+    public.ST_asgeojson(the_geom_4326),
     s.date_min,
     s.date_max,
     s.validator,
@@ -992,7 +992,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     s.non_digital_proof AS "preuvNoNum",
     s.altitude_min AS "altMin",
     s.altitude_max AS "altMax",
-    st_astext(s.the_geom_4326) AS wkt,
+    public.ST_astext(s.the_geom_4326) AS wkt,
     s.date_min AS "dateDebut",
     s.date_max AS "dateFin",
     s.validator AS validateur,
@@ -1009,11 +1009,11 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     t.cd_nom AS "cdNom",
     t.cd_ref AS "cdRef",
     s.nom_cite AS "nomCite",
-    st_x(st_transform(s.the_geom_point, 2154)) AS x_centroid,
-    st_y(st_transform(s.the_geom_point, 2154)) AS y_centroid,
+    public.ST_x(public.ST_transform(s.the_geom_point, 2154)) AS x_centroid,
+    public.ST_y(public.ST_transform(s.the_geom_point, 2154)) AS y_centroid,
     COALESCE(s.meta_update_date, s.meta_create_date) AS lastact,
-    st_asgeojson(s.the_geom_4326) AS geojson_4326,
-    st_asgeojson(s.the_geom_local) AS geojson_local,
+    public.ST_asgeojson(s.the_geom_4326) AS geojson_4326,
+    public.ST_asgeojson(s.the_geom_local) AS geojson_local,
     deco."ObjGeoTyp",
     deco."methGrp",
     deco."obsMeth",

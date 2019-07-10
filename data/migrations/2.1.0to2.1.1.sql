@@ -163,40 +163,6 @@ $BODY$
   COST 100;
 
 
--- update trigger synthese -> cor_area_synthese
-
-CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese()
-  RETURNS trigger AS
-$BODY$
-  DECLARE
-  id_area_loop integer;
-  geom_change boolean;
-  BEGIN
-  geom_change = false;
-  IF(TG_OP = 'UPDATE') THEN
-	SELECT INTO geom_change NOT ST_EQUALS(OLD.the_geom_local, NEW.the_geom_local);
-  END IF;
-
-  IF (geom_change) THEN
-	DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = NEW.id_synthese;
-  END IF;
-
-  -- intersection avec toutes les areas et écriture dans cor_area_synthese
-    IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND geom_change )) THEN
-      INSERT INTO gn_synthese.cor_area_synthese SELECT
-	      s.id_synthese AS id_synthese,
-        a.id_area AS id_area,
-        s.cd_nom AS cd_nom
-        FROM ref_geo.l_areas a
-        JOIN gn_synthese.synthese s ON ST_INTERSECTS(s.the_geom_local, a.geom)
-        WHERE s.id_synthese = NEW.id_synthese AND a.enable IS true;
-    END IF;
-  RETURN NULL;
-  END;
-  $BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-
 -- suppression des aires de cor_area where enabled = false
 DELETE FROM gn_synthese.cor_area_synthese WHERE id_area IN (
 SELECT s.id_area
@@ -341,3 +307,236 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100
   ROWS 1000;
+
+
+CREATE MATERIALIZED VIEW vm_min_max_for_taxons AS
+WITH
+s as (
+  SELECT synt.cd_nom, t.cd_ref, the_geom_local, date_min, date_max, altitude_min, altitude_max
+  FROM gn_synthese.synthese synt
+  LEFT JOIN taxonomie.taxref t ON t.cd_nom = synt.cd_nom
+  WHERE id_nomenclature_valid_status IN('1','2')
+)
+,loc AS (
+  SELECT cd_ref,
+	count(*) AS nbobs,
+	public.ST_Transform(public.ST_SetSRID(public.box2d(public.ST_extent(s.the_geom_local))::geometry,2154), 4326) AS bbox4326
+  FROM  s
+  GROUP BY cd_ref
+)
+,dat AS (
+  SELECT cd_ref,
+	min(TO_CHAR(date_min, 'DDD')::int) AS daymin,
+	max(TO_CHAR(date_max, 'DDD')::int) AS daymax
+  FROM s
+  GROUP BY cd_ref
+)
+,alt AS (
+  SELECT cd_ref,
+	min(altitude_min) AS altitudemin,
+	max(altitude_max) AS altitudemax
+  FROM s
+  GROUP BY cd_ref
+)
+SELECT loc.cd_ref, nbobs,  daymin, daymax, altitudemin, altitudemax, bbox4326
+FROM loc
+LEFT JOIN alt ON alt.cd_ref = loc.cd_ref
+LEFT JOIN dat ON dat.cd_ref = loc.cd_ref
+ORDER BY loc.cd_ref;
+
+CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese()
+  RETURNS trigger AS
+$BODY$
+  DECLARE
+  id_area_loop integer;
+  geom_change boolean;
+  BEGIN
+  geom_change = false;
+  IF(TG_OP = 'UPDATE') THEN
+	SELECT INTO geom_change NOT public.ST_EQUALS(OLD.the_geom_local, NEW.the_geom_local);
+  END IF;
+
+  IF (geom_change) THEN
+	DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = NEW.id_synthese;
+  END IF;
+
+  -- intersection avec toutes les areas et écriture dans cor_area_synthese
+    IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND geom_change )) THEN
+      INSERT INTO gn_synthese.cor_area_synthese SELECT
+	      s.id_synthese AS id_synthese,
+        a.id_area AS id_area,
+        s.cd_nom AS cd_nom
+        FROM ref_geo.l_areas a
+        JOIN gn_synthese.synthese s ON public.ST_INTERSECTS(s.the_geom_local, a.geom)
+        WHERE s.id_synthese = NEW.id_synthese AND a.enable IS true;
+    END IF;
+  RETURN NULL;
+  END;
+  $BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS 
+ SELECT s.id_synthese,
+    s.unique_id_sinp,
+    s.unique_id_sinp_grp,
+    s.id_source,
+    s.entity_source_pk_value,
+    s.count_min,
+    s.count_max,
+    s.nom_cite,
+    s.meta_v_taxref,
+    s.sample_number_proof,
+    s.digital_proof,
+    s.non_digital_proof,
+    s.altitude_min,
+    s.altitude_max,
+    s.the_geom_4326,
+    public.ST_asgeojson(the_geom_4326),
+    s.date_min,
+    s.date_max,
+    s.validator,
+    s.validation_comment,
+    s.observers,
+    s.id_digitiser,
+    s.determiner,
+    s.comment_context,
+    s.comment_description,
+    s.meta_validation_date,
+    s.meta_create_date,
+    s.meta_update_date,
+    s.last_action,
+    d.id_dataset,
+    d.dataset_name,
+    d.id_acquisition_framework,
+    s.id_nomenclature_geo_object_nature,
+    s.id_nomenclature_info_geo_type,
+    s.id_nomenclature_grp_typ,
+    s.id_nomenclature_obs_meth,
+    s.id_nomenclature_obs_technique,
+    s.id_nomenclature_bio_status,
+    s.id_nomenclature_bio_condition,
+    s.id_nomenclature_naturalness,
+    s.id_nomenclature_exist_proof,
+    s.id_nomenclature_valid_status,
+    s.id_nomenclature_diffusion_level,
+    s.id_nomenclature_life_stage,
+    s.id_nomenclature_sex,
+    s.id_nomenclature_obj_count,
+    s.id_nomenclature_type_count,
+    s.id_nomenclature_sensitivity,
+    s.id_nomenclature_observation_status,
+    s.id_nomenclature_blurring,
+    s.id_nomenclature_source_status,
+    s.id_nomenclature_determination_method,
+    sources.name_source,
+    sources.url_source,
+    t.cd_nom,
+    t.cd_ref,
+    t.nom_valide,
+    t.lb_nom,
+    t.nom_vern
+   FROM gn_synthese.synthese s
+     JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
+     JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
+     JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source;
+
+
+CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS 
+ WITH deco AS (
+         SELECT s_1.id_synthese,
+            n1.label_default AS "ObjGeoTyp",
+            n2.label_default AS "methGrp",
+            n3.label_default AS "obsMeth",
+            n4.label_default AS "obsTech",
+            n5.label_default AS "ocEtatBio",
+            n6.label_default AS "ocStatBio",
+            n7.label_default AS "ocNat",
+            n8.label_default AS "preuveOui",
+            n9.label_default AS "difNivPrec",
+            n10.label_default AS "ocStade",
+            n11.label_default AS "ocSex",
+            n12.label_default AS "objDenbr",
+            n13.label_default AS "denbrTyp",
+            n14.label_default AS "sensiNiv",
+            n15.label_default AS "statObs",
+            n16.label_default AS "dEEFlou",
+            n17.label_default AS "statSource",
+            n18.label_default AS "typInfGeo",
+            n19.label_default AS "ocMethDet"
+           FROM gn_synthese.synthese s_1
+            LEFT JOIN ref_nomenclatures.t_nomenclatures n1 ON s_1.id_nomenclature_geo_object_nature = n1.id_nomenclature
+            LEFT JOIN ref_nomenclatures.t_nomenclatures n2 ON s_1.id_nomenclature_grp_typ = n2.id_nomenclature
+            LEFT JOIN ref_nomenclatures.t_nomenclatures n3 ON s_1.id_nomenclature_obs_meth = n3.id_nomenclature
+            LEFT JOIN ref_nomenclatures.t_nomenclatures n4 ON s_1.id_nomenclature_obs_technique = n4.id_nomenclature
+            LEFT JOIN ref_nomenclatures.t_nomenclatures n5 ON s_1.id_nomenclature_bio_status = n5.id_nomenclature
+            LEFT JOIN ref_nomenclatures.t_nomenclatures n6 ON s_1.id_nomenclature_bio_condition = n6.id_nomenclature
+            LEFT JOIN ref_nomenclatures.t_nomenclatures n7 ON s_1.id_nomenclature_naturalness = n7.id_nomenclature
+            LEFT JOIN ref_nomenclatures.t_nomenclatures n8 ON s_1.id_nomenclature_exist_proof = n8.id_nomenclature
+            LEFT JOIN ref_nomenclatures.t_nomenclatures n9 ON s_1.id_nomenclature_diffusion_level = n9.id_nomenclature
+            LEFT JOIN ref_nomenclatures.t_nomenclatures n10 ON s_1.id_nomenclature_life_stage = n10.id_nomenclature
+            LEFT JOIN ref_nomenclatures.t_nomenclatures n11 ON s_1.id_nomenclature_sex = n11.id_nomenclature
+            LEFT JOIN ref_nomenclatures.t_nomenclatures n12 ON s_1.id_nomenclature_obj_count = n12.id_nomenclature
+            LEFT JOIN ref_nomenclatures.t_nomenclatures n13 ON s_1.id_nomenclature_type_count = n13.id_nomenclature
+            LEFT JOIN ref_nomenclatures.t_nomenclatures n14 ON s_1.id_nomenclature_sensitivity = n14.id_nomenclature
+            LEFT JOIN ref_nomenclatures.t_nomenclatures n15 ON s_1.id_nomenclature_observation_status = n15.id_nomenclature
+            LEFT JOIN ref_nomenclatures.t_nomenclatures n16 ON s_1.id_nomenclature_blurring = n16.id_nomenclature
+            LEFT JOIN ref_nomenclatures.t_nomenclatures n17 ON s_1.id_nomenclature_source_status = n17.id_nomenclature
+            LEFT JOIN ref_nomenclatures.t_nomenclatures n18 ON s_1.id_nomenclature_info_geo_type = n18.id_nomenclature
+            LEFT JOIN ref_nomenclatures.t_nomenclatures n19 ON s_1.id_nomenclature_determination_method = n19.id_nomenclature
+        )
+ SELECT s.id_synthese AS "idSynthese",
+    s.unique_id_sinp AS "permId",
+    s.unique_id_sinp_grp AS "permIdGrp",
+    s.count_min AS "denbrMin",
+    s.count_max AS "denbrMax",
+    s.meta_v_taxref AS "vTAXREF",
+    s.sample_number_proof AS "sampleNumb",
+    s.digital_proof AS "preuvNum",
+    s.non_digital_proof AS "preuvNoNum",
+    s.altitude_min AS "altMin",
+    s.altitude_max AS "altMax",
+    public.ST_astext(s.the_geom_4326) AS wkt,
+    s.date_min AS "dateDebut",
+    s.date_max AS "dateFin",
+    s.validator AS validateur,
+    s.observers AS observer,
+    s.id_digitiser AS id_digitiser,
+    s.determiner AS detminer,
+    s.comment_context AS "obsCtx",
+    s.comment_description AS "obsDescr",
+    s.meta_create_date,
+    s.meta_update_date,
+    d.id_dataset AS "jddId",
+    d.dataset_name AS "jddCode",
+    d.id_acquisition_framework,
+    t.cd_nom AS "cdNom",
+    t.cd_ref AS "cdRef",
+    s.nom_cite AS "nomCite",
+    public.ST_x(public.ST_transform(s.the_geom_point, 2154)) AS x_centroid,
+    public.ST_y(public.ST_transform(s.the_geom_point, 2154)) AS y_centroid,
+    COALESCE(s.meta_update_date, s.meta_create_date) AS lastact,
+    public.ST_asgeojson(s.the_geom_4326) AS geojson_4326,
+    public.ST_asgeojson(s.the_geom_local) AS geojson_local,
+    deco."ObjGeoTyp",
+    deco."methGrp",
+    deco."obsMeth",
+    deco."obsTech",
+    deco."ocEtatBio",
+    deco."ocNat",
+    deco."preuveOui",
+    deco."difNivPrec",
+    deco."ocStade",
+    deco."ocSex",
+    deco."objDenbr",
+    deco."denbrTyp",
+    deco."sensiNiv",
+    deco."statObs",
+    deco."dEEFlou",
+    deco."statSource",
+    deco."typInfGeo"
+   FROM gn_synthese.synthese s
+     JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
+     JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
+     JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source
+     JOIN deco ON deco.id_synthese = s.id_synthese;
