@@ -1229,12 +1229,12 @@ Modifiez la variable ``EXCLUDED_COLUMNS``
 D'autres élements sont paramètrables dans le module synthese. La liste complète est disponible dans le fichier ``config/geonature_config.toml`` rubrique ``SYNTHESE``.
 
 
-Recherche d'éventuels doublons dans la synthèse (sans s'appuyer sur les identifiants uniques)
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Vérifier les doublons
+"""""""""""""""""""""
 
-Au fil des échanges, il est fréquent de récupérer voire produire des doublons n'ayant pas un identifiant unique pour les repérer (double saisies, transferts sans identifiants etc...). 
+Au fil des échanges, il est fréquent de récupérer, voire produire, des doublons n'ayant pas un identifiant unique pour les repérer (double saisies, transferts sans identifiants etc...). 
 
-Ci-dessous un exemple de script pour repérer les "doublons" ou données très similaires. Ce script renvoie toutes les lignes pour lesquelles la synthèse repère :
+Ci-dessous un exemple de script pour repérer les "doublons" ou données très similaires dans la synthèse, sans s'appuyer sur les identifiants uniques. Ce script renvoie toutes les lignes pour lesquelles des données concernent :
 
 - la même espèce au même stade et avec le même sexe, 
 - vue aux mêmes dates, 
