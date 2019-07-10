@@ -1421,6 +1421,16 @@ WHERE o.code_object = 'TDatasets' AND t.module_code = 'FP';
 -- ALTER TABLE v1_florepatri.t_apresence ADD COLUMN diffusable boolean;
 -- ALTER TABLE v1_florepatri.t_apresence ALTER COLUMN diffusable SET DEFAULT true;
 
+ALTER TABLE v1_florepatri.t_zprospection DISABLE TRIGGER tri_insert_zp;
+ALTER TABLE v1_florepatri.t_zprospection DISABLE TRIGGER tri_update_synthese_zp;
+ALTER TABLE v1_florepatri.t_zprospection DISABLE TRIGGER tri_update_zp;
+ALTER TABLE v1_florepatri.t_apresence DISABLE TRIGGER tri_delete_synthese_ap;
+ALTER TABLE v1_florepatri.t_apresence DISABLE TRIGGER tri_insert_ap;
+ALTER TABLE v1_florepatri.t_apresence DISABLE TRIGGER tri_insert_synthese_ap;
+ALTER TABLE v1_florepatri.t_apresence DISABLE TRIGGER tri_update_ap;
+ALTER TABLE v1_florepatri.t_apresence DISABLE TRIGGER tri_update_synthese_ap;
+ALTER TABLE v1_florepatri.cor_zp_obs DISABLE TRIGGER tri_insert_synthese_cor_zp_obs;
+
 INSERT INTO v1_florepatri.bib_comptages_methodo SELECT * FROM v1_compat.bib_comptages_methodo;
 INSERT INTO v1_florepatri.bib_frequences_methodo_new SELECT * FROM v1_compat.bib_frequences_methodo_new;
 INSERT INTO v1_florepatri.bib_pentes SELECT * FROM v1_compat.bib_pentes;
@@ -1430,8 +1440,87 @@ INSERT INTO v1_florepatri.bib_physionomies SELECT * FROM v1_compat.bib_physionom
 INSERT INTO v1_florepatri.bib_rezo_ecrins SELECT * FROM v1_compat.bib_rezo_ecrins;
 INSERT INTO v1_florepatri.bib_statuts SELECT * FROM v1_compat.bib_statuts;
 INSERT INTO v1_florepatri.bib_taxons_fp SELECT * FROM v1_compat.bib_taxons_fp;
-INSERT INTO v1_florepatri.t_zprospection SELECT * FROM v1_compat.t_zprospection;
-INSERT INTO v1_florepatri.t_apresence
+INSERT INTO v1_florepatri.t_zprospection (
+  indexzp,
+  id_secteur,
+  id_protocole,
+  id_lot,
+  id_organisme,
+  dateobs,
+  date_insert,
+  date_update,
+  validation,
+  topo_valid,
+  erreur_signalee,
+  supprime,
+  cd_nom,
+  saisie_initiale,
+  insee,
+  taxon_saisi,
+  the_geom_local,
+  geom_point_3857,
+  geom_mixte_3857,
+  srid_dessin,
+  the_geom_3857,
+  id_rezo_ecrins
+) 
+SELECT 
+  indexzp,
+  id_secteur,
+  id_protocole,
+  id_lot,
+  id_organisme,
+  dateobs,
+  date_insert,
+  date_update,
+  validation,
+  topo_valid,
+  erreur_signalee,
+  supprime,
+  cd_nom,
+  saisie_initiale,
+  insee,
+  taxon_saisi,
+  the_geom_local,
+  geom_point_3857,
+  geom_mixte_3857,
+  srid_dessin,
+  the_geom_3857,
+  id_rezo_ecrins 
+FROM v1_compat.t_zprospection;
+
+INSERT INTO v1_florepatri.t_apresence (
+  indexap,
+  codepheno,
+  indexzp,
+  altitude_saisie,
+  surfaceap,
+  frequenceap,
+  date_insert,
+  date_update,
+  topo_valid,
+  supprime,
+  erreur_signalee,
+  diffusable,
+  altitude_sig,
+  altitude_retenue,
+  insee,
+  id_frequence_methodo_new ,
+  nb_transects_frequence,
+  nb_points_frequence,
+  nb_contacts_frequence ,
+  id_comptage_methodo,
+  nb_placettes_comptage,
+  surface_placette_comptage,
+  remarques,
+  the_geom_local,
+  the_geom_3857,
+  longueur_pas,
+  effectif_placettes_steriles,
+  effectif_placettes_fertiles,
+  total_steriles,
+  total_fertiles
+)
 SELECT 
   indexap,
   codepheno,
@@ -1463,7 +1552,7 @@ SELECT
   effectif_placettes_fertiles,
   total_steriles,
   total_fertiles
- FROM v1_compat.t_apresence;
+FROM v1_compat.t_apresence;
 INSERT INTO v1_florepatri.cor_zp_obs SELECT * FROM v1_compat.cor_zp_obs;
 INSERT INTO v1_florepatri.cor_taxon_statut SELECT * FROM v1_compat.cor_taxon_statut;
 INSERT INTO v1_florepatri.cor_ap_physionomie SELECT * FROM v1_compat.cor_ap_physionomie;
@@ -1479,3 +1568,159 @@ ALTER TABLE v1_florepatri.t_apresence ADD COLUMN unique_id_sinp_fp uuid;
 UPDATE v1_florepatri.t_apresence SET unique_id_sinp_fp = public.uuid_generate_v4();
 ALTER TABLE v1_florepatri.t_apresence ALTER COLUMN unique_id_sinp_fp SET NOT NULL;
 ALTER TABLE v1_florepatri.t_apresence ALTER COLUMN unique_id_sinp_fp SET DEFAULT public.uuid_generate_v4();
+
+ALTER TABLE v1_florepatri.t_zprospection ENABLE TRIGGER tri_insert_zp;
+ALTER TABLE v1_florepatri.t_zprospection ENABLE TRIGGER tri_update_synthese_zp;
+ALTER TABLE v1_florepatri.t_zprospection ENABLE TRIGGER tri_update_zp;
+ALTER TABLE v1_florepatri.t_apresence ENABLE TRIGGER tri_delete_synthese_ap;
+ALTER TABLE v1_florepatri.t_apresence ENABLE TRIGGER tri_insert_ap;
+ALTER TABLE v1_florepatri.t_apresence ENABLE TRIGGER tri_insert_synthese_ap;
+ALTER TABLE v1_florepatri.t_apresence ENABLE TRIGGER tri_update_ap;
+ALTER TABLE v1_florepatri.t_apresence ENABLE TRIGGER tri_update_synthese_ap;
+ALTER TABLE v1_florepatri.cor_zp_obs ENABLE TRIGGER tri_insert_synthese_cor_zp_obs;
+
+--INSERT dans la synthese
+INSERT INTO gn_synthese.synthese
+    (
+      unique_id_sinp,
+      unique_id_sinp_grp,
+      id_source,
+      id_module,
+      entity_source_pk_value,
+      id_dataset,
+      id_nomenclature_geo_object_nature,
+      id_nomenclature_grp_typ,
+      id_nomenclature_obs_meth,
+      id_nomenclature_bio_status,
+      id_nomenclature_bio_condition,
+      id_nomenclature_naturalness,
+      id_nomenclature_exist_proof,
+      id_nomenclature_valid_status,
+      id_nomenclature_diffusion_level,
+      id_nomenclature_life_stage,
+      id_nomenclature_sex,
+      id_nomenclature_obj_count,
+      id_nomenclature_type_count,
+      id_nomenclature_sensitivity,
+      id_nomenclature_observation_status,
+      id_nomenclature_blurring,
+      id_nomenclature_source_status,
+      id_nomenclature_info_geo_type,
+      count_min,
+      count_max,
+      cd_nom,
+      nom_cite,
+      meta_v_taxref,
+      altitude_min,
+      altitude_max,
+      the_geom_4326,
+      the_geom_point,
+      the_geom_local,
+      date_min,
+      date_max,
+      validator,
+      observers,
+      determiner,
+      comment_context,
+      comment_description,
+      meta_create_date,
+      meta_update_date,
+      last_action
+    )
+ SELECT
+      ap.unique_id_sinp_fp,
+      zp.unique_id_sinp_grp,
+      104, --TODO 104 = PNE
+      (SELECT id_module FROM gn_commons.t_modules WHERE module_code = '4' LIMIT 1),
+      ap.indexap,
+      zp.id_lot,
+      ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO','In'),
+      ref_nomenclatures.get_id_nomenclature('TYP_GRP','OBS'),
+      ref_nomenclatures.get_id_nomenclature('METH_OBS','0'),
+      ref_nomenclatures.get_id_nomenclature('STATUT_BIO','12'),
+      ref_nomenclatures.get_id_nomenclature('ETA_BIO','2'),
+      ref_nomenclatures.get_id_nomenclature('NATURALITE','1'),
+      ref_nomenclatures.get_id_nomenclature('PREUVE_EXIST','2'),
+      CASE 
+        WHEN zp.validation=true THEN ref_nomenclatures.get_id_nomenclature('STATUT_VALID','1')
+        WHEN zp.validation=false THEN ref_nomenclatures.get_id_nomenclature('STATUT_VALID','0')
+      END,
+      ref_nomenclatures.get_id_nomenclature('NIV_PRECIS','5'),
+      CASE 
+        WHEN ap.codepheno=1 THEN ref_nomenclatures.get_id_nomenclature('STADE_VIE','132')
+        WHEN ap.codepheno=2 THEN ref_nomenclatures.get_id_nomenclature('STADE_VIE','128')
+        WHEN ap.codepheno=3 THEN ref_nomenclatures.get_id_nomenclature('STADE_VIE','129')
+        WHEN ap.codepheno=4 THEN ref_nomenclatures.get_id_nomenclature('STADE_VIE','127')
+        WHEN ap.codepheno=5 THEN ref_nomenclatures.get_id_nomenclature('STADE_VIE','130')
+        WHEN ap.codepheno=6 THEN ref_nomenclatures.get_id_nomenclature('STADE_VIE','132')
+        WHEN ap.codepheno=7 THEN ref_nomenclatures.get_id_nomenclature('STADE_VIE','19')
+        WHEN ap.codepheno=8 THEN ref_nomenclatures.get_id_nomenclature('STADE_VIE','131')
+        ELSE ref_nomenclatures.get_id_nomenclature('STADE_VIE','0')
+      END,
+      ref_nomenclatures.get_id_nomenclature('SEXE','6'),
+      ref_nomenclatures.get_id_nomenclature('OBJ_DENBR','NSP'),
+      CASE 
+        WHEN ap.id_comptage_methodo=1 THEN ref_nomenclatures.get_id_nomenclature('TYP_DENBR','Co')
+        WHEN ap.id_comptage_methodo=2 THEN ref_nomenclatures.get_id_nomenclature('TYP_DENBR','Ca')
+        ELSE ref_nomenclatures.get_id_nomenclature('TYP_DENBR','NSP')
+      END,
+      NULL,--todo sensitivity
+      ref_nomenclatures.get_id_nomenclature('STATUT_OBS','Pr'),
+      ref_nomenclatures.get_id_nomenclature('DEE_FLOU','NON'),
+      ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE','Te'),
+      ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO','1'),
+      ap.total_steriles + ap.total_fertiles,--count_min
+      ap.total_steriles + ap.total_fertiles,--count_max
+      zp.cd_nom,
+      COALESCE(zp.taxon_saisi,'non disponible'),
+      'Taxref V11.0',
+      ap.altitude_retenue,--altitude_min
+      ap.altitude_retenue,--altitude_max
+      public.st_transform(ap.the_geom_3857,4326),
+      public.st_transform(public.ST_pointonsurface(ap.the_geom_3857),4326),
+      ap.the_geom_local,
+      zp.dateobs,--date_min
+      zp.dateobs,--date_max
+      'Cédric Dentant',
+      array_to_string(array_agg(r.prenom_role || ' ' || r.nom_role), ', '),--observers
+      array_to_string(array_agg(r.prenom_role || ' ' || r.nom_role), ', '),--determiner
+      zp.saisie_initiale,
+      ap.remarques,
+      ap.date_insert,
+      ap.date_update,
+      CASE 
+        WHEN ap.date_insert = ap.date_update THEN 'c'
+        ELSE 'u'
+      END
+  FROM v1_florepatri.t_apresence ap
+  JOIN v1_florepatri.t_zprospection zp ON zp.indexzp = ap.indexzp 
+  LEFT JOIN v1_florepatri.cor_zp_obs c  ON c.indexzp = zp.indexzp
+  JOIN utilisateurs.t_roles r ON r.id_role = c.codeobs
+  WHERE ap.supprime = false
+  GROUP BY
+      ap.unique_id_sinp_fp,
+      zp.unique_id_sinp_grp,
+      ap.indexap,
+      zp.id_lot,
+      zp.validation,
+      ap.codepheno,
+      ap.id_comptage_methodo,
+      ap.total_fertiles,
+      ap.total_steriles,
+      zp.cd_nom,
+      zp.taxon_saisi,
+      zp.saisie_initiale,
+      ap.altitude_retenue,
+      ap.the_geom_3857,
+      ap.the_geom_local,
+      zp.dateobs,
+      ap.remarques,
+      zp.saisie_initiale,
+      ap.date_insert,
+      ap.date_update;
+-- insertion des observateurs dans cor_observer_synthese
+INSERT INTO gn_synthese.cor_observer_synthese
+  SELECT s.id_synthese, c.codeobs
+  FROM v1_florepatri.t_apresence ap
+  JOIN v1_florepatri.cor_zp_obs c ON c.indexzp = ap.indexzp
+  JOIN gn_synthese.synthese s ON s.entity_source_pk_value::integer = ap.indexap AND id_source = 104;
