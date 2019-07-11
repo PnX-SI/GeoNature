@@ -31,7 +31,7 @@ cp -r $myrootpath/geonature_old/external_modules/* external_modules
 rm -r external_modules/occtax
 # Rapatrier le fichier de conf de Occtax et de validation
 cp $myrootpath/geonature_old/contrib/occtax/config/conf_gn_module.toml $myrootpath/$currentdir/contrib/occtax/config/conf_gn_module.toml
-cp $myrootpath/geonature_old/contrib/gn_module_validation/config/conf_gn_module.toml $myrootpath/$currentdir/contrib/occtax/config/conf_gn_module.toml
+cp $myrootpath/geonature_old/contrib/gn_module_validation/config/conf_gn_module.toml $myrootpath/$currentdir/contrib/gn_module_validation/config/conf_gn_module.toml
 
 # on supprime le lien symbolique qui pointe vers geonature_old/contrib/occtax/frontend/assets
 rm $myrootpath/$currentdir/frontend/src/external_assets/occtax
@@ -39,7 +39,7 @@ rm $myrootpath/$currentdir/frontend/src/external_assets/validation
 
 # on recrée le lien symbolique sur le nouveau répertoire de GeoNature
 ln -s $myrootpath/$currentdir/contrib/occtax external_modules/occtax
-ln -s $myrootpath/$currentdir/contrib/gn_module_validation external_modules/occtax
+ln -s $myrootpath/$currentdir/contrib/gn_module_validation external_modules/validation
 
 cp -r $myrootpath/geonature_old/frontend/src/external_assets/* $myrootpath/$currentdir/frontend/src/external_assets/
 
