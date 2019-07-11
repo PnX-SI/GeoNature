@@ -12,3 +12,5 @@ def gnmodule_install_app(gn_db, gn_app):
         # To run a SQL script use the gn_db parameter
         gn_db.session.execute(open(str(ROOT_DIR / "data/dashboard.sql"), "r").read())
         gn_db.session.commit()
+        # Install frontend
+        subprocess.call(["npm install"], cwd=str(ROOT_DIR / "frontend"), shell=True)

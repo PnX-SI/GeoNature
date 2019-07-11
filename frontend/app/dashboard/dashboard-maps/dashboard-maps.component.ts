@@ -81,14 +81,14 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     //// Légende concernant le nombre d'observations
     this.divLegendObs = L.DomUtil.create('div', 'divLegend');
     this.divLegendObs.innerHTML += "<b>Nombre d'observations</b><br/>";
-    const gradesObs = [0, 1000, 2000, 3000, 4000, 5000, 10000];
+    const gradesObs = [1, 1000, 2000, 3000, 4000, 5000, 10000];
     for (var i = 0; i < gradesObs.length; i++) {
       this.divLegendObs.innerHTML += '<i style="background:' + this.getColorObs(gradesObs[i] + 1) + '"></i>' + gradesObs[i] + (gradesObs[i + 1] ? '&ndash;' + gradesObs[i + 1] + '<br>' : '+');
     }
     //// Légende concernant le nombre de taxons
     this.divLegendTax = L.DomUtil.create('div', 'divLegend');
     this.divLegendTax.innerHTML += "<b>Nombre de taxons</b><br/>";
-    const gradesTax = [0, 100, 200, 300, 400, 500, 600];
+    const gradesTax = [1, 100, 200, 300, 400, 500, 600];
     for (var i = 0; i < gradesTax.length; i++) {
       this.divLegendTax.innerHTML += '<i style="background:' + this.getColorTax(gradesTax[i] + 1) + '"></i>' + gradesTax[i] + (gradesTax[i + 1] ? '&ndash;' + gradesTax[i + 1] + '<br>' : '+');
     }
@@ -235,9 +235,6 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   // Couleurs de la carte relative au nombre d'observations
   getColorObs(obs) {
     var nb_classes = 7;
-    // if (this.mapForm.value.nbClasses) {
-    //   nb_classes = this.mapForm.value.nbClasses;
-    // }
     const gradesObs = [1000, 2000, 3000, 4000, 5000, 10000];
     for (var i = 0; i < nb_classes - 1; i++) {
       if (obs < gradesObs[i]) {
@@ -250,9 +247,6 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   // Couleurs de la carte relative au nombre de taxons
   getColorTax(tax) {
     var nb_classes = 7;
-    // if (this.mapForm.value.nbClasses) {
-    //   nb_classes = this.mapForm.value.nbClasses;
-    // }
     const gradesTax = [100, 200, 300, 400, 500, 600];
     for (var i = 0; i < nb_classes - 1; i++) {
       if (tax < gradesTax[i]) {
