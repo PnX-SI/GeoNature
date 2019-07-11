@@ -84,15 +84,14 @@ class SyntheseQuery:
         """
         allowed_datasets = TDatasets.get_user_datasets(user)
         if user.value_filter in ("1", "2"):
-            self.add_join(
-                CorObserverSynthese,
-                CorObserverSynthese.id_synthese,
-                self.model.id_synthese,
-                join_type="left",
+            # get id synthese where user is observer
+            subquery_observers = (
+                select([CorObserverSynthese.id_synthese])
+                .select_from(CorObserverSynthese)
+                .where(CorObserverSynthese.id_role == user.id_role)
             )
-
             ors_filters = [
-                CorObserverSynthese.id_role == user.id_role,
+                self.model.id_synthese.in_(subquery_observers),
                 self.model.id_digitiser == user.id_role,
             ]
             if current_app.config["SYNTHESE"]["CRUVED_SEARCH_WITH_OBSERVER_AS_TXT"]:
@@ -106,6 +105,7 @@ class SyntheseQuery:
             elif user.value_filter == "2":
                 ors_filters.append(self.model.id_dataset.in_(allowed_datasets))
                 self.query = self.query.where(or_(*ors_filters))
+            print(self.query)
 
     def filter_taxonomy(self):
         """
