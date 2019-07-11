@@ -2,13 +2,16 @@
 CHANGELOG
 =========
 
-2.2.0 (unreleased)
+2.1.1 (unreleased)
+------------------
+
+https://github.com/PnX-SI/GeoNature/compare/2.1.0...develop
 
 **🚀 Nouveautés**
 
 * Compatibilité Debian 10
 * Factorisation du formulaire de recherche de la synthèse (utilisé dans le module synthese et validation)
-* Simplification du module de recherche avancé d'un taxon en le limitant à l'ordre (performances)
+* Simplification et correction du module de recherche avancée d'un taxon en le limitant à l'ordre (performances)
 * Ajout d'un composant de recherche taxonomique avancé basé sur les rangs taxonomiques (modules synthese et validation), basé sur la nouvelle fonction ``taxonomie.find_all_taxons_children`` ajoutée à TaxHub
 * Mise en place d'une documentation développeur automatique de l'API à partir des docstring et des composants frontend, générée par Travis et désormais accessible à l'adresse http://docs.geonature.fr (#673)
 * Amélioration de la documentation (triggers, installation, module validation)
@@ -29,6 +32,7 @@ CHANGELOG
 * Occtax : correction du parametre ``DATE_FORM_WITH_TODAY`` non pris en compte (#670)
 * Correction du composant ``dynamicForm`` sur les champs de recherche de type texte (recherche sur Preuve numérique) (#530)
 * Désactivation du mode "enchainer les relevés" en mode édition (#699)
+* Correction de ``gn_monitoring`` : utiliser ``gn_commons.t_modules`` à la place de ``utilisateurs.t_applications`` pour associer des sites de suivi à des modules
 * Fix de SQLalchemy 1.3.3 et jointure sur objet Table
 * Le trigger remplissant ``cor_area_synthese`` en intersectant ``gn_synthese.synthese`` avec ``ref_geo.l_areas`` ne prend plus que les zonages ayant le champs ``enabled=true``
 * Correction ``dict()`` et version de Python (par @jpm-cbna)
