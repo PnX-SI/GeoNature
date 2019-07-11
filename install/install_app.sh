@@ -144,7 +144,7 @@ cd ../frontend
 wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-nvm install 8.16.0
+nvm install 8.1.1
 
 echo " ############"
 echo "Installation des paquets npm"
