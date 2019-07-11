@@ -106,12 +106,12 @@ UNION ALL
   GROUP BY vm_synthese.group2_inpn
 WITH DATA;
 
-CREATE MATERIALIZED VIEW gn_dashboard.vm_geom_simplified AS 
- SELECT DISTINCT l.id_area,
-    l.id_type,
-    l.area_name,
-    st_simplifypreservetopology(l.geom, 5::double precision) AS geom_simplified
-   FROM ref_geo.l_areas l
-     JOIN ref_geo.bib_areas_types b ON l.id_type = b.id_type
-  WHERE b.type_code::text = 'COM'::text
-WITH DATA;
+-- CREATE MATERIALIZED VIEW gn_dashboard.vm_geom_simplified AS 
+--  SELECT DISTINCT l.id_area,
+--     l.id_type,
+--     l.area_name,
+--     st_simplifypreservetopology(l.geom, 5::double precision) AS geom_simplified
+--    FROM ref_geo.l_areas l
+--      JOIN ref_geo.bib_areas_types b ON l.id_type = b.id_type
+--   WHERE b.type_code::text = 'COM'::text
+-- WITH DATA;
