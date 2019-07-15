@@ -1406,8 +1406,9 @@ WHERE cd_nomenclature = '20' AND id_type = ref_nomenclatures.get_id_nomenclature
 --suppression du terme PDA dans la liste des observateurs
 UPDATE utilisateurs.t_listes SET nom_liste = 'Observateurs flore prioritaire' WHERE nom_liste ILIKE 'PDA_observateurs';
 --Création du module
+DELETE FROM gn_commons.t_modules WHERE module_code = 'FP';
 INSERT INTO gn_commons.t_modules (module_code, module_label, module_picto, module_path, module_external_url, module_target, active_backend, active_frontend) 
-VALUES ('FP','Flore Prioritaire','fa-leaf-heart',NULL,'https://mondomaine.fr/pda','_blank', false, true);
+VALUES ('FP','Flore Prioritaire','fa-leaf-heart',NULL,'https://mondomaine.fr/pda','_blank', false, false);
 --gestion des permissions (TODO car cette requête ne fait rien)
 INSERT INTO gn_permissions.cor_object_module (id_object, id_module)
 SELECT o.id_object, t.id_module
@@ -1676,9 +1677,9 @@ INSERT INTO gn_synthese.synthese
       'Taxref V11.0',
       ap.altitude_retenue,--altitude_min
       ap.altitude_retenue,--altitude_max
-      public.st_transform(ap.the_geom_3857,4326),
-      public.st_transform(public.ST_pointonsurface(ap.the_geom_3857),4326),
-      ap.the_geom_local,
+      public.st_transform(public.st_buffer(ap.the_geom_3857,0),4326),
+      public.st_transform(public.ST_pointonsurface(public.st_buffer(ap.the_geom_3857,0)),4326),
+      public.st_buffer(ap.the_geom_local, 0),
       zp.dateobs,--date_min
       zp.dateobs,--date_max
       'Cédric Dentant',
@@ -1723,4 +1724,4 @@ INSERT INTO gn_synthese.cor_observer_synthese
   SELECT s.id_synthese, c.codeobs
   FROM v1_florepatri.t_apresence ap
   JOIN v1_florepatri.cor_zp_obs c ON c.indexzp = ap.indexzp
-  JOIN gn_synthese.synthese s ON s.entity_source_pk_value::integer = ap.indexap AND id_source = 104;
+  JOIN gn_synthese.synthese s ON s.entity_source_pk_value::bigint = ap.indexap AND id_source = 104;
