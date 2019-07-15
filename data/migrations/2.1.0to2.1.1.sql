@@ -133,34 +133,34 @@ ALTER TABLE gn_commons.t_validations DROP COLUMN id_table_location;
 
 
 -- update fonction trigger validation
-CREATE OR REPLACE FUNCTION gn_commons.fct_trg_add_default_validation_status()
-  RETURNS trigger AS
-$BODY$
-DECLARE
-	theschema text := quote_ident(TG_TABLE_SCHEMA);
-	thetable text := quote_ident(TG_TABLE_NAME);
-	theuuidfieldname character varying(50);
-	theuuid uuid;
-  thecomment text := 'auto = default value';
-BEGIN
-  --Retouver le nom du champ stockant l'uuid de l'enregistrement en cours de validation
-	SELECT INTO theuuidfieldname gn_commons.get_uuid_field_name(theschema,thetable);
-  --Récupérer l'uuid de l'enregistrement en cours de validation
-	EXECUTE format('SELECT $1.%I', theuuidfieldname) INTO theuuid USING NEW;
-  --Insertion du statut de validation et des informations associées dans t_validations
-  INSERT INTO gn_commons.t_validations (uuid_attached_row,id_nomenclature_valid_status,id_validator,validation_comment,validation_date)
-  VALUES(
-    theuuid,
-    ref_nomenclatures.get_default_nomenclature_value('STATUT_VALID'), --comme la fonction est générique, cette valeur par défaut doit exister et est la même pour tous les modules
-    null,
-    thecomment,
-    NOW()
-  );
-  RETURN NEW;
-END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
+  CREATE OR REPLACE FUNCTION gn_commons.fct_trg_add_default_validation_status()
+    RETURNS trigger AS
+  $BODY$
+  DECLARE
+    theschema text := quote_ident(TG_TABLE_SCHEMA);
+    thetable text := quote_ident(TG_TABLE_NAME);
+    theuuidfieldname character varying(50);
+    theuuid uuid;
+    thecomment text := 'auto = default value';
+  BEGIN
+    --Retouver le nom du champ stockant l'uuid de l'enregistrement en cours de validation
+    SELECT INTO theuuidfieldname gn_commons.get_uuid_field_name(theschema,thetable);
+    --Récupérer l'uuid de l'enregistrement en cours de validation
+    EXECUTE format('SELECT $1.%I', theuuidfieldname) INTO theuuid USING NEW;
+    --Insertion du statut de validation et des informations associées dans t_validations
+    INSERT INTO gn_commons.t_validations (uuid_attached_row,id_nomenclature_valid_status,id_validator,validation_comment,validation_date)
+    VALUES(
+      theuuid,
+      ref_nomenclatures.get_default_nomenclature_value('STATUT_VALID'), --comme la fonction est générique, cette valeur par défaut doit exister et est la même pour tous les modules
+      null,
+      thecomment,
+      NOW()
+    );
+    RETURN NEW;
+  END;
+  $BODY$
+    LANGUAGE plpgsql VOLATILE
+    COST 100;
 
 
 -- suppression des aires de cor_area where enabled = false
@@ -540,3 +540,94 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
      JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source
      JOIN deco ON deco.id_synthese = s.id_synthese;
+
+
+-- ajout d'index 
+
+CREATE INDEX i_t_releves_occtax_id_dataset
+  ON pr_occtax.t_releves_occtax
+  USING btree
+  (id_dataset);
+
+CREATE INDEX i_t_releves_occtax_geom_4326
+  ON pr_occtax.t_releves_occtax
+  USING gist
+  (geom_4326);
+
+
+CREATE INDEX i_t_occurrences_occtax_id_releve_occtax
+  ON pr_occtax.t_occurrences_occtax
+  USING btree
+  (id_releve_occtax);
+
+CREATE INDEX i_t_occurrences_occtax_cd_nom
+  ON pr_occtax.t_occurrences_occtax
+  USING btree
+  (cd_nom);
+
+
+CREATE INDEX i_cor_counting_occtax_id_occurrence_occtax
+  ON pr_occtax.cor_counting_occtax
+  USING btree
+  (id_occurrence_occtax);
+
+
+CREATE INDEX i_t_datasets_id_acquisition_framework
+  ON gn_meta.t_datasets
+  USING btree
+  (id_acquisition_framework);
+
+
+-- suppression de l'uuid sur cor_role_releve - replacement par un serial
+ALTER TABLE pr_occtax.cor_role_releves_occtax DROP CONSTRAINT pk_cor_role_releves_occtax;
+ALTER TABLE pr_occtax.cor_role_releves_occtax ADD PRIMARY KEY (id_releve_occtax, id_role);
+
+
+-- update vue v_releve_list
+
+DROP VIEW pr_occtax.v_releve_list;
+CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS 
+WITH 
+    occurrences (id_releve_occtax, taxons, nb_occ) as (
+    SELECT id_releve_occtax, 
+    string_agg(DISTINCT t.nom_valide::text, ', '::text) AS taxons,
+    count(DISTINCT occ.id_occurrence_occtax) AS nb_occ
+    FROM pr_occtax.t_occurrences_occtax occ
+    INNER JOIN taxonomie.taxref t ON occ.cd_nom = t.cd_nom
+    GROUP BY id_releve_occtax
+),
+observateurs (id_releve_occtax, nb_observer, observers_txt) as (
+    SELECT id_releve_occtax, 
+    count(DISTINCT obs.id_role) AS nb_observer,
+    string_agg(DISTINCT CONCAT_WS(' ', NULLIF(obs.nom_role, ''), NULLIF(obs.prenom_role, '')), ', '::text) as observers
+    FROM pr_occtax.cor_role_releves_occtax cor_role
+    INNER JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
+    GROUP BY id_releve_occtax
+)
+
+SELECT rel.id_releve_occtax,
+    rel.id_dataset,
+    rel.id_digitiser,
+    rel.date_min,
+    rel.date_max,
+    rel.altitude_min,
+    rel.altitude_max,
+    rel.meta_device_entry,
+    rel.comment,
+    rel.geom_4326,
+    rel."precision",
+    rel.observers_txt,
+    dataset.dataset_name,
+    taxons,
+    CONCAT_WS('<br/>', 
+    	taxons, 
+    	CASE WHEN rel.date_min::date = rel.date_max::date THEN to_char(rel.date_min, 'DD/MM/YYYY') ELSE CONCAT(to_char(rel.date_min, 'DD/MM/YYYY'), ' - ', to_char(rel.date_max::date, 'DD/MM/YYYY')) END, 
+    	COALESCE(cor_role.observers_txt, rel.observers_txt)
+    ) AS leaflet_popup,
+    COALESCE(cor_role.observers_txt, rel.observers_txt) AS observateurs,
+    nb_occ,
+    nb_observer
+FROM pr_occtax.t_releves_occtax rel
+INNER JOIN gn_meta.t_datasets dataset ON dataset.id_dataset = rel.id_dataset
+LEFT JOIN observateurs cor_role ON cor_role.id_releve_occtax = rel.id_releve_occtax
+LEFT JOIN occurrences occ ON occ.id_releve_occtax = rel.id_releve_occtax;
