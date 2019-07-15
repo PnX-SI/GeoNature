@@ -57,11 +57,13 @@ def filter_query_with_cruved(
         )
 
     if user.value_filter in ("1", "2"):
-        q = q.outerjoin(
-            CorObserverSynthese, CorObserverSynthese.id_synthese == model_id_syn_col
+        sub_query_observers = (
+            DB.session.query(CorObserverSynthese.id_synthese)
+            .filter(CorObserverSynthese.id_role == user.id_role)
+            .subquery("sub_query_observers")
         )
         ors_filters = [
-            CorObserverSynthese.id_role == user.id_role,
+            model.id_synthese.in_(sub_query_observers),
             model_id_digitiser_column == user.id_role,
         ]
         if current_app.config["SYNTHESE"]["CRUVED_SEARCH_WITH_OBSERVER_AS_TXT"]:

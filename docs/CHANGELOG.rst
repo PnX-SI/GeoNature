@@ -9,7 +9,6 @@ https://github.com/PnX-SI/GeoNature/compare/2.1.0...develop
 
 **🚀 Nouveautés**
 
-* Compatibilité Debian 10
 * Factorisation du formulaire de recherche de la synthèse (utilisé dans le module synthese et validation)
 * Simplification et correction du module de recherche avancée d'un taxon en le limitant à l'ordre (performances)
 * Ajout d'un composant de recherche taxonomique avancé basé sur les rangs taxonomiques (modules synthese et validation), basé sur la nouvelle fonction ``taxonomie.find_all_taxons_children`` ajoutée à TaxHub
@@ -40,20 +39,13 @@ https://github.com/PnX-SI/GeoNature/compare/2.1.0...develop
 **⚠️ Notes de version**
 
 * Passer TaxHub en version 1.6.3
-* Passer le script de migration ``data/2.1.1to2.2.0.sql``
+* Passer le script de migration ``data/2.1.0to2.1.1.sql``
 * Si vous aviez modifier les id_nomenclatures dans la surcouche de la configuration du module validation, supprimer les car on se base maintenant sur les cd_nomenclatures
-* Lancer la commande de mise à jour de la configuration du module de validation
+* Suivez ensuite la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 * Nouvelle localisation de la doc : http://docs.geonature.fr
-
-::
-
-    cd /home/`whoami`/geonature/backend
-    source venv/bin/activate
-    geonature update_module_configuration validation
 
 **TODO**
 
-- Indiquer Debian 10 dans la doc ?
 - Indiquer template dans la doc DEV ?
 - Modifier version GN de data/migrations/v1tov2 ?
 - Commentaire des cd_nomenclature (style only ?) : https://github.com/PnX-SI/GeoNature/blob/develop/contrib/gn_module_validation/config/conf_schema_toml.py
