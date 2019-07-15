@@ -856,8 +856,9 @@ CREATE TRIGGER tri_update_synthese_stations_fs AFTER UPDATE ON v1_florestation.t
 ------------------
 UPDATE utilisateurs.t_listes SET nom_liste = 'Observateurs flore station' WHERE nom_liste ILIKE 'flore_observateurs';
 --Création du module --
-INSERT INTO gn_commons.t_modules (module_code, module_label, module_picto, module_path, module_external_url, module_target) 
-VALUES ('FS','Flore station','fa-flower-tulip',NULL,'https://mondomaine.fr/fs','_blank'); 
+DELETE FROM gn_commons.t_modules WHERE module_code = 'FS';
+INSERT INTO gn_commons.t_modules (module_code, module_label, module_picto, module_path, module_external_url, module_target, active_backend, active_frontend) 
+VALUES ('FS','Flore station','fa-flower-tulip',NULL,'https://mondomaine.fr/fs','_blank', false, false); 
 
 INSERT INTO gn_permissions.cor_object_module (id_object, id_module)
 SELECT o.id_object, t.id_module
