@@ -1,4 +1,3 @@
-TRUNCATE utilisateurs.bib_unites CASCADE;
 -- recréer bib_unités et id_unite
 CREATE TABLE IF NOT EXISTS utilisateurs.bib_unites (
     nom_unite character varying(50) NOT NULL,
@@ -10,6 +9,9 @@ CREATE TABLE IF NOT EXISTS utilisateurs.bib_unites (
     email_unite character varying(100),
     id_unite integer NOT NULL
 );
+ALTER TABLE ONLY utilisateurs.bib_unites
+    ADD CONSTRAINT bib_unites_pkey PRIMARY KEY (id_unite);
+TRUNCATE utilisateurs.bib_unites CASCADE;
 
 ALTER TABLE utilisateurs.t_roles 
 ADD COLUMN id_unite INTEGER;

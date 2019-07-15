@@ -43,7 +43,7 @@ GROUP BY s.id_synthese
  UPDATE gn_synthese.synthese SET observers = f.obs
  FROM formated_observers f 
  JOIN gn_synthese.synthese s ON f.id_synthese = s.id_synthese
- WHERE f.id_synthese = s.id_synthese
+ WHERE f.id_synthese = s.id_synthese;
 
 
 -- Actions du trigger tri_insert_cor_area_synthese
@@ -54,15 +54,15 @@ SELECT
   a.id_area,
   s.cd_nom
 FROM ref_geo.l_areas a
-JOIN gn_synthese.synthese s ON St_Intersects(s.the_geom_local, a.geom)
+JOIN gn_synthese.synthese s ON public.st_intersects(s.the_geom_local, a.geom)
 WHERE a.enable = true;
 
 --Action du trigger tri_maj_cor_area_taxon
 --On vide la table cor_area_taxon
 TRUNCATE TABLE gn_synthese.cor_area_taxon;
 --On recalcul tout son contenu avec ce qu'il y a dans la synthèse et dans cor_area synthese
-INSERT INTO gn_synthese.cor_area_taxon (id_area, cd_nom, last_date, color, nb_obs)
-SELECT id_area, s.cd_nom,  max(s.date_min) AS last_date, gn_synthese.color_taxon(s.cd_nom, max(s.date_min)) AS color, count(s.id_synthese) AS nb_obs
+INSERT INTO gn_synthese.cor_area_taxon (id_area, cd_nom, last_date, nb_obs)
+SELECT id_area, s.cd_nom,  max(s.date_min) AS last_date, count(s.id_synthese) AS nb_obs
 FROM gn_synthese.cor_area_synthese cor
 JOIN gn_synthese.synthese s ON s.id_synthese = cor.id_synthese
 GROUP BY id_area, s.cd_nom;
