@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-2.1.1 (unreleased)
+2.1.1 (2019-07-16)
 ------------------
 
 https://github.com/PnX-SI/GeoNature/compare/2.1.0...develop
@@ -48,13 +48,6 @@ https://github.com/PnX-SI/GeoNature/compare/2.1.0...develop
 * Suivez ensuite la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 * Nouvelle localisation de la doc : http://docs.geonature.fr
 
-**TODO**
-
-- Modifier version GN de data/migrations/v1tov2 ?
-- Commentaire des cd_nomenclature (style only ?) : https://github.com/PnX-SI/GeoNature/blob/develop/contrib/gn_module_validation/config/conf_schema_toml.py
-- Vérifier triggers et supprimer remarques traitées dans la doc triggers
-- Vérifier pour JBrieuc n'a pas eu le contenu des regles de sensibilité apres MAJ
-- Vérifier README du template et ajouter lien vers DOC dev et installation d'un module
 
 2.1.0 (2019-06-01)
 ------------------
