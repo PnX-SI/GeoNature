@@ -67,16 +67,9 @@ export class NomenclatureComponent extends GenericFormComponent
    * Valeur possible: n'importequel attribut de l'objet ``nomenclature`` renvoyé par l'API
    */
   @Input() keyValue;
-<<<<<<< HEAD
   @Input() bindAllItem: false;
   @Output() labelsLoaded = new EventEmitter<Array<any>>();
 
-=======
-  /**
-   * Booléan qui permet de passer tout l'objet au formControl, et pas seulement une propriété de l'objet renvoyé par l'API.
-   */
-  @Input() bindAllItem: boolean = false;
->>>>>>> origin/master
   constructor(private _dfService: DataFormService, private _translate: TranslateService) {
     super();
   }
