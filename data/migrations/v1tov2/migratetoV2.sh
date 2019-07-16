@@ -71,6 +71,13 @@ then
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f contact_flore_to_occtax.sql  &>> ../../../var/log/migratetov2.log
 fi
 
+#Insert occtax in synthese
+if $import_contactinv or $import_contactfaune or $import_contactflore
+then
+    echo "Insert occtax in synthese"
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f occtax_to_synthese.sql  &>> ../../../var/log/migratetov2.log
+fi
+
 #schema v1_florestation
 if $import_florestation
 then

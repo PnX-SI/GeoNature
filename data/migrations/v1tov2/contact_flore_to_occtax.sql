@@ -1,9 +1,12 @@
 DROP FOREIGN TABLE v1_compat.v_nomade_classes;
 IMPORT FOREIGN SCHEMA contactflore FROM SERVER geonature1server INTO v1_compat;
 
+--désactiver les triggers 
 ALTER TABLE pr_occtax.t_releves_occtax DISABLE TRIGGER USER;
 ALTER TABLE pr_occtax.t_occurrences_occtax DISABLE TRIGGER tri_log_changes_t_occurrences_occtax;
 ALTER TABLE pr_occtax.cor_counting_occtax DISABLE TRIGGER tri_log_changes_cor_counting_occtax;
+ALTER TABLE pr_occtax.cor_counting_occtax DISABLE TRIGGER tri_insert_synthese_cor_counting_occtax;
+ALTER TABLE pr_occtax.cor_counting_occtax DISABLE TRIGGER tri_insert_default_validation_status;
 ALTER TABLE pr_occtax.cor_role_releves_occtax DISABLE TRIGGER tri_log_changes_cor_role_releves_occtax;
 ALTER TABLE pr_occtax.cor_role_releves_occtax DISABLE TRIGGER tri_insert_synthese_cor_role_releves_occtax;
 ALTER TABLE gn_synthese.cor_observer_synthese DISABLE TRIGGER trg_maj_synthese_observers_txt;
@@ -225,34 +228,6 @@ uuid_generate_v4() AS unique_id_cor_role_releve,
 id_cflore AS id_releve_occtax,
 id_role AS id_role
 FROM v1_compat.vm_cor_role_fiche_flore;
-
---correspondance observateurs en synthese, jouer l'action à la place du tri_insert_synthese_cor_role_releves_occtax
-INSERT INTO gn_synthese.cor_observer_synthese(id_synthese, id_role) 
-SELECT s.id_synthese, cro.id_role 
-FROM gn_synthese.synthese s
-JOIN pr_occtax.cor_counting_occtax cco ON cco.id_counting_occtax::varchar = s.entity_source_pk_value
-JOIN pr_occtax.t_occurrences_occtax oo ON oo.id_occurrence_occtax = cco.id_occurrence_occtax
-JOIN pr_occtax.t_releves_occtax r ON r.id_releve_occtax = oo.id_releve_occtax
-JOIN pr_occtax.cor_role_releves_occtax cro ON cro.id_releve_occtax = r.id_releve_occtax
-WHERE s.id_dataset  = 112;
---observers_as_txt en synthese jouer l'action du trigger trg_maj_synthese_observers_txt
-WITH synthese_observers AS (
-  SELECT c.id_synthese, array_to_string(array_agg(r.nom_role || ' ' || r.prenom_role), ', ') AS theobservers
-  FROM utilisateurs.t_roles r
-  JOIN gn_synthese.cor_observer_synthese c ON c.id_role = r.id_role
-  GROUP BY id_synthese
-)
-UPDATE gn_synthese.synthese
-SET observers = so.theobservers
-FROM synthese_observers so
-WHERE gn_synthese.synthese.id_synthese = so.id_synthese;
-
-ALTER TABLE pr_occtax.t_releves_occtax ENABLE TRIGGER USER;
-ALTER TABLE pr_occtax.t_occurrences_occtax ENABLE TRIGGER tri_log_changes_t_occurrences_occtax;
-ALTER TABLE pr_occtax.cor_counting_occtax ENABLE TRIGGER tri_log_changes_cor_counting_occtax;
-ALTER TABLE pr_occtax.cor_role_releves_occtax ENABLE TRIGGER tri_log_changes_cor_role_releves_occtax;
-ALTER TABLE pr_occtax.cor_role_releves_occtax ENABLE TRIGGER tri_insert_synthese_cor_role_releves_occtax;
-ALTER TABLE gn_synthese.cor_observer_synthese ENABLE TRIGGER trg_maj_synthese_observers_txt;
 
 -- Suppression des VM
 DROP MATERIALIZED VIEW v1_compat.vm_t_fiches_cflore;
