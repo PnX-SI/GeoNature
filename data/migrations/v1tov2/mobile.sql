@@ -6,7 +6,16 @@ CREATE TABLE gn_synchronomade.erreurs_occtax
   json text,
   date_import date,
   CONSTRAINT erreurs_occtax_pkey PRIMARY KEY (id)
-)
+);
+
+CREATE TABLE gn_synchronomade.erreurs_flora
+(
+  id serial NOT NULL,
+  json text,
+  date_import date,
+  CONSTRAINT erreurs_flora_pkey PRIMARY KEY (id)
+);
+
 
 
 CREATE OR REPLACE VIEW gn_synchronomade.v_color_taxon_area
@@ -43,7 +52,7 @@ SELECT DISTINCT n.id_nom,
         END AS contactfaune,
     true AS mortalite
    FROM taxonomie.bib_noms n
-     LEFT JOIN v1_compat.cor_message_taxon cmt ON cmt.id_nom = n.id_nom
+     LEFT JOIN v1_compat.cor_message_taxon_contactfaune cmt ON cmt.id_nom = n.id_nom
      LEFT JOIN v1_compat.bib_messages_cf m ON m.id_message_cf = cmt.id_message_cf
      LEFT JOIN taxonomie.cor_taxon_attribut cta ON cta.cd_ref = n.cd_ref
      JOIN taxonomie.cor_nom_liste cnl ON cnl.id_nom = n.id_nom and cnl.id_liste in (1, 11, 12, 13, 14)
@@ -67,15 +76,15 @@ SELECT DISTINCT n.id_nom,
             ELSE 5
         END AS denombrement,
     f2.bool AS patrimonial,
-    m.texte_message_cf AS message,
+    m.texte_message_cflore AS message,
         CASE
             WHEN tx.cd_nom = ANY (ARRAY[60577, 60612]) THEN false
             ELSE true
         END AS contactfaune,
     true AS mortalite
    FROM taxonomie.bib_noms n
-     LEFT JOIN v1_compat.cor_message_taxon cmt ON cmt.id_nom = n.id_nom
-     LEFT JOIN v1_compat.bib_messages_cf m ON m.id_message_cf = cmt.id_message_cf
+     LEFT JOIN v1_compat.cor_message_taxon_cflore cmt ON cmt.id_nom = n.id_nom
+     LEFT JOIN v1_compat.bib_messages_cflore m ON m.id_message_cflore = cmt.id_message_cflore
      LEFT JOIN taxonomie.cor_taxon_attribut cta ON cta.cd_ref = n.cd_ref
      JOIN taxonomie.cor_nom_liste cnl ON cnl.id_nom = n.id_nom and cnl.id_liste > 300 AND cnl.id_liste < 400
      join taxonomie.cor_nom_liste cnl_500 on cnl_500.id_nom = n.id_nom and cnl_500.id_liste = 500
@@ -83,7 +92,7 @@ SELECT DISTINCT n.id_nom,
      --JOIN v1_compat.v_nomade_classes g ON g.id_classe = cnl.id_liste
      JOIN taxonomie.taxref tx ON tx.cd_nom = n.cd_nom and tx.regne = 'Plantae'
      JOIN v1_compat.cor_boolean f2 ON f2.expression::text = cta.valeur_attribut AND cta.id_attribut = 1
-  ORDER BY n.id_nom, taxonomie.find_cdref(n.cd_nom), tx.lb_nom, n.nom_francais, cnl.id_liste, f2.bool, m.texte_message_cf;
+  ORDER BY n.id_nom, taxonomie.find_cdref(n.cd_nom), tx.lb_nom, n.nom_francais, cnl.id_liste, f2.bool, m.texte_message_cflore;
 
 CREATE OR REPLACE VIEW gn_synchronomade.v_nomade_taxons_inv
 AS 
@@ -98,15 +107,15 @@ SELECT DISTINCT n.id_nom,
             ELSE 5
         END AS denombrement,
     f2.bool AS patrimonial,
-    m.texte_message_cf AS message,
+    m.texte_message_inv AS message,
         CASE
             WHEN tx.cd_nom = ANY (ARRAY[60577, 60612]) THEN false
             ELSE true
         END AS contactfaune,
     true AS mortalite
    FROM taxonomie.bib_noms n
-     LEFT JOIN v1_compat.cor_message_taxon cmt ON cmt.id_nom = n.id_nom
-     LEFT JOIN v1_compat.bib_messages_cf m ON m.id_message_cf = cmt.id_message_cf
+     LEFT JOIN v1_compat.cor_message_taxon_contactinv cmt ON cmt.id_nom = n.id_nom
+     LEFT JOIN v1_compat.bib_messages_inv m ON m.id_message_inv = cmt.id_message_inv
      LEFT JOIN taxonomie.cor_taxon_attribut cta ON cta.cd_ref = n.cd_ref
      JOIN taxonomie.cor_nom_liste cnl ON cnl.id_nom = n.id_nom and cnl.id_liste IN (2, 5, 8, 9, 10, 15, 16)
      join taxonomie.cor_nom_liste cnl_500 on cnl_500.id_nom = n.id_nom and cnl_500.id_liste = 500
@@ -114,7 +123,7 @@ SELECT DISTINCT n.id_nom,
      --JOIN v1_compat.v_nomade_classes g ON g.id_classe = cnl.id_liste
      JOIN taxonomie.taxref tx ON tx.cd_nom = n.cd_nom and tx.phylum = 'Chordata'
      JOIN v1_compat.cor_boolean f2 ON f2.expression::text = cta.valeur_attribut AND cta.id_attribut = 1
-  ORDER BY n.id_nom, taxonomie.find_cdref(n.cd_nom), tx.lb_nom, n.nom_francais, cnl.id_liste, f2.bool, m.texte_message_cf;
+  ORDER BY n.id_nom, taxonomie.find_cdref(n.cd_nom), tx.lb_nom, n.nom_francais, cnl.id_liste, f2.bool, m.texte_message_inv;
 
 
 
@@ -172,6 +181,46 @@ AS SELECT c.id_critere_inv,
     c.tri_inv
    FROM v1_compat.bib_criteres_inv c
   ORDER BY c.tri_inv;
+
+-- recréation de la vue recherche_mobile
+
+CREATE OR REPLACE VIEW gn_synchronomade.v_mobile_recherche
+AS ( SELECT ap.indexap AS gid,
+    zp.dateobs,
+    t.latin AS taxon,
+    o.observateurs,
+    st_asgeojson(st_transform(ap.the_geom_local, 4326)) AS geom_4326,
+    st_x(st_transform(st_centroid(ap.the_geom_local), 4326)) AS centroid_x,
+    st_y(st_transform(st_centroid(ap.the_geom_local), 4326)) AS centroid_y
+   FROM v1_florepatri.t_apresence ap
+     JOIN v1_florepatri.t_zprospection zp ON ap.indexzp = zp.indexzp
+     JOIN v1_florepatri.bib_taxons_fp t ON t.cd_nom = zp.cd_nom
+     JOIN ( SELECT c.indexzp,
+            array_to_string(array_agg((r.prenom_role::text || ' '::text) || r.nom_role::text), ', '::text) AS observateurs
+           FROM v1_florepatri.cor_zp_obs c
+             JOIN utilisateurs.t_roles r ON r.id_role = c.codeobs
+          GROUP BY c.indexzp) o ON o.indexzp = ap.indexzp
+  WHERE ap.supprime = false AND st_isvalid(ap.the_geom_local) AND ap.topo_valid = true
+  ORDER BY zp.dateobs DESC)
+UNION
+( SELECT cft.id_station AS gid,
+    s.dateobs,
+    t.latin AS taxon,
+    o.observateurs,
+    st_asgeojson(st_transform(s.the_geom_3857, 4326)) AS geom_4326,
+    st_x(st_transform(st_centroid(s.the_geom_3857), 4326)) AS centroid_x,
+    st_y(st_transform(st_centroid(s.the_geom_3857), 4326)) AS centroid_y
+   FROM v1_florestation.cor_fs_taxon cft
+     JOIN v1_florestation.t_stations_fs s ON s.id_station = cft.id_station
+     JOIN v1_florepatri.bib_taxons_fp t ON t.cd_nom = cft.cd_nom
+     JOIN ( SELECT c.id_station,
+            array_to_string(array_agg((r.prenom_role::text || ' '::text) || r.nom_role::text), ', '::text) AS observateurs
+           FROM v1_florestation.cor_fs_observateur c
+             JOIN utilisateurs.t_roles r ON r.id_role = c.id_role
+          GROUP BY c.id_station) o ON o.id_station = cft.id_station
+  WHERE cft.supprime = false AND st_isvalid(s.the_geom_3857)
+  ORDER BY s.dateobs DESC);
+
 
 
 -- création de nouveau JDD pour les données des appli mobiles v1 qui écrivent en v2

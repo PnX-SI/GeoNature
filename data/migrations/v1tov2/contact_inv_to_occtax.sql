@@ -5,6 +5,19 @@ DROP FOREIGN TABLE v1_compat.log_colors_day;
 
 IMPORT FOREIGN SCHEMA contactinv FROM SERVER geonature1server INTO v1_compat;
 
+DROP FOREIGN TABLE v1_compat.cor_message_taxon;
+
+--changement de nom de la table cor_message_taxon
+CREATE FOREIGN TABLE v1_compat.cor_message_taxon_contactinv
+ (
+	id_message_inv int,
+	id_nom int 
+)
+SERVER geonature1server
+OPTIONS (schema_name 'contactinv', table_name 'cor_message_taxon');
+-- SELECT * FROM contactinv.cor_message_taxon;
+
+
 ALTER TABLE pr_occtax.t_releves_occtax DISABLE TRIGGER USER;
 ALTER TABLE pr_occtax.t_occurrences_occtax DISABLE TRIGGER tri_log_changes_t_occurrences_occtax;
 ALTER TABLE pr_occtax.cor_counting_occtax DISABLE TRIGGER tri_log_changes_cor_counting_occtax;
