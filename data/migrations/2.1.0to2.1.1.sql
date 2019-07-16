@@ -272,41 +272,6 @@ $BODY$
   COST 100
   ROWS 1000;
 
-CREATE OR REPLACE FUNCTION ref_geo.fct_get_altitude_intersection(IN mygeom geometry)
-  RETURNS TABLE(altitude_min integer, altitude_max integer) AS
-$BODY$
-DECLARE
-    thesrid int;
-    is_vectorized int;
-BEGIN
-  SELECT gn_commons.get_default_parameter('local_srid', NULL) INTO thesrid;
-  SELECT COALESCE(gid, NULL) FROM ref_geo.dem_vector LIMIT 1 INTO is_vectorized;
-	
-  IF is_vectorized IS NULL THEN
-    -- Use dem
-    RETURN QUERY
-    SELECT min((altitude).val)::integer AS altitude_min, max((altitude).val)::integer AS altitude_max
-    FROM (
-	SELECT public.ST_DumpAsPolygons(public.ST_clip(rast, 1
-	, public.st_transform(myGeom,thesrid), true)) AS altitude
-	FROM ref_geo.dem AS altitude 
-	WHERE public.st_intersects(rast,public.st_transform(myGeom,thesrid))
-    ) AS a;		
-  -- Use dem_vector
-  ELSE
-    RETURN QUERY
-    WITH d  as (
-        SELECT public.st_transform(myGeom,thesrid) a
-     )
-    SELECT min(val)::int as altitude_min, max(val)::int as altitude_max
-    FROM ref_geo.dem_vector, d
-    WHERE public.st_intersects(a,geom);
-  END IF;
-END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100
-  ROWS 1000;
 
 
 CREATE MATERIALIZED VIEW vm_min_max_for_taxons AS
@@ -603,8 +568,7 @@ observateurs (id_releve_occtax, nb_observer, observers_txt) as (
     FROM pr_occtax.cor_role_releves_occtax cor_role
     INNER JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
     GROUP BY id_releve_occtax
-);
-
+)
 SELECT rel.id_releve_occtax,
     rel.id_dataset,
     rel.id_digitiser,
@@ -673,3 +637,27 @@ BEGIN
 END;
 $function$
 ;
+
+CREATE OR REPLACE FUNCTION ref_geo.fct_get_area_intersection(
+    IN mygeom public.geometry,
+    IN myidtype integer DEFAULT NULL::integer)
+  RETURNS TABLE(id_area integer, id_type integer, area_code character varying, area_name character varying) AS
+$BODY$
+DECLARE
+  isrid int;
+BEGIN
+  SELECT gn_commons.get_default_parameter('local_srid', NULL) INTO isrid;
+  RETURN QUERY
+  WITH d  as (
+      SELECT public.st_transform(myGeom,isrid) geom_trans
+  )
+  SELECT a.id_area, a.id_type, a.area_code, a.area_name
+  FROM ref_geo.l_areas a, d
+  WHERE public.st_intersects(geom_trans, a.geom)
+    AND (myIdType IS NULL OR a.id_type = myIdType)
+    AND enable=true;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100
+  ROWS 1000;
