@@ -1121,7 +1121,7 @@ SELECT rel.id_releve_occtax,
 FROM pr_occtax.t_releves_occtax rel
 INNER JOIN gn_meta.t_datasets dataset ON dataset.id_dataset = rel.id_dataset
 LEFT JOIN observateurs cor_role ON cor_role.id_releve_occtax = rel.id_releve_occtax
-LEFT JOIN occurrences occ ON occ.id_releve_occtax = rel.id_releve_occtax
+LEFT JOIN occurrences occ ON occ.id_releve_occtax = rel.id_releve_occtax;
 
 
 --------------------
@@ -1155,7 +1155,6 @@ INSERT INTO pr_occtax.defaults_nomenclatures_value (mnemonique_type, id_organism
 ,('TECHNIQUE_OBS',0,0,0, ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'))
 ,('STATUT_SOURCE',0, 0, 0,  ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE', 'Te'))
 ,('NAT_OBJ_GEO',0, 0, 0,  ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO', 'NSP'))
-
 ;
 
 -- Creation d'une liste 'observateur occtax'

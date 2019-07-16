@@ -224,7 +224,7 @@ BEGIN
     FROM (
 	SELECT public.ST_DumpAsPolygons(public.ST_clip(
     rast, 
-    [1],
+    1,
 	  public.st_transform(myGeom,thesrid), 
     true)
   ) AS altitude
