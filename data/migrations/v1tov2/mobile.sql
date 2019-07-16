@@ -165,7 +165,7 @@ AS SELECT DISTINCT r.id_role,
 DROP foreign table v1_compat.v_nomade_criteres_cf;
 DROP foreign table v1_compat.v_nomade_criteres_inv;
 
-CREATE OR REPLACE VIEW v1_compat.v_nomade_criteres_cf
+CREATE OR REPLACE VIEW gn_synchronomade.v_nomade_criteres_cf
 AS SELECT c.id_critere_cf,
     c.nom_critere_cf,
     c.tri_cf,
@@ -175,12 +175,20 @@ AS SELECT c.id_critere_cf,
   ORDER BY ccl.id_liste, c.tri_cf;
 
 
-CREATE OR REPLACE VIEW v1_compat.v_nomade_criteres_inv
+CREATE OR REPLACE VIEW gn_synchronomade.v_nomade_criteres_inv
 AS SELECT c.id_critere_inv,
     c.nom_critere_inv,
     c.tri_inv
    FROM v1_compat.bib_criteres_inv c
   ORDER BY c.tri_inv;
+
+
+
+CREATE OR REPLACE VIEW gn_synchronomade.v_nomade_milieux_inv
+AS SELECT b.id_milieu_inv,
+    b.nom_milieu_inv
+   FROM v1_compat.bib_milieux_inv b
+  ORDER BY b.id_milieu_inv;
 
 -- recréation de la vue recherche_mobile
 
