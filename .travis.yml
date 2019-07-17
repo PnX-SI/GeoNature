@@ -1,3 +1,4 @@
+enabled: false
 language: python
 
 python:
@@ -29,7 +30,7 @@ script:
   - mkdir build/html/frontend
   - cd ../frontend
   #- npm run build
-  - npm run compodoc
+  #- npm run compodoc
 
 # deploy github pages on commit on master
 deploy:
