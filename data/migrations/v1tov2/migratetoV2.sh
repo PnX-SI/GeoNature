@@ -45,6 +45,40 @@ fi
 # ref_geo
 if $import_ref_geo
 then
+    echo "Insert PNE DEM (IGN BD TOPO 25m BD alti)"
+    echo "" &>> ../../../var/log/migratetov2.log
+    echo "" &>> ../../../var/log/migratetov2.log
+    echo "--------------------" &>> ../../../var/log/migratetov2.log
+    echo "Insert PNE DEM (IGN BD TOPO 25m BD alti)" &>> ../../../var/log/migratetov2.log
+    echo "--------------------" &>> ../../../var/log/migratetov2.log
+    echo "" &>> ../../../var/log/migratetov2.log
+    if [ ! -f 'tmp/geonature/mymnt.zip' ]
+    then
+        wget --cache=off $mnt_url -P tmp/geonature
+    else
+        echo "tmp/geonature/mymnt.zip already exist"
+    fi
+        unzip tmp/geonature/mymnt.zip -d tmp/geonature
+    export PGPASSWORD=$user_pg_pass;sudo -n -u postgres -s psql -d $db_name -c "TRUNCATE TABLE ref_geo.dem;" &>> ../../../var/log/migratetov2.log
+    export PGPASSWORD=$user_pg_pass;sudo -n -u postgres -s psql -d $db_name -c "TRUNCATE TABLE ref_geo.dem_vector;" &>> ../../../var/log/migratetov2.log
+    export PGPASSWORD=$user_pg_pass;raster2pgsql -s $srid_local -c -C -I -M -d -t 5x5 tmp/geonature/mymnt.asc ref_geo.dem|psql -h $db_host -U $user_pg -d $db_name  &>> ../../../var/log/migratetov2.log
+    sudo -n -u postgres -s psql -d $db_name -c "REINDEX INDEX ref_geo.dem_st_convexhull_idx;" &>> ../../../var/log/migratetov2.log
+    echo "Vectorisation of DEM raster. This may take a few minutes..."
+    echo "" &>> ../../../var/log/migratetov2.log
+    echo "" &>> ../../../var/log/migratetov2.log
+    echo "--------------------" &>> ../../../var/log/migratetov2.log
+    echo "Vectorisation of DEM raster. This may take a few minutes" &>> ../../../var/log/migratetov2.log
+    echo "--------------------" &>> ../../../var/log/migratetov2.log
+    echo "" &>> ../../../var/log/migratetov2.log
+    sudo -n -u postgres -s psql -d $db_name -c "INSERT INTO ref_geo.dem_vector (geom, val) SELECT (ST_DumpAsPolygons(rast)).* FROM ref_geo.dem;" &>> ../../../var/log/migratetov2.log
+    echo "Refresh DEM vector spatial index. This may take a few minutes..."
+    echo "" &>> ../../../var/log/migratetov2.log
+    echo "" &>> ../../../var/log/migratetov2.log
+    echo "--------------------" &>> ../../../var/log/migratetov2.log
+    echo "Refresh DEM vector spatial index. This may take a few minutes" &>> ../../../var/log/migratetov2.log
+    echo "--------------------" &>> ../../../var/log/migratetov2.log
+    echo "" &>> ../../../var/log/migratetov2.log
+    sudo -n -u postgres -s psql -d $db_name -c "REINDEX INDEX ref_geo.index_dem_vector_geom;" &>> ../../../var/log/migratetov2.log
     echo "Get ref_geo content from geonaturedb1"
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f ref_geo.sql  &>> ../../../var/log/migratetov2.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f my_organisme/myrefgeo.sql  &>> ../../../var/log/migratetov2.log
