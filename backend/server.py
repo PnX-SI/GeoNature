@@ -66,9 +66,8 @@ def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
     app.config["ID_APP"] = app.config["ID_APPLICATION_GEONATURE"]
 
     with app.app_context():
-        from geonature.utils.logs import mail_handler
-
-        if app.config["MAILERROR"]["MAIL_ON_ERROR"]:
+        if app.config["MAIL_ON_ERROR"] and app.config['MAIL_CONFIG']:
+            from geonature.utils.logs import mail_handler
             logging.getLogger().addHandler(mail_handler)
         # DB.create_all()
 
@@ -136,7 +135,7 @@ def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
         # Configuration des mails
         if app.config['MAIL_CONFIG']:
             mail_conf = app.config['MAIL_CONFIG']
-            app.config["MAIL_SERVER"] = mail_conf["MAIL_SERVER"]
+            app.config["MAIL_SERVER"] = mail_conf["MAIL_HOST"]
             app.config["MAIL_PORT"] = mail_conf["HOST_PORT"]
             app.config["MAIL_USERNAME"] = mail_conf["MAIL_USERNAME"]
             app.config["MAIL_PASSWORD"] = mail_conf["MAIL_PASS"]
