@@ -13,17 +13,27 @@ import { Observable } from 'rxjs';
 import { of } from 'rxjs/observable/of';
 import { catchError, debounceTime, distinctUntilChanged, tap, switchMap } from 'rxjs/operators';
 
+/**
+ * Ce composant affiche une carte Leaflet ainsi qu'un outil de recherche de lieux dits et d'adresses (basé sur l'API OpenStreetMap).
+ * @example
+ * <pnx-map [center]="center" [zoom]="zoom"> </pnx-map>`
+ */
 @Component({
   selector: 'pnx-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit {
-  @Input() baseMaps: any;
+  /**
+   *  coordonnées du centrage de la carte: [long,lat]
+   */
   @Input() center: Array<number>;
-  @Input() zoom: number;
+  /** Niveaux de zoom à l'initialisation de la carte */
+  @Input() zoom: number = AppConfig.MAPCONFIG.ZOOM_LEVEL;
+  /** Hauteur de la carte (obligatoire) */
   @Input() height: string;
-  @Input() searchBar = true;
+  /** Activer la barre de recherche */
+  @Input() searchBar: boolean = true;
   searchLocation: string;
   public searching = false;
   public searchFailed = false;
@@ -76,7 +86,6 @@ export class MapComponent implements OnInit {
   }
 
   initialize() {
-    const zoom = this.zoom || AppConfig.MAPCONFIG.ZOOM_LEVEL;
     let center: LatLngExpression;
     if (this.center !== undefined) {
       center = L.latLng(this.center[0], this.center[1]);
@@ -87,7 +96,7 @@ export class MapComponent implements OnInit {
     const map = L.map('map', {
       zoomControl: false,
       center: center,
-      zoom: zoom,
+      zoom: this.zoom,
       preferCanvas: true
     });
     this.map = map;

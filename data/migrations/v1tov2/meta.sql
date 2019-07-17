@@ -31,6 +31,7 @@ AND id_protocole <> 0;
 --AND id_protocole IN (SELECT DISTINCT id_protocole FROM v1_compat.vm_syntheseff);
 SELECT setval('gn_meta.sinp_datatype_protocols_id_protocol_seq', (SELECT max(id_protocol)+1 FROM gn_meta.sinp_datatype_protocols), true);
 
+
 --------------------------------------------
 --CADRE D'ACQUISITION (V2) = PROGRAMMES (V1)
 --------------------------------------------

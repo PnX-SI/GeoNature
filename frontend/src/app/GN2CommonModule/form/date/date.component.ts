@@ -17,7 +17,17 @@ export interface DateStruc {
   month: number;
   year: number;
 }
-
+/**
+ * Ce composant permet de créer un input de type "datepicker". 
+ * Créé à parti de https://github.com/ng-bootstrap/ng-bootstrap
+ * Retourne objet date: 
+ * ```
+ * {
+    "year": 2018,
+    "month": 3,
+      "day": 9
+ }```  
+ */
 @Component({
   selector: 'pnx-date',
   host: {

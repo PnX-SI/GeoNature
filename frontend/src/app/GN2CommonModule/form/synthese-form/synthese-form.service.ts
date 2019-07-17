@@ -70,10 +70,6 @@ export class SyntheseFormService {
   formatParams() {
     const params = Object.assign({}, this.searchForm.value);
     const updatedParams = {};
-    console.log('LAAAAAAAAAAAAAA');
-
-    console.log(params['geoIntersection']);
-
     // tslint:disable-next-line:forin
     for (let key in params) {
       if ((key === 'date_min' && params.date_min) || (key === 'date_max' && params.date_max)) {

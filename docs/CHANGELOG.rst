@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-2.1.1 (unreleased)
+2.1.1 (2019-07-16)
 ------------------
 
 https://github.com/PnX-SI/GeoNature/compare/2.1.0...develop
@@ -19,6 +19,7 @@ https://github.com/PnX-SI/GeoNature/compare/2.1.0...develop
 * Lister toutes les données de la synthèse ayant un ``uuid_sinp`` dans le module validation, et plus seulement celles qui ont un enregistrement dans ``gn_commons.t_validations``
 * On ne liste plus les ``id_nomenclatures`` des types de validation à utiliser, dans la configuration du module. Mais on utilise toutes les nomenclatures activées du type de nomenclature ``STATUT_VALID``. (https://github.com/PnX-SI/gn_module_validation/issues/30)
 * Ajout de tests sur les ajouts de JDD et CA
+* Amélioration des performances: ajout d'index sur Occtax et Metadonnées
 * Script d'import des métadonnées à partir du webservice MTD de l'INPN (@DonovanMaillard)
 * Complément, correction et compatibilité 2.1.0 des scripts de migration ``data/migrations/v1tov2``
   
@@ -29,6 +30,9 @@ https://github.com/PnX-SI/GeoNature/compare/2.1.0...develop
 * Occtax : correction de l'édition d'un relevé à la géométrie de type Polyline (#684)
 * Occtax : correction l'édition et du contrôle conditionnel des champs de "preuves" (preuve d'existence numérique / non numérique) (#679)
 * Occtax : correction du parametre ``DATE_FORM_WITH_TODAY`` non pris en compte (#670)
+* Occtax: correction de la date_max non remplie lorsque ``DATE_FORM_WITH_TODAY = false`` 
+* Occtax: correction d'un bug lors de l'enchainement de relevé lorsque l'heure est remplie
+* Synthese: correction des doublons lorsqu'il y a plusieurs observateurs
 * Correction du composant ``dynamicForm`` sur les champs de recherche de type texte (recherche sur Preuve numérique) (#530)
 * Désactivation du mode "enchainer les relevés" en mode édition (#699)
 * Correction de ``gn_monitoring`` : utiliser ``gn_commons.t_modules`` à la place de ``utilisateurs.t_applications`` pour associer des sites de suivi à des modules
@@ -44,14 +48,6 @@ https://github.com/PnX-SI/GeoNature/compare/2.1.0...develop
 * Suivez ensuite la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 * Nouvelle localisation de la doc : http://docs.geonature.fr
 
-**TODO**
-
-- Indiquer template dans la doc DEV ?
-- Modifier version GN de data/migrations/v1tov2 ?
-- Commentaire des cd_nomenclature (style only ?) : https://github.com/PnX-SI/GeoNature/blob/develop/contrib/gn_module_validation/config/conf_schema_toml.py
-- Vérifier triggers et supprimer remarques traitées dans la doc triggers
-- Vérifier pour JBrieuc n'a pas eu le contenu des regles de sensibilité apres MAJ
-- Vérifier README du template et ajouter lien vers DOC dev et installation d'un module
 
 2.1.0 (2019-06-01)
 ------------------

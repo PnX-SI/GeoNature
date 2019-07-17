@@ -129,7 +129,7 @@ Passer alors sur l'utilisateur ``geonatureadmin``: ``su geonatureadmin`` et exec
     export LANG=fr_FR.UTF-8
 
 
-Pour la suite de la documentation et pour l'administration courante de GeoNature, **on n'utilisera plus jamais l'utilisateur ``root``** (utiliser `geonatureadmin` dans l'exemple de la documentation. ``su geonatureadmin`` pour change d'utilisateur). Si besoin d'exécuter des commandes avec des droits d'administrateur, on les précède de ``sudo``.
+Pour la suite de la documentation et pour l'administration courante de GeoNature, **on n'utilisera plus jamais l'utilisateur** ``root`` (utiliser `geonatureadmin` dans l'exemple de la documentation. ``su geonatureadmin`` pour change d'utilisateur). Si besoin d'exécuter des commandes avec des droits d'administrateur, on les précède de ``sudo``.
 
 Il est d'ailleurs possible de renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec ``root``.
 

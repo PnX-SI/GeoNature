@@ -12,8 +12,18 @@ python ../../../geonature_cmd.py install_command
 
 geonature install_gn_module $TRAVIS_BUILD_DIR/contrib/occtax occtax --build=false
 
+cd ../../../frontend
+
+cp src/custom/custom.scss.sample src/custom/custom.scss
+cp src/custom/components/footer/footer.component.ts.sample src/custom/components/footer/footer.component.ts
+cp src/custom/components/footer/footer.component.html.sample src/custom/components/footer/footer.component.html
+cp src/custom/components/introduction/introduction.component.ts.sample src/custom/components/introduction/introduction.component.ts
+cp src/custom/components/introduction/introduction.component.html.sample src/custom/components/introduction/introduction.component.html
 
 
+geonature generate_frontend_tsconfig
+geonature generate_frontend_modules_route
+geonature update_configuration --build=false
 
 
 
