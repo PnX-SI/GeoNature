@@ -2,6 +2,17 @@
 DROP FOREIGN TABLE v1_compat.v_nomade_classes;
 IMPORT FOREIGN SCHEMA contactfaune FROM SERVER geonature1server INTO v1_compat;
 
+--changement de nom de la table cor_message_taxon
+DROP FOREIGN TABLE v1_compat.cor_message_taxon;
+
+CREATE FOREIGN TABLE v1_compat.cor_message_taxon_contactfaune
+(
+	id_message_cf int,
+	id_nom int 
+)
+SERVER geonature1server
+OPTIONS (schema_name 'contactfaune', table_name 'cor_message_taxon');
+
 --create de vues métérialisées pour des raisons de performances
 CREATE MATERIALIZED VIEW v1_compat.vm_t_fiches_cf AS
 SELECT * FROM v1_compat.t_fiches_cf;
