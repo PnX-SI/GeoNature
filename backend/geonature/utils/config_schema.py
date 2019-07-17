@@ -47,7 +47,7 @@ class RightsSchemaConf(Schema):
     ALL_DATA = fields.Integer(missing=3)
 
 
-class MailErrorConf(Schema):
+class MailConfig(Schema):
     MAIL_ON_ERROR = fields.Boolean(missing=False)
     MAIL_HOST = fields.String(missing="")
     HOST_PORT = fields.Integer(missing=465)
@@ -56,8 +56,7 @@ class MailErrorConf(Schema):
     MAIL_PASS = fields.String(missing="")
     MAIL_TO = fields.List(fields.String(), missing=list())
 
-    MAIL_SERVER = fields.String(missing="")
-    MAIL_USE_SSL = fields.Boolean(missing=False)
+    MAIL_USE_SSL = fields.Boolean(missing=True)
     MAIL_USE_TLS = fields.Boolean(missing=False)
     MAIL_DEFAULT_SENDER = fields.String(missing="")
 
@@ -86,9 +85,9 @@ class GnPySchemaConf(Schema):
             os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
         )
     )
-    MAILERROR = fields.Nested(MailErrorConf, missing=dict())
     CAS = fields.Nested(CasSchemaConf, missing=dict())
-    MAIL_CONFIG = fields.Nested(MailErrorConf, missing=None)
+    MAIL_ON_ERROR = fields.Boolean(missing=False)
+    MAIL_CONFIG = fields.Nested(MailConfig, missing=None)
 
 
 class GnFrontEndConf(Schema):
