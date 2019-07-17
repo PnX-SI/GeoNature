@@ -1,11 +1,8 @@
 DROP FOREIGN TABLE v1_compat.v_nomade_classes;
-DROP FOREIGN TABLE v1_compat.cor_message_taxon;
 DROP FOREIGN TABLE v1_compat.log_colors;
 DROP FOREIGN TABLE v1_compat.log_colors_day;
 
 IMPORT FOREIGN SCHEMA contactinv FROM SERVER geonature1server INTO v1_compat;
-
---désactiver les triggers 
 DROP FOREIGN TABLE v1_compat.cor_message_taxon;
 --changement de nom de la table cor_message_taxon
 CREATE FOREIGN TABLE v1_compat.cor_message_taxon_contactinv
@@ -16,7 +13,7 @@ CREATE FOREIGN TABLE v1_compat.cor_message_taxon_contactinv
 SERVER geonature1server
 OPTIONS (schema_name 'contactinv', table_name 'cor_message_taxon');
 
-
+--désactiver les triggers 
 ALTER TABLE pr_occtax.t_releves_occtax DISABLE TRIGGER USER;
 ALTER TABLE pr_occtax.t_occurrences_occtax DISABLE TRIGGER tri_log_changes_t_occurrences_occtax;
 ALTER TABLE pr_occtax.cor_counting_occtax DISABLE TRIGGER tri_log_changes_cor_counting_occtax;
