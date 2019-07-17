@@ -67,6 +67,19 @@ FROM gn_synthese.cor_area_synthese cor
 JOIN gn_synthese.synthese s ON s.id_synthese = cor.id_synthese
 GROUP BY id_area, s.cd_nom;
 
+-- Maintenance
+VACUUM FULL gn_synthese.cor_area_synthese;
+VACUUM FULL gn_synthese.cor_area_taxon;
+VACUUM FULL gn_synthese.taxons_synthese_autocomplete;
+VACUUM FULL gn_synthese.cor_observer_synthese;
+VACUUM FULL gn_synthese.synthese;
+
+REINDEX TABLE gn_synthese.cor_area_synthese;
+REINDEX TABLE gn_synthese.cor_area_taxon;
+REINDEX TABLE gn_synthese.taxons_synthese_autocomplete;
+REINDEX TABLE gn_synthese.cor_observer_synthese;
+REINDEX TABLE gn_synthese.synthese;
+
 
 -- On réactive les triggers du schéma synthese après avoir joué (ci-dessus) leurs actions
 ALTER TABLE gn_synthese.cor_area_synthese ENABLE TRIGGER tri_maj_cor_area_taxon;

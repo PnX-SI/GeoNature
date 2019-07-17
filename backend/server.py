@@ -5,6 +5,7 @@ Démarrage de l'application
 import logging
 
 from flask import Flask
+from flask_mail import Mail, Message
 
 from flask_cors import CORS
 
@@ -12,6 +13,8 @@ from geonature.utils.env import DB, list_and_import_gn_modules
 
 from urllib.parse import urlparse, urlencode, ParseResult
 
+
+MAIL = Mail()
 
 class ReverseProxied(object):
     def __init__(self, app, script_name=None, scheme=None, server=None):
@@ -129,6 +132,21 @@ def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
         app.wsgi_app = ReverseProxied(app.wsgi_app, script_name=config["API_ENDPOINT"])
 
         CORS(app, supports_credentials=True)
+
+        # Configuration des mails
+        if app.config['MAIL_CONFIG']:
+            mail_conf = app.config['MAIL_CONFIG']
+            app.config["MAIL_SERVER"] = mail_conf["MAIL_SERVER"]
+            app.config["MAIL_PORT"] = mail_conf["HOST_PORT"]
+            app.config["MAIL_USERNAME"] = mail_conf["MAIL_USERNAME"]
+            app.config["MAIL_PASSWORD"] = mail_conf["MAIL_PASS"]
+            app.config["MAIL_FROM"] = mail_conf["MAIL_FROM"]
+            app.config["MAIL_DEFAULT_SENDER"] = mail_conf["MAIL_DEFAULT_SENDER"]
+            app.config["MAIL_USE_TLS"] = mail_conf["MAIL_USE_TLS"]
+            app.config["MAIL_USE_SSL"] = mail_conf["MAIL_USE_SSL"]
+            MAIL.init_app(app)
+
+
         # Chargement des mosdules tiers
         if with_external_mods:
             for conf, manifest, module in list_and_import_gn_modules(app):
