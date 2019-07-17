@@ -48,16 +48,17 @@ class RightsSchemaConf(Schema):
 
 
 class MailConfig(Schema):
-    MAIL_SERVER = fields.String(missing="")
+    MAIL_SERVER = fields.String(required=True)
     MAIL_PORT = fields.Integer(missing=465)
-
-    MAIL_USERNAME = fields.String(missing="")
-    MAIL_PASSWORD = fields.String(missing="")
-    ERROR_MAIL_TO = fields.List(fields.String(), missing=list())
-
-    MAIL_USE_SSL = fields.Boolean(missing=True)
     MAIL_USE_TLS = fields.Boolean(missing=False)
-    MAIL_DEFAULT_SENDER = fields.String(missing="")
+    MAIL_USE_SSL = fields.Boolean(missing=True)
+    MAIL_USERNAME = fields.String(required=True)
+    MAIL_PASSWORD = fields.String(required=True)
+    MAIL_DEFAULT_SENDER = fields.String(missing=None)
+    MAIL_MAX_EMAILS = fields.Integer(missing=None)
+    MAIL_ASCII_ATTACHMENTS = fields.Boolean(missing=False)
+
+    ERROR_MAIL_TO = fields.List(fields.String(), missing=list())
 
 
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend

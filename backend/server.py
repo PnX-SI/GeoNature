@@ -134,14 +134,8 @@ def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
 
         # Configuration des mails
         if app.config['MAIL_CONFIG']:
-            mail_conf = app.config['MAIL_CONFIG']
-            app.config["MAIL_SERVER"] = mail_conf["MAIL_SERVER"]
-            app.config["MAIL_PORT"] = mail_conf["MAIL_PORT"]
-            app.config["MAIL_USERNAME"] = mail_conf["MAIL_USERNAME"]
-            app.config["MAIL_PASSWORD"] = mail_conf["MAIL_PASSWORD"]
-            app.config["MAIL_DEFAULT_SENDER"] = mail_conf["MAIL_DEFAULT_SENDER"]
-            app.config["MAIL_USE_TLS"] = mail_conf["MAIL_USE_TLS"]
-            app.config["MAIL_USE_SSL"] = mail_conf["MAIL_USE_SSL"]
+            conf = {**app.config, **app.config['MAIL_CONFIG']}
+            app.config = conf
             MAIL.init_app(app)
 
 
