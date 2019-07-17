@@ -1,9 +1,13 @@
 Migration des données de GeoNature V1 vers V2
-----------------------------------------------
+---------------------------------------------
 
 La procédure consiste à aller chercher les données de GeoNature V1 en Foreign data wrapper pour ensuite les intégrer dans les tables de la BDD de GeoNature v2.
 
+<<<<<<< HEAD
 Pré-requis : GeoNature 1.9.1 en place, à migrer vers 2.1.1. UsersHub et TaxHub avec leurs schémas de BDD à jour (UH 2.0.3 et TH 1.6.3)
+=======
+Pré-requis : GeoNature 1.9.1 en place, à migrer vers 2.0.1. UsersHub et TaxHub avec leurs schémas de BDD à jour (UH 2.0.3 et TH 1.6.2)
+>>>>>>> d55ee32eb5686c9c4589e70d4977b35ceb03e4ba
 
 - Copier et renommer le fichier ``migratetoV2.ini.sample`` en ``migratetoV2.ini``
 - Renseigner le fichier ``migratetoV2.ini``
