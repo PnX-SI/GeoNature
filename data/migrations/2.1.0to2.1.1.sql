@@ -162,6 +162,7 @@ ALTER TABLE gn_commons.t_validations DROP COLUMN id_table_location;
     LANGUAGE plpgsql VOLATILE
     COST 100;
 
+ALTER TABLE gn_synthese.cor_area_synthese DROP COLUMN cd_nom;
 
 -- suppression des aires de cor_area where enabled = false
 DELETE FROM gn_synthese.cor_area_synthese WHERE id_area IN (
@@ -329,8 +330,7 @@ $BODY$
     IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND geom_change )) THEN
       INSERT INTO gn_synthese.cor_area_synthese SELECT
 	      s.id_synthese AS id_synthese,
-        a.id_area AS id_area,
-        s.cd_nom AS cd_nom
+        a.id_area AS id_area
         FROM ref_geo.l_areas a
         JOIN gn_synthese.synthese s ON public.ST_INTERSECTS(s.the_geom_local, a.geom)
         WHERE s.id_synthese = NEW.id_synthese AND a.enable IS true;

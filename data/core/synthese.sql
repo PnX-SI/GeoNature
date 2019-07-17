@@ -216,8 +216,7 @@ ALTER TABLE ONLY synthese ALTER COLUMN id_synthese SET DEFAULT nextval('synthese
 
 CREATE TABLE cor_area_synthese (
     id_synthese integer,
-    id_area integer,
-    cd_nom integer
+    id_area integer
 );
 
 CREATE TABLE cor_observer_synthese
@@ -647,8 +646,7 @@ $BODY$
     IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND geom_change )) THEN
       INSERT INTO gn_synthese.cor_area_synthese SELECT
 	      s.id_synthese AS id_synthese,
-        a.id_area AS id_area,
-        s.cd_nom AS cd_nom
+        a.id_area AS id_area
         FROM ref_geo.l_areas a
         JOIN gn_synthese.synthese s ON public.ST_INTERSECTS(s.the_geom_local, a.geom)
         WHERE s.id_synthese = NEW.id_synthese AND a.enable IS true;
