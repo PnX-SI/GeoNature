@@ -28,7 +28,7 @@ export class GeojsonComponent implements OnInit, OnChanges {
   /** Zoom sur la bounding box des données envoyées */
   @Input() zoomOnLayer = true;
   /** Affiche les données sous forme de cluster */
-  @Input() asCluste: boolean = false;
+  @Input() asCluster: boolean = false;
   public geojsonCharged = new Subject<any>();
   /** Observable pour retourner les données geojson passées au composant */
   public currentGeoJson$: Observable<L.Layer> = this.geojsonCharged.asObservable();
