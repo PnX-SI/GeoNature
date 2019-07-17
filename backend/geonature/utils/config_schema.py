@@ -56,6 +56,10 @@ class MailErrorConf(Schema):
     MAIL_PASS = fields.String(missing="")
     MAIL_TO = fields.List(fields.String(), missing=list())
 
+    MAIL_SERVER = fields.String(missing="")
+    MAIL_USE_SSL = fields.Boolean(missing=False)
+    MAIL_USE_TLS = fields.Boolean(missing=False)
+    MAIL_DEFAULT_SENDER = fields.String(missing="")
 
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
 class GnPySchemaConf(Schema):
@@ -84,6 +88,7 @@ class GnPySchemaConf(Schema):
     )
     MAILERROR = fields.Nested(MailErrorConf, missing=dict())
     CAS = fields.Nested(CasSchemaConf, missing=dict())
+    MAIL_CONFIG = fields.Nested(MailErrorConf, missing=None)
 
 
 class GnFrontEndConf(Schema):
