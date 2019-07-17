@@ -134,7 +134,8 @@ def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
 
         # Configuration des mails
         if app.config['MAIL_CONFIG']:
-            conf = {**app.config, **app.config['MAIL_CONFIG']}
+            conf = app.config.copy()
+            conf.update(app.config['MAIL_CONFIG'])
             app.config = conf
             MAIL.init_app(app)
 
