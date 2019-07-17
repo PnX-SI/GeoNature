@@ -223,7 +223,9 @@ def get_one_synthese(id_synthese):
 def export_observations_web(info_role):
     """
         Optimized route for observations web export
+
         .. :quickref: Synthese;
+        
         This view is customisable by the administrator
         Some columns arer mandatory: id_sythese, geojson and geojson_local to generate the exported files
         
@@ -236,10 +238,10 @@ def export_observations_web(info_role):
     # set default to csv
     export_format = "csv"
     export_view = GenericTable(
-        "v_synthese_for_export",
-        "gn_synthese",
-        "the_geom_local",
-        current_app.config["LOCAL_SRID"],
+        tableName="v_synthese_for_export",
+        schemaName="gn_synthese",
+        geometry_field=None,
+        srid=current_app.config["LOCAL_SRID"],
     )
     if "export_format" in params:
         export_format = params["export_format"]
@@ -496,6 +498,7 @@ def general_stats(info_role):
 def get_taxon_tree():
     """
     Get taxon tree
+
     .. :quickref: Synthese;
     """
     taxon_tree_table = GenericTable(

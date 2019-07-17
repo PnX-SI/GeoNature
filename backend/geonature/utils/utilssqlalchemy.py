@@ -115,7 +115,7 @@ class GenericTable:
             d'une vue avec la base de données par rétroingénierie
     """
 
-    def __init__(self, tableName, schemaName, geometry_field, srid=None):
+    def __init__(self, tableName, schemaName, geometry_field=None, srid=None):
         meta = MetaData(schema=schemaName, bind=DB.engine)
         meta.reflect(views=True)
 
