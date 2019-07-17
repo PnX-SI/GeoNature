@@ -48,7 +48,6 @@ class RightsSchemaConf(Schema):
 
 
 class MailConfig(Schema):
-    MAIL_ON_ERROR = fields.Boolean(missing=False)
     MAIL_HOST = fields.String(missing="")
     HOST_PORT = fields.Integer(missing=465)
     MAIL_FROM = fields.String(missing="")
@@ -59,6 +58,7 @@ class MailConfig(Schema):
     MAIL_USE_SSL = fields.Boolean(missing=True)
     MAIL_USE_TLS = fields.Boolean(missing=False)
     MAIL_DEFAULT_SENDER = fields.String(missing="")
+
 
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
 class GnPySchemaConf(Schema):
