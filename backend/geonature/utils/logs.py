@@ -42,10 +42,10 @@ class SSLSMTPHandler(SMTPHandler):
 if current_app.config['MAIL_CONFIG'] and current_app.config['MAIL_ON_ERROR']:
     MAIL_CONFIG = current_app.config['MAIL_CONFIG']
     mail_handler = SSLSMTPHandler(
-        mailhost=(MAIL_CONFIG['MAIL_HOST'], MAIL_CONFIG['HOST_PORT']),
+        mailhost=(MAIL_CONFIG['MAIL_SERVER'], MAIL_CONFIG['MAIL_PORT']),
         fromaddr=MAIL_CONFIG['MAIL_USERNAME'],
-        toaddrs=MAIL_CONFIG['MAIL_TO'],
+        toaddrs=MAIL_CONFIG['ERROR_MAIL_TO'],
         subject='GeoNature error',
-        credentials=(MAIL_CONFIG['MAIL_USERNAME'], MAIL_CONFIG['MAIL_PASS']))
+        credentials=(MAIL_CONFIG['MAIL_USERNAME'], MAIL_CONFIG['MAIL_PASSWORD']))
 
     mail_handler.setLevel(logging.ERROR)

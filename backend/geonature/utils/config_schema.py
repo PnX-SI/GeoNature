@@ -48,12 +48,12 @@ class RightsSchemaConf(Schema):
 
 
 class MailConfig(Schema):
-    MAIL_HOST = fields.String(missing="")
-    HOST_PORT = fields.Integer(missing=465)
-    MAIL_FROM = fields.String(missing="")
+    MAIL_SERVER = fields.String(missing="")
+    MAIL_PORT = fields.Integer(missing=465)
+
     MAIL_USERNAME = fields.String(missing="")
-    MAIL_PASS = fields.String(missing="")
-    MAIL_TO = fields.List(fields.String(), missing=list())
+    MAIL_PASSWORD = fields.String(missing="")
+    ERROR_MAIL_TO = fields.List(fields.String(), missing=list())
 
     MAIL_USE_SSL = fields.Boolean(missing=True)
     MAIL_USE_TLS = fields.Boolean(missing=False)
