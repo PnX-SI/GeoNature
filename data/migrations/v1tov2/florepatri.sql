@@ -1572,8 +1572,8 @@ ALTER TABLE v1_florepatri.t_apresence ALTER COLUMN unique_id_sinp_fp SET DEFAULT
 
 -- Convertion d'un multipoint en point
 UPDATE v1_florepatri.t_apresence SET 
-  the_geom_local = (SELECT (st_dump(the_geom_local)).geom FROM v1_florepatri.t_apresence WHERE indexap = 406197584),
-  the_geom_3857 = (SELECT (st_dump(the_geom_3857)).geom FROM v1_florepatri.t_apresence WHERE indexap = 406197584)
+  the_geom_local = (SELECT (public.st_dump(the_geom_local)).geom FROM v1_florepatri.t_apresence WHERE indexap = 406197584),
+  the_geom_3857 = (SELECT (public.st_dump(the_geom_3857)).geom FROM v1_florepatri.t_apresence WHERE indexap = 406197584)
 WHERE indexap = 406197584;
 
 ALTER TABLE v1_florepatri.t_zprospection ENABLE TRIGGER tri_insert_zp;
@@ -1704,7 +1704,7 @@ INSERT INTO gn_synthese.synthese
   LEFT JOIN v1_florepatri.cor_zp_obs c  ON c.indexzp = zp.indexzp
   LEFT JOIN utilisateurs.t_roles r ON r.id_role = c.codeobs
   WHERE ap.supprime = false
-  AND st_geometrytype(ap.the_geom_local) = 'ST_Polygon'
+  AND public.st_geometrytype(ap.the_geom_local) = 'ST_Polygon'
   GROUP BY
       ap.unique_id_sinp_fp,
       zp.unique_id_sinp_grp,
@@ -1844,7 +1844,7 @@ INSERT INTO gn_synthese.synthese
   LEFT JOIN v1_florepatri.cor_zp_obs c  ON c.indexzp = zp.indexzp
   LEFT JOIN utilisateurs.t_roles r ON r.id_role = c.codeobs
   WHERE ap.supprime = false
-  AND st_geometrytype(ap.the_geom_local) IN('ST_LineString','ST_Point')
+  AND public.st_geometrytype(ap.the_geom_local) IN('ST_LineString','ST_Point')
   GROUP BY
       ap.unique_id_sinp_fp,
       zp.unique_id_sinp_grp,

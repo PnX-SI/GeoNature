@@ -869,7 +869,6 @@ SELECT o.id_object, t.id_module
 FROM gn_permissions.t_objects o, gn_commons.t_modules t
 WHERE o.code_object = 'TDatasets' AND t.module_code = 'FS';   
 
-                                                                                                                                                                                                                                                    		_self     		true	true	
 ------------
 --SYNTHESE--
 ------------

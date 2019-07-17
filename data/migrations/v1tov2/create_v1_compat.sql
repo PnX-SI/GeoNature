@@ -55,6 +55,10 @@ CREATE INDEX i_cor_synthese_v1_to_v2_id_nomenclature_cible
   USING btree
   (id_nomenclature_cible);
 
+--On déplace l'id de la source occtax
+UPDATE gn_synthese.t_sources 
+SET id_source = (SELECT max(id_source)+1 FROM v1_compat.bib_sources) 
+WHERE name_source = 'Occtax';
 --on insert ensuite les sources de la V1
 INSERT INTO gn_synthese.t_sources (
 	id_source,
@@ -69,8 +73,6 @@ SELECT
   'historique.' || db_schema || '_' || db_table || '.' || db_field AS entity_source_pk_field
 FROM v1_compat.bib_sources;
 SELECT setval('gn_synthese.t_sources_id_source_seq', (SELECT max(id_source)+1 FROM gn_synthese.t_sources), true);
-INSERT INTO gn_synthese.t_sources ( name_source, desc_source, entity_source_pk_field, url_source)
- VALUES ('Occtax', 'Données issues du module Occtax', 'pr_occtax.cor_counting_occtax.id_counting_occtax', '#/occtax/info/id_counting');
 
 -----------------------------------------------
 --ETABLIR LES CORESPONDANCES DE NOMENCLATURES--

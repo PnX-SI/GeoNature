@@ -26,3 +26,8 @@ FROM v1_compat.l_unites_geo;
 SELECT pg_catalog.setval('ref_geo.l_areas_id_area_seq', (SELECT max(id_area) FROM ref_geo.l_areas), true);
 
 ALTER TABLE ref_geo.l_areas ENABLE TRIGGER tri_meta_dates_change_l_areas;
+
+--Perfs
+VACUUM FULL ref_geo.l_areas;
+VACUUM ANALYSE ref_geo.l_areas;
+REINDEX TABLE ref_geo.l_areas;
