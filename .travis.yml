@@ -16,8 +16,8 @@ install:
   - ./travis_test.sh
   # install frontend
   - cd ../../../frontend
-  - nvm install 8.16.0
-  - npm install
+  #- nvm install 8.16.0
+  #- npm install
 
 script:
   -  # test backend
