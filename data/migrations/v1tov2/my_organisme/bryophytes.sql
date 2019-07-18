@@ -294,6 +294,6 @@ INSERT INTO gn_synthese.synthese
 INSERT INTO gn_synthese.cor_observer_synthese (id_synthese, id_role)
 SELECT syn.id_synthese, c.id_role
 FROM old_bryophytes.cor_bryo_observateur c 
-LEFT JOIN old_bryophytes.cor_bryo_taxon cft ON cft.id_station = c.id_station
-LEFT JOIN gn_synthese.synthese syn ON syn.entity_source_pk_value::integer = cft.gid AND syn.id_source = 106;
+JOIN old_bryophytes.cor_bryo_taxon cft ON cft.id_station = c.id_station
+JOIN gn_synthese.synthese syn ON syn.entity_source_pk_value::integer = cft.gid AND syn.id_source = 106;
 
