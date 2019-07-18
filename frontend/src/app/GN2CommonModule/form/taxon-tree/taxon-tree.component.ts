@@ -13,7 +13,7 @@ import { TreeNode, TreeComponent, IActionMapping } from 'angular-tree-component'
 /** Generic component for display taxon tree. Not use yet */
 @Component({
   selector: 'pnx-tree',
-  templateUrl: 'tree.component.html'
+  templateUrl: 'taxon-tree.component.html'
 })
 export class TaxonTreeComponent implements OnInit, AfterContentInit {
   public selectedNodes = [];
