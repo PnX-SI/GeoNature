@@ -38,6 +38,7 @@ CHANGELOG
 * Fix de SQLalchemy 1.3.3 et jointure sur objet Table
 * Le trigger remplissant ``cor_area_synthese`` en intersectant ``gn_synthese.synthese`` avec ``ref_geo.l_areas`` ne prend plus que les zonages ayant le champs ``enabled=true``
 * Correction ``dict()`` et version de Python (par @jpm-cbna)
+* MAJ de sécurité de Bootstrap (en version 4.3.1)
 
 **⚠️ Notes de version**
 
