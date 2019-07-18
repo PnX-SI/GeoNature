@@ -1,5 +1,5 @@
 #! /bin/bash
-. migratetov2.ini
+. ../migratetov2.ini
 . mymigratetov2.ini
 . ../../../config/settings.ini
 
@@ -26,6 +26,13 @@ if $import_aigle
 then
     echo "Get aigle schema content from geontauredb1"
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f aigle.sql  &>> ../../../var/log/mymigratetov2.log
+fi
+
+#schema bryophytes
+if $import_bryophytes
+then
+    echo "Get bryophytes schema content from geontauredb1"
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f bryophytes.sql  &>> ../../../var/log/mymigratetov2.log
 fi
 
 #schema gn_meta

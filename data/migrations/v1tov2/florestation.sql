@@ -974,8 +974,8 @@ INSERT INTO gn_synthese.synthese
 INSERT INTO gn_synthese.cor_observer_synthese (id_synthese, id_role)
 SELECT syn.id_synthese, c.id_role
 FROM v1_florestation.cor_fs_observateur c 
-JOIN v1_florestation.t_stations_fs st ON st.id_station = c.id_station
-JOIN gn_synthese.synthese syn ON syn.entity_source_pk_value::integer = st.gid AND syn.id_source = 105;
+JOIN v1_florestation.cor_fs_taxon cft ON cft.id_station = c.id_station
+JOIN gn_synthese.synthese syn ON syn.entity_source_pk_value::integer = cft.gid AND syn.id_source = 105;
 
 
 -- TODO Vérifier que le champ secteur de la vue v1_florestation.v_export_fs_all n'est pas utilisé dans l'appli  symfony florestation
