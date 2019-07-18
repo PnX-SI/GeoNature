@@ -115,7 +115,7 @@ class GenericTable:
             d'une vue avec la base de données par rétroingénierie
     """
 
-    def __init__(self, tableName, schemaName, geometry_field, srid=None):
+    def __init__(self, tableName, schemaName, geometry_field=None, srid=None):
         meta = MetaData(schema=schemaName, bind=DB.engine)
         meta.reflect(views=True)
 
@@ -127,8 +127,13 @@ class GenericTable:
         # Test geometry field
         if geometry_field:
             try:
-                if not self.tableDef.columns[geometry_field].type.__class__.__name__ == "Geometry":
-                    raise TypeError("field {} is not a geometry column".format(geometry_field))
+                if (
+                    not self.tableDef.columns[geometry_field].type.__class__.__name__
+                    == "Geometry"
+                ):
+                    raise TypeError(
+                        "field {} is not a geometry column".format(geometry_field)
+                    )
             except KeyError:
                 raise KeyError("field {} doesn't exists".format(geometry_field))
 
@@ -518,14 +523,14 @@ def csv_resp(fn):
     return _csv_resp
 
 
-def to_csv_resp(filename, data, columns, separator):
+def to_csv_resp(filename, data, columns, separator=";"):
 
     headers = Headers()
     headers.add("Content-Type", "text/plain")
     headers.add(
         "Content-Disposition", "attachment", filename="export_%s.csv" % filename
     )
-    out = generate_csv_content(columns, data)
+    out = generate_csv_content(columns, data, separator)
     return Response(out, headers=headers)
 
 

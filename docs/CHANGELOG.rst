@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-2.1.1 (2019-07-16)
+2.1.1 (2019-07-17)
 ------------------
 
 https://github.com/PnX-SI/GeoNature/compare/2.1.0...develop
@@ -19,6 +19,7 @@ https://github.com/PnX-SI/GeoNature/compare/2.1.0...develop
 * Lister toutes les données de la synthèse ayant un ``uuid_sinp`` dans le module validation, et plus seulement celles qui ont un enregistrement dans ``gn_commons.t_validations``
 * On ne liste plus les ``id_nomenclatures`` des types de validation à utiliser, dans la configuration du module. Mais on utilise toutes les nomenclatures activées du type de nomenclature ``STATUT_VALID``. (https://github.com/PnX-SI/gn_module_validation/issues/30)
 * Ajout de tests sur les ajouts de JDD et CA
+* Ajout d'une fonctionnalité d'envoie d'email via Flask-Mail dans le coeur de GeoNature
 * Amélioration des performances: ajout d'index sur Occtax et Metadonnées
 * Script d'import des métadonnées à partir du webservice MTD de l'INPN (@DonovanMaillard)
 * Complément, correction et compatibilité 2.1.0 des scripts de migration ``data/migrations/v1tov2``
