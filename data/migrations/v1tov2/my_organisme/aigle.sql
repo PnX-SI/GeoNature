@@ -434,6 +434,9 @@ INSERT INTO pr_aigle.t_photos_aires SELECT * FROM v1_compat.t_photos_aires;
 INSERT INTO pr_aigle.t_territoires SELECT * FROM v1_compat.t_territoires;
 INSERT INTO pr_aigle.t_rencontres SELECT * FROM v1_compat.t_rencontres;
 INSERT INTO pr_aigle.t_visites SELECT * FROM v1_compat.t_visites;
+INSERT INTO pr_aigle.cor_aire_territoire SELECT * FROM v1_compat.cor_aire_territoire;
+INSERT INTO pr_aigle.cor_rencontre_comportement SELECT * FROM v1_compat.cor_rencontre_comportement;
+INSERT INTO pr_aigle.cor_visite_activite SELECT * FROM v1_compat.cor_visite_activite;
 
 ---------
 --INDEX--
