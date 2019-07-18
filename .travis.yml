@@ -23,23 +23,23 @@ script:
   -  # test backend
   - cd ../backend
   - pytest --disable-warnings
-  - cd ../docs
-  - make html
-  # create a repository for frontend doc
-  - mkdir build/html/frontend
-  - cd ../frontend
+  # - cd ../docs
+  # - make html
+  # # create a repository for frontend doc
+  # - mkdir build/html/frontend
+  # - cd ../frontend
   #- npm run build
   #- npm run compodoc
 
 # deploy github pages on commit on master
-deploy:
-  provider: pages
-  skip_cleanup: true
-  github_token: $GITHUB_TOKEN # set in the Travis dashboard
-  local_dir: docs/build/html
-  github_url: http://docs.geonature.fr
-  on:
-    branch: master
+# deploy:
+#   provider: pages
+#   skip_cleanup: true
+#   github_token: $GITHUB_TOKEN # set in the Travis dashboard
+#   local_dir: docs/build/html
+#   github_url: http://docs.geonature.fr
+#   on:
+#     branch: master
 
 notifications:
   email:
