@@ -98,13 +98,14 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     // Initialisation de la fonction "showData" (au chargement de la page, la carte affiche automatiquement le nombre d'observations)
     this.showData = this.onEachFeatureNbObs;
     // Accès aux données de synthèse de la BDD GeoNature 
-    this.dataService.getDataCommunes().subscribe(
-      (data) => {
-        // console.log(data);
-        this.myCommunes = data;
-        this.background = data;
-      }
-    );
+    this.dataService.getDataCommunes()
+      .subscribe(
+        (data) => {
+          // console.log(data);
+          this.myCommunes = data;
+          this.background = data;
+        }
+      );
     // Initialisation de la variable currentMap (au chargement de la page, la carte affiche automatiquement le nombre d'observations)
     this.currentMap = 1; // Permet d'afficher les informations de légende associées au nombre d'observations
   }
@@ -173,7 +174,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     }
   }
   getCurrentParameters(event) {
-    // console.log(event);
+    console.log(event);
     console.log(this.filter);
     console.log(this.mapForm.value);
     // Copie des éléments du formulaire pour pouvoir y ajouter cd_ref s'il s'agit d'un filtre par taxon
@@ -185,6 +186,8 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
         var cd_ref = event.item.cd_ref;
         // Enregistrement du cd_ref pour un potentiel changement de période concernant un taxon
         this.currentCdRef = cd_ref;
+        // L'affichage de la carte du nombre de taxons n'a pas de sens lorsqu'on a sélectionné un taxon en particulier
+        this.changeMapToObs();
       }
       else {
         // Récupération du cd_ref pour un changement de période concernant un taxon
