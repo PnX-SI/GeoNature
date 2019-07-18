@@ -1,5 +1,6 @@
 #! /bin/bash
 . migratetov2.ini
+. mymigratetov2.ini
 . ../../../config/settings.ini
 
 touch ../../../var/log/mymigratetov2.log
@@ -18,6 +19,13 @@ if $import_metadata
 then
     echo "Get meta schema content from geontauredb1"
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f mymeta.sql  &>> ../../../var/log/mymigratetov2.log
+fi
+
+#schema aigle
+if $import_aigle
+then
+    echo "Get aigle schema content from geontauredb1"
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f aigle.sql  &>> ../../../var/log/mymigratetov2.log
 fi
 
 #schema gn_meta
