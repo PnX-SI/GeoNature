@@ -2,10 +2,8 @@
 CHANGELOG
 =========
 
-2.1.1 (2019-07-17)
+2.1.1 (2019-07-18)
 ------------------
-
-https://github.com/PnX-SI/GeoNature/compare/2.1.0...develop
 
 **🚀 Nouveautés**
 
