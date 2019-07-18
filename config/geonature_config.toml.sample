@@ -30,7 +30,7 @@ DEFAULT_LANGUAGE='fr'
 [FRONTEND]
 
 # Configuration du serveur mail (utilisé pour le module export et le logging par email)
-[MAILCONFIG]
+[MAIL_CONFIG]
 
 # Configuration de la Synthese
 [SYNTHESE]
