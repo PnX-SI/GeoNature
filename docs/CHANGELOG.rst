@@ -21,7 +21,7 @@ CHANGELOG
 * Amélioration des performances: ajout d'index sur Occtax et Metadonnées
 * Script d'import des métadonnées à partir du webservice MTD de l'INPN (@DonovanMaillard)
 * Complément, correction et compatibilité 2.1.0 des scripts de migration ``data/migrations/v1tov2``
-* Ajout d'un module de backoffice dans le coeur de GeoNature. Basé sur Flask-admin, les modules peuvent alimenter dynamiquement le module avec leur configuration
+* Ajout d'un module de backoffice dans le coeur de GeoNature. Basé sur Flask-admin, les modules peuvent alimenter dynamiquement le backoffice avec leur configuration
 
 **🐛 Corrections**
   
