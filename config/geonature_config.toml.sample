@@ -29,9 +29,6 @@ DEFAULT_LANGUAGE='fr'
 # Configuration générale du frontend
 [FRONTEND]
 
-# Configuration du serveur mail (utilisé pour le module export et le logging par email)
-[MAIL_CONFIG]
-
 # Configuration de la Synthese
 [SYNTHESE]
 
