@@ -61,7 +61,8 @@ then
         unzip tmp/geonature/mymnt.zip -d tmp/geonature
     export PGPASSWORD=$user_pg_pass;sudo -n -u postgres -s psql -d $db_name -c "TRUNCATE TABLE ref_geo.dem;" &>> ../../../var/log/migratetov2.log
     export PGPASSWORD=$user_pg_pass;sudo -n -u postgres -s psql -d $db_name -c "TRUNCATE TABLE ref_geo.dem_vector;" &>> ../../../var/log/migratetov2.log
-    export PGPASSWORD=$user_pg_pass;raster2pgsql -s $srid_local -c -C -I -M -d -t 5x5 tmp/geonature/mymnt.asc ref_geo.dem|psql -h $db_host -U $user_pg -d $db_name  &>> ../../../var/log/migratetov2.log
+    echo "insertion du MNT dans ref_geo.dem" &>> ../../../var/log/migratetov2.log
+    export PGPASSWORD=$user_pg_pass;raster2pgsql -s $srid_local -c -C -I -M -d tmp/geonature/mymnt.asc ref_geo.dem|psql -h $db_host -U $user_pg -d $db_name 
     sudo -n -u postgres -s psql -d $db_name -c "REINDEX INDEX ref_geo.dem_st_convexhull_idx;" &>> ../../../var/log/migratetov2.log
     echo "Vectorisation of DEM raster. This may take a few minutes..."
     echo "" &>> ../../../var/log/migratetov2.log
