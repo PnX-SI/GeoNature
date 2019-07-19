@@ -23,11 +23,11 @@ export class DashboardComponent implements OnInit {
   public distinctYears = [];
   public taxLevel: { [taxLevel: string]: any } = {};
 
-  public showHistogram = true;
-  public showMap = true;
-  public showPieChart = true;
-  public showLineChart = true;
-  public showSpecies = true;
+  public showHistogram = false;
+  public showMap = false;
+  public showPieChart = false;
+  public showLineChart = false;
+  public showSpecies = false;
 
   constructor(title: Title, public dataService: DataService) {
     title.setTitle("GeoNature - Dashboard")

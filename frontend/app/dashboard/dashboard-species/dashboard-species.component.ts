@@ -70,6 +70,7 @@ export class DashboardSpeciesComponent implements OnInit {
 
   speciesForm: FormGroup;
   @Input() distinctYears: any;
+  public spinner = false;
 
   constructor(public dataService: DataService, public fb: FormBuilder) {
     // Déclaration du formulaire contenant les filtres du pie chart
@@ -79,9 +80,9 @@ export class DashboardSpeciesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.spinner = true;
     // Par défaut, le pie chart s'affiche au niveau du règne
     this.speciesForm.controls["selectedYear"].setValue(2019);
-
     // Accès aux données de synthèse de la BDD GeoNature
     this.dataService.getSpecies({ selectedYear: this.speciesForm.value.selectedYear }).subscribe(
       (data) => {
@@ -92,12 +93,14 @@ export class DashboardSpeciesComponent implements OnInit {
           }
         )
         this.chart.chart.update();
+        this.spinner = false;
       }
     );
   }
 
   // Rafraichissement des données en fonction de l'année renseignée par l'utilisateur
   getCurrentYear(event) {
+    this.spinner = true;
     // Réinitialisation de l'array des données à afficher, paramètre du pie chart
     var pieChartDataTemp = [];
     // Accès aux données de synthèse de la BDD GeoNature
@@ -109,6 +112,7 @@ export class DashboardSpeciesComponent implements OnInit {
           }
         )
         this.pieChartData = pieChartDataTemp;
+        this.spinner = false;
         console.log(this.pieChartData);
       }
     );

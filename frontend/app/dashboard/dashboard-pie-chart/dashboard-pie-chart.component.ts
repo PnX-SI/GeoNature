@@ -27,7 +27,7 @@ export class DashboardPieChartComponent implements OnInit {
   public pieChartOptions = {
     legend: {
       display: 'true',
-      position: 'right',
+      position: 'left',
       labels: {
         fontSize: 15,
         filter: function (legendItem, chartData) {
@@ -47,13 +47,13 @@ export class DashboardPieChartComponent implements OnInit {
       //   }
       // },
       labels: [
-        {
-          render: 'label',
-          arc: true,
-          fontSize: 14,
-          position: 'outside',
-          overlap: false
-        },
+        // {
+        //   render: 'label',
+        //   fontSize: 14,
+        //   position: 'outside',
+        //   arc: true,
+        //   overlap: false
+        // },
         {
           render: 'percentage',
           fontColor: 'white',
@@ -73,6 +73,7 @@ export class DashboardPieChartComponent implements OnInit {
   @Input() taxonomies: any;
   @Input() yearsMinMax: any;
   public yearRange = [1980, 2019];
+  public spinner = false;
 
   constructor(public dataService: DataService, public fb: FormBuilder) {
     // Déclaration du formulaire contenant les filtres du pie chart
@@ -83,6 +84,7 @@ export class DashboardPieChartComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.spinner = true;
     // Initialisation de l'array des labels, paramètre du pie chart
     this.pieChartLabels = this.taxonomies["Règne"];
     // Par défaut, le pie chart s'affiche au niveau du règne
@@ -97,6 +99,7 @@ export class DashboardPieChartComponent implements OnInit {
           }
         );
         this.chart.chart.update();
+        this.spinner = false;
       }
     );
   }
@@ -110,6 +113,7 @@ export class DashboardPieChartComponent implements OnInit {
 
   // Rafraichissement des données en fonction des filtres renseignés par l'utilisateur
   getCurrentParameters(event) {
+    this.spinner = true;
     // console.log(event);
     // S'il s'agit d'un changement de rang taxonomique : réinitialisation de l'array de la légende
     if (event.target) {
@@ -144,6 +148,7 @@ export class DashboardPieChartComponent implements OnInit {
         );
         // console.log(pieChartDataTemp);
         this.pieChartData = pieChartDataTemp;
+        this.spinner = false;
         console.log(this.pieChartData);
       }
     );

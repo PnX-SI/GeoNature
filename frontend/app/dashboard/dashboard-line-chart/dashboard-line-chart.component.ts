@@ -145,7 +145,10 @@ export class DashboardLineChartComponent implements OnInit {
     responsive: true,
     legend: {
       display: 'true',
-      position: 'left'
+      position: 'left',
+      labels: {
+        fontSize: 15
+      }
     },
     scales: {
       xAxes: [{
@@ -166,9 +169,12 @@ export class DashboardLineChartComponent implements OnInit {
   };
   public lineChartLegend = true;
 
+  public spinner = false;
+
   constructor(public dataService: DataService, public fb: FormBuilder) { }
 
   ngOnInit() {
+    this.spinner = true;
     // Accès aux années distinctes présentes dans la BDD GeoNature
     this.dataService.getYears({ type: "distinct" }).subscribe(
       (data) => {
@@ -235,6 +241,7 @@ export class DashboardLineChartComponent implements OnInit {
               }
             )
             this.lineChartData = lineChartDataTemp;
+            this.spinner = false;
           }
         );
       }

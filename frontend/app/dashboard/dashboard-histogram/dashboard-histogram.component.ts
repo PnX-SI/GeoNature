@@ -85,6 +85,7 @@ export class DashboardHistogramComponent implements OnInit {
 
   histForm: FormGroup;
   public filter: any;
+  public spinner = false;
   @Input() taxonomies: any;
 
   public taxonApiEndPoint = `${AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
@@ -105,6 +106,7 @@ export class DashboardHistogramComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.spinner = true;
     // Accès aux données de synthèse de la BDD GeoNature 
     this.dataService.getDataSynthese().subscribe(
       (data) => {
@@ -121,6 +123,7 @@ export class DashboardHistogramComponent implements OnInit {
         // Enregistrement des données "sans filtre" pour pouvoir les afficher plus rapidement par la suite
         this.noFilterBarChartLabels = this.barChartLabels;
         this.noFilterBarChartData = this.barChartData;
+        this.spinner = false;
       }
     );
   }
@@ -146,6 +149,7 @@ export class DashboardHistogramComponent implements OnInit {
     }
   }
   getCurrentTax(event) {
+    this.spinner = true;
     // console.log(event);
     // console.log(this.histForm.value);
     // console.log(this.filter);
@@ -202,6 +206,7 @@ export class DashboardHistogramComponent implements OnInit {
             }
           );
           this.barChartData = barChartDataTemp;
+          this.spinner = false;
           console.log(this.barChartData);
         }, (error) => {
           // Affichage d'un message d'erreur s'il n'y a pas de données pour le taxon sélectionné

@@ -61,6 +61,8 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
 
   public taxonApiEndPoint = `${AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
 
+  public spinner = false;
+
   constructor(public dataService: DataService, public fb: FormBuilder, public mapService: MapService) {
     // Déclaration du formulaire contenant les filtres de la carte
     this.mapForm = fb.group({
@@ -95,6 +97,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   }
 
   ngOnInit() {
+    this.spinner = true;
     // Initialisation de la fonction "showData" (au chargement de la page, la carte affiche automatiquement le nombre d'observations)
     this.showData = this.onEachFeatureNbObs;
     // Accès aux données de synthèse de la BDD GeoNature 
@@ -104,6 +107,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
           // console.log(data);
           this.myCommunes = data;
           this.background = data;
+          this.spinner = false;
         }
       );
     // Initialisation de la variable currentMap (au chargement de la page, la carte affiche automatiquement le nombre d'observations)
@@ -174,6 +178,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     }
   }
   getCurrentParameters(event) {
+    this.spinner = true;
     console.log(event);
     console.log(this.filter);
     console.log(this.mapForm.value);
@@ -201,13 +206,14 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     this.dataService.getDataCommunes(this.filtersDict).subscribe(
       (data) => {
         this.myCommunes = data;
+        this.spinner = false;
       }
     );
   }
 
   // Communes grisées si pas de données concernant une certaine année
   defineBackground(feature, layer) {
-    layer.setStyle({ fillColor: 'rgb(150, 150, 150)', color: 'rgb(255, 255, 255)', fillOpacity: 0.9 });
+    layer.setStyle({ fillColor: 'rgb(150, 150, 150)', color: this.initialBorderColor, fillOpacity: 0.9 });
     layer.on({
       mouseover: this.highlightFeatureBackground.bind(this),
       mouseout: this.resetHighlight.bind(this),

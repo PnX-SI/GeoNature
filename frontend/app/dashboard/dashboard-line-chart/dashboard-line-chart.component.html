@@ -1,5 +1,22 @@
+<div class="row row-md">
+    <div class="col-md-5">
+        <em class="fa fa-md fa-info-circle" aria-hidden="true"></em>
+        <small>Il est possible de cliquer sur
+            les éléments de légende du graphe
+            pour les faire
+            disparaître ou réapparaître.
+        </small>
+    </div>
+    <div class="col-md-2">
+        <div style="text-align: center">
+            <div class="spinner-border text-secondary m-1" role="status" *ngIf="spinner"></div>
+        </div>
+    </div>
+</div><br /><br />
+
 <div style="display: block" *ngIf="nbFrameworks > 0 && lineChartData.length===nbFrameworks">
     <canvas baseChart [datasets]="lineChartData" [labels]="lineChartLabels" [chartType]="lineChartType"
         [colors]="lineChartColors" [options]=lineChartOptions>
     </canvas>
 </div>
+<br />

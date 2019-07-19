@@ -31,8 +31,18 @@
                             </select>
                         </div>
                     </form>
-                </div>
+                </div><br />
 
+                <em class="fa fa-md fa-info-circle" aria-hidden="true"></em>
+                <small>Il est possible de cliquer sur
+                    les éléments de légende du graphe
+                    pour les faire
+                    disparaître ou réapparaître.
+                </small>
+
+                <div style="text-align: center">
+                    <div class="spinner-border text-secondary m-5" role="status" *ngIf="spinner"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -40,9 +50,10 @@
     <div class="col-md-10 padding-sm">
         <div style="display: block">
             <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
-                [colors]="pieChartColors" [options]="pieChartOptions" padding="20px">
+                [colors]="pieChartColors" [options]="pieChartOptions">
             </canvas>
         </div>
     </div>
 
 </div>
+<br />

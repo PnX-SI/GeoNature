@@ -7,6 +7,10 @@
   background: radial-gradient(circle at top left, rgba(62, 69, 81, 0.7), #e0e0e0);
 }
 
+.card-body {
+  text-align: justify;
+}
+
 .btn-outline-green {
   color: #689f38;
   background-color: #ffffff;
@@ -21,4 +25,8 @@
 
 .btn-outline-green:focus, .btn-outline-green.focus {
   box-shadow: 0 0 0 0.2rem #aed581;
+}
+
+.fa-info-circle {
+  color: rgb(217,146,30);
 }
