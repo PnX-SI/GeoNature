@@ -21,6 +21,7 @@ CHANGELOG
 * Amélioration des performances: ajout d'index sur Occtax et Metadonnées
 * Script d'import des métadonnées à partir du webservice MTD de l'INPN (@DonovanMaillard)
 * Complément, correction et compatibilité 2.1.0 des scripts de migration ``data/migrations/v1tov2``
+* Ajout d'un module de backoffice dans le coeur de GeoNature. Basé sur Flask-admin, les modules peuvent alimenter dynamiquement le module avec leur configuration
 
 **🐛 Corrections**
   
@@ -43,7 +44,7 @@ CHANGELOG
 
 **⚠️ Notes de version**
 
-* Passer TaxHub en version 1.6.3
+* Passer TaxHub en version 1.6.3 (https://github.com/PnX-SI/TaxHub/releases/tag/1.6.3)
 * Passer le script de migration ``data/2.1.0to2.1.1.sql``
 * Si vous aviez modifier les id_nomenclatures dans la surcouche de la configuration du module validation, supprimer les car on se base maintenant sur les cd_nomenclatures
 * Suivez ensuite la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
