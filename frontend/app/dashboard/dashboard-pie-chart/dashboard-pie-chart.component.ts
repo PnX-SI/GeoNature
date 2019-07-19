@@ -14,6 +14,7 @@ export class DashboardPieChartComponent implements OnInit {
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
+  public subscription: any;
   public pieChartType = 'doughnut';
   public pieChartLabels = [];
   public pieChartData = [];
@@ -90,7 +91,7 @@ export class DashboardPieChartComponent implements OnInit {
     // Par défaut, le pie chart s'affiche au niveau du règne
     this.pieChartForm.controls["selectedFilter"].setValue("Règne");
     // Accès aux données de synthèse de la BDD GeoNature
-    this.dataService.getDataSynthesePerTaxLevel(this.pieChartForm.value).subscribe(
+    this.subscription = this.dataService.getDataSynthesePerTaxLevel(this.pieChartForm.value).subscribe(
       (data) => {
         //Remplissage de l'array des données, paramètre du pie chart
         data.forEach(
@@ -113,6 +114,7 @@ export class DashboardPieChartComponent implements OnInit {
 
   // Rafraichissement des données en fonction des filtres renseignés par l'utilisateur
   getCurrentParameters(event) {
+    this.subscription.unsubscribe();
     this.spinner = true;
     // console.log(event);
     // S'il s'agit d'un changement de rang taxonomique : réinitialisation de l'array de la légende
@@ -123,7 +125,7 @@ export class DashboardPieChartComponent implements OnInit {
     // Réinitialisation de l'array des données à afficher, paramètre du pie chart
     var pieChartDataTemp = [];
     // Accès aux données de synthèse de la BDD GeoNature
-    this.dataService.getDataSynthesePerTaxLevel(this.pieChartForm.value).subscribe(
+    this.subscription = this.dataService.getDataSynthesePerTaxLevel(this.pieChartForm.value).subscribe(
       (data) => {
         console.log(data);
         // Remplissage de l'array des données, en tenant compte du fait qu'il peut n'y avoir aucune observation pour certains taxons

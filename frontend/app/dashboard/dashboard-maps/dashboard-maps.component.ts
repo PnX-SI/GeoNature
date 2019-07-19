@@ -17,6 +17,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
 
   public background: Array<any>;
   public myCommunes: Array<any>;
+  public subscription: any;
   public showData: Function;
   public initialBorderColor = 'rgb(255, 255, 255)';
   public selectedBorderColor = 'rgb(50, 50, 50)';
@@ -58,10 +59,9 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   public yearRange = [1980, 2019];
   currentCdRef: any;
   public filtersDict: any;
+  public spinner = false;
 
   public taxonApiEndPoint = `${AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
-
-  public spinner = false;
 
   constructor(public dataService: DataService, public fb: FormBuilder, public mapService: MapService) {
     // Déclaration du formulaire contenant les filtres de la carte
@@ -101,15 +101,14 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     // Initialisation de la fonction "showData" (au chargement de la page, la carte affiche automatiquement le nombre d'observations)
     this.showData = this.onEachFeatureNbObs;
     // Accès aux données de synthèse de la BDD GeoNature 
-    this.dataService.getDataCommunes()
-      .subscribe(
-        (data) => {
-          // console.log(data);
-          this.myCommunes = data;
-          this.background = data;
-          this.spinner = false;
-        }
-      );
+    this.subscription = this.dataService.getDataCommunes().subscribe(
+      (data) => {
+        // console.log(data);
+        this.myCommunes = data;
+        this.background = data;
+        this.spinner = false;
+      }
+    );
     // Initialisation de la variable currentMap (au chargement de la page, la carte affiche automatiquement le nombre d'observations)
     this.currentMap = 1; // Permet d'afficher les informations de légende associées au nombre d'observations
   }
@@ -178,6 +177,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     }
   }
   getCurrentParameters(event) {
+    this.subscription.unsubscribe();
     this.spinner = true;
     console.log(event);
     console.log(this.filter);
@@ -203,7 +203,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     }
     // console.log(this.filtersDict);
     // Accès aux données de synthèse de la BDD GeoNature
-    this.dataService.getDataCommunes(this.filtersDict).subscribe(
+    this.subscription = this.dataService.getDataCommunes(this.filtersDict).subscribe(
       (data) => {
         this.myCommunes = data;
         this.spinner = false;
