@@ -23,13 +23,13 @@ class MyHomeView(AdminIndexView):
                 if v.category not in already_added_categie:
                     category['module_name'] = v.category
                     category['module_views'].append(
-                        {'url': v.url, 'name': v.name})
+                        {'url': current_app.config['API_ENDPOINT'] + v.url, 'name': v.name})
                     already_added_categie.append(v.category)
                 else:
                     for m in admin_modules:
                         if m['module_name'] == v.category:
                             m['module_views'].append(
-                                {'url': v.url, 'name': v.name})
+                                {'url': current_app.config['API_ENDPOINT'] + v.url, 'name': v.name})
                 admin_modules.append(category)
             print(admin_modules)
         return self.render('admin_home.html', admin_modules=admin_modules)
