@@ -21,7 +21,7 @@ CHANGELOG
 * Amélioration des performances: ajout d'index sur Occtax et Metadonnées
 * Script d'import des métadonnées à partir du webservice MTD de l'INPN (@DonovanMaillard)
 * Complément, correction et compatibilité 2.1.0 des scripts de migration ``data/migrations/v1tov2``
-  
+
 **🐛 Corrections**
   
 * Nombreuses corrections du module de validation (non utilisation des id_nomenclature, simplification des vues et de la table ``gn_commons.t_validations``)
@@ -39,6 +39,7 @@ CHANGELOG
 * Le trigger remplissant ``cor_area_synthese`` en intersectant ``gn_synthese.synthese`` avec ``ref_geo.l_areas`` ne prend plus que les zonages ayant le champs ``enabled=true``
 * Correction ``dict()`` et version de Python (par @jpm-cbna)
 * MAJ de sécurité de Bootstrap (en version 4.3.1)
+* L'ancien module export du coeur est enlevé en vue de la sortie du nouveau module export
 
 **⚠️ Notes de version**
 
