@@ -7,32 +7,33 @@ CHANGELOG
 
 **🚀 Nouveautés**
 
-* Factorisation du formulaire de recherche de la synthèse (utilisé dans le module synthese et validation)
-* Simplification et correction du module de recherche avancée d'un taxon en le limitant à l'ordre (performances)
-* Ajout d'un composant de recherche taxonomique avancé basé sur les rangs taxonomiques (modules synthese et validation), basé sur la nouvelle fonction ``taxonomie.find_all_taxons_children`` ajoutée à TaxHub
+* SYNTHESE: Factorisation du formulaire de recherche (utilisé dans le module synthese et validation)
+* SYNTHESE: Simplification et correction du module de recherche avancée d'un taxon en le limitant à l'ordre (performances)
+* SYNTHESE: Ajout d'un composant de recherche taxonomique avancé basé sur les rangs taxonomiques (modules synthese et validation), basé sur la nouvelle fonction ``taxonomie.find_all_taxons_children`` ajoutée à TaxHub
+* Création d'un backoffice d'admnistration dans le coeur de GeoNature. Basé sur Flask-admin, les modules peuvent alimenter dynamiquement le backoffice avec leur configuration
 * Mise en place d'une documentation développeur automatique de l'API à partir des docstring et des composants frontend, générée par Travis et désormais accessible à l'adresse http://docs.geonature.fr (#673)
 * Amélioration de la documentation (triggers, installation, module validation)
 * Suppression du module d'exemple, remplacé par un template de module (https://github.com/PnX-SI/gn_module_template)
 * Ajout d'un champ ``validable`` sur la table ``gn_meta.t_datasets`` controlant les données présentes dans le module VALIDATION (https://github.com/PnX-SI/gn_module_validation/issues/31)
-* Lister toutes les données de la synthèse ayant un ``uuid_sinp`` dans le module validation, et plus seulement celles qui ont un enregistrement dans ``gn_commons.t_validations``
-* On ne liste plus les ``id_nomenclatures`` des types de validation à utiliser, dans la configuration du module. Mais on utilise toutes les nomenclatures activées du type de nomenclature ``STATUT_VALID``. (https://github.com/PnX-SI/gn_module_validation/issues/30)
+* VALIDATION: Lister toutes les données de la synthèse ayant un ``uuid_sinp`` dans le module validation, et plus seulement celles qui ont un enregistrement dans ``gn_commons.t_validations``
+* VALIDATION: On ne liste plus les ``id_nomenclatures`` des types de validation à utiliser, dans la configuration du module. Mais on utilise toutes les nomenclatures activées du type de nomenclature ``STATUT_VALID``. (https://github.com/PnX-SI/gn_module_validation/issues/30)
 * Ajout de tests sur les ajouts de JDD et CA
 * Ajout d'une fonctionnalité d'envoie d'email via Flask-Mail dans le coeur de GeoNature
 * Amélioration des performances: ajout d'index sur Occtax et Metadonnées
 * Script d'import des métadonnées à partir du webservice MTD de l'INPN (@DonovanMaillard)
 * Complément, correction et compatibilité 2.1.0 des scripts de migration ``data/migrations/v1tov2``
-* Ajout d'un module de backoffice dans le coeur de GeoNature. Basé sur Flask-admin, les modules peuvent alimenter dynamiquement le backoffice avec leur configuration
+
 
 **🐛 Corrections**
   
 * Nombreuses corrections du module de validation (non utilisation des id_nomenclature, simplification des vues et de la table ``gn_commons.t_validations``)
 * Ordonnancement de listes déroulantes (#685)
-* Occtax : correction de l'édition d'un relevé à la géométrie de type Polyline (#684)
-* Occtax : correction l'édition et du contrôle conditionnel des champs de "preuves" (preuve d'existence numérique / non numérique) (#679)
-* Occtax : correction du parametre ``DATE_FORM_WITH_TODAY`` non pris en compte (#670)
-* Occtax: correction de la date_max non remplie lorsque ``DATE_FORM_WITH_TODAY = false`` 
-* Occtax: correction d'un bug lors de l'enchainement de relevé lorsque l'heure est remplie
-* Synthese: correction des doublons lorsqu'il y a plusieurs observateurs
+* OCCTAX : correction de l'édition d'un relevé à la géométrie de type Polyline (#684)
+* OCCTAX : correction l'édition et du contrôle conditionnel des champs de "preuves" (preuve d'existence numérique / non numérique) (#679)
+* OCCTAX : correction du parametre ``DATE_FORM_WITH_TODAY`` non pris en compte (#670)
+* OCCTAX: correction de la date_max non remplie lorsque ``DATE_FORM_WITH_TODAY = false`` 
+* OCCTAX: correction d'un bug lors de l'enchainement de relevé lorsque l'heure est remplie
+* SYNTHESE: correction des doublons lorsqu'il y a plusieurs observateurs
 * Correction du composant ``dynamicForm`` sur les champs de recherche de type texte (recherche sur Preuve numérique) (#530)
 * Désactivation du mode "enchainer les relevés" en mode édition (#699)
 * Correction de ``gn_monitoring`` : utiliser ``gn_commons.t_modules`` à la place de ``utilisateurs.t_applications`` pour associer des sites de suivi à des modules
