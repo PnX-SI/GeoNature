@@ -93,7 +93,7 @@ def get_observations_for_web(info_role):
     :qparam str period_end: *tbd*
     :qparam str area*: Generic filter on area
     :qparam str *: Generic filter, given by colname & value 
-    :>jsonarr array data: Array of synthese with geojson key
+    :>jsonarr array data: Array of synthese with geojson key, see above
     :>jsonarr int nb_total: Number of observations
     :>jsonarr bool nb_obs_limited: Is number of observations capped
     """
@@ -204,13 +204,14 @@ def get_one_synthese(id_synthese):
 
     .. :quickref: Synthese; Get one synthese
 
-    It return a dict composed of the following::
+    It returns a dict composed of the following::
 
         'data' dict: Array of dict (with geojson key)
         'nb_total' int: Number of observations
         'nb_obs_limited' bool: Is number of observations capped
 
     :param int id_synthese:Synthese to be queried
+    :>jsonarr array synthese_as_dict: One synthese with geojson key, see above
     """
     metadata_view = GenericTable("v_metadata_for_export", "gn_synthese", None)
     q = (
