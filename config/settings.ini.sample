@@ -75,10 +75,10 @@ install_usershub_schema=true
 usershub_release=2.0.3
 
 # Définir dans quelle version de TaxHub (release, branche ou tag) prendre le code SQL permettant la création du schéma taxonomie de la base de données de GeoNature
-taxhub_release=1.6.2
+taxhub_release=1.6.3
 
 # Définir dans quelle version du sous-module des nomenclatures (release, branche ou tag) prendre le code SQL permettant la création du schéma 'ref_nomenclatures' de la base de données GeoNature
-nomenclature_release=1.2.5
+nomenclature_release=1.2.6
 
 
 #Configuration python

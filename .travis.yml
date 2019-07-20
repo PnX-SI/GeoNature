@@ -6,33 +6,40 @@ python:
 before_install:
   - sudo apt-get install -y libgdal1-dev libgdal-dev
   - sudo apt-get install -y python-gdal
+  - python -c "import fcntl; fcntl.fcntl(1, fcntl.F_SETFL, 0)"
 
 # install dependencies
 install:
   - cd backend
-  - pip install -r requirements.txt
   - pip install -r requirements-dev.txt
   - cd tests/travis_test
   - ./travis_test.sh
   # install frontend
   - cd ../../../frontend
-  - nvm install 9
-  - npm install --only=dev
+  #- nvm install 8.16.0
+  #- npm install
 
 script:
+  -  # test backend
   - cd ../backend
-  # - pytest
-  - cd ../docs
-  - make html
+  - pytest --disable-warnings
+  # - cd ../docs
+  # - make html
+  # # create a repository for frontend doc
+  # - mkdir build/html/frontend
+  # - cd ../frontend
+  #- npm run build
+  #- npm run compodoc
 
 # deploy github pages on commit on master
-deploy:
-  provider: pages
-  skip_cleanup: true
-  github_token: $GITHUB_TOKEN # set in the Travis dashboard
-  local_dir: docs/build/html
-  on:
-    branch: master
+# deploy:
+#   provider: pages
+#   skip_cleanup: true
+#   github_token: $GITHUB_TOKEN # set in the Travis dashboard
+#   local_dir: docs/build/html
+#   github_url: http://docs.geonature.fr
+#   on:
+#     branch: master
 
 notifications:
   email:

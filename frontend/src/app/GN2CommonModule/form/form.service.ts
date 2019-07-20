@@ -74,7 +74,7 @@ export class FormService {
     if (hourMin && !hourMax) {
       return true;
       // if hour min et hour max => check validity
-    } else if (hourMin && hourMax) {
+    } else if (dateMin && dateMax && hourMin && hourMax) {
       const formatedHourMin = hourMin.split(':').map(h => parseInt(h));
       const formatedHourMax = hourMax.split(':').map(h => parseInt(h));
       const formatedDateMin = new Date(dateMin.year, dateMin.month, dateMin.day);

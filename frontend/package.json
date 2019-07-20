@@ -9,7 +9,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "compodoc": "npx compodoc -p src/tsconfig.app.json --output=../docs/frontend_doc"
+    "compodoc": "npx compodoc -p src/tsconfig.app.json --output=../docs/build/html/frontend"
   },
   "private": true,
   "dependencies": {
@@ -38,7 +38,7 @@
     "@types/leaflet-markercluster": "^1.0.3",
     "angular-tree-component": "^7.1.0",
     "angular2-chartjs": "^0.2.0",
-    "bootstrap": "4.1.3",
+    "bootstrap": "^4.3.1",
     "chart.js": "^2.6.0",
     "core-js": "^2.4.1",
     "font-awesome": "^4.7.0",
@@ -62,7 +62,6 @@
   },
   "devDependencies": {
     "@angular/language-service": "^4.0.0",
-    "@compodoc/compodoc": "^1.1.9",
     "@types/jasmine": "~2.5.53",
     "@types/jasminewd2": "~2.0.2",
     "@types/jquery": "^3.2.11",

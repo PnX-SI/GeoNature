@@ -4,7 +4,8 @@ from sqlalchemy import or_
 from flask import request
 
 from geonature.utils.env import DB
-from geonature.utils.utilssqlalchemy import test_type_and_generate_query
+from geonature.utils.utilssqlalchemy import test_type_and_generate_query, testDataType
+
 from geonature.utils.errors import GeonatureApiError
 
 from geonature.core.gn_meta.models import (
@@ -67,7 +68,12 @@ def get_datasets_cruved(info_role, params=dict()):
             if testT:
                 raise GeonatureApiError(message=testT)
             q = q.filter(col == params[param])
-
+    if "orderby" in params:
+        try:
+            orderCol = getattr(TDatasets.__table__.columns, params["orderby"])
+            q = q.order_by(orderCol)
+        except AttributeError:
+            log.error("the attribute to order on does not exist")
     data = q.all()
     return [d.as_dict(True) for d in data]
 
@@ -102,6 +108,16 @@ def get_af_cruved(info_role, params={}):
             CorAcquisitionFrameworkActor.id_acquisition_framework
             == TAcquisitionFramework.id_acquisition_framework,
         ).filter(CorAcquisitionFrameworkActor.id_role == info_role.id_role)
+
+    params = params.to_dict()
+    if "orderby" in params:
+        try:
+            order_col = getattr(
+                TAcquisitionFramework.__table__.columns, params.pop("orderby")
+            )
+            q = q.order_by(order_col)
+        except AttributeError:
+            log.error("the attribute to order on does not exist")
 
     # Generic Filters
     for key, value in params.items():

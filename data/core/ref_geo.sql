@@ -32,10 +32,10 @@ DECLARE
         thegeomchange boolean;
 BEGIN
 	-- si c'est un insert ou que c'est un UPDATE ET que le geom_4326 a été modifié
-	IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NOT ST_EQUALS(hstore(OLD)-> the4326geomcol, hstore(NEW)-> the4326geomcol)  )) THEN
+	IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NOT public.ST_EQUALS(hstore(OLD)-> the4326geomcol, hstore(NEW)-> the4326geomcol)  )) THEN
 		--récupérer le srid local
 		SELECT INTO thelocalsrid parameter_value::int FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid';
-		EXECUTE FORMAT ('SELECT ST_TRANSFORM($1.%I, $2)',the4326geomcol) INTO thegeomlocalvalue USING NEW, thelocalsrid;
+		EXECUTE FORMAT ('SELECT public.ST_TRANSFORM($1.%I, $2)',the4326geomcol) INTO thegeomlocalvalue USING NEW, thelocalsrid;
                 -- insertion dans le NEW de la geom transformée
 		NEW := NEW#= hstore(thelocalgeomcol, thegeomlocalvalue);
 	END IF;
@@ -222,20 +222,24 @@ BEGIN
     RETURN QUERY
     SELECT min((altitude).val)::integer AS altitude_min, max((altitude).val)::integer AS altitude_max
     FROM (
-	SELECT ST_DumpAsPolygons(ST_clip(rast, 1
-	, st_transform(myGeom,thesrid), true)) AS altitude
+	SELECT public.ST_DumpAsPolygons(public.ST_clip(
+    rast, 
+    1,
+	  public.st_transform(myGeom,thesrid), 
+    true)
+  ) AS altitude
 	FROM ref_geo.dem AS altitude 
-	WHERE st_intersects(rast,st_transform(myGeom,thesrid))
+	WHERE public.st_intersects(rast,public.st_transform(myGeom,thesrid))
     ) AS a;		
   -- Use dem_vector
   ELSE
     RETURN QUERY
     WITH d  as (
-        SELECT st_transform(myGeom,thesrid) a
+        SELECT public.st_transform(myGeom,thesrid) a
      )
     SELECT min(val)::int as altitude_min, max(val)::int as altitude_max
     FROM ref_geo.dem_vector, d
-    WHERE st_intersects(a,geom);
+    WHERE public.st_intersects(a,geom);
   END IF;
 END;
 $BODY$
@@ -255,11 +259,11 @@ BEGIN
   SELECT gn_commons.get_default_parameter('local_srid', NULL) INTO isrid;
   RETURN QUERY
   WITH d  as (
-      SELECT st_transform(myGeom,isrid) geom_trans
+      SELECT public.st_transform(myGeom,isrid) geom_trans
   )
   SELECT a.id_area, a.id_type, a.area_code, a.area_name
   FROM ref_geo.l_areas a, d
-  WHERE st_intersects(geom_trans, a.geom)
+  WHERE public.st_intersects(geom_trans, a.geom)
     AND (myIdType IS NULL OR a.id_type = myIdType)
     AND enable=true;
 END;

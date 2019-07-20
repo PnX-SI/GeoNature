@@ -157,7 +157,7 @@ def get_synthese(info_role):
 
     .. deprecated:: 2?
     Use :route: /for_web instead
-    
+
     Params must have same synthese fields names
 
     :parameter str info_role: Role used to get the associated filters 
@@ -249,15 +249,15 @@ def get_one_synthese(id_synthese):
 @routes.route("/export_observations", methods=["POST"])
 @permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
 def export_observations_web(info_role):
-    """Optimized route for observations web export
-       
+    """Optimized route for observations web export.
+
     .. :quickref: Synthese;
-    
+
     This view is customisable by the administrator
-    Some columns arer mandatory: id_sythese, geojson and geojson_local to generate the exported files
-    
+    Some columns are mandatory: id_synthese, geojson and geojson_local to generate the exported files
+
     POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
-    
+
     :query str export_format: str<'csv', 'geojson', 'shapefiles'>
 
     """
@@ -265,10 +265,10 @@ def export_observations_web(info_role):
     # set default to csv
     export_format = "csv"
     export_view = GenericTable(
-        "v_synthese_for_export",
-        "gn_synthese",
-        "the_geom_local",
-        current_app.config["LOCAL_SRID"],
+        tableName="v_synthese_for_export",
+        schemaName="gn_synthese",
+        geometry_field=None,
+        srid=current_app.config["LOCAL_SRID"],
     )
     if "export_format" in params:
         export_format = params["export_format"]
@@ -367,7 +367,7 @@ def export_metadata(info_role):
     """Route to export the metadata in CSV
 
     .. :quickref: Synthese;
-    
+
     The table synthese is join with gn_synthese.v_metadata_for_export
     The column jdd_id is mandatory in the view gn_synthese.v_metadata_for_export
 
@@ -405,7 +405,7 @@ def export_status(info_role):
     """Route to get all the protection status of a synthese search
 
     .. :quickref: Synthese;
-    
+
     Get the CRUVED from 'R' action because we don't give observations X/Y but only statuts
     and to be constistant with the data displayed in the web interface
 
@@ -527,7 +527,7 @@ def general_stats(info_role):
 @routes.route("/taxons_tree", methods=["GET"])
 @json_resp
 def get_taxon_tree():
-    """Get taxon tree
+    """Get taxon tree.
 
     .. :quickref: Synthese;
     """
@@ -541,7 +541,7 @@ def get_taxon_tree():
 @routes.route("/taxons_autocomplete", methods=["GET"])
 @json_resp
 def get_autocomplete_taxons_synthese():
-    """Autocomplete taxon for web search (based on all taxon in Synthese)
+    """Autocomplete taxon for web search (based on all taxon in Synthese).
 
     .. :quickref: Synthese;
 

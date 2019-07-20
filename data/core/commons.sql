@@ -107,21 +107,17 @@ $BODY$
 DECLARE
 	theschema text := quote_ident(TG_TABLE_SCHEMA);
 	thetable text := quote_ident(TG_TABLE_NAME);
-	theidtablelocation int;
 	theuuidfieldname character varying(50);
 	theuuid uuid;
   thecomment text := 'auto = default value';
 BEGIN
-  --Retrouver l'id de la table source stockant l'enregistrement en cours de validation
-	SELECT INTO theidtablelocation gn_commons.get_table_location_id(theschema,thetable);
   --Retouver le nom du champ stockant l'uuid de l'enregistrement en cours de validation
 	SELECT INTO theuuidfieldname gn_commons.get_uuid_field_name(theschema,thetable);
   --Récupérer l'uuid de l'enregistrement en cours de validation
 	EXECUTE format('SELECT $1.%I', theuuidfieldname) INTO theuuid USING NEW;
   --Insertion du statut de validation et des informations associées dans t_validations
-  INSERT INTO gn_commons.t_validations (id_table_location,uuid_attached_row,id_nomenclature_valid_status,id_validator,validation_comment,validation_date)
+  INSERT INTO gn_commons.t_validations (uuid_attached_row,id_nomenclature_valid_status,id_validator,validation_comment,validation_date)
   VALUES(
-    theidtablelocation,
     theuuid,
     ref_nomenclatures.get_default_nomenclature_value('STATUT_VALID'), --comme la fonction est générique, cette valeur par défaut doit exister et est la même pour tous les modules
     null,

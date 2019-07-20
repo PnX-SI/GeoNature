@@ -1,13 +1,17 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
-import { Map, GeoJSON } from 'leaflet';
+import { Map } from 'leaflet';
 import { MapService } from '../map.service';
 import { AppConfig } from '@geonature_config/app.config';
 import { CommonService } from '../../service/common.service';
 import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
+import { GeoJSON } from 'togeojson';
 
 import 'leaflet-draw';
 import * as L from 'leaflet';
 
+/**
+ * Ce composant permet d'activer le `plugin leaflet-draw <https://github.com/Leaflet/Leaflet.draw>`_
+ */
 @Component({
   selector: 'pnx-leaflet-draw',
   templateUrl: 'leaflet-draw.component.html'
@@ -19,11 +23,17 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   public drawnItems: any;
   // save the current layer type because the edite event do not send it...
   public currentLayerType: string;
-  // coordinates of the entity to draw
+  /** Coordonnées de l'entité à dessiner */
   @Input() geojson: GeoJSON;
+  /**
+   *  Objet permettant de paramettrer le plugin et les différentes formes dessinables (point, ligne, cercle etc...)
+   *
+   * Par défault le fichier ``leaflet-draw.option.ts`` est passé au composant. Il est possible de surcharger l'objet pour activer/désactiver certaines formes. Voir `exemple <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/occtax/occtax-map-form/occtax-map-form.component.ts#L27>`_
+   */
   @Input() options = leafletDrawOption;
   @Input() zoomLevel = AppConfig.MAPCONFIG.ZOOM_LEVEL_RELEVE;
-  @Output() layerDrawed = new EventEmitter<any>();
+  /** Niveau de zoom à partir du quel on peut dessiner sur la carte */
+  @Output() layerDrawed = new EventEmitter<GeoJSON>();
   @Output() layerDeleted = new EventEmitter<any>();
 
   constructor(public mapservice: MapService, private _commonService: CommonService) {}
@@ -137,7 +147,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     if (geojson.type === 'LineString' || geojson.type == 'MultiLineString') {
       const latLng = L.GeoJSON.coordsToLatLngs(
         geojson.coordinates,
-        geojson.type === 'Polygon' ? 0 : 1
+        geojson.type === 'LineString' ? 0 : 1
       );
       layer = L.polyline(latLng);
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
@@ -145,7 +155,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     if (geojson.type === 'Polygon' || geojson.type == 'MultiPolygon') {
       const latLng = L.GeoJSON.coordsToLatLngs(
         geojson.coordinates,
-        geojson.type === 'LineString' ? 0 : 1
+        geojson.type === 'Polygon' ? 1 : 2
       );
       layer = L.polygon(latLng);
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);

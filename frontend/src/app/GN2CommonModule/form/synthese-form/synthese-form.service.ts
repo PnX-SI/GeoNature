@@ -80,7 +80,15 @@ export class SyntheseFormService {
       ) {
         updatedParams[key] = this._periodFormatter.format(params[key]);
       } else if (key === 'geoIntersection' && params['geoIntersection']) {
-        updatedParams['geoIntersection'] = stringify(params['geoIntersection']);
+        // stringify accepte uniquement les geojson simple (pas les feature collection)
+        // on boucle sur les feature pour les transformer en WKT
+        if (Array.isArray(params['geoIntersection'])) {
+          updatedParams['geoIntersection'] = params['geoIntersection'].map(geojson => {
+            return stringify(geojson);
+          });
+        } else {
+          updatedParams['geoIntersection'] = stringify(params['geoIntersection']);
+        }
       } else if (params[key]) {
         // if its an Array push only if > 0
         if (Array.isArray(params[key]) && params[key].length > 0) {

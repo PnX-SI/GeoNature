@@ -3,32 +3,63 @@ CHANGELOG
 =========
 
 
-2.2.0 (unreleased)
+
+2.1.2 (Unreleased)
+------------------
 
 **🚀 Nouveautés**
 
-* Factorisation du formulaire de recherche de la synthese (utilisé dans le module synthese et validation)
-* Ajout d'un composant de recherche taxonomique avancé basé sur les rang taxonomique (modules synthese et validation)
+**🐛 Corrections**
 
-  
+2.1.1 (2019-07-18)
+------------------
+
+**🚀 Nouveautés**
+
+* SYNTHESE: Factorisation du formulaire de recherche (utilisé dans le module synthese et validation)
+* SYNTHESE: Simplification et correction du module de recherche avancée d'un taxon en le limitant à l'ordre (performances)
+* SYNTHESE: Ajout d'un composant de recherche taxonomique avancé basé sur les rangs taxonomiques (modules synthese et validation), basé sur la nouvelle fonction ``taxonomie.find_all_taxons_children`` ajoutée à TaxHub
+* Création d'un backoffice d'admnistration dans le coeur de GeoNature. Basé sur Flask-admin, les modules peuvent alimenter dynamiquement le backoffice avec leur configuration
+* Mise en place d'une documentation développeur automatique de l'API à partir des docstring et des composants frontend, générée par Travis et désormais accessible à l'adresse http://docs.geonature.fr (#673)
+* Amélioration de la documentation (triggers, installation, module validation)
+* Suppression du module d'exemple, remplacé par un template de module (https://github.com/PnX-SI/gn_module_template)
+* Ajout d'un champ ``validable`` sur la table ``gn_meta.t_datasets`` controlant les données présentes dans le module VALIDATION (https://github.com/PnX-SI/gn_module_validation/issues/31)
+* VALIDATION: Lister toutes les données de la synthèse ayant un ``uuid_sinp`` dans le module validation, et plus seulement celles qui ont un enregistrement dans ``gn_commons.t_validations``
+* VALIDATION: On ne liste plus les ``id_nomenclatures`` des types de validation à utiliser, dans la configuration du module. Mais on utilise toutes les nomenclatures activées du type de nomenclature ``STATUT_VALID``. (https://github.com/PnX-SI/gn_module_validation/issues/30)
+* Ajout de tests sur les ajouts de JDD et CA
+* Ajout d'une fonctionnalité d'envoie d'email via Flask-Mail dans le coeur de GeoNature
+* Amélioration des performances: ajout d'index sur Occtax et Metadonnées
+* Script d'import des métadonnées à partir du webservice MTD de l'INPN (@DonovanMaillard)
+* Complément, correction et compatibilité 2.1.0 des scripts de migration ``data/migrations/v1tov2``
+
+
 **🐛 Corrections**
   
-  * Nombreuses corrections du module de validation (non utilisation des id_nomenclature, simplification des vues)
-
+* Nombreuses corrections du module de validation (non utilisation des id_nomenclature, simplification des vues et de la table ``gn_commons.t_validations``)
+* Ordonnancement de listes déroulantes (#685)
+* OCCTAX : correction de l'édition d'un relevé à la géométrie de type Polyline (#684)
+* OCCTAX : correction l'édition et du contrôle conditionnel des champs de "preuves" (preuve d'existence numérique / non numérique) (#679)
+* OCCTAX : correction du parametre ``DATE_FORM_WITH_TODAY`` non pris en compte (#670)
+* OCCTAX: correction de la date_max non remplie lorsque ``DATE_FORM_WITH_TODAY = false`` 
+* OCCTAX: correction d'un bug lors de l'enchainement de relevé lorsque l'heure est remplie
+* SYNTHESE: correction des doublons lorsqu'il y a plusieurs observateurs
+* Correction du composant ``dynamicForm`` sur les champs de recherche de type texte (recherche sur Preuve numérique) (#530)
+* Désactivation du mode "enchainer les relevés" en mode édition (#699)
+* Correction de ``gn_monitoring`` : utiliser ``gn_commons.t_modules`` à la place de ``utilisateurs.t_applications`` pour associer des sites de suivi à des modules
+* Fix de SQLalchemy 1.3.3 et jointure sur objet Table
+* Le trigger remplissant ``cor_area_synthese`` en intersectant ``gn_synthese.synthese`` avec ``ref_geo.l_areas`` ne prend plus que les zonages ayant le champs ``enabled=true``
+* Correction ``dict()`` et version de Python (par @jpm-cbna)
+* MAJ de sécurité de Bootstrap (en version 4.3.1)
+* L'ancien module export du coeur est enlevé en vue de la sortie du nouveau module export
 
 **⚠️ Notes de version**
 
- - Monter à Taxhub 1.6.3
- - Passer le script de migration 2.1.1to2.2.0
- - Lancer la commande de mise à jour de la configuration du module de validation
+* Passer TaxHub en version 1.6.3 (https://github.com/PnX-SI/TaxHub/releases/tag/1.6.3)
+* Passer le script de migration ``data/2.1.0to2.1.1.sql``
+* Si vous aviez modifier les id_nomenclatures dans la surcouche de la configuration du module validation, supprimer les car on se base maintenant sur les cd_nomenclatures
+* Suivez ensuite la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
+* Nouvelle localisation de la doc : http://docs.geonature.fr
 
-   ::
-
-    cd /home/`whoami`/geonature/backend
-    source venv/bin/activate
-    geonature update_module_configuration validation
-
-    
 
 2.1.0 (2019-06-01)
 ------------------

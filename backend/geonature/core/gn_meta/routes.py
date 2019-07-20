@@ -48,7 +48,9 @@ def get_datasets_list():
 def get_datasets(info_role):
     """
     Get datasets list
+    
     .. :quickref: Metadata;
+
     :param info_role: add with kwargs
     :type info_role: TRole
     :query boolean active: filter on active fiel
@@ -66,7 +68,7 @@ def get_datasets(info_role):
             gunicorn_error_logger.info(e)
             log.error(e)
             with_mtd_error = True
-    params = dict(request.args)
+    params = request.args.to_dict()
     datasets = get_datasets_cruved(info_role, params)
     datasets_resp = {"data": datasets}
     if with_mtd_error:
@@ -81,7 +83,9 @@ def get_datasets(info_role):
 def get_dataset(id_dataset):
     """
     Get one dataset
+
     .. :quickref: Metadata;
+
     :param id_dataset: the id_dataset
     :param type: int
     :returns: dict<TDataset>
@@ -108,6 +112,7 @@ def get_dataset(id_dataset):
 def post_dataset(info_role):
     """
     Post a dataset
+
     .. :quickref: Metadata;
     """
     if info_role.value_filter == "0":
@@ -143,7 +148,9 @@ def post_dataset(info_role):
 def get_acquisition_frameworks(info_role):
     """
     Get all AF with cruved filter
+
     .. :quickref: Metadata;
+
     """
     params = request.args
     return get_af_cruved(info_role, params)
@@ -153,8 +160,10 @@ def get_acquisition_frameworks(info_role):
 @json_resp
 def get_acquisition_framework(id_acquisition_framework):
     """
-    Get on AF
+    Get one AF
+
     .. :quickref: Metadata;
+
     :param id_acquisition_framework: the id_acquisition_framework
     :param type: int
     """

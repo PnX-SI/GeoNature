@@ -477,6 +477,16 @@ ALTER TABLE cor_dataset_actor
   ADD CONSTRAINT check_is_unique_cor_dataset_actor_organism UNIQUE(id_dataset, id_organism, id_nomenclature_actor_role);
 
 
+---------
+--INDEX--
+---------
+
+
+CREATE INDEX i_t_datasets_id_acquisition_framework
+  ON gn_meta.t_datasets
+  USING btree
+  (id_acquisition_framework);
+
 --------
 --VIEW--
 --------

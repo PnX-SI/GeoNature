@@ -1,9 +1,11 @@
 import {
   Component,
   OnInit,
+  Output,
   OnDestroy,
   ViewChild,
-  AfterViewInit
+  AfterViewInit,
+  EventEmitter
 } from "@angular/core";
 import { MapService } from "@geonature_common/map/map.service";
 import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
@@ -43,7 +45,7 @@ export class OcctaxMapFormComponent
     private occtaxService: OcctaxDataService,
     private _dfs: DataFormService,
     private _authService: AuthService
-  ) { }
+  ) {}
 
   ngOnInit() {
     // overight the leaflet draw object to set options

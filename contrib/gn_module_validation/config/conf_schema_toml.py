@@ -38,7 +38,7 @@ DEFAULT_LIST_COLUMN = [
     {"prop": "observers", "name": "Observateur", "max_width": 200},
 ]
 
-# cd_nomenclature_valid_status used for validation module
+# cd_nomenclature_valid_status used for validation module only use for color style
 STATUS_INFO = {
     "0": {"cat": "notassessed", "color": "#FFFFFF"},  #  en attente de validation
     "1": {"cat": "assessable", "color": "#8BC34A"},  # certain tres problable

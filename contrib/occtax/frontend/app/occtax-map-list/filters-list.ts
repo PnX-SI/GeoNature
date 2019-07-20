@@ -63,6 +63,18 @@ export const FILTERSLIST = [
     required: false
   },
   {
+    type_widget: "text",
+    attribut_label: "Preuve numérique",
+    attribut_name: "digital_proof",
+    required: false
+  },
+  {
+    type_widget: "text",
+    attribut_label: "Preuve non numérique",
+    attribut_name: "non_digital_proof",
+    required: false
+  },
+  {
     type_widget: "nomenclature",
     attribut_label: "Niveau de diffusion",
     attribut_name: "id_nomenclature_diffusion_level",

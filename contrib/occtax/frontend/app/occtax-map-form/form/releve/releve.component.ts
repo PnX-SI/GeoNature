@@ -115,9 +115,10 @@ export class ReleveComponent implements OnInit, OnDestroy {
           let oldmaxdate = (this.releveForm.controls.properties as FormGroup)
             .value["date_max"];
 
-          //Compare the dates before the change of the datemin. If datemin and datemax were equal, maintain this equality
-          //If they don't, do nothing
-          //oldmaxdate and oldmindate are objects. Strigify it for a right comparison
+          //Compare the dates before the change of the datemin. 
+          // If datemin and datemax were equal, maintain this equality
+          // If they don't, do nothing
+          // oldmaxdate and oldmindate are objects. Strigify it for a right comparison
           if (oldmindate) {
             if (
               JSON.stringify(oldmaxdate) == JSON.stringify(oldmindate) ||
@@ -127,6 +128,11 @@ export class ReleveComponent implements OnInit, OnDestroy {
                 date_max: newvalue
               });
             }
+            // if olddatminDate is null => fill dateMax
+          } else {
+            this.releveForm.controls.properties.patchValue({
+              date_max: newvalue
+            });
           }
         }
       );

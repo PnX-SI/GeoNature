@@ -16,6 +16,8 @@ import_taxonomie=true
 import_metadata=true
 #import "layers" schema content to ref_geo
 import_ref_geo=true
+#MNT zip file url (CAUTION : the .asc file name IS mymnt.asc)
+mnt_url=https://mondomaine.fr/mymnt.zip
 #import "contactfaune" schema content
 import_contactfaune=true
 #import "contactflore" schema content

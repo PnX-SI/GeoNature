@@ -68,6 +68,7 @@ def delete_recursively(path_folder, period=1, excluded_files=[]):
     """
     for the_file in os.listdir(path_folder):
         file_path = os.path.join(path_folder, the_file)
+
         try:
             now = datetime.datetime.now()
             creation_date = datetime.datetime.utcfromtimestamp(os.path.getctime(file_path))
