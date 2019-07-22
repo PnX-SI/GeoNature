@@ -2,6 +2,7 @@
 Fonctions utilitaires
 """
 import json
+import datetime
 from functools import wraps
 
 from dateutil import parser
@@ -488,6 +489,12 @@ def json_resp(fn):
 def to_json_resp(
     res, status=200, filename=None, as_file=False, indent=None, extension="json"
 ):
+    def additionnal_converter(o):
+        if isinstance(o, datetime.datetime):
+            return SERIALIZERS['datetime'](o)
+        else :
+            raise TypeError( "{} is not JSON serializable".format(repr(o)) )
+            
     if not res:
         status = 404
         res = {"message": "not found"}
@@ -502,7 +509,7 @@ def to_json_resp(
             filename="export_{}.{}".format(filename, extension),
         )
     return Response(
-        json.dumps(res, ensure_ascii=False, indent=indent),
+        json.dumps(res, ensure_ascii=False, indent=indent,default=additionnal_converter),
         status=status,
         mimetype="application/json",
         headers=headers,
