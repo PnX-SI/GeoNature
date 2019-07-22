@@ -1,37 +1,55 @@
-import ast
-import datetime
 import logging
+import datetime
+import ast
 import time
+
 from collections import OrderedDict
 
-from flask import (Blueprint, current_app, render_template, request,
-                   send_from_directory)
-from geojson import Feature, FeatureCollection
-from geonature.core.gn_meta.models import TDatasets
-from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
-from geonature.core.gn_synthese.models import (DefaultsNomenclaturesValue,
-                                               Synthese, SyntheseOneRecord,
-                                               TSources, VColorAreaTaxon,
-                                               VMTaxonsSyntheseAutocomplete,
-                                               VSyntheseForWebApp)
-from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
-from geonature.core.gn_synthese.utils import query as synthese_query
-from geonature.core.gn_synthese.utils import \
-    query_select_sqla as synthese_query_select
-from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
-from geonature.core.ref_geo.models import BibAreasTypes, LAreas
-from geonature.core.taxonomie.models import (Taxref, TaxrefProtectionArticles,
-                                             TaxrefProtectionEspeces)
+from flask import Blueprint, request, current_app, send_from_directory, render_template
+from sqlalchemy import distinct, func, desc, select
+from sqlalchemy.orm import exc
+from sqlalchemy.sql import text
+from geojson import FeatureCollection, Feature
+
+
 from geonature.utils import filemanager
 from geonature.utils.env import DB, ROOT_DIR
 from geonature.utils.errors import GeonatureApiError
+
 from geonature.utils.utilsgeometry import FionaShapeService
-from geonature.utils.utilssqlalchemy import (GenericTable, csv_resp, json_resp,
-                                             to_csv_resp, to_json_resp)
-from sqlalchemy import desc, distinct, func, select
-from sqlalchemy.orm import exc
-from sqlalchemy.sql import text
+
+from geonature.core.gn_synthese.models import (
+    Synthese,
+    TSources,
+    DefaultsNomenclaturesValue,
+    SyntheseOneRecord,
+    VMTaxonsSyntheseAutocomplete,
+    VSyntheseForWebApp,
+    VColorAreaTaxon,
+)
+from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
+from geonature.core.taxonomie.models import (
+    Taxref,
+    TaxrefProtectionArticles,
+    TaxrefProtectionEspeces,
+)
+from geonature.core.ref_geo.models import LAreas, BibAreasTypes
+from geonature.core.gn_synthese.utils import query as synthese_query
+from geonature.core.gn_synthese.utils import query_select_sqla as synthese_query_select
+from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
+
+from geonature.core.gn_meta.models import TDatasets
+
+from geonature.core.gn_permissions import decorators as permissions
+from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
+
+from geonature.utils.utilssqlalchemy import (
+    to_csv_resp,
+    to_json_resp,
+    json_resp,
+    GenericTable,
+    csv_resp,
+)
 
 # debug
 # current_app.config['SQLALCHEMY_ECHO'] = True
@@ -44,7 +62,6 @@ log = logging.getLogger()
 
 def current_milli_time():
     return time.time()
-
 
 ############################################
 ########### GET OBSERVATIONS  ##############
