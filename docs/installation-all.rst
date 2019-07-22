@@ -116,7 +116,27 @@ Pour Debian 8 :
 
 * Configuration de la locale du serveur
 
-Certains serveurs sont livrés sans "locale" (langue par défaut). Pour l'installation de GeoNature, il est necessaire de bien configurer la locale.
+Certains serveurs sont livrés sans "locale" (langue par défaut). Pour l'installation de GeoNature, il est necessaire de bien configurer la locale. Si la commande ``locale`` renvoie ceci:
+
+::
+
+    LANG=fr_FR.UTF-8
+    LANGUAGE=fr_FR.UTF-8
+    LC_CTYPE="fr_FR.UTF-8"
+    LC_NUMERIC="fr_FR.UTF-8"
+    LC_TIME="fr_FR.UTF-8"
+    LC_COLLATE="fr_FR.UTF-8"
+    LC_MONETARY="fr_FR.UTF-8"
+    LC_MESSAGES="fr_FR.UTF-8"
+    LC_PAPER="fr_FR.UTF-8"
+    LC_NAME="fr_FR.UTF-8"
+    LC_ADDRESS="fr_FR.UTF-8"
+    LC_TELEPHONE="fr_FR.UTF-8"
+    LC_MEASUREMENT="fr_FR.UTF-8"
+    LC_IDENTIFICATION="fr_FR.UTF-8"
+    LC_ALL=fr_FR.UTF-8
+
+vous pouvez alors passer cette étape de configuration des locale.
 
 Exécuter la commande ``dpkg-reconfigure locales``. Une fenêtre s'affiche dans votre console. Dans la liste déroulante, sélectionnez ``fr_FR.UTF-8 UTF-8`` avec ``Espace``, puis cliquez sur OK. Une 2ème fenêtre s'affiche avec une liste de locale activées (``fr_FR.UTF-8`` doit être présent dans la liste), confirmez votre choix, en cliquant sur OK, puis attendez que la locale s'installe.
 

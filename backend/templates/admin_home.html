@@ -1,0 +1,21 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+<h3> Bienvenue sur l'interface d'administration de GeoNature</h3>
+<h5> Vous trouverez ci-dessous les interfaces de configuration des différents modules</h5>
+
+{% for mod in admin_modules %}
+  {% if mod.module_name is not none %}
+    <h3> Module {{mod.module_name}}: </h3> 
+
+    {% for view in mod.module_views %}
+    <ul>
+      <li>
+        <a href="{{view.url}}/"> {{ view.name}}</a>
+      </li>
+    </ul>
+    {% endfor %}
+  {% endif %}
+{% endfor %}
+
+{% endblock %}
+

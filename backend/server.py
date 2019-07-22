@@ -16,6 +16,7 @@ from urllib.parse import urlparse, urlencode, ParseResult
 
 MAIL = Mail()
 
+
 class ReverseProxied(object):
     def __init__(self, app, script_name=None, scheme=None, server=None):
         self.app = app
@@ -29,7 +30,7 @@ class ReverseProxied(object):
             environ["SCRIPT_NAME"] = script_name
             path_info = environ["PATH_INFO"]
             if path_info.startswith(script_name):
-                environ["PATH_INFO"] = path_info[len(script_name) :]
+                environ["PATH_INFO"] = path_info[len(script_name):]
         scheme = environ.get("HTTP_X_SCHEME", "") or self.scheme
         if scheme:
             environ["wsgi.url_scheme"] = scheme
@@ -66,10 +67,15 @@ def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
     app.config["ID_APP"] = app.config["ID_APPLICATION_GEONATURE"]
 
     with app.app_context():
-        if app.config["MAIL_ON_ERROR"] and app.config['MAIL_CONFIG']:
+        if app.config["MAIL_ON_ERROR"] and app.config["MAIL_CONFIG"]:
             from geonature.utils.logs import mail_handler
+
             logging.getLogger().addHandler(mail_handler)
         # DB.create_all()
+
+        if with_flask_admin:
+            #from geonature.core.admin import flask_admin
+            from geonature.core.admin.admin import flask_admin
 
         from pypnusershub.routes import routes
 
@@ -78,8 +84,6 @@ def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
         from pypnnomenclature.routes import routes
 
         app.register_blueprint(routes, url_prefix="/nomenclatures")
-        if with_flask_admin:
-            from pypnnomenclature.admin import admin
 
         from geonature.core.gn_permissions.routes import routes
 
@@ -128,17 +132,17 @@ def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
         # errors
         from geonature.core.errors import routes
 
-        app.wsgi_app = ReverseProxied(app.wsgi_app, script_name=config["API_ENDPOINT"])
+        app.wsgi_app = ReverseProxied(
+            app.wsgi_app, script_name=config["API_ENDPOINT"])
 
         CORS(app, supports_credentials=True)
 
         # Configuration des mails
-        if app.config['MAIL_CONFIG']:
+        if app.config["MAIL_CONFIG"]:
             conf = app.config.copy()
-            conf.update(app.config['MAIL_CONFIG'])
+            conf.update(app.config["MAIL_CONFIG"])
             app.config = conf
             MAIL.init_app(app)
-
 
         # Chargement des mosdules tiers
         if with_external_mods:
