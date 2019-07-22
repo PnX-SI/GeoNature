@@ -34,16 +34,14 @@ UPDATE gn_synthese.synthese SET meta_update_date = NOW() WHERE meta_update_date 
 
 --trg_maj_synthese_observers_txt
 WITH formated_observers AS (
-SELECT s.id_synthese, array_to_string(array_agg(r.nom_role || ' ' || r.prenom_role), ', ') as obs
-FROM gn_synthese.synthese s
-JOIN gn_synthese.cor_observer_synthese cor ON s.id_synthese = cor.id_synthese
+SELECT cor.id_synthese, array_to_string(array_agg(concat(r.nom_role, ' ', r.prenom_role)), ', ') as obs
+FROM gn_synthese.cor_observer_synthese cor
 JOIN utilisateurs.t_roles r on r.id_role = cor.id_role
-GROUP BY s.id_synthese
+GROUP BY cor.id_synthese
 )
  UPDATE gn_synthese.synthese SET observers = f.obs
- FROM formated_observers f 
- JOIN gn_synthese.synthese s ON f.id_synthese = s.id_synthese
- WHERE f.id_synthese = s.id_synthese;
+ FROM formated_observers f
+ WHERE f.id_synthese = gn_synthese.synthese.id_synthese;
 
 --maintenance sur la table synthese avant intersects lourd
 VACUUM FULL gn_synthese.synthese;
@@ -55,8 +53,7 @@ REINDEX TABLE gn_synthese.synthese;
 INSERT INTO gn_synthese.cor_area_synthese 
 SELECT
   s.id_synthese,
-  a.id_area,
-  s.cd_nom
+  a.id_area
 FROM ref_geo.l_areas a
 JOIN gn_synthese.synthese s ON public.st_intersects(s.the_geom_local, a.geom)
 WHERE a.enable = true;
