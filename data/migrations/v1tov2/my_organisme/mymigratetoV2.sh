@@ -1,5 +1,5 @@
 #! /bin/bash
-. ../migratetov2.ini
+. ../migratetoV2.ini
 . mymigratetov2.ini
 . ../../../../config/settings.ini
 
