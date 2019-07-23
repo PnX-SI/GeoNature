@@ -107,7 +107,7 @@ JOIN pr_occtax.cor_role_releves_occtax cro ON cro.id_releve_occtax = r.id_releve
 WHERE s.id_dataset IN(4,14,15,112);
 --observers_as_txt en synthese jouer l'action du trigger trg_maj_synthese_observers_txt
 WITH synthese_observers AS (
-  SELECT c.id_synthese, array_to_string(array_agg(r.nom_role || ' ' || r.prenom_role), ', ') AS theobservers
+  SELECT c.id_synthese, array_to_string(array_agg(concat(r.nom_role, ' ', r.prenom_role)), ', ') AS theobservers
   FROM utilisateurs.t_roles r
   JOIN gn_synthese.cor_observer_synthese c ON c.id_role = r.id_role
   GROUP BY id_synthese

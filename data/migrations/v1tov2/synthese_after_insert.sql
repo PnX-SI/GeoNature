@@ -1,4 +1,5 @@
 -- Actions du trigger trg_refresh_taxons_forautocomplete
+TRUNCATE TABLE gn_synthese.taxons_synthese_autocomplete;
 INSERT INTO gn_synthese.taxons_synthese_autocomplete
 SELECT DISTINCT
   t.cd_nom,
@@ -50,6 +51,7 @@ REINDEX TABLE gn_synthese.synthese;
 
 -- Actions du trigger tri_insert_cor_area_synthese
 -- On recalcule l'intersection entre les données de la synthèse et les géométries de ref_geo.l_areas
+TRUNCATE TABLE gn_synthese.cor_area_synthese;
 INSERT INTO gn_synthese.cor_area_synthese 
 SELECT
   s.id_synthese,
