@@ -1,23 +1,33 @@
 CREATE SCHEMA gn_synchronomade;
 
+----------
+--TABLES--
+----------
+
+CREATE TABLE gn_synchronomade.erreurs_flora (
+    id serial NOT NULL,
+    json text,
+    date_import date
+);
+
 CREATE TABLE gn_synchronomade.erreurs_occtax
 (
   id serial NOT NULL,
   json text,
-  date_import date,
-  CONSTRAINT erreurs_occtax_pkey PRIMARY KEY (id)
-);
-
-CREATE TABLE gn_synchronomade.erreurs_flora
-(
-  id serial NOT NULL,
-  json text,
-  date_import date,
-  CONSTRAINT erreurs_flora_pkey PRIMARY KEY (id)
+  date_import date
 );
 
 
+----------------
+--PRIMARY KEYS--
+----------------
+ALTER TABLE ONLY gn_synchronomade.erreurs_flora ADD CONSTRAINT erreurs_flora_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY gn_synchronomade.erreurs_occtax ADD CONSTRAINT erreurs_occtax_pkey PRIMARY KEY (id);
 
+
+---------
+--VIEWS--
+---------
 CREATE OR REPLACE VIEW gn_synchronomade.v_color_taxon_area
 AS SELECT b.id_nom,
     c.id_area,
@@ -28,10 +38,9 @@ AS SELECT b.id_nom,
             ELSE 'red'::text
         END AS color
    FROM gn_synthese.cor_area_taxon c
-   join taxonomie.bib_noms b on b.cd_nom = c.cd_nom;
+   JOIN taxonomie.bib_noms b on b.cd_nom = c.cd_nom;
 
 -- Recréation des vues qui sont devenues des tables (pour assurer l'évolution - si on ajoute des taxons ou des observateur)
-
 CREATE OR REPLACE VIEW gn_synchronomade.v_nomade_taxons_faune
 AS 
 SELECT DISTINCT n.id_nom,
@@ -125,8 +134,6 @@ SELECT DISTINCT n.id_nom,
      JOIN v1_compat.cor_boolean f2 ON f2.expression::text = cta.valeur_attribut AND cta.id_attribut = 1
   ORDER BY n.id_nom, taxonomie.find_cdref(n.cd_nom), tx.lb_nom, n.nom_francais, cnl.id_liste, f2.bool, m.texte_message_inv;
 
-
-
 CREATE OR REPLACE VIEW gn_synchronomade.v_nomade_observateurs_inv
 AS SELECT DISTINCT r.id_role,
     r.nom_role,
@@ -141,7 +148,6 @@ AS SELECT DISTINCT r.id_role,
            FROM utilisateurs.cor_role_menu crm
              JOIN utilisateurs.t_roles r_1 ON r_1.id_role = crm.id_role AND crm.id_menu = 11 AND r_1.groupe = false AND r_1.active = true))
   ORDER BY r.nom_role, r.prenom_role, r.id_role;
-
 
 CREATE OR REPLACE VIEW gn_synchronomade.v_nomade_observateurs_faune
 AS SELECT DISTINCT r.id_role,
@@ -158,10 +164,7 @@ AS SELECT DISTINCT r.id_role,
              JOIN utilisateurs.t_roles r_1 ON r_1.id_role = crm.id_role AND crm.id_menu = 11 AND r_1.groupe = false AND r_1.active = true))
   ORDER BY r.nom_role, r.prenom_role, r.id_role;
 
-
-
 -- recréation des vue "critere". Pdt la migrations, les vues ont été transformés en table, celles pose des problèmes de droits car elles s'appuyent sur des tables qui n'existe plus.
-
 DROP foreign table v1_compat.v_nomade_criteres_cf;
 DROP foreign table v1_compat.v_nomade_criteres_inv;
 
@@ -174,15 +177,12 @@ AS SELECT c.id_critere_cf,
      JOIN v1_compat.cor_critere_liste ccl ON ccl.id_critere_cf = c.id_critere_cf
   ORDER BY ccl.id_liste, c.tri_cf;
 
-
 CREATE OR REPLACE VIEW gn_synchronomade.v_nomade_criteres_inv
 AS SELECT c.id_critere_inv,
     c.nom_critere_inv,
     c.tri_inv
    FROM v1_compat.bib_criteres_inv c
   ORDER BY c.tri_inv;
-
-
 
 CREATE OR REPLACE VIEW gn_synchronomade.v_nomade_milieux_inv
 AS SELECT b.id_milieu_inv,
@@ -191,7 +191,6 @@ AS SELECT b.id_milieu_inv,
   ORDER BY b.id_milieu_inv;
 
 -- recréation de la vue recherche_mobile
-
 CREATE OR REPLACE VIEW gn_synchronomade.v_mobile_recherche
 AS ( SELECT ap.indexap AS gid,
     zp.dateobs,
@@ -230,88 +229,11 @@ UNION
   ORDER BY s.dateobs DESC);
 
 
-
--- création de nouveau JDD pour les données des appli mobiles v1 qui écrivent en v2
-
-INSERT INTO gn_meta.t_datasets (
-    id_acquisition_framework,
-    dataset_name,
-    dataset_shortname,
-    dataset_desc,
-    id_nomenclature_data_type,
-    keywords,
-    marine_domain,
-    terrestrial_domain,
-    id_nomenclature_dataset_objectif,
-    bbox_west,
-    bbox_east,
-    bbox_south,
-    bbox_north,
-    id_nomenclature_collecting_method,
-    id_nomenclature_data_origin,
-    id_nomenclature_source_status,
-    id_nomenclature_resource_type,
-    validable
-    )
-    VALUES
-    (
-    1,
-    'Contact faune - mobile v1 vers base de données v2 - 2019',
-    'Contact faune v1 vers v2',
-    'Observations aléatoires de la faune vertebrée saisis en mobile (phase transitoire GeoNature v1 vers v2',
-    ref_nomenclatures.get_id_nomenclature('DATA_TYP', '1'),
-    'Aléatoire, hors protocole, faune',
-    false,
-    true,
-    ref_nomenclatures.get_id_nomenclature('JDD_OBJECTIFS', '1.1'),
-    4.85695,
-    6.85654,
-    44.5020,
-    45.25,
-    ref_nomenclatures.get_id_nomenclature('METHO_RECUEIL', '1'),
-    ref_nomenclatures.get_id_nomenclature('DS_PUBLIQUE', 'Pu'),
-    ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE', 'Te'),
-    ref_nomenclatures.get_id_nomenclature('RESOURCE_TYP', '1'),
-    true
-    ),
-    (
-    1,
-    'Contact invertébré - mobile v1 vers base de données v2 - 2019',
-    'Contact invertébré v1 vers v2',
-    'Observations aléatoires de la faune invertebrée saisie en mobile (phase transitoire GeoNature v1 vers v2',
-    ref_nomenclatures.get_id_nomenclature('DATA_TYP', '1'),
-    'Aléatoire, ATBI, biodiversité, faune, invertebré',
-    false,
-    true,
-    ref_nomenclatures.get_id_nomenclature('JDD_OBJECTIFS', '1.1'),
-    4.85695,
-    6.85654,
-    44.5020,
-    45.25,
-    ref_nomenclatures.get_id_nomenclature('METHO_RECUEIL', '1'),
-    ref_nomenclatures.get_id_nomenclature('DS_PUBLIQUE', 'Pu'),
-    ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE', 'Te'),
-    ref_nomenclatures.get_id_nomenclature('RESOURCE_TYP', '1'),
-    true
-    ),
-    (
-    1,
-    'Mortalité faune - mobile v1 vers base de données v2 - 2019',
-    'Mortalité v1 vers v2',
-    'Fiche mortalité saisie en mobile (phase transitoire GeoNature v1 vers v2) - 2019',
-    ref_nomenclatures.get_id_nomenclature('DATA_TYP', '1'),
-    'Aléatoire, mortalité, faune, vertebré',
-    false,
-    true,
-    ref_nomenclatures.get_id_nomenclature('JDD_OBJECTIFS', '1.1'),
-    4.85695,
-    6.85654,
-    44.5020,
-    45.25,
-    ref_nomenclatures.get_id_nomenclature('METHO_RECUEIL', '1'),
-    ref_nomenclatures.get_id_nomenclature('DS_PUBLIQUE', 'Pu'),
-    ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE', 'Te'),
-    ref_nomenclatures.get_id_nomenclature('RESOURCE_TYP', '1'),
-    true
-    )
-;
+---------------
+--IMPORT DATA--
+---------------
+IMPORT FOREIGN SCHEMA synchronomade FROM SERVER geonature1server INTO v1_compat;
+INSERT INTO gn_synchronomade.erreurs_occtax (json, date_import) SELECT json, date_import FROM v1_compat.erreurs_cf;
+INSERT INTO gn_synchronomade.erreurs_occtax (json, date_import) SELECT json, date_import FROM v1_compat.erreurs_inv;
+INSERT INTO gn_synchronomade.erreurs_occtax (json, date_import) SELECT json, date_import FROM v1_compat.erreurs_mortalite;
+INSERT INTO gn_synchronomade.erreurs_flora (json, date_import) SELECT json, date_import FROM v1_compat.erreurs_flora;
