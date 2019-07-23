@@ -16,6 +16,7 @@ import { AppConfig } from '@geonature_config/app.config';
 export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   @ViewChild('tree') treeComponent: TreeComponent;
   public AppConfig = AppConfig;
+  public URL_AUTOCOMPLETE = AppConfig.API_TAXHUB + '/taxref/search/lb_nom';
   public taxonsTree;
   public treeOptions;
   public selectedNodes = [];

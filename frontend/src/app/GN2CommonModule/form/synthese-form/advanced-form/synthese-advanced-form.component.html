@@ -5,7 +5,7 @@
     </button>
   </div>
   <div class="modal-body">
-      <pnx-autocomplete apiEndPoint="http://127.0.0.1:5000/api/taxref/search/lb_nom"
+      <pnx-autocomplete [apiEndPoint]="URL_AUTOCOMPLETE"
       [searchAsParameter]="'true'"  
       [parentFormControl]="formService.searchForm.controls.taxon_rank"
       [formatter]="formatter"
