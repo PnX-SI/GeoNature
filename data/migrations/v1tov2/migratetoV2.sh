@@ -113,6 +113,13 @@ then
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f occtax_to_synthese.sql  &>> ../../../var/log/migratetov2.log
 fi
 
+#schema gn_synchronomade
+if $prepare_mobile
+then
+    echo "Get synchronomade content from geonaturedb1"
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f mobile.sql  &>> ../../../var/log/migratetov2.log
+fi
+
 #schema v1_florestation
 if $import_florestation
 then
