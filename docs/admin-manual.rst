@@ -286,7 +286,7 @@ Version 2.1.0 de GeoNature
 
 .. image :: https://geonature.fr/docs/img/2019-06-triggers-gn_synthese.jpg
 
-**Table : synthese**
+**Table : synthese**
 
 Table contenant l’ensemble des données.
 Respecte le standard Occurrence de taxon du SINP.
@@ -300,25 +300,25 @@ Respecte le standard Occurrence de taxon du SINP.
    
   - AFTER INSERT OR UPDATE OF cd_nom OR DELETE
   - Mise à jour de la table ``taxons_synthese_autocomplete``
-  - Actions :
+  - Actions :
   
-    1. Si suppression ou update : suppression des enregistrements avec le cd_nom concerné dans la table ``gn_synthese.taxons_synthese_autocomplete auto``. *Si un cd_nom est présent dans plusieurs enregistrements, il sera supprimé également. Il manque un test pour savoir si la suppression doit ou non être activée.*
+    1. Si suppression ou update : suppression des enregistrements avec le cd_nom concerné dans la table ``gn_synthese.taxons_synthese_autocomplete auto``. *Si un cd_nom est présent dans plusieurs enregistrements, il sera supprimé également. Il manque un test pour savoir si la suppression doit ou non être activée.*
     2. Insertion des informations taxonomiques du cd_nom concerné dans la table ``gn_synthese.taxons_synthese_autocomplete auto``
 
 * tri_insert_cor_area_synthese
 
   - AFTER INSERT OR UPDATE OF the_geom_local
   - Mise à jour de la table ``cor_area_synthese``
-  - Actions :
+  - Actions :
   
-    1. Si update : suppression des enregistrements de la table ``gn_synthese.cor_area_synthese`` avec l'id_synthese concerné
+    1. Si update : suppression des enregistrements de la table ``gn_synthese.cor_area_synthese`` avec l'id_synthese concerné
     2. Insertion des id_areas intersectant la géométrie de la synthèse dans ``gn_synthese.cor_area_synthese``. *Prise en compte de toutes les aires qu’elles soient ou non actives. Manque enable = true*
 
 * tri_del_area_synt_maj_corarea_tax
 
   - BEFORE DELETE
   - Mise à jour des tables ``cor_area_taxon`` et ``cor_area_synthese``
-  - Actions :
+  - Actions :
     
     1. Récupération de l’ensemble des aires intersectant la donnée de synthèse
     2. Suppression des enregistrement de ``cor_area_taxon`` avec le cd_nom et les aires concernés
@@ -329,14 +329,14 @@ Respecte le standard Occurrence de taxon du SINP.
 
   - AFTER UPDATE OF cd_nom
   - Mise à jour de la table cor_area_taxon
-  - Actions :
+  - Actions :
   
     1. Récupération de l’ensemble des aires intersectant la donnée de synthèse
     2. Recalcul ``cor_area_taxon`` pour l’ancien cd_nom via fonction ``gn_synthese.delete_and_insert_area_taxon``
     3. Recalcul ``cor_area_taxon`` pour le nouveau cd_nom via fonction ``gn_synthese.delete_and_insert_area_taxon``
 
 
-**Table : cor_area_synthese**
+**Table : cor_area_synthese**
 
 Table contenant l’ensemble des id_areas intersectant les enregistrements de la synthèse
 
@@ -344,19 +344,19 @@ Table contenant l’ensemble des id_areas intersectant les enregistrements de la
 
   - AFTER INSERT OR UPDATE
   - Mise à jour des données de cor_area_taxon
-  - Actions :
+  - Actions :
   
     1. Récupération du cd_nom en lien avec l’enregistrement ``cor_area_synthese``
     2. Suppression des données de ``cor_area_taxon`` avec le ``cd_nom`` et ``id_area`` concerné
     3. Insertion des données dans ``cor_area_taxon`` en lien avec le ``cd_nom`` et ``id_area``
 
-**Table : cor_observer_synthese**
+**Table : cor_observer_synthese**
 
 * trg_maj_synthese_observers_txt
 
   - AFTER INSERT OR UPDATE OR DELETE
   - Mise à jour du champ ``observers`` de la table ``synthese``
-  - Actions :
+  - Actions :
   
     1. Construction de la valeur textuelle des observateurs
     2. Mise à jour du champ observer de l’enregistrement de la table ``synthese``
@@ -366,7 +366,7 @@ Table contenant l’ensemble des id_areas intersectant les enregistrements de la
 * delete_and_insert_area_taxon
 
   - Fonction qui met à jour la table ``cor_area_taxon`` en fonction d’un ``cd_nom`` et d'une liste d'``id area``
-  - Actions :
+  - Actions :
   
     1. Suppression des enregistrement de la table ``cor_area_taxon`` avec le ``cd_nom`` et les ``id_area`` concernés
     2. Insertion des données dans ``cor_area_taxon`` 
@@ -374,7 +374,7 @@ Table contenant l’ensemble des id_areas intersectant les enregistrements de la
 * color_taxon
 
   - Fonction qui associe une couleur à une durée
-  - *Passer les couleurs en paramètres : table  gn_commons.t_parameters ?*
+  - *Passer les couleurs en paramètres : table  gn_commons.t_parameters ?*
   - *Passer la fonction en immutable*
 
 Modularité
@@ -810,8 +810,13 @@ Pour utiliser celui proposé par défaut :
     unzip /tmp/geonature/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -d /tmp/geonature
     export PGPASSWORD=MYUSERPGPASS;raster2pgsql -s MYSRID -c -C -I -M -d -t 5x5 /tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc ref_geo.dem|psql -h localhost -U MYPGUSER -d MYDBNAME
     sudo -n -u postgres -s psql -d MYDBNAME -c "REINDEX INDEX ref_geo.dem_st_convexhull_idx;"
-  
-Si votre MNT source est constitué de plusieurs fichiers (dalles), assurez vous que toutes vos dalles ont le même système de projection et le même format de fichier (tiff, asc, ou img par exemple). Après avoir chargé vos fichiers dans ``tmp/geonature`` (par exemple), vous pouvez lancer la commande ``export`` en remplacant le nom des fichiers par *.asc :
+
+Si votre MNT source est constitué de plusieurs fichiers (dalles),
+assurez vous que toutes vos dalles ont le même système de projection
+et le même format de fichier (tiff, asc, ou img par exemple).
+Après avoir chargé vos fichiers dans ``tmp/geonature`` (par exemple),
+vous pouvez lancer la commande ``export`` en remplacant le nom des
+fichiers par \*.asc :
 
 .. code-block:: console
 

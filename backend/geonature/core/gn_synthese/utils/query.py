@@ -203,7 +203,7 @@ def filter_query_all_filters(model, q, filters, user):
         )
 
     if "geoIntersection" in filters:
-        # Insersect with the geom send from the map
+        # Intersect with the geom send from the map
         ors = []
         for str_wkt in filters["geoIntersection"]:
             # if the geom is a circle

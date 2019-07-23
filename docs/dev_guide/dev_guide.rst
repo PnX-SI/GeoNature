@@ -36,7 +36,8 @@ Serialisation des modèles
 
 - ``geonature.utils.utilssqlalchemy.serializable``
 
-Décorateur pour les modèles SQLA : Ajoute une méthode as_dict qui retourne un dictionnaire des données de l'objet sérialisable json
+Décorateur pour les modèles SQLA : Ajoute une méthode as_dict qui retourne un
+dictionnaire des données de l'objet sérialisable json
 
 
 Fichier définition modèle ::
@@ -60,7 +61,8 @@ fichier utilisation modele ::
 - ``geonature.utils.utilssqlalchemy.geoserializable``
 
 
-Décorateur pour les modèles SQLA : Ajoute une méthode as_geofeature qui retourne un dictionnaire serialisable sous forme de Feature geojson.
+Décorateur pour les modèles SQLA : Ajoute une méthode as_geofeature qui
+retourne un dictionnaire serialisable sous forme de Feature geojson.
 
 
 Fichier définition modèle ::
@@ -83,8 +85,10 @@ fichier utilisation modele ::
 
 Décorateur pour les modèles SQLA:
 
-- Ajoute une méthode ``as_list`` qui retourne l'objet sous forme de tableau (utilisé pour créer des shapefiles)
-- Ajoute une méthode de classe ``to_shape`` qui crée des shapefiles à partir des données passées en paramètre 
+- Ajoute une méthode ``as_list`` qui retourne l'objet sous forme de tableau
+  (utilisé pour créer des shapefiles)
+- Ajoute une méthode de classe ``to_shape`` qui crée des shapefiles à partir
+  des données passées en paramètre
 
 Fichier définition modèle ::
 
@@ -115,14 +119,18 @@ fichier utilisation modele ::
 Classe utilitaire pour crer des shapefiles.
 
 La classe contient 3 méthode de classe:
-- FionaShapeService.create_shapes_struct(): crée la structure de 3 shapefiles (point, ligne, polygone) à partir des colonens et de la geom passé en paramètre
+
+- FionaShapeService.create_shapes_struct(): crée la structure de 3 shapefiles
+  (point, ligne, polygone) à partir des colonens et de la geom passé en
+  paramètre
 - FionaShapeService.create_feature(): ajoute un enregistrement aux shapefiles
-- FionaShapeService.save_and_zip_shapefiles(): sauvegarde et zip les shapefiles qui ont au moin un enregistrement
+- FionaShapeService.save_and_zip_shapefiles(): sauvegarde et zip les shapefiles
+  qui ont au moin un enregistrement
 
 ::
 
         data = DB.session.query(MySQLAModel).all()
-        
+
         for d in data:
                 FionaShapeService.create_shapes_struct(
                         db_cols=db_cols,
@@ -139,7 +147,9 @@ La classe contient 3 méthode de classe:
 - ``geonature.utils.utilssqlalchemy.json_resp``
 
 
-Décorateur pour les routes : les données renvoyées par la route sont automatiquement serialisées en json (ou geojson selon la structure des données)
+Décorateur pour les routes : les données renvoyées par la route sont
+automatiquement serialisées en json (ou geojson selon la structure des
+données).
 
 S'insère entre le décorateur de route flask et la signature de fonction
 
@@ -181,18 +191,20 @@ Vérification des droits des utilisateurs
 - ``pypnusershub.routes.check_auth``
 
 
-Décorateur pour les routes : vérifie les droits de l'utilisateur et le redirige en cas de niveau insuffisant ou d'informations de session erronés
+Décorateur pour les routes : vérifie les droits de l'utilisateur et le
+redirige en cas de niveau insuffisant ou d'informations de session erronés.
 (deprecated) Privilegier `check_auth_cruved`
 
 params :
 
 * level <int>: niveau de droits requis pour accéder à la vue
 * get_role <bool:False>: si True, ajoute l'id utilisateur aux kwargs de la vue
-* redirect_on_expiration <str:None> : identifiant de vue  sur laquelle rediriger l'utilisateur en cas d'expiration de sa session
-* redirect_on_invalid_token <str:None> : identifiant de vue sur laquelle rediriger l'utilisateur en cas d'informations de session invalides
+* redirect_on_expiration <str:None> : identifiant de vue  sur laquelle
+  rediriger l'utilisateur en cas d'expiration de sa session
+* redirect_on_invalid_token <str:None> : identifiant de vue sur laquelle
+  rediriger l'utilisateur en cas d'informations de session invalides
 
-
-    ::
+::
 
     from flask import Blueprint
     from pypnusershub.routes import check_auth
@@ -215,17 +227,21 @@ params :
 
 - ``pypnusershub.routes.check_auth_cruved``
 
-Décorateur pour les routes : Vérifie les droits de l'utilisateur à effectuer une action sur la donnée et le redirige en cas de niveau insuffisant ou d'informations de session erronées
+Décorateur pour les routes : Vérifie les droits de l'utilisateur à effectuer
+une action sur la donnée et le redirige en cas de niveau insuffisant ou
+d'informations de session erronées
 
 params :
 
-* action <str:['C','R','U','V','E','D']> type d'action effectuée par la route (Create, Read, Update, Validate, Export, Delete)
+* action <str:['C','R','U','V','E','D']> type d'action effectuée par la route
+  (Create, Read, Update, Validate, Export, Delete)
 * get_role <bool:False>: si True, ajoute l'id utilisateur aux kwargs de la vue
-* redirect_on_expiration <str:None> : identifiant de vue  sur laquelle rediriger l'utilisateur en cas d'expiration de sa session
-* redirect_on_invalid_token <str:None> : identifiant de vue sur laquelle rediriger l'utilisateur en cas d'informations de session invalides
+* redirect_on_expiration <str:None> : identifiant de vue  sur laquelle
+  rediriger l'utilisateur en cas d'expiration de sa session
+* redirect_on_invalid_token <str:None> : identifiant de vue sur laquelle
+  rediriger l'utilisateur en cas d'informations de session invalides
 
-
-    ::
+::
 
     from flask import Blueprint
     from pypnusershub.routes import check_auth_cruved
@@ -250,17 +266,20 @@ params :
 
 
 Fonction qui retourne le cruved d'un utilisateur pour une application donnée.
-Si aucun cruved n'est définit pour l'application, c'est celui de l'application mère qui est retourné.
-Le cruved de l'application enfant surcharge toujours celui de l'application mère.
+Si aucun cruved n'est définit pour l'application, c'est celui de l'application
+mère qui est retourné.
+Le cruved de l'application enfant surcharge toujours celui de l'application
+mère.
 
 params:
 * id_role <integer:None>
 * id_application: id du module surlequel on veut avoir le cruved
 * id_application_parent: id l'application parent du module
 
-Valeur retourné: <dict> {'C': '1', 'R':'2', 'U': '1', 'V':'2', 'E':'3', 'D': '3'}
+Valeur retourné:
+<dict> {'C': '1', 'R':'2', 'U': '1', 'V':'2', 'E':'3', 'D': '3'}
 
-    ::
+::
 
     from pypnusershub.db.tools import cruved_for_user_in_app
 
