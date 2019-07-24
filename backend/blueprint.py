@@ -101,6 +101,7 @@ def get_communes_stat():
         .group_by(LAreas.area_name, LAreas.geom)
     )
 
+    # st_simplify
     # q = (
     #     select(
     #         [
@@ -225,27 +226,56 @@ def get_especes_stat():
     params = request.args
 
     sql = text(
-        """ WITH recontactees AS 
-            (SELECT DISTINCT cd_ref FROM gn_synthese.synthese s JOIN taxonomie.taxref t ON t.cd_nom=s.cd_nom WHERE date_part('year', date_min) < :selectedYear
-            INTERSECT
-            SELECT DISTINCT cd_ref FROM gn_synthese.synthese s JOIN taxonomie.taxref t ON t.cd_nom=s.cd_nom WHERE date_part('year', date_min) = :selectedYear), 
-            non_recontactees AS 
-            (SELECT DISTINCT cd_ref FROM gn_synthese.synthese s JOIN taxonomie.taxref t ON t.cd_nom=s.cd_nom WHERE date_part('year', date_min) < :selectedYear
-            EXCEPT
-            SELECT DISTINCT cd_ref FROM gn_synthese.synthese s JOIN taxonomie.taxref t ON t.cd_nom=s.cd_nom WHERE date_part('year', date_min) = :selectedYear),
+        """ WITH recontactees AS
+                (SELECT DISTINCT cd_ref FROM gn_synthese.synthese s JOIN taxonomie.taxref t ON t.cd_nom=s.cd_nom WHERE date_part('year', date_min) < :selectedYear
+                INTERSECT
+                SELECT DISTINCT cd_ref FROM gn_synthese.synthese s JOIN taxonomie.taxref t ON t.cd_nom=s.cd_nom WHERE date_part('year', date_min) = :selectedYear),
+            non_recontactees AS
+                (SELECT DISTINCT cd_ref FROM gn_synthese.synthese s JOIN taxonomie.taxref t ON t.cd_nom=s.cd_nom WHERE date_part('year', date_min) < :selectedYear
+                EXCEPT
+                SELECT DISTINCT cd_ref FROM gn_synthese.synthese s JOIN taxonomie.taxref t ON t.cd_nom=s.cd_nom WHERE date_part('year', date_min) = :selectedYear),
             nouvelles AS
-            (SELECT DISTINCT cd_ref FROM gn_synthese.synthese s JOIN taxonomie.taxref t ON t.cd_nom=s.cd_nom WHERE date_part('year', date_min) = :selectedYear
-            EXCEPT
-            SELECT DISTINCT cd_ref FROM gn_synthese.synthese s JOIN taxonomie.taxref t ON t.cd_nom=s.cd_nom WHERE date_part('year', date_min) < :selectedYear)
+                (SELECT DISTINCT cd_ref FROM gn_synthese.synthese s JOIN taxonomie.taxref t ON t.cd_nom=s.cd_nom WHERE date_part('year', date_min) = :selectedYear
+                EXCEPT
+                SELECT DISTINCT cd_ref FROM gn_synthese.synthese s JOIN taxonomie.taxref t ON t.cd_nom=s.cd_nom WHERE date_part('year', date_min) < :selectedYear)
 
             SELECT count(cd_ref) FROM recontactees
             UNION ALL
             SELECT count(cd_ref) FROM non_recontactees
-            UNION all 
+            UNION ALL
             SELECT count(cd_ref) FROM nouvelles """
     )
-    data = DB.engine.execute(sql, selectedYear=params["selectedYear"])
-    return [d[0] for d in data]
+    q = DB.engine.execute(sql, selectedYear=params["selectedYear"])
+    return [elt[0] for elt in q]
+
+    # recontactees = text(
+    #     """ WITH recontactees AS
+    #         (SELECT DISTINCT cd_ref FROM gn_synthese.synthese s JOIN taxonomie.taxref t ON t.cd_nom=s.cd_nom WHERE date_part('year', date_min) < :selectedYear
+    #         INTERSECT
+    #         SELECT DISTINCT cd_ref FROM gn_synthese.synthese s JOIN taxonomie.taxref t ON t.cd_nom=s.cd_nom WHERE date_part('year', date_min) = :selectedYear)
+    #     SELECT count(cd_ref) FROM recontactees """
+    # )
+    # q = DB.engine.execute(recontactees, selectedYear=params["selectedYear"])
+    # non_recontactees = text(
+    #     """ WITH non_recontactees AS
+    #         (SELECT DISTINCT cd_ref FROM gn_synthese.synthese s JOIN taxonomie.taxref t ON t.cd_nom=s.cd_nom WHERE date_part('year', date_min) < :selectedYear
+    #         EXCEPT
+    #         SELECT DISTINCT cd_ref FROM gn_synthese.synthese s JOIN taxonomie.taxref t ON t.cd_nom=s.cd_nom WHERE date_part('year', date_min) = :selectedYear)
+    #     SELECT count(cd_ref) FROM non_recontactees """
+    # )
+    # p = DB.engine.execute(non_recontactees, selectedYear=params["selectedYear"])
+    # nouvelles = text(
+    #     """ WITH nouvelles AS
+    #             (SELECT DISTINCT cd_ref FROM gn_synthese.synthese s JOIN taxonomie.taxref t ON t.cd_nom=s.cd_nom WHERE date_part('year', date_min) = :selectedYear
+    #             EXCEPT
+    #             SELECT DISTINCT cd_ref FROM gn_synthese.synthese s JOIN taxonomie.taxref t ON t.cd_nom=s.cd_nom WHERE date_part('year', date_min) < :selectedYear)
+    #         SELECT count(cd_ref) FROM nouvelles """
+    # )
+    # r = DB.engine.execute(nouvelles, selectedYear=params["selectedYear"])
+    # recontactees_data = [elt[0] for elt in q]
+    # non_recontactees_data = [elt[0] for elt in p]
+    # nouvelles_data = [elt[0] for elt in r]
+    # return [recontactees_data, non_recontactees_data, nouvelles_data]
 
 
 # vm_taxonomie

@@ -162,7 +162,8 @@ export class DashboardLineChartComponent implements OnInit {
         display: true,
         scaleLabel: {
           display: true,
-          labelString: "Nombre d'observations"
+          labelString: "Nombre d'observations",
+          fontSize: 16
         }
       }]
     }

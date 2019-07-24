@@ -57,9 +57,11 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   @Input() taxonomies: any;
   @Input() yearsMinMax: any;
   public yearRange = [1980, 2019];
-  currentCdRef: any;
+  public currentCdRef: any;
   public filtersDict: any;
   public spinner = false;
+  public spinnerInit = true;
+  public disabledTaxButton = false;
 
   public taxonApiEndPoint = `${AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
 
@@ -97,6 +99,13 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   }
 
   ngOnInit() {
+    this.mapForm.controls.selectedYearRange
+      .valueChanges
+      .debounceTime(1000)
+      .distinctUntilChanged()
+      .subscribe(data => {
+        console.log(data);
+      })
     this.spinner = true;
     // Initialisation de la fonction "showData" (au chargement de la page, la carte affiche automatiquement le nombre d'observations)
     this.showData = this.onEachFeatureNbObs;
@@ -107,6 +116,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
         this.myCommunes = data;
         this.background = data;
         this.spinner = false;
+        this.spinnerInit = false;
       }
     );
     // Initialisation de la variable currentMap (au chargement de la page, la carte affiche automatiquement le nombre d'observations)
@@ -166,7 +176,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     this.mapForm.controls["selectedOrdre"].reset();
     this.mapForm.controls["selectedFamille"].reset();
     this.mapForm.controls["taxon"].reset();
-    console.log(this.mapForm.value);
+    // console.log(this.mapForm.value);
     // Afficher les données d'origine si la valeur vaut ""
     if (this.filter == "") {
       this.dataService.getDataCommunes(this.mapForm.value).subscribe(
@@ -179,13 +189,14 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   getCurrentParameters(event) {
     this.subscription.unsubscribe();
     this.spinner = true;
-    console.log(event);
-    console.log(this.filter);
-    console.log(this.mapForm.value);
+    this.disabledTaxButton = false;
+    // console.log(event);
+    // console.log(this.filter);
+    // console.log(this.mapForm.value);
     // Copie des éléments du formulaire pour pouvoir y ajouter cd_ref s'il s'agit d'un filtre par taxon
     this.filtersDict = Object.assign({}, this.mapForm.value);
     // S'il s'agit d'une recherche de taxon...
-    if (this.filter == 'Taxon') {
+    if (this.filter == 'Rechercher un taxon/une espèce...') {
       if (event.item) {
         // Récupération du cd_ref
         var cd_ref = event.item.cd_ref;
@@ -200,6 +211,8 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
       }
       // Ajout de cd_ref à la liste des paramètres de la requête
       this.filtersDict["taxon"] = cd_ref;
+      // Impossibilité d'afficher la carte en mode "Nombre de taxons"
+      this.disabledTaxButton = true;
     }
     // console.log(this.filtersDict);
     // Accès aux données de synthèse de la BDD GeoNature
@@ -213,7 +226,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
 
   // Communes grisées si pas de données concernant une certaine année
   defineBackground(feature, layer) {
-    layer.setStyle({ fillColor: 'rgb(150, 150, 150)', color: this.initialBorderColor, fillOpacity: 0.9 });
+    layer.setStyle({ fillColor: 'rgb(150, 150, 150)', color: this.initialBorderColor, fillOpacity: 0.9, weight: 1 });
     layer.on({
       mouseover: this.highlightFeatureBackground.bind(this),
       mouseout: this.resetHighlight.bind(this),
@@ -223,7 +236,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
 
   // Paramètres de la carte relative au nombre d'observations
   onEachFeatureNbObs(feature, layer) {
-    layer.setStyle({ fillColor: this.getColorObs(feature.properties.nb_obs), color: this.initialBorderColor, fillOpacity: 0.9 });
+    layer.setStyle({ fillColor: this.getColorObs(feature.properties.nb_obs), color: this.initialBorderColor, fillOpacity: 0.9, weight: 1 });
     layer.on({
       mouseover: this.highlightFeature.bind(this),
       mouseout: this.resetHighlight.bind(this),
@@ -233,7 +246,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
 
   // Paramètres de la carte relative au nombre de taxons
   onEachFeatureNbTax(feature, layer) {
-    layer.setStyle({ fillColor: this.getColorTax(feature.properties.nb_taxons), color: this.initialBorderColor, fillOpacity: 0.9 });
+    layer.setStyle({ fillColor: this.getColorTax(feature.properties.nb_taxons), color: this.initialBorderColor, fillOpacity: 0.9, weight: 1 });
     layer.on({
       mouseover: this.highlightFeature.bind(this),
       mouseout: this.resetHighlight.bind(this),
@@ -269,9 +282,8 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   highlightFeature(e) {
     const layer = e.target;
     layer.setStyle({
-      //color: this.selectedBorderColor,
-      color: "rgb(50, 50, 50)",
-      weight: 7,
+      color: this.selectedBorderColor,
+      weight: 5,
       fillOpacity: 1
     });
     layer.bringToFront();
@@ -289,9 +301,8 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   highlightFeatureBackground(e) {
     const layer = e.target;
     layer.setStyle({
-      //color: this.selectedBorderColor,
-      color: "rgb(50, 50, 50)",
-      weight: 7,
+      color: this.selectedBorderColor,
+      weight: 5,
       fillOpacity: 1
     });
     layer.bringToFront();
@@ -314,7 +325,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     this.currentNbTax = null;
     layer.setStyle({
       color: this.initialBorderColor,
-      weight: 3,
+      weight: 1,
       fillOpacity: 0.9
     });
   }

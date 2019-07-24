@@ -2,9 +2,11 @@
 
     <div class="col-md-8 padding-sm">
         <div class="card-absolute">
-            <h5> {{ introLegend }} </h5>
+            <h5><em class="fa fa-lg fa-question-circle" style="padding-right: 0.2rem" aria-hidden="true"
+                    *ngIf="introLegend==='Placez la souris sur une commune'"></em> {{ introLegend }} </h5>
             <h5><b>
-                    <p> {{ currentCommune }} </p>
+                    <p><em class="fa fa-md fa-map-pin" style="padding-right: 0.2rem" aria-hidden="true"
+                            *ngIf="introLegend!='Placez la souris sur une commune'"></em> {{ currentCommune }} </p>
                 </b></h5>
             <p> {{ currentNbObs }} </p>
             <p> {{ currentNbTax }} </p>
@@ -18,28 +20,61 @@
 
     <div class="col-md-4 padding-sm">
         <div class="card" style="height:100%">
-            <h5 class="card-header white-text" style="text-align:center; color:white">Filtres</h5>
+            <h3 class="card-header" style="text-align:center; color:white">
+                <div class="row row-md">
+                    <div class="col-md-1" style="text-align: left">
+                        <em class="fa fa-lg fa-filter" aria-hidden="true"
+                            style="text-shadow: 0 0 15px rgba(0, 0, 0, 0.4)"></em>
+                    </div>
+                    <div class="col-md-10" style="text-shadow: 0 0 15px rgba(0, 0, 0, 0.8)">
+                        Filtrer
+                    </div>
+                </div>
+            </h3>
             <div class="card-body">
 
                 <div id="buttons">
                     <div class="row row-sm">
                         <div class="col-md-6 padding-sm">
-                            <button class="btn btn-block btn-bordeaux" (click)="changeMapToObs()"> <B>Nombre
-                                    d'observations</B> </button>
+                            <button class="btn btn-block btn-bordeaux" (click)="changeMapToObs()" *ngIf="!spinnerInit">
+                                <B>Nombre d'observations</B>
+                                <em class="fa fa-md fa-eye" style="padding-left: 0.2rem" aria-hidden="true"></em>
+                            </button>
+                            <button class="btn btn-block btn-bordeaux" area-disabled="true" *ngIf="spinnerInit"
+                                disabled>
+                                <B>Nombre d'observations</B>
+                                <em class="fa fa-md fa-eye" style="padding-left: 0.2rem" aria-hidden="true"></em>
+                            </button>
                         </div>
                         <div class="col-md-6 padding-sm">
-                            <button class="btn btn-block btn-water" *ngIf="filter != 'Taxon'"
-                                (click)="changeMapToTax()"> <B>Nombre de taxons</B>
+                            <button class="btn btn-block btn-water" (click)="changeMapToTax()"
+                                *ngIf="!disabledTaxButton && !spinnerInit"> <B>Nombre de taxons</B>
+                                <em class="fa fa-md fa-paw" style="padding-left: 0.2rem" aria-hidden="true"></em>
+                            </button>
+                            <button class="btn btn-block btn-water" area-disabled="true"
+                                *ngIf="disabledTaxButton || spinnerInit" disabled> <B>Nombre de taxons</B>
+                                <em class="fa fa-md fa-paw" style="padding-left: 0.2rem" aria-hidden="true"></em>
                             </button>
                         </div>
                     </div><br />
-                    <div class="row row-sm">
+                    <div class=" row row-sm">
                         <div class="col-md-6 padding-sm">
-                            <button class="btn btn-block btn-secondary" (click)="changeMapToCommunes()"> <B>Communes</B>
+                            <button class="btn btn-block btn-secondary" (click)="changeMapToCommunes()"
+                                *ngIf="!spinner">
+                                <B>Communes</B>
+                            </button>
+                            <button class="btn btn-block btn-secondary" area-disabled="true"
+                                (click)="changeMapToCommunes()" *ngIf="spinner" disabled>
+                                <B>Communes</B>
                             </button>
                         </div>
                         <div class="col-md-6 padding-sm">
-                            <button class="btn btn-block btn-secondary" (click)="changeMapToMailles()"> <B>Mailles</B>
+                            <button class="btn btn-block btn-secondary" (click)="changeMapToMailles()" *ngIf="!spinner">
+                                <B>Mailles</B>
+                            </button>
+                            <button class="btn btn-block btn-secondary" area-disabled="true"
+                                (click)="changeMapToMailles()" *ngIf="spinner" disabled>
+                                <B>Mailles</B>
                             </button>
                         </div>
                     </div>
@@ -62,15 +97,22 @@
                                     <nouislider class="nouislider" [connect]="true" [tooltips]="true"
                                         [min]="yearRange[0]" [max]="yearRange[1]" [step]="1"
                                         [formControl]="mapForm.controls.selectedYearRange"
-                                        (change)="getCurrentParameters($event)"></nouislider>
+                                        (change)="getCurrentParameters($event)" *ngIf="!spinnerInit"></nouislider>
+                                </div>
+                                <div class="col-md-11">
+                                    <nouislider class="nouislider" [connect]="true" [tooltips]="true"
+                                        [min]="yearRange[0]" [max]="yearRange[1]" [step]="1" [disabled]="true"
+                                        [formControl]="mapForm.controls.selectedYearRange" *ngIf="spinnerInit">
+                                    </nouislider>
                                 </div>
                             </div>
                         </div><br />
                         <div class="form-group row">
                             <div class="col-md-6">
-                                <label class="col-form-label"><b> Type de filtre taxonomique </b></label>
+                                <label class="col-form-label"><b> Rang taxonomique </b></label>
                                 <select class="form-control form-control-sm" [disableControl]="disabled"
-                                    formControlName="selectedFilter" (change)="onTaxFilterChange($event)">
+                                    formControlName="selectedFilter" (change)="onTaxFilterChange($event)"
+                                    *ngIf="!spinnerInit">
                                     <option> </option>
                                     <option> Groupe INPN 1 </option>
                                     <option> Groupe INPN 2 </option>
@@ -79,7 +121,10 @@
                                     <option> Classe </option>
                                     <option> Ordre </option>
                                     <option> Famille </option>
-                                    <option> Taxon </option>
+                                    <option> Rechercher un taxon/une espèce... </option>
+                                </select>
+                                <select class="form-control form-control-sm" formControlName="selectedFilter"
+                                    (change)="onTaxFilterChange($event)" *ngIf="spinnerInit" disabled>
                                 </select>
                             </div>
                             <div class="col-md-6" id="group1_inpn_filter" *ngIf="filter === 'Groupe INPN 1'">
@@ -110,7 +155,8 @@
                                     (change)="getCurrentParameters($event)">
                                     <option> </option>
                                     <ng-container *ngFor="let regne of taxonomies['Règne']">
-                                        <option [ngValue]="regne" *ngIf="regne != 'Not defined'"> {{ regne }} </option>
+                                        <option [ngValue]="regne" *ngIf="regne != 'Not defined'"> {{ regne }}
+                                        </option>
                                     </ng-container>
                                 </select>
                             </div>
@@ -158,19 +204,24 @@
                                     </ng-container>
                                 </select>
                             </div>
-                            <div class="col-md-6" id="taxon_filter" *ngIf="filter === 'Taxon'">
-                                <label class="col-form-label"> Taxon </label>
+                            <div class="col-md-6" id="taxon_filter"
+                                *ngIf="filter === 'Rechercher un taxon/une espèce...'">
+                                <label class="col-form-label"> Taxon/espèce </label>
                                 <pnx-taxonomy label="" [parentFormControl]="mapForm.controls.taxon" [idList]="500"
                                     [charNumber]="3" [listLength]="30" [apiEndPoint]="taxonApiEndPoint"
                                     (onChange)="getCurrentParameters($event)">
                                 </pnx-taxonomy>
+                                <div class="card-absolute-taxon">
+                                    <em class="fa fa-md fa-question-circle" aria-hidden="true"></em>
+                                    <small>Recherche : tapez au moins 3 lettres</small>
+                                </div>
                             </div>
                         </div>
                     </form>
                 </div>
 
                 <div style="text-align: center">
-                    <div class="spinner-border text-secondary m-5" role="status" *ngIf="spinner"></div>
+                    <div class="spinner-border text-secondary m-5" role="status" *ngIf="spinner || spinnerInit"></div>
                 </div>
 
             </div>

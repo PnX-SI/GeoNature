@@ -11,22 +11,27 @@
   text-align: justify;
 }
 
-.btn-outline-green {
-  color: #689f38;
-  background-color: #ffffff;
-  border-color: #689f38;
+.card-absolute {
+  margin-left: 1.3rem;
+  margin-right:0.1rem;
+  margin-top: 0.1rem;
+  margin-bottom: 1rem;
+  padding: 10px 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-color: rgb(255, 255, 255);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
 }
 
-.btn-outline-green:hover {
-  color: #fff;
-  background-color: #689f38;
-  border-color: #689f38;
-}
-
-.btn-outline-green:focus, .btn-outline-green.focus {
-  box-shadow: 0 0 0 0.2rem #aed581;
+.card-absolute small {
+  margin: 0 0 5px;
+  color: #424242;
 }
 
 .fa-info-circle {
   color: rgb(217,146,30);
+}
+
+.fa-question-circle {
+  color: rgb(119,163,53);
 }

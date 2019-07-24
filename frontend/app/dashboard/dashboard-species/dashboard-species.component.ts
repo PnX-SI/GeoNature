@@ -14,8 +14,9 @@ export class DashboardSpeciesComponent implements OnInit {
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
+  public subscription: any;
   public pieChartType = 'doughnut';
-  public pieChartLabels = ["Espèces recontactées", "Espèces non recontactées", "Nouvelles espèces"];
+  public pieChartLabels = ["Taxons recontactés", "Taxons non recontactés", "Nouveaux taxons"];
   public pieChartData = [];
   public pieChartColors = [
     {
@@ -26,7 +27,7 @@ export class DashboardSpeciesComponent implements OnInit {
   public pieChartOptions = {
     legend: {
       display: 'true',
-      position: 'right',
+      position: 'left',
       labels: {
         fontSize: 15,
         filter: function (legendItem, chartData) {
@@ -84,7 +85,7 @@ export class DashboardSpeciesComponent implements OnInit {
     // Par défaut, le pie chart s'affiche au niveau du règne
     this.speciesForm.controls["selectedYear"].setValue(2019);
     // Accès aux données de synthèse de la BDD GeoNature
-    this.dataService.getSpecies({ selectedYear: this.speciesForm.value.selectedYear }).subscribe(
+    this.subscription = this.dataService.getSpecies({ selectedYear: this.speciesForm.value.selectedYear }).subscribe(
       (data) => {
         // console.log(data);
         data.forEach(
@@ -100,11 +101,12 @@ export class DashboardSpeciesComponent implements OnInit {
 
   // Rafraichissement des données en fonction de l'année renseignée par l'utilisateur
   getCurrentYear(event) {
+    this.subscription.unsubscribe();
     this.spinner = true;
     // Réinitialisation de l'array des données à afficher, paramètre du pie chart
     var pieChartDataTemp = [];
     // Accès aux données de synthèse de la BDD GeoNature
-    this.dataService.getSpecies({ selectedYear: this.speciesForm.value.selectedYear }).subscribe(
+    this.subscription = this.dataService.getSpecies({ selectedYear: this.speciesForm.value.selectedYear }).subscribe(
       (data) => {
         data.forEach(
           (elt) => {

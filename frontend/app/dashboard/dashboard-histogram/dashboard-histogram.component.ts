@@ -16,6 +16,7 @@ export class DashboardHistogramComponent implements OnInit {
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
+  public subscription: any;
   public barChartOptions = {
     scaleShowVerticalLines: true,
     responsive: true,
@@ -46,7 +47,8 @@ export class DashboardHistogramComponent implements OnInit {
           scaleLabel: {
             display: true,
             labelString: "Nombre d'observations",
-            fontColor: 'rgb(159, 5, 63)'
+            fontColor: 'rgb(159, 5, 63)',
+            fontSize: 16
           }
         },
         {
@@ -63,7 +65,8 @@ export class DashboardHistogramComponent implements OnInit {
           scaleLabel: {
             display: true,
             labelString: "Nombre de taxons",
-            fontColor: 'rgb(0, 128, 128)'
+            fontColor: 'rgb(0, 128, 128)',
+            fontSize: 16
           }
         }
       ]
@@ -86,6 +89,7 @@ export class DashboardHistogramComponent implements OnInit {
   histForm: FormGroup;
   public filter: any;
   public spinner = false;
+  public currentTaxon = "";
   @Input() taxonomies: any;
 
   public taxonApiEndPoint = `${AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
@@ -108,7 +112,7 @@ export class DashboardHistogramComponent implements OnInit {
   ngOnInit() {
     this.spinner = true;
     // Accès aux données de synthèse de la BDD GeoNature 
-    this.dataService.getDataSynthese().subscribe(
+    this.subscription = this.dataService.getDataSynthese().subscribe(
       (data) => {
         // console.log(data);
         // Remplissage des array qui seront paramètres du bar chart
@@ -146,15 +150,17 @@ export class DashboardHistogramComponent implements OnInit {
     // Afficher les données d'origine si la valeur vaut ""
     if (this.filter == "") {
       this.barChartData = this.noFilterBarChartData;
+      this.currentTaxon = "";
     }
   }
   getCurrentTax(event) {
+    this.subscription.unsubscribe();
     this.spinner = true;
     // console.log(event);
     // console.log(this.histForm.value);
     // console.log(this.filter);
     // Définition du label sélectionné, selon qu'il s'agit d'une recherche de taxon ou d'une liste déroulante
-    if (this.filter == 'Taxon') {
+    if (this.filter == 'Rechercher un taxon/une espèce...') {
       var label = event.item.cd_ref;
       // Récupération du cd_ref
       this.histForm.controls['taxon'].setValue(label);
@@ -164,9 +170,11 @@ export class DashboardHistogramComponent implements OnInit {
       var index = event.target.value.indexOf(':');
       var label = event.target.value.substring(index + 2);
     }
+    this.currentTaxon = label;
     // Afficher les données d'origine si la valeur vaut ""
     if (label == "") {
       this.barChartData = this.noFilterBarChartData;
+      this.spinner = false;
     }
     // Sinon...
     else {
@@ -176,7 +184,7 @@ export class DashboardHistogramComponent implements OnInit {
         { data: [], label: "Nombre de taxons", yAxisID: 'yAxisTax' }
       ];
       // Accès aux données de synthèse de la BDD GeoNature 
-      this.dataService.getDataSynthese(this.histForm.value).subscribe(
+      this.subscription = this.dataService.getDataSynthese(this.histForm.value).subscribe(
         (data) => {
           console.log(data);
           // Remplissage de l'array en tenant compte du fait qu'il peut n'y avoir aucune observation pour certaines années 
@@ -189,7 +197,7 @@ export class DashboardHistogramComponent implements OnInit {
               while ((i < dataLength) && (keepGoing == true)) {
                 if (year == data[i][0]) {
                   barChartDataTemp[0]["data"].push(data[i][1]);
-                  if (this.filter != 'Taxon') {
+                  if (this.filter != 'Rechercher un taxon/une espèce...') {
                     barChartDataTemp[1]["data"].push(data[i][2]);
                   }
                   keepGoing = false;
@@ -199,7 +207,7 @@ export class DashboardHistogramComponent implements OnInit {
               }
               if (keepGoing == true) {
                 barChartDataTemp[0]["data"].push(0);
-                if (this.filter != 'Taxon') {
+                if (this.filter != 'Rechercher un taxon/une espèce...') {
                   barChartDataTemp[1]["data"].push(0);
                 }
               }

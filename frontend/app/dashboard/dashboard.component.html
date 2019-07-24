@@ -9,12 +9,15 @@
     <div class="row row-md">
         <button class="btn btn-block btn-lg btn-title" (click)="hideHistogram($event)">
             <div class="row row-md">
-                <div class="col-md-10 offset-md-1">
+                <div class="col-md-1" style="text-align: left">
+                    <em class="fa fa-xl fa-calendar" aria-hidden="true" *ngIf="showHistogram"></em>
+                </div>
+                <div class="col-md-10">
                     <h3><b>Synthèse par année</b></h3>
                 </div>
                 <div class="col-md-1" style="text-align: right">
-                    <em class="fa fa-lg fa-window-restore" aria-hidden="true" *ngIf="!showHistogram"></em>
-                    <em class="fa fa-lg fa-window-close" aria-hidden="true" *ngIf="showHistogram"></em>
+                    <em class="fa fa-lg fa-chevron-down" aria-hidden="true" *ngIf="!showHistogram"></em>
+                    <em class="fa fa-lg fa-chevron-up" aria-hidden="true" *ngIf="showHistogram"></em>
                 </div>
             </div>
             <em class="fa fa-xl fa-calendar" aria-hidden="true" *ngIf="!showHistogram"></em>
@@ -26,12 +29,15 @@
     <div class="row row-md">
         <button class="btn btn-block btn-lg btn-title" (click)="hideMap($event)">
             <div class="row row-md">
-                <div class="col-md-10 offset-md-1">
+                <div class="col-md-1" style="text-align: left">
+                    <em class="fa fa-xl fa-globe" aria-hidden="true" *ngIf="showMap"></em>
+                </div>
+                <div class="col-md-10">
                     <h3><b>Synthèse par entité géographique</b></h3>
                 </div>
                 <div class="col-md-1" style="text-align: right">
-                    <em class="fa fa-lg fa-window-restore" aria-hidden="true" *ngIf="!showMap"></em>
-                    <em class="fa fa-lg fa-window-close" aria-hidden="true" *ngIf="showMap"></em>
+                    <em class="fa fa-lg fa-chevron-down" aria-hidden="true" *ngIf="!showMap"></em>
+                    <em class="fa fa-lg fa-chevron-up" aria-hidden="true" *ngIf="showMap"></em>
                 </div>
             </div>
             <em class="fa fa-xl fa-globe" aria-hidden="true" *ngIf="!showMap"></em>
@@ -42,12 +48,15 @@
     <div class="row row-md">
         <button class="btn btn-block btn-lg btn-title" (click)="hidePieChart($event)">
             <div class="row row-md">
-                <div class="col-md-10 offset-md-1">
-                    <h3><b>Synthèse par niveau taxonomique</b></h3>
+                <div class="col-md-1" style="text-align: left">
+                    <em class="fa fa-xl fa-sitemap" aria-hidden="true" *ngIf="showPieChart"></em>
+                </div>
+                <div class="col-md-10">
+                    <h3><b>Synthèse par rang taxonomique</b></h3>
                 </div>
                 <div class="col-md-1" style="text-align: right">
-                    <em class="fa fa-lg fa-window-restore" aria-hidden="true" *ngIf="!showPieChart"></em>
-                    <em class="fa fa-lg fa-window-close" aria-hidden="true" *ngIf="showPieChart"></em>
+                    <em class="fa fa-lg fa-chevron-down" aria-hidden="true" *ngIf="!showPieChart"></em>
+                    <em class="fa fa-lg fa-chevron-up" aria-hidden="true" *ngIf="showPieChart"></em>
                 </div>
             </div>
             <em class="fa fa-xl fa-sitemap" aria-hidden="true" *ngIf="!showPieChart"></em>
@@ -59,12 +68,15 @@
     <div class="row row-md">
         <button class="btn btn-block btn-lg btn-title" (click)="hideLineChart($event)">
             <div class="row row-md">
-                <div class="col-md-10 offset-md-1">
+                <div class="col-md-1" style="text-align: left">
+                    <em class="fa fa-xl fa-cubes" aria-hidden="true" *ngIf="showLineChart"></em>
+                </div>
+                <div class="col-md-10">
                     <h3><b>Synthèse par cadre d'acquisition</b></h3>
                 </div>
                 <div class="col-md-1" style="text-align: right">
-                    <em class="fa fa-lg fa-window-restore" aria-hidden="true" *ngIf="!showLineChart"></em>
-                    <em class="fa fa-lg fa-window-close" aria-hidden="true" *ngIf="showLineChart"></em>
+                    <em class="fa fa-lg fa-chevron-down" aria-hidden="true" *ngIf="!showLineChart"></em>
+                    <em class="fa fa-lg fa-chevron-up" aria-hidden="true" *ngIf="showLineChart"></em>
                 </div>
             </div>
             <em class="fa fa-xl fa-cubes" aria-hidden="true" *ngIf="!showLineChart"></em>
@@ -75,12 +87,15 @@
     <div class="row row-md">
         <button class="btn btn-block btn-lg btn-title" (click)="hideSpecies($event)">
             <div class="row row-md">
-                <div class="col-md-10 offset-md-1">
-                    <h3><b>Espèces recontactées, non recontactées et nouvelles par année</b></h3>
+                <div class="col-md-1" style="text-align: left">
+                    <em class="fa fa-xl fa-paw" aria-hidden="true" *ngIf="showSpecies"></em>
+                </div>
+                <div class="col-md-10">
+                    <h3><b>Taxons recontactés, non recontactés et nouveaux par année</b></h3>
                 </div>
                 <div class="col-md-1" style="text-align: right">
-                    <em class="fa fa-lg fa-window-restore" aria-hidden="true" *ngIf="!showSpecies"></em>
-                    <em class="fa fa-lg fa-window-close" aria-hidden="true" *ngIf="showSpecies"></em>
+                    <em class="fa fa-lg fa-chevron-down" aria-hidden="true" *ngIf="!showSpecies"></em>
+                    <em class="fa fa-lg fa-chevron-up" aria-hidden="true" *ngIf="showSpecies"></em>
                 </div>
             </div>
             <em class="fa fa-xl fa-paw" aria-hidden="true" *ngIf="!showSpecies"></em>

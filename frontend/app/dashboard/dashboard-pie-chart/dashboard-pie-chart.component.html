@@ -2,7 +2,17 @@
 
     <div class="col-md-2 padding-sm">
         <div class="card" style="height:100%">
-            <h5 class="card-header" style="text-align:center; color:white">Filtres</h5>
+            <h3 class="card-header" style="text-align:center; color:white">
+                <div class="row row-md">
+                    <div class="col-md-1" style="text-align: left">
+                        <em class="fa fa-lg fa-filter" aria-hidden="true"
+                            style="text-shadow: 0 0 15px rgba(0, 0, 0, 0.4)"></em>
+                    </div>
+                    <div class="col-md-10" style="text-shadow: 0 0 15px rgba(0, 0, 0, 0.8)">
+                        Filtrer
+                    </div>
+                </div>
+            </h3>
             <div class="card-body">
 
                 <div id="filters">
@@ -19,7 +29,7 @@
                             </div>
                         </div><br />
                         <div class="form-group">
-                            <label class="col-form-label"><b> Niveau taxonomique </b></label>
+                            <label class="col-form-label"><b> Rang taxonomique </b></label>
                             <select class="form-control form-control-sm" [disableControl]="disabled"
                                 formControlName="selectedFilter" (change)="getCurrentParameters($event)">
                                 <option> Groupe INPN 1 </option>
@@ -33,13 +43,6 @@
                     </form>
                 </div><br />
 
-                <em class="fa fa-md fa-info-circle" aria-hidden="true"></em>
-                <small>Il est possible de cliquer sur
-                    les éléments de légende du graphe
-                    pour les faire
-                    disparaître ou réapparaître.
-                </small>
-
                 <div style="text-align: center">
                     <div class="spinner-border text-secondary m-5" role="status" *ngIf="spinner"></div>
                 </div>
@@ -48,6 +51,15 @@
     </div>
 
     <div class="col-md-10 padding-sm">
+        <div class="row row-md">
+            <div class="card-absolute">
+                <em class="fa fa-lg fa-question-circle" style="padding-right: 0.2rem" aria-hidden="true"></em>
+                <small>Cliquez sur
+                    les éléments de légende
+                    pour les faire
+                    disparaître/réapparaître et actualiser le graphe.</small>
+            </div>
+        </div>
         <div style="display: block">
             <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
                 [colors]="pieChartColors" [options]="pieChartOptions">

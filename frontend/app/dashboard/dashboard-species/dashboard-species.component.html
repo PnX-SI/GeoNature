@@ -2,13 +2,23 @@
 
     <div class="col-md-2 padding-sm">
         <div class="card" style="height:100%">
-            <h5 class="card-header" style="text-align:center; color:white">Filtres</h5>
+            <h3 class="card-header" style="text-align:center; color:white">
+                <div class="row row-md">
+                    <div class="col-md-1" style="text-align: left">
+                        <em class="fa fa-lg fa-filter" aria-hidden="true"
+                            style="text-shadow: 0 0 15px rgba(0, 0, 0, 0.4)"></em>
+                    </div>
+                    <div class="col-md-10" style="text-shadow: 0 0 15px rgba(0, 0, 0, 0.8)">
+                        Filtrer
+                    </div>
+                </div>
+            </h3>
             <div class="card-body">
 
                 <div id="filters">
                     <form [formGroup]="speciesForm">
                         <div class="form-group" id="years">
-                            <label class="col-form-label"> Année </label>
+                            <label class="col-form-label"><b> Année </b></label>
                             <select class="form-control form-control-sm" formControlName="selectedYear"
                                 (change)="getCurrentYear($event)">
                                 <ng-container *ngFor="let year of distinctYears">
@@ -29,6 +39,17 @@
     </div>
 
     <div class="col-md-10 padding-sm">
+        <div class="row row-md">
+            <div class="card-absolute">
+                <em class="fa fa-lg fa-info-circle" style="padding-right: 0.2rem" aria-hidden="true"></em>
+                <small>Pour une année donnée, un taxon recontacté correspond à un taxon qui avait déjà été observé
+                    au cours d'une des années précédentes (au moins). <br />
+                    Un taxon non recontacté correspond à un taxon qui avait déjà été observé au cours d'une des
+                    années précédentes (au moins) mais qui n'a pas été observé pendant l'année en cours. <br />
+                    Un nouveau taxon correspond à un taxon qui n'avait jamais été observé au cours des années
+                    précédentes.</small>
+            </div>
+        </div>
         <div style="display: block">
             <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
                 [colors]="pieChartColors" [options]="pieChartOptions" padding="20px">
