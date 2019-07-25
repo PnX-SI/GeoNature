@@ -2,7 +2,6 @@ import { Component, OnInit, Output, EventEmitter } from "@angular/core";
 import { ValidationDataService } from "../services/data.service";
 
 import { MapListService } from "@geonature_common/map-list/map-list.service";
-import { CommonService } from "@geonature_common/service/common.service";
 import { ToastrService } from "ngx-toastr";
 import { ModuleConfig } from "../module.config";
 import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthese-form.service";
@@ -31,6 +30,16 @@ export class ValidationComponent implements OnInit {
     this._fs.selectedTaxonFromRankInput = [];
     this._fs.selectedtaxonFromComponent = [];
     this.getStatusNames();
+    this.toastr.info(
+      "Le nombre d'observation affiché sur la carte est limité à " +
+        ModuleConfig.NB_MAX_OBS_MAP,
+      "",
+      {
+        positionClass: "toast-top-center",
+        tapToDismiss: true,
+        timeOut: 3000
+      }
+    );
   }
 
   getStatusNames() {

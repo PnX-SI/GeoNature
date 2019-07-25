@@ -80,7 +80,7 @@ class GnModuleSchemaConf(Schema):
         fields.String, missing=DEFAULT_COLUMNS_API_VALIDATION
     )
     LIST_COLUMNS_FRONTEND = fields.List(fields.Dict, missing=DEFAULT_LIST_COLUMN)
-    NB_MAX_OBS_MAP = fields.Integer(missing=10000)
+    NB_MAX_OBS_MAP = fields.Integer(missing=5000)
     MAP_POINT_STYLE = fields.Dict(fields.Dict(), missing=MAP_POINT_STYLE)
     ICON_FOR_AUTOMATIC_VALIDATION = fields.String(missing=ICON_FOR_AUTOMATIC_VALIDATION)
     ZOOM_SINGLE_POINT = fields.Integer(missing=ZOOM_SINGLE_POINT)
