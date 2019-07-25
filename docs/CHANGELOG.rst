@@ -17,6 +17,7 @@ CHANGELOG
   * Migration: suppression d'un lien symoblique qui créait des liens en cascade
   * Amélioration de la documentation (@dthonon)
   * Amélioration de la rapidité d'installation du MNT grâce à la suppression d'un paramètre inutile
+  * BACKOFFICE: correction d'une URL incorrect et customisation
 
 **⚠️ Notes de version**
   

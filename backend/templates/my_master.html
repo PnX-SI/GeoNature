@@ -1,0 +1,16 @@
+
+{% extends 'admin/base.html' %}
+
+{% block head_tail %}
+  {{ super() }}
+  <style>
+    .navbar-brand {
+      display: none!important
+    }
+  </style>
+{% endblock %}
+
+{% block page_body %}
+    {{super()}}
+{% endblock %}
+
