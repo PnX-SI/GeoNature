@@ -8,7 +8,15 @@
      </ngx-datatable-row-detail>
 
 
-  <ngx-datatable-column [checkboxable]="true" [maxWidth]="10"></ngx-datatable-column>
+  <ngx-datatable-column [checkboxable]="true" [maxWidth]="10">
+
+      <ng-template ngx-datatable-header-template>
+        <label class="datatable-checkbox">
+          <input type="checkbox" (click)="toggleSelection($event)" matTooltip="Séléctionner/désélectionner tout"> 
+        </label>
+        </ng-template>
+      
+  </ngx-datatable-column>
 
   <ngx-datatable-column maxWidth="5">
 
@@ -59,9 +67,7 @@
        let-selectedCount="selectedCount",
        let-curPage="curPage",
        let-offset="offset">
-      <button type="button" (click)="this.selectAll()" class="btn btn-success btn-sm ml-3"> Tout sélectionner</button>
-      <span> ' ' </span>
-      <button type="button" (click)="this.deselectAll()" class="btn btn-success btn-sm"> Tout désélectionner</button>
+
 
        <datatable-pager
          [pagerLeftArrowIcon]="'datatable-icon-left'"

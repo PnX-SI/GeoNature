@@ -157,7 +157,13 @@ export class ValidationSyntheseListComponent
       this.setOriginStyleToAll();
     }
   }
-
+  toggleSelection(element) {
+    if (element.target.checked) {
+      this.selectAll();
+    } else {
+      this.deselectAll();
+    }
+  }
   onActivate(event) {
     if (event.type == "checkbox" || event.type == "click") {
       this.setSelectedObs();

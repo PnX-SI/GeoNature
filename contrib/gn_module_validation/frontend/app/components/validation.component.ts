@@ -31,7 +31,7 @@ export class ValidationComponent implements OnInit {
     this._fs.selectedtaxonFromComponent = [];
     this.getStatusNames();
     this.toastr.info(
-      "Le nombre d'observation affiché sur la carte est limité à " +
+      "Le nombre d'observations affiché sur la carte est limité à " +
         ModuleConfig.NB_MAX_OBS_MAP,
       "",
       {
