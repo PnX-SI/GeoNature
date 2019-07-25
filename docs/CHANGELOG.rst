@@ -4,12 +4,21 @@ CHANGELOG
 
 
 
-2.1.2 (Unreleased)
+2.1.2 (2019-07-25)
 ------------------
 
 **🚀 Nouveautés**
 
 **🐛 Corrections**
+
+  * SYNTHESE: Correction d'une URL en dur pour la recherche de rang taxonomique
+  * OCCTAX: affichage uniquement des JDD actifs 
+  * VALIDATION: abaissement de la limite d'affichage de données sur la carte par défaut + message indicatif
+  * Migration: suppression d'un lien symoblique qui créait des liens en cascade
+
+**⚠️ Notes de version**
+  
+  Ceci est une version corrective mineure. Si vous migrez depuis la 2.1.0, passez directement à cette version en suivant les notes de version de la 2.1.1.
 
 2.1.1 (2019-07-18)
 ------------------
