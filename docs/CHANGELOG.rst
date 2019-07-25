@@ -7,8 +7,6 @@ CHANGELOG
 2.1.2 (2019-07-25)
 ------------------
 
-**🚀 Nouveautés**
-
 **🐛 Corrections**
 
   * SYNTHESE: Correction d'une URL en dur pour la recherche de rangs taxonomiques
