@@ -32,7 +32,8 @@ export class DashboardHistogramComponent implements OnInit {
         display: true,
         scaleLabel: {
           display: true,
-          labelString: 'Années'
+          labelString: 'Années',
+          fontSize: 16
         }
       }],
       yAxes: [
@@ -165,12 +166,13 @@ export class DashboardHistogramComponent implements OnInit {
       // Récupération du cd_ref
       this.histForm.controls['taxon'].setValue(label);
       console.log(this.histForm.value);
+      this.currentTaxon = event.item.lb_nom;
     }
     else {
       var index = event.target.value.indexOf(':');
       var label = event.target.value.substring(index + 2);
+      this.currentTaxon = label;
     }
-    this.currentTaxon = label;
     // Afficher les données d'origine si la valeur vaut ""
     if (label == "") {
       this.barChartData = this.noFilterBarChartData;

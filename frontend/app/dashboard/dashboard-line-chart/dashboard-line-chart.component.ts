@@ -155,7 +155,8 @@ export class DashboardLineChartComponent implements OnInit {
         display: true,
         scaleLabel: {
           display: true,
-          labelString: 'Années'
+          labelString: 'Années',
+          fontSize: 16
         }
       }],
       yAxes: [{

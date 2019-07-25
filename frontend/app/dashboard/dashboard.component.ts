@@ -136,44 +136,19 @@ export class DashboardComponent implements OnInit {
   }
 
   hideHistogram(event) {
-    if (this.showHistogram == true) {
-      this.showHistogram = false;
-    }
-    else {
-      this.showHistogram = true;
-    }
+    this.showHistogram = !this.showHistogram;
   }
   hideMap(event) {
-    if (this.showMap == true) {
-      this.showMap = false;
-    }
-    else {
-      this.showMap = true;
-    }
+    this.showMap = !this.showMap;
   }
   hidePieChart(event) {
-    if (this.showPieChart == true) {
-      this.showPieChart = false;
-    }
-    else {
-      this.showPieChart = true;
-    }
+    this.showPieChart = !this.showPieChart;
   }
   hideLineChart(event) {
-    if (this.showLineChart == true) {
-      this.showLineChart = false;
-    }
-    else {
-      this.showLineChart = true;
-    }
+    this.showLineChart = !this.showLineChart;
   }
   hideSpecies(event) {
-    if (this.showSpecies == true) {
-      this.showSpecies = false;
-    }
-    else {
-      this.showSpecies = true;
-    }
+    this.showSpecies = !this.showSpecies;
   }
 
 }
