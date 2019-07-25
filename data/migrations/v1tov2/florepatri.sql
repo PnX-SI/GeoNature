@@ -714,7 +714,11 @@ BEGIN
     IF public.ST_isvalid(new.the_geom_local) AND public.ST_isvalid(new.the_geom_3857) THEN
       new.topo_valid = 'true';
       -- on calcul la commune...
-      SELECT INTO theinsee c.area_code FROM (SELECT * FROM ref_geo.fct_get_area_intersection(new.the_geom_local,25) LIMIT 1) c;
+      SELECT INTO theinsee m.insee_com
+      FROM ref_geo.l_areas lc
+      JOIN ref_geo.li_municipalities m ON m.id_area = lc.id_area
+      WHERE public.st_intersects(lc.geom, new.the_geom_local) AND lc.id_type = 25
+      ORDER BY public.ST_area(public.ST_intersection(lc.geom, new.the_geom_local)) DESC LIMIT 1;
       new.insee = theinsee;-- mise à jour du code insee
       -- on calcul l'altitude
       SELECT altitude_min INTO thealtitude FROM (SELECT * FROM ref_geo.fct_get_altitude_intersection(new.the_geom_local) LIMIT 1) a;
@@ -728,7 +732,11 @@ BEGIN
       new.topo_valid = 'false';
       moncentroide = public.ST_setsrid(public.st_centroid(public.box2d(new.the_geom_local)),2154); -- calcul le centroid de la bbox pour les croisements SIG
       -- on calcul la commune...
-      SELECT INTO theinsee c.area_code FROM (SELECT * FROM ref_geo.fct_get_area_intersection(moncentroide,25) LIMIT 1) c;
+      SELECT INTO theinsee m.insee_com
+      FROM ref_geo.l_areas lc
+      JOIN ref_geo.li_municipalities m ON m.id_area = lc.id_area
+      WHERE public.st_intersects(lc.geom, moncentroide) AND lc.id_type = 25
+      ORDER BY public.ST_area(public.ST_intersection(lc.geom, moncentroide)) DESC LIMIT 1;
       new.insee = theinsee;-- mise à jour du code insee
       -- on calcul l'altitude
       SELECT altitude_min INTO thealtitude FROM (SELECT * FROM ref_geo.fct_get_altitude_intersection(moncentroide) LIMIT 1) a;
@@ -787,7 +795,11 @@ fin de section en attente */
   IF public.ST_isvalid(new.the_geom_local) AND public.ST_isvalid(new.the_geom_3857) THEN
     new.topo_valid = 'true';
     -- on calcul la commune...
-    SELECT INTO theinsee c.area_code FROM (SELECT * FROM ref_geo.fct_get_area_intersection(new.the_geom_local,25) LIMIT 1) c;
+    SELECT INTO theinsee m.insee_com
+    FROM ref_geo.l_areas lc
+    JOIN ref_geo.li_municipalities m ON m.id_area = lc.id_area
+    WHERE public.st_intersects(lc.geom, new.the_geom_local) AND lc.id_type = 25
+    ORDER BY public.ST_area(public.ST_intersection(lc.geom, new.the_geom_local)) DESC LIMIT 1;
     new.insee = theinsee;-- mise à jour du code insee
     -- on calcul l'altitude
     SELECT altitude_min INTO thealtitude FROM (SELECT * FROM ref_geo.fct_get_altitude_intersection(new.the_geom_local) LIMIT 1) a;
@@ -801,7 +813,11 @@ fin de section en attente */
     new.topo_valid = 'false';
     moncentroide = public.ST_setsrid(public.st_centroid(public.box2d(new.the_geom_local)),2154); -- calcul le centroid de la bbox pour les croisements SIG
     -- on calcul la commune...
-    SELECT INTO theinsee c.area_code FROM (SELECT * FROM ref_geo.fct_get_area_intersection(moncentroide,25) LIMIT 1) c;
+    SELECT INTO theinsee m.insee_com
+    FROM ref_geo.l_areas lc
+    JOIN ref_geo.li_municipalities m ON m.id_area = lc.id_area
+    WHERE public.st_intersects(lc.geom, moncentroide) AND lc.id_type = 25
+    ORDER BY public.ST_area(public.ST_intersection(lc.geom, moncentroide)) DESC LIMIT 1;
     new.insee = theinsee;-- mise à jour du code insee
     -- on calcul l'altitude
     SELECT altitude_min INTO thealtitude FROM (SELECT * FROM ref_geo.fct_get_altitude_intersection(moncentroide) LIMIT 1) a;

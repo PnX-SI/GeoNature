@@ -500,7 +500,7 @@ return new; -- return new procède à l'insertion de la donnée dans PG avec les
 END;
 $$;
 
-CREATE FUNCTION v1_florestation.florestation_update() RETURNS trigger
+CREATE OR REPLACE FUNCTION v1_florestation.florestation_update() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE 
@@ -518,10 +518,14 @@ IF (old.the_geom_local is null AND old.the_geom_3857 is null) THEN
 		new.srid_dessin = 3857;
     END IF;
     -- on calcul la commune...
-    SELECT area_code INTO theinsee FROM (SELECT ref_geo.fct_get_area_intersection(new.the_geom_local,25) LIMIT 1) c;
+    SELECT INTO theinsee m.insee_com 
+    FROM ref_geo.l_areas lc 
+    JOIN ref_geo.li_municipalities m ON m.id_area = lc.id_area
+    WHERE public.st_intersects(lc.geom, new.the_geom_local) AND lc.id_type = 25
+    ORDER BY public.ST_area(public.ST_intersection(lc.geom, new.the_geom_local)) DESC LIMIT 1;
     new.insee = theinsee;-- mise à jour du code insee
     -- on calcul l'altitude
-    SELECT altitude_min INTO thealtitude FROM (SELECT ref_geo.fct_get_altitude_intersection(new.the_geom_local) LIMIT 1) a;
+    SELECT altitude_min INTO thealtitude FROM (SELECT * FROM ref_geo.fct_get_altitude_intersection(new.the_geom_local) LIMIT 1) a;
     new.altitude_sig = thealtitude;-- mise à jour de l'altitude sig
     IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
         new.altitude_retenue = new.altitude_sig;
@@ -546,10 +550,14 @@ IF (old.the_geom_local is NOT NULL OR old.the_geom_3857 is NOT NULL) THEN
         END IF;
     END IF;
     -- on calcul la commune...
-    SELECT area_code INTO theinsee FROM (SELECT ref_geo.fct_get_area_intersection(new.the_geom_local,25) LIMIT 1) c;
+    SELECT INTO theinsee m.insee_com 
+    FROM ref_geo.l_areas lc 
+    JOIN ref_geo.li_municipalities m ON m.id_area = lc.id_area
+    WHERE public.st_intersects(lc.geom, new.the_geom_local) AND lc.id_type = 25
+    ORDER BY public.ST_area(public.ST_intersection(lc.geom, new.the_geom_local)) DESC LIMIT 1;
     new.insee = theinsee;-- mise à jour du code insee
     -- on calcul l'altitude
-    SELECT altitude_min INTO thealtitude FROM (SELECT ref_geo.fct_get_altitude_intersection(new.the_geom_local) LIMIT 1) a;
+    SELECT altitude_min INTO thealtitude FROM (SELECT * FROM ref_geo.fct_get_altitude_intersection(new.the_geom_local) LIMIT 1) a;
     new.altitude_sig = thealtitude;-- mise à jour de l'altitude sig
     IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
         new.altitude_retenue = new.altitude_sig;
@@ -595,7 +603,7 @@ BEGIN
     --Récupération de la version taxref
     SELECT parameter_value INTO thetaxrefversion FROM gn_commons.t_parameters WHERE parameter_name = 'taxref_version';
     --Récupération du statut de validation
-    IF (fiche.validation==true) THEN 
+    IF (fiche.validation) THEN 
 	SELECT ref_nomenclatures.get_id_nomenclature('STATUT_VALID','1') INTO thevalidationstatus;
     ELSE
 	SELECT ref_nomenclatures.get_id_nomenclature('STATUT_VALID','2') INTO thevalidationstatus;
@@ -793,7 +801,7 @@ RETURN NEW;
 END;
 $$;
 
-CREATE FUNCTION v1_florestation.update_synthese_stations_fs() RETURNS trigger
+CREATE OR REPLACE FUNCTION v1_florestation.update_synthese_stations_fs() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE 
@@ -811,7 +819,7 @@ IF (
 	OR ((new.validation <> old.validation) OR (new.validation is null and old.validation is NOT NULL) OR (new.validation is NOT NULL and old.validation is null))
 ) THEN
         --Récupération du statut de validation
-	IF (new.validation==true) THEN 
+	IF (new.validation) THEN 
 		SELECT ref_nomenclatures.get_id_nomenclature('STATUT_VALID','1') INTO thevalidationstatus;
 	ELSE
 		SELECT ref_nomenclatures.get_id_nomenclature('STATUT_VALID','2') INTO thevalidationstatus;
