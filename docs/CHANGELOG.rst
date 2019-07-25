@@ -11,7 +11,7 @@ CHANGELOG
 
 **🐛 Corrections**
 
-  * SYNTHESE: Correction d'une URL en dur pour la recherche de rang taxonomique
+  * SYNTHESE: Correction d'une URL en dur pour la recherche de rangs taxonomiques
   * OCCTAX: affichage uniquement des JDD actifs 
   * VALIDATION: abaissement de la limite d'affichage de données sur la carte par défaut + message indicatif
   * Migration: suppression d'un lien symoblique qui créait des liens en cascade
