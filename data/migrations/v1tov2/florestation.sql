@@ -87,8 +87,6 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION application_aggregate_taxons_rang_sp(integer)
-  OWNER TO cartopne;
 
   CREATE OR REPLACE FUNCTION application_aggregate_taxons_all_rang_sp(id integer)
   RETURNS text AS
@@ -148,8 +146,6 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION application_aggregate_taxons_all_rang_sp(integer)
-  OWNER TO cartopne;
 
 CREATE OR REPLACE FUNCTION application_find_cdref_rang_sp(id integer)
   RETURNS integer AS
@@ -189,8 +185,6 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION application_find_cdref_rang_sp(integer)
-  OWNER TO cartopne;
 
 CREATE OR REPLACE FUNCTION application_find_lbnom_ref(id integer)
   RETURNS integer AS
@@ -210,9 +204,6 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION application_find_lbnom_ref(integer)
-  OWNER TO cartopne;
-
 
 CREATE OR REPLACE FUNCTION application_find_nomcomplet_ref(id integer)
   RETURNS integer AS
@@ -232,8 +223,6 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION application_find_nomcomplet_ref(integer)
-  OWNER TO cartopne;
 
 CREATE OR REPLACE FUNCTION application_nobs2obs(
     ids integer[],
@@ -251,8 +240,6 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION application_nobs2obs(integer[], integer)
-  OWNER TO cartopne;
 
 CREATE OR REPLACE FUNCTION application_strate2abondance(frequence character)
   RETURNS integer AS
@@ -274,8 +261,6 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION application_strate2abondance(character)
-  OWNER TO cartopne;
 
 CREATE OR REPLACE FUNCTION application_surfacefs2surface(id integer)
   RETURNS integer AS
@@ -295,8 +280,6 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION application_surfacefs2surface(integer)
-  OWNER TO cartopne;
 
 --TODO : analyser ce qui sert et déplacer les functions et leur usage dans un schéma métier.
 
