@@ -15,6 +15,8 @@ CHANGELOG
   * OCCTAX: affichage uniquement des JDD actifs 
   * VALIDATION: abaissement de la limite d'affichage de données sur la carte par défaut + message indicatif
   * Migration: suppression d'un lien symoblique qui créait des liens en cascade
+  * Amélioration de la documentation (@dthonon)
+  * Amélioration de la rapidité d'installation du MNT grâce à la suppression d'un paramètre inutile
 
 **⚠️ Notes de version**
   
