@@ -607,9 +607,8 @@ Opération à faire régulièrement grâce à une tâche cron.
 
   .. code-block:: console
 
-    cd geonature/config
-    tar -zcvf <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-geonature_config.tar.gz ./
-    cd /home/<MY_USER>/geonature
+    cd /home/`whoami`/geonature/config
+    tar -zcvf /home/`whoami`/backup/`date +%Y%m%d%H%M`-geonature_config.tar.gz ./
     
 Opération à faire à chaque modification d'un paramètre de configuration.
 
@@ -617,8 +616,8 @@ Opération à faire à chaque modification d'un paramètre de configuration.
 
   .. code-block:: console
 
-    cd /home/<MY_USER>geonature/frontend/src/custom
-    tar -zcvf <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-geonature_custom.tar.gz ./
+    cd /home/`whoami`/geonature/frontend/src/custom
+    tar -zcvf /home/`whoami`/`date +%Y%m%d%H%M`-geonature_custom.tar.gz ./
 
 Opération à faire à chaque modification de la customisation de l'application.
 
@@ -626,8 +625,8 @@ Opération à faire à chaque modification de la customisation de l'application.
 
   .. code-block:: console
 
-    cd /home/<MY_USER>geonature/external_modules
-    tar -zcvf <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-external_modules.tar.gz ./
+    cd /home/`whoami`/geonature/external_modules
+    tar -zcvf /home/`whoami`/backup/`date +%Y%m%d%H%M`-external_modules.tar.gz ./
 
 Restauration
 """"""""""""
