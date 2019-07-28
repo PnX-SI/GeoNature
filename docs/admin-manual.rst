@@ -955,9 +955,9 @@ Le module est fourni avec une liste restreinte de taxons (8 seulement). C'est à
 
 Le paramètre ``id_taxon_list = 100`` correspond à un ID de liste de la table ``taxonomie.bib_listes`` (L'ID 100 correspond à la liste "Saisie Occtax"). Vous pouvez changer ce paramètre avec l'ID de liste que vous souhaitez, ou bien garder cet ID et changer le contenu de cette liste.
 
-Voici les requêtes SQL pour remplir la liste 500 avec tous les taxons de Taxref à partir du rang ``genre`` : 
+Voici les requêtes SQL pour remplir la liste 100 avec tous les taxons de Taxref à partir du rang ``genre`` : 
 
-Il faut d'abord remplir la table ``taxonomie.bib_noms`` (table des taxons de sa structure), puis remplir la liste 500, avec l'ensemble des taxons de ``bib_noms`` :
+Il faut d'abord remplir la table ``taxonomie.bib_noms`` (table des taxons de sa structure), puis remplir la liste 100, avec l'ensemble des taxons de ``bib_noms`` :
 
 .. code-block:: sql 
 
@@ -968,10 +968,10 @@ Il faut d'abord remplir la table ``taxonomie.bib_noms`` (table des taxons de sa 
     SELECT cd_nom, cd_ref, nom_vern
     FROM taxonomie.taxref
     WHERE id_rang NOT IN ('Dumm','SPRG','KD','SSRG','IFRG','PH','SBPH','IFPH','DV','SBDV','SPCL','CLAD','CL',
-      'SBCL','IFCL','LEG','SPOR','COH','OR','SBOR','IFOR','SPFM','FM','SBFM','TR','SSTR')
+      'SBCL','IFCL','LEG','SPOR','COH','OR','SBOR','IFOR','SPFM','FM','SBFM','TR','SSTR');
 
     INSERT INTO taxonomie.cor_nom_liste (id_liste,id_nom)
-    SELECT 100,n.id_nom FROM taxonomie.bib_noms n
+    SELECT 100,n.id_nom FROM taxonomie.bib_noms n;
 
 Il est également possible d'éditer des listes à partir de l'application TaxHub.
 
