@@ -596,7 +596,7 @@ Connectez-vous avec l'utilisateur linux ``postgres`` pour lancer une sauvegarde 
 .. code-block:: console
 
     sudo su postgres
-    pg_dump -Fc geonature2db  > backup/`date +%Y-%m-%d-%H:%M`-geonaturedb.backup
+    pg_dump -Fc geonature2db  > /home/`whoami`/backup/`date +%Y-%m-%d-%H:%M`-geonaturedb.backup
     exit
 
 Si la sauvegarde ne se fait pas, c'est qu'il faut revoir les droits du répertoire où sont faites les sauvegardes pour que l'utilisateur ``postgres`` puisse y écrire
