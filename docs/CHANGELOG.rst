@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.1.3 (unreleased)
+------------------
+
+**🚀 Nouveautés**
+
+- Le composant 'observateur' permet de rechercher sur le nom ou le prénom (utilisation des RegEx)
+
+**🐛 Corrections**
+
+
 
 
 2.1.2 (2019-07-25)
