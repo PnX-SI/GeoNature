@@ -2,8 +2,7 @@ DROP FOREIGN TABLE v1_compat.v_nomade_classes;
 DROP FOREIGN TABLE v1_compat.log_colors;
 DROP FOREIGN TABLE v1_compat.log_colors_day;
 
-IMPORT FOREIGN SCHEMA contactinv FROM SERVER geonature1server INTO v1_compat;
-DROP FOREIGN TABLE v1_compat.cor_message_taxon;
+IMPORT FOREIGN SCHEMA contactinv EXCEPT (cor_message_taxon_contactinv, v_nomade_milieux_inv) FROM SERVER geonature1server INTO v1_compat;
 --changement de nom de la table cor_message_taxon
 CREATE FOREIGN TABLE v1_compat.cor_message_taxon_contactinv
  (
@@ -12,6 +11,13 @@ CREATE FOREIGN TABLE v1_compat.cor_message_taxon_contactinv
 )
 SERVER geonature1server
 OPTIONS (schema_name 'contactinv', table_name 'cor_message_taxon');
+
+-- recréation des vue transformées en table dans v1_compat qui on tdes problème de droits
+CREATE OR REPLACE VIEW v1_compat.v_nomade_milieux_inv
+AS SELECT v1.id_milieu_inv,
+    v1.nom_milieu_inv
+   FROM v1_compat.bib_milieux_inv v1
+  ORDER BY v1.id_milieu_inv;
 
 --désactiver les triggers 
 ALTER TABLE pr_occtax.t_releves_occtax DISABLE TRIGGER USER;

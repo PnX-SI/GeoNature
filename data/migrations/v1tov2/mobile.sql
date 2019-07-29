@@ -38,7 +38,10 @@ AS SELECT b.id_nom,
             ELSE 'red'::text
         END AS color
    FROM gn_synthese.cor_area_taxon c
-   JOIN taxonomie.bib_noms b on b.cd_nom = c.cd_nom;
+   JOIN taxonomie.bib_noms b on b.cd_nom = c.cd_nom
+   JOIN ref_geo.l_areas a on a.id_area = c.id_area
+    WHERE a.id_type = ref_geo.get_id_area_type('UG')
+   ;
 
 -- Recréation des vues qui sont devenues des tables (pour assurer l'évolution - si on ajoute des taxons ou des observateur)
 CREATE OR REPLACE VIEW gn_synchronomade.v_nomade_taxons_faune
