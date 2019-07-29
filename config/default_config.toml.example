@@ -24,6 +24,8 @@ SECRET_KEY = 'super secret key'
 COOKIE_EXPIRATION = 7200
 COOKIE_AUTORENEW = true
 TRAP_ALL_EXCEPTIONS = false
+# Log level for API. Default set to ERROR (40) (see https://docs.python.org/3/library/logging.html#logging-levels)
+API_LOG_LEVEL = 40
 # code EPSG des geom local de la BDD
 LOCAL_SRID = 2154
 

@@ -89,6 +89,8 @@ class GnPySchemaConf(Schema):
     CAS = fields.Nested(CasSchemaConf, missing=dict())
     MAIL_ON_ERROR = fields.Boolean(missing=False)
     MAIL_CONFIG = fields.Nested(MailConfig, missing=None)
+    # default = 40 (error)
+    API_LOG_LEVEL = fields.Integer(missing=40, validate=OneOf([0, 10, 20, 30, 40, 50]))
 
 
 class GnFrontEndConf(Schema):
