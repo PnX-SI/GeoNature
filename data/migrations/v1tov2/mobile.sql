@@ -28,13 +28,14 @@ ALTER TABLE ONLY gn_synchronomade.erreurs_occtax ADD CONSTRAINT erreurs_occtax_p
 ---------
 --VIEWS--
 ---------
+-- gris s'écrit 'grey' avec un 'e' et non un 'a', mais cette faute est déportée sur l'appli mobile ! Ne pas changer !
 CREATE OR REPLACE VIEW gn_synchronomade.v_color_taxon_area
 AS SELECT b.id_nom,
     c.id_area,
     c.nb_obs,
     c.last_date,
         CASE
-            WHEN date_part('day'::text, now() - c.last_date::timestamp with time zone) < 365::double precision THEN 'grey'::text
+            WHEN date_part('day'::text, now() - c.last_date::timestamp with time zone) < 365::double precision THEN 'gray'::text
             ELSE 'red'::text
         END AS color
    FROM gn_synthese.cor_area_taxon c
@@ -107,13 +108,12 @@ SELECT DISTINCT n.id_nom,
   ORDER BY n.id_nom, taxonomie.find_cdref(n.cd_nom), tx.lb_nom, n.nom_francais, cnl.id_liste, f2.bool, m.texte_message_cflore;
 
 CREATE OR REPLACE VIEW gn_synchronomade.v_nomade_taxons_inv
-AS 
-SELECT DISTINCT n.id_nom,
+AS SELECT DISTINCT n.id_nom,
     taxonomie.find_cdref(n.cd_nom) AS cd_ref,
     n.cd_nom,
     tx.lb_nom AS nom_latin,
     n.nom_francais,
-    cnl.id_liste as id_classe,
+    cnl.id_liste AS id_classe,
         CASE
             WHEN tx.cd_nom = ANY (ARRAY[61098, 61119, 61000]) THEN 6
             ELSE 5
@@ -129,13 +129,11 @@ SELECT DISTINCT n.id_nom,
      LEFT JOIN v1_compat.cor_message_taxon_contactinv cmt ON cmt.id_nom = n.id_nom
      LEFT JOIN v1_compat.bib_messages_inv m ON m.id_message_inv = cmt.id_message_inv
      LEFT JOIN taxonomie.cor_taxon_attribut cta ON cta.cd_ref = n.cd_ref
-     JOIN taxonomie.cor_nom_liste cnl ON cnl.id_nom = n.id_nom and cnl.id_liste IN (2, 5, 8, 9, 10, 15, 16)
-     join taxonomie.cor_nom_liste cnl_500 on cnl_500.id_nom = n.id_nom and cnl_500.id_liste = 500
-    -- join taxonomie.bib_listes bib on bib.id_liste = cnl.id_liste 
-     --JOIN v1_compat.v_nomade_classes g ON g.id_classe = cnl.id_liste
-     JOIN taxonomie.taxref tx ON tx.cd_nom = n.cd_nom and tx.phylum = 'Chordata'
+     JOIN taxonomie.cor_nom_liste cnl ON cnl.id_nom = n.id_nom AND (cnl.id_liste = ANY (ARRAY[2, 5, 8, 9, 10, 15, 16]))
+     JOIN taxonomie.cor_nom_liste cnl_500 ON cnl_500.id_nom = n.id_nom AND cnl_500.id_liste = 500
+     JOIN taxonomie.taxref tx ON tx.cd_nom = n.cd_nom 
      JOIN v1_compat.cor_boolean f2 ON f2.expression::text = cta.valeur_attribut AND cta.id_attribut = 1
-  ORDER BY n.id_nom, taxonomie.find_cdref(n.cd_nom), tx.lb_nom, n.nom_francais, cnl.id_liste, f2.bool, m.texte_message_inv;
+  ORDER BY n.id_nom, (taxonomie.find_cdref(n.cd_nom)), tx.lb_nom, n.nom_francais, cnl.id_liste, f2.bool, m.texte_message_inv;
 
 CREATE OR REPLACE VIEW gn_synchronomade.v_nomade_observateurs_inv
 AS SELECT DISTINCT r.id_role,
