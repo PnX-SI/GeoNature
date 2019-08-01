@@ -1,4 +1,5 @@
 import logging
+import json
 import datetime
 import ast
 
@@ -71,7 +72,7 @@ def current_milli_time():
 ############################################
 
 
-@routes.route("/for_web", methods=["GET"])
+@routes.route("/for_web", methods=["GET", "POST"])
 @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
 @json_resp
 def get_observations_for_web(info_role):
@@ -81,8 +82,16 @@ def get_observations_for_web(info_role):
         :query: all the fields of the view v_synthese_for_export
         :returns: Array of dict (with geojson key)
     """
-    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
+    if request.json:
+        filters = request.json
+    elif request.data:
+        filters = json.loads(request.data)
+    else:
+        filters = {key: request.args.getlist(key) for key, value in request.args.items()}
+
     if "limit" in filters:
+        if isinstance(filters["limit"], int):
+            filters["limit"] = [filters["limit"]]
         result_limit = filters.pop("limit")[0]
     else:
         result_limit = current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
@@ -139,7 +148,7 @@ def get_synthese(info_role):
         Return synthese row(s) filtered by form params NOT USE ANY MORE FOR PERFORMANCE ISSUES
         .. :quickref: Synthese;
         Params must have same synthese fields names
-        
+
     """
     # change all args in a list of value
     filters = {key: request.args.getlist(key) for key, value in request.args.items()}
@@ -225,12 +234,12 @@ def export_observations_web(info_role):
         Optimized route for observations web export
 
         .. :quickref: Synthese;
-        
+
         This view is customisable by the administrator
         Some columns arer mandatory: id_sythese, geojson and geojson_local to generate the exported files
-        
+
         POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
-        
+
         :query str export_format: str<'csv', 'geojson', 'shapefiles'>
 
     """
