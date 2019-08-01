@@ -89,9 +89,14 @@ def get_observations_for_web(info_role):
     else:
         filters = {key: request.args.getlist(key) for key, value in request.args.items()}
 
+    # Passage de l'ensemble des filtres
+    #   en array pour des questions de compatibilité
+    # TODO voir si ça ne peut pas être modifié
+    for k in filters.keys():
+        if not isinstance(filters[k], list):
+            filters[k] = [filters[k]]
+
     if "limit" in filters:
-        if isinstance(filters["limit"], int):
-            filters["limit"] = [filters["limit"]]
         result_limit = filters.pop("limit")[0]
     else:
         result_limit = current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
