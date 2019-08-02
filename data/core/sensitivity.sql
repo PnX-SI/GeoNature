@@ -102,24 +102,25 @@ INSERT INTO gn_sensitivity.cor_sensitivity_area_type VALUES
 
 -- Vues des règles actives
 CREATE MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref AS
- SELECT r.id_sensitivity,
-    r.cd_nom,
-    t.cd_ref,
-    r.nom_cite,
-    r.id_nomenclature_sensitivity,
-    r.sensitivity_duration,
-    r.sensitivity_territory,
-    r.id_territory,
-    COALESCE(r.date_min, '1900-01-01'::date) as date_min,
-    COALESCE(r.date_max, '1900-12-31') as date_max,
-    r.source,
-    r.active,
-    r.comments,
-    r.meta_create_date,
-    r.meta_update_date
-   FROM gn_sensitivity.t_sensitivity_rules r
-     JOIN taxonomie.taxref t ON t.cd_nom = r.cd_nom
-     WHERE active = true
+WITH RECURSIVE r(cd_ref) AS (
+    SELECT t.cd_ref,
+       r.id_sensitivity, r.cd_nom, r.nom_cite, r.id_nomenclature_sensitivity,
+       r.sensitivity_duration, r.sensitivity_territory, r.id_territory,
+       COALESCE(r.date_min, '1900-01-01'::date) AS date_min,
+       COALESCE(r.date_max, '1900-12-31'::date) AS date_max,
+       r.active, r.comments, r.meta_create_date, r.meta_update_date
+    FROM gn_sensitivity.t_sensitivity_rules r
+    JOIN taxonomie.taxref t ON t.cd_nom = r.cd_nom
+    WHERE r.active = true
+  UNION ALL
+    SELECT t.cd_ref , r.id_sensitivity, t.cd_nom, r.nom_cite, r.id_nomenclature_sensitivity,
+       r.sensitivity_duration, r.sensitivity_territory, r.id_territory, r.date_min,
+       r.date_max, r.active, r.comments, r.meta_create_date, r.meta_update_date
+    FROM taxonomie.taxref t, r
+    WHERE cd_taxsup = r.cd_ref
+)
+SELECT r.*
+FROM r
 WITH DATA;
 
 --- Fonction calcul de la sensibilité
