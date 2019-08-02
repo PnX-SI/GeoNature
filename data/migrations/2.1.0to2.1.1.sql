@@ -162,7 +162,7 @@ ALTER TABLE gn_commons.t_validations DROP COLUMN id_table_location;
     LANGUAGE plpgsql VOLATILE
     COST 100;
 
-ALTER TABLE gn_synthese.cor_area_synthese DROP IF EXISTS COLUMN cd_nom;
+ALTER TABLE gn_synthese.cor_area_synthese DROP COLUMN IF EXISTScd_nom;
 
 -- suppression des aires de cor_area where enabled = false
 DELETE FROM gn_synthese.cor_area_synthese WHERE id_area IN (
