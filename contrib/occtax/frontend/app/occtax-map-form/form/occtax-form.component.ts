@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { CommonService } from "@geonature_common/service/common.service";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { ToastrService } from "ngx-toastr";

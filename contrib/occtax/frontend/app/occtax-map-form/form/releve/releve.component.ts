@@ -28,6 +28,7 @@ export class ReleveComponent implements OnInit, OnDestroy {
   public areasIntersected = new Array();
   public occtaxConfig: any;
   private geojsonSubscription$: Subscription;
+  public isEditionSub$ : Subscription;
 
   constructor(
     private _ms: MapService,
@@ -67,8 +68,15 @@ export class ReleveComponent implements OnInit, OnDestroy {
       };
     }
 
+    // Autocomplete date only if its not edition MODE
+    this.isEditionSub$ = this.fs.editionMode$
+    .filter(isEdit => isEdit === false)  
+    .subscribe(isEdit => {
+      this.autoCompleteDate();
 
-    this.autoCompleteDate();
+    });
+    
+
 
     // autcomplete hourmax + set null when empty
     (this.releveForm.controls
@@ -144,5 +152,6 @@ export class ReleveComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.geojsonSubscription$.unsubscribe();
+    this.isEditionSub$.unsubscribe();
   }
 }
