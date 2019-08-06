@@ -20,7 +20,7 @@ class TestApiModulePrOcctax:
         """
         test get vreleve avec les filtres principaux
         Route utilisé sur l'interface carte/list Occtax
-        
+
         """
         token = get_token(self.client)
         self.client.set_cookie("/", "token", token)

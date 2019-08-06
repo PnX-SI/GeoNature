@@ -1,8 +1,15 @@
+<div id="cover-spin" *ngIf="!_ds.dataLoaded"> 
+</div>
+
 
 <div class="wrapper">
 
       <nav #navBar id="sidebar" class="collapse show" class="collapse show">
-        <pnx-validation-search (searchClicked)="loadAndStoreData($event)"></pnx-validation-search>
+        <!-- <pnx-validation-search (searchClicked)="loadAndStoreData($event)"></pnx-validation-search> -->
+        <pnx-synthese-search
+        [displayValidation]="true"
+        (searchClicked)="loadAndStoreData($event)">
+        </pnx-synthese-search>
       </nav>
 
     <!-- Page Content  -->

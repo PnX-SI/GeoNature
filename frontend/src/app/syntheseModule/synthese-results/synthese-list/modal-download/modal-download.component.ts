@@ -2,8 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { AppConfig } from '@geonature_config/app.config';
 import { HttpParams } from '@angular/common/http';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { DataService } from '../../../services/data.service';
-import { SyntheseStoreService } from '../../../services/store.service';
+import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
+import { SyntheseStoreService } from '@geonature_common/form/synthese-form/synthese-store.service';
 
 @Component({
   selector: 'pnx-synthese-modal-download',
@@ -17,7 +17,7 @@ export class SyntheseModalDownloadComponent implements OnInit {
 
   constructor(
     public activeModal: NgbActiveModal,
-    public _dataService: DataService,
+    public _dataService: SyntheseDataService,
     private _storeService: SyntheseStoreService
   ) {}
 

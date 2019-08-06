@@ -1,7 +1,7 @@
 from collections import OrderedDict
 
 from flask import current_app
-from sqlalchemy import ForeignKey, or_
+from sqlalchemy import ForeignKey, or_, Sequence
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import select, func
 from sqlalchemy.dialects.postgresql import UUID
@@ -172,12 +172,7 @@ class VSyntheseDecodeNomenclatures(DB.Model):
 class Synthese(DB.Model):
     __tablename__ = "synthese"
     __table_args__ = {"schema": "gn_synthese"}
-    id_synthese = DB.Column(
-        DB.Integer,
-        ForeignKey("gn_synthese.v_synthese_decode_nomenclatures.id_synthese"),
-        primary_key=True,
-        autoincrement=True,
-    )
+    id_synthese = DB.Column(DB.Integer, primary_key=True)
     unique_id_sinp = DB.Column(UUID(as_uuid=True))
     unique_id_sinp_grp = DB.Column(UUID(as_uuid=True))
     id_source = DB.Column(DB.Integer)
@@ -335,7 +330,7 @@ class VSyntheseForWebApp(DB.Model):
     id_nomenclature_observation_status = DB.Column(DB.Integer)
     id_nomenclature_blurring = DB.Column(DB.Integer)
     id_nomenclature_source_status = DB.Column(DB.Integer)
-    id_nomenclature_source_status = DB.Column(DB.Integer)
+    id_nomenclature_valid_status = DB.Column(DB.Integer)
     name_source = DB.Column(DB.Unicode)
     url_source = DB.Column(DB.Unicode)
     st_asgeojson = DB.Column(DB.Unicode)

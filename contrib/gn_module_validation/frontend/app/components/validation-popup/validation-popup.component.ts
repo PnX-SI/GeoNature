@@ -6,7 +6,7 @@ import {  FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbDateParserFormatter, NgbModule, NgbdButtonsRadioreactive } from "@ng-bootstrap/ng-bootstrap";
 //import { FILTERSLIST } from "./filters-list";
 import { Router } from "@angular/router";
-import { DataService } from '../../services/data.service';
+import { ValidationDataService } from "../../services/data.service";
 import { ToastrService } from 'ngx-toastr';
 
 
@@ -44,7 +44,7 @@ export class ValidationPopupComponent {
     private _dateParser: NgbDateParserFormatter,
     private _router: Router,
     private _fb: FormBuilder,
-    public dataService: DataService,
+    public dataService: ValidationDataService,
     private toastr: ToastrService,
     private mapListService: MapListService
     ) {
@@ -68,7 +68,9 @@ export class ValidationPopupComponent {
             this.toastr.success('Vous avez modifié le statut de validation de ' + this.observations.length + ' observation(s)');
             // bind statut value with validation-synthese-list component
             this.update_status();
-            this.getValidationDate(this.observations[0]);
+            // emit the date of today in output to update the validation date on maplist
+            this.valDate.emit(new Date());
+            //this.getValidationDate(this.observations[0]);
             resolve('data updated');
         }
       })
@@ -86,7 +88,6 @@ export class ValidationPopupComponent {
     )
     .then(
       data => {
-        //console.log(data);
         return new Promise((resolve, reject) => {
           // close validation status popup
           this.closeModal();
@@ -161,8 +162,8 @@ export class ValidationPopupComponent {
     this.modalRef.close();
   }
 
-  getValidationDate(id) {
-    this.dataService.getValidationDate(id).subscribe(
+  getValidationDate(uuid) {
+    this.dataService.getValidationDate(uuid).subscribe(
       result => {
         // get status names
         this.validationDate = result;
@@ -177,6 +178,7 @@ export class ValidationPopupComponent {
         }
       },
       () => {
+        // emit date of today 
         this.valDate.emit(this.validationDate);
       }
     );

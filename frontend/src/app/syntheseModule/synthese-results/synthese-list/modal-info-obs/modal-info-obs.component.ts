@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { DataService } from '../../../services/data.service';
+import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { AppConfig } from '@geonature_config/app.config';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -17,7 +17,7 @@ export class ModalInfoObsComponent implements OnInit {
   public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
   constructor(
     private _gnDataService: DataFormService,
-    private _dataService: DataService,
+    private _dataService: SyntheseDataService,
     public activeModal: NgbActiveModal
   ) {}
 

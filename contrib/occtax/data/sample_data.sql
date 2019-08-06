@@ -66,7 +66,7 @@ INSERT INTO gn_meta.t_datasets (
     id_nomenclature_data_origin,
     id_nomenclature_source_status,
     id_nomenclature_resource_type,
-    default_validity,
+    validable,
     meta_create_date,
     meta_update_date
     )

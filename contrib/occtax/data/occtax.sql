@@ -386,7 +386,7 @@ ALTER TABLE ONLY cor_counting_occtax
     ADD CONSTRAINT pk_cor_counting_occtax_occtax PRIMARY KEY (id_counting_occtax);
 
 ALTER TABLE ONLY cor_role_releves_occtax
-    ADD CONSTRAINT pk_cor_role_releves_occtax PRIMARY KEY (unique_id_cor_role_releve);
+    ADD CONSTRAINT pk_cor_role_releves_occtax PRIMARY KEY (id_releve_occtax, id_role);
 
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT pk_pr_occtax_defaults_nomenclatures_value PRIMARY KEY (mnemonique_type, id_organism, regne, group2_inpn);
@@ -554,6 +554,38 @@ ALTER TABLE ONLY defaults_nomenclatures_value
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT check_pr_occtax_defaults_nomenclatures_value_isregne CHECK (taxonomie.check_is_regne(regne::text) OR regne::text = '0'::text) NOT VALID;
 
+
+
+----------------------
+----- INDEX ----------
+----------------------
+
+CREATE INDEX i_t_releves_occtax_id_dataset
+  ON pr_occtax.t_releves_occtax
+  USING btree
+  (id_dataset);
+
+CREATE INDEX i_t_releves_occtax_geom_4326
+  ON pr_occtax.t_releves_occtax
+  USING gist
+  (geom_4326);
+
+
+CREATE INDEX i_t_occurrences_occtax_id_releve_occtax
+  ON pr_occtax.t_occurrences_occtax
+  USING btree
+  (id_releve_occtax);
+
+CREATE INDEX i_t_occurrences_occtax_cd_nom
+  ON pr_occtax.t_occurrences_occtax
+  USING btree
+  (cd_nom);
+
+
+CREATE INDEX i_cor_counting_occtax_id_occurrence_occtax
+  ON pr_occtax.cor_counting_occtax
+  USING btree
+  (id_occurrence_occtax);
 
 ----------------------
 --FUNCTIONS TRIGGERS--
@@ -1046,7 +1078,25 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
 
 -- Vue représentant l'ensemble des relevés du protocole occtax pour la représentation du module carte liste
 CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS 
- SELECT rel.id_releve_occtax,
+WITH 
+    occurrences (id_releve_occtax, taxons, nb_occ) as (
+    SELECT id_releve_occtax, 
+    string_agg(DISTINCT t.nom_valide::text, ', '::text) AS taxons,
+    count(DISTINCT occ.id_occurrence_occtax) AS nb_occ
+    FROM pr_occtax.t_occurrences_occtax occ
+    INNER JOIN taxonomie.taxref t ON occ.cd_nom = t.cd_nom
+    GROUP BY id_releve_occtax
+),
+observateurs (id_releve_occtax, nb_observer, observers_txt) as (
+    SELECT id_releve_occtax, 
+    count(DISTINCT obs.id_role) AS nb_observer,
+    string_agg(DISTINCT CONCAT_WS(' ', NULLIF(obs.nom_role, ''), NULLIF(obs.prenom_role, '')), ', '::text) as observers
+    FROM pr_occtax.cor_role_releves_occtax cor_role
+    INNER JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
+    GROUP BY id_releve_occtax
+)
+
+SELECT rel.id_releve_occtax,
     rel.id_dataset,
     rel.id_digitiser,
     rel.date_min,
@@ -1059,18 +1109,19 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS
     rel."precision",
     rel.observers_txt,
     dataset.dataset_name,
-    string_agg(t.nom_valide::text, ','::text) AS taxons,
-    (((string_agg(t.nom_valide::text, ','::text) || '<br/>'::text) || rel.date_min::date) || '<br/>'::text) || COALESCE(string_agg(DISTINCT (obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text), rel.observers_txt::text) AS leaflet_popup,
-    COALESCE(string_agg(DISTINCT (obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text), rel.observers_txt::text) AS observateurs,
-    count(DISTINCT(occ.id_occurrence_occtax)) AS nb_occ,
-    count(DISTINCT(obs.id_role)) as nb_observer
-   FROM pr_occtax.t_releves_occtax rel
-     LEFT JOIN pr_occtax.t_occurrences_occtax occ ON rel.id_releve_occtax = occ.id_releve_occtax
-     LEFT JOIN taxonomie.taxref t ON occ.cd_nom = t.cd_nom
-     LEFT JOIN pr_occtax.cor_role_releves_occtax cor_role ON cor_role.id_releve_occtax = rel.id_releve_occtax
-     LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
-     LEFT JOIN gn_meta.t_datasets dataset ON dataset.id_dataset = rel.id_dataset
-  GROUP BY dataset.dataset_name, rel.id_releve_occtax, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.meta_device_entry;
+    taxons,
+    CONCAT_WS('<br/>', 
+    	taxons, 
+    	CASE WHEN rel.date_min::date = rel.date_max::date THEN to_char(rel.date_min, 'DD/MM/YYYY') ELSE CONCAT(to_char(rel.date_min, 'DD/MM/YYYY'), ' - ', to_char(rel.date_max::date, 'DD/MM/YYYY')) END, 
+    	COALESCE(cor_role.observers_txt, rel.observers_txt)
+    ) AS leaflet_popup,
+    COALESCE(cor_role.observers_txt, rel.observers_txt) AS observateurs,
+    nb_occ,
+    nb_observer
+FROM pr_occtax.t_releves_occtax rel
+INNER JOIN gn_meta.t_datasets dataset ON dataset.id_dataset = rel.id_dataset
+LEFT JOIN observateurs cor_role ON cor_role.id_releve_occtax = rel.id_releve_occtax
+LEFT JOIN occurrences occ ON occ.id_releve_occtax = rel.id_releve_occtax;
 
 
 --------------------
@@ -1104,7 +1155,6 @@ INSERT INTO pr_occtax.defaults_nomenclatures_value (mnemonique_type, id_organism
 ,('TECHNIQUE_OBS',0,0,0, ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'))
 ,('STATUT_SOURCE',0, 0, 0,  ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE', 'Te'))
 ,('NAT_OBJ_GEO',0, 0, 0,  ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO', 'NSP'))
-
 ;
 
 -- Creation d'une liste 'observateur occtax'
@@ -1113,7 +1163,7 @@ VALUES('obsocctax','Observateurs Occtax','Liste des observateurs du module Occta
 
 -- Ajout de l'utilsateur admin dans la liste
 INSERT INTO utilisateurs.cor_role_liste (id_liste, id_role)
-SELECT id_liste, 7
+SELECT id_liste, (SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_en_poste')
 FROM utilisateurs.t_listes
 WHERE code_liste = 'obsocctax';
 

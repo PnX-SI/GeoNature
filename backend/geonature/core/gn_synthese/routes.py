@@ -1,6 +1,7 @@
 import logging
 import datetime
 import ast
+import time
 
 from collections import OrderedDict
 
@@ -59,9 +60,6 @@ routes = Blueprint("gn_synthese", __name__)
 log = logging.getLogger()
 
 
-import time
-
-
 def current_milli_time():
     return time.time()
 
@@ -75,11 +73,47 @@ def current_milli_time():
 @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
 @json_resp
 def get_observations_for_web(info_role):
-    """
-        Optimized route for serve data to the frontend with all filters
-        .. :quickref: Synthese;
-        :query: all the fields of the view v_synthese_for_export
-        :returns: Array of dict (with geojson key)
+    """Optimized route to serve data for the frontend with all filters.
+
+    .. :quickref: Synthese; Get filtered observations
+
+    Query filtered by any filter, returning all the fields of the
+    view v_synthese_for_export::
+
+        properties = {
+            "id": r["id_synthese"],
+            "date_min": str(r["date_min"]),
+            "cd_nom": r["cd_nom"],
+            "nom_vern_or_lb_nom": r["nom_vern"] if r["nom_vern"] else r["lb_nom"],
+            "lb_nom": r["lb_nom"],
+            "dataset_name": r["dataset_name"],
+            "observers": r["observers"],
+            "url_source": r["url_source"],
+            "entity_source_pk_value": r["entity_source_pk_value"],
+        }
+        geojson = ast.literal_eval(r["st_asgeojson"])
+        geojson["properties"] = properties
+
+    :param str info_role: Role used to get the associated filters, **TBC**
+    :qparam str limit: Limit number of synthese returned. Defaults to NB_MAX_OBS_MAP.
+    :qparam str cd_ref: Filter by TAXREF cd_ref attribute
+    :qparam str taxonomy_group2_inpn: Filter by TAXREF group2_inpn attribute
+    :qparam str taxonomy_id_hab: Filter by TAXREF id_habitat attribute
+    :qparam str taxonomy_lr: Filter by TAXREF cd_ref attribute
+    :qparam str taxhub_attribut*: Generig TAXREF filter, given attribute & value
+    :qparam str observers: Filter on observer
+    :qparam str id_organism: Filter on organism
+    :qparam str date_min: Start date
+    :qparam str date_max: End date
+    :qparam str id_acquisition_framework: *tbd*
+    :qparam str geoIntersection: Intersect with the geom send from the map
+    :qparam str period_start: *tbd*
+    :qparam str period_end: *tbd*
+    :qparam str area*: Generic filter on area
+    :qparam str *: Generic filter, given by colname & value
+    :>jsonarr array data: Array of synthese with geojson key, see above
+    :>jsonarr int nb_total: Number of observations
+    :>jsonarr bool nb_obs_limited: Is number of observations capped
     """
     filters = {key: request.args.getlist(key) for key, value in request.args.items()}
     if "limit" in filters:
@@ -135,11 +169,17 @@ def get_observations_for_web(info_role):
 @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
 @json_resp
 def get_synthese(info_role):
-    """
-        Return synthese row(s) filtered by form params NOT USE ANY MORE FOR PERFORMANCE ISSUES
-        .. :quickref: Synthese;
-        Params must have same synthese fields names
-        
+    """Return synthese row(s) filtered by form params. NOT USED ANY MORE FOR PERFORMANCE ISSUES
+
+    .. :quickref: Synthese; Deprecated
+
+    .. deprecated:: 2?
+    Use :route: /for_web instead
+
+    Params must have same synthese fields names
+
+    :parameter str info_role: Role used to get the associated filters
+    :returns dict[dict, int, bool]: See description above
     """
     # change all args in a list of value
     filters = {key: request.args.getlist(key) for key, value in request.args.items()}
@@ -178,12 +218,18 @@ def get_synthese(info_role):
 @routes.route("/vsynthese/<id_synthese>", methods=["GET"])
 @json_resp
 def get_one_synthese(id_synthese):
-    """
-        Get one synthese record for web app with all decoded nomenclature
-        .. :quickref: Synthese;
+    """Get one synthese record for web app with all decoded nomenclature
 
-        :params id_synthese:
-        :type id_synthese: int
+    .. :quickref: Synthese; Get one synthese
+
+    It returns a dict composed of the following::
+
+        'data' dict: Array of dict (with geojson key)
+        'nb_total' int: Number of observations
+        'nb_obs_limited' bool: Is number of observations capped
+
+    :param int id_synthese:Synthese to be queried
+    :>jsonarr array synthese_as_dict: One synthese with geojson key, see above
     """
     metadata_view = GenericTable("v_metadata_for_export", "gn_synthese", None)
     q = (
@@ -221,25 +267,26 @@ def get_one_synthese(id_synthese):
 @routes.route("/export_observations", methods=["POST"])
 @permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
 def export_observations_web(info_role):
-    """
-        Optimized route for observations web export
-        .. :quickref: Synthese;
-        This view is customisable by the administrator
-        Some columns arer mandatory: id_sythese, geojson and geojson_local to generate the exported files
-        
-        POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
-        
-        :query str export_format: str<'csv', 'geojson', 'shapefiles'>
+    """Optimized route for observations web export.
+
+    .. :quickref: Synthese;
+
+    This view is customisable by the administrator
+    Some columns are mandatory: id_synthese, geojson and geojson_local to generate the exported files
+
+    POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
+
+    :query str export_format: str<'csv', 'geojson', 'shapefiles'>
 
     """
     params = request.args
     # set default to csv
     export_format = "csv"
     export_view = GenericTable(
-        "v_synthese_for_export",
-        "gn_synthese",
-        "the_geom_local",
-        current_app.config["LOCAL_SRID"],
+        tableName="v_synthese_for_export",
+        schemaName="gn_synthese",
+        geometry_field=None,
+        srid=current_app.config["LOCAL_SRID"],
     )
     if "export_format" in params:
         export_format = params["export_format"]
@@ -256,7 +303,9 @@ def export_observations_web(info_role):
             columns_to_serialize.append(db_col.key)
 
     q = DB.session.query(export_view.tableDef).filter(
-        export_view.tableDef.columns.idSynthese.in_(id_list)
+        export_view.tableDef.columns[
+            current_app.config["SYNTHESE"]["EXPORT_ID_SYNTHESE_COL"]
+        ].in_(id_list)
     )
     # check R and E CRUVED to know if we filter with cruved
     cruved = cruved_scope_for_user_in_module(info_role.id_role, module_code="SYNTHESE")[
@@ -335,13 +384,14 @@ def export_observations_web(info_role):
 @routes.route("/export_metadata", methods=["GET"])
 @permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
 def export_metadata(info_role):
-    """
-        Route to export the metadata in CSV
-        .. :quickref: Synthese;
-        The table synthese is join with gn_synthese.v_metadata_for_export
-        The column jdd_id is mandatory in the view gn_synthese.v_metadata_for_export
+    """Route to export the metadata in CSV
 
-        POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
+    .. :quickref: Synthese;
+
+    The table synthese is join with gn_synthese.v_metadata_for_export
+    The column jdd_id is mandatory in the view gn_synthese.v_metadata_for_export
+
+    POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
     """
     filters = {key: request.args.getlist(key) for key, value in request.args.items()}
 
@@ -372,13 +422,15 @@ def export_metadata(info_role):
 @routes.route("/export_statuts", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
 def export_status(info_role):
-    """
-    Route to get all the protection status of a synthese search
+    """Route to get all the protection status of a synthese search
+
     .. :quickref: Synthese;
-    Parameters:
-        - HTTP-GET: the same that the /synthese endpoint (all the filter in web app)
+
     Get the CRUVED from 'R' action because we don't give observations X/Y but only statuts
     and to be constistant with the data displayed in the web interface
+
+    Parameters:
+        - HTTP-GET: the same that the /synthese endpoint (all the filter in web app)
     """
     filters = {key: request.args.getlist(key) for key, value in request.args.items()}
 
@@ -466,9 +518,10 @@ def export_status(info_role):
 @permissions.check_cruved_scope("R", True)
 @json_resp
 def general_stats(info_role):
-    """
+    """Return stats about synthese.
+
     .. :quickref: Synthese;
-    Return stats about synthese
+
         - nb of observations
         - nb of distinct species
         - nb of distinct observer
@@ -494,8 +547,8 @@ def general_stats(info_role):
 @routes.route("/taxons_tree", methods=["GET"])
 @json_resp
 def get_taxon_tree():
-    """
-    Get taxon tree
+    """Get taxon tree.
+
     .. :quickref: Synthese;
     """
     taxon_tree_table = GenericTable(
@@ -508,14 +561,15 @@ def get_taxon_tree():
 @routes.route("/taxons_autocomplete", methods=["GET"])
 @json_resp
 def get_autocomplete_taxons_synthese():
-    """
-        Autocomplete taxon for web search (based on all taxon in Synthese)
-        The request use trigram algorithm to get relevent results
-        .. :quickref: Synthese;
+    """Autocomplete taxon for web search (based on all taxon in Synthese).
 
-        :query str search_name: the search name (use sql ilike statement and puts "%" for spaces)
-        :query str regne: filter with kingdom
-        :query str group2_inpn : filter with INPN group 2
+    .. :quickref: Synthese;
+
+    The request use trigram algorithm to get relevent results
+
+    :query str search_name: the search name (use sql ilike statement and puts "%" for spaces)
+    :query str regne: filter with kingdom
+    :query str group2_inpn : filter with INPN group 2
     """
     search_name = request.args.get("search_name", "")
     q = DB.session.query(
@@ -547,9 +601,9 @@ def get_autocomplete_taxons_synthese():
 @routes.route("/sources", methods=["GET"])
 @json_resp
 def get_sources():
-    """
-        Get all sources
-        .. :quickref: Synthese;
+    """Get all sources.
+
+    .. :quickref: Synthese;
     """
     q = DB.session.query(TSources)
     data = q.all()
@@ -559,13 +613,13 @@ def get_sources():
 @routes.route("/defaultsNomenclatures", methods=["GET"])
 @json_resp
 def getDefaultsNomenclatures():
-    """
-        Get default nomenclatures
-        .. :quickref: Synthese;
+    """Get default nomenclatures
 
-        :query str group2_inpn:
-        :query str regne:
-        :query int organism:
+    .. :quickref: Synthese;
+
+    :query str group2_inpn:
+    :query str regne:
+    :query int organism:
     """
     params = request.args
     group2_inpn = "0"
@@ -600,14 +654,15 @@ def getDefaultsNomenclatures():
 @routes.route("/color_taxon", methods=["GET"])
 @json_resp
 def get_color_taxon():
-    """
-    Get color of taxon in areas (table synthese.cor_area_taxon)
+    """Get color of taxon in areas (table synthese.cor_area_taxon).
+
     .. :quickref: Synthese;
+
     :query str code_area_type: Type area code (ref_geo.bib_areas_types.type_code)
     :query int id_area: Id of area (ref_geo.l_areas.id_area)
     :query int cd_nom: taxon code (taxonomie.taxref.cd_nom)
     Those three parameters can be multiples
-    Returns: Array<dict<VColorAreaTaxon>>
+    :returns: Array<dict<VColorAreaTaxon>>
     """
     params = request.args
     id_areas_type = params.getlist("code_area_type")
@@ -627,3 +682,47 @@ def get_color_taxon():
     if len(cd_noms) > 0:
         q = q.filter(VColorAreaTaxon.cd_nom.in_(tuple(cd_noms)))
     return [d.as_dict() for d in q.all()]
+
+
+@routes.route("/test", methods=["GET"])
+@json_resp
+def test():
+    from shapely.geometry import asShape
+    from geoalchemy2.shape import from_shape
+    from shapely.geometry import Point
+    import random
+
+    s = DB.session.query(Synthese).get(86510)
+
+    s_as_dict = s.as_dict()
+    s_as_dict.pop("unique_id_sinp")
+    # wkt = asShape(s.the_geom_4326)
+    # print(wkt)
+    # releve.geom_4326 = from_shape(shape, srid=4326)
+
+    DB.session.query()
+    for i in range(4000):
+        new_point = Point(random.uniform(6.1, 7.5), random.uniform(44.0, 45.2))
+        wkb = from_shape(new_point, 4326)
+        s_as_dict["id_synthese"] = random.randint(1500, 9999999)
+
+        # with random cd_nom
+        random_cd_nom = DB.engine.execute(
+            """
+        SELECT cd_nom FROM taxonomie.bib_noms OFFSET random() * (select count(*) from taxonomie.bib_noms) limit 1 ;"""
+        )
+        cd_nom = None
+        for cd in random_cd_nom:
+            s_as_dict["cd_nom"] = cd[0]
+        new_synthese = Synthese(**s_as_dict)
+        new_synthese.the_geom_4326 = wkb
+
+        q = DB.session.add(new_synthese)
+        # DB.session.flush()
+        DB.session.commit()
+
+    # s = TSources(name_source="lalala")
+
+    DB.session.add(s)
+    DB.session.commit()
+    return "la"

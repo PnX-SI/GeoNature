@@ -31,6 +31,20 @@ export interface Taxon {
   synonymes?: Array<any>;
 }
 
+/**
+ * Ce composant permet de créer un "input" de type "typeahead" pour rechercher des taxons à partir d'une liste définit dans schéma taxonomie. Table ``taxonomie.bib_listes`` et ``taxonomie.cor_nom_listes``.
+ *
+ *  @example
+ * <pnx-taxonomy #taxon
+ * label="{{ 'Taxon.Taxon' | translate }}
+ * [parentFormControl]="occurrenceForm.controls.cd_nom"
+ * [idList]="occtaxConfig.id_taxon_list" [charNumber]="3"
+ *  [listLength]="occtaxConfig.taxon_result_number"
+ * (onChange)="fs.onTaxonChanged($event);"
+ * [displayAdvancedFilters]=true>
+ * </pnx-taxonomy>
+ *
+ * */
 @Component({
   selector: 'pnx-taxonomy',
   templateUrl: './taxonomy.component.html',
@@ -38,16 +52,20 @@ export interface Taxon {
   encapsulation: ViewEncapsulation.None
 })
 export class TaxonomyComponent implements OnInit {
+  /**
+   * Reactive form
+   */
   @Input() parentFormControl: FormControl;
   @Input() label: string;
   // api endpoint for the automplete ressource
   @Input() apiEndPoint: string;
-  // id of the taxon list from taxhub
+  /*** Id de la liste de taxon (obligatoire)*/
   @Input() idList: string;
+  /** Nombre de charactere avant que la recherche AJAX soit lançé (obligatoire) */
   @Input() charNumber: number;
-  // number of typeahead results
+  //**ombre de résultat affiché */
   @Input() listLength = 20;
-  // display the kindow and group filter
+  /** Afficher ou non les filtres par regne et groupe INPN qui controle l'autocomplétion */
   @Input() displayAdvancedFilters = false;
   searchString: any;
   filteredTaxons: any;
@@ -57,7 +75,6 @@ export class TaxonomyComponent implements OnInit {
   regnesAndGroup: any;
   noResult: boolean;
   isLoading = false;
-  showResultList = true;
   @Output() onChange = new EventEmitter<NgbTypeaheadSelectItemEvent>(); // renvoie l'evenement, le taxon est récupérable grâce à e.item
   @Output() onDelete = new EventEmitter<Taxon>();
 
@@ -68,13 +85,11 @@ export class TaxonomyComponent implements OnInit {
     this.apiEndPoint =
       this.apiEndPoint || `${AppConfig.API_TAXHUB}/taxref/allnamebylist/${this.idList}`;
 
-    
-      this.parentFormControl.valueChanges
-        .filter(value => value !== null && value.length === 0)
-        .subscribe(value => {
-          this.onDelete.emit();
-          this.showResultList = false;
-        });
+    this.parentFormControl.valueChanges
+      .filter(value => value !== null && value.length === 0)
+      .subscribe(value => {
+        this.onDelete.emit();
+      });
     if (this.displayAdvancedFilters) {
       // get regne and group2
       this._dfService.getRegneAndGroup2Inpn().subscribe(data => {

@@ -2,6 +2,17 @@
 DROP FOREIGN TABLE v1_compat.v_nomade_classes;
 IMPORT FOREIGN SCHEMA contactfaune FROM SERVER geonature1server INTO v1_compat;
 
+--changement de nom de la table cor_message_taxon
+DROP FOREIGN TABLE v1_compat.cor_message_taxon;
+
+CREATE FOREIGN TABLE v1_compat.cor_message_taxon_contactfaune
+(
+	id_message_cf int,
+	id_nom int 
+)
+SERVER geonature1server
+OPTIONS (schema_name 'contactfaune', table_name 'cor_message_taxon');
+
 --create de vues métérialisées pour des raisons de performances
 CREATE MATERIALIZED VIEW v1_compat.vm_t_fiches_cf AS
 SELECT * FROM v1_compat.t_fiches_cf;
@@ -11,10 +22,12 @@ CREATE MATERIALIZED VIEW v1_compat.vm_cor_role_fiche_cf AS
 SELECT * FROM v1_compat.cor_role_fiche_cf;
 
 
---TODO : réactiver les triggers en prod
+--désactiver les triggers 
 ALTER TABLE pr_occtax.t_releves_occtax DISABLE TRIGGER USER;
 ALTER TABLE pr_occtax.t_occurrences_occtax DISABLE TRIGGER tri_log_changes_t_occurrences_occtax;
 ALTER TABLE pr_occtax.cor_counting_occtax DISABLE TRIGGER tri_log_changes_cor_counting_occtax;
+ALTER TABLE pr_occtax.cor_counting_occtax DISABLE TRIGGER tri_insert_synthese_cor_counting_occtax;
+ALTER TABLE pr_occtax.cor_counting_occtax DISABLE TRIGGER tri_insert_default_validation_status;
 ALTER TABLE pr_occtax.cor_role_releves_occtax DISABLE TRIGGER tri_log_changes_cor_role_releves_occtax;
 ALTER TABLE pr_occtax.cor_role_releves_occtax DISABLE TRIGGER tri_insert_synthese_cor_role_releves_occtax;
 ALTER TABLE gn_synthese.cor_observer_synthese DISABLE TRIGGER trg_maj_synthese_observers_txt;
@@ -297,6 +310,7 @@ WHERE yearling > 0;
 -- mettre à jour le serial
 SELECT pg_catalog.setval('pr_occtax.t_occurrences_occtax_id_occurrence_occtax_seq', (SELECT max(id_occurrence_occtax)+1 FROM pr_occtax.t_occurrences_occtax), true);
 SELECT pg_catalog.setval('pr_occtax.t_releves_occtax_id_releve_occtax_seq', (SELECT max(id_releve_occtax)+1 FROM pr_occtax.t_releves_occtax), true);
+SELECT pg_catalog.setval('pr_occtax.cor_counting_occtax_id_counting_occtax_seq', (SELECT max(id_counting_occtax)+1 FROM pr_occtax.cor_counting_occtax), true);
 
 
 -- observateurs 
@@ -306,35 +320,6 @@ uuid_generate_v4() AS unique_id_cor_role_releve,
 id_cf AS id_releve_occtax,
 id_role AS id_role
 FROM v1_compat.vm_cor_role_fiche_cf;
-
---TODO Déplacer cette partie pour ne la jouer qu'une fois les 3 schéma cf, inv et cflore importés
---correspondance observateurs en synthese, jouer l'action à la place du tri_insert_synthese_cor_role_releves_occtax
-INSERT INTO gn_synthese.cor_observer_synthese(id_synthese, id_role) 
-SELECT s.id_synthese, cro.id_role 
-FROM gn_synthese.synthese s
-JOIN pr_occtax.cor_counting_occtax cco ON cco.id_counting_occtax::varchar = s.entity_source_pk_value
-JOIN pr_occtax.t_occurrences_occtax oo ON oo.id_occurrence_occtax = cco.id_occurrence_occtax
-JOIN pr_occtax.t_releves_occtax r ON r.id_releve_occtax = oo.id_releve_occtax
-JOIN pr_occtax.cor_role_releves_occtax cro ON cro.id_releve_occtax = r.id_releve_occtax
-WHERE s.id_dataset IN(4,15);
---observers_as_txt en synthese jouer l'action du trigger trg_maj_synthese_observers_txt
-WITH synthese_observers AS (
-  SELECT c.id_synthese, array_to_string(array_agg(r.nom_role || ' ' || r.prenom_role), ', ') AS theobservers
-  FROM utilisateurs.t_roles r
-  JOIN gn_synthese.cor_observer_synthese c ON c.id_role = r.id_role
-  GROUP BY id_synthese
-)
-UPDATE gn_synthese.synthese
-SET observers = so.theobservers
-FROM synthese_observers so
-WHERE gn_synthese.synthese.id_synthese = so.id_synthese;
-
-ALTER TABLE pr_occtax.t_releves_occtax ENABLE TRIGGER USER;
-ALTER TABLE pr_occtax.t_occurrences_occtax ENABLE TRIGGER tri_log_changes_t_occurrences_occtax;
-ALTER TABLE pr_occtax.cor_counting_occtax ENABLE TRIGGER tri_log_changes_cor_counting_occtax;
-ALTER TABLE pr_occtax.cor_role_releves_occtax ENABLE TRIGGER tri_log_changes_cor_role_releves_occtax;
-ALTER TABLE pr_occtax.cor_role_releves_occtax ENABLE TRIGGER tri_insert_synthese_cor_role_releves_occtax;
-ALTER TABLE gn_synthese.cor_observer_synthese ENABLE TRIGGER trg_maj_synthese_observers_txt;
 
 -- TODO Gérer les id_datasets PNE dans ce script non générique
 -- TODO Données sans dénombrement (af, am etc = 0)

@@ -25,6 +25,8 @@ MANDATORY_COLUMNS = [
     "meta_update_date",
     "cd_nomenclature_validation_status",
     "mnemonique",
+    "label_default",
+    "unique_id_sinp",
 ]
 
 # CONFIG MAP-LIST
@@ -36,8 +38,7 @@ DEFAULT_LIST_COLUMN = [
     {"prop": "observers", "name": "Observateur", "max_width": 200},
 ]
 
-# cd_nomenclature_valid_status used for validation module
-
+# cd_nomenclature_valid_status used for validation module only use for color style
 STATUS_INFO = {
     "0": {"cat": "notassessed", "color": "#FFFFFF"},  #  en attente de validation
     "1": {"cat": "assessable", "color": "#8BC34A"},  # certain tres problable
@@ -79,7 +80,7 @@ class GnModuleSchemaConf(Schema):
         fields.String, missing=DEFAULT_COLUMNS_API_VALIDATION
     )
     LIST_COLUMNS_FRONTEND = fields.List(fields.Dict, missing=DEFAULT_LIST_COLUMN)
-    NB_MAX_OBS_MAP = fields.Integer(missing=10000)
+    NB_MAX_OBS_MAP = fields.Integer(missing=5000)
     MAP_POINT_STYLE = fields.Dict(fields.Dict(), missing=MAP_POINT_STYLE)
     ICON_FOR_AUTOMATIC_VALIDATION = fields.String(missing=ICON_FOR_AUTOMATIC_VALIDATION)
     ZOOM_SINGLE_POINT = fields.Integer(missing=ZOOM_SINGLE_POINT)

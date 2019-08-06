@@ -2,8 +2,13 @@ import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { Map } from 'leaflet';
 import { MapService } from '../map.service';
 import * as L from 'leaflet';
-import { Observable ,  Subject } from 'rxjs';
+import { Observable } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
+import { GeoJSON } from 'togeojson';
 
+/**
+ *         Affiche sur la carte les geojson passé en *input*
+ */
 @Component({
   selector: 'pnx-geojson',
   templateUrl: 'geojson.component.html'
@@ -12,17 +17,23 @@ export class GeojsonComponent implements OnInit, OnChanges {
   public map: Map;
   public currentGeojson: L.Layer;
   public layerGroup: any;
-  @Input() geojson: any;
+  /** Objet geojson à afficher sur la carte */
+  @Input() geojson: GeoJSON;
+  /**
+   * Fonction permettant d'effectuer un traitement sur chaque layer du geojson (afficher une popup, définir un style etc...)
+   * fonction définit par la librairie leaflet: ``onEachFeature(feature, layer)``. `Voir doc leaflet <http://leafletjs.com/examples/geojson/>`_
+   */
   @Input() onEachFeature: any;
   @Input() style: any;
-  // zoom on geojson extend
+  /** Zoom sur la bounding box des données envoyées */
   @Input() zoomOnLayer = true;
-  // display the geojsons as cluster or not
-  @Input() asCluster = false;
+  /** Affiche les données sous forme de cluster */
+  @Input() asCluster: boolean = false;
   public geojsonCharged = new Subject<any>();
+  /** Observable pour retourner les données geojson passées au composant */
   public currentGeoJson$: Observable<L.Layer> = this.geojsonCharged.asObservable();
 
-  constructor(public mapservice: MapService) { }
+  constructor(public mapservice: MapService) {}
 
   ngOnInit() {
     this.map = this.mapservice.map;

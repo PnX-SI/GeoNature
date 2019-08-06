@@ -62,7 +62,7 @@ def filter_query_all_filters(model, q, filters, user):
             # if the geom is a circle
             if "radius" in filters:
                 radius = filters.pop("radius")[0]
-                wkt = circle_from_point(wkt, float(radius))
+                wkt = circle_from_point(loads(str_wkt), float(radius))
             else:
                 wkt = loads(str_wkt)
             geom_wkb = from_shape(wkt, srid=4326)

@@ -4,7 +4,13 @@ import { MapService } from '../map.service';
 import { AppConfig } from '@geonature_config/app.config';
 import * as L from 'leaflet';
 import { CommonService } from '../../service/common.service';
+import { GeoJson } from 'togeojson';
 
+/**
+ * Ce composant permet d'afficher un marker au clic sur la carte ainsi qu'un controleur permettant d'afficher/désafficher le marker.
+ *
+ * NB: Doit être utiliser à l'interieur d'une balise ``pnx-map``
+ */
 @Component({
   selector: 'pnx-marker',
   templateUrl: 'marker.component.html'
@@ -13,9 +19,10 @@ export class MarkerComponent implements OnInit, OnChanges {
   public map: Map;
   public previousCoord: Array<any>;
   @Input() coordinates: Array<any>;
+  /** Niveau de zoom à partir du quel on peut ajouter un marker sur la carte*/
   @Input() zoomLevel: number;
-  @Output() markerChanged = new EventEmitter<any>();
-  constructor(public mapservice: MapService, private _commonService: CommonService) { }
+  @Output() markerChanged = new EventEmitter<GeoJson>();
+  constructor(public mapservice: MapService, private _commonService: CommonService) {}
 
   ngOnInit() {
     this.map = this.mapservice.map;

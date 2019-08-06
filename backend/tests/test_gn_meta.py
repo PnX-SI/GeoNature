@@ -86,3 +86,76 @@ class TestGnMeta:
 
         jdds = post_jdd_from_user(id_user=10991, id_organism=104)
         assert len(jdds) >= 1
+
+    def test_post_dataset(self):
+        token = get_token(self.client, login="admin", password="admin")
+        self.client.set_cookie("/", "token", token)
+        one_dataset = {
+            "active": True,
+            "bbox_east": None,
+            "bbox_north": None,
+            "bbox_south": None,
+            "bbox_west": None,
+            "cor_dataset_actor": [
+                {
+                    "id_cda": None,
+                    "id_nomenclature_actor_role": 369,
+                    "id_organism": 0,
+                    "id_role": None,
+                }
+            ],
+            "dataset_desc": "a",
+            "dataset_name": "a",
+            "dataset_shortname": "a",
+            "id_acquisition_framework": 1,
+            "id_dataset": 5,
+            "id_nomenclature_collecting_method": 404,
+            "id_nomenclature_data_origin": 77,
+            "id_nomenclature_data_type": 327,
+            "id_nomenclature_dataset_objectif": 415,
+            "id_nomenclature_resource_type": 324,
+            "id_nomenclature_source_status": 73,
+            "keywords": None,
+            "marine_domain": False,
+            "terrestrial_domain": True,
+            "validable": True,
+        }
+        response = post_json(
+            self.client, url_for("gn_meta.post_dataset"), json_dict=one_dataset
+        )
+        assert response.status_code == 200
+
+    def test_post_ca(self):
+        token = get_token(self.client, login="admin", password="admin")
+        self.client.set_cookie("/", "token", token)
+        one_ca = {
+            "acquisition_framework_desc": "ttt",
+            "acquisition_framework_end_date": None,
+            "acquisition_framework_name": "tt",
+            "acquisition_framework_parent_id": None,
+            "acquisition_framework_start_date": "2019-07-03",
+            "cor_af_actor": [
+                {
+                    "id_cafa": None,
+                    "id_nomenclature_actor_role": 365,
+                    "id_organism": 0,
+                    "id_role": None,
+                }
+            ],
+            "cor_objectifs": [359],
+            "cor_volets_sinp": [],
+            "ecologic_or_geologic_target": "aaaa",
+            "id_acquisition_framework": None,
+            "id_nomenclature_financing_type": 392,
+            "id_nomenclature_territorial_level": 352,
+            "is_parent": False,
+            "keywords": "ttt",
+            "target_description": None,
+            "territory_desc": "aaa",
+        }
+
+        response = post_json(
+            self.client, url_for("gn_meta.post_acquisition_framework"), json_dict=one_ca
+        )
+        assert response.status_code == 200
+

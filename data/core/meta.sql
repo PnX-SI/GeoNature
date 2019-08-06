@@ -187,8 +187,8 @@ CREATE TABLE t_datasets (
     id_nomenclature_data_origin integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value('DS_PUBLIQUE'),
     id_nomenclature_source_status integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value('STATUT_SOURCE'),
     id_nomenclature_resource_type integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value('RESOURCE_TYP'),
-    default_validity boolean,
     active boolean NOT NULL DEFAULT TRUE,
+    validable boolean DEFAULT TRUE,
     meta_create_date timestamp without time zone NOT NULL,
     meta_update_date timestamp without time zone
 );
@@ -476,6 +476,16 @@ ALTER TABLE cor_dataset_actor
 ALTER TABLE cor_dataset_actor
   ADD CONSTRAINT check_is_unique_cor_dataset_actor_organism UNIQUE(id_dataset, id_organism, id_nomenclature_actor_role);
 
+
+---------
+--INDEX--
+---------
+
+
+CREATE INDEX i_t_datasets_id_acquisition_framework
+  ON gn_meta.t_datasets
+  USING btree
+  (id_acquisition_framework);
 
 --------
 --VIEW--

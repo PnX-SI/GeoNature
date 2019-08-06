@@ -9,8 +9,7 @@ import { CruvedStoreService } from '../services/cruved-store.service';
   providers: []
 })
 export class AdminComponent implements OnInit {
-  URL_NOMENCLATURE_ADMIN = AppConfig.API_ENDPOINT +
-    '/nomenclatures/admin/bibnomenclaturestypesadmin/';
+  URL_NOMENCLATURE_ADMIN = AppConfig.API_ENDPOINT + '/admin/';
 
   URL_BACKOFFICE_PERM = AppConfig.API_ENDPOINT + '/permissions_backoffice/users';
   constructor(public _cruvedStore: CruvedStoreService) {}

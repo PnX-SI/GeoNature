@@ -1,14 +1,13 @@
-import { stringify } from 'wellknown';
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { DataService } from '../../services/data.service';
+import { ValidationDataService } from "../../services/data.service";
+import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { AppConfig } from '@geonature_config/app.config';
-import { MatTabsModule } from '@angular/material/tabs';
 import { ToastrService } from 'ngx-toastr';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { ModuleConfig } from "../../module.config";
-import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { NgbModal, NgbActiveModal, ModalDismissReasons } from "@ng-bootstrap/ng-bootstrap";
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'pnx-validation-modal-info-obs',
@@ -33,14 +32,13 @@ export class ValidationModalInfoObsComponent implements OnInit {
   public VALIDATION_CONFIG = ModuleConfig;
   public statusForm: FormGroup;
   public edit;
-  //public statusKeys2;
-  public statusKeys;
-  public statusNames;
+  public validationStatus;
   public MapListService;
   public email;
   public mailto: String;
   public showEmail;
   public validationDate;
+  public currentCdNomenclature;
 
 
   @Input() inputSyntheseData: GeoJSON;
@@ -52,7 +50,8 @@ export class ValidationModalInfoObsComponent implements OnInit {
   constructor(
     public mapListService: MapListService,
     private _gnDataService: DataFormService,
-    private _dataService: DataService,
+    private _validatioDataService: ValidationDataService,
+    private _syntheseDataService: SyntheseDataService,
     public activeModal: NgbActiveModal,
     private toastr: ToastrService,
     private _fb: FormBuilder
@@ -67,7 +66,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
   ngOnInit() {
     this.id_synthese = this.oneObsSynthese.id_synthese;
     this.loadOneSyntheseReleve(this.oneObsSynthese);
-    this.loadValidationHistory(this.id_synthese);
+    this.loadValidationHistory(this.oneObsSynthese.unique_id_sinp);
 
 
     // get all id_synthese of the filtered observations:
@@ -96,12 +95,21 @@ export class ValidationModalInfoObsComponent implements OnInit {
     this.showEmail = false;
   }
 
+  setCurrentCdNomenclature(item){
+    this.currentCdNomenclature = item.cd_nomenclature;
+  }
+
   getStatusNames() {
-    this._dataService.getStatusNames().subscribe(
+    this._validatioDataService.getStatusNames().subscribe(
       result => {
         // get status names
-        this.statusNames = result;
-        this.statusKeys = Object.keys(this.VALIDATION_CONFIG.STATUS_INFO);
+        this.validationStatus = result;
+        //this.validationStatus[0]
+        // order item
+        // put "en attente de la validation" at the end
+        this.validationStatus.push(this.validationStatus[0]);
+        // end remove it
+        this.validationStatus.shift();
       },
       err => {
         if (err.statusText === 'Unknown Error') {
@@ -119,7 +127,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
   }
 
   loadOneSyntheseReleve(oneObsSynthese) {
-    this._dataService.getOneSyntheseObservation(oneObsSynthese.id_synthese)
+    this._syntheseDataService.getOneSyntheseObservation(oneObsSynthese.id_synthese)
       .subscribe(
         data => {
           this.selectedObs = data;          
@@ -150,8 +158,8 @@ export class ValidationModalInfoObsComponent implements OnInit {
       );
   }
 
-  loadValidationHistory(id) {
-    this._dataService.getValidationHistory(id)
+  loadValidationHistory(uuid) {
+    this._validatioDataService.getValidationHistory(uuid)
       .subscribe(
         data => {
           this.validationHistory = data;
@@ -171,10 +179,12 @@ export class ValidationModalInfoObsComponent implements OnInit {
           }
         },
         err => {
-          console.log(err.error);
-          if (err.statusText === 'Unknown Error') {
+          console.log(err);
+          if(err.status == 404) {
+            this.toastr.warning('Aucun historique de validation')
+          } else if (err.statusText === 'Unknown Error') {
             // show error message if no connexion
-            this.toastr.error('ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connexion)');
+            this.toastr.error('ERROR: IMPsOSSIBLE TO CONNECT TO SERVER (check your connexion)');
           } else {
             // show error message if other server error
             this.toastr.error(err.error);
@@ -248,7 +258,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
 
   onSubmit(value) {
     // post validation status form ('statusForm') for the current observation
-    return this._dataService.postStatus(value, this.id_synthese).toPromise()
+    return this._validatioDataService.postStatus(value, this.id_synthese).toPromise()
       .then(
         data => {
           this.promiseResult = data as JSON;
@@ -257,9 +267,9 @@ export class ValidationModalInfoObsComponent implements OnInit {
             // show success message indicating the number of observation(s) with modified validation status
             this.toastr.success('Nouveau statut de validation enregistré');
             this.update_status();
-            this.getValidationDate(this.id_synthese);
+            this.getValidationDate(this.oneObsSynthese.unique_id_sinp);
             this.loadOneSyntheseReleve(this.oneObsSynthese);
-            this.loadValidationHistory(this.id_synthese);
+            this.loadValidationHistory(this.oneObsSynthese.unique_id_sinp);
             // bind statut value with validation-synthese-list component
             this.statusForm.reset();
             resolve('data updated');
@@ -297,7 +307,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
     // send valstatus value to validation-synthese-list component
     this.modifiedStatus.emit({
       id_synthese: this.id_synthese,
-      new_status: this.statusForm.controls['statut'].value
+      new_status: this.currentCdNomenclature;
     });
   }
 
@@ -306,8 +316,8 @@ export class ValidationModalInfoObsComponent implements OnInit {
     this.edit = false;
   }
 
-  getValidationDate(id) {
-    this._dataService.getValidationDate(id).subscribe(
+  getValidationDate(uuid) {
+    this._validatioDataService.getValidationDate(uuid).subscribe(
       result => {
         // get status names
         this.validationDate = result;

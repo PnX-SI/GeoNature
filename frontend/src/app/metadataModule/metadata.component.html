@@ -31,7 +31,7 @@
             </mat-expansion-panel-header>
             <mat-list>
               <ng-container *ngFor="let ds of af.datasetsTemp; let last = last">
-                <mat-list-item>
+                <mat-list-item class="metadata-list-item">
                   <a *ngIf="_cruvedStore.cruved?.METADATA?.cruved.U !== '0'"
                     class="bt-edit" 
                     title="Editer le jeu de données"

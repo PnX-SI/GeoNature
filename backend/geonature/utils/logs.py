@@ -36,12 +36,16 @@ class SSLSMTPHandler(SMTPHandler):
         except:
             self.handleError(record)
 
-MAIL_CONFIG = current_app.config['MAILERROR']
-mail_handler = SSLSMTPHandler(
-    mailhost=(MAIL_CONFIG['MAIL_HOST'], MAIL_CONFIG['HOST_PORT']),
-    fromaddr=MAIL_CONFIG['MAIL_FROM'],
-    toaddrs=MAIL_CONFIG['MAIL_TO'],
-    subject='GeoNature error',
-    credentials=(MAIL_CONFIG['MAIL_USERNAME'], MAIL_CONFIG['MAIL_PASS']))
+# Si la configuration des mails est spécifié
+#   et que le paramètre MAIL_ON_ERROR est à True
+# Configuration de l'envoie de mail lors des erreurs GeoNature
+if current_app.config['MAIL_CONFIG'] and current_app.config['MAIL_ON_ERROR']:
+    MAIL_CONFIG = current_app.config['MAIL_CONFIG']
+    mail_handler = SSLSMTPHandler(
+        mailhost=(MAIL_CONFIG['MAIL_SERVER'], MAIL_CONFIG['MAIL_PORT']),
+        fromaddr=MAIL_CONFIG['MAIL_USERNAME'],
+        toaddrs=MAIL_CONFIG['ERROR_MAIL_TO'],
+        subject='GeoNature error',
+        credentials=(MAIL_CONFIG['MAIL_USERNAME'], MAIL_CONFIG['MAIL_PASSWORD']))
 
-mail_handler.setLevel(logging.ERROR)
+    mail_handler.setLevel(logging.ERROR)

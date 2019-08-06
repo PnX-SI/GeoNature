@@ -14,6 +14,18 @@ import { AppConfig } from '../../../../conf/app.config';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 import { CommonService } from '../../service/common.service';
 
+/**
+ *  Ce composant permet de créer un "input" de type "select" ou "multiselect" affichant l'ensemble des jeux de données sur lesquels l'utilisateur connecté a des droits (table ``gn_meta.t_datasets`` et ``gn_meta.cor_dataset_actor``)
+ *
+ * @example
+ * <pnx-datasets
+ * [idAcquisitionFrameworks]="formService.searchForm.controls.id_acquisition_frameworks.value"
+ * [multiSelect]='true'
+ *  [displayAll]="true"
+ * [parentFormControl]="formService.searchForm.controls.id_dataset"
+ * label="{{ 'MetaData.Datasets' | translate}}"
+ * </pnx-datasets>
+ */
 @Component({
   selector: 'pnx-datasets',
   templateUrl: 'datasets.component.html'
@@ -22,10 +34,24 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
   public dataSets: any;
   public savedDatasets: Array<any>;
   public iterableDiffer: IterableDiffer<any>;
+  /**
+   * Permet de filtrer les JDD en fonction d'un tableau d'ID cadre d'acqusition. A connecter avec le formControl du composant ``pnx-acquisition-framework``.
+   * Utiliser cet Input lorsque le composant ``pnx-acquisition-framework`` est en mode multiselect.
+   */
   @Input() idAcquisitionFrameworks: Array<number> = [];
+  /**
+   *  Permet de filtrer les JDD en fonction de l'ID cadre d'acqusition. A connecter avec le formControl du composant ``pnx-acquisition-framework``.
+   *  Utiliser cet Input lorsque le composant ``pnx-acquisition-framework`` est en mode select simple.
+   */
   @Input() idAcquisitionFramework: number;
-  @Input() bindAllItem: false;
-  @Input() displayOnlyActive = true;
+  /**
+   * Est-ce que le composant doit afficher l'item "tous" dans les options du select ? (facultatif)
+   */
+  @Input() bindAllItem: boolean = false;
+  /**
+   * Booléan qui controle si on affiche seulement les JDD actifs ou également ceux qui sont inatif
+   */
+  @Input() displayOnlyActive: boolean = true;
   constructor(
     private _dfs: DataFormService,
     private _commonService: CommonService,
@@ -41,10 +67,11 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
 
   getDatasets(params?) {
     params = {};
+
     if (this.displayOnlyActive) {
       params['active'] = true;
     }
-    this._dfs.getDatasets(params).subscribe(
+    this._dfs.getDatasets((params = params)).subscribe(
       res => {
         this.dataSets = res.data;
         this.savedDatasets = res.data;

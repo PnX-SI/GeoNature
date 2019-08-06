@@ -1,5 +1,6 @@
 import datetime
 import logging
+import json
 
 from flask import current_app
 
@@ -141,8 +142,8 @@ def parse_jdd_xml(xml):
             "dataset_name": dataset_name,
             "dataset_shortname": dataset_shortname,
             "dataset_desc": dataset_desc,
-            "terrestrial_domain": terrestrial_domain,
-            "marine_domain": marine_domain,
+            "terrestrial_domain": json.loads(terrestrial_domain),
+            "marine_domain": json.loads(marine_domain),
         }
 
         jdd_list.append(current_jdd)
