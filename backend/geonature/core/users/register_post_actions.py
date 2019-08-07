@@ -98,8 +98,11 @@ def create_dataset_user(user):
     return {"msg": "ok"}
 
 
-function_dict = {
-    "create_temp_user": validate_temp_user,
-    "valid_temp_user": create_dataset_user,
-}
+if current_app.config["REGISTER"]["AUTO_DATASET_CREATION"]:
+    function_dict = {
+        "create_temp_user": validate_temp_user,
+        "valid_temp_user": create_dataset_user,
+    }
+else:
+    function_dict = {"create_temp_user": validate_temp_user}
 
