@@ -63,6 +63,7 @@ class MailConfig(Schema):
 
 class Register(Schema):
     AUTO_ACCOUNT_CREATION = fields.Boolean(missing=True)
+    AUTO_DATASET_CREATION = fields.Boolean(missing=True)
 
 
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend

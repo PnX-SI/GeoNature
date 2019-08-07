@@ -101,9 +101,9 @@ def insert_role(user=None):
 @routes.route("/login/recovery", methods=["POST"])
 def login_recovery():
     """
-        Inscrit un user à partir de l'interface geonature
-        Fonctionne selon l'autorisation 'ENABLE_SIGN_UP' dans la config.
-        Fait appel à l'API UsersHub
+        Call UsersHub API to create a TOKEN for a user
+        A post_action send an email with the user login and a link to reset its password
+        Work only if 'ENABLE_SIGN_UP' is set to True
     """
     # test des droits
     if not config.get("ENABLE_SIGN_UP", False):
@@ -112,44 +112,46 @@ def login_recovery():
     data = request.get_json()
 
     r = s.post(
-        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/login_recovery",
+        url=config["API_ENDPOINT"]
+        + "/pypn/register/post_usershub/create_cor_role_token",
         json=data,
     )
 
     return Response(r), r.status_code
 
 
-@routes.route("/password/recovery", methods=["POST"])
-def password_recovery():
-    """
-        Inscrit un user à partir de l'interface geonature
-        Fonctionne selon l'autorisation 'ENABLE_SIGN_UP' dans la config.
-        Fait appel à l'API UsersHub
-    """
-    # test des droits
-    if not config.get("ENABLE_SIGN_UP", False):
-        return jsonify({"msg": "Page introuvable"}), 404
+# TODO: supprimée si inutilisée
+# @routes.route("/password/recovery", methods=["POST"])
+# def password_recovery():
+#     """
+#         Inscrit un user à partir de l'interface geonature
+#         Fonctionne selon l'autorisation 'ENABLE_SIGN_UP' dans la config.
+#         Fait appel à l'API UsersHub
+#     """
+#     # test des droits
+#     if not config.get("ENABLE_SIGN_UP", False):
+#         return jsonify({"msg": "Page introuvable"}), 404
 
-    data = request.get_json()
+#     data = request.get_json()
 
-    identifiant = data.get("identifiant", None)
+#     identifiant = data.get("identifiant", None)
 
-    if not identifiant:
-        return {"msg": "Login inconnu"}, 400
+#     if not identifiant:
+#         return {"msg": "Login inconnu"}, 400
 
-    user = DB.session.query(User).filter_by(identifiant=identifiant).one()
+#     user = DB.session.query(User).filter_by(identifiant=identifiant).one()
 
-    data = {
-        "email": user.email,
-        "url_confirmation": config["URL_APPLICATION"] + "/#/new-password",
-    }
+#     data = {
+#         "email": user.email,
+#         "url_confirmation": config["URL_APPLICATION"] + "/#/new-password",
+#     }
 
-    r = s.post(
-        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/password_recovery",
-        json=data,
-    )
+#     r = s.post(
+#         url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/password_recovery",
+#         json=data,
+#     )
 
-    return Response(r), r.status_code
+#     return Response(r), r.status_code
 
 
 @routes.route("/inscription", methods=["POST"])
@@ -179,7 +181,8 @@ def inscription():
 @routes.route("/confirmation", methods=["GET"])
 def confirmation():
     """
-        Confirmation du mail
+        Validate a account after a demande (this action is triggered by the link in the email)
+        Create a personnal JDD as post_action if the parameter AUTO_DATASET_CREATION is set to True
         Fait appel à l'API UsersHub
     """
     # test des droits
@@ -278,37 +281,39 @@ def change_password():
     return set_change_password(data)
 
 
-@routes.route("/password", methods=["PUT"])
-@permissions.check_cruved_scope("R", True)
-@json_resp
-def update_password(info_role):
-    """
-        Modifie le mot de passe de l'utilisateur connecté
-        Fait appel à l'API UsersHub
-    """
-    if not config.get("ENABLE_SIGN_UP", False):
-        return {"message": "Page introuvable"}, 404
+# TODO: supprimer cette route si inutilisée
 
-    data = request.get_json()
-    user = DB.session.query(User).get(info_role.id_role)
+# @routes.route("/password", methods=["PUT"])
+# @permissions.check_cruved_scope("R", True)
+# @json_resp
+# def update_password(info_role):
+#     """
+#         Modifie le mot de passe de l'utilisateur connecté
+#         Fait appel à l'API UsersHub
+#     """
+#     if not config.get("ENABLE_SIGN_UP", False):
+#         return {"message": "Page introuvable"}, 404
 
-    if user is None:
-        return {"msg": "Droit insuffisant"}, 403
+#     data = request.get_json()
+#     user = DB.session.query(User).get(info_role.id_role)
 
-    # Vérification du password initiale du role
-    if not user.check_password(data.get("init_password", None)):
-        return {"msg": "Le mot de passe initial est invalide"}, 400
+#     if user is None:
+#         return {"msg": "Droit insuffisant"}, 403
 
-    # recuperation du token usershub API
-    token = s.post(
-        url=config["API_ENDPOINT"]
-        + "/pypn/register/post_usershub/create_cor_role_token",
-        json={"email": user.email},
-    ).json()
+#     # Vérification du password initiale du role
+#     if not user.check_password(data.get("init_password", None)):
+#         return {"msg": "Le mot de passe initial est invalide"}, 400
 
-    data["token"] = token["token"]
+#     # recuperation du token usershub API
+#     token = s.post(
+#         url=config["API_ENDPOINT"]
+#         + "/pypn/register/post_usershub/create_cor_role_token",
+#         json={"email": user.email},
+#     ).json()
 
-    return set_change_password(data)
+#     data["token"] = token["token"]
+
+#     return set_change_password(data)
 
 
 @routes.route("/cor_role", methods=["POST"])

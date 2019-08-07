@@ -74,17 +74,21 @@
   background-size: cover;
 }
 
-form.ng-invalid { border-left-style: none!important; }
-small {color: red}
+form.ng-invalid {
+  border-left-style: none !important;
+}
+small {
+  color: red;
+}
 
-.inscription{
+.inscription {
   color: #fff;
 }
 
 .forgot {
   color: #eee;
-  font-size: .8rem;
-  margin-top: 3px;
+  font-size: 0.8rem;
+  margin-top: -10px;
   margin-bottom: 10px;
   cursor: pointer;
 }
@@ -92,19 +96,20 @@ small {color: red}
   text-decoration: underline;
 }
 
-.inscription a, .forgot-password a {
-  color: inherit; 
+.inscription a,
+.forgot-password a {
+  color: inherit;
 }
 
 .mat-mini-fab {
-  background-color: #ddd!important;
+  background-color: #ddd !important;
 }
 .mat-mini-fab:hover {
-  background-color: #aaa!important;
+  background-color: #aaa !important;
 }
 
 .mat-stepper-horizontal {
-  background-color: rgba(0, 0, 0, 0)!important;
+  background-color: rgba(0, 0, 0, 0) !important;
 }
 
 ::ng-deep .mat-horizontal-stepper-header-container {
@@ -112,7 +117,7 @@ small {color: red}
 }
 
 ::ng-deep .mat-horizontal-content-container {
-  padding: 0px!important;
+  padding: 0px !important;
 }
 
 i.loader {
@@ -121,12 +126,12 @@ i.loader {
 }
 
 i.loader .mat-spinner {
-    width: 25px!important;
-    height: 25px!important;
+  width: 25px !important;
+  height: 25px !important;
 }
 
 .btn-connect .mat-spinner {
-  width: 20px!important;
-  height: 20px!important;
-  margin-right: 8px!important;
+  width: 20px !important;
+  height: 20px !important;
+  margin-right: 8px !important;
 }

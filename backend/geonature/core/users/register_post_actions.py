@@ -55,8 +55,6 @@ def create_dataset_user(user):
     """
         After dataset validation, add a personnal AF and JDD so the user can add new user
     """
-    print("POST DATASET USE")
-    print(user)
     af_desc_and_name = "Cadre d'acquisition personnel de {name} {surname}".format(
         name=user["nom_role"], surname=user["prenom_role"]
     )
@@ -69,9 +67,6 @@ def create_dataset_user(user):
 
     DB.session.add(new_af)
     DB.session.commit()
-    print("LAAAAAAAAA")
-    print(new_af)
-    print(new_af.id_acquisition_framework)
 
     ds_desc_and_name = "Jeu de données personnel de {name} {surname}".format(
         name=user["nom_role"], surname=user["prenom_role"]
@@ -98,11 +93,35 @@ def create_dataset_user(user):
     return {"msg": "ok"}
 
 
+def send_email_for_recovery(data):
+    """
+    Send an email with the login of the role and the possibility to reset its password
+    """
+    user = data["role"]
+    recipients = current_app.config["MAIL_CONFIG"]["MAIL_USERNAME"]
+    url_password = (
+        current_app.config["URL_APPLICATION"] + "#/new-password?token=" + data["token"]
+    )
+
+    msg_html = render_template(
+        "email_login_and_new_pass.html",
+        identifiant=user["identifiant"],
+        url_password=url_password,
+    )
+    subject = "Confirmation changement Identifiant / mot de passe"
+    send_mail([user["email"]], subject, msg_html)
+    return {"msg": "ok"}
+
+
 if current_app.config["REGISTER"]["AUTO_DATASET_CREATION"]:
     function_dict = {
         "create_temp_user": validate_temp_user,
         "valid_temp_user": create_dataset_user,
+        "create_cor_role_token": send_email_for_recovery,
     }
 else:
-    function_dict = {"create_temp_user": validate_temp_user}
+    function_dict = {
+        "create_temp_user": validate_temp_user,
+        "create_cor_role_token": send_email_for_recovery,
+    }
 

@@ -16,9 +16,7 @@ export class LoginComponent implements OnInit {
   identifiant: FormGroup;
   password: FormGroup;
   form: FormGroup;
-  password_recovery: boolean = false;
-  login_recovery: boolean = false;
-  identifiantLoading: boolean = false;
+  login_or_pass_recovery: boolean = false;
 
   constructor(
     private _authService: AuthService,
@@ -36,25 +34,13 @@ export class LoginComponent implements OnInit {
         AppConfig.API_ENDPOINT
       }/gn_auth/login_cas`;
       document.location.href = url_redirection_cas;
-    } else {
-      this.setForm();
     }
   }
 
-  register() {
-    if (this.identifiant.valid && this.password.valid) {
-      const user = Object.assign(this.identifiant.value, this.password.value);
-      this._authService.signinUser(user);
-    }
-  }
+  register(user) {
+    console.log(user);
 
-  setForm() {
-    this.identifiant = this.fb.group({
-      identifiant: ['', [Validators.required], this.identifiantNotExist.bind(this)]
-    });
-    this.password = this.fb.group({
-      password: ['', Validators.required]
-    });
+    this._authService.signinUser(user);
   }
 
   loginRecovery(data) {
@@ -100,22 +86,22 @@ export class LoginComponent implements OnInit {
   /**
    * Validateur qui retourne true/false selon qu'un login existe ou non en BD
    **/
-  identifiantNotExist(control: AbstractControl) {
-    return control.valueChanges
-      .delay(500)
-      .debounceTime(500)
-      .distinctUntilChanged()
-      .switchMap(value => {
-        this.identifiantLoading = true;
-        return this._authService.checkUserExist(control.value);
-      })
-      .map(res => {
-        this.identifiantLoading = false;
-        if (res.login_exist === true) {
-          return control.setErrors(null);
-        } else {
-          return control.setErrors({ loginNotExist: 'Identifiant inconnu' });
-        }
-      });
-  }
+  // identifiantNotExist(control: AbstractControl) {
+  //   return control.valueChanges
+  //     .delay(500)
+  //     .debounceTime(500)
+  //     .distinctUntilChanged()
+  //     .switchMap(value => {
+  //       this.identifiantLoading = true;
+  //       return this._authService.checkUserExist(control.value);
+  //     })
+  //     .map(res => {
+  //       this.identifiantLoading = false;
+  //       if (res.login_exist === true) {
+  //         return control.setErrors(null);
+  //       } else {
+  //         return control.setErrors({ loginNotExist: 'Identifiant inconnu' });
+  //       }
+  //     });
+  // }
 }

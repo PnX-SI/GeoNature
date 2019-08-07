@@ -77,11 +77,15 @@ export class AuthService {
 
   signinUser(user: any) {
     this.isLoading = true;
+    console.log('LAAA');
+    console.log(user);
+
     const options = {
-      login: user.identifiant,
+      login: user.username,
       password: user.password,
       id_application: AppConfig.ID_APPLICATION_GEONATURE
     };
+    console.log(options);
     this._http
       .post<any>(`${AppConfig.API_ENDPOINT}/auth/login`, options)
       .finally(() => (this.isLoading = false))
@@ -106,10 +110,9 @@ export class AuthService {
       );
   }
 
-  signupUser(data: any): Observable<any> {  
+  signupUser(data: any): Observable<any> {
     const options = data;
-    return this._http
-      .post<any>(`${AppConfig.API_ENDPOINT}/users/inscription`, options);
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/users/inscription`, options);
   }
 
   decodeObjectCookies(val) {

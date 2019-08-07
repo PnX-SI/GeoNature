@@ -164,6 +164,5 @@
   },
   "MyAccount": "My account",
   "CreateAccount": "Create an account",
-  "ForgetPassword": "Forgot password?",
-  "ForgotLogin": "Forgot login?"
+  "ForgotPasswordOrLogin": "Loggin or password forgotten"
 }

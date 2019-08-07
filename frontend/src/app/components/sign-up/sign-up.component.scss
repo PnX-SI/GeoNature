@@ -73,11 +73,22 @@
   background-size: cover;
 }
 
-form.ng-invalid { border-left-style: none!important; }
-small {color: red}
+form.ng-invalid {
+  border-left-style: none !important;
+}
+small {
+  color: red;
+}
 
 form h5 {
   text-decoration: underline;
   margin-top: 30px;
   font-size: 1.1em;
+}
+
+.mat-mini-fab {
+  background-color: #ddd !important;
+}
+.mat-mini-fab:hover {
+  background-color: #aaa !important;
 }
