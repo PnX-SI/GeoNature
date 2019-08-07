@@ -2,7 +2,7 @@
     Give a unique entry point for gunicorn
 """
 
-import warning
+import warnings
 
 from sqlalchemy import exc as sa_exc
 
