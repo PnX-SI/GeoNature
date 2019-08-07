@@ -1,0 +1,155 @@
+<div id="login-body">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 col-lg-8 mx-auto">
+        <div class="panel panel-default panel-signin" style="padding: 20px">
+          <div class="panel-heading">
+              INSCRIPTION
+          </div>
+          <div class="panel-body ">
+            <form [formGroup]="form">
+
+              <h5> Utilisateur </h5>
+
+              <div class="form-group row">
+                <label for="nom_role" class="col-md-3 col-form-label text-md-right">Nom</label>
+                <div class="col-md-9 col-lg-7">
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="nom_role" 
+                    placeholder="Nom" 
+                    formControlName="nom_role">
+                  <small *ngIf="form.get('nom_role').hasError('required') && form.get('nom_role').touched">
+                    Ce champ est nécessaire
+                  </small>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="prenom_role" class="col-md-3 col-form-label text-md-right">Prénom</label>
+                <div class="col-md-9 col-lg-7">
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="prenom_role" 
+                    placeholder="Prénom" 
+                    formControlName="prenom_role">
+                  <small *ngIf="form.get('prenom_role').hasError('required') && form.get('prenom_role').touched">
+                    Ce champ est nécessaire
+                  </small>
+                </div>
+              </div>
+
+              <mat-divider></mat-divider>
+
+              <h5> Compte </h5>
+
+              <div class="form-group row">
+                <label for="identifiant" class="col-md-3 col-form-label text-md-right">Identifiant</label>
+                <div class="col-md-9 col-lg-7">
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="identifiant" 
+                    placeholder="Identifiant" 
+                    formControlName="identifiant">
+                  <small *ngIf="form.get('identifiant').hasError('required') && form.get('identifiant').touched">
+                    Ce champ est nécessaire
+                  </small>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="email" class="col-md-3 col-form-label text-md-right">Adresse mail</label>
+                <div class="col-md-9 col-lg-7">
+                  <input 
+                    type="text" 
+                    [ngClass]="form.disabled ? 'form-control-plaintext' : 'form-control'"
+                    id="email" 
+                    placeholder="Email" 
+                    formControlName="email">
+                  <small *ngIf="form.get('password_confirmation').hasError('required') && form.get('password_confirmation').touched">
+                    Ce champ est nécessaire
+                  </small>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="password" class="col-md-3 col-form-label text-md-right">Mot de passe</label>
+                <div class="col-md-9 col-lg-7">
+                  <input 
+                    type="password" 
+                    class="form-control"
+                    id="password" 
+                    placeholder="Mot de passe" 
+                    formControlName="password">
+                  <small *ngIf="form.get('password').hasError('required') && form.get('password').touched">
+                    Ce champ est nécessaire
+                  </small>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="password_confirmation" class="col-md-3 col-form-label text-md-right">Confirmation</label>
+                <div class="col-md-9 col-lg-7">
+                  <input 
+                    type="password" 
+                    class="form-control"
+                    id="password_confirmation" 
+                    placeholder="Confirmation du mot de passe" 
+                    formControlName="password_confirmation">
+                  <small *ngIf="form.get('password_confirmation').hasError('required') && form.get('password_confirmation').touched">
+                    Ce champ est nécessaire
+                  </small>
+                  <small *ngIf="form.get('password_confirmation').hasError('similarError') && form.get('password_confirmation').touched">
+                    Erreur de confirmation
+                  </small>
+                </div>
+              </div>
+
+              <mat-divider></mat-divider>
+
+              <h5> Informations complémentaires </h5>
+
+              <div class="form-group row">
+                <label for="organisme" class="col-md-3 col-form-label text-md-right">Organisme</label>
+                <div class="col-md-9 col-lg-7">
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="organisme" 
+                    placeholder="Organisme" 
+                    formControlName="organisme">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="remarques" class="col-md-3 col-form-label text-md-right"> Remarques </label>
+                <div class="col-md-9 col-lg-7">
+                  <textarea 
+                  id="remarques" 
+                  class="form-control"
+                  placeholder="Précisions diverses..." 
+                  formControlName="remarques"></textarea>
+                </div>
+              </div>
+
+              <div class="text-center">
+                <button 
+                  type="button" 
+                  class="btn btn-success"
+                  [disabled]="!form.valid"
+                  (click)="save()">S'inscrire</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  
+
+  </div>
+</div>
+
+

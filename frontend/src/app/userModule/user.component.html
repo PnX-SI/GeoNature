@@ -1,0 +1,108 @@
+<div class="card card-page center-in-div">
+  <div class="card-header">
+    <h3 class="underlined main-color"> Mes informations </h3>
+    <div class="float-right">
+      <ng-container *ngIf="form.disabled else validation">
+        <button 
+          type="button" 
+          class="btn btn-sm btn-info" 
+          matTooltip="Editer ces informations" 
+          matTooltipPosition="left"
+          (click)="form.enable()">
+          <i class="fa fa-edit"></i> Editer
+        </button>
+      </ng-container>
+      <ng-template #validation>
+        <button 
+        type="button" 
+        class="btn btn-sm btn-secondary" 
+        matTooltip="Annuler modifications" 
+        (click)="cancel()">
+          <i class="fa fa-times"></i> Annuler
+        </button>
+        <button 
+        type="button" 
+        class="btn btn-sm btn-info" 
+        matTooltip="Enrigistrer modifications" 
+        (click)="save()">
+          <i class="fa fa-check"></i> Enregistrer
+        </button>
+      </ng-template>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <form [formGroup]="form">
+      <div>
+        <div class="form-group row">
+          <label for="nom_role" class="col-sm-3 col-form-label text-right">Nom</label>
+          <div class="col-sm-9 col-xl-5">
+            <input 
+              type="text" 
+              [ngClass]="form.disabled ? 'form-control-plaintext' : 'form-control'" 
+              id="nom_role" 
+              placeholder="Nom" 
+              formControlName="nom_role">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="prenom_role" class="col-sm-3 col-form-label text-right">Prenom</label>
+          <div class="col-sm-9 col-xl-5">
+            <input 
+              type="text" 
+              [ngClass]="form.disabled ? 'form-control-plaintext' : 'form-control'"
+              id="prenom_role" 
+              placeholder="Prenom" 
+              formControlName="prenom_role">
+          </div>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+
+      <div>
+        <div class="form-group row">
+          <label for="identifiant" class="col-sm-3 col-form-label text-right">Login</label>
+          <div class="col-sm-9 col-xl-5">
+            <input 
+              type="text" 
+              [ngClass]="form.disabled ? 'form-control-plaintext' : 'form-control'"
+              id="identifiant" 
+              placeholder="Login" 
+              formControlName="identifiant">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="email" class="col-sm-3 col-form-label text-right">Adresse mail</label>
+          <div class="col-sm-9 col-xl-5">
+            <input 
+              type="text" 
+              [ngClass]="form.disabled ? 'form-control-plaintext' : 'form-control'"
+              id="email" 
+              placeholder="Email" 
+              formControlName="email">
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center" *ngIf="form.disabled">
+        <a routerLink="password" class="btn btn-primary">Changer de mot de passe</a>
+      </div>
+
+      <mat-divider></mat-divider>
+      <div class="form-group row">
+        <label for="remarques" class="col-sm-3 col-form-label text-right"> Remarques </label>
+        <div class="col-sm-9">
+          <textarea 
+          id="remarques" 
+          [ngClass]="form.disabled ? 'form-control-plaintext' : 'form-control'"
+          placeholder="Informations complémentaires..." 
+          formControlName="remarques"></textarea>
+        </div>
+      </div>
+    </form>
+
+  </div>
+
+</div>
+
+

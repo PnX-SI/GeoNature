@@ -10,6 +10,7 @@ import { AuthService } from '@geonature/components/auth/auth.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { GlobalSubService } from '../services/global-sub.service';
+import { AppConfig } from '@geonature_config/app.config';
 
 @Injectable()
 export class ModuleGuardService implements CanActivate {
@@ -61,6 +62,22 @@ export class AuthGuard implements CanActivate, CanActivateChild {
       return false;
     } else {
       return true;
+    }
+  }
+}
+
+@Injectable()
+export class SignUpGuard implements CanActivate {
+  constructor(
+    private _router: Router
+  ) {}
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    if (AppConfig['ENABLE_SIGN_UP'] || false) {
+      return true;
+    } else {
+      this._router.navigate(['/login']);
+      return false;
     }
   }
 }

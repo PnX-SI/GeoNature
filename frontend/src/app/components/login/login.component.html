@@ -4,35 +4,110 @@
           <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
               <div class="panel panel-default panel-signin" style="padding: 20px">
                   <div class="panel-heading">
+                    <div class="float-left" *ngIf="login_recovery || password_recovery">
+                      <button mat-mini-fab (click)="login_recovery=false;password_recovery=false;">
+                        <mat-icon>arrow_back</mat-icon>
+                      </button>
+                    </div>
                       GEONATURE
                   </div>
                   <div class="panel-body ">
-                    <form (ngSubmit)="register(userForm.value)" #userForm="ngForm">
-                        <!-- <div class="form-group inner-addon right-addon">
-                            <i class="fa fa-user"></i>
-                            <input type="text" class="form-control" name="username" placeholder="Identifiant" ngModel>
-                        </div> -->
-                        <div class="form-group">
+                    <ng-container *ngIf="!login_recovery && !password_recovery; else logPwdRecoBlock">
+                      <mat-horizontal-stepper linear #stepper="matHorizontalStepper">
+
+                        <mat-step [stepControl]="identifiant">
+                          <form [formGroup]="identifiant">
+                            <div class="form-group">
+                              <i *ngIf="!identifiantLoading"
+                                class="addon fa fa-user"></i>
+                              <i *ngIf="identifiantLoading" 
+                                class="addon loader">
+                                <mat-spinner diameter="25" strokeWidth="2"></mat-spinner>
+                              </i>
+                              <input 
+                                type="text" 
+                                id="identifiant" 
+                                class="form-control" 
+                                formControlName="identifiant"
+                                placeholder="Identifiant"
+                                autofocus>
+                              <small *ngIf="identifiant.get('identifiant').hasError('required') && identifiant.get('identifiant').touched">
+                                Ce champ est nécessaire
+                              </small>
+                              <small *ngIf="identifiant.get('identifiant').hasError('loginNotExist') && identifiant.get('identifiant').touched">
+                                Ce login n'existe pas
+                              </small>
+                            </div>
+                            <div class="float-left " *ngIf="enable_sign_up">
+                              <div class="forgot" (click)="login_recovery=true">{{ 'ForgotLogin' | translate }}</div>
+                              <div class="inscription">
+                                <a routerLink="/inscription">{{ 'CreateAccount' | translate }}</a>
+                              </div>
+                            </div>
+                            
+                            <div class="text-right">
+                              <button type="button" class="btn btn-lg btn-success text-uppercase" matStepperNext>Suivant</button>
+                            </div>
+
+                          </form>
+                        </mat-step>
+
+                        <mat-step [stepControl]="password">
+                          <form [formGroup]="password" (submit)="register()">
+                            <div class="form-group">
+                              <i class=" addon fa fa-lock"></i>
+                              <input 
+                              type="password" 
+                              name="password" 
+                              class="form-control"
+                              formControlName="password"
+                              placeholder="Mot de passe">
+                              <small *ngIf="password.get('password').hasError('required') && password.get('password').touched">
+                                Ce champ est nécessaire
+                              </small>
+                            </div>
+                            <div class="float-left forgot" *ngIf="enable_sign_up">
+                              <span (click)="password_recovery=true">{{ 'ForgotPassword' | translate }}</span>
+                            </div>
+                            <div class="text-right">
+                              <button class="btn btn-lg btn-success text-uppercase btn-connect" type="submit">
+                                <ng-container *ngIf="!_authService.isLoading; else spinnerBlock">Se connecter</ng-container>
+                                <ng-template #spinnerBlock>
+                                  <div class="float-left"><mat-spinner diameter="25" strokeWidth="2"></mat-spinner></div>
+                                  Connexion...
+                                </ng-template>
+                              </button>
+                            </div>
+                          </form>
+                          <p *ngIf="_authService.loginError" class="alert alert-danger" role="alert" style="margin-top:5px;">
+                            <strong> {{'LoginError' | translate }} </strong>
+                          </p>
+                          
+                        </mat-step>
+
+                      </mat-horizontal-stepper>
+                    </ng-container>
+                    <ng-template #logPwdRecoBlock>
+                      <ng-container *ngIf="login_recovery">
+                        <div>Veuillez renseigner votre adresse email utilisée lors de votre inscription. Un message y sera envoyé avec votre identifiant.</div>
+                        <form (ngSubmit)="loginRecovery(identifiantForm.value)" #identifiantForm="ngForm">
+                          <div class="form-group">
                             <!-- <span class='addon icon-profil'></span> -->
-                            <i class="addon fa fa-user"></i>
-                            <input type="text" id="login" class="form-control" name="username" ngModel placeholder="Identifiant"
-                              autofocus>
+                            <i class="addon fa fa-envelope-o"></i>
+                            <input type="email" id="email" class="form-control" name="email" ngModel placeholder="Adresse mail"
+                              autofocus required>
                           </div>
-                        <div class="form-group">
-                            <i class=" addon fa fa-lock"></i>
-                            <input type="password" name="password" class="form-control" placeholder="Mot de passe" ngModel>
+                          <button class="btn btn-lg btn-success btn-block text-uppercase" type="submit">Retrouver mon identifiant</button>
+                        </form>
+                      </ng-container>
+                      <ng-container *ngIf="password_recovery">
+                        <div>
+                          Veuillez confirmer votre demande de modification de mot de passe
                         </div>
-                        <button class="btn btn-lg btn-success btn-block text-uppercase" type="submit">Se connecter</button>
-          
-                        <!-- <input type="submit" class="btn btn-success" value="Connexion"> -->
-                    </form>
-                    <p *ngIf="_authService.loginError" class="alert alert-danger" role="alert" style="margin-top:5px;">
-                        <strong> {{'LoginError' | translate }} </strong>
-                    </p>
-                    <img style="margin-left: 40%;" *ngIf="_authService.isLoading" src="assets/images/Spinner.gif" 
-                        alt="Chargement..." 
-                        height="60" 
-                        width="60">
+                        <button class="btn btn-lg btn-success btn-block text-uppercase" type="button" (click)="pwd_recovery()">Confirmer</button>
+                      </ng-container>
+                    </ng-template>
+
                   </div>
               </div>
           </div>

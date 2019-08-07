@@ -1,5 +1,5 @@
 .panel {
-  margin-top: 25%;
+  margin-top: 10px;
 }
 
 .panel-signin {
@@ -21,7 +21,7 @@
   background-color: #1d21249e;
   border: 1px solid #55585a;
   position: relative;
-  padding-left: 32px !important;
+  padding-left: 15px !important;
   border-radius: 0px !important;
 }
 
@@ -69,7 +69,6 @@
 }
 
 #login-body {
-  height: 100vh;
   background: url(../../../custom/images/login_background.jpg) center 10% no-repeat;
   background-size: cover;
 }
@@ -77,56 +76,8 @@
 form.ng-invalid { border-left-style: none!important; }
 small {color: red}
 
-.inscription{
-  color: #fff;
-}
-
-.forgot {
-  color: #eee;
-  font-size: .8rem;
-  margin-top: 3px;
-  margin-bottom: 10px;
-  cursor: pointer;
-}
-.forgot:hover {
+form h5 {
   text-decoration: underline;
-}
-
-.inscription a, .forgot-password a {
-  color: inherit; 
-}
-
-.mat-mini-fab {
-  background-color: #ddd!important;
-}
-.mat-mini-fab:hover {
-  background-color: #aaa!important;
-}
-
-.mat-stepper-horizontal {
-  background-color: rgba(0, 0, 0, 0)!important;
-}
-
-::ng-deep .mat-horizontal-stepper-header-container {
-  display: none !important;
-}
-
-::ng-deep .mat-horizontal-content-container {
-  padding: 0px!important;
-}
-
-i.loader {
-  top: 6px;
-  left: 8px;
-}
-
-i.loader .mat-spinner {
-    width: 25px!important;
-    height: 25px!important;
-}
-
-.btn-connect .mat-spinner {
-  width: 20px!important;
-  height: 20px!important;
-  margin-right: 8px!important;
+  margin-top: 30px;
+  font-size: 1.1em;
 }

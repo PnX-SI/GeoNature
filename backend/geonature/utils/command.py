@@ -20,6 +20,7 @@ from geonature.utils.env import (
     ROOT_DIR,
     GN_MODULE_FE_FILE,
     load_config,
+    get_config_file_path,
     DB,
     GN_EXTERNAL_MODULE,
 )
@@ -73,7 +74,11 @@ def build_geonature_front(rebuild_sass=False):
 def frontend_routes_templating(app=None):
     if not app:
         app = get_app_for_cmd(with_external_mods=False)
-    log.info("Generating frontend routing")
+        
+    log.info('Generating frontend routing')
+    #recuperation de la configuration
+    configs_gn = load_config(get_config_file_path())
+
     from geonature.utils.env import list_frontend_enabled_modules
 
     with open(
@@ -94,7 +99,7 @@ def frontend_routes_templating(app=None):
 
             # TODO test if two modules with the same name is okay for Angular
 
-        route_template = template.render(routes=routes)
+        route_template = template.render(routes=routes, enable_sign_up=configs_gn.get('ENABLE_SIGN_UP'))
 
         with open(
             str(ROOT_DIR / "frontend/src/app/routing/app-routing.module.ts"), "w"
