@@ -3,7 +3,6 @@ import { ValidationDataService } from "../../services/data.service";
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { AppConfig } from '@geonature_config/app.config';
-/**import { ToastrService } from 'ngx-toastr';**/
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { ModuleConfig } from "../../module.config";
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -41,12 +40,9 @@ export class ValidationModalInfoObsComponent implements OnInit {
   public validationDate;
   public currentCdNomenclature;
 
-
-  @Input() inputSyntheseData: GeoJSON;
   @Input() oneObsSynthese: any;
   @Output() modifiedStatus = new EventEmitter();
   @Output() valDate = new EventEmitter();
-  @ViewChild('table') table: DatatableComponent;
 
   constructor(
     public mapListService: MapListService,
@@ -54,7 +50,6 @@ export class ValidationModalInfoObsComponent implements OnInit {
     private _validatioDataService: ValidationDataService,
     private _syntheseDataService: SyntheseDataService,
     public activeModal: NgbActiveModal,
-    /**private toastr: ToastrService,**/
     private _fb: FormBuilder,
     private _commonService: CommonService,
   ) {
@@ -116,7 +111,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
       err => {
         if (err.statusText === 'Unknown Error') {
           // show error message if no connexion
-          this._commonService.translateToaster("error", "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connexion)");
+          this._commonService.translateToaster("error", "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)");
         } else {
           // show error message if other server error
           this._commonService.translateToaster("error", err.error);
@@ -186,7 +181,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
             this._commonService.translateToaster("warning", "Aucun historique de validation");
           } else if (err.statusText === 'Unknown Error') {
             // show error message if no connexion
-            this._commonService.translateToaster("error", "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connexion)");
+            this._commonService.translateToaster("error", "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)");
           } else {
             // show error message if other server error
             this._commonService.translateToaster("error", err.error);
@@ -263,7 +258,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
     return this._validatioDataService.postStatus(value, this.id_synthese).toPromise()
       .then(
         data => {
-          this.promiseResult = data as JSON;
+        /** TODO à virer ? ** this.promiseResult = data as JSON; **/
           //console.log('retour du post : ', this.promiseResult);
           return new Promise((resolve, reject) => {
             // show success message indicating the number of observation(s) with modified validation status
@@ -281,12 +276,12 @@ export class ValidationModalInfoObsComponent implements OnInit {
         err => {
           if (err.statusText === 'Unknown Error') {
             // show error message if no connexion
-            this._commonService.translateToaster("error", "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connexion)");
+            this._commonService.translateToaster("error", "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)");
           } else {
             // show error message if other server error
             this._commonService.translateToaster("error", err.error);
           }
-          reject();
+          Promise.reject();
         }
       )
       .then(
@@ -327,7 +322,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
       err => {
         if (err.statusText === 'Unknown Error') {
           // show error message if no connexion
-          this._commonService.translateToaster("error", "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connexion)");
+          this._commonService.translateToaster("error", "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)");
         } else {
           // show error message if other server error
           this._commonService.translateToaster("error", err.error);

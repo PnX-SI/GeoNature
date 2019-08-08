@@ -8,9 +8,10 @@ import {
   HostListener,
   AfterContentChecked,
   OnChanges,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  EventEmitter
 } from "@angular/core";
-import { GeoJSON, FeatureGroup } from "leaflet";
+import { FeatureGroup } from "leaflet";
 import { MapService } from "@geonature_common/map/map.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
@@ -20,8 +21,6 @@ import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { ValidationModalInfoObsComponent } from "../validation-modal-info-obs/validation-modal-info-obs.component";
 import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthese-form.service";
 import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthese-data.service";
-
-import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "pnx-validation-synthese-list",
@@ -40,12 +39,11 @@ export class ValidationSyntheseListComponent
   public rowNumber: number;
   private _latestWidth: number;
   public id_same_coordinates = []; // list of observation ids having same geographic coordinates
-  public validationStatus;
   public modif_text =
     "Attention données modifiées depuis la dernière validation";
   public npage;
 
-  @Input() inputSyntheseData: GeoJSON;
+  @Input() inputSyntheseData: Array<any>;
   @Input() validationStatus: Array<any>;
   @ViewChild("table") table: DatatableComponent;
   @Output() pageChange: EventEmitter<number>;
@@ -60,7 +58,6 @@ export class ValidationSyntheseListComponent
     public ref: ChangeDetectorRef,
     private _ms: MapService,
     public formService: SyntheseFormService,
-    private toastr: ToastrService
   ) {}
 
   ngOnInit() {
