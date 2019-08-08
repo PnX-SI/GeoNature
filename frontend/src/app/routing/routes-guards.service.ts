@@ -73,7 +73,7 @@ export class SignUpGuard implements CanActivate {
   ) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (AppConfig['ACCOUNT_MANAGER']['ENABLE_SIGN_UP'] || false) {
+    if (AppConfig['REGISTER']['ENABLE_SIGN_UP'] || false) {
       return true;
     } else {
       this._router.navigate(['/login']);

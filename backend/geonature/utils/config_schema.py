@@ -61,7 +61,7 @@ class MailConfig(Schema):
     ERROR_MAIL_TO = fields.List(fields.String(), missing=list())
 
 
-class AccountManager(Schema):
+class Register(Schema):
         # config liée à l'incription
     ENABLE_SIGN_UP = fields.Boolean(missing=False)
     AUTO_ACCOUNT_CREATION = fields.Boolean(missing=True)
@@ -218,11 +218,11 @@ class GnGeneralSchemaConf(Schema):
     ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS = fields.Boolean(missing=True)
     BDD = fields.Nested(BddConfig, missing=dict())
 
-    ACCOUNT_MANAGER = fields.Nested(AccountManager, missing={})
+    REGISTER = fields.Nested(Register, missing={})
 
     @validates_schema
     def validate_enable_sign_up(self, data):
-        if data['ACCOUNT_MANAGER'].get("ENABLE_SIGN_UP", False):
+        if data['REGISTER'].get("ENABLE_SIGN_UP", False):
             if data.get("URL_USERSHUB", None) is None:
                 raise ValidationError(
                     "URL_USERSHUB est necessaire si ENABLE_SIGN_UP=True", "URL_USERSHUB"
@@ -242,7 +242,7 @@ class GnGeneralSchemaConf(Schema):
     @validates_schema
     def validate_enable_sign_up(self, data):
         # si CAS_PUBLIC = true and ENABLE_SIGN_UP = true
-        if data.get("CAS_PUBLIC").get("CAS_AUTHENTIFICATION") and data['ACCOUNT_MANAGER'].get(
+        if data.get("CAS_PUBLIC").get("CAS_AUTHENTIFICATION") and data['REGISTER'].get(
             "ENABLE_SIGN_UP", False
         ):
             raise ValidationError(

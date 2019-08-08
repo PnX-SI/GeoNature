@@ -38,7 +38,7 @@ def validate_temp_user(data):
         }
 
     subject = "Demande de création de compte GeoNature"
-    if current_app.config["ACCOUNT_MANAGER"]["AUTO_ACCOUNT_CREATION"]:
+    if current_app.config["REGISTER"]["AUTO_ACCOUNT_CREATION"]:
         template = "email_self_validate_account.html"
         recipients = [user.email]
     else:
@@ -137,7 +137,7 @@ def send_email_for_recovery(data):
     return {"msg": "ok"}
 
 
-if current_app.config["ACCOUNT_MANAGER"]["AUTO_DATASET_CREATION"]:
+if current_app.config["REGISTER"]["AUTO_DATASET_CREATION"]:
     function_dict = {
         "create_temp_user": validate_temp_user,
         "valid_temp_user": create_dataset_user,
