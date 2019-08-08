@@ -130,7 +130,7 @@ def inscription():
         Fait appel à l'API UsersHub
     """
     # test des droits
-    if not config.get("ENABLE_SIGN_UP", False):
+    if not config['ACCOUNT_MANAGER'].get("ENABLE_SIGN_UP", False):
         return jsonify({"message": "Page introuvable"}), 404
 
     data = request.get_json()
@@ -154,7 +154,7 @@ def confirmation():
         Fait appel à l'API UsersHub
     """
     # test des droits
-    if not config.get("ENABLE_SIGN_UP", False):
+    if not config['ACCOUNT_MANAGER'].get("ENABLE_SIGN_UP", False):
         return jsonify({"message": "Page introuvable"}), 404
 
     token = request.args.get("token", None)
@@ -222,7 +222,7 @@ def change_password(id_role):
         Modifie le mot de passe de l'utilisateur du token
         Fait appel à l'API UsersHub
     """
-    if not config.get("ENABLE_SIGN_UP", False):
+    if not config['ACCOUNT_MANAGER'].get("ENABLE_SIGN_UP", False):
         return {"message": "Page introuvable"}, 404
 
     user = DB.session.query(User).get(id_role)

@@ -61,9 +61,12 @@ class MailConfig(Schema):
     ERROR_MAIL_TO = fields.List(fields.String(), missing=list())
 
 
-class Register(Schema):
+class AccountManager(Schema):
+        # config liée à l'incription
+    ENABLE_SIGN_UP = fields.Boolean(missing=False)
     AUTO_ACCOUNT_CREATION = fields.Boolean(missing=True)
     AUTO_DATASET_CREATION = fields.Boolean(missing=True)
+    VALIDATOR_EMAIL = fields.Email()
 
 
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
@@ -95,40 +98,6 @@ class GnPySchemaConf(Schema):
     MAIL_ON_ERROR = fields.Boolean(missing=False)
     MAIL_CONFIG = fields.Nested(MailConfig, missing=None)
     URL_USERSHUB = fields.Url(required=False)
-    ADMIN_APPLICATION_LOGIN = fields.String(required=False)
-    ADMIN_APPLICATION_PASSWORD = fields.String(required=False)
-    ADMIN_APPLICATION_MAIL = fields.String(
-        required=False, validate=Email(error="Email invalide")
-    )
-    after_USERSHUB_request = fields.Dict(missing={})
-    REGISTER = fields.Nested(Register, missing={})
-
-    @validates_schema
-    def validate_enable_sign_up(self, data):
-        if data.get("ENABLE_SIGN_UP", False):
-            if data.get("URL_USERSHUB", None) is None:
-                raise ValidationError(
-                    "URL_USERSHUB est necessaire si ENABLE_SIGN_UP=True", "URL_USERSHUB"
-                )
-
-            if data.get("ADMIN_APPLICATION_LOGIN", None) is None:
-                raise ValidationError(
-                    "ADMIN_APPLICATION_LOGIN est necessaire si ENABLE_SIGN_UP=True",
-                    "ADMIN_APPLICATION_LOGIN",
-                )
-
-            if data.get("ADMIN_APPLICATION_PASSWORD", None) is None:
-                raise ValidationError(
-                    "ADMIN_APPLICATION_PASSWORD est necessaire si ENABLE_SIGN_UP=True",
-                    "ADMIN_APPLICATION_PASSWORD",
-                )
-
-            if data.get("ADMIN_APPLICATION_MAIL", None) is None:
-                raise ValidationError(
-                    "ADMIN_APPLICATION_MAIL est necessaire si ENABLE_SIGN_UP=True",
-                    "ADMIN_APPLICATION_MAIL",
-                )
-
 
 class GnFrontEndConf(Schema):
     PROD_MOD = fields.Boolean(missing=True)
@@ -136,6 +105,7 @@ class GnFrontEndConf(Schema):
     DISPLAY_STAT_BLOC = fields.Boolean(missing=True)
     DISPLAY_MAP_LAST_OBS = fields.Boolean(missing=True)
     MULTILINGUAL = fields.Boolean(missing=False)
+
 
 
 id_municipality = BddConfig().load({}).data.get("id_area_type_municipality")
@@ -247,13 +217,32 @@ class GnGeneralSchemaConf(Schema):
     # Ajoute la surchouche 'taxonomique' sur l'API nomenclature
     ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS = fields.Boolean(missing=True)
     BDD = fields.Nested(BddConfig, missing=dict())
-    # config liée à l'incription
-    ENABLE_SIGN_UP = fields.Boolean(missing=False)
+
+    ACCOUNT_MANAGER = fields.Nested(AccountManager, missing={})
+
+    @validates_schema
+    def validate_enable_sign_up(self, data):
+        if data['ACCOUNT_MANAGER'].get("ENABLE_SIGN_UP", False):
+            if data.get("URL_USERSHUB", None) is None:
+                raise ValidationError(
+                    "URL_USERSHUB est necessaire si ENABLE_SIGN_UP=True", "URL_USERSHUB"
+                )
+            if (
+                data['MAIL_CONFIG'].get("MAIL_SERVER", None) is None or 
+                data['MAIL_CONFIG'].get("MAIL_USERNAME", None) is None or
+                data['MAIL_CONFIG'].get("MAIL_PASSWORD", None) is None
+
+            ):
+                raise ValidationError(
+                    "Veuillez remplir la rubrique MAIL_CONFIG si ENABLE_SIGN_UP=True",
+                    "ENABLE_SIGN_UP",
+                )
+
 
     @validates_schema
     def validate_enable_sign_up(self, data):
         # si CAS_PUBLIC = true and ENABLE_SIGN_UP = true
-        if data.get("CAS_PUBLIC").get("CAS_AUTHENTIFICATION") and data.get(
+        if data.get("CAS_PUBLIC").get("CAS_AUTHENTIFICATION") and data['ACCOUNT_MANAGER'].get(
             "ENABLE_SIGN_UP", False
         ):
             raise ValidationError(
