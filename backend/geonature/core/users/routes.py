@@ -11,6 +11,7 @@ from geonature.core.users.models import VUserslistForallMenu, BibOrganismes, Cor
 from pypnusershub.db.models import User
 from pypnusershub.db.models_register import TempUser
 from pypnusershub.routes_register import bp as user_api
+from pypnusershub.routes import check_auth
 
 from geonature.utils.utilssqlalchemy import json_resp
 from geonature.core.gn_permissions import decorators as permissions
@@ -98,35 +99,13 @@ def insert_role(user=None):
     return user.as_dict()
 
 
-@routes.route("/login/recovery", methods=["POST"])
-def login_recovery():
-    """
-        Call UsersHub API to create a TOKEN for a user
-        A post_action send an email with the user login and a link to reset its password
-        Work only if 'ENABLE_SIGN_UP' is set to True
-    """
-    # test des droits
-    if not config.get("ENABLE_SIGN_UP", False):
-        return jsonify({"msg": "Page introuvable"}), 404
-
-    data = request.get_json()
-
-    r = s.post(
-        url=config["API_ENDPOINT"]
-        + "/pypn/register/post_usershub/create_cor_role_token",
-        json=data,
-    )
-
-    return Response(r), r.status_code
-
-
-# TODO: supprimée si inutilisée
-# @routes.route("/password/recovery", methods=["POST"])
-# def password_recovery():
+# TODO supprimer si non utilisé
+# @routes.route("/login/recovery", methods=["POST"])
+# def login_recovery():
 #     """
-#         Inscrit un user à partir de l'interface geonature
-#         Fonctionne selon l'autorisation 'ENABLE_SIGN_UP' dans la config.
-#         Fait appel à l'API UsersHub
+#         Call UsersHub API to create a TOKEN for a user
+#         A post_action send an email with the user login and a link to reset its password
+#         Work only if 'ENABLE_SIGN_UP' is set to True
 #     """
 #     # test des droits
 #     if not config.get("ENABLE_SIGN_UP", False):
@@ -134,20 +113,9 @@ def login_recovery():
 
 #     data = request.get_json()
 
-#     identifiant = data.get("identifiant", None)
-
-#     if not identifiant:
-#         return {"msg": "Login inconnu"}, 400
-
-#     user = DB.session.query(User).filter_by(identifiant=identifiant).one()
-
-#     data = {
-#         "email": user.email,
-#         "url_confirmation": config["URL_APPLICATION"] + "/#/new-password",
-#     }
-
 #     r = s.post(
-#         url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/password_recovery",
+#         url=config["API_ENDPOINT"]
+#         + "/pypn/register/post_usershub/create_cor_role_token",
 #         json=data,
 #     )
 
@@ -246,14 +214,50 @@ def update_role(info_role):
     return user.as_dict()
 
 
-def set_change_password(data):
+@routes.route("/password/change", methods=["PUT"])
+@check_auth(1, True)
+@json_resp
+def change_password(id_role):
+    """
+        Modifie le mot de passe de l'utilisateur du token
+        Fait appel à l'API UsersHub
+    """
+    if not config.get("ENABLE_SIGN_UP", False):
+        return {"message": "Page introuvable"}, 404
+
+    user = DB.session.query(User).get(id_role)
+    if not user:
+        return {"msg": "Droit insuffisant"}, 403
+    data = request.get_json()
+
+    init_password = data.get("init_password", None)
+    # if not init_passwork provided(passwork forgotten) -> check if token exist
+    if not init_password:
+        if not data.get("token", None):
+            return {"msg": "Erreur serveur"}, 500
+    else:
+        if not user.check_password(data.get("init_password", None)):
+            return {"msg": "Le mot de passe initial est invalide"}, 400
+
+        # recuperation du token usershub API
+        # send request to get the token (enable_post_action = False to NOT sent email)
+        resp = s.post(
+            url=config["API_ENDPOINT"]
+            + "/pypn/register/post_usershub/create_cor_role_token",
+            json={"email": user.email, "enable_post_action": False},
+        )
+        if resp.status_code != 200:
+            # comme concerne le password, on explicite pas le message
+            return {"msg": "Erreur lors de la génération du token"}, 500
+
+        data["token"] = resp.json()["token"]
+
     if (
         not data.get("password", None)
         or not data.get("password_confirmation", None)
         or not data.get("token", None)
     ):
         return {"msg": "Erreur serveur"}, 500
-
     r = s.post(
         url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/change_password",
         json=data,
@@ -262,58 +266,7 @@ def set_change_password(data):
     if r.status_code != 200:
         # comme concerne le password, on explicite pas le message
         return {"msg": "Erreur serveur"}, 500
-
     return {"msg": "Mot de passe modifié avec succès"}, 200
-
-
-@routes.route("/password/change", methods=["POST"])
-@json_resp
-def change_password():
-    """
-        Modifie le mot de passe de l'utilisateur du token
-        Fait appel à l'API UsersHub
-    """
-    if not config.get("ENABLE_SIGN_UP", False):
-        return {"message": "Page introuvable"}, 404
-
-    data = request.get_json()
-
-    return set_change_password(data)
-
-
-# TODO: supprimer cette route si inutilisée
-
-# @routes.route("/password", methods=["PUT"])
-# @permissions.check_cruved_scope("R", True)
-# @json_resp
-# def update_password(info_role):
-#     """
-#         Modifie le mot de passe de l'utilisateur connecté
-#         Fait appel à l'API UsersHub
-#     """
-#     if not config.get("ENABLE_SIGN_UP", False):
-#         return {"message": "Page introuvable"}, 404
-
-#     data = request.get_json()
-#     user = DB.session.query(User).get(info_role.id_role)
-
-#     if user is None:
-#         return {"msg": "Droit insuffisant"}, 403
-
-#     # Vérification du password initiale du role
-#     if not user.check_password(data.get("init_password", None)):
-#         return {"msg": "Le mot de passe initial est invalide"}, 400
-
-#     # recuperation du token usershub API
-#     token = s.post(
-#         url=config["API_ENDPOINT"]
-#         + "/pypn/register/post_usershub/create_cor_role_token",
-#         json={"email": user.email},
-#     ).json()
-
-#     data["token"] = token["token"]
-
-#     return set_change_password(data)
 
 
 @routes.route("/cor_role", methods=["POST"])
