@@ -77,8 +77,6 @@ export class AuthService {
 
   signinUser(user: any) {
     this.isLoading = true;
-    console.log('LAAA');
-    console.log(user);
 
     const options = {
       login: user.username,
