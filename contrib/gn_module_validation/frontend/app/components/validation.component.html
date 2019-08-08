@@ -20,12 +20,11 @@
       <div class="col-sm-12 col-md-5 padding-sm middle">
             <button #buttonToggle
             [style.left.px]="marginButton"
-            (click)="mooveButton()"
+            (click)="searchBarHidden = !searchBarHidden"
             data-toggle="collapse" data-target="#sidebar"
             aria-controls="sidebar"
             type="button" id="sidebarCollapse" class="btn btn-toogle-sidenav box-shadow">
-                <i [hidden]="searchBarHidden" class="fa fa-caret-left"></i>
-                <i [hidden]="!searchBarHidden" class="fa fa-caret-right"></i>
+                <i class="fa" [ngClass]="searchBarHidden ? 'fa-caret-left' : 'fa-caret-right'"></i>
             </button>
           <pnx-validation-synthese-list [inputSyntheseData]="_mapListService.tableData" [validationStatus]="validationStatus"></pnx-validation-synthese-list>
 
@@ -38,7 +37,9 @@
 
       </div>
       <div class="col-sm-12 col-md-7 padding-sm last">
-          <pnx-validation-synthese-carte [inputSyntheseData]="_mapListService.geojsonData"></pnx-validation-synthese-carte>
+          <!--pnx-validation-synthese-carte [inputSyntheseData]="_mapListService.geojsonData"></pnx-validation-synthese-carte-->
+          <pnx-map-list [idName]="'id_synthese'" height="89vh">
+    </pnx-map-list>
       </div>
 
     </div>
