@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable }  from 'rxjs';
-import { map }  from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { AppConfig } from '../../../conf/app.config';
 import { Role } from './form.service';
 
@@ -26,24 +26,19 @@ export class UserDataService {
 
   putRole(role: Role): Observable<Role> {
     const options = role;
-    return this._http
-            .put<any>(`${AppConfig.API_ENDPOINT}/users/role`, options)
-            .pipe(
-                map((res: Role) => { 
-                  return res;
-                })
-               );
+    return this._http.put<any>(`${AppConfig.API_ENDPOINT}/users/role`, options).pipe(
+      map((res: Role) => {
+        return res;
+      })
+    );
   }
 
   putPassword(role: Role): Observable<any> {
     const options = role;
-    return this._http
-            .put<any>(`${AppConfig.API_ENDPOINT}/users/password`, options)
-            .pipe(
-                map((res: Role) => { 
-                  return res;
-                })
-               );
+    return this._http.put<any>(`${AppConfig.API_ENDPOINT}/users/password/change`, options).pipe(
+      map((res: Role) => {
+        return res;
+      })
+    );
   }
-
 }
