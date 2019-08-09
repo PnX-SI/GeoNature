@@ -493,6 +493,8 @@ def to_json_resp(
     def additionnal_converter(o):
         if isinstance(o, datetime.datetime):
             return SERIALIZERS['datetime'](o)
+        elif isinstance(o, datetime.time):
+            return SERIALIZERS['time'](o)
         elif isinstance(o,uuid.UUID):
             return SERIALIZERS['uuid'](o)
         else :
