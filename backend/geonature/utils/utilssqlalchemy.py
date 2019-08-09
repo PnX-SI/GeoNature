@@ -3,6 +3,7 @@ Fonctions utilitaires
 """
 import json
 import datetime
+import uuid
 from functools import wraps
 
 from dateutil import parser
@@ -492,6 +493,8 @@ def to_json_resp(
     def additionnal_converter(o):
         if isinstance(o, datetime.datetime):
             return SERIALIZERS['datetime'](o)
+        elif isinstance(o,uuid.UUID):
+            return SERIALIZERS['uuid'](o)
         else :
             raise TypeError( "{} is not JSON serializable".format(repr(o)) )
             
