@@ -21,7 +21,7 @@ export class SignUpComponent implements OnInit {
     private _router: Router,
     private _toasterService: ToastrService
   ) {
-    if (!(AppConfig['ENABLE_SIGN_UP'] || false)) {
+    if (!(AppConfig['REGISTER']['ENABLE_SIGN_UP'] || false)) {
       //this._router.navigate(['/login']);
     }
   }

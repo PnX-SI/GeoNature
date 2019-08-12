@@ -13,6 +13,7 @@ from geonature.core.gn_meta.models import (
     TDatasets,
     TAcquisitionFramework,
     CorDatasetActor,
+    CorAcquisitionFrameworkActor
 )
 from geonature.utils.utilsmails import send_mail
 from geonature.utils.env import DB
@@ -58,6 +59,21 @@ def create_dataset_user(user):
     af_desc_and_name = "Cadre d'acquisition personnel de {name} {surname}".format(
         name=user["nom_role"], surname=user["prenom_role"]
     )
+
+    # actor = data productor
+    af_productor = CorAcquisitionFrameworkActor(
+        id_role=user["id_role"],
+        id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
+            "ROLE_ACTEUR", "6"
+        )
+    )
+    af_contact = CorAcquisitionFrameworkActor(
+        id_role=user["id_role"],
+        id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
+            "ROLE_ACTEUR", "1"
+        )
+    )
+
     new_af = TAcquisitionFramework(
         acquisition_framework_name=af_desc_and_name,
         acquisition_framework_desc=af_desc_and_name
@@ -65,16 +81,24 @@ def create_dataset_user(user):
         acquisition_framework_start_date=datetime.datetime.now(),
     )
 
+    new_af.cor_af_actor = [af_productor, af_contact]
+
     DB.session.add(new_af)
     DB.session.commit()
 
     ds_desc_and_name = "Jeu de données personnel de {name} {surname}".format(
         name=user["nom_role"], surname=user["prenom_role"]
     )
-    actor = CorDatasetActor(
+    ds_productor = CorDatasetActor(
         id_role=user["id_role"],
         id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
-            "ROLE_ACTEUR", "1"
+            "ROLE_ACTEUR", "6"
+        ),
+    )
+    ds_contact = CorDatasetActor(
+        id_role=user["id_role"],
+        id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
+            "ROLE_ACTEUR", "6"
         ),
     )
     # add new JDD: terrestrial and marine = True as default
@@ -87,7 +111,7 @@ def create_dataset_user(user):
         marine_domain=True,
         terrestrial_domain=True,
     )
-    new_dataset.cor_dataset_actor.append(actor)
+    new_dataset.cor_dataset_actor = [ds_productor, ds_contact]
     DB.session.add(new_dataset)
     DB.session.commit()
     return {"msg": "ok"}

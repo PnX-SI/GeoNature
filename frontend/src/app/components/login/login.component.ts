@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit {
     private _toasterService: ToastrService
   ) {
     this.casLogin = AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION;
-    this.enable_sign_up = AppConfig['ENABLE_SIGN_UP'] || false;
+    this.enable_sign_up = AppConfig['REGISTER']['ENABLE_SIGN_UP'] || false;
   }
 
   ngOnInit() {

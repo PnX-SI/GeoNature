@@ -99,7 +99,7 @@ def frontend_routes_templating(app=None):
 
             # TODO test if two modules with the same name is okay for Angular
 
-        route_template = template.render(routes=routes, enable_sign_up=configs_gn.get('ENABLE_SIGN_UP'))
+        route_template = template.render(routes=routes, enable_sign_up=configs_gn['REGISTER'].get('ENABLE_SIGN_UP'))
 
         with open(
             str(ROOT_DIR / "frontend/src/app/routing/app-routing.module.ts"), "w"
