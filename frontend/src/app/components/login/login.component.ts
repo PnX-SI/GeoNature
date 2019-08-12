@@ -38,13 +38,11 @@ export class LoginComponent implements OnInit {
   }
 
   register(user) {
-    console.log(user);
-
     this._authService.signinUser(user);
   }
 
-  loginRecovery(data) {
-    this._authService.loginRecovery(data).subscribe(
+  loginOrPwdRecovery(data) {
+    this._authService.loginOrPwdRecovery(data).subscribe(
       res => {
         this._toasterService.info(res.msg, '', {
           positionClass: 'toast-top-center',
@@ -61,47 +59,4 @@ export class LoginComponent implements OnInit {
       }
     );
   }
-
-  pwd_recovery() {
-    if (this.identifiant.valid) {
-      this._authService.passwordRecovery(this.identifiant.value).subscribe(
-        res => {
-          this._toasterService.info(res.msg, '', {
-            positionClass: 'toast-top-center',
-            tapToDismiss: true,
-            timeOut: 10000
-          });
-        },
-        error => {
-          this._toasterService.error(error.error.msg, '', {
-            positionClass: 'toast-top-center',
-            tapToDismiss: true,
-            timeOut: 5000
-          });
-        }
-      );
-    }
-  }
-
-  /**
-   * Validateur qui retourne true/false selon qu'un login existe ou non en BD
-   **/
-  // identifiantNotExist(control: AbstractControl) {
-  //   return control.valueChanges
-  //     .delay(500)
-  //     .debounceTime(500)
-  //     .distinctUntilChanged()
-  //     .switchMap(value => {
-  //       this.identifiantLoading = true;
-  //       return this._authService.checkUserExist(control.value);
-  //     })
-  //     .map(res => {
-  //       this.identifiantLoading = false;
-  //       if (res.login_exist === true) {
-  //         return control.setErrors(null);
-  //       } else {
-  //         return control.setErrors({ loginNotExist: 'Identifiant inconnu' });
-  //       }
-  //     });
-  // }
 }

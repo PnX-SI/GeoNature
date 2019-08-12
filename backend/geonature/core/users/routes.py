@@ -99,27 +99,134 @@ def insert_role(user=None):
     return user.as_dict()
 
 
-# TODO supprimer si non utilisé
-# @routes.route("/login/recovery", methods=["POST"])
-# def login_recovery():
-#     """
-#         Call UsersHub API to create a TOKEN for a user
-#         A post_action send an email with the user login and a link to reset its password
-#         Work only if 'ENABLE_SIGN_UP' is set to True
-#     """
-#     # test des droits
-#     if not config.get("ENABLE_SIGN_UP", False):
-#         return jsonify({"msg": "Page introuvable"}), 404
+@routes.route("/cor_role", methods=["POST"])
+@json_resp
+def insert_in_cor_role(id_group=None, id_user=None):
+    """
+    Insert a user in a group
 
-#     data = request.get_json()
+    .. :quickref: User;
 
-#     r = s.post(
-#         url=config["API_ENDPOINT"]
-#         + "/pypn/register/post_usershub/create_cor_role_token",
-#         json=data,
-#     )
+    :param id_role: the id user
+    :type id_role: int    
+    :param id_group: the id group
+    :type id_group: int
+        # TODO ajouter test sur les POST de données
+    """
+    exist_user = (
+        DB.session.query(CorRole)
+        .filter(CorRole.id_role_groupe == id_group)
+        .filter(CorRole.id_role_utilisateur == id_user)
+        .all()
+    )
+    if not exist_user:
+        cor_role = CorRole(id_group, id_user)
+        DB.session.add(cor_role)
+        DB.session.commit()
+        DB.session.flush()
+        return cor_role.as_dict()
+    return {"message": "cor already exists"}, 500
 
-#     return Response(r), r.status_code
+
+@routes.route("/organism", methods=["POST"])
+@json_resp
+def insert_organism(organism):
+    """
+    Insert a organism
+
+    .. :quickref: User;
+    """
+    if organism is not None:
+        data = organism
+    else:
+        data = dict(request.get_json())
+    organism = BibOrganismes(**data)
+    if organism.id_organisme:
+        exist_org = DB.session.query(BibOrganismes).get(organism.id_organisme)
+        if exist_org:
+            DB.session.merge(organism)
+        else:
+            DB.session.add(organism)
+    else:
+        DB.session.add(organism)
+    DB.session.commit()
+    DB.session.flush()
+    return organism.as_dict()
+
+
+@routes.route("/roles", methods=["GET"])
+@json_resp
+def get_roles():
+    """
+    Get all roles
+
+    .. :quickref: User;
+    """
+    params = request.args.to_dict()
+    q = DB.session.query(User)
+    if "group" in params:
+        q = q.filter(User.groupe == params["group"])
+    if "orderby" in params:
+        try:
+            order_col = getattr(User.__table__.columns, params.pop("orderby"))
+            q = q.order_by(order_col)
+        except AttributeError:
+            log.error("the attribute to order on does not exist")
+    return [user.as_dict() for user in q.all()]
+
+
+@routes.route("/organisms", methods=["GET"])
+@json_resp
+def get_organismes():
+    """
+        Get all organisms
+
+        .. :quickref: User;
+    """
+    params = request.args.to_dict()
+    q = DB.session.query(BibOrganismes)
+    if "orderby" in params:
+        try:
+            order_col = getattr(BibOrganismes.__table__.columns, params.pop("orderby"))
+            q = q.order_by(order_col)
+        except AttributeError:
+            log.error("the attribute to order on does not exist")
+    return [organism.as_dict() for organism in q.all()]
+
+
+@routes.route("/organisms_dataset_actor", methods=["GET"])
+@permissions.check_cruved_scope("R", True)
+@json_resp
+def get_organismes_jdd(info_role):
+    """
+    Get all organisms and the JDD where there are actor and where 
+    the current user hase autorization with its cruved
+
+    .. :quickref: User;
+    """
+    params = request.args.to_dict()
+
+    datasets = [dataset["id_dataset"] for dataset in get_datasets_cruved(info_role)]
+    q = (
+        DB.session.query(BibOrganismes)
+        .join(
+            CorDatasetActor, BibOrganismes.id_organisme == CorDatasetActor.id_organism
+        )
+        .filter(CorDatasetActor.id_dataset.in_(datasets))
+        .distinct()
+    )
+    if "orderby" in params:
+        try:
+            order_col = getattr(BibOrganismes.__table__.columns, params.pop("orderby"))
+            q = q.order_by(order_col)
+        except AttributeError:
+            log.error("the attribute to order on does not exist")
+    return [organism.as_dict() for organism in q.all()]
+
+
+#########################
+### REGISTER ROUTES #####
+#########################
 
 
 @routes.route("/inscription", methods=["POST"])
@@ -140,6 +247,28 @@ def inscription():
 
     r = s.post(
         url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/create_temp_user",
+        json=data,
+    )
+
+    return Response(r), r.status_code
+
+
+@routes.route("/login/recovery", methods=["POST"])  # TODO supprimer si non utilisé
+def login_recovery():
+    """
+        Call UsersHub API to create a TOKEN for a user	
+        A post_action send an email with the user login and a link to reset its password	
+        Work only if 'ENABLE_SIGN_UP' is set to True	
+    """
+    # test des droits
+    if not config.get("ENABLE_SIGN_UP", False):
+        return jsonify({"msg": "Page introuvable"}), 404
+
+    data = request.get_json()
+
+    r = s.post(
+        url=config["API_ENDPOINT"]
+        + "/pypn/register/post_usershub/create_cor_role_token",
         json=data,
     )
 
@@ -267,129 +396,4 @@ def change_password(id_role):
         # comme concerne le password, on explicite pas le message
         return {"msg": "Erreur serveur"}, 500
     return {"msg": "Mot de passe modifié avec succès"}, 200
-
-
-@routes.route("/cor_role", methods=["POST"])
-@json_resp
-def insert_in_cor_role(id_group=None, id_user=None):
-    """
-    Insert a user in a group
-
-    .. :quickref: User;
-
-    :param id_role: the id user
-    :type id_role: int    
-    :param id_group: the id group
-    :type id_group: int
-        # TODO ajouter test sur les POST de données
-    """
-    exist_user = (
-        DB.session.query(CorRole)
-        .filter(CorRole.id_role_groupe == id_group)
-        .filter(CorRole.id_role_utilisateur == id_user)
-        .all()
-    )
-    if not exist_user:
-        cor_role = CorRole(id_group, id_user)
-        DB.session.add(cor_role)
-        DB.session.commit()
-        DB.session.flush()
-        return cor_role.as_dict()
-    return {"message": "cor already exists"}, 500
-
-
-@routes.route("/organism", methods=["POST"])
-@json_resp
-def insert_organism(organism):
-    """
-    Insert a organism
-
-    .. :quickref: User;
-    """
-    if organism is not None:
-        data = organism
-    else:
-        data = dict(request.get_json())
-    organism = BibOrganismes(**data)
-    if organism.id_organisme:
-        exist_org = DB.session.query(BibOrganismes).get(organism.id_organisme)
-        if exist_org:
-            DB.session.merge(organism)
-        else:
-            DB.session.add(organism)
-    else:
-        DB.session.add(organism)
-    DB.session.commit()
-    DB.session.flush()
-    return organism.as_dict()
-
-
-@routes.route("/roles", methods=["GET"])
-@json_resp
-def get_roles():
-    """
-    Get all roles
-
-    .. :quickref: User;
-    """
-    params = request.args.to_dict()
-    q = DB.session.query(User)
-    if "group" in params:
-        q = q.filter(User.groupe == params["group"])
-    if "orderby" in params:
-        try:
-            order_col = getattr(User.__table__.columns, params.pop("orderby"))
-            q = q.order_by(order_col)
-        except AttributeError:
-            log.error("the attribute to order on does not exist")
-    return [user.as_dict() for user in q.all()]
-
-
-@routes.route("/organisms", methods=["GET"])
-@json_resp
-def get_organismes():
-    """
-        Get all organisms
-
-        .. :quickref: User;
-    """
-    params = request.args.to_dict()
-    q = DB.session.query(BibOrganismes)
-    if "orderby" in params:
-        try:
-            order_col = getattr(BibOrganismes.__table__.columns, params.pop("orderby"))
-            q = q.order_by(order_col)
-        except AttributeError:
-            log.error("the attribute to order on does not exist")
-    return [organism.as_dict() for organism in q.all()]
-
-
-@routes.route("/organisms_dataset_actor", methods=["GET"])
-@permissions.check_cruved_scope("R", True)
-@json_resp
-def get_organismes_jdd(info_role):
-    """
-    Get all organisms and the JDD where there are actor and where 
-    the current user hase autorization with its cruved
-
-    .. :quickref: User;
-    """
-    params = request.args.to_dict()
-
-    datasets = [dataset["id_dataset"] for dataset in get_datasets_cruved(info_role)]
-    q = (
-        DB.session.query(BibOrganismes)
-        .join(
-            CorDatasetActor, BibOrganismes.id_organisme == CorDatasetActor.id_organism
-        )
-        .filter(CorDatasetActor.id_dataset.in_(datasets))
-        .distinct()
-    )
-    if "orderby" in params:
-        try:
-            order_col = getattr(BibOrganismes.__table__.columns, params.pop("orderby"))
-            q = q.order_by(order_col)
-        except AttributeError:
-            log.error("the attribute to order on does not exist")
-    return [organism.as_dict() for organism in q.all()]
 

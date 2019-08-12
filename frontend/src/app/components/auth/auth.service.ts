@@ -63,16 +63,12 @@ export class AuthService {
     return this._http.post<any>(`${AppConfig.API_ENDPOINT}/auth/login/check`, options);
   }
 
-  loginRecovery(data: any): Observable<any> {
+  loginOrPwdRecovery(data: any): Observable<any> {
     return this._http.post<any>(`${AppConfig.API_ENDPOINT}/users/login/recovery`, data);
   }
 
-  passwordRecovery(data: any): Observable<any> {
-    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/users/password/recovery`, data);
-  }
-
   passwordChange(data: any): Observable<any> {
-    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/users/password/change`, data);
+    return this._http.put<any>(`${AppConfig.API_ENDPOINT}/users/password/change`, data);
   }
 
   signinUser(user: any) {
