@@ -1,4 +1,4 @@
 backend/__pycache__/*
-__pycache__/
+**/__pycache__/
 frontend/app/module.config.ts
 **/node_modules/
