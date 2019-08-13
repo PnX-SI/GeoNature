@@ -5,8 +5,9 @@
             <h5><em class="fa fa-lg fa-question-circle" style="padding-right: 0.2rem" aria-hidden="true"
                     *ngIf="introLegend==='Placez la souris sur une commune'"></em> {{ introLegend }} </h5>
             <h5><b>
-                    <p><em class="fa fa-md fa-map-pin" style="padding-right: 0.2rem" aria-hidden="true"
-                            *ngIf="introLegend!='Placez la souris sur une commune'"></em> {{ currentCommune }} </p>
+                    <p><em class="fa fa-md fa-map-pin" style="padding-right: 0.2rem; color: rgb(191,24,24)"
+                            aria-hidden="true" *ngIf="introLegend!='Placez la souris sur une commune'"></em>
+                        {{ currentCommune }} </p>
                 </b></h5>
             <p> {{ currentNbObs }} </p>
             <p> {{ currentNbTax }} </p>

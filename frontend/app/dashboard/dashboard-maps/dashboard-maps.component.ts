@@ -57,7 +57,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   public filter: any;
   @Input() taxonomies: any;
   @Input() yearsMinMax: any;
-  public yearRange = [1980, 2019];
+  public yearRange = [1970, 2019];
   public currentCdRef: any;
   public filtersDict: any;
   public spinner = false;
