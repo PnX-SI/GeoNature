@@ -15,15 +15,20 @@ export class DashboardSpeciesComponent implements OnInit {
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
   public subscription: any;
+  // Type de graphe
   public pieChartType = 'doughnut';
+  // Tableau contenant les labels du graphe
   public pieChartLabels = ["Taxons recontactés", "Taxons non recontactés", "Nouveaux taxons"];
+  // Tableau contenant les données du graphe
   public pieChartData = [];
+  // Dictionnaire contenant les couleurs et la taille de bordure du graphe
   public pieChartColors = [
     {
       backgroundColor: ["rgb(119,163,53)", "rgb(217,146,30)", "rgb(43,132,183)"],
       borderWidth: 0.8
     }
   ];
+  // Dictionnaire contenant les options à implémenter sur le graphe (calcul des pourcentages notamment)
   public pieChartOptions = {
     legend: {
       display: 'true',
@@ -36,16 +41,6 @@ export class DashboardSpeciesComponent implements OnInit {
       }
     },
     plugins: {
-      // outlabels: {
-      //   text: '%p',
-      //   color: 'white',
-      //   stretch: 45,
-      //   font: {
-      //     resizable: true,
-      //     minSize: 12,
-      //     maxSize: 18
-      //   }
-      // },
       labels: [
         {
           render: 'label',
@@ -59,8 +54,6 @@ export class DashboardSpeciesComponent implements OnInit {
           fontColor: 'white',
           fontSize: 14,
           fontStyle: 'bold',
-          // position: 'outside',
-          // textMargin: 15,
           precision: 2,
           textShadow: true,
           overlap: false
@@ -82,12 +75,11 @@ export class DashboardSpeciesComponent implements OnInit {
 
   ngOnInit() {
     this.spinner = true;
-    // Par défaut, le pie chart s'affiche au niveau du règne
-    this.speciesForm.controls["selectedYear"].setValue(2019);
+    // Par défaut, le pie chart s'affiche à l'année en court
+    this.speciesForm.controls["selectedYear"].setValue(this.distinctYears[this.distinctYears.length - 1]);
     // Accès aux données de synthèse de la BDD GeoNature
     this.subscription = this.dataService.getSpecies({ selectedYear: this.speciesForm.value.selectedYear }).subscribe(
       (data) => {
-        // console.log(data);
         data.forEach(
           (elt) => {
             this.pieChartData.push(elt);
@@ -115,7 +107,6 @@ export class DashboardSpeciesComponent implements OnInit {
         )
         this.pieChartData = pieChartDataTemp;
         this.spinner = false;
-        console.log(this.pieChartData);
       }
     );
   }
