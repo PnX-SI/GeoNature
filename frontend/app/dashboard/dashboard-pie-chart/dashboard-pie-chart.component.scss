@@ -1,10 +1,14 @@
 .card {
   background-color: white;
-  border-color: rgb(150,150,150);
+  border-color: rgb(150, 150, 150);
 }
 
 .card-header {
-  background: radial-gradient(circle at top left, rgba(62, 69, 81, 0.7), #e0e0e0);
+  background: radial-gradient(
+    circle at top left,
+    rgba(62, 69, 81, 0.7),
+    #e0e0e0
+  );
 }
 
 .card-body {
@@ -13,7 +17,7 @@
 
 .card-absolute {
   margin-left: 1.3rem;
-  margin-right:0.1rem;
+  margin-right: 0.1rem;
   margin-top: 0.1rem;
   margin-bottom: 1rem;
   padding: 10px 10px;
@@ -29,9 +33,9 @@
 }
 
 .fa-info-circle {
-  color: rgb(217,146,30);
+  color: rgb(217, 146, 30);
 }
 
 .fa-question-circle {
-  color: rgb(119,163,53);
+  color: rgb(119, 163, 53);
 }

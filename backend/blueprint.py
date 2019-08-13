@@ -88,30 +88,6 @@ def get_area_stat(type_code):
         .group_by(LAreas.area_name, LAreas.geom)
     )
 
-    # st_simplify
-    # q = (
-    #     select(
-    #         [
-    #             func.count(Synthese.id_synthese),
-    #             VGeomSimplified.area_name,
-    #             func.st_asgeojson(
-    #                 func.st_transform(VGeomSimplified.geom_simplified, 4326)
-    #             ),
-    #             func.count(distinct(Taxref.cd_ref)),
-    #         ]
-    #     )
-    #     .select_from(
-    #         Synthese.__table__.join(
-    #             CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese
-    #         )
-    #         .join(VGeomSimplified, VGeomSimplified.id_area == CorAreaSynthese.id_area)
-    #         .join(Taxref, Taxref.cd_nom == Synthese.cd_nom)
-    #         .join(BibAreasTypes, BibAreasTypes.id_type == VGeomSimplified.id_type)
-    #     )
-    #     .where(BibAreasTypes.type_code == "COM")
-    #     .group_by(VGeomSimplified.area_name, VGeomSimplified.geom_simplified)
-    # )
-
     if "selectedYearRange" in params:
         q = q.where(
             func.date_part("year", Synthese.date_min)
@@ -139,6 +115,7 @@ def get_area_stat(type_code):
         q = q.where(Taxref.group2_inpn == params["selectedGroup2INPN"])
     # data = q.all()
     data = DB.engine.execute(q)
+    print(q)
 
     geojson_features = []
     for d in data:
@@ -162,7 +139,7 @@ def get_synthese_per_tax_level_stat():
                 # func.count(distinct(Taxref.cd_ref)),
             )
             # .join(Taxref, Taxref.cd_nom == VSynthese.cd_nom)
-            .group_by(VSynthese.regne)
+            .group_by(VSynthese.regne).order_by(VSynthese.regne)
         )
     if ("selectedFilter" in params) and (params["selectedFilter"] == "Phylum"):
         q = (
@@ -172,7 +149,7 @@ def get_synthese_per_tax_level_stat():
                 # func.count(distinct(Taxref.cd_ref)),
             )
             # .join(Taxref, Taxref.cd_nom == VSynthese.cd_nom)
-            .group_by(VSynthese.phylum)
+            .group_by(VSynthese.phylum).order_by(VSynthese.phylum)
         )
     if ("selectedFilter" in params) and (params["selectedFilter"] == "Classe"):
         q = (
@@ -182,7 +159,7 @@ def get_synthese_per_tax_level_stat():
                 # func.count(distinct(Taxref.cd_ref)),
             )
             # .join(Taxref, Taxref.cd_nom == VSynthese.cd_nom)
-            .group_by(VSynthese.classe)
+            .group_by(VSynthese.classe).order_by(VSynthese.classe)
         )
     if ("selectedFilter" in params) and (params["selectedFilter"] == "Ordre"):
         q = (
@@ -192,7 +169,7 @@ def get_synthese_per_tax_level_stat():
                 # func.count(distinct(Taxref.cd_ref)),
             )
             # .join(Taxref, Taxref.cd_nom == VSynthese.cd_nom)
-            .group_by(VSynthese.ordre)
+            .group_by(VSynthese.ordre).order_by(VSynthese.ordre)
         )
     if ("selectedFilter" in params) and (params["selectedFilter"] == "Groupe INPN 1"):
         q = (
@@ -202,7 +179,7 @@ def get_synthese_per_tax_level_stat():
                 # func.count(distinct(Taxref.cd_ref)),
             )
             # .join(Taxref, Taxref.cd_nom == VSynthese.cd_nom)
-            .group_by(VSynthese.group1_inpn)
+            .group_by(VSynthese.group1_inpn).order_by(VSynthese.group1_inpn)
         )
     if ("selectedFilter" in params) and (params["selectedFilter"] == "Groupe INPN 2"):
         q = (
@@ -212,7 +189,7 @@ def get_synthese_per_tax_level_stat():
                 # func.count(distinct(Taxref.cd_ref)),
             )
             # .join(Taxref, Taxref.cd_nom == VSynthese.cd_nom)
-            .group_by(VSynthese.group2_inpn)
+            .group_by(VSynthese.group2_inpn).order_by(VSynthese.group2_inpn)
         )
     if "selectedYearRange" in params:
         q = q.filter(
@@ -306,6 +283,7 @@ def get_taxonomie():
     )
     if "taxLevel" in params:
         q = q.filter(VTaxonomie.level == params["taxLevel"])
+    q = q.order_by(VTaxonomie.name_taxon)
     return q.all()
 
 

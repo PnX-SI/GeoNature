@@ -59,26 +59,8 @@
                         </div>
                     </div><br />
                     <div class=" row row-sm">
-                        <!-- <div class="col-md-6 padding-sm">
-                            <button class="btn btn-block btn-secondary" (click)="changeMapToCommunes()"
-                                *ngIf="!spinner">
-                                <B>Communes</B>
-                            </button>
-                            <button class="btn btn-block btn-secondary" area-disabled="true"
-                                (click)="changeMapToCommunes()" *ngIf="spinner" disabled>
-                                <B>Communes</B>
-                            </button>
-                        </div>
-                        <div class="col-md-6 padding-sm">
-                            <button class="btn btn-block btn-secondary" (click)="changeMapToMailles()" *ngIf="!spinner">
-                                <B>Mailles</B>
-                            </button>
-                            <button class="btn btn-block btn-secondary" area-disabled="true"
-                                (click)="changeMapToMailles()" *ngIf="spinner" disabled>
-                                <B>Mailles</B>
-                            </button>
-                        </div> -->
-                        <select [formControl]="areaTypeControl">
+
+                        <select class="form-control" [formControl]="areaTypeControl">
                             <option [ngValue]="area_type.type_code" *ngFor="let area_type of tabAreasTypes">
                                 {{ area_type.type_name }} </option>
                         </select>

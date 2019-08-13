@@ -1,5 +1,4 @@
-@import '../../../node_modules/nouislider/distribute/nouislider.css';
-
+// @import '../../../node_modules/nouislider/distribute/nouislider.css';
 
 .card {
   background-color: white;
@@ -7,7 +6,11 @@
 }
 
 .card-header {
-  background: radial-gradient(circle at top left, rgba(62, 69, 81, 0.7), #e0e0e0);
+  background: radial-gradient(
+    circle at top left,
+    rgba(62, 69, 81, 0.7),
+    #e0e0e0
+  );
 }
 
 .card-absolute {
@@ -28,7 +31,7 @@
 }
 
 .card-absolute-taxon {
-  margin-right:0.1rem;
+  margin-right: 0.1rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
   padding: 5px 5px;
@@ -44,7 +47,7 @@
 }
 
 .fa-question-circle {
-  color: rgb(119,163,53);
+  color: rgb(119, 163, 53);
 }
 
 ::ng-deep .divLegend {
@@ -64,46 +67,50 @@
   opacity: 0.9;
 }
 
-.btn-bordeaux { 
-  color: #ffffff; 
-  background-color: rgba(159, 5, 63, 0.8); 
-  border-color: rgba(159, 5, 63, 0.8); 
-} 
-
-.btn-bordeaux:hover { 
-  color: #ffffff; 
-  background-color: #711334; 
-  border-color: #711334; 
-} 
-
-.btn-bordeaux:focus, .btn-bordeaux.focus {
-  box-shadow: 0 0 0 0.2rem #DEBFCA;
+.btn-bordeaux {
+  color: #ffffff;
+  background-color: rgba(159, 5, 63, 0.8);
+  border-color: rgba(159, 5, 63, 0.8);
 }
 
-.btn-bordeaux:disabled, .btn-bordeaux.disabled { 
-  color: #ffffff; 
-  background-color: rgba(159, 5, 63, 0.8); 
-  border-color: rgba(159, 5, 63, 0.8); 
-} 
-
-.btn-water { 
-  color: #ffffff; 
-  background-color: rgba(0, 128, 128, 0.8); 
-  border-color: rgba(0, 128, 128, 0.8); 
-} 
-
-.btn-water:hover { 
-  color: #ffffff; 
-  background-color: #225F5F; 
-  border-color: #225F5F; 
-} 
-
-.btn-water:focus, .btn-water.focus {
-  box-shadow: 0 0 0 0.2rem #C4D8D8;
+.btn-bordeaux:hover {
+  color: #ffffff;
+  background-color: #711334;
+  border-color: #711334;
 }
 
-.btn-water:disabled, .btn-water.disabled { 
-  color: #ffffff; 
-  background-color: rgba(0, 128, 128, 0.8); 
-  border-color: rgba(0, 128, 128, 0.8); 
-} 
+.btn-bordeaux:focus,
+.btn-bordeaux.focus {
+  box-shadow: 0 0 0 0.2rem #debfca;
+}
+
+.btn-bordeaux:disabled,
+.btn-bordeaux.disabled {
+  color: #ffffff;
+  background-color: rgba(159, 5, 63, 0.8);
+  border-color: rgba(159, 5, 63, 0.8);
+}
+
+.btn-water {
+  color: #ffffff;
+  background-color: rgba(0, 128, 128, 0.8);
+  border-color: rgba(0, 128, 128, 0.8);
+}
+
+.btn-water:hover {
+  color: #ffffff;
+  background-color: #225f5f;
+  border-color: #225f5f;
+}
+
+.btn-water:focus,
+.btn-water.focus {
+  box-shadow: 0 0 0 0.2rem #c4d8d8;
+}
+
+.btn-water:disabled,
+.btn-water.disabled {
+  color: #ffffff;
+  background-color: rgba(0, 128, 128, 0.8);
+  border-color: rgba(0, 128, 128, 0.8);
+}

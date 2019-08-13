@@ -1,8 +1,15 @@
-import { Component, OnInit, OnChanges, AfterViewInit, Input } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  OnChanges,
+  AfterViewInit,
+  Input,
+  ViewEncapsulation
+} from "@angular/core";
 import { FormBuilder, FormGroup, FormControl } from "@angular/forms";
 import { MapService } from "@geonature_common/map/map.service";
-import * as L from 'leaflet';
-import { AppConfig } from '@geonature_config/app.config';
+import * as L from "leaflet";
+import { AppConfig } from "@geonature_config/app.config";
 import { ModuleConfig } from "../../module.config";
 // Services
 import { DataService } from "../services/data.services";
@@ -10,28 +17,66 @@ import { DataService } from "../services/data.services";
 @Component({
   selector: "dashboard-maps",
   templateUrl: "dashboard-maps.component.html",
-  styleUrls: ['./dashboard-maps.component.scss'],
+  ViewEncapsulation: ViewEncapsulation.None,
+  styleUrls: ["./dashboard-maps.component.scss"],
   providers: [MapService]
 })
-
-export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit {
-
+export class DashboardMapsComponent
+  implements OnInit, OnChanges, AfterViewInit {
   public background: Array<any>;
   public myCommunes: Array<any>;
   public subscription: any;
   public showData: Function;
-  public initialBorderColor = 'rgb(255, 255, 255)';
-  public selectedBorderColor = 'rgb(50, 50, 50)';
+  public initialBorderColor = "rgb(255, 255, 255)";
+  public selectedBorderColor = "rgb(50, 50, 50)";
   public obsColors: { [nbClasses: string]: any } = {
     2: ["#BE8096", "#64112E"],
     3: ["#D4AAB9", "#89173F", "#320917"],
     4: ["#D4AAB9", "#9E4161", "#64112E", "#260712"],
     5: ["#E9D4DC", "#B36B84", "#89173F", "#4B0D23", "#19050C"],
     6: ["#E9D4DC", "#C995A7", "#9E4161", "#711334", "#3F0B1D", "#0D0306"],
-    7: ["#E9D4DC", "#C995A7", "#A95673", "#89173F", "#64112E", "#3F0B1D", "#19050C"],
-    8: ["#F4E9ED", "#DEBFCA", "#BE8096", "#9E4161", "#7D153A", "#580F29", "#320917", "#0D0306"],
-    9: ["#F4E9ED", "#DEBFCA", "#BE8096", "#9E4161", "#89173F", "#64112E", "#3F0B1D", "#260712", "#0D0306"],
-    10: ["#F4E9ED", "#DEBFCA", "#BE8096", "#9E4161", "#89173F", "#711334", "#580F29", "#3F0B1D", "#260712", "#0D0306"]
+    7: [
+      "#E9D4DC",
+      "#C995A7",
+      "#A95673",
+      "#89173F",
+      "#64112E",
+      "#3F0B1D",
+      "#19050C"
+    ],
+    8: [
+      "#F4E9ED",
+      "#DEBFCA",
+      "#BE8096",
+      "#9E4161",
+      "#7D153A",
+      "#580F29",
+      "#320917",
+      "#0D0306"
+    ],
+    9: [
+      "#F4E9ED",
+      "#DEBFCA",
+      "#BE8096",
+      "#9E4161",
+      "#89173F",
+      "#64112E",
+      "#3F0B1D",
+      "#260712",
+      "#0D0306"
+    ],
+    10: [
+      "#F4E9ED",
+      "#DEBFCA",
+      "#BE8096",
+      "#9E4161",
+      "#89173F",
+      "#711334",
+      "#580F29",
+      "#3F0B1D",
+      "#260712",
+      "#0D0306"
+    ]
   };
   public taxColors: { [nbClasses: string]: any } = {
     2: ["#8AB2B2", "#1E5454"],
@@ -39,10 +84,48 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     4: ["#B1CCCC", "#4F8C8C", "#1E5454", "#0C2020"],
     5: ["#D8E5E5", "#76A5A5", "#297373", "#173F3F", "#081515"],
     6: ["#D8E5E5", "#9DBFBF", "#4F8C8C", "#225F5F", "#133535", "#040B0B"],
-    7: ["#D8E5E5", "#9DBFBF", "#639999", "#297373", "#1E5454", "#133535", "#081515"],
-    8: ["#EBF2F2", "#C4D8D8", "#8AB2B2", "#4F8C8C", "#266969", "#1B4A4A", "#0F2A2A", "#040B0B"],
-    9: ["#EBF2F2", "#C4D8D8", "#8AB2B2", "#4F8C8C", "#297373", "#1E5454", "#133535", "#0C2020", "#040B0B"],
-    10: ["#EBF2F2", "#C4D8D8", "#8AB2B2", "#4F8C8C", "#297373", "#225F5F", "#1B4A4A", "#133535", "#0C2020", "#040B0B"]
+    7: [
+      "#D8E5E5",
+      "#9DBFBF",
+      "#639999",
+      "#297373",
+      "#1E5454",
+      "#133535",
+      "#081515"
+    ],
+    8: [
+      "#EBF2F2",
+      "#C4D8D8",
+      "#8AB2B2",
+      "#4F8C8C",
+      "#266969",
+      "#1B4A4A",
+      "#0F2A2A",
+      "#040B0B"
+    ],
+    9: [
+      "#EBF2F2",
+      "#C4D8D8",
+      "#8AB2B2",
+      "#4F8C8C",
+      "#297373",
+      "#1E5454",
+      "#133535",
+      "#0C2020",
+      "#040B0B"
+    ],
+    10: [
+      "#EBF2F2",
+      "#C4D8D8",
+      "#8AB2B2",
+      "#4F8C8C",
+      "#297373",
+      "#225F5F",
+      "#1B4A4A",
+      "#133535",
+      "#0C2020",
+      "#040B0B"
+    ]
   };
   public legend: any;
   public divLegendObs: any;
@@ -65,11 +148,17 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   public disabledTaxButton = false;
   public tabAreasTypes: Array<any>;
   public areaTypeControl = new FormControl();
-  public currentTypeCode: string;
+  public currentTypeCode = "COM";
 
-  public taxonApiEndPoint = `${AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
+  public taxonApiEndPoint = `${
+    AppConfig.API_ENDPOINT
+  }/synthese/taxons_autocomplete`;
 
-  constructor(public dataService: DataService, public fb: FormBuilder, public mapService: MapService) {
+  constructor(
+    public dataService: DataService,
+    public fb: FormBuilder,
+    public mapService: MapService
+  ) {
     // Déclaration du formulaire contenant les filtres de la carte
     this.mapForm = fb.group({
       // nbClasses: fb.control(null),
@@ -87,61 +176,67 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
 
     // Initialisation des variables formant la légende
     //// Légende concernant le nombre d'observations
-    this.divLegendObs = L.DomUtil.create('div', 'divLegend');
+    this.divLegendObs = L.DomUtil.create("div", "divLegend");
     this.divLegendObs.innerHTML += "<b>Nombre d'observations</b><br/>";
     const gradesObs = [1, 1000, 2000, 3000, 4000, 5000, 10000];
     for (var i = 0; i < gradesObs.length; i++) {
-      this.divLegendObs.innerHTML += '<i style="background:' + this.getColorObs(gradesObs[i] + 1) + '"></i>' + gradesObs[i] + (gradesObs[i + 1] ? '&ndash;' + gradesObs[i + 1] + '<br>' : '+');
+      this.divLegendObs.innerHTML +=
+        '<i style="background:' +
+        this.getColorObs(gradesObs[i] + 1) +
+        '"></i>' +
+        gradesObs[i] +
+        (gradesObs[i + 1] ? "&ndash;" + gradesObs[i + 1] + "<br>" : "+");
     }
     //// Légende concernant le nombre de taxons
-    this.divLegendTax = L.DomUtil.create('div', 'divLegend');
+    this.divLegendTax = L.DomUtil.create("div", "divLegend");
     this.divLegendTax.innerHTML += "<b>Nombre de taxons</b><br/>";
     const gradesTax = [1, 100, 200, 300, 400, 500, 600];
     for (var i = 0; i < gradesTax.length; i++) {
-      this.divLegendTax.innerHTML += '<i style="background:' + this.getColorTax(gradesTax[i] + 1) + '"></i>' + gradesTax[i] + (gradesTax[i + 1] ? '&ndash;' + gradesTax[i + 1] + '<br>' : '+');
+      this.divLegendTax.innerHTML +=
+        '<i style="background:' +
+        this.getColorTax(gradesTax[i] + 1) +
+        '"></i>' +
+        gradesTax[i] +
+        (gradesTax[i + 1] ? "&ndash;" + gradesTax[i + 1] + "<br>" : "+");
     }
   }
 
   ngOnInit() {
-    this.mapForm.controls.selectedYearRange
-      .valueChanges
+    this.mapForm.controls.selectedYearRange.valueChanges
       .debounceTime(1000)
       .distinctUntilChanged()
       .subscribe(data => {
         console.log(data);
-      })
+      });
     this.spinner = true;
     // Initialisation de la fonction "showData" (au chargement de la page, la carte affiche automatiquement le nombre d'observations)
     this.showData = this.onEachFeatureNbObs;
-    // Accès aux données de synthèse de la BDD GeoNature 
-    this.subscription = this.dataService.getDataCommunes('COM').subscribe(
-      (data) => {
+    // Accès aux données de synthèse de la BDD GeoNature
+    this.subscription = this.dataService
+      .getDataCommunes("COM")
+      .subscribe(data => {
         // console.log(data);
         this.myCommunes = data;
         this.background = data;
         this.spinner = false;
         this.spinnerInit = false;
-      }
-    );
+      });
     // Initialisation de la variable currentMap (au chargement de la page, la carte affiche automatiquement le nombre d'observations)
     this.currentMap = 1; // Permet d'afficher les informations de légende associées au nombre d'observations
     // Liste déroulante des areas_types
-    this.dataService.getAreasTypes(ModuleConfig.AREA_TYPE).subscribe(
-      (data) => {
-        this.tabAreasTypes = data;
-      }
-    )
-    this.areaTypeControl.patchValue('COM');
+    this.dataService.getAreasTypes(ModuleConfig.AREA_TYPE).subscribe(data => {
+      this.tabAreasTypes = data;
+    });
+    this.areaTypeControl.patchValue("COM");
     this.areaTypeControl.valueChanges.subscribe(value => {
       this.currentTypeCode = value;
-      this.dataService.getDataCommunes(this.currentTypeCode, this.mapForm.value).subscribe(
-        (data) => {
+      this.dataService
+        .getDataCommunes(this.currentTypeCode, this.mapForm.value)
+        .subscribe(data => {
           this.myCommunes = data;
           this.background = data;
-        }
-      );
-
-    })
+        });
+    });
   }
 
   ngOnChanges(change) {
@@ -154,7 +249,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   ngAfterViewInit() {
     // Implémentation de la légende (au chargement de la page, la carte affiche automatiquement le nombre d'observations)
     this.legend = (L as any).control({ position: "bottomright" });
-    this.legend.onAdd = (map) => {
+    this.legend.onAdd = map => {
       return this.divLegendObs;
     };
     this.legend.addTo(this.mapService.map);
@@ -165,7 +260,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     this.myCommunes = Object.assign({}, this.myCommunes);
     this.showData = this.onEachFeatureNbTax.bind(this);
     this.mapService.map.removeControl(this.legend);
-    this.legend.onAdd = (map) => {
+    this.legend.onAdd = map => {
       return this.divLegendTax;
     };
     this.legend.addTo(this.mapService.map);
@@ -177,7 +272,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     this.myCommunes = Object.assign({}, this.myCommunes);
     this.showData = this.onEachFeatureNbObs.bind(this);
     this.mapService.map.removeControl(this.legend);
-    this.legend.onAdd = (map) => {
+    this.legend.onAdd = map => {
       return this.divLegendObs;
     };
     this.legend.addTo(this.mapService.map);
@@ -200,11 +295,11 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     // console.log(this.mapForm.value);
     // Afficher les données d'origine si la valeur vaut ""
     if (this.filter == "") {
-      this.dataService.getDataCommunes(this.currentTypeCode, this.mapForm.value).subscribe(
-        (data) => {
+      this.dataService
+        .getDataCommunes(this.currentTypeCode, this.mapForm.value)
+        .subscribe(data => {
           this.myCommunes = data;
-        }
-      );
+        });
     }
   }
   getCurrentParameters(event) {
@@ -217,7 +312,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     // Copie des éléments du formulaire pour pouvoir y ajouter cd_ref s'il s'agit d'un filtre par taxon
     this.filtersDict = Object.assign({}, this.mapForm.value);
     // S'il s'agit d'une recherche de taxon...
-    if (this.filter == 'Rechercher un taxon/une espèce...') {
+    if (this.filter == "Rechercher un taxon/une espèce...") {
       if (event.item) {
         // Récupération du cd_ref
         var cd_ref = event.item.cd_ref;
@@ -225,8 +320,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
         this.currentCdRef = cd_ref;
         // L'affichage de la carte du nombre de taxons n'a pas de sens lorsqu'on a sélectionné un taxon en particulier
         this.changeMapToObs();
-      }
-      else {
+      } else {
         // Récupération du cd_ref pour un changement de période concernant un taxon
         var cd_ref = this.currentCdRef;
       }
@@ -237,43 +331,58 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     }
     // console.log(this.filtersDict);
     // Accès aux données de synthèse de la BDD GeoNature
-    this.subscription = this.dataService.getDataCommunes(this.currentTypeCode, this.filtersDict).subscribe(
-      (data) => {
+    this.subscription = this.dataService
+      .getDataCommunes(this.currentTypeCode, this.filtersDict)
+      .subscribe(data => {
         this.myCommunes = data;
         this.spinner = false;
-      }
-    );
+      });
   }
 
   // Communes grisées si pas de données concernant une certaine année
   defineBackground(feature, layer) {
-    layer.setStyle({ fillColor: 'rgb(150, 150, 150)', color: this.initialBorderColor, fillOpacity: 0.9, weight: 1 });
+    layer.setStyle({
+      fillColor: "rgb(150, 150, 150)",
+      color: this.initialBorderColor,
+      fillOpacity: 0.9,
+      weight: 1
+    });
     layer.on({
       mouseover: this.highlightFeatureBackground.bind(this),
       mouseout: this.resetHighlight.bind(this),
       click: this.zoomToFeature.bind(this)
     });
-  };
+  }
 
   // Paramètres de la carte relative au nombre d'observations
   onEachFeatureNbObs(feature, layer) {
-    layer.setStyle({ fillColor: this.getColorObs(feature.properties.nb_obs), color: this.initialBorderColor, fillOpacity: 0.9, weight: 1 });
+    layer.setStyle({
+      fillColor: this.getColorObs(feature.properties.nb_obs),
+      color: this.initialBorderColor,
+      fillOpacity: 0.9,
+      weight: 1
+    });
     layer.on({
       mouseover: this.highlightFeature.bind(this),
       mouseout: this.resetHighlight.bind(this),
       click: this.zoomToFeature.bind(this)
     });
-  };
+  }
 
   // Paramètres de la carte relative au nombre de taxons
   onEachFeatureNbTax(feature, layer) {
-    layer.setStyle({ fillColor: this.getColorTax(feature.properties.nb_taxons), color: this.initialBorderColor, fillOpacity: 0.9, weight: 1 });
+    layer.setStyle({
+      fillColor: this.getColorTax(feature.properties.nb_taxons),
+      color: this.initialBorderColor,
+      fillOpacity: 0.9,
+      weight: 1
+    });
     layer.on({
       mouseover: this.highlightFeature.bind(this),
       mouseout: this.resetHighlight.bind(this),
       click: this.zoomToFeature.bind(this)
     });
-  };
+  }
 
   // Couleurs de la carte relative au nombre d'observations
   getColorObs(obs) {
@@ -311,10 +420,11 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     this.introLegend = null;
     this.currentCommune = layer.feature.geometry.properties.area_name;
     if (this.currentMap == 1) {
-      this.currentNbObs = "Nombre d'observations : " + layer.feature.geometry.properties.nb_obs;
-    }
-    else if (this.currentMap == 2) {
-      this.currentNbTax = "Nombre de taxons : " + layer.feature.geometry.properties.nb_taxons;
+      this.currentNbObs =
+        "Nombre d'observations : " + layer.feature.geometry.properties.nb_obs;
+    } else if (this.currentMap == 2) {
+      this.currentNbTax =
+        "Nombre de taxons : " + layer.feature.geometry.properties.nb_taxons;
     }
   }
 
@@ -331,8 +441,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     this.currentCommune = layer.feature.geometry.properties.area_name;
     if (this.currentMap == 1) {
       this.currentNbObs = "Nombre d'observations : 0";
-    }
-    else if (this.currentMap == 2) {
+    } else if (this.currentMap == 2) {
       this.currentNbTax = "Nombre de taxons : 0";
     }
   }
@@ -355,5 +464,4 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   zoomToFeature(e) {
     this.mapService.map.fitBounds(e.target.getBounds());
   }
-
 }
