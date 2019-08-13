@@ -1,3 +1,7 @@
+::ng-deep {
+  @import "../../node_modules/nouislider/distribute/nouislider";
+}
+
 .panel-container {
   border-color: rgb(0, 128, 128);
   border-width: 0.1em;
@@ -15,22 +19,22 @@
 
 .fa-globe {
   padding-top: 0.3rem;
-  color: rgb(119,163,53);
+  color: rgb(119, 163, 53);
 }
 
 .fa-sitemap {
   padding-top: 0.3rem;
-  color: rgb(217,146,30);
+  color: rgb(217, 146, 30);
 }
 
 .fa-cubes {
   padding-top: 0.3rem;
-  color: rgb(134,83,183);
+  color: rgb(134, 83, 183);
 }
 
 .fa-paw {
   padding-top: 0.3rem;
-  color: rgb(46,86,150);
+  color: rgb(46, 86, 150);
 }
 
 .fa-chevron-down {
@@ -39,7 +43,7 @@
 
 .fa-chevron-up {
   padding-top: 0.9rem;
-  color: rgb(205,60,60);
+  color: rgb(205, 60, 60);
 }
 
 #hide-btn {
@@ -63,8 +67,8 @@
 // }
 
 .btn-block {
-  margin-right: 0.950rem;
-  margin-left: 0.950rem;
+  margin-right: 0.95rem;
+  margin-left: 0.95rem;
 }
 
 h3 {
