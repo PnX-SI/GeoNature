@@ -40,3 +40,43 @@ WITH RECURSIVE r(cd_ref) AS (
 )
 SELECT r.*
 FROM r;
+
+
+-- Ne plus considérer les géométries parfaitement limitrophes comme intersectantes
+CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese()
+  RETURNS trigger AS
+$BODY$
+  DECLARE
+  id_area_loop integer;
+  geom_change boolean;
+  BEGIN
+  geom_change = false;
+  IF(TG_OP = 'UPDATE') THEN
+	SELECT INTO geom_change NOT public.ST_EQUALS(OLD.the_geom_local, NEW.the_geom_local);
+  END IF;
+
+  IF (geom_change) THEN
+	DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = NEW.id_synthese;
+  END IF;
+
+  -- intersection avec toutes les areas et écriture dans cor_area_synthese
+    IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND geom_change )) THEN
+      INSERT INTO gn_synthese.cor_area_synthese SELECT
+	      s.id_synthese AS id_synthese,
+        a.id_area AS id_area
+        FROM ref_geo.l_areas a
+        JOIN gn_synthese.synthese s 
+        	ON public.ST_INTERSECTS(s.the_geom_local, a.geom)  AND NOT public.ST_TOUCHES(s.the_geom_local,a.geom)
+        WHERE s.id_synthese = NEW.id_synthese AND a.enable IS true;
+    END IF;
+  RETURN NULL;
+  END;
+  $BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+-- Correction sur les données antérieures
+DELETE FROM gn_synthese.cor_area_synthese cas
+USING gn_synthese.synthese s , ref_geo.l_areas a
+WHERE cas.id_synthese = s.id_synthese AND a.id_area = cas.id_area
+AND public.ST_TOUCHES(s.the_geom_local,a.geom);
