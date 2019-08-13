@@ -61,25 +61,12 @@ def get_synthese_stat():
     # return [d.as_dict() for d in data]
 
 
-@blueprint.route("/communes", methods=["GET"])
+@blueprint.route("/areas/<type_code>", methods=["GET"])
 @json_resp
-def get_communes_stat():
+def get_area_stat(type_code):
     params = request.args
-    # q = (
-    #     DB.session.query(
-    #         func.count(Synthese.id_synthese),
-    #         LAreas.area_name,
-    #         func.st_asgeojson(func.st_transform(LAreas.geom, 4326)),
-    #         func.count(distinct(Taxref.cd_ref)),
-    #     )
-    #     .join(CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese)
-    #     .join(LAreas, LAreas.id_area == CorAreaSynthese.id_area)
-    #     .join(Taxref, Taxref.cd_nom == Synthese.cd_nom)
-    #     .join(BibAreasTypes, BibAreasTypes.id_type == LAreas.id_type)
-    #     .group_by(LAreas.area_name, LAreas.geom)
-    #     .filter(BibAreasTypes.type_code == "COM")
-    # )
-
+    print(blueprint.config)
+    # print(current_app.config['DASHBOARD']['AREA_TYPE'])
     q = (
         select(
             [
@@ -94,10 +81,10 @@ def get_communes_stat():
                 CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese
             )
             .join(LAreas, LAreas.id_area == CorAreaSynthese.id_area)
+            .join(BibAreasTypes, LAreas.id_type == BibAreasTypes.id_type)
             .join(Taxref, Taxref.cd_nom == Synthese.cd_nom)
-            .join(BibAreasTypes, BibAreasTypes.id_type == LAreas.id_type)
         )
-        .where(BibAreasTypes.type_code == "COM")
+        .where(BibAreasTypes.type_code == type_code)
         .group_by(LAreas.area_name, LAreas.geom)
     )
 
@@ -168,35 +155,65 @@ def get_communes_stat():
 def get_synthese_per_tax_level_stat():
     params = request.args
     if ("selectedFilter" in params) and (params["selectedFilter"] == "Règne"):
-        q = DB.session.query(
-            func.coalesce(VSynthese.regne, "Not defined"),
-            func.count(VSynthese.id_synthese),
-        ).group_by(VSynthese.regne)
+        q = (
+            DB.session.query(
+                func.coalesce(VSynthese.regne, "Not defined"),
+                func.count(VSynthese.id_synthese),
+                # func.count(distinct(Taxref.cd_ref)),
+            )
+            # .join(Taxref, Taxref.cd_nom == VSynthese.cd_nom)
+            .group_by(VSynthese.regne)
+        )
     if ("selectedFilter" in params) and (params["selectedFilter"] == "Phylum"):
-        q = DB.session.query(
-            func.coalesce(VSynthese.phylum, "Not defined"),
-            func.count(VSynthese.id_synthese),
-        ).group_by(VSynthese.phylum)
+        q = (
+            DB.session.query(
+                func.coalesce(VSynthese.phylum, "Not defined"),
+                func.count(VSynthese.id_synthese),
+                # func.count(distinct(Taxref.cd_ref)),
+            )
+            # .join(Taxref, Taxref.cd_nom == VSynthese.cd_nom)
+            .group_by(VSynthese.phylum)
+        )
     if ("selectedFilter" in params) and (params["selectedFilter"] == "Classe"):
-        q = DB.session.query(
-            func.coalesce(VSynthese.classe, "Not defined"),
-            func.count(VSynthese.id_synthese),
-        ).group_by(VSynthese.classe)
+        q = (
+            DB.session.query(
+                func.coalesce(VSynthese.classe, "Not defined"),
+                func.count(VSynthese.id_synthese),
+                # func.count(distinct(Taxref.cd_ref)),
+            )
+            # .join(Taxref, Taxref.cd_nom == VSynthese.cd_nom)
+            .group_by(VSynthese.classe)
+        )
     if ("selectedFilter" in params) and (params["selectedFilter"] == "Ordre"):
-        q = DB.session.query(
-            func.coalesce(VSynthese.ordre, "Not defined"),
-            func.count(VSynthese.id_synthese),
-        ).group_by(VSynthese.ordre)
+        q = (
+            DB.session.query(
+                func.coalesce(VSynthese.ordre, "Not defined"),
+                func.count(VSynthese.id_synthese),
+                # func.count(distinct(Taxref.cd_ref)),
+            )
+            # .join(Taxref, Taxref.cd_nom == VSynthese.cd_nom)
+            .group_by(VSynthese.ordre)
+        )
     if ("selectedFilter" in params) and (params["selectedFilter"] == "Groupe INPN 1"):
-        q = DB.session.query(
-            func.coalesce(VSynthese.group1_inpn, "Not defined"),
-            func.count(VSynthese.id_synthese),
-        ).group_by(VSynthese.group1_inpn)
+        q = (
+            DB.session.query(
+                func.coalesce(VSynthese.group1_inpn, "Not defined"),
+                func.count(VSynthese.id_synthese),
+                # func.count(distinct(Taxref.cd_ref)),
+            )
+            # .join(Taxref, Taxref.cd_nom == VSynthese.cd_nom)
+            .group_by(VSynthese.group1_inpn)
+        )
     if ("selectedFilter" in params) and (params["selectedFilter"] == "Groupe INPN 2"):
-        q = DB.session.query(
-            func.coalesce(VSynthese.group2_inpn, "Not defined"),
-            func.count(VSynthese.id_synthese),
-        ).group_by(VSynthese.group2_inpn)
+        q = (
+            DB.session.query(
+                func.coalesce(VSynthese.group2_inpn, "Not defined"),
+                func.count(VSynthese.id_synthese),
+                # func.count(distinct(Taxref.cd_ref)),
+            )
+            # .join(Taxref, Taxref.cd_nom == VSynthese.cd_nom)
+            .group_by(VSynthese.group2_inpn)
+        )
     if "selectedYearRange" in params:
         q = q.filter(
             func.date_part("year", VSynthese.date_min)
@@ -306,5 +323,18 @@ def get_years():
             func.min(func.date_part("year", VSynthese.date_min)),
             func.max(func.date_part("year", VSynthese.date_min)),
         )
+    print(q)
     return q.all()
+
+
+@blueprint.route("/areas_types", methods=["GET"])
+@json_resp
+def get_areas_types():
+    params = request.args
+    q = DB.session.query(BibAreasTypes)
+    if "type_code" in params:
+        tab_types_codes = params.getlist("type_code")
+        q = q.filter(BibAreasTypes.type_code.in_(tab_types_codes))
+    data = q.all()
+    return [elt.as_dict() for elt in data]
 

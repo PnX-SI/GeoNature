@@ -23,6 +23,10 @@ export class DashboardPieChartComponent implements OnInit {
     {
       backgroundColor: this.backgroundColors.concat(this.backgroundColors, this.backgroundColors, this.backgroundColors, this.backgroundColors, this.backgroundColors, this.backgroundColors, this.backgroundColors, this.backgroundColors, this.backgroundColors),
       borderWidth: 0.8
+    },
+    {
+      backgroundColor: this.backgroundColors.concat(this.backgroundColors, this.backgroundColors, this.backgroundColors, this.backgroundColors, this.backgroundColors, this.backgroundColors, this.backgroundColors, this.backgroundColors, this.backgroundColors),
+      borderWidth: 0.8
     }
   ];
   public pieChartOptions = {
@@ -93,6 +97,7 @@ export class DashboardPieChartComponent implements OnInit {
     // Accès aux données de synthèse de la BDD GeoNature
     this.subscription = this.dataService.getDataSynthesePerTaxLevel(this.pieChartForm.value).subscribe(
       (data) => {
+        console.log(data);
         //Remplissage de l'array des données, paramètre du pie chart
         data.forEach(
           (elt) => {
@@ -100,6 +105,7 @@ export class DashboardPieChartComponent implements OnInit {
           }
         );
         this.chart.chart.update();
+        console.log(this.pieChartData);
         this.spinner = false;
       }
     );

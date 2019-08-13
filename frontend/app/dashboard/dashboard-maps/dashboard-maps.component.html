@@ -58,7 +58,7 @@
                         </div>
                     </div><br />
                     <div class=" row row-sm">
-                        <div class="col-md-6 padding-sm">
+                        <!-- <div class="col-md-6 padding-sm">
                             <button class="btn btn-block btn-secondary" (click)="changeMapToCommunes()"
                                 *ngIf="!spinner">
                                 <B>Communes</B>
@@ -76,7 +76,11 @@
                                 (click)="changeMapToMailles()" *ngIf="spinner" disabled>
                                 <B>Mailles</B>
                             </button>
-                        </div>
+                        </div> -->
+                        <select [formControl]="areaTypeControl">
+                            <option [ngValue]="area_type.type_code" *ngFor="let area_type of tabAreasTypes">
+                                {{ area_type.type_name }} </option>
+                        </select>
                     </div>
                 </div><br />
 
@@ -97,13 +101,17 @@
                                     <nouislider class="nouislider" [connect]="true" [tooltips]="true"
                                         [min]="yearRange[0]" [max]="yearRange[1]" [step]="1"
                                         [formControl]="mapForm.controls.selectedYearRange"
-                                        (change)="getCurrentParameters($event)" *ngIf="!spinnerInit"></nouislider>
+                                        (change)="getCurrentParameters($event)"
+                                        *ngIf="!spinnerInit && yearRange[0]!=yearRange[1]"></nouislider>
                                 </div>
                                 <div class="col-md-11">
                                     <nouislider class="nouislider" [connect]="true" [tooltips]="true"
                                         [min]="yearRange[0]" [max]="yearRange[1]" [step]="1" [disabled]="true"
-                                        [formControl]="mapForm.controls.selectedYearRange" *ngIf="spinnerInit">
+                                        [formControl]="mapForm.controls.selectedYearRange"
+                                        *ngIf="spinnerInit && yearRange[0]!=yearRange[1]">
                                     </nouislider>
+                                    {{yearRange[0]}}
+                                    {{yearRange[1]}}
                                 </div>
                             </div>
                         </div><br />

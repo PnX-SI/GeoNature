@@ -1,8 +1,9 @@
 import { Component, OnInit, OnChanges, AfterViewInit, Input } from "@angular/core";
-import { FormBuilder, FormGroup } from "@angular/forms";
+import { FormBuilder, FormGroup, FormControl } from "@angular/forms";
 import { MapService } from "@geonature_common/map/map.service";
 import * as L from 'leaflet';
 import { AppConfig } from '@geonature_config/app.config';
+import { ModuleConfig } from "../../module.config";
 // Services
 import { DataService } from "../services/data.services";
 
@@ -62,6 +63,9 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   public spinner = false;
   public spinnerInit = true;
   public disabledTaxButton = false;
+  public tabAreasTypes: Array<any>;
+  public areaTypeControl = new FormControl();
+  public currentTypeCode: string;
 
   public taxonApiEndPoint = `${AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
 
@@ -110,7 +114,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     // Initialisation de la fonction "showData" (au chargement de la page, la carte affiche automatiquement le nombre d'observations)
     this.showData = this.onEachFeatureNbObs;
     // Accès aux données de synthèse de la BDD GeoNature 
-    this.subscription = this.dataService.getDataCommunes().subscribe(
+    this.subscription = this.dataService.getDataCommunes('COM').subscribe(
       (data) => {
         // console.log(data);
         this.myCommunes = data;
@@ -121,6 +125,23 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     );
     // Initialisation de la variable currentMap (au chargement de la page, la carte affiche automatiquement le nombre d'observations)
     this.currentMap = 1; // Permet d'afficher les informations de légende associées au nombre d'observations
+    // Liste déroulante des areas_types
+    this.dataService.getAreasTypes(ModuleConfig.AREA_TYPE).subscribe(
+      (data) => {
+        this.tabAreasTypes = data;
+      }
+    )
+    this.areaTypeControl.patchValue('COM');
+    this.areaTypeControl.valueChanges.subscribe(value => {
+      this.currentTypeCode = value;
+      this.dataService.getDataCommunes(this.currentTypeCode, this.mapForm.value).subscribe(
+        (data) => {
+          this.myCommunes = data;
+          this.background = data;
+        }
+      );
+
+    })
   }
 
   ngOnChanges(change) {
@@ -179,7 +200,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     // console.log(this.mapForm.value);
     // Afficher les données d'origine si la valeur vaut ""
     if (this.filter == "") {
-      this.dataService.getDataCommunes(this.mapForm.value).subscribe(
+      this.dataService.getDataCommunes(this.currentTypeCode, this.mapForm.value).subscribe(
         (data) => {
           this.myCommunes = data;
         }
@@ -216,7 +237,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     }
     // console.log(this.filtersDict);
     // Accès aux données de synthèse de la BDD GeoNature
-    this.subscription = this.dataService.getDataCommunes(this.filtersDict).subscribe(
+    this.subscription = this.dataService.getDataCommunes(this.currentTypeCode, this.filtersDict).subscribe(
       (data) => {
         this.myCommunes = data;
         this.spinner = false;

@@ -8,5 +8,4 @@ from marshmallow import Schema, fields
 
 
 class GnModuleSchemaConf(Schema):
-    pass
-
+   AREA_TYPE = fields.List(fields.String(), missing=['COM', 'M1', 'M5', 'M10'])
