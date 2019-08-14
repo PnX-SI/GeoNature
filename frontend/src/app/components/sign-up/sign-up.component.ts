@@ -21,7 +21,7 @@ export class SignUpComponent implements OnInit {
     private _router: Router,
     private _toasterService: ToastrService
   ) {
-    if (!(AppConfig['REGISTER']['ENABLE_SIGN_UP'] || false)) {
+    if (!(AppConfig['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false)) {
       //this._router.navigate(['/login']);
     }
   }
@@ -47,8 +47,6 @@ export class SignUpComponent implements OnInit {
   }
 
   save() {
-    console.log('PASSE LAAAAAAAAA');
-
     if (this.form.valid) {
       this._authService.signupUser(this.form.value).subscribe(
         res => {

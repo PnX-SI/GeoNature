@@ -36,7 +36,7 @@
                                         <i class=" addon fa fa-lock"></i>
                                         <input type="password" name="password" class="form-control" placeholder="Mot de passe" ngModel>
                                     </div>
-                                    <div *ngIf="enable_sign_up" class="forgot" (click)="login_or_pass_recovery=true">{{ 'ForgotPasswordOrLogin' | translate }}</div>
+                                    <div *ngIf="enable_user_management" class="forgot" (click)="login_or_pass_recovery=true">{{ 'ForgotPasswordOrLogin' | translate }}</div>
 
                                     <button class="btn btn-lg btn-success btn-block text-uppercase" type="submit">Se connecter</button>
                                     <br>

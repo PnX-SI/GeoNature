@@ -11,6 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class LoginComponent implements OnInit {
   enable_sign_up: boolean = false;
+  enable_user_management: boolean = false;
   public casLogin: boolean;
 
   identifiant: FormGroup;
@@ -24,7 +25,9 @@ export class LoginComponent implements OnInit {
     private _toasterService: ToastrService
   ) {
     this.casLogin = AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION;
-    this.enable_sign_up = AppConfig['REGISTER']['ENABLE_SIGN_UP'] || false;
+    this.enable_sign_up = AppConfig['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false;
+    this.enable_user_management =
+      AppConfig['ACCOUNT_MANAGEMENT']['ENABLE_USER_MANAGEMENT'] || false;
   }
 
   ngOnInit() {

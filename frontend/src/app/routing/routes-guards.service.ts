@@ -68,12 +68,10 @@ export class AuthGuard implements CanActivate, CanActivateChild {
 
 @Injectable()
 export class SignUpGuard implements CanActivate {
-  constructor(
-    private _router: Router
-  ) {}
+  constructor(private _router: Router) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (AppConfig['REGISTER']['ENABLE_SIGN_UP'] || false) {
+    if (AppConfig['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false) {
       return true;
     } else {
       this._router.navigate(['/login']);
