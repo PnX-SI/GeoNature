@@ -225,7 +225,7 @@ def get_organismes_jdd(info_role):
 
 
 #########################
-### REGISTER ROUTES #####
+### ACCOUNT_MANAGEMENT ROUTES #####
 #########################
 
 
@@ -237,7 +237,7 @@ def inscription():
         Fait appel à l'API UsersHub
     """
     # test des droits
-    if not config['REGISTER'].get("ENABLE_SIGN_UP", False):
+    if not config["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP", False):
         return jsonify({"message": "Page introuvable"}), 404
 
     data = request.get_json()
@@ -283,7 +283,7 @@ def confirmation():
         Fait appel à l'API UsersHub
     """
     # test des droits
-    if not config['REGISTER'].get("ENABLE_SIGN_UP", False):
+    if not config["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP", False):
         return jsonify({"message": "Page introuvable"}), 404
 
     token = request.args.get("token", None)
@@ -296,6 +296,7 @@ def confirmation():
         url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/valid_temp_user",
         json=data,
     )
+
     if r.status_code != 200:
         return Response(r), r.status_code
 
@@ -351,7 +352,7 @@ def change_password(id_role):
         Modifie le mot de passe de l'utilisateur du token
         Fait appel à l'API UsersHub
     """
-    if not config['REGISTER'].get("ENABLE_SIGN_UP", False):
+    if not config["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP", False):
         return {"message": "Page introuvable"}, 404
 
     user = DB.session.query(User).get(id_role)

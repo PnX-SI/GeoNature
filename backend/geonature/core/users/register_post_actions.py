@@ -13,7 +13,7 @@ from geonature.core.gn_meta.models import (
     TDatasets,
     TAcquisitionFramework,
     CorDatasetActor,
-    CorAcquisitionFrameworkActor
+    CorAcquisitionFrameworkActor,
 )
 from geonature.utils.utilsmails import send_mail
 from geonature.utils.env import DB
@@ -38,7 +38,7 @@ def validate_temp_user(data):
         }
 
     subject = "Demande de création de compte GeoNature"
-    if current_app.config["REGISTER"]["AUTO_ACCOUNT_CREATION"]:
+    if current_app.config["ACCOUNT_MANAGEMENT"]["AUTO_ACCOUNT_CREATION"]:
         template = "email_self_validate_account.html"
         recipients = [user.email]
     else:
@@ -60,18 +60,18 @@ def create_dataset_user(user):
         name=user["nom_role"], surname=user["prenom_role"]
     )
 
-    # actor = data productor
+    #  actor = data productor
     af_productor = CorAcquisitionFrameworkActor(
         id_role=user["id_role"],
         id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
             "ROLE_ACTEUR", "6"
-        )
+        ),
     )
     af_contact = CorAcquisitionFrameworkActor(
         id_role=user["id_role"],
         id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
             "ROLE_ACTEUR", "1"
-        )
+        ),
     )
 
     new_af = TAcquisitionFramework(
@@ -98,7 +98,7 @@ def create_dataset_user(user):
     ds_contact = CorDatasetActor(
         id_role=user["id_role"],
         id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
-            "ROLE_ACTEUR", "6"
+            "ROLE_ACTEUR", "1"
         ),
     )
     # add new JDD: terrestrial and marine = True as default
@@ -137,7 +137,7 @@ def send_email_for_recovery(data):
     return {"msg": "ok"}
 
 
-if current_app.config["REGISTER"]["AUTO_DATASET_CREATION"]:
+if current_app.config["ACCOUNT_MANAGEMENT"]["AUTO_DATASET_CREATION"]:
     function_dict = {
         "create_temp_user": validate_temp_user,
         "valid_temp_user": create_dataset_user,
