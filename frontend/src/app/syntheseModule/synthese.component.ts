@@ -1,13 +1,14 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
-import { DataService } from './services/data.service';
+import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
+
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { SyntheseFormService } from './services/form.service';
-import { SyntheseStoreService } from './services/store.service';
+import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
+import { SyntheseStoreService } from '@geonature_common/form/synthese-form/synthese-store.service';
 import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
 import { AppConfig } from '@geonature_config/app.config';
-import { ToastrService, ToastrConfig } from 'ngx-toastr';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'pnx-synthese',
@@ -22,7 +23,7 @@ export class SyntheseComponent implements OnInit {
   public CONFIG = AppConfig;
 
   constructor(
-    public searchService: DataService,
+    public searchService: SyntheseDataService,
     public _mapListService: MapListService,
     private _commonService: CommonService,
     private _modalService: NgbModal,
@@ -76,6 +77,11 @@ export class SyntheseComponent implements OnInit {
   }
 
   ngOnInit() {
+    // reinitialize the form
+    this._fs.searchForm.reset();
+    this._fs.selectedCdRefFromTree = [];
+    this._fs.selectedTaxonFromRankInput = [];
+    this._fs.selectedtaxonFromComponent = [];
     const initialFilter = { limit: AppConfig.SYNTHESE.NB_LAST_OBS };
     this.loadAndStoreData(initialFilter);
   }

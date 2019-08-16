@@ -63,7 +63,7 @@ export class DatasetFormComponent implements OnInit {
       id_nomenclature_data_origin: [null, Validators.required],
       id_nomenclature_source_status: [null, Validators.required],
       id_nomenclature_resource_type: [null, Validators.required],
-      default_validity: true,
+      validable: true,
       active: [true, Validators.required]
     });
 

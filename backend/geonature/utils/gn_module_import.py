@@ -366,7 +366,8 @@ def create_module_config(app, module_code, mod_path=None, build=True):
 
     with app.app_context():
         if not mod_path:
-            mod_path = str(GN_EXTERNAL_MODULE / module_code.lower())
+            # get the symlink location to write the config file
+            mod_path = os.readlink(str(GN_EXTERNAL_MODULE / module_code.lower()))
 
         # fetch the module in the DB from its name
         module_object = (

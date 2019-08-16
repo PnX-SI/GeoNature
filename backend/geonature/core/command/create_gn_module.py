@@ -19,7 +19,7 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from geonature.utils.env import DB, DEFAULT_CONFIG_FILE
 
-from geonature.utils.command import get_app_for_cmd, build_geonature_front
+from geonature.utils.command import get_app_for_cmd, build_geonature_front, tsconfig_app_templating
 from geonature.core.command.main import main
 from geonature.utils.gn_module_import import (
     check_gn_module_file,

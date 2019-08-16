@@ -26,7 +26,7 @@ CREATE TABLE gn_sensitivity.t_sensitivity_rules
   CONSTRAINT fk_t_sensitivity_rules_id_nomenclature_sensitivity FOREIGN KEY (id_nomenclature_sensitivity)
       REFERENCES ref_nomenclatures.t_nomenclatures (id_nomenclature) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE NO ACTION,
-  CONSTRAINT check_t_sensitivity_rules_niv_precis CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_sensitivity, 'SENSIBILITE'::character varying))
+  CONSTRAINT check_t_sensitivity_rules_niv_precis CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_sensitivity, 'SENSIBILITE'::character varying))  NOT VALID
 );
 COMMENT ON TABLE gn_sensitivity.t_sensitivity_rules
   IS 'List of sensitivity rules per taxon. Compilation of national and regional list. If you whant to disable one ou several rules you can set false to enable.';
@@ -101,25 +101,26 @@ INSERT INTO gn_sensitivity.cor_sensitivity_area_type VALUES
 (ref_nomenclatures.get_id_nomenclature('SENSIBILITE', '3'), ref_geo.get_id_area_type('DEP'));
 
 -- Vues des règles actives
-CREATE MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref AS 
- SELECT r.id_sensitivity,
-    r.cd_nom,
-    t.cd_ref,
-    r.nom_cite,
-    r.id_nomenclature_sensitivity,
-    r.sensitivity_duration,
-    r.sensitivity_territory,
-    r.id_territory,
-    COALESCE(r.date_min, '1900-01-01'::date) as date_min,
-    COALESCE(r.date_max, '1900-12-31') as date_max,
-    r.source,
-    r.active,
-    r.comments,
-    r.meta_create_date,
-    r.meta_update_date
-   FROM gn_sensitivity.t_sensitivity_rules r
-     JOIN taxonomie.taxref t ON t.cd_nom = r.cd_nom
-     WHERE active = true
+CREATE MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref AS
+WITH RECURSIVE r(cd_ref) AS (
+    SELECT t.cd_ref,
+       r.id_sensitivity, r.cd_nom, r.nom_cite, r.id_nomenclature_sensitivity,
+       r.sensitivity_duration, r.sensitivity_territory, r.id_territory,
+       COALESCE(r.date_min, '1900-01-01'::date) AS date_min,
+       COALESCE(r.date_max, '1900-12-31'::date) AS date_max,
+       r.active, r.comments, r.meta_create_date, r.meta_update_date
+    FROM gn_sensitivity.t_sensitivity_rules r
+    JOIN taxonomie.taxref t ON t.cd_nom = r.cd_nom
+    WHERE r.active = true
+  UNION ALL
+    SELECT t.cd_ref , r.id_sensitivity, t.cd_nom, r.nom_cite, r.id_nomenclature_sensitivity,
+       r.sensitivity_duration, r.sensitivity_territory, r.id_territory, r.date_min,
+       r.date_max, r.active, r.comments, r.meta_create_date, r.meta_update_date
+    FROM taxonomie.taxref t, r
+    WHERE cd_taxsup = r.cd_ref
+)
+SELECT r.*
+FROM r
 WITH DATA;
 
 --- Fonction calcul de la sensibilité
@@ -131,7 +132,7 @@ CREATE OR REPLACE FUNCTION gn_sensitivity.get_id_nomenclature_sensitivity(
     my_criterias jsonb)
   RETURNS integer AS
 $BODY$
-DECLARE 
+DECLARE
     niv_precis integer;
     niv_precis_null integer;
 BEGIN
@@ -139,12 +140,12 @@ BEGIN
     niv_precis_null := (SELECT ref_nomenclatures.get_id_nomenclature('SENSIBILITE'::text, '0'::text));
 
     -- ##########################################
-    -- TESTS unicritère 
-    --    => Permet de voir si un critère est remplis ou non de façon à limiter au maximum 
+    -- TESTS unicritère
+    --    => Permet de voir si un critère est remplis ou non de façon à limiter au maximum
     --      la requete globale qui croise l'ensemble des critères
     -- ##########################################
-    
-    -- Paramètres cd_ref 
+
+    -- Paramètres cd_ref
      IF NOT EXISTS (
         SELECT 1
         FROM gn_sensitivity.t_sensitivity_rules_cd_ref s
@@ -157,7 +158,7 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM gn_sensitivity.t_sensitivity_rules_cd_ref s
-        WHERE s.cd_ref = my_cd_ref 
+        WHERE s.cd_ref = my_cd_ref
         AND (date_part('year', CURRENT_TIMESTAMP) - sensitivity_duration) <= date_part('year', my_date_obs)
     ) THEN
         return niv_precis_null;
@@ -167,12 +168,12 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM gn_sensitivity.t_sensitivity_rules_cd_ref s
-        WHERE s.cd_ref = my_cd_ref 
+        WHERE s.cd_ref = my_cd_ref
         AND (to_char(my_date_obs, 'MMDD') between to_char(s.date_min, 'MMDD') and to_char(s.date_max, 'MMDD') )
     ) THEN
         return niv_precis_null;
     END IF;
-    
+
     -- Paramètres critères biologiques
     -- S'il existe un critère pour ce taxon
     IF EXISTS (
@@ -200,10 +201,10 @@ BEGIN
 
 
     -- ##########################################
-    -- TESTS multicritères 
+    -- TESTS multicritères
     --    => Permet de voir si l'ensemble des critères sont remplis
     -- ##########################################
-    
+
     -- Paramètres durée, zone géographique, période de l'observation et critères biologique
 	SELECT INTO niv_precis s.id_nomenclature_sensitivity
 	FROM (
@@ -252,7 +253,7 @@ CREATE TABLE gn_sensitivity.cor_sensitivity_synthese  (
     CONSTRAINT cor_sensitivity_synthese_id_nomenclature_sensitivity_fkey FOREIGN KEY (id_nomenclature_sensitivity)
       REFERENCES ref_nomenclatures.t_nomenclatures (id_nomenclature) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
-    CONSTRAINT check_synthese_sensitivity 
+    CONSTRAINT check_synthese_sensitivity
         CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_sensitivity, 'SENSIBILITE'::character varying)) NOT VALID
 );
 
@@ -287,7 +288,7 @@ CREATE TRIGGER tri_maj_id_sensitivity_synthese
   FOR EACH ROW
   EXECUTE PROCEDURE gn_sensitivity.fct_tri_maj_id_sensitivity_synthese();
 
-  
+
 CREATE TRIGGER tri_delete_id_sensitivity_synthese
   AFTER DELETE
   ON gn_sensitivity.cor_sensitivity_synthese

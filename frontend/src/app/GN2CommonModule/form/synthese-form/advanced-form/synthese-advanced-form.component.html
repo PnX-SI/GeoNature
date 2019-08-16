@@ -1,0 +1,94 @@
+<div class="modal-header">
+    <h4 class="modal-title pull-left">Filtres taxonomiques avancés</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="onCloseModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+      <pnx-autocomplete [apiEndPoint]="URL_AUTOCOMPLETE"
+      [searchAsParameter]="'true'"  
+      [parentFormControl]="formService.searchForm.controls.taxon_rank"
+      [formatter]="formatter"
+      [othersGetParams]="queryString"
+      [mapFunc]="mapFunc"
+      [formatter]="formatter"
+      keyValue="displayed_name"
+      label="Rechercher un rang taxonomique (nom latin - au dessus du genre)"
+      (onChange)="onTaxonSelected($event)"
+      >
+      </pnx-autocomplete>
+  
+      <div class="alert alert-warning taxon-alert" *ngIf="formService.selectedTaxonFromRankInput.length > 0">
+          <p class="taxon-list">
+            <b> Taxon(s) recherché(s):</b>
+          </p>
+          <li class="taxon-list" *ngFor="let taxon of formService.selectedTaxonFromRankInput; let i = index">
+            {{taxon.lb_nom}}
+            <i (click)="formService.removeTaxon(i, formService.selectedTaxonFromRankInput)" class="fa fa-times clickable"></i>
+          </li>
+  
+        </div>
+        <button (click)="toggleTree()" id="btn-tree" class="btn btn-sm btn-outline-primary"
+        data-toggle="collapse" data-target="#collapseTree">
+        Arbre taxonomique
+        <i *ngIf="showTree" class="fa fa-chevron-down" aria-expanded="false"> </i>
+        <i *ngIf="!showTree" class="fa fa-chevron-right" aria-expanded="false"> </i>
+      </button>
+  
+      <div [hidden]="!AppConfig.SYNTHESE.DISPLAY_TAXON_TREE" class="collapse" id="collapseTree">
+      <small> Selectionner un ou plusieurs taxons à partir de la hierarchie taxonomique </small> <br>
+      <span *ngIf="isLoading"> Chargement... <img  src="assets/images/Spinner.gif" alt="Chargement..." height="40" width="40"> </span>
+      <div class="card">
+        <div class="card-body tree-wrapper">
+          <tree-root #tree (event)="catchEvent($event)" [state]="storeService.taxonTreeState" [nodes]="storeService.taxonTree"
+            [options]="treeOptions">
+            <ng-template #treeNodeTemplate let-node let-index="index">
+  
+              <i *ngIf="!node.data.leaf" class="fa fa-folder-o" aria-hidden="true"></i>
+              <i *ngIf="node.data.leaf" class="fa fa-hand-o-right" aria-hidden="true"></i>
+  
+              <span [ngClass]="node.data.classes">{{ node.data.name }}</span>
+            </ng-template>
+          </tree-root>
+  
+  
+  
+        </div>
+  
+      </div>
+      <button type="button" id="button-refresh" class="btn btn-sm btn-outline-danger" (click)="resetTree()">
+        <small> Réinitialiser la sélection </small>
+      </button>
+    </div>
+    <br>
+  
+  
+  
+  
+  
+    <pnx-multiselect [values]="storeService.taxonomyLR" [parentFormControl]="formService.searchForm.controls.taxonomy_lr"
+      keyLabel="nom_categorie_lr" keyValue="id_categorie_france" label="Liste rouge UICN">
+    </pnx-multiselect>
+    <pnx-multiselect [values]="storeService.taxonomyHab" [parentFormControl]="formService.searchForm.controls.taxonomy_id_hab"
+      keyLabel="nom_habitat" keyValue="id_habitat" label="Habitat">
+    </pnx-multiselect>
+  
+    <pnx-multiselect [values]="storeService.taxonomyGroup2Inpn" [parentFormControl]="formService.searchForm.controls.taxonomy_group2_inpn"
+      keyLabel="value" keyValue="value" label="Groupe 2 INPN">
+    </pnx-multiselect>
+  
+  
+  
+    <div *ngIf="storeService.formBuilded && storeService.taxhubAttributes.length > 0">
+      <h5> Attributs taxhub</h5>
+      <div class="dynamic-form padding-sm" *ngFor="let formDef of storeService.taxhubAttributes; let i = index">
+        <pnx-dynamic-form [formDef]="formDef" [form]="formService.searchForm">
+        </pnx-dynamic-form>
+      </div>
+  
+  
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-success" (click)="onCloseModal()">Valider et fermer</button>
+    </div>
+  

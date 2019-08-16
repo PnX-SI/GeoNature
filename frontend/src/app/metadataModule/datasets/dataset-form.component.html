@@ -85,7 +85,7 @@
       
               <pnx-nomenclature 
                   class="auto"
-                  label="Méthode de collècte" 
+                  label="Méthode de collecte" 
                   [parentFormControl]="datasetForm.get('id_nomenclature_collecting_method')"
                   codeNomenclatureType="METHO_RECUEIL">
               </pnx-nomenclature>
@@ -114,6 +114,11 @@
               <input [formControl]="datasetForm.get('active')" type="checkbox" name="active" id="active" [value]="true">
               <small class="" for="active">
                 Actif
+              </small>
+
+              <input [formControl]="datasetForm.controls.validable" type="checkbox" name="validable" id="validable" [value]="true">
+              <small class="" for="validable">
+                Validable
               </small>
             </div>
       

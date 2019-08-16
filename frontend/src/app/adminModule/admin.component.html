@@ -4,15 +4,14 @@
   </div>
 
 
-  <!-- TODO div class="card-body" *ngIf="_cruvedStore.cruved?.ADMIN?.module_objects.NOMENCLATURES &&
+  <div class="card-body" *ngIf="_cruvedStore.cruved?.ADMIN?.module_objects.NOMENCLATURES &&
   adminStoreService?.moduleCruved?.module_objects?.NOMENCLATURES?.cruved?.C != '0'
-  "-->
-  <div class="card-body" *ngIf="_cruvedStore.cruved?.ADMIN?.module_objects.NOMENCLATURES">
-    <h5 class="underlined second-color"> Administration des nomenclatures</h5>
+  ">
+    <h5 class="underlined second-color"> Backoffice GeoNature</h5>
 
     <li class="no-bullet">
       <a target="_blank" [href]="URL_NOMENCLATURE_ADMIN" class="nomenclature">
-        <h5 class="btn btn-primary"> Nomenclatures
+        <h5 class="btn btn-primary"> Backoffice
           <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
         </h5>
       </a>
@@ -20,9 +19,8 @@
 
   </div>
 
-  <div class="card-body" *ngIf="_cruvedStore.cruved?.ADMIN?.module_objects?.PERMISSIONS">
-  <!-- TODO div class="card-body" *ngIf="_cruvedStore.cruved?.ADMIN?.module_objects?.PERMISSIONS && 
-  adminStoreService?.moduleCruved?.module_objects?.PERMISSIONS?.cruved?.C != '0'"-->
+  <div class="card-body" *ngIf="_cruvedStore.cruved?.ADMIN?.module_objects?.PERMISSIONS && 
+  adminStoreService?.moduleCruved?.module_objects?.PERMISSIONS?.cruved?.C != '0'">
     <h5 class="underlined second-color"> Administration des permissions (CRUVED)</h5>
 
     <li class="no-bullet">

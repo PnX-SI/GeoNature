@@ -2,6 +2,103 @@
 CHANGELOG
 =========
 
+2.1.3 (unreleased)
+------------------
+
+**🚀 Nouveautés**
+
+* Le composant 'observateur' permet de rechercher sur le nom ou le prénom (utilisation des RegEx)
+* Complément de la documentation d'administration (@lpofredc)
+* Création de compte (désactivé par défaut) avec groupe par défaut + CA et JDD personnel par défaut (désactivable). Voir https://github.com/PnX-SI/UsersHub/issues/47
+* Espace utilisateur (désactibale)
+* Mot de passe oublié (désactivable)
+* Complément migration v1tov2 (Flore station, Flore patrimoniale, GeoNature-mobile
+
+**🐛 Corrections**
+
+* Occtax : correction de l'autocompletion en mode edition (#706)
+* Synthèse : Prise en compte du paramètre ``EXPORT_ID_SYNTHESE_COL`` (#707)
+* Prise en compte des sous-taxons pour le calcul des règles de sensibilité
+
+**⚠️ Notes de version**
+
+* MAJ UsersHub et sous module authentification ? 
+* Paramètres à ajouter ?
+
+**TODO**
+
+* Comment activer et paramétrer créatino compte et autres. Renseigner email. Compléter la doc ?
+* Voir https://github.com/PnX-SI/UsersHub/issues/84 OK car intégré dans GN ?
+* Paramètre URL_USERHUB : Manque un S
+* Login et MDP admin UH dans conf ?
+* PROD_MOD à mettre à true par défaut ?
+* Conf Sign up et Register à regrouper ?
+
+2.1.2 (2019-07-25)
+------------------
+
+**🐛 Corrections**
+
+* SYNTHESE : correction d'une URL en dur pour la recherche de rangs taxonomiques
+* OCCTAX : affichage uniquement des JDD actifs 
+* VALIDATION : abaissement de la limite d'affichage de données sur la carte par défaut + message indicatif
+* Migration : suppression d'un lien symbolique qui créait des liens en cascade
+* Amélioration de la documentation (@dthonon)
+* Amélioration de la rapidité d'installation du MNT grâce à la suppression d'un paramètre inutile
+* BACKOFFICE : correction d'une URL incorrecte et customisation
+
+**⚠️ Notes de version**
+  
+Ceci est une version corrective mineure. Si vous migrez depuis la 2.1.0, passez directement à cette version en suivant les notes de version de la 2.1.1.
+
+2.1.1 (2019-07-18)
+------------------
+
+**🚀 Nouveautés**
+
+* SYNTHESE : Factorisation du formulaire de recherche (utilisé dans le module synthese et validation)
+* SYNTHESE : Simplification et correction du module de recherche avancée d'un taxon en le limitant à l'ordre (performances)
+* SYNTHESE : Ajout d'un composant de recherche taxonomique avancé basé sur les rangs taxonomiques (modules synthese et validation), basé sur la nouvelle fonction ``taxonomie.find_all_taxons_children`` ajoutée à TaxHub
+* Création d'un backoffice d'admnistration dans le coeur de GeoNature. Basé sur Flask-admin, les modules peuvent alimenter dynamiquement le backoffice avec leur configuration
+* Mise en place d'une documentation développeur automatique de l'API à partir des docstring et des composants frontend, générée par Travis et désormais accessible à l'adresse http://docs.geonature.fr (#673)
+* Amélioration de la documentation (triggers, installation, module validation)
+* Suppression du module d'exemple, remplacé par un template de module (https://github.com/PnX-SI/gn_module_template)
+* Ajout d'un champ ``validable`` sur la table ``gn_meta.t_datasets`` controlant les données présentes dans le module VALIDATION (https://github.com/PnX-SI/gn_module_validation/issues/31)
+* VALIDATION: Lister toutes les données de la synthèse ayant un ``uuid_sinp`` dans le module validation, et plus seulement celles qui ont un enregistrement dans ``gn_commons.t_validations``
+* VALIDATION : On ne liste plus les ``id_nomenclatures`` des types de validation à utiliser, dans la configuration du module. Mais on utilise toutes les nomenclatures activées du type de nomenclature ``STATUT_VALID``. (https://github.com/PnX-SI/gn_module_validation/issues/30)
+* Ajout de tests sur les ajouts de JDD et CA
+* Ajout d'une fonctionnalité d'envoi d'email via Flask-Mail dans le coeur de GeoNature
+* Amélioration des performances : ajout d'index sur Occtax et Metadonnées
+* Script d'import des métadonnées à partir du webservice MTD de l'INPN (@DonovanMaillard)
+* Complément, correction et compatibilité 2.1.0 des scripts de migration ``data/migrations/v1tov2``
+
+**🐛 Corrections**
+  
+* Nombreuses corrections du module de validation (non utilisation des id_nomenclature, simplification des vues et de la table ``gn_commons.t_validations``)
+* Ordonnancement de listes déroulantes (#685)
+* OCCTAX : correction de l'édition d'un relevé à la géométrie de type Polyline (#684)
+* OCCTAX : correction l'édition et du contrôle conditionnel des champs de "preuves" (preuve d'existence numérique / non numérique) (#679)
+* OCCTAX : correction du parametre ``DATE_FORM_WITH_TODAY`` non pris en compte (#670)
+* OCCTAX : correction de la date_max non remplie lorsque ``DATE_FORM_WITH_TODAY = false`` 
+* OCCTAX : correction d'un bug lors de l'enchainement de relevé lorsque l'heure est remplie
+* SYNTHESE : correction des doublons lorsqu'il y a plusieurs observateurs
+* Correction du composant ``dynamicForm`` sur les champs de recherche de type texte (recherche sur Preuve numérique) (#530)
+* Désactivation du mode "enchainer les relevés" en mode édition (#699)
+* Correction de ``gn_monitoring`` : utiliser ``gn_commons.t_modules`` à la place de ``utilisateurs.t_applications`` pour associer des sites de suivi à des modules
+* Fix de SQLalchemy 1.3.3 et jointure sur objet Table
+* Le trigger remplissant ``cor_area_synthese`` en intersectant ``gn_synthese.synthese`` avec ``ref_geo.l_areas`` ne prend plus que les zonages ayant le champs ``enabled=true``
+* Correction ``dict()`` et version de Python (par @jpm-cbna)
+* MAJ de sécurité de Bootstrap (en version 4.3.1)
+* L'ancien module export du coeur est supprimé en vue de la sortie prochaine du nouveau module export
+
+**⚠️ Notes de version**
+
+* Passer TaxHub en version 1.6.3 (https://github.com/PnX-SI/TaxHub/releases/tag/1.6.3)
+* Passer le script de migration ``data/2.1.0to2.1.1.sql``
+* Si vous aviez modifier les ``id_nomenclature`` dans la surcouche de la configuration du module validation, supprimer les car on se base maintenant sur les ``cd_nomenclature``
+* Suivez ensuite la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
+* Nouvelle localisation de la doc : http://docs.geonature.fr
+
 2.1.0 (2019-06-01)
 ------------------
 
@@ -603,6 +700,7 @@ Il ne s'agit pas de mettre à jour GeoNature mais d'en installer une nouvelle ve
 Si vous mettez à jour votre GeoNature depuis une Beta4 : 
 
 * Téléchargez la beta5 et renommer les répertoires :
+
 ::
 
     cd /home/myuser
@@ -610,7 +708,9 @@ Si vous mettez à jour votre GeoNature depuis une Beta4 :
     unzip geonature2beta.zip
     mv /home/<mon_user>/geonature/ /home/<mon_user>/geonature_old/
     mv GeoNature-geonature2beta /home/<mon_user>/geonature/
+
 * Exécutez le script de migration ``install/migration/beta4tobeta5.sh`` depuis la racine de votre GeoNature :
+
 ::
 
     cd geonature
@@ -782,7 +882,7 @@ A noter aussi que cette version de GeoNature est compatible avec GeoNature-atlas
 * Création ou mise à jour des géométries compatible PostGIS 2.
 * Ajout du champ diffusable (oui/non) dans le formulaire web de saisie, uniquement pour ContactFaune et Mortalité (TODO : faire la même chose pour les autres protocoles).
 * Multi-projection : Les versions antérieures de GeoNature n'étaient compatibles qu'avec la projection Lambert 93 (srid: 2154). Cette version permet de choisir sa projection locale. Elle ajoute un paramètre ``srid_local`` dans le ``config/settings.ini`` et renomme tous les champs ``the_geom_2154`` en ``the_geom_local`` des tables "métier".
-Ce paramètre est notamment utilisé lors de la création de la base pour affecter le srid de la projection locale à tous les champs ``the_geom_local`` présents dans les tables de la base. Ce paramètre est également utilisé pour mettre en cohérence le système de projection local utilisé dans toutes les couches SIG présentes dans la base et les géométries stockées dans les champs ``the_geom_local`` des tables "métier". Le paramétrage du service WMS dans ``wms/wms.map`` est également pris en charge par le script d'installation de l'application.
+  Ce paramètre est notamment utilisé lors de la création de la base pour affecter le srid de la projection locale à tous les champs ``the_geom_local`` présents dans les tables de la base. Ce paramètre est également utilisé pour mettre en cohérence le système de projection local utilisé dans toutes les couches SIG présentes dans la base et les géométries stockées dans les champs ``the_geom_local`` des tables "métier". Le paramétrage du service WMS dans ``wms/wms.map`` est également pris en charge par le script d'installation de l'application.
 * Correction de l'installation de npm
 * Script ``install_all.sh`` mis à jour avec les nouvelles versions de GeoNature-atlas, de TaxHub et de UsersHub.
 
@@ -791,12 +891,9 @@ IMPORTANT : toutes les couches SIG insérées dans le schéma ``layers`` doivent
 **Notes de versions**
 
 * Vous pouvez ajouter les paramètres ``srid_local``, ``install_sig_layers`` et ``add_sample_data`` au fichier ``config/settings.ini`` en vous inspirant du fichier ``config/settings.ini.sample``. Toutefois ces paramètres ne sont utilisés que pour une nouvelle installation et notamment pour l'installation de la base.
-
 * Vous pouvez passer directement d'une 1.7.X à la 1.9.0, en prenant en compte les notes des différentes versions intermédiaires, notamment les scripts de mise à jour de la BDD ainsi que les éventuels nouveaux paramètres à ajouter. 
-
 * Si vous migrez depuis la version 1.8.3, exécutez le fichier SQL ``data/update_1.8.3to1.9.0.sql``. Comme GeoNature ne fonctionne jusque là que pour des structures de métropole, il est basé sur le fait que le champ ``the_geom_local`` reste en Lambert 93 (2154). Assurez-vous que le paramètre ``$srid_local`` dans ``lib/sfGeonatureConfig.php`` est égal à ``2154``.
-ATTENTION : ce script SQL renomme tous les champs ``the_geom_2154`` en ``the_geom_local`` de la BDD de GeoNature. Ceci affecte de nombreuses tables, de nombreux triggers et de nombreuses vues de la base. Le script n'intègre que les vues fournies par défaut. Si vous avez créé des vues spécifiques, notamment pour le module d'export, ou si vous avez modifié des vues fournies, vous devez adapter/compléter le script. Vous pouvez vous inspirer de son contenu.
-
+  ATTENTION : ce script SQL renomme tous les champs ``the_geom_2154`` en ``the_geom_local`` de la BDD de GeoNature. Ceci affecte de nombreuses tables, de nombreux triggers et de nombreuses vues de la base. Le script n'intègre que les vues fournies par défaut. Si vous avez créé des vues spécifiques, notamment pour le module d'export, ou si vous avez modifié des vues fournies, vous devez adapter/compléter le script. Vous pouvez vous inspirer de son contenu.
 * RAPPEL : Ceci affecte également la webapi des applications mobiles. Vous devez donc mettre à jour votre webapi si vous utilisez la saisie sur les applications mobiles. Une release de la webapi devrait sortir bientôt.
 
 

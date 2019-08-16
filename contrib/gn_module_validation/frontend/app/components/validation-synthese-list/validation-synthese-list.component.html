@@ -1,4 +1,4 @@
-<!--Table-->
+
 <ngx-datatable (window:resize)="onResize($event)" #table class="material striped margin-top-xs table-size expandable"
   [rows]="mapListService.tableData" [columns]="VALIDATION_CONFIG.LIST_COLUMNS_FRONTEND" [columnMode]="'force'"
   [headerHeight]="50" [footerHeight]="35" [selected]="mapListService.selectedRow" [selectionType]="'multiClick'" [count]="mapListService.tableData.length"
@@ -8,8 +8,15 @@
      </ngx-datatable-row-detail>
 
 
-  <!-- DATA COLOMNS -->
-  <ngx-datatable-column [checkboxable]="true" [maxWidth]="10"></ngx-datatable-column>
+  <ngx-datatable-column [checkboxable]="true" [maxWidth]="10">
+
+      <ng-template ngx-datatable-header-template>
+        <label class="datatable-checkbox">
+          <input type="checkbox" (click)="toggleSelection($event)" matTooltip="Séléctionner/désélectionner tout"> 
+        </label>
+        </ng-template>
+      
+  </ngx-datatable-column>
 
   <ngx-datatable-column maxWidth="5">
 
@@ -31,8 +38,9 @@
   <ngx-datatable-column *ngFor="let col of VALIDATION_CONFIG.LIST_COLUMNS_FRONTEND" name="{{col.name}}" prop="{{col.prop}}"
     maxWidth="{{col.max_width}}">
     <ng-template *ngIf="col.prop === 'id_nomenclature_valid_status'" let-row="row" ngx-datatable-cell-template>
-        <!-- VALIDATION_CONFIG.STATUS_INFO[row.cd_nomenclature_validation_status] -->
-      <div class="statusContent"> <span class="validationCircle" [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.cd_nomenclature_validation_status]?.color}"><i class="material-icons">{{row.validation_auto}}</i></span>
+      <div class="statusContent"> 
+        <span class="validationCircle" [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.cd_nomenclature_validation_status]?.color}">
+          <i class="material-icons">{{row.validation_auto}}</i></span>
         <div [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.cd_nomenclature_validation_status]?.color}" class="statusName">
           <span>{{row.label_default}}</span><span *ngIf="row.validation_auto"> (automatique)</span>
         </div>
@@ -41,12 +49,12 @@
   </ngx-datatable-column>
 
   <ngx-datatable-column maxWidth="60">
-    <ng-template let-column="column" ngx-datatable-header-template>
+    <ng-template let-column="column"   ngx-datatable-header-template>
       <span>Détails</span>
     </ng-template>
      <ng-template let-row="row" ngx-datatable-cell-template>
         <button #ValidationModalInfoObs id="details" type="button" (click)="openInfoModal(row)" class="btn btn-info fa fa-info-circle" title="details">
-        </button>
+        </button> 
      </ng-template>
   </ngx-datatable-column>
 
@@ -59,9 +67,7 @@
        let-selectedCount="selectedCount",
        let-curPage="curPage",
        let-offset="offset">
-      <button type="button" (click)="this.selectAll()" class="btn btn-success btn-sm ml-3"> Tout sélectionner</button>
-      <span> ' ' </span>
-      <button type="button" (click)="this.deselectAll()" class="btn btn-success btn-sm"> Tout désélectionner</button>
+
 
        <datatable-pager
          [pagerLeftArrowIcon]="'datatable-icon-left'"
@@ -83,14 +89,12 @@
 
 </ngx-datatable>
 
-<!-- MODAL FOR VALIDATION -->
 <pnx-validation-popup [selectedPages]="selectedPages" [currentPage]="npage" 
   [nbTotalObservation]="nbTotalObservation" [observations]="selectedObs" 
   [validationStatus]="validationStatus"
   (valStatus)="onStatusChange($event)" (valDate)="onValidationDateChange($event)">
 </pnx-validation-popup>
 
-<!-- MODAL INFO OBS -->
 <ng-template #ValidationModalInfoObs let-c="close " let-d="dismiss">
 
   <pnx-validation-modal-info-obs></pnx-validation-modal-info-obs>

@@ -5,7 +5,9 @@ import {
   OnChanges,
   OnDestroy,
   SimpleChanges,
-  ViewEncapsulation
+  ViewEncapsulation,
+  Output,
+  EventEmitter
 } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -14,6 +16,25 @@ import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 
+/**
+ * Ce composant permet de créer un "input" de type "select" ou "multiselect" à partir d'une liste d'items définie dans le référentiel de nomenclatures
+ * (thésaurus) de GeoNature (table ``ref_nomenclature.t_nomenclature``).
+ *
+ * En mode "multiselect" (Input ``multiSelect=true``), une barre de recherche permet de filtrée les nomenclatures sur leur label.
+ *
+ * NB: La table ``ref_nomenclatures.cor_taxref_nomenclature`` permet de faire corespondre des items de nomenclature à des groupe INPN et des règne. A chaque fois que ces deux derniers input sont modifiés, la liste des items est rechargée.
+ * Ce composant peut ainsi être couplé au composant taxonomy qui renvoie le regne et le groupe INPN de l'espèce saisie.
+ *
+ * @example
+ * <pnx-nomenclature
+ * [parentFormControl]="occtaxForm.controls.id_nomenclature_etat_bio"
+ * codeNomenclatureType="ETA_BIO"
+ * [multiSelect]=true
+ *  keyValue='cd_nomenclature'
+ *  regne="Animalia"
+ * group2Inpn="Mammifères">
+ * </pnx-nomenclature>
+ */
 @Component({
   selector: 'pnx-nomenclature',
   templateUrl: './nomenclature.component.html',
@@ -29,11 +50,28 @@ export class NomenclatureComponent extends GenericFormComponent
   public valueSubscription: Subscription;
   public _currentCdNomenclature: Array<any> = null;
   public currentIdNomenclature: number;
+  public savedLabels;
+  /**
+   * Mnémonique du type de nomenclature qui doit être affiché dans la liste déroulante.
+   *  Table``ref_nomenclatures.bib_nomenclatures_types`` (obligatoire)
+   */
   @Input() codeNomenclatureType: string;
+  /**
+   * Filter par regne taxonomique
+   */
   @Input() regne: string;
+  /**
+   * Filter group 2 INPN
+   */
   @Input() group2Inpn: string;
+  /**
+   * Attribut de l'objet nomenclature renvoyé au formControl (facultatif, par défaut ``id_nomenclature``).
+   * Valeur possible: n'importequel attribut de l'objet ``nomenclature`` renvoyé par l'API
+   */
   @Input() keyValue;
   @Input() bindAllItem: boolean = false;
+  @Output() labelsLoaded = new EventEmitter<Array<any>>();
+
   constructor(private _dfService: DataFormService, private _translate: TranslateService) {
     super();
   }
@@ -92,6 +130,7 @@ export class NomenclatureComponent extends GenericFormComponent
                       .pipe(
                         map(data => {
                           this._currentCdNomenclature = data.values;
+                        this.labelsLoaded.emit(data.values);
                           return data.values;
                         })
                       );

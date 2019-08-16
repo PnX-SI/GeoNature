@@ -64,6 +64,7 @@ sudo apt-get install -y curl unzip git
 sudo apt-get install -y apache2 libapache2-mod-wsgi libapache2-mod-perl2 
 sudo apt-get install -y postgresql 
 sudo apt-get install -y postgresql-contrib
+sudo apt-get install -y wget
 if [ "$OS_VERSION" == "9" ]
 then
     sudo apt-get install -y postgresql-server-dev-9.6 
@@ -226,6 +227,7 @@ cd /home/`whoami`/taxhub
 # Setting configuration of TaxHub
 echo "Configuration de l'application TaxHub ..."
 cp settings.ini.sample settings.ini
+sed -i "s/my_local=.*$/my_local=$my_local/g" config/settings.ini
 sed -i "s/drop_apps_db=.*$/drop_apps_db=false/g" settings.ini
 sed -i "s/db_host=.*$/db_host=$pg_host/g" settings.ini
 sed -i "s/db_port=.*$/db_port=$pg_port/g" settings.ini

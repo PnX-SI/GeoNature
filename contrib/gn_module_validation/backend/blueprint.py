@@ -21,6 +21,7 @@ from geonature.core.gn_synthese.models import (
     Synthese,
     TSources,
     VMTaxonsSyntheseAutocomplete,
+    VSyntheseForWebApp,
 )
 
 from geonature.core.gn_commons.models import BibTablesLocation
@@ -30,9 +31,9 @@ from .query import filter_query_all_filters
 from geonature.utils.env import DB
 
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_commons.models import TValidations, VLatestValidations
+from geonature.core.gn_commons.models import TValidations
 
-from .models import VValidationsForWebApp
+from .models import VSyntheseValidation
 
 # from geonature.core.gn_synthese.utils import query as synthese_query
 
@@ -48,8 +49,10 @@ log = logging.getLogger()
 def get_synthese_data(info_role):
 
     """
-        return synthese and t_validations data filtered by form params
-        Params must have same synthese fields names
+    Return synthese and t_validations data filtered by form params
+    Params must have same synthese fields names
+
+    .. :quickref: Validation;
     """
 
     try:
@@ -62,15 +65,13 @@ def get_synthese_data(info_role):
 
         result_limit = blueprint.config["NB_MAX_OBS_MAP"]
 
-        # allowed_datasets = TDatasets.get_user_datasets(info_role)
-
         # pdb.set_trace()
 
-        q = DB.session.query(VLatestValidations)
+        q = DB.session.query(VSyntheseValidation)
 
-        q = filter_query_all_filters(VLatestValidations, q, filters, info_role)
+        q = filter_query_all_filters(VSyntheseValidation, q, filters, info_role)
 
-        q = q.order_by(VLatestValidations.validation_date.desc())
+        q = q.order_by(VSyntheseValidation.date_min.desc())
 
         nb_total = 0
 
@@ -82,9 +83,6 @@ def get_synthese_data(info_role):
 
         features = []
 
-        # DB.session.execute(select([VLatestValidations.id_synthese])).fetchone()[0]
-
-        # DB.session.query(VLatestValidations).get(1).get_geofeature(columns=columns)
         for d in data:
             feature = d.get_geofeature(columns=columns)
             feature["properties"]["nom_vern_or_lb_nom"] = (
@@ -97,7 +95,8 @@ def get_synthese_data(info_role):
             "nb_obs_limited": nb_total == blueprint.config["NB_MAX_OBS_MAP"],
             "nb_total": nb_total,
         }
-    except Exception:
+    except Exception as e:
+        log.error(e)
         return (
             'INTERNAL SERVER ERROR ("get_synthese_data() error"): contactez l\'administrateur du site',
             500,
@@ -137,61 +136,35 @@ def get_statusNames(info_role):
 
 
 @blueprint.route("/<id_synthese>", methods=["POST"])
-@permissions.check_cruved_scope("C", True, module_code="VALIDATION")
+@permissions.check_cruved_scope("V", True, module_code="VALIDATION")
 @json_resp
 def post_status(info_role, id_synthese):
+    """
+    Add a validation status for the given id_synthese
+
+    .. :quickref: Validation;
+
+    """
     try:
         data = dict(request.get_json())
-        validation_status = data["statut"]
+        id_validation_status = data["statut"]
         validation_comment = data["comment"]
 
-        if validation_status == "":
+        if id_validation_status == "":
             return "Aucun statut de validation n'est sélectionné", 400
 
         id_synthese = id_synthese.split(",")
 
         for id in id_synthese:
-
             # t_validations.id_validation:
-            id_val = 1  # auto-incremented in t_validations
 
-            # t_validations.id_table_location:
-            # get id_source value of the observation in synthese table
-            synthese_id_source = select([Synthese.id_source]).where(
-                Synthese.id_synthese == int(id)
-            )
-            # get entity_source_pk_field value of the observation in TSources table with id_source value
-            entity_source_pk_field = DB.session.execute(
-                select([TSources.entity_source_pk_field]).where(
-                    TSources.id_source == synthese_id_source
-                )
-            ).fetchone()[0]
-            name_schema = str(entity_source_pk_field).split(".")[0]
-            name_table = str(entity_source_pk_field).split(".")[1]
-            # get id_table_location
-            id_table_loc = DB.session.query(
-                func.gn_commons.get_table_location_id(name_schema, name_table)
-            )
-            if DB.session.execute(id_table_loc).fetchone()[0] == None:
-                return (
-                    "INTERNAL SERVER ERROR : no id_table_location / contactez l'administrateur du site",
-                    500,
-                )
             # t_validations.uuid_attached_row:
             uuid = DB.session.query(Synthese.unique_id_sinp).filter(
                 Synthese.id_synthese == int(id)
             )
 
-            # t_validations.id_nomenclature_valid_status:
-            id_nomenclature_status = DB.session.query(
-                TNomenclatures.id_nomenclature
-            ).filter(TNomenclatures.id_nomenclature == validation_status)
-
             # t_validations.id_validator:
-            id_valdator = info_role.id_role
-
-            # t_validations.validation_comment
-            comment = validation_comment
+            id_validator = info_role.id_role
 
             # t_validations.validation_date
             val_date = datetime.datetime.now()
@@ -201,12 +174,10 @@ def post_status(info_role, id_synthese):
 
             # insert values in t_validations
             addValidation = TValidations(
-                id_val,
-                id_table_loc,
                 uuid,
-                id_nomenclature_status,
-                id_valdator,
-                comment,
+                id_validation_status,
+                id_validator,
+                validation_comment,
                 val_date,
                 val_auto,
             )
@@ -306,30 +277,34 @@ def get_autocomplete_taxons_synthese():
     return [d.as_dict() for d in data]
 
 
-@blueprint.route("/history/<id_synthese>", methods=["GET"])
+@blueprint.route("/history/<uuid_attached_row>", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="VALIDATION")
 @json_resp
-def get_hist(info_role, id_synthese):
+def get_hist(info_role, uuid_attached_row):
 
     try:
-        q = DB.session.execute(
-            select(
-                [
-                    VValidationsForWebApp.id_nomenclature_valid_status,
-                    VValidationsForWebApp.validation_date,
-                    VValidationsForWebApp.validation_comment,
-                    VValidationsForWebApp.validator,
-                    VValidationsForWebApp.validation_auto,
-                    VValidationsForWebApp.label_default,
-                    VValidationsForWebApp.cd_nomenclature_validation_status,
-                ]
-            ).where(VValidationsForWebApp.id_synthese == id_synthese)
+        data = (
+            DB.session.query(
+                TValidations.id_nomenclature_valid_status,
+                TValidations.validation_date,
+                TValidations.validation_comment,
+                Synthese.validator,
+                TValidations.validation_auto,
+                TNomenclatures.label_default,
+                TNomenclatures.cd_nomenclature,
+            )
+            .join(
+                TNomenclatures,
+                TNomenclatures.id_nomenclature
+                == TValidations.id_nomenclature_valid_status,
+            )
+            .join(Synthese, Synthese.unique_id_sinp == TValidations.uuid_attached_row)
+            .filter(TValidations.uuid_attached_row == uuid_attached_row)
+            .all()
         )
 
-        q = q.fetchall()
-
         history = []
-        for row in q:
+        for row in data:
             line = {}
             line.update(
                 {
@@ -355,24 +330,24 @@ def get_hist(info_role, id_synthese):
         )
 
 
-@blueprint.route("/date/<id>", methods=["GET"])
+@blueprint.route("/date/<uuid>", methods=["GET"])
 @json_resp
-def get_validation_date(id):
+def get_validation_date(uuid):
     """
         Retourne la date de validation
-        pour l'observation id_synthese
+        pour l'observation uuid
     """
     try:
         date = DB.session.execute(
-            select([VLatestValidations.validation_date]).where(
-                VLatestValidations.id_synthese == id
+            select([VSyntheseValidation.validation_date]).where(
+                VSyntheseValidation.unique_id_sinp == uuid
             )
         ).fetchone()[0]
         return str(date)
     except (Exception) as e:
         log.error(e)
         return (
-            'INTERNAL SERVER ERROR ("get_validation_date(id_synthese) error"): contactez l\'administrateur du site',
+            'INTERNAL SERVER ERROR ("get_validation_date(uuid) error"): contactez l\'administrateur du site',
             500,
         )
 

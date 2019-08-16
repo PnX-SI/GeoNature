@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, ValidatorFn } from '@angular/forms';
 import { AppConfig } from '@geonature_config/app.config';
 import { stringify as toWKT } from 'wellknown';
-import { /** TODO NgbDatepickerConfig, **/ NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter'; 
-import { DYNAMIC_FORM_DEF } from './dynamycFormConfig';
+import { DYNAMIC_FORM_DEF } from '@geonature_common/form/synthese-form/dynamycFormConfig';
 import { isArray } from 'util';
 
 @Injectable()
@@ -98,12 +98,11 @@ export class SyntheseFormService {
         }
       }
     }
-    if (this.selectedtaxonFromComponent.length > 0 || this.selectedCdRefFromTree.length > 0) {
-      // search on cd_ref to include synonyme from the synthese searchs
-      updatedParams['cd_ref'] = [
-        ...this.selectedtaxonFromComponent.map(taxon => taxon.cd_ref),
-        ...this.selectedCdRefFromTree
-      ];
+    if (this.selectedtaxonFromComponent.length > 0) {
+      updatedParams['cd_ref'] = this.selectedtaxonFromComponent.map(taxon => taxon.cd_ref);
+    }
+    if (this.selectedCdRefFromTree.length > 0) {
+      updatedParams['cd_ref_parent'] = this.selectedCdRefFromTree;
     }
     return updatedParams;
   }

@@ -4,7 +4,10 @@
 
 <div class="wrapper">
     <nav #navBar id="sidebar" class="collapse show">
-        <pnx-synthese-search (searchClicked)="loadAndStoreData($event)"></pnx-synthese-search>
+        <!-- <pnx-synthese-search (searchClicked)="loadAndStoreData($event)"></pnx-synthese-search> -->
+        <pnx-synthese-search
+            (searchClicked)="loadAndStoreData($event)">
+        </pnx-synthese-search>
     </nav>
 
     <div class="row row-sm page-content">

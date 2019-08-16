@@ -1,7 +1,8 @@
 from flask import current_app, request
 from shapely.wkt import loads
 from geoalchemy2.shape import from_shape
-from sqlalchemy import func, or_, and_
+from sqlalchemy import func, or_, and_, select
+from sqlalchemy.sql import text
 from sqlalchemy.orm import aliased
 
 from geonature.utils.env import DB
@@ -56,11 +57,13 @@ def filter_query_with_cruved(
         )
 
     if user.value_filter in ("1", "2"):
-        q = q.outerjoin(
-            CorObserverSynthese, CorObserverSynthese.id_synthese == model_id_syn_col
+        sub_query_observers = (
+            DB.session.query(CorObserverSynthese.id_synthese)
+            .filter(CorObserverSynthese.id_role == user.id_role)
+            .subquery("sub_query_observers")
         )
         ors_filters = [
-            CorObserverSynthese.id_role == user.id_role,
+            model.id_synthese.in_(sub_query_observers),
             model_id_digitiser_column == user.id_role,
         ]
         if current_app.config["SYNTHESE"]["CRUVED_SEARCH_WITH_OBSERVER_AS_TXT"]:
@@ -86,13 +89,31 @@ def filter_taxonomy(model, q, filters):
     Returns:
         -Tuple: the SQLAlchemy query and the filter dictionnary
     """
+    cd_ref_childs = []
+    if "cd_ref_parent" in filters:
+        # find all taxon child from cd_ref parent
+        cd_ref_parent_int = list(map(lambda x: int(x), filters.pop("cd_ref_parent")))
+        sql = text(
+            """SELECT DISTINCT cd_ref FROM taxonomie.find_all_taxons_children(:id_parent)"""
+        )
+        result = DB.engine.execute(sql, id_parent=cd_ref_parent_int)
+        if result:
+            cd_ref_childs = [r[0] for r in result]
+
+    cd_ref_selected = []
     if "cd_ref" in filters:
+        cd_ref_selected = filters.pop("cd_ref")
+    # concat cd_ref child and just selected cd_ref
+    cd_ref_childs.extend(cd_ref_selected)
+
+    if len(cd_ref_childs) > 0:
         sub_query_synonym = (
             DB.session.query(Taxref.cd_nom)
-            .filter(Taxref.cd_ref.in_(filters.pop("cd_ref")))
+            .filter(Taxref.cd_ref.in_(cd_ref_childs))
             .subquery("sub_query_synonym")
         )
         q = q.filter(model.cd_nom.in_(sub_query_synonym))
+
     if "taxonomy_group2_inpn" in filters:
         q = q.filter(Taxref.group2_inpn.in_(filters.pop("taxonomy_group2_inpn")))
 
@@ -182,7 +203,7 @@ def filter_query_all_filters(model, q, filters, user):
         )
 
     if "geoIntersection" in filters:
-        # Insersect with the geom send from the map
+        # Intersect with the geom send from the map
         ors = []
         for str_wkt in filters["geoIntersection"]:
             # if the geom is a circle

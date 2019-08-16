@@ -9,7 +9,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "compodoc": "npx compodoc -p src/tsconfig.app.json --output=../docs/frontend_doc"
+    "compodoc": "npx compodoc -p src/tsconfig.app.json --output=../docs/build/html/frontend"
   },
   "private": true,
   "dependencies": {
@@ -67,7 +67,6 @@
     "@angular-devkit/build-angular": "~0.13.0",
     "@angular/cli": "^7.3.8",
     "@angular/language-service": "7.2.6",
-    "@compodoc/compodoc": "^1.1.9",
     "@types/jasmine": "~3.3.12",
     "@types/jasminewd2": "~2.0.5",
     "@types/jquery": "^3.3.11",

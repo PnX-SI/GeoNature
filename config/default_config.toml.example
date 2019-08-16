@@ -35,6 +35,22 @@ MTD_API_ENDPOINT = "https://preprod-inpn.mnhn.fr/mtd"
 # BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 UPLOAD_FOLDER = 'static/medias'
 
+# Enable logging email error (must fill the mail config bellow if true)
+MAIL_ON_ERROR = false
+# mail configuration for FlaskMail and error logging
+[MAIL_CONFIG]
+    MAIL_SERVER = 'my_email_server'
+    MAIL_PORT = 465
+    MAIL_USE_TLS = false
+    MAIL_USE_SSL = true
+    MAIL_USERNAME = 'my_user_name - email address of the sender'
+    MAIL_PASSWORD = 'my_pass'
+    MAIL_DEFAULT_SENDER = 'my_email@email.com'
+    MAIL_MAX_EMAILS = <int>
+    MAIL_ASCII_ATTACHMENTS = false
+    # email(s) to the administrator for the email logging
+    ERROR_MAIL_TO = [email@email.com, email2@email.com]
+
 # CAS authentification (Optional, instead of UsersHub local authentification)
 [CAS_PUBLIC]
     CAS_AUTHENTIFICATION = false
@@ -72,14 +88,7 @@ ID_USER_SOCLE_2 = 6
     # Passe le frontend en mode multilingue
     MULTILINGUAL = false
 
-[MAILERROR]
-    MAIL_ON_ERROR = false
-    MAIL_HOST = 'host mail'
-    HOST_PORT = host mail port
-    MAIL_FROM = 'Email from'
-    MAIL_USERNAME = 'email username'
-    MAIL_PASS = 'email to'
-    MAIL_TO = 'email to'
+
 
 # map configuration
 [MAPCONFIG]
@@ -122,7 +131,7 @@ ID_USER_SOCLE_2 = 6
     TAXON_RESULT_NUMBER = 20
 
     # id_attribut taxhub pour l'affichage dans la modale du détail d'une observation et dans les filtres taxonomique avancés
-    ID_ATTRIBUT_TAXHUB = [101, 102]
+    ID_ATTRIBUT_TAXHUB = [102, 103]
 
     # Colonne de la table gn_synthese.synthese que l'on veut masquer dans les filtres du formulaire 'occurrence avancé'. Par défaut, c'est un tableau vide. Exemple: 
     EXCLUDED_COLUMNS = ['non_digital_proof'] pour enlever le filtre 'preuve non numérique'

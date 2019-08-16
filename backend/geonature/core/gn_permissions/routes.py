@@ -22,8 +22,9 @@ routes = Blueprint("gn_permissions", __name__)
 @permissions.check_cruved_scope("R", True)
 @json_resp
 def get_cruved(info_role):
-    """ 
+    """
     Get the cruved for a user
+
     .. :quickref: Permissions;
     
     Params:
@@ -34,7 +35,7 @@ def get_cruved(info_role):
     
     :returns: dict of the CRUVED
     """
-    params = dict(request.args)
+    params = request.args.to_dict()
 
     # get modules
     q = DB.session.query(TModules)
@@ -83,6 +84,7 @@ def get_cruved(info_role):
 def logout():
     """	
     Route to logout with cruved
+    
     .. :quickref: Permissions;
     
     To avoid multiples server call, we store the cruved in the session	

@@ -185,10 +185,10 @@ class TDatasets(DB.Model):
     id_nomenclature_resource_type = DB.Column(
         DB.Integer, default=TNomenclatures.get_default_nomenclature("RESOURCE_TYP")
     )
-    default_validity = DB.Column(DB.Boolean)
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
     active = DB.Column(DB.Boolean, default=True)
+    validable = DB.Column(DB.Boolean)
 
     cor_dataset_actor = relationship(
         CorDatasetActor,

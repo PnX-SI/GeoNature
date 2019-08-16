@@ -261,6 +261,8 @@ GeoNature contient aussi des tables de stockage transversales qui peuvent être 
 
 Cela permet de ne pas avoir à mettre en place des tables et mécanismes dans chaque module, mais de s'appuyer sur un stockage, des fonctions et développements factorisés, centralisés et partagés.
 
+Ces tables utilisent notamment le mécanisme des UUID (identifiant unique) pour retrouver les enregistrements. Depuis une table source (Occtax ou un autre module) on peut retrouver les enregistrments stockées dans les table transversale en utilisant un ``WHERE <TABLE_TRANSVERSALE>.uuid_attached_row = <MON_UUID_SOURCE>`` et ainsi retrouver l'historique de validation, les médias ou encore la sensibilité associé à une donnée.
+
 Voir https://github.com/PnX-SI/GeoNature/issues/339
 
 Triggers vers la synthèse : 
@@ -284,7 +286,7 @@ Version 2.1.0 de GeoNature
 
 .. image :: https://geonature.fr/docs/img/2019-06-triggers-gn_synthese.jpg
 
-**Table : synthese**
+**Table : synthese**
 
 Table contenant l’ensemble des données.
 Respecte le standard Occurrence de taxon du SINP.
@@ -298,25 +300,25 @@ Respecte le standard Occurrence de taxon du SINP.
    
   - AFTER INSERT OR UPDATE OF cd_nom OR DELETE
   - Mise à jour de la table ``taxons_synthese_autocomplete``
-  - Actions :
+  - Actions :
   
-    1. Si suppression ou update : suppression des enregistrements avec le cd_nom concerné dans la table ``gn_synthese.taxons_synthese_autocomplete auto``. *Si un cd_nom est présent dans plusieurs enregistrements, il sera supprimé également. Il manque un test pour savoir si la suppression doit ou non être activée.*
+    1. Si suppression ou update : suppression des enregistrements avec le cd_nom concerné dans la table ``gn_synthese.taxons_synthese_autocomplete auto``. *Si un cd_nom est présent dans plusieurs enregistrements, il sera supprimé également. Il manque un test pour savoir si la suppression doit ou non être activée.*
     2. Insertion des informations taxonomiques du cd_nom concerné dans la table ``gn_synthese.taxons_synthese_autocomplete auto``
 
 * tri_insert_cor_area_synthese
 
   - AFTER INSERT OR UPDATE OF the_geom_local
   - Mise à jour de la table ``cor_area_synthese``
-  - Actions :
+  - Actions :
   
-    1. Si update : suppression des enregistrements de la table ``gn_synthese.cor_area_synthese`` avec l'id_synthese concerné
+    1. Si update : suppression des enregistrements de la table ``gn_synthese.cor_area_synthese`` avec l'id_synthese concerné
     2. Insertion des id_areas intersectant la géométrie de la synthèse dans ``gn_synthese.cor_area_synthese``. *Prise en compte de toutes les aires qu’elles soient ou non actives. Manque enable = true*
 
 * tri_del_area_synt_maj_corarea_tax
 
   - BEFORE DELETE
   - Mise à jour des tables ``cor_area_taxon`` et ``cor_area_synthese``
-  - Actions :
+  - Actions :
     
     1. Récupération de l’ensemble des aires intersectant la donnée de synthèse
     2. Suppression des enregistrement de ``cor_area_taxon`` avec le cd_nom et les aires concernés
@@ -327,14 +329,14 @@ Respecte le standard Occurrence de taxon du SINP.
 
   - AFTER UPDATE OF cd_nom
   - Mise à jour de la table cor_area_taxon
-  - Actions :
+  - Actions :
   
     1. Récupération de l’ensemble des aires intersectant la donnée de synthèse
     2. Recalcul ``cor_area_taxon`` pour l’ancien cd_nom via fonction ``gn_synthese.delete_and_insert_area_taxon``
     3. Recalcul ``cor_area_taxon`` pour le nouveau cd_nom via fonction ``gn_synthese.delete_and_insert_area_taxon``
 
 
-**Table : cor_area_synthese**
+**Table : cor_area_synthese**
 
 Table contenant l’ensemble des id_areas intersectant les enregistrements de la synthèse
 
@@ -342,19 +344,19 @@ Table contenant l’ensemble des id_areas intersectant les enregistrements de la
 
   - AFTER INSERT OR UPDATE
   - Mise à jour des données de cor_area_taxon
-  - Actions :
+  - Actions :
   
     1. Récupération du cd_nom en lien avec l’enregistrement ``cor_area_synthese``
     2. Suppression des données de ``cor_area_taxon`` avec le ``cd_nom`` et ``id_area`` concerné
     3. Insertion des données dans ``cor_area_taxon`` en lien avec le ``cd_nom`` et ``id_area``
 
-**Table : cor_observer_synthese**
+**Table : cor_observer_synthese**
 
 * trg_maj_synthese_observers_txt
 
   - AFTER INSERT OR UPDATE OR DELETE
   - Mise à jour du champ ``observers`` de la table ``synthese``
-  - Actions :
+  - Actions :
   
     1. Construction de la valeur textuelle des observateurs
     2. Mise à jour du champ observer de l’enregistrement de la table ``synthese``
@@ -364,7 +366,7 @@ Table contenant l’ensemble des id_areas intersectant les enregistrements de la
 * delete_and_insert_area_taxon
 
   - Fonction qui met à jour la table ``cor_area_taxon`` en fonction d’un ``cd_nom`` et d'une liste d'``id area``
-  - Actions :
+  - Actions :
   
     1. Suppression des enregistrement de la table ``cor_area_taxon`` avec le ``cd_nom`` et les ``id_area`` concernés
     2. Insertion des données dans ``cor_area_taxon`` 
@@ -372,7 +374,7 @@ Table contenant l’ensemble des id_areas intersectant les enregistrements de la
 * color_taxon
 
   - Fonction qui associe une couleur à une durée
-  - *Passer les couleurs en paramètres : table  gn_commons.t_parameters ?*
+  - *Passer les couleurs en paramètres : table  gn_commons.t_parameters ?*
   - *Passer la fonction en immutable*
 
 Modularité
@@ -414,7 +416,7 @@ A chaque modification du fichier global de configuration (``<GEONATURE_DIRECTORY
 
 Ainsi après chaque modification des fichiers de configuration globale, placez-vous dans le backend de GeoNature (``/home/monuser/GeoNature/backend``) et lancez les commandes : 
 
-::
+.. code-block:: console
 
     source venv/bin/activate
     geonature update_configuration
@@ -429,7 +431,7 @@ Comme pour la configuration globale, ce fichier est minimaliste et peut être su
 
 A chaque modification de ce fichier, lancer les commandes suivantes depuis le backend de GeoNature (``/home/monuser/GeoNature/backend``). Le fichier est copié à destination du frontend ``<nom_module>/frontend/app/module.config.ts``, qui est alors recompilé automatiquement.
 
-::
+.. code-block:: console
 
     source venv/bin/activate
     geonature update_module_configuration <NOM_DE_MODULE>
@@ -457,7 +459,7 @@ Commandes GeoNature
 GeoNature est fourni avec une série de commandes pour administrer l'application.
 Pour les exécuter, il est nécessaire d'être dans le virtualenv python de GeoNature
 
-::
+.. code-block:: console
 
     cd <GEONATURE_DIRECTORY>/backend
     source venv/bin/activate
@@ -491,19 +493,19 @@ Par défaut :
 
 Pour vérifier que les API de GeoNature et de TaxHub sont lancées, exécuter la commande :
 
-::
+.. code-block:: console
 
     ps -aux |grep gunicorn
 
 La commande doit renvoyer 4 fois la ligne suivante pour GeoNature :
 
-::
+.. code-block:: console
 
     root      27074  4.6  0.1  73356 23488 ?        S    17:35   0:00       /home/theo/workspace/GN2/GeoNature/backend/venv/bin/python3 /home/theo/workspace/GN2/GeoNature/backend/venv/bin/gunicorn wsgi:app --error-log /var/log/geonature/api_errors.log --pid=geonature2.pid -w 4 -b 0.0.0.0:8000 -n geonature2
 
 et 4 fois la ligne suivante pour TaxHub :
 
-::
+.. code-block:: console
 
     root      27103 10.0  0.3 546188 63328 ?        Sl   17:35   0:00 /home/theo/workspace/GN2/TaxHub/venv/bin/python3.5 /home/theo/workspace/GN2/TaxHub/venv/bin/gunicorn server:app --access-logfile /var/log/taxhub/taxhub-access.log --error-log /var/log/taxhub/taxhub-errors.log --pid=taxhub.pid -w 4 -b 0.0.0.0:5000 -n taxhub
     
@@ -535,7 +537,7 @@ Pour les stopper, exécuter les commandes suivantes :
 
 Pour redémarer les API :
 
-::
+.. code-block:: console
 
     sudo supervisorctl reload
 
@@ -546,7 +548,7 @@ Lors d'une opération de maintenance (montée en version, modification de la bas
 
 Pour cela, désactivez la configuration Apache de GeoNature, puis activez la configuration du mode de maintenance :
 
-::
+.. code-block:: console
 
     sudo a2dissite geonature
     sudo a2ensite geonature_maintenance
@@ -554,7 +556,7 @@ Pour cela, désactivez la configuration Apache de GeoNature, puis activez la con
 
 A la fin de l'opération de maintenance, effectuer la manipulation inverse :
 
-::
+.. code-block:: console
 
     sudo a2dissite geonature_maintenance     
     sudo a2ensite geonature
@@ -580,7 +582,7 @@ Sauvegarde
 
 Les sauvegardes de la BDD sont à faire avec l'utilisateur ``postgres``. Commencer par créer un répertoire et lui donner des droits sur le répertoire où seront faites les sauvegardes.
 
-::
+.. code-block:: console
 
     # Créer le répertoire pour stocker les sauvegardes
     mkdir /home/`whoami`/backup
@@ -591,10 +593,10 @@ Les sauvegardes de la BDD sont à faire avec l'utilisateur ``postgres``. Commenc
 
 Connectez-vous avec l'utilisateur linux ``postgres`` pour lancer une sauvegarde de la BDD :
 
-::
+.. code-block:: console
 
     sudo su postgres
-    pg_dump -Fc geonature2db  > backup/`date +%Y-%m-%d-%H:%M`-geonaturedb.backup
+    pg_dump -Fc geonature2db  > /home/`whoami`/backup/`date +%Y-%m-%d-%H:%M`-geonaturedb.backup
     exit
 
 Si la sauvegarde ne se fait pas, c'est qu'il faut revoir les droits du répertoire où sont faites les sauvegardes pour que l'utilisateur ``postgres`` puisse y écrire
@@ -603,29 +605,28 @@ Opération à faire régulièrement grâce à une tâche cron.
 
 * Sauvegarde des fichiers de configuration :
 
-  ::
+  .. code-block:: console
 
-    cd geonature/config
-    tar -zcvf <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-geonature_config.tar.gz ./
-    cd /home/<MY_USER>/geonature
+    cd /home/`whoami`/geonature/config
+    tar -zcvf /home/`whoami`/backup/`date +%Y%m%d%H%M`-geonature_config.tar.gz ./
     
 Opération à faire à chaque modification d'un paramètre de configuration.
 
 * Sauvegarde des fichiers de customisation :
 
-  ::
+  .. code-block:: console
 
-    cd /home/<MY_USER>geonature/frontend/src/custom
-    tar -zcvf <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-geonature_custom.tar.gz ./
+    cd /home/`whoami`/geonature/frontend/src/custom
+    tar -zcvf /home/`whoami`/`date +%Y%m%d%H%M`-geonature_custom.tar.gz ./
 
 Opération à faire à chaque modification de la customisation de l'application.
 
 * Sauvegarde des modules externes :
 
-  ::
+  .. code-block:: console
 
-    cd /home/<MY_USER>geonature/external_modules
-    tar -zcvf <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-external_modules.tar.gz ./
+    cd /home/`whoami`/geonature/external_modules
+    tar -zcvf /home/`whoami`/backup/`date +%Y%m%d%H%M`-external_modules.tar.gz ./
 
 Restauration
 """"""""""""
@@ -634,7 +635,7 @@ Restauration
 
   - Créer une base de données vierge (on part du principe que la base de données ``geonature2db`` n'existe pas ou plus). Sinon adaptez le nom de la BDD et également la configuration de connexion de l'application à la BDD dans ``<GEONATURE_DIRECTORY>/config/geonature_config.toml``
 
-    ::
+    .. code-block:: console
 
         sudo -n -u postgres -s createdb -O <MON_USER> geonature2db
         sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS postgis;"
@@ -645,7 +646,7 @@ Restauration
         
   - Restaurer la BDD à partir du backup
 
-    ::
+    .. code-block:: console
     
         sudo su postgres
         pg_restore -d geonature2db <MY_BACKUP_DIRECTORY_PATH>/201803150917-geonaturedb.backup
@@ -654,7 +655,7 @@ Restauration
 
   - Décomprésser les fichiers précedemment sauvegardés pour les remettre au bon emplacement :
 
-    ::
+    .. code-block:: console
 
         sudo rm <GEONATURE_DIRECTORY>/config/*
         cd <GEONATURE_DIRECTORY>/config
@@ -670,7 +671,7 @@ Restauration
 
 * Relancer l'application :
 
-  ::
+  .. code-block:: console
 
     cd /<MY_USER>/geonature/frontend
     npm run build
@@ -683,7 +684,7 @@ La customisation de l'application nécessite de relancer la compilation du front
 
 Pour cela exécuter la commande suivante depuis le répertoire ``frontend``
 
-::
+.. code-block:: console
 
     npm run start -- --host=0.0.0.0 --disable-host-check
 
@@ -712,7 +713,7 @@ Le logo affiché dans la barre de navigation de GeoNature peut être modifié da
 
 Relancez la construction de l’interface :
 
-::
+.. code-block:: console
 
     cd /home/`whoami`/geonature/frontend
     npm run build
@@ -729,7 +730,7 @@ Il suffit pour cela de mettre à jour le fichier ``introduction.component.html``
 
 Afin que ces modifications soient prises en compte dans l'interface, il est nécessaire de relancer les commandes suivantes :
 
-::
+.. code-block:: console
 
     cd /home/`whoami`/geonature/frontend
     npm run build
@@ -741,7 +742,7 @@ Le pied de page peut être customisé de la même manière, en renseignant le fi
 
 De la même manière, il est nécessaire de relancer les commandes suivantes pour que les modifications soient prises en compte :
 
-::
+.. code-block:: console
 
     cd /home/`whoami`/geonature/frontend
     npm run build
@@ -754,7 +755,7 @@ Les couleurs de textes, couleurs de fonds, forme des boutons etc peuvent être a
 
 Pour remplacer la couleur de fond du bandeau de navigation par une image, on peut par exemple apporter la modification suivante :
 
-::
+.. code-block:: css
 
     html body pnx-root pnx-nav-home mat-sidenav-container.sidenav-container.mat-drawer-container.mat-sidenav-container mat-sidenav-content.mat-drawer-content.mat-sidenav-content mat-toolbar#app-toolbar.row.mat-toolbar
    {
@@ -766,7 +767,7 @@ Dans ce cas, l’image ``bandeau_test.jpg`` doit se trouver dans le répertoire 
 
 Comme pour la modification des contenus, il est nécessaire de relancer la commande suivante pour que les modifications soient prises en compte :
 
-::
+.. code-block:: console
 
     cd /home/`whoami`/geonature/frontend
     npm run build
@@ -789,12 +790,11 @@ GeoNature est fourni avec des données géographiques de base sur la métropôle
 *TODO : Procédure à améliorer et simplifier : https://github.com/PnX-SI/GeoNature/issues/235*
 
 
-
 Si vous n'avez pas choisi d'intégrer le raster MNT national à 250m fourni par défaut lors de l'installation ou que vous souhaitez le remplacer, voici les commandes qui vous permettront de le faire.
 
 Suppression du MNT par défaut (adapter le nom de la base de données : MYDBNAME).
 
-::
+.. code-block:: console
 
     sudo -n -u postgres -s psql -d MYDBNAME -c "TRUNCATE TABLE ref_geo.dem;"
     sudo -n -u postgres -s psql -d MYDBNAME -c "TRUNCATE TABLE ref_geo.dem_vector;"
@@ -803,22 +803,27 @@ Placer votre propre fichier MNT (ou vos différents fichiers "dalles") dans le r
 
 Pour utiliser celui proposé par défaut :
 
-::
+.. code-block:: console
 
     wget --cache=off http://geonature.fr/data/ign/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -P /tmp/geonature
     unzip /tmp/geonature/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -d /tmp/geonature
     export PGPASSWORD=MYUSERPGPASS;raster2pgsql -s MYSRID -c -C -I -M -d -t 5x5 /tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc ref_geo.dem|psql -h localhost -U MYPGUSER -d MYDBNAME
     sudo -n -u postgres -s psql -d MYDBNAME -c "REINDEX INDEX ref_geo.dem_st_convexhull_idx;"
-  
-Si votre MNT source est constitué de plusieurs fichiers (dalles), assurez vous que toutes vos dalles ont le même système de projection et le même format de fichier (tiff, asc, ou img par exemple). Après avoir chargé vos fichiers dans ``tmp/geonature`` (par exemple), vous pouvez lancer la commande ``export`` en remplacant le nom des fichiers par *.asc :
 
-::
+Si votre MNT source est constitué de plusieurs fichiers (dalles),
+assurez vous que toutes vos dalles ont le même système de projection
+et le même format de fichier (tiff, asc, ou img par exemple).
+Après avoir chargé vos fichiers dans ``tmp/geonature`` (par exemple),
+vous pouvez lancer la commande ``export`` en remplacant le nom des
+fichiers par \*.asc :
+
+.. code-block:: console
 
     export PGPASSWORD=MYUSERPGPASS;raster2pgsql -s MYSRID -c -C -I -M -d -t 5x5 /tmp/geonature/*.asc ref_geo.dem|psql -h localhost -U MYPGUSER -d MYDBNAME
 
 Si vous souhaitez vectoriser le raster MNT pour de meilleures performances lors des calculs en masse de l'altitude à partir de la localisation des observations, vous pouvez le faire en lançant les commandes ci-dessous. Sachez que cela prendra du temps et beaucoup d'espace disque (2.8Go supplémentaires environ pour le fichier DEM France à 250m).
 
-::
+.. code-block:: console
 
     sudo -n -u postgres -s psql -d MYDBNAME -c "INSERT INTO ref_geo.dem_vector (geom, val) SELECT (ST_DumpAsPolygons(rast)).* FROM ref_geo.dem;"
     sudo -n -u postgres -s psql -d MYDBNAME -c "REINDEX INDEX ref_geo.index_dem_vector_geom;"
@@ -869,7 +874,7 @@ Le module est fourni par défaut avec l'installation de GeoNature.
 
 Si vous l'avez supprimé, lancez les commandes suivantes depuis le repertoire ``backend`` de GeoNature
 
-::
+.. code-block:: console
 
     source venv/bin/activate
     geonature install_gn_module /home/<mon_user>/geonature/contrib/occtax occtax
@@ -949,11 +954,11 @@ Le module est fourni avec une liste restreinte de taxons (8 seulement). C'est à
 
 Le paramètre ``id_taxon_list = 100`` correspond à un ID de liste de la table ``taxonomie.bib_listes`` (L'ID 100 correspond à la liste "Saisie Occtax"). Vous pouvez changer ce paramètre avec l'ID de liste que vous souhaitez, ou bien garder cet ID et changer le contenu de cette liste.
 
-Voici les requêtes SQL pour remplir la liste 500 avec tous les taxons de Taxref à partir du rang ``genre`` : 
+Voici les requêtes SQL pour remplir la liste 100 avec tous les taxons de Taxref à partir du rang ``genre`` : 
 
-Il faut d'abord remplir la table ``taxonomie.bib_noms`` (table des taxons de sa structure), puis remplir la liste 500, avec l'ensemble des taxons de ``bib_noms`` :
+Il faut d'abord remplir la table ``taxonomie.bib_noms`` (table des taxons de sa structure), puis remplir la liste 100, avec l'ensemble des taxons de ``bib_noms`` :
 
-:: 
+.. code-block:: sql 
 
     DELETE FROM taxonomie.cor_nom_liste;
     DELETE FROM taxonomie.bib_noms;
@@ -962,10 +967,10 @@ Il faut d'abord remplir la table ``taxonomie.bib_noms`` (table des taxons de sa 
     SELECT cd_nom, cd_ref, nom_vern
     FROM taxonomie.taxref
     WHERE id_rang NOT IN ('Dumm','SPRG','KD','SSRG','IFRG','PH','SBPH','IFPH','DV','SBDV','SPCL','CLAD','CL',
-      'SBCL','IFCL','LEG','SPOR','COH','OR','SBOR','IFOR','SPFM','FM','SBFM','TR','SSTR')
+      'SBCL','IFCL','LEG','SPOR','COH','OR','SBOR','IFOR','SPFM','FM','SBFM','TR','SSTR');
 
     INSERT INTO taxonomie.cor_nom_liste (id_liste,id_nom)
-    SELECT 100,n.id_nom FROM taxonomie.bib_noms n
+    SELECT 100,n.id_nom FROM taxonomie.bib_noms n;
 
 Il est également possible d'éditer des listes à partir de l'application TaxHub.
 
@@ -988,7 +993,7 @@ La valeur 0 pour ses champs revient à mettre la valeur par défaut pour tous le
 
 Une interface de gestion des nomenclatures est prévue d'être développée pour simplifier cette configuration.
 
-TODO: valeur par défaut de la validation
+TODO : valeur par défaut de la validation
 
 Personnaliser l'interface Map-list
 **********************************
@@ -1158,7 +1163,9 @@ Enlevez la ligne de la colonne que vous souhaitez désactiver. Les noms de colon
             "lastAction",
             "validateur"
         ]
-.. note::
+
+:Note:
+
     L'entête ``[SYNTHESE]`` au dessus ``EXPORT_COLUMNS`` indique simplement que cette variable appartient au bloc de configuration de la synthese. Ne pas rajouter l'entête à chaque paramètre de la synthese mais une seule fois au dessus de toutes les variables de configuration du module.
 
 Il est également possible de personnaliser ses exports en éditant le SQL de la vue ``gn_synthese.v_synthese_for_export`` (niveau SQL et administration GeoNature avancé).
@@ -1176,7 +1183,7 @@ La vue doit OBLIGATOIREMENT contenir les champs :
 
 Ces champs doivent impérativement être présents dans la vue, mais ne seront pas nécessairement dans le fichier d'export si ils ne figurent pas dans la variable ``EXPORT_COLUMNS``. De manière générale, préférez rajouter des champs plutôt que d'en enlever !
 
-Le nom de ces champs peuvent cependant être modifié. Dans ce cas, modifiez le fichier ``geonature_config.toml``, section ``SYNTHESE`` parmis les variables suivantes (``EXPORT_ID_SYNTHESE_COL, EXPORT_ID_DATASET_COL, EXPORT_ID_DIGITISER_COL, EXPORT_OBSERVERS_COL, EXPORT_GEOJSON_4326_COL, EXPORT_GEOJSON_LOCAL_COL``)
+Le nom de ces champs peuvent cependant être modifié. Dans ce cas, modifiez le fichier ``geonature_config.toml``, section ``SYNTHESE`` parmis les variables suivantes (``EXPORT_ID_SYNTHESE_COL, EXPORT_ID_DATASET_COL, EXPORT_ID_DIGITISER_COL, EXPORT_OBSERVERS_COL, EXPORT_GEOJSON_4326_COL, EXPORT_GEOJSON_LOCAL_COL``).
 
 NB: Lorsqu'on effectue une recherche dans la synthèse, on interroge la vue ``gn_synthese.v_synthese_for_web_app``. L'interface web passe ensuite une liste d'``id_synthese`` à la vue ``gn_synthese.v_synthese_for_export``correspondant à la recherche précedemment effectuée (ce qui permet à cette seconde vue d'être totalement modifiable).
 
@@ -1224,3 +1231,18 @@ Modifiez la variable ``EXCLUDED_COLUMNS``
 
 
 D'autres élements sont paramètrables dans le module synthese. La liste complète est disponible dans le fichier ``config/geonature_config.toml`` rubrique ``SYNTHESE``.
+
+Module VALIDATION
+-----------------
+
+Le module VALIDATION, integré depuis la version 2.1.0 dans le coeur de GeoNature permet de valider des occurrences de taxon en s'appuyant sur les données présentes dans la SYNTHESE. Le module s'appuie sur le `standard Validation <http://www.naturefrance.fr/la-reunion/protocole-de-validation>`_ du SINP et sur ses `nomenclatures officiels <http://standards-sinp.mnhn.fr/nomenclature/80-niveaux-de-validation-validation-manuelle-ou-combinee-2018-05-14/>`_.
+
+Afin de valider une occurrence, celle-ci doit impérativement avoir un UUID. En effet, la validation est stockée en BDD dans la table transversale ``gn_commons.t_validations``  (`voir doc <admin-manual.html#tables-transversales>`_ ) qui impose la présence de cet UUID.
+
+La table ``gn_commons.t_validations`` contient l'ensemble de l'historique de validation des occurrences. Pour une même occurrence (identifiée par un UUID unique) on peut donc retrouver plusieurs lignes dans la table correspondant au différents statuts de validation attribués à cet occurrence dans le temps.
+
+La vue ``gn_commons.v_latest_validation`` permet de récupérer le dernier statut de validation d'une occurrence.
+
+NB : une donnée non présente dans la SYNTHESE, ne remontera pas dans l'interface du module VALIDATION. Cependant rien n'empêche un administrateur avancé d'utiliser la table de validation et son mécanisme pour des données qui ne seraient pas en SYNTHESE (du moment que les données disposent d'un UUID).
+
+Au niveau de l'interface, le formulaire de recherche est commun avec le module SYNTHESE. Les paramètres de configuration du formulaire sont donc également partagés et administrables depuis le fichier ``geonature_config.toml``, rubrique SYNTHESE.

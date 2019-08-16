@@ -8,21 +8,18 @@ import {
   HostListener,
   AfterContentChecked,
   OnChanges,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  EventEmitter
 } from "@angular/core";
-
-import { GeoJSON, FeatureGroup, Marker } from "leaflet";
-
 import { MapService } from "@geonature_common/map/map.service";
-import { DataService } from "../../services/data.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
 import { ModuleConfig } from "../../module.config";
 import { DomSanitizer } from "@angular/platform-browser";
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { ValidationModalInfoObsComponent } from "../validation-modal-info-obs/validation-modal-info-obs.component";
-import { FormService } from "../../services/form.service";
-import { ToastrService } from "ngx-toastr";
+import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthese-form.service";
+import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthese-data.service";
 
 @Component({
   selector: "pnx-validation-synthese-list",
@@ -36,17 +33,15 @@ export class ValidationSyntheseListComponent
   selectedIndex: Array<number> = [];
   selectedPages = [];
   coordinates_list = []; // list of coordinates for selected rows
-  group: FeatureGroup;
   marker: MediaTrackSupportedConstraints;
   public rowNumber: number;
   private _latestWidth: number;
   public id_same_coordinates = []; // list of observation ids having same geographic coordinates
-  public validationStatus;
   public modif_text =
     "Attention données modifiées depuis la dernière validation";
   public npage;
 
-  @Input() inputSyntheseData: GeoJSON;
+  @Input() inputSyntheseData: Array<any>;
   @Input() validationStatus: Array<any>;
   @ViewChild("table") table: DatatableComponent;
   @Output() pageChange: EventEmitter<number>;
@@ -54,15 +49,13 @@ export class ValidationSyntheseListComponent
 
   constructor(
     public mapListService: MapListService,
-    private _ds: DataService,
+    private _ds: SyntheseDataService,
     public ngbModal: NgbModal,
     private _commonService: CommonService,
-    //private _fs: SyntheseFormService,
     public sanitizer: DomSanitizer,
     public ref: ChangeDetectorRef,
     private _ms: MapService,
-    public formService: FormService,
-    private toastr: ToastrService
+    public formService: SyntheseFormService,
   ) {}
 
   ngOnInit() {
@@ -70,10 +63,9 @@ export class ValidationSyntheseListComponent
     const h = document.documentElement.clientHeight;
     this.rowNumber = Math.trunc(h / 37);
 
-    this.group = new FeatureGroup();
+    // this.group = new FeatureGroup();
     this.onMapClick();
     this.onTableClick();
-    //console.log(this.mapListService.tableData);
     this.npage = 1;
   }
 
@@ -110,33 +102,6 @@ export class ValidationSyntheseListComponent
       this.setSelectedObs();
     });
   }
-
-  // getStatusNames() {
-  //   this._ds.getStatusNames().subscribe(
-  //     result => {
-  //       console.log(result);
-  //       // {0: "Root", 1: "Inconnu", 2: "Indéterminé", 3: "Adulte", 4: "Juvénile", 5: "Immature"}
-  //       // get status names
-  //       this.statusNames = result;
-  //       this.statusKeys = Object.keys(this.VALIDATION_CONFIG.STATUS_INFO);
-  //       console.log(this.statusKeys);
-  //     },
-  //     err => {
-  //       if (err.statusText === "Unknown Error") {
-  //         // show error message if no connexion
-  //         this.toastr.error(
-  //           "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connexion)"
-  //         );
-  //       } else {
-  //         // show error message if other server error
-  //         this.toastr.error(err.error);
-  //       }
-  //     },
-  //     () => {
-  //       this.deselectAll();
-  //     }
-  //   );
-  // }
 
   onTableClick() {
     this.setSelectedObs();
@@ -187,7 +152,13 @@ export class ValidationSyntheseListComponent
       this.setOriginStyleToAll();
     }
   }
-
+  toggleSelection(element) {
+    if (element.target.checked) {
+      this.selectAll();
+    } else {
+      this.deselectAll();
+    }
+  }
   onActivate(event) {
     if (event.type == "checkbox" || event.type == "click") {
       this.setSelectedObs();
@@ -199,13 +170,7 @@ export class ValidationSyntheseListComponent
   }
 
   viewFitList(id_observations) {
-    // create an empty featre group
-    // and fill it with the selected layer to get bounds
-    this.group = new FeatureGroup();
-    id_observations.forEach(id_obs => {
-      this.group.addLayer(this.mapListService.layerDict[id_obs]);
-    });
-    this._ms.getMap().fitBounds(this.group.getBounds());
+    this.mapListService.zoomOnSeveralSelectedLayers(this._ms.map, id_observations);
   }
 
   setSelectedObs() {

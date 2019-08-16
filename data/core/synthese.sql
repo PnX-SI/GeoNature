@@ -128,7 +128,6 @@ CREATE TABLE t_sources (
     desc_source text,
     entity_source_pk_field character varying(255),
     url_source character varying(255),
-    validable boolean NOT NULL DEFAULT true,
     meta_create_date timestamp without time zone DEFAULT now(),
     meta_update_date timestamp without time zone DEFAULT now()
 );
@@ -217,8 +216,7 @@ ALTER TABLE ONLY synthese ALTER COLUMN id_synthese SET DEFAULT nextval('synthese
 
 CREATE TABLE cor_area_synthese (
     id_synthese integer,
-    id_area integer,
-    cd_nom integer
+    id_area integer
 );
 
 CREATE TABLE cor_observer_synthese
@@ -374,10 +372,8 @@ ALTER TABLE ONLY synthese
 
 
 ALTER TABLE ONLY cor_area_synthese
-    ADD CONSTRAINT fk_cor_area_synthese_id_synthese FOREIGN KEY (id_synthese) REFERENCES synthese(id_synthese) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_area_synthese_id_synthese FOREIGN KEY (id_synthese) REFERENCES synthese(id_synthese) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE ONLY cor_area_synthese
-    ADD CONSTRAINT fk_cor_area_synthese_cd_nom FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY cor_area_synthese
     ADD CONSTRAINT fk_cor_area_synthese_id_area FOREIGN KEY (id_area) REFERENCES ref_geo.l_areas(id_area) ON UPDATE CASCADE;
@@ -506,7 +502,7 @@ s as (
 ,loc AS (
   SELECT cd_ref,
 	count(*) AS nbobs,
-	ST_Transform(ST_SetSRID(box2d(st_extent(s.the_geom_local))::geometry,MYLOCALSRID), 4326) AS bbox4326
+	public.ST_Transform(public.ST_SetSRID(public.box2d(public.ST_extent(s.the_geom_local))::geometry,MYLOCALSRID), 4326) AS bbox4326
   FROM  s
   GROUP BY cd_ref
 )
@@ -637,7 +633,7 @@ $BODY$
   BEGIN
   geom_change = false;
   IF(TG_OP = 'UPDATE') THEN
-	SELECT INTO geom_change NOT ST_EQUALS(OLD.the_geom_local, NEW.the_geom_local);
+	SELECT INTO geom_change NOT public.ST_EQUALS(OLD.the_geom_local, NEW.the_geom_local);
   END IF;
 
   IF (geom_change) THEN
@@ -648,11 +644,10 @@ $BODY$
     IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND geom_change )) THEN
       INSERT INTO gn_synthese.cor_area_synthese SELECT
 	      s.id_synthese AS id_synthese,
-        a.id_area AS id_area,
-        s.cd_nom AS cd_nom
+        a.id_area AS id_area
         FROM ref_geo.l_areas a
-        JOIN gn_synthese.synthese s ON ST_INTERSECTS(s.the_geom_local, a.geom)
-        WHERE s.id_synthese = NEW.id_synthese;
+        JOIN gn_synthese.synthese s ON public.ST_INTERSECTS(s.the_geom_local, a.geom)
+        WHERE s.id_synthese = NEW.id_synthese AND a.enable IS true;
     END IF;
   RETURN NULL;
   END;
@@ -665,8 +660,8 @@ CREATE OR REPLACE FUNCTION gn_synthese.fct_trg_refresh_taxons_forautocomplete()
   RETURNS trigger AS
 $BODY$
  DECLARE
+  thenomvern VARCHAR;
   BEGIN
-
     IF TG_OP in ('DELETE', 'TRUNCATE', 'UPDATE') AND OLD.cd_nom NOT IN (SELECT DISTINCT cd_nom FROM gn_synthese.synthese) THEN
         DELETE FROM gn_synthese.taxons_synthese_autocomplete auto
         WHERE auto.cd_nom = OLD.cd_nom;
@@ -681,16 +676,24 @@ $BODY$
           t.lb_nom,
           t.regne,
           t.group2_inpn
-      FROM taxonomie.taxref t  WHERE cd_nom = NEW.cd_nom;
-      INSERT INTO gn_synthese.taxons_synthese_autocomplete
-      SELECT t.cd_nom,
-        t.cd_ref,
-        concat(t.nom_vern, ' =  <i> ', t.nom_valide, '</i>', ' - [', t.id_rang, ' - ', t.cd_nom , ']' ) AS search_name,
-        t.nom_valide,
-        t.lb_nom,
-        t.regne,
-        t.group2_inpn
-      FROM taxonomie.taxref t  WHERE t.nom_vern IS NOT NULL AND cd_nom = NEW.cd_nom;
+      FROM taxonomie.taxref t WHERE cd_nom = NEW.cd_nom;
+      --On insère une seule fois le nom_vern car il est le même pour tous les synonymes
+      SELECT INTO thenomvern t.cd_nom 
+      FROM gn_synthese.taxons_synthese_autocomplete a
+      JOIN taxonomie.taxref t ON t.cd_nom = a.cd_nom
+      WHERE a.cd_ref = taxonomie.find_cdref(NEW.cd_nom)
+      AND a.search_name ILIKE t.nom_vern||'%';
+      IF thenomvern IS NULL THEN
+        INSERT INTO gn_synthese.taxons_synthese_autocomplete
+        SELECT t.cd_nom,
+          t.cd_ref,
+          concat(t.nom_vern, ' =  <i> ', t.nom_valide, '</i>', ' - [', t.id_rang, ' - ', t.cd_nom , ']' ) AS search_name,
+          t.nom_valide,
+          t.lb_nom,
+          t.regne,
+          t.group2_inpn
+        FROM taxonomie.taxref t WHERE t.nom_vern IS NOT NULL AND cd_nom = NEW.cd_nom;
+      END IF;
     END IF;
   RETURN NULL;
   END;
@@ -782,77 +785,63 @@ $$;
 --VIEWS--
 ---------
 
-CREATE OR REPLACE VIEW gn_synthese.v_tree_taxons_synthese AS
-WITH 
-  cd_synthese AS(
-    SELECT DISTINCT cd_nom FROM gn_synthese.synthese
-  )
-	,taxon AS (
-    SELECT
-      t_1.cd_ref,
-      t_1.lb_nom AS nom_latin,
-      t_1.nom_vern AS nom_francais,
-      t_1.cd_nom,
-      t_1.id_rang,
-      t_1.regne,
-      t_1.phylum,
-      t_1.classe,
-      t_1.ordre,
-      t_1.famille,
-      t_1.lb_nom
-    FROM taxonomie.taxref t_1
-    JOIN cd_synthese s ON s.cd_nom = t_1.cd_nom
-  )
-  ,cd_regne AS (
-    SELECT DISTINCT taxref.cd_nom,
-      taxref.regne
-    FROM taxonomie.taxref
-    WHERE taxref.id_rang::text = 'KD'::text 
-    AND taxref.cd_nom = taxref.cd_ref
-  )
-SELECT
-  t.cd_ref,
-  t.nom_latin,
-  t.nom_francais,
-  t.id_regne,
-  t.nom_regne,
-  COALESCE(t.id_embranchement, t.id_regne) AS id_embranchement,
-  COALESCE(t.nom_embranchement, ' Sans embranchement dans taxref') AS nom_embranchement,
-  COALESCE(t.id_classe, t.id_embranchement) AS id_classe,
-  COALESCE(t.nom_classe, ' Sans classe dans taxref') AS nom_classe,
-  COALESCE(t.desc_classe, ' Sans classe dans taxref') AS desc_classe,
-  COALESCE(t.id_ordre, t.id_classe) AS id_ordre,
-  COALESCE(t.nom_ordre, ' Sans ordre dans taxref') AS nom_ordre,
-  COALESCE(t.id_famille, t.id_ordre) AS id_famille,
-  COALESCE(t.nom_famille, ' Sans famille dans taxref') AS nom_famille
-FROM ( 
-  SELECT DISTINCT
-    t_1.cd_ref,
-    t_1.nom_latin,
-    t_1.nom_francais,
-    ( SELECT DISTINCT r.cd_nom
-      FROM cd_regne r
-      WHERE r.regne = t_1.regne
-    ) AS id_regne,
-    t_1.regne AS nom_regne,
-    ph.cd_nom AS id_embranchement,
-    t_1.phylum AS nom_embranchement,
-    t_1.phylum AS desc_embranchement,
-    cl.cd_nom AS id_classe,
-    t_1.classe AS nom_classe,
-    t_1.classe AS desc_classe,
-    ord.cd_nom AS id_ordre,
-    t_1.ordre AS nom_ordre,
-    f.cd_nom AS id_famille,
-    t_1.famille AS nom_famille
-  FROM taxon t_1
-  LEFT JOIN taxonomie.taxref ph ON ph.id_rang = 'PH' AND ph.cd_nom = ph.cd_ref AND ph.lb_nom = t_1.phylum AND NOT t_1.phylum IS NULL
-  LEFT JOIN taxonomie.taxref cl ON cl.id_rang = 'CL' AND cl.cd_nom = cl.cd_ref AND cl.lb_nom = t_1.classe AND NOT t_1.classe IS NULL
-  LEFT JOIN taxonomie.taxref ord ON ord.id_rang = 'OR' AND ord.cd_nom = ord.cd_ref AND ord.lb_nom = t_1.ordre AND NOT t_1.ordre IS NULL
-  LEFT JOIN taxonomie.taxref f ON f.id_rang = 'FM' AND f.cd_nom = f.cd_ref AND f.lb_nom = t_1.famille AND f.phylum = t_1.phylum AND NOT t_1.famille IS NULL
-) t
-ORDER BY id_regne, id_embranchement, id_classe, id_ordre, id_famille;
+CREATE OR REPLACE VIEW gn_synthese.v_tree_taxons_synthese AS 
+ WITH cd_famille AS (
+         SELECT t_1.cd_ref,
+            t_1.lb_nom AS nom_latin,
+            t_1.nom_vern AS nom_francais,
+            t_1.cd_nom,
+            t_1.id_rang,
+            t_1.regne,
+            t_1.phylum,
+            t_1.classe,
+            t_1.ordre,
+            t_1.famille,
+            t_1.lb_nom
+           FROM taxonomie.taxref t_1
+          WHERE (t_1.lb_nom::text IN ( SELECT DISTINCT t_2.famille
+                   FROM gn_synthese.synthese s
+                     JOIN taxonomie.taxref t_2 ON t_2.cd_nom = s.cd_nom))
+        ), cd_regne AS (
+         SELECT DISTINCT taxref.cd_nom,
+            taxref.regne
+           FROM taxonomie.taxref
+          WHERE taxref.id_rang::text = 'KD'::text AND taxref.cd_nom = taxref.cd_ref
+        )
+ SELECT t.cd_ref,
+    t.nom_latin,
+    t.nom_francais,
+    t.id_regne,
+    t.nom_regne,
+    COALESCE(t.id_embranchement, t.id_regne) AS id_embranchement,
+    COALESCE(t.nom_embranchement, ' Sans embranchement dans taxref'::character varying) AS nom_embranchement,
+    COALESCE(t.id_classe, t.id_embranchement) AS id_classe,
+    COALESCE(t.nom_classe, ' Sans classe dans taxref'::character varying) AS nom_classe,
+    COALESCE(t.desc_classe, ' Sans classe dans taxref'::character varying) AS desc_classe,
+    COALESCE(t.id_ordre, t.id_classe) AS id_ordre,
+    COALESCE(t.nom_ordre, ' Sans ordre dans taxref'::character varying) AS nom_ordre
+   FROM ( SELECT DISTINCT t_1.cd_ref,
+            t_1.nom_latin,
+            t_1.nom_francais,
+            ( SELECT DISTINCT r.cd_nom
+                   FROM cd_regne r
+                  WHERE r.regne::text = t_1.regne::text) AS id_regne,
+            t_1.regne AS nom_regne,
+            ph.cd_nom AS id_embranchement,
+            t_1.phylum AS nom_embranchement,
+            t_1.phylum AS desc_embranchement,
+            cl.cd_nom AS id_classe,
+            t_1.classe AS nom_classe,
+            t_1.classe AS desc_classe,
+            ord.cd_nom AS id_ordre,
+            t_1.ordre AS nom_ordre
+           FROM cd_famille t_1
+             LEFT JOIN taxonomie.taxref ph ON ph.id_rang::text = 'PH'::text AND ph.cd_nom = ph.cd_ref AND ph.lb_nom::text = t_1.phylum::text AND NOT t_1.phylum IS NULL
+             LEFT JOIN taxonomie.taxref cl ON cl.id_rang::text = 'CL'::text AND cl.cd_nom = cl.cd_ref AND cl.lb_nom::text = t_1.classe::text AND NOT t_1.classe IS NULL
+             LEFT JOIN taxonomie.taxref ord ON ord.id_rang::text = 'OR'::text AND ord.cd_nom = ord.cd_ref AND ord.lb_nom::text = t_1.ordre::text AND NOT t_1.ordre IS NULL) t
+  ORDER BY t.id_regne, (COALESCE(t.id_embranchement, t.id_regne)), (COALESCE(t.id_classe, t.id_embranchement)), (COALESCE(t.id_ordre, t.id_classe));
 
+COMMENT ON VIEW gn_synthese.v_tree_taxons_synthese IS 'Vue destinée à l''arbre taxonomique de la synthese. S''arrête  à la famille pour des questions de performances';
 
 
 
@@ -897,7 +886,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
     s.altitude_min,
     s.altitude_max,
     s.the_geom_4326,
-    st_asgeojson(the_geom_4326),
+    public.ST_asgeojson(the_geom_4326),
     s.date_min,
     s.date_max,
     s.validator,
@@ -1001,7 +990,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     s.non_digital_proof AS "preuvNoNum",
     s.altitude_min AS "altMin",
     s.altitude_max AS "altMax",
-    st_astext(s.the_geom_4326) AS wkt,
+    public.ST_astext(s.the_geom_4326) AS wkt,
     s.date_min AS "dateDebut",
     s.date_max AS "dateFin",
     s.validator AS validateur,
@@ -1018,11 +1007,11 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     t.cd_nom AS "cdNom",
     t.cd_ref AS "cdRef",
     s.nom_cite AS "nomCite",
-    st_x(st_transform(s.the_geom_point, 2154)) AS x_centroid,
-    st_y(st_transform(s.the_geom_point, 2154)) AS y_centroid,
+    public.ST_x(public.ST_transform(s.the_geom_point, 2154)) AS x_centroid,
+    public.ST_y(public.ST_transform(s.the_geom_point, 2154)) AS y_centroid,
     COALESCE(s.meta_update_date, s.meta_create_date) AS lastact,
-    st_asgeojson(s.the_geom_4326) AS geojson_4326,
-    st_asgeojson(s.the_geom_local) AS geojson_local,
+    public.ST_asgeojson(s.the_geom_4326) AS geojson_4326,
+    public.ST_asgeojson(s.the_geom_local) AS geojson_local,
     deco."ObjGeoTyp",
     deco."methGrp",
     deco."obsMeth",

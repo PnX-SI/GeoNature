@@ -230,6 +230,16 @@ export class MapListService {
     }
   }
 
+  zoomOnSeveralSelectedLayers(map, layers) {
+    let group = new L.FeatureGroup();
+    layers.forEach(layer => {
+      this.layerDict[layer];
+      group.addLayer(this.layerDict[layer]);
+    });
+
+    this._ms.getMap().fitBounds(group.getBounds());
+  }
+
   /**
    * Use in synthese where layer are not GeoJson but PolyLigne, Polygon ...
    * @param map
