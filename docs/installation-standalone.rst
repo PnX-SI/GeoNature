@@ -246,7 +246,7 @@ La mise à jour de GeoNature consiste à télécharger sa nouvelle version dans 
 
 * Suivez les éventuelles notes de version décrites ici : https://github.com/PnX-SI/GeoNature/releases.
 
-⚠️ Si la realease inclue des scripts de migration SQL: *lancer ces scripts avec l'utilisateur de BDD courant* (généralement `geonatadmin`) et non le super-utilisateur `postgres`.
+⚠️ Si la release inclut des scripts de migration SQL : *lancer ces scripts avec l'utilisateur de BDD courant* (généralement ``geonatadmin``) et non le super-utilisateur ``postgres``.
 
 Sauf mentions contraires dans les notes de version, vous pouvez sauter des versions mais en suivant bien les différentes notes de versions et notamment les scripts de mise à jour de la base de données à exécuter successivement.
 
