@@ -170,7 +170,9 @@ export class ValidationSyntheseListComponent
   }
 
   viewFitList(id_observations) {
-    this.mapListService.zoomOnSeveralSelectedLayers(this._ms.map, id_observations);
+    if (id_observations.length) {
+      this.mapListService.zoomOnSeveralSelectedLayers(this._ms.map, id_observations);
+    }
   }
 
   setSelectedObs() {
