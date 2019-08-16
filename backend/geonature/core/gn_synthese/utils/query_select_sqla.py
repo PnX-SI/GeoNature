@@ -25,6 +25,7 @@ from geonature.core.gn_meta.models import (
     TDatasets,
 )
 
+from geonature.core.gn_permissions.tools import get_taxonomic_filter_per_role
 
 class SyntheseQuery:
     """
@@ -275,6 +276,23 @@ class SyntheseQuery:
                 col = getattr(self.model.__table__.columns, colname)
                 self.query = self.query.where(col.in_(value))
 
+    def filter_on_taxonomic_filters(self,user):
+        """
+        Filter the query with the taxonomic filters of a user
+        """
+        taxonomic_filters = get_taxonomic_filter_per_role(user)
+
+        # join with table taxonomie.taxref (add code to check if table already joined)
+        self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
+        
+        ors_filters = []
+        for t_filter in taxonomic_filters:
+            # on boucle sur le dictionnaire (ex si il ya {'classe': 'chordatada', 'famille': 'aves'})
+            for key, value in t_filter.items():
+                attr = getattr(Taxref, key)
+                ors_filters.append(attr == value)   
+        self.query = self.query.where(or_(*ors_filters))
+
     def filter_query_all_filters(self, user):
         """High level function to manage query with all filters.
 
@@ -293,9 +311,10 @@ class SyntheseQuery:
         """
 
         self.filter_query_with_cruved(user)
-
+        self.filter_on_taxonomic_filters(user)
         self.filter_taxonomy()
         self.filter_other_filters()
+        
 
         if self.query_joins is not None:
             self.query = self.query.select_from(self.query_joins)

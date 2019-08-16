@@ -75,6 +75,7 @@ class VSyntheseValidation(DB.Model):
     label_default = DB.Column(DB.Unicode)
     validation_auto = DB.Column(DB.Boolean)
     validation_date = DB.Column(DB.DateTime)
+    st_asgeojson = DB.Column(DB.Unicode)
 
     def get_geofeature(self, recursif=False, columns=()):
         return self.as_geofeature(

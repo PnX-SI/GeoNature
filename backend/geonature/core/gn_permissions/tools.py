@@ -279,3 +279,20 @@ def get_or_fetch_user_cruved(
         session[module_code] = {}
         session[module_code]['user_cruved'] = user_cruved
     return user_cruved
+
+def get_taxonomic_filter_per_role(user):
+    """
+    (Fct to be rewritten as decorator)
+    get taxonomic filter(s) info per user (role) 
+    """
+    
+    q_permissions = (
+        DB.session.query(VUsersPermissions)
+        .filter(VUsersPermissions.code_filter_type == "TAXONOMIC")
+        .filter(VUsersPermissions.id_role == user.id_role)
+        .filter(VUsersPermissions.module_code == user.module_code) 
+        )
+    
+    taxonomic_filters = [json.loads(perm.value_filter) for perm in q_permissions.all()]
+     #print('Liste des filtres mis en forme : ',taxonomic_filters) # tests
+    return taxonomic_filters

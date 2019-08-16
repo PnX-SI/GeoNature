@@ -3,8 +3,7 @@ from flask import Blueprint, current_app, request
 
 from operator import itemgetter
 
-import pdb
-
+import ast
 import re
 
 from sqlalchemy import select, desc, cast, DATE, func
@@ -26,7 +25,7 @@ from geonature.core.gn_synthese.models import (
 
 from geonature.core.gn_commons.models import BibTablesLocation
 
-from .query import filter_query_all_filters
+from .query_select_sqla import ValidationQuery
 
 from geonature.utils.env import DB
 
@@ -79,33 +78,69 @@ def get_synthese_data(info_role):
 
         result_limit = blueprint.config["NB_MAX_OBS_MAP"]
 
-        # pdb.set_trace()
+        query = (
+                select(
+                    [
+                        VSyntheseValidation.cd_nom,
+                        VSyntheseValidation.cd_nomenclature_validation_status,
+                        VSyntheseValidation.dataset_name,
+                        VSyntheseValidation.date_min,
+                        VSyntheseValidation.entity_source_pk_value,
+                        VSyntheseValidation.id_nomenclature_valid_status,
+                        VSyntheseValidation.id_synthese,
+                        VSyntheseValidation.label_default,
+                        VSyntheseValidation.meta_update_date,
+                        VSyntheseValidation.mnemonique,
+                        VSyntheseValidation.nom_valide,
+                        VSyntheseValidation.nom_vern,
+                        VSyntheseValidation.st_asgeojson,
+                        VSyntheseValidation.lb_nom,
+                        VSyntheseValidation.observers,
+                        VSyntheseValidation.unique_id_sinp,
+                        VSyntheseValidation.validation_auto,
+                        VSyntheseValidation.validation_date,
+                    ]
+                )
+                .where(VSyntheseValidation.the_geom_4326.isnot(None))
+                .order_by(VSyntheseValidation.date_min.desc())
+                )
 
-        q = DB.session.query(VSyntheseValidation)
+        validation_query_class = ValidationQuery(VSyntheseValidation, query, filters)
+        validation_query_class.filter_query_all_filters(info_role)
 
-        q = filter_query_all_filters(VSyntheseValidation, q, filters, info_role)
-
-        q = q.order_by(VSyntheseValidation.date_min.desc())
+        result = DB.engine.execute(validation_query_class.query.limit(result_limit))
+        
+        geojson_features = []
+        for r in result:
+            geojson = {}
+            properties = {
+                "cd_nom": r["cd_nom"],
+                "cd_nomenclature_validation_status": r["cd_nomenclature_validation_status"],
+                "dataset_name": r["dataset_name"],
+                "date_min": str(r["date_min"]),
+                "entity_source_pk_value": r["entity_source_pk_value"],
+                "id_nomenclature_valid_status": r["id_nomenclature_valid_status"],
+                "id_synthese": r["id_synthese"],
+                "label_default": r["label_default"],
+                "meta_update_date": str(r["meta_update_date"]),
+                "mnemonique": r["mnemonique"],
+                "nom_valide": r["nom_valide"],
+                "nom_vern_or_lb_nom": r["nom_vern"] if r["nom_vern"] else r["lb_nom"],
+                "observers": r["observers"],
+                "unique_id_sinp": str(r["unique_id_sinp"]),
+                "validation_auto": r["validation_auto"],
+                "validation_date": str(r["validation_date"]),
+            }
+            geojson["type"] = "Feature"
+            geojson["properties"] = properties
+            geojson["id"] = r["id_synthese"]
+            geojson["geometry"] = ast.literal_eval(r["st_asgeojson"])
+            geojson_features.append(geojson) 
 
         nb_total = 0
 
-        data = q.limit(result_limit)
-        columns = (
-            blueprint.config["COLUMNS_API_VALIDATION_WEB_APP"]
-            + blueprint.config["MANDATORY_COLUMNS"]
-        )
-
-        features = []
-
-        for d in data:
-            feature = d.get_geofeature(columns=columns)
-            feature["properties"]["nom_vern_or_lb_nom"] = (
-                d.nom_vern if d.lb_nom is None else d.lb_nom
-            )
-            features.append(feature)
-
         return {
-            "data": FeatureCollection(features),
+            "data": FeatureCollection(geojson_features),
             "nb_obs_limited": nb_total == blueprint.config["NB_MAX_OBS_MAP"],
             "nb_total": nb_total,
         }
