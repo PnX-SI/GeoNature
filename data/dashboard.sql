@@ -32,7 +32,11 @@ CREATE MATERIALIZED VIEW gn_dashboard.vm_synthese AS
    FROM gn_synthese.synthese s
      JOIN taxonomie.taxref t ON s.cd_nom = t.cd_nom
 WITH DATA;
+COMMENT ON MATERIALIZED VIEW gn_dashboard.vm_synthese
+    IS 'Vue matérialisée remettant à plat la taxonomie de toutes les observations présentes dans la synthèse';
 
+CREATE unique index on gn_dashboard.vm_synthese (id_synthese);
+CREATE index on gn_dashboard.vm_synthese (cd_ref);
 
 -- CREATE MATERIALIZED VIEW gn_dashboard.vm_synthese_communes_complete AS 
 --  SELECT a.area_name,
@@ -67,7 +71,10 @@ CREATE MATERIALIZED VIEW gn_dashboard.vm_synthese_frameworks AS
   GROUP BY af.acquisition_framework_name, (date_part('year'::text, s.date_min))
   ORDER BY af.acquisition_framework_name, (date_part('year'::text, s.date_min))
 WITH DATA;
+COMMENT ON MATERIALIZED VIEW gn_dashboard.vm_synthese_frameworks
+    IS 'Vue matérialisée calculant le nombre d''observations par cadre d''acquisition par année';
 
+CREATE unique index on gn_dashboard.vm_synthese_frameworks (acquisition_framework_name,year);
 
 CREATE MATERIALIZED VIEW gn_dashboard.vm_taxonomie AS 
  SELECT 'Règne'::text AS level,
@@ -105,6 +112,10 @@ UNION ALL
    FROM gn_dashboard.vm_synthese
   GROUP BY vm_synthese.group2_inpn
 WITH DATA;
+COMMENT ON MATERIALIZED VIEW gn_dashboard.vm_synthese
+    IS 'Vue matérialisée listant tous les rangs taxonomiques ayant des données ainsi que leur niveau';
+
+CREATE unique index on gn_dashboard.vm_taxonomie (name_taxon,level);
 
 -- CREATE MATERIALIZED VIEW gn_dashboard.vm_geom_simplified AS 
 --  SELECT DISTINCT l.id_area,
@@ -115,3 +126,14 @@ WITH DATA;
 --      JOIN ref_geo.bib_areas_types b ON l.id_type = b.id_type
 --   WHERE b.type_code::text = 'COM'::text
 -- WITH DATA;
+
+-- Fonction rafraichissant en parallèle toutes les vues matérialisées utilisées par le Dashboard
+-- USAGE : SELECT gn_dashboard.refresh_materialized_view_data()
+CREATE OR REPLACE FUNCTION gn_dashboard.refresh_materialized_view_data()
+RETURNS VOID AS $$
+BEGIN
+  REFRESH MATERIALIZED VIEW CONCURRENTLY gn_dashboard.vm_synthese;
+  REFRESH MATERIALIZED VIEW CONCURRENTLY gn_dashboard.vm_synthese_frameworks;
+  REFRESH MATERIALIZED VIEW CONCURRENTLY gn_dashboard.vm_taxonomie;
+END
+$$ LANGUAGE plpgsql;
