@@ -59,7 +59,6 @@
                         </div>
                     </div><br />
                     <div class=" row row-sm">
-
                         <select class="form-control" [formControl]="areaTypeControl">
                             <option [ngValue]="area_type.type_code" *ngFor="let area_type of tabAreasTypes">
                                 {{ area_type.type_name }} </option>
@@ -69,14 +68,6 @@
 
                 <div id="filters">
                     <form [formGroup]="mapForm">
-                        <!-- <div class="form-group">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text"> Nombre de classes </div>
-                                </div>
-                                <input type="text" class="form-control" formControlName="nbClasses">
-                            </div>
-                        </div><br /> -->
                         <div class="form-group">
                             <label class="col-form-label"><b> Période </b></label>
                             <div class="row justify-content-md-center">

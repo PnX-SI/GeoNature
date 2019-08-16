@@ -208,18 +208,12 @@ export class DashboardMapsComponent
   }
 
   ngOnInit() {
-    this.mapForm.controls.selectedYearRange.valueChanges
-      .debounceTime(1000)
-      .distinctUntilChanged()
-      .subscribe(data => {
-        console.log(data);
-      });
     this.spinner = true;
     // Initialisation de la fonction "showData" (au chargement de la page, la carte affiche automatiquement le nombre d'observations)
     this.showData = this.onEachFeatureNbObs;
     // Accès aux données de synthèse de la BDD GeoNature
     this.subscription = this.dataService
-      .getDataCommunes("COM")
+      .getDataAreas("COM")
       .subscribe(data => {
         // console.log(data);
         this.myCommunes = data;
@@ -237,7 +231,7 @@ export class DashboardMapsComponent
     this.areaTypeControl.valueChanges.subscribe(value => {
       this.currentTypeCode = value;
       this.dataService
-        .getDataCommunes(this.currentTypeCode, this.mapForm.value)
+        .getDataAreas(this.currentTypeCode, this.mapForm.value)
         .subscribe(data => {
           this.myCommunes = data;
           this.background = data;
@@ -302,7 +296,7 @@ export class DashboardMapsComponent
     // Afficher les données d'origine si la valeur vaut ""
     if (this.filter == "") {
       this.dataService
-        .getDataCommunes(this.currentTypeCode, this.mapForm.value)
+        .getDataAreas(this.currentTypeCode, this.mapForm.value)
         .subscribe(data => {
           this.myCommunes = data;
         });
@@ -338,7 +332,7 @@ export class DashboardMapsComponent
     // console.log(this.filtersDict);
     // Accès aux données de synthèse de la BDD GeoNature
     this.subscription = this.dataService
-      .getDataCommunes(this.currentTypeCode, this.filtersDict)
+      .getDataAreas(this.currentTypeCode, this.filtersDict)
       .subscribe(data => {
         this.myCommunes = data;
         this.spinner = false;

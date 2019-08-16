@@ -5,12 +5,12 @@ import { BaseChartDirective } from 'ng2-charts/ng2-charts';
 import { DataService } from "../services/data.services";
 
 @Component({
-  selector: "dashboard-species",
-  templateUrl: "dashboard-species.component.html",
-  styleUrls: ['./dashboard-species.component.scss']
+  selector: "dashboard-recontact",
+  templateUrl: "dashboard-recontact.component.html",
+  styleUrls: ['./dashboard-recontact.component.scss']
 })
 
-export class DashboardSpeciesComponent implements OnInit {
+export class DashboardRecontactComponent implements OnInit {
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
@@ -78,7 +78,7 @@ export class DashboardSpeciesComponent implements OnInit {
     // Par défaut, le pie chart s'affiche à l'année en court
     this.speciesForm.controls["selectedYear"].setValue(this.distinctYears[this.distinctYears.length - 1]);
     // Accès aux données de synthèse de la BDD GeoNature
-    this.subscription = this.dataService.getSpecies({ selectedYear: this.speciesForm.value.selectedYear }).subscribe(
+    this.subscription = this.dataService.getDataRecontact(this.speciesForm.value.selectedYear).subscribe(
       (data) => {
         data.forEach(
           (elt) => {
@@ -98,7 +98,7 @@ export class DashboardSpeciesComponent implements OnInit {
     // Réinitialisation de l'array des données à afficher, paramètre du pie chart
     var pieChartDataTemp = [];
     // Accès aux données de synthèse de la BDD GeoNature
-    this.subscription = this.dataService.getSpecies({ selectedYear: this.speciesForm.value.selectedYear }).subscribe(
+    this.subscription = this.dataService.getDataRecontact(this.speciesForm.value.selectedYear).subscribe(
       (data) => {
         data.forEach(
           (elt) => {

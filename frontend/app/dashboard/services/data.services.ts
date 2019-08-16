@@ -19,7 +19,7 @@ export class DataService {
         return this.httpClient.get<any>(AppConfig.API_ENDPOINT + "/" + ModuleConfig.MODULE_URL + "/synthese", { params: queryString })
     }
 
-    getDataCommunes(type_code, params?) {
+    getDataAreas(type_code, params?) {
         let queryString = new HttpParams();
         if (params) {
             for (const key in params) {
@@ -31,7 +31,7 @@ export class DataService {
         return this.httpClient.get<any>(AppConfig.API_ENDPOINT + "/" + ModuleConfig.MODULE_URL + "/areas/" + type_code, { params: queryString })
     }
 
-    getDataCommunesINPN(params?) {
+    getDataSynthesePerTaxLevel(taxLevel, params?) {
         let queryString = new HttpParams();
         if (params) {
             for (const key in params) {
@@ -40,67 +40,19 @@ export class DataService {
                 }
             }
         }
-        return this.httpClient.get<any>(AppConfig.API_ENDPOINT + "/" + ModuleConfig.MODULE_URL + "/communes_inpn", { params: queryString })
+        return this.httpClient.get<any>(AppConfig.API_ENDPOINT + "/" + ModuleConfig.MODULE_URL + "/synthese_per_tax_level/" + taxLevel, { params: queryString })
     }
 
-    getDataSynthesePerTaxLevel(params?) {
-        let queryString = new HttpParams();
-        if (params) {
-            for (const key in params) {
-                if (params[key]) {
-                    queryString = queryString.set(key, params[key]);
-                }
-            }
-        }
-        return this.httpClient.get<any>(AppConfig.API_ENDPOINT + "/" + ModuleConfig.MODULE_URL + "/synthese_per_tax_level", { params: queryString })
+    getDataFrameworks() {
+        return this.httpClient.get<any>(AppConfig.API_ENDPOINT + "/" + ModuleConfig.MODULE_URL + "/frameworks")
     }
 
-    getDataFrameworks(params?) {
-        let queryString = new HttpParams();
-        if (params) {
-            for (const key in params) {
-                if (params[key]) {
-                    queryString = queryString.set(key, params[key]);
-                }
-            }
-        }
-        return this.httpClient.get<any>(AppConfig.API_ENDPOINT + "/" + ModuleConfig.MODULE_URL + "/frameworks", { params: queryString })
+    getDataRecontact(year) {
+        return this.httpClient.get<any>(AppConfig.API_ENDPOINT + "/" + ModuleConfig.MODULE_URL + "/recontact/" + year)
     }
 
-    getSpecies(params?) {
-        let queryString = new HttpParams();
-        if (params) {
-            for (const key in params) {
-                if (params[key]) {
-                    queryString = queryString.set(key, params[key]);
-                }
-            }
-        }
-        return this.httpClient.get<any>(AppConfig.API_ENDPOINT + "/" + ModuleConfig.MODULE_URL + "/species", { params: queryString })
-    }
-
-    getTaxonomie(params?) {
-        let queryString = new HttpParams();
-        if (params) {
-            for (const key in params) {
-                if (params[key]) {
-                    queryString = queryString.set(key, params[key]);
-                }
-            }
-        }
-        return this.httpClient.get<any>(AppConfig.API_ENDPOINT + "/" + ModuleConfig.MODULE_URL + "/taxonomie", { params: queryString })
-    }
-
-    getYears(params?) {
-        let queryString = new HttpParams();
-        if (params) {
-            for (const key in params) {
-                if (params[key]) {
-                    queryString = queryString.set(key, params[key]);
-                }
-            }
-        }
-        return this.httpClient.get<any>(AppConfig.API_ENDPOINT + "/" + ModuleConfig.MODULE_URL + "/years", { params: queryString })
+    getTaxonomy(taxLevel) {
+        return this.httpClient.get<any>(AppConfig.API_ENDPOINT + "/" + ModuleConfig.MODULE_URL + "/taxonomy/" + taxLevel)
     }
 
     getAreasTypes(types_codes: Array<string>) {
@@ -111,6 +63,10 @@ export class DataService {
             }
         )
         return this.httpClient.get<any>(AppConfig.API_ENDPOINT + "/" + ModuleConfig.MODULE_URL + "/areas_types", { params: queryString })
+    }
+
+    getYears(model) {
+        return this.httpClient.get<any>(AppConfig.API_ENDPOINT + "/" + ModuleConfig.MODULE_URL + "/years/" + model)
     }
 
 }

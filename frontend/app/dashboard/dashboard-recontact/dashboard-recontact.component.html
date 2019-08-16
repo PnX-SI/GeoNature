@@ -22,7 +22,7 @@
                             <select class="form-control form-control-sm" formControlName="selectedYear"
                                 (change)="getCurrentYear($event)">
                                 <ng-container *ngFor="let year of distinctYears">
-                                    <option [ngValue]="year" *ngIf="year != distinctYears[0]">
+                                    <option [ngValue]="year">
                                         {{ year }} </option>
                                 </ng-container>
                             </select>

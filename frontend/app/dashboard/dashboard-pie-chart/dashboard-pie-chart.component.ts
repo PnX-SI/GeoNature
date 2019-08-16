@@ -84,37 +84,18 @@ export class DashboardPieChartComponent implements OnInit {
       position: "left",
       labels: {
         fontSize: 15,
-        filter: function(legendItem, chartData) {
+        filter: function (legendItem, chartData) {
           return chartData.datasets[0].data[legendItem.index] != 0;
         }
       }
     },
     plugins: {
-      // outlabels: {
-      //   text: '%p',
-      //   color: 'white',
-      //   stretch: 45,
-      //   font: {
-      //     resizable: true,
-      //     minSize: 12,
-      //     maxSize: 18
-      //   }
-      // },
       labels: [
-        // {
-        //   render: 'label',
-        //   fontSize: 14,
-        //   position: 'outside',
-        //   arc: true,
-        //   overlap: false
-        // },
         {
           render: "percentage",
           fontColor: "white",
           fontSize: 14,
           fontStyle: "bold",
-          // position: 'outside',
-          // textMargin: 15,
           precision: 2,
           textShadow: true,
           overlap: false
@@ -127,6 +108,7 @@ export class DashboardPieChartComponent implements OnInit {
   @Input() taxonomies: any;
   @Input() yearsMinMax: any;
   public yearRange = [1980, 2019];
+  public currentTaxLevel = "Règne";
   public spinner = false;
 
   constructor(public dataService: DataService, public fb: FormBuilder) {
@@ -140,24 +122,20 @@ export class DashboardPieChartComponent implements OnInit {
   ngOnInit() {
     this.spinner = true;
     // Initialisation de l'array des labels, paramètre du pie chart
-    this.pieChartLabels = this.taxonomies["Règne"];
-    // Par défaut, le pie chart s'affiche au niveau du règne
-    this.pieChartForm.controls["selectedFilter"].setValue("Règne");
-    // Accès aux données de synthèse de la BDD GeoNature
+    this.pieChartLabels = this.taxonomies[this.currentTaxLevel];
+    // Accès aux données de synthèse de la BDD GeoNature (par défaut le pie chart s'affiche au niveau du règne)
     this.subscription = this.dataService
-      .getDataSynthesePerTaxLevel(this.pieChartForm.value)
+      .getDataSynthesePerTaxLevel(this.currentTaxLevel)
       .subscribe(data => {
-        console.log(this.pieChartLabels);
-
         console.log(data);
         //Remplissage de l'array des données, paramètre du pie chart
         data.forEach(elt => {
           this.pieChartData.push(elt[1]);
         });
         this.chart.chart.update();
-        console.log(this.pieChartData);
         this.spinner = false;
       });
+    this.pieChartForm.controls["selectedFilter"].setValue(this.currentTaxLevel);
   }
 
   ngOnChanges(change) {
@@ -169,29 +147,27 @@ export class DashboardPieChartComponent implements OnInit {
 
   // Rafraichissement des données en fonction des filtres renseignés par l'utilisateur
   getCurrentParameters(event) {
+    console.log(event)
     this.subscription.unsubscribe();
     this.spinner = true;
     // console.log(event);
     // S'il s'agit d'un changement de rang taxonomique : réinitialisation de l'array de la légende
     if (event.target) {
       this.pieChartLabels = this.taxonomies[event.target.value];
+      this.currentTaxLevel = event.target.value;
       console.log(this.pieChartLabels);
     }
     // Réinitialisation de l'array des données à afficher, paramètre du pie chart
     var pieChartDataTemp = [];
     // Accès aux données de synthèse de la BDD GeoNature
     this.subscription = this.dataService
-      .getDataSynthesePerTaxLevel(this.pieChartForm.value)
+      .getDataSynthesePerTaxLevel(this.currentTaxLevel, this.pieChartForm.value)
       .subscribe(data => {
         console.log(data);
         // Remplissage de l'array des données, en tenant compte du fait qu'il peut n'y avoir aucune observation pour certains taxons
         const dataLength = data.length;
         var start = 0;
-        console.log(this.pieChartLabels);
-
         this.pieChartLabels.forEach(taxon => {
-          console.log(taxon);
-
           var i = start;
           var keepGoing = true;
           while (i < dataLength && keepGoing == true) {
@@ -206,7 +182,6 @@ export class DashboardPieChartComponent implements OnInit {
             pieChartDataTemp.push(0);
           }
         });
-        // console.log(pieChartDataTemp);
         this.pieChartData = pieChartDataTemp;
         this.spinner = false;
         console.log(this.pieChartData);
