@@ -24,6 +24,8 @@ backend/static/configs/*
 
 backend/run.py
 
+frontend/npm-shrinkwrap.json
+
 .vscode
 
 *.perm
