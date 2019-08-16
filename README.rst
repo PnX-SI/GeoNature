@@ -38,6 +38,35 @@ Un certain nombre de paramètres permettent de customiser le module en modifiant
 - Paramétrage des zonages affichables sur la carte "Synthèse par entité géographique" : ``AREA_TYPE``. Passer un tableau de ``type_code`` (table ``ref_geo.bib_areas_types``).
 - Paramétrage du nombre de classes sur la cartographie "Synthèse par entité géographique". Voir ``BORNE_TAXON`` et ``BORNE_OBS`` pour changer respectivement l'affichage en mode 'nombre d'observations' et 'nombre de taxons'.
 
+Vues matérialisées
+==================
+
+Dans un soucis de performance, des vues matérialisées ont été mises en place. Elles sont renseignées lors de l'installation du module. Il faut rafraichir régulièrement ces vues matérialisées avec la fonction ``REFRESH MATERIALIZED VIEW`` pour prendre en compte les nouvelles données intégrées dans la Synthèse.
+
+Une fonction permet de mettre à jour toutes les vues matérialisées du schéma ``gn_dashboard``.
+
+* Pour lancer manuellement cette fonction, ouvrez une console SQL et exécutez la requête suivante :
+
+  ::
+
+        SELECT gn_dashboard.refresh_materialized_view_data();
+
+* Pour automatiser l'éxecution de cette fonction (toutes les heures dans cet exemple), ajoutez la dans le crontab de l'utilisateur ``postgres`` :
+
+  ::
+
+        sudo su postgres
+        crontab -e
+
+
+Ajouter la ligne suivante en prenant soin de mettre à jour les paramètres de connexion à la base de GeoNature-atlas :
+
+::
+
+    0 * * * * psql -d geonatureatlas -c "SELECT gn_dashboard.refresh_materialized_view_data();"
+
+Pour enregistrer et sortir : ``Ctrl + O``, ENTER puis ``Ctrl + X``
+
 Licence
 =======
 
