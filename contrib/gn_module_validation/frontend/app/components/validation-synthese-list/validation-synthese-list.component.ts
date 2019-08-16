@@ -11,7 +11,6 @@ import {
   ChangeDetectorRef,
   EventEmitter
 } from "@angular/core";
-import { FeatureGroup } from "leaflet";
 import { MapService } from "@geonature_common/map/map.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
@@ -34,7 +33,6 @@ export class ValidationSyntheseListComponent
   selectedIndex: Array<number> = [];
   selectedPages = [];
   coordinates_list = []; // list of coordinates for selected rows
-  group: FeatureGroup;
   marker: MediaTrackSupportedConstraints;
   public rowNumber: number;
   private _latestWidth: number;
@@ -65,7 +63,7 @@ export class ValidationSyntheseListComponent
     const h = document.documentElement.clientHeight;
     this.rowNumber = Math.trunc(h / 37);
 
-    this.group = new FeatureGroup();
+    // this.group = new FeatureGroup();
     this.onMapClick();
     this.onTableClick();
     this.npage = 1;
@@ -172,13 +170,7 @@ export class ValidationSyntheseListComponent
   }
 
   viewFitList(id_observations) {
-    // create an empty featre group
-    // and fill it with the selected layer to get bounds
-    this.group = new FeatureGroup();
-    id_observations.forEach(id_obs => {
-      this.group.addLayer(this.mapListService.layerDict[id_obs]);
-    });
-    this._ms.getMap().fitBounds(this.group.getBounds());
+    this.mapListService.zoomOnSeveralSelectedLayers(this._ms.map, id_observations);
   }
 
   setSelectedObs() {
