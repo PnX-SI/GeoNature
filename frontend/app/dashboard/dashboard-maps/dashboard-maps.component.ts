@@ -154,7 +154,7 @@ export class DashboardMapsComponent
 
   public taxonApiEndPoint = `${
     AppConfig.API_ENDPOINT
-  }/synthese/taxons_autocomplete`;
+    }/synthese/taxons_autocomplete`;
 
   constructor(
     public dataService: DataService,
@@ -180,30 +180,29 @@ export class DashboardMapsComponent
     //// Légende concernant le nombre d'observations
     this.divLegendObs = L.DomUtil.create("div", "divLegend");
     this.divLegendObs.innerHTML += "<b>Nombre d'observations</b><br/>";
-    // const gradesObs = [1, 1000, 2000, 3000, 4000, 5000, 10000];
-    // const gradesObs = ModuleConfig.BORNE_OBS;
-    for (var i = 0; i < this.gradesObs.length; i++) {
+    var nb_classes = this.gradesObs.length;
+    for (var i = 0; i < nb_classes; i++) {
       this.divLegendObs.innerHTML +=
         '<i style="background:' +
         this.getColorObs(this.gradesObs[i]) +
         '"></i>' +
         this.gradesObs[i] +
         (this.gradesObs[i + 1]
-          ? "&ndash;" + this.gradesObs[i + 1] + "<br>"
+          ? "&ndash;" + (this.gradesObs[i + 1] - 1) + "<br>"
           : "+");
     }
     //// Légende concernant le nombre de taxons
     this.divLegendTax = L.DomUtil.create("div", "divLegend");
     this.divLegendTax.innerHTML += "<b>Nombre de taxons</b><br/>";
-    //const gradesTax = [1, 100, 200, 300, 400, 500, 600];
-    for (var i = 0; i < this.gradesTax.length; i++) {
+    var nb_classes = this.gradesTax.length;
+    for (var i = 0; i < nb_classes; i++) {
       this.divLegendTax.innerHTML +=
         '<i style="background:' +
         this.getColorTax(this.gradesTax[i]) +
         '"></i>' +
         this.gradesTax[i] +
         (this.gradesTax[i + 1]
-          ? "&ndash;" + this.gradesTax[i + 1] + "<br>"
+          ? "&ndash;" + (this.gradesTax[i + 1] - 1) + "<br>"
           : "+");
     }
   }
@@ -394,10 +393,9 @@ export class DashboardMapsComponent
   // Couleurs de la carte relative au nombre d'observations
   getColorObs(obs) {
     var nb_classes = this.gradesObs.length;
-    // const gradesObs = [1000, 2000, 3000, 4000, 5000, 10000];
-    for (var i = 0; i < nb_classes - 1; i++) {
-      if (obs <= this.gradesObs[i]) {
-        return this.obsColors[nb_classes][i];
+    for (var i = 1; i < nb_classes; i++) {
+      if (obs < this.gradesObs[i]) {
+        return this.obsColors[nb_classes][i - 1];
       }
     }
     return this.obsColors[nb_classes][nb_classes - 1];
@@ -406,11 +404,9 @@ export class DashboardMapsComponent
   // Couleurs de la carte relative au nombre de taxons
   getColorTax(tax) {
     var nb_classes = this.gradesTax.length;
-
-    //const gradesTax = [100, 200, 300, 400, 500, 600];
-    for (var i = 0; i < nb_classes - 1; i++) {
-      if (tax <= this.gradesTax[i]) {
-        return this.taxColors[nb_classes][i];
+    for (var i = 1; i < nb_classes; i++) {
+      if (tax < this.gradesTax[i]) {
+        return this.taxColors[nb_classes][i - 1];
       }
     }
     return this.taxColors[nb_classes][nb_classes - 1];
