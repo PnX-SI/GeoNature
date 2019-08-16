@@ -51,7 +51,8 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 * Lancez les commandes suivantes pour installer les dépendances de GeoNature (debian 9) :
 
   ::  
-
+    
+    sudo apt-get install wget
     sudo apt-get install -y postgresql postgis postgresql-server-dev-9.6
     sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev libgdal-dev python-gdal python-virtualenv build-essential
     sudo pip install --upgrade pip virtualenv virtualenvwrapper
@@ -66,7 +67,7 @@ Installation de l'application
 
 * Se placer dans le répertoire de l'utilisateur (``/home/geonatureadmin/`` dans notre cas) 
 
-* Récupérer l'application (``X.Y.Z`` à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnX-SI/GeoNature/releases>`_). La version 2 de GeoNature est actuellement en cours de développement, et propose des versions 2.0.0-rc.X. Voir le `tableau de compatibilité <versions-compatibility.rst>`_ des versions de GeoNature avec ses dépendances.
+* Récupérer l'application (``X.Y.Z`` à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnX-SI/GeoNature/releases>`_). Voir le `tableau de compatibilité <versions-compatibility.rst>`_ des versions de GeoNature avec ses dépendances.
 
   ::
 
@@ -113,7 +114,7 @@ Pendant l'installation, vous serez invité à fournir le mot de passe ``sudo`` d
 Installation de l'application
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Lancer le script d'installation de l'application :
+Lancer le script d'installation de l'application (depuis le répertoire ``install``):
 
 La commande ``install_app.sh`` comporte deux paramètres optionnels qui doivent être utilisés dans l'ordre :
 
@@ -123,8 +124,8 @@ La commande ``install_app.sh`` comporte deux paramètres optionnels qui doivent 
 
 ::
 
-    touch var/log/install_app.log
-    ./install_app.sh 2>&1 | tee install_all.log
+    touch ../var/log/install_app.log
+    ./install_app.sh 2>&1 | tee ../var/log/install_app.log
 
 Pendant l'installation, vous serez invité à fournir le mot de passe ``sudo`` de votre utilisateur linux.
 
@@ -136,6 +137,42 @@ Une fois l'installation terminée, lancer cette commande pour ajouter ``nvm`` da
 
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
+Configuration Apache
+^^^^^^^^^^^^^^^^^^^^
+
+Créer le fichier de configuration Apache de GeoNature
+
+``sudo nano /etc/apache2/sites-available/geonature.conf``
+
+Puis coller la configuration suivante:
+
+::
+
+    Alias /geonature /home/geonatureadmin/geonature/frontend/dist
+    <Directory /home/geonatureadmin/geonature/frontend/dist>
+      Require all granted
+    </Directory>
+    <Location /geonature/api>
+     ProxyPass http://127.0.0.1:8000
+     ProxyPassReverse  http://127.0.0.1:8000
+    </Location>
+
+Activer les modules suivants:
+
+::
+
+    sudo a2enmod rewrite
+    sudo a2enmod proxy
+    sudo a2enmod proxy_http
+
+Activer la nouvelle configuration:
+
+``sudo a2ensite geonature.conf``
+
+et redémarrer Apache:
+
+``sudo service apache2 restart``
 
 L'application est disponible à l'adresse suivante :
 
@@ -207,7 +244,12 @@ La mise à jour de GeoNature consiste à télécharger sa nouvelle version dans 
     mv GeoNature-X.Y.Z /home/`whoami`/geonature/
     cd geonature
 
-* Suivez les éventuelles notes de version décrites ici : https://github.com/PnX-SI/GeoNature/releases. Sauf mentions contraires dans les notes de version, vous pouvez sauter des versions mais en suivant bien les différentes notes de versions et notamment les scripts de mise à jour de la base de données à exécuter successivement.
+* Suivez les éventuelles notes de version décrites ici : https://github.com/PnX-SI/GeoNature/releases.
+
+⚠️ Si la release inclut des scripts de migration SQL : *lancer ces scripts avec l'utilisateur de BDD courant* (généralement ``geonatadmin``) et non le super-utilisateur ``postgres``.
+
+Sauf mentions contraires dans les notes de version, vous pouvez sauter des versions mais en suivant bien les différentes notes de versions et notamment les scripts de mise à jour de la base de données à exécuter successivement.
+
 
 * Si vous devez aussi mettre à jour TaxHub et/ou UsersHub, suivez leurs notes de versions mais aussi leur documentation (https://usershub.readthedocs.io et https://taxhub.readthedocs.io).
 

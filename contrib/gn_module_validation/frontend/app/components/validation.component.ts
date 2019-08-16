@@ -1,16 +1,10 @@
 import { Component, OnInit, Output, EventEmitter } from "@angular/core";
-import { DataService } from "../services/data.service";
+import { ValidationDataService } from "../services/data.service";
+
 import { MapListService } from "@geonature_common/map-list/map-list.service";
-import { CommonService } from "@geonature_common/service/common.service";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { ValidationSyntheseListComponent } from "./validation-synthese-list/validation-synthese-list.component";
-import { ValidationSyntheseCarteComponent } from "./validation-synthese-carte/validation-synthese-carte.component";
-//import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
-import { AppConfig } from "@geonature_config/app.config";
 import { ToastrService } from "ngx-toastr";
 import { ModuleConfig } from "../module.config";
-import { ValidationSearchComponent } from "./validation-search/validation-search.component";
-import { FormService } from "../services/form.service";
+import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthese-form.service";
 
 @Component({
   selector: "pnx-validation",
@@ -21,21 +15,31 @@ export class ValidationComponent implements OnInit {
   public serverData;
   public sameCoordinates: any;
   public validationStatus;
-  public VALIDATION_CONFIG = ModuleConfig;
-
-  //public syntheseConfig = AppConfig.SYNTHESE;
-  @Output() searchClicked = new EventEmitter();
 
   constructor(
-    public _ds: DataService,
+    public _ds: ValidationDataService,
     private _mapListService: MapListService,
-    private _commonService: CommonService,
     private toastr: ToastrService,
-    private _fs: FormService
+    private _fs: SyntheseFormService
   ) {}
 
   ngOnInit() {
+    // reinitialize the form
+    this._fs.searchForm.reset();
+    this._fs.selectedCdRefFromTree = [];
+    this._fs.selectedTaxonFromRankInput = [];
+    this._fs.selectedtaxonFromComponent = [];
     this.getStatusNames();
+    this.toastr.info(
+      "Le nombre d'observations affiché sur la carte est limité à " +
+        ModuleConfig.NB_MAX_OBS_MAP,
+      "",
+      {
+        positionClass: "toast-top-center",
+        tapToDismiss: true,
+        timeOut: 3000
+      }
+    );
   }
 
   getStatusNames() {
@@ -72,7 +76,6 @@ export class ValidationComponent implements OnInit {
     this._ds.dataLoaded = false;
     this._ds.getSyntheseData(formatedParams).subscribe(
       result => {
-        //console.log(result);
         this._mapListService.geojsonData = result["data"];
         this._mapListService.loadTableData(
           result["data"],
@@ -116,7 +119,8 @@ export class ValidationComponent implements OnInit {
   customColumns(feature) {
     // function pass to the LoadTableData maplist service function to format date
     if (feature.properties.validation_auto === true) {
-      feature.properties.validation_auto = this.VALIDATION_CONFIG.ICON_FOR_AUTOMATIC_VALIDATION;
+      feature.properties.validation_auto =
+        ModuleConfig.ICON_FOR_AUTOMATIC_VALIDATION;
     }
     if (feature.properties.validation_auto === false) {
       feature.properties.validation_auto = "";

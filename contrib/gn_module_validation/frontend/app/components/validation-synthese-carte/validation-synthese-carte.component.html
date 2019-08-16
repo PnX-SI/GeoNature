@@ -3,4 +3,11 @@
         [geojson]="inputSyntheseData"
         [onEachFeature]="onEachFeature.bind(this)"
     ></pnx-geojson>
+    <pnx-leaflet-draw
+    [options]="leafletDrawOptions"
+    [zoomLevel]="1"
+    (layerDrawed)="bindGeojsonForm($event)"
+    (layerDeleted)="deleteControlValue()"
+  >
+  </pnx-leaflet-draw>
 </pnx-map>

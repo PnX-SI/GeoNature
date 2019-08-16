@@ -5,6 +5,7 @@ much more efficient
 """
 from flask import current_app, request
 from sqlalchemy import func, or_, and_, select, join
+from sqlalchemy.sql import text
 from sqlalchemy.orm import aliased
 from shapely.wkt import loads
 from geoalchemy2.shape import from_shape
@@ -83,15 +84,14 @@ class SyntheseQuery:
         """
         allowed_datasets = TDatasets.get_user_datasets(user)
         if user.value_filter in ("1", "2"):
-            self.add_join(
-                CorObserverSynthese,
-                CorObserverSynthese.id_synthese,
-                self.model.id_synthese,
-                join_type="left",
+            # get id synthese where user is observer
+            subquery_observers = (
+                select([CorObserverSynthese.id_synthese])
+                .select_from(CorObserverSynthese)
+                .where(CorObserverSynthese.id_role == user.id_role)
             )
-
             ors_filters = [
-                CorObserverSynthese.id_role == user.id_role,
+                self.model.id_synthese.in_(subquery_observers),
                 self.model.id_digitiser == user.id_role,
             ]
             if current_app.config["SYNTHESE"]["CRUVED_SEARCH_WITH_OBSERVER_AS_TXT"]:
@@ -105,6 +105,7 @@ class SyntheseQuery:
             elif user.value_filter == "2":
                 ors_filters.append(self.model.id_dataset.in_(allowed_datasets))
                 self.query = self.query.where(or_(*ors_filters))
+            print(self.query)
 
     def filter_taxonomy(self):
         """
@@ -115,9 +116,30 @@ class SyntheseQuery:
         Returns:
             -Tuple: the SQLAlchemy query and the filter dictionnary
         """
+        cd_ref_childs = []
+        if "cd_ref_parent" in self.filters:
+            print(self.filters["cd_ref_parent"])
+            # find all taxon child from cd_ref parent
+            cd_ref_parent_int = list(
+                map(lambda x: int(x), self.filters.pop("cd_ref_parent"))
+            )
+            sql = text(
+                """SELECT DISTINCT cd_ref FROM taxonomie.find_all_taxons_children(:id_parent)"""
+            )
+            result = DB.engine.execute(sql, id_parent=cd_ref_parent_int)
+            if result:
+                cd_ref_childs = [r[0] for r in result]
+
+        cd_ref_selected = []
         if "cd_ref" in self.filters:
+            cd_ref_selected = self.filters.pop("cd_ref")
+
+        # concat cd_ref child and just selected cd_ref
+        cd_ref_childs.extend(cd_ref_selected)
+
+        if len(cd_ref_childs) > 0:
             sub_query_synonym = select([Taxref.cd_nom]).where(
-                Taxref.cd_ref.in_(self.filters.pop("cd_ref"))
+                Taxref.cd_ref.in_(cd_ref_childs)
             )
             self.query = self.query.where(self.model.cd_nom.in_(sub_query_synonym))
         if "taxonomy_group2_inpn" in self.filters:
@@ -254,8 +276,20 @@ class SyntheseQuery:
                 self.query = self.query.where(col.in_(value))
 
     def filter_query_all_filters(self, user):
-        """
-            Hight level function to manage query with all filters
+        """High level function to manage query with all filters.
+
+        Apply CRUVED, toxonomy and other filters.
+
+        Parameters
+        ----------
+        user: str
+            User filtered by CRUVED.
+        
+        Returns
+        -------
+        sqlalchemy.orm.query.Query.filter
+            Combined filter to apply.
+
         """
 
         self.filter_query_with_cruved(user)

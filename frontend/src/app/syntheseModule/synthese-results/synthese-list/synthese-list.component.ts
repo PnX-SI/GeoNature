@@ -10,8 +10,8 @@ import {
 } from '@angular/core';
 import { GeoJSON } from 'leaflet';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
-import { DataService } from '../../services/data.service';
-import { SyntheseFormService } from '../../services/form.service';
+import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
+import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '@geonature_common/service/common.service';
 import { AppConfig } from '@geonature_config/app.config';
@@ -44,7 +44,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   private _latestWidth: number;
   constructor(
     public mapListService: MapListService,
-    private _ds: DataService,
+    private _ds: SyntheseDataService,
     public ngbModal: NgbModal,
     private _commonService: CommonService,
     private _fs: SyntheseFormService,

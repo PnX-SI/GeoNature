@@ -115,13 +115,27 @@ class GenericTable:
             d'une vue avec la base de données par rétroingénierie
     """
 
-    def __init__(self, tableName, schemaName, geometry_field, srid=None):
+    def __init__(self, tableName, schemaName, geometry_field=None, srid=None):
         meta = MetaData(schema=schemaName, bind=DB.engine)
         meta.reflect(views=True)
+
         try:
             self.tableDef = meta.tables["{}.{}".format(schemaName, tableName)]
         except KeyError:
-            raise KeyError("table doesn't exists")
+            raise KeyError("table {}.{} doesn't exists".format(schemaName, tableName))
+
+        # Test geometry field
+        if geometry_field:
+            try:
+                if (
+                    not self.tableDef.columns[geometry_field].type.__class__.__name__
+                    == "Geometry"
+                ):
+                    raise TypeError(
+                        "field {} is not a geometry column".format(geometry_field)
+                    )
+            except KeyError:
+                raise KeyError("field {} doesn't exists".format(geometry_field))
 
         self.geometry_field = geometry_field
         self.srid = srid
@@ -286,7 +300,12 @@ class GenericQuery:
             q = self.build_query_filters(q, self.filters)
             q = self.build_query_order(q, self.filters)
 
-        data = q.limit(self.limit).offset(self.offset * self.limit).all()
+        # Si la limite spécifiée est égale à -1
+        # les paramètres limit et offset ne sont pas pris en compte
+        if self.limit == -1:
+            data = q.all()
+        else:
+            data = q.limit(self.limit).offset(self.offset * self.limit).all()
         nb_results = q.count()
 
         if self.geometry_field:
@@ -504,17 +523,22 @@ def csv_resp(fn):
     return _csv_resp
 
 
-def to_csv_resp(filename, data, columns, separator):
-    outdata = [separator.join(columns)]
+def to_csv_resp(filename, data, columns, separator=";"):
 
     headers = Headers()
     headers.add("Content-Type", "text/plain")
     headers.add(
         "Content-Disposition", "attachment", filename="export_%s.csv" % filename
     )
+    out = generate_csv_content(columns, data, separator)
+    return Response(out, headers=headers)
+
+
+def generate_csv_content(columns, data, separator):
+    outdata = [separator.join(columns)]
     for o in data:
         outdata.append(
             separator.join('"%s"' % (o.get(i), "")[o.get(i) is None] for i in columns)
         )
     out = "\r\n".join(outdata)
-    return Response(out, headers=headers)
+    return out

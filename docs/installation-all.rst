@@ -34,18 +34,12 @@ GeoNature se sert de flux internet externes durant son installation et son fonct
 - https://preprod-inpn.mnhn.fr/mtd
 - https://wxs.ign.fr/
 
-Configuration de la locale du serveur
-""""""""""""""""""""""""""""""""""""""
-
-Certains serveurs sont livrés sans "locale" (langue par défaut). Pour l'installation de GeoNature, il est necessaire de bien configurer la locale.
-
-Depuis l'utilisateur ``root``, exécuter la commande ``dpkg-reconfigure locales``. Une fenêtre s'affiche dans votre console. Dans la liste déroulante, sélectionnez ``fr_FR.UTF-8 UTF-8`` avec ``Espace``, puis cliquez sur OK. Une 2ème fenêtre s'affiche avec une liste de locale activées (``fr_FR.UTF-8`` doit être présent dans la liste), confirmez votre choix, en cliquant sur OK, puis attendez que la locale s'installe.
-
-
 Installation de l'application
 -----------------------------
 
-Ce document décrit une procédure d'installation packagée de GeoNature.
+Ce document décrit une procédure d'installation packagée de GeoNature. 
+
+Un tutoriel vidéo détaille aussi l'installation globale de GeoNature version 2.1.1 : https://www.youtube.com/watch?v=JYgH7cV9AjE. La procédure ci-dessous reste la référence officielle à suivre. 
 
 En lançant le script d'installation ci-dessous, l'application GeoNature ainsi que ses dépendances seront installées sur un seul et même serveur au sein d'une seule base de données.
 
@@ -120,9 +114,42 @@ Pour Debian 8 :
     usermod -g www-data geonatureadmin
 
 
-Se reconnecter en SSH au serveur avec le nouvel utilisateur pour ne pas faire l'installation en ``root``.
+* Configuration de la locale du serveur
 
-On ne se connectera plus en ``root``. Si besoin d'exécuter des commandes avec des droits d'administrateur, on les précède de ``sudo``.
+Certains serveurs sont livrés sans "locale" (langue par défaut). Pour l'installation de GeoNature, il est necessaire de bien configurer la locale. Si la commande ``locale`` renvoie ceci:
+
+::
+
+    LANG=fr_FR.UTF-8
+    LANGUAGE=fr_FR.UTF-8
+    LC_CTYPE="fr_FR.UTF-8"
+    LC_NUMERIC="fr_FR.UTF-8"
+    LC_TIME="fr_FR.UTF-8"
+    LC_COLLATE="fr_FR.UTF-8"
+    LC_MONETARY="fr_FR.UTF-8"
+    LC_MESSAGES="fr_FR.UTF-8"
+    LC_PAPER="fr_FR.UTF-8"
+    LC_NAME="fr_FR.UTF-8"
+    LC_ADDRESS="fr_FR.UTF-8"
+    LC_TELEPHONE="fr_FR.UTF-8"
+    LC_MEASUREMENT="fr_FR.UTF-8"
+    LC_IDENTIFICATION="fr_FR.UTF-8"
+    LC_ALL=fr_FR.UTF-8
+
+vous pouvez alors passer cette étape de configuration des locale.
+
+Exécuter la commande ``dpkg-reconfigure locales``. Une fenêtre s'affiche dans votre console. Dans la liste déroulante, sélectionnez ``fr_FR.UTF-8 UTF-8`` avec ``Espace``, puis cliquez sur OK. Une 2ème fenêtre s'affiche avec une liste de locale activées (``fr_FR.UTF-8`` doit être présent dans la liste), confirmez votre choix, en cliquant sur OK, puis attendez que la locale s'installe.
+
+Passer alors sur l'utilisateur ``geonatureadmin``: ``su geonatureadmin`` et executer ensuite ces commandes:
+
+::
+
+    export LC_ALL=fr_FR.UTF-8
+    export LANGUAGE=fr_FR.UTF-8
+    export LANG=fr_FR.UTF-8
+
+
+Pour la suite de la documentation et pour l'administration courante de GeoNature, **on n'utilisera plus jamais l'utilisateur** ``root`` (utiliser `geonatureadmin` dans l'exemple de la documentation. ``su geonatureadmin`` pour change d'utilisateur). Si besoin d'exécuter des commandes avec des droits d'administrateur, on les précède de ``sudo``.
 
 Il est d'ailleurs possible de renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec ``root``.
 
@@ -144,7 +171,7 @@ Il est aussi important de configurer l'accès au serveur en HTTPS plutôt qu'en 
     
     nano install_all.ini
 
-Renseignez à minima votre utilisateur linux, l'URL (ou IP) de votre serveur (avec un ``/`` à la fin) ainsi que l'utilisateur PostgreSQL que vous souhaitez et son mot de passe.
+Renseignez à minima votre utilisateur linux, l'URL (ou IP) de votre serveur (avec un ``/`` à la fin) ainsi que l'utilisateur PostgreSQL que vous souhaitez et son mot de passe. Le script se chargera d'installer PostgreSQL et de créer l'utilisateur de base de données que vous avez renseigné.
 
 Pour la définition des numéros de version des dépendances, voir le `tableau de compatibilité <versions-compatibility.rst>`_ des versions de GeoNature avec ses dépendances. Il est déconseillé de modifier ces versions, chaque nouvelle version de GeoNature étant fournie avec les versions adaptées de ses dépendances.
 

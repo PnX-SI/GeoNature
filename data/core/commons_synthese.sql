@@ -1,7 +1,6 @@
 
 -- vue validation de gn_commons necessitant le schéma synthese
-
-CREATE OR REPLACE VIEW gn_commons.v_validations_for_web_app AS
+CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS 
  SELECT s.id_synthese,
     s.unique_id_sinp,
     s.unique_id_sinp_grp,
@@ -50,36 +49,24 @@ CREATE OR REPLACE VIEW gn_commons.v_validations_for_web_app AS
     s.id_nomenclature_observation_status,
     s.id_nomenclature_blurring,
     s.id_nomenclature_source_status,
-    sources.name_source,
-    sources.url_source,
+    s.id_nomenclature_valid_status,
     t.cd_nom,
     t.cd_ref,
     t.nom_valide,
     t.lb_nom,
     t.nom_vern,
-    v.id_validation,
-    v.id_table_location,
-    v.uuid_attached_row,
-    v.id_nomenclature_valid_status,
-    v.id_validator,
-    v.validation_comment,
-    v.validation_date,
-    v.validation_auto,
-    n.mnemonique
+    n.mnemonique,
+    n.cd_nomenclature AS cd_nomenclature_validation_status,
+    n.label_default,
+    latest_v.validation_auto,
+    latest_v.validation_date
    FROM gn_synthese.synthese s
      JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
-     JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source
-     JOIN gn_commons.t_validations v ON v.uuid_attached_row = s.unique_id_sinp
-     JOIN ref_nomenclatures.t_nomenclatures n ON n.id_nomenclature = v.id_nomenclature_valid_status;
+     LEFT JOIN gn_commons.t_validations v ON v.uuid_attached_row = s.unique_id_sinp
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n ON n.id_nomenclature = s.id_nomenclature_valid_status
+     LEFT JOIN gn_commons.v_latest_validation latest_v ON latest_v.uuid_attached_row = s.unique_id_sinp
+     WHERE d.validable = true;
+  ;
 
-
-CREATE OR REPLACE VIEW gn_commons.v_latest_validations_for_web_app AS
-SELECT v1.*
-FROM gn_commons.v_validations_for_web_app v1
-JOIN
-(
-	SELECT id_synthese, Max(validation_date)
-	FROM gn_commons.v_validations_for_web_app
-	GROUP BY id_synthese
-) v2 on v1.validation_date = v2.max AND v1.id_synthese = v2.id_synthese;
+COMMENT ON VIEW gn_commons.v_synthese_validation_forwebapp  IS 'Vue utilisée pour le module validation. Prend l''id_nomenclature dans la table synthese ainsi que toutes les colonnes de la synthese pour les filtres. On JOIN sur la vue latest_validation pour voir si la validation est auto';

@@ -15,12 +15,12 @@ import {
   MatButtonModule
 } from '@angular/material';
 
-
 import { Http } from '@angular/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AutoCompleteModule } from 'primeng/primeng';
+import { TreeModule } from 'angular-tree-component';
 
 // Components
 import { NomenclatureComponent } from './form/nomenclature/nomenclature.component';
@@ -52,6 +52,10 @@ import { AreasComponent } from '@geonature_common/form/areas/areas.component';
 import { AcquisitionFrameworksComponent } from '@geonature_common/form/acquisition-frameworks/acquisition-frameworks.component';
 import { ModalDownloadComponent } from '@geonature_common/others/modal-download/modal-download.component';
 import { PeriodComponent } from '@geonature_common/form/date/period.component';
+import { AutoCompleteComponent } from '@geonature_common/form/autocomplete/autocomplete.component';
+import { SyntheseSearchComponent } from '@geonature_common/form/synthese-form/synthese-form.component';
+import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-component';
+
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
 // pipe
@@ -65,6 +69,7 @@ import { MapListService } from './map-list/map-list.service';
 import { CommonService } from './service/common.service';
 import { FormService } from './form/form.service';
 import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
+import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 
 // add all rxjs operators
 import 'rxjs/Rx';
@@ -94,7 +99,8 @@ export function HttpLoaderFactory(http: Http) {
     NgxDatatableModule,
     TranslateModule.forChild(),
     NgbModule.forRoot(),
-    AutoCompleteModule
+    AutoCompleteModule,
+    TreeModule
   ],
   declarations: [
     NomenclatureComponent,
@@ -122,7 +128,10 @@ export function HttpLoaderFactory(http: Http) {
     AreasComponent,
     AcquisitionFrameworksComponent,
     ModalDownloadComponent,
-    PeriodComponent
+    PeriodComponent,
+    AutoCompleteComponent,
+    SyntheseSearchComponent,
+    TaxonAdvancedModalComponent
   ],
   providers: [
     TranslateService,
@@ -132,8 +141,10 @@ export function HttpLoaderFactory(http: Http) {
     CommonService,
     FormService,
     DynamicFormService,
-    NgbDatePeriodParserFormatter
+    NgbDatePeriodParserFormatter,
+    SyntheseDataService
   ],
+  entryComponents: [TaxonAdvancedModalComponent],
   exports: [
     MunicipalitiesComponent,
     DynamicFormComponent,
@@ -177,7 +188,10 @@ export function HttpLoaderFactory(http: Http) {
     GenericFormGeneratorComponent,
     AreasComponent,
     AcquisitionFrameworksComponent,
-    PeriodComponent
+    PeriodComponent,
+    AutoCompleteComponent,
+    SyntheseSearchComponent,
+    TaxonAdvancedModalComponent
   ]
 })
-export class GN2CommonModule { }
+export class GN2CommonModule {}

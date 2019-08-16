@@ -1,22 +1,5 @@
 IMPORT FOREIGN SCHEMA utilisateurs FROM SERVER geonature1server INTO v1_compat;
 
--- recréer bib_unités et id_unite
-
-CREATE TABLE IF NOT EXISTS utilisateurs.bib_unites (
-    nom_unite character varying(50) NOT NULL,
-    adresse_unite character varying(128),
-    cp_unite character varying(5),
-    ville_unite character varying(100),
-    tel_unite character varying(14),
-    fax_unite character varying(14),
-    email_unite character varying(100),
-    id_unite integer NOT NULL
-);
-
-ALTER TABLE utilisateurs.t_roles 
-ADD COLUMN id_unite INTEGER;
-
-
 TRUNCATE utilisateurs.t_roles CASCADE;
 --NOTICE:  truncate cascades to table "cor_roles"
 --NOTICE:  truncate cascades to table "cor_role_droit_application"
@@ -43,7 +26,6 @@ TRUNCATE utilisateurs.t_applications CASCADE;
 --NOTICE:  truncate cascades to table "cor_role_app_profil"
 --NOTICE:  truncate cascades to table "cor_application_nomenclature"
 TRUNCATE utilisateurs.cor_role_app_profil CASCADE;
-TRUNCATE utilisateurs.bib_unites CASCADE;
 DELETE FROM utilisateurs.bib_organismes WHERE id_organisme != 0;
 TRUNCATE utilisateurs.cor_profil_for_app CASCADE;
 TRUNCATE utilisateurs.cor_role_liste CASCADE;
@@ -78,28 +60,6 @@ SELECT
   id_parent FROM v1_compat.bib_organismes WHERE id_organisme NOT IN (SELECT id_organisme FROM utilisateurs.bib_organismes);
 
 
-INSERT INTO utilisateurs.bib_unites(
-  nom_unite,
-  adresse_unite,
-  cp_unite,
-  ville_unite,
-  tel_unite,
-  fax_unite,
-  email_unite,
-  id_unite
-)
-SELECT   
-  nom_unite,
-  adresse_unite,
-  cp_unite,
-  ville_unite,
-  tel_unite,
-  fax_unite,
-  email_unite,
-  id_unite 
-FROM v1_compat.bib_unites 
-WHERE id_unite NOT IN (SELECT id_unite FROM utilisateurs.bib_unites);
-
 INSERT INTO utilisateurs.t_roles (
     groupe,
     id_role,
@@ -110,7 +70,6 @@ INSERT INTO utilisateurs.t_roles (
     pass,
     email,
     id_organisme,
-    id_unite,
     remarques,
     pn,
     session_appli,
@@ -129,7 +88,6 @@ SELECT
     pass,
     email,
     id_organisme,
-    id_unite,
     remarques,
     pn,
     session_appli,

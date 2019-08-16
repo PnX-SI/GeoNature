@@ -29,9 +29,6 @@ DEFAULT_LANGUAGE='fr'
 # Configuration générale du frontend
 [FRONTEND]
 
-# Mise en place d'un système d'erreur par email
-[MAILERROR]
-
 # Configuration de la Synthese
 [SYNTHESE]
 

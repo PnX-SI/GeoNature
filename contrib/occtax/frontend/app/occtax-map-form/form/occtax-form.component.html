@@ -6,10 +6,9 @@
     <h5 class="card-header" [class.disabled]="fs.disabled">
       <i class="fa fa-pencil" aria-hidden="true"></i>
       <b>{{ 'Releve.Releve' | translate }} </b>
-      <span id="toggle-btn" class="float-right" matTooltip=" {{'Releve.StayOnFormInterface' | translate}} " matTooltipPosition="left">
+      <span *ngIf="fs.displayStayOnFormInterface" id="toggle-btn" class="float-right" matTooltip=" {{'Releve.StayOnFormInterface' | translate}} " matTooltipPosition="left">
           <i class="fa fa-repeat" aria-hidden="true"></i>
-
-        <mat-slide-toggle color="primary" [formControl]="fs.stayOnFormInterface">
+        <mat-slide-toggle  color="primary" [formControl]="fs.stayOnFormInterface">
         </mat-slide-toggle>
       </span>
 
@@ -95,7 +94,6 @@
   <!-- <pre>form value: <br>{{fs.occurrenceForm.value | json}}</pre> -->
   <!-- <pre>form value: <br>{{fs.releveForm.value | json}}</pre> -->
   <!-- <pre>taxon list: <br>{{fs.taxonsList | json}}</pre> -->
-
 
 
 

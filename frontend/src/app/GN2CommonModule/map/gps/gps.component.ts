@@ -6,14 +6,23 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '../../service/common.service';
 import * as L from 'leaflet';
 
+/**
+ * Affiche une modale permettant de renseigner les coordonnées d'une observation, puis affiche un marker à la position renseignée.
+ *
+ * Ce composant hérite du composant MarkerComponent: il dispose donc des mêmes inputs et outputs.
+ */
 @Component({
   selector: 'pnx-gps',
   templateUrl: 'gps.component.html'
 })
-
 export class GPSComponent extends MarkerComponent implements OnInit {
   @ViewChild('modalContent') public modalContent: any;
-  constructor(public mapService: MapService, public modalService: NgbModal, public commonService: CommonService, private _mapListServive: MapListService) {
+  constructor(
+    public mapService: MapService,
+    public modalService: NgbModal,
+    public commonService: CommonService,
+    private _mapListServive: MapListService
+  ) {
     super(mapService, commonService);
   }
 

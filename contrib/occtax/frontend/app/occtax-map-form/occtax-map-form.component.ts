@@ -1,9 +1,11 @@
 import {
   Component,
   OnInit,
+  Output,
   OnDestroy,
   ViewChild,
-  AfterViewInit
+  AfterViewInit,
+  EventEmitter
 } from "@angular/core";
 import { MapService } from "@geonature_common/map/map.service";
 import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
@@ -43,7 +45,7 @@ export class OcctaxMapFormComponent
     private occtaxService: OcctaxDataService,
     private _dfs: DataFormService,
     private _authService: AuthService
-  ) { }
+  ) {}
 
   ngOnInit() {
     // overight the leaflet draw object to set options
@@ -73,6 +75,7 @@ export class OcctaxMapFormComponent
       if (!isNaN(this.id)) {
         // set showOccurrence to false;
         this.fs.showOccurrence = false;
+        this.fs.editionMode$.next(true);
         this.fs.editionMode = true;
         // load one releve
         this.occtaxService.getOneReleve(this.id).subscribe(
@@ -176,6 +179,7 @@ export class OcctaxMapFormComponent
           }
         ); // end subscribe
       } else {
+        this.fs.editionMode$.next(false);
         // set digitiser as default observers only if occtaxconfig set observers_txt parameter to false
         if (!this.occtaxConfig.observers_txt) {
           const currentUser = this._authService.getCurrentUser();

@@ -131,6 +131,9 @@
     "CurrentlyEditing": "Please first validate the currently editing taxon",
     "NoTaxonFound": "No taxon found for this search",
     "ExistProofValidation": "This field must begin with 'http://', 'https://', ou 'ftp://'",
+    "NoExistProofError": "If exist proof is 'YES' one of two proof field must be filled",
+    "ExistproofError": "The exist proof can be filled only if exist proof is true",
+
     "StatusSource": "Source status"
   },
   "Counting": {

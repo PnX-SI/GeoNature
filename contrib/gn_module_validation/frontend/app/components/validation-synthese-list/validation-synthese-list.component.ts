@@ -10,18 +10,17 @@ import {
   OnChanges,
   ChangeDetectorRef
 } from "@angular/core";
-
-import { GeoJSON, FeatureGroup, Marker } from "leaflet";
-
+import { GeoJSON, FeatureGroup } from "leaflet";
 import { MapService } from "@geonature_common/map/map.service";
-import { DataService } from "../../services/data.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
 import { ModuleConfig } from "../../module.config";
 import { DomSanitizer } from "@angular/platform-browser";
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { ValidationModalInfoObsComponent } from "../validation-modal-info-obs/validation-modal-info-obs.component";
-import { FormService } from "../../services/form.service";
+import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthese-form.service";
+import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthese-data.service";
+
 import { ToastrService } from "ngx-toastr";
 
 @Component({
@@ -54,14 +53,13 @@ export class ValidationSyntheseListComponent
 
   constructor(
     public mapListService: MapListService,
-    private _ds: DataService,
+    private _ds: SyntheseDataService,
     public ngbModal: NgbModal,
     private _commonService: CommonService,
-    //private _fs: SyntheseFormService,
     public sanitizer: DomSanitizer,
     public ref: ChangeDetectorRef,
     private _ms: MapService,
-    public formService: FormService,
+    public formService: SyntheseFormService,
     private toastr: ToastrService
   ) {}
 
@@ -73,7 +71,6 @@ export class ValidationSyntheseListComponent
     this.group = new FeatureGroup();
     this.onMapClick();
     this.onTableClick();
-    //console.log(this.mapListService.tableData);
     this.npage = 1;
   }
 
@@ -110,33 +107,6 @@ export class ValidationSyntheseListComponent
       this.setSelectedObs();
     });
   }
-
-  // getStatusNames() {
-  //   this._ds.getStatusNames().subscribe(
-  //     result => {
-  //       console.log(result);
-  //       // {0: "Root", 1: "Inconnu", 2: "Indéterminé", 3: "Adulte", 4: "Juvénile", 5: "Immature"}
-  //       // get status names
-  //       this.statusNames = result;
-  //       this.statusKeys = Object.keys(this.VALIDATION_CONFIG.STATUS_INFO);
-  //       console.log(this.statusKeys);
-  //     },
-  //     err => {
-  //       if (err.statusText === "Unknown Error") {
-  //         // show error message if no connexion
-  //         this.toastr.error(
-  //           "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connexion)"
-  //         );
-  //       } else {
-  //         // show error message if other server error
-  //         this.toastr.error(err.error);
-  //       }
-  //     },
-  //     () => {
-  //       this.deselectAll();
-  //     }
-  //   );
-  // }
 
   onTableClick() {
     this.setSelectedObs();
@@ -187,7 +157,13 @@ export class ValidationSyntheseListComponent
       this.setOriginStyleToAll();
     }
   }
-
+  toggleSelection(element) {
+    if (element.target.checked) {
+      this.selectAll();
+    } else {
+      this.deselectAll();
+    }
+  }
   onActivate(event) {
     if (event.type == "checkbox" || event.type == "click") {
       this.setSelectedObs();
@@ -298,7 +274,7 @@ export class ValidationSyntheseListComponent
           this.mapListService.tableData[obs].id_synthese ==
           modifiedStatus.id_synthese
         ) {
-          this.mapListService.tableData[obs].id_nomenclature_valid_status =
+          this.mapListService.tableData[obs].cd_nomenclature_validation_status =
             modifiedStatus.new_status;
           this.mapListService.tableData[obs].validation_auto = "";
         }

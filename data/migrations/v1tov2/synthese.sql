@@ -6,7 +6,12 @@
 
 --rappatrier les données localement pour des questions de performances
 CREATE MATERIALIZED VIEW v1_compat.vm_syntheseff AS
-SELECT * FROM v1_compat.syntheseff;
+SELECT * FROM v1_compat.syntheseff
+WHERE id_source IN(1,2,3,4,5,8,9,10,11,12,13,16,18,19,20,99,200,201,202,203,204,205,206);
+--TODO : 
+-- 17 = LPO ; 
+--REFAIRE DEPUIS LA SOURCE: 
+-- 107 = CBNA ; 111 = BDF05 ; 8 = Chiroptères
 
 --création d'index sur la vue matérialisée
 CREATE UNIQUE INDEX ui_id_synthese_vm_syntheseff ON v1_compat.vm_syntheseff (id_synthese);
@@ -53,11 +58,13 @@ CREATE INDEX i_vm_syntheseff_id_organisme
 
 
 ALTER TABLE gn_synthese.synthese DISABLE TRIGGER USER;
+ALTER TABLE gn_synthese.cor_area_synthese DISABLE TRIGGER USER;
+ALTER TABLE gn_synthese.cor_observer_synthese DISABLE TRIGGER USER;
+
 --DELETE FROM gn_synthese.synthese;
 INSERT INTO gn_synthese.synthese (
-  id_synthese, -- serial NOT NULL,
   unique_id_sinp, -- uuid,
-  --unique_id_sinp_grp, -- uuid,
+  unique_id_sinp_grp, -- uuid,
   id_source, --integer,
   entity_source_pk_value, --character varying,
   id_dataset, --integer,
@@ -70,7 +77,7 @@ INSERT INTO gn_synthese.synthese (
   id_nomenclature_naturalness, --integer DEFAULT gn_synthese.get_default_nomenclature_value(8), -- Correspondance nomenclature INPN = naturalite = 8
   id_nomenclature_exist_proof, --integer DEFAULT gn_synthese.get_default_nomenclature_value(15), -- Correspondance nomenclature INPN = preuve_exist = 15
   id_nomenclature_valid_status, --integer DEFAULT gn_synthese.get_default_nomenclature_value(101), -- Correspondance nomenclature GEONATURE = statut_valide = 101
-  id_nomenclature_diffusion_level, --integer DEFAULT gn_synthese.get_default_nomenclature_value(5), -- Correspondance nomenclature INPN = niv_precis = 5 
+  id_nomenclature_diffusion_level, --integer DEFAULT gn_synthese.get_default_nomenclature_value(5), -- Correspondance nomenclature INPN = niv_precis = 5
   id_nomenclature_life_stage, --integer DEFAULT gn_synthese.get_default_nomenclature_value(10), -- Correspondance nomenclature INPN = stade_vie = 10
   id_nomenclature_sex, --integer DEFAULT gn_synthese.get_default_nomenclature_value(9), -- Correspondance nomenclature INPN = sexe = 9
   id_nomenclature_obj_count, --integer DEFAULT gn_synthese.get_default_nomenclature_value(6), -- Correspondance nomenclature INPN = obj_denbr = 6
@@ -87,13 +94,12 @@ INSERT INTO gn_synthese.synthese (
   meta_v_taxref, -- character varying(50) DEFAULT 'SELECT gn_commons.get_default_parameter(''taxref_version'',NULL)'::character varying,
   sample_number_proof, -- text,
   digital_proof, -- text,
-  non_digital_proof, -- text,  
+  non_digital_proof, -- text,
   altitude_min, --integer,
   altitude_max, --integer,
   the_geom_4326, -- geometry(Geometry,4326),
   the_geom_point, -- geometry(Point,4326),
   the_geom_local, -- geometry(Geometry,2154),
-  --id_area, --integer, C'est quoi ça ???
   date_min, -- date NOT NULL,
   date_max, -- date NOT NULL,
   validator, -- character varying(1000),
@@ -101,13 +107,14 @@ INSERT INTO gn_synthese.synthese (
   observers, -- character varying(1000),
   determiner, -- character varying(1000),
   id_nomenclature_determination_method, -- character varying(20),
-  comments, -- text,
+  comment_description, -- text,
+  comment_context, -- text,
   meta_validation_date, -- timestamp without time zone DEFAULT now(),
   meta_create_date, -- timestamp without time zone DEFAULT now(),
   meta_update_date, -- timestamp without time zone DEFAULT now(),
   last_action -- character(1)
 )
-WITH 
+WITH
 s AS (SELECT * FROM v1_compat.vm_syntheseff WHERE supprime = false)
 ,n3 AS (SELECT * FROM v1_compat.cor_synthese_v1_to_v2 WHERE id_type_nomenclature_cible = 3)
 ,n24 AS (SELECT * FROM v1_compat.cor_synthese_v1_to_v2 WHERE id_type_nomenclature_cible = 24)
@@ -126,7 +133,7 @@ s AS (SELECT * FROM v1_compat.vm_syntheseff WHERE supprime = false)
 ,n19 AS (SELECT * FROM v1_compat.cor_synthese_v1_to_v2 WHERE id_type_nomenclature_cible = 19)
 ,n23 AS (SELECT * FROM v1_compat.cor_synthese_v1_to_v2 WHERE id_type_nomenclature_cible = 23)
 SELECT
-  s.id_synthese
+  uuid_generate_v4()
   ,uuid_generate_v4()
   ,s.id_source
   ,s.id_fiche_source
@@ -171,6 +178,7 @@ SELECT
   ,determinateur AS determiner
   ,NULL AS id_nomenclature_determination_method --TODO
   ,s.remarques AS comments
+  ,concat('old_id_synthese : ',s.id_synthese)
   ,NULL AS meta_validation_date
   ,date_insert AS meta_create_date
   ,date_update AS meta_update_date
@@ -192,13 +200,27 @@ LEFT JOIN n6 ON s.id_source = n6.pk_source
 LEFT JOIN n21 ON s.id_source = n21.pk_source
 LEFT JOIN n19 ON s.id_source = n19.pk_source
 LEFT JOIN n23 ON s.id_precision = n23.pk_source
-LEFT JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
-WHERE supprime = false
-AND id_source NOT IN (
-    SELECT id_source FROM synthese.bib_sources
-    WHERE nom_source ILIKE 'Contact invertébrés'
-    OR nom_source ILIKE 'Contact faune'
-    OR nom_source ILIKE 'Contact flore'
-    OR nom_source ILIKE 'Mortalité'
-)
-;
+LEFT JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom;
+
+
+-- Maintenance
+VACUUM FULL gn_synthese.cor_area_synthese;
+VACUUM FULL gn_synthese.cor_area_taxon;
+VACUUM FULL gn_synthese.taxons_synthese_autocomplete;
+VACUUM FULL gn_synthese.cor_observer_synthese;
+VACUUM FULL gn_synthese.synthese;
+VACUUM FULL gn_synthese.t_sources;
+
+VACUUM ANALYSE gn_synthese.cor_area_synthese;
+VACUUM ANALYSE gn_synthese.cor_area_taxon;
+VACUUM ANALYSE gn_synthese.taxons_synthese_autocomplete;
+VACUUM ANALYSE gn_synthese.cor_observer_synthese;
+VACUUM ANALYSE gn_synthese.synthese;
+VACUUM ANALYSE gn_synthese.t_sources;
+
+REINDEX TABLE gn_synthese.cor_area_synthese;
+REINDEX TABLE gn_synthese.cor_area_taxon;
+REINDEX TABLE gn_synthese.taxons_synthese_autocomplete;
+REINDEX TABLE gn_synthese.cor_observer_synthese;
+REINDEX TABLE gn_synthese.synthese;
+REINDEX TABLE gn_synthese.t_sources;

@@ -135,7 +135,8 @@ def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
         # errors
         from geonature.core.errors import routes
 
-        app.wsgi_app = ReverseProxied(app.wsgi_app, script_name=config["API_ENDPOINT"])
+        app.wsgi_app = ReverseProxied(
+            app.wsgi_app, script_name=config["API_ENDPOINT"])
 
         CORS(app, supports_credentials=True)
 
@@ -145,7 +146,8 @@ def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
             conf.update(app.config["MAIL_CONFIG"])
             app.config = conf
             MAIL.init_app(app)
-            
+
+
         # Chargement des mosdules tiers
         if with_external_mods:
             for conf, manifest, module in list_and_import_gn_modules(app):

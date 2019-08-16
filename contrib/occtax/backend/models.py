@@ -84,28 +84,27 @@ class ReleveModel(DB.Model):
         }
 
 
-corRoleRelevesOccurrence = DB.Table(
-    "cor_role_releves_occtax",
-    DB.MetaData(schema="pr_occtax"),
-    DB.Column(
+class corRoleRelevesOccurrence(DB.Model):
+    __tablename__ = "cor_role_releves_occtax"
+    __table_args__ = {"schema": "pr_occtax"}
+    unique_id_cor_role_releve = DB.Column(
         "unique_id_cor_role_releve",
         UUID(as_uuid=True),
         default=select([func.uuid_generate_v4()]),
         primary_key=True,
-    ),
-    DB.Column(
+    )
+    id_releve_occtax = DB.Column(
         "id_releve_occtax",
         DB.Integer,
         ForeignKey("pr_occtax.t_releves_occtax.id_releve_occtax"),
         primary_key=False,
-    ),
-    DB.Column(
+    )
+    id_role = DB.Column(
         "id_role",
         DB.Integer,
         ForeignKey("utilisateurs.t_roles.id_role"),
         primary_key=False,
-    ),
-)
+    )
 
 
 @serializable
@@ -193,12 +192,12 @@ class TRelevesOccurrence(ReleveModel):
 
     observers = DB.relationship(
         User,
-        secondary=corRoleRelevesOccurrence,
-        primaryjoin=(corRoleRelevesOccurrence.c.id_releve_occtax == id_releve_occtax),
-        secondaryjoin=(corRoleRelevesOccurrence.c.id_role == User.id_role),
+        secondary=corRoleRelevesOccurrence.__table__,
+        primaryjoin=(corRoleRelevesOccurrence.id_releve_occtax == id_releve_occtax),
+        secondaryjoin=(corRoleRelevesOccurrence.id_role == User.id_role),
         foreign_keys=[
-            corRoleRelevesOccurrence.c.id_releve_occtax,
-            corRoleRelevesOccurrence.c.id_role,
+            corRoleRelevesOccurrence.id_releve_occtax,
+            corRoleRelevesOccurrence.id_role,
         ],
     )
 
@@ -235,12 +234,12 @@ class VReleveOccurrence(ReleveModel):
     observateurs = DB.Column(DB.Unicode)
     observers = DB.relationship(
         User,
-        secondary=corRoleRelevesOccurrence,
-        primaryjoin=(corRoleRelevesOccurrence.c.id_releve_occtax == id_releve_occtax),
-        secondaryjoin=(corRoleRelevesOccurrence.c.id_role == User.id_role),
+        secondary=corRoleRelevesOccurrence.__table__,
+        primaryjoin=(corRoleRelevesOccurrence.id_releve_occtax == id_releve_occtax),
+        secondaryjoin=(corRoleRelevesOccurrence.id_role == User.id_role),
         foreign_keys=[
-            corRoleRelevesOccurrence.c.id_releve_occtax,
-            corRoleRelevesOccurrence.c.id_role,
+            corRoleRelevesOccurrence.id_releve_occtax,
+            corRoleRelevesOccurrence.id_role,
         ],
     )
 
@@ -272,12 +271,12 @@ class VReleveList(ReleveModel):
     nb_observer = DB.Column(DB.Integer)
     observers = DB.relationship(
         User,
-        secondary=corRoleRelevesOccurrence,
-        primaryjoin=(corRoleRelevesOccurrence.c.id_releve_occtax == id_releve_occtax),
-        secondaryjoin=(corRoleRelevesOccurrence.c.id_role == User.id_role),
+        secondary=corRoleRelevesOccurrence.__table__,
+        primaryjoin=(corRoleRelevesOccurrence.id_releve_occtax == id_releve_occtax),
+        secondaryjoin=(corRoleRelevesOccurrence.id_role == User.id_role),
         foreign_keys=[
-            corRoleRelevesOccurrence.c.id_releve_occtax,
-            corRoleRelevesOccurrence.c.id_role,
+            corRoleRelevesOccurrence.id_releve_occtax,
+            corRoleRelevesOccurrence.id_role,
         ],
     )
 
