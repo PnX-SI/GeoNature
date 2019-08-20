@@ -1069,6 +1069,7 @@ BEGIN
       determiner = theobservers,
       last_action = 'u'
     WHERE id_synthese = theidsynthese;
+    DELETE FROM gn_synthese.cor_observer_synthese WHERE id_synthese = theidsynthese AND id_role = new.codeobs;
     INSERT INTO gn_synthese.cor_observer_synthese (id_synthese, id_role) VALUES(theidsynthese, new.codeobs);
   END LOOP;
 	RETURN NEW; 			
@@ -1217,7 +1218,7 @@ BEGIN
       new.total_steriles + new.total_fertiles,--count_min
       new.total_steriles + new.total_fertiles,--count_max
       thezp.cd_nom,
-      COALESCE(thezp.saisie_initiale,'non disponible'),
+      COALESCE(thezp.taxon_saisi,'non disponible'),
       thetaxrefversion,
       new.altitude_retenue,--altitude_min
       new.altitude_retenue,--altitude_max
