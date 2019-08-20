@@ -1049,19 +1049,19 @@ DECLARE
 BEGIN
   --Récupération de la liste des observateurs	
   --ici on va mettre à jour l'enregistrement dans synthese autant de fois qu'on insert dans cette table
-	SELECT INTO theobservers array_to_string(array_agg(r.prenom_role || ' ' || r.nom_role), ', ') AS observateurs 
+  SELECT INTO theobservers array_to_string(array_agg(r.prenom_role || ' ' || r.nom_role), ', ') AS observateurs 
   FROM v1_florepatri.cor_zp_obs c
-  JOIN utilisateurs.t_roles r ON r.id_role = c.codeobs
-  JOIN v1_florepatri.t_zprospection zp ON zp.indexzp = c.indexzp
+   JOIN utilisateurs.t_roles r ON r.id_role = c.codeobs
+   JOIN v1_florepatri.t_zprospection zp ON zp.indexzp = c.indexzp
   WHERE c.indexzp = new.indexzp;
   --on boucle sur tous les enregistrements de la zp
   --si la zp est sans ap, la boucle ne se fait pas
-  FOR mesap IN SELECT ap.indexap FROM v1_florepatri.t_zprospection zp JOIN v1_florepatri.t_apresence ap ON ap.indexzp = zp.indexzp WHERE ap.indexzp = new.indexzp  LOOP
+  FOR mesap IN SELECT indexap FROM v1_florepatri.t_apresence WHERE supprime = false AND indexzp = new.indexzp  LOOP
     -- on récupére l'id_synthese
     SELECT INTO theidsynthese id_synthese 
     FROM gn_synthese.synthese
     WHERE id_source = (SELECT id_source FROM gn_synthese.t_sources WHERE name_source ILIKE 'Flore prioritaire') 
-    AND entity_source_pk_value = CAST(mesap.indexap AS VARCHAR);
+    AND entity_source_pk_value = mesap.indexap::varchar;
     --on fait le update du champ observateurs dans synthese
     UPDATE gn_synthese.synthese
     SET 
@@ -1072,7 +1072,7 @@ BEGIN
     DELETE FROM gn_synthese.cor_observer_synthese WHERE id_synthese = theidsynthese AND id_role = new.codeobs;
     INSERT INTO gn_synthese.cor_observer_synthese (id_synthese, id_role) VALUES(theidsynthese, new.codeobs);
   END LOOP;
-	RETURN NEW; 			
+  RETURN NEW; 			
 END;
 $BODY$
 LANGUAGE plpgsql VOLATILE
@@ -1341,7 +1341,7 @@ DECLARE
   mesap RECORD;
   thevalidationstatus INTEGER;
 BEGIN
-  FOR mesap IN SELECT ap.indexap FROM v1_florepatri.t_zprospection zp JOIN v1_florepatri.t_apresence ap ON ap.indexzp = zp.indexzp WHERE ap.indexzp = new.indexzp  LOOP
+  FOR mesap IN SELECT indexap FROM v1_florepatri.t_apresence WHERE supprime = true AND indexzp = new.indexzp  LOOP
     --On ne fait qq chose que si l'un des champs de la table t_zprospection concerné dans synthese a changé
     IF (
             new.indexzp <> old.indexzp 
