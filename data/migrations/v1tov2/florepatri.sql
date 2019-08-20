@@ -1194,7 +1194,7 @@ BEGIN
     ( 
       new.unique_id_sinp_fp,
       thezp.unique_id_sinp_grp,
-      104, --TODO 104 = PNE
+      104, -- 104 = PNE
       new.indexap,
       thezp.id_lot,
       ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO','In'),
@@ -1210,7 +1210,7 @@ BEGIN
       ref_nomenclatures.get_id_nomenclature('SEXE','6'),
       ref_nomenclatures.get_id_nomenclature('OBJ_DENBR','NSP'),
       thecomptagemethodo,
-      NULL,--todo sensitivity
+      ref_nomenclatures.get_id_nomenclature('SENSIBILITE','0'),
       ref_nomenclatures.get_id_nomenclature('STATUT_OBS','Pr'),
       ref_nomenclatures.get_id_nomenclature('DEE_FLOU','NON'),
       ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE','Te'),
@@ -1654,7 +1654,7 @@ INSERT INTO gn_synthese.synthese
  SELECT
       ap.unique_id_sinp_fp,
       zp.unique_id_sinp_grp,
-      104, --TODO 104 = PNE
+      104, -- 104 = PNE
       (SELECT id_module FROM gn_commons.t_modules WHERE module_code = '4' LIMIT 1),
       ap.indexap,
       zp.id_lot,
@@ -1688,7 +1688,7 @@ INSERT INTO gn_synthese.synthese
         WHEN ap.id_comptage_methodo=2 THEN ref_nomenclatures.get_id_nomenclature('TYP_DENBR','Ca')
         ELSE ref_nomenclatures.get_id_nomenclature('TYP_DENBR','NSP')
       END,
-      NULL,--todo sensitivity
+      ref_nomenclatures.get_id_nomenclature('SENSIBILITE','0'),
       ref_nomenclatures.get_id_nomenclature('STATUT_OBS','Pr'),
       ref_nomenclatures.get_id_nomenclature('DEE_FLOU','NON'),
       ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE','Te'),
@@ -1794,7 +1794,7 @@ INSERT INTO gn_synthese.synthese
  SELECT
       ap.unique_id_sinp_fp,
       zp.unique_id_sinp_grp,
-      104, --TODO 104 = PNE
+      104, -- 104 = PNE
       (SELECT id_module FROM gn_commons.t_modules WHERE module_code = '4' LIMIT 1),
       ap.indexap,
       zp.id_lot,
@@ -1828,7 +1828,7 @@ INSERT INTO gn_synthese.synthese
         WHEN ap.id_comptage_methodo=2 THEN ref_nomenclatures.get_id_nomenclature('TYP_DENBR','Ca')
         ELSE ref_nomenclatures.get_id_nomenclature('TYP_DENBR','NSP')
       END,
-      NULL,--todo sensitivity
+      ref_nomenclatures.get_id_nomenclature('SENSIBILITE','0'),
       ref_nomenclatures.get_id_nomenclature('STATUT_OBS','Pr'),
       ref_nomenclatures.get_id_nomenclature('DEE_FLOU','NON'),
       ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE','Te'),
