@@ -14,11 +14,13 @@ export class DashboardFrameworksComponent implements OnInit {
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
-  public nbFrameworks: any;
-  public adjustedData = [];
+  // Type de graphe
   public lineChartType = 'line';
+  // Tableau contenant les labels du graphe
   public lineChartLabels = [];
+  // Tableau contenant les données du graphe
   public lineChartData = [];
+  // Tableau contenant les couleurs de fond et de contour pour chaque cadre d'acquisition
   public lineChartColors = [
     {
       backgroundColor: "rgba(217,146,30, 0.7)",
@@ -141,6 +143,7 @@ export class DashboardFrameworksComponent implements OnInit {
       borderColor: "rgb(229,226,222)"
     }
   ];
+  // Dictionnaire contenant les options à implémenter sur le graphe
   public lineChartOptions = {
     responsive: true,
     legend: {
@@ -169,8 +172,12 @@ export class DashboardFrameworksComponent implements OnInit {
       }]
     }
   };
-  public lineChartLegend = true;
 
+  // Nombre de cadres d'acquisition dans la base de données
+  public nbFrameworks: any;
+  // Tableau permettant de contenir les données transmises par l'API une fois reformatées
+  public adjustedData = [];
+  // Gestion du spinner
   public spinner = false;
 
   constructor(public dataService: DataService, public fb: FormBuilder) { }
@@ -180,19 +187,15 @@ export class DashboardFrameworksComponent implements OnInit {
     // Accès aux années distinctes présentes dans la BDD GeoNature
     this.dataService.getYears("distinct").subscribe(
       (data) => {
-        this.lineChartLabels.length = 0;
         // Remplissage de l'array des labels, paramètre du line chart
         data.forEach(
           (elt) => {
             this.lineChartLabels.push(elt[0]);
           }
         );
-        // console.log(this.lineChartLabels);
-
-        // Accès aux données de synthèse de la BDD GeoNature
+        // Accès aux données de la VM vm_synthese_frameworks
         this.dataService.getDataFrameworks().subscribe(
           (data) => {
-            // console.log(data);
             var dataLength = data.length;
             var firstElt = 0;
             // On parcourt l'array des données renvoyées par l'API pour les séparer selon leur cadre d'acquisition
@@ -200,23 +203,20 @@ export class DashboardFrameworksComponent implements OnInit {
               if (data[i][0] != data[i - 1][0]) {
                 var framework = data.slice(firstElt, i);
                 this.adjustedData.push(framework);
-                // console.log(framework);
                 var firstElt = i;
               }
               if (i == dataLength - 1) {
                 var framework = data.slice(firstElt, i + 1);
                 this.adjustedData.push(framework);
-                // console.log(framework);
               }
             }
-            // console.log(this.adjustedData);
-            this.nbFrameworks = this.adjustedData.length; // Nécessaire pour afficher le line chart (voir html)
+            this.nbFrameworks = this.adjustedData.length; // Nécessaire pour afficher le line chart (cf. html)
             // Initialisation de l'array des données à afficher, paramètre du line chart
             var lineChartDataTemp = [];
             // Remplissage de l'array des données en fonction du cadre d'acquisition, en tenant compte du fait qu'il peut n'y avoir aucune observation pour certaines années
             this.adjustedData.forEach(
               (framework) => {
-                // Initialisation du dictionnaire de données relatif à un cadre d'acquisition (à ajouter à l'array)
+                // Initialisation du dictionnaire de données relatif au cadre d'acquisition considéré
                 var frameworkDataTemp = { data: [], label: framework[0][0], fill: false };
                 var frameworkLength = framework.length;
                 var start = 0;
@@ -237,9 +237,8 @@ export class DashboardFrameworksComponent implements OnInit {
                     }
                   }
                 );
-                // Ajout du jeu de données (dictionnaire relatif à un cadre d'acquisition) à l'array des données, paramètre du line chart
+                // Ajout du jeu de données (dictionnaire relatif au cadre d'acquisition considéré) à l'array des données à afficher, paramètre du line chart
                 lineChartDataTemp.push(frameworkDataTemp);
-                // console.log(lineChartDataTemp);
               }
             )
             this.lineChartData = lineChartDataTemp;
@@ -248,7 +247,6 @@ export class DashboardFrameworksComponent implements OnInit {
         );
       }
     );
-
   }
 
 }

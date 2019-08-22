@@ -14,14 +14,13 @@ export class DashboardRecontactComponent implements OnInit {
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
-  public subscription: any;
   // Type de graphe
   public pieChartType = 'doughnut';
   // Tableau contenant les labels du graphe
   public pieChartLabels = ["Taxons recontactés", "Taxons non recontactés", "Nouveaux taxons"];
   // Tableau contenant les données du graphe
   public pieChartData = [];
-  // Dictionnaire contenant les couleurs et la taille de bordure du graphe
+  // Tableau contenant les couleurs et la taille de bordure du graphe
   public pieChartColors = [
     {
       backgroundColor: ["rgb(119,163,53)", "rgb(217,146,30)", "rgb(43,132,183)"],
@@ -62,8 +61,13 @@ export class DashboardRecontactComponent implements OnInit {
     }
   }
 
+  // Gestion du formulaire 
   speciesForm: FormGroup;
   @Input() distinctYears: any;
+
+  // Pouvoir stoppper le chargement des données si un changement de filtre est opéré avant la fin du chargement
+  public subscription: any;
+  // Gestion du spinner
   public spinner = false;
 
   constructor(public dataService: DataService, public fb: FormBuilder) {
@@ -75,11 +79,12 @@ export class DashboardRecontactComponent implements OnInit {
 
   ngOnInit() {
     this.spinner = true;
-    // Par défaut, le pie chart s'affiche à l'année en court
+    // Par défaut, le pie chart s'affiche sur l'année en court
     this.speciesForm.controls["selectedYear"].setValue(this.distinctYears[this.distinctYears.length - 1]);
-    // Accès aux données de synthèse de la BDD GeoNature
+    // Accès aux données de synthèse
     this.subscription = this.dataService.getDataRecontact(this.speciesForm.value.selectedYear).subscribe(
       (data) => {
+        // Remplissage de l'array des données à afficher, paramètre du line chart
         data.forEach(
           (elt) => {
             this.pieChartData.push(elt);
@@ -97,9 +102,10 @@ export class DashboardRecontactComponent implements OnInit {
     this.spinner = true;
     // Réinitialisation de l'array des données à afficher, paramètre du pie chart
     var pieChartDataTemp = [];
-    // Accès aux données de synthèse de la BDD GeoNature
+    // Accès aux données de synthèse
     this.subscription = this.dataService.getDataRecontact(this.speciesForm.value.selectedYear).subscribe(
       (data) => {
+        // Remplissage de l'array des données à afficher, paramètre du line chart
         data.forEach(
           (elt) => {
             pieChartDataTemp.push(elt);

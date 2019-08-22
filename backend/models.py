@@ -4,7 +4,7 @@ from sqlalchemy.sql import select
 from geonature.utils.utilssqlalchemy import serializable
 from geonature.utils.env import DB
 
-
+# vm_synthese
 @serializable
 class VSynthese(DB.Model):
     __tablename__ = "vm_synthese"
@@ -37,35 +37,7 @@ class VSynthese(DB.Model):
     date_max = DB.Column(DB.DateTime)
 
 
-# @serializable
-# class VSyntheseCommunes(DB.Model):
-#     __tablename__ = "vm_synthese_communes"
-#     __table_args__ = {"schema": "gn_dashboard"}
-#     area_name = DB.Column(DB.Unicode, primary_key=True)
-#     geom_area_4326 = DB.Column(DB.Unicode)
-#     # id_type = DB.Column(DB.Unicode)
-#     year = DB.Column(DB.Integer)
-#     nb_obs = DB.Column(DB.Integer)
-#     nb_taxons = DB.Column(DB.Integer)
-#     regne = DB.Column(DB.Unicode)
-#     phylum = DB.Column(DB.Unicode)
-#     classe = DB.Column(DB.Unicode)
-#     # ordre = DB.Column(DB.Unicode)
-#     # famille = DB.Column(DB.Unicode)
-
-# @serializable
-# class VSyntheseCommunesINPN(DB.Model):
-#     __tablename__ = "vm_synthese_communes_inpn"
-#     __table_args__ = {"schema": "gn_dashboard"}
-#     area_name = DB.Column(DB.Unicode, primary_key=True)
-#     geom_area_4326 = DB.Column(DB.Unicode)
-#     year = DB.Column(DB.Integer)
-#     nb_obs = DB.Column(DB.Integer)
-#     nb_taxons = DB.Column(DB.Integer)
-#     group1_inpn = DB.Column(DB.Unicode)
-#     group2_inpn = DB.Column(DB.Unicode)
-
-
+# vm_taxonomie
 @serializable
 class VTaxonomie(DB.Model):
     __tablename__ = "vm_taxonomie"
@@ -74,6 +46,7 @@ class VTaxonomie(DB.Model):
     name_taxon = DB.Column(DB.Unicode, primary_key=True)
 
 
+# vm_synthese_frameworks
 @serializable
 class VFrameworks(DB.Model):
     __tablename__ = "vm_synthese_frameworks"
@@ -81,14 +54,4 @@ class VFrameworks(DB.Model):
     acquisition_framework_name = DB.Column(DB.Unicode, primary_key=True)
     year = DB.Column(DB.Integer)
     nb_obs = DB.Column(DB.Integer)
-
-
-@serializable
-class VGeomSimplified(DB.Model):
-    __tablename__ = "vm_geom_simplified"
-    __table_args__ = {"schema": "gn_dashboard"}
-    id_area = DB.Column(DB.Unicode, primary_key=True)
-    id_type = DB.Column(DB.Integer)
-    area_name = DB.Column(DB.Unicode)
-    geom_simplified = DB.Column(DB.Unicode)
 

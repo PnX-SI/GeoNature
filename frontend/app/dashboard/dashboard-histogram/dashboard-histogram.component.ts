@@ -16,7 +16,25 @@ export class DashboardHistogramComponent implements OnInit {
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
-  public subscription: any;
+  // Type de graphe
+  public barChartType = 'bar';
+  // Tableau contenant les labels du graphe
+  public barChartLabels = [];
+  // Pouvoir enregistrer le tableau des labels au chargement du composant lorsqu'aucun filtre n'est sélectionné (accélérer l'affichage des données par la suite)
+  public noFilterBarChartLabels = [];
+  // Tableau contenant les données du graphe
+  public barChartData = [
+    { data: [], label: "Nombre d'observations", yAxisID: 'yAxisObs' },
+    { data: [], label: "Nombre de taxons", yAxisID: 'yAxisTax' }
+  ];
+  // Pouvoir enregistrer le tableau des données au chargement du composant lorsqu'aucun filtre n'est sélectionné (accélérer l'affichage des données par la suite)
+  public noFilterBarChartData = [];
+  // Tableau contenant les couleurs du graphe
+  public barChartColors = [
+    { backgroundColor: 'rgba(159, 5, 63, 0.8)' },
+    { backgroundColor: 'rgba(0, 128, 128, 0.8)' }
+  ];
+  // Dictionnaire contenant les options à implémenter sur le graphe (affichage des deux axes avec leur légende notamment) 
   public barChartOptions = {
     scaleShowVerticalLines: true,
     responsive: true,
@@ -73,26 +91,19 @@ export class DashboardHistogramComponent implements OnInit {
       ]
     }
   };
-  public barChartLabels = [];
-  public noFilterBarChartLabels = [];
-  public barChartType = 'bar';
-  public barChartLegend = true;
-  public barChartData = [
-    { data: [], label: "Nombre d'observations", yAxisID: 'yAxisObs' },
-    { data: [], label: "Nombre de taxons", yAxisID: 'yAxisTax' }
-  ];
-  public noFilterBarChartData = [];
-  public barChartColors = [
-    { backgroundColor: 'rgba(159, 5, 63, 0.8)' },
-    { backgroundColor: 'rgba(0, 128, 128, 0.8)' }
-  ];
 
+  // Gestion du formulaire
   histForm: FormGroup;
-  public filter: any;
-  public spinner = false;
-  public currentTaxon = "";
   @Input() taxonomies: any;
+  public filter: any;
+  public currentTaxon = "";
 
+  // Pouvoir stoppper le chargement des données si un changement de filtre est opéré avant la fin du chargement
+  public subscription: any;
+  // Gestion du spinner
+  public spinner = false;
+
+  // Récupérer la liste des taxons existants dans la BDD pour permettre la recherche de taxon (pnx-taxonomy)
   public taxonApiEndPoint = `${AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
 
   constructor(public dataService: DataService, public commonService: CommonService, public fb: FormBuilder) {
@@ -112,11 +123,10 @@ export class DashboardHistogramComponent implements OnInit {
 
   ngOnInit() {
     this.spinner = true;
-    // Accès aux données de synthèse de la BDD GeoNature 
+    // Accès aux données de la VM vm_synthese
     this.subscription = this.dataService.getDataSynthese().subscribe(
       (data) => {
-        // console.log(data);
-        // Remplissage des array qui seront paramètres du bar chart
+        // Remplissage des array des labels et des données à afficher, paramètres du bar chart
         data.forEach(
           (elt) => {
             this.barChartLabels.push(elt[0]);
@@ -137,7 +147,6 @@ export class DashboardHistogramComponent implements OnInit {
   onTaxFilterChange(event) {
     // Déterminer le type de filtre taxonomique qui a été sélectionné pour afficher la liste déroulante adéquate
     this.filter = event.target.value;
-    // console.log(this.filter);
     // Réinitialiser l'ancien filtre qui a été sélectionné pour empêcher les erreurs de requête
     this.histForm.controls['selectedGroup1INPN'].reset();
     this.histForm.controls['selectedGroup2INPN'].reset();
@@ -147,7 +156,6 @@ export class DashboardHistogramComponent implements OnInit {
     this.histForm.controls['selectedOrdre'].reset();
     this.histForm.controls['selectedFamille'].reset();
     this.histForm.controls['taxon'].reset();
-    console.log(this.histForm.value);
     // Afficher les données d'origine si la valeur vaut ""
     if (this.filter == "") {
       this.barChartData = this.noFilterBarChartData;
@@ -157,39 +165,35 @@ export class DashboardHistogramComponent implements OnInit {
   getCurrentTax(event) {
     this.subscription.unsubscribe();
     this.spinner = true;
-    // console.log(event);
-    // console.log(this.histForm.value);
-    // console.log(this.filter);
-    // Définition du label sélectionné, selon qu'il s'agit d'une recherche de taxon ou d'une liste déroulante
+    //// Actualiser le titre du graphe avec le nom du taxon sélectionné (currentTaxon)
+    // Différents cas selon qu'il s'agit d'une recherche de taxon ou d'une liste déroulante
     if (this.filter == 'Rechercher un taxon/une espèce...') {
       var label = event.item.cd_ref;
-      // Récupération du cd_ref
-      this.histForm.controls['taxon'].setValue(label);
-      console.log(this.histForm.value);
       this.currentTaxon = event.item.lb_nom;
+      // Récupération du cd_ref dans le formulaire
+      this.histForm.controls['taxon'].setValue(label);
     }
     else {
       var index = event.target.value.indexOf(':');
       var label = event.target.value.substring(index + 2);
       this.currentTaxon = label;
     }
-    // Afficher les données d'origine si la valeur vaut ""
+    //// Afficher les données d'origine si la valeur vaut ""
     if (label == "") {
       this.barChartData = this.noFilterBarChartData;
       this.spinner = false;
     }
-    // Sinon...
+    //// Sinon...
     else {
       // Réinitialisation de l'array des données à afficher, paramètre du bar chart
       var barChartDataTemp = [
         { data: [], label: "Nombre d'observations", yAxisID: 'yAxisObs' },
         { data: [], label: "Nombre de taxons", yAxisID: 'yAxisTax' }
       ];
-      // Accès aux données de synthèse de la BDD GeoNature 
+      // Accès aux données de la VM vm_synthese 
       this.subscription = this.dataService.getDataSynthese(this.histForm.value).subscribe(
         (data) => {
-          console.log(data);
-          // Remplissage de l'array en tenant compte du fait qu'il peut n'y avoir aucune observation pour certaines années 
+          // Remplissage de l'array des données en tenant compte du fait qu'il peut n'y avoir aucune observation pour certaines années 
           const dataLength = data.length;
           var start = 0;
           this.barChartLabels.forEach(
@@ -217,13 +221,12 @@ export class DashboardHistogramComponent implements OnInit {
           );
           this.barChartData = barChartDataTemp;
           this.spinner = false;
-          console.log(this.barChartData);
         }, (error) => {
           // Affichage d'un message d'erreur s'il n'y a pas de données pour le taxon sélectionné
-          console.log(error);
           this.commonService.toastrService.info("Il n'y a aucune donnée disponible pour ce taxon", "");
         }
       );
     }
-
   }
+
+}

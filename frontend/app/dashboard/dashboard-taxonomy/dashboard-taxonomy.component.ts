@@ -10,12 +10,16 @@ import { DataService } from "../services/data.services";
   styleUrls: ["./dashboard-taxonomy.component.scss"]
 })
 export class DashboardTaxonomyComponent implements OnInit {
+
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
-  public subscription: any;
+  // Type de graphe
   public pieChartType = "doughnut";
+  // Tableau contenant les labels du graphe
   public pieChartLabels = [];
+  // Tableau contenant les données du graphe
   public pieChartData = [];
+  // Paramétrer les couleurs du graphes
   public backgroundColors = [
     "rgb(217,146,30)",
     "rgb(119,163,53)",
@@ -48,6 +52,7 @@ export class DashboardTaxonomyComponent implements OnInit {
     "rgb(167,110,33)",
     "rgb(229,226,222)"
   ];
+  // Tableau contenant les couleurs du graphe
   public pieChartColors = [
     {
       backgroundColor: this.backgroundColors.concat(
@@ -78,6 +83,7 @@ export class DashboardTaxonomyComponent implements OnInit {
       borderWidth: 0.8
     }
   ];
+  // Dictionnaire contenant les options à implémenter sur le graphe
   public pieChartOptions = {
     legend: {
       display: "true",
@@ -104,11 +110,16 @@ export class DashboardTaxonomyComponent implements OnInit {
     }
   };
 
+  // Gestion du formulaire
   pieChartForm: FormGroup;
   @Input() taxonomies: any;
   @Input() yearsMinMax: any;
-  public yearRange = [0, 2019];
   public currentTaxLevel = "Règne";
+  public yearRange = [0, 2019];
+
+  // Pouvoir stoppper le chargement des données si un changement de filtre est opéré avant la fin du chargement
+  public subscription: any;
+  // Gestion du spinner  
   public spinner = false;
 
   constructor(public dataService: DataService, public fb: FormBuilder) {

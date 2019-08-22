@@ -9,7 +9,7 @@ from sqlalchemy.sql.expression import label, distinct, case
 from geonature.utils.utilssqlalchemy import json_resp
 from geonature.utils.env import DB
 
-from .models import VSynthese, VTaxonomie, VFrameworks, VGeomSimplified
+from .models import VSynthese, VTaxonomie, VFrameworks
 from geonature.core.gn_synthese.models import Synthese, CorAreaSynthese
 from geonature.core.ref_geo.models import LAreas, BibAreasTypes
 from geonature.core.taxonomie.models import Taxref

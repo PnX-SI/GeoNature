@@ -13,8 +13,7 @@
             <p> {{ currentNbTax }} </p>
         </div>
         <pnx-map height="80vh">
-            <!-- <pnx-marker (markerChanged)="test($event)"></pnx-marker> -->
-            <pnx-geojson [geojson]="background" [onEachFeature]="defineBackground.bind(this)"></pnx-geojson>
+            <!-- <pnx-geojson [geojson]="background" [onEachFeature]="defineBackground.bind(this)"></pnx-geojson> -->
             <pnx-geojson [geojson]="myCommunes" [onEachFeature]="showData.bind(this)"></pnx-geojson>
         </pnx-map>
     </div>
