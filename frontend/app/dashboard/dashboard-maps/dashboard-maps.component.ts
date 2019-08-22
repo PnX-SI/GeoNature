@@ -142,7 +142,7 @@ export class DashboardMapsComponent
   public filter: any;
   @Input() taxonomies: any;
   @Input() yearsMinMax: any;
-  public yearRange = [1970, 2019];
+  public yearRange = [0, 2019];
   public currentCdRef: any;
   public filtersDict: any;
   public spinner = false;

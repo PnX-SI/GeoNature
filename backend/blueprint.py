@@ -251,8 +251,8 @@ def get_areas_types():
     return [elt.as_dict() for elt in data]
 
 
-# Obtenir la liste des années pendant lesquelles des observations ont été faîtes
-# OU obtenir l'année min et l'année de cette liste
+# Obtenir la liste des années au cours desquelles des observations ont été faîtes
+# OU obtenir l'année min et l'année max de cette liste
 # vm_synthese
 @blueprint.route("/years/<model>", methods=["GET"])
 @json_resp

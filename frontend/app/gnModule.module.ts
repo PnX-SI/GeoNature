@@ -13,8 +13,8 @@ import "chartjs-plugin-labels";
 import { DashboardComponent } from "./dashboard/dashboard.component";
 import { DashboardMapsComponent } from "./dashboard/dashboard-maps/dashboard-maps.component";
 import { DashboardHistogramComponent } from "./dashboard/dashboard-histogram/dashboard-histogram.component";
-import { DashboardPieChartComponent } from "./dashboard/dashboard-pie-chart/dashboard-pie-chart.component";
-import { DashboardLineChartComponent } from "./dashboard/dashboard-line-chart/dashboard-line-chart.component";
+import { DashboardTaxonomyComponent } from "./dashboard/dashboard-taxonomy/dashboard-taxonomy.component";
+import { DashboardFrameworksComponent } from "./dashboard/dashboard-frameworks/dashboard-frameworks.component";
 import { DashboardRecontactComponent } from "./dashboard/dashboard-recontact/dashboard-recontact.component";
 // Services
 import { DataService } from "./dashboard/services/data.services"
@@ -24,12 +24,12 @@ const routes: Routes = [
   { path: "", component: DashboardComponent },
   { path: "maps", component: DashboardMapsComponent },
   { path: "histogram", component: DashboardHistogramComponent },
-  { path: "piechart", component: DashboardPieChartComponent },
-  { path: "linechart", component: DashboardLineChartComponent }
+  { path: "piechart", component: DashboardTaxonomyComponent },
+  { path: "linechart", component: DashboardFrameworksComponent }
 ];
 
 @NgModule({
-  declarations: [DashboardComponent, DashboardMapsComponent, DashboardHistogramComponent, DashboardPieChartComponent, DashboardLineChartComponent, DashboardRecontactComponent],
+  declarations: [DashboardComponent, DashboardMapsComponent, DashboardHistogramComponent, DashboardTaxonomyComponent, DashboardFrameworksComponent, DashboardRecontactComponent],
   imports: [GN2CommonModule, RouterModule.forChild(routes), CommonModule, FormsModule, ReactiveFormsModule, MatTabsModule, ChartsModule, NouisliderModule],
   providers: [DataService],
   bootstrap: [DashboardComponent]

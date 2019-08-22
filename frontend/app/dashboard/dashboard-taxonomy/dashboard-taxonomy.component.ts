@@ -5,11 +5,11 @@ import { BaseChartDirective } from "ng2-charts/ng2-charts";
 import { DataService } from "../services/data.services";
 
 @Component({
-  selector: "dashboard-pie-chart",
-  templateUrl: "dashboard-pie-chart.component.html",
-  styleUrls: ["./dashboard-pie-chart.component.scss"]
+  selector: "dashboard-taxonomy",
+  templateUrl: "dashboard-taxonomy.component.html",
+  styleUrls: ["./dashboard-taxonomy.component.scss"]
 })
-export class DashboardPieChartComponent implements OnInit {
+export class DashboardTaxonomyComponent implements OnInit {
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
   public subscription: any;
@@ -107,7 +107,7 @@ export class DashboardPieChartComponent implements OnInit {
   pieChartForm: FormGroup;
   @Input() taxonomies: any;
   @Input() yearsMinMax: any;
-  public yearRange = [1980, 2019];
+  public yearRange = [0, 2019];
   public currentTaxLevel = "Règne";
   public spinner = false;
 

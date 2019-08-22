@@ -5,12 +5,12 @@ import { BaseChartDirective } from 'ng2-charts/ng2-charts';
 import { DataService } from "../services/data.services";
 
 @Component({
-  selector: "dashboard-line-chart",
-  templateUrl: "dashboard-line-chart.component.html",
-  styleUrls: ['./dashboard-line-chart.component.scss']
+  selector: "dashboard-frameworks",
+  templateUrl: "dashboard-frameworks.component.html",
+  styleUrls: ['./dashboard-frameworks.component.scss']
 })
 
-export class DashboardLineChartComponent implements OnInit {
+export class DashboardFrameworksComponent implements OnInit {
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
@@ -178,7 +178,7 @@ export class DashboardLineChartComponent implements OnInit {
   ngOnInit() {
     this.spinner = true;
     // Accès aux années distinctes présentes dans la BDD GeoNature
-    this.dataService.getYears({ type: "distinct" }).subscribe(
+    this.dataService.getYears("distinct").subscribe(
       (data) => {
         this.lineChartLabels.length = 0;
         // Remplissage de l'array des labels, paramètre du line chart

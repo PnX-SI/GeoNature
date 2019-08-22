@@ -62,8 +62,8 @@
             <em class="fa fa-xl fa-sitemap" aria-hidden="true" *ngIf="!showPieChart"></em>
         </button>
     </div>
-    <dashboard-pie-chart [taxonomies]="taxonomies" [yearsMinMax]="yearsMinMax" *ngIf="showPieChart">
-    </dashboard-pie-chart>
+    <dashboard-taxonomy [taxonomies]="taxonomies" [yearsMinMax]="yearsMinMax" *ngIf="showPieChart">
+    </dashboard-taxonomy>
 
     <div class="row row-md">
         <button class="btn btn-block btn-lg btn-title" (click)="hideLineChart($event)">
@@ -82,7 +82,7 @@
             <em class="fa fa-xl fa-cubes" aria-hidden="true" *ngIf="!showLineChart"></em>
         </button>
     </div>
-    <dashboard-line-chart *ngIf="showLineChart"></dashboard-line-chart>
+    <dashboard-frameworks *ngIf="showLineChart"></dashboard-frameworks>
 
     <div class="row row-md">
         <button class="btn btn-block btn-lg btn-title" (click)="hideSpecies($event)">

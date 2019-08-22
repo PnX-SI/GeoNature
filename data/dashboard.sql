@@ -2,6 +2,7 @@ DROP SCHEMA if exists gn_dashboard cascade;
 
 CREATE SCHEMA gn_dashboard;
 
+-- Vue matérialisée remettant à plat la taxonomie de toutes les observations présentes dans la synthèse
 CREATE MATERIALIZED VIEW gn_dashboard.vm_synthese AS 
  SELECT s.id_synthese,
     s.id_source,
@@ -38,29 +39,8 @@ COMMENT ON MATERIALIZED VIEW gn_dashboard.vm_synthese
 CREATE unique index on gn_dashboard.vm_synthese (id_synthese);
 CREATE index on gn_dashboard.vm_synthese (cd_ref);
 
--- CREATE MATERIALIZED VIEW gn_dashboard.vm_synthese_communes_complete AS 
---  SELECT a.area_name,
---     st_asgeojson(st_transform(a.geom, 4326)) AS geom_area_4326,
---     date_part('year'::text, s.date_min) AS year,
---     t.regne,
---     t.phylum,
---     t.group1_inpn,
---     t.classe,
---     t.group2_inpn,
---     t.ordre,
---     t.famille,
---     t.cd_ref,
---     count(*) AS nb_obs,
---     count(DISTINCT t.cd_ref) AS nb_taxons
---    FROM gn_synthese.synthese s
---      JOIN ref_geo.l_areas a ON st_intersects(s.the_geom_local, a.geom)
---      JOIN taxonomie.taxref t ON s.cd_nom = t.cd_nom
---   WHERE a.id_type = 25
---   GROUP BY GROUPING SETS ((a.area_name, a.geom, (date_part('year'::text, s.date_min)), t.regne, t.phylum, t.group1_inpn, t.classe, t.group2_inpn, t.ordre, t.famille, t.cd_ref), (a.area_name, a.geom))
---   ORDER BY a.area_name, (date_part('year'::text, s.date_min)), t.regne, t.phylum, t.group1_inpn, t.classe, t.group2_inpn, t.ordre, t.famille, t.cd_ref
--- WITH DATA;
 
-
+-- Vue matérialisée calculant le nombre d'observations par cadre d'acquisition par année
 CREATE MATERIALIZED VIEW gn_dashboard.vm_synthese_frameworks AS 
  SELECT DISTINCT af.acquisition_framework_name,
     date_part('year'::text, s.date_min) AS year,
@@ -76,6 +56,8 @@ COMMENT ON MATERIALIZED VIEW gn_dashboard.vm_synthese_frameworks
 
 CREATE unique index on gn_dashboard.vm_synthese_frameworks (acquisition_framework_name,year);
 
+
+-- Vue matérialisée listant tous les taxons pour lesquels des données ont été observées, ainsi que leur rang taxonomique
 CREATE MATERIALIZED VIEW gn_dashboard.vm_taxonomie AS 
  SELECT 'Règne'::text AS level,
     COALESCE(vm_synthese.regne, 'Not defined'::character varying) AS name_taxon
@@ -113,21 +95,12 @@ UNION ALL
   GROUP BY vm_synthese.group2_inpn
 WITH DATA;
 COMMENT ON MATERIALIZED VIEW gn_dashboard.vm_synthese
-    IS 'Vue matérialisée listant tous les rangs taxonomiques ayant des données ainsi que leur niveau';
+    IS 'Vue matérialisée listant tous les taxons pour lesquels des données ont été observées, ainsi que leur rang taxonomique';
 
 CREATE unique index on gn_dashboard.vm_taxonomie (name_taxon,level);
 
--- CREATE MATERIALIZED VIEW gn_dashboard.vm_geom_simplified AS 
---  SELECT DISTINCT l.id_area,
---     l.id_type,
---     l.area_name,
---     st_simplifypreservetopology(l.geom, 5::double precision) AS geom_simplified
---    FROM ref_geo.l_areas l
---      JOIN ref_geo.bib_areas_types b ON l.id_type = b.id_type
---   WHERE b.type_code::text = 'COM'::text
--- WITH DATA;
 
--- Fonction rafraichissant en parallèle toutes les vues matérialisées utilisées par le Dashboard
+-- Fonction rafraichissant en parallèle toutes les vues matérialisées utilisées par le module Dashboard
 -- USAGE : SELECT gn_dashboard.refresh_materialized_view_data()
 CREATE OR REPLACE FUNCTION gn_dashboard.refresh_materialized_view_data()
 RETURNS VOID AS $$
