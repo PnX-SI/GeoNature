@@ -58,13 +58,14 @@ def get_area_stat(type_code):
     q = (
         select(
             [
-                func.count(Synthese.id_synthese),
+                LAreas.id_area,
                 LAreas.area_name,
                 func.st_asgeojson(
                     func.st_transform(
                         func.st_simplifypreservetopology(LAreas.geom, 50), 4326
                     )
                 ),
+                func.count(Synthese.id_synthese),
                 func.count(distinct(Taxref.cd_ref)),
             ]
         )
@@ -77,7 +78,7 @@ def get_area_stat(type_code):
             .join(Taxref, Taxref.cd_nom == Synthese.cd_nom)
         )
         .where(BibAreasTypes.type_code == type_code)
-        .group_by(LAreas.area_name, LAreas.geom)
+        .group_by(LAreas.id_area)
     )
     if "selectedYearRange" in params:
         yearRange = params["selectedYearRange"].split(",")
@@ -102,9 +103,13 @@ def get_area_stat(type_code):
     data = DB.engine.execute(q)
 
     geojson_features = []
-    for d in data:
-        properties = {"nb_obs": int(d[0]), "nb_taxons": int(d[3]), "area_name": d[1]}
-        geojson = json.loads(d[2])
+    for elt in data:
+        geojson = json.loads(elt[2])
+        properties = {
+            "area_name": elt[1],
+            "nb_obs": int(elt[3]),
+            "nb_taxons": int(elt[4]),
+        }
         geojson["properties"] = properties
         geojson_features.append(geojson)
     return FeatureCollection(geojson_features)

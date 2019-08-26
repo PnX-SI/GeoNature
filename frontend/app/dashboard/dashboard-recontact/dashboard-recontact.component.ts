@@ -62,7 +62,7 @@ export class DashboardRecontactComponent implements OnInit {
   }
 
   // Gestion du formulaire 
-  speciesForm: FormGroup;
+  recontactForm: FormGroup;
   @Input() distinctYears: any;
 
   // Pouvoir stoppper le chargement des données si un changement de filtre est opéré avant la fin du chargement
@@ -72,7 +72,7 @@ export class DashboardRecontactComponent implements OnInit {
 
   constructor(public dataService: DataService, public fb: FormBuilder) {
     // Déclaration du formulaire contenant les filtres du pie chart
-    this.speciesForm = fb.group({
+    this.recontactForm = fb.group({
       selectedYear: fb.control(null)
     });
   }
@@ -80,9 +80,9 @@ export class DashboardRecontactComponent implements OnInit {
   ngOnInit() {
     this.spinner = true;
     // Par défaut, le pie chart s'affiche sur l'année en court
-    this.speciesForm.controls["selectedYear"].setValue(this.distinctYears[this.distinctYears.length - 1]);
+    this.recontactForm.controls["selectedYear"].setValue(this.distinctYears[this.distinctYears.length - 1]);
     // Accès aux données de synthèse
-    this.subscription = this.dataService.getDataRecontact(this.speciesForm.value.selectedYear).subscribe(
+    this.subscription = this.dataService.getDataRecontact(this.recontactForm.value.selectedYear).subscribe(
       (data) => {
         // Remplissage de l'array des données à afficher, paramètre du line chart
         data.forEach(
@@ -103,7 +103,7 @@ export class DashboardRecontactComponent implements OnInit {
     // Réinitialisation de l'array des données à afficher, paramètre du pie chart
     var pieChartDataTemp = [];
     // Accès aux données de synthèse
-    this.subscription = this.dataService.getDataRecontact(this.speciesForm.value.selectedYear).subscribe(
+    this.subscription = this.dataService.getDataRecontact(this.recontactForm.value.selectedYear).subscribe(
       (data) => {
         // Remplissage de l'array des données à afficher, paramètre du line chart
         data.forEach(

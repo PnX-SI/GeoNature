@@ -132,25 +132,25 @@ export class DashboardTaxonomyComponent implements OnInit {
 
   ngOnInit() {
     this.spinner = true;
+    // Par défaut, le pie chart s'affiche au niveau du règne
+    this.pieChartForm.controls["selectedFilter"].setValue(this.currentTaxLevel);
     // Initialisation de l'array des labels, paramètre du pie chart
     this.pieChartLabels = this.taxonomies[this.currentTaxLevel];
-    // Accès aux données de synthèse de la BDD GeoNature (par défaut le pie chart s'affiche au niveau du règne)
+    // Accès aux données de la VM vm_synthese
     this.subscription = this.dataService
       .getDataSynthesePerTaxLevel(this.currentTaxLevel)
       .subscribe(data => {
-        console.log(data);
-        //Remplissage de l'array des données, paramètre du pie chart
+        // Remplissage de l'array des données à afficher, paramètre du pie chart
         data.forEach(elt => {
           this.pieChartData.push(elt[1]);
         });
         this.chart.chart.update();
         this.spinner = false;
       });
-    this.pieChartForm.controls["selectedFilter"].setValue(this.currentTaxLevel);
   }
 
   ngOnChanges(change) {
-    // Récupération des années min et max présentes dans les données de synthèse de la BDD GeoNature
+    // Récupération des années min et max présentes dans la synthèse de GeoNature
     if (change.yearsMinMax && change.yearsMinMax.currentValue != undefined) {
       this.yearRange = change.yearsMinMax.currentValue;
     }
@@ -158,23 +158,19 @@ export class DashboardTaxonomyComponent implements OnInit {
 
   // Rafraichissement des données en fonction des filtres renseignés par l'utilisateur
   getCurrentParameters(event) {
-    console.log(event)
     this.subscription.unsubscribe();
     this.spinner = true;
-    // console.log(event);
     // S'il s'agit d'un changement de rang taxonomique : réinitialisation de l'array de la légende
     if (event.target) {
-      this.pieChartLabels = this.taxonomies[event.target.value];
       this.currentTaxLevel = event.target.value;
-      console.log(this.pieChartLabels);
+      this.pieChartLabels = this.taxonomies[this.currentTaxLevel];
     }
     // Réinitialisation de l'array des données à afficher, paramètre du pie chart
     var pieChartDataTemp = [];
-    // Accès aux données de synthèse de la BDD GeoNature
+    // Accès aux données de la VM vm_synthese
     this.subscription = this.dataService
       .getDataSynthesePerTaxLevel(this.currentTaxLevel, this.pieChartForm.value)
       .subscribe(data => {
-        console.log(data);
         // Remplissage de l'array des données, en tenant compte du fait qu'il peut n'y avoir aucune observation pour certains taxons
         const dataLength = data.length;
         var start = 0;
@@ -195,7 +191,6 @@ export class DashboardTaxonomyComponent implements OnInit {
         });
         this.pieChartData = pieChartDataTemp;
         this.spinner = false;
-        console.log(this.pieChartData);
       });
   }
 }

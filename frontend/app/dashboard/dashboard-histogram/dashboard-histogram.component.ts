@@ -20,8 +20,6 @@ export class DashboardHistogramComponent implements OnInit {
   public barChartType = 'bar';
   // Tableau contenant les labels du graphe
   public barChartLabels = [];
-  // Pouvoir enregistrer le tableau des labels au chargement du composant lorsqu'aucun filtre n'est sélectionné (accélérer l'affichage des données par la suite)
-  public noFilterBarChartLabels = [];
   // Tableau contenant les données du graphe
   public barChartData = [
     { data: [], label: "Nombre d'observations", yAxisID: 'yAxisObs' },
@@ -126,7 +124,7 @@ export class DashboardHistogramComponent implements OnInit {
     // Accès aux données de la VM vm_synthese
     this.subscription = this.dataService.getDataSynthese().subscribe(
       (data) => {
-        // Remplissage des array des labels et des données à afficher, paramètres du bar chart
+        // Remplissage des array des labels et des données à afficher, paramètres de l'histogramme
         data.forEach(
           (elt) => {
             this.barChartLabels.push(elt[0]);
@@ -136,7 +134,6 @@ export class DashboardHistogramComponent implements OnInit {
         );
         this.chart.chart.update();
         // Enregistrement des données "sans filtre" pour pouvoir les afficher plus rapidement par la suite
-        this.noFilterBarChartLabels = this.barChartLabels;
         this.noFilterBarChartData = this.barChartData;
         this.spinner = false;
       }
@@ -185,7 +182,7 @@ export class DashboardHistogramComponent implements OnInit {
     }
     //// Sinon...
     else {
-      // Réinitialisation de l'array des données à afficher, paramètre du bar chart
+      // Réinitialisation de l'array des données à afficher, paramètre de l'histogramme
       var barChartDataTemp = [
         { data: [], label: "Nombre d'observations", yAxisID: 'yAxisObs' },
         { data: [], label: "Nombre de taxons", yAxisID: 'yAxisTax' }
@@ -193,7 +190,7 @@ export class DashboardHistogramComponent implements OnInit {
       // Accès aux données de la VM vm_synthese 
       this.subscription = this.dataService.getDataSynthese(this.histForm.value).subscribe(
         (data) => {
-          // Remplissage de l'array des données en tenant compte du fait qu'il peut n'y avoir aucune observation pour certaines années 
+          // Remplissage de l'array des données, en tenant compte du fait qu'il peut n'y avoir aucune observation pour certaines années 
           const dataLength = data.length;
           var start = 0;
           this.barChartLabels.forEach(
