@@ -21,16 +21,20 @@ import { DataService } from "../services/data.services";
   styleUrls: ["./dashboard-maps.component.scss"],
   providers: [MapService]
 })
-export class DashboardMapsComponent
-  implements OnInit, OnChanges, AfterViewInit {
-  public background: Array<any>;
-  public myCommunes: Array<any>;
-  public subscription: any;
+export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit {
+
+  // Tableau contenant la géométrie et les données des zonages
+  public myAreas: Array<any>;
+  // Fonction permettant d'afficher les zonages sur la carte (leaflet)
   public showData: Function;
+  // Bornes pour la représentation en nombre d'observations
+  public gradesObs = ModuleConfig.BORNE_OBS;
+  // Bornes pour la représentation en nombre de taxons
+  public gradesTax = ModuleConfig.BORNE_TAXON;
+  // Couleurs de bordure des zonages
   public initialBorderColor = "rgb(255, 255, 255)";
   public selectedBorderColor = "rgb(50, 50, 50)";
-  public gradesObs = ModuleConfig.BORNE_OBS;
-  public gradesTax = ModuleConfig.BORNE_TAXON;
+  // Couleurs de remplissage des zonages pour la représentation en nombre d'observations
   public obsColors: { [nbClasses: string]: any } = {
     2: ["#BE8096", "#64112E"],
     3: ["#D4AAB9", "#89173F", "#320917"],
@@ -80,6 +84,7 @@ export class DashboardMapsComponent
       "#0D0306"
     ]
   };
+  // Couleurs de remplissage des zonages pour la représentation en nombre de taxons
   public taxColors: { [nbClasses: string]: any } = {
     2: ["#8AB2B2", "#1E5454"],
     3: ["#B1CCCC", "#297373", "#0F2A2A"],
@@ -129,32 +134,47 @@ export class DashboardMapsComponent
       "#040B0B"
     ]
   };
+  // Encart pour la légende de la carte
   public legend: any;
+  // Légende pour la représentation en nombre d'observations
   public divLegendObs: any;
+  // Légende pour la représentation en nombre de taxons
   public divLegendTax: any;
-  public introLegend = "Placez la souris sur une commune";
-  public currentMap: any;
-  public currentCommune: any;
+  // Chaîne de caractères permettant de gérer le contenu de la légende dynamiquement
+  public introLegend = "Placez la souris sur un zonage";
+  // Stocker le type de représentation qui a été sélectionné en dernier #1 nb d'observations #2 nb de taxons
+  public currentMap = 1 // par défaut, la carte affiche automatiquement le nombre d'observations
+  // Stocker le nom du zonage sur lequel la souris est posée
+  public currentArea: any;
+  // Stocker le nb d'observations du zonage sur lequel la souris est posée
   public currentNbObs: any;
+  // Stocker le nb de taxons du zonage sur lequel la souris est posée
   public currentNbTax: any;
+  // Stocker le cd_ref du taxon qui a été sélectionné en dernier
+  public currentCdRef: any;
 
+  // Gestion du formulaire général
   mapForm: FormGroup;
-  public filter: any;
   @Input() taxonomies: any;
   @Input() yearsMinMax: any;
   public yearRange = [0, 2019];
-  public currentCdRef: any;
   public filtersDict: any;
-  public spinner = false;
-  public spinnerInit = true;
+  public filter: any;
   public disabledTaxButton = false;
   public tabAreasTypes: Array<any>;
-  public areaTypeControl = new FormControl();
-  public currentTypeCode = "COM";
 
-  public taxonApiEndPoint = `${
-    AppConfig.API_ENDPOINT
-    }/synthese/taxons_autocomplete`;
+  // Gestion du formulaire contrôlant le type de zonage
+  public areaTypeControl = new FormControl();
+  public currentTypeCode = "COM"; // par défaut, la carte s'affiche automatiquement en mode "communes"
+
+  // Pouvoir stoppper le chargement des données si un changement de filtre est opéré avant la fin du chargement
+  public subscription: any;
+  // Gestion du spinner 
+  public spinner = false;
+  public spinnerInit = true;
+
+  // Récupérer la liste des taxons existants dans la BDD pour permettre la recherche de taxon (pnx-taxonomy)
+  public taxonApiEndPoint = `${AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
 
   constructor(
     public dataService: DataService,
@@ -163,7 +183,6 @@ export class DashboardMapsComponent
   ) {
     // Déclaration du formulaire contenant les filtres de la carte
     this.mapForm = fb.group({
-      // nbClasses: fb.control(null),
       selectedYearRange: fb.control(this.yearRange),
       selectedFilter: fb.control(null),
       selectedRegne: fb.control(null),
@@ -176,8 +195,8 @@ export class DashboardMapsComponent
       taxon: fb.control(null)
     });
 
-    // Initialisation des variables formant la légende
-    //// Légende concernant le nombre d'observations
+    //// Initialisation des variables formant la légende
+    // Légende concernant le nombre d'observations
     this.divLegendObs = L.DomUtil.create("div", "divLegend");
     this.divLegendObs.innerHTML += "<b>Nombre d'observations</b><br/>";
     var nb_classes = this.gradesObs.length;
@@ -191,7 +210,7 @@ export class DashboardMapsComponent
           ? "&ndash;" + (this.gradesObs[i + 1] - 1) + "<br>"
           : "+");
     }
-    //// Légende concernant le nombre de taxons
+    // Légende concernant le nombre de taxons
     this.divLegendTax = L.DomUtil.create("div", "divLegend");
     this.divLegendTax.innerHTML += "<b>Nombre de taxons</b><br/>";
     var nb_classes = this.gradesTax.length;
@@ -209,47 +228,46 @@ export class DashboardMapsComponent
 
   ngOnInit() {
     this.spinner = true;
-    // Initialisation de la fonction "showData" (au chargement de la page, la carte affiche automatiquement le nombre d'observations)
-    this.showData = this.onEachFeatureNbObs;
-    // Accès aux données de synthèse de la BDD GeoNature
+    // Accès aux données de synthèse
     this.subscription = this.dataService
-      .getDataAreas("COM")
+      .getDataAreas(this.currentTypeCode)
       .subscribe(data => {
-        // console.log(data);
-        this.myCommunes = data;
-        this.background = data;
+        // Initialisation du tableau contenant la géométrie et les données des zonages : par défaut, la carte s'affiche automatiquement en mode "communes"
+        this.myAreas = data;
         this.spinner = false;
         this.spinnerInit = false;
       });
-    console.log(this.mapForm.value.selectedYearRange);
-    // Initialisation de la variable currentMap (au chargement de la page, la carte affiche automatiquement le nombre d'observations)
-    this.currentMap = 1; // Permet d'afficher les informations de légende associées au nombre d'observations
-    // Liste déroulante des areas_types
+    // Initialisation de la fonction "showData" : par défaut, la carte affiche automatiquement le nombre d'observations
+    this.showData = this.onEachFeatureNbObs;
+    // Par défaut, la carte s'affiche en mode "communes"
+    this.areaTypeControl.patchValue("COM");
+    // Récupération des noms de type_area qui seront contenus dans la liste déroulante du formulaire areaTypeControl
     this.dataService.getAreasTypes(ModuleConfig.AREA_TYPE).subscribe(data => {
+      // Création de la liste déroulante
       this.tabAreasTypes = data;
     });
-    this.areaTypeControl.patchValue("COM");
+    // Abonnement à la liste déroulante du formulaire areaTypeControl afin de modifier le type de zonage à chaque changement
     this.areaTypeControl.valueChanges.subscribe(value => {
-      console.log(this.mapForm.value);
       this.currentTypeCode = value;
+      // Accès aux données de synthèse
       this.dataService
         .getDataAreas(this.currentTypeCode, this.mapForm.value)
         .subscribe(data => {
-          this.myCommunes = data;
-          this.background = data;
+          // Rafraichissement du tableau contenant la géométrie et les données des zonages
+          this.myAreas = data;
         });
     });
   }
 
   ngOnChanges(change) {
-    // Récupération des années min et max présentes dans les données de synthèse de la BDD GeoNature
+    // Récupération des années min et max présentes dans la synthèse de GeoNature
     if (change.yearsMinMax && change.yearsMinMax.currentValue != undefined) {
       this.yearRange = change.yearsMinMax.currentValue;
     }
   }
 
   ngAfterViewInit() {
-    // Implémentation de la légende (au chargement de la page, la carte affiche automatiquement le nombre d'observations)
+    // Implémentation de la légende : par défaut, la carte affiche automatiquement le nombre d'observations
     this.legend = (L as any).control({ position: "bottomright" });
     this.legend.onAdd = map => {
       return this.divLegendObs;
@@ -257,9 +275,9 @@ export class DashboardMapsComponent
     this.legend.addTo(this.mapService.map);
   }
 
-  // Afficher les données relatives au nombre de taxons
+  // Afficher les données, configurations et légende relatives au nombre de taxons (switcher)
   changeMapToTax() {
-    this.myCommunes = Object.assign({}, this.myCommunes);
+    this.myAreas = Object.assign({}, this.myAreas);
     this.showData = this.onEachFeatureNbTax.bind(this);
     this.mapService.map.removeControl(this.legend);
     this.legend.onAdd = map => {
@@ -269,9 +287,9 @@ export class DashboardMapsComponent
     this.currentMap = 2; // Permet d'afficher les informations de légende associées au nombre de taxons
   }
 
-  // Afficher les données relatives au nombre d'observations
+  // Afficher les données, configurations et légende relatives au nombre d'observations (switcher)
   changeMapToObs() {
-    this.myCommunes = Object.assign({}, this.myCommunes);
+    this.myAreas = Object.assign({}, this.myAreas);
     this.showData = this.onEachFeatureNbObs.bind(this);
     this.mapService.map.removeControl(this.legend);
     this.legend.onAdd = map => {
@@ -294,13 +312,14 @@ export class DashboardMapsComponent
     this.mapForm.controls["selectedOrdre"].reset();
     this.mapForm.controls["selectedFamille"].reset();
     this.mapForm.controls["taxon"].reset();
-    // console.log(this.mapForm.value);
     // Afficher les données d'origine si la valeur vaut ""
     if (this.filter == "") {
+      // Accès aux données de synthèse
       this.dataService
         .getDataAreas(this.currentTypeCode, this.mapForm.value)
         .subscribe(data => {
-          this.myCommunes = data;
+          // Rafraichissement du tableau contenant la géométrie et les données des zonages
+          this.myAreas = data;
         });
     }
   }
@@ -308,13 +327,11 @@ export class DashboardMapsComponent
     this.subscription.unsubscribe();
     this.spinner = true;
     this.disabledTaxButton = false;
-    // console.log(event);
-    // console.log(this.filter);
-    console.log(this.mapForm.value);
     // Copie des éléments du formulaire pour pouvoir y ajouter cd_ref s'il s'agit d'un filtre par taxon
     this.filtersDict = Object.assign({}, this.mapForm.value);
     // S'il s'agit d'une recherche de taxon...
     if (this.filter == "Rechercher un taxon/une espèce...") {
+      // Cas d'une nouvelle recherche de taxon
       if (event.item) {
         // Récupération du cd_ref
         var cd_ref = event.item.cd_ref;
@@ -322,8 +339,10 @@ export class DashboardMapsComponent
         this.currentCdRef = cd_ref;
         // L'affichage de la carte du nombre de taxons n'a pas de sens lorsqu'on a sélectionné un taxon en particulier
         this.changeMapToObs();
-      } else {
-        // Récupération du cd_ref pour un changement de période concernant un taxon
+      }
+      // Cas d'un changement de la période sur le slider
+      else {
+        // Récupération du cd_ref
         var cd_ref = this.currentCdRef;
       }
       // Ajout de cd_ref à la liste des paramètres de la requête
@@ -331,32 +350,17 @@ export class DashboardMapsComponent
       // Impossibilité d'afficher la carte en mode "Nombre de taxons"
       this.disabledTaxButton = true;
     }
-    // console.log(this.filtersDict);
-    // Accès aux données de synthèse de la BDD GeoNature
+    // Accès aux données de synthèse
     this.subscription = this.dataService
       .getDataAreas(this.currentTypeCode, this.filtersDict)
       .subscribe(data => {
-        this.myCommunes = data;
+        // Rafraichissement du tableau contenant la géométrie et les données des zonages
+        this.myAreas = data;
         this.spinner = false;
       });
   }
 
-  // Communes grisées si pas de données concernant une certaine année
-  defineBackground(feature, layer) {
-    layer.setStyle({
-      fillColor: "rgb(150, 150, 150)",
-      color: this.initialBorderColor,
-      fillOpacity: 0.9,
-      weight: 1
-    });
-    layer.on({
-      mouseover: this.highlightFeatureBackground.bind(this),
-      mouseout: this.resetHighlight.bind(this),
-      click: this.zoomToFeature.bind(this)
-    });
-  }
-
-  // Paramètres de la carte relative au nombre d'observations
+  // Configuration de la carte relative au nombre d'observations
   onEachFeatureNbObs(feature, layer) {
     layer.setStyle({
       fillColor: this.getColorObs(feature.properties.nb_obs),
@@ -371,7 +375,7 @@ export class DashboardMapsComponent
     });
   }
 
-  // Paramètres de la carte relative au nombre de taxons
+  // Configuration de la carte relative au nombre de taxons
   onEachFeatureNbTax(feature, layer) {
     layer.setStyle({
       fillColor: this.getColorTax(feature.properties.nb_taxons),
@@ -386,7 +390,7 @@ export class DashboardMapsComponent
     });
   }
 
-  // Couleurs de la carte relative au nombre d'observations
+  // Couleurs de la carte relatives au nombre d'observations
   getColorObs(obs) {
     var nb_classes = this.gradesObs.length;
     for (var i = 1; i < nb_classes; i++) {
@@ -397,7 +401,7 @@ export class DashboardMapsComponent
     return this.obsColors[nb_classes][nb_classes - 1];
   }
 
-  // Couleurs de la carte relative au nombre de taxons
+  // Couleurs de la carte relatives au nombre de taxons
   getColorTax(tax) {
     var nb_classes = this.gradesTax.length;
     for (var i = 1; i < nb_classes; i++) {
@@ -408,7 +412,7 @@ export class DashboardMapsComponent
     return this.taxColors[nb_classes][nb_classes - 1];
   }
 
-  // Changer l'aspect de la commune lorsque la souris passe dessus
+  // Changer l'aspect du zonage lorsque la souris passe dessus
   highlightFeature(e) {
     const layer = e.target;
     layer.setStyle({
@@ -418,7 +422,7 @@ export class DashboardMapsComponent
     });
     layer.bringToFront();
     this.introLegend = null;
-    this.currentCommune = layer.feature.geometry.properties.area_name;
+    this.currentArea = layer.feature.geometry.properties.area_name;
     if (this.currentMap == 1) {
       this.currentNbObs =
         "Nombre d'observations : " + layer.feature.geometry.properties.nb_obs;
@@ -428,29 +432,11 @@ export class DashboardMapsComponent
     }
   }
 
-  // Changer l'aspect de la commune lorsque la souris passe dessus
-  highlightFeatureBackground(e) {
-    const layer = e.target;
-    layer.setStyle({
-      color: this.selectedBorderColor,
-      weight: 5,
-      fillOpacity: 1
-    });
-    layer.bringToFront();
-    this.introLegend = null;
-    this.currentCommune = layer.feature.geometry.properties.area_name;
-    if (this.currentMap == 1) {
-      this.currentNbObs = "Nombre d'observations : 0";
-    } else if (this.currentMap == 2) {
-      this.currentNbTax = "Nombre de taxons : 0";
-    }
-  }
-
-  // Réinitialiser l'aspect de la commune lorsque la souris n'est plus dessus
+  // Réinitialiser l'aspect du zonage lorsque la souris n'est plus dessus
   resetHighlight(e) {
     const layer = e.target;
-    this.introLegend = "Placez la souris sur une commune";
-    this.currentCommune = null;
+    this.introLegend = "Placez la souris sur un zonage";
+    this.currentArea = null;
     this.currentNbObs = null;
     this.currentNbTax = null;
     layer.setStyle({
@@ -460,7 +446,7 @@ export class DashboardMapsComponent
     });
   }
 
-  // Zoomer sur une commune en cliquant dessus
+  // Zoomer sur un zonage en cliquant dessus
   zoomToFeature(e) {
     this.mapService.map.fitBounds(e.target.getBounds());
   }

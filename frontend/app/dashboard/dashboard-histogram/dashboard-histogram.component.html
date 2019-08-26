@@ -1,6 +1,7 @@
 <div class="row row-sm">
 
     <div class="col-md-2 padding-sm">
+
         <div class="card" style="height:100%">
             <h3 class="card-header" style="text-align:center; color:white">
                 <div class="row row-md">
@@ -13,8 +14,8 @@
                     </div>
                 </div>
             </h3>
-            <div class="card-body">
 
+            <div class="card-body">
                 <div id="filters">
                     <form [formGroup]="histForm">
                         <div class="form-group">
@@ -124,12 +125,13 @@
                 <div style="text-align: center">
                     <div class="spinner-border text-secondary m-5" role="status" *ngIf="spinner"></div>
                 </div>
-
             </div>
         </div>
+
     </div>
 
     <div class="col-md-10 padding-sm">
+
         <div class="row row-md">
             <div class="card-absolute">
                 <em class="fa fa-lg fa-info-circle" style="padding-right: 0.2rem" aria-hidden="true"></em>
@@ -142,6 +144,7 @@
                     taxon.</small>
             </div>
         </div>
+
         <div class="row row-md">
             <div class="col-md-12" *ngIf="currentTaxon===''">
                 <h5 style="color: #757575; padding-left: 0.6rem; text-shadow: 0 0 15px rgba(50, 50, 50, 0.2);">
@@ -152,11 +155,13 @@
                     <b>Nombres d'observations et de taxons pour <i>{{ currentTaxon }}</i></b></h5>
             </div>
         </div>
+
         <div style="display: block">
             <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
                 [colors]="barChartColors" [legend]="barChartLegend" [chartType]="barChartType">
             </canvas>
         </div>
+
     </div>
 
 </div>

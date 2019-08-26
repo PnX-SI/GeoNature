@@ -3,18 +3,18 @@
     <div class="col-md-8 padding-sm">
         <div class="card-absolute">
             <h5><em class="fa fa-lg fa-question-circle" style="padding-right: 0.2rem" aria-hidden="true"
-                    *ngIf="introLegend==='Placez la souris sur une commune'"></em> {{ introLegend }} </h5>
+                    *ngIf="introLegend==='Placez la souris sur un zonage'"></em> {{ introLegend }} </h5>
             <h5><b>
                     <p><em class="fa fa-md fa-map-pin" style="padding-right: 0.2rem; color: rgb(191,24,24)"
-                            aria-hidden="true" *ngIf="introLegend!='Placez la souris sur une commune'"></em>
-                        {{ currentCommune }} </p>
+                            aria-hidden="true" *ngIf="introLegend!='Placez la souris sur un zonage'"></em>
+                        {{ currentArea }} </p>
                 </b></h5>
             <p> {{ currentNbObs }} </p>
             <p> {{ currentNbTax }} </p>
         </div>
         <pnx-map height="80vh">
             <!-- <pnx-geojson [geojson]="background" [onEachFeature]="defineBackground.bind(this)"></pnx-geojson> -->
-            <pnx-geojson [geojson]="myCommunes" [onEachFeature]="showData.bind(this)"></pnx-geojson>
+            <pnx-geojson [geojson]="myAreas" [onEachFeature]="showData.bind(this)"></pnx-geojson>
         </pnx-map>
     </div>
 

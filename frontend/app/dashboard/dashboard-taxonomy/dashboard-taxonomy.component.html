@@ -1,6 +1,7 @@
 <div class="row row-sm">
 
     <div class="col-md-2 padding-sm">
+
         <div class="card" style="height:100%">
             <h3 class="card-header" style="text-align:center; color:white">
                 <div class="row row-md">
@@ -13,8 +14,8 @@
                     </div>
                 </div>
             </h3>
-            <div class="card-body">
 
+            <div class="card-body">
                 <div id="filters">
                     <form [formGroup]="pieChartForm">
                         <div class="form-group">
@@ -48,9 +49,11 @@
                 </div>
             </div>
         </div>
+
     </div>
 
     <div class="col-md-10 padding-sm">
+
         <div class="row row-md">
             <div class="card-absolute">
                 <em class="fa fa-lg fa-question-circle" style="padding-right: 0.2rem" aria-hidden="true"></em>
@@ -60,11 +63,13 @@
                     disparaître/réapparaître et actualiser le graphe.</small>
             </div>
         </div>
+
         <div style="display: block">
             <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
                 [colors]="pieChartColors" [options]="pieChartOptions">
             </canvas>
         </div>
+
     </div>
 
 </div>
