@@ -60,7 +60,11 @@ def get_area_stat(type_code):
             [
                 func.count(Synthese.id_synthese),
                 LAreas.area_name,
-                func.st_asgeojson(func.st_transform(LAreas.geom, 4326)),
+                func.st_asgeojson(
+                    func.st_transform(
+                        func.st_simplifypreservetopology(LAreas.geom, 50), 4326
+                    )
+                ),
                 func.count(distinct(Taxref.cd_ref)),
             ]
         )
@@ -76,14 +80,9 @@ def get_area_stat(type_code):
         .group_by(LAreas.area_name, LAreas.geom)
     )
     if "selectedYearRange" in params:
-        q = q.where(
-            func.date_part("year", Synthese.date_min)
-            <= params["selectedYearRange"][5:9]
-        )
-        q = q.where(
-            func.date_part("year", Synthese.date_max)
-            >= params["selectedYearRange"][0:4]
-        )
+        yearRange = params["selectedYearRange"].split(",")
+        q = q.where(func.date_part("year", Synthese.date_min) <= yearRange[1])
+        q = q.where(func.date_part("year", Synthese.date_max) >= yearRange[0])
     if ("selectedRegne" in params) and (params["selectedRegne"] != ""):
         q = q.where(Taxref.regne == params["selectedRegne"])
     if ("selectedPhylum" in params) and (params["selectedPhylum"] != ""):
@@ -172,14 +171,9 @@ def get_synthese_per_tax_level_stat(taxLevel):
             .order_by(VSynthese.group2_inpn)
         )
     if "selectedYearRange" in params:
-        q = q.filter(
-            func.date_part("year", VSynthese.date_min)
-            <= params["selectedYearRange"][5:9]
-        )
-        q = q.filter(
-            func.date_part("year", VSynthese.date_max)
-            >= params["selectedYearRange"][0:4]
-        )
+        yearRange = params["selectedYearRange"].split(",")
+        q = q.filter(func.date_part("year", VSynthese.date_min) <= yearRange[1])
+        q = q.filter(func.date_part("year", VSynthese.date_max) >= yearRange[0])
     return q.all()
 
 

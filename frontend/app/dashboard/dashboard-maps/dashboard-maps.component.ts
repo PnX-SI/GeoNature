@@ -221,6 +221,7 @@ export class DashboardMapsComponent
         this.spinner = false;
         this.spinnerInit = false;
       });
+    console.log(this.mapForm.value.selectedYearRange);
     // Initialisation de la variable currentMap (au chargement de la page, la carte affiche automatiquement le nombre d'observations)
     this.currentMap = 1; // Permet d'afficher les informations de légende associées au nombre d'observations
     // Liste déroulante des areas_types
@@ -229,6 +230,7 @@ export class DashboardMapsComponent
     });
     this.areaTypeControl.patchValue("COM");
     this.areaTypeControl.valueChanges.subscribe(value => {
+      console.log(this.mapForm.value);
       this.currentTypeCode = value;
       this.dataService
         .getDataAreas(this.currentTypeCode, this.mapForm.value)
@@ -308,7 +310,7 @@ export class DashboardMapsComponent
     this.disabledTaxButton = false;
     // console.log(event);
     // console.log(this.filter);
-    // console.log(this.mapForm.value);
+    console.log(this.mapForm.value);
     // Copie des éléments du formulaire pour pouvoir y ajouter cd_ref s'il s'agit d'un filtre par taxon
     this.filtersDict = Object.assign({}, this.mapForm.value);
     // S'il s'agit d'une recherche de taxon...
