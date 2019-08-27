@@ -181,7 +181,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     public fb: FormBuilder,
     public mapService: MapService
   ) {
-    // Déclaration du formulaire contenant les filtres de la carte
+    // Déclaration du formulaire général contenant les filtres de la carte
     this.mapForm = fb.group({
       selectedYearRange: fb.control(this.yearRange),
       selectedFilter: fb.control(null),
@@ -275,7 +275,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     this.legend.addTo(this.mapService.map);
   }
 
-  // Afficher les données, configurations et légende relatives au nombre de taxons (switcher)
+  // Afficher les données, configurations (couleurs) et légende relatives au nombre de taxons (switcher)
   changeMapToTax() {
     this.myAreas = Object.assign({}, this.myAreas);
     this.showData = this.onEachFeatureNbTax.bind(this);
@@ -287,7 +287,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     this.currentMap = 2; // Permet d'afficher les informations de légende associées au nombre de taxons
   }
 
-  // Afficher les données, configurations et légende relatives au nombre d'observations (switcher)
+  // Afficher les données, configurations (couleurs) et légende relatives au nombre d'observations (switcher)
   changeMapToObs() {
     this.myAreas = Object.assign({}, this.myAreas);
     this.showData = this.onEachFeatureNbObs.bind(this);
@@ -390,7 +390,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     });
   }
 
-  // Couleurs de la carte relatives au nombre d'observations
+  // Couleurs de la carte relative au nombre d'observations
   getColorObs(obs) {
     var nb_classes = this.gradesObs.length;
     for (var i = 1; i < nb_classes; i++) {
@@ -401,7 +401,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     return this.obsColors[nb_classes][nb_classes - 1];
   }
 
-  // Couleurs de la carte relatives au nombre de taxons
+  // Couleurs de la carte relative au nombre de taxons
   getColorTax(tax) {
     var nb_classes = this.gradesTax.length;
     for (var i = 1; i < nb_classes; i++) {

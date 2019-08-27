@@ -53,62 +53,56 @@ def get_synthese_stat():
 # Obtenir le nombre d'observations et le nombre de taxons pour chaque zonage avec une échelle donnée (type_code)
 @blueprint.route("/areas/<type_code>", methods=["GET"])
 @json_resp
-def get_area_stat(type_code):
+def get_areas_stat(type_code):
     params = request.args
-    q = (
-        select(
-            [
-                LAreas.id_area,
-                LAreas.area_name,
-                func.st_asgeojson(
-                    func.st_transform(
-                        func.st_simplifypreservetopology(LAreas.geom, 50), 4326
-                    )
-                ),
-                func.count(Synthese.id_synthese),
-                func.count(distinct(Taxref.cd_ref)),
-            ]
-        )
-        .select_from(
-            Synthese.__table__.join(
-                CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese
-            )
-            .join(LAreas, LAreas.id_area == CorAreaSynthese.id_area)
-            .join(BibAreasTypes, LAreas.id_type == BibAreasTypes.id_type)
-            .join(Taxref, Taxref.cd_nom == Synthese.cd_nom)
-        )
-        .where(BibAreasTypes.type_code == type_code)
-        .group_by(LAreas.id_area)
-    )
+    x = """ """
     if "selectedYearRange" in params:
         yearRange = params["selectedYearRange"].split(",")
-        q = q.where(func.date_part("year", Synthese.date_min) <= yearRange[1])
-        q = q.where(func.date_part("year", Synthese.date_max) >= yearRange[0])
+        x = (
+            x
+            + """ AND date_part('year', s.date_min) <= """
+            + yearRange[1]
+            + """ AND date_part('year', s.date_max) >= """
+            + yearRange[0]
+        )
     if ("selectedRegne" in params) and (params["selectedRegne"] != ""):
-        q = q.where(Taxref.regne == params["selectedRegne"])
+        x = x + """AND t.regne = '""" + params["selectedRegne"] + """' """
     if ("selectedPhylum" in params) and (params["selectedPhylum"] != ""):
-        q = q.where(Taxref.phylum == params["selectedPhylum"])
+        x = x + """AND t.phylum = '""" + params["selectedPhylum"] + """' """
     if ("selectedClasse") in params and (params["selectedClasse"] != ""):
-        q = q.where(Taxref.classe == params["selectedClasse"])
+        x = x + """AND t.classe = '""" + params["selectedClasse"] + """' """
     if ("selectedOrdre") in params and (params["selectedOrdre"] != ""):
-        q = q.where(Taxref.ordre == params["selectedOrdre"])
+        x = x + """AND t.ordre = '""" + params["selectedOrdre"] + """' """
     if ("selectedFamille") in params and (params["selectedFamille"] != ""):
-        q = q.where(Taxref.famille == params["selectedFamille"])
+        x = x + """AND t.famille = '""" + params["selectedFamille"] + """' """
     if ("taxon") in params and (params["taxon"] != ""):
-        q = q.where(Taxref.cd_ref == params["taxon"])
+        x = x + """AND t.cd_ref = """ + params["taxon"] + """ """
     if ("selectedGroup1INPN") in params and (params["selectedGroup1INPN"] != ""):
-        q = q.where(Taxref.group1_inpn == params["selectedGroup1INPN"])
+        x = x + """AND t.group1_inpn = '""" + params["selectedGroup1INPN"] + """' """
     if ("selectedGroup2INPN") in params and (params["selectedGroup2INPN"] != ""):
-        q = q.where(Taxref.group2_inpn == params["selectedGroup2INPN"])
-    data = DB.engine.execute(q)
+        x = x + """AND t.group2_inpn = '""" + params["selectedGroup2INPN"] + """' """
+    q = text(
+        """ WITH count AS
+            (SELECT cor.id_area, count(distinct cor.id_synthese) as nb_obs, count(distinct t.cd_ref) as nb_tax
+            FROM gn_synthese.cor_area_synthese cor
+            JOIN gn_synthese.synthese s ON s.id_synthese=cor.id_synthese
+            JOIN taxonomie.taxref t ON s.cd_nom=t.cd_nom
+            WHERE cor.id_area IN (SELECT id_area FROM ref_geo.l_areas WHERE id_type = ref_geo.get_id_area_type(:code)) """
+        + x
+        + """ GROUP BY cor.id_area)
+        SELECT a.area_name, st_asgeojson(st_transform(st_simplifyPreserveTopology(a.geom, 50), 4326)), c.nb_obs, c.nb_tax
+        FROM ref_geo.l_areas a
+        JOIN count c ON a.id_area = c.id_area """
+    )
+    data = DB.engine.execute(q, code=type_code)
 
     geojson_features = []
     for elt in data:
-        geojson = json.loads(elt[2])
+        geojson = json.loads(elt[1])
         properties = {
-            "area_name": elt[1],
-            "nb_obs": int(elt[3]),
-            "nb_taxons": int(elt[4]),
+            "area_name": elt[0],
+            "nb_obs": int(elt[2]),
+            "nb_taxons": int(elt[3]),
         }
         geojson["properties"] = properties
         geojson_features.append(geojson)
@@ -197,7 +191,7 @@ def get_frameworks_stat():
 @blueprint.route("/recontact/<year>", methods=["GET"])
 @json_resp
 def get_recontact_stat(year):
-    sql = text(
+    q = text(
         """ WITH recontactees AS
                 (SELECT DISTINCT cd_ref FROM gn_synthese.synthese s JOIN taxonomie.taxref t ON t.cd_nom=s.cd_nom WHERE date_part('year', date_min) < :selectedYear
                 INTERSECT
@@ -217,8 +211,8 @@ def get_recontact_stat(year):
             UNION ALL
             SELECT count(cd_ref) FROM nouvelles """
     )
-    q = DB.engine.execute(sql, selectedYear=year)
-    return [elt[0] for elt in q]
+    data = DB.engine.execute(q, selectedYear=year)
+    return [elt[0] for elt in data]
 
 
 # Obtenir la liste des taxons observés pour un rang taxonomique donné
