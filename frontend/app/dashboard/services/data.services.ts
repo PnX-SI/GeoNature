@@ -19,7 +19,7 @@ export class DataService {
         return this.httpClient.get<any>(AppConfig.API_ENDPOINT + "/" + ModuleConfig.MODULE_URL + "/synthese", { params: queryString })
     }
 
-    getDataAreas(type_code, params?) {
+    getDataAreas(simplify_level, type_code, params?) {
         let queryString = new HttpParams();
         if (params) {
             for (const key in params) {
@@ -28,7 +28,7 @@ export class DataService {
                 }
             }
         }
-        return this.httpClient.get<any>(AppConfig.API_ENDPOINT + "/" + ModuleConfig.MODULE_URL + "/areas/" + type_code, { params: queryString })
+        return this.httpClient.get<any>(AppConfig.API_ENDPOINT + "/" + ModuleConfig.MODULE_URL + "/areas/" + simplify_level + "/" + type_code, { params: queryString })
     }
 
     getDataSynthesePerTaxLevel(taxLevel, params?) {

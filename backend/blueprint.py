@@ -51,10 +51,11 @@ def get_synthese_stat():
 
 
 # Obtenir le nombre d'observations et le nombre de taxons pour chaque zonage avec une échelle donnée (type_code)
-@blueprint.route("/areas/<type_code>", methods=["GET"])
+@blueprint.route("/areas/<simplify_level>/<type_code>", methods=["GET"])
 @json_resp
-def get_areas_stat(type_code):
+def get_areas_stat(simplify_level, type_code):
     params = request.args
+    # x : Variable contenant les conditions WHERE à ajouter à la requête générale
     x = """ """
     if "selectedYearRange" in params:
         yearRange = params["selectedYearRange"].split(",")
@@ -81,6 +82,7 @@ def get_areas_stat(type_code):
         x = x + """AND t.group1_inpn = '""" + params["selectedGroup1INPN"] + """' """
     if ("selectedGroup2INPN") in params and (params["selectedGroup2INPN"] != ""):
         x = x + """AND t.group2_inpn = '""" + params["selectedGroup2INPN"] + """' """
+    # q : Requête générale
     q = text(
         """ WITH count AS
             (SELECT cor.id_area, count(distinct cor.id_synthese) as nb_obs, count(distinct t.cd_ref) as nb_tax
@@ -90,11 +92,11 @@ def get_areas_stat(type_code):
             WHERE cor.id_area IN (SELECT id_area FROM ref_geo.l_areas WHERE id_type = ref_geo.get_id_area_type(:code)) """
         + x
         + """ GROUP BY cor.id_area)
-        SELECT a.area_name, st_asgeojson(st_transform(st_simplifyPreserveTopology(a.geom, 50), 4326)), c.nb_obs, c.nb_tax
+        SELECT a.area_name, st_asgeojson(st_transform(st_simplifyPreserveTopology(a.geom, :level), 4326)), c.nb_obs, c.nb_tax
         FROM ref_geo.l_areas a
         JOIN count c ON a.id_area = c.id_area """
     )
-    data = DB.engine.execute(q, code=type_code)
+    data = DB.engine.execute(q, level=simplify_level, code=type_code)
 
     geojson_features = []
     for elt in data:

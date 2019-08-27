@@ -11,4 +11,5 @@ class GnModuleSchemaConf(Schema):
     AREA_TYPE = fields.List(fields.String(), missing=["COM", "M1", "M5", "M10"])
     BORNE_OBS = fields.List(fields.Integer(), missing=[1, 20, 40, 60, 80, 100, 120])
     BORNE_TAXON = fields.List(fields.Integer(), missing=[1, 5, 10, 15])
+    SIMPLIFY_LEVEL = fields.Integer(missing=50)
 

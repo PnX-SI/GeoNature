@@ -27,6 +27,8 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   public myAreas: Array<any>;
   // Fonction permettant d'afficher les zonages sur la carte (leaflet)
   public showData: Function;
+  // Degré de simplication des zonages
+  public simplifyLevel = ModuleConfig.SIMPLIFY_LEVEL;
   // Bornes pour la représentation en nombre d'observations
   public gradesObs = ModuleConfig.BORNE_OBS;
   // Bornes pour la représentation en nombre de taxons
@@ -227,10 +229,11 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   }
 
   ngOnInit() {
+    console.log(this.simplifyLevel);
     this.spinner = true;
     // Accès aux données de synthèse
     this.subscription = this.dataService
-      .getDataAreas(this.currentTypeCode)
+      .getDataAreas(this.simplifyLevel, this.currentTypeCode)
       .subscribe(data => {
         // Initialisation du tableau contenant la géométrie et les données des zonages : par défaut, la carte s'affiche automatiquement en mode "communes"
         this.myAreas = data;
@@ -251,7 +254,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
       this.currentTypeCode = value;
       // Accès aux données de synthèse
       this.dataService
-        .getDataAreas(this.currentTypeCode, this.mapForm.value)
+        .getDataAreas(this.simplifyLevel, this.currentTypeCode, this.mapForm.value)
         .subscribe(data => {
           // Rafraichissement du tableau contenant la géométrie et les données des zonages
           this.myAreas = data;
@@ -316,7 +319,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     if (this.filter == "") {
       // Accès aux données de synthèse
       this.dataService
-        .getDataAreas(this.currentTypeCode, this.mapForm.value)
+        .getDataAreas(this.simplifyLevel, this.currentTypeCode, this.mapForm.value)
         .subscribe(data => {
           // Rafraichissement du tableau contenant la géométrie et les données des zonages
           this.myAreas = data;
@@ -352,7 +355,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     }
     // Accès aux données de synthèse
     this.subscription = this.dataService
-      .getDataAreas(this.currentTypeCode, this.filtersDict)
+      .getDataAreas(this.simplifyLevel, this.currentTypeCode, this.filtersDict)
       .subscribe(data => {
         // Rafraichissement du tableau contenant la géométrie et les données des zonages
         this.myAreas = data;
