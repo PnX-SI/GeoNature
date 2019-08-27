@@ -68,7 +68,7 @@ export class DashboardRecontactComponent implements OnInit {
   // Pouvoir stoppper le chargement des données si un changement de filtre est opéré avant la fin du chargement
   public subscription: any;
   // Gestion du spinner
-  public spinner = false;
+  public spinner = true;
 
   constructor(public dataService: DataService, public fb: FormBuilder) {
     // Déclaration du formulaire contenant les filtres du pie chart
@@ -78,7 +78,6 @@ export class DashboardRecontactComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.spinner = true;
     // Par défaut, le pie chart s'affiche sur l'année en court
     this.recontactForm.controls["selectedYear"].setValue(this.distinctYears[this.distinctYears.length - 1]);
     // Accès aux données de synthèse

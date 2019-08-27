@@ -1,6 +1,7 @@
 <div class="row row-sm">
 
     <div class="col-md-8 padding-sm">
+
         <div class="card-absolute">
             <h5><em class="fa fa-lg fa-question-circle" style="padding-right: 0.2rem" aria-hidden="true"
                     *ngIf="introLegend==='Placez la souris sur un zonage'"></em> {{ introLegend }} </h5>
@@ -12,13 +13,15 @@
             <p> {{ currentNbObs }} </p>
             <p> {{ currentNbTax }} </p>
         </div>
+
         <pnx-map height="80vh">
-            <!-- <pnx-geojson [geojson]="background" [onEachFeature]="defineBackground.bind(this)"></pnx-geojson> -->
             <pnx-geojson [geojson]="myAreas" [onEachFeature]="showData.bind(this)"></pnx-geojson>
         </pnx-map>
+
     </div>
 
     <div class="col-md-4 padding-sm">
+
         <div class="card" style="height:100%">
             <h3 class="card-header" style="text-align:center; color:white">
                 <div class="row row-md">
@@ -31,34 +34,25 @@
                     </div>
                 </div>
             </h3>
-            <div class="card-body">
 
+            <div class="card-body">
                 <div id="buttons">
                     <div class="row row-sm">
                         <div class="col-md-6 padding-sm">
-                            <button class="btn btn-block btn-bordeaux" (click)="changeMapToObs()" *ngIf="!spinnerInit">
-                                <B>Nombre d'observations</B>
-                                <em class="fa fa-md fa-eye" style="padding-left: 0.2rem" aria-hidden="true"></em>
-                            </button>
-                            <button class="btn btn-block btn-bordeaux" area-disabled="true" *ngIf="spinnerInit"
-                                disabled>
+                            <button class="btn btn-block btn-bordeaux" (click)="changeMapToObs()" [disabled]="spinner">
                                 <B>Nombre d'observations</B>
                                 <em class="fa fa-md fa-eye" style="padding-left: 0.2rem" aria-hidden="true"></em>
                             </button>
                         </div>
                         <div class="col-md-6 padding-sm">
-                            <button class="btn btn-block btn-water" (click)="changeMapToTax()"
-                                *ngIf="!disabledTaxButton && !spinnerInit"> <B>Nombre de taxons</B>
-                                <em class="fa fa-md fa-paw" style="padding-left: 0.2rem" aria-hidden="true"></em>
-                            </button>
                             <button class="btn btn-block btn-water" area-disabled="true"
-                                *ngIf="disabledTaxButton || spinnerInit" disabled> <B>Nombre de taxons</B>
+                                [disabled]="disabledTaxButton || spinner"> <B>Nombre de taxons</B>
                                 <em class="fa fa-md fa-paw" style="padding-left: 0.2rem" aria-hidden="true"></em>
                             </button>
                         </div>
                     </div><br />
-                    <div class=" row row-sm">
-                        <select class="form-control" [formControl]="areaTypeControl">
+                    <div class="row row-sm">
+                        <select class="form-control" [formControl]="areaTypeControl" [disabled]="spinner">
                             <option [ngValue]="area_type.type_code" *ngFor="let area_type of tabAreasTypes">
                                 {{ area_type.type_name }} </option>
                         </select>
@@ -74,14 +68,8 @@
                                     <nouislider class="nouislider" [connect]="true" [tooltips]="true"
                                         [min]="yearRange[0]" [max]="yearRange[1]" [step]="1"
                                         [formControl]="mapForm.controls.selectedYearRange"
-                                        (change)="getCurrentParameters($event)"
-                                        *ngIf="!spinnerInit && yearRange[0]!=yearRange[1]"></nouislider>
-                                </div>
-                                <div class="col-md-11">
-                                    <nouislider class="nouislider" [connect]="true" [tooltips]="true"
-                                        [min]="yearRange[0]" [max]="yearRange[1]" [step]="1" [disabled]="true"
-                                        [formControl]="mapForm.controls.selectedYearRange"
-                                        *ngIf="spinnerInit && yearRange[0]!=yearRange[1]">
+                                        (change)="getCurrentParameters($event)" [disabled]="spinner"
+                                        *ngIf="yearRange[0]!=yearRange[1]">
                                     </nouislider>
                                 </div>
                             </div>
@@ -89,9 +77,8 @@
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <label class="col-form-label"><b> Rang taxonomique </b></label>
-                                <select class="form-control form-control-sm" [disableControl]="disabled"
-                                    formControlName="selectedFilter" (change)="onTaxFilterChange($event)"
-                                    *ngIf="!spinnerInit">
+                                <select class="form-control form-control-sm" formControlName="selectedFilter"
+                                    (change)="onTaxFilterChange($event)" [disabled]="spinner">
                                     <option> </option>
                                     <option> Groupe INPN 1 </option>
                                     <option> Groupe INPN 2 </option>
@@ -102,14 +89,11 @@
                                     <option> Famille </option>
                                     <option> Rechercher un taxon/une espèce... </option>
                                 </select>
-                                <select class="form-control form-control-sm" formControlName="selectedFilter"
-                                    (change)="onTaxFilterChange($event)" *ngIf="spinnerInit" disabled>
-                                </select>
                             </div>
                             <div class="col-md-6" id="group1_inpn_filter" *ngIf="filter === 'Groupe INPN 1'">
                                 <label class="col-form-label"> Groupe INPN 1 </label>
                                 <select class="form-control form-control-sm" formControlName="selectedGroup1INPN"
-                                    (change)="getCurrentParameters($event)">
+                                    (change)="getCurrentParameters($event)" [disabled]="spinner">
                                     <option> </option>
                                     <ng-container *ngFor="let group1_inpn of taxonomies['Groupe INPN 1']">
                                         <option [ngValue]="group1_inpn" *ngIf="group1_inpn != 'Not defined'">
@@ -120,7 +104,7 @@
                             <div class="col-md-6" id="group2_inpn_filter" *ngIf="filter === 'Groupe INPN 2'">
                                 <label class="col-form-label"> Groupe INPN 2 </label>
                                 <select class="form-control form-control-sm" formControlName="selectedGroup2INPN"
-                                    (change)="getCurrentParameters($event)">
+                                    (change)="getCurrentParameters($event)" [disabled]="spinner">
                                     <option> </option>
                                     <ng-container *ngFor="let group2_inpn of taxonomies['Groupe INPN 2']">
                                         <option [ngValue]="group2_inpn" *ngIf="group2_inpn != 'Not defined'">
@@ -131,7 +115,7 @@
                             <div class="col-md-6" id="regne_filter" *ngIf="filter === 'Règne'">
                                 <label class="col-form-label"> Règne </label>
                                 <select class="form-control form-control-sm" formControlName="selectedRegne"
-                                    (change)="getCurrentParameters($event)">
+                                    (change)="getCurrentParameters($event)" [disabled]="spinner">
                                     <option> </option>
                                     <ng-container *ngFor="let regne of taxonomies['Règne']">
                                         <option [ngValue]="regne" *ngIf="regne != 'Not defined'"> {{ regne }}
@@ -142,7 +126,7 @@
                             <div class="col-md-6" id="phylum_filter" *ngIf="filter === 'Phylum'">
                                 <label class="col-form-label"> Phylum </label>
                                 <select class="form-control form-control-sm" formControlName="selectedPhylum"
-                                    (change)="getCurrentParameters($event)">
+                                    (change)="getCurrentParameters($event)" [disabled]="spinner">
                                     <option> </option>
                                     <ng-container *ngFor="let phylum of taxonomies['Phylum']">
                                         <option [ngValue]="phylum" *ngIf="phylum != 'Not defined'"> {{ phylum }}
@@ -153,7 +137,7 @@
                             <div class="col-md-6" id="classe_filter" *ngIf="filter === 'Classe'">
                                 <label class="col-form-label"> Classe </label>
                                 <select class="form-control form-control-sm" formControlName="selectedClasse"
-                                    (change)="getCurrentParameters($event)">
+                                    (change)="getCurrentParameters($event)" [disabled]="spinner">
                                     <option> </option>
                                     <ng-container *ngFor="let classe of taxonomies['Classe']">
                                         <option [ngValue]="classe" *ngIf="classe != 'Not defined'"> {{ classe }}
@@ -164,7 +148,7 @@
                             <div class="col-md-6" id="ordre_filter" *ngIf="filter === 'Ordre'">
                                 <label class="col-form-label"> Ordre </label>
                                 <select class="form-control form-control-sm" formControlName="selectedOrdre"
-                                    (change)="getCurrentParameters($event)">
+                                    (change)="getCurrentParameters($event)" [disabled]="spinner">
                                     <option> </option>
                                     <ng-container *ngFor="let ordre of taxonomies['Ordre']">
                                         <option [ngValue]="ordre" *ngIf="ordre != 'Not defined'"> {{ ordre }}
@@ -175,7 +159,7 @@
                             <div class="col-md-6" id="famille_filter" *ngIf="filter === 'Famille'">
                                 <label class="col-form-label"> Famille </label>
                                 <select class="form-control form-control-sm" formControlName="selectedFamille"
-                                    (change)="getCurrentParameters($event)">
+                                    (change)="getCurrentParameters($event)" [disabled]="spinner">
                                     <option> </option>
                                     <ng-container *ngFor="let famille of taxonomies['Famille']">
                                         <option [ngValue]="famille" *ngIf="famille != 'Not defined'"> {{ famille }}
@@ -200,11 +184,11 @@
                 </div>
 
                 <div style="text-align: center">
-                    <div class="spinner-border text-secondary m-5" role="status" *ngIf="spinner || spinnerInit"></div>
+                    <div class="spinner-border text-secondary m-5" role="status" *ngIf="spinner"></div>
                 </div>
-
             </div>
         </div>
+
     </div>
 
 </div>

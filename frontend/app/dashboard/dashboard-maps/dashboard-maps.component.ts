@@ -172,8 +172,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   // Pouvoir stoppper le chargement des données si un changement de filtre est opéré avant la fin du chargement
   public subscription: any;
   // Gestion du spinner 
-  public spinner = false;
-  public spinnerInit = true;
+  public spinner = true;
 
   // Récupérer la liste des taxons existants dans la BDD pour permettre la recherche de taxon (pnx-taxonomy)
   public taxonApiEndPoint = `${AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
@@ -229,8 +228,6 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   }
 
   ngOnInit() {
-    console.log(this.simplifyLevel);
-    this.spinner = true;
     // Accès aux données de synthèse
     this.subscription = this.dataService
       .getDataAreas(this.simplifyLevel, this.currentTypeCode)
@@ -238,7 +235,6 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
         // Initialisation du tableau contenant la géométrie et les données des zonages : par défaut, la carte s'affiche automatiquement en mode "communes"
         this.myAreas = data;
         this.spinner = false;
-        this.spinnerInit = false;
       });
     // Initialisation de la fonction "showData" : par défaut, la carte affiche automatiquement le nombre d'observations
     this.showData = this.onEachFeatureNbObs;
@@ -251,6 +247,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     });
     // Abonnement à la liste déroulante du formulaire areaTypeControl afin de modifier le type de zonage à chaque changement
     this.areaTypeControl.valueChanges.subscribe(value => {
+      this.spinner = true;
       this.currentTypeCode = value;
       // Accès aux données de synthèse
       this.dataService
@@ -258,6 +255,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
         .subscribe(data => {
           // Rafraichissement du tableau contenant la géométrie et les données des zonages
           this.myAreas = data;
+          this.spinner = false;
         });
     });
   }

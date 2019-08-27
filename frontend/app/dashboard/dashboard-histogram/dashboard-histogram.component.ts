@@ -99,7 +99,7 @@ export class DashboardHistogramComponent implements OnInit {
   // Pouvoir stoppper le chargement des données si un changement de filtre est opéré avant la fin du chargement
   public subscription: any;
   // Gestion du spinner
-  public spinner = false;
+  public spinner = true;
 
   // Récupérer la liste des taxons existants dans la BDD pour permettre la recherche de taxon (pnx-taxonomy)
   public taxonApiEndPoint = `${AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
@@ -120,7 +120,6 @@ export class DashboardHistogramComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.spinner = true;
     // Accès aux données de la VM vm_synthese
     this.subscription = this.dataService.getDataSynthese().subscribe(
       (data) => {

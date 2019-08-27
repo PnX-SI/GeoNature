@@ -120,7 +120,7 @@ export class DashboardTaxonomyComponent implements OnInit {
   // Pouvoir stoppper le chargement des données si un changement de filtre est opéré avant la fin du chargement
   public subscription: any;
   // Gestion du spinner  
-  public spinner = false;
+  public spinner = true;
 
   constructor(public dataService: DataService, public fb: FormBuilder) {
     // Déclaration du formulaire contenant les filtres du pie chart
@@ -131,7 +131,6 @@ export class DashboardTaxonomyComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.spinner = true;
     // Par défaut, le pie chart s'affiche au niveau du règne
     this.pieChartForm.controls["selectedFilter"].setValue(this.currentTaxLevel);
     // Initialisation de l'array des labels, paramètre du pie chart

@@ -178,12 +178,11 @@ export class DashboardFrameworksComponent implements OnInit {
   // Tableau permettant de contenir les données transmises par l'API une fois reformatées
   public adjustedData = [];
   // Gestion du spinner
-  public spinner = false;
+  public spinner = true;
 
   constructor(public dataService: DataService, public fb: FormBuilder) { }
 
   ngOnInit() {
-    this.spinner = true;
     // Accès aux années distinctes présentes dans la BDD GeoNature
     this.dataService.getYears("distinct").subscribe(
       (data) => {
