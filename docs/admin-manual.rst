@@ -48,11 +48,11 @@ Modèle simplifié de la BDD (2017-12-15) :
 
 .. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2017-12-15-GN2-MCD-simplifie.jpg
 
-Dernière version complète de la base de données (2018-03-19), à mettre à jour : 
+Dernière version complète de la base de données (GeoNature 2.1 / 2019-08) : 
 
-.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2018-03-19-GN2-MCD.png
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2019-08-GN2.1-MCD.png
 
-Désolé pour les relations complexes entre tables...
+Les relations complexes entre les schémas ont été masquées pour faciliter la lisibilité.
 
 Gestion des droits :
 """"""""""""""""""""
