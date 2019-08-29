@@ -8,6 +8,30 @@ SET default_with_oids = false;
 -------------
 --FUNCTIONS--
 -------------
+CREATE FUNCTION v1_florestation.etiquette_utm(mongeom public.geometry) RETURNS character
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+monx char(6);
+mony char(7);
+monetiquette char(24);
+BEGIN
+-- on prend le centroid du géom comme ça la fonction marchera avec tous les objets point ligne ou polygon
+-- si la longitude en WGS84 degré decimal est < à 6 degrés on est en zone UTM 31
+IF public.st_x(public.st_transform(public.st_centroid(mongeom),4326))< 6 then
+	monx = CAST(public.st_x(public.st_transform(public.st_centroid(mongeom),32631)) AS integer)as string;
+	mony = CAST(public.st_y(public.st_transform(public.st_centroid(mongeom),32631)) AS integer)as string;
+	monetiquette = 'UTM31 x:'|| monx || ' y:' || mony;
+ELSE
+	-- sinon on est en zone UTM 32
+	monx = CAST(public.st_x(public.st_transform(public.st_centroid(mongeom),32632)) AS integer)as string;
+	mony = CAST(public.st_y(public.st_transform(public.st_centroid(mongeom),32632)) AS integer)as string;
+	monetiquette = 'UTM32 x:'|| monx || ' y:' || mony;
+END IF;
+RETURN monetiquette;
+END;
+$$;
+
 CREATE FUNCTION v1_florestation.application_rang_sp(id integer) RETURNS integer
     LANGUAGE plpgsql
     AS $$
@@ -681,70 +705,9 @@ CREATE OR REPLACE VIEW v1_florestation.v_export_fs_all AS
   WHERE s.supprime = false AND cft.supprime = false
   ORDER BY s.dateobs;
 
-
---FUNCTIONS--
-CREATE FUNCTION v1_florestation.application_rang_sp(id integer) RETURNS integer
-    LANGUAGE plpgsql
-    AS $$
---fonction permettant de renvoyer le cd_ref au rang espèce d'une sous-espèce, une variété ou une convariété à partir de son cd_nom
---si le cd_nom passé est d'un rang espèce ou supérieur (genre, famille...), la fonction renvoie le cd_ref du même rang que le cd_nom passé en entré
---
---Gil DELUERMOZ septembre 2011
-  DECLARE
-  rang character(4);
-  rangsup character(4);
-  ref integer;
-  sup integer;
-  BEGIN
-	SELECT INTO rang id_rang FROM taxonomie.taxref WHERE cd_nom = id;
-	IF(rang='SSES' OR rang = 'VAR' OR rang = 'CVAR') THEN
-	    IF(rang = 'SSES') THEN
-		SELECT INTO ref cd_taxsup FROM taxonomie.taxref WHERE cd_nom = id;
-	    END IF;
-	    
-	    IF(rang = 'VAR' OR rang = 'CVAR') THEN
-		SELECT INTO sup cd_taxsup FROM taxonomie.taxref WHERE cd_nom = id;
-		SELECT INTO rangsup id_rang FROM taxonomie.taxref WHERE cd_nom = sup;
-		IF(rangsup = 'ES') THEN
-			SELECT INTO ref cd_ref FROM taxonomie.taxref WHERE cd_nom = sup;
-		END IF;
-		IF(rangsup = 'SSES') THEN
-			SELECT INTO ref cd_taxsup FROM taxonomie.taxref WHERE cd_nom = sup;
-		END IF;
-	    END IF;
-	ELSE
-	   SELECT INTO ref cd_ref FROM taxonomie.taxref WHERE cd_nom = id;
-	END IF;
-	return ref;
-  END;
-$$;
-
-CREATE FUNCTION v1_florestation.etiquette_utm(mongeom public.geometry) RETURNS character
-    LANGUAGE plpgsql
-    AS $$
-DECLARE
-monx char(6);
-mony char(7);
-monetiquette char(24);
-BEGIN
--- on prend le centroid du géom comme ça la fonction marchera avec tous les objets point ligne ou polygon
--- si la longitude en WGS84 degré decimal est < à 6 degrés on est en zone UTM 31
-IF public.st_x(public.st_transform(public.st_centroid(mongeom),4326))< 6 then
-	monx = CAST(public.st_x(public.st_transform(public.st_centroid(mongeom),32631)) AS integer)as string;
-	mony = CAST(public.st_y(public.st_transform(public.st_centroid(mongeom),32631)) AS integer)as string;
-	monetiquette = 'UTM31 x:'|| monx || ' y:' || mony;
-ELSE
-	-- sinon on est en zone UTM 32
-	monx = CAST(public.st_x(public.st_transform(public.st_centroid(mongeom),32632)) AS integer)as string;
-	mony = CAST(public.st_y(public.st_transform(public.st_centroid(mongeom),32632)) AS integer)as string;
-	monetiquette = 'UTM32 x:'|| monx || ' y:' || mony;
-END IF;
-RETURN monetiquette;
-END;
-$$;
-
-
+---------------------
 --FUNCTIONS TRIGGER--
+---------------------
 CREATE OR REPLACE FUNCTION v1_florestation.delete_synthese_cor_fs_taxon() RETURNS trigger
     LANGUAGE plpgsql
     AS $$

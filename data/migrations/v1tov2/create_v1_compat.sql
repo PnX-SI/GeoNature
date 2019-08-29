@@ -1,10 +1,7 @@
 DROP SCHEMA IF EXISTS v1_compat CASCADE ;
-DROP SCHEMA IF EXISTS gn_synchronomade CASCADE ;
 
 CREATE SCHEMA v1_compat;
 COMMENT ON SCHEMA v1_compat IS 'schéma contenant des objets permettant une compatibilité temporaire avec les outils mobiles de la V1';
-CREATE SCHEMA gn_synchronomade;
-COMMENT ON SCHEMA gn_synchronomade IS 'schéma contenant les erreurs de synchronisation et permettant une compatibilité temporaire avec les outils mobiles de la V1';
 
 --On importe ici les schémas V1 meta et synthese pour faire les correspondances nécessaires
 IMPORT FOREIGN SCHEMA synthese FROM SERVER geonature1server INTO v1_compat;

@@ -1602,6 +1602,7 @@ ALTER TABLE v1_florepatri.t_apresence ALTER COLUMN unique_id_sinp_fp SET NOT NUL
 ALTER TABLE v1_florepatri.t_apresence ALTER COLUMN unique_id_sinp_fp SET DEFAULT public.uuid_generate_v4();
 
 -- Convertion d'un multipoint en point
+-- Erreur dans le script mais pas d'erreur si exécuté hors du script !
 UPDATE v1_florepatri.t_apresence SET 
   the_geom_local = (SELECT (public.st_dump(the_geom_local)).geom FROM v1_florepatri.t_apresence WHERE indexap = 406197584),
   the_geom_3857 = (SELECT (public.st_dump(the_geom_3857)).geom FROM v1_florepatri.t_apresence WHERE indexap = 406197584)
