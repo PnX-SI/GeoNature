@@ -14,6 +14,12 @@ SET client_min_messages = warning;
 
 SET search_path = v1_florepatri, pg_catalog;
 
+SET default_with_oids = false;
+
+
+-------------
+--FUNCTIONS--
+-------------
 CREATE OR REPLACE FUNCTION letypedegeom(mongeom public.geometry)
   RETURNS character varying AS
 $BODY$
@@ -37,8 +43,10 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
-SET default_with_oids = false;
 
+----------
+--TABLES--
+----------
 CREATE TABLE bib_comptages_methodo (
     id_comptage_methodo integer NOT NULL,
     nom_comptage_methodo character varying(100)
@@ -188,6 +196,10 @@ CREATE TABLE t_zprospection (
     CONSTRAINT enforce_srid_the_geom_3857 CHECK ((public.st_srid(the_geom_3857) = 3857))
 );
 
+
+---------
+--VIEWS--
+---------
 CREATE VIEW v_ap_line AS
  SELECT a.indexap,
     a.indexzp,
@@ -553,6 +565,7 @@ CREATE VIEW v_toutesleszp_sridlocal AS
   GROUP BY zp.indexzp, zp.dateobs, t.latin, zp.taxon_saisi, o.observateurs, zp.the_geom_local, zp.insee, com.nom_com, org.nom_organisme, zp.topo_valid, zp.validation, zp.saisie_initiale, zp.srid_dessin
   ORDER BY zp.indexzp;
 
+
 ----------------
 --PRIMARY KEYS--
 ----------------
@@ -620,7 +633,6 @@ CREATE INDEX index_gist_t_zprospection_geom_mixte_3857 ON t_zprospection USING g
 ----------------
 --FOREIGN KEYS--
 ----------------
-
 ALTER TABLE ONLY bib_taxons_fp
     ADD CONSTRAINT bib_taxons_fp_cd_nom_fkey FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
 
@@ -1314,6 +1326,7 @@ BEGIN
       count_min = new.total_steriles + new.total_fertiles,
       count_max = new.total_steriles + new.total_fertiles,
       comment_description = new.remarques,
+      meta_update_date = now(),
       last_action = 'u',
       the_geom_4326 = public.ST_transform(new.the_geom_3857,4326),
       the_geom_local = new.the_geom_local,
@@ -1367,6 +1380,7 @@ BEGIN
           id_nomenclature_valid_status = thevalidationstatus,
           date_min = new.dateobs,
           date_max = new.dateobs,
+          meta_update_date = now(),
           last_action = 'u'
         WHERE id_source = (SELECT id_source FROM gn_synthese.t_sources WHERE name_source ILIKE 'Flore prioritaire') 
         AND entity_source_pk_value = CAST(mesap.indexap AS VARCHAR);

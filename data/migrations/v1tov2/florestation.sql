@@ -8,7 +8,7 @@ SET default_with_oids = false;
 -------------
 --FUNCTIONS--
 -------------
-CREATE FUNCTION application_rang_sp(id integer) RETURNS integer
+CREATE FUNCTION v1_florestation.application_rang_sp(id integer) RETURNS integer
     LANGUAGE plpgsql
     AS $$
 --fonction permettant de renvoyer le cd_ref au rang espèce d'une sous-espèce, une variété ou une convariété à partir de son cd_nom
@@ -44,7 +44,7 @@ CREATE FUNCTION application_rang_sp(id integer) RETURNS integer
   END;
 $$;
 
-CREATE OR REPLACE FUNCTION application_aggregate_taxons_rang_sp(id integer)
+CREATE OR REPLACE FUNCTION v1_florestation.application_aggregate_taxons_rang_sp(id integer)
   RETURNS text AS
 $BODY$
 --fonction permettant de regroupper dans un tableau tous les cd_nom d'une espèce et de ces sous espèces, variétés et convariétés à partir du cd_nom d'un taxon
@@ -88,7 +88,7 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
-  CREATE OR REPLACE FUNCTION application_aggregate_taxons_all_rang_sp(id integer)
+CREATE OR REPLACE FUNCTION v1_florestation.application_aggregate_taxons_all_rang_sp(id integer)
   RETURNS text AS
 $BODY$
 --fonction permettant de regroupper dans un tableau au rang espèce tous les cd_nom d'une espèce et de ces sous espèces, variétés et convariétés à partir du cd_nom d'un taxon
@@ -147,7 +147,7 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
-CREATE OR REPLACE FUNCTION application_find_cdref_rang_sp(id integer)
+CREATE OR REPLACE FUNCTION v1_florestation.application_find_cdref_rang_sp(id integer)
   RETURNS integer AS
 $BODY$
 --fonction permettant de renvoyer le cd_ref au rang espèce d'une sous-espèce, une variété ou une convariété à partir de son cd_nom
@@ -186,7 +186,7 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
-CREATE OR REPLACE FUNCTION application_find_lbnom_ref(id integer)
+CREATE OR REPLACE FUNCTION v1_florestation.application_find_lbnom_ref(id integer)
   RETURNS integer AS
 $BODY$
 --fonction permettant de renvoyer le lb_nom du taxon de référence d'un taxon synonyme à partir de son cd_nom
@@ -205,7 +205,7 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
-CREATE OR REPLACE FUNCTION application_find_nomcomplet_ref(id integer)
+CREATE OR REPLACE FUNCTION v1_florestation.application_find_nomcomplet_ref(id integer)
   RETURNS integer AS
 $BODY$
 --fonction permettant de renvoyer le nom_complet du taxon de référence d'un taxon synonyme à partir de son cd_nom
@@ -224,7 +224,7 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
-CREATE OR REPLACE FUNCTION application_nobs2obs(
+CREATE OR REPLACE FUNCTION v1_florestation.application_nobs2obs(
     ids integer[],
     rang integer)
   RETURNS integer AS
@@ -241,7 +241,7 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
-CREATE OR REPLACE FUNCTION application_strate2abondance(frequence character)
+CREATE OR REPLACE FUNCTION v1_florestation.application_strate2abondance(frequence character)
   RETURNS integer AS
 $BODY$
 --fonction pour la bdf05 permettant de renvoyer le niveau d'abondance des taxons d'un relevé flore station à partir de l'abondance dans les relevés station
@@ -262,7 +262,7 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
-CREATE OR REPLACE FUNCTION application_surfacefs2surface(id integer)
+CREATE OR REPLACE FUNCTION v1_florestation.application_surfacefs2surface(id integer)
   RETURNS integer AS
 $BODY$
 --fonction pour la bdf05 permettant de renvoyer une surface à partir des classes de surface de flore station
@@ -553,6 +553,8 @@ CREATE INDEX index_cd_nom ON v1_florestation.cor_fs_taxon USING btree (cd_nom);
 CREATE INDEX index_gist_t_stations_fs_the_geom_3857 ON v1_florestation.t_stations_fs USING gist (the_geom_3857);
 
 CREATE INDEX index_gist_t_stations_fs_the_geom_local ON v1_florestation.t_stations_fs USING gist (the_geom_local);
+
+CREATE INDEX i_fk_insee_com_li_municipalities ON ref_geo.li_municipalities USING btree (insee_com);
 
 
 --SET UUID FOR SYNTHESE
