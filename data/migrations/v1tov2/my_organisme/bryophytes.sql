@@ -1,4 +1,4 @@
-CREATE SCHEMA old_bryophytes;
+CREATE SCHEMA hist_bryophytes;
 
 
 SET default_tablespace = '';
@@ -7,55 +7,55 @@ SET default_with_oids = false;
 ----------
 --TABLES--
 ----------
-CREATE TABLE old_bryophytes.bib_supports
+CREATE TABLE hist_bryophytes.bib_supports
 (
   id_support integer NOT NULL,
   nom_support character varying(20) NOT NULL
 );
 
-CREATE TABLE old_bryophytes.bib_abondances (
+CREATE TABLE hist_bryophytes.bib_abondances (
     id_abondance character(1) NOT NULL,
     nom_abondance character varying(128) NOT NULL
 );
 
-CREATE TABLE old_bryophytes.bib_expositions (
+CREATE TABLE hist_bryophytes.bib_expositions (
     id_exposition character(2) NOT NULL,
     nom_exposition character varying(10) NOT NULL,
     tri_exposition integer
 );
 
-CREATE TABLE old_bryophytes.cor_bryo_observateur (
+CREATE TABLE hist_bryophytes.cor_bryo_observateur (
     id_role integer NOT NULL,
     id_station bigint NOT NULL
 );
 
-CREATE SEQUENCE old_bryophytes.cor_bryo_taxon_gid_seq
+CREATE SEQUENCE hist_bryophytes.cor_bryo_taxon_gid_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
 
-CREATE TABLE old_bryophytes.cor_bryo_taxon (
+CREATE TABLE hist_bryophytes.cor_bryo_taxon (
     id_station bigint NOT NULL,
     cd_nom integer NOT NULL,
     id_abondance character(1),
     taxon_saisi character varying(255),
     supprime boolean DEFAULT false,
     id_station_cd_nom integer NOT NULL,
-    gid integer DEFAULT nextval('old_bryophytes.cor_bryo_taxon_gid_seq'::regclass) NOT NULL,
+    gid integer DEFAULT nextval('hist_bryophytes.cor_bryo_taxon_gid_seq'::regclass) NOT NULL,
     diffusable boolean DEFAULT true
 );
-CREATE SEQUENCE old_bryophytes.cor_bryo_taxon_id_station_cd_nom_seq
+CREATE SEQUENCE hist_bryophytes.cor_bryo_taxon_id_station_cd_nom_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE old_bryophytes.cor_bryo_taxon_id_station_cd_nom_seq OWNED BY old_bryophytes.cor_bryo_taxon.id_station_cd_nom;
-ALTER TABLE ONLY old_bryophytes.cor_bryo_taxon ALTER COLUMN id_station_cd_nom SET DEFAULT nextval('old_bryophytes.cor_bryo_taxon_id_station_cd_nom_seq'::regclass);
+ALTER SEQUENCE hist_bryophytes.cor_bryo_taxon_id_station_cd_nom_seq OWNED BY hist_bryophytes.cor_bryo_taxon.id_station_cd_nom;
+ALTER TABLE ONLY hist_bryophytes.cor_bryo_taxon ALTER COLUMN id_station_cd_nom SET DEFAULT nextval('hist_bryophytes.cor_bryo_taxon_id_station_cd_nom_seq'::regclass);
 
-CREATE TABLE old_bryophytes.t_stations_bryo (
+CREATE TABLE hist_bryophytes.t_stations_bryo (
     id_station bigint NOT NULL,
     id_exposition character(2) NOT NULL,
     id_support integer NOT NULL,
@@ -86,32 +86,32 @@ CREATE TABLE old_bryophytes.t_stations_bryo (
     CONSTRAINT enforce_srid_the_geom_3857 CHECK ((public.st_srid(the_geom_3857) = 3857)),
     CONSTRAINT enforce_srid_the_geom_local CHECK ((public.st_srid(the_geom_local) = 2154))
 );
-CREATE SEQUENCE old_bryophytes.t_stations_bryo_gid_seq
+CREATE SEQUENCE hist_bryophytes.t_stations_bryo_gid_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE old_bryophytes.t_stations_bryo_gid_seq OWNED BY old_bryophytes.t_stations_bryo.gid;
-ALTER TABLE ONLY old_bryophytes.t_stations_bryo ALTER COLUMN gid SET DEFAULT nextval('old_bryophytes.t_stations_bryo_gid_seq'::regclass);
+ALTER SEQUENCE hist_bryophytes.t_stations_bryo_gid_seq OWNED BY hist_bryophytes.t_stations_bryo.gid;
+ALTER TABLE ONLY hist_bryophytes.t_stations_bryo ALTER COLUMN gid SET DEFAULT nextval('hist_bryophytes.t_stations_bryo_gid_seq'::regclass);
 
 
 ----------------
 --PRIMARY KEYS--
 ----------------
-ALTER TABLE ONLY old_bryophytes.bib_supports
+ALTER TABLE ONLY hist_bryophytes.bib_supports
     ADD CONSTRAINT bib_supports_pkey PRIMARY KEY (id_support);
-ALTER TABLE ONLY old_bryophytes.bib_abondances
+ALTER TABLE ONLY hist_bryophytes.bib_abondances
     ADD CONSTRAINT pk_bib_abondances PRIMARY KEY (id_abondance);
-ALTER TABLE ONLY old_bryophytes.bib_expositions
+ALTER TABLE ONLY hist_bryophytes.bib_expositions
     ADD CONSTRAINT pk_bib_expositions PRIMARY KEY (id_exposition);
-ALTER TABLE ONLY old_bryophytes.cor_bryo_observateur
+ALTER TABLE ONLY hist_bryophytes.cor_bryo_observateur
     ADD CONSTRAINT pk_cor_bryo_observateur PRIMARY KEY (id_role, id_station);
-ALTER TABLE ONLY old_bryophytes.cor_bryo_taxon
+ALTER TABLE ONLY hist_bryophytes.cor_bryo_taxon
     ADD CONSTRAINT pk_cor_bryo_taxons PRIMARY KEY (id_station, cd_nom);
-ALTER TABLE ONLY old_bryophytes.t_stations_bryo
+ALTER TABLE ONLY hist_bryophytes.t_stations_bryo
     ADD CONSTRAINT pk_t_stations_bryo PRIMARY KEY (id_station);
-ALTER TABLE ONLY old_bryophytes.t_stations_bryo
+ALTER TABLE ONLY hist_bryophytes.t_stations_bryo
     ADD CONSTRAINT t_stations_bryo_gid_key UNIQUE (gid);
 
 
@@ -137,60 +137,60 @@ CREATE FOREIGN TABLE v1_compat.bib_expositions_bryo
 SERVER geonature1server
 OPTIONS (schema_name 'bryophytes', table_name 'bib_expositions');
 
-INSERT INTO old_bryophytes.bib_abondances SELECT * FROM v1_compat.bib_abondances_bryo;
-INSERT INTO old_bryophytes.bib_expositions SELECT * FROM v1_compat.bib_expositions_bryo;
-INSERT INTO old_bryophytes.bib_supports SELECT * FROM v1_compat.bib_supports;
-INSERT INTO old_bryophytes.t_stations_bryo SELECT * FROM v1_compat.t_stations_bryo;
-INSERT INTO old_bryophytes.cor_bryo_observateur SELECT * FROM v1_compat.cor_bryo_observateur;
-INSERT INTO old_bryophytes.cor_bryo_taxon SELECT * FROM v1_compat.cor_bryo_taxon;
+INSERT INTO hist_bryophytes.bib_abondances SELECT * FROM v1_compat.bib_abondances_bryo;
+INSERT INTO hist_bryophytes.bib_expositions SELECT * FROM v1_compat.bib_expositions_bryo;
+INSERT INTO hist_bryophytes.bib_supports SELECT * FROM v1_compat.bib_supports;
+INSERT INTO hist_bryophytes.t_stations_bryo SELECT * FROM v1_compat.t_stations_bryo;
+INSERT INTO hist_bryophytes.cor_bryo_observateur SELECT * FROM v1_compat.cor_bryo_observateur;
+INSERT INTO hist_bryophytes.cor_bryo_taxon SELECT * FROM v1_compat.cor_bryo_taxon;
 
 
 ---------
 --INDEX--
 ---------
-CREATE INDEX fki_t_stations_bryo_gid ON old_bryophytes.t_stations_bryo USING btree (gid);
-CREATE INDEX i_fk_t_stations_bryo_bib_exposit ON old_bryophytes.t_stations_bryo USING btree (id_exposition);
-CREATE INDEX index_cd_nom ON old_bryophytes.cor_bryo_taxon USING btree (cd_nom);
-CREATE INDEX index_gist_t_stations_bryo_the_geom_2154 ON old_bryophytes.t_stations_bryo USING gist (the_geom_local);
-CREATE INDEX index_gist_t_stations_bryo_the_geom_3857 ON old_bryophytes.t_stations_bryo USING gist (the_geom_3857);
+CREATE INDEX fki_t_stations_bryo_gid ON hist_bryophytes.t_stations_bryo USING btree (gid);
+CREATE INDEX i_fk_t_stations_bryo_bib_exposit ON hist_bryophytes.t_stations_bryo USING btree (id_exposition);
+CREATE INDEX index_cd_nom ON hist_bryophytes.cor_bryo_taxon USING btree (cd_nom);
+CREATE INDEX index_gist_t_stations_bryo_the_geom_2154 ON hist_bryophytes.t_stations_bryo USING gist (the_geom_local);
+CREATE INDEX index_gist_t_stations_bryo_the_geom_3857 ON hist_bryophytes.t_stations_bryo USING gist (the_geom_3857);
 
 
 ----------------
 --FOREIGN KEYS--
 ----------------
-ALTER TABLE ONLY old_bryophytes.t_stations_bryo
-    ADD CONSTRAINT fk_t_stations_bryo_bib_supports FOREIGN KEY (id_support) REFERENCES old_bryophytes.bib_supports(id_support) ON UPDATE CASCADE;
-ALTER TABLE ONLY old_bryophytes.cor_bryo_observateur
-    ADD CONSTRAINT cor_bryo_observateur_id_station_fkey FOREIGN KEY (id_station) REFERENCES old_bryophytes.t_stations_bryo(id_station) ON UPDATE CASCADE ON DELETE CASCADE;
-ALTER TABLE ONLY old_bryophytes.cor_bryo_taxon
+ALTER TABLE ONLY hist_bryophytes.t_stations_bryo
+    ADD CONSTRAINT fk_t_stations_bryo_bib_supports FOREIGN KEY (id_support) REFERENCES hist_bryophytes.bib_supports(id_support) ON UPDATE CASCADE;
+ALTER TABLE ONLY hist_bryophytes.cor_bryo_observateur
+    ADD CONSTRAINT cor_bryo_observateur_id_station_fkey FOREIGN KEY (id_station) REFERENCES hist_bryophytes.t_stations_bryo(id_station) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY hist_bryophytes.cor_bryo_taxon
     ADD CONSTRAINT cor_bryo_taxons_cd_nom_fkey FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
-ALTER TABLE ONLY old_bryophytes.cor_bryo_taxon
-    ADD CONSTRAINT cor_bryo_taxons_id_abondance_fkey FOREIGN KEY (id_abondance) REFERENCES old_bryophytes.bib_abondances(id_abondance) ON UPDATE CASCADE;
-ALTER TABLE ONLY old_bryophytes.cor_bryo_taxon
-    ADD CONSTRAINT cor_bryo_taxons_id_station_fkey FOREIGN KEY (id_station) REFERENCES old_bryophytes.t_stations_bryo(id_station) ON UPDATE CASCADE;
-ALTER TABLE ONLY old_bryophytes.cor_bryo_observateur
+ALTER TABLE ONLY hist_bryophytes.cor_bryo_taxon
+    ADD CONSTRAINT cor_bryo_taxons_id_abondance_fkey FOREIGN KEY (id_abondance) REFERENCES hist_bryophytes.bib_abondances(id_abondance) ON UPDATE CASCADE;
+ALTER TABLE ONLY hist_bryophytes.cor_bryo_taxon
+    ADD CONSTRAINT cor_bryo_taxons_id_station_fkey FOREIGN KEY (id_station) REFERENCES hist_bryophytes.t_stations_bryo(id_station) ON UPDATE CASCADE;
+ALTER TABLE ONLY hist_bryophytes.cor_bryo_observateur
     ADD CONSTRAINT fk_cor_bryo_observateur_t_roles FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
-ALTER TABLE ONLY old_bryophytes.t_stations_bryo
-    ADD CONSTRAINT fk_t_stations_bryo_bib_expositions FOREIGN KEY (id_exposition) REFERENCES old_bryophytes.bib_expositions(id_exposition) ON UPDATE CASCADE;
-ALTER TABLE ONLY old_bryophytes.t_stations_bryo
+ALTER TABLE ONLY hist_bryophytes.t_stations_bryo
+    ADD CONSTRAINT fk_t_stations_bryo_bib_expositions FOREIGN KEY (id_exposition) REFERENCES hist_bryophytes.bib_expositions(id_exposition) ON UPDATE CASCADE;
+ALTER TABLE ONLY hist_bryophytes.t_stations_bryo
     ADD CONSTRAINT fk_t_stations_bryo_t_datasets FOREIGN KEY (id_lot) REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE;
-ALTER TABLE ONLY old_bryophytes.t_stations_bryo
+ALTER TABLE ONLY hist_bryophytes.t_stations_bryo
     ADD CONSTRAINT fk_t_stations_bryo_bib_organismes FOREIGN KEY (id_organisme) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
-ALTER TABLE ONLY old_bryophytes.t_stations_bryo
+ALTER TABLE ONLY hist_bryophytes.t_stations_bryo
     ADD CONSTRAINT fk_t_stations_bryo_sinp_datatype_protocols FOREIGN KEY (id_protocole) REFERENCES gn_meta.sinp_datatype_protocols(id_protocol) ON UPDATE CASCADE;
 
 -------------------------
 --SET UUID FOR SYNTHESE--
 -------------------------
-ALTER TABLE old_bryophytes.t_stations_bryo ADD COLUMN unique_id_sinp_grp uuid;
-UPDATE old_bryophytes.t_stations_bryo SET unique_id_sinp_grp = uuid_generate_v4();
-ALTER TABLE old_bryophytes.t_stations_bryo ALTER COLUMN unique_id_sinp_grp SET NOT NULL;
-ALTER TABLE old_bryophytes.t_stations_bryo ALTER COLUMN unique_id_sinp_grp SET DEFAULT uuid_generate_v4();
+ALTER TABLE hist_bryophytes.t_stations_bryo ADD COLUMN unique_id_sinp_grp uuid;
+UPDATE hist_bryophytes.t_stations_bryo SET unique_id_sinp_grp = uuid_generate_v4();
+ALTER TABLE hist_bryophytes.t_stations_bryo ALTER COLUMN unique_id_sinp_grp SET NOT NULL;
+ALTER TABLE hist_bryophytes.t_stations_bryo ALTER COLUMN unique_id_sinp_grp SET DEFAULT uuid_generate_v4();
 
-ALTER TABLE old_bryophytes.cor_bryo_taxon ADD COLUMN unique_id_sinp_bryo uuid;
-UPDATE old_bryophytes.cor_bryo_taxon SET unique_id_sinp_bryo = uuid_generate_v4();
-ALTER TABLE old_bryophytes.cor_bryo_taxon ALTER COLUMN unique_id_sinp_bryo SET NOT NULL;
-ALTER TABLE old_bryophytes.cor_bryo_taxon ALTER COLUMN unique_id_sinp_bryo SET DEFAULT uuid_generate_v4();
+ALTER TABLE hist_bryophytes.cor_bryo_taxon ADD COLUMN unique_id_sinp_bryo uuid;
+UPDATE hist_bryophytes.cor_bryo_taxon SET unique_id_sinp_bryo = uuid_generate_v4();
+ALTER TABLE hist_bryophytes.cor_bryo_taxon ALTER COLUMN unique_id_sinp_bryo SET NOT NULL;
+ALTER TABLE hist_bryophytes.cor_bryo_taxon ALTER COLUMN unique_id_sinp_bryo SET DEFAULT uuid_generate_v4();
 
 ------------
 --SYNTHESE--
@@ -280,20 +280,20 @@ INSERT INTO gn_synthese.synthese
          WHEN s.date_insert = s.date_update THEN 'c'
          ELSE 'u'
       END
-    FROM old_bryophytes.t_stations_bryo s
-      JOIN old_bryophytes.cor_bryo_taxon cft ON cft.id_station = s.id_station
+    FROM hist_bryophytes.t_stations_bryo s
+      JOIN hist_bryophytes.cor_bryo_taxon cft ON cft.id_station = s.id_station
       JOIN (
         SELECT c.id_station, array_to_string(array_agg(r.nom_role || ' ' || r.prenom_role), ', ') AS observateurs 
-        FROM old_bryophytes.cor_bryo_observateur c
+        FROM hist_bryophytes.cor_bryo_observateur c
         JOIN utilisateurs.t_roles r ON r.id_role = c.id_role
-        JOIN old_bryophytes.t_stations_bryo s ON s.id_station = c.id_station
+        JOIN hist_bryophytes.t_stations_bryo s ON s.id_station = c.id_station
         GROUP BY c.id_station
       ) o ON o.id_station = s.id_station
     WHERE s.supprime = false AND cft.supprime = false;
 
 INSERT INTO gn_synthese.cor_observer_synthese (id_synthese, id_role)
 SELECT syn.id_synthese, c.id_role
-FROM old_bryophytes.cor_bryo_observateur c 
-JOIN old_bryophytes.cor_bryo_taxon cft ON cft.id_station = c.id_station
+FROM hist_bryophytes.cor_bryo_observateur c 
+JOIN hist_bryophytes.cor_bryo_taxon cft ON cft.id_station = c.id_station
 JOIN gn_synthese.synthese syn ON syn.entity_source_pk_value::integer = cft.gid AND syn.id_source = 106;
 
