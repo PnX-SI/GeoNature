@@ -148,7 +148,11 @@ INSERT INTO pr_occtax.t_occurrences_occtax(
     -- preuve existance: non -- TODO: si presence d'herbier à modifier
     ref_nomenclatures.get_id_nomenclature('PREUVE_EXIST','2') AS id_nomenclature_exist_proof,
     -- prevision diffusion = precise
-    ref_nomenclatures.get_id_nomenclature('NIV_PRECIS','5') AS id_nomenclature_diffusion_level,
+    CASE 
+      WHEN cflore.diffusable = true THEN ref_nomenclatures.get_id_nomenclature('NIV_PRECIS','5') 
+      WHEN cflore.diffusable = false THEN ref_nomenclatures.get_id_nomenclature('NIV_PRECIS','4') 
+      ELSE ref_nomenclatures.get_id_nomenclature('NIV_PRECIS','5') 
+    END AS id_nomenclature_diffusion_level,
     -- statut obs: present
     ref_nomenclatures.get_id_nomenclature('STATUT_OBS','Pr') AS id_nomenclature_observation_status,
     -- floutage: non
