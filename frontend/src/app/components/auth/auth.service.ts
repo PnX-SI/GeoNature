@@ -1,7 +1,5 @@
 import { Router } from '@angular/router';
-//import * as firebase from 'firebase';
 import { Injectable } from '@angular/core';
-import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { HttpClient } from '@angular/common/http';
 import { AppConfig } from '../../../conf/app.config';
 import { CookieService } from 'ng2-cookies';
@@ -20,7 +18,6 @@ export class AuthService {
   authentified = false;
   currentUser: any;
   token: string;
-  toastrConfig: ToastrConfig;
   loginError: boolean;
   public isLoading = false;
   constructor(private router: Router, private _http: HttpClient, private _cookie: CookieService) {}

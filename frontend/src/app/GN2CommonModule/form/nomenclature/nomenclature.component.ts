@@ -67,7 +67,7 @@ export class NomenclatureComponent extends GenericFormComponent
    * Valeur possible: n'importequel attribut de l'objet ``nomenclature`` renvoyé par l'API
    */
   @Input() keyValue;
-  @Input() bindAllItem: false;
+  @Input() bindAllItem = false;
   @Output() labelsLoaded = new EventEmitter<Array<any>>();
 
   constructor(private _dfService: DataFormService, private _translate: TranslateService) {
