@@ -164,5 +164,6 @@
   },
   "MyAccount": "My account",
   "CreateAccount": "Create an account",
-  "ForgotPasswordOrLogin": "Loggin or password forgotten"
+  "ForgotPasswordOrLogin": "Loggin or password forgotten",
+  "AccountEmailConfirmation": "An email has be sent to confirm your account"
 }

@@ -15,10 +15,9 @@ import { NavHomeComponent } from '../components/nav-home/nav-home.component';
 
 const defaultRoutes: Routes = [
   { path: 'login',  component: LoginComponent},
-  // uncomment to activate login
   {% if enable_sign_up %}
-  { path: 'inscription',  component: SignUpComponent, canActivate: [SignUpGuard],},
-  { path: 'new-password',  component: NewPasswordComponent, canActivate: [SignUpGuard],},
+  { path: 'inscription',  component: SignUpComponent, canActivate: [SignUpGuard]},
+  { path: 'new-password',  component: NewPasswordComponent, canActivate: [SignUpGuard]},
   {% endif %}
    { path: '', component: NavHomeComponent, canActivateChild: [AuthGuard],
      children: [

@@ -167,5 +167,6 @@
   },
   "MyAccount": "Mon compte",
   "CreateAccount": "Créer un compte",
-  "ForgotPasswordOrLogin": "Identifiant ou mot de passe oublié ?"
+  "ForgotPasswordOrLogin": "Identifiant ou mot de passe oublié ?",
+  "AccountEmailConfirmation": "Un email vient de vous être envoyé pour activer votre compte"
 }

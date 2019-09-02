@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
 import { AppConfig } from '@geonature_config/app.config';
-import { ToastrService, ToastrConfig } from 'ngx-toastr';
+import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../auth/auth.service';
 import { similarValidator } from '@geonature/services/validators';
+import { CommonService } from '@geonature_common/service/common.service';
 
 @Component({
   selector: 'pnx-signup',
@@ -14,15 +14,46 @@ import { similarValidator } from '@geonature/services/validators';
 })
 export class SignUpComponent implements OnInit {
   form: FormGroup;
+  dynamicFormGroup: FormGroup;
+  public formControlBuilded = false;
+  public FILTERSLIST = [
+    {
+      type_widget: 'nomenclature',
+      attribut_label: 'Type de regroupement',
+      attribut_name: 'id_nomenclature_grp_typ',
+      code_nomenclature_type: 'TYP_GRP',
+      required: false
+    },
+    {
+      type_widget: 'text',
+      attribut_label: 'Preuve non numérique',
+      attribut_name: 'non_digital_proof',
+      required: false
+    },
+    {
+      type_widget: 'text',
+      attribut_label: 'test2',
+      attribut_name: 'test2',
+      required: false
+    },
+    {
+      type_widget: 'checkbox',
+      attribut_label: "J'ai lu et je valide la charte",
+      attribut_name: 'validate_charte',
+      values: ['<a href="https://geonature.readthedocs.io/fr/latest/"> Charte GeoNature </a>'],
+      required: true
+    }
+  ];
 
   constructor(
     private fb: FormBuilder,
     private _authService: AuthService,
     private _router: Router,
-    private _toasterService: ToastrService
+    private _toasterService: ToastrService,
+    private _commonService: CommonService
   ) {
     if (!(AppConfig['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false)) {
-      //this._router.navigate(['/login']);
+      this._router.navigate(['/login']);
     }
   }
 
@@ -44,18 +75,20 @@ export class SignUpComponent implements OnInit {
       remarques: ['', null],
       organisme: ['', null]
     });
+    this.dynamicFormGroup = this.fb.group({});
+    // this.FILTERSLIST.forEach(formDef => {
+    //   this.dynamicFormGroup.addControl(formDef.attribut_name, new FormControl());
+    // });
+    // console.log(this.dynamicFormGroup);
+
+    // this.formControlBuilded = true;
   }
 
   save() {
     if (this.form.valid) {
       this._authService.signupUser(this.form.value).subscribe(
         res => {
-          this._toasterService.info(res.msg, '', {
-            positionClass: 'toast-top-center',
-            tapToDismiss: true,
-            timeOut: 10000
-          });
-          // this._router.navigate(['/inscription']);
+          this._commonService.translateToaster('info', 'AccountEmailConfirmation');
         },
         // error callback
         error => {
