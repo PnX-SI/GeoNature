@@ -16,9 +16,9 @@ export class DynamicFormService {
   createControl(formDef): AbstractControl {
     let abstractForm;
     if (formDef.type_widget === 'checkbox') {
-      abstractForm = formDef.obligatoire
-        ? new FormControl([], Validators.required)
-        : new FormControl([]);
+      abstractForm = formDef.required
+        ? new FormControl(null, Validators.required)
+        : new FormControl(null);
     } else {
       abstractForm = formDef.required
         ? new FormControl(formDef.value || null, Validators.required)

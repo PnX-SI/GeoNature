@@ -19,7 +19,8 @@
 
     <div *ngSwitchCase="'checkbox'">
       <label *ngFor="let val of formDef.values">
-        <input type="checkbox" [name]="formDef.attribut_name" [value]="val" [formControl]="form.controls[formDef.attribut_name]" (change)="onCheckChange($event, form.controls[formDef.attribut_name])">        {{val}}
+        <input type="checkbox" [name]="formDef.attribut_name" [value]="val" [formControl]="form.controls[formDef.attribut_name]" (change)="onCheckChange($event, form.controls[formDef.attribut_name])" > 
+        <span [innerHTML]="val"> </span>
       </label>
     </div>
 
