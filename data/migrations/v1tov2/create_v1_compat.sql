@@ -1,3 +1,6 @@
+INSERT INTO gn_synthese.defaults_nomenclatures_value(mnemonique_type, id_organism,regne, group2_inpn, id_nomenclature)
+VALUES ('SENSIBILITE', 0, 0, 0, ref_nomenclatures.get_id_nomenclature('SENSIBILITE', '0'));
+
 DROP SCHEMA IF EXISTS v1_compat CASCADE ;
 
 CREATE SCHEMA v1_compat;
