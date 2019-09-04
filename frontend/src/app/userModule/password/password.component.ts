@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { AppConfig } from '@geonature_config/app.config';
 import { UserDataService } from '../services/user-data.service';
 import { ToastrService, ToastrConfig } from 'ngx-toastr';
 import { similarValidator } from '@geonature/services/validators';
