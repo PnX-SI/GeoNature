@@ -1,3 +1,33 @@
+-------------
+--FUNCTIONS--
+-------------
+CREATE OR REPLACE FUNCTION insert_maj_date()
+  RETURNS trigger AS
+$BODY$
+BEGIN
+	new.date_insert= 'now';
+	new.date_update= 'now';
+	RETURN NEW; 			
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+CREATE OR REPLACE FUNCTION update_maj_date()
+  RETURNS trigger AS
+$BODY$
+BEGIN
+	new.date_update= 'now';
+	RETURN NEW; 			
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+
+----------------
+--CONTACTFAUNE--
+----------------
 CREATE SCHEMA hist_contactfaune;
 CREATE TABLE hist_contactfaune.bib_criteres_cf AS
 SELECT * FROM v1_compat.bib_criteres_cf;
@@ -24,6 +54,10 @@ ALTER TABLE ONLY hist_contactfaune.cor_unite_taxon ADD CONSTRAINT pk_cor_unite_t
 ALTER TABLE ONLY hist_contactfaune.t_fiches_cf ADD CONSTRAINT pk_t_fiches_cf PRIMARY KEY (id_cf);
 ALTER TABLE ONLY hist_contactfaune.t_releves_cf ADD CONSTRAINT pk_t_releves_cf PRIMARY KEY (id_releve_cf);
 
+
+--------------
+--CONTACTINV--
+--------------
 CREATE SCHEMA hist_contactinv;
 CREATE TABLE hist_contactinv.bib_criteres_inv AS
 SELECT * FROM v1_compat.bib_criteres_inv;
@@ -50,6 +84,10 @@ ALTER TABLE ONLY hist_contactinv.cor_unite_taxon ADD CONSTRAINT pk_cor_unite_tax
 ALTER TABLE ONLY hist_contactinv.t_fiches_inv ADD CONSTRAINT pk_t_fiches_inv PRIMARY KEY (id_inv);
 ALTER TABLE ONLY hist_contactinv.t_releves_inv ADD CONSTRAINT pk_t_releves_inv PRIMARY KEY (id_releve_inv);
 
+
+----------------
+--CONTACTFLORE--
+----------------
 CREATE SCHEMA hist_contactflore;
 CREATE TABLE hist_contactflore.bib_abondances_cflore AS
 SELECT * FROM v1_compat.bib_abondances_cflore;
@@ -76,6 +114,10 @@ ALTER TABLE ONLY hist_contactflore.cor_unite_taxon_cflore ADD CONSTRAINT pk_cor_
 ALTER TABLE ONLY hist_contactflore.t_fiches_cflore ADD CONSTRAINT pk_t_fiches_cflore PRIMARY KEY (id_cflore);
 ALTER TABLE ONLY hist_contactflore.t_releves_cflore ADD CONSTRAINT pk_t_releves_cflore PRIMARY KEY (id_releve_cflore);
 
+
+---------
+--BDF05--
+---------
 IMPORT FOREIGN SCHEMA associations FROM SERVER geonature1server INTO v1_compat;
 CREATE SCHEMA partenaires_bdf05;
 CREATE TABLE partenaires_bdf05.bdf05_bib_observateurs AS
@@ -98,6 +140,10 @@ ALTER TABLE partenaires_bdf05.bdf05_t_stations ADD CONSTRAINT fk_bdf05_t_station
 ALTER TABLE partenaires_bdf05.bdf05_t_stations ADD CONSTRAINT fk_bdf05_t_stations_codeobs3 FOREIGN KEY (codeobs3)
     REFERENCES partenaires_bdf05.bdf05_bib_observateurs (codeobs) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 
+
+-----------------
+--BIBLIOGRAPHIE--
+-----------------
 IMPORT FOREIGN SCHEMA bibliographie FROM SERVER geonature1server INTO v1_compat;
 CREATE SCHEMA hist_bibliographie;
 CREATE TABLE hist_bibliographie.bibliographie AS
@@ -110,11 +156,19 @@ ALTER TABLE hist_bibliographie.bibliographie ADD CONSTRAINT biblio_id_source_fke
 ALTER TABLE hist_bibliographie.bibliographie ADD CONSTRAINT fk_biblio_bib_organismes FOREIGN KEY (id_organisme)
     REFERENCES utilisateurs.bib_organismes (id_organisme) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 
+
+--------
+--CBNA--
+--------
 CREATE SCHEMA partenaires_cbna;
 --On importe rien; C'est à refaire. Les anciennes données sont au format GN1
 
+
+---------------
+--CHIROPTERES--
+---------------
 IMPORT FOREIGN SCHEMA chiropteres EXCEPT(t_visites) FROM SERVER geonature1server INTO v1_compat;
---changement de nom des tables
+--Renommer les tables
 ALTER FOREIGN TABLE v1_compat.t_sites RENAME TO t_sites_chiro;
 ALTER FOREIGN TABLE v1_compat.bib_taxons RENAME TO bib_taxons_chiro;
 ALTER FOREIGN TABLE v1_compat.bib_observateurs RENAME TO bib_observateurs_chiro;
@@ -194,6 +248,9 @@ ALTER TABLE hist_chiropteres.t_visites ADD CONSTRAINT fk_t_visites_t_sites FOREI
       REFERENCES hist_chiropteres.t_sites (id_site) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;
 
 
+-----------
+--CIGALES--
+-----------
 IMPORT FOREIGN SCHEMA cigales EXCEPT(t_transects) FROM SERVER geonature1server INTO v1_compat;
 CREATE FOREIGN TABLE v1_compat.t_transects_cigales
 (
@@ -618,7 +675,7 @@ CREATE SEQUENCE v1_imports.tmp4csv_id_csv_seq
 ----------------
 INSERT INTO gn_meta.sinp_datatype_protocols (id_protocol, protocol_name, protocol_desc, id_nomenclature_protocol_type)
 VALUES(0, 'pas de correspondance dans cette table', 'le protocole n''est pas connu ou n''est pas décrit dans cette table', 394);
-IMPORT FOREIGN SCHEMA naturalistes FROM SERVER geonature1server INTO v1_compat;
+IMPORT FOREIGN SCHEMA naturalistes EXCEPT(fauneisere) FROM SERVER geonature1server INTO v1_compat;
 CREATE SCHEMA partenaires_naturalistes;
 CREATE TABLE partenaires_naturalistes.bernard_frin AS
 SELECT * FROM v1_compat.bernard_frin;
@@ -626,8 +683,6 @@ CREATE TABLE partenaires_naturalistes.christophe_perrier AS
 SELECT * FROM v1_compat.christophe_perrier;
 CREATE TABLE partenaires_naturalistes.eric_drouet AS
 SELECT * FROM v1_compat.eric_drouet;
-CREATE TABLE partenaires_naturalistes.lpo_isere AS
-SELECT * FROM v1_compat.fauneisere;
 CREATE TABLE partenaires_naturalistes.jacques_nel AS
 SELECT * FROM v1_compat.jacques_nel;
 CREATE TABLE partenaires_naturalistes.pierre_frapa AS
@@ -637,7 +692,7 @@ SELECT * FROM v1_compat.stephane_bence;
 ALTER TABLE partenaires_naturalistes.bernard_frin ADD CONSTRAINT pk_bernard_frin PRIMARY KEY(gid);
 ALTER TABLE partenaires_naturalistes.christophe_perrier ADD CONSTRAINT pk_christophe_perrier PRIMARY KEY(gid);
 ALTER TABLE partenaires_naturalistes.eric_drouet ADD CONSTRAINT pk_eric_drouet PRIMARY KEY(gid);
-ALTER TABLE naturalistes.lpo_isere ADD CONSTRAINT pk_lpo_isere PRIMARY KEY(id);
+ALTER TABLE partenaires_lpo.lpo_isere ADD CONSTRAINT pk_lpo_isere PRIMARY KEY(id);
 ALTER TABLE partenaires_naturalistes.jacques_nel ADD CONSTRAINT pk_jacques_nel PRIMARY KEY(gid);
 ALTER TABLE partenaires_naturalistes.pierre_frapa ADD CONSTRAINT pk_pierre_frapa PRIMARY KEY(gid);
 ALTER TABLE partenaires_naturalistes.stephane_bence ADD CONSTRAINT pk_stephane_bence PRIMARY KEY(gid);
@@ -693,13 +748,6 @@ ALTER TABLE partenaires_naturalistes.eric_drouet ADD CONSTRAINT enforce_srid_the
 ALTER TABLE partenaires_naturalistes.eric_drouet ADD CONSTRAINT enforce_srid_the_geom_point CHECK (public.st_srid(the_geom_point) = 3857);
 ALTER TABLE partenaires_naturalistes.eric_drouet ADD CONSTRAINT eric_drouet_cle_check CHECK (cle < 5);
 
-ALTER TABLE partenaires_naturalistes.fauneisere
-  ADD CONSTRAINT enforce_dims_the_geom_2154 CHECK (public.st_ndims(the_geom_2154) = 2);
-ALTER TABLE partenaires_naturalistes.fauneisere
-  ADD CONSTRAINT enforce_geotype_the_geom_2154 CHECK (public.st_geometrytype(the_geom_2154) = 'ST_Point'::text OR the_geom_2154 IS NULL);
-ALTER TABLE partenaires_naturalistes.fauneisere
-  ADD CONSTRAINT enforce_srid_the_geom_2154 CHECK (public.st_srid(the_geom_2154) = 2154);
-
 ALTER TABLE partenaires_naturalistes.jacques_nel ADD CONSTRAINT fk_jacques_nel_bib_organismes FOREIGN KEY (id_organisme)
     REFERENCES utilisateurs.bib_organismes (id_organisme) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 ALTER TABLE partenaires_naturalistes.jacques_nel ADD CONSTRAINT jacques_nel_id_lot_fkey FOREIGN KEY (id_lot)
@@ -750,3 +798,184 @@ ALTER TABLE partenaires_naturalistes.stephane_bence ADD CONSTRAINT enforce_srid_
 ALTER TABLE partenaires_naturalistes.stephane_bence ADD CONSTRAINT enforce_srid_the_geom_3857 CHECK (public.st_srid(the_geom_3857) = 3857);
 ALTER TABLE partenaires_naturalistes.stephane_bence ADD CONSTRAINT enforce_srid_the_geom_point CHECK (public.st_srid(the_geom_point) = 3857);
 ALTER TABLE partenaires_naturalistes.stephane_bence ADD CONSTRAINT stephane_bence_cle_check CHECK (cle < 5);
+
+
+-------
+--LPO--
+-------
+IMPORT FOREIGN SCHEMA partenaires LIMIT TO(lpo_paca) FROM SERVER geonature1server INTO v1_compat;
+CREATE SCHEMA partenaires_lpo;
+CREATE TABLE partenaires_lpo.lpo_paca AS
+SELECT * FROM v1_compat.lpo_paca;
+ALTER TABLE partenaires_lpo.lpo_paca ADD CONSTRAINT pk_lpo_paca PRIMARY KEY(id_sighting);
+ALTER TABLE partenaires_lpo.lpo_paca ADD CONSTRAINT enforce_dims_the_geom_4326 CHECK (st_ndims(the_geom_4326) = 2);
+ALTER TABLE partenaires_lpo.lpo_paca ADD CONSTRAINT enforce_geotype_the_geom_4326 CHECK (st_geometrytype(the_geom_4326) = 'ST_Point'::text OR the_geom_4326 IS NULL);
+ALTER TABLE partenaires_lpo.lpo_paca ADD CONSTRAINT enforce_srid_the_geom_4326 CHECK (st_srid(the_geom_4326) = 4326);
+
+IMPORT FOREIGN SCHEMA naturalistes LIMIT TO(fauneisere) FROM SERVER geonature1server INTO v1_compat;
+CREATE TABLE partenaires_lpo.lpo_isere AS
+SELECT * FROM v1_compat.fauneisere;
+ALTER TABLE partenaires_lpo.lpo_isere ADD CONSTRAINT pk_lpo_isere PRIMARY KEY(id);
+ALTER TABLE partenaires_lpo.lpo_isere ADD CONSTRAINT enforce_dims_the_geom_2154 CHECK (public.st_ndims(the_geom_2154) = 2);
+ALTER TABLE partenaires_lpo.lpo_isere ADD CONSTRAINT enforce_geotype_the_geom_2154 CHECK (public.st_geometrytype(the_geom_2154) = 'ST_Point'::text OR the_geom_2154 IS NULL);
+ALTER TABLE partenaires_lpo.lpo_isere ADD CONSTRAINT enforce_srid_the_geom_2154 CHECK (public.st_srid(the_geom_2154) = 2154);
+
+-----------
+--EXPERTS--
+-----------
+IMPORT FOREIGN SCHEMA partenaires LIMIT TO(rencontres, experts, atbi, abc) FROM SERVER geonature1server INTO v1_compat;
+CREATE SCHEMA partenaires_experts;
+CREATE TABLE partenaires_experts.experts AS
+SELECT * FROM v1_compat.experts;
+CREATE TABLE partenaires_experts.rencontres AS
+SELECT * FROM v1_compat.rencontres;
+CREATE TABLE partenaires_experts.atbi AS
+SELECT * FROM v1_compat.atbi;
+CREATE TABLE partenaires_experts.abc AS
+SELECT * FROM v1_compat.abc;
+ALTER TABLE partenaires_experts.rencontres ADD CONSTRAINT pk_rencontres PRIMARY KEY(gid);
+ALTER TABLE partenaires_experts.experts ADD CONSTRAINT pk_experts PRIMARY KEY(id_expert);
+ALTER TABLE partenaires_experts.atbi ADD CONSTRAINT atbi_pkey PRIMARY KEY(id_atbi);
+ALTER TABLE partenaires_experts.abc ADD CONSTRAINT abc_pkey PRIMARY KEY(id_abc);
+
+ALTER TABLE partenaires_experts.experts ADD CONSTRAINT experts_id_lot_fkey FOREIGN KEY (id_lot)
+    REFERENCES gn_meta.t_datasets (id_dataset) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_experts.experts ADD CONSTRAINT experts_id_protocole_fkey FOREIGN KEY (id_protocole)
+    REFERENCES gn_meta.sinp_datatype_protocols (id_protocol) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_experts.experts ADD CONSTRAINT experts_id_source_fkey FOREIGN KEY (id_source)
+    REFERENCES gn_synthese.t_sources (id_source) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_experts.experts ADD CONSTRAINT fk_experts_bib_organismes FOREIGN KEY (id_organisme)
+    REFERENCES utilisateurs.bib_organismes (id_organisme) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_experts.experts ADD CONSTRAINT enforce_dims_the_geom_2154 CHECK (public.st_ndims(the_geom_2154) = 2);
+ALTER TABLE partenaires_experts.experts ADD CONSTRAINT enforce_dims_the_geom_3857 CHECK (public.st_ndims(the_geom_3857) = 2);
+ALTER TABLE partenaires_experts.experts ADD CONSTRAINT enforce_dims_the_geom_point CHECK (public.st_ndims(the_geom_point) = 2);
+ALTER TABLE partenaires_experts.experts ADD CONSTRAINT enforce_geotype_the_geom_point CHECK (public.st_geometrytype(the_geom_point) = 'ST_Point'::text OR the_geom_point IS NULL);
+ALTER TABLE partenaires_experts.experts ADD CONSTRAINT enforce_srid_the_geom_2154 CHECK (public.st_srid(the_geom_2154) = 2154);
+ALTER TABLE partenaires_experts.experts ADD CONSTRAINT enforce_srid_the_geom_3857 CHECK (public.st_srid(the_geom_3857) = 3857);
+ALTER TABLE partenaires_experts.experts ADD CONSTRAINT enforce_srid_the_geom_point CHECK (public.st_srid(the_geom_point) = 3857);
+ALTER TABLE partenaires_experts.experts ADD CONSTRAINT experts_cle_check CHECK (cle < 5);
+CREATE TRIGGER tri_insert_experts
+  BEFORE INSERT
+  ON partenaires_experts.experts
+  FOR EACH ROW
+  EXECUTE PROCEDURE insert_maj_date();
+CREATE TRIGGER tri_update_experts
+  BEFORE UPDATE
+  ON partenaires_experts.experts
+  FOR EACH ROW
+  EXECUTE PROCEDURE update_maj_date();
+
+ALTER TABLE partenaires_experts.rencontres ADD CONSTRAINT rencontres_id_lot_fkey FOREIGN KEY (id_lot)
+    REFERENCES gn_meta.t_datasets (id_dataset) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_experts.rencontres ADD CONSTRAINT rencontres_id_protocole_fkey FOREIGN KEY (id_protocole)
+    REFERENCES gn_meta.sinp_datatype_protocols (id_protocol) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_experts.rencontres ADD CONSTRAINT rencontres_id_source_fkey FOREIGN KEY (id_source)
+    REFERENCES gn_synthese.t_sources (id_source) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_experts.rencontres ADD CONSTRAINT fk_rencontres_bib_organismes FOREIGN KEY (id_organisme)
+    REFERENCES utilisateurs.bib_organismes (id_organisme) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_experts.rencontres ADD CONSTRAINT enforce_dims_the_geom_2154 CHECK (public.st_ndims(the_geom_2154) = 2);
+ALTER TABLE partenaires_experts.rencontres ADD CONSTRAINT enforce_dims_the_geom_3857 CHECK (public.st_ndims(the_geom_3857) = 2);
+ALTER TABLE partenaires_experts.rencontres ADD CONSTRAINT enforce_dims_the_geom_point CHECK (public.st_ndims(the_geom_point) = 2);
+ALTER TABLE partenaires_experts.rencontres ADD CONSTRAINT enforce_geotype_the_geom_point CHECK (public.st_geometrytype(the_geom_point) = 'ST_Point'::text OR the_geom_point IS NULL);
+ALTER TABLE partenaires_experts.rencontres ADD CONSTRAINT enforce_srid_the_geom_2154 CHECK (public.st_srid(the_geom_2154) = 2154);
+ALTER TABLE partenaires_experts.rencontres ADD CONSTRAINT enforce_srid_the_geom_3857 CHECK (public.st_srid(the_geom_3857) = 3857);
+ALTER TABLE partenaires_experts.rencontres ADD CONSTRAINT enforce_srid_the_geom_point CHECK (public.st_srid(the_geom_point) = 3857);
+ALTER TABLE partenaires_experts.rencontres ADD CONSTRAINT rencontres_cle_check CHECK (cle < 5);
+CREATE TRIGGER tri_insert_rencontres
+  BEFORE INSERT
+  ON partenaires_experts.rencontres
+  FOR EACH ROW
+  EXECUTE PROCEDURE insert_maj_date();
+CREATE TRIGGER tri_update_rencontres
+  BEFORE UPDATE
+  ON partenaires_experts.rencontres
+  FOR EACH ROW
+  EXECUTE PROCEDURE update_maj_date();
+
+ALTER TABLE partenaires_experts.atbi ADD CONSTRAINT atbi_id_lot_fkey FOREIGN KEY (id_lot)
+    REFERENCES gn_meta.t_datasets (id_dataset) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_experts.atbi ADD CONSTRAINT atbi_id_protocole_fkey FOREIGN KEY (id_protocole)
+    REFERENCES gn_meta.sinp_datatype_protocols (id_protocol) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_experts.atbi ADD CONSTRAINT atbi_id_source_fkey FOREIGN KEY (id_source)
+    REFERENCES gn_synthese.t_sources (id_source) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_experts.atbi ADD CONSTRAINT fk_atbi_bib_organismes FOREIGN KEY (id_organisme)
+    REFERENCES utilisateurs.bib_organismes (id_organisme) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_experts.atbi ADD CONSTRAINT enforce_dims_the_geom_2154 CHECK (public.st_ndims(the_geom_2154) = 2);
+ALTER TABLE partenaires_experts.atbi ADD CONSTRAINT enforce_dims_the_geom_3857 CHECK (public.st_ndims(the_geom_3857) = 2);
+ALTER TABLE partenaires_experts.atbi ADD CONSTRAINT enforce_dims_the_geom_point CHECK (public.st_ndims(the_geom_point) = 2);
+ALTER TABLE partenaires_experts.atbi ADD CONSTRAINT enforce_geotype_the_geom_point CHECK (public.st_geometrytype(the_geom_point) = 'ST_Point'::text OR the_geom_point IS NULL);
+ALTER TABLE partenaires_experts.atbi ADD CONSTRAINT enforce_srid_the_geom_2154 CHECK (public.st_srid(the_geom_2154) = 2154);
+ALTER TABLE partenaires_experts.atbi ADD CONSTRAINT enforce_srid_the_geom_3857 CHECK (public.st_srid(the_geom_3857) = 3857);
+ALTER TABLE partenaires_experts.atbi ADD CONSTRAINT enforce_srid_the_geom_point CHECK (public.st_srid(the_geom_point) = 3857);
+ALTER TABLE partenaires_experts.atbi ADD CONSTRAINT atbi_cle_check CHECK (cle < 5);
+CREATE TRIGGER tri_insert_atbi
+  BEFORE INSERT
+  ON partenaires_experts.atbi
+  FOR EACH ROW
+  EXECUTE PROCEDURE insert_maj_date();
+CREATE TRIGGER tri_update_atbi
+  BEFORE UPDATE
+  ON partenaires_experts.atbi
+  FOR EACH ROW
+  EXECUTE PROCEDURE update_maj_date();
+
+ALTER TABLE partenaires_experts.abc ADD CONSTRAINT abc_id_lot_fkey FOREIGN KEY (id_lot)
+    REFERENCES gn_meta.t_datasets (id_dataset) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_experts.abc ADD CONSTRAINT abc_id_protocole_fkey FOREIGN KEY (id_protocole)
+    REFERENCES gn_meta.sinp_datatype_protocols (id_protocol) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_experts.abc ADD CONSTRAINT abc_id_source_fkey FOREIGN KEY (id_source)
+    REFERENCES gn_synthese.t_sources (id_source) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_experts.abc ADD CONSTRAINT fk_abc_bib_organismes FOREIGN KEY (id_organisme)
+    REFERENCES utilisateurs.bib_organismes (id_organisme) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_experts.abc ADD CONSTRAINT enforce_dims_the_geom_2154 CHECK (public.st_ndims(the_geom_2154) = 2);
+ALTER TABLE partenaires_experts.abc ADD CONSTRAINT enforce_dims_the_geom_3857 CHECK (public.st_ndims(the_geom_3857) = 2);
+ALTER TABLE partenaires_experts.abc ADD CONSTRAINT enforce_dims_the_geom_point CHECK (public.st_ndims(the_geom_point) = 2);
+ALTER TABLE partenaires_experts.abc ADD CONSTRAINT enforce_geotype_the_geom_point CHECK (public.st_geometrytype(the_geom_point) = 'ST_Point'::text OR the_geom_point IS NULL);
+ALTER TABLE partenaires_experts.abc ADD CONSTRAINT enforce_srid_the_geom_2154 CHECK (public.st_srid(the_geom_2154) = 2154);
+ALTER TABLE partenaires_experts.abc ADD CONSTRAINT enforce_srid_the_geom_3857 CHECK (public.st_srid(the_geom_3857) = 3857);
+ALTER TABLE partenaires_experts.abc ADD CONSTRAINT enforce_srid_the_geom_point CHECK (public.st_srid(the_geom_point) = 3857);
+ALTER TABLE partenaires_experts.abc ADD CONSTRAINT abc_cle_check CHECK (cle < 5);
+CREATE TRIGGER tri_insert_abc
+  BEFORE INSERT
+  ON partenaires_experts.abc
+  FOR EACH ROW
+  EXECUTE PROCEDURE insert_maj_date();
+CREATE TRIGGER tri_update_abc
+  BEFORE UPDATE
+  ON partenaires_experts.abc
+  FOR EACH ROW
+  EXECUTE PROCEDURE update_maj_date();
+
+---------------
+--EMBRUN 2016--
+---------------
+IMPORT FOREIGN SCHEMA partenaires LIMIT TO(embrun_2016) FROM SERVER geonature1server INTO v1_compat;
+CREATE SCHEMA hist_embrun2016;
+CREATE TABLE hist_embrun2016.embrun_2016 AS
+SELECT * FROM v1_compat.embrun_2016;
+ALTER TABLE hist_embrun2016.embrun_2016 ADD CONSTRAINT pk_embrun_2016 PRIMARY KEY(gid);
+
+------------
+--STOC-EPS--
+------------
+IMPORT FOREIGN SCHEMA stoceps FROM SERVER geonature1server INTO v1_compat;
+CREATE SCHEMA hist_stoceps;
+CREATE TABLE hist_stoceps.t_points_ecoute AS
+SELECT * FROM v1_compat.t_points_ecoute;
+CREATE TABLE hist_stoceps.t_releves_stoc AS
+SELECT * FROM v1_compat.t_releves_stoc;
+ALTER TABLE hist_stoceps.t_points_ecoute ADD CONSTRAINT pk_t_points_ecoute PRIMARY KEY(id_point_ecoute);
+ALTER TABLE hist_stoceps.t_releves_stoc ADD CONSTRAINT pk_t_releves_stoc PRIMARY KEY(id_releve_stoc);
+ALTER TABLE hist_stoceps.t_releves_stoc ADD CONSTRAINT fk_t_releves_t_points_ecoute FOREIGN KEY (id_point_ecoute)
+    REFERENCES hist_stoceps.t_points_ecoute (id_point_ecoute) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE hist_stoceps.t_points_ecoute ADD CONSTRAINT enforce_dims_the_geom_27572 CHECK (st_ndims(the_geom_27572) = 2);
+ALTER TABLE hist_stoceps.t_points_ecoute ADD CONSTRAINT enforce_geotype_the_geom_27572 CHECK (st_geometrytype(the_geom_27572) = 'ST_Point'::text OR the_geom_27572 IS NULL);
+ALTER TABLE hist_stoceps.t_points_ecoute ADD CONSTRAINT enforce_srid_the_geom_27572 CHECK (st_srid(the_geom_27572) = 27572);
+CREATE SEQUENCE hist_stoceps.t_releves_stoc_id_releve_stoc_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 128336
+  CACHE 1;
+
+
