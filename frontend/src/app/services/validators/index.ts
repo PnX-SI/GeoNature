@@ -1,1 +1,1 @@
-export * from './similar.validator';
+export * from './validators';
