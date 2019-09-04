@@ -57,7 +57,6 @@ class MailConfig(Schema):
     MAIL_DEFAULT_SENDER = fields.String(missing=None)
     MAIL_MAX_EMAILS = fields.Integer(missing=None)
     MAIL_ASCII_ATTACHMENTS = fields.Boolean(missing=False)
-
     ERROR_MAIL_TO = fields.List(fields.String(), missing=list())
 
 
@@ -68,6 +67,7 @@ class AccountManagement(Schema):
     AUTO_ACCOUNT_CREATION = fields.Boolean(missing=True)
     AUTO_DATASET_CREATION = fields.Boolean(missing=True)
     VALIDATOR_EMAIL = fields.Email()
+    ACCOUNT_FORM = fields.List(fields.Dict(), missing=[])
 
 
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
