@@ -1,34 +1,6 @@
 <div class="card card-page center-in-div">
   <div class="card-header">
     <h3 class="underlined main-color"> Mes informations </h3>
-    <div class="float-right">
-      <ng-container *ngIf="form.disabled else validation">
-        <button 
-          type="button" 
-          class="btn btn-sm btn-info" 
-          matTooltip="Editer ces informations" 
-          matTooltipPosition="left"
-          (click)="form.enable()">
-          <i class="fa fa-edit"></i> Editer
-        </button>
-      </ng-container>
-      <ng-template #validation>
-        <button 
-        type="button" 
-        class="btn btn-sm btn-secondary" 
-        matTooltip="Annuler modifications" 
-        (click)="cancel()">
-          <i class="fa fa-times"></i> Annuler
-        </button>
-        <button 
-        type="button" 
-        class="btn btn-sm btn-info" 
-        matTooltip="Enrigistrer modifications" 
-        (click)="save()">
-          <i class="fa fa-check"></i> Enregistrer
-        </button>
-      </ng-template>
-    </div>
   </div>
 
   <div class="card-body">
@@ -99,6 +71,35 @@
           formControlName="remarques"></textarea>
         </div>
       </div>
+
+      <div class="float-right">
+          <ng-container *ngIf="form.disabled else validation">
+            <button 
+              type="button" 
+              class="btn btn-sm btn-primary" 
+              matTooltip="Editer ces informations" 
+              matTooltipPosition="left"
+              (click)="form.enable()">
+              <i class="fa fa-edit"></i> Editer
+            </button>
+          </ng-container>
+          <ng-template #validation>
+            <button 
+            type="button" 
+            class="btn btn-sm btn-danger" 
+            matTooltip="Annuler modifications" 
+            (click)="cancel()">
+              <i class="fa fa-times"></i> Annuler
+            </button>
+            <button 
+            type="button" 
+            class="btn btn-sm btn-success" 
+            matTooltip="Enrigistrer modifications" 
+            (click)="save()">
+              <i class="fa fa-check"></i> Enregistrer
+            </button>
+          </ng-template>
+        </div>
     </form>
 
   </div>

@@ -46,6 +46,21 @@
                 </div>
               </div>
 
+              <div class="form-group row">
+                  <label for="email" class="col-md-3 col-form-label text-md-right">Adresse mail</label>
+                  <div class="col-md-9 col-lg-7">
+                    <input 
+                      type="text" 
+                      [ngClass]="form.disabled ? 'form-control-plaintext' : 'form-control'"
+                      id="email" 
+                      placeholder="Email" 
+                      formControlName="email">
+                    <small *ngIf="form.get('password_confirmation').hasError('required') && form.get('password_confirmation').touched">
+                      Ce champ est nécessaire
+                    </small>
+                  </div>
+                </div>
+
               <mat-divider></mat-divider>
 
               <h5> Compte </h5>
@@ -60,21 +75,6 @@
                     placeholder="Identifiant" 
                     formControlName="identifiant">
                   <small *ngIf="form.get('identifiant').hasError('required') && form.get('identifiant').touched">
-                    Ce champ est nécessaire
-                  </small>
-                </div>
-              </div>
-
-              <div class="form-group row">
-                <label for="email" class="col-md-3 col-form-label text-md-right">Adresse mail</label>
-                <div class="col-md-9 col-lg-7">
-                  <input 
-                    type="text" 
-                    [ngClass]="form.disabled ? 'form-control-plaintext' : 'form-control'"
-                    id="email" 
-                    placeholder="Email" 
-                    formControlName="email">
-                  <small *ngIf="form.get('password_confirmation').hasError('required') && form.get('password_confirmation').touched">
                     Ce champ est nécessaire
                   </small>
                 </div>
