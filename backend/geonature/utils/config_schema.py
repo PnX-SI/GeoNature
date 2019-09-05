@@ -254,6 +254,18 @@ class GnGeneralSchemaConf(Schema):
                 "ENABLE_SIGN_UP, ENABLE_USER_MANAGEMENT",
             )
 
+    @validates_schema
+    def validate_account_autovalidation(self, data):
+        account_config = data.get("ACCOUNT_MANAGEMENT")
+        if (
+            not account_config.get("AUTO_ACCOUNT_CREATION", False)
+            and account_config.get("VALIDATOR_EMAIL", None) is None
+        ):
+            raise ValidationError(
+                "Si AUTO_ACCOUNT_CREATION = False, veuillez remplir le paramètre VALIDATOR_EMAIL",
+                "AUTO_ACCOUNT_CREATION, VALIDATOR_EMAIL",
+            )
+
 
 class ManifestSchemaConf(Schema):
     package_format_version = fields.String(required=True)
