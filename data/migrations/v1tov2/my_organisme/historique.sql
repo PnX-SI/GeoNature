@@ -479,11 +479,14 @@ CREATE TABLE hist_archives.bib_protocoles AS
 SELECT * FROM v1_compat.bib_protocoles;
 CREATE TABLE hist_archives.cor_protocoles AS
 SELECT * FROM v1_compat.cor_protocoles;
+CREATE TABLE hist_archives.bib_criteres_synthese_gn1 AS
+SELECT * FROM v1_compat.bib_criteres_synthese;
 ALTER TABLE hist_archives.bib_critere_arch ADD CONSTRAINT pk_bib_crites_archives PRIMARY KEY(codecritarch);
 ALTER TABLE hist_archives.bib_observateurs ADD CONSTRAINT pk_bib_observateurs PRIMARY KEY(codeobs);
 ALTER TABLE hist_archives.bib_protocoles ADD CONSTRAINT pk_bib_protocoles PRIMARY KEY(codeprotocole);
 ALTER TABLE hist_archives.archives ADD CONSTRAINT pk_archives PRIMARY KEY(num_auto);
 ALTER TABLE hist_archives.cor_protocoles ADD CONSTRAINT pk_cor_protocoles PRIMARY KEY(codeprotocole, id_protocole);
+ALTER TABLE hist_archives.bib_criteres_synthese_gn1 ADD CONSTRAINT pk_bib_criteres_synthese_gn1 PRIMARY KEY(id_critere_synthese);
 ALTER TABLE hist_archives.archives ADD CONSTRAINT fk_archives_bib_critere_arch FOREIGN KEY (codecritarch)
     REFERENCES hist_archives.bib_critere_arch (codecritarch) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;
 ALTER TABLE hist_archives.archives ADD CONSTRAINT fk_archives_bib_lots FOREIGN KEY (id_lot)
@@ -653,7 +656,9 @@ ALTER TABLE v1_imports.importedobs ADD CONSTRAINT importedobs_id_lot_fkey FOREIG
 ALTER TABLE v1_imports.importedobs ADD CONSTRAINT importedobs_id_protocole_fkey FOREIGN KEY (id_protocole)
     REFERENCES hist_archives.bib_protocoles (codeprotocole) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 ALTER TABLE v1_imports.importedobs ADD CONSTRAINT importedobs_id_source_fkey FOREIGN KEY (id_source)
-      REFERENCES gn_synthese.t_sources (id_source) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+    REFERENCES gn_synthese.t_sources (id_source) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE v1_imports.importedobs ADD CONSTRAINT importedobs_id_critere_synthese_gn1_fkey FOREIGN KEY (id_critere_synthese)
+    REFERENCES hist_archives.bib_criteres_synthese_gn1 (id_critere_synthese) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 ALTER TABLE v1_imports.importedobs ADD CONSTRAINT enforce_dims_the_geom_2154 CHECK (public.st_ndims(the_geom_2154) = 2);
 ALTER TABLE v1_imports.importedobs ADD CONSTRAINT enforce_dims_the_geom_3857 CHECK (public.st_ndims(the_geom_3857) = 2);
 ALTER TABLE v1_imports.importedobs ADD CONSTRAINT enforce_dims_the_geom_point CHECK (public.st_ndims(the_geom_point) = 2);
@@ -689,6 +694,7 @@ CREATE TABLE partenaires_naturalistes.pierre_frapa AS
 SELECT * FROM v1_compat.pierre_frapa;
 CREATE TABLE partenaires_naturalistes.stephane_bence AS
 SELECT * FROM v1_compat.stephane_bence;
+
 ALTER TABLE partenaires_naturalistes.bernard_frin ADD CONSTRAINT pk_bernard_frin PRIMARY KEY(gid);
 ALTER TABLE partenaires_naturalistes.christophe_perrier ADD CONSTRAINT pk_christophe_perrier PRIMARY KEY(gid);
 ALTER TABLE partenaires_naturalistes.eric_drouet ADD CONSTRAINT pk_eric_drouet PRIMARY KEY(gid);
@@ -696,15 +702,16 @@ ALTER TABLE partenaires_lpo.lpo_isere ADD CONSTRAINT pk_lpo_isere PRIMARY KEY(id
 ALTER TABLE partenaires_naturalistes.jacques_nel ADD CONSTRAINT pk_jacques_nel PRIMARY KEY(gid);
 ALTER TABLE partenaires_naturalistes.pierre_frapa ADD CONSTRAINT pk_pierre_frapa PRIMARY KEY(gid);
 ALTER TABLE partenaires_naturalistes.stephane_bence ADD CONSTRAINT pk_stephane_bence PRIMARY KEY(gid);
-
-ALTER TABLE partenaires_naturalistes.bernard_frin ADD CONSTRAINT fk_frin_bib_organismes FOREIGN KEY (id_organisme)
+ALTER TABLE partenaires_naturalistes.bernard_frin ADD CONSTRAINT fk_bernard_frin_bib_organismes FOREIGN KEY (id_organisme)
     REFERENCES utilisateurs.bib_organismes (id_organisme) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
-ALTER TABLE partenaires_naturalistes.bernard_frin ADD CONSTRAINT frin_id_lot_fkey FOREIGN KEY (id_lot)
+ALTER TABLE partenaires_naturalistes.bernard_frin ADD CONSTRAINT bernard_frin_id_lot_fkey FOREIGN KEY (id_lot)
     REFERENCES gn_meta.t_datasets (id_dataset) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
-ALTER TABLE partenaires_naturalistes.bernard_frin ADD CONSTRAINT frin_id_protocole_fkey FOREIGN KEY (id_protocole)
+ALTER TABLE partenaires_naturalistes.bernard_frin ADD CONSTRAINT bernard_frin_id_protocole_fkey FOREIGN KEY (id_protocole)
     REFERENCES gn_meta.sinp_datatype_protocols (id_protocol) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
-ALTER TABLE partenaires_naturalistes.bernard_frin ADD CONSTRAINT frin_id_source_fkey FOREIGN KEY (id_source)
+ALTER TABLE partenaires_naturalistes.bernard_frin ADD CONSTRAINT bernard_frin_id_source_fkey FOREIGN KEY (id_source)
       REFERENCES gn_synthese.t_sources (id_source) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_naturalistes.bernard_frin ADD CONSTRAINT bernard_frin_id_critere_synthese_gn1_fkey FOREIGN KEY (id_critere_synthese)
+      REFERENCES hist_archives.bib_criteres_synthese_gn1 (id_critere_synthese) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 ALTER TABLE partenaires_naturalistes.bernard_frin ADD CONSTRAINT enforce_dims_the_geom_2154 CHECK (public.st_ndims(the_geom_2154) = 2);
 ALTER TABLE partenaires_naturalistes.bernard_frin ADD CONSTRAINT enforce_dims_the_geom_3857 CHECK (public.st_ndims(the_geom_3857) = 2);
 ALTER TABLE partenaires_naturalistes.bernard_frin ADD CONSTRAINT enforce_dims_the_geom_point CHECK (public.st_ndims(the_geom_point) = 2);
@@ -712,7 +719,7 @@ ALTER TABLE partenaires_naturalistes.bernard_frin ADD CONSTRAINT enforce_geotype
 ALTER TABLE partenaires_naturalistes.bernard_frin ADD CONSTRAINT enforce_srid_the_geom_2154 CHECK (public.st_srid(the_geom_2154) = 2154);
 ALTER TABLE partenaires_naturalistes.bernard_frin ADD CONSTRAINT enforce_srid_the_geom_3857 CHECK (public.st_srid(the_geom_3857) = 3857);
 ALTER TABLE partenaires_naturalistes.bernard_frin ADD CONSTRAINT enforce_srid_the_geom_point CHECK (public.st_srid(the_geom_point) = 3857);
-ALTER TABLE partenaires_naturalistes.bernard_frin ADD CONSTRAINT frin_cle_check CHECK (cle < 5);
+ALTER TABLE partenaires_naturalistes.bernard_frin ADD CONSTRAINT bernard_frin_cle_check CHECK (cle < 5);
 
 ALTER TABLE partenaires_naturalistes.christophe_perrier ADD CONSTRAINT fk_christophe_perrier_bib_organismes FOREIGN KEY (id_organisme)
     REFERENCES utilisateurs.bib_organismes (id_organisme) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
@@ -721,7 +728,9 @@ ALTER TABLE partenaires_naturalistes.christophe_perrier ADD CONSTRAINT christoph
 ALTER TABLE partenaires_naturalistes.christophe_perrier ADD CONSTRAINT christophe_perrier_id_protocole_fkey FOREIGN KEY (id_protocole)
     REFERENCES gn_meta.sinp_datatype_protocols (id_protocol) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 ALTER TABLE partenaires_naturalistes.christophe_perrier ADD CONSTRAINT christophe_perrier_id_source_fkey FOREIGN KEY (id_source)
-      REFERENCES gn_synthese.t_sources (id_source) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+    REFERENCES gn_synthese.t_sources (id_source) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_naturalistes.christophe_perrier ADD CONSTRAINT christophe_perrier_id_critere_synthese_gn1_fkey FOREIGN KEY (id_critere_synthese)
+    REFERENCES hist_archives.bib_criteres_synthese_gn1 (id_critere_synthese) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 ALTER TABLE partenaires_naturalistes.christophe_perrier ADD CONSTRAINT enforce_dims_the_geom_2154 CHECK (public.st_ndims(the_geom_2154) = 2);
 ALTER TABLE partenaires_naturalistes.christophe_perrier ADD CONSTRAINT enforce_dims_the_geom_3857 CHECK (public.st_ndims(the_geom_3857) = 2);
 ALTER TABLE partenaires_naturalistes.christophe_perrier ADD CONSTRAINT enforce_dims_the_geom_point CHECK (public.st_ndims(the_geom_point) = 2);
@@ -738,7 +747,9 @@ ALTER TABLE partenaires_naturalistes.eric_drouet ADD CONSTRAINT eric_drouet_id_l
 ALTER TABLE partenaires_naturalistes.eric_drouet ADD CONSTRAINT eric_drouet_id_protocole_fkey FOREIGN KEY (id_protocole)
     REFERENCES gn_meta.sinp_datatype_protocols (id_protocol) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 ALTER TABLE partenaires_naturalistes.eric_drouet ADD CONSTRAINT eric_drouet_id_source_fkey FOREIGN KEY (id_source)
-      REFERENCES gn_synthese.t_sources (id_source) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+    REFERENCES gn_synthese.t_sources (id_source) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_naturalistes.eric_drouet ADD CONSTRAINT eric_drouet_id_critere_synthese_gn1_fkey FOREIGN KEY (id_critere_synthese)
+    REFERENCES hist_archives.bib_criteres_synthese_gn1 (id_critere_synthese) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 ALTER TABLE partenaires_naturalistes.eric_drouet ADD CONSTRAINT enforce_dims_the_geom_2154 CHECK (public.st_ndims(the_geom_2154) = 2);
 ALTER TABLE partenaires_naturalistes.eric_drouet ADD CONSTRAINT enforce_dims_the_geom_3857 CHECK (public.st_ndims(the_geom_3857) = 2);
 ALTER TABLE partenaires_naturalistes.eric_drouet ADD CONSTRAINT enforce_dims_the_geom_point CHECK (public.st_ndims(the_geom_point) = 2);
@@ -755,7 +766,9 @@ ALTER TABLE partenaires_naturalistes.jacques_nel ADD CONSTRAINT jacques_nel_id_l
 ALTER TABLE partenaires_naturalistes.jacques_nel ADD CONSTRAINT jacques_nel_id_protocole_fkey FOREIGN KEY (id_protocole)
     REFERENCES gn_meta.sinp_datatype_protocols (id_protocol) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 ALTER TABLE partenaires_naturalistes.jacques_nel ADD CONSTRAINT jacques_nel_id_source_fkey FOREIGN KEY (id_source)
-      REFERENCES gn_synthese.t_sources (id_source) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+    REFERENCES gn_synthese.t_sources (id_source) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_naturalistes.jacques_nel ADD CONSTRAINT jacques_nel_id_critere_synthese_gn1_fkey FOREIGN KEY (id_critere_synthese)
+    REFERENCES hist_archives.bib_criteres_synthese_gn1 (id_critere_synthese) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 ALTER TABLE partenaires_naturalistes.jacques_nel ADD CONSTRAINT enforce_dims_the_geom_2154 CHECK (public.st_ndims(the_geom_2154) = 2);
 ALTER TABLE partenaires_naturalistes.jacques_nel ADD CONSTRAINT enforce_dims_the_geom_3857 CHECK (public.st_ndims(the_geom_3857) = 2);
 ALTER TABLE partenaires_naturalistes.jacques_nel ADD CONSTRAINT enforce_dims_the_geom_point CHECK (public.st_ndims(the_geom_point) = 2);
@@ -772,7 +785,9 @@ ALTER TABLE partenaires_naturalistes.pierre_frapa ADD CONSTRAINT pierre_frapa_id
 ALTER TABLE partenaires_naturalistes.pierre_frapa ADD CONSTRAINT pierre_frapa_id_protocole_fkey FOREIGN KEY (id_protocole)
     REFERENCES gn_meta.sinp_datatype_protocols (id_protocol) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 ALTER TABLE partenaires_naturalistes.pierre_frapa ADD CONSTRAINT pierre_frapa_id_source_fkey FOREIGN KEY (id_source)
-      REFERENCES gn_synthese.t_sources (id_source) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+    REFERENCES gn_synthese.t_sources (id_source) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_naturalistes.pierre_frapa ADD CONSTRAINT pierre_frapa_id_critere_synthese_gn1_fkey FOREIGN KEY (id_critere_synthese)
+    REFERENCES hist_archives.bib_criteres_synthese_gn1 (id_critere_synthese) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 ALTER TABLE partenaires_naturalistes.pierre_frapa ADD CONSTRAINT enforce_dims_the_geom_2154 CHECK (public.st_ndims(the_geom_2154) = 2);
 ALTER TABLE partenaires_naturalistes.pierre_frapa ADD CONSTRAINT enforce_dims_the_geom_3857 CHECK (public.st_ndims(the_geom_3857) = 2);
 ALTER TABLE partenaires_naturalistes.pierre_frapa ADD CONSTRAINT enforce_dims_the_geom_point CHECK (public.st_ndims(the_geom_point) = 2);
@@ -790,6 +805,8 @@ ALTER TABLE partenaires_naturalistes.stephane_bence ADD CONSTRAINT stephane_benc
     REFERENCES gn_meta.sinp_datatype_protocols (id_protocol) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 ALTER TABLE partenaires_naturalistes.stephane_bence ADD CONSTRAINT stephane_bence_id_source_fkey FOREIGN KEY (id_source)
       REFERENCES gn_synthese.t_sources (id_source) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_naturalistes.stephane_bence ADD CONSTRAINT stephane_bence_id_critere_synthese_gn1_fkey FOREIGN KEY (id_critere_synthese)
+    REFERENCES hist_archives.bib_criteres_synthese_gn1 (id_critere_synthese) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 ALTER TABLE partenaires_naturalistes.stephane_bence ADD CONSTRAINT enforce_dims_the_geom_2154 CHECK (public.st_ndims(the_geom_2154) = 2);
 ALTER TABLE partenaires_naturalistes.stephane_bence ADD CONSTRAINT enforce_dims_the_geom_3857 CHECK (public.st_ndims(the_geom_3857) = 2);
 ALTER TABLE partenaires_naturalistes.stephane_bence ADD CONSTRAINT enforce_dims_the_geom_point CHECK (public.st_ndims(the_geom_point) = 2);
@@ -803,10 +820,13 @@ ALTER TABLE partenaires_naturalistes.stephane_bence ADD CONSTRAINT stephane_benc
 -------
 --LPO--
 -------
-IMPORT FOREIGN SCHEMA partenaires LIMIT TO(lpo_paca) FROM SERVER geonature1server INTO v1_compat;
+IMPORT FOREIGN SCHEMA partenaires LIMIT TO(lpo_paca, cor_critere_lpo_synthese) FROM SERVER geonature1server INTO v1_compat;
 CREATE SCHEMA partenaires_lpo;
+CREATE TABLE partenaires_lpo.cor_critere_lpo_synthese_gn1 AS
+SELECT * FROM v1_compat.cor_critere_lpo_synthese;
 CREATE TABLE partenaires_lpo.lpo_paca AS
 SELECT * FROM v1_compat.lpo_paca;
+ALTER TABLE partenaires_lpo.cor_critere_lpo_synthese_gn1 ADD CONSTRAINT pk_cor_critere_lpo_synthese_gn1 PRIMARY KEY(code_atlas, id_critere_synthese);
 ALTER TABLE partenaires_lpo.lpo_paca ADD CONSTRAINT pk_lpo_paca PRIMARY KEY(id_sighting);
 ALTER TABLE partenaires_lpo.lpo_paca ADD CONSTRAINT enforce_dims_the_geom_4326 CHECK (st_ndims(the_geom_4326) = 2);
 ALTER TABLE partenaires_lpo.lpo_paca ADD CONSTRAINT enforce_geotype_the_geom_4326 CHECK (st_geometrytype(the_geom_4326) = 'ST_Point'::text OR the_geom_4326 IS NULL);
@@ -846,6 +866,8 @@ ALTER TABLE partenaires_experts.experts ADD CONSTRAINT experts_id_source_fkey FO
     REFERENCES gn_synthese.t_sources (id_source) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 ALTER TABLE partenaires_experts.experts ADD CONSTRAINT fk_experts_bib_organismes FOREIGN KEY (id_organisme)
     REFERENCES utilisateurs.bib_organismes (id_organisme) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_experts.experts ADD CONSTRAINT experts_id_critere_synthese_fkey FOREIGN KEY (id_critere_synthese)
+    REFERENCES hist_archives.bib_criteres_synthese_gn1 (id_critere_synthese) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 ALTER TABLE partenaires_experts.experts ADD CONSTRAINT enforce_dims_the_geom_2154 CHECK (public.st_ndims(the_geom_2154) = 2);
 ALTER TABLE partenaires_experts.experts ADD CONSTRAINT enforce_dims_the_geom_3857 CHECK (public.st_ndims(the_geom_3857) = 2);
 ALTER TABLE partenaires_experts.experts ADD CONSTRAINT enforce_dims_the_geom_point CHECK (public.st_ndims(the_geom_point) = 2);
@@ -873,6 +895,8 @@ ALTER TABLE partenaires_experts.rencontres ADD CONSTRAINT rencontres_id_source_f
     REFERENCES gn_synthese.t_sources (id_source) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 ALTER TABLE partenaires_experts.rencontres ADD CONSTRAINT fk_rencontres_bib_organismes FOREIGN KEY (id_organisme)
     REFERENCES utilisateurs.bib_organismes (id_organisme) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_experts.rencontres ADD CONSTRAINT rencontres_id_critere_synthese_fkey FOREIGN KEY (id_critere_synthese)
+    REFERENCES hist_archives.bib_criteres_synthese_gn1 (id_critere_synthese) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 ALTER TABLE partenaires_experts.rencontres ADD CONSTRAINT enforce_dims_the_geom_2154 CHECK (public.st_ndims(the_geom_2154) = 2);
 ALTER TABLE partenaires_experts.rencontres ADD CONSTRAINT enforce_dims_the_geom_3857 CHECK (public.st_ndims(the_geom_3857) = 2);
 ALTER TABLE partenaires_experts.rencontres ADD CONSTRAINT enforce_dims_the_geom_point CHECK (public.st_ndims(the_geom_point) = 2);
@@ -900,6 +924,8 @@ ALTER TABLE partenaires_experts.atbi ADD CONSTRAINT atbi_id_source_fkey FOREIGN 
     REFERENCES gn_synthese.t_sources (id_source) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 ALTER TABLE partenaires_experts.atbi ADD CONSTRAINT fk_atbi_bib_organismes FOREIGN KEY (id_organisme)
     REFERENCES utilisateurs.bib_organismes (id_organisme) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_experts.atbi ADD CONSTRAINT atbi_id_critere_synthese_fkey FOREIGN KEY (id_critere_synthese)
+    REFERENCES hist_archives.bib_criteres_synthese_gn1 (id_critere_synthese) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 ALTER TABLE partenaires_experts.atbi ADD CONSTRAINT enforce_dims_the_geom_2154 CHECK (public.st_ndims(the_geom_2154) = 2);
 ALTER TABLE partenaires_experts.atbi ADD CONSTRAINT enforce_dims_the_geom_3857 CHECK (public.st_ndims(the_geom_3857) = 2);
 ALTER TABLE partenaires_experts.atbi ADD CONSTRAINT enforce_dims_the_geom_point CHECK (public.st_ndims(the_geom_point) = 2);
@@ -927,6 +953,8 @@ ALTER TABLE partenaires_experts.abc ADD CONSTRAINT abc_id_source_fkey FOREIGN KE
     REFERENCES gn_synthese.t_sources (id_source) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 ALTER TABLE partenaires_experts.abc ADD CONSTRAINT fk_abc_bib_organismes FOREIGN KEY (id_organisme)
     REFERENCES utilisateurs.bib_organismes (id_organisme) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
+ALTER TABLE partenaires_experts.abc ADD CONSTRAINT abc_id_critere_synthese_fkey FOREIGN KEY (id_critere_synthese)
+    REFERENCES hist_archives.bib_criteres_synthese_gn1 (id_critere_synthese) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION;
 ALTER TABLE partenaires_experts.abc ADD CONSTRAINT enforce_dims_the_geom_2154 CHECK (public.st_ndims(the_geom_2154) = 2);
 ALTER TABLE partenaires_experts.abc ADD CONSTRAINT enforce_dims_the_geom_3857 CHECK (public.st_ndims(the_geom_3857) = 2);
 ALTER TABLE partenaires_experts.abc ADD CONSTRAINT enforce_dims_the_geom_point CHECK (public.st_ndims(the_geom_point) = 2);
