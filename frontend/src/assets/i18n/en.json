@@ -165,5 +165,6 @@
   "MyAccount": "My account",
   "CreateAccount": "Create an account",
   "ForgotPasswordOrLogin": "Loggin or password forgotten",
-  "AccountEmailConfirmation": "An email has be sent to confirm your account"
+  "AutoAccountEmailConfirmation": "An email has be sent to confirm your account",
+  "AdminAccountEmailConfirmation": "Your demand has been saved, an administrator will answer you soon"
 }

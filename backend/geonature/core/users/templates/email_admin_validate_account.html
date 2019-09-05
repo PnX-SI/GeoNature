@@ -1,7 +1,27 @@
 <p>Bonjour,</p>
 
-<p>Vous venez de vous créer un compte Utilisateur.</p>
+<p>Un utilisateur vient d'effectuer une demande de création de compte sur GeoNature</p>
 
-<p>Avant toute chose, et par mesure de sécurité, nous vous remercions de bien vouloir <a href="{{ url_validation }}">valider votre adresse e-mail et confirmer la création de votre compte</a>.</p>
+Voici les information de l'utilisateur:
+
+<ul>
+  <li> <b>Nom: </b>  {{user.nom_role}}</li>
+  <li> <b>Prénom: </b>  {{user.prenom_role}}</li>
+  <li> <b>Identifiant: </b>  {{user.identifiant}}</li>
+  <li> <b>Email: </b> {{user.nom_role}}</li>
+
+</ul>
+
+{% if additional_fields | length > 0 %}
+<h5>Informations complémentaires:</h5>
+  <ul>
+  {% for item in additional_fields %}
+    <li><b> {{item.key}}: </b>  {{item.value}}  </li> 
+  {% endfor %}
+</ul>
+
+{% endif%}
+
+<p>Pour valider cette demande,  <a href="{{ url_validation }}">cliquer sur ce lien<a>.</p>
 
 <p>Cordialement,</p>

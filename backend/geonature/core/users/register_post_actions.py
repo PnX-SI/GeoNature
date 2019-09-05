@@ -36,16 +36,25 @@ def validate_temp_user(data):
                 token=token
             )
         }
-
+    user_dict = user.as_dict()
     subject = "Demande de création de compte GeoNature"
     if current_app.config["ACCOUNT_MANAGEMENT"]["AUTO_ACCOUNT_CREATION"]:
         template = "email_self_validate_account.html"
         recipients = [user.email]
     else:
         template = "email_admin_validate_account.html"
-        recipients = current_app.config["MAIL_CONFIG"]["MAIL_USERNAME"]
+        recipients = [current_app.config["ACCOUNT_MANAGEMENT"]["VALIDATOR_EMAIL"]]
     url_validation = url_for("users.confirmation", token=user.token_role)
-    msg_html = render_template(template, url_validation=url_validation, user=user)
+
+    additional_fields = [
+        {"key": key, "value": value} for key, value in user_dict["champs_addi"].items()
+    ]
+    msg_html = render_template(
+        template,
+        url_validation=url_validation,
+        user=user_dict,
+        additional_fields=additional_fields,
+    )
 
     send_mail(recipients, subject, msg_html)
 
