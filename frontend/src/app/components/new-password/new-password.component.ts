@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
-import { ToastrService, ToastrConfig } from 'ngx-toastr';
-import { HttpClient } from '@angular/common/http';
+import { ToastrService } from 'ngx-toastr';
 import { similarValidator } from '@geonature/services/validators';
 import { Router, ActivatedRoute } from '@angular/router';
 

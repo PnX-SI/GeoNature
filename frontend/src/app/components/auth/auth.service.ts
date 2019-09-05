@@ -68,7 +68,7 @@ export class AuthService {
   }
 
   passwordChange(data: any): Observable<any> {
-    return this._http.put<any>(`${AppConfig.API_ENDPOINT}/users/password/change`, data);
+    return this._http.put<any>(`${AppConfig.API_ENDPOINT}/users/password/new`, data);
   }
 
   signinUser(user: any) {

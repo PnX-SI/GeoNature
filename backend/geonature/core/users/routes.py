@@ -261,7 +261,7 @@ def login_recovery():
         Work only if 'ENABLE_SIGN_UP' is set to True	
     """
     # test des droits
-    if not config.get("ENABLE_SIGN_UP", False):
+    if not current_app.config.get("ACCOUNT_MANAGEMENT").get("ENABLE_SIGN_UP", False):
         return jsonify({"msg": "Page introuvable"}), 404
 
     data = request.get_json()
@@ -349,10 +349,10 @@ def update_role(info_role):
 @json_resp
 def change_password(id_role):
     """
-        Modifie le mot de passe de l'utilisateur du token
+        Modifie le mot de passe de l'utilisateur connecté et de son ancien mdp 
         Fait appel à l'API UsersHub
     """
-    if not config["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP", False):
+    if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP", False):
         return {"message": "Page introuvable"}, 404
 
     user = DB.session.query(User).get(id_role)
@@ -398,3 +398,27 @@ def change_password(id_role):
         return {"msg": "Erreur serveur"}, 500
     return {"msg": "Mot de passe modifié avec succès"}, 200
 
+
+@routes.route("/password/new", methods=["PUT"])
+@json_resp
+def new_password():
+    """
+    Modifie le mdp d'un utilisateur apres que celui-ci ai demander un renouvelement
+    Necessite un token envoyer par mail a l'utilisateur
+    """
+    if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP", False):
+        return {"message": "Page introuvable"}, 404
+
+    data = dict(request.get_json())
+    if not data.get("token", None):
+        return {"msg": "Erreur serveur"}, 500
+
+    r = s.post(
+        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/change_password",
+        json=data,
+    )
+
+    if r.status_code != 200:
+        # comme concerne le password, on explicite pas le message
+        return {"msg": "Erreur serveur"}, 500
+    return {"msg": "Mot de passe modifié avec succès"}, 200

@@ -149,7 +149,7 @@
                 <button 
                   type="button" 
                   class="btn btn-success"
-                  [disabled]="!form.valid  || !dynamicFormGroup.valid"
+                  [disabled]="!form.valid  || !dynamicFormGroup.valid || disableSubmit"
                   (click)="save()"> S'inscrire
                 </button>
               </div>

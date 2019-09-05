@@ -55,14 +55,18 @@
 
                   <ng-template #logPwdRecoBlock>
                       <ng-container *ngIf="login_or_pass_recovery">
-                        <div>Veuillez renseigner votre adresse email utilisée lors de votre inscription. Un message y sera envoyé avec votre identifiant.</div>
+                        <div>
+                            <small style="color:white!important">Veuillez renseigner votre adresse email utilisée lors de votre inscription. </small> <br>
+                            <small style="color:white!important">Un message y sera envoyé avec votre identifiant et la possibilité de renouveler votre votre mot de passe.</small>
+                        </div>
+                    
                         <form (ngSubmit)="loginOrPwdRecovery(identifiantForm.value)" #identifiantForm="ngForm">
                           <div class="form-group">
                             <i class="addon fa fa-envelope-o"></i>
                             <input type="email" id="email" class="form-control" name="email" ngModel placeholder="Adresse mail"
                               autofocus required>
                           </div>
-                          <button class="btn btn-lg btn-success btn-block text-uppercase" type="submit">Retrouver mon identifiant</button>
+                          <button [disabled]="disableSubmit" class="btn btn-lg btn-success btn-block text-uppercase" type="submit">Envoyer</button>
                         </form>
                       </ng-container>
                     </ng-template>

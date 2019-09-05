@@ -15,6 +15,7 @@ import { CommonService } from '@geonature_common/service/common.service';
 export class SignUpComponent implements OnInit {
   form: FormGroup;
   dynamicFormGroup: FormGroup;
+  public disableSubmit = false;
   public formControlBuilded = false;
   public FORM_CONFIG = AppConfig.ACCOUNT_MANAGEMENT.ACCOUNT_FORM;
 
@@ -53,28 +54,34 @@ export class SignUpComponent implements OnInit {
 
   save() {
     if (this.form.valid) {
+      this.disableSubmit = true;
       const finalForm = Object.assign({}, this.form.value);
       // concatenate two forms
       if (AppConfig.ACCOUNT_MANAGEMENT.ACCOUNT_FORM.length > 0) {
         finalForm['champs_addi'] = this.dynamicFormGroup.value;
       }
-      this._authService.signupUser(finalForm).subscribe(
-        res => {
-          const callbackMessage = AppConfig.ACCOUNT_MANAGEMENT.AUTO_ACCOUNT_CREATION
-            ? 'AutoAccountEmailConfirmation'
-            : 'AdminAccountEmailConfirmation';
-          this._commonService.translateToaster('info', callbackMessage);
-          this._router.navigate(['/login']);
-        },
-        // error callback
-        error => {
-          this._toasterService.error(error.error.msg, '', {
-            positionClass: 'toast-top-center',
-            tapToDismiss: true,
-            timeOut: 5000
-          });
-        }
-      );
+      this._authService
+        .signupUser(finalForm)
+        .subscribe(
+          res => {
+            const callbackMessage = AppConfig.ACCOUNT_MANAGEMENT.AUTO_ACCOUNT_CREATION
+              ? 'AutoAccountEmailConfirmation'
+              : 'AdminAccountEmailConfirmation';
+            this._commonService.translateToaster('info', callbackMessage);
+            this._router.navigate(['/login']);
+          },
+          // error callback
+          error => {
+            this._toasterService.error(error.error.msg, '', {
+              positionClass: 'toast-top-center',
+              tapToDismiss: true,
+              timeOut: 5000
+            });
+          }
+        )
+        .add(() => {
+          this.disableSubmit = false;
+        });
     }
   }
 }

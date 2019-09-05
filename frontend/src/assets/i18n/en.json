@@ -166,5 +166,6 @@
   "CreateAccount": "Create an account",
   "ForgotPasswordOrLogin": "Loggin or password forgotten",
   "AutoAccountEmailConfirmation": "An email has been sent to confirm your account",
-  "AdminAccountEmailConfirmation": "Your demand has been saved, an administrator will answer to you soon"
+  "AdminAccountEmailConfirmation": "Your demand has been saved, an administrator will answer to you soon",
+  "PasswordAndLoginRecovery": "An email has been sent to recover your login and password"
 }
