@@ -64,6 +64,7 @@ export class SignUpComponent implements OnInit {
             ? 'AutoAccountEmailConfirmation'
             : 'AdminAccountEmailConfirmation';
           this._commonService.translateToaster('info', callbackMessage);
+          this._router.navigate(['/login']);
         },
         // error callback
         error => {

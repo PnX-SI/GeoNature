@@ -1,86 +1,114 @@
 <div>
-  <small *ngIf="(formDef.type_widget == 'checkbox' && formDef.values.length > 1)
-      || formDef.type_widget == 'text'
-      || formDef.type_widget == 'textarea'
-      || formDef.type_widget == 'radio'
-      || formDef.type_widget == 'select'
-      " [attr.for]="formDef.attribut_name">{{formDef.attribut_label}}</small>
-  <div [ngSwitch]="formDef.type_widget">
-
-    <input 
-      *ngSwitchCase="'text'" 
-      class="form-control form-control-sm" 
-      [formControl]="form.get(formDef.attribut_name)" 
-      [id]="formDef.attribut_name"
-      type="text"
-    >
-    <textarea 
-      *ngSwitchCase="'textarea'"
-      class="form-control form-control-sm" 
-      [formControl]="form.get(formDef.attribut_name)" 
-      [id]="formDef.attribut_name"
-      type="textarea">
-    </textarea>
-
-    <select 
-      *ngSwitchCase="'select'" 
-      class="form-control" 
-      [id]="formDef.attribut_name" 
-      [formControl]="form.get(formDef.attribut_name)">
-        <option  [value]="null"> - </option>
-        <option *ngFor="let val of formDef.values" [value]="val">{{val}}</option>
-    </select>
-
-    <pnx-nomenclature 
-      *ngSwitchCase="'nomenclature'" 
-      [label]=formDef.attribut_label 
-      [parentFormControl]="form.get(formDef.attribut_name)" 
-      [codeNomenclatureType]="formDef.code_nomenclature_type"
-      [multiSelect]="formDef.multi_select" 
-      [keyValue]="formDef.key_value">
-    </pnx-nomenclature>
-
-    <div *ngSwitchCase="'checkbox'">
-      <div *ngIf="formDef.values.length == 1; else elseBlock">
-          <label><span [innerHTML]="formDef.attribut_label"> </span></label> 
-          <input type="checkbox" [name]="formDef.attribut_name" [value]="formDef.values[0]" (change)="onCheckChange($event, form.get(formDef.attribut_name))" > 
+    <small *ngIf="(formDef.type_widget == 'checkbox' && formDef.values.length > 1)
+        || formDef.type_widget == 'text'
+        || formDef.type_widget == 'textarea'
+        || formDef.type_widget == 'radio'
+        || formDef.type_widget == 'select'
+        " [attr.for]="formDef.attribut_name">{{formDef.attribut_label}}</small>
+    <div [ngSwitch]="formDef.type_widget">
+  
+      <input 
+        *ngSwitchCase="'text'" 
+        class="form-control form-control-sm" 
+        [formControl]="form.get(formDef.attribut_name)" 
+        [id]="formDef.attribut_name"
+        type="text"
+      >
+      <textarea 
+        *ngSwitchCase="'textarea'"
+        class="form-control form-control-sm" 
+        [formControl]="form.get(formDef.attribut_name)" 
+        [id]="formDef.attribut_name"
+        type="textarea">
+      </textarea>
+  
+      <select 
+        *ngSwitchCase="'select'" 
+        class="form-control" 
+        [id]="formDef.attribut_name" 
+        [formControl]="form.get(formDef.attribut_name)">
+          <option  [value]="null"> - </option>
+          <option *ngFor="let val of formDef.values" [value]="val">{{val}}</option>
+      </select>
+  
+      <pnx-nomenclature 
+        *ngSwitchCase="'nomenclature'" 
+        [label]=formDef.attribut_label 
+        [parentFormControl]="form.get(formDef.attribut_name)" 
+        [codeNomenclatureType]="formDef.code_nomenclature_type"
+        [multiSelect]="formDef.multi_select" 
+        [keyValue]="formDef.key_value">
+      </pnx-nomenclature>
+  
+      <div *ngSwitchCase="'checkbox'">
+            <div class="custom-control custom-checkbox" *ngIf="formDef.values.length == 1; else elseBlock">
+                <input 
+                  type="checkbox" 
+                  [id]="formDef.attribut_name"
+                  class="custom-control-input"
+                  [ngClass]="{'is-invalid': form.get(formDef.attribut_name).invalid}"
+                  [name]="formDef.attribut_name" 
+                  [value]="formDef.values[0]" 
+                  (change)="onCheckChange($event, form.get(formDef.attribut_name))" 
+                > 
+                <label class="custom-control-label" [for]="formDef.attribut_name"><span [innerHTML]="formDef.attribut_label"> </span></label> 
+              </div>
+            <ng-template #elseBlock>
+                <div *ngFor="let val of formDef.values; let index=index" class="custom-control custom-checkbox">
+                    <input 
+                      class="custom-control-input" 
+                      [ngClass]="{'is-invalid': form.get(formDef.attribut_name).invalid}" 
+                      type="checkbox" 
+                      [id]="val"
+                      [name]="formDef.attribut_name" 
+                      [value]="val" 
+                      (change)="onCheckChange($event, form.get(formDef.attribut_name))" 
+                    > 
+                    <label [for]="val" class="custom-control-label"><span [innerHTML]="val"></span></label>
+                </div>
+            </ng-template>
       </div>
-      <ng-template #elseBlock>
-          <div *ngFor="let val of formDef.values; let index=index">
-              <input  type="checkbox" [name]="formDef.attribut_name" [value]="val" (change)="onCheckChange($event, form.get(formDef.attribut_name))" > 
-              <label><span [innerHTML]="val"></span></label>
-          </div>
-      </ng-template>
-    </div>
-
-
-    <div *ngSwitchCase="'radio'">
-      <div *ngFor="let val of formDef.values">
-          <input (click)="onRadioChange(val, form.get(formDef.attribut_name))" type="radio" [name]="formDef.attribut_name" [value]="val"
-          [formControl]="form.get(formDef.attribut_name)"> 
-          <label> <span [innerHTML]="val"></span> </label>
+  
+  
+      <div *ngSwitchCase="'radio'">
+        <div *ngFor="let val of formDef.values" class="custom-control custom-radio">
+            <input 
+              type="radio" 
+              [id]="val" 
+              (click)="onRadioChange(val, form.get(formDef.attribut_name))" 
+              class="custom-control-input"
+              [name]="formDef.attribut_name" 
+              [value]="val"
+              [formControl]="form.get(formDef.attribut_name)"> 
+            <label 
+              class="custom-control-label"
+              [for]="val"> 
+              <span [innerHTML]="val"></span>
+            </label>
+        </div>
+  
       </div>
+  
+      <pnx-taxonomy *ngSwitchCase="'taxonomy'" [label]="formDef.attribut_label" [parentFormControl]="form.get(formDef.attribut_name)" [idList]="formDef.idComponent"
+        [charNumber]="3" [listLength]="20">
+      </pnx-taxonomy>
+  
+      <pnx-datasets *ngSwitchCase="'dataset'" [label]="formDef.attribut_label" [parentFormControl]="form.get(formDef.attribut_name)" [multiSelect]="formDef.multi_select">
+      </pnx-datasets>
+  
+      <pnx-observers *ngSwitchCase="'observers'" [label]="formDef.attribut_label" [parentFormControl]="form.get(formDef.attribut_name)" [idMenu]="formDef.idComponent">
+      </pnx-observers>
+  
+      <pnx-date *ngSwitchCase="'date'" [label]="formDef.attribut_label" [parentFormControl]="form.get(formDef.attribut_name)">
+      </pnx-date>
+  
+      <pnx-municipalities *ngSwitchCase="'municipalities'" [label]="formDef.attribut_label" [parentFormControl]="form.get(formDef.attribut_name)">
+      </pnx-municipalities>
+  
+      <pnx-multiselect *ngSwitchCase="'multiselect'" [values]="formDef.values" [parentFormControl]="form.get(formDef.attribut_name)" keyLabel="value" keyValue="value"
+      [label]="formDef.attribut_label"  [searchBar]="false">
+      </pnx-multiselect>
     </div>
-
-    <pnx-taxonomy *ngSwitchCase="'taxonomy'" [label]="formDef.attribut_label" [parentFormControl]="form.get(formDef.attribut_name)" [idList]="formDef.idComponent"
-      [charNumber]="3" [listLength]="20">
-    </pnx-taxonomy>
-
-    <pnx-datasets *ngSwitchCase="'dataset'" [label]="formDef.attribut_label" [parentFormControl]="form.get(formDef.attribut_name)" [multiSelect]="formDef.multi_select">
-    </pnx-datasets>
-
-    <pnx-observers *ngSwitchCase="'observers'" [label]="formDef.attribut_label" [parentFormControl]="form.get(formDef.attribut_name)" [idMenu]="formDef.idComponent">
-    </pnx-observers>
-
-    <pnx-date *ngSwitchCase="'date'" [label]="formDef.attribut_label" [parentFormControl]="form.get(formDef.attribut_name)">
-    </pnx-date>
-
-    <pnx-municipalities *ngSwitchCase="'municipalities'" [label]="formDef.attribut_label" [parentFormControl]="form.get(formDef.attribut_name)">
-    </pnx-municipalities>
-
-    <pnx-multiselect *ngSwitchCase="'multiselect'" [values]="formDef.values" [parentFormControl]="form.get(formDef.attribut_name)" keyLabel="value" keyValue="value"
-    [label]="formDef.attribut_label"  [searchBar]="false">
-    </pnx-multiselect>
+  
   </div>
-
-</div>
+  
