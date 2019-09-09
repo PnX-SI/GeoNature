@@ -3,7 +3,6 @@
 . mymigratetov2.ini
 . ../../../../config/settings.ini
 
-sudo rm ../../../../var/log/mymigratetov2.log
 touch ../../../../var/log/mymigratetov2.log
 sudo chmod 777 . ../../../../var/log/mymigratetov2.log
 

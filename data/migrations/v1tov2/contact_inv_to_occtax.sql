@@ -213,11 +213,7 @@ INSERT INTO pr_occtax.t_occurrences_occtax(
     ref_nomenclatures.get_id_nomenclature('STATUT_BIO','1') AS id_nomenclature_bio_status,
     ref_nomenclatures.get_id_nomenclature('NATURALITE','1') AS id_nomenclature_naturalness,
     ref_nomenclatures.get_id_nomenclature('PREUVE_EXIST','2') AS id_nomenclature_exist_proof,
-    CASE 
-      WHEN inv.diffusable = true THEN ref_nomenclatures.get_id_nomenclature('NIV_PRECIS','5') 
-      WHEN inv.diffusable = false THEN ref_nomenclatures.get_id_nomenclature('NIV_PRECIS','4') 
-      ELSE ref_nomenclatures.get_id_nomenclature('NIV_PRECIS','5') 
-    END AS id_nomenclature_diffusion_level,
+    ref_nomenclatures.get_id_nomenclature('NIV_PRECIS','5') AS id_nomenclature_diffusion_level,
     ref_nomenclatures.get_id_nomenclature('STATUT_OBS','Pr') AS id_nomenclature_observation_status,
     ref_nomenclatures.get_id_nomenclature('DEE_FLOU','NON') AS id_nomenclature_blurring,
     ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE','Te') AS id_nomenclature_source_status,

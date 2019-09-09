@@ -1,7 +1,4 @@
-DROP SCHEMA IF EXISTS gn_synchronomade;
 CREATE SCHEMA gn_synchronomade;
-COMMENT ON SCHEMA gn_synchronomade IS 'schéma contenant les erreurs de synchronisation et permettant une compatibilité temporaire avec les outils mobiles de la V1';
-
 
 ----------
 --TABLES--

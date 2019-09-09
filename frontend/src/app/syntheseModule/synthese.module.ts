@@ -9,7 +9,7 @@ import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthe
 import { SyntheseStoreService } from '@geonature_common/form/synthese-form/synthese-store.service';
 import { MapService } from '@geonature_common/map/map.service';
 import { TreeModule } from 'angular-tree-component';
-import { DynamicFormService } from '@geonature_common/form/dynamic-form/dynamic-form.service';
+import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
 import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service';
 import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
 import { ModalInfoObsComponent } from './synthese-results/synthese-list/modal-info-obs/modal-info-obs.component';

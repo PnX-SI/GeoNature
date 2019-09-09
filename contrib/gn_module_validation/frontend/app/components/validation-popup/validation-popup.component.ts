@@ -72,7 +72,7 @@ export class ValidationPopupComponent {
             this.valDate.emit(new Date());
             //this.getValidationDate(this.observations[0]);
             resolve('data updated');
-        })
+        }
       })
     .catch(
       err => {
@@ -92,7 +92,7 @@ export class ValidationPopupComponent {
           // close validation status popup
           this.closeModal();
           resolve('process finished');
-      })
+      }
     })
     .then(
       data => {

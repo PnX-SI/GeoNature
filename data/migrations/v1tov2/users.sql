@@ -115,17 +115,6 @@ SELECT * FROM v1_compat.t_listes;
 INSERT INTO utilisateurs.cor_role_liste (id_role, id_liste)
 SELECT * FROM v1_compat.cor_role_liste;
 
---
---Gestion de la liste occtax
-SELECT setval('utilisateurs.t_listes_id_liste_seq', (SELECT max(id_liste)+1 FROM utilisateurs.t_listes), true);
-INSERT INTO utilisateurs.t_listes (code_liste, nom_liste, desc_liste)
-VALUES('obsocctax','Observateurs Occtax','Liste des observateurs du module Occtax');
--- Ajout des admin dans la liste
-INSERT INTO utilisateurs.cor_role_liste (id_liste, id_role)
-SELECT id_liste, 1001
-FROM utilisateurs.t_listes
-WHERE code_liste = 'obsocctax';
-
 INSERT INTO utilisateurs.cor_profil_for_app (id_profil, id_application)
 SELECT * FROM v1_compat.cor_profil_for_app;
 
