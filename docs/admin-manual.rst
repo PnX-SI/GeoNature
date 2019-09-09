@@ -872,7 +872,7 @@ Création de compte
 Configuration de la création de compte
 """"""""""""""""""""""""""""""""""""""
 
-Depuis la version 2.1.0, UsersHub propose une API de création de compte. Une interface a été ajoutée à GeoNature pour permettre aux futurs utilisateurs de faire des demande de création de compte depuis la page d'accueil de GeoNature. Ce mode est activable/désactivable depuis la configuration globale de GeoNature. 
+Depuis la version 2.1.0, UsersHub propose une API de création de compte. Une interface a été ajoutée à GeoNature pour permettre aux futurs utilisateurs de faire des demandes de création de compte depuis la page d'accueil de GeoNature. Ce mode est activable/désactivable depuis la configuration globale de GeoNature. 
 
 Pour des raisons de sécurité, l'API de création de compte est réservée aux utilisateurs "admin" grâce à un token secret. GeoNature a donc besoin de se connecter en tant qu'administrateur à UsersHub pour executer les requêtes d'administration de compte.
 Renseigner les paramètres suivant dans le fichier de configuration (`geonature_config.toml`). L'utilisateur doit avoir des droits 6 dans UsersHub
@@ -925,7 +925,7 @@ Customisation du formulaire
 
 Le formulaire de création de compte est par défaut assez minimaliste (nom, prénom, email, mdp, organisme).
 
-*NB* l'organisme est demandé à l'utilisateur à titre "informatif", c'est à l'administrateur de rattacher "à la main" l'utilisateur à son organisme, et eventuellement de le créer, s'il n'existe pas.
+**NB**: l'organisme est demandé à l'utilisateur à titre "informatif", c'est à l'administrateur de rattacher "à la main" l'utilisateur à son organisme, et eventuellement de le créer, s'il n'existe pas.
 
 Il est possible d'ajouter des champs au formulaire grâce à un générateur controlé par la configuration. Plusieurs type de champs peuvent être ajoutés (text, textarea, number, select, checkbox mais aussi taxonomy, nomenclature etc...).
 
@@ -956,10 +956,13 @@ Espace utilisateur
 Enfin, un espace "utilisateur" est accessible lorsque l'on est connecté, permettant de modifier ses informations personnels, y compris son mot de passe.
 Cet espace est activable grâce au paramètre  ``ENABLE_USER_MANAGEMENT``. Par défaut, il est désactivé.
 
-[ACCOUNT_MANAGEMENT]
-    AUTO_ACCOUNT_CREATION = true
-    ENABLE_SIGN_UP = true
-    ENABLE_USER_MANAGEMENT = true
+::
+
+
+    [ACCOUNT_MANAGEMENT]
+        AUTO_ACCOUNT_CREATION = true
+        ENABLE_SIGN_UP = true
+        ENABLE_USER_MANAGEMENT = true
 
 
 Module OCCTAX
