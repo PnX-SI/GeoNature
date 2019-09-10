@@ -4,7 +4,7 @@ import requests
 from flask import Blueprint, request
 from sqlalchemy.sql import distinct
 
-from flask import Blueprint, request, current_app, Response, jsonify, redirect
+from flask import Blueprint, request, current_app, Response, redirect
 
 from geonature.utils.env import DB
 from geonature.core.users.models import VUserslistForallMenu, BibOrganismes, CorRole
@@ -232,13 +232,13 @@ def get_organismes_jdd(info_role):
 @routes.route("/inscription", methods=["POST"])
 def inscription():
     """
-        Inscrit un user à partir de l'interface geonature
+        Ajoute un utilisateur à utilisateurs.temp_user à partir de l'interface geonature
         Fonctionne selon l'autorisation 'ENABLE_SIGN_UP' dans la config.
         Fait appel à l'API UsersHub
     """
     # test des droits
     if not config["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP", False):
-        return jsonify({"message": "Page introuvable"}), 404
+        return {"message": "Page introuvable"}, 404
 
     data = request.get_json()
     # ajout des valeurs non présentes dans le form
@@ -262,7 +262,7 @@ def login_recovery():
     """
     # test des droits
     if not current_app.config.get("ACCOUNT_MANAGEMENT").get("ENABLE_SIGN_UP", False):
-        return jsonify({"msg": "Page introuvable"}), 404
+        return {"msg": "Page introuvable"}, 404
 
     data = request.get_json()
 
@@ -284,11 +284,11 @@ def confirmation():
     """
     # test des droits
     if not config["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP", False):
-        return jsonify({"message": "Page introuvable"}), 404
+        return {"message": "Page introuvable"}, 404
 
     token = request.args.get("token", None)
     if token is None:
-        return jsonify({"message": "Token introuvable"}), 404
+        return {"message": "Token introuvable"}, 404
 
     data = {"token": token, "id_application": config["ID_APPLICATION_GEONATURE"]}
 
