@@ -1,4 +1,5 @@
 import logging
+import json
 import datetime
 import ast
 import time
@@ -69,7 +70,7 @@ def current_milli_time():
 ############################################
 
 
-@routes.route("/for_web", methods=["GET"])
+@routes.route("/for_web", methods=["GET", "POST"])
 @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
 @json_resp
 def get_observations_for_web(info_role):
@@ -115,7 +116,20 @@ def get_observations_for_web(info_role):
     :>jsonarr int nb_total: Number of observations
     :>jsonarr bool nb_obs_limited: Is number of observations capped
     """
-    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
+    if request.json:
+        filters = request.json
+    elif request.data:
+        filters = json.loads(request.data)
+    else:
+        filters = {key: request.args.getlist(key) for key, value in request.args.items()}
+
+    # Passage de l'ensemble des filtres
+    #   en array pour des questions de compatibilité
+    # TODO voir si ça ne peut pas être modifié
+    for k in filters.keys():
+        if not isinstance(filters[k], list):
+            filters[k] = [filters[k]]
+
     if "limit" in filters:
         result_limit = filters.pop("limit")[0]
     else:
@@ -169,6 +183,7 @@ def get_observations_for_web(info_role):
 @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
 @json_resp
 def get_synthese(info_role):
+<<<<<<< HEAD
     """Return synthese row(s) filtered by form params. NOT USED ANY MORE FOR PERFORMANCE ISSUES
 
     .. :quickref: Synthese; Deprecated
@@ -180,6 +195,13 @@ def get_synthese(info_role):
 
     :parameter str info_role: Role used to get the associated filters
     :returns dict[dict, int, bool]: See description above
+=======
+    """
+        Return synthese row(s) filtered by form params NOT USE ANY MORE FOR PERFORMANCE ISSUES
+        .. :quickref: Synthese;
+        Params must have same synthese fields names
+
+>>>>>>> origin/query_synthese_post
     """
     # change all args in a list of value
     filters = {key: request.args.getlist(key) for key, value in request.args.items()}
@@ -269,6 +291,7 @@ def get_one_synthese(id_synthese):
 def export_observations_web(info_role):
     """Optimized route for observations web export.
 
+<<<<<<< HEAD
     .. :quickref: Synthese;
 
     This view is customisable by the administrator
@@ -277,6 +300,16 @@ def export_observations_web(info_role):
     POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
 
     :query str export_format: str<'csv', 'geojson', 'shapefiles'>
+=======
+        .. :quickref: Synthese;
+
+        This view is customisable by the administrator
+        Some columns arer mandatory: id_sythese, geojson and geojson_local to generate the exported files
+
+        POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
+
+        :query str export_format: str<'csv', 'geojson', 'shapefiles'>
+>>>>>>> origin/query_synthese_post
 
     """
     params = request.args

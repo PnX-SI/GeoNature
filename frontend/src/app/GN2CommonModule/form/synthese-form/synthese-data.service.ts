@@ -43,10 +43,11 @@ export class SyntheseDataService {
     }
     return queryUrl;
   }
+
   getSyntheseData(params) {
-    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/for_web`, {
-      params: this.buildQueryUrl(params)
-    });
+    return this._api.post<any>(`${AppConfig.API_ENDPOINT}/synthese/for_web`,
+      params
+    );
   }
 
   getSyntheseGeneralStat() {
