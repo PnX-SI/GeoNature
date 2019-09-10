@@ -121,7 +121,9 @@ def get_observations_for_web(info_role):
     elif request.data:
         filters = json.loads(request.data)
     else:
-        filters = {key: request.args.getlist(key) for key, value in request.args.items()}
+        filters = {
+            key: request.args.getlist(key) for key, value in request.args.items()
+        }
 
     # Passage de l'ensemble des filtres
     #   en array pour des questions de compatibilité
@@ -183,7 +185,6 @@ def get_observations_for_web(info_role):
 @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
 @json_resp
 def get_synthese(info_role):
-<<<<<<< HEAD
     """Return synthese row(s) filtered by form params. NOT USED ANY MORE FOR PERFORMANCE ISSUES
 
     .. :quickref: Synthese; Deprecated
@@ -195,13 +196,6 @@ def get_synthese(info_role):
 
     :parameter str info_role: Role used to get the associated filters
     :returns dict[dict, int, bool]: See description above
-=======
-    """
-        Return synthese row(s) filtered by form params NOT USE ANY MORE FOR PERFORMANCE ISSUES
-        .. :quickref: Synthese;
-        Params must have same synthese fields names
-
->>>>>>> origin/query_synthese_post
     """
     # change all args in a list of value
     filters = {key: request.args.getlist(key) for key, value in request.args.items()}
@@ -291,7 +285,6 @@ def get_one_synthese(id_synthese):
 def export_observations_web(info_role):
     """Optimized route for observations web export.
 
-<<<<<<< HEAD
     .. :quickref: Synthese;
 
     This view is customisable by the administrator
@@ -300,16 +293,6 @@ def export_observations_web(info_role):
     POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
 
     :query str export_format: str<'csv', 'geojson', 'shapefiles'>
-=======
-        .. :quickref: Synthese;
-
-        This view is customisable by the administrator
-        Some columns arer mandatory: id_sythese, geojson and geojson_local to generate the exported files
-
-        POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
-
-        :query str export_format: str<'csv', 'geojson', 'shapefiles'>
->>>>>>> origin/query_synthese_post
 
     """
     params = request.args
