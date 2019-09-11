@@ -98,9 +98,33 @@ class GnPySchemaConf(Schema):
     CAS = fields.Nested(CasSchemaConf, missing=dict())
     MAIL_ON_ERROR = fields.Boolean(missing=False)
     MAIL_CONFIG = fields.Nested(MailConfig, missing=None)
-    URL_USERSHUB = fields.Url(required=False)
     ADMIN_APPLICATION_LOGIN = fields.String()
     ADMIN_APPLICATION_PASSWORD = fields.String()
+
+    # Doublon de la confif volontaire pour faire de la validation
+    # entre des confs public et privée
+    URL_USERSHUB = fields.Url(required=False)
+    ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, missing={})
+
+    @validates_schema
+    def validate_enable_usershub_and_mail(self, data):
+        # si account management = true, URL_USERSHUB et MAIL_CONFIG sont necessaire
+        if data["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP", False) or data[
+            "ACCOUNT_MANAGEMENT"
+        ].get("ENABLE_USER_MANAGEMENT", False):
+            if data.get("URL_USERSHUB", None) is None:
+                raise ValidationError(
+                    "URL_USERSHUB est necessaire si ENABLE_SIGN_UP=True", "URL_USERSHUB"
+                )
+            if (
+                data["MAIL_CONFIG"].get("MAIL_SERVER", None) is None
+                or data["MAIL_CONFIG"].get("MAIL_USERNAME", None) is None
+                or data["MAIL_CONFIG"].get("MAIL_PASSWORD", None) is None
+            ):
+                raise ValidationError(
+                    "Veuillez remplir la rubrique MAIL_CONFIG si ENABLE_SIGN_UP=True",
+                    "ENABLE_SIGN_UP",
+                )
 
 
 class GnFrontEndConf(Schema):
@@ -220,27 +244,8 @@ class GnGeneralSchemaConf(Schema):
     # Ajoute la surchouche 'taxonomique' sur l'API nomenclature
     ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS = fields.Boolean(missing=True)
     BDD = fields.Nested(BddConfig, missing=dict())
-
+    URL_USERSHUB = fields.Url(required=False)
     ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, missing={})
-
-    @validates_schema
-    def validate_enable_sign_up(self, data):
-        if data["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP", False) or data[
-            "ACCOUNT_MANAGEMENT"
-        ].get("ENABLE_USER_MANAGEMENT", False):
-            if data.get("URL_USERSHUB", None) is None:
-                raise ValidationError(
-                    "URL_USERSHUB est necessaire si ENABLE_SIGN_UP=True", "URL_USERSHUB"
-                )
-            if (
-                data["MAIL_CONFIG"].get("MAIL_SERVER", None) is None
-                or data["MAIL_CONFIG"].get("MAIL_USERNAME", None) is None
-                or data["MAIL_CONFIG"].get("MAIL_PASSWORD", None) is None
-            ):
-                raise ValidationError(
-                    "Veuillez remplir la rubrique MAIL_CONFIG si ENABLE_SIGN_UP=True",
-                    "ENABLE_SIGN_UP",
-                )
 
     @validates_schema
     def validate_enable_sign_up(self, data):
