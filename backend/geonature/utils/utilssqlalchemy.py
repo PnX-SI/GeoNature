@@ -538,7 +538,11 @@ def generate_csv_content(columns, data, separator):
     outdata = [separator.join(columns)]
     for o in data:
         outdata.append(
-            separator.join('"%s"' % (o.get(i), "")[o.get(i) is None] for i in columns)
+            separator.join(
+                '"{}"'.format(
+                    str(o.get(i)).replace('"', '""') if o.get(i) is not None else ""
+                )
+                for i in columns
+            )
         )
-    out = "\r\n".join(outdata)
-    return out
+    return "\r\n".join(outdata)
