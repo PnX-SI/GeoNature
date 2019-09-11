@@ -127,3 +127,19 @@ CREATE OR REPLACE VIEW utilisateurs.v_droits_sentiers AS
              JOIN utilisateurs.cor_role_droit_application c ON c.id_role = g.id_role_groupe
           WHERE c.id_application = 21 AND u.groupe = false) a
   GROUP BY a.id_role, a.identifiant, a.email, a.pass, a.structure, a.lang, a.nom_role, a.prenom_role, a.id_application, a.id_unite;
+
+--Gestion des applications flore PNE restées en version GN1 et adaptées pour le MCD GN2
+INSERT INTO utilisateurs.t_applications(code_application, nom_application, desc_application) VALUES
+  ('FL', 'flore GN1', 'Anciennes applications flore prioritaire et flore station de GeoNature1 portées pour le modèle de GeoNature2');
+  INSERT INTO utilisateurs.cor_profil_for_app(id_profil, id_application) VALUES
+  (1, (SELECT id_application FROM utilisateurs.t_applications WHERE code_application = 'FL'))
+  ,(2, (SELECT id_application FROM utilisateurs.t_applications WHERE code_application = 'FL'))
+  ,(3, (SELECT id_application FROM utilisateurs.t_applications WHERE code_application = 'FL'))
+  ,(6, (SELECT id_application FROM utilisateurs.t_applications WHERE code_application = 'FL'));
+  INSERT INTO utilisateurs.cor_role_app_profil (id_role, id_application, id_profil) VALUES
+  (332,(SELECT id_application FROM utilisateurs.t_applications WHERE code_application = 'FL'),6)
+  ,(1001,(SELECT id_application FROM utilisateurs.t_applications WHERE code_application = 'FL'),2)
+  ,(1004,(SELECT id_application FROM utilisateurs.t_applications WHERE code_application = 'FL'),6)
+  ,(1238,(SELECT id_application FROM utilisateurs.t_applications WHERE code_application = 'FL'),2)
+  ,(1260,(SELECT id_application FROM utilisateurs.t_applications WHERE code_application = 'FL'),2)
+  ;
