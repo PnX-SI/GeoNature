@@ -94,7 +94,8 @@ def get_areas_stat(simplify_level, type_code):
         + """ GROUP BY cor.id_area)
         SELECT a.area_name, st_asgeojson(st_transform(st_simplifyPreserveTopology(a.geom, :level), 4326)), c.nb_obs, c.nb_tax
         FROM ref_geo.l_areas a
-        JOIN count c ON a.id_area = c.id_area """
+        JOIN count c ON a.id_area = c.id_area 
+        """
     )
     data = DB.engine.execute(q, level=simplify_level, code=type_code)
 
