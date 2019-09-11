@@ -7,10 +7,9 @@
 --rappatrier les données localement pour des questions de performances
 CREATE MATERIALIZED VIEW v1_compat.vm_syntheseff AS
 SELECT * FROM v1_compat.syntheseff
-WHERE id_source IN(1,2,3,4,5,8,9,10,11,12,13,16,18,19,20,99,200,201,202,203,204,205,206);
---TODO : 
--- 17 = LPO ; 
---REFAIRE DEPUIS LA SOURCE: 
+WHERE id_source IN(1,2,3,4,5,8,9,10,11,12,13,16,17,18,19,20,99,107,111,200,201,202,203,204,205,206);
+ 
+--A REFAIRE DEPUIS LA SOURCE ON DAY: 
 -- 107 = CBNA ; 111 = BDF05 ; 8 = Chiroptères
 
 --création d'index sur la vue matérialisée
