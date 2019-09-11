@@ -34,7 +34,6 @@ URL_USERHUB = "http://127.0.0.1:5001"
 # Administrateur de mon application
 ADMIN_APPLICATION_LOGIN = "login_admin_usershub"
 ADMIN_APPLICATION_PASSWORD = "password_admin_usershub"
-ADMIN_APPLICATION_MAIL = "email_admin_usershub"
 
 # MTD
 XML_NAMESPACE = "{http://inpn.mnhn.fr/mtd}"
@@ -245,7 +244,7 @@ ID_USER_SOCLE_2 = 6
 
     [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]]
         type_widget = "textarea"
-        attribut_label = "Remarque longue"
+        attribut_label = "Qui êtes vous ?"
         attribut_name = "comment_area"
         required = false
 

@@ -241,6 +241,7 @@ def inscription():
         return {"message": "Page introuvable"}, 404
 
     data = request.get_json()
+    data["id_application"] = current_app.config["ID_APPLICATION_GEONATURE"]
     # ajout des valeurs non présentes dans le form
     data["groupe"] = False
     data["url_confirmation"] = config["API_ENDPOINT"] + "/users/confirmation"
