@@ -21,7 +21,7 @@
                         <div class="form-group">
                             <label class="col-form-label"><b> Rang taxonomique </b></label>
                             <select class="form-control form-control-sm" formControlName="selectedFilter"
-                                (change)="onTaxFilterChange($event)" [disabled]="spinner">
+                                (change)="onTaxFilterChange($event)" [disableControl]="spinner">
                                 <option> </option>
                                 <option> Groupe INPN 1 </option>
                                 <option> Groupe INPN 2 </option>

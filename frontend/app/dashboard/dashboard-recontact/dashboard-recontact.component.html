@@ -21,7 +21,7 @@
                         <div class="form-group" id="years">
                             <label class="col-form-label"><b> Année </b></label>
                             <select class="form-control form-control-sm" formControlName="selectedYear"
-                                (change)="getCurrentYear($event)" [disabled]="spinner">
+                                (change)="getCurrentYear($event)" [disableControl]="spinner">
                                 <ng-container *ngFor="let year of distinctYears">
                                     <option [ngValue]="year">
                                         {{ year }} </option>

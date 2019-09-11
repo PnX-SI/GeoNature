@@ -166,7 +166,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   public tabAreasTypes: Array<any>;
 
   // Gestion du formulaire contrôlant le type de zonage
-  public areaTypeControl = new FormControl();
+  public areaTypeControl = new FormControl('COM');
   public currentTypeCode = "COM"; // par défaut, la carte s'affiche automatiquement en mode "communes"
 
   // Pouvoir stoppper le chargement des données si un changement de filtre est opéré avant la fin du chargement
@@ -238,26 +238,27 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
       });
     // Initialisation de la fonction "showData" : par défaut, la carte affiche automatiquement le nombre d'observations
     this.showData = this.onEachFeatureNbObs;
-    // Par défaut, la carte s'affiche en mode "communes"
-    this.areaTypeControl.patchValue("COM");
     // Récupération des noms de type_area qui seront contenus dans la liste déroulante du formulaire areaTypeControl
     this.dataService.getAreasTypes(ModuleConfig.AREA_TYPE).subscribe(data => {
       // Création de la liste déroulante
       this.tabAreasTypes = data;
     });
     // Abonnement à la liste déroulante du formulaire areaTypeControl afin de modifier le type de zonage à chaque changement
-    this.areaTypeControl.valueChanges.subscribe(value => {
-      this.spinner = true;
-      this.currentTypeCode = value;
-      // Accès aux données de synthèse
-      this.dataService
-        .getDataAreas(this.simplifyLevel, this.currentTypeCode, this.mapForm.value)
-        .subscribe(data => {
-          // Rafraichissement du tableau contenant la géométrie et les données des zonages
-          this.myAreas = data;
-          this.spinner = false;
-        });
-    });
+    this.areaTypeControl.valueChanges
+      .distinctUntilChanged() // le [disableControl] du HTML déclenche l'API sans fin
+      .skip(1) // l'initialisation de la liste déroulante sur "Communes" lance l'API une fois
+      .subscribe(value => {
+        this.spinner = true;
+        this.currentTypeCode = value;
+        // Accès aux données de synthèse
+        this.dataService
+          .getDataAreas(this.simplifyLevel, this.currentTypeCode, this.mapForm.value)
+          .subscribe(data => {
+            // Rafraichissement du tableau contenant la géométrie et les données des zonages
+            this.myAreas = data;
+            this.spinner = false;
+          });
+      });
   }
 
   ngOnChanges(change) {

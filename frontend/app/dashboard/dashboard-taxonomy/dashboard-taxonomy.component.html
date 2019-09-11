@@ -32,7 +32,7 @@
                         <div class="form-group">
                             <label class="col-form-label"><b> Rang taxonomique </b></label>
                             <select class="form-control form-control-sm" formControlName="selectedFilter"
-                                (change)="getCurrentParameters($event)" [disabled]="spinner">
+                                (change)="getCurrentParameters($event)" [disableControl]="spinner">
                                 <option> Groupe INPN 1 </option>
                                 <option> Groupe INPN 2 </option>
                                 <option> Règne </option>
