@@ -36,7 +36,7 @@
                         <div class="form-group" id="group1_inpn_filter" *ngIf="filter === 'Groupe INPN 1'">
                             <label class="col-form-label"> Groupe INPN 1 </label>
                             <select class="form-control form-control-sm" formControlName="selectedGroup1INPN"
-                                (change)="getCurrentTax($event)" [disabled]="spinner">
+                                (change)="getCurrentTax($event)" [disableControl]="spinner">
                                 <option> </option>
                                 <ng-container *ngFor="let group1_inpn of taxonomies['Groupe INPN 1']">
                                     <option [ngValue]="group1_inpn" *ngIf="group1_inpn != 'Not defined'">
@@ -47,7 +47,7 @@
                         <div class="form-group" id="group2_inpn_filter" *ngIf="filter === 'Groupe INPN 2'">
                             <label class="col-form-label"> Groupe INPN 2 </label>
                             <select class="form-control form-control-sm" formControlName="selectedGroup2INPN"
-                                (change)="getCurrentTax($event)" [disabled]="spinner">
+                                (change)="getCurrentTax($event)" [disableControl]="spinner">
                                 <option> </option>
                                 <ng-container *ngFor="let group2_inpn of taxonomies['Groupe INPN 2']">
                                     <option [ngValue]="group2_inpn" *ngIf="group2_inpn != 'Not defined'">
@@ -58,7 +58,7 @@
                         <div class="form-group" id="regne_filter" *ngIf="filter === 'Règne'">
                             <label class="col-form-label"> Règne </label>
                             <select class="form-control form-control-sm" formControlName="selectedRegne"
-                                (change)="getCurrentTax($event)" [disabled]="spinner">
+                                (change)="getCurrentTax($event)" [disableControl]="spinner">
                                 <option> </option>
                                 <ng-container *ngFor="let regne of taxonomies['Règne']">
                                     <option [ngValue]="regne" *ngIf="regne != 'Not defined'"> {{ regne }} </option>
@@ -68,7 +68,7 @@
                         <div class="form-group" id="phylum_filter" *ngIf="filter === 'Phylum'">
                             <label class="col-form-label"> Phylum </label>
                             <select class="form-control form-control-sm" formControlName="selectedPhylum"
-                                (change)="getCurrentTax($event)" [disabled]="spinner">
+                                (change)="getCurrentTax($event)" [disableControl]="spinner">
                                 <option> </option>
                                 <ng-container *ngFor="let phylum of taxonomies['Phylum']">
                                     <option [ngValue]="phylum" *ngIf="phylum != 'Not defined'"> {{ phylum }}
@@ -79,7 +79,7 @@
                         <div class="form-group" id="classe_filter" *ngIf="filter === 'Classe'">
                             <label class="col-form-label"> Classe </label>
                             <select class="form-control form-control-sm" formControlName="selectedClasse"
-                                (change)="getCurrentTax($event)" [disabled]="spinner">
+                                (change)="getCurrentTax($event)" [disableControl]="spinner">
                                 <option> </option>
                                 <ng-container *ngFor="let classe of taxonomies['Classe']">
                                     <option [ngValue]="classe" *ngIf="classe != 'Not defined'"> {{ classe }}
@@ -90,7 +90,7 @@
                         <div class="form-group" id="ordre_filter" *ngIf="filter === 'Ordre'">
                             <label class="col-form-label"> Ordre </label>
                             <select class="form-control form-control-sm" formControlName="selectedOrdre"
-                                (change)="getCurrentTax($event)" [disabled]="spinner">
+                                (change)="getCurrentTax($event)" [disableControl]="spinner">
                                 <option> </option>
                                 <ng-container *ngFor="let ordre of taxonomies['Ordre']">
                                     <option [ngValue]="ordre" *ngIf="ordre != 'Not defined'"> {{ ordre }} </option>
@@ -100,7 +100,7 @@
                         <div class="form-group" id="ordre_filter" *ngIf="filter === 'Famille'">
                             <label class="col-form-label"> Famille </label>
                             <select class="form-control form-control-sm" formControlName="selectedFamille"
-                                (change)="getCurrentTax($event)" [disabled]="spinner">
+                                (change)="getCurrentTax($event)" [disableControl]="spinner">
                                 <option> </option>
                                 <ng-container *ngFor="let famille of taxonomies['Famille']">
                                     <option [ngValue]="famille" *ngIf="famille != 'Not defined'"> {{ famille }}
@@ -158,7 +158,7 @@
 
         <div style="display: block">
             <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
-                [colors]="barChartColors" [legend]="barChartLegend" [chartType]="barChartType">
+                [colors]="barChartColors" [chartType]="barChartType">
             </canvas>
         </div>
 
