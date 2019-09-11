@@ -14,6 +14,12 @@ SET client_min_messages = warning;
 
 SET search_path = v1_florepatri, pg_catalog;
 
+SET default_with_oids = false;
+
+
+-------------
+--FUNCTIONS--
+-------------
 CREATE OR REPLACE FUNCTION letypedegeom(mongeom public.geometry)
   RETURNS character varying AS
 $BODY$
@@ -37,8 +43,10 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
-SET default_with_oids = false;
 
+----------
+--TABLES--
+----------
 CREATE TABLE bib_comptages_methodo (
     id_comptage_methodo integer NOT NULL,
     nom_comptage_methodo character varying(100)
@@ -188,6 +196,10 @@ CREATE TABLE t_zprospection (
     CONSTRAINT enforce_srid_the_geom_3857 CHECK ((public.st_srid(the_geom_3857) = 3857))
 );
 
+
+---------
+--VIEWS--
+---------
 CREATE VIEW v_ap_line AS
  SELECT a.indexap,
     a.indexzp,
@@ -553,6 +565,7 @@ CREATE VIEW v_toutesleszp_sridlocal AS
   GROUP BY zp.indexzp, zp.dateobs, t.latin, zp.taxon_saisi, o.observateurs, zp.the_geom_local, zp.insee, com.nom_com, org.nom_organisme, zp.topo_valid, zp.validation, zp.saisie_initiale, zp.srid_dessin
   ORDER BY zp.indexzp;
 
+
 ----------------
 --PRIMARY KEYS--
 ----------------
@@ -620,7 +633,6 @@ CREATE INDEX index_gist_t_zprospection_geom_mixte_3857 ON t_zprospection USING g
 ----------------
 --FOREIGN KEYS--
 ----------------
-
 ALTER TABLE ONLY bib_taxons_fp
     ADD CONSTRAINT bib_taxons_fp_cd_nom_fkey FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
 
@@ -1049,19 +1061,19 @@ DECLARE
 BEGIN
   --Récupération de la liste des observateurs	
   --ici on va mettre à jour l'enregistrement dans synthese autant de fois qu'on insert dans cette table
-	SELECT INTO theobservers array_to_string(array_agg(r.prenom_role || ' ' || r.nom_role), ', ') AS observateurs 
+  SELECT INTO theobservers array_to_string(array_agg(r.prenom_role || ' ' || r.nom_role), ', ') AS observateurs 
   FROM v1_florepatri.cor_zp_obs c
-  JOIN utilisateurs.t_roles r ON r.id_role = c.codeobs
-  JOIN v1_florepatri.t_zprospection zp ON zp.indexzp = c.indexzp
+   JOIN utilisateurs.t_roles r ON r.id_role = c.codeobs
+   JOIN v1_florepatri.t_zprospection zp ON zp.indexzp = c.indexzp
   WHERE c.indexzp = new.indexzp;
   --on boucle sur tous les enregistrements de la zp
   --si la zp est sans ap, la boucle ne se fait pas
-  FOR mesap IN SELECT ap.indexap FROM v1_florepatri.t_zprospection zp JOIN v1_florepatri.t_apresence ap ON ap.indexzp = zp.indexzp WHERE ap.indexzp = new.indexzp  LOOP
+  FOR mesap IN SELECT indexap FROM v1_florepatri.t_apresence WHERE supprime = false AND indexzp = new.indexzp  LOOP
     -- on récupére l'id_synthese
     SELECT INTO theidsynthese id_synthese 
     FROM gn_synthese.synthese
     WHERE id_source = (SELECT id_source FROM gn_synthese.t_sources WHERE name_source ILIKE 'Flore prioritaire') 
-    AND entity_source_pk_value = CAST(mesap.indexap AS VARCHAR);
+    AND entity_source_pk_value = mesap.indexap::varchar;
     --on fait le update du champ observateurs dans synthese
     UPDATE gn_synthese.synthese
     SET 
@@ -1069,9 +1081,10 @@ BEGIN
       determiner = theobservers,
       last_action = 'u'
     WHERE id_synthese = theidsynthese;
+    DELETE FROM gn_synthese.cor_observer_synthese WHERE id_synthese = theidsynthese AND id_role = new.codeobs;
     INSERT INTO gn_synthese.cor_observer_synthese (id_synthese, id_role) VALUES(theidsynthese, new.codeobs);
   END LOOP;
-	RETURN NEW; 			
+  RETURN NEW; 			
 END;
 $BODY$
 LANGUAGE plpgsql VOLATILE
@@ -1193,7 +1206,7 @@ BEGIN
     ( 
       new.unique_id_sinp_fp,
       thezp.unique_id_sinp_grp,
-      104, --TODO 104 = PNE
+      104, -- 104 = PNE
       new.indexap,
       thezp.id_lot,
       ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO','In'),
@@ -1209,7 +1222,7 @@ BEGIN
       ref_nomenclatures.get_id_nomenclature('SEXE','6'),
       ref_nomenclatures.get_id_nomenclature('OBJ_DENBR','NSP'),
       thecomptagemethodo,
-      NULL,--todo sensitivity
+      ref_nomenclatures.get_id_nomenclature('SENSIBILITE','0'),
       ref_nomenclatures.get_id_nomenclature('STATUT_OBS','Pr'),
       ref_nomenclatures.get_id_nomenclature('DEE_FLOU','NON'),
       ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE','Te'),
@@ -1217,7 +1230,7 @@ BEGIN
       new.total_steriles + new.total_fertiles,--count_min
       new.total_steriles + new.total_fertiles,--count_max
       thezp.cd_nom,
-      COALESCE(thezp.saisie_initiale,'non disponible'),
+      COALESCE(thezp.taxon_saisi,'non disponible'),
       thetaxrefversion,
       new.altitude_retenue,--altitude_min
       new.altitude_retenue,--altitude_max
@@ -1313,6 +1326,7 @@ BEGIN
       count_min = new.total_steriles + new.total_fertiles,
       count_max = new.total_steriles + new.total_fertiles,
       comment_description = new.remarques,
+      meta_update_date = now(),
       last_action = 'u',
       the_geom_4326 = public.ST_transform(new.the_geom_3857,4326),
       the_geom_local = new.the_geom_local,
@@ -1340,7 +1354,7 @@ DECLARE
   mesap RECORD;
   thevalidationstatus INTEGER;
 BEGIN
-  FOR mesap IN SELECT ap.indexap FROM v1_florepatri.t_zprospection zp JOIN v1_florepatri.t_apresence ap ON ap.indexzp = zp.indexzp WHERE ap.indexzp = new.indexzp  LOOP
+  FOR mesap IN SELECT indexap FROM v1_florepatri.t_apresence WHERE supprime = true AND indexzp = new.indexzp  LOOP
     --On ne fait qq chose que si l'un des champs de la table t_zprospection concerné dans synthese a changé
     IF (
             new.indexzp <> old.indexzp 
@@ -1366,6 +1380,7 @@ BEGIN
           id_nomenclature_valid_status = thevalidationstatus,
           date_min = new.dateobs,
           date_max = new.dateobs,
+          meta_update_date = now(),
           last_action = 'u'
         WHERE id_source = (SELECT id_source FROM gn_synthese.t_sources WHERE name_source ILIKE 'Flore prioritaire') 
         AND entity_source_pk_value = CAST(mesap.indexap AS VARCHAR);
@@ -1587,6 +1602,7 @@ ALTER TABLE v1_florepatri.t_apresence ALTER COLUMN unique_id_sinp_fp SET NOT NUL
 ALTER TABLE v1_florepatri.t_apresence ALTER COLUMN unique_id_sinp_fp SET DEFAULT public.uuid_generate_v4();
 
 -- Convertion d'un multipoint en point
+-- Erreur dans le script mais pas d'erreur si exécuté hors du script !
 UPDATE v1_florepatri.t_apresence SET 
   the_geom_local = (SELECT (public.st_dump(the_geom_local)).geom FROM v1_florepatri.t_apresence WHERE indexap = 406197584),
   the_geom_3857 = (SELECT (public.st_dump(the_geom_3857)).geom FROM v1_florepatri.t_apresence WHERE indexap = 406197584)
@@ -1653,7 +1669,7 @@ INSERT INTO gn_synthese.synthese
  SELECT
       ap.unique_id_sinp_fp,
       zp.unique_id_sinp_grp,
-      104, --TODO 104 = PNE
+      104, -- 104 = PNE
       (SELECT id_module FROM gn_commons.t_modules WHERE module_code = '4' LIMIT 1),
       ap.indexap,
       zp.id_lot,
@@ -1687,7 +1703,7 @@ INSERT INTO gn_synthese.synthese
         WHEN ap.id_comptage_methodo=2 THEN ref_nomenclatures.get_id_nomenclature('TYP_DENBR','Ca')
         ELSE ref_nomenclatures.get_id_nomenclature('TYP_DENBR','NSP')
       END,
-      NULL,--todo sensitivity
+      ref_nomenclatures.get_id_nomenclature('SENSIBILITE','0'),
       ref_nomenclatures.get_id_nomenclature('STATUT_OBS','Pr'),
       ref_nomenclatures.get_id_nomenclature('DEE_FLOU','NON'),
       ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE','Te'),
@@ -1793,7 +1809,7 @@ INSERT INTO gn_synthese.synthese
  SELECT
       ap.unique_id_sinp_fp,
       zp.unique_id_sinp_grp,
-      104, --TODO 104 = PNE
+      104, -- 104 = PNE
       (SELECT id_module FROM gn_commons.t_modules WHERE module_code = '4' LIMIT 1),
       ap.indexap,
       zp.id_lot,
@@ -1827,7 +1843,7 @@ INSERT INTO gn_synthese.synthese
         WHEN ap.id_comptage_methodo=2 THEN ref_nomenclatures.get_id_nomenclature('TYP_DENBR','Ca')
         ELSE ref_nomenclatures.get_id_nomenclature('TYP_DENBR','NSP')
       END,
-      NULL,--todo sensitivity
+      ref_nomenclatures.get_id_nomenclature('SENSIBILITE','0'),
       ref_nomenclatures.get_id_nomenclature('STATUT_OBS','Pr'),
       ref_nomenclatures.get_id_nomenclature('DEE_FLOU','NON'),
       ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE','Te'),
