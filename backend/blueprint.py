@@ -90,10 +90,28 @@ def get_areas_stat(type_code):
             WHERE cor.id_area IN (SELECT id_area FROM ref_geo.l_areas WHERE id_type = ref_geo.get_id_area_type(:code)) """
         + x
         + """ GROUP BY cor.id_area)
-        SELECT a.area_name, st_asgeojson(st_transform(st_simplifyPreserveTopology(a.geom, 50), 4326)), c.nb_obs, c.nb_tax
+        SELECT a.area_name, st_asgeojson(st_transform(a.simplified_geom, 4326)), c.nb_obs, c.nb_tax
         FROM ref_geo.l_areas a
-        JOIN count c ON a.id_area = c.id_area """
+        JOIN count c ON a.id_area = c.id_area 
+        """
     )
+    if(type_code == 'COM'):
+        q = text(
+        """ WITH count AS
+            (SELECT cor.id_area, count(distinct cor.id_synthese) as nb_obs, count(distinct t.cd_ref) as nb_tax
+            FROM gn_synthese.cor_area_synthese cor
+            JOIN gn_synthese.synthese s ON s.id_synthese=cor.id_synthese
+            JOIN taxonomie.taxref t ON s.cd_nom=t.cd_nom
+            WHERE cor.id_area IN (SELECT id_area FROM ref_geo.l_areas WHERE id_type = ref_geo.get_id_area_type(:code)) """
+        + x
+        + """ GROUP BY cor.id_area)
+        SELECT a.area_name, st_asgeojson(st_transform(a.simplified_geom, 4326)), c.nb_obs, c.nb_tax
+        FROM ref_geo.l_areas a
+        JOIN count c ON a.id_area = c.id_area 
+        JOIN ref_geo.li_municipalities m ON m.id_area = a.id_area AND m.insee_dep IN ('05','38')
+        """
+    )
+
     data = DB.engine.execute(q, code=type_code)
 
     geojson_features = []
