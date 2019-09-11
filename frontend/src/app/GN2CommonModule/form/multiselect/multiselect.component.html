@@ -1,14 +1,8 @@
 <small> {{label }} </small>
 <div class="input-group">
-  <div 
-    class="btn-white full-width clickable dropdown-toggle" 
-    data-toggle="dropdown" 
-    aria-expanded="true" 
-    [ngClass]="{'disabled': disabled, 'custom-invalid' : parentFormControl.invalid && !disabled}"
-    id="button-input"
-  >
-
-    <span *ngFor="let item of selectedItems" class="filter-option input-value pull-left" style="white-space: normal!important;"> {{item[keyLabel]}}
+  <div class="dropdown-toggle btn-white full-width clickable" data-toggle="dropdown" aria-expanded="true" [ngClass]="{'disabled': disabled, 'custom-invalid' : parentFormControl.invalid && !disabled}"
+    id="button-input">
+    <span *ngFor="let item of selectedItems" class="filter-option input-value pull-left"> {{item[keyLabel]}}
       <div (click)="removeItem($event, item)" class="fa fa-times clickable remove-button"> </div>
     </span>
 
