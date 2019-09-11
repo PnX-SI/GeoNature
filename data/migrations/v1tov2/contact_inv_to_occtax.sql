@@ -336,6 +336,12 @@ id_inv AS id_releve_occtax,
 id_role AS id_role
 FROM v1_compat.vm_cor_role_fiche_inv;
 
+-- mettre à jour les serial
+SELECT pg_catalog.setval('pr_occtax.t_occurrences_occtax_id_occurrence_occtax_seq', (SELECT max(id_occurrence_occtax)+1 FROM pr_occtax.t_occurrences_occtax), true);
+SELECT pg_catalog.setval('pr_occtax.t_releves_occtax_id_releve_occtax_seq', (SELECT max(id_releve_occtax)+1 FROM pr_occtax.t_releves_occtax), true);
+SELECT pg_catalog.setval('pr_occtax.cor_counting_occtax_id_counting_occtax_seq', (SELECT max(id_counting_occtax)+1 FROM pr_occtax.cor_counting_occtax), true);
+
+
 -- Suppression des VM
 DROP MATERIALIZED VIEW v1_compat.vm_t_fiches_inv;
 DROP MATERIALIZED VIEW v1_compat.vm_t_releves_inv;

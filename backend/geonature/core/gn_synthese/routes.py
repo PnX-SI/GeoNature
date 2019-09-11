@@ -1,4 +1,5 @@
 import logging
+import json
 import datetime
 import ast
 import time
@@ -69,7 +70,7 @@ def current_milli_time():
 ############################################
 
 
-@routes.route("/for_web", methods=["GET"])
+@routes.route("/for_web", methods=["GET", "POST"])
 @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
 @json_resp
 def get_observations_for_web(info_role):
@@ -115,7 +116,22 @@ def get_observations_for_web(info_role):
     :>jsonarr int nb_total: Number of observations
     :>jsonarr bool nb_obs_limited: Is number of observations capped
     """
-    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
+    if request.json:
+        filters = request.json
+    elif request.data:
+        filters = json.loads(request.data)
+    else:
+        filters = {
+            key: request.args.getlist(key) for key, value in request.args.items()
+        }
+
+    # Passage de l'ensemble des filtres
+    #   en array pour des questions de compatibilité
+    # TODO voir si ça ne peut pas être modifié
+    for k in filters.keys():
+        if not isinstance(filters[k], list):
+            filters[k] = [filters[k]]
+
     if "limit" in filters:
         result_limit = filters.pop("limit")[0]
     else:
