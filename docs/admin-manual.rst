@@ -894,9 +894,9 @@ Les fonctionnalités de création de compte necessite l'envoie d'emails pour vé
         MAIL_PORT = 465
         MAIL_USE_TLS = false
         MAIL_USE_SSL = true
-        MAIL_USERNAME = 'supervision@ecrins-parcnational.fr'
+        MAIL_USERNAME = 'mon_email@email.io'
         MAIL_PASSWORD = 'M@rm0tt3'
-        MAIL_DEFAULT_SENDER = 'supervision@ecrins-parcnational.fr'
+        MAIL_DEFAULT_SENDER = 'mon_email@email.io'
         MAIL_ASCII_ATTACHMENTS = false
 
 Pour activer cette fonctionnalité (qui est par défaut désactivé), éditer le fichier de configuration de la manière suivante:
@@ -924,7 +924,7 @@ Deux modes sont alors disponibles. Soit l'utilisateur est automatiquement accept
         VALIDATOR_EMAIL = 'email@validateur.io'
 
 
-L'utilisateur qui demande la création de compte est automatiquement mis dans un "groupe" UsersHub (par défaut, il s'agit du groupe "en poste"). Ce groupe est paramétrable depuis la table ``utilisateurs.cor_role_app_profil``. (La ligne ou `is_default_group_for_app` sera pris comme groupe par défaut pour GeoNature). Il n'est pas en paramètre de GeoNature pusqu'il serait falsifiable via l'API.
+L'utilisateur qui demande la création de compte est automatiquement mis dans un "groupe" UsersHub (par défaut, il s'agit du groupe "en poste"). Ce groupe est paramétrable depuis la table ``utilisateurs.cor_role_app_profil``. (La ligne ou `is_default_group_for_app = true` sera pris comme groupe par défaut pour GeoNature). Il n'est pas en paramètre de GeoNature pusqu'il serait falsifiable via l'API. ⚠️ **Attention** si vous effectuez une migration depuis une version de GeoNature < 2.2.0, aucun groupe par défaut n'est définit, vous devez définir à la main  le groupe par défaut pour l'application GeoNature dans la table ``utilisateurs.cor_role_app_profil``.
 
 Il est également possible de créer automatiquement un jeu de données et un cadre d'acquisition "personnel" à l'utilisateur afin qu'il puisse saisir des données dès sa création de compte via le paramètre `AUTO_DATASET_CREATION`. Par la suite l'administrateur pourra rattacher l'utilisateur à des JDD et CA via son organisme.
 
