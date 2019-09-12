@@ -2,8 +2,10 @@
 CHANGELOG
 =========
 
-2.1.3 (unreleased)
+2.2.0 (unreleased)
 ------------------
+
+https://github.com/PnX-SI/GeoNature/compare/2.1.2...develop
 
 **🚀 Nouveautés**
 
@@ -12,24 +14,22 @@ CHANGELOG
 **🐛 Corrections**
 
 
-
-
 2.1.2 (2019-07-25)
 ------------------
 
 **🐛 Corrections**
 
-  * SYNTHESE: Correction d'une URL en dur pour la recherche de rangs taxonomiques
-  * OCCTAX: affichage uniquement des JDD actifs 
-  * VALIDATION: abaissement de la limite d'affichage de données sur la carte par défaut + message indicatif
-  * Migration: suppression d'un lien symoblique qui créait des liens en cascade
-  * Amélioration de la documentation (@dthonon)
-  * Amélioration de la rapidité d'installation du MNT grâce à la suppression d'un paramètre inutile
-  * BACKOFFICE: correction d'une URL incorrect et customisation
+* SYNTHESE : Correction d'une URL en dur pour la recherche de rangs taxonomiques
+* OCCTAX : Affichage uniquement des JDD actifs 
+* VALIDATION : Abaissement de la limite d'affichage de données sur la carte par défaut + message indicatif
+* Migration : Suppression d'un lien symbolique qui créait des liens en cascade
+* Amélioration de la documentation (@dthonon)
+* Amélioration de la rapidité d'installation du MNT grâce à la suppression d'un paramètre inutile
+* BACKOFFICE : Correction d'une URL incorrecte et customisation
 
 **⚠️ Notes de version**
   
-  Ceci est une version corrective mineure. Si vous migrez depuis la 2.1.0, passez directement à cette version en suivant les notes de version de la 2.1.1.
+Ceci est une version corrective mineure. Si vous migrez depuis la 2.1.0, passez directement à cette version en suivant les notes de version de la 2.1.1.
 
 2.1.1 (2019-07-18)
 ------------------
