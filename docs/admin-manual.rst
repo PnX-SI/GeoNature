@@ -924,7 +924,7 @@ Deux modes sont alors disponibles. Soit l'utilisateur est automatiquement accept
         VALIDATOR_EMAIL = 'email@validateur.io'
 
 
-Par défaut l'utilisateur est mis automatiquement dans un "groupe" UsersHub. Ce groupe est paramétrable depuis la table ``utilisateurs.cor_role_app_profil``. (La ligne ou `is_default_group_for_app` sera pris comme groupe par défaut pour GeoNature). Il n'est pas en paramètre de GeoNature pusqu'il serait falsifiable via l'API.
+L'utilisateur qui demande la création de compte est automatiquement mis dans un "groupe" UsersHub (par défaut, il s'agit du groupe "en poste"). Ce groupe est paramétrable depuis la table ``utilisateurs.cor_role_app_profil``. (La ligne ou `is_default_group_for_app` sera pris comme groupe par défaut pour GeoNature). Il n'est pas en paramètre de GeoNature pusqu'il serait falsifiable via l'API.
 
 Il est également possible de créer automatiquement un jeu de données et un cadre d'acquisition "personnel" à l'utilisateur afin qu'il puisse saisir des données dès sa création de compte via le paramètre `AUTO_DATASET_CREATION`. Par la suite l'administrateur pourra rattacher l'utilisateur à des JDD et CA via son organisme.
 

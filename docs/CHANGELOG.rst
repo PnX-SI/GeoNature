@@ -11,6 +11,9 @@ https://github.com/PnX-SI/GeoNature/compare/2.1.2...develop
 
 - Le composant 'observateur' permet de rechercher sur le nom ou le prénom (utilisation des RegEx)
 - Ajout d'interfaces de création de compte, de récupération de son mdp et d'administration de son profil basé sur l'API UsersHub 2.1.0 (PR @@jbrieuclp)
+- Amélioration du composant de création dynamique de formulaire (support de text-area, checkbox simple et multiple et exemple d'utilisation à partir de la conf GeoNature)
+- Passage à Flask 1.1.1
+- Nouvelle version du sous-module d'authentification (1.4.0), compatible avec UsersHub 2.1.0
 
 **🐛 Corrections**
 
@@ -19,6 +22,8 @@ https://github.com/PnX-SI/GeoNature/compare/2.1.2...develop
 - SYNTHESE BDD : suppression automatique des aires intersectées (synthese.cor_area_synthese) lorsqu'une observation est supprimée (DELETE CASCADE)
 - OCCTAX: correction d'une automcomplétion automatique erronée de la date max en mode édition
 
+Notes:
+Si la création de compte est activée, UsersHub 2.1.0 doit être installée
 
 2.1.2 (2019-07-25)
 ------------------
