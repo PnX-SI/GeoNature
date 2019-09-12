@@ -4,6 +4,8 @@ Dashboard
 
 Module GeoNature permettant de proposer un tableau de bord contenant plusieurs graphiques et cartes basés sur les données présentes dans la synthèse de GeoNature. Développé par Elsa Guilley, stagiaire au Parc national des Ecrins en 2019. 
 
+Démo vidéo : https://geonature.fr/docs/img/2019-09-GN-dashboard-0.1.0.gif
+
 .. image :: https://user-images.githubusercontent.com/38694819/57705368-0ab5bb00-7664-11e9-9b40-fe5c43d4d29e.png
 
 **Fonctionnalités** :
