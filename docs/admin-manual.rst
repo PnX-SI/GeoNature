@@ -954,7 +954,7 @@ L'exemple ci dessous permet de créer un champs de type "checkbox" obligatoire, 
         [ACCOUNT_MANAGEMENT]
         [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]]
             type_widget = "checkbox"
-            attribut_label = "<a href='http://docs.geonature.fr'>J'ai lu et j'accepte la charte</a>"
+            attribut_label = "<a target="_blank" href='http://docs.geonature.fr'>J'ai lu et j'accepte la charte</a>"
             attribut_name = "validate_charte"
             values = [true] 
             required = true
