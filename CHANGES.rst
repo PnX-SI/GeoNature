@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-0.1.0 (unreleased)
+0.1.0 (2019-09-12)
 ------------------
 
 Première version fonctionnelle du module GeoNature de tableau de bord, développé par @ElsaGuilley. 
