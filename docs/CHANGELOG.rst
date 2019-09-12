@@ -10,8 +10,14 @@ https://github.com/PnX-SI/GeoNature/compare/2.1.2...develop
 **🚀 Nouveautés**
 
 - Le composant 'observateur' permet de rechercher sur le nom ou le prénom (utilisation des RegEx)
+- Ajout d'interfaces de création de compte, de récupération de son mdp et d'administration de son profil basé sur l'API UsersHub 2.1.0 (PR @@jbrieuclp)
 
 **🐛 Corrections**
+
+- Correction d'un bug sur les export CSV en utilisant la lib standard `csv` (#733)
+- SYNTHESE API : passage de route principale de récupération des données de GET en POST
+- SYNTHESE BDD : suppression automatique des aires intersectées (synthese.cor_area_synthese) lorsqu'une observation est supprimée (DELETE CASCADE)
+- OCCTAX: correction d'une automcomplétion automatique erronée de la date max en mode édition
 
 
 2.1.2 (2019-07-25)
