@@ -2,6 +2,8 @@
 Fonctions utilitaires
 """
 import json
+import csv
+import io
 from functools import wraps
 
 from dateutil import parser
@@ -535,14 +537,12 @@ def to_csv_resp(filename, data, columns, separator=";"):
 
 
 def generate_csv_content(columns, data, separator):
-    outdata = [separator.join(columns)]
-    for o in data:
-        outdata.append(
-            separator.join(
-                '"{}"'.format(
-                    str(o.get(i)).replace('"', '""') if o.get(i) is not None else ""
-                )
-                for i in columns
-            )
-        )
-    return "\r\n".join(outdata)
+    fp = io.StringIO()
+    writer = csv.DictWriter(fp, columns, delimiter=separator, quoting=csv.QUOTE_ALL)
+    writer.writeheader()  # ligne d'entête
+
+    for line in data:
+        writer.writerow(line)
+    fp.seek(0)  # Rembobinage du "fichier"
+    return fp.read()  # Retourne une chaine
+
