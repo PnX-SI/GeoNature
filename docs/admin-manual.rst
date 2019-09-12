@@ -872,7 +872,7 @@ Création de compte
 Configuration de la création de compte
 """"""""""""""""""""""""""""""""""""""
 
-Depuis la version 2.1.0, UsersHub propose une API de création de compte. Une interface a été ajoutée à GeoNature pour permettre aux futurs utilisateurs de faire des demande de création de compte depuis la page d'accueil de GeoNature. Ce mode est activable/désactivable depuis la configuration globale de GeoNature. 
+Depuis la version 2.1.0, UsersHub propose une API de création de compte. Une interface a été ajoutée à GeoNature pour permettre aux futurs utilisateurs de faire des demandes de création de compte depuis la page d'accueil de GeoNature. Ce mode est activable/désactivable depuis la configuration globale de GeoNature. 
 
 Pour des raisons de sécurité, l'API de création de compte est réservée aux utilisateurs "admin" grâce à un token secret. GeoNature a donc besoin de se connecter en tant qu'administrateur à UsersHub pour executer les requêtes d'administration de compte.
 Renseigner les paramètres suivant dans le fichier de configuration (`geonature_config.toml`). L'utilisateur doit avoir des droits 6 dans UsersHub
@@ -884,6 +884,20 @@ Renseigner les paramètres suivant dans le fichier de configuration (`geonature_
         # Administrateur de mon application
         ADMIN_APPLICATION_LOGIN = "login_admin_usershub"
         ADMIN_APPLICATION_PASSWORD = "password_admin_usershub
+
+Les fonctionnalités de création de compte necessite l'envoie d'emails pour vérifier l'identité des demandeurs de compte. Il est donc necessaire d'avoir un serveur SFTP capable d'envoyer des emails. Renseigner la rubrique ``MAIL_CONFIG`` de la configuration :
+
+::
+
+    [MAIL_CONFIG]
+        MAIL_SERVER = 'mail.espaces-naturels.fr'
+        MAIL_PORT = 465
+        MAIL_USE_TLS = false
+        MAIL_USE_SSL = true
+        MAIL_USERNAME = 'supervision@ecrins-parcnational.fr'
+        MAIL_PASSWORD = 'M@rm0tt3'
+        MAIL_DEFAULT_SENDER = 'supervision@ecrins-parcnational.fr'
+        MAIL_ASCII_ATTACHMENTS = false
 
 Pour activer cette fonctionnalité (qui est par défaut désactivé), éditer le fichier de configuration de la manière suivante:
 
