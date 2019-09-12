@@ -7,7 +7,7 @@ CHANGELOG
 
 Première version fonctionnelle du module GeoNature de tableau de bord, développé par @ElsaGuilley. 
 
-.. image :: https://user-images.githubusercontent.com/38694819/57705368-0ab5bb00-7664-11e9-9b40-fe5c43d4d29e.png
+Démo vidéo : https://geonature.fr/docs/img/2019-09-GN-dashboard-0.1.0.gif
 
 **Fonctionnalités**
 
