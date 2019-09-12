@@ -70,6 +70,12 @@ class AccountManagement(Schema):
     ACCOUNT_FORM = fields.List(fields.Dict(), missing=[])
 
 
+class UsersHubConfig(Schema):
+    ADMIN_APPLICATION_LOGIN = fields.String()
+    ADMIN_APPLICATION_PASSWORD = fields.String()
+    URL_USERSHUB = fields.Url()
+
+
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
 class GnPySchemaConf(Schema):
     SQLALCHEMY_DATABASE_URI = fields.String(
@@ -99,12 +105,8 @@ class GnPySchemaConf(Schema):
     MAIL_ON_ERROR = fields.Boolean(missing=False)
     MAIL_CONFIG = fields.Nested(MailConfig, missing=None)
     ADMIN_APPLICATION_LOGIN = fields.String()
-    ADMIN_APPLICATION_PASSWORD = fields.String()
-
-    # Doublon de la confif volontaire pour faire de la validation
-    # entre des confs public et privée
-    URL_USERSHUB = fields.Url(required=False)
     ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, missing={})
+    USERSHUB = fields.Nested(UsersHubConfig, missing={})
 
     @validates_schema
     def validate_enable_usershub_and_mail(self, data):
@@ -112,9 +114,14 @@ class GnPySchemaConf(Schema):
         if data["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP", False) or data[
             "ACCOUNT_MANAGEMENT"
         ].get("ENABLE_USER_MANAGEMENT", False):
-            if data.get("URL_USERSHUB", None) is None:
+            if (
+                data["USERSHUB"].get("URL_USERSHUB", None) is None
+                or data["USERSHUB"].get("ADMIN_APPLICATION_LOGIN", None) is None
+                or data["USERSHUB"].get("ADMIN_APPLICATION_PASSWORD", None) is None
+            ):
                 raise ValidationError(
-                    "URL_USERSHUB est necessaire si ENABLE_SIGN_UP=True", "URL_USERSHUB"
+                    "URL_USERSHUB, ADMIN_APPLICATION_LOGIN et ADMIN_APPLICATION_PASSWORD sont necessaires si ENABLE_SIGN_UP=True",
+                    "URL_USERSHUB",
                 )
             if (
                 data["MAIL_CONFIG"].get("MAIL_SERVER", None) is None
