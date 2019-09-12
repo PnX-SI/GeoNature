@@ -24,6 +24,9 @@ https://github.com/PnX-SI/GeoNature/compare/2.1.2...develop
 
 Notes:
 Si la création de compte est activée, UsersHub 2.1.0 doit être installée
+- Passer le script de migration 2.1.2to2.2.0.sql
+- Si vous souhaiteez activer les fonctionnalités de création de compte, veuillir lire **attentivement** cette documentation: http://docs.geonature.fr/admin-manual.html#creation-de-compte
+TODO: lien ci dessus à vérifier
 
 2.1.2 (2019-07-25)
 ------------------
