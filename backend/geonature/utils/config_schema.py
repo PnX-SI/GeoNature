@@ -4,7 +4,7 @@
 
 import os
 
-from marshmallow import Schema, fields, validates_schema, ValidationError
+from marshmallow import Schema, fields, validates_schema, ValidationError, post_load
 from marshmallow.validate import OneOf, Regexp, Email
 from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_EXPORT_COLUMNS,
@@ -107,6 +107,17 @@ class GnPySchemaConf(Schema):
     ADMIN_APPLICATION_LOGIN = fields.String()
     ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, missing={})
     USERSHUB = fields.Nested(UsersHubConfig, missing={})
+
+    @post_load()
+    def unwrap_usershub(self, data):
+        """
+            On met la section [USERSHUB] à la racine de la conf
+            pour compatibilité et simplicité ave le sous-module d'authentif
+        """
+        for key, value in data["USERSHUB"].items():
+            data[key] = value
+        data.pop("USERSHUB")
+        return data
 
     @validates_schema
     def validate_enable_usershub_and_mail(self, data):

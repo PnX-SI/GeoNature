@@ -879,9 +879,11 @@ Renseigner les paramètres suivant dans le fichier de configuration (`geonature_
 
 ::
 
-    # Administrateur de mon application
-    ADMIN_APPLICATION_LOGIN = "login_admin_usershub"
-    ADMIN_APPLICATION_PASSWORD = "password_admin_usershub
+    [USERSHUB]
+        URL_USERSHUB = 'http://mon_adresse_usershub.fr' # sans slash final
+        # Administrateur de mon application
+        ADMIN_APPLICATION_LOGIN = "login_admin_usershub"
+        ADMIN_APPLICATION_PASSWORD = "password_admin_usershub
 
 Pour activer cette fonctionnalité (qui est par défaut désactivé), éditer le fichier de configuration de la manière suivante:
 
