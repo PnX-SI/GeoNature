@@ -5,12 +5,10 @@ CHANGELOG
 2.2.0 (unreleased)
 ------------------
 
-https://github.com/PnX-SI/GeoNature/compare/2.1.2...develop
-
 **🚀 Nouveautés**
 
 * Ajout d'interfaces et de paramètres de création de compte, de récupération de son mot de passe et d'administration de son profil, basé sur l'API UsersHub 2.1.0 (par @jbrieuclp et @TheoLechemia) #615
-* Création d'une fonctionnalité de création automatique d'un CA et d'un JDD personnel lors de la validation d'un compte créé automatiquement (paramétrable)
+* Ajout d'une fonctionnalité de création automatique d'un CA et d'un JDD personnel lors de la validation d'un compte créé automatiquement (paramétrable)
 * Amélioration du composant de création dynamique de formulaire (support de text-area, checkbox simple et multiple et exemple d'utilisation à partir de la conf GeoNature)
 * Le composant 'observateur' permet de rechercher sur le nom ou le prénom (utilisation des RegEx) #567
 * Mise à jour de Flask en version 1.1.1
@@ -25,9 +23,9 @@ https://github.com/PnX-SI/GeoNature/compare/2.1.2...develop
 * SYNTHESE BDD : Suppression automatique des aires intersectées (``synthese.cor_area_synthese``) lorsqu'une observation est supprimée (DELETE CASCADE)
 * SYNTHESE : Prise en compte du paramètre ``EXPORT_ID_SYNTHESE_COL`` (#707)
 * OCCTAX : Correction d'une autocomplétion automatique erronée de la date max en mode édition (#706)
-* VALIDATION : Corrections diverses, par @jbrieuclp (#709)
-* Prise en compte des sous taxons pour le calcul des règles de sensibilité
-* Correction des contraintes CHECK sur les tables liés à la sensibilité
+* VALIDATION : Améliorations des performances, par @jbrieuclp (#710)
+* Prise en compte des sous-taxons pour le calcul des règles de sensibilité
+* Correction des contraintes CHECK sur les tables liées à la sensibilité
 * Complément et correction des scripts de migration ``data/migrations/v1tov2``
 * Correction et clarification de la documentation d'administration des listes de taxons et de sauvegarde et restauration de la BDD (par @lpofredc)
 
@@ -35,16 +33,8 @@ https://github.com/PnX-SI/GeoNature/compare/2.1.2...develop
 
 * Passer le script de migration ``data/2.1.2to2.2.0.sql``
 * Suivez ensuite la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
-* Si vous souhaitez activer les fonctionnalités de création de compte, veuillir lire **attentivement** cette documentation: http://docs.geonature.fr/admin-manual.html#creation-de-compte
+* Si vous souhaitez activer les fonctionnalités de création de compte, veuillir lire **attentivement** cette documentation : http://docs.geonature.fr/admin-manual.html#creation-de-compte
 * Si vous activez la création de compte, UsersHub 2.1.0 doit être installé
-
-**TODO**
-
-* Lien doc ci dessus à vérifier
-* Aire intersectées supprimées. A faire en update ?
-* Build auto HS ?
-* Voir https://github.com/PnX-SI/GeoNature/issues/710
-* Voir les PR ?
 
 2.1.2 (2019-07-25)
 ------------------
