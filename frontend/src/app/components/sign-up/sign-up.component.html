@@ -17,6 +17,22 @@
               <h5> Utilisateur </h5>
 
               <div class="form-group row">
+                <label for="prenom_role" class="col-md-3 col-form-label text-md-right">Prénom</label>
+                <div class="col-md-9 col-lg-7">
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="prenom_role" 
+                    placeholder="Prénom" 
+                    formControlName="prenom_role">
+                  <small *ngIf="form.get('prenom_role').hasError('required') && form.get('prenom_role').touched">
+                    Ce champ est nécessaire
+                  </small>
+                </div>
+              </div>
+
+              
+              <div class="form-group row">
                 <label for="nom_role" class="col-md-3 col-form-label text-md-right">Nom</label>
                 <div class="col-md-9 col-lg-7">
                   <input 
@@ -31,20 +47,6 @@
                 </div>
               </div>
 
-              <div class="form-group row">
-                <label for="prenom_role" class="col-md-3 col-form-label text-md-right">Prénom</label>
-                <div class="col-md-9 col-lg-7">
-                  <input 
-                    type="text" 
-                    class="form-control" 
-                    id="prenom_role" 
-                    placeholder="Prénom" 
-                    formControlName="prenom_role">
-                  <small *ngIf="form.get('prenom_role').hasError('required') && form.get('prenom_role').touched">
-                    Ce champ est nécessaire
-                  </small>
-                </div>
-              </div>
 
               <div class="form-group row">
                   <label for="email" class="col-md-3 col-form-label text-md-right">Adresse email</label>
