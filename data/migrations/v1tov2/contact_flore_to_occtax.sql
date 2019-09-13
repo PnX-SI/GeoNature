@@ -148,7 +148,11 @@ INSERT INTO pr_occtax.t_occurrences_occtax(
     -- preuve existance: non -- TODO: si presence d'herbier à modifier
     ref_nomenclatures.get_id_nomenclature('PREUVE_EXIST','2') AS id_nomenclature_exist_proof,
     -- prevision diffusion = precise
-    ref_nomenclatures.get_id_nomenclature('NIV_PRECIS','5') AS id_nomenclature_diffusion_level,
+    CASE 
+      WHEN cflore.diffusable = true THEN ref_nomenclatures.get_id_nomenclature('NIV_PRECIS','5') 
+      WHEN cflore.diffusable = false THEN ref_nomenclatures.get_id_nomenclature('NIV_PRECIS','4') 
+      ELSE ref_nomenclatures.get_id_nomenclature('NIV_PRECIS','5') 
+    END AS id_nomenclature_diffusion_level,
     -- statut obs: present
     ref_nomenclatures.get_id_nomenclature('STATUT_OBS','Pr') AS id_nomenclature_observation_status,
     -- floutage: non
@@ -228,6 +232,11 @@ uuid_generate_v4() AS unique_id_cor_role_releve,
 id_cflore AS id_releve_occtax,
 id_role AS id_role
 FROM v1_compat.vm_cor_role_fiche_flore;
+
+-- mettre à jour les serial
+SELECT pg_catalog.setval('pr_occtax.t_occurrences_occtax_id_occurrence_occtax_seq', (SELECT max(id_occurrence_occtax)+1 FROM pr_occtax.t_occurrences_occtax), true);
+SELECT pg_catalog.setval('pr_occtax.t_releves_occtax_id_releve_occtax_seq', (SELECT max(id_releve_occtax)+1 FROM pr_occtax.t_releves_occtax), true);
+SELECT pg_catalog.setval('pr_occtax.cor_counting_occtax_id_counting_occtax_seq', (SELECT max(id_counting_occtax)+1 FROM pr_occtax.cor_counting_occtax), true);
 
 -- Suppression des VM
 DROP MATERIALIZED VIEW v1_compat.vm_t_fiches_cflore;

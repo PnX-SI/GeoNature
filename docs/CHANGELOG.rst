@@ -2,24 +2,56 @@
 CHANGELOG
 =========
 
+2.2.0 (unreleased)
+------------------
 
+**🚀 Nouveautés**
+
+* Ajout d'interfaces et de paramètres de création de compte, de récupération de son mot de passe et d'administration de son profil, basé sur l'API UsersHub 2.1.0 (par @jbrieuclp et @TheoLechemia) #615
+* Ajout d'une fonctionnalité de création automatique d'un CA et d'un JDD personnel lors de la validation d'un compte créé automatiquement (paramétrable)
+* Amélioration du composant de création dynamique de formulaire (support de text-area, checkbox simple et multiple et exemple d'utilisation à partir de la conf GeoNature)
+* Le composant 'observateur' permet de rechercher sur le nom ou le prénom (utilisation des RegEx) #567
+* Mise à jour de Flask en version 1.1.1
+* Nouvelle version du sous-module d'authentification (1.4.0), compatible avec UsersHub 2.1.0
+* Mise à jour et clarification du MCD (http://docs.geonature.fr/admin-manual.html#base-de-donnees) par @jpm-cbna
+* Ajout d'une tutoriel vidéo d'installation dans la documentation (https://www.youtube.com/watch?v=JYgH7cV9AjE, par @olivier8064)
+
+**🐛 Corrections**
+
+* Correction d'un bug sur les export CSV en utilisant la librairie Python standard ``csv`` (#733)
+* SYNTHESE API : Passage de la route principale de récupération des données en POST plutôt qu'en GET (#704)
+* SYNTHESE BDD : Suppression automatique des aires intersectées (``synthese.cor_area_synthese``) lorsqu'une observation est supprimée (DELETE CASCADE)
+* SYNTHESE : Prise en compte du paramètre ``EXPORT_ID_SYNTHESE_COL`` (#707)
+* OCCTAX : Correction d'une autocomplétion automatique erronée de la date max en mode édition (#706)
+* VALIDATION : Améliorations des performances, par @jbrieuclp (#710)
+* Prise en compte des sous-taxons pour le calcul des règles de sensibilité
+* Correction des contraintes CHECK sur les tables liées à la sensibilité
+* Complément et correction des scripts de migration ``data/migrations/v1tov2``
+* Correction et clarification de la documentation d'administration des listes de taxons et de sauvegarde et restauration de la BDD (par @lpofredc)
+
+**⚠️ Notes de version**
+
+* Passer le script de migration ``data/2.1.2to2.2.0.sql``
+* Suivez ensuite la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
+* Si vous souhaitez activer les fonctionnalités de création de compte, veuillir lire **attentivement** cette documentation : http://docs.geonature.fr/admin-manual.html#creation-de-compte
+* Si vous activez la création de compte, UsersHub 2.1.0 doit être installé
 
 2.1.2 (2019-07-25)
 ------------------
 
 **🐛 Corrections**
 
-  * SYNTHESE: Correction d'une URL en dur pour la recherche de rangs taxonomiques
-  * OCCTAX: affichage uniquement des JDD actifs 
-  * VALIDATION: abaissement de la limite d'affichage de données sur la carte par défaut + message indicatif
-  * Migration: suppression d'un lien symoblique qui créait des liens en cascade
-  * Amélioration de la documentation (@dthonon)
-  * Amélioration de la rapidité d'installation du MNT grâce à la suppression d'un paramètre inutile
-  * BACKOFFICE: correction d'une URL incorrect et customisation
+* SYNTHESE : Correction d'une URL en dur pour la recherche de rangs taxonomiques
+* OCCTAX : Affichage uniquement des JDD actifs 
+* VALIDATION : Abaissement de la limite d'affichage de données sur la carte par défaut + message indicatif
+* Migration : Suppression d'un lien symbolique qui créait des liens en cascade
+* Amélioration de la documentation (@dthonon)
+* Amélioration de la rapidité d'installation du MNT grâce à la suppression d'un paramètre inutile
+* BACKOFFICE : Correction d'une URL incorrecte et customisation
 
 **⚠️ Notes de version**
   
-  Ceci est une version corrective mineure. Si vous migrez depuis la 2.1.0, passez directement à cette version en suivant les notes de version de la 2.1.1.
+Ceci est une version corrective mineure. Si vous migrez depuis la 2.1.0, passez directement à cette version en suivant les notes de version de la 2.1.1.
 
 2.1.1 (2019-07-18)
 ------------------
@@ -41,7 +73,6 @@ CHANGELOG
 * Amélioration des performances: ajout d'index sur Occtax et Metadonnées
 * Script d'import des métadonnées à partir du webservice MTD de l'INPN (@DonovanMaillard)
 * Complément, correction et compatibilité 2.1.0 des scripts de migration ``data/migrations/v1tov2``
-
 
 **🐛 Corrections**
   
@@ -66,7 +97,7 @@ CHANGELOG
 
 * Passer TaxHub en version 1.6.3 (https://github.com/PnX-SI/TaxHub/releases/tag/1.6.3)
 * Passer le script de migration ``data/2.1.0to2.1.1.sql``
-* Si vous aviez modifier les id_nomenclatures dans la surcouche de la configuration du module validation, supprimer les car on se base maintenant sur les cd_nomenclatures
+* Si vous aviez modifier les ``id_nomenclature`` dans la surcouche de la configuration du module validation, supprimer les car on se base maintenant sur les ``cd_nomenclature``
 * Suivez ensuite la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 * Nouvelle localisation de la doc : http://docs.geonature.fr
 

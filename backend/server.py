@@ -69,6 +69,10 @@ def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
 
         app.register_blueprint(routes, url_prefix="/auth")
 
+        from pypnusershub import routes_register
+
+        app.register_blueprint(routes_register.bp, url_prefix="/pypn/register")
+
         from pypnnomenclature.routes import routes
 
         app.register_blueprint(routes, url_prefix="/nomenclatures")

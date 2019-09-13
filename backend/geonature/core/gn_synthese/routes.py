@@ -1,4 +1,5 @@
 import logging
+import json
 import datetime
 import ast
 import time
@@ -63,12 +64,13 @@ log = logging.getLogger()
 def current_milli_time():
     return time.time()
 
+
 ############################################
 ########### GET OBSERVATIONS  ##############
 ############################################
 
 
-@routes.route("/for_web", methods=["GET"])
+@routes.route("/for_web", methods=["GET", "POST"])
 @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
 @json_resp
 def get_observations_for_web(info_role):
@@ -109,12 +111,27 @@ def get_observations_for_web(info_role):
     :qparam str period_start: *tbd*
     :qparam str period_end: *tbd*
     :qparam str area*: Generic filter on area
-    :qparam str *: Generic filter, given by colname & value 
+    :qparam str *: Generic filter, given by colname & value
     :>jsonarr array data: Array of synthese with geojson key, see above
     :>jsonarr int nb_total: Number of observations
     :>jsonarr bool nb_obs_limited: Is number of observations capped
     """
-    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
+    if request.json:
+        filters = request.json
+    elif request.data:
+        filters = json.loads(request.data)
+    else:
+        filters = {
+            key: request.args.getlist(key) for key, value in request.args.items()
+        }
+
+    # Passage de l'ensemble des filtres
+    #   en array pour des questions de compatibilité
+    # TODO voir si ça ne peut pas être modifié
+    for k in filters.keys():
+        if not isinstance(filters[k], list):
+            filters[k] = [filters[k]]
+
     if "limit" in filters:
         result_limit = filters.pop("limit")[0]
     else:
@@ -177,7 +194,7 @@ def get_synthese(info_role):
 
     Params must have same synthese fields names
 
-    :parameter str info_role: Role used to get the associated filters 
+    :parameter str info_role: Role used to get the associated filters
     :returns dict[dict, int, bool]: See description above
     """
     # change all args in a list of value
@@ -302,7 +319,9 @@ def export_observations_web(info_role):
             columns_to_serialize.append(db_col.key)
 
     q = DB.session.query(export_view.tableDef).filter(
-        export_view.tableDef.columns.idSynthese.in_(id_list)
+        export_view.tableDef.columns[
+            current_app.config["SYNTHESE"]["EXPORT_ID_SYNTHESE_COL"]
+        ].in_(id_list)
     )
     # check R and E CRUVED to know if we filter with cruved
     cruved = cruved_scope_for_user_in_module(info_role.id_role, module_code="SYNTHESE")[
@@ -518,7 +537,7 @@ def general_stats(info_role):
     """Return stats about synthese.
 
     .. :quickref: Synthese;
-    
+
         - nb of observations
         - nb of distinct species
         - nb of distinct observer
@@ -654,7 +673,7 @@ def get_color_taxon():
     """Get color of taxon in areas (table synthese.cor_area_taxon).
 
     .. :quickref: Synthese;
-    
+
     :query str code_area_type: Type area code (ref_geo.bib_areas_types.type_code)
     :query int id_area: Id of area (ref_geo.l_areas.id_area)
     :query int cd_nom: taxon code (taxonomie.taxref.cd_nom)
@@ -689,19 +708,20 @@ def test():
     from shapely.geometry import Point
     import random
 
-    s = DB.session.query(Synthese).get(86510)
+    s = DB.session.query(Synthese).get(2)
 
     s_as_dict = s.as_dict()
     s_as_dict.pop("unique_id_sinp")
     # wkt = asShape(s.the_geom_4326)
     # print(wkt)
     # releve.geom_4326 = from_shape(shape, srid=4326)
+    import datetime
 
     DB.session.query()
-    for i in range(4000):
+    for i in range(1000):
         new_point = Point(random.uniform(6.1, 7.5), random.uniform(44.0, 45.2))
         wkb = from_shape(new_point, 4326)
-        s_as_dict["id_synthese"] = random.randint(1500, 9999999)
+        s_as_dict["id_synthese"] = random.randint(1500, 999999999)
 
         # with random cd_nom
         random_cd_nom = DB.engine.execute(
@@ -713,13 +733,19 @@ def test():
             s_as_dict["cd_nom"] = cd[0]
         new_synthese = Synthese(**s_as_dict)
         new_synthese.the_geom_4326 = wkb
+        new_synthese.the_geom_local = func.st_transform(wkb, 2154)
 
+        new_date = datetime.datetime.now()
+        new_date = new_date.replace(year=random.randint(2000, 2016))
+        new_synthese.date_min = new_date
+        new_synthese.date_max = new_date
+        print(new_synthese.the_geom_local)
         q = DB.session.add(new_synthese)
         # DB.session.flush()
         DB.session.commit()
 
     # s = TSources(name_source="lalala")
 
-    DB.session.add(s)
-    DB.session.commit()
+    # DB.session.add(s)
+    # DB.session.commit()
     return "la"

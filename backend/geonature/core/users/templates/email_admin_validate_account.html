@@ -1,0 +1,27 @@
+<p>Bonjour,</p>
+
+<p>Un utilisateur vient d'effectuer une demande de création de compte sur GeoNature</p>
+
+Voici les informations de l'utilisateur :
+
+<ul>
+  <li> <b>Nom : </b>  {{user.nom_role}}</li>
+  <li> <b>Prénom : </b>  {{user.prenom_role}}</li>
+  <li> <b>Identifiant : </b>  {{user.identifiant}}</li>
+  <li> <b>Email : </b> {{user.email}}</li>
+
+</ul>
+
+{% if additional_fields | length > 0 %}
+<h5>Informations complémentaires :</h5>
+  <ul>
+  {% for item in additional_fields %}
+    <li><b> {{item.key}}: </b>  {{item.value}}  </li> 
+  {% endfor %}
+</ul>
+
+{% endif%}
+
+<p>Pour valider cette demande,  <a href="{{ url_validation }}">cliquer sur ce lien</a>.</p>
+
+<p>Cordialement,</p>

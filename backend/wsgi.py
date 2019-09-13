@@ -12,8 +12,7 @@ from server import get_app
 config_path = get_config_file_path()
 config = load_config(config_path)
 
-# give the app context from server.py in a app object
-# remove sqlachemy warning in production
+# give the app context from server.py in a app object and filter sqlalchemy warning
 with warnings.catch_warnings():
     warnings.simplefilter("ignore", category=sa_exc.SAWarning)
     app = get_app(config)
