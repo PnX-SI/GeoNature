@@ -538,7 +538,9 @@ def to_csv_resp(filename, data, columns, separator=";"):
 
 def generate_csv_content(columns, data, separator):
     fp = io.StringIO()
-    writer = csv.DictWriter(fp, columns, delimiter=separator, quoting=csv.QUOTE_ALL)
+    writer = csv.DictWriter(
+        fp, columns, delimiter=separator, quoting=csv.QUOTE_ALL, extrasaction="ignore"
+    )
     writer.writeheader()  # ligne d'entête
 
     for line in data:
