@@ -162,7 +162,7 @@ ALTER TABLE gn_commons.t_validations DROP COLUMN id_table_location;
     LANGUAGE plpgsql VOLATILE
     COST 100;
 
-ALTER TABLE gn_synthese.cor_area_synthese DROP COLUMN cd_nom;
+ALTER TABLE gn_synthese.cor_area_synthese DROP COLUMN IF EXISTS cd_nom;
 
 -- suppression des aires de cor_area where enabled = false
 DELETE FROM gn_synthese.cor_area_synthese WHERE id_area IN (
@@ -724,11 +724,3 @@ CREATE OR REPLACE VIEW gn_synthese.v_tree_taxons_synthese AS
 
 
   COMMENT ON VIEW gn_synthese.v_tree_taxons_synthese IS 'Vue destinée à l''arbre taxonomique de la synthese. S''arrête  à la famille pour des questions de performances';
-
-
---Permet la suppression d'enregistrements en synthese sans bloquage
-ALTER TABLE gn_synthese.cor_area_synthese DROP CONSTRAINT fk_cor_area_synthese_id_synthese;
-ALTER TABLE gn_synthese.cor_area_synthese
-  ADD CONSTRAINT fk_cor_area_synthese_id_synthese FOREIGN KEY (id_synthese)
-      REFERENCES gn_synthese.synthese (id_synthese) MATCH SIMPLE
-      ON UPDATE CASCADE ON DELETE CASCADE;
