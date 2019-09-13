@@ -104,10 +104,6 @@ class GnPySchemaConf(Schema):
     CAS = fields.Nested(CasSchemaConf, missing=dict())
     MAIL_ON_ERROR = fields.Boolean(missing=False)
     MAIL_CONFIG = fields.Nested(MailConfig, missing=None)
-<<<<<<< HEAD
-    # default = 40 (error)
-    API_LOG_LEVEL = fields.Integer(missing=40, validate=OneOf([0, 10, 20, 30, 40, 50]))
-=======
     ADMIN_APPLICATION_LOGIN = fields.String()
     ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, missing={})
     USERSHUB = fields.Nested(UsersHubConfig, missing={})
@@ -147,7 +143,6 @@ class GnPySchemaConf(Schema):
                     "Veuillez remplir la rubrique MAIL_CONFIG si ENABLE_SIGN_UP=True",
                     "ENABLE_SIGN_UP",
                 )
->>>>>>> origin/develop
 
 
 class GnFrontEndConf(Schema):
