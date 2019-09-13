@@ -21,8 +21,8 @@ install:
 
 script:
   -  # test backend
-  - cd ../backend
-  - pytest --disable-warnings
+  # - cd ../backend
+  # - pytest --disable-warnings
   # - cd ../docs
   # - make html
   # # create a repository for frontend doc
