@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Inject, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { AuthService, User } from '../../components/auth/auth.service';
 import { AppConfig } from '../../../conf/app.config';
 import { MatSidenav } from '@angular/material/sidenav';
@@ -12,8 +12,7 @@ import { GlobalSubService } from '../../services/global-sub.service';
 @Component({
   selector: 'pnx-nav-home',
   templateUrl: './nav-home.component.html',
-  styleUrls: ['./nav-home.component.scss'],
-  providers: [{ provide: AppConfig, useValue: AppConfig }]
+  styleUrls: ['./nav-home.component.scss']
 })
 export class NavHomeComponent implements OnInit, OnDestroy {
   public moduleName = 'Accueil';
@@ -25,9 +24,9 @@ export class NavHomeComponent implements OnInit, OnDestroy {
 
   constructor(
     private translate: TranslateService,
-    private _authService: AuthService,
+    public _authService: AuthService,
     private activatedRoute: ActivatedRoute,
-    private _sideNavService: SideNavService,
+    public _sideNavService: SideNavService,
     private _location: Location,
     private _globalSub: GlobalSubService
   ) {}

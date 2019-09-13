@@ -4,6 +4,7 @@ npm-debug.log
 
 /dist/
 src/conf/app.config.ts
+src/tsconfig.app.json
 
 #routing
 src/app/routing/app-routing.module.ts

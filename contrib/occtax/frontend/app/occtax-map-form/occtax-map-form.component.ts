@@ -26,8 +26,7 @@ import { AuthService } from "@geonature/components/auth/auth.service";
   // important to provide a new instance of OcctaxFormService to réinitialize it
   providers: [MapService, OcctaxFormService]
 })
-export class OcctaxMapFormComponent
-  implements OnInit, OnDestroy, AfterViewInit {
+export class OcctaxMapFormComponent implements OnInit, OnDestroy, AfterViewInit {
   public leafletDrawOptions: any;
   private _sub: Subscription;
   public id: number;
@@ -75,6 +74,7 @@ export class OcctaxMapFormComponent
       if (!isNaN(this.id)) {
         // set showOccurrence to false;
         this.fs.showOccurrence = false;
+        this.fs.editionMode$.next(true);
         this.fs.editionMode = true;
         // load one releve
         this.occtaxService.getOneReleve(this.id).subscribe(
@@ -178,6 +178,7 @@ export class OcctaxMapFormComponent
           }
         ); // end subscribe
       } else {
+        this.fs.editionMode$.next(false);
         // set digitiser as default observers only if occtaxconfig set observers_txt parameter to false
         if (!this.occtaxConfig.observers_txt) {
           const currentUser = this._authService.getCurrentUser();

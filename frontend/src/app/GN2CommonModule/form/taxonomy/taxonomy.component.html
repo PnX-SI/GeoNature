@@ -25,8 +25,8 @@
 <small> {{label}} </small>
 <div class="input-group">
   <input type="text" class="form-control form-control-sm " [ngClass]="{'loading' : isLoading && parentFormControl.value?.length >= 3}"
-    id="taxonInput" [formControl]="parentFormControl" [disableControl]="disabled" [ngbTypeahead]="searchTaxon"
-    [inputFormatter]="formatter" [resultTemplate]="rt" (selectItem)="taxonSelected($event)" />
+    id="taxonInput" [formControl]="parentFormControl" [placement]="'bottom-left'" [ngbTypeahead]="searchTaxon"
+    [inputFormatter]="formatter" [resultTemplate]="rt" (selectItem)="taxonSelected($event)">
   <div class="input-group-append" *ngIf="displayAdvancedFilters">
     <button class="btn btn-sm btn-outline-shadow" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false"
       aria-controls="collapseExample" matTooltip="Filtrer les taxons proposés à l'autocompletion  par règne et groupe INPN">

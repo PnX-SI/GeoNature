@@ -12,10 +12,10 @@ import {
   MatPaginatorModule
 } from '@angular/material';
 
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { AutoCompleteModule } from 'primeng/primeng';
 import { TreeModule } from 'angular-tree-component';
 
@@ -45,6 +45,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ObserversTextComponent } from '@geonature_common/form/observers-text/observers-text.component';
 import { MunicipalitiesComponent } from '@geonature_common/form/municipalities/municipalities.component';
 import { GenericFormGeneratorComponent } from '@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component';
+import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 import { AreasComponent } from '@geonature_common/form/areas/areas.component';
 import { AcquisitionFrameworksComponent } from '@geonature_common/form/acquisition-frameworks/acquisition-frameworks.component';
 import { ModalDownloadComponent } from '@geonature_common/others/modal-download/modal-download.component';
@@ -55,8 +56,8 @@ import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-for
 
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
-// pipe
 
+// pipe
 import { ReadablePropertiePipe } from './pipe/readable-propertie.pipe';
 
 // Service
@@ -71,10 +72,6 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
 // add all rxjs operators
 import 'rxjs/Rx';
 import { MultiSelectComponent } from './form/multiselect/multiselect.component';
-
-export function HttpLoaderFactory(http: Http) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
-}
 
 @NgModule({
   imports: [
@@ -119,6 +116,7 @@ export function HttpLoaderFactory(http: Http) {
     MunicipalitiesComponent,
     MultiSelectComponent,
     GenericFormGeneratorComponent,
+    GenericFormComponent,
     AreasComponent,
     AcquisitionFrameworksComponent,
     ModalDownloadComponent,
@@ -177,6 +175,7 @@ export function HttpLoaderFactory(http: Http) {
     ObserversTextComponent,
     MultiSelectComponent,
     GenericFormGeneratorComponent,
+    GenericFormComponent,
     AreasComponent,
     AcquisitionFrameworksComponent,
     PeriodComponent,

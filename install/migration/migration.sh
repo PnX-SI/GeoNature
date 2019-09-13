@@ -70,6 +70,11 @@ fi
 
 
 cd $myrootpath/$currentdir/frontend
+
+export NVM_DIR="$HOME/.nvm"
+ [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+nvm install 10.15.3
+
 npm install --only=prod
 
 # lien symbolique vers le dossier static du backend (pour le backoffice)
@@ -100,6 +105,7 @@ echo "Update configurations"
 geonature update_configuration --build=false
 #geonature generate_frontend_config --build=false
 geonature generate_frontend_modules_route
+geonature generate_frontend_tsconfig_app
 geonature generate_frontend_tsconfig
 geonature update_module_configuration occtax --build=false
 geonature update_module_configuration validation

@@ -5,6 +5,283 @@ CREATE SCHEMA v1_florestation;
 SET default_tablespace = '';
 SET default_with_oids = false;
 
+-------------
+--FUNCTIONS--
+-------------
+CREATE FUNCTION application_rang_sp(id integer) RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+--fonction permettant de renvoyer le cd_ref au rang espèce d'une sous-espèce, une variété ou une convariété à partir de son cd_nom
+--si le cd_nom passé est d'un rang espèce ou supérieur (genre, famille...), la fonction renvoie le cd_ref du même rang que le cd_nom passé en entré
+--
+--Gil DELUERMOZ septembre 2011
+  DECLARE
+  rang character(4);
+  rangsup character(4);
+  ref integer;
+  sup integer;
+  BEGIN
+	SELECT INTO rang id_rang FROM taxonomie.taxref WHERE cd_nom = id;
+	IF(rang='SSES' OR rang = 'VAR' OR rang = 'CVAR') THEN
+	    IF(rang = 'SSES') THEN
+		SELECT INTO ref cd_taxsup FROM taxonomie.taxref WHERE cd_nom = id;
+	    END IF;
+	    
+	    IF(rang = 'VAR' OR rang = 'CVAR') THEN
+		SELECT INTO sup cd_taxsup FROM taxonomie.taxref WHERE cd_nom = id;
+		SELECT INTO rangsup id_rang FROM taxonomie.taxref WHERE cd_nom = sup;
+		IF(rangsup = 'ES') THEN
+			SELECT INTO ref cd_ref FROM taxonomie.taxref WHERE cd_nom = sup;
+		END IF;
+		IF(rangsup = 'SSES') THEN
+			SELECT INTO ref cd_taxsup FROM taxonomie.taxref WHERE cd_nom = sup;
+		END IF;
+	    END IF;
+	ELSE
+	   SELECT INTO ref cd_ref FROM taxonomie.taxref WHERE cd_nom = id;
+	END IF;
+	return ref;
+  END;
+$$;
+
+CREATE OR REPLACE FUNCTION application_aggregate_taxons_rang_sp(id integer)
+  RETURNS text AS
+$BODY$
+--fonction permettant de regroupper dans un tableau tous les cd_nom d'une espèce et de ces sous espèces, variétés et convariétés à partir du cd_nom d'un taxon
+--si le cd_nom passé est d'un rang différent de l'espèce (genre, famille... ou sous-espèce, variété...), la fonction renvoie simplement le cd_ref du cd_nom passé en entré
+--
+--Gil DELUERMOZ septembre 2011
+
+  DECLARE
+  rang character(4);
+  rangsup character(4);
+  ref integer;
+  sup integer;
+  cd integer;
+  tab integer;
+  r text;
+  
+  BEGIN
+	SELECT INTO rang id_rang FROM taxonomie.taxref WHERE cd_nom = id;
+	IF(rang='ES') THEN
+		cd = taxonomie.find_cdref(id);
+		--SELECT INTO tab cd_nom FROM taxonomie.taxref WHERE id_rang = 'SSES' AND cd_taxsup = taxonomie.find_cdref(id);
+		SELECT INTO r array_agg(a.cd_nom) FROM (
+		SELECT cd_nom FROM taxonomie.taxref WHERE cd_ref = cd
+		UNION
+		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'SSES' AND cd_taxsup = cd
+		UNION
+		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'VAR' AND cd_taxsup = cd
+		UNION
+		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'CVAR' AND cd_taxsup = cd
+		UNION
+		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'VAR' AND cd_taxsup IN (SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'SSES' AND cd_taxsup = cd)
+		UNION
+		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'CVAR' AND cd_taxsup IN (SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'SSES' AND cd_taxsup = cd)
+		) a;   
+	ELSE
+	   SELECT INTO r array_agg(cd_ref) FROM taxonomie.taxref WHERE cd_nom = id;
+	END IF;
+	return r;
+  END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+  CREATE OR REPLACE FUNCTION application_aggregate_taxons_all_rang_sp(id integer)
+  RETURNS text AS
+$BODY$
+--fonction permettant de regroupper dans un tableau au rang espèce tous les cd_nom d'une espèce et de ces sous espèces, variétés et convariétés à partir du cd_nom d'un taxon
+--si le cd_nom passé est d'un rang supérieur à l'espèce (genre, famille...), la fonction renvoie simplement le cd_ref du cd_nom passé en entré
+--
+--Gil DELUERMOZ septembre 2011
+
+  DECLARE
+  rang character(4);
+  rangsup character(4);
+  ref integer;
+  sup integer;
+  cd integer;
+  tab integer;
+  r text;
+  
+  BEGIN
+	SELECT INTO rang id_rang FROM taxonomie.taxref WHERE cd_nom = id;
+	IF(rang='ES' OR rang='SSES' OR rang = 'VAR' OR rang = 'CVAR') THEN
+	    IF(rang = 'ES') THEN
+		cd = taxonomie.find_cdref(id);
+	    END IF;
+	    IF(rang = 'SSES') THEN
+		SELECT INTO cd cd_taxsup FROM taxonomie.taxref WHERE cd_nom = taxonomie.find_cdref(id);
+	    END IF;
+	    IF(rang = 'VAR' OR rang = 'CVAR') THEN
+		SELECT INTO sup cd_taxsup FROM taxonomie.taxref WHERE cd_nom = taxonomie.find_cdref(id);
+		SELECT INTO rangsup id_rang FROM taxonomie.taxref WHERE cd_nom = taxonomie.find_cdref(sup);
+		IF(rangsup = 'ES') THEN
+			cd = sup;
+		ELSE
+			SELECT INTO cd cd_taxsup FROM taxonomie.taxref WHERE cd_nom = taxonomie.find_cdref(sup);
+		END IF;
+	    END IF;
+
+		--SELECT INTO tab cd_nom FROM taxonomie.taxref WHERE id_rang = 'SSES' AND cd_taxsup = taxonomie.find_cdref(id);
+		SELECT INTO r array_agg(a.cd_nom) FROM (
+		SELECT cd_nom FROM taxonomie.taxref WHERE cd_ref = cd
+		UNION
+		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'SSES' AND cd_taxsup = cd
+		UNION
+		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'VAR' AND cd_taxsup = cd
+		UNION
+		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'CVAR' AND cd_taxsup = cd
+		UNION
+		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'VAR' AND cd_taxsup IN (SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'SSES' AND cd_taxsup = cd)
+		UNION
+		SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'CVAR' AND cd_taxsup IN (SELECT cd_nom FROM taxonomie.taxref WHERE id_rang = 'SSES' AND cd_taxsup = cd)
+		) a;   
+	ELSE
+	   SELECT INTO r cd_ref FROM taxonomie.taxref WHERE cd_nom = id;
+	END IF;
+	return r;
+  END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+CREATE OR REPLACE FUNCTION application_find_cdref_rang_sp(id integer)
+  RETURNS integer AS
+$BODY$
+--fonction permettant de renvoyer le cd_ref au rang espèce d'une sous-espèce, une variété ou une convariété à partir de son cd_nom
+--si le cd_nom passé est d'un rang espèce ou supérieur (genre, famille...), la fonction renvoie simplement le cd_ref du cd_nom passé en entré
+--
+--Gil DELUERMOZ septembre 2011
+
+  DECLARE
+  rang character(4);
+  rangsup character(4);
+  ref integer;
+  sup integer;
+  BEGIN
+	SELECT INTO rang id_rang FROM taxonomie.taxref WHERE cd_nom = id;
+	IF(rang='SSES' OR rang = 'VAR' OR rang = 'CVAR') THEN
+	    IF(rang = 'SSES') THEN
+		SELECT INTO ref cd_taxsup FROM taxonomie.taxref WHERE cd_nom = id;
+	    END IF;
+	    
+	    IF(rang = 'VAR' OR rang = 'CVAR') THEN
+		SELECT INTO sup cd_taxsup FROM taxonomie.taxref WHERE cd_nom = id;
+		SELECT INTO rangsup id_rang FROM taxonomie.taxref WHERE cd_nom = sup;
+		IF(rangsup = 'ES') THEN
+			SELECT INTO ref cd_ref FROM taxonomie.taxref WHERE cd_nom = sup;
+		END IF;
+		IF(rangsup = 'SSES') THEN
+			SELECT INTO ref cd_taxsup FROM taxonomie.taxref WHERE cd_nom = sup;
+		END IF;
+	    END IF;
+	ELSE
+	   SELECT INTO ref cd_ref FROM taxonomie.taxref WHERE cd_nom = id;
+	END IF;
+	return ref;
+  END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+CREATE OR REPLACE FUNCTION application_find_lbnom_ref(id integer)
+  RETURNS integer AS
+$BODY$
+--fonction permettant de renvoyer le lb_nom du taxon de référence d'un taxon synonyme à partir de son cd_nom
+--
+--Gil DELUERMOZ septembre 2011
+
+  DECLARE 
+  nomref varchar(100);
+  ref integer;
+  BEGIN
+	SELECT INTO ref cd_ref FROM taxonomie.taxref WHERE cd_nom = id;
+	SELECT INTO nomref lb_nom FROM taxonomie.taxref WHERE cd_nom = ref;
+	return nomref;
+  END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+CREATE OR REPLACE FUNCTION application_find_nomcomplet_ref(id integer)
+  RETURNS integer AS
+$BODY$
+--fonction permettant de renvoyer le nom_complet du taxon de référence d'un taxon synonyme à partir de son cd_nom
+--
+--Gil DELUERMOZ septembre 2011
+
+  DECLARE 
+  nomcompletref varchar(255);
+  ref integer;
+  BEGIN
+	SELECT INTO ref cd_ref FROM taxonomie.taxref WHERE cd_nom = id;
+	SELECT INTO nomcompletref nom_complet FROM taxonomie.taxref WHERE cd_nom = ref;
+	return nomcompletref;
+  END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+CREATE OR REPLACE FUNCTION application_nobs2obs(
+    ids integer[],
+    rang integer)
+  RETURNS integer AS
+$BODY$
+--fonction pour la bdf05 permettant de renvoyer une surface à partir des classes de surface de flore station
+--Gil DELUERMOZ avril 2012
+
+  DECLARE 
+  id_role integer;
+  BEGIN
+	return ids[rang];
+  END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+CREATE OR REPLACE FUNCTION application_strate2abondance(frequence character)
+  RETURNS integer AS
+$BODY$
+--fonction pour la bdf05 permettant de renvoyer le niveau d'abondance des taxons d'un relevé flore station à partir de l'abondance dans les relevés station
+--Gil DELUERMOZ avril 2012
+
+  DECLARE 
+  abondance integer;
+  BEGIN
+	IF frequence = '+' OR frequence = '1' THEN abondance = 1;
+	ELSIF frequence = '2' OR frequence = '3' THEN abondance = 2;
+	ELSIF frequence = '4' OR frequence = '5' THEN abondance = 3;
+	ELSIF frequence = '' OR frequence IS NULL THEN abondance = NULL;
+	ELSE abondance = 0;
+	END IF;
+	RETURN abondance;
+  END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+CREATE OR REPLACE FUNCTION application_surfacefs2surface(id integer)
+  RETURNS integer AS
+$BODY$
+--fonction pour la bdf05 permettant de renvoyer une surface à partir des classes de surface de flore station
+--Gil DELUERMOZ avril 2012
+
+  DECLARE 
+  surface integer;
+  BEGIN
+	IF id  = 1 THEN surface = 100;
+	ELSIF id  = 2  THEN surface = 10;
+	ELSE surface = NULL;
+	END IF;
+	RETURN surface;
+  END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+--TODO : analyser ce qui sert et déplacer les functions et leur usage dans un schéma métier.
 
 --TABLES--
 CREATE TABLE v1_florestation.bib_supports
@@ -500,7 +777,7 @@ return new; -- return new procède à l'insertion de la donnée dans PG avec les
 END;
 $$;
 
-CREATE FUNCTION v1_florestation.florestation_update() RETURNS trigger
+CREATE OR REPLACE FUNCTION v1_florestation.florestation_update() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE 
@@ -518,10 +795,14 @@ IF (old.the_geom_local is null AND old.the_geom_3857 is null) THEN
 		new.srid_dessin = 3857;
     END IF;
     -- on calcul la commune...
-    SELECT area_code INTO theinsee FROM (SELECT ref_geo.fct_get_area_intersection(new.the_geom_local,25) LIMIT 1) c;
+    SELECT INTO theinsee m.insee_com 
+    FROM ref_geo.l_areas lc 
+    JOIN ref_geo.li_municipalities m ON m.id_area = lc.id_area
+    WHERE public.st_intersects(lc.geom, new.the_geom_local) AND lc.id_type = 25
+    ORDER BY public.ST_area(public.ST_intersection(lc.geom, new.the_geom_local)) DESC LIMIT 1;
     new.insee = theinsee;-- mise à jour du code insee
     -- on calcul l'altitude
-    SELECT altitude_min INTO thealtitude FROM (SELECT ref_geo.fct_get_altitude_intersection(new.the_geom_local) LIMIT 1) a;
+    SELECT altitude_min INTO thealtitude FROM (SELECT * FROM ref_geo.fct_get_altitude_intersection(new.the_geom_local) LIMIT 1) a;
     new.altitude_sig = thealtitude;-- mise à jour de l'altitude sig
     IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
         new.altitude_retenue = new.altitude_sig;
@@ -546,10 +827,14 @@ IF (old.the_geom_local is NOT NULL OR old.the_geom_3857 is NOT NULL) THEN
         END IF;
     END IF;
     -- on calcul la commune...
-    SELECT area_code INTO theinsee FROM (SELECT ref_geo.fct_get_area_intersection(new.the_geom_local,25) LIMIT 1) c;
+    SELECT INTO theinsee m.insee_com 
+    FROM ref_geo.l_areas lc 
+    JOIN ref_geo.li_municipalities m ON m.id_area = lc.id_area
+    WHERE public.st_intersects(lc.geom, new.the_geom_local) AND lc.id_type = 25
+    ORDER BY public.ST_area(public.ST_intersection(lc.geom, new.the_geom_local)) DESC LIMIT 1;
     new.insee = theinsee;-- mise à jour du code insee
     -- on calcul l'altitude
-    SELECT altitude_min INTO thealtitude FROM (SELECT ref_geo.fct_get_altitude_intersection(new.the_geom_local) LIMIT 1) a;
+    SELECT altitude_min INTO thealtitude FROM (SELECT * FROM ref_geo.fct_get_altitude_intersection(new.the_geom_local) LIMIT 1) a;
     new.altitude_sig = thealtitude;-- mise à jour de l'altitude sig
     IF new.altitude_saisie IS null OR new.altitude_saisie = -1 THEN-- mis à jour de l'altitude retenue
         new.altitude_retenue = new.altitude_sig;
@@ -595,7 +880,7 @@ BEGIN
     --Récupération de la version taxref
     SELECT parameter_value INTO thetaxrefversion FROM gn_commons.t_parameters WHERE parameter_name = 'taxref_version';
     --Récupération du statut de validation
-    IF (fiche.validation==true) THEN 
+    IF (fiche.validation) THEN 
 	SELECT ref_nomenclatures.get_id_nomenclature('STATUT_VALID','1') INTO thevalidationstatus;
     ELSE
 	SELECT ref_nomenclatures.get_id_nomenclature('STATUT_VALID','2') INTO thevalidationstatus;
@@ -793,7 +1078,7 @@ RETURN NEW;
 END;
 $$;
 
-CREATE FUNCTION v1_florestation.update_synthese_stations_fs() RETURNS trigger
+CREATE OR REPLACE FUNCTION v1_florestation.update_synthese_stations_fs() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 DECLARE 
@@ -811,7 +1096,7 @@ IF (
 	OR ((new.validation <> old.validation) OR (new.validation is null and old.validation is NOT NULL) OR (new.validation is NOT NULL and old.validation is null))
 ) THEN
         --Récupération du statut de validation
-	IF (new.validation==true) THEN 
+	IF (new.validation) THEN 
 		SELECT ref_nomenclatures.get_id_nomenclature('STATUT_VALID','1') INTO thevalidationstatus;
 	ELSE
 		SELECT ref_nomenclatures.get_id_nomenclature('STATUT_VALID','2') INTO thevalidationstatus;

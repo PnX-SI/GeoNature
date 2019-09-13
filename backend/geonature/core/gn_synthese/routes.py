@@ -63,6 +63,7 @@ log = logging.getLogger()
 def current_milli_time():
     return time.time()
 
+
 ############################################
 ########### GET OBSERVATIONS  ##############
 ############################################
@@ -109,7 +110,7 @@ def get_observations_for_web(info_role):
     :qparam str period_start: *tbd*
     :qparam str period_end: *tbd*
     :qparam str area*: Generic filter on area
-    :qparam str *: Generic filter, given by colname & value 
+    :qparam str *: Generic filter, given by colname & value
     :>jsonarr array data: Array of synthese with geojson key, see above
     :>jsonarr int nb_total: Number of observations
     :>jsonarr bool nb_obs_limited: Is number of observations capped
@@ -177,7 +178,7 @@ def get_synthese(info_role):
 
     Params must have same synthese fields names
 
-    :parameter str info_role: Role used to get the associated filters 
+    :parameter str info_role: Role used to get the associated filters
     :returns dict[dict, int, bool]: See description above
     """
     # change all args in a list of value
@@ -302,7 +303,9 @@ def export_observations_web(info_role):
             columns_to_serialize.append(db_col.key)
 
     q = DB.session.query(export_view.tableDef).filter(
-        export_view.tableDef.columns.idSynthese.in_(id_list)
+        export_view.tableDef.columns[
+            current_app.config["SYNTHESE"]["EXPORT_ID_SYNTHESE_COL"]
+        ].in_(id_list)
     )
     # check R and E CRUVED to know if we filter with cruved
     cruved = cruved_scope_for_user_in_module(info_role.id_role, module_code="SYNTHESE")[
@@ -518,7 +521,7 @@ def general_stats(info_role):
     """Return stats about synthese.
 
     .. :quickref: Synthese;
-    
+
         - nb of observations
         - nb of distinct species
         - nb of distinct observer
@@ -654,7 +657,7 @@ def get_color_taxon():
     """Get color of taxon in areas (table synthese.cor_area_taxon).
 
     .. :quickref: Synthese;
-    
+
     :query str code_area_type: Type area code (ref_geo.bib_areas_types.type_code)
     :query int id_area: Id of area (ref_geo.l_areas.id_area)
     :query int cd_nom: taxon code (taxonomie.taxref.cd_nom)

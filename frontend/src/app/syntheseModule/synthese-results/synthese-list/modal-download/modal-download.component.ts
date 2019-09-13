@@ -17,7 +17,7 @@ export class SyntheseModalDownloadComponent implements OnInit {
 
   constructor(
     public activeModal: NgbActiveModal,
-    private _dataService: SyntheseDataService,
+    public _dataService: SyntheseDataService,
     private _storeService: SyntheseStoreService
   ) {}
 

@@ -2,6 +2,7 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { GN2CommonModule } from "@geonature_common/GN2Common.module";
 import { Routes, RouterModule } from "@angular/router";
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 // Components
 import { OcctaxMapFormComponent } from "./occtax-map-form/occtax-map-form.component";
 import { ReleveComponent } from "./occtax-map-form/form/releve/releve.component";
@@ -31,7 +32,13 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, GN2CommonModule, RouterModule.forChild(routes), MatSlideToggleModule],
+  imports: [
+    RouterModule.forChild(routes), 
+    GN2CommonModule, 
+    CommonModule, 
+    MatSlideToggleModule, 
+    NgbModule
+  ],
   declarations: [
     OcctaxMapFormComponent,
     OcctaxFormComponent,

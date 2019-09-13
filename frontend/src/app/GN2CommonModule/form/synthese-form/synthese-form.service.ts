@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, ValidatorFn } from '@angular/forms';
 import { AppConfig } from '@geonature_config/app.config';
 import { stringify } from 'wellknown';
-import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date-parser-formatter';
+import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
 import { DYNAMIC_FORM_DEF } from '@geonature_common/form/synthese-form/dynamycFormConfig';
 

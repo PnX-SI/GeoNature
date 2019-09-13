@@ -2,8 +2,16 @@ DROP FOREIGN TABLE v1_compat.v_nomade_classes;
 DROP FOREIGN TABLE v1_compat.log_colors;
 DROP FOREIGN TABLE v1_compat.log_colors_day;
 
-IMPORT FOREIGN SCHEMA contactinv FROM SERVER geonature1server INTO v1_compat;
-DROP FOREIGN TABLE v1_compat.cor_message_taxon;
+IMPORT FOREIGN SCHEMA contactinv EXCEPT(cor_message_taxon, v_nomade_milieux_inv) FROM SERVER geonature1server INTO v1_compat;
+
+-- recréation des vues transformées en table qui avaient des problèmes de droits
+
+CREATE OR REPLACE VIEW v1_compat.v_nomade_milieux_inv
+AS SELECT v1.id_milieu_inv,
+    v1.nom_milieu_inv
+   FROM v1_compat.bib_milieux_inv v1
+  ORDER BY v1.id_milieu_inv;
+
 --changement de nom de la table cor_message_taxon
 CREATE FOREIGN TABLE v1_compat.cor_message_taxon_contactinv
  (

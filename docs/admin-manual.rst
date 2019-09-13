@@ -596,7 +596,7 @@ Connectez-vous avec l'utilisateur linux ``postgres`` pour lancer une sauvegarde 
 .. code-block:: console
 
     sudo su postgres
-    pg_dump -Fc geonature2db  > backup/`date +%Y-%m-%d-%H:%M`-geonaturedb.backup
+    pg_dump -Fc geonature2db  > /home/`whoami`/backup/`date +%Y-%m-%d-%H:%M`-geonaturedb.backup
     exit
 
 Si la sauvegarde ne se fait pas, c'est qu'il faut revoir les droits du répertoire où sont faites les sauvegardes pour que l'utilisateur ``postgres`` puisse y écrire
@@ -607,9 +607,8 @@ Opération à faire régulièrement grâce à une tâche cron.
 
   .. code-block:: console
 
-    cd geonature/config
-    tar -zcvf <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-geonature_config.tar.gz ./
-    cd /home/<MY_USER>/geonature
+    cd /home/`whoami`/geonature/config
+    tar -zcvf /home/`whoami`/backup/`date +%Y%m%d%H%M`-geonature_config.tar.gz ./
     
 Opération à faire à chaque modification d'un paramètre de configuration.
 
@@ -617,8 +616,8 @@ Opération à faire à chaque modification d'un paramètre de configuration.
 
   .. code-block:: console
 
-    cd /home/<MY_USER>geonature/frontend/src/custom
-    tar -zcvf <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-geonature_custom.tar.gz ./
+    cd /home/`whoami`/geonature/frontend/src/custom
+    tar -zcvf /home/`whoami`/`date +%Y%m%d%H%M`-geonature_custom.tar.gz ./
 
 Opération à faire à chaque modification de la customisation de l'application.
 
@@ -626,8 +625,8 @@ Opération à faire à chaque modification de la customisation de l'application.
 
   .. code-block:: console
 
-    cd /home/<MY_USER>geonature/external_modules
-    tar -zcvf <MY_BACKUP_DIRECTORY_PATH>/`date +%Y%m%d%H%M`-external_modules.tar.gz ./
+    cd /home/`whoami`/geonature/external_modules
+    tar -zcvf /home/`whoami`/backup/`date +%Y%m%d%H%M`-external_modules.tar.gz ./
 
 Restauration
 """"""""""""
@@ -955,9 +954,9 @@ Le module est fourni avec une liste restreinte de taxons (8 seulement). C'est à
 
 Le paramètre ``id_taxon_list = 100`` correspond à un ID de liste de la table ``taxonomie.bib_listes`` (L'ID 100 correspond à la liste "Saisie Occtax"). Vous pouvez changer ce paramètre avec l'ID de liste que vous souhaitez, ou bien garder cet ID et changer le contenu de cette liste.
 
-Voici les requêtes SQL pour remplir la liste 500 avec tous les taxons de Taxref à partir du rang ``genre`` : 
+Voici les requêtes SQL pour remplir la liste 100 avec tous les taxons de Taxref à partir du rang ``genre`` : 
 
-Il faut d'abord remplir la table ``taxonomie.bib_noms`` (table des taxons de sa structure), puis remplir la liste 500, avec l'ensemble des taxons de ``bib_noms`` :
+Il faut d'abord remplir la table ``taxonomie.bib_noms`` (table des taxons de sa structure), puis remplir la liste 100, avec l'ensemble des taxons de ``bib_noms`` :
 
 .. code-block:: sql 
 
@@ -968,10 +967,10 @@ Il faut d'abord remplir la table ``taxonomie.bib_noms`` (table des taxons de sa 
     SELECT cd_nom, cd_ref, nom_vern
     FROM taxonomie.taxref
     WHERE id_rang NOT IN ('Dumm','SPRG','KD','SSRG','IFRG','PH','SBPH','IFPH','DV','SBDV','SPCL','CLAD','CL',
-      'SBCL','IFCL','LEG','SPOR','COH','OR','SBOR','IFOR','SPFM','FM','SBFM','TR','SSTR')
+      'SBCL','IFCL','LEG','SPOR','COH','OR','SBOR','IFOR','SPFM','FM','SBFM','TR','SSTR');
 
     INSERT INTO taxonomie.cor_nom_liste (id_liste,id_nom)
-    SELECT 100,n.id_nom FROM taxonomie.bib_noms n
+    SELECT 100,n.id_nom FROM taxonomie.bib_noms n;
 
 Il est également possible d'éditer des listes à partir de l'application TaxHub.
 
