@@ -19,7 +19,7 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from geonature.utils.env import DB, DEFAULT_CONFIG_FILE
 
-from geonature.utils.command import get_app_for_cmd, build_geonature_front
+from geonature.utils.command import get_app_for_cmd, build_geonature_front, tsconfig_app_templating
 from geonature.core.command.main import main
 from geonature.utils.gn_module_import import (
     check_gn_module_file,
@@ -106,7 +106,9 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                 gn_module_register_config(module_code.lower())
 
                 if enable_frontend:
-                    # generation du du routing du frontend
+                    # generation du fichier tsconfig.app.json
+                    tsconfig_app_templating(app)
+                    # generation du routing du frontend
                     frontend_routes_templating(app)
                     # generation du fichier de configuration du frontend
                     create_module_config(

@@ -42,7 +42,7 @@ export class OcctaxFormService {
   // boolean to check if its editionMode
   public editionMode: boolean;
   // subscription to get edition mode when data loaded in ajax
-  public editionMode$ = <BehaviorSubject<boolean>>new BehaviorSubject(null);
+  public editionMode$: BehaviorSubject<boolean> = new BehaviorSubject(null);
 
   public releveForm: FormGroup;
   public occurrenceForm: FormGroup;
@@ -482,7 +482,7 @@ export class OcctaxFormService {
 
   patchAllDefaultNomenclature() {
     // fetch and patch all default nomenclature
-    this.getDefaultValues(this.currentUser.organismId).subscribe(data => {
+    this.getDefaultValues(this.currentUser.id_organisme).subscribe(data => {
       this.defaultValues = data;
       this.patchDefaultNomenclatureReleve(data);
       this.patchDefaultNomenclatureOccurrence(data);
@@ -499,7 +499,7 @@ export class OcctaxFormService {
     this.occurrenceForm.patchValue({ nom_cite: $event.item.search_name });
     // fetch default nomenclature value filtered by organism, regne, group2_inpn
     this.getDefaultValues(
-      this.currentUser.organismId,
+      this.currentUser.id_organisme,
       $event.item.regne,
       $event.item.group2_inpn
     ).subscribe(data => {

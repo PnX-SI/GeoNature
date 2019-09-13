@@ -40,12 +40,9 @@ export class ValidationModalInfoObsComponent implements OnInit {
   public validationDate;
   public currentCdNomenclature;
 
-
-  @Input() inputSyntheseData: GeoJSON;
   @Input() oneObsSynthese: any;
   @Output() modifiedStatus = new EventEmitter();
   @Output() valDate = new EventEmitter();
-  @ViewChild('table') table: DatatableComponent;
 
   constructor(
     public mapListService: MapListService,
@@ -261,7 +258,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
     return this._validatioDataService.postStatus(value, this.id_synthese).toPromise()
       .then(
         data => {
-          this.promiseResult = data as JSON;
+        /** TODO à virer ? ** this.promiseResult = data as JSON; **/
           //console.log('retour du post : ', this.promiseResult);
           return new Promise((resolve, reject) => {
             // show success message indicating the number of observation(s) with modified validation status
@@ -284,7 +281,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
             // show error message if other server error
             this.toastr.error(err.error);
           }
-          reject();
+          Promise.reject();
         }
       )
       .then(

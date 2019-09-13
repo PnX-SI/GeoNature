@@ -8,9 +8,9 @@ import {
   HostListener,
   AfterContentChecked,
   OnChanges,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  EventEmitter
 } from "@angular/core";
-import { GeoJSON, FeatureGroup } from "leaflet";
 import { MapService } from "@geonature_common/map/map.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
@@ -20,8 +20,6 @@ import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { ValidationModalInfoObsComponent } from "../validation-modal-info-obs/validation-modal-info-obs.component";
 import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthese-form.service";
 import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthese-data.service";
-
-import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "pnx-validation-synthese-list",
@@ -35,17 +33,15 @@ export class ValidationSyntheseListComponent
   selectedIndex: Array<number> = [];
   selectedPages = [];
   coordinates_list = []; // list of coordinates for selected rows
-  group: FeatureGroup;
   marker: MediaTrackSupportedConstraints;
   public rowNumber: number;
   private _latestWidth: number;
   public id_same_coordinates = []; // list of observation ids having same geographic coordinates
-  public validationStatus;
   public modif_text =
     "Attention données modifiées depuis la dernière validation";
   public npage;
 
-  @Input() inputSyntheseData: GeoJSON;
+  @Input() inputSyntheseData: Array<any>;
   @Input() validationStatus: Array<any>;
   @ViewChild("table") table: DatatableComponent;
   @Output() pageChange: EventEmitter<number>;
@@ -60,7 +56,6 @@ export class ValidationSyntheseListComponent
     public ref: ChangeDetectorRef,
     private _ms: MapService,
     public formService: SyntheseFormService,
-    private toastr: ToastrService
   ) {}
 
   ngOnInit() {
@@ -68,7 +63,7 @@ export class ValidationSyntheseListComponent
     const h = document.documentElement.clientHeight;
     this.rowNumber = Math.trunc(h / 37);
 
-    this.group = new FeatureGroup();
+    // this.group = new FeatureGroup();
     this.onMapClick();
     this.onTableClick();
     this.npage = 1;
@@ -175,13 +170,7 @@ export class ValidationSyntheseListComponent
   }
 
   viewFitList(id_observations) {
-    // create an empty featre group
-    // and fill it with the selected layer to get bounds
-    this.group = new FeatureGroup();
-    id_observations.forEach(id_obs => {
-      this.group.addLayer(this.mapListService.layerDict[id_obs]);
-    });
-    this._ms.getMap().fitBounds(this.group.getBounds());
+    this.mapListService.zoomOnSeveralSelectedLayers(this._ms.map, id_observations);
   }
 
   setSelectedObs() {

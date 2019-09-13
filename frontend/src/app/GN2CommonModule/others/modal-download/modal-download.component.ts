@@ -9,7 +9,7 @@ import {
   HttpEventType,
   HttpErrorResponse
 } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { CommonService } from '@geonature_common/service/common.service';
 
 export const FormatMapMime = new Map([

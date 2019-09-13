@@ -3,11 +3,11 @@ import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import { ModuleConfig } from "../../module.config";
 import {  FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { NgbDateParserFormatter, NgbModule, NgbdButtonsRadioreactive } from "@ng-bootstrap/ng-bootstrap";
+import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 //import { FILTERSLIST } from "./filters-list";
 import { Router } from "@angular/router";
 import { ValidationDataService } from "../../services/data.service";
-import { ToastrService } from 'ngx-toastr';
+import { CommonService } from "@geonature_common/service/common.service";
 
 
 @Component({
@@ -45,7 +45,7 @@ export class ValidationPopupComponent {
     private _router: Router,
     private _fb: FormBuilder,
     public dataService: ValidationDataService,
-    private toastr: ToastrService,
+    private _commonService: CommonService,
     private mapListService: MapListService
     ) {
       // form used for changing validation status
@@ -62,10 +62,9 @@ export class ValidationPopupComponent {
     return this.dataService.postStatus(value, this.observations).toPromise()
     .then(
       data => {
-        this.promiseResult = data as JSON;
         return new Promise((resolve, reject) => {
             // show success message indicating the number of observation(s) with modified validation status
-            this.toastr.success('Vous avez modifié le statut de validation de ' + this.observations.length + ' observation(s)');
+            this._commonService.translateToaster("success", "Vous avez modifié le statut de validation de ' + this.observations.length + ' observation(s)");
             // bind statut value with validation-synthese-list component
             this.update_status();
             // emit the date of today in output to update the validation date on maplist
@@ -78,12 +77,12 @@ export class ValidationPopupComponent {
       err => {
         if (err.statusText === 'Unknown Error') {
           // show error message if no connexion
-          this.toastr.error('ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connexion)');
+          this._commonService.translateToaster("error", "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)");
         } else {
           // show error message if other server error
-          this.toastr.error(err.error);
+          this._commonService.translateToaster("error", err.error);
         }
-        reject()
+        Promise.reject()
       }
     )
     .then(
@@ -171,10 +170,10 @@ export class ValidationPopupComponent {
       err => {
         if (err.statusText === 'Unknown Error') {
           // show error message if no connexion
-          this.toastr.error('ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connexion)');
+          this._commonService.translateToaster("error", "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)");
         } else {
           // show error message if other server error
-          this.toastr.error(err.error);
+          this._commonService.translateToaster("error", err.error);
         }
       },
       () => {
