@@ -121,7 +121,7 @@ class TestGnPermissionsView:
         response = self.client.get(url_for("gn_permissions_backoffice.users"))
         # test = self.get_context_variable('users')
         assert b"Liste des roles" in response.data
-        assert b"Grp_admin" in response.data
+        assert b"Grp_en_poste" in response.data
         assert response.status_code == 200
 
     def test_get_user_cruveds(self):
