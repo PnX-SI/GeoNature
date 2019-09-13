@@ -43,9 +43,8 @@ FROM r;
 
 
 
+-- Optimisation de la vue validation
 DROP view gn_commons.v_synthese_validation_forwebapp;
-
-
 CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS 
  SELECT s.id_synthese,
     s.unique_id_sinp,
@@ -115,3 +114,8 @@ CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS
   ORDER BY s.id_synthese, v.validation_date DESC;
 
 COMMENT ON VIEW gn_commons.v_synthese_validation_forwebapp  IS 'Vue utilisée pour le module validation. Prend l''id_nomenclature dans la table synthese ainsi que toutes les colonnes de la synthese pour les filtres. On JOIN sur la vue latest_validation pour voir si la validation est auto';
+
+
+
+DELETE FROM gn_synthese.cor_area_synthese
+WHERE id_synthese NOT IN (SELECT id_synthese FROM gn_synthese.synthese);
