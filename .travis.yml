@@ -37,7 +37,7 @@ deploy:
   skip_cleanup: true
   github_token: $GITHUB_TOKEN # set in the Travis dashboard
   local_dir: docs/build/html
-  github_url: http://docs.geonature.fr
+  fqdn: http://docs.geonature.fr
   target_branch: gh-pages
   on:
     branch: master
