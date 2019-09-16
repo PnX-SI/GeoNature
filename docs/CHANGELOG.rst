@@ -13,6 +13,7 @@ CHANGELOG
 * Le composant 'observateur' permet de rechercher sur le nom ou le prénom (utilisation des RegEx) #567
 * Mise à jour de Flask en version 1.1.1
 * Nouvelle version du sous-module d'authentification (1.4.0), compatible avec UsersHub 2.1.0
+* Mise à jour du sous-module de nomenclatures (version 1.2.7)
 * Mise à jour et clarification du MCD (http://docs.geonature.fr/admin-manual.html#base-de-donnees) par @jpm-cbna
 * Ajout d'une tutoriel vidéo d'installation dans la documentation (https://www.youtube.com/watch?v=JYgH7cV9AjE, par @olivier8064)
 
@@ -33,7 +34,7 @@ CHANGELOG
 
 * Passer le script de migration ``data/2.1.2to2.2.0.sql``
 * Suivez ensuite la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
-* Si vous souhaitez activer les fonctionnalités de création de compte, veuillir lire **attentivement** cette documentation : http://docs.geonature.fr/admin-manual.html#creation-de-compte
+* Si vous souhaitez activer les fonctionnalités de création de compte, veuillir lire **attentivement** cette documentation : http://docs.geonature.fr/admin-manual.html#configuration-de-la-creation-de-compte
 * Si vous activez la création de compte, UsersHub 2.1.0 doit être installé
 
 2.1.2 (2019-07-25)
