@@ -250,10 +250,11 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
       .subscribe(value => {
         this.spinner = true;
         this.currentTypeCode = value;
-        // Accès aux données de synthèse
+        //// Accès aux données de synthèse
         this.dataService
-          .getDataAreas(this.simplifyLevel, this.currentTypeCode, this.mapForm.value)
+          .getDataAreas(this.simplifyLevel, this.currentTypeCode, this.filtersDict)
           .subscribe(data => {
+            console.log(this.filtersDict);
             // Rafraichissement du tableau contenant la géométrie et les données des zonages
             this.myAreas = data;
             this.spinner = false;
