@@ -119,7 +119,8 @@ def get_observations_for_web(info_role):
     if request.json:
         filters = request.json
     elif request.data:
-        filters = json.loads(request.data)
+        #  decode byte to str - compat python 3.5
+        filters = json.loads(request.data.decode("utf-8"))
     else:
         filters = {
             key: request.args.getlist(key) for key, value in request.args.items()
