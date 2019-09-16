@@ -15,16 +15,16 @@ install:
   - cd tests/travis_test
   - ./travis_test.sh
   # install frontend
-  - cd ../../../frontend
+  #- cd ../../../frontend
   #- nvm install 8.16.0
   #- npm install
 
 script:
   -  # test backend
   # - cd ../backend
-  # - pytest --disable-warnings
-  # - cd ../docs
-  # - make html
+  #- pytest --disable-warnings
+  - cd ../docs
+  - make html
   # # create a repository for frontend doc
   # - mkdir build/html/frontend
   # - cd ../frontend
