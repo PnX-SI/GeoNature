@@ -19,7 +19,7 @@ Démo vidéo : https://geonature.fr/docs/img/2019-09-GN-dashboard-0.1.0.gif
 
 **Présentation** :
 
-* Rapport de stage de Elsa Guilley : http://geonature.fr/documents/xxxxxxxxxxxxxxxxxx
+* Rapport de stage de Elsa Guilley : https://geonature.fr/documents/2019-09-rapport-stage-Elsa-Guilley-Dashboard-Validation.pdf
 * Présentation de soutenance de stage de Elsa Guilley : http://geonature.fr/documents/xxxxxxxxxxxxxxxxxxxxx
 
 Installation
