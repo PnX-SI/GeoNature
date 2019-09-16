@@ -13,7 +13,7 @@ CHANGELOG
 * Le composant 'observateur' permet de rechercher sur le nom ou le prénom (utilisation des RegEx) #567
 * Mise à jour de Flask en version 1.1.1
 * Nouvelle version du sous-module d'authentification (1.4.0), compatible avec UsersHub 2.1.0
-* Mise à jour du sous-module de nomenclatures (version 1.2.7)
+* Mise à jour du sous-module de nomenclatures (version 1.3.0)
 * Mise à jour et clarification du MCD (http://docs.geonature.fr/admin-manual.html#base-de-donnees) par @jpm-cbna
 * Ajout d'une tutoriel vidéo d'installation dans la documentation (https://www.youtube.com/watch?v=JYgH7cV9AjE, par @olivier8064)
 
