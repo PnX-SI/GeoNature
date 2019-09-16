@@ -20,10 +20,10 @@ install:
   #- npm install
 
 script:
-  -  # test backend
+  ## test backend
   # - cd ../backend
   #- pytest --disable-warnings
-  - cd ../docs
+  - cd ../../../docs/
   - make html
   # # create a repository for frontend doc
   # - mkdir build/html/frontend
