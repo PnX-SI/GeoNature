@@ -21,7 +21,7 @@ install:
 
 script:
   ## test backend
-  - cd ../../backend
+  - cd ../../../backend
   - pytest --disable-warnings --ignore=usershub-geonature
   - cd ../docs/
   - make html
