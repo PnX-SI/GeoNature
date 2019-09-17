@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy, Inject, ViewChild } from '@angular/core';
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
@@ -45,7 +44,9 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     this._globalSub.currentModuleSub.subscribe(module => {
       if (module) {
         this.moduleName = module.module_label;
-        this.currentDocUrl = module.module_doc_url;
+        if (module.module_doc_url) {
+          this.currentDocUrl = module.module_doc_url;
+        }
       } else {
         this.moduleName = 'Accueil';
       }
