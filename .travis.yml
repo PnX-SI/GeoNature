@@ -22,7 +22,7 @@ install:
 script:
   ## test backend
   - cd ../../../backend
-  - pytest --disable-warnings --ignore=usershub-geonature
+  - pytest --disable-warnings --ignore=tests/usershub-geonature
   - cd ../docs/
   - make html
   # # create a repository for frontend doc
