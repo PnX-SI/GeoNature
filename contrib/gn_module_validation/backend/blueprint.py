@@ -79,8 +79,6 @@ def get_synthese_data(info_role):
 
         result_limit = blueprint.config["NB_MAX_OBS_MAP"]
 
-        # pdb.set_trace()
-
         q = DB.session.query(VSyntheseValidation)
 
         q = filter_query_all_filters(VSyntheseValidation, q, filters, info_role)

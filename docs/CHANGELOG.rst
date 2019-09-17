@@ -32,10 +32,10 @@ CHANGELOG
 
 **⚠️ Notes de version**
 
-* Passer le script de migration ``data/2.1.2to2.2.0.sql``
+* Passer le script de migration suivant: https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.1.2to2.2.0.sql
 * Suivez ensuite la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 * Si vous souhaitez activer les fonctionnalités de création de compte, veuillir lire **attentivement** cette documentation : http://docs.geonature.fr/admin-manual.html#configuration-de-la-creation-de-compte
-* Si vous activez la création de compte, UsersHub 2.1.0 doit être installé
+* Si vous activez la création de compte, UsersHub 2.1.0 doit être installé. Voir la  `note de version <https://github.com/PnX-SI/UsersHub/releases>`_.
 
 2.1.2 (2019-07-25)
 ------------------
