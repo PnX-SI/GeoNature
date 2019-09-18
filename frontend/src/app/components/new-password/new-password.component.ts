@@ -37,8 +37,9 @@ export class NewPasswordComponent implements OnInit {
   setForm() {
     this.form = this.fb.group({
       password: ['', [Validators.required]],
-      password_confirmation: ['', [Validators.required, similarValidator('password')]]
+      password_confirmation: ['', [Validators.required]]
     });
+    this.form.setValidators([similarValidator('password', 'password_confirmation')]);
   }
 
   submit() {

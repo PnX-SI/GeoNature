@@ -108,7 +108,7 @@
                   <small *ngIf="form.get('password_confirmation').hasError('required') && form.get('password_confirmation').touched">
                     Ce champ est nécessaire
                   </small>
-                  <small *ngIf="form.get('password_confirmation').hasError('similarError') && form.get('password_confirmation').touched">
+                  <small *ngIf="form.hasError('similarError') && form.get('password_confirmation').touched">
                     Erreur de confirmation
                   </small>
                 </div>
@@ -155,6 +155,7 @@
                   (click)="save()"> S'inscrire
                 </button>
               </div>
+
 
             </form>
           </div>

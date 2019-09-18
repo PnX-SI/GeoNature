@@ -1,16 +1,13 @@
-import { ValidatorFn, AbstractControl } from '@angular/forms';
+import { ValidatorFn, AbstractControl, FormGroup } from '@angular/forms';
 
-export function similarValidator(compared: string): ValidatorFn {
-  return (control: AbstractControl): { [key: string]: any } => {
-    const valeur = control.value;
-    const group = control.parent;
-    let valid = false;
-    if (group) {
-      const comparedValue = group.controls[compared].value;
-      valid = comparedValue == valeur ? true : false;
+export function similarValidator(pass: string, passConfirm: string): ValidatorFn {
+  return (control: FormGroup): { [key: string]: any } => {
+    const passControl = control.get(pass);
+    const confirPassControl = control.get(passConfirm);
+    if (passControl && confirPassControl && passControl.value === confirPassControl.value) {
+      return null;
     }
-
-    return valid ? null : { similarError: { valeur } };
+    return { similarError: true };
   };
 }
 

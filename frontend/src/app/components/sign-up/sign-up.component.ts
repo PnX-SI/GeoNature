@@ -44,11 +44,12 @@ export class SignUpComponent implements OnInit {
         '',
         [Validators.pattern('^[a-z0-9._-]+@[a-z0-9._-]{2,}.[a-z]{2,4}$'), Validators.required]
       ],
-      password: ['', Validators.required],
-      password_confirmation: ['', [Validators.required, similarValidator('password')]],
+      password: ['', [Validators.required]],
+      password_confirmation: ['', [Validators.required]],
       remarques: ['', null],
       organisme: ['', null]
     });
+    this.form.setValidators([similarValidator('password', 'password_confirmation')]);
     this.dynamicFormGroup = this.fb.group({});
   }
 
