@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-2.2.0 (unreleased)
-------------------
+2.2.0 - Module utilisateurs (2019-09-18)
+----------------------------------------
 
 **🚀 Nouveautés**
 
@@ -29,13 +29,14 @@ CHANGELOG
 * Correction des contraintes CHECK sur les tables liées à la sensibilité
 * Complément et correction des scripts de migration ``data/migrations/v1tov2``
 * Correction et clarification de la documentation d'administration des listes de taxons et de sauvegarde et restauration de la BDD (par @lpofredc)
+* Correction de la rotation des logs
 
 **⚠️ Notes de version**
 
 * Passer le script de migration suivant: https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.1.2to2.2.0.sql
 * Suivez ensuite la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 * Si vous souhaitez activer les fonctionnalités de création de compte, veuillir lire **attentivement** cette documentation : http://docs.geonature.fr/admin-manual.html#configuration-de-la-creation-de-compte
-* Si vous activez la création de compte, UsersHub 2.1.0 doit être installé. Voir la  `note de version <https://github.com/PnX-SI/UsersHub/releases>`_.
+* Si vous activez la création de compte, UsersHub 2.1.0 doit être installé. Voir sa `note de version <https://github.com/PnX-SI/UsersHub/releases>`_.
 
 2.1.2 (2019-07-25)
 ------------------
@@ -102,9 +103,8 @@ Ceci est une version corrective mineure. Si vous migrez depuis la 2.1.0, passez 
 * Suivez ensuite la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 * Nouvelle localisation de la doc : http://docs.geonature.fr
 
-
-2.1.0 (2019-06-01)
-------------------
+2.1.0 - Module validation (2019-06-01)
+--------------------------------------
 
 **🚀 Nouveautés**
 
@@ -199,8 +199,8 @@ Ceci est une version corrective mineure. Si vous migrez depuis la 2.1.0, passez 
 * Exécuter le script de migration SQL de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.0.0to2.0.1.sql)
 * Suivez ensuite la procédure classique de mise à jour de GeoNature (https://geonature.readthedocs.io/fr/latest/installation-standalone.html#mise-a-jour-de-l-application)
 
-2.0.0 (2019-02-28)
-------------------
+2.0.0 - La refonte (2019-02-28)
+-------------------------------
 
 La version 2 de GeoNature est une refonte complète de l'application.
 
