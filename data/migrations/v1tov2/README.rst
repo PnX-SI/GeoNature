@@ -12,4 +12,4 @@ Pré-requis : GeoNature 1.9.1 en place, à migrer vers 2.1.2. UsersHub et TaxHub
 
 La partie spécifique au PnEcrins est dans le répertoire ``my_organisme``, à adapter pour votre contexte.
 
-**NB**: La personnalisation des métadonnées et notamment l'association des acteurs associés aux JDD et CA (indipensable pour les notions de droits) n'est pas prise en compte dans la migration. Un modèle est présent dans le script ``my_organisme/mymeta.sql``.
+**NB** : La personnalisation des métadonnées et notamment l'association des acteurs associés aux JDD et CA (indispensable pour les notions de droits) n'est pas prise en compte dans la migration. Un exemple est présent dans le script ``my_organisme/mymeta.sql``.
