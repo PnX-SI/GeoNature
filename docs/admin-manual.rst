@@ -21,7 +21,7 @@ Base de données
 
 Dans la continuité de sa version 1, GeoNature V2 utilise le SGBD PostgreSQL et sa cartouche spatiale PostGIS. Cependant l'architecture du modèle de données a été complétement revue.
 
-La base de données a notemment été refondue pour s'appuyer au maximum sur des standards, comme le standard d'Occurrences de Taxon du MNHN (Voir https://github.com/PnX-SI/GeoNature/issues/183).
+La base de données a notamment été refondue pour s'appuyer au maximum sur des standards, comme le standard d'Occurrences de Taxon du SINP (Voir https://github.com/PnX-SI/GeoNature/issues/183).
 
 La base de données a également été traduite en Anglais et supporte désormais le multilangue.
 
