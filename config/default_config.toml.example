@@ -30,7 +30,7 @@ API_LOG_LEVEL = 40
 LOCAL_SRID = 2154
 
 [USERSHUB]
-    URL_USERHUB = "http://127.0.0.1:5001"
+    URL_USERSHUB = "http://127.0.0.1:5001"
     # Administrateur de mon application
     ADMIN_APPLICATION_LOGIN = "login_admin_usershub"
     ADMIN_APPLICATION_PASSWORD = "password_admin_usershub"
