@@ -58,15 +58,14 @@ CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS
     n.mnemonique,
     n.cd_nomenclature AS cd_nomenclature_validation_status,
     n.label_default,
-    latest_v.validation_auto,
-    latest_v.validation_date
+    v.validation_auto,
+    v.validation_date
    FROM gn_synthese.synthese s
      JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
-     LEFT JOIN gn_commons.t_validations v ON v.uuid_attached_row = s.unique_id_sinp
      LEFT JOIN ref_nomenclatures.t_nomenclatures n ON n.id_nomenclature = s.id_nomenclature_valid_status
-     LEFT JOIN gn_commons.v_latest_validation latest_v ON latest_v.uuid_attached_row = s.unique_id_sinp
-     WHERE d.validable = true;
-  ;
+     LEFT JOIN gn_commons.t_validations v ON v.uuid_attached_row = s.unique_id_sinp
+  WHERE d.validable = true
+  ORDER BY s.id_synthese, v.validation_date DESC;
 
 COMMENT ON VIEW gn_commons.v_synthese_validation_forwebapp  IS 'Vue utilisée pour le module validation. Prend l''id_nomenclature dans la table synthese ainsi que toutes les colonnes de la synthese pour les filtres. On JOIN sur la vue latest_validation pour voir si la validation est auto';

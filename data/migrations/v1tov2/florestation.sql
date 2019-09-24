@@ -8,7 +8,31 @@ SET default_with_oids = false;
 -------------
 --FUNCTIONS--
 -------------
-CREATE FUNCTION application_rang_sp(id integer) RETURNS integer
+CREATE FUNCTION v1_florestation.etiquette_utm(mongeom public.geometry) RETURNS character
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+monx char(6);
+mony char(7);
+monetiquette char(24);
+BEGIN
+-- on prend le centroid du géom comme ça la fonction marchera avec tous les objets point ligne ou polygon
+-- si la longitude en WGS84 degré decimal est < à 6 degrés on est en zone UTM 31
+IF public.st_x(public.st_transform(public.st_centroid(mongeom),4326))< 6 then
+	monx = CAST(public.st_x(public.st_transform(public.st_centroid(mongeom),32631)) AS integer)as string;
+	mony = CAST(public.st_y(public.st_transform(public.st_centroid(mongeom),32631)) AS integer)as string;
+	monetiquette = 'UTM31 x:'|| monx || ' y:' || mony;
+ELSE
+	-- sinon on est en zone UTM 32
+	monx = CAST(public.st_x(public.st_transform(public.st_centroid(mongeom),32632)) AS integer)as string;
+	mony = CAST(public.st_y(public.st_transform(public.st_centroid(mongeom),32632)) AS integer)as string;
+	monetiquette = 'UTM32 x:'|| monx || ' y:' || mony;
+END IF;
+RETURN monetiquette;
+END;
+$$;
+
+CREATE FUNCTION v1_florestation.application_rang_sp(id integer) RETURNS integer
     LANGUAGE plpgsql
     AS $$
 --fonction permettant de renvoyer le cd_ref au rang espèce d'une sous-espèce, une variété ou une convariété à partir de son cd_nom
@@ -44,7 +68,7 @@ CREATE FUNCTION application_rang_sp(id integer) RETURNS integer
   END;
 $$;
 
-CREATE OR REPLACE FUNCTION application_aggregate_taxons_rang_sp(id integer)
+CREATE OR REPLACE FUNCTION v1_florestation.application_aggregate_taxons_rang_sp(id integer)
   RETURNS text AS
 $BODY$
 --fonction permettant de regroupper dans un tableau tous les cd_nom d'une espèce et de ces sous espèces, variétés et convariétés à partir du cd_nom d'un taxon
@@ -88,7 +112,7 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
-  CREATE OR REPLACE FUNCTION application_aggregate_taxons_all_rang_sp(id integer)
+CREATE OR REPLACE FUNCTION v1_florestation.application_aggregate_taxons_all_rang_sp(id integer)
   RETURNS text AS
 $BODY$
 --fonction permettant de regroupper dans un tableau au rang espèce tous les cd_nom d'une espèce et de ces sous espèces, variétés et convariétés à partir du cd_nom d'un taxon
@@ -147,7 +171,7 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
-CREATE OR REPLACE FUNCTION application_find_cdref_rang_sp(id integer)
+CREATE OR REPLACE FUNCTION v1_florestation.application_find_cdref_rang_sp(id integer)
   RETURNS integer AS
 $BODY$
 --fonction permettant de renvoyer le cd_ref au rang espèce d'une sous-espèce, une variété ou une convariété à partir de son cd_nom
@@ -186,7 +210,7 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
-CREATE OR REPLACE FUNCTION application_find_lbnom_ref(id integer)
+CREATE OR REPLACE FUNCTION v1_florestation.application_find_lbnom_ref(id integer)
   RETURNS integer AS
 $BODY$
 --fonction permettant de renvoyer le lb_nom du taxon de référence d'un taxon synonyme à partir de son cd_nom
@@ -205,7 +229,7 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
-CREATE OR REPLACE FUNCTION application_find_nomcomplet_ref(id integer)
+CREATE OR REPLACE FUNCTION v1_florestation.application_find_nomcomplet_ref(id integer)
   RETURNS integer AS
 $BODY$
 --fonction permettant de renvoyer le nom_complet du taxon de référence d'un taxon synonyme à partir de son cd_nom
@@ -224,7 +248,7 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
-CREATE OR REPLACE FUNCTION application_nobs2obs(
+CREATE OR REPLACE FUNCTION v1_florestation.application_nobs2obs(
     ids integer[],
     rang integer)
   RETURNS integer AS
@@ -241,7 +265,7 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
-CREATE OR REPLACE FUNCTION application_strate2abondance(frequence character)
+CREATE OR REPLACE FUNCTION v1_florestation.application_strate2abondance(frequence character)
   RETURNS integer AS
 $BODY$
 --fonction pour la bdf05 permettant de renvoyer le niveau d'abondance des taxons d'un relevé flore station à partir de l'abondance dans les relevés station
@@ -262,7 +286,7 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
-CREATE OR REPLACE FUNCTION application_surfacefs2surface(id integer)
+CREATE OR REPLACE FUNCTION v1_florestation.application_surfacefs2surface(id integer)
   RETURNS integer AS
 $BODY$
 --fonction pour la bdf05 permettant de renvoyer une surface à partir des classes de surface de flore station
@@ -554,6 +578,8 @@ CREATE INDEX index_gist_t_stations_fs_the_geom_3857 ON v1_florestation.t_station
 
 CREATE INDEX index_gist_t_stations_fs_the_geom_local ON v1_florestation.t_stations_fs USING gist (the_geom_local);
 
+CREATE INDEX i_fk_insee_com_li_municipalities ON ref_geo.li_municipalities USING btree (insee_com);
+
 
 --SET UUID FOR SYNTHESE
 ALTER TABLE v1_florestation.t_stations_fs ADD COLUMN unique_id_sinp_grp uuid;
@@ -679,70 +705,9 @@ CREATE OR REPLACE VIEW v1_florestation.v_export_fs_all AS
   WHERE s.supprime = false AND cft.supprime = false
   ORDER BY s.dateobs;
 
-
---FUNCTIONS--
-CREATE FUNCTION v1_florestation.application_rang_sp(id integer) RETURNS integer
-    LANGUAGE plpgsql
-    AS $$
---fonction permettant de renvoyer le cd_ref au rang espèce d'une sous-espèce, une variété ou une convariété à partir de son cd_nom
---si le cd_nom passé est d'un rang espèce ou supérieur (genre, famille...), la fonction renvoie le cd_ref du même rang que le cd_nom passé en entré
---
---Gil DELUERMOZ septembre 2011
-  DECLARE
-  rang character(4);
-  rangsup character(4);
-  ref integer;
-  sup integer;
-  BEGIN
-	SELECT INTO rang id_rang FROM taxonomie.taxref WHERE cd_nom = id;
-	IF(rang='SSES' OR rang = 'VAR' OR rang = 'CVAR') THEN
-	    IF(rang = 'SSES') THEN
-		SELECT INTO ref cd_taxsup FROM taxonomie.taxref WHERE cd_nom = id;
-	    END IF;
-	    
-	    IF(rang = 'VAR' OR rang = 'CVAR') THEN
-		SELECT INTO sup cd_taxsup FROM taxonomie.taxref WHERE cd_nom = id;
-		SELECT INTO rangsup id_rang FROM taxonomie.taxref WHERE cd_nom = sup;
-		IF(rangsup = 'ES') THEN
-			SELECT INTO ref cd_ref FROM taxonomie.taxref WHERE cd_nom = sup;
-		END IF;
-		IF(rangsup = 'SSES') THEN
-			SELECT INTO ref cd_taxsup FROM taxonomie.taxref WHERE cd_nom = sup;
-		END IF;
-	    END IF;
-	ELSE
-	   SELECT INTO ref cd_ref FROM taxonomie.taxref WHERE cd_nom = id;
-	END IF;
-	return ref;
-  END;
-$$;
-
-CREATE FUNCTION v1_florestation.etiquette_utm(mongeom public.geometry) RETURNS character
-    LANGUAGE plpgsql
-    AS $$
-DECLARE
-monx char(6);
-mony char(7);
-monetiquette char(24);
-BEGIN
--- on prend le centroid du géom comme ça la fonction marchera avec tous les objets point ligne ou polygon
--- si la longitude en WGS84 degré decimal est < à 6 degrés on est en zone UTM 31
-IF public.st_x(public.st_transform(public.st_centroid(mongeom),4326))< 6 then
-	monx = CAST(public.st_x(public.st_transform(public.st_centroid(mongeom),32631)) AS integer)as string;
-	mony = CAST(public.st_y(public.st_transform(public.st_centroid(mongeom),32631)) AS integer)as string;
-	monetiquette = 'UTM31 x:'|| monx || ' y:' || mony;
-ELSE
-	-- sinon on est en zone UTM 32
-	monx = CAST(public.st_x(public.st_transform(public.st_centroid(mongeom),32632)) AS integer)as string;
-	mony = CAST(public.st_y(public.st_transform(public.st_centroid(mongeom),32632)) AS integer)as string;
-	monetiquette = 'UTM32 x:'|| monx || ' y:' || mony;
-END IF;
-RETURN monetiquette;
-END;
-$$;
-
-
+---------------------
 --FUNCTIONS TRIGGER--
+---------------------
 CREATE OR REPLACE FUNCTION v1_florestation.delete_synthese_cor_fs_taxon() RETURNS trigger
     LANGUAGE plpgsql
     AS $$

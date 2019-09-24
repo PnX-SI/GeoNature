@@ -1,10 +1,10 @@
+INSERT INTO gn_synthese.defaults_nomenclatures_value(mnemonique_type, id_organism,regne, group2_inpn, id_nomenclature)
+VALUES ('SENSIBILITE', 0, 0, 0, ref_nomenclatures.get_id_nomenclature('SENSIBILITE', '0'));
+
 DROP SCHEMA IF EXISTS v1_compat CASCADE ;
-DROP SCHEMA IF EXISTS gn_synchronomade CASCADE ;
 
 CREATE SCHEMA v1_compat;
 COMMENT ON SCHEMA v1_compat IS 'schéma contenant des objets permettant une compatibilité temporaire avec les outils mobiles de la V1';
-CREATE SCHEMA gn_synchronomade;
-COMMENT ON SCHEMA gn_synchronomade IS 'schéma contenant les erreurs de synchronisation et permettant une compatibilité temporaire avec les outils mobiles de la V1';
 
 --On importe ici les schémas V1 meta et synthese pour faire les correspondances nécessaires
 IMPORT FOREIGN SCHEMA synthese FROM SERVER geonature1server INTO v1_compat;
@@ -330,15 +330,3 @@ UPDATE v1_compat.cor_synthese_v1_to_v2
 SET id_nomenclature_cible = ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO','2')
 WHERE pk_source IN(5,6,7,8,9,11,13,14)
 AND entity_source = 'v1_compat.t_precisions' AND field_source = 'id_precision' AND entity_target = 'gn_synthese.synthese' AND field_target = 'id_nomenclature_info_geo_type';
-
-
---
---Gestion des listes
-SELECT setval('utilisateurs.t_listes_id_liste_seq', (SELECT max(id_liste)+1 FROM utilisateurs.t_listes), true);
-INSERT INTO utilisateurs.t_listes (code_liste, nom_liste, desc_liste)
-VALUES('obsocctax','Observateurs Occtax','Liste des observateurs du module Occtax');
--- Ajout de l'utilisateur admin dans la liste
-INSERT INTO utilisateurs.cor_role_liste (id_liste, id_role)
-SELECT id_liste, 1001
-FROM utilisateurs.t_listes
-WHERE code_liste = 'obsocctax';

@@ -30,15 +30,18 @@ INSERT INTO utilisateurs.t_roles(id_role, groupe, nom_role, identifiant, id_orga
 -- set mdp="admin" pour tous les utilisateurs utilisé dans les test
 UPDATE utilisateurs.t_roles SET pass_plus = '$2y$13$TMuRXgvIg6/aAez0lXLLFu0lyPk4m8N55NDhvLoUHh/Ar3rFzjFT.' WHERE id_role IN (2,3,16);
 
+-- Ajuster la séquence de t_roles après insertion des données
+SELECT pg_catalog.setval('utilisateurs.t_roles_id_role_seq', (SELECT max(id_role)+1 FROM utilisateurs.t_roles), false);
+
 
 -- Ajout dans cor_rol_app_profil pour qu'il puisse se connecter
 INSERT INTO utilisateurs.cor_role_app_profil VALUES
-  (1,3,1),
-  (2,3,1),
-  (3,3,1),
-  (7,3,1),
-  (9,3,1),
-  (16,3,1)
+  (1,3,1,false),
+  (2,3,1, false),
+  (3,3,1, false),
+  (7,3,1, true),
+  (1,1,6, false),
+  (16,3,1, false)
 ;
 
 

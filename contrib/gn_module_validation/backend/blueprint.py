@@ -53,6 +53,20 @@ def get_synthese_data(info_role):
     Params must have same synthese fields names
 
     .. :quickref: Validation;
+
+    Parameters:
+    ------------
+    info_role (User): 
+        Information about the user asking the route. Auto add with kwargs
+    truc (int): 
+        essai
+    
+
+    Returns
+    -------
+    dict
+        test
+
     """
 
     try:
@@ -64,8 +78,6 @@ def get_synthese_data(info_role):
                 filters[key] = value[0].split(",")
 
         result_limit = blueprint.config["NB_MAX_OBS_MAP"]
-
-        # pdb.set_trace()
 
         q = DB.session.query(VSyntheseValidation)
 
@@ -136,15 +148,9 @@ def get_statusNames(info_role):
 
 
 @blueprint.route("/<id_synthese>", methods=["POST"])
-@permissions.check_cruved_scope("V", True, module_code="VALIDATION")
+@permissions.check_cruved_scope("C", True, module_code="VALIDATION")
 @json_resp
 def post_status(info_role, id_synthese):
-    """
-    Add a validation status for the given id_synthese
-
-    .. :quickref: Validation;
-
-    """
     try:
         data = dict(request.get_json())
         id_validation_status = data["statut"]

@@ -127,14 +127,14 @@ sudo -s sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/geonature-service.con
 sudo -s sed -i "s%ROOT_DIR%${BASE_DIR}%" /etc/supervisor/conf.d/geonature-service.conf
 
 
+echo "Lancement de l'application api backend..."
+sudo -s supervisorctl reread
+sudo -s supervisorctl reload
+
 #création d'un fichier rotation des logs
 sudo cp $DIR/log_rotate /etc/logrotate.d/geonature
 sudo -s sed -i "s%APP_PATH%${BASE_DIR}%" /etc/logrotate.d/geonature
 sudo logrotate -f /etc/logrotate.conf
-
-echo "Lancement de l'application api backend..."
-sudo -s supervisorctl reread
-sudo -s supervisorctl reload
 
 
 # Frontend installation
