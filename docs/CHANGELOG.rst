@@ -2,50 +2,61 @@
 CHANGELOG
 =========
 
-2.1.3 (unreleased)
+2.2.1 (unreleased)
 ------------------
-
-**🚀 Nouveautés**
-
-* Le composant 'observateur' permet de rechercher sur le nom ou le prénom (utilisation des RegEx)
-* Complément de la documentation d'administration (@lpofredc)
-* Création de compte (désactivé par défaut) avec groupe par défaut + CA et JDD personnel par défaut (désactivable). Voir https://github.com/PnX-SI/UsersHub/issues/47
-* Espace utilisateur (désactibale)
-* Mot de passe oublié (désactivable)
-* Complément migration v1tov2 (Flore station, Flore patrimoniale, GeoNature-mobile
 
 **🐛 Corrections**
 
-* Occtax : correction de l'autocompletion en mode edition (#706)
-* Synthèse : Prise en compte du paramètre ``EXPORT_ID_SYNTHESE_COL`` (#707)
+*
+
+2.2.0 - Module utilisateurs (2019-09-18)
+----------------------------------------
+
+**🚀 Nouveautés**
+
+* Ajout d'interfaces et de paramètres de création de compte, de récupération de son mot de passe et d'administration de son profil, basé sur l'API UsersHub 2.1.0 (par @jbrieuclp et @TheoLechemia) #615
+* Ajout d'une fonctionnalité de création automatique d'un CA et d'un JDD personnel lors de la validation d'un compte créé automatiquement (paramétrable)
+* Amélioration du composant de création dynamique de formulaire (support de text-area, checkbox simple et multiple et exemple d'utilisation à partir de la conf GeoNature)
+* Le composant 'observateur' permet de rechercher sur le nom ou le prénom (utilisation des RegEx) #567
+* Mise à jour de Flask en version 1.1.1
+* Nouvelle version du sous-module d'authentification (1.4.1), compatible avec UsersHub 2.1.0
+* Mise à jour du sous-module de nomenclatures (version 1.3.0)
+* Mise à jour et clarification du MCD (http://docs.geonature.fr/admin-manual.html#base-de-donnees) par @jpm-cbna
+* Ajout d'une tutoriel vidéo d'installation dans la documentation (https://www.youtube.com/watch?v=JYgH7cV9AjE, par @olivier8064)
+
+**🐛 Corrections**
+
+* Correction d'un bug sur les export CSV en utilisant la librairie Python standard ``csv`` (#733)
+* SYNTHESE API : Passage de la route principale de récupération des données en POST plutôt qu'en GET (#704)
+* SYNTHESE BDD : Suppression automatique des aires intersectées (``synthese.cor_area_synthese``) lorsqu'une observation est supprimée (DELETE CASCADE)
+* SYNTHESE : Prise en compte du paramètre ``EXPORT_ID_SYNTHESE_COL`` (#707)
+* OCCTAX : Correction d'une autocomplétion automatique erronée de la date max en mode édition (#706)
+* VALIDATION : Améliorations des performances, par @jbrieuclp (#710)
 * Prise en compte des sous-taxons pour le calcul des règles de sensibilité
+* Correction des contraintes CHECK sur les tables liées à la sensibilité
+* Complément et correction des scripts de migration ``data/migrations/v1tov2``
+* Correction et clarification de la documentation d'administration des listes de taxons et de sauvegarde et restauration de la BDD (par @lpofredc)
+* Correction de la rotation des logs
 
 **⚠️ Notes de version**
 
-* MAJ UsersHub et sous module authentification ? 
-* Paramètres à ajouter ?
-
-**TODO**
-
-* Comment activer et paramétrer créatino compte et autres. Renseigner email. Compléter la doc ?
-* Voir https://github.com/PnX-SI/UsersHub/issues/84 OK car intégré dans GN ?
-* Paramètre URL_USERHUB : Manque un S
-* Login et MDP admin UH dans conf ?
-* PROD_MOD à mettre à true par défaut ?
-* Conf Sign up et Register à regrouper ?
+* Passer le script de migration suivant: https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.1.2to2.2.0.sql
+* Suivez ensuite la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
+* Si vous souhaitez activer les fonctionnalités de création de compte, veuillez lire **attentivement** cette documentation : http://docs.geonature.fr/admin-manual.html#configuration-de-la-creation-de-compte
+* Si vous activez la création de compte, UsersHub 2.1.0 doit être installé. Voir sa `note de version <https://github.com/PnX-SI/UsersHub/releases>`_.
 
 2.1.2 (2019-07-25)
 ------------------
 
 **🐛 Corrections**
 
-* SYNTHESE : correction d'une URL en dur pour la recherche de rangs taxonomiques
-* OCCTAX : affichage uniquement des JDD actifs 
-* VALIDATION : abaissement de la limite d'affichage de données sur la carte par défaut + message indicatif
-* Migration : suppression d'un lien symbolique qui créait des liens en cascade
+* SYNTHESE : Correction d'une URL en dur pour la recherche de rangs taxonomiques
+* OCCTAX : Affichage uniquement des JDD actifs 
+* VALIDATION : Abaissement de la limite d'affichage de données sur la carte par défaut + message indicatif
+* Migration : Suppression d'un lien symbolique qui créait des liens en cascade
 * Amélioration de la documentation (@dthonon)
 * Amélioration de la rapidité d'installation du MNT grâce à la suppression d'un paramètre inutile
-* BACKOFFICE : correction d'une URL incorrecte et customisation
+* BACKOFFICE : Correction d'une URL incorrecte et customisation
 
 **⚠️ Notes de version**
   
@@ -56,19 +67,19 @@ Ceci est une version corrective mineure. Si vous migrez depuis la 2.1.0, passez 
 
 **🚀 Nouveautés**
 
-* SYNTHESE : Factorisation du formulaire de recherche (utilisé dans le module synthese et validation)
-* SYNTHESE : Simplification et correction du module de recherche avancée d'un taxon en le limitant à l'ordre (performances)
-* SYNTHESE : Ajout d'un composant de recherche taxonomique avancé basé sur les rangs taxonomiques (modules synthese et validation), basé sur la nouvelle fonction ``taxonomie.find_all_taxons_children`` ajoutée à TaxHub
+* SYNTHESE: Factorisation du formulaire de recherche (utilisé dans le module synthese et validation)
+* SYNTHESE: Simplification et correction du module de recherche avancée d'un taxon en le limitant à l'ordre (performances)
+* SYNTHESE: Ajout d'un composant de recherche taxonomique avancé basé sur les rangs taxonomiques (modules synthese et validation), basé sur la nouvelle fonction ``taxonomie.find_all_taxons_children`` ajoutée à TaxHub
 * Création d'un backoffice d'admnistration dans le coeur de GeoNature. Basé sur Flask-admin, les modules peuvent alimenter dynamiquement le backoffice avec leur configuration
 * Mise en place d'une documentation développeur automatique de l'API à partir des docstring et des composants frontend, générée par Travis et désormais accessible à l'adresse http://docs.geonature.fr (#673)
 * Amélioration de la documentation (triggers, installation, module validation)
 * Suppression du module d'exemple, remplacé par un template de module (https://github.com/PnX-SI/gn_module_template)
 * Ajout d'un champ ``validable`` sur la table ``gn_meta.t_datasets`` controlant les données présentes dans le module VALIDATION (https://github.com/PnX-SI/gn_module_validation/issues/31)
 * VALIDATION: Lister toutes les données de la synthèse ayant un ``uuid_sinp`` dans le module validation, et plus seulement celles qui ont un enregistrement dans ``gn_commons.t_validations``
-* VALIDATION : On ne liste plus les ``id_nomenclatures`` des types de validation à utiliser, dans la configuration du module. Mais on utilise toutes les nomenclatures activées du type de nomenclature ``STATUT_VALID``. (https://github.com/PnX-SI/gn_module_validation/issues/30)
+* VALIDATION: On ne liste plus les ``id_nomenclatures`` des types de validation à utiliser, dans la configuration du module. Mais on utilise toutes les nomenclatures activées du type de nomenclature ``STATUT_VALID``. (https://github.com/PnX-SI/gn_module_validation/issues/30)
 * Ajout de tests sur les ajouts de JDD et CA
-* Ajout d'une fonctionnalité d'envoi d'email via Flask-Mail dans le coeur de GeoNature
-* Amélioration des performances : ajout d'index sur Occtax et Metadonnées
+* Ajout d'une fonctionnalité d'envoie d'email via Flask-Mail dans le coeur de GeoNature
+* Amélioration des performances: ajout d'index sur Occtax et Metadonnées
 * Script d'import des métadonnées à partir du webservice MTD de l'INPN (@DonovanMaillard)
 * Complément, correction et compatibilité 2.1.0 des scripts de migration ``data/migrations/v1tov2``
 
@@ -79,9 +90,9 @@ Ceci est une version corrective mineure. Si vous migrez depuis la 2.1.0, passez 
 * OCCTAX : correction de l'édition d'un relevé à la géométrie de type Polyline (#684)
 * OCCTAX : correction l'édition et du contrôle conditionnel des champs de "preuves" (preuve d'existence numérique / non numérique) (#679)
 * OCCTAX : correction du parametre ``DATE_FORM_WITH_TODAY`` non pris en compte (#670)
-* OCCTAX : correction de la date_max non remplie lorsque ``DATE_FORM_WITH_TODAY = false`` 
-* OCCTAX : correction d'un bug lors de l'enchainement de relevé lorsque l'heure est remplie
-* SYNTHESE : correction des doublons lorsqu'il y a plusieurs observateurs
+* OCCTAX: correction de la date_max non remplie lorsque ``DATE_FORM_WITH_TODAY = false`` 
+* OCCTAX: correction d'un bug lors de l'enchainement de relevé lorsque l'heure est remplie
+* SYNTHESE: correction des doublons lorsqu'il y a plusieurs observateurs
 * Correction du composant ``dynamicForm`` sur les champs de recherche de type texte (recherche sur Preuve numérique) (#530)
 * Désactivation du mode "enchainer les relevés" en mode édition (#699)
 * Correction de ``gn_monitoring`` : utiliser ``gn_commons.t_modules`` à la place de ``utilisateurs.t_applications`` pour associer des sites de suivi à des modules
@@ -89,7 +100,7 @@ Ceci est une version corrective mineure. Si vous migrez depuis la 2.1.0, passez 
 * Le trigger remplissant ``cor_area_synthese`` en intersectant ``gn_synthese.synthese`` avec ``ref_geo.l_areas`` ne prend plus que les zonages ayant le champs ``enabled=true``
 * Correction ``dict()`` et version de Python (par @jpm-cbna)
 * MAJ de sécurité de Bootstrap (en version 4.3.1)
-* L'ancien module export du coeur est supprimé en vue de la sortie prochaine du nouveau module export
+* L'ancien module export du coeur est enlevé en vue de la sortie du nouveau module export
 
 **⚠️ Notes de version**
 
@@ -99,8 +110,8 @@ Ceci est une version corrective mineure. Si vous migrez depuis la 2.1.0, passez 
 * Suivez ensuite la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 * Nouvelle localisation de la doc : http://docs.geonature.fr
 
-2.1.0 (2019-06-01)
-------------------
+2.1.0 - Module validation (2019-06-01)
+--------------------------------------
 
 **🚀 Nouveautés**
 
@@ -195,8 +206,8 @@ Ceci est une version corrective mineure. Si vous migrez depuis la 2.1.0, passez 
 * Exécuter le script de migration SQL de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.0.0to2.0.1.sql)
 * Suivez ensuite la procédure classique de mise à jour de GeoNature (https://geonature.readthedocs.io/fr/latest/installation-standalone.html#mise-a-jour-de-l-application)
 
-2.0.0 (2019-02-28)
-------------------
+2.0.0 - La refonte (2019-02-28)
+-------------------------------
 
 La version 2 de GeoNature est une refonte complète de l'application.
 

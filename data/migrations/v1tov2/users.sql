@@ -58,7 +58,7 @@ SELECT
   id_organisme,
   uuid_organisme,
   id_parent FROM v1_compat.bib_organismes WHERE id_organisme NOT IN (SELECT id_organisme FROM utilisateurs.bib_organismes);
-
+SELECT setval('utilisateurs.bib_organismes_id_organisme_seq', (SELECT max(id_organisme)+1 FROM utilisateurs.bib_organismes), true);
 
 INSERT INTO utilisateurs.t_roles (
     groupe,
@@ -96,6 +96,7 @@ SELECT
     uuid_role,
     pass_plus
  FROM v1_compat.t_roles WHERE id_role NOT IN(SELECT id_role FROM utilisateurs.t_roles);
+SELECT setval('utilisateurs.t_roles_id_role_seq', (SELECT max(id_role)+1 FROM utilisateurs.t_roles), true);
 
 -- creation uuid si NULL
 UPDATE utilisateurs.t_roles
@@ -108,12 +109,24 @@ SELECT * FROM v1_compat.cor_roles;
 INSERT INTO utilisateurs.t_applications (id_application, nom_application, desc_application,code_application, id_parent)
 SELECT id_application, nom_application, desc_application, code_application, id_parent FROM v1_compat.t_applications
 WHERE id_application NOT in (SELECT id_application FROM utilisateurs.t_applications);
+SELECT setval('utilisateurs.t_applications_id_application_seq', (SELECT max(id_application)+1 FROM utilisateurs.t_applications), true);
 
 INSERT INTO utilisateurs.t_listes(id_liste, code_liste, nom_liste, desc_liste)
 SELECT * FROM v1_compat.t_listes;
+SELECT setval('utilisateurs.t_listes_id_liste_seq', (SELECT max(id_liste)+1 FROM utilisateurs.t_listes), true);
 
 INSERT INTO utilisateurs.cor_role_liste (id_role, id_liste)
 SELECT * FROM v1_compat.cor_role_liste;
+
+--
+--Gestion de la liste occtax
+INSERT INTO utilisateurs.t_listes (code_liste, nom_liste, desc_liste)
+VALUES('obsocctax','Observateurs Occtax','Liste des observateurs du module Occtax');
+-- Ajout des admin dans la liste
+INSERT INTO utilisateurs.cor_role_liste (id_liste, id_role)
+SELECT id_liste, 1001
+FROM utilisateurs.t_listes
+WHERE code_liste = 'obsocctax';
 
 INSERT INTO utilisateurs.cor_profil_for_app (id_profil, id_application)
 SELECT * FROM v1_compat.cor_profil_for_app;

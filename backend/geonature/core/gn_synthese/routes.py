@@ -1,4 +1,5 @@
 import logging
+import json
 import datetime
 import ast
 import time
@@ -69,7 +70,7 @@ def current_milli_time():
 ############################################
 
 
-@routes.route("/for_web", methods=["GET"])
+@routes.route("/for_web", methods=["GET", "POST"])
 @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
 @json_resp
 def get_observations_for_web(info_role):
@@ -115,7 +116,23 @@ def get_observations_for_web(info_role):
     :>jsonarr int nb_total: Number of observations
     :>jsonarr bool nb_obs_limited: Is number of observations capped
     """
-    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
+    if request.json:
+        filters = request.json
+    elif request.data:
+        #  decode byte to str - compat python 3.5
+        filters = json.loads(request.data.decode("utf-8"))
+    else:
+        filters = {
+            key: request.args.getlist(key) for key, value in request.args.items()
+        }
+
+    # Passage de l'ensemble des filtres
+    #   en array pour des questions de compatibilité
+    # TODO voir si ça ne peut pas être modifié
+    for k in filters.keys():
+        if not isinstance(filters[k], list):
+            filters[k] = [filters[k]]
+
     if "limit" in filters:
         result_limit = filters.pop("limit")[0]
     else:
@@ -692,19 +709,20 @@ def test():
     from shapely.geometry import Point
     import random
 
-    s = DB.session.query(Synthese).get(86510)
+    s = DB.session.query(Synthese).get(2)
 
     s_as_dict = s.as_dict()
     s_as_dict.pop("unique_id_sinp")
     # wkt = asShape(s.the_geom_4326)
     # print(wkt)
     # releve.geom_4326 = from_shape(shape, srid=4326)
+    import datetime
 
     DB.session.query()
-    for i in range(4000):
+    for i in range(1000):
         new_point = Point(random.uniform(6.1, 7.5), random.uniform(44.0, 45.2))
         wkb = from_shape(new_point, 4326)
-        s_as_dict["id_synthese"] = random.randint(1500, 9999999)
+        s_as_dict["id_synthese"] = random.randint(1500, 999999999)
 
         # with random cd_nom
         random_cd_nom = DB.engine.execute(
@@ -716,13 +734,19 @@ def test():
             s_as_dict["cd_nom"] = cd[0]
         new_synthese = Synthese(**s_as_dict)
         new_synthese.the_geom_4326 = wkb
+        new_synthese.the_geom_local = func.st_transform(wkb, 2154)
 
+        new_date = datetime.datetime.now()
+        new_date = new_date.replace(year=random.randint(2000, 2016))
+        new_synthese.date_min = new_date
+        new_synthese.date_max = new_date
+        print(new_synthese.the_geom_local)
         q = DB.session.add(new_synthese)
         # DB.session.flush()
         DB.session.commit()
 
     # s = TSources(name_source="lalala")
 
-    DB.session.add(s)
-    DB.session.commit()
+    # DB.session.add(s)
+    # DB.session.commit()
     return "la"

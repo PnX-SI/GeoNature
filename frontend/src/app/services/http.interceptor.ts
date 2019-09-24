@@ -1,5 +1,4 @@
-
-import {throwError as observableThrowError,  Observable } from 'rxjs';
+import { throwError as observableThrowError, Observable } from 'rxjs';
 import { Injectable, Injector } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
 import { AuthService } from '@geonature/components/auth/auth.service';
@@ -20,17 +19,10 @@ export class MyCustomInterceptor implements HttpInterceptor {
     } else {
       errMsg = error.message ? error.message : error.toString();
     }
-    console.error(errMsg);
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Interceptor to redirect to the login page if token is expired
-    // also put a withCredentials header
-    const auth = this.inj.get(AuthService);
-    if (!auth.getToken()) {
-      this.router.navigate(['/login']);
-    }
-    
+
     //Creation d'une liste blanche pour autoriser les CROS request.
     if (WHITE_LIST.indexOf(this.extractHostname(request.url)) === -1) {
       // add a custom header

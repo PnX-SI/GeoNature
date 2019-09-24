@@ -1,5 +1,3 @@
-
-
 """
     Entry point for the command line used in geonature_cmd.py
 """
@@ -25,7 +23,7 @@ from geonature.utils.command import (
     frontend_routes_templating,
     tsconfig_templating,
     tsconfig_app_templating,
-    update_app_configuration
+    update_app_configuration,
 )
 
 
@@ -45,20 +43,22 @@ def main(ctx):
     if not in_virtualenv:
 
         if not allow_no_virtualenv:
-            ctx.fail((
-                'You must be in the GeoNature virtualenv to be able to run '
-                'this script. The virtualenv is made available once GeoNature '
-                "has been installed and it's default directory is '{0}'. You "
-                'can activate it by doing "source {0}/activate/bin/activate". '
-                'If you installed GeoNature outside of a virtualenv, you can '
-                'bypass this check by setting the GEONATURE_NO_VIRTUALENV '
-                'env var to 1. How ever, this setupis not officially '
-                'supported by the GeoNature team.'
-            ).format(DEFAULT_VIRTUALENV_DIR))
+            ctx.fail(
+                (
+                    "You must be in the GeoNature virtualenv to be able to run "
+                    "this script. The virtualenv is made available once GeoNature "
+                    "has been installed and it's default directory is '{0}'. You "
+                    'can activate it by doing "source {0}/activate/bin/activate". '
+                    "If you installed GeoNature outside of a virtualenv, you can "
+                    "bypass this check by setting the GEONATURE_NO_VIRTUALENV "
+                    "env var to 1. How ever, this setupis not officially "
+                    "supported by the GeoNature team."
+                ).format(DEFAULT_VIRTUALENV_DIR)
+            )
 
         log.warning(
             'Running with "GEONATURE_NO_VIRTUALENV=1". This setup may work, '
-            'but is not officially supported by the GeoNature team.'
+            "but is not officially supported by the GeoNature team."
         )
 
 
@@ -74,28 +74,21 @@ def install_command(ctx):
     try:
         install_geonature_command()
     except EnvironmentError:
-        ctx.fail((
-            'You must be in the GeoNature virtualenv to be able to run '
-            'this script. The virtualenv is made available once GeoNature '
-            "has been installed and it's default directory is '{0}'. You "
-            'can activate it by doing "source {0}/activate/bin/activate". '
-            'If you installed GeoNature outside of a virtualenv, you should '
-            'stick to using "python geonature_cmd.py" manually.'
-        ).format(DEFAULT_VIRTUALENV_DIR))
+        ctx.fail(
+            (
+                "You must be in the GeoNature virtualenv to be able to run "
+                "this script. The virtualenv is made available once GeoNature "
+                "has been installed and it's default directory is '{0}'. You "
+                'can activate it by doing "source {0}/activate/bin/activate". '
+                "If you installed GeoNature outside of a virtualenv, you should "
+                'stick to using "python geonature_cmd.py" manually.'
+            ).format(DEFAULT_VIRTUALENV_DIR)
+        )
 
 
 @main.command()
-@click.option(
-    '--conf-file',
-    required=False,
-    default=DEFAULT_CONFIG_FILE
-)
-@click.option(
-    '--build',
-    type=bool,
-    required=False,
-    default=True
-)
+@click.option("--conf-file", required=False, default=DEFAULT_CONFIG_FILE)
+@click.option("--build", type=bool, required=False, default=True)
 def generate_frontend_config(conf_file, build):
     """
         Génération des fichiers de configurations pour javascript
@@ -105,20 +98,16 @@ def generate_frontend_config(conf_file, build):
         create_frontend_config(conf_file)
         if build:
             build_geonature_front()
-        log.info('Config successfully updated')
+        log.info("Config successfully updated")
     except FileNotFoundError:
         log.warning("file {} doesn't exists".format(conf_file))
 
 
 
 @main.command()
-@click.option('--uri', default="0.0.0.0:8000")
-@click.option('--worker', default=4)
-@click.option(
-    '--conf-file',
-    required=False,
-    default=DEFAULT_CONFIG_FILE
-)
+@click.option("--uri", default="0.0.0.0:8000")
+@click.option("--worker", default=4)
+@click.option("--conf-file", required=False, default=DEFAULT_CONFIG_FILE)
 def start_gunicorn(uri, worker, config_file=None):
     """
         Lance l'api du backend avec gunicorn
@@ -127,13 +116,9 @@ def start_gunicorn(uri, worker, config_file=None):
 
 
 @main.command()
-@click.option('--host', default="0.0.0.0")
-@click.option('--port', default=8000)
-@click.option(
-    '--conf-file',
-    required=False,
-    default=DEFAULT_CONFIG_FILE
-)
+@click.option("--host", default="0.0.0.0")
+@click.option("--port", default=8000)
+@click.option("--conf-file", required=False, default=DEFAULT_CONFIG_FILE)
 def dev_back(host, port, conf_file):
     """
         Lance l'api du backend avec flask
@@ -150,11 +135,9 @@ def dev_back(host, port, conf_file):
 
 @main.command()
 @click.option(
-    '--action',
-    default="restart",
-    type=click.Choice(['start', 'stop', 'restart'])
+    "--action", default="restart", type=click.Choice(["start", "stop", "restart"])
 )
-@click.option('--app_name', default="geonature2")
+@click.option("--app_name", default="geonature2")
 def supervisor(action, app_name):
     """
         Lance les actions du supervisor
@@ -170,11 +153,7 @@ def dev_front():
     start_geonature_front()
 
 
-@click.option(
-    '--build-sass',
-    type=bool,
-    default=False
-)
+@click.option("--build-sass", type=bool, default=False)
 @main.command()
 def frontend_build(build_sass):
     """
@@ -209,23 +188,9 @@ def generate_frontend_tsconfig_app():
 
 
 @main.command()
-@click.option(
-    '--conf-file',
-    required=False,
-    default=DEFAULT_CONFIG_FILE
-)
-@click.option(
-    '--build',
-    type=bool,
-    required=False,
-    default=True
-)
-@click.option(
-    '--prod',
-    type=bool,
-    required=False,
-    default=True
-)
+@click.option("--conf-file", required=False, default=DEFAULT_CONFIG_FILE)
+@click.option("--build", type=bool, required=False, default=True)
+@click.option("--prod", type=bool, required=False, default=True)
 def update_configuration(conf_file, build, prod):
     """
         Regénère la configuration de l'application
@@ -237,4 +202,6 @@ def update_configuration(conf_file, build, prod):
         - geonature update_configuration --build=false (met à jour la configuration sans recompiler le frontend)
 
     """
+    # Recréation du fichier de routing car il dépend de la conf
+    frontend_routes_templating()
     update_app_configuration(conf_file, build, prod)

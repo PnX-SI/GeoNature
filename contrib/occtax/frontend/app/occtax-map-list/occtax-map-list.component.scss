@@ -142,6 +142,10 @@ ngx-datatable {
   display: flex;
 }
 
+:host /deep/ .full-wrapper {
+  display: flex;
+}
+
 :host /deep/ .trash-btn {
   position: relative;
   top: 28px;

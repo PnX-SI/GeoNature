@@ -21,13 +21,13 @@ Base de données
 
 Dans la continuité de sa version 1, GeoNature V2 utilise le SGBD PostgreSQL et sa cartouche spatiale PostGIS. Cependant l'architecture du modèle de données a été complétement revue.
 
-La base de données a notemment été refondue pour s'appuyer au maximum sur des standards, comme le standard d'Occurrences de Taxon du MNHN (Voir https://github.com/PnX-SI/GeoNature/issues/183).
+La base de données a notamment été refondue pour s'appuyer au maximum sur des standards, comme le standard d'Occurrences de Taxon du SINP (Voir https://github.com/PnX-SI/GeoNature/issues/183).
 
 La base de données a également été traduite en Anglais et supporte désormais le multilangue.
 
 Les préfixes des schémas de BDD sont désormais standardisés : ``ref_`` concerne les référentiels externes, ``gn`` concerne les schémas du coeur de GeoNature et ``pr`` les schémas des protocoles. 
 
-Autres standards:
+Autres standards :
 
 - Noms de tables, commentaires et fonctions en anglais
 - Pas de nom de table dans les noms de champs
@@ -48,14 +48,14 @@ Modèle simplifié de la BDD (2017-12-15) :
 
 .. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2017-12-15-GN2-MCD-simplifie.jpg
 
-Dernière version complète de la base de données (2018-03-19), à mettre à jour : 
+Dernière version complète de la base de données (GeoNature 2.1 / 2019-08) : 
 
-.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2018-03-19-GN2-MCD.png
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2019-08-GN2-1-MCD.png
 
-Désolé pour les relations complexes entre tables...
+Les relations complexes entre les schémas ont été grisées pour faciliter la lisibilité.
 
-Gestion des droits :
-""""""""""""""""""""
+Gestion des droits
+""""""""""""""""""
 
 L'accès des utilisateurs à l'application GeoNature est gérée de manière centralisée dans UsersHub. 
 
@@ -102,8 +102,8 @@ A noter que toutes les actions et toutes les portées n'ont pas été implément
 
 TODO : Lister les permissions implémentées dans chaque module.
 
-Nomenclatures :
-"""""""""""""""
+Nomenclatures
+"""""""""""""
 
 - Toutes les valeurs des listes déroulantes sont gérées dans une table générique ``ref_nomenclatures.t_nomenclatures``
 - Elles s'appuient sur les nomenclatures du SINP (http://standards-sinp.mnhn.fr/nomenclature/) qui peuvent être désactivées ou completées
@@ -118,14 +118,14 @@ Nomenclatures :
 - Ces valeurs par défaut sont aussi utilisées pour certains champs qui sont cachés (statut_observation, floutage, statut_validation...) mais ne sont donc pas modifiables par l'utilisateur
 - Il existe aussi une table pour définir des valeurs par défaut générales de nomenclature (``ref_nomenclatures.defaults_nomenclatures_value``)
 
-Métadonnées :
-"""""""""""""
+Métadonnées
+"""""""""""
 
 - Elles sont gérées dans le schéma ``gn_meta`` basé sur le standard Métadonnées du SINP (http://standards-sinp.mnhn.fr/category/standards/metadonnees/)
 - Elles permettent de gérer des jeux de données, des cadres d'acquisition, des acteurs (propriétaire, financeur, producteur...) et des protocoles
 
-Données SIG :
-"""""""""""""
+Données SIG
+"""""""""""
 
 - Le schéma ``ref_geo`` permet de gérer les données SIG (zonages, communes, MNT...) de manière centralisée, potentiellement partagé avec d'autres BDD
 - Il contient une table des zonages, des types de zonages, des communes, des grilles (mailles) et un MNT raster ou vectorisé (https://github.com/PnX-SI/GeoNature/issues/235)
@@ -133,8 +133,8 @@ Données SIG :
 - La fonction ``ref_geo.fct_get_altitude_intersection`` permet de renvoyer l'altitude min et max d'une observation en fournissant sa géométrie
 - L'intersection d'une observation avec les zonages sont stockés au niveau de la synthèse (``gn_synthese.cor_area_synthese``) et pas de la donnée source pour alléger et simplifier leur gestion
 
-Fonctions : 
-"""""""""""
+Fonctions
+"""""""""
 
 La base de données contient de nombreuses fonctions.
 
@@ -254,8 +254,8 @@ La base de données contient de nombreuses fonctions.
 
 TODO : A compléter... A voir si on mentionne les triggers ou pas...
 
-Tables transversales :
-""""""""""""""""""""""
+Tables transversales
+""""""""""""""""""""
 
 GeoNature contient aussi des tables de stockage transversales qui peuvent être utilisées par tous les modules. C'est le cas pour la validation, la sensibilité, l'historisation des modifications et les médias. 
 
@@ -265,8 +265,8 @@ Ces tables utilisent notamment le mécanisme des UUID (identifiant unique) pour 
 
 Voir https://github.com/PnX-SI/GeoNature/issues/339
 
-Triggers vers la synthèse : 
-"""""""""""""""""""""""""""
+Triggers vers la synthèse
+"""""""""""""""""""""""""
 
 Voir ceux mis en place de Occtax vers Synthèse.
 
@@ -279,8 +279,8 @@ Cheminement d'une donnée Occtax :
 5. Trigger de rapatriement du dernier statut de validation de la table verticale vers la synthese.
         
 
-Triggers dans la synthèse : 
-"""""""""""""""""""""""""""
+Triggers dans la synthèse
+"""""""""""""""""""""""""
 
 Version 2.1.0 de GeoNature
 
@@ -863,6 +863,121 @@ Vous pouvez aussi vous inspirer des exemples avancés de migration des données 
 * Import depuis SERENA : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/serena
 * Import continu : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/generic
 * Import d'un CSV historique (Flavia) : https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/2018-12-csv-vers-synthese-FLAVIA.sql
+
+
+Création de compte
+------------------
+
+Configuration de la création de compte
+""""""""""""""""""""""""""""""""""""""
+
+Depuis la version 2.1.0, UsersHub propose une API de création de compte utilisateur. Une interface a été ajoutée à GeoNature pour permettre aux futurs utilisateurs de faire des demandes de création de compte depuis la page d'authentification de GeoNature. Ce mode est activable/désactivable depuis la configuration globale de GeoNature. 
+
+Pour des raisons de sécurité, l'API de création de compte est réservée aux utilisateurs "admin" grâce à un token secret. GeoNature a donc besoin de se connecter en tant qu'administrateur à UsersHub pour éxecuter les requêtes d'administration de compte.
+Renseigner les paramètres suivants dans le fichier de configuration (``geonature_config.toml``). L'utilisateur doit avoir des droits 6 dans UsersHub
+
+::
+
+    [USERSHUB]
+        URL_USERSHUB = 'http://mon_adresse_usershub.fr' # sans slash final
+        # Administrateur de mon application
+        ADMIN_APPLICATION_LOGIN = "login_admin_usershub"
+        ADMIN_APPLICATION_PASSWORD = "password_admin_usershub
+
+Les fonctionnalités de création de compte nécessitent l'envoi d'emails pour vérifier l'identité des demandeurs de compte. Il est donc nécessaire d'avoir un serveur SMTP capable d'envoyer des emails. Renseigner la rubrique ``MAIL_CONFIG`` de la configuration :
+
+::
+
+    [MAIL_CONFIG]
+        MAIL_SERVER = 'mail.espaces-naturels.fr'
+        MAIL_PORT = 465
+        MAIL_USE_TLS = false
+        MAIL_USE_SSL = true
+        MAIL_USERNAME = 'mon_email@email.io'
+        MAIL_PASSWORD = 'M@rm0tt3'
+        MAIL_DEFAULT_SENDER = 'mon_email@email.io'
+        MAIL_ASCII_ATTACHMENTS = false
+
+Pour activer cette fonctionnalité (qui est par défaut désactivée), modifier le fichier de configuration de la manière suivante :
+
+NB : tous les paramètres décrits ci-dessous doivent être dans la rubrique ``[ACCOUNT_MANAGEMENT]``
+
+::
+
+    [ACCOUNT_MANAGEMENT]
+        ENABLE_SIGN_UP = true
+
+Deux modes sont alors disponibles. Soit l'utilisateur est automatiquement accepté et un compte lui est créé après une confirmation de son email, soit un mail est envoyé à un administrateur pour confirmer la demande. Le compte ne sera crée qu'après validation par l'administrateur. Le paramètre ``AUTO_ACCOUNT_CREATION`` contrôle ce comportement (par défaut le compte créé sans validation par un administrateur: true). Dans le mode "création de compte validé par administrateur", il est indispensable de renseigner un email où seront envoyés les emails de validation (paramètre ``VALIDATOR_EMAIL``)
+
+::
+
+    # automatique
+    [ACCOUNT_MANAGEMENT]
+        ENABLE_SIGN_UP = true
+        AUTO_ACCOUNT_CREATION = true
+
+    # validé par admin
+    [ACCOUNT_MANAGEMENT]
+        ENABLE_SIGN_UP = true
+        AUTO_ACCOUNT_CREATION = false
+        VALIDATOR_EMAIL = 'email@validateur.io'
+
+
+L'utilisateur qui demande la création de compte est automatiquement mis dans un "groupe" UsersHub (par défaut, il s'agit du groupe "En poste"). Ce groupe est paramétrable depuis la table ``utilisateurs.cor_role_app_profil``. (La ligne où ``is_default_group_for_app = true`` sera utilisée comme groupe par défaut pour GeoNature). Il n'est pas en paramètre de GeoNature pusqu'il serait falsifiable via l'API. ⚠️ **Attention**, si vous effectuez une migration depuis une version de GeoNature < 2.2.0, aucun groupe par défaut n'est défini, vous devez définir à la main le groupe par défaut pour l'application GeoNature dans la table ``utilisateurs.cor_role_app_profil``.
+
+Il est également possible de créer automatiquement un jeu de données et un cadre d'acquisition "personnel" à l'utilisateur afin qu'il puisse saisir des données dès sa création de compte via le paramètre `AUTO_DATASET_CREATION`. Par la suite l'administrateur pourra rattacher l'utilisateur à des JDD et CA via son organisme.
+
+::
+
+    [ACCOUNT_MANAGEMENT]
+        AUTO_ACCOUNT_CREATION = true
+        ENABLE_SIGN_UP = true
+        AUTO_DATASET_CREATION = true
+
+
+Customisation du formulaire
+"""""""""""""""""""""""""""
+
+Le formulaire de création de compte est par défaut assez minimaliste (nom, prénom, email, mdp, organisme, remarque).
+
+*NB* l'organisme est demandé à l'utilisateur à titre "informatif", c'est à l'administrateur de rattacher individuellement l'utilisateur à son organisme, et éventuellement de le créer, s'il n'existe pas.
+
+Il est possible d'ajouter des champs au formulaire grâce à un générateur controlé par la configuration. Plusieurs type de champs peuvent être ajoutés (text, textarea, number, select, checkbox mais aussi taxonomy, nomenclature etc...).
+
+L'exemple ci-dessous permet de créer un champs de type "checkbox" obligatoire, avec un lien vers un document (une charte par exemple) et un champ de type "select", non obligatoire. (voir le fichier ``geonature_config.toml.example`` pour un exemple plus exhaustif).
+
+::
+
+        [ACCOUNT_MANAGEMENT]
+        [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]]
+            type_widget = "checkbox"
+            attribut_label = "<a target='_blank' href='http://docs.geonature.fr'>J'ai lu et j'accepte la charte</a>"
+            attribut_name = "validate_charte"
+            values = [true] 
+            required = true
+
+        [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]]
+            type_widget = "select"
+            attribut_label = "Exemple select"
+            attribut_name = "select_test"
+            values = ["value1", "value2"]
+            required = false
+
+
+Espace utilisateur
+""""""""""""""""""
+
+Enfin, un espace "utilisateur" est accessible lorsque l'on est connecté, permettant de modifier ses informations personnelles, y compris son mot de passe.
+
+Cet espace est activable grâce au paramètre ``ENABLE_USER_MANAGEMENT``. Par défaut, il est désactivé.
+
+::
+
+        [ACCOUNT_MANAGEMENT]
+        AUTO_ACCOUNT_CREATION = true
+        ENABLE_SIGN_UP = true
+        ENABLE_USER_MANAGEMENT = true
+
 
 Module OCCTAX
 -------------

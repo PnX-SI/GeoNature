@@ -21,6 +21,13 @@ CREATE FOREIGN TABLE v1_compat.cor_message_taxon_contactinv
 SERVER geonature1server
 OPTIONS (schema_name 'contactinv', table_name 'cor_message_taxon');
 
+-- recréation des vue transformées en table dans v1_compat qui on tdes problème de droits
+CREATE OR REPLACE VIEW v1_compat.v_nomade_milieux_inv
+AS SELECT v1.id_milieu_inv,
+    v1.nom_milieu_inv
+   FROM v1_compat.bib_milieux_inv v1
+  ORDER BY v1.id_milieu_inv;
+
 --désactiver les triggers 
 ALTER TABLE pr_occtax.t_releves_occtax DISABLE TRIGGER USER;
 ALTER TABLE pr_occtax.t_occurrences_occtax DISABLE TRIGGER tri_log_changes_t_occurrences_occtax;
@@ -213,7 +220,11 @@ INSERT INTO pr_occtax.t_occurrences_occtax(
     ref_nomenclatures.get_id_nomenclature('STATUT_BIO','1') AS id_nomenclature_bio_status,
     ref_nomenclatures.get_id_nomenclature('NATURALITE','1') AS id_nomenclature_naturalness,
     ref_nomenclatures.get_id_nomenclature('PREUVE_EXIST','2') AS id_nomenclature_exist_proof,
-    ref_nomenclatures.get_id_nomenclature('NIV_PRECIS','5') AS id_nomenclature_diffusion_level,
+    CASE 
+      WHEN inv.diffusable = true THEN ref_nomenclatures.get_id_nomenclature('NIV_PRECIS','5') 
+      WHEN inv.diffusable = false THEN ref_nomenclatures.get_id_nomenclature('NIV_PRECIS','4') 
+      ELSE ref_nomenclatures.get_id_nomenclature('NIV_PRECIS','5') 
+    END AS id_nomenclature_diffusion_level,
     ref_nomenclatures.get_id_nomenclature('STATUT_OBS','Pr') AS id_nomenclature_observation_status,
     ref_nomenclatures.get_id_nomenclature('DEE_FLOU','NON') AS id_nomenclature_blurring,
     ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE','Te') AS id_nomenclature_source_status,
@@ -335,6 +346,12 @@ uuid_generate_v4() AS unique_id_cor_role_releve,
 id_inv AS id_releve_occtax,
 id_role AS id_role
 FROM v1_compat.vm_cor_role_fiche_inv;
+
+-- mettre à jour les serial
+SELECT pg_catalog.setval('pr_occtax.t_occurrences_occtax_id_occurrence_occtax_seq', (SELECT max(id_occurrence_occtax)+1 FROM pr_occtax.t_occurrences_occtax), true);
+SELECT pg_catalog.setval('pr_occtax.t_releves_occtax_id_releve_occtax_seq', (SELECT max(id_releve_occtax)+1 FROM pr_occtax.t_releves_occtax), true);
+SELECT pg_catalog.setval('pr_occtax.cor_counting_occtax_id_counting_occtax_seq', (SELECT max(id_counting_occtax)+1 FROM pr_occtax.cor_counting_occtax), true);
+
 
 -- Suppression des VM
 DROP MATERIALIZED VIEW v1_compat.vm_t_fiches_inv;
