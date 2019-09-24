@@ -23,6 +23,8 @@ import { HomeContentComponent } from './components/home-content/home-content.com
 import { SidenavItemsComponent } from './components/sidenav-items/sidenav-items.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { LoginComponent } from './components/login/login.component';
+import { SignUpComponent } from './components/sign-up/sign-up.component';
+import { NewPasswordComponent } from './components/new-password/new-password.component';
 import { NavHomeComponent } from './components/nav-home/nav-home.component';
 
 // Custom component (footer, presentation etc...)
@@ -32,7 +34,11 @@ import { IntroductionComponent } from '../custom/components/introduction/introdu
 // Service
 import { AuthService } from './components/auth/auth.service';
 import { CookieService } from 'ng2-cookies';
-import { AuthGuard, ModuleGuardService } from '@geonature/routing/routes-guards.service';
+import {
+  AuthGuard,
+  ModuleGuardService,
+  SignUpGuard
+} from '@geonature/routing/routes-guards.service';
 import { ModuleService } from './services/module.service';
 import { CruvedStoreService } from './services/cruved-store.service';
 import { SideNavService } from './components/sidenav-items/sidenav-service';
@@ -72,6 +78,8 @@ export function createTranslateLoader(http: HttpClient) {
     SidenavItemsComponent,
     PageNotFoundComponent,
     LoginComponent,
+    SignUpComponent,
+    NewPasswordComponent,
     NavHomeComponent,
     FooterComponent,
     IntroductionComponent
@@ -85,10 +93,11 @@ export function createTranslateLoader(http: HttpClient) {
     CookieService,
     HttpClient,
     ModuleGuardService,
+    SignUpGuard,
     SideNavService,
     CruvedStoreService,
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

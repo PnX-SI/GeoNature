@@ -3,7 +3,6 @@
 """
 
 import warnings
-
 from sqlalchemy import exc as sa_exc
 
 from geonature.utils.env import load_config, get_config_file_path

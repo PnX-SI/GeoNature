@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { TreeNode, TreeComponent, IActionMapping } from 'angular-tree-component';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
-import { DynamicFormService } from '@geonature_common/form/dynamic-form/dynamic-form.service';
+import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
 import { FormGroup } from '@angular/forms';
 import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service';
 import { AppConfig } from '@geonature_config/app.config';

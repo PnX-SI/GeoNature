@@ -1,5 +1,4 @@
-
-import {throwError as observableThrowError,  Observable } from 'rxjs';
+import { throwError as observableThrowError, Observable } from 'rxjs';
 import { Injectable, Injector } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
 import { AuthService } from '@geonature/components/auth/auth.service';
@@ -20,11 +19,10 @@ export class MyCustomInterceptor implements HttpInterceptor {
     } else {
       errMsg = error.message ? error.message : error.toString();
     }
-    console.error(errMsg);
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Interceptor to redirect to the login page if token is expired
+/*    // Interceptor to redirect to the login page if token is expired
     // also put a withCredentials header
     const auth = this.inj.get(AuthService);
     if (!auth.getToken()) {
@@ -38,7 +36,11 @@ export class MyCustomInterceptor implements HttpInterceptor {
         withCredentials: true
       });
     }
-
+*/
+    // add a custom header
+    const customReq = request.clone({
+      withCredentials: true
+    });
     // pass on the modified request object
     // and intercept error
     return next.handle(request).catch((err: any) => {

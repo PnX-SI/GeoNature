@@ -34,12 +34,12 @@ GeoNature se sert de flux internet externes durant son installation et son fonct
 - https://preprod-inpn.mnhn.fr/mtd
 - https://wxs.ign.fr/
 
+
+
 Installation de l'application
 -----------------------------
 
-Ce document décrit une procédure d'installation packagée de GeoNature. 
-
-Un tutoriel vidéo détaille aussi l'installation globale de GeoNature version 2.1.1 : https://www.youtube.com/watch?v=JYgH7cV9AjE. La procédure ci-dessous reste la référence officielle à suivre. 
+Ce document décrit une procédure d'installation packagée de GeoNature.
 
 En lançant le script d'installation ci-dessous, l'application GeoNature ainsi que ses dépendances seront installées sur un seul et même serveur au sein d'une seule base de données.
 

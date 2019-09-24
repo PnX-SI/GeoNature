@@ -20,7 +20,7 @@ legend {
   font-size: inherit;
 }
 
-:host /deep/ .dynamic-form {
+:host /deep/ .dynamic-form-wrapper {
   display: flex;
 }
 
@@ -31,7 +31,7 @@ legend {
 }
 
 :host /deep/ pnx-dynamic-form {
-  width: 90%;
+  max-width: 90%;
 }
 
 .taxon-list {

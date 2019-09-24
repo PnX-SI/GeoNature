@@ -16,6 +16,7 @@ Mainteneurs :
 - Theo LECHEMIA (PnEcrins) : Frontend / Angular 4
 - Camille MONCHICOURT (PnEcrins) : Documentation / Gestion du projet
 
+.. image :: http://geonature.fr/docs/img/developpement/geonature-techno.png
 
 API
 ---
@@ -30,7 +31,6 @@ GeoNature utilise :
   métadonnées, intersections géographiques, exports...)
 
 .. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/api_services.png
-
 
 Liste des routes
 *****************

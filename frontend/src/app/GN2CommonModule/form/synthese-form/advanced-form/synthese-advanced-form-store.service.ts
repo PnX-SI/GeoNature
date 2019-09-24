@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
-import { DynamicFormService } from '@geonature_common/form/dynamic-form/dynamic-form.service';
+import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
 import { TreeModel } from 'angular-tree-component';
 import { AppConfig } from '@geonature_config/app.config';
 import { formatTaxonTree } from '@geonature_common/form/taxon-tree/taxon-tree.service';
