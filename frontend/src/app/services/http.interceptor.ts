@@ -22,13 +22,7 @@ export class MyCustomInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-/*    // Interceptor to redirect to the login page if token is expired
-    // also put a withCredentials header
-    const auth = this.inj.get(AuthService);
-    if (!auth.getToken()) {
-      this.router.navigate(['/login']);
-    }
-    
+
     //Creation d'une liste blanche pour autoriser les CROS request.
     if (WHITE_LIST.indexOf(this.extractHostname(request.url)) === -1) {
       // add a custom header
@@ -36,11 +30,7 @@ export class MyCustomInterceptor implements HttpInterceptor {
         withCredentials: true
       });
     }
-*/
-    // add a custom header
-    const customReq = request.clone({
-      withCredentials: true
-    });
+
     // pass on the modified request object
     // and intercept error
     return next.handle(request).catch((err: any) => {

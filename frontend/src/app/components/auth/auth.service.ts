@@ -77,7 +77,7 @@ export class AuthService {
       password: user.password,
       id_application: AppConfig.ID_APPLICATION_GEONATURE
     };
-    console.log(options);
+
     this._http
       .post<any>(`${AppConfig.API_ENDPOINT}/auth/login`, options)
       .finally(() => (this.isLoading = false))
