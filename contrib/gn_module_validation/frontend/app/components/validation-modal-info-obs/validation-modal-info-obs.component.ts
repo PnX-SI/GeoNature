@@ -8,7 +8,7 @@ import { ModuleConfig } from "../../module.config";
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
- 
+
 @Component({
   selector: 'pnx-validation-modal-info-obs',
   templateUrl: 'validation-modal-info-obs.component.html',
@@ -138,7 +138,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
             this.email = this.selectedObs.cor_observers.map(el => el.email).join();
             this.mailto = String("mailto:" + this.email);
           }
-           
+
         }
       );
  
@@ -335,5 +335,5 @@ export class ValidationModalInfoObsComponent implements OnInit {
       }
     );
   }
- 
+  
 }
