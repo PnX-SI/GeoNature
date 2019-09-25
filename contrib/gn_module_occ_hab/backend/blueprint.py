@@ -1,40 +1,64 @@
-from flask import Blueprint, current_app, session
+from flask import Blueprint, current_app, session, request
+from geoalchemy2.shape import from_shape
+from shapely.geometry import asShape
 
-# from geonature.utils.utilssqlalchemy import json_resp
+from geonature.utils.utilssqlalchemy import json_resp
+from geonature.utils.utilsgeometry import remove_third_dimension
+from geonature.utils.env import DB
+
 # from geonature.utils.env import get_id_module
 
 # import des fonctions utiles depuis le sous-module d'authentification
 # from geonature.core.gn_permissions import decorators as permissions
 # from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
 
+from pypnusershub.db.models import User
+
+from .models import TStationsOcchab, THabitatsOcchab
+
 blueprint = Blueprint("occhab", __name__)
 
 
-# # Exemple d'une route simple
-# @blueprint.route('/test', methods=['GET'])
-# @json_resp
-# def get_view():
-#     q = DB.session.query(MySQLAModel)
-#     data = q.all()
-#     return [d.as_dict() for d in data]
+@blueprint.route("/station", methods=["POST"])
+@json_resp
+def post_station():
+    """
+    Post one occhab station (station + habitats)
 
+    .. :quickref: OccHab; Post one occhab station (station + habitats)
 
-# # Exemple d'une route protégée le CRUVED du sous module d'authentification
-# @blueprint.route('/test_cruved', methods=['GET'])
-# @permissions.check_cruved_scope('R', module_code="MY_MODULE_CODE")
-# @json_resp
-# def get_sensitive_view(info_role):
-#     # Récupérer l'id de l'utilisateur qui demande la route
-#     id_role = info_role.id_role
-#     # Récupérer la portée autorisée à l'utilisateur pour l'acton 'R' (read)
-#     read_scope = info_role.value_filter
+    :returns: GeoJson<TStationsOcchab>
+    """
 
-#     #récupérer le CRUVED complet de l'utilisateur courant
-#     user_cruved = get_or_fetch_user_cruved(
-#         session=session,
-#         id_role=info_role.id_role,
-#         module_code='MY_MODULE_CODE',
-#     )
-#     q = DB.session.query(MySQLAModel)
-#     data = q.all()
-#     return [d.as_dict() for d in data]
+    data = dict(request.get_json())
+    occ_hab = None
+    if "t_habitats" in data:
+        occ_hab = data.pop("t_habitats")
+    observers_list = None
+    if "observers" in data:
+        observers_list = data.pop("observers")
+
+    station = TStationsOcchab(**data)
+    shape = asShape(data["geom_4326"])
+    two_dimension_geom = remove_third_dimension(shape)
+    station.geom_4326 = from_shape(two_dimension_geom, srid=4326)
+    if observers_list is not None:
+        observers = (
+            DB.session.query(User).filter(User.id_role.in_(observers_list)).all()
+        )
+        for o in observers:
+            station.observers.append(o)
+    if occ_hab is not None:
+
+        for occ in occ_hab:
+            data_attr = [k for k in occ]
+            for att in data_attr:
+                if not getattr(THabitatsOcchab, att, False):
+                    occ.pop(att)
+            habitat_obj = THabitatsOcchab(**occ)
+            station.t_habitats.append(habitat_obj)
+    DB.session.add(station)
+    print("OUI")
+    DB.session.commit()
+    print("EA?")
+    return station.get_geofeature()
