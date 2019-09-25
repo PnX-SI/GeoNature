@@ -1,14 +1,14 @@
 <div class="row row-sm">
   <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
     <pnx-map [height]="height">
-        <pnx-leaflet-draw></pnx-leaflet-draw>
+        <pnx-leaflet-draw (layerDrawed)="occHabForm.patchGeomValue($event)"></pnx-leaflet-draw>
 
     </pnx-map>
 
     <div class="card">
         <div class="card-body">
           <h4 class="card-title">Habitats de la station</h4>
-          <div *ngFor='let hab of occHabForm.stationForm.value.habitats'>
+          <div *ngFor='let hab of occHabForm.stationForm.value.t_habitats'>
             <ul>
               <li> {{hab |json}} </li>
             </ul>
@@ -23,23 +23,54 @@
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">Station</h5>
-        <pnx-observers-text [parentFormControl]="occHabForm.stationForm.get('observers')">
+        <pnx-observers-text [parentFormControl]="occHabForm.stationForm.get('observers_txt')">
         </pnx-observers-text>
         <pnx-datasets 
           label="{{ 'MetaData.Datasets' | translate }}" 
           [parentFormControl]="occHabForm.stationForm.get('id_dataset')"
         >
         </pnx-datasets>
-        <pnx-date [defaultToday]="true" 
-          label="{{ 'Releve.MinDate' | translate }}" 
-          [parentFormControl]="occHabForm.stationForm.get('date_min')"
-        >
-        </pnx-date>
-        <pnx-date [defaultToday]="true" 
-          label="{{ 'Releve.MinDate' | translate }}" 
-          [parentFormControl]="occHabForm.stationForm.get('date_max')"
-        >
-        </pnx-date>
+        <div class="form-group">
+            <div class="row row-0">
+              <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
+                <pnx-date 
+                  [defaultToday]="true" 
+                  label="{{ 'Releve.MinDate' | translate }}" 
+                  [parentFormControl]="occHabForm.stationForm.get('date_min')"
+                >
+                </pnx-date>
+              </div>
+            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
+              <pnx-date 
+                [defaultToday]="true" 
+                label="{{ 'Releve.MinDate' | translate }}" 
+                [parentFormControl]="occHabForm.stationForm.get('date_max')"
+              >
+              </pnx-date>
+            </div>
+          </div>
+        </div>
+            
+
+        <div class="form-group">
+          <div class="row row-0">
+            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
+                <small for=""> Altitude min</small>
+                <input 
+                  type="number" 
+                  class="form-control form-control-sm"
+                  [formControl]="occHabForm.stationForm.get('altitude_min')"
+                >
+            </div>
+            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
+              <small for=""> Altitude max</small>
+              <input 
+                type="number" 
+                class="form-control form-control-sm"
+                [formControl]="occHabForm.stationForm.get('altitude_max')"
+              >
+            </div>
+        </div>
 
         <pnx-nomenclature
           label="Méthode de calcul de l'aire" 
@@ -73,7 +104,7 @@
         </pnx-nomenclature>
 
         <pnx-nomenclature
-          label="Technique de collecte de l'information habitats" 
+          label="Technique de collecte de l'information habitat" 
           [parentFormControl]="occHabForm.habitatForm.get('id_nomenclature_collection_technique')"
           codeNomenclatureType="TECHNIQUE_COLLECT_HAB" 
         > 
@@ -92,16 +123,17 @@
         > 
           Ajouter l'habitat
         </button>
-        <!-- <pre>
+        <pre>
             {{occHabForm.stationForm.value |json }}
             {{occHabForm.habitatForm.value |json }}
-        </pre> -->
+        </pre>
       </div>
     </div>
 
     <button 
       type="button" 
       class="btn btn-success" 
+      (click)="occHabForm.postStation()"
     >
       Valider la station
     </button>

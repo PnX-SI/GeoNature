@@ -5,6 +5,7 @@ import { GN2CommonModule } from "@geonature_common/GN2Common.module";
 import { Routes, RouterModule } from "@angular/router";
 import { OccHabFormComponent } from "./components/occhab-form.component";
 import { OcchabFormService } from "./services/form-service";
+import { OccHabDataService } from "./services/data.service";
 
 // my module routing
 const routes: Routes = [{ path: "", component: OccHabFormComponent }];
@@ -12,7 +13,7 @@ const routes: Routes = [{ path: "", component: OccHabFormComponent }];
 @NgModule({
   declarations: [OccHabFormComponent],
   imports: [CommonModule, GN2CommonModule, RouterModule.forChild(routes)],
-  providers: [OcchabFormService],
+  providers: [OcchabFormService, OccHabDataService],
   bootstrap: []
 })
 export class GeonatureModule {}
