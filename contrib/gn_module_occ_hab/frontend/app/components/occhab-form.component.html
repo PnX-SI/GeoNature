@@ -1,0 +1,118 @@
+<div class="row row-sm">
+  <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
+    <pnx-map [height]="height">
+        <pnx-leaflet-draw></pnx-leaflet-draw>
+
+    </pnx-map>
+
+    <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Habitats de la station</h4>
+          <div *ngFor='let hab of occHabForm.stationForm.value.habitats'>
+            <ul>
+              <li> {{hab |json}} </li>
+            </ul>
+            
+          </div>
+    
+        </div>
+      </div>
+  </div>
+
+  <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Station</h5>
+        <pnx-observers-text [parentFormControl]="occHabForm.stationForm.get('observers')">
+        </pnx-observers-text>
+        <pnx-datasets 
+          label="{{ 'MetaData.Datasets' | translate }}" 
+          [parentFormControl]="occHabForm.stationForm.get('id_dataset')"
+        >
+        </pnx-datasets>
+        <pnx-date [defaultToday]="true" 
+          label="{{ 'Releve.MinDate' | translate }}" 
+          [parentFormControl]="occHabForm.stationForm.get('date_min')"
+        >
+        </pnx-date>
+        <pnx-date [defaultToday]="true" 
+          label="{{ 'Releve.MinDate' | translate }}" 
+          [parentFormControl]="occHabForm.stationForm.get('date_max')"
+        >
+        </pnx-date>
+
+        <pnx-nomenclature
+          label="Méthode de calcul de l'aire" 
+          [parentFormControl]="occHabForm.stationForm.get('id_nomenclature_area_surface_calculation')"
+          codeNomenclatureType="METHOD_CALCUL_SURFACE" 
+        > 
+        </pnx-nomenclature>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Habitat</h5>
+        <div class="form-group">
+            <pnx-autocomplete apiEndPoint="http://127.0.0.1:5000/api/habref/habitats/autocomplete/list/1"
+            [searchAsParameter]="false"  
+            [parentFormControl]="occHabForm.habitatForm.get('habitat_obj')"
+            queryParamSearch="search_name"
+            [formatter]="formatter"
+            keyValue="lb_hab_fr_complet"
+            label="Rechercher un habitat"
+          >
+          </pnx-autocomplete>
+        </div>
+
+        <pnx-nomenclature
+          label="Type de détermination de l''habitat" 
+          [parentFormControl]="occHabForm.habitatForm.get('id_nomenclature_determination_type')"
+          codeNomenclatureType="DETERMINATION_TYP_HAB" 
+        > 
+        </pnx-nomenclature>
+
+        <pnx-nomenclature
+          label="Technique de collecte de l'information habitats" 
+          [parentFormControl]="occHabForm.habitatForm.get('id_nomenclature_collection_technique')"
+          codeNomenclatureType="TECHNIQUE_COLLECT_HAB" 
+        > 
+        </pnx-nomenclature>
+        <pnx-nomenclature
+          label="Interêt communautaire" 
+          [parentFormControl]="occHabForm.habitatForm.get('id_nomenclature_community_interest')"
+          codeNomenclatureType="HAB_INTERET_COM" 
+        > 
+        </pnx-nomenclature>
+        <br>
+        <button 
+          type="button" 
+          class="btn btn-primary"
+          (click)="occHabForm.addHabitat(); test();"
+        > 
+          Ajouter l'habitat
+        </button>
+        <!-- <pre>
+            {{occHabForm.stationForm.value |json }}
+            {{occHabForm.habitatForm.value |json }}
+        </pre> -->
+      </div>
+    </div>
+
+    <button 
+      type="button" 
+      class="btn btn-success" 
+    >
+      Valider la station
+    </button>
+
+
+
+  </div>
+
+
+
+
+
+
+</div>
