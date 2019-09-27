@@ -1,0 +1,93 @@
+<div class="row row-sm">
+  <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
+    <pnx-taxonomy 
+      label="{{ 'Taxon.Taxon' | translate }}" 
+      [parentFormControl]="dynamicFormGroup.controls.cd_nom"
+      [idList]="occtaxConfig.id_taxon_list" 
+      [charNumber]="3" 
+      [listLength]="20">
+    </pnx-taxonomy>
+  </div>
+  <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
+    <div *ngIf="occtaxConfig.observers_txt; else elseBlock">
+      <pnx-observers-text 
+        [parentFormControl]="dynamicFormGroup.controls.observers_txt">
+      </pnx-observers-text>
+    </div>
+    <ng-template #elseBlock>
+      <pnx-observers 
+        label="{{ 'Releve.Observers' | translate }}"
+        [parentFormControl]="dynamicFormGroup.controls.observers" 
+        [idMenu]="occtaxConfig.id_observers_list">
+      </pnx-observers>
+    </ng-template>
+  </div>
+  <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
+    <pnx-datasets 
+      label="{{ 'Releve.Dataset' | translate }}" 
+      appId="14"
+      [displayAll]="true" 
+      [parentFormControl]="dynamicFormGroup.controls.id_dataset">
+    </pnx-datasets>
+  </div>
+  <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 padding-sm">
+    <pnx-date 
+      label="{{ 'Releve.MinDate' | translate }}" 
+      [parentFormControl]="dynamicFormGroup.controls.date_low">
+    </pnx-date>
+  </div>
+
+  <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 padding-sm">
+    <pnx-date 
+      label="{{ 'Releve.MaxDate' | translate }}" 
+      [parentFormControl]="dynamicFormGroup.controls.date_up">
+    </pnx-date>
+  </div>
+
+  <button 
+    class="btn btn-outline-shadow actions" 
+    matTooltip="{{ 'Form.RefreshFilters' | translate }}"
+    (click)="refreshFilters()"
+  >
+    <i id="refresh-filter" class="fa fa-trash-o clickable action" aria-hidden="true">
+    </i>
+  </button>
+
+
+  <button 
+    class="btn btn-outline-shadow actions" 
+    matTooltip="{{ 'Form.AdvancedFilters' | translate }}"
+    (click)="toggleAdvancedFilters()"
+  >
+    <i class="fa fa-filter" aria-hidden="true"></i>
+  </button>
+
+  <svg *ngIf="dynamicForm?.formsSelected.length > 0" 
+    height="40" 
+    width="10"
+  >
+    <circle 
+      cx="5" 
+      cy="30" 
+      r="3" 
+      stroke="red" 
+      stroke-width="0" 
+      fill="red"/>
+  </svg>
+  <button id="search-btn" 
+    class="btn btn-primary" 
+    (click)="searchData()"
+  >
+    {{ 'Search' | translate }}
+    <i class="fa fa-search" aria-hidden="true"></i>
+  </button>
+</div>
+
+<div id="collapse-settings" [hidden]="!advandedFilterOpen">
+  <pnx-dynamic-form-generator 
+    #dynamicForm 
+    selectLabel="Autres Critères" 
+    [myFormGroup]="dynamicFormGroup"
+    [formsDefinition]="formsDefinition">
+  </pnx-dynamic-form-generator>
+</div>
