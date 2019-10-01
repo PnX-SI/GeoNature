@@ -66,6 +66,7 @@ INSERT INTO gn_meta.t_datasets (
     id_nomenclature_data_origin,
     id_nomenclature_source_status,
     id_nomenclature_resource_type,
+    active,
     validable,
     meta_create_date,
     meta_update_date
@@ -91,6 +92,7 @@ INSERT INTO gn_meta.t_datasets (
     ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE', 'Te'),
     ref_nomenclatures.get_id_nomenclature('RESOURCE_TYP', '1'),
     true,
+    true,
     '2018-09-01 16:57:44.45879',
     null
     ),
@@ -113,6 +115,7 @@ INSERT INTO gn_meta.t_datasets (
     ref_nomenclatures.get_id_nomenclature('DS_PUBLIQUE', 'Pu'),
     ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE', 'Te'),
     ref_nomenclatures.get_id_nomenclature('RESOURCE_TYP', '1'),
+    true,
     true,
     '2018-09-01 16:59:03.25687',
     null
@@ -172,6 +175,11 @@ INSERT INTO gn_meta.cor_dataset_protocol (id_dataset, id_protocol) VALUES
 ,((SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='dadab32d-5f9e-4dba-aa1f-c06487d536e8'),0)
 ;
 SELECT pg_catalog.setval('gn_meta.sinp_datatype_protocols_id_protocol_seq', (SELECT max(id_protocol)+1 FROM gn_meta.cor_dataset_protocol), true);
+
+INSERT INTO gn_commons.cor_module_dataset (id_module, id_dataset)
+SELECT gn_commons.get_id_module_bycode('OCCTAX'), id_dataset
+FROM gn_meta.t_datasets
+WHERE active;
 
 -- Insérer 2 relevés d'exemple dans Occtax
 
