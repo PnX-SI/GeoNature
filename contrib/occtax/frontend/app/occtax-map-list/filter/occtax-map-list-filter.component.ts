@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
-import { OcctaxDataService } from "../services/occtax-data.service";
+import { OcctaxDataService } from "../../services/occtax-data.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
@@ -20,7 +20,7 @@ import { HttpParams } from '@angular/common/http';
   templateUrl: "occtax-map-list-filter.component.html",
   styleUrls: ["./occtax-map-list-filter.component.scss"]
 })
-export class OcctaxMapListFilterComponent implements OnInit, OnDestroy {
+export class OcctaxMapListFilterComponent implements OnInit {
   public formsDefinition = FILTERSLIST;
   public dynamicFormGroup: FormGroup;
   public formsSelected = [];
