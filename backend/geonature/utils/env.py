@@ -169,11 +169,14 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
     # and import only modules which are enabled
     for f in mod_path.iterdir():
         if f.is_dir():
-            conf_manifest = load_and_validate_toml(
-                str(f / "manifest.toml"), ManifestSchemaProdConf
-            )
-            # set module code upper because module call is always upper in gn_commons.t_modules
-            module_code = conf_manifest["module_code"].upper()
+            try:
+                conf_manifest = load_and_validate_toml(
+                    str(f / "manifest.toml"), ManifestSchemaProdConf
+                )
+                # set module code upper because module call is always upper in gn_commons.t_modules
+                module_code = conf_manifest["module_code"].upper()
+            except Exception as e:
+                print("Cant find the module, it will not be enable, {}".format(e))
             if module_code in enabled_modules_name:
                 # import du module dans le sys.path
                 module_path = Path(GN_EXTERNAL_MODULE / module_code.lower())
