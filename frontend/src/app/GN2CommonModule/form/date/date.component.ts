@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { NgbDateFRParserFormatter } from './ngb-date-custom-parser-formatter';
 
 export interface DateStruc {

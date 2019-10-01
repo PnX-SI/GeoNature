@@ -6,7 +6,7 @@ import { DataFormService } from "@geonature_common/form/data-form.service";
 import { OcctaxFormService } from "../occtax-form.service";
 import { ViewEncapsulation } from "@angular/core";
 import { ModuleConfig } from "../../../module.config";
-import { DateStruc } from "@geonature_common/form/date.component";
+import { DateStruc } from "@geonature_common/form/date/date.component";
 
 
 @Component({
@@ -70,12 +70,10 @@ export class ReleveComponent implements OnInit, OnDestroy {
 
     // Autocomplete date only if its not edition MODE
     this.isEditionSub$ = this.fs.editionMode$
-    .filter(isEdit => isEdit === false)  
     .subscribe(isEdit => {
-      console.log("NOT EDTION MODE");
-      
-      this.autoCompleteDate();
-
+      if (isEdit === false) {
+        this.autoCompleteDate();
+      }  
     });
     
 
@@ -85,10 +83,11 @@ export class ReleveComponent implements OnInit, OnDestroy {
       .properties as FormGroup).controls.hour_min.valueChanges
       .filter(value => value != null)
       .subscribe(value => {
-
-        if (value.length == 0)
+        
+        if (value.length == 0) {
           (this.releveForm.controls
             .properties as FormGroup).controls.hour_min.reset();
+        }
         else if (
           // autcomplete only if hour max is empty or invalid
           (this.releveForm.controls
@@ -99,8 +98,8 @@ export class ReleveComponent implements OnInit, OnDestroy {
             // autcomplete hour max only if currentHourMax is null
             (this.releveForm.controls
               .properties as FormGroup).controls.hour_max.patchValue(value);
-          }
-        });
+        }
+      }});
 
     // set hour_max = hour_min to prevent date_max<date_min
     (this.releveForm.controls

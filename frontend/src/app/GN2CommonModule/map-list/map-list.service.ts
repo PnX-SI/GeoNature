@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
+import { Subject, Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AppConfig } from '../../../conf/app.config';
-import { Observable } from 'rxjs';
 import { CommonService } from '@geonature_common/service/common.service';
 import * as L from 'leaflet';
 import { FormControl } from '@angular/forms';
