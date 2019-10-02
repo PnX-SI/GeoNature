@@ -1,3 +1,8 @@
+-- Définir le statut de validation à inconnu pour toutes les données entrant en synthèse sans statut de validation
+-- A adapter au contexte
+UPDATE gn_synthese.defaults_nomenclatures_value 
+SET id_nomenclature = ref_nomenclatures.get_id_nomenclature('STATUT_VALID', '6')
+WHERE mnemonique_type = 'STATUT_VALID';
 
 INSERT INTO gn_synthese.synthese (
 unique_id_sinp,
@@ -126,3 +131,6 @@ ALTER TABLE pr_occtax.cor_counting_occtax ENABLE TRIGGER tri_insert_synthese_cor
 ALTER TABLE pr_occtax.cor_counting_occtax ENABLE TRIGGER tri_insert_default_validation_status;
 ALTER TABLE pr_occtax.cor_role_releves_occtax ENABLE TRIGGER tri_log_changes_cor_role_releves_occtax;
 ALTER TABLE pr_occtax.cor_role_releves_occtax ENABLE TRIGGER tri_insert_synthese_cor_role_releves_occtax;
+
+-- Modifier la valeur par défaut du statut de validation
+
