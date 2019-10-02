@@ -1,15 +1,29 @@
 import { Component, OnInit } from "@angular/core";
 import { OcchabFormService } from "../services/form-service";
+import { OcchabStoreService } from "../services/store.service";
+import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
 
 @Component({
   selector: "pnx-occhab-form",
-  templateUrl: "occhab-form.component.html"
+  templateUrl: "occhab-form.component.html",
+  styleUrls: ["./occhab-form.component.scss"]
 })
 export class OccHabFormComponent implements OnInit {
-  public height = "80vh";
-  constructor(public occHabForm: OcchabFormService) {}
+  public showDepth = false;
+  public leafletDrawOptions = leafletDrawOption;
+  constructor(
+    public occHabForm: OcchabFormService,
+    public storeService: OcchabStoreService
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.leafletDrawOptions;
+    leafletDrawOption.draw.polyline = false;
+  }
+
+  toggleDepth() {
+    this.showDepth = !this.showDepth;
+  }
 
   formatter(item) {
     return item.lb_hab_fr_complet.replace(/<[^>]*>/g, "");

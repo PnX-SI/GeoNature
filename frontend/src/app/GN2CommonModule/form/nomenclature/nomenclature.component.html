@@ -9,9 +9,17 @@
 
   <small> {{label}} </small>
   <div class="input-group">
-    <select class="form-control form-control-sm" [disableControl]="disabled" [formControl]="parentFormControl">
-      <option *ngFor="let label of labels" [ngValue]="label[keyValue]" [title]="label[definitionLang]">
+    <select class="form-control form-control-sm" [disableControl]="disabled" [formControl]="parentFormControl" [compareWith]="compareFn">
+      <option *ngFor="let label of labels" [ngValue]="label" [title]="label[definitionLang]">
         {{label[labelLang]}} </option>
     </select>
   </div>
+
+
+  <!-- <div class="input-group">
+    <select class="form-control form-control-sm" [disableControl]="disabled" [formControl]="parentFormControl" [compareWith]="compareFn">
+      <option *ngFor="let label of labels" [ngValue]="label[keyValue]" [title]="label[definitionLang]">
+        {{label[labelLang]}} </option>
+    </select>
+  </div> -->
 </ng-template>

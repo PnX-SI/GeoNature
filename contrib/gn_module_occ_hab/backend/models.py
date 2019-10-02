@@ -27,7 +27,8 @@ class THabitatsOcchab(DB.Model):
     __tablename__ = "t_habitats"
     __table_args__ = {"schema": "pr_occhab"}
     id_habitat = DB.Column(DB.Integer, primary_key=True)
-    id_station = DB.Column(DB.Integer, ForeignKey("pr_occhab.t_stations.id_station"))
+    id_station = DB.Column(DB.Integer, ForeignKey(
+        "pr_occhab.t_stations.id_station"))
     unique_id_sinp_hab = DB.Column(
         UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
     )
@@ -61,8 +62,11 @@ class TStationsOcchab(DB.Model):
     id_nomenclature_exposure = DB.Column(DB.Integer)
     altitude_min = DB.Column(DB.Integer)
     altitude_max = DB.Column(DB.Integer)
+    depth_min = DB.Column(DB.Integer)
+    depth_max = DB.Column(DB.Integer)
     area = DB.Column(DB.Float)
     id_nomenclature_area_surface_calculation = DB.Column(DB.Integer)
+    id_nomenclature_geographic_object = DB.Column(DB.Integer)
     comment = DB.Column(DB.Integer)
     geom_4326 = DB.Column(Geometry("GEOMETRY", 4626))
 
@@ -80,4 +84,3 @@ class TStationsOcchab(DB.Model):
 
     def get_geofeature(self, recursif=True):
         return self.as_geofeature("geom_4326", "id_station", recursif)
-

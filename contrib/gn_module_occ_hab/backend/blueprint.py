@@ -6,12 +6,6 @@ from geonature.utils.utilssqlalchemy import json_resp
 from geonature.utils.utilsgeometry import remove_third_dimension
 from geonature.utils.env import DB
 
-# from geonature.utils.env import get_id_module
-
-# import des fonctions utiles depuis le sous-module d'authentification
-# from geonature.core.gn_permissions import decorators as permissions
-# from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
-
 from pypnusershub.db.models import User
 
 from .models import TStationsOcchab, THabitatsOcchab
@@ -44,7 +38,8 @@ def post_station():
     station.geom_4326 = from_shape(two_dimension_geom, srid=4326)
     if observers_list is not None:
         observers = (
-            DB.session.query(User).filter(User.id_role.in_(observers_list)).all()
+            DB.session.query(User).filter(
+                User.id_role.in_(observers_list)).all()
         )
         for o in observers:
             station.observers.append(o)
@@ -58,7 +53,5 @@ def post_station():
             habitat_obj = THabitatsOcchab(**occ)
             station.t_habitats.append(habitat_obj)
     DB.session.add(station)
-    print("OUI")
     DB.session.commit()
-    print("EA?")
     return station.get_geofeature()

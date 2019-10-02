@@ -36,8 +36,9 @@ export class DataFormService {
     );
   }
 
-  getNomenclatures(...codesNomenclatureType) {
+  getNomenclatures(codesNomenclatureType) {
     let params: HttpParams = new HttpParams();
+    params = params.set('orderby', 'label_default');
     codesNomenclatureType.forEach(code => {
       params = params.append('code_type', code);
     });
@@ -158,6 +159,10 @@ export class DataFormService {
       });
       return areasIntersected;
     });
+  }
+
+  getAreaSize(geojson) {
+    return this._http.post(`${AppConfig.API_ENDPOINT}/geo/area_size`, geojson);
   }
 
   getMunicipalities(nom_com?, limit?) {

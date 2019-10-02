@@ -1,38 +1,84 @@
 <div class="row row-sm">
   <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
-    <pnx-map [height]="height">
-        <pnx-leaflet-draw (layerDrawed)="occHabForm.patchGeomValue($event)"></pnx-leaflet-draw>
-
+    <pnx-map [height]="occHabForm.height">
+        <pnx-leaflet-draw
+          [options]="leafletDrawOptions"
+          zoomLevel="5"
+         (layerDrawed)="occHabForm.patchGeomValue($event)"></pnx-leaflet-draw>
     </pnx-map>
 
-    <div class="card">
-        <div class="card-body">
-          <h4 class="card-title">Habitats de la station</h4>
-          <div *ngFor='let hab of occHabForm.stationForm.value.t_habitats'>
-            <ul>
-              <li> {{hab |json}} </li>
-            </ul>
+    <!-- HABITAT ALREADY SAVED -->
+    <div class="card" *ngIf="occHabForm.stationForm.value.t_habitats.length > 0">
+      <h4 class="card-header">
+        Habitats de la station
+      </h4>
+
+        <div class="card-body small">
+          <div >
+            <table class="table">
+              <thead style="font-weight: bold">
+                <tr>
+                  <td> N°</td>
+                  <td> Habitat</td>
+                  <td> Interet communautaire</td>
+                  <td> Determinateur</td>
+                  <td> Abondance</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor='let hab of occHabForm.stationForm.value.t_habitats; let i=index'>
+                    <td> {{i + 1}}</td>
+                    <td>  {{hab.habitat_obj?.lb_hab_fr_complet}}</td>
+                    <td> {{hab.id_nomenclature_community_interest?.label_default}}</td>
+                    <td> {{hab.determiner}}</td>
+                    <td>  {{hab.id_nomenclature_abundance?.label_default}}</td>
+                    <td> 
+                      <button type="button" class="btn btn-primary btn-sm">
+                          <i class="fa fa-pencil-square-o" aria-hidden="true" ></i>
+                      </button> 
+                      <button type="button" class="btn btn-danger btn-sm">
+                          <i class="fa fa-times" aria-hidden="true"></i>
+
+                      </button>
+                    </td>
+
+                  </tr>
+              </tbody>  
+            </table>
+
             
           </div>
     
         </div>
       </div>
+      <!--END  HABITAT ALREADY SAVED -->
   </div>
 
-  <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
+  <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm form">
     <div class="card">
+      <h5 class="card-header">
+        <i class="fa fa-flag" aria-hidden="true"></i>
+        Station
+      </h5>
+
       <div class="card-body">
-        <h5 class="card-title">Station</h5>
-        <pnx-observers-text [parentFormControl]="occHabForm.stationForm.get('observers_txt')">
-        </pnx-observers-text>
-        <pnx-datasets 
-          label="{{ 'MetaData.Datasets' | translate }}" 
-          [parentFormControl]="occHabForm.stationForm.get('id_dataset')"
-        >
-        </pnx-datasets>
+        <div class="row">
+          <div class="col">
+            <pnx-observers-text [parentFormControl]="occHabForm.stationForm.get('observers_txt')">
+            </pnx-observers-text>
+          </div>
+          <div class="col">
+              <pnx-datasets 
+                label="{{ 'MetaData.Datasets' | translate }}" 
+                [parentFormControl]="occHabForm.stationForm.get('id_dataset')"
+              >
+              </pnx-datasets>
+          </div>
+        </div>
+
         <div class="form-group">
             <div class="row row-0">
-              <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
+              <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm">
                 <pnx-date 
                   [defaultToday]="true" 
                   label="{{ 'Releve.MinDate' | translate }}" 
@@ -40,10 +86,10 @@
                 >
                 </pnx-date>
               </div>
-            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm">
               <pnx-date 
                 [defaultToday]="true" 
-                label="{{ 'Releve.MinDate' | translate }}" 
+                label="{{ 'Releve.MaxDate' | translate }}" 
                 [parentFormControl]="occHabForm.stationForm.get('date_max')"
               >
               </pnx-date>
@@ -54,7 +100,7 @@
 
         <div class="form-group">
           <div class="row row-0">
-            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm">
                 <small for=""> Altitude min</small>
                 <input 
                   type="number" 
@@ -62,7 +108,7 @@
                   [formControl]="occHabForm.stationForm.get('altitude_min')"
                 >
             </div>
-            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 padding-sm">
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm">
               <small for=""> Altitude max</small>
               <input 
                 type="number" 
@@ -70,51 +116,187 @@
                 [formControl]="occHabForm.stationForm.get('altitude_max')"
               >
             </div>
+            <button 
+              *ngIf="!showDepth"
+              (click)="toggleDepth()"
+              class="btn btn-sm btn-outline-shadow depth-button" 
+              data-toggle="collapse"
+              data-target="#collapseDepth">
+              <i class="fa fa-plus" aria-expanded="false"></i>
+            </button>
+            <button 
+              *ngIf="showDepth"
+              (click)="toggleDepth()"
+              class="btn btn-sm btn-outline-shadow depth-button" 
+              data-toggle="collapse"
+              data-target="#collapseDepth">
+              <i class="fa fa-minus" aria-expanded="false"></i>
+            </button>
+          </div>
         </div>
 
-        <pnx-nomenclature
-          label="Méthode de calcul de l'aire" 
-          [parentFormControl]="occHabForm.stationForm.get('id_nomenclature_area_surface_calculation')"
-          codeNomenclatureType="METHOD_CALCUL_SURFACE" 
-        > 
-        </pnx-nomenclature>
-      </div>
+        <div class="form-group collapse" id="collapseDepth">
+          <div class="row row-0">
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm">
+                <small for=""> Profondeur min</small>
+                <input 
+                  type="number" 
+                  class="form-control form-control-sm"
+                  [formControl]="occHabForm.stationForm.get('depth_min')"
+                >
+            </div>
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm">
+              <small for=""> Profondeur max</small>
+              <input 
+                type="number" 
+                class="form-control form-control-sm"
+                [formControl]="occHabForm.stationForm.get('depth_max')"
+              >
+            </div>
+          </div>
+        </div>
+
+
+
+          <div class="custom-control custom-checkbox mr-sm-2">
+              <input 
+                type="checkbox" 
+                class="custom-control-input form-control-sm" 
+                id="customControlAutosizing"
+                [formControl]="occHabForm.stationForm.get('is_habitat_complex')"
+                >
+              <label class="custom-control-label small" for="customControlAutosizing">Habitat complexe</label>
+          </div>
+
+        
+        <pnx-dumb-select
+          label="Exposition" 
+          [parentFormControl]="occHabForm.stationForm.get('id_nomenclature_exposure')"         
+          [items]="storeService.nomenclatureItems.EXPOSITION"
+          comparedKey="id_nomenclature"
+          titleKey="definition_fr"
+          displayedKey="label_fr">
+       </pnx-dumb-select>
+
+       <div class="row">
+         <div class="col">
+            <small> Surface</small>
+            <input 
+              class="form-control form-control-sm"
+              [formControl]="occHabForm.stationForm.get('area')"
+              type="number"
+            >
+         </div>
+
+         <div class="col">
+            <pnx-dumb-select
+              label="Méthode de calcul de l'aire" 
+              [parentFormControl]="occHabForm.stationForm.get('id_nomenclature_area_surface_calculation')"         
+              [items]="storeService.nomenclatureItems.METHOD_CALCUL_SURFACE"
+              comparedKey="id_nomenclature"
+              titleKey="definition_fr"
+              displayedKey="label_fr">
+           </pnx-dumb-select>
+         </div>
+
+   
+       </div>
+
+        <pnx-dumb-select
+          label="Nature objet géographique" 
+          [parentFormControl]="occHabForm.stationForm.get('id_nomenclature_geographic_object')"         
+          [items]="storeService.nomenclatureItems.NAT_OBJ_GEO"
+          comparedKey="id_nomenclature"
+          titleKey="definition_fr"
+          displayedKey="label_fr">
+       </pnx-dumb-select>
     </div>
+  </div>
 
+    <!-- END STATION FORM -->
+    <br>
     <div class="card">
+      <h5 class="card-header">
+        <i class="fa fa-leaf" aria-hidden="true"></i>
+        Habitat
+      </h5>
       <div class="card-body">
-        <h5 class="card-title">Habitat</h5>
-        <div class="form-group">
-            <pnx-autocomplete apiEndPoint="http://127.0.0.1:5000/api/habref/habitats/autocomplete/list/1"
-            [searchAsParameter]="false"  
-            [parentFormControl]="occHabForm.habitatForm.get('habitat_obj')"
-            queryParamSearch="search_name"
-            [formatter]="formatter"
-            keyValue="lb_hab_fr_complet"
-            label="Rechercher un habitat"
-          >
-          </pnx-autocomplete>
+        <div class="row">
+          <div class="col">
+              <pnx-autocomplete apiEndPoint="http://127.0.0.1:5000/api/habref/habitats/autocomplete/list/1"
+              [searchAsParameter]="false"  
+              [parentFormControl]="occHabForm.habitatForm.get('habitat_obj')"
+              queryParamSearch="search_name"
+              [formatter]="formatter"
+              keyValue="lb_hab_fr"
+              label="Rechercher un habitat"
+              (onChange)="occHabForm.patchNomCite($event)"
+              >
+            </pnx-autocomplete>
+          </div>
+
+          <div class="col">
+            <pnx-dumb-select
+              label="Habitat d'interet communautaire" 
+              [parentFormControl]="occHabForm.habitatForm.get('id_nomenclature_community_interest')"         
+              [items]="storeService.nomenclatureItems.HAB_INTERET_COM"
+              comparedKey="id_nomenclature"
+              titleKey="definition_fr"
+              displayedKey="label_fr">
+            </pnx-dumb-select>
+          </div>
         </div>
 
-        <pnx-nomenclature
-          label="Type de détermination de l''habitat" 
-          [parentFormControl]="occHabForm.habitatForm.get('id_nomenclature_determination_type')"
-          codeNomenclatureType="DETERMINATION_TYP_HAB" 
-        > 
-        </pnx-nomenclature>
+        <div class="row">
+          <div class="col">
+              <small> Déterminateur</small>
+              <input type="text" 
+                name="determinter"
+                class="form-control form-control-sm"
+                [formControl]="occHabForm.habitatForm.get('determiner')"         
+              >
+          </div>
+          <div class="col">
+              <pnx-dumb-select
+              label="Type de détermination" 
+              [parentFormControl]="occHabForm.habitatForm.get('id_nomenclature_determination_type')"         
+              [items]="storeService.nomenclatureItems.DETERMINATION_TYP_HAB"
+              comparedKey="id_nomenclature"
+              titleKey="definition_fr"
+              displayedKey="label_fr">
+            </pnx-dumb-select>
+          </div>
+        </div>
 
-        <pnx-nomenclature
-          label="Technique de collecte de l'information habitat" 
-          [parentFormControl]="occHabForm.habitatForm.get('id_nomenclature_collection_technique')"
-          codeNomenclatureType="TECHNIQUE_COLLECT_HAB" 
-        > 
-        </pnx-nomenclature>
-        <pnx-nomenclature
-          label="Interêt communautaire" 
-          [parentFormControl]="occHabForm.habitatForm.get('id_nomenclature_community_interest')"
-          codeNomenclatureType="HAB_INTERET_COM" 
-        > 
-        </pnx-nomenclature>
+
+        <pnx-dumb-select
+          label="Technique de collècte" 
+          [parentFormControl]="occHabForm.habitatForm.get('id_nomenclature_collection_technique')"         
+          [items]="storeService.nomenclatureItems.TECHNIQUE_COLLECT_HAB"
+          comparedKey="id_nomenclature"
+          titleKey="definition_fr"
+          displayedKey="label_fr">
+        </pnx-dumb-select>
+
+        <div class="form-group">
+          <small> Pourcentage de recouvrement</small>
+          <input type="number" 
+            name="recovery"
+            class="form-control form-control-sm"
+            [formControl]="occHabForm.habitatForm.get('recovery_percentage')"         
+          >
+        </div>
+
+        <pnx-dumb-select
+          label="Abondance" 
+          [parentFormControl]="occHabForm.habitatForm.get('id_nomenclature_abundance')"         
+          [items]="storeService.nomenclatureItems.ABONDANCE_HAB"
+          comparedKey="id_nomenclature"
+          titleKey="definition_fr"
+          displayedKey="label_fr">
+        </pnx-dumb-select>
+
+
         <br>
         <button 
           type="button" 
@@ -123,17 +305,18 @@
         > 
           Ajouter l'habitat
         </button>
-        <pre>
+        <!-- <pre>
             {{occHabForm.stationForm.value |json }}
             {{occHabForm.habitatForm.value |json }}
-        </pre>
+        </pre> -->
       </div>
     </div>
 
     <button 
       type="button" 
       class="btn btn-success" 
-      (click)="occHabForm.postStation()"
+      (click)="postStation()"
+      [disabled]="occHabForm.stationForm.invalid || occHabForm.stationForm.value.t_habitats.lenght == 0"
     >
       Valider la station
     </button>
@@ -141,10 +324,4 @@
 
 
   </div>
-
-
-
-
-
-
 </div>

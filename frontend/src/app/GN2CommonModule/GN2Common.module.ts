@@ -42,8 +42,7 @@ import { LeafletFileLayerComponent } from './map/filelayer/filelayer.component';
 import { MapListComponent } from './map-list/map-list.component';
 import { MapDataComponent } from './map-list/map-data/map-data.component';
 import { MapListGenericFiltersComponent } from './map-list/generic-filters/generic-filters.component';
-import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ObserversTextComponent } from '@geonature_common/form/observers-text/observers-text.component';
 import { MunicipalitiesComponent } from '@geonature_common/form/municipalities/municipalities.component';
@@ -56,6 +55,7 @@ import { PeriodComponent } from '@geonature_common/form/date/period.component';
 import { AutoCompleteComponent } from '@geonature_common/form/autocomplete/autocomplete.component';
 import { SyntheseSearchComponent } from '@geonature_common/form/synthese-form/synthese-form.component';
 import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-component';
+import { DumbSelectComponent } from '@geonature_common/form/dumb-select/dumb-select.component';
 
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
@@ -129,7 +129,8 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     PeriodComponent,
     AutoCompleteComponent,
     SyntheseSearchComponent,
-    TaxonAdvancedModalComponent
+    TaxonAdvancedModalComponent,
+    DumbSelectComponent
   ],
   providers: [
     TranslateService,
@@ -190,7 +191,8 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     PeriodComponent,
     AutoCompleteComponent,
     SyntheseSearchComponent,
-    TaxonAdvancedModalComponent
+    TaxonAdvancedModalComponent,
+    DumbSelectComponent
   ]
 })
 export class GN2CommonModule {}
