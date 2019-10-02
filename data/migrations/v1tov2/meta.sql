@@ -210,3 +210,10 @@ INSERT INTO gn_meta.t_datasets (
 UPDATE gn_meta.t_datasets SET active = false;
 UPDATE gn_meta.t_datasets SET active = true WHERE id_dataset IN(4,14,15);
 UPDATE gn_meta.t_datasets SET active = true WHERE dataset_shortname IN('Occtax','Mobile V1 vers occtax');
+
+
+-- Avant toute insertion, définir le statut de validation à inconnu pour toute l'instance GeoNature
+-- A adapter au contexte
+UPDATE ref_nomenclatures.defaults_nomenclatures_value
+SET id_nomenclature = ref_nomenclatures.get_id_nomenclature('STATUT_VALID', '6')
+WHERE mnemonique_type = 'STATUT_VALID';
