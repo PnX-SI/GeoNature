@@ -1191,8 +1191,8 @@ INSERT INTO gn_synthese.synthese
       ref_nomenclatures.get_id_nomenclature('DEE_FLOU','NON'),
       ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE','Te'),
       ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO','1'),
-      -1,--count_min
-      -1,--count_max
+      NULL,--count_min
+      NULL,--count_max
       cft.cd_nom,
       COALESCE(cft.taxon_saisi,'non disponible'),
       'Taxref V11.0',
