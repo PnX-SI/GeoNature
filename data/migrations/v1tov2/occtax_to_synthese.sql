@@ -1,3 +1,8 @@
+-- Définir le statut de validation à inconnu pour toutes les données
+-- A adapter au contexte
+UPDATE gn_synthese.defaults_nomenclatures_value 
+SET id_nomenclature = ref_nomenclatures.get_id_nomenclature('STATUT_VALID', '6')
+WHERE mnemonique_type = 'STATUT_VALID';
 
 INSERT INTO gn_synthese.synthese (
 unique_id_sinp,
