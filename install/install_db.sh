@@ -67,11 +67,11 @@ function database_exists () {
 }
 
 function write_log() {
-    echo $message
+    echo $1
     echo "" &>> var/log/install_db.log
     echo "" &>> var/log/install_db.log
     echo "--------------------" &>> var/log/install_db.log
-    echo $message &>> var/log/install_db.log
+    echo $1 &>> var/log/install_db.log
     echo "--------------------" &>> var/log/install_db.log
 }
 
