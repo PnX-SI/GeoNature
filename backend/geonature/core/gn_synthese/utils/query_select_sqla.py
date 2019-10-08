@@ -105,7 +105,6 @@ class SyntheseQuery:
             elif user.value_filter == "2":
                 ors_filters.append(self.model.id_dataset.in_(allowed_datasets))
                 self.query = self.query.where(or_(*ors_filters))
-            print(self.query)
 
     def filter_taxonomy(self):
         """
