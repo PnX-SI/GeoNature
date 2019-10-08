@@ -66,6 +66,15 @@ function database_exists () {
     fi
 }
 
+function write_log() {
+    echo $1
+    echo "" &>> var/log/install_db.log
+    echo "" &>> var/log/install_db.log
+    echo "--------------------" &>> var/log/install_db.log
+    echo $1 &>> var/log/install_db.log
+    echo "--------------------" &>> var/log/install_db.log
+}
+
 
 if database_exists $db_name
 then
@@ -80,19 +89,9 @@ fi
 
 if ! database_exists $db_name
 then
-    echo "Creating GeoNature database..."
-    echo "--------------------" &> var/log/install_db.log
-    echo "Creating GeoNature database" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
+    write_log "Creating GeoNature database..."
     sudo -n -u postgres -s createdb -O $user_pg $db_name -T template0 -E UTF-8 -l $my_local
-    echo "Adding PostGIS and PLPGSQL extensions..."
-    echo "" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "Adding PostGIS and PLPGSQL extensions" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
+    write_log "Adding PostGIS and other use PostgreSQL extensions"
     sudo -n -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS postgis;" &>> var/log/install_db.log
     sudo -n -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS hstore;" &>> var/log/install_db.log
     sudo -n -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';" &>> var/log/install_db.log
@@ -104,48 +103,26 @@ then
     echo "GRANT..."
     cp data/grant.sql tmp/geonature/grant.sql
     sudo sed -i "s/MYPGUSER/$user_pg/g" tmp/geonature/grant.sql
-    echo "" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "GRANT" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
+    write_log 'GRANT'
     sudo -n -u postgres -s psql -d $db_name -f tmp/geonature/grant.sql &>> var/log/install_db.log
 
-    echo "Creating 'public' functions..."
-    echo "" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "Creating 'public' functions" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
+    write_log "Creating 'public' functions..."
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/public.sql  &>> var/log/install_db.log
 
     if [ "$install_usershub_schema" = true ];
      then
-        echo "Getting and creating USERS schema (utilisateurs)..."
-        echo "" &>> var/log/install_db.log
-        echo "" &>> var/log/install_db.log
-        echo "--------------------" &>> var/log/install_db.log
-        echo "Creating USERS schema (utilisateurs)" &>> var/log/install_db.log
-        echo "--------------------" &>> var/log/install_db.log
-        echo "" &>> var/log/install_db.log
+        write_log "Getting and creating USERS schema (utilisateurs).."
         wget https://raw.githubusercontent.com/PnEcrins/UsersHub/$usershub_release/data/usershub.sql -P tmp/usershub
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/usershub/usershub.sql  &>> var/log/install_db.log
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/usershub/usershub_api.sql  &>> var/log/install_db.log
         
-        echo "--------------------" &>> var/log/install_db.log
-        echo "Insert minimal data (utilisateurs)" &>> var/log/install_db.log
-        echo "--------------------" &>> var/log/install_db.log
+        write_log "Insert minimal data (utilisateurs)"
         wget https://raw.githubusercontent.com/PnEcrins/UsersHub/$usershub_release/data/usershub-data.sql -P tmp/usershub
         wget https://raw.githubusercontent.com/PnEcrins/UsersHub/$usershub_release/data/usershub-dataset.sql -P tmp/usershub
         wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/adds_for_usershub.sql -P tmp/taxhub
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/usershub/usershub-data.sql  &>> var/log/install_db.log
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/usershub/usershub-dataset.sql  &>> var/log/install_db.log
-        echo "Insertion of data for usershub..."
-        echo "" &>> var/log/install_db.log
-        echo "" &>> var/log/install_db.log
-        echo "--------------------" &>> var/log/install_db.log
+        write_log "Insertion of data for usershub..."
         # fisrt insert taxhub data for usershub
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/taxhub/adds_for_usershub.sql  &>> var/log/install_db.log
         # insert geonature data for usershub
@@ -179,50 +156,39 @@ then
     wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata_atlas.sql -P tmp/taxhub
     wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/materialized_views.sql -P tmp/taxhub
 
-    echo "Creating 'taxonomie' schema..."
-    echo "" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "Creating 'taxonomie' schema" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
+    write_log "Creating 'taxonomie' schema..."
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/taxhub/taxhubdb.sql  &>> var/log/install_db.log
-
-    echo "Inserting INPN taxonomic data... (This may take a few minutes)"
-    echo "" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "Inserting INPN taxonomic data" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
+    write_log "Inserting INPN taxonomic data... (This may take a few minutes)"
     sudo -n -u postgres -s psql -d $db_name -f tmp/taxhub/data_inpn_taxhub.sql &>> var/log/install_db.log
 
-    echo "Creating dictionaries data for taxonomic schema..."
-    echo "" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "Creating dictionaries data for taxonomic schema" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
+    write_log "Creating dictionaries data for taxonomic schema..."
+
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/taxhub/taxhubdata.sql  &>> var/log/install_db.log
 
-    echo "Inserting sample dataset  - atlas attributes..."
-    echo "" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "Inserting sample dataset  - atlas attributes" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
+    write_log "Inserting sample dataset  - atlas attributes...."
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/taxhub/taxhubdata_atlas.sql  &>> var/log/install_db.log
 
-    echo "Creating a view that represent the taxonomic hierarchy..."
-    echo "" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "Creating a view that represent the taxonomic hierarchy" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
+    write_log "Creating a view that represent the taxonomic hierarchy..."
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/taxhub/materialized_views.sql  &>> var/log/install_db.log
+
+
+    echo "Download and extract habref file..."
+    if [ ! -d '/tmp/habref/' ]
+    then
+        mkdir /tmp/habref
+    fi
+    if [ ! -f '/tmp/habref/HABREF_40.zip' ]
+    then
+      wget https://geonature.fr/data/inpn/habitats/HABREF_40.zip -P /tmp/habref
+    else
+      echo HABREF_40.zip exists
+    fi
+    unzip /tmp/habref/HABREF_40.zip -d /tmp/habref
+    write_log "Creating 'habitat' schema..."
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/habitat.sql &>> $LOG_DIR/installdb/install_db.log
+
+    write_log "Inserting INPN habitat data..."
+    sudo -u postgres -s psql -d $db_name  -f data/inpn/data_inpn_habref.sql &>> $LOG_DIR/installdb/install_db.log
 
 
     echo "Getting 'nomenclature' schema creation scripts..."
@@ -231,67 +197,34 @@ then
     wget https://raw.githubusercontent.com/PnX-SI/Nomenclature-api-module/$nomenclature_release/data/nomenclatures_taxonomie.sql -P tmp/nomenclatures
     wget https://raw.githubusercontent.com/PnX-SI/Nomenclature-api-module/$nomenclature_release/data/data_nomenclatures_taxonomie.sql -P tmp/nomenclatures
 
-    echo "Creating 'nomenclatures' schema..."
-    echo "" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "Creating 'nomenclatures' schema" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
+    write_log "Creating 'nomenclatures' schema"
+
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/nomenclatures/nomenclatures.sql  &>> var/log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/nomenclatures/nomenclatures_taxonomie.sql  &>> var/log/install_db.log
 
-    echo "Inserting 'nomenclatures' data..."
-    echo "" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "Inserting 'nomenclatures' data" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
+    write_log "Inserting 'nomenclatures' data..."
+
     sudo sed -i "s/MYDEFAULTLANGUAGE/$default_language/g" tmp/nomenclatures/data_nomenclatures.sql
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/nomenclatures/data_nomenclatures.sql  &>> var/log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/nomenclatures/data_nomenclatures_taxonomie.sql  &>> var/log/install_db.log
 
-    echo "Creating 'commons' schema..."
-    echo "" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "Creating 'commons' schema" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
+    write_log "Creating 'commons' schema..."
     cp data/core/commons.sql tmp/geonature/commons.sql
     sudo sed -i "s/MYLOCALSRID/$srid_local/g" tmp/geonature/commons.sql
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/geonature/commons.sql  &>> var/log/install_db.log
 
-    echo "Creating 'meta' schema..."
-    echo "" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "CreatingInstall_ 'meta' schema" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
+    write_log "Creating 'meta' schema..."
+
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/meta.sql  &>> var/log/install_db.log
 
-    echo "Creating 'ref_geo' schema..."
-    echo "" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "Creating 'ref_geo' schema..." &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
+    write_log "Creating 'ref_geo' schema..."
     cp data/core/ref_geo.sql tmp/geonature/ref_geo.sql
     sudo sed -i "s/MYLOCALSRID/$srid_local/g" tmp/geonature/ref_geo.sql
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/geonature/ref_geo.sql  &>> var/log/install_db.log
 
     if [ "$install_sig_layers" = true ];
     then
-        echo "Insert default French municipalities (IGN admin-express)"
-        echo "" &>> var/log/install_db.log
-        echo "" &>> var/log/install_db.log
-        echo "--------------------" &>> var/log/install_db.log
-        echo "Insert default French municipalities (IGN admin-express)" &>> var/log/install_db.log
-        echo "--------------------" &>> var/log/install_db.log
-        echo "" &>> var/log/install_db.log
+        write_log "Insert default French municipalities (IGN admin-express)"
         if [ ! -f 'tmp/geonature/communes_fr_admin_express_2019-01.zip' ]
         then
             wget  --cache=off http://geonature.fr/data/ign/communes_fr_admin_express_2019-01.zip -P tmp/geonature
@@ -300,29 +233,17 @@ then
         fi
         unzip tmp/geonature/communes_fr_admin_express_2019-01.zip -d tmp/geonature
         sudo -n -u postgres -s psql -d $db_name -f tmp/geonature/fr_municipalities.sql &>> var/log/install_db.log
-        echo "" &>> var/log/install_db.log
-        echo "Restore $user_pg owner" &>> var/log/install_db.log
-        echo "--------------------" &>> var/log/install_db.log
+        write_log "Restore $user_pg owner"
         sudo -n -u postgres -s psql -d $db_name -c "ALTER TABLE ref_geo.temp_fr_municipalities OWNER TO $user_pg;" &>> var/log/install_db.log
-        echo "" &>> var/log/install_db.log
-        echo "Insert data in l_areas and li_municipalities tables" &>> var/log/install_db.log
-        echo "--------------------" &>> var/log/install_db.log
+        write_log "Insert data in l_areas and li_municipalities tables"
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/ref_geo_municipalities.sql  &>> var/log/install_db.log
-        echo "" &>> var/log/install_db.log
-        echo "Drop french municipalities temp table" &>> var/log/install_db.log
-        echo "--------------------" &>> var/log/install_db.log
+        write_log "Drop french municipalities temp table"
         sudo -n -u postgres -s psql -d $db_name -c "DROP TABLE ref_geo.temp_fr_municipalities;" &>> var/log/install_db.log
     fi
 
     if [ "$install_grid_layer" = true ];
     then
-        echo "Insert INPN grids"
-        echo "" &>> var/log/install_db.log
-        echo "" &>> var/log/install_db.log
-        echo "--------------------" &>> var/log/install_db.log
-        echo "Insert INPN grids" &>> var/log/install_db.log
-        echo "--------------------" &>> var/log/install_db.log
-        echo "" &>> var/log/install_db.log
+        write_log "Insert INPN grids"
         if [ ! -f 'tmp/geonature/inpn_grids.zip' ]
         then
             wget  --cache=off https://geonature.fr/data/inpn/layers/2019/inpn_grids.zip -P tmp/geonature
@@ -330,29 +251,19 @@ then
             echo "tmp/geonature/inpn_grids.zip already exist"
         fi
         unzip tmp/geonature/inpn_grids.zip -d tmp/geonature
-        echo "Insert grid layers... (This may take a few minutes)"
+        write_log "Insert grid layers... (This may take a few minutes)"
         sudo -n -u postgres -s psql -d $db_name -f tmp/geonature/inpn_grids.sql &>> var/log/install_db.log
-        echo "" &>> var/log/install_db.log
-        echo "Restore $user_pg owner" &>> var/log/install_db.log
-        echo "--------------------" &>> var/log/install_db.log
+        write_log "Restore $user_pg owner"
         sudo -n -u postgres -s psql -d $db_name -c "ALTER TABLE ref_geo.temp_grids_1 OWNER TO $user_pg;" &>> var/log/install_db.log
         sudo -n -u postgres -s psql -d $db_name -c "ALTER TABLE ref_geo.temp_grids_5 OWNER TO $user_pg;" &>> var/log/install_db.log
         sudo -n -u postgres -s psql -d $db_name -c "ALTER TABLE ref_geo.temp_grids_10 OWNER TO $user_pg;" &>> var/log/install_db.log
-        echo "" &>> var/log/install_db.log
-        echo "Insert data in l_areas and li_grids tables" &>> var/log/install_db.log
-        echo "--------------------" &>> var/log/install_db.log
+        write_log "Insert data in l_areas and li_grids tables"
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/ref_geo_grids.sql  &>> var/log/install_db.log
     fi
 
     if  [ "$install_default_dem" = true ];
     then
-        echo "Insert default French DEM (IGN 250m BD alti)"
-        echo "" &>> var/log/install_db.log
-        echo "" &>> var/log/install_db.log
-        echo "--------------------" &>> var/log/install_db.log
-        echo "Insert default French DEM (IGN 250m BD alti)" &>> var/log/install_db.log
-        echo "--------------------" &>> var/log/install_db.log
-        echo "" &>> var/log/install_db.log
+        write_log "Insert default French DEM (IGN 250m BD alti)"
         if [ ! -f 'tmp/geonature/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip' ]
         then
             wget --cache=off http://geonature.fr/data/ign/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -P tmp/geonature
@@ -366,100 +277,44 @@ then
         sudo -n -u postgres -s psql -d $db_name -c "REINDEX INDEX ref_geo.dem_st_convexhull_idx;" &>> var/log/install_db.log
         if [ "$vectorise_dem" = true ];
         then
-            echo "Vectorisation of DEM raster. This may take a few minutes..."
-            echo "" &>> var/log/install_db.log
-            echo "" &>> var/log/install_db.log
-            echo "--------------------" &>> var/log/install_db.log
-            echo "Vectorisation of DEM raster. This may take a few minutes" &>> var/log/install_db.log
-            echo "--------------------" &>> var/log/install_db.log
-            echo "" &>> var/log/install_db.log
+            write_log "Vectorisation of DEM raster. This may take a few minutes..."
             sudo -n -u postgres -s psql -d $db_name -c "INSERT INTO ref_geo.dem_vector (geom, val) SELECT (ST_DumpAsPolygons(rast)).* FROM ref_geo.dem;" &>> var/log/install_db.log
             
-            echo "Refresh DEM vector spatial index. This may take a few minutes..."
-            echo "" &>> var/log/install_db.log
-            echo "" &>> var/log/install_db.log
-            echo "--------------------" &>> var/log/install_db.log
-            echo "Refresh DEM vector spatial index. This may take a few minutes" &>> var/log/install_db.log
-            echo "--------------------" &>> var/log/install_db.log
-            echo "" &>> var/log/install_db.log
+            write_log "Refresh DEM vector spatial index. This may take a few minutes..."
             sudo -n -u postgres -s psql -d $db_name -c "REINDEX INDEX ref_geo.index_dem_vector_geom;" &>> var/log/install_db.log
         fi
     fi
 
-    echo "Creating 'imports' schema..."
-    echo "" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "Creating 'imports' schema" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
+    write_log "Creating 'imports' schema..."
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/imports.sql  &>> var/log/install_db.log
 
 
-    echo "Creating 'synthese' schema..."
-    echo "" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "Creating 'synthese' schema" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
+    write_log "Creating 'synthese' schema..."
     cp data/core/synthese.sql tmp/geonature/synthese.sql
     sudo sed -i "s/MYLOCALSRID/$srid_local/g" tmp/geonature/synthese.sql
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/geonature/synthese.sql  &>> var/log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/synthese_default_values.sql  &>> var/log/install_db.log
 
-    echo "--------------------" &>> var/log/install_db.log
-    echo "Creating commons view depending of synthese" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
+    write_log "Creating commons view depending of synthese"
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/commons_synthese.sql  &>> var/log/install_db.log
 
-    echo "Creating 'exports' schema..."
-    echo "" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "Creating 'exports' schema" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
+    write_log "Creating 'exports' schema..."
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/exports.sql  &>> var/log/install_db.log
 
 
-    echo "Creating 'monitoring' schema..."
-    echo "" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "Creating 'monitoring' schema" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
+    write_log "Creating 'monitoring' schema..."
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/monitoring.sql  &>> var/log/install_db.log
 
-    echo "Creating 'permissions' schema"
-    echo "" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "Creating 'permissions' schema" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
+    write_log "Creating 'permissions' schema"
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/permissions.sql  &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "Insert 'permissions' data" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
+
+    write_log "Insert 'permissions' data"
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/permissions_data.sql  &>> var/log/install_db.log
 
-    echo "Creating 'gn_sensitivity' schema"
-    echo "" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "Creating 'gn_sensitivity' schema" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/sensitivity.sql  &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
-    echo "" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
-    echo "Insert 'gn_sensitivity' data" &>> var/log/install_db.log
-    echo "--------------------" &>> var/log/install_db.log
+    
+    write_log "Insert 'gn_sensitivity' data"
+    echo "--------------------"
     if [ ! -f 'tmp/geonature/181201_referentiel_donnes_sensibles.csv' ]
         then
             wget --cache=off https://geonature.fr/data/inpn/sensitivity/181201_referentiel_donnes_sensibles.csv -P tmp/geonature
@@ -475,30 +330,14 @@ then
     #Installation des données exemples
     if [ "$add_sample_data" = true ];
     then
-        echo "Inserting sample datasets..."
-        echo "" &>> var/log/install_db.log
-        echo "" &>> var/log/install_db.log
-        echo "Inserting sample dataset for meta schema..."
-        echo "--------------------" &>> var/log/install_db.log
-        echo "Inserting sample dataset for meta schema" &>> var/log/install_db.log
-        echo "--------------------" &>> var/log/install_db.log
+        write_log "Inserting sample datasets..."
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/meta_data.sql  &>> var/log/install_db.log
         
-        echo "" &>> var/log/install_db.log
-        echo "" &>> var/log/install_db.log
-        echo "Inserting sample dataset for monitoring schema..."
-        echo "--------------------" &>> var/log/install_db.log
-        echo "Inserting sample dataset for monitoring schema" &>> var/log/install_db.log
-        echo "--------------------" &>> var/log/install_db.log
+        write_log "Inserting sample dataset for monitoring schema..."
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/monitoring_data.sql  &>> var/log/install_db.log
         
-        echo "Inserting sample dataset of taxons for taxonomic schema..."
-        echo "" &>> var/log/install_db.log
-        echo "" &>> var/log/install_db.log
-        echo "--------------------" &>> var/log/install_db.log
-        echo "Inserting sample dataset of taxons for taxonomic schema" &>> var/log/install_db.log
-        echo "--------------------" &>> var/log/install_db.log
-        echo "" &>> var/log/install_db.log
+        write_log "Inserting sample dataset of taxons for taxonomic schema..."
+
         wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata_taxons_example.sql -P tmp/taxhub
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/taxhub/taxhubdata_taxons_example.sql  &>> var/log/install_db.log
 
