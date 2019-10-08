@@ -513,3 +513,21 @@ CREATE OR REPLACE VIEW v_acquisition_frameworks_territories AS
 INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module_desc, module_path, module_target, active_frontend, active_backend, module_doc_url) VALUES
 ('METADATA', 'Metadonnées', 'fa-book', 'Module de gestion des métadonnées', 'metadata', '_self', TRUE, TRUE, 'https://geonature.readthedocs.io/fr/latest/user-manual.html#metadonnees')
 ;
+
+-----------------------
+--LINK WITH T_MODULES--
+-----------------------
+--Created here because gn_meta uses gn_commons (see above) and must be created after gn_commons
+CREATE TABLE gn_commons.cor_module_dataset (
+    id_module integer NOT NULL,
+    id_dataset integer NOT NULL,
+  CONSTRAINT pk_cor_module_dataset PRIMARY KEY (id_module, id_dataset),
+  CONSTRAINT fk_cor_module_dataset_id_module FOREIGN KEY (id_module)
+      REFERENCES gn_commons.t_modules (id_module) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE NO ACTION,
+  CONSTRAINT fk_cor_module_dataset_id_dataset FOREIGN KEY (id_dataset)
+      REFERENCES gn_meta.t_datasets (id_dataset) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE NO ACTION
+);
+COMMENT ON TABLE gn_commons.cor_module_dataset IS 'Define wich datasets can be used in modules';
+
