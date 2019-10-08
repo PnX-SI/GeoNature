@@ -193,16 +193,9 @@
             ngx-datatable-cell-template
             let-row="row"
           >
-            <ng-container *ngIf="row.date_min == row.date_max; else dateDiffBlc">
-              <span matTooltip="{{ row.date_max|date:'dd-MM-yyyy' }}">
-                {{ row.date_max|date:'dd-MM-yyyy' }}
-              </span>
-            </ng-container>
-            <ng-template #dateDiffBlc>
-              <span matTooltip="Du {{ row.date_min|date:'dd-MM-yyyy' }} au {{ row.date_max|date:'dd-MM-yyyy' }}">
-                Du {{ row.date_min|date:'dd-MM-yyyy' }} au {{ row.date_max|date:'dd-MM-yyyy' }}
-              </span>
-            </ng-template>
+            <span matTooltip="{{ displayDateTooltip(row) }}">
+              {{ displayDateTooltip(row) }}
+            </span>
           </ng-template>
 
           <!-- date_min -->

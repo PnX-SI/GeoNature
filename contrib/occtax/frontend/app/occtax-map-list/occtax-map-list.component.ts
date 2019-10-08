@@ -1,5 +1,6 @@
-import { Component, OnInit, OnDestroy, ViewChild } from "@angular/core";
+import { Component, OnInit, OnDestroy, ViewChild, Renderer2 } from "@angular/core";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
+import { MapService } from "@geonature_common/map/map.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { Router } from "@angular/router";
@@ -12,6 +13,7 @@ import { AppConfig } from "@geonature_config/app.config";
 import { GlobalSubService } from "@geonature/services/global-sub.service";
 import { Subscription } from "rxjs/Subscription";
 import { HttpParams } from '@angular/common/http';
+import * as moment from 'moment';
 
 @Component({
   selector: "pnx-occtax-map-list",
@@ -47,7 +49,8 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
     private _commonService: CommonService,
     private _router: Router,
     public ngbModal: NgbModal,
-    public globalSub: GlobalSubService
+    public globalSub: GlobalSubService,
+    private renderer: Renderer2
   ) {}
 
   ngOnInit() {
@@ -75,7 +78,8 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
     // FETCH THE DATA
     this.mapListService.getData(
       this.apiEndPoint,
-      [{ param: "limit", value: 12 }]
+      [{ param: "limit", value: 12 }],
+      this.displayLeafletPopupCallback.bind(this) //afin que le this présent dans displayLeafletPopupCallback soit ce component.
     );
     // end OnInit
   }
@@ -177,6 +181,16 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
   }
 
   /**
+  * Retourne la date en période ou non
+  * Sert aussi à la mise en forme du tooltip
+  */
+  displayDateTooltip(element): string {
+    return element.date_min == element.date_max ? 
+              moment(element.date_min).format('DD-MM-YYYY') : 
+              `Du ${moment(element.date_min).format("DD-MM-YYYY")} au ${moment(element.date_max).format("DD-MM-YYYY")}`;
+  }
+
+  /**
   * Retourne un tableau des taxon (nom valide ou nom cité)
   * Sert aussi à la mise en forme du tooltip
   */
@@ -219,4 +233,29 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
 
     return tooltip.sort();
   }
+
+  displayLeafletPopupCallback(feature): any {
+    const leafletPopup = this.renderer.createElement('div');
+    leafletPopup.style.maxHeight = '80vh';
+    leafletPopup.style.overflowY = 'auto';
+
+    const divObservateurs = this.renderer.createElement('div');
+    divObservateurs.innerHTML = this.displayObservateursTooltip(feature.properties).join(', ');
+
+    const divDate = this.renderer.createElement('div');
+    divDate.innerHTML = this.displayDateTooltip(feature.properties);
+
+    const divTaxons = this.renderer.createElement('div');
+    divTaxons.style.marginTop = '5px';
+    let taxons = this.displayTaxonsTooltip(feature.properties).join('<br>');
+    divTaxons.innerHTML = taxons;
+
+    this.renderer.appendChild(leafletPopup, divObservateurs);
+    this.renderer.appendChild(leafletPopup, divDate);
+    this.renderer.appendChild(leafletPopup, divTaxons);
+
+    feature.properties['leaflet_popup'] = leafletPopup;
+    return feature;
+  }
+
 }
