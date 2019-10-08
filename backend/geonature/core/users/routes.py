@@ -1,7 +1,6 @@
 import logging
 import requests
 
-from flask import Blueprint, request
 from sqlalchemy.sql import distinct
 
 from flask import Blueprint, request, current_app, Response, redirect
