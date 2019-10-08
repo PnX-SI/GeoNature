@@ -1,10 +1,9 @@
 import logging
 import requests
 
-from flask import Blueprint, request
-from sqlalchemy.sql import distinct
 
 from flask import Blueprint, request, current_app, Response, redirect
+from sqlalchemy.sql import distinct
 
 from geonature.utils.env import DB
 from geonature.core.users.models import VUserslistForallMenu, BibOrganismes, CorRole
