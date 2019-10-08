@@ -2,12 +2,15 @@
 CHANGELOG
 =========
 
-2.2.1 (unreleased)
+2.2.1 (2019-10-08)
 ------------------
 
 **🐛 Corrections**
 
-*
+* La route de changement de mot de passe était désactivé par le mauvais paramètre (ENABLE_SIGN_UP et non ENABLE_USER_MANAGEMENT)
+* Désactivation du mode "enchainement des relevé" en mode édition. Correction effacement du même relevé (#744)
+* Correction d'affichage du module métadonnées lorsque les AF n'ont pas de JDD pour des raisons de droit (#743)
+* Diverses corrections de doublons d'import et de logs de débugs
 
 2.2.0 - Module utilisateurs (2019-09-18)
 ----------------------------------------
