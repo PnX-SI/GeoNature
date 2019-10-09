@@ -64,3 +64,23 @@ Problèmes liés à la BDD
 * Après un redémarrage de PostgreSQL (``sudo service postgresql restart``), celle-ci ne sera plus accessible par l'application et si vous tentez de vous connecter, vous aurez un message du type ``LoginError``. Cela est lié au fait que lorsqu'on redémarre PostgreSQL, il faut aussi relancer les API de GeoNature, car cela génère des erreurs de transaction et de session entre l'API et PostgreSQL.
 
 Donc à chaque ``sudo service postgresql restart``, lancer un ``sudo supervisorctl reload``
+
+
+
+Problème de lancement l'API lié à supervisor 
+--------------------------------------------
+
+* Suite à une montée de version, si la commande ``sudo supervisorctl reload`` renvoie cette erreur:
+
+::
+
+    error: <class 'socket.error'>, [Errno 2] No such file or directory: file: /usr/lib/python2.7/socket.py line: 228
+
+Il s'agit d'une erreur lié à supervisor, qui se charge de lancer les applications. Redémarrer le service puis relancer la commande:
+
+::
+
+    sudo service supervisor start
+    sudo supervisorctl reload
+
+Retester le fonctionnement de l'application grâce à la commande ``ps -aux |grep gunicorn``, celle ci doit renvoyer plus d'une ligne

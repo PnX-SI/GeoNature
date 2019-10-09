@@ -13,7 +13,7 @@ id_taxon_list = 100
 # number of results in the autocomplete taxon search
 taxon_result_number = 20
 
-# Add a validation rule between Proof fields. If true, fulfil at least one proof in the form
+# Add a validation rule for digital proof. Must begin with a http:// or https://
 digital_proof_validator = true
 
 # set default form date picker with the date of today
