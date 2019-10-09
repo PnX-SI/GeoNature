@@ -11,6 +11,7 @@ CHANGELOG
 * Désactivation du mode "enchainement des relevés" en mode édition (#669). Correction effacement du même relevé (#744)
 * Correction d'affichage du module métadonnées lorsque les AF n'ont pas de JDD pour des raisons de droit (#743)
 * Diverses corrections de doublons d'import et de logs de débugs (#742)
+* Montée de version du sous-module d'authentification: 1.4.2
 
 2.2.0 - Module utilisateurs (2019-09-18)
 ----------------------------------------
