@@ -1,7 +1,6 @@
 import logging
 import requests
 
-
 from flask import Blueprint, request, current_app, Response, redirect
 from sqlalchemy.sql import distinct
 
@@ -352,7 +351,9 @@ def change_password(id_role):
         Modifie le mot de passe de l'utilisateur connecté et de son ancien mdp 
         Fait appel à l'API UsersHub
     """
-    if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP", False):
+    if not current_app.config["ACCOUNT_MANAGEMENT"].get(
+        "ENABLE_USER_MANAGEMENT", False
+    ):
         return {"message": "Page introuvable"}, 404
 
     user = DB.session.query(User).get(id_role)
