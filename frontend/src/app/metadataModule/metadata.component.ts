@@ -67,7 +67,7 @@ export class MetadataComponent implements OnInit {
       //attribut les jdds au ca respectif
       for (var i = 0; i < results['data'].length; i++) {
         let af = this.findAcquisitionFrameworkById(results['data'][i].id_acquisition_framework);
-        if (typeof af['datasets'] === 'undefined') {
+        if (!('datasets' in af)) {
           af['datasets'] = new Array();
           af['datasetsTemp'] = new Array();
         }

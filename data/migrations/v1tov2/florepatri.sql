@@ -1439,7 +1439,7 @@ UPDATE utilisateurs.t_listes SET nom_liste = 'Observateurs flore prioritaire' WH
 --Création du module
 DELETE FROM gn_commons.t_modules WHERE module_code = 'FP';
 INSERT INTO gn_commons.t_modules (module_code, module_label, module_picto, module_path, module_external_url, module_target, active_backend, active_frontend) 
-VALUES ('FP','Flore Prioritaire','fa-leaf-heart',NULL,'https://mondomaine.fr/pda','_blank', false, false);
+VALUES ('FP','Flore Prioritaire','fa-leaf-heart',NULL,'https://gn1.ecrins-parcnational.fr/geonature/pda','_blank', false, false);
 --gestion des permissions (TODO car cette requête ne fait rien)
 INSERT INTO gn_permissions.cor_object_module (id_object, id_module)
 SELECT o.id_object, t.id_module
