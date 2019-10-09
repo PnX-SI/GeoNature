@@ -14,6 +14,7 @@ from geonature.core.gn_meta.models import (
     TAcquisitionFramework,
     CorAcquisitionFrameworkActor,
 )
+from geonature.core.gn_commons.models import CorModuleDataset, TModules
 
 log = logging.getLogger()
 
@@ -23,6 +24,16 @@ def get_datasets_cruved(info_role, params=dict()):
         Return the datasets filtered with cruved
     """
     q = DB.session.query(TDatasets)
+
+    # filter with modules
+    if "module_code" in params:
+        q = (
+            q.join(
+                CorModuleDataset, CorModuleDataset.id_dataset == TDatasets.id_dataset
+            )
+            .join(TModules, TModules.id_module == CorModuleDataset.id_module)
+            .filter(TModules.module_code == params["module_code"])
+        )
     # filters with cruved
     if info_role.value_filter == "2":
         q = q.join(CorDatasetActor, CorDatasetActor.id_dataset == TDatasets.id_dataset)
@@ -86,6 +97,9 @@ def get_af_cruved(info_role, params={}):
             params (dict): get parameters for filter
     """
     q = DB.session.query(TAcquisitionFramework)
+    if "module_code" in params:
+        q = q.filter()
+    # filter with cruved
     if info_role.value_filter == "2":
         q = q.join(
             CorAcquisitionFrameworkActor,

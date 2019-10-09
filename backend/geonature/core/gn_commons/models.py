@@ -155,3 +155,12 @@ class THistoryActions(DB.Model):
     operation_type = DB.Column(DB.Unicode)
     operation_date = DB.Column(DB.DateTime)
     table_content = DB.Column(DB.Unicode)
+
+
+@serializable
+class CorModuleDataset(DB.Model):
+    __tablename__ = "cor_module_dataset"
+    __table_args__ = {"schema": "gn_commons"}
+    id_cor_module_dataset = DB.Column(DB.Integer, primary_key=True)
+    id_module = DB.Column(DB.Integer, ForeignKey("gn_commons.t_modules.id_module"))
+    id_dataset = DB.Column(DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"))

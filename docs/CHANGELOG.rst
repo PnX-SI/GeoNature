@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+2.2.2 (Unreleased)
+------------------
+
+**🚀 Nouveautés**
+
+* Nouvelle association possible entre un JDD et un module (#399)
+
 2.2.1 (2019-10-09)
 ------------------
 

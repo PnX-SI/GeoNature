@@ -519,9 +519,10 @@ INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module
 -----------------------
 --Created here because gn_meta uses gn_commons (see above) and must be created after gn_commons
 CREATE TABLE gn_commons.cor_module_dataset (
+    id_cor_module_dataset serial,
     id_module integer NOT NULL,
     id_dataset integer NOT NULL,
-  CONSTRAINT pk_cor_module_dataset PRIMARY KEY (id_module, id_dataset),
+  CONSTRAINT pk_cor_module_dataset PRIMARY KEY (id_cor_module_dataset),
   CONSTRAINT fk_cor_module_dataset_id_module FOREIGN KEY (id_module)
       REFERENCES gn_commons.t_modules (id_module) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE NO ACTION,
@@ -529,5 +530,5 @@ CREATE TABLE gn_commons.cor_module_dataset (
       REFERENCES gn_meta.t_datasets (id_dataset) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE NO ACTION
 );
-COMMENT ON TABLE gn_commons.cor_module_dataset IS 'Define wich datasets can be used in modules';
+COMMENT ON TABLE gn_commons.cor_module_dataset IS 'Define which datasets can be used in modules';
 

@@ -38,7 +38,6 @@ export class ReleveComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.occtaxConfig = ModuleConfig;
-
     // subscription to the geojson observable
     this.geojsonSubscription$ = this._ms.gettingGeojson$.subscribe(geojson => {
       this.releveForm.patchValue({ geometry: geojson.geometry });
