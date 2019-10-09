@@ -46,9 +46,13 @@ def validate_temp_user(data):
         recipients = [current_app.config["ACCOUNT_MANAGEMENT"]["VALIDATOR_EMAIL"]]
     url_validation = url_for("users.confirmation", token=user.token_role)
 
-    additional_fields = [
-        {"key": key, "value": value} for key, value in user_dict["champs_addi"].items()
-    ]
+    if user_dict["champs_addi"] is None:
+        additional_fields = []
+    else:
+        additional_fields = [
+            {"key": key, "value": value}
+            for key, value in user_dict["champs_addi"].items()
+        ]
     msg_html = render_template(
         template,
         url_validation=url_validation,
