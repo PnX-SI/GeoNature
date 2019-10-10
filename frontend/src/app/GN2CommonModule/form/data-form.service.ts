@@ -130,6 +130,23 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_TAXHUB}/taxref/bib_habitats`);
   }
 
+  getTypologyHabitat(id_list: number) {
+    let params = new HttpParams();
+
+    if (id_list) {
+      params = params.set('id_list', id_list.toString());
+    }
+    return this._http
+      .get<any>(`${AppConfig.API_TAXHUB}/habref/typo`, { params: params })
+      .map(data => {
+        // replace '_' with space because habref is super clean !
+        return data.map(d => {
+          d['lb_nom_typo'] = d['lb_nom_typo'].replace(/_/g, ' ');
+          return d;
+        });
+      });
+  }
+
   getGeoInfo(geojson) {
     return this._http.post<any>(`${AppConfig.API_ENDPOINT}/geo/info`, geojson);
   }

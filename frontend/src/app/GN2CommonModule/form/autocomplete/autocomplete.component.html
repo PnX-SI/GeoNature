@@ -7,7 +7,7 @@
   [disableControl]="false" 
   [ngbTypeahead]="search"
   [inputFormatter]="formatter"
-  [resultTemplate]="rt" 
+  [resultTemplate]="resultTemplate || rt" 
   (selectItem)="itemSelected($event)" />
   <ng-template #rt let-r="result" let-t="term">
     <span [innerHTML]="r[keyValue]">  </span>

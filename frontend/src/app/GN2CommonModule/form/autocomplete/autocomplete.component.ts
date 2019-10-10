@@ -41,6 +41,11 @@ export class AutoCompleteComponent implements OnInit {
    */
   @Input() mapFunc: any;
 
+  /**
+   * Pass a custom template for the displayed items,
+   * if null the default template is taken (cf #rt in template)
+   */
+  @Input() resultTemplate: any;
   @Output() onChange = new EventEmitter<NgbTypeaheadSelectItemEvent>(); // renvoie l'evenement, le taxon est récupérable grâce à e.item
   @Output() onDelete = new EventEmitter<any>();
 

@@ -1,9 +1,11 @@
 import { Injectable } from "@angular/core";
 import { DataFormService } from "@geonature_common/form/data-form.service";
+import { ModuleConfig } from "../module.config";
 
 @Injectable()
 export class OcchabStoreService {
   public nomenclatureItems = {};
+  public typoHabitat: Array<any>;
   constructor(private _gnDataService: DataFormService) {
     this._gnDataService
       .getNomenclatures([
@@ -20,7 +22,11 @@ export class OcchabStoreService {
         data.forEach(element => {
           this.nomenclatureItems[element.mnemonique] = element.values;
         });
-        console.log(this.nomenclatureItems);
+      });
+    this._gnDataService
+      .getTypologyHabitat(ModuleConfig.CODE_TYPO_HABITAT)
+      .subscribe(data => {
+        this.typoHabitat = data;
       });
   }
 }

@@ -11,6 +11,8 @@ import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
 export class OccHabFormComponent implements OnInit {
   public showDepth = false;
   public leafletDrawOptions = leafletDrawOption;
+  public filteredHab: any;
+  options: string[] = ["One", "Two", "Three"];
   constructor(
     public occHabForm: OcchabFormService,
     public storeService: OcchabStoreService
@@ -26,10 +28,6 @@ export class OccHabFormComponent implements OnInit {
   }
 
   formatter(item) {
-    return item.lb_hab_fr_complet.replace(/<[^>]*>/g, "");
-  }
-
-  test() {
-    this.height = "50vh";
+    return item.search_name;
   }
 }

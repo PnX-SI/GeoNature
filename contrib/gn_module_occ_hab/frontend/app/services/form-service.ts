@@ -1,5 +1,10 @@
 import { Injectable } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import {
+  FormBuilder,
+  FormGroup,
+  FormControl,
+  Validators
+} from "@angular/forms";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { OccHabDataService } from "../services/data.service";
 import { CommonService } from "@geonature_common/service/common.service";
@@ -9,6 +14,8 @@ import { DataFormService } from "@geonature_common/form/data-form.service";
 export class OcchabFormService {
   public stationForm: FormGroup;
   public habitatForm: FormGroup;
+  public typoHabControl = new FormControl();
+  public selectedTypo: any;
   public height = "90vh";
 
   constructor(
@@ -18,6 +25,10 @@ export class OcchabFormService {
     private _commonService: CommonService,
     private _gn_dataSerice: DataFormService
   ) {
+    // get selected cd_typo to filter the habref autcomplete
+    this.typoHabControl.valueChanges.subscribe(data => {
+      this.selectedTypo = { cd_typo: data };
+    });
     this.stationForm = this._fb.group({
       unique_id_sinp_station: null,
       id_dataset: [null, Validators.required],
@@ -48,8 +59,7 @@ export class OcchabFormService {
       id_nomenclature_collection_technique: [null, Validators.required],
       recovery_percentage: null,
       id_nomenclature_abundance: null,
-      technical_precision: null,
-      id_nomenclature_community_interest: null
+      technical_precision: null
     });
   }
 
@@ -66,9 +76,9 @@ export class OcchabFormService {
 
   patchGeomValue(geom) {
     this.stationForm.patchValue({ geom_4326: geom.geometry });
-    this._gn_dataSerice.getAreaSize(geom).subscribe(data => {
-      this.stationForm.patchValue({ area: Math.round(data) });
-    });
+    // this._gn_dataSerice.getAreaSize(geom).subscribe(data => {
+    //   this.stationForm.patchValue({ area: Math.round(data) });
+    // });
     this._gn_dataSerice.getGeoIntersection(geom).subscribe(data => {
       this.stationForm.patchValue({
         altitude_min: data["altitude_min"],

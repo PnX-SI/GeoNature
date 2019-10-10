@@ -40,7 +40,6 @@ CREATE TABLE pr_occhab.t_habitats(
   unique_id_sinp_grp_occtax uuid,
   unique_id_sinp_grp_phyto uuid,
   id_nomenclature_sensitvity integer,
-  id_nomenclature_community_interest integer,
   id_nomenclature_geographic_object integer
 );
 

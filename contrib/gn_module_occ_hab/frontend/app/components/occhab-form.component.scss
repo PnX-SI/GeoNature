@@ -14,3 +14,8 @@
 .card-body {
   padding-top: 5px !important;
 }
+
+:host ::ng-deep ngb-typeahead-window {
+  height: 300px;
+  overflow-y: auto;
+}

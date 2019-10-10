@@ -1,5 +1,10 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
+import {
+  MatAutocompleteModule,
+  MatFormFieldModule,
+  MatInputModule
+} from "@angular/material";
 
 import { GN2CommonModule } from "@geonature_common/GN2Common.module";
 import { Routes, RouterModule } from "@angular/router";
@@ -17,7 +22,14 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [OccHabFormComponent, OccHabMapListComponent],
-  imports: [CommonModule, GN2CommonModule, RouterModule.forChild(routes)],
+  imports: [
+    CommonModule,
+    GN2CommonModule,
+    RouterModule.forChild(routes),
+    MatAutocompleteModule,
+    MatFormFieldModule,
+    MatInputModule
+  ],
   providers: [OcchabFormService, OccHabDataService, OcchabStoreService],
   bootstrap: []
 })

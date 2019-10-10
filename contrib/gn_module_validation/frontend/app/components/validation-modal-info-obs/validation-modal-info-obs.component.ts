@@ -1,11 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
-  ViewChild
-} from "@angular/core";
+import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { ValidationDataService } from "../../services/data.service";
 import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthese-data.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";

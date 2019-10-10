@@ -20,7 +20,6 @@
                 <tr>
                   <td> N°</td>
                   <td> Habitat</td>
-                  <td> Interet communautaire</td>
                   <td> Determinateur</td>
                   <td> Abondance</td>
                 </tr>
@@ -29,7 +28,6 @@
                 <tr *ngFor='let hab of occHabForm.stationForm.value.t_habitats; let i=index'>
                     <td> {{i + 1}}</td>
                     <td>  {{hab.habitat_obj?.lb_hab_fr_complet}}</td>
-                    <td> {{hab.id_nomenclature_community_interest?.label_default}}</td>
                     <td> {{hab.determiner}}</td>
                     <td>  {{hab.id_nomenclature_abundance?.label_default}}</td>
                     <td> 
@@ -53,7 +51,6 @@
       </div>
       <!--END  HABITAT ALREADY SAVED -->
   </div>
-
   <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm form">
     <div class="card">
       <h5 class="card-header">
@@ -221,30 +218,36 @@
         Habitat
       </h5>
       <div class="card-body">
-        <div class="row">
-          <div class="col">
+        <div class="form-row">
+          <div class="col-6">
+              <small> Sélectionner une typologie d'habitat</small>
+              <select
+               [formControl]="occHabForm.typoHabControl"
+               class="form-control form-control-sm"> 
+                <option 
+                  *ngFor="let typo of storeService.typoHabitat" 
+                  [ngValue]="typo.cd_typo"> 
+                    {{typo.lb_nom_typo}}
+                 </option>
+              </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="col-6">
               <pnx-autocomplete apiEndPoint="http://127.0.0.1:5000/api/habref/habitats/autocomplete/list/1"
               [searchAsParameter]="false"  
               [parentFormControl]="occHabForm.habitatForm.get('habitat_obj')"
               queryParamSearch="search_name"
+              [othersGetParams]="occHabForm.selectedTypo"
               [formatter]="formatter"
-              keyValue="lb_hab_fr"
+              keyValue="search_name"
               label="Rechercher un habitat"
               (onChange)="occHabForm.patchNomCite($event)"
-              >
-            </pnx-autocomplete>
+            >
+          </pnx-autocomplete>
           </div>
 
-          <div class="col">
-            <pnx-dumb-select
-              label="Habitat d'interet communautaire" 
-              [parentFormControl]="occHabForm.habitatForm.get('id_nomenclature_community_interest')"         
-              [items]="storeService.nomenclatureItems.HAB_INTERET_COM"
-              comparedKey="id_nomenclature"
-              titleKey="definition_fr"
-              displayedKey="label_fr">
-            </pnx-dumb-select>
-          </div>
         </div>
 
         <div class="row">

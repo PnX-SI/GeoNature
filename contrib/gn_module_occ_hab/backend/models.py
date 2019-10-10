@@ -41,7 +41,6 @@ class THabitatsOcchab(DB.Model):
     id_nomenclature_abundance = DB.Column(DB.Integer)
     technical_precision = DB.Column(DB.Unicode)
     id_nomenclature_sensitvity = DB.Column(DB.Integer)
-    id_nomenclature_community_interest = DB.Column(DB.Integer)
 
 
 @serializable
