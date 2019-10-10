@@ -10,6 +10,7 @@ from pypnnomenclature.models import TNomenclatures
 from geonature.utils.utilssqlalchemy import serializable
 from geonature.utils.env import DB
 from geonature.core.users.models import BibOrganismes
+from geonature.core.gn_commons.models import CorModuleDataset, TModules
 from pypnusershub.db.models import User
 
 
@@ -190,11 +191,26 @@ class TDatasets(DB.Model):
     active = DB.Column(DB.Boolean, default=True)
     validable = DB.Column(DB.Boolean)
 
+    modules = relationship(
+        TModules,
+        secondary=CorModuleDataset.__table__,
+        primaryjoin=(CorModuleDataset.id_dataset == id_dataset),
+        secondaryjoin=(CorModuleDataset.id_module == TModules.id_module),
+        foreign_keys=[CorModuleDataset.id_dataset, CorModuleDataset.id_module],
+        lazy="select",
+    )
+
     cor_dataset_actor = relationship(
         CorDatasetActor,
         lazy="select",
         cascade="save-update, merge, delete, delete-orphan",
     )
+
+    # cor_dataset_module = relationship(
+    #     CorModuleDataset,
+    #     lazy="select",
+    #     cascade="save-update, merge, delete, delete-orphan",
+    # )
 
     @staticmethod
     def get_id(uuid_dataset):
