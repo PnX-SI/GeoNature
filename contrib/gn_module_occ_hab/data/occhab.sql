@@ -1,4 +1,7 @@
+DROP SCHEMA IF EXISTS pr_occhab CASCADE;
 CREATE SCHEMA pr_occhab;
+
+SET search_path = pr_occhab, pg_catalog;
 
 CREATE TABLE pr_occhab.t_stations(
   id_station serial NOT NULL,
@@ -17,7 +20,8 @@ CREATE TABLE pr_occhab.t_stations(
   area integer,
   id_nomenclature_area_surface_calculation integer,
   comment text,
-  geom_4326 geometry NOT NULL
+  geom_4326 public.geometry NOT NULL,
+  id_nomenclature_geographic_object integer
 );
 
 COMMENT ON COLUMN t_stations.id_nomenclature_exposure IS 'Correspondance nomenclature INPN = exposition d''un terrain, REF_NOMENCLATURES = EXPOSITION';
@@ -39,8 +43,7 @@ CREATE TABLE pr_occhab.t_habitats(
   technical_precision character varying(500),
   unique_id_sinp_grp_occtax uuid,
   unique_id_sinp_grp_phyto uuid,
-  id_nomenclature_sensitvity integer,
-  id_nomenclature_geographic_object integer
+  id_nomenclature_sensitvity integer
 );
 
 CREATE TABLE pr_occhab.cor_station_observer(
@@ -66,10 +69,10 @@ ALTER TABLE ONLY pr_occhab.t_stations
     ADD CONSTRAINT pk_t_stations PRIMARY KEY (id_station);
 
 ALTER TABLE ONLY pr_occhab.t_habitats
-    ADD CONSTRAINT pk_t_stations PRIMARY KEY (id_habitat);
+    ADD CONSTRAINT pk_t_habitats PRIMARY KEY (id_habitat);
 
 ALTER TABLE ONLY pr_occhab.cor_station_observer
-    ADD CONSTRAINT pk_t_stations PRIMARY KEY (id_cor_station_observer);
+    ADD CONSTRAINT pk_cor_station_observer PRIMARY KEY (id_cor_station_observer);
 
 ALTER TABLE ONLY pr_occhab.defaults_nomenclatures_value
     ADD CONSTRAINT pk_pr_occhab_defaults_nomenclatures_value PRIMARY KEY (mnemonique_type, id_organism, regne, group2_inpn);
@@ -90,6 +93,10 @@ ALTER TABLE ONLY pr_occhab.t_stations
 ADD CONSTRAINT fk_t_stations_id_nomenclature_area_surface_calculation FOREIGN KEY (id_nomenclature_area_surface_calculation) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 
+ALTER TABLE ONLY pr_occhab.t_stations
+ADD CONSTRAINT fk_t_stations_id_nomenclature_geographic_object FOREIGN KEY (id_nomenclature_geographic_object) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+
 ALTER TABLE ONLY pr_occhab.t_habitats
 ADD CONSTRAINT fk_t_habitats_id_station FOREIGN KEY (id_station) REFERENCES pr_occhab.t_stations(id_station) ON UPDATE CASCADE;
 
@@ -104,9 +111,6 @@ ADD CONSTRAINT fk_t_habitats_id_nomenclature_abundance FOREIGN KEY (id_nomenclat
 
 ALTER TABLE ONLY pr_occhab.t_habitats
 ADD CONSTRAINT fk_t_habitats_id_nomenclature_sensitvity FOREIGN KEY (id_nomenclature_sensitvity) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY pr_occhab.t_habitats
-ADD CONSTRAINT fk_t_habitats_id_nomenclature_community_interest FOREIGN KEY (id_nomenclature_community_interest) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 
 ALTER TABLE ONLY pr_occhab.cor_station_observer
@@ -143,6 +147,9 @@ ALTER TABLE pr_occhab.t_stations
   ADD CONSTRAINT check_t_stations_exposure CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_exposure,'EXPOSURE')) NOT VALID;
 
 ALTER TABLE pr_occhab.t_stations
+  ADD CONSTRAINT check_t_stations_geographic_object CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_geographic_object,'NAT_OBJ_GEO')) NOT VALID;
+
+ALTER TABLE pr_occhab.t_stations
   ADD CONSTRAINT check_t_stations_area_method CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_area_surface_calculation,'METHOD_CALCUL_SURFACE')) NOT VALID;
 
 ALTER TABLE pr_occhab.t_habitats
@@ -156,7 +163,3 @@ ALTER TABLE pr_occhab.t_habitats
 
 ALTER TABLE pr_occhab.t_habitats
   ADD CONSTRAINT check_t_habitats_sensitivity CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_sensitvity,'SENSIBILITE')) NOT VALID;
-
-ALTER TABLE pr_occhab.t_habitats
-  ADD CONSTRAINT check_t_habitats_community_interest CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_community_interest,'HAB_INTERET_COM')) NOT VALID;
-
