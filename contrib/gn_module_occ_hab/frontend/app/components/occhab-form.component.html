@@ -27,7 +27,7 @@
               <tbody>
                 <tr *ngFor='let hab of occHabForm.stationForm.value.t_habitats; let i=index'>
                     <td> {{i + 1}}</td>
-                    <td>  {{hab.habitat_obj?.lb_hab_fr_complet}}</td>
+                    <td>  {{hab.habitat_obj?.search_name}}</td>
                     <td> {{hab.determiner}}</td>
                     <td>  {{hab.id_nomenclature_abundance?.label_default}}</td>
                     <td> 
@@ -68,6 +68,7 @@
               <pnx-datasets 
                 label="{{ 'MetaData.Datasets' | translate }}" 
                 [parentFormControl]="occHabForm.stationForm.get('id_dataset')"
+                moduleCode="OCC_HAB"
               >
               </pnx-datasets>
           </div>
@@ -304,7 +305,7 @@
         <button 
           type="button" 
           class="btn btn-primary"
-          (click)="occHabForm.addHabitat(); test();"
+          (click)="occHabForm.addHabitat();"
         > 
           Ajouter l'habitat
         </button>
@@ -318,7 +319,7 @@
     <button 
       type="button" 
       class="btn btn-success" 
-      (click)="postStation()"
+      (click)="occHabForm.postStation()"
       [disabled]="occHabForm.stationForm.invalid || occHabForm.stationForm.value.t_habitats.lenght == 0"
     >
       Valider la station

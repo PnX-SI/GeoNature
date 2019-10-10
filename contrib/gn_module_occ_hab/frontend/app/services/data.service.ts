@@ -13,4 +13,16 @@ export class OccHabDataService {
       data
     );
   }
+
+  getStations(params?) {
+    return this._http.get<any>(
+      `${AppConfig.API_ENDPOINT}/${ModuleConfig.MODULE_URL}/stations`
+    );
+  }
+
+  getOneStation(id_station) {
+    return this._http.get<any>(
+      `${AppConfig.API_ENDPOINT}/${ModuleConfig.MODULE_URL}/station/${id_station}`
+    );
+  }
 }

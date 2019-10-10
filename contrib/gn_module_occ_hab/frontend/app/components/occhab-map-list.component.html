@@ -1,7 +1,23 @@
 <div class="row row-sm">
     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
         <pnx-map  height="90vh">
+          <pnx-geojson [geojson]="storeService.stations" >
 
+          </pnx-geojson>
         </pnx-map>
+  </div>
+
+  <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
+    <table class="table">
+      <tbody>
+
+        <tr *ngFor="let station of storeService.stations"> 
+
+          <td> <button class="btn btn-primary" [routerLink]="['form', station.properties.id_station]"> {{ station.properties.id_station }} </button> </td>
+          <td> {{station.properties.date_min}} </td>
+        </tr>
+      </tbody>
+    </table>
+    {{storeService.stations |json}}
   </div>
 </div>

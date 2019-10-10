@@ -69,6 +69,8 @@ export class OcchabFormService {
   }
 
   addHabitat() {
+    // resize the map
+    this.height = "55vh";
     // this.stationForm.patchValue({ habitats: this.habitatForm.value });
     this.stationForm.value.t_habitats.push(this.habitatForm.value);
     this.habitatForm.reset();
@@ -89,7 +91,7 @@ export class OcchabFormService {
 
   patchNomCite($event) {
     this.habitatForm.patchValue({
-      nom_cite: $event.item.lb_hab_fr_complet.replace(/<[^>]*>/g, "")
+      nom_cite: $event.item.search_name
     });
   }
 
@@ -124,8 +126,6 @@ export class OcchabFormService {
     formData.t_habitats.forEach(element => {
       this.formatNomenclature(element);
     });
-
-    console.log(formData);
 
     this._dataService.postStation(formData).subscribe(
       data => {

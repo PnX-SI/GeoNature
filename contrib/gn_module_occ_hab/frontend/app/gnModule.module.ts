@@ -17,6 +17,7 @@ import { OcchabStoreService } from "./services/store.service";
 // my module routing
 const routes: Routes = [
   { path: "form", component: OccHabFormComponent },
+  { path: "form/:id_station", component: OccHabFormComponent },
   { path: "", component: OccHabMapListComponent }
 ];
 
