@@ -55,3 +55,38 @@ def post_station():
     DB.session.add(station)
     DB.session.commit()
     return station.get_geofeature()
+
+
+@blueprint.route("/station/<int:id_station>", methods=["GET"])
+@json_resp
+def get_one_station(id_station):
+    """
+        Return one station
+
+        .. :quickref: Occhab;
+
+        :param id_station: the id_station
+        :type id_station: int
+
+        :return: a dict representing one station with its habitats
+        :rtype dict<TStationsOcchab>
+
+    """
+    params = request.args
+    station = DB.session.query(TStationsOcchab).get(id_station)
+    return station.get_geofeature(True)
+
+
+@blueprint.route("/stations", methods=["GET"])
+@json_resp
+def get_all_habitats():
+    """
+        Return all station with their habitat
+    """
+    params = request.args
+    q = DB.session.query(TStationsOcchab)
+
+    if 'id_dataset' in params:
+        q = q.filter(TStationsOcchab.id_dataset == params['id_dataset'])
+    data = q.all()
+    return [d.get_geofeature(True) for d in data]
