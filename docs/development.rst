@@ -455,7 +455,7 @@ Serialisation des modèles
   Fichier routes ::
 
     from flask import Blueprint
-    from geonature.utils.utilssqlalchemy import json_resp
+    from utils_flask_sqla.response import json_resp
 
     blueprint = Blueprint(__name__)
 
@@ -548,7 +548,7 @@ Vérification des droits des utilisateurs
 
         from flask import Blueprint
         from pypnusershub.routes import check_auth
-        from geonature.utils.utilssqlalchemy import json_resp
+        from utils_flask_sqla.response import json_resp
 
         blueprint = Blueprint(__name__)
 
@@ -586,7 +586,7 @@ Vérification des droits des utilisateurs
 
         from flask import Blueprint
         from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
-        from geonature.utils.utilssqlalchemy import json_resp
+        from utils_flask_sqla.response import json_resp
         from geonature.core.gn_permissions import decorators as permissions
 
         blueprint = Blueprint(__name__)
