@@ -416,11 +416,9 @@ def serializable(cls):
         else:
             fprops = cls_db_columns
         if relationships:
-            selected_relationship = [
-                (rel, use_list)
-                for (rel, use_list) in cls_db_relationships
-                if rel in relationships
-            ]
+            selected_relationship = list(
+                filter(lambda d: d[0] in columns, cls_db_relationships)
+            )
         else:
             selected_relationship = cls_db_relationships
         out = {item: _serializer(getattr(self, item)) for item, _serializer in fprops}
