@@ -397,7 +397,7 @@ def serializable(cls):
         (db_rel.key, db_rel.uselist) for db_rel in cls.__mapper__.relationships
     ]
 
-    def serializefn(self, recursif=False, columns=()):
+    def serializefn(self, recursif=False, columns=(), relationships=()):
         """
         Méthode qui renvoie les données de l'objet sous la forme d'un dict
 
@@ -408,20 +408,32 @@ def serializable(cls):
                 soit également sérialisé
             columns: liste
                 liste des colonnes qui doivent être prises en compte
+            relationships: liste
+                liste des relationships qui doivent être prise en compte
         """
         if columns:
             fprops = list(filter(lambda d: d[0] in columns, cls_db_columns))
         else:
             fprops = cls_db_columns
-
+        if relationships:
+            selected_relationship = [
+                (rel, use_list)
+                for (rel, use_list) in cls_db_relationships
+                if rel in relationships
+            ]
+        else:
+            selected_relationship = cls_db_relationships
         out = {item: _serializer(getattr(self, item)) for item, _serializer in fprops}
         if recursif is False:
             return out
 
-        for (rel, uselist) in cls_db_relationships:
+        for (rel, uselist) in selected_relationship:
             if getattr(self, rel):
                 if uselist is True:
-                    out[rel] = [x.as_dict(recursif) for x in getattr(self, rel)]
+                    out[rel] = [
+                        x.as_dict(recursif, relationships=relationships)
+                        for x in getattr(self, rel)
+                    ]
                 else:
                     out[rel] = getattr(self, rel).as_dict(recursif)
 
@@ -547,4 +559,3 @@ def generate_csv_content(columns, data, separator):
         writer.writerow(line)
     fp.seek(0)  # Rembobinage du "fichier"
     return fp.read()  # Retourne une chaine
-
