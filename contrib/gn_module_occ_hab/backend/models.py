@@ -8,6 +8,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import serializable, geoserializable
 from pypnusershub.db.models import User
+from pypnnomenclature.models import TNomenclatures
 
 
 class CorStationObserverOccHab(DB.Model):
@@ -34,11 +35,14 @@ class THabitatsOcchab(DB.Model):
     )
     cd_hab = DB.Column(DB.Integer)
     nom_cite = DB.Column(DB.Unicode)
-    id_nomenclature_determination_type = DB.Column(DB.Integer)
+    id_nomenclature_determination_type = DB.Column(
+        DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
     determiner = DB.Column(DB.Unicode)
-    id_nomenclature_collection_technique = DB.Column(DB.Integer)
+    id_nomenclature_collection_technique = DB.Column(
+        DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
     recovery_percentage = DB.Column(DB.Float)
-    id_nomenclature_abundance = DB.Column(DB.Integer)
+    id_nomenclature_abundance = DB.Column(
+        DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
     technical_precision = DB.Column(DB.Unicode)
     id_nomenclature_sensitvity = DB.Column(DB.Integer)
 
@@ -58,14 +62,17 @@ class TStationsOcchab(DB.Model):
     observers_txt = DB.Column(DB.Unicode)
     station_name = DB.Column(DB.Unicode)
     is_habitat_complex = DB.Column(DB.Boolean)
-    id_nomenclature_exposure = DB.Column(DB.Integer)
+    id_nomenclature_exposure = DB.Column(
+        DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
     altitude_min = DB.Column(DB.Integer)
     altitude_max = DB.Column(DB.Integer)
     depth_min = DB.Column(DB.Integer)
     depth_max = DB.Column(DB.Integer)
     area = DB.Column(DB.Float)
-    id_nomenclature_area_surface_calculation = DB.Column(DB.Integer)
-    id_nomenclature_geographic_object = DB.Column(DB.Integer)
+    id_nomenclature_area_surface_calculation = DB.Column(
+        DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_geographic_object = DB.Column(
+        DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
     comment = DB.Column(DB.Integer)
     geom_4326 = DB.Column(Geometry("GEOMETRY", 4626))
 
@@ -83,3 +90,55 @@ class TStationsOcchab(DB.Model):
 
     def get_geofeature(self, recursif=True):
         return self.as_geofeature("geom_4326", "id_station", recursif)
+
+
+@serializable
+class OneHabitat(THabitatsOcchab):
+    """
+    Class which extend THabitatsOcchab with nomenclatures relationships
+    use for get ONE habitat and station
+    """
+    determination_method = DB.relationship(
+        TNomenclatures,
+        primaryjoin=(TNomenclatures.id_nomenclature ==
+                     THabitatsOcchab.id_nomenclature_determination_type),
+    )
+
+    collection_technique = DB.relationship(
+        TNomenclatures,
+        primaryjoin=(TNomenclatures.id_nomenclature ==
+                     THabitatsOcchab.id_nomenclature_collection_technique),
+    )
+    abundance = DB.relationship(
+        TNomenclatures,
+        primaryjoin=(TNomenclatures.id_nomenclature ==
+                     THabitatsOcchab.id_nomenclature_abundance),
+    )
+
+    # def as_dict_rel(self, recursif=False, columns=()):
+    #     '''
+    #         Overrigth as_dict method to set nomenclature object to the id_nomenclature... attributes
+    #     '''
+    #     hab_dict = self.as_dict()
+    #     hab_dict['determination_method'] = dict(self.determination_method)
+    #     return hab_dict
+
+
+@serializable
+@geoserializable
+class OneStation(TStationsOcchab):
+    exposure = DB.relationship(
+        TNomenclatures,
+        primaryjoin=(TNomenclatures.id_nomenclature ==
+                     TStationsOcchab.id_nomenclature_exposure),
+    )
+    area_surface_calculation = DB.relationship(
+        TNomenclatures,
+        primaryjoin=(TNomenclatures.id_nomenclature ==
+                     TStationsOcchab.id_nomenclature_area_surface_calculation),
+    )
+    geographic_object = DB.relationship(
+        TNomenclatures,
+        primaryjoin=(TNomenclatures.id_nomenclature ==
+                     TStationsOcchab.id_nomenclature_geographic_object),
+    )

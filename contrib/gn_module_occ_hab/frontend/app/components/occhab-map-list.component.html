@@ -12,7 +12,6 @@
       <tbody>
 
         <tr *ngFor="let station of storeService.stations"> 
-
           <td> <button class="btn btn-primary" [routerLink]="['form', station.properties.id_station]"> {{ station.properties.id_station }} </button> </td>
           <td> {{station.properties.date_min}} </td>
         </tr>

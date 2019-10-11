@@ -8,7 +8,7 @@ from geonature.utils.env import DB
 
 from pypnusershub.db.models import User
 
-from .models import TStationsOcchab, THabitatsOcchab
+from .models import TStationsOcchab, THabitatsOcchab, OneStation
 
 blueprint = Blueprint("occhab", __name__)
 
@@ -73,8 +73,21 @@ def get_one_station(id_station):
 
     """
     params = request.args
-    station = DB.session.query(TStationsOcchab).get(id_station)
-    return station.get_geofeature(True)
+    station = DB.session.query(OneStation).get(id_station)
+    return station.as_dict(
+        True,
+        relationships=(
+            't_habitats',
+            'observers',
+            'exposure',
+            'area_surface_calculation',
+            'geographic_object',
+            'determination_method',
+            'collection_technique',
+            'abundance'
+        )
+    )
+    # return station.get_geofeature(True)
 
 
 @blueprint.route("/stations", methods=["GET"])

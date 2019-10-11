@@ -2,6 +2,7 @@
   <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
     <pnx-map [height]="occHabForm.height">
         <pnx-leaflet-draw
+          [geojson]="occHabForm.stationForm.value.geom_4326"
           [options]="leafletDrawOptions"
           zoomLevel="5"
          (layerDrawed)="occHabForm.patchGeomValue($event)"></pnx-leaflet-draw>
@@ -309,10 +310,10 @@
         > 
           Ajouter l'habitat
         </button>
-        <!-- <pre>
+        <pre>
             {{occHabForm.stationForm.value |json }}
             {{occHabForm.habitatForm.value |json }}
-        </pre> -->
+        </pre>
       </div>
     </div>
 

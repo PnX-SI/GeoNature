@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { OcchabFormService } from "../services/form-service";
 import { OcchabStoreService } from "../services/store.service";
+import { OccHabDataService } from "../services/data.service";
 import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
 import { ActivatedRoute } from "@angular/router";
 import { Subscription } from "rxjs/Subscription";
@@ -18,6 +19,7 @@ export class OccHabFormComponent implements OnInit {
 
   constructor(
     public occHabForm: OcchabFormService,
+    private _occHabDataService: OccHabDataService,
     public storeService: OcchabStoreService,
     private _route: ActivatedRoute
   ) {}
@@ -28,16 +30,16 @@ export class OccHabFormComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.storeService.state$.subscribe(state => {
-      console.log("subscription to state");
-      console.log(state);
-    });
     // get the id from the route
     this._sub = this._route.params.subscribe(params => {
-      console.log("LOAAAAD");
-
-      console.log(params);
-      this.storeService.getOnStation(params["id_station"]);
+      this._occHabDataService
+        .getOneStation(params["id_station"])
+        .subscribe(station => {
+          // this.occHabForm.stationForm.patchValue(station.properties);
+          // this.occHabForm.stationForm.patchValue({
+          //   geom_4326: station.geometry
+          // });
+        });
     });
   }
 
