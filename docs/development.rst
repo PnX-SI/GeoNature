@@ -346,6 +346,7 @@ Serialisation des modèles
 
     from geonature.utils.env import DB
     from geonature.utils.utilssqlalchemy import serializable
+    from utils_flask_sqla.serializers import serializable
 
     @serializable
     class MyModel(DB.Model):

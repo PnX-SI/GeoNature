@@ -7,11 +7,13 @@ from geoalchemy2 import Geometry
 
 from pypnnomenclature.models import TNomenclatures
 
-from geonature.utils.utilssqlalchemy import serializable, geoserializable
+from geonature.utils.utilssqlalchemy import geoserializable
 from geonature.utils.env import DB
 from pypnusershub.db.tools import InsufficientRightsError
 from pypnusershub.db.models import User
 from geonature.core.gn_meta.models import TDatasets
+
+from utils_flask_sqla.serializers import serializable
 
 
 class ReleveModel(DB.Model):
