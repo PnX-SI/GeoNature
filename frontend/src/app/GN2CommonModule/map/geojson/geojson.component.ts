@@ -49,6 +49,13 @@ export class GeojsonComponent implements OnInit, OnChanges {
     this.mapservice.layerGroup = new L.FeatureGroup();
     this.mapservice.map.addLayer(this.mapservice.layerGroup);
     this.mapservice.layerGroup.addLayer(this.currentGeojson);
+    if (this.zoomOnLayer) {
+      try {
+        this.map.fitBounds(this.mapservice.layerGroup.getBounds());
+      } catch (error) {
+        console.log('no layer in featuregroup');
+      }
+    }
   }
 
   ngOnChanges(changes) {
