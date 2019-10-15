@@ -1,11 +1,13 @@
 import logging
 import requests
 
+from flask import Blueprint, request
+from sqlalchemy.sql import distinct, and_
+
 from flask import Blueprint, request, current_app, Response, redirect
-from sqlalchemy.sql import distinct
 
 from geonature.utils.env import DB
-from geonature.core.users.models import VUserslistForallMenu, BibOrganismes, CorRole
+from geonature.core.users.models import VUserslistForallMenu, BibOrganismes, CorRole, TListes
 from pypnusershub.db.models import User
 from pypnusershub.db.models_register import TempUser
 from pypnusershub.routes_register import bp as user_api
@@ -41,6 +43,36 @@ def getRolesByMenuId(id_menu):
     :query str nom_complet: begenning of complet name of the role
     """
     q = DB.session.query(VUserslistForallMenu).filter_by(id_menu=id_menu)
+
+    parameters = request.args
+    if parameters.get("nom_complet"):
+        q = q.filter(
+            VUserslistForallMenu.nom_complet.ilike(
+                "{}%".format(parameters.get("nom_complet"))
+            )
+        )
+    data = q.order_by(VUserslistForallMenu.nom_complet.asc()).all()
+    return [n.as_dict() for n in data]
+
+
+@routes.route("/menu_from_code/<string:code_liste>", methods=["GET"])
+@json_resp
+def getRolesByMenuCode(code_liste):
+    """
+    Retourne la liste des roles associés à une liste (identifiée par son code)
+
+    .. :quickref: User;
+
+    :param code_liste: the code of user list (utilisateurs.t_lists)
+    :type code_liste: string
+    :query str nom_complet: begenning of complet name of the role
+    """
+
+    q = DB.session.query(VUserslistForallMenu).join(
+        TListes, and_(TListes.id_liste == VUserslistForallMenu.id_menu,
+                      TListes.code_liste == code_liste
+                      )
+    )
 
     parameters = request.args
     if parameters.get("nom_complet"):
@@ -351,9 +383,7 @@ def change_password(id_role):
         Modifie le mot de passe de l'utilisateur connecté et de son ancien mdp 
         Fait appel à l'API UsersHub
     """
-    if not current_app.config["ACCOUNT_MANAGEMENT"].get(
-        "ENABLE_USER_MANAGEMENT", False
-    ):
+    if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP", False):
         return {"message": "Page introuvable"}, 404
 
     user = DB.session.query(User).get(id_role)
