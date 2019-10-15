@@ -100,8 +100,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
       } else {
         if (this.selectedItems.length === 0) {
           value.forEach(item => {
-            this.selectedItems.push(item);
-            this.formControlValue.push(item);
+            this.addItem(item);
           });
         }
       }
