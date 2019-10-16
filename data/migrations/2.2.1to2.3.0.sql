@@ -1,5 +1,10 @@
+-- on met tous les JDD comme appartenant Occtax par défaut pour assurer la rétrocompatibilité
+SELECT id_module, t.id_dataset
+gn_commons.get_id_module_bycode('OCCTAX'), gn_meta.t_datasets t
+WHERE t.active = true
+;
 
--- vue validation de gn_commons necessitant le schéma synthese
+DROP view gn_commons.v_synthese_validation_forwebapp;
 CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS 
  SELECT DISTINCT ON (s.id_synthese) s.id_synthese,
     s.unique_id_sinp,

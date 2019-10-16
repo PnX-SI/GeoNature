@@ -18,7 +18,7 @@ from geonature.core.gn_meta.models import (
     CorAcquisitionFrameworkObjectif,
     CorAcquisitionFrameworkVoletSINP,
 )
-from geonature.core.gn_commons.models import TModules
+from geonature.core.gn_commons.models import TModules, CorModuleDataset
 from geonature.core.gn_meta.repositories import get_datasets_cruved, get_af_cruved
 from geonature.utils.utilssqlalchemy import json_resp
 from geonature.core.gn_permissions import decorators as permissions
@@ -125,6 +125,7 @@ def post_dataset(info_role):
 
     data = dict(request.get_json())
     cor_dataset_actor = data.pop("cor_dataset_actor")
+    modules = data.pop("modules")
 
     dataset = TDatasets(**data)
 
@@ -134,6 +135,9 @@ def post_dataset(info_role):
             cor.pop("id_cda")
         dataset.cor_dataset_actor.append(CorDatasetActor(**cor))
 
+    modules = TModules.query.filter(TModules.id_module.in_(modules)).all()
+    for m in modules:
+        dataset.modules.append(m)
     if dataset.id_dataset:
         DB.session.merge(dataset)
     else:
