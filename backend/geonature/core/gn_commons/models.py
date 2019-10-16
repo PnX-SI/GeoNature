@@ -9,8 +9,9 @@ from geoalchemy2 import Geometry
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
+from utils_flask_sqla.serializers import serializable
 
-from geonature.utils.utilssqlalchemy import serializable, geoserializable
+from geonature.utils.utilssqlalchemy import geoserializable
 from geonature.utils.env import DB
 
 

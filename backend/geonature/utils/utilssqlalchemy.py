@@ -367,6 +367,9 @@ def serializeQueryTest(data, column_def):
     return rows
 
 
+################################################################################
+# ATTENTION NON MAINTENTU - PREFERER LA MËME FONCTION DU LA LIB utils_flask_sqla
+################################################################################
 def serializable(cls):
     """
         Décorateur de classe pour les DB.Models
@@ -447,7 +450,9 @@ def geoserializable(cls):
         Permet de rajouter la fonction as_geofeature à une classe
     """
 
-    def serializegeofn(self, geoCol, idCol, recursif=False, columns=()):
+    def serializegeofn(
+        self, geoCol, idCol, recursif=False, columns=(), relationships=()
+    ):
         """
         Méthode qui renvoie les données de l'objet sous la forme
         d'une Feature geojson
@@ -472,7 +477,7 @@ def geoserializable(cls):
         feature = Feature(
             id=str(getattr(self, idCol)),
             geometry=geometry,
-            properties=self.as_dict(recursif, columns),
+            properties=self.as_dict(recursif, columns, relationships),
         )
         return feature
 
@@ -480,6 +485,9 @@ def geoserializable(cls):
     return cls
 
 
+################################################################################
+# ATTENTION NON MAINTENTU - PREFERER LA MËME FONCTION DU LA LIB utils_flask_sqla
+################################################################################
 def json_resp(fn):
     """
     Décorateur transformant le résultat renvoyé par une vue
@@ -497,6 +505,9 @@ def json_resp(fn):
     return _json_resp
 
 
+################################################################################
+# ATTENTION NON MAINTENTU - PREFERER LA MËME FONCTION DU LA LIB utils_flask_sqla
+################################################################################
 def to_json_resp(
     res, status=200, filename=None, as_file=False, indent=None, extension="json"
 ):
@@ -521,6 +532,9 @@ def to_json_resp(
     )
 
 
+################################################################################
+# ATTENTION NON MAINTENTU - PREFERER LA MËME FONCTION DU LA LIB utils_flask_sqla
+################################################################################
 def csv_resp(fn):
     """
     Décorateur transformant le résultat renvoyé en un fichier csv
@@ -535,6 +549,9 @@ def csv_resp(fn):
     return _csv_resp
 
 
+################################################################################
+# ATTENTION NON MAINTENTU - PREFERER LA MËME FONCTION DU LA LIB utils_flask_sqla
+################################################################################
 def to_csv_resp(filename, data, columns, separator=";"):
 
     headers = Headers()
@@ -546,6 +563,9 @@ def to_csv_resp(filename, data, columns, separator=";"):
     return Response(out, headers=headers)
 
 
+################################################################################
+# ATTENTION NON MAINTENTU - PREFERER LA MËME FONCTION DU LA LIB utils_flask_sqla
+################################################################################
 def generate_csv_content(columns, data, separator):
     fp = io.StringIO()
     writer = csv.DictWriter(

@@ -2,7 +2,7 @@ from flask import Blueprint, request, current_app
 from sqlalchemy.sql import text
 
 from geonature.utils.env import DB
-from geonature.utils.utilssqlalchemy import json_resp
+from utils_flask_sqla.response import json_resp
 from geonature.core.ref_geo.models import BibAreasTypes, LiMunicipalities, LAreas
 
 routes = Blueprint("ref_geo", __name__)
