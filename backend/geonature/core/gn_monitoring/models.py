@@ -42,7 +42,7 @@ corSiteModule = DB.Table(
     DB.Column(
         "id_base_site",
         DB.Integer,
-        ForeignKey("gn_monitoring.cor_site_application.id_base_site"),
+        ForeignKey("gn_monitoring.cor_site_module.id_base_site"),
         primary_key=True,
     ),
     DB.Column(
@@ -59,7 +59,7 @@ corSiteArea = DB.Table(
     DB.Column(
         "id_base_site",
         DB.Integer,
-        ForeignKey("gn_monitoring.cor_site_application.id_base_site"),
+        ForeignKey("gn_monitoring.cor_site_module.id_base_site"),
         primary_key=True,
     ),
     DB.Column(
