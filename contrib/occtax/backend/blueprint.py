@@ -51,6 +51,7 @@ from geonature.utils.utilssqlalchemy import (
 from geonature.utils.errors import GeonatureApiError
 from geonature.core.users.models import UserRigth
 from geonature.core.gn_meta.models import TDatasets, CorDatasetActor
+from geonature.core.taxonomie.models import Taxref
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
 
@@ -333,6 +334,11 @@ def insertOrUpdateOneReleve(info_role):
             cor_counting_occtax = occ["cor_counting_occtax"]
             occ.pop("cor_counting_occtax")
 
+        taxref = None
+        if "taxref" in occ:
+            taxref = Taxref(**occ["taxref"])
+            occ.pop("taxref")
+
         # Test et suppression
         #   des propriétés inexistantes de TOccurrencesOccurrence
         attliste = [k for k in occ]
@@ -343,6 +349,8 @@ def insertOrUpdateOneReleve(info_role):
         if "id_occurrence_occtax" in occ and occ["id_occurrence_occtax"] is None:
             occ.pop("id_occurrence_occtax")
         occtax = TOccurrencesOccurrence(**occ)
+
+        occtax.taxref = taxref
 
         for cnt in cor_counting_occtax:
             # Test et suppression
