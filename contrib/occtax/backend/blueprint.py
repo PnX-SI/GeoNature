@@ -36,14 +36,8 @@ from .models import (
 )
 from .repositories import ReleveRepository, get_query_occtax_filters
 from .utils import get_nomenclature_filters
-from geonature.utils.utilssqlalchemy import (
-    json_resp,
-    testDataType,
-    csv_resp,
-    GenericTable,
-    to_json_resp,
-    to_csv_resp,
-)
+from utils_flask_sqla.response import to_csv_resp, to_json_resp, csv_resp, json_resp
+from geonature.utils.utilssqlalchemy import testDataType, GenericTable
 from geonature.utils.errors import GeonatureApiError
 from geonature.core.users.models import UserRigth
 from geonature.core.gn_meta.models import TDatasets, CorDatasetActor

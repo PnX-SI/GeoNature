@@ -1,13 +1,10 @@
 from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
 from flask import current_app
+from utils_flask_sqla.serializers import serializable
 
 from geonature.utils.env import DB
-from geonature.utils.utilssqlalchemy import serializable
-
-from geonature.utils.env import DB
-from geonature.utils.utilssqlalchemy import serializable, geoserializable
-from geonature.utils.env import DB
+from geonature.utils.utilssqlalchemy import geoserializable
 
 
 @serializable

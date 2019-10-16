@@ -7,12 +7,12 @@ import os
 import logging
 
 from flask import Blueprint, request, current_app, jsonify
-
 from geojson import FeatureCollection
+from utils_flask_sqla.response import json_resp
 
 from geonature.utils.env import DB
 from geonature.core.gn_monitoring.config_manager import generate_config
-from geonature.utils.utilssqlalchemy import json_resp, GenericQuery, testDataType
+from geonature.utils.utilssqlalchemy import GenericQuery, testDataType
 from geonature.utils.errors import GeonatureApiError
 
 
