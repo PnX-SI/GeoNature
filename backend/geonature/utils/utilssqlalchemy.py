@@ -450,7 +450,9 @@ def geoserializable(cls):
         Permet de rajouter la fonction as_geofeature à une classe
     """
 
-    def serializegeofn(self, geoCol, idCol, recursif=False, columns=()):
+    def serializegeofn(
+        self, geoCol, idCol, recursif=False, columns=(), relationships=()
+    ):
         """
         Méthode qui renvoie les données de l'objet sous la forme
         d'une Feature geojson
@@ -475,7 +477,7 @@ def geoserializable(cls):
         feature = Feature(
             id=str(getattr(self, idCol)),
             geometry=geometry,
-            properties=self.as_dict(recursif, columns),
+            properties=self.as_dict(recursif, columns, relationships),
         )
         return feature
 
