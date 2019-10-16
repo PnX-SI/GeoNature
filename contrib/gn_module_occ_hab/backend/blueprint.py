@@ -74,20 +74,7 @@ def get_one_station(id_station):
     """
     params = request.args
     station = DB.session.query(OneStation).get(id_station)
-    return station.as_dict(
-        True,
-        relationships=(
-            't_habitats',
-            'observers',
-            'exposure',
-            'area_surface_calculation',
-            'geographic_object',
-            'determination_method',
-            'collection_technique',
-            'abundance'
-        )
-    )
-    # return station.get_geofeature(True)
+    return station.get_geofeature(True)
 
 
 @blueprint.route("/stations", methods=["GET"])

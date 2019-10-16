@@ -107,6 +107,57 @@ export class OcchabFormService {
     });
   }
 
+  getOrNull(obj, key) {
+    return obj[key] ? obj[key] : null;
+  }
+
+  /**
+   * format the data returned by get one station to fit with the form
+   */
+  formatStationAndHab(station) {
+    const formatedHabitats = station.t_habitats.map(hab => {
+      return {
+        ...hab,
+        id_nomenclature_determination_type: this.getOrNull(
+          hab,
+          "determination_method"
+        ),
+        id_nomenclature_area_surface_calculation: this.getOrNull(
+          hab,
+          "collection_technique"
+        ),
+        id_nomenclature_abundance: this.getOrNull(hab, "abundance")
+      };
+    });
+    station.t_habitats = formatedHabitats;
+    console.log(station.date_min);
+    console.log(station.date_max);
+
+    return {
+      ...station,
+      date_min: this._dateParser.parse(station.date_min),
+      date_max: this._dateParser.parse(station.date_max),
+      id_nomenclature_geographic_object: this.getOrNull(
+        station,
+        "geographic_object"
+      ),
+      id_nomenclature_area_surface_calculation: this.getOrNull(
+        station,
+        "geographic_object"
+      ),
+      id_nomenclature_exposure: this.getOrNull(station, "exposure")
+    };
+  }
+
+  patchStationForm(oneStation) {
+    const formatedStation = this.stationForm.patchValue(
+      this.formatStationAndHab(this.formatStationAndHab(oneStation.properties))
+    );
+    this.stationForm.patchValue({
+      geom_4326: oneStation.geometry
+    });
+  }
+
   postStation() {
     let formData = Object.assign({}, this.stationForm.value);
 

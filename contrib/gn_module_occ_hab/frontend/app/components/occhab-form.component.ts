@@ -35,10 +35,7 @@ export class OccHabFormComponent implements OnInit {
       this._occHabDataService
         .getOneStation(params["id_station"])
         .subscribe(station => {
-          // this.occHabForm.stationForm.patchValue(station.properties);
-          // this.occHabForm.stationForm.patchValue({
-          //   geom_4326: station.geometry
-          // });
+          this.occHabForm.patchStationForm(station);
         });
     });
   }
