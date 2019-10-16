@@ -144,7 +144,7 @@ ALTER TABLE ONLY pr_occhab.t_stations
     ADD CONSTRAINT t_stations_date_max CHECK (date_min >= date_max);
 
 ALTER TABLE pr_occhab.t_stations
-  ADD CONSTRAINT check_t_stations_exposure CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_exposure,'EXPOSURE')) NOT VALID;
+  ADD CONSTRAINT check_t_stations_exposure CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_exposure,'EXPOSITION')) NOT VALID;
 
 ALTER TABLE pr_occhab.t_stations
   ADD CONSTRAINT check_t_stations_geographic_object CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_geographic_object,'NAT_OBJ_GEO')) NOT VALID;
