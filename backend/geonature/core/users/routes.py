@@ -292,7 +292,9 @@ def login_recovery():
         Work only if 'ENABLE_SIGN_UP' is set to True	
     """
     # test des droits
-    if not current_app.config.get("ACCOUNT_MANAGEMENT").get("ENABLE_SIGN_UP", False):
+    if not current_app.config.get("ACCOUNT_MANAGEMENT").get(
+        "ENABLE_USER_MANAGEMENT", False
+    ):
         return {"msg": "Page introuvable"}, 404
 
     data = request.get_json()
@@ -341,6 +343,10 @@ def update_role(info_role):
     """
         Modifie le role de l'utilisateur du token en cours
     """
+    if not current_app.config["ACCOUNT_MANAGEMENT"].get(
+        "ENABLE_USER_MANAGEMENT", False
+    ):
+        return {"message": "Page introuvable"}, 404
     data = dict(request.get_json())
 
     user = DB.session.query(User).get(info_role.id_role)
@@ -437,7 +443,9 @@ def new_password():
     Modifie le mdp d'un utilisateur apres que celui-ci ai demander un renouvelement
     Necessite un token envoyer par mail a l'utilisateur
     """
-    if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP", False):
+    if not current_app.config["ACCOUNT_MANAGEMENT"].get(
+        "ENABLE_USER_MANAGEMENT", False
+    ):
         return {"message": "Page introuvable"}, 404
 
     data = dict(request.get_json())
