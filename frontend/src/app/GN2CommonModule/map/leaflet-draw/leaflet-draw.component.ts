@@ -161,7 +161,8 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
     }
     if (geojson.type === 'Point') {
-      layer = L.circleMarker(geojson.coordinates);
+      const latLng = L.GeoJSON.coordsToLatLng(geojson.coordinates)
+      layer = L.circleMarker(latLng);
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
     }
 
