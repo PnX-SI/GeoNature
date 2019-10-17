@@ -70,18 +70,15 @@
         <label> {{ 'Taxon.ObservedTaxon' | translate }} </label>
         <div class="row row-sm">
           <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
-            <img *ngIf="showSpinner" src="assets/images/Spinner.gif" alt="Chargement..." height="40" width="40">
-            <div *ngIf="!showSpinner">
               <table class="table table-hover ">
                 <tr [ngClass]="{'table-success': i == selectedIndex}" *ngFor="let occ of releve?.properties.t_occurrences_occtax; let i = index"
                   (click)="selectOccurrence(occ, i)">
-                  <td class="selected-taxon">{{occ.taxon?.nom_complet}}</td>
+                  <td class="selected-taxon">{{occ.taxonomie?.nom_complet}}</td>
                   <td>
                     <i class="fa fa-eye clickable" aria-hidden="true"></i>
                   </td>
                 </tr>
               </table>
-            </div>
           </div>
         </div>
       </div>

@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs/Subscription";
 import { OcctaxFormService } from "../occtax-map-form/form/occtax-form.service";
 import { MapService } from "@geonature_common/map/map.service";
-import { DataFormService } from "@geonature_common/form/data-form.service";
 import { FormGroup, FormArray } from "@angular/forms";
 import { OcctaxDataService } from "../services/occtax-data.service";
 import { ModuleConfig } from "../module.config";
@@ -38,7 +37,6 @@ export class OcctaxMapInfoComponent implements OnInit {
     public fs: OcctaxFormService,
     private _route: ActivatedRoute,
     private _ms: MapService,
-    private _dfs: DataFormService,
     private _router: Router,
     private _occtaxService: OcctaxDataService,
     private _modalService: NgbModal,
@@ -100,14 +98,6 @@ export class OcctaxMapInfoComponent implements OnInit {
           this.dateMax = data.releve.properties.date_max.substring(0, 10);
 
           this._ms.loadGeometryReleve(data.releve, false);
-
-          // load taxonomy info
-          data.releve.properties.t_occurrences_occtax.forEach(occ => {
-            this._dfs.getTaxonInfo(occ.cd_nom).subscribe(taxon => {
-              occ["taxon"] = taxon;
-              this.showSpinner = false;
-            });
-          });
         },
         error => {
           if (error.status === 403) {
