@@ -13,8 +13,9 @@ from werkzeug.exceptions import NotFound
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
+from utils_flask_sqla.serializers import serializable
 
-from geonature.utils.utilssqlalchemy import serializable, geoserializable, SERIALIZERS
+from geonature.utils.utilssqlalchemy import geoserializable, SERIALIZERS
 from geonature.utils.utilsgeometry import shapeserializable
 from geonature.utils.env import DB
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework

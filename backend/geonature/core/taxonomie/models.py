@@ -1,12 +1,12 @@
-from geonature.utils.env import DB
-from geonature.utils.utilssqlalchemy import serializable
+from utils_flask_sqla.serializers import serializable
 
+from geonature.utils.env import DB
 
 
 @serializable
 class TaxrefProtectionArticles(DB.Model):
-    __tablename__ = 'taxref_protection_articles'
-    __table_args__ = {'schema': 'taxonomie'}
+    __tablename__ = "taxref_protection_articles"
+    __table_args__ = {"schema": "taxonomie"}
     cd_protection = DB.Column(DB.Unicode, primary_key=True)
     article = DB.Column(DB.Unicode)
     intitule = DB.Column(DB.Unicode)
@@ -20,13 +20,13 @@ class TaxrefProtectionArticles(DB.Model):
     concerne_mon_territoire = DB.Column(DB.Boolean)
 
     def __repr__(self):
-        return '<TaxrefProtectionArticles %r>' % self.article
+        return "<TaxrefProtectionArticles %r>" % self.article
 
 
 @serializable
 class TaxrefProtectionEspeces(DB.Model):
-    __tablename__ = 'taxref_protection_especes'
-    __table_args__ = {'schema': 'taxonomie'}
+    __tablename__ = "taxref_protection_especes"
+    __table_args__ = {"schema": "taxonomie"}
     cd_nom = DB.Column(DB.Unicode, primary_key=True)
     cd_protection = DB.Column(DB.Unicode, primary_key=True)
     nom_cite = DB.Column(DB.Unicode)
@@ -38,8 +38,8 @@ class TaxrefProtectionEspeces(DB.Model):
 
 @serializable
 class Taxref(DB.Model):
-    __tablename__ = 'taxref'
-    __table_args__ = {'schema': 'taxonomie'}
+    __tablename__ = "taxref"
+    __table_args__ = {"schema": "taxonomie"}
     cd_nom = DB.Column(DB.Integer, primary_key=True)
     id_statut = DB.Column(DB.Unicode)
     id_habitat = DB.Column(DB.Integer)
@@ -67,34 +67,24 @@ class Taxref(DB.Model):
     url = DB.Column(DB.Unicode)
 
     def __repr__(self):
-        return '<Taxref %r>' % self.nom_complet
+        return "<Taxref %r>" % self.nom_complet
+
 
 class CorTaxonAttribut(DB.Model):
-    __tablename__ = 'cor_taxon_attribut'
-    __table_args__ = {'schema': 'taxonomie'}
-    id_attribut = DB.Column(
-        DB.Integer,
-        nullable=False,
-        primary_key=True
-    )
-    cd_ref = DB.Column(
-        DB.Integer,
-        nullable=False,
-        primary_key=True
-    )
+    __tablename__ = "cor_taxon_attribut"
+    __table_args__ = {"schema": "taxonomie"}
+    id_attribut = DB.Column(DB.Integer, nullable=False, primary_key=True)
+    cd_ref = DB.Column(DB.Integer, nullable=False, primary_key=True)
     valeur_attribut = DB.Column(DB.Text, nullable=False)
 
     def __repr__(self):
-        return '<CorTaxonAttribut %r>' % self.valeur_attribut
+        return "<CorTaxonAttribut %r>" % self.valeur_attribut
 
 
 class TaxrefLR(DB.Model):
-    __tablename__ = 'taxref_liste_rouge_fr'
-    __table_args__ = {'schema': 'taxonomie'}
-    id_lr = DB.Column(
-        DB.Integer,
-        primary_key=True
-    )
+    __tablename__ = "taxref_liste_rouge_fr"
+    __table_args__ = {"schema": "taxonomie"}
+    id_lr = DB.Column(DB.Integer, primary_key=True)
     ordre_statut = DB.Column(DB.Integer)
     vide = DB.Column(DB.Unicode)
     cd_nom = DB.Column(DB.Integer)

@@ -8,7 +8,7 @@ from flask import Blueprint, request, current_app
 from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_commons.models import TModules, TParameters
 from geonature.utils.env import DB
-from geonature.utils.utilssqlalchemy import json_resp
+from utils_flask_sqla.response import json_resp
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 
