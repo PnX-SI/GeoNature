@@ -5,7 +5,7 @@ WHERE t.active = true
 ;
 
 DROP view gn_commons.v_synthese_validation_forwebapp;
-CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS 
+CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS
  SELECT DISTINCT ON (s.id_synthese) s.id_synthese,
     s.unique_id_sinp,
     s.unique_id_sinp_grp,
@@ -74,3 +74,7 @@ CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS
   ORDER BY s.id_synthese, v.validation_date DESC;
 
 COMMENT ON VIEW gn_commons.v_synthese_validation_forwebapp  IS 'Vue utilisée pour le module validation. Prend l''id_nomenclature dans la table synthese ainsi que toutes les colonnes de la synthese pour les filtres. On JOIN sur la vue latest_validation pour voir si la validation est auto';
+
+
+-- Nettoyage monitoring
+DROP TABLE IF EXISTS gn_monitoring.cor_site_application;
