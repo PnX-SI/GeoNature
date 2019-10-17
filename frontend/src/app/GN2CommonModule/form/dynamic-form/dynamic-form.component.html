@@ -109,6 +109,15 @@
       <pnx-multiselect *ngSwitchCase="'multiselect'" [values]="formDef.values" [parentFormControl]="form.get(formDef.attribut_name)" keyLabel="value" keyValue="value"
       [label]="formDef.attribut_label"  [searchBar]="false">
       </pnx-multiselect>
+
+      <pnx-geometry-form *ngSwitchCase="'geometry'"
+        [parentFormControl]="form.get(formDef.attribut_name)"
+        [label]="formDef.attribut_label"
+        [typeGeometry]="formDef.type_geometry"
+        [mapHeight]="formDef.mapHeight ? formDef.mapHeight : '40vh'"
+      >
+      </pnx-geometry-form>
+
     </div>
 
   </div>
