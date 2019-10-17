@@ -261,16 +261,12 @@ export class MapListService {
         let newFeature = null;
         if (customCallBack) {
           newFeature = customCallBack(feature);
-        } else {
-          newFeature = this.deFaultCustomColumns(feature);
         }
         this.tableData.push(newFeature.properties);
       });
     } else {
       data.features.forEach(feature => {
-        let newFeature = null;
-        newFeature = this.deFaultCustomColumns(feature);
-        this.tableData.push(newFeature.properties);
+        this.tableData.push(feature.properties);
       });
     }
   }

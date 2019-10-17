@@ -115,14 +115,6 @@ class OneHabitat(THabitatsOcchab):
                      THabitatsOcchab.id_nomenclature_abundance),
     )
 
-    # def as_dict_rel(self, recursif=False, columns=()):
-    #     '''
-    #         Overrigth as_dict method to set nomenclature object to the id_nomenclature... attributes
-    #     '''
-    #     hab_dict = self.as_dict()
-    #     hab_dict['determination_method'] = dict(self.determination_method)
-    #     return hab_dict
-
 
 @serializable
 @geoserializable
@@ -142,3 +134,21 @@ class OneStation(TStationsOcchab):
         primaryjoin=(TNomenclatures.id_nomenclature ==
                      TStationsOcchab.id_nomenclature_geographic_object),
     )
+
+    t_one_habitats = relationship("OneHabitat", lazy="select")
+
+    def get_geofeature(self, recursif=True):
+        return self.as_geofeature(
+            "geom_4326",
+            "id_station",
+            True,
+            relationships=[
+                't_one_habitats',
+                'exposure',
+                'area_surface_calculation',
+                'geographic_object',
+                'determination_method',
+                'collection_technique',
+                'abundance'
+            ]
+        )

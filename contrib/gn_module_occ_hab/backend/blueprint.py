@@ -1,5 +1,6 @@
 from flask import Blueprint, current_app, session, request
 from geoalchemy2.shape import from_shape
+from geojson import FeatureCollection
 from shapely.geometry import asShape
 
 from geonature.utils.utilssqlalchemy import json_resp
@@ -8,7 +9,8 @@ from geonature.utils.env import DB
 
 from pypnusershub.db.models import User
 
-from .models import TStationsOcchab, THabitatsOcchab, OneStation
+from .models import OneStation, TStationsOcchab, THabitatsOcchab
+
 
 blueprint = Blueprint("occhab", __name__)
 
@@ -89,4 +91,5 @@ def get_all_habitats():
     if 'id_dataset' in params:
         q = q.filter(TStationsOcchab.id_dataset == params['id_dataset'])
     data = q.all()
-    return [d.get_geofeature(True) for d in data]
+    return FeatureCollection(
+        [d.get_geofeature(True) for d in data])

@@ -13,6 +13,7 @@ import { Subscription } from "rxjs/Subscription";
 })
 export class OccHabFormComponent implements OnInit {
   public showDepth = false;
+  public showHabForm = false;
   public leafletDrawOptions = leafletDrawOption;
   public filteredHab: any;
   private _sub: Subscription;
@@ -29,6 +30,10 @@ export class OccHabFormComponent implements OnInit {
     leafletDrawOption.draw.polyline = false;
   }
 
+  toggleShowHabForm() {
+    this.showHabForm = !this.showHabForm;
+  }
+
   ngAfterViewInit() {
     // get the id from the route
     this._sub = this._route.params.subscribe(params => {
@@ -36,6 +41,7 @@ export class OccHabFormComponent implements OnInit {
         .getOneStation(params["id_station"])
         .subscribe(station => {
           this.occHabForm.patchStationForm(station);
+          this.occHabForm.height = this.occHabForm.MAP_SMALL_HEIGHT;
         });
     });
   }

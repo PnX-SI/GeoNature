@@ -22,17 +22,17 @@
                   <td> N°</td>
                   <td> Habitat</td>
                   <td> Determinateur</td>
-                  <td> Abondance</td>
+                  <td> Technique de collecte</td>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor='let hab of occHabForm.stationForm.value.t_habitats; let i=index'>
-                    <td> {{i + 1}}</td>
-                    <td>  {{hab.habitat_obj?.search_name}}</td>
+                  <td> {{i + 1}}</td>
+                    <td>  {{hab?.nom_cite}}</td>
                     <td> {{hab.determiner}}</td>
-                    <td>  {{hab.id_nomenclature_abundance?.label_default}}</td>
+                    <td>  {{hab.id_nomenclature_collection_technique?.label_default}}</td>
                     <td> 
-                      <button type="button" class="btn btn-primary btn-sm">
+                      <button type="buttosn" class="btn btn-primary btn-sm">
                           <i class="fa fa-pencil-square-o" aria-hidden="true" ></i>
                       </button> 
                       <button type="button" class="btn btn-danger btn-sm">
@@ -164,7 +164,7 @@
                 id="customControlAutosizing"
                 [formControl]="occHabForm.stationForm.get('is_habitat_complex')"
                 >
-              <label class="custom-control-label small" for="customControlAutosizing">Habitat complexe</label>
+              <label class="custom-control-label small" for="customControlAutosizing"> Complexe d'habitat </label>
           </div>
 
         
@@ -218,8 +218,20 @@
       <h5 class="card-header">
         <i class="fa fa-leaf" aria-hidden="true"></i>
         Habitat
+        <button *ngIf="!showHabForm" type="button" class="btn btn-sm btn-primary float-right"
+        (click)="toggleShowHabForm()">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        Ajouter un habitat à la station
+      </button>
+      <button *ngIf="showHabForm"
+        (click)="toggleShowHabForm()" 
+        type="button" class="btn btn-sm btn-danger float-right" (click)="fs.toggleOccurrence(); fs.cancelOccurrence()">
+        <i class="fa fa-minus" aria-hidden="true"></i>
+        Annuler la saisie de l'habitat
+
+      </button>
       </h5>
-      <div class="card-body">
+      <div class="card-body" *ngIf="showHabForm">
         <div class="form-row">
           <div class="col-6">
               <small> Sélectionner une typologie d'habitat</small>
@@ -308,11 +320,13 @@
           class="btn btn-primary"
           (click)="occHabForm.addHabitat();"
         > 
-          Ajouter l'habitat
+        <i style="color: rgb(0, 233, 0);" class="fa fa-check" aria-hidden="true"></i>
+
+          Valider l'habitat
         </button>
         <pre>
-            {{occHabForm.stationForm.value |json }}
-            {{occHabForm.habitatForm.value |json }}
+            <!-- {{occHabForm.stationForm.value |json }}
+            {{occHabForm.habitatForm.value |json }} -->
         </pre>
       </div>
     </div>

@@ -17,6 +17,8 @@ export class OcchabFormService {
   public typoHabControl = new FormControl();
   public selectedTypo: any;
   public height = "90vh";
+  public MAP_SMALL_HEIGHT = "50vh";
+  public MAP_FULL_HEIGHT = "90vh";
 
   constructor(
     private _fb: FormBuilder,
@@ -70,7 +72,7 @@ export class OcchabFormService {
 
   addHabitat() {
     // resize the map
-    this.height = "55vh";
+    this.height = this.MAP_SMALL_HEIGHT;
     // this.stationForm.patchValue({ habitats: this.habitatForm.value });
     this.stationForm.value.t_habitats.push(this.habitatForm.value);
     this.habitatForm.reset();
@@ -115,23 +117,22 @@ export class OcchabFormService {
    * format the data returned by get one station to fit with the form
    */
   formatStationAndHab(station) {
-    const formatedHabitats = station.t_habitats.map(hab => {
+    const formatedHabitats = station.t_one_habitats.map(hab => {
       return {
         ...hab,
         id_nomenclature_determination_type: this.getOrNull(
           hab,
           "determination_method"
         ),
-        id_nomenclature_area_surface_calculation: this.getOrNull(
+        id_nomenclature_collection_technique: this.getOrNull(
           hab,
           "collection_technique"
         ),
         id_nomenclature_abundance: this.getOrNull(hab, "abundance")
       };
     });
-    station.t_habitats = formatedHabitats;
-    console.log(station.date_min);
-    console.log(station.date_max);
+    station["t_habitats"] = formatedHabitats;
+    console.log(formatedHabitats);
 
     return {
       ...station,
@@ -151,7 +152,7 @@ export class OcchabFormService {
 
   patchStationForm(oneStation) {
     const formatedStation = this.stationForm.patchValue(
-      this.formatStationAndHab(this.formatStationAndHab(oneStation.properties))
+      this.formatStationAndHab(oneStation.properties)
     );
     this.stationForm.patchValue({
       geom_4326: oneStation.geometry
