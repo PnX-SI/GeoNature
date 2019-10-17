@@ -100,6 +100,9 @@ export class MultiSelectComponent implements OnInit, OnChanges {
       } else {
         if (this.selectedItems.length === 0) {
           value.forEach(item => {
+            if(!this.bindAllItem) {
+              item = this.values[item];
+            }
             this.addItem(item);
           });
         }
