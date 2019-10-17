@@ -9,6 +9,7 @@ from pypnnomenclature.models import TNomenclatures
 
 from geonature.utils.utilssqlalchemy import serializable, geoserializable
 from geonature.utils.env import DB
+from geonature.core.taxonomie.models import Taxref
 from pypnusershub.db.tools import InsufficientRightsError
 from pypnusershub.db.models import User
 from geonature.core.gn_meta.models import TDatasets
@@ -145,7 +146,7 @@ class TOccurrencesOccurrence(DB.Model):
     id_nomenclature_source_status = DB.Column(DB.Integer)
     determiner = DB.Column(DB.Unicode)
     id_nomenclature_determination_method = DB.Column(DB.Integer)
-    cd_nom = DB.Column(DB.Integer)
+    cd_nom = DB.Column(DB.Integer, ForeignKey(Taxref.cd_nom))
     nom_cite = DB.Column(DB.Unicode)
     meta_v_taxref = DB.Column(
         DB.Unicode,
@@ -162,6 +163,8 @@ class TOccurrencesOccurrence(DB.Model):
         cascade="all,delete-orphan",
         uselist=True,
     )
+
+    taxonomie = relationship("Taxref", lazy="joined")
 
 
 @serializable

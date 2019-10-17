@@ -117,28 +117,9 @@ export class OcctaxMapFormComponent
               properties: data.releve.properties
             });
 
-            const orderedCdNomList = [];
             data.releve.properties.t_occurrences_occtax.forEach(occ => {
-              orderedCdNomList.push(occ.cd_nom);
-              this._dfs.getTaxonInfo(occ.cd_nom).subscribe(taxon => {
-                this.fs.taxonsList.push(taxon);
-              });
+              this.fs.taxonsList.push(occ.taxonomie);
             });
-
-            // HACK to re order taxon list because of side effect of ajax
-            // TODO: do it with async
-            const reOrderTaxon = [];
-            setTimeout(() => {
-              for (let i = 0; i < orderedCdNomList.length; i++) {
-                for (let j = 0; j < this.fs.taxonsList.length; j++) {
-                  if (this.fs.taxonsList[j].cd_nom === orderedCdNomList[i]) {
-                    reOrderTaxon.push(this.fs.taxonsList[j]);
-                    break;
-                  }
-                }
-              }
-              this.fs.taxonsList = reOrderTaxon;
-            }, 1500);
 
             // set the occurrence
             this.fs.indexOccurrence =
