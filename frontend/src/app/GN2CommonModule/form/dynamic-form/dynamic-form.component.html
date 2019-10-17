@@ -1,4 +1,4 @@
-<div>
+<div [attr.hidden]="formDef.hidden">
     <small *ngIf="(formDef.type_widget == 'checkbox' && formDef.values.length > 1)
         || formDef.type_widget == 'text'
         || formDef.type_widget == 'textarea'
