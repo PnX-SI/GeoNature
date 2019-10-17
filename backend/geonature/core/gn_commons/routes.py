@@ -22,7 +22,7 @@ def get_modules(info_role):
     """
     Return the allowed modules of user from its cruved
     .. :quickref: Commons;
-    
+
     """
     params = request.args
     q = DB.session.query(TModules)
@@ -85,7 +85,7 @@ def insert_or_update_media(id_media=None):
     if request.form:
         formData = dict(request.form)
         for key in formData:
-            data[key] = formData[key][0]
+            data[key] = formData[key]
     else:
         data = request.get_json(silent=True)
 
