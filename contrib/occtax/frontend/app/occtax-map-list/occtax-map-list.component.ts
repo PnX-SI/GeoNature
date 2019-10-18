@@ -1,5 +1,6 @@
-import { Component, OnInit, OnDestroy, ViewChild } from "@angular/core";
+import { Component, OnInit, OnDestroy, ViewChild, Renderer2 } from "@angular/core";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
+import { MapService } from "@geonature_common/map/map.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { Router } from "@angular/router";
@@ -8,17 +9,16 @@ import { ModuleConfig } from "../module.config";
 import { TaxonomyComponent } from "@geonature_common/form/taxonomy/taxonomy.component";
 import { FormGroup, FormBuilder } from "@angular/forms";
 import { GenericFormGeneratorComponent } from "@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component";
-import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
-import { FILTERSLIST } from "./filters-list";
 import { AppConfig } from "@geonature_config/app.config";
 import { GlobalSubService } from "@geonature/services/global-sub.service";
 import { Subscription } from "rxjs/Subscription";
+import { HttpParams } from '@angular/common/http';
+import * as moment from 'moment';
 
 @Component({
   selector: "pnx-occtax-map-list",
   templateUrl: "occtax-map-list.component.html",
-  styleUrls: ["./occtax-map-list.component.scss"],
-  providers: [MapListService]
+  styleUrls: ["./occtax-map-list.component.scss"]
 })
 export class OcctaxMapListComponent implements OnInit, OnDestroy {
   public userCruved = {};
@@ -29,15 +29,11 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
   public idName: string;
   public apiEndPoint: string;
   public occtaxConfig: any;
-  public formsDefinition = FILTERSLIST;
+  // public formsDefinition = FILTERSLIST;
   public dynamicFormGroup: FormGroup;
   public formsSelected = [];
   public moduleSub: Subscription;
-  // provisoire
-  public tableMessages = {
-    emptyMessage: "Aucune observation à afficher",
-    totalMessage: "observation(s) au total"
-  };
+
   advandedFilterOpen = false;
   @ViewChild(NgbModal)
   public modalCol: NgbModal;
@@ -45,6 +41,7 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
   public taxonomyComponent: TaxonomyComponent;
   @ViewChild("dynamicForm")
   public dynamicForm: GenericFormGeneratorComponent;
+  @ViewChild('table') table: any;
 
   constructor(
     private mapListService: MapListService,
@@ -52,22 +49,15 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
     private _commonService: CommonService,
     private _router: Router,
     public ngbModal: NgbModal,
-    private _fb: FormBuilder,
-    private _dateParser: NgbDateParserFormatter,
-    public globalSub: GlobalSubService
+    public globalSub: GlobalSubService,
+    private renderer: Renderer2
   ) {}
 
   ngOnInit() {
-    this.dynamicFormGroup = this._fb.group({
-      cd_nom: null,
-      observers: null,
-      dataset: null,
-      observers_txt: null,
-      id_dataset: null,
-      date_up: null,
-      date_low: null,
-      municipality: null
-    });
+    //config
+    this.occtaxConfig = ModuleConfig;
+    this.idName = "id_releve_occtax";
+    this.apiEndPoint = "occtax/releves";
 
     // get user cruved
     this.moduleSub = this.globalSub.currentModuleSub
@@ -77,67 +67,25 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
         this.userCruved = mod.cruved;
       });
 
-    this.occtaxConfig = ModuleConfig;
-
     // parameters for maplist
     // columns to be default displayed
-    this.displayColumns = ModuleConfig.default_maplist_columns;
-    this.mapListService.displayColumns = this.displayColumns;
-
+    this.mapListService.displayColumns = this.occtaxConfig.default_maplist_columns;
     // columns available for display
-
     this.mapListService.availableColumns = this.occtaxConfig.available_maplist_column;
 
-    this.idName = "id_releve_occtax";
     this.mapListService.idName = this.idName;
-    this.apiEndPoint = "occtax/vreleve";
 
     // FETCH THE DATA
     this.mapListService.getData(
-      "occtax/vreleve",
+      this.apiEndPoint,
       [{ param: "limit", value: 12 }],
-      this.customColumns
+      this.displayLeafletPopupCallback.bind(this) //afin que le this présent dans displayLeafletPopupCallback soit ce component.
     );
     // end OnInit
   }
 
-  toggleAdvancedFilters() {
-    this.advandedFilterOpen = !this.advandedFilterOpen;
-  }
-
-  closeAdvancedFilters() {
-    this.advandedFilterOpen = false;
-  }
-
-  searchData() {
-    this.mapListService.refreshUrlQuery(12);
-    const params = [];
-    for (let key in this.dynamicFormGroup.value) {
-      let value = this.dynamicFormGroup.value[key];
-      if (key === "cd_nom" && value) {
-        value = this.dynamicFormGroup.value[key].cd_nom;
-        params.push({ param: key, value: value });
-      } else if ((key === "date_up" || key === "date_low") && value) {
-        value = this._dateParser.format(this.dynamicFormGroup.value[key]);
-        params.push({ param: key, value: value });
-      } else if (key === "observers" && value) {
-        this.dynamicFormGroup.value.observers.forEach(observer => {
-          params.push({ param: "observers", value: observer });
-        });
-      } else if (value && value !== "") {
-        params.push({ param: key, value: value });
-      }
-    }
-    this.closeAdvancedFilters();
-    this.mapListService.refreshData(this.apiEndPoint, "set", params);
-  }
-
-  onEditReleve(id_releve) {
-    this._router.navigate(["occtax/form", id_releve]);
-  }
-
-  onDetailReleve(id_releve) {
-    this._router.navigate(["occtax/info", id_releve]);
+  onChangePage(event) {
+    this.mapListService.setTablePage(event, this.apiEndPoint);
   }
 
   onDeleteReleve(id) {
@@ -174,24 +122,6 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
 
   openModalDownload(event, modal) {
     this.ngbModal.open(modal, { size: "lg" });
-  }
-
-  onAddReleve() {
-    this._router.navigate(["occtax/form"]);
-  }
-
-  customColumns(feature) {
-    // function pass to the getData and the maplist service to format date
-    // on the table
-    // must return a feature
-    feature.properties.date_min = new Date(feature.properties.date_min);
-    feature.properties.date_max = new Date(feature.properties.date_max);
-    return feature;
-  }
-  refreshFilters() {
-    this.taxonomyComponent.refreshAllInput();
-    this.dynamicFormGroup.reset();
-    this.mapListService.refreshUrlQuery(12);
   }
 
   toggle(col) {
@@ -238,4 +168,94 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.moduleSub.unsubscribe();
   }
+
+  toggleExpandRow(row) {
+    this.table.rowDetail.toggleExpandRow(row);
+  }
+
+  onColumnSort(event) {
+    this.mapListService.setHttpParam('orderby', event.column.prop);
+    this.mapListService.setHttpParam('order', event.newValue);
+    this.mapListService.deleteHttpParam('offset');
+    this.mapListService.refreshData(this.apiEndPoint, 'set');
+  }
+
+  /**
+  * Retourne la date en période ou non
+  * Sert aussi à la mise en forme du tooltip
+  */
+  displayDateTooltip(element): string {
+    return element.date_min == element.date_max ? 
+              moment(element.date_min).format('DD-MM-YYYY') : 
+              `Du ${moment(element.date_min).format("DD-MM-YYYY")} au ${moment(element.date_max).format("DD-MM-YYYY")}`;
+  }
+
+  /**
+  * Retourne un tableau des taxon (nom valide ou nom cité)
+  * Sert aussi à la mise en forme du tooltip
+  */
+  displayTaxonsTooltip(row): string[] {
+    let tooltip = [];
+    if (row.t_occurrences_occtax === undefined) {
+      tooltip.push('Aucun taxon');
+    }
+
+    for (let i=0; i<row.t_occurrences_occtax.length; i++) {
+      let occ = row.t_occurrences_occtax[i];
+      if ( occ.taxref !== undefined ) {
+        tooltip.push(occ.taxref.nom_complet);
+      } else {
+        tooltip.push(occ.nom_cite);
+      }
+    }
+
+    return tooltip.sort();
+  }
+
+  /**
+  * Retourne un tableau des observateurs (prenom nom)
+  * Sert aussi à la mise en forme du tooltip
+  */
+  displayObservateursTooltip(row): string[] {
+    let tooltip = [];
+    if (row.observers === undefined) {
+      if(row.observers_txt !== null && row.observers_txt.trim() !== '') {
+        tooltip.push(row.observers_txt.trim());
+      } else {
+        tooltip.push('Aucun observateurs');
+      }
+    }
+
+    for (let i=0; i<row.observers.length; i++) {
+      let obs = row.observers[i];
+      tooltip.push([obs.prenom_role, obs.nom_role].join(' '));
+    }
+
+    return tooltip.sort();
+  }
+
+  displayLeafletPopupCallback(feature): any {
+    const leafletPopup = this.renderer.createElement('div');
+    leafletPopup.style.maxHeight = '80vh';
+    leafletPopup.style.overflowY = 'auto';
+
+    const divObservateurs = this.renderer.createElement('div');
+    divObservateurs.innerHTML = this.displayObservateursTooltip(feature.properties).join(', ');
+
+    const divDate = this.renderer.createElement('div');
+    divDate.innerHTML = this.displayDateTooltip(feature.properties);
+
+    const divTaxons = this.renderer.createElement('div');
+    divTaxons.style.marginTop = '5px';
+    let taxons = this.displayTaxonsTooltip(feature.properties).join('<br>');
+    divTaxons.innerHTML = taxons;
+
+    this.renderer.appendChild(leafletPopup, divObservateurs);
+    this.renderer.appendChild(leafletPopup, divDate);
+    this.renderer.appendChild(leafletPopup, divTaxons);
+
+    feature.properties['leaflet_popup'] = leafletPopup;
+    return feature;
+  }
+
 }

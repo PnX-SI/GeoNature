@@ -17,6 +17,7 @@ from .models import (
     corRoleRelevesOccurrence,
 )
 from geonature.core.gn_meta.models import TDatasets, CorDatasetActor
+from pypnusershub.db.models import User
 
 
 class ReleveRepository:
@@ -90,10 +91,24 @@ class ReleveRepository:
     def filter_query_with_autorization(self, user):
         q = DB.session.query(self.model)
         if user.value_filter == "2":
-            allowed_datasets = TDatasets.get_user_datasets(user)
+            #jointure pour obtenir les jeux de données autorisés
+            if user.id_organisme is None:
+                q = q.outerjoin(TDatasets, 
+                    and_(self.model.id_dataset == TDatasets.id_dataset,
+                        TDatasets.cor_dataset_actor.any(id_role=user.id_role)
+                    )
+                )
+            else: 
+                q = q.outerjoin(TDatasets, 
+                    and_(self.model.id_dataset == TDatasets.id_dataset,
+                        or_(TDatasets.cor_dataset_actor.any(id_organism=user.id_organisme),
+                            TDatasets.cor_dataset_actor.any(id_role=user.id_role)
+                        )
+                    )
+                )
             q = q.filter(
                 or_(
-                    self.model.id_dataset.in_(tuple(allowed_datasets)),
+                    TDatasets.id_dataset.isnot(None),
                     self.model.observers.any(id_role=user.id_role),
                     self.model.id_digitiser == user.id_role,
                 )
@@ -291,13 +306,57 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False):
         for nomenclature in counting_filters:
             col = getattr(CorCountingOccurrence.__table__.columns, nomenclature)
             q = q.filter(col == params.pop(nomenclature))
-
+    """
     # Order by
     if "orderby" in params:
         if params.get("orderby") in mappedView.__table__.columns:
             orderCol = getattr(mappedView.__table__.columns, params["orderby"])
         if "order" in params:
             if params["order"] == "desc":
+                orderCol = orderCol.desc()
+        q = q.order_by(orderCol)
+    """
+    return q
+
+def get_query_occtax_order(orderby, mappedView, q, from_generic_table=False):
+    """
+        Permet de d'ordonner sur un champ d'une table
+        Ajout d'elements de tris spécifiques/synthétiques
+    """
+    if from_generic_table:
+        mappedView = mappedView.tableDef.columns
+
+    # Order by
+    if "orderby" in orderby:
+        if orderby.get("orderby") == 'date':
+            if "order" in orderby and orderby["order"] == "desc":
+                orderCol = getattr(mappedView.__table__.columns, 'date_max')
+            else: 
+                orderCol = getattr(mappedView.__table__.columns, 'date_min')
+        elif orderby.get("orderby") == 'nb_taxons':
+            sub_query = DB.session.query(
+                TRelevesOccurrence.id_releve_occtax, DB.func.count().label("nb_taxons")
+            ).join(
+                TOccurrencesOccurrence, TOccurrencesOccurrence.id_releve_occtax == TRelevesOccurrence.id_releve_occtax
+            ).group_by(
+                TRelevesOccurrence.id_releve_occtax
+            ).subquery()
+            q = q.join(sub_query, sub_query.c.id_releve_occtax == TRelevesOccurrence.id_releve_occtax)
+            orderCol = sub_query.c.nb_taxons
+        elif orderby.get("orderby") == 'dataset':
+            q = q.join(TDatasets, TDatasets.id_dataset == TRelevesOccurrence.id_dataset)
+            orderCol = TDatasets.dataset_name
+        elif orderby.get("orderby") == 'observateurs':
+            q = q.join(
+                    corRoleRelevesOccurrence, corRoleRelevesOccurrence.id_releve_occtax == TRelevesOccurrence.id_releve_occtax
+                ).join(User, corRoleRelevesOccurrence.id_role == User.id_role)
+            orderCol = User.nom_role
+        elif orderby.get("orderby") in mappedView.__table__.columns:
+            orderCol = getattr(mappedView.__table__.columns, orderby["orderby"])
+
+    if 'orderCol' in locals():
+        if "order" in orderby:
+            if orderby["order"] == "desc":
                 orderCol = orderCol.desc()
         q = q.order_by(orderCol)
 
