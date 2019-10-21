@@ -2,16 +2,15 @@ from sqlalchemy import ForeignKey, or_
 from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship, exc
 from sqlalchemy.dialects.postgresql import UUID
-
 from werkzeug.exceptions import NotFound
 
 from pypnnomenclature.models import TNomenclatures
+from pypnusershub.db.models import User
+from utils_flask_sqla.serializers import serializable
 
-from geonature.utils.utilssqlalchemy import serializable
 from geonature.utils.env import DB
 from geonature.core.users.models import BibOrganismes
 from geonature.core.gn_commons.models import CorModuleDataset, TModules
-from pypnusershub.db.models import User
 
 
 class CorAcquisitionFrameworkObjectif(DB.Model):

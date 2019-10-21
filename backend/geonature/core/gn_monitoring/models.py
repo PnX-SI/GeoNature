@@ -10,11 +10,12 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import select, func
 
 from geoalchemy2 import Geometry
+from pypnusershub.db.models import User
+from utils_flask_sqla.serializers import serializable
 
-from geonature.utils.utilssqlalchemy import serializable, geoserializable
+from geonature.utils.utilssqlalchemy import geoserializable
 from geonature.utils.env import DB
 from geonature.core.gn_commons.models import TModules
-from pypnusershub.db.models import User
 
 
 corVisitObserver = DB.Table(
@@ -41,7 +42,7 @@ corSiteModule = DB.Table(
     DB.Column(
         "id_base_site",
         DB.Integer,
-        ForeignKey("gn_monitoring.cor_site_application.id_base_site"),
+        ForeignKey("gn_monitoring.cor_site_module.id_base_site"),
         primary_key=True,
     ),
     DB.Column(
@@ -58,7 +59,7 @@ corSiteArea = DB.Table(
     DB.Column(
         "id_base_site",
         DB.Integer,
-        ForeignKey("gn_monitoring.cor_site_application.id_base_site"),
+        ForeignKey("gn_monitoring.cor_site_module.id_base_site"),
         primary_key=True,
     ),
     DB.Column(
