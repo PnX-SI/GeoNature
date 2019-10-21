@@ -1,4 +1,10 @@
-import { Component, OnInit, OnDestroy, ViewChild, Renderer2 } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+  Renderer2
+} from "@angular/core";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { MapService } from "@geonature_common/map/map.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
@@ -12,8 +18,8 @@ import { GenericFormGeneratorComponent } from "@geonature_common/form/dynamic-fo
 import { AppConfig } from "@geonature_config/app.config";
 import { GlobalSubService } from "@geonature/services/global-sub.service";
 import { Subscription } from "rxjs/Subscription";
-import { HttpParams } from '@angular/common/http';
-import * as moment from 'moment';
+import { HttpParams } from "@angular/common/http";
+import * as moment from "moment";
 
 @Component({
   selector: "pnx-occtax-map-list",
@@ -41,7 +47,7 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
   public taxonomyComponent: TaxonomyComponent;
   @ViewChild("dynamicForm")
   public dynamicForm: GenericFormGeneratorComponent;
-  @ViewChild('table') table: any;
+  @ViewChild("table") table: any;
 
   constructor(
     private mapListService: MapListService,
@@ -174,35 +180,36 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
   }
 
   onColumnSort(event) {
-    this.mapListService.setHttpParam('orderby', event.column.prop);
-    this.mapListService.setHttpParam('order', event.newValue);
-    this.mapListService.deleteHttpParam('offset');
-    this.mapListService.refreshData(this.apiEndPoint, 'set');
+    this.mapListService.setHttpParam("orderby", event.column.prop);
+    this.mapListService.setHttpParam("order", event.newValue);
+    this.mapListService.deleteHttpParam("offset");
+    this.mapListService.refreshData(this.apiEndPoint, "set");
   }
 
   /**
-  * Retourne la date en période ou non
-  * Sert aussi à la mise en forme du tooltip
-  */
+   * Retourne la date en période ou non
+   * Sert aussi à la mise en forme du tooltip
+   */
   displayDateTooltip(element): string {
-    return element.date_min == element.date_max ? 
-              moment(element.date_min).format('DD-MM-YYYY') : 
-              `Du ${moment(element.date_min).format("DD-MM-YYYY")} au ${moment(element.date_max).format("DD-MM-YYYY")}`;
+    return element.date_min == element.date_max
+      ? moment(element.date_min).format("DD-MM-YYYY")
+      : `Du ${moment(element.date_min).format("DD-MM-YYYY")} au ${moment(
+          element.date_max
+        ).format("DD-MM-YYYY")}`;
   }
 
   /**
-  * Retourne un tableau des taxon (nom valide ou nom cité)
-  * Sert aussi à la mise en forme du tooltip
-  */
+   * Retourne un tableau des taxon (nom valide ou nom cité)
+   * Sert aussi à la mise en forme du tooltip
+   */
   displayTaxonsTooltip(row): string[] {
     let tooltip = [];
     if (row.t_occurrences_occtax === undefined) {
-      tooltip.push('Aucun taxon');
+      tooltip.push("Aucun taxon");
     }
-
-    for (let i=0; i<row.t_occurrences_occtax.length; i++) {
+    for (let i = 0; i < row.t_occurrences_occtax.length; i++) {
       let occ = row.t_occurrences_occtax[i];
-      if ( occ.taxref !== undefined ) {
+      if (occ.taxref !== undefined) {
         tooltip.push(occ.taxref.nom_complet);
       } else {
         tooltip.push(occ.nom_cite);
@@ -213,49 +220,50 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
   }
 
   /**
-  * Retourne un tableau des observateurs (prenom nom)
-  * Sert aussi à la mise en forme du tooltip
-  */
+   * Retourne un tableau des observateurs (prenom nom)
+   * Sert aussi à la mise en forme du tooltip
+   */
   displayObservateursTooltip(row): string[] {
     let tooltip = [];
     if (row.observers === undefined) {
-      if(row.observers_txt !== null && row.observers_txt.trim() !== '') {
+      if (row.observers_txt !== null && row.observers_txt.trim() !== "") {
         tooltip.push(row.observers_txt.trim());
       } else {
-        tooltip.push('Aucun observateurs');
+        tooltip.push("Aucun observateurs");
       }
-    }
-
-    for (let i=0; i<row.observers.length; i++) {
-      let obs = row.observers[i];
-      tooltip.push([obs.prenom_role, obs.nom_role].join(' '));
+    } else {
+      for (let i = 0; i < row.observers.length; i++) {
+        let obs = row.observers[i];
+        tooltip.push([obs.prenom_role, obs.nom_role].join(" "));
+      }
     }
 
     return tooltip.sort();
   }
 
   displayLeafletPopupCallback(feature): any {
-    const leafletPopup = this.renderer.createElement('div');
-    leafletPopup.style.maxHeight = '80vh';
-    leafletPopup.style.overflowY = 'auto';
+    const leafletPopup = this.renderer.createElement("div");
+    leafletPopup.style.maxHeight = "80vh";
+    leafletPopup.style.overflowY = "auto";
 
-    const divObservateurs = this.renderer.createElement('div');
-    divObservateurs.innerHTML = this.displayObservateursTooltip(feature.properties).join(', ');
+    const divObservateurs = this.renderer.createElement("div");
+    divObservateurs.innerHTML = this.displayObservateursTooltip(
+      feature.properties
+    ).join(", ");
 
-    const divDate = this.renderer.createElement('div');
+    const divDate = this.renderer.createElement("div");
     divDate.innerHTML = this.displayDateTooltip(feature.properties);
 
-    const divTaxons = this.renderer.createElement('div');
-    divTaxons.style.marginTop = '5px';
-    let taxons = this.displayTaxonsTooltip(feature.properties).join('<br>');
+    const divTaxons = this.renderer.createElement("div");
+    divTaxons.style.marginTop = "5px";
+    let taxons = this.displayTaxonsTooltip(feature.properties).join("<br>");
     divTaxons.innerHTML = taxons;
 
     this.renderer.appendChild(leafletPopup, divObservateurs);
     this.renderer.appendChild(leafletPopup, divDate);
     this.renderer.appendChild(leafletPopup, divTaxons);
 
-    feature.properties['leaflet_popup'] = leafletPopup;
+    feature.properties["leaflet_popup"] = leafletPopup;
     return feature;
   }
-
 }

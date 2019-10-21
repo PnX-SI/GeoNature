@@ -45,9 +45,9 @@ class FormConfig(Schema):
 
 
 default_map_list_conf = [
+    {"prop": "taxons", "name": "Taxon(s)"},
     {"prop": "observateurs", "name": "Observateurs"},
     {"prop": "date", "name": "Date"},
-    {"prop": "nb_taxons", "name": "Nb. taxon"},
     {"prop": "dataset", "name": "Jeu de données"},
 ]
 

@@ -79,12 +79,19 @@
           <ng-container *ngIf="row.digitiser !== undefined">
             <div><strong>Saisie par : </strong>{{ row.digitiser.nom_complet }}</div>
           </ng-container>
+          <div><strong>Observé par: </strong></div>
+          <div style="margin-left: 20px;">
+              <div *ngFor="let obs of displayObservateursTooltip(row)">
+                {{ obs }}
+              </div>
+            </div>
           <div><strong>Taxon(s): </strong></div>
           <div style="margin-left: 20px;">
             <div *ngFor="let taxon of displayTaxonsTooltip(row)">
               {{ taxon }}
             </div>
           </div>
+        
         </ng-template>
       </ngx-datatable-row-detail>
 
@@ -236,6 +243,20 @@
               </span>
             </span> 
           </ng-template>
+          <ng-template 
+            *ngSwitchCase="'taxons'" 
+            ngx-datatable-cell-template
+            let-row="row" 
+          >
+            <span 
+              [matTooltip]="displayTaxonsTooltip(row).join('\n')" 
+              matTooltipPosition="left"
+            >
+              <span>
+                  <span class='badge badge-dark'> {{row.t_occurrences_occtax?.length}} </span> {{displayTaxonsTooltip(row)}}
+              </span>
+            </span> 
+          </ng-template>
 
           <!-- observateurs -->
           <!-- Affiche le nombre de taxons du relevé -->
@@ -338,3 +359,5 @@
 
   <!-- END ROW -->
 </div>
+
+{{mapListService.tableData |json}}
