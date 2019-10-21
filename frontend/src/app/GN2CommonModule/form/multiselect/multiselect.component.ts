@@ -92,6 +92,9 @@ export class MultiSelectComponent implements OnInit, OnChanges {
       });
 
     this.parentFormControl.valueChanges.subscribe(value => {
+      if (this.values.length < 1) {
+        return;
+      }
       // filter the list of options to not display twice an item
       if (value === null) {
         this.selectedItems = [];
@@ -100,7 +103,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
       } else {
         if (this.selectedItems.length === 0) {
           value.forEach(item => {
-            if(!this.bindAllItem) {
+            if (!this.bindAllItem) {
               item = this.values[item];
             }
             this.addItem(item);
@@ -192,6 +195,10 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   ngOnChanges(changes) {
     if (changes.values && changes.values.currentValue) {
       this.savedValues = changes.values.currentValue;
+
+      if (this.parentFormControl.value) {
+        this.parentFormControl.setValue(this.parentFormControl.value);
+      }
       // remove doublon in the dropdown lists
       // @FIXME: timeout to wait for the formcontrol to be updated
       setTimeout(() => {
