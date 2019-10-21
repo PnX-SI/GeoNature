@@ -1076,7 +1076,7 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
   GROUP BY rel.id_releve_occtax, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.meta_device_entry, rel.comment, rel.geom_4326, rel."precision", t.cd_nom, occ.nom_cite, occ.id_occurrence_occtax, t.lb_nom, t.nom_valide, t.nom_complet_html, t.nom_vern;
 
 
--- Vue représentant l'ensemble des relevés du protocole occtax pour la représentation du module carte liste
+-- Vue représentant l'ensemble des relevés du protocole occtax pour la représentation du module carte liste (DEPRECIE)
 CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS 
 WITH 
     occurrences (id_releve_occtax, taxons, nb_occ) as (

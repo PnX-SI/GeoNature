@@ -201,7 +201,7 @@ class TDatasets(DB.Model):
 
     cor_dataset_actor = relationship(
         CorDatasetActor,
-        lazy="select",
+        lazy="joined",
         cascade="save-update, merge, delete, delete-orphan",
     )
 

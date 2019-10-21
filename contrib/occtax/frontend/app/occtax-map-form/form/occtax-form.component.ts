@@ -77,6 +77,7 @@ export class OcctaxFormComponent implements OnInit {
     }
     // format nom_cite, update date, set id_releve_occtax and id_occurrence_occtax
     finalForm.properties.t_occurrences_occtax.forEach((occ, index) => {
+      delete occ["taxref"];
       occ.id_releve_occtax = finalForm.properties.id_releve_occtax;
       delete occ.taxref;
       occ.cor_counting_occtax.forEach(count => {
