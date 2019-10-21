@@ -33,6 +33,7 @@ export class OcctaxMapInfoComponent implements OnInit {
   public releveForm: FormGroup;
   public userReleveCruved: any;
   public nbCounting = 0;
+  public currentReleve: any;
   constructor(
     public fs: OcctaxFormService,
     private _route: ActivatedRoute,
@@ -79,6 +80,8 @@ export class OcctaxMapInfoComponent implements OnInit {
       // load one releve
       this._occtaxService.getOneReleve(id_releve).subscribe(
         data => {
+          // save current releve
+          this.currentReleve = data;
           this.userReleveCruved = data.cruved;
           // calculate the nbCounting
           data.releve.properties.t_occurrences_occtax.forEach(occ => {

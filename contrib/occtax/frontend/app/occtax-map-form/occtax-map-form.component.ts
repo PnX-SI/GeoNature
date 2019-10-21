@@ -80,6 +80,8 @@ export class OcctaxMapFormComponent
         // load one releve
         this.occtaxService.getOneReleve(this.id).subscribe(
           data => {
+            // save the current releve
+            this.fs.currentReleve = data;
             //test if observers exist.
             //Case when some releves were create with 'observers_txt : true' and others with 'observers_txt : false'
             //if this case comes up with 'observers_txt : false', the form is load with an empty 'observers' input
@@ -118,7 +120,7 @@ export class OcctaxMapFormComponent
             });
 
             data.releve.properties.t_occurrences_occtax.forEach(occ => {
-              this.fs.taxonsList.push(occ.taxonomie);
+              this.fs.taxonsList.push(occ.taxref);
             });
 
             // set the occurrence
