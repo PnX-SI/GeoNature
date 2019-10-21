@@ -135,6 +135,8 @@ def getOneReleve(id_releve, info_role):
     user_cruved = get_or_fetch_user_cruved(
         session=session, id_role=info_role.id_role, module_code="OCCTAX"
     )
+    dataset = DB.session.query(TDatasets).get(releve_model.id_dataset)
+    releve_geojson["properties"]["dataset"] = dataset.as_dict()
     releve_cruved = releve_model.get_releve_cruved(info_role, user_cruved)
     return {"releve": releve_geojson, "cruved": releve_cruved}
 
