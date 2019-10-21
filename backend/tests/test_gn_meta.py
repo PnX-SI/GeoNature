@@ -119,6 +119,7 @@ class TestGnMeta:
             "marine_domain": False,
             "terrestrial_domain": True,
             "validable": True,
+            "modules": [],
         }
         response = post_json(
             self.client, url_for("gn_meta.post_dataset"), json_dict=one_dataset
