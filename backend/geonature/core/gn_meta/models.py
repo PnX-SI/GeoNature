@@ -205,12 +205,6 @@ class TDatasets(DB.Model):
         cascade="save-update, merge, delete, delete-orphan",
     )
 
-    # cor_dataset_module = relationship(
-    #     CorModuleDataset,
-    #     lazy="select",
-    #     cascade="save-update, merge, delete, delete-orphan",
-    # )
-
     @staticmethod
     def get_id(uuid_dataset):
         id_dataset = (
