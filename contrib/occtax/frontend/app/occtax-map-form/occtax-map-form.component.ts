@@ -118,7 +118,7 @@ export class OcctaxMapFormComponent
             });
 
             data.releve.properties.t_occurrences_occtax.forEach(occ => {
-              this.fs.taxonsList.push(occ.taxonomie);
+              this.fs.taxonsList.push(occ.taxref);
             });
 
             // set the occurrence
