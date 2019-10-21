@@ -9,6 +9,12 @@ CHANGELOG
 
 * Nouvelle association possible entre un JDD et un module (#399 et #8)
 
+**🐛 Corrections**
+
+* OCCTAX: Gestion de l'édtion des occurrence ou le JDD a été désactivée (#694)
+* OCCTAX: Correction d'une faiblesse lors de la récupération des informations taxonomiques d'un relevé (utilisation d'une jointure plutôt que l'API TaxHub) Corrige #751 ?
+
+
 2.2.1 (2019-10-09)
 ------------------
 
