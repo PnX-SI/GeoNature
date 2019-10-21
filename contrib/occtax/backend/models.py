@@ -164,7 +164,7 @@ class TOccurrencesOccurrence(DB.Model):
         uselist=True,
     )
 
-    taxonomie = relationship("Taxref", lazy="joined")
+    taxref = relationship("Taxref", lazy="joined")
 
 
 @serializable
