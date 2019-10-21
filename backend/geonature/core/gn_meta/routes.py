@@ -18,7 +18,7 @@ from geonature.core.gn_meta.models import (
     CorAcquisitionFrameworkObjectif,
     CorAcquisitionFrameworkVoletSINP,
 )
-from geonature.core.gn_commons.models import TModules, CorModuleDataset
+from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_meta.repositories import get_datasets_cruved, get_af_cruved
 from utils_flask_sqla.response import json_resp
 from geonature.core.gn_permissions import decorators as permissions
