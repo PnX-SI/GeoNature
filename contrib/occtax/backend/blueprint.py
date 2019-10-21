@@ -35,9 +35,9 @@ from .models import (
     DefaultNomenclaturesValue,
 )
 from .repositories import (
-    ReleveRepository, 
+    ReleveRepository,
     get_query_occtax_filters,
-    get_query_occtax_order
+    get_query_occtax_order,
 )
 from .utils import get_nomenclature_filters
 from geonature.utils.utilssqlalchemy import (
@@ -51,27 +51,11 @@ from geonature.utils.utilssqlalchemy import (
 from geonature.utils.errors import GeonatureApiError
 from geonature.core.users.models import UserRigth
 from geonature.core.gn_meta.models import TDatasets, CorDatasetActor
-from geonature.core.taxonomie.models import Taxref
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
 
 blueprint = Blueprint("pr_occtax", __name__)
 log = logging.getLogger(__name__)
-
-# @blueprint.route("/releves_old", methods=["GET"])
-# @permissions.check_cruved_scope("R", True, module_code="OCCTAX")
-# @json_resp
-# def getReleves_old(info_role):
-#     """
-#     Get all releves - Not used in frontend
-#
-#     .. :quickref: Occtax;
-#    
-#     :returns: `Geojson<TReleves>`
-#     """
-#     releve_repository = ReleveRepository(TRelevesOccurrence)
-#     data = releve_repository.get_all(info_role)
-#     return FeatureCollection([n.as_dict() for n in data])
 
 
 @blueprint.route("/releves", methods=["GET"])
@@ -87,8 +71,10 @@ def getReleves(info_role):
     limit = int(parameters.get("limit", 100))
     page = int(parameters.get("offset", 0))
     orderby = {
-        'orderby': (parameters.get("orderby", 'date_max')).lower(),
-        'order': (parameters.get("order", 'desc')).lower() if (parameters.get("order", 'desc')).lower() == 'asc' else 'desc' #asc or desc
+        "orderby": (parameters.get("orderby", "date_max")).lower(),
+        "order": (parameters.get("order", "desc")).lower()
+        if (parameters.get("order", "desc")).lower() == "asc"
+        else "desc",  # asc or desc
     }
 
     # Filters
@@ -96,17 +82,18 @@ def getReleves(info_role):
 
     # Order by
     q = get_query_occtax_order(orderby, TRelevesOccurrence, q)
-
     try:
         data = q.limit(limit).offset(page * limit).all()
     except Exception as e:
         DB.session.rollback()
         raise
 
-    #Pour obtenir le nombre de résultat de la requete sans le LIMIT
+    # Pour obtenir le nombre de résultat de la requete sans le LIMIT
     try:
         nbResultsQuery = releve_repository.get_filtered_query(info_role)
-        nbResultsQuery = get_query_occtax_filters(parameters, TRelevesOccurrence, nbResultsQuery)
+        nbResultsQuery = get_query_occtax_filters(
+            parameters, TRelevesOccurrence, nbResultsQuery
+        )
         nbResultsWithoutFilter = nbResultsQuery.count()
     except Exception as e:
         DB.session.rollback()
@@ -116,7 +103,7 @@ def getReleves(info_role):
     user_cruved = get_or_fetch_user_cruved(
         session=session, id_role=info_role.id_role, module_code="OCCTAX"
     )
-    
+
     featureCollection = []
     for n in data:
         releve_cruved = n.get_releve_cruved(user, user_cruved)
@@ -334,11 +321,6 @@ def insertOrUpdateOneReleve(info_role):
             cor_counting_occtax = occ["cor_counting_occtax"]
             occ.pop("cor_counting_occtax")
 
-        taxref = None
-        if "taxref" in occ:
-            taxref = Taxref(**occ["taxref"])
-            occ.pop("taxref")
-
         # Test et suppression
         #   des propriétés inexistantes de TOccurrencesOccurrence
         attliste = [k for k in occ]
@@ -349,8 +331,6 @@ def insertOrUpdateOneReleve(info_role):
         if "id_occurrence_occtax" in occ and occ["id_occurrence_occtax"] is None:
             occ.pop("id_occurrence_occtax")
         occtax = TOccurrencesOccurrence(**occ)
-
-        occtax.taxref = taxref
 
         for cnt in cor_counting_occtax:
             # Test et suppression
