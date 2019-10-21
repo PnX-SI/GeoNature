@@ -13,7 +13,7 @@ CHANGELOG
 
 * OCCTAX: Gestion de l'édtion des occurrence ou le JDD a été désactivée (#694)
 * OCCTAX: Correction d'une faiblesse lors de la récupération des informations taxonomiques d'un relevé (utilisation d'une jointure plutôt que l'API TaxHub) Corrige #751 ?
-
+* Simplification de l'écriture des logs dans le script ``install_db.sh``
 
 2.2.1 (2019-10-09)
 ------------------

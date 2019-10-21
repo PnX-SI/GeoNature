@@ -47,7 +47,7 @@
         <div class="row row-sm">
           <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 padding-sm">
               <div class="dataset-inactive" *ngIf="currentReleve?.releve?.properties?.dataset.active == false; else elseblocDataset">
-                <small> <b> {{ 'MetaData.Datasets' | translate }}: </b>  </small>
+                 <b> {{ 'MetaData.Datasets' | translate }}: </b> 
                 <small>
                     {{currentReleve?.releve?.properties?.dataset?.dataset_name}}
                 </small> 
