@@ -8,7 +8,7 @@ from geonature.utils.env import DB
 from geonature.core.gn_commons.models import VLatestValidations
 from geonature.utils.utilssqlalchemy import testDataType
 from geonature.utils.errors import GeonatureApiError
-from .utils import get_nomenclature_filters
+from .utils import get_nomenclature_filters, is_already_joined
 
 from .models import (
     TRelevesOccurrence,
@@ -197,10 +197,14 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False):
             TOccurrencesOccurrence.id_releve_occtax == mappedView.id_releve_occtax,
         ).filter(TOccurrencesOccurrence.cd_nom == int(params.pop("cd_nom")))
     if "observers" in params:
-        q = q.join(
-            corRoleRelevesOccurrence,
-            corRoleRelevesOccurrence.id_releve_occtax == mappedView.id_releve_occtax,
-        ).filter(corRoleRelevesOccurrence.id_role.in_(args.getlist("observers")))
+        if not is_already_joined(corRoleRelevesOccurrence, q):
+            q = q.join(
+                corRoleRelevesOccurrence,
+                corRoleRelevesOccurrence.id_releve_occtax
+                == mappedView.id_releve_occtax,
+            )
+
+        q = q.filter(corRoleRelevesOccurrence.id_role.in_(args.getlist("observers")))
         params.pop("observers")
 
     if "date_up" in params:
@@ -244,23 +248,21 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False):
     else:
         table_columns = mappedView.__table__.columns
 
-    join_with_t_occ = False
     if "non_digital_proof" in params:
-        q = q.join(
-            TOccurrencesOccurrence,
-            mappedView.id_releve_occtax == TOccurrencesOccurrence.id_releve_occtax,
-        )
-        join_with_t_occ = True
-        q = q.filter(
-            TOccurrencesOccurrence.non_digital_proof == params.pop("non_digital_proof")
-        )
-    if "digital_proof" in params:
-        if not join_with_t_occ:
+        if not is_already_joined(TOccurrencesOccurrence, q):
             q = q.join(
                 TOccurrencesOccurrence,
                 mappedView.id_releve_occtax == TOccurrencesOccurrence.id_releve_occtax,
             )
-        join_with_t_occ = True
+        q = q.filter(
+            TOccurrencesOccurrence.non_digital_proof == params.pop("non_digital_proof")
+        )
+    if "digital_proof" in params:
+        if not is_already_joined(TOccurrencesOccurrence, q):
+            q = q.join(
+                TOccurrencesOccurrence,
+                mappedView.id_releve_occtax == TOccurrencesOccurrence.id_releve_occtax,
+            )
         q = q.filter(
             TOccurrencesOccurrence.digital_proof == params.pop("digital_proof")
         )
