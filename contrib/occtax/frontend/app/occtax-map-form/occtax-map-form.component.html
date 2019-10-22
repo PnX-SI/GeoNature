@@ -8,15 +8,15 @@
         [coordinates]="fs.markerCoordinates" 
         [zoomLevel]="occtaxConfig.releve_map_zoom_level"
         (markerChanged)="sendGeoInfo($event)"
-        >
+      >
       </pnx-marker>
       
       <pnx-leaflet-draw 
         [geojson]="fs.geojsonCoordinates" 
         [options]="leafletDrawOptions" 
         [zoomLevel]="occtaxConfig.releve_map_zoom_level"
-        layerDrawed)="sendGeoInfo($event)"
-        >
+        (layerDrawed)="sendGeoInfo($event)"
+      >
       </pnx-leaflet-draw>
 
       <pnx-leaflet-filelayer
