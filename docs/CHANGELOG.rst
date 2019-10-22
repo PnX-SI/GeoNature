@@ -5,15 +5,26 @@ CHANGELOG
 2.2.2 (Unreleased)
 ------------------
 
+Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...develop
+
 **🚀 Nouveautés**
 
-* Nouvelle association possible entre un JDD et un module (#399 et #8)
+* Nouvelle association possible entre un JDD et un module (#399)
 
 **🐛 Corrections**
 
-* OCCTAX: Gestion de l'édtion des occurrence ou le JDD a été désactivée (#694)
-* OCCTAX: Correction d'une faiblesse lors de la récupération des informations taxonomiques d'un relevé (utilisation d'une jointure plutôt que l'API TaxHub) Corrige #751 ?
+* OCCTAX : Gestion de l'édition des occurrences où le JDD a été désactivé, en ne permettant pas de modifier le JDD (#694)
+* OCCTAX : Amélioration des performances de la liste des relevés (par @jbrieuclp) (#690)
+* OCCTAX : Correction d'une faiblesse lors de la récupération des informations taxonomiques d'un relevé (utilisation d'une jointure plutôt que l'API TaxHub). Corrige #751 ?
+* OCCTAX : Correction des listes longues de taxons dans les tooltip des relevés en y ajoutant un scroll (par @jbrieuclp) (#666)
+µ INSCRIPTION : Correction si aucun champ additionnel n'a été ajouté au formulaire (par @jbrieuclp) (#746)
 * Simplification de l'écriture des logs dans le script ``install_db.sh``
+* Externalisation des outils Flask et SQLAlchemy en utilisant le nouveau sous-module dédié (https://github.com/PnX-SI/Utils-Flask-SQLAlchemy) qui améliore aussi les performances des jointures
+
+**⚠️ Notes de version**
+
+* Passer le script de migration suivant: https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.2.1to2.3.0.sql
+* Lors de la migration, tous les JDD actifs sont associés par défaut au module Occtax (https://github.com/PnX-SI/GeoNature/blob/develop/data/migrations/2.2.1to2.3.0.sql#L17-L22), à chacun d'adapter si besoin, en en retirant certains.
 
 2.2.1 (2019-10-09)
 ------------------
