@@ -103,15 +103,15 @@ Pour cela GeoNature s'appuie sur l'application TaxHub et sa structure de BDD
 qui est dupliquée dans le schéma ``taxonomie``.
 Détails sur `<https://github.com/PnX-SI/TaxHub>`_
 
+.. image:: https://geonature.fr/documents/logo-geonature.jpg
+    :target: https://geonature.fr
+
 =======
 Licence
 =======
 
 * OpenSource - GPL-3.0
 * Copyleft 2014-2019 - Parc National des Écrins - Parc national des Cévennes
-
-.. image:: https://geonature.fr/documents/logo-geonature.jpg
-    :target: https://geonature.fr
 
 .. image:: http://geonature.fr/img/logo-pne.jpg
     :target: http://www.ecrins-parcnational.fr
