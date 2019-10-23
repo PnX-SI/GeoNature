@@ -197,6 +197,7 @@ class TDatasets(DB.Model):
         secondaryjoin=(CorModuleDataset.id_module == TModules.id_module),
         foreign_keys=[CorModuleDataset.id_dataset, CorModuleDataset.id_module],
         lazy="select",
+        cascade="save-update, merge",
     )
 
     cor_dataset_actor = relationship(
