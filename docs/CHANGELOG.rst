@@ -20,6 +20,7 @@ Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...develop
 µ INSCRIPTION : Correction si aucun champ additionnel n'a été ajouté au formulaire (par @jbrieuclp) (#746)
 * Simplification de l'écriture des logs dans le script ``install_db.sh``
 * Externalisation des outils Flask et SQLAlchemy en utilisant le nouveau sous-module dédié (https://github.com/PnX-SI/Utils-Flask-SQLAlchemy) qui améliore aussi les performances des jointures
+* Correction de l'installation des requirements.txt lors de l'installation d'un module (#764 par @joelclems)
 
 **⚠️ Notes de version**
 
