@@ -295,7 +295,12 @@
       </ng-container>
 
     </ngx-datatable>
-    <button id="download-btn" class="btn btn-primary box-shadow" (click)="openModalDownload($event, modalDownload)">
+    <button 
+      *ngIf="userCruved?.E != '0'"
+      id="download-btn" 
+      class="btn btn-primary box-shadow" 
+      (click)="openModalDownload($event, modalDownload)"
+    >
       <i class="fa fa-download" aria-hidden="true">
       </i>
       <small> {{ 'DownloadData' | translate }} </small>
