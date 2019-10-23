@@ -11,6 +11,7 @@
 ################################################################################
 
 https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/archive/develop.zip
+https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/archive/develop.zip
 https://github.com/PnX-SI/UsersHub-authentification-module/archive/develop.zip
 https://github.com/PnX-SI/Nomenclature-api-module/archive/develop.zip
 chardet==3.0.4
