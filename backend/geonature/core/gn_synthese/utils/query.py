@@ -63,7 +63,7 @@ def filter_query_with_cruved(
             .subquery("sub_query_observers")
         )
         ors_filters = [
-            model.id_synthese.in_(sub_query_observers),
+            model_id_syn_col.in_(sub_query_observers),
             model_id_digitiser_column == user.id_role,
         ]
         if current_app.config["SYNTHESE"]["CRUVED_SEARCH_WITH_OBSERVER_AS_TXT"]:
