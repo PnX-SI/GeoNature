@@ -128,6 +128,7 @@ def post_dataset(info_role):
     modules = data.pop("modules")
 
     dataset = TDatasets(**data)
+    dataset.modules = []
 
     for cor in cor_dataset_actor:
         # remove id_cda if None otherwise merge no working well
@@ -135,8 +136,9 @@ def post_dataset(info_role):
             cor.pop("id_cda")
         dataset.cor_dataset_actor.append(CorDatasetActor(**cor))
 
-    modules = TModules.query.filter(TModules.id_module.in_(modules)).all()
-    for m in modules:
+    modules_obj = TModules.query.filter(TModules.id_module.in_(modules)).all()
+
+    for m in modules_obj:
         dataset.modules.append(m)
     if dataset.id_dataset:
         DB.session.merge(dataset)

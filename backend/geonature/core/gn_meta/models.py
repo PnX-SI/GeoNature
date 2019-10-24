@@ -10,7 +10,8 @@ from utils_flask_sqla.serializers import serializable
 
 from geonature.utils.env import DB
 from geonature.core.users.models import BibOrganismes
-from geonature.core.gn_commons.models import CorModuleDataset, TModules
+
+from geonature.core.gn_commons.models import TModules, cor_module_dataset
 
 
 class CorAcquisitionFrameworkObjectif(DB.Model):
@@ -190,15 +191,7 @@ class TDatasets(DB.Model):
     active = DB.Column(DB.Boolean, default=True)
     validable = DB.Column(DB.Boolean)
 
-    modules = relationship(
-        TModules,
-        secondary=CorModuleDataset.__table__,
-        primaryjoin=(CorModuleDataset.id_dataset == id_dataset),
-        secondaryjoin=(CorModuleDataset.id_module == TModules.id_module),
-        foreign_keys=[CorModuleDataset.id_dataset, CorModuleDataset.id_module],
-        lazy="select",
-        cascade="save-update, merge",
-    )
+    modules = DB.relationship("TModules", secondary=cor_module_dataset)
 
     cor_dataset_actor = relationship(
         CorDatasetActor,
@@ -244,6 +237,25 @@ class TDatasets(DB.Model):
                 )
             )
         return list(set([d.id_dataset for d in q.all()]))
+
+
+# @serializable
+# class TModules(DB.Model):
+#     __tablename__ = "t_modules"
+#     __table_args__ = {"schema": "gn_commons", "extend_existing": True}
+#     id_module = DB.Column(DB.Integer, primary_key=True)
+#     module_code = DB.Column(DB.Unicode)
+#     module_label = DB.Column(DB.Unicode)
+#     module_picto = DB.Column(DB.Unicode)
+#     module_desc = DB.Column(DB.Unicode)
+#     module_group = DB.Column(DB.Unicode)
+#     module_path = DB.Column(DB.Unicode)
+#     module_external_url = DB.Column(DB.Unicode)
+#     module_target = DB.Column(DB.Unicode)
+#     module_comment = DB.Column(DB.Unicode)
+#     active_frontend = DB.Column(DB.Boolean)
+#     active_backend = DB.Column(DB.Boolean)
+#     module_doc_url = DB.Column(DB.Unicode)
 
 
 @serializable
