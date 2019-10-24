@@ -92,15 +92,20 @@ export class MultiSelectComponent implements OnInit, OnChanges {
       });
 
     this.parentFormControl.valueChanges.subscribe(value => {
+      console.log('LAAAAAAAAA');
+
       if (this.values.length < 1) {
         return;
       }
-      // filter the list of options to not display twice an item
+      //  if the new value is null
+      //refresh selectedItems, formcontrolValue and values to display
       if (value === null) {
         this.selectedItems = [];
         this.formControlValue = [];
         this.values = this.savedValues;
       } else {
+        // when patch value when init the component
+        // push the item only if selected items == 0 (to not push twice the object when the formControl is patch)
         if (this.selectedItems.length === 0) {
           value.forEach(item => {
             if (!this.bindAllItem) {
@@ -130,6 +135,8 @@ export class MultiSelectComponent implements OnInit, OnChanges {
       return;
     }
     // set the item for the formControl
+    // if bindAllItem -> push the whole object
+    // else push only the key of the object( @Input keyValue)
     let updateItem;
     if (this.bindAllItem) {
       updateItem = item;
