@@ -193,6 +193,8 @@ class TDatasets(DB.Model):
 
     modules = DB.relationship("TModules", secondary=cor_module_dataset)
 
+    # HACK: the relationship is not well defined for many to many relationship
+    # because CorDatasetActor could be an User or an Organisme object...
     cor_dataset_actor = relationship(
         CorDatasetActor,
         lazy="joined",
