@@ -38,9 +38,21 @@ export class HomeContentComponent implements OnInit {
     }
     if (AppConfig.FRONTEND.DISPLAY_STAT_BLOC) {
       // get general stats
-      this._syntheseApi.getSyntheseGeneralStat().subscribe(result => {
-        this.generalStat = result;
-      });
+      this._syntheseApi
+        .getSyntheseGeneralStat()
+        .map(stat => {
+          // tslint:disable-next-line:forin
+          for (const key in stat) {
+            // prtetty the number with spaces
+            if (stat[key]) {
+              stat[key] = stat[key].toLocaleString('fr-FR');
+            }
+          }
+          return stat;
+        })
+        .subscribe(result => {
+          this.generalStat = result;
+        });
     }
 
     // get module home if not already in localstorage
