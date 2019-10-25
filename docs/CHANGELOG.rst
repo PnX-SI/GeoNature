@@ -10,6 +10,7 @@ Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...develop
 **🚀 Nouveautés**
 
 * Nouvelle association possible entre un JDD et un module (#399)
+* METADATA: Ajout des ID sur les JDD et CA
 
 **🐛 Corrections**
 
@@ -17,7 +18,7 @@ Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...develop
 * OCCTAX : Amélioration des performances de la liste des relevés (par @jbrieuclp) (#690)
 * OCCTAX : Correction d'une faiblesse lors de la récupération des informations taxonomiques d'un relevé (utilisation d'une jointure plutôt que l'API TaxHub). Corrige #751 ?
 * OCCTAX : Correction des listes longues de taxons dans les tooltip des relevés en y ajoutant un scroll (par @jbrieuclp) (#666)
-µ INSCRIPTION : Correction si aucun champ additionnel n'a été ajouté au formulaire (par @jbrieuclp) (#746)
+ INSCRIPTION : Correction si aucun champ additionnel n'a été ajouté au formulaire (par @jbrieuclp) (#746)
 * Simplification de l'écriture des logs dans le script ``install_db.sh``
 * Externalisation des outils Flask et SQLAlchemy en utilisant le nouveau sous-module dédié (https://github.com/PnX-SI/Utils-Flask-SQLAlchemy) qui améliore aussi les performances des jointures
 * Correction de l'installation des requirements.txt lors de l'installation d'un module (#764 par @joelclems)
