@@ -11,7 +11,7 @@ from utils_flask_sqla.serializers import serializable
 from geonature.utils.env import DB
 from geonature.core.users.models import BibOrganismes
 
-from geonature.core.gn_commons.models import TModules, cor_module_dataset
+from geonature.core.gn_commons.models import cor_module_dataset
 
 
 class CorAcquisitionFrameworkObjectif(DB.Model):
@@ -237,25 +237,6 @@ class TDatasets(DB.Model):
                 )
             )
         return list(set([d.id_dataset for d in q.all()]))
-
-
-# @serializable
-# class TModules(DB.Model):
-#     __tablename__ = "t_modules"
-#     __table_args__ = {"schema": "gn_commons", "extend_existing": True}
-#     id_module = DB.Column(DB.Integer, primary_key=True)
-#     module_code = DB.Column(DB.Unicode)
-#     module_label = DB.Column(DB.Unicode)
-#     module_picto = DB.Column(DB.Unicode)
-#     module_desc = DB.Column(DB.Unicode)
-#     module_group = DB.Column(DB.Unicode)
-#     module_path = DB.Column(DB.Unicode)
-#     module_external_url = DB.Column(DB.Unicode)
-#     module_target = DB.Column(DB.Unicode)
-#     module_comment = DB.Column(DB.Unicode)
-#     active_frontend = DB.Column(DB.Boolean)
-#     active_backend = DB.Column(DB.Boolean)
-#     module_doc_url = DB.Column(DB.Unicode)
 
 
 @serializable
