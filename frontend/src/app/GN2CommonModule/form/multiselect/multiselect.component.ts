@@ -209,6 +209,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
       }
       // remove doublon in the dropdown lists
       // @FIXME: timeout to wait for the formcontrol to be updated
+      // the data from formControl can came in AJAX, so we wait for it...
       setTimeout(() => {
         this.removeDoublon();
       }, 2000);
