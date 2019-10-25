@@ -91,9 +91,8 @@ export class MultiSelectComponent implements OnInit, OnChanges {
         this.onSearch.emit(value);
       });
 
+    // When data his push via 'patchValue' (API POST data for example)
     this.parentFormControl.valueChanges.subscribe(value => {
-      console.log('LAAAAAAAAA');
-
       if (this.values.length < 1) {
         return;
       }
@@ -108,9 +107,6 @@ export class MultiSelectComponent implements OnInit, OnChanges {
         // push the item only if selected items == 0 (to not push twice the object when the formControl is patch)
         if (this.selectedItems.length === 0) {
           value.forEach(item => {
-            if (!this.bindAllItem) {
-              item = this.values[item];
-            }
             this.addItem(item);
           });
         }
@@ -118,6 +114,11 @@ export class MultiSelectComponent implements OnInit, OnChanges {
     });
   }
 
+  /**
+   * Add the current item in the formControl (the full object if bindAllItems=True and only the id (keyValue) otherwise)
+   * filter the select list to not have doublon
+   * @param item : the full item object (not the id)
+   */
   addItem(item) {
     // remove element from the items list to avoid doublon
     this.values = this.values.filter(curItem => {
@@ -149,7 +150,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
     this.parentFormControl.patchValue(this.formControlValue);
 
     this.searchControl.reset();
-    this.onChange.emit(item);
+    this.onChange.emit(updateItem);
   }
 
   removeItem($event, item) {
