@@ -266,7 +266,6 @@ class VReleveOccurrence(ReleveModel):
 
 
 @serializable
-<< << << < HEAD
 @geoserializable
 class VReleveList(ReleveModel):
     __tablename__ = "v_releve_list"
@@ -306,10 +305,6 @@ class VReleveList(ReleveModel):
 
 
 @serializable
-== == == =
->>>>>> > origin/develop
-
-
 class DefaultNomenclaturesValue(DB.Model):
     __tablename__ = "defaults_nomenclatures_value"
     __table_args__ = {"schema": "pr_occtax"}
