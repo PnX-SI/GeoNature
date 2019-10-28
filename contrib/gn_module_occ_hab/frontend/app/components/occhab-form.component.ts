@@ -3,8 +3,9 @@ import { OcchabFormService } from "../services/form-service";
 import { OcchabStoreService } from "../services/store.service";
 import { OccHabDataService } from "../services/data.service";
 import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs/Subscription";
+import { CommonService } from "@geonature_common/service/common.service";
 
 @Component({
   selector: "pnx-occhab-form",
@@ -22,7 +23,9 @@ export class OccHabFormComponent implements OnInit {
     public occHabForm: OcchabFormService,
     private _occHabDataService: OccHabDataService,
     public storeService: OcchabStoreService,
-    private _route: ActivatedRoute
+    private _route: ActivatedRoute,
+    private _router: Router,
+    private _commonService: CommonService
   ) {}
 
   ngOnInit() {
@@ -48,6 +51,24 @@ export class OccHabFormComponent implements OnInit {
 
   toggleDepth() {
     this.showDepth = !this.showDepth;
+  }
+
+  postStation() {
+    const station = this.occHabForm.formatStationBeforePost();
+    this._occHabDataService.postStation(station).subscribe(
+      data => {
+        this.occHabForm.resetAllForm();
+        this.occHabForm.height = this.occHabForm.MAP_FULL_HEIGHT;
+        this._router.navigate(["occhab"]);
+      },
+      error => {
+        if (error.status === 403) {
+          this._commonService.translateToaster("error", "NotAllowed");
+        } else {
+          this._commonService.translateToaster("error", "ErrorMessage");
+        }
+      }
+    );
   }
 
   formatter(item) {

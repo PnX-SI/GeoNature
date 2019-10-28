@@ -7,7 +7,6 @@ import {
 } from "@angular/forms";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { OccHabDataService } from "../services/data.service";
-import { CommonService } from "@geonature_common/service/common.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 
 @Injectable()
@@ -23,8 +22,6 @@ export class OcchabFormService {
   constructor(
     private _fb: FormBuilder,
     private _dateParser: NgbDateParserFormatter,
-    private _dataService: OccHabDataService,
-    private _commonService: CommonService,
     private _gn_dataSerice: DataFormService
   ) {
     // get selected cd_typo to filter the habref autcomplete
@@ -65,9 +62,10 @@ export class OcchabFormService {
     });
   }
 
-  resetStationForm() {
+  resetAllForm() {
     this.stationForm.reset();
     this.stationForm.patchValue({ t_habitats: [] });
+    this.habitatForm.reset();
   }
 
   addHabitat() {
@@ -116,7 +114,7 @@ export class OcchabFormService {
   /**
    * format the data returned by get one station to fit with the form
    */
-  formatStationAndHab(station) {
+  formatStationAndHabtoPatch(station) {
     const formatedHabitats = station.t_one_habitats.map(hab => {
       return {
         ...hab,
@@ -132,7 +130,6 @@ export class OcchabFormService {
       };
     });
     station["t_habitats"] = formatedHabitats;
-    console.log(formatedHabitats);
 
     return {
       ...station,
@@ -152,14 +149,14 @@ export class OcchabFormService {
 
   patchStationForm(oneStation) {
     const formatedStation = this.stationForm.patchValue(
-      this.formatStationAndHab(oneStation.properties)
+      this.formatStationAndHabtoPatch(oneStation.properties)
     );
     this.stationForm.patchValue({
       geom_4326: oneStation.geometry
     });
   }
-
-  postStation() {
+  /** Format a station before post */
+  formatStationBeforePost() {
     let formData = Object.assign({}, this.stationForm.value);
 
     //format cd_hab
@@ -179,20 +176,6 @@ export class OcchabFormService {
       this.formatNomenclature(element);
     });
 
-    this._dataService.postStation(formData).subscribe(
-      data => {
-        this.resetStationForm();
-        this.habitatForm.reset();
-        this.height = "65vh";
-      },
-      error => {
-        if (error.status === 403) {
-          this._commonService.translateToaster("error", "NotAllowed");
-        } else {
-          console.error(error.error.message);
-          this._commonService.translateToaster("error", "ErrorMessage");
-        }
-      }
-    );
+    return formData;
   }
 }

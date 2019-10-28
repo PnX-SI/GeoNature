@@ -1,5 +1,10 @@
 <div class="row row-sm">
-    <button class="btn btn-outline-success float-right"> Ajouter une station </button>
+  <div class="card">
+      <div class="card-body">
+          <button class="btn btn-success float-right" 
+          [routerLink]="['form']"> Ajouter une station </button>
+      </div>
+  </div>
 
 </div>
 
@@ -40,9 +45,7 @@
           <ng-template let-row="row" ngx-datatable-cell-template>
             <button 
               class="btn btn-outline-shadow btn-no-padding btn-ghost"
-              [routerLink]="['form', row.id_station]"
-
-              >
+              [routerLink]="['form', row.id_station]">
               <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
             </button>
           </ng-template>
@@ -67,41 +70,5 @@
         </ngx-datatable-column>
       </ng-container>
     </ngx-datatable>
-
-    <!-- <ngx-datatable 
-    #table 
-    class="material striped margin-top-xs table-size expandable" 
-    [rows]="storeService.stations"
-    [columns]="mapListService.displayColumns" 
-    [loadingIndicator]="mapListService.isLoading" 
-    [columnMode]="'force'"
-    [headerHeight]="35" 
-    [footerHeight]="40" 
-    [rowHeight]="40" 
-    [draggable]="false" 
-    [selected]="mapListService.selectedRow"
-    [externalPaging]="true" 
-    [scrollbarH]="false" 
-    [selectionType]="'single'" 
-    [count]="mapListService.page.totalElements"
-    [offset]="mapListService.page.pageNumber" 
-    [limit]="mapListService.page.size"
-    [rowClass]="mapListService.getRowClass"
-    [messages]="occtaxConfig.list_messages" 
-    (page)="mapListService.setTablePage($event, apiEndPoint)" 
-    (select)="mapListService.onRowSelect($event)"
-  >
-  </ngx-datatable> -->
-
-    <!-- <table class="table">
-      <tbody>
-
-        <tr *ngFor="let station of storeService.stations"> 
-          <td> <button class="btn btn-primary" [routerLink]="['form', station.properties.id_station]"> {{ station.properties.id_station }} </button> </td>
-          <td> {{station.properties.date_min}} </td>
-        </tr>
-      </tbody>
-    </table> -->
-    {{mapListService.tableData |json}}
   </div>
 </div>

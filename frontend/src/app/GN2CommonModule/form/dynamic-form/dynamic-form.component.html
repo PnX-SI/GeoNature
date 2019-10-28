@@ -59,13 +59,13 @@
                       class="custom-control-input" 
                       [ngClass]="{'is-invalid': form.get(formDef.attribut_name).invalid}" 
                       type="checkbox" 
-                      [id]="val"
+                      id="{{formDef.attribut_name}}_{{val}}"
                       [name]="formDef.attribut_name" 
                       [value]="val" 
                       (change)="onCheckChange($event, form.get(formDef.attribut_name))" 
                     > 
-                    <label [for]="val" class="custom-control-label"><span [innerHTML]="val"></span></label>
-                </div>
+                    <label for="{{formDef.attribut_name}}_{{val}}" class="custom-control-label"><span [innerHTML]="val"></span></label>
+                  </div>
             </ng-template>
       </div>
   

@@ -75,7 +75,6 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
     if (this.displayOnlyActive) {
       params['active'] = true;
     }
-    console.log(this.moduleCode);
     if (this.moduleCode) {
       params['module_code'] = this.moduleCode;
     }

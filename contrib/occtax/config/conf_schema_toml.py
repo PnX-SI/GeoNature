@@ -45,23 +45,25 @@ class FormConfig(Schema):
 
 
 default_map_list_conf = [
-    {"prop": "taxons", "name": "Taxon"},
-    {"prop": "date_min", "name": "Date début"},
+    {"prop": "taxons", "name": "Taxon(s)"},
     {"prop": "observateurs", "name": "Observateurs"},
-    {"prop": "dataset_name", "name": "Jeu de données"},
+    {"prop": "date", "name": "Date"},
+    {"prop": "dataset", "name": "Jeu de données"},
 ]
 
 available_maplist_column = [
-    {"prop": "altitude_max", "name": "altitude_max"},
-    {"prop": "altitude_min", "name": "altitude_min"},
+    {"prop": "altitude_min", "name": "Altitude min"},
+    {"prop": "altitude_max", "name": "Altitude max"},
     {"prop": "comment", "name": "Commentaire"},
-    {"prop": "date_max", "name": "Date fin"},
+    {"prop": "date", "name": "Date"},
     {"prop": "date_min", "name": "Date début"},
-    {"prop": "id_dataset", "name": "ID dataset"},
+    {"prop": "date_max", "name": "Date fin"},
+    {"prop": "id_dataset", "name": "ID jeu de données"},
+    {"prop": "dataset", "name": "Jeu de données"},
     {"prop": "id_digitiser", "name": "ID rédacteur"},
     {"prop": "id_releve_occtax", "name": "ID relevé"},
-    {"prop": "observateurs", "name": "observateurs"},
-    {"prop": "taxons", "name": "taxons"},
+    {"prop": "observateurs", "name": "Observateurs"},
+    {"prop": "nb_taxons", "name": "Nb. taxon"},
 ]
 
 default_columns_export = [
@@ -144,7 +146,7 @@ class GnModuleSchemaConf(Schema):
     export_message = fields.String(missing=export_message)
     list_messages = fields.Dict(missing=list_messages)
     digital_proof_validator = fields.Boolean(missing=True)
-    releve_map_zoom_level = fields.Integer(missing=6)
+    releve_map_zoom_level = fields.Integer()
     id_taxon_list = fields.Integer(missing=100)
     taxon_result_number = fields.Integer(missing=20)
     id_observers_list = fields.Integer(missing=1)

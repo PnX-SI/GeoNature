@@ -28,7 +28,7 @@ log = logging.getLogger()
 @routes.route("/config", methods=["GET"])
 def get_config():
     """
-    Parse and return configuration files as toml 
+    Parse and return configuration files as toml
     .. :quickref: Generic;
     """
     app_name = request.args.get("app", "base_app")

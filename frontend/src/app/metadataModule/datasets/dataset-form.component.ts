@@ -65,7 +65,7 @@ export class DatasetFormComponent implements OnInit {
       id_nomenclature_resource_type: [null, Validators.required],
       validable: true,
       active: [true, Validators.required],
-      modules: null
+      modules: [new Array()]
     });
 
     this.cor_dataset_actor_array = this._fb.array([]);

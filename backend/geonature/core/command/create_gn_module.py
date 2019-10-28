@@ -81,6 +81,9 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                 # Si le module n'est pas déjà dans la table gn_commons.t_modules, on l'installe
                 # sinon on leve une execption et on arrête la commande
 
+                # Installation des dépendances python
+                gn_module_import_requirements(module_path)
+
                 # Vérification de la conformité du code :
                 #   installation
                 #   front end
@@ -143,12 +146,9 @@ def run_install_gn_module(app, module_path):
         Installation du module en executant :
             configurations
             install_env.sh
-            installation des dépendances python
             install_db.py
             install_app.py
     """
-
-    gn_module_import_requirements(module_path)
 
     #   ENV
     gn_file = Path(module_path) / "install_env.sh"
