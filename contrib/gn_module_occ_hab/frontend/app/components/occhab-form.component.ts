@@ -33,6 +33,12 @@ export class OccHabFormComponent implements OnInit {
     leafletDrawOption.draw.polyline = false;
   }
 
+  // toggle the hab form and call the editHab function of form service
+  editHab(index) {
+    this.toggleShowHabForm();
+    this.occHabForm.editHab(index);
+  }
+
   toggleShowHabForm() {
     this.showHabForm = !this.showHabForm;
   }

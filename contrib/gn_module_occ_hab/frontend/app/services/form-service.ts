@@ -28,6 +28,7 @@ export class OcchabFormService {
     this.typoHabControl.valueChanges.subscribe(data => {
       this.selectedTypo = { cd_typo: data };
     });
+
     this.stationForm = this._fb.group({
       unique_id_sinp_station: null,
       id_dataset: [null, Validators.required],
@@ -51,8 +52,8 @@ export class OcchabFormService {
 
     this.habitatForm = this._fb.group({
       unique_id_sinp_hab: null,
-      nom_cite: "test",
-      habitat_obj: null,
+      nom_cite: null,
+      habref: null,
       id_nomenclature_determination_type: null,
       determiner: null,
       id_nomenclature_collection_technique: [null, Validators.required],
@@ -74,6 +75,36 @@ export class OcchabFormService {
     // this.stationForm.patchValue({ habitats: this.habitatForm.value });
     this.stationForm.value.t_habitats.push(this.habitatForm.value);
     this.habitatForm.reset();
+  }
+
+  /**
+   * patch the hab with the data of station form and splice the station form with the given index
+   * @param index: index of the habitat to edit
+   */
+  editHab(index) {
+    this.habitatForm.patchValue(this.stationForm.value.t_habitats[index]);
+    // reproduce what the autocomplete component of habitat receive originaly
+    this.habitatForm.patchValue({
+      habref: {
+        //nom_cite: this.stationForm.value.t_habitats[index].nom_cite,
+        search_name: this.stationForm.value.t_habitats[index].nom_cite,
+        cd_hab: this.stationForm.value.t_habitats[index].habref.cd_hab
+      }
+    });
+    // remove the current hab and patch the form to fire events
+    this.deleteHab(index);
+  }
+
+  /**
+   * Delete the current hab of the station form
+   * @param index index of the habitat to delete
+   */
+  deleteHab(index) {
+    const updatedStationForm = this.stationForm.value.t_habitats.splice(
+      index,
+      0
+    );
+    this.stationForm.patchValue({ t_habitats: updatedStationForm });
   }
 
   patchGeomValue(geom) {
@@ -148,7 +179,7 @@ export class OcchabFormService {
   }
 
   patchStationForm(oneStation) {
-    const formatedStation = this.stationForm.patchValue(
+    this.stationForm.patchValue(
       this.formatStationAndHabtoPatch(oneStation.properties)
     );
     this.stationForm.patchValue({
@@ -161,7 +192,7 @@ export class OcchabFormService {
 
     //format cd_hab
     formData.t_habitats.forEach(element => {
-      element.cd_hab = element.habitat_obj.cd_hab;
+      element.cd_hab = element.habref.cd_hab;
     });
 
     // format date

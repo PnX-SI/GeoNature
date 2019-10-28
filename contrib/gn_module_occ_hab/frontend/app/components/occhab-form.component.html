@@ -23,6 +23,7 @@
                   <td> Habitat</td>
                   <td> Determinateur</td>
                   <td> Technique de collecte</td>
+                  <td> #</td>
                 </tr>
               </thead>
               <tbody>
@@ -32,12 +33,20 @@
                     <td> {{hab.determiner}}</td>
                     <td>  {{hab.id_nomenclature_collection_technique?.label_default}}</td>
                     <td> 
-                      <button type="buttosn" class="btn btn-primary btn-sm">
+                      <button 
+                        matTooltip="Editer cet habitat" 
+                        type="buttosn" 
+                        class="btn btn-primary btn-sm"
+                        (click)="editHab(i)"  
+                      >
                           <i class="fa fa-pencil-square-o" aria-hidden="true" ></i>
                       </button> 
-                      <button type="button" class="btn btn-danger btn-sm">
+                      <button 
+                        matTooltip="Supprimer cet habitat de la station" 
+                        type="button" class="btn btn-danger btn-sm"
+                        (click)="occHabForm.deleteHab(i)" 
+                      >
                           <i class="fa fa-times" aria-hidden="true"></i>
-
                       </button>
                     </td>
 
@@ -225,7 +234,7 @@
       </button>
       <button *ngIf="showHabForm"
         (click)="toggleShowHabForm()" 
-        type="button" class="btn btn-sm btn-danger float-right" (click)="fs.toggleOccurrence(); fs.cancelOccurrence()">
+        type="button" class="btn btn-sm btn-danger float-right" (click)="toggleShowHabForm(); fs.cancelOccurrence()">
         <i class="fa fa-minus" aria-hidden="true"></i>
         Annuler la saisie de l'habitat
 
@@ -251,7 +260,7 @@
           <div class="col-6">
               <pnx-autocomplete apiEndPoint="http://127.0.0.1:5000/api/habref/habitats/autocomplete/list/1"
               [searchAsParameter]="false"  
-              [parentFormControl]="occHabForm.habitatForm.get('habitat_obj')"
+              [parentFormControl]="occHabForm.habitatForm.get('habref')"
               queryParamSearch="search_name"
               [othersGetParams]="occHabForm.selectedTypo"
               [formatter]="formatter"
@@ -324,10 +333,7 @@
 
           Valider l'habitat
         </button>
-        <pre>
-            <!-- {{occHabForm.stationForm.value |json }}
-            {{occHabForm.habitatForm.value |json }} -->
-        </pre>
+
       </div>
     </div>
 
@@ -340,7 +346,11 @@
       Valider la station
     </button>
 
-
+    <pre>
+      <!-- {{occHabForm.stationForm.value |json }} -->
+      <b> Habitat form: </b>
+      {{occHabForm.habitatForm.value |json }}
+  </pre>
 
   </div>
 </div>

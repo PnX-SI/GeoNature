@@ -5,10 +5,14 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import select, func, and_
 from sqlalchemy.dialects.postgresql import UUID
 
-from geonature.utils.env import DB
-from geonature.utils.utilssqlalchemy import serializable, geoserializable
 from pypnusershub.db.models import User
 from pypnnomenclature.models import TNomenclatures
+
+from geonature.utils.env import DB
+from geonature.utils.utilssqlalchemy import geoserializable
+from utils_flask_sqla.serializers import serializable
+
+from geonature.core.habref.models import Habref
 
 
 class CorStationObserverOccHab(DB.Model):
@@ -33,7 +37,7 @@ class THabitatsOcchab(DB.Model):
     unique_id_sinp_hab = DB.Column(
         UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
     )
-    cd_hab = DB.Column(DB.Integer)
+    cd_hab = DB.Column(DB.Integer, ForeignKey('ref_habitat.habref.cd_hab'))
     nom_cite = DB.Column(DB.Unicode)
     id_nomenclature_determination_type = DB.Column(
         DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
@@ -45,6 +49,8 @@ class THabitatsOcchab(DB.Model):
         DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
     technical_precision = DB.Column(DB.Unicode)
     id_nomenclature_sensitvity = DB.Column(DB.Integer)
+
+    habref = DB.relationship("Habref")
 
 
 @serializable
@@ -115,6 +121,13 @@ class OneHabitat(THabitatsOcchab):
                      THabitatsOcchab.id_nomenclature_abundance),
     )
 
+    # autocomplete_habref = DB.relationship(
+    #     "AutoCompleteHabitat",
+    #     primaryjoin=(AutoCompleteHabitat.cd_hab ==
+    #                  THabitatsOcchab.cd_hab),
+    #     foreign_keys=[AutoCompleteHabitat.cd_hab, THabitatsOcchab.cd_hab]
+    # )
+
 
 @serializable
 @geoserializable
@@ -149,6 +162,7 @@ class OneStation(TStationsOcchab):
                 'geographic_object',
                 'determination_method',
                 'collection_technique',
-                'abundance'
+                'abundance',
+                "habref"
             ]
         )

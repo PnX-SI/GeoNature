@@ -5,7 +5,8 @@ import { OccHabDataService } from "../services/data.service";
 
 @Component({
   selector: "pnx-occhab-map-list",
-  templateUrl: "occhab-map-list.component.html"
+  templateUrl: "occhab-map-list.component.html",
+  styleUrls: ["./occhab-map-list.component.scss"]
 })
 export class OccHabMapListComponent implements OnInit {
   public displayedColumns = [
@@ -24,9 +25,5 @@ export class OccHabMapListComponent implements OnInit {
       this.mapListService.geojsonData = data;
       this.mapListService.loadTableData(data);
     });
-  }
-
-  test() {
-    console.log("lAA");
   }
 }
