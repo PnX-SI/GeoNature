@@ -48,6 +48,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   /**
    * Booléan qui permet de passer tout l'objet au formControl, et pas seulement une propriété de l'objet renvoyé par l'API. Facultatif, par défaut à ``false``, c'est alors l'attribut passé en Input ``keyValue`` qui est renvoyé au formControl.
    * Lorsque l'on passe ``true`` à cet Input, l'Input ``keyValue`` devient inutile.
+   * L'API qui renvoit séléctionnées au formulaire doit être un tableau d'entier et non un tableau d'items
    */
   @Input() bindAllItem: false;
   // time before the output are triggered
@@ -107,7 +108,17 @@ export class MultiSelectComponent implements OnInit, OnChanges {
         // push the item only if selected items == 0 (to not push twice the object when the formControl is patch)
         if (this.selectedItems.length === 0) {
           value.forEach(item => {
-            this.addItem(item);
+            if (this.bindAllItem) {
+              this.addItem(item);
+            } else {
+              // if not bind all item (the formControl send an integer) we must find in the values array the current item
+              for (let i = 0; i < this.values.length; i++) {
+                if (this.values[i][this.keyValue] === item) {
+                  this.addItem(this.values[i]);
+                  break;
+                }
+              }
+            }
           });
         }
       }
