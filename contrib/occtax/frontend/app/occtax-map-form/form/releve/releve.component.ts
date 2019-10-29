@@ -71,7 +71,9 @@ export class ReleveComponent implements OnInit, OnDestroy {
     this.isEditionSub$ = this.fs.editionMode$
     .filter(isEdit => isEdit === false)  
     .subscribe(isEdit => {
-      this.autoCompleteDate();
+      if (isEdit === false) {
+        this.autoCompleteDate();
+      }  
     });
     
 
