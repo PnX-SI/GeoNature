@@ -1,3 +1,7 @@
 :host /deep/ .datatable-body-row.active .datatable-row-group {
   background-color: rgb(117, 227, 118) !important;
 }
+:host /deep/ .datatable-row-detail {
+  height: auto !important;
+  font-size: 0.8em;
+}

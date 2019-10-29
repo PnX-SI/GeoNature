@@ -7,11 +7,11 @@ from sqlalchemy.dialects.postgresql import UUID
 
 from pypnusershub.db.models import User
 from pypnnomenclature.models import TNomenclatures
+from utils_flask_sqla.serializers import serializable
+
 
 from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import geoserializable
-from utils_flask_sqla.serializers import serializable
-
 from geonature.core.habref.models import Habref
 
 
@@ -62,7 +62,8 @@ class TStationsOcchab(DB.Model):
     unique_id_sinp_station = DB.Column(
         UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
     )
-    id_dataset = DB.Column(DB.Integer)
+    id_dataset = DB.Column(DB.Integer, ForeignKey(
+        'gn_meta.t_datasets.id_dataset'))
     date_min = DB.Column(DB.DateTime)
     date_max = DB.Column(DB.DateTime)
     observers_txt = DB.Column(DB.Unicode)
@@ -82,9 +83,11 @@ class TStationsOcchab(DB.Model):
     comment = DB.Column(DB.Integer)
     geom_4326 = DB.Column(Geometry("GEOMETRY", 4626))
 
-    t_habitats = relationship("THabitatsOcchab", lazy="select")
+    t_habitats = relationship("THabitatsOcchab", lazy="joined")
+    dataset = relationship("TDatasets", lazy="joined")
     observers = DB.relationship(
         User,
+        lazy="joined",
         secondary=CorStationObserverOccHab.__table__,
         primaryjoin=(CorStationObserverOccHab.id_station == id_station),
         secondaryjoin=(CorStationObserverOccHab.id_role == User.id_role),
@@ -120,13 +123,6 @@ class OneHabitat(THabitatsOcchab):
         primaryjoin=(TNomenclatures.id_nomenclature ==
                      THabitatsOcchab.id_nomenclature_abundance),
     )
-
-    # autocomplete_habref = DB.relationship(
-    #     "AutoCompleteHabitat",
-    #     primaryjoin=(AutoCompleteHabitat.cd_hab ==
-    #                  THabitatsOcchab.cd_hab),
-    #     foreign_keys=[AutoCompleteHabitat.cd_hab, THabitatsOcchab.cd_hab]
-    # )
 
 
 @serializable

@@ -10,14 +10,20 @@ import { CommonService } from "@geonature_common/service/common.service";
 @Component({
   selector: "pnx-occhab-form",
   templateUrl: "occhab-form.component.html",
-  styleUrls: ["./occhab-form.component.scss"]
+  styleUrls: ["./occhab-form.component.scss"],
+  providers: [OcchabFormService]
 })
 export class OccHabFormComponent implements OnInit {
   public showDepth = false;
-  public showHabForm = false;
+  public showHabForm = true;
   public leafletDrawOptions = leafletDrawOption;
   public filteredHab: any;
   private _sub: Subscription;
+  public currentlyEditingHab = false;
+  public currentIdHabEdition: number;
+  public MAP_SMALL_HEIGHT = "50vh";
+  public MAP_FULL_HEIGHT = "87vh";
+  public mapHeight = this.MAP_FULL_HEIGHT;
 
   constructor(
     public occHabForm: OcchabFormService,
@@ -33,16 +39,6 @@ export class OccHabFormComponent implements OnInit {
     leafletDrawOption.draw.polyline = false;
   }
 
-  // toggle the hab form and call the editHab function of form service
-  editHab(index) {
-    this.toggleShowHabForm();
-    this.occHabForm.editHab(index);
-  }
-
-  toggleShowHabForm() {
-    this.showHabForm = !this.showHabForm;
-  }
-
   ngAfterViewInit() {
     // get the id from the route
     this._sub = this._route.params.subscribe(params => {
@@ -50,13 +46,53 @@ export class OccHabFormComponent implements OnInit {
         .getOneStation(params["id_station"])
         .subscribe(station => {
           this.occHabForm.patchStationForm(station);
-          this.occHabForm.height = this.occHabForm.MAP_SMALL_HEIGHT;
+
+          this.mapHeight = this.MAP_SMALL_HEIGHT;
         });
     });
   }
 
+  // toggle the hab form and call the editHab function of form service
+  editHab(index) {
+    this.showHabForm = true;
+    // check if the form hab is not currently edited
+    if (!this.occHabForm.habitatForm.pristine) {
+      const r = confirm(
+        "Attention, le formulaire habitat est en cours d'édition, êtes vous sur de supprimer l'édition en cours ?"
+      );
+      if (r == true) {
+        this.occHabForm.editHab(index);
+        this.currentlyEditingHab = true;
+        this.currentIdHabEdition = index;
+      }
+    } else {
+      this.occHabForm.editHab(index);
+      this.currentIdHabEdition = index;
+      this.currentlyEditingHab = true;
+    }
+  }
+
+  cancelHab() {
+    this.showHabForm = false;
+    this.occHabForm.cancelHab(
+      this.currentlyEditingHab,
+      this.currentIdHabEdition
+    );
+    this.currentlyEditingHab = false;
+  }
+
+  toggleShowHabForm() {
+    this.showHabForm = !this.showHabForm;
+  }
+
   toggleDepth() {
     this.showDepth = !this.showDepth;
+  }
+
+  addHabitat() {
+    this.mapHeight = this.MAP_SMALL_HEIGHT;
+    this.toggleShowHabForm();
+    this.occHabForm.addHabitat();
   }
 
   postStation() {
@@ -64,7 +100,6 @@ export class OccHabFormComponent implements OnInit {
     this._occHabDataService.postStation(station).subscribe(
       data => {
         this.occHabForm.resetAllForm();
-        this.occHabForm.height = this.occHabForm.MAP_FULL_HEIGHT;
         this._router.navigate(["occhab"]);
       },
       error => {

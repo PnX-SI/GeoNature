@@ -1,6 +1,6 @@
 <div class="row row-sm">
   <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
-    <pnx-map [height]="occHabForm.height">
+    <pnx-map [height]="mapHeight">
         <pnx-leaflet-draw
           [geojson]="occHabForm.stationForm.value.geom_4326"
           [options]="leafletDrawOptions"
@@ -9,7 +9,7 @@
     </pnx-map>
 
     <!-- HABITAT ALREADY SAVED -->
-    <div class="card" *ngIf="occHabForm.stationForm.value.t_habitats.length > 0">
+    <div class="card" *ngIf="occHabForm.stationForm.value.t_habitats?.length > 0">
       <h4 class="card-header">
         Habitats de la station
       </h4>
@@ -27,15 +27,15 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor='let hab of occHabForm.stationForm.value.t_habitats; let i=index'>
-                  <td> {{i + 1}}</td>
+                <tr *ngFor='let hab of occHabForm.stationForm.value?.t_habitats; let i=index'>
+                  <td> {{occHabForm.stationForm.value?.t_habitats.length - i}} </td>
                     <td>  {{hab?.nom_cite}}</td>
                     <td> {{hab.determiner}}</td>
                     <td>  {{hab.id_nomenclature_collection_technique?.label_default}}</td>
                     <td> 
                       <button 
                         matTooltip="Editer cet habitat" 
-                        type="buttosn" 
+                        type="button" 
                         class="btn btn-primary btn-sm"
                         (click)="editHab(i)"  
                       >
@@ -61,7 +61,8 @@
       </div>
       <!--END  HABITAT ALREADY SAVED -->
   </div>
-  <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm form">
+  <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
+    <div class="all-form">
     <div class="card">
       <h5 class="card-header">
         <i class="fa fa-flag" aria-hidden="true"></i>
@@ -164,18 +165,6 @@
           </div>
         </div>
 
-
-
-          <div class="custom-control custom-checkbox mr-sm-2">
-              <input 
-                type="checkbox" 
-                class="custom-control-input form-control-sm" 
-                id="customControlAutosizing"
-                [formControl]="occHabForm.stationForm.get('is_habitat_complex')"
-                >
-              <label class="custom-control-label small" for="customControlAutosizing"> Complexe d'habitat </label>
-          </div>
-
         
         <pnx-dumb-select
           label="Exposition" 
@@ -222,135 +211,142 @@
   </div>
 
     <!-- END STATION FORM -->
-    <br>
+
     <div class="card">
-      <h5 class="card-header">
-        <i class="fa fa-leaf" aria-hidden="true"></i>
-        Habitat
-        <button *ngIf="!showHabForm" type="button" class="btn btn-sm btn-primary float-right"
-        (click)="toggleShowHabForm()">
-        <i class="fa fa-plus" aria-hidden="true"></i>
-        Ajouter un habitat à la station
-      </button>
-      <button *ngIf="showHabForm"
-        (click)="toggleShowHabForm()" 
-        type="button" class="btn btn-sm btn-danger float-right" (click)="toggleShowHabForm(); fs.cancelOccurrence()">
-        <i class="fa fa-minus" aria-hidden="true"></i>
-        Annuler la saisie de l'habitat
-
-      </button>
-      </h5>
-      <div class="card-body" *ngIf="showHabForm">
-        <div class="form-row">
-          <div class="col-6">
-              <small> Sélectionner une typologie d'habitat</small>
-              <select
-               [formControl]="occHabForm.typoHabControl"
-               class="form-control form-control-sm"> 
-                <option 
-                  *ngFor="let typo of storeService.typoHabitat" 
-                  [ngValue]="typo.cd_typo"> 
-                    {{typo.lb_nom_typo}}
-                 </option>
-              </select>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="col-6">
-              <pnx-autocomplete apiEndPoint="http://127.0.0.1:5000/api/habref/habitats/autocomplete/list/1"
-              [searchAsParameter]="false"  
-              [parentFormControl]="occHabForm.habitatForm.get('habref')"
-              queryParamSearch="search_name"
-              [othersGetParams]="occHabForm.selectedTypo"
-              [formatter]="formatter"
-              keyValue="search_name"
-              label="Rechercher un habitat"
-              (onChange)="occHabForm.patchNomCite($event)"
-            >
-          </pnx-autocomplete>
-          </div>
-
-        </div>
-
-        <div class="row">
-          <div class="col">
-              <small> Déterminateur</small>
-              <input type="text" 
-                name="determinter"
-                class="form-control form-control-sm"
-                [formControl]="occHabForm.habitatForm.get('determiner')"         
-              >
-          </div>
-          <div class="col">
-              <pnx-dumb-select
-              label="Type de détermination" 
-              [parentFormControl]="occHabForm.habitatForm.get('id_nomenclature_determination_type')"         
-              [items]="storeService.nomenclatureItems.DETERMINATION_TYP_HAB"
-              comparedKey="id_nomenclature"
-              titleKey="definition_fr"
-              displayedKey="label_fr">
-            </pnx-dumb-select>
-          </div>
-        </div>
-
-
-        <pnx-dumb-select
-          label="Technique de collècte" 
-          [parentFormControl]="occHabForm.habitatForm.get('id_nomenclature_collection_technique')"         
-          [items]="storeService.nomenclatureItems.TECHNIQUE_COLLECT_HAB"
-          comparedKey="id_nomenclature"
-          titleKey="definition_fr"
-          displayedKey="label_fr">
-        </pnx-dumb-select>
-
-        <div class="form-group">
-          <small> Pourcentage de recouvrement</small>
-          <input type="number" 
-            name="recovery"
-            class="form-control form-control-sm"
-            [formControl]="occHabForm.habitatForm.get('recovery_percentage')"         
-          >
-        </div>
-
-        <pnx-dumb-select
-          label="Abondance" 
-          [parentFormControl]="occHabForm.habitatForm.get('id_nomenclature_abundance')"         
-          [items]="storeService.nomenclatureItems.ABONDANCE_HAB"
-          comparedKey="id_nomenclature"
-          titleKey="definition_fr"
-          displayedKey="label_fr">
-        </pnx-dumb-select>
-
-
-        <br>
-        <button 
-          type="button" 
-          class="btn btn-primary"
-          (click)="occHabForm.addHabitat();"
-        > 
-        <i style="color: rgb(0, 233, 0);" class="fa fa-check" aria-hidden="true"></i>
-
-          Valider l'habitat
+      <div class="habitat-form">
+        <h5 class="card-header">
+          <i class="fa fa-leaf" aria-hidden="true"></i>
+          Habitat
+          <button *ngIf="!showHabForm" type="button" class="btn btn-sm btn-primary float-right"
+          (click)="toggleShowHabForm()">
+          <i class="fa fa-plus" aria-hidden="true"></i>
+          Ajouter un habitat à la station
         </button>
-
+        <button *ngIf="showHabForm && occHabForm.stationForm?.value.t_habitats.length > 0"
+          (click)="toggleShowHabForm()" 
+          type="button" class="btn btn-sm btn-danger float-right" (click)="toggleShowHabForm(); cancelHab()">
+          <i class="fa fa-minus" aria-hidden="true"></i>
+          Annuler la saisie de l'habitat
+  
+        </button>
+        </h5>
+        <div class="card-body body-hab-form" *ngIf="showHabForm">
+          <div class="form-row">
+            <div class="col-6">
+                <small> Sélectionner une typologie d'habitat</small>
+                <select
+                 [formControl]="occHabForm.typoHabControl"
+                 class="form-control form-control-sm"> 
+                  <option 
+                    *ngFor="let typo of storeService.typoHabitat" 
+                    [ngValue]="typo.cd_typo"> 
+                      {{typo.lb_nom_typo}}
+                   </option>
+                </select>
+            </div>
+          </div>
+  
+          <div class="form-row">
+            <div class="col-6">
+                <pnx-autocomplete apiEndPoint="http://127.0.0.1:5000/api/habref/habitats/autocomplete/list/1"
+                [searchAsParameter]="false"  
+                [parentFormControl]="occHabForm.habitatForm.get('habref')"
+                queryParamSearch="search_name"
+                [othersGetParams]="occHabForm.selectedTypo"
+                [formatter]="formatter"
+                keyValue="search_name"
+                label="Rechercher un habitat"
+                (onChange)="occHabForm.patchNomCite($event)"
+              >
+            </pnx-autocomplete>
+            </div>
+  
+          </div>
+  
+          <div class="form-row">
+            <div class="col">
+                <small> Déterminateur</small>
+                <input type="text" 
+                  name="determinter"
+                  class="form-control form-control-sm"
+                  [formControl]="occHabForm.habitatForm.get('determiner')"         
+                >
+            </div>
+            <div class="col">
+                <pnx-dumb-select
+                label="Type de détermination" 
+                [parentFormControl]="occHabForm.habitatForm.get('id_nomenclature_determination_type')"         
+                [items]="storeService.nomenclatureItems.DETERMINATION_TYP_HAB"
+                comparedKey="id_nomenclature"
+                titleKey="definition_fr"
+                displayedKey="label_fr">
+              </pnx-dumb-select>
+            </div>
+          </div>
+  
+  
+          <pnx-dumb-select
+            label="Technique de collècte" 
+            [parentFormControl]="occHabForm.habitatForm.get('id_nomenclature_collection_technique')"         
+            [items]="storeService.nomenclatureItems.TECHNIQUE_COLLECT_HAB"
+            comparedKey="id_nomenclature"
+            titleKey="definition_fr"
+            displayedKey="label_fr">
+          </pnx-dumb-select>
+  
+          <div class="form-group">
+            <small> Pourcentage de recouvrement</small>
+            <input type="number" 
+              name="recovery"
+              class="form-control form-control-sm"
+              [formControl]="occHabForm.habitatForm.get('recovery_percentage')"         
+            >
+          </div>
+  
+          <pnx-dumb-select
+            label="Abondance" 
+            [parentFormControl]="occHabForm.habitatForm.get('id_nomenclature_abundance')"         
+            [items]="storeService.nomenclatureItems.ABONDANCE_HAB"
+            comparedKey="id_nomenclature"
+            titleKey="definition_fr"
+            displayedKey="label_fr">
+          </pnx-dumb-select>
+  
+  
+          <br>
+          <button 
+            type="button" 
+            class="btn btn-primary"
+            (click)="addHabitat();"
+          > 
+          <i style="color: rgb(0, 233, 0);" class="fa fa-check" aria-hidden="true"></i>
+  
+            Valider l'habitat
+          </button>
+  
+  
+        </div>
       </div>
     </div>
+  </div>
+    
 
     <button 
       type="button" 
-      class="btn btn-success" 
+      class="btn btn-success"
+      id="validate-btn" 
       (click)="postStation()"
       [disabled]="occHabForm.stationForm.invalid || occHabForm.stationForm.value.t_habitats.lenght == 0"
     >
       Valider la station
     </button>
 
-    <pre>
-      <!-- {{occHabForm.stationForm.value |json }} -->
-      <b> Habitat form: </b>
-      {{occHabForm.habitatForm.value |json }}
-  </pre>
+  
+
+    
+      <!-- {{occHabForm.stationForm.value |json }}
+      <b> Habitat form: </b> -->
+      <!-- {{occHabForm.habitatForm.value |json }} -->
 
   </div>
 </div>

@@ -1,5 +1,5 @@
-.form {
-  max-height: 90vh;
+.all-form {
+  max-height: 87vh;
   overflow-y: auto;
 }
 
@@ -12,10 +12,34 @@
 }
 
 .card-body {
+  padding-bottom: 10px;
   padding-top: 5px !important;
+}
+.card-header {
+  padding-bottom: 5px;
+  padding-top: 5px;
 }
 
 :host ::ng-deep ngb-typeahead-window {
   height: 300px;
   overflow-y: auto;
 }
+
+#validate-btn {
+  position: absolute;
+  right: 50px;
+  bottom: -10px;
+  box-shadow: 3px 5px 10px 2px rgba(0, 0, 0, 0.51),
+    0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+// .habitat-form {
+//   padding-left: 40px;
+//   padding-right: 20px;
+// }
+
+// .body-hab-form {
+//   border: 1px solid rgba(0, 0, 0, 0.125);
+//   border-width: 0px 1px 1px 1px;
+//   border-style: solid;
+// }

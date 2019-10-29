@@ -46,7 +46,6 @@ def post_station():
         for o in observers:
             station.observers.append(o)
     if occ_hab is not None:
-
         for occ in occ_hab:
             data_attr = [k for k in occ]
             for att in data_attr:
@@ -54,7 +53,10 @@ def post_station():
                     occ.pop(att)
             habitat_obj = THabitatsOcchab(**occ)
             station.t_habitats.append(habitat_obj)
-    DB.session.add(station)
+    if station.id_station:
+        DB.session.merge(station)
+    else:
+        DB.session.add(station)
     DB.session.commit()
     return station.get_geofeature()
 

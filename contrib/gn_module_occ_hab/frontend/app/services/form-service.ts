@@ -15,10 +15,6 @@ export class OcchabFormService {
   public habitatForm: FormGroup;
   public typoHabControl = new FormControl();
   public selectedTypo: any;
-  public height = "90vh";
-  public MAP_SMALL_HEIGHT = "50vh";
-  public MAP_FULL_HEIGHT = "90vh";
-
   constructor(
     private _fb: FormBuilder,
     private _dateParser: NgbDateParserFormatter,
@@ -29,7 +25,13 @@ export class OcchabFormService {
       this.selectedTypo = { cd_typo: data };
     });
 
-    this.stationForm = this._fb.group({
+    this.stationForm = this.initStationForm();
+    this.habitatForm = this.initHabForm();
+  }
+
+  initStationForm(): FormGroup {
+    return this._fb.group({
+      id_station: null,
       unique_id_sinp_station: null,
       id_dataset: [null, Validators.required],
       date_min: [null, Validators.required],
@@ -49,8 +51,10 @@ export class OcchabFormService {
       comment: null,
       t_habitats: [new Array()]
     });
+  }
 
-    this.habitatForm = this._fb.group({
+  initHabForm(): FormGroup {
+    return this._fb.group({
       unique_id_sinp_hab: null,
       nom_cite: null,
       habref: null,
@@ -70,10 +74,8 @@ export class OcchabFormService {
   }
 
   addHabitat() {
-    // resize the map
-    this.height = this.MAP_SMALL_HEIGHT;
-    // this.stationForm.patchValue({ habitats: this.habitatForm.value });
-    this.stationForm.value.t_habitats.push(this.habitatForm.value);
+    // add at the beginning of the list
+    this.stationForm.value.t_habitats.unshift(this.habitatForm.value);
     this.habitatForm.reset();
   }
 
@@ -95,16 +97,30 @@ export class OcchabFormService {
     this.deleteHab(index);
   }
 
+  /** Cancel the current hab
+   * if idEdition = true, we patch the former value to no not loose it
+   * we keep the order
+   */
+  cancelHab(isEditing?, currentIndex?) {
+    if (isEditing) {
+      this.stationForm.value.t_habitats.splice(
+        currentIndex,
+        0,
+        this.habitatForm.value
+      );
+      this.stationForm.patchValue({
+        t_habitats: this.stationForm.value.t_habitats
+      });
+    }
+    this.habitatForm.reset();
+  }
+
   /**
    * Delete the current hab of the station form
    * @param index index of the habitat to delete
    */
   deleteHab(index) {
-    const updatedStationForm = this.stationForm.value.t_habitats.splice(
-      index,
-      0
-    );
-    this.stationForm.patchValue({ t_habitats: updatedStationForm });
+    this.stationForm.value.t_habitats.splice(index, 1);
   }
 
   patchGeomValue(geom) {
@@ -172,16 +188,17 @@ export class OcchabFormService {
       ),
       id_nomenclature_area_surface_calculation: this.getOrNull(
         station,
-        "geographic_object"
+        "area_surface_calculation"
       ),
       id_nomenclature_exposure: this.getOrNull(station, "exposure")
     };
   }
 
   patchStationForm(oneStation) {
-    this.stationForm.patchValue(
-      this.formatStationAndHabtoPatch(oneStation.properties)
-    );
+    const formatedData = this.formatStationAndHabtoPatch(oneStation.properties);
+
+    this.stationForm.patchValue(formatedData);
+    this.stationForm.controls.t_habitats.patchValue(formatedData.t_habitats);
     this.stationForm.patchValue({
       geom_4326: oneStation.geometry
     });
@@ -193,6 +210,7 @@ export class OcchabFormService {
     //format cd_hab
     formData.t_habitats.forEach(element => {
       element.cd_hab = element.habref.cd_hab;
+      delete element["habref"];
     });
 
     // format date
