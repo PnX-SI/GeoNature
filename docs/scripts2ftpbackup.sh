@@ -1,4 +1,4 @@
-# CAUTION : all local and ftp directory and subdirectory destination must by created before running this script
+# CAUTION : all local and ftp directories and subdirectories destinations have to be created before running this script
 BKPDIR="/var/backups/internet"
 TODAY=`date +%d`
 DAY=`date +%A |tr 'A-Z' 'a-z'`
@@ -7,7 +7,7 @@ DEBUG="/bin/false" #DEBUG="/bin/echo"
 
 $DEBUG "*** Start internet applications backup ***"
 	nice -n 0 tar -czf $BKPDIR/taxhub/taxhub_medias.tar.gz /home/geonatadmin/taxhub/static/medias/
-	# Taxhub
+	# TaxHub
 	nice -n 0 ncftpput -u myftpuser -p myftppass myftp.url.fr /geonature2/dayly-backup/taxhub/ $BKPDIR/taxhub/taxhub_medias.tar.gz
 	nice -n 0 ncftpput -u myftpuser -p myftppass myftp.url.fr /geonature2/dayly-backup/taxhub/ /home/geonatadmin/taxhub/config.py
 	nice -n 0 ncftpput -u myftpuser -p myftppass myftp.url.fr /geonature2/dayly-backup/taxhub/ /home/geonatadmin/taxhub/settings.ini
@@ -18,7 +18,7 @@ $DEBUG "*** Start internet applications backup ***"
 	nice -n 0 ncftpput -u myftpuser -p myftppass myftp.url.fr /geonature2/dayly-backup/geonature/external_modules/occtax/config/ /home/geonatadmin/geonature/external_modules/occtax/config/conf_gn_module.toml
 	nice -n 0 ncftpput -u myftpuser -p myftppass myftp.url.fr /geonature2/dayly-backup/geonature/external_modules/dashboard/config/ /home/geonatadmin/geonature/external_modules/dashboard/config/conf_gn_module.toml
 	nice -n 0 ncftpput -u myftpuser -p myftppass myftp.url.fr /geonature2/dayly-backup/geonature/external_modules/validation/config/ /home/geonatadmin/geonature/external_modules/validation/config/conf_gn_module.toml
-	# synchronomade
+	# Synchronomade GN v1
 	nice -n 0 ncftpput -u myftpuser -p myftppass myftp.url.fr /geonature2/dayly-backup/synchronomade/webapi/apk/ /home/geonatadmin/synchronomade/webapi/apk/*.*
 	nice -n 0 ncftpput -u myftpuser -p myftppass myftp.url.fr /geonature2/dayly-backup/synchronomade/webapi/datas/ /home/geonatadmin/synchronomade/webapi/datas/*.*
 	nice -n 0 ncftpput -u myftpuser -p myftppass myftp.url.fr /geonature2/dayly-backup/synchronomade/webapi/ /home/geonatadmin/synchronomade/webapi/gunicorn_start.sh
@@ -29,7 +29,7 @@ $DEBUG "*** Start internet applications backup ***"
 	nice -n 0 ncftpput -u myftpuser -p myftppass myftp.url.fr /geonature2/dayly-backup/usershub/config/ /home/geonatadmin/usershub/config/settings.ini
 
 	if [ $(date +%d) == "29" ]; then
-		# Taxhub
+		# TaxHub
 		nice -n 0 ncftpput -u myftpuser -p myftppass myftp.url.fr /geonature2/month-backup/taxhub/ $BKPDIR/taxhub/taxhub_medias.tar.gz
 		nice -n 0 ncftpput -u myftpuser -p myftppass myftp.url.fr /geonature2/month-backup/taxhub/ /home/geonatadmin/taxhub/config.py
 		nice -n 0 ncftpput -u myftpuser -p myftppass myftp.url.fr /geonature2/month-backup/taxhub/ /home/geonatadmin/taxhub/settings.ini
@@ -40,7 +40,7 @@ $DEBUG "*** Start internet applications backup ***"
 		nice -n 0 ncftpput -u myftpuser -p myftppass myftp.url.fr /geonature2/month-backup/geonature/external_modules/occtax/config/ /home/geonatadmin/geonature/external_modules/occtax/config/conf_gn_module.toml
 		nice -n 0 ncftpput -u myftpuser -p myftppass myftp.url.fr /geonature2/month-backup/geonature/external_modules/dashboard/config/ /home/geonatadmin/geonature/external_modules/dashboard/config/conf_gn_module.toml
 		nice -n 0 ncftpput -u myftpuser -p myftppass myftp.url.fr /geonature2/month-backup/geonature/external_modules/validation/config/ /home/geonatadmin/geonature/external_modules/validation/config/conf_gn_module.toml
-		# synchronomade
+		# Synchronomade GN v1
 		nice -n 0 ncftpput -u myftpuser -p myftppass myftp.url.fr /geonature2/month-backup/synchronomade/webapi/apk/ /home/geonatadmin/synchronomade/webapi/apk/*.*
 		nice -n 0 ncftpput -u myftpuser -p myftppass myftp.url.fr /geonature2/month-backup/synchronomade/webapi/datas/ /home/geonatadmin/synchronomade/webapi/datas/*.*
 		nice -n 0 ncftpput -u myftpuser -p myftppass myftp.url.fr /geonature2/month-backup/synchronomade/webapi/ /home/geonatadmin/synchronomade/webapi/gunicorn_start.sh
