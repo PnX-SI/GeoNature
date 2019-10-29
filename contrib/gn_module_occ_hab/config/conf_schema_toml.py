@@ -9,4 +9,4 @@ from marshmallow import Schema, fields
 
 
 class GnModuleSchemaConf(Schema):
-    CODE_TYPO_HABITAT = fields.Integer(missing=1)
+    ID_LIST_HABITAT = fields.Integer(missing=1)

@@ -32,7 +32,7 @@ export class OcchabStoreService {
         });
       });
     this._gnDataService
-      .getTypologyHabitat(ModuleConfig.CODE_TYPO_HABITAT)
+      .getTypologyHabitat(ModuleConfig.ID_LIST_HABITAT)
       .subscribe(data => {
         this.typoHabitat = data;
       });
