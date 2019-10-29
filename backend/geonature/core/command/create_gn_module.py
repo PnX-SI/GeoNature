@@ -123,7 +123,8 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                     build_geonature_front(rebuild_sass=True)
 
                 # finally restart geonature backend via supervisor
-                subprocess.call(["sudo", "supervisorctl", "restart", "geonature2"])
+                subprocess.call(
+                    ["sudo", "supervisorctl", "restart", "geonature2"])
 
             else:
                 raise GeoNatureError(
@@ -135,8 +136,8 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
     except (GNModuleInstallError, GeoNatureError) as ex:
         log.critical(
             (
-                "\n\n\033[91mError while installing GN module '{}'\033[0m.The process returned:\n\t{}"
-            ).format(module_code, ex)
+                "\n\n\033[91mError while installing GN module \033[0m.The process returned:\n\t{}"
+            ).format(ex)
         )
         sys.exit(1)
 
@@ -173,7 +174,8 @@ def run_install_gn_module(app, module_path):
             # TODO: try to make it executable
             # TODO: change exception type
             # TODO: make error message
-            raise GNModuleInstallError("File {} not excecutable".format(str(gn_file)))
+            raise GNModuleInstallError(
+                "File {} not excecutable".format(str(gn_file)))
 
     #   APP
     gn_file = Path(module_path) / "install_gn_module.py"
