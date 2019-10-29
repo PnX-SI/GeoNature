@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { OcchabFormService } from "../services/form-service";
 import { OcchabStoreService } from "../services/store.service";
 import { OccHabDataService } from "../services/data.service";
@@ -6,6 +6,7 @@ import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs/Subscription";
 import { CommonService } from "@geonature_common/service/common.service";
+import { AppConfig } from "@geonature_config/app.config";
 
 @Component({
   selector: "pnx-occhab-form",
@@ -24,6 +25,7 @@ export class OccHabFormComponent implements OnInit {
   public MAP_SMALL_HEIGHT = "50vh";
   public MAP_FULL_HEIGHT = "87vh";
   public mapHeight = this.MAP_FULL_HEIGHT;
+  public appConfig = AppConfig;
 
   constructor(
     public occHabForm: OcchabFormService,

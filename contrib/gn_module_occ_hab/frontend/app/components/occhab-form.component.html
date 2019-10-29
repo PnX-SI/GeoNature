@@ -248,14 +248,14 @@
   
           <div class="form-row">
             <div class="col-6">
-                <pnx-autocomplete apiEndPoint="http://127.0.0.1:5000/api/habref/habitats/autocomplete/list/1"
+                <pnx-autocomplete apiEndPoint="{{appConfig.API_TAXHUB}}/habref/habitats/autocomplete/list/1"
                 [searchAsParameter]="false"  
                 [parentFormControl]="occHabForm.habitatForm.get('habref')"
                 queryParamSearch="search_name"
                 [othersGetParams]="occHabForm.selectedTypo"
                 [formatter]="formatter"
                 keyValue="search_name"
-                label="Rechercher un habitat"
+                label="Rechercher un habitat (tapez les premières lettres...)"
                 (onChange)="occHabForm.patchNomCite($event)"
               >
             </pnx-autocomplete>
@@ -314,18 +314,18 @@
   
   
           <br>
-          <button 
-            type="button" 
-            class="btn btn-primary"
-            (click)="addHabitat();"
-          > 
-          <i style="color: rgb(0, 233, 0);" class="fa fa-check" aria-hidden="true"></i>
-  
-            Valider l'habitat
-          </button>
-  
-  
+
+
         </div>
+        <button 
+          type="button" 
+          class="btn btn-primary"
+          (click)="addHabitat();"
+        > 
+      <i style="color: rgb(0, 233, 0);" class="fa fa-check" aria-hidden="true"></i>
+
+        Valider l'habitat
+      </button>
       </div>
     </div>
   </div>
