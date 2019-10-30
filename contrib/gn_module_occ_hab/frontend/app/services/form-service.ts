@@ -15,7 +15,7 @@ export class OcchabFormService {
   public stationForm: FormGroup;
   public typoHabControl = new FormControl();
   public selectedTypo: any;
-  public currentHabFormIndex = 0;
+  public currentEditingHabForm = null;
   constructor(
     private _fb: FormBuilder,
     private _dateParser: NgbDateParserFormatter,
@@ -53,6 +53,8 @@ export class OcchabFormService {
 
   initHabForm(): FormGroup {
     return this._fb.group({
+      id_station: null,
+      id_habitat: null,
       unique_id_sinp_hab: null,
       nom_cite: null,
       habref: [Validators.required, this.cdHabValidator],
@@ -86,7 +88,7 @@ export class OcchabFormService {
     const currentHabNumber = this.stationForm.value.t_habitats.length - 1;
     const habFormArray = this.stationForm.controls.t_habitats as FormArray;
     habFormArray.push(this.initHabForm());
-    this.currentHabFormIndex = currentHabNumber + 1;
+    this.currentEditingHabForm = currentHabNumber + 1;
   }
 
   /**
@@ -94,7 +96,7 @@ export class OcchabFormService {
    * @param index: index of the habitat to edit
    */
   editHab(index) {
-    this.currentHabFormIndex = index;
+    this.currentEditingHabForm = index;
   }
 
   /** Cancel the current hab
@@ -102,7 +104,8 @@ export class OcchabFormService {
    * we keep the order
    */
   cancelHab() {
-    this.currentHabFormIndex = null;
+    this.deleteHab(this.currentEditingHabForm);
+    this.currentEditingHabForm = null;
   }
 
   /**
@@ -129,7 +132,7 @@ export class OcchabFormService {
 
   patchNomCite($event) {
     const habArrayForm = this.stationForm.controls.t_habitats as FormArray;
-    habArrayForm.controls[this.currentHabFormIndex].patchValue({
+    habArrayForm.controls[this.currentEditingHabForm].patchValue({
       nom_cite: $event.item.search_name
     });
   }
@@ -155,6 +158,7 @@ export class OcchabFormService {
    */
   formatStationAndHabtoPatch(station) {
     const formatedHabitats = station.t_one_habitats.map(hab => {
+      hab.habref["search_name"] = hab.nom_cite;
       return {
         ...hab,
         id_nomenclature_determination_type: this.getOrNull(
@@ -187,14 +191,18 @@ export class OcchabFormService {
   }
 
   patchStationForm(oneStation) {
+    // create t_habitat formArray
+    for (let i = 0; i < oneStation.properties.t_one_habitats.length; i++) {
+      (this.stationForm.controls.t_habitats as FormArray).push(
+        this.initHabForm()
+      );
+    }
     const formatedData = this.formatStationAndHabtoPatch(oneStation.properties);
     this.stationForm.patchValue(formatedData);
     this.stationForm.patchValue({
       geom_4326: oneStation.geometry
     });
-
-    //
-    this.currentHabFormIndex = null;
+    this.currentEditingHabForm = null;
   }
 
   /** Format a station before post */

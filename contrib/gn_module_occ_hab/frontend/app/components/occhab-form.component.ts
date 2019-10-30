@@ -70,7 +70,7 @@ export class OccHabFormComponent implements OnInit {
     this.mapHeight = this.MAP_SMALL_HEIGHT;
     this.showHabForm = false;
     this.showTabHab = true;
-    this.occHabForm.currentHabFormIndex = null;
+    this.occHabForm.currentEditingHabForm = null;
   }
 
   // toggle the hab form and call the editHab function of form service
@@ -80,6 +80,7 @@ export class OccHabFormComponent implements OnInit {
   }
 
   cancelHab() {
+    this.showHabForm = false;
     this.occHabForm.cancelHab();
   }
 
