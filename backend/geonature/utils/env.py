@@ -9,11 +9,7 @@ from collections import ChainMap, namedtuple
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm.exc import NoResultFound
 
-import pip
-if int(pip.__version__.split('.')[0])>9:
-    from pip._internal.main import main as pip_main
-else:
-    from pip import main as pip_main
+from pip._internal.main import main as pip_main
 
 # Define GEONATURE_VERSION before import config_shema module
 # because GEONATURE_VERSION is imported in this module

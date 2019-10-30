@@ -44,3 +44,4 @@ fiona==1.7.13
 flask_wtf==0.14.2
 lxml==4.2.5
 Flask-Mail==0.9.1
+pip==19.3.1
