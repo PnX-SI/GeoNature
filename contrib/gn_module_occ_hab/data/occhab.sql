@@ -20,8 +20,15 @@ CREATE TABLE pr_occhab.t_stations(
   area integer,
   id_nomenclature_area_surface_calculation integer,
   comment text,
-  geom_4326 public.geometry NOT NULL,
-  id_nomenclature_geographic_object integer
+  geom_local public.geometry(Geometry,:MYLOCALSRID),
+  geom_4326 public.geometry(Geometry,4326),
+  precision integer,
+  numerization_scale character varying (15)
+  id_nomenclature_geographic_object integer,
+  CONSTRAINT enforce_dims_geom_4326 CHECK ((public.st_ndims(geom_4326) = 2)),
+  CONSTRAINT enforce_dims_geom_local CHECK ((public.st_ndims(geom_local) = 2)),
+  CONSTRAINT enforce_srid_geom_4326 CHECK ((public.st_srid(geom_4326) = 4326)),
+  CONSTRAINT enforce_srid_geom_local CHECK ((public.st_srid(geom_local) = :MYLOCALSRID))
 );
 
 COMMENT ON COLUMN t_stations.id_nomenclature_exposure IS 'Correspondance nomenclature INPN = exposition d''un terrain, REF_NOMENCLATURES = EXPOSITION';
@@ -43,7 +50,8 @@ CREATE TABLE pr_occhab.t_habitats(
   technical_precision character varying(500),
   unique_id_sinp_grp_occtax uuid,
   unique_id_sinp_grp_phyto uuid,
-  id_nomenclature_sensitvity integer
+  id_nomenclature_sensitvity integer,
+  id_nomenclature_community_interest integer
 );
 
 CREATE TABLE pr_occhab.cor_station_observer(
@@ -163,3 +171,25 @@ ALTER TABLE pr_occhab.t_habitats
 
 ALTER TABLE pr_occhab.t_habitats
   ADD CONSTRAINT check_t_habitats_sensitivity CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_sensitvity,'SENSIBILITE')) NOT VALID;
+
+------------
+--TRIGGERS--
+------------
+
+CREATE TRIGGER tri_calculate_geom_local
+  BEFORE INSERT OR UPDATE
+  ON pr_occhab.t_stations
+  FOR EACH ROW
+  EXECUTE PROCEDURE ref_geo.fct_trg_calculate_geom_local('geom_4326', 'geom_local');
+
+
+
+------------
+----DATA----
+------------
+
+
+INSERT INTO pr_occtax.defaults_nomenclatures_value (mnemonique_type, id_organism, regne, group2_inpn, id_nomenclature) VALUES
+('METH_OBS',0,0,0, ref_nomenclatures.get_id_nomenclature('METH_OBS', 'sig'))
+
+;
