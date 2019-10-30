@@ -27,6 +27,8 @@ def post_station():
     """
 
     data = dict(request.get_json())
+    print(data['id_station'])
+    print(data['t_habitats'])
     occ_hab = None
     if "t_habitats" in data:
         occ_hab = data.pop("t_habitats")
@@ -47,6 +49,8 @@ def post_station():
             station.observers.append(o)
     if occ_hab is not None:
         for occ in occ_hab:
+            if occ['id_habitat'] is None:
+                occ.pop('id_habitat')
             data_attr = [k for k in occ]
             for att in data_attr:
                 if not getattr(THabitatsOcchab, att, False):
