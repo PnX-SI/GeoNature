@@ -31,7 +31,7 @@ const routes: Routes = [
     MatFormFieldModule,
     MatInputModule
   ],
-  providers: [OcchabFormService, OccHabDataService, OcchabStoreService],
+  providers: [OccHabDataService, OcchabStoreService],
   bootstrap: []
 })
 export class GeonatureModule {}

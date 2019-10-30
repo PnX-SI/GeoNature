@@ -3,18 +3,19 @@ import {
   FormBuilder,
   FormGroup,
   FormControl,
-  Validators
+  Validators,
+  AbstractControl,
+  FormArray
 } from "@angular/forms";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
-import { OccHabDataService } from "../services/data.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 
 @Injectable()
 export class OcchabFormService {
   public stationForm: FormGroup;
-  public habitatForm: FormGroup;
   public typoHabControl = new FormControl();
   public selectedTypo: any;
+  public currentHabFormIndex = 0;
   constructor(
     private _fb: FormBuilder,
     private _dateParser: NgbDateParserFormatter,
@@ -24,9 +25,6 @@ export class OcchabFormService {
     this.typoHabControl.valueChanges.subscribe(data => {
       this.selectedTypo = { cd_typo: data };
     });
-
-    this.stationForm = this.initStationForm();
-    this.habitatForm = this.initHabForm();
   }
 
   initStationForm(): FormGroup {
@@ -49,7 +47,7 @@ export class OcchabFormService {
       id_nomenclature_geographic_object: [null, Validators.required],
       geom_4326: [null, Validators.required],
       comment: null,
-      t_habitats: [new Array()]
+      t_habitats: this._fb.array([])
     });
   }
 
@@ -57,7 +55,7 @@ export class OcchabFormService {
     return this._fb.group({
       unique_id_sinp_hab: null,
       nom_cite: null,
-      habref: null,
+      habref: [Validators.required, this.cdHabValidator],
       id_nomenclature_determination_type: null,
       determiner: null,
       id_nomenclature_collection_technique: [null, Validators.required],
@@ -67,16 +65,28 @@ export class OcchabFormService {
     });
   }
 
-  resetAllForm() {
-    this.stationForm.reset();
-    this.stationForm.patchValue({ t_habitats: [] });
-    this.habitatForm.reset();
+  cdHabValidator(habControl: AbstractControl) {
+    const currentHab = habControl.value;
+    if (!currentHab) {
+      return null;
+    } else if (!currentHab.cd_hab && !currentHab.search_name) {
+      return {
+        invalidTaxon: true
+      };
+    } else {
+      return null;
+    }
   }
 
-  addHabitat() {
-    // add at the beginning of the list
-    this.stationForm.value.t_habitats.unshift(this.habitatForm.value);
-    this.habitatForm.reset();
+  resetAllForm() {
+    this.stationForm.reset();
+  }
+
+  addNewHab() {
+    const currentHabNumber = this.stationForm.value.t_habitats.length - 1;
+    const habFormArray = this.stationForm.controls.t_habitats as FormArray;
+    habFormArray.push(this.initHabForm());
+    this.currentHabFormIndex = currentHabNumber + 1;
   }
 
   /**
@@ -84,35 +94,15 @@ export class OcchabFormService {
    * @param index: index of the habitat to edit
    */
   editHab(index) {
-    this.habitatForm.patchValue(this.stationForm.value.t_habitats[index]);
-    // reproduce what the autocomplete component of habitat receive originaly
-    this.habitatForm.patchValue({
-      habref: {
-        //nom_cite: this.stationForm.value.t_habitats[index].nom_cite,
-        search_name: this.stationForm.value.t_habitats[index].nom_cite,
-        cd_hab: this.stationForm.value.t_habitats[index].habref.cd_hab
-      }
-    });
-    // remove the current hab and patch the form to fire events
-    this.deleteHab(index);
+    this.currentHabFormIndex = index;
   }
 
   /** Cancel the current hab
    * if idEdition = true, we patch the former value to no not loose it
    * we keep the order
    */
-  cancelHab(isEditing?, currentIndex?) {
-    if (isEditing) {
-      this.stationForm.value.t_habitats.splice(
-        currentIndex,
-        0,
-        this.habitatForm.value
-      );
-      this.stationForm.patchValue({
-        t_habitats: this.stationForm.value.t_habitats
-      });
-    }
-    this.habitatForm.reset();
+  cancelHab() {
+    this.currentHabFormIndex = null;
   }
 
   /**
@@ -120,7 +110,8 @@ export class OcchabFormService {
    * @param index index of the habitat to delete
    */
   deleteHab(index) {
-    this.stationForm.value.t_habitats.splice(index, 1);
+    const habArrayForm = this.stationForm.controls.t_habitats as FormArray;
+    habArrayForm.removeAt(index);
   }
 
   patchGeomValue(geom) {
@@ -137,7 +128,8 @@ export class OcchabFormService {
   }
 
   patchNomCite($event) {
-    this.habitatForm.patchValue({
+    const habArrayForm = this.stationForm.controls.t_habitats as FormArray;
+    habArrayForm.controls[this.currentHabFormIndex].patchValue({
       nom_cite: $event.item.search_name
     });
   }
@@ -196,13 +188,15 @@ export class OcchabFormService {
 
   patchStationForm(oneStation) {
     const formatedData = this.formatStationAndHabtoPatch(oneStation.properties);
-
     this.stationForm.patchValue(formatedData);
-    this.stationForm.controls.t_habitats.patchValue(formatedData.t_habitats);
     this.stationForm.patchValue({
       geom_4326: oneStation.geometry
     });
+
+    //
+    this.currentHabFormIndex = null;
   }
+
   /** Format a station before post */
   formatStationBeforePost() {
     let formData = Object.assign({}, this.stationForm.value);
