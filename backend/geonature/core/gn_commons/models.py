@@ -14,6 +14,8 @@ from utils_flask_sqla.serializers import serializable
 from geonature.utils.utilssqlalchemy import geoserializable
 from geonature.utils.env import DB
 
+# from geonature.core.gn_meta.models import TDatasets
+
 
 @serializable
 class BibTablesLocation(DB.Model):
@@ -25,6 +27,24 @@ class BibTablesLocation(DB.Model):
     table_name = DB.Column(DB.Unicode)
     pk_field = DB.Column(DB.Unicode)
     uuid_field_name = DB.Column(DB.Unicode)
+
+
+cor_module_dataset = DB.Table(
+    "cor_module_dataset",
+    DB.Column(
+        "id_module",
+        DB.Integer,
+        ForeignKey("gn_commons.t_modules.id_module"),
+        primary_key=True,
+    ),
+    DB.Column(
+        "id_dataset",
+        DB.Integer,
+        ForeignKey("gn_meta.t_datasets.id_dataset"),
+        primary_key=True,
+    ),
+    schema="gn_commons",
+)
 
 
 @serializable
@@ -156,15 +176,3 @@ class THistoryActions(DB.Model):
     operation_type = DB.Column(DB.Unicode)
     operation_date = DB.Column(DB.DateTime)
     table_content = DB.Column(DB.Unicode)
-
-
-@serializable
-class CorModuleDataset(DB.Model):
-    __tablename__ = "cor_module_dataset"
-    __table_args__ = {"schema": "gn_commons"}
-    id_module = DB.Column(
-        DB.Integer, ForeignKey("gn_commons.t_modules.id_module"), primary_key=True
-    )
-    id_dataset = DB.Column(
-        DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"), primary_key=True
-    )

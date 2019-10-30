@@ -42,16 +42,16 @@
 
       <div *ngSwitchCase="'checkbox'">
             <div class="custom-control custom-checkbox" *ngIf="formDef.values.length == 1; else elseBlock">
-                <input
-                  type="checkbox"
-                  [id]="formDef.attribut_name"
+                <input 
+                  type="checkbox" 
+                  id="{{formDef.attribut_name}}_{{val}}"
                   class="custom-control-input"
                   [ngClass]="{'is-invalid': form.get(formDef.attribut_name).invalid}"
-                  [name]="formDef.attribut_name"
-                  [value]="formDef.values[0]"
-                  (change)="onCheckChange($event, form.get(formDef.attribut_name))"
-                >
-                <label class="custom-control-label" [for]="formDef.attribut_name"><span [innerHTML]="formDef.attribut_label"> </span></label>
+                  [name]="formDef.attribut_name" 
+                  [value]="formDef.values[0]" 
+                  (change)="onCheckChange($event, form.get(formDef.attribut_name))" 
+                > 
+                <label class="custom-control-label" for="{{formDef.attribut_name}}_{{val}}"><span [innerHTML]="formDef.attribut_label"> </span></label> 
               </div>
             <ng-template #elseBlock>
                 <div *ngFor="let val of formDef.values; let index=index" class="custom-control custom-checkbox">
@@ -72,17 +72,17 @@
 
       <div *ngSwitchCase="'radio'">
         <div *ngFor="let val of formDef.values" class="custom-control custom-radio">
-            <input
-              type="radio"
-              [id]="val"
-              (click)="onRadioChange(val, form.get(formDef.attribut_name))"
+            <input 
+              type="radio" 
+              id="{{formDef.attribut_name}}_{{val}}"
+              (click)="onRadioChange(val, form.get(formDef.attribut_name))" 
               class="custom-control-input"
               [name]="formDef.attribut_name"
               [value]="val"
               [formControl]="form.get(formDef.attribut_name)">
             <label
               class="custom-control-label"
-              [for]="val">
+              for="{{formDef.attribut_name}}_{{val}}"> 
               <span [innerHTML]="val"></span>
             </label>
         </div>
