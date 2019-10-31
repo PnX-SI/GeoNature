@@ -352,7 +352,7 @@
       type="button" 
       class="btn btn-success btn-sm"
       (click)="postStation()"
-      [disabled]="occHabForm.stationForm.invalid"
+      [disabled]="occHabForm.stationForm.invalid || showHabForm"
     >
       Valider la station
     </button>

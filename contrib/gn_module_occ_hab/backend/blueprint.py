@@ -1,16 +1,12 @@
-from flask import Blueprint, current_app, session, request
-from geoalchemy2.shape import from_shape
-from geojson import FeatureCollection
-from shapely.geometry import asShape
-
-from geonature.utils.utilssqlalchemy import json_resp
-from geonature.utils.utilsgeometry import remove_third_dimension
-from geonature.utils.env import DB
-
-from pypnusershub.db.models import User
-
 from .models import OneStation, TStationsOcchab, THabitatsOcchab
-
+from pypnusershub.db.models import User
+from geonature.utils.env import DB
+from geonature.utils.utilsgeometry import remove_third_dimension
+from geonature.utils.utilssqlalchemy import json_resp
+from shapely.geometry import asShape
+from geojson import FeatureCollection
+from geoalchemy2.shape import from_shape
+from flask import Blueprint, current_app, session, request
 
 blueprint = Blueprint("occhab", __name__)
 
@@ -27,8 +23,6 @@ def post_station():
     """
 
     data = dict(request.get_json())
-    print(data['id_station'])
-    print(data['t_habitats'])
     occ_hab = None
     if "t_habitats" in data:
         occ_hab = data.pop("t_habitats")
@@ -37,6 +31,7 @@ def post_station():
         observers_list = data.pop("observers")
 
     station = TStationsOcchab(**data)
+    print(station.observer_rel)
     shape = asShape(data["geom_4326"])
     two_dimension_geom = remove_third_dimension(shape)
     station.geom_4326 = from_shape(two_dimension_geom, srid=4326)
@@ -47,6 +42,7 @@ def post_station():
         )
         for o in observers:
             station.observers.append(o)
+    t_hab_list_object = []
     if occ_hab is not None:
         for occ in occ_hab:
             if occ['id_habitat'] is None:
@@ -55,8 +51,8 @@ def post_station():
             for att in data_attr:
                 if not getattr(THabitatsOcchab, att, False):
                     occ.pop(att)
-            habitat_obj = THabitatsOcchab(**occ)
-            station.t_habitats.append(habitat_obj)
+            t_hab_list_object.append(THabitatsOcchab(**occ))
+    station.t_habitats = t_hab_list_object
     if station.id_station:
         DB.session.merge(station)
     else:
@@ -80,7 +76,6 @@ def get_one_station(id_station):
         :rtype dict<TStationsOcchab>
 
     """
-    params = request.args
     station = DB.session.query(OneStation).get(id_station)
     return station.get_geofeature(True)
 
@@ -97,5 +92,7 @@ def get_all_habitats():
     if 'id_dataset' in params:
         q = q.filter(TStationsOcchab.id_dataset == params['id_dataset'])
     data = q.all()
+    # for d in data:
+    #     print(d.observer_rel)
     return FeatureCollection(
         [d.get_geofeature(True) for d in data])
