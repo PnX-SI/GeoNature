@@ -58,7 +58,45 @@ SELECT * FROM v1_compat.cor_critere_liste;
 ----------------
 ALTER TABLE ONLY gn_synchronomade.erreurs_flora ADD CONSTRAINT erreurs_flora_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY gn_synchronomade.erreurs_occtax ADD CONSTRAINT erreurs_occtax_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY gn_synchronomade.cor_boolean ADD CONSTRAINT cor_boolean_pkey PRIMARY KEY (expression);
+ALTER TABLE ONLY gn_synchronomade.bib_criteres_cf ADD CONSTRAINT bib_criteres_cf_pkey PRIMARY KEY (id_critere_cf);
+ALTER TABLE ONLY gn_synchronomade.bib_criteres_inv ADD CONSTRAINT bib_criteres_inv_pkey PRIMARY KEY (id_critere_inv);
+ALTER TABLE ONLY gn_synchronomade.bib_messages_cf ADD CONSTRAINT bib_messages_cf_pkey PRIMARY KEY (id_message_cf);
+ALTER TABLE ONLY gn_synchronomade.bib_messages_inv ADD CONSTRAINT bib_messages_inv_pkey PRIMARY KEY (id_message_inv);
+ALTER TABLE ONLY gn_synchronomade.bib_messages_cflore ADD CONSTRAINT bib_messages_cflore_pkey PRIMARY KEY (id_message_cflore);
+ALTER TABLE ONLY gn_synchronomade.bib_milieux_inv ADD CONSTRAINT bib_milieux_inv_pkey PRIMARY KEY (id_milieu_inv);
+ALTER TABLE ONLY gn_synchronomade.cor_message_taxon_contactfaune ADD CONSTRAINT cor_message_taxon_contactfaune_pkey PRIMARY KEY (id_message_cf, id_nom);
+ALTER TABLE ONLY gn_synchronomade.cor_message_taxon_contactinv ADD CONSTRAINT cor_message_taxon_contactinv_pkey PRIMARY KEY (id_message_inv, id_nom);
+ALTER TABLE ONLY gn_synchronomade.cor_message_taxon_cflore ADD CONSTRAINT cor_message_taxon_cflore_pkey PRIMARY KEY (id_message_cflore, id_nom);
+ALTER TABLE ONLY gn_synchronomade.cor_critere_liste ADD CONSTRAINT cor_cor_critere_liste_pkey PRIMARY KEY (id_critere_cf, id_liste);
 
+
+----------------
+--FOREIGN KEYS--
+----------------
+ALTER TABLE ONLY gn_synchronomade.cor_critere_liste
+    ADD CONSTRAINT fk_cor_critere_liste_bib_criter FOREIGN KEY (id_critere_cf) REFERENCES gn_synchronomade.bib_criteres_cf(id_critere_cf) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY gn_synchronomade.cor_critere_liste
+    ADD CONSTRAINT fk_cor_critere_liste_bib_liste FOREIGN KEY (id_liste) REFERENCES taxonomie.bib_listes(id_liste) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY gn_synchronomade.cor_message_taxon_contactfaune
+    ADD CONSTRAINT fk_cor_message_taxoncf_bib_noms FOREIGN KEY (id_nom) REFERENCES taxonomie.bib_noms(id_nom) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY gn_synchronomade.cor_message_taxon_contactfaune
+    ADD CONSTRAINT fk_cor_message_taxoncf_bib_message_cf FOREIGN KEY (id_message_cf) REFERENCES gn_synchronomade.bib_messages_cf(id_message_cf) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY gn_synchronomade.cor_message_taxon_contactinv
+    ADD CONSTRAINT fk_cor_message_taxoninv_bib_noms FOREIGN KEY (id_nom) REFERENCES taxonomie.bib_noms(id_nom) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY gn_synchronomade.cor_message_taxon_contactinv
+    ADD CONSTRAINT fk_cor_message_taxoninv_bib_message_inv FOREIGN KEY (id_message_inv) REFERENCES gn_synchronomade.bib_messages_inv(id_message_inv) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY gn_synchronomade.cor_message_taxon_cflore
+    ADD CONSTRAINT fk_cor_message_taxoncflore_bib_noms FOREIGN KEY (id_nom) REFERENCES taxonomie.bib_noms(id_nom) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY gn_synchronomade.cor_message_taxon_cflore
+    ADD CONSTRAINT fk_cor_message_taxoncflore_bib_message_cflore FOREIGN KEY (id_message_cflore) REFERENCES gn_synchronomade.bib_messages_cflore(id_message_cflore) ON UPDATE CASCADE;
 
 ---------
 --VIEWS--
