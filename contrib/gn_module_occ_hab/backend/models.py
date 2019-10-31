@@ -9,10 +9,10 @@ from pypnusershub.db.models import User
 from pypnnomenclature.models import TNomenclatures
 from utils_flask_sqla.serializers import serializable
 
-
+from geonature.core.habref.models import Habref
+from geonature.core.utils import ReleveCruvedAutorization
 from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import geoserializable
-from geonature.core.habref.models import Habref
 
 
 class CorStationObserverOccHab(DB.Model):
@@ -55,7 +55,16 @@ class THabitatsOcchab(DB.Model):
 
 @serializable
 @geoserializable
-class TStationsOcchab(DB.Model):
+class TStationsOcchab(DB.Model, ReleveCruvedAutorization):
+    # overright the constructor
+    # to inherit of ReleModel, the constructor must define some mandatory attribute
+    def __init__(self, *args, **kwargs):
+        super(TStationsOcchab, self).__init__(*args, **kwargs)
+        self.observer_rel = getattr(self, 'observers')
+        self.dataset_rel = getattr(self, 'dataset')
+        self.id_digitiser_col = getattr(self, 'id_digitiser')
+        self.id_dataset_col = getattr(self, 'id_dataset')
+
     __tablename__ = "t_stations"
     __table_args__ = {"schema": "pr_occhab"}
     id_station = DB.Column(DB.Integer, primary_key=True)
@@ -83,7 +92,8 @@ class TStationsOcchab(DB.Model):
     comment = DB.Column(DB.Integer)
     geom_4326 = DB.Column(Geometry("GEOMETRY", 4626))
 
-    t_habitats = relationship("THabitatsOcchab", lazy="joined")
+    t_habitats = relationship(
+        "THabitatsOcchab", lazy="joined",  cascade="all, delete-orphan")
     dataset = relationship("TDatasets", lazy="joined")
     observers = DB.relationship(
         User,
@@ -99,6 +109,9 @@ class TStationsOcchab(DB.Model):
 
     def get_geofeature(self, recursif=True):
         return self.as_geofeature("geom_4326", "id_station", recursif)
+
+    def __repr__(self):
+        return self.observer_rel
 
 
 @serializable
