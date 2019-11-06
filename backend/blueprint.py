@@ -89,12 +89,15 @@ def get_areas_stat(simplify_level, type_code):
             FROM gn_synthese.cor_area_synthese cor
             JOIN gn_synthese.synthese s ON s.id_synthese=cor.id_synthese
             JOIN taxonomie.taxref t ON s.cd_nom=t.cd_nom
-            WHERE cor.id_area IN (SELECT id_area FROM ref_geo.l_areas WHERE id_type = ref_geo.get_id_area_type(:code)) """
+            JOIN ref_geo.l_areas l ON cor.id_area = l.id_area
+            JOIN ref_geo.bib_areas_types lt ON l.id_type = lt.id_type
+            WHERE lt.type_code = :code AND l.enable = true
+        """
         + x
         + """ GROUP BY cor.id_area)
         SELECT a.area_name, st_asgeojson(st_transform(st_simplifyPreserveTopology(a.geom, :level), 4326)), c.nb_obs, c.nb_tax
         FROM ref_geo.l_areas a
-        JOIN count c ON a.id_area = c.id_area 
+        JOIN count c ON a.id_area = c.id_area
         """
     )
     data = DB.engine.execute(q, level=simplify_level, code=type_code)
@@ -263,4 +266,3 @@ def get_years(model):
             func.max(func.date_part("year", VSynthese.date_min)),
         )
     return q.all()
-
