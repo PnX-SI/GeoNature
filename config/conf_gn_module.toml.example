@@ -1,7 +1,6 @@
 # Fichier listant les paramètres du module et leurs valeurs par défaut
 
-
 AREA_TYPE = ["COM", "M1", "M5", "M10"]
-BORNE_TAXON = [1, 20, 40, 60, 80, 100, 120]
-BORNE_OBS = [1, 5, 10, 15]
+BORNE_TAXON = [1, 5, 10, 15]
+BORNE_OBS = [1, 20, 40, 60, 80, 100, 120]
 SIMPLIFY_LEVEL = 50
