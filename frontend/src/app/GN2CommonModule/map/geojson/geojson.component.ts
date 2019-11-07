@@ -43,7 +43,8 @@ export class GeojsonComponent implements OnInit, OnChanges {
     this.currentGeojson = this.mapservice.createGeojson(
       geojson,
       this.asCluster,
-      this.onEachFeature
+      this.onEachFeature,
+      this.style
     );
     this.geojsonCharged.next(this.currentGeojson);
     this.mapservice.layerGroup = new L.FeatureGroup();
