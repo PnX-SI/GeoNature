@@ -1,4 +1,3 @@
-
 from geojson import FeatureCollection
 from geoalchemy2.shape import from_shape
 from flask import Blueprint, current_app, session, request
@@ -101,17 +100,26 @@ def get_all_habitats(info_role):
     """
         Return all station with their habitat
     """
-    params = request.args
+    params = request.args.to_dict()
     q = DB.session.query(TStationsOcchab)
 
     if 'id_dataset' in params:
         q = q.filter(TStationsOcchab.id_dataset == params['id_dataset'])
+
+    if 'cd_hab' in params:
+        q = q.filter(TStationsOcchab.t_habitats.any(cd_hab=params['cd_hab']))
+
+    if 'date_low' in params:
+        q = q.filter(TStationsOcchab.date_min >= params.pop("date_low"))
+
+    if "date_up" in params:
+        q = q.filter(TStationsOcchab.date_max <= params.pop("date_up"))
+
     data = q.all()
 
     user_cruved = get_or_fetch_user_cruved(
         session=session, id_role=info_role.id_role, module_code="OCCTAX"
     )
-
     feature_list = []
     for d in data:
         feature = d.get_geofeature(True)
