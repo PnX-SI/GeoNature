@@ -8,7 +8,9 @@
   [ngbTypeahead]="search"
   [inputFormatter]="formatter"
   [resultTemplate]="resultTemplate || rt" 
-  (selectItem)="itemSelected($event)" />
+  (selectItem)="itemSelected($event)"
+  [placeholder]="placeholder"
+  />
   <ng-template #rt let-r="result" let-t="term">
     <span [innerHTML]="r[keyValue]">  </span>
   </ng-template>

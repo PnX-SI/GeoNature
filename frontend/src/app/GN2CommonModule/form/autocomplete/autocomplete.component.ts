@@ -21,6 +21,7 @@ export class AutoCompleteComponent implements OnInit {
   @Input() parentFormControl: FormControl;
   @Input() label: string;
   @Input() charNumber = 2;
+  @Input() placeholder;
   /** number of typeahead results */
   @Input() listLength = 20;
   /** The key of the dict to display in the typehead */

@@ -1,25 +1,35 @@
-<div class="row row-sm">
-  <div class="card">
-      <div class="card-body">
-          <button class="btn btn-success float-right" 
-          [routerLink]="['form']"> Ajouter une station </button>
-      </div>
-  </div>
-
+<div class="float-btns">
+    <button
+      id="add-btn"
+      class="btn  btn-success hard-shadow btn-action" 
+      [routerLink]="['form']"
+      matTooltip="Saisir une nouvelle station d'habitat"
+    > 
+        Saisir
+        <i class="fa fa-plus" aria-hidden="true"></i>    </button>
+    <button 
+      class="btn  btn-primary hard-shadow btn-action"
+      data-toggle="collapse"
+      data-target="#collapseFilter"
+      matTooltip="Rechercher des habitats "
+    >
+      Rechercher
+      <i class="fa fa-search" aria-hidden="true"></i>
+    
+    </button>
+    
 </div>
 
 <div class="row row-sm">
-    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
-        <!-- <pnx-map  height="90vh">
-          <pnx-geojson [geojson]="storeService.stations" >
-
-          </pnx-geojson>
-        </pnx-map> -->
-
-        <pnx-map-list height='90vh' idName="id_station"></pnx-map-list>
+  <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
+    <pnx-map-list height='88vh' idName="id_station"></pnx-map-list>
   </div>
 
   <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
+    <div class="collapse" id="collapseFilter">
+      <pnx-occhab-map-list-filter (onSearch)="searchData($event)"> </pnx-occhab-map-list-filter>
+    </div>
+
     <ngx-datatable 
       #dataTable 
       class="material striped margin-top-xs table-size expandable" 

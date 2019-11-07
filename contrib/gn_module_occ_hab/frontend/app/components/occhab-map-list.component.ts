@@ -24,7 +24,11 @@ export class OccHabMapListComponent implements OnInit {
     public mapListService: MapListService
   ) {}
   ngOnInit() {
-    this._occHabDataService.getStations().subscribe(featureCollection => {
+    this.getStations();
+  }
+
+  getStations(params?) {
+    this._occHabDataService.getStations(params).subscribe(featureCollection => {
       // this.stations = data;
       this.mapListService.tableData = [];
       featureCollection.features.forEach(feature => {
@@ -35,6 +39,10 @@ export class OccHabMapListComponent implements OnInit {
       });
       this.mapListService.geojsonData = featureCollection;
     });
+  }
+
+  searchData(params) {
+    this.getStations(params);
   }
 
   toggleExpandRow(row) {

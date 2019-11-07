@@ -1,18 +1,13 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import {
-  MatAutocompleteModule,
-  MatFormFieldModule,
-  MatInputModule
-} from "@angular/material";
-
 import { GN2CommonModule } from "@geonature_common/GN2Common.module";
 import { Routes, RouterModule } from "@angular/router";
 import { OccHabFormComponent } from "./components/occhab-form.component";
 import { OccHabMapListComponent } from "./components/occhab-map-list.component";
-import { OcchabFormService } from "./services/form-service";
+import { OcchabMapListFilterComponent } from "./components/occhab-map-list-filter.component";
 import { OccHabDataService } from "./services/data.service";
 import { OcchabStoreService } from "./services/store.service";
+import { OccHabMapListService } from "./services/occhab-map-list.service";
 
 // my module routing
 const routes: Routes = [
@@ -22,16 +17,13 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [OccHabFormComponent, OccHabMapListComponent],
-  imports: [
-    CommonModule,
-    GN2CommonModule,
-    RouterModule.forChild(routes),
-    MatAutocompleteModule,
-    MatFormFieldModule,
-    MatInputModule
+  declarations: [
+    OccHabFormComponent,
+    OccHabMapListComponent,
+    OcchabMapListFilterComponent
   ],
-  providers: [OccHabDataService, OcchabStoreService],
+  imports: [CommonModule, GN2CommonModule, RouterModule.forChild(routes)],
+  providers: [OccHabDataService, OcchabStoreService, OccHabMapListService],
   bootstrap: []
 })
 export class GeonatureModule {}
