@@ -94,7 +94,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
 
     // When data his push via 'patchValue' (API POST data for example)
     this.parentFormControl.valueChanges.subscribe(value => {
-      if (this.values.length < 1) {
+      if (this.values && this.values.length < 1) {
         return;
       }
       //  if the new value is null
