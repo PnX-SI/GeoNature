@@ -48,7 +48,7 @@ def filter_query_all_filters(model, q, filters, user):
         date_max = datetime.datetime.strptime(
             filters.pop("date_max")[0], '%Y-%m-%d')
         date_max = date_max.replace(hour=23, minute=59, second=59)
-        q = q.filter(model.date_min <= date_max)
+        q = q.filter(model.date_max <= date_max)
 
     if "id_acquisition_frameworks" in filters:
         q = q.join(
