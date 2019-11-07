@@ -55,10 +55,11 @@ class THabitatsOcchab(DB.Model):
 
 @serializable
 @geoserializable
-class TStationsOcchab(DB.Model, ReleveCruvedAutorization):
+class TStationsOcchab(ReleveCruvedAutorization):
     # overright the constructor
     # to inherit of ReleModel, the constructor must define some mandatory attribute
     def __init__(self, *args, **kwargs):
+        print('INIT')
         super(TStationsOcchab, self).__init__(*args, **kwargs)
         self.observer_rel = getattr(self, 'observers')
         self.dataset_rel = getattr(self, 'dataset')
@@ -109,9 +110,6 @@ class TStationsOcchab(DB.Model, ReleveCruvedAutorization):
 
     def get_geofeature(self, recursif=True):
         return self.as_geofeature("geom_4326", "id_station", recursif)
-
-    def __repr__(self):
-        return self.observer_rel
 
 
 @serializable
