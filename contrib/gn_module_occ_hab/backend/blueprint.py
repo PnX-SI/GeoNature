@@ -1,19 +1,21 @@
+import datetime
+
+from flask import Blueprint, current_app, session, send_from_directory, request
 from geojson import FeatureCollection
 from geoalchemy2.shape import from_shape
-from flask import Blueprint, current_app, session, request
 from pypnusershub.db.models import User
 from shapely.geometry import asShape
 
-from utils_flask_sqla.response import json_resp
-
+from utils_flask_sqla.response import json_resp, to_csv_resp, to_json_resp
 from geonature.core.gn_permissions import decorators as permissions
+from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
 from geonature.utils.env import DB
 from geonature.utils.utilsgeometry import remove_third_dimension
-from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
-
+from geonature.utils import filemanager
+from geonature.utils.utilssqlalchemy import GenericTable
 
 from .models import OneStation, TStationsOcchab, THabitatsOcchab
-
+from .query import filter_query_with_cruved
 
 blueprint = Blueprint("occhab", __name__)
 
@@ -98,7 +100,7 @@ def get_one_station(id_station, info_role):
 @json_resp
 def get_all_habitats(info_role):
     """
-        Return all station with their habitat
+        Get all stations with their hab
     """
     params = request.args.to_dict()
     q = DB.session.query(TStationsOcchab)
@@ -115,6 +117,11 @@ def get_all_habitats(info_role):
     if "date_up" in params:
         q = q.filter(TStationsOcchab.date_max <= params.pop("date_up"))
 
+    q = filter_query_with_cruved(
+        TStationsOcchab,
+        q,
+        info_role
+    )
     data = q.all()
 
     user_cruved = get_or_fetch_user_cruved(
@@ -128,3 +135,30 @@ def get_all_habitats(info_role):
 
         feature_list.append(feature)
     return FeatureCollection(feature_list)
+
+
+@blueprint.route("/export_stations/<export_format>", methods=["POST"])
+@permissions.check_cruved_scope("E", True, module_code="OCC_HAB")
+def export_all_habitats(info_role, export_format='csv',):
+    """
+        Download all stations
+        The route is in post to avoid a to big query string
+    """
+    export_view = GenericTable(
+        tableName="v_export_sinp",
+        schemaName="pr_occhab",
+        geometry_field=None,
+        srid=current_app.config["LOCAL_SRID"],
+    )
+
+    file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
+    file_name = filemanager.removeDisallowedFilenameChars(file_name)
+    results = DB.session.query(export_view.tableDef).all()
+    if export_format == 'csv':
+        formated_data = [
+            export_view.as_dict(d, columns=[]) for d in results
+        ]
+        return to_csv_resp(
+            file_name, formated_data, separator=";", columns=[]
+        )
+    return ''

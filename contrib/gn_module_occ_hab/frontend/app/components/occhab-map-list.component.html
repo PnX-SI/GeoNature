@@ -5,7 +5,7 @@
       [routerLink]="['form']"
       matTooltip="Saisir une nouvelle station d'habitat"
     > 
-        Saisir
+        SAISIR
         <i class="fa fa-plus" aria-hidden="true"></i>    </button>
     <button 
       class="btn  btn-primary hard-shadow btn-action"
@@ -13,14 +13,14 @@
       data-target="#collapseFilter"
       matTooltip="Rechercher des habitats "
     >
-      Rechercher
+      RECHERCHER
       <i class="fa fa-search" aria-hidden="true"></i>
     
     </button>
     
 </div>
 
-<div class="row row-sm">
+<div class="row row-sm map-list-container">
   <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
     <pnx-map-list height='88vh' idName="id_station"></pnx-map-list>
   </div>
@@ -29,6 +29,14 @@
     <div class="collapse" id="collapseFilter">
       <pnx-occhab-map-list-filter (onSearch)="searchData($event)"> </pnx-occhab-map-list-filter>
     </div>
+    <button
+      id="download-btn"
+      class="btn btn-primary box-shadow btn-action"
+      (click)="downloadStations('csv')"
+      >
+      TELECHARGER
+      <i class="fa fa-download" aria-hidden="true"></i>
+    </button>
 
     <ngx-datatable 
       #dataTable 
@@ -37,6 +45,7 @@
       [rowHeight]="40"
       [selected]="mapListService.selectedRow"
       [selectionType]="'single'" 
+      [rowClass]="mapListService.getRowClass"
       (select)="mapListService.onRowSelect($event)"
     >
       <ngx-datatable-row-detail 
@@ -177,4 +186,5 @@
       </ng-container>
     </ngx-datatable>
   </div>
+
 </div>

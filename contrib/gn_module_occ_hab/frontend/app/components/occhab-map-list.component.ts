@@ -45,6 +45,12 @@ export class OccHabMapListComponent implements OnInit {
     this.getStations(params);
   }
 
+  downloadStations(exportFormat: string) {
+    console.log("download ????");
+
+    this._occHabDataService.exportStations(exportFormat);
+  }
+
   toggleExpandRow(row) {
     this.dataTable.rowDetail.toggleExpandRow(row);
   }

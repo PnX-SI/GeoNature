@@ -1,11 +1,19 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpParams } from "@angular/common/http";
+import { HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
+import {
+  DataFormService,
+  FormatMapMime
+} from "@geonature_common/form/data-form.service";
+
 import { AppConfig } from "@geonature_config/app.config";
 import { ModuleConfig } from "../module.config";
 
 @Injectable()
 export class OccHabDataService {
-  constructor(private _http: HttpClient) {}
+  constructor(
+    private _http: HttpClient,
+    private _gnDataService: DataFormService
+  ) {}
 
   postStation(data) {
     return this._http.post(
@@ -30,6 +38,26 @@ export class OccHabDataService {
   getOneStation(id_station) {
     return this._http.get<any>(
       `${AppConfig.API_ENDPOINT}/${ModuleConfig.MODULE_URL}/station/${id_station}`
+    );
+  }
+
+  exportStations(export_format, idsStation?: []) {
+    const source = this._http.post(
+      `${AppConfig.API_ENDPOINT}/${ModuleConfig.MODULE_URL}/export_stations/${export_format}`,
+      {
+        headers: new HttpHeaders().set(
+          "Content-Type",
+          `${FormatMapMime.get(export_format)}`
+        ),
+        observe: "events",
+        responseType: "blob",
+        reportProgress: true
+      }
+    );
+    this._gnDataService.subscribeAndDownload(
+      source,
+      "export_hab",
+      export_format
     );
   }
 }

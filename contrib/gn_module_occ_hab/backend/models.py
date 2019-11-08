@@ -90,7 +90,8 @@ class TStationsOcchab(ReleveCruvedAutorization):
         DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
     id_nomenclature_geographic_object = DB.Column(
         DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    comment = DB.Column(DB.Integer)
+    comment = DB.Column(DB.Unicode)
+    id_digitiser = DB.Column(DB.Integer)
     geom_4326 = DB.Column(Geometry("GEOMETRY", 4626))
 
     t_habitats = relationship(

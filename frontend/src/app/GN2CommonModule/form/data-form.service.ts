@@ -1,16 +1,30 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-
+import {
+  HttpClient,
+  HttpParams,
+  HttpHeaders,
+  HttpEventType,
+  HttpErrorResponse,
+  HttpEvent
+} from '@angular/common/http';
 import { AppConfig } from '../../../conf/app.config';
 import { Taxon } from './taxonomy/taxonomy.component';
+import { Observable } from 'rxjs';
 
 /** Interface for queryString parameters*/
 interface ParamsDict {
   [key: string]: any;
 }
 
+export const FormatMapMime = new Map([
+  ['csv', 'text/csv'],
+  ['json', 'application/json'],
+  ['shp', 'application/zip']
+]);
+
 @Injectable()
 export class DataFormService {
+  private _blob: Blob;
   constructor(private _http: HttpClient) {}
 
   getNomenclature(
@@ -308,5 +322,44 @@ export class DataFormService {
 
   addOrderBy(httpParam: HttpParams, order_column): HttpParams {
     return httpParam.append('orderby', order_column);
+  }
+
+  subscribeAndDownload(
+    source: Observable<HttpEvent<Blob>>,
+    fileName: string,
+    format: string
+  ): void {
+    const subscription = source.subscribe(
+      event => {
+        if (event.type === HttpEventType.Response) {
+          this._blob = new Blob([event.body], { type: event.headers.get('Content-Type') });
+        }
+      },
+      (e: HttpErrorResponse) => {
+        //this._commonService.translateToaster('error', 'ErrorMessage');
+        //this.isDownloading = false;
+      },
+      // response OK
+      () => {
+        //this.isDownloading = false;
+        const date = new Date();
+        const extension = format === 'shapefile' ? 'zip' : format;
+        this.saveBlob(this._blob, `${fileName}_${date.toISOString()}.${extension}`);
+        subscription.unsubscribe();
+      }
+    );
+  }
+
+  saveBlob(blob, filename) {
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('visibility', 'hidden');
+    link.download = filename;
+    link.onload = () => {
+      URL.revokeObjectURL(link.href);
+    };
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 }

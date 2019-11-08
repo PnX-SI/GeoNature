@@ -10,3 +10,4 @@ from marshmallow import Schema, fields
 
 class GnModuleSchemaConf(Schema):
     ID_LIST_HABITAT = fields.Integer(missing=1)
+    OBSERVER_AS_TXT = fields.Integer(missing=False)
