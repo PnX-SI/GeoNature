@@ -217,7 +217,8 @@ def get_organismes():
     q = DB.session.query(BibOrganismes)
     if "orderby" in params:
         try:
-            order_col = getattr(BibOrganismes.__table__.columns, params.pop("orderby"))
+            order_col = getattr(
+                BibOrganismes.__table__.columns, params.pop("orderby"))
             q = q.order_by(order_col)
         except AttributeError:
             log.error("the attribute to order on does not exist")
@@ -236,7 +237,8 @@ def get_organismes_jdd(info_role):
     """
     params = request.args.to_dict()
 
-    datasets = [dataset["id_dataset"] for dataset in get_datasets_cruved(info_role)]
+    datasets = [dataset["id_dataset"]
+                for dataset in get_datasets_cruved(info_role)]
     q = (
         DB.session.query(BibOrganismes)
         .join(
@@ -247,7 +249,8 @@ def get_organismes_jdd(info_role):
     )
     if "orderby" in params:
         try:
-            order_col = getattr(BibOrganismes.__table__.columns, params.pop("orderby"))
+            order_col = getattr(
+                BibOrganismes.__table__.columns, params.pop("orderby"))
             q = q.order_by(order_col)
         except AttributeError:
             log.error("the attribute to order on does not exist")
@@ -277,14 +280,16 @@ def inscription():
     data["url_confirmation"] = config["API_ENDPOINT"] + "/users/confirmation"
 
     r = s.post(
-        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/create_temp_user",
+        url=config["API_ENDPOINT"] +
+        "/pypn/register/post_usershub/create_temp_user",
         json=data,
     )
 
     return Response(r), r.status_code
 
 
-@routes.route("/login/recovery", methods=["POST"])  # TODO supprimer si non utilisé
+# TODO supprimer si non utilisé
+@routes.route("/login/recovery", methods=["POST"])
 def login_recovery():
     """
         Call UsersHub API to create a TOKEN for a user	
@@ -323,10 +328,12 @@ def confirmation():
     if token is None:
         return {"message": "Token introuvable"}, 404
 
-    data = {"token": token, "id_application": config["ID_APPLICATION_GEONATURE"]}
+    data = {"token": token,
+            "id_application": config["ID_APPLICATION_GEONATURE"]}
 
     r = s.post(
-        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/valid_temp_user",
+        url=config["API_ENDPOINT"] +
+        "/pypn/register/post_usershub/valid_temp_user",
         json=data,
     )
 
@@ -389,7 +396,7 @@ def change_password(id_role):
         Modifie le mot de passe de l'utilisateur connecté et de son ancien mdp 
         Fait appel à l'API UsersHub
     """
-    if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP", False):
+    if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT", False):
         return {"message": "Page introuvable"}, 404
 
     user = DB.session.query(User).get(id_role)
@@ -426,7 +433,8 @@ def change_password(id_role):
     ):
         return {"msg": "Erreur serveur"}, 500
     r = s.post(
-        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/change_password",
+        url=config["API_ENDPOINT"] +
+        "/pypn/register/post_usershub/change_password",
         json=data,
     )
 
@@ -453,7 +461,8 @@ def new_password():
         return {"msg": "Erreur serveur"}, 500
 
     r = s.post(
-        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/change_password",
+        url=config["API_ENDPOINT"] +
+        "/pypn/register/post_usershub/change_password",
         json=data,
     )
 
