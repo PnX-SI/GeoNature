@@ -137,7 +137,7 @@ def get_all_habitats(info_role):
     return FeatureCollection(feature_list)
 
 
-@blueprint.route("/export_stations/<export_format>", methods=["POST"])
+@blueprint.route("/export_stations/<export_format>", methods=["POST", "GET"])
 @permissions.check_cruved_scope("E", True, module_code="OCC_HAB")
 def export_all_habitats(info_role, export_format='csv',):
     """
@@ -158,7 +158,8 @@ def export_all_habitats(info_role, export_format='csv',):
         formated_data = [
             export_view.as_dict(d, columns=[]) for d in results
         ]
+        columns = [key for key,value in formated_data[0].items()]
         return to_csv_resp(
-            file_name, formated_data, separator=";", columns=[]
+            file_name, formated_data, separator=";", columns=columns
         )
     return ''

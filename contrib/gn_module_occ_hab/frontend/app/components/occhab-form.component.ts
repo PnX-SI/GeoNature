@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs/Subscription";
 import { CommonService } from "@geonature_common/service/common.service";
 import { AppConfig } from "@geonature_config/app.config";
+import { ModuleConfig } from "../module.config";
 
 @Component({
   selector: "pnx-occhab-form",
@@ -24,6 +25,7 @@ export class OccHabFormComponent implements OnInit {
   public MAP_FULL_HEIGHT = "87vh";
   public mapHeight = this.MAP_FULL_HEIGHT;
   public appConfig = AppConfig;
+  public moduleConfig = ModuleConfig;
   public showHabForm = false;
   public showTabHab = false;
   public showDepth = false;
