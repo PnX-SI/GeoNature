@@ -15,18 +15,6 @@ order by cd_hab;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 INSERT INTO gn_meta.t_acquisition_frameworks (
     acquisition_framework_name, 
     acquisition_framework_desc, 

@@ -20,11 +20,11 @@ CREATE TABLE pr_occhab.t_stations(
   area integer,
   id_nomenclature_area_surface_calculation integer,
   comment text,
-  geom_local public.geometry(Geometry,:MYLOCALSRID),
+  geom_local public.geometry(Geometry, :MYLOCALSRID),
   geom_4326 public.geometry(Geometry,4326),
   precision integer,
   id_digitiser integer,
-  numerization_scale character varying (15)
+  numerization_scale character varying (15),
   id_nomenclature_geographic_object integer,
   CONSTRAINT enforce_dims_geom_4326 CHECK ((public.st_ndims(geom_4326) = 2)),
   CONSTRAINT enforce_dims_geom_local CHECK ((public.st_ndims(geom_local) = 2)),
@@ -203,7 +203,7 @@ to_char(s.date_min, 'DD/MM/YYYY'::text)as "dateDebut",
 to_char(s.date_max, 'DD/MM/YYYY'::text)as "dateFin",
 s.observers_txt as "observateur",
 nom2.cd_nomenclature as "methodeCalculSurface",
-st_astext(s.geom_4326)as "geometry",
+public.st_astext(s.geom_4326)as "geometry",
 nom3.cd_nomenclature as "natureObjetGeo",
 h.unique_id_sinp_hab as "identifiantHabSINP",
 h.nom_cite as "nomCite",
@@ -230,7 +230,7 @@ LEFT join ref_nomenclatures.t_nomenclatures nom4 on nom4.id_nomenclature = h.id_
 ------------
 
 
-INSERT INTO pr_occtax.defaults_nomenclatures_value (mnemonique_type, id_organism, regne, group2_inpn, id_nomenclature) VALUES
-('METH_OBS',0,0,0, ref_nomenclatures.get_id_nomenclature('METH_OBS', 'sig'))
+-- INSERT INTO pr_occtax.defaults_nomenclatures_value (mnemonique_type, id_organism, regne, group2_inpn, id_nomenclature) VALUES
+-- ('METH_OBS',0,0,0, ref_nomenclatures.get_id_nomenclature('METH_OBS', 'sig'))
 
-;
+-- ;
