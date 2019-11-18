@@ -88,9 +88,16 @@ def insert_or_update_media(id_media=None):
         formData = dict(request.form)
         for key in formData:
             data[key] = formData[key]
+            if data[key] == 'true':
+                data[key] = True
+            if data[key] == 'false':
+                data[key] = False
     else:
         data = request.get_json(silent=True)
 
+    print('route data', data)
+    print('route file', file)
+    print('request!!! file', request.files)
     m = TMediaRepository(
         data=data, file=file, id_media=id_media
     ).create_or_update_media()
