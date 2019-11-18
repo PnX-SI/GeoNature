@@ -95,9 +95,6 @@ def insert_or_update_media(id_media=None):
     else:
         data = request.get_json(silent=True)
 
-    print('route data', data)
-    print('route file', file)
-    print('request!!! file', request.files)
     m = TMediaRepository(
         data=data, file=file, id_media=id_media
     ).create_or_update_media()
