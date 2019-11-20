@@ -95,3 +95,8 @@ COMMENT ON VIEW gn_commons.v_synthese_validation_forwebapp  IS 'Vue utilisée po
 
 -- Nettoyage monitoring
 DROP TABLE IF EXISTS gn_monitoring.cor_site_application;
+
+-- gn_commons.t_modules Changement des CHARACTER(n) en CHARACTER VARYING(n)
+ALTER TABLE gn_commons.t_modules ALTER COLUMN module_path TYPE CHARACTER VARYING(255);
+ALTER TABLE gn_commons.t_modules ALTER COLUMN module_external_url TYPE CHARACTER VARYING(255);
+ALTER TABLE gn_commons.t_modules ALTER COLUMN module_target TYPE CHARACTER VARYING(10);
