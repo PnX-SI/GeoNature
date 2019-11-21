@@ -840,7 +840,6 @@ CREATE OR REPLACE VIEW gn_synthese.v_tree_taxons_synthese AS
              LEFT JOIN taxonomie.taxref cl ON cl.id_rang::text = 'CL'::text AND cl.cd_nom = cl.cd_ref AND cl.lb_nom::text = t_1.classe::text AND NOT t_1.classe IS NULL
              LEFT JOIN taxonomie.taxref ord ON ord.id_rang::text = 'OR'::text AND ord.cd_nom = ord.cd_ref AND ord.lb_nom::text = t_1.ordre::text AND NOT t_1.ordre IS NULL) t
   ORDER BY t.id_regne, (COALESCE(t.id_embranchement, t.id_regne)), (COALESCE(t.id_classe, t.id_embranchement)), (COALESCE(t.id_ordre, t.id_classe));
-
 COMMENT ON VIEW gn_synthese.v_tree_taxons_synthese IS 'Vue destinée à l''arbre taxonomique de la synthese. S''arrête  à la famille pour des questions de performances';
 
 
@@ -937,48 +936,6 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
 
 
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS 
- WITH deco AS (
-         SELECT s_1.id_synthese,
-            n1.label_default AS "ObjGeoTyp",
-            n2.label_default AS "methGrp",
-            n3.label_default AS "obsMeth",
-            n4.label_default AS "obsTech",
-            n5.label_default AS "ocEtatBio",
-            n6.label_default AS "ocStatBio",
-            n7.label_default AS "ocNat",
-            n8.label_default AS "preuveOui",
-            n9.label_default AS "difNivPrec",
-            n10.label_default AS "ocStade",
-            n11.label_default AS "ocSex",
-            n12.label_default AS "objDenbr",
-            n13.label_default AS "denbrTyp",
-            n14.label_default AS "sensiNiv",
-            n15.label_default AS "statObs",
-            n16.label_default AS "dEEFlou",
-            n17.label_default AS "statSource",
-            n18.label_default AS "typInfGeo",
-            n19.label_default AS "ocMethDet"
-           FROM gn_synthese.synthese s_1
-            LEFT JOIN ref_nomenclatures.t_nomenclatures n1 ON s_1.id_nomenclature_geo_object_nature = n1.id_nomenclature
-            LEFT JOIN ref_nomenclatures.t_nomenclatures n2 ON s_1.id_nomenclature_grp_typ = n2.id_nomenclature
-            LEFT JOIN ref_nomenclatures.t_nomenclatures n3 ON s_1.id_nomenclature_obs_meth = n3.id_nomenclature
-            LEFT JOIN ref_nomenclatures.t_nomenclatures n4 ON s_1.id_nomenclature_obs_technique = n4.id_nomenclature
-            LEFT JOIN ref_nomenclatures.t_nomenclatures n5 ON s_1.id_nomenclature_bio_status = n5.id_nomenclature
-            LEFT JOIN ref_nomenclatures.t_nomenclatures n6 ON s_1.id_nomenclature_bio_condition = n6.id_nomenclature
-            LEFT JOIN ref_nomenclatures.t_nomenclatures n7 ON s_1.id_nomenclature_naturalness = n7.id_nomenclature
-            LEFT JOIN ref_nomenclatures.t_nomenclatures n8 ON s_1.id_nomenclature_exist_proof = n8.id_nomenclature
-            LEFT JOIN ref_nomenclatures.t_nomenclatures n9 ON s_1.id_nomenclature_diffusion_level = n9.id_nomenclature
-            LEFT JOIN ref_nomenclatures.t_nomenclatures n10 ON s_1.id_nomenclature_life_stage = n10.id_nomenclature
-            LEFT JOIN ref_nomenclatures.t_nomenclatures n11 ON s_1.id_nomenclature_sex = n11.id_nomenclature
-            LEFT JOIN ref_nomenclatures.t_nomenclatures n12 ON s_1.id_nomenclature_obj_count = n12.id_nomenclature
-            LEFT JOIN ref_nomenclatures.t_nomenclatures n13 ON s_1.id_nomenclature_type_count = n13.id_nomenclature
-            LEFT JOIN ref_nomenclatures.t_nomenclatures n14 ON s_1.id_nomenclature_sensitivity = n14.id_nomenclature
-            LEFT JOIN ref_nomenclatures.t_nomenclatures n15 ON s_1.id_nomenclature_observation_status = n15.id_nomenclature
-            LEFT JOIN ref_nomenclatures.t_nomenclatures n16 ON s_1.id_nomenclature_blurring = n16.id_nomenclature
-            LEFT JOIN ref_nomenclatures.t_nomenclatures n17 ON s_1.id_nomenclature_source_status = n17.id_nomenclature
-            LEFT JOIN ref_nomenclatures.t_nomenclatures n18 ON s_1.id_nomenclature_info_geo_type = n18.id_nomenclature
-            LEFT JOIN ref_nomenclatures.t_nomenclatures n19 ON s_1.id_nomenclature_determination_method = n19.id_nomenclature
-        )
  SELECT s.id_synthese AS "idSynthese",
     s.unique_id_sinp AS "permId",
     s.unique_id_sinp_grp AS "permIdGrp",
@@ -1006,36 +963,55 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     d.id_acquisition_framework,
     t.cd_nom AS "cdNom",
     t.cd_ref AS "cdRef",
+    t.nom_valide AS "nomValide",
     s.nom_cite AS "nomCite",
     public.ST_x(public.ST_transform(s.the_geom_point, 2154)) AS x_centroid,
     public.ST_y(public.ST_transform(s.the_geom_point, 2154)) AS y_centroid,
     COALESCE(s.meta_update_date, s.meta_create_date) AS lastact,
     public.ST_asgeojson(s.the_geom_4326) AS geojson_4326,
     public.ST_asgeojson(s.the_geom_local) AS geojson_local,
-    deco."ObjGeoTyp",
-    deco."methGrp",
-    deco."obsMeth",
-    deco."obsTech",
-    deco."ocEtatBio",
-    deco."ocNat",
-    deco."preuveOui",
-    deco."difNivPrec",
-    deco."ocStade",
-    deco."ocSex",
-    deco."objDenbr",
-    deco."denbrTyp",
-    deco."sensiNiv",
-    deco."statObs",
-    deco."dEEFlou",
-    deco."statSource",
-    deco."typInfGeo"
+    n1.label_default AS "ObjGeoTyp",
+    n2.label_default AS "methGrp",
+    n3.label_default AS "obsMeth",
+    n4.label_default AS "obsTech",
+    n5.label_default AS "ocStatutBio",
+    n6.label_default AS "ocEtatBio",
+    n7.label_default AS "ocNat",
+    n8.label_default AS "preuveOui",
+    n9.label_default AS "difNivPrec",
+    n10.label_default AS "ocStade",
+    n11.label_default AS "ocSex",
+    n12.label_default AS "objDenbr",
+    n13.label_default AS "denbrTyp",
+    n14.label_default AS"sensiNiv",
+    n15.label_default AS "statObs",
+    n16.label_default AS "dEEFlou",
+    n17.label_default AS "statSource",
+    n18.label_default AS "typInfGeo",
+    n19.label_default AS "ocMethDet"
    FROM gn_synthese.synthese s
      JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
      JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source
-     JOIN deco ON deco.id_synthese = s.id_synthese;
-
-
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n1 ON s.id_nomenclature_geo_object_nature = n1.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n2 ON s.id_nomenclature_grp_typ = n2.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n3 ON s.id_nomenclature_obs_meth = n3.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n4 ON s.id_nomenclature_obs_technique = n4.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n5 ON s.id_nomenclature_bio_status = n5.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n6 ON s.id_nomenclature_bio_condition = n6.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n7 ON s.id_nomenclature_naturalness = n7.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n8 ON s.id_nomenclature_exist_proof = n8.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n9 ON s.id_nomenclature_diffusion_level = n9.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n10 ON s.id_nomenclature_life_stage = n10.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n11 ON s.id_nomenclature_sex = n11.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n12 ON s.id_nomenclature_obj_count = n12.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n13 ON s.id_nomenclature_type_count = n13.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n14 ON s.id_nomenclature_sensitivity = n14.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n15 ON s.id_nomenclature_observation_status = n15.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n16 ON s.id_nomenclature_blurring = n16.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n17 ON s.id_nomenclature_source_status = n17.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n18 ON s.id_nomenclature_info_geo_type = n18.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n19 ON s.id_nomenclature_determination_method = n19.id_nomenclature;
 
 
 CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS 
@@ -1059,7 +1035,6 @@ CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS
      LEFT JOIN utilisateurs.t_roles roles ON roles.id_role = act.id_role
      JOIN count_nb_obs ON count_nb_obs.id_dataset = d.id_dataset
   GROUP BY d.id_dataset, d.unique_dataset_id, d.dataset_name, af.acquisition_framework_name, count_nb_obs.nb_obs;
-
 
 
 -- vue couleur taxon
