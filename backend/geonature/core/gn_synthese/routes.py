@@ -544,11 +544,11 @@ def general_stats(info_role):
         - nb of distinct observer
         - nb ob datasets
     """
-    allowed_datasets = TDatasets.get_user_datasets(info_role)
     q = DB.session.query(
-        func.count(Synthese.id_dataset),
+        func.count(Synthese.id_synthese),
         func.count(func.distinct(Synthese.cd_nom)),
         func.count(func.distinct(Synthese.observers)),
+        func.count(func.distinct(Synthese.id_dataset)),
     )
     q = synthese_query.filter_query_with_cruved(Synthese, q, info_role)
     data = q.one()
@@ -556,7 +556,7 @@ def general_stats(info_role):
         "nb_data": data[0],
         "nb_species": data[1],
         "nb_observers": data[2],
-        "nb_dataset": len(allowed_datasets),
+        "nb_dataset": data[3],
     }
     return data
 
