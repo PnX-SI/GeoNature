@@ -158,8 +158,9 @@ def export_all_habitats(info_role, export_format='csv',):
     db_cols_for_shape = []
     columns_to_serialize = []
     for db_col in export_view.db_cols:
-        db_cols_for_shape.append(db_col)
-        columns_to_serialize.append(db_col.key)
+        if db_col.key in blueprint.config['EXPORT_COLUMS']:
+            db_cols_for_shape.append(db_col)
+            columns_to_serialize.append(db_col.key)
     results = DB.session.query(export_view.tableDef).limit(
         blueprint.config['NB_MAX_EXPORT'])
     if export_format == 'csv':
