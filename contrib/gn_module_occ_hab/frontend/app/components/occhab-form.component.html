@@ -12,7 +12,7 @@
                 <tr>
                   <td> N°</td>
                   <td> Habitat</td>
-                  <td> Determinateur</td>
+                  <td> Abondance</td>
                   <td> #</td>
                 </tr>
               </thead>
@@ -21,7 +21,7 @@
                   <tr *ngIf="i != occHabForm.currentEditingHabForm">
                         <td> {{occHabForm.stationForm.value.t_habitats.length - i}} </td>
                         <td> {{hab?.nom_cite}} </td>
-                        <td> {{hab.determiner}}</td>
+                        <td> {{hab?.id_nomenclature_abundance?.label_default}}</td>
                         <td> 
                           <span 
                             matTooltip="Editer cet habitat" 

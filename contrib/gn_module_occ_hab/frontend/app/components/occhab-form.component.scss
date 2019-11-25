@@ -22,7 +22,11 @@
 
 .table td,
 .table th {
-  padding: 0.4rem;
+  padding: 0.1rem;
+}
+
+tbody {
+  font-size: 11px;
 }
 
 #validate-btn {
@@ -45,8 +49,7 @@
   position: absolute;
   z-index: 1500;
   bottom: 0;
-  width: 97%;
-  margin-left: 10px;
+  width: 100%;
   overflow-y: auto;
   max-height: 35vh;
 }
