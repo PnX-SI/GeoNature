@@ -15,7 +15,6 @@ import {
   MatButtonModule
 } from '@angular/material';
 
-import { HttpClient } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { NgbModule, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';

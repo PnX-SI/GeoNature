@@ -1,4 +1,6 @@
 import { NgModule } from "@angular/core";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+
 import { CommonModule } from "@angular/common";
 import { GN2CommonModule } from "@geonature_common/GN2Common.module";
 import { Routes, RouterModule } from "@angular/router";
@@ -8,6 +10,7 @@ import { OcchabMapListFilterComponent } from "./components/occhab-map-list-filte
 import { OccHabDataService } from "./services/data.service";
 import { OcchabStoreService } from "./services/store.service";
 import { OccHabMapListService } from "./services/occhab-map-list.service";
+import { OccHabModalDownloadComponent } from "./components/map-list/modal-download.component";
 
 // my module routing
 const routes: Routes = [
@@ -20,9 +23,17 @@ const routes: Routes = [
   declarations: [
     OccHabFormComponent,
     OccHabMapListComponent,
-    OcchabMapListFilterComponent
+    OcchabMapListFilterComponent,
+    OccHabModalDownloadComponent
   ],
-  imports: [CommonModule, GN2CommonModule, RouterModule.forChild(routes)],
+  imports: [
+    CommonModule,
+    GN2CommonModule,
+    RouterModule.forChild(routes),
+    NgbModule.forRoot()
+  ],
+  entryComponents: [OccHabModalDownloadComponent],
+
   providers: [OccHabDataService, OcchabStoreService, OccHabMapListService],
   bootstrap: []
 })

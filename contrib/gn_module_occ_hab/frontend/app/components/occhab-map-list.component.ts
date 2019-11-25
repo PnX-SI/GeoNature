@@ -3,6 +3,9 @@ import { OcchabStoreService } from "../services/store.service";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { OccHabDataService } from "../services/data.service";
 import { DatatableComponent } from "@swimlane/ngx-datatable/release";
+import { OccHabModalDownloadComponent } from "./map-list/modal-download.component";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+
 import * as moment from "moment";
 
 @Component({
@@ -21,7 +24,8 @@ export class OccHabMapListComponent implements OnInit {
   constructor(
     public storeService: OcchabStoreService,
     private _occHabDataService: OccHabDataService,
-    public mapListService: MapListService
+    public mapListService: MapListService,
+    private _ngbModal: NgbModal
   ) {}
   ngOnInit() {
     this.getStations();
@@ -45,10 +49,11 @@ export class OccHabMapListComponent implements OnInit {
     this.getStations(params);
   }
 
-  downloadStations(exportFormat: string) {
-     this._occHabDataService.exportStations(exportFormat);
-
-
+  openModal() {
+    this._ngbModal.open(OccHabModalDownloadComponent, {
+      size: "lg",
+      windowClass: "large-modal"
+    });
   }
 
   toggleExpandRow(row) {
