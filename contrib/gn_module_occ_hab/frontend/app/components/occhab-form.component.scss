@@ -1,5 +1,5 @@
 .all-form {
-  max-height: 87vh;
+  height: 85vh;
   overflow-y: auto;
 }
 
@@ -11,18 +11,18 @@
   margin-top: 20px;
 }
 
-.card-body {
-  padding-bottom: 10px;
-  padding-top: 5px !important;
-}
-.card-header {
-  padding-bottom: 5px;
-  padding-top: 5px;
-}
-
 :host ::ng-deep ngb-typeahead-window {
   height: 300px;
   overflow-y: auto;
+}
+
+.card-body.small {
+  padding: 0px !important;
+}
+
+.table td,
+.table th {
+  padding: 0.4rem;
 }
 
 #validate-btn {
@@ -33,13 +33,20 @@
     0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-// .habitat-form {
-//   padding-left: 40px;
-//   padding-right: 20px;
-// }
+#validateButton {
+  position: fixed;
+  right: 25px;
+  z-index: 1000;
+  bottom: 10px;
+}
 
-// .body-hab-form {
-//   border: 1px solid rgba(0, 0, 0, 0.125);
-//   border-width: 0px 1px 1px 1px;
-//   border-style: solid;
-// }
+#overlay-hab {
+  opacity: 90%;
+  position: absolute;
+  z-index: 1500;
+  bottom: 0;
+  width: 97%;
+  margin-left: 10px;
+  overflow-y: auto;
+  max-height: 35vh;
+}

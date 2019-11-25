@@ -87,8 +87,8 @@ export class OcchabFormService {
   addNewHab() {
     const currentHabNumber = this.stationForm.value.t_habitats.length - 1;
     const habFormArray = this.stationForm.controls.t_habitats as FormArray;
-    habFormArray.push(this.initHabForm());
-    this.currentEditingHabForm = currentHabNumber + 1;
+    habFormArray.insert(0, this.initHabForm());
+    this.currentEditingHabForm = 0;
   }
 
   /**

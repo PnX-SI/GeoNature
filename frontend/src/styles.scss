@@ -17,11 +17,11 @@ mat-sidenav-content {
 
 .mat-toolbar {
   //min-height: 5vh !important;
-  min-height: 40px!important;
+  min-height: 40px !important;
 }
 .mat-toolbar-row {
   //height: 5vh !important;
-  height: 40px!important;
+  height: 40px !important;
 }
 
 .mat-tooltip {
@@ -163,6 +163,11 @@ footer {
   background-color: transparent !important;
 }
 
+.btn-action {
+  font-weight: bold;
+  border-radius: 20px;
+}
+
 .input-sm {
   height: 1.5rem;
 }
@@ -233,6 +238,10 @@ li.no-bullet {
 
 .box-shadow {
   box-shadow: 4px 5px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.hard-shadow {
+  box-shadow: 4px 5px 8px 0 rgba(0, 0, 0, 0.49), 7px 6px 20px 0 rgba(0, 0, 0, 0.41);
 }
 
 .disabled {

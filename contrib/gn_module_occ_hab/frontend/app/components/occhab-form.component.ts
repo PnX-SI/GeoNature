@@ -13,7 +13,10 @@ import { ModuleConfig } from "../module.config";
 @Component({
   selector: "pnx-occhab-form",
   templateUrl: "occhab-form.component.html",
-  styleUrls: ["./occhab-form.component.scss"],
+  styleUrls: [
+    "./occhab-form.component.scss",
+    "../components/responsive-map.scss"
+  ],
   providers: [OcchabFormService]
 })
 export class OccHabFormComponent implements OnInit {
@@ -21,7 +24,7 @@ export class OccHabFormComponent implements OnInit {
   public filteredHab: any;
   private _sub: Subscription;
   public editionMode = false;
-  public MAP_SMALL_HEIGHT = "50vh";
+  public MAP_SMALL_HEIGHT = "50vh !important;";
   public MAP_FULL_HEIGHT = "87vh";
   public mapHeight = this.MAP_FULL_HEIGHT;
   public appConfig = AppConfig;

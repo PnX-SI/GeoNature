@@ -11,7 +11,10 @@ import * as moment from "moment";
 @Component({
   selector: "pnx-occhab-map-list",
   templateUrl: "occhab-map-list.component.html",
-  styleUrls: ["./occhab-map-list.component.scss"]
+  styleUrls: [
+    "./occhab-map-list.component.scss",
+    "../components/responsive-map.scss"
+  ]
 })
 export class OccHabMapListComponent implements OnInit {
   public displayedColumns = [

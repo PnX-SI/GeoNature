@@ -1,21 +1,10 @@
 <div class="row row-sm">
   <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
-    <pnx-map [height]="mapHeight">
-        <pnx-leaflet-draw
-          [geojson]="occHabForm.stationForm.value.geom_4326"
-          [options]="leafletDrawOptions"
-          zoomLevel="5"
-         (layerDrawed)="occHabForm.patchGeomValue($event)"></pnx-leaflet-draw>
-    </pnx-map>
-
     <!-- HABITAT ALREADY SAVED -->
     <div 
-      class="card" 
+      id="overlay-hab"
+      class="card hard-shadow" 
       *ngIf="showTabHab;">
-      <h4 class="card-header">
-        Habitats de la station
-      </h4>
-
         <div class="card-body small">
           <div >
             <table class="table">
@@ -24,34 +13,32 @@
                   <td> N°</td>
                   <td> Habitat</td>
                   <td> Determinateur</td>
-                  <td> Technique de collecte</td>
                   <td> #</td>
                 </tr>
               </thead>
               <tbody>
                 <ng-container *ngFor='let hab of occHabForm.stationForm.value.t_habitats; let last=last let i=index'>
                   <tr *ngIf="i != occHabForm.currentEditingHabForm">
-                        <td> {{i +1}} </td>
+                        <td> {{occHabForm.stationForm.value.t_habitats.length - i}} </td>
                         <td> {{hab?.nom_cite}} </td>
                         <td> {{hab.determiner}}</td>
-                        <td> {{hab.id_nomenclature_collection_technique?.label_default}}</td>
                         <td> 
-                          <button 
+                          <span 
                             matTooltip="Editer cet habitat" 
                             type="button" 
                             class="btn btn-primary btn-sm"
                             (click)="editHab(i)"  
                           >
                               <i class="fa fa-pencil-square-o" aria-hidden="true" ></i>
-                          </button> 
-                          <button 
+                        </span> 
+                          <span 
                             matTooltip="Supprimer cet habitat de la station" 
                             type="button" class="btn btn-danger btn-sm"
                             (click)="occHabForm.deleteHab(i)" 
                           >
                               <i class="fa fa-times" aria-hidden="true"></i>
-                          </button>
-                        </td>
+                        </span>
+                      </td>
                   </tr>
                 </ng-container>
               </tbody>  
@@ -63,6 +50,15 @@
         </div>
       </div>
       <!--END  HABITAT ALREADY SAVED -->
+    <pnx-map [height]="mapHeight">
+        <pnx-leaflet-draw
+          [geojson]="occHabForm.stationForm.value.geom_4326"
+          [options]="leafletDrawOptions"
+          zoomLevel="5"
+         (layerDrawed)="occHabForm.patchGeomValue($event)"></pnx-leaflet-draw>
+    </pnx-map>
+
+    
   </div>
   <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
     <div class="all-form">
@@ -72,7 +68,7 @@
         Station
       </h5>
 
-      <div class="card-bod">
+      <div class="card-body">
         <div class="row">
           <div class="col">
             <pnx-observers-text [parentFormControl]="occHabForm.stationForm.get('observers_txt')">
@@ -231,6 +227,16 @@
 
     <!-- END STATION FORM -->
 
+    <button 
+      id="validateButton"
+      type="button" 
+      class="btn btn-success hard-shadow btn-action"
+      (click)="postStation()"
+      [disabled]="occHabForm.stationForm.invalid || showHabForm"
+    >
+      VALIDER LA STATION
+    </button>
+
     <div class="card">
       <div class="habitat-form">
         <h5 class="card-header">
@@ -282,7 +288,8 @@
                   [othersGetParams]="occHabForm.selectedTypo"
                   [formatter]="formatter"
                   keyValue="search_name"
-                  label="Rechercher un habitat (tapez les premières lettres...)"
+                  label="Habitat"
+                  placeholder="tapez les premières lettres..."
                   (onChange)="occHabForm.patchNomCite($event)"
               >
             </pnx-autocomplete>
@@ -354,6 +361,8 @@
           <i style="color: rgb(0, 233, 0);" class="fa fa-plus" aria-hidden="true"></i>
           Valider cet habitat
         </button>
+
+
         </div>
 
       </div>
@@ -362,22 +371,9 @@
 
   </div>
     
+  <!-- {{occHabForm.stationForm.value.t_habitats[0] |json }} -->
 
-
-    <button 
-      type="button" 
-      class="btn btn-success btn-sm"
-      (click)="postStation()"
-      [disabled]="occHabForm.stationForm.invalid || showHabForm"
-    >
-      Valider la station
-    </button>
-
-  
-
-    
       <!-- {{occHabForm.stationForm.value |json }} -->
-      <!-- {{occHabForm.stationForm.value.t_habitats |json }} -->
 
   </div>
 </div>
