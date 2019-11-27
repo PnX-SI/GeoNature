@@ -54,10 +54,18 @@
       <!--END  HABITAT ALREADY SAVED -->
     <pnx-map [height]="mapHeight">
         <pnx-leaflet-draw
-          [geojson]="occHabForm.stationForm.value.geom_4326"
+          [geojson]="currentGeoJsonFileLayer"
           [options]="leafletDrawOptions"
           zoomLevel="5"
-         (layerDrawed)="occHabForm.patchGeomValue($event)"></pnx-leaflet-draw>
+         (layerDrawed)="occHabForm.patchGeomValue($event)">
+        </pnx-leaflet-draw>
+        <pnx-leaflet-filelayer
+          [editMode]="true"
+          (onLoad)="infoMessageFileLayer()"
+          (onGeomChange)="occHabForm.patchGeomValue($event)"
+          [style]="{'color': 'green'}"
+        >
+        </pnx-leaflet-filelayer>  
     </pnx-map>
 
     

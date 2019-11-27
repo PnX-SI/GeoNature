@@ -33,6 +33,8 @@ export class OccHabFormComponent implements OnInit {
   public showTabHab = false;
   public showDepth = false;
   public disabledForm = true;
+  public firstFileLayerMessage = true;
+  public currentGeoJsonFileLayer;
 
   constructor(
     public occHabForm: OcchabFormService,
@@ -62,6 +64,7 @@ export class OccHabFormComponent implements OnInit {
         this._occHabDataService
           .getOneStation(params["id_station"])
           .subscribe(station => {
+            this.currentGeoJsonFileLayer = station.geometry;
             this.occHabForm.patchStationForm(station);
             this.mapHeight = this.MAP_SMALL_HEIGHT;
           });
@@ -76,6 +79,14 @@ export class OccHabFormComponent implements OnInit {
         "Releve.FillGeometryFirst"
       );
     }
+  }
+
+  // display help toaster for filelayer
+  infoMessageFileLayer() {
+    if (this.firstFileLayerMessage) {
+      this._commonService.translateToaster("info", "Map.FileLayerInfoMessage");
+    }
+    this.firstFileLayerMessage = false;
   }
 
   addNewHab() {
