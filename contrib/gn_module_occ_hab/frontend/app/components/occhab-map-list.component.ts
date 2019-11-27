@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild, HostListener } from "@angular/core";
 import { OcchabStoreService } from "../services/store.service";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { OccHabDataService } from "../services/data.service";
@@ -18,12 +18,13 @@ import * as moment from "moment";
 })
 export class OccHabMapListComponent implements OnInit {
   public displayedColumns = [
-    { name: "Date", prop: "date_min" },
-    { name: "Habitats", prop: "habitats" },
-    { name: "Jeu de données", prop: "dataset_name" }
+    { name: "Date", prop: "date_min", width: "100" },
+    { name: "Habitats", prop: "habitats", width: "300" },
+    { name: "Jeu de données", prop: "dataset_name", width: "200" }
   ];
   @ViewChild("dataTable") dataTable: DatatableComponent;
   // public tabColumns = this.displayedColumns.map(col => col.prop);
+  public rowNumber: number;
   constructor(
     public storeService: OcchabStoreService,
     private _occHabDataService: OccHabDataService,
@@ -32,6 +33,20 @@ export class OccHabMapListComponent implements OnInit {
   ) {}
   ngOnInit() {
     this.getStations();
+    // get wiewport height to set the number of rows in the tabl
+    const h = document.documentElement.clientHeight;
+    this.rowNumber = Math.trunc(h / 55);
+    // observable on mapListService.currentIndexRow to find the current page
+    this.mapListService.currentIndexRow$.subscribe(indexRow => {
+      const currentPage = Math.trunc(indexRow / this.rowNumber);
+      this.dataTable.offset = currentPage;
+    });
+  }
+
+  // update the number of row per page when resize the window
+  @HostListener("window:resize", ["$event"])
+  onResize(event) {
+    this.rowNumber = Math.trunc(event.target.innerHeight / 55);
   }
 
   getStations(params?) {

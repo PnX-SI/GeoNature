@@ -39,13 +39,18 @@
     </button>
 
     <ngx-datatable 
+      (window:resize)="onResize($event)"
       #dataTable 
-      class="material striped margin-top-xs table-size expandable" 
+      class="material striped margin-top-xs table-size expandable"
       [rows]="mapListService.tableData"
       [rowHeight]="40"
       [selected]="mapListService.selectedRow"
       [selectionType]="'single'" 
       [rowClass]="mapListService.getRowClass"
+      [count]="mapListService.tableData.length"
+      [limit]="rowNumber"
+      [footerHeight]="50"
+      [headerHeight]="50"
       (select)="mapListService.onRowSelect($event)"
     >
       <ngx-datatable-row-detail 
@@ -136,6 +141,7 @@
             [name]="col.name" 
             [prop]="col.prop"
             [ngSwitch]="col.prop"
+            [width]="col.width"
           >
           <!-- HABITAT -->
           <ng-template 
