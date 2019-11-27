@@ -227,6 +227,17 @@ export class OcchabFormService {
       this.formatNomenclature(element);
     });
 
-    return formData;
+    // Format data in geojson
+    const geom = formData["geom_4326"];
+    delete formData["geom_4326"];
+    return {
+      type: "Feature",
+      geometry: {
+        ...geom
+      },
+      properties: {
+        ...formData
+      }
+    };
   }
 }

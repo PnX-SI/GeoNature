@@ -59,7 +59,6 @@ class TStationsOcchab(ReleveCruvedAutorization):
     # overright the constructor
     # to inherit of ReleModel, the constructor must define some mandatory attribute
     def __init__(self, *args, **kwargs):
-        print('INIT')
         super(TStationsOcchab, self).__init__(*args, **kwargs)
         self.observer_rel = getattr(self, 'observers')
         self.dataset_rel = getattr(self, 'dataset')

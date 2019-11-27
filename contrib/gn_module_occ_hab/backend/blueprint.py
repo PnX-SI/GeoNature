@@ -36,14 +36,16 @@ def post_station(info_role):
 
     data = dict(request.get_json())
     occ_hab = None
-    if "t_habitats" in data:
-        occ_hab = data.pop("t_habitats")
+    properties = data['properties']
+    if "t_habitats" in properties:
+        occ_hab = properties.pop("t_habitats")
     observers_list = None
-    if "observers" in data:
-        observers_list = data.pop("observers")
+    if "observers" in properties:
+        observers_list = properties.pop("observers")
 
-    station = TStationsOcchab(**data)
-    shape = asShape(data["geom_4326"])
+    print(properties)
+    station = TStationsOcchab(**properties)
+    shape = asShape(data["geometry"])
     two_dimension_geom = remove_third_dimension(shape)
     station.geom_4326 = from_shape(two_dimension_geom, srid=4326)
     if observers_list is not None:
