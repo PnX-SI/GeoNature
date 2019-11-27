@@ -36,9 +36,6 @@ export class OcchabStoreService {
       .subscribe(data => {
         this.typoHabitat = data;
       });
-    this._occHabDataService.getStations().subscribe(data => {
-      this.stations = data;
-    });
   }
 
   get state() {
