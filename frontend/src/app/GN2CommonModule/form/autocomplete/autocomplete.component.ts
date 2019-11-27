@@ -85,7 +85,10 @@ export class AutoCompleteComponent implements OnInit {
           if (this.othersGetParams) {
             // add other params in query string
             for (let param in this.othersGetParams) {
-              getParams = getParams.append(param, this.othersGetParams[param].toString());
+              // check if the param is not null
+              if (this.othersGetParams[param]) {
+                getParams = getParams.append(param, this.othersGetParams[param].toString());
+              }
             }
           }
           return this._api.get<any>(url, { params: getParams }).catch(err => {

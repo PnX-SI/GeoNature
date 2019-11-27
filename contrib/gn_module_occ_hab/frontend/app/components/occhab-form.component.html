@@ -270,6 +270,7 @@
                 <select
                  [formControl]="occHabForm.typoHabControl"
                  class="form-control form-control-sm"> 
+                 <option [ngValue]="null"> Toutes </option>
                   <option 
                     *ngFor="let typo of storeService.typoHabitat" 
                     [ngValue]="typo.cd_typo"> 
