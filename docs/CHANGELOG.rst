@@ -13,6 +13,7 @@ Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...develop
 * METADATA: Ajout des ID sur les JDD et CA
 * Le composant générique FileLayer expose un ``output`` pour récuperer la géometrie sélectionnée (un observable de MapService était utilisé auparavant) 
 * Support des markers sur le composant ``leaflet-draw``
+* Possibilité de ne pas activer le composant marker au lancement lorsque celui est utilisé (input ``defaultEnable``)
 
 **🐛 Corrections**
 
