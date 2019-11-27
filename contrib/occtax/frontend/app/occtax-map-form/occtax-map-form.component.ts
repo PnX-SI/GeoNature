@@ -26,7 +26,8 @@ import { AuthService } from "@geonature/components/auth/auth.service";
   // important to provide a new instance of OcctaxFormService to réinitialize it
   providers: [MapService, OcctaxFormService]
 })
-export class OcctaxMapFormComponent implements OnInit, OnDestroy, AfterViewInit {
+export class OcctaxMapFormComponent
+  implements OnInit, OnDestroy, AfterViewInit {
   public leafletDrawOptions: any;
   private _sub: Subscription;
   public id: number;
