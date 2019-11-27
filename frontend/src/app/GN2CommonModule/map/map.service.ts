@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Map, GeoJSON, Layer, FeatureGroup, Marker, LatLng } from 'leaflet';
-import { Subject ,  Observable } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
@@ -46,7 +46,7 @@ export class MapService {
     color: 'green'
   };
 
-  constructor(private http: HttpClient, private _commonService: CommonService) { }
+  constructor(private http: HttpClient, private _commonService: CommonService) {}
 
   setMap(map) {
     this.map = map;
@@ -70,6 +70,10 @@ export class MapService {
     if (!this.firstLayerFromMap) {
       this._geojsonCoord.next(geojsonCoord);
     }
+  }
+
+  zoomOnMarker(coordinates, zoomLevel = 15) {
+    this.map.setView(new L.LatLng(coordinates[1], coordinates[0]), zoomLevel);
   }
 
   /**
