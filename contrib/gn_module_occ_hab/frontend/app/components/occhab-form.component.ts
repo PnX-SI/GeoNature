@@ -32,6 +32,7 @@ export class OccHabFormComponent implements OnInit {
   public showHabForm = false;
   public showTabHab = false;
   public showDepth = false;
+  public disabledForm = true;
 
   constructor(
     public occHabForm: OcchabFormService,
@@ -46,6 +47,9 @@ export class OccHabFormComponent implements OnInit {
     this.leafletDrawOptions;
     leafletDrawOption.draw.polyline = false;
     this.occHabForm.stationForm = this.occHabForm.initStationForm();
+    this.occHabForm.stationForm.controls.geom_4326.valueChanges.subscribe(d => {
+      this.disabledForm = false;
+    });
   }
 
   ngAfterViewInit() {
@@ -59,11 +63,19 @@ export class OccHabFormComponent implements OnInit {
           .getOneStation(params["id_station"])
           .subscribe(station => {
             this.occHabForm.patchStationForm(station);
-
             this.mapHeight = this.MAP_SMALL_HEIGHT;
           });
       }
     });
+  }
+
+  formIsDisable() {
+    if (this.disabledForm) {
+      this._commonService.translateToaster(
+        "warning",
+        "Releve.FillGeometryFirst"
+      );
+    }
   }
 
   addNewHab() {

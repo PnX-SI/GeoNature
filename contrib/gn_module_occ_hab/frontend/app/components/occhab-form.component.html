@@ -1,3 +1,5 @@
+
+
 <div class="row row-sm">
   <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
     <!-- HABITAT ALREADY SAVED -->
@@ -61,6 +63,9 @@
     
   </div>
   <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
+    <!-- Overlay to disable form until map is not fill -->
+    <div *ngIf="disabledForm" id="overlay" [class.disabled-form]="disabledForm" (click)="formIsDisable()">
+    </div>
     <div class="all-form">
     <div class="card">
       <h5 class="card-header">
