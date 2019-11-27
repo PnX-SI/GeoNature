@@ -53,6 +53,12 @@
       </div>
       <!--END  HABITAT ALREADY SAVED -->
     <pnx-map [height]="mapHeight">
+        <pnx-marker 
+          [coordinates]="markerCoordinates" 
+          zoomLevel="5"
+          [defaultEnable]="false"
+          (markerChanged)="occHabForm.patchGeomValue($event)">
+        </pnx-marker>
         <pnx-leaflet-draw
           [geojson]="currentGeoJsonFileLayer"
           [options]="leafletDrawOptions"
@@ -65,7 +71,7 @@
           (onGeomChange)="occHabForm.patchGeomValue($event)"
           [style]="{'color': 'green'}"
         >
-        </pnx-leaflet-filelayer>  
+        </pnx-leaflet-filelayer>
     </pnx-map>
 
     
@@ -386,7 +392,6 @@
   </div>
     
   <!-- {{occHabForm.stationForm.value.t_habitats[0] |json }} -->
-
       <!-- {{occHabForm.stationForm.value |json }} -->
 
   </div>

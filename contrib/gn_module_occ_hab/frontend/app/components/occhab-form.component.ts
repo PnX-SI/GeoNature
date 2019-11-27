@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
-import { FormArray } from "@angular/forms";
 import { OcchabFormService } from "../services/form-service";
 import { OcchabStoreService } from "../services/store.service";
 import { OccHabDataService } from "../services/data.service";
 import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
+import { MapService } from "@geonature_common/map/map.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs/Subscription";
 import { CommonService } from "@geonature_common/service/common.service";
@@ -35,6 +35,7 @@ export class OccHabFormComponent implements OnInit {
   public disabledForm = true;
   public firstFileLayerMessage = true;
   public currentGeoJsonFileLayer;
+  public markerCoordinates;
 
   constructor(
     public occHabForm: OcchabFormService,
@@ -42,7 +43,8 @@ export class OccHabFormComponent implements OnInit {
     public storeService: OcchabStoreService,
     private _route: ActivatedRoute,
     private _router: Router,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private _mapService: MapService
   ) {}
 
   ngOnInit() {
@@ -64,9 +66,15 @@ export class OccHabFormComponent implements OnInit {
         this._occHabDataService
           .getOneStation(params["id_station"])
           .subscribe(station => {
-            this.currentGeoJsonFileLayer = station.geometry;
-            this.occHabForm.patchStationForm(station);
-            this.mapHeight = this.MAP_SMALL_HEIGHT;
+            if (station.geometry.type == "Point") {
+              // set the input for the marker component
+              this.markerCoordinates = station.geometry.coordinates;
+            } else {
+              // set the input for leaflet draw component
+              this.currentGeoJsonFileLayer = station.geometry;
+              this.occHabForm.patchStationForm(station);
+              this.mapHeight = this.MAP_SMALL_HEIGHT;
+            }
           });
       }
     });
