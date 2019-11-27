@@ -85,7 +85,10 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
         this.layerDrawed.emit({ geojson: null });
       } else {
-        this._currentDraw = (e as any).layer.setStyle(this.mapservice.searchStyle);
+        this._currentDraw = (e as any).layer;
+        if ((e as any).layerType !== 'marker') {
+          this._currentDraw = this._currentDraw.setStyle(this.mapservice.searchStyle);
+        }
         this.currentLayerType = (e as any).layerType;
         this.mapservice.leafletDrawFeatureGroup.addLayer(this._currentDraw);
         const geojson = this.getGeojsonFromFeatureGroup(this.currentLayerType);
@@ -151,16 +154,23 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       );
       layer = L.polyline(latLng);
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
-    }
-    if (geojson.type === 'Polygon' || geojson.type == 'MultiPolygon') {
+      this.mapservice.map.fitBounds(layer.getBounds());
+    } else if (geojson.type === 'Polygon' || geojson.type == 'MultiPolygon') {
       const latLng = L.GeoJSON.coordsToLatLngs(
         geojson.coordinates,
         geojson.type === 'Polygon' ? 1 : 2
       );
       layer = L.polygon(latLng);
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
+      this.mapservice.map.fitBounds(layer.getBounds());
     }
-    this.mapservice.map.fitBounds(layer.getBounds());
+    // marker
+    else if (geojson.type === 'Point') {
+      console.log(geojson);
+      layer = L.marker(new L.LatLng(geojson.coordinates[1], geojson.coordinates[0]), {});
+      this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
+      this.map.setView(layer.getLatLng(), 15);
+    }
     // disable point event on the map
     this.mapservice.setEditingMarker(false);
     // send observable

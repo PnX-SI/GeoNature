@@ -11,6 +11,8 @@ Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...develop
 
 * Nouvelle association possible entre un JDD et un module (#399)
 * METADATA: Ajout des ID sur les JDD et CA
+* Le composant générique FileLayer expose un ``output`` pour récuperer la géometrie sélectionnée (un observable de MapService était utilisé auparavant) 
+* Support des markers sur le composant ``leaflet-draw``
 
 **🐛 Corrections**
 
