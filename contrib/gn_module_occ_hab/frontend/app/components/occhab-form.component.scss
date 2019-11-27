@@ -72,3 +72,7 @@ tbody {
   cursor: not-allowed;
   opacity: 0.3;
 }
+
+:host /deep/ ngb-typeahead-window {
+  transform: translate(0px, 30px) !important;
+}
