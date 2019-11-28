@@ -17,6 +17,7 @@ from geonature.utils import filemanager
 from geonature.utils.env import DB, ROOT_DIR
 from geonature.utils.errors import GeonatureApiError
 
+from geonature.utils.utilssqlalchemy import serializeQuery
 from geonature.utils.utilsgeometry import FionaShapeService
 
 from geonature.core.gn_synthese.models import (
@@ -279,6 +280,61 @@ def get_one_synthese(id_synthese):
 ################################
 ########### EXPORTS ############
 ################################
+
+
+@routes.route("/export_taxons", methods=["GET"])
+@permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
+def export_taxon_web(info_role):
+    """Optimized route for taxon web export.
+
+    .. :quickref: Synthese;
+
+    This view is customisable by the administrator
+    Some columns are mandatory: cd_ref
+
+    POST parameters: Use a list of cd_ref (in POST parameters) to filter the v_synthese_taxon_for_export_view
+
+    :query str export_format: str<'csv'>
+
+    """
+    # Test de conformité de la vue v_synthese_for_export_view
+    if not getattr(VSyntheseForWebApp,"cd_ref", None):
+        return {"msg": "View v_synthese_for_export_view must have a cd_ref column"}, 500
+
+    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
+
+    taxon_view = GenericTable(
+        "v_synthese_taxon_for_export_view",
+        "gn_synthese",
+        None
+    )
+    from sqlalchemy import func
+
+    q = DB.session.query(
+        distinct(VSyntheseForWebApp.cd_ref),
+        taxon_view.tableDef,
+        func.count().over(
+            partition_by=VSyntheseForWebApp.cd_ref
+        ).label("nb_obs")
+    ).join(
+        taxon_view.tableDef,
+        getattr(
+            taxon_view.tableDef.columns,
+            "cd_ref"
+        )
+        == VSyntheseForWebApp.cd_ref,
+    )
+
+    q = synthese_query.filter_query_all_filters(
+        VSyntheseForWebApp, q, filters, info_role
+    )
+
+    return to_csv_resp(
+        datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S"),
+        data=serializeQuery(q.all(), q.column_descriptions),
+        separator=";",
+        columns=[db_col.key for db_col in taxon_view.tableDef.columns] + ["nb_obs"]
+    )
 
 
 @routes.route("/export_observations", methods=["POST"])

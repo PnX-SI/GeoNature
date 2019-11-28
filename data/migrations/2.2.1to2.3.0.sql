@@ -93,7 +93,7 @@ CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS
 COMMENT ON VIEW gn_commons.v_synthese_validation_forwebapp  IS 'Vue utilisée pour le module validation. Prend l''id_nomenclature dans la table synthese ainsi que toutes les colonnes de la synthese pour les filtres. On JOIN sur la vue latest_validation pour voir si la validation est auto';
 
 DROP VIEW gn_synthese.v_synthese_for_export;
-CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS 
+CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
  SELECT s.id_synthese AS "idSynthese",
     s.unique_id_sinp AS "permId",
     s.unique_id_sinp_grp AS "permIdGrp",
@@ -171,9 +171,9 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
      LEFT JOIN ref_nomenclatures.t_nomenclatures n18 ON s.id_nomenclature_info_geo_type = n18.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n19 ON s.id_nomenclature_determination_method = n19.id_nomenclature
 ;
-   
-CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS 
- SELECT 
+
+CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
+ SELECT
     ccc.unique_id_sinp_occtax AS "permId",
     ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_observation_status) AS "statObs",
     occ.nom_cite AS "nomCite",
@@ -237,7 +237,7 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
      LEFT JOIN utilisateurs.t_roles r ON r.id_role = cr.id_role
      LEFT JOIN utilisateurs.bib_organismes o ON o.id_organisme = r.id_organisme
    GROUP BY ccc.id_counting_occtax,occ.id_occurrence_occtax,rel.id_releve_occtax,d.id_dataset;
-  
+
 --INDEX--
 CREATE INDEX i_cor_role_releves_occtax_id_releve_occtax ON pr_occtax.cor_role_releves_occtax USING btree (id_releve_occtax);
 CREATE INDEX i_cor_role_releves_occtax_id_role ON pr_occtax.cor_role_releves_occtax USING btree (id_role);
@@ -263,7 +263,24 @@ CREATE INDEX i_t_releves_occtax_id_nomenclature_obs_technique ON pr_occtax.t_rel
 CREATE INDEX i_t_releves_occtax_id_nomenclature_grp_typ ON pr_occtax.t_releves_occtax USING btree (id_nomenclature_grp_typ);
 CREATE INDEX i_t_releves_occtax_geom_local ON pr_occtax.t_releves_occtax USING gist (geom_local);
 CREATE INDEX i_t_releves_occtax_date_max ON pr_occtax.t_releves_occtax USING btree (date_max);
-   
+
 
 -- Nettoyage monitoring
 DROP TABLE IF EXISTS gn_monitoring.cor_site_application;
+
+
+-- TEST vue export taxons de la synthèse
+
+CREATE OR REPLACE VIEW gn_synthese.v_synthese_taxon_for_export_view AS
+ SELECT t.group1_inpn,
+    t.group2_inpn,
+    t.regne,
+    t.phylum,
+    t.classe,
+    t.ordre,
+    t.famille,
+    t.id_rang,
+    t.cd_ref,
+    t.nom_valide
+    FROM gn_synthese.synthese  s
+   JOIN taxonomie.taxref t ON s.cd_nom = t.cd_ref;

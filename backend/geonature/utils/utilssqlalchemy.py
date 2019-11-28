@@ -335,7 +335,7 @@ def serializeQuery(data, columnDef):
         {
             c["name"]: getattr(row, c["name"])
             for c in columnDef
-            if getattr(row, c["name"]) is not None
+            if getattr(row, (c["name"] if c["name"] else ""), None) is not None
         }
         for row in data
     ]
