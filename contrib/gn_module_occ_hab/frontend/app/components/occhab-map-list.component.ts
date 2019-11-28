@@ -25,6 +25,7 @@ export class OccHabMapListComponent implements OnInit {
   @ViewChild("dataTable") dataTable: DatatableComponent;
   // public tabColumns = this.displayedColumns.map(col => col.prop);
   public rowNumber: number;
+  public dataLoading = true;
   constructor(
     public storeService: OcchabStoreService,
     private _occHabDataService: OccHabDataService,
@@ -50,6 +51,7 @@ export class OccHabMapListComponent implements OnInit {
   }
 
   getStations(params?) {
+    this.dataLoading = true;
     this._occHabDataService.getStations(params).subscribe(featureCollection => {
       // this.stations = data;
       this.mapListService.tableData = [];
@@ -60,6 +62,7 @@ export class OccHabMapListComponent implements OnInit {
         this.mapListService.tableData.push(feature.properties);
       });
       this.mapListService.geojsonData = featureCollection;
+      this.dataLoading = false;
     });
   }
 
@@ -122,18 +125,18 @@ export class OccHabMapListComponent implements OnInit {
     leafletPopup.style.overflowY = "auto";
 
     const divObservateurs = document.createElement("div");
-    divObservateurs.innerHTML = "<b> Observateurs: </b> <br>";
+    divObservateurs.innerHTML = "<b> Observateurs : </b> <br>";
     divObservateurs.innerHTML =
       divObservateurs.innerHTML +
       this.displayObservateursTooltip(feature.properties).join(", ");
 
     const divDate = document.createElement("div");
-    divDate.innerHTML = "<b> Date: </b> <br>";
+    divDate.innerHTML = "<b> Date : </b> <br>";
     divDate.innerHTML =
       divDate.innerHTML + this.displayDateTooltip(feature.properties);
 
     const divHab = document.createElement("div");
-    divHab.innerHTML = "<b> Habitas: </b> <br>";
+    divHab.innerHTML = "<b> Habitats : </b> <br>";
 
     divHab.style.marginTop = "5px";
     let taxons = this.displayHabTooltip(feature.properties).join("<br>");

@@ -1,3 +1,5 @@
+<div id="cover-spin" *ngIf="dataLoading"> 
+</div>
 <div class="float-btns">
     <button
       id="add-btn"
@@ -105,6 +107,7 @@
     <ngx-datatable-column maxWidth="10">
         <ng-template let-row="row" ngx-datatable-cell-template>
           <button 
+            [routerLink]="['info', row.id_station]"
             class="btn btn-outline-shadow btn-no-padding btn-ghost"
             >
             <i class="fa fa-info-circle" aria-hidden="true"></i>

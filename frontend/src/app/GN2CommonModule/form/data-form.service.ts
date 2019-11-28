@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import {
   HttpClient,
   HttpParams,
-  HttpHeaders,
   HttpEventType,
   HttpErrorResponse,
   HttpEvent
@@ -161,6 +160,10 @@ export class DataFormService {
           return d;
         });
       });
+  }
+
+  getHabitatInfo(cd_hab) {
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}/habref/habitat/${cd_hab}`);
   }
 
   getGeoInfo(geojson) {

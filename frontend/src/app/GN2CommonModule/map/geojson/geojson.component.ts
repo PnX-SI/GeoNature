@@ -27,6 +27,9 @@ export class GeojsonComponent implements OnInit, OnChanges {
   @Input() style: any;
   /** Zoom sur la bounding box des données envoyées */
   @Input() zoomOnLayer = true;
+
+  /** Zoom dès la 1ere fois qu'une données est passée */
+  @Input() zoomOnFirstTime = false;
   /** Affiche les données sous forme de cluster */
   @Input() asCluster: boolean = false;
   public geojsonCharged = new Subject<any>();
@@ -57,16 +60,14 @@ export class GeojsonComponent implements OnInit, OnChanges {
         this.mapservice.map.removeLayer(this.currentGeojson);
       }
       this.loadGeojson(changes.geojson.currentValue);
-      // zoom on layer extend after fisrt search
-      if (changes.geojson.previousValue !== undefined && this.zoomOnLayer) {
+      // zoom on layer
+      if (this.zoomOnFirstTime && this.zoomOnLayer) {
         // try to fit bound on layer. catch error if no layer in feature group
-
         try {
           this.map.fitBounds(this.mapservice.layerGroup.getBounds());
         } catch (error) {
           console.log('no layer in featuregroup');
         }
-        //
       }
     }
   }

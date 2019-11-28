@@ -1,8 +1,20 @@
 <!--Table-->
-<ngx-datatable (window:resize)="onResize($event)" #table class="material striped margin-top-xs table-size expandable"
-  [rows]="mapListService.tableData" [columns]="SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND" [columnMode]="'force'"
-  [headerHeight]="50" [footerHeight]="35" [selected]="mapListService.selectedRow" [selectionType]="'single'" [count]="mapListService.tableData.length"
-  [limit]="rowNumber" [rowClass]="getRowClass" (select)="mapListService.onRowSelect($event)">
+<ngx-datatable 
+  (window:resize)="onResize($event)" 
+  #table 
+  class="material striped margin-top-xs table-size expandable"
+  [rows]="mapListService.tableData" 
+  [columns]="SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND" 
+  [columnMode]="'force'"
+  [headerHeight]="50" 
+  [footerHeight]="35" 
+  [selected]="mapListService.selectedRow" 
+  [selectionType]="'single'" 
+  [count]="mapListService.tableData.length"
+  [limit]="rowNumber" 
+  [rowClass]="getRowClass" 
+  (select)="mapListService.onRowSelect($event)"
+>
 
 
   <ngx-datatable-column [maxWidth]="5">

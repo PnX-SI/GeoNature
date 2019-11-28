@@ -11,12 +11,13 @@ import { OccHabDataService } from "./services/data.service";
 import { OcchabStoreService } from "./services/store.service";
 import { OccHabMapListService } from "./services/occhab-map-list.service";
 import { OccHabModalDownloadComponent } from "./components/map-list/modal-download.component";
-
+import { OcchabInfoComponent } from "./components/occhab-info.component/occhab-info.component";
 // my module routing
 const routes: Routes = [
   { path: "form", component: OccHabFormComponent },
   { path: "form/:id_station", component: OccHabFormComponent },
-  { path: "", component: OccHabMapListComponent }
+  { path: "", component: OccHabMapListComponent },
+  { path: "info/:id_station", component: OcchabInfoComponent }
 ];
 
 @NgModule({
@@ -24,6 +25,7 @@ const routes: Routes = [
     OccHabFormComponent,
     OccHabMapListComponent,
     OcchabMapListFilterComponent,
+    OcchabInfoComponent,
     OccHabModalDownloadComponent
   ],
   imports: [

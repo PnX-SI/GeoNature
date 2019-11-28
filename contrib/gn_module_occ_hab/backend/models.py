@@ -163,8 +163,10 @@ class OneStation(TStationsOcchab):
             "id_station",
             True,
             relationships=[
+                'observers',
                 't_one_habitats',
                 'exposure',
+                'dataset',
                 'area_surface_calculation',
                 'geographic_object',
                 'determination_method',
