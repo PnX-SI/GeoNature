@@ -8,7 +8,10 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 @Component({
   selector: "pnx-occhab-info",
   templateUrl: "./occhab-info.component.html",
-  styleUrls: ["./occhab-info.component.scss"]
+  styleUrls: [
+    "./occhab-info.component.scss",
+    "../../components/responsive-map.scss"
+  ]
 })
 export class OcchabInfoComponent implements OnInit, OnDestroy {
   public oneStation;
