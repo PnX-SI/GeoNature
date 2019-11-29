@@ -6,10 +6,12 @@ import time
 
 from collections import OrderedDict
 
-from flask import Blueprint, request, current_app, send_from_directory, render_template
+from flask import (
+    Blueprint, request, current_app,
+    send_from_directory, render_template
+)
 from sqlalchemy import distinct, func, desc, select
 from sqlalchemy.orm import exc
-from sqlalchemy.sql import text
 from geojson import FeatureCollection, Feature
 
 
@@ -18,7 +20,6 @@ from geonature.utils.env import DB, ROOT_DIR
 from geonature.utils.errors import GeonatureApiError
 
 from geonature.utils.utilssqlalchemy import serializeQuery
-from geonature.utils.utilsgeometry import FionaShapeService
 
 from geonature.core.gn_synthese.models import (
     Synthese,
@@ -49,8 +50,7 @@ from geonature.utils.utilssqlalchemy import (
     to_csv_resp,
     to_json_resp,
     json_resp,
-    GenericTable,
-    csv_resp,
+    GenericTable
 )
 
 # debug
@@ -311,7 +311,6 @@ def export_taxon_web(info_role):
         "gn_synthese",
         None
     )
-    from sqlalchemy import func
 
     q = DB.session.query(
         taxon_view.tableDef,
