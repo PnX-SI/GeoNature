@@ -106,7 +106,7 @@ $$;
 CREATE OR REPLACE FUNCTION gn_synthese.delete_and_insert_area_taxon(my_cd_nom integer, my_id_area integer[]) RETURNS void
     LANGUAGE plpgsql
     AS $$
-BEGIN 
+BEGIN
   -- supprime dans cor_area_taxon
   DELETE FROM gn_synthese.cor_area_taxon WHERE cd_nom = my_cd_nom AND id_area = ANY (my_id_area);
   -- réinsertion et calcul
@@ -235,8 +235,8 @@ CREATE TABLE defaults_nomenclatures_value (
 
 CREATE TABLE gn_synthese.cor_area_taxon (
   cd_nom integer NOT NULL,
-  id_area integer NOT NULL, 
-  nb_obs integer NOT NULL, 
+  id_area integer NOT NULL,
+  nb_obs integer NOT NULL,
   last_date timestamp without time zone NOT NULL
 );
 
@@ -557,7 +557,7 @@ CREATE UNIQUE INDEX i_unique_cd_ref_vm_min_max_for_taxons ON gn_synthese.vm_min_
 CREATE INDEX i_taxons_synthese_autocomplete_cd_nom
   ON taxons_synthese_autocomplete (cd_nom ASC NULLS LAST);
 
-CREATE INDEX i_tri_taxons_synthese_autocomplete_search_name 
+CREATE INDEX i_tri_taxons_synthese_autocomplete_search_name
   ON taxons_synthese_autocomplete USING GIST (search_name gist_trgm_ops);
 
 -------------
@@ -605,7 +605,7 @@ DECLARE
   theidsynthese integer;
 BEGIN
   IF (TG_OP = 'UPDATE') OR (TG_OP = 'INSERT') THEN
-    theidsynthese = NEW.id_synthese; 
+    theidsynthese = NEW.id_synthese;
   END IF;
   IF (TG_OP = 'DELETE') THEN
     theidsynthese = OLD.id_synthese;
@@ -615,7 +615,7 @@ BEGIN
   FROM utilisateurs.t_roles r
   WHERE r.id_role IN(SELECT id_role FROM gn_synthese.cor_observer_synthese WHERE id_synthese = theidsynthese);
   --mise à jour du champ observers dans la table synthese
-  UPDATE gn_synthese.synthese 
+  UPDATE gn_synthese.synthese
   SET observers = theobservers
   WHERE id_synthese =  theidsynthese;
 RETURN NULL;
@@ -678,7 +678,7 @@ $BODY$
           t.group2_inpn
       FROM taxonomie.taxref t WHERE cd_nom = NEW.cd_nom;
       --On insère une seule fois le nom_vern car il est le même pour tous les synonymes
-      SELECT INTO thenomvern t.cd_nom 
+      SELECT INTO thenomvern t.cd_nom
       FROM gn_synthese.taxons_synthese_autocomplete a
       JOIN taxonomie.taxref t ON t.cd_nom = a.cd_nom
       WHERE a.cd_ref = taxonomie.find_cdref(NEW.cd_nom)
@@ -738,7 +738,7 @@ CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_manage_area_synth_and_taxon() RET
     AS $$
 DECLARE
     the_id_areas int[];
-BEGIN 
+BEGIN
    -- on récupère tous les aires intersectées par l'id_synthese concerné
     SELECT array_agg(id_area) INTO the_id_areas
     FROM gn_synthese.cor_area_synthese
@@ -765,7 +765,7 @@ CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_update_cd_nom() RETURNS trigger
   AS $$
 DECLARE
     the_id_areas int[];
-BEGIN 
+BEGIN
    -- on récupère tous les aires intersectées par l'id_synthese concerné
     SELECT array_agg(id_area) INTO the_id_areas
     FROM gn_synthese.cor_area_synthese
@@ -775,7 +775,7 @@ BEGIN
     PERFORM(gn_synthese.delete_and_insert_area_taxon(OLD.cd_nom, the_id_areas));
     -- recalcul pour le nouveau taxon
     PERFORM(gn_synthese.delete_and_insert_area_taxon(NEW.cd_nom, the_id_areas));
-    
+
   RETURN OLD;
 END;
 $$;
@@ -785,7 +785,7 @@ $$;
 --VIEWS--
 ---------
 
-CREATE OR REPLACE VIEW gn_synthese.v_tree_taxons_synthese AS 
+CREATE OR REPLACE VIEW gn_synthese.v_tree_taxons_synthese AS
  WITH cd_famille AS (
          SELECT t_1.cd_ref,
             t_1.lb_nom AS nom_latin,
@@ -869,7 +869,7 @@ ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_info_geo_type) AS inf
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_determination_method) AS determination_method
 FROM gn_synthese.synthese s;
 
-CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS 
+CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
  SELECT s.id_synthese,
     s.unique_id_sinp,
     s.unique_id_sinp_grp,
@@ -935,7 +935,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
      JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source;
 
 
-CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS 
+CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
  SELECT s.id_synthese AS "idSynthese",
     s.unique_id_sinp AS "permId",
     s.unique_id_sinp_grp AS "permIdGrp",
@@ -1014,7 +1014,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
      LEFT JOIN ref_nomenclatures.t_nomenclatures n19 ON s.id_nomenclature_determination_method = n19.id_nomenclature;
 
 
-CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS 
+CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS
  WITH count_nb_obs AS (
          SELECT count(*) AS nb_obs,
             synthese.id_dataset
@@ -1040,11 +1040,30 @@ CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS
 -- vue couleur taxon
 CREATE OR REPLACE VIEW gn_synthese.v_color_taxon_area AS
 SELECT cd_nom, id_area, nb_obs, last_date,
- CASE 
+ CASE
   WHEN date_part('day', (now() - last_date)) < 365 THEN 'grey'
   ELSE 'red'
  END as color
 FROM gn_synthese.cor_area_taxon;
+
+
+-- Vue export des taxons de la synthèse
+-- Première version qui reste à affiner/étoffer
+
+CREATE OR REPLACE VIEW gn_synthese.v_synthese_taxon_for_export_view AS
+ SELECT DISTINCT t.group1_inpn,
+    t.group2_inpn,
+    t.regne,
+    t.phylum,
+    t.classe,
+    t.ordre,
+    t.famille,
+    t.id_rang,
+    t.cd_ref,
+    t.nom_valide
+FROM gn_synthese.synthese  s
+JOIN taxonomie.taxref t ON s.cd_nom = t.cd_ref
+WHERE t.cd_nom = t.cd_ref;
 
 ------------
 --TRIGGERS--
@@ -1087,10 +1106,10 @@ CREATE TRIGGER trg_refresh_taxons_forautocomplete
   EXECUTE PROCEDURE gn_synthese.fct_trg_refresh_taxons_forautocomplete();
 
 -- trigger insertion ou update sur cor_area_syntese - déclenché après insert ou update sur cor_area_synthese
-CREATE TRIGGER tri_maj_cor_area_taxon 
-AFTER INSERT OR UPDATE 
-ON gn_synthese.cor_area_synthese 
-FOR EACH ROW 
+CREATE TRIGGER tri_maj_cor_area_taxon
+AFTER INSERT OR UPDATE
+ON gn_synthese.cor_area_synthese
+FOR EACH ROW
 EXECUTE PROCEDURE gn_synthese.fct_tri_maj_cor_unite_taxon();
 
 -- trigger suppression dans la synthese

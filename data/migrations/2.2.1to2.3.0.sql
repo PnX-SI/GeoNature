@@ -269,7 +269,8 @@ CREATE INDEX i_t_releves_occtax_date_max ON pr_occtax.t_releves_occtax USING btr
 DROP TABLE IF EXISTS gn_monitoring.cor_site_application;
 
 
--- TEST vue export taxons de la synthèse
+-- Vue export des taxons de la synthèse
+-- Première version qui reste à affiner/étoffer
 
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_taxon_for_export_view AS
  SELECT DISTINCT t.group1_inpn,
@@ -285,6 +286,3 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_taxon_for_export_view AS
 FROM gn_synthese.synthese  s
 JOIN taxonomie.taxref t ON s.cd_nom = t.cd_ref
 WHERE t.cd_nom = t.cd_ref;
-
-
- --- PB cd_ref =3864
