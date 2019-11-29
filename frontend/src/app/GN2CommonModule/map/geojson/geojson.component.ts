@@ -77,5 +77,13 @@ export class GeojsonComponent implements OnInit, OnChanges {
         //
       }
     }
+    if (changes.style && changes.style.currentValue !== undefined) {
+      if (this.currentGeojson) {
+        for (const key of Object.keys(this.currentGeojson['_layers'])) {
+          const layer = this.currentGeojson['_layers'][key];
+          layer.setStyle(changes.style.currentValue);
+        }
+      }
+    }
   }
 }
