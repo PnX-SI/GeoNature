@@ -272,7 +272,7 @@ DROP TABLE IF EXISTS gn_monitoring.cor_site_application;
 -- TEST vue export taxons de la synthèse
 
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_taxon_for_export_view AS
- SELECT t.group1_inpn,
+ SELECT DISTINCT t.group1_inpn,
     t.group2_inpn,
     t.regne,
     t.phylum,
@@ -282,5 +282,9 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_taxon_for_export_view AS
     t.id_rang,
     t.cd_ref,
     t.nom_valide
-    FROM gn_synthese.synthese  s
-   JOIN taxonomie.taxref t ON s.cd_nom = t.cd_ref;
+FROM gn_synthese.synthese  s
+JOIN taxonomie.taxref t ON s.cd_nom = t.cd_ref
+WHERE t.cd_nom = t.cd_ref;
+
+
+ --- PB cd_ref =3864
