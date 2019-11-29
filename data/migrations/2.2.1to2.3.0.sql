@@ -268,6 +268,11 @@ CREATE INDEX i_t_releves_occtax_date_max ON pr_occtax.t_releves_occtax USING btr
 -- Nettoyage monitoring
 DROP TABLE IF EXISTS gn_monitoring.cor_site_application;
 
+-- gn_commons.t_modules Changement des CHARACTER(n) en CHARACTER VARYING(n)
+ALTER TABLE gn_commons.t_modules ALTER COLUMN module_path TYPE CHARACTER VARYING(255);
+ALTER TABLE gn_commons.t_modules ALTER COLUMN module_external_url TYPE CHARACTER VARYING(255);
+ALTER TABLE gn_commons.t_modules ALTER COLUMN module_target TYPE CHARACTER VARYING(10);
+
 
 -- Vue export des taxons de la synthèse
 -- Première version qui reste à affiner/étoffer
