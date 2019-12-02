@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { OcchabFormService } from "../services/form-service";
 import { OcchabStoreService } from "../services/store.service";
+import { DataFormService } from "@geonature_common/form/data-form.service";
 import { OccHabDataService } from "../services/data.service";
 import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
 import { MapService } from "@geonature_common/map/map.service";
@@ -9,6 +10,7 @@ import { Subscription } from "rxjs/Subscription";
 import { CommonService } from "@geonature_common/service/common.service";
 import { AppConfig } from "@geonature_config/app.config";
 import { ModuleConfig } from "../module.config";
+import { filter } from "rxjs/operators";
 
 @Component({
   selector: "pnx-occhab-form",
@@ -44,16 +46,24 @@ export class OccHabFormComponent implements OnInit {
     private _route: ActivatedRoute,
     private _router: Router,
     private _commonService: CommonService,
-    private _mapService: MapService
+    private _gnDataService: DataFormService
   ) {}
 
   ngOnInit() {
     this.leafletDrawOptions;
     leafletDrawOption.draw.polyline = false;
-    this.occHabForm.stationForm = this.occHabForm.initStationForm();
-    this.occHabForm.stationForm.controls.geom_4326.valueChanges.subscribe(d => {
-      this.disabledForm = false;
-    });
+    this.storeService.defaultNomenclature$
+      .pipe(filter(val => val !== null))
+      .subscribe(val => {
+        this.occHabForm.stationForm = this.occHabForm.initStationForm(
+          this.storeService.defaultNomenclature
+        );
+        this.occHabForm.stationForm.controls.geom_4326.valueChanges.subscribe(
+          d => {
+            this.disabledForm = false;
+          }
+        );
+      });
   }
 
   ngAfterViewInit() {

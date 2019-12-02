@@ -175,3 +175,12 @@ class OneStation(TStationsOcchab):
                 "habref"
             ]
         )
+
+
+@serializable
+class DefaultNomenclaturesValue(DB.Model):
+    __tablename__ = "defaults_nomenclatures_value"
+    __table_args__ = {"schema": "pr_occhab"}
+    mnemonique_type = DB.Column(DB.Integer, primary_key=True)
+    id_organism = DB.Column(DB.Integer, primary_key=True)
+    id_nomenclature = DB.Column(DB.Integer, primary_key=True)
