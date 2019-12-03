@@ -63,7 +63,10 @@ corSiteArea = DB.Table(
         primary_key=True,
     ),
     DB.Column(
-        "id_area", DB.Integer, ForeignKey("ref_geo.l_areas.id_area"), primary_key=True
+        "id_area",
+        DB.Integer,
+        ForeignKey("ref_geo.l_areas.id_area"),
+        primary_key=True
     ),
 )
 
@@ -84,14 +87,20 @@ class TBaseVisits(DB.Model):
 
     visit_date_min = DB.Column(DB.DateTime)
     visit_date_max = DB.Column(DB.DateTime)
+
     # geom = DB.Column(Geometry('GEOMETRY', 4326))
     comments = DB.Column(DB.DateTime)
     uuid_base_visit = DB.Column(
         UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
     )
 
+    meta_create_date = DB.Column(DB.DateTime)
+    meta_update_date = DB.Column(DB.DateTime)
+
     digitiser = relationship(
-        User, primaryjoin=(User.id_role == id_digitiser), foreign_keys=[id_digitiser]
+        User,
+        primaryjoin=(User.id_role == id_digitiser),
+        foreign_keys=[id_digitiser]
     )
 
     observers = DB.relationship(
@@ -125,11 +134,18 @@ class TBaseSites(DB.Model):
         UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
     )
 
+    meta_create_date = DB.Column(DB.DateTime)
+    meta_update_date = DB.Column(DB.DateTime)
+
     digitiser = relationship(
-        User, primaryjoin=(User.id_role == id_digitiser), foreign_keys=[id_digitiser]
+        User,
+        primaryjoin=(User.id_role == id_digitiser),
+        foreign_keys=[id_digitiser]
     )
     inventor = relationship(
-        User, primaryjoin=(User.id_role == id_inventor), foreign_keys=[id_inventor]
+        User,
+        primaryjoin=(User.id_role == id_inventor),
+        foreign_keys=[id_inventor]
     )
 
     t_base_visits = relationship(

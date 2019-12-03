@@ -289,30 +289,6 @@ CREATE TRIGGER tri_meta_dates_change_synthese
 ALTER TABLE gn_monitoring.t_base_visits ADD meta_create_date timestamp without time zone DEFAULT now();
 ALTER TABLE gn_monitoring.t_base_visits ADD meta_update_date timestamp without time zone DEFAULT now();
 
-
-CREATE TRIGGER tri_meta_dates_change_synthese
-  BEFORE INSERT OR UPDATE
-  ON gn_monitoring.t_base_visits
-  FOR EACH ROW
-  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
-
-
--- Ajout date création modificiation sur les tables de base de monitoring
--- viens en complément du stockage vertical
-ALTER TABLE gn_monitoring.t_base_sites ADD meta_create_date timestamp without time zone DEFAULT now();
-ALTER TABLE gn_monitoring.t_base_sites ADD meta_update_date timestamp without time zone DEFAULT now();
-
-
-CREATE TRIGGER tri_meta_dates_change_synthese
-  BEFORE INSERT OR UPDATE
-  ON gn_monitoring.t_base_sites
-  FOR EACH ROW
-  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
-
-ALTER TABLE gn_monitoring.t_base_visits ADD meta_create_date timestamp without time zone DEFAULT now();
-ALTER TABLE gn_monitoring.t_base_visits ADD meta_update_date timestamp without time zone DEFAULT now();
-
-
 CREATE TRIGGER tri_meta_dates_change_synthese
   BEFORE INSERT OR UPDATE
   ON gn_monitoring.t_base_visits
@@ -334,5 +310,4 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_taxon_for_export_view AS
     t.nom_valide
     FROM gn_synthese.synthese  s
    JOIN taxonomie.taxref t ON s.cd_nom = t.cd_ref;
-
 
