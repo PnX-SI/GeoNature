@@ -8,10 +8,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 @Component({
   selector: "pnx-occhab-info",
   templateUrl: "./occhab-info.component.html",
-  styleUrls: [
-    "./occhab-info.component.scss",
-    "../../components/responsive-map.scss"
-  ]
+  styleUrls: ["./occhab-info.component.scss", "../responsive-map.scss"]
 })
 export class OcchabInfoComponent implements OnInit, OnDestroy {
   public oneStation;
@@ -19,6 +16,7 @@ export class OcchabInfoComponent implements OnInit, OnDestroy {
   public currentHab;
   public habInfo: Array<any>;
   public modalContent;
+  public selectedIndex;
   private _sub: Subscription;
   constructor(
     private _occHabDataService: OccHabDataService,
@@ -47,6 +45,7 @@ export class OcchabInfoComponent implements OnInit, OnDestroy {
 
   setCurrentHab(index) {
     this.currentHab = this.stationContent.t_one_habitats[index];
+    this.selectedIndex = index;
   }
 
   getHabInfo(cd_hab) {

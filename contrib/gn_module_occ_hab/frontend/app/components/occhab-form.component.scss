@@ -76,3 +76,25 @@ tbody {
 :host /deep/ ngb-typeahead-window {
   transform: translate(0px, 30px) !important;
 }
+
+.inline {
+  display: flex;
+}
+
+#addon {
+  height: calc(1.5em + 0.4rem);
+  position: relative;
+  top: 23px;
+}
+
+#station-card {
+  margin-bottom: 5px;
+}
+
+#header-form-hab {
+  background-color: #007bff;
+}
+
+#add-hab-btn {
+  background-color: white !important;
+}

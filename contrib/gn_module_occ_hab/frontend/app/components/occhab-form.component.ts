@@ -15,10 +15,7 @@ import { filter } from "rxjs/operators";
 @Component({
   selector: "pnx-occhab-form",
   templateUrl: "occhab-form.component.html",
-  styleUrls: [
-    "./occhab-form.component.scss",
-    "../components/responsive-map.scss"
-  ],
+  styleUrls: ["./occhab-form.component.scss", "./responsive-map.scss"],
   providers: [OcchabFormService]
 })
 export class OccHabFormComponent implements OnInit {
@@ -38,6 +35,7 @@ export class OccHabFormComponent implements OnInit {
   public firstFileLayerMessage = true;
   public currentGeoJsonFileLayer;
   public markerCoordinates;
+  public currentEditingStation: any;
 
   constructor(
     public occHabForm: OcchabFormService,
@@ -76,6 +74,7 @@ export class OccHabFormComponent implements OnInit {
         this._occHabDataService
           .getOneStation(params["id_station"])
           .subscribe(station => {
+            this.currentEditingStation = station;
             if (station.geometry.type == "Point") {
               // set the input for the marker component
               this.markerCoordinates = station.geometry.coordinates;

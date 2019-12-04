@@ -50,21 +50,12 @@ class THabitatsOcchab(DB.Model):
     technical_precision = DB.Column(DB.Unicode)
     id_nomenclature_sensitvity = DB.Column(DB.Integer)
 
-    habref = DB.relationship("Habref")
+    habref = DB.relationship("Habref", lazy="joined")
 
 
 @serializable
 @geoserializable
 class TStationsOcchab(ReleveCruvedAutorization):
-    # overright the constructor
-    # to inherit of ReleModel, the constructor must define some mandatory attribute
-    def __init__(self, *args, **kwargs):
-        super(TStationsOcchab, self).__init__(*args, **kwargs)
-        self.observer_rel = getattr(self, 'observers')
-        self.dataset_rel = getattr(self, 'dataset')
-        self.id_digitiser_col = getattr(self, 'id_digitiser')
-        self.id_dataset_col = getattr(self, 'id_dataset')
-
     __tablename__ = "t_stations"
     __table_args__ = {"schema": "pr_occhab"}
     id_station = DB.Column(DB.Integer, primary_key=True)
@@ -108,8 +99,27 @@ class TStationsOcchab(ReleveCruvedAutorization):
         ],
     )
 
+    # overright the constructor
+    # to inherit of ReleModel, the constructor must define some mandatory attribute
+    def __init__(self, *args, **kwargs):
+        super(TStationsOcchab, self).__init__(*args, **kwargs)
+        self.observer_rel = getattr(self, 'observers')
+        self.dataset_rel = getattr(self, 'dataset')
+        self.id_digitiser_col = getattr(self, 'id_digitiser')
+        self.id_dataset_col = getattr(self, 'id_dataset')
+
     def get_geofeature(self, recursif=True):
-        return self.as_geofeature("geom_4326", "id_station", recursif)
+        return self.as_geofeature(
+            "geom_4326",
+            "id_station",
+            recursif,
+            relationships=[
+                'observers',
+                't_habitats',
+                'habref',
+                'dataset',
+            ]
+        )
 
 
 @serializable

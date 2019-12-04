@@ -58,7 +58,7 @@ export class OcchabFormService {
   }
 
   initHabForm(defaultNomenclature): FormGroup {
-    return this._fb.group({
+    const habForm = this._fb.group({
       id_station: null,
       id_habitat: null,
       unique_id_sinp_hab: null,
@@ -75,6 +75,23 @@ export class OcchabFormService {
       id_nomenclature_abundance: null,
       technical_precision: null
     });
+    habForm.setValidators([this.technicalValidator]);
+    return habForm;
+  }
+
+  technicalValidator(habForm: AbstractControl): { [key: string]: boolean } {
+    const technicalValue = habForm.get("id_nomenclature_collection_technique")
+      .value;
+    const technicalPrecision = habForm.get("technical_precision").value;
+
+    if (
+      technicalValue &&
+      technicalValue.cd_nomenclature == "10" &&
+      !technicalPrecision
+    ) {
+      return { invalidTechnicalValues: true };
+    }
+    return null;
   }
 
   patchDefaultNomenclature(

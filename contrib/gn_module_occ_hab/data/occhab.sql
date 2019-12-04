@@ -19,7 +19,7 @@ AS $$
     thenomenclatureid integer;
   BEGIN
       SELECT INTO thenomenclatureid id_nomenclature
-      FROM pr_occtax.defaults_nomenclatures_value
+      FROM pr_occhab.defaults_nomenclatures_value
       WHERE mnemonique_type = mytype
       AND (id_organism = 0 OR id_organism = myidorganism)
       AND (regne = '0' OR regne = myregne)
@@ -54,11 +54,11 @@ CREATE TABLE pr_occhab.t_stations(
   id_nomenclature_area_surface_calculation integer,
   comment text,
   geom_local public.geometry(Geometry, :MYLOCALSRID),
-  geom_4326 public.geometry(Geometry,4326),
+  geom_4326 public.geometry(Geometry,4326) NOT NULL,
   precision integer,
   id_digitiser integer,
   numerization_scale character varying (15),
-  id_nomenclature_geographic_object integer,
+  id_nomenclature_geographic_object integer NOT NULL,
   CONSTRAINT enforce_dims_geom_4326 CHECK ((public.st_ndims(geom_4326) = 2)),
   CONSTRAINT enforce_dims_geom_local CHECK ((public.st_ndims(geom_local) = 2)),
   CONSTRAINT enforce_srid_geom_4326 CHECK ((public.st_srid(geom_4326) = 4326)),
@@ -143,7 +143,7 @@ ADD CONSTRAINT fk_t_stations_id_digitiser FOREIGN KEY (id_digitiser) REFERENCES 
 
 
 ALTER TABLE ONLY pr_occhab.t_habitats
-ADD CONSTRAINT fk_t_habitats_id_station FOREIGN KEY (id_station) REFERENCES pr_occhab.t_stations(id_station) ON UPDATE CASCADE;
+ADD CONSTRAINT fk_t_habitats_id_station FOREIGN KEY (id_station) REFERENCES pr_occhab.t_stations(id_station) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY pr_occhab.t_habitats
 ADD CONSTRAINT fk_t_habitats_id_nomenclature_determination_type FOREIGN KEY (id_nomenclature_determination_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
@@ -156,6 +156,9 @@ ADD CONSTRAINT fk_t_habitats_id_nomenclature_abundance FOREIGN KEY (id_nomenclat
 
 ALTER TABLE ONLY pr_occhab.t_habitats
 ADD CONSTRAINT fk_t_habitats_id_nomenclature_sensitvity FOREIGN KEY (id_nomenclature_sensitvity) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY pr_occhab.t_habitats
+ADD CONSTRAINT fk_t_habitats_id_nomenclature_community_interest FOREIGN KEY (id_nomenclature_community_interest) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 
 ALTER TABLE ONLY pr_occhab.cor_station_observer

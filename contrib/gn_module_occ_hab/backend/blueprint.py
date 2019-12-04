@@ -67,6 +67,10 @@ def post_station(info_role):
                 if not getattr(THabitatsOcchab, att, False):
                     occ.pop(att)
             t_hab_list_object.append(THabitatsOcchab(**occ))
+
+    # set habitat complexe
+    station.is_habitat_complex = len(t_hab_list_object) > 1
+
     station.t_habitats = t_hab_list_object
     if station.id_station:
         user_cruved = get_or_fetch_user_cruved(

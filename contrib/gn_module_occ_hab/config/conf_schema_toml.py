@@ -15,7 +15,6 @@ class FormConfig(Schema):
     depth_max = fields.Boolean(missing=True)
     altitude_min = fields.Boolean(missing=True)
     altitude_max = fields.Boolean(missing=True)
-    habitat_complex = fields.Boolean(missing=True)
     exposure = fields.Boolean(missing=True)
     area = fields.Boolean(missing=True)
     area_surface_calculation = fields.Boolean(missing=True)
@@ -26,7 +25,6 @@ class FormConfig(Schema):
     collection_technique = fields.Boolean(missing=True)
     recovery_percentage = fields.Boolean(missing=True)
     id_nomenclature_abundance = fields.Boolean(missing=True)
-    technical_precision = fields.Boolean(missing=True)
     technical_precision = fields.Boolean(missing=True)
 
 
