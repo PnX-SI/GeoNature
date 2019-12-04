@@ -273,6 +273,9 @@ ALTER TABLE gn_commons.t_modules ALTER COLUMN module_path TYPE CHARACTER VARYING
 ALTER TABLE gn_commons.t_modules ALTER COLUMN module_external_url TYPE CHARACTER VARYING(255);
 ALTER TABLE gn_commons.t_modules ALTER COLUMN module_target TYPE CHARACTER VARYING(10);
 
+-- gn_commons.t_modules  : module_code, module_path UNIQUE
+ALTER TABLE gn_commons.t_modules ADD CONSTRAINT unique_t_modules_module_path UNIQUE (module_path);
+ALTER TABLE gn_commons.t_modules ADD CONSTRAINT unique_t_modules_module_code UNIQUE (module_code);
 
 -- Ajout date création modificiation sur les tables de base de monitoring
 -- viens en complément du stockage vertical
