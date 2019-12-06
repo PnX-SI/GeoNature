@@ -5,6 +5,7 @@
         || formDef.type_widget == 'radio'
         || formDef.type_widget == 'select'
         || formDef.type_widget == 'time'
+        || formDef.type_widget == 'number'
         " [attr.for]="formDef.attribut_name">{{formDef.attribut_label}}</small>
     <div [ngSwitch]="formDef.type_widget">
 
@@ -116,6 +117,14 @@
       [formControl]="form.get(formDef.attribut_name)"
       [id]="formDef.attribut_name"
       type="time"
+      >
+
+      <input
+      *ngSwitchCase="'number'"
+      class="form-control form-control-sm"
+      [formControl]="form.get(formDef.attribut_name)"
+      [id]="formDef.attribut_name"
+      type="number"
       >
 
       <pnx-geometry-form *ngSwitchCase="'geometry'"
