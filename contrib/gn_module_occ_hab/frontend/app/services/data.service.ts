@@ -28,8 +28,6 @@ export class OccHabDataService {
   }
 
   getStations(params?) {
-    console.log("get statioooooooooooons");
-
     let queryString: HttpParams = new HttpParams();
     for (let key in params) {
       if (params[key]) {

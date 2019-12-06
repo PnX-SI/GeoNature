@@ -6,8 +6,11 @@ from geojson import FeatureCollection, Feature
 from geoalchemy2.shape import from_shape
 from pypnusershub.db.models import User
 from shapely.geometry import asShape
+from sqlalchemy import func, distinct
 
+from pypnnomenclature.models import TNomenclatures
 from utils_flask_sqla.response import json_resp, to_csv_resp, to_json_resp
+
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
 from geonature.utils.env import DB, ROOT_DIR
@@ -16,7 +19,7 @@ from geonature.utils.utilsgeometry import remove_third_dimension
 from geonature.utils import filemanager
 from geonature.utils.utilssqlalchemy import GenericTable
 
-from .models import OneStation, TStationsOcchab, THabitatsOcchab
+from .models import OneStation, TStationsOcchab, THabitatsOcchab, DefaultNomenclaturesValue
 from .query import filter_query_with_cruved
 
 blueprint = Blueprint("occhab", __name__)
@@ -64,6 +67,10 @@ def post_station(info_role):
                 if not getattr(THabitatsOcchab, att, False):
                     occ.pop(att)
             t_hab_list_object.append(THabitatsOcchab(**occ))
+
+    # set habitat complexe
+    station.is_habitat_complex = len(t_hab_list_object) > 1
+
     station.t_habitats = t_hab_list_object
     if station.id_station:
         user_cruved = get_or_fetch_user_cruved(
@@ -255,3 +262,46 @@ def import_data():
         DB.session.add(new_sta)
         DB.session.commit()
     return sta_dict
+
+
+@blueprint.route("/defaultNomenclatures", methods=["GET"])
+@json_resp
+def getDefaultNomenclatures():
+    """Get default nomenclatures define in occtax module
+
+    .. :quickref: Occtax;
+
+    :returns: dict: {'MODULE_CODE': 'ID_NOMENCLATURE'}
+
+    """
+    params = request.args
+    group2_inpn = "0"
+    regne = "0"
+    organism = 0
+    if "group2_inpn" in params:
+        group2_inpn = params["group2_inpn"]
+    if "regne" in params:
+        regne = params["regne"]
+    if "organism" in params:
+        organism = params["organism"]
+    types = request.args.getlist("mnemonique")
+
+    q = DB.session.query(
+        distinct(DefaultNomenclaturesValue.mnemonique_type),
+        func.pr_occhab.get_default_nomenclature_value(
+            DefaultNomenclaturesValue.mnemonique_type, organism, regne, group2_inpn
+        ),
+    )
+    if len(types) > 0:
+        q = q.filter(
+            DefaultNomenclaturesValue.mnemonique_type.in_(tuple(types)))
+    data = q.all()
+
+    formated_dict = {}
+    for d in data:
+        nomenclature_obj = None
+        if d[1]:
+            nomenclature_obj = DB.session.query(
+                TNomenclatures).get(d[1]).as_dict()
+        formated_dict[d[0]] = nomenclature_obj
+    return formated_dict

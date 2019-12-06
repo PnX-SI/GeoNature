@@ -9,8 +9,12 @@ export class OcchabStoreService {
   public nomenclatureItems = {};
   public typoHabitat: Array<any>;
   public stations: Array<any>;
-  private _state$: BehaviorSubject<any> = new BehaviorSubject({});
-  public state$: Observable<any> = this._state$.asObservable();
+  private _defaultNomenclature$: BehaviorSubject<any> = new BehaviorSubject(
+    null
+  );
+  public defaultNomenclature$: Observable<
+    any
+  > = this._defaultNomenclature$.asObservable();
   constructor(
     private _gnDataService: DataFormService,
     private _occHabDataService: OccHabDataService
@@ -36,22 +40,14 @@ export class OcchabStoreService {
       .subscribe(data => {
         this.typoHabitat = data;
       });
-  }
-
-  get state() {
-    return this._state$.getValue();
-  }
-
-  setState(nextState): void {
-    this._state$.next(nextState);
-  }
-
-  getOnStation(id_station) {
-    this._occHabDataService.getOneStation(id_station).subscribe(data => {
-      this.setState({
-        ...this.state,
-        station: data
+    this._gnDataService
+      .getDefaultNomenclatureValue("occhab")
+      .subscribe(data => {
+        this._defaultNomenclature$.next(data);
       });
-    });
+  }
+
+  get defaultNomenclature() {
+    return this._defaultNomenclature$.getValue();
   }
 }

@@ -13,7 +13,7 @@ class Habref(DB.Model):
     __table_args__ = {"schema": "ref_habitat"}
     cd_hab = DB.Column(DB.Integer, primary_key=True)
     fg_validite = DB.Column(DB.Unicode)
-    cd_typo = DB.Column(DB.Integer, ForeignKey("ref_habitat.typoref.cd_typo"))
+    cd_typo = DB.Column(DB.Integer)
     lb_code = DB.Column(DB.Unicode)
     lb_hab_fr = DB.Column(DB.Unicode)
     lb_hab_fr_complet = DB.Column(DB.Unicode)

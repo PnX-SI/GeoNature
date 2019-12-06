@@ -9,6 +9,7 @@ import {
 } from "@angular/forms";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { DataFormService } from "@geonature_common/form/data-form.service";
+import { OcchabStoreService } from "./store.service";
 
 @Injectable()
 export class OcchabFormService {
@@ -19,7 +20,8 @@ export class OcchabFormService {
   constructor(
     private _fb: FormBuilder,
     private _dateParser: NgbDateParserFormatter,
-    private _gn_dataSerice: DataFormService
+    private _gn_dataSerice: DataFormService,
+    private _storeService: OcchabStoreService
   ) {
     // get selected cd_typo to filter the habref autcomplete
     this.typoHabControl.valueChanges.subscribe(data => {
@@ -27,7 +29,7 @@ export class OcchabFormService {
     });
   }
 
-  initStationForm(): FormGroup {
+  initStationForm(defaultNomenclature): FormGroup {
     return this._fb.group({
       id_station: null,
       unique_id_sinp_station: null,
@@ -43,28 +45,71 @@ export class OcchabFormService {
       depth_min: null,
       depth_max: null,
       area: null,
-      id_nomenclature_area_surface_calculation: null,
-      id_nomenclature_geographic_object: [null, Validators.required],
+      id_nomenclature_area_surface_calculation:
+        defaultNomenclature["METHOD_CALCUL_SURFACE"],
+      id_nomenclature_geographic_object: [
+        defaultNomenclature["NAT_OBJ_GEO"],
+        Validators.required
+      ],
       geom_4326: [null, Validators.required],
       comment: null,
       t_habitats: this._fb.array([])
     });
   }
 
-  initHabForm(): FormGroup {
-    return this._fb.group({
+  initHabForm(defaultNomenclature): FormGroup {
+    const habForm = this._fb.group({
       id_station: null,
       id_habitat: null,
       unique_id_sinp_hab: null,
       nom_cite: null,
       habref: [Validators.required, this.cdHabValidator],
-      id_nomenclature_determination_type: null,
+      id_nomenclature_determination_type:
+        defaultNomenclature["DETERMINATION_TYP_HAB"],
       determiner: null,
-      id_nomenclature_collection_technique: [null, Validators.required],
+      id_nomenclature_collection_technique: [
+        defaultNomenclature["TECHNIQUE_COLLECT_HAB"],
+        Validators.required
+      ],
       recovery_percentage: null,
       id_nomenclature_abundance: null,
       technical_precision: null
     });
+    habForm.setValidators([this.technicalValidator]);
+    return habForm;
+  }
+
+  technicalValidator(habForm: AbstractControl): { [key: string]: boolean } {
+    const technicalValue = habForm.get("id_nomenclature_collection_technique")
+      .value;
+    const technicalPrecision = habForm.get("technical_precision").value;
+
+    if (
+      technicalValue &&
+      technicalValue.cd_nomenclature == "10" &&
+      !technicalPrecision
+    ) {
+      return { invalidTechnicalValues: true };
+    }
+    return null;
+  }
+
+  patchDefaultNomenclature(
+    defaultNomenclature,
+    stationForm: FormGroup,
+    habitatForm: FormGroup
+  ) {
+    stationForm.patchValue({
+      id_nomenclature_area_surface_calculation:
+        defaultNomenclature["METHOD_CALCUL_SURFACE"],
+      id_nomenclature_geographic_object: defaultNomenclature["NAT_OBJ_GEO"]
+    });
+    // habitatForm.patchValue({
+    //   id_nomenclature_determination_type:
+    //     defaultNomenclature["DETERMINATION_TYP_HAB"],
+    //   id_nomenclature_collection_technique:
+    //     defaultNomenclature["TECHNIQUE_COLLECT_HAB"]
+    // });
   }
 
   cdHabValidator(habControl: AbstractControl) {
@@ -87,7 +132,10 @@ export class OcchabFormService {
   addNewHab() {
     const currentHabNumber = this.stationForm.value.t_habitats.length - 1;
     const habFormArray = this.stationForm.controls.t_habitats as FormArray;
-    habFormArray.insert(0, this.initHabForm());
+    habFormArray.insert(
+      0,
+      this.initHabForm(this._storeService.defaultNomenclature)
+    );
     this.currentEditingHabForm = 0;
   }
 
@@ -194,7 +242,7 @@ export class OcchabFormService {
     // create t_habitat formArray
     for (let i = 0; i < oneStation.properties.t_one_habitats.length; i++) {
       (this.stationForm.controls.t_habitats as FormArray).push(
-        this.initHabForm()
+        this.initHabForm(this._storeService.defaultNomenclature)
       );
     }
     const formatedData = this.formatStationAndHabtoPatch(oneStation.properties);

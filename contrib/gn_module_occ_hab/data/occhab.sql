@@ -3,6 +3,39 @@ CREATE SCHEMA pr_occhab;
 
 SET search_path = pr_occhab, pg_catalog;
 
+
+
+-------------
+--FUNCTIONS--
+-------------
+
+CREATE OR REPLACE FUNCTION pr_occhab.get_default_nomenclature_value(mytype character varying, myidorganism integer DEFAULT 0, myregne character varying(20) DEFAULT '0', mygroup2inpn character varying(255) DEFAULT '0') RETURNS integer
+IMMUTABLE
+LANGUAGE plpgsql
+AS $$
+--Function that return the default nomenclature id with wanteds nomenclature type, organism id, regne, group2_inpn
+--Return -1 if nothing matche with given parameters
+  DECLARE
+    thenomenclatureid integer;
+  BEGIN
+      SELECT INTO thenomenclatureid id_nomenclature
+      FROM pr_occhab.defaults_nomenclatures_value
+      WHERE mnemonique_type = mytype
+      AND (id_organism = 0 OR id_organism = myidorganism)
+      AND (regne = '0' OR regne = myregne)
+      AND (group2_inpn = '0' OR group2_inpn = mygroup2inpn)
+      ORDER BY group2_inpn DESC, regne DESC, id_organism DESC LIMIT 1;
+    IF (thenomenclatureid IS NOT NULL) THEN
+      RETURN thenomenclatureid;
+    END IF;
+    RETURN NULL;
+  END;
+$$;
+
+------------------------
+--TABLES AND SEQUENCES--
+------------------------
+
 CREATE TABLE pr_occhab.t_stations(
   id_station serial NOT NULL,
   unique_id_sinp_station uuid NOT NULL DEFAULT public.uuid_generate_v4(),
@@ -21,11 +54,11 @@ CREATE TABLE pr_occhab.t_stations(
   id_nomenclature_area_surface_calculation integer,
   comment text,
   geom_local public.geometry(Geometry, :MYLOCALSRID),
-  geom_4326 public.geometry(Geometry,4326),
+  geom_4326 public.geometry(Geometry,4326) NOT NULL,
   precision integer,
   id_digitiser integer,
   numerization_scale character varying (15),
-  id_nomenclature_geographic_object integer,
+  id_nomenclature_geographic_object integer NOT NULL,
   CONSTRAINT enforce_dims_geom_4326 CHECK ((public.st_ndims(geom_4326) = 2)),
   CONSTRAINT enforce_dims_geom_local CHECK ((public.st_ndims(geom_local) = 2)),
   CONSTRAINT enforce_srid_geom_4326 CHECK ((public.st_srid(geom_4326) = 4326)),
@@ -70,6 +103,7 @@ CREATE TABLE pr_occhab.defaults_nomenclatures_value (
 );
 
 
+
 ----------------
 --PRIMARY KEYS--
 ----------------
@@ -85,7 +119,6 @@ ALTER TABLE ONLY pr_occhab.cor_station_observer
 
 ALTER TABLE ONLY pr_occhab.defaults_nomenclatures_value
     ADD CONSTRAINT pk_pr_occhab_defaults_nomenclatures_value PRIMARY KEY (mnemonique_type, id_organism, regne, group2_inpn);
-
 
 ----------------
 --FOREIGN KEYS--
@@ -110,7 +143,7 @@ ADD CONSTRAINT fk_t_stations_id_digitiser FOREIGN KEY (id_digitiser) REFERENCES 
 
 
 ALTER TABLE ONLY pr_occhab.t_habitats
-ADD CONSTRAINT fk_t_habitats_id_station FOREIGN KEY (id_station) REFERENCES pr_occhab.t_stations(id_station) ON UPDATE CASCADE;
+ADD CONSTRAINT fk_t_habitats_id_station FOREIGN KEY (id_station) REFERENCES pr_occhab.t_stations(id_station) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY pr_occhab.t_habitats
 ADD CONSTRAINT fk_t_habitats_id_nomenclature_determination_type FOREIGN KEY (id_nomenclature_determination_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
@@ -124,6 +157,9 @@ ADD CONSTRAINT fk_t_habitats_id_nomenclature_abundance FOREIGN KEY (id_nomenclat
 ALTER TABLE ONLY pr_occhab.t_habitats
 ADD CONSTRAINT fk_t_habitats_id_nomenclature_sensitvity FOREIGN KEY (id_nomenclature_sensitvity) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
+ALTER TABLE ONLY pr_occhab.t_habitats
+ADD CONSTRAINT fk_t_habitats_id_nomenclature_community_interest FOREIGN KEY (id_nomenclature_community_interest) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
 
 ALTER TABLE ONLY pr_occhab.cor_station_observer
 ADD CONSTRAINT fk_cor_station_observer_t_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
@@ -131,13 +167,13 @@ ADD CONSTRAINT fk_cor_station_observer_t_role FOREIGN KEY (id_role) REFERENCES u
 ALTER TABLE ONLY pr_occhab.cor_station_observer
 ADD CONSTRAINT fk_cor_station_observer_id_station FOREIGN KEY (id_station) REFERENCES pr_occhab.t_stations(id_station) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE ONLY defaults_nomenclatures_value
+ALTER TABLE ONLY pr_occhab.defaults_nomenclatures_value
     ADD CONSTRAINT fk_pr_occhab_defaults_nomenclatures_value_mnemonique_type FOREIGN KEY (mnemonique_type) REFERENCES ref_nomenclatures.bib_nomenclatures_types(mnemonique) ON UPDATE CASCADE;
 
-ALTER TABLE ONLY defaults_nomenclatures_value
+ALTER TABLE ONLY pr_occhab.defaults_nomenclatures_value
     ADD CONSTRAINT fk_pr_occhab_defaults_nomenclatures_value_id_organism FOREIGN KEY (id_organism) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
 
-ALTER TABLE ONLY defaults_nomenclatures_value
+ALTER TABLE ONLY pr_occhab.defaults_nomenclatures_value
     ADD CONSTRAINT fk_pr_occhab_defaults_nomenclatures_value_id_nomenclature FOREIGN KEY (id_nomenclature) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 

@@ -55,10 +55,23 @@ export class DataFormService {
     codesNomenclatureType.forEach(code => {
       params = params.append('code_type', code);
     });
-    console.log(params);
 
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/nomenclatures/nomenclatures`, {
       params: params
+    });
+  }
+
+  getDefaultNomenclatureValue(path, mnemoniques: Array<string> = [], kwargs: ParamsDict = {}) {
+    let queryString: HttpParams = new HttpParams();
+    // tslint:disable-next-line:forin
+    for (const key in kwargs) {
+      queryString = queryString.set(key, kwargs[key].toString());
+    }
+    mnemoniques.forEach(mnem => {
+      queryString = queryString.append('mnemonique', mnem);
+    });
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/${path}/defaultNomenclatures`, {
+      params: queryString
     });
   }
 
