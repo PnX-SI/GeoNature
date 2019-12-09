@@ -67,6 +67,7 @@ export class OcchabFormService {
       id_nomenclature_determination_type:
         defaultNomenclature["DETERMINATION_TYP_HAB"],
       determiner: null,
+      id_nomenclature_community_interest: null,
       id_nomenclature_collection_technique: [
         defaultNomenclature["TECHNIQUE_COLLECT_HAB"],
         Validators.required
