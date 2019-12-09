@@ -50,6 +50,12 @@ export class DumbSelectComponent extends GenericFormComponent {
    */
   @Input() displayedKey: string;
 
+  /** Affiche un item avec pour valeur null */
+  @Input() displayNullValue = false;
+
+  /** Label de la valeure Null */
+  @Input() nullValueLabel: string;
+
   compareFn(c1: any, c2: any): boolean {
     return c1 && c2 ? c1[this.comparedKey] === c2[this.comparedKey] : c1 === c2;
   }
