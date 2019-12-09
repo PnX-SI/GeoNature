@@ -50,17 +50,14 @@ export class OccHabFormComponent implements OnInit {
   ngOnInit() {
     this.leafletDrawOptions;
     leafletDrawOption.draw.polyline = false;
+    this.occHabForm.stationForm = this.occHabForm.initStationForm();
+    this.occHabForm.stationForm.controls.geom_4326.valueChanges.subscribe(d => {
+      this.disabledForm = false;
+    });
     this.storeService.defaultNomenclature$
       .pipe(filter(val => val !== null))
       .subscribe(val => {
-        this.occHabForm.stationForm = this.occHabForm.initStationForm(
-          this.storeService.defaultNomenclature
-        );
-        this.occHabForm.stationForm.controls.geom_4326.valueChanges.subscribe(
-          d => {
-            this.disabledForm = false;
-          }
-        );
+        this.occHabForm.patchDefaultNomenclaureStation(val);
       });
   }
 
@@ -81,9 +78,8 @@ export class OccHabFormComponent implements OnInit {
             } else {
               // set the input for leaflet draw component
               this.currentGeoJsonFileLayer = station.geometry;
-              this.occHabForm.patchStationForm(station);
-              this.mapHeight = this.MAP_SMALL_HEIGHT;
             }
+            this.occHabForm.patchStationForm(station);
           });
       }
     });
@@ -112,7 +108,6 @@ export class OccHabFormComponent implements OnInit {
   }
 
   validateHabitat() {
-    this.mapHeight = this.MAP_SMALL_HEIGHT;
     this.showHabForm = false;
     this.showTabHab = true;
     this.occHabForm.currentEditingHabForm = null;

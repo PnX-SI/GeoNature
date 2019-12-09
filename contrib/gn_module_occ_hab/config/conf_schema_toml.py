@@ -18,19 +18,20 @@ class FormConfig(Schema):
     exposure = fields.Boolean(missing=True)
     area = fields.Boolean(missing=True)
     area_surface_calculation = fields.Boolean(missing=True)
-    comment = fields.Boolean(missing=True)
     geographic_object = fields.Boolean(missing=True)
     determination_type = fields.Boolean(missing=True)
     determiner = fields.Boolean(missing=True)
     collection_technique = fields.Boolean(missing=True)
     recovery_percentage = fields.Boolean(missing=True)
-    id_nomenclature_abundance = fields.Boolean(missing=True)
+    abundance = fields.Boolean(missing=True)
     technical_precision = fields.Boolean(missing=True)
+    community_interest = fields.Boolean(missing=True)
 
 
 class GnModuleSchemaConf(Schema):
     ID_LIST_HABITAT = fields.Integer(missing=1)
     OBSERVER_AS_TXT = fields.Integer(missing=False)
+    OBSERVER_LIST_ID = fields.Integer(missing=1)
     formConfig = fields.Nested(FormConfig, missing=dict())
     EXPORT_FORMAT = fields.List(fields.String(), missing=[
                                 'csv', 'geojson', 'shapefile'])

@@ -51,9 +51,12 @@ def post_station(info_role):
     two_dimension_geom = remove_third_dimension(shape)
     station.geom_4326 = from_shape(two_dimension_geom, srid=4326)
     if observers_list is not None:
+
         observers = (
             DB.session.query(User).filter(
-                User.id_role.in_(observers_list)).all()
+                User.id_role.in_(
+                    list(map(lambda user: user['id_role'], observers_list))
+                )).all()
         )
         for o in observers:
             station.observers.append(o)

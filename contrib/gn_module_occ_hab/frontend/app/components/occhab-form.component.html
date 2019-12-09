@@ -89,9 +89,21 @@
 
       <div class="card-body">
         <div class="row">
-          <div class="col">
-            <pnx-observers-text [parentFormControl]="occHabForm.stationForm.get('observers_txt')">
-            </pnx-observers-text>
+          <div class="col-6">
+            <div *ngIf="moduleConfig.formConfig.OBSERVER_AS_TXT; else observerIDBlock" class="col">
+              <pnx-observers-text 
+                [parentFormControl]="occHabForm.stationForm.get('observers_txt')">
+              </pnx-observers-text>
+            </div>
+            <ng-template #observerIDBlock>
+              <pnx-observers 
+                [parentFormControl]="occHabForm.stationForm.get('observers')" 
+                [idMenu]="moduleConfig.OBSERVER_LIST_ID"
+                label="{{ 'Releve.Observers' | translate }}" 
+                [bindAllItem]="true"
+              >
+              </pnx-observers>
+            </ng-template>
           </div>
           <div class="col">
             <div class="dataset-inactive" *ngIf="currentEditingStation?.properties?.dataset?.active == false; else elseblocDataset">
@@ -217,7 +229,7 @@
        <div class="row">
          <div 
           class="col"
-          *ngIf="area"          
+          *ngIf="moduleConfig.formConfig.area"          
         >
             <small> Surface</small>
             <input 
@@ -229,6 +241,7 @@
 
          <div class="col">
             <pnx-dumb-select
+              *ngIf="moduleConfig.formConfig.area_surface_calculation"
               label="Méthode de calcul de la surface" 
               [parentFormControl]="occHabForm.stationForm.get('id_nomenclature_area_surface_calculation')"         
               [items]="storeService.nomenclatureItems.METHOD_CALCUL_SURFACE"
@@ -242,6 +255,7 @@
        </div>
 
         <pnx-dumb-select
+          *ngIf="moduleConfig.formConfig.geographic_object"
           label="Nature objet géographique" 
           [parentFormControl]="occHabForm.stationForm.get('id_nomenclature_geographic_object')"         
           [items]="storeService.nomenclatureItems.NAT_OBJ_GEO"
@@ -331,7 +345,9 @@
               </div>
             </div>
             <div class="col-6">
+                moduleConfig.formConfig.community_interest
               <pnx-dumb-select
+                *ngIf="moduleConfig.formConfig.community_interest"
                 label="Habitat d'interet communautaire" 
                 [parentFormControl]="occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].get('id_nomenclature_community_interest')"         
                 [items]="storeService.nomenclatureItems.HAB_INTERET_COM"
@@ -347,7 +363,10 @@
           </div>
   
           <div class="form-row">
-            <div class="col">
+            <div 
+              class="col" 
+              *ngIf="moduleConfig.formConfig.determiner"
+            >
                 <small> Déterminateur</small>
                 <input type="text" 
                   name="determinter"
@@ -355,7 +374,10 @@
                   [formControl]="occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].get('determiner')"         
                 >
             </div>
-            <div class="col">
+            <div 
+              class="col"
+              *ngIf="moduleConfig.formConfig.determination_type"
+            >
               <pnx-dumb-select
                 label="Type de détermination" 
                 [parentFormControl]="occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].get('id_nomenclature_determination_type')"         
@@ -369,6 +391,8 @@
   
   
           <pnx-dumb-select
+            *ngIf="moduleConfig.formConfig.collection_technique"
+            determination_type
             label="Technique de collècte" 
             [parentFormControl]="occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].get('id_nomenclature_collection_technique')"         
             [items]="storeService.nomenclatureItems.TECHNIQUE_COLLECT_HAB"
@@ -380,6 +404,7 @@
           
           <div class="form-group">
             <input 
+              *ngIf="moduleConfig.formConfig.technical_precision"
               type="text"
               class="form-control form-control-sm"
               placeholder="Précision sur la technique de collecte"
@@ -395,7 +420,10 @@
             Veuillez fournir des précisions concernant la technique de collecte
           </small>
 
-          <div class="form-group">
+          <div 
+            class="form-group"
+            *ngIf="moduleConfig.formConfig.recovery_percentage"
+          >
             <small> Pourcentage de recouvrement</small>
             <input type="number" 
               name="recovery"
@@ -405,12 +433,15 @@
           </div>
   
           <pnx-dumb-select
+            *ngIf="moduleConfig.formConfig.abundance"
             label="Abondance" 
             [parentFormControl]="occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].get('id_nomenclature_abundance')"         
             [items]="storeService.nomenclatureItems.ABONDANCE_HAB"
             comparedKey="id_nomenclature"
             titleKey="definition_fr"
-            displayedKey="label_fr">
+            displayedKey="label_fr"
+            [displayNullValue]="true"
+          >
           </pnx-dumb-select>
   
   

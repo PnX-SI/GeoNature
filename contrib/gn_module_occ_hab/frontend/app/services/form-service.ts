@@ -10,6 +10,7 @@ import {
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { OcchabStoreService } from "./store.service";
+import { ModuleConfig } from "../module.config";
 
 @Injectable()
 export class OcchabFormService {
@@ -29,15 +30,21 @@ export class OcchabFormService {
     });
   }
 
-  initStationForm(defaultNomenclature): FormGroup {
+  initStationForm(): FormGroup {
     return this._fb.group({
       id_station: null,
       unique_id_sinp_station: null,
       id_dataset: [null, Validators.required],
       date_min: [null, Validators.required],
       date_max: [null, Validators.required],
-      observers: null,
-      observers_txt: [null, Validators.required],
+      observers: [
+        null,
+        !ModuleConfig.OBSERVER_AS_TXT ? Validators.required : null
+      ],
+      observers_txt: [
+        null,
+        ModuleConfig.OBSERVER_AS_TXT ? Validators.required : null
+      ],
       is_habitat_complex: false,
       id_nomenclature_exposure: null,
       altitude_min: null,
@@ -45,15 +52,19 @@ export class OcchabFormService {
       depth_min: null,
       depth_max: null,
       area: null,
-      id_nomenclature_area_surface_calculation:
-        defaultNomenclature["METHOD_CALCUL_SURFACE"],
-      id_nomenclature_geographic_object: [
-        defaultNomenclature["NAT_OBJ_GEO"],
-        Validators.required
-      ],
+      id_nomenclature_area_surface_calculation: null,
+      id_nomenclature_geographic_object: [null, Validators.required],
       geom_4326: [null, Validators.required],
       comment: null,
       t_habitats: this._fb.array([])
+    });
+  }
+
+  patchDefaultNomenclaureStation(defaultNomenclature) {
+    this.stationForm.patchValue({
+      id_nomenclature_area_surface_calculation:
+        defaultNomenclature["METHOD_CALCUL_SURFACE"],
+      id_nomenclature_geographic_object: defaultNomenclature["NAT_OBJ_GEO"]
     });
   }
 
@@ -93,24 +104,6 @@ export class OcchabFormService {
       return { invalidTechnicalValues: true };
     }
     return null;
-  }
-
-  patchDefaultNomenclature(
-    defaultNomenclature,
-    stationForm: FormGroup,
-    habitatForm: FormGroup
-  ) {
-    stationForm.patchValue({
-      id_nomenclature_area_surface_calculation:
-        defaultNomenclature["METHOD_CALCUL_SURFACE"],
-      id_nomenclature_geographic_object: defaultNomenclature["NAT_OBJ_GEO"]
-    });
-    // habitatForm.patchValue({
-    //   id_nomenclature_determination_type:
-    //     defaultNomenclature["DETERMINATION_TYP_HAB"],
-    //   id_nomenclature_collection_technique:
-    //     defaultNomenclature["TECHNIQUE_COLLECT_HAB"]
-    // });
   }
 
   cdHabValidator(habControl: AbstractControl) {
@@ -257,11 +250,12 @@ export class OcchabFormService {
   /** Format a station before post */
   formatStationBeforePost() {
     let formData = Object.assign({}, this.stationForm.value);
-
     //format cd_hab
     formData.t_habitats.forEach(element => {
-      element.cd_hab = element.habref.cd_hab;
-      delete element["habref"];
+      if (element.habref) {
+        element.cd_hab = element.habref.cd_hab;
+        delete element["habref"];
+      }
     });
 
     // format date

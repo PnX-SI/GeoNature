@@ -89,7 +89,7 @@ CREATE TABLE pr_occhab.t_habitats(
 );
 
 CREATE TABLE pr_occhab.cor_station_observer(
-  id_cor_station_observer integer NOT NULL,
+  id_cor_station_observer serial NOT NULL,
   id_station integer NOT NULL,
   id_role integer NOT NULL
 );
