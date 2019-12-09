@@ -329,6 +329,18 @@
                 </button>
               </div>
             </div>
+            <div class="col-6">
+              <pnx-dumb-select
+                label="Habitat d'interet communautaire" 
+                [parentFormControl]="occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].get('id_nomenclature_community_interest')"         
+                [items]="storeService.nomenclatureItems.HAB_INTERET_COM"
+                comparedKey="id_nomenclature"
+                titleKey="definition_fr"
+                displayedKey="label_fr"
+                [displayNullValue]="true"
+              >
+              </pnx-dumb-select>
+            </div>
 
   
           </div>
@@ -343,7 +355,7 @@
                 >
             </div>
             <div class="col">
-                <pnx-dumb-select
+              <pnx-dumb-select
                 label="Type de détermination" 
                 [parentFormControl]="occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].get('id_nomenclature_determination_type')"         
                 [items]="storeService.nomenclatureItems.DETERMINATION_TYP_HAB"
