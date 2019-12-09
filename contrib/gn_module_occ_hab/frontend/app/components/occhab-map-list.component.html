@@ -107,9 +107,10 @@
     <ngx-datatable-column maxWidth="10">
         <ng-template let-row="row" ngx-datatable-cell-template>
           <button 
+            [matTooltip]="row.id_station" 
             [routerLink]="['info', row.id_station]"
             class="btn btn-outline-shadow btn-no-padding btn-ghost"
-            >
+          >
             <i class="fa fa-info-circle" aria-hidden="true"></i>
             {{row.id_station}}
           </button>
@@ -131,7 +132,8 @@
       <ngx-datatable-column maxWidth="10">
         <ng-template let-row="row" ngx-datatable-cell-template>
           <button class="btn btn-outline-shadow btn-no-padding btn-ghost"
-           >
+            (click)="openDeleteModal(row, deleteModal)"
+          >
             <i class="fa fa-trash-o" aria-hidden="true"></i>
           </button>
         </ng-template>
@@ -197,3 +199,14 @@
   </div>
 
 </div>
+
+<ng-template #deleteModal let-c="close " let-d="dismiss">
+
+  <pnx-occhab-delete 
+    [c]="c"
+    [idStation]="deleteOne.id_station"
+    [nbHabitats]="deleteOne.t_habitats.length"
+    (onDelete)="mapListService.deleteObsFront(deleteOne.id_station)">
+  </pnx-occhab-delete>
+
+</ng-template>

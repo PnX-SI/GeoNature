@@ -12,6 +12,26 @@
     <div class="card border-primary bg-light" >
       <h5 class="card-header bg-primary text-white">
           Station n° {{stationContent?.id_station}}
+          <button 
+            matTooltip="Editez le relevé {{oneStation?.id}}" 
+            type="button" class="btn btn-success button-rounded float-right btn-action box-shadow "
+            [disabled]="stationContent?.rights.U == false"
+            [routerLink]="['/occhab/form', oneStation?.id]"
+          >
+          <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true">
+          </i>
+        </button>
+        <button 
+          matTooltip="Supprimer le relevé {{oneStation?.id}}" 
+          type="button" 
+          (click)="openDeleteModal(deleteModal)" 
+          class="btn btn-danger button-rounded float-right btn-action box-shadow "
+          [disabled]="stationContent?.rights.D == false"
+        >
+          <i class="fa fa-trash-o  fa-lg" aria-hidden="true">
+          </i>
+        </button>
+
       </h5>
       <div class="card-body" id="card-station">
 
@@ -34,9 +54,12 @@
               <h5>
                   <b class="text-muted">Observateur(s) :</b> 
                 </h5>
-                <p *ngIf="stationContent?.observers; else elseBlock">
-                    #TODO
-                </p>
+                <div *ngIf="stationContent?.observers; else elseBlock">
+                    <p *ngFor="let obs of stationContent.observers; let last=last"> 
+                      {{obs.nom_role}} {{obs.prenom_role}} 
+                      <span *ngIf="!last">, </span>
+                    </p>
+                </div>
                 <ng-template #elseBlock>
                     <p>{{stationContent?.observers_txt}} </p>
                 </ng-template>
@@ -99,15 +122,15 @@
                 <h5 class="text-muted"> <b>Information sur l'habitat (Habref) : </b> </h5> 
                 <p> 
                   <b class="text-muted">Nom :</b> {{currentHab?.habref.lb_code}} - {{currentHab?.habref.lb_hab_fr}} 
-                  <i class="fa fa-info-circle clickable" aria-hidden="true" (click)="openModal(modalInfo, habInfo?.lb_description )"></i>
+                  <i class="fa fa-info-circle clickable" aria-hidden="true" (click)="openModalContent(modalInfo, habInfo?.lb_description )"></i>
                 
                 </p>
                 <b class="text-muted"> Typologie : </b>  {{habInfo?.typo.lb_nom_typo}}
-                <i class="fa fa-info-circle clickable" aria-hidden="true" (click)="openModal(modalInfo, habInfo?.typo.presentation )"></i>
+                <i class="fa fa-info-circle clickable" aria-hidden="true" (click)="openModalContent(modalInfo, habInfo?.typo.presentation )"></i>
                 <br>
                 <br>
                 <button 
-                (click)="openModalCoresp(modalCoresp)"
+                (click)="openModal(modalCoresp)"
                 type="button" class="btn btn-outline-primary">
                 Correspondances avec d'autres typologie d'habitats
               </button>
@@ -161,5 +184,16 @@
 
 
   </ng-template>
+
+  <ng-template #deleteModal let-c="close">
+
+      <pnx-occhab-delete 
+        [c]="c"
+        [idStation]="oneStation?.id"
+        [nbHabitats]="stationContent.t_one_habitats.length"
+      >
+      </pnx-occhab-delete>
+    
+    </ng-template>
 
 </div>

@@ -4,7 +4,7 @@ import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { OccHabDataService } from "../services/data.service";
 import { DatatableComponent } from "@swimlane/ngx-datatable/release";
 import { OccHabModalDownloadComponent } from "./map-list/modal-download.component";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
 import * as moment from "moment";
 
@@ -14,7 +14,8 @@ import * as moment from "moment";
   styleUrls: [
     "./occhab-map-list.component.scss",
     "../components/responsive-map.scss"
-  ]
+  ],
+  providers: [NgbActiveModal]
 })
 export class OccHabMapListComponent implements OnInit {
   public displayedColumns = [
@@ -26,6 +27,7 @@ export class OccHabMapListComponent implements OnInit {
   // public tabColumns = this.displayedColumns.map(col => col.prop);
   public rowNumber: number;
   public dataLoading = true;
+  public deleteOne: any;
   constructor(
     public storeService: OcchabStoreService,
     private _occHabDataService: OccHabDataService,
@@ -148,5 +150,10 @@ export class OccHabMapListComponent implements OnInit {
 
     feature.properties["leaflet_popup"] = leafletPopup;
     return feature;
+  }
+
+  openDeleteModal(station, deleteModal) {
+    this.deleteOne = station;
+    this._ngbModal.open(deleteModal);
   }
 }

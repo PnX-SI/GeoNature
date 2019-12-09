@@ -22,7 +22,8 @@ export class OcchabInfoComponent implements OnInit, OnDestroy {
     private _occHabDataService: OccHabDataService,
     private _route: ActivatedRoute,
     private _dataService: DataFormService,
-    private modal: NgbModal
+    private modal: NgbModal,
+    private _ngbModal: NgbModal
   ) {}
 
   ngOnInit() {}
@@ -34,8 +35,6 @@ export class OcchabInfoComponent implements OnInit, OnDestroy {
         this._occHabDataService
           .getOneStation(params["id_station"])
           .subscribe(station => {
-            console.log(station);
-
             this.stationContent = station.properties;
             this.oneStation = station;
           });
@@ -54,13 +53,17 @@ export class OcchabInfoComponent implements OnInit, OnDestroy {
     });
   }
 
-  openModal(modal, content) {
+  openModalContent(modal, content) {
     this.modal.open(modal);
     this.modalContent = content;
   }
 
-  openModalCoresp(modal) {
+  openModal(modal) {
     this.modal.open(modal, { size: "lg" });
+  }
+
+  openDeleteModal(modalDelete) {
+    this._ngbModal.open(modalDelete);
   }
 
   ngOnDestroy() {

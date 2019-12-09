@@ -12,6 +12,7 @@ import { OcchabStoreService } from "./services/store.service";
 import { OccHabMapListService } from "./services/occhab-map-list.service";
 import { OccHabModalDownloadComponent } from "./components/map-list/modal-download.component";
 import { OcchabInfoComponent } from "./components/occhab-info.component/occhab-info.component";
+import { ModalDeleteStation } from "./components/delete-modal/delete-modal.component";
 // my module routing
 const routes: Routes = [
   { path: "form", component: OccHabFormComponent },
@@ -26,7 +27,8 @@ const routes: Routes = [
     OccHabMapListComponent,
     OcchabMapListFilterComponent,
     OcchabInfoComponent,
-    OccHabModalDownloadComponent
+    OccHabModalDownloadComponent,
+    ModalDeleteStation
   ],
   imports: [
     CommonModule,

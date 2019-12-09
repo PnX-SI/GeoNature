@@ -1,10 +1,5 @@
 import { Injectable } from "@angular/core";
-import {
-  HttpClient,
-  HttpParams,
-  HttpHeaders,
-  HttpEventType
-} from "@angular/common/http";
+import { HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
 import {
   DataFormService,
   FormatMapMime
@@ -40,9 +35,15 @@ export class OccHabDataService {
     );
   }
 
-  getOneStation(id_station) {
+  getOneStation(idStation) {
     return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/${ModuleConfig.MODULE_URL}/station/${id_station}`
+      `${AppConfig.API_ENDPOINT}/${ModuleConfig.MODULE_URL}/station/${idStation}`
+    );
+  }
+
+  deleteOneStation(idStation) {
+    return this._http.delete<any>(
+      `${AppConfig.API_ENDPOINT}/${ModuleConfig.MODULE_URL}/station/${idStation}`
     );
   }
 

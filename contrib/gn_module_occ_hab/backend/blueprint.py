@@ -51,7 +51,6 @@ def post_station(info_role):
     two_dimension_geom = remove_third_dimension(shape)
     station.geom_4326 = from_shape(two_dimension_geom, srid=4326)
     if observers_list is not None:
-
         observers = (
             DB.session.query(User).filter(
                 User.id_role.in_(
@@ -105,7 +104,27 @@ def get_one_station(id_station, info_role):
 
     """
     station = DB.session.query(OneStation).get(id_station)
-    return station.get_geofeature(True)
+    station_geojson = station.get_geofeature(True)
+    user_cruved = get_or_fetch_user_cruved(
+        session=session, id_role=info_role.id_role, module_code="OCC_HAB"
+    )
+    station_geojson['properties']['rights'] = station.get_releve_cruved(
+        info_role, user_cruved)
+    return station_geojson
+
+
+@blueprint.route("/station/<int:id_station>", methods=["DELETE"])
+@permissions.check_cruved_scope("D", True, module_code="OCC_HAB")
+@json_resp
+def delete_one_station(id_station, info_role):
+    station = DB.session.query(TStationsOcchab).get(id_station)
+    is_allowed = station.user_is_allowed_to(info_role, info_role.value_filter)
+    if is_allowed:
+        DB.session.delete(station)
+        DB.session.commit()
+        return station.get_geofeature(True)
+    else:
+        return 'Forbidden', 403
 
 
 @blueprint.route("/stations", methods=["GET"])
@@ -138,7 +157,7 @@ def get_all_habitats(info_role):
     data = q.limit(blueprint.config['NB_MAX_MAP_LIST'])
 
     user_cruved = get_or_fetch_user_cruved(
-        session=session, id_role=info_role.id_role, module_code="OCCTAX"
+        session=session, id_role=info_role.id_role, module_code="OCC_HAB"
     )
     feature_list = []
     for d in data:
