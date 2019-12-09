@@ -45,14 +45,22 @@
           <b> Altitude max </b>: {{releve?.properties.altitude_max }} </p>
 
         <div class="row row-sm">
-          <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-0">
-            <pnx-datasets 
-                class="auto" 
-                label="{{ 'MetaData.Datasets' | translate }}" 
-                [parentFormControl]="releveForm.get('properties').get('id_dataset')"
-                appId="14" 
-                [disabled]="disabled">
-            </pnx-datasets>
+          <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 padding-sm">
+              <div class="dataset-inactive" *ngIf="currentReleve?.releve?.properties?.dataset.active == false; else elseblocDataset">
+                 <b> {{ 'MetaData.Datasets' | translate }}: </b> 
+                <small>
+                    {{currentReleve?.releve?.properties?.dataset?.dataset_name}}
+                </small> 
+              </div>
+              <ng-template #elseblocDataset>
+                <pnx-datasets 
+                  label="{{ 'MetaData.Datasets' | translate }}" 
+                  [parentFormControl]="releveForm.controls.properties.controls.id_dataset"
+                  [disabled]="fs.disabled"
+                  moduleCode="OCCTAX"
+                  >
+                </pnx-datasets>
+              </ng-template>
           </div>
           <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
             <pnx-nomenclature 
@@ -82,18 +90,15 @@
         <label> {{ 'Taxon.ObservedTaxon' | translate }} </label>
         <div class="row row-sm">
           <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
-            <img *ngIf="showSpinner" src="assets/images/Spinner.gif" alt="Chargement..." height="40" width="40">
-            <div *ngIf="!showSpinner">
               <table class="table table-hover ">
                 <tr [ngClass]="{'table-success': i == selectedIndex}" *ngFor="let occ of releve?.properties.t_occurrences_occtax; let i = index"
                   (click)="selectOccurrence(occ, i)">
-                  <td class="selected-taxon">{{occ.taxon?.nom_complet}}</td>
+                  <td class="selected-taxon">{{occ.taxref?.nom_complet}}</td>
                   <td>
                     <i class="fa fa-eye clickable" aria-hidden="true"></i>
                   </td>
                 </tr>
               </table>
-            </div>
           </div>
         </div>
       </div>

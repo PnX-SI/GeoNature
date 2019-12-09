@@ -8,7 +8,7 @@ from flask import Blueprint, request, current_app
 from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_commons.models import TModules, TParameters
 from geonature.utils.env import DB
-from geonature.utils.utilssqlalchemy import json_resp
+from utils_flask_sqla.response import json_resp
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 
@@ -22,7 +22,7 @@ def get_modules(info_role):
     """
     Return the allowed modules of user from its cruved
     .. :quickref: Commons;
-    
+
     """
     params = request.args
     q = DB.session.query(TModules)
@@ -38,8 +38,10 @@ def get_modules(info_role):
             module = mod.as_dict()
             module["cruved"] = app_cruved
             if mod.active_frontend:
-                module["module_url"] = "{}/#/{}".format(
-                    current_app.config["URL_APPLICATION"], mod.module_path
+                # module["module_url"] = "{}/#/{}".format(
+                #     current_app.config["URL_APPLICATION"], mod.module_path
+                module["module_url"] = "/#/{}".format(
+                    mod.module_path
                 )
             else:
                 module["module_url"] = mod.module_external_url
@@ -85,7 +87,11 @@ def insert_or_update_media(id_media=None):
     if request.form:
         formData = dict(request.form)
         for key in formData:
-            data[key] = formData[key][0]
+            data[key] = formData[key]
+            if data[key] == 'true':
+                data[key] = True
+            if data[key] == 'false':
+                data[key] = False
     else:
         data = request.get_json(silent=True)
 

@@ -28,6 +28,7 @@ export class ObserversComponent extends GenericFormComponent {
    *  Id de la liste d'utilisateur (table ``utilisateur.t_menus``) (obligatoire)
    */
   @Input() idMenu: number;
+  @Input() codeList: string;
   @Input() bindAllItem = false;
   @Input() bindValue: string = null;
   public observers: Observable<Array<any>>;
@@ -37,11 +38,21 @@ export class ObserversComponent extends GenericFormComponent {
   }
 
   ngOnInit() {
-    this.observers = this._dfService
-                          .getObservers(this.idMenu)
-                          .pipe(
-                            map(data => data)
-                          );
+    if (this.idMenu) {
+      this.observers = this._dfService
+                            .getObservers(this.idMenu);
+    } else if (this.codeList) {
+      this.observers = this._dfService
+                            .getObserversFromCode(this.codeList)
+                            .pipe(
+                              map(data => {
+                                if (this.parentFormControl.value) {
+                                  this.parentFormControl.setValue(this.parentFormControl.value);
+                                }
+                                return data;
+                              })
+                            );
+    }
   }
 
   formatobs(obs: string): string {

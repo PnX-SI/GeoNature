@@ -2,8 +2,6 @@ import {
   Component,
   OnInit,
   Input,
-  Output,
-  EventEmitter,
   IterableDiffers,
   IterableDiffer
 } from '@angular/core';
@@ -46,6 +44,10 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit {
    * Booléan qui controle si on affiche seulement les JDD actifs ou également ceux qui sont inatif
    */
   @Input() displayOnlyActive: boolean = true;
+  /**
+   * code du module pour n'afficher que les JDD associés au module
+   */
+  @Input() moduleCode: string;
 
   constructor(
     private _dfs: DataFormService,
@@ -64,6 +66,10 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit {
 
     if (this.displayOnlyActive) {
       params['active'] = true;
+    }
+
+    if (this.moduleCode) {
+      params['module_code'] = this.moduleCode;
     }
 
     this.dataSets = this._dfs

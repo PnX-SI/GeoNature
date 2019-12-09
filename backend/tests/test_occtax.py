@@ -26,13 +26,12 @@ class TestApiModulePrOcctax:
         self.client.set_cookie("/", "token", token)
 
         response = self.client.get(
-            url_for("pr_occtax.getViewReleveList"),
+            url_for("pr_occtax.getReleves"),
             query_string={
                 "observers_txt": "test",
                 "id_dataset": 1,
                 "date_low": "2016-02-01",
                 "cd_nom": 60612,
-                "observers": [1],
             },
         )
 
@@ -59,9 +58,14 @@ class TestApiModulePrOcctax:
         update_data["properties"]["observers"] = [1]
 
         update_data["properties"]["observers"] = [1]
+        update_data["properties"].pop("dataset")
 
         # insert with to new occurrences
         for i in range(2):
+            # pop taxref relationships
+            for occ in update_data["properties"]["t_occurrences_occtax"]:
+                if "taxref" in occ:
+                    occ.pop("taxref")
             # put an ID = None to reproduce the MERGE bug
             temp = update_data["properties"]["t_occurrences_occtax"][0]
             temp["id_occurrence_occtax"] = None
@@ -120,6 +124,7 @@ class TestApiModulePrOcctax:
             "cd_nom": 67111,
             "date_up": "2017-05-11",
             "date_low": "2009-05-01",
+            "observers": 1,
         }
         # CSV
         csv_query_string = base_query_string.copy()

@@ -152,7 +152,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       layer = L.polyline(latLng);
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
     }
-    if (geojson.type === 'Polygon' || geojson.type == 'MultiPolygon') {
+    if (geojson.type === 'Polygon' || geojson.type === 'MultiPolygon') {
       const latLng = L.GeoJSON.coordsToLatLngs(
         geojson.coordinates,
         geojson.type === 'Polygon' ? 1 : 2
@@ -160,7 +160,17 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       layer = L.polygon(latLng);
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
     }
-    this.mapservice.map.fitBounds(layer.getBounds());
+    if (geojson.type === 'Point') {
+      const latLng = L.GeoJSON.coordsToLatLng(geojson.coordinates)
+      layer = L.circleMarker(latLng);
+      this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
+    }
+
+    if ( layer.getBounds ) {
+      this.mapservice.map.fitBounds(layer.getBounds());
+    } else {
+      this.mapservice.map.setView(layer._latlng, 8);
+    }
     // disable point event on the map
     this.mapservice.setEditingMarker(false);
     // send observable

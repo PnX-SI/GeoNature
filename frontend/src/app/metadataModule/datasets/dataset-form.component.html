@@ -110,7 +110,9 @@
                   [parentFormControl]="datasetForm.get('id_nomenclature_resource_type')"
                   codeNomenclatureType="RESOURCE_TYP">
               </pnx-nomenclature>
-      
+              <br>
+              <h5> Spécifique GeoNature </h5>
+
               <input [formControl]="datasetForm.get('active')" type="checkbox" name="active" id="active" [value]="true">
               <small class="" for="active">
                 Actif
@@ -120,6 +122,11 @@
               <small class="" for="validable">
                 Validable
               </small>
+              <br>
+              <pnx-multiselect [values]="moduleService.modules" [parentFormControl]="datasetForm.get('modules')" keyLabel="module_label" keyValue="id_module"
+                label="Module(s) GeoNature associé(s) au jeu de données" [bindAllItem]="true">
+              </pnx-multiselect>
+
             </div>
       
           </div>

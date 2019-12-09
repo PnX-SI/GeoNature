@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonService } from '@geonature_common/service/common.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { MetadataFormService } from '../services/metadata-form.service';
+import { ModuleService } from '@geonature/services/module.service';
 
 @Component({
   selector: 'pnx-datasets-form',
@@ -33,7 +34,8 @@ export class DatasetFormComponent implements OnInit {
     private _router: Router,
     private _commonService: CommonService,
     private _dfs: DataFormService,
-    private _formService: MetadataFormService
+    private _formService: MetadataFormService,
+    public moduleService: ModuleService
   ) {}
 
   ngOnInit() {
@@ -64,7 +66,8 @@ export class DatasetFormComponent implements OnInit {
       id_nomenclature_source_status: [null, Validators.required],
       id_nomenclature_resource_type: [null, Validators.required],
       validable: true,
-      active: [true, Validators.required]
+      active: [true, Validators.required],
+      modules: [new Array()]
     });
 
     this.cor_dataset_actor_array = this._fb.array([]);
@@ -118,6 +121,8 @@ export class DatasetFormComponent implements OnInit {
 
     if (this._formService.formValid) {
       const dataset = Object.assign(this.datasetForm.value, {});
+      // format module
+      dataset.modules = dataset.modules.map(mod => mod.id_module);
 
       dataset['cor_dataset_actor'] = update_cor_dataset_actor;
       this._api.post<any>(`${AppConfig.API_ENDPOINT}/meta/dataset`, dataset).subscribe(

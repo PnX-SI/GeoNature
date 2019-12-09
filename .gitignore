@@ -30,6 +30,9 @@ backend/run.py
 *.pem
 *.ipynb
 
+tsconfig.json
+.angulardoc.json
+Pipfile.lock
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -13,9 +13,9 @@ from pypnnomenclature.repository import (
 from geonature.utils.env import DB
 from geonature.utils.utilstoml import load_toml
 from geonature.utils.errors import GeonatureApiError
-from geonature.core.gn_commons.models import TModules
 
 from geonature.core.gn_commons.repositories import get_table_location_id
+from geonature.core.users.models import TApplications
 
 def generate_config(file_path):
     '''
@@ -44,7 +44,7 @@ def find_field_config(config_data):
             elif ckey == 'appId':
                 # Cas particulier qui permet de passer
                 #       du nom d'une application à son identifiant
-                # TODO se baser sur un code_application 
+                # TODO se baser sur un code_application
                 #       qui serait unique et non modifiable
                 config_data[ckey] = get_app_id(config_data[ckey])
 
@@ -97,16 +97,16 @@ def parse_field(fieldlist):
 
 def get_app_id(module_code):
     '''
-        Retourne l'identifiant d'un module 
+        Retourne l'identifiant d'un module
         à partir de son code
     '''
     try:
         mod_id = (
-            DB.session.query(TModules.id_module)
-            .filter_by(module_code = str(module_code)).one()
+            DB.session.query(TApplications.id_application)
+            .filter_by(code_application=str(module_code)).one()
         )
         return mod_id
-    
+
     except NoResultFound:
         raise GeonatureApiError(
             message="module {} not found".format(module_code)

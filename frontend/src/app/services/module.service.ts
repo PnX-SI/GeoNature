@@ -8,11 +8,11 @@ export class ModuleService {
   // all modules exepted GEONATURE, for sidebar display
   public displayedModules: Array<any>;
 
-  constructor(private _api: DataFormService) {    
+  constructor(private _api: DataFormService) {
     this._api.getModulesList([]).subscribe(data => {
       this.modules = data;
       this.displayedModules = data.filter(mod => {
-        return mod.module_code.toLowerCase() !== 'geonature';
+        return mod.module_code.toLowerCase() !== 'geonature' && mod.active_frontend;
       });
       this.setModulesLocalStorage(data);
     });

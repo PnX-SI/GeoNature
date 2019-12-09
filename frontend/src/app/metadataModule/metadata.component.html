@@ -23,26 +23,38 @@
                   [routerLink]="['/metadata/af', af.id_acquisition_framework]" >
                   <i class="fa fa-pencil-square" aria-hidden="true"></i>
                 </a>
-                {{ af.acquisition_framework_name | uppercase }}
+                {{af.id_acquisition_framework}}: {{ af.acquisition_framework_name | uppercase }}
               </mat-panel-title>
               <mat-panel-description *ngIf="af.acquisition_framework_name != af.acquisition_framework_desc">
                 {{ af.acquisition_framework_desc }} 
               </mat-panel-description>
             </mat-expansion-panel-header>
-            <mat-list>
-              <ng-container *ngFor="let ds of af.datasetsTemp; let last = last">
-                <mat-list-item class="metadata-list-item">
-                  <a *ngIf="_cruvedStore.cruved?.METADATA?.cruved.U !== '0'"
-                    class="bt-edit" 
-                    title="Editer le jeu de données"
-                    [routerLink]="['/metadata/dataset', ds.id_dataset]" >
-                    <i class="fa fa-pencil-square" aria-hidden="true"></i>
-                  </a>
-                  <span>↳ {{ ds.dataset_name }}</span>
-                </mat-list-item>
-                <mat-divider *ngIf="!last"></mat-divider>
-              </ng-container>
-            </mat-list>
+            <table class="table">
+              <thead class="bold">
+                <tr>
+                    <td>#</td>
+                    <td>
+                      Id
+                    </td>
+                    <td>Nom du JDD</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let ds of af.datasetsTemp; let last = last">
+                    <td> 
+                      <a *ngIf="_cruvedStore.cruved?.METADATA?.cruved.U !== '0'"
+                      class="bt-edit" 
+                      title="Editer le jeu de données"
+                      [routerLink]="['/metadata/dataset', ds.id_dataset]" >
+                      ↳
+                      <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                      </a> 
+                    </td>
+                    <td> {{ds.id_dataset}}</td>
+                    <td> {{ ds.dataset_name }} </td>
+                </tr>
+              </tbody>
+            </table>
           </mat-expansion-panel>
         </ng-container>
       </mat-accordion>

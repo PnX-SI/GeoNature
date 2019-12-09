@@ -118,3 +118,7 @@ SELECT * FROM  v1_compat.taxhub_admin_log;
 SELECT taxonomie.fct_build_bibtaxon_attributs_view('Animalia');
 SELECT taxonomie.fct_build_bibtaxon_attributs_view('Plantae');
 SELECT taxonomie.fct_build_bibtaxon_attributs_view('Fungi');
+
+SELECT setval('taxonomie.taxhub_admin_log_id_seq', (SELECT max(id)+1 FROM taxonomie.taxhub_admin_log), true);
+SELECT setval('taxonomie.bib_noms_id_nom_seq', (SELECT max(id_nom)+1 FROM taxonomie.bib_noms), true);
+SELECT setval('taxonomie.t_medias_id_media_seq', (SELECT max(id_media)+1 FROM taxonomie.t_medias), true);

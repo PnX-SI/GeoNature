@@ -1,3 +1,5 @@
+import datetime
+
 from flask import current_app, request
 from shapely.wkt import loads
 from geoalchemy2.shape import from_shape
@@ -63,7 +65,7 @@ def filter_query_with_cruved(
             .subquery("sub_query_observers")
         )
         ors_filters = [
-            model.id_synthese.in_(sub_query_observers),
+            model_id_syn_col.in_(sub_query_observers),
             model_id_digitiser_column == user.id_role,
         ]
         if current_app.config["SYNTHESE"]["CRUVED_SEARCH_WITH_OBSERVER_AS_TXT"]:
@@ -92,7 +94,8 @@ def filter_taxonomy(model, q, filters):
     cd_ref_childs = []
     if "cd_ref_parent" in filters:
         # find all taxon child from cd_ref parent
-        cd_ref_parent_int = list(map(lambda x: int(x), filters.pop("cd_ref_parent")))
+        cd_ref_parent_int = list(
+            map(lambda x: int(x), filters.pop("cd_ref_parent")))
         sql = text(
             """SELECT DISTINCT cd_ref FROM taxonomie.find_all_taxons_children(:id_parent)"""
         )
@@ -115,7 +118,8 @@ def filter_taxonomy(model, q, filters):
         q = q.filter(model.cd_nom.in_(sub_query_synonym))
 
     if "taxonomy_group2_inpn" in filters:
-        q = q.filter(Taxref.group2_inpn.in_(filters.pop("taxonomy_group2_inpn")))
+        q = q.filter(Taxref.group2_inpn.in_(
+            filters.pop("taxonomy_group2_inpn")))
 
     if "taxonomy_id_hab" in filters:
         q = q.filter(Taxref.id_habitat.in_(filters.pop("taxonomy_id_hab")))
@@ -173,7 +177,8 @@ def filter_query_all_filters(model, q, filters, user):
     q = filter_query_with_cruved(model, q, user)
 
     if "observers" in filters:
-        q = q.filter(model.observers.ilike("%" + filters.pop("observers")[0] + "%"))
+        q = q.filter(model.observers.ilike(
+            "%" + filters.pop("observers")[0] + "%"))
 
     if "id_organism" in filters:
         id_datasets = (
@@ -188,7 +193,11 @@ def filter_query_all_filters(model, q, filters, user):
         q = q.filter(model.date_min >= filters.pop("date_min")[0])
 
     if "date_max" in filters:
-        q = q.filter(model.date_min <= filters.pop("date_max")[0])
+        # set the date_max at 23h59 because a hour can be set in timestamp
+        date_max = datetime.datetime.strptime(
+            filters.pop("date_max")[0], '%Y-%m-%d')
+        date_max = date_max.replace(hour=23, minute=59, second=59)
+        q = q.filter(model.date_max <= date_max)
 
     if "id_acquisition_framework" in filters:
         q = q.join(
