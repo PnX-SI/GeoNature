@@ -93,7 +93,6 @@
       <pnx-taxonomy *ngSwitchCase="'taxonomy'" [label]="formDef.attribut_label" [parentFormControl]="form.get(formDef.attribut_name)" [idList]="formDef.idComponent"
         [charNumber]="3" [listLength]="20">
       </pnx-taxonomy>
-<<<<<<< HEAD
   
       <pnx-datasets 
         *ngSwitchCase="'dataset'" 
@@ -109,13 +108,6 @@
         [label]="formDef.attribut_label" 
         [parentFormControl]="form.get(formDef.attribut_name)" 
         [idMenu]="formDef.idComponent">
-=======
-
-      <pnx-datasets *ngSwitchCase="'dataset'" [label]="formDef.attribut_label" [parentFormControl]="form.get(formDef.attribut_name)" [multiSelect]="formDef.multi_select">
-      </pnx-datasets>
-
-      <pnx-observers *ngSwitchCase="'observers'" [label]="formDef.attribut_label" [parentFormControl]="form.get(formDef.attribut_name)" [idMenu]="formDef.idComponent" [codeList]="formDef.code_list">
->>>>>>> ang4-ang7
       </pnx-observers>
 
       <pnx-date *ngSwitchCase="'date'" [label]="formDef.attribut_label" [parentFormControl]="form.get(formDef.attribut_name)">
@@ -123,7 +115,6 @@
 
       <pnx-municipalities *ngSwitchCase="'municipalities'" [label]="formDef.attribut_label" [parentFormControl]="form.get(formDef.attribut_name)">
       </pnx-municipalities>
-<<<<<<< HEAD
   
       <pnx-multiselect 
         *ngSwitchCase="'multiselect'" 
@@ -134,11 +125,6 @@
         keyValue="value"
         [label]="formDef.attribut_label"  
         [searchBar]="false">
-=======
-
-      <pnx-multiselect *ngSwitchCase="'multiselect'" [values]="formDef.values" [parentFormControl]="form.get(formDef.attribut_name)" keyLabel="value" keyValue="value"
-      [label]="formDef.attribut_label"  [searchBar]="false">
->>>>>>> ang4-ang7
       </pnx-multiselect>
 
       <pnx-geometry-form *ngSwitchCase="'geometry'"
