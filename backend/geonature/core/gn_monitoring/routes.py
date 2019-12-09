@@ -5,7 +5,8 @@ from geojson import FeatureCollection
 from geonature.utils.env import DB
 from geonature.core.gn_monitoring.models import TBaseSites, corSiteArea, corSiteModule
 from geonature.core.ref_geo.models import LAreas
-from geonature.utils.utilssqlalchemy import json_resp, get_geojson_feature
+from utils_flask_sqla.response import json_resp
+from geonature.utils.utilssqlalchemy import get_geojson_feature
 
 
 routes = Blueprint("gn_monitoring", __name__)

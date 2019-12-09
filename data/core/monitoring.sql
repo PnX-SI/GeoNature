@@ -25,7 +25,9 @@ CREATE TABLE t_base_sites
   base_site_code character varying(25) DEFAULT NULL::character varying,
   first_use_date date,
   geom public.geometry(Geometry,4326) NOT NULL,
-  uuid_base_site UUID DEFAULT public.uuid_generate_v4()
+  uuid_base_site UUID DEFAULT public.uuid_generate_v4(),
+  meta_create_date timestamp without time zone DEFAULT now(),
+  meta_update_date timestamp without time zone DEFAULT now()
 );
 
 CREATE TABLE t_base_visits
@@ -36,7 +38,9 @@ CREATE TABLE t_base_visits
   visit_date_min date NOT NULL,
   visit_date_max date,
   comments text,
-  uuid_base_visit UUID DEFAULT public.uuid_generate_v4()
+  uuid_base_visit UUID DEFAULT public.uuid_generate_v4(),
+  meta_create_date timestamp without time zone DEFAULT now(),
+  meta_update_date timestamp without time zone DEFAULT now()
 );
 
 CREATE TABLE cor_visit_observer
@@ -155,12 +159,23 @@ CREATE TRIGGER tri_log_changes
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
 
-
 CREATE TRIGGER tri_log_changes
   AFTER INSERT OR UPDATE OR DELETE
   ON gn_monitoring.t_base_sites
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
+
+CREATE TRIGGER tri_meta_dates_change_synthese
+  BEFORE INSERT OR UPDATE
+  ON gn_monitoring.t_base_sites
+  FOR EACH ROW
+  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
+
+CREATE TRIGGER tri_meta_dates_change_synthese
+  BEFORE INSERT OR UPDATE
+  ON gn_monitoring.t_base_visits
+  FOR EACH ROW
+  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
 
 CREATE FUNCTION fct_trg_cor_site_area()

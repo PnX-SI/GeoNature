@@ -2,15 +2,16 @@ from sqlalchemy import ForeignKey, or_
 from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship, exc
 from sqlalchemy.dialects.postgresql import UUID
-
 from werkzeug.exceptions import NotFound
 
 from pypnnomenclature.models import TNomenclatures
+from pypnusershub.db.models import User
+from utils_flask_sqla.serializers import serializable
 
-from geonature.utils.utilssqlalchemy import serializable
 from geonature.utils.env import DB
 from geonature.core.users.models import BibOrganismes
-from pypnusershub.db.models import User
+
+from geonature.core.gn_commons.models import cor_module_dataset
 
 
 class CorAcquisitionFrameworkObjectif(DB.Model):
@@ -190,9 +191,13 @@ class TDatasets(DB.Model):
     active = DB.Column(DB.Boolean, default=True)
     validable = DB.Column(DB.Boolean)
 
+    modules = DB.relationship("TModules", secondary=cor_module_dataset)
+
+    # HACK: the relationship is not well defined for many to many relationship
+    # because CorDatasetActor could be an User or an Organisme object...
     cor_dataset_actor = relationship(
         CorDatasetActor,
-        lazy="select",
+        lazy="joined",
         cascade="save-update, merge, delete, delete-orphan",
     )
 

@@ -70,12 +70,12 @@ Celle-ci permet de centraliser les utilisateurs et observateurs,
 de les ajouter dans un groupe et d'hériter directement de droits dans
 l'ensemble des applications (GeoNature, Faune, Flore, Geotrek, Police...).
 
-A chaque ajout ou modification dans l'application UsersHub sa base de données
+A chaque ajout ou modification dans l'application UsersHub, sa base de données
 est mise à jour ainsi que tous les schémas ``utilisateurs`` des applications
 qui sont connectées à UsersHub.
 
 Ne jamais modifier une donnée dans le schéma ``utilisateurs`` de GeoNature.
-Celui-ci est synchronisé automatiquement par les modifications apportées depuis
+Celui-ci est synchronisée automatiquement par les modifications apportées depuis
 l'application UsersHub dans le schéma ``utilisateurs`` de la BDD de UsersHub.
 
 Attention aussi à ne jamais supprimer un utilisateur auquel serait associé des
@@ -103,13 +103,15 @@ Pour cela GeoNature s'appuie sur l'application TaxHub et sa structure de BDD
 qui est dupliquée dans le schéma ``taxonomie``.
 Détails sur `<https://github.com/PnX-SI/TaxHub>`_
 
+.. image:: https://geonature.fr/documents/logo-geonature.jpg
+    :target: https://geonature.fr
+
 =======
 Licence
 =======
 
 * OpenSource - GPL-3.0
 * Copyleft 2014-2019 - Parc National des Écrins - Parc national des Cévennes
-
 
 .. image:: http://geonature.fr/img/logo-pne.jpg
     :target: http://www.ecrins-parcnational.fr

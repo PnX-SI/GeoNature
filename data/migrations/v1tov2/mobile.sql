@@ -20,13 +20,83 @@ CREATE TABLE gn_synchronomade.erreurs_occtax
   date_import date
 );
 
+CREATE TABLE gn_synchronomade.cor_message_taxon_contactfaune AS
+SELECT * FROM v1_compat.cor_message_taxon_contactfaune;
+
+CREATE TABLE gn_synchronomade.cor_message_taxon_cflore AS
+SELECT * FROM v1_compat.cor_message_taxon_cflore;
+
+CREATE TABLE gn_synchronomade.cor_message_taxon_contactinv AS
+SELECT * FROM v1_compat.cor_message_taxon_contactinv;
+
+CREATE TABLE gn_synchronomade.bib_messages_cf AS
+SELECT * FROM v1_compat.bib_messages_cf;
+
+CREATE TABLE gn_synchronomade.bib_messages_cflore AS
+SELECT * FROM v1_compat.bib_messages_cflore;
+
+CREATE TABLE gn_synchronomade.bib_messages_inv AS
+SELECT * FROM v1_compat.bib_messages_inv;
+
+CREATE TABLE gn_synchronomade.cor_boolean AS
+SELECT * FROM v1_compat.cor_boolean;
+
+CREATE TABLE gn_synchronomade.bib_criteres_cf AS
+SELECT * FROM v1_compat.bib_criteres_cf;
+
+CREATE TABLE gn_synchronomade.bib_criteres_inv AS
+SELECT * FROM v1_compat.bib_criteres_inv;
+
+CREATE TABLE gn_synchronomade.bib_milieux_inv AS
+SELECT * FROM v1_compat.bib_milieux_inv;
+
+CREATE TABLE gn_synchronomade.cor_critere_liste AS
+SELECT * FROM v1_compat.cor_critere_liste;
 
 ----------------
 --PRIMARY KEYS--
 ----------------
 ALTER TABLE ONLY gn_synchronomade.erreurs_flora ADD CONSTRAINT erreurs_flora_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY gn_synchronomade.erreurs_occtax ADD CONSTRAINT erreurs_occtax_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY gn_synchronomade.cor_boolean ADD CONSTRAINT cor_boolean_pkey PRIMARY KEY (expression);
+ALTER TABLE ONLY gn_synchronomade.bib_criteres_cf ADD CONSTRAINT bib_criteres_cf_pkey PRIMARY KEY (id_critere_cf);
+ALTER TABLE ONLY gn_synchronomade.bib_criteres_inv ADD CONSTRAINT bib_criteres_inv_pkey PRIMARY KEY (id_critere_inv);
+ALTER TABLE ONLY gn_synchronomade.bib_messages_cf ADD CONSTRAINT bib_messages_cf_pkey PRIMARY KEY (id_message_cf);
+ALTER TABLE ONLY gn_synchronomade.bib_messages_inv ADD CONSTRAINT bib_messages_inv_pkey PRIMARY KEY (id_message_inv);
+ALTER TABLE ONLY gn_synchronomade.bib_messages_cflore ADD CONSTRAINT bib_messages_cflore_pkey PRIMARY KEY (id_message_cflore);
+ALTER TABLE ONLY gn_synchronomade.bib_milieux_inv ADD CONSTRAINT bib_milieux_inv_pkey PRIMARY KEY (id_milieu_inv);
+ALTER TABLE ONLY gn_synchronomade.cor_message_taxon_contactfaune ADD CONSTRAINT cor_message_taxon_contactfaune_pkey PRIMARY KEY (id_message_cf, id_nom);
+ALTER TABLE ONLY gn_synchronomade.cor_message_taxon_contactinv ADD CONSTRAINT cor_message_taxon_contactinv_pkey PRIMARY KEY (id_message_inv, id_nom);
+ALTER TABLE ONLY gn_synchronomade.cor_message_taxon_cflore ADD CONSTRAINT cor_message_taxon_cflore_pkey PRIMARY KEY (id_message_cflore, id_nom);
+ALTER TABLE ONLY gn_synchronomade.cor_critere_liste ADD CONSTRAINT cor_cor_critere_liste_pkey PRIMARY KEY (id_critere_cf, id_liste);
 
+
+----------------
+--FOREIGN KEYS--
+----------------
+ALTER TABLE ONLY gn_synchronomade.cor_critere_liste
+    ADD CONSTRAINT fk_cor_critere_liste_bib_criter FOREIGN KEY (id_critere_cf) REFERENCES gn_synchronomade.bib_criteres_cf(id_critere_cf) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY gn_synchronomade.cor_critere_liste
+    ADD CONSTRAINT fk_cor_critere_liste_bib_liste FOREIGN KEY (id_liste) REFERENCES taxonomie.bib_listes(id_liste) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY gn_synchronomade.cor_message_taxon_contactfaune
+    ADD CONSTRAINT fk_cor_message_taxoncf_bib_noms FOREIGN KEY (id_nom) REFERENCES taxonomie.bib_noms(id_nom) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY gn_synchronomade.cor_message_taxon_contactfaune
+    ADD CONSTRAINT fk_cor_message_taxoncf_bib_message_cf FOREIGN KEY (id_message_cf) REFERENCES gn_synchronomade.bib_messages_cf(id_message_cf) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY gn_synchronomade.cor_message_taxon_contactinv
+    ADD CONSTRAINT fk_cor_message_taxoninv_bib_noms FOREIGN KEY (id_nom) REFERENCES taxonomie.bib_noms(id_nom) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY gn_synchronomade.cor_message_taxon_contactinv
+    ADD CONSTRAINT fk_cor_message_taxoninv_bib_message_inv FOREIGN KEY (id_message_inv) REFERENCES gn_synchronomade.bib_messages_inv(id_message_inv) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY gn_synchronomade.cor_message_taxon_cflore
+    ADD CONSTRAINT fk_cor_message_taxoncflore_bib_noms FOREIGN KEY (id_nom) REFERENCES taxonomie.bib_noms(id_nom) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY gn_synchronomade.cor_message_taxon_cflore
+    ADD CONSTRAINT fk_cor_message_taxoncflore_bib_message_cflore FOREIGN KEY (id_message_cflore) REFERENCES gn_synchronomade.bib_messages_cflore(id_message_cflore) ON UPDATE CASCADE;
 
 ---------
 --VIEWS--
@@ -68,15 +138,13 @@ SELECT DISTINCT n.id_nom,
         END AS contactfaune,
     true AS mortalite
    FROM taxonomie.bib_noms n
-     LEFT JOIN v1_compat.cor_message_taxon_contactfaune cmt ON cmt.id_nom = n.id_nom
-     LEFT JOIN v1_compat.bib_messages_cf m ON m.id_message_cf = cmt.id_message_cf
+     LEFT JOIN gn_synchronomade.cor_message_taxon_contactfaune cmt ON cmt.id_nom = n.id_nom
+     LEFT JOIN gn_synchronomade.bib_messages_cf m ON m.id_message_cf = cmt.id_message_cf
      LEFT JOIN taxonomie.cor_taxon_attribut cta ON cta.cd_ref = n.cd_ref
      JOIN taxonomie.cor_nom_liste cnl ON cnl.id_nom = n.id_nom and cnl.id_liste in (1, 11, 12, 13, 14)
-     join taxonomie.cor_nom_liste cnl_500 on cnl_500.id_nom = n.id_nom and cnl_500.id_liste = 500
-    -- join taxonomie.bib_listes bib on bib.id_liste = cnl.id_liste 
-     --JOIN v1_compat.v_nomade_classes g ON g.id_classe = cnl.id_liste
+     JOIN taxonomie.cor_nom_liste cnl_500 on cnl_500.id_nom = n.id_nom and cnl_500.id_liste = 500
      JOIN taxonomie.taxref tx ON tx.cd_nom = n.cd_nom and tx.phylum = 'Chordata'
-     JOIN v1_compat.cor_boolean f2 ON f2.expression::text = cta.valeur_attribut AND cta.id_attribut = 1
+     JOIN gn_synchronomade.cor_boolean f2 ON f2.expression::text = cta.valeur_attribut AND cta.id_attribut = 1
   ORDER BY n.id_nom, taxonomie.find_cdref(n.cd_nom), tx.lb_nom, n.nom_francais, cnl.id_liste, f2.bool, m.texte_message_cf;
 
 CREATE OR REPLACE VIEW gn_synchronomade.v_nomade_taxons_flore
@@ -99,15 +167,13 @@ SELECT DISTINCT n.id_nom,
         END AS contactfaune,
     true AS mortalite
    FROM taxonomie.bib_noms n
-     LEFT JOIN v1_compat.cor_message_taxon_cflore cmt ON cmt.id_nom = n.id_nom
-     LEFT JOIN v1_compat.bib_messages_cflore m ON m.id_message_cflore = cmt.id_message_cflore
+     LEFT JOIN gn_synchronomade.cor_message_taxon_cflore cmt ON cmt.id_nom = n.id_nom
+     LEFT JOIN gn_synchronomade.bib_messages_cflore m ON m.id_message_cflore = cmt.id_message_cflore
      LEFT JOIN taxonomie.cor_taxon_attribut cta ON cta.cd_ref = n.cd_ref
      JOIN taxonomie.cor_nom_liste cnl ON cnl.id_nom = n.id_nom and cnl.id_liste > 300 AND cnl.id_liste < 400
-     join taxonomie.cor_nom_liste cnl_500 on cnl_500.id_nom = n.id_nom and cnl_500.id_liste = 500
-    -- join taxonomie.bib_listes bib on bib.id_liste = cnl.id_liste 
-     --JOIN v1_compat.v_nomade_classes g ON g.id_classe = cnl.id_liste
+     JOIN taxonomie.cor_nom_liste cnl_500 on cnl_500.id_nom = n.id_nom and cnl_500.id_liste = 500
      JOIN taxonomie.taxref tx ON tx.cd_nom = n.cd_nom and tx.regne = 'Plantae'
-     JOIN v1_compat.cor_boolean f2 ON f2.expression::text = cta.valeur_attribut AND cta.id_attribut = 1
+     JOIN gn_synchronomade.cor_boolean f2 ON f2.expression::text = cta.valeur_attribut AND cta.id_attribut = 1
   ORDER BY n.id_nom, taxonomie.find_cdref(n.cd_nom), tx.lb_nom, n.nom_francais, cnl.id_liste, f2.bool, m.texte_message_cflore;
 
 CREATE OR REPLACE VIEW gn_synchronomade.v_nomade_taxons_inv
@@ -129,13 +195,13 @@ AS SELECT DISTINCT n.id_nom,
         END AS contactfaune,
     true AS mortalite
    FROM taxonomie.bib_noms n
-     LEFT JOIN v1_compat.cor_message_taxon_contactinv cmt ON cmt.id_nom = n.id_nom
-     LEFT JOIN v1_compat.bib_messages_inv m ON m.id_message_inv = cmt.id_message_inv
+     LEFT JOIN gn_synchronomade.cor_message_taxon_contactinv cmt ON cmt.id_nom = n.id_nom
+     LEFT JOIN gn_synchronomade.bib_messages_inv m ON m.id_message_inv = cmt.id_message_inv
      LEFT JOIN taxonomie.cor_taxon_attribut cta ON cta.cd_ref = n.cd_ref
      JOIN taxonomie.cor_nom_liste cnl ON cnl.id_nom = n.id_nom AND (cnl.id_liste = ANY (ARRAY[2, 5, 8, 9, 10, 15, 16]))
      JOIN taxonomie.cor_nom_liste cnl_500 ON cnl_500.id_nom = n.id_nom AND cnl_500.id_liste = 500
      JOIN taxonomie.taxref tx ON tx.cd_nom = n.cd_nom 
-     JOIN v1_compat.cor_boolean f2 ON f2.expression::text = cta.valeur_attribut AND cta.id_attribut = 1
+     JOIN gn_synchronomade.cor_boolean f2 ON f2.expression::text = cta.valeur_attribut AND cta.id_attribut = 1
   ORDER BY n.id_nom, (taxonomie.find_cdref(n.cd_nom)), tx.lb_nom, n.nom_francais, cnl.id_liste, f2.bool, m.texte_message_inv;
 
 CREATE OR REPLACE VIEW gn_synchronomade.v_nomade_observateurs_inv
@@ -177,21 +243,21 @@ AS SELECT c.id_critere_cf,
     c.nom_critere_cf,
     c.tri_cf,
     ccl.id_liste AS id_classe
-   FROM v1_compat.bib_criteres_cf c
-     JOIN v1_compat.cor_critere_liste ccl ON ccl.id_critere_cf = c.id_critere_cf
+   FROM gn_synchronomade.bib_criteres_cf c
+     JOIN gn_synchronomade.cor_critere_liste ccl ON ccl.id_critere_cf = c.id_critere_cf
   ORDER BY ccl.id_liste, c.tri_cf;
 
 CREATE OR REPLACE VIEW gn_synchronomade.v_nomade_criteres_inv
 AS SELECT c.id_critere_inv,
     c.nom_critere_inv,
     c.tri_inv
-   FROM v1_compat.bib_criteres_inv c
+   FROM gn_synchronomade.bib_criteres_inv c
   ORDER BY c.tri_inv;
 
 CREATE OR REPLACE VIEW gn_synchronomade.v_nomade_milieux_inv
 AS SELECT b.id_milieu_inv,
     b.nom_milieu_inv
-   FROM v1_compat.bib_milieux_inv b
+   FROM gn_synchronomade.bib_milieux_inv b
   ORDER BY b.id_milieu_inv;
 
 -- recréation de la vue recherche_mobile

@@ -31,6 +31,7 @@ import { AreasIntersectedComponent } from './form/areas-intersected/areas-inters
 import { DatasetsComponent } from './form/datasets/datasets.component';
 import { DynamicFormComponent } from './form/dynamic-form/dynamic-form.component';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
+import { GeometryFormComponent} from '@geonature_common/form/geometry-form/geometry-form.component';
 
 import { MapComponent } from './map/map.component';
 import { MarkerComponent } from './map/marker/marker.component';
@@ -129,7 +130,8 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     PeriodComponent,
     AutoCompleteComponent,
     SyntheseSearchComponent,
-    TaxonAdvancedModalComponent
+    TaxonAdvancedModalComponent,
+    GeometryFormComponent
   ],
   providers: [
     TranslateService,
@@ -190,7 +192,8 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     PeriodComponent,
     AutoCompleteComponent,
     SyntheseSearchComponent,
-    TaxonAdvancedModalComponent
+    TaxonAdvancedModalComponent,
+    GeometryFormComponent,
   ]
 })
 export class GN2CommonModule {}

@@ -144,18 +144,18 @@ export class MapService {
     });
   }
 
-  createGeojson(geojson, asCluster: boolean, onEachFeature?): GeoJSON {
+  createGeojson(geojson, asCluster: boolean, onEachFeature?, style?): GeoJSON {
     const geojsonLayer = L.geoJSON(geojson, {
       style: feature => {
         switch (feature.geometry.type) {
           // No color nor opacity for linestrings
           case 'LineString':
-            return {
+            return style ? style : {
               color: '#3388ff',
               weight: 3
             };
           default:
-            return {
+            return style ? style : {
               color: '#3388ff',
               fill: true,
               fillOpacity: 0.2,

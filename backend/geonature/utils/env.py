@@ -9,7 +9,7 @@ from collections import ChainMap, namedtuple
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm.exc import NoResultFound
 
-import pip
+from pip._internal.main import main as pip_main
 
 # Define GEONATURE_VERSION before import config_shema module
 # because GEONATURE_VERSION is imported in this module
@@ -143,7 +143,7 @@ def load_config(config_file=None):
 def import_requirements(req_file):
     with open(req_file, "r") as requirements:
         for req in requirements:
-            if pip.main(["install", req]) == 1:
+            if pip_main(["install", req]) == 1:
                 raise Exception("Package {} not installed".format(req))
 
 

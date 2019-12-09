@@ -23,10 +23,22 @@
     </div>
   </div>
   <div class="row row-0">
-    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
-      <pnx-datasets label="{{ 'MetaData.Datasets' | translate }}" [parentFormControl]="releveForm.get('properties').get('id_dataset')"
-        [disabled]="fs.disabled">
-      </pnx-datasets>
+    <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 padding-sm">
+      <div class="dataset-inactive" *ngIf="fs.currentReleve?.releve?.properties?.dataset.active == false; else elseblocDataset">
+        <small> {{ 'MetaData.Datasets' | translate }}:  </small>
+        <small>
+          <b> {{fs.currentReleve?.releve?.properties?.dataset?.dataset_name}}</b>
+        </small> 
+      </div>
+      <ng-template #elseblocDataset>
+        <pnx-datasets 
+          label="{{ 'MetaData.Datasets' | translate }}" 
+          [parentFormControl]="releveForm.controls.properties.controls.id_dataset"
+          [disabled]="fs.disabled"
+          moduleCode="OCCTAX"
+          >
+        </pnx-datasets>
+      </ng-template>
     </div>
   </div>
   <div class="form-group row row-0">

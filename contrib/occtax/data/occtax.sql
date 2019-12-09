@@ -560,32 +560,34 @@ ALTER TABLE ONLY defaults_nomenclatures_value
 ----- INDEX ----------
 ----------------------
 
-CREATE INDEX i_t_releves_occtax_id_dataset
-  ON pr_occtax.t_releves_occtax
-  USING btree
-  (id_dataset);
+CREATE INDEX i_t_releves_occtax_id_dataset ON pr_occtax.t_releves_occtax USING btree (id_dataset);
+CREATE INDEX i_t_releves_occtax_geom_4326 ON pr_occtax.t_releves_occtax USING gist (geom_4326);
+CREATE INDEX i_t_releves_occtax_id_nomenclature_obs_technique ON pr_occtax.t_releves_occtax USING btree (id_nomenclature_obs_technique);
+CREATE INDEX i_t_releves_occtax_id_nomenclature_grp_typ ON pr_occtax.t_releves_occtax USING btree (id_nomenclature_grp_typ);
+CREATE INDEX i_t_releves_occtax_geom_local ON pr_occtax.t_releves_occtax USING gist (geom_local);
+CREATE INDEX i_t_releves_occtax_date_max ON pr_occtax.t_releves_occtax USING btree (date_max);
 
-CREATE INDEX i_t_releves_occtax_geom_4326
-  ON pr_occtax.t_releves_occtax
-  USING gist
-  (geom_4326);
+CREATE INDEX i_t_occurrences_occtax_id_releve_occtax ON pr_occtax.t_occurrences_occtax USING btree (id_releve_occtax);
+CREATE INDEX i_t_occurrences_occtax_id_nomenclature_obs_meth ON pr_occtax.t_occurrences_occtax USING btree (id_nomenclature_obs_meth);
+CREATE INDEX i_t_occurrences_occtax_id_nomenclature_bio_condition ON pr_occtax.t_occurrences_occtax USING btree (id_nomenclature_bio_condition);
+CREATE INDEX i_t_occurrences_occtax_id_nomenclature_bio_status ON pr_occtax.t_occurrences_occtax USING btree (id_nomenclature_bio_status);
+CREATE INDEX i_t_occurrences_occtax_id_nomenclature_naturalness ON pr_occtax.t_occurrences_occtax USING btree (id_nomenclature_naturalness);
+CREATE INDEX i_t_occurrences_occtax_id_nomenclature_exist_proof ON pr_occtax.t_occurrences_occtax USING btree (id_nomenclature_exist_proof);
+CREATE INDEX i_t_occurrences_occtax_id_nomenclature_observation_status ON pr_occtax.t_occurrences_occtax USING btree (id_nomenclature_observation_status);
+CREATE INDEX i_t_occurrences_occtax_id_nomenclature_blurring ON pr_occtax.t_occurrences_occtax USING btree (id_nomenclature_blurring);
+CREATE INDEX i_t_occurrences_occtax_id_nomenclature_source_status ON pr_occtax.t_occurrences_occtax USING btree (id_nomenclature_source_status);
+CREATE INDEX i_t_occurrences_occtax_id_nomenclature_determination_method ON pr_occtax.t_occurrences_occtax USING btree (id_nomenclature_determination_method);
+CREATE INDEX i_t_occurrences_occtax_cd_nom ON pr_occtax.t_occurrences_occtax USING btree (cd_nom);
 
+CREATE INDEX i_cor_counting_occtax_id_occurrence_occtax ON pr_occtax.cor_counting_occtax USING btree (id_occurrence_occtax);
+CREATE INDEX i_cor_counting_occtax_id_nomenclature_life_stage ON pr_occtax.cor_counting_occtax USING btree (id_nomenclature_life_stage);
+CREATE INDEX i_cor_counting_occtax_id_nomenclature_sex ON pr_occtax.cor_counting_occtax USING btree (id_nomenclature_sex);
+CREATE INDEX i_cor_counting_occtax_id_nomenclature_obj_count ON pr_occtax.cor_counting_occtax USING btree (id_nomenclature_obj_count);
+CREATE INDEX i_cor_counting_occtax_id_nomenclature_type_count ON pr_occtax.cor_counting_occtax USING btree (id_nomenclature_type_count);
 
-CREATE INDEX i_t_occurrences_occtax_id_releve_occtax
-  ON pr_occtax.t_occurrences_occtax
-  USING btree
-  (id_releve_occtax);
-
-CREATE INDEX i_t_occurrences_occtax_cd_nom
-  ON pr_occtax.t_occurrences_occtax
-  USING btree
-  (cd_nom);
-
-
-CREATE INDEX i_cor_counting_occtax_id_occurrence_occtax
-  ON pr_occtax.cor_counting_occtax
-  USING btree
-  (id_occurrence_occtax);
+CREATE INDEX i_cor_role_releves_occtax_id_releve_occtax ON pr_occtax.cor_role_releves_occtax USING btree (id_releve_occtax);
+CREATE INDEX i_cor_role_releves_occtax_id_role ON pr_occtax.cor_role_releves_occtax USING btree (id_role);
+CREATE unique INDEX i_cor_role_releves_occtax_id_role_id_releve_occtax ON pr_occtax.cor_role_releves_occtax USING btree (id_role, id_releve_occtax);
 
 ----------------------
 --FUNCTIONS TRIGGERS--
@@ -1076,7 +1078,7 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
   GROUP BY rel.id_releve_occtax, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.meta_device_entry, rel.comment, rel.geom_4326, rel."precision", t.cd_nom, occ.nom_cite, occ.id_occurrence_occtax, t.lb_nom, t.nom_valide, t.nom_complet_html, t.nom_vern;
 
 
--- Vue représentant l'ensemble des relevés du protocole occtax pour la représentation du module carte liste
+-- Vue représentant l'ensemble des relevés du protocole occtax pour la représentation du module carte liste (DEPRECIE)
 CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS 
 WITH 
     occurrences (id_releve_occtax, taxons, nb_occ) as (
