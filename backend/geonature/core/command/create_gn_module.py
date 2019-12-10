@@ -90,9 +90,6 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                 #   backend
                 check_codefile_validity(module_path, module_code)
 
-                # Installation du module
-                run_install_gn_module(app, module_path)
-
                 # copie dans external mods:
                 copy_in_external_mods(module_path, module_code.lower())
 
@@ -105,6 +102,8 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                     app, module_code, url, enable_frontend, enable_backend
                 )
 
+                # Installation du module
+                run_install_gn_module(app, module_path)
                 # Enregistrement de la config du module
                 gn_module_register_config(module_code.lower())
 
@@ -134,6 +133,12 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                 )  # noqa
 
     except (GNModuleInstallError, GeoNatureError) as ex:
+        # remove module if not installed well
+        mod = DB.session.query(TModules).filter(
+            TModules.module_code == module_code).one_or_none()
+        if mod:
+            DB.session.delete(mod)
+            DB.session.commit()
         log.critical(
             (
                 "\n\n\033[91mError while installing GN module \033[0m.The process returned:\n\t{}"
