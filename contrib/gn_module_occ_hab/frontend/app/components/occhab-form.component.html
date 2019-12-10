@@ -57,18 +57,18 @@
           [coordinates]="markerCoordinates" 
           zoomLevel="5"
           [defaultEnable]="false"
-          (markerChanged)="occHabForm.patchGeomValue($event)">
+          (markerChanged)="occHabForm.patchGeoValue($event)">
         </pnx-marker>
         <pnx-leaflet-draw
           [geojson]="currentGeoJsonFileLayer"
           [options]="leafletDrawOptions"
           zoomLevel="5"
-         (layerDrawed)="occHabForm.patchGeomValue($event)">
+         (layerDrawed)="occHabForm.patchGeoValue($event)">
         </pnx-leaflet-draw>
         <pnx-leaflet-filelayer
           [editMode]="true"
           (onLoad)="infoMessageFileLayer()"
-          (onGeomChange)="occHabForm.patchGeomValue($event)"
+          (onGeomChange)="occHabForm.patchGeoValue($event)"
           [style]="{'color': 'green'}"
         >
         </pnx-leaflet-filelayer>
@@ -345,7 +345,6 @@
               </div>
             </div>
             <div class="col-6">
-                moduleConfig.formConfig.community_interest
               <pnx-dumb-select
                 *ngIf="moduleConfig.formConfig.community_interest"
                 label="Habitat d'interet communautaire" 

@@ -159,15 +159,19 @@ export class OcchabFormService {
     habArrayForm.removeAt(index);
   }
 
-  patchGeomValue(geom) {
+  patchGeoValue(geom) {
     this.stationForm.patchValue({ geom_4326: geom.geometry });
     // this._gn_dataSerice.getAreaSize(geom).subscribe(data => {
     //   this.stationForm.patchValue({ area: Math.round(data) });
     // });
     this._gn_dataSerice.getGeoIntersection(geom).subscribe(data => {
+      // TODO: areas intersected
+    });
+
+    this._gn_dataSerice.getGeoInfo(geom).subscribe(data => {
       this.stationForm.patchValue({
-        altitude_min: data["altitude_min"],
-        altitude_max: data["altitude_max"]
+        altitude_min: data["altitude"]["altitude_min"],
+        altitude_max: data["altitude"]["altitude_max"]
       });
     });
   }
