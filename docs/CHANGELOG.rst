@@ -24,6 +24,7 @@ Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...develop
 * Externalisation des outils Flask et SQLAlchemy en utilisant le nouveau sous-module dédié (https://github.com/PnX-SI/Utils-Flask-SQLAlchemy) qui améliore aussi les performances des jointures
 * Correction de l'installation des requirements.txt lors de l'installation d'un module (#764 par @joelclems)
 * COMMONS : t_modules modification des champs de type CHARACTER(n) en CHARACTER VARYING(n) (module_path, module_target, module_external_url)
+* COMMONS : t_modules, ajout de contraintes UNIQUE pour les champs module_path et module_code)
 
 **⚠️ Notes de version**
 
