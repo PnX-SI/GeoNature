@@ -289,6 +289,13 @@ CREATE TRIGGER tri_meta_dates_change_synthese
 ALTER TABLE gn_monitoring.t_base_visits ADD meta_create_date timestamp without time zone DEFAULT now();
 ALTER TABLE gn_monitoring.t_base_visits ADD meta_update_date timestamp without time zone DEFAULT now();
 
+ALTER TABLE gn_monitoring.t_base_visits ADD id_dataset integer NOT NULL;
+
+ALTER TABLE gn_monitoring.t_base_visits ADD CONSTRAINT fk_t_base_visits_t_datasets FOREIGN KEY (id_dataset)
+      REFERENCES gn_meta.t_datasets (id_dataset) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE NO ACTION;
+
+
 CREATE TRIGGER tri_meta_dates_change_synthese
   BEFORE INSERT OR UPDATE
   ON gn_monitoring.t_base_visits

@@ -34,6 +34,7 @@ CREATE TABLE t_base_visits
 (
   id_base_visit serial NOT NULL,
   id_base_site integer,
+  id_dataset integer NOT NULL,
   id_digitiser integer,
   visit_date_min date NOT NULL,
   visit_date_max date,
@@ -42,6 +43,7 @@ CREATE TABLE t_base_visits
   meta_create_date timestamp without time zone DEFAULT now(),
   meta_update_date timestamp without time zone DEFAULT now()
 );
+
 
 CREATE TABLE cor_visit_observer
 (
@@ -98,6 +100,10 @@ ALTER TABLE ONLY t_base_visits
 ALTER TABLE ONLY t_base_visits
     ADD CONSTRAINT fk_t_base_visits_id_digitiser FOREIGN KEY (id_digitiser) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
+
+ALTER TABLE gn_monitoring.t_base_visits ADD CONSTRAINT fk_t_base_visits_t_datasets FOREIGN KEY (id_dataset)
+      REFERENCES gn_meta.t_datasets (id_dataset) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE NO ACTION;
 
 ALTER TABLE ONLY cor_visit_observer
   ADD CONSTRAINT fk_cor_visit_observer_id_base_visit FOREIGN KEY (id_base_visit) REFERENCES t_base_visits (id_base_visit) ON UPDATE CASCADE ON DELETE CASCADE;
