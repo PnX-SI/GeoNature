@@ -256,17 +256,16 @@ LEFT join ref_nomenclatures.t_nomenclatures nom4 on nom4.id_nomenclature = h.id_
 
 
 
-
-
-
-
-
 ------------
 ----DATA----
 ------------
 
 
--- INSERT INTO pr_occtax.defaults_nomenclatures_value (mnemonique_type, id_organism, regne, group2_inpn, id_nomenclature) VALUES
--- ('METH_OBS',0,0,0, ref_nomenclatures.get_id_nomenclature('METH_OBS', 'sig'))
+INSERT INTO pr_occhab.defaults_nomenclatures_value (mnemonique_type, id_organism, regne, group2_inpn, id_nomenclature) VALUES
+('METHOD_CALCUL_SURFACE',0,0,0, ref_nomenclatures.get_id_nomenclature('METHOD_CALCUL_SURFACE', 'sig')),
+('NAT_OBJ_GEO',0,0,0, ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO', 'NSP')),
+('DETERMINATION_TYP_HAB',0,0,0, ref_nomenclatures.get_id_nomenclature('DETERMINATION_TYP_HAB', '0')),
+('TECHNIQUE_COLLECT_HAB',0,0,0, ref_nomenclatures.get_id_nomenclature('TECHNIQUE_COLLECT_HAB', '0'))
+;
 
 -- ;

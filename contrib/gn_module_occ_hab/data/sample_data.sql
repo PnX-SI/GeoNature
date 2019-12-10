@@ -1,3 +1,5 @@
+BEGIN;
+
 DELETE FROM ref_habitat.bib_list_habitat WHERE list_name = 'Liste test occhab';
 INSERT INTO ref_habitat.bib_list_habitat(list_name) VALUES ('Liste test occhab');
 SELECT pg_catalog.setval('ref_habitat.bib_list_habitat_id_list_seq', (SELECT max(id_list)+1 FROM ref_habitat.bib_list_habitat), true);
@@ -12,7 +14,6 @@ SELECT b.id_list, cd_hab
 FROM ref_habitat.habref h, ref_habitat.bib_list_habitat b
 WHERE h.cd_typo IN (1,2,3,4,5,6,7) and b.list_name = 'Liste test occhab'
 order by cd_hab;
-
 
 
 INSERT INTO gn_meta.t_acquisition_frameworks (
@@ -68,7 +69,7 @@ INSERT INTO gn_meta.t_datasets (
     )
     VALUES
     (
-     (SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE acquisition_framework_name='Données d''habitats'),
+     (SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE acquisition_framework_name='Données d''habitats' LIMIT 1),
     'Carto d''habitat X',
     'Carto d''habitat X',
     'Carto d''habitat X',
@@ -92,11 +93,14 @@ INSERT INTO gn_meta.t_datasets (
     )
 ;
 
--- Renseigner les tables de correspondance
+COMMIT;
 
+-- Renseignement des tables de correspondance
+
+BEGIN;
 
 INSERT INTO gn_meta.cor_dataset_actor (id_dataset, id_role, id_organism, id_nomenclature_actor_role) VALUES
-((SELECT id_dataset FROM gn_meta.t_datasets WHERE dataset_name='Carto d''habitat X')
+((SELECT id_dataset FROM gn_meta.t_datasets WHERE dataset_name='Carto d''habitat X' LIMIT 1)
   , NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '1'))
 ;
 
@@ -105,3 +109,5 @@ INSERT INTO gn_commons.cor_module_dataset (id_module, id_dataset)
 SELECT gn_commons.get_id_module_bycode('OCC_HAB'), id_dataset
 FROM gn_meta.t_datasets
 WHERE dataset_name='Carto d''habitat X';
+
+COMMIT;
