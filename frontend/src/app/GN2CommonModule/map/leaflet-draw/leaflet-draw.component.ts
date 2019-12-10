@@ -169,7 +169,11 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     if ( layer.getBounds ) {
       this.mapservice.map.fitBounds(layer.getBounds());
     } else {
-      this.mapservice.map.setView(layer._latlng, 8);
+      if (this.mapservice.map['_zoom'] === 0) {
+        this.mapservice.map.setView(layer._latlng, 8);
+      } else {
+        this.mapservice.map.panTo(layer._latlng);
+      }
     }
     // disable point event on the map
     this.mapservice.setEditingMarker(false);
