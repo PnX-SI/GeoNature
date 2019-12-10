@@ -142,6 +142,9 @@
               </pnx-date>
             </div>
           </div>
+          <small *ngIf="occHabForm.stationForm.errors?.invalidDate" class="error" style="color:red">
+            {{ 'Releve.DateMaxError' | translate }}
+          </small>
         </div>
             
 
@@ -186,6 +189,9 @@
               <i class="fa fa-minus" aria-expanded="false"></i>
             </button>
           </div>
+          <small *ngIf="occHabForm.stationForm.errors?.invalidAlt" class="error" style="color:red">
+            {{ 'Releve.AltitudeError' | translate }}
+          </small>
         </div>
 
         <div class="form-group collapse" id="collapseDepth">
@@ -231,7 +237,7 @@
           class="col"
           *ngIf="moduleConfig.formConfig.area"          
         >
-            <small> Surface</small>
+            <small> Surface (en m²)</small>
             <input 
               class="form-control form-control-sm"
               [formControl]="occHabForm.stationForm.get('area')"

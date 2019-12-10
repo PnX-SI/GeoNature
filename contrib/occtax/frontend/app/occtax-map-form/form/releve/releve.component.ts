@@ -2,6 +2,7 @@ import { Component, Input, OnInit, OnDestroy } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { Subscription } from "rxjs/Subscription";
 import { MapService } from "@geonature_common/map/map.service";
+import { FormService } from "@geonature_common/form/form.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { OcctaxFormService } from "../occtax-form.service";
 import { ViewEncapsulation } from "@angular/core";
@@ -15,8 +16,7 @@ import { DateStruc } from "@geonature_common/form/date/date.component";
   encapsulation: ViewEncapsulation.None
 })
 export class ReleveComponent implements OnInit, OnDestroy {
-  @Input()
-  releveForm: FormGroup;
+  @Input() releveForm: FormGroup;
   public dateMin: Date;
   public dateMax: Date;
   public geojson: any;
@@ -32,7 +32,8 @@ export class ReleveComponent implements OnInit, OnDestroy {
   constructor(
     private _ms: MapService,
     private _dfs: DataFormService,
-    public fs: OcctaxFormService
+    public fs: OcctaxFormService,
+    private _commonFormService: FormService
   ) {}
 
   ngOnInit() {
@@ -68,7 +69,9 @@ export class ReleveComponent implements OnInit, OnDestroy {
     // Autocomplete date only if its not edition MODE
     this.isEditionSub$ = this.fs.editionMode$.subscribe(isEdit => {
       if (isEdit === false) {
-        this.autoCompleteDate();
+        this._commonFormService.autoCompleteDate(
+          this.releveForm.controls.properties as FormGroup
+        );
       }
     });
 
@@ -104,40 +107,6 @@ export class ReleveComponent implements OnInit, OnDestroy {
             .properties as FormGroup).controls.hour_max.reset();
       });
   } // END INIT
-
-  autoCompleteDate() {
-    // date max autocomplete
-    (this.releveForm.controls
-      .properties as FormGroup).controls.date_min.valueChanges.subscribe(
-      newvalue => {
-        //Get mindate and maxdate value before mindate change
-        let oldmindate = (this.releveForm.controls.properties as FormGroup)
-          .value["date_min"];
-        let oldmaxdate = (this.releveForm.controls.properties as FormGroup)
-          .value["date_max"];
-
-        //Compare the dates before the change of the datemin.
-        // If datemin and datemax were equal, maintain this equality
-        // If they don't, do nothing
-        // oldmaxdate and oldmindate are objects. Strigify it for a right comparison
-        if (oldmindate) {
-          if (
-            JSON.stringify(oldmaxdate) == JSON.stringify(oldmindate) ||
-            oldmaxdate == null
-          ) {
-            this.releveForm.controls.properties.patchValue({
-              date_max: newvalue
-            });
-          }
-          // if olddatminDate is null => fill dateMax
-        } else {
-          this.releveForm.controls.properties.patchValue({
-            date_max: newvalue
-          });
-        }
-      }
-    );
-  }
 
   toggleTime() {
     this.showTime = !this.showTime;

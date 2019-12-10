@@ -8,6 +8,7 @@ import {
   FormArray
 } from "@angular/forms";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
+import { FormService } from "@geonature_common/form/form.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { OcchabStoreService } from "./store.service";
 import { ModuleConfig } from "../module.config";
@@ -22,7 +23,8 @@ export class OcchabFormService {
     private _fb: FormBuilder,
     private _dateParser: NgbDateParserFormatter,
     private _gn_dataSerice: DataFormService,
-    private _storeService: OcchabStoreService
+    private _storeService: OcchabStoreService,
+    private _formService: FormService
   ) {
     // get selected cd_typo to filter the habref autcomplete
     this.typoHabControl.valueChanges.subscribe(data => {
@@ -31,7 +33,7 @@ export class OcchabFormService {
   }
 
   initStationForm(): FormGroup {
-    return this._fb.group({
+    const stationForm = this._fb.group({
       id_station: null,
       unique_id_sinp_station: null,
       id_dataset: [null, Validators.required],
@@ -58,6 +60,20 @@ export class OcchabFormService {
       comment: null,
       t_habitats: this._fb.array([])
     });
+    stationForm.setValidators([
+      this._formService.dateValidator(
+        stationForm.get("date_min"),
+        stationForm.get("date_max")
+      ),
+      this._formService.altitudeValidator(
+        stationForm.get("altitude_min"),
+        stationForm.get("altitude_max")
+      )
+    ]);
+
+    this._formService.autoCompleteDate(stationForm);
+
+    return stationForm;
   }
 
   patchDefaultNomenclaureStation(defaultNomenclature) {
@@ -161,9 +177,9 @@ export class OcchabFormService {
 
   patchGeoValue(geom) {
     this.stationForm.patchValue({ geom_4326: geom.geometry });
-    // this._gn_dataSerice.getAreaSize(geom).subscribe(data => {
-    //   this.stationForm.patchValue({ area: Math.round(data) });
-    // });
+    this._gn_dataSerice.getAreaSize(geom).subscribe(data => {
+      this.stationForm.patchValue({ area: Math.round(data) });
+    });
     this._gn_dataSerice.getGeoIntersection(geom).subscribe(data => {
       // TODO: areas intersected
     });
