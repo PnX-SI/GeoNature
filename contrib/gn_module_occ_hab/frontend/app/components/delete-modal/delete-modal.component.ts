@@ -37,7 +37,7 @@ export class ModalDeleteStation implements OnInit {
         );
       },
       () => {
-        this.activeModal.close();
+        this.c.close();
       }
     );
   }

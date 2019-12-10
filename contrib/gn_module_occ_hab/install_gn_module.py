@@ -13,13 +13,15 @@ def gnmodule_install_app(gn_db, gn_app):
         script_data = str(ROOT_DIR / 'data/sample_data.sql')
         try:
             gn_db.engine.execute(
-                    text(open(script_install, 'r').read()),
-                    MYLOCALSRID=gn_app.config['LOCAL_SRID']
-                )
+                text(open(script_install, 'r').read()),
+                MYLOCALSRID=gn_app.config['LOCAL_SRID']
+            )
             gn_db.session.commit()
-        except Exception as e:
+        except Exception:
             raise "Erreur lors de l'installation du schéma pr_occhab"
         try:
-            gn_db.engine.execute(text(open(script_data, 'r').read()))
+            gn_db.engine.execute(
+                text(open(script_data, 'r').read()).execution_options(autocommit=True))
         except Exception as e:
+            print(e)
             print("Erreur lors de l'insertion des données exemples")
