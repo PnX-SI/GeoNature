@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from "@angular/core";
-import { OccHabMapListService } from "../services/occhab-map-list.service";
+import { OccHabMapListService } from "../../services/occhab-map-list.service";
 import { AppConfig } from "@geonature_config/app.config";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 

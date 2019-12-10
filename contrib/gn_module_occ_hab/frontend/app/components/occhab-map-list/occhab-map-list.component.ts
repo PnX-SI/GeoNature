@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild, HostListener } from "@angular/core";
-import { OcchabStoreService } from "../services/store.service";
+import { OcchabStoreService } from "../../services/store.service";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
-import { OccHabDataService } from "../services/data.service";
+import { OccHabDataService } from "../../services/data.service";
 import { DatatableComponent } from "@swimlane/ngx-datatable/release";
-import { OccHabModalDownloadComponent } from "./map-list/modal-download.component";
+import { OccHabModalDownloadComponent } from "./modal-download.component";
 import { NgbModal, NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
 import * as moment from "moment";
@@ -11,10 +11,7 @@ import * as moment from "moment";
 @Component({
   selector: "pnx-occhab-map-list",
   templateUrl: "occhab-map-list.component.html",
-  styleUrls: [
-    "./occhab-map-list.component.scss",
-    "../components/responsive-map.scss"
-  ],
+  styleUrls: ["./occhab-map-list.component.scss", "../responsive-map.scss"],
   providers: [NgbActiveModal]
 })
 export class OccHabMapListComponent implements OnInit {

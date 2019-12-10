@@ -106,7 +106,7 @@ INSERT INTO gn_meta.cor_dataset_actor (id_dataset, id_role, id_organism, id_nome
 
 
 INSERT INTO gn_commons.cor_module_dataset (id_module, id_dataset)
-SELECT gn_commons.get_id_module_bycode('OCC_HAB'), id_dataset
+SELECT gn_commons.get_id_module_bycode('OCCHAB'), id_dataset
 FROM gn_meta.t_datasets
 WHERE dataset_name='Carto d''habitat X';
 

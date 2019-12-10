@@ -26,7 +26,7 @@ blueprint = Blueprint("occhab", __name__)
 
 
 @blueprint.route("/station", methods=["POST"])
-@permissions.check_cruved_scope("C", True, module_code="OCC_HAB")
+@permissions.check_cruved_scope("C", True, module_code="OCCHAB")
 @json_resp
 def post_station(info_role):
     """
@@ -88,7 +88,7 @@ def post_station(info_role):
 
 
 @blueprint.route("/station/<int:id_station>", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="OCC_HAB")
+@permissions.check_cruved_scope("R", True, module_code="OCCHAB")
 @json_resp
 def get_one_station(id_station, info_role):
     """
@@ -106,7 +106,7 @@ def get_one_station(id_station, info_role):
     station = DB.session.query(OneStation).get(id_station)
     station_geojson = station.get_geofeature(True)
     user_cruved = get_or_fetch_user_cruved(
-        session=session, id_role=info_role.id_role, module_code="OCC_HAB"
+        session=session, id_role=info_role.id_role, module_code="OCCHAB"
     )
     station_geojson['properties']['rights'] = station.get_releve_cruved(
         info_role, user_cruved)
@@ -114,9 +114,12 @@ def get_one_station(id_station, info_role):
 
 
 @blueprint.route("/station/<int:id_station>", methods=["DELETE"])
-@permissions.check_cruved_scope("D", True, module_code="OCC_HAB")
+@permissions.check_cruved_scope("D", True, module_code="OCCHAB")
 @json_resp
 def delete_one_station(id_station, info_role):
+    """
+        Delete a station with its habitat and its observers
+    """
     station = DB.session.query(TStationsOcchab).get(id_station)
     is_allowed = station.user_is_allowed_to(info_role, info_role.value_filter)
     if is_allowed:
@@ -128,7 +131,7 @@ def delete_one_station(id_station, info_role):
 
 
 @blueprint.route("/stations", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="OCC_HAB")
+@permissions.check_cruved_scope("R", True, module_code="OCCHAB")
 @json_resp
 def get_all_habitats(info_role):
     """
@@ -154,10 +157,11 @@ def get_all_habitats(info_role):
         q,
         info_role
     )
+    q = q.order_by(TStationsOcchab.date_min.desc())
     data = q.limit(blueprint.config['NB_MAX_MAP_LIST'])
 
     user_cruved = get_or_fetch_user_cruved(
-        session=session, id_role=info_role.id_role, module_code="OCC_HAB"
+        session=session, id_role=info_role.id_role, module_code="OCCHAB"
     )
     feature_list = []
     for d in data:
@@ -170,7 +174,7 @@ def get_all_habitats(info_role):
 
 
 @blueprint.route("/export_stations/<export_format>", methods=["POST", "GET"])
-@permissions.check_cruved_scope("E", True, module_code="OCC_HAB")
+@permissions.check_cruved_scope("E", True, module_code="OCCHAB")
 def export_all_habitats(info_role, export_format='csv',):
     """
         Download all stations
