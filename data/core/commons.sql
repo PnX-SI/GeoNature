@@ -504,9 +504,15 @@ ALTER TABLE t_validations
 ALTER TABLE t_history_actions
   ADD CONSTRAINT check_t_history_actions_operation_type CHECK (operation_type IN('I','U','D'));
 
-  ALTER TABLE ONLY t_modules 
+ALTER TABLE ONLY t_modules
     ADD CONSTRAINT check_urls_not_null CHECK (module_path IS NOT NULL OR module_external_url IS NOT NULL);
-  
+
+ALTER TABLE t_modules
+    ADD CONSTRAINT unique_t_modules_module_path UNIQUE (module_path);
+
+ALTER TABLE t_modules
+    ADD CONSTRAINT unique_t_modules_module_code UNIQUE (module_code);
+
 ------------
 --TRIGGERS--
 ------------
