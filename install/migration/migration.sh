@@ -30,6 +30,7 @@ cp -r $myrootpath/geonature_old/external_modules/* external_modules
 # On supprime le lien symbolique qui pointe vers geonature_old/contrib/occtax et validation
 rm -r external_modules/occtax
 rm -r external_modules/validation
+rm -r external_modules/occhab
 # Rapatrier le fichier de conf de Occtax et de validation
 cp $myrootpath/geonature_old/contrib/occtax/config/conf_gn_module.toml $myrootpath/$currentdir/contrib/occtax/config/conf_gn_module.toml
 cp $myrootpath/geonature_old/contrib/gn_module_validation/config/conf_gn_module.toml $myrootpath/$currentdir/contrib/gn_module_validation/config/conf_gn_module.toml
