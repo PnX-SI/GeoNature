@@ -34,6 +34,7 @@ import { DynamicFormService } from '@geonature_common/form/dynamic-form-generato
 import { MapComponent } from './map/map.component';
 import { MarkerComponent } from './map/marker/marker.component';
 import { LeafletDrawComponent } from './map/leaflet-draw/leaflet-draw.component';
+import { MapOverLaysComponent } from './map/overlays/overlays.component';
 
 import { GPSComponent } from './map/gps/gps.component';
 import { GeojsonComponent } from './map/geojson/geojson.component';
@@ -110,6 +111,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     LeafletDrawComponent,
     LeafletFileLayerComponent,
     GPSComponent,
+    MapOverLaysComponent,
     MapListComponent,
     MapDataComponent,
     DisableControlDirective,
@@ -157,6 +159,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     LeafletFileLayerComponent,
     GeojsonComponent,
     GPSComponent,
+    MapOverLaysComponent,
     MapListComponent,
     MapDataComponent,
     DisableControlDirective,
