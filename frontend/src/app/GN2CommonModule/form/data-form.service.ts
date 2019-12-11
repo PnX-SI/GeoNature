@@ -211,7 +211,7 @@ export class DataFormService {
   }
 
   getAreaSize(geojson) {
-    return this._http.post(`${AppConfig.API_ENDPOINT}/geo/area_size`, geojson);
+    return this._http.post<number>(`${AppConfig.API_ENDPOINT}/geo/area_size`, geojson);
   }
 
   getMunicipalities(nom_com?, limit?) {
