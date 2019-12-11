@@ -32,7 +32,7 @@ export class OccHabMapListComponent implements OnInit {
     private _ngbModal: NgbModal
   ) {}
   ngOnInit() {
-    this.getStations();
+    this.getStations({ limit: 50 });
     // get wiewport height to set the number of rows in the tabl
     const h = document.documentElement.clientHeight;
     this.rowNumber = Math.trunc(h / 55);

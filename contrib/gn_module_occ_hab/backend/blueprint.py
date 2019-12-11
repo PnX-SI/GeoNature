@@ -160,7 +160,9 @@ def get_all_habitats(info_role):
         info_role
     )
     q = q.order_by(TStationsOcchab.date_min.desc())
-    data = q.limit(blueprint.config['NB_MAX_MAP_LIST'])
+    limit = request.args.get(
+        'limit', None) or blueprint.config['NB_MAX_MAP_LIST']
+    data = q.limit(limit)
 
     user_cruved = get_or_fetch_user_cruved(
         session=session, id_role=info_role.id_role, module_code="OCCHAB"
