@@ -282,12 +282,60 @@ ALTER TABLE gn_commons.t_modules ADD CONSTRAINT unique_t_modules_module_code UNI
 ALTER TABLE gn_monitoring.t_base_sites ADD meta_create_date timestamp without time zone DEFAULT now();
 ALTER TABLE gn_monitoring.t_base_sites ADD meta_update_date timestamp without time zone DEFAULT now();
 
+ALTER TABLE gn_monitoring.t_base_sites ADD altitude_min int;
+ALTER TABLE gn_monitoring.t_base_sites ADD altitude_max int;
 
-CREATE TRIGGER tri_meta_dates_change_synthese
+DO $$
+DECLARE local_srid integer;
+BEGIN
+    local_srid := (SELECT parameter_value FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid');
+
+    EXECUTE 'ALTER TABLE gn_monitoring.t_base_sites ADD geom_local geometry(Geometry,' || local_srid || ')';
+END $$;
+
+
+CREATE TRIGGER tri_calculate_geom_local
+  BEFORE INSERT OR UPDATE
+  ON gn_monitoring.t_base_sites
+  FOR EACH ROW
+  EXECUTE PROCEDURE ref_geo.fct_trg_calculate_geom_local('geom', 'geom_local');
+
+
+CREATE TRIGGER tri_meta_dates_change_t_base_sites
   BEFORE INSERT OR UPDATE
   ON gn_monitoring.t_base_sites
   FOR EACH ROW
   EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
+
+
+CREATE OR REPLACE FUNCTION ref_geo.fct_trg_calculate_alt_minmax()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+	the4326geomcol text := quote_ident(TG_ARGV[0]);
+  thelocalsrid int;
+BEGIN
+	-- si c'est un insert ou que c'est un UPDATE ET que le geom_4326 a été modifié
+	IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NOT public.ST_EQUALS(hstore(OLD)-> the4326geomcol, hstore(NEW)-> the4326geomcol))) THEN
+		--récupérer le srid local
+		SELECT INTO thelocalsrid parameter_value::int FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid';
+		--Calcul de l'altitude
+        SELECT (ref_geo.fct_get_altitude_intersection(st_transform(hstore(NEW)-> the4326geomcol,thelocalsrid))).*  INTO NEW.altitude_min, NEW.altitude_max ;
+
+	END IF;
+  RETURN NEW;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+
+CREATE TRIGGER tri_t_base_sites_calculate_alt
+  BEFORE INSERT OR UPDATE
+  ON gn_monitoring.t_base_sites
+  FOR EACH ROW
+  EXECUTE PROCEDURE ref_geo.fct_trg_calculate_alt_minmax('geom');
+
 
 ALTER TABLE gn_monitoring.t_base_visits ADD meta_create_date timestamp without time zone DEFAULT now();
 ALTER TABLE gn_monitoring.t_base_visits ADD meta_update_date timestamp without time zone DEFAULT now();
