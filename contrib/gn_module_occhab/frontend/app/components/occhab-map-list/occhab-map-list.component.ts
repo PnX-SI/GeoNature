@@ -7,6 +7,7 @@ import { OccHabModalDownloadComponent } from "./modal-download.component";
 import { NgbModal, NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
 import * as moment from "moment";
+import { ModuleConfig } from "../../../../../../external_modules/occhab/frontend/app/module.config";
 
 @Component({
   selector: "pnx-occhab-map-list",
@@ -63,7 +64,11 @@ export class OccHabMapListComponent implements OnInit {
       .getStations(params)
       .subscribe(featuresCollection => {
         // store the idsStation in the store service
-
+        if (
+          featuresCollection.features.length === ModuleConfig.NB_MAX_MAP_LIST
+        ) {
+          this.openModal(true);
+        }
         this.storeService.idsStation = featuresCollection.features.map(
           feature => feature.id
         );
@@ -84,11 +89,12 @@ export class OccHabMapListComponent implements OnInit {
     this.getStations(params);
   }
 
-  openModal() {
-    this._ngbModal.open(OccHabModalDownloadComponent, {
+  openModal(tooManyObs = false) {
+    const ref = this._ngbModal.open(OccHabModalDownloadComponent, {
       size: "lg",
       windowClass: "large-modal"
     });
+    ref.componentInstance.tooManyObs = tooManyObs;
   }
 
   toggleExpandRow(row) {

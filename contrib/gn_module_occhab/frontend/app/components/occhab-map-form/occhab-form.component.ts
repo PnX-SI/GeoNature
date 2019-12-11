@@ -36,25 +36,6 @@ export class OccHabFormComponent implements OnInit {
   public markerCoordinates;
   public currentEditingStation: any;
 
-  public layer = [
-    {
-      layerName: "machin",
-      geojson: {
-        type: "FeatureCollection",
-        features: [
-          {
-            type: "Feature",
-            properties: {},
-            geometry: {
-              type: "Point",
-              coordinates: [4.7845458984375, 45.81348649679973]
-            }
-          }
-        ]
-      }
-    }
-  ];
-
   constructor(
     public occHabForm: OcchabFormService,
     private _occHabDataService: OccHabDataService,

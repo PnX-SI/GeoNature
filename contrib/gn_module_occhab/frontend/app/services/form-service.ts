@@ -177,19 +177,33 @@ export class OcchabFormService {
 
   patchGeoValue(geom) {
     this.stationForm.patchValue({ geom_4326: geom.geometry });
-    this._gn_dataSerice.getAreaSize(geom).subscribe(data => {
-      this.stationForm.patchValue({ area: Math.round(data) });
-    });
-    this._gn_dataSerice.getGeoIntersection(geom).subscribe(data => {
-      // TODO: areas intersected
-    });
+    this._gn_dataSerice.getAreaSize(geom).subscribe(
+      data => {
+        this.stationForm.patchValue({ area: Math.round(data) });
+      },
+      // if error reset area
+      () => {
+        this.stationForm.patchValue({ area: null });
+      }
+    );
+    // this._gn_dataSerice.getGeoIntersection(geom).subscribe(data => {
+    //   // TODO: areas intersected
+    // });
 
-    this._gn_dataSerice.getGeoInfo(geom).subscribe(data => {
-      this.stationForm.patchValue({
-        altitude_min: data["altitude"]["altitude_min"],
-        altitude_max: data["altitude"]["altitude_max"]
-      });
-    });
+    this._gn_dataSerice.getGeoInfo(geom).subscribe(
+      data => {
+        this.stationForm.patchValue({
+          altitude_min: data["altitude"]["altitude_min"],
+          altitude_max: data["altitude"]["altitude_max"]
+        });
+      },
+      () => {
+        this.stationForm.patchValue({
+          altitude_min: null,
+          altitude_max: null
+        });
+      }
+    );
   }
 
   patchNomCite($event) {

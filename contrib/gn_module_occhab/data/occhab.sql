@@ -275,6 +275,7 @@ to_char(s.date_max, 'DD/MM/YYYY'::text)as "dateFin",
 s.observers_txt as "observateur",
 nom2.cd_nomenclature as "methodeCalculSurface",
 public.st_astext(s.geom_4326)as "geometry",
+public.st_asgeojson(s.geom_4326) as geojson
 nom3.cd_nomenclature as "natureObjetGeo",
 h.unique_id_sinp_hab as "identifiantHabSINP",
 h.nom_cite as "nomCite",

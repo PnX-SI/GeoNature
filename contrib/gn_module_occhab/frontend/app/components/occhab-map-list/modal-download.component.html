@@ -8,20 +8,19 @@
   <div *ngIf="tooManyObs">
 
     <div class="alert alert-danger" role="alert">
-      <b> Attention ! </b> Votre requête comporte un nombre trop important d'observations pour que celles-ci soient affichées sur la
+      <b> Attention ! </b> Votre requête comporte un nombre trop important de stations pour que celles-ci soient affichées sur la
       carte.
     </div>
 
-    <!-- <div class="alert alert-warning" role="alert">
-      Vous pouvez néamoins exporter les données, dans une limite de <b> {{syntheseConfig.NB_MAX_OBS_EXPORT}} </b>
-      observations en cliquant sur les liens ci-dessous
+    <div class="alert alert-warning" role="alert">
+      Vous pouvez néamoins exporter les données, dans une limite de <b> {{MODULE_CONFIG.NB_MAX_EXPORT}} </b>
+      stations en cliquant sur les liens ci-dessous
     </div>
 
     <div class="alert alert-warning" role="alert">
-      En fermant cette fenêtre vous pouvez visualiser <b> seulement</b> les {{syntheseConfig.NB_MAX_OBS_MAP}} dernières
-      observations
-      correspondant à votre requête. <br>
-    </div> -->
+      En fermant cette fenêtre vous pouvez visualiser <b> seulement</b> les {{MODULE_CONFIG.NB_MAX_MAP_LIST}} dernières
+      stations correspondant à votre requête. <br>
+    </div>
 
   </div>
   <h5 class="underlined second-color"> Télécharger les observations </h5>
@@ -30,7 +29,7 @@
       <i class="fa fa-info-circle" aria-hidden="true"></i>
       Votre recherche comporte {{storeService.idsStation.length}} station(s) d'habitat 
     </p>
-    <p>
+    <p *ngIf="!tooManyObs">
       <b>NB: </b> Le limite du nombre de station exportable est de {{MODULE_CONFIG.NB_MAX_EXPORT}}
     </p>
     <button style="margin-left: 5px;" *ngFor="let format of MODULE_CONFIG.EXPORT_FORMAT" class="buttonLoad" (click)="downloadStations(format)"
