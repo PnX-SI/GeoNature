@@ -212,6 +212,29 @@ ALTER TABLE pr_occhab.t_habitats
 ALTER TABLE pr_occhab.t_habitats
   ADD CONSTRAINT check_t_habitats_sensitivity CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_sensitvity,'SENSIBILITE')) NOT VALID;
 
+----------------------
+----- INDEX ----------
+----------------------
+CREATE INDEX i_t_stations_id_dataset
+  ON pr_occhab.t_stations
+  USING btree
+  (id_dataset);
+
+CREATE INDEX i_t_stations_occhab_geom_4326
+  ON pr_occhab.t_stations
+  USING gist
+  (geom_4326);
+
+CREATE INDEX i_t_habitats_cd_hab
+  ON pr_occhab.t_habitats
+  USING btree
+  (cd_hab);
+
+CREATE INDEX i_t_habitats_cd_hab
+  ON pr_occhab.t_habitats
+  USING btree
+  (id_station);
+
 ------------
 --TRIGGERS--
 ------------
