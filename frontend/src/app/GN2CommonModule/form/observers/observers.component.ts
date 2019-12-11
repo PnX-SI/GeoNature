@@ -21,7 +21,6 @@ import { DataFormService } from '../data-form.service';
   encapsulation: ViewEncapsulation.None
 })
 export class ObserversComponent implements OnInit {
-  filteredObservers: Array<any>;
   /**
    *  Id de la liste d'utilisateur (table ``utilisateur.t_menus``) (obligatoire)
    */
@@ -38,7 +37,8 @@ export class ObserversComponent implements OnInit {
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
   public searchControl = new FormControl();
-  public observers: Array<any>;
+  public observers: Array<any> = [];
+  public filteredObservers: Array<any> = [];
   public selectedObservers = [];
 
   constructor(private _dfService: DataFormService) {}
@@ -51,12 +51,22 @@ export class ObserversComponent implements OnInit {
   }
 
   filterObservers(event) {
-    if (event !== null) {
+    if (event !== null && event.length > 0) {
+      const regex = new RegExp(
+        event
+          .toLowerCase()
+          .split(' ')
+          .join('*|') + '*'
+      );
       this.filteredObservers = this.observers.filter(obs => {
-        return obs.nom_complet.toLowerCase().indexOf(event.toLowerCase()) === 0;
+        return obs.nom_complet.toLowerCase().match(regex);
       });
     } else {
       this.filteredObservers = this.observers;
     }
+  }
+
+  formatobs(obs: string): string {
+    return obs.toLowerCase().replace(' ', '');
   }
 }

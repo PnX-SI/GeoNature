@@ -14,9 +14,9 @@ INSERT INTO cor_profil_for_app (id_profil, id_application) VALUES
 
 --Accès du GRP_admin et du GRP_en_poste à GeoNature en l'associant au profil Lecteur 
 -- Les permissions applicatives (CRUVED) sont gérées dans l'admin GeoNature
-INSERT INTO cor_role_app_profil (id_role, id_application, id_profil) VALUES
-(9, (SELECT id_application FROM utilisateurs.t_applications WHERE code_application = 'GN'), 1)
-,(7, (SELECT id_application FROM utilisateurs.t_applications WHERE code_application = 'GN'), 1)
+INSERT INTO cor_role_app_profil (id_role, id_application, id_profil, is_default_group_for_app) VALUES
+(9, (SELECT id_application FROM utilisateurs.t_applications WHERE code_application = 'GN'), 1, false)
+,(7, (SELECT id_application FROM utilisateurs.t_applications WHERE code_application = 'GN'), 1, true)
 ;
 
 

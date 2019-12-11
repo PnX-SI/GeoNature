@@ -15,20 +15,24 @@ export class DynamicFormComponent implements OnInit {
   ngOnInit() {}
 
   onCheckChange(event, formControl: FormControl) {
+    const currentFormValue = Object.assign([], formControl.value);
     /* Selected */
     if (event.target.checked) {
       // Add a new control in the arrayForm
-      formControl.value.push(event.target.value);
+      currentFormValue.push(event.target.value);
+      // patch value to declench validators
+      formControl.patchValue(currentFormValue);
+      console.log(event.target.value);
     } else {
-      /* unselected */
-      // find the unselected element
-
-      formControl.value.forEach((val, index) => {
+      //find the unselected element
+      currentFormValue.forEach((val, index) => {
         if (val === event.target.value) {
           // Remove the unselected element from the arrayForm
-          formControl.value.splice(index, 1);
+          currentFormValue.splice(index, 1);
         }
       });
+      // patch value to declench validators
+      formControl.patchValue(currentFormValue);
     }
   }
 

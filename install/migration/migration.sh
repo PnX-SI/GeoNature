@@ -102,7 +102,9 @@ geonature update_configuration --build=false
 geonature generate_frontend_modules_route
 geonature generate_frontend_tsconfig
 geonature update_module_configuration occtax --build=false
-geonature update_module_configuration validation
+geonature update_module_configuration validation --build=false
+
+geonature frontend_build
 
 sudo supervisorctl reload
 

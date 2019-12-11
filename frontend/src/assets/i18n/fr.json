@@ -62,7 +62,7 @@
   },
   "MapList": {
     "InvalidTypeError": "Le type de valeur renseigné ne correspond au type du champ",
-    "NoColumnSelected": "Veuillez séléctionner une colonne à filtrer",
+    "NoColumnSelected": "Veuillez sélectionner une colonne à filtrer",
     "ObservationNumber": "Nombre d'observation(s) :"
   },
   "Releve": {
@@ -82,7 +82,7 @@
     "Dataset": "Jeu de données",
     "Comment": "Commentaire",
     "SaveReleve": "Enregistrer le relevé",
-    "DateMaxError": "La date de début ne peut pas être superieure à la date de fin",
+    "DateMaxError": "La date de début ne peut pas être supérieure à la date de fin",
     "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
     "HourMaxError": "L'heure de début ne peut pas être supérieure à l'heure de fin",
     "SavedTaxon": "Taxon(s) enregistré(s)",
@@ -91,8 +91,8 @@
     "Info": "Informations relevé",
     "Delete": "Supprimer le relevé",
     "DeleteSuccessfully": "Le relevé a été supprimé avec succès",
-    "Validate": "Valider le releve",
-    "UnValidate": "Invalider le releve",
+    "Validate": "Valider le relevé",
+    "UnValidate": "Invalider le relevé",
     "ObsTechnique": "Technique d'observation",
     "AddTaxonOnReleve": "Ajouter un taxon sur ce relevé",
     "CancelTaxon": "Annuler la saisie du taxon",
@@ -163,6 +163,12 @@
   "Synthese": {
     "DeleteObs": "Supprimer l'observations",
     "DeleteSuccess": "Observation supprimée avec succès",
-    "PeriodError": "Le champs 'periode début' ET 'periode fin' doivent être remplit si vous souhaitez faire une recherche par période"
-  }
+    "PeriodError": "Le champs 'periode début' ET 'periode fin' doivent être remplis si vous souhaitez faire une recherche par période"
+  },
+  "MyAccount": "Mon compte",
+  "CreateAccount": "Créer un compte",
+  "ForgotPasswordOrLogin": "Identifiant ou mot de passe oublié ?",
+  "AutoAccountEmailConfirmation": "Un email vient de vous être envoyé pour activer votre compte",
+  "AdminAccountEmailConfirmation": "Votre demande de création de compte a bien été prise en compte, elle va être évaluée par un administrateur",
+  "PasswordAndLoginRecovery": "Un email vient de vous être envoyé pour récupérer votre identifiant et/ou renouveler votre mot de passe"
 }

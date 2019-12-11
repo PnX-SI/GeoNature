@@ -8,6 +8,7 @@ import {
   FormControl
 } from "@angular/forms";
 import { GeoJSON } from "leaflet";
+import { BehaviorSubject } from "rxjs/BehaviorSubject";
 
 import { AppConfig } from "@geonature_config/app.config";
 import { HttpClient, HttpParams } from "@angular/common/http";
@@ -29,7 +30,6 @@ export class OcctaxFormService {
   public taxonsList: Array<Taxon> = [];
   public showOccurrence: boolean;
   public showCounting: boolean;
-  public editionMode: boolean;
   public isEdintingOccurrence: boolean;
   public defaultValues: any;
   public defaultValuesLoaded = false;
@@ -39,15 +39,17 @@ export class OcctaxFormService {
   public savedCurrentTaxon: any;
   public currentHourMax: string;
 
+  // boolean to check if its editionMode
+  public editionMode: boolean;
+  // subscription to get edition mode when data loaded in ajax
+  public editionMode$ = <BehaviorSubject<boolean>>new BehaviorSubject(null);
+
   public releveForm: FormGroup;
   public occurrenceForm: FormGroup;
   public countingForm: FormArray;
   public currentUser: User;
   public disabled = true;
   public stayOnFormInterface = new FormControl(false);
-  /** Display on not the control to stay on the form interface */
-  public displayStayOnFormInterface = true;
-
   public currentCdExistProot = null;
   public currentExistProofLabels = null;
 

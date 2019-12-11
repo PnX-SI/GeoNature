@@ -234,6 +234,10 @@ export class DataFormService {
     });
   }
 
+  getRole(id: number) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/role/${id}`);
+  }
+
   getRoles(params?: ParamsDict, orderByName = true) {
     let queryString: HttpParams = new HttpParams();
     if (orderByName) {

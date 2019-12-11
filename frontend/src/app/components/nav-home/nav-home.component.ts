@@ -12,8 +12,7 @@ import { GlobalSubService } from '../../services/global-sub.service';
 @Component({
   selector: 'pnx-nav-home',
   templateUrl: './nav-home.component.html',
-  styleUrls: ['./nav-home.component.scss'],
-  providers: [{ provide: AppConfig, useValue: AppConfig }]
+  styleUrls: ['./nav-home.component.scss']
 })
 export class NavHomeComponent implements OnInit, OnDestroy {
   public moduleName = 'Accueil';
@@ -45,7 +44,9 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     this._globalSub.currentModuleSub.subscribe(module => {
       if (module) {
         this.moduleName = module.module_label;
-        this.currentDocUrl = module.module_doc_url;
+        if (module.module_doc_url) {
+          this.currentDocUrl = module.module_doc_url;
+        }
       } else {
         this.moduleName = 'Accueil';
       }

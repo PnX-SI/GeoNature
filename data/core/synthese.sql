@@ -372,7 +372,7 @@ ALTER TABLE ONLY synthese
 
 
 ALTER TABLE ONLY cor_area_synthese
-    ADD CONSTRAINT fk_cor_area_synthese_id_synthese FOREIGN KEY (id_synthese) REFERENCES synthese(id_synthese) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_area_synthese_id_synthese FOREIGN KEY (id_synthese) REFERENCES synthese(id_synthese) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 ALTER TABLE ONLY cor_area_synthese

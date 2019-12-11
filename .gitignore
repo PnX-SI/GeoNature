@@ -28,6 +28,7 @@ backend/run.py
 
 *.perm
 *.pem
+*.ipynb
 
 
 # Byte-compiled / optimized / DLL files

@@ -9,7 +9,10 @@ import {
   MatIconModule,
   MatToolbarModule,
   MatExpansionModule,
-  MatPaginatorModule
+  MatPaginatorModule,
+  MatStepperModule,
+  MatProgressSpinnerModule,
+  MatButtonModule
 } from '@angular/material';
 
 import { Http } from '@angular/http';
@@ -88,6 +91,9 @@ export function HttpLoaderFactory(http: Http) {
     MatToolbarModule,
     MatExpansionModule,
     MatPaginatorModule,
+    MatStepperModule,
+    MatProgressSpinnerModule,
+    MatButtonModule,
     FormsModule,
     ReactiveFormsModule,
     NgxDatatableModule,
@@ -171,6 +177,9 @@ export function HttpLoaderFactory(http: Http) {
     MatExpansionModule,
     MatPaginatorModule,
     NgxDatatableModule,
+    MatStepperModule,
+    MatProgressSpinnerModule,
+    MatButtonModule,
     NgbModule,
     TranslateModule,
     MapListGenericFiltersComponent,
