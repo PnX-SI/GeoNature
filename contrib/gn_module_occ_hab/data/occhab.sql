@@ -223,6 +223,18 @@ CREATE TRIGGER tri_calculate_geom_local
   EXECUTE PROCEDURE ref_geo.fct_trg_calculate_geom_local('geom_4326', 'geom_local');
 
 
+CREATE TRIGGER tri_log_changes_t_habitats_occhab
+  AFTER INSERT OR UPDATE OR DELETE
+  ON pr_occhab.t_habitats
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
+
+CREATE TRIGGER tri_log_changes_t_stations_occhab
+  AFTER INSERT OR UPDATE OR DELETE
+  ON pr_occhab.t_stations
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
+
 ------------
 --VIEWS--
 ------------
@@ -266,6 +278,11 @@ INSERT INTO pr_occhab.defaults_nomenclatures_value (mnemonique_type, id_organism
 ('NAT_OBJ_GEO',0,0,0, ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO', 'NSP')),
 ('DETERMINATION_TYP_HAB',0,0,0, ref_nomenclatures.get_id_nomenclature('DETERMINATION_TYP_HAB', '0')),
 ('TECHNIQUE_COLLECT_HAB',0,0,0, ref_nomenclatures.get_id_nomenclature('TECHNIQUE_COLLECT_HAB', '0'))
+;
+
+INSERT INTO gn_commons.bib_tables_location (table_desc, schema_name, table_name, pk_field, uuid_field_name) VALUES
+('occurence d''habitat du module OccHab', 'pr_occhab', 't_habitats', 'id_habitat', 'unique_id_sinp_hab')
+,('Station correspondant à un regroupement d''occurence d''habitat du module OccHab', 'pr_occhab', 't_stations', 'id_station', 'unique_id_sinp_station')
 ;
 
 -- ;
