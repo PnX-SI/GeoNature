@@ -25,7 +25,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   public currentLayerType: string;
   /** Coordonnées de l'entité à dessiner */
   @Input() geojson: GeoJSON;
-  @Input() bZoomOnPoint = false;
+  @Input() bZoomOnPoint = true;
   @Input() zoomLevelOnPoint = 8;
   /**
    *  Objet permettant de paramettrer le plugin et les différentes formes dessinables (point, ligne, cercle etc...)
@@ -174,8 +174,9 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     if ( layer.getBounds ) {
       this.mapservice.map.fitBounds(layer.getBounds());
     } else {
-      if (this.mapservice.map['_zoom'] === 0 && this.bZoomOnPoint) {
-        this.mapservice.map.setView(layer._latlng, this.zoomLevelOnPoint);
+      console.log('zoom', this.bZoomOnPoint, this.zoomLevelOnPoint);
+      if (this.mapservice.map['_zoom'] === 0 || this.bZoomOnPoint) {
+        this.mapservice.map.setView(layer._latlng, this.zoomLevelOnPoint, this.mapservice.map['_zoom']);
       } else {
         this.mapservice.map.panTo(layer._latlng);
       }
