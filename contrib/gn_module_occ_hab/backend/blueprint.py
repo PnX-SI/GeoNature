@@ -7,6 +7,8 @@ from geoalchemy2.shape import from_shape
 from pypnusershub.db.models import User
 from shapely.geometry import asShape
 from sqlalchemy import func, distinct
+from sqlalchemy.sql import text
+
 
 from pypnnomenclature.models import TNomenclatures
 from utils_flask_sqla.response import json_resp, to_csv_resp, to_json_resp
@@ -331,3 +333,25 @@ def getDefaultNomenclatures():
                 TNomenclatures).get(d[1]).as_dict()
         formated_dict[d[0]] = nomenclature_obj
     return formated_dict
+
+
+@blueprint.route("/stations/dataset/<int:id_dataset>", methods=["POST", "GET"])
+@json_resp
+def getStationsDataset(id_dataset):
+    data = dict(request.get_json())
+    sql = text("""
+        SELECT geom_4326
+        FROM pr_occhab.t_stations
+        WHERE id_dataset = :id_dataset AND geom_4326 <> ST_MakeEnvelope(
+            :xmin, :ymin, :xmax, :ymax
+        LIMIT 50
+        )
+    """)
+    DB.engine.execute(
+        sql,
+        id_dataset=id_dataset,
+        xmin="",
+        ymin="",
+        xmax="",
+        ymax="",
+    )

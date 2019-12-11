@@ -132,7 +132,8 @@ export class MapComponent implements OnInit {
         map.addLayer(baseControl[basemap.name]);
       }
     });
-    L.control.layers(baseControl).addTo(map);
+    this.mapService.layerControl = L.control.layers(baseControl);
+    this.mapService.layerControl.addTo(map);
     L.control.scale().addTo(map);
 
     this.mapService.setMap(map);

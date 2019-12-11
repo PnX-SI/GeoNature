@@ -29,6 +29,7 @@ export class MapService {
   // this observable must be fired only after a map event
   // not from data sended by API (to avoid recalculate altitude for exemple)
   public firstLayerFromMap = true;
+  public layerControl: L.Control.Layers;
 
   selectedStyle = {
     color: '#ff0000',
