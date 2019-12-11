@@ -139,6 +139,9 @@ export class MapService {
   }
 
   createMarker(x, y, isDraggable) {
+    console.log('LAAAAAAAA');
+    console.log(L.marker);
+
     return L.marker([y, x], {
       icon: L.icon({
         iconUrl: require<any>('../../../../node_modules/leaflet/dist/images/marker-icon.png'),

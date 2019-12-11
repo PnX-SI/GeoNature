@@ -177,13 +177,16 @@ def get_all_habitats(info_role):
     return FeatureCollection(feature_list)
 
 
-@blueprint.route("/export_stations/<export_format>", methods=["POST", "GET"])
+@blueprint.route("/export_stations/<export_format>", methods=["POST"])
 @permissions.check_cruved_scope("E", True, module_code="OCCHAB")
 def export_all_habitats(info_role, export_format='csv',):
     """
         Download all stations
         The route is in post to avoid a to big query string
     """
+
+    data = request.get_json()
+
     export_view = GenericTable(
         tableName="v_export_sinp",
         schemaName="pr_occhab",
@@ -199,8 +202,12 @@ def export_all_habitats(info_role, export_format='csv',):
         if db_col.key in blueprint.config['EXPORT_COLUMS']:
             db_cols_for_shape.append(db_col)
             columns_to_serialize.append(db_col.key)
-    results = DB.session.query(export_view.tableDef).limit(
-        blueprint.config['NB_MAX_EXPORT'])
+    print()
+    results = DB.session.query(export_view.tableDef).filter(
+        export_view.tableDef.columns.id_station.in_(data['idsStation'])
+    ).limit(
+        blueprint.config['NB_MAX_EXPORT']
+    )
     if export_format == 'csv':
         formated_data = [
             export_view.as_dict(d, columns=[]) for d in results

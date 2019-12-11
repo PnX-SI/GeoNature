@@ -47,15 +47,11 @@ export class OccHabDataService {
     );
   }
 
-  exportStations(export_format, idsStation?: []) {
+  exportStations(export_format, idsStation?: Array<number>) {
     const sub = this._http.post(
       `${AppConfig.API_ENDPOINT}/${ModuleConfig.MODULE_URL}/export_stations/${export_format}`,
-      idsStation,
+      { idsStation: idsStation },
       {
-        headers: new HttpHeaders().set(
-          "Content-Type",
-          `${FormatMapMime.get(export_format)}`
-        ),
         observe: "events",
         responseType: "blob",
         reportProgress: true

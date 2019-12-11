@@ -51,18 +51,25 @@ export class OccHabMapListComponent implements OnInit {
 
   getStations(params?) {
     this.dataLoading = true;
-    this._occHabDataService.getStations(params).subscribe(featureCollection => {
-      // this.stations = data;
-      this.mapListService.tableData = [];
-      featureCollection.features.forEach(feature => {
-        // add leaflet popup
-        this.displayLeafletPopupCallback(feature);
-        // push the data in the dataTable array
-        this.mapListService.tableData.push(feature.properties);
+    this._occHabDataService
+      .getStations(params)
+      .subscribe(featuresCollection => {
+        // store the idsStation in the store service
+
+        this.storeService.idsStation = featuresCollection.features.map(
+          feature => feature.id
+        );
+        // this.stations = data;
+        this.mapListService.tableData = [];
+        featuresCollection.features.forEach(feature => {
+          // add leaflet popup
+          this.displayLeafletPopupCallback(feature);
+          // push the data in the dataTable array
+          this.mapListService.tableData.push(feature.properties);
+        });
+        this.mapListService.geojsonData = featuresCollection;
+        this.dataLoading = false;
       });
-      this.mapListService.geojsonData = featureCollection;
-      this.dataLoading = false;
-    });
   }
 
   searchData(params) {

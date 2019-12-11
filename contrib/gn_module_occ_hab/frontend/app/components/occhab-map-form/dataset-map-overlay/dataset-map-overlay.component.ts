@@ -17,12 +17,12 @@ export class OccHabDatasetMapOverlayComponent implements OnInit {
       "url(assets/images/location-pointer.png)"
     );
     this._mapService.map.addControl(new CustomLegend());
-    L.DomEvent.disableClickPropagation(
-      document.getElementById("occHabLayerControl")
-    );
+    // L.DomEvent.disableClickPropagation(
+    //   document.getElementById("occHabLayerControl")
+    // );
 
     document.getElementById("occHabLayerControl").onclick = () => {
-      const bounds: L.LatLngBounds = this._mapService.map.getBounds();
+      const bounds = this._mapService.map.getBounds();
       this.getBoundingBox.emit({
         southEast: bounds.getSouthEast(),
         southWest: bounds.getSouthWest(),
