@@ -174,7 +174,6 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     if ( layer.getBounds ) {
       this.mapservice.map.fitBounds(layer.getBounds());
     } else {
-      console.log('zoom', this.bZoomOnPoint, this.zoomLevelOnPoint);
       if (this.mapservice.map['_zoom'] === 0 || this.bZoomOnPoint) {
         this.mapservice.map.setView(layer._latlng, this.zoomLevelOnPoint, this.mapservice.map['_zoom']);
       } else {
