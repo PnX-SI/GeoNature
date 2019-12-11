@@ -11,7 +11,6 @@ import { CommonService } from "@geonature_common/service/common.service";
 import { AppConfig } from "@geonature_config/app.config";
 import { ModuleConfig } from "../../module.config";
 import { filter } from "rxjs/operators";
-
 @Component({
   selector: "pnx-occhab-form",
   templateUrl: "occhab-form.component.html",
@@ -37,6 +36,25 @@ export class OccHabFormComponent implements OnInit {
   public markerCoordinates;
   public currentEditingStation: any;
 
+  public layer = [
+    {
+      layerName: "machin",
+      geojson: {
+        type: "FeatureCollection",
+        features: [
+          {
+            type: "Feature",
+            properties: {},
+            geometry: {
+              type: "Point",
+              coordinates: [4.7845458984375, 45.81348649679973]
+            }
+          }
+        ]
+      }
+    }
+  ];
+
   constructor(
     public occHabForm: OcchabFormService,
     private _occHabDataService: OccHabDataService,
@@ -44,7 +62,8 @@ export class OccHabFormComponent implements OnInit {
     private _route: ActivatedRoute,
     private _router: Router,
     private _commonService: CommonService,
-    private _gnDataService: DataFormService
+    private _gnDataService: DataFormService,
+    private _mapService: MapService
   ) {}
 
   ngOnInit() {
@@ -147,6 +166,10 @@ export class OccHabFormComponent implements OnInit {
 
   formatter(item) {
     return item.search_name;
+  }
+
+  loadDatasetGeom(event) {
+    console.log(event);
   }
 
   ngOnDestroy() {
