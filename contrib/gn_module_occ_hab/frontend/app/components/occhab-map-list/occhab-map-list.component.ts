@@ -5,7 +5,7 @@ import { OccHabDataService } from "../../services/data.service";
 import { DatatableComponent } from "@swimlane/ngx-datatable/release";
 import { OccHabModalDownloadComponent } from "./modal-download.component";
 import { NgbModal, NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-
+import { CommonService } from "@geonature_common/service/common.service";
 import * as moment from "moment";
 
 @Component({
@@ -21,7 +21,6 @@ export class OccHabMapListComponent implements OnInit {
     { name: "Jeu de données", prop: "dataset_name", width: "200" }
   ];
   @ViewChild("dataTable") dataTable: DatatableComponent;
-  // public tabColumns = this.displayedColumns.map(col => col.prop);
   public rowNumber: number;
   public dataLoading = true;
   public deleteOne: any;
@@ -29,9 +28,18 @@ export class OccHabMapListComponent implements OnInit {
     public storeService: OcchabStoreService,
     private _occHabDataService: OccHabDataService,
     public mapListService: MapListService,
-    private _ngbModal: NgbModal
+    private _ngbModal: NgbModal,
+    private _commonService: CommonService
   ) {}
   ngOnInit() {
+    if (this.storeService.firstMessageMapList) {
+      this._commonService.regularToaster(
+        "info",
+        "Les 50 dernières stations saisies"
+      );
+      this.storeService.firstMessageMapList = false;
+    }
+
     this.getStations({ limit: 50 });
     // get wiewport height to set the number of rows in the tabl
     const h = document.documentElement.clientHeight;

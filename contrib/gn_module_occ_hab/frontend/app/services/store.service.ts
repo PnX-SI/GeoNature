@@ -9,6 +9,7 @@ export class OcchabStoreService {
   public nomenclatureItems = {};
   public typoHabitat: Array<any>;
   public stations: Array<any>;
+  public firstMessageMapList = true;
   /** Current list of id_station in the map list */
   public idsStation: Array<number>;
   private _defaultNomenclature$: BehaviorSubject<any> = new BehaviorSubject(
