@@ -25,6 +25,7 @@ Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...develop
 * Correction de l'installation des requirements.txt lors de l'installation d'un module (#764 par @joelclems)
 * COMMONS : t_modules modification des champs de type CHARACTER(n) en CHARACTER VARYING(n) (module_path, module_target, module_external_url)
 * COMMONS : t_modules, ajout de contraintes UNIQUE pour les champs module_path et module_code)
+* pnx-geojson : amélioration du zoom, gestion des styles
 
 **⚠️ Notes de version**
 
