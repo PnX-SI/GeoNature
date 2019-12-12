@@ -460,7 +460,7 @@ IMPORT FOREIGN SCHEMA habitats FROM SERVER geonature1server INTO v1_compat;
 INSERT INTO ref_geo.bib_areas_types (type_name, type_code, type_desc) VALUES
 ('Polygones SOPHIE', 'SOPHIE', 'Les 124 polygones du protocole SOPHIE de suivi des habitats ');
 INSERT INTO ref_geo.l_areas(id_type, area_name, area_code, geom, centroid, source, enable)
-SELECT ref_geo.get_id_area_type('SOPHIE'), concat('SOPHIE-',ssp::varchar), ssp::varchar, ST_Multi(st_transform(historiquethe_geom, 2154)), public.ST_Pointonsurface(st_transform(the_geom, 2154)), 'gn1', false 
+SELECT ref_geo.get_id_area_type('SOPHIE'), concat('SOPHIE-',ssp::varchar), ssp::varchar, ST_Multi(st_transform(the_geom, 2154)), public.ST_Pointonsurface(st_transform(the_geom, 2154)), 'gn1', false 
 FROM v1_compat.sophie;
 
 
@@ -698,7 +698,6 @@ SELECT * FROM v1_compat.stephane_bence;
 ALTER TABLE partenaires_naturalistes.bernard_frin ADD CONSTRAINT pk_bernard_frin PRIMARY KEY(gid);
 ALTER TABLE partenaires_naturalistes.christophe_perrier ADD CONSTRAINT pk_christophe_perrier PRIMARY KEY(gid);
 ALTER TABLE partenaires_naturalistes.eric_drouet ADD CONSTRAINT pk_eric_drouet PRIMARY KEY(gid);
-ALTER TABLE partenaires_lpo.lpo_isere ADD CONSTRAINT pk_lpo_isere PRIMARY KEY(id);
 ALTER TABLE partenaires_naturalistes.jacques_nel ADD CONSTRAINT pk_jacques_nel PRIMARY KEY(gid);
 ALTER TABLE partenaires_naturalistes.pierre_frapa ADD CONSTRAINT pk_pierre_frapa PRIMARY KEY(gid);
 ALTER TABLE partenaires_naturalistes.stephane_bence ADD CONSTRAINT pk_stephane_bence PRIMARY KEY(gid);

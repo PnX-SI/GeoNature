@@ -5,7 +5,7 @@ from flask import current_app, jsonify, Response
 from pypnusershub.db.tools import InsufficientRightsError
 
 from geonature.utils.env import DB
-from geonature.utils.utilssqlalchemy import json_resp
+from utils_flask_sqla.response import json_resp
 from geonature.utils.errors import GeonatureApiError
 
 from sqlalchemy.exc import SQLAlchemyError

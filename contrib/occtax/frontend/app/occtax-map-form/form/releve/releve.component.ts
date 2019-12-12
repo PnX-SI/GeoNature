@@ -38,7 +38,6 @@ export class ReleveComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.occtaxConfig = ModuleConfig;
-
     // subscription to the geojson observable
     this.geojsonSubscription$ = this._ms.gettingGeojson$.subscribe(geojson => {
       this.releveForm.patchValue({ geometry: geojson.geometry });
@@ -72,10 +71,9 @@ export class ReleveComponent implements OnInit, OnDestroy {
     this.isEditionSub$ = this.fs.editionMode$
     .filter(isEdit => isEdit === false)  
     .subscribe(isEdit => {
-      console.log("NOT EDTION MODE");
-      
-      this.autoCompleteDate();
-
+      if (isEdit === false) {
+        this.autoCompleteDate();
+      }  
     });
     
 

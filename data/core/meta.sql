@@ -529,5 +529,5 @@ CREATE TABLE gn_commons.cor_module_dataset (
       REFERENCES gn_meta.t_datasets (id_dataset) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE NO ACTION
 );
-COMMENT ON TABLE gn_commons.cor_module_dataset IS 'Define wich datasets can be used in modules';
+COMMENT ON TABLE gn_commons.cor_module_dataset IS 'Define which datasets can be used in modules';
 

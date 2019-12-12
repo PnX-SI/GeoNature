@@ -38,6 +38,7 @@ export class OcctaxFormService {
   public savedOccurrenceData: any;
   public savedCurrentTaxon: any;
   public currentHourMax: string;
+  public currentReleve: any;
 
   // boolean to check if its editionMode
   public editionMode: boolean;
@@ -50,9 +51,6 @@ export class OcctaxFormService {
   public currentUser: User;
   public disabled = true;
   public stayOnFormInterface = new FormControl(false);
-  /** Display on not the control to stay on the form interface */
-  public displayStayOnFormInterface = true;
-
   public currentCdExistProot = null;
   public currentExistProofLabels = null;
 

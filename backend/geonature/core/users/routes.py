@@ -1,18 +1,19 @@
 import logging
 import requests
 
+from flask import Blueprint, request
+from sqlalchemy.sql import distinct, and_
 
 from flask import Blueprint, request, current_app, Response, redirect
-from sqlalchemy.sql import distinct
 
 from geonature.utils.env import DB
-from geonature.core.users.models import VUserslistForallMenu, BibOrganismes, CorRole
+from geonature.core.users.models import VUserslistForallMenu, BibOrganismes, CorRole, TListes
 from pypnusershub.db.models import User
 from pypnusershub.db.models_register import TempUser
 from pypnusershub.routes_register import bp as user_api
 from pypnusershub.routes import check_auth
 
-from geonature.utils.utilssqlalchemy import json_resp
+from utils_flask_sqla.response import json_resp
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_meta.models import CorDatasetActor, TDatasets
 from geonature.core.gn_meta.repositories import get_datasets_cruved
@@ -42,6 +43,36 @@ def getRolesByMenuId(id_menu):
     :query str nom_complet: begenning of complet name of the role
     """
     q = DB.session.query(VUserslistForallMenu).filter_by(id_menu=id_menu)
+
+    parameters = request.args
+    if parameters.get("nom_complet"):
+        q = q.filter(
+            VUserslistForallMenu.nom_complet.ilike(
+                "{}%".format(parameters.get("nom_complet"))
+            )
+        )
+    data = q.order_by(VUserslistForallMenu.nom_complet.asc()).all()
+    return [n.as_dict() for n in data]
+
+
+@routes.route("/menu_from_code/<string:code_liste>", methods=["GET"])
+@json_resp
+def getRolesByMenuCode(code_liste):
+    """
+    Retourne la liste des roles associés à une liste (identifiée par son code)
+
+    .. :quickref: User;
+
+    :param code_liste: the code of user list (utilisateurs.t_lists)
+    :type code_liste: string
+    :query str nom_complet: begenning of complet name of the role
+    """
+
+    q = DB.session.query(VUserslistForallMenu).join(
+        TListes, and_(TListes.id_liste == VUserslistForallMenu.id_menu,
+                      TListes.code_liste == code_liste
+                      )
+    )
 
     parameters = request.args
     if parameters.get("nom_complet"):
@@ -186,7 +217,8 @@ def get_organismes():
     q = DB.session.query(BibOrganismes)
     if "orderby" in params:
         try:
-            order_col = getattr(BibOrganismes.__table__.columns, params.pop("orderby"))
+            order_col = getattr(
+                BibOrganismes.__table__.columns, params.pop("orderby"))
             q = q.order_by(order_col)
         except AttributeError:
             log.error("the attribute to order on does not exist")
@@ -205,7 +237,8 @@ def get_organismes_jdd(info_role):
     """
     params = request.args.to_dict()
 
-    datasets = [dataset["id_dataset"] for dataset in get_datasets_cruved(info_role)]
+    datasets = [dataset["id_dataset"]
+                for dataset in get_datasets_cruved(info_role)]
     q = (
         DB.session.query(BibOrganismes)
         .join(
@@ -216,7 +249,8 @@ def get_organismes_jdd(info_role):
     )
     if "orderby" in params:
         try:
-            order_col = getattr(BibOrganismes.__table__.columns, params.pop("orderby"))
+            order_col = getattr(
+                BibOrganismes.__table__.columns, params.pop("orderby"))
             q = q.order_by(order_col)
         except AttributeError:
             log.error("the attribute to order on does not exist")
@@ -246,14 +280,16 @@ def inscription():
     data["url_confirmation"] = config["API_ENDPOINT"] + "/users/confirmation"
 
     r = s.post(
-        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/create_temp_user",
+        url=config["API_ENDPOINT"] +
+        "/pypn/register/post_usershub/create_temp_user",
         json=data,
     )
 
     return Response(r), r.status_code
 
 
-@routes.route("/login/recovery", methods=["POST"])  # TODO supprimer si non utilisé
+# TODO supprimer si non utilisé
+@routes.route("/login/recovery", methods=["POST"])
 def login_recovery():
     """
         Call UsersHub API to create a TOKEN for a user	
@@ -261,7 +297,9 @@ def login_recovery():
         Work only if 'ENABLE_SIGN_UP' is set to True	
     """
     # test des droits
-    if not current_app.config.get("ACCOUNT_MANAGEMENT").get("ENABLE_SIGN_UP", False):
+    if not current_app.config.get("ACCOUNT_MANAGEMENT").get(
+        "ENABLE_USER_MANAGEMENT", False
+    ):
         return {"msg": "Page introuvable"}, 404
 
     data = request.get_json()
@@ -290,10 +328,12 @@ def confirmation():
     if token is None:
         return {"message": "Token introuvable"}, 404
 
-    data = {"token": token, "id_application": config["ID_APPLICATION_GEONATURE"]}
+    data = {"token": token,
+            "id_application": config["ID_APPLICATION_GEONATURE"]}
 
     r = s.post(
-        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/valid_temp_user",
+        url=config["API_ENDPOINT"] +
+        "/pypn/register/post_usershub/valid_temp_user",
         json=data,
     )
 
@@ -310,6 +350,10 @@ def update_role(info_role):
     """
         Modifie le role de l'utilisateur du token en cours
     """
+    if not current_app.config["ACCOUNT_MANAGEMENT"].get(
+        "ENABLE_USER_MANAGEMENT", False
+    ):
+        return {"message": "Page introuvable"}, 404
     data = dict(request.get_json())
 
     user = DB.session.query(User).get(info_role.id_role)
@@ -352,7 +396,7 @@ def change_password(id_role):
         Modifie le mot de passe de l'utilisateur connecté et de son ancien mdp 
         Fait appel à l'API UsersHub
     """
-    if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP", False):
+    if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT", False):
         return {"message": "Page introuvable"}, 404
 
     user = DB.session.query(User).get(id_role)
@@ -389,7 +433,8 @@ def change_password(id_role):
     ):
         return {"msg": "Erreur serveur"}, 500
     r = s.post(
-        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/change_password",
+        url=config["API_ENDPOINT"] +
+        "/pypn/register/post_usershub/change_password",
         json=data,
     )
 
@@ -406,7 +451,9 @@ def new_password():
     Modifie le mdp d'un utilisateur apres que celui-ci ai demander un renouvelement
     Necessite un token envoyer par mail a l'utilisateur
     """
-    if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP", False):
+    if not current_app.config["ACCOUNT_MANAGEMENT"].get(
+        "ENABLE_USER_MANAGEMENT", False
+    ):
         return {"message": "Page introuvable"}, 404
 
     data = dict(request.get_json())
@@ -414,7 +461,8 @@ def new_password():
         return {"msg": "Erreur serveur"}, 500
 
     r = s.post(
-        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/change_password",
+        url=config["API_ENDPOINT"] +
+        "/pypn/register/post_usershub/change_password",
         json=data,
     )
 

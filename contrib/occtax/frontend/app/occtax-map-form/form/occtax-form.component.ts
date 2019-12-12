@@ -77,7 +77,9 @@ export class OcctaxFormComponent implements OnInit {
     }
     // format nom_cite, update date, set id_releve_occtax and id_occurrence_occtax
     finalForm.properties.t_occurrences_occtax.forEach((occ, index) => {
+      delete occ["taxref"];
       occ.id_releve_occtax = finalForm.properties.id_releve_occtax;
+      delete occ.taxref;
       occ.cor_counting_occtax.forEach(count => {
         count.id_occurrence_occtax = occ.id_occurrence_occtax;
       });
@@ -94,8 +96,6 @@ export class OcctaxFormComponent implements OnInit {
     // disable button
     this.disabledAfterPost = true;
     //console.log(JSON.stringify(finalForm));
-    // set true to display the control to stay on the form
-    this.fs.displayStayOnFormInterface = true;
 
     // Post
     this._cfs.postOcctax(finalForm).subscribe(
@@ -122,14 +122,23 @@ export class OcctaxFormComponent implements OnInit {
           delete saveForm["properties"]["comment"];
           saveForm["properties"]["t_occurrences_occtax"] = [];
           this.fs.releveForm.patchValue(saveForm);
+          let l = this._mapService.fileLayerFeatureGroup.getLayers()
+          l.forEach(
+              (el) => {
+                  if (el.getLayers()[0].options.color == "red") {
+                      el.setStyle({"color": "green", "opacity": 0.2});
+                  }
+              }
+          );
         } else {
+          // reset carto
+          this._mapService.setEditingMarker(false);
+          // reset default marker mode
+          this._mapService.setEditingMarker(true);
           // redirect
           this.router.navigate(["/occtax"]);
         }
-        // reset carto
-        this._mapService.setEditingMarker(false);
-        // reset default marker mode
-        this._mapService.setEditingMarker(true);
+
       },
       error => {
         if (error.status === 403) {

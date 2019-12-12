@@ -25,10 +25,15 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   public currentLayerType: string;
   /** Coordonnées de l'entité à dessiner */
   @Input() geojson: GeoJSON;
+  @Input() bZoomOnPoint = true;
+  @Input() zoomLevelOnPoint = 8;
   /**
    *  Objet permettant de paramettrer le plugin et les différentes formes dessinables (point, ligne, cercle etc...)
    *
-   * Par défault le fichier ``leaflet-draw.option.ts`` est passé au composant. Il est possible de surcharger l'objet pour activer/désactiver certaines formes. Voir `exemple <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/occtax/occtax-map-form/occtax-map-form.component.ts#L27>`_
+   * Par défault le fichier ``leaflet-draw.option.ts`` est passé au composant.
+   * Il est possible de surcharger l'objet pour activer/désactiver certaines formes.
+   * Voir `exemple
+   * <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/occtax/occtax-map-form/occtax-map-form.component.ts#L27>`_
    */
   @Input() options = leafletDrawOption;
   @Input() zoomLevel = AppConfig.MAPCONFIG.ZOOM_LEVEL_RELEVE;
@@ -144,7 +149,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
 
   loadDrawfromGeoJson(geojson) {
     let layer;
-    if (geojson.type === 'LineString' || geojson.type == 'MultiLineString') {
+    if (geojson.type === 'LineString' || geojson.type === 'MultiLineString') {
       const latLng = L.GeoJSON.coordsToLatLngs(
         geojson.coordinates,
         geojson.type === 'LineString' ? 0 : 1
@@ -152,7 +157,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       layer = L.polyline(latLng);
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
     }
-    if (geojson.type === 'Polygon' || geojson.type == 'MultiPolygon') {
+    if (geojson.type === 'Polygon' || geojson.type === 'MultiPolygon') {
       const latLng = L.GeoJSON.coordsToLatLngs(
         geojson.coordinates,
         geojson.type === 'Polygon' ? 1 : 2
@@ -160,7 +165,21 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       layer = L.polygon(latLng);
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
     }
-    this.mapservice.map.fitBounds(layer.getBounds());
+    if (geojson.type === 'Point') {
+      const latLng = L.GeoJSON.coordsToLatLng(geojson.coordinates);
+      layer = L.circleMarker(latLng);
+      this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
+    }
+
+    if ( layer.getBounds ) {
+      this.mapservice.map.fitBounds(layer.getBounds());
+    } else {
+      if (this.mapservice.map['_zoom'] === 0 || this.bZoomOnPoint) {
+        this.mapservice.map.setView(layer._latlng, this.zoomLevelOnPoint, this.mapservice.map['_zoom']);
+      } else {
+        this.mapservice.map.panTo(layer._latlng);
+      }
+    }
     // disable point event on the map
     this.mapservice.setEditingMarker(false);
     // send observable

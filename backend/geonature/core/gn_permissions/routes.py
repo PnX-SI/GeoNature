@@ -8,7 +8,7 @@ from copy import copy
 from flask import Blueprint, request, Response, render_template, session
 
 from geonature.utils.env import DB
-from geonature.utils.utilssqlalchemy import json_resp
+from utils_flask_sqla.response import json_resp
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions.models import TObjects, CorObjectModule
 from geonature.core.gn_permissions import decorators as permissions

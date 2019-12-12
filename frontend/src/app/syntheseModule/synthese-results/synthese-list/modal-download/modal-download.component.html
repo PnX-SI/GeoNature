@@ -32,6 +32,14 @@
     </button>
   </div>
 
+  <h5 class="underlined second-color"> Télécharger les taxons </h5>
+  <div style="margin-bottom:5px;">
+    <button [disabled]="_dataService.isDownloading" class="btn btn-success"
+    (click)="downloadStatusOrMetadata('synthese/export_taxons', 'synthese_statuts')">
+      Taxon <i class="fa fa-list-alt" aria-hidden="true"></i>
+   </button>
+  </div>
+
   <h5 class="underlined second-color"> Télécharger les statuts</h5>
   <div>
     <button [disabled]="_dataService.isDownloading" class="btn btn-success" (click)="downloadStatusOrMetadata('synthese/export_statuts', 'synthese_statuts')">

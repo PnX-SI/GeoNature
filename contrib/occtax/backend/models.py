@@ -7,11 +7,15 @@ from geoalchemy2 import Geometry
 
 from pypnnomenclature.models import TNomenclatures
 
-from geonature.utils.utilssqlalchemy import serializable, geoserializable
+from geonature.utils.utilssqlalchemy import geoserializable
 from geonature.utils.env import DB
+from geonature.core.taxonomie.models import Taxref
 from pypnusershub.db.tools import InsufficientRightsError
 from pypnusershub.db.models import User
 from geonature.core.gn_meta.models import TDatasets
+from geonature.core.taxonomie.models import Taxref
+
+from utils_flask_sqla.serializers import serializable
 
 
 class ReleveModel(DB.Model):
@@ -145,7 +149,7 @@ class TOccurrencesOccurrence(DB.Model):
     id_nomenclature_source_status = DB.Column(DB.Integer)
     determiner = DB.Column(DB.Unicode)
     id_nomenclature_determination_method = DB.Column(DB.Integer)
-    cd_nom = DB.Column(DB.Integer)
+    cd_nom = DB.Column(DB.Integer, ForeignKey(Taxref.cd_nom))
     nom_cite = DB.Column(DB.Unicode)
     meta_v_taxref = DB.Column(
         DB.Unicode,
@@ -163,6 +167,8 @@ class TOccurrencesOccurrence(DB.Model):
         uselist=True,
     )
 
+    taxref = relationship("Taxref", lazy="joined")
+
 
 @serializable
 @geoserializable
@@ -170,7 +176,7 @@ class TRelevesOccurrence(ReleveModel):
     __tablename__ = "t_releves_occtax"
     __table_args__ = {"schema": "pr_occtax"}
     id_releve_occtax = DB.Column(DB.Integer, primary_key=True)
-    id_dataset = DB.Column(DB.Integer)
+    id_dataset = DB.Column(DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"))
     id_digitiser = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
     id_nomenclature_grp_typ = DB.Column(DB.Integer)
     observers_txt = DB.Column(DB.Unicode)
@@ -192,6 +198,7 @@ class TRelevesOccurrence(ReleveModel):
 
     observers = DB.relationship(
         User,
+        lazy="joined",
         secondary=corRoleRelevesOccurrence.__table__,
         primaryjoin=(corRoleRelevesOccurrence.id_releve_occtax == id_releve_occtax),
         secondaryjoin=(corRoleRelevesOccurrence.id_role == User.id_role),
@@ -202,7 +209,11 @@ class TRelevesOccurrence(ReleveModel):
     )
 
     digitiser = relationship(
-        User, primaryjoin=(User.id_role == id_digitiser), foreign_keys=[id_digitiser]
+        User, lazy="joined", primaryjoin=(User.id_role == id_digitiser), foreign_keys=[id_digitiser]
+    )
+
+    dataset = relationship(
+        TDatasets, lazy="joined", primaryjoin=(TDatasets.id_dataset == id_dataset), foreign_keys=[id_dataset]
     )
 
     def get_geofeature(self, recursif=True):
@@ -245,44 +256,6 @@ class VReleveOccurrence(ReleveModel):
 
     def get_geofeature(self, recursif=True):
         return self.as_geofeature("geom_4326", "id_occurrence_occtax", recursif)
-
-
-@serializable
-@geoserializable
-class VReleveList(ReleveModel):
-    __tablename__ = "v_releve_list"
-    __table_args__ = {"schema": "pr_occtax"}
-    id_releve_occtax = DB.Column(DB.Integer, primary_key=True)
-    id_dataset = DB.Column(DB.Integer)
-    id_digitiser = DB.Column(DB.Integer)
-    date_min = DB.Column(DB.DateTime)
-    date_max = DB.Column(DB.DateTime)
-    altitude_min = DB.Column(DB.Integer)
-    altitude_max = DB.Column(DB.Integer)
-    meta_device_entry = DB.Column(DB.Unicode)
-    comment = DB.Column(DB.Unicode)
-    geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
-    taxons = DB.Column(DB.Unicode)
-    leaflet_popup = DB.Column(DB.Unicode)
-    observateurs = DB.Column(DB.Unicode)
-    dataset_name = DB.Column(DB.Unicode)
-    observers_txt = DB.Column(DB.Unicode)
-    nb_occ = DB.Column(DB.Integer)
-    nb_observer = DB.Column(DB.Integer)
-    observers = DB.relationship(
-        User,
-        secondary=corRoleRelevesOccurrence.__table__,
-        primaryjoin=(corRoleRelevesOccurrence.id_releve_occtax == id_releve_occtax),
-        secondaryjoin=(corRoleRelevesOccurrence.id_role == User.id_role),
-        foreign_keys=[
-            corRoleRelevesOccurrence.id_releve_occtax,
-            corRoleRelevesOccurrence.id_role,
-        ],
-    )
-
-    def get_geofeature(self, recursif=True):
-
-        return self.as_geofeature("geom_4326", "id_releve_occtax", recursif)
 
 
 @serializable

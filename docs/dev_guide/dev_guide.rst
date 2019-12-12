@@ -43,7 +43,7 @@ dictionnaire des données de l'objet sérialisable json
 Fichier définition modèle ::
 
     from geonature.utils.env import DB
-    from geonature.utils.utilssqlalchemy import serializable
+    from utils_flask_sqla.serializers import serializable
 
     @serializable
     class MyModel(DB.Model):
@@ -157,7 +157,7 @@ S'insère entre le décorateur de route flask et la signature de fonction
 fichier routes ::
 
     from flask import Blueprint
-    from geonature.utils.utilssqlalchemy import json_resp
+    from utils_flask_sqla.response import json_resp
 
     blueprint = Blueprint(__name__)
 
@@ -208,7 +208,7 @@ params :
 
     from flask import Blueprint
     from pypnusershub.routes import check_auth
-    from geonature.utils.utilssqlalchemy import json_resp
+    from utils_flask_sqla.response import json_resp
 
     blueprint = Blueprint(__name__)
 
@@ -245,7 +245,7 @@ params :
 
     from flask import Blueprint
     from pypnusershub.routes import check_auth_cruved
-    from geonature.utils.utilssqlalchemy import json_resp
+    from utils_flask_sqla.response import json_resp
 
     blueprint = Blueprint(__name__)
 
