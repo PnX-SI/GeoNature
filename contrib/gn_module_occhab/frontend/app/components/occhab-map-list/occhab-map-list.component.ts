@@ -44,7 +44,9 @@ export class OccHabMapListComponent implements OnInit {
     this.getStations({ limit: 50 });
     // get wiewport height to set the number of rows in the tabl
     const h = document.documentElement.clientHeight;
-    this.rowNumber = Math.trunc(h / 55);
+    console.log(h);
+
+    this.rowNumber = this.calculeteRowNumber(h);
     // observable on mapListService.currentIndexRow to find the current page
     this.mapListService.currentIndexRow$.subscribe(indexRow => {
       const currentPage = Math.trunc(indexRow / this.rowNumber);
@@ -52,10 +54,24 @@ export class OccHabMapListComponent implements OnInit {
     });
   }
 
+  /** Calculate the number of row with the client screen height */
+  calculeteRowNumber(screenHeight: number): number {
+    //if(scr)
+    if (screenHeight > 1000) {
+      return Math.trunc(screenHeight / 52);
+    } else if (screenHeight > 800) {
+      return Math.trunc(screenHeight / 55);
+    } else if (screenHeight <= 800) {
+      return Math.trunc(screenHeight / 62);
+    }
+  }
+
   // update the number of row per page when resize the window
   @HostListener("window:resize", ["$event"])
   onResize(event) {
-    this.rowNumber = Math.trunc(event.target.innerHeight / 55);
+    console.log(event.target.innerHeight);
+
+    this.rowNumber = this.calculeteRowNumber(event.target.innerHeight);
   }
 
   getStations(params?) {
