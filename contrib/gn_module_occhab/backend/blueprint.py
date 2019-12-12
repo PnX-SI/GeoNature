@@ -200,9 +200,9 @@ def export_all_habitats(info_role, export_format='csv',):
     columns_to_serialize = []
     for db_col in export_view.db_cols:
         if db_col.key in blueprint.config['EXPORT_COLUMS']:
-            db_cols_for_shape.append(db_col)
+            if db_col.key != 'geometry':
+                db_cols_for_shape.append(db_col)
             columns_to_serialize.append(db_col.key)
-    print()
     results = DB.session.query(export_view.tableDef).filter(
         export_view.tableDef.columns.id_station.in_(data['idsStation'])
     ).limit(
@@ -238,7 +238,6 @@ def export_all_habitats(info_role, export_format='csv',):
             )
 
             dir_path = str(ROOT_DIR / "backend/static/shapefiles")
-
             export_view.as_shape(
                 db_cols=db_cols_for_shape,
                 data=results,

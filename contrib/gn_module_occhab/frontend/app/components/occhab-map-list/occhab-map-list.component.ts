@@ -107,8 +107,7 @@ export class OccHabMapListComponent implements OnInit {
 
   openModal(tooManyObs = false) {
     const ref = this._ngbModal.open(OccHabModalDownloadComponent, {
-      size: "lg",
-      windowClass: "large-modal"
+      size: "lg"
     });
     ref.componentInstance.tooManyObs = tooManyObs;
   }
