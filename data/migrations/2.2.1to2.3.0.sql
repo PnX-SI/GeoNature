@@ -264,7 +264,9 @@ CREATE INDEX i_t_releves_occtax_id_nomenclature_grp_typ ON pr_occtax.t_releves_o
 CREATE INDEX i_t_releves_occtax_geom_local ON pr_occtax.t_releves_occtax USING gist (geom_local);
 CREATE INDEX i_t_releves_occtax_date_max ON pr_occtax.t_releves_occtax USING btree (date_max);
 
-
+-- ###############################################
+-- MONITORING
+-- ###############################################
 -- Nettoyage monitoring
 DROP TABLE IF EXISTS gn_monitoring.cor_site_application;
 
@@ -292,10 +294,11 @@ BEGIN
 
     EXECUTE 'ALTER TABLE gn_monitoring.t_base_sites ADD geom_local geometry(Geometry,' || local_srid || ')';
 
-    --Mise à jour des données existantes
+    --Mise à jour des données existantes: champ geom_local
     UPDATE  gn_monitoring.t_base_sites SET geom_local = st_transform(geom, local_srid);
 END $$;
 
+--Mise à jour des données existantes : champ alt_min/max
 WITH alt AS (
     SELECT (ref_geo.fct_get_altitude_intersection(geom_local)).*, id_base_site
     FROM gn_monitoring.t_base_sites
@@ -358,11 +361,34 @@ ALTER TABLE gn_monitoring.t_base_visits ADD CONSTRAINT fk_t_base_visits_t_datase
       ON UPDATE CASCADE ON DELETE NO ACTION;
 
 
+ALTER TABLE gn_monitoring.t_base_visits ADD id_nomenclature_obs_technique integer DEFAULT ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133');
+ALTER TABLE gn_monitoring.t_base_visits ADD id_nomenclature_grp_typ integer DEFAULT ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'PASS');
+
+
+ALTER TABLE ONLY gn_monitoring.t_base_visits
+    ADD CONSTRAINT fk_t_base_visits_id_nomenclature_obs_technique FOREIGN KEY (id_nomenclature_obs_technique) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY gn_monitoring.t_base_visits
+    ADD CONSTRAINT fk_t_base_visits_id_nomenclature_grp_typ FOREIGN KEY (id_nomenclature_grp_typ) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE gn_monitoring.t_base_visits
+  ADD CONSTRAINT check_t_base_visits_id_nomenclature_obs_technique CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_obs_technique,'TECHNIQUE_OBS')) NOT VALID;
+
+ALTER TABLE gn_monitoring.t_base_visits
+  ADD CONSTRAINT check_t_base_visits_id_nomenclature_grp_typ CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_grp_typ,'TYP_GRP')) NOT VALID;
+
+
 CREATE TRIGGER tri_meta_dates_change_synthese
   BEFORE INSERT OR UPDATE
   ON gn_monitoring.t_base_visits
   FOR EACH ROW
   EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
+
+
+
+-- ###############################################
+-- EXPORT TAXON LIST
+-- ###############################################
 
 -- Vue export des taxons de la synthèse
 -- Première version qui reste à affiner/étoffer

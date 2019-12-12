@@ -25,7 +25,7 @@ CREATE TABLE t_base_sites
   base_site_code character varying(25) DEFAULT NULL::character varying,
   first_use_date date,
   geom public.geometry(Geometry,4326) NOT NULL,
-  geom_local geometry(Geometry,2154),
+  geom_local public.geometry(Geometry,2154),
   altitude_min integer,
   altitude_max integer,
   uuid_base_site UUID DEFAULT public.uuid_generate_v4(),
@@ -41,6 +41,8 @@ CREATE TABLE t_base_visits
   id_digitiser integer,
   visit_date_min date NOT NULL,
   visit_date_max date,
+  id_nomenclature_obs_technique integer DEFAULT ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),
+  id_nomenclature_grp_typ integer DEFAULT ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'PASS'),
   comments text,
   uuid_base_visit UUID DEFAULT public.uuid_generate_v4(),
   meta_create_date timestamp without time zone DEFAULT now(),
@@ -126,6 +128,11 @@ ALTER TABLE ONLY cor_site_area
 ALTER TABLE ONLY cor_site_area
   ADD CONSTRAINT fk_cor_site_area_id_area FOREIGN KEY (id_area) REFERENCES ref_geo.l_areas (id_area);
 
+ALTER TABLE ONLY t_base_visits
+    ADD CONSTRAINT fk_t_base_visits_id_nomenclature_obs_technique FOREIGN KEY (id_nomenclature_obs_technique) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY t_base_visits
+    ADD CONSTRAINT fk_t_base_visits_id_nomenclature_grp_typ FOREIGN KEY (id_nomenclature_grp_typ) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 --------------
 --CONSTRAINS--
@@ -139,6 +146,11 @@ ALTER TABLE t_base_sites
 ALTER TABLE t_base_sites
   ADD CONSTRAINT check_t_base_sites_type_site CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_type_site,'TYPE_SITE')) NOT VALID;
 
+ALTER TABLE t_base_visits
+  ADD CONSTRAINT check_t_base_visits_id_nomenclature_obs_technique CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_obs_technique,'TECHNIQUE_OBS')) NOT VALID;
+
+ALTER TABLE t_base_visits
+  ADD CONSTRAINT check_t_base_visits_id_nomenclature_grp_typ CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_grp_typ,'TYP_GRP')) NOT VALID;
 
 ---------
 --INDEX--
