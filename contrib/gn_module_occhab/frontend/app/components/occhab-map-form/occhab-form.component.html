@@ -1,6 +1,6 @@
 
 
-<div class="row row-sm">
+<div class="row row-0">
   <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
     <!-- HABITAT ALREADY SAVED -->
     <div 
@@ -92,9 +92,9 @@
       </h5>
 
       <div class="card-body">
-        <div class="row">
-          <div class="col-6">
-            <div *ngIf="moduleConfig.OBSERVER_AS_TXT; else observerIDBlock" class="col">
+        <div class="row row-0">
+          <div class="col-6 padding-sm">
+            <div *ngIf="moduleConfig.OBSERVER_AS_TXT; else observerIDBlock">
               <pnx-observers-text 
                 [parentFormControl]="occHabForm.stationForm.get('observers_txt')">
               </pnx-observers-text>
@@ -236,9 +236,9 @@
           displayedKey="label_fr">
        </pnx-dumb-select>
 
-       <div class="row">
+       <div class="row row-0">
          <div 
-          class="col"
+          class="col padding-sm"
           *ngIf="moduleConfig.formConfig.area"          
         >
             <small> Surface (en m²)</small>
@@ -249,7 +249,7 @@
             >
          </div>
 
-         <div class="col">
+         <div class="col padding-sm">
             <pnx-dumb-select
               *ngIf="moduleConfig.formConfig.area_surface_calculation"
               label="Méthode de calcul de la surface" 
@@ -260,19 +260,34 @@
               displayedKey="label_fr">
            </pnx-dumb-select>
          </div>
-
-   
+       </div>
+       <div class="row row-0">
+          <div class="form-group col-6 padding-sm">
+            <pnx-dumb-select
+              *ngIf="moduleConfig.formConfig.geographic_object"
+              label="Nature objet géographique" 
+              [parentFormControl]="occHabForm.stationForm.get('id_nomenclature_geographic_object')"         
+              [items]="storeService.nomenclatureItems.NAT_OBJ_GEO"
+              comparedKey="id_nomenclature"
+              titleKey="definition_fr"
+              displayedKey="label_fr">
+            </pnx-dumb-select>
+          </div>
        </div>
 
-        <pnx-dumb-select
-          *ngIf="moduleConfig.formConfig.geographic_object"
-          label="Nature objet géographique" 
-          [parentFormControl]="occHabForm.stationForm.get('id_nomenclature_geographic_object')"         
-          [items]="storeService.nomenclatureItems.NAT_OBJ_GEO"
-          comparedKey="id_nomenclature"
-          titleKey="definition_fr"
-          displayedKey="label_fr">
-       </pnx-dumb-select>
+       <div class="row row-0">
+        <div class="form-group col-6 padding-sm">
+            <textarea 
+              class="form-control form-control-sm"
+              type="textarea"
+              placeholder="Commentaire"
+              [formControl]="occHabForm.stationForm.get('comment')"
+            ></textarea>
+        </div>
+
+       </div>
+
+
     </div>
   </div>
 
@@ -318,7 +333,7 @@
           class="card-body body-hab-form"
         >
           <div class="form-row collapse" id="collaspeTypo">
-            <div class="col-6">
+            <div class="col-6 padding-sm">
                 <small> Sélectionner une typologie d'habitat</small>
                 <select
                  [formControl]="occHabForm.typoHabControl"
@@ -354,7 +369,7 @@
                 </button>
               </div>
             </div>
-            <div class="col-6">
+            <div class="col-6 padding-sm">
               <pnx-dumb-select
                 *ngIf="moduleConfig.formConfig.community_interest"
                 label="Habitat d'interet communautaire" 
