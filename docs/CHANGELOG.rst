@@ -12,6 +12,8 @@ Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...develop
 * Nouvelle association possible entre un JDD et un module (#399)
 * METADATA: Ajout des ID sur les JDD et CA
 * Ajout d'inputs time et number à dynamic form
+* Ajout d'un paramètre dans le cas ou le serveur se trouve derrière un proxy
+
 **🐛 Corrections**
 
 * side nav : Correction pour ne pas afficher les modules pour lesquels le paramètre active_frontend est False
@@ -34,6 +36,10 @@ Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...develop
 
 2.2.1 (2019-10-09)
 ------------------
+
+**🚀 Nouveautés**
+
+* Ajout d'un paramètre dans le cas ou le serveur se trouve derrière un proxy
 
 **🐛 Corrections**
 
