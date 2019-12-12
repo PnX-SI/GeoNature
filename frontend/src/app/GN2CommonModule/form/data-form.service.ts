@@ -165,7 +165,7 @@ export class DataFormService {
       params = params.set('id_list', id_list.toString());
     }
     return this._http
-      .get<any>(`${AppConfig.API_TAXHUB}/habref/typo`, { params: params })
+      .get<any>(`${AppConfig.API_ENDPOINT}/habref/typo`, { params: params })
       .map(data => {
         // replace '_' with space because habref is super clean !
         return data.map(d => {
@@ -176,7 +176,7 @@ export class DataFormService {
   }
 
   getHabitatInfo(cd_hab) {
-    return this._http.get<any>(`${AppConfig.API_TAXHUB}/habref/habitat/${cd_hab}`);
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/habref/habitat/${cd_hab}`);
   }
 
   getGeoInfo(geojson) {
