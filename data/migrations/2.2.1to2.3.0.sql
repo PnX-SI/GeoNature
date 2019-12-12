@@ -291,7 +291,18 @@ BEGIN
     local_srid := (SELECT parameter_value FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid');
 
     EXECUTE 'ALTER TABLE gn_monitoring.t_base_sites ADD geom_local geometry(Geometry,' || local_srid || ')';
+
+    --Mise à jour des données existantes
+    UPDATE  gn_monitoring.t_base_sites SET geom_local = st_transform(geom, local_srid);
 END $$;
+
+WITH alt AS (
+    SELECT (ref_geo.fct_get_altitude_intersection(geom_local)).*, id_base_site
+    FROM gn_monitoring.t_base_sites
+)
+UPDATE gn_monitoring.t_base_sites  s SET altitude_min = alt.altitude_min, altitude_max = alt.altitude_max
+FROM alt
+WHERE s.id_base_site = alt.id_base_site;
 
 
 CREATE TRIGGER tri_calculate_geom_local
