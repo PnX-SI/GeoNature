@@ -25,6 +25,8 @@ export class ObserversComponent implements OnInit {
    *  Id de la liste d'utilisateur (table ``utilisateur.t_menus``) (obligatoire)
    */
   @Input() idMenu: number;
+  @Input() codeList: string;
+
   @Input() label: string;
   // Disable the input: default to false
   @Input() disabled = false;
@@ -44,10 +46,25 @@ export class ObserversComponent implements OnInit {
   constructor(private _dfService: DataFormService) {}
 
   ngOnInit() {
-    this._dfService.getObservers(this.idMenu).subscribe(data => {
-      this.observers = data;
-      this.filteredObservers = data;
-    });
+    // si idMenu
+    if (this.idMenu) {
+      this._dfService.getObservers(this.idMenu).subscribe(data => {
+        this.observers = data;
+        this.filteredObservers = data;
+        if (this.parentFormControl.value) {
+          this.parentFormControl.setValue(this.parentFormControl.value);
+        }
+      });
+      // sinon si codeList
+    } else if (this.codeList) {
+      this._dfService.getObserversFromCode(this.codeList).subscribe(data => {
+        this.observers = data;
+        this.filteredObservers = data;
+        if (this.parentFormControl.value) {
+          this.parentFormControl.setValue(this.parentFormControl.value);
+        }
+      });
+    }
   }
 
   filterObservers(event) {

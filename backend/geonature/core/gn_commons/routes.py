@@ -86,6 +86,10 @@ def insert_or_update_media(id_media=None):
         formData = dict(request.form)
         for key in formData:
             data[key] = formData[key]
+            if data[key] == 'true':
+                data[key] = True
+            if data[key] == 'false':
+                data[key] = False
     else:
         data = request.get_json(silent=True)
 

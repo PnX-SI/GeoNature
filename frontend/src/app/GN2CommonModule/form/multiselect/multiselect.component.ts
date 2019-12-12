@@ -48,6 +48,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   /**
    * Booléan qui permet de passer tout l'objet au formControl, et pas seulement une propriété de l'objet renvoyé par l'API. Facultatif, par défaut à ``false``, c'est alors l'attribut passé en Input ``keyValue`` qui est renvoyé au formControl.
    * Lorsque l'on passe ``true`` à cet Input, l'Input ``keyValue`` devient inutile.
+   * L'API qui renvoit séléctionnées au formulaire doit être un tableau d'entier et non un tableau d'items
    */
   @Input() bindAllItem: false;
   // time before the output are triggered
@@ -91,23 +92,44 @@ export class MultiSelectComponent implements OnInit, OnChanges {
         this.onSearch.emit(value);
       });
 
+    // When data his push via 'patchValue' (API POST data for example)
     this.parentFormControl.valueChanges.subscribe(value => {
-      // filter the list of options to not display twice an item
+      if (this.values && this.values.length < 1) {
+        return;
+      }
+      //  if the new value is null
+      //refresh selectedItems, formcontrolValue and values to display
       if (value === null) {
         this.selectedItems = [];
         this.formControlValue = [];
         this.values = this.savedValues;
       } else {
+        // when patch value when init the component
+        // push the item only if selected items == 0 (to not push twice the object when the formControl is patch)
         if (this.selectedItems.length === 0) {
           value.forEach(item => {
-            this.selectedItems.push(item);
-            this.formControlValue.push(item);
+            if (this.bindAllItem) {
+              this.addItem(item);
+            } else {
+              // if not bind all item (the formControl send an integer) we must find in the values array the current item
+              for (let i = 0; i < this.values.length; i++) {
+                if (this.values[i][this.keyValue] === item) {
+                  this.addItem(this.values[i]);
+                  break;
+                }
+              }
+            }
           });
         }
       }
     });
   }
 
+  /**
+   * Add the current item in the formControl (the full object if bindAllItems=True and only the id (keyValue) otherwise)
+   * filter the select list to not have doublon
+   * @param item : the full item object (not the id)
+   */
   addItem(item) {
     // remove element from the items list to avoid doublon
     this.values = this.values.filter(curItem => {
@@ -125,6 +147,8 @@ export class MultiSelectComponent implements OnInit, OnChanges {
       return;
     }
     // set the item for the formControl
+    // if bindAllItem -> push the whole object
+    // else push only the key of the object( @Input keyValue)
     let updateItem;
     if (this.bindAllItem) {
       updateItem = item;
@@ -137,7 +161,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
     this.parentFormControl.patchValue(this.formControlValue);
 
     this.searchControl.reset();
-    this.onChange.emit(item);
+    this.onChange.emit(updateItem);
   }
 
   removeItem($event, item) {
@@ -190,8 +214,13 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   ngOnChanges(changes) {
     if (changes.values && changes.values.currentValue) {
       this.savedValues = changes.values.currentValue;
+
+      if (this.parentFormControl.value) {
+        this.parentFormControl.setValue(this.parentFormControl.value);
+      }
       // remove doublon in the dropdown lists
       // @FIXME: timeout to wait for the formcontrol to be updated
+      // the data from formControl can came in AJAX, so we wait for it...
       setTimeout(() => {
         this.removeDoublon();
       }, 2000);

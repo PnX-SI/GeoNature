@@ -11,6 +11,7 @@
 ################################################################################
 
 https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/archive/develop.zip
+https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/archive/develop.zip
 https://github.com/PnX-SI/UsersHub-authentification-module/archive/develop.zip
 https://github.com/PnX-SI/Nomenclature-api-module/archive/develop.zip
 https://github.com/PnX-SI/Habref-api-module/archive/develop.zip
@@ -44,3 +45,4 @@ fiona==1.7.13
 flask_wtf==0.14.2
 lxml==4.2.5
 Flask-Mail==0.9.1
+pip==19.3.1

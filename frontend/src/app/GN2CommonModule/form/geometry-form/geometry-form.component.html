@@ -1,0 +1,10 @@
+<label>{{label}}</label>
+<pnx-map height={{mapHeight}}>
+    <pnx-leaflet-draw
+      [options]="leafletDrawOptions"
+      [zoomLevel]="1"
+      (layerDrawed)="bindGeojsonForm($event)"
+      [geojson]="geojson ? geojson.geometry : null"
+      >
+    </pnx-leaflet-draw>
+</pnx-map>

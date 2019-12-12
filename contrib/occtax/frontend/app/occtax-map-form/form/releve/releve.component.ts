@@ -8,6 +8,7 @@ import { OcctaxFormService } from "../occtax-form.service";
 import { ViewEncapsulation } from "@angular/core";
 import { ModuleConfig } from "../../../module.config";
 import { DateStruc } from "@geonature_common/form/date/date.component";
+import { filter } from "rxjs/operators";
 
 @Component({
   selector: "pnx-releve",
@@ -67,18 +68,20 @@ export class ReleveComponent implements OnInit, OnDestroy {
     }
 
     // Autocomplete date only if its not edition MODE
-    this.isEditionSub$ = this.fs.editionMode$.subscribe(isEdit => {
-      if (isEdit === false) {
-        this._commonFormService.autoCompleteDate(
-          this.releveForm.controls.properties as FormGroup
-        );
-      }
-    });
+    this.isEditionSub$ = this.fs.editionMode$
+      .pipe(filter(isEdit => isEdit === false))
+      .subscribe(isEdit => {
+        if (isEdit === false) {
+          this._commonFormService.autoCompleteDate(
+            this.releveForm.controls.properties as FormGroup
+          );
+        }
+      });
 
     // autcomplete hourmax + set null when empty
     (this.releveForm.controls
       .properties as FormGroup).controls.hour_min.valueChanges
-      .filter(value => value != null)
+      .pipe(filter(value => value != null))
       .subscribe(value => {
         if (value.length == 0) {
           (this.releveForm.controls
@@ -100,7 +103,7 @@ export class ReleveComponent implements OnInit, OnDestroy {
     // set hour_max = hour_min to prevent date_max<date_min
     (this.releveForm.controls
       .properties as FormGroup).controls.hour_max.valueChanges
-      .filter(value => value != null)
+      .pipe(filter(value => value != null))
       .subscribe(value => {
         if (value.length == 0)
           (this.releveForm.controls
