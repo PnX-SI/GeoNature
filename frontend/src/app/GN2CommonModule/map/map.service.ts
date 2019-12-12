@@ -139,9 +139,6 @@ export class MapService {
   }
 
   createMarker(x, y, isDraggable) {
-    console.log('LAAAAAAAA');
-    console.log(L.marker);
-
     return L.marker([y, x], {
       icon: L.icon({
         iconUrl: require<any>('../../../../node_modules/leaflet/dist/images/marker-icon.png'),
@@ -158,17 +155,21 @@ export class MapService {
         switch (feature.geometry.type) {
           // No color nor opacity for linestrings
           case 'LineString':
-            return style ? style : {
-              color: '#3388ff',
-              weight: 3
-            };
+            return style
+              ? style
+              : {
+                  color: '#3388ff',
+                  weight: 3
+                };
           default:
-            return style ? style : {
-              color: '#3388ff',
-              fill: true,
-              fillOpacity: 0.2,
-              weight: 3
-            };
+            return style
+              ? style
+              : {
+                  color: '#3388ff',
+                  fill: true,
+                  fillOpacity: 0.2,
+                  weight: 3
+                };
         }
       },
       pointToLayer: (feature, latlng) => {

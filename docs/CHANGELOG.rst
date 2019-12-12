@@ -40,9 +40,6 @@ Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...develop
 2.2.1 (2019-10-09)
 ------------------
 
-**🚀 Nouveautés**
-
-* Ajout d'un paramètre dans le cas ou le serveur se trouve derrière un proxy
 
 **🐛 Corrections**
 
