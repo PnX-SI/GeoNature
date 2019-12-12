@@ -112,10 +112,6 @@ export class NomenclatureComponent extends GenericFormComponent
     }
   }
 
-  compareFn(c1: any, c2: any): boolean {
-    return c1 && c2 ? c1.id_nomenclature === c2.id_nomenclature : c1 === c2;
-  }
-
   ngOnChanges(changes: SimpleChanges) {
     // if change regne => change groupe2inpn also
     if (changes.regne !== undefined && !changes.regne.firstChange) {
