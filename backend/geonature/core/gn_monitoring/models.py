@@ -95,7 +95,7 @@ class TBaseVisits(DB.Model):
     # Pour le moment non défini comme une clé étrangère
     #   pour les questions de perfs
     #   a voir en fonction des usage
-    id_module = = DB.Column(DB.Integer)
+    id_module = DB.Column(DB.Integer)
 
     visit_date_min = DB.Column(DB.DateTime)
     visit_date_max = DB.Column(DB.DateTime)
@@ -122,7 +122,6 @@ class TBaseVisits(DB.Model):
         secondaryjoin=(corVisitObserver.c.id_role == User.id_role),
         foreign_keys=[corVisitObserver.c.id_base_visit, corVisitObserver.c.id_role],
     )
-
 
     dataset = relationship(
         TDatasets,
