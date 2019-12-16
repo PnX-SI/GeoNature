@@ -311,13 +311,7 @@ def getDefaultNomenclatures():
 
     """
     params = request.args
-    group2_inpn = "0"
-    regne = "0"
     organism = 0
-    if "group2_inpn" in params:
-        group2_inpn = params["group2_inpn"]
-    if "regne" in params:
-        regne = params["regne"]
     if "organism" in params:
         organism = params["organism"]
     types = request.args.getlist("mnemonique")
@@ -325,7 +319,7 @@ def getDefaultNomenclatures():
     q = DB.session.query(
         distinct(DefaultNomenclaturesValue.mnemonique_type),
         func.pr_occhab.get_default_nomenclature_value(
-            DefaultNomenclaturesValue.mnemonique_type, organism, regne, group2_inpn
+            DefaultNomenclaturesValue.mnemonique_type, organism
         ),
     )
     if len(types) > 0:

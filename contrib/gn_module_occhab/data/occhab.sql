@@ -9,11 +9,11 @@ SET search_path = pr_occhab, pg_catalog;
 --FUNCTIONS--
 -------------
 
-CREATE OR REPLACE FUNCTION pr_occhab.get_default_nomenclature_value(mytype character varying, myidorganism integer DEFAULT 0, myregne character varying(20) DEFAULT '0', mygroup2inpn character varying(255) DEFAULT '0') RETURNS integer
+CREATE OR REPLACE FUNCTION pr_occhab.get_default_nomenclature_value(mytype character varying, myidorganism integer DEFAULT 0) RETURNS integer
 IMMUTABLE
 LANGUAGE plpgsql
 AS $$
---Function that return the default nomenclature id with wanteds nomenclature type, organism id, regne, group2_inpn
+--Function that return the default nomenclature id with wanteds nomenclature type, organism id
 --Return -1 if nothing matche with given parameters
   DECLARE
     thenomenclatureid integer;
@@ -22,8 +22,6 @@ AS $$
       FROM pr_occhab.defaults_nomenclatures_value
       WHERE mnemonique_type = mytype
       AND (id_organism = 0 OR id_organism = myidorganism)
-      AND (regne = '0' OR regne = myregne)
-      AND (group2_inpn = '0' OR group2_inpn = mygroup2inpn)
       ORDER BY group2_inpn DESC, regne DESC, id_organism DESC LIMIT 1;
     IF (thenomenclatureid IS NOT NULL) THEN
       RETURN thenomenclatureid;
@@ -97,8 +95,6 @@ CREATE TABLE pr_occhab.cor_station_observer(
 CREATE TABLE pr_occhab.defaults_nomenclatures_value (
     mnemonique_type character varying(255) NOT NULL,
     id_organism integer NOT NULL DEFAULT 0,
-    regne character varying(20) NOT NULL DEFAULT '0',
-    group2_inpn character varying(255) NOT NULL DEFAULT '0',
     id_nomenclature integer NOT NULL
 );
 
@@ -118,7 +114,7 @@ ALTER TABLE ONLY pr_occhab.cor_station_observer
     ADD CONSTRAINT pk_cor_station_observer PRIMARY KEY (id_cor_station_observer);
 
 ALTER TABLE ONLY pr_occhab.defaults_nomenclatures_value
-    ADD CONSTRAINT pk_pr_occhab_defaults_nomenclatures_value PRIMARY KEY (mnemonique_type, id_organism, regne, group2_inpn);
+    ADD CONSTRAINT pk_pr_occhab_defaults_nomenclatures_value PRIMARY KEY (mnemonique_type, id_organism);
 
 ----------------
 --FOREIGN KEYS--
@@ -297,7 +293,7 @@ LEFT join ref_nomenclatures.t_nomenclatures nom4 on nom4.id_nomenclature = h.id_
 ------------
 
 
-INSERT INTO pr_occhab.defaults_nomenclatures_value (mnemonique_type, id_organism, regne, group2_inpn, id_nomenclature) VALUES
+INSERT INTO pr_occhab.defaults_nomenclatures_value (mnemonique_type, id_organism, id_nomenclature) VALUES
 ('METHOD_CALCUL_SURFACE',0,0,0, ref_nomenclatures.get_id_nomenclature('METHOD_CALCUL_SURFACE', 'sig')),
 ('NAT_OBJ_GEO',0,0,0, ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO', 'NSP')),
 ('DETERMINATION_TYP_HAB',0,0,0, ref_nomenclatures.get_id_nomenclature('DETERMINATION_TYP_HAB', '1')),
