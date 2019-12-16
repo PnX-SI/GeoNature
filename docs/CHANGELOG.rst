@@ -2,14 +2,39 @@
 CHANGELOG
 =========
 
-2.2.2 (Unreleased)
-------------------
+2.3.0 - Occhab de Noël (Unreleased)
+-----------------------------------
 
 Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...develop
 
 **🚀 Nouveautés**
 
-* Nouvelle association possible entre un JDD et un module (#399)
+* Développement du module Occhab (Occurrences d'habitats) basé sur une version minimale du standard SINP du même nom et s'appuyant sur le référentiel Habref du SINP #735
+
+  - Consultation (carte-liste) des stations et affichage de leurs habitats
+  - Recherche (et export) des stations par jeu de données, habitats ou dates
+  - Saisie d'une station et de ses habitats
+  - Possibilité de saisir plusieurs habitats par station
+  - Saisie des habitats basée sur une liste pré-définie à partir d'Habref. Possibilité d'intégrer toutes les typologies d'habitat ou de faire des listes réduites d'habitats
+  - Possibilité de charger un fichier GeoJson, KML ou GPX sur la carte et d'utiliser un de ses objets comme géométrie de station
+  - Mise en place d'une API Occhab (Get, Post, Delete, Export stations et habitats et récupérer les valeurs par défaut des nomenclatures)
+  - Calcul automatique des altitudes (min/max) et de la surface d'une station
+  - Gestion des droits (en fonction du CRUVED de l'utilisateur connecté)
+  - Définition des valeurs par défaut dans la BDD (paramétrable par organisme)
+  - Possibilité de masquer des champs du formulaire
+
+* Création d'un sous-module autonome ou intégré pour gérer l'API d'Habref (https://github.com/PnX-SI/Habref-api-module) pour : 
+
+  - Rechercher un habitat dans Habref (avec usage du trigramme pour la pertinence du résultat)
+  - Obtenir les infos d'un habitat et de ses correspondances à partir de son cd_hab
+  - Obtenir les habitats d'une liste (avec ou sans leur code en plus de leur nom et filtrable par typologie)
+  - Obtenir la liste des typologies (filtrable par liste d'habitats)
+  - Obtenir toutes les correspondances d'un habitat à partir de son cd_hab
+
+* Association des JDD à des modules pour dissocier les JDD utilisées dans Occtax ou dans Occhab notamment (#399)
+* Mise à jour de Angular 4 à Angular 7 (performances, ....) par @jbrieuclp
+* Doc utilisateur Synthèse (par @amandine-sahl)
+* Externalisation des librairies d'outils Flask et SQLAlchemy (https://github.com/PnX-SI/Utils-Flask-SQLAlchemy et https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo) pour pouvoir les factorier et les utiliser dans d'autres applications. Cela améliore aussi les performances des jointures.
 * METADATA: Ajout des ID sur les JDD et CA
 * Le composant générique FileLayer expose un ``output`` pour récuperer la géometrie sélectionnée (un observable de MapService était utilisé auparavant) 
 * Support des markers sur le composant ``leaflet-draw``
@@ -19,12 +44,12 @@ Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...develop
 
 **🐛 Corrections**
 
-* side nav : Correction pour ne pas afficher les modules pour lesquels le paramètre active_frontend est False
+* Side nav : Correction pour ne pas afficher les modules pour lesquels le paramètre ``active_frontend`` est False (#822)
 * OCCTAX : Gestion de l'édition des occurrences où le JDD a été désactivé, en ne permettant pas de modifier le JDD (#694)
 * OCCTAX : Amélioration des performances de la liste des relevés (par @jbrieuclp) (#690)
 * OCCTAX : Correction d'une faiblesse lors de la récupération des informations taxonomiques d'un relevé (utilisation d'une jointure plutôt que l'API TaxHub). Corrige #751 ?
 * OCCTAX : Correction des listes longues de taxons dans les tooltip des relevés en y ajoutant un scroll (par @jbrieuclp) (#666)
- INSCRIPTION : Correction si aucun champ additionnel n'a été ajouté au formulaire (par @jbrieuclp) (#746)
+* INSCRIPTION : Correction si aucun champ additionnel n'a été ajouté au formulaire (par @jbrieuclp) (#746)
 * Simplification de l'écriture des logs dans le script ``install_db.sh``
 * Externalisation des outils Flask et SQLAlchemy en utilisant le nouveau sous-module dédié (https://github.com/PnX-SI/Utils-Flask-SQLAlchemy) qui améliore aussi les performances des jointures
 * Correction de l'installation des requirements.txt lors de l'installation d'un module (#764 par @joelclems)
@@ -36,10 +61,12 @@ Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...develop
 
 * Passer le script de migration suivant: https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.2.1to2.3.0.sql
 * Lors de la migration, tous les JDD actifs sont associés par défaut au module Occtax (https://github.com/PnX-SI/GeoNature/blob/develop/data/migrations/2.2.1to2.3.0.sql#L17-L22), à chacun d'adapter si besoin, en en retirant certains.
+* Angular 4 à 7 : Conséquences sur modules ???
+* Sous-modules Utils : Conséquences sur modules ???
+* Installation Occhab
 
 2.2.1 (2019-10-09)
 ------------------
-
 
 **🐛 Corrections**
 
