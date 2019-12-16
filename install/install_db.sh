@@ -178,22 +178,22 @@ then
     then
         mkdir tmp/habref
     fi
-    if [ ! -f 'tmp/habref/HABREF_40.zip' ]
+    if [ ! -f 'tmp/habref/HABREF_50.zip' ]
     then
-      wget https://geonature.fr/data/inpn/habitats/HABREF_40.zip -P tmp/habref
+      wget https://geonature.fr/data/inpn/habitats/HABREF_50.zip -P tmp/habref
     else
       echo HABREF_40.zip exists
     fi
-    unzip tmp/habref/HABREF_40.zip -d tmp/habref
-
-    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/habitat.sql -P tmp/habref 
-    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/inpn/data_inpn_habref.sql -P tmp/habref
+    unzip tmp/habref/HABREF_50.zip -d tmp/habref
+    
+    wget https://raw.githubusercontent.com/PnX-SI/Habref-api-module/$habref_api_release/src/pypn_habref_api/data/habref.sql -P tmp/habref
+    wget https://raw.githubusercontent.com/PnX-SI/Habref-api-module/$habref_api_release/src/pypn_habref_api/data/data_inpn_habref.sql -P tmp/habref 
 
     # sed to replace /tmp/taxhub to ~/<geonature_dir>/tmp.taxhub
     sed -i 's#'/tmp/habref'#'$parentdir/tmp/habref'#g' tmp/habref/data_inpn_habref.sql
 
     write_log "Creating 'habitat' schema..."
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/habref/habitat.sql &>> var/log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/habref/habref.sql &>> var/log/install_db.log
 
     write_log "Inserting INPN habitat data..."
     sudo -u postgres -s psql -d $db_name  -f tmp/habref/data_inpn_habref.sql &>> var/log/install_db.log
@@ -367,5 +367,6 @@ rm tmp/taxhub/*.txt
 rm tmp/taxhub/*.sql
 rm tmp/taxhub/*.csv
 rm tmp/habref/*.csv
+rm tmp/habref/*.pdf
 rm tmp/habref/*.sql
 rm tmp/nomenclatures/*.sql
