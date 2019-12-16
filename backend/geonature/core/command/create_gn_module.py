@@ -2,8 +2,8 @@
     Fonctions permettant d'ajouter un module tiers à GN
     Ce module ne doit en aucun cas faire appel à des models ou au coeur de geonature
     dans les imports d'entête de fichier pour garantir un bon fonctionnement des fonctions
-    d'administration de l'application GeoNature (génération des fichiers de configuration, des 
-    fichiers de routing du frontend etc...). Ces dernières doivent pouvoir fonctionner même si 
+    d'administration de l'application GeoNature (génération des fichiers de configuration, des
+    fichiers de routing du frontend etc...). Ces dernières doivent pouvoir fonctionner même si
     un paquet PIP du requirement GeoNature n'a pas été bien installé
 """
 
@@ -133,12 +133,6 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                 )  # noqa
 
     except (GNModuleInstallError, GeoNatureError) as ex:
-        # remove module if not installed well
-        mod = DB.session.query(TModules).filter(
-            TModules.module_code == module_code).one_or_none()
-        if mod:
-            DB.session.delete(mod)
-            DB.session.commit()
         log.critical(
             (
                 "\n\n\033[91mError while installing GN module \033[0m.The process returned:\n\t{}"

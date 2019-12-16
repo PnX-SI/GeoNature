@@ -225,15 +225,15 @@ CREATE INDEX i_t_stations_occhab_geom_4326
   USING gist
   (geom_4326);
 
-CREATE INDEX i_t_habitats_cd_hab
+CREATE INDEX i_t_habitats_id_station
   ON pr_occhab.t_habitats
   USING btree
-  (cd_hab);
+  (id_station);
 
 CREATE INDEX i_t_habitats_cd_hab
   ON pr_occhab.t_habitats
   USING btree
-  (id_station);
+  (cd_hab);
 
 ------------
 --TRIGGERS--
@@ -275,7 +275,7 @@ to_char(s.date_max, 'DD/MM/YYYY'::text)as "dateFin",
 s.observers_txt as "observateur",
 nom2.cd_nomenclature as "methodeCalculSurface",
 public.st_astext(s.geom_4326)as "geometry",
-public.st_asgeojson(s.geom_4326) as geojson
+public.st_asgeojson(s.geom_4326) as geojson,
 nom3.cd_nomenclature as "natureObjetGeo",
 h.unique_id_sinp_hab as "identifiantHabSINP",
 h.nom_cite as "nomCite",
