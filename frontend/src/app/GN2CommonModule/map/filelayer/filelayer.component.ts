@@ -135,14 +135,7 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
     // event on load fail
 
     (this.fileLayerControl as any).loader.on('data:error', error => {
-      this._toasterService.error(
-        error.error.message,
-        "Erreur d'import" /** TODO, {
-        positionClass: 'toast-top-center',
-        tapToDismiss: true,
-        timeOut: 3000
-      }*/
-      );
+      this._toasterService.error(error.error.message, "Erreur d'import");
       console.error(error);
     });
   }
