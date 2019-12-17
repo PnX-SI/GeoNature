@@ -71,6 +71,11 @@ export class SyntheseFormService {
     const params = Object.assign({}, this.searchForm.value);
     const updatedParams = {};
     // tslint:disable-next-line:forin
+
+    // Supression du champ cd_nom qui est un champ uniquement
+    //    destiné au fonctionnement du formulaire et non pas de recherche
+    delete params['cd_nom'];
+
     for (let key in params) {
       if ((key === 'date_min' && params.date_min) || (key === 'date_max' && params.date_max)) {
         updatedParams[key] = this._dateParser.format(params[key]);
