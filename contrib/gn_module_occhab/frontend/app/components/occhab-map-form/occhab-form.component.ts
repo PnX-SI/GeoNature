@@ -35,6 +35,8 @@ export class OccHabFormComponent implements OnInit {
   public currentGeoJsonFileLayer;
   public markerCoordinates;
   public currentEditingStation: any;
+  // boolean tocheck if the station has at least one hab (control the validity of the form)
+  public atLeastOneHab = false
 
   constructor(
     public occHabForm: OcchabFormService,
@@ -45,11 +47,14 @@ export class OccHabFormComponent implements OnInit {
     private _commonService: CommonService,
     private _gnDataService: DataFormService,
     private _mapService: MapService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.leafletDrawOptions;
     leafletDrawOption.draw.polyline = false;
+    leafletDrawOption.draw.circle = false;
+    leafletDrawOption.draw.rectangle = false;
+
     this.occHabForm.stationForm = this.occHabForm.initStationForm();
     this.occHabForm.stationForm.controls.geom_4326.valueChanges.subscribe(d => {
       this.disabledForm = false;
@@ -111,6 +116,7 @@ export class OccHabFormComponent implements OnInit {
     this.showHabForm = false;
     this.showTabHab = true;
     this.occHabForm.currentEditingHabForm = null;
+    this.atLeastOneHab = true;
   }
 
   // toggle the hab form and call the editHab function of form service
