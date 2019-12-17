@@ -57,7 +57,8 @@ export class NewPasswordComponent implements OnInit {
         },
         // error callback
         error => {
-          this._toasterService.error(error.error.msg, ''
+          this._toasterService.error(error.error.msg, '');
+        }
       );
     }
   }

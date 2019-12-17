@@ -91,12 +91,12 @@ export class OcchabFormService {
       unique_id_sinp_hab: null,
       nom_cite: null,
       habref: [Validators.required, this.cdHabValidator],
-      id_nomenclature_determination_type:
-        defaultNomenclature["DETERMINATION_TYP_HAB"],
+      id_nomenclature_determination_type: defaultNomenclature ?
+        defaultNomenclature["DETERMINATION_TYP_HAB"] : null,
       determiner: null,
       id_nomenclature_community_interest: null,
       id_nomenclature_collection_technique: [
-        defaultNomenclature["TECHNIQUE_COLLECT_HAB"],
+        defaultNomenclature ? defaultNomenclature["TECHNIQUE_COLLECT_HAB"] : null,
         Validators.required
       ],
       recovery_percentage: null,
