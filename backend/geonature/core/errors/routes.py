@@ -3,13 +3,14 @@ import logging
 from flask import current_app, jsonify, Response
 
 from pypnusershub.db.tools import InsufficientRightsError
+from sqlalchemy.exc import SQLAlchemyError
+
+from utils_flask_sqla.response import json_resp
 from utils_flask_sqla.errors import UtilsSqlaError
 
 from geonature.utils.env import DB
-from utils_flask_sqla.response import json_resp
 from geonature.utils.errors import GeonatureApiError
 
-from sqlalchemy.exc import SQLAlchemyError
 
 log = logging.getLogger(__name__)
 gunicorn_error_logger = logging.getLogger("gunicorn.error")
