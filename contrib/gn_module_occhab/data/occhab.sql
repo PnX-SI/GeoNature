@@ -294,10 +294,10 @@ LEFT join ref_nomenclatures.t_nomenclatures nom4 on nom4.id_nomenclature = h.id_
 
 
 INSERT INTO pr_occhab.defaults_nomenclatures_value (mnemonique_type, id_organism, id_nomenclature) VALUES
-('METHOD_CALCUL_SURFACE',0,0,0, ref_nomenclatures.get_id_nomenclature('METHOD_CALCUL_SURFACE', 'sig')),
-('NAT_OBJ_GEO',0,0,0, ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO', 'NSP')),
-('DETERMINATION_TYP_HAB',0,0,0, ref_nomenclatures.get_id_nomenclature('DETERMINATION_TYP_HAB', '1')),
-('TECHNIQUE_COLLECT_HAB',0,0,0, ref_nomenclatures.get_id_nomenclature('TECHNIQUE_COLLECT_HAB', '0'))
+('METHOD_CALCUL_SURFACE',0, ref_nomenclatures.get_id_nomenclature('METHOD_CALCUL_SURFACE', 'sig')),
+('NAT_OBJ_GEO',0, ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO', 'NSP')),
+('DETERMINATION_TYP_HAB',0, ref_nomenclatures.get_id_nomenclature('DETERMINATION_TYP_HAB', '1')),
+('TECHNIQUE_COLLECT_HAB',0, ref_nomenclatures.get_id_nomenclature('TECHNIQUE_COLLECT_HAB', '0'))
 ;
 
 INSERT INTO gn_commons.bib_tables_location (table_desc, schema_name, table_name, pk_field, uuid_field_name) VALUES
