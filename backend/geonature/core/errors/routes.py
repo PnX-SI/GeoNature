@@ -3,6 +3,7 @@ import logging
 from flask import current_app, jsonify, Response
 
 from pypnusershub.db.tools import InsufficientRightsError
+from utils_flask_sqla.errors import UtilsSqlaError
 
 from geonature.utils.env import DB
 from utils_flask_sqla.response import json_resp
@@ -22,7 +23,6 @@ def internal_error(error):  # pylint: disable=W0613
     return {"message": "internal server error"}, 500
 
 
-
 @current_app.errorhandler(SQLAlchemyError)
 @json_resp
 def sqlalchemy_error(error):  # pylint: disable=W0613
@@ -33,6 +33,15 @@ def sqlalchemy_error(error):  # pylint: disable=W0613
 
 @current_app.errorhandler(GeonatureApiError)
 def geonature_api_error(error):
+    gunicorn_error_logger.error(error.to_dict())
+    DB.session.rollback()
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    return response
+
+
+@current_app.errorhandler(UtilsSqlaError)
+def utils_flask_sql_error(error):
     gunicorn_error_logger.error(error.to_dict())
     DB.session.rollback()
     response = jsonify(error.to_dict())
