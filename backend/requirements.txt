@@ -10,10 +10,11 @@
 # `Pipfile.lock` and then regenerate `requirements*.txt`.
 ################################################################################
 
-utils-flask-sqlalchemy==0.1.0
+
 https://github.com/PnX-SI/UsersHub-authentification-module/archive/1.4.3.zip
 https://github.com/PnX-SI/Nomenclature-api-module/archive/master.zip
-https://github.com/PnX-SI/Habref-api-module/archive/0.1.0.zip
+https://github.com/PnX-SI/Habref-api-module/archive/0.1.1.zip
+utils-flask-sqlalchemy==0.1.0
 chardet==3.0.4
 click==6.7
 flask-cors==3.0.3
