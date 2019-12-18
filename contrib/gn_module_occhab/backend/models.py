@@ -38,7 +38,7 @@ class THabitatsOcchab(DB.Model):
     unique_id_sinp_hab = DB.Column(
         UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
     )
-    cd_hab = DB.Column(DB.Integer, ForeignKey('ref_habitat.habref.cd_hab'))
+    cd_hab = DB.Column(DB.Integer, ForeignKey('ref_habitats.habref.cd_hab'))
     nom_cite = DB.Column(DB.Unicode)
     id_nomenclature_determination_type = DB.Column(
         DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))

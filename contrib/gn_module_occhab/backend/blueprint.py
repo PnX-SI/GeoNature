@@ -34,11 +34,12 @@ def post_station(info_role):
     """
     Post one occhab station (station + habitats)
 
-    .. :quickref: OccHab; Post one occhab station (station + habitats)
+    .. :quickref: OccHab; 
+
+    Post one occhab station (station + habitats)
 
     :returns: GeoJson<TStationsOcchab>
     """
-
     data = dict(request.get_json())
     occ_hab = None
     properties = data['properties']
@@ -78,7 +79,7 @@ def post_station(info_role):
     station.t_habitats = t_hab_list_object
     if station.id_station:
         user_cruved = get_or_fetch_user_cruved(
-            session=session, id_role=info_role.id_role, module_code="OCCTAX"
+            session=session, id_role=info_role.id_role, module_code="OCCHAB"
         )
         # check if allowed to update or raise 403
         station.check_if_allowed(info_role, 'U', user_cruved["U"])
@@ -121,6 +122,9 @@ def get_one_station(id_station, info_role):
 def delete_one_station(id_station, info_role):
     """
         Delete a station with its habitat and its observers
+
+        .. :quickref: Occhab;
+
     """
     station = DB.session.query(TStationsOcchab).get(id_station)
     is_allowed = station.user_is_allowed_to(info_role, info_role.value_filter)
@@ -138,6 +142,9 @@ def delete_one_station(id_station, info_role):
 def get_all_habitats(info_role):
     """
         Get all stations with their hab
+
+        .. :quickref: Occhab;
+
     """
     params = request.args.to_dict()
     q = DB.session.query(TStationsOcchab)
@@ -182,7 +189,10 @@ def get_all_habitats(info_role):
 def export_all_habitats(info_role, export_format='csv',):
     """
         Download all stations
-        The route is in post to avoid a to big query string
+        The route is in post to avoid a too large query string
+
+        .. :quickref: Occhab;
+
     """
 
     data = request.get_json()
@@ -257,47 +267,47 @@ def export_all_habitats(info_role, export_format='csv',):
         )
 
 
-@blueprint.route("/import", methods=["GET"])
-@json_resp
-def import_data():
-    """
-    Generate thousand random obs
-    """
-    import random
-    for i in range(10000):
-        sta = DB.session.query(TStationsOcchab).get(1)
-        sta_dict = sta.get_geofeature(True)
-        prop = sta_dict['properties']
-        habitat = prop.pop('t_habitats')[0]
-        prop.pop('dataset')
-        prop.pop('unique_id_sinp_station')
-        prop.pop('id_station')
-        geom = sta_dict.pop('geometry')
-        shape = asShape(geom)
-        two_dimension_geom = remove_third_dimension(shape)
-        t = from_shape(two_dimension_geom, srid=4326)
-        prop['id_dataset'] = [1, 2, 4, 5, 7][random.randint(0, 4)]
-        new_sta = TStationsOcchab(**prop)
-        new_sta.geom_4326 = t
-        # habitat
-        habitat.pop('id_habitat')
-        habitat.pop('unique_id_sinp_hab')
-        habitat.pop('habref')
-        cd_hab_random = [80,
-                         81,
-                         82,
-                         83,
-                         84,
-                         85,
-                         86,
-                         79
-                         ]
-        habitat['cd_hab'] = cd_hab_random[random.randint(0, 7)]
-        hab = THabitatsOcchab(**habitat)
-        new_sta.t_habitats.append(hab)
-        DB.session.add(new_sta)
-        DB.session.commit()
-    return sta_dict
+# @blueprint.route("/import", methods=["GET"])
+# @json_resp
+# def import_data():
+#     """
+#     Generate thousand random obs
+#     """
+#     import random
+#     for i in range(10000):
+#         sta = DB.session.query(TStationsOcchab).get(1)
+#         sta_dict = sta.get_geofeature(True)
+#         prop = sta_dict['properties']
+#         habitat = prop.pop('t_habitats')[0]
+#         prop.pop('dataset')
+#         prop.pop('unique_id_sinp_station')
+#         prop.pop('id_station')
+#         geom = sta_dict.pop('geometry')
+#         shape = asShape(geom)
+#         two_dimension_geom = remove_third_dimension(shape)
+#         t = from_shape(two_dimension_geom, srid=4326)
+#         prop['id_dataset'] = [1, 2, 4, 5, 7][random.randint(0, 4)]
+#         new_sta = TStationsOcchab(**prop)
+#         new_sta.geom_4326 = t
+#         # habitat
+#         habitat.pop('id_habitat')
+#         habitat.pop('unique_id_sinp_hab')
+#         habitat.pop('habref')
+#         cd_hab_random = [80,
+#                          81,
+#                          82,
+#                          83,
+#                          84,
+#                          85,
+#                          86,
+#                          79
+#                          ]
+#         habitat['cd_hab'] = cd_hab_random[random.randint(0, 7)]
+#         hab = THabitatsOcchab(**habitat)
+#         new_sta.t_habitats.append(hab)
+#         DB.session.add(new_sta)
+#         DB.session.commit()
+#     return sta_dict
 
 
 @blueprint.route("/defaultNomenclatures", methods=["GET"])
@@ -305,7 +315,7 @@ def import_data():
 def getDefaultNomenclatures():
     """Get default nomenclatures define in occtax module
 
-    .. :quickref: Occtax;
+    .. :quickref: Occtab;
 
     :returns: dict: {'MODULE_CODE': 'ID_NOMENCLATURE'}
 
@@ -336,24 +346,27 @@ def getDefaultNomenclatures():
         formated_dict[d[0]] = nomenclature_obj
     return formated_dict
 
-
-@blueprint.route("/stations/dataset/<int:id_dataset>", methods=["POST", "GET"])
-@json_resp
-def getStationsDataset(id_dataset):
-    data = dict(request.get_json())
-    sql = text("""
-        SELECT geom_4326
-        FROM pr_occhab.t_stations
-        WHERE id_dataset = :id_dataset AND geom_4326 <> ST_MakeEnvelope(
-            :xmin, :ymin, :xmax, :ymax
-        LIMIT 50
-        )
-    """)
-    DB.engine.execute(
-        sql,
-        id_dataset=id_dataset,
-        xmin="",
-        ymin="",
-        xmax="",
-        ymax="",
-    )
+# TODO
+# @blueprint.route("/stations/dataset/<int:id_dataset>", methods=["POST", "GET"])
+# @json_resp
+# def getStationsDataset(id_dataset):
+    """
+    Get all stations of a dataset
+    """
+#     data = dict(request.get_json())
+#     sql = text("""
+#         SELECT geom_4326
+#         FROM pr_occhab.t_stations
+#         WHERE id_dataset = :id_dataset AND geom_4326 <> ST_MakeEnvelope(
+#             :xmin, :ymin, :xmax, :ymax
+#         LIMIT 50
+#         )
+#     """)
+#     DB.engine.execute(
+#         sql,
+#         id_dataset=id_dataset,
+#         xmin="",
+#         ymin="",
+#         xmax="",
+#         ymax="",
+#     )
