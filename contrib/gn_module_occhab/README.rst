@@ -1,52 +1,18 @@
-Template de création d'un module GeoNature
-==========================================
+Module Occhab
+=============
 
-Ce template décrit la structure obligatoire d'un module GeoNature.
-- Le backend est développé en Python grâce au framework Flask.
-- Le frontend est développé grâce au framework Angular (voir la version actuelle du coeur)
+Module GeoNature de saisie et de synthese basé sur le standard Occurrence d'habitat du SINP: http://standards-sinp.mnhn.fr/standard-doccurrences-habitats-v1-0/.
 
-GeoNature prévoit cependant l'intégration de module "externe" dont le frontend serait développé dans d'autres technologies. La gestion de l'intégration du module est à la charge du développeur.
+Le module offre les fonctionnalité suivantes:
 
-Fichiers relatifs à l'installation
-==================================
-
-* ``manifest.tml`` (obligatoire) : Fichier contenant la description du module (nom, version de GeoNature supportée ...)
-* ``install_env.sh`` : Installation des paquets Debian
-* ``install_db.sh`` : Installation d'installation du schéma de BDD du module (non obligatoire, peut être piloté par le code)
-* ``install_app.sh`` : Si besoin de manipulation sur le serveur (copie de fichier, desample ... Non obligatoire)
-* ``install_gn_module.py`` : Fichier d'installation du module: 
-
-  * commandes SQL
-  * extra commandes python
-  * ce fichier doit contenir la méthode suivante : ``gnmodule_install_app(gn_db, gn_app)``
-* ``requirements.txt`` : Liste des paquets Python
-* ``config/conf_schema_toml.py`` : Schéma Marshmallow de spécification des paramètres du module
-* ``config/conf_gn_module.toml.sample`` : Fichier de configuration du module (à désampler)
-
-
-Fichiers relatifs au bon fonctionnement du module
-=================================================
-
-Backend
--------
-
-Si votre module comporte des routes, il doit comporter le fichier suivant : ``backend/blueprint.py``
-avec une variable ``blueprint`` qui contient toutes les routes
-
-::
-
-    blueprint = Blueprint('gn_module_validation', __name__)
-
-
-Frontend
---------
-
-Le dossier ``frontend`` comprend les élements suivants :
-
-- le dossier ``app`` comprend le code typescript du module
-
-     Il doit inclure le "module Angular racine", celui-ci doit impérativement s'appeler ``gnModule.module.ts`` 
-
-- le dossier ``assets`` avec l'ensemble des médias (images, son).
-    
-- Un fichier ``package.json`` qui décrit l'ensemble des librairies JS nécessaires au module.
+- Consultation (carte-liste) des stations et affichage de leurs habitats
+- Recherche (et export) des stations par jeu de données, habitats ou dates
+- Saisie d'une station et de ses habitats
+- Possibilité de saisir plusieurs habitats par station
+- Saisie des habitats basée sur une liste pré-définie à partir d'Habref. Possibilité d'intégrer toutes les typologies d'habitat ou de faire des listes réduites d'habitats
+- Possibilité de charger un fichier GeoJson, KML ou GPX sur la carte et d'utiliser un de ses objets comme géométrie de station
+- Mise en place d'une API Occhab (Get, Post, Delete, Export stations et habitats et récupérer les valeurs par défaut des nomenclatures)
+- Calcul automatique des altitudes (min/max) et de la surface d'une station
+- Gestion des droits (en fonction du CRUVED de l'utilisateur connecté)
+- Définition des valeurs par défaut dans la BDD (paramétrable par organisme)
+- Possibilité de masquer des champs du formulaire

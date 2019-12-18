@@ -42,6 +42,13 @@ Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...develop
 * Ajout d'inputs time et number à dynamic form
 * Ajout d'un paramètre dans le cas ou le serveur se trouve derrière un proxy
 
+
+** Notes de versions **
+
+* Lancer cette commande pour définit la nouvelle version de NodeJS par défaut:
+
+    nvm alias default  10.15.3
+
 **🐛 Corrections**
 
 * Side nav : Correction pour ne pas afficher les modules pour lesquels le paramètre ``active_frontend`` est False (#822)
