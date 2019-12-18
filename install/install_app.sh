@@ -192,12 +192,16 @@ my_current_geonature_directory=$(pwd)
 # Installation du module Occtax et OccHab
 source backend/venv/bin/activate
 geonature install_gn_module $my_current_geonature_directory/contrib/occtax /occtax --build=false
-geonature install_gn_module $my_current_geonature_directory/contrib/gn_module_occhab /occhab --build=false
+
+if [ "$install_module_occhab" = true ];
+  then
+  geonature install_gn_module $my_current_geonature_directory/contrib/gn_module_occhab /occhab --build=false
+fi
 
 if [ "$install_module_validation" = true ];
   then
     geonature install_gn_module $my_current_geonature_directory/contrib/gn_module_validation /validation --build=false
-  fi
+fi
 
 
 if [[ $MODE != "dev" ]]
