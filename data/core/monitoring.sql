@@ -38,6 +38,7 @@ CREATE TABLE t_base_visits
   id_base_visit serial NOT NULL,
   id_base_site integer,
   id_dataset integer NOT NULL,
+  id_module INTEGER NOT NULL,
   id_digitiser integer,
   visit_date_min date NOT NULL,
   visit_date_max date,
@@ -48,6 +49,7 @@ CREATE TABLE t_base_visits
   meta_create_date timestamp without time zone DEFAULT now(),
   meta_update_date timestamp without time zone DEFAULT now()
 );
+
 
 
 CREATE TABLE cor_visit_observer
@@ -134,6 +136,9 @@ ALTER TABLE ONLY t_base_visits
 ALTER TABLE ONLY t_base_visits
     ADD CONSTRAINT fk_t_base_visits_id_nomenclature_grp_typ FOREIGN KEY (id_nomenclature_grp_typ) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
+ALTER TABLE gn_monitoring.t_base_visits
+    ADD CONSTRAINT fk_t_base_visits_id_module FOREIGN KEY (id_module) REFERENCES gn_commons.t_modules (id_module) MATCH SIMPLE
+            ON UPDATE CASCADE ON DELETE CASCADE;
 --------------
 --CONSTRAINS--
 --------------
@@ -229,3 +234,12 @@ CREATE TRIGGER tri_t_base_sites_calculate_alt
   ON gn_monitoring.t_base_sites
   FOR EACH ROW
   EXECUTE PROCEDURE ref_geo.fct_trg_calculate_alt_minmax('geom');
+
+
+------------
+--TRIGGERS--
+------------
+INSERT INTO gn_commons.bib_tables_location(table_desc, schema_name, table_name, pk_field, uuid_field_name)
+VALUES
+('Table centralisant les sites faisant l''objet de protocole de suivis', 'gn_monitoring', 't_base_sites', 'id_base_site', 'uuid_base_site'),
+('Table centralisant les visites réalisées sur un site', 'gn_monitoring', 't_base_visits', 'id_base_visit', 'uuid_base_visit');

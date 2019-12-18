@@ -92,10 +92,15 @@ class TBaseVisits(DB.Model):
         DB.Integer,
         ForeignKey("gn_meta.t_datasets.id_dataset")
     )
+    # Pour le moment non défini comme une clé étrangère
+    #   pour les questions de perfs
+    #   a voir en fonction des usage
+    id_module = DB.Column(DB.Integer)
+
     visit_date_min = DB.Column(DB.DateTime)
     visit_date_max = DB.Column(DB.DateTime)
-
-    # geom = DB.Column(Geometry('GEOMETRY', 4326))
+    id_nomenclature_obs_technique = DB.Column(DB.Integer)
+    id_nomenclature_grp_typ = DB.Column(DB.Integer)
     comments = DB.Column(DB.DateTime)
     uuid_base_visit = DB.Column(
         UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
@@ -117,7 +122,6 @@ class TBaseVisits(DB.Model):
         secondaryjoin=(corVisitObserver.c.id_role == User.id_role),
         foreign_keys=[corVisitObserver.c.id_base_visit, corVisitObserver.c.id_role],
     )
-
 
     dataset = relationship(
         TDatasets,

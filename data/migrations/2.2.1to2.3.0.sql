@@ -364,6 +364,12 @@ ALTER TABLE gn_monitoring.t_base_visits ADD CONSTRAINT fk_t_base_visits_t_datase
 ALTER TABLE gn_monitoring.t_base_visits ADD id_nomenclature_obs_technique integer DEFAULT ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133');
 ALTER TABLE gn_monitoring.t_base_visits ADD id_nomenclature_grp_typ integer DEFAULT ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'PASS');
 
+ALTER TABLE gn_monitoring.t_base_visits ADD COLUMN IF NOT EXISTS id_module INTEGER NOT NULL;
+
+ALTER TABLE gn_monitoring.t_base_visits ADD CONSTRAINT fk_t_base_visits_id_module FOREIGN KEY (id_module)
+            REFERENCES gn_commons.t_modules (id_module) MATCH SIMPLE
+            ON UPDATE CASCADE ON DELETE CASCADE;
+
 
 ALTER TABLE ONLY gn_monitoring.t_base_visits
     ADD CONSTRAINT fk_t_base_visits_id_nomenclature_obs_technique FOREIGN KEY (id_nomenclature_obs_technique) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
