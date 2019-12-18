@@ -20,10 +20,4 @@ def gnmodule_install_app(gn_db, gn_app):
     """
         Fonction principale permettant de réaliser les opérations d'installation du module :
     """
-    # install frontend
-    com = """ln -s {GEONATURE_DIR} {ROOT_DIR}"""
-    com = com.format(
-        GEONATURE_DIR=str(GEONATURE_DIR / 'frontend' / 'node_modules'),
-        ROOT_DIR=str(ROOT_DIR / 'frontend')
-    )
-    subprocess.call(com.split(' '))
+    pass
