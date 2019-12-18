@@ -76,9 +76,8 @@ export class OccHabMapListComponent implements OnInit {
 
   getStations(params?) {
     this.dataLoading = true;
-    this._occHabDataService
-      .getStations(params)
-      .subscribe(featuresCollection => {
+    this._occHabDataService.getStations(params).subscribe(
+      featuresCollection => {
         // store the idsStation in the store service
         if (
           featuresCollection.features.length === ModuleConfig.NB_MAX_MAP_LIST
@@ -98,7 +97,15 @@ export class OccHabMapListComponent implements OnInit {
         });
         this.mapListService.geojsonData = featuresCollection;
         this.dataLoading = false;
-      });
+      },
+      // error callback
+      e => {
+        if (e.status == 500) {
+          this._commonService.translateToaster("error", "ErrorMessage");
+        }
+        this.dataLoading = false;
+      }
+    );
   }
 
   searchData(params) {
