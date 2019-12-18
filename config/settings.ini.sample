@@ -78,7 +78,7 @@ usershub_release=2.1.0
 taxhub_release=1.6.3
 
 # Définir dans quelle version de Habref-api-module (release, branche ou tag) prendre le code SQL permettant la création du schéma ref_habitat de la base de données de GeoNature
-habref_api_release=develop
+habref_api_release=0.1.0
 
 # Définir dans quelle version du sous-module des nomenclatures (release, branche ou tag) prendre le code SQL permettant la création du schéma 'ref_nomenclatures' de la base de données GeoNature
 nomenclature_release=nomenclature_occhab
