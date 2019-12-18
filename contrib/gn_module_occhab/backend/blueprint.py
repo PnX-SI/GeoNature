@@ -313,9 +313,9 @@ def export_all_habitats(info_role, export_format='csv',):
 @blueprint.route("/defaultNomenclatures", methods=["GET"])
 @json_resp
 def getDefaultNomenclatures():
-    """Get default nomenclatures define in occtax module
+    """Get default nomenclatures define in occhab module
 
-    .. :quickref: Occtab;
+    .. :quickref: Occhab;
 
     :returns: dict: {'MODULE_CODE': 'ID_NOMENCLATURE'}
 

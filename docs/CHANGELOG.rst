@@ -47,6 +47,7 @@ Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...develop
 
 * Lancer cette commande pour définit la nouvelle version de NodeJS par défaut:
 
+    nvm use  10.15.3
     nvm alias default  10.15.3
 
 **🐛 Corrections**
