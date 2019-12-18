@@ -45,10 +45,56 @@ Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...develop
 
 ** Notes de versions **
 
-* Lancer cette commande pour définit la nouvelle version de NodeJS par défaut:
+* Suivez les instructions suivantes pour effectuer la migration:
 
-    nvm use  10.15.3
-    nvm alias default  10.15.3
+Télécharger la nouvelle version
+
+  ::
+
+      wget https://github.com/PnX-SI/GeoNature/archive/2.3.0.zip
+      unzip 2.3.0.zip
+      rm 2.3.0.zip
+  
+Renommer l’ancien repertoire de l’application, ainsi que le nouveau :
+
+  ::
+
+      mv /home/`whoami`/geonature/ /home/`whoami`/geonature_old/
+      mv GeoNature-X.Y.Z /home/`whoami`/geonature/
+      cd geonature
+  
+* Lancer le scripts de migration SQL:
+
+  ::
+
+    cd /home/`whomami`/geonature/install/migration 
+    ./2.2.1to2.3.0.sh
+
+Verifier que la migration s'est bien déroulée dans le fichier var/log/2.2.1to2.3.0.log
+
+
+* Lancer le script de migration habituel 
+
+  ::
+
+    cd /home/`whoami/geonature 
+    ./install/migration/migration.sh
+
+* Lancer cette commande pour définir la nouvelle version de NodeJS par défaut:
+
+  ::
+
+      nvm alias default 10.15.3
+
+* Vous pouvez installer le nouveau module OccHab (Occurrence d'habitat) si vous le souhaitez:
+
+::
+
+    cd /home/`whoami`/geonaturre/backend
+    source venv/bin/activate 
+    geonature install_gn_module /home/`whoami`/geonature/contrib/gn_module_occhab /occhab
+
+
 
 **🐛 Corrections**
 
