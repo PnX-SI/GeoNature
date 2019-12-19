@@ -10,16 +10,24 @@ Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...develop
 **🚀 Nouveautés**
 
 * Nouvelle association possible entre un JDD et un module (#399)
+* METADATA: Ajout des ID sur les JDD et CA
+* Ajout d'inputs time et number à dynamic form
+* Ajout d'un paramètre dans le cas ou le serveur se trouve derrière un proxy
 
 **🐛 Corrections**
 
+* side nav : Correction pour ne pas afficher les modules pour lesquels le paramètre active_frontend est False
 * OCCTAX : Gestion de l'édition des occurrences où le JDD a été désactivé, en ne permettant pas de modifier le JDD (#694)
 * OCCTAX : Amélioration des performances de la liste des relevés (par @jbrieuclp) (#690)
 * OCCTAX : Correction d'une faiblesse lors de la récupération des informations taxonomiques d'un relevé (utilisation d'une jointure plutôt que l'API TaxHub). Corrige #751 ?
 * OCCTAX : Correction des listes longues de taxons dans les tooltip des relevés en y ajoutant un scroll (par @jbrieuclp) (#666)
-µ INSCRIPTION : Correction si aucun champ additionnel n'a été ajouté au formulaire (par @jbrieuclp) (#746)
+ INSCRIPTION : Correction si aucun champ additionnel n'a été ajouté au formulaire (par @jbrieuclp) (#746)
 * Simplification de l'écriture des logs dans le script ``install_db.sh``
 * Externalisation des outils Flask et SQLAlchemy en utilisant le nouveau sous-module dédié (https://github.com/PnX-SI/Utils-Flask-SQLAlchemy) qui améliore aussi les performances des jointures
+* Correction de l'installation des requirements.txt lors de l'installation d'un module (#764 par @joelclems)
+* COMMONS : t_modules modification des champs de type CHARACTER(n) en CHARACTER VARYING(n) (module_path, module_target, module_external_url)
+* COMMONS : t_modules, ajout de contraintes UNIQUE pour les champs module_path et module_code)
+* pnx-geojson : amélioration du zoom, gestion des styles
 
 **⚠️ Notes de version**
 
@@ -28,6 +36,10 @@ Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...develop
 
 2.2.1 (2019-10-09)
 ------------------
+
+**🚀 Nouveautés**
+
+* Ajout d'un paramètre dans le cas ou le serveur se trouve derrière un proxy
 
 **🐛 Corrections**
 

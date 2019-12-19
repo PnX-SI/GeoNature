@@ -151,6 +151,8 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
   }
 
   downloadData(format) {
+    // bug d'angular: duplication des clés ...
+    //https://github.com/angular/angular/issues/20430
     let queryString = this.mapListService.urlQuery.delete("limit");
     queryString = queryString.delete("offset");
     const url = `${
@@ -206,13 +208,14 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
     let tooltip = [];
     if (row.t_occurrences_occtax === undefined) {
       tooltip.push("Aucun taxon");
-    }
-    for (let i = 0; i < row.t_occurrences_occtax.length; i++) {
-      let occ = row.t_occurrences_occtax[i];
-      if (occ.taxref !== undefined) {
-        tooltip.push(occ.taxref.nom_complet);
-      } else {
-        tooltip.push(occ.nom_cite);
+    } else {
+      for (let i = 0; i < row.t_occurrences_occtax.length; i++) {
+        let occ = row.t_occurrences_occtax[i];
+        if (occ.taxref !== undefined) {
+          tooltip.push(occ.taxref.nom_complet);
+        } else {
+          tooltip.push(occ.nom_cite);
+        }
       }
     }
 

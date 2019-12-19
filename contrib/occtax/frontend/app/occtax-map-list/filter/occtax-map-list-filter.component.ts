@@ -13,7 +13,7 @@ import { FILTERSLIST } from "./filters-list";
 import { AppConfig } from "@geonature_config/app.config";
 import { GlobalSubService } from "@geonature/services/global-sub.service";
 import { Subscription } from "rxjs/Subscription";
-import { HttpParams } from '@angular/common/http';
+import { HttpParams } from "@angular/common/http";
 
 @Component({
   selector: "pnx-occtax-map-list-filter",
@@ -38,7 +38,6 @@ export class OcctaxMapListFilterComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-
     this.dynamicFormGroup = this._fb.group({
       cd_nom: null,
       observers: null,
@@ -51,9 +50,7 @@ export class OcctaxMapListFilterComponent implements OnInit {
     });
 
     this.occtaxConfig = ModuleConfig;
-
   }
-
 
   searchData() {
     this.mapListService.refreshUrlQuery(12);

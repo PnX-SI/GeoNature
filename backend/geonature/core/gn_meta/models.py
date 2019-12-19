@@ -10,7 +10,8 @@ from utils_flask_sqla.serializers import serializable
 
 from geonature.utils.env import DB
 from geonature.core.users.models import BibOrganismes
-from geonature.core.gn_commons.models import CorModuleDataset, TModules
+
+from geonature.core.gn_commons.models import cor_module_dataset
 
 
 class CorAcquisitionFrameworkObjectif(DB.Model):
@@ -190,15 +191,10 @@ class TDatasets(DB.Model):
     active = DB.Column(DB.Boolean, default=True)
     validable = DB.Column(DB.Boolean)
 
-    modules = relationship(
-        TModules,
-        secondary=CorModuleDataset.__table__,
-        primaryjoin=(CorModuleDataset.id_dataset == id_dataset),
-        secondaryjoin=(CorModuleDataset.id_module == TModules.id_module),
-        foreign_keys=[CorModuleDataset.id_dataset, CorModuleDataset.id_module],
-        lazy="select",
-    )
+    modules = DB.relationship("TModules", secondary=cor_module_dataset)
 
+    # HACK: the relationship is not well defined for many to many relationship
+    # because CorDatasetActor could be an User or an Organisme object...
     cor_dataset_actor = relationship(
         CorDatasetActor,
         lazy="joined",

@@ -26,13 +26,12 @@ class TestApiModulePrOcctax:
         self.client.set_cookie("/", "token", token)
 
         response = self.client.get(
-            url_for("pr_occtax.getViewReleveList"),
+            url_for("pr_occtax.getReleves"),
             query_string={
                 "observers_txt": "test",
                 "id_dataset": 1,
                 "date_low": "2016-02-01",
                 "cd_nom": 60612,
-                "observers": [1],
             },
         )
 
@@ -59,6 +58,7 @@ class TestApiModulePrOcctax:
         update_data["properties"]["observers"] = [1]
 
         update_data["properties"]["observers"] = [1]
+        update_data["properties"].pop("dataset")
 
         # insert with to new occurrences
         for i in range(2):
@@ -78,34 +78,34 @@ class TestApiModulePrOcctax:
             self.client, url_for("pr_occtax.insertOrUpdateOneReleve"), update_data
         )
 
-        # assert response.status_code == 200
+        assert response.status_code == 200
 
-        # resp_data_update = json_of_response(response)
+        resp_data_update = json_of_response(response)
 
-        # assert resp_data_update["properties"]["comment"] == "Super MODIIFF"
+        assert resp_data_update["properties"]["comment"] == "Super MODIIFF"
 
-        # # get the releve
-        # response = self.client.get(
-        #     url_for(
-        #         "pr_occtax.getOneReleve",
-        #         id_releve=resp_data_update["properties"]["id_releve_occtax"],
-        #     )
-        # )
-        # resp_data_update = json_of_response(response)
+        # get the releve
+        response = self.client.get(
+            url_for(
+                "pr_occtax.getOneReleve",
+                id_releve=resp_data_update["properties"]["id_releve_occtax"],
+            )
+        )
+        resp_data_update = json_of_response(response)
 
-        # assert "releve" in resp_data_update
-        # # check that the 3 occurrences are heres
-        # assert (
-        #     len(resp_data_update["releve"]["properties"]["t_occurrences_occtax"]) == 3
-        # )
-        # response = self.client.delete(
-        #     url_for(
-        #         "pr_occtax.deleteOneReleve",
-        #         id_releve=resp_data_update["releve"]["properties"]["id_releve_occtax"],
-        #     )
-        # )
+        assert "releve" in resp_data_update
+        # check that the 3 occurrences are heres
+        assert (
+            len(resp_data_update["releve"]["properties"]["t_occurrences_occtax"]) == 3
+        )
+        response = self.client.delete(
+            url_for(
+                "pr_occtax.deleteOneReleve",
+                id_releve=resp_data_update["releve"]["properties"]["id_releve_occtax"],
+            )
+        )
 
-        # assert response.status_code == 200
+        assert response.status_code == 200
 
     def test_get_export_sinp(self):
         token = get_token(self.client)
@@ -124,6 +124,7 @@ class TestApiModulePrOcctax:
             "cd_nom": 67111,
             "date_up": "2017-05-11",
             "date_low": "2009-05-01",
+            "observers": 1,
         }
         # CSV
         csv_query_string = base_query_string.copy()

@@ -1,3 +1,4 @@
+import { distinctUntilChanged } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { arrayMinLengthValidator } from '@geonature/services/validators/validators';
@@ -15,19 +16,39 @@ export class DynamicFormService {
   }
 
   createControl(formDef): AbstractControl {
-    let abstractForm;
+    let value = formDef.value || null;
+    const validators = [];
+
     if (formDef.type_widget === 'checkbox') {
-      abstractForm = new FormControl(
-        new Array(),
-        formDef.required ? arrayMinLengthValidator(1) : null
-      );
+      value = value || new Array();
+      if (formDef.required) {
+        validators.push(arrayMinLengthValidator(1));
+      }
     } else {
-      abstractForm = formDef.required
-        ? new FormControl(formDef.value || null, Validators.required)
-        : new FormControl(formDef.value || null);
+      if (formDef.required) {
+        validators.push(Validators.required);
+      }
+      if (formDef.max_length && formDef.max_length > 0) {
+        validators.push(Validators.maxLength(formDef.max_length));
+      }
+
+      // contraintes min et max pour "number"
+      if (formDef.type_widget === 'number') {
+        const cond_min = typeof formDef.min === 'number' &&  !( (typeof formDef.max === 'number') && formDef.min > formDef.max);
+        const cond_max = typeof formDef.max === 'number' &&  !( (typeof formDef.min === 'number') && formDef.min > formDef.max);
+
+        if (cond_min) {
+          validators.push(Validators.min(formDef.min));
+        }
+
+        if (cond_max) {
+          validators.push(Validators.max(formDef.max));
+        }
+      }
+
     }
 
-    return abstractForm;
+    return new FormControl({ value: value, disabled: formDef.disabled}, validators);
   }
 
   addNewControl(formDef, formGroup: FormGroup) {
