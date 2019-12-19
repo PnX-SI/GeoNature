@@ -21,6 +21,7 @@ export class AutoCompleteComponent implements OnInit {
   @Input() parentFormControl: FormControl;
   @Input() label: string;
   @Input() charNumber = 2;
+  @Input() placeholder = '';
   /** number of typeahead results */
   @Input() listLength = 20;
   /** The key of the dict to display in the typehead */
@@ -41,6 +42,11 @@ export class AutoCompleteComponent implements OnInit {
    */
   @Input() mapFunc: any;
 
+  /**
+   * Pass a custom template for the displayed items,
+   * if null the default template is taken (cf #rt in template)
+   */
+  @Input() resultTemplate: any;
   @Output() onChange = new EventEmitter<NgbTypeaheadSelectItemEvent>(); // renvoie l'evenement, le taxon est récupérable grâce à e.item
   @Output() onDelete = new EventEmitter<any>();
 
@@ -79,7 +85,10 @@ export class AutoCompleteComponent implements OnInit {
           if (this.othersGetParams) {
             // add other params in query string
             for (let param in this.othersGetParams) {
-              getParams = getParams.append(param, this.othersGetParams[param].toString());
+              // check if the param is not null
+              if (this.othersGetParams[param]) {
+                getParams = getParams.append(param, this.othersGetParams[param].toString());
+              }
             }
           }
           return this._api.get<any>(url, { params: getParams }).catch(err => {

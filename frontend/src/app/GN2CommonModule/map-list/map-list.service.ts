@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
+import { Subject, Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AppConfig } from '../../../conf/app.config';
-import { Observable } from 'rxjs';
 import { CommonService } from '@geonature_common/service/common.service';
 import * as L from 'leaflet';
 import { FormControl } from '@angular/forms';
@@ -15,6 +14,9 @@ export class MapListService {
   public mapSelected = new Subject<any>();
   public onMapClik$: Observable<string> = this.mapSelected.asObservable();
   public onTableClick$: Observable<number> = this.tableSelected.asObservable();
+  public currentIndexRow = new Subject<number>();
+  public currentIndexRow$: Observable<number> = this.currentIndexRow.asObservable();
+
   public selectedRow = [];
   public data: any;
   public tableData = new Array();
@@ -84,6 +86,7 @@ export class MapListService {
           break;
         }
       }
+      this.currentIndexRow.next(i);
     });
   }
 
@@ -100,6 +103,21 @@ export class MapListService {
     } else {
       this.tableSelected.next(row);
     }
+  }
+
+  /** Search a row in the table data and return its page */
+  foundARowAndPage(id, rowNumber) {
+    this.selectedRow = []; // clear selected list
+
+    const integerId = parseInt(id);
+    let i;
+    for (i = 0; i < this.tableData.length; i++) {
+      if (this.tableData[i]['id'] === integerId) {
+        this.selectedRow.push(this.tableData[i]);
+        break;
+      }
+    }
+    return Math.trunc(i / rowNumber);
   }
 
   getRowClass() {
@@ -160,11 +178,11 @@ export class MapListService {
     if (params) {
       if (method === 'set') {
         params.forEach(param => {
-          this.setHttpParam(param.param, param.value)
+          this.setHttpParam(param.param, param.value);
         });
       } else {
         params.forEach(param => {
-          this.appendHttpParam(param.param, param.value)
+          this.appendHttpParam(param.param, param.value);
         });
       }
     }
@@ -178,7 +196,7 @@ export class MapListService {
     this.urlQuery = this.urlQuery.append(param, value);
   }
 
-  deleteHttpParam(param, value=undefined) {
+  deleteHttpParam(param, value = undefined) {
     this.urlQuery = this.urlQuery.delete(param, value);
   }
 
@@ -275,16 +293,12 @@ export class MapListService {
         let newFeature = null;
         if (customCallBack) {
           newFeature = customCallBack(feature);
-        } else {
-          newFeature = this.deFaultCustomColumns(feature);
         }
         this.tableData.push(newFeature.properties);
       });
     } else {
       data.features.forEach(feature => {
-        let newFeature = null;
-        newFeature = this.deFaultCustomColumns(feature);
-        this.tableData.push(newFeature.properties);
+        this.tableData.push(feature.properties);
       });
     }
   }

@@ -28,7 +28,7 @@ class ReverseProxied(object):
             environ["SCRIPT_NAME"] = script_name
             path_info = environ["PATH_INFO"]
             if path_info.startswith(script_name):
-                environ["PATH_INFO"] = path_info[len(script_name) :]
+                environ["PATH_INFO"] = path_info[len(script_name):]
         scheme = environ.get("HTTP_X_SCHEME", "") or self.scheme
         if scheme:
             environ["wsgi.url_scheme"] = scheme
@@ -69,8 +69,10 @@ def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
 
         app.register_blueprint(routes, url_prefix="/auth")
 
-        from pypnusershub import routes_register
+        from pypn_habref_api.routes import routes
+        app.register_blueprint(routes, url_prefix="/habref")
 
+        from pypnusershub import routes_register
         app.register_blueprint(routes_register.bp, url_prefix="/pypn/register")
 
         from pypnnomenclature.routes import routes
@@ -124,7 +126,8 @@ def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
         # errors
         from geonature.core.errors import routes
 
-        app.wsgi_app = ReverseProxied(app.wsgi_app, script_name=config["API_ENDPOINT"])
+        app.wsgi_app = ReverseProxied(
+            app.wsgi_app, script_name=config["API_ENDPOINT"])
 
         CORS(app, supports_credentials=True)
 

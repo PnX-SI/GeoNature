@@ -20,6 +20,4 @@ def gnmodule_install_app(gn_db, gn_app):
     """
         Fonction principale permettant de réaliser les opérations d'installation du module :
     """
-    # install frontend
-    subprocess.call(["npm install"], cwd=str(ROOT_DIR / "frontend"), shell=True)
-
+    pass

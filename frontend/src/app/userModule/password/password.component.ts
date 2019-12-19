@@ -45,11 +45,7 @@ export class PasswordComponent implements OnInit {
           this.router.navigate(['/user']);
         },
         error => {
-          this._toasterService.error(error.error.msg, '', {
-            positionClass: 'toast-top-center',
-            tapToDismiss: true,
-            timeOut: 5000
-          });
+          this._toasterService.error(error.error.msg, '');
         }
       );
     }

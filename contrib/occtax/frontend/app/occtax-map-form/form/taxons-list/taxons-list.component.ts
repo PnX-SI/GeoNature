@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { OcctaxFormService } from "../../../occtax-map-form/form/occtax-form.service";
 import { CommonService } from "@geonature_common/service/common.service";
-import { Taxon } from "@geonature_common_form/taxonomy/taxonomy.component";
+import { Taxon } from "@geonature_common/form/taxonomy/taxonomy.component";
 
 @Component({
   selector: "pnx-taxons-list",

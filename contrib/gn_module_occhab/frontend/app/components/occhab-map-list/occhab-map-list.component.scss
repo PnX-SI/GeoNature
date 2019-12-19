@@ -1,0 +1,46 @@
+:host /deep/ .datatable-body-row.active .datatable-row-group {
+  background-color: rgb(117, 227, 118) !important;
+}
+:host /deep/ .datatable-row-detail {
+  height: auto !important;
+  font-size: 0.8em;
+}
+
+:host /deep/ .ngx-datatable {
+  border-color: #007bff !important;
+  border: solid 1px;
+}
+
+:host-context(mat-toolbar) {
+  background-color: black;
+}
+
+.float-btns {
+  position: absolute;
+  z-index: 10000;
+  margin-top: 5px;
+  margin-left: 20px;
+}
+
+#add-btn {
+  margin-right: 10px;
+}
+
+.map-list-container {
+  margin-top: -5px;
+}
+
+#download-btn {
+  // margin-top: 8px;
+  // margin-right: 5px;
+  // float: right;
+  z-index: 1000;
+  bottom: 1%;
+  right: 1%;
+  position: absolute;
+}
+
+:host /deep/ ngx-datatable {
+  // height: 92vh !important;
+  height: 100%;
+}
