@@ -36,7 +36,7 @@ export class OccHabFormComponent implements OnInit {
   public markerCoordinates;
   public currentEditingStation: any;
   // boolean tocheck if the station has at least one hab (control the validity of the form)
-  public atLeastOneHab = false
+  public atLeastOneHab = false;
 
   constructor(
     public occHabForm: OcchabFormService,
@@ -47,7 +47,7 @@ export class OccHabFormComponent implements OnInit {
     private _commonService: CommonService,
     private _gnDataService: DataFormService,
     private _mapService: MapService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.leafletDrawOptions;
@@ -71,6 +71,7 @@ export class OccHabFormComponent implements OnInit {
     this._sub = this._route.params.subscribe(params => {
       if (params["id_station"]) {
         this.editionMode = true;
+        this.atLeastOneHab = true;
         this.showHabForm = false;
         this.showTabHab = true;
         this._occHabDataService
