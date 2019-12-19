@@ -31,6 +31,21 @@ export class DynamicFormService {
       if (formDef.max_length && formDef.max_length > 0) {
         validators.push(Validators.maxLength(formDef.max_length));
       }
+
+      // contraintes min et max pour "number"
+      if (formDef.type_widget === 'number') {
+        const cond_min = typeof formDef.min === 'number' &&  !( (typeof formDef.max === 'number') && formDef.min > formDef.max);
+        const cond_max = typeof formDef.max === 'number' &&  !( (typeof formDef.min === 'number') && formDef.min > formDef.max);
+
+        if (cond_min) {
+          validators.push(Validators.min(formDef.min));
+        }
+
+        if (cond_max) {
+          validators.push(Validators.max(formDef.max));
+        }
+      }
+
     }
 
     return new FormControl({ value: value, disabled: formDef.disabled}, validators);

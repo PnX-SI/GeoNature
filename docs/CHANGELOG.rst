@@ -11,6 +11,8 @@ Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...develop
 
 * Nouvelle association possible entre un JDD et un module (#399)
 * METADATA: Ajout des ID sur les JDD et CA
+* Ajout d'inputs time et number à dynamic form
+* Ajout d'un paramètre dans le cas ou le serveur se trouve derrière un proxy
 
 **🐛 Corrections**
 
@@ -24,6 +26,8 @@ Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...develop
 * Externalisation des outils Flask et SQLAlchemy en utilisant le nouveau sous-module dédié (https://github.com/PnX-SI/Utils-Flask-SQLAlchemy) qui améliore aussi les performances des jointures
 * Correction de l'installation des requirements.txt lors de l'installation d'un module (#764 par @joelclems)
 * COMMONS : t_modules modification des champs de type CHARACTER(n) en CHARACTER VARYING(n) (module_path, module_target, module_external_url)
+* COMMONS : t_modules, ajout de contraintes UNIQUE pour les champs module_path et module_code)
+* pnx-geojson : amélioration du zoom, gestion des styles
 
 **⚠️ Notes de version**
 
@@ -32,6 +36,10 @@ Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...develop
 
 2.2.1 (2019-10-09)
 ------------------
+
+**🚀 Nouveautés**
+
+* Ajout d'un paramètre dans le cas ou le serveur se trouve derrière un proxy
 
 **🐛 Corrections**
 

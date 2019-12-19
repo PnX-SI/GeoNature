@@ -168,7 +168,7 @@ ALTER TABLE ONLY bib_areas_types
 
 ALTER TABLE ONLY dem
   ADD CONSTRAINT pk_dem PRIMARY KEY (rid);
-  
+
 ALTER TABLE ONLY dem_vector
     ADD CONSTRAINT pk_dem_vector PRIMARY KEY (gid);
 
@@ -216,21 +216,21 @@ DECLARE
 BEGIN
   SELECT gn_commons.get_default_parameter('local_srid', NULL) INTO thesrid;
   SELECT COALESCE(gid, NULL) FROM ref_geo.dem_vector LIMIT 1 INTO is_vectorized;
-	
+
   IF is_vectorized IS NULL THEN
     -- Use dem
     RETURN QUERY
     SELECT min((altitude).val)::integer AS altitude_min, max((altitude).val)::integer AS altitude_max
     FROM (
 	SELECT public.ST_DumpAsPolygons(public.ST_clip(
-    rast, 
+    rast,
     1,
-	  public.st_transform(myGeom,thesrid), 
+	  public.st_transform(myGeom,thesrid),
     true)
   ) AS altitude
-	FROM ref_geo.dem AS altitude 
+	FROM ref_geo.dem AS altitude
 	WHERE public.st_intersects(rast,public.st_transform(myGeom,thesrid))
-    ) AS a;		
+    ) AS a;
   -- Use dem_vector
   ELSE
     RETURN QUERY
@@ -286,6 +286,29 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
+
+CREATE OR REPLACE FUNCTION ref_geo.fct_trg_calculate_alt_minmax()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+	the4326geomcol text := quote_ident(TG_ARGV[0]);
+  thelocalsrid int;
+BEGIN
+	-- si c'est un insert ou que c'est un UPDATE ET que le geom_4326 a été modifié
+	IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NOT public.ST_EQUALS(hstore(OLD)-> the4326geomcol, hstore(NEW)-> the4326geomcol))) THEN
+		--récupérer le srid local
+		SELECT INTO thelocalsrid parameter_value::int FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid';
+		--Calcul de l'altitude
+        SELECT (ref_geo.fct_get_altitude_intersection(st_transform(hstore(NEW)-> the4326geomcol,thelocalsrid))).*  INTO NEW.altitude_min, NEW.altitude_max ;
+
+	END IF;
+  RETURN NEW;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+
 -- Fonction trigger pour conserver l'intégriter entre deux champs géom
 -- A TERMINER
 
@@ -312,13 +335,13 @@ $BODY$
 --   IF(hstore(NEW) -> the4326geomcol IS NOT NULL) THEN
 --     INSERT INTO pr_occtax.debug(d) VALUES (TG_TABLE_NAME);
 
---   -- si geom4326 est null et que geomlocal ne l'est pas on remplit geom_4326 
+--   -- si geom4326 est null et que geomlocal ne l'est pas on remplit geom_4326
 --   ELSIF(hstore(NEW)->thelocalgeomcol IS NOT NULL) THEN
 --   INSERT INTO pr_occtax.debug (d) VALUES ( FORMAT ('UPDATE %s.%s SET %s = (SELECT ST_TRANSFORM(%7$s.%s, %s)) WHERE %6$s=$1.%6$s', TG_TABLE_NAME, TG_TABLE_SCHEMA, the4326geomcol, thelocalgeomcol, thelocalsrid, thepkcolname, NEW ));
 --     EXECUTE FORMAT ('UPDATE %s.%s SET %s = (SELECT ST_TRANSFORM($1.%s, %s)) WHERE %6$s=$1.%6$s', TG_TABLE_NAME, TG_TABLE_SCHEMA, the4326geomcol, thelocalgeomcol, thelocalsrid, thepkcolname ) INTO thegeomlocalvalue USING NEW;
 
 --   END IF;
--- ELSIF (TG_OP = 'UPDATE') THEN 
+-- ELSIF (TG_OP = 'UPDATE') THEN
 --  -- on vérifie si la geom 4326 a changé
 --   EXECUTE FORMAT('SELECT ST_EQUALS($1.%I, $2.%I)', the4326geomcol) INTO thegeom4326change USING NEW, OLD;
 --     -- si il a changé on met à jour la geom_local

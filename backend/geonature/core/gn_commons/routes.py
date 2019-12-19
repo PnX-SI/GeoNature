@@ -38,10 +38,8 @@ def get_modules(info_role):
             module = mod.as_dict()
             module["cruved"] = app_cruved
             if mod.active_frontend:
-                # module["module_url"] = "{}/#/{}".format(
-                #     current_app.config["URL_APPLICATION"], mod.module_path
-                module["module_url"] = "/#/{}".format(
-                    mod.module_path
+                module["module_url"] = "{}/#/{}".format(
+                    current_app.config["URL_APPLICATION"], mod.module_path
                 )
             else:
                 module["module_url"] = mod.module_external_url
