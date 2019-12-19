@@ -333,8 +333,6 @@ then
         write_log "Inserting sample datasets..."
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/meta_data.sql  &>> var/log/install_db.log
         
-        write_log "Inserting sample dataset for monitoring schema..."
-        export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/monitoring_data.sql  &>> var/log/install_db.log
         
         write_log "Inserting sample dataset of taxons for taxonomic schema..."
 
