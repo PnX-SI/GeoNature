@@ -82,8 +82,8 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
     this.mapListService.availableColumns = this.occtaxConfig.available_maplist_column;
 
     this.mapListService.idName = this.idName;
-
     // FETCH THE DATA
+    this.mapListService.refreshUrlQuery();
     this.mapListService.getData(
       this.apiEndPoint,
       [{ param: "limit", value: 12 }],
