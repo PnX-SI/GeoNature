@@ -184,7 +184,7 @@ class ReleveRepository:
             return self.filter_query_with_autorization(info_user)
 
 
-def get_query_occtax_filters(args, mappedView, q, from_generic_table=False):
+def get_query_occtax_filters(args, mappedView, q, from_generic_table=False, obs_txt_column="observers_txt"):
     if from_generic_table:
         mappedView = mappedView.tableDef.columns
     params = args.to_dict()
@@ -245,7 +245,8 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False):
 
     if "observers_txt" in params:
         observers_query = "%{}%".format(params.pop("observers_txt"))
-        q = q.filter(mappedView.observers_txt.ilike(observers_query))
+        q = q.filter(getattr(
+            mappedView, obs_txt_column).ilike(observers_query))
 
     if from_generic_table:
         table_columns = mappedView
@@ -323,16 +324,6 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False):
             col = getattr(
                 CorCountingOccurrence.__table__.columns, nomenclature)
             q = q.filter(col == params.pop(nomenclature))
-    """
-    # Order by
-    if "orderby" in params:
-        if params.get("orderby") in mappedView.__table__.columns:
-            orderCol = getattr(mappedView.__table__.columns, params["orderby"])
-        if "order" in params:
-            if params["order"] == "desc":
-                orderCol = orderCol.desc()
-        q = q.order_by(orderCol)
-    """
     return q
 
 

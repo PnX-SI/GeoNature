@@ -139,10 +139,12 @@ class GnModuleSchemaConf(Schema):
     export_geom_columns_name = fields.String(missing="geom_4326")
     export_id_column_name = fields.String(missing="permId")
     export_srid = fields.Integer(missing=4326)
+    export_observer_txt_column = fields.String(missing="obsId")
     export_available_format = fields.List(
         fields.String(), missing=available_export_format
     )
-    export_columns = fields.List(fields.String(), missing=default_columns_export)
+    export_columns = fields.List(
+        fields.String(), missing=default_columns_export)
     export_message = fields.String(missing=export_message)
     list_messages = fields.Dict(missing=list_messages)
     digital_proof_validator = fields.Boolean(missing=True)
@@ -150,7 +152,8 @@ class GnModuleSchemaConf(Schema):
     id_taxon_list = fields.Integer(missing=100)
     taxon_result_number = fields.Integer(missing=20)
     id_observers_list = fields.Integer(missing=1)
-    default_maplist_columns = fields.List(fields.Dict(), missing=default_map_list_conf)
+    default_maplist_columns = fields.List(
+        fields.Dict(), missing=default_map_list_conf)
     available_maplist_column = fields.List(
         fields.Dict(), missing=available_maplist_column
     )
@@ -158,4 +161,3 @@ class GnModuleSchemaConf(Schema):
     ENABLE_GPS_TOOL = fields.Boolean(missing=True)
     ENABLE_UPLOAD_TOOL = fields.Boolean(missing=True)
     DATE_FORM_WITH_TODAY = fields.Boolean(missing=True)
-
