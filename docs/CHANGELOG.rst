@@ -35,28 +35,41 @@ Rédaction en cours. Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...de
 * Mise à jour de Angular 4 à Angular 7 (performances, ....) par @jbrieuclp
 * Ajout d'une documentation utilisateur pour le module Synthèse : http://docs.geonature.fr/user-manual.html#synthese (par @amandine-sahl)
 * OCCTAX : Amélioration importante des performances de la liste des relevés (par @jbrieuclp) (#690, #740)
+* Amélioriations des performances des exports de Occtax et de Synthèse et ajout d'index dans Occtax (par @gildeluermoz) (#560)
+* Partage de scripts de sauvegarde de l'application et de la BDD dans ``data/scripts/backup/`` (par @gildeluermoz)
 * Externalisation des librairies d'outils Flask et SQLAlchemy (https://github.com/PnX-SI/Utils-Flask-SQLAlchemy et https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo) pour pouvoir les factoriser et les utiliser dans d'autres applications. Cela améliore aussi les performances des jointures.
-* METADATA: Ajout des ID sur les JDD et CA
+* SYNTHESE : Ajout d'un export de la liste des espèces (#805)
+* METADONNEES : Affichage des ID des JDD et CA
+* OCCTAX : Conserver le fichier GPX ou GeoJSON chargé sur la carte quand on enchaine des relevés et ajouter de la transparence sur les géométries utilisés dans les relevés précédents (#813)
+* Ajout des dates de creation et de modification dans les tables ``gn_monitoring.t_base_sites`` et ``gn_monitoring.t_base_visits`` et triggers pour les calculer automatiquement
+* Ajout des champs ``geom_local``, ``altitude_min`` et ``altitude_max`` dans la table ``gn_monitoring.t_base_sites`` et triggers pour les calculer automatiquement (#812)
+* Ajout des champs ``id_dataset``, ``id_module``, ``id_nomenclature_obs_technique`` et ``id_nomenclature_grp_typ`` dans la table ``gn_monitoring.t_base_visits`` (#812)
 * Le composant générique FileLayer expose un ``output`` pour récuperer la géométrie sélectionnée (un observable de MapService était utilisé auparavant) 
 * Support des markers sur le composant ``leaflet-draw``
 * Possibilité de ne pas activer le composant ``marker`` au lancement lorsque celui-ci est utilisé (input ``defaultEnable``)
 * Ajout d'inputs ``time`` et ``number`` au composant DynamicForm permettant de générer des formulaires dynamiques.
+* Améliorations diverses du composant DynamicForm (par @joelclems)
 * Ajout d'un paramètre dans le cas où le serveur se trouve derrière un proxy (``proxy_http`` ou dans ``proxy_https`` dans ``config/settings.ini``)
 * Ajout d'une route permettant de récupérer la liste des rôles d'une liste à partir de son code
 
 **🐛 Corrections**
 
-* Side nav : Correction pour ne pas afficher les modules pour lesquels le paramètre ``active_frontend`` est False (#822)
+* MENU Side nav : Correction pour ne pas afficher les modules pour lesquels le paramètre ``active_frontend`` est False (#822)
 * OCCTAX : Gestion de l'édition des occurrences où le JDD a été désactivé, en ne permettant pas de modifier le JDD (#694)
-* OCCTAX : Correction d'une faiblesse lors de la récupération des informations taxonomiques d'un relevé (utilisation d'une jointure plutôt que l'API TaxHub). Corrige #751 ?
+* OCCTAX : Correction d'une faiblesse lors de la récupération des informations taxonomiques d'un relevé (utilisation d'une jointure plutôt que l'API TaxHub) (#751)
 * OCCTAX : Correction des longues listes de taxons dans les tooltip des relevés en y ajoutant un scroll (par @jbrieuclp) (#666)
+* OCCTAX : Masquer le bouton ``Télécharger`` si l'utilisateur n'a pas de droits d'export dans le module (E = 0)
+* SYNTHESE : Filtre sur ``date_max`` en prenant ``date_max <= 23:59:59`` pour prendre en compte les observations avec un horaire (#778)
+* SYNTHESE : Correction des boutons radios pour les filtres taxonomiques avancés basés sur les attributs TaxHub (#763)
+* SYNTHESE : Correction de la recherche par ``cd_nom`` dans le composant ``SearchTaxon`` (#824)
 * VALIDATION : Corrections mineures (par @jbrieuclp) (#715)
 * INSCRIPTION : Correction si aucun champ additionnel n'a été ajouté au formulaire (par @jbrieuclp) (#746)
+* INSCRIPTION : Correction de l'usage des paramètres ``ENABLE_SIGN_UP`` et ``ENABLE_USER_MANAGEMENT`` (#791)
 * Simplification de l'écriture des logs dans le script ``install_db.sh``
 * Correction de l'installation des requirements.txt lors de l'installation d'un module (#764 par @joelclems)
-* COMMONS : t_modules modification des champs de type CHARACTER(n) en CHARACTER VARYING(n) (module_path, module_target, module_external_url)
-* COMMONS : t_modules, ajout de contraintes UNIQUE pour les champs module_path et module_code)
-* pnx-geojson : amélioration du zoom, gestion des styles
+* COMMONS : Modification des champs de ``t_modules`` de type CHARACTER(n) en CHARACTER VARYING(n) (``module_path``, ``module_target``, ``module_external_url``) (#799)
+* COMMONS : Ajout de contraintes d'unicité pour les champs ``module_path`` et ``module_code`` de ``t_modules``
+* pnx-geojson : Amélioration du zoom, gestion des styles
 * Migration des données GeoNature V1 vers V2 (``data/migrations/v1tov2/``) : ajustements mineurs
 
 **A VOIR**
@@ -114,7 +127,7 @@ Verifier que la migration s'est bien déroulée dans le fichier ``var/log/2.2.1t
 
 ::
 
-    cd /home/`whoami`/geonaturre/backend
+    cd /home/`whoami`/geonature/backend
     source venv/bin/activate 
     geonature install_gn_module /home/`whoami`/geonature/contrib/gn_module_occhab /occhab
 
