@@ -292,11 +292,12 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False):
             q = q.filter(col == params.pop(nomenclature))
 
     if len(occurrence_filters) > 0:
-        if not join_with_t_occ:
+        if not is_already_joined(TOccurrencesOccurrence, q):
             q = q.join(
                 TOccurrencesOccurrence,
                 mappedView.id_releve_occtax == TOccurrencesOccurrence.id_releve_occtax,
             )
+
         for nomenclature in occurrence_filters:
             col = getattr(
                 TOccurrencesOccurrence.__table__.columns, nomenclature)
