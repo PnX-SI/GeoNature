@@ -1060,10 +1060,10 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_taxon_for_export_view AS
     t.famille,
     t.id_rang,
     t.cd_ref,
-    t.nom_valide
+    t.nom_valide,
+    s.id_synthese
 FROM gn_synthese.synthese  s
-JOIN taxonomie.taxref t ON s.cd_nom = t.cd_ref
-WHERE t.cd_nom = t.cd_ref;
+JOIN taxonomie.taxref t ON s.cd_nom = t.cd_ref;
 
 ------------
 --TRIGGERS--

@@ -399,7 +399,7 @@ CREATE TRIGGER tri_meta_dates_change_synthese
 -- Vue export des taxons de la synthèse
 -- Première version qui reste à affiner/étoffer
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_taxon_for_export_view AS
- SELECT t.group1_inpn,
+ SELECT DISTINCT t.group1_inpn,
     t.group2_inpn,
     t.regne,
     t.phylum,
@@ -408,7 +408,8 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_taxon_for_export_view AS
     t.famille,
     t.id_rang,
     t.cd_ref,
-    t.nom_valide
-    FROM gn_synthese.synthese  s
-   JOIN taxonomie.taxref t ON s.cd_nom = t.cd_ref;
+    t.nom_valide,
+    s.id_synthese
+FROM gn_synthese.synthese  s
+JOIN taxonomie.taxref t ON s.cd_nom = t.cd_ref;
 

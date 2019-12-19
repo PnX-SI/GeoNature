@@ -299,9 +299,6 @@ def export_taxon_web(info_role):
     :query str export_format: str<'csv'>
 
     """
-    # Test de conformité de la vue v_synthese_for_export_view
-    if not getattr(VSyntheseForWebApp, "cd_ref", None):
-        return {"msg": "View v_synthese_for_export_view must have a cd_ref column"}, 500
 
     filters = {
         key: request.args.getlist(key) for key, value in request.args.items()
@@ -313,8 +310,25 @@ def export_taxon_web(info_role):
         None
     )
 
+    # Test de conformité de la vue v_synthese_for_export_view
+    try:
+        assert hasattr(VSyntheseForWebApp, "id_synthese")
+        assert hasattr(taxon_view.tableDef.columns, "cd_ref")
+        assert hasattr(taxon_view.tableDef.columns, "cd_nom")
+
+    except AssertionError as e:
+        return {"msg": """
+                        View v_synthese_for_export_view and v_synthese_taxon_for_export_view  
+                        must have a cd_ref, cd_nom and id_synthese columns \n
+                        trace: {}
+                        """.format(str(e))
+                }, 500
+    # remove_id_synthese
+    columns = list(filter(lambda col: col.key != 'id_synthese',
+                          taxon_view.tableDef.columns))
+
     q = DB.session.query(
-        taxon_view.tableDef,
+        *columns,
         func.count(
             VSyntheseForWebApp.id_synthese
         ).over(
@@ -324,20 +338,21 @@ def export_taxon_web(info_role):
         taxon_view.tableDef,
         getattr(
             taxon_view.tableDef.columns,
-            "cd_ref"
-        ) == VSyntheseForWebApp.cd_ref
+            "id_synthese"
+        ) == VSyntheseForWebApp.id_synthese
     )
+    q = q.filter(taxon_view.tableDef.columns.cd_nom ==
+                 taxon_view.tableDef.columns.cd_ref)
 
     q = synthese_query.filter_query_all_filters(
         VSyntheseForWebApp, q, filters, info_role
     )
     print(q)
-
     return to_csv_resp(
         datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S"),
         data=serializeQuery(q.all(), q.column_descriptions),
         separator=";",
-        columns=[db_col.key for db_col in taxon_view.tableDef.columns] + ["nb_obs"]
+        columns=[db_col.key for db_col in columns] + ["nb_obs"]
     )
 
 
