@@ -47,7 +47,8 @@ class TestApiModulePrOcctax:
         self.client.set_cookie("/", "token", token)
 
         response = post_json(
-            self.client, url_for("pr_occtax.insertOrUpdateOneReleve"), releve_data
+            self.client, url_for(
+                "pr_occtax.insertOrUpdateOneReleve"), releve_data
         )
 
         assert response.status_code == 200
@@ -75,7 +76,8 @@ class TestApiModulePrOcctax:
             update_data["properties"]["t_occurrences_occtax"].append(temp)
 
         response = post_json(
-            self.client, url_for("pr_occtax.insertOrUpdateOneReleve"), update_data
+            self.client, url_for(
+                "pr_occtax.insertOrUpdateOneReleve"), update_data
         )
 
         assert response.status_code == 200
@@ -96,7 +98,8 @@ class TestApiModulePrOcctax:
         assert "releve" in resp_data_update
         # check that the 3 occurrences are heres
         assert (
-            len(resp_data_update["releve"]["properties"]["t_occurrences_occtax"]) == 3
+            len(resp_data_update["releve"]["properties"]
+                ["t_occurrences_occtax"]) == 3
         )
         response = self.client.delete(
             url_for(
@@ -124,7 +127,6 @@ class TestApiModulePrOcctax:
             "cd_nom": 67111,
             "date_up": "2017-05-11",
             "date_low": "2009-05-01",
-            "observers": 1,
         }
         # CSV
         csv_query_string = base_query_string.copy()
@@ -135,7 +137,7 @@ class TestApiModulePrOcctax:
 
         assert response.status_code == 200
 
-        # geojson
+        # # geojson
         geojson_query_string = base_query_string.copy()
         geojson_query_string["format"] = "geojson"
         response = self.client.get(
@@ -143,6 +145,7 @@ class TestApiModulePrOcctax:
         )
         assert response.status_code == 200
         data = json_of_response(response)
+
         assert len(data["features"]) == 2
         # shapefile
         shape_query_string = base_query_string.copy()
@@ -160,7 +163,8 @@ class TestApiModulePrOcctax:
         token = get_token(self.client)
         self.client.set_cookie("/", "token", token)
 
-        response = self.client.get(url_for("pr_occtax.getOneReleve", id_releve=1))
+        response = self.client.get(
+            url_for("pr_occtax.getOneReleve", id_releve=1))
         assert response.status_code == 200
 
     def test_user_cannot_delete_releve(self):
