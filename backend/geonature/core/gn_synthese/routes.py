@@ -283,7 +283,7 @@ def get_one_synthese(id_synthese):
 ################################
 
 
-@routes.route("/export_taxons", methods=["GET"])
+@routes.route("/export_taxons", methods=["POST"])
 @permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
 def export_taxon_web(info_role):
     """Optimized route for taxon web export.
@@ -300,54 +300,64 @@ def export_taxon_web(info_role):
 
     """
 
-    filters = {
-        key: request.args.getlist(key) for key, value in request.args.items()
-    }
-
     taxon_view = GenericTable(
         "v_synthese_taxon_for_export_view",
         "gn_synthese",
         None
     )
-
+    columns = taxon_view.tableDef.columns
     # Test de conformité de la vue v_synthese_for_export_view
     try:
-        assert hasattr(VSyntheseForWebApp, "id_synthese")
         assert hasattr(taxon_view.tableDef.columns, "cd_ref")
-        assert hasattr(taxon_view.tableDef.columns, "cd_nom")
 
     except AssertionError as e:
         return {"msg": """
-                        View v_synthese_for_export_view and v_synthese_taxon_for_export_view  
-                        must have a cd_ref, cd_nom and id_synthese columns \n
+                        View v_synthese_taxon_for_export_view
+                        must have a cd_ref column \n
                         trace: {}
                         """.format(str(e))
                 }, 500
-    # remove_id_synthese
-    columns = list(filter(lambda col: col.key != 'id_synthese',
-                          taxon_view.tableDef.columns))
+
+    id_list = request.get_json()
+
+    # check R and E CRUVED to know if we filter with cruved
+    cruved = cruved_scope_for_user_in_module(
+        info_role.id_role, module_code="SYNTHESE"
+    )[0]
+
+    subq = DB.session.query(
+        VSyntheseForWebApp.cd_ref,
+        func.count(distinct(
+            VSyntheseForWebApp.id_synthese
+        )).label("nb_obs")
+    ).filter(
+        VSyntheseForWebApp.id_synthese.in_(id_list)
+    ).group_by(VSyntheseForWebApp.cd_ref)
+
+    if cruved["R"] > cruved["E"]:
+        # filter on cruved specifying the column
+        # id_dataset, id_synthese, id_digitiser
+        #   and observer in the v_synthese_for_export_view
+        subq = synthese_query.filter_query_with_cruved(
+            VSyntheseForWebApp,
+            subq,
+            info_role,
+            id_synthese_column="id_synthese",
+            id_dataset_column="id_dataset",
+            observers_column="observers",
+            id_digitiser_column="id_digitiser",
+            with_generic_table=False,
+        )
+    subq = subq.subquery()
 
     q = DB.session.query(
         *columns,
-        func.count(
-            VSyntheseForWebApp.id_synthese
-        ).over(
-            partition_by=VSyntheseForWebApp.cd_ref
-        ).label("nb_obs")
-    ).distinct().join(
-        taxon_view.tableDef,
-        getattr(
-            taxon_view.tableDef.columns,
-            "id_synthese"
-        ) == VSyntheseForWebApp.id_synthese
+        subq.c.nb_obs
+    ).join(
+        subq,
+        subq.c.cd_ref == columns.cd_ref
     )
-    q = q.filter(taxon_view.tableDef.columns.cd_nom ==
-                 taxon_view.tableDef.columns.cd_ref)
 
-    q = synthese_query.filter_query_all_filters(
-        VSyntheseForWebApp, q, filters, info_role
-    )
-    print(q)
     return to_csv_resp(
         datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S"),
         data=serializeQuery(q.all(), q.column_descriptions),
