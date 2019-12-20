@@ -97,19 +97,22 @@ Renommer l’ancien répertoire de l'application, ainsi que le nouveau :
 ::
 
     mv /home/`whoami`/geonature/ /home/`whoami`/geonature_old/
-    mv GeoNature-X.Y.Z /home/`whoami`/geonature/
+    mv GeoNature-2.3.0 /home/`whoami`/geonature/
     cd geonature
   
-* Lancer le script de migration SQL qui va appliquer les évolutions de la BDD et installer le nouveau schéma ``ref_habitats`` :
+* Lancer le script de migration SQL qui va installer le nouveau schéma ``ref_habitats`` :
 
 ::
 
-    cd /home/`whomami`/geonature/install/migration 
+    cd /home/`whomami`/geonature/install/migration
+    chmod +x 2.2.1to2.3.0.sh
     ./2.2.1to2.3.0.sh
 
 Verifier que la migration s'est bien déroulée dans le fichier ``var/log/2.2.1to2.3.0.log``.
 
-* Lancer le script de migration habituel 
+* Lancer le script de migration SQL suivant https://raw.githubusercontent.com/PnX-SI/GeoNature/2.3.0/data/migrations/2.2.1to2.3.0.sql
+
+* Lancer enfin le script de migration habituel 
 
 ::
 
