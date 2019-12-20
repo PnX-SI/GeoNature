@@ -21,13 +21,14 @@ export class ModalDeleteStation implements OnInit {
   ngOnInit() {}
 
   deleteStation() {
+    this.onDelete.emit();
     this._occHabDataService.deleteOneStation(this.idStation).subscribe(
       d => {
         this._commonService.regularToaster(
           "success",
           "Station supprimée avec succès"
         );
-        this.onDelete.emit();
+
         this._router.navigate(["occhab"]);
       },
       () => {
@@ -37,7 +38,7 @@ export class ModalDeleteStation implements OnInit {
         );
       },
       () => {
-        this.c.close();
+        this.c();
       }
     );
   }

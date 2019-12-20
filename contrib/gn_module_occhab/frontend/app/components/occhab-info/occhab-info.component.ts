@@ -4,6 +4,7 @@ import { Subscription } from "rxjs/Subscription";
 import { ActivatedRoute } from "@angular/router";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { CommonService } from "@geonature_common/service/common.service";
 
 @Component({
   selector: "pnx-occhab-info",
@@ -23,7 +24,8 @@ export class OcchabInfoComponent implements OnInit, OnDestroy {
     private _route: ActivatedRoute,
     private _dataService: DataFormService,
     private modal: NgbModal,
-    private _ngbModal: NgbModal
+    private _ngbModal: NgbModal,
+    private _commonService: CommonService
   ) {}
 
   ngOnInit() {}
@@ -48,9 +50,18 @@ export class OcchabInfoComponent implements OnInit, OnDestroy {
   }
 
   getHabInfo(cd_hab) {
-    this._dataService.getHabitatInfo(cd_hab).subscribe(data => {
-      this.habInfo = data;
-    });
+    this._dataService.getHabitatInfo(cd_hab).subscribe(
+      data => {
+        this.habInfo = data;
+      },
+      () => {
+        this.habInfo = null;
+        this._commonService.regularToaster(
+          "error",
+          "Erreur lors de l'interrogation Habref"
+        );
+      }
+    );
   }
 
   openModalContent(modal, content) {

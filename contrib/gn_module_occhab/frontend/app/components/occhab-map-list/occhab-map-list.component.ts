@@ -44,7 +44,6 @@ export class OccHabMapListComponent implements OnInit {
     this.getStations({ limit: 50 });
     // get wiewport height to set the number of rows in the tabl
     const h = document.documentElement.clientHeight;
-    console.log(h);
 
     this.rowNumber = this.calculeteRowNumber(h);
     // observable on mapListService.currentIndexRow to find the current page
@@ -69,8 +68,6 @@ export class OccHabMapListComponent implements OnInit {
   // update the number of row per page when resize the window
   @HostListener("window:resize", ["$event"])
   onResize(event) {
-    console.log(event.target.innerHeight);
-
     this.rowNumber = this.calculeteRowNumber(event.target.innerHeight);
   }
 
