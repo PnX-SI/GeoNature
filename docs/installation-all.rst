@@ -208,7 +208,7 @@ Vous pouvez vous connecter avec l'utilisateur intégré par défaut (admin/admin
 
 Si vous rencontrez une erreur, se reporter aux fichiers de logs :
 
-- Logs de l'installation de la base de données : ``/home/<MY_USER>/geonature/var/log/geonature/install_db.log``
+- Logs de l'installation de la base de données : ``/home/<MY_USER>/geonature/var/log/install_db.log``
 - Log général de l'installation de l'application : ``/home/<MY_USER>/install_all.log``
 
 
