@@ -329,7 +329,9 @@ def export_taxon_web(info_role):
         VSyntheseForWebApp.cd_ref,
         func.count(distinct(
             VSyntheseForWebApp.id_synthese
-        )).label("nb_obs")
+        )).label("nb_obs"),
+        func.min(VSyntheseForWebApp.date_min).label("date_min"),
+        func.max(VSyntheseForWebApp.date_max).label("date_max")
     ).filter(
         VSyntheseForWebApp.id_synthese.in_(id_list)
     ).group_by(VSyntheseForWebApp.cd_ref)
@@ -352,7 +354,9 @@ def export_taxon_web(info_role):
 
     q = DB.session.query(
         *columns,
-        subq.c.nb_obs
+        subq.c.nb_obs,
+        subq.c.date_min,
+        subq.c.date_max
     ).join(
         subq,
         subq.c.cd_ref == columns.cd_ref
@@ -362,7 +366,7 @@ def export_taxon_web(info_role):
         datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S"),
         data=serializeQuery(q.all(), q.column_descriptions),
         separator=";",
-        columns=[db_col.key for db_col in columns] + ["nb_obs"]
+        columns=[db_col.key for db_col in columns] + ["nb_obs", "date_min", "date_max"]
     )
 
 

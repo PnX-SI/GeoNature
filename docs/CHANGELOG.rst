@@ -5,8 +5,6 @@ CHANGELOG
 2.3.0 - Occhab de Noël (Unreleased)
 -----------------------------------
 
-Rédaction en cours. Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...develop
-
 **🚀 Nouveautés**
 
 * Développement du module Occhab (Occurrences d'habitats) basé sur une version minimale du standard SINP du même nom et s'appuyant sur le référentiel Habref du SINP (#735)
@@ -30,6 +28,11 @@ Rédaction en cours. Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...de
   - Obtenir les habitats d'une liste (avec ou sans leur code en plus de leur nom et filtrable par typologie)
   - Obtenir la liste des typologies (filtrable par liste d'habitats)
 
+* Mise à jour du module des nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module) en version 1.3.1 incluant notamment : 
+
+  - Ajout de nomenclatures SINP concernant les habitats
+  - Ajout d'une contrainte d'unicité sur la combinaison des champs ``id_type`` et ``cd_nomenclature`` de la table ``t_nomenclatures``
+
 * Association des JDD à des modules pour filtrer les JDD utilisés dans Occtax ou dans Occhab notamment (#399)
 * Mise à jour de Angular 4 à Angular 7 (performances, ....) par @jbrieuclp
 * Ajout d'une documentation utilisateur pour le module Synthèse : http://docs.geonature.fr/user-manual.html#synthese (par @amandine-sahl)
@@ -38,8 +41,10 @@ Rédaction en cours. Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...de
 * Partage de scripts de sauvegarde de l'application et de la BDD dans ``data/scripts/backup/`` (par @gildeluermoz)
 * Externalisation des librairies d'outils Flask et SQLAlchemy (https://github.com/PnX-SI/Utils-Flask-SQLAlchemy et https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo) pour pouvoir les factoriser et les utiliser dans d'autres applications. Cela améliore aussi les performances des jointures.
 * SYNTHESE : Ajout d'un export de la liste des espèces (#805)
+* SYNTHESE : Baser la portée de tous les exports (y compris Statuts) sur l'action E (#804)
 * METADONNEES : Affichage des ID des JDD et CA
 * OCCTAX : Conserver le fichier GPX ou GeoJSON chargé sur la carte quand on enchaine des relevés et ajouter de la transparence sur les géométries utilisés dans les relevés précédents (#813)
+* OCCTAX : Clarification de l'ergonomie pour ajouter un dénombrement sur un taxon (#780)
 * Ajout des dates de creation et de modification dans les tables ``gn_monitoring.t_base_sites`` et ``gn_monitoring.t_base_visits`` et triggers pour les calculer automatiquement
 * Ajout des champs ``geom_local``, ``altitude_min`` et ``altitude_max`` dans la table ``gn_monitoring.t_base_sites`` et triggers pour les calculer automatiquement (#812)
 * Ajout des champs ``id_dataset``, ``id_module``, ``id_nomenclature_obs_technique`` et ``id_nomenclature_grp_typ`` dans la table ``gn_monitoring.t_base_visits`` (#812)
@@ -58,6 +63,8 @@ Rédaction en cours. Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...de
 * OCCTAX : Correction d'une faiblesse lors de la récupération des informations taxonomiques d'un relevé (utilisation d'une jointure plutôt que l'API TaxHub) (#751)
 * OCCTAX : Correction des longues listes de taxons dans les tooltip des relevés en y ajoutant un scroll (par @jbrieuclp) (#666)
 * OCCTAX : Masquer le bouton ``Télécharger`` si l'utilisateur n'a pas de droits d'export dans le module (E = 0)
+* OCCTAX : Correction de l'affichage des relevés dans la liste (#777)
+* OCCTAX : Correction des exports quand on filtre sur un obervateur en texte
 * SYNTHESE : Filtre sur ``date_max`` en prenant ``date_max <= 23:59:59`` pour prendre en compte les observations avec un horaire (#778)
 * SYNTHESE : Correction des boutons radios pour les filtres taxonomiques avancés basés sur les attributs TaxHub (#763)
 * SYNTHESE : Correction de la recherche par ``cd_nom`` dans le composant ``SearchTaxon`` (#824)
@@ -100,7 +107,7 @@ Renommer l’ancien répertoire de l'application, ainsi que le nouveau :
     mv GeoNature-2.3.0 /home/`whoami`/geonature/
     cd geonature
   
-* Lancer le script de migration SQL qui va installer le nouveau schéma ``ref_habitats`` :
+* Lancer le script de migration SQL qui va installer et remplir le nouveau schéma ``ref_habitats`` avec Habref et mettre à jour le schéma ``ref_nomenclatures`` :
 
 ::
 
@@ -108,7 +115,7 @@ Renommer l’ancien répertoire de l'application, ainsi que le nouveau :
     chmod +x 2.2.1to2.3.0.sh
     ./2.2.1to2.3.0.sh
 
-Verifier que la migration s'est bien déroulée dans le fichier ``var/log/2.2.1to2.3.0.log``.
+Vérifier que la migration s'est bien déroulée dans le fichier ``var/log/2.2.1to2.3.0.log``.
 
 * Lancer le script de migration SQL suivant https://raw.githubusercontent.com/PnX-SI/GeoNature/2.3.0/data/migrations/2.2.1to2.3.0.sql
 
