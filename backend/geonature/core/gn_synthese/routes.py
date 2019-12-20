@@ -515,7 +515,7 @@ def export_metadata(info_role):
 
 
 @routes.route("/export_statuts", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
+@permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
 def export_status(info_role):
     """Route to get all the protection status of a synthese search
 
