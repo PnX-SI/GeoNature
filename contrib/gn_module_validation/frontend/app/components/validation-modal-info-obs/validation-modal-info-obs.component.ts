@@ -3,11 +3,11 @@ import { ValidationDataService } from "../../services/data.service";
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { AppConfig } from '@geonature_config/app.config';
+import { ToastrService } from 'ngx-toastr';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { ModuleConfig } from "../../module.config";
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { CommonService } from "@geonature_common/service/common.service";
 
 @Component({
   selector: 'pnx-validation-modal-info-obs',
@@ -50,8 +50,8 @@ export class ValidationModalInfoObsComponent implements OnInit {
     private _validatioDataService: ValidationDataService,
     private _syntheseDataService: SyntheseDataService,
     public activeModal: NgbActiveModal,
-    private _fb: FormBuilder,
-    private _commonService: CommonService,
+    private toastr: ToastrService,
+    private _fb: FormBuilder
   ) {
     // form used for changing validation status
     this.statusForm = this._fb.group({
@@ -111,10 +111,10 @@ export class ValidationModalInfoObsComponent implements OnInit {
       err => {
         if (err.statusText === 'Unknown Error') {
           // show error message if no connexion
-          this._commonService.translateToaster("error", "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)");
+          this.toastr.error('ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connexion)');
         } else {
           // show error message if other server error
-          this._commonService.translateToaster("error", err.error);
+          this.toastr.error(err.error);
         }
       },
       () => {
@@ -134,8 +134,11 @@ export class ValidationModalInfoObsComponent implements OnInit {
           this.selectedObs.date_min = date_min.toLocaleDateString('fr-FR');
           const date_max = new Date(this.selectedObs.date_max);
           this.selectedObs.date_max = date_max.toLocaleDateString('fr-FR');
-          this.email = this.selectedObs.cor_observers.map(el => el.email).join();
-          this.mailto = String("mailto:" + this.email);
+          if (this.selectedObs.cor_observers) {
+            this.email = this.selectedObs.cor_observers.map(el => el.email).join();            
+            this.mailto = String("mailto:" + this.email);
+          }
+
           
         }
       );
@@ -169,7 +172,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
               this.validationHistory[row].comment = '';
             }
             // format validator
-            if (this.validationHistory[row].typeValidation == 'True') {
+            if (this.validationHistory[row].typeValidation == 'True' {
               this.validationHistory[row].validator = 'Attribution automatique';
               //this.mapListService.tableData[row]['validation_auto'] = '';
             }
@@ -178,13 +181,13 @@ export class ValidationModalInfoObsComponent implements OnInit {
         err => {
           console.log(err);
           if(err.status == 404) {
-            this._commonService.translateToaster("warning", "Aucun historique de validation");
+            this.toastr.warning('Aucun historique de validation')
           } else if (err.statusText === 'Unknown Error') {
             // show error message if no connexion
-            this._commonService.translateToaster("error", "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)");
+            this.toastr.error('ERROR: IMPsOSSIBLE TO CONNECT TO SERVER (check your connexion)');
           } else {
             // show error message if other server error
-            this._commonService.translateToaster("error", err.error);
+            this.toastr.error(err.error);
           }
         },
         () => {
@@ -262,7 +265,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
           //console.log('retour du post : ', this.promiseResult);
           return new Promise((resolve, reject) => {
             // show success message indicating the number of observation(s) with modified validation status
-            this._commonService.translateToaster("success", "Nouveau statut de validation enregistré");
+            this.toastr.success('Nouveau statut de validation enregistré');
             this.update_status();
             this.getValidationDate(this.oneObsSynthese.unique_id_sinp);
             this.loadOneSyntheseReleve(this.oneObsSynthese);
@@ -270,16 +273,16 @@ export class ValidationModalInfoObsComponent implements OnInit {
             // bind statut value with validation-synthese-list component
             this.statusForm.reset();
             resolve('data updated');
-          })
+          }
       })
       .catch(
         err => {
           if (err.statusText === 'Unknown Error') {
             // show error message if no connexion
-            this._commonService.translateToaster("error", "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)");
+            this.toastr.error('ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connexion)');
           } else {
             // show error message if other server error
-            this._commonService.translateToaster("error", err.error);
+            this.toastr.error(err.error);
           }
           Promise.reject();
         }
@@ -291,8 +294,8 @@ export class ValidationModalInfoObsComponent implements OnInit {
             // close validation status popup
             this.edit = false;
             resolve('process finished');
-          })
-      })
+          }
+    })
       .then(
         data => {
           //console.log(data);
@@ -304,7 +307,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
     // send valstatus value to validation-synthese-list component
     this.modifiedStatus.emit({
       id_synthese: this.id_synthese,
-      new_status: this.currentCdNomenclature
+      new_status: this.currentCdNomenclature;
     });
   }
 
@@ -322,10 +325,10 @@ export class ValidationModalInfoObsComponent implements OnInit {
       err => {
         if (err.statusText === 'Unknown Error') {
           // show error message if no connexion
-          this._commonService.translateToaster("error", "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)");
+          this.toastr.error('ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connexion)');
         } else {
           // show error message if other server error
-          this._commonService.translateToaster("error", err.error);
+          this.toastr.error(err.error);
         }
       },
       () => {

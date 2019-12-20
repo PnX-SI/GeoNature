@@ -44,7 +44,9 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     this._globalSub.currentModuleSub.subscribe(module => {
       if (module) {
         this.moduleName = module.module_label;
-        this.currentDocUrl = module.module_doc_url;
+        if (module.module_doc_url) {
+          this.currentDocUrl = module.module_doc_url;
+        }
       } else {
         this.moduleName = 'Accueil';
       }

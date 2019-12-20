@@ -91,8 +91,6 @@ export class OcctaxFormComponent implements OnInit {
     // disable button
     this.disabledAfterPost = true;
     //console.log(JSON.stringify(finalForm));
-    // set true to display the control to stay on the form
-    this.fs.displayStayOnFormInterface = true;
 
     // Post
     this._cfs.postOcctax(finalForm).subscribe(

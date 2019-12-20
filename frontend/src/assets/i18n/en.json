@@ -27,7 +27,7 @@
   "LoginError": "Login or password incorrect",
   "DownloadData": "Download data",
   "Downloading": "Downloading",
-  "DownloadOverflow": "The number of items is too important to be downloaded, please modify your request or contact your administrator",
+  "DownloadOverflow": "The number of items is too big to be downloaded, please modify your request or contact your administrator",
   "AllItems": "all",
   "MapList": {
     "InvalidTypeError": "Invalid type error",
@@ -62,11 +62,11 @@
     "AddLine": "Locate observation (line)",
     "AddPolygon": "Locate observation (polygon)",
     "ZoomWarning": "Inappropriate scale, zoom more ",
-    "FileLayerInfoMessage": "Right click on the shape to select your current releve. Selected layer are in red. Right click to display the layer info",
+    "FileLayerInfoMessage": "Right click on the shape to select your current releve. Selected layer is in red. Right click to display the layer info",
     "FileLayerInfoSynthese": "Right click on the shape to display info"
   },
   "Releve": {
-    "Releve": "Relevé",
+    "Releve": "Releve",
     "AddReleve": "Add a releve",
     "Observer": "Observer",
     "Observers": "Observers",
@@ -82,19 +82,19 @@
     "Dataset": "Dataset",
     "Comment": "Comment",
     "SaveReleve": "Save releve",
-    "DateMaxError": "Max date can't be inferior to the date min",
-    "AltitudeError": "Altitude max cannot be less than altitude min",
+    "DateMaxError": "Max date can't be inferior to the min date",
+    "AltitudeError": "Altitude max cannot be smaller than altitude min",
     "HourMaxError": "End hour can't be inferior to start hour",
     "SavedTaxon": "Saved taxon(s)",
     "InfoGeo": "Geographic informations of the releve",
     "Edit": "Edit releve",
-    "Info": "Informations releve",
+    "Info": "Releve information",
     "Delete": "Delete releve",
     "DeleteSuccessfully": "Releve deleted successfully",
     "ObsTechnique": "Observation technic",
-    "AddTaxonOnReleve": "Add a taxon on this releve",
+    "AddTaxonOnReleve": "Add a taxon to this releve",
     "CancelTaxon": "Cancel this taxon",
-    "FillGeometryFirst": "Veuillez saisir un pointage sur la carte",
+    "FillGeometryFirst": "Please locate on map",
     "GroupType": "Grouping type",
     "DoesNotExist": "This releve does not exist",
     "StayOnFormInterface": "Stay on form interface"
@@ -132,8 +132,8 @@
     "CurrentlyEditing": "Please first validate the currently editing taxon",
     "NoTaxonFound": "No taxon found for this search",
     "ExistProofValidation": "This field must begin with 'http://', 'https://', ou 'ftp://'",
-    "NoExistProofError": "If exist proof is 'YES' one of two proof field must be filled",
-    "ExistproofError": "The exist proof can be filled only if exist proof is true",
+    "NoExistProofError": "If existence proof is 'YES' one of two proof fields must be filled",
+    "ExistproofError": "The existence proof can be filled only if exist proof is true",
 
     "StatusSource": "Source status"
   },
@@ -144,13 +144,13 @@
     "Type": "Type",
     "LifeStage": "Life stage",
     "Sex": "Sex",
-    "Phenology": "Phénology",
+    "Phenology": "Phenology",
     "CountingObject": "Counting object",
     "CountingType": "Counting type",
     "ValidationStatus": "Validation status",
     "Numbers": "Numbers",
     "Total": "Total",
-    "CountError": "Max counting can't be inferior to counting min"
+    "CountError": "Max counting can't be inferior to min counting"
   },
   "Geo": {
     "Municipalities": "Cities"
@@ -161,6 +161,12 @@
     "ExportModuleName": "Export module"
   },
   "Synthese": {
-    "DeleteObs": "Supprimer l'observations"
-  }
+    "DeleteObs": "Delete this observation"
+  },
+  "MyAccount": "My account",
+  "CreateAccount": "Create an account",
+  "ForgotPasswordOrLogin": "Loggin or password forgotten",
+  "AutoAccountEmailConfirmation": "An email has been sent to confirm your account",
+  "AdminAccountEmailConfirmation": "Your demand has been saved, an administrator will answer to you soon",
+  "PasswordAndLoginRecovery": "An email has been sent to recover your login and password"
 }

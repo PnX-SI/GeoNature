@@ -132,6 +132,7 @@ then
         echo "" &>> var/log/install_db.log
         wget https://raw.githubusercontent.com/PnEcrins/UsersHub/$usershub_release/data/usershub.sql -P tmp/usershub
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/usershub/usershub.sql  &>> var/log/install_db.log
+        export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/usershub/usershub_api.sql  &>> var/log/install_db.log
         
         echo "--------------------" &>> var/log/install_db.log
         echo "Insert minimal data (utilisateurs)" &>> var/log/install_db.log

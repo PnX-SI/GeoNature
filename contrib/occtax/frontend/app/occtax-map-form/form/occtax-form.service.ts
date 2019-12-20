@@ -50,9 +50,6 @@ export class OcctaxFormService {
   public currentUser: User;
   public disabled = true;
   public stayOnFormInterface = new FormControl(false);
-  /** Display on not the control to stay on the form interface */
-  public displayStayOnFormInterface = true;
-
   public currentCdExistProot = null;
   public currentExistProofLabels = null;
 

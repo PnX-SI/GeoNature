@@ -1,4 +1,5 @@
 APP_PATH/var/log/gn_errors.log {
+    su root root
     daily
     rotate 8
     size 100M

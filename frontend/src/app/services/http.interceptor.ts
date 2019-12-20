@@ -1,5 +1,4 @@
-
-import {throwError as observableThrowError,  Observable } from 'rxjs';
+import { throwError as observableThrowError, Observable } from 'rxjs';
 import { Injectable, Injector } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
 import { AuthService } from '@geonature/components/auth/auth.service';
@@ -20,7 +19,6 @@ export class MyCustomInterceptor implements HttpInterceptor {
     } else {
       errMsg = error.message ? error.message : error.toString();
     }
-    console.error(errMsg);
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -30,7 +28,7 @@ export class MyCustomInterceptor implements HttpInterceptor {
     if (!auth.getToken()) {
       this.router.navigate(['/login']);
     }
-    
+
     //Creation d'une liste blanche pour autoriser les CROS request.
     if (WHITE_LIST.indexOf(this.extractHostname(request.url)) === -1) {
       // add a custom header
@@ -51,11 +49,10 @@ export class MyCustomInterceptor implements HttpInterceptor {
     var hostname;
     //find & remove protocol (http, ftp, etc.) and get hostname
 
-    if (url.indexOf("//") > -1) {
-        hostname = url.split('/')[2];
-    }
-    else {
-        hostname = url.split('/')[0];
+    if (url.indexOf('//') > -1) {
+      hostname = url.split('/')[2];
+    } else {
+      hostname = url.split('/')[0];
     }
 
     //find & remove port number
@@ -64,5 +61,5 @@ export class MyCustomInterceptor implements HttpInterceptor {
     hostname = hostname.split('?')[0];
 
     return hostname;
-  } 
+  }
 }

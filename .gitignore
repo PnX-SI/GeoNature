@@ -3,6 +3,7 @@ settings.ini
 config/geonature_config.toml
 
 **/conf_gn_module.toml
+**/module.config.ts
 
 log/*
 .vscode/
@@ -28,6 +29,7 @@ backend/run.py
 
 *.perm
 *.pem
+*.ipynb
 
 
 # Byte-compiled / optimized / DLL files
