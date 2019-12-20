@@ -29,7 +29,6 @@ Rédaction en cours. Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...de
   - Obtenir les infos d'un habitat et de ses correspondances à partir de son cd_hab
   - Obtenir les habitats d'une liste (avec ou sans leur code en plus de leur nom et filtrable par typologie)
   - Obtenir la liste des typologies (filtrable par liste d'habitats)
-  - Obtenir toutes les correspondances d'un habitat à partir de son cd_hab
 
 * Association des JDD à des modules pour filtrer les JDD utilisés dans Occtax ou dans Occhab notamment (#399)
 * Mise à jour de Angular 4 à Angular 7 (performances, ....) par @jbrieuclp
@@ -50,7 +49,7 @@ Rédaction en cours. Voir https://github.com/PnX-SI/GeoNature/compare/2.2.1...de
 * Ajout d'inputs ``time`` et ``number`` au composant DynamicForm permettant de générer des formulaires dynamiques.
 * Améliorations diverses du composant DynamicForm (par @joelclems)
 * Ajout d'un paramètre dans le cas où le serveur se trouve derrière un proxy (``proxy_http`` ou dans ``proxy_https`` dans ``config/settings.ini``)
-* Ajout d'une route permettant de récupérer la liste des rôles d'une liste à partir de son code
+* Ajout d'une route permettant de récupérer la liste des rôles d'une liste à partir de son code (par @joelclems)
 
 **🐛 Corrections**
 
