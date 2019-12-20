@@ -61,6 +61,8 @@ add_sample_data=true
 
 # Installer le module validation
 install_module_validation=true
+# Installer le module Occurrence d'habitat
+install_module_occhab=true
 
 
 # Taxonomy, Users and Nomenclatures configuration
