@@ -408,6 +408,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_taxon_for_export_view AS
     t.famille,
     t.id_rang,
     t.cd_ref,
+    t.cd_nom,
     t.nom_valide,
     s.id_synthese
 FROM gn_synthese.synthese  s
