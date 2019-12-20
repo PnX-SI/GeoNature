@@ -44,5 +44,3 @@ echo 'NOMENCLATURES' &>> /home/`whoami`/geonature/var/log/2.2.1to2.3.0.log
 echo '------------------' &>> /home/`whoami`/geonature/var/log/2.2.1to2.3.0.log
 export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /home/`whoami`/geonature/tmp/update1.3.0to1.3.1.sql  &>> /home/`whoami`/geonature/var/log/2.2.1to2.3.0.log
 echo 'Ok'
-
-sudo supervisortctl start geonature2
