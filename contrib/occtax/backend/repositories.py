@@ -91,32 +91,10 @@ class ReleveRepository:
     def filter_query_with_autorization(self, user):
         q = DB.session.query(self.model)
         if user.value_filter == "2":
-            # jointure pour obtenir les jeux de données autorisés
-            if user.id_organisme is None:
-                q = q.outerjoin(
-                    TDatasets,
-                    and_(
-                        self.model.id_dataset == TDatasets.id_dataset,
-                        TDatasets.cor_dataset_actor.any(id_role=user.id_role),
-                    ),
-                )
-            else:
-                q = q.outerjoin(
-                    TDatasets,
-                    and_(
-                        self.model.id_dataset == TDatasets.id_dataset,
-                        or_(
-                            TDatasets.cor_dataset_actor.any(
-                                id_organism=user.id_organisme
-                            ),
-                            TDatasets.cor_dataset_actor.any(
-                                id_role=user.id_role),
-                        ),
-                    ),
-                )
+            allowed_datasets = TDatasets.get_user_datasets(user)
             q = q.filter(
                 or_(
-                    TDatasets.id_dataset.isnot(None),
+                    self.model.id_dataset.in_(tuple(allowed_datasets)),
                     self.model.observers.any(id_role=user.id_role),
                     self.model.id_digitiser == user.id_role,
                 )
