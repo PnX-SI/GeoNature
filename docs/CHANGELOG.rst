@@ -28,6 +28,11 @@ CHANGELOG
   - Obtenir les habitats d'une liste (avec ou sans leur code en plus de leur nom et filtrable par typologie)
   - Obtenir la liste des typologies (filtrable par liste d'habitats)
 
+* Mise à jour du module des nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module) en version 1.3.1 incluant notamment : 
+
+  - Ajout de nomenclatures SINP concernant les habitats
+  - Ajout d'une contrainte d'unicité sur la combinaison des champs ``id_type`` et ``cd_nomenclature`` de la table ``t_nomenclatures``
+
 * Association des JDD à des modules pour filtrer les JDD utilisés dans Occtax ou dans Occhab notamment (#399)
 * Mise à jour de Angular 4 à Angular 7 (performances, ....) par @jbrieuclp
 * Ajout d'une documentation utilisateur pour le module Synthèse : http://docs.geonature.fr/user-manual.html#synthese (par @amandine-sahl)
@@ -102,7 +107,7 @@ Renommer l’ancien répertoire de l'application, ainsi que le nouveau :
     mv GeoNature-2.3.0 /home/`whoami`/geonature/
     cd geonature
   
-* Lancer le script de migration SQL qui va installer le nouveau schéma ``ref_habitats`` :
+* Lancer le script de migration SQL qui va installer et remplir le nouveau schéma ``ref_habitats`` avec Habref et mettre à jour le schéma ``ref_nomenclatures`` :
 
 ::
 
@@ -110,7 +115,7 @@ Renommer l’ancien répertoire de l'application, ainsi que le nouveau :
     chmod +x 2.2.1to2.3.0.sh
     ./2.2.1to2.3.0.sh
 
-Verifier que la migration s'est bien déroulée dans le fichier ``var/log/2.2.1to2.3.0.log``.
+Vérifier que la migration s'est bien déroulée dans le fichier ``var/log/2.2.1to2.3.0.log``.
 
 * Lancer le script de migration SQL suivant https://raw.githubusercontent.com/PnX-SI/GeoNature/2.3.0/data/migrations/2.2.1to2.3.0.sql
 
