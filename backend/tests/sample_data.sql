@@ -169,6 +169,10 @@ INSERT INTO gn_meta.cor_dataset_protocol (id_dataset, id_protocol) VALUES
 ;
 SELECT pg_catalog.setval('gn_meta.sinp_datatype_protocols_id_protocol_seq', (SELECT max(id_protocol)+1 FROM gn_meta.cor_dataset_protocol), true);
 
+INSERT INTO gn_commons.cor_module_dataset (id_module, id_dataset)
+SELECT gn_commons.get_id_module_bycode('OCCTAX'), id_dataset
+FROM gn_meta.t_datasets
+WHERE active;
 
 
 

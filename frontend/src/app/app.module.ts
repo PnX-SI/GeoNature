@@ -37,7 +37,8 @@ import { CookieService } from 'ng2-cookies';
 import {
   AuthGuard,
   ModuleGuardService,
-  SignUpGuard
+  SignUpGuard,
+  UserManagementGuard
 } from '@geonature/routing/routes-guards.service';
 import { ModuleService } from './services/module.service';
 import { CruvedStoreService } from './services/cruved-store.service';
@@ -94,6 +95,7 @@ export function createTranslateLoader(http: HttpClient) {
     HttpClient,
     ModuleGuardService,
     SignUpGuard,
+    UserManagementGuard,
     SideNavService,
     CruvedStoreService,
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true }

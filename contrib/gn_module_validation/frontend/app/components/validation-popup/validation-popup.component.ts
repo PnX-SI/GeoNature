@@ -64,14 +64,14 @@ export class ValidationPopupComponent {
       data => {
         return new Promise((resolve, reject) => {
             // show success message indicating the number of observation(s) with modified validation status
-            this._commonService.translateToaster("success", "Vous avez modifié le statut de validation de ' + this.observations.length + ' observation(s)");
+            this._commonService.translateToaster("success", "Vous avez modifié le statut de validation de " + this.observations.length + " observation(s)");
             // bind statut value with validation-synthese-list component
             this.update_status();
             // emit the date of today in output to update the validation date on maplist
             this.valDate.emit(new Date());
             //this.getValidationDate(this.observations[0]);
             resolve('data updated');
-        }
+        })
       })
     .catch(
       err => {
@@ -91,7 +91,7 @@ export class ValidationPopupComponent {
           // close validation status popup
           this.closeModal();
           resolve('process finished');
-      }
+      })
     })
     .then(
       data => {

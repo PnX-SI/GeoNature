@@ -164,8 +164,11 @@
 }
 
 #addOccurrence {
-  margin-left: 95%;
   cursor: pointer;
+}
+
+#validate-btn {
+  margin-top: 20px;
 }
 
 select.form-control-sm:not([size]):not([multiple]) {
@@ -235,6 +238,6 @@ button[disabled] {
   opacity: 0.3;
 }
 
-#toggle-btn{
+#toggle-btn {
   margin-right: 10px;
 }

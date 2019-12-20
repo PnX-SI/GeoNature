@@ -7,12 +7,14 @@
   [disableControl]="false" 
   [ngbTypeahead]="search"
   [inputFormatter]="formatter"
-  [resultTemplate]="rt" 
-  (selectItem)="itemSelected($event)" />
+  [resultTemplate]="resultTemplate || rt" 
+  (selectItem)="itemSelected($event)"
+  [placeholder]="placeholder"
+  />
   <ng-template #rt let-r="result" let-t="term">
     <span [innerHTML]="r[keyValue]">  </span>
   </ng-template>
 
 </div>
-<small *ngIf="!isLoading && noResult && parentFormControl.value?.length >= 3" style="color:red"> {{'Taxon.NoTaxonFound'
-  | translate}}</small>
+<small *ngIf="!isLoading && noResult && parentFormControl.value?.length >= 3" style="color:red"> 
+  Aucun élement trouvé</small>

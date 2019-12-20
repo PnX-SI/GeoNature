@@ -87,7 +87,7 @@ class TestGnMeta:
         jdds = post_jdd_from_user(id_user=10991, id_organism=104)
         assert len(jdds) >= 1
 
-    def test_post_dataset(self):
+    def test_post_and_update_dataset(self):
         token = get_token(self.client, login="admin", password="admin")
         self.client.set_cookie("/", "token", token)
         one_dataset = {
@@ -119,10 +119,44 @@ class TestGnMeta:
             "marine_domain": False,
             "terrestrial_domain": True,
             "validable": True,
+            "modules": [1],
         }
         response = post_json(
             self.client, url_for("gn_meta.post_dataset"), json_dict=one_dataset
         )
+        dataset = json_of_response(response)
+        assert len(dataset["modules"]) == 1
+        assert response.status_code == 200
+
+        # edition
+        # fetch dataset
+        response = self.client.get(
+            url_for("gn_meta.get_dataset", id_dataset=dataset["id_dataset"])
+        )
+        fetched_dataset = json_of_response(response)
+        # suppression du module associé
+        fetched_dataset["modules"] = []
+
+        for cor in fetched_dataset["cor_dataset_actor"]:
+            cor.pop("organism")
+        # ajout d'un acteur
+        fetched_dataset["cor_dataset_actor"].append(
+            {
+                "id_cda": None,
+                "id_nomenclature_actor_role": 369,
+                "id_organism": 1,
+                "id_role": None,
+            }
+        )
+        # modification du nom
+        fetched_dataset["dataset_name"] = "new_name"
+        response = post_json(
+            self.client, url_for("gn_meta.post_dataset"), json_dict=fetched_dataset
+        )
+        updated_dataset = json_of_response(response)
+        assert "modules" not in updated_dataset
+        assert len(updated_dataset["cor_dataset_actor"]) == 2
+        assert updated_dataset["dataset_name"] == "new_name"
         assert response.status_code == 200
 
     def test_post_ca(self):

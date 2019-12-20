@@ -71,8 +71,14 @@ export class SyntheseFormService {
     const params = Object.assign({}, this.searchForm.value);
     const updatedParams = {};
     // tslint:disable-next-line:forin
-    for (let key in params) {
-      if ((key === 'date_min' && params.date_min) || (key === 'date_max' && params.date_max)) {
+
+    for (const key in params) {
+      if (key === 'cd_nom') {
+        // Test if cd_nom is an integer
+        if (Number.isInteger(parseInt(params[key], 10))) {
+          updatedParams[key] = parseInt(params[key], 10);
+        }
+      } else if ((key === 'date_min' && params.date_min) || (key === 'date_max' && params.date_max)) {
         updatedParams[key] = this._dateParser.format(params[key]);
       } else if (
         (key === 'period_end' && params.period_end) ||
@@ -98,6 +104,7 @@ export class SyntheseFormService {
           updatedParams[key] = params[key];
         }
       }
+
     }
 
     if (this.selectedtaxonFromComponent.length > 0) {

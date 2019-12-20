@@ -7,7 +7,6 @@ config/geonature_config.toml
 
 log/*
 .vscode/
-**/node_modules/
 geonature_config.toml
 external_assets/
 external_modules/*
@@ -31,6 +30,9 @@ backend/run.py
 *.pem
 *.ipynb
 
+tsconfig.json
+.angulardoc.json
+Pipfile.lock
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

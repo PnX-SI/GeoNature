@@ -151,6 +151,9 @@ cd /home/`whoami`/geonature
 cp config/settings.ini.sample config/settings.ini
 echo "Installation de la base de données et configuration de l'application GeoNature ..."
 my_url="${my_url//\//\\/}"
+proxy_http="${proxy_http//\//\\/}"
+proxy_https="${proxy_https//\//\\/}"
+
 sed -i "s/my_local=.*$/my_local=$my_local/g" config/settings.ini
 sed -i "s/my_url=.*$/my_url=$my_url/g" config/settings.ini
 sed -i "s/drop_apps_db=.*$/drop_apps_db=$drop_geonaturedb/g" config/settings.ini
@@ -167,7 +170,9 @@ sed -i "s/usershub_release=.*$/usershub_release=$usershub_release/g" config/sett
 sed -i "s/taxhub_release=.*$/taxhub_release=$taxhub_release/g" config/settings.ini
 sed -i "s/taxhub_release=.*$/taxhub_release=$taxhub_release/g" config/settings.ini
 sed -i "s/install_module_validation=.*$/install_module_validation=$install_module_validation/g" config/settings.ini
-
+sed -i "s/install_module_occhab=.*$/install_module_occhab=$install_module_occhab/g" config/settings.ini
+sed -i "s/proxy_http=.*$/proxy_http=$proxy_http/g" config/settings.ini
+sed -i "s/proxy_https=.*$/proxy_https=$proxy_https/g" config/settings.ini
 
 cd install/
 # Installation of GeoNature database

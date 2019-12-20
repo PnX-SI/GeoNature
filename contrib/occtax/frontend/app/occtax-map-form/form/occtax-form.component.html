@@ -55,34 +55,41 @@
         <div>
           <button id="counting-button" type="button" (click)="fs.toggleCounting()" class="btn btn-primary btn-sm"
             data-toggle="collapse" data-target="#collapseCounting" [disabled]="fs.disabled">
+            <b> {{ 'Counting.Counting' | translate }}s </b>
             <span *ngIf="!fs.showCounting">
-              <i class="fa fa-plus" aria-hidden="true"></i>
+              <i class="fa fa-chevron-right" aria-hidden="true"></i>
             </span>
             <span *ngIf="fs.showCounting">
-              <i class="fa fa-minus" aria-hidden="true"></i>
+              <i class="fa fa-chevron-down" aria-hidden="true"></i>
             </span>
-            <b> {{ 'Counting.Counting' | translate }}s </b>
           </button>
           <!-- COUNTING -->
-          <!-- <button type="button" class="btn btn-primary btn-sm" >
 
-                  </button> -->
         </div>
         <div class="collapse" id="collapseCounting">
           <div *ngFor="let counting of fs.nbCounting; let i = index">
             <pnx-counting [formArray]="fs.countingForm" [index]="i" [length]="fs.nbCounting.length" (countingRemoved)="fs.removeCounting($event)">
             </pnx-counting>
           </div>
-          <button id="addOccurrence" type="button" class="btn btn-primary btn-sm" (click)="fs.addCounting()" [disabled]="fs.disabled">
+          <button 
+            id="addOccurrence" 
+            matTooltip="Ajouter un nouveau dénombrement" 
+            type="button" 
+            class="btn btn-primary btn-sm float-right" 
+            (click)="fs.addCounting()" 
+            [disabled]="fs.disabled">
+            Ajouter un nouveau dénombrement
             <i class="fa fa-plus-circle" aria-hidden="true"></i>
           </button>
         </div>
       </div>
       <div class="center">
-        <button class="btn btn-primary btn-sm " [disabled]="fs.occurrenceForm.invalid || fs.countingForm.invalid"
+        <button 
+          class="btn btn-primary btn-sm" 
+          id="validate-btn" 
+          [disabled]="fs.occurrenceForm.invalid || fs.countingForm.invalid"
           (click)="fs.addOccurrence(fs.indexOccurrence)">
           <i id="check" class="fa fa-check" aria-hidden="true"></i>
-
           {{ 'Taxon.ValidateTaxon' | translate }}
         </button>
       </div>

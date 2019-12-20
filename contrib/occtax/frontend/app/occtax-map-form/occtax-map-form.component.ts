@@ -26,7 +26,8 @@ import { AuthService } from "@geonature/components/auth/auth.service";
   // important to provide a new instance of OcctaxFormService to réinitialize it
   providers: [MapService, OcctaxFormService]
 })
-export class OcctaxMapFormComponent implements OnInit, OnDestroy, AfterViewInit {
+export class OcctaxMapFormComponent
+  implements OnInit, OnDestroy, AfterViewInit {
   public leafletDrawOptions: any;
   private _sub: Subscription;
   public id: number;
@@ -79,6 +80,8 @@ export class OcctaxMapFormComponent implements OnInit, OnDestroy, AfterViewInit 
         // load one releve
         this.occtaxService.getOneReleve(this.id).subscribe(
           data => {
+            // save the current releve
+            this.fs.currentReleve = data;
             //test if observers exist.
             //Case when some releves were create with 'observers_txt : true' and others with 'observers_txt : false'
             //if this case comes up with 'observers_txt : false', the form is load with an empty 'observers' input
@@ -116,28 +119,9 @@ export class OcctaxMapFormComponent implements OnInit, OnDestroy, AfterViewInit 
               properties: data.releve.properties
             });
 
-            const orderedCdNomList = [];
             data.releve.properties.t_occurrences_occtax.forEach(occ => {
-              orderedCdNomList.push(occ.cd_nom);
-              this._dfs.getTaxonInfo(occ.cd_nom).subscribe(taxon => {
-                this.fs.taxonsList.push(taxon);
-              });
+              this.fs.taxonsList.push(occ.taxref);
             });
-
-            // HACK to re order taxon list because of side effect of ajax
-            // TODO: do it with async
-            const reOrderTaxon = [];
-            setTimeout(() => {
-              for (let i = 0; i < orderedCdNomList.length; i++) {
-                for (let j = 0; j < this.fs.taxonsList.length; j++) {
-                  if (this.fs.taxonsList[j].cd_nom === orderedCdNomList[i]) {
-                    reOrderTaxon.push(this.fs.taxonsList[j]);
-                    break;
-                  }
-                }
-              }
-              this.fs.taxonsList = reOrderTaxon;
-            }, 1500);
 
             // set the occurrence
             this.fs.indexOccurrence =
@@ -150,13 +134,6 @@ export class OcctaxMapFormComponent implements OnInit, OnDestroy, AfterViewInit 
             if (data.releve.geometry.type == "Point") {
               // set the input for the marker component
               this.fs.markerCoordinates = data.releve.geometry.coordinates;
-              this._ms.map.setView(
-                [
-                  data.releve.geometry.coordinates[1],
-                  data.releve.geometry.coordinates[0]
-                ],
-                15
-              );
             } else {
               // set the input for leafletdraw component
               this.fs.geojsonCoordinates = data.releve.geometry;

@@ -12,14 +12,9 @@
   
               <small>Cadre d'acquisition </small>
               <div class="input-group">
-                <!-- TODO select class="form-control form-control-sm"
-                  [disableControl]="disabled" [formControl]="datasetForm.controls.id_acquisition_framework">
-                  <option *ngFor="let ac of acquisitionFrameworks" [ngValue]="ac.id_acquisition_framework">
-                    {{ac.acquisition_framework_name}}
-                  </option>
-                </select-->
-                <select class="form-control form-control-sm"
-                  [disableControl]="'disabled'" [formControl]="datasetForm.controls.id_acquisition_framework">
+                <select 
+                  class="form-control form-control-sm"
+                  [formControl]="datasetForm.controls.id_acquisition_framework">
                   <option *ngFor="let ac of acquisitionFrameworks" [ngValue]="ac.id_acquisition_framework">
                     {{ac.acquisition_framework_name}}
                   </option>
@@ -93,7 +88,9 @@
               <pnx-nomenclature label="Type de ressource" [parentFormControl]="datasetForm.controls.id_nomenclature_resource_type"
                 codeNomenclatureType="RESOURCE_TYP">
               </pnx-nomenclature>
-      
+              <br>
+              <h5> Spécifique GeoNature </h5>
+
               <input [formControl]="datasetForm.controls.active" type="checkbox" name="active" id="active" [value]="true">
               <small class="" for="active">
                 Actif
@@ -103,6 +100,11 @@
               <small class="" for="validable">
                 Validable
               </small>
+              <br>
+              <pnx-multiselect [values]="moduleService.modules" [parentFormControl]="datasetForm.get('modules')" keyLabel="module_label" keyValue="id_module"
+                label="Module(s) GeoNature associé(s) au jeu de données" [bindAllItem]="true">
+              </pnx-multiselect>
+
             </div>
       
           </div>

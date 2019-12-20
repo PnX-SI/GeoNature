@@ -57,11 +57,7 @@ export class NewPasswordComponent implements OnInit {
         },
         // error callback
         error => {
-          this._toasterService.error(error.error.msg, '', {
-            positionClass: 'toast-top-center',
-            tapToDismiss: true,
-            timeOut: 5000
-          });
+          this._toasterService.error(error.error.msg, '');
         }
       );
     }

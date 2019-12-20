@@ -38,6 +38,7 @@ export class OcctaxFormService {
   public savedOccurrenceData: any;
   public savedCurrentTaxon: any;
   public currentHourMax: string;
+  public currentReleve: any;
 
   // boolean to check if its editionMode
   public editionMode: boolean;

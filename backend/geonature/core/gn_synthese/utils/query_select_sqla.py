@@ -3,6 +3,8 @@ Filter the query of synthese using SQLA expression language and 'select' object
 https://docs.sqlalchemy.org/en/latest/core/tutorial.html#selecting
 much more efficient
 """
+import datetime
+
 from flask import current_app, request
 from sqlalchemy import func, or_, and_, select, join
 from sqlalchemy.sql import text
@@ -69,12 +71,14 @@ class SyntheseQuery:
 
     def add_join_multiple_cond(self, right_table, conditions):
         if self.first:
-            self.query_joins = self.model.__table__.join(right_table, and_(*conditions))
+            self.query_joins = self.model.__table__.join(
+                right_table, and_(*conditions))
             self.first = False
         else:
             # check if the table not already joined
             if right_table not in self._already_joined_table:
-                self.query_joins = self.query_joins.join(right_table, and_(*conditions))
+                self.query_joins = self.query_joins.join(
+                    right_table, and_(*conditions))
                 # push the joined table in _already_joined_table list
                 self._already_joined_table.append(right_table)
 
@@ -140,11 +144,13 @@ class SyntheseQuery:
             sub_query_synonym = select([Taxref.cd_nom]).where(
                 Taxref.cd_ref.in_(cd_ref_childs)
             )
-            self.query = self.query.where(self.model.cd_nom.in_(sub_query_synonym))
+            self.query = self.query.where(
+                self.model.cd_nom.in_(sub_query_synonym))
         if "taxonomy_group2_inpn" in self.filters:
             self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
             self.query = self.query.where(
-                Taxref.group2_inpn.in_(self.filters.pop("taxonomy_group2_inpn"))
+                Taxref.group2_inpn.in_(
+                    self.filters.pop("taxonomy_group2_inpn"))
             )
 
         if "taxonomy_id_hab" in self.filters:
@@ -155,7 +161,8 @@ class SyntheseQuery:
 
         if "taxonomy_lr" in self.filters:
             sub_query_lr = select([TaxrefLR.cd_nom]).where(
-                TaxrefLR.id_categorie_france.in_(self.filters.pop("taxonomy_lr"))
+                TaxrefLR.id_categorie_france.in_(
+                    self.filters.pop("taxonomy_lr"))
             )
             # TODO est-ce qu'il faut pas filtrer sur le cd_ ref ?
             # quid des protection définit à rang superieur de la saisie ?
@@ -166,7 +173,8 @@ class SyntheseQuery:
             if colname.startswith("taxhub_attribut"):
                 self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
                 taxhub_id_attr = colname[16:]
-                aliased_cor_taxon_attr[taxhub_id_attr] = aliased(CorTaxonAttribut)
+                aliased_cor_taxon_attr[taxhub_id_attr] = aliased(
+                    CorTaxonAttribut)
                 self.add_join_multiple_cond(
                     aliased_cor_taxon_attr[taxhub_id_attr],
                     [
@@ -177,7 +185,8 @@ class SyntheseQuery:
                     ],
                 )
                 self.query = self.query.where(
-                    aliased_cor_taxon_attr[taxhub_id_attr].valeur_attribut.in_(value)
+                    aliased_cor_taxon_attr[taxhub_id_attr].valeur_attribut.in_(
+                        value)
                 )
 
         # remove attributes taxhub from filters
@@ -197,28 +206,34 @@ class SyntheseQuery:
             )
         if "observers" in self.filters:
             self.query = self.query.where(
-                self.model.observers.ilike("%" + self.filters.pop("observers")[0] + "%")
+                self.model.observers.ilike(
+                    "%" + self.filters.pop("observers")[0] + "%")
             )
 
         if "id_organism" in self.filters:
             datasets = (
                 DB.session.query(CorDatasetActor.id_dataset)
                 .filter(
-                    CorDatasetActor.id_organism.in_(self.filters.pop("id_organism"))
+                    CorDatasetActor.id_organism.in_(
+                        self.filters.pop("id_organism"))
                 )
                 .all()
             )
             formated_datasets = [d[0] for d in datasets]
-            self.query = self.query.where(self.model.id_dataset.in_(formated_datasets))
-
+            self.query = self.query.where(
+                self.model.id_dataset.in_(formated_datasets))
         if "date_min" in self.filters:
             self.query = self.query.where(
                 self.model.date_min >= self.filters.pop("date_min")[0]
             )
 
         if "date_max" in self.filters:
+            # set the date_max at 23h59 because a hour can be set in timestamp
+            date_max = datetime.datetime.strptime(
+                self.filters.pop("date_max")[0], '%Y-%m-%d')
+            date_max = date_max.replace(hour=23, minute=59, second=59)
             self.query = self.query.where(
-                self.model.date_min <= self.filters.pop("date_max")[0]
+                self.model.date_max <= date_max
             )
 
         if "id_acquisition_framework" in self.filters:
@@ -269,7 +284,8 @@ class SyntheseQuery:
                 self.add_join(
                     CorAreaSynthese, CorAreaSynthese.id_synthese, self.model.id_synthese
                 )
-                self.query = self.query.where(CorAreaSynthese.id_area.in_(value))
+                self.query = self.query.where(
+                    CorAreaSynthese.id_area.in_(value))
             else:
                 col = getattr(self.model.__table__.columns, colname)
                 self.query = self.query.where(col.in_(value))
@@ -283,7 +299,7 @@ class SyntheseQuery:
         ----------
         user: str
             User filtered by CRUVED.
-        
+
         Returns
         -------
         sqlalchemy.orm.query.Query.filter

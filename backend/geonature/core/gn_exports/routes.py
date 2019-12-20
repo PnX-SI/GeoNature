@@ -4,7 +4,7 @@ from flask import Blueprint, request
 from sqlalchemy import or_
 
 from geonature.utils.env import DB
-from geonature.utils.utilssqlalchemy import json_resp
+from utils_flask_sqla.response import json_resp
 from geonature.utils import filemanager
 
 

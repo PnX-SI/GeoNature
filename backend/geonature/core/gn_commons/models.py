@@ -9,9 +9,12 @@ from geoalchemy2 import Geometry
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
+from utils_flask_sqla.serializers import serializable
 
-from geonature.utils.utilssqlalchemy import serializable, geoserializable
+from geonature.utils.utilssqlalchemy import geoserializable
 from geonature.utils.env import DB
+
+# from geonature.core.gn_meta.models import TDatasets
 
 
 @serializable
@@ -24,6 +27,24 @@ class BibTablesLocation(DB.Model):
     table_name = DB.Column(DB.Unicode)
     pk_field = DB.Column(DB.Unicode)
     uuid_field_name = DB.Column(DB.Unicode)
+
+
+cor_module_dataset = DB.Table(
+    "cor_module_dataset",
+    DB.Column(
+        "id_module",
+        DB.Integer,
+        ForeignKey("gn_commons.t_modules.id_module"),
+        primary_key=True,
+    ),
+    DB.Column(
+        "id_dataset",
+        DB.Integer,
+        ForeignKey("gn_meta.t_datasets.id_dataset"),
+        primary_key=True,
+    ),
+    schema="gn_commons",
+)
 
 
 @serializable

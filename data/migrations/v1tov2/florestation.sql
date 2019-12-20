@@ -811,7 +811,7 @@ IF (new.altitude_saisie <> old.altitude_saisie OR old.altitude_saisie is null OR
 	BEGIN
 		if new.altitude_saisie is null or new.altitude_saisie = 0 then
 			-- on calcul l'altitude
-			SELECT altitude_min INTO thealtitude FROM (SELECT ref_geo.fct_get_altitude_intersection(new.the_geom_local) LIMIT 1) a;
+			SELECT altitude_min INTO thealtitude FROM (SELECT * FROM ref_geo.fct_get_altitude_intersection(new.the_geom_local) LIMIT 1) a;
 			new.altitude_retenue = thealtitude;-- mise à jour de l'altitude retenue
 		else
 			new.altitude_retenue = new.altitude_saisie;
@@ -1112,7 +1112,7 @@ UPDATE utilisateurs.t_listes SET nom_liste = 'Observateurs flore station' WHERE 
 --Création du module --
 DELETE FROM gn_commons.t_modules WHERE module_code = 'FS';
 INSERT INTO gn_commons.t_modules (module_code, module_label, module_picto, module_path, module_external_url, module_target, active_backend, active_frontend) 
-VALUES ('FS','Flore station','fa-flower-tulip',NULL,'https://mondomaine.fr/fs','_blank', false, false); 
+VALUES ('FS','Flore station','fa-flower-tulip',NULL,'https://gn1.ecrins-parcnational.fr/geonature/fs','_blank', false, false); 
 
 INSERT INTO gn_permissions.cor_object_module (id_object, id_module)
 SELECT o.id_object, t.id_module
@@ -1191,8 +1191,8 @@ INSERT INTO gn_synthese.synthese
       ref_nomenclatures.get_id_nomenclature('DEE_FLOU','NON'),
       ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE','Te'),
       ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO','1'),
-      -1,--count_min
-      -1,--count_max
+      NULL,--count_min
+      NULL,--count_max
       cft.cd_nom,
       COALESCE(cft.taxon_saisi,'non disponible'),
       'Taxref V11.0',

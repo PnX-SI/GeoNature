@@ -37,7 +37,7 @@
     "AddPolygon": "Localisez l'observation (polygone)",
     "ZoomWarning": "Echelle de saisie inadaptée, veuillez zoomer davantage pour pointer le relevé",
     "FileLayerInfoMessage": "Cliquer sur la couche (point/ligne/polygone) pour en faire le pointage de votre releve. La couche selectionné apparait en rouge sur la carte. Clic droit pour afficher les infos de la couche ",
-    "FileLayerInfoSynthese": "Fichier importé. Clic droit sur une couche pour afficher ses infos"
+    "FileLayerInfoSynthese": "Fichier importé. Clic droit sur un objet pour afficher ses infos"
   },
   "MetaData": {
     "JddError": "Erreur lors de la récupération des jeux de données",

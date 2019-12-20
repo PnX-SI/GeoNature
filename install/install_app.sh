@@ -112,6 +112,8 @@ if [[ $MODE == "dev" ]]
 then
   pip install -r requirements-dev.txt
 fi
+
+
 echo "Création des commandes 'geonature'..."
 python ${BASE_DIR}/geonature_cmd.py install_command
 echo "Création de la configuration du frontend depuis 'config/geonature_config.toml'..."
@@ -187,14 +189,19 @@ geonature generate_frontend_modules_route
 cd ../
 my_current_geonature_directory=$(pwd)
 
-# Installation du module Occtax
+# Installation du module Occtax et OccHab
 source backend/venv/bin/activate
 geonature install_gn_module $my_current_geonature_directory/contrib/occtax /occtax --build=false
+
+if [ "$install_module_occhab" = true ];
+  then
+  geonature install_gn_module $my_current_geonature_directory/contrib/gn_module_occhab /occhab --build=false
+fi
 
 if [ "$install_module_validation" = true ];
   then
     geonature install_gn_module $my_current_geonature_directory/contrib/gn_module_validation /validation --build=false
-  fi
+fi
 
 
 if [[ $MODE != "dev" ]]

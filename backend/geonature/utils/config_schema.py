@@ -22,8 +22,10 @@ class CasUserSchemaConf(Schema):
 
 class CasFrontend(Schema):
     CAS_AUTHENTIFICATION = fields.Boolean(missing="false")
-    CAS_URL_LOGIN = fields.Url(missing="https://preprod-inpn.mnhn.fr/auth/login")
-    CAS_URL_LOGOUT = fields.Url(missing="https://preprod-inpn.mnhn.fr/auth/logout")
+    CAS_URL_LOGIN = fields.Url(
+        missing="https://preprod-inpn.mnhn.fr/auth/login")
+    CAS_URL_LOGOUT = fields.Url(
+        missing="https://preprod-inpn.mnhn.fr/auth/logout")
 
 
 class CasSchemaConf(Schema):
@@ -76,7 +78,12 @@ class UsersHubConfig(Schema):
     URL_USERSHUB = fields.Url()
 
 
+class ServerConfig(Schema):
+    LOG_LEVEL = fields.Integer(missing=20)
+
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
+
+
 class GnPySchemaConf(Schema):
     SQLALCHEMY_DATABASE_URI = fields.String(
         required=True,
@@ -107,6 +114,7 @@ class GnPySchemaConf(Schema):
     ADMIN_APPLICATION_LOGIN = fields.String()
     ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, missing={})
     USERSHUB = fields.Nested(UsersHubConfig, missing={})
+    SERVER = fields.Nested(ServerConfig, missing={})
 
     @post_load()
     def unwrap_usershub(self, data):
@@ -158,7 +166,8 @@ id_municipality = BddConfig().load({}).data.get("id_area_type_municipality")
 
 class Synthese(Schema):
     AREA_FILTERS = fields.List(
-        fields.Dict, missing=[{"label": "Communes", "id_type": id_municipality}]
+        fields.Dict, missing=[
+            {"label": "Communes", "id_type": id_municipality}]
     )
     # Listes des champs renvoyés par l'API synthese '/synthese'
     # Si on veut afficher des champs personnalisés dans le frontend (paramètre LIST_COLUMNS_FRONTEND) il faut
@@ -168,8 +177,10 @@ class Synthese(Schema):
         fields.String, missing=DEFAULT_COLUMNS_API_SYNTHESE
     )
     # Colonnes affichées sur la liste des résultats de la sytnthese
-    LIST_COLUMNS_FRONTEND = fields.List(fields.Dict, missing=DEFAULT_LIST_COLUMN)
-    EXPORT_COLUMNS = fields.List(fields.String(), missing=DEFAULT_EXPORT_COLUMNS)
+    LIST_COLUMNS_FRONTEND = fields.List(
+        fields.Dict, missing=DEFAULT_LIST_COLUMN)
+    EXPORT_COLUMNS = fields.List(
+        fields.String(), missing=DEFAULT_EXPORT_COLUMNS)
     # Certaines colonnes sont obligatoires pour effectuer les filtres CRUVED
     EXPORT_ID_SYNTHESE_COL = fields.String(missing="idSynthese")
     EXPORT_ID_DATASET_COL = fields.String(missing="jddId")
@@ -232,7 +243,8 @@ BASEMAP = [
 
 class MapConfig(Schema):
     BASEMAP = fields.List(fields.Dict, missing=BASEMAP)
-    CENTER = fields.List(fields.Float, missing=[46.52863469527167, 2.43896484375])
+    CENTER = fields.List(fields.Float, missing=[
+                         46.52863469527167, 2.43896484375])
     ZOOM_LEVEL = fields.Integer(missing=6)
     ZOOM_LEVEL_RELEVE = fields.Integer(missing=15)
     # zoom appliqué sur la carte lorsque l'on clique sur une liste
@@ -245,7 +257,8 @@ class GnGeneralSchemaConf(Schema):
     appName = fields.String(missing="GeoNature2")
     GEONATURE_VERSION = fields.String(missing=GEONATURE_VERSION.strip())
     DEFAULT_LANGUAGE = fields.String(missing="fr")
-    PASS_METHOD = fields.String(missing="hash", validate=OneOf(["hash", "md5"]))
+    PASS_METHOD = fields.String(
+        missing="hash", validate=OneOf(["hash", "md5"]))
     DEBUG = fields.Boolean(missing=False)
     URL_APPLICATION = fields.Url(required=True)
     API_ENDPOINT = fields.Url(required=True)

@@ -13,7 +13,7 @@ id_taxon_list = 100
 # number of results in the autocomplete taxon search
 taxon_result_number = 20
 
-# Add a validation rule between Proof fields. If true, fulfil at least one proof in the form
+# Add a validation rule for digital proof. Must begin with a http:// or https://
 digital_proof_validator = true
 
 # set default form date picker with the date of today
@@ -52,13 +52,16 @@ list_messages = { emptyMessage = "Aucune donnée à afficher", totalMessage = "o
 # --------------- EXPORT PARAMETER ---------------------
 
 # Name of the view based export
-export_view_name = 'ViewExportDLB'
+export_view_name = 'export_occtax_sinp'
 
 # Name of the geometry columns of the view
 export_geom_columns_name = 'geom_4326'
 
 # Name of the primary key column of the view
 export_id_column_name = 'permId'
+
+# Name of the columns with observers_txt
+export_observer_txt_column = 'obsId'
 
 # SRID for the shapefile
 export_srid = 4326

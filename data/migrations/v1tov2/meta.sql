@@ -210,3 +210,30 @@ INSERT INTO gn_meta.t_datasets (
 UPDATE gn_meta.t_datasets SET active = false;
 UPDATE gn_meta.t_datasets SET active = true WHERE id_dataset IN(4,14,15);
 UPDATE gn_meta.t_datasets SET active = true WHERE dataset_shortname IN('Occtax','Mobile V1 vers occtax');
+
+
+-- Avant toute insertion, définir le statut de validation à inconnu pour toute l'instance GeoNature
+-- A adapter au contexte
+UPDATE ref_nomenclatures.defaults_nomenclatures_value
+SET id_nomenclature = ref_nomenclatures.get_id_nomenclature('STATUT_VALID', '6')
+WHERE mnemonique_type = 'STATUT_VALID';
+
+UPDATE pr_occtax.defaults_nomenclatures_value
+SET id_nomenclature = ref_nomenclatures.get_id_nomenclature('NATURALITE', '0')
+WHERE mnemonique_type = 'NATURALITE';
+
+ -- création d'un nouveau dataset pour les pièges photo
+INSERT INTO gn_meta.t_datasets (unique_dataset_id,id_acquisition_framework,dataset_name,dataset_shortname,dataset_desc,id_nomenclature_data_type,keywords,marine_domain,terrestrial_domain,id_nomenclature_dataset_objectif,bbox_west,bbox_east,bbox_south,bbox_north,id_nomenclature_collecting_method,id_nomenclature_data_origin,id_nomenclature_source_status,id_nomenclature_resource_type,active,validable,meta_create_date,meta_update_date) VALUES 
+('fb775bf0-2a38-4d08-aa5c-5b13ba0bf131',1,'Piège photo','Piège photo','Données d''observation recueillies grâce à des pièges photo',325,'Piège photo',false,true,414,NULL,NULL,NULL,NULL,403,78,75,323,true,true,'2019-10-07 16:23:05.120','2019-10-07 16:29:10.575')
+;
+
+INSERT INTO gn_meta.cor_dataset_territory (id_dataset,id_nomenclature_territory,territory_desc) VALUES 
+((select id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = 'fb775bf0-2a38-4d08-aa5c-5b13ba0bf131'),372,'Territoire du parc national des Ecrins et des communes environnantes')
+;
+
+INSERT INTO gn_meta.cor_dataset_actor (id_dataset,id_role,id_organism,id_nomenclature_actor_role) VALUES 
+((select id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = 'fb775bf0-2a38-4d08-aa5c-5b13ba0bf131'),NULL,2,365)
+,((select id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = 'fb775bf0-2a38-4d08-aa5c-5b13ba0bf131'),NULL,2,370)
+,((select id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = 'fb775bf0-2a38-4d08-aa5c-5b13ba0bf131'),NULL,2,371)
+,((select id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id = 'fb775bf0-2a38-4d08-aa5c-5b13ba0bf131'),NULL,2,401)
+;

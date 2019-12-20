@@ -11,9 +11,11 @@ import { OccurrenceComponent } from "./occtax-map-form/form/occurrence/occurrenc
 import { OcctaxFormComponent } from "./occtax-map-form/form/occtax-form.component";
 import { TaxonsListComponent } from "./occtax-map-form/form/taxons-list/taxons-list.component";
 import { OcctaxMapListComponent } from "./occtax-map-list/occtax-map-list.component";
+import { OcctaxMapListFilterComponent } from "./occtax-map-list/filter/occtax-map-list-filter.component";
 import { OcctaxMapInfoComponent } from "./occtax-map-info/occtax-map-info.component";
 // Service
 import { OcctaxDataService } from "./services/occtax-data.service";
+import { MapListService } from "@geonature_common/map-list/map-list.service";
 
 import {
   MatSlideToggleModule
@@ -47,9 +49,10 @@ const routes: Routes = [
     CountingComponent,
     OccurrenceComponent,
     TaxonsListComponent,
-    OcctaxMapListComponent
+    OcctaxMapListComponent,
+    OcctaxMapListFilterComponent
   ],
-  providers: [OcctaxDataService],
+  providers: [OcctaxDataService, MapListService],
   bootstrap: [OcctaxMapFormComponent]
 })
 export class GeonatureModule { }

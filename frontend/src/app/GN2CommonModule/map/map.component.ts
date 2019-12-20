@@ -9,9 +9,15 @@ import { CommonService } from '../service/common.service';
 
 import 'leaflet-draw';
 import { FormControl } from '@angular/forms';
-import { Observable ,  of } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, tap, switchMap, map } from 'rxjs/operators';
-
+import { Observable, of } from 'rxjs';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  tap,
+  switchMap,
+  map
+} from 'rxjs/operators';
 
 const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search';
 const PARAMS = new HttpParams({
@@ -31,13 +37,9 @@ export class NominatimService {
       return of([]);
     }
 
-    return this.http
-      .get(NOMINATIM_URL, {params: PARAMS.set('q', term)}).pipe(
-        map(res => res)
-      );
+    return this.http.get(NOMINATIM_URL, { params: PARAMS.set('q', term) }).pipe(map(res => res));
   }
 }
-
 
 /**
  * Ce composant affiche une carte Leaflet ainsi qu'un outil de recherche de lieux dits et d'adresses (basé sur l'API OpenStreetMap).
@@ -83,17 +85,18 @@ export class MapComponent implements OnInit {
     text$.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      tap(() => this.searching = true),
+      tap(() => (this.searching = true)),
       switchMap(term =>
         this._nominatim.search(term).pipe(
-          tap(() => this.searchFailed = false),
+          tap(() => (this.searchFailed = false)),
           catchError(() => {
             this._commonService.translateToaster('Warning', 'Map.LocationError');
             this.searchFailed = true;
             return of([]);
-          }))
+          })
+        )
       ),
-      tap(() => this.searching = false)
+      tap(() => (this.searching = false))
     );
 
   onResultSelected(nomatimObject) {
@@ -129,7 +132,8 @@ export class MapComponent implements OnInit {
         map.addLayer(baseControl[basemap.name]);
       }
     });
-    L.control.layers(baseControl).addTo(map);
+    this.mapService.layerControl = L.control.layers(baseControl);
+    this.mapService.layerControl.addTo(map);
     L.control.scale().addTo(map);
 
     this.mapService.setMap(map);

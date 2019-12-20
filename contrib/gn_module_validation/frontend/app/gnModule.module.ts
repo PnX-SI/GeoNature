@@ -12,9 +12,8 @@ import { ValidationSyntheseCarteComponent } from "./components/validation-synthe
 import { ValidationPopupComponent } from "./components/validation-popup/validation-popup.component";
 import { ValidationDefinitionsComponent } from "./components/validation-definitions/validation-definitions.component";
 import { ValidationModalInfoObsComponent } from "./components/validation-modal-info-obs/validation-modal-info-obs.component";
-// import { NomenclatureComponent } from "@geonature_common/form/nomenclature/nomenclature.component";
 //services
-import { DynamicFormService } from "@geonature_common/form/dynamic-form/dynamic-form.service";
+import { DynamicFormService } from "@geonature_common/form/dynamic-form-generator/dynamic-form.service";
 import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthese-data.service";
 import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthese-form.service";
 import { TaxonAdvancedStoreService } from "@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service";
