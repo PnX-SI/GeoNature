@@ -6,7 +6,6 @@ config/geonature_config.toml
 
 log/*
 .vscode/
-**/node_modules/
 geonature_config.toml
 external_assets/
 external_modules/*

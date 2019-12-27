@@ -1,0 +1,108 @@
+.card-body {
+  padding: 5px;
+}
+
+.all-form {
+  height: 85vh;
+  overflow-y: auto;
+}
+
+.form-group {
+  margin-bottom: 5px !important;
+}
+
+.depth-button {
+  margin-top: 20px;
+}
+
+:host ::ng-deep ngb-typeahead-window {
+  height: 300px;
+  overflow-y: auto;
+}
+
+.card-body.small {
+  padding: 0px !important;
+}
+
+.table td,
+.table th {
+  padding: 0.1rem;
+}
+
+tbody {
+  font-size: 11px;
+}
+
+#validate-btn {
+  position: absolute;
+  right: 50px;
+  bottom: -10px;
+  box-shadow: 3px 5px 10px 2px rgba(0, 0, 0, 0.51),
+    0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#validateButton {
+  position: fixed;
+  right: 25px;
+  z-index: 1000;
+  bottom: 10px;
+}
+
+#overlay-hab {
+  opacity: 90%;
+  position: absolute;
+  z-index: 1500;
+  bottom: 0;
+  width: 100%;
+  overflow-y: auto;
+  max-height: 35vh;
+}
+
+// disable overlay
+#overlay {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#overlay {
+  z-index: 1000;
+}
+
+.disabled-form {
+  background-color: #000000;
+  cursor: not-allowed;
+  opacity: 0.3;
+}
+
+:host /deep/ ngb-typeahead-window {
+  transform: translate(0px, 30px) !important;
+}
+
+.inline {
+  display: flex;
+}
+
+#addon {
+  height: calc(1.5em + 0.4rem);
+  position: relative;
+  top: 23px;
+}
+
+#station-card {
+  margin-bottom: 5px;
+}
+
+#header-form-hab {
+  background-color: #007bff;
+}
+
+#add-hab-btn {
+  background-color: white !important;
+}
+
+pnx-autocomplete {
+  width: 100%;
+}

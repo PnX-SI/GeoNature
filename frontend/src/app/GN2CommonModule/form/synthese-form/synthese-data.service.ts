@@ -90,6 +90,22 @@ export class SyntheseDataService {
     this.subscribeAndDownload(source, 'synthese_observations', format);
   }
 
+  downloadTaxons(idSyntheseList: Array<number>, format: string, filename: string) {
+    this.isDownloading = true;
+
+    const source = this._api.post(
+      `${AppConfig.API_ENDPOINT}/synthese/export_taxons`,
+      idSyntheseList,
+      {
+        headers: new HttpHeaders().set('Content-Type', 'application/json'),
+        observe: 'events',
+        responseType: 'blob',
+        reportProgress: true
+      });
+
+    this.subscribeAndDownload(source, filename, format);
+  }
+
   downloadStatusOrMetadata(url: string, format: string, queryString: HttpParams, filename: string) {
     this.isDownloading = true;
     const source = this._api.get(`${url}?${queryString.toString()}`, {

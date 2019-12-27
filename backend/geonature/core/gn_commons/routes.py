@@ -38,10 +38,8 @@ def get_modules(info_role):
             module = mod.as_dict()
             module["cruved"] = app_cruved
             if mod.active_frontend:
-                # module["module_url"] = "{}/#/{}".format(
-                #     current_app.config["URL_APPLICATION"], mod.module_path
-                module["module_url"] = "/#/{}".format(
-                    mod.module_path
+                module["module_url"] = "{}/#/{}".format(
+                    current_app.config["URL_APPLICATION"], mod.module_path
                 )
             else:
                 module["module_url"] = mod.module_external_url
@@ -88,6 +86,10 @@ def insert_or_update_media(id_media=None):
         formData = dict(request.form)
         for key in formData:
             data[key] = formData[key]
+            if data[key] == 'true':
+                data[key] = True
+            if data[key] == 'false':
+                data[key] = False
     else:
         data = request.get_json(silent=True)
 

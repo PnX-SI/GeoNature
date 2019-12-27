@@ -89,6 +89,7 @@ fi
 
 if ! database_exists $db_name
 then
+    echo "--------------------" &> var/log/install_db.log
     write_log "Creating GeoNature database..."
     sudo -n -u postgres -s createdb -O $user_pg $db_name -T template0 -E UTF-8 -l $my_local
     write_log "Adding PostGIS and other use PostgreSQL extensions"
@@ -173,27 +174,34 @@ then
 
 
     echo "Download and extract habref file..."
-    if [ ! -d '/tmp/habref/' ]
+    if [ ! -d 'tmp/habref/' ]
     then
-        mkdir /tmp/habref
+        mkdir tmp/habref
     fi
-    if [ ! -f '/tmp/habref/HABREF_40.zip' ]
+    if [ ! -f 'tmp/habref/HABREF_50.zip' ]
     then
-      wget https://geonature.fr/data/inpn/habitats/HABREF_40.zip -P /tmp/habref
+      wget https://geonature.fr/data/inpn/habitats/HABREF_50.zip -P tmp/habref
     else
       echo HABREF_40.zip exists
     fi
-    unzip /tmp/habref/HABREF_40.zip -d /tmp/habref
+    unzip tmp/habref/HABREF_50.zip -d tmp/habref
+    
+    wget https://raw.githubusercontent.com/PnX-SI/Habref-api-module/$habref_api_release/src/pypn_habref_api/data/habref.sql -P tmp/habref
+    wget https://raw.githubusercontent.com/PnX-SI/Habref-api-module/$habref_api_release/src/pypn_habref_api/data/data_inpn_habref.sql -P tmp/habref 
+
+    # sed to replace /tmp/taxhub to ~/<geonature_dir>/tmp.taxhub
+    sed -i 's#'/tmp/habref'#'$parentdir/tmp/habref'#g' tmp/habref/data_inpn_habref.sql
+
     write_log "Creating 'habitat' schema..."
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/habitat.sql &>> $LOG_DIR/installdb/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/habref/habref.sql &>> var/log/install_db.log
 
     write_log "Inserting INPN habitat data..."
-    sudo -u postgres -s psql -d $db_name  -f data/inpn/data_inpn_habref.sql &>> $LOG_DIR/installdb/install_db.log
+    sudo -u postgres -s psql -d $db_name  -f tmp/habref/data_inpn_habref.sql &>> var/log/install_db.log
 
 
     echo "Getting 'nomenclature' schema creation scripts..."
-    wget https://raw.githubusercontent.com/PnX-SI/Nomenclature-api-module/$nomenclature_release/data/nomenclatures.sql -P tmp/nomenclatures
-    wget https://raw.githubusercontent.com/PnX-SI/Nomenclature-api-module/$nomenclature_release/data/data_nomenclatures.sql -P tmp/nomenclatures
+    wget --no-cache --no-cookies https://raw.githubusercontent.com/PnX-SI/Nomenclature-api-module/$nomenclature_release/data/nomenclatures.sql -P tmp/nomenclatures
+    wget --no-cache --no-cookies https://raw.githubusercontent.com/PnX-SI/Nomenclature-api-module/$nomenclature_release/data/data_nomenclatures.sql -P tmp/nomenclatures
     wget https://raw.githubusercontent.com/PnX-SI/Nomenclature-api-module/$nomenclature_release/data/nomenclatures_taxonomie.sql -P tmp/nomenclatures
     wget https://raw.githubusercontent.com/PnX-SI/Nomenclature-api-module/$nomenclature_release/data/data_nomenclatures_taxonomie.sql -P tmp/nomenclatures
 
@@ -303,7 +311,7 @@ then
 
 
     write_log "Creating 'monitoring' schema..."
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/monitoring.sql  &>> var/log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -v MYLOCALSRID=$srid_local -f data/core/monitoring.sql  &>> var/log/install_db.log
 
     write_log "Creating 'permissions' schema"
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/permissions.sql  &>> var/log/install_db.log
@@ -333,8 +341,6 @@ then
         write_log "Inserting sample datasets..."
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/meta_data.sql  &>> var/log/install_db.log
         
-        write_log "Inserting sample dataset for monitoring schema..."
-        export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/monitoring_data.sql  &>> var/log/install_db.log
         
         write_log "Inserting sample dataset of taxons for taxonomic schema..."
 
@@ -358,4 +364,7 @@ rm tmp/usershub/*.sql
 rm tmp/taxhub/*.txt
 rm tmp/taxhub/*.sql
 rm tmp/taxhub/*.csv
+rm tmp/habref/*.csv
+rm tmp/habref/*.pdf
+rm tmp/habref/*.sql
 rm tmp/nomenclatures/*.sql

@@ -1,7 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { CommonService } from "@geonature_common/service/common.service";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
-import { ToastrService } from "ngx-toastr";
 import { OcctaxFormService } from "./occtax-form.service";
 import { Router } from "@angular/router";
 import * as L from "leaflet";
@@ -21,7 +20,6 @@ export class OcctaxFormComponent implements OnInit {
     public fs: OcctaxFormService,
     private _dateParser: NgbDateParserFormatter,
     private _cfs: OcctaxDataService,
-    private toastr: ToastrService,
     private router: Router,
     private _commonService: CommonService,
     private _mapService: MapService
@@ -34,7 +32,6 @@ export class OcctaxFormComponent implements OnInit {
     this.fs.taxonsList = [];
     this.fs.indexOccurrence = 0;
     this.fs.editionMode = false;
-
     // remove disabled form on geom selected
     this.fs.releveForm.controls.geometry.valueChanges.subscribe(data => {
       this.fs.disabled = false;
@@ -101,9 +98,7 @@ export class OcctaxFormComponent implements OnInit {
     this._cfs.postOcctax(finalForm).subscribe(
       () => {
         this.disabledAfterPost = false;
-        this.toastr.success("Relevé enregistré", "", {
-          positionClass: "toast-top-center"
-        });
+        this._commonService.translateToaster("success", "Relevé enregistré");
         // resert the forms
         this.fs.releveForm.reset();
         this.fs.patchDefaultNomenclatureOccurrence(this.fs.defaultValues);
@@ -122,14 +117,20 @@ export class OcctaxFormComponent implements OnInit {
           delete saveForm["properties"]["comment"];
           saveForm["properties"]["t_occurrences_occtax"] = [];
           this.fs.releveForm.patchValue(saveForm);
+          let l = this._mapService.fileLayerFeatureGroup.getLayers();
+          l.forEach(el => {
+            if ((el as any).getLayers()[0].options.color == "red") {
+              (el as any).setStyle({ color: "green", opacity: 0.2 });
+            }
+          });
         } else {
+          // reset carto
+          this._mapService.setEditingMarker(false);
+          // reset default marker mode
+          this._mapService.setEditingMarker(true);
           // redirect
           this.router.navigate(["/occtax"]);
         }
-        // reset carto
-        this._mapService.setEditingMarker(false);
-        // reset default marker mode
-        this._mapService.setEditingMarker(true);
       },
       error => {
         if (error.status === 403) {

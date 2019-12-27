@@ -811,7 +811,7 @@ IF (new.altitude_saisie <> old.altitude_saisie OR old.altitude_saisie is null OR
 	BEGIN
 		if new.altitude_saisie is null or new.altitude_saisie = 0 then
 			-- on calcul l'altitude
-			SELECT altitude_min INTO thealtitude FROM (SELECT ref_geo.fct_get_altitude_intersection(new.the_geom_local) LIMIT 1) a;
+			SELECT altitude_min INTO thealtitude FROM (SELECT * FROM ref_geo.fct_get_altitude_intersection(new.the_geom_local) LIMIT 1) a;
 			new.altitude_retenue = thealtitude;-- mise à jour de l'altitude retenue
 		else
 			new.altitude_retenue = new.altitude_saisie;

@@ -64,11 +64,20 @@ export class GeometryFormComponent implements OnInit {
 
     }
 
-      // suivi formControl => composant
-      this.parentFormControl.valueChanges.subscribe(geometry => {
-        this.geojson = {'geometry': geometry};
-      });
+    // init geometry from parentFormControl
+    if (this.parentFormControl.value) {
+      this.setGeojson(this.parentFormControl.value);
+    }
 
+    // suivi formControl => composant
+    this.parentFormControl.valueChanges.subscribe(geometry => {
+      this.setGeojson(geometry);
+    });
+
+  }
+
+  setGeojson(geometry) {
+    this.geojson = {'geometry': geometry};
   }
 
   // suivi composant => formControl

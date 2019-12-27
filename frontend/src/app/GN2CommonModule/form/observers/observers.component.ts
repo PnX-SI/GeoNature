@@ -55,7 +55,7 @@ export class ObserversComponent implements OnInit {
           this.parentFormControl.setValue(this.parentFormControl.value);
         }
       });
-    // sinon si codeList
+      // sinon si codeList
     } else if (this.codeList) {
       this._dfService.getObserversFromCode(this.codeList).subscribe(data => {
         this.observers = data;
