@@ -48,7 +48,7 @@ export class SyntheseSearchComponent implements OnInit {
     });
 
     if (this.displayValidation) {
-      this._api.getNomenclatures('STATUT_VALID').subscribe(data => {
+      this._api.getNomenclatures(['STATUT_VALID']).subscribe(data => {
         this.validationStatus = data[0].values;
       });
     }
