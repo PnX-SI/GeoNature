@@ -21,6 +21,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
   public selectedObsTaxonDetail;
   public validationHistory: any;
   public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
+  public APP_CONFIG = AppConfig;
   public filteredIds;
   public id_synthese;
   public position;
