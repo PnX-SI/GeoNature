@@ -277,7 +277,6 @@ def getDefaultNomenclatures():
     :returns: dict: {'MODULE_CODE': 'ID_NOMENCLATURE'}
 
     """
-    print('LA ????')
     params = request.args
     organism = 0
     if "organism" in params:
