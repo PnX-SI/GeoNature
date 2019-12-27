@@ -22,7 +22,7 @@ AS $$
       FROM pr_occhab.defaults_nomenclatures_value
       WHERE mnemonique_type = mytype
       AND (id_organism = 0 OR id_organism = myidorganism)
-      ORDER BY group2_inpn DESC, regne DESC, id_organism DESC LIMIT 1;
+      ORDER BY id_organism DESC LIMIT 1;
     IF (thenomenclatureid IS NOT NULL) THEN
       RETURN thenomenclatureid;
     END IF;
@@ -297,7 +297,7 @@ INSERT INTO pr_occhab.defaults_nomenclatures_value (mnemonique_type, id_organism
 ('METHOD_CALCUL_SURFACE',0, ref_nomenclatures.get_id_nomenclature('METHOD_CALCUL_SURFACE', 'sig')),
 ('NAT_OBJ_GEO',0, ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO', 'NSP')),
 ('DETERMINATION_TYP_HAB',0, ref_nomenclatures.get_id_nomenclature('DETERMINATION_TYP_HAB', '1')),
-('TECHNIQUE_COLLECT_HAB',0, ref_nomenclatures.get_id_nomenclature('TECHNIQUE_COLLECT_HAB', '0'))
+('TECHNIQUE_COLLECT_HAB',0, ref_nomenclatures.get_id_nomenclature('TECHNIQUE_COLLECT_HAB', '1'))
 ;
 
 INSERT INTO gn_commons.bib_tables_location (table_desc, schema_name, table_name, pk_field, uuid_field_name) VALUES
