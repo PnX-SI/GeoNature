@@ -131,7 +131,7 @@ Vérifier que la migration s'est bien déroulée dans le fichier ``var/log/2.2.1
     source venv/bin/activate 
     geonature install_gn_module /home/`whoami`/geonature/contrib/gn_module_occhab /occhab
     
-* Lors de la migration (``/data/migrations/2.2.1to2.3.0.sql``), tous les JDD actifs sont associés par défaut au module Occtax (https://github.com/PnX-SI/GeoNature/blob/develop/data/migrations/2.2.1to2.3.0.sql#L17-L22), à chacun d'adapter si besoin, en en retirant certains. Pour utiliser le module Occhab , vous devez y associer au moins un JDD.
+* Lors de la migration (``/data/migrations/2.2.1to2.3.0.sql``), tous les JDD actifs sont associés par défaut au module Occtax (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.2.1to2.3.0.sql#L17-L22). A chacun d'adapter si besoin, en en retirant certains. Pour utiliser le module Occhab, vous devez y associer au moins un JDD.
 
 2.2.1 (2019-10-09)
 ------------------
