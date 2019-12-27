@@ -14,7 +14,7 @@ NB_MAX_EXPORT = 50000
 # Nombre max de station pour le map/liste
 NB_MAX_MAP_LIST = 5000
 
-Control du masquage/affichage des champs du formulaire
+# Control du masquage/affichage des champs du formulaire
 [formConfig]
     date_min = true
     date_max = true
@@ -24,11 +24,13 @@ Control du masquage/affichage des champs du formulaire
     altitude_max = true
     exposure = true
     area = true
-    comment=true
+    comment = true
     area_surface_calculation = true
     geographic_object = true
     determination_type = true
     determiner = true
+    collection_technique = true
+    technical_precision = true
     recovery_percentage = true
     abundance = true
     community_interest = true
