@@ -48,7 +48,7 @@ CREATE TABLE pr_occhab.t_stations(
   altitude_max integer,
   depth_min integer,
   depth_max integer,
-  area integer,
+  area bigint,
   id_nomenclature_area_surface_calculation integer,
   comment text,
   geom_local public.geometry(Geometry, :MYLOCALSRID),
