@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-2.3.0 - Occhab de Noël (Unreleased)
+2.3.0 - Occhab de Noël (2019-12-27)
 -----------------------------------
 
 **🚀 Nouveautés**
