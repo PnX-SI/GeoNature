@@ -267,49 +267,6 @@ def export_all_habitats(info_role, export_format='csv',):
         )
 
 
-# @blueprint.route("/import", methods=["GET"])
-# @json_resp
-# def import_data():
-#     """
-#     Generate thousand random obs
-#     """
-#     import random
-#     for i in range(10000):
-#         sta = DB.session.query(TStationsOcchab).get(1)
-#         sta_dict = sta.get_geofeature(True)
-#         prop = sta_dict['properties']
-#         habitat = prop.pop('t_habitats')[0]
-#         prop.pop('dataset')
-#         prop.pop('unique_id_sinp_station')
-#         prop.pop('id_station')
-#         geom = sta_dict.pop('geometry')
-#         shape = asShape(geom)
-#         two_dimension_geom = remove_third_dimension(shape)
-#         t = from_shape(two_dimension_geom, srid=4326)
-#         prop['id_dataset'] = [1, 2, 4, 5, 7][random.randint(0, 4)]
-#         new_sta = TStationsOcchab(**prop)
-#         new_sta.geom_4326 = t
-#         # habitat
-#         habitat.pop('id_habitat')
-#         habitat.pop('unique_id_sinp_hab')
-#         habitat.pop('habref')
-#         cd_hab_random = [80,
-#                          81,
-#                          82,
-#                          83,
-#                          84,
-#                          85,
-#                          86,
-#                          79
-#                          ]
-#         habitat['cd_hab'] = cd_hab_random[random.randint(0, 7)]
-#         hab = THabitatsOcchab(**habitat)
-#         new_sta.t_habitats.append(hab)
-#         DB.session.add(new_sta)
-#         DB.session.commit()
-#     return sta_dict
-
-
 @blueprint.route("/defaultNomenclatures", methods=["GET"])
 @json_resp
 def getDefaultNomenclatures():
@@ -320,6 +277,7 @@ def getDefaultNomenclatures():
     :returns: dict: {'MODULE_CODE': 'ID_NOMENCLATURE'}
 
     """
+    print('LA ????')
     params = request.args
     organism = 0
     if "organism" in params:
