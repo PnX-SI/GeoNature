@@ -102,7 +102,7 @@ Renommer l’ancien répertoire de l'application, ainsi que le nouveau :
 
 ::
 
-    cd /home/`whomami`/geonature/install/migration
+    cd /home/`whoami`/geonature/install/migration
     chmod +x 2.2.1to2.3.0.sh
     ./2.2.1to2.3.0.sh
 
