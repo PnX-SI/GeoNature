@@ -3,8 +3,6 @@ from flask import Blueprint, current_app, request
 
 from operator import itemgetter
 
-import pdb
-
 import re
 
 from sqlalchemy import select, desc, cast, DATE, func
