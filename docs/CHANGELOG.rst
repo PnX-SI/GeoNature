@@ -78,14 +78,8 @@ CHANGELOG
 * pnx-geojson : Amélioration du zoom, gestion des styles
 * Migration des données GeoNature V1 vers V2 (``data/migrations/v1tov2/``) : ajustements mineurs
 
-**A VOIR**
-
-* A faire en update ? https://github.com/PnX-SI/GeoNature/commit/4461cf20b1639537b6c9c0a75485b59ac4e18f1d
-
 **⚠️ Notes de version**
 
-* Lors de la migration (/data/migrations/2.2.1to2.3.0.sql), tous les JDD actifs sont associés par défaut au module Occtax (https://github.com/PnX-SI/GeoNature/blob/develop/data/migrations/2.2.1to2.3.0.sql#L17-L22), à chacun d'adapter si besoin, en en retirant certains.
-* Script de migration du module Nomenclature ?
 * Angular 4 à 7 : Conséquences sur modules ???
 * Sous-modules Utils : Conséquences sur modules ???
 
@@ -117,9 +111,9 @@ Renommer l’ancien répertoire de l'application, ainsi que le nouveau :
 
 Vérifier que la migration s'est bien déroulée dans le fichier ``var/log/2.2.1to2.3.0.log``.
 
-* Lancer le script de migration SQL suivant https://raw.githubusercontent.com/PnX-SI/GeoNature/2.3.0/data/migrations/2.2.1to2.3.0.sql
+* Lancer le script SQL de mise à jour de la BDD de GeoNature https://raw.githubusercontent.com/PnX-SI/GeoNature/2.3.0/data/migrations/2.2.1to2.3.0.sql
 
-* Lancer enfin le script de migration habituel 
+* Lancer enfin le script de migration habituel :
 
 ::
 
@@ -132,13 +126,15 @@ Vérifier que la migration s'est bien déroulée dans le fichier ``var/log/2.2.1
 
     nvm alias default 10.15.3
 
-* Vous pouvez installer le nouveau module Occhab (Occurrence d'habitats) si vous le souhaitez :
+* Vous pouvez installer le nouveau module Occhab (Occurrences d'habitats) si vous le souhaitez :
 
 ::
 
     cd /home/`whoami`/geonature/backend
     source venv/bin/activate 
     geonature install_gn_module /home/`whoami`/geonature/contrib/gn_module_occhab /occhab
+    
+* Lors de la migration (/data/migrations/2.2.1to2.3.0.sql), tous les JDD actifs sont associés par défaut au module Occtax (https://github.com/PnX-SI/GeoNature/blob/develop/data/migrations/2.2.1to2.3.0.sql#L17-L22), à chacun d'adapter si besoin, en en retirant certains. Pour utiliser le module Occhab , vous devez y associer au moins un JDD.
 
 2.2.1 (2019-10-09)
 ------------------
