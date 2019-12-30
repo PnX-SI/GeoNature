@@ -40,6 +40,7 @@
       </div>
       <ng-template #elseblocDataset>
         <pnx-datasets 
+          class="sm" 
           label="{{ 'MetaData.Datasets' | translate }}" 
           [parentFormControl]="releveForm.controls.properties.controls.id_dataset"
           [disabled]="fs.disabled"
