@@ -76,7 +76,7 @@ Ajouter la ligne suivante en prenant soin de mettre à jour les paramètres de c
 
 ::
 
-    0 * * * * psql -d geonatureatlas -c "SELECT gn_dashboard.refresh_materialized_view_data();"
+    0 * * * * psql -d geonature2db -c "SELECT gn_dashboard.refresh_materialized_view_data();"
 
 Pour enregistrer et sortir : ``Ctrl + O``, ENTER puis ``Ctrl + X``
 
