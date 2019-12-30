@@ -200,7 +200,8 @@ def get_synthese(info_role):
     :returns dict[dict, int, bool]: See description above
     """
     # change all args in a list of value
-    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
+    filters = {key: request.args.getlist(key)
+               for key, value in request.args.items()}
     if "limit" in filters:
         result_limit = filters.pop("limit")[0]
     else:
@@ -282,7 +283,7 @@ def get_one_synthese(id_synthese):
 ################################
 
 
-@routes.route("/export_taxons", methods=["GET"])
+@routes.route("/export_taxons", methods=["POST"])
 @permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
 def export_taxon_web(info_role):
     """Optimized route for taxon web export.
@@ -298,44 +299,74 @@ def export_taxon_web(info_role):
     :query str export_format: str<'csv'>
 
     """
-    # Test de conformité de la vue v_synthese_for_export_view
-    if not getattr(VSyntheseForWebApp, "cd_ref", None):
-        return {"msg": "View v_synthese_for_export_view must have a cd_ref column"}, 500
-
-    filters = {
-        key: request.args.getlist(key) for key, value in request.args.items()
-    }
 
     taxon_view = GenericTable(
         "v_synthese_taxon_for_export_view",
         "gn_synthese",
         None
     )
+    columns = taxon_view.tableDef.columns
+    # Test de conformité de la vue v_synthese_for_export_view
+    try:
+        assert hasattr(taxon_view.tableDef.columns, "cd_ref")
+
+    except AssertionError as e:
+        return {"msg": """
+                        View v_synthese_taxon_for_export_view
+                        must have a cd_ref column \n
+                        trace: {}
+                        """.format(str(e))
+                }, 500
+
+    id_list = request.get_json()
+
+    # check R and E CRUVED to know if we filter with cruved
+    cruved = cruved_scope_for_user_in_module(
+        info_role.id_role, module_code="SYNTHESE"
+    )[0]
+
+    subq = DB.session.query(
+        VSyntheseForWebApp.cd_ref,
+        func.count(distinct(
+            VSyntheseForWebApp.id_synthese
+        )).label("nb_obs"),
+        func.min(VSyntheseForWebApp.date_min).label("date_min"),
+        func.max(VSyntheseForWebApp.date_max).label("date_max")
+    ).filter(
+        VSyntheseForWebApp.id_synthese.in_(id_list)
+    ).group_by(VSyntheseForWebApp.cd_ref)
+
+    if cruved["R"] > cruved["E"]:
+        # filter on cruved specifying the column
+        # id_dataset, id_synthese, id_digitiser
+        #   and observer in the v_synthese_for_export_view
+        subq = synthese_query.filter_query_with_cruved(
+            VSyntheseForWebApp,
+            subq,
+            info_role,
+            id_synthese_column="id_synthese",
+            id_dataset_column="id_dataset",
+            observers_column="observers",
+            id_digitiser_column="id_digitiser",
+            with_generic_table=False,
+        )
+    subq = subq.subquery()
 
     q = DB.session.query(
-        taxon_view.tableDef,
-        func.count(
-            VSyntheseForWebApp.id_synthese
-        ).over(
-            partition_by=VSyntheseForWebApp.cd_ref
-        ).label("nb_obs")
-    ).distinct().join(
-        taxon_view.tableDef,
-        getattr(
-            taxon_view.tableDef.columns,
-            "cd_ref"
-        ) == VSyntheseForWebApp.cd_ref
-    )
-
-    q = synthese_query.filter_query_all_filters(
-        VSyntheseForWebApp, q, filters, info_role
+        *columns,
+        subq.c.nb_obs,
+        subq.c.date_min,
+        subq.c.date_max
+    ).join(
+        subq,
+        subq.c.cd_ref == columns.cd_ref
     )
 
     return to_csv_resp(
         datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S"),
         data=serializeQuery(q.all(), q.column_descriptions),
         separator=";",
-        columns=[db_col.key for db_col in taxon_view.tableDef.columns] + ["nb_obs"]
+        columns=[db_col.key for db_col in columns] + ["nb_obs", "date_min", "date_max"]
     )
 
 
@@ -420,11 +451,13 @@ def export_observations_web(info_role):
         features = []
         for r in results:
             geometry = ast.literal_eval(
-                getattr(r, current_app.config["SYNTHESE"]["EXPORT_GEOJSON_4326_COL"])
+                getattr(
+                    r, current_app.config["SYNTHESE"]["EXPORT_GEOJSON_4326_COL"])
             )
             feature = Feature(
                 geometry=geometry,
-                properties=export_view.as_dict(r, columns=columns_to_serialize),
+                properties=export_view.as_dict(
+                    r, columns=columns_to_serialize),
             )
             features.append(feature)
         results = FeatureCollection(features)
@@ -468,7 +501,8 @@ def export_metadata(info_role):
 
     POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
     """
-    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
+    filters = {key: request.args.getlist(key)
+               for key, value in request.args.items()}
 
     metadata_view = GenericTable("v_metadata_for_export", "gn_synthese", None)
     q = DB.session.query(
@@ -495,7 +529,7 @@ def export_metadata(info_role):
 
 
 @routes.route("/export_statuts", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
+@permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
 def export_status(info_role):
     """Route to get all the protection status of a synthese search
 
@@ -507,7 +541,8 @@ def export_status(info_role):
     Parameters:
         - HTTP-GET: the same that the /synthese endpoint (all the filter in web app)
     """
-    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
+    filters = {key: request.args.getlist(key)
+               for key, value in request.args.items()}
 
     # initalize the select object
     q = select(
@@ -528,7 +563,8 @@ def export_status(info_role):
     synthese_query_class = SyntheseQuery(VSyntheseForWebApp, q, filters)
 
     # add join
-    synthese_query_class.add_join(Taxref, Taxref.cd_nom, VSyntheseForWebApp.cd_nom)
+    synthese_query_class.add_join(
+        Taxref, Taxref.cd_nom, VSyntheseForWebApp.cd_nom)
     synthese_query_class.add_join(
         TaxrefProtectionEspeces,
         TaxrefProtectionEspeces.cd_nom,
@@ -666,7 +702,8 @@ def get_autocomplete_taxons_synthese():
         q = q.filter(VMTaxonsSyntheseAutocomplete.group2_inpn == group2_inpn)
 
     q = q.order_by(
-        desc(VMTaxonsSyntheseAutocomplete.cd_nom == VMTaxonsSyntheseAutocomplete.cd_ref)
+        desc(VMTaxonsSyntheseAutocomplete.cd_nom ==
+             VMTaxonsSyntheseAutocomplete.cd_ref)
     )
     limit = request.args.get("limit", 20)
     data = q.order_by(desc("idx_trgm")).limit(20).all()
@@ -715,7 +752,8 @@ def getDefaultsNomenclatures():
         ),
     )
     if len(types) > 0:
-        q = q.filter(DefaultsNomenclaturesValue.mnemonique_type.in_(tuple(types)))
+        q = q.filter(
+            DefaultsNomenclaturesValue.mnemonique_type.in_(tuple(types)))
     try:
         data = q.all()
     except Exception:
@@ -759,52 +797,52 @@ def get_color_taxon():
     return [d.as_dict() for d in q.all()]
 
 
-@routes.route("/test", methods=["GET"])
-@json_resp
-def test():
-    from shapely.geometry import asShape
-    from geoalchemy2.shape import from_shape
-    from shapely.geometry import Point
-    import random
+# @routes.route("/test", methods=["GET"])
+# @json_resp
+# def test():
+#     from shapely.geometry import asShape
+#     from geoalchemy2.shape import from_shape
+#     from shapely.geometry import Point
+#     import random
 
-    s = DB.session.query(Synthese).get(2)
+#     s = DB.session.query(Synthese).get(2)
 
-    s_as_dict = s.as_dict()
-    s_as_dict.pop("unique_id_sinp")
-    # wkt = asShape(s.the_geom_4326)
-    # print(wkt)
-    # releve.geom_4326 = from_shape(shape, srid=4326)
-    import datetime
+#     s_as_dict = s.as_dict()
+#     s_as_dict.pop("unique_id_sinp")
+#     # wkt = asShape(s.the_geom_4326)
+#     # print(wkt)
+#     # releve.geom_4326 = from_shape(shape, srid=4326)
+#     import datetime
 
-    DB.session.query()
-    for i in range(1000):
-        new_point = Point(random.uniform(6.1, 7.5), random.uniform(44.0, 45.2))
-        wkb = from_shape(new_point, 4326)
-        s_as_dict["id_synthese"] = random.randint(1500, 999999999)
+#     DB.session.query()
+#     for i in range(1000):
+#         new_point = Point(random.uniform(6.1, 7.5), random.uniform(44.0, 45.2))
+#         wkb = from_shape(new_point, 4326)
+#         s_as_dict["id_synthese"] = random.randint(1500, 999999999)
 
-        # with random cd_nom
-        random_cd_nom = DB.engine.execute(
-            """
-        SELECT cd_nom FROM taxonomie.bib_noms OFFSET random() * (select count(*) from taxonomie.bib_noms) limit 1 ;"""
-        )
-        cd_nom = None
-        for cd in random_cd_nom:
-            s_as_dict["cd_nom"] = cd[0]
-        new_synthese = Synthese(**s_as_dict)
-        new_synthese.the_geom_4326 = wkb
-        new_synthese.the_geom_local = func.st_transform(wkb, 2154)
+#         # with random cd_nom
+#         random_cd_nom = DB.engine.execute(
+#             """
+#         SELECT cd_nom FROM taxonomie.bib_noms OFFSET random() * (select count(*) from taxonomie.bib_noms) limit 1 ;"""
+#         )
+#         cd_nom = None
+#         for cd in random_cd_nom:
+#             s_as_dict["cd_nom"] = cd[0]
+#         new_synthese = Synthese(**s_as_dict)
+#         new_synthese.the_geom_4326 = wkb
+#         new_synthese.the_geom_local = func.st_transform(wkb, 2154)
 
-        new_date = datetime.datetime.now()
-        new_date = new_date.replace(year=random.randint(2000, 2016))
-        new_synthese.date_min = new_date
-        new_synthese.date_max = new_date
-        print(new_synthese.the_geom_local)
-        q = DB.session.add(new_synthese)
-        # DB.session.flush()
-        DB.session.commit()
+#         new_date = datetime.datetime.now()
+#         new_date = new_date.replace(year=random.randint(2000, 2016))
+#         new_synthese.date_min = new_date
+#         new_synthese.date_max = new_date
+#         print(new_synthese.the_geom_local)
+#         q = DB.session.add(new_synthese)
+#         # DB.session.flush()
+#         DB.session.commit()
 
-    # s = TSources(name_source="lalala")
+#     # s = TSources(name_source="lalala")
 
-    # DB.session.add(s)
-    # DB.session.commit()
-    return "la"
+#     # DB.session.add(s)
+#     # DB.session.commit()
+#     return "la"

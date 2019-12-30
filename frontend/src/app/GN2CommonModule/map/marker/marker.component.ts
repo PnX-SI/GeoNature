@@ -19,8 +19,11 @@ export class MarkerComponent implements OnInit, OnChanges {
   public map: Map;
   public previousCoord: Array<any>;
   @Input() coordinates: Array<any>;
+  @Input() zoomToLocationLevel: number;
   /** Niveau de zoom à partir du quel on peut ajouter un marker sur la carte*/
   @Input() zoomLevel: number;
+  /** Contrôle si le marker est activé par défaut au lancement du composant */
+  @Input() defaultEnable = true;
   @Output() markerChanged = new EventEmitter<GeoJson>();
   constructor(public mapservice: MapService, private _commonService: CommonService) {}
 
@@ -28,7 +31,12 @@ export class MarkerComponent implements OnInit, OnChanges {
     this.map = this.mapservice.map;
     this.zoomLevel = this.zoomLevel || AppConfig.MAPCONFIG.ZOOM_LEVEL_RELEVE;
     this.setMarkerLegend();
-    this.enableMarkerOnClick();
+    // activation or not of the marker
+    if (this.defaultEnable) {
+      this.enableMarkerOnClick();
+    } else {
+      this.changeMarkerButtonColor(false);
+    }
 
     this.mapservice.isMarkerEditing$.subscribe(isEditing => {
       this.toggleEditing(isEditing);
@@ -97,12 +105,14 @@ export class MarkerComponent implements OnInit, OnChanges {
     });
   }
 
+  changeMarkerButtonColor(enable) {
+    document.getElementById('markerLegend').style.backgroundColor = enable ? '#c8c8cc' : 'white';
+  }
+
   toggleEditing(enable: boolean) {
     this.mapservice.editingMarker = enable;
+    this.changeMarkerButtonColor(this.mapservice.editingMarker);
 
-    document.getElementById('markerLegend').style.backgroundColor = this.mapservice.editingMarker
-      ? '#c8c8cc'
-      : 'white';
     if (!this.mapservice.editingMarker) {
       // disable event
       this.mapservice.map.off('click');
@@ -124,6 +134,7 @@ export class MarkerComponent implements OnInit, OnChanges {
   ngOnChanges(changes) {
     if (changes.coordinates && changes.coordinates.currentValue) {
       const coords = changes.coordinates.currentValue;
+      this.mapservice.zoomOnMarker(coords, this.zoomToLocationLevel);
       this.previousCoord = coords;
       this.generateMarkerAndEvent(coords[0], coords[1]);
     }

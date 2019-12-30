@@ -1,0 +1,57 @@
+
+<div class="row row-sm form">
+    <div class="col-2">
+        <pnx-datasets 
+        label="{{ 'Releve.Dataset' | translate }}" 
+        [displayAll]="true" 
+        [displayOnlyActive]="false"
+        [parentFormControl]="mapListFormService.searchForm.get('id_dataset')"
+        moduleCode="OCCHAB">
+      </pnx-datasets>
+    </div>
+    <div class="col-3">
+      <pnx-autocomplete 
+        apiEndPoint="{{appConfig.API_ENDPOINT}}/habref/habitats/autocomplete/list/{{moduleConfig.ID_LIST_HABITAT}}"
+        [searchAsParameter]="false"  
+        [parentFormControl]="mapListFormService.searchForm.get('habitat')"
+        queryParamSearch="search_name"
+        [formatter]="formatter"
+        keyValue="search_name"
+        label="Habitat"
+        placeholder="Tapez les 1eres lettres de l'habitat"
+      >
+      </pnx-autocomplete>
+    </div>
+    <div class="col-2">
+      <pnx-date 
+        label="{{ 'Releve.MinDate' | translate }}" 
+        [parentFormControl]="mapListFormService.searchForm.get('date_low')">
+      </pnx-date>
+    </div>
+    
+    <div class="col-2">
+      <pnx-date 
+        label="{{ 'Releve.MaxDate' | translate }}" 
+        [parentFormControl]="mapListFormService.searchForm.get('date_up')">
+      </pnx-date>
+    </div>
+
+    <button 
+      class="btn btn-primary"
+      (click)="searchEvent()"
+      >
+      Rechercher
+    </button>
+    <button 
+      class="btn btn-danger btn-sm"
+      (click)="resetFilterForm()"
+      matTooltip="Raffraichir les filtres"
+      >
+      <i class="fa fa-refresh" aria-hidden="true"></i>
+    </button>
+
+    <!-- {{mapListFormService.searchForm.value |json}} -->
+
+
+
+</div>

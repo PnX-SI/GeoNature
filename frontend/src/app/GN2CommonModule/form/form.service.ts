@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, ValidatorFn } from '@angular/forms';
-import { FormGroup } from '@angular/forms/src/model';
+import { FormGroup, FormControl } from '@angular/forms/src/model';
+import { Subscription } from 'rxjs';
 
 @Injectable()
 export class FormService {
@@ -109,5 +110,37 @@ export class FormService {
       return isIn !== -1;
     });
     return filteredData;
+  }
+
+  autoCompleteDate(
+    formControl,
+    dateMinControlName = 'date_min',
+    dateMaxControlName = 'date_max'
+  ): Subscription {
+    // date max autocomplete
+    const dateMinControl: FormControl = formControl.get(dateMinControlName);
+    const subscription = dateMinControl.valueChanges.subscribe(newvalue => {
+      // Get mindate and maxdate value before mindate change
+      let oldmindate = formControl.value['date_min'];
+      let oldmaxdate = formControl.value['date_max'];
+
+      // Compare the dates before the change of the datemin.
+      // If datemin and datemax were equal, maintain this equality
+      // If they don't, do nothing
+      // oldmaxdate and oldmindate are objects. Strigify it for a right comparison
+      if (oldmindate) {
+        if (JSON.stringify(oldmaxdate) === JSON.stringify(oldmindate) || oldmaxdate == null) {
+          formControl.patchValue({
+            date_max: newvalue
+          });
+        }
+        // if olddatminDate is null => fill dateMax
+      } else {
+        formControl.patchValue({
+          date_max: newvalue
+        });
+      }
+    });
+    return subscription;
   }
 }

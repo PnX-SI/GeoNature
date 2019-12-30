@@ -15,7 +15,6 @@ import {
   MatButtonModule
 } from '@angular/material';
 
-import { HttpClient } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { NgbModule, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
@@ -31,11 +30,12 @@ import { AreasIntersectedComponent } from './form/areas-intersected/areas-inters
 import { DatasetsComponent } from './form/datasets/datasets.component';
 import { DynamicFormComponent } from './form/dynamic-form/dynamic-form.component';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
-import { GeometryFormComponent} from '@geonature_common/form/geometry-form/geometry-form.component';
+import { GeometryFormComponent } from '@geonature_common/form/geometry-form/geometry-form.component';
 
 import { MapComponent } from './map/map.component';
 import { MarkerComponent } from './map/marker/marker.component';
 import { LeafletDrawComponent } from './map/leaflet-draw/leaflet-draw.component';
+import { MapOverLaysComponent } from './map/overlays/overlays.component';
 
 import { GPSComponent } from './map/gps/gps.component';
 import { GeojsonComponent } from './map/geojson/geojson.component';
@@ -43,8 +43,7 @@ import { LeafletFileLayerComponent } from './map/filelayer/filelayer.component';
 import { MapListComponent } from './map-list/map-list.component';
 import { MapDataComponent } from './map-list/map-data/map-data.component';
 import { MapListGenericFiltersComponent } from './map-list/generic-filters/generic-filters.component';
-import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ObserversTextComponent } from '@geonature_common/form/observers-text/observers-text.component';
 import { MunicipalitiesComponent } from '@geonature_common/form/municipalities/municipalities.component';
@@ -57,6 +56,7 @@ import { PeriodComponent } from '@geonature_common/form/date/period.component';
 import { AutoCompleteComponent } from '@geonature_common/form/autocomplete/autocomplete.component';
 import { SyntheseSearchComponent } from '@geonature_common/form/synthese-form/synthese-form.component';
 import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-component';
+import { DumbSelectComponent } from '@geonature_common/form/dumb-select/dumb-select.component';
 
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
@@ -112,6 +112,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     LeafletDrawComponent,
     LeafletFileLayerComponent,
     GPSComponent,
+    MapOverLaysComponent,
     MapListComponent,
     MapDataComponent,
     DisableControlDirective,
@@ -131,6 +132,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     AutoCompleteComponent,
     SyntheseSearchComponent,
     TaxonAdvancedModalComponent,
+    DumbSelectComponent,
     GeometryFormComponent
   ],
   providers: [
@@ -159,6 +161,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     LeafletFileLayerComponent,
     GeojsonComponent,
     GPSComponent,
+    MapOverLaysComponent,
     MapListComponent,
     MapDataComponent,
     DisableControlDirective,
@@ -193,7 +196,8 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     AutoCompleteComponent,
     SyntheseSearchComponent,
     TaxonAdvancedModalComponent,
-    GeometryFormComponent,
+    DumbSelectComponent,
+    GeometryFormComponent
   ]
 })
 export class GN2CommonModule {}

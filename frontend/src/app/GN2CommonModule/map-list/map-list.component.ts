@@ -23,7 +23,6 @@ export class MapListComponent implements OnInit, AfterViewInit {
   @Input() height: string;
   @Input() idName: string;
 
-
   constructor(private _ms: MapService, public mapListService: MapListService) {}
 
   ngOnInit() {
@@ -47,7 +46,9 @@ export class MapListComponent implements OnInit, AfterViewInit {
         // observable
         this.mapListService.mapSelected.next(feature.id);
         // open popup
-        layer.bindPopup(feature.properties.leaflet_popup).openPopup();
+        if (feature.properties.leaflet_popup) {
+          layer.bindPopup(feature.properties.leaflet_popup).openPopup();
+        }
       }
     });
   }

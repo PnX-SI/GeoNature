@@ -11,7 +11,7 @@ import { OcctaxDataService } from "../services/occtax-data.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { DatatableComponent } from '@swimlane/ngx-datatable/release';
+import { DatatableComponent } from "@swimlane/ngx-datatable/release";
 import { ModuleConfig } from "../module.config";
 import { TaxonomyComponent } from "@geonature_common/form/taxonomy/taxonomy.component";
 import { FormGroup, FormBuilder } from "@angular/forms";
@@ -48,7 +48,8 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
   public taxonomyComponent: TaxonomyComponent;
   @ViewChild("dynamicForm")
   public dynamicForm: GenericFormGeneratorComponent;
-  @ViewChild("table") table: DatatableComponent;
+  @ViewChild("table")
+  table: DatatableComponent;
 
   constructor(
     public mapListService: MapListService,
@@ -81,8 +82,8 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
     this.mapListService.availableColumns = this.occtaxConfig.available_maplist_column;
 
     this.mapListService.idName = this.idName;
-
     // FETCH THE DATA
+    this.mapListService.refreshUrlQuery();
     this.mapListService.getData(
       this.apiEndPoint,
       [{ param: "limit", value: 12 }],

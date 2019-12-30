@@ -65,12 +65,7 @@ export class SyntheseComponent implements OnInit {
       //toaster
       this._toasterService.info(
         `Les ${AppConfig.SYNTHESE.NB_LAST_OBS} dernières observations de la synthèse`,
-        ''/** TODO,
-        {
-          positionClass: 'toast-top-center',
-          tapToDismiss: true,
-          timeOut: 5000
-        }*/
+        ''
       );
     }
     this.firstLoad = false;
