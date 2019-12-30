@@ -17,12 +17,12 @@ import { DataService } from "../services/data.services";
 @Component({
   selector: "dashboard-maps",
   templateUrl: "dashboard-maps.component.html",
-  ViewEncapsulation: ViewEncapsulation.None,
+  // encapsulation: ViewEncapsulation.None,
   styleUrls: ["./dashboard-maps.component.scss"],
   providers: [MapService]
 })
-export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit {
-
+export class DashboardMapsComponent
+  implements OnInit, OnChanges, AfterViewInit {
   // Tableau contenant la géométrie et les données des zonages
   public myAreas: Array<any>;
   // Fonction permettant d'afficher les zonages sur la carte (leaflet)
@@ -145,7 +145,7 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   // Chaîne de caractères permettant de gérer le contenu de la légende dynamiquement
   public introLegend = "Placez la souris sur un zonage";
   // Stocker le type de représentation qui a été sélectionné en dernier #1 nb d'observations #2 nb de taxons
-  public currentMap = 1 // par défaut, la carte affiche automatiquement le nombre d'observations
+  public currentMap = 1; // par défaut, la carte affiche automatiquement le nombre d'observations
   // Stocker le nom du zonage sur lequel la souris est posée
   public currentArea: any;
   // Stocker le nb d'observations du zonage sur lequel la souris est posée
@@ -166,12 +166,12 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
   public tabAreasTypes: Array<any>;
 
   // Gestion du formulaire contrôlant le type de zonage
-  public areaTypeControl = new FormControl('COM');
+  public areaTypeControl = new FormControl("COM");
   public currentTypeCode = "COM"; // par défaut, la carte s'affiche automatiquement en mode "communes"
 
   // Pouvoir stoppper le chargement des données si un changement de filtre est opéré avant la fin du chargement
   public subscription: any;
-  // Gestion du spinner 
+  // Gestion du spinner
   public spinner = true;
 
   // Récupérer la liste des taxons existants dans la BDD pour permettre la recherche de taxon (pnx-taxonomy)
@@ -203,13 +203,13 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     var nb_classes = this.gradesObs.length;
     for (var i = 0; i < nb_classes; i++) {
       this.divLegendObs.innerHTML +=
-        '<i style="background:' +
+        '<div class="row row-0"> <i style="background:' +
         this.getColorObs(this.gradesObs[i]) +
         '"></i>' +
         this.gradesObs[i] +
         (this.gradesObs[i + 1]
-          ? "&ndash;" + (this.gradesObs[i + 1] - 1) + "<br>"
-          : "+");
+          ? "&ndash;" + (this.gradesObs[i + 1] - 1) + "</div>"
+          : "+ </div>");
     }
     // Légende concernant le nombre de taxons
     this.divLegendTax = L.DomUtil.create("div", "divLegend");
@@ -217,13 +217,13 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     var nb_classes = this.gradesTax.length;
     for (var i = 0; i < nb_classes; i++) {
       this.divLegendTax.innerHTML +=
-        '<i style="background:' +
+        '<div class="row row-0"> <i style="background:' +
         this.getColorTax(this.gradesTax[i]) +
         '"></i>' +
         this.gradesTax[i] +
         (this.gradesTax[i + 1]
-          ? "&ndash;" + (this.gradesTax[i + 1] - 1) + "<br>"
-          : "+");
+          ? "&ndash;" + (this.gradesTax[i + 1] - 1) + "</div>"
+          : "+ </div>");
     }
   }
 
@@ -252,7 +252,11 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
         this.currentTypeCode = value;
         // Accès aux données de synthèse
         this.dataService
-          .getDataAreas(this.simplifyLevel, this.currentTypeCode, this.filtersDict)
+          .getDataAreas(
+            this.simplifyLevel,
+            this.currentTypeCode,
+            this.filtersDict
+          )
           .subscribe(data => {
             // Rafraichissement du tableau contenant la géométrie et les données des zonages
             this.myAreas = data;
@@ -318,7 +322,11 @@ export class DashboardMapsComponent implements OnInit, OnChanges, AfterViewInit 
     if (this.filter == "") {
       // Accès aux données de synthèse
       this.dataService
-        .getDataAreas(this.simplifyLevel, this.currentTypeCode, this.mapForm.value)
+        .getDataAreas(
+          this.simplifyLevel,
+          this.currentTypeCode,
+          this.mapForm.value
+        )
         .subscribe(data => {
           // Rafraichissement du tableau contenant la géométrie et les données des zonages
           this.myAreas = data;
