@@ -86,25 +86,28 @@ Mise à jour du module
 
 - Téléchargez la nouvelle version du module
 
-  ```
-  wget https://github.com/PnX-SI/gn_module_dashboard/archive/X.Y.Z.zip
-  unzip X.Y.Z.zip
-  rm X.Y.Z.zip
-  ```
+  ::
+  
+        wget https://github.com/PnX-SI/gn_module_dashboard/archive/X.Y.Z.zip
+        unzip X.Y.Z.zip
+        rm X.Y.Z.zip
+  
 
 - Renommez l'ancien et le nouveau répertoire
 
-  ```
-  mv /home/`whoami`/gn_module_dashboard /home/`whoami`/gn_module_dashboard_old
-  mv /home/`whoami`/gn_module_dashboard-X.Y.Z /home/`whoami`/gn_module_dashboard
-  ```
+  ::
+  
+        mv /home/`whoami`/gn_module_dashboard /home/`whoami`/gn_module_dashboard_old
+        mv /home/`whoami`/gn_module_dashboard-X.Y.Z /home/`whoami`/gn_module_dashboard
+
 
 - Rappatriez les fichiers de configuration
 
-  ````
-  cp /home/`whoami`/gn_module_dashboard_old/config/conf_gn_module.toml /home/`whoami`/gn_module_dashboard/config/conf_gn_module.toml
-  cp /home/`whoami`/gn_module_dashboard_old/frontend/app/module.config.ts /home/`whoami`/gn_module_dashboard/frontend/app/module.config.ts```
-  ````
+  ::
+        
+        cp /home/`whoami`/gn_module_dashboard_old/config/conf_gn_module.toml         /home/`whoami`/gn_module_dashboard/config/conf_gn_module.toml
+        cp /home/`whoami`/gn_module_dashboard_old/frontend/app/module.config.ts         /home/`whoami`/gn_module_dashboard/frontend/app/module.config.ts```
+
 
 Licence
 =======
