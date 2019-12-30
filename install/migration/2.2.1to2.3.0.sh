@@ -2,6 +2,8 @@
 
 sudo supervisorctl stop geonature2
 
+
+
 mkdir /home/`whoami`/geonature/var/
 mkdir /home/`whoami`/geonature/var/log
 mkdir /home/`whoami`/geonature/tmp
@@ -38,9 +40,11 @@ echo 'Ok'
 
 # migration nomenclature
 wget https://raw.githubusercontent.com/PnX-SI/Nomenclature-api-module/develop/data/update1.3.0to1.3.1.sql -P /home/`whoami`/geonature/tmp/
+wget https://raw.githubusercontent.com/PnX-SI/Nomenclature-api-module/develop/data/update1.3.1to1.3.2.sql -P /home/`whoami`/geonature/tmp/
 echo 'Migration sql nomenclatures...'
 echo "--------------------" &>> /home/`whoami`/geonature/var/log/2.2.1to2.3.0.log
 echo 'NOMENCLATURES' &>> /home/`whoami`/geonature/var/log/2.2.1to2.3.0.log
 echo '------------------' &>> /home/`whoami`/geonature/var/log/2.2.1to2.3.0.log
 export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /home/`whoami`/geonature/tmp/update1.3.0to1.3.1.sql  &>> /home/`whoami`/geonature/var/log/2.2.1to2.3.0.log
+export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f /home/`whoami`/geonature/tmp/update1.3.1to1.3.2.sql  &>> /home/`whoami`/geonature/var/log/2.2.1to2.3.0.log
 echo 'Ok'

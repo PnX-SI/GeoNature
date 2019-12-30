@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-2.3.0 - Occhab de Noël (Unreleased)
+2.3.0 - Occhab de Noël (2019-12-27)
 -----------------------------------
 
 **🚀 Nouveautés**
@@ -20,15 +20,15 @@ CHANGELOG
   - Gestion des droits (en fonction du CRUVED de l'utilisateur connecté)
   - Définition des valeurs par défaut dans la BDD (paramétrable par organisme)
   - Possibilité de masquer des champs du formulaire
-
+  
 * Création d'un sous-module autonome ou intégré pour gérer l'API d'Habref (https://github.com/PnX-SI/Habref-api-module) pour : 
 
   - Rechercher un habitat dans Habref (avec usage du trigramme pour la pertinence du résultat)
   - Obtenir les infos d'un habitat et de ses correspondances à partir de son cd_hab
   - Obtenir les habitats d'une liste (avec ou sans leur code en plus de leur nom et filtrable par typologie)
   - Obtenir la liste des typologies (filtrable par liste d'habitats)
-
-* Mise à jour du module des nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module) en version 1.3.1 incluant notamment : 
+  
+* Mise à jour du module des nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module) en version 1.3.2 incluant notamment :
 
   - Ajout de nomenclatures SINP concernant les habitats
   - Ajout d'une contrainte d'unicité sur la combinaison des champs ``id_type`` et ``cd_nomenclature`` de la table ``t_nomenclatures``
@@ -37,7 +37,7 @@ CHANGELOG
 * Mise à jour de Angular 4 à Angular 7 (performances, ....) par @jbrieuclp
 * Ajout d'une documentation utilisateur pour le module Synthèse : http://docs.geonature.fr/user-manual.html#synthese (par @amandine-sahl)
 * OCCTAX : Amélioration importante des performances de la liste des relevés (par @jbrieuclp) (#690, #740)
-* Amélioriations des performances des exports de Occtax et de Synthèse et ajout d'index dans Occtax (par @gildeluermoz) (#560)
+* Améliorations des performances des exports de Occtax et de Synthèse et ajout d'index dans Occtax (par @gildeluermoz) (#560)
 * Partage de scripts de sauvegarde de l'application et de la BDD dans ``data/scripts/backup/`` (par @gildeluermoz)
 * Externalisation des librairies d'outils Flask et SQLAlchemy (https://github.com/PnX-SI/Utils-Flask-SQLAlchemy et https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo) pour pouvoir les factoriser et les utiliser dans d'autres applications. Cela améliore aussi les performances des jointures.
 * SYNTHESE : Ajout d'un export de la liste des espèces (#805)
@@ -78,16 +78,7 @@ CHANGELOG
 * pnx-geojson : Amélioration du zoom, gestion des styles
 * Migration des données GeoNature V1 vers V2 (``data/migrations/v1tov2/``) : ajustements mineurs
 
-**A VOIR**
-
-* A faire en update ? https://github.com/PnX-SI/GeoNature/commit/4461cf20b1639537b6c9c0a75485b59ac4e18f1d
-
 **⚠️ Notes de version**
-
-* Lors de la migration (/data/migrations/2.2.1to2.3.0.sql), tous les JDD actifs sont associés par défaut au module Occtax (https://github.com/PnX-SI/GeoNature/blob/develop/data/migrations/2.2.1to2.3.0.sql#L17-L22), à chacun d'adapter si besoin, en en retirant certains.
-* Script de migration du module Nomenclature ?
-* Angular 4 à 7 : Conséquences sur modules ???
-* Sous-modules Utils : Conséquences sur modules ???
 
 * Suivez les instructions suivantes pour effectuer la migration :
 
@@ -111,19 +102,19 @@ Renommer l’ancien répertoire de l'application, ainsi que le nouveau :
 
 ::
 
-    cd /home/`whomami`/geonature/install/migration
+    cd /home/`whoami`/geonature/install/migration
     chmod +x 2.2.1to2.3.0.sh
     ./2.2.1to2.3.0.sh
 
 Vérifier que la migration s'est bien déroulée dans le fichier ``var/log/2.2.1to2.3.0.log``.
 
-* Lancer le script de migration SQL suivant https://raw.githubusercontent.com/PnX-SI/GeoNature/2.3.0/data/migrations/2.2.1to2.3.0.sql
+* Lancer le script SQL de mise à jour de la BDD de GeoNature https://raw.githubusercontent.com/PnX-SI/GeoNature/2.3.0/data/migrations/2.2.1to2.3.0.sql
 
-* Lancer enfin le script de migration habituel 
+* Lancer enfin le script de migration habituel :
 
 ::
 
-    cd /home/`whoami/geonature 
+    cd /home/`whoami`/geonature 
     ./install/migration/migration.sh
 
 * Lancer cette commande pour définir la nouvelle version de NodeJS par défaut :
@@ -132,13 +123,15 @@ Vérifier que la migration s'est bien déroulée dans le fichier ``var/log/2.2.1
 
     nvm alias default 10.15.3
 
-* Vous pouvez installer le nouveau module Occhab (Occurrence d'habitats) si vous le souhaitez :
+* Vous pouvez installer le nouveau module Occhab (Occurrences d'habitats) si vous le souhaitez :
 
 ::
 
     cd /home/`whoami`/geonature/backend
     source venv/bin/activate 
     geonature install_gn_module /home/`whoami`/geonature/contrib/gn_module_occhab /occhab
+    
+* Lors de la migration (``/data/migrations/2.2.1to2.3.0.sql``), tous les JDD actifs sont associés par défaut au module Occtax (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.2.1to2.3.0.sql#L17-L22). A chacun d'adapter si besoin, en en retirant certains. Pour utiliser le module Occhab, vous devez y associer au moins un JDD.
 
 2.2.1 (2019-10-09)
 ------------------

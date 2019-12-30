@@ -21,6 +21,8 @@ class FormConfig(Schema):
     geographic_object = fields.Boolean(missing=True)
     comment = fields.Boolean(missing=True)
     determination_type = fields.Boolean(missing=True)
+    collection_technique = fields.Boolean(missing=True)
+    technical_precision = fields.Boolean(missing=True)
     determiner = fields.Boolean(missing=True)
     recovery_percentage = fields.Boolean(missing=False)
     abundance = fields.Boolean(missing=True)
