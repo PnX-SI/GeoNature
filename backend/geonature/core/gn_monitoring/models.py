@@ -16,6 +16,7 @@ from utils_flask_sqla.serializers import serializable
 from geonature.utils.utilssqlalchemy import geoserializable
 from geonature.utils.env import DB
 from geonature.core.gn_commons.models import TModules
+from geonature.core.gn_meta.models import TDatasets
 
 
 corVisitObserver = DB.Table(
@@ -83,12 +84,23 @@ class TBaseVisits(DB.Model):
     id_base_site = DB.Column(
         DB.Integer, ForeignKey("gn_monitoring.t_base_sites.id_base_site")
     )
-    id_digitiser = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
+    id_digitiser = DB.Column(
+        DB.Integer,
+        ForeignKey("utilisateurs.t_roles.id_role")
+    )
+    id_dataset = DB.Column(
+        DB.Integer,
+        ForeignKey("gn_meta.t_datasets.id_dataset")
+    )
+    # Pour le moment non défini comme une clé étrangère
+    #   pour les questions de perfs
+    #   a voir en fonction des usage
+    id_module = DB.Column(DB.Integer)
 
     visit_date_min = DB.Column(DB.DateTime)
     visit_date_max = DB.Column(DB.DateTime)
-
-    # geom = DB.Column(Geometry('GEOMETRY', 4326))
+    id_nomenclature_obs_technique = DB.Column(DB.Integer)
+    id_nomenclature_grp_typ = DB.Column(DB.Integer)
     comments = DB.Column(DB.DateTime)
     uuid_base_visit = DB.Column(
         UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
@@ -111,6 +123,13 @@ class TBaseVisits(DB.Model):
         foreign_keys=[corVisitObserver.c.id_base_visit, corVisitObserver.c.id_role],
     )
 
+    dataset = relationship(
+        TDatasets,
+        lazy="joined",
+        primaryjoin=(TDatasets.id_dataset == id_dataset),
+        foreign_keys=[id_dataset]
+    )
+
 
 @serializable
 @geoserializable
@@ -122,8 +141,14 @@ class TBaseSites(DB.Model):
     __tablename__ = "t_base_sites"
     __table_args__ = {"schema": "gn_monitoring"}
     id_base_site = DB.Column(DB.Integer, primary_key=True)
-    id_inventor = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
-    id_digitiser = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
+    id_inventor = DB.Column(
+        DB.Integer,
+        ForeignKey("utilisateurs.t_roles.id_role")
+    )
+    id_digitiser = DB.Column(
+        DB.Integer,
+        ForeignKey("utilisateurs.t_roles.id_role")
+    )
     id_nomenclature_type_site = DB.Column(DB.Integer)
     base_site_name = DB.Column(DB.Unicode)
     base_site_description = DB.Column(DB.Unicode)

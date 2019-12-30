@@ -1,16 +1,29 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-
+import {
+  HttpClient,
+  HttpParams,
+  HttpEventType,
+  HttpErrorResponse,
+  HttpEvent
+} from '@angular/common/http';
 import { AppConfig } from '../../../conf/app.config';
 import { Taxon } from './taxonomy/taxonomy.component';
+import { Observable } from 'rxjs';
 
 /** Interface for queryString parameters*/
 interface ParamsDict {
   [key: string]: any;
 }
 
+export const FormatMapMime = new Map([
+  ['csv', 'text/csv'],
+  ['json', 'application/json'],
+  ['shp', 'application/zip']
+]);
+
 @Injectable()
 export class DataFormService {
+  private _blob: Blob;
   constructor(private _http: HttpClient) {}
 
   getNomenclature(
@@ -36,13 +49,29 @@ export class DataFormService {
     );
   }
 
-  getNomenclatures(...codesNomenclatureType) {
+  getNomenclatures(codesNomenclatureType) {
     let params: HttpParams = new HttpParams();
+    params = params.set('orderby', 'label_default');
     codesNomenclatureType.forEach(code => {
       params = params.append('code_type', code);
     });
+
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/nomenclatures/nomenclatures`, {
       params: params
+    });
+  }
+
+  getDefaultNomenclatureValue(path, mnemoniques: Array<string> = [], kwargs: ParamsDict = {}) {
+    let queryString: HttpParams = new HttpParams();
+    // tslint:disable-next-line:forin
+    for (const key in kwargs) {
+      queryString = queryString.set(key, kwargs[key].toString());
+    }
+    mnemoniques.forEach(mnem => {
+      queryString = queryString.append('mnemonique', mnem);
+    });
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/${path}/defaultNomenclatures`, {
+      params: queryString
     });
   }
 
@@ -133,6 +162,27 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_TAXHUB}/taxref/bib_habitats`);
   }
 
+  getTypologyHabitat(id_list: number) {
+    let params = new HttpParams();
+
+    if (id_list) {
+      params = params.set('id_list', id_list.toString());
+    }
+    return this._http
+      .get<any>(`${AppConfig.API_ENDPOINT}/habref/typo`, { params: params })
+      .map(data => {
+        // replace '_' with space because habref is super clean !
+        return data.map(d => {
+          d['lb_nom_typo'] = d['lb_nom_typo'].replace(/_/g, ' ');
+          return d;
+        });
+      });
+  }
+
+  getHabitatInfo(cd_hab) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/habref/habitat/${cd_hab}`);
+  }
+
   getGeoInfo(geojson) {
     return this._http.post<any>(`${AppConfig.API_ENDPOINT}/geo/info`, geojson);
   }
@@ -162,6 +212,10 @@ export class DataFormService {
       });
       return areasIntersected;
     });
+  }
+
+  getAreaSize(geojson) {
+    return this._http.post<number>(`${AppConfig.API_ENDPOINT}/geo/area_size`, geojson);
   }
 
   getMunicipalities(nom_com?, limit?) {
@@ -288,5 +342,44 @@ export class DataFormService {
 
   addOrderBy(httpParam: HttpParams, order_column): HttpParams {
     return httpParam.append('orderby', order_column);
+  }
+
+  subscribeAndDownload(
+    source: Observable<HttpEvent<Blob>>,
+    fileName: string,
+    format: string
+  ): void {
+    const subscription = source.subscribe(
+      event => {
+        if (event.type === HttpEventType.Response) {
+          this._blob = new Blob([event.body], { type: event.headers.get('Content-Type') });
+        }
+      },
+      (e: HttpErrorResponse) => {
+        //this._commonService.translateToaster('error', 'ErrorMessage');
+        //this.isDownloading = false;
+      },
+      // response OK
+      () => {
+        //this.isDownloading = false;
+        const date = new Date();
+        const extension = format === 'shapefile' ? 'zip' : format;
+        this.saveBlob(this._blob, `${fileName}_${date.toISOString()}.${extension}`);
+        subscription.unsubscribe();
+      }
+    );
+  }
+
+  saveBlob(blob, filename) {
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('visibility', 'hidden');
+    link.download = filename;
+    link.onload = () => {
+      URL.revokeObjectURL(link.href);
+    };
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 }

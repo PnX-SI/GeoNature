@@ -26,7 +26,9 @@
   </div>
   <h5 class="underlined second-color"> Télécharger les observations </h5>
   <div style="margin-bottom:5px;">
-    <button [disabled]="_dataService.isDownloading" style="margin-left: 5px;" *ngFor="let format of syntheseConfig.EXPORT_FORMAT" class="buttonLoad" (click)="downloadObservations(format)"
+    <button [disabled]="_dataService.isDownloading" style="margin-left: 5px;"
+      *ngFor="let format of syntheseConfig.EXPORT_FORMAT"
+      class="buttonLoad" (click)="downloadObservations(format)"
       type="button" class="btn btn-success format-btn">
       Format {{format}}
     </button>
@@ -35,14 +37,15 @@
   <h5 class="underlined second-color"> Télécharger les taxons </h5>
   <div style="margin-bottom:5px;">
     <button [disabled]="_dataService.isDownloading" class="btn btn-success"
-    (click)="downloadStatusOrMetadata('synthese/export_taxons', 'synthese_statuts')">
-      Taxon <i class="fa fa-list-alt" aria-hidden="true"></i>
+    (click)="downloadTaxons('csv', 'synthese_taxons')">
+      Taxons <i class="fa fa-list-alt" aria-hidden="true"></i>
    </button>
   </div>
 
   <h5 class="underlined second-color"> Télécharger les statuts</h5>
   <div>
-    <button [disabled]="_dataService.isDownloading" class="btn btn-success" (click)="downloadStatusOrMetadata('synthese/export_statuts', 'synthese_statuts')">
+    <button [disabled]="_dataService.isDownloading" class="btn btn-success"
+    (click)="downloadStatusOrMetadata('synthese/export_statuts', 'synthese_statuts')">
        Statuts <i class="fa fa-list-alt" aria-hidden="true"></i>
 
     </button>

@@ -12,7 +12,7 @@ export class ModuleService {
     this._api.getModulesList([]).subscribe(data => {
       this.modules = data;
       this.displayedModules = data.filter(mod => {
-        return mod.module_code.toLowerCase() !== 'geonature' && mod.active_frontend;
+        return (mod.module_code.toLowerCase() !== 'geonature') && (mod.active_frontend || mod.module_external_url);
       });
       this.setModulesLocalStorage(data);
     });

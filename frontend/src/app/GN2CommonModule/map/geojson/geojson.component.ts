@@ -27,6 +27,9 @@ export class GeojsonComponent implements OnInit, OnChanges {
   @Input() style: any;
   /** Zoom sur la bounding box des données envoyées */
   @Input() zoomOnLayer = true;
+
+  /** Zoom dès la 1ere fois qu'une données est passée */
+  @Input() zoomOnFirstTime = false;
   /** Affiche les données sous forme de cluster */
   @Input() asCluster: boolean = false;
   public geojsonCharged = new Subject<any>();
@@ -37,6 +40,25 @@ export class GeojsonComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.map = this.mapservice.map;
+  }
+
+  zoom(curLayerGroup: L.FeatureGroup) {
+    if (!curLayerGroup) {
+      return;
+    }
+    setTimeout(() => {
+      const map = this.map || this.mapservice.map || curLayerGroup['_map'];
+      if (!curLayerGroup.getBounds) {
+        return;
+      }
+
+      let bounds = curLayerGroup.getBounds();
+      if (!Object.keys(bounds).length) {
+        return;
+      }
+
+      map.fitBounds(curLayerGroup.getBounds());
+    }, 200);
   }
 
   loadGeojson(geojson) {
@@ -51,11 +73,7 @@ export class GeojsonComponent implements OnInit, OnChanges {
     this.mapservice.map.addLayer(this.mapservice.layerGroup);
     this.mapservice.layerGroup.addLayer(this.currentGeojson);
     if (this.zoomOnLayer) {
-      try {
-        this.map.fitBounds(this.mapservice.layerGroup.getBounds());
-      } catch (error) {
-        console.log('no layer in featuregroup');
-      }
+      this.zoom(this.mapservice.layerGroup);
     }
   }
 
@@ -65,16 +83,9 @@ export class GeojsonComponent implements OnInit, OnChanges {
         this.mapservice.map.removeLayer(this.currentGeojson);
       }
       this.loadGeojson(changes.geojson.currentValue);
-      // zoom on layer extend after fisrt search
-      if (changes.geojson.previousValue !== undefined && this.zoomOnLayer) {
-        // try to fit bound on layer. catch error if no layer in feature group
-
-        try {
-          this.map.fitBounds(this.mapservice.layerGroup.getBounds());
-        } catch (error) {
-          console.log('no layer in featuregroup');
-        }
-        //
+      // zoom on layer
+      if (this.zoomOnFirstTime && this.zoomOnLayer) {
+        this.zoom(this.mapservice.layerGroup);
       }
     }
     if (changes.style && changes.style.currentValue !== undefined) {

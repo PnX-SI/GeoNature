@@ -264,7 +264,9 @@ CREATE INDEX i_t_releves_occtax_id_nomenclature_grp_typ ON pr_occtax.t_releves_o
 CREATE INDEX i_t_releves_occtax_geom_local ON pr_occtax.t_releves_occtax USING gist (geom_local);
 CREATE INDEX i_t_releves_occtax_date_max ON pr_occtax.t_releves_occtax USING btree (date_max);
 
-
+-- ###############################################
+-- MONITORING
+-- ###############################################
 -- Nettoyage monitoring
 DROP TABLE IF EXISTS gn_monitoring.cor_site_application;
 
@@ -273,21 +275,114 @@ ALTER TABLE gn_commons.t_modules ALTER COLUMN module_path TYPE CHARACTER VARYING
 ALTER TABLE gn_commons.t_modules ALTER COLUMN module_external_url TYPE CHARACTER VARYING(255);
 ALTER TABLE gn_commons.t_modules ALTER COLUMN module_target TYPE CHARACTER VARYING(10);
 
+-- gn_commons.t_modules  : module_code, module_path UNIQUE
+ALTER TABLE gn_commons.t_modules ADD CONSTRAINT unique_t_modules_module_path UNIQUE (module_path);
+ALTER TABLE gn_commons.t_modules ADD CONSTRAINT unique_t_modules_module_code UNIQUE (module_code);
 
 -- Ajout date création modificiation sur les tables de base de monitoring
 -- viens en complément du stockage vertical
 ALTER TABLE gn_monitoring.t_base_sites ADD meta_create_date timestamp without time zone DEFAULT now();
 ALTER TABLE gn_monitoring.t_base_sites ADD meta_update_date timestamp without time zone DEFAULT now();
 
+ALTER TABLE gn_monitoring.t_base_sites ADD altitude_min int;
+ALTER TABLE gn_monitoring.t_base_sites ADD altitude_max int;
 
-CREATE TRIGGER tri_meta_dates_change_synthese
+DO $$
+DECLARE local_srid integer;
+BEGIN
+    local_srid := (SELECT parameter_value FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid');
+
+    EXECUTE 'ALTER TABLE gn_monitoring.t_base_sites ADD geom_local geometry(Geometry,' || local_srid || ')';
+
+    --Mise à jour des données existantes: champ geom_local
+    UPDATE  gn_monitoring.t_base_sites SET geom_local = st_transform(geom, local_srid);
+END $$;
+
+--Mise à jour des données existantes : champ alt_min/max
+WITH alt AS (
+    SELECT (ref_geo.fct_get_altitude_intersection(geom_local)).*, id_base_site
+    FROM gn_monitoring.t_base_sites
+)
+UPDATE gn_monitoring.t_base_sites  s SET altitude_min = alt.altitude_min, altitude_max = alt.altitude_max
+FROM alt
+WHERE s.id_base_site = alt.id_base_site;
+
+
+CREATE TRIGGER tri_calculate_geom_local
+  BEFORE INSERT OR UPDATE
+  ON gn_monitoring.t_base_sites
+  FOR EACH ROW
+  EXECUTE PROCEDURE ref_geo.fct_trg_calculate_geom_local('geom', 'geom_local');
+
+
+CREATE TRIGGER tri_meta_dates_change_t_base_sites
   BEFORE INSERT OR UPDATE
   ON gn_monitoring.t_base_sites
   FOR EACH ROW
   EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
+
+CREATE OR REPLACE FUNCTION ref_geo.fct_trg_calculate_alt_minmax()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+	the4326geomcol text := quote_ident(TG_ARGV[0]);
+  thelocalsrid int;
+BEGIN
+	-- si c'est un insert ou que c'est un UPDATE ET que le geom_4326 a été modifié
+	IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NOT public.ST_EQUALS(hstore(OLD)-> the4326geomcol, hstore(NEW)-> the4326geomcol))) THEN
+		--récupérer le srid local
+		SELECT INTO thelocalsrid parameter_value::int FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid';
+		--Calcul de l'altitude
+        SELECT (ref_geo.fct_get_altitude_intersection(st_transform(hstore(NEW)-> the4326geomcol,thelocalsrid))).*  INTO NEW.altitude_min, NEW.altitude_max ;
+
+	END IF;
+  RETURN NEW;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+
+CREATE TRIGGER tri_t_base_sites_calculate_alt
+  BEFORE INSERT OR UPDATE
+  ON gn_monitoring.t_base_sites
+  FOR EACH ROW
+  EXECUTE PROCEDURE ref_geo.fct_trg_calculate_alt_minmax('geom');
+
+
 ALTER TABLE gn_monitoring.t_base_visits ADD meta_create_date timestamp without time zone DEFAULT now();
 ALTER TABLE gn_monitoring.t_base_visits ADD meta_update_date timestamp without time zone DEFAULT now();
+
+ALTER TABLE gn_monitoring.t_base_visits ADD id_dataset integer NOT NULL;
+
+ALTER TABLE gn_monitoring.t_base_visits ADD CONSTRAINT fk_t_base_visits_t_datasets FOREIGN KEY (id_dataset)
+      REFERENCES gn_meta.t_datasets (id_dataset) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE NO ACTION;
+
+
+ALTER TABLE gn_monitoring.t_base_visits ADD id_nomenclature_obs_technique integer DEFAULT ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133');
+ALTER TABLE gn_monitoring.t_base_visits ADD id_nomenclature_grp_typ integer DEFAULT ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'PASS');
+
+ALTER TABLE gn_monitoring.t_base_visits ADD COLUMN IF NOT EXISTS id_module INTEGER NOT NULL;
+
+ALTER TABLE gn_monitoring.t_base_visits ADD CONSTRAINT fk_t_base_visits_id_module FOREIGN KEY (id_module)
+            REFERENCES gn_commons.t_modules (id_module) MATCH SIMPLE
+            ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+ALTER TABLE ONLY gn_monitoring.t_base_visits
+    ADD CONSTRAINT fk_t_base_visits_id_nomenclature_obs_technique FOREIGN KEY (id_nomenclature_obs_technique) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY gn_monitoring.t_base_visits
+    ADD CONSTRAINT fk_t_base_visits_id_nomenclature_grp_typ FOREIGN KEY (id_nomenclature_grp_typ) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE gn_monitoring.t_base_visits
+  ADD CONSTRAINT check_t_base_visits_id_nomenclature_obs_technique CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_obs_technique,'TECHNIQUE_OBS')) NOT VALID;
+
+ALTER TABLE gn_monitoring.t_base_visits
+  ADD CONSTRAINT check_t_base_visits_id_nomenclature_grp_typ CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_grp_typ,'TYP_GRP')) NOT VALID;
+
 
 CREATE TRIGGER tri_meta_dates_change_synthese
   BEFORE INSERT OR UPDATE
@@ -295,19 +390,28 @@ CREATE TRIGGER tri_meta_dates_change_synthese
   FOR EACH ROW
   EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
+
+
+-- ###############################################
+-- EXPORT TAXON LIST
+-- ###############################################
+
 -- Vue export des taxons de la synthèse
 -- Première version qui reste à affiner/étoffer
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_taxon_for_export_view AS
- SELECT t.group1_inpn,
-    t.group2_inpn,
-    t.regne,
-    t.phylum,
-    t.classe,
-    t.ordre,
-    t.famille,
-    t.id_rang,
-    t.cd_ref,
-    t.nom_valide
-    FROM gn_synthese.synthese  s
-   JOIN taxonomie.taxref t ON s.cd_nom = t.cd_ref;
+ SELECT DISTINCT
+    ref.nom_valide,
+    ref.cd_ref,
+    ref.nom_vern,
+    ref.group1_inpn,
+    ref.group2_inpn,
+    ref.regne,
+    ref.phylum,
+    ref.classe,
+    ref.ordre,
+    ref.famille,
+    ref.id_rang
+FROM gn_synthese.synthese  s
+JOIN taxonomie.taxref t ON s.cd_nom = t.cd_nom
+JOIN taxonomie.taxref ref ON t.cd_ref = ref.cd_nom;
 

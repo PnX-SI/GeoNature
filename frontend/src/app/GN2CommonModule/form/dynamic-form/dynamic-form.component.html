@@ -4,6 +4,8 @@
         || formDef.type_widget == 'textarea'
         || formDef.type_widget == 'radio'
         || formDef.type_widget == 'select'
+        || formDef.type_widget == 'time'
+        || formDef.type_widget == 'number'
         " [attr.for]="formDef.attribut_name">{{formDef.attribut_label}}</small>
     <div [ngSwitch]="formDef.type_widget">
 
@@ -43,16 +45,16 @@
 
       <div *ngSwitchCase="'checkbox'">
             <div class="custom-control custom-checkbox" *ngIf="formDef.values.length == 1; else elseBlock">
-                <input 
-                  type="checkbox" 
+                <input
+                  type="checkbox"
                   id="{{formDef.attribut_name}}_{{val}}"
                   class="custom-control-input"
                   [ngClass]="{'is-invalid': form.get(formDef.attribut_name).invalid}"
-                  [name]="formDef.attribut_name" 
-                  [value]="formDef.values[0]" 
-                  (change)="onCheckChange($event, form.get(formDef.attribut_name))" 
-                > 
-                <label class="custom-control-label" for="{{formDef.attribut_name}}_{{val}}"><span [innerHTML]="formDef.attribut_label"> </span></label> 
+                  [name]="formDef.attribut_name"
+                  [value]="formDef.values[0]"
+                  (change)="onCheckChange($event, form.get(formDef.attribut_name))"
+                >
+                <label class="custom-control-label" for="{{formDef.attribut_name}}_{{val}}"><span [innerHTML]="formDef.attribut_label"> </span></label>
               </div>
             <ng-template #elseBlock>
                 <div *ngFor="let val of formDef.values; let index=index" class="custom-control custom-checkbox">
@@ -73,17 +75,17 @@
 
       <div *ngSwitchCase="'radio'">
         <div *ngFor="let val of formDef.values" class="custom-control custom-radio">
-            <input 
-              type="radio" 
+            <input
+              type="radio"
               id="{{formDef.attribut_name}}_{{val}}"
-              (click)="onRadioChange(val, form.get(formDef.attribut_name))" 
+              (click)="onRadioChange(val, form.get(formDef.attribut_name))"
               class="custom-control-input"
               [name]="formDef.attribut_name"
               [value]="val"
               [formControl]="form.get(formDef.attribut_name)">
             <label
               class="custom-control-label"
-              for="{{formDef.attribut_name}}_{{val}}"> 
+              for="{{formDef.attribut_name}}_{{val}}">
               <span [innerHTML]="val"></span>
             </label>
         </div>
@@ -126,6 +128,22 @@
         [label]="formDef.attribut_label"  
         [searchBar]="false">
       </pnx-multiselect>
+
+      <input
+      *ngSwitchCase="'time'"
+      class="form-control form-control-sm"
+      [formControl]="form.get(formDef.attribut_name)"
+      [id]="formDef.attribut_name"
+      type="time"
+      >
+
+      <input
+      *ngSwitchCase="'number'"
+      class="form-control form-control-sm"
+      [formControl]="form.get(formDef.attribut_name)"
+      [id]="formDef.attribut_name"
+      type="number"
+      >
 
       <pnx-geometry-form *ngSwitchCase="'geometry'"
       [parentFormControl]="form.get(formDef.attribut_name)"

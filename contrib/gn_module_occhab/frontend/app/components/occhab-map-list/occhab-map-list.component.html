@@ -1,0 +1,212 @@
+<div id="cover-spin" *ngIf="dataLoading"> 
+</div>
+<div class="float-btns">
+    <button
+      id="add-btn"
+      class="btn  btn-success hard-shadow btn-action" 
+      [routerLink]="['form']"
+      matTooltip="Ajouter une nouvelle station d'habitat"
+    > 
+        AJOUTER
+        <i class="fa fa-plus" aria-hidden="true"></i>    </button>
+    <button 
+      class="btn  btn-primary hard-shadow btn-action"
+      data-toggle="collapse"
+      data-target="#collapseFilter"
+      matTooltip="Rechercher des habitats "
+    >
+      FILTRER
+      <i class="fa fa-sliders" aria-hidden="true"></i>
+    
+    </button>
+    
+</div>
+
+<div class="row row-sm map-list-container">
+  <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
+    <pnx-map-list height='88vh' idName="id_station"></pnx-map-list>
+  </div>
+
+  <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
+    <div class="collapse" id="collapseFilter">
+      <pnx-occhab-map-list-filter (onSearch)="searchData($event)"> </pnx-occhab-map-list-filter>
+    </div>
+    <button
+      id="download-btn"
+      class="btn btn-primary box-shadow btn-action"
+      (click)="openModal()"
+      >
+      TELECHARGER
+      <i class="fa fa-download" aria-hidden="true"></i>
+    </button>
+
+    <ngx-datatable 
+      (window:resize)="onResize($event)"
+      #dataTable 
+      class="material striped margin-top-xs table-size expandable"
+      [rows]="mapListService.tableData"
+      [rowHeight]="40"
+      [selected]="mapListService.selectedRow"
+      [selectionType]="'single'" 
+      [rowClass]="mapListService.getRowClass"
+      [count]="mapListService.tableData.length"
+      [limit]="rowNumber"
+      [footerHeight]="50"
+      [headerHeight]="50"
+      (select)="mapListService.onRowSelect($event)"
+    >
+      <ngx-datatable-row-detail 
+        #myDetailRow 
+        rowHeight="100" 
+      >
+      <ng-template ngx-datatable-row-detail-template
+        let-row="row" 
+        let-expanded="expanded" 
+      >
+        <div><strong>ID station : </strong>{{ row.id_station }}</div>
+        <ng-container *ngIf="row.comment !== null && row?.comment.trim() !== ''">
+          <div><strong>Commentaire : </strong>{{ row.comment }}</div>
+        </ng-container>
+        <div><strong>Altitude : </strong>{{ row.altitude_min == row.altitude_max ? row.altitude_min : row.altitude_min+' - '+row.altitude_max }}</div>
+        <div><strong>Observé par: </strong></div>
+        <div style="margin-left: 20px;">
+            <div *ngFor="let obs of displayObservateursTooltip(row)">
+              {{ obs }}
+            </div>
+          </div>
+        <div><strong>Habitats(s): </strong></div>
+        <div style="margin-left: 20px;">
+          <div *ngFor="let hab of displayHabTooltip(row)">
+            {{ hab }}
+          </div>
+        </div>
+      
+      </ng-template>
+    </ngx-datatable-row-detail>
+    <ngx-datatable-column
+      [width]="10"
+      [resizeable]="false"
+      [sortable]="false"
+      [draggable]="false"
+      [canAutoResize]="false"
+    >
+
+    <ng-template ngx-datatable-cell-template
+      let-row="row" 
+      let-expanded="expanded"
+    >
+      <a href="javascript:void(0)"
+        matTooltip="Ouvrir/fermer le détail"
+        [class.datatable-icon-right]="!expanded"
+        [class.datatable-icon-down]="expanded"
+        (click)="toggleExpandRow(row)">
+      </a>
+    </ng-template>
+  
+    </ngx-datatable-column>
+    <ngx-datatable-column maxWidth="10">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <button 
+            [matTooltip]="row.id_station" 
+            [routerLink]="['info', row.id_station]"
+            class="btn btn-outline-shadow btn-no-padding btn-ghost"
+          >
+            <i class="fa fa-info-circle" aria-hidden="true"></i>
+            {{row.id_station}}
+          </button>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <ngx-datatable-column maxWidth="10">
+
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <button 
+              class="btn btn-outline-shadow btn-no-padding btn-ghost"
+              [routerLink]="['form', row.id_station]">
+              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+            </button>
+          </ng-template>
+        </ngx-datatable-column>
+      
+
+      <ngx-datatable-column maxWidth="10">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <button class="btn btn-outline-shadow btn-no-padding btn-ghost"
+            (click)="openDeleteModal(row, deleteModal)"
+          >
+            <i class="fa fa-trash-o" aria-hidden="true"></i>
+          </button>
+        </ng-template>
+      </ngx-datatable-column>
+
+
+
+      <ng-container *ngFor="let col of displayedColumns" >
+          <ngx-datatable-column  
+            [name]="col.name" 
+            [prop]="col.prop"
+            [ngSwitch]="col.prop"
+            [width]="col.width"
+          >
+          <!-- HABITAT -->
+          <ng-template 
+            *ngSwitchCase="'habitats'" 
+            ngx-datatable-cell-template
+            let-row="row" 
+          >
+            <span 
+              [matTooltip]="displayHabTooltip(row).join('\n')" 
+              matTooltipPosition="left"
+            >
+              <span>
+                  <span class='badge badge-dark'> {{row.t_habitats?.length}} </span>
+                    {{displayHabTooltip(row)}}
+                </span>
+            </span> 
+        </ng-template>
+        <!-- DATE -->
+        <ng-template 
+          *ngSwitchCase="'date_min'" 
+          ngx-datatable-cell-template
+          let-row="row" 
+          maxWidth="50" 
+        >
+          <span matTooltip="{{ row.date_min|date:'dd-MM-yyyy' }}">
+            {{ row.date_min|date:'dd-MM-yyyy' }}
+          </span>
+        </ng-template>
+        <!-- JDD -->
+        <ng-template 
+          *ngSwitchCase="'dataset_name'" 
+          ngx-datatable-cell-template
+          let-row="row" 
+        >
+          <span matTooltip="{{ row.dataset.dataset_name }}">
+              {{row.dataset.dataset_name}}
+          </span>
+        </ng-template>
+        <!-- OTHER COLS -->
+        <ng-template *ngSwitchDefault let-row="row" ngx-datatable-cell-template>
+          <span 
+            [matTooltip]="row[col.prop]"
+              matTooltipPosition="left">
+            {{row[col.prop]}}
+          </span>
+        </ng-template>
+        </ngx-datatable-column>
+      </ng-container>
+    </ngx-datatable>
+  </div>
+
+</div>
+
+<ng-template #deleteModal let-c="close " let-d="dismiss">
+
+  <pnx-occhab-delete 
+    [c]="c"
+    [idStation]="deleteOne.id_station"
+    [nbHabitats]="deleteOne.t_habitats.length"
+    (onDelete)="mapListService.deleteObsFront(deleteOne.id_station)">
+  </pnx-occhab-delete>
+
+</ng-template>

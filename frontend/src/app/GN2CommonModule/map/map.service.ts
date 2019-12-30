@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Map, GeoJSON, Layer, FeatureGroup, Marker, LatLng } from 'leaflet';
-import { Subject ,  Observable } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
@@ -29,6 +29,7 @@ export class MapService {
   // this observable must be fired only after a map event
   // not from data sended by API (to avoid recalculate altitude for exemple)
   public firstLayerFromMap = true;
+  public layerControl: L.Control.Layers;
 
   selectedStyle = {
     color: '#ff0000',
@@ -46,7 +47,7 @@ export class MapService {
     color: 'green'
   };
 
-  constructor(private http: HttpClient, private _commonService: CommonService) { }
+  constructor(private http: HttpClient, private _commonService: CommonService) {}
 
   setMap(map) {
     this.map = map;
@@ -70,6 +71,10 @@ export class MapService {
     if (!this.firstLayerFromMap) {
       this._geojsonCoord.next(geojsonCoord);
     }
+  }
+
+  zoomOnMarker(coordinates, zoomLevel = 15) {
+    this.map.setView(new L.LatLng(coordinates[1], coordinates[0]), zoomLevel);
   }
 
   /**
@@ -150,17 +155,21 @@ export class MapService {
         switch (feature.geometry.type) {
           // No color nor opacity for linestrings
           case 'LineString':
-            return style ? style : {
-              color: '#3388ff',
-              weight: 3
-            };
+            return style
+              ? style
+              : {
+                  color: '#3388ff',
+                  weight: 3
+                };
           default:
-            return style ? style : {
-              color: '#3388ff',
-              fill: true,
-              fillOpacity: 0.2,
-              weight: 3
-            };
+            return style
+              ? style
+              : {
+                  color: '#3388ff',
+                  fill: true,
+                  fillOpacity: 0.2,
+                  weight: 3
+                };
         }
       },
       pointToLayer: (feature, latlng) => {

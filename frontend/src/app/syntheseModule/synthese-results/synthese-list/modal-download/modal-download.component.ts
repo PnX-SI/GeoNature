@@ -27,6 +27,10 @@ export class SyntheseModalDownloadComponent implements OnInit {
     this._dataService.downloadObservations(this._storeService.idSyntheseList, format);
   }
 
+  downloadTaxons(format, filename) {
+    this._dataService.downloadTaxons(this._storeService.idSyntheseList, format, filename);
+  }
+
   downloadStatusOrMetadata(url, filename) {
     this.queryString = this.queryString.delete('limit');
     this._dataService.downloadStatusOrMetadata(

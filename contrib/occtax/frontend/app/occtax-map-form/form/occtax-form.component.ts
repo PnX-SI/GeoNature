@@ -117,14 +117,20 @@ export class OcctaxFormComponent implements OnInit {
           delete saveForm["properties"]["comment"];
           saveForm["properties"]["t_occurrences_occtax"] = [];
           this.fs.releveForm.patchValue(saveForm);
+          let l = this._mapService.fileLayerFeatureGroup.getLayers();
+          l.forEach(el => {
+            if ((el as any).getLayers()[0].options.color == "red") {
+              (el as any).setStyle({ color: "green", opacity: 0.2 });
+            }
+          });
         } else {
+          // reset carto
+          this._mapService.setEditingMarker(false);
+          // reset default marker mode
+          this._mapService.setEditingMarker(true);
           // redirect
           this.router.navigate(["/occtax"]);
         }
-        // reset carto
-        this._mapService.setEditingMarker(false);
-        // reset default marker mode
-        this._mapService.setEditingMarker(true);
       },
       error => {
         if (error.status === 403) {

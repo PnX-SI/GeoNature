@@ -80,7 +80,8 @@ def getAreasIntersection():
     )
 
     try:
-        result = DB.engine.execute(sql, geom=str(data["geometry"]), type=id_type)
+        result = DB.engine.execute(
+            sql, geom=str(data["geometry"]), type=id_type)
     except Exception as e:
         DB.session.rollback()
         raise
@@ -109,7 +110,8 @@ def getAreasIntersection():
     data = {}
     for b in bibareatype:
         data[b.id_type] = b.as_dict(columns=("type_name", "type_code"))
-        data[b.id_type]["areas"] = [a for a in areas if a["id_type"] == b.id_type]
+        data[b.id_type]["areas"] = [
+            a for a in areas if a["id_type"] == b.id_type]
 
     return data
 
@@ -123,11 +125,13 @@ def get_municipalities():
     """
     parameters = request.args
 
-    q = DB.session.query(LiMunicipalities).order_by(LiMunicipalities.nom_com.asc())
+    q = DB.session.query(LiMunicipalities).order_by(
+        LiMunicipalities.nom_com.asc())
 
     if "nom_com" in parameters:
         q = q.filter(
-            LiMunicipalities.nom_com.ilike("{}%".format(parameters.get("nom_com")))
+            LiMunicipalities.nom_com.ilike(
+                "{}%".format(parameters.get("nom_com")))
         )
     limit = int(parameters.get("limit")) if parameters.get("limit") else 100
 
@@ -143,7 +147,8 @@ def get_areas():
         .. :quickref: Ref Geo;
     """
     # change all args in a list of value
-    params = {key: request.args.getlist(key) for key, value in request.args.items()}
+    params = {key: request.args.getlist(key)
+              for key, value in request.args.items()}
 
     q = DB.session.query(LAreas).order_by(LAreas.area_name.asc())
 
@@ -151,10 +156,45 @@ def get_areas():
         q = q.filter(LAreas.id_type.in_(params["id_type"]))
 
     if "area_name" in params:
-        q = q.filter(LAreas.area_name.ilike("%{}%".format(params.get("area_name")[0])))
+        q = q.filter(LAreas.area_name.ilike(
+            "%{}%".format(params.get("area_name")[0])))
 
     limit = int(params.get("limit")[0]) if params.get("limit") else 100
 
     data = q.limit(limit)
     return [d.as_dict() for d in data]
 
+
+@routes.route("/area_size", methods=["Post"])
+@json_resp
+def get_area_size():
+    """
+        Return the area size from a given geojson
+
+        .. :quickref: Ref Geo;
+
+        :returns: An area size (int)
+    """
+
+    geojson = dict(request.get_json())
+    query = text("""
+    SELECT
+    ST_Area(
+        ST_Transform(
+            ST_SetSrid(
+                ST_GeomFromGeoJSON(:geojson), 4326
+            ),:local_srid
+        )
+    )
+    """)
+
+    result = DB.engine.execute(
+        query,
+        geojson=str(geojson['geometry']),
+        local_srid=current_app.config['LOCAL_SRID']
+    )
+    area = None
+    if result:
+        for r in result:
+            return r[0]
+    return None

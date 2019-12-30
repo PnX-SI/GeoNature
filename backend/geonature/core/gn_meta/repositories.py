@@ -1,6 +1,7 @@
 import logging
 
 from sqlalchemy import or_
+from sqlalchemy.orm import joinedload
 from flask import request
 
 from geonature.utils.env import DB
@@ -22,15 +23,15 @@ def get_datasets_cruved(info_role, params=dict()):
     """
         Return the datasets filtered with cruved
     """
-    q = DB.session.query(TDatasets)
-
+    q = DB.session.query(TDatasets).distinct()
     # filter with modules
     if "module_code" in params:
         q = q.filter(TDatasets.modules.any(module_code=params["module_code"]))
 
     # filters with cruved
     if info_role.value_filter == "2":
-        q = q.join(CorDatasetActor, CorDatasetActor.id_dataset == TDatasets.id_dataset)
+        q = q.join(CorDatasetActor, CorDatasetActor.id_dataset ==
+                   TDatasets.id_dataset)
         # if organism is None => do not filter on id_organism even if level = 2
         if info_role.id_organisme is None:
             q = q.filter(CorDatasetActor.id_role == info_role.id_role)
@@ -54,7 +55,8 @@ def get_datasets_cruved(info_role, params=dict()):
         if type(request.args["id_acquisition_framework"]) is list:
             q = q.filter(
                 TDatasets.id_acquisition_framework.in_(
-                    [int(id_af) for id_af in params["id_acquisition_framework"]]
+                    [int(id_af)
+                     for id_af in params["id_acquisition_framework"]]
                 )
             )
         else:
@@ -62,8 +64,8 @@ def get_datasets_cruved(info_role, params=dict()):
                 TDatasets.id_acquisition_framework
                 == int(request.args["id_acquisition_framework"])
             )
-        params.pop("id_acquisition_framework")
 
+        params.pop("id_acquisition_framework")
     table_columns = TDatasets.__table__.columns
     # Generic Filters
     for param in params:
@@ -79,7 +81,7 @@ def get_datasets_cruved(info_role, params=dict()):
             q = q.order_by(orderCol)
         except AttributeError:
             log.error("the attribute to order on does not exist")
-    data = q.all()
+    data = q.distinct().all()
     return [d.as_dict(True) for d in data]
 
 
@@ -90,7 +92,7 @@ def get_af_cruved(info_role, params={}):
             info_role (VUsersPermissions):  user object with cruved level (value filter)
             params (dict): get parameters for filter
     """
-    q = DB.session.query(TAcquisitionFramework)
+    q = DB.session.query(TAcquisitionFramework).distinct()
     if "module_code" in params:
         q = q.filter()
     # filter with cruved
@@ -102,7 +104,8 @@ def get_af_cruved(info_role, params={}):
         )
         # if organism is None => do not filter on id_organism even if level = 2
         if info_role.id_organisme is None:
-            q = q.filter(CorAcquisitionFrameworkActor.id_role == info_role.id_role)
+            q = q.filter(CorAcquisitionFrameworkActor.id_role ==
+                         info_role.id_role)
         else:
             q = q.filter(
                 or_(

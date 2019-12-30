@@ -26,7 +26,8 @@ import { AuthService } from "@geonature/components/auth/auth.service";
   // important to provide a new instance of OcctaxFormService to réinitialize it
   providers: [MapService, OcctaxFormService]
 })
-export class OcctaxMapFormComponent implements OnInit, OnDestroy, AfterViewInit {
+export class OcctaxMapFormComponent
+  implements OnInit, OnDestroy, AfterViewInit {
   public leafletDrawOptions: any;
   private _sub: Subscription;
   public id: number;
@@ -133,13 +134,6 @@ export class OcctaxMapFormComponent implements OnInit, OnDestroy, AfterViewInit 
             if (data.releve.geometry.type == "Point") {
               // set the input for the marker component
               this.fs.markerCoordinates = data.releve.geometry.coordinates;
-              this._ms.map.setView(
-                [
-                  data.releve.geometry.coordinates[1],
-                  data.releve.geometry.coordinates[0]
-                ],
-                15
-              );
             } else {
               // set the input for leafletdraw component
               this.fs.geojsonCoordinates = data.releve.geometry;
