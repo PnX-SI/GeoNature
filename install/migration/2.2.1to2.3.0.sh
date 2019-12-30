@@ -1,10 +1,5 @@
 . /home/`whoami`/geonature_old/config/settings.ini
 
-<<<<<<< HEAD
-sudo supervisorctl stop geonature2
-
-=======
->>>>>>> 47ea4211b92e389b1a98c63c3fb94bfdf3b53fc1
 mkdir /home/`whoami`/geonature/var/
 mkdir /home/`whoami`/geonature/var/log
 mkdir /home/`whoami`/geonature/tmp
