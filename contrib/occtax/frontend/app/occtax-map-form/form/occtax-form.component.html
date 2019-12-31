@@ -2,16 +2,14 @@
   *ngIf="fs.disabled" 
   id="overlay" 
   [class.disabled-form]="fs.disabled" 
-  (click)="fs.formDisabled()"
->
+  (click)="fs.formDisabled()">
 </div>
 
 <div id="form">
   <div class="card line-height-sm">
     <h5 
       class="card-header" 
-      [class.disabled]="fs.disabled"
-    >
+      [class.disabled]="fs.disabled">
       <i class="fa fa-pencil" aria-hidden="true"></i>
       <b>{{ 'Releve.Releve' | translate }} </b>
       <span 
@@ -19,13 +17,11 @@
         id="toggle-btn" 
         class="float-right" 
         matTooltip=" {{'Releve.StayOnFormInterface' | translate}} " 
-        matTooltipPosition="left"
-      >
+        matTooltipPosition="left">
         <i class="fa fa-repeat" aria-hidden="true"></i>
         <mat-slide-toggle  
           color="primary" 
-          [formControl]="fs.stayOnFormInterface"
-        >
+          [formControl]="fs.stayOnFormInterface">
         </mat-slide-toggle>
       </span>
     </h5>
@@ -33,8 +29,7 @@
     <div class="card-body">
       <div>
         <pnx-releve 
-          [releveForm]="fs.releveForm  "
-        >
+          [releveForm]="fs.releveForm">
         </pnx-releve>
       </div>
     </div>
@@ -50,8 +45,7 @@
           *ngIf="fs.showOccurrence" 
           class="btn btn-primary toggle-btn btn-sm" 
           [disabled]="fs.occurrenceForm.invalid || fs.countingForm.invalid"
-          (click)="fs.addOccurrence(fs.indexOccurrence)"
-        >
+          (click)="fs.addOccurrence(fs.indexOccurrence)">
           <i id="check" class="fa fa-check toggle-btn" aria-hidden="true"></i>
 
           {{ 'Taxon.ValidateTaxon' | translate }}
@@ -61,8 +55,7 @@
           type="button" 
           class="btn btn-sm btn-primary toggle-btn cancel-or-add"
           [disabled]="fs.disabled" 
-          (click)="fs.toggleOccurrence();"
-        >
+          (click)="fs.toggleOccurrence();">
           <i class="fa fa-plus" aria-hidden="true"></i>
           {{ 'Releve.AddTaxonOnReleve' | translate }}
         </button>
@@ -70,8 +63,7 @@
           *ngIf="fs.showOccurrence" 
           type="button" 
           class="btn btn-sm btn-danger toggle-btn cancel-or-add" 
-          (click)="fs.toggleOccurrence(); fs.cancelOccurrence()"
-        >
+          (click)="fs.toggleOccurrence(); fs.cancelOccurrence()">
           <i class="fa fa-minus" aria-hidden="true"></i>
           {{ 'Releve.CancelTaxon' | translate }}
         </button>
@@ -80,73 +72,61 @@
     </h5>
     <div 
       *ngIf="fs.showOccurrence"
-      class="card-body" 
-    >
+      class="card-body">
       <pnx-occurrence 
-        [occurrenceForm]="fs.occurrenceForm"
-      >
+        [occurrenceForm]="fs.occurrenceForm">
       </pnx-occurrence>
       <div>
         <div>
           <button 
             id="counting-button" 
             type="button" 
+            (click)="fs.toggleCounting()" 
             class="btn btn-primary btn-sm"
             data-toggle="collapse" 
             data-target="#collapseCounting" 
-            [disabled]="fs.disabled"
-            (click)="fs.toggleCounting()" 
-          >
-            <span 
-              *ngIf="!fs.showCounting"
-            >
-              <i class="fa fa-plus" aria-hidden="true"></i>
-            </span>
-            <span 
-              *ngIf="fs.showCounting"
-            >
-              <i class="fa fa-minus" aria-hidden="true"></i>
-            </span>
+            [disabled]="fs.disabled">
             <b> {{ 'Counting.Counting' | translate }}s </b>
+            <span *ngIf="!fs.showCounting">
+              <i class="fa fa-chevron-right" aria-hidden="true"></i>
+            </span>
+            <span *ngIf="fs.showCounting">
+              <i class="fa fa-chevron-down" aria-hidden="true"></i>
+            </span>
           </button>
           <!-- COUNTING -->
-          <!-- <button type="button" class="btn btn-primary btn-sm" >
 
-                  </button> -->
         </div>
         <div 
           id="collapseCounting"
-          class="collapse" 
-        >
+          class="collapse">
           <div *ngFor="let counting of fs.nbCounting; let i = index">
             <pnx-counting 
               [formArray]="fs.countingForm" 
               [index]="i" 
               [length]="fs.nbCounting.length" 
-              (countingRemoved)="fs.removeCounting($event)"
-            >
+              (countingRemoved)="fs.removeCounting($event)">
             </pnx-counting>
           </div>
-
           <button 
             id="addOccurrence" 
+            matTooltip="Ajouter un nouveau dénombrement" 
             type="button" 
-            class="btn btn-primary btn-sm" 
-            [disabled]="fs.disabled"
+            class="btn btn-primary btn-sm float-right" 
             (click)="fs.addCounting()" 
-          >
+            [disabled]="fs.disabled">
+            Ajouter un nouveau dénombrement
             <i class="fa fa-plus-circle" aria-hidden="true"></i>
           </button>
         </div>
       </div>
       <div class="center">
         <button 
-          class="btn btn-primary btn-sm " 
+          class="btn btn-primary btn-sm" 
+          id="validate-btn" 
           [disabled]="fs.occurrenceForm.invalid || fs.countingForm.invalid"
-          (click)="fs.addOccurrence(fs.indexOccurrence)"
-        >
+          (click)="fs.addOccurrence(fs.indexOccurrence)">
           <i id="check" class="fa fa-check" aria-hidden="true"></i>
-
           {{ 'Taxon.ValidateTaxon' | translate }}
         </button>
       </div>
@@ -165,22 +145,20 @@
     <button 
       class="btn btn-danger" 
       routerLink="/occtax"
-      (click)="fs.disabled = true;" 
-    > 
+      (click)="fs.disabled = true;"> 
       {{ 'Cancel' | translate }}
     </button>
     <button 
       class="btn btn-success" 
       [disabled]="(
-        fs.releveForm.invalid
-        || fs.taxonsList == 0 
-        || fs.countingForm.invalid
-        || fs.showOccurrence
-        || (fs.showOccurrence && fs.occurrenceForm.invalid )
-        || disabledAfterPost
-      )"
-      (click)="submitData()"
-    >
+          fs.releveForm.invalid
+          || !fs.taxonsList.length
+          || fs.countingForm.invalid
+          || fs.showOccurrence
+          || (fs.showOccurrence && fs.occurrenceForm.invalid )
+          || disabledAfterPost
+          )"
+      (click)="submitData()">
       <i class="fa fa-floppy-o" aria-hidden="true"></i>
       {{ 'Releve.SaveReleve' | translate }}
     </button>

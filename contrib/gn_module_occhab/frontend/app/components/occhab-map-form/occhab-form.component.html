@@ -1,0 +1,507 @@
+
+
+<div class="row row-0">
+  <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
+    <!-- HABITAT ALREADY SAVED -->
+    <div 
+      id="overlay-hab"
+      class="card hard-shadow" 
+      *ngIf="showTabHab;">
+        <div class="card-body small">
+          <div >
+            <table class="table">
+              <thead style="font-weight: bold">
+                <tr>
+                  <td> N°</td>
+                  <td> Habitat</td>
+                  <td> Abondance</td>
+                  <td> #</td>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor='let hab of occHabForm.stationForm.value.t_habitats; let last=last let i=index'>
+                  <tr *ngIf="i != occHabForm.currentEditingHabForm">
+                        <td> {{occHabForm.stationForm.value.t_habitats.length - i}} </td>
+                        <td> {{hab?.nom_cite}} </td>
+                        <td> {{hab?.id_nomenclature_abundance?.label_default}}</td>
+                        <td> 
+                          <span 
+                            matTooltip="Editer cet habitat" 
+                            type="button" 
+                            class="btn btn-primary btn-sm"
+                            (click)="editHab(i)"  
+                          >
+                              <i class="fa fa-pencil-square-o" aria-hidden="true" ></i>
+                        </span> 
+                          <span 
+                            matTooltip="Supprimer cet habitat de la station" 
+                            type="button" class="btn btn-danger btn-sm"
+                            (click)="occHabForm.deleteHab(i)" 
+                          >
+                              <i class="fa fa-times" aria-hidden="true"></i>
+                        </span>
+                      </td>
+                  </tr>
+                </ng-container>
+              </tbody>  
+            </table>
+
+            
+          </div>
+    
+        </div>
+      </div>
+      <!--END  HABITAT ALREADY SAVED -->
+    <pnx-map [height]="mapHeight">
+        <!-- <pnx-occhab-dataset-map-overlay
+          (getBoundingBox)="loadDatasetGeom($event)"
+        >
+        </pnx-occhab-dataset-map-overlay> -->
+        <pnx-marker 
+          [coordinates]="markerCoordinates" 
+          zoomLevel="5"
+          [defaultEnable]="false"
+          (markerChanged)="occHabForm.patchGeoValue($event)">
+        </pnx-marker>
+        <pnx-leaflet-draw
+          [geojson]="currentGeoJsonFileLayer"
+          [options]="leafletDrawOptions"
+          zoomLevel="5"
+         (layerDrawed)="occHabForm.patchGeoValue($event)">
+        </pnx-leaflet-draw>
+        <pnx-leaflet-filelayer
+          [editMode]="true"
+          (onLoad)="infoMessageFileLayer()"
+          (onGeomChange)="occHabForm.patchGeoValue($event)"
+          [style]="{'color': 'green'}"
+        >
+        </pnx-leaflet-filelayer>
+    </pnx-map>
+
+    
+  </div>
+  <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
+    <!-- Overlay to disable form until map is not fill -->
+    <div *ngIf="disabledForm" id="overlay" [class.disabled-form]="disabledForm" (click)="formIsDisable()">
+    </div>
+    <div class="all-form">
+    <div class="card border-primary" id="station-card">
+      <h5 class="card-header bg-primary text-white">
+        <i class="fa fa-flag" aria-hidden="true"></i>
+        Station
+      </h5>
+
+      <div class="card-body">
+        <div class="row row-0">
+          <div class="col-6 padding-sm">
+            <div *ngIf="moduleConfig.OBSERVER_AS_TXT; else observerIDBlock">
+              <pnx-observers-text 
+                [parentFormControl]="occHabForm.stationForm.get('observers_txt')">
+              </pnx-observers-text>
+            </div>
+            <ng-template #observerIDBlock>
+              <pnx-observers 
+                [parentFormControl]="occHabForm.stationForm.get('observers')" 
+                [idMenu]="moduleConfig.OBSERVER_LIST_ID"
+                label="{{ 'Releve.Observers' | translate }}" 
+                [bindAllItem]="true"
+              >
+              </pnx-observers>
+            </ng-template>
+          </div>
+          <div class="col">
+            <div class="dataset-inactive" *ngIf="currentEditingStation?.properties?.dataset?.active == false; else elseblocDataset">
+                  <small> {{ 'MetaData.Datasets' | translate }}:  </small>
+                  <small>
+                    <b> {{currentEditingStation?.properties?.dataset?.dataset_name}}</b>
+                  </small> 
+                </div>
+            <ng-template #elseblocDataset>
+              <pnx-datasets 
+                label="{{ 'MetaData.Datasets' | translate }}" 
+                [parentFormControl]="occHabForm.stationForm.get('id_dataset')"
+                moduleCode="OCCHAB"
+              >
+              </pnx-datasets>
+            </ng-template>
+          </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row row-0">
+              <div 
+                class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
+                *ngIf="moduleConfig.formConfig.date_min"
+              >
+                <pnx-date 
+                  [defaultToday]="true" 
+                  label="{{ 'Releve.MinDate' | translate }}" 
+                  [parentFormControl]="occHabForm.stationForm.get('date_min')"
+                >
+                </pnx-date>
+              </div>
+            <div 
+              class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
+              *ngIf="moduleConfig.formConfig.date_max"
+            >
+              <pnx-date 
+                [defaultToday]="true" 
+                label="{{ 'Releve.MaxDate' | translate }}" 
+                [parentFormControl]="occHabForm.stationForm.get('date_max')"
+              >
+              </pnx-date>
+            </div>
+          </div>
+          <small *ngIf="occHabForm.stationForm.errors?.invalidDate" class="error" style="color:red">
+            {{ 'Releve.DateMaxError' | translate }}
+          </small>
+        </div>
+            
+
+        <div class="form-group">
+          <div class="row row-0">
+            <div 
+              class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
+              *ngIf="moduleConfig.formConfig.altitude_min"
+            >
+                <small for=""> Altitude min</small>
+                <input 
+                  type="number" 
+                  class="form-control form-control-sm"
+                  [formControl]="occHabForm.stationForm.get('altitude_min')"
+                >
+            </div>
+            <div 
+              class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
+              *ngIf="moduleConfig.formConfig.altitude_max"
+              >
+              <small for=""> Altitude max</small>
+              <input 
+                type="number" 
+                class="form-control form-control-sm"
+                [formControl]="occHabForm.stationForm.get('altitude_max')"
+              >
+            </div>
+            <button 
+              *ngIf="!showDepth && (moduleConfig.formConfig.depth_min || moduleConfig.formConfig.depth_max)"
+              (click)="toggleDepth()"
+              class="btn btn-sm btn-outline-shadow depth-button" 
+              data-toggle="collapse"
+              data-target="#collapseDepth">
+              <i class="fa fa-plus" aria-expanded="false"></i>
+            </button>
+            <button 
+              *ngIf="showDepth"
+              (click)="toggleDepth()"
+              class="btn btn-sm btn-outline-shadow depth-button" 
+              data-toggle="collapse"
+              data-target="#collapseDepth">
+              <i class="fa fa-minus" aria-expanded="false"></i>
+            </button>
+          </div>
+          <small *ngIf="occHabForm.stationForm.errors?.invalidAlt" class="error" style="color:red">
+            {{ 'Releve.AltitudeError' | translate }}
+          </small>
+        </div>
+
+        <div class="form-group collapse" id="collapseDepth">
+          <div class="row row-0">
+            <div 
+              class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
+              *ngIf="moduleConfig.formConfig.depth_min"
+            >
+                <small for=""> Profondeur min</small>
+                <input 
+                  type="number" 
+                  class="form-control form-control-sm"
+                  [formControl]="occHabForm.stationForm.get('depth_min')"
+                >
+            </div>
+            <div 
+              class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
+              *ngIf="moduleConfig.formConfig.depth_max"
+            >
+              <small for=""> Profondeur max</small>
+              <input 
+                type="number" 
+                class="form-control form-control-sm"
+                [formControl]="occHabForm.stationForm.get('depth_max')"
+              >
+            </div>
+          </div>
+        </div>
+
+        
+        <pnx-dumb-select
+          *ngIf="moduleConfig.formConfig.exposure"
+          label="Exposition" 
+          [parentFormControl]="occHabForm.stationForm.get('id_nomenclature_exposure')"         
+          [items]="storeService.nomenclatureItems.EXPOSITION"
+          comparedKey="id_nomenclature"
+          titleKey="definition_fr"
+          displayedKey="label_fr">
+       </pnx-dumb-select>
+
+       <div class="row row-0">
+         <div 
+          class="col padding-sm"
+          *ngIf="moduleConfig.formConfig.area"          
+        >
+            <small> Surface (en m²)</small>
+            <input 
+              class="form-control form-control-sm"
+              [formControl]="occHabForm.stationForm.get('area')"
+              type="number"
+            >
+         </div>
+
+         <div class="col padding-sm">
+            <pnx-dumb-select
+              *ngIf="moduleConfig.formConfig.area_surface_calculation"
+              label="Méthode de calcul de la surface" 
+              [parentFormControl]="occHabForm.stationForm.get('id_nomenclature_area_surface_calculation')"         
+              [items]="storeService.nomenclatureItems.METHOD_CALCUL_SURFACE"
+              comparedKey="id_nomenclature"
+              titleKey="definition_fr"
+              displayedKey="label_fr">
+           </pnx-dumb-select>
+         </div>
+       </div>
+       <div class="row row-0">
+          <div class="form-group col-6 padding-sm">
+            <pnx-dumb-select
+              *ngIf="moduleConfig.formConfig.geographic_object"
+              label="Nature objet géographique" 
+              [parentFormControl]="occHabForm.stationForm.get('id_nomenclature_geographic_object')"         
+              [items]="storeService.nomenclatureItems.NAT_OBJ_GEO"
+              comparedKey="id_nomenclature"
+              titleKey="definition_fr"
+              displayedKey="label_fr">
+            </pnx-dumb-select>
+          </div>
+       </div>
+
+       <div 
+        class="row row-0"
+        *ngIf="moduleConfig.formConfig.comment"
+      >
+        <div class="form-group col-6 padding-sm">
+            <textarea 
+              class="form-control form-control-sm"
+              type="textarea"
+              placeholder="Commentaire"
+              [formControl]="occHabForm.stationForm.get('comment')"
+            ></textarea>
+        </div>
+
+       </div>
+
+
+    </div>
+  </div>
+
+    <!-- END STATION FORM -->
+
+    <button 
+      id="validateButton"
+      type="button" 
+      class="btn btn-success hard-shadow btn-action"
+      (click)="postStation()"
+      [disabled]="occHabForm.stationForm.invalid || showHabForm || !atLeastOneHab"
+    >
+      VALIDER LA STATION
+    </button>
+
+    
+    <div class="card border-primary">
+      <div class="habitat-form">
+        <h5 class="card-header text-white" id="header-form-hab">
+          <i class="fa fa-leaf" aria-hidden="true"></i>
+          Habitat
+          <button 
+          *ngIf="!showHabForm"
+          type="button" 
+          id="add-hab-btn"
+          class="btn btn-sm float-right "
+          (click)=addNewHab();
+          > 
+          <i style="color: rgb(0, 233, 0);" class="fa fa-plus" aria-hidden="true"></i>
+          Ajouter un habitat à la station
+        </button>
+        <button 
+          *ngIf="showHabForm"
+          type="button" 
+          class="btn btn-sm btn-danger float-right add-hab-btn" 
+          (click)="cancelHab()">
+          <i class="fa fa-minus" aria-hidden="true"></i>
+          Annuler l'édition de l'habitat
+        </button>
+        </h5>
+        <div 
+          *ngIf="showHabForm"
+          class="card-body body-hab-form"
+        >
+          <div class="form-row collapse" id="collaspeTypo">
+            <div class="col-6 padding-sm">
+                <small> Sélectionner une typologie d'habitat</small>
+                <select
+                 [formControl]="occHabForm.typoHabControl"
+                 class="form-control form-control-sm"> 
+                 <option [ngValue]="null"> Toutes </option>
+                  <option 
+                    *ngFor="let typo of storeService.typoHabitat" 
+                    [ngValue]="typo.cd_typo"> 
+                      {{typo.lb_nom_typo}}
+                   </option>
+                </select>
+            </div>
+          </div>
+  
+          <div class="form-row">
+            <div class="col-6 inline">
+                <pnx-autocomplete apiEndPoint="{{appConfig.API_ENDPOINT}}/habref/habitats/autocomplete/list/{{moduleConfig.ID_LIST_HABITAT}}"
+                  [searchAsParameter]="false"  
+                  [parentFormControl]="occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].get('habref')"
+                  queryParamSearch="search_name"
+                  [othersGetParams]="occHabForm.selectedTypo"
+                  [formatter]="formatter"
+                  keyValue="search_name"
+                  label="Habitat"
+                  placeholder="Tapez les premières lettres..."
+                  (onChange)="occHabForm.patchNomCite($event)"
+              >
+              </pnx-autocomplete>
+              <div class="input-group-append" id="addon">
+                <button class="btn btn-sm btn-outline-shadow" data-toggle="collapse" data-target="#collaspeTypo" aria-expanded="false"
+                  aria-controls="collapseExample" matTooltip="Filtrer les habitat proposés à l'autocompletion  par typologie">
+                  <i class="fa fa-filter" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+            <div class="col-6 padding-sm">
+              <pnx-dumb-select
+                *ngIf="moduleConfig.formConfig.community_interest"
+                label="Habitat d'interet communautaire" 
+                [parentFormControl]="occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].get('id_nomenclature_community_interest')"         
+                [items]="storeService.nomenclatureItems.HAB_INTERET_COM"
+                comparedKey="id_nomenclature"
+                titleKey="definition_fr"
+                displayedKey="label_fr"
+                [displayNullValue]="true"
+              >
+              </pnx-dumb-select>
+            </div>
+
+  
+          </div>
+  
+          <div class="form-row">
+            <div 
+              class="col" 
+              *ngIf="moduleConfig.formConfig.determiner"
+            >
+                <small> Déterminateur</small>
+                <input type="text" 
+                  name="determinter"
+                  class="form-control form-control-sm"
+                  [formControl]="occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].get('determiner')"         
+                >
+            </div>
+            <div 
+              class="col"
+              *ngIf="moduleConfig.formConfig.determination_type"
+            >
+              <pnx-dumb-select
+                label="Type de détermination" 
+                [parentFormControl]="occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].get('id_nomenclature_determination_type')"         
+                [items]="storeService.nomenclatureItems.DETERMINATION_TYP_HAB"
+                comparedKey="id_nomenclature"
+                titleKey="definition_fr"
+                displayedKey="label_fr">
+              </pnx-dumb-select>
+            </div>
+          </div>
+  
+  
+          <pnx-dumb-select
+            *ngIf="moduleConfig.formConfig.collection_technique"
+            label="Technique de collecte" 
+            [parentFormControl]="occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].get('id_nomenclature_collection_technique')"         
+            [items]="storeService.nomenclatureItems.TECHNIQUE_COLLECT_HAB"
+            comparedKey="id_nomenclature"
+            titleKey="definition_fr"
+            displayedKey="label_fr">
+          </pnx-dumb-select>
+
+          
+          <div class="form-group">
+            <input 
+              *ngIf="moduleConfig.formConfig.technical_precision"
+              type="text"
+              class="form-control form-control-sm"
+              placeholder="Précision sur la technique de collecte"
+              [ngClass]="{'ng-invalid' : occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].errors?.invalidTechnicalValues}"
+              [formControl]="occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].get('technical_precision')"           
+            >
+          </div>
+
+          <small 
+            *ngIf="occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].errors?.invalidTechnicalValues"
+            class="error"
+            style="color:red"> 
+            Veuillez fournir des précisions concernant la technique de collecte
+          </small>
+
+          <div 
+            class="form-group"
+            *ngIf="moduleConfig.formConfig.recovery_percentage"
+          >
+            <small> Pourcentage de recouvrement</small>
+            <input type="number" 
+              name="recovery"
+              class="form-control form-control-sm"
+              [formControl]="occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].get('recovery_percentage')"         
+            >
+          </div>
+  
+          <pnx-dumb-select
+            *ngIf="moduleConfig.formConfig.abundance"
+            label="Abondance" 
+            [parentFormControl]="occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].get('id_nomenclature_abundance')"         
+            [items]="storeService.nomenclatureItems.ABONDANCE_HAB"
+            comparedKey="id_nomenclature"
+            titleKey="definition_fr"
+            displayedKey="label_fr"
+            [displayNullValue]="true"
+          >
+          </pnx-dumb-select>
+  
+  
+          <br>
+
+          <button 
+          type="button" 
+          class="btn btn-primary btn-sm"
+          (click)="validateHabitat();"
+          [disabled]="
+          occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm]
+          && occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].invalid"
+          > 
+          <i style="color: rgb(0, 233, 0);" class="fa fa-plus" aria-hidden="true"></i>
+          Valider cet habitat
+        </button>
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+    
+  <!-- {{occHabForm.stationForm.value.t_habitats[0] |json }} -->
+      <!-- {{occHabForm.stationForm.value |json }} -->
+
+  </div>
+</div>

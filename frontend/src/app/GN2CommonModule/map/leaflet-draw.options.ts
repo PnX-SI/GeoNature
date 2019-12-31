@@ -11,9 +11,8 @@ export const leafletDrawOption: any = {
       drawError: {
         color: '#e1e100', // Color the shape will turn when intersects
         message: 'Intersection forbidden !' // Message that will show when intersect
-      },
-    },
-
+      }
+    }
   },
   edit: {
     remove: false,

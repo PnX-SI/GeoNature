@@ -2,8 +2,8 @@
     Fonctions permettant d'ajouter un module tiers à GN
     Ce module ne doit en aucun cas faire appel à des models ou au coeur de geonature
     dans les imports d'entête de fichier pour garantir un bon fonctionnement des fonctions
-    d'administration de l'application GeoNature (génération des fichiers de configuration, des 
-    fichiers de routing du frontend etc...). Ces dernières doivent pouvoir fonctionner même si 
+    d'administration de l'application GeoNature (génération des fichiers de configuration, des
+    fichiers de routing du frontend etc...). Ces dernières doivent pouvoir fonctionner même si
     un paquet PIP du requirement GeoNature n'a pas été bien installé
 """
 
@@ -19,7 +19,7 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from geonature.utils.env import DB, DEFAULT_CONFIG_FILE
 
-from geonature.utils.command import get_app_for_cmd, build_geonature_front
+from geonature.utils.command import get_app_for_cmd, build_geonature_front, tsconfig_app_templating
 from geonature.core.command.main import main
 from geonature.utils.gn_module_import import (
     check_gn_module_file,
@@ -90,9 +90,6 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                 #   backend
                 check_codefile_validity(module_path, module_code)
 
-                # Installation du module
-                run_install_gn_module(app, module_path)
-
                 # copie dans external mods:
                 copy_in_external_mods(module_path, module_code.lower())
 
@@ -105,11 +102,15 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                     app, module_code, url, enable_frontend, enable_backend
                 )
 
+                # Installation du module
+                run_install_gn_module(app, module_path)
                 # Enregistrement de la config du module
                 gn_module_register_config(module_code.lower())
 
                 if enable_frontend:
-                    # generation du du routing du frontend
+                    # generation du fichier tsconfig.app.json
+                    tsconfig_app_templating(app)
+                    # generation du routing du frontend
                     frontend_routes_templating(app)
                     # generation du fichier de configuration du frontend
                     create_module_config(
@@ -121,7 +122,8 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                     build_geonature_front(rebuild_sass=True)
 
                 # finally restart geonature backend via supervisor
-                subprocess.call(["sudo", "supervisorctl", "restart", "geonature2"])
+                subprocess.call(
+                    ["sudo", "supervisorctl", "restart", "geonature2"])
 
             else:
                 raise GeoNatureError(
@@ -133,8 +135,8 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
     except (GNModuleInstallError, GeoNatureError) as ex:
         log.critical(
             (
-                "\n\n\033[91mError while installing GN module '{}'\033[0m.The process returned:\n\t{}"
-            ).format(module_code, ex)
+                "\n\n\033[91mError while installing GN module \033[0m.The process returned:\n\t{}"
+            ).format(ex)
         )
         sys.exit(1)
 
@@ -171,7 +173,8 @@ def run_install_gn_module(app, module_path):
             # TODO: try to make it executable
             # TODO: change exception type
             # TODO: make error message
-            raise GNModuleInstallError("File {} not excecutable".format(str(gn_file)))
+            raise GNModuleInstallError(
+                "File {} not excecutable".format(str(gn_file)))
 
     #   APP
     gn_file = Path(module_path) / "install_gn_module.py"

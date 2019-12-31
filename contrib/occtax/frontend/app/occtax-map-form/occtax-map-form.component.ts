@@ -134,13 +134,6 @@ export class OcctaxMapFormComponent
             if (data.releve.geometry.type == "Point") {
               // set the input for the marker component
               this.fs.markerCoordinates = data.releve.geometry.coordinates;
-              this._ms.map.setView(
-                [
-                  data.releve.geometry.coordinates[1],
-                  data.releve.geometry.coordinates[0]
-                ],
-                15
-              );
             } else {
               // set the input for leafletdraw component
               this.fs.geojsonCoordinates = data.releve.geometry;

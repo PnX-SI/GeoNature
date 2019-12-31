@@ -208,8 +208,8 @@ Vous pouvez vous connecter avec l'utilisateur intégré par défaut (admin/admin
 
 Si vous rencontrez une erreur, se reporter aux fichiers de logs :
 
-- Logs de l'installation de la base de données : ``/home/myuser/geonature/var/log/geonature/install_db.log``
-- Log général de l'installation de l'application : ``/home/myuser/var/log/geonature/install_app.log``
+- Logs de l'installation de la base de données : ``/home/<MY_USER>/geonature/var/log/install_db.log``
+- Log général de l'installation de l'application : ``/home/<MY_USER>/install_all.log``
 
 
 Si vous souhaitez que GeoNature soit à la racine du serveur, ou à une autre adresse, editez le fichier de configuration Apache (``/etc/apache2/sites-available/geonature.conf``) en modifiant l'alias :

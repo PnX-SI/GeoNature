@@ -7,7 +7,7 @@ import { AppConfig } from '@geonature_config/app.config';
 import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { Router, ActivatedRoute } from '@angular/router';
-import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date-parser-formatter';
+import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { FormService } from '@geonature_common/form/form.service';
 
 @Component({

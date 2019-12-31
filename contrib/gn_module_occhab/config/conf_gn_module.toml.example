@@ -1,0 +1,36 @@
+# Fichier listant les paramètres du module et leurs valeurs par défaut
+
+# Id de la liste habitat: voir table ref_habitats.bib_list_habitat et ref_habitats.cor_list_habitat
+ID_LIST_HABITAT = 1
+# Mettre le champs observateur en mode texte libre
+OBSERVER_AS_TXT = false
+# liste des observateurs si OBSERVER_AS_TXT = false. Voir table utilisateurs.t_listes et utilisateurs.cor_role_liste
+OBSERVER_LIST_ID = 1
+
+# format d'export disponible
+EXPORT_FORMAT = ['csv', 'geojson', 'shapefile']
+# Nombre max d'habitat pour les exports
+NB_MAX_EXPORT = 50000
+# Nombre max de station pour le map/liste
+NB_MAX_MAP_LIST = 5000
+
+# Control du masquage/affichage des champs du formulaire
+[formConfig]
+    date_min = true
+    date_max = true
+    depth_min = true
+    depth_max = true
+    altitude_min = true
+    altitude_max = true
+    exposure = true
+    area = true
+    comment = true
+    area_surface_calculation = true
+    geographic_object = true
+    determination_type = true
+    determiner = true
+    collection_technique = true
+    technical_precision = true
+    recovery_percentage = true
+    abundance = true
+    community_interest = true

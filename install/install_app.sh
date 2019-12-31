@@ -112,6 +112,8 @@ if [[ $MODE == "dev" ]]
 then
   pip install -r requirements-dev.txt
 fi
+
+
 echo "Création des commandes 'geonature'..."
 python ${BASE_DIR}/geonature_cmd.py install_command
 echo "Création de la configuration du frontend depuis 'config/geonature_config.toml'..."
@@ -144,7 +146,7 @@ cd ../frontend
 wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-nvm install 8.1.1
+nvm install 10.15.3
 
 echo " ############"
 echo "Installation des paquets npm"
@@ -178,6 +180,8 @@ fi
 
 # Generate the tsconfig.json 
 geonature generate_frontend_tsconfig
+# Generate the src/tsconfig.app.json 
+geonature generate_frontend_tsconfig_app
 # Generate the modules routing file by templating
 geonature generate_frontend_modules_route  
 
@@ -185,14 +189,19 @@ geonature generate_frontend_modules_route
 cd ../
 my_current_geonature_directory=$(pwd)
 
-# Installation du module Occtax
+# Installation du module Occtax et OccHab
 source backend/venv/bin/activate
 geonature install_gn_module $my_current_geonature_directory/contrib/occtax /occtax --build=false
+
+if [ "$install_module_occhab" = true ];
+  then
+  geonature install_gn_module $my_current_geonature_directory/contrib/gn_module_occhab /occhab --build=false
+fi
 
 if [ "$install_module_validation" = true ];
   then
     geonature install_gn_module $my_current_geonature_directory/contrib/gn_module_validation /validation --build=false
-  fi
+fi
 
 
 if [[ $MODE != "dev" ]]

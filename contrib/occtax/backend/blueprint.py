@@ -144,7 +144,8 @@ def getOneCounting(id_counting):
     """
     try:
         data = (
-            DB.session.query(CorCountingOccurrence, TRelevesOccurrence.id_releve_occtax)
+            DB.session.query(CorCountingOccurrence,
+                             TRelevesOccurrence.id_releve_occtax)
             .join(
                 TOccurrencesOccurrence,
                 TOccurrencesOccurrence.id_occurrence_occtax
@@ -180,7 +181,8 @@ def getOneReleve(id_releve, info_role):
     :rtype: `dict{'releve':<TRelevesOccurrence>, 'cruved': Cruved}` 
     """
     releve_repository = ReleveRepository(TRelevesOccurrence)
-    releve_model, releve_geojson = releve_repository.get_one(id_releve, info_role)
+    releve_model, releve_geojson = releve_repository.get_one(
+        id_releve, info_role)
     user_cruved = get_or_fetch_user_cruved(
         session=session, id_role=info_role.id_role, module_code="OCCTAX"
     )
@@ -280,7 +282,7 @@ def insertOrUpdateOneReleve(info_role):
                 }]
             }
         }
-    
+
     :returns: GeoJson<TRelevesOccurrence>
     """
 
@@ -307,7 +309,8 @@ def insertOrUpdateOneReleve(info_role):
     releve.geom_4326 = from_shape(two_dimension_geom, srid=4326)
 
     if observersList is not None:
-        observers = DB.session.query(User).filter(User.id_role.in_(observersList)).all()
+        observers = DB.session.query(User).filter(
+            User.id_role.in_(observersList)).all()
         for o in observers:
             releve.observers.append(o)
 
@@ -383,7 +386,7 @@ def insertOrUpdateOneReleve(info_role):
 @json_resp
 def deleteOneReleve(id_releve, info_role):
     """Delete one releve and its associated occurrences and counting
-    
+
     .. :quickref: Occtax;
 
     :params int id_releve: ID of the releve to delete
@@ -400,9 +403,9 @@ def deleteOneReleve(id_releve, info_role):
 @json_resp
 def deleteOneOccurence(id_occ):
     """Delete one occurrence and associated counting
-    
+
     .. :quickref: Occtax;
-    
+
     :params int id_occ: ID of the occurrence to delete
 
     """
@@ -432,9 +435,9 @@ def deleteOneOccurence(id_occ):
 @json_resp
 def deleteOneOccurenceCounting(id_count):
     """Delete one counting
-    
+
     .. :quickref: Occtax;
-    
+
     :params int id_count: ID of the counting to delete
 
     """
@@ -463,9 +466,9 @@ def deleteOneOccurenceCounting(id_count):
 @json_resp
 def getDefaultNomenclatures():
     """Get default nomenclatures define in occtax module
-    
+
     .. :quickref: Occtax;
-    
+
     :returns: dict: {'MODULE_CODE': 'ID_NOMENCLATURE'}
 
     """
@@ -488,7 +491,8 @@ def getDefaultNomenclatures():
         ),
     )
     if len(types) > 0:
-        q = q.filter(DefaultNomenclaturesValue.mnemonique_type.in_(tuple(types)))
+        q = q.filter(
+            DefaultNomenclaturesValue.mnemonique_type.in_(tuple(types)))
     try:
         data = q.all()
     except Exception:
@@ -508,9 +512,9 @@ def getDefaultNomenclatures():
 )
 def export(info_role):
     """Export data from pr_occtax.export_occtax_sinp view (parameter)
-    
+
     .. :quickref: Occtax; Export data from pr_occtax.export_occtax_sinp
-    
+
     :query str format: format of the export ('csv', 'geojson', 'shapefile')
 
     """
@@ -519,13 +523,20 @@ def export(info_role):
     export_id_column_name = blueprint.config["export_id_column_name"]
     export_columns = blueprint.config["export_columns"]
     export_srid = blueprint.config["export_srid"]
-
     export_view = GenericTable(
         export_view_name, "pr_occtax", export_geom_column, export_srid
     )
     releve_repository = ReleveRepository(export_view)
-    q = releve_repository.get_filtered_query(info_role, from_generic_table=True)
-    q = get_query_occtax_filters(request.args, export_view, q, from_generic_table=True)
+    q = releve_repository.get_filtered_query(
+        info_role, from_generic_table=True)
+    q = get_query_occtax_filters(
+        request.args,
+        export_view,
+        q,
+        from_generic_table=True,
+        obs_txt_column=blueprint.config['export_observer_txt_column']
+
+    )
 
     data = q.all()
 
@@ -544,7 +555,8 @@ def export(info_role):
         )
     elif export_format == "geojson":
         results = FeatureCollection(
-            [export_view.as_geofeature(d, columns=export_columns) for d in data]
+            [export_view.as_geofeature(d, columns=export_columns)
+             for d in data]
         )
         return to_json_resp(
             results, as_file=True, filename=file_name, indent=4, extension="geojson"

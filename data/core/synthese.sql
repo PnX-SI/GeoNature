@@ -1049,21 +1049,23 @@ FROM gn_synthese.cor_area_taxon;
 
 -- Vue export des taxons de la synthèse
 -- Première version qui reste à affiner/étoffer
-
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_taxon_for_export_view AS
- SELECT DISTINCT t.group1_inpn,
-    t.group2_inpn,
-    t.regne,
-    t.phylum,
-    t.classe,
-    t.ordre,
-    t.famille,
-    t.id_rang,
-    t.cd_ref,
-    t.nom_valide
+ SELECT DISTINCT
+    ref.nom_valide,
+    ref.cd_ref,
+    ref.nom_vern,
+    ref.group1_inpn,
+    ref.group2_inpn,
+    ref.regne,
+    ref.phylum,
+    ref.classe,
+    ref.ordre,
+    ref.famille,
+    ref.id_rang
 FROM gn_synthese.synthese  s
-JOIN taxonomie.taxref t ON s.cd_nom = t.cd_ref
-WHERE t.cd_nom = t.cd_ref;
+JOIN taxonomie.taxref t ON s.cd_nom = t.cd_nom
+JOIN taxonomie.taxref ref ON t.cd_ref = ref.cd_nom;
+
 
 ------------
 --TRIGGERS--

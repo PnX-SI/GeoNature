@@ -9,4 +9,5 @@ if (AppConfig.FRONTEND.PROD_MOD) {
   enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule);
+platformBrowserDynamic().bootstrapModule(AppModule)
+	.catch(err => console.log(err));
