@@ -30,6 +30,8 @@ export class MapService {
   // not from data sended by API (to avoid recalculate altitude for exemple)
   public firstLayerFromMap = true;
   public layerControl: L.Control.Layers;
+  // Leaflet reference for external module
+  public L = L;
 
   selectedStyle = {
     color: '#ff0000',
