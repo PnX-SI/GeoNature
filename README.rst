@@ -101,12 +101,24 @@ Mise à jour du module
         mv /home/`whoami`/gn_module_dashboard-X.Y.Z /home/`whoami`/gn_module_dashboard
 
 
-- Rappatriez les fichiers de configuration
+- Rappatriez le fichiers de configuration
 
   ::
         
-        cp /home/`whoami`/gn_module_dashboard_old/config/conf_gn_module.toml         /home/`whoami`/gn_module_dashboard/config/conf_gn_module.toml
-        cp /home/`whoami`/gn_module_dashboard_old/frontend/app/module.config.ts         /home/`whoami`/gn_module_dashboard/frontend/app/module.config.ts```
+        cp /home/`whoami`/gn_module_dashboard_old/config/conf_gn_module.toml       /home/`whoami`/gn_module_dashboard/config/conf_gn_module.toml
+
+- Refaire le lien symbolique vers les `node_modules`
+
+  ::
+           
+        ln -s /home/`whoami`/geonature/frontend/node_modules /home/`whoami`/gn_module_dashboard/frontend
+- Relancer la compilation en mettant à jour la configuration
+
+  ::
+        
+        cd /home/`whoami`/geonature/backend
+        source venv/bin/activate
+        geonature update_module_configuration DASHBOARD
 
 
 Licence
