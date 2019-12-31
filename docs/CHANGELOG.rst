@@ -80,6 +80,8 @@ CHANGELOG
 
 **⚠️ Notes de version**
 
+NB: La version 2.3.0 n'est pas compatible avec le module Dashboard. Si vous avez le module dashboard installé, ne passez pas à cette nouvelle version. Compatibilité à venir.
+
 * Suivez les instructions suivantes pour effectuer la migration :
 
 Télécharger la nouvelle version :
