@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-0.2.0 (2019-12-30)
+0.2.0 (Unreleased)
 ------------------
 
 **🐛 Corrections**
@@ -15,6 +15,7 @@ CHANGELOG
 ------------------
 
 Première version fonctionnelle du module GeoNature de tableau de bord, développé par @ElsaGuilley. 
+Compatible avec la version de 2.2.1 de GeoNature.
 
 Démo vidéo : https://geonature.fr/docs/img/2019-09-GN-dashboard-0.1.0.gif
 
