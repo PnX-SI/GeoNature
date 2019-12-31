@@ -1,13 +1,24 @@
 <table class="table table-dark table-responsive">
   <tbody>
-    <tr *ngFor="let taxon of list; let i = index" [ngClass]="{'first' : i === 0}">
+    <tr 
+      *ngFor="let taxon of list; let i = index" 
+      [ngClass]="{'first' : i === 0}"
+    >
       <td> {{i +1 }} </td>
       <td> {{taxon.nom_valide}} </td>
       <td>
-        <i class="fa fa-pencil-square-o blue" aria-hidden="true" (click)="editTaxons(i)"></i>
+        <i 
+          class="fa fa-pencil-square-o blue" 
+          aria-hidden="true" 
+          (click)="editTaxons(i)"
+        ></i>
       </td>
       <td>
-        <i class="fa fa-times red" aria-hidden="true" (click)="deleteTaxon(i)"></i>
+        <i 
+          class="fa fa-times red" 
+          aria-hidden="true" 
+          (click)="deleteTaxon(i)"
+        ></i>
       </td>
     </tr>
   </tbody>

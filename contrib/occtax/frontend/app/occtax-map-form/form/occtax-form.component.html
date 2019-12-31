@@ -1,25 +1,37 @@
-<div *ngIf="fs.disabled" id="overlay" [class.disabled-form]="fs.disabled" (click)="fs.formDisabled()">
+<div 
+  *ngIf="fs.disabled" 
+  id="overlay" 
+  [class.disabled-form]="fs.disabled" 
+  (click)="fs.formDisabled()">
 </div>
 
 <div id="form">
   <div class="card line-height-sm">
-    <h5 class="card-header" [class.disabled]="fs.disabled">
+    <h5 
+      class="card-header" 
+      [class.disabled]="fs.disabled">
       <i class="fa fa-pencil" aria-hidden="true"></i>
       <b>{{ 'Releve.Releve' | translate }} </b>
-      <span *ngIf="!fs.editionMode" id="toggle-btn" class="float-right" matTooltip=" {{'Releve.StayOnFormInterface' | translate}} " matTooltipPosition="left">
-          <i class="fa fa-repeat" aria-hidden="true"></i>
-        <mat-slide-toggle  color="primary" [formControl]="fs.stayOnFormInterface">
+      <span 
+        *ngIf="!fs.editionMode" 
+        id="toggle-btn" 
+        class="float-right" 
+        matTooltip=" {{'Releve.StayOnFormInterface' | translate}} " 
+        matTooltipPosition="left">
+        <i class="fa fa-repeat" aria-hidden="true"></i>
+        <mat-slide-toggle  
+          color="primary" 
+          [formControl]="fs.stayOnFormInterface">
         </mat-slide-toggle>
       </span>
-
     </h5>
 
     <div class="card-body">
       <div>
-        <pnx-releve [releveForm]="fs.releveForm">
+        <pnx-releve 
+          [releveForm]="fs.releveForm">
         </pnx-releve>
       </div>
-
     </div>
   </div>
 
@@ -29,32 +41,51 @@
       <i class="fa fa-paw" aria-hidden="true"></i>
       Taxon
       <span>
-          <button *ngIf="fs.showOccurrence" class="btn btn-primary toggle-btn btn-sm" [disabled]="fs.occurrenceForm.invalid || fs.countingForm.invalid"
+        <button 
+          *ngIf="fs.showOccurrence" 
+          class="btn btn-primary toggle-btn btn-sm" 
+          [disabled]="fs.occurrenceForm.invalid || fs.countingForm.invalid"
           (click)="fs.addOccurrence(fs.indexOccurrence)">
           <i id="check" class="fa fa-check toggle-btn" aria-hidden="true"></i>
 
           {{ 'Taxon.ValidateTaxon' | translate }}
         </button>
-        <button [disabled]="fs.disabled" *ngIf="!fs.showOccurrence" type="button" class="btn btn-sm btn-primary toggle-btn cancel-or-add"
+        <button 
+          *ngIf="!fs.showOccurrence" 
+          type="button" 
+          class="btn btn-sm btn-primary toggle-btn cancel-or-add"
+          [disabled]="fs.disabled" 
           (click)="fs.toggleOccurrence();">
           <i class="fa fa-plus" aria-hidden="true"></i>
           {{ 'Releve.AddTaxonOnReleve' | translate }}
         </button>
-        <button *ngIf="fs.showOccurrence" type="button" class="btn btn-sm btn-danger toggle-btn cancel-or-add" (click)="fs.toggleOccurrence(); fs.cancelOccurrence()">
+        <button 
+          *ngIf="fs.showOccurrence" 
+          type="button" 
+          class="btn btn-sm btn-danger toggle-btn cancel-or-add" 
+          (click)="fs.toggleOccurrence(); fs.cancelOccurrence()">
           <i class="fa fa-minus" aria-hidden="true"></i>
           {{ 'Releve.CancelTaxon' | translate }}
-
         </button>
       </span>
 
     </h5>
-    <div class="card-body" *ngIf="fs.showOccurrence">
-      <pnx-occurrence [occurrenceForm]="fs.occurrenceForm">
+    <div 
+      *ngIf="fs.showOccurrence"
+      class="card-body">
+      <pnx-occurrence 
+        [occurrenceForm]="fs.occurrenceForm">
       </pnx-occurrence>
       <div>
         <div>
-          <button id="counting-button" type="button" (click)="fs.toggleCounting()" class="btn btn-primary btn-sm"
-            data-toggle="collapse" data-target="#collapseCounting" [disabled]="fs.disabled">
+          <button 
+            id="counting-button" 
+            type="button" 
+            (click)="fs.toggleCounting()" 
+            class="btn btn-primary btn-sm"
+            data-toggle="collapse" 
+            data-target="#collapseCounting" 
+            [disabled]="fs.disabled">
             <b> {{ 'Counting.Counting' | translate }}s </b>
             <span *ngIf="!fs.showCounting">
               <i class="fa fa-chevron-right" aria-hidden="true"></i>
@@ -66,9 +97,15 @@
           <!-- COUNTING -->
 
         </div>
-        <div class="collapse" id="collapseCounting">
+        <div 
+          id="collapseCounting"
+          class="collapse">
           <div *ngFor="let counting of fs.nbCounting; let i = index">
-            <pnx-counting [formArray]="fs.countingForm" [index]="i" [length]="fs.nbCounting.length" (countingRemoved)="fs.removeCounting($event)">
+            <pnx-counting 
+              [formArray]="fs.countingForm" 
+              [index]="i" 
+              [length]="fs.nbCounting.length" 
+              (countingRemoved)="fs.removeCounting($event)">
             </pnx-counting>
           </div>
           <button 
@@ -105,9 +142,15 @@
 
 
   <div class=center>
-    <button class="btn btn-danger" (click)="fs.disabled = true;" routerLink="/occtax"> {{ 'Cancel' | translate }}
+    <button 
+      class="btn btn-danger" 
+      routerLink="/occtax"
+      (click)="fs.disabled = true;"> 
+      {{ 'Cancel' | translate }}
     </button>
-    <button class="btn btn-success" [disabled]="(
+    <button 
+      class="btn btn-success" 
+      [disabled]="(
           fs.releveForm.invalid
           || !fs.taxonsList.length
           || fs.countingForm.invalid
