@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+
+2.3.1 (Unreleased)
+------------------
+
+**🐛 Corrections**
+
+* Ajout d'un reference de l'objet Leaflet `L` afin qu'il soit utilisé dans les modules
+
+
 2.3.0 - Occhab de Noël (2019-12-27)
 -----------------------------------
 
@@ -132,6 +141,19 @@ Vérifier que la migration s'est bien déroulée dans le fichier ``var/log/2.2.1
     geonature install_gn_module /home/`whoami`/geonature/contrib/gn_module_occhab /occhab
     
 * Lors de la migration (``/data/migrations/2.2.1to2.3.0.sql``), tous les JDD actifs sont associés par défaut au module Occtax (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.2.1to2.3.0.sql#L17-L22). A chacun d'adapter si besoin, en en retirant certains. Pour utiliser le module Occhab, vous devez y associer au moins un JDD.
+
+* NB: Si vous avez installé des modules externes autres que les modules du coeur (occtax, validation et occhab), il faut recréer à la main des liens symboliques vers le repertoire `node_modules` du coeur pour chacun d'entre eux.
+
+::
+
+    ln -s /home/`whoami`/geonature/frontend/node_modules /home/`whoami`/<MODULE_NAME>/frontend/
+
+Relancer ensuite la compilation du frontend:
+
+:: 
+
+    cd frontend 
+    npm run build
 
 2.2.1 (2019-10-09)
 ------------------

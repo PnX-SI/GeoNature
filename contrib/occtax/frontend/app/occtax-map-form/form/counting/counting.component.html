@@ -1,71 +1,112 @@
     <div class="row row-0 row-counting">
-      <div *ngIf="occtaxConfig.form_fields.life_stage" class="col-xs-12 col-sm-12 col-md-12 col-lg-4 col-counting padding-sm">
+      <div 
+        *ngIf="occtaxConfig.form_fields.life_stage" 
+        class="col-xs-12 col-sm-12 col-md-12 col-lg-4 col-counting padding-sm"
+      >
           <pnx-nomenclature
             class="sm" 
             label="{{ 'Counting.LifeStage' | translate }}" 
-            [parentFormControl]="formArray.controls[index].controls.id_nomenclature_life_stage"
             codeNomenclatureType="STADE_VIE" 
+            [parentFormControl]="formArray.controls[index].controls.id_nomenclature_life_stage"
             [regne]="fs.currentTaxon.regne"  
-            [group2Inpn]="fs.currentTaxon.group2_inpn"> 
+            [group2Inpn]="fs.currentTaxon.group2_inpn"
+          > 
           </pnx-nomenclature>
       </div>
-      <div *ngIf="occtaxConfig.form_fields.sex" class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-counting padding-sm">
+      <div 
+        *ngIf="occtaxConfig.form_fields.sex" 
+        class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-counting padding-sm"
+      >
             <pnx-nomenclature
               class="sm" 
               label="{{ 'Counting.Sex' | translate }}"
-              [parentFormControl]="formArray.controls[index].controls.id_nomenclature_sex"
               codeNomenclatureType="SEXE" 
+              [parentFormControl]="formArray.controls[index].controls.id_nomenclature_sex"
               [regne]="fs.currentTaxon.regne" 
-              [group2Inpn]="fs.currentTaxon.group2_inpn">
+              [group2Inpn]="fs.currentTaxon.group2_inpn"
+            >
             </pnx-nomenclature>
       </div>
-      <div *ngIf="occtaxConfig.form_fields.obj_count" class="col-xs-12 col-sm-12 col-md-12 col-lg-5 col-counting padding-sm">
+      <div 
+        *ngIf="occtaxConfig.form_fields.obj_count" 
+        class="col-xs-12 col-sm-12 col-md-12 col-lg-5 col-counting padding-sm"
+      >
             <pnx-nomenclature 
               class="sm" 
               label="{{ 'Counting.CountingObject' | translate }}"
-              [parentFormControl]="formArray.controls[index].controls.id_nomenclature_obj_count"
               codeNomenclatureType="OBJ_DENBR" 
+              [parentFormControl]="formArray.controls[index].controls.id_nomenclature_obj_count"
               [regne]="fs.currentTaxon.regne"
-              [group2Inpn]="fs.currentTaxon.group2_inpn">
+              [group2Inpn]="fs.currentTaxon.group2_inpn"
+            >
             </pnx-nomenclature>
       </div>
 
     </div>
     <div class="form-group row row-0">
-        <div *ngIf="occtaxConfig.form_fields.type_count" class="col-xs-12 col-sm-12 col-md-12 col-lg-5 col-counting padding-sm">
+        <div 
+          *ngIf="occtaxConfig.form_fields.type_count" 
+          class="col-xs-12 col-sm-12 col-md-12 col-lg-5 col-counting padding-sm"
+        >
             <pnx-nomenclature
               class="sm" 
               #typeDenombrement
               label="{{ 'Counting.CountingType' | translate }}"
-              [parentFormControl]="formArray.controls[index].controls.id_nomenclature_type_count"
               codeNomenclatureType="TYP_DENBR"
+              [parentFormControl]="formArray.controls[index].controls.id_nomenclature_type_count"
               [regne]="fs.currentTaxon.regne"
-              [group2Inpn]="fs.currentTaxon.group2_inpn">
+              [group2Inpn]="fs.currentTaxon.group2_inpn"
+            >
             </pnx-nomenclature> 
         </div>
-        <div *ngIf="occtaxConfig.form_fields.count_min" class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-counting padding-sm">
+        <div 
+          *ngIf="occtaxConfig.form_fields.count_min" 
+          class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-counting padding-sm"
+        >
           <div class="form-group" >
             <small> {{ 'Counting.NumberMin' | translate }} </small>
-            <input [ngClass]="{'is-invalid' : formArray.controls[index].errors?.invalidCount}" class="form-control form-control-sm" type="number" min="0"
-            [formControl]="formArray.controls[index].controls.count_min">
+            <input 
+              class="form-control form-control-sm" 
+              type="number" 
+              min="0"
+              [ngClass]="{'is-invalid' : formArray.controls[index].errors?.invalidCount}" 
+              [formControl]="formArray.controls[index].controls.count_min"
+            >
           </div>
         </div>
-        <div *ngIf="occtaxConfig.form_fields.count_max" class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-counting padding-sm">
+        <div 
+          *ngIf="occtaxConfig.form_fields.count_max" 
+          class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-counting padding-sm"
+        >
           <div class="form-group">
-              <small> {{ 'Counting.NumberMax' | translate }} </small>
-            <input [ngClass]="{'is-invalid' : formArray.controls[index].errors?.invalidCount}" class="form-control form-control-sm" type="number" min="0"
-            [formControl]="formArray.controls[index].controls.count_max">
+            <small> {{ 'Counting.NumberMax' | translate }} </small>
+            <input 
+              class="form-control form-control-sm" 
+              type="number" 
+              min="0"
+              [ngClass]="{'is-invalid' : formArray.controls[index].errors?.invalidCount}" 
+              [formControl]="formArray.controls[index].controls.count_max"
+            >
           </div>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-1 col-counting padding-sm" *ngIf="index == length -1 && index != 0">
-          <button id="add-counting" type="button" class="btn btn-danger btn-sm" (click)="onRemoveCounting(index)">
-              <i class="fa fa-times" aria-hidden="true"></i>
+        <div 
+          *ngIf="index == length -1 && index != 0"
+          class="col-xs-12 col-sm-12 col-md-12 col-lg-1 col-counting padding-sm" 
+        >
+          <button 
+            id="add-counting" 
+            type="button" 
+            class="btn btn-danger btn-sm" 
+            (click)="onRemoveCounting(index)"
+          >
+            <i class="fa fa-times" aria-hidden="true"></i>
           </button>
         </div>
         <small 
           *ngIf="formArray.controls[index].errors?.invalidCount"
           class="error"
-          style="color:red"> 
+          style="color:red"
+        > 
           {{ 'Counting.CountError' | translate }}
         </small>
     </div>
