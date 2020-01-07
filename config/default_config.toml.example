@@ -148,6 +148,10 @@ ID_USER_SOCLE_2 = 6
     DISPLAY_TAXON_TREE = true
     # Active le fait de rechercher sur le nom d'observateur en ILIKE sur les portée 1 et 2 du CRUVED
     CRUVED_SEARCH_WITH_OBSERVER_AS_TXT = false
+    # Switch the observer form input in free text input (false by default) or in select input (true)
+    SEARCH_OBSERVER_WITH_LIST = false
+    # id of the observer list -- utilisateurs.t_menus
+    ID_SEARCH_OBSERVER_LIST = 1
     # Activer la clusterisation des couches sur la carte
     # si false, passez le NB_MAX_OBS_MAP à 10000 pour des question de performances des navigateurs
     ENABLE_LEAFLET_CLUSTER = true

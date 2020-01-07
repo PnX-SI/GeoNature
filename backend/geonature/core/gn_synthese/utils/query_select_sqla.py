@@ -205,9 +205,15 @@ class SyntheseQuery:
                 self.model.id_dataset.in_(self.filters.pop("id_dataset"))
             )
         if "observers" in self.filters:
+            #découpe des éléments saisies par les espaces
+            observers = (self.filters.pop("observers")[0]).split()
             self.query = self.query.where(
-                self.model.observers.ilike(
-                    "%" + self.filters.pop("observers")[0] + "%")
+                and_(*[self.model.observers.ilike("%" + observer + "%") for observer in observers])
+            )
+
+        if "observers_list" in self.filters:
+            self.query = self.query.where(
+                and_(*[self.model.observers.ilike("%" + observer.get('nom_complet') + "%") for observer in self.filters.pop("observers_list")])
             )
 
         if "id_organism" in self.filters:
