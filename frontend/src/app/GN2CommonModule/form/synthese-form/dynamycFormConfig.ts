@@ -171,5 +171,31 @@ export const DYNAMIC_FORM_DEF = [
     attribut_label: 'Preuve non numérique',
     attribut_name: 'non_digital_proof',
     required: false
+  },
+  {
+    type_widget: 'observers',
+    attribut_label: "Saisie par",
+    attribut_name: 'id_digitiser',
+    idComponent: '1',
+    required: false,
+    multi_select: true
+  },
+  {
+    type_widget: 'text',
+    attribut_label: 'Commentaire (relevé)',
+    attribut_name: 'comment_context',
+    required: false
+  },
+  {
+    type_widget: 'text',
+    attribut_label: 'Commentaire (taxon)',
+    attribut_name: 'comment_description',
+    required: false
+  },
+  {
+    type_widget: 'text',
+    attribut_label: 'Déterminateur',
+    attribut_name: 'determiner',
+    required: false
   }
 ];

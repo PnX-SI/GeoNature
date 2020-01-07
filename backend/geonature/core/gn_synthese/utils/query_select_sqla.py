@@ -292,9 +292,12 @@ class SyntheseQuery:
                 )
                 self.query = self.query.where(
                     CorAreaSynthese.id_area.in_(value))
-            else:
+            elif colname.startswith("id_"):
                 col = getattr(self.model.__table__.columns, colname)
                 self.query = self.query.where(col.in_(value))
+            else:
+                col = getattr(self.model.__table__.columns, colname)
+                self.query = self.query.where(col.ilike("%{}%".format(value[0])))
 
     def filter_query_all_filters(self, user):
         """High level function to manage query with all filters.
