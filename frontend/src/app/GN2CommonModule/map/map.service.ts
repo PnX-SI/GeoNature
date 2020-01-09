@@ -212,7 +212,7 @@ export class MapService {
         geometry: { type: 'Point', coordinates: [markerCoord.lng, markerCoord.lat] }
       };
       this.setGeojsonCoord(geojson);
-      this.marker.on('moveend', (event: MouseEvent) => {
+      this.marker.on('moveend', (event: L.LeafletMouseEvent) => {
         if (this.map.getZoom() < AppConfig.MAPCONFIG.ZOOM_LEVEL_RELEVE) {
           this._commonService.translateToaster('warning', 'Map.ZoomWarning');
         } else {

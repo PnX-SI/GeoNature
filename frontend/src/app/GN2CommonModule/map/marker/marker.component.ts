@@ -88,7 +88,7 @@ export class MarkerComponent implements OnInit, OnChanges {
   }
 
   markerMoveEvent(marker: Marker) {
-    marker.on('moveend', (event: MouseEvent) => {
+    marker.on('moveend', (event: L.LeafletMouseEvent) => {
       if (this.map.getZoom() < this.zoomLevel) {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
         this.mapservice.marker.remove();
