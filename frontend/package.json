@@ -10,6 +10,7 @@
         "chartjs-plugin-piechart-outlabels": "^0.1.4",
         "ng2-charts": "^1.6.0",
         "ng2-nouislider": "1.8.2",
-        "nouislider": "13.1.5"
+        "nouislider": "13.1.5",
+        "tslib": "^1.10.0"
     }
 }

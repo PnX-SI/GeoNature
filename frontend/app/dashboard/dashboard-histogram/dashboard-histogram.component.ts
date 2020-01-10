@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, Input } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
-import { BaseChartDirective } from "ng2-charts/ng2-charts";
+import { BaseChartDirective } from "ng2-charts";
 import { AppConfig } from "@geonature_config/app.config";
 // Services
 import { DataService } from "../services/data.services";

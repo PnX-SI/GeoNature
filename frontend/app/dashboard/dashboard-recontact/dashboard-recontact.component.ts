@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, Input } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
-import { BaseChartDirective } from 'ng2-charts/ng2-charts';
+import { BaseChartDirective } from 'ng2-charts';
 // Services
 import { DataService } from "../services/data.services";
 
@@ -61,7 +61,7 @@ export class DashboardRecontactComponent implements OnInit {
     }
   }
 
-  // Gestion du formulaire 
+  // Gestion du formulaire
   recontactForm: FormGroup;
   @Input() distinctYears: any;
 
