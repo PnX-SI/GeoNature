@@ -132,6 +132,8 @@ Vérifier que la migration s'est bien déroulée dans le fichier ``var/log/2.2.1
 
     nvm alias default 10.15.3
 
+En cas d'erreur sur la version de NodeJS, voir https://github.com/PnX-SI/GeoNature/issues/832.
+
 * Vous pouvez installer le nouveau module Occhab (Occurrences d'habitats) si vous le souhaitez :
 
 ::
@@ -142,13 +144,13 @@ Vérifier que la migration s'est bien déroulée dans le fichier ``var/log/2.2.1
     
 * Lors de la migration (``/data/migrations/2.2.1to2.3.0.sql``), tous les JDD actifs sont associés par défaut au module Occtax (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.2.1to2.3.0.sql#L17-L22). A chacun d'adapter si besoin, en en retirant certains. Pour utiliser le module Occhab, vous devez y associer au moins un JDD.
 
-* NB: Si vous avez installé des modules externes autres que les modules du coeur (occtax, validation et occhab), il faut recréer à la main des liens symboliques vers le repertoire `node_modules` du coeur pour chacun d'entre eux.
+* NB : Si vous avez installé des modules externes autres que les modules du cœur (Occtax, Validation et Occhab), il faut recréer à la main des liens symboliques vers le repertoire ``node_modules`` du cœur pour chacun d'entre eux.
 
 ::
 
     ln -s /home/`whoami`/geonature/frontend/node_modules /home/`whoami`/<MODULE_NAME>/frontend/
 
-Relancer ensuite la compilation du frontend:
+Relancer ensuite la compilation du frontend :
 
 :: 
 
