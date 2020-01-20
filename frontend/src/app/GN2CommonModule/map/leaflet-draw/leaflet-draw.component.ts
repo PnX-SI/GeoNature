@@ -44,9 +44,9 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   constructor(public mapservice: MapService, private _commonService: CommonService) {}
 
   ngOnInit() {
-    this.map = this.mapservice.map;
-    this._Le = L as any;
-    this.enableLeafletDraw();
+      this.map = this.mapservice.map;
+      this._Le = L as any;
+      this.enableLeafletDraw();
   }
 
   enableLeafletDraw() {
@@ -174,7 +174,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       console.log(geojson);
       layer = L.marker(new L.LatLng(geojson.coordinates[1], geojson.coordinates[0]), {});
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
-      this.map.setView(layer.getLatLng(), 15);
+      // this.map.setView(layer.getLatLng(), 15);
     }
     if (geojson.type === 'Point') {
       const latLng = L.GeoJSON.coordsToLatLng(geojson.coordinates);
