@@ -1,7 +1,16 @@
-import { Component, OnInit, Input, EventEmitter, Output, OnChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  EventEmitter,
+  Output,
+  OnChanges,
+  ElementRef,
+  ViewChild,
+  HostListener
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-
 /**
  * Ce composant permet d'afficher un input de type multiselect à partir d'une liste de valeurs passé en Input
  *
@@ -29,7 +38,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   public savedValues = [];
 
   @Input() parentFormControl: FormControl;
-  //** Valeurs à afficher dans la liste déroulante. Doit être un tableau de dictionnaire */
+  /** Valeurs à afficher dans la liste déroulante. Doit être un tableau de dictionnaire */
   @Input() values: Array<any>;
   /**
    * Clé du dictionnaire de valeur que le composant doit prendre pour l'affichage de la liste déroulante
@@ -46,7 +55,9 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   // label displayed above the input
   @Input() label: any;
   /**
-   * Booléan qui permet de passer tout l'objet au formControl, et pas seulement une propriété de l'objet renvoyé par l'API. Facultatif, par défaut à ``false``, c'est alors l'attribut passé en Input ``keyValue`` qui est renvoyé au formControl.
+   * Booléan qui permet de passer tout l'objet au formControl,
+   * et pas seulement une propriété de l'objet renvoyé par l'API.
+   * Facultatif, par défaut à ``false``, c'est alors l'attribut passé en Input ``keyValue`` qui est renvoyé au formControl.
    * Lorsque l'on passe ``true`` à cet Input, l'Input ``keyValue`` devient inutile.
    * L'API qui renvoit séléctionnées au formulaire doit être un tableau d'entier et non un tableau d'items
    */
@@ -56,6 +67,11 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   @Output() onSearch = new EventEmitter();
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
+
+  @ViewChild('button_input') el: ElementRef;
+
+  valSave;
+
   constructor(private _translate: TranslateService) {}
 
   // Component to generate a custom multiselect input with a search bar (which can be disabled)
@@ -98,7 +114,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
         return;
       }
       //  if the new value is null
-      //refresh selectedItems, formcontrolValue and values to display
+      // refresh selectedItems, formcontrolValue and values to display
       if (value === null) {
         this.selectedItems = [];
         this.formControlValue = [];
@@ -208,6 +224,57 @@ export class MultiSelectComponent implements OnInit, OnChanges {
         });
         return !isInArray;
       });
+    }
+  }
+
+  onFocus(event) {
+    this.valSave = ' ';
+
+  }
+
+  onBlur(event) {
+    this.valSave = null;
+  }
+
+
+  setValSave(val = null) {
+    this.valSave = val;
+    console.log('valSave', this.valSave);
+  }
+
+  @HostListener('window:keyup', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+
+    // enter
+    if (event.keyCode === 13) {
+      if (this.valSave) {
+        const valSave = JSON.parse(JSON.stringify(this.valSave));
+        this.el.nativeElement.click();
+        this.el.nativeElement.focus();
+        if (valSave !== ' ') {
+          this.addItem(valSave);
+        }
+      }
+    }
+
+    // bas
+    if (event.keyCode === 40) {
+      if (this.valSave) {
+        const element = (event.srcElement as HTMLTextAreaElement).nextElementSibling;
+        if (element) {
+          (element as HTMLElement).focus();
+        }
+      }
+    }
+
+    // haut
+    if (event.keyCode === 38) {
+      if (this.valSave) {
+        const element = (event.srcElement as HTMLTextAreaElement).previousElementSibling;
+        if (element) {
+          (element as HTMLElement).focus();
+        }
+      }
     }
   }
 
