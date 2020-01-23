@@ -47,7 +47,7 @@ export class DynamicFormService {
         }
       }
 
-      if (formDef.type_widget === 'taxonomy') {
+      if (formDef.type_widget === 'taxonomy' && formDef.required) {
         validators.push(isObjectValidator());
       }
     }
