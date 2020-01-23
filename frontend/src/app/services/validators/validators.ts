@@ -16,3 +16,9 @@ export function arrayMinLengthValidator(arrayLenght): ValidatorFn {
     return control.value.length >= arrayLenght ? null : { arrayMinLengthError: true };
   };
 }
+
+export function isObjectValidator(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } => {
+    return (typeof control.value === 'object' && control.value != null) ? null : { isObjectError: true };
+  };
+}
