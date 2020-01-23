@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, enableProdMode } from '@angular/core';
 import { Map } from 'leaflet';
 import { MapService } from '../map.service';
 import { AppConfig } from '@geonature_config/app.config';
@@ -24,6 +24,9 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   // save the current layer type because the edite event do not send it...
   public currentLayerType: string;
   /** Coordonnées de l'entité à dessiner */
+  drawControl;
+  @Input() bEnable = true; // pour pouvoir cacher / afficher le composant
+
   @Input() geojson: GeoJSON;
   @Input() bZoomOnPoint = true;
   @Input() zoomLevelOnPoint = 8;
@@ -41,6 +44,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   @Output() layerDrawed = new EventEmitter<GeoJSON>();
   @Output() layerDeleted = new EventEmitter<any>();
 
+
   constructor(public mapservice: MapService, private _commonService: CommonService) {}
 
   ngOnInit() {
@@ -52,8 +56,12 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   enableLeafletDraw() {
     this.options.edit['featureGroup'] = this.drawnItems;
     this.options.edit['featureGroup'] = this.mapservice.leafletDrawFeatureGroup;
-    const drawControl = new this._Le.Control.Draw(this.options);
-    this.map.addControl(drawControl);
+    this.drawControl = new this._Le.Control.Draw(this.options);
+    this.map.addControl(this.drawControl);
+
+    if (!this.bEnable) {
+      this.disableDrawControl();
+    }
 
     this.map.on(this._Le.Draw.Event.DRAWSTART, e => {
       this.mapservice.removeAllLayers(this.map, this.mapservice.fileLayerFeatureGroup);
@@ -168,9 +176,9 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       layer = L.polygon(latLng);
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
       this.mapservice.map.fitBounds(layer.getBounds());
-    }
-    // marker
-    else if (geojson.type === 'Point') {
+
+    } else if (geojson.type === 'Point') {
+      // marker
       console.log(geojson);
       layer = L.marker(new L.LatLng(geojson.coordinates[1], geojson.coordinates[0]), {});
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
@@ -205,9 +213,34 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     this.mapservice.setGeojsonCoord(new_geojson);
   }
 
+  // cache le draw control
+  disableDrawControl() {
+    if (!this.drawControl) {
+      return;
+    }
+    this.mapservice.leafletDrawFeatureGroup.clearLayers();
+    this.drawControl.remove();
+  }
+
+  // fait apparaitre le draw control
+  enableDrawControl() {
+    if (!this.drawControl) {
+      return;
+    }
+    this.mapservice.leafletDrawFeatureGroup.addTo(this.map);
+    this.drawControl.addTo(this.map);
+  }
+
   ngOnChanges(changes) {
     if (changes.geojson && changes.geojson.currentValue) {
       this.loadDrawfromGeoJson(changes.geojson.currentValue);
+    }
+    if (changes.bEnable) {
+      if (this.bEnable) {
+        this.enableDrawControl();
+      } else {
+        this.disableDrawControl();
+      }
     }
   }
 }
