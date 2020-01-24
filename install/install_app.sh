@@ -146,11 +146,11 @@ cd ../frontend
 wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-nvm install 10.15.3
+nvm use
 
 echo " ############"
 echo "Installation des paquets npm"
-npm install --only=prod
+npm ci --only=prod
 
 # lien symbolique vers le dossier static du backend (pour le backoffice)
 ln -s ${BASE_DIR}/frontend/node_modules ${BASE_DIR}/backend/static
@@ -178,12 +178,12 @@ if [ ! -f src/custom/components/introduction/introduction.component.html ]; then
 fi
 
 
-# Generate the tsconfig.json 
+# Generate the tsconfig.json
 geonature generate_frontend_tsconfig
-# Generate the src/tsconfig.app.json 
+# Generate the src/tsconfig.app.json
 geonature generate_frontend_tsconfig_app
 # Generate the modules routing file by templating
-geonature generate_frontend_modules_route  
+geonature generate_frontend_modules_route
 
 # Retour à la racine de GeoNature
 cd ../

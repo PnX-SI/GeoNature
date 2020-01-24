@@ -1,12 +1,12 @@
 #!/bin/bash
 parentdir="$(dirname "$(pwd)")"
-currentdir=${PWD##*/} 
+currentdir=${PWD##*/}
 myrootpath=`pwd`/..
 
 echo 'You are executing this script FROM '`pwd`' AND your oldgeonature directory is in '$parentdir'/geonature_old'
 read -p "Press any key to exit. Press Y or y to continue."  choice
-echo 
-if [ $choice ] 
+echo
+if [ $choice ]
 then
   if [ $choice != 'y' ] && [ $choice != 'Y' ] && [ $choice ]
   then
@@ -73,9 +73,9 @@ cd $myrootpath/$currentdir/frontend
 
 export NVM_DIR="$HOME/.nvm"
  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-nvm install 10.15.3
+nvm use
 
-npm install --only=prod
+npm ci --only=prod
 
 # lien symbolique vers le dossier static du backend (pour le backoffice)
 ln -s $myrootpath/$currentdir/frontend/node_modules $myrootpath/$currentdir/backend/static
