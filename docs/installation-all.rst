@@ -197,9 +197,8 @@ Vous pouvez vous connecter avec l'utilisateur intégré par défaut (admin/admin
     
 :Note:
 
-    * **GeoNature-atlas** : Comme dans la V1, le script ``install_all.sh`` permettra d'installer automatiquement GeoNature-atlas (en option)
-    * Une première version de GeoNature-atlas compatible avec GeoNature V2 est disponible dans sa branche ``develop`` : https://github.com/PnEcrins/GeoNature-atlas/issues/162
-    * Suivez la procédure d'installation classique de GeoNature-atlas mais exécutez le script ``install_db_gn2.sh`` à la place de ``install_db.sh``
+    * **GeoNature-atlas** : Comme dans la V1, le script ``install_all.sh`` permettra à terme d'installer automatiquement GeoNature-atlas (en option)
+    * Une première version de GeoNature-atlas compatible avec GeoNature V2 est disponible : https://github.com/PnEcrins/GeoNature-atlas
     * Vous pouvez utiliser le schéma ``ref_geo`` de GeoNature pour votre territoire, les communes et les mailles, si vous les avez intégré dans ``ref_geo.l_areas`` au préalable.
     
 :Note:
