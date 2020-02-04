@@ -142,11 +142,7 @@ sudo logrotate -f /etc/logrotate.conf
 # Frontend installation
 # Node and npm installation
 echo "Installation de npm"
-cd ../frontend
-wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  
+cd ../frontend  
 
 nvm install
 nvm use
@@ -211,9 +207,9 @@ if [[ $MODE != "dev" ]]
 then
   cd frontend
   echo "Build du frontend..."
-  export NVM_DIR="$HOME/.nvm"
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  
+  # export NVM_DIR="$HOME/.nvm"
+  # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  # [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  
   npm rebuild node-sass --force
   npm run build
 fi
