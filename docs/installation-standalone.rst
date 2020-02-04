@@ -215,7 +215,7 @@ Lancer le script d'installation de l'application :
 ::
 
     touch var/log/install_app.log
-    ./install_app.sh 2>&1 | tee install_all.log
+    ../install_app.sh 2>&1 | tee install_all.log
 
 Suite à l'execution de ce script, l'application Taxhub a été lancé automatiquement par le superviseur et est disponible à l'adresse ``127.0.0.1:5000`` (et l'API, à ``127.0.0.1:5000//api``)
 
