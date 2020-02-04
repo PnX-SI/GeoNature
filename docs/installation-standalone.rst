@@ -123,7 +123,7 @@ La commande ``install_app.sh`` comporte deux paramètres optionnels qui doivent 
 - ``-h`` ou ``--help`` affiche l'aide pour cette commande ``install_app.sh``
 
 ::
-
+    
     touch ../var/log/install_app.log
     ./install_app.sh 2>&1 | tee ../var/log/install_app.log
 
@@ -214,10 +214,12 @@ Lancer le script d'installation de l'application :
 
 ::
 
+    mkdir var 
+    mkdir var/log
     touch var/log/install_app.log
-    ../install_app.sh 2>&1 | tee install_all.log
+    ./install_app.sh 2>&1 | tee var/log/install_app.log
 
-Suite à l'execution de ce script, l'application Taxhub a été lancé automatiquement par le superviseur et est disponible à l'adresse ``127.0.0.1:5000`` (et l'API, à ``127.0.0.1:5000//api``)
+Suite à l'execution de ce script, l'application Taxhub a été lancé automatiquement par le superviseur et est disponible à l'adresse ``127.0.0.1:5000`` (et l'API, à ``127.0.0.1:5000/api``)
 
 Voir la doc d'installation de TaxHub : http://taxhub.readthedocs.io/
 
