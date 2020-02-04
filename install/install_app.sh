@@ -207,9 +207,6 @@ if [[ $MODE != "dev" ]]
 then
   cd frontend
   echo "Build du frontend..."
-  # export NVM_DIR="$HOME/.nvm"
-  # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-  # [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  
   npm rebuild node-sass --force
   npm run build
 fi

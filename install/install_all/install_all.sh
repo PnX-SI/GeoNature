@@ -68,11 +68,12 @@ sudo apt-get install -y wget
 
 # NVM installation (to install node and npm)
 wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-# refresh bashrc
-source ~/.bashrc
+
+# make nvm command avalaible
+. ~/.nvm/nvm.sh
+. ~/.profile
+. ~/.bashrc
+
 
 if [ "$OS_VERSION" == "9" ]
 then
