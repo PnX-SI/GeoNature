@@ -1,4 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, enableProdMode } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges,
+  enableProdMode
+} from '@angular/core';
 import { Map } from 'leaflet';
 import { MapService } from '../map.service';
 import { AppConfig } from '@geonature_config/app.config';
@@ -24,10 +32,12 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   // save the current layer type because the edite event do not send it...
   public currentLayerType: string;
   /** Coordonnées de l'entité à dessiner */
-  drawControl;
-  @Input() bEnable = true; // pour pouvoir cacher / afficher le composant
+  public drawControl;
+  /* pour pouvoir cacher / afficher le composant */
+  @Input() bEnable = true; //
 
   @Input() geojson: GeoJSON;
+  /* Boolean qui control le zoom au point*/
   @Input() bZoomOnPoint = true;
   @Input() zoomLevelOnPoint = 8;
   /**
@@ -44,13 +54,12 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   @Output() layerDrawed = new EventEmitter<GeoJSON>();
   @Output() layerDeleted = new EventEmitter<any>();
 
-
   constructor(public mapservice: MapService, private _commonService: CommonService) {}
 
   ngOnInit() {
-      this.map = this.mapservice.map;
-      this._Le = L as any;
-      this.enableLeafletDraw();
+    this.map = this.mapservice.map;
+    this._Le = L as any;
+    this.enableLeafletDraw();
   }
 
   enableLeafletDraw() {
@@ -176,7 +185,6 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       layer = L.polygon(latLng);
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
       this.mapservice.map.fitBounds(layer.getBounds());
-
     } else if (geojson.type === 'Point') {
       // marker
       console.log(geojson);
