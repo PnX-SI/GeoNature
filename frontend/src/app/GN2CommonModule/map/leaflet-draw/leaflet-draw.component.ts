@@ -35,9 +35,8 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   public drawControl;
   /* pour pouvoir cacher / afficher le composant */
   @Input() bEnable = true; //
-
   @Input() geojson: GeoJSON;
-  /* Boolean qui control le zoom au point*/
+  /* Boolean qui controle le zoom au point*/
   @Input() bZoomOnPoint = true;
   @Input() zoomLevelOnPoint = 8;
   /**
