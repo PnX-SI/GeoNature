@@ -102,21 +102,21 @@ sudo apt-get install -y python3-virtualenv virtualenv
 sudo apt-get install -y build-essential 
 sudo pip install --upgrade pip virtualenv virtualenvwrapper 
 
-if [ "$OS_VERSION" == "9" ]
-then
-    sudo curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
-    sudo apt-get install nodejs
-    fi
-if [ "$OS_VERSION" == "8" ]
-then
-    sudo apt-get install -y npm 
-fi
+# if [ "$OS_VERSION" == "9" ]
+# then
+#     sudo curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+#     sudo apt-get install nodejs
+#     fi
+# if [ "$OS_VERSION" == "8" ]
+# then
+#     sudo apt-get install -y npm 
+# fi
 
-if [ "$OS_VERSION" == "16.04" ] || [ "$OS_VERSION" == "18.04" ]
-then
-    sudo apt-get install -y nodejs
-    sudo apt-get install -y npm
-fi
+# if [ "$OS_VERSION" == "16.04" ] || [ "$OS_VERSION" == "18.04" ]
+# then
+#     sudo apt-get install -y nodejs
+#     sudo apt-get install -y npm
+# fi
 
 sudo apt-get install -y supervisor 
 
