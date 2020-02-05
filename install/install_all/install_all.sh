@@ -69,10 +69,9 @@ sudo apt-get install -y wget
 # NVM installation (to install node and npm)
 wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
 
-# make nvm command avalaible
-. ~/.nvm/nvm.sh
-. ~/.profile
-. ~/.bashrc
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 
 if [ "$OS_VERSION" == "9" ]
@@ -189,7 +188,8 @@ cd install/
 ./install_db.sh
 
 # Installation and configuration of GeoNature application
-./install_app.sh
+# lance install_app en le sourcant pour que la commande NVM soit disponible
+[ -s "install_app.sh" ] && \. "install_app.sh" 
 
 cd ../
 
@@ -280,7 +280,9 @@ sudo a2enmod proxy
 sudo a2enmod proxy_http
 
 # Installation of TaxHub
-./install_app.sh
+# lance install_app en le sourcant pour que la commande NVM soit disponible
+[ -s "install_app.sh" ] && \. "install_app.sh" 
+
 
 # Installation and configuration of UsersHub application (if activated)
 if [ "$install_usershub_app" = true ]; then
@@ -301,7 +303,8 @@ if [ "$install_usershub_app" = true ]; then
     sed -i 's#url_application=.*#url_application='$my_url'usershub#g' config/settings.ini
 
     # Installation of UsersHub application
-    ./install_app.sh
+    # lance install_app en le sourcant pour que la commande NVM soit disponible
+    [ -s "install_app.sh" ] && \. "install_app.sh" 
 
     # Apache configuration of UsersHub
     if [ -f  /etc/apache2/sites-available/usershub.conf ]; then
