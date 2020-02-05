@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# make nvm available 
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
 OS_BITS="$(getconf LONG_BIT)"
 
 # test the server architecture
@@ -141,10 +146,8 @@ sudo logrotate -f /etc/logrotate.conf
 
 # Frontend installation
 # Node and npm installation
-echo "Installation de npm"
+echo "Installation de node et npm"
 cd ../frontend  
-# reread bashrc
-source ~/.bashrc
 
 nvm install
 nvm use
@@ -191,7 +194,6 @@ cd ../
 my_current_geonature_directory=$(pwd)
 
 # Installation du module Occtax et OccHab
-source backend/venv/bin/activate
 geonature install_gn_module $my_current_geonature_directory/contrib/occtax /occtax --build=false
 
 if [ "$install_module_occhab" = true ];
@@ -204,6 +206,8 @@ if [ "$install_module_validation" = true ];
     geonature install_gn_module $my_current_geonature_directory/contrib/gn_module_validation /validation --build=false
 fi
 
+echo "Désactiver le virtual env"
+deactivate
 
 if [[ $MODE != "dev" ]]
 then
@@ -214,5 +218,4 @@ then
 fi
 
 
-echo "Désactiver le virtual env"
-deactivate
+
