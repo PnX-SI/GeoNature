@@ -143,6 +143,8 @@ sudo logrotate -f /etc/logrotate.conf
 # Node and npm installation
 echo "Installation de npm"
 cd ../frontend  
+# reread bashrc
+source ~/.bashrc
 
 nvm install
 nvm use
