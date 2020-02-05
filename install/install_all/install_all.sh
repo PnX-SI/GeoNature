@@ -323,4 +323,7 @@ fi
 sudo apache2ctl restart
 
 
+# fix nvm version
+cd /home/`whoami`/geonature/frontend 
+nvm alias default
 echo "L'installation est terminée!"
