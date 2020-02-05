@@ -226,13 +226,11 @@ Frontend
 
     import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 
-- Les librairies JS seront installées par npm dans un dossier ``node_modules``
-  à la racine du dossier ``frontend`` du module. (Il n'est pas nécessaire de
+- Les librairies JS seront installées dans le dossier ``node_modules``
+  de GeoNature. (Il n'est pas nécessaire de
   réinstaller toutes les librairies déjà présentes dans GeoNature
   (Angular, Leaflet, ChartJS ...). Le ``package.json`` de GeoNature liste
   l'ensemble des librairies déjà installées et réutilisable dans le module.
-
-  Lancer ``npm init`` pour initialiser le module.
 
 - Les fichiers d'assets sont à ranger dans le dossier ``assets`` du frontend.
   Angular-cli impose cependant que tous les assets soient dans le répertoire
@@ -337,15 +335,18 @@ Fournit l'instance de connexion SQLAlchemy Python ::
 Serialisation des modèles
 """""""""""""""""""""""""
 
-- ``geonature.utils.utilssqlalchemy.serializable``
+La sérialisation des modèles SQLAlchemy s'appuie sur deux librairies maison externalisée. Voir la doc plus complète: https://github.com/PnX-SI/Utils-Flask-SQLAlchemy
+
+- ``utils_flask_sqla.serializers.serializable``
 
   Décorateur pour les modèles SQLA : Ajoute une méthode ``as_dict`` qui
   retourne un dictionnaire des données de l'objet sérialisable json
 
-  Fichier définition modèle ::
+  Fichier définition modèle :
+
+  ::
 
     from geonature.utils.env import DB
-    from geonature.utils.utilssqlalchemy import serializable
     from utils_flask_sqla.serializers import serializable
 
     @serializable
