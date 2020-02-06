@@ -359,7 +359,7 @@ La sérialisation des modèles SQLAlchemy s'appuie sur deux librairies maison ex
     instance = DB.session.query(MyModel).get(1)
     result = instance.as_dict()
 
-- ``geonature.utils.utilssqlalchemy.geoserializable``
+- ``utils_flask_sqla_geo.serializers.geoserializable``
 
 
   Décorateur pour les modèles SQLA : Ajoute une méthode as_geofeature qui
@@ -369,7 +369,8 @@ La sérialisation des modèles SQLAlchemy s'appuie sur deux librairies maison ex
   Fichier définition modèle ::
 
     from geonature.utils.env import DB
-    from geonature.utils.utilssqlalchemy import geoserializable
+    from utils_flask_sqla_geo.serializers import geoserializable
+
 
     @geoserializable
     class MyModel(DB.Model):
@@ -382,7 +383,7 @@ La sérialisation des modèles SQLAlchemy s'appuie sur deux librairies maison ex
     instance = DB.session.query(MyModel).get(1)
     result = instance.as_geofeature()
 
-- ``geonature.utils.utilsgeometry.shapeserializable``
+- ``utils_flask_sqla_geo.serializers.shapeserializable``
 
   Décorateur pour les modèles SQLA :
 
@@ -394,7 +395,8 @@ La sérialisation des modèles SQLAlchemy s'appuie sur deux librairies maison ex
   Fichier définition modèle ::
 
     from geonature.utils.env import DB
-    from geonature.utils.utilsgeometry import shapeserializable
+    from utils_flask_sqla_geo.serializers import shapeserializable
+
 
     @shapeserializable
     class MyModel(DB.Model):
@@ -414,7 +416,7 @@ La sérialisation des modèles SQLAlchemy s'appuie sur deux librairies maison ex
         file_name=file_name
     )
 
-- ``geonature.utils.utilsgeometry.FionaShapeService``
+- ``utils_flask_sqla_geo.utilsgeometry.FionaShapeService``
 
   Classe utilitaire pour créer des shapefiles.
 
@@ -445,7 +447,7 @@ La sérialisation des modèles SQLAlchemy s'appuie sur deux librairies maison ex
 
 
 
-- ``geonature.utils.utilssqlalchemy.json_resp``
+- ``utils_flask_sqla_geo.serializers.json_resp``
 
   Décorateur pour les routes : les données renvoyées par la route sont
   automatiquement serialisées en json (ou geojson selon la structure des

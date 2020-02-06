@@ -2,11 +2,12 @@ from sqlalchemy import or_
 from werkzeug.exceptions import NotFound
 from sqlalchemy.sql import func, and_
 from sqlalchemy.orm.exc import NoResultFound
+
 from pypnnomenclature.models import TNomenclatures
+from utils_flask_sqla.generic import testDataType
 
 from geonature.utils.env import DB
 from geonature.core.gn_commons.models import VLatestValidations
-from geonature.utils.utilssqlalchemy import testDataType
 from geonature.utils.errors import GeonatureApiError
 from .utils import get_nomenclature_filters, is_already_joined
 

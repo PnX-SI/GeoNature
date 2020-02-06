@@ -12,14 +12,14 @@ from sqlalchemy.sql import text
 
 from pypnnomenclature.models import TNomenclatures
 from utils_flask_sqla.response import json_resp, to_csv_resp, to_json_resp
+from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
+from utils_flask_sqla_geo.generic import GenericTableGeo
 
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
 from geonature.utils.env import DB, ROOT_DIR
 from geonature.utils.errors import GeonatureApiError
-from geonature.utils.utilsgeometry import remove_third_dimension
 from geonature.utils import filemanager
-from geonature.utils.utilssqlalchemy import GenericTable
 
 from .models import OneStation, TStationsOcchab, THabitatsOcchab, DefaultNomenclaturesValue
 from .query import filter_query_with_cruved
@@ -197,9 +197,10 @@ def export_all_habitats(info_role, export_format='csv',):
 
     data = request.get_json()
 
-    export_view = GenericTable(
+    export_view = GenericTableGeo(
         tableName="v_export_sinp",
         schemaName="pr_occhab",
+        engine=DB.engine,
         geometry_field=None,
         srid=current_app.config["LOCAL_SRID"],
     )

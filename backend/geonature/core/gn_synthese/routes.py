@@ -14,12 +14,14 @@ from sqlalchemy import distinct, func, desc, select
 from sqlalchemy.orm import exc
 from geojson import FeatureCollection, Feature
 
+from utils_flask_sqla.generic import serializeQuery, GenericTable
+from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
+from utils_flask_sqla_geo.generic import GenericTableGeo
+
 
 from geonature.utils import filemanager
 from geonature.utils.env import DB, ROOT_DIR
 from geonature.utils.errors import GeonatureApiError
-
-from geonature.utils.utilssqlalchemy import serializeQuery
 
 from geonature.core.gn_synthese.models import (
     Synthese,
@@ -38,7 +40,6 @@ from geonature.core.taxonomie.models import (
 )
 from geonature.core.ref_geo.models import LAreas, BibAreasTypes
 from geonature.core.gn_synthese.utils import query as synthese_query
-from geonature.core.gn_synthese.utils import query_select_sqla as synthese_query_select
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 from geonature.core.gn_meta.models import TDatasets
@@ -46,12 +47,6 @@ from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 
-from geonature.utils.utilssqlalchemy import (
-    to_csv_resp,
-    to_json_resp,
-    json_resp,
-    GenericTable
-)
 
 # debug
 # current_app.config['SQLALCHEMY_ECHO'] = True
@@ -250,7 +245,11 @@ def get_one_synthese(id_synthese):
     :param int id_synthese:Synthese to be queried
     :>jsonarr array synthese_as_dict: One synthese with geojson key, see above
     """
-    metadata_view = GenericTable("v_metadata_for_export", "gn_synthese", None)
+    metadata_view = GenericTable(
+        tableName="v_metadata_for_export",
+        schemaName="gn_synthese",
+        engine=DB.engine
+    )
     q = (
         DB.session.query(
             SyntheseOneRecord,
@@ -301,9 +300,9 @@ def export_taxon_web(info_role):
     """
 
     taxon_view = GenericTable(
-        "v_synthese_taxon_for_export_view",
-        "gn_synthese",
-        None
+        tableName="v_synthese_taxon_for_export_view",
+        schemaName="gn_synthese",
+        engine=DB.engine
     )
     columns = taxon_view.tableDef.columns
     # Test de conformité de la vue v_synthese_for_export_view
@@ -366,7 +365,8 @@ def export_taxon_web(info_role):
         datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S"),
         data=serializeQuery(q.all(), q.column_descriptions),
         separator=";",
-        columns=[db_col.key for db_col in columns] + ["nb_obs", "date_min", "date_max"]
+        columns=[db_col.key for db_col in columns] +
+        ["nb_obs", "date_min", "date_max"]
     )
 
 
@@ -388,9 +388,10 @@ def export_observations_web(info_role):
     params = request.args
     # set default to csv
     export_format = "csv"
-    export_view = GenericTable(
+    export_view = GenericTableGeo(
         tableName="v_synthese_for_export",
         schemaName="gn_synthese",
+        engine=DB.engine,
         geometry_field=None,
         srid=current_app.config["LOCAL_SRID"],
     )
@@ -504,7 +505,11 @@ def export_metadata(info_role):
     filters = {key: request.args.getlist(key)
                for key, value in request.args.items()}
 
-    metadata_view = GenericTable("v_metadata_for_export", "gn_synthese", None)
+    metadata_view = GenericTable(
+        tableName="v_metadata_for_export",
+        schemaName="gn_synthese",
+        engine=DB.engine
+    )
     q = DB.session.query(
         distinct(VSyntheseForWebApp.id_dataset), metadata_view.tableDef
     ).join(
@@ -663,7 +668,9 @@ def get_taxon_tree():
     .. :quickref: Synthese;
     """
     taxon_tree_table = GenericTable(
-        "v_tree_taxons_synthese", "gn_synthese", geometry_field=None
+        tableName="v_tree_taxons_synthese",
+        schemaName="gn_synthese",
+        engine=DB.engine
     )
     data = DB.session.query(taxon_tree_table.tableDef).all()
     return [taxon_tree_table.as_dict(d) for d in data]

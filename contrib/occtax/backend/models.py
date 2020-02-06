@@ -1,21 +1,21 @@
 from flask import current_app
+from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
 from sqlalchemy.sql import select, func, and_
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects.postgresql import UUID
-from geoalchemy2 import Geometry
 
 from pypnnomenclature.models import TNomenclatures
-
-from geonature.utils.utilssqlalchemy import geoserializable
-from geonature.utils.env import DB
-from geonature.core.taxonomie.models import Taxref
 from pypnusershub.db.tools import InsufficientRightsError
 from pypnusershub.db.models import User
+from utils_flask_sqla.serializers import serializable
+from utils_flask_sqla_geo.serializers import geoserializable
+from utils_flask_sqla_geo.serializers import geoserializable
+
+from geonature.core.taxonomie.models import Taxref
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.taxonomie.models import Taxref
-
-from utils_flask_sqla.serializers import serializable
+from geonature.utils.env import DB
 
 
 class ReleveModel(DB.Model):

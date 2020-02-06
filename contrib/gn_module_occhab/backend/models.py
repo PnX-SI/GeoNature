@@ -7,13 +7,12 @@ from sqlalchemy.dialects.postgresql import UUID
 
 from pypnusershub.db.models import User
 from pypnnomenclature.models import TNomenclatures
-from utils_flask_sqla.serializers import serializable
-
 from pypn_habref_api.models import Habref
+from utils_flask_sqla.serializers import serializable
+from utils_flask_sqla_geo.serializers import geoserializable
 
 from geonature.core.utils import ReleveCruvedAutorization
 from geonature.utils.env import DB
-from geonature.utils.utilssqlalchemy import geoserializable
 
 
 class CorStationObserverOccHab(DB.Model):

@@ -12,8 +12,9 @@ from sqlalchemy.orm import aliased
 from shapely.wkt import loads
 from geoalchemy2.shape import from_shape
 
+from utils_flask_sqla_geo.utilsgeometry import circle_from_point
+
 from geonature.utils.env import DB
-from geonature.utils.utilsgeometry import circle_from_point
 from geonature.core.taxonomie.models import Taxref, CorTaxonAttribut, TaxrefLR
 from geonature.core.gn_synthese.models import (
     Synthese,
