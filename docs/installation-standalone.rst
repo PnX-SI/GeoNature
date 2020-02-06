@@ -56,9 +56,15 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
     sudo apt-get install -y postgresql postgis postgresql-server-dev-9.6
     sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev libgdal-dev python-gdal python-virtualenv build-essential
     sudo pip install --upgrade pip virtualenv virtualenvwrapper
-    sudo apt-get install -y npm
     sudo apt-get install -y supervisor
     sudo apt-get install -y apache2
+    # installation de NVM
+    wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
+
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
     
 Sur Ubuntu 18, installez la version 10 de postgresql-server-dev ``sudo apt-get install postgresql-server-dev-10``. La version est à adapter sur les autres versions de Debian ou Ubuntu
 

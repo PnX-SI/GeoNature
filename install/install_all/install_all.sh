@@ -65,6 +65,15 @@ sudo apt-get install -y apache2 libapache2-mod-wsgi libapache2-mod-perl2
 sudo apt-get install -y postgresql 
 sudo apt-get install -y postgresql-contrib
 sudo apt-get install -y wget
+
+# NVM installation (to install node and npm)
+wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+
 if [ "$OS_VERSION" == "9" ]
 then
     sudo apt-get install -y postgresql-server-dev-9.6 
@@ -102,21 +111,21 @@ sudo apt-get install -y python3-virtualenv virtualenv
 sudo apt-get install -y build-essential 
 sudo pip install --upgrade pip virtualenv virtualenvwrapper 
 
-if [ "$OS_VERSION" == "9" ]
-then
-    sudo curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
-    sudo apt-get install nodejs
-    fi
-if [ "$OS_VERSION" == "8" ]
-then
-    sudo apt-get install -y npm 
-fi
+# if [ "$OS_VERSION" == "9" ]
+# then
+#     sudo curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+#     sudo apt-get install nodejs
+#     fi
+# if [ "$OS_VERSION" == "8" ]
+# then
+#     sudo apt-get install -y npm 
+# fi
 
-if [ "$OS_VERSION" == "16.04" ] || [ "$OS_VERSION" == "18.04" ]
-then
-    sudo apt-get install -y nodejs
-    sudo apt-get install -y npm
-fi
+# if [ "$OS_VERSION" == "16.04" ] || [ "$OS_VERSION" == "18.04" ]
+# then
+#     sudo apt-get install -y nodejs
+#     sudo apt-get install -y npm
+# fi
 
 sudo apt-get install -y supervisor 
 
@@ -179,7 +188,8 @@ cd install/
 ./install_db.sh
 
 # Installation and configuration of GeoNature application
-./install_app.sh
+# lance install_app en le sourcant pour que la commande NVM soit disponible
+[ -s "install_app.sh" ] && \. "install_app.sh" 
 
 cd ../
 
@@ -270,7 +280,9 @@ sudo a2enmod proxy
 sudo a2enmod proxy_http
 
 # Installation of TaxHub
-./install_app.sh
+# lance install_app en le sourcant pour que la commande NVM soit disponible
+[ -s "install_app.sh" ] && \. "install_app.sh" 
+
 
 # Installation and configuration of UsersHub application (if activated)
 if [ "$install_usershub_app" = true ]; then
@@ -291,7 +303,8 @@ if [ "$install_usershub_app" = true ]; then
     sed -i 's#url_application=.*#url_application='$my_url'usershub#g' config/settings.ini
 
     # Installation of UsersHub application
-    ./install_app.sh
+    # lance install_app en le sourcant pour que la commande NVM soit disponible
+    [ -s "install_app.sh" ] && \. "install_app.sh" 
 
     # Apache configuration of UsersHub
     if [ -f  /etc/apache2/sites-available/usershub.conf ]; then
@@ -310,4 +323,7 @@ fi
 sudo apache2ctl restart
 
 
+# fix nvm version
+cd /home/`whoami`/geonature/frontend 
+nvm alias default
 echo "L'installation est terminée!"

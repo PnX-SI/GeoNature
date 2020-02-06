@@ -4,8 +4,8 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --poll=2000",
-    "build": "ng build --prod --aot=false --build-optimizer=false",
+    "start": ". ~/.nvm/nvm.sh; nvm use; ng serve --poll=2000",
+    "build": ". ~/.nvm/nvm.sh; nvm use; ng build --prod --aot=false --build-optimizer=false",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
@@ -60,6 +60,7 @@
     "to-regex": "^3.0.2",
     "togeojson": "^0.16.0",
     "tslib": "^1.9.3",
+    "@types/node": "^11.13.23",
     "wellknown": "^0.5.0",
     "zone.js": "^0.8.26"
   },
@@ -68,7 +69,6 @@
     "@types/jasmine": "~3.3.12",
     "@types/jasminewd2": "~2.0.5",
     "@types/jquery": "^3.3.11",
-    "@types/node": "~11.13.0",
     "codelyzer": "~5.0.0",
     "jasmine-core": "^3.4.0",
     "jasmine-spec-reporter": "~4.2.1",

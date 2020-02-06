@@ -139,7 +139,6 @@ ENV/
 .mypy_cache/
 
 *.pid
-package-lock.json
 *.orig
 
 
