@@ -70,7 +70,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
 
   @ViewChild('button_input') el: ElementRef;
 
-  valSave; // pour la selection au clavier
+  public valSave; // pour la selection au clavier
 
   constructor(private _translate: TranslateService) {}
 
