@@ -61,7 +61,7 @@ export class GeojsonComponent implements OnInit, OnChanges {
     }, 200);
   }
 
-  loadGeojson(geojson) {
+  loadGeojson(geojson, zoom = true) {
     this.currentGeojson = this.mapservice.createGeojson(
       geojson,
       this.asCluster,
@@ -72,7 +72,7 @@ export class GeojsonComponent implements OnInit, OnChanges {
     this.mapservice.layerGroup = new L.FeatureGroup();
     this.mapservice.map.addLayer(this.mapservice.layerGroup);
     this.mapservice.layerGroup.addLayer(this.currentGeojson);
-    if (this.zoomOnLayer) {
+    if (zoom) {
       this.zoom(this.mapservice.layerGroup);
     }
   }
@@ -82,10 +82,11 @@ export class GeojsonComponent implements OnInit, OnChanges {
       if (this.currentGeojson !== undefined) {
         this.mapservice.map.removeLayer(this.currentGeojson);
       }
-      this.loadGeojson(changes.geojson.currentValue);
-      // zoom on layer
-      if (this.zoomOnFirstTime && this.zoomOnLayer) {
-        this.zoom(this.mapservice.layerGroup);
+      // first time we pass data: zoom or not ?
+      if (changes.geojson.previousValue === undefined) {
+        this.loadGeojson(changes.geojson.currentValue, this.zoomOnFirstTime && this.zoomOnLayer);
+      } else {
+        this.loadGeojson(changes.geojson.currentValue, this.zoomOnLayer);
       }
     }
     if (changes.style && changes.style.currentValue !== undefined) {
