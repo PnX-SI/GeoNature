@@ -6,17 +6,20 @@ CHANGELOG
 2.3.1 (Unreleased)
 ------------------
 
+**🚀 Nouveautés**
+
+* Utilisation généralisée des nouvelles librairies de sérialisation (https://github.com/PnX-SI/Utils-Flask-SQLAlchemy et https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo)
+
 **🐛 Corrections**
 
 * Ajout d'un reference de l'objet Leaflet `L` afin qu'il soit utilisé dans les modules
-
-* Lancer cette commande pour définir la nouvelle version de NodeJS par défaut :
-
-::
-    cd frontend
-    nvm use
+* Correction de l'installation de NodeJS et NPM par l'utilisation généralisée de NVM.
+* Possibilité de régler le timeout de gunicorn pour éviter le plantage lors de requêtes longues
 
 En cas d'erreur sur la version de NodeJS, voir https://github.com/PnX-SI/GeoNature/issues/832.
+
+Note de version:
+* Rajouter la ligne ``gun_timeout=30`` au fichier ``config/settings.ini``. Il s'agit du temps maximal (en seconde) autorisé pour chaque requête. A monter, si vous avez déjà rencontrer des problèmes de timeout
 
 2.3.0 - Occhab de Noël (2019-12-27)
 -----------------------------------
