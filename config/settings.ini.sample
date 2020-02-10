@@ -105,3 +105,4 @@ venv_dir=venv
 gun_num_workers=4
 gun_host=0.0.0.0
 gun_port=8000
+gun_timeout=30
