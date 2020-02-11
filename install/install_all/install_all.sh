@@ -109,7 +109,7 @@ sudo apt-get install -y libgdal-dev
 sudo apt-get install -y python-gdal 
 sudo apt-get install -y build-essential 
 python3 -m pip install --upgrade pip
-pip3 install virtualenv
+pip3 install virtualenv==20.0.1
 # sudo pip install --upgrade pip virtualenv virtualenvwrapper 
 
 
