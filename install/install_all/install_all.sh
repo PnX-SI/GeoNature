@@ -100,7 +100,7 @@ sudo apt-get install -y libgdal-dev
 sudo apt-get install -y python-gdal 
 sudo apt-get install -y python3-virtualenv virtualenv 
 sudo apt-get install -y build-essential 
-sudo pip install --upgrade pip virtualenv virtualenvwrapper 
+sudo pip install --upgrade pip virtualenv==16.7.9 virtualenvwrapper 
 
 if [ "$OS_VERSION" == "9" ]
 then
