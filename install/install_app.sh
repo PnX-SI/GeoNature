@@ -103,9 +103,9 @@ fi
 
 if [[ $python_path ]]; then
   echo "Installation du virtual env..."
-  virtualenv -p $python_path venv
+  python3 -m virtualenv -p $python_path venv
 else
-  virtualenv venv
+  python3 -m virtualenv venv
 fi
 
 echo "Activation du virtual env..."
