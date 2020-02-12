@@ -116,9 +116,8 @@ pip3 install virtualenv==20.0.1
 sudo apt-get install -y supervisor 
 
 #TODO: test de le virer
-# To make opencv (TaxHub) work on Debian 8
-# sudo apt-get install -y libsm6 libxrender1 libfontconfig1 
-# sudo apt-get install -y python-qt4 
+# To make opencv (TaxHub) work on Debian 10
+sudo apt-get install -y libsm6 libxrender1 libfontconfig1 
 
 # Creating PostgreSQL user
 echo "Création de l'utilisateur PostgreSQL..."
