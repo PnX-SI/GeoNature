@@ -99,8 +99,6 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                 enable_frontend = create_external_assets_symlink(
                     module_path, module_code.lower()
                 )
-                print('LAAAAAAAAA')
-                print(enable_frontend)
 
                 # ajout du module dans la table gn_commons.t_modules
                 add_application_db(
