@@ -13,14 +13,14 @@
   },
   "private": true,
   "dependencies": {
-    "@angular-devkit/core": "^7.3.8",
     "@angular-devkit/build-angular": "~0.13.0",
+    "@angular-devkit/core": "^7.3.8",
     "@angular/animations": "7.2.6",
     "@angular/cdk": "^7.3.7",
+    "@angular/cli": "^7.3.8",
     "@angular/common": "7.2.6",
     "@angular/compiler": "7.2.6",
     "@angular/compiler-cli": "7.2.6",
-    "@angular/cli": "^7.3.8",
     "@angular/core": "7.2.6",
     "@angular/flex-layout": "^7.0.0-beta.24",
     "@angular/forms": "7.2.6",
@@ -36,6 +36,7 @@
     "@types/leaflet": "^1.4.3",
     "@types/leaflet-draw": "^0.4.13",
     "@types/leaflet.markercluster": "^1.4.0",
+    "@types/node": "^11.13.23",
     "ajv": "^6.10.0",
     "angular-tree-component": "^8.3.0",
     "angular2-chartjs": "^0.5.1",
@@ -59,10 +60,10 @@
     "tether": "^1.4.5",
     "to-regex": "^3.0.2",
     "togeojson": "^0.16.0",
-    "tslib": "^1.9.3",
-    "@types/node": "^11.13.23",
+    "tslib": "^1.10.0",
     "wellknown": "^0.5.0",
-    "zone.js": "^0.8.26"
+    "zone.js": "^0.8.26",
+    "package-json-path": "1.0.8"
   },
   "devDependencies": {
     "@angular/language-service": "7.2.6",
