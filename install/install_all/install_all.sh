@@ -268,7 +268,7 @@ sudo a2enmod proxy_http
 
 # Installation of TaxHub
 # lance install_app en le sourcant pour que la commande NVM soit disponible
-[ -s "install_app.sh" ] && \. "install_app.sh" 
+./install_app.sh
 
 
 # Installation and configuration of UsersHub application (if activated)
@@ -291,7 +291,7 @@ if [ "$install_usershub_app" = true ]; then
 
     # Installation of UsersHub application
     # lance install_app en le sourcant pour que la commande NVM soit disponible
-    [ -s "install_app.sh" ] && \. "install_app.sh" 
+    ./install_app.sh 
 
     # Apache configuration of UsersHub
     if [ -f  /etc/apache2/sites-available/usershub.conf ]; then
