@@ -302,10 +302,10 @@ def create_external_assets_symlink(module_path, module_code):
     try:
         if not os.path.isdir(geonature_asset_symlink):
             log.info("Create a symlink for assets \n")
-            subprocess.call(
+            assert subprocess.call(
                 ["ln", "-s", module_assets_dir, module_code],
                 cwd=str(ROOT_DIR / "frontend/src/external_assets"),
-            )
+            ) == 0
         else:
             log.info("symlink already exist \n")
 
@@ -316,27 +316,6 @@ def create_external_assets_symlink(module_path, module_code):
     return True
 
 
-def create_node_modules_symlink(module_path):
-    """
-    Create a symlink of GN node_modules in frontend module directory
-    """
-    log.info('Create node_modules symlink...')
-    frontend_module_path = Path(module_path) / 'frontend'
-    gn_node_module_path = ROOT_DIR / "frontend/node_modules"
-    if (frontend_module_path / 'node_modules').is_symlink():
-        log.info("node_module symlink already exist, deleting it...\n")
-        os.unlink(str(frontend_module_path / 'node_modules'))
-    try:
-        subprocess.call(
-            ["ln", "-s", str(gn_node_module_path),
-                str(frontend_module_path)]
-        )
-    except Exception as ex:
-        log.info("...error when create node_modules symlink \n")
-        raise GeoNatureError(ex)
-    log.info("...%s\n", MSG_OK)
-
-
 def install_frontend_dependencies(module_path):
     """
     Install module frontend dependencies in the GN node_modules directory
@@ -345,10 +324,11 @@ def install_frontend_dependencies(module_path):
     frontend_module_path = Path(module_path) / 'frontend'
     if (frontend_module_path / 'package.json').is_file():
         try:
-            subprocess.call(
+            # To avoid Maximum call stack size exceeded on npm install - clear cache...
+            assert subprocess.call(
                 ['npm', 'install', str(frontend_module_path), '--no-save'],
                 cwd=str(ROOT_DIR / "frontend")
-            )
+            ) == 0
         except Exception as ex:
             log.info('Error while installing JS dependencies')
             raise GeoNatureError(ex)
