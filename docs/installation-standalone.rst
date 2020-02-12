@@ -52,10 +52,11 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
   ::  
     
-    sudo apt-get install wget
+    sudo apt-get install wget git
     sudo apt-get install -y postgresql postgis postgresql-server-dev-9.6
-    sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev libgdal-dev python-gdal python-virtualenv build-essential
-    sudo pip install --upgrade pip virtualenv virtualenvwrapper
+    sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev libgdal-dev python-gdal build-essential
+    python3 -m pip install pip==20.0.2
+    pip3 install virtualenv==20.0.1
     sudo apt-get install -y supervisor
     sudo apt-get install -y apache2
     # installation de NVM
@@ -90,7 +91,7 @@ Installation de l'application
 
   ::
 
-    mv GeoNature-X.Y.Z /home/<mon_user>/geonature/
+    mv GeoNature-X.Y.Z /home/`whoami`/geonature/
     cd geonature
 
 * Copier puis mettre à jour le fichier de configuration (``config/settings.ini``) comportant les informations relatives à votre environnement serveur :
@@ -204,6 +205,7 @@ Télécharger Taxhub depuis le dépôt github depuis la racine de votre utilisat
     cd ~
     wget https://github.com/PnX-SI/TaxHub/archive/X.Y.Z.zip
     unzip X.Y.Z.zip
+    rm X.Y.Z.zip
     
 en mode développeur: 
 
