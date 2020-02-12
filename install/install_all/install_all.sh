@@ -108,7 +108,7 @@ sudo apt-get install -y libpq-dev
 sudo apt-get install -y libgdal-dev 
 sudo apt-get install -y python-gdal 
 sudo apt-get install -y build-essential 
-python3 -m pip install --upgrade pip
+python3 -m pip install pip==20.0.2
 pip3 install virtualenv==20.0.1
 # sudo pip install --upgrade pip virtualenv virtualenvwrapper 
 
