@@ -60,7 +60,8 @@ def check_manifest(module_path):
         configs_py["min_geonature_version"]
     ) and gn_v > version.parse(configs_py["max_geonature_version"]):
         raise GeoNatureError(
-            "Geonature version {} is imcompatible with module".format(GEONATURE_VERSION)
+            "Geonature version {} is imcompatible with module".format(
+                GEONATURE_VERSION)
         )
     for e_gn_v in configs_py["exclude_geonature_versions"]:
         if gn_v == version.parse(e_gn_v):
@@ -119,7 +120,7 @@ def gn_module_register_config(module_code):
 
 
 def gn_module_import_requirements(module_path):
-    req_p = Path(module_path) / "requirements.txt"
+    req_p = Path(module_path) / "backend/requirements.txt"
     if req_p.is_file():
         log.info("import_requirements")
         import_requirements(str(req_p))
@@ -315,6 +316,47 @@ def create_external_assets_symlink(module_path, module_code):
     return True
 
 
+def create_node_modules_symlink(module_path):
+    """
+    Create a symlink of GN node_modules in frontend module directory
+    """
+    log.info('Create node_modules symlink...')
+    frontend_module_path = Path(module_path) / 'frontend'
+    gn_node_module_path = ROOT_DIR / "frontend/node_modules"
+    if (frontend_module_path / 'node_modules').is_symlink():
+        log.info("node_module symlink already exist, deleting it...\n")
+        os.unlink(str(frontend_module_path / 'node_modules'))
+    try:
+        subprocess.call(
+            ["ln", "-s", str(gn_node_module_path),
+                str(frontend_module_path)]
+        )
+    except Exception as ex:
+        log.info("...error when create node_modules symlink \n")
+        raise GeoNatureError(ex)
+    log.info("...%s\n", MSG_OK)
+
+
+def install_frontend_dependencies(module_path):
+    """
+    Install module frontend dependencies in the GN node_modules directory
+    """
+    log.info('Installing JS dependencies...')
+    frontend_module_path = Path(module_path) / 'frontend'
+    if (frontend_module_path / 'package.json').is_file():
+        try:
+            subprocess.call(
+                ['npm', 'install', str(frontend_module_path), '--no-save'],
+                cwd=str(ROOT_DIR / "frontend")
+            )
+        except Exception as ex:
+            log.info('Error while installing JS dependencies')
+            raise GeoNatureError(ex)
+    else:
+        log.info('No package.json - skip js packages installation')
+    log.info("...%s\n", MSG_OK)
+
+
 def add_application_db(app, module_code, url, enable_frontend, enable_backend):
     log.info("Register the module in gn_commons.t_modules ... \n")
     from geonature.core.users.models import TApplications
@@ -367,7 +409,8 @@ def create_module_config(app, module_code, mod_path=None, build=True):
     with app.app_context():
         if not mod_path:
             # get the symlink location to write the config file
-            mod_path = os.readlink(str(GN_EXTERNAL_MODULE / module_code.lower()))
+            mod_path = os.readlink(
+                str(GN_EXTERNAL_MODULE / module_code.lower()))
 
         # fetch the module in the DB from its name
         module_object = (
@@ -392,7 +435,8 @@ def create_module_config(app, module_code, mod_path=None, build=True):
         # set id_module and module_code
         config_module["ID_MODULE"] = module_object.id_module
         config_module["MODULE_CODE"] = module_object.module_code
-        config_module["MODULE_URL"] = module_object.module_path.replace(" ", "")
+        config_module["MODULE_URL"] = module_object.module_path.replace(
+            " ", "")
 
         frontend_config_path = os.path.join(
             mod_path, "frontend/app/module.config.ts"
@@ -400,7 +444,8 @@ def create_module_config(app, module_code, mod_path=None, build=True):
         try:
             with open(str(ROOT_DIR / frontend_config_path), "w") as outputfile:
                 outputfile.write("export const ModuleConfig = ")
-                json.dump(config_module, outputfile, indent=True, sort_keys=True)
+                json.dump(config_module, outputfile,
+                          indent=True, sort_keys=True)
         except FileNotFoundError:
             log.info("No frontend config file")
         if build:

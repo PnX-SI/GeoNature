@@ -24,10 +24,12 @@ from geonature.core.command.main import main
 from geonature.utils.gn_module_import import (
     check_gn_module_file,
     check_manifest,
+    create_node_modules_symlink,
     gn_module_import_requirements,
     gn_module_register_config,
     gn_module_activate,
     gn_module_deactivate,
+    install_frontend_dependencies,
     check_codefile_validity,
     create_external_assets_symlink,
     add_application_db,
@@ -97,6 +99,9 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                 enable_frontend = create_external_assets_symlink(
                     module_path, module_code.lower()
                 )
+                print('LAAAAAAAAA')
+                print(enable_frontend)
+
                 # ajout du module dans la table gn_commons.t_modules
                 add_application_db(
                     app, module_code, url, enable_frontend, enable_backend
@@ -108,6 +113,8 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                 gn_module_register_config(module_code.lower())
 
                 if enable_frontend:
+                    create_node_modules_symlink(module_path)
+                    install_frontend_dependencies(module_path)
                     # generation du fichier tsconfig.app.json
                     tsconfig_app_templating(app)
                     # generation du routing du frontend
