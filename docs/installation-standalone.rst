@@ -9,7 +9,7 @@ Prérequis
 
 Ressources minimum serveur :
 
-- Un serveur Linux **architecture 64-bits** disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.
+- Un serveur Linux **architecture 64-bits** disposant d’au moins de 4 Go RAM et de 20 Go d’espace disque.
 
 GeoNature utilise les technologies suivantes:
 
@@ -17,7 +17,7 @@ GeoNature utilise les technologies suivantes:
 - Python 3 et dépendances Python nécessaires à l'application
 - Flask (framework web Python)
 - Apache
-- Angular 4, Angular CLI, NodeJS
+- Angular 7, Angular CLI, NodeJS
 - Librairies javascript (Leaflet, ChartJS)
 - Librairies CSS (Bootstrap, Material Design)
 
@@ -48,7 +48,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
 * Se reconnecter en SSH au serveur avec le nouvel utilisateur pour ne pas faire l'installation en ``root``. On ne se connectera plus en ``root``. Si besoin d'éxecuter des commandes avec des droits d'administrateur, on les précède de ``sudo``. Il est d'ailleurs possible renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec root. Voir https://docs.ovh.com/fr/vps/conseils-securisation-vps/ pour plus d'informations sur le sécurisation du serveur.
 
-* Lancez les commandes suivantes pour installer les dépendances de GeoNature (debian 9) :
+* Lancez les commandes suivantes pour installer les dépendances de GeoNature (Debian 9) :
 
   ::  
     
@@ -67,7 +67,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
     [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
     
-Sur Ubuntu 18, installez la version 10 de postgresql-server-dev ``sudo apt-get install postgresql-server-dev-10``. La version est à adapter sur les autres versions de Debian ou Ubuntu
+Sur Ubuntu 18, installez la version 10 de postgresql-server-dev ``sudo apt-get install postgresql-server-dev-10``. La version est à adapter sur les autres versions de Debian ou Ubuntu.
 
 Installation de l'application
 -----------------------------
