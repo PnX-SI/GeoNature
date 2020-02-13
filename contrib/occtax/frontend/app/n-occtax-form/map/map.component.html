@@ -2,13 +2,13 @@
   height="100%" 
   class="map-card">
   <pnx-marker 
-    [coordinates]="fs.markerCoordinates" 
+    [coordinates]="coordinates" 
     [zoomLevel]="occtaxConfig.releve_map_zoom_level"
     (markerChanged)="sendGeoInfo($event)">
   </pnx-marker>
 
   <pnx-leaflet-draw 
-    [geojson]="fs.geojsonCoordinates" 
+    [geojson]="geojson" 
     [options]="leafletDrawOptions" 
     [zoomLevel]="occtaxConfig.releve_map_zoom_level"
     (layerDrawed)="sendGeoInfo($event)">

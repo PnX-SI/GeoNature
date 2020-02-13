@@ -4,7 +4,7 @@ import { BehaviorSubject } from "rxjs/BehaviorSubject";
 import { AppConfig } from "@geonature_config/app.config";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Router, ActivatedRoute } from "@angular/router";
-import { ModuleConfig } from "../../module.config";
+import { ModuleConfig } from "../module.config";
 import { AuthService, User } from "@geonature/components/auth/auth.service";
 import { CommonService } from "@geonature_common/service/common.service";
 

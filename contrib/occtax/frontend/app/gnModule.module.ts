@@ -5,7 +5,7 @@ import { Routes, RouterModule } from "@angular/router";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 // Components
 import { OcctaxMapFormComponent } from "./occtax-map-form/occtax-map-form.component";
-import { OcctaxMapFormComponent as NOcctaxMapFormComponent } from "./n-occtax-map-form/occtax-map-form.component";
+import { OcctaxFormComponent as NOcctaxFormComponent } from "./n-occtax-form/occtax-form.component";
 import { ReleveComponent } from "./occtax-map-form/form/releve/releve.component";
 import { CountingComponent } from "./occtax-map-form/form/counting/counting.component";
 import { OccurrenceComponent } from "./occtax-map-form/form/occurrence/occurrence.component";
@@ -15,12 +15,14 @@ import { OcctaxMapListComponent } from "./occtax-map-list/occtax-map-list.compon
 import { OcctaxMapListFilterComponent } from "./occtax-map-list/filter/occtax-map-list-filter.component";
 import { OcctaxMapInfoComponent } from "./occtax-map-info/occtax-map-info.component";
 
-import { OcctaxFormMapComponent } from "./n-occtax-map-form/form/map/map.component";
+import { OcctaxFormMapComponent } from "./n-occtax-form/map/map.component";
+//import { OcctaxFormReleveComponent } from "./n-occtax-form/releve/releve.component";
 // Service
 import { OcctaxDataService } from "./services/occtax-data.service";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 
-import { OcctaxFormService } from "./n-occtax-map-form/services/form.service";
+import { OcctaxFormService } from "./n-occtax-form/occtax-form.service";
+import { OcctaxFormMapService } from "./n-occtax-form/map/map.service";
 
 import {
   MatSlideToggleModule
@@ -28,8 +30,8 @@ import {
 
 const routes: Routes = [
   { path: "", component: OcctaxMapListComponent },
-  { path: "form", component: NOcctaxMapFormComponent },
-  { path: "form/:id", component: NOcctaxMapFormComponent, pathMatch: "full" },
+  { path: "form", component: NOcctaxFormComponent },
+  { path: "form/:id", component: NOcctaxFormComponent, pathMatch: "full" },
   { path: "info/:id", component: OcctaxMapInfoComponent, pathMatch: "full" },
   {
     path: "info/id_counting/:id",
@@ -48,7 +50,7 @@ const routes: Routes = [
   ],
   declarations: [
     OcctaxMapFormComponent,
-    NOcctaxMapFormComponent,
+    NOcctaxFormComponent,
     OcctaxFormComponent,
     OcctaxMapInfoComponent,
     ReleveComponent,
@@ -57,9 +59,15 @@ const routes: Routes = [
     TaxonsListComponent,
     OcctaxMapListComponent,
     OcctaxMapListFilterComponent,
-    OcctaxFormMapComponent
+    OcctaxFormMapComponent,
+    // OcctaxFormReleveComponent
   ],
-  providers: [OcctaxDataService, MapListService, OcctaxFormService],
+  providers: [
+    OcctaxDataService, 
+    MapListService, 
+    OcctaxFormService,
+    OcctaxFormMapService
+  ],
   bootstrap: [OcctaxMapFormComponent]
 })
 export class GeonatureModule { }

@@ -7,36 +7,41 @@ import {
   AfterViewInit,
   EventEmitter
 } from "@angular/core";
-import { MapService } from "@geonature_common/map/map.service";
-import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
+// import { MapService } from "@geonature_common/map/map.service";
+// import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs/Subscription";
-import { ModuleConfig } from "../../../module.config";
+import { ModuleConfig } from "../module.config";
 // import { OcctaxFormService } from "./form/occtax-form.service";
 import { CommonService } from "@geonature_common/service/common.service";
 // import { OcctaxDataService } from "../services/occtax-data.service";
-import { OcctaxFormService } from "../../services/form.service";
+import { OcctaxFormService } from "./occtax-form.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { MarkerComponent } from "@geonature_common/map/marker/marker.component";
 import { AuthService } from "@geonature/components/auth/auth.service";
 
 @Component({
-  selector: "pnx-occtax-form-map",
-  templateUrl: "map.component.html",
-//  styleUrls: ["./occtax-map-form.component.scss"],
+  selector: "pnx-occtax-form",
+  templateUrl: "./occtax-form.component.html",
+  styleUrls: ["./occtax-form.component.scss"],
   // important to provide a new instance of OcctaxFormService to réinitialize it
-  providers: [MapService, OcctaxFormService]
+  // providers: [MapService, OcctaxFormService]
+  providers: [OcctaxFormService]
 })
-export class OcctaxFormMapComponent implements OnInit, OnDestroy, AfterViewInit {
-  
+export class OcctaxFormComponent implements OnInit, OnDestroy, AfterViewInit {
+
   public leafletDrawOptions: any;
-  @ViewChild(MarkerComponent)
-  public markerComponent: MarkerComponent;
+  private _sub: Subscription;
+  public id: number;
+  // @ViewChild(MarkerComponent)
+  // public markerComponent: MarkerComponent;
   public firstFileLayerMessage = true;
 
   public occtaxConfig = ModuleConfig;
   constructor(
-    private _ms: MapService,
+    // private _ms: MapService,
+    private _route: ActivatedRoute,
+    private _router: Router,
     private _commonService: CommonService,
     public fs: OcctaxFormService,
     // private occtaxService: OcctaxDataService,
@@ -45,15 +50,22 @@ export class OcctaxFormMapComponent implements OnInit, OnDestroy, AfterViewInit 
   ) {}
 
   ngOnInit() {
-    // overight the leaflet draw object to set options
-    // examples: enable circle =>  leafletDrawOption.draw.circle = true;
-    leafletDrawOption.draw.circle = false;
-    leafletDrawOption.draw.rectangle = false;
-    leafletDrawOption.draw.marker = false;
-    leafletDrawOption.draw.polyline = true;
-    leafletDrawOption.edit.remove = false;
-    this.leafletDrawOptions = leafletDrawOption;
+    // // overight the leaflet draw object to set options
+    // // examples: enable circle =>  leafletDrawOption.draw.circle = true;
+    // leafletDrawOption.draw.circle = false;
+    // leafletDrawOption.draw.rectangle = false;
+    // leafletDrawOption.draw.marker = false;
+    // leafletDrawOption.draw.polyline = true;
+    // leafletDrawOption.edit.remove = false;
+    // this.leafletDrawOptions = leafletDrawOption;
 
+    // // refresh the forms
+    // this.fs.releveForm = this.fs.initReleveForm();
+    // this.fs.occurrenceForm = this.fs.initOccurenceForm();
+    // this.fs.countingForm = this.fs.initCountingArray();
+
+    // // patch default values in ajax
+    // this.fs.patchAllDefaultNomenclature();
   }
 
   ngAfterViewInit() {
