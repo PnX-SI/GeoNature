@@ -53,6 +53,7 @@
     "ng2-cookies": "^1.0.12",
     "ngx-bootstrap": "^4.0.0",
     "ngx-toastr": "^10.0.2",
+    "package-json-path": "1.0.8",
     "popper.js": "^1.15.0",
     "primeng": "^7.1.0",
     "rxjs": "^6.4.0",
@@ -62,8 +63,7 @@
     "togeojson": "^0.16.0",
     "tslib": "^1.10.0",
     "wellknown": "^0.5.0",
-    "zone.js": "^0.8.26",
-    "package-json-path": "1.0.8"
+    "zone.js": "^0.8.26"
   },
   "devDependencies": {
     "@angular/language-service": "7.2.6",

@@ -24,7 +24,6 @@ from geonature.core.command.main import main
 from geonature.utils.gn_module_import import (
     check_gn_module_file,
     check_manifest,
-    create_node_modules_symlink,
     gn_module_import_requirements,
     gn_module_register_config,
     gn_module_activate,
@@ -111,7 +110,6 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                 gn_module_register_config(module_code.lower())
 
                 if enable_frontend:
-                    create_node_modules_symlink(module_path)
                     install_frontend_dependencies(module_path)
                     # generation du fichier tsconfig.app.json
                     tsconfig_app_templating(app)
@@ -249,3 +247,16 @@ def update_module_configuration(module_code, build, prod):
         subprocess.call(["sudo", "supervisorctl", "reload"])
     app = get_app_for_cmd(with_external_mods=False)
     create_module_config(app, module_code.lower(), build=build)
+
+
+@main.command()
+@click.argument('module_path')
+def test(module_path):
+    import json
+    with open(module_path) as f:
+        package_json = json.load(f)
+        dependencies = package_json['dependencies']
+        print(dependencies)
+        for lib, version in dependencies.items():
+            print(lib)
+            print(version)

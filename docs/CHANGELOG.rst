@@ -9,17 +9,20 @@ CHANGELOG
 **🚀 Nouveautés**
 
 * Utilisation généralisée des nouvelles librairies de sérialisation (https://github.com/PnX-SI/Utils-Flask-SQLAlchemy et https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo)
+* Ajout du nom vernaculaire dans les fiches d'information des relevés d'Occtax (par @FloVollmer / #826)
 
 **🐛 Corrections**
 
 * Ajout d'un reference de l'objet Leaflet `L` afin qu'il soit utilisé dans les modules
-* Correction de l'installation de NodeJS et NPM par l'utilisation généralisée de NVM.
+* Correction de l'installation de NodeJS et NPM par l'utilisation généralisée de NVM (#832 et #837).
 * Possibilité de régler le timeout de gunicorn pour éviter le plantage lors de requêtes longues
+* Fixer la version de vitualenv (par @sogalgeeko)
 
 En cas d'erreur sur la version de NodeJS, voir https://github.com/PnX-SI/GeoNature/issues/832.
 
-Note de version:
-* Rajouter la ligne ``gun_timeout=30`` au fichier ``config/settings.ini``. Il s'agit du temps maximal (en seconde) autorisé pour chaque requête. A monter, si vous avez déjà rencontrer des problèmes de timeout
+**Note de version**
+
+* Rajouter la ligne ``gun_timeout=30`` au fichier ``config/settings.ini``. Il s'agit du temps maximal (en seconde) autorisé pour chaque requête. A augmenter, si vous avez déjà rencontré des problèmes de timeout
 
 2.3.0 - Occhab de Noël (2019-12-27)
 -----------------------------------
