@@ -1,5 +1,7 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject } from "rxjs/BehaviorSubject";
+import { FormControl } from "@angular/forms";
+import { BehaviorSubject } from "rxjs";
+import { filter } from "rxjs/operators";
 
 import { AppConfig } from "@geonature_config/app.config";
 import { HttpClient, HttpParams } from "@angular/common/http";
@@ -7,45 +9,45 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { ModuleConfig } from "../module.config";
 import { AuthService, User } from "@geonature/components/auth/auth.service";
 import { CommonService } from "@geonature_common/service/common.service";
+import { OcctaxDataService } from "../services/occtax-data.service";
 
 @Injectable()
 export class OcctaxFormService {
-  // boolean to check if its editionMode
-  public editionMode: boolean;
-  // subscription to get edition mode when data loaded in ajax
-  public editionMode$: BehaviorSubject<boolean> = new BehaviorSubject(null);
+  
+  //id du relevé récupérer en GET
   public id_releve_occtax: BehaviorSubject<number> = new BehaviorSubject(null);
+  //si ID en get récupération des données du relevé
+  public occtaxData: BehaviorSubject<any> = new BehaviorSubject(null);
 
   public currentUser: User;
   public disabled = true;
-  //public stayOnFormInterface = new FormControl(false);
+  public editionMode: boolean = false; // boolean to check if its editionMode
+  public stayOnFormInterface = new FormControl(false);
   
   constructor(
     private _http: HttpClient,
     private _route: ActivatedRoute,
     private _router: Router,
     private _auth: AuthService,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private _dataS: OcctaxDataService,
   ) {
-    this.getReleveId();
     this.currentUser = this._auth.getCurrentUser();
-
-    //si modification, récuperation de l'ID du relevé
-    let id = this._route.snapshot.paramMap.get('id');
-    if ( Number.isInteger(Number(id)) ) {
-      this.id_releve_occtax.next(Number(id));
-    } 
     
-    
-  } // end constructor
+    this.id_releve_occtax
+            .pipe(
+              filter(id=>id !== null)
+            )
+            .subscribe(id=>this.getOcctaxData(id))
+  }
 
-  private getReleveId(){
-    
-
-    //On vérifie si l'id de fichier à changé (pour recharger les infos au besoin)
-    //if ( this.fileDataS.file_id.getValue() !== Number(id_fichier) ) {
-    //  this.fileDataS.file_id.next(Number(id_fichier));
-    //} 
+  getOcctaxData(id) {
+    this._dataS.getOneReleve(id)
+                .pipe()
+                .subscribe(data=>{
+                  this.occtaxData.next(data);
+                  this.editionMode = true;
+                });
   }
 
   getDefaultValues(idOrg?: number, regne?: string, group2_inpn?: string) {

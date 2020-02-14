@@ -1,20 +1,16 @@
 import { Component, Input, OnInit, OnDestroy } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { Subscription } from "rxjs/Subscription";
-import { MapService } from "@geonature_common/map/map.service";
-import { FormService } from "@geonature_common/form/form.service";
-import { DataFormService } from "@geonature_common/form/data-form.service";
-//import { OcctaxFormService } from "../occtax-form.service";
-import { ViewEncapsulation } from "@angular/core";
+import { GeoJSON } from "leaflet";
 import { ModuleConfig } from "../../module.config";
-import { DateStruc } from "@geonature_common/form/date/date.component";
-import { filter } from "rxjs/operators";
+import { CommonService } from "@geonature_common/service/common.service";
+import { OcctaxFormService } from "../occtax-form.service";
+import { OcctaxFormReleveService } from "./releve.service";
+import { OcctaxFormMapService } from "../map/map.service";
 
 @Component({
   selector: "pnx-occtax-form-releve",
   templateUrl: "releve.component.html",
-  styleUrls: ["./releve.component.scss"],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ["./releve.component.scss"]
 })
 export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
 
@@ -27,57 +23,34 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   // public showTime: boolean = false;
   // public today: DateStruc = null;
   // public areasIntersected = new Array();
-  // public occtaxConfig: any;
   // private geojsonSubscription$: Subscription;
   // public isEditionSub$: Subscription;
+  public releveForm: FormGroup;
+  public occtaxConfig: any;
+  public geojson: GeoJSON;
 
   constructor(
-    // private _ms: MapService,
-    // private _dfs: DataFormService,
-    // public fs: OcctaxFormService,
-    // private _commonFormService: FormService
-  ) {}
+    public occtaxFormService: OcctaxFormService,
+    private occtaxFormReleveService: OcctaxFormReleveService,
+    private occtaxFormMapService: OcctaxFormMapService,
+    private commonService: CommonService
+  ) {
+    this.occtaxConfig = ModuleConfig;
+  }
 
   ngOnInit() {
+    this.releveForm = this.occtaxFormReleveService.form;
+
+    this.occtaxFormMapService.geojson
+                    .subscribe(geojson=>this.geojson = geojson);
     // this.occtaxConfig = ModuleConfig;
     // // subscription to the geojson observable
     // this.geojsonSubscription$ = this._ms.gettingGeojson$.subscribe(geojson => {
-    //   this.releveForm.patchValue({ geometry: geojson.geometry });
-    //   this.geojson = geojson;
-
-    //   // get to geo info from API
-    //   this._dfs.getGeoInfo(geojson).subscribe(res => {
-    //     this.releveForm.controls.properties.patchValue({
-    //       altitude_min: res.altitude.altitude_min,
-    //       altitude_max: res.altitude.altitude_max
-    //     });
-    //   });
 
     //   this._dfs.getFormatedGeoIntersection(geojson).subscribe(res => {
     //     this.areasIntersected = res;
     //   });
     // });
-
-    // // set today for the datepicker limit
-    // if (ModuleConfig.DATE_FORM_WITH_TODAY) {
-    //   const today = new Date();
-    //   this.today = {
-    //     year: today.getFullYear(),
-    //     month: today.getMonth() + 1,
-    //     day: today.getDate()
-    //   };
-    // }
-
-    // // Autocomplete date only if its not edition MODE
-    // this.isEditionSub$ = this.fs.editionMode$
-    //   .pipe(filter(isEdit => isEdit === false))
-    //   .subscribe(isEdit => {
-    //     if (isEdit === false) {
-    //       this._commonFormService.autoCompleteDate(
-    //         this.releveForm.controls.properties as FormGroup
-    //       );
-    //     }
-    //   });
 
     // // autcomplete hourmax + set null when empty
     // (this.releveForm.controls
@@ -112,12 +85,31 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     //   });
   } // END INIT
 
+  get dataset(): any {
+    let occtaxData = this.occtaxFormService.occtaxData.getValue();
+    if (occtaxData && occtaxData.releve.properties.dataset) {
+      return occtaxData.releve.properties.dataset;
+    }
+    return null;
+  }
+
   toggleTime() {
     // this.showTime = !this.showTime;
   }
 
   ngOnDestroy() {
+    console.log("destroy");
+    this.occtaxFormReleveService.reset();
     // this.geojsonSubscription$.unsubscribe();
     // this.isEditionSub$.unsubscribe();
+  }
+
+  formDisabled() {
+    if (this.occtaxFormService.disabled) {
+      this.commonService.translateToaster(
+        "warning",
+        "Releve.FillGeometryFirst"
+      );
+    }
   }
 }

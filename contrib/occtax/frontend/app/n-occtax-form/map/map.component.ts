@@ -57,6 +57,6 @@ export class OcctaxFormMapComponent implements OnInit, AfterViewInit {
   }
 
   sendGeoInfo(geojson) {
-    this.ms.geojson = geojson;
+    this.ms.geometry = geojson;
   }
 }

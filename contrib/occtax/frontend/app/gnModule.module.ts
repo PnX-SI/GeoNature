@@ -5,7 +5,6 @@ import { Routes, RouterModule } from "@angular/router";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 // Components
 import { OcctaxMapFormComponent } from "./occtax-map-form/occtax-map-form.component";
-import { OcctaxFormComponent as NOcctaxFormComponent } from "./n-occtax-form/occtax-form.component";
 import { ReleveComponent } from "./occtax-map-form/form/releve/releve.component";
 import { CountingComponent } from "./occtax-map-form/form/counting/counting.component";
 import { OccurrenceComponent } from "./occtax-map-form/form/occurrence/occurrence.component";
@@ -15,14 +14,16 @@ import { OcctaxMapListComponent } from "./occtax-map-list/occtax-map-list.compon
 import { OcctaxMapListFilterComponent } from "./occtax-map-list/filter/occtax-map-list-filter.component";
 import { OcctaxMapInfoComponent } from "./occtax-map-info/occtax-map-info.component";
 
+import { OcctaxFormComponent as NOcctaxFormComponent } from "./n-occtax-form/occtax-form.component";
 import { OcctaxFormMapComponent } from "./n-occtax-form/map/map.component";
-//import { OcctaxFormReleveComponent } from "./n-occtax-form/releve/releve.component";
+import { OcctaxFormReleveComponent } from "./n-occtax-form/releve/releve.component";
 // Service
 import { OcctaxDataService } from "./services/occtax-data.service";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 
 import { OcctaxFormService } from "./n-occtax-form/occtax-form.service";
 import { OcctaxFormMapService } from "./n-occtax-form/map/map.service";
+import { OcctaxFormReleveService } from "./n-occtax-form/releve/releve.service";
 
 import {
   MatSlideToggleModule
@@ -60,13 +61,14 @@ const routes: Routes = [
     OcctaxMapListComponent,
     OcctaxMapListFilterComponent,
     OcctaxFormMapComponent,
-    // OcctaxFormReleveComponent
+    OcctaxFormReleveComponent
   ],
   providers: [
     OcctaxDataService, 
     MapListService, 
     OcctaxFormService,
-    OcctaxFormMapService
+    OcctaxFormMapService,
+    OcctaxFormReleveService
   ],
   bootstrap: [OcctaxMapFormComponent]
 })

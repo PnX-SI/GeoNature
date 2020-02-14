@@ -4,6 +4,7 @@ import {
   FormControl,
   Validators
 } from "@angular/forms";
+import { BehaviorSubject } from "rxjs";
 import { GeoJSON } from "leaflet";
 import { filter, map } from "rxjs/operators";
 import { HttpClient, HttpParams } from "@angular/common/http";
@@ -12,12 +13,11 @@ import { OcctaxFormService } from '../occtax-form.service';
 @Injectable()
 export class OcctaxFormMapService {
  
-  public geometry: FormControl;
+  private _geometry: FormControl;
+  public geojson: BehaviorSubject<GeoJSON> = new BehaviorSubject(null);
 
-  get geojson() { 
-    return this.geometry.value; 
-  }
-  set geojson(geojson) { 
+  get geometry(): FormControl { return this._geometry; }
+  set geometry(geojson) { 
     if (JSON.stringify(geojson.geometry) !== JSON.stringify(this.geometry.value) ) {
       this.geometry.setValue(geojson.geometry); 
     }
@@ -28,7 +28,7 @@ export class OcctaxFormMapService {
     private _http: HttpClient,
     private occtaxFormService: OcctaxFormService
   ) {
-    this.geometry = new FormControl(null, Validators.required);
+    this._geometry = new FormControl(null, Validators.required);
 
     //Observe les données, si édition patch le formulaire par la valeur du relevé
     this.occtaxFormService.occtaxData
@@ -40,8 +40,9 @@ export class OcctaxFormMapService {
 
     //active la saisie si la geometry est valide
     this.geometry.valueChanges
-                .subscribe(geojson => {
+                .subscribe(geometry => {
                   this.occtaxFormService.disabled = this.geometry.invalid;
+                  this.geojson.next({geometry: geometry});
                 });
   } 
 
