@@ -1,25 +1,27 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, AfterViewInit } from "@angular/core";
+import { filter } from 'rxjs/operators';
 import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
 import { CommonService } from "@geonature_common/service/common.service";
 import { GeoJSON } from "leaflet";
 import { ModuleConfig } from "../../module.config";
 import { OcctaxFormMapService } from './map.service';
-import { OcctaxFormService } from '../occtax-form.service';
 
 @Component({
   selector: "pnx-occtax-form-map",
   templateUrl: "map.component.html"
 })
-export class OcctaxFormMapComponent implements OnInit {
+export class OcctaxFormMapComponent implements OnInit, AfterViewInit {
   
   public leafletDrawOptions: any;
   public firstFileLayerMessage = true;
   public occtaxConfig = ModuleConfig;
 
+  public coordinates = null;
+  public geojson = null;
+
   constructor(
     private ms: OcctaxFormMapService,
-    private _commonService: CommonService,
-    public fs: OcctaxFormService,
+    private _commonService: CommonService
   ) {}
 
   ngOnInit() {
@@ -31,6 +33,19 @@ export class OcctaxFormMapComponent implements OnInit {
     leafletDrawOption.draw.polyline = true;
     leafletDrawOption.edit.remove = false;
     this.leafletDrawOptions = leafletDrawOption;
+
+    this.ms.geometry
+                .valueChanges
+                .subscribe(geojson => {
+                  if (geojson.type == "Point") {
+                    // set the input for the marker component
+                    this.coordinates = geojson.coordinates;
+                  } else {
+                    // set the input for leafletdraw component
+                    this.geojson = geojson;
+                  }
+                });
+
   }
 
   // display help toaster for filelayer
@@ -42,16 +57,6 @@ export class OcctaxFormMapComponent implements OnInit {
   }
 
   sendGeoInfo(geojson) {
-    this.ms.geojson.next(geojson);
-  }
-
-  get coordinates(): Array<number> {
-    if ()
-    return null;
-  }
-
-  get geojson(): GeoJSON {
-    console.log(this.ms.geojson.getValue())
-    return this.ms.geojson.getValue();
+    this.ms.geojson = geojson;
   }
 }
