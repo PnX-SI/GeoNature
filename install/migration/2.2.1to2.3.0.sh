@@ -1,5 +1,7 @@
 . /home/`whoami`/geonature_old/config/settings.ini
 
+sudo supervisorctl stop geonature2
+
 mkdir /home/`whoami`/geonature/var/
 mkdir /home/`whoami`/geonature/var/log
 mkdir /home/`whoami`/geonature/tmp
