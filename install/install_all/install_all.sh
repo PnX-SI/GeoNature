@@ -313,6 +313,3 @@ sudo apache2ctl restart
 cd /home/`whoami`/geonature/frontend 
 nvm alias default
 echo "L'installation est terminée!"
-
-# reload terminal to make nvm (npm + node) available
-exec bash
