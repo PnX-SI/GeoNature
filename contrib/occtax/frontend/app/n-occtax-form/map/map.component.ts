@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { filter } from 'rxjs/operators';
 import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
 import { CommonService } from "@geonature_common/service/common.service";
@@ -10,7 +10,7 @@ import { OcctaxFormMapService } from './map.service';
   selector: "pnx-occtax-form-map",
   templateUrl: "map.component.html"
 })
-export class OcctaxFormMapComponent implements OnInit, AfterViewInit {
+export class OcctaxFormMapComponent implements OnInit {
   
   public leafletDrawOptions: any;
   public firstFileLayerMessage = true;
@@ -25,6 +25,7 @@ export class OcctaxFormMapComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
+    console.log("init map")
     // overight the leaflet draw object to set options
     // examples: enable circle =>  leafletDrawOption.draw.circle = true;
     leafletDrawOption.draw.circle = false;

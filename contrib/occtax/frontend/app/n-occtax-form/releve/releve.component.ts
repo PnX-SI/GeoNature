@@ -39,6 +39,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    console.log("init relevbe")
     this.releveForm = this.occtaxFormReleveService.form;
 
     this.occtaxFormMapService.geojson

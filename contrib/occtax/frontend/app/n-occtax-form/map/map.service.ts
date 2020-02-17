@@ -16,10 +16,10 @@ export class OcctaxFormMapService {
   private _geometry: FormControl;
   public geojson: BehaviorSubject<GeoJSON> = new BehaviorSubject(null);
 
-  get geometry(): FormControl { return this._geometry; }
-  set geometry(geojson) { 
-    if (JSON.stringify(geojson.geometry) !== JSON.stringify(this.geometry.value) ) {
-      this.geometry.setValue(geojson.geometry); 
+  get geometry() { return this._geometry; }
+  set geometry(geojson: GeoJSON) { 
+    if (JSON.stringify(geojson.geometry) !== JSON.stringify(this._geometry.value) ) {
+      this._geometry.setValue(geojson.geometry); 
     }
   }
 

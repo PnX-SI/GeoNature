@@ -1,10 +1,53 @@
-<div class="row row-0">
-  <div class="col-sm-12 col-md-7 padding-sm map-content">
-  	<div style="height: 92vh;">
-    	<pnx-occtax-form-map></pnx-occtax-form-map>
-    </div>
-  </div>
-  <div class="col-sm-12 col-md-5 padding-0 form">
-    <pnx-occtax-form-releve></pnx-occtax-form-releve>
-  </div>
+<div class="container-fluid">
+	<mat-card>
+		<mat-card-header>
+			<ul class="occtax-tabs">
+				<li class="occtax-tab">
+					<mat-icon class="example-tab-icon">place</mat-icon>
+					Relevé
+				</li>
+				<li class="occtax-tab">
+					<mat-icon class="example-tab-icon">emoji_nature</mat-icon>
+					Taxons
+				</li>
+			</ul>
+		</mat-card-header>
+		<mat-tab-group>
+
+			<mat-tab>
+			  <ng-template mat-tab-label>
+		      <mat-icon class="example-tab-icon">place</mat-icon>
+		      Relevé
+		    </ng-template>
+		    <ng-template matTabContent>
+		    	<div class="card-content" [ngStyle]="{'height.px': cardContentHeight}">
+		    		<div class="row" style="height: 100%">
+		    			<div class="col-lg-6" >
+			  				<pnx-occtax-form-map></pnx-occtax-form-map>
+		    			</div>
+		    			<div class="col-lg-6">
+			  				<pnx-occtax-form-releve></pnx-occtax-form-releve>
+		    			</div>
+		    		</div>
+	  			</div>
+			  </ng-template>
+		  </mat-tab>
+
+		  <mat-tab>
+			  <ng-template mat-tab-label>
+		      <mat-icon class="example-tab-icon">emoji_nature</mat-icon>
+		      Taxons
+		    </ng-template>
+		    <ng-template matTabContent>
+			    gnie
+			    gnie
+			  </ng-template>
+		  </mat-tab>
+
+		</mat-tab-group>
+	</mat-card>
 </div>
+
+
+
+

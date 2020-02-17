@@ -26,7 +26,8 @@ import { OcctaxFormMapService } from "./n-occtax-form/map/map.service";
 import { OcctaxFormReleveService } from "./n-occtax-form/releve/releve.service";
 
 import {
-  MatSlideToggleModule
+  MatSlideToggleModule,
+  MatTabsModule
 } from '@angular/material';
 
 const routes: Routes = [
@@ -47,6 +48,7 @@ const routes: Routes = [
     GN2CommonModule, 
     CommonModule, 
     MatSlideToggleModule, 
+    MatTabsModule,
     NgbModule
   ],
   declarations: [

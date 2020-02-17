@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { BehaviorSubject } from "rxjs";
-import { filter } from "rxjs/operators";
+import { filter, tap } from "rxjs/operators";
 
 import { AppConfig } from "@geonature_config/app.config";
 import { HttpClient, HttpParams } from "@angular/common/http";
@@ -21,7 +21,7 @@ export class OcctaxFormService {
 
   public currentUser: User;
   public disabled = true;
-  public editionMode: boolean = false; // boolean to check if its editionMode
+  public editionMode: BehaviorSubject<boolean> = new BehaviorSubject(false); // boolean to check if its editionMode
   public stayOnFormInterface = new FormControl(false);
   
   constructor(
@@ -34,8 +34,10 @@ export class OcctaxFormService {
   ) {
     this.currentUser = this._auth.getCurrentUser();
     
+    //observation de l'URL
     this.id_releve_occtax
             .pipe(
+              tap(()=>this.editionMode.next(false)), //reinitialisation du mode edition à faux
               filter(id=>id !== null)
             )
             .subscribe(id=>this.getOcctaxData(id))
@@ -46,7 +48,7 @@ export class OcctaxFormService {
                 .pipe()
                 .subscribe(data=>{
                   this.occtaxData.next(data);
-                  this.editionMode = true;
+                  this.editionMode.next(true);
                 });
   }
 
