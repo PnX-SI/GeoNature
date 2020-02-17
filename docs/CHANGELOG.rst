@@ -5,13 +5,6 @@ CHANGELOG
 2.3.1 (Unreleased)
 ------------------
 
-* A noter ?? En cas d'erreur sur la version de NodeJS, voir https://github.com/PnX-SI/GeoNature/issues/832.
-* Attention au ``sudo supervisorctl stop geonature2`` dans install/migration/2.2.1to2.3.0.sh
-* Merger Master dans Develop
-* Voir https://github.com/PnX-SI/GeoNature/compare/master...develop et DynamicForm et Multiselect et Validator...
-* MAJ versions des dépendances (UH et TH notamment)
-* remove node_module symlink
-
 **🚀 Nouveautés**
 
 * Installation globale : Compatibilité Debian 10 (PostgreSQL 11, PostGIS 2.5)
@@ -32,6 +25,7 @@ CHANGELOG
 
 **⚠️ Notes de version**
 
+* Vous pouvez passer directement à cette version depuis la 2.2.x, mais en suivant les notes de version des versions intermédiaires
 * Rajouter la ligne ``gun_timeout=30`` au fichier ``config/settings.ini``. Il s'agit du temps maximal (en seconde) autorisé pour chaque requête. A augmenter, si vous avez déjà rencontré des problèmes de timeout.
 
 2.3.0 - Occhab de Noël (2019-12-27)
@@ -112,25 +106,7 @@ CHANGELOG
 
 **⚠️ Notes de version**
 
-* Suivez les instructions suivantes pour effectuer la migration :
-
-Télécharger la nouvelle version :
-
-::
-
-    wget https://github.com/PnX-SI/GeoNature/archive/2.3.0.zip
-    unzip 2.3.0.zip
-    rm 2.3.0.zip
-
-Renommer l’ancien répertoire de l'application, ainsi que le nouveau :
-
-::
-
-    mv /home/`whoami`/geonature/ /home/`whoami`/geonature_old/
-    mv GeoNature-2.3.0 /home/`whoami`/geonature/
-    cd geonature
-
-* Lancer le script de migration SQL qui va installer et remplir le nouveau schéma ``ref_habitats`` avec Habref et mettre à jour le schéma ``ref_nomenclatures`` :
+* Lancer le script de migration qui va installer et remplir le nouveau schéma ``ref_habitats`` avec Habref et mettre à jour le schéma ``ref_nomenclatures`` :
 
 ::
 
@@ -142,21 +118,6 @@ Vérifier que la migration s'est bien déroulée dans le fichier ``var/log/2.2.1
 
 * Lancer le script SQL de mise à jour de la BDD de GeoNature https://raw.githubusercontent.com/PnX-SI/GeoNature/2.3.0/data/migrations/2.2.1to2.3.0.sql
 
-* Lancer enfin le script de migration habituel :
-
-::
-
-    cd /home/`whoami`/geonature
-    ./install/migration/migration.sh
-
-* Lancer cette commande pour définir la nouvelle version de NodeJS par défaut :
-
-::
-
-    nvm alias default 10.15.3
-
-En cas d'erreur sur la version de NodeJS, voir https://github.com/PnX-SI/GeoNature/issues/832.
-
 * Vous pouvez installer le nouveau module Occhab (Occurrences d'habitats) si vous le souhaitez :
 
 ::
@@ -166,19 +127,6 @@ En cas d'erreur sur la version de NodeJS, voir https://github.com/PnX-SI/GeoNatu
     geonature install_gn_module /home/`whoami`/geonature/contrib/gn_module_occhab /occhab
 
 * Lors de la migration (``/data/migrations/2.2.1to2.3.0.sql``), tous les JDD actifs sont associés par défaut au module Occtax (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.2.1to2.3.0.sql#L17-L22). A chacun d'adapter si besoin, en en retirant certains. Pour utiliser le module Occhab, vous devez y associer au moins un JDD.
-
-* NB : Si vous avez installé des modules externes autres que les modules du cœur (Occtax, Validation et Occhab), il faut recréer à la main des liens symboliques vers le repertoire ``node_modules`` du cœur pour chacun d'entre eux.
-
-::
-
-    ln -s /home/`whoami`/geonature/frontend/node_modules /home/`whoami`/<MODULE_NAME>/frontend/
-
-Relancer ensuite la compilation du frontend :
-
-::
-
-    cd frontend
-    npm run build
 
 2.2.1 (2019-10-09)
 ------------------
