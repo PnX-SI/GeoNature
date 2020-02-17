@@ -1,12 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
-  OnChanges,
-  enableProdMode
-} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { Map } from 'leaflet';
 import { MapService } from '../map.service';
 import { AppConfig } from '@geonature_config/app.config';
