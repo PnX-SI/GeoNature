@@ -1,6 +1,7 @@
-import { Component, OnInit, HostListener, Inject, ElementRef, AfterViewInit } from "@angular/core";
+import { Component, OnInit, HostListener, Inject, AfterViewInit } from "@angular/core";
 import { DOCUMENT } from '@angular/common';
 import { ActivatedRoute, Router } from "@angular/router";
+import { BehaviorSubject } from 'rxjs';
 import { ModuleConfig } from "../module.config";
 import { OcctaxFormService } from "./occtax-form.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
@@ -17,6 +18,8 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
 
   public occtaxConfig = ModuleConfig;
   public id;
+  releveUrl: string = null;
+  currentTab: 'releve'|'taxons';
   cardHeight: number;
   cardContentHeight: any;
 
@@ -24,7 +27,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     @Inject(DOCUMENT) document,
     private _route: ActivatedRoute,
     private _router: Router,
-    public fs: OcctaxFormService,
+    public occtaxFormService: OcctaxFormService,
     private _dfs: DataFormService,
     private _authService: AuthService
   ) { }
@@ -33,11 +36,19 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     //si modification, récuperation de l'ID du relevé
     let id = this._route.snapshot.paramMap.get('id');
     if ( id && Number.isInteger(Number(id)) ) {
-      this.fs.id_releve_occtax.next(Number(id));
+      this.occtaxFormService.id_releve_occtax.next(Number(id));
     } else {
-      this.fs.id_releve_occtax.next(null);
+      this.occtaxFormService.id_releve_occtax.next(null);
     }
 
+    //gestion de la route pour les occurrences
+    let urlSegments = this._router.routerState.snapshot.url.split('/');
+    if ( urlSegments[urlSegments.length-1] === 'taxons') {
+      this.currentTab = <'releve'|'taxons'> urlSegments.pop();
+    } else {
+      this.currentTab = 'releve';
+    }
+    this.releveUrl = urlSegments.join('/');
   }
 
   ngAfterViewInit() {
@@ -52,9 +63,10 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
   calcCardContentHeight(): void {
     let wH = window.innerHeight;
     let tbH = document.getElementById('app-toolbar').offsetHeight;
-    let nbH = (document.querySelector("pnx-occtax-form mat-tab-header") as ElementRef).offsetHeight;
+    let nbH = (<HTMLScriptElement><any>document.querySelector("pnx-occtax-form .tab")).offsetHeight;
 
-    this.cardContentHeight = wH -(tbH + nbH + 58);
+    let height = wH -(tbH + nbH + 40);
+    this.cardContentHeight = height >= 350 ? height : 350;
   }
 
 }

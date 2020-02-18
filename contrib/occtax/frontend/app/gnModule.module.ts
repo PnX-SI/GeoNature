@@ -34,6 +34,7 @@ const routes: Routes = [
   { path: "", component: OcctaxMapListComponent },
   { path: "form", component: NOcctaxFormComponent },
   { path: "form/:id", component: NOcctaxFormComponent, pathMatch: "full" },
+  { path: "form/:id/taxons", component: NOcctaxFormComponent, pathMatch: "full" },
   { path: "info/:id", component: OcctaxMapInfoComponent, pathMatch: "full" },
   {
     path: "info/id_counting/:id",

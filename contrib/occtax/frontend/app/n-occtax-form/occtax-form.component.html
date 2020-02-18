@@ -1,51 +1,47 @@
 <div class="container-fluid">
-	<mat-card>
-		<mat-card-header>
-			<ul class="occtax-tabs">
-				<li class="occtax-tab">
-					<mat-icon class="example-tab-icon">place</mat-icon>
-					Relevé
-				</li>
-				<li class="occtax-tab">
-					<mat-icon class="example-tab-icon">emoji_nature</mat-icon>
-					Taxons
-				</li>
-			</ul>
-		</mat-card-header>
-		<mat-tab-group>
+	<div class="occtax-form">
+		<div class="tab">
+		  <a 
+		  	[routerLink]="releveUrl"
+		  	class="tablinks" 
+		  	[class.active]="currentTab === 'releve'">
+		  	<mat-icon class="example-tab-icon">place</mat-icon>
+				Relevé
+		  </a>
+		  <a 
+		  	[routerLink]="[releveUrl, 'taxons']"
+		  	class="tablinks" 
+		  	[ngClass]="{'active': currentTab === 'taxons', 'disabled': !(occtaxFormService.editionMode|async)}"
+		  	>
+		  	<mat-icon class="example-tab-icon">emoji_nature</mat-icon>
+				Taxons
+		  </a>
+		</div>
 
-			<mat-tab>
-			  <ng-template mat-tab-label>
-		      <mat-icon class="example-tab-icon">place</mat-icon>
-		      Relevé
-		    </ng-template>
-		    <ng-template matTabContent>
-		    	<div class="card-content" [ngStyle]="{'height.px': cardContentHeight}">
-		    		<div class="row" style="height: 100%">
-		    			<div class="col-lg-6" >
-			  				<pnx-occtax-form-map></pnx-occtax-form-map>
-		    			</div>
-		    			<div class="col-lg-6">
-			  				<pnx-occtax-form-releve></pnx-occtax-form-releve>
-		    			</div>
-		    		</div>
-	  			</div>
-			  </ng-template>
-		  </mat-tab>
+		<div 
+			*ngIf="currentTab === 'releve'"
+			class="occtax-form-content" 
+			[ngStyle]="{'min-height.px': cardContentHeight}">
+			<div class="row" style="height: 100%">
+				<div class="col-xl-6 col-lg-7 col-sm-6" [ngStyle]="{'min-height.px': cardContentHeight}">
+					<pnx-occtax-form-map></pnx-occtax-form-map>
+				</div>
+				<div class="col-xl-6 col-lg-5 col-sm-6">
+					<pnx-occtax-form-releve></pnx-occtax-form-releve>
+				</div>
+			</div>
+		</div>
 
-		  <mat-tab>
-			  <ng-template mat-tab-label>
-		      <mat-icon class="example-tab-icon">emoji_nature</mat-icon>
-		      Taxons
-		    </ng-template>
-		    <ng-template matTabContent>
-			    gnie
-			    gnie
-			  </ng-template>
-		  </mat-tab>
+		<div 
+			*ngIf="currentTab === 'taxons'"
+			class="occtax-form-content" 
+			[ngStyle]="{'min-height.px': cardContentHeight}">
+			<div class="row" style="height: 100%">
+				Taxons
+			</div>
+		</div>
+	</div>
 
-		</mat-tab-group>
-	</mat-card>
 </div>
 
 

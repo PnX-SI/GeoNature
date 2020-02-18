@@ -20,7 +20,6 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   // public geojson: any;
   // public dataSets: any;
   // public geoInfo: any;
-  // public showTime: boolean = false;
   // public today: DateStruc = null;
   // public areasIntersected = new Array();
   // private geojsonSubscription$: Subscription;
@@ -28,6 +27,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   public releveForm: FormGroup;
   public occtaxConfig: any;
   public geojson: GeoJSON;
+  public showTime: boolean = false; //gestion de l'affichage des infos complémentaires de temps
 
   constructor(
     public occtaxFormService: OcctaxFormService,
