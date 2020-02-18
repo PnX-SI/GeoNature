@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-2.3.1 (Unreleased)
+2.3.1 (2020-02-18)
 ------------------
 
 **🚀 Nouveautés**
@@ -25,7 +25,7 @@ CHANGELOG
 
 **⚠️ Notes de version**
 
-* Vous pouvez passer directement à cette version depuis la 2.2.x, mais en suivant les notes de version des versions intermédiaires
+* Vous pouvez passer directement à cette version depuis la 2.2.x, mais en suivant les notes de version des versions intermédiaires (NB: il n'est pas necessaire passer le script ``migrate.sh`` des versions précedentes)
 * Rajouter la ligne ``gun_timeout=30`` au fichier ``config/settings.ini``. Il s'agit du temps maximal (en seconde) autorisé pour chaque requête. A augmenter, si vous avez déjà rencontré des problèmes de timeout.
 
 2.3.0 - Occhab de Noël (2019-12-27)
