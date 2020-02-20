@@ -7,7 +7,7 @@ CHANGELOG
 
 **🐛 Corrections**
 
-*
+* Correction d'une incohérence dans le décompte des JDD sur la page d'accueil (#752)
 
 2.3.1 (2020-02-18)
 ------------------
