@@ -29,15 +29,6 @@ Installation
 * Téléchargez la dernière version stable du module (``wget https://github.com/PnX-SI/gn_module_dashboard/archive/X.Y.Z.zip`` ou en cliquant sur le bouton GitHub "Clone or download" de cette page) dans ``/home/myuser/``
 * Dézippez la dans ``/home/myuser/`` (``unzip X.Y.Z.zip``)
 * Renommer le répertoire ``mv gn_module_dashboard-X.Y.Z gn_module_dashboard``
-* Créer un lien symbolique vers le répertoire ``node_modules`` de GeoNature ``ln -s /home/`whoami`/geonature/frontend/node_modules /home/`whoami`/gn_module_dashboard/frontend``
-* Installez les librairies frontend necessaire au module 
-
-::
-
-    cd /home/`whoami`/geonature/frontend 
-    npm install angular2-chartjs@0.2.0 chart.js@2.6.0 chartjs-plugin-labels@1.1.0 chartjs-plugin-piechart-outlabels@0.1.4 ng2-charts@1.6.0 ng2-nouislider@1.8.2 nouislider@13.1.5
-
-
 * Placez-vous dans le répertoire ``backend`` de GeoNature et lancez les commandes ``source venv/bin/activate`` puis ``geonature install_gn_module <mon_chemin_absolu_vers_le_module> <url_relative_du_module>`` pour installer le module (exemple ``geonature install_gn_module /home/`whoami`/gn_module_dashboard /dashboard``)
 * Complétez la configuration du module dans le fichier ``config/conf_gn_module.toml`` à partir des paramètres présents dans ``config/conf_gn_module.toml.example``, dont vous pouvez surcoucher les valeurs par défaut. Relancez la mise à jour de la configuration depuis le répertoire ``geonature/backend`` avec les commandes ``source venv/bin/activate`` puis ``geonature update_module_configuration DASHBOARD``
 * Vous pouvez sortir du venv en lançant la commande ``deactivate``
@@ -119,6 +110,39 @@ Mise à jour du module
         cd /home/`whoami`/geonature/backend
         source venv/bin/activate
         geonature update_module_configuration DASHBOARD
+
+
+Mise à jour du module
+---------------------
+
+- Téléchargez la nouvelle version du module
+
+  ```
+  wget https://github.com/PnX-SI/gn_module_dashboard/archive/X.Y.Z.zip
+  unzip X.Y.Z.zip
+  rm X.Y.Z.zip
+  ```
+
+- Renommez l'ancien et le nouveau répertoire
+
+  ```
+  mv /home/`whoami`/gn_module_dashboard /home/`whoami`/gn_module_dashboard_old
+  mv /home/`whoami`/gn_module_dashboard-X.Y.Z /home/`whoami`/gn_module_dashboard
+  ```
+
+- Rappatriez le fichier de configuration
+
+  ```
+  cp /home/`whoami`/gn_module_dashboard_old/config/conf_gn_module.toml   /home/`whoami`/gn_module_dashboard/config/conf_gn_module.toml
+  ```
+  
+  ```
+- Relancer la compilation en mettant à jour la configuration
+  ```
+  cd /home/`whoami`/geonature/backend
+  source venv/bin/activate
+  geonature update_module_configuration DASHBOARD
+  ```
 
 
 Licence
