@@ -53,6 +53,7 @@ def check_cruved_scope(
             user_permissions = get_user_permissions(
                 user, action, "SCOPE", module_code, object_code
             )
+
             # if object_code no heritage
             if object_code:
                 user_with_highter_perm = get_max_perm(user_permissions)
@@ -63,16 +64,18 @@ def check_cruved_scope(
                 # otherwise return GEONATURE permission
                 module_permissions = []
                 geonature_permission = []
-                # user_permissions is a array of at least 1 permission
-                # get the user from the first element of the array
+                # filter the GeoNature perm and the module perm in two
+                # arrays to make heritage
                 for user_permission in user_permissions:
                     if user_permission.module_code == module_code:
                         module_permissions.append(user_permission)
                     else:
                         geonature_permission.append(user_permission)
                 # take the max of the different permissions
+                # if no module permission take the max of GN perm
                 if len(module_permissions) == 0:
                     user_with_highter_perm = get_max_perm(geonature_permission)
+                # if at least one module perm: take the max of module perms
                 else:
                     user_with_highter_perm = get_max_perm(module_permissions)
             # if get_role = True : set info_role as kwargs
