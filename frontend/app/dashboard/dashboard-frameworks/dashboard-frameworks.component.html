@@ -2,7 +2,7 @@
     <div class="spinner-border text-secondary m-1" role="status" *ngIf="spinner"></div>
 </div>
 
-<div class="row row-md">
+<div  *ngIf="nbFrameworks > 0" class="row row-md">
     <div class="card-absolute">
         <em class="fa fa-lg fa-question-circle" style="padding-right: 0.2rem" aria-hidden="true"></em>
         <small>Cliquez sur
@@ -10,6 +10,10 @@
             pour les faire
             disparaître/réapparaître et actualiser le graphe.</small>
     </div>
+</div>
+
+<div *ngIf="nbFrameworks == 0" class="alert alert-primary" role="alert">
+    <strong>Le graphique s'affiche quand il y a plus d'un cadre d'acquisition</strong>
 </div>
 
 <div style="display: block" *ngIf="nbFrameworks > 0 && lineChartData.length===nbFrameworks">
