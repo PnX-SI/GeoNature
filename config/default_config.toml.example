@@ -6,7 +6,7 @@
 #
 # ATTENTION : Les paramètres qui ne sont pas dans une section (entre crochets) 
 #     doivent être au début du fichier !
-#     Les paramètres dans une section doivent être maintenu dans leur section.
+#     Les paramètres dans une section doivent être maintenus dans leur section.
 #
 # NOTES : après toute modification dans ce fichier, il est nécessaire de 
 #     mettre à jour GeoNature à l'aide de la commande :
@@ -17,7 +17,7 @@
 # URI de connexion à la base Postgresql utilisé par Psycopg2
 SQLALCHEMY_DATABASE_URI = "postgresql://monuser:monpassachanger@localhost:monport/mondbname"
 # Active (=true) ou pas (=false) le système de suivi de modification de SQLAlchemy
-# Note : l'API event de SQLAchemy n'étant pas utilisé, la désactivation économise des ressources.
+# Note : l'API event de SQLAchemy n'étant pas utilisée, la désactivation économise des ressources.
 SQLALCHEMY_TRACK_MODIFICATIONS = false
 
 # Application
@@ -25,11 +25,11 @@ SQLALCHEMY_TRACK_MODIFICATIONS = false
 # Nom de l'application dans la page d'accueil.
 appName = "GeoNature 2"
 
-# Langue par défaut utilisé par l'application.
-# Utilisé pour l'instant seulement avec les nomenclatures.
+# Langue par défaut utilisée par l'application.
+# Utilisée pour l'instant seulement avec les nomenclatures.
 DEFAULT_LANGUAGE = "fr"
 
-# Méthode d'encodage du mot de passe nécessaire à l'identification (hash or md5)
+# Méthode d'encodage du mot de passe nécessaire à l'identification (hash ou md5)
 PASS_METHOD = "hash"
 
 # Active le déboguage en mode développement avec Gunicorn
@@ -50,7 +50,7 @@ ID_APPLICATION_GEONATURE = 3
 # Type de session
 SESSION_TYPE = "filesystem"
 
-# Clé de salage utilisé pour la session. Remplacer 'super secret key' par un UUID par exemple.
+# Clé de salage utilisée pour la session. Remplacer 'super secret key' par un UUID par exemple.
 SECRET_KEY = "super secret key"
 
 # Temps de validité d'un cookie en secondes
@@ -69,27 +69,27 @@ API_LOG_LEVEL = 40
 # Code EPSG pour les geom locaux en base de données
 LOCAL_SRID = 2154
 
-# MTD
+# MTD (pour la connexion au webservice de métadonnées de l'INPN)
 XML_NAMESPACE = "{http://inpn.mnhn.fr/mtd}"
 MTD_API_ENDPOINT = "https://preprod-inpn.mnhn.fr/mtd"
 
 # Fichiers
 # BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-# Chemin du dossier où stocker les fichier depuis la racine du dossier 'backend'
+# Chemin du dossier où stocker les fichiers depuis la racine du dossier 'backend'
 UPLOAD_FOLDER = "static/medias"
 
-# Active (=true) ou pas (=false) l'envoie d'email pour chaque erreur du backend de GeoNature
+# Active (=true) ou pas (=false) l'envoi d'email pour chaque erreur du backend de GeoNature
 # Attention : si activé, il est nécessaire de remplir la secetion 'MAIL_CONFIG'.
 MAIL_ON_ERROR = false
 
 [USERSHUB]
     # URL de l'application Usershub
     URL_USERSHUB = "http://127.0.0.1:5001"
-    # Identifiant et mot de passe d'un compte 'Administrateur' dans Usershub
+    # Identifiant et mot de passe d'un compte 'Administrateur' dans UsersHub
     ADMIN_APPLICATION_LOGIN = "login_admin_usershub"
     ADMIN_APPLICATION_PASSWORD = "password_admin_usershub"
 
-# Configuration de l'envoie d'email pour FlaskMail et l'envoie par email des logs d'erreur
+# Configuration de l'envoi d'email pour FlaskMail et l'envoi par email des logs d'erreur
 # Cf. https://flask-mail.readthedocs.io/en/latest/#configuring-flask-mail
 [MAIL_CONFIG]
     MAIL_SERVER = "my_email_server"
@@ -137,10 +137,10 @@ MAIL_ON_ERROR = false
     # Affiche le composant 'custom/components/footer' sur la page d'accueil
     DISPLAY_FOOTER = false
 
-    # Affiche un bloc ce stat sur la page d'accueil
+    # Affiche un bloc de stat sur la page d'accueil
     DISPLAY_STAT_BLOC = true
 
-    # Affiche la carte des 100 obs sur la page d'accueil
+    # Affiche la carte des 100 dernieres observations sur la page d'accueil
     DISPLAY_MAP_LAST_OBS = true
 
     # Passe le frontend en mode multilingue (non implémenté pour l'instant)
@@ -157,7 +157,7 @@ MAIL_ON_ERROR = false
 
     # Coordonnées par défaut du centre de la carte à afficher
     # Attention : les coordonnées sont au format [Y, X]
-    # Cf leaflet configuration (https://leafletjs.com/reference-1.4.0.html#latlng-l-latlng)
+    # Cf Leaflet configuration (https://leafletjs.com/reference-1.4.0.html#latlng-l-latlng)
     CENTER = [46.52863469527167, 2.43896484375]
 
     # Zoom par défaut
@@ -166,13 +166,13 @@ MAIL_ON_ERROR = false
     # Zoom à partir duquel on peut pointer un relevé
     ZOOM_LEVEL_RELEVE = 15
 
-    # Zoom appliqué sur la carte lors du clique sur une liste
+    # Zoom appliqué sur la carte lors du clic sur une liste
     ZOOM_ON_CLICK = 16
 
 
 # Configuration du module Synthese
 [SYNTHESE]
-    # Liste des entités géographiques sur lesquels les filtres
+    # Liste des entités géographiques sur lesquelles les filtres
     # géographiques de la synthese s'appuient 
     # (id_area = id de l'entité géo, table ref_geo.bib_areas_types).
     # ATTENTION : Si de nouveaux types d'entités géographiques sont intégrés
@@ -185,7 +185,7 @@ MAIL_ON_ERROR = false
     ]
 
     # Colonne à afficher par défaut sur la liste des résultats de la synthese
-    # Choisir le champ 'prop' parmis les colonnes suivante :
+    # Choisir le champ 'prop' parmis les colonnes suivantes :
     # id_synthese, date_min, cd_nom, lb_nom, nom_vern_or_lb_nom, st_asgeojson, 
     # observers, dataset_name, url_source
     LIST_COLUMNS_FRONTEND = [
@@ -195,10 +195,10 @@ MAIL_ON_ERROR = false
         { prop = "dataset_name", name = "Jeu de données" }
     ]
     
-    # Nombre de résultat à afficher pour la rechercher autocompleté de taxon
+    # Nombre de résultats à afficher pour la recherche autocompletée de taxon
     TAXON_RESULT_NUMBER = 20
 
-    # Liste de 'id_attribut' Taxhub à afficher dans :
+    # Liste de 'id_attribut' TaxHub à afficher dans :
     # - la modale du détail d'une observation 
     # - les filtres taxonomique avancés
     ID_ATTRIBUT_TAXHUB = [102, 103]
@@ -209,28 +209,28 @@ MAIL_ON_ERROR = false
     EXCLUDED_COLUMNS = ["non_digital_proof"]
 
     # Affiche (=true) ou masque (=false) l'arbre de recherche taxonomique 
-    # dans la recherche taxonommique avancée.
-    # Cette fonctionnalité n'est pas actuallement stable sur un grand nombre de taxon.
+    # dans la recherche taxonomique avancée.
+    # Cette fonctionnalité n'est pas actuallement stable sur un grand nombre de taxons.
     # Passer à 'false' si le temps de chargement est trop long.
     DISPLAY_TAXON_TREE = true
 
     # Active (=true) ou pas (=false) le fait de rechercher sur le nom d'observateur 
-    # en 'ILIKE' sur les portée 1 et 2 du CRUVED
+    # en 'ILIKE' sur les portées 1 et 2 du CRUVED
     CRUVED_SEARCH_WITH_OBSERVER_AS_TXT = false
 
-    # Activer (=true) ou pas (=false) la clusterisation des couches sur la carte
+    # Activer (=true) ou pas (=false) la clusterisation des objets sur la carte
     # Si 'false', passez le NB_MAX_OBS_MAP à 10000 pour éviter 
     # de surcharger les navigateurs des clients (question de performances).
     ENABLE_LEAFLET_CLUSTER = true
 
-    # Nombre d'observation maximum à afficher sur la carte après une recherche
+    # Nombre d'observations maximum à afficher sur la carte après une recherche
     NB_MAX_OBS_MAP = 50000
 
     # Nombre des dernières observations affichées par défaut
     # sur la page d'accueil de la Synthèse 
     NB_LAST_OBS = 100
 
-    # Nombre max d'observation dans les exports
+    # Nombre max d'observations dans les exports
     NB_MAX_OBS_EXPORT = 50000
 
     # Noms des colonnes obligatoires de la vue ``gn_synthese.v_synthese_for_export``
@@ -345,7 +345,6 @@ MAIL_ON_ERROR = false
         attribut_name = "id_nomenclature_typ_grp"
         code_nomenclature_type = "TYP_GRP"
         required = false
-
 
 [SERVER]
     LOG_LEVEL = 20
