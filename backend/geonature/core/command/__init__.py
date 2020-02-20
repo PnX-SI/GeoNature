@@ -7,7 +7,7 @@ import geonature.core.command.create_gn_module
 
 # Load modules commands
 from geonature.utils.env import ROOT_DIR
-plugin_folder = os.path.join(ROOT_DIR, 'external_modules')
+plugin_folder = os.path.join(str(ROOT_DIR), 'external_modules')
 sys.path.insert(0, os.path.join(plugin_folder))
 
 for dirname in os.listdir(plugin_folder):
