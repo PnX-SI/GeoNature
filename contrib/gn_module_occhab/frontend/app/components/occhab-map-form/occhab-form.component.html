@@ -57,6 +57,10 @@
           (getBoundingBox)="loadDatasetGeom($event)"
         >
         </pnx-occhab-dataset-map-overlay> -->
+        <pnx-geojson 
+          [geojson]="mapListService.geojsonData"
+          [onEachFeature]="onEachFeature.bind(this)">
+        </pnx-geojson>
         <pnx-marker 
           [coordinates]="markerCoordinates" 
           zoomLevel="5"

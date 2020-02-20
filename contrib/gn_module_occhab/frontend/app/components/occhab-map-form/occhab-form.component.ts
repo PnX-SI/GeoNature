@@ -10,7 +10,10 @@ import { Subscription } from "rxjs/Subscription";
 import { CommonService } from "@geonature_common/service/common.service";
 import { AppConfig } from "@geonature_config/app.config";
 import { ModuleConfig } from "../../module.config";
+import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { filter } from "rxjs/operators";
+import * as moment from "moment";
+
 @Component({
   selector: "pnx-occhab-form",
   templateUrl: "occhab-form.component.html",
@@ -45,8 +48,11 @@ export class OccHabFormComponent implements OnInit {
     private _route: ActivatedRoute,
     private _router: Router,
     private _commonService: CommonService,
+    public mapListService: MapListService,
+
     private _gnDataService: DataFormService,
     private _mapService: MapService
+    
   ) {}
 
   ngOnInit() {
@@ -64,6 +70,24 @@ export class OccHabFormComponent implements OnInit {
       .subscribe(val => {
         this.occHabForm.patchDefaultNomenclaureStation(val);
       });
+
+    this.mapListService.geojsonData = null;
+
+    this.occHabForm.stationForm.controls.id_dataset.valueChanges.subscribe(v => {
+      if(this.occHabForm.stationForm.get('id_dataset').value != null){
+        this._occHabDataService.getStations({'id_dataset':this.occHabForm.stationForm.get('id_dataset').value}).subscribe(
+        featuresCollection => {
+            this.mapListService.geojsonData = featuresCollection;
+          },
+          // error callback
+          e => {
+            if (e.status == 500) {
+              this._commonService.translateToaster("error", "ErrorMessage");
+            }
+          }
+        );
+      }
+    });
   }
 
   ngAfterViewInit() {
@@ -89,6 +113,107 @@ export class OccHabFormComponent implements OnInit {
           });
       }
     });
+  }
+
+  originStyle = {
+    color: '#3388ff',
+    fill: false,
+    fillColor: '#f03',
+    fillOpacity: 0.2,
+    weight: 3
+  };
+
+  onEachFeature(feature, layer) {
+    layer.setStyle(this.originStyle);
+     // event from the map
+     layer.on({
+       contextmenu: () => {
+         // open popup
+         (layer as any).setStyle({ color: 'red', fill: true, fillOpacity: 0.2});
+         const leafletPopup: HTMLElement = document.createElement("div");
+         leafletPopup.style.maxHeight = "80vh";
+         leafletPopup.style.overflowY = "auto";
+     
+         const divObservateurs = document.createElement("div");
+         divObservateurs.innerHTML = "<b> Observateurs : </b> <br>";
+         divObservateurs.innerHTML =
+           divObservateurs.innerHTML +
+           this.displayObservateursTooltip(feature.properties).join(", ");
+     
+         const divDate = document.createElement("div");
+         divDate.innerHTML = "<b> Date : </b> <br>";
+         divDate.innerHTML =
+           divDate.innerHTML + this.displayDateTooltip(feature.properties);
+     
+         const divHab = document.createElement("div");
+         divHab.innerHTML = "<b> Habitats : </b> <br> ";
+     
+         divHab.style.marginTop = "5px";
+         let taxons = this.displayHabTooltip(feature.properties).join("<br>");
+         divHab.innerHTML = divHab.innerHTML + taxons;
+     
+         leafletPopup.appendChild(divObservateurs);
+         leafletPopup.appendChild(divDate);
+         leafletPopup.appendChild(divHab);
+ 
+        layer.bindPopup(leafletPopup).openPopup();
+       }
+     });
+ 
+     layer.on(
+       {
+         mouseout: () => {
+             layer.setStyle(this.originStyle);
+             layer.closePopup();
+             layer.unbindPopup();
+         }
+       });
+ 
+       layer.on(
+         {
+           click: () => {
+               layer.setStyle(this.originStyle);
+               layer.closePopup();
+               layer.unbindPopup();
+           }
+         });
+   }
+   displayDateTooltip(element): string {
+    return element.date_min == element.date_max
+      ? moment(element.date_min).format("DD-MM-YYYY")
+      : `Du ${moment(element.date_min).format("DD-MM-YYYY")} au ${moment(
+          element.date_max
+        ).format("DD-MM-YYYY")}`;
+  }
+
+  displayHabTooltip(row): string[] {
+    let tooltip = [];
+    if (row.t_habitats === undefined) {
+      tooltip.push("Aucun habitat");
+    } else {
+      for (let i = 0; i < row.t_habitats.length; i++) {
+        let occ = row.t_habitats[i];
+        tooltip.push(occ.nom_cite);
+      }
+    }
+    return tooltip.sort();
+  }
+
+  displayObservateursTooltip(row): string[] {
+    let tooltip = [];
+    if (row.observers === undefined) {
+      if (row.observers_txt !== null && row.observers_txt.trim() !== "") {
+        tooltip.push(row.observers_txt.trim());
+      } else {
+        tooltip.push("Aucun observateurs");
+      }
+    } else {
+      for (let i = 0; i < row.observers.length; i++) {
+        let obs = row.observers[i];
+        tooltip.push([obs.prenom_role, obs.nom_role].join(" "));
+      }
+    }
+    return tooltip.sort();
   }
 
   formIsDisable() {
