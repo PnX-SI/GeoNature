@@ -98,11 +98,7 @@ Mise à jour du module
         
         cp /home/`whoami`/gn_module_dashboard_old/config/conf_gn_module.toml       /home/`whoami`/gn_module_dashboard/config/conf_gn_module.toml
 
-- Refaire le lien symbolique vers les `node_modules`
 
-  ::
-           
-        ln -s /home/`whoami`/geonature/frontend/node_modules /home/`whoami`/gn_module_dashboard/frontend
 - Relancer la compilation en mettant à jour la configuration
 
   ::
