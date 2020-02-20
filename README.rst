@@ -96,7 +96,7 @@ Mise à jour du module
 
   ::
         
-        cp /home/`whoami`/gn_module_dashboard_old/config/conf_gn_module.toml       /home/`whoami`/gn_module_dashboard/config/conf_gn_module.toml
+        cp /home/`whoami`/gn_module_dashboard_old/config/conf_gn_module.toml /home/`whoami`/gn_module_dashboard/config/conf_gn_module.toml
 
 
 - Relancer la compilation en mettant à jour la configuration
@@ -107,38 +107,6 @@ Mise à jour du module
         source venv/bin/activate
         geonature update_module_configuration DASHBOARD
 
-
-Mise à jour du module
----------------------
-
-- Téléchargez la nouvelle version du module
-
-  ```
-  wget https://github.com/PnX-SI/gn_module_dashboard/archive/X.Y.Z.zip
-  unzip X.Y.Z.zip
-  rm X.Y.Z.zip
-  ```
-
-- Renommez l'ancien et le nouveau répertoire
-
-  ```
-  mv /home/`whoami`/gn_module_dashboard /home/`whoami`/gn_module_dashboard_old
-  mv /home/`whoami`/gn_module_dashboard-X.Y.Z /home/`whoami`/gn_module_dashboard
-  ```
-
-- Rappatriez le fichier de configuration
-
-  ```
-  cp /home/`whoami`/gn_module_dashboard_old/config/conf_gn_module.toml   /home/`whoami`/gn_module_dashboard/config/conf_gn_module.toml
-  ```
-  
-  ```
-- Relancer la compilation en mettant à jour la configuration
-  ```
-  cd /home/`whoami`/geonature/backend
-  source venv/bin/activate
-  geonature update_module_configuration DASHBOARD
-  ```
 
 
 Licence
