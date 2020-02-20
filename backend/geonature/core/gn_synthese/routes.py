@@ -23,6 +23,9 @@ from geonature.utils import filemanager
 from geonature.utils.env import DB, ROOT_DIR
 from geonature.utils.errors import GeonatureApiError
 
+from geonature.core.gn_meta.models import TDatasets
+from geonature.core.gn_meta.repositories import get_datasets_cruved
+
 from geonature.core.gn_synthese.models import (
     Synthese,
     TSources,
@@ -42,7 +45,6 @@ from geonature.core.ref_geo.models import LAreas, BibAreasTypes
 from geonature.core.gn_synthese.utils import query as synthese_query
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
-from geonature.core.gn_meta.models import TDatasets
 
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
@@ -643,9 +645,9 @@ def general_stats(info_role):
         - nb of distinct observer
         - nb ob datasets
     """
-    allowed_datasets = TDatasets.get_user_datasets(info_role)
+    allowed_datasets = get_datasets_cruved(info_role)
     q = DB.session.query(
-        func.count(Synthese.id_dataset),
+        func.count(Synthese.id_synthese),
         func.count(func.distinct(Synthese.cd_nom)),
         func.count(func.distinct(Synthese.observers)),
     )
