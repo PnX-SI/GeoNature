@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, Input } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
-import { BaseChartDirective } from "ng2-charts/ng2-charts";
+import { BaseChartDirective } from "ng2-charts";
 // Services
 import { DataService } from "../services/data.services";
 
@@ -119,7 +119,7 @@ export class DashboardTaxonomyComponent implements OnInit {
 
   // Pouvoir stoppper le chargement des données si un changement de filtre est opéré avant la fin du chargement
   public subscription: any;
-  // Gestion du spinner  
+  // Gestion du spinner
   public spinner = true;
 
   constructor(public dataService: DataService, public fb: FormBuilder) {

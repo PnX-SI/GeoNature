@@ -8,7 +8,6 @@ import {
 } from "@angular/core";
 import { FormBuilder, FormGroup, FormControl } from "@angular/forms";
 import { MapService } from "@geonature_common/map/map.service";
-import * as L from "leaflet";
 import { AppConfig } from "@geonature_config/app.config";
 import { ModuleConfig } from "../../module.config";
 // Services
@@ -198,7 +197,7 @@ export class DashboardMapsComponent
 
     //// Initialisation des variables formant la légende
     // Légende concernant le nombre d'observations
-    this.divLegendObs = L.DomUtil.create("div", "divLegend");
+    this.divLegendObs = this.mapService.L.DomUtil.create("div", "divLegend");
     this.divLegendObs.innerHTML += "<b>Nombre d'observations</b><br/>";
     var nb_classes = this.gradesObs.length;
     for (var i = 0; i < nb_classes; i++) {
@@ -212,7 +211,7 @@ export class DashboardMapsComponent
           : "+ </div>");
     }
     // Légende concernant le nombre de taxons
-    this.divLegendTax = L.DomUtil.create("div", "divLegend");
+    this.divLegendTax = this.mapService.L.DomUtil.create("div", "divLegend");
     this.divLegendTax.innerHTML += "<b>Nombre de taxons</b><br/>";
     var nb_classes = this.gradesTax.length;
     for (var i = 0; i < nb_classes; i++) {
@@ -274,7 +273,9 @@ export class DashboardMapsComponent
 
   ngAfterViewInit() {
     // Implémentation de la légende : par défaut, la carte affiche automatiquement le nombre d'observations
-    this.legend = (L as any).control({ position: "bottomright" });
+    this.legend = (this.mapService.L as any).control({
+      position: "bottomright"
+    });
     this.legend.onAdd = map => {
       return this.divLegendObs;
     };

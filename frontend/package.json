@@ -1,15 +1,14 @@
 {
-    "name": "dashboard",
-    "version": "0.0.0",
-    "license": "MIT",
-    "private": true,
-    "dependencies": {
-        "angular2-chartjs": "^0.2.0",
-        "chart.js": "^2.6.0",
-        "chartjs-plugin-labels": "^1.1.0",
-        "chartjs-plugin-piechart-outlabels": "^0.1.4",
-        "ng2-charts": "^1.6.0",
-        "ng2-nouislider": "1.8.2",
-        "nouislider": "13.1.5"
-    }
+  "name": "dashboard",
+  "version": "0.0.0",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "chartjs-plugin-labels": "^1.1.0",
+    "chartjs-plugin-piechart-outlabels": "^0.1.4",
+    "ng2-charts": "^1.6.0",
+    "ng2-nouislider": "1.8.2",
+    "nouislider": "13.1.5",
+    "tslib": "^1.10.0"
+  }
 }

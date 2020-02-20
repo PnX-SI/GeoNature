@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
-import { BaseChartDirective } from 'ng2-charts/ng2-charts';
+import { BaseChartDirective } from 'ng2-charts';
 // Services
 import { DataService } from "../services/data.services";
 
