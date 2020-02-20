@@ -2,12 +2,12 @@
 CHANGELOG
 =========
 
-0.2.0 (Unreleased)
+0.2.0 (2020-02-20)
 ------------------
 
 **🐛 Corrections**
 
-* Compatibilité GeoNature 2.3.0
+* Compatibilité GeoNature 2.3.1
 * Optimisation et non prise en compte des communes non actives
 * Révision de la documentation d'installation et de mis à jour
 
