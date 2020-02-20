@@ -3,6 +3,7 @@ import { CommonModule } from "@angular/common";
 import { GN2CommonModule } from "@geonature_common/GN2Common.module";
 import { Routes, RouterModule } from "@angular/router";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { GNPanelModule } from "@geonature/templates/gn-panel/gn-panel.module";
 // Components
 import { OcctaxMapFormComponent } from "./occtax-map-form/occtax-map-form.component";
 import { ReleveComponent } from "./occtax-map-form/form/releve/releve.component";
@@ -17,6 +18,9 @@ import { OcctaxMapInfoComponent } from "./occtax-map-info/occtax-map-info.compon
 import { OcctaxFormComponent as NOcctaxFormComponent } from "./n-occtax-form/occtax-form.component";
 import { OcctaxFormMapComponent } from "./n-occtax-form/map/map.component";
 import { OcctaxFormReleveComponent } from "./n-occtax-form/releve/releve.component";
+import { OcctaxFormOccurrenceComponent } from "./n-occtax-form/occurrence/occurrence.component";
+import { OcctaxFormTaxaListComponent } from "./n-occtax-form/taxa-list/taxa-list.component";
+import { OcctaxFormCountingComponent } from "./n-occtax-form/counting/counting.component";
 // Service
 import { OcctaxDataService } from "./services/occtax-data.service";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
@@ -24,6 +28,8 @@ import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { OcctaxFormService } from "./n-occtax-form/occtax-form.service";
 import { OcctaxFormMapService } from "./n-occtax-form/map/map.service";
 import { OcctaxFormReleveService } from "./n-occtax-form/releve/releve.service";
+import { OcctaxFormOccurrenceService } from "./n-occtax-form/occurrence/occurrence.service";
+import { OcctaxFormCountingService } from "./n-occtax-form/counting/counting.service";
 
 import {
   MatSlideToggleModule,
@@ -50,7 +56,8 @@ const routes: Routes = [
     CommonModule, 
     MatSlideToggleModule, 
     MatTabsModule,
-    NgbModule
+    NgbModule,
+    GNPanelModule
   ],
   declarations: [
     OcctaxMapFormComponent,
@@ -64,14 +71,19 @@ const routes: Routes = [
     OcctaxMapListComponent,
     OcctaxMapListFilterComponent,
     OcctaxFormMapComponent,
-    OcctaxFormReleveComponent
+    OcctaxFormReleveComponent,
+    OcctaxFormOccurrenceComponent,
+    OcctaxFormTaxaListComponent,
+    OcctaxFormCountingComponent
   ],
   providers: [
     OcctaxDataService, 
     MapListService, 
     OcctaxFormService,
     OcctaxFormMapService,
-    OcctaxFormReleveService
+    OcctaxFormReleveService,
+    OcctaxFormOccurrenceService,
+    OcctaxFormCountingService
   ],
   bootstrap: [OcctaxMapFormComponent]
 })

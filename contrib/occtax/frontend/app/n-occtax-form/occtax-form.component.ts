@@ -38,6 +38,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     if ( id && Number.isInteger(Number(id)) ) {
       this.occtaxFormService.id_releve_occtax.next(Number(id));
     } else {
+      id = null;
       this.occtaxFormService.id_releve_occtax.next(null);
     }
 
@@ -49,6 +50,11 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
       this.currentTab = 'releve';
     }
     this.releveUrl = urlSegments.join('/');
+
+    //Vérification de la route taxons avec un ID de releve, sinon redirection
+    if (this.currentTab === 'taxons' && id === null) {
+      this._router.navigate([this.releveUrl])
+    }
   }
 
   ngAfterViewInit() {

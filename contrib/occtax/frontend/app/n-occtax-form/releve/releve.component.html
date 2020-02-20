@@ -17,7 +17,7 @@
     <!-- OBSERVATEURS -->
     <pnx-observers 
       *ngIf="!occtaxConfig.observers_txt; else elseBlock"
-      [parentFormControl]="releveForm.get('observers')" 
+      [parentFormControl]="propertiesForm.get('observers')" 
       [idMenu]="occtaxConfig.id_observers_list"
       [disabled]="occtaxFormService.disabled" 
       label="{{ 'Releve.Observers' | translate }}" 
@@ -25,7 +25,7 @@
     </pnx-observers>
     <ng-template #elseBlock>
       <pnx-observers-text 
-        [parentFormControl]="releveForm.get('observers_txt')" 
+        [parentFormControl]="propertiesForm.get('observers_txt')" 
         [disabled]="occtaxFormService.disabled">
       </pnx-observers-text>
     </ng-template>
@@ -34,7 +34,7 @@
     <pnx-datasets 
       *ngIf="dataset?.active || true; else elseblocDataset"
       label="{{ 'MetaData.Datasets' | translate }}" 
-      [parentFormControl]="releveForm.get('id_dataset')"
+      [parentFormControl]="propertiesForm.get('id_dataset')"
       [disabled]="occtaxFormService.disabled"
       moduleCode="OCCTAX">
     </pnx-datasets>
@@ -66,7 +66,7 @@
       *ngIf="occtaxConfig.form_fields.date_min" 
       label="{{ 'Releve.MinDate' | translate }}" 
       [defaultToday]="occtaxConfig.DATE_FORM_WITH_TODAY" 
-      [parentFormControl]="releveForm.get('date_min')"
+      [parentFormControl]="propertiesForm.get('date_min')"
       [disabled]="occtaxFormService.disabled">
     </pnx-date>
   </div>
@@ -76,7 +76,7 @@
     <pnx-date 
       *ngIf="occtaxConfig.form_fields.date_max" 
       label="{{ 'Releve.MaxDate' | translate }} " 
-      [parentFormControl]="releveForm.get('date_max')"
+      [parentFormControl]="propertiesForm.get('date_max')"
       [disabled]="occtaxFormService.disabled">
     </pnx-date>
   </div>
@@ -103,8 +103,8 @@
       class="form-group">
       <small> {{'Releve.HourMin' | translate }} </small>
       <input 
-        [ngClass]="{'is-invalid' : releveForm.get('hour_min').invalid}" 
-        [formControl]="releveForm.get('hour_min')"
+        [ngClass]="{'is-invalid' : propertiesForm.get('hour_min').invalid}" 
+        [formControl]="propertiesForm.get('hour_min')"
         class="form-control form-control-sm" 
         type="text" 
         placeholder="{{'Releve.HourFormat' | translate }}"
@@ -119,8 +119,8 @@
       class="form-group">
       <small> {{'Releve.HourMax' | translate }} </small>
       <input 
-        [ngClass]="{'is-invalid' : releveForm.get('hour_max').invalid}" 
-        [formControl]="releveForm.get('hour_max')"
+        [ngClass]="{'is-invalid' : propertiesForm.get('hour_max').invalid}" 
+        [formControl]="propertiesForm.get('hour_max')"
         class="form-control form-control-sm" 
         type="text" 
         placeholder="{{'Releve.HourFormat' | translate }}"
@@ -139,7 +139,7 @@
       <input 
         class="form-control form-control-sm" 
         type="number" 
-        [formControl]="releveForm.get('altitude_min')"
+        [formControl]="propertiesForm.get('altitude_min')"
         [disableControl]="occtaxFormService.disabled">
     </div>
   </div>
@@ -151,7 +151,7 @@
       <input 
         class="form-control form-control-sm" 
         type="number" 
-        [formControl]="releveForm.get('altitude_max')"
+        [formControl]="propertiesForm.get('altitude_max')"
         [disableControl]="occtaxFormService.disabled">
     </div>
   </div>
@@ -161,7 +161,7 @@
     <pnx-nomenclature 
       *ngIf="occtaxConfig.form_fields.group_type" 
       label="{{ 'Releve.GroupType' | translate }}" 
-      [parentFormControl]="releveForm.get('id_nomenclature_grp_typ')"
+      [parentFormControl]="propertiesForm.get('id_nomenclature_grp_typ')"
       codeNomenclatureType="TYP_GRP" 
       [disabled]="occtaxFormService.disabled">
     </pnx-nomenclature>
@@ -175,7 +175,7 @@
 <pnx-nomenclature 
   *ngIf="occtaxConfig.form_fields.obs_technique" 
   label="{{ 'Releve.ObsTechnique' | translate }}" 
-  [parentFormControl]="releveForm.get('id_nomenclature_obs_technique')"
+  [parentFormControl]="propertiesForm.get('id_nomenclature_obs_technique')"
   codeNomenclatureType="TECHNIQUE_OBS" 
   [disabled]="occtaxFormService.disabled">
 </pnx-nomenclature>
@@ -189,7 +189,7 @@
   <small> {{ 'Releve.Comment' | translate }} </small>
   <textarea 
     class="form-control" 
-    [formControl]="releveForm.get('comment')">
+    [formControl]="propertiesForm.get('comment')">
   </textarea>
 </div>
 
@@ -197,14 +197,18 @@
   <ng-container *ngIf="!(occtaxFormService.editionMode|async); else modifButton">
     <button 
       class="btn btn-primary"
-      matTooltip="Enregistrer le relevé et saisir les taxons">
+      matTooltip="Enregistrer le relevé et saisir les taxons"
+      [disabled]="releveForm.invalid"
+      (click)="submitReleveForm()">
       Enregistrer
     </button> 
   </ng-container>
   <ng-template #modifButton>
     <button 
       class="btn btn-primary"
-      matTooltip="Modifier le relevé">
+      matTooltip="Modifier le relevé"
+      [disabled]="propertiesForm.invalid"
+      (click)="submitReleveForm()">
       Modifier
     </button> 
   </ng-template>

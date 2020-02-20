@@ -8,7 +8,7 @@
   </pnx-marker>
 
   <pnx-leaflet-draw 
-    [geojson]="geojson" 
+    [geojson]="geometry" 
     [options]="leafletDrawOptions" 
     [zoomLevel]="occtaxConfig.releve_map_zoom_level"
     (layerDrawed)="sendGeoInfo($event)">

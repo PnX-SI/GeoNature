@@ -1,0 +1,233 @@
+<h5>Occurrence</h5>
+
+<div class="row">
+  <div class="col-sm-6">
+    <pnx-taxonomy 
+      #taxon 
+      label="{{ 'Taxon.NomCite' | translate }}" 
+      [parentFormControl]="occurrenceForm.get('nom_cite')"
+      [idList]="occtaxConfig.id_taxon_list" 
+      [charNumber]="3" 
+      [listLength]="occtaxConfig.taxon_result_number" 
+      (onChange)="onSelectTaxon($event);" 
+      [displayAdvancedFilters]=true>
+    </pnx-taxonomy>
+  </div>
+  <div class="col-sm-6 align-self-end">
+    <small> Taxref </small>
+    <span 
+      class="form-control form-control-sm form-nom-complet" 
+      [innerHTML]="(occtaxFormOccurrenceService.taxref|async)?.search_name">
+    </span>
+    
+  </div>
+</div>
+
+<div class="row">
+  <div 
+    *ngIf="occtaxConfig.form_fields.determiner"
+    class="col-sm-6">
+    <small> {{ 'Taxon.Determiner' | translate }} </small>
+    <input 
+      class="form-control form-control-sm" 
+      [formControl]="occurrenceForm.get('determiner')" 
+      type="text">
+  </div>
+
+  <div 
+    *ngIf="occtaxConfig.form_fields.determination_method"
+    class="col-sm-6">
+    <pnx-nomenclature 
+      label="{{ 'Taxon.DeterminationMethod' | translate }}" 
+      [parentFormControl]="occurrenceForm.get('id_nomenclature_determination_method')"
+      codeNomenclatureType="METH_DETERMIN" 
+      [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne" 
+      [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
+    </pnx-nomenclature>
+  </div>
+</div>
+
+<div style="margin-top: 10px;">
+  <button 
+    type="button" 
+    class="btn btn-outline-shadow btn-sm"
+    (click)='collapse()'>
+    <i class="fa fa-cog" aria-hidden="true"></i>
+    {{ 'Taxon.Advanced' | translate }}
+  </button>
+</div>
+
+<div [@detailExpand]='advanced'>
+  <div class="row">
+    <div 
+      *ngIf="occtaxConfig.form_fields.observation_status"
+      class="col-lg-4 col-sm-6">
+      <pnx-nomenclature 
+        label="{{ 'Taxon.ObservationStatus' | translate }}" 
+        [parentFormControl]="occurrenceForm.get('id_nomenclature_observation_status')"
+        codeNomenclatureType="STATUT_OBS">
+      </pnx-nomenclature>
+    </div>
+
+    <div 
+      *ngIf="occtaxConfig.form_fields.obs_method"
+      class="col-lg-4 col-sm-6">
+      <pnx-nomenclature 
+        label="{{ 'Taxon.ObsMethod' | translate }}" 
+        [parentFormControl]="occurrenceForm.get('id_nomenclature_obs_meth')"
+        codeNomenclatureType="METH_OBS" 
+        [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne" 
+        [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
+      </pnx-nomenclature>
+    </div>
+
+    <div 
+      *ngIf="occtaxConfig.form_fields.bio_condition"
+      class="col-lg-4 col-sm-6">
+      <pnx-nomenclature 
+        label="{{ 'Taxon.BiologicalCondition' | translate }}" 
+        [parentFormControl]="occurrenceForm.get('id_nomenclature_bio_condition')"
+        codeNomenclatureType="ETA_BIO" 
+        [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne" 
+        [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
+      </pnx-nomenclature>
+    </div>
+
+    <div 
+      *ngIf="occtaxConfig.form_fields.naturalness"
+      class="col-lg-4 col-sm-6">
+      <pnx-nomenclature 
+        label="{{ 'Taxon.Naturalness' | translate }}" 
+        [parentFormControl]="occurrenceForm.get('id_nomenclature_naturalness')"
+        codeNomenclatureType="NATURALITE" 
+        [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne" 
+        [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
+      </pnx-nomenclature>
+    </div>
+
+    <div 
+      *ngIf="occtaxConfig.form_fields.bio_status"
+      class="col-lg-4 col-sm-6">
+      <pnx-nomenclature 
+        label="{{ 'Taxon.BiologicalStatus' | translate }}" 
+        [parentFormControl]="occurrenceForm.get('id_nomenclature_bio_status')"
+        codeNomenclatureType="STATUT_BIO" 
+        [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne" 
+        [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
+      </pnx-nomenclature>
+    </div>
+
+    <div 
+      *ngIf="occtaxConfig.form_fields.source_status"
+      class="col-lg-4 col-sm-6">
+      <pnx-nomenclature 
+        label="{{ 'Taxon.StatusSource' | translate }}" 
+        [parentFormControl]="occurrenceForm.get('id_nomenclature_source_status')"
+        codeNomenclatureType="STATUT_SOURCE">
+      </pnx-nomenclature>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div 
+      *ngIf="occtaxConfig.form_fields.diffusion_level"
+      class="col-lg-4 col-sm-6">
+      <pnx-nomenclature 
+        label="{{ 'Taxon.DiffusionLevel' | translate }}" 
+        [parentFormControl]="occurrenceForm.get('id_nomenclature_diffusion_level')"
+        codeNomenclatureType="NIV_PRECIS">
+      </pnx-nomenclature>
+    </div>
+
+    <div 
+      *ngIf="occtaxConfig.form_fields.blurring"
+      class="col-lg-4 col-sm-6">
+      <pnx-nomenclature 
+        label="{{ 'Taxon.Blurring' | translate }}" 
+        [parentFormControl]="occurrenceForm.get('id_nomenclature_blurring')"
+        codeNomenclatureType="DEE_FLOU">
+      </pnx-nomenclature>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div 
+      *ngIf="occtaxConfig.form_fields.exist_proof"
+      class="col-lg-4 col-sm-6">
+      <pnx-nomenclature 
+        #existProof
+        label="{{ 'Taxon.ExistProof' | translate }}" 
+        [parentFormControl]="occurrenceForm.get('id_nomenclature_exist_proof')"
+        codeNomenclatureType="PREUVE_EXIST" 
+        [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne" 
+        [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn"
+        (labelsLoaded)="getLabels($event)">
+      </pnx-nomenclature>
+    </div>
+
+    <div 
+      *ngIf="occtaxConfig.form_fields.digital_proof"
+      class="col-lg-4 col-sm-6">
+      <div class="form-group">
+        <small> {{ 'Taxon.DigitalProof' | translate }} </small>
+        <input 
+          [ngClass]="{'is-invalid' : occurrenceForm.get('digital_proof').invalid}" 
+          class="form-control form-control-sm"
+          [formControl]="occurrenceForm.get('digital_proof')" 
+          type="text">
+      </div>
+      <small 
+        *ngIf="occtaxConfig?.digital_proof_validator && occurrenceForm.errors?.invalidDigitalProof"
+        class="red">
+        {{ 'Taxon.ExistProofValidation' | translate }}
+      </small>
+    </div>
+
+    <div 
+      *ngIf="occtaxConfig.form_fields.non_digital_proof"
+      class="col-lg-4 col-sm-6">
+      <div class="form-group">
+        <small> {{ 'Taxon.NonDigitalProof' | translate }} </small>
+        <input 
+          [ngClass]="{'is-invalid' : occurrenceForm.get('non_digital_proof').invalid}" 
+          class="form-control form-control-sm"
+          [formControl]="occurrenceForm.get('non_digital_proof')" 
+          type="text">
+      </div>
+    </div>
+    <small 
+      *ngIf="occurrenceForm.errors?.existproofError" 
+      class="error" 
+      style="color:red">
+      {{'Taxon.ExistproofError' |translate}}      
+    </small>
+    <small 
+      *ngIf="occurrenceForm.errors?.noExistProofError" 
+      class="error" 
+      style="color:red">
+      {{'Taxon.NoExistProofError' |translate}}
+    </small>
+  </div>
+
+
+  <div 
+    *ngIf="occtaxConfig.form_fields.comment_occ">
+    <textarea 
+      placeholder="{{ 'Releve.Comment' | translate }}" 
+      class="form-control" 
+      [formControl]="occurrenceForm.get('comment')"
+      rows="2" 
+      id="commentaire">
+    </textarea>
+  </div>
+</div>
+      
+  
+<h5>Dénombrement</h5>  
+
+<!-- <ng-container *ngFor="let formCounting of occurrenceForm.get('cor_counting_occtax').controls; index as i">
+  counting
+  <pnx-occtax-form-counting [form]="formCounting"></pnx-occtax-form-counting>
+</ng-container> -->

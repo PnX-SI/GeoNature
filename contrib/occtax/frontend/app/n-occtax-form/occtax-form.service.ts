@@ -40,7 +40,7 @@ export class OcctaxFormService {
               tap(()=>this.editionMode.next(false)), //reinitialisation du mode edition à faux
               filter(id=>id !== null)
             )
-            .subscribe(id=>this.getOcctaxData(id))
+            .subscribe(id=>this.getOcctaxData(id));
   }
 
   getOcctaxData(id) {

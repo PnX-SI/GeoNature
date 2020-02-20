@@ -59,6 +59,7 @@ import { DumbSelectComponent } from '@geonature_common/form/dumb-select/dumb-sel
 
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
+import { DisplayMouseOverDirective } from './directive/display-mouse-over.directive';
 
 // pipe
 import { ReadablePropertiePipe } from './pipe/readable-propertie.pipe';
@@ -115,6 +116,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MapListComponent,
     MapDataComponent,
     DisableControlDirective,
+    DisplayMouseOverDirective,
     ReadablePropertiePipe,
     DatasetsComponent,
     MapListGenericFiltersComponent,
@@ -164,6 +166,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MapListComponent,
     MapDataComponent,
     DisableControlDirective,
+    DisplayMouseOverDirective,
     ReadablePropertiePipe,
     DatasetsComponent,
     ModalDownloadComponent,

@@ -4,8 +4,9 @@ import {
   FormGroup,
   Validators
 } from "@angular/forms";
-import { forkJoin } from "rxjs";
-import { filter, map } from "rxjs/operators";
+import { Observable, Subscription } from "rxjs";
+import { filter, map, switchMap, tap } from "rxjs/operators";
+import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { GeoJSON } from "leaflet";
 import { AppConfig } from "@geonature_config/app.config";
 import { ModuleConfig } from "../../module.config";
@@ -16,101 +17,107 @@ import { OcctaxFormMapService } from '../map/map.service';
 
 @Injectable()
 export class OcctaxFormReleveService {
-  public defaultValues: any;
-  public defaultValuesLoaded = false;
   public userReleveRigth: any;
-  public currentHourMax: string;
-  public currentReleve: any;
+  public $_autocompleteDate: Subscription = new Subscription();
 
-  public form: FormGroup;
+  public propertiesForm: FormGroup;
   public releve: any;
   public geojson: GeoJSON;
+  public releveForm: FormGroup;
+
 
   constructor(
-    private _fb: FormBuilder,
+    private fb: FormBuilder,
+    private dateParser: NgbDateParserFormatter,
     private coreFormService: FormService,
     private dataFormService: DataFormService,
     private occtaxFormService: OcctaxFormService,
     private occtaxFormMapService: OcctaxFormMapService
   ) {
-    this.currentHourMax = null;
-
-    this.initForm();
+    this.initPropertiesForm();
     this.setObservables();
+
+    this.releveForm = this.fb.group({
+      geometry: this.occtaxFormMapService.geometry,
+      properties: this.propertiesForm
+    });
   }
 
-  initForm(): void {
+  private get initialValues() {
+    return {
+      id_digitiser: this.occtaxFormService.currentUser.id_role,
+      meta_device_entry: "web",
+      observers: [this.occtaxFormService.currentUser]
+    };
+  }
+
+  initPropertiesForm(): void {
     //FORM
-    this.form = this._fb.group({
-      id_releve_occtax: null,
+    this.propertiesForm = this.fb.group({
+      // id_releve_occtax: null,
       id_dataset: [null, Validators.required],
-      id_digitiser: this.occtaxFormService.currentUser.id_role, //initialisation par l'user en cours
+      id_digitiser: null,
       date_min: [null, Validators.required],
       date_max: [null, Validators.required],
-      hour_min: [
-        null,
-        Validators.pattern(
-          "^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$"
-        )
-      ],
-      hour_max: [
-        null,
-        Validators.pattern(
-          "^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$"
-        )
-      ],
+      hour_min: [null, Validators.pattern("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$")],
+      hour_max: [null, Validators.pattern("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$")],
       altitude_min: null,
       altitude_max: null,
-      meta_device_entry: "web",
+      meta_device_entry: null,
       comment: null,
       id_nomenclature_obs_technique: [null, Validators.required],
-      observers: [
-        [this.occtaxFormService.currentUser], //initialisation par l'user en cours
-        !ModuleConfig.observers_txt ? Validators.required : null
-      ],
-      observers_txt: [
-        null,
-        ModuleConfig.observers_txt ? Validators.required : null
-      ],
-      id_nomenclature_grp_typ: null,
-      t_occurrences_occtax: [new Array()]
+      observers: [null, (!ModuleConfig.observers_txt ? Validators.required : null)],
+      observers_txt: [ null, (ModuleConfig.observers_txt ? Validators.required : null)],
+      id_nomenclature_grp_typ: null
     });
 
+    this.propertiesForm.patchValue(this.initialValues);
+
     // VALIDATORS
-    this.form.setValidators([
+    this.propertiesForm.setValidators([
       this.coreFormService.dateValidator(
-        this.form.get("date_min"),
-        this.form.get("date_max")
+        this.propertiesForm.get("date_min"),
+        this.propertiesForm.get("date_max")
       ),
       this.coreFormService.hourAndDateValidator(
-        this.form.get("date_min"),
-        this.form.get("date_max"),
-        this.form.get("hour_min"),
-        this.form.get("hour_max")
+        this.propertiesForm.get("date_min"),
+        this.propertiesForm.get("date_max"),
+        this.propertiesForm.get("hour_min"),
+        this.propertiesForm.get("hour_max")
       ),
       this.coreFormService.altitudeValidator(
-        this.form.get("altitude_min"),
-        this.form.get("altitude_max")
+        this.propertiesForm.get("altitude_min"),
+        this.propertiesForm.get("altitude_max")
       )
     ]);
-
   }
 
+
+  /**
+  * Initialise les observables pour la mise en place des actions automatiques
+  **/
   private setObservables() {
 
-    // Mise en forme de la date à partir des données de l'API
-    this.occtaxFormService.occtaxData
-            .pipe(
-              filter(data=> data && data.releve.properties),
-              map(data=>{
-                let releve = data.releve.properties;
-                releve.date_min = this.formatDate(releve.date_min);
-                releve.date_max = this.formatDate(releve.date_max);
-                return releve;
-              })
-            )
-            .subscribe(releve=>this.form.patchValue(releve));
-
+    //patch le form par les valeurs par defaut si creation
+    this.occtaxFormService.editionMode
+      .pipe(
+        tap((editionMode: boolean)=>{
+          // gestion de l'autocomplétion de la date ou non.
+          this.$_autocompleteDate.unsubscribe();
+          if (!editionMode) {
+            this.$_autocompleteDate = this.coreFormService.autoCompleteDate(
+                      this.propertiesForm as FormGroup,
+                      'date_min',
+                      'date_max'
+                    );
+          } 
+        }),
+        switchMap((editionMode: boolean) => {
+          //Le switch permet, selon si édition ou creation, de récuperer les valeur par defaut ou celle de l'API
+          return editionMode ? this.releveValues : this.defaultValues;
+        })
+      ).subscribe(values=>this.propertiesForm.patchValue(values))//filter((editionMode: boolean) => !editionMode))
+    
     //Observation de la geometry pour récupere les info d'altitudes
     this.occtaxFormMapService.geojson
                   .pipe(filter(geojson=>geojson !== null))
@@ -120,58 +127,72 @@ export class OcctaxFormReleveService {
                       this.getAltitude();
                   });
 
-    // AUTOCOMPLETE DATE ON EDIT
-    // Observation de l'état d'édition pour activer l'autocomplétion de la date ou non.
-    this.occtaxFormService.editionMode
-      .pipe(filter((editionMode: boolean) => !editionMode)) //si on est en mode creation uniquement
-      .subscribe(editionMode => {
-        this.coreFormService.autoCompleteDate(
-          this.form as FormGroup,
-          'date_min',
-          'date_max'
-        );
-      });
 
     // AUTOCORRECTION de hour
     // si le champ est une chaine vide ('') on reset la valeur null
-    this.form.get('hour_min')
+    this.propertiesForm.get('hour_min')
                   .valueChanges
                   .pipe(
                     filter(hour => hour && hour.length == 0)
                   )
                   .subscribe(hour => {
-                    this.form.get('hour_min').reset();
+                    this.propertiesForm.get('hour_min').reset();
                   });
 
-    this.form.get('hour_max')
+    this.propertiesForm.get('hour_max')
                   .valueChanges
                   .pipe(
                     filter(hour => hour && hour.length == 0)
                   )
                   .subscribe(hour => {
-                    this.form.get('hour_max').reset();
+                    this.propertiesForm.get('hour_max').reset();
                   });
 
     // AUTOCOMPLETE DE hour_max par hour_min UNIQUEMENT SI editionMode = FAUX
-    this.form.get('hour_min')
+    this.propertiesForm.get('hour_min')
                   .valueChanges
                   .pipe(
                     filter(hour => !this.occtaxFormService.editionMode.getValue() && hour != null)
                   ).subscribe(hour => {
                     if (
                       // autcomplete only if hour max is empty or invalid
-                      (this.form.get('hour_max').invalid ||
-                      this.form.get('hour_max').value == null)
+                      (this.propertiesForm.get('hour_max').invalid ||
+                      this.propertiesForm.get('hour_max').value == null)
                     ) {
-                        this.form.get('hour_max').setValue(hour);
+                        this.propertiesForm.get('hour_max').setValue(hour);
                     }
                   });
+  }
+
+  private get releveValues(): Observable<any> {
+    return this.occtaxFormService.occtaxData
+                    .pipe(
+                      filter(data=> data && data.releve.properties),
+                      map(data=>{
+                        let releve = data.releve.properties;
+                        releve.date_min = this.formatDate(releve.date_min);
+                        releve.date_max = this.formatDate(releve.date_max);
+                        return releve;
+                      })
+                    );
+  }
+
+  private get defaultValues(): Observable<any> {
+    return this.occtaxFormService.getDefaultValues(this.occtaxFormService.currentUser.id_organisme)
+                    .pipe(
+                      map(data=> {
+                        return {
+                          id_nomenclature_grp_typ: data["TYP_GRP"],
+                          id_nomenclature_obs_technique: data["TECHNIQUE_OBS"]
+                        };
+                      })
+                    );
   }
 
   private getAltitude() {
     // get to geo info from API
     this.dataFormService.getGeoInfo(this.geojson).subscribe(res => {
-      this.form.patchValue({
+      this.propertiesForm.patchValue({
         altitude_min: res.altitude.altitude_min,
         altitude_max: res.altitude.altitude_max
       });
@@ -187,7 +208,26 @@ export class OcctaxFormReleveService {
     };
   }
 
+  get releveFormValue() {
+    let value = this.releveForm.value;
+    value.properties.date_min = this.dateParser.format(
+      value.properties.date_min
+    );
+    value.properties.date_max = this.dateParser.format(
+      value.properties.date_max
+    );
+    return value;
+  }
+
+  submitReleve() {
+      console.log('update', this.releveFormValue);
+    // if (this.occtaxFormService.id_releve_occtax.getValue()) {
+    // } else {
+    //   console.log('add', this.releveFormValue);
+    // }
+  }
+
   reset() {
-    this.initForm();
+    this.propertiesForm.reset(this.initialValues);
   }
 }

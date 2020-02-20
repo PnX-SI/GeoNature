@@ -14,20 +14,11 @@ import { OcctaxFormMapService } from "../map/map.service";
 })
 export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
 
-  // @Input() releveForm: FormGroup;
-  // public dateMin: Date;
-  // public dateMax: Date;
-  // public geojson: any;
-  // public dataSets: any;
-  // public geoInfo: any;
-  // public today: DateStruc = null;
-  // public areasIntersected = new Array();
-  // private geojsonSubscription$: Subscription;
-  // public isEditionSub$: Subscription;
-  public releveForm: FormGroup;
   public occtaxConfig: any;
   public geojson: GeoJSON;
   public showTime: boolean = false; //gestion de l'affichage des infos complémentaires de temps
+  
+  public releveForm: FormGroup;
 
   constructor(
     public occtaxFormService: OcctaxFormService,
@@ -39,51 +30,11 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    console.log("init relevbe")
-    this.releveForm = this.occtaxFormReleveService.form;
+    this.releveForm = this.occtaxFormReleveService.releveForm;
 
     this.occtaxFormMapService.geojson
                     .subscribe(geojson=>this.geojson = geojson);
-    // this.occtaxConfig = ModuleConfig;
-    // // subscription to the geojson observable
-    // this.geojsonSubscription$ = this._ms.gettingGeojson$.subscribe(geojson => {
 
-    //   this._dfs.getFormatedGeoIntersection(geojson).subscribe(res => {
-    //     this.areasIntersected = res;
-    //   });
-    // });
-
-    // // autcomplete hourmax + set null when empty
-    // (this.releveForm.controls
-    //   .properties as FormGroup).controls.hour_min.valueChanges
-    //   .pipe(filter(value => value != null))
-    //   .subscribe(value => {
-    //     if (value.length == 0) {
-    //       (this.releveForm.controls
-    //         .properties as FormGroup).controls.hour_min.reset();
-    //     } else if (
-    //       // autcomplete only if hour max is empty or invalid
-    //       (this.releveForm.controls.properties as FormGroup).controls.hour_max
-    //         .invalid ||
-    //       this.releveForm.value.properties.hour_max == null
-    //     ) {
-    //       if (!this.fs.currentHourMax) {
-    //         // autcomplete hour max only if currentHourMax is null
-    //         (this.releveForm.controls
-    //           .properties as FormGroup).controls.hour_max.patchValue(value);
-    //       }
-    //     }
-    //   });
-
-    // // set hour_max = hour_min to prevent date_max<date_min
-    // (this.releveForm.controls
-    //   .properties as FormGroup).controls.hour_max.valueChanges
-    //   .pipe(filter(value => value != null))
-    //   .subscribe(value => {
-    //     if (value.length == 0)
-    //       (this.releveForm.controls
-    //         .properties as FormGroup).controls.hour_max.reset();
-    //   });
   } // END INIT
 
   get dataset(): any {
@@ -94,15 +45,12 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     return null;
   }
 
-  toggleTime() {
-    // this.showTime = !this.showTime;
+  get propertiesForm(): any {
+    return this.releveForm.get('properties');
   }
 
   ngOnDestroy() {
-    console.log("destroy");
     this.occtaxFormReleveService.reset();
-    // this.geojsonSubscription$.unsubscribe();
-    // this.isEditionSub$.unsubscribe();
   }
 
   formDisabled() {
@@ -111,6 +59,12 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
         "warning",
         "Releve.FillGeometryFirst"
       );
+    }
+  }
+
+  submitReleveForm() {
+    if (this.releveForm.valid) {
+      this.occtaxFormReleveService.submitReleve();
     }
   }
 }

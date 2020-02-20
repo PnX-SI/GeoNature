@@ -1,5 +1,5 @@
-import { Component, OnInit } from "@angular/core";
-import { filter } from 'rxjs/operators';
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { filter, map } from 'rxjs/operators';
 import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
 import { CommonService } from "@geonature_common/service/common.service";
 import { GeoJSON } from "leaflet";
@@ -10,14 +10,14 @@ import { OcctaxFormMapService } from './map.service';
   selector: "pnx-occtax-form-map",
   templateUrl: "map.component.html"
 })
-export class OcctaxFormMapComponent implements OnInit {
+export class OcctaxFormMapComponent implements OnInit, OnDestroy {
   
   public leafletDrawOptions: any;
   public firstFileLayerMessage = true;
   public occtaxConfig = ModuleConfig;
 
   public coordinates = null;
-  public geojson = null;
+  public geometry = null;
 
   constructor(
     private ms: OcctaxFormMapService,
@@ -25,7 +25,6 @@ export class OcctaxFormMapComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log("init map")
     // overight the leaflet draw object to set options
     // examples: enable circle =>  leafletDrawOption.draw.circle = true;
     leafletDrawOption.draw.circle = false;
@@ -35,15 +34,18 @@ export class OcctaxFormMapComponent implements OnInit {
     leafletDrawOption.edit.remove = false;
     this.leafletDrawOptions = leafletDrawOption;
 
-    this.ms.geometry
-                .valueChanges
-                .subscribe(geojson => {
-                  if (geojson.type == "Point") {
+    this.ms.geojson
+                .pipe(
+                  filter(geojson=>geojson !== null),
+                  map(geojson=>geojson.geometry)
+                )
+                .subscribe(geometry => {
+                  if (geometry.type == "Point") {
                     // set the input for the marker component
-                    this.coordinates = geojson.coordinates;
+                    this.coordinates = geometry.coordinates;
                   } else {
                     // set the input for leafletdraw component
-                    this.geojson = geojson;
+                    this.geometry = geometry;
                   }
                 });
 
@@ -59,5 +61,9 @@ export class OcctaxFormMapComponent implements OnInit {
 
   sendGeoInfo(geojson) {
     this.ms.geometry = geojson;
+  }
+
+  ngOnDestroy() {
+    this.ms.reset();
   }
 }
