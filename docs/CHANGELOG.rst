@@ -5,9 +5,13 @@ CHANGELOG
 2.3.2 (unreleased)
 ------------------
 
+**🚀 Nouveautés**
+
+* Possibilité de charger les commandes d'un module dans les commandes de GeoNature
+
 **🐛 Corrections**
 
-* Correction d'une incohérence dans le décompte des JDD sur la page d'accueil (#752)
+* Correction d'une incohérence dans le décompte des JDD sur la page d'accueil en leur appliquant le CRUVED (#752)
 
 2.3.1 (2020-02-18)
 ------------------
