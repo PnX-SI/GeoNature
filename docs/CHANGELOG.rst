@@ -8,6 +8,7 @@ CHANGELOG
 **🚀 Nouveautés**
 
 * Possibilité de charger les commandes d'un module dans les commandes de GeoNature
+* Ajout de commentaires dans le fichier d'exemple de configuration ``config/default_config.toml.example``
 
 **🐛 Corrections**
 
