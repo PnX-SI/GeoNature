@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.3.2 (unreleased)
+------------------
+
+**🚀 Nouveautés**
+
+* Possibilité de charger les commandes d'un module dans les commandes de GeoNature
+* Ajout de commentaires dans le fichier d'exemple de configuration ``config/default_config.toml.example``
+
+**🐛 Corrections**
+
+* Correction d'une incohérence dans le décompte des JDD sur la page d'accueil en leur appliquant le CRUVED (#752)
+
 2.3.1 (2020-02-18)
 ------------------
 
@@ -106,27 +118,9 @@ CHANGELOG
 
 **⚠️ Notes de version**
 
-NB: La version 2.3.0 n'est pas compatible avec le module Dashboard. Si vous avez le module dashboard installé, ne passez pas à cette nouvelle version. Compatibilité à venir.
+NB: La version 2.3.0 n'est pas compatible avec le module Dashboard. Si vous avez le module dashboard installé, ne passez pas à cette nouvelle version. Compatibilité dans la 2.3.1.
 
-* Suivez les instructions suivantes pour effectuer la migration :
-
-Télécharger la nouvelle version :
-
-::
-
-    wget https://github.com/PnX-SI/GeoNature/archive/2.3.0.zip
-    unzip 2.3.0.zip
-    rm 2.3.0.zip
-  
-Renommer l’ancien répertoire de l'application, ainsi que le nouveau :
-
-::
-
-    mv /home/`whoami`/geonature/ /home/`whoami`/geonature_old/
-    mv GeoNature-2.3.0 /home/`whoami`/geonature/
-    cd geonature
-  
-* Lancer le script de migration SQL qui va installer et remplir le nouveau schéma ``ref_habitats`` avec Habref et mettre à jour le schéma ``ref_nomenclatures`` :
+* Lancer le script de migration qui va installer et remplir le nouveau schéma ``ref_habitats`` avec Habref et mettre à jour le schéma ``ref_nomenclatures`` :
 
 ::
 
