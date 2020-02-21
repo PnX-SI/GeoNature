@@ -181,7 +181,14 @@ Pour la définition des numéros de version des dépendances, voir le `tableau d
     chmod +x install_all.sh
     ./install_all.sh 2>&1 | tee install_all.log
 
-Une fois l'installation terminée, les applications sont disponibles aux adresses suivantes :
+Une fois l'installation terminée, lancez la commande suivante:
+
+::
+
+    exec bash
+
+
+Les applications sont disponibles aux adresses suivantes :
 
 - http://monip.com/geonature
 - http://monip.com/taxhub/

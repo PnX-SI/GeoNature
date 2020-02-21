@@ -2,27 +2,43 @@
 CHANGELOG
 =========
 
-
-2.3.1 (Unreleased)
+2.3.2 (unreleased)
 ------------------
 
 **🚀 Nouveautés**
 
-* Utilisation généralisée des nouvelles librairies de sérialisation (https://github.com/PnX-SI/Utils-Flask-SQLAlchemy et https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo)
+* Possibilité de charger les commandes d'un module dans les commandes de GeoNature
+* Ajout de commentaires dans le fichier d'exemple de configuration ``config/default_config.toml.example``
+
+**🐛 Corrections**
+
+* Correction d'une incohérence dans le décompte des JDD sur la page d'accueil en leur appliquant le CRUVED (#752)
+
+2.3.1 (2020-02-18)
+------------------
+
+**🚀 Nouveautés**
+
+* Installation globale : Compatibilité Debian 10 (PostgreSQL 11, PostGIS 2.5)
+* Installation globale : Passage à Taxhub 1.6.4 et UsersHub 2.1.1
+* Utilisation généralisée des nouvelles librairies externalisées de sérialisation (https://github.com/PnX-SI/Utils-Flask-SQLAlchemy et https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo)
+* Possibilité de régler le timeout de Gunicorn pour éviter le plantage lors de requêtes longues
+* Ne pas zoomer sur les observations au premier chargement de la carte (#838)
+* Leaflet-draw : Ajout de la possibilité de zoomer sur le point (par @joelclems)
 * Ajout du nom vernaculaire dans les fiches d'information des relevés d'Occtax (par @FloVollmer / #826)
 
 **🐛 Corrections**
 
-* Ajout d'un reference de l'objet Leaflet `L` afin qu'il soit utilisé dans les modules
-* Correction de l'installation de NodeJS et NPM par l'utilisation généralisée de NVM (#832 et #837).
-* Possibilité de régler le timeout de gunicorn pour éviter le plantage lors de requêtes longues
-* Fixer la version de vitualenv (par @sogalgeeko)
+* Correction de l'installation de Node.js et npm par l'utilisation généralisée de nvm (#832 et #837)
+* Fixation de la version de Node.js en 10.15.3 (dans le fichier ``fronted/.nvmrc``)
+* Ajout d'une référence de l'objet Leaflet ``L`` afin qu'il soit utilisé dans les modules et changement du typage de l'évenement Leaflet ``MouseEvent`` en ``L.LeafletMouseEvent``
+* Fixation de la version de vitualenv en 20.0.1 (par @sogalgeeko)
+* Corrections de typos dans la documentation d'administration (#840 - par @sogalgeeko)
 
-En cas d'erreur sur la version de NodeJS, voir https://github.com/PnX-SI/GeoNature/issues/832.
+**⚠️ Notes de version**
 
-**Note de version**
-
-* Rajouter la ligne ``gun_timeout=30`` au fichier ``config/settings.ini``. Il s'agit du temps maximal (en seconde) autorisé pour chaque requête. A augmenter, si vous avez déjà rencontré des problèmes de timeout
+* Vous pouvez passer directement à cette version depuis la 2.2.x, mais en suivant les notes de version des versions intermédiaires (NB: il n'est pas necessaire passer le script ``migrate.sh`` des versions précedentes)
+* Rajouter la ligne ``gun_timeout=30`` au fichier ``config/settings.ini``. Il s'agit du temps maximal (en seconde) autorisé pour chaque requête. A augmenter, si vous avez déjà rencontré des problèmes de timeout.
 
 2.3.0 - Occhab de Noël (2019-12-27)
 -----------------------------------
@@ -102,25 +118,9 @@ En cas d'erreur sur la version de NodeJS, voir https://github.com/PnX-SI/GeoNatu
 
 **⚠️ Notes de version**
 
-* Suivez les instructions suivantes pour effectuer la migration :
+NB: La version 2.3.0 n'est pas compatible avec le module Dashboard. Si vous avez le module dashboard installé, ne passez pas à cette nouvelle version. Compatibilité dans la 2.3.1.
 
-Télécharger la nouvelle version :
-
-::
-
-    wget https://github.com/PnX-SI/GeoNature/archive/2.3.0.zip
-    unzip 2.3.0.zip
-    rm 2.3.0.zip
-
-Renommer l’ancien répertoire de l'application, ainsi que le nouveau :
-
-::
-
-    mv /home/`whoami`/geonature/ /home/`whoami`/geonature_old/
-    mv GeoNature-2.3.0 /home/`whoami`/geonature/
-    cd geonature
-
-* Lancer le script de migration SQL qui va installer et remplir le nouveau schéma ``ref_habitats`` avec Habref et mettre à jour le schéma ``ref_nomenclatures`` :
+* Lancer le script de migration qui va installer et remplir le nouveau schéma ``ref_habitats`` avec Habref et mettre à jour le schéma ``ref_nomenclatures`` :
 
 ::
 
@@ -132,21 +132,6 @@ Vérifier que la migration s'est bien déroulée dans le fichier ``var/log/2.2.1
 
 * Lancer le script SQL de mise à jour de la BDD de GeoNature https://raw.githubusercontent.com/PnX-SI/GeoNature/2.3.0/data/migrations/2.2.1to2.3.0.sql
 
-* Lancer enfin le script de migration habituel :
-
-::
-
-    cd /home/`whoami`/geonature
-    ./install/migration/migration.sh
-
-* Lancer cette commande pour définir la nouvelle version de NodeJS par défaut :
-
-::
-
-    nvm alias default 10.15.3
-
-En cas d'erreur sur la version de NodeJS, voir https://github.com/PnX-SI/GeoNature/issues/832.
-
 * Vous pouvez installer le nouveau module Occhab (Occurrences d'habitats) si vous le souhaitez :
 
 ::
@@ -156,19 +141,6 @@ En cas d'erreur sur la version de NodeJS, voir https://github.com/PnX-SI/GeoNatu
     geonature install_gn_module /home/`whoami`/geonature/contrib/gn_module_occhab /occhab
 
 * Lors de la migration (``/data/migrations/2.2.1to2.3.0.sql``), tous les JDD actifs sont associés par défaut au module Occtax (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.2.1to2.3.0.sql#L17-L22). A chacun d'adapter si besoin, en en retirant certains. Pour utiliser le module Occhab, vous devez y associer au moins un JDD.
-
-* NB : Si vous avez installé des modules externes autres que les modules du cœur (Occtax, Validation et Occhab), il faut recréer à la main des liens symboliques vers le repertoire ``node_modules`` du cœur pour chacun d'entre eux.
-
-::
-
-    ln -s /home/`whoami`/geonature/frontend/node_modules /home/`whoami`/<MODULE_NAME>/frontend/
-
-Relancer ensuite la compilation du frontend :
-
-::
-
-    cd frontend
-    npm run build
 
 2.2.1 (2019-10-09)
 ------------------
