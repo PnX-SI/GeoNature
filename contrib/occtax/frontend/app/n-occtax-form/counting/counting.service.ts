@@ -30,7 +30,7 @@ export class OcctaxFormCountingService {
     };
   }
 
-  getForm(): FormGroup {
+  createForm(): FormGroup {
     const form = this.fb.group({
       id_nomenclature_life_stage: [null, Validators.required],
       id_nomenclature_sex: [null, Validators.required],
@@ -57,22 +57,8 @@ export class OcctaxFormCountingService {
   }
 
 
-
-  patchDefaultNomenclatureCounting(
-    countingForm: FormGroup,
-    defaultNomenclatures
-  ): void {
-    countingForm.patchValue({
-      id_nomenclature_life_stage: defaultNomenclatures["STADE_VIE"],
-      id_nomenclature_sex: defaultNomenclatures["SEXE"],
-      id_nomenclature_obj_count: defaultNomenclatures["OBJ_DENBR"],
-      id_nomenclature_type_count: defaultNomenclatures["TYP_DENBR"],
-      id_nomenclature_valid_status: defaultNomenclatures["STATUT_VALID"]
-    });
-  }
-
   reset() {
-    this.form.reset(this.initialValues);
+    //this.form.reset(this.initialValues);
   }
 
 }

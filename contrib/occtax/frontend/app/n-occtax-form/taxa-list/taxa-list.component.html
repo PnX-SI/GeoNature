@@ -1,23 +1,26 @@
-<gn-panel *ngFor="let taxon of taxons"
+<gn-panel *ngFor="let occurrence of occurrences"
 	displayMouseOver 
   selector=".gn-panel-header > .btn-actions">
   <div class="gn-panel-header">
 	  <span class="btn-actions d-none">
-	    <button mat-icon-button class="btn-edit">
+	    <button 
+        mat-icon-button 
+        class="btn-edit"
+        (click)="editOCcurrence(occurrence)">
 	      <mat-icon matTooltip="Editer la donnée">edit</mat-icon>
 	    </button>
 	  	<button mat-icon-button class="btn-clear">
 	      <mat-icon matTooltip="Supprimer la donnée">clear</mat-icon>
 	    </button>
 	  </span>
-    <span [innerHTML]="taxon.taxref?.nom_complet || taxon.nom_cite" class="header-title"></span>
+    <span [innerHTML]="occurrence.taxref?.nom_complet || occurrence.nom_cite" class="header-title"></span>
 
     <!-- <ng-container *ngIf="(getStatuts(taxon.statuts)).length">
       <mat-icon class="nb-statut" [matBadge]="(getStatuts(taxon.statuts)).length" [matTooltip]="(getStatuts(taxon.statuts)).length + ' statuts'">star</mat-icon>
     </ng-container> -->
     <a 
-    	*ngIf="taxon.taxref"
-	    [href]="taxon.taxref.url" 
+    	*ngIf="occurrence.taxref"
+	    [href]="occurrence.taxref.url" 
 	     class="btn-inpn"
 	    target="_BLANK" 
 	    mat-icon-button>
@@ -25,7 +28,7 @@
     </a>
   </div>
   <div class="gn-panel-content">
-  	{{taxon|json}}
+  	{{occurrence|json}}
     <!-- <div class="bloc-ligne" *ngIf="taxon.date_min != taxon.date_max"><mat-icon>access_time</mat-icon> Observé du {{ taxon.date_min | date:'dd/MM/yyyy' }} au {{ taxon.date_max | date:'dd/MM/yyyy' }}</div>
     <div class="bloc-ligne" *ngIf="taxon.date_min == taxon.date_max"><mat-icon>access_time</mat-icon> Observé le {{ taxon.date_min | date:'dd/MM/yyyy' }}</div>
     <div class="bloc-ligne"><mat-icon>visibility</mat-icon> {{ taxon.nb_obs }} observations(s)</div>

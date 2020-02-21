@@ -29,7 +29,7 @@
 			*ngIf="currentTab === 'releve'"
 			class="occtax-form-content" 
 			[ngStyle]="{'min-height.px': cardContentHeight}">
-			<div class="row" style="height: 100%">
+			<div class="row">
 				<div class="col-xl-6 col-lg-7 col-sm-6" [ngStyle]="{'min-height.px': cardContentHeight}">
 					<pnx-occtax-form-map></pnx-occtax-form-map>
 				</div>
@@ -43,11 +43,11 @@
 			*ngIf="currentTab === 'taxons'"
 			class="occtax-form-content" 
 			[ngStyle]="{'min-height.px': cardContentHeight}">
-			<div class="row" style="height: 100%">
-				<div class="col-xl-7 col-lg-7 col-sm-6">
+			<div class="row">
+				<div class="col-md-7">
 					<pnx-occtax-form-occurrence></pnx-occtax-form-occurrence>
 				</div>
-				<div class="col-xl-5 col-lg-5 col-sm-6">
+				<div class="col-md-5">
 					<pnx-occtax-form-taxa-list></pnx-occtax-form-taxa-list>
 				</div>
 			</div>

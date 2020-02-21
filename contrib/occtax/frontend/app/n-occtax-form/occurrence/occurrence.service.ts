@@ -2,17 +2,9 @@ import { Injectable } from "@angular/core";
 import { FormBuilder, FormGroup, Validators, FormArray } from "@angular/forms";
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, filter, switchMap, tap } from 'rxjs/operators';
-
 import { OcctaxFormService } from '../occtax-form.service';
 import { OcctaxFormCountingService } from '../counting/counting.service';
-// import { AppConfig } from "@geonature_config/app.config";
-// import { HttpClient, HttpParams } from "@angular/common/http";
-// import { Router } from "@angular/router";
-// import { ModuleConfig } from "../../module.config";
-// import { AuthService, User } from "@geonature/components/auth/auth.service";
 import { FormService } from "@geonature_common/form/form.service";
-// import { Taxon } from "@geonature_common/form/taxonomy/taxonomy.component";
-// import { CommonService } from "@geonature_common/service/common.service";
 
 @Injectable()
 export class OcctaxFormOccurrenceService {
@@ -22,10 +14,6 @@ export class OcctaxFormOccurrenceService {
   public occurrence: BehaviorSubject<any> = new BehaviorSubject(null)
 
   constructor(
-    // private _http: HttpClient,
-    // private _router: Router,
-    // private _auth: AuthService,
-    // private _commonService: CommonService
     private fb: FormBuilder,
     private coreFormService: FormService,
     private occtaxFormService: OcctaxFormService,
@@ -61,7 +49,7 @@ export class OcctaxFormOccurrenceService {
       digital_proof: null,
       non_digital_proof: null,
       comment: null,
-      cor_counting_occtax: new FormArray([])
+      cor_counting_occtax: this.fb.array([], Validators.required)
     });
 
     this.form.patchValue(this.initialValues);
@@ -84,11 +72,23 @@ export class OcctaxFormOccurrenceService {
     //patch le form par les valeurs par defaut si creation
     this.occurrence
       .pipe(
+        tap(()=>{
+          //On vide préalablement le FormArray //.clear() existe en angular 8
+          this.clearFormArray(this.form.get('cor_counting_occtax'));
+        }),
         switchMap(occurrence => {
-          //Le switch permet, selon si édition ou creation, de récuperer les valeur par defaut ou celle de l'API
-          return /*this.occurrence ? this.occurrence :*/ this.defaultValues;
+          //on oriente la source des données pour patcher le formulaire
+          return occurrence ? this.occurrence : this.defaultValues;
+        }),
+        tap(occurrence=>{
+          //mise en place des countingForm
+          if (occurrence.cor_counting_occtax) {
+            occurrence.cor_counting_occtax.forEach((c, i)=>{
+              (this.form.get('cor_counting_occtax') as FormArray).push(this.occtaxFormCountingService.createForm());
+            })
+          }
         })
-      ).subscribe(values=>this.form.patchValue(values))
+      ).subscribe(values=>{console.log(values);this.form.patchValue(values)});
 
     //attribut le cd_nom au formulaire si un taxon est selectionné
     this.taxref
@@ -126,19 +126,25 @@ export class OcctaxFormOccurrenceService {
   private get defaultValues(): Observable<any> {
     return this.occtaxFormService.getDefaultValues(this.occtaxFormService.currentUser.id_organisme)
                     .pipe(
-                      map(data=> {
+                      map(DATA=> {
                         return {
-                          id_nomenclature_bio_condition: data["ETA_BIO"],
-                          id_nomenclature_naturalness: data["NATURALITE"],
-                          id_nomenclature_obs_meth: data["METH_OBS"],
-                          id_nomenclature_bio_status: data["STATUT_BIO"],
-                          id_nomenclature_exist_proof: data["PREUVE_EXIST"],
-                          id_nomenclature_determination_method: data["METH_DETERMIN"],
-                          id_nomenclature_observation_status: data["STATUT_OBS"],
-                          id_nomenclature_diffusion_level: data["NIV_PRECIS"],
-                          id_nomenclature_blurring: data["DEE_FLOU"],
-                          id_nomenclature_source_status: data["STATUT_SOURCE"],
-//                          cor_counting_occtax: new FormArray(this.occtaxFormCountingService.getForm())
+                          id_nomenclature_bio_condition: DATA["ETA_BIO"],
+                          id_nomenclature_naturalness: DATA["NATURALITE"],
+                          id_nomenclature_obs_meth: DATA["METH_OBS"],
+                          id_nomenclature_bio_status: DATA["STATUT_BIO"],
+                          id_nomenclature_exist_proof: DATA["PREUVE_EXIST"],
+                          id_nomenclature_determination_method: DATA["METH_DETERMIN"],
+                          id_nomenclature_observation_status: DATA["STATUT_OBS"],
+                          id_nomenclature_diffusion_level: DATA["NIV_PRECIS"],
+                          id_nomenclature_blurring: DATA["DEE_FLOU"],
+                          id_nomenclature_source_status: DATA["STATUT_SOURCE"],
+                          cor_counting_occtax: [{
+                            id_nomenclature_life_stage: DATA["STADE_VIE"],
+                            id_nomenclature_sex: DATA["SEXE"],
+                            id_nomenclature_obj_count: DATA["OBJ_DENBR"],
+                            id_nomenclature_type_count: DATA["TYP_DENBR"],
+                            id_nomenclature_valid_status: DATA["STATUT_VALID"]
+                          }]
                         };
                       })
                     );
@@ -226,7 +232,11 @@ export class OcctaxFormOccurrenceService {
     this.form.reset(this.initialValues);
   }
 
-
+  private clearFormArray(formArray: FormArray) {
+    while (formArray.length !== 0) {
+      formArray.removeAt(0)
+    }
+  }
   
 
 }

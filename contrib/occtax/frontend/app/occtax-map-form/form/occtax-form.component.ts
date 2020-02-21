@@ -8,7 +8,7 @@ import { OcctaxDataService } from "../../services/occtax-data.service";
 import { MapService } from "@geonature_common/map/map.service";
 
 @Component({
-  selector: "old-pnx-occtax-form",
+  selector: "pnx-occtax-form",
   templateUrl: "./occtax-form.component.html",
   styleUrls: ["./occtax-form.component.scss"],
   providers: []

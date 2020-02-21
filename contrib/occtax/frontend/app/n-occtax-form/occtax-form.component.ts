@@ -10,7 +10,7 @@ import { AuthService } from "@geonature/components/auth/auth.service";
 import { NavHomeComponent } from "@geonature/components/nav-home/nav-home.component";
 
 @Component({
-  selector: "pnx-occtax-form",
+  selector: "pnx-occtax-form2",
   templateUrl: "./occtax-form.component.html",
   styleUrls: ["./occtax-form.component.scss"]
 })

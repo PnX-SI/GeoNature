@@ -1,5 +1,5 @@
 <h5>Occurrence</h5>
-
+{{occurrenceForm.get('nom_cite').value}}
 <div class="row">
   <div class="col-sm-6">
     <pnx-taxonomy 
@@ -126,10 +126,7 @@
         codeNomenclatureType="STATUT_SOURCE">
       </pnx-nomenclature>
     </div>
-  </div>
 
-
-  <div class="row">
     <div 
       *ngIf="occtaxConfig.form_fields.diffusion_level"
       class="col-lg-4 col-sm-6">
@@ -227,7 +224,7 @@
   
 <h5>Dénombrement</h5>  
 
-<!-- <ng-container *ngFor="let formCounting of occurrenceForm.get('cor_counting_occtax').controls; index as i">
+<ng-container *ngFor="let formCounting of occurrenceForm.get('cor_counting_occtax').controls; index as i">
   counting
   <pnx-occtax-form-counting [form]="formCounting"></pnx-occtax-form-counting>
-</ng-container> -->
+</ng-container>
