@@ -1,11 +1,13 @@
 import { Component, OnInit } from "@angular/core";
-import {animate, state, style, transition, trigger} from '@angular/animations';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { FormControl, FormGroup } from "@angular/forms";
+import { map, filter, tap } from 'rxjs/operators';
 import { OcctaxFormService } from "../occtax-form.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { NomenclatureComponent } from "@geonature_common/form/nomenclature/nomenclature.component";
 import { ModuleConfig } from "../../module.config";
 import { OcctaxFormOccurrenceService } from "./occurrence.service";
+import { Taxon } from "@geonature_common/form/taxonomy/taxonomy.component";
 
 @Component({
   selector: "pnx-occtax-form-occurrence",
@@ -28,7 +30,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit {
   // @ViewChild("existProof") existProof: NomenclatureComponent;
   public occtaxConfig = ModuleConfig;
   public occurrenceForm: FormGroup;
-  public taxref: FormGroup;
+  public taxonForm: FormControl; //control permettant de rechercher un taxon TAXREF
   private advanced: string = 'collapsed';
 
   constructor(
@@ -39,14 +41,53 @@ export class OcctaxFormOccurrenceComponent implements OnInit {
 
   ngOnInit() {
     this.occurrenceForm = this.occtaxFormOccurrenceService.form;
+
+    this.initTaxrefSearch();
+  }
+
+  initTaxrefSearch() {
+    this.taxonForm = new FormControl(null);
+
+    //attribut le cd_nom au formulaire si un taxon est selectionné
+    this.taxonForm
+          .valueChanges
+          .pipe(
+            filter(taxon=>taxon !== null),
+            map(taxon=>{
+              let nom_cite = null;
+              let cd_nom = null;
+              if (typeof taxon === 'string') {
+                nom_cite = taxon.length ? taxon : null;
+              } else {
+                nom_cite = taxon.search_name.replace(/<[^>]*>/g, '');
+                cd_nom = taxon.cd_nom ? taxon.cd_nom : null;
+              }
+              return {
+                        nom_cite: nom_cite, 
+                        cd_nom: cd_nom
+                      };
+            })
+          )
+          .subscribe((values: any)=>{
+            this.occurrenceForm.get('nom_cite').setValue(values.nom_cite);
+            this.occurrenceForm.get('cd_nom').setValue(values.cd_nom);
+          });
+
+    this.occtaxFormOccurrenceService.occurrence
+              .pipe(
+                tap(()=>this.taxonForm.setValue(null)),
+                filter(occurrence=>occurrence),
+                map((occurrence: any): Taxon=>{
+                  let taxon: Taxon = occurrence.taxref ? <Taxon> occurrence.taxref : <Taxon> {};
+                  taxon.search_name = occurrence.nom_cite.replace(/<[^>]*>/g, '');
+                  return taxon
+                })
+              )
+              .subscribe((taxref: Taxon)=>this.taxonForm.setValue(taxref));
   }
 
   getLabels(labels) {
     //this.fs.currentExistProofLabels = labels;
-  }
-
-  onSelectTaxon(event: any): void {
-    this.occtaxFormOccurrenceService.taxref.next(event.item);
   }
 
   validateDigitalProof(c: FormControl) {

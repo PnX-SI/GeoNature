@@ -90,10 +90,7 @@ export class OcctaxFormOccurrenceService {
         })
       ).subscribe(values=>{console.log(values);this.form.patchValue(values)});
 
-    //attribut le cd_nom au formulaire si un taxon est selectionné
-    this.taxref
-          .pipe(map(taxref=>{return taxref ? taxref.cd_nom : null}))
-          .subscribe(cd_nom=>this.form.get('cd_nom').setValue(cd_nom));
+    
 
     // this.taxref
     //       .pipe(
@@ -114,12 +111,6 @@ export class OcctaxFormOccurrenceService {
     //         // });
     //       });
 
-    this.form.get('nom_cite')
-                  .valueChanges
-                  .pipe(
-                    filter(val=>val.cd_nom === undefined)
-                  )
-                  .subscribe(()=>this.taxref.next(null));
   }
 
 

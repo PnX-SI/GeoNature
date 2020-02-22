@@ -1,23 +1,21 @@
 <h5>Occurrence</h5>
-{{occurrenceForm.get('nom_cite').value}}
 <div class="row">
   <div class="col-sm-6">
     <pnx-taxonomy 
-      #taxon 
       label="{{ 'Taxon.NomCite' | translate }}" 
-      [parentFormControl]="occurrenceForm.get('nom_cite')"
+      [parentFormControl]="taxonForm"
       [idList]="occtaxConfig.id_taxon_list" 
       [charNumber]="3" 
       [listLength]="occtaxConfig.taxon_result_number" 
-      (onChange)="onSelectTaxon($event);" 
-      [displayAdvancedFilters]=true>
+      displayAdvancedFilters="true"
+      displayLabel="search_name">
     </pnx-taxonomy>
   </div>
   <div class="col-sm-6 align-self-end">
-    <small> Taxref </small>
+    <small> TAXREF - Nom valide </small>
     <span 
       class="form-control form-control-sm form-nom-complet" 
-      [innerHTML]="(occtaxFormOccurrenceService.taxref|async)?.search_name">
+      [innerHTML]="taxonForm.value?.nom_valide">
     </span>
     
   </div>
