@@ -202,7 +202,7 @@
 <div class="section" id="serialisation-des-modeles">
 <h2>Serialisation des modèles<a class="headerlink" href="#serialisation-des-modeles" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">geonature.utils.utilssqlalchemy.serializable</span></code></li>
+<li><code class="docutils literal"><span class="pre">utils_flask_sqla.serializers.serializable</span></code></li>
 </ul>
 <p>Décorateur pour les modèles SQLA : Ajoute une méthode as_dict qui retourne un
 dictionnaire des données de l’objet sérialisable json</p>
@@ -222,13 +222,13 @@ dictionnaire des données de l’objet sérialisable json</p>
 </pre></div>
 </div>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">geonature.utils.utilssqlalchemy.geoserializable</span></code></li>
+<li><code class="docutils literal"><span class="pre">utils_flask_sqla_geo.serializers.geoserializable</span></code></li>
 </ul>
 <p>Décorateur pour les modèles SQLA : Ajoute une méthode as_geofeature qui
 retourne un dictionnaire serialisable sous forme de Feature geojson.</p>
 <p>Fichier définition modèle</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="k">import</span> <span class="n">DB</span>
-<span class="kn">from</span> <span class="nn">geonature.utils.utilssqlalchemy</span> <span class="k">import</span> <span class="n">geoserializable</span>
+<span class="kn">from</span> <span class="nn">utils_flask_sqla_geo.serializers</span> <span class="k">import</span> <span class="n">geoserializable</span>
 
 <span class="nd">@geoserializable</span>
 <span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
@@ -242,7 +242,7 @@ retourne un dictionnaire serialisable sous forme de Feature geojson.</p>
 </pre></div>
 </div>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">geonature.utils.utilsgeometry.shapeserializable</span></code></li>
+<li><code class="docutils literal"><span class="pre">utils_flask_sqla_geo.serializers.shapeserializable</span></code></li>
 </ul>
 <p>Décorateur pour les modèles SQLA:</p>
 <ul class="simple">
@@ -253,7 +253,9 @@ des données passées en paramètre</li>
 </ul>
 <p>Fichier définition modèle</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="k">import</span> <span class="n">DB</span>
-<span class="kn">from</span> <span class="nn">geonature.utils.utilsgeometry</span> <span class="k">import</span> <span class="n">shapeserializable</span>
+
+<span class="kn">from</span> <span class="nn">utils_flask_sqla_geo.serializers</span> <span class="k">import</span> <span class="n">shapeserializable</span>
+
 
 <span class="nd">@shapeserializable</span>
 <span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
@@ -274,7 +276,7 @@ des données passées en paramètre</li>
 </pre></div>
 </div>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">geonature.utils.utilsgeometry.FionaShapeService</span></code></li>
+<li><code class="docutils literal"><span class="pre">utils_flask_sqla_geo.serializers.FionaShapeService</span></code></li>
 </ul>
 <p>Classe utilitaire pour crer des shapefiles.</p>
 <p>La classe contient 3 méthode de classe:</p>
@@ -301,7 +303,7 @@ qui ont au moin un enregistrement</li>
 </pre></div>
 </div>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">geonature.utils.utilssqlalchemy.json_resp</span></code></li>
+<li><code class="docutils literal"><span class="pre">utils_flask_sqla.response.json_resp</span></code></li>
 </ul>
 <p>Décorateur pour les routes : les données renvoyées par la route sont
 automatiquement serialisées en json (ou geojson selon la structure des

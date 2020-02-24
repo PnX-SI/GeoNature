@@ -1092,6 +1092,9 @@
                                 <span class="modifier">Public</span> <a href="#formsSelected">formsSelected</a>
                             </li>
                             <li>
+                                <span class="modifier">Public</span> <a href="#formsSelectedHidden">formsSelectedHidden</a>
+                            </li>
+                            <li>
                                 <span class="modifier">Public</span> <a href="#selectControl">selectControl</a>
                             </li>
                         </ul>
@@ -1155,7 +1158,7 @@
                     </tr>
                             <tr>
                                 <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="24" class="link-to-prism">src/app/GN2CommonModule/form/dynamic-form-generator/dynamic-form-generator.component.ts:24</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="25" class="link-to-prism">src/app/GN2CommonModule/form/dynamic-form-generator/dynamic-form-generator.component.ts:25</a></div>
                                 </td>
                             </tr>
     
@@ -1306,7 +1309,7 @@ Par défault le formulaire est controlé par un champ select</p>
     
                             <tr>
                                 <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="57" class="link-to-prism">src/app/GN2CommonModule/form/dynamic-form-generator/dynamic-form-generator.component.ts:57</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="60" class="link-to-prism">src/app/GN2CommonModule/form/dynamic-form-generator/dynamic-form-generator.component.ts:60</a></div>
                                 </td>
                             </tr>
     
@@ -1366,7 +1369,7 @@ Par défault le formulaire est controlé par un champ select</p>
     
                             <tr>
                                 <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="27" class="link-to-prism">src/app/GN2CommonModule/form/dynamic-form-generator/dynamic-form-generator.component.ts:27</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="28" class="link-to-prism">src/app/GN2CommonModule/form/dynamic-form-generator/dynamic-form-generator.component.ts:28</a></div>
                                 </td>
                             </tr>
     
@@ -1398,7 +1401,7 @@ Par défault le formulaire est controlé par un champ select</p>
     
                             <tr>
                                 <td class="col-md-4">
-                                    <div class="io-line">Defined in <a href="" data-line="49" class="link-to-prism">src/app/GN2CommonModule/form/dynamic-form-generator/dynamic-form-generator.component.ts:49</a></div>
+                                    <div class="io-line">Defined in <a href="" data-line="52" class="link-to-prism">src/app/GN2CommonModule/form/dynamic-form-generator/dynamic-form-generator.component.ts:52</a></div>
                                 </td>
                             </tr>
     
@@ -1503,6 +1506,29 @@ Par défault le formulaire est controlé par un champ select</p>
                 <tbody>
                     <tr>
                         <td class="col-md-4">
+                            <a name="formsSelectedHidden"></a>
+                            <span class="name"><b><span class="modifier">Public</span> formsSelectedHidden</b><a href="#formsSelectedHidden"><span class="fa fa-link"></span></a></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <span class="modifier-icon fa fa-reset"></span><code>formsSelectedHidden:     <code></code>
+    </code>
+                        </td>
+                    </tr>
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="25" class="link-to-prism">src/app/GN2CommonModule/form/dynamic-form-generator/dynamic-form-generator.component.ts:25</a></div>
+                                </td>
+                            </tr>
+    
+    
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <tbody>
+                    <tr>
+                        <td class="col-md-4">
                             <a name="selectControl"></a>
                             <span class="name"><b><span class="modifier">Public</span> selectControl</b><a href="#selectControl"><span class="fa fa-link"></span></a></span>
                         </td>
@@ -1551,12 +1577,15 @@ export class GenericFormGeneratorComponent implements OnInit {
    */
   @Input() autoGenerated &#x3D; false;
   public formsSelected &#x3D; [];
+  public formsSelectedHidden &#x3D; [];
   constructor(private _dynformService: DynamicFormService) {}
 
   ngOnInit() {
     if (this.autoGenerated) {
       // HACK: formeSelect &#x3D; formDefinition en mode autoGenerated &#x3D; true (on affiche tous les champs sans les filtrer au préalable)
-      this.formsSelected &#x3D; this.formsDefinition;
+      // this.formsSelected &#x3D; this.formsDefinition;
+      this.formsSelected &#x3D; this.formsDefinition.filter(e &#x3D;&gt; !e.hidden);
+      this.formsSelectedHidden &#x3D; this.formsDefinition.filter(e &#x3D;&gt; e.hidden);
       this.formsDefinition.forEach(formDef &#x3D;&gt; {
         if (formDef.type_widget) {
           this._dynformService.addNewControl(formDef, this.myFormGroup);
@@ -1616,8 +1645,17 @@ export class GenericFormGeneratorComponent implements OnInit {
       &lt;/pnx-dynamic-form&gt;
       &lt;i *ngIf&#x3D;&quot;!autoGenerated&quot; class&#x3D;&quot;fa fa-trash-o clickable trash-btn&quot; (click)&#x3D;&quot;removeFormControl(i)&quot; aria-hidden&#x3D;&quot;true&quot;&gt;&lt;/i&gt;
   &lt;/div&gt;
-
+  &lt;div hidden class&#x3D;&quot;dynamic-form-wrapper&quot; *ngFor&#x3D;&quot;let formDef of formsSelectedHidden; let i &#x3D; index&quot;&gt;
+    &lt;pnx-dynamic-form
+      class&#x3D;&quot;dynam
+      ic-form padding-sm&quot;
+      [formDef]&#x3D;&quot;formDef&quot;
+      [form]&#x3D;&quot;myFormGroup&quot;&gt;
+    &lt;/pnx-dynamic-form&gt;
+    &lt;i *ngIf&#x3D;&quot;!autoGenerated&quot; class&#x3D;&quot;fa fa-trash-o clickable trash-btn&quot; (click)&#x3D;&quot;removeFormControl(i)&quot; aria-hidden&#x3D;&quot;true&quot;&gt;&lt;/i&gt;
+  &lt;/div&gt;
 &lt;/div&gt;
+
 </code></pre>
     </div>
 
@@ -1644,7 +1682,7 @@ export class GenericFormGeneratorComponent implements OnInit {
 <script src="../js/libs/htmlparser.js"></script>
 <script src="../js/libs/deep-iterator.js"></script>
 <script>
-        var COMPONENT_TEMPLATE = '<div><div *ngIf="!autoGenerated">  <small> {{selectLabel}} </small>  <div class="input-group filter-control" >    <select class="form-control form-control-sm" [formControl]="selectControl">      <option [ngValue]="null" > </option>      <option *ngFor="let formDef of formsDefinition" [ngValue]="formDef">        {{formDef?.attribut_label}}      </option>    </select>  </div></div><div class="full-wrapper" *ngIf="formControlBuilded">  <div class="dynamic-form-wrapper" *ngFor="let formDef of formsSelected; let i = index">      <pnx-dynamic-form        class="dynamic-form padding-sm"        [formDef]="formDef"        [form]="myFormGroup">      </pnx-dynamic-form>      <i *ngIf="!autoGenerated" class="fa fa-trash-o clickable trash-btn" (click)="removeFormControl(i)" aria-hidden="true"></i>  </div></div></div>'
+        var COMPONENT_TEMPLATE = '<div><div *ngIf="!autoGenerated">  <small> {{selectLabel}} </small>  <div class="input-group filter-control" >    <select class="form-control form-control-sm" [formControl]="selectControl">      <option [ngValue]="null" > </option>      <option *ngFor="let formDef of formsDefinition" [ngValue]="formDef">        {{formDef?.attribut_label}}      </option>    </select>  </div></div><div class="full-wrapper" *ngIf="formControlBuilded">  <div class="dynamic-form-wrapper" *ngFor="let formDef of formsSelected; let i = index">      <pnx-dynamic-form        class="dynamic-form padding-sm"        [formDef]="formDef"        [form]="myFormGroup">      </pnx-dynamic-form>      <i *ngIf="!autoGenerated" class="fa fa-trash-o clickable trash-btn" (click)="removeFormControl(i)" aria-hidden="true"></i>  </div>  <div hidden class="dynamic-form-wrapper" *ngFor="let formDef of formsSelectedHidden; let i = index">    <pnx-dynamic-form      class="dynam      ic-form padding-sm"      [formDef]="formDef"      [form]="myFormGroup">    </pnx-dynamic-form>    <i *ngIf="!autoGenerated" class="fa fa-trash-o clickable trash-btn" (click)="removeFormControl(i)" aria-hidden="true"></i>  </div></div></div>'
     var COMPONENTS = [{'name': 'AcquisitionFrameworksComponent', 'selector': 'pnx-acquisition-frameworks'},{'name': 'ActorComponent', 'selector': 'pnx-metadata-actor'},{'name': 'AdminComponent', 'selector': 'pnx-admin'},{'name': 'AfFormComponent', 'selector': 'pnx-af-form'},{'name': 'AfListComponent', 'selector': 'pnx-af-list'},{'name': 'AppComponent', 'selector': 'pnx-root'},{'name': 'AreasComponent', 'selector': 'pnx-areas'},{'name': 'AreasIntersectedComponent', 'selector': 'pnx-areas-intersected-modal'},{'name': 'AutoCompleteComponent', 'selector': 'pnx-autocomplete'},{'name': 'DatasetFormComponent', 'selector': 'pnx-datasets-form'},{'name': 'DatasetListComponent', 'selector': 'pnx-dataset-list'},{'name': 'DatasetsComponent', 'selector': 'pnx-datasets'},{'name': 'DateComponent', 'selector': 'pnx-date'},{'name': 'DumbSelectComponent', 'selector': 'pnx-dumb-select'},{'name': 'DynamicFormComponent', 'selector': 'pnx-dynamic-form'},{'name': 'FooterComponent', 'selector': 'pnx-footer'},{'name': 'GPSComponent', 'selector': 'pnx-gps'},{'name': 'GenericFormComponent', 'selector': 'pnx-generic-form'},{'name': 'GenericFormGeneratorComponent', 'selector': 'pnx-dynamic-form-generator'},{'name': 'GeojsonComponent', 'selector': 'pnx-geojson'},{'name': 'GeometryFormComponent', 'selector': 'pnx-geometry-form'},{'name': 'HomeContentComponent', 'selector': 'pnx-home-content'},{'name': 'IntroductionComponent', 'selector': 'pnx-introduction'},{'name': 'LeafletDrawComponent', 'selector': 'pnx-leaflet-draw'},{'name': 'LeafletFileLayerComponent', 'selector': 'pnx-leaflet-filelayer'},{'name': 'LoginComponent', 'selector': 'pnx-login'},{'name': 'MapComponent', 'selector': 'pnx-map'},{'name': 'MapDataComponent', 'selector': 'pnx-map-data'},{'name': 'MapListComponent', 'selector': 'pnx-map-list'},{'name': 'MapListGenericFiltersComponent', 'selector': 'pnx-map-list-generic-filter'},{'name': 'MapOverLaysComponent', 'selector': 'pnx-map-overlays'},{'name': 'MarkerComponent', 'selector': 'pnx-marker'},{'name': 'MetadataComponent', 'selector': 'pnx-metadata'},{'name': 'ModalDownloadComponent', 'selector': 'pnx-modal-download'},{'name': 'ModalInfoObsComponent', 'selector': 'pnx-synthese-modal-info-obs'},{'name': 'MultiSelectComponent', 'selector': 'pnx-multiselect'},{'name': 'MunicipalitiesComponent', 'selector': 'pnx-municipalities'},{'name': 'NavHomeComponent', 'selector': 'pnx-nav-home'},{'name': 'NewPasswordComponent', 'selector': 'pnx-new-password'},{'name': 'NomenclatureComponent', 'selector': 'pnx-nomenclature'},{'name': 'ObserversComponent', 'selector': 'pnx-observers'},{'name': 'ObserversTextComponent', 'selector': 'pnx-observers-text'},{'name': 'PageNotFoundComponent', 'selector': 'pnx-page-not-found'},{'name': 'PasswordComponent', 'selector': 'pnx-user-password'},{'name': 'PeriodComponent', 'selector': 'pnx-period'},{'name': 'SidenavItemsComponent', 'selector': 'pnx-sidenav-items'},{'name': 'SignUpComponent', 'selector': 'pnx-signup'},{'name': 'SyntheseCarteComponent', 'selector': 'pnx-synthese-carte'},{'name': 'SyntheseComponent', 'selector': 'pnx-synthese'},{'name': 'SyntheseListComponent', 'selector': 'pnx-synthese-list'},{'name': 'SyntheseModalDownloadComponent', 'selector': 'pnx-synthese-modal-download'},{'name': 'SyntheseSearchComponent', 'selector': 'pnx-synthese-search'},{'name': 'TaxonAdvancedModalComponent', 'selector': 'pnx-validation-taxon-advanced'},{'name': 'TaxonTreeComponent', 'selector': 'pnx-tree'},{'name': 'TaxonomyComponent', 'selector': 'pnx-taxonomy'},{'name': 'UserComponent', 'selector': 'pnx-user'}];
     var DIRECTIVES = [{'name': 'DisableControlDirective', 'selector': '[disableControl]'}];
     var ACTUAL_COMPONENT = {'name': 'GenericFormGeneratorComponent'};

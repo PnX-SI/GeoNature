@@ -1363,7 +1363,7 @@ fonction définit par la librairie leaflet: <code>onEachFeature(feature, layer)<
                     </tr>
                     <tr>
                         <td class="col-md-4">
-    <code>loadGeojson(geojson: )</code>
+    <code>loadGeojson(geojson: , zoom: )</code>
                         </td>
                     </tr>
     
@@ -1391,6 +1391,14 @@ fonction définit par la librairie leaflet: <code>onEachFeature(feature, layer)<
                                             <tbody>
                                                     <tr>
                                                       <td>geojson</td>
+                                                      <td>
+                                                      </td>
+                                                      <td>
+                                                      </td>
+                                                      <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                      <td>zoom</td>
                                                       <td>
                                                       </td>
                                                       <td>
@@ -1808,7 +1816,7 @@ export class GeojsonComponent implements OnInit, OnChanges {
     }, 200);
   }
 
-  loadGeojson(geojson) {
+  loadGeojson(geojson, zoom &#x3D; true) {
     this.currentGeojson &#x3D; this.mapservice.createGeojson(
       geojson,
       this.asCluster,
@@ -1819,7 +1827,7 @@ export class GeojsonComponent implements OnInit, OnChanges {
     this.mapservice.layerGroup &#x3D; new L.FeatureGroup();
     this.mapservice.map.addLayer(this.mapservice.layerGroup);
     this.mapservice.layerGroup.addLayer(this.currentGeojson);
-    if (this.zoomOnLayer) {
+    if (zoom) {
       this.zoom(this.mapservice.layerGroup);
     }
   }
@@ -1829,10 +1837,11 @@ export class GeojsonComponent implements OnInit, OnChanges {
       if (this.currentGeojson !&#x3D;&#x3D; undefined) {
         this.mapservice.map.removeLayer(this.currentGeojson);
       }
-      this.loadGeojson(changes.geojson.currentValue);
-      // zoom on layer
-      if (this.zoomOnFirstTime &amp;&amp; this.zoomOnLayer) {
-        this.zoom(this.mapservice.layerGroup);
+      // first time we pass data: zoom or not ?
+      if (changes.geojson.previousValue &#x3D;&#x3D;&#x3D; undefined) {
+        this.loadGeojson(changes.geojson.currentValue, this.zoomOnFirstTime &amp;&amp; this.zoomOnLayer);
+      } else {
+        this.loadGeojson(changes.geojson.currentValue, this.zoomOnLayer);
       }
     }
     if (changes.style &amp;&amp; changes.style.currentValue !&#x3D;&#x3D; undefined) {

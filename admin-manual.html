@@ -123,7 +123,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#exploitation">Exploitation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#logs">Logs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#commandes-geonature">Commandes GeoNature</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#verification-des-services">Verification des services</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#verification-des-services">Vérification des services</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#supervision-des-services">Supervision des services</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#stopper-redemarrer-les-api">Stopper/Redémarrer les API</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#maintenance">Maintenance</a></li>
@@ -253,12 +253,12 @@
 <p>GeoNature possède une architecture modulaire et s’appuie sur plusieurs “services” indépendants pour fonctionner :</p>
 <ul class="simple">
 <li>UsersHub et son sous-module d’authentification Flask (<a class="reference external" href="https://github.com/PnX-SI/UsersHub-authentification-module">https://github.com/PnX-SI/UsersHub-authentification-module</a>) sont utilisés pour gérer le schéma de BDD <code class="docutils literal"><span class="pre">ref_users</span></code> (actuellement nommé <code class="docutils literal"><span class="pre">utilisateurs</span></code>) et l’authentification. UsersHub permet une gestion centralisée de ses utilisateurs (listes, organismes, droits), utilisable par les différentes applications de son système d’information.</li>
-<li>TaxHub (<a class="reference external" href="https://github.com/PnX-SI/TaxHub">https://github.com/PnX-SI/TaxHub</a>) est utilisé pour la gestion du schéma de BDD <code class="docutils literal"><span class="pre">ref_taxonomy</span></code> (actuellement nommé <code class="docutils literal"><span class="pre">taxonomie</span></code>). L’API de TaxHub est utilisée pour récupérer des informations sur les espèces et la taxonomie en générale.</li>
+<li>TaxHub (<a class="reference external" href="https://github.com/PnX-SI/TaxHub">https://github.com/PnX-SI/TaxHub</a>) est utilisé pour la gestion du schéma de BDD <code class="docutils literal"><span class="pre">ref_taxonomy</span></code> (actuellement nommé <code class="docutils literal"><span class="pre">taxonomie</span></code>). L’API de TaxHub est utilisée pour récupérer des informations sur les espèces et la taxonomie en général.</li>
 <li>Un sous-module Flask (<a class="reference external" href="https://github.com/PnX-SI/Nomenclature-api-module/">https://github.com/PnX-SI/Nomenclature-api-module/</a>) a été créé pour une gestion centralisée des nomenclatures (<a class="reference external" href="https://github.com/PnX-SI/Nomenclature-api-module/">https://github.com/PnX-SI/Nomenclature-api-module/</a>), il pilote le schéma <code class="docutils literal"><span class="pre">ref_nomenclature</span></code>.</li>
 <li><code class="docutils literal"><span class="pre">ref_geo</span></code> est le schéma de base de données qui gère le référentiel géographique. Il est utilisé pour gérer les zonages, les communes, le calcul automatique d’altitude et les intersections spatiales.</li>
 </ul>
 <p>GeoNature a également une séparation claire entre le backend (API: intéraction avec la base de données) et le frontend (interface utilisateur). Le backend peut être considéré comme un “service” dont se sert le frontend pour récupérer ou poster des données.
-NB: Le backend en le frontend se lancent séparement dans GeoNature.</p>
+NB: Le backend et le frontend se lancent séparement dans GeoNature.</p>
 <img alt="http://geonature.fr/docs/img/admin-manual/design-geonature.png" src="http://geonature.fr/docs/img/admin-manual/design-geonature.png" />
 </div>
 <div class="section" id="base-de-donnees">
@@ -289,7 +289,7 @@ NB: Le backend en le frontend se lancent séparement dans GeoNature.</p>
 <p>Les relations complexes entre les schémas ont été grisées pour faciliter la lisibilité.</p>
 <div class="section" id="gestion-des-droits">
 <h3>Gestion des droits<a class="headerlink" href="#gestion-des-droits" title="Permalink to this headline">¶</a></h3>
-<p>L’accès des utilisateurs à l’application GeoNature est gérée de manière centralisée dans UsersHub.</p>
+<p>L’accès des utilisateurs à l’application GeoNature est géré de manière centralisée dans UsersHub.</p>
 <p>La gestion des droits (permissions), spécifique à GeoNature, est gérée dans un schéma (<code class="docutils literal"><span class="pre">gn_permissions</span></code>) et un module de GeoNature dédié. Dans la version 1 de GeoNature, il était possible d’attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour étendre les possibilités d’attribution de droits et les rendre plus génériques.</p>
 <p>La gestion des droits dans GeoNature, comme dans beaucoup d’applications, est liée à des actions (Create / Read / Update / Delete aka CRUD). Pour les besoins  métiers de l’application nous avons rajouté deux actions : “Valider” et “Exporter”, ce qui donne le CRUVED : Create / Read / Update / Validate / Export / Delete.</p>
 <p>Sur ces actions, on va pouvoir appliquer des filtres de manière générique.</p>
@@ -307,13 +307,13 @@ NB: Le backend en le frontend se lancent séparement dans GeoNature.</p>
 </ul>
 <p>Enfin ces permissions vont pouvoir s’attribuer à l’ensemble de l’application GeoNature et/ou à un module.</p>
 <p>On a donc le quatriptique : Un utilisateur / Une action / Un filtre / Un module</p>
-<p>Pour l’instant les filtres de type groupe taxonomique, précisions et géographique existent dans la base de données mais ne sont pas implémentées au niveau de l’application GeoNature, donc ils n’ont aucun effet.</p>
+<p>Pour l’instant les filtres de type groupe taxonomique, précisions et géographique existent dans la base de données mais ne sont pas implémentés au niveau de l’application GeoNature, donc ils n’ont aucun effet.</p>
 <p>Récapitulatif :</p>
 <ul class="simple">
-<li>Dans GeoNature V2 on peut attribuer à une role des actions possibles, sur lesquels on peut ajouter des filtres, dans un module ou sur toute l’application GeoNature (définis dans <code class="docutils literal"><span class="pre">gn_permissions.cor_role_action_filter_module_object</span></code>).</li>
+<li>Dans GeoNature V2 on peut attribuer à un role des actions possibles, sur lesquels on peut ajouter des filtres, dans un module ou sur toute l’application GeoNature (définis dans <code class="docutils literal"><span class="pre">gn_permissions.cor_role_action_filter_module_object</span></code>).</li>
 <li>6 actions sont possibles dans GeoNature : Create / Read / Update / Validate / Export / Delete (aka CRUVED).</li>
-<li>Différents types de filtre existent. Le plus courant est le filtre de type “SCOPE” (portée) : 3 portée sont attribuables à des actions: Mes données / Les données de mon organisme / Toutes les données.</li>
-<li>Une vue permet de retourner toutes les actions, leur filtres et leur modules de GeoNature pour tous les rôles (<code class="docutils literal"><span class="pre">gn_permissions.v_users_permissions</span></code>)</li>
+<li>Différents types de filtre existent. Le plus courant est le filtre de type “SCOPE” (portée) : 3 portées sont attribuables à des actions: Mes données / Les données de mon organisme / Toutes les données.</li>
+<li>Une vue permet de retourner toutes les actions, leurs filtres et leurs modules de GeoNature pour tous les rôles (<code class="docutils literal"><span class="pre">gn_permissions.v_users_permissions</span></code>)</li>
 <li>Des fonctions PostgreSQL ont aussi été intégrées pour faciliter la récupération de ces informations (<code class="docutils literal"><span class="pre">gn_permissions.cruved_for_user_in_module</span></code>, <code class="docutils literal"><span class="pre">gn_permissions.does_user_have_scope_permission</span></code>, …)</li>
 <li>Les permissions attribuées à un module surchargent les permission attribuées sur l’ensemble de l’application par un mécanisme d’héritage. Par défaut et en l’absence de permissions, tous les modules héritent des permissions de GeoNature. Attention cependant aux utilisateurs appartenant à plusieurs groupes. Si un CRUVED est définit pour un module à un seul de ses groupes, c’est ce CRUVED qui sera pris en compte. En effet, le mécanisme d’héritage ne fonctionne plus lorsqu’on surcouche implicitement le CRUVED d’un module pour un groupe.</li>
 <li>Si un utilisateur n’a aucune action possible sur un module, alors il ne lui sera pas affiché et il ne pourra pas y accéder</li>
@@ -354,7 +354,7 @@ NB: Le backend en le frontend se lancent séparement dans GeoNature.</p>
 <li>Il contient une table des zonages, des types de zonages, des communes, des grilles (mailles) et un MNT raster ou vectorisé (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/issues/235">https://github.com/PnX-SI/GeoNature/issues/235</a>)</li>
 <li>La fonction <code class="docutils literal"><span class="pre">ref_geo.fct_get_area_intersection</span></code> permet de renvoyer les zonages intersectés par une observation en fournissant sa géométrie</li>
 <li>La fonction <code class="docutils literal"><span class="pre">ref_geo.fct_get_altitude_intersection</span></code> permet de renvoyer l’altitude min et max d’une observation en fournissant sa géométrie</li>
-<li>L’intersection d’une observation avec les zonages sont stockés au niveau de la synthèse (<code class="docutils literal"><span class="pre">gn_synthese.cor_area_synthese</span></code>) et pas de la donnée source pour alléger et simplifier leur gestion</li>
+<li>Les intersections d’une observation avec les zonages sont stockées au niveau de la synthèse (<code class="docutils literal"><span class="pre">gn_synthese.cor_area_synthese</span></code>) et non au niveau de la donnée source pour alléger et simplifier leur gestion</li>
 </ul>
 </div>
 <div class="section" id="fonctions">
@@ -480,7 +480,7 @@ d’une observation avec tous les zonages</td>
 <h3>Tables transversales<a class="headerlink" href="#tables-transversales" title="Permalink to this headline">¶</a></h3>
 <p>GeoNature contient aussi des tables de stockage transversales qui peuvent être utilisées par tous les modules. C’est le cas pour la validation, la sensibilité, l’historisation des modifications et les médias.</p>
 <p>Cela permet de ne pas avoir à mettre en place des tables et mécanismes dans chaque module, mais de s’appuyer sur un stockage, des fonctions et développements factorisés, centralisés et partagés.</p>
-<p>Ces tables utilisent notamment le mécanisme des UUID (identifiant unique) pour retrouver les enregistrements. Depuis une table source (Occtax ou un autre module) on peut retrouver les enregistrments stockées dans les table transversale en utilisant un <code class="docutils literal"><span class="pre">WHERE</span> <span class="pre">&lt;TABLE_TRANSVERSALE&gt;.uuid_attached_row</span> <span class="pre">=</span> <span class="pre">&lt;MON_UUID_SOURCE&gt;</span></code> et ainsi retrouver l’historique de validation, les médias ou encore la sensibilité associé à une donnée.</p>
+<p>Ces tables utilisent notamment le mécanisme des UUID (identifiant unique) pour retrouver les enregistrements. Depuis une table source (Occtax ou un autre module) on peut retrouver les enregistrements stockées dans les tables transversales en utilisant un <code class="docutils literal"><span class="pre">WHERE</span> <span class="pre">&lt;TABLE_TRANSVERSALE&gt;.uuid_attached_row</span> <span class="pre">=</span> <span class="pre">&lt;MON_UUID_SOURCE&gt;</span></code> et ainsi retrouver l’historique de validation, les médias ou encore la sensibilité associés à une donnée.</p>
 <p>Voir <a class="reference external" href="https://github.com/PnX-SI/GeoNature/issues/339">https://github.com/PnX-SI/GeoNature/issues/339</a></p>
 </div>
 <div class="section" id="triggers-vers-la-synthese">
@@ -491,8 +491,8 @@ d’une observation avec tous les zonages</td>
 <li>Formulaire Occtax</li>
 <li>Ecriture dans la table <code class="docutils literal"><span class="pre">cor_counting_occtax</span></code> et génération d’un nouvel UUID</li>
 <li>Trigger d’écriture dans la table verticale <code class="docutils literal"><span class="pre">t_validations</span></code> à partir de la valeur par défaut de la nomenclature de validation (<code class="docutils literal"><span class="pre">gn_common.ref_nomenclatures.defaults_nomenclatures_value</span></code>)</li>
-<li>Trigger d’écriture d’Occtax vers la synthese (on ne maitrise pas l’ordre de ces 2 triggers qui sont lancés en même temps)</li>
-<li>Trigger de rapatriement du dernier statut de validation de la table verticale vers la synthese.</li>
+<li>Trigger d’écriture d’Occtax vers la synthèse (on ne maitrise pas l’ordre de ces 2 triggers qui sont lancés en même temps)</li>
+<li>Trigger de rapatriement du dernier statut de validation de la table verticale vers la synthèse.</li>
 </ol>
 </div>
 <div class="section" id="triggers-dans-la-synthese">
@@ -560,7 +560,7 @@ Respecte le standard Occurrence de taxon du SINP.</p>
 <li>Mise à jour des données de cor_area_taxon</li>
 <li>Actions :<ol class="arabic">
 <li>Récupération du cd_nom en lien avec l’enregistrement <code class="docutils literal"><span class="pre">cor_area_synthese</span></code></li>
-<li>Suppression des données de <code class="docutils literal"><span class="pre">cor_area_taxon</span></code> avec le <code class="docutils literal"><span class="pre">cd_nom</span></code> et <code class="docutils literal"><span class="pre">id_area</span></code> concerné</li>
+<li>Suppression des données de <code class="docutils literal"><span class="pre">cor_area_taxon</span></code> avec le <code class="docutils literal"><span class="pre">cd_nom</span></code> et <code class="docutils literal"><span class="pre">id_area</span></code> concernés</li>
 <li>Insertion des données dans <code class="docutils literal"><span class="pre">cor_area_taxon</span></code> en lien avec le <code class="docutils literal"><span class="pre">cd_nom</span></code> et <code class="docutils literal"><span class="pre">id_area</span></code></li>
 </ol>
 </li>
@@ -605,7 +605,7 @@ Respecte le standard Occurrence de taxon du SINP.</p>
 <p>Chaque module doit avoir son propre schéma dans la BDD, avec ses propres fichiers SQL de création comme le module OccTax : <a class="reference external" href="https://github.com/PnX-SI/GeoNature/tree/develop/contrib/occtax/data">https://github.com/PnX-SI/GeoNature/tree/develop/contrib/occtax/data</a></p>
 <p>Côté Backend, chaque module a aussi son modèle et ses routes : <a class="reference external" href="https://github.com/PnX-SI/GeoNature/tree/develop/contrib/occtax/backend">https://github.com/PnX-SI/GeoNature/tree/develop/contrib/occtax/backend</a></p>
 <p>Idem côté Frontend, où chaque module a sa configuration et ses composants : <a class="reference external" href="https://github.com/PnX-SI/GeoNature/tree/develop/contrib/occtax/frontend/app">https://github.com/PnX-SI/GeoNature/tree/develop/contrib/occtax/frontend/app</a></p>
-<p>Mais en pouvant utiliser des composants du Coeur comme expliqué dans la documentation Developpeur.</p>
+<p>Mais en pouvant utiliser des composants du Cœur comme expliqué dans la documentation Developpeur.</p>
 <p>Plus d’infos sur le développement d’un module : <a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#d%C3%A9velopper-et-installer-un-gn_module">https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#d%C3%A9velopper-et-installer-un-gn_module</a></p>
 </div>
 <div class="section" id="configuration">
@@ -614,7 +614,7 @@ Respecte le standard Occurrence de taxon du SINP.</p>
 <ul class="simple">
 <li>Une configuration pour l’installation : <code class="docutils literal"><span class="pre">config/settings.ini</span></code></li>
 <li>Une configuration globale de l’application : <code class="docutils literal"><span class="pre">&lt;GEONATURE_DIRECTORY&gt;/config/geonature_config.toml</span></code> (générée lors de l’installation de GeoNature)</li>
-<li>Une configuration par module : <code class="docutils literal"><span class="pre">&lt;GEONATURE_DIRECTORY&gt;/external_modules/&lt;nom_module&gt;/config/conf_gn_module.toml</span></code> (générée lors de l’instalation d’un module)</li>
+<li>Une configuration par module : <code class="docutils literal"><span class="pre">&lt;GEONATURE_DIRECTORY&gt;/external_modules/&lt;nom_module&gt;/config/conf_gn_module.toml</span></code> (générée lors de l’installation d’un module)</li>
 <li>Une table <code class="docutils literal"><span class="pre">gn_commons.t_parameters</span></code> pour des paramètres gérés dans la BDD</li>
 </ul>
 <img alt="http://geonature.fr/docs/img/admin-manual/administration-geonature.png" src="http://geonature.fr/docs/img/admin-manual/administration-geonature.png" />
@@ -653,7 +653,7 @@ Respecte le standard Occurrence de taxon du SINP.</p>
 <li>Logs d’installation de la BDD d’un module : <code class="docutils literal"><span class="pre">install_&lt;nom_module&gt;_schema.log</span></code></li>
 <li>Logs de l’API : <code class="docutils literal"><span class="pre">gn-errors.log</span></code></li>
 </ul>
-<p>Les logs de TaxHub sont dans le repertoire <code class="docutils literal"><span class="pre">/var/log/taxhub</span></code>:</p>
+<p>Les logs de TaxHub sont dans le répertoire <code class="docutils literal"><span class="pre">/var/log/taxhub</span></code>:</p>
 <ul class="simple">
 <li>Logs de l’API de TaxHub : <code class="docutils literal"><span class="pre">taxhub-errors.log</span></code></li>
 </ul>
@@ -667,7 +667,7 @@ Pour les exécuter, il est nécessaire d’être dans le virtualenv python de Ge
 </pre></div>
 </div>
 <p>Le préfixe (venv) se met alors au début de votre invite de commande.</p>
-<p>Voici la liste des commandes disponible (aussi disponible en tapant la commande <code class="docutils literal"><span class="pre">geonature</span> <span class="pre">--help</span></code>) :</p>
+<p>Voici la liste des commandes disponibles (aussi disponibles en tapant la commande <code class="docutils literal"><span class="pre">geonature</span> <span class="pre">--help</span></code>) :</p>
 <ul class="simple">
 <li>activate_gn_module : Active un gn_module installé (Possibilité d’activer seulement le backend ou le frontend)</li>
 <li>deactivate_gn_module : Désactive gn_un module activé (Possibilté de désactiver seulement le backend ou le frontend)</li>
@@ -677,13 +677,13 @@ Pour les exécuter, il est nécessaire d’être dans le virtualenv python de Ge
 <li>install_gn_module : Installe un gn_module</li>
 <li>start_gunicorn : Lance l’API du backend avec gunicorn</li>
 <li>supervisor : Exécute les commandes supervisor (<code class="docutils literal"><span class="pre">supervisor</span> <span class="pre">stop</span> <span class="pre">&lt;service&gt;</span></code>, <code class="docutils literal"><span class="pre">supervisor</span> <span class="pre">reload</span></code>)</li>
-<li>update_configuration : Met à jour la configuration du coeur de l’application. A exécuter suite à un modification du fichier <code class="docutils literal"><span class="pre">geonature_config.toml</span></code></li>
+<li>update_configuration : Met à jour la configuration du cœur de l’application. A exécuter suite à une modification du fichier <code class="docutils literal"><span class="pre">geonature_config.toml</span></code></li>
 <li>update_module_configuration : Met à jour la configuration d’un module. A exécuter suite à une modification du fichier <code class="docutils literal"><span class="pre">conf_gn_module.toml</span></code>.</li>
 </ul>
 <p>Effectuez <code class="docutils literal"><span class="pre">geonature</span> <span class="pre">&lt;nom_commande&gt;</span> <span class="pre">--help</span></code> pour accéder à la documentation et à des exemples d’utilisation de chaque commande.</p>
 </div>
 <div class="section" id="verification-des-services">
-<h3>Verification des services<a class="headerlink" href="#verification-des-services" title="Permalink to this headline">¶</a></h3>
+<h3>Vérification des services<a class="headerlink" href="#verification-des-services" title="Permalink to this headline">¶</a></h3>
 <p>Les API de GeoNature et de TaxHub sont lancées par deux serveurs http python indépendants (Gunicorn), eux-mêmes controlés par le supervisor.</p>
 <p>Par défaut :</p>
 <ul class="simple">
@@ -703,7 +703,7 @@ Pour les exécuter, il est nécessaire d’être dans le virtualenv python de Ge
 </pre></div>
 </div>
 <p>Chaque ligne correspond à un worker Gunicorn.</p>
-<p>Si ces lignes n’apparaissent pas, cela signigie qu’une des deux API n’a pas été lancée ou a connu un problème à son lancement. Voir les logs des API pour plus d’informations.</p>
+<p>Si ces lignes n’apparaissent pas, cela signifie qu’une des deux API n’a pas été lancée ou a connu un problème à son lancement. Voir les logs des API pour plus d’informations.</p>
 </div>
 <div class="section" id="supervision-des-services">
 <h3>Supervision des services<a class="headerlink" href="#supervision-des-services" title="Permalink to this headline">¶</a></h3>
@@ -831,7 +831,7 @@ chmod g+rwx /home/`whoami`/backup
 </li>
 <li><p class="first">Restauration de la configuration et de la customisation :</p>
 <ul>
-<li><p class="first">Décomprésser les fichiers précedemment sauvegardés pour les remettre au bon emplacement :</p>
+<li><p class="first">Décompresser les fichiers précedemment sauvegardés pour les remettre au bon emplacement :</p>
 <div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">sudo rm &lt;GEONATURE_DIRECTORY&gt;/config/*</span>
 <span class="go">cd &lt;GEONATURE_DIRECTORY&gt;/config</span>
 <span class="go">sudo tar -zxvf &lt;MY_BACKUP_DIRECTORY&gt;/201803150953-geonature_config.tar.gz</span>
@@ -865,10 +865,10 @@ chmod g+rwx /home/`whoami`/backup
 <div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">npm run start -- --host=0.0.0.0 --disable-host-check</span>
 </pre></div>
 </div>
-<p>L’application est désormais disponible sur une serveur de développement à la même addresse que précedemment, mais sur le port 4200 : <a class="reference external" href="http://test.geonature.fr:4200">http://test.geonature.fr:4200</a></p>
+<p>L’application est désormais disponible sur une serveur de développement à la même addresse que précédemment, mais sur le port 4200 : <a class="reference external" href="http://test.geonature.fr:4200">http://test.geonature.fr:4200</a></p>
 <p>Ouvrez un nouveau terminal (pour laisser tourner le serveur de développement), puis modifier la variable <code class="docutils literal"><span class="pre">URL_APPLICATION</span></code> dans le fichier <code class="docutils literal"><span class="pre">geonature_config.toml</span></code> en mettant l’adresse ci-dessus et relancer l’application (<code class="docutils literal"><span class="pre">sudo</span> <span class="pre">supervisorctl</span> <span class="pre">restart</span> <span class="pre">geonature2</span></code>)</p>
 <p>A chaque modification d’un fichier du frontend, une compilation rapide est relancée et votre navigateur se rafraichit automatiquement en intégrant les dernières modifications.</p>
-<p>Une fois les modifications terminées, remodifier le fichier <code class="docutils literal"><span class="pre">geonature_config.toml</span></code> pour remettre l’URL initiale, relancez l’application (<code class="docutils literal"><span class="pre">sudo</span> <span class="pre">supervisorctl</span> <span class="pre">restart</span> <span class="pre">geonature2</span></code>), puis relancez la compliation du frontend (<code class="docutils literal"><span class="pre">npm</span> <span class="pre">run</span> <span class="pre">build</span></code>). Faites enfin un <code class="docutils literal"><span class="pre">ctrl+c</span></code> dans le terminal ou le frontend a été lancé pour stopper le serveur de développement.</p>
+<p>Une fois les modifications terminées, remodifier le fichier <code class="docutils literal"><span class="pre">geonature_config.toml</span></code> pour remettre l’URL initiale, relancez l’application (<code class="docutils literal"><span class="pre">sudo</span> <span class="pre">supervisorctl</span> <span class="pre">restart</span> <span class="pre">geonature2</span></code>), puis relancez la compilation du frontend (<code class="docutils literal"><span class="pre">npm</span> <span class="pre">run</span> <span class="pre">build</span></code>). Faites enfin un <code class="docutils literal"><span class="pre">ctrl+c</span></code> dans le terminal ou le frontend a été lancé pour stopper le serveur de développement.</p>
 <p>Si la manipulation vous parait compliquée, vous pouvez suivre la documentation qui suit, qui fait relancer la compilation du frontend à chaque modification.</p>
 <div class="section" id="integrer-son-logo">
 <h3>Intégrer son logo<a class="headerlink" href="#integrer-son-logo" title="Permalink to this headline">¶</a></h3>
@@ -910,7 +910,7 @@ chmod g+rwx /home/`whoami`/backup
 </div>
 <div class="section" id="customiser-l-aspect-esthetique">
 <h3>Customiser l’aspect esthétique<a class="headerlink" href="#customiser-l-aspect-esthetique" title="Permalink to this headline">¶</a></h3>
-<p>Les couleurs de textes, couleurs de fonds, forme des boutons etc peuvent être adaptés en renseignant le fichier <code class="docutils literal"><span class="pre">custom.scss</span></code>, situé dans le répertoire <code class="docutils literal"><span class="pre">geonature/frontend/src/custom</span></code>.</p>
+<p>Les couleurs de textes, couleurs de fonds, forme des boutons etc peuvent être adaptées en renseignant le fichier <code class="docutils literal"><span class="pre">custom.scss</span></code>, situé dans le répertoire <code class="docutils literal"><span class="pre">geonature/frontend/src/custom</span></code>.</p>
 <p>Pour remplacer la couleur de fond du bandeau de navigation par une image, on peut par exemple apporter la modification suivante :</p>
 <div class="highlight-css"><div class="highlight"><pre><span></span> <span class="nt">html</span> <span class="nt">body</span> <span class="nt">pnx-root</span> <span class="nt">pnx-nav-home</span> <span class="nt">mat-sidenav-container</span><span class="p">.</span><span class="nc">sidenav-container</span><span class="p">.</span><span class="nc">mat-drawer-container</span><span class="p">.</span><span class="nc">mat-sidenav-container</span> <span class="nt">mat-sidenav-content</span><span class="p">.</span><span class="nc">mat-drawer-content</span><span class="p">.</span><span class="nc">mat-sidenav-content</span> <span class="nt">mat-toolbar</span><span class="p">#</span><span class="nn">app-toolbar</span><span class="p">.</span><span class="nc">row</span><span class="p">.</span><span class="nc">mat-toolbar</span>
 <span class="p">{</span>

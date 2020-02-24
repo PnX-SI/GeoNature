@@ -196,7 +196,7 @@ Pour une installation packagée voir cette <a class="reference external" href="h
 <h2>Prérequis<a class="headerlink" href="#prerequis" title="Permalink to this headline">¶</a></h2>
 <p>Ressources minimum serveur :</p>
 <ul class="simple">
-<li>Un serveur Linux <strong>architecture 64-bits</strong> disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.</li>
+<li>Un serveur Linux <strong>architecture 64-bits</strong> disposant d’au moins de 4 Go RAM et de 20 Go d’espace disque.</li>
 </ul>
 <p>GeoNature utilise les technologies suivantes:</p>
 <ul class="simple">
@@ -204,7 +204,7 @@ Pour une installation packagée voir cette <a class="reference external" href="h
 <li>Python 3 et dépendances Python nécessaires à l’application</li>
 <li>Flask (framework web Python)</li>
 <li>Apache</li>
-<li>Angular 4, Angular CLI, NodeJS</li>
+<li>Angular 7, Angular CLI, NodeJS</li>
 <li>Librairies javascript (Leaflet, ChartJS)</li>
 <li>Librairies CSS (Bootstrap, Material Design)</li>
 </ul>
@@ -234,19 +234,25 @@ Pour une installation packagée voir cette <a class="reference external" href="h
 <ul>
 <li><p class="first">Se reconnecter en SSH au serveur avec le nouvel utilisateur pour ne pas faire l’installation en <code class="docutils literal"><span class="pre">root</span></code>. On ne se connectera plus en <code class="docutils literal"><span class="pre">root</span></code>. Si besoin d’éxecuter des commandes avec des droits d’administrateur, on les précède de <code class="docutils literal"><span class="pre">sudo</span></code>. Il est d’ailleurs possible renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec root. Voir <a class="reference external" href="https://docs.ovh.com/fr/vps/conseils-securisation-vps/">https://docs.ovh.com/fr/vps/conseils-securisation-vps/</a> pour plus d’informations sur le sécurisation du serveur.</p>
 </li>
-<li><p class="first">Lancez les commandes suivantes pour installer les dépendances de GeoNature (debian 9) :</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">wget</span>
+<li><p class="first">Lancez les commandes suivantes pour installer les dépendances de GeoNature (Debian 9) :</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">wget</span> <span class="n">git</span>
 <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">postgresql</span> <span class="n">postgis</span> <span class="n">postgresql</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="n">dev</span><span class="o">-</span><span class="mf">9.6</span>
-<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">python3</span> <span class="n">python3</span><span class="o">-</span><span class="n">dev</span> <span class="n">python3</span><span class="o">-</span><span class="n">setuptools</span> <span class="n">python</span><span class="o">-</span><span class="n">pip</span> <span class="n">libpq</span><span class="o">-</span><span class="n">dev</span> <span class="n">libgdal</span><span class="o">-</span><span class="n">dev</span> <span class="n">python</span><span class="o">-</span><span class="n">gdal</span> <span class="n">python</span><span class="o">-</span><span class="n">virtualenv</span> <span class="n">build</span><span class="o">-</span><span class="n">essential</span>
-<span class="n">sudo</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">pip</span> <span class="n">virtualenv</span> <span class="n">virtualenvwrapper</span>
-<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">npm</span>
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">python3</span> <span class="n">python3</span><span class="o">-</span><span class="n">dev</span> <span class="n">python3</span><span class="o">-</span><span class="n">setuptools</span> <span class="n">python</span><span class="o">-</span><span class="n">pip</span> <span class="n">libpq</span><span class="o">-</span><span class="n">dev</span> <span class="n">libgdal</span><span class="o">-</span><span class="n">dev</span> <span class="n">python</span><span class="o">-</span><span class="n">gdal</span> <span class="n">build</span><span class="o">-</span><span class="n">essential</span>
+<span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">pip</span><span class="o">==</span><span class="mf">20.0</span><span class="o">.</span><span class="mi">2</span>
+<span class="n">pip3</span> <span class="n">install</span> <span class="n">virtualenv</span><span class="o">==</span><span class="mf">20.0</span><span class="o">.</span><span class="mi">1</span>
 <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">supervisor</span>
 <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">apache2</span>
+<span class="c1"># installation de NVM</span>
+<span class="n">wget</span> <span class="o">-</span><span class="n">qO</span><span class="o">-</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">creationix</span><span class="o">/</span><span class="n">nvm</span><span class="o">/</span><span class="n">v0</span><span class="o">.</span><span class="mf">33.6</span><span class="o">/</span><span class="n">install</span><span class="o">.</span><span class="n">sh</span> <span class="o">|</span> <span class="n">bash</span>
+
+<span class="n">export</span> <span class="n">NVM_DIR</span><span class="o">=</span><span class="s2">&quot;$HOME/.nvm&quot;</span>
+<span class="p">[</span> <span class="o">-</span><span class="n">s</span> <span class="s2">&quot;$NVM_DIR/nvm.sh&quot;</span> <span class="p">]</span> <span class="o">&amp;&amp;</span> \<span class="o">.</span> <span class="s2">&quot;$NVM_DIR/nvm.sh&quot;</span>  <span class="c1"># This loads nvm</span>
+<span class="p">[</span> <span class="o">-</span><span class="n">s</span> <span class="s2">&quot;$NVM_DIR/bash_completion&quot;</span> <span class="p">]</span> <span class="o">&amp;&amp;</span> \<span class="o">.</span> <span class="s2">&quot;$NVM_DIR/bash_completion&quot;</span>  <span class="c1"># This loads nvm bash_completion</span>
 </pre></div>
 </div>
 </li>
 </ul>
-<p>Sur Ubuntu 18, installez la version 10 de postgresql-server-dev <code class="docutils literal"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">postgresql-server-dev-10</span></code>. La version est à adapter sur les autres versions de Debian ou Ubuntu</p>
+<p>Sur Ubuntu 18, installez la version 10 de postgresql-server-dev <code class="docutils literal"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">postgresql-server-dev-10</span></code>. La version est à adapter sur les autres versions de Debian ou Ubuntu.</p>
 </div>
 <div class="section" id="installation-de-l-application">
 <h2>Installation de l’application<a class="headerlink" href="#installation-de-l-application" title="Permalink to this headline">¶</a></h2>
@@ -265,8 +271,8 @@ Pour une installation packagée voir cette <a class="reference external" href="h
 </div>
 </li>
 <li><p class="first">Renommer le répertoire de l’application puis placez-vous dedans :</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mv</span> <span class="n">GeoNature</span><span class="o">-</span><span class="n">X</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Z</span> <span class="o">/</span><span class="n">home</span><span class="o">/&lt;</span><span class="n">mon_user</span><span class="o">&gt;/</span><span class="n">geonature</span><span class="o">/</span>
-<span class="n">cd</span> <span class="n">geonature</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span>mv GeoNature-X.Y.Z /home/`whoami`/geonature/
+cd geonature
 </pre></div>
 </div>
 </li>
@@ -355,6 +361,7 @@ Pour une installation packagée voir cette <a class="reference external" href="h
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~</span>
 <span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">PnX</span><span class="o">-</span><span class="n">SI</span><span class="o">/</span><span class="n">TaxHub</span><span class="o">/</span><span class="n">archive</span><span class="o">/</span><span class="n">X</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">zip</span>
 <span class="n">unzip</span> <span class="n">X</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">zip</span>
+<span class="n">rm</span> <span class="n">X</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">zip</span>
 </pre></div>
 </div>
 <p>en mode développeur:</p>
@@ -365,11 +372,13 @@ Pour une installation packagée voir cette <a class="reference external" href="h
 </pre></div>
 </div>
 <p>Lancer le script d’installation de l’application :</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">touch</span> <span class="n">var</span><span class="o">/</span><span class="n">log</span><span class="o">/</span><span class="n">install_app</span><span class="o">.</span><span class="n">log</span>
-<span class="o">./</span><span class="n">install_app</span><span class="o">.</span><span class="n">sh</span> <span class="mi">2</span><span class="o">&gt;&amp;</span><span class="mi">1</span> <span class="o">|</span> <span class="n">tee</span> <span class="n">install_all</span><span class="o">.</span><span class="n">log</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="n">var</span>
+<span class="n">mkdir</span> <span class="n">var</span><span class="o">/</span><span class="n">log</span>
+<span class="n">touch</span> <span class="n">var</span><span class="o">/</span><span class="n">log</span><span class="o">/</span><span class="n">install_app</span><span class="o">.</span><span class="n">log</span>
+<span class="o">./</span><span class="n">install_app</span><span class="o">.</span><span class="n">sh</span> <span class="mi">2</span><span class="o">&gt;&amp;</span><span class="mi">1</span> <span class="o">|</span> <span class="n">tee</span> <span class="n">var</span><span class="o">/</span><span class="n">log</span><span class="o">/</span><span class="n">install_app</span><span class="o">.</span><span class="n">log</span>
 </pre></div>
 </div>
-<p>Suite à l’execution de ce script, l’application Taxhub a été lancé automatiquement par le superviseur et est disponible à l’adresse <code class="docutils literal"><span class="pre">127.0.0.1:5000</span></code> (et l’API, à <code class="docutils literal"><span class="pre">127.0.0.1:5000//api</span></code>)</p>
+<p>Suite à l’execution de ce script, l’application Taxhub a été lancé automatiquement par le superviseur et est disponible à l’adresse <code class="docutils literal"><span class="pre">127.0.0.1:5000</span></code> (et l’API, à <code class="docutils literal"><span class="pre">127.0.0.1:5000/api</span></code>)</p>
 <p>Voir la doc d’installation de TaxHub : <a class="reference external" href="http://taxhub.readthedocs.io/">http://taxhub.readthedocs.io/</a></p>
 <p>Voir la doc d’installation de UsersHub : <a class="reference external" href="http://usershub.readthedocs.io/">http://usershub.readthedocs.io/</a></p>
 </div>

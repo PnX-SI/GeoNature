@@ -188,14 +188,14 @@
 <ul class="simple">
 <li>Ressources minimum serveur :</li>
 </ul>
-<p>Un serveur Linux (Debian 8 ou 9 ou Ubuntu 16 ou 18 <strong>architecture 64-bits</strong>) disposant d’au moins de 4 Go RAM et de 20 Go d’espace disque.</p>
+<p>Un serveur Linux (Debian 9 ou 10 ou Ubuntu 16 ou 18 <strong>architecture 64-bits</strong>) disposant d’au moins de 4 Go RAM et de 20 Go d’espace disque.</p>
 <p>Le script global d’installation de GeoNature va aussi se charger d’installer les dépendances nécessaires :</p>
 <ul class="simple">
 <li>PostgreSQL / PostGIS</li>
 <li>Python 3 et dépendances Python nécessaires à l’application</li>
 <li>Flask (framework web Python)</li>
 <li>Apache</li>
-<li>Angular 4, Angular CLI, NodeJS</li>
+<li>Angular 7, Angular CLI, NodeJS</li>
 <li>Librairies javascript (Leaflet, ChartJS)</li>
 <li>Librairies CSS (Bootstrap, Material Design)</li>
 </ul>
@@ -338,7 +338,11 @@
 <span class="o">./</span><span class="n">install_all</span><span class="o">.</span><span class="n">sh</span> <span class="mi">2</span><span class="o">&gt;&amp;</span><span class="mi">1</span> <span class="o">|</span> <span class="n">tee</span> <span class="n">install_all</span><span class="o">.</span><span class="n">log</span>
 </pre></div>
 </div>
-<p>Une fois l’installation terminée, les applications sont disponibles aux adresses suivantes :</p>
+<p>Une fois l’installation terminée, lancez la commande suivante:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">exec</span> <span class="n">bash</span>
+</pre></div>
+</div>
+<p>Les applications sont disponibles aux adresses suivantes :</p>
 <ul class="simple">
 <li><a class="reference external" href="http://monip.com/geonature">http://monip.com/geonature</a></li>
 <li><a class="reference external" href="http://monip.com/taxhub/">http://monip.com/taxhub/</a></li>
@@ -353,9 +357,8 @@
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Note:</th><td class="field-body"><ul class="first simple">
-<li><strong>GeoNature-atlas</strong> : Comme dans la V1, le script <code class="docutils literal"><span class="pre">install_all.sh</span></code> permettra d’installer automatiquement GeoNature-atlas (en option)</li>
-<li>Une première version de GeoNature-atlas compatible avec GeoNature V2 est disponible dans sa branche <code class="docutils literal"><span class="pre">develop</span></code> : <a class="reference external" href="https://github.com/PnEcrins/GeoNature-atlas/issues/162">https://github.com/PnEcrins/GeoNature-atlas/issues/162</a></li>
-<li>Suivez la procédure d’installation classique de GeoNature-atlas mais exécutez le script <code class="docutils literal"><span class="pre">install_db_gn2.sh</span></code> à la place de <code class="docutils literal"><span class="pre">install_db.sh</span></code></li>
+<li><strong>GeoNature-atlas</strong> : Comme dans la V1, le script <code class="docutils literal"><span class="pre">install_all.sh</span></code> permettra à terme d’installer automatiquement GeoNature-atlas (en option)</li>
+<li>Une première version de GeoNature-atlas compatible avec GeoNature V2 est disponible : <a class="reference external" href="https://github.com/PnEcrins/GeoNature-atlas">https://github.com/PnEcrins/GeoNature-atlas</a></li>
 <li>Vous pouvez utiliser le schéma <code class="docutils literal"><span class="pre">ref_geo</span></code> de GeoNature pour votre territoire, les communes et les mailles, si vous les avez intégré dans <code class="docutils literal"><span class="pre">ref_geo.l_areas</span></code> au préalable.</li>
 </ul>
 </td>

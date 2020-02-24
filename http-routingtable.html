@@ -188,14 +188,17 @@
    <a href="#cap-/gn_monitoring"><strong>/gn_monitoring</strong></a> | 
    <a href="#cap-/habref"><strong>/habref</strong></a> | 
    <a href="#cap-/meta"><strong>/meta</strong></a> | 
+   <a href="#cap-/monitorings"><strong>/monitorings</strong></a> | 
    <a href="#cap-/nomenclatures/nomenclature"><strong>/nomenclatures/nomenclature</strong></a> | 
    <a href="#cap-/nomenclatures/nomenclatures"><strong>/nomenclatures/nomenclatures</strong></a> | 
+   <a href="#cap-/occhab"><strong>/occhab</strong></a> | 
    <a href="#cap-/occtax"><strong>/occtax</strong></a> | 
    <a href="#cap-/permissions"><strong>/permissions</strong></a> | 
    <a href="#cap-/permissions_backoffice"><strong>/permissions_backoffice</strong></a> | 
    <a href="#cap-/pypn"><strong>/pypn</strong></a> | 
    <a href="#cap-/synthese"><strong>/synthese</strong></a> | 
-   <a href="#cap-/users"><strong>/users</strong></a>
+   <a href="#cap-/users"><strong>/users</strong></a> | 
+   <a href="#cap-/validation"><strong>/validation</strong></a>
    </div>
 
    <table class="indextable modindextable">
@@ -399,6 +402,74 @@
        <a href="development.html#post--meta-dataset_mtd-(id_user)-(id_organism)"><code class="xref">POST /meta/dataset_mtd/(id_user)/(id_organism)</code></a></td><td>
        <em></em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/monitorings"><td></td><td>
+       <strong>/monitorings</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--monitorings-config"><code class="xref">GET /monitorings/config</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--monitorings-config-(string-module_path)"><code class="xref">GET /monitorings/config/(string:module_path)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--monitorings-config-test-(string-module_path)"><code class="xref">GET /monitorings/config/test/(string:module_path)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--monitorings-module-(value)"><code class="xref">GET /monitorings/module/(value)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--monitorings-modules"><code class="xref">GET /monitorings/modules</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--monitorings-object-(string-module_path)-(string-object_type)"><code class="xref">GET /monitorings/object/(string:module_path)/(string:object_type)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--monitorings-object-(string-module_path)-(string-object_type)-(int-id)"><code class="xref">GET /monitorings/object/(string:module_path)/(string:object_type)/(int:id)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--monitorings-object-module"><code class="xref">GET /monitorings/object/module</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--monitorings-routes_list"><code class="xref">GET /monitorings/routes_list</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--monitorings-test_permission"><code class="xref">GET /monitorings/test_permission</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--monitorings-util-(string-type_util)-(int-id)"><code class="xref">GET /monitorings/util/(string:type_util)/(int:id)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--monitorings-util-(string-type_util)-(string-ids)"><code class="xref">GET /monitorings/util/(string:type_util)/(string:ids)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--monitorings-util-nomenclature-(string-code_nomenclature_type)-(string-cd_nomenclature)"><code class="xref">GET /monitorings/util/nomenclature/(string:code_nomenclature_type)/(string:cd_nomenclature)</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-/nomenclatures/nomenclature"><td></td><td>
        <strong>/nomenclatures/nomenclature</strong></td><td></td></tr>
      <tr>
@@ -418,6 +489,39 @@
        <td></td>
        <td>
        <a href="development.html#get--nomenclatures-nomenclatures"><code class="xref">GET /nomenclatures/nomenclatures</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/occhab"><td></td><td>
+       <strong>/occhab</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--occhab-defaultNomenclatures"><code class="xref">GET /occhab/defaultNomenclatures</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--occhab-station-(int-id_station)"><code class="xref">GET /occhab/station/(int:id_station)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--occhab-stations"><code class="xref">GET /occhab/stations</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--occhab-export_stations-(export_format)"><code class="xref">POST /occhab/export_stations/(export_format)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--occhab-station"><code class="xref">POST /occhab/station</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#delete--occhab-station-(int-id_station)"><code class="xref">DELETE /occhab/station/(int:id_station)</code></a></td><td>
        <em></em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-/occtax"><td></td><td>
@@ -731,6 +835,24 @@
        <td></td>
        <td>
        <a href="development.html#put--users-role"><code class="xref">PUT /users/role</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/validation"><td></td><td>
+       <strong>/validation</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--validation"><code class="xref">GET /validation</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--validation-date-(uuid)"><code class="xref">GET /validation/date/(uuid)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--validation-definitions"><code class="xref">GET /validation/definitions</code></a></td><td>
        <em></em></td></tr>
    </table>
 

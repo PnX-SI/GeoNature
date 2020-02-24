@@ -1086,7 +1086,7 @@
             
                                     <tr>
                                         <td class="col-md-4">
-                                            <div class="io-line">Defined in <a href="" data-line="54" class="link-to-prism">src/app/GN2CommonModule/form/dynamic-form-generator/dynamic-form.service.ts:54</a></div>
+                                            <div class="io-line">Defined in <a href="" data-line="58" class="link-to-prism">src/app/GN2CommonModule/form/dynamic-form-generator/dynamic-form.service.ts:58</a></div>
                                         </td>
                                     </tr>
             
@@ -1155,7 +1155,7 @@
             
                                     <tr>
                                         <td class="col-md-4">
-                                            <div class="io-line">Defined in <a href="" data-line="18" class="link-to-prism">src/app/GN2CommonModule/form/dynamic-form-generator/dynamic-form.service.ts:18</a></div>
+                                            <div class="io-line">Defined in <a href="" data-line="19" class="link-to-prism">src/app/GN2CommonModule/form/dynamic-form-generator/dynamic-form.service.ts:19</a></div>
                                         </td>
                                     </tr>
             
@@ -1215,7 +1215,7 @@
             
                                     <tr>
                                         <td class="col-md-4">
-                                            <div class="io-line">Defined in <a href="" data-line="10" class="link-to-prism">src/app/GN2CommonModule/form/dynamic-form-generator/dynamic-form.service.ts:10</a></div>
+                                            <div class="io-line">Defined in <a href="" data-line="11" class="link-to-prism">src/app/GN2CommonModule/form/dynamic-form-generator/dynamic-form.service.ts:11</a></div>
                                         </td>
                                     </tr>
             
@@ -1268,10 +1268,11 @@
         <pre class="line-numbers"><code class="language-typescript">import { distinctUntilChanged } from &#x27;rxjs/operators&#x27;;
 import { Injectable } from &#x27;@angular/core&#x27;;
 import { FormControl, FormGroup, Validators, AbstractControl } from &#x27;@angular/forms&#x27;;
-import { arrayMinLengthValidator } from &#x27;@geonature/services/validators/validators&#x27;;
+import { arrayMinLengthValidator, isObjectValidator } from &#x27;@geonature/services/validators/validators&#x27;;
 
 @Injectable()
 export class DynamicFormService {
+
   constructor() {}
 
   toFormGroup(formsDef: Array&lt;any&gt;) {
@@ -1313,6 +1314,9 @@ export class DynamicFormService {
         }
       }
 
+      if (formDef.type_widget &#x3D;&#x3D;&#x3D; &#x27;taxonomy&#x27; &amp;&amp; formDef.required) {
+        validators.push(isObjectValidator());
+      }
     }
 
     return new FormControl({ value: value, disabled: formDef.disabled}, validators);
@@ -1321,6 +1325,7 @@ export class DynamicFormService {
   addNewControl(formDef, formGroup: FormGroup) {
     formGroup.addControl(formDef.attribut_name, this.createControl(formDef));
   }
+
 }
 </code></pre>
     </div>

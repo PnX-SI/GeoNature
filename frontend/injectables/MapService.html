@@ -2802,7 +2802,7 @@ export class MapService {
         geometry: { type: &#x27;Point&#x27;, coordinates: [markerCoord.lng, markerCoord.lat] }
       };
       this.setGeojsonCoord(geojson);
-      this.marker.on(&#x27;moveend&#x27;, (event: MouseEvent) &#x3D;&gt; {
+      this.marker.on(&#x27;moveend&#x27;, (event: L.LeafletMouseEvent) &#x3D;&gt; {
         if (this.map.getZoom() &lt; AppConfig.MAPCONFIG.ZOOM_LEVEL_RELEVE) {
           this._commonService.translateToaster(&#x27;warning&#x27;, &#x27;Map.ZoomWarning&#x27;);
         } else {
