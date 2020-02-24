@@ -13,7 +13,7 @@ CHANGELOG
 **🐛 Corrections**
 
 * Correction d'une incohérence dans le décompte des JDD sur la page d'accueil en leur appliquant le CRUVED (#752)
-* Montée de version de la librairie ``utils-flask-sqlalchemy-geo`` pour compatibilité avec la dernière version du module d'export
+* Montée de version de la librairie ``utils-flask-sqlalchemy-geo`` pour compatibilité avec la version 1.0.0 du module d'export
 
 2.3.1 (2020-02-18)
 ------------------
