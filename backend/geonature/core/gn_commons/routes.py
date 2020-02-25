@@ -120,6 +120,7 @@ def delete_media(id_media):
 def get_parameters_list():
     """
     Get all parameters from gn_commons.t_parameters
+
     .. :quickref: Commons;
     """
     q = DB.session.query(TParameters)
@@ -143,7 +144,15 @@ def get_one_parameter(param_name, id_org=None):
 
 @routes.route("/t_mobile_apps", methods=["GET"])
 @json_resp
-def get_t_mobiles_apps():
+def get_t_mobile_apps():
+    """
+    Get all mobile applications
+
+    .. :quickref: Commons;
+
+    :query str app_code: the app code
+    :returns: Array<dict<TMobileApps>>
+    """
     params = request.args
     q = DB.session.query(TMobileApps)
     if 'app_code' in request.args:
