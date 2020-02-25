@@ -37,3 +37,22 @@ CREATE TRIGGER tri_calculate_altitude
   ON pr_occtax.t_releves_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE ref_geo.fct_trg_calculate_alt_minmax('geom_4326');
+
+
+
+-- Création de la table necessaire au MAJ mobiles
+
+CREATE TABLE gn_commons.t_mobile_apps(
+  id_mobile_app serial,
+  app_code character varying(30),
+  relative_path_apk character varying(255),
+  url_apk character varying(255)
+);
+
+COMMENT ON COLUMN gn_commons.t_mobile_apps.app_code IS 'Code de l''application mobile. Pas de FK vers t_modules car une application mobile ne correspond pas forcement à un module GN';
+
+ALTER TABLE ONLY gn_commons.t_mobile_apps
+    ADD CONSTRAINT pk_t_moobile_apps PRIMARY KEY (id_mobile_app);
+
+ALTER TABLE gn_commons.t_mobile_apps
+    ADD CONSTRAINT unique_t_mobile_apps_app_code UNIQUE (app_code);
