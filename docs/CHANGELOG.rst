@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.3.3 (Unreleased)
+------------------
+
+**🚀 Nouveautés**
+
+**🐛 Corrections**
+
+* Réécriture du trigger générique de calcule de l'altitude. N'est executé que si l'altitude n'est pas postée
+* Ajout d'un offset sur la route de la couleur des taxons
+
 2.3.2 (2020-02-24)
 ------------------
 
