@@ -1,9 +1,6 @@
 import { Injectable } from "@angular/core";
-import {
-  FormBuilder,
-  FormControl,
-  Validators
-} from "@angular/forms";
+import { FormBuilder, FormControl, Validators } from "@angular/forms";
+import { isEqual } from 'lodash';
 import { BehaviorSubject } from "rxjs";
 import { GeoJSON } from "leaflet";
 import { filter, map, tap } from "rxjs/operators";
@@ -18,8 +15,9 @@ export class OcctaxFormMapService {
 
   get geometry() { return this._geometry; }
   set geometry(geojson: GeoJSON) { 
-    if (JSON.stringify(geojson.geometry) !== JSON.stringify(this._geometry.value) ) {
+    if ( !isEqual(geojson.geometry, this._geometry.value) ) {
       this._geometry.setValue(geojson.geometry); 
+      this._geometry.markAsDirty();
     }
   }
 
@@ -40,10 +38,6 @@ export class OcctaxFormMapService {
   * Initialise les observables pour la mise en place des actions automatiques
   **/
   private setObservables() {
-    //Observe les données, si édition patch le formulaire par la valeur du relevé
-    this.occtaxFormService.editionMode
-            //.subscribe((editionMode: boolean)=>{console.log("edition", editionMode); this.occtaxFormService.disabled = !editionMode});
-
     //Observe les données, si édition patch le formulaire par la valeur du relevé
     this.occtaxFormService.occtaxData
             .pipe(

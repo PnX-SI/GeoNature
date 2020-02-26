@@ -132,11 +132,12 @@
     "Blurring": "Blurring",
     "CurrentlyEditing": "Please first validate the currently editing taxon",
     "NoTaxonFound": "No taxon found for this search",
-    "ExistProofValidation": "This field must begin with 'http://', 'https://', ou 'ftp://'",
-    "NoExistProofError": "If existence proof is 'YES' one of two proof fields must be filled",
-    "ExistproofError": "The existence proof can be filled only if exist proof is true",
-
-    "StatusSource": "Source status"
+    "StatusSource": "Source status",
+    "Errors": {
+      "ExistProofValidation": "This field must begin with 'http://', 'https://', ou 'ftp://'",
+      "NoExistProofError": "If existence proof is 'YES' one of two proof fields must be filled",
+      "ExistproofError": "The existence proof can be filled only if exist proof is true"
+    }
   },
   "Counting": {
     "Counting": "Counting",

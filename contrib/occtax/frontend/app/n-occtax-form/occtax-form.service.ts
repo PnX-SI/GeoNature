@@ -5,7 +5,7 @@ import { filter, tap } from "rxjs/operators";
 
 import { AppConfig } from "@geonature_config/app.config";
 import { HttpClient, HttpParams } from "@angular/common/http";
-import { Router, ActivatedRoute } from "@angular/router";
+import { Router } from "@angular/router";
 import { ModuleConfig } from "../module.config";
 import { AuthService, User } from "@geonature/components/auth/auth.service";
 import { CommonService } from "@geonature_common/service/common.service";
@@ -26,7 +26,6 @@ export class OcctaxFormService {
   
   constructor(
     private _http: HttpClient,
-    private _route: ActivatedRoute,
     private _router: Router,
     private _auth: AuthService,
     private _commonService: CommonService,
@@ -46,10 +45,19 @@ export class OcctaxFormService {
   getOcctaxData(id) {
     this._dataS.getOneReleve(id)
                 .pipe()
-                .subscribe(data=>{
-                  this.occtaxData.next(data);
-                  this.editionMode.next(true);
-                });
+                .subscribe(
+                  data=>{
+                    this.occtaxData.next(data);
+                    this.editionMode.next(true);
+                  },
+                  error => {
+                    this._commonService.translateToaster(
+                      "error",
+                      "Releve.DoesNotExist"
+                    );
+                    this._router.navigate(["occtax/form"])
+                  }
+                );
   }
 
   getDefaultValues(idOrg?: number, regne?: string, group2_inpn?: string) {
@@ -85,5 +93,28 @@ export class OcctaxFormService {
         "Releve.FillGeometryFirst"
       );
     }
+  }
+
+  addOccurrenceData(occurrence): void {
+    let occtaxData = this.occtaxData.getValue();
+
+    if ( !occtaxData.releve.properties.t_occurrences_occtax ) {
+      occtaxData.releve.properties.t_occurrences_occtax = [];
+    }
+    occtaxData.releve.properties.t_occurrences_occtax.push(occurrence);
+    this.occtaxData.next(occtaxData);
+  }
+
+  removeOccurrenceData(id_occurrence): void {
+    let occtaxData = this.occtaxData.getValue();
+    if ( occtaxData.releve.properties.t_occurrences_occtax ) {
+      for (let i=0; i<occtaxData.releve.properties.t_occurrences_occtax.length; i++) {
+        if ( occtaxData.releve.properties.t_occurrences_occtax[i].id_occurrence_occtax === id_occurrence ) {
+          occtaxData.releve.properties.t_occurrences_occtax.splice(i, 1);
+          break;
+        }
+      }
+    }
+    this.occtaxData.next(occtaxData);
   }
 }

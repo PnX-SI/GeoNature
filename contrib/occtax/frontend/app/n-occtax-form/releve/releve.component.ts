@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, OnDestroy } from "@angular/core";
 import { FormGroup } from "@angular/forms";
+import { ActivatedRoute } from "@angular/router";
 import { GeoJSON } from "leaflet";
 import { ModuleConfig } from "../../module.config";
 import { CommonService } from "@geonature_common/service/common.service";
@@ -21,6 +22,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   public releveForm: FormGroup;
 
   constructor(
+    private route: ActivatedRoute,
     public occtaxFormService: OcctaxFormService,
     private occtaxFormReleveService: OcctaxFormReleveService,
     private occtaxFormMapService: OcctaxFormMapService,
@@ -34,6 +36,8 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
 
     this.occtaxFormMapService.geojson
                     .subscribe(geojson=>this.geojson = geojson);
+
+    this.occtaxFormReleveService.route = this.route;
 
   } // END INIT
 
@@ -66,5 +70,9 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     if (this.releveForm.valid) {
       this.occtaxFormReleveService.submitReleve();
     }
+  }
+
+  console() {
+    console.log(this.releveForm)
   }
 }

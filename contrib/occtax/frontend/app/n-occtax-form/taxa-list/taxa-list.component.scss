@@ -1,4 +1,8 @@
-.gn-panel-header .mat-icon-button {
+::ng-deep .gn-panel {
+	margin-left: 60px!important;
+}
+
+.mat-icon-button {
 	width: 26px;
   height: 26px;
   line-height: 26px;
@@ -7,6 +11,7 @@
 
 .btn-actions {
 	position: absolute;
+	padding-top: 8px;
 }
 
 .btn-edit {
@@ -21,8 +26,4 @@
 .btn-inpn {
 	margin-left: 15px;
 	color: #555;
-}
-
-.header-title {
-	margin-left: 60px;
 }

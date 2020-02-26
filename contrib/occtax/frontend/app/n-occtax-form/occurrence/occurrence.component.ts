@@ -1,6 +1,6 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, AfterViewInit } from "@angular/core";
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { FormControl, FormGroup } from "@angular/forms";
+import { FormControl, FormGroup, FormArray, Validators } from "@angular/forms";
 import { map, filter, tap } from 'rxjs/operators';
 import { OcctaxFormService } from "../occtax-form.service";
 import { CommonService } from "@geonature_common/service/common.service";
@@ -23,30 +23,53 @@ import { Taxon } from "@geonature_common/form/taxonomy/taxonomy.component";
 })
 export class OcctaxFormOccurrenceComponent implements OnInit {
   
-  // @Input() occurrenceForm: FormGroup;
-  // @ViewChild("taxon") taxon;
-  // @ViewChildren(NomenclatureComponent)
-  // nomenclatures: QueryList<NomenclatureComponent>;
-  // @ViewChild("existProof") existProof: NomenclatureComponent;
   public occtaxConfig = ModuleConfig;
   public occurrenceForm: FormGroup;
   public taxonForm: FormControl; //control permettant de rechercher un taxon TAXREF
   private advanced: string = 'collapsed';
+  public countingStep: number = 0;
+  
+  public displayProofFromElements: boolean = false;
 
   constructor(
     public fs: OcctaxFormService,
     private _commonService: CommonService,
-    private occtaxFormOccurrenceService: OcctaxFormOccurrenceService
+    private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
+    private occtaxFormService: OcctaxFormService
   ) {}
 
   ngOnInit() {
     this.occurrenceForm = this.occtaxFormOccurrenceService.form;
 
+    //gestion de l'affichage des preuves d'existence selon si Preuve = 'Oui' ou non.
+    this.occurrenceForm.get('id_nomenclature_exist_proof')
+                              .valueChanges
+                              .pipe(
+                                map((id_nomenclature: number): boolean=>{
+                                  let cd_nomenclature = this.occtaxFormOccurrenceService.getCdNomenclatureById(
+                                                  id_nomenclature,
+                                                  this.occtaxFormOccurrenceService.existProof_DATA
+                                                );
+                                  return cd_nomenclature == '1';
+                                })
+                              )
+                              .subscribe((display: boolean)=>this.displayProofFromElements = display);
+
     this.initTaxrefSearch();
   }
 
+  ngAfterViewInit() {
+    //a chaque reinitialisation du formulaire on place le focus sur la zone de saisie du taxon
+    this.occtaxFormOccurrenceService.occurrence
+          .subscribe(()=>document.getElementById("taxonInput").focus());
+  }
+
+  setExistProofData(data) {
+    this.occtaxFormOccurrenceService.existProof_DATA = data;
+  }
+
   initTaxrefSearch() {
-    this.taxonForm = new FormControl(null);
+    this.taxonForm = new FormControl(null, Validators.required);
 
     //attribut le cd_nom au formulaire si un taxon est selectionné
     this.taxonForm
@@ -86,22 +109,34 @@ export class OcctaxFormOccurrenceComponent implements OnInit {
               .subscribe((taxref: Taxon)=>this.taxonForm.setValue(taxref));
   }
 
-  getLabels(labels) {
-    //this.fs.currentExistProofLabels = labels;
+  get countingControls() {
+    return (this.occurrenceForm.get('cor_counting_occtax') as FormArray).controls;
   }
 
-  validateDigitalProof(c: FormControl) {
-    // let REGEX = new RegExp("^(http://|https://|ftp://){1}.+$");
-    // return REGEX.test(c.value)
-    //   ? null
-    //   : {
-    //       validateDigitalProof: {
-    //         valid: false
-    //       }
-    //     };
+  submitOccurrenceForm() {
+    if (this.occurrenceForm.valid) {
+      this.occtaxFormOccurrenceService.submitOccurrence();
+    }
+  }
+
+  resetOccurrenceForm() {
+    this.occtaxFormOccurrenceService.reset();
+  }
+
+  addCounting() {
+    this.occtaxFormOccurrenceService.addCountingForm();
+  }
+
+  setCountingStep(index: number) {
+    this.countingStep = index;
   }
 
   collapse(){
     this.advanced = (this.advanced === 'collapsed' ? 'expanded' : 'collapsed');
+  }
+
+  console() { 
+    
+    console.log() //;
   }
 }

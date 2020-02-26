@@ -4,6 +4,7 @@ import {
   FormGroup,
   Validators
 } from "@angular/forms";
+import { Router, ActivatedRoute } from "@angular/router";
 import { Observable, Subscription } from "rxjs";
 import { filter, map, switchMap, tap } from "rxjs/operators";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
@@ -14,6 +15,7 @@ import { FormService } from "@geonature_common/form/form.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { OcctaxFormService } from '../occtax-form.service';
 import { OcctaxFormMapService } from '../map/map.service';
+import { OcctaxDataService } from '../../services/occtax-data.service';
 
 @Injectable()
 export class OcctaxFormReleveService {
@@ -25,14 +27,18 @@ export class OcctaxFormReleveService {
   public geojson: GeoJSON;
   public releveForm: FormGroup;
 
+  public waiting: boolean = false;
+  public route: ActivatedRoute;
 
   constructor(
+    private router: Router,
     private fb: FormBuilder,
     private dateParser: NgbDateParserFormatter,
     private coreFormService: FormService,
     private dataFormService: DataFormService,
     private occtaxFormService: OcctaxFormService,
-    private occtaxFormMapService: OcctaxFormMapService
+    private occtaxFormMapService: OcctaxFormMapService,
+    private occtaxDataService: OcctaxDataService
   ) {
     this.initPropertiesForm();
     this.setObservables();
@@ -216,15 +222,24 @@ export class OcctaxFormReleveService {
     value.properties.date_max = this.dateParser.format(
       value.properties.date_max
     );
+    value.properties.observers = value.properties.observers.map(observer=>observer.id_role);
     return value;
   }
 
-  submitReleve() {
-      console.log('update', this.releveFormValue);
-    // if (this.occtaxFormService.id_releve_occtax.getValue()) {
-    // } else {
-    //   console.log('add', this.releveFormValue);
-    // }
+  submitReleve() {  
+    this.waiting = true;
+
+    this.occtaxDataService
+                .createReleve(this.releveFormValue)
+                .pipe(
+                  tap(()=>this.waiting = false)
+                )
+                .subscribe((data:any)=>this.router.navigate([data.id, 'taxons'], {relativeTo: this.route}));
+
+    if (this.occtaxFormService.id_releve_occtax.getValue()) {
+    } else {
+      console.log('add', this.releveFormValue);
+    }
   }
 
   reset() {

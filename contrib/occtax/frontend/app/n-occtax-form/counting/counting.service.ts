@@ -5,23 +5,25 @@ import {
   Validators,
   AbstractControl
 } from "@angular/forms";
-import { BehaviorSubject } from "rxjs/BehaviorSubject";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 import { ModuleConfig } from "../../module.config";
 import { FormService } from "@geonature_common/form/form.service";
+import { OcctaxFormService } from '../occtax-form.service';
 
 @Injectable()
 export class OcctaxFormCountingService {
 
   // public form: FormGroup;
+  counting: any;
 
   constructor(
     private fb: FormBuilder,
     private coreFormService: FormService,
-  ) {
-    console.log("couting")
-    // this.initForm();
-  }
+    private occtaxFormService: OcctaxFormService,
+  ) 
+  { }
 
   private get initialValues() {
     return {
@@ -30,8 +32,9 @@ export class OcctaxFormCountingService {
     };
   }
 
-  createForm(): FormGroup {
+  createForm(patchWithDefaultValues: boolean = false): FormGroup {
     const form = this.fb.group({
+      id_counting_occtax: null,
       id_nomenclature_life_stage: [null, Validators.required],
       id_nomenclature_sex: [null, Validators.required],
       id_nomenclature_obj_count: [null, Validators.required],
@@ -44,6 +47,10 @@ export class OcctaxFormCountingService {
 
     form.patchValue(this.initialValues);
 
+    if (patchWithDefaultValues) {
+      this.defaultValues.subscribe(DATA=>form.patchValue(DATA));
+    }
+
     return form;
   }
 
@@ -54,6 +61,21 @@ export class OcctaxFormCountingService {
       return countMin > countMax ? { invalidCount: true } : null;
     }
     return null;
+  }
+
+  private get defaultValues(): Observable<any> {
+    return this.occtaxFormService.getDefaultValues(this.occtaxFormService.currentUser.id_organisme)
+                    .pipe(
+                      map(DATA=> {
+                        return {
+                          id_nomenclature_life_stage: DATA["STADE_VIE"],
+                          id_nomenclature_sex: DATA["SEXE"],
+                          id_nomenclature_obj_count: DATA["OBJ_DENBR"],
+                          id_nomenclature_type_count: DATA["TYP_DENBR"],
+                          id_nomenclature_valid_status: DATA["STATUT_VALID"]
+                        };
+                      })
+                    );
   }
 
 

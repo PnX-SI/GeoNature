@@ -46,7 +46,7 @@ class ReleveRepository:
         releve = releve.get_releve_if_allowed(info_user)
         rel_as_geojson = releve.get_geofeature()
         # add the last validation status
-        for occ in rel_as_geojson["properties"]["t_occurrences_occtax"]:
+        for occ in rel_as_geojson.get("properties").get("t_occurrences_occtax", []):
             for count in occ.get("cor_counting_occtax", []):
                 try:
                     validation_status = (

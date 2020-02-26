@@ -200,12 +200,18 @@
       matTooltip="Enregistrer le relevé et saisir les taxons"
       [disabled]="releveForm.invalid"
       (click)="submitReleveForm()">
+      <mat-spinner 
+        *ngIf="occtaxFormReleveService.waiting"
+        diameter="25"
+        strokeWidth="2">
+      </mat-spinner>
       Enregistrer
     </button> 
   </ng-container>
   <ng-template #modifButton>
     <button 
-      class="btn btn-primary"
+      class="btn"
+      [ngClass]="releveForm.dirty ? 'btn-primary' : 'btn-light'"
       matTooltip="Modifier le relevé"
       [disabled]="propertiesForm.invalid"
       (click)="submitReleveForm()">
@@ -213,3 +219,6 @@
     </button> 
   </ng-template>
 </div>
+
+
+<button (click)="console()">console</button>

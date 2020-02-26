@@ -1,23 +1,31 @@
 import { Injectable } from "@angular/core";
-import { FormBuilder, FormGroup, Validators, FormArray } from "@angular/forms";
+import { FormBuilder, FormGroup, Validators, FormArray, ValidatorFn, ValidationErrors, AbstractControl
+ } from "@angular/forms";
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map, filter, switchMap, tap } from 'rxjs/operators';
+import { map, filter, switchMap, tap, pairwise } from 'rxjs/operators';
+import { CommonService } from "@geonature_common/service/common.service";
 import { OcctaxFormService } from '../occtax-form.service';
 import { OcctaxFormCountingService } from '../counting/counting.service';
 import { FormService } from "@geonature_common/form/form.service";
+import { OcctaxDataService } from '../../services/occtax-data.service';
 
 @Injectable()
 export class OcctaxFormOccurrenceService {
 
   public form: FormGroup;
   public taxref: BehaviorSubject<any> = new BehaviorSubject(null);
-  public occurrence: BehaviorSubject<any> = new BehaviorSubject(null)
+  public occurrence: BehaviorSubject<any> = new BehaviorSubject(null);
+  public existProof_DATA: Array<any> = [];
+
+  public saveWaiting: boolean = false;
 
   constructor(
     private fb: FormBuilder,
+    private commonService: CommonService,
     private coreFormService: FormService,
     private occtaxFormService: OcctaxFormService,
     private occtaxFormCountingService: OcctaxFormCountingService,
+    private occtaxDataService: OcctaxDataService
   ) {
     this.initForm();
     this.setObservables();
@@ -43,7 +51,7 @@ export class OcctaxFormOccurrenceService {
       determiner: [null, Validators.required],
       id_nomenclature_determination_method: [null, Validators.required],
       nom_cite: [null, Validators.required],
-      cd_nom: [null, this.coreFormService.taxonValidator],
+      cd_nom: [null, Validators.required],
       meta_v_taxref: null,
       sample_number_proof: null,
       digital_proof: null,
@@ -53,15 +61,6 @@ export class OcctaxFormOccurrenceService {
     });
 
     this.form.patchValue(this.initialValues);
-
-    // this.form.get('cd_nom').setValidators([
-    //   this.coreFormService.taxonValidator,
-    //   Validators.required
-    // ]);
-
-    //occForm.controls.non_digital_proof.setValidators([this.proofValidator.bind(this)]);
-    //this.form.setValidators([this.proofValidator.bind(this)]);
-
   }
 
   /**
@@ -74,7 +73,7 @@ export class OcctaxFormOccurrenceService {
       .pipe(
         tap(()=>{
           //On vide préalablement le FormArray //.clear() existe en angular 8
-          this.clearFormArray(this.form.get('cor_counting_occtax'));
+          this.clearFormArray((this.form.get('cor_counting_occtax') as FormArray));
         }),
         switchMap(occurrence => {
           //on oriente la source des données pour patcher le formulaire
@@ -84,32 +83,59 @@ export class OcctaxFormOccurrenceService {
           //mise en place des countingForm
           if (occurrence.cor_counting_occtax) {
             occurrence.cor_counting_occtax.forEach((c, i)=>{
-              (this.form.get('cor_counting_occtax') as FormArray).push(this.occtaxFormCountingService.createForm());
+              this.addCountingForm();
             })
           }
         })
-      ).subscribe(values=>{console.log(values);this.form.patchValue(values)});
+      ).subscribe(values=>{this.form.patchValue(values)});
 
-    
+    //Gestion des erreurs pour les preuves d'existence
+    this.form.get('id_nomenclature_exist_proof')
+                            .valueChanges
+                            .pipe(
+                              map((id_nomenclature: number): string=>{
+                                return this.getCdNomenclatureById(
+                                                id_nomenclature,
+                                                this.existProof_DATA
+                                              );
+                              })
+                            )
+                            .subscribe((cd_nomenclature: string)=>{
+                              if (cd_nomenclature == "1") {
+                                this.form.setValidators(proofRequiredValidator);
+                                this.form.get('digital_proof').setValidators(Validators.pattern("^(http://|https://|ftp://){1}.+$"));
+                                this.form.get('non_digital_proof').setValidators([]);
+                              } else {
+                                this.form.setValidators([]);
+                                this.form.get('digital_proof').setValidators(proofNotNullValidator);
+                                this.form.get('non_digital_proof').setValidators(proofNotNullValidator);
+                              }
+                              this.form.updateValueAndValidity();
+                              this.form.get('digital_proof').updateValueAndValidity();
+                              this.form.get('non_digital_proof').updateValueAndValidity();
+                            });
 
-    // this.taxref
-    //       .pipe(
-    //         filter(taxref=>taxref !== null),
-    //         switchMap({
-    //                       return this.getDefaultValues(
-    //                             //   this.currentUser.id_organisme,
-    //                             //   $event.item.regne,
-    //                             //   $event.item.group2_inpn
-    //                             })
+    //reset digital_proof à null si texte vide : ''
+    this.form.get('digital_proof')
+                            .valueChanges
+                            .pipe(
+                              filter(val=>val !== null), //filtre la valeur null
+                              pairwise(),
+                              filter(([prev, next]: [string, string])=>prev !== next),
+                              map(([prev, next]: [string, string])=>{return next.length > 0 ? next : null;})
+                            )
+                            .subscribe(val=>this.form.get('digital_proof').setValue(val));
 
-    //       )
-    //       .subscribe(data=>{
-    //         // this.patchDefaultNomenclatureOccurrence(data);
-    //         // // counting
-    //         // this.countingForm.controls.forEach(formgroup => {
-    //         //   this.patchDefaultNomenclatureCounting(formgroup as FormGroup, data);
-    //         // });
-    //       });
+    //reset non_digital_proof à null si texte vide : ''
+    this.form.get('non_digital_proof')
+                            .valueChanges
+                            .pipe(
+                              filter(val=>val !== null), //filtre la valeur null
+                              pairwise(),
+                              filter(([prev, next]: [string, string])=>prev !== next),
+                              map(([prev, next]: [string, string])=>{return next.length > 0 ? next : null;})
+                            )
+                            .subscribe(val=>this.form.get('non_digital_proof').setValue(val));
 
   }
 
@@ -141,86 +167,62 @@ export class OcctaxFormOccurrenceService {
                     );
   }
 
-  getCurrentCD(labels, currentID) {
+  addCountingForm(): void {
+    (this.form.get('cor_counting_occtax') as FormArray).push(this.occtaxFormCountingService.createForm(true));
+  }
+
+  getCdNomenclatureById(IdNomenclature, DATA) {
     //currentCD = null;
     let i = 0;
-    while (i < labels.length) {
-      if (labels[i].id_nomenclature == currentID) {
-        return labels[i].cd_nomenclature;
+    while (i < DATA.length) {
+      if (DATA[i].id_nomenclature == IdNomenclature) {
+        return DATA[i].cd_nomenclature;
       }
       i++;
     }
     return null;
   }
 
-  // proofValidator(occControl: FormGroup) {
-  //   if (
-  //     occControl.controls.id_nomenclature_exist_proof !== null &&
-  //     this.currentExistProofLabels !== null
-  //   ) {
-  //     // on recupere le CD a partir de l'id
-  //     const currentCD = this.getCurrentCD(
-  //       this.currentExistProofLabels,
-  //       occControl.controls.id_nomenclature_exist_proof.value
-  //     );
-  //     // si le type validation est = OUI et que les deux champs validation
-  //     // sont pas remplis  (null ou legnth == 0)=> erreur
-  //     // prettier-ignore
-  //     if (
-  //       currentCD === "1" &&
-  //       (
-  //         ( 
-  //           occControl.controls.digital_proof.value === null
-  //           ||
-  //           (
-  //             occControl.controls.digital_proof.value !== null &&
-  //             occControl.controls.digital_proof.value.length === 0
-  //           )
-  //         )// false
-  //       &&
-  //         (
-  //           occControl.controls.non_digital_proof.value === null 
-  //           ||
-  //             (
-  //               occControl.controls.non_digital_proof.value !== null &&
-  //               occControl.controls.non_digital_proof.value.length === 0
-  //             )
-  //         )// true
-  //       )
-  //     ) {
+  submitOccurrence() {
+    let id_releve = this.occtaxFormService.id_releve_occtax.getValue();
+    console.log()
+    if (this.occurrence.getValue()) {
+      //update
+    } else {
+      //create
+      this.saveWaiting = true;
+      this.occtaxDataService
+                .createOccurrence(id_releve, this.form.value)
+                .pipe(
+                  tap(()=>this.saveWaiting = false)
+                )
+                .subscribe(occurrence=>{
+                  this.commonService.translateToaster(
+                    "info",
+                    "Taxon.CreateDone"
+                  );
+                  this.occtaxFormService.addOccurrenceData(occurrence);
+                  this.reset();
+                });
+    }
+    console.log('update', this.form.value);
+  }
 
-  //       return { noExistProofError: true };
-  //     }
-  //     // si les deux preuve sont pas NULL
-  //     if (
-  //       (occControl.controls.digital_proof.value !== null &&
-  //         occControl.controls.digital_proof.value.length > 0) ||
-  //       (occControl.controls.non_digital_proof.value !== null &&
-  //         occControl.controls.non_digital_proof.value.length > 0)
-  //     ) {
-  //       // si preuve est different de oui on leve une erreur
-  //       if (currentCD !== "1") {
-  //         return { existproofError: true };
-  //       }
-  //       // si preuve = oui et que le validateur de la conf est activé et que preuve numerique est différent de http ...
-  //       else if (
-  //         occControl.controls.digital_proof.value !== null &&
-  //         occControl.controls.digital_proof.value.length > 0 &&
-  //         ModuleConfig.digital_proof_validator
-  //       ) {
-  //         let REGEX = new RegExp("^(http://|https://|ftp://){1}.+$");
-  //         return REGEX.test(occControl.controls.digital_proof.value)
-  //           ? null
-  //           : {
-  //               invalidDigitalProof: true
-  //             };
-  //       }
-  //     }
-  //   }
-  // }
+  deleteOccurrence(occurrence) {
+    this.occtaxDataService.deleteOccurrence(occurrence.id_occurrence_occtax)
+              .subscribe((confirm:boolean)=>{
+                console.log(occurrence.id_occurrence_occtax)
+                this.occtaxFormService.removeOccurrenceData(occurrence.id_occurrence_occtax);
+                this.commonService.translateToaster(
+                  "info",
+                  "Taxon.DeleteDone"
+                );
+              });
+  }
 
   reset() {
     this.form.reset(this.initialValues);
+    this.occurrence.next(null);
   }
 
   private clearFormArray(formArray: FormArray) {
@@ -228,6 +230,26 @@ export class OcctaxFormOccurrenceService {
       formArray.removeAt(0)
     }
   }
-  
+}
 
+
+
+export const proofRequiredValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+  const digital_proof = control.get('digital_proof');
+  const non_digital_proof = control.get('non_digital_proof');
+
+  if ( digital_proof && non_digital_proof && digital_proof.value === null && non_digital_proof.value === null ) {
+    return { 'proofRequired': true }
+  }
+
+  return null
+};
+
+
+
+export function proofNotNullValidator(control: AbstractControl): { [key: string]: boolean } | null {
+    if ( control.value !== null ) {
+        return { 'proofNotNull': true };
+    }
+    return null;
 }

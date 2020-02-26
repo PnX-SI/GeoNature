@@ -8,8 +8,7 @@ import { OcctaxFormCountingService } from "./counting.service";
 @Component({
   selector: "pnx-occtax-form-counting",
   templateUrl: "./counting.component.html",
-  styleUrls: ["./counting.component.scss"],
-  providers: [OcctaxFormCountingService]
+  styleUrls: ["./counting.component.scss"]
 })
 export class OcctaxFormCountingComponent implements OnInit {
   
@@ -18,8 +17,7 @@ export class OcctaxFormCountingComponent implements OnInit {
 
   constructor(
     public fs: OcctaxFormService,
-    private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
-    private occtaxFormCountingService: OcctaxFormCountingService
+    public occtaxFormOccurrenceService: OcctaxFormOccurrenceService
   ) {}
 
   ngOnInit() {
