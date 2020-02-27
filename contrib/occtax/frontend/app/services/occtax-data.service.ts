@@ -32,6 +32,10 @@ export class OcctaxDataService {
     return this._api.post(`${AppConfig.API_ENDPOINT}/occtax/releve/${id_releve}/occurrence`, form);
   }
 
+  updateOccurrence(id_occurrence, form) {
+    return this._api.post(`${AppConfig.API_ENDPOINT}/occtax/occurrence/${id_occurrence}`, form);
+  }
+
   deleteOccurrence(id) {
     return this._api.delete(`${AppConfig.API_ENDPOINT}/occtax/occurrence/${id}`);
   }

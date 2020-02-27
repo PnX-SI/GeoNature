@@ -280,7 +280,8 @@
     <button 
       *ngIf="countingControls.length > 1"
       mat-icon-button 
-      class="btn-clear d-none">
+      class="btn-clear d-none"
+      (click)="removeCounting(i)">
       <mat-icon matTooltip="Supprimer ce denombrement">clear</mat-icon>
     </button>
 

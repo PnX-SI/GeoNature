@@ -117,4 +117,9 @@ export class OcctaxFormService {
     }
     this.occtaxData.next(occtaxData);
   }
+
+  replaceOccurrenceData(occurrence): void {
+    this.removeOccurrenceData(occurrence.id_occurrence_occtax);
+    this.addOccurrenceData(occurrence);
+  }
 }

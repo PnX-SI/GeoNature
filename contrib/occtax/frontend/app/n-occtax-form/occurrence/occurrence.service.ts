@@ -186,11 +186,25 @@ export class OcctaxFormOccurrenceService {
   submitOccurrence() {
     let id_releve = this.occtaxFormService.id_releve_occtax.getValue();
     console.log()
+    this.saveWaiting = true;
     if (this.occurrence.getValue()) {
       //update
+      this.occtaxDataService
+                .updateOccurrence((this.occurrence.getValue()).id_occurrence_occtax, this.form.value)
+                .pipe(
+                  tap(()=>this.saveWaiting = false)
+                )
+                .subscribe(occurrence=>{
+                  console.log(occurrence)
+                  this.commonService.translateToaster(
+                    "info",
+                    "Taxon.UpdateDone"
+                  );
+                 this.occtaxFormService.replaceOccurrenceData(occurrence);
+                 this.reset();
+                });
     } else {
       //create
-      this.saveWaiting = true;
       this.occtaxDataService
                 .createOccurrence(id_releve, this.form.value)
                 .pipe(

@@ -28,12 +28,11 @@ export class OcctaxFormTaxaListComponent implements OnInit {
   ngOnInit() {
     this.occtaxFormService.occtaxData
               .pipe(
-                //TODO merge Observable this.occtaxFormOccurrenceService.occurrence
+                //TODO merge Observable this.occtaxFormOccurrenceService.occurrence, pour enlever taxon en cours de modif
                 tap(()=>this.occurrences = []),
                 filter(data=> data && data.releve.properties.t_occurrences_occtax),
                 map(data=>{
                   return data.releve.properties.t_occurrences_occtax
-                            .filter(occ=>occ.id_occurrence_occtax !== this.occIDInEdit)
                             .sort((o1, o2) => {
                               const name1 = (o1.taxref ? o1.taxref.nom_complet : this.removeHtml(o1.nom_cite)).toLowerCase();
                               const name2 = (o2.taxref ? o2.taxref.nom_complet : this.removeHtml(o2.nom_cite)).toLowerCase();

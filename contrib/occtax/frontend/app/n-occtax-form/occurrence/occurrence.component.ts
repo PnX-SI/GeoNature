@@ -127,6 +127,10 @@ export class OcctaxFormOccurrenceComponent implements OnInit {
     this.occtaxFormOccurrenceService.addCountingForm();
   }
 
+  removeCounting(index) {
+    (this.occurrenceForm.get('cor_counting_occtax') as FormArray).removeAt(index);
+  }
+
   setCountingStep(index: number) {
     this.countingStep = index;
   }
