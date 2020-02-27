@@ -48,8 +48,17 @@ CHANGELOG
 
 **⚠️ Notes de version**
 
+* Installez ``pip3`` et ``virtualenv``
+
+::
+
+    sudo apt-get update
+    sudo apt-get install python3-pip
+    sudo pip3 install virtualenv==20.0.1
+
 * Vous pouvez passer directement à cette version depuis la 2.2.x, mais en suivant les notes de version des versions intermédiaires (NB: il n'est pas necessaire passer le script ``migrate.sh`` des versions précedentes)
 * Rajouter la ligne ``gun_timeout=30`` au fichier ``config/settings.ini``. Il s'agit du temps maximal (en seconde) autorisé pour chaque requête. A augmenter, si vous avez déjà rencontré des problèmes de timeout.
+* Depuis le répertoire `frontend` lancez la commande `nvm install`
 
 2.3.0 - Occhab de Noël (2019-12-27)
 -----------------------------------
