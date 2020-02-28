@@ -1,11 +1,11 @@
 <div 
-  *ngIf="occtaxFormService.disabled" 
+  *ngIf="propertiesForm.disabled" 
   id="overlay" 
-  [class.disabled-form]="occtaxFormService.disabled" 
+  [class.disabled-form]="propertiesForm.disabled" 
   (click)="formDisabled()">
 </div>
 
-<div>
+<div class="d-xl-none">
   <pnx-areas-intersected-modal *ngIf="geojson"
     [geojson]="geojson"> 
   </pnx-areas-intersected-modal>
@@ -19,14 +19,14 @@
       *ngIf="!occtaxConfig.observers_txt; else elseBlock"
       [parentFormControl]="propertiesForm.get('observers')" 
       [idMenu]="occtaxConfig.id_observers_list"
-      [disabled]="occtaxFormService.disabled" 
+      [disabled]="propertiesForm.disabled" 
       label="{{ 'Releve.Observers' | translate }}" 
       [bindAllItem]="true">
     </pnx-observers>
     <ng-template #elseBlock>
       <pnx-observers-text 
         [parentFormControl]="propertiesForm.get('observers_txt')" 
-        [disabled]="occtaxFormService.disabled">
+        [disabled]="propertiesForm.disabled">
       </pnx-observers-text>
     </ng-template>
 
@@ -35,7 +35,7 @@
       *ngIf="dataset?.active || true; else elseblocDataset"
       label="{{ 'MetaData.Datasets' | translate }}" 
       [parentFormControl]="propertiesForm.get('id_dataset')"
-      [disabled]="occtaxFormService.disabled"
+      [disabled]="propertiesForm.disabled"
       moduleCode="OCCTAX">
     </pnx-datasets>
     <ng-template #elseblocDataset>
@@ -67,7 +67,7 @@
       label="{{ 'Releve.MinDate' | translate }}" 
       [defaultToday]="occtaxConfig.DATE_FORM_WITH_TODAY" 
       [parentFormControl]="propertiesForm.get('date_min')"
-      [disabled]="occtaxFormService.disabled">
+      [disabled]="propertiesForm.disabled">
     </pnx-date>
   </div>
 
@@ -77,14 +77,14 @@
       *ngIf="occtaxConfig.form_fields.date_max" 
       label="{{ 'Releve.MaxDate' | translate }} " 
       [parentFormControl]="propertiesForm.get('date_max')"
-      [disabled]="occtaxFormService.disabled">
+      [disabled]="propertiesForm.disabled">
     </pnx-date>
   </div>
 
   <div class="d-flex align-content-end flex-wrap">
     <button 
       class="btn btn-sm btn-outline-shadow" 
-      [disabled]="occtaxFormService.disabled" 
+      [disabled]="propertiesForm.disabled" 
       (click)="showTime = !showTime">
       <i 
         class="fa fa-plus" 
@@ -108,7 +108,7 @@
         class="form-control form-control-sm" 
         type="text" 
         placeholder="{{'Releve.HourFormat' | translate }}"
-        [disableControl]="occtaxFormService.disabled">
+        [disableControl]="propertiesForm.disabled">
     </div>
   </div>
 
@@ -124,7 +124,7 @@
         class="form-control form-control-sm" 
         type="text" 
         placeholder="{{'Releve.HourFormat' | translate }}"
-        [disableControl]="occtaxFormService.disabled">
+        [disableControl]="propertiesForm.disabled">
     </div>
   </div>
 </div>
@@ -140,7 +140,7 @@
         class="form-control form-control-sm" 
         type="number" 
         [formControl]="propertiesForm.get('altitude_min')"
-        [disableControl]="occtaxFormService.disabled">
+        [disableControl]="propertiesForm.disabled">
     </div>
   </div>
 
@@ -152,7 +152,7 @@
         class="form-control form-control-sm" 
         type="number" 
         [formControl]="propertiesForm.get('altitude_max')"
-        [disableControl]="occtaxFormService.disabled">
+        [disableControl]="propertiesForm.disabled">
     </div>
   </div>
 
@@ -163,7 +163,7 @@
       label="{{ 'Releve.GroupType' | translate }}" 
       [parentFormControl]="propertiesForm.get('id_nomenclature_grp_typ')"
       codeNomenclatureType="TYP_GRP" 
-      [disabled]="occtaxFormService.disabled">
+      [disabled]="propertiesForm.disabled">
     </pnx-nomenclature>
   </div>
 </div>
@@ -177,7 +177,7 @@
   label="{{ 'Releve.ObsTechnique' | translate }}" 
   [parentFormControl]="propertiesForm.get('id_nomenclature_obs_technique')"
   codeNomenclatureType="TECHNIQUE_OBS" 
-  [disabled]="occtaxFormService.disabled">
+  [disabled]="propertiesForm.disabled">
 </pnx-nomenclature>
 
 
@@ -219,6 +219,3 @@
     </button> 
   </ng-template>
 </div>
-
-
-<button (click)="console()">console</button>

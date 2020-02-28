@@ -96,6 +96,9 @@ export class OcctaxFormReleveService {
         this.propertiesForm.get("altitude_max")
       )
     ]);
+
+    //on desactive le form, il sera réactivé si la geom est ok
+    this.propertiesForm.disable();
   }
 
 
@@ -126,12 +129,18 @@ export class OcctaxFormReleveService {
     
     //Observation de la geometry pour récupere les info d'altitudes
     this.occtaxFormMapService.geojson
-                  .pipe(filter(geojson=>geojson !== null))
-                  .subscribe(geojson=>{
-                      this.geojson = geojson;
-                      // get to geo info from API
-                      this.getAltitude();
-                  });
+                  .pipe(
+                    filter(geojson=>geojson !== null),
+                    tap((geojson)=>{
+                      //geom valide
+                      if (!this.occtaxFormService.editionMode.getValue()) {
+                        //recup des info d'altitude uniquement en mode creation
+                        this.getAltitude(geojson)
+                      }
+                      this.propertiesForm.enable(); //active le form
+                    })
+                  )
+                  .subscribe(geojson=>this.geojson = geojson);
 
 
     // AUTOCORRECTION de hour
@@ -195,9 +204,9 @@ export class OcctaxFormReleveService {
                     );
   }
 
-  private getAltitude() {
+  private getAltitude(geojson) {
     // get to geo info from API
-    this.dataFormService.getGeoInfo(this.geojson).subscribe(res => {
+    this.dataFormService.getGeoInfo(geojson).subscribe(res => {
       this.propertiesForm.patchValue({
         altitude_min: res.altitude.altitude_min,
         altitude_max: res.altitude.altitude_max
@@ -229,16 +238,25 @@ export class OcctaxFormReleveService {
   submitReleve() {  
     this.waiting = true;
 
-    this.occtaxDataService
-                .createReleve(this.releveFormValue)
-                .pipe(
-                  tap(()=>this.waiting = false)
-                )
-                .subscribe((data:any)=>this.router.navigate([data.id, 'taxons'], {relativeTo: this.route}));
-
     if (this.occtaxFormService.id_releve_occtax.getValue()) {
+      //update
+      this.occtaxDataService
+                  .updateReleve(this.occtaxFormService.id_releve_occtax.getValue(), this.releveFormValue)
+                  .pipe(
+                    tap(()=>this.waiting = false)
+                  )
+                  .subscribe((data:any)=>{
+                    this.occtaxFormService.replaceReleveData(data);
+                    this.releveForm.markAsPristine()
+                  });
     } else {
-      console.log('add', this.releveFormValue);
+      //create
+      this.occtaxDataService
+                  .createReleve(this.releveFormValue)
+                  .pipe(
+                    tap(()=>this.waiting = false)
+                  )
+                  .subscribe((data:any)=>this.router.navigate([data.id, 'taxons'], {relativeTo: this.route}));
     }
   }
 

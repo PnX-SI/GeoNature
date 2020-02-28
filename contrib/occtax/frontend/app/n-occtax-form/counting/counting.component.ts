@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
 import { OcctaxFormService } from "../occtax-form.service";
 import { ModuleConfig } from "../../module.config";
@@ -10,7 +10,7 @@ import { OcctaxFormCountingService } from "./counting.service";
   templateUrl: "./counting.component.html",
   styleUrls: ["./counting.component.scss"]
 })
-export class OcctaxFormCountingComponent implements OnInit {
+export class OcctaxFormCountingComponent{
   
   public occtaxConfig = ModuleConfig;
   @Input('form') countingForm: FormGroup;
@@ -20,7 +20,4 @@ export class OcctaxFormCountingComponent implements OnInit {
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService
   ) {}
 
-  ngOnInit() {
-    //this.occurrenceForm = this.occtaxFormOccurrenceService.form;
-  } 
 }

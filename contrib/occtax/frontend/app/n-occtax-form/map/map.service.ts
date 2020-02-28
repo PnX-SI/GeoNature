@@ -49,7 +49,6 @@ export class OcctaxFormMapService {
     //active la saisie si la geometry est valide
     this._geometry.valueChanges
                 .pipe(
-                  tap(()=>this.occtaxFormService.disabled = this._geometry.invalid),
                   map(geometry=>this._geometry.valid ? {geometry: geometry} : null)
                 )
                 .subscribe(geojson => {                 

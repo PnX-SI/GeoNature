@@ -42,7 +42,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   } // END INIT
 
   get dataset(): any {
-    let occtaxData = this.occtaxFormService.occtaxData.getValue();
+    const occtaxData = this.occtaxFormService.occtaxData.getValue();
     if (occtaxData && occtaxData.releve.properties.dataset) {
       return occtaxData.releve.properties.dataset;
     }
@@ -70,9 +70,5 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     if (this.releveForm.valid) {
       this.occtaxFormReleveService.submitReleve();
     }
-  }
-
-  console() {
-    console.log(this.releveForm)
   }
 }

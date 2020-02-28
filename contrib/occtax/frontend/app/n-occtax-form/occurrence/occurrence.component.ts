@@ -124,7 +124,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit {
   }
 
   addCounting() {
-    this.occtaxFormOccurrenceService.addCountingForm();
+    this.occtaxFormOccurrenceService.addCountingForm(true); //patchwithdefaultvalue
   }
 
   removeCounting(index) {
@@ -137,10 +137,5 @@ export class OcctaxFormOccurrenceComponent implements OnInit {
 
   collapse(){
     this.advanced = (this.advanced === 'collapsed' ? 'expanded' : 'collapsed');
-  }
-
-  console() { 
-    
-    console.log() //;
   }
 }

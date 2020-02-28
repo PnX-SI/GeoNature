@@ -83,7 +83,7 @@ export class OcctaxFormOccurrenceService {
           //mise en place des countingForm
           if (occurrence.cor_counting_occtax) {
             occurrence.cor_counting_occtax.forEach((c, i)=>{
-              this.addCountingForm();
+              this.addCountingForm(occurrence.id_occurrence_occtax === null); //si id_occurrence_occtax === null on patch le form avec les valeurs par defauts
             })
           }
         })
@@ -167,8 +167,8 @@ export class OcctaxFormOccurrenceService {
                     );
   }
 
-  addCountingForm(): void {
-    (this.form.get('cor_counting_occtax') as FormArray).push(this.occtaxFormCountingService.createForm(true));
+  addCountingForm(patchWithDefaultValue: boolean = false): void {
+    (this.form.get('cor_counting_occtax') as FormArray).push(this.occtaxFormCountingService.createForm(patchWithDefaultValue));
   }
 
   getCdNomenclatureById(IdNomenclature, DATA) {

@@ -122,4 +122,10 @@ export class OcctaxFormService {
     this.removeOccurrenceData(occurrence.id_occurrence_occtax);
     this.addOccurrenceData(occurrence);
   }
+
+  replaceReleveData(releve): void {
+    let occtaxData = this.occtaxData.getValue();
+    occtaxData.releve = releve
+    this.occtaxData.next(occtaxData);
+  }
 }

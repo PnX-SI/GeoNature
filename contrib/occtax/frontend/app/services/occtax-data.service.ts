@@ -28,6 +28,10 @@ export class OcctaxDataService {
     return this._api.post(`${AppConfig.API_ENDPOINT}/occtax/releve`, form);
   }
 
+  updateReleve(id_releve, form) {
+    return this._api.post(`${AppConfig.API_ENDPOINT}/occtax/releve/${id_releve}`, form);
+  }
+
   createOccurrence(id_releve, form) {
     return this._api.post(`${AppConfig.API_ENDPOINT}/occtax/releve/${id_releve}/occurrence`, form);
   }

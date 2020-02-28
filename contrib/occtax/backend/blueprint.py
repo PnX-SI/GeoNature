@@ -332,6 +332,60 @@ def createReleve(info_role):
 
     return releve.get_geofeature()
 
+@blueprint.route("/releve/<int:id_releve>", methods=["POST"])
+@permissions.check_cruved_scope("U", True, module_code="OCCTAX")
+@json_resp
+def updateReleve(id_releve, info_role):
+    """
+    Post one Occurrence data (Occurrence + Counting) for add to Releve
+
+    """
+    #get releve by id_releve
+    q = DB.session.query(TRelevesOccurrence)
+
+    try:
+        releve = q.get(id_releve)
+    except Exception as e:
+        DB.session.rollback()
+        raise
+
+    if not releve:
+        return {"message": "not found"}, 404
+
+    #Test des droits d'édition du relevé
+    user_cruved = get_or_fetch_user_cruved(
+        session=session, id_role=info_role.id_role, module_code="OCCTAX"
+    )
+    update_code_filter = user_cruved["U"]
+    # info_role.code_action = update_data_scope
+    user = UserRigth(
+        id_role=info_role.id_role,
+        value_filter=update_code_filter,
+        code_action="U",
+        id_organisme=info_role.id_organisme,
+    )
+
+    releve = releve.get_releve_if_allowed(user)
+    #fin test, si ici => c'est ok
+
+    rel_data = dict(request.get_json())
+    releve.set_columns(**rel_data.get("properties"))
+    shape = asShape(rel_data.get("geometry"))
+    two_dimension_geom = remove_third_dimension(shape)
+    releve.geom_4326 = from_shape(two_dimension_geom, srid=4326)
+
+    observersList = rel_data.get("properties").get("observers", [])
+    releve.observers = []
+    if observersList is not None:
+        observers = DB.session.query(User).filter(
+            User.id_role.in_(observersList)).all()
+        [releve.observers.append(o) for o in observers]
+    
+    DB.session.commit()
+    DB.session.flush()
+
+    return releve.get_geofeature()
+
 
 @blueprint.route("/releve/<int:id_releve>/occurrence", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="OCCTAX")
@@ -433,12 +487,7 @@ def updateOccurrence(id_occurrence, info_role):
     #fin test, si ici => c'est ok
 
     occ = dict(request.get_json())
-    print(getattr(occurrence, 'id_occurrence_occtax'))
-    print(occurrence.id_occurrence_occtax)
-
     occurrence.set_columns(**occ)
-    print(getattr(occurrence, 'id_occurrence_occtax'))
-    print(occurrence.id_occurrence_occtax)
     
     DB.session.commit()
     DB.session.flush()

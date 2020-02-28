@@ -91,8 +91,9 @@ class OcctaxModel(DB.Model):
 
                     # delete related rows that were not in kwargs[rel]
                     for item in query.filter(not_(getattr(cls, pk).in_(valid_ids))).all():
+                        print(item)
                         col_changes = {
-                            pk: str(item.get(pk)),
+                            pk: str(getattr(item, pk)),
                             'deleted': True,
                         }
                         if rel in changes:
@@ -334,6 +335,12 @@ class TRelevesOccurrence(ReleveModel):
     dataset = relationship(
         TDatasets, lazy="joined", primaryjoin=(TDatasets.id_dataset == id_dataset), foreign_keys=[id_dataset]
     )
+
+    readonly_fields = [
+        'id_releve_occtax',
+        't_occurrences_occtax',
+        'observers'
+    ]
 
     def get_geofeature(self, recursif=True):
         return self.as_geofeature("geom_4326", "id_releve_occtax", recursif)
