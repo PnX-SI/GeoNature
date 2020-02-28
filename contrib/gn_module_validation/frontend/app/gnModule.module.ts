@@ -39,7 +39,7 @@ const routes: Routes = [{ path: "", component: ValidationComponent }];
     CommonModule,
     MatTabsModule,
     NgbModule,
-    // TreeModule.forRoot()
+    TreeModule.forRoot()
   ],
   entryComponents: [ValidationModalInfoObsComponent],
 
