@@ -1,3 +1,9 @@
+"""
+Utility function to manage cruved and all filter of Synthese
+Depreciated (but still use in validation module and export taxon in synthese)
+For performance reason, use query_select_sqla.py
+"""
+
 import datetime
 
 from flask import current_app, request

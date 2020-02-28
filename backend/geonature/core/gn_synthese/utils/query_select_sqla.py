@@ -1,4 +1,6 @@
 """
+Utility function to manage cruved and all filter of Synthese
+Use these functions rather than query.py 
 Filter the query of synthese using SQLA expression language and 'select' object 
 https://docs.sqlalchemy.org/en/latest/core/tutorial.html#selecting
 much more efficient
@@ -278,7 +280,6 @@ class SyntheseQuery:
                     ),
                 )
             )
-
         # generic filters
         for colname, value in self.filters.items():
             if colname.startswith("area"):

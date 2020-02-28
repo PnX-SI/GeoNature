@@ -787,6 +787,8 @@ def get_color_taxon():
     :returns: Array<dict<VColorAreaTaxon>>
     """
     params = request.args
+    limit = int(params.get('limit', 100))
+    page = int(params.get('offset', 0))
     id_areas_type = params.getlist("code_area_type")
     cd_noms = params.getlist("cd_nom")
     id_areas = params.getlist("id_area")
@@ -803,7 +805,8 @@ def get_color_taxon():
         q = q.filter(LAreas.id_area.in_(tuple(id_areas)))
     if len(cd_noms) > 0:
         q = q.filter(VColorAreaTaxon.cd_nom.in_(tuple(cd_noms)))
-    return [d.as_dict() for d in q.all()]
+    data = q.limit(limit).offset(page * limit).all()
+    return [d.as_dict() for d in data]
 
 
 # @routes.route("/test", methods=["GET"])

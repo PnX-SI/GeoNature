@@ -2,7 +2,21 @@
 CHANGELOG
 =========
 
-2.3.2 (unreleased)
+2.3.3 (Unreleased)
+------------------
+
+**🚀 Nouveautés**
+
+* Réécriture du trigger générique de calcul de l'altitude. N'est executé que si l'altitude n'est pas postée
+* Ajout d'un offset sur la route de la couleur des taxons
+
+**🐛 Corrections**
+
+**⚠️ Notes de version**
+
+* SQL d'update de la BDD...
+
+2.3.2 (2020-02-24)
 ------------------
 
 **🚀 Nouveautés**
@@ -13,6 +27,7 @@ CHANGELOG
 **🐛 Corrections**
 
 * Correction d'une incohérence dans le décompte des JDD sur la page d'accueil en leur appliquant le CRUVED (#752)
+* Montée de version de la librairie ``utils-flask-sqlalchemy-geo`` pour compatibilité avec la version 1.0.0 du module d'export
 
 2.3.1 (2020-02-18)
 ------------------
@@ -37,8 +52,15 @@ CHANGELOG
 
 **⚠️ Notes de version**
 
-* Vous pouvez passer directement à cette version depuis la 2.2.x, mais en suivant les notes de version des versions intermédiaires (NB: il n'est pas necessaire passer le script ``migrate.sh`` des versions précedentes)
-* Rajouter la ligne ``gun_timeout=30`` au fichier ``config/settings.ini``. Il s'agit du temps maximal (en seconde) autorisé pour chaque requête. A augmenter, si vous avez déjà rencontré des problèmes de timeout.
+* Vous pouvez passer directement à cette version depuis la 2.2.x, mais en suivant les notes des versions intermédiaires (NB : il n'est pas nécessaire d’exécuter le script ``migrate.sh`` des versions précédentes)
+* Installez ``pip3`` et ``virtualenv``
+::
+
+    sudo apt-get update
+    sudo apt-get install python3-pip
+    sudo pip3 install virtualenv==20.0.1
+* Rajoutez la ligne ``gun_timeout=30`` au fichier ``config/settings.ini``. Il s'agit du temps maximal (en seconde) autorisé pour chaque requête. A augmenter, si vous avez déjà rencontré des problèmes de timeout.
+* Depuis le répertoire ``frontend``, lancez la commande ``nvm install``
 
 2.3.0 - Occhab de Noël (2019-12-27)
 -----------------------------------
