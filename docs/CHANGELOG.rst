@@ -7,10 +7,10 @@ CHANGELOG
 
 **🚀 Nouveautés**
 
-**🐛 Corrections**
-
 * Réécriture du trigger générique de calcul de l'altitude. N'est executé que si l'altitude n'est pas postée
 * Ajout d'un offset sur la route de la couleur des taxons
+
+**🐛 Corrections**
 
 **⚠️ Notes de version**
 
