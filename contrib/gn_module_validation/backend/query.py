@@ -1,11 +1,14 @@
+import datetime
+
 from flask import current_app, request
 from shapely.wkt import loads
 from geoalchemy2.shape import from_shape
 from sqlalchemy import func, or_, and_
 from sqlalchemy.orm import aliased
 
+from utils_flask_sqla_geo.utilsgeometry import circle_from_point
+
 from geonature.utils.env import DB
-from geonature.utils.utilsgeometry import circle_from_point
 from geonature.core.taxonomie.models import Taxref, CorTaxonAttribut, TaxrefLR
 from geonature.core.gn_synthese.models import (
     Synthese,
@@ -35,13 +38,18 @@ def filter_query_all_filters(model, q, filters, user):
     q = filter_query_with_cruved(model, q, user)
 
     if "observers" in filters:
-        q = q.filter(model.observers.ilike("%" + filters.pop("observers")[0] + "%"))
+        q = q.filter(model.observers.ilike(
+            "%" + filters.pop("observers")[0] + "%"))
 
     if "date_min" in filters:
         q = q.filter(model.date_min >= filters.pop("date_min")[0])
 
     if "date_max" in filters:
-        q = q.filter(model.date_min <= filters.pop("date_max")[0])
+        # set the date_max at 23h59 because a hour can be set in timestamp
+        date_max = datetime.datetime.strptime(
+            filters.pop("date_max")[0], '%Y-%m-%d')
+        date_max = date_max.replace(hour=23, minute=59, second=59)
+        q = q.filter(model.date_max <= date_max)
 
     if "id_acquisition_frameworks" in filters:
         q = q.join(

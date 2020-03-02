@@ -2,15 +2,16 @@ from sqlalchemy import ForeignKey, or_
 from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship, exc
 from sqlalchemy.dialects.postgresql import UUID
-
 from werkzeug.exceptions import NotFound
 
 from pypnnomenclature.models import TNomenclatures
+from pypnusershub.db.models import User
+from utils_flask_sqla.serializers import serializable
 
-from geonature.utils.utilssqlalchemy import serializable
 from geonature.utils.env import DB
 from geonature.core.users.models import BibOrganismes
-from pypnusershub.db.models import User
+
+from geonature.core.gn_commons.models import cor_module_dataset
 
 
 class CorAcquisitionFrameworkObjectif(DB.Model):
@@ -100,7 +101,8 @@ class CorDatasetActor(DB.Model):
     __tablename__ = "cor_dataset_actor"
     __table_args__ = {"schema": "gn_meta"}
     id_cda = DB.Column(DB.Integer, primary_key=True)
-    id_dataset = DB.Column(DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"))
+    id_dataset = DB.Column(DB.Integer, ForeignKey(
+        "gn_meta.t_datasets.id_dataset"))
     id_role = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
     id_organism = DB.Column(
         DB.Integer, ForeignKey("utilisateurs.bib_organismes.id_organisme")
@@ -167,29 +169,38 @@ class TDatasets(DB.Model):
     marine_domain = DB.Column(DB.Boolean)
     terrestrial_domain = DB.Column(DB.Boolean)
     id_nomenclature_dataset_objectif = DB.Column(
-        DB.Integer, default=TNomenclatures.get_default_nomenclature("JDD_OBJECTIFS")
+        DB.Integer, default=TNomenclatures.get_default_nomenclature(
+            "JDD_OBJECTIFS")
     )
     bbox_west = DB.Column(DB.Float)
     bbox_east = DB.Column(DB.Float)
     bbox_south = DB.Column(DB.Float)
     bbox_north = DB.Column(DB.Float)
     id_nomenclature_collecting_method = DB.Column(
-        DB.Integer, default=TNomenclatures.get_default_nomenclature("METHO_RECUEIL")
+        DB.Integer, default=TNomenclatures.get_default_nomenclature(
+            "METHO_RECUEIL")
     )
     id_nomenclature_data_origin = DB.Column(
-        DB.Integer, default=TNomenclatures.get_default_nomenclature("DS_PUBLIQUE")
+        DB.Integer, default=TNomenclatures.get_default_nomenclature(
+            "DS_PUBLIQUE")
     )
     id_nomenclature_source_status = DB.Column(
-        DB.Integer, default=TNomenclatures.get_default_nomenclature("STATUT_SOURCE")
+        DB.Integer, default=TNomenclatures.get_default_nomenclature(
+            "STATUT_SOURCE")
     )
     id_nomenclature_resource_type = DB.Column(
-        DB.Integer, default=TNomenclatures.get_default_nomenclature("RESOURCE_TYP")
+        DB.Integer, default=TNomenclatures.get_default_nomenclature(
+            "RESOURCE_TYP")
     )
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
     active = DB.Column(DB.Boolean, default=True)
     validable = DB.Column(DB.Boolean)
 
+    modules = DB.relationship("TModules", secondary=cor_module_dataset)
+
+    # HACK: the relationship is not well defined for many to many relationship
+    # because CorDatasetActor could be an User or an Organisme object...
     cor_dataset_actor = relationship(
         CorDatasetActor,
         lazy="select",
@@ -219,11 +230,14 @@ class TDatasets(DB.Model):
         return uuid_dataset
 
     @staticmethod
-    def get_user_datasets(user):
+    def get_user_datasets(user, only_query=False):
         """get the dataset(s) where the user is actor (himself or with its organism)
-            param: user from TRole model
-            return: a list of id_dataset """
-        q = DB.session.query(CorDatasetActor, CorDatasetActor.id_dataset)
+            param: 
+              - user from TRole model
+              - only_query: boolean (return the query not the id_datasets allowed if true)
+
+            return: a list of id_dataset or a query"""
+        q = DB.session.query(CorDatasetActor)
         if user.id_organisme is None:
             q = q.filter(CorDatasetActor.id_role == user.id_role)
         else:
@@ -233,6 +247,8 @@ class TDatasets(DB.Model):
                     CorDatasetActor.id_role == user.id_role,
                 )
             )
+        if only_query:
+            return q
         return list(set([d.id_dataset for d in q.all()]))
 
 

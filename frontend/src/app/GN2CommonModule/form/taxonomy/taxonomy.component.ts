@@ -1,19 +1,18 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  of } from 'rxjs';
 import { DataFormService } from '../data-form.service';
 import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
-import { of } from 'rxjs/observable/of';
 import { CommonService } from '@geonature_common/service/common.service';
 import { AppConfig } from '@geonature_config/app.config';
 
 export interface Taxon {
-  search_name: string;
-  nom_valide: string;
-  group2_inpn: string;
-  regne: string;
-  lb_nom: string;
-  cd_nom: number;
+  search_name?: string;
+  nom_valide?: string;
+  group2_inpn?: string;
+  regne?: string;
+  lb_nom?: string;
+  cd_nom?: number;
   cd_ref?: number;
   cd_sup?: number;
   cd_taxsup?: number;

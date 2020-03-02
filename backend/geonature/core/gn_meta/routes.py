@@ -20,7 +20,7 @@ from geonature.core.gn_meta.models import (
 )
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_meta.repositories import get_datasets_cruved, get_af_cruved
-from geonature.utils.utilssqlalchemy import json_resp
+from utils_flask_sqla.response import json_resp
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_meta import mtd_utils
 from geonature.utils.errors import GeonatureApiError
@@ -125,15 +125,20 @@ def post_dataset(info_role):
 
     data = dict(request.get_json())
     cor_dataset_actor = data.pop("cor_dataset_actor")
+    modules = data.pop("modules")
 
     dataset = TDatasets(**data)
-
     for cor in cor_dataset_actor:
         # remove id_cda if None otherwise merge no working well
         if "id_cda" in cor and cor["id_cda"] is None:
             cor.pop("id_cda")
         dataset.cor_dataset_actor.append(CorDatasetActor(**cor))
 
+    # init the relationship as an empty list
+    modules_obj = (
+        DB.session.query(TModules).filter(TModules.id_module.in_(modules)).all()
+    )
+    dataset.modules = modules_obj
     if dataset.id_dataset:
         DB.session.merge(dataset)
     else:

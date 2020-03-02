@@ -24,7 +24,7 @@ export class SyntheseComponent implements OnInit {
 
   constructor(
     public searchService: SyntheseDataService,
-    private _mapListService: MapListService,
+    public _mapListService: MapListService,
     private _commonService: CommonService,
     private _modalService: NgbModal,
     private _fs: SyntheseFormService,
@@ -65,12 +65,7 @@ export class SyntheseComponent implements OnInit {
       //toaster
       this._toasterService.info(
         `Les ${AppConfig.SYNTHESE.NB_LAST_OBS} dernières observations de la synthèse`,
-        '',
-        {
-          positionClass: 'toast-top-center',
-          tapToDismiss: true,
-          timeOut: 5000
-        }
+        ''
       );
     }
     this.firstLoad = false;

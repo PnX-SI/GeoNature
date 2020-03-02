@@ -226,13 +226,11 @@ Frontend
 
     import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 
-- Les librairies JS seront installées par npm dans un dossier ``node_modules``
-  à la racine du dossier ``frontend`` du module. (Il n'est pas nécessaire de
+- Les librairies JS seront installées dans le dossier ``node_modules``
+  de GeoNature. (Il n'est pas nécessaire de
   réinstaller toutes les librairies déjà présentes dans GeoNature
   (Angular, Leaflet, ChartJS ...). Le ``package.json`` de GeoNature liste
   l'ensemble des librairies déjà installées et réutilisable dans le module.
-
-  Lancer ``npm init`` pour initialiser le module.
 
 - Les fichiers d'assets sont à ranger dans le dossier ``assets`` du frontend.
   Angular-cli impose cependant que tous les assets soient dans le répertoire
@@ -337,15 +335,19 @@ Fournit l'instance de connexion SQLAlchemy Python ::
 Serialisation des modèles
 """""""""""""""""""""""""
 
-- ``geonature.utils.utilssqlalchemy.serializable``
+La sérialisation des modèles SQLAlchemy s'appuie sur deux librairies maison externalisée. Voir la doc plus complète: https://github.com/PnX-SI/Utils-Flask-SQLAlchemy
+
+- ``utils_flask_sqla.serializers.serializable``
 
   Décorateur pour les modèles SQLA : Ajoute une méthode ``as_dict`` qui
   retourne un dictionnaire des données de l'objet sérialisable json
 
-  Fichier définition modèle ::
+  Fichier définition modèle :
+
+  ::
 
     from geonature.utils.env import DB
-    from geonature.utils.utilssqlalchemy import serializable
+    from utils_flask_sqla.serializers import serializable
 
     @serializable
     class MyModel(DB.Model):
@@ -357,7 +359,7 @@ Serialisation des modèles
     instance = DB.session.query(MyModel).get(1)
     result = instance.as_dict()
 
-- ``geonature.utils.utilssqlalchemy.geoserializable``
+- ``utils_flask_sqla_geo.serializers.geoserializable``
 
 
   Décorateur pour les modèles SQLA : Ajoute une méthode as_geofeature qui
@@ -367,7 +369,8 @@ Serialisation des modèles
   Fichier définition modèle ::
 
     from geonature.utils.env import DB
-    from geonature.utils.utilssqlalchemy import geoserializable
+    from utils_flask_sqla_geo.serializers import geoserializable
+
 
     @geoserializable
     class MyModel(DB.Model):
@@ -380,7 +383,7 @@ Serialisation des modèles
     instance = DB.session.query(MyModel).get(1)
     result = instance.as_geofeature()
 
-- ``geonature.utils.utilsgeometry.shapeserializable``
+- ``utils_flask_sqla_geo.serializers.shapeserializable``
 
   Décorateur pour les modèles SQLA :
 
@@ -392,7 +395,8 @@ Serialisation des modèles
   Fichier définition modèle ::
 
     from geonature.utils.env import DB
-    from geonature.utils.utilsgeometry import shapeserializable
+    from utils_flask_sqla_geo.serializers import shapeserializable
+
 
     @shapeserializable
     class MyModel(DB.Model):
@@ -412,7 +416,7 @@ Serialisation des modèles
         file_name=file_name
     )
 
-- ``geonature.utils.utilsgeometry.FionaShapeService``
+- ``utils_flask_sqla_geo.utilsgeometry.FionaShapeService``
 
   Classe utilitaire pour créer des shapefiles.
 
@@ -443,7 +447,7 @@ Serialisation des modèles
 
 
 
-- ``geonature.utils.utilssqlalchemy.json_resp``
+- ``utils_flask_sqla_geo.serializers.json_resp``
 
   Décorateur pour les routes : les données renvoyées par la route sont
   automatiquement serialisées en json (ou geojson selon la structure des
@@ -454,7 +458,7 @@ Serialisation des modèles
   Fichier routes ::
 
     from flask import Blueprint
-    from geonature.utils.utilssqlalchemy import json_resp
+    from utils_flask_sqla.response import json_resp
 
     blueprint = Blueprint(__name__)
 
@@ -547,7 +551,7 @@ Vérification des droits des utilisateurs
 
         from flask import Blueprint
         from pypnusershub.routes import check_auth
-        from geonature.utils.utilssqlalchemy import json_resp
+        from utils_flask_sqla.response import json_resp
 
         blueprint = Blueprint(__name__)
 
@@ -585,7 +589,7 @@ Vérification des droits des utilisateurs
 
         from flask import Blueprint
         from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
-        from geonature.utils.utilssqlalchemy import json_resp
+        from utils_flask_sqla.response import json_resp
         from geonature.core.gn_permissions import decorators as permissions
 
         blueprint = Blueprint(__name__)

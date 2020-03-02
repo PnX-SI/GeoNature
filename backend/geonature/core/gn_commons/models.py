@@ -9,9 +9,12 @@ from geoalchemy2 import Geometry
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
+from utils_flask_sqla.serializers import serializable
+from utils_flask_sqla_geo.serializers import geoserializable
 
-from geonature.utils.utilssqlalchemy import serializable, geoserializable
 from geonature.utils.env import DB
+
+# from geonature.core.gn_meta.models import TDatasets
 
 
 @serializable
@@ -24,6 +27,24 @@ class BibTablesLocation(DB.Model):
     table_name = DB.Column(DB.Unicode)
     pk_field = DB.Column(DB.Unicode)
     uuid_field_name = DB.Column(DB.Unicode)
+
+
+cor_module_dataset = DB.Table(
+    "cor_module_dataset",
+    DB.Column(
+        "id_module",
+        DB.Integer,
+        ForeignKey("gn_commons.t_modules.id_module"),
+        primary_key=True,
+    ),
+    DB.Column(
+        "id_dataset",
+        DB.Integer,
+        ForeignKey("gn_meta.t_datasets.id_dataset"),
+        primary_key=True,
+    ),
+    schema="gn_commons",
+)
 
 
 @serializable
@@ -56,7 +77,8 @@ class TMedias(DB.Model):
         # ForeignKey('ref_nomenclatures.t_nomenclatures.id_nomenclature')
     )
     id_table_location = DB.Column(
-        DB.Integer, ForeignKey("gn_commons.bib_tables_location.id_table_location")
+        DB.Integer, ForeignKey(
+            "gn_commons.bib_tables_location.id_table_location")
     )
     unique_id_media = DB.Column(
         UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
@@ -107,7 +129,8 @@ class TValidations(DB.Model):
     validation_auto = DB.Column(DB.Boolean)
     validation_label = DB.relationship(
         TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_valid_status),
+        primaryjoin=(TNomenclatures.id_nomenclature ==
+                     id_nomenclature_valid_status),
         foreign_keys=[id_nomenclature_valid_status],
     )
     validator_role = DB.relationship(

@@ -1,0 +1,15 @@
+@media (min-height: 700px) {
+  :host /deep/ #map {
+    height: 90vh !important;
+  }
+}
+@media (min-height: 800px) {
+  :host /deep/ #map {
+    height: 92vh !important;
+  }
+}
+@media (min-height: 900px) {
+  :host /deep/ #map {
+    height: 93vh !important;
+  }
+}

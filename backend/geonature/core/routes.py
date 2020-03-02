@@ -7,12 +7,14 @@ import os
 import logging
 
 from flask import Blueprint, request, current_app, jsonify
-
 from geojson import FeatureCollection
+
+from utils_flask_sqla.response import json_resp
+from utils_flask_sqla.generic import GenericQuery, testDataType
+from utils_flask_sqla_geo.generic import GenericQueryGeo
 
 from geonature.utils.env import DB
 from geonature.core.gn_monitoring.config_manager import generate_config
-from geonature.utils.utilssqlalchemy import json_resp, GenericQuery, testDataType
 from geonature.utils.errors import GeonatureApiError
 
 
@@ -28,7 +30,7 @@ log = logging.getLogger()
 @routes.route("/config", methods=["GET"])
 def get_config():
     """
-    Parse and return configuration files as toml 
+    Parse and return configuration files as toml
     .. :quickref: Generic;
     """
     app_name = request.args.get("app", "base_app")
@@ -109,8 +111,22 @@ def get_generic_view(view_schema, view_name):
     # @TODO créer un système de mise en cache des vues mappées
     geom = parameters.get("geometry_field", None)
 
-    results = GenericQuery(
-        DB.session, view_name, view_schema, geom, parameters, limit, page
-    ).return_query()
-
-    return results
+    if geom:
+        return GenericQueryGeo(
+            DB=DB,
+            tableName=view_name,
+            schemaName=view_schema,
+            geometry_field=geom,
+            filters=parameters,
+            limit=limit,
+            offset=page
+        ).return_query()
+    else:
+        return GenericQuery(
+            DB=DB,
+            tableName=view_name,
+            schemaName=view_schema,
+            filters=parameters,
+            limit=limit,
+            offset=page
+        ).return_query()

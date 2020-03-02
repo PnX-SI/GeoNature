@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { DataFormService } from '../data-form.service';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 
 /**

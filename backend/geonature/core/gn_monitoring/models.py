@@ -4,17 +4,20 @@
         relatifs aux protocoles de suivis
 """
 
+from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import select, func
 
-from geoalchemy2 import Geometry
 
-from geonature.utils.utilssqlalchemy import serializable, geoserializable
-from geonature.utils.env import DB
-from geonature.core.gn_commons.models import TModules
 from pypnusershub.db.models import User
+from utils_flask_sqla.serializers import serializable
+from utils_flask_sqla_geo.serializers import geoserializable
+
+from geonature.core.gn_commons.models import TModules
+from geonature.core.gn_meta.models import TDatasets
+from geonature.utils.env import DB
 
 
 corVisitObserver = DB.Table(
@@ -41,7 +44,7 @@ corSiteModule = DB.Table(
     DB.Column(
         "id_base_site",
         DB.Integer,
-        ForeignKey("gn_monitoring.cor_site_application.id_base_site"),
+        ForeignKey("gn_monitoring.cor_site_module.id_base_site"),
         primary_key=True,
     ),
     DB.Column(
@@ -58,11 +61,14 @@ corSiteArea = DB.Table(
     DB.Column(
         "id_base_site",
         DB.Integer,
-        ForeignKey("gn_monitoring.cor_site_application.id_base_site"),
+        ForeignKey("gn_monitoring.cor_site_module.id_base_site"),
         primary_key=True,
     ),
     DB.Column(
-        "id_area", DB.Integer, ForeignKey("ref_geo.l_areas.id_area"), primary_key=True
+        "id_area",
+        DB.Integer,
+        ForeignKey("ref_geo.l_areas.id_area"),
+        primary_key=True
     ),
 )
 
@@ -79,18 +85,35 @@ class TBaseVisits(DB.Model):
     id_base_site = DB.Column(
         DB.Integer, ForeignKey("gn_monitoring.t_base_sites.id_base_site")
     )
-    id_digitiser = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
+    id_digitiser = DB.Column(
+        DB.Integer,
+        ForeignKey("utilisateurs.t_roles.id_role")
+    )
+    id_dataset = DB.Column(
+        DB.Integer,
+        ForeignKey("gn_meta.t_datasets.id_dataset")
+    )
+    # Pour le moment non défini comme une clé étrangère
+    #   pour les questions de perfs
+    #   a voir en fonction des usage
+    id_module = DB.Column(DB.Integer)
 
     visit_date_min = DB.Column(DB.DateTime)
     visit_date_max = DB.Column(DB.DateTime)
-    # geom = DB.Column(Geometry('GEOMETRY', 4326))
+    id_nomenclature_obs_technique = DB.Column(DB.Integer)
+    id_nomenclature_grp_typ = DB.Column(DB.Integer)
     comments = DB.Column(DB.DateTime)
     uuid_base_visit = DB.Column(
         UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
     )
 
+    meta_create_date = DB.Column(DB.DateTime)
+    meta_update_date = DB.Column(DB.DateTime)
+
     digitiser = relationship(
-        User, primaryjoin=(User.id_role == id_digitiser), foreign_keys=[id_digitiser]
+        User,
+        primaryjoin=(User.id_role == id_digitiser),
+        foreign_keys=[id_digitiser]
     )
 
     observers = DB.relationship(
@@ -98,7 +121,15 @@ class TBaseVisits(DB.Model):
         secondary=corVisitObserver,
         primaryjoin=(corVisitObserver.c.id_base_visit == id_base_visit),
         secondaryjoin=(corVisitObserver.c.id_role == User.id_role),
-        foreign_keys=[corVisitObserver.c.id_base_visit, corVisitObserver.c.id_role],
+        foreign_keys=[corVisitObserver.c.id_base_visit,
+                      corVisitObserver.c.id_role],
+    )
+
+    dataset = relationship(
+        TDatasets,
+        lazy="joined",
+        primaryjoin=(TDatasets.id_dataset == id_dataset),
+        foreign_keys=[id_dataset]
     )
 
 
@@ -112,8 +143,14 @@ class TBaseSites(DB.Model):
     __tablename__ = "t_base_sites"
     __table_args__ = {"schema": "gn_monitoring"}
     id_base_site = DB.Column(DB.Integer, primary_key=True)
-    id_inventor = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
-    id_digitiser = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
+    id_inventor = DB.Column(
+        DB.Integer,
+        ForeignKey("utilisateurs.t_roles.id_role")
+    )
+    id_digitiser = DB.Column(
+        DB.Integer,
+        ForeignKey("utilisateurs.t_roles.id_role")
+    )
     id_nomenclature_type_site = DB.Column(DB.Integer)
     base_site_name = DB.Column(DB.Unicode)
     base_site_description = DB.Column(DB.Unicode)
@@ -124,11 +161,18 @@ class TBaseSites(DB.Model):
         UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
     )
 
+    meta_create_date = DB.Column(DB.DateTime)
+    meta_update_date = DB.Column(DB.DateTime)
+
     digitiser = relationship(
-        User, primaryjoin=(User.id_role == id_digitiser), foreign_keys=[id_digitiser]
+        User,
+        primaryjoin=(User.id_role == id_digitiser),
+        foreign_keys=[id_digitiser]
     )
     inventor = relationship(
-        User, primaryjoin=(User.id_role == id_inventor), foreign_keys=[id_inventor]
+        User,
+        primaryjoin=(User.id_role == id_inventor),
+        foreign_keys=[id_inventor]
     )
 
     t_base_visits = relationship(

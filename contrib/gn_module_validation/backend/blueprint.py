@@ -3,8 +3,6 @@ from flask import Blueprint, current_app, request
 
 from operator import itemgetter
 
-import pdb
-
 import re
 
 from sqlalchemy import select, desc, cast, DATE, func
@@ -13,7 +11,7 @@ import datetime
 
 from geojson import FeatureCollection
 
-from geonature.utils.utilssqlalchemy import json_resp
+from utils_flask_sqla.response import json_resp
 
 from geonature.core.gn_meta.models import TDatasets
 

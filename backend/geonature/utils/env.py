@@ -9,7 +9,7 @@ from collections import ChainMap, namedtuple
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm.exc import NoResultFound
 
-import pip
+from pip._internal.main import main as pip_main
 
 # Define GEONATURE_VERSION before import config_shema module
 # because GEONATURE_VERSION is imported in this module
@@ -43,7 +43,7 @@ GN_MODULE_FE_FILE = "frontend/app/gnModule.module"
 
 def in_virtualenv():
     """ Return if we are in a virtualenv """
-    return hasattr(sys, "real_prefix")
+    return 'VIRTUAL_ENV' in os.environ
 
 
 def virtualenv_status():
@@ -64,7 +64,8 @@ def venv_path(*children):
         If additional arguments are passed, they are concatenated to the path.
     """
     if not in_virtualenv():
-        raise EnvironmentError("This function can only be called in a virtualenv")
+        raise EnvironmentError(
+            "This function can only be called in a virtualenv")
     path = sys.exec_prefix
     return Path(os.path.join(path, *children))
 
@@ -143,7 +144,7 @@ def load_config(config_file=None):
 def import_requirements(req_file):
     with open(req_file, "r") as requirements:
         for req in requirements:
-            if pip.main(["install", req]) == 1:
+            if pip_main(["install", req]) == 1:
                 raise Exception("Package {} not installed".format(req))
 
 
@@ -155,7 +156,8 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
     with app.app_context():
         from geonature.core.gn_commons.models import TModules
 
-        modules = DB.session.query(TModules).filter(TModules.active_backend == True)
+        modules = DB.session.query(TModules).filter(
+            TModules.active_backend == True)
         module_info = {}
         enabled_modules_name = []
         for mod in modules:
@@ -169,11 +171,15 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
     # and import only modules which are enabled
     for f in mod_path.iterdir():
         if f.is_dir():
-            conf_manifest = load_and_validate_toml(
-                str(f / "manifest.toml"), ManifestSchemaProdConf
-            )
-            # set module code upper because module call is always upper in gn_commons.t_modules
-            module_code = conf_manifest["module_code"].upper()
+            module_code = None
+            try:
+                conf_manifest = load_and_validate_toml(
+                    str(f / "manifest.toml"), ManifestSchemaProdConf
+                )
+                # set module code upper because module call is always upper in gn_commons.t_modules
+                module_code = conf_manifest["module_code"].upper()
+            except Exception as e:
+                print("Cant find the module, it will not be enable, {}".format(e))
             if module_code in enabled_modules_name:
                 # import du module dans le sys.path
                 module_path = Path(GN_EXTERNAL_MODULE / module_code.lower())
@@ -184,6 +190,7 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
                 sys.path.insert(0, module_parent_dir)
                 module = __import__(module_import_name)
                 # get and validate the module config
+
                 class GnModuleSchemaProdConf(
                     module.config.conf_schema_toml.GnModuleSchemaConf
                 ):
@@ -194,13 +201,16 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
                 )
 
                 # add id_module and url_path to the module config
-                update_module_config = dict(conf_module, **module_info.get(module_code))
+                update_module_config = dict(
+                    conf_module, **module_info.get(module_code))
                 # register the module conf in the app config
                 app.config[module_code] = update_module_config
 
                 # import the blueprint
-                python_module_name = "{}.backend.blueprint".format(module_path.name)
-                module_blueprint = __import__(python_module_name, globals=globals())
+                python_module_name = "{}.backend.blueprint".format(
+                    module_path.name)
+                module_blueprint = __import__(
+                    python_module_name, globals=globals())
                 # register the confif in bluprint.config
                 module.backend.blueprint.blueprint.config = update_module_config
                 sys.path.pop(0)
@@ -217,7 +227,8 @@ def list_frontend_enabled_modules(app, mod_path=GN_EXTERNAL_MODULE):
 
     with app.app_context():
         enabled_modules = (
-            DB.session.query(TModules).filter(TModules.active_frontend == True).all()
+            DB.session.query(TModules).filter(
+                TModules.active_frontend == True).all()
         )
         for mod in enabled_modules:
             yield mod.module_path.replace(" ", ""), mod.module_code

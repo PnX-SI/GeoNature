@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, ValidatorFn } from '@angular/forms';
 import { AppConfig } from '@geonature_config/app.config';
 import { stringify as toWKT } from 'wellknown';
-import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date-parser-formatter';
-import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
+import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter'; 
 import { DYNAMIC_FORM_DEF } from '@geonature_common/form/synthese-form/dynamycFormConfig';
 import { isArray } from 'util';
 
@@ -18,7 +18,7 @@ export class SyntheseFormService {
   constructor(
     private _fb: FormBuilder,
     private _dateParser: NgbDateParserFormatter,
-    private _periodFormatter: NgbDatePeriodParserFormatter
+    private _periodFormatter: NgbDatePeriodParserFormatter 
   ) {
     this.searchForm = this._fb.group({
       cd_nom: null,

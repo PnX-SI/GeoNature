@@ -17,7 +17,7 @@ export class SyntheseModalDownloadComponent implements OnInit {
 
   constructor(
     public activeModal: NgbActiveModal,
-    private _dataService: SyntheseDataService,
+    public _dataService: SyntheseDataService,
     private _storeService: SyntheseStoreService
   ) {}
 
@@ -25,6 +25,10 @@ export class SyntheseModalDownloadComponent implements OnInit {
 
   downloadObservations(format) {
     this._dataService.downloadObservations(this._storeService.idSyntheseList, format);
+  }
+
+  downloadTaxons(format, filename) {
+    this._dataService.downloadTaxons(this._storeService.idSyntheseList, format, filename);
   }
 
   downloadStatusOrMetadata(url, filename) {

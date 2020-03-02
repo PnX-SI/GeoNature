@@ -34,7 +34,7 @@ Serialisation des modèles
 =========================
 
 
-- ``geonature.utils.utilssqlalchemy.serializable``
+- ``utils_flask_sqla.serializers.serializable``
 
 Décorateur pour les modèles SQLA : Ajoute une méthode as_dict qui retourne un
 dictionnaire des données de l'objet sérialisable json
@@ -43,7 +43,7 @@ dictionnaire des données de l'objet sérialisable json
 Fichier définition modèle ::
 
     from geonature.utils.env import DB
-    from geonature.utils.utilssqlalchemy import serializable
+    from utils_flask_sqla.serializers import serializable
 
     @serializable
     class MyModel(DB.Model):
@@ -58,7 +58,7 @@ fichier utilisation modele ::
 
 
 
-- ``geonature.utils.utilssqlalchemy.geoserializable``
+- ``utils_flask_sqla_geo.serializers.geoserializable``
 
 
 Décorateur pour les modèles SQLA : Ajoute une méthode as_geofeature qui
@@ -68,7 +68,7 @@ retourne un dictionnaire serialisable sous forme de Feature geojson.
 Fichier définition modèle ::
 
     from geonature.utils.env import DB
-    from geonature.utils.utilssqlalchemy import geoserializable
+    from utils_flask_sqla_geo.serializers import geoserializable
 
     @geoserializable
     class MyModel(DB.Model):
@@ -81,7 +81,7 @@ fichier utilisation modele ::
     instance = DB.session.query(MyModel).get(1)
     result = instance.as_geofeature()
 
-- ``geonature.utils.utilsgeometry.shapeserializable``
+- ``utils_flask_sqla_geo.serializers.shapeserializable``
 
 Décorateur pour les modèles SQLA:
 
@@ -93,7 +93,9 @@ Décorateur pour les modèles SQLA:
 Fichier définition modèle ::
 
     from geonature.utils.env import DB
-    from geonature.utils.utilsgeometry import shapeserializable
+    
+    from utils_flask_sqla_geo.serializers import shapeserializable
+
 
     @shapeserializable
     class MyModel(DB.Model):
@@ -114,7 +116,7 @@ fichier utilisation modele ::
         file_name=file_name
     )
 
-- ``geonature.utils.utilsgeometry.FionaShapeService``
+- ``utils_flask_sqla_geo.serializers.FionaShapeService``
 
 Classe utilitaire pour crer des shapefiles.
 
@@ -144,7 +146,7 @@ La classe contient 3 méthode de classe:
 
 
 
-- ``geonature.utils.utilssqlalchemy.json_resp``
+- ``utils_flask_sqla.response.json_resp``
 
 
 Décorateur pour les routes : les données renvoyées par la route sont
@@ -157,7 +159,7 @@ S'insère entre le décorateur de route flask et la signature de fonction
 fichier routes ::
 
     from flask import Blueprint
-    from geonature.utils.utilssqlalchemy import json_resp
+    from utils_flask_sqla.response import json_resp
 
     blueprint = Blueprint(__name__)
 
@@ -208,7 +210,7 @@ params :
 
     from flask import Blueprint
     from pypnusershub.routes import check_auth
-    from geonature.utils.utilssqlalchemy import json_resp
+    from utils_flask_sqla.response import json_resp
 
     blueprint = Blueprint(__name__)
 
@@ -245,7 +247,7 @@ params :
 
     from flask import Blueprint
     from pypnusershub.routes import check_auth_cruved
-    from geonature.utils.utilssqlalchemy import json_resp
+    from utils_flask_sqla.response import json_resp
 
     blueprint = Blueprint(__name__)
 

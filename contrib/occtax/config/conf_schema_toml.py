@@ -45,23 +45,25 @@ class FormConfig(Schema):
 
 
 default_map_list_conf = [
-    {"prop": "taxons", "name": "Taxon"},
-    {"prop": "date_min", "name": "Date début"},
+    {"prop": "taxons", "name": "Taxon(s)"},
     {"prop": "observateurs", "name": "Observateurs"},
-    {"prop": "dataset_name", "name": "Jeu de données"},
+    {"prop": "date", "name": "Date"},
+    {"prop": "dataset", "name": "Jeu de données"},
 ]
 
 available_maplist_column = [
-    {"prop": "altitude_max", "name": "altitude_max"},
-    {"prop": "altitude_min", "name": "altitude_min"},
+    {"prop": "altitude_min", "name": "Altitude min"},
+    {"prop": "altitude_max", "name": "Altitude max"},
     {"prop": "comment", "name": "Commentaire"},
-    {"prop": "date_max", "name": "Date fin"},
+    {"prop": "date", "name": "Date"},
     {"prop": "date_min", "name": "Date début"},
-    {"prop": "id_dataset", "name": "ID dataset"},
+    {"prop": "date_max", "name": "Date fin"},
+    {"prop": "id_dataset", "name": "ID jeu de données"},
+    {"prop": "dataset", "name": "Jeu de données"},
     {"prop": "id_digitiser", "name": "ID rédacteur"},
     {"prop": "id_releve_occtax", "name": "ID relevé"},
-    {"prop": "observateurs", "name": "observateurs"},
-    {"prop": "taxons", "name": "taxons"},
+    {"prop": "observateurs", "name": "Observateurs"},
+    {"prop": "nb_taxons", "name": "Nb. taxon"},
 ]
 
 default_columns_export = [
@@ -137,18 +139,21 @@ class GnModuleSchemaConf(Schema):
     export_geom_columns_name = fields.String(missing="geom_4326")
     export_id_column_name = fields.String(missing="permId")
     export_srid = fields.Integer(missing=4326)
+    export_observer_txt_column = fields.String(missing="obsId")
     export_available_format = fields.List(
         fields.String(), missing=available_export_format
     )
-    export_columns = fields.List(fields.String(), missing=default_columns_export)
+    export_columns = fields.List(
+        fields.String(), missing=default_columns_export)
     export_message = fields.String(missing=export_message)
     list_messages = fields.Dict(missing=list_messages)
     digital_proof_validator = fields.Boolean(missing=True)
-    releve_map_zoom_level = fields.Integer(missing=6)
+    releve_map_zoom_level = fields.Integer()
     id_taxon_list = fields.Integer(missing=100)
     taxon_result_number = fields.Integer(missing=20)
     id_observers_list = fields.Integer(missing=1)
-    default_maplist_columns = fields.List(fields.Dict(), missing=default_map_list_conf)
+    default_maplist_columns = fields.List(
+        fields.Dict(), missing=default_map_list_conf)
     available_maplist_column = fields.List(
         fields.Dict(), missing=available_maplist_column
     )
@@ -156,4 +161,3 @@ class GnModuleSchemaConf(Schema):
     ENABLE_GPS_TOOL = fields.Boolean(missing=True)
     ENABLE_UPLOAD_TOOL = fields.Boolean(missing=True)
     DATE_FORM_WITH_TODAY = fields.Boolean(missing=True)
-

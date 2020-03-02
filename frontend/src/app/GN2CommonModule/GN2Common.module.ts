@@ -14,11 +14,9 @@ import {
   MatProgressSpinnerModule,
   MatButtonModule
 } from '@angular/material';
-
-import { Http } from '@angular/http';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AutoCompleteModule } from 'primeng/primeng';
 import { TreeModule } from 'angular-tree-component';
 
@@ -31,10 +29,12 @@ import { AreasIntersectedComponent } from './form/areas-intersected/areas-inters
 import { DatasetsComponent } from './form/datasets/datasets.component';
 import { DynamicFormComponent } from './form/dynamic-form/dynamic-form.component';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
+import { GeometryFormComponent } from '@geonature_common/form/geometry-form/geometry-form.component';
 
 import { MapComponent } from './map/map.component';
 import { MarkerComponent } from './map/marker/marker.component';
 import { LeafletDrawComponent } from './map/leaflet-draw/leaflet-draw.component';
+import { MapOverLaysComponent } from './map/overlays/overlays.component';
 
 import { GPSComponent } from './map/gps/gps.component';
 import { GeojsonComponent } from './map/geojson/geojson.component';
@@ -42,12 +42,12 @@ import { LeafletFileLayerComponent } from './map/filelayer/filelayer.component';
 import { MapListComponent } from './map-list/map-list.component';
 import { MapDataComponent } from './map-list/map-data/map-data.component';
 import { MapListGenericFiltersComponent } from './map-list/generic-filters/generic-filters.component';
-import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ObserversTextComponent } from '@geonature_common/form/observers-text/observers-text.component';
 import { MunicipalitiesComponent } from '@geonature_common/form/municipalities/municipalities.component';
 import { GenericFormGeneratorComponent } from '@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component';
+import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 import { AreasComponent } from '@geonature_common/form/areas/areas.component';
 import { AcquisitionFrameworksComponent } from '@geonature_common/form/acquisition-frameworks/acquisition-frameworks.component';
 import { ModalDownloadComponent } from '@geonature_common/others/modal-download/modal-download.component';
@@ -55,11 +55,12 @@ import { PeriodComponent } from '@geonature_common/form/date/period.component';
 import { AutoCompleteComponent } from '@geonature_common/form/autocomplete/autocomplete.component';
 import { SyntheseSearchComponent } from '@geonature_common/form/synthese-form/synthese-form.component';
 import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-component';
+import { DumbSelectComponent } from '@geonature_common/form/dumb-select/dumb-select.component';
 
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
-// pipe
 
+// pipe
 import { ReadablePropertiePipe } from './pipe/readable-propertie.pipe';
 
 // Service
@@ -74,10 +75,6 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
 // add all rxjs operators
 import 'rxjs/Rx';
 import { MultiSelectComponent } from './form/multiselect/multiselect.component';
-
-export function HttpLoaderFactory(http: Http) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
-}
 
 @NgModule({
   imports: [
@@ -114,6 +111,7 @@ export function HttpLoaderFactory(http: Http) {
     LeafletDrawComponent,
     LeafletFileLayerComponent,
     GPSComponent,
+    MapOverLaysComponent,
     MapListComponent,
     MapDataComponent,
     DisableControlDirective,
@@ -125,13 +123,16 @@ export function HttpLoaderFactory(http: Http) {
     MunicipalitiesComponent,
     MultiSelectComponent,
     GenericFormGeneratorComponent,
+    GenericFormComponent,
     AreasComponent,
     AcquisitionFrameworksComponent,
     ModalDownloadComponent,
     PeriodComponent,
     AutoCompleteComponent,
     SyntheseSearchComponent,
-    TaxonAdvancedModalComponent
+    TaxonAdvancedModalComponent,
+    DumbSelectComponent,
+    GeometryFormComponent
   ],
   providers: [
     TranslateService,
@@ -159,6 +160,7 @@ export function HttpLoaderFactory(http: Http) {
     LeafletFileLayerComponent,
     GeojsonComponent,
     GPSComponent,
+    MapOverLaysComponent,
     MapListComponent,
     MapDataComponent,
     DisableControlDirective,
@@ -186,12 +188,15 @@ export function HttpLoaderFactory(http: Http) {
     ObserversTextComponent,
     MultiSelectComponent,
     GenericFormGeneratorComponent,
+    GenericFormComponent,
     AreasComponent,
     AcquisitionFrameworksComponent,
     PeriodComponent,
     AutoCompleteComponent,
     SyntheseSearchComponent,
-    TaxonAdvancedModalComponent
+    TaxonAdvancedModalComponent,
+    DumbSelectComponent,
+    GeometryFormComponent
   ]
 })
 export class GN2CommonModule {}

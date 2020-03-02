@@ -4,11 +4,17 @@ import { Routes, RouterModule } from '@angular/router';
 import { HomeContentComponent } from '../components/home-content/home-content.component';
 import { PageNotFoundComponent } from '../components/page-not-found/page-not-found.component';
 import { AuthGuard, ModuleGuardService } from '@geonature/routing/routes-guards.service';
+
 {% if enable_sign_up %}
 import { SignUpGuard } from '@geonature/routing/routes-guards.service';
 import { SignUpComponent } from '../components/sign-up/sign-up.component';
+{% endif %}
+
+{% if enable_user_management %}
+import { UserManagementGuard } from '@geonature/routing/routes-guards.service';
 import { NewPasswordComponent } from '../components/new-password/new-password.component';
 {% endif %}
+
 import { LoginComponent } from '../components/login/login.component';
 import { NavHomeComponent } from '../components/nav-home/nav-home.component';
 
@@ -17,7 +23,9 @@ const defaultRoutes: Routes = [
   { path: 'login',  component: LoginComponent},
   {% if enable_sign_up %}
   { path: 'inscription',  component: SignUpComponent, canActivate: [SignUpGuard]},
-  { path: 'new-password',  component: NewPasswordComponent, canActivate: [SignUpGuard]},
+  {% endif %}
+  {% if enable_user_management %}
+  { path: 'new-password',  component: NewPasswordComponent, canActivate: [UserManagementGuard]},
   {% endif %}
    { path: '', component: NavHomeComponent, canActivateChild: [AuthGuard],
      children: [
@@ -46,4 +54,3 @@ const defaultRoutes: Routes = [
 
 
 export const routing = RouterModule.forRoot(defaultRoutes, {useHash: true });
-

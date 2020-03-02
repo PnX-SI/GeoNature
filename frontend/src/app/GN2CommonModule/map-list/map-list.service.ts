@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
+import { Subject, Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AppConfig } from '../../../conf/app.config';
-import { Observable } from 'rxjs';
 import { CommonService } from '@geonature_common/service/common.service';
 import * as L from 'leaflet';
 import { FormControl } from '@angular/forms';
@@ -15,6 +14,9 @@ export class MapListService {
   public mapSelected = new Subject<any>();
   public onMapClik$: Observable<string> = this.mapSelected.asObservable();
   public onTableClick$: Observable<number> = this.tableSelected.asObservable();
+  public currentIndexRow = new Subject<number>();
+  public currentIndexRow$: Observable<number> = this.currentIndexRow.asObservable();
+
   public selectedRow = [];
   public data: any;
   public tableData = new Array();
@@ -23,6 +25,7 @@ export class MapListService {
   public columns = [];
   public layerDict = {};
   public selectedLayer: any;
+  public endPoint: string;
 
   public urlQuery: HttpParams = new HttpParams();
   public page = new Page();
@@ -47,6 +50,7 @@ export class MapListService {
     weight: 3,
     fill: true
   };
+
   constructor(
     private _http: HttpClient,
     private _commonService: CommonService,
@@ -82,6 +86,7 @@ export class MapListService {
           break;
         }
       }
+      this.currentIndexRow.next(i);
     });
   }
 
@@ -100,6 +105,21 @@ export class MapListService {
     }
   }
 
+  /** Search a row in the table data and return its page */
+  foundARowAndPage(id, rowNumber) {
+    this.selectedRow = []; // clear selected list
+
+    const integerId = parseInt(id);
+    let i;
+    for (i = 0; i < this.tableData.length; i++) {
+      if (this.tableData[i]['id'] === integerId) {
+        this.selectedRow.push(this.tableData[i]);
+        break;
+      }
+    }
+    return Math.trunc(i / rowNumber);
+  }
+
   getRowClass() {
     return 'clickable';
   }
@@ -111,24 +131,22 @@ export class MapListService {
   }
 
   // fetch the data
-  loadData(endPoint, param?) {
+  dataService() {
     this.isLoading = true;
     return this._http
-      .get<any>(`${AppConfig.API_ENDPOINT}/${endPoint}`, { params: this.urlQuery })
+      .get<any>(`${AppConfig.API_ENDPOINT}/${this.endPoint}`, { params: this.urlQuery })
       .delay(200)
       .finally(() => (this.isLoading = false));
   }
 
-  getData(endPoint, param?: Array<any>, customCallBack?) {
-    //  params: parameter to filter on the api
-    //  customCallBack: function which return a feature to custom the content of the table
-    this.manageUrlQuery('set', param);
-    this.customCallBack = customCallBack;
-    this.loadData(endPoint, param).subscribe(
+  loadData() {
+    this.dataService().subscribe(
       data => {
-        this.page.totalElements = data.total_filtered;
+        this.page.totalElements = data.total;
+        this.page.itemPerPage = parseInt(this.urlQuery.get('limit'));
+        this.page.pageNumber = data.page;
         this.geojsonData = data.items;
-        this.loadTableData(data.items, customCallBack);
+        this.loadTableData(data.items, this.customCallBack);
       },
       err => {
         if (err.status === 500) {
@@ -138,20 +156,21 @@ export class MapListService {
     );
   }
 
+  getData(endPoint, param?: Array<any>, customCallBack?) {
+    //  params: parameter to filter on the api
+    //  customCallBack: function which return a feature to custom the content of the table
+    this.manageUrlQuery('set', param);
+    this.customCallBack = customCallBack;
+    this.endPoint = endPoint;
+    this.loadData();
+  }
+
   refreshData(apiEndPoint, method, params?: Array<any>) {
     this.manageUrlQuery(method, params);
-    this.loadData(apiEndPoint, params).subscribe(
-      res => {
-        this.page.totalElements = res.total_filtered;
-        this.geojsonData = res.items;
-        this.loadTableData(res.items, this.customCallBack);
-      },
-      err => {
-        if (err.status === 500) {
-          this._commonService.translateToaster('error', 'MapList.InvalidTypeError');
-        }
-      }
-    );
+    if (apiEndPoint !== null && this.endPoint !== apiEndPoint) {
+      this.endPoint = apiEndPoint;
+    }
+    this.loadData();
   }
 
   manageUrlQuery(method, params?: Array<any>) {
@@ -159,14 +178,26 @@ export class MapListService {
     if (params) {
       if (method === 'set') {
         params.forEach(param => {
-          this.urlQuery = this.urlQuery.set(param.param, param.value);
+          this.setHttpParam(param.param, param.value);
         });
       } else {
         params.forEach(param => {
-          this.urlQuery = this.urlQuery.append(param.param, param.value);
+          this.appendHttpParam(param.param, param.value);
         });
       }
     }
+  }
+
+  setHttpParam(param, value) {
+    this.urlQuery = this.urlQuery.set(param, value);
+  }
+
+  appendHttpParam(param, value) {
+    this.urlQuery = this.urlQuery.append(param, value);
+  }
+
+  deleteHttpParam(param, value = undefined) {
+    this.urlQuery = this.urlQuery.delete(param, value);
   }
 
   refreshUrlQuery(limit?: number) {
@@ -183,7 +214,6 @@ export class MapListService {
 
   deleteObsFront(idDelete: number) {
     // supprimer une observation sur la carte et la liste en front seulement
-
     this.tableData = this.tableData.filter(row => {
       return row[this.idName] !== idDelete;
     });
@@ -231,6 +261,16 @@ export class MapListService {
     }
   }
 
+  zoomOnSeveralSelectedLayers(map, layers) {
+    let group = new L.FeatureGroup();
+    layers.forEach(layer => {
+      this.layerDict[layer];
+      group.addLayer(this.layerDict[layer]);
+    });
+
+    this._ms.getMap().fitBounds(group.getBounds());
+  }
+
   /**
    * Use in synthese where layer are not GeoJson but PolyLigne, Polygon ...
    * @param map
@@ -252,16 +292,12 @@ export class MapListService {
         let newFeature = null;
         if (customCallBack) {
           newFeature = customCallBack(feature);
-        } else {
-          newFeature = this.deFaultCustomColumns(feature);
         }
         this.tableData.push(newFeature.properties);
       });
     } else {
       data.features.forEach(feature => {
-        let newFeature = null;
-        newFeature = this.deFaultCustomColumns(feature);
-        this.tableData.push(newFeature.properties);
+        this.tableData.push(feature.properties);
       });
     }
   }
@@ -272,6 +308,8 @@ export class Page {
   size: number = 5;
   // The total number of elements
   totalElements: number = 0;
+  // The total number of elements
+  itemPerPage: number = 0;
   // The total number of pages
   totalPages: number = 2;
   // The current page number

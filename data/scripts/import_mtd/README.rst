@@ -1,8 +1,10 @@
-**Ce script permet d'importer les métadonnées à partir de leurs uuid en utilisant le webservice mtd de l'INPN.**
-Il permet de rappatrier dans une instance GeoNature les métadonnées correspondant à des données INPN qui 
+**Ces scripts permetttent d'importer les métadonnées à partir de leurs uuid en utilisant le webservice mtd de l'INPN.**
+Ils permettent de rappatrier dans une instance GeoNature les métadonnées correspondant à des données INPN qui 
 déjà importées dans la BDD GeoNature depuis un export INPN.  
 
 
+* Le script ``run_import_mtd.py`` retrouve les informations des métadonnées à partir des UUID des JDD et des UUID des CA déjà présent dans la base GN2
+* Le script ``import_jdd_and_ca`` effectue les mêmes manipulation en s'appuyant uniquement sur les UUID JDD et retrouve les CA correspondants.
 Fonctionnement général du script
 --------------------------------
 
@@ -75,6 +77,9 @@ Execution du script
 ::
     
     python run_import_mtd.py > import_mtd.log
+    ou
+    python import_jdd_and_ca.py > import_mtd.log
+
 
 
 

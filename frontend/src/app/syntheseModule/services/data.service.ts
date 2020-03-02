@@ -10,9 +10,8 @@ import {
 import { GeoJSON } from 'leaflet';
 import { AppConfig } from '@geonature_config/app.config';
 import { isArray } from 'util';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject ,  Observable } from 'rxjs';
 import { CommonService } from '@geonature_common/service/common.service';
-import { Observable } from 'rxjs';
 
 export const FormatMapMime = new Map([
   ['csv', 'text/csv'],

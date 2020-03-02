@@ -2,10 +2,12 @@ from flask import Blueprint, request
 from sqlalchemy.sql import func
 from geojson import FeatureCollection
 
+from utils_flask_sqla_geo.generic import get_geojson_feature
+
 from geonature.utils.env import DB
 from geonature.core.gn_monitoring.models import TBaseSites, corSiteArea, corSiteModule
 from geonature.core.ref_geo.models import LAreas
-from geonature.utils.utilssqlalchemy import json_resp, get_geojson_feature
+from utils_flask_sqla.response import json_resp
 
 
 routes = Blueprint("gn_monitoring", __name__)
@@ -28,12 +30,14 @@ def get_list_sites():
 
     if parameters.get("name_app"):
         q = q.filter(
-            TBaseSites.applications.any(nom_application=parameters.get("name_app"))
+            TBaseSites.applications.any(
+                nom_application=parameters.get("name_app"))
         )
 
     if parameters.get("id_app"):
         q = q.filter(
-            TBaseSites.applications.any(id_application=parameters.get("id_app"))
+            TBaseSites.applications.any(
+                id_application=parameters.get("id_app"))
         )
 
     if parameters.get("id_base_site"):
@@ -78,7 +82,7 @@ def get_site_areas(id_site):
     Get areas of a site from cor_site_area as geojson
 
     .. :quickref: Monitoring;
-    
+
     :param id_module: int
     :type id_module: int
     :param id_area_type:

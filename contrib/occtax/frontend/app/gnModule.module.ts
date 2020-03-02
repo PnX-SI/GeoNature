@@ -2,6 +2,7 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { GN2CommonModule } from "@geonature_common/GN2Common.module";
 import { Routes, RouterModule } from "@angular/router";
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 // Components
 import { OcctaxMapFormComponent } from "./occtax-map-form/occtax-map-form.component";
 import { ReleveComponent } from "./occtax-map-form/form/releve/releve.component";
@@ -10,9 +11,11 @@ import { OccurrenceComponent } from "./occtax-map-form/form/occurrence/occurrenc
 import { OcctaxFormComponent } from "./occtax-map-form/form/occtax-form.component";
 import { TaxonsListComponent } from "./occtax-map-form/form/taxons-list/taxons-list.component";
 import { OcctaxMapListComponent } from "./occtax-map-list/occtax-map-list.component";
+import { OcctaxMapListFilterComponent } from "./occtax-map-list/filter/occtax-map-list-filter.component";
 import { OcctaxMapInfoComponent } from "./occtax-map-info/occtax-map-info.component";
 // Service
 import { OcctaxDataService } from "./services/occtax-data.service";
+import { MapListService } from "@geonature_common/map-list/map-list.service";
 
 import {
   MatSlideToggleModule
@@ -31,7 +34,13 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, GN2CommonModule, RouterModule.forChild(routes), MatSlideToggleModule],
+  imports: [
+    RouterModule.forChild(routes), 
+    GN2CommonModule, 
+    CommonModule, 
+    MatSlideToggleModule, 
+    NgbModule
+  ],
   declarations: [
     OcctaxMapFormComponent,
     OcctaxFormComponent,
@@ -40,9 +49,10 @@ const routes: Routes = [
     CountingComponent,
     OccurrenceComponent,
     TaxonsListComponent,
-    OcctaxMapListComponent
+    OcctaxMapListComponent,
+    OcctaxMapListFilterComponent
   ],
-  providers: [OcctaxDataService],
+  providers: [OcctaxDataService, MapListService],
   bootstrap: [OcctaxMapFormComponent]
 })
 export class GeonatureModule { }

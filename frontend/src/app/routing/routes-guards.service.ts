@@ -79,3 +79,17 @@ export class SignUpGuard implements CanActivate {
     }
   }
 }
+
+@Injectable()
+export class UserManagementGuard implements CanActivate {
+  constructor(private _router: Router) {}
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    if (AppConfig['ACCOUNT_MANAGEMENT']['ENABLE_USER_MANAGEMENT'] || false) {
+      return true;
+    } else {
+      this._router.navigate(['/login']);
+      return false;
+    }
+  }
+}

@@ -24,7 +24,7 @@ export class DynamicFormComponent implements OnInit {
       formControl.patchValue(currentFormValue);
       console.log(event.target.value);
     } else {
-      //find the unselected element
+      // find the unselected element
       currentFormValue.forEach((val, index) => {
         if (val === event.target.value) {
           // Remove the unselected element from the arrayForm

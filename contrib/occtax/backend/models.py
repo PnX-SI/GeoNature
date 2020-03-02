@@ -1,17 +1,21 @@
 from flask import current_app
+from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
 from sqlalchemy.sql import select, func, and_
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects.postgresql import UUID
-from geoalchemy2 import Geometry
 
 from pypnnomenclature.models import TNomenclatures
-
-from geonature.utils.utilssqlalchemy import serializable, geoserializable
-from geonature.utils.env import DB
 from pypnusershub.db.tools import InsufficientRightsError
 from pypnusershub.db.models import User
+from utils_flask_sqla.serializers import serializable
+from utils_flask_sqla_geo.serializers import geoserializable
+from utils_flask_sqla_geo.serializers import geoserializable
+
+from geonature.core.taxonomie.models import Taxref
 from geonature.core.gn_meta.models import TDatasets
+from geonature.core.taxonomie.models import Taxref
+from geonature.utils.env import DB
 
 
 class ReleveModel(DB.Model):
@@ -116,7 +120,8 @@ class CorCountingOccurrence(DB.Model):
         UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
     )
     id_occurrence_occtax = DB.Column(
-        DB.Integer, ForeignKey("pr_occtax.t_occurrences_occtax.id_occurrence_occtax")
+        DB.Integer, ForeignKey(
+            "pr_occtax.t_occurrences_occtax.id_occurrence_occtax")
     )
     id_nomenclature_life_stage = DB.Column(DB.Integer)
     id_nomenclature_sex = DB.Column(DB.Integer)
@@ -145,11 +150,12 @@ class TOccurrencesOccurrence(DB.Model):
     id_nomenclature_source_status = DB.Column(DB.Integer)
     determiner = DB.Column(DB.Unicode)
     id_nomenclature_determination_method = DB.Column(DB.Integer)
-    cd_nom = DB.Column(DB.Integer)
+    cd_nom = DB.Column(DB.Integer, ForeignKey(Taxref.cd_nom))
     nom_cite = DB.Column(DB.Unicode)
     meta_v_taxref = DB.Column(
         DB.Unicode,
-        default=select([func.gn_commons.get_default_parameter("taxref_version")]),
+        default=select(
+            [func.gn_commons.get_default_parameter("taxref_version")]),
     )
     sample_number_proof = DB.Column(DB.Unicode)
     digital_proof = DB.Column(DB.Unicode)
@@ -163,6 +169,8 @@ class TOccurrencesOccurrence(DB.Model):
         uselist=True,
     )
 
+    taxref = relationship("Taxref", lazy="joined")
+
 
 @serializable
 @geoserializable
@@ -170,8 +178,10 @@ class TRelevesOccurrence(ReleveModel):
     __tablename__ = "t_releves_occtax"
     __table_args__ = {"schema": "pr_occtax"}
     id_releve_occtax = DB.Column(DB.Integer, primary_key=True)
-    id_dataset = DB.Column(DB.Integer)
-    id_digitiser = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
+    id_dataset = DB.Column(DB.Integer, ForeignKey(
+        "gn_meta.t_datasets.id_dataset"))
+    id_digitiser = DB.Column(DB.Integer, ForeignKey(
+        "utilisateurs.t_roles.id_role"))
     id_nomenclature_grp_typ = DB.Column(DB.Integer)
     observers_txt = DB.Column(DB.Unicode)
     date_min = DB.Column(DB.DateTime)
@@ -184,7 +194,8 @@ class TRelevesOccurrence(ReleveModel):
     meta_device_entry = DB.Column(DB.Unicode)
     comment = DB.Column(DB.Unicode)
     geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
-    geom_local = DB.Column(Geometry("GEOMETRY", current_app.config["LOCAL_SRID"]))
+    geom_local = DB.Column(
+        Geometry("GEOMETRY", current_app.config["LOCAL_SRID"]))
 
     t_occurrences_occtax = relationship(
         "TOccurrencesOccurrence", lazy="joined", cascade="all, delete-orphan"
@@ -192,8 +203,10 @@ class TRelevesOccurrence(ReleveModel):
 
     observers = DB.relationship(
         User,
+        lazy="joined",
         secondary=corRoleRelevesOccurrence.__table__,
-        primaryjoin=(corRoleRelevesOccurrence.id_releve_occtax == id_releve_occtax),
+        primaryjoin=(corRoleRelevesOccurrence.id_releve_occtax ==
+                     id_releve_occtax),
         secondaryjoin=(corRoleRelevesOccurrence.id_role == User.id_role),
         foreign_keys=[
             corRoleRelevesOccurrence.id_releve_occtax,
@@ -202,7 +215,11 @@ class TRelevesOccurrence(ReleveModel):
     )
 
     digitiser = relationship(
-        User, primaryjoin=(User.id_role == id_digitiser), foreign_keys=[id_digitiser]
+        User, lazy="joined", primaryjoin=(User.id_role == id_digitiser), foreign_keys=[id_digitiser]
+    )
+
+    dataset = relationship(
+        TDatasets, lazy="joined", primaryjoin=(TDatasets.id_dataset == id_dataset), foreign_keys=[id_dataset]
     )
 
     def get_geofeature(self, recursif=True):
@@ -235,7 +252,8 @@ class VReleveOccurrence(ReleveModel):
     observers = DB.relationship(
         User,
         secondary=corRoleRelevesOccurrence.__table__,
-        primaryjoin=(corRoleRelevesOccurrence.id_releve_occtax == id_releve_occtax),
+        primaryjoin=(corRoleRelevesOccurrence.id_releve_occtax ==
+                     id_releve_occtax),
         secondaryjoin=(corRoleRelevesOccurrence.id_role == User.id_role),
         foreign_keys=[
             corRoleRelevesOccurrence.id_releve_occtax,
@@ -272,7 +290,8 @@ class VReleveList(ReleveModel):
     observers = DB.relationship(
         User,
         secondary=corRoleRelevesOccurrence.__table__,
-        primaryjoin=(corRoleRelevesOccurrence.id_releve_occtax == id_releve_occtax),
+        primaryjoin=(corRoleRelevesOccurrence.id_releve_occtax ==
+                     id_releve_occtax),
         secondaryjoin=(corRoleRelevesOccurrence.id_role == User.id_role),
         foreign_keys=[
             corRoleRelevesOccurrence.id_releve_occtax,

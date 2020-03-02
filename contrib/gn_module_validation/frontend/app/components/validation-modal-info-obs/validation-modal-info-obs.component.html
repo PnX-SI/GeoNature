@@ -237,9 +237,9 @@
           <td>
             <b> Commune(s) </b>
           </td>
-          <td>
-            <li *ngFor="let mun of selectedObs?.municipalities; let i = index">
-            {{ mun.area_name}}
+          <td *ngFor="let ar of selectedObs?.areas; let i = index">
+            <li *ngIf="ar.id_type == APP_CONFIG.BDD.id_area_type_municipality">
+                {{ar.area_name}}
             </li>
           </td>
         </tr>
