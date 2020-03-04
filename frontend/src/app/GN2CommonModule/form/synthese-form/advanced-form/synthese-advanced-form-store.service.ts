@@ -5,7 +5,7 @@ import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthe
 import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
 import { TreeModel } from 'angular-tree-component';
 import { AppConfig } from '@geonature_config/app.config';
-import { formatTaxonTree } from '@geonature_common/form/taxon-tree/taxon-tree.service';
+import { formatTaxonTree } from './taxon-tree.service';
 
 @Injectable()
 export class TaxonAdvancedStoreService {
@@ -18,6 +18,7 @@ export class TaxonAdvancedStoreService {
   public taxonomyLR: Array<any>;
   public taxonomyHab: Array<any>;
   public taxonomyGroup2Inpn: Array<any>;
+  public isLoading = true;
 
   constructor(
     private _dataService: DataFormService,
@@ -28,6 +29,7 @@ export class TaxonAdvancedStoreService {
     if (AppConfig.SYNTHESE.DISPLAY_TAXON_TREE) {
       this._validationDataService.getTaxonTree().subscribe(data => {
         this.taxonTree = formatTaxonTree(data);
+        this.isLoading = false;
       });
     }
 
