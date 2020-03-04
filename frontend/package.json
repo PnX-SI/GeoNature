@@ -6,6 +6,7 @@
     "ng": "ng",
     "start": ". ~/.nvm/nvm.sh; nvm use; ng serve --poll=2000",
     "build": ". ~/.nvm/nvm.sh; nvm use; ng build --prod --aot=false --build-optimizer=false",
+    "build-aot": ". ~/.nvm/nvm.sh; nvm use; ng build --prod --aot=true --build-optimizer=true",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",

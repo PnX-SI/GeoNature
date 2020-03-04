@@ -11,8 +11,8 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./new-password.component.scss']
 })
 export class NewPasswordComponent implements OnInit {
-  token: string;
-  form: FormGroup;
+  public token: string;
+  public form: FormGroup;
 
   constructor(
     private _authService: AuthService,
