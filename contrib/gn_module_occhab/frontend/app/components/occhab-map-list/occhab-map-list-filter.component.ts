@@ -23,7 +23,7 @@ export class OcchabMapListFilterComponent implements OnInit {
     return item.search_name;
   }
 
-  searchEvent($event) {
+  searchEvent() {
     this.onSearch.emit(this.cleanFilter());
   }
 

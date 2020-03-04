@@ -64,6 +64,7 @@ export class OcctaxMapFormComponent
 
     // patch default values in ajax
     this.fs.patchAllDefaultNomenclature();
+    
   }
 
   ngAfterViewInit() {

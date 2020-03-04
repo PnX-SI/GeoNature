@@ -32,7 +32,6 @@ export class ValidationPopupComponent {
 
   @Input() observations : Array<number>;
   @Input() selectedPages : Array<number>;
-  @Input() nbTotalObservation : number;
   @Input() validationStatus: Array<any>;
   @Input() currentPage : any;
   @Input() validation : any;
