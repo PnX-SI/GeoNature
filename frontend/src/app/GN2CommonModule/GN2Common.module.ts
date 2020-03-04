@@ -1,24 +1,25 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  MatCardModule,
-  MatMenuModule,
-  MatSidenavModule,
-  MatTooltipModule,
-  MatListModule,
-  MatIconModule,
-  MatToolbarModule,
-  MatExpansionModule,
-  MatPaginatorModule,
-  MatStepperModule,
-  MatProgressSpinnerModule,
-  MatButtonModule
-} from '@angular/material';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import {MatCardModule } from '@angular/material/card' 
+import {MatMenuModule } from '@angular/material/menu' 
+import {MatSidenavModule } from '@angular/material/sidenav' 
+import {MatTooltipModule } from '@angular/material/tooltip' 
+import {MatListModule } from '@angular/material/list' 
+import {MatIconModule } from '@angular/material/icon' 
+import {MatToolbarModule } from '@angular/material/toolbar' 
+import {MatExpansionModule } from '@angular/material/expansion' 
+import {MatPaginatorModule } from '@angular/material/paginator' 
+import {MatStepperModule } from '@angular/material/stepper' 
+import {MatProgressSpinnerModule } from '@angular/material/progress-spinner' 
+import {MatButtonModule } from '@angular/material/button' 
+
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AutoCompleteModule } from 'primeng/primeng';
 import { TreeModule } from 'angular-tree-component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 // Components
 import { NomenclatureComponent } from './form/nomenclature/nomenclature.component';
@@ -42,8 +43,7 @@ import { LeafletFileLayerComponent } from './map/filelayer/filelayer.component';
 import { MapListComponent } from './map-list/map-list.component';
 import { MapDataComponent } from './map-list/map-data/map-data.component';
 import { MapListGenericFiltersComponent } from './map-list/generic-filters/generic-filters.component';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+
 import { ObserversTextComponent } from '@geonature_common/form/observers-text/observers-text.component';
 import { MunicipalitiesComponent } from '@geonature_common/form/municipalities/municipalities.component';
 import { GenericFormGeneratorComponent } from '@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component';
@@ -95,7 +95,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     ReactiveFormsModule,
     NgxDatatableModule,
     TranslateModule.forChild(),
-    NgbModule.forRoot(),
+    NgbModule,
     AutoCompleteModule,
     TreeModule
   ],

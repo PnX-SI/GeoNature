@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { PageEvent, MatPaginator, MatPaginatorIntl } from '@angular/material';
+import { PageEvent, MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { CruvedStoreService } from '../services/cruved-store.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 

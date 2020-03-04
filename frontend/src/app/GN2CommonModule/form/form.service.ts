@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, ValidatorFn } from '@angular/forms';
-import { FormGroup, FormControl } from '@angular/forms/src/model';
+import { AbstractControl, ValidatorFn, FormGroup, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 @Injectable()

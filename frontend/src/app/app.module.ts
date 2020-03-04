@@ -12,7 +12,6 @@ import {
 // For Angular Dependencies
 import 'hammerjs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { ChartModule } from 'angular2-chartjs';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -61,7 +60,6 @@ export function createTranslateLoader(http: HttpClient) {
     BrowserModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    FlexLayoutModule,
     routing,
     ChartModule,
     ToastrModule.forRoot({

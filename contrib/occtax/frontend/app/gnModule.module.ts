@@ -17,9 +17,7 @@ import { OcctaxMapInfoComponent } from "./occtax-map-info/occtax-map-info.compon
 import { OcctaxDataService } from "./services/occtax-data.service";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 
-import {
-  MatSlideToggleModule
-} from '@angular/material';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 const routes: Routes = [
   { path: "", component: OcctaxMapListComponent },

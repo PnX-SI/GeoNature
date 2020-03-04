@@ -15,7 +15,7 @@ import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthe
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '@geonature_common/service/common.service';
 import { AppConfig } from '@geonature_config/app.config';
-import { HttpParams } from '@angular/common/http/src/params';
+import { HttpParams } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SyntheseModalDownloadComponent } from './modal-download/modal-download.component';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
