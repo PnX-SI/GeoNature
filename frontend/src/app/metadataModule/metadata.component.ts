@@ -3,6 +3,7 @@ import { PageEvent, MatPaginator, MatPaginatorIntl } from '@angular/material/pag
 import { CruvedStoreService } from '../services/cruved-store.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 
+@Injectable()
 export class MetadataPaginator extends MatPaginatorIntl {
   constructor() {
     super();

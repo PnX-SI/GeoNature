@@ -148,7 +148,7 @@ class GnModuleSchemaConf(Schema):
     export_message = fields.String(missing=export_message)
     list_messages = fields.Dict(missing=list_messages)
     digital_proof_validator = fields.Boolean(missing=True)
-    releve_map_zoom_level = fields.Integer()
+    releve_map_zoom_level = fields.Integer(missing=None)
     id_taxon_list = fields.Integer(missing=100)
     taxon_result_number = fields.Integer(missing=20)
     id_observers_list = fields.Integer(missing=1)

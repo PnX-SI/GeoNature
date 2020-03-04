@@ -2,7 +2,7 @@
 <ngx-datatable (window:resize)="onResize($event)" #table class="material striped margin-top-xs table-size expandable"
   [rows]="mapListService.tableData" [columns]="VALIDATION_CONFIG.LIST_COLUMNS_FRONTEND" [columnMode]="'force'"
   [headerHeight]="50" [footerHeight]="35" [selected]="mapListService.selectedRow" [selectionType]="'multiClick'" [count]="mapListService.tableData.length"
-  [limit]="rowNumber" [rowClass]="getRowClass" (select)="mapListService.onRowSelect($event)" (activate)="onActivate($event, modal)">
+  [limit]="rowNumber" [rowClass]="getRowClass" (select)="mapListService.onRowSelect($event)" (activate)="onActivate($event)">
 
   <ngx-datatable-row-detail rowHeight="100">
      </ngx-datatable-row-detail>
@@ -89,10 +89,13 @@
 
 </ngx-datatable>
 
-<pnx-validation-popup [selectedPages]="selectedPages" [currentPage]="npage" 
-  [nbTotalObservation]="nbTotalObservation" [observations]="selectedObs" 
+<pnx-validation-popup 
+  [selectedPages]="selectedPages" 
+  [currentPage]="npage" 
+  [observations]="selectedObs" 
   [validationStatus]="validationStatus"
-  (valStatus)="onStatusChange($event)" (valDate)="onValidationDateChange($event)">
+  (valStatus)="onStatusChange($event)" 
+  (valDate)="onValidationDateChange($event)">
 </pnx-validation-popup>
 
 <ng-template #ValidationModalInfoObs let-c="close " let-d="dismiss">

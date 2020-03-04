@@ -18,7 +18,7 @@ export class ValidationComponent implements OnInit {
 
   constructor(
     public _ds: ValidationDataService,
-    private _mapListService: MapListService,
+    public mapListService: MapListService,
     private _commonService: CommonService,
     private _fs: SyntheseFormService
   ) {}
@@ -66,12 +66,12 @@ export class ValidationComponent implements OnInit {
     this._ds.dataLoaded = false;
     this._ds.getSyntheseData(formatedParams).subscribe(
       result => {
-        this._mapListService.geojsonData = result["data"];
-        this._mapListService.loadTableData(
+        this.mapListService.geojsonData = result["data"];
+        this.mapListService.loadTableData(
           result["data"],
           this.customColumns.bind(this)
         );
-        this._mapListService.idName = "id_synthese";
+        this.mapListService.idName = "id_synthese";
 
         this._ds.dataLoaded = true;
       },

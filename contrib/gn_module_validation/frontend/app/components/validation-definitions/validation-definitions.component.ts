@@ -13,7 +13,7 @@ import { ModuleConfig } from "../../module.config";
 })
 export class ValidationDefinitionsComponent {
   public definitions;
-  private showDefinitions: Boolean = false;
+  public showDefinitions: Boolean = false;
   public VALIDATION_CONFIG = ModuleConfig;
 
   constructor(
