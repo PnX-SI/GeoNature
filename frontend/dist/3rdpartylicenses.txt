@@ -115,6 +115,8 @@ THE SOFTWARE.
 
 @angular/material/stepper
 
+@angular/material/tabs
+
 @angular/material/toolbar
 
 @angular/material/tooltip
