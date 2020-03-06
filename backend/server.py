@@ -123,6 +123,9 @@ def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
 
         app.register_blueprint(routes, url_prefix="/gn_commons")
 
+        from geonature.core.gn_modules.routes import routes 
+        app.register_blueprint(routes, url_prefix="/gn_modules")
+
         # errors
         from geonature.core.errors import routes
 
