@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Inject, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -14,7 +14,7 @@ import { GlobalSubService } from '../../services/global-sub.service';
   templateUrl: './nav-home.component.html',
   styleUrls: ['./nav-home.component.scss']
 })
-export class NavHomeComponent implements OnInit, OnDestroy {
+export class NavHomeComponent implements OnInit, OnDestroy, AfterViewInit {
   public moduleName = 'Accueil';
   private subscription: Subscription;
   public currentUser: User;
@@ -51,11 +51,14 @@ export class NavHomeComponent implements OnInit, OnDestroy {
         this.moduleName = 'Accueil';
       }
     });
-    // init the sidenav instance in sidebar service
-    this._sideNavService.setSideNav(this.sidenav);
 
     // put the user name in navbar
     this.currentUser = this._authService.getCurrentUser();
+  }
+
+  ngAfterViewInit() {
+    this._sideNavService.setSideNav(this.sidenav);
+    this.sidenav.open();
   }
   changeLanguage(lang) {
     this.translate.use(lang);

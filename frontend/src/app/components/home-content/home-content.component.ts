@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppConfig } from '../../../conf/app.config';
 import { MapService } from '@geonature_common/map/map.service';
-import { SideNavService } from '../sidenav-items/sidenav-service';
 import { DataService } from '@geonature/syntheseModule/services/data.service';
 import { GlobalSubService } from '../../services/global-sub.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
@@ -20,7 +19,6 @@ export class HomeContentComponent implements OnInit {
   public generalStat: any;
 
   constructor(
-    private _SideNavService: SideNavService,
     private _syntheseApi: DataService,
     private _globalSub: GlobalSubService,
     private _api: DataFormService,
@@ -28,8 +26,7 @@ export class HomeContentComponent implements OnInit {
     private _mapService: MapService
   ) {}
 
-  ngOnInit() {
-    this._SideNavService.sidenav.open();
+  ngOnInit() {    
     this.appConfig = AppConfig;
     if (AppConfig.FRONTEND.DISPLAY_MAP_LAST_OBS) {
       this._syntheseApi.getSyntheseData({ limit: 100 }).subscribe(result => {
