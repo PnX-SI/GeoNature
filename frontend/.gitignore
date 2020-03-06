@@ -3,12 +3,6 @@
 npm-debug.log
 
 src/conf/app.config.ts
-src/tsconfig.app.json
-
-#routing
-src/app/routing/app-routing.module.ts
-#tsconfig
-tsconfig.json
 
 
 # custom components
