@@ -173,6 +173,86 @@
           }
         }
       }
+    },
+    "gn2Common": {
+      "projectType": "library",
+      "root": "projects/gn2-common",
+      "sourceRoot": "projects/gn2-common/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/gn2-common/tsconfig.lib.json",
+            "project": "projects/gn2-common/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/gn2-common/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/gn2-common/src/test.ts",
+            "tsConfig": "projects/gn2-common/tsconfig.spec.json",
+            "karmaConfig": "projects/gn2-common/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/gn2-common/tsconfig.lib.json",
+              "projects/gn2-common/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "pnxMap": {
+      "projectType": "library",
+      "root": "projects/pnx-map",
+      "sourceRoot": "projects/pnx-map/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/pnx-map/tsconfig.lib.json",
+            "project": "projects/pnx-map/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/pnx-map/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/pnx-map/src/test.ts",
+            "tsConfig": "projects/pnx-map/tsconfig.spec.json",
+            "karmaConfig": "projects/pnx-map/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/pnx-map/tsconfig.lib.json",
+              "projects/pnx-map/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "geonature",
