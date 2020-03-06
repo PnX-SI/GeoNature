@@ -18,7 +18,7 @@
       "es2016",
       "dom"
     ],
-    "baseUrl": "/home/theo/workspace/GeoNature/frontend/node_modules",
+    "baseUrl": "node_modules",
     "paths": {
       "@angular/*": [
         "node_modules/@angular/*"
