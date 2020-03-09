@@ -6,6 +6,7 @@ import { HttpClientModule, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angu
 
 import { DatasetListComponent } from './datasets/dataset-list.component';
 import { DatasetFormComponent } from './datasets/dataset-form.component';
+import { DatasetFicheComponent } from './datasets/dataset-fiche.component';
 import { AfListComponent } from './af/af-list.component';
 import { AfFormComponent } from './af/af-form.component';
 import { ActorComponent } from './actors/actors.component';
@@ -16,6 +17,7 @@ const routes: Routes = [
   { path: 'dataset', component: DatasetFormComponent },
   { path: 'datasets', component: DatasetListComponent },
   { path: 'dataset/:id', component: DatasetFormComponent },
+  { path: 'dataset_fiche/:id', component: DatasetFicheComponent },
   { path: 'afs', component: AfListComponent },
   { path: 'af', component: AfFormComponent },
   { path: 'af/:id', component: AfFormComponent }
@@ -36,6 +38,7 @@ const routes: Routes = [
     MetadataComponent,
     DatasetListComponent,
     DatasetFormComponent,
+    DatasetFicheComponent,
     AfListComponent,
     AfFormComponent,
     ActorComponent

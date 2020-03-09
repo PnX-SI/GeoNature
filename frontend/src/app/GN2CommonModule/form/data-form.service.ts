@@ -314,6 +314,14 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/dataset/${id}`);
   }
 
+  getDatasetDetails(id) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/dataset_details/${id}`);
+  }
+
+  getImports(id_dataset) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/import/by_dataset/${id_dataset}`);
+  }
+
   getModulesList(exclude: Array<string>) {
     let queryString: HttpParams = new HttpParams();
     exclude.forEach(mod_code => {

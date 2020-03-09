@@ -1,0 +1,82 @@
+<div class="container">
+
+    <button class="btn btn-secondary" routerLink="/metadata">  <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
+    </button>
+
+    <div class="card ">
+      <div class="card-body">
+        <h3>
+          Jeu de données
+        </h3>
+
+
+        <p>Cadre d'acquisition : <small>{{dataset.acquisition_framework.acquisition_framework_name}}</small></p>
+
+        <p>Nom du JDD : <small>{{dataset.dataset_name}}</small></p>
+        
+        <p>Nom court du JDD : <small>{{dataset.dataset_shortname}}</small></p>
+
+        <p>Description : <br/>
+        <small>{{dataset.dataset_desc}}</small></p>
+
+        <p>Domaine : <small>
+          {{dataset.terrestrial_domain ? 'terrestre' : ''}}
+          {{(dataset.terrestrial_domain && dataset.marine_domain) ? ' et ' : ''}}
+          {{dataset.marine_domain ? 'marin' : ''}}
+        </small></p>
+        
+        <p>Type de données : <small>{{dataset.data_type.label_default}} <br/>
+        {{dataset.data_type.definition_default}}</small></p>
+
+        <p>Objectif : <small>{{dataset.dataset_objectif.label_default}} <br/>
+        {{dataset.dataset_objectif.definition_default}}</small></p>
+
+        <p>Méthode de collecte : <small>{{dataset.collecting_method.label_default}} <br/>
+        {{dataset.collecting_method.definition_default}}</small></p>
+
+        <p>Origine des données : <small>{{dataset.data_origin.label_default}} <br/>
+        {{dataset.data_origin.definition_default}}</small></p>
+
+        <p>Statut source : <small>{{dataset.source_status.label_default}} <br/>
+        {{dataset.source_status.definition_default}}</small></p>
+
+        <p>Type de ressource : <small>{{dataset.resource_type.label_default}} <br/>
+        {{dataset.resource_type.definition_default}}</small></p>
+        
+        <br>
+        <h5> Spécifique GeoNature </h5>
+
+        <p>
+          Actif : <small>{{dataset.active ? 'Oui' : 'Non'}}</small> <br/>
+          Validable : <small>{{dataset.validable ? 'Oui' : 'Non'}}</small>
+        </p>
+
+        <p>Module(s) GeoNature associé(s) au jeu de données :
+          <small>
+            <ul *ngIf="dataset.modules; else noModule">
+              <li *ngFor='let module of dataset.modules'>
+                {{ module.module_code }}
+              </li>
+            </ul>
+            <ng-template #noModule>Aucun</ng-template>
+          </small>
+        </p>
+        
+        <p>Import(s) fait(s) sur ce jeu de données :
+          <small>
+            <ul *ngIf="imports; else noImport">
+              <li *ngFor='let import of imports'>
+                {{ import.id_import }} ; {{ import.import_table }} ; {{ import.date_create_import }}
+              </li>
+            </ul>
+            <ng-template #noImport>Aucun</ng-template>
+          </small>
+        </p>
+
+      </div>
+    </div>
+
+    <button class="btn btn-secondary" routerLink="/metadata">  <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
+    </button>
+</div>
+
