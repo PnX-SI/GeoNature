@@ -34,7 +34,7 @@ export class GeojsonComponent implements OnInit, OnChanges {
   @Input() asCluster: boolean = false;
   public geojsonCharged = new Subject<any>();
   /** Observable pour retourner les données geojson passées au composant */
-  public currentGeoJson$: Observable<L.Layer> = this.geojsonCharged.asObservable();
+  public currentGeoJson$: Observable<L.GeoJSON> = this.geojsonCharged.asObservable();
 
   constructor(public mapservice: MapService) {}
 
