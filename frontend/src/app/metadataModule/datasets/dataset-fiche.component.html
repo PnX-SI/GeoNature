@@ -62,7 +62,7 @@
           </small>
         </p>
         
-        <p>Import(s) fait(s) sur ce jeu de données :
+        <p>Import(s) fait(s) sur le jeu de données :
           <small>
             <ul *ngIf="imports; else noImport">
               <li *ngFor='let import of imports'>
@@ -70,6 +70,17 @@
               </li>
             </ul>
             <ng-template #noImport>Aucun</ng-template>
+          </small>
+        </p>
+
+        <p>Acteurs(s) associé(s) au jeu de données :
+          <small>
+            <ul *ngIf="dataset.cor_dataset_actor; else noActor">
+              <li *ngFor='let actor of dataset.cor_dataset_actor'>
+                {{ actor.role.nom_role }} {{ actor.role.prenom_role }}
+              </li>
+            </ul>
+            <ng-template #noActor>Aucun</ng-template>
           </small>
         </p>
 
