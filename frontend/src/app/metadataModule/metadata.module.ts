@@ -10,6 +10,7 @@ import { AfListComponent } from './af/af-list.component';
 import { AfFormComponent } from './af/af-form.component';
 import { ActorComponent } from './actors/actors.component';
 import { MetadataComponent } from './metadata.component';
+import { AfCardComponent } from './af/af-card.component';
 
 const routes: Routes = [
   { path: '', component: MetadataComponent },
@@ -18,7 +19,8 @@ const routes: Routes = [
   { path: 'dataset/:id', component: DatasetFormComponent },
   { path: 'afs', component: AfListComponent },
   { path: 'af', component: AfFormComponent },
-  { path: 'af/:id', component: AfFormComponent }
+  { path: 'af/:id', component: AfFormComponent },
+  { path: 'af-card/:id', component: AfCardComponent }
 ];
 
 @NgModule({
@@ -38,7 +40,8 @@ const routes: Routes = [
     DatasetFormComponent,
     AfListComponent,
     AfFormComponent,
-    ActorComponent
+    ActorComponent,
+    AfCardComponent
   ],
   providers: []
 })
