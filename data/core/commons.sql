@@ -443,6 +443,19 @@ CREATE TABLE t_mobile_apps(
 
 COMMENT ON COLUMN t_mobile_apps.app_code IS 'Code de l''application mobile. Pas de FK vers t_modules car une application mobile ne correspond pas forcement à un module GN';
 
+CREATE TABLE t_soft_versions
+(
+  id_soft integer NOT NULL,
+  soft_code varchar (10) NOT NULL,
+  soft_name varchar (100) NOT NULL,
+  soft_installed_version varchar (20) NOT NULL,
+  install_date timestamp without time zone,
+  commentaire text
+);
+COMMENT ON COLUMN t_soft_versions.soft_code IS 'code unique et permanent de l''application ou du module. Utiliser si possible le même code que celui défini dans utilisateurs.t_applications ou dans gn_commons.t_modules';
+COMMENT ON COLUMN t_soft_versions.soft_name IS 'Nom de l''application ou du module';
+COMMENT ON COLUMN t_soft_versions.soft_installed_version IS 'Version de l''application ou du module auquel la base correspond';
+COMMENT ON COLUMN t_soft_versions.install_date IS 'date à laquelle la version actuelle a été mise à jour';
 
 
 ---------------
@@ -469,6 +482,9 @@ ALTER TABLE ONLY t_modules
 
 ALTER TABLE ONLY t_mobile_apps
     ADD CONSTRAINT pk_t_moobile_apps PRIMARY KEY (id_mobile_app);
+
+ALTER TABLE ONLY t_soft_versions
+    ADD CONSTRAINT pk_t_soft_versions PRIMARY KEY (id_soft);
 
 
 ----------------
@@ -569,6 +585,12 @@ INSERT INTO gn_commons.t_modules(id_module, module_code, module_label, module_pi
 -- insertion du module Admin
 INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend, module_doc_url) VALUES
 ('ADMIN', 'Admin', 'fa-cog', 'Backoffice de GeoNature', 'admin', '_self', 'Administration des métadonnées et des nomenclatures', TRUE, FALSE, 'https://geonature.readthedocs.io/fr/latest/user-manual.html#admin')
+;
+-- insertion des modules et applications
+INSERT INTO gn_commons.t_soft_versions(id_soft, soft_code, soft_name, soft_installed_version, install_date, commentaire) VALUES
+(1,'UH', 'UsersHub', '2.1.1', now(), NULL)
+,(2,'TH', 'TaxHub', '1.6.5', now(), NULL)
+,(3,'GN', 'GeoNAture', '2.4.0', now(), NULL)
 ;
 
 
