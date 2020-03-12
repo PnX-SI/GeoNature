@@ -272,6 +272,10 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}`);
   }
 
+  getAcquisitionFrameworkDetails(id_af) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework_details/${id_af}`);
+  }
+
   getOrganisms(orderByName = true) {
     let queryString: HttpParams = new HttpParams();
     if (orderByName) {

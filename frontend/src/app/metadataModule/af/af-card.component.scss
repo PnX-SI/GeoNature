@@ -1,9 +1,18 @@
 .btn-secondary, 
 .btn-success, 
 .btn-danger {
-    margin: 1% 1% 1% 0.2%;
+    margin: 1% 1% 1% 10%;
 }
 
 .bold {
     font-weight: bold;
+}
+
+.main-card {
+    width: 80%;
+    margin: auto;
+}
+
+.card-body {
+    font-size: 14px;
 }

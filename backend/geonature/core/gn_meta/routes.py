@@ -14,6 +14,7 @@ from geonature.core.gn_meta.models import (
     TDatasets,
     CorDatasetActor,
     TAcquisitionFramework,
+    TAcquisitionFrameworkDetails,
     CorAcquisitionFrameworkActor,
     CorAcquisitionFrameworkObjectif,
     CorAcquisitionFrameworkVoletSINP,
@@ -177,6 +178,24 @@ def get_acquisition_framework(id_acquisition_framework):
         return af.as_dict(True)
     return None
 
+@routes.route("/acquisition_framework_details/<id_acquisition_framework>", methods=["GET"])
+@json_resp
+def get_acquisition_framework_details(id_acquisition_framework):
+    """
+    Get one AF
+
+    .. :quickref: Metadata;
+
+    :param id_acquisition_framework: the id_acquisition_framework
+    :param type: int
+    """
+    af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
+    acquisition_framework = af.as_dict(True)
+    if acquisition_framework:
+        acquisition_framework["nomenclature_territorial_level"] = af.nomenclature_territorial_level.as_dict()
+        acquisition_framework["nomenclature_financing_type"] = af.nomenclature_financing_type.as_dict()
+        return acquisition_framework
+    return None
 
 @routes.route("/acquisition_framework", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="METADATA")

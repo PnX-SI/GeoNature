@@ -1,115 +1,152 @@
 <div class="container">
   <button class="btn btn-secondary" routerLink="/metadata"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
   </button>
-  <div class="card">
+  <div class="card main-card">
     <h3 class="card-header">Cadre d'acquisition</h3>
     <div class="card-body">
-      <div class="row">
-        <div class="col d-flex align-items-center d-flex align-items-center">Nom :
-        </div>
-        <div class="col d-flex align-items-center bold">{{af.acquisition_framework_name}}
+      <div class="card">
+        <h5 class="card-header">Informations générales</h5>
+        <div class="card-body">
+          <div class="row">
+            <div class="col d-flex align-items-center d-flex align-items-center">Nom :
+            </div>
+            <div class="col d-flex align-items-center bold">{{af.acquisition_framework_name}}
+            </div>
+          </div>
+          <hr width="75%" color="grey">
+          <div class="row">
+            <div class="col d-flex align-items-center">Description :
+            </div>
+            <div class="col d-flex align-items-center bold">{{af.acquisition_framework_desc}}
+            </div>
+          </div>
+          <hr width="75%" color="grey">
+          <div class="row">
+            <div class="col d-flex align-items-center">Est parent :
+            </div>
+            <div class="col d-flex align-items-center bold">{{af.is_parent ? 'Oui' : 'Non'}}
+            </div>
+          </div>
+          <hr width="75%" color="grey">
+          <div class="row">
+            <div class="col d-flex align-items-center">Niveau territorial :
+            </div>
+            <div class="col d-flex align-items-center bold">{{af.nomenclature_territorial_level.mnemonique}}
+            </div>
+          </div>
+          <hr width="75%" color="grey">
+          <div class="row">
+            <div class="col d-flex align-items-center">Description du territoire :
+            </div>
+            <div class="col d-flex align-items-center bold">{{af.territory_desc}}
+            </div>
+          </div>
+          <hr width="75%" color="grey">
+          <div class="row">
+            <div class="col d-flex align-items-center">Objectifs du cadre d'acquisition :
+            </div>
+            <div class="col d-flex align-items-center bold">
+              <div class="col d-flex align-items-center bold">
+                <span *ngFor="let objectif of af.cor_objectifs">{{ objectif.mnemonique }}</span>
+              </div>
+            </div>
+          </div>
+          <hr width="75%" color="grey">
+          <div class="row">
+            <div class="col d-flex align-items-center">Volets SINP :
+            </div>
+            <div class="col d-flex align-items-center bold">
+              <span *ngFor="let volet of af.cor_volets_sinp">{{ volet.mnemonique }}</span>
+            </div>
+          </div>
+          <hr width="75%" color="grey">
+          <div class="row">
+            <div class="col d-flex align-items-center">Type de financement :
+            </div>
+            <div class="col d-flex align-items-center bold">{{af.nomenclature_financing_type.mnemonique}}
+            </div>
+          </div>
+          <hr width="75%" color="grey">
+          <div class="row">
+            <div class="col d-flex align-items-center">Cibles écologiques ou géologiques :
+            </div>
+            <div class="col d-flex align-items-center bold">{{af.ecologic_or_geologic_target}}
+            </div>
+          </div>
+          <hr width="75%" color="grey">
+          <div class="row">
+            <div class="col d-flex align-items-center">Description de la cible :
+            </div>
+            <div class="col d-flex align-items-center bold">{{af.target_description}}
+            </div>
+          </div>
+          <hr width="75%" color="grey">
+          <div class="row">
+            <div class="col d-flex align-items-center">Date début :
+            </div>
+            <div class="col d-flex align-items-center bold">{{ af.start_date }}
+            </div>
+          </div>
+          <hr width="75%" color="grey">
+          <div class="row">
+            <div class="col d-flex align-items-center">Date fin :
+            </div>
+            <div class="col d-flex align-items-center bold">{{ af.end_date }}
+            </div>
+          </div>
         </div>
       </div>
-      <hr width="75%" color="grey"> 
-      <div class="row">
-        <div class="col d-flex align-items-center">Description :
-        </div>
-        <div class="col d-flex align-items-center bold">{{af.acquisition_framework_desc}}
-        </div>
-      </div>
-      <hr width="75%" color="grey"> 
-      <div class="row">
-        <div class="col d-flex align-items-center">Est parent :
-        </div>
-        <div class="col d-flex align-items-center bold">{{af.is_parent ? 'Oui' : 'Non'}}
-        </div>
-      </div>
-      <hr width="75%" color="grey"> 
-      <div class="row">
-        <div class="col d-flex align-items-center">Niveau territorial :
-        </div>
-        <div class="col d-flex align-items-center bold">{{af.nomenclature_territorial_level}}
-        </div>
-      </div>
-      <hr width="75%" color="grey"> 
-      <div class="row">
-        <div class="col d-flex align-items-center">Description du territoire :
-        </div>
-        <div class="col d-flex align-items-center bold">{{af.territory_desc}}
+
+
+      <hr width="75%" color="grey">
+      <div class="card">
+        <h5 class="card-header">Acteurs</h5>
+        <div class="card-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Role acteur</th>
+                <th scope="col">Organisme</th>
+                <th scope="col">Type de role</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let actor of af.cor_af_actor">
+                <th scope="row">{{ actor.id_cafa }}</th>
+                <td>{{ actor.id_role }}</td>
+                <td>{{ actor.organism.nom_organisme }}</td>
+                <td>{{ actor.nomenclature_actor_role.mnemonique }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
-      <hr width="75%" color="grey"> 
-      <div class="row">
-        <div class="col d-flex align-items-center">Objectifs du cadre d'acquisition :
+      <hr width="75%" color="grey">
+      <div class="card">
+        <h5 class="card-header">Jeux de données</h5>
+        <div class="card-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Nom</th>
+                <th scope="col">Description</th>
+                <th scope="col">Objectif</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let ds of datasets">
+                <th scope="row">{{ ds.id_dataset }}</th>
+                <td>{{ ds.dataset_name }}</td>
+                <td>{{ ds.dataset_desc }}</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <div class="col d-flex align-items-center bold">
-        </div>
-      </div>
-      <hr width="75%" color="grey"> 
-      <div class="row">
-        <div class="col d-flex align-items-center">Volets SINP :
-        </div>
-        <div class="col d-flex align-items-center bold">
-          <span *ngFor="let volet of af.cor_volets_sinp" >{{ volet.mnemonique }}</span>
-        </div>
-      </div>
-      <hr width="75%" color="grey"> 
-      <div class="row">
-        <div class="col d-flex align-items-center">Type de financement :
-        </div>
-        <div class="col d-flex align-items-center bold">id_nomenclature_financing_type
-        </div>
-      </div>
-      <hr width="75%" color="grey"> 
-      <div class="row">
-        <div class="col d-flex align-items-center">Cibles écologiques ou géologiques :
-        </div>
-        <div class="col d-flex align-items-center bold">{{af.ecologic_or_geologic_target}}
-        </div>
-      </div>
-      <hr width="75%" color="grey"> 
-      <div class="row">
-        <div class="col d-flex align-items-center">Description de la cible :
-        </div>
-        <div class="col d-flex align-items-center bold">{{af.target_description}}
-        </div>
-      </div>
-      <hr width="75%" color="grey"> 
-      <div class="row">
-        <div class="col d-flex align-items-center">Date début :
-        </div>
-        <div class="col d-flex align-items-center bold">
-        </div>
-      </div>
-      <hr width="75%" color="grey"> 
-      <div class="row">
-        <div class="col d-flex align-items-center">Date fin :
-        </div>
-        <div class="col d-flex align-items-center bold">
-        </div>
-      </div>
-      <hr width="100%" color="black"> 
-      <h5>Jeux de données</h5>
-      <div class="row">
-        <table class="table table-sm table-bordered">
-          <thead>
-            <tr>
-              <th scope="col">Id</th>
-              <th scope="col">Nom</th>
-              <th scope="col">Description</th>
-              <th scope="col">Objectif</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let ds of datasets">
-              <th scope="row">{{ ds.id_dataset }}</th>
-              <td>{{ ds.dataset_name }}</td>
-              <td>{{ ds.dataset_desc }}</td>
-              <td>@mdo</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
     </div>
   </div>
+  <button class="btn btn-success" (click)="displayJSON()">Exporter au format PDF</button>
 </div>
