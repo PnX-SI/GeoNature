@@ -5,9 +5,9 @@ Ce dossier comprends plusieurs scripts permettant d'effectuer la migration des d
 
 * ``restore_ginco_db.sh``: Ce script restaure une BDD GINCO à partir d'un DUMP SQL, puis crée un Foreign Data Wrapper entre la base restaurée et la base GeoNature cible. Un nouveau schéma ``ginco_migration`` est créé, comportant les table des schéma ``website`` et ``raw_data`` de la base Ginco source
 * ``insert_data.sh``: Ce script vient lire dans le FDW précedemment créé pour insérer les données en synthese.
-* ``import_mtd.sh``: Script contenant un script python permettant de récupérer les cadres d'acquisitions et les informations détaillés de chaque JDD présent dans la base Ginco à partir du web-service MTD.
+* ``import_mtd.sh``: Script contenant un script python permettant de récupérer les cadres d'acquisitions et les informations détaillées de chaque JDD présent dans la base Ginco à partir du web-service MTD.
 * ``find_conflicts.sql`` Script permettant de remonter les erreurs d'integrité des données sources (voir plus bas)
-Remplir le fichier de configuration ``settings.ini``, puis lancer les scripts dans l'ordre décrit ci-dessous. Pour chaque script un fichier de log est crée dans le répertoire ``log``.
+Désampler le fichier ``settings.ini.sample``, le remplir puis lancer les scripts dans l'ordre décrit ci-dessous. Pour chaque script un fichier de log est crée dans le répertoire ``log``.
 
 Quels données sont rappatriées ?
 ********************************

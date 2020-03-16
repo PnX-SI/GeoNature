@@ -20,9 +20,7 @@ SQLALCHEMY_DATABASE_URI = "postgresql://{user}:{password}@{host}:{port}/{databas
 	database=os.environ['geonature_db_name']
 )
 TABLE_DONNEES_INPN=os.environ['TABLE_DONNEES_INPN']
-CHAMP_ID_CA=os.environ['CHAMP_ID_CA']
 CHAMP_ID_JDD=os.environ['CHAMP_ID_JDD']
-DEFAULT_ID_AF=os.environ['DEFAULT_ID_AF']
 DELETE_XML_FILE_AFTER_IMPORT=os.environ['DELETE_XML_FILE_AFTER_IMPORT']
 
 

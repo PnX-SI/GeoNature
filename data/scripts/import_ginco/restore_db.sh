@@ -36,13 +36,13 @@ function database_exists () {
 # create user 
 sudo ls
 # sudo -n -u postgres -s psql -c "CREATE ROLE admin WITH LOGIN PASSWORD '$ginco_admin_pg_pass';" &> log/restore_ginco_db.log
-# sudo -n -u postgres -s psql -c "CREATE ROLE ogam WITH LOGIN PASSWORD '$ginco_ogame_pg_name';" &>> log/restore_ginco_db.log
+# sudo -n -u postgres -s psql -c "CREATE ROLE ogam WITH LOGIN PASSWORD '$ginco_ogame_pg_pass';" &>> log/restore_ginco_db.log
 # sudo -n -u postgres -s psql -c "ALTER ROLE admin WITH SUPERUSER;" &>> log/restore_ginco_db.log
 # -- create database
 
 # if database_exists $ginco_db_name
 # then
-#         if $drop_apps_db
+#         if $drop_ginco_db
 #             then
 #             write_log "Drop database..."
 #             sudo -u postgres -s dropdb $ginco_db_name
