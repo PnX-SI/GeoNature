@@ -34,6 +34,6 @@ psql -h $db_host -U $geonature_pg_user -d $geonature_db_name -f synthese_after_i
 echo "OK"
 
 write_log "PERMISSIONS"
-psql -h $db_host -U $geonature_pg_user -d $geonature_db_name -f synthese_before_insert.sql  &>> log/insert_data.log
+psql -h $db_host -U $geonature_pg_user -d $geonature_db_name -f permissions.sql  &>> log/insert_data.log
 
 echo "Terminé"

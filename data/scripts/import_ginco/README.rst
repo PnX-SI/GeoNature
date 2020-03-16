@@ -12,8 +12,8 @@ Désampler le fichier ``settings.ini.sample``, le remplir puis lancer les script
 Quels données sont rappatriées ?
 ********************************
 
-- L'ensemble des utilisateurs et groupes des tables ``users`` et ``roles`` sont insérées dans la table ``utilisateurs.t_roles``
-- Les jeux de données sont rappatriés depuis les tables ``jdd`` et ``jdd_fields`` vers la table ``gn_meta.t_datasets``. Les JDD taggués comme ``deleted`` ne sont pas importés. Le rattachement du JDD à son cadre d'acquisition ainsi que l'ensemble des informations liés aux métadonnées sont récupérées via le script ``import_mtd.sh``
+- L'ensemble des organismes sont rappatriés depuis la table ``providers``. Les utilisateurs ne sont pas importé pour éviter les doublons lors de la connexion au CAS.
+- Les jeux de données sont rappatriés depuis les tables ``jdd`` et ``jdd_fields`` vers la table ``gn_meta.t_datasets``. Les JDD taggués comme ``deleted`` ne sont pas importés. Le rattachement du JDD à son cadre d'acquisition ainsi que l'ensemble des informations liés aux métadonnées sont récupérées via le script ``import_mtd.sh``. Celui-ci insert également des organismes et des utilisateurs en récupérant les acteurs des JDD et CA.
 - Les données d'occurrence de taxon présent dans la table ``raw_data.<NOM_DU_MODELE_GINCO>`` sont rappatriées dans la table ``gn_synthese.synthese``. Les données ne possédant pas de géomtrie, de cd_nom, appartenant à une JDD supprimés ou étant en doublon (UUID non unique dans la table source) ne sont pas intégrées.
 - Une table ``ginco_migration.doublons`` a été créé pour repérer les données doublonnées. On y retrouve l'uuid et son nombre d'occurrence dans la table source.
 
@@ -23,8 +23,17 @@ Gestion des droits
 L'ensemble des permissions présentes dans GINCO ne sont pas encore existantes dans GeoNature (voir les données publiques, voir les données sensible etc...).
 Dans l'attente de ces évolutuons, deux groupes on été créee (reprenant des groupes existans dans GINCO):
 - Un groupe "Administrateur": 
-  Il a accès à : Quels modules, Quels CRUVED
-- Un groupe "Producteur"
+  C:3 R:3 U:3 V:3 E:3 D:3 sur tous les modules
+  Accès aux module Occtax, Occhab, Metadata, Admin, Synthese, Validation
+- Un groupe "Producteur":
+    GeoNature / Synthese / Occtax / Occhab :
+    C:3 R:2 U:1 V:0 E:2 D:1
+    Metadonnées:
+    C:0 R:2
+    Pas d'accès: Validation, Admin
+
+- Les personnes du groupe 'Administateur' on accès à Usershub et Taxhub avec un profil 'administateur'.
+Après sa première connexion au CAS, l'administrateur devra se connecter à UserHub pour s'ajouter au groupe 'Administrateur'.
 
 Version Taxref
 **************
@@ -54,3 +63,16 @@ Après avoir corrigé les données dans la table ``gn_synthese.synthese``, vous 
 
     ALTER TABLE gn_synthese.synthese
    ADD CONSTRAINT check_synthese_date_max CHECK (date_max >= date_min);
+
+
+Connexion au CAS INPN
+*********************
+
+Le paramètre ``BDD.ID_USER_SOCLE_1`` contrôle le groupe (et donc les droits) de toute nouvelle personne se connecter à la plateforme via la CAS INPN. 
+Mettre l'id du groupe producteur auquel on a affecté des droits (voir plus haut).
+
+Autre configuration
+====================
+- Carto 
+- Limiter le nombre d'observation dans le module validation 
+- Monter le timeout gunicorn

@@ -23,5 +23,5 @@ db_port=5432
 
 # Pour le script python de récupération des JDD et CA, ne pas modifier sauf si vous savez ce que vous faites
 TABLE_DONNEES_INPN=gn_meta.t_datasets
-CHAMP_ID_JDD=id_dataset
+CHAMP_ID_JDD=unique_dataset_id
 DELETE_XML_FILE_AFTER_IMPORT=true
