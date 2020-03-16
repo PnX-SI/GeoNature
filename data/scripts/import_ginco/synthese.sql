@@ -180,7 +180,7 @@ SELECT
   t13.id_nomenclature,
   m.denombrementmin,
   m.denombrementmax,
-  t.cd_nom,
+  tax.cd_nom,
   m.nomcite,
   m.versiontaxref,
   m.geometrie,
@@ -206,12 +206,10 @@ left JOIN ref_nomenclatures.t_nomenclatures t10 ON t10.cd_nomenclature = m.statu
 left JOIN ref_nomenclatures.t_nomenclatures t11 ON t11.cd_nomenclature = m.deefloutage AND t11.id_type = 4
 left JOIN ref_nomenclatures.t_nomenclatures t12 ON t12.cd_nomenclature = m.statutobservation AND t12.id_type = 19
 left JOIN ref_nomenclatures.t_nomenclatures t13 ON t13.cd_nomenclature = m.typeinfogeoen AND t13.id_type = 23
-JOIN taxonomie.taxref tax ON tax.cd_nom = m.cdnom:integer
-
+JOIN taxonomie.taxref tax ON tax.cd_nom = m.cdnom::integer
 WHERE m.identifiantpermanent NOT IN (
   select identifiantpermanent
 from ginco_migration.vm_data_model_source
 group by identifiantpermanent
 having count(*) > 1)
-AND m.cdnom IS NOT NULL
 ;
