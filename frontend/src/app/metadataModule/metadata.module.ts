@@ -17,7 +17,7 @@ const routes: Routes = [
   { path: 'dataset', component: DatasetFormComponent },
   { path: 'datasets', component: DatasetListComponent },
   { path: 'dataset/:id', component: DatasetFormComponent },
-  { path: 'dataset_fiche/:id', component: DatasetFicheComponent },
+  { path: 'dataset_detail/:id', component: DatasetFicheComponent },
   { path: 'afs', component: AfListComponent },
   { path: 'af', component: AfFormComponent },
   { path: 'af/:id', component: AfFormComponent }
