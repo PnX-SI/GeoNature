@@ -56,13 +56,18 @@ L'ensemble des permissions présentes dans GINCO ne sont pas encore existantes d
 Dans l'attente de ces évolutuons, deux groupes on été créés (reprenant des groupes existants dans GINCO):
 
 - Un groupe "Administrateur": 
-  Il possède le CRUVED suivant sur tous les modules: C:3 R:3 U:3 V:3 E:3 D:3
+  Il possède le CRUVED suivant sur tous les modules: 
+  
+  C:3 R:3 U:3 V:3 E:3 D:3
+  
   Il a accès aux modules Occtax, Occhab, Metadata, Admin, Synthese, Validation
 - Un groupe "Producteur":
     Il a accès aux modules Synthese / Occtax / Occhab avec le CRUVED suivant:
+    
     C:3 R:2 U:1 V:0 E:2 D:1
     
     Metadonnées:
+    
     C:0 R:2
     
     Pas d'accès: Validation, Admin
