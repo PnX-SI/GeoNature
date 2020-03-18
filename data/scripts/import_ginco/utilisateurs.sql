@@ -74,8 +74,8 @@ INSERT INTO utilisateurs.bib_organismes (nom_organisme, adresse_organisme, cp_or
 -- Création de deux groupe (admin et producteurs)
 
 INSERT INTO utilisateurs.t_roles (groupe, nom_role, desc_role) VALUES 
-(true,'Administrateur', NULL, 'Groupe Administrateur'),
-(true, 'Producteur', NULL,'Groupe producteur')
+(true,'Administrateur', 'Groupe Administrateur'),
+(true, 'Producteur','Groupe producteur')
 ;
 
 
