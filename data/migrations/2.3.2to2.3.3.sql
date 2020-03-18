@@ -66,3 +66,6 @@ ALTER TABLE ONLY gn_synthese.synthese
 
 COMMENT ON COLUMN gn_synthese.synthese.id_area_attachment
   IS 'Id area du rattachement géographique - cas des observation sans géométrie précise';
+
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_info_geo_type_id_area_attachment CHECK (NOT (ref_nomenclatures.get_cd_nomenclature(id_nomenclature_info_geo_type) = '2'  AND id_area_attachment IS NULL )) NOT VALID;
