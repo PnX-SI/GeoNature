@@ -84,25 +84,25 @@
           <div class="row">
             <div class="col d-flex align-items-center">Date début :
             </div>
-            <div class="col d-flex align-items-center bold">{{ af.start_date }}
+            <div class="col d-flex align-items-center bold">{{ af.acquisition_framework_start_date }}
             </div>
           </div>
           <hr width="75%" color="grey">
           <div class="row">
             <div class="col d-flex align-items-center">Date fin :
             </div>
-            <div class="col d-flex align-items-center bold">{{ af.end_date }}
+            <div class="col d-flex align-items-center bold">{{ af.acquisition_framework_end_date }}
             </div>
           </div>
         </div>
       </div>
 
 
-      <hr width="75%" color="grey">
-      <div class="card">
+      <hr *ngIf="af.cor_af_actor" width="75%" color="grey">
+      <div *ngIf="af.cor_af_actor" class="card">
         <h5 class="card-header">Acteurs</h5>
         <div class="card-body">
-          <table class="table">
+          <table class="table table-bordered">
             <thead>
               <tr>
                 <th scope="col">Id</th>
@@ -122,11 +122,60 @@
           </table>
         </div>
       </div>
-      <hr width="75%" color="grey">
-      <div class="card">
+      <hr *ngIf="datasets" width="75%" color="grey">
+      <div *ngIf="datasets" class="card">
         <h5 class="card-header">Jeux de données</h5>
-        <div class="card-body">
-          <table class="table">
+        <div *ngFor="let ds of datasets" class="card-body">
+          <div class="card">
+            <div class="card-body">
+              <h6 class="card-title bold">Informations</h6>
+              <div class="row">
+                <div class="col d-flex align-items-center">id :
+                </div>
+                <div class="col d-flex align-items-center bold">{{ ds.id_dataset }}
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col d-flex align-items-center">Nom :
+                </div>
+                <div class="col d-flex align-items-center bold">{{ ds.dataset_name }}
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col d-flex align-items-center">Description :
+                </div>
+                <div class="col d-flex align-items-center bold">{{ ds.dataset_desc }}
+                </div>
+              </div>
+              <hr *ngIf="ds['imports']" width="100%" color="grey">
+              <h6 *ngIf="ds['imports']" class="card-title bold">Imports</h6>
+              <table *ngIf="ds['imports']" class="table table-bordered table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Nom</th>
+                    <th scope="col">Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let import of ds['imports']">
+                    <th>{{ import.id_import }}</th>
+                    <td>{{ import.full_file_name }}</td>
+                    <td>{{ import.date_create_import }}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+
+
+
+
+
+          <!-- <table class="table">
             <thead>
               <tr>
                 <th scope="col">Id</th>
@@ -143,7 +192,7 @@
                 <td></td>
               </tr>
             </tbody>
-          </table>
+          </table> -->
         </div>
       </div>
     </div>

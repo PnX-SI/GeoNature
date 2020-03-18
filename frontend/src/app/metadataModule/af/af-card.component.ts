@@ -1,11 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { AppConfig } from '../../../conf/app.config';
-import {
-  HttpClient, HttpParams
-} from '@angular/common/http';
 
 @Component({
   selector: 'pnx-af-card',
@@ -20,9 +15,7 @@ export class AfCardComponent implements OnInit {
 
   constructor(
     private _dfs: DataFormService,
-    private _route: ActivatedRoute,
-    private _dateParser: NgbDateParserFormatter,
-    private _http: HttpClient
+    private _route: ActivatedRoute
   ) { }
 
   ngOnInit() {
@@ -39,41 +32,34 @@ export class AfCardComponent implements OnInit {
 
     // console.log(this.acquisitionFrameworks);
   }
+  getAf(id_af: number) {
+    this._dfs.getAcquisitionFrameworkDetails(id_af).subscribe(data => {
+      this.af = data;
+      if (this.af.acquisition_framework_start_date) {
+        var start_date = new Date(this.af.acquisition_framework_start_date);
+        this.af.acquisition_framework_start_date = start_date.toLocaleDateString();
+      }
+      if (this.af.acquisition_framework_end_date) {
+        var end_date = new Date(this.af.acquisition_framework_end_date);
+        this.af.acquisition_framework_end_date = end_date.toLocaleDateString();
+      }
+    });
+  }
 
   getDatasets(id_af: number) {
     var params: { [key: string]: any; } = {};
     params["id_acquisition_frameworks"] = [id_af];
     this._dfs.getDatasets(params, false).subscribe(results => {
-      //console.log(results["data"]);
       this.datasets = results["data"];
+      this.getImports();
     });
   }
 
-  getAf(id_af: number) {
-    this._dfs.getAcquisitionFrameworkDetails(id_af).subscribe(data => {
-      this.af = data;
-      data.acquisition_framework_start_date = this._dateParser.parse(
-        data.acquisition_framework_start_date
-      );
-      data.acquisition_framework_end_date = this._dateParser.parse(
-        data.acquisition_framework_end_date
-      );
-    });
-  }
-
-
-  formatDate(date_in_json) {
-    var date_json = JSON.parse(date_in_json);
-    var date_converted = date_json.day + "/" + date_json.month + "/" + date_json.year;
-    return date_converted;
-  }
-
-  displayJSON() {
-    var x;
-    for (x in this.af.acquisition_framework_start_date) {
-      console.log(x);
-      console.log(this.af.acquisition_framework_start_date[x]);
+  getImports() {
+    for (let i = 0; i < this.datasets.length; i++) {
+      this._dfs.getImports(this.datasets[i]["id_dataset"]).subscribe(data => {
+        this.datasets[i]['imports'] = data;
+      });
     }
   }
-
 }
