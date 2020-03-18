@@ -56,3 +56,13 @@ ALTER TABLE ONLY gn_commons.t_mobile_apps
 
 ALTER TABLE gn_commons.t_mobile_apps
     ADD CONSTRAINT unique_t_mobile_apps_app_code UNIQUE (app_code);
+
+
+-- Obs sans geom dans la synthese
+
+ALTER TABLE gn_synthese.synthese ADD COLUMN id_area_attachment integer;
+ALTER TABLE ONLY gn_synthese.synthese
+    ADD CONSTRAINT fk_synthese_id_area_attachment FOREIGN KEY (id_area_attachment) REFERENCES ref_geo.l_areas (id_area) ON UPDATE CASCADE;
+
+COMMENT ON COLUMN gn_synthese.synthese.id_area_attachment
+  IS 'Id area du rattachement géographique - cas des observation sans géométrie précise';
