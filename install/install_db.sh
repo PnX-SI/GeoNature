@@ -233,13 +233,13 @@ then
     if [ "$install_sig_layers" = true ];
     then
         write_log "Insert default French municipalities (IGN admin-express)"
-        if [ ! -f 'tmp/geonature/communes_fr_admin_express_2019-01.zip' ]
+        if [ ! -f 'tmp/geonature/communes_fr_admin_express_2020-02.zip' ]
         then
-            wget  --cache=off http://geonature.fr/data/ign/communes_fr_admin_express_2019-01.zip -P tmp/geonature
+            wget  --cache=off http://geonature.fr/data/ign/communes_fr_admin_express_2020-02.zip -P tmp/geonature
         else
-            echo "tmp/geonature/communes_fr_admin_express_2019-01.zip already exist"
+            echo "tmp/geonature/communes_fr_admin_express_2020-02.zip already exist"
         fi
-        unzip tmp/geonature/communes_fr_admin_express_2019-01.zip -d tmp/geonature
+        unzip tmp/geonature/communes_fr_admin_express_2020-02.zip -d tmp/geonature
         sudo -n -u postgres -s psql -d $db_name -f tmp/geonature/fr_municipalities.sql &>> var/log/install_db.log
         write_log "Restore $user_pg owner"
         sudo -n -u postgres -s psql -d $db_name -c "ALTER TABLE ref_geo.temp_fr_municipalities OWNER TO $user_pg;" &>> var/log/install_db.log
@@ -247,6 +247,20 @@ then
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/ref_geo_municipalities.sql  &>> var/log/install_db.log
         write_log "Drop french municipalities temp table"
         sudo -n -u postgres -s psql -d $db_name -c "DROP TABLE ref_geo.temp_fr_municipalities;" &>> var/log/install_db.log
+
+        if [ ! -f 'tmp/geonature/departement_admin_express_2020-02.zip' ]
+        then
+            wget  --cache=off http://geonature.fr/data/ign/departement_admin_express_2020-02.zip -P tmp/geonature
+        else
+            echo "tmp/geonature/departement_admin_express_2020-02.zip already exist"
+        fi
+        write_log "Insert departements"
+        unzip tmp/geonature/departement_admin_express_2020-02.zip -d tmp/geonature
+        export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/geonature/fr_departements.sql  &>> var/log/install_db.log
+        export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/ref_geo_departements.sql  &>> var/log/install_db.log
+        
+        write_log "Drop french departements temp table"
+        sudo -n -u postgres -s psql -d $db_name -c "DROP TABLE ref_geo.temp_fr_departements;" &>> var/log/install_db.log
     fi
 
     if [ "$install_grid_layer" = true ];

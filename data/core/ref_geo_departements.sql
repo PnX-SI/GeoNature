@@ -1,0 +1,6 @@
+SET search_path = ref_geo, pg_catalog;
+
+INSERT INTO l_areas (id_type, area_code, area_name, geom)
+SELECT get_id_area_type('DEP') AS id_type, insee_dep, nom_dep, geom 
+FROM temp_fr_departements
+;
