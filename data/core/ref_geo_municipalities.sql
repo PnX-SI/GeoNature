@@ -1,7 +1,7 @@
 SET search_path = ref_geo, pg_catalog;
 
-INSERT INTO l_areas (id_type, area_code, area_name, geom)
-SELECT get_id_area_type('COM') AS id_type, insee_com, nom_com, geom FROM temp_fr_municipalities
+INSERT INTO l_areas (id_type, area_code, area_name, geom, geojson_4326)
+SELECT get_id_area_type('COM') AS id_type, insee_com, nom_com, geom, geojson FROM temp_fr_municipalities
 -- on ne met pas les arrondissement
 WHERE id ILIKE 'commune%'
 ;
