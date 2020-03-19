@@ -86,6 +86,7 @@ CREATE TABLE l_areas (
     area_code character varying(25),
     geom public.geometry(MultiPolygon,MYLOCALSRID),
     centroid public.geometry(Point,MYLOCALSRID),
+    geojson_4326 character varying,
     source character varying(250),
     comment text,
     enable boolean NOT NULL DEFAULT (TRUE),
