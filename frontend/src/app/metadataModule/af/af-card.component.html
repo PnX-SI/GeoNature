@@ -31,7 +31,7 @@
           <div class="row">
             <div class="col d-flex align-items-center">Niveau territorial :
             </div>
-            <div class="col d-flex align-items-center bold">{{af.nomenclature_territorial_level.mnemonique}}
+            <div class="col d-flex align-items-center bold">{{af.nomenclature_territorial_level?.mnemonique}}
             </div>
           </div>
           <hr width="75%" color="grey">
@@ -63,7 +63,7 @@
           <div class="row">
             <div class="col d-flex align-items-center">Type de financement :
             </div>
-            <div class="col d-flex align-items-center bold">{{af.nomenclature_financing_type.mnemonique}}
+            <div class="col d-flex align-items-center bold">{{af.nomenclature_financing_type?.mnemonique}}
             </div>
           </div>
           <hr width="75%" color="grey">
@@ -106,17 +106,17 @@
             <thead>
               <tr>
                 <th scope="col">Id</th>
-                <th scope="col">Role acteur</th>
                 <th scope="col">Organisme</th>
                 <th scope="col">Type de role</th>
+                <th scope="col">Personne</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let actor of af.cor_af_actor">
                 <th scope="row">{{ actor.id_cafa }}</th>
-                <td>{{ actor.id_role }}</td>
-                <td>{{ actor.organism.nom_organisme }}</td>
-                <td>{{ actor.nomenclature_actor_role.mnemonique }}</td>
+                <td>{{ actor.organism?.nom_organisme }}</td>
+                <td>{{ actor.nomenclature_actor_role?.mnemonique }}</td>
+                <td>{{ actor.role?.nom_complet }}</td>
               </tr>
             </tbody>
           </table>
