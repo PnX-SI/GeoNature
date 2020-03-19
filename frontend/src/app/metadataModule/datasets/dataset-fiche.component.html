@@ -43,14 +43,50 @@
         <p>Type de ressource : <small>{{dataset.resource_type.label_default}} <br/>
         {{dataset.resource_type.definition_default}}</small></p>
         
+        <h6 *ngIf="imports"> Import(s) fait(s) sur le jeu de données : </h6>
+        <table *ngIf="imports" class="table table-bordered table-sm">
+          <thead>
+            <tr>
+              <th scope="col">Id</th>
+              <th scope="col">Nom</th>
+              <th scope="col">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let import of imports">
+              <th>{{ import.id_import }}</th>
+              <td>{{ import.full_file_name }}</td>
+              <td>{{ import.date_create_import }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h6 *ngIf="dataset.cor_dataset_actor">Acteurs(s) associé(s) au jeu de données :</h6>
+        <table class="table table-bordered table-sm">
+          <thead>
+            <tr>
+              <th scope="col">Id</th>
+              <th scope="col">Nom role</th>
+              <th scope="col">Nom organisme</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let actor of dataset.cor_dataset_actor">
+              <td>{{ actor?.id_cda }}</td>
+              <td>{{ actor.role?.nom_role }} {{ actor.role?.prenom_role }}</td>
+              <td>{{ actor.organism?.nom_organisme }}</td>
+            </tr>
+          </tbody>
+        </table>
+
         <br>
         <h5> Spécifique GeoNature </h5>
-
+    
         <p>
           Actif : <small>{{dataset.active ? 'Oui' : 'Non'}}</small> <br/>
           Validable : <small>{{dataset.validable ? 'Oui' : 'Non'}}</small>
         </p>
-
+    
         <p>Module(s) GeoNature associé(s) au jeu de données :
           <small>
             <ul *ngIf="dataset.modules; else noModule">
@@ -59,28 +95,6 @@
               </li>
             </ul>
             <ng-template #noModule>Aucun</ng-template>
-          </small>
-        </p>
-        
-        <p>Import(s) fait(s) sur le jeu de données :
-          <small>
-            <ul *ngIf="imports; else noImport">
-              <li *ngFor='let import of imports'>
-                {{ import.id_import }} ; {{ import.import_table }} ; {{ import.date_create_import }}
-              </li>
-            </ul>
-            <ng-template #noImport>Aucun</ng-template>
-          </small>
-        </p>
-
-        <p>Acteurs(s) associé(s) au jeu de données :
-          <small>
-            <ul *ngIf="dataset.cor_dataset_actor; else noActor">
-              <li *ngFor='let actor of dataset.cor_dataset_actor'>
-                {{ actor.role.nom_role }} {{ actor.role.prenom_role }}
-              </li>
-            </ul>
-            <ng-template #noActor>Aucun</ng-template>
           </small>
         </p>
 
