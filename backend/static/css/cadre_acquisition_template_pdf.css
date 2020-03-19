@@ -1,0 +1,118 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.bandeau {
+    max-width: 95%;
+    float: right;
+}
+
+.logo {
+    max-width: 25%;
+    position: absolute;
+    margin-top: 4%;
+    float: left;
+}
+
+div.header {
+    display: inline-block;
+}
+
+div.titre {
+    display: inline-block;
+    margin-top: 2%;
+    width: 100%;
+    text-align: center;
+}
+
+.label-titre {
+    font-size: 150%;
+    font-weight: bold;
+}
+
+
+.ligne-titre {
+    width: 55%;
+    /* color : #f8af51; */
+    background-color: #f8af51;
+    height: 4px;
+    border: none;
+}
+
+.ligne-jeux-donnees {
+    border: none;
+    height: 4px;
+    width: 85%;
+    background-color: #f8af51;
+}
+
+div.section {
+    display: flex;
+    /* align-items: center; */
+    margin-top: 5%;
+}
+
+.etiquettes {
+    /* flex-direction: column;
+    justify-content: space-between; */
+    font-weight: bold;
+    text-align: center;
+    /* font-size: 18px; */
+    margin-right: 3%;
+}
+
+.etiquette {
+    display: table;
+    width: 340px;
+    height: 30px;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px; 
+}
+
+.etiquette-info, .etiquette {
+    margin-top: 8%;
+}
+
+.informations {
+    font-size: 13px;
+    width: 100%;
+}
+
+.information {
+    margin-bottom: 40px;;
+}
+
+.info-titre {
+    font-weight: bold;
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+.info-contenu {
+    margin-left: 25px;
+    margin-top: 0;
+}
+
+#volet {
+    background-color: #a6b727;
+}
+
+#type-financement {
+    background-color: #d3e070;
+}
+
+#statut-avancement {
+    background-color: #f0f4cf;
+}
+
+#nombre-taxons {
+    background-color: #fee9ca;
+}
+
+#nombre-donnees {
+    background-color: #fcbb5a;
+}
+
+#jeux-donnees {
+    background-color: #f69200;
+}

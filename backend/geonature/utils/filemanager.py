@@ -83,8 +83,15 @@ def delete_recursively(path_folder, period=1, excluded_files=[]):
             log.error(e)
 
 def generate_pdf(template, data, filename):
+    options = {
+        'margin-top': '0',
+        'margin-right': '0',
+        'margin-bottom': '0',
+        'margin-left': '0',
+        'encoding': "UTF-8"
+    }
     rendered = render_template(template, data=data)
-    pdfkit.from_string(rendered, filename)
+    pdfkit.from_string(rendered, filename, options=options)
     pdf_download = open(filename, 'rb').read()
     remove_file(filename)
     return pdf_download

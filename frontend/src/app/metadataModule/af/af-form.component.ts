@@ -13,7 +13,6 @@ import { FormService } from '@geonature_common/form/form.service';
 @Component({
   selector: 'pnx-af-form',
   templateUrl: './af-form.component.html',
-  styleUrls: ['./af-card.component.scss'],
   providers: [MetadataFormService]
 })
 export class AfFormComponent implements OnInit {
