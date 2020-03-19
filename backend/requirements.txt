@@ -28,7 +28,7 @@ gunicorn==19.7.0
 idna==2.6
 itsdangerous==0.24
 jinja2==2.10.1
-markupsafe==1.0
+markupsafe==1.1
 marshmallow==2.15.1
 packaging==16.8
 pip==20.0.2
