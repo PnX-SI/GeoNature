@@ -8,18 +8,20 @@
     </head>
 
     <body>
-        <div class="header">
-            <img class="logo" src="{{ url_for('static', filename='images/Logo_SINP_texte.png') }}" alt="Logo SINP">
-            <img class="bandeau" src="{{ url_for('static', filename='images/Bandeau_SINP_base.png') }}" alt="Bandeau SINP"> 
-        </div>
+        {% if data.css: %}
+            <div class="header">
+                <img class="logo" src="{{ url_for('static', filename=data.css['logo']) }}" alt="Logo SINP">
+                <img class="bandeau" src="{{ url_for('static', filename=data.css['bandeau']) }}" alt="Bandeau SINP"> 
+            </div>
+        {% endif %}
         <div class="titre">
             <label class="label-titre">Cadre d'acquisition des données</label>
-            <hr class="ligne-titre">
+            <hr class="ligne-titre ligne" {% if data.css: %} id="ligne-titre-{{data.css['entite']}}" {% else %} id="ligne-titre-defaut"  {% endif %}>
         </div>
         <div class="section">
             <div class="etiquettes">
 
-                <div class="etiquette" id="volet">
+                <div class="etiquette" {% if data.css: %} id="volet-{{data.css['entite']}}" {% else %} id="volet-defaut"  {% endif %}>
                     <p>Volets SINP</p>
                 </div>
                 <div class="etiquette-info">
@@ -28,35 +30,35 @@
                     {% endfor %}
                 </div>
                 
-                <div class="etiquette" id="type-financement">
+                <div class="etiquette" {% if data.css: %} id="type-financement-{{data.css['entite']}}" {% else %} id="type-financement-defaut"  {% endif %}>
                     <p>Type de financement</p>
                 </div>
                 <div class="etiquette-info">
                     <p>Mixte</p>
                 </div>
 
-                <div class="etiquette" id="statut-avancement">
+                <div class="etiquette" {% if data.css: %} id="statut-avancement-{{data.css['entite']}}" {% else %} id="statut-avancement-defaut"  {% endif %}>
                     <p>Statut d'avancement</p>
                 </div>
                 <div class="etiquette-info">
                     <p>Clos</p>
                 </div>
 
-                <div class="etiquette" id="nombre-taxons">
+                <div class="etiquette" {% if data.css: %} id="nombre-taxons-{{data.css['entite']}}" {% else %} id="nombre-taxons-defaut"  {% endif %}>
                     <p>Nombre de taxons</p>
                 </div>
                 <div class="etiquette-info">
                     <p>123</p>
                 </div>
 
-                <div class="etiquette" id="nombre-donnees">
+                <div class="etiquette" {% if data.css: %} id="nombre-donnees-{{data.css['entite']}}" {% else %} id="nombre-donnees-defaut"  {% endif %}>
                     <p>Nombre de données</p>
                 </div>
                 <div class="etiquette-info">
                     <p>2548</p>
                 </div>
 
-                <div class="etiquette" id="jeux-donnees">
+                <div class="etiquette" {% if data.css: %} id="jeux-donnees-{{data.css['entite']}}" {% else %} id="jeux-donnees-defaut"  {% endif %}>
                     <p>Jeu(x) de données</p>
                 </div>
                 <div class="etiquette-info">
@@ -68,48 +70,48 @@
             <div class="informations">
                 <div class="information">
                     <p class="info-titre">Identification</p>
-                    <p class="info-contenu">une truc</p>
+                    <p class="info-contenu">un truc</p>
                 </div>
 
                 <div class="information">
                     <p class="info-titre">Cadre de référence</p>
-                    <p class="info-contenu">une truc</p>
+                    <p class="info-contenu">un truc</p>
                 </div>
 
 
                 <div class="information">
                     <p class="info-titre">Dates</p>
-                    <p class="info-contenu">une truc</p>
+                    <p class="info-contenu">un truc</p>
                 </div>
 
                 <div class="information">
                     <p class="info-titre">Objectifs</p>
-                    <p class="info-contenu">une truc</p>
+                    <p class="info-contenu">un truc</p>
                 </div>
 
                 <div class="information">
                     <p class="info-titre">Territoires concernés</p>
-                    <p class="info-contenu">une truc</p>
+                    <p class="info-contenu">un truc</p>
                 </div>
 
                 <div class="information">
                     <p class="info-titre">Cible taxonomique</p>
-                    <p class="info-contenu">une truc</p>
+                    <p class="info-contenu">un truc</p>
                 </div>
 
                 <div class="information">
                     <p class="info-titre">Contacts</p>
-                    <p class="info-contenu">une truc</p>
+                    <p class="info-contenu">un truc</p>
                 </div>
 
                 <div class="information">
                     <p class="info-titre">Mots-clés</p>
-                    <p class="info-contenu">une truc</p>
+                    <p class="info-contenu">un truc</p>
                 </div>
-                <hr class="ligne-jeux-donnees" align="left">
+                <hr class="ligne-jeux-donnees ligne" {% if data.css: %} id="ligne-jeux-donnees-{{data.css['entite']}}" {% else %} id="ligne-jeux-donnees-defaut" {% endif %}  align="left">
                 <div class="information">
                     <p class="info-titre">Liste des jeux de données associés au cadre</p>
-                    <p class="info-contenu">une truc</p>
+                    <p class="info-contenu">un truc</p>
                 </div>
             </div>
         </div>

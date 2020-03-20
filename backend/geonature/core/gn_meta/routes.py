@@ -224,12 +224,20 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
 
     filename = 'cadre_acquisition_'+current_date+'_at_'+current_time+'.pdf'
 
+
+    df['css'] = {
+        "logo" : "images/Logo_SINP.png",
+        "bandeau" : "images/Bandeau_SINP.png",
+        "entite" : "sinp"
+    }
+
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf('cadre_acquisition_template_pdf.html', df, filename)
     
+    
     # return render_template(
     #     'cadre_acquisition_template_pdf.html',
-    #     data=data,
+    #     data=df,
     #     redirect=current_app.config["URL_APPLICATION"]+'/#/metadata'), 404
     return Response(
         pdf_file,

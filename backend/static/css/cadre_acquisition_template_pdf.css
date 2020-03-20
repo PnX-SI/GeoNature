@@ -3,15 +3,15 @@ body {
 }
 
 .bandeau {
-    max-width: 95%;
+    width: 95%;
     float: right;
 }
 
 .logo {
-    max-width: 25%;
+    width: 250px;
     position: absolute;
-    margin-top: 4%;
-    float: left;
+    top: 10%;
+    transform: translateY(-50%);
 }
 
 div.header {
@@ -30,34 +30,28 @@ div.titre {
     font-weight: bold;
 }
 
+.ligne {
+    border: none;
+    height: 4px;
+}
 
 .ligne-titre {
     width: 55%;
-    /* color : #f8af51; */
-    background-color: #f8af51;
-    height: 4px;
-    border: none;
 }
 
+
 .ligne-jeux-donnees {
-    border: none;
-    height: 4px;
     width: 85%;
-    background-color: #f8af51;
 }
 
 div.section {
     display: flex;
-    /* align-items: center; */
     margin-top: 5%;
 }
 
 .etiquettes {
-    /* flex-direction: column;
-    justify-content: space-between; */
     font-weight: bold;
     text-align: center;
-    /* font-size: 18px; */
     margin-right: 3%;
 }
 
@@ -93,26 +87,113 @@ div.section {
     margin-top: 0;
 }
 
-#volet {
+
+/* DEFAUT */
+
+#ligne-titre-defaut {
+    background-color: grey;
+}
+
+#ligne-jeux-donnees-defaut {
+    background-color: grey;
+}
+
+#volet-defaut {
+    background-color: grey;
+}
+
+#type-financement-defaut {
+    background-color: grey;
+}
+
+#statut-avancement-defaut {
+    background-color: grey;
+}
+
+#nombre-taxons-defaut {
+    background-color: grey;
+}
+
+#nombre-donnees-defaut {
+    background-color: grey;
+}
+
+#jeux-donnees-defaut {
+    background-color: grey;
+}
+
+/* FIN DEFAUT */
+
+
+
+/* SINP */
+
+#ligne-titre-sinp {
+    background-color: #f8af51;
+}
+
+#ligne-jeux-donnees-sinp {
+    background-color: #f8af51;
+}
+
+#volet-sinp {
     background-color: #a6b727;
 }
 
-#type-financement {
+#type-financement-sinp {
     background-color: #d3e070;
 }
 
-#statut-avancement {
+#statut-avancement-sinp {
     background-color: #f0f4cf;
 }
 
-#nombre-taxons {
+#nombre-taxons-sinp {
     background-color: #fee9ca;
 }
 
-#nombre-donnees {
+#nombre-donnees-sinp {
     background-color: #fcbb5a;
 }
 
-#jeux-donnees {
+#jeux-donnees-sinp {
     background-color: #f69200;
 }
+
+/* FIN SINP */
+
+/* DEPOBIO */
+
+#ligne-titre-depobio {
+    background-color: #07A9E7;
+}
+
+#ligne-jeux-donnees-depobio {
+    background-color: #07A9E7;
+}
+
+#volet-depobio {
+    background-color: #B5EBE2;
+}
+
+#type-financement-depobio {
+    background-color: #B5EBE2;
+}
+
+#statut-avancement-depobio {
+    background-color: #B5EBE2;
+}
+
+#nombre-taxons-depobio {
+    background-color: #DDF5FE;
+}
+
+#nombre-donnees-depobio {
+    background-color:  #63D4C1;
+}
+
+#jeux-donnees-depobio {
+    background-color: #E3F7F4;
+}
+
+/* FIN DEPOBIO */
