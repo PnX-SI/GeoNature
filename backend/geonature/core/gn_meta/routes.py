@@ -218,9 +218,6 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
 
     current_date = f"{dt.datetime.now():%d_%m_%Y}"
     current_time = f"{dt.datetime.now():%Hh%Mm%Ss}"
-    # response = make_response(pdf)
-    # response.headers['Content-Type'] = 'application/pdf'
-    # response.headers['Content-Disposition'] = 'inline; filename='+'cadre_acquisition_'+current_date+'.pdf'
 
     filename = 'cadre_acquisition_'+current_date+'_at_'+current_time+'.pdf'
 
@@ -234,11 +231,6 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf('cadre_acquisition_template_pdf.html', df, filename)
     
-    
-    # return render_template(
-    #     'cadre_acquisition_template_pdf.html',
-    #     data=df,
-    #     redirect=current_app.config["URL_APPLICATION"]+'/#/metadata'), 404
     return Response(
         pdf_file,
         mimetype="application/pdf",
