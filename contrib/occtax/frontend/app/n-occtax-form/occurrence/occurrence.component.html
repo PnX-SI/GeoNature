@@ -249,7 +249,7 @@
   <div 
     *ngIf="occtaxConfig.form_fields.comment_occ">
     <textarea 
-      placeholder="{{ 'Releve.Comment' | translate }}" 
+      placeholder="{{ 'Taxon.Comment' | translate }}" 
       class="form-control" 
       [formControl]="occurrenceForm.get('comment')"
       rows="2" 
@@ -259,7 +259,11 @@
 </div>
       
   
-<h5>Dénombrement<ng-container *ngIf="countingControls.length > 1">s</ng-container> ({{ countingControls.length }})</h5>  
+<h5 style="margin-top: 15px;">
+  <span [matBadge]="countingControls.length" matBadgeOverlap="false">
+    Dénombrement<ng-container *ngIf="countingControls.length > 1">s</ng-container>
+  </span>
+</h5>  
 
 <div 
   *ngIf="occurrenceForm.get('cor_counting_occtax').hasError('required')" 

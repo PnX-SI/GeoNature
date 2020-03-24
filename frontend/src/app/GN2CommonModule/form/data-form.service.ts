@@ -49,7 +49,7 @@ export class DataFormService {
     );
   }
 
-  getNomenclatures(codesNomenclatureType) {
+  getNomenclatures(codesNomenclatureType: Array<string>) {
     let params: HttpParams = new HttpParams();
     params = params.set('orderby', 'label_default');
     codesNomenclatureType.forEach(code => {

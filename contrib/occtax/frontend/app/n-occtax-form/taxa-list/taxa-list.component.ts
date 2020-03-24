@@ -1,10 +1,12 @@
 import { Component, Input, OnInit } from "@angular/core";
+import { combineLatest  } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormOccurrenceService } from "../occurrence/occurrence.service";
+import { OcctaxTaxaListService } from "./taxa-list.service";
 
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
 
@@ -23,26 +25,31 @@ export class OcctaxFormTaxaListComponent implements OnInit {
     public dialog: MatDialog,
     private translate: TranslateService,
     private occtaxFormService: OcctaxFormService,
-    private occtaxFormOccurrenceService: OcctaxFormOccurrenceService) { }
+    private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
+    public occtaxTaxaListService: OcctaxTaxaListService
+  ) { }
 
   ngOnInit() {
-    this.occtaxFormService.occtaxData
-              .pipe(
-                //TODO merge Observable this.occtaxFormOccurrenceService.occurrence, pour enlever taxon en cours de modif
-                tap(()=>this.occurrences = []),
-                filter(data=> data && data.releve.properties.t_occurrences_occtax),
-                map(data=>{
-                  return data.releve.properties.t_occurrences_occtax
-                            .sort((o1, o2) => {
-                              const name1 = (o1.taxref ? o1.taxref.nom_complet : this.removeHtml(o1.nom_cite)).toLowerCase();
-                              const name2 = (o2.taxref ? o2.taxref.nom_complet : this.removeHtml(o2.nom_cite)).toLowerCase();
-                              if (name1 > name2) { return 1; }
-                              if (name1 < name2) { return -1; }
-                              return 0;
-                            })
-                })
-              )
-              .subscribe(occurrences=>this.occurrences = occurrences);
+    combineLatest(this.occtaxFormService.occtaxData, this.occtaxFormOccurrenceService.occurrence)
+      .pipe(
+        tap(()=>this.occurrences = []),
+        filter(([occtaxData, occurrence]: any)=>occtaxData && occtaxData.releve.properties.t_occurrences_occtax),
+        map(([occtaxData, occurrence]: any)=>{
+          return occtaxData.releve.properties.t_occurrences_occtax
+                    .filter(occ=>{
+                      //enlève l'occurrence en cours de modification de la liste affichée
+                      return occurrence !== null ? occ.id_occurrence_occtax !== occurrence.id_occurrence_occtax : true;
+                    }) 
+                    .sort((o1, o2) => {
+                      const name1 = (o1.taxref ? o1.taxref.nom_complet : this.removeHtml(o1.nom_cite)).toLowerCase();
+                      const name2 = (o2.taxref ? o2.taxref.nom_complet : this.removeHtml(o2.nom_cite)).toLowerCase();
+                      if (name1 > name2) { return 1; }
+                      if (name1 < name2) { return -1; }
+                      return 0;
+                    })
+        })
+      )
+      .subscribe(occurrences=>this.occurrences = occurrences);
   }
 
   editOccurrence(occurrence) {

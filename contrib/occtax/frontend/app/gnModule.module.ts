@@ -30,6 +30,7 @@ import { OcctaxFormMapService } from "./n-occtax-form/map/map.service";
 import { OcctaxFormReleveService } from "./n-occtax-form/releve/releve.service";
 import { OcctaxFormOccurrenceService } from "./n-occtax-form/occurrence/occurrence.service";
 import { OcctaxFormCountingService } from "./n-occtax-form/counting/counting.service";
+import { OcctaxTaxaListService } from "./n-occtax-form/taxa-list/taxa-list.service";
 
 import {
   MatSlideToggleModule,
@@ -83,7 +84,8 @@ const routes: Routes = [
     OcctaxFormMapService,
     OcctaxFormReleveService,
     OcctaxFormOccurrenceService,
-    OcctaxFormCountingService
+    OcctaxFormCountingService,
+    OcctaxTaxaListService
   ],
   bootstrap: [OcctaxMapFormComponent]
 })

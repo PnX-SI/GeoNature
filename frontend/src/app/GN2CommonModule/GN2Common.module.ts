@@ -13,7 +13,8 @@ import {
   MatStepperModule,
   MatProgressSpinnerModule,
   MatButtonModule,
-  MatDialogModule
+  MatDialogModule,
+  MatBadgeModule
 } from '@angular/material';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -95,6 +96,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MatProgressSpinnerModule,
     MatButtonModule,
     MatDialogModule,
+    MatBadgeModule,
     FormsModule,
     ReactiveFormsModule,
     NgxDatatableModule,
@@ -193,6 +195,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MatProgressSpinnerModule,
     MatButtonModule,
     MatDialogModule,
+    MatBadgeModule,
     NgbModule,
     TranslateModule,
     MapListGenericFiltersComponent,
