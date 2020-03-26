@@ -35,31 +35,31 @@ function database_exists () {
 
 # create user 
 sudo ls
-# sudo -n -u postgres -s psql -c "CREATE ROLE admin WITH LOGIN PASSWORD '$ginco_admin_pg_pass';" &> log/restore_ginco_db.log
-# sudo -n -u postgres -s psql -c "CREATE ROLE ogam WITH LOGIN PASSWORD '$ginco_ogame_pg_pass';" &>> log/restore_ginco_db.log
-# sudo -n -u postgres -s psql -c "ALTER ROLE admin WITH SUPERUSER;" &>> log/restore_ginco_db.log
-# -- create database
+sudo -n -u postgres -s psql -c "CREATE ROLE admin WITH LOGIN PASSWORD '$ginco_admin_pg_pass';" &> log/restore_ginco_db.log
+sudo -n -u postgres -s psql -c "CREATE ROLE ogam WITH LOGIN PASSWORD '$ginco_ogame_pg_pass';" &>> log/restore_ginco_db.log
+sudo -n -u postgres -s psql -c "ALTER ROLE admin WITH SUPERUSER;" &>> log/restore_ginco_db.log
+-- create database
 
-# if database_exists $ginco_db_name
-# then
-#         if $drop_ginco_db
-#             then
-#             write_log "Drop database..."
-#             sudo -u postgres -s dropdb $ginco_db_name
-#         else
-#             write_log "Database exists but the settings file indicate that we don't have to drop it."
-#         fi
-# fi
-# write_log "Create DB"
-# sudo -n -u postgres -s createdb -O admin $ginco_db_name &>> log/restore_ginco_db.log
-# sudo -n -u postgres -s psql -d $ginco_db_name -c "CREATE EXTENSION IF NOT EXISTS postgis;" &>> log/restore_ginco_db.log
-# sudo -n -u postgres -s psql -d $ginco_db_name -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';" &>> log/restore_ginco_db.log
-# sudo -n -u postgres -s psql -d $ginco_db_name -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";' &>> log/restore_ginco_db.log
-# sudo -n -u postgres -s psql -d $ginco_db_name -c 'CREATE EXTENSION IF NOT EXISTS unaccent;' &>> log/restore_ginco_db.log
+if database_exists $ginco_db_name
+then
+        if $drop_ginco_db
+            then
+            write_log "Drop database..."
+            sudo -u postgres -s dropdb $ginco_db_name
+        else
+            write_log "Database exists but the settings file indicate that we don't have to drop it."
+        fi
+fi
+write_log "Create DB"
+sudo -n -u postgres -s createdb -O admin $ginco_db_name &>> log/restore_ginco_db.log
+sudo -n -u postgres -s psql -d $ginco_db_name -c "CREATE EXTENSION IF NOT EXISTS postgis;" &>> log/restore_ginco_db.log
+sudo -n -u postgres -s psql -d $ginco_db_name -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';" &>> log/restore_ginco_db.log
+sudo -n -u postgres -s psql -d $ginco_db_name -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";' &>> log/restore_ginco_db.log
+sudo -n -u postgres -s psql -d $ginco_db_name -c 'CREATE EXTENSION IF NOT EXISTS unaccent;' &>> log/restore_ginco_db.log
 
-# write_log "Restauration de la DB... ça va être long !"
-# export PGPASSWORD=$ginco_admin_pg_pass;psql -h $db_host -d $ginco_db_name -U admin -f $sql_dump_path &>> log/restore_ginco_db.log
-# write_log "Restauration terminée"
+write_log "Restauration de la DB... ça va être long !"
+export PGPASSWORD=$ginco_admin_pg_pass;psql -h $db_host -d $ginco_db_name -U admin -f $sql_dump_path &>> log/restore_ginco_db.log
+write_log "Restauration terminée"
 
 
 
