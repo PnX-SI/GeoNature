@@ -52,13 +52,16 @@ list_messages = { emptyMessage = "Aucune donnée à afficher", totalMessage = "o
 # --------------- EXPORT PARAMETER ---------------------
 
 # Name of the view based export
-export_view_name = 'ViewExportDLB'
+export_view_name = 'export_occtax_sinp'
 
 # Name of the geometry columns of the view
 export_geom_columns_name = 'geom_4326'
 
 # Name of the primary key column of the view
 export_id_column_name = 'permId'
+
+# Name of the columns with observers_txt
+export_observer_txt_column = 'obsId'
 
 # SRID for the shapefile
 export_srid = 4326

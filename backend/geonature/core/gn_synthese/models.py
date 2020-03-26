@@ -13,16 +13,15 @@ from werkzeug.exceptions import NotFound
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
-from utils_flask_sqla.serializers import serializable
+from pypnusershub.db.tools import InsufficientRightsError
+from utils_flask_sqla.serializers import serializable, SERIALIZERS
+from utils_flask_sqla_geo.serializers import geoserializable, shapeserializable
 
-from geonature.utils.utilssqlalchemy import geoserializable, SERIALIZERS
-from geonature.utils.utilsgeometry import shapeserializable
-from geonature.utils.env import DB
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
 from geonature.core.ref_geo.models import LAreas
 from geonature.core.ref_geo.models import LiMunicipalities
 from geonature.core.gn_commons.models import THistoryActions, TValidations
-from pypnusershub.db.tools import InsufficientRightsError
+from geonature.utils.env import DB
 
 
 class SyntheseCruved(DB.Model):
@@ -209,7 +208,8 @@ class Synthese(DB.Model):
     altitude_max = DB.Column(DB.Unicode)
     the_geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
     the_geom_point = DB.Column(Geometry("GEOMETRY", 4326))
-    the_geom_local = DB.Column(Geometry("GEOMETRY", current_app.config["LOCAL_SRID"]))
+    the_geom_local = DB.Column(
+        Geometry("GEOMETRY", current_app.config["LOCAL_SRID"]))
     date_min = DB.Column(DB.DateTime)
     date_max = DB.Column(DB.DateTime)
     validator = DB.Column(DB.Unicode)
@@ -434,7 +434,8 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
         secondary=corAreaSynthese,
         primaryjoin=(corAreaSynthese.c.id_synthese == id_synthese),
         secondaryjoin=(corAreaSynthese.c.id_area == LAreas.id_area),
-        foreign_keys=[corAreaSynthese.c.id_synthese, corAreaSynthese.c.id_area],
+        foreign_keys=[corAreaSynthese.c.id_synthese,
+                      corAreaSynthese.c.id_area],
     )
     datasets = DB.relationship(
         "TDatasets",

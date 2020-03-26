@@ -1,0 +1,29 @@
+
+# Supprimer la base Ginco (cas ou le script est lancé à plusieurs reprises)
+drop_ginco_db=false
+
+# noom de la base de données Ginco créé à partir du dump sql
+ginco_db_name=ginco_db
+# Les utilisateur 'admin' et 'ogam' sont necessair à la restauration et sont créé par le script.
+# Veuillez choisir des mdp pour ces deux utilisateurs
+ginco_admin_pg_pass=monpassachanger
+ginco_ogame_pg_pass=monpassachanger
+# nom du modèle ogam de la table des données à importer
+ginco_data_table_name=model_592e825dab701_observation
+# code insee de la région des données Ginco (pour ref_geo GeoNature)
+code_insee_reg=34
+
+sql_dump_path=./path_to_sql_file.sql
+
+# Information de la base de donnée GeoNature cible
+geonature_db_name=geonature2db
+geonature_pg_user=geonatadmin
+geonature_user_pg_pass=monpassachanger
+db_host=localhost
+db_port=5432
+
+
+# Pour le script python de récupération des JDD et CA, ne pas modifier sauf si vous savez ce que vous faites
+TABLE_DONNEES_INPN=gn_meta.t_datasets
+CHAMP_ID_JDD=unique_dataset_id
+DELETE_XML_FILE_AFTER_IMPORT=true

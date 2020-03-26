@@ -36,7 +36,9 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     if (AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
       // if token not here here, redirection to CAS login page
-      const url_redirection_cas = `${AppConfig.CAS_PUBLIC.CAS_URL_LOGIN}?service=${AppConfig.API_ENDPOINT}/gn_auth/login_cas`;
+      const url_redirection_cas = `${AppConfig.CAS_PUBLIC.CAS_URL_LOGIN}?service=${
+        AppConfig.API_ENDPOINT
+      }/gn_auth/login_cas`;
       document.location.href = url_redirection_cas;
     }
   }
@@ -54,11 +56,7 @@ export class LoginComponent implements OnInit {
           this._commonService.translateToaster('info', 'PasswordAndLoginRecovery');
         },
         error => {
-          this._toasterService.error(error.error.msg, '', {
-            positionClass: 'toast-top-center',
-            tapToDismiss: true,
-            timeOut: 5000
-          });
+          this._toasterService.error(error.error.msg, '');
         }
       )
       .add(() => {

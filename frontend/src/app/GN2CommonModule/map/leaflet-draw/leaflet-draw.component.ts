@@ -24,7 +24,11 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   // save the current layer type because the edite event do not send it...
   public currentLayerType: string;
   /** Coordonnées de l'entité à dessiner */
+  public drawControl;
+  /* pour pouvoir cacher / afficher le composant */
+  @Input() bEnable = true; //
   @Input() geojson: GeoJSON;
+  /* Boolean qui controle le zoom au point*/
   @Input() bZoomOnPoint = true;
   @Input() zoomLevelOnPoint = 8;
   /**
@@ -52,8 +56,12 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   enableLeafletDraw() {
     this.options.edit['featureGroup'] = this.drawnItems;
     this.options.edit['featureGroup'] = this.mapservice.leafletDrawFeatureGroup;
-    const drawControl = new this._Le.Control.Draw(this.options);
-    this.map.addControl(drawControl);
+    this.drawControl = new this._Le.Control.Draw(this.options);
+    this.map.addControl(this.drawControl);
+
+    if (!this.bEnable) {
+      this.disableDrawControl();
+    }
 
     this.map.on(this._Le.Draw.Event.DRAWSTART, e => {
       this.mapservice.removeAllLayers(this.map, this.mapservice.fileLayerFeatureGroup);
@@ -90,7 +98,10 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
         this.layerDrawed.emit({ geojson: null });
       } else {
-        this._currentDraw = (e as any).layer.setStyle(this.mapservice.searchStyle);
+        this._currentDraw = (e as any).layer;
+        if ((e as any).layerType !== 'marker') {
+          this._currentDraw = this._currentDraw.setStyle(this.mapservice.searchStyle);
+        }
         this.currentLayerType = (e as any).layerType;
         this.mapservice.leafletDrawFeatureGroup.addLayer(this._currentDraw);
         const geojson = this.getGeojsonFromFeatureGroup(this.currentLayerType);
@@ -164,6 +175,15 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       );
       layer = L.polygon(latLng);
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
+      this.mapservice.map.fitBounds(layer.getBounds());
+    } else if (geojson.type === 'Point') {
+      // marker
+      console.log(geojson);
+      layer = L.marker(new L.LatLng(geojson.coordinates[1], geojson.coordinates[0]), {});
+      this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
+      if (this.bZoomOnPoint) {
+        this.map.setView(layer.getLatLng(), 15);
+      }
     }
     if (geojson.type === 'Point') {
       const latLng = L.GeoJSON.coordsToLatLng(geojson.coordinates);
@@ -171,11 +191,15 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
     }
 
-    if ( layer.getBounds ) {
+    if (layer.getBounds) {
       this.mapservice.map.fitBounds(layer.getBounds());
     } else {
       if (this.mapservice.map['_zoom'] === 0 || this.bZoomOnPoint) {
-        this.mapservice.map.setView(layer._latlng, this.zoomLevelOnPoint, this.mapservice.map['_zoom']);
+        this.mapservice.map.setView(
+          layer._latlng,
+          this.zoomLevelOnPoint,
+          this.mapservice.map['_zoom']
+        );
       } else {
         this.mapservice.map.panTo(layer._latlng);
       }
@@ -188,9 +212,34 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     this.mapservice.setGeojsonCoord(new_geojson);
   }
 
+  // cache le draw control
+  disableDrawControl() {
+    if (!this.drawControl) {
+      return;
+    }
+    this.mapservice.leafletDrawFeatureGroup.clearLayers();
+    this.drawControl.remove();
+  }
+
+  // fait apparaitre le draw control
+  enableDrawControl() {
+    if (!this.drawControl) {
+      return;
+    }
+    this.mapservice.leafletDrawFeatureGroup.addTo(this.map);
+    this.drawControl.addTo(this.map);
+  }
+
   ngOnChanges(changes) {
     if (changes.geojson && changes.geojson.currentValue) {
       this.loadDrawfromGeoJson(changes.geojson.currentValue);
+    }
+    if (changes.bEnable) {
+      if (this.bEnable) {
+        this.enableDrawControl();
+      } else {
+        this.disableDrawControl();
+      }
     }
   }
 }

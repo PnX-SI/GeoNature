@@ -3,10 +3,10 @@ settings.ini
 config/geonature_config.toml
 
 **/conf_gn_module.toml
+**/module.config.ts
 
 log/*
 .vscode/
-**/node_modules/
 geonature_config.toml
 external_assets/
 external_modules/*
@@ -140,7 +140,6 @@ ENV/
 .mypy_cache/
 
 *.pid
-package-lock.json
 *.orig
 
 

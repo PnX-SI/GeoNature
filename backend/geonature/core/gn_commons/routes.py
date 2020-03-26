@@ -6,7 +6,7 @@
 from flask import Blueprint, request, current_app
 
 from geonature.core.gn_commons.repositories import TMediaRepository
-from geonature.core.gn_commons.models import TModules, TParameters
+from geonature.core.gn_commons.models import TModules, TParameters, TMobileApps
 from geonature.utils.env import DB
 from utils_flask_sqla.response import json_resp
 from geonature.core.gn_permissions import decorators as permissions
@@ -50,7 +50,8 @@ def get_modules(info_role):
 @routes.route("/module/<module_code>", methods=["GET"])
 @json_resp
 def get_module(module_code):
-    module = DB.session.query(TModules).filter_by(module_code=module_code).one()
+    module = DB.session.query(TModules).filter_by(
+        module_code=module_code).one()
     return module.as_dict()
 
 
@@ -119,6 +120,7 @@ def delete_media(id_media):
 def get_parameters_list():
     """
     Get all parameters from gn_commons.t_parameters
+
     .. :quickref: Commons;
     """
     q = DB.session.query(TParameters)
@@ -138,3 +140,22 @@ def get_one_parameter(param_name, id_org=None):
 
     data = q.all()
     return [d.as_dict() for d in data]
+
+
+@routes.route("/t_mobile_apps", methods=["GET"])
+@json_resp
+def get_t_mobile_apps():
+    """
+    Get all mobile applications
+
+    .. :quickref: Commons;
+
+    :query str app_code: the app code
+    :returns: Array<dict<TMobileApps>>
+    """
+    params = request.args
+    q = DB.session.query(TMobileApps)
+    if 'app_code' in request.args:
+        q = q.filter(TMobileApps.app_code == params['app_code'])
+
+    return [d.as_dict() for d in q.all()]

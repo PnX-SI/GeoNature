@@ -1,0 +1,57 @@
+<div class="modal-header">
+  <h5 class="modal-title" id="modalLabel"> Téléchargement </h5>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.close();">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div *ngIf="tooManyObs">
+
+    <div class="alert alert-danger" role="alert">
+      <b> Attention ! </b> Votre requête comporte un nombre trop important de stations pour que celles-ci soient affichées sur la
+      carte.
+    </div>
+
+    <div class="alert alert-warning" role="alert">
+      Vous pouvez néamoins exporter les données, dans une limite de <b> {{MODULE_CONFIG.NB_MAX_EXPORT}} </b>
+      stations en cliquant sur les liens ci-dessous
+    </div>
+
+    <div class="alert alert-warning" role="alert">
+      En fermant cette fenêtre vous pouvez visualiser <b> seulement</b> les {{MODULE_CONFIG.NB_MAX_MAP_LIST}} dernières
+      stations correspondant à votre requête. <br>
+    </div>
+
+  </div>
+  <h5 class="underlined second-color"> Télécharger les habitats des stations </h5>
+  <div style="margin-bottom:5px;">
+    <p> 
+      <i class="fa fa-info-circle" aria-hidden="true"></i>
+      Votre recherche comporte {{storeService.idsStation.length}} station(s) d'habitat 
+    </p>
+    <p *ngIf="!tooManyObs">
+      <b>NB: </b> Le limite du nombre d'habitat exportables est de {{MODULE_CONFIG.NB_MAX_EXPORT}}
+    </p>
+    <button style="margin-left: 5px;" *ngFor="let format of MODULE_CONFIG.EXPORT_FORMAT" class="buttonLoad" (click)="downloadStations(format)"
+      type="button" class="btn btn-success format-btn">
+        Format {{format}}
+    </button>
+  </div>
+
+
+  <!-- <h5 class="underlined second-color"> Télécharger les métadonnées</h5>
+  <div>
+    <button [disabled]="_dataService.isDownloading" class="btn btn-success" (click)="downloadStatusOrMetadata('synthese/export_metadata', 'synthese_metadata')">
+       Métadonnées <i class="fa fa-list-alt" aria-hidden="true"></i>
+
+    </button>
+  </div> -->
+
+
+  <!-- <div *ngIf="_dataService.isDownloading" class="telechargement card" style="margin-top: 30px;">
+    <div class="card-body text-{{bstype}}" >
+      {{'Downloading' | translate }}
+      <img  src="assets/images/Spinner.gif" alt="Chargement..." height="40" width="40">
+    </div>
+  </div> -->
+</div>

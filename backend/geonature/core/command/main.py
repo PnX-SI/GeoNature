@@ -22,7 +22,8 @@ from geonature.utils.command import (
     create_frontend_config,
     frontend_routes_templating,
     tsconfig_templating,
-    update_app_configuration,
+    tsconfig_app_templating,
+    update_app_configuration
 )
 
 
@@ -178,9 +179,31 @@ def generate_frontend_tsconfig():
 
 
 @main.command()
-@click.option("--conf-file", required=False, default=DEFAULT_CONFIG_FILE)
-@click.option("--build", type=bool, required=False, default=True)
-@click.option("--prod", type=bool, required=False, default=True)
+def generate_frontend_tsconfig_app():
+    """
+        Génere tsconfig.app du frontend/src
+    """
+    tsconfig_app_templating()
+
+
+@main.command()
+@click.option(
+    '--conf-file',
+    required=False,
+    default=DEFAULT_CONFIG_FILE
+)
+@click.option(
+    '--build',
+    type=bool,
+    required=False,
+    default=True
+)
+@click.option(
+    '--prod',
+    type=bool,
+    required=False,
+    default=True
+)
 def update_configuration(conf_file, build, prod):
     """
         Regénère la configuration de l'application

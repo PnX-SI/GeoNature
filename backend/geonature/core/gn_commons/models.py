@@ -10,8 +10,8 @@ from geoalchemy2 import Geometry
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
 from utils_flask_sqla.serializers import serializable
+from utils_flask_sqla_geo.serializers import geoserializable
 
-from geonature.utils.utilssqlalchemy import geoserializable
 from geonature.utils.env import DB
 
 # from geonature.core.gn_meta.models import TDatasets
@@ -77,7 +77,8 @@ class TMedias(DB.Model):
         # ForeignKey('ref_nomenclatures.t_nomenclatures.id_nomenclature')
     )
     id_table_location = DB.Column(
-        DB.Integer, ForeignKey("gn_commons.bib_tables_location.id_table_location")
+        DB.Integer, ForeignKey(
+            "gn_commons.bib_tables_location.id_table_location")
     )
     unique_id_media = DB.Column(
         UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
@@ -128,7 +129,8 @@ class TValidations(DB.Model):
     validation_auto = DB.Column(DB.Boolean)
     validation_label = DB.relationship(
         TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_valid_status),
+        primaryjoin=(TNomenclatures.id_nomenclature ==
+                     id_nomenclature_valid_status),
         foreign_keys=[id_nomenclature_valid_status],
     )
     validator_role = DB.relationship(
@@ -176,3 +178,13 @@ class THistoryActions(DB.Model):
     operation_type = DB.Column(DB.Unicode)
     operation_date = DB.Column(DB.DateTime)
     table_content = DB.Column(DB.Unicode)
+
+
+@serializable
+class TMobileApps(DB.Model):
+    __tablename__ = "t_mobile_apps"
+    __table_args__ = {"schema": "gn_commons"}
+    id_mobile_app = DB.Column(DB.Integer, primary_key=True)
+    app_code = DB.Column(DB.Unicode)
+    relative_path_apk = DB.Column(DB.Unicode)
+    url_apk = DB.Column(DB.Unicode)

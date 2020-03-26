@@ -12,8 +12,9 @@
   
               <small>Cadre d'acquisition </small>
               <div class="input-group">
-                <select class="form-control form-control-sm"
-                  [disableControl]="disabled" [formControl]="datasetForm.controls.id_acquisition_framework">
+                <select 
+                  class="form-control form-control-sm"
+                  [formControl]="datasetForm.controls.id_acquisition_framework">
                   <option *ngFor="let ac of acquisitionFrameworks" [ngValue]="ac.id_acquisition_framework">
                     {{ac.acquisition_framework_name}}
                   </option>

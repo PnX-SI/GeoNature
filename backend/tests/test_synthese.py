@@ -16,7 +16,8 @@ class TestSynthese:
         assert response.status_code == 200
 
     def test_get_defaut_nomenclature(self):
-        response = self.client.get(url_for("gn_synthese.getDefaultsNomenclatures"))
+        response = self.client.get(
+            url_for("gn_synthese.getDefaultsNomenclatures"))
         assert response.status_code == 200
 
     def test_get_synthese_data(self):
@@ -82,7 +83,8 @@ class TestSynthese:
         token = get_token(self.client, login="partenaire", password="admin")
         self.client.set_cookie("/", "token", token)
 
-        response = self.client.get(url_for("gn_synthese.get_observations_for_web"))
+        response = self.client.get(
+            url_for("gn_synthese.get_observations_for_web"))
         data = json_of_response(response)
 
         assert len(data["data"]["features"]) == 0
@@ -92,9 +94,11 @@ class TestSynthese:
         """
             Test avec un cruved R2 qui join sur cor_synthese_observers
         """
-        token = get_token(self.client, login="test_cruved_r2", password="admin")
+        token = get_token(
+            self.client, login="test_cruved_r2", password="admin")
         self.client.set_cookie("/", "token", token)
-        response = self.client.get(url_for("gn_synthese.get_observations_for_web"))
+        response = self.client.get(
+            url_for("gn_synthese.get_observations_for_web"))
         data = json_of_response(response)
 
         # le résultat doit être supérieur ou égal à 2
@@ -164,4 +168,12 @@ class TestSynthese:
             url_for("gn_synthese.get_one_synthese", id_synthese=2)
         )
 
+        assert response.status_code == 200
+
+    def test_color_taxon(self):
+        response = self.client.get(
+            url_for(
+                "gn_synthese.get_color_taxon"
+            )
+        )
         assert response.status_code == 200

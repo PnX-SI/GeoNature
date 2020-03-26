@@ -434,6 +434,17 @@ COMMENT ON COLUMN t_modules.module_path IS 'url relative vers le module - si mod
 COMMENT ON COLUMN t_modules.module_external_url IS 'url absolue vers le module - si module externe (active_frontend = false)';
 -- Ne surtout pas créer de séquence sur cette table pour associer librement id_module et id_application.
 
+CREATE TABLE t_mobile_apps(
+  id_mobile_app serial,
+  app_code character varying(30),
+  relative_path_apk character varying(255),
+  url_apk character varying(255)
+);
+
+COMMENT ON COLUMN t_mobile_apps.app_code IS 'Code de l''application mobile. Pas de FK vers t_modules car une application mobile ne correspond pas forcement à un module GN';
+
+
+
 ---------------
 --PRIMARY KEY--
 ---------------
@@ -455,6 +466,9 @@ ALTER TABLE ONLY t_history_actions
 
 ALTER TABLE ONLY t_modules
     ADD CONSTRAINT pk_t_modules PRIMARY KEY (id_module);
+
+ALTER TABLE ONLY t_mobile_apps
+    ADD CONSTRAINT pk_t_moobile_apps PRIMARY KEY (id_mobile_app);
 
 
 ----------------
@@ -512,6 +526,9 @@ ALTER TABLE t_modules
 
 ALTER TABLE t_modules
     ADD CONSTRAINT unique_t_modules_module_code UNIQUE (module_code);
+
+ALTER TABLE t_mobile_apps
+    ADD CONSTRAINT unique_t_mobile_apps_app_code UNIQUE (app_code);
 
 ------------
 --TRIGGERS--
