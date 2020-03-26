@@ -71,6 +71,7 @@ AS SELECT  s.id_synthese,
         FROM gn_commons.t_validations v
         WHERE v.uuid_attached_row = s.unique_id_sinp
         ORDER BY v.validation_date DESC
+        LIMIT 1
     ) v ON true
   WHERE d.validable = true;
   
