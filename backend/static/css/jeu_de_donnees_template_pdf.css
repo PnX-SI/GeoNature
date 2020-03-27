@@ -1,9 +1,11 @@
 body {
     font-family: Verdana, sans-serif;
 }
+
 p {
     margin: 0;
 }
+
 .bandeau {
     width: 95%;
     float: right;
@@ -41,7 +43,6 @@ div.titre {
     height: 5px;
     margin-top: 15px;
 }
-
 
 .ligne-ca-initial {
     width: 90%;
@@ -193,7 +194,6 @@ div.titre {
 /* FIN DEFAUT */
 
 
-
 /* SINP */
 #ligne-titre-sinp {
     background-color: #f8af51;
@@ -245,5 +245,4 @@ div.titre {
 #nombre-donnees-depobio {
     background-color: #63D4C1;
 }
-
 /* FIN DEPOBIO */
