@@ -1,6 +1,7 @@
 import json
 import logging
-from flask import Blueprint, current_app, request
+from flask import Blueprint, current_app, request,render_template
+import pprint
 
 from sqlalchemy import or_
 from sqlalchemy.sql import text
@@ -9,6 +10,8 @@ from geonature.utils.env import DB
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.tools import InsufficientRightsError
+
+import datetime as dt
 
 from geonature.core.gn_meta.models import (
     TDatasets,
@@ -24,6 +27,9 @@ from utils_flask_sqla.response import json_resp
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_meta import mtd_utils
 from geonature.utils.errors import GeonatureApiError
+import geonature.utils.filemanager as fm
+
+from flask.wrappers import Response
 
 routes = Blueprint("gn_meta", __name__)
 
@@ -146,6 +152,47 @@ def post_dataset(info_role):
     DB.session.commit()
     return dataset.as_dict(True)
 
+@routes.route("/dataset/export_pdf/<id_dataset>", methods=["GET"])
+@permissions.check_cruved_scope("C", True, module_code="METADATA")
+def get_export_pdf_dataset(id_dataset, info_role):
+    """
+    Get a PDF export of one dataset
+    """
+    
+    #Verification des droits
+    if info_role.value_filter == "0":
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" a dataset').format(
+                info_role.id_role, 'export'
+            ),
+            403,
+        )
+
+    data = DB.session.query(TDatasets).get(id_dataset)
+    df = data.as_dict(True)
+
+    current_date = f"{dt.datetime.now():%d_%m_%Y}"
+    current_time = f"{dt.datetime.now():%Hh%Mm%Ss}"
+
+    filename = 'jeu_de_donnees_'+current_date+'_at_'+current_time+'.pdf'
+
+    df['css'] = {
+        "logo" : "images/Logo_SINP.png",
+        "bandeau" : "images/Bandeau_SINP.png",
+        "entite" : "sinp"
+    }
+
+    # Appel de la methode pour generer un pdf
+    pdf_file = fm.generate_pdf('jeu_de_donnees_template_pdf.html', df, filename)
+
+    return Response(
+        pdf_file,
+        mimetype="application/pdf",
+        headers={
+            "Content-disposition": "attachment; filename=" + filename,
+            "Content-type": "application/pdf"
+        }
+    )
 
 @routes.route("/acquisition_frameworks", methods=["GET"])
 @permissions.check_cruved_scope("R", True)

@@ -133,4 +133,9 @@ export class DatasetFormComponent implements OnInit {
       );
     }
   }
+
+  getPdf() {
+    const url = `${AppConfig.API_ENDPOINT}/meta/dataset/export_pdf/${this.id_dataset}`;
+    window.open(url);
+  }
 }
