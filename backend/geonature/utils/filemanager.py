@@ -6,7 +6,8 @@ import datetime
 import re
 
 from werkzeug.utils import secure_filename
-from flask import current_app
+from flask import current_app, render_template
+import pdfkit
 
 # get the root logger
 log = logging.getLogger()
@@ -80,3 +81,17 @@ def delete_recursively(path_folder, period=1, excluded_files=[]):
                     shutil.rmtree(file_path)
         except Exception as e:
             log.error(e)
+
+def generate_pdf(template, data, filename):
+    options = {
+        'margin-top': '0',
+        'margin-right': '0',
+        'margin-bottom': '0',
+        'margin-left': '0',
+        'encoding': "UTF-8"
+    }
+    rendered = render_template(template, data=data)
+    pdfkit.from_string(rendered, filename, options=options)
+    pdf_download = open(filename, 'rb').read()
+    remove_file(filename)
+    return pdf_download

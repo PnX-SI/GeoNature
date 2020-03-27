@@ -1,6 +1,7 @@
 import json
 import logging
-from flask import Blueprint, current_app, request
+from flask import Blueprint, current_app, request,render_template
+import pprint
 
 from sqlalchemy import or_
 from sqlalchemy.sql import text
@@ -9,6 +10,8 @@ from geonature.utils.env import DB
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.tools import InsufficientRightsError
+
+import datetime as dt
 
 from geonature.core.gn_meta.models import (
     TDatasets,
@@ -24,6 +27,9 @@ from utils_flask_sqla.response import json_resp
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_meta import mtd_utils
 from geonature.utils.errors import GeonatureApiError
+import geonature.utils.filemanager as fm
+
+from flask.wrappers import Response
 
 routes = Blueprint("gn_meta", __name__)
 
@@ -160,6 +166,84 @@ def get_acquisition_frameworks(info_role):
     params = request.args
     return get_af_cruved(info_role, params)
 
+@routes.route("/acquisition_frameworks/export_pdf/<id_acquisition_framework>", methods=["GET"])
+@permissions.check_cruved_scope("C", True, module_code="METADATA")
+def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
+    """
+    Get a PDF export of one acquisition
+    """
+    
+    #Verification des droits
+    if info_role.value_filter == "0":
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" a dataset').format(
+                info_role.id_role, 'export'
+            ),
+            403,
+        )
+
+    # Recuperation des données
+    af = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
+
+    if af:
+        data = dict()
+        df = af.as_dict(True)
+        data['nom'] = df['acquisition_framework_name'] if df['acquisition_framework_name'] else ''
+        data['description'] = df['acquisition_framework_desc'] if df['acquisition_framework_desc'] else ''
+        data['mots_cles'] = df['keywords'] if df['keywords'] else ''
+        data['est_parent'] = True if df['is_parent'] else False
+        if data['est_parent']:
+            # TODO Chercher parent
+            data['cadre_parent'] = 'X'
+        # TODO Niveau territorial
+        # A chercher dans les referentiels 
+        # Endpoint trouvé mais pas de fonction existante a appellée
+        data['description_territoire'] = df['territory_desc'] if df['territory_desc'] else ''
+        # TODO Objectifs du cadre d'acquisition
+        # TODO Volets SINP
+        # TODO Type de financement
+        data['cibles_eco_ou_geo'] = df['ecologic_or_geologic_target'] if df['ecologic_or_geologic_target'] else ''
+        data['description_cible'] = df['target_description'] if df['target_description'] else ''
+        data['date_debut'] = df['acquisition_framework_start_date'] if df['acquisition_framework_start_date'] else ''
+        data['date_fin'] = df['acquisition_framework_end_date'] if df['acquisition_framework_end_date'] else ''
+        # TODO Reformater les dates : jj/mm/yyyy
+        # TODO Les acteurs sur le cote
+    else :
+        return render_template(
+            'error.html',
+            error='Le dataset presente des erreurs',
+            redirect=current_app.config["URL_APPLICATION"]+'/#/metadata'), 404
+
+    pprint.pprint(df)
+
+    current_date = f"{dt.datetime.now():%d_%m_%Y}"
+    current_time = f"{dt.datetime.now():%Hh%Mm%Ss}"
+
+    filename = 'cadre_acquisition_'+current_date+'_at_'+current_time+'.pdf'
+
+
+    df['css'] = {
+        "logo" : "images/Logo_SINP.png",
+        "bandeau" : "images/Bandeau_SINP.png",
+        "entite" : "sinp"
+    }
+
+    # Appel de la methode pour generer un pdf
+    pdf_file = fm.generate_pdf('cadre_acquisition_template_pdf.html', df, filename)
+    
+    # return render_template(
+    #     'cadre_acquisition_template_pdf.html',
+    #     data=df,
+    #     redirect=current_app.config["URL_APPLICATION"]+'/#/metadata'), 404
+
+    return Response(
+        pdf_file,
+        mimetype="application/pdf",
+        headers={
+            "Content-disposition": "attachment; filename=" + filename,
+            "Content-type": "application/pdf"
+        }
+    )
 
 @routes.route("/acquisition_framework/<id_acquisition_framework>", methods=["GET"])
 @json_resp
@@ -176,7 +260,6 @@ def get_acquisition_framework(id_acquisition_framework):
     if af:
         return af.as_dict(True)
     return None
-
 
 @routes.route("/acquisition_framework", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="METADATA")
@@ -264,4 +347,5 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
     .. :quickref: Metadata;
     """
     return mtd_utils.post_jdd_from_user(id_user=id_user, id_organism=id_organism)
+
 

@@ -1,0 +1,248 @@
+body {
+    font-family: Verdana, sans-serif;
+}
+p {
+    margin: 0;
+}
+.bandeau {
+    width: 95%;
+    float: right;
+}
+
+.logo {
+    width: 250px;
+    position: absolute;
+    top: 130px;
+    left: 20px;
+    transform: translateY(-50%);
+}
+
+div.header {
+    display: inline-block;
+}
+
+div.titre {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+}
+
+.label-titre {
+    font-size: 150%;
+    font-weight: bold;
+}
+
+.ligne {
+    border: none;
+}
+
+.ligne-titre {
+    width: 55%;
+    height: 4px;
+}
+
+
+.ligne-jeux-donnees {
+    width: 90%;
+    height: 6px;
+    margin-left: 10px;
+}
+
+.etiquettes {
+    display: flex;
+    justify-content: space-between;
+    width: 95%;
+    margin: 30px auto 0;
+}
+
+.etiquette {
+    width: 220px;
+    height: 140px;
+    border: 1px solid grey;
+    border-radius: 20px;
+}
+
+.etiquette-haut {
+    display: flex;
+    justify-content: space-between;
+    height: 55%;
+    margin: 15px 15px 0;
+}
+
+.etiquette-bas {
+    text-align: center;
+}
+
+.logo-etiquette {
+    width: 65px;
+    height: 65px;
+}
+
+.titre-etiquette {
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0;
+}
+
+.stat-etiquette {
+    font-weight: bold;
+    font-size: 36px;
+    margin: 0;
+}
+
+.description {
+    display: flex;
+    width: 95%;
+    margin: 30px auto 0;
+}
+
+.fiche-descriptive, .zone-geographique, .repartition-especes {
+    margin: 5px auto 20px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.liste-jdd {
+    margin: 0 auto 5px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.left-block {
+    width:51%;
+}
+
+.zone, .repartition {
+    height: 300px;
+}
+
+.jdd {
+    height: 20%;
+}
+
+.informations {
+    padding-left: 20px;
+    font-size: 13px;
+    width: 49%;
+    border: 1px solid grey;
+    border-radius: 30px;
+}
+
+.information {
+    margin-bottom: 30px;
+}
+
+.info-titre {
+    font-weight: bold;
+    margin: 0;
+}
+
+.info-contenu {
+    margin: 0 25px 0;
+}
+
+.jdd-details {
+    display: flex;
+    margin: 15px 0 0 25px;
+}
+
+.logo-jdd {
+    height: 35px;
+    width: 35px;
+}
+
+.jdd-info {
+    font-size: 12px;
+    margin: 2px 0 0 10px;
+}
+
+.footer {
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+    position: fixed;
+    top: 1370px;
+    left: 40px;
+}
+
+/* DEFAUT */
+#ligne-titre-defaut {
+    background-color: grey;
+}
+
+#ligne-jeux-donnees-defaut {
+    background-color: grey;
+}
+
+#jeux-donnees-defaut {
+    background-color: grey;
+}
+
+#nombre-taxons-defaut {
+    background-color: grey;
+}
+
+#nombre-habitats-defaut {
+    background-color: grey;
+}
+
+#nombre-donnees-defaut {
+    background-color: grey;
+}
+/* FIN DEFAUT */
+
+
+
+/* SINP */
+#ligne-titre-sinp {
+    background-color: #f8af51;
+}
+
+#ligne-jeux-donnees-sinp {
+    background-color: #f8af51;
+}
+
+#jeux-donnees-sinp {
+    background-color: #E3EAD2;
+}
+
+#nombre-taxons-sinp {
+    background-color: #F0F4CF;
+}
+
+#nombre-habitats-sinp {
+    background-color: #A8BE73;
+}
+
+#nombre-donnees-sinp {
+    background-color: #FEE9CA;
+}
+/* FIN SINP */
+
+
+/* DEPOBIO */
+#ligne-titre-depobio {
+    background-color: #07A9E7;
+}
+
+#ligne-jeux-donnees-depobio {
+    background-color: #07A9E7;
+}
+
+#jeux-donnees-depobio {
+    background-color: #E3F7F4;
+}
+
+#nombre-taxons-depobio {
+    background-color: #DDF5FE;
+}
+
+#nombre-habitats-depobio {
+    background-color: #B5EBE2;
+}
+
+#nombre-donnees-depobio {
+    background-color: #63D4C1;
+}
+
+/* FIN DEPOBIO */
