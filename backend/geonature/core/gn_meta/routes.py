@@ -231,6 +231,11 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf('cadre_acquisition_template_pdf.html', df, filename)
     
+    # return render_template(
+    #     'cadre_acquisition_template_pdf.html',
+    #     data=df,
+    #     redirect=current_app.config["URL_APPLICATION"]+'/#/metadata'), 404
+
     return Response(
         pdf_file,
         mimetype="application/pdf",
