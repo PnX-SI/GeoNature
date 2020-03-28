@@ -148,9 +148,12 @@ export class MultiSelectComponent implements OnInit, OnChanges {
    */
   addItem(item) {
     // remove element from the items list to avoid doublon
-    this.values = this.values.filter(curItem => {
-      return curItem[this.keyLabel] !== item[this.keyLabel];
-    });
+    if (this.values) {
+      this.values = this.values.filter(curItem => {
+        return curItem[this.keyLabel] !== item[this.keyLabel];
+      });
+    }
+
     if (item === 'all') {
       this.selectedItems = [];
       this._translate.get('AllItems', { value: 'AllItems' }).subscribe(value => {
