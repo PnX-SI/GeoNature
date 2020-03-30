@@ -45,8 +45,8 @@ CREATE TRIGGER tri_calculate_altitude
 CREATE TABLE gn_commons.t_mobile_apps(
   id_mobile_app serial,
   app_code character varying(30),
-  relative_path_app character varying(255),
-  url_app character varying(255),
+  relative_path_apk character varying(255),
+  url_apk character varying(255),
   package character varying(255),
   version_code character varying(10)
 );
