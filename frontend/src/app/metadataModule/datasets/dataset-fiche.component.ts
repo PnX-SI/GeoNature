@@ -15,6 +15,8 @@ export class DatasetFicheComponent implements OnInit {
   public id_dataset: number;
   public dataset: any;
   public imports: Array<any>
+  public nbTaxons: number;
+  public nbObservations: number;
 
   constructor(
     private _route: ActivatedRoute,
@@ -41,6 +43,12 @@ export class DatasetFicheComponent implements OnInit {
         this.imports = data;
         console.log(this.imports);
       })
+    });
+    this._dfs.getCountTaxon(id).subscribe(data => {
+        this.nbTaxons = data;
+    });
+    this._dfs.getCountObservation(id).subscribe(data => {
+        this.nbObservations = data;
     });
   }
   

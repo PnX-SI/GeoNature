@@ -1,103 +1,151 @@
-<div class="container">
+  <div class="container-fluid mt-4">
 
-    <button class="btn btn-secondary" routerLink="/metadata">  <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
-    </button>
+    <h1>JEU DE DONNÉES : {{dataset.dataset_name}}</h1>
 
-    <div class="card ">
-      <div class="card-body">
-        <h3>
-          Jeu de données
-        </h3>
+    <div class=" row row-0 ">
+      <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 ">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col"><h4>Taxons</h4> {{nbTaxons}} </div>
+              <div class="col-auto" width="60"><img src="./assets/images/Taxon_icon.svg" width="64"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col"><h4>Observations</h4> {{nbObservations}} </div>
+              <div class="col-auto" width="60"><img src="./assets/images/Donnee_icon.svg" width="64"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row row-0 ">
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 ">
+        <div class="card">
+          <div class="card-header">
+            Fiche descriptive
+          </div>
+          <div class="card-body">
 
+            <div class="b">Identification :</div>
+            <div class="a"> Instance : {{dataset.dataset_name}}</div>
+            <div class="a"> Libellé court : {{dataset.dataset_shortname}}</div>
+            <div class="a"> Description : <small>{{dataset.dataset_desc}}></small></div>
 
-        <p>Cadre d'acquisition : <small>{{dataset.acquisition_framework.acquisition_framework_name}}</small></p>
+            <br/>
 
-        <p>Nom du JDD : <small>{{dataset.dataset_name}}</small></p>
+            <div class="b">Type de données : {{dataset.data_type.label_default}} </div>
+            <div class="b"> Objectifs : {{dataset.dataset_objectif.label_default}} </div>
+            
+            <br/>
+
+            <div class="b">Territoires :</div>
+            <div class="a"> Couverture du territoire terrestre : {{dataset.terrestrial_domain ? "oui" : "non"}} </div>
+            <div class="a"> Couverture du territoire marin : {{dataset.marine_domain ? "oui" : "non"}} </div>
+
+            <br/>
+
+            <div class="b">Cadre de référence</div>
+            <div class="a"> Titre du cadre d'acquisition : {{dataset.acquisition_framework.acquisition_framework_name}} </div>
+            <div class="a"> Identifiant du cadre d'acquisition : {{dataset.id_acquisition_framework }} </div>
+
+            <br/>
+            
+            <div class="b">Processus de collecte :</div>
+            <div class="a"> Libellé : {{dataset.collecting_method.label_default}} </div>
+            <div class="a"> Description : {{dataset.collecting_method.definition_default}} </div>
+            <div class="a"> Url : ??? </div>
+            <div class="a"> Type de protocole : ??? </div>
+            <div class="a"> Précisions : ??? </div>
+
+            <br/>
+
+            <div class="b">Contacts </div>
+            <div *ngIf="dataset.cor_dataset_actor">
+              <div *ngFor="let actor of dataset.cor_dataset_actor">
+                <div class="a">Nom : {{ actor.role?.nom_role }} {{ actor.role?.prenom_role }}</div>
+                <div class="a">Organisme : {{ actor.organism?.nom_organisme }}</div>
+                <div class="a">SIRET : ???</div>
+                <div class="a">Base de production : ???</div>
+                <div class="a">Email : {{ actor.role?.email }}</div>
+                <br/>
+              </div>
+            </div>
+
+            <br/>
+
+            <h2>Attribut additionnels</h2>
+            <div class="b">Actif : {{dataset.active ? 'Oui' : 'Non'}} </div>
+            <div class="b">Validable : {{dataset.validable ? 'Oui' : 'Non'}} </div>
+
+            <br/>
+            
+            <div class="b">Origine des données : {{dataset.data_origin.label_default}} </div>
+            <div class="b">Statut source : {{dataset.source_status.label_default}} </div>
+            <div class="b">Type de ressource : {{dataset.resource_type.label_default}} </div>
         
-        <p>Nom court du JDD : <small>{{dataset.dataset_shortname}}</small></p>
+            <div *ngIf="dataset.modules">
+              Module(s) GeoNature associé(s) au jeu de données :
+              <div *ngFor='let module of dataset.modules'>
+                <div class="a">{{ module.module_code }}</div>
+              </div>
+            </div>
+            
+            <div class="b" *ngIf="imports"> Import(s) fait(s) sur le jeu de données : </div>
+            <table *ngIf="imports" class="table table-bordered table-sm">
+              <thead>
+                <tr>
+                  <th scope="col">Id</th>
+                  <th scope="col">Nom</th>
+                  <th scope="col">Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let import of imports">
+                  <th>{{ import.id_import }}</th>
+                  <td>{{ import.full_file_name }}</td>
+                  <td>{{ import.date_create_import }}</td>
+                </tr>
+              </tbody>
+            </table>
 
-        <p>Description : <br/>
-        <small>{{dataset.dataset_desc}}</small></p>
+          </div>
+        </div>
+      </div>
 
-        <p>Domaine : <small>
-          {{dataset.terrestrial_domain ? 'terrestre' : ''}}
-          {{(dataset.terrestrial_domain && dataset.marine_domain) ? ' et ' : ''}}
-          {{dataset.marine_domain ? 'marin' : ''}}
-        </small></p>
-        
-        <p>Type de données : <small>{{dataset.data_type.label_default}} <br/>
-        {{dataset.data_type.definition_default}}</small></p>
-
-        <p>Objectif : <small>{{dataset.dataset_objectif.label_default}} <br/>
-        {{dataset.dataset_objectif.definition_default}}</small></p>
-
-        <p>Méthode de collecte : <small>{{dataset.collecting_method.label_default}} <br/>
-        {{dataset.collecting_method.definition_default}}</small></p>
-
-        <p>Origine des données : <small>{{dataset.data_origin.label_default}} <br/>
-        {{dataset.data_origin.definition_default}}</small></p>
-
-        <p>Statut source : <small>{{dataset.source_status.label_default}} <br/>
-        {{dataset.source_status.definition_default}}</small></p>
-
-        <p>Type de ressource : <small>{{dataset.resource_type.label_default}} <br/>
-        {{dataset.resource_type.definition_default}}</small></p>
-        
-        <h6 *ngIf="imports"> Import(s) fait(s) sur le jeu de données : </h6>
-        <table *ngIf="imports" class="table table-bordered table-sm">
-          <thead>
-            <tr>
-              <th scope="col">Id</th>
-              <th scope="col">Nom</th>
-              <th scope="col">Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let import of imports">
-              <th>{{ import.id_import }}</th>
-              <td>{{ import.full_file_name }}</td>
-              <td>{{ import.date_create_import }}</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <h6 *ngIf="dataset.cor_dataset_actor">Acteurs(s) associé(s) au jeu de données :</h6>
-        <table class="table table-bordered table-sm">
-          <thead>
-            <tr>
-              <th scope="col">Id</th>
-              <th scope="col">Nom role</th>
-              <th scope="col">Nom organisme</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let actor of dataset.cor_dataset_actor">
-              <td>{{ actor?.id_cda }}</td>
-              <td>{{ actor.role?.nom_role }} {{ actor.role?.prenom_role }}</td>
-              <td>{{ actor.organism?.nom_organisme }}</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <br>
-        <h5> Spécifique GeoNature </h5>
-    
-        <p>
-          Actif : <small>{{dataset.active ? 'Oui' : 'Non'}}</small> <br/>
-          Validable : <small>{{dataset.validable ? 'Oui' : 'Non'}}</small>
-        </p>
-    
-        <p>Module(s) GeoNature associé(s) au jeu de données :
-          <small>
-            <ul *ngIf="dataset.modules; else noModule">
-              <li *ngFor='let module of dataset.modules'>
-                {{ module.module_code }}
-              </li>
-            </ul>
-            <ng-template #noModule>Aucun</ng-template>
-          </small>
-        </p>
-
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-4 padding-sm margin-md">
+        <div class="card ">
+          <div class="card-header">
+            Périmètre géographique
+          </div>
+          <div class="card-body">
+            <div id="world-map" style="height: 250px;"></div>
+          </div>
+        </div>
+        <div class="card ">
+          <div class="card-header">
+            Répartition des espèces
+          </div>
+          <div class="card-body">
+            <div id="world-map" style="height: 250px;"></div>
+          </div>
+        </div>
+        <div class="card ">
+          <div class="card-header">
+            Cadre d'acquisition initial
+          </div>
+            <div class="card-body">
+            <div class="row">
+              <div class="col-auto" width="60"><img src="./assets/images/Taxon_icon_vert.svg" width="64"></div>
+              <div class="col">{{dataset.acquisition_framework.acquisition_framework_name}}</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 

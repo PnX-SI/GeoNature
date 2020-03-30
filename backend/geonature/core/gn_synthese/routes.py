@@ -796,6 +796,21 @@ def get_color_taxon():
         q = q.filter(VColorAreaTaxon.cd_nom.in_(tuple(cd_noms)))
     return [d.as_dict() for d in q.all()]
 
+@routes.route("/count_taxon_by_dataset/<int:id_dataset>", methods=["GET"])
+@json_resp
+def get_count_taxon(id_dataset):
+    """Get taxons found in a given dataset
+    """
+    return DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset == id_dataset).distinct().count()
+
+
+@routes.route("/count_observation_by_dataset/<int:id_dataset>", methods=["GET"])
+@json_resp
+def get_count_observation(id_dataset):
+    """Get observations found in a given dataset
+    """
+    return DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset == id_dataset).count()
+
 
 # @routes.route("/test", methods=["GET"])
 # @json_resp
