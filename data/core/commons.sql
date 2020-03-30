@@ -438,7 +438,9 @@ CREATE TABLE t_mobile_apps(
   id_mobile_app serial,
   app_code character varying(30),
   relative_path_apk character varying(255),
-  url_apk character varying(255)
+  url_apk character varying(255),
+  package character varying(255),
+  version_code character varying(10)
 );
 
 COMMENT ON COLUMN t_mobile_apps.app_code IS 'Code de l''application mobile. Pas de FK vers t_modules car une application mobile ne correspond pas forcement à un module GN';
