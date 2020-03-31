@@ -6,11 +6,12 @@ import { ModuleService } from '@geonature/services/module.service';
 
 @Component({
   selector: 'pnx-datasets-form',
-  templateUrl: './dataset-fiche.component.html',
+  templateUrl: './dataset-card.component.html',
+  styleUrls: ['./dataset-card.scss'],
   providers: [MetadataFormService]
 })
 
-export class DatasetFicheComponent implements OnInit {
+export class DatasetCardComponent implements OnInit {
   public organisms: Array<any>;
   public id_dataset: number;
   public dataset: any;
