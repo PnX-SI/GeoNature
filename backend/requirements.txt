@@ -31,6 +31,7 @@ jinja2==2.10.1
 markupsafe==1.0
 marshmallow==2.15.1
 packaging==16.8
+pdfkit==0.6.1
 pip==20.0.2
 psycopg2==2.7.5
 pyparsing==2.2.0
