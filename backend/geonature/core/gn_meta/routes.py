@@ -171,10 +171,7 @@ def get_export_pdf_dataset(id_dataset, info_role):
     data = DB.session.query(TDatasets).get(id_dataset)
     df = data.as_dict(True)
 
-    current_date = f"{dt.datetime.now():%d_%m_%Y}"
-    current_time = f"{dt.datetime.now():%Hh%Mm%Ss}"
-
-    filename = 'jeu_de_donnees_'+current_date+'_at_'+current_time+'.pdf'
+    filename = 'jeu_de_donnees_id_n_{}.pdf'.format(id_dataset)
 
     df['css'] = {
         "logo" : "images/Logo_SINP.png",
