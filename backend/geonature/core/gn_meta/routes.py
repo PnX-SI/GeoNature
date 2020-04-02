@@ -255,13 +255,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
             error='Le dataset presente des erreurs',
             redirect=current_app.config["URL_APPLICATION"]+'/#/metadata'), 404
 
-    pprint.pprint(df)
-
-    current_date = f"{dt.datetime.now():%d_%m_%Y}"
-    current_time = f"{dt.datetime.now():%Hh%Mm%Ss}"
-
-    filename = 'cadre_acquisition_'+current_date+'_at_'+current_time+'.pdf'
-
+    filename = 'cadre_acquisition_id_n_{}.pdf'.format(id_acquisition_framework)
 
     df['css'] = {
         "logo" : "images/Logo_SINP.png",
@@ -271,11 +265,6 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
 
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf('cadre_acquisition_template_pdf.html', df, filename)
-    
-    # return render_template(
-    #     'cadre_acquisition_template_pdf.html',
-    #     data=df,
-    #     redirect=current_app.config["URL_APPLICATION"]+'/#/metadata'), 404
 
     return Response(
         pdf_file,
