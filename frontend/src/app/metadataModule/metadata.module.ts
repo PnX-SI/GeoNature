@@ -11,6 +11,8 @@ import { AfListComponent } from './af/af-list.component';
 import { AfFormComponent } from './af/af-form.component';
 import { ActorComponent } from './actors/actors.component';
 import { MetadataComponent } from './metadata.component';
+import { ChartsModule } from "ng2-charts/ng2-charts";
+import { ChartModule } from 'angular2-chartjs';
 
 const routes: Routes = [
   { path: '', component: MetadataComponent },
@@ -31,7 +33,9 @@ const routes: Routes = [
     }),
     CommonModule,
     GN2CommonModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    ChartModule,
+    ChartsModule
   ],
   exports: [],
   declarations: [

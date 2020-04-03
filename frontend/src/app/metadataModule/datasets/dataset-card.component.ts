@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , ViewChild} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { MetadataFormService } from '../services/metadata-form.service';
 import { ModuleService } from '@geonature/services/module.service';
+import { BaseChartDirective } from 'ng2-charts';
 
 @Component({
   selector: 'pnx-datasets-form',
@@ -18,6 +19,57 @@ export class DatasetCardComponent implements OnInit {
   public imports: Array<any>
   public nbTaxons: number;
   public nbObservations: number;
+  
+  @ViewChild(BaseChartDirective) chart: BaseChartDirective;
+
+  // Type de graphe
+  public pieChartType = 'doughnut';
+  // Tableau contenant les labels du graphe
+  public pieChartLabels = [];
+  // Tableau contenant les données du graphe
+  public pieChartData = [];
+  // Tableau contenant les couleurs et la taille de bordure du graphe
+  public pieChartColors = [
+    {
+      backgroundColor: ["rgb(0,80,240)", "rgb(80,160,240)", "rgb(160,200,240)"],
+    }
+  ];
+  // Dictionnaire contenant les options à implémenter sur le graphe (calcul des pourcentages notamment)
+  public pieChartOptions = {
+    weight: "0.2",
+    legend: {
+      display: 'true',
+      position: 'left',
+      labels: {
+        fontSize: 15,
+        filter: function (legendItem, chartData) {
+          return chartData.datasets[0].data[legendItem.index] != 0;
+        }
+      },
+    },
+    plugins: {
+      labels: [
+        {
+          render: 'label',
+          arc: true,
+          fontSize: 14,
+          position: 'outside',
+          overlap: false
+        },
+        {
+          render: 'percentage',
+          fontColor: 'white',
+          fontSize: 14,
+          fontStyle: 'bold',
+          precision: 2,
+          textShadow: true,
+          overlap: false
+        }
+      ]
+    }
+  }
+  
+  public spinner = true;
 
   constructor(
     private _route: ActivatedRoute,
@@ -33,7 +85,6 @@ export class DatasetCardComponent implements OnInit {
         this.getDataset(this.id_dataset);
       }
     });
-
   }
 
   getDataset(id) {
@@ -51,6 +102,18 @@ export class DatasetCardComponent implements OnInit {
     this._dfs.getCountObservation(id).subscribe(data => {
         this.nbObservations = data;
     });
+    this._dfs.getRepartitionTaxons(id).subscribe(data => {
+      this.pieChartData.length = 0;
+      this.pieChartLabels.length = 0;
+        for(let row of data) {
+          this.pieChartData.push(row[0]);
+          this.pieChartLabels.push(row[1]);
+        }
+        this.chart.chart.update();
+        this.chart.ngOnChanges({});
+        this.spinner = false;
+    });
+    
   }
   
 }
