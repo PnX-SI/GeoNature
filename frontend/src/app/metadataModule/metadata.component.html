@@ -52,6 +52,14 @@
                     </td>
                     <td> {{ds.id_dataset}}</td>
                     <td> {{ ds.dataset_name }} </td>
+                    <td> 
+                      <a *ngIf="_cruvedStore.cruved?.METADATA?.cruved.U !== '0'"
+                      class="bt-edit" 
+                      title="Fiche du jeu de données"
+                      [routerLink]="['/metadata/dataset_detail', ds.id_dataset]" >
+                      <i class="fa fa-eye" aria-hidden="true"></i>
+                      </a> 
+                    </td>
                 </tr>
               </tbody>
             </table>

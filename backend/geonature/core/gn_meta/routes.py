@@ -15,6 +15,7 @@ import datetime as dt
 
 from geonature.core.gn_meta.models import (
     TDatasets,
+    TDatasetDetails,
     CorDatasetActor,
     TAcquisitionFramework,
     CorAcquisitionFrameworkActor,
@@ -109,6 +110,41 @@ def get_dataset(id_dataset):
     for o in organisms:
         dataset["cor_dataset_actor"][i]["organism"] = o
         i = i + 1
+    return dataset
+
+
+@routes.route("/dataset_details/<id_dataset>", methods=["GET"])
+@json_resp
+def get_dataset_details(id_dataset):
+    """
+    Get one dataset with nomenclatures and af
+
+    .. :quickref: Metadata;
+
+    :param id_dataset: the id_dataset
+    :param type: int
+    :returns: dict<TDatasetDetails>
+    """
+    data = DB.session.query(TDatasetDetails).get(id_dataset)
+    cor = data.cor_dataset_actor
+    dataset = data.as_dict(True)
+    organisms = []
+    for c in cor:
+        if c.organism:
+            organisms.append(c.organism.as_dict())
+        else:
+            organisms.append(None)
+    i = 0
+    for o in organisms:
+        dataset["cor_dataset_actor"][i]["organism"] = o
+        i = i + 1
+    dataset["data_type"] = data.data_type.as_dict()
+    dataset["dataset_objectif"] = data.dataset_objectif.as_dict()
+    dataset["collecting_method"] = data.collecting_method.as_dict()
+    dataset["data_origin"] = data.data_origin.as_dict()
+    dataset["source_status"] = data.source_status.as_dict()
+    dataset["resource_type"] = data.resource_type.as_dict()
+    dataset["acquisition_framework"] = data.acquisition_framework.as_dict()
     return dataset
 
 
