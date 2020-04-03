@@ -72,10 +72,13 @@ export class OcctaxFormOccurrenceComponent implements OnInit {
     this.taxonForm = new FormControl(null, Validators.required);
 
     //attribut le cd_nom au formulaire si un taxon est selectionné
+    //gère le taxon en cours pour filtrer les valeurs des differents select
     this.taxonForm
           .valueChanges
           .pipe(
+            tap(()=>this.occtaxFormOccurrenceService.taxref.next(null)),
             filter(taxon=>taxon !== null),
+            tap(taxon=>this.occtaxFormOccurrenceService.taxref.next(taxon)),
             map(taxon=>{
               let nom_cite = null;
               let cd_nom = null;
