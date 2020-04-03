@@ -58,7 +58,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    setInterval(()=>this.calcCardContentHeight(),500);
+    setTimeout(()=>this.calcCardContentHeight(),500);
   }
 
   @HostListener('window:resize', ['$event'])
@@ -66,13 +66,12 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     this.calcCardContentHeight()
   }
 
-  calcCardContentHeight(): void {
+  calcCardContentHeight() {
     let wH = window.innerHeight;
-    let tbH = document.getElementById('app-toolbar').offsetHeight;
-    let nbH = (<HTMLScriptElement><any>document.querySelector("pnx-occtax-form .tab")).offsetHeight;
+    let tbH = document.getElementById('app-toolbar') ? document.getElementById('app-toolbar').offsetHeight : 0;
+    let nbH = (<HTMLScriptElement><any>document.querySelector("pnx-occtax-form .tab")) ? (<HTMLScriptElement><any>document.querySelector("pnx-occtax-form .tab")).offsetHeight : 0;
 
     let height = wH -(tbH + nbH + 40);
     this.cardContentHeight = height >= 350 ? height : 350;
   }
-
 }

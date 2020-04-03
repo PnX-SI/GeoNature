@@ -185,7 +185,6 @@ export class OcctaxFormOccurrenceService {
 
   submitOccurrence() {
     let id_releve = this.occtaxFormService.id_releve_occtax.getValue();
-    console.log()
     this.saveWaiting = true;
     if (this.occurrence.getValue()) {
       //update
@@ -195,7 +194,6 @@ export class OcctaxFormOccurrenceService {
                   tap(()=>this.saveWaiting = false)
                 )
                 .subscribe(occurrence=>{
-                  console.log(occurrence)
                   this.commonService.translateToaster(
                     "info",
                     "Taxon.UpdateDone"
@@ -219,13 +217,11 @@ export class OcctaxFormOccurrenceService {
                   this.reset();
                 });
     }
-    console.log('update', this.form.value);
   }
 
   deleteOccurrence(occurrence) {
     this.occtaxDataService.deleteOccurrence(occurrence.id_occurrence_occtax)
               .subscribe((confirm:boolean)=>{
-                console.log(occurrence.id_occurrence_occtax)
                 this.occtaxFormService.removeOccurrenceData(occurrence.id_occurrence_occtax);
                 this.commonService.translateToaster(
                   "info",

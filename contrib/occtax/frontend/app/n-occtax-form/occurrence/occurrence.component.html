@@ -1,4 +1,4 @@
-<h5>Occurrence</h5>
+<h5>{{'Taxon.Observation' |translate}}</h5>
 <div class="row">
   <div class="col-sm-6">
     <pnx-taxonomy 
@@ -261,7 +261,7 @@
   
 <h5 style="margin-top: 15px;">
   <span [matBadge]="countingControls.length" matBadgeOverlap="false">
-    Dénombrement<ng-container *ngIf="countingControls.length > 1">s</ng-container>
+    {{'Counting.Counting' |translate}}<ng-container *ngIf="countingControls.length > 1">s</ng-container>
   </span>
 </h5>  
 
@@ -272,7 +272,7 @@
   {{'Taxon.Errors.CountingRequiredError' |translate}}
 </div>
 
-<mat-accordion>
+<mat-accordion [multi]="true">
 
   <div 
     *ngFor="let formCounting of countingControls; index as i"
@@ -289,7 +289,7 @@
       <mat-icon matTooltip="Supprimer ce denombrement">clear</mat-icon>
     </button>
 
-    <mat-expansion-panel [expanded]="countingStep === i" (opened)="setCountingStep(i)">
+    <mat-expansion-panel [expanded]="countingControls.length === (i+1)">
       <mat-expansion-panel-header>
         <mat-panel-title>
           Dénombrement - {{ i + 1 }}
