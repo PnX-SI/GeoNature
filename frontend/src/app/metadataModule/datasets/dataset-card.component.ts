@@ -36,7 +36,7 @@ export class DatasetCardComponent implements OnInit {
   ];
   // Dictionnaire contenant les options à implémenter sur le graphe (calcul des pourcentages notamment)
   public pieChartOptions = {
-    weight: "0.2",
+    cutoutPercentage: 80,
     legend: {
       display: 'true',
       position: 'left',
