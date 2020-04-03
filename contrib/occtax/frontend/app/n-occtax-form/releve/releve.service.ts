@@ -11,6 +11,7 @@ import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { GeoJSON } from "leaflet";
 import { AppConfig } from "@geonature_config/app.config";
 import { ModuleConfig } from "../../module.config";
+import { CommonService } from "@geonature_common/service/common.service";
 import { FormService } from "@geonature_common/form/form.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { OcctaxFormService } from '../occtax-form.service';
@@ -33,6 +34,7 @@ export class OcctaxFormReleveService {
   constructor(
     private router: Router,
     private fb: FormBuilder,
+    private _commonService: CommonService,
     private dateParser: NgbDateParserFormatter,
     private coreFormService: FormService,
     private dataFormService: DataFormService,
@@ -245,10 +247,23 @@ export class OcctaxFormReleveService {
                   .pipe(
                     tap(()=>this.waiting = false)
                   )
-                  .subscribe((data:any)=>{
-                    this.occtaxFormService.replaceReleveData(data);
-                    this.releveForm.markAsPristine()
-                  });
+                  .subscribe(
+                    (data:any) => {
+                      this._commonService.translateToaster(
+                        "info",
+                        "Releve.Infos.ReleveModified"
+                      );
+                      this.occtaxFormService.replaceReleveData(data);
+                      this.releveForm.markAsPristine()
+                    },
+                    err => {
+                      this.waiting = false;
+                      this._commonService.translateToaster(
+                        "error",
+                        "ErrorMessage"
+                      );
+                    }
+                  );
     } else {
       //create
       this.occtaxDataService
@@ -256,7 +271,22 @@ export class OcctaxFormReleveService {
                   .pipe(
                     tap(()=>this.waiting = false)
                   )
-                  .subscribe((data:any)=>this.router.navigate([data.id, 'taxons'], {relativeTo: this.route}));
+                  .subscribe(
+                    (data:any) => {
+                      this._commonService.translateToaster(
+                        "info",
+                        "Releve.Infos.ReleveAdded"
+                      );
+                      this.router.navigate([data.id, 'taxons'], {relativeTo: this.route})
+                    },
+                    err => {
+                      this.waiting = false;
+                      this._commonService.translateToaster(
+                        "error",
+                        "ErrorMessage"
+                      );
+                    }
+                  );
     }
   }
 
