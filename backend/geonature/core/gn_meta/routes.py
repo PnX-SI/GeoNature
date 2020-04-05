@@ -296,6 +296,13 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
         "entite" : "sinp"
     }
 
+    date = dt.datetime.now().strftime("%d/%m/%Y")
+
+    df['footer'] = {
+        "url" : current_app.config["URL_APPLICATION"]+"/api/meta/acquisition_frameworks/export_pdf/"+id_acquisition_framework,
+        "date" : date
+    }
+
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf('cadre_acquisition_template_pdf.html', df, filename)
 
