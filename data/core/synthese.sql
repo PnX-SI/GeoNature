@@ -1132,6 +1132,6 @@ CREATE TRIGGER tri_update_cor_area_taxon_update_cd_nom
 --DATA--
 --------
 
-INSERT INTO gn_commons.t_modules (module_code, module_label, module_picto, module_desc, module_path, module_target, active_frontend, active_backend) VALUES
-('SYNTHESE', 'Synthese', 'fa-search', 'Application synthese', 'synthese', '_self', 'true', 'true');
+INSERT INTO gn_commons.t_modules (module_code, module_label, module_picto, module_desc, module_path, module_target, active_frontend, active_backend, module_doc_url) VALUES
+('SYNTHESE', 'Synthese', 'fa-search', 'Application synthese', 'synthese', '_self', 'true', 'true', 'http://docs.geonature.fr/user-manual.html#synthese');
 

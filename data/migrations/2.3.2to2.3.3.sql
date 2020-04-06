@@ -31,14 +31,29 @@ END;
 $function$
 ;
 
--- application du trigger sur occtax
+-- Application du trigger sur Occtax
 CREATE TRIGGER tri_calculate_altitude
   BEFORE INSERT OR UPDATE
   ON pr_occtax.t_releves_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE ref_geo.fct_trg_calculate_alt_minmax('geom_4326');
 
-
+-- Mise à jour des URL des documentations utilisateurs
+UPDATE gn_commons.t_modules 
+   SET module_doc_url='http://docs.geonature.fr/user-manual.html' 
+   WHERE module_code='GEONATURE';
+UPDATE gn_commons.t_modules 
+   SET module_doc_url='http://docs.geonature.fr/user-manual.html#admin' 
+   WHERE module_code='ADMIN';
+UPDATE gn_commons.t_modules 
+   SET module_doc_url='http://docs.geonature.fr/user-manual.html#metadonnees' 
+   WHERE module_code='METADATA';
+UPDATE gn_commons.t_modules 
+   SET module_doc_url='http://docs.geonature.fr/user-manual.html#synthese' 
+   WHERE module_code='SYNTHESE';
+UPDATE gn_commons.t_modules 
+   SET module_doc_url='http://docs.geonature.fr/user-manual.html#occtax' 
+   WHERE module_code='OCCTAX';
 
 -- Création de la table necessaire au MAJ mobiles
 

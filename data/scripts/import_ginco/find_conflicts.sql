@@ -15,14 +15,14 @@ CREATE TABLE ginco_migration.cd_nom_null AS (
 
 DROP TABLE IF EXISTS ginco_migration.date_invalid;
 CREATE TABLE ginco_migration.date_invalid AS (
-  SELECT identifiantpermanent
+  SELECT unique_id_sinp
   FROM gn_synthese.synthese
   WHERE date_max < date_min
 );
 
 DROP TABLE IF EXISTS ginco_migration.count_invalid;
 CREATE TABLE ginco_migration.count_invalid AS (
-  SELECT identifiantpermanent
+  SELECT unique_id_sinp
   FROM gn_synthese.synthese
   WHERE count_max < count_min
 );
