@@ -127,7 +127,11 @@ export class MapComponent implements OnInit {
       const configObj = (basemap as any).subdomains
         ? { attribution: basemap.attribution, subdomains: (basemap as any).subdomains }
         : { attribution: basemap.attribution };
-      baseControl[basemap.name] = L.tileLayer(basemap.layer, configObj);
+      if( basemap.hasOwnProperty('url') ){
+        baseControl[basemap.name] = L.tileLayer.wms(basemap.url, {'layers':basemap.layers,'attribution':basemap.attribution});
+      }else{
+        baseControl[basemap.name] = L.tileLayer(basemap.layer, configObj);
+      }
       if (index === 0) {
         map.addLayer(baseControl[basemap.name]);
       }
