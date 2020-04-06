@@ -158,22 +158,27 @@ def get_t_mobile_apps():
     params = request.args
     q = DB.session.query(TMobileApps)
     if "app_code" in request.args:
-        q = q.filter(TMobileApps.app_code == params["app_code"])
+        q = q.filter(TMobileApps.app_code.ilike(params["app_code"]))
     mobile_apps = []
     for d in q.all():
         one_app = d.as_dict()
         one_app["settings"] = {}
         #  if local
-        if one_app["url_apk"] is None:
+        if one_app["url_apk"] is None or len(one_app["url_apk"]) == 0:
             try:
-                url_apk = str(BACKEND_DIR / one_app["relative_path_apk"])
+                url_apk = "{}/{}".format(
+                    current_app.config["API_ENDPOINT"], one_app["relative_path_apk"]
+                )
                 one_app["url_apk"] = url_apk
-                dir_app = "/".join(url_apk.split("/")[:-1])
+                dir_app = "/".join(
+                    str(BACKEND_DIR / one_app["relative_path_apk"]).split("/")[:-1]
+                )
                 settings_file = "{}/settings.json".format(dir_app)
                 with open(settings_file) as f:
                     one_app["settings"] = json.load(f)
             except Exception as e:
                 raise e
+
         else:
             #  get config
             dir_app = "/".join(one_app["url_apk"].split("/")[:-1])
@@ -195,4 +200,3 @@ def get_t_mobile_apps():
     if len(mobile_apps) == 1:
         return mobile_apps[0]
     return mobile_apps
-
