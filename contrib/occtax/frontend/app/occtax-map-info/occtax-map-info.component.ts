@@ -1,121 +1,158 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, AfterViewInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Subscription } from "rxjs/Subscription";
-import { OcctaxFormService } from "../occtax-map-form/form/occtax-form.service";
+import { Subscription, BehaviorSubject } from "rxjs";
+import { map, filter, tap } from "rxjs/operators";
+import { isEqual } from 'lodash';
 import { MapService } from "@geonature_common/map/map.service";
-import { FormGroup, FormArray } from "@angular/forms";
 import { OcctaxDataService } from "../services/occtax-data.service";
 import { ModuleConfig } from "../module.config";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
+import { DataFormService } from "@geonature_common/form/data-form.service";
+
+const NOMENCLATURES = [
+        'TECHNIQUE_OBS', 
+        'TYP_GRP',
+        'METH_DETERMIN', 
+        'STATUT_OBS', 
+        'METH_OBS', 
+        'ETA_BIO', 
+        'NATURALITE', 
+        'STATUT_BIO', 
+        'STATUT_SOURCE', 
+        'NIV_PRECIS', 
+        'DEE_FLOU', 
+        'PREUVE_EXIST', 
+        'STADE_VIE',
+        'SEXE',
+        'OBJ_DENBR',
+        'TYP_DENBR'];
 
 @Component({
   selector: "pnx-occtax-map-info",
   templateUrl: "occtax-map-info.component.html",
   styleUrls: ["./occtax-map-info.component.scss"],
-  providers: [OcctaxFormService]
 })
-export class OcctaxMapInfoComponent implements OnInit {
-  private _sub: Subscription;
-  public id: number;
+export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
+
   public occtaxConfig = ModuleConfig;
-  public releve: any;
-  public observers: any;
-  public selectedOccurrence: any;
-  public occurrenceForm: FormGroup;
-  public countingFormArray: FormArray;
-  public disabled = true;
-  public selectedIndex: number;
-  public dateMin: string;
-  public dateMax: string;
-  public showSpinner = true;
-  public geojson: any;
-  public releveForm: FormGroup;
-  public userReleveCruved: any;
-  public nbCounting = 0;
-  public currentReleve: any;
+  public occtaxData: BehaviorSubject<any> = new BehaviorSubject(null);
+  nomenclatures: Array<any> = [];
+  displayOccurrence: BehaviorSubject<any> = new BehaviorSubject(null);
+  private _geojson: any;
+
+  get releve() {
+    return this.occtaxData.getValue() ? this.occtaxData.getValue().properties : null;
+  }
+
+  get id() {
+    return this.occtaxData.getValue() ? this.occtaxData.getValue().id : null;
+  }
+
+  get geojson() { return this._geojson; }
+  set geojson(geojson: any) { 
+    if ( !isEqual(geojson, this._geojson) ) {
+      this._geojson = geojson; 
+    }
+  }
+
+  get occurrences() {
+    return this.releve && this.releve.t_occurrences_occtax ? this.releve.t_occurrences_occtax : [];
+  }
+
+  get nbCounting() {
+    let nbCounting = 0
+    for (var i=0; i < this.occurrences.length; i++) {
+      nbCounting =+ this.occurrences[i].cor_counting_occtax.length
+    }
+    return nbCounting;
+  }
+
   constructor(
-    public fs: OcctaxFormService,
     private _route: ActivatedRoute,
     private _ms: MapService,
     private _router: Router,
-    private _occtaxService: OcctaxDataService,
+    private occtaxDataService: OcctaxDataService,
     private _modalService: NgbModal,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private dataFormS: DataFormService
   ) {}
 
   ngOnInit() {
-    // init forms
-    this.releveForm = this.fs.initReleveForm();
-    this.occurrenceForm = this.fs.initOccurenceForm();
+    //si modification, récuperation de l'ID du relevé
+    let id = this._route.snapshot.paramMap.get('id');
+    let id_counting = this._route.snapshot.paramMap.get('id_counting');
 
-    this._sub = this._route.params.subscribe(params => {
-      // check if the id in the URL is an id_releve or a id_counting
-      const inter = this._router.url.split("/");
-      const parsed_url = inter[inter.length - 2];
-      if (parsed_url === "id_counting") {
-        // get the id_releve from the id_counting
-        this._occtaxService.getOneCounting(params["id"]).subscribe(data => {
-          this.id = data["id_releve"];
-          this.loadReleve(this.id);
-        });
-      } else {
-        // get the id_releve from the url
-        this.id = +params["id"];
-        this.loadReleve(this.id);
-      }
-    });
-  }
-
-  selectOccurrence(occ, index) {
-    this.selectedIndex = index;
-    this.selectedOccurrence = occ;
-    this.occurrenceForm.patchValue(occ);
-    // init counting form with data
-    this.countingFormArray = this.fs.initCountingArray(occ.cor_counting_occtax);
-  }
-
-  loadReleve(id_releve) {
-    if (!isNaN(id_releve)) {
-      // load one releve
-      this._occtaxService.getOneReleve(id_releve).subscribe(
-        data => {
-          // save current releve
-          this.currentReleve = data;
-          this.userReleveCruved = data.cruved;
-          // calculate the nbCounting
-          data.releve.properties.t_occurrences_occtax.forEach(occ => {
-            this.nbCounting += occ.cor_counting_occtax.length;
-          });
-
-          this.releveForm.patchValue(data.releve);
-          this.releve = data.releve;
-          if (!ModuleConfig.observers_txt) {
-            this.observers = data.releve.properties.observers
-              .map(obs => obs.nom_role + " " + obs.prenom_role)
-              .join(", ");
-          } else {
-            this.observers = data.releve.properties.observers_txt;
-          }
-          this.dateMin = data.releve.properties.date_min.substring(0, 10);
-          this.dateMax = data.releve.properties.date_max.substring(0, 10);
-
-          this._ms.loadGeometryReleve(data.releve, false);
-        },
-        error => {
-          if (error.status === 403) {
-            this._commonService.translateToaster("error", "NotAllowed");
-          } else if (error.status === 404) {
-            this._commonService.translateToaster(
-              "error",
-              "Releve.DoesNotExist"
-            );
-          }
-
-          this._router.navigate(["/occtax"]);
-        }
-      );
+    if ( id && Number.isInteger(Number(id)) ) {
+      this.getOcctaxData(Number(id));
+    } else if ( id_counting && Number.isInteger(Number(id_counting)) ) {
+      //si id_counting de passé
+      this.occtaxDataService.getOneCounting(Number(id_counting))
+        .pipe(
+          map(data=>data["id_releve"])
+        )
+        .subscribe(id_releve => this.getOcctaxData(id_releve));
     }
+
+    this.getNomenclatures();
+
+    
+  }
+
+  ngAfterViewInit() {
+    //gestion de la geometrie
+    this.occtaxData
+          .pipe(
+            filter(data=>data !== null),
+            map(data=>{return {geometry: data.geometry};})
+          )
+          .subscribe(geojson=>{
+            this.geojson = geojson;
+            this._ms.loadGeometryReleve(geojson, false);
+          })
+  }
+
+  getOcctaxData(id) {
+    this.occtaxDataService.getOneReleve(id)
+                .pipe(
+                  map(data=>{
+                    let releve = data.releve;
+                    releve.properties.date_min = new Date(releve.properties.date_min);
+                    releve.properties.date_max = new Date(releve.properties.date_max);
+                    return releve;
+                  })
+                )
+                .subscribe(
+                  data=>this.occtaxData.next(data),
+                  error => {
+                    this._commonService.translateToaster(
+                      "error",
+                      "Releve.DoesNotExist"
+                    );
+                    this._router.navigate(["occtax"])
+                  }
+                );
+  }
+
+  getNomenclatures() {
+    this.dataFormS
+        .getNomenclatures(NOMENCLATURES)
+        .pipe(
+          map(data=>{
+            let values = [];
+            for (let i=0; i < data.length; i++) {
+              data[i].values.forEach(element => {
+                values[element.id_nomenclature] = element
+              });
+            }
+            return values;
+          })
+        )
+        .subscribe(nomenclatures => this.nomenclatures = nomenclatures);
+  }
+
+  getLibelleByID(ID: number, lang: string = 'default') {
+    return this.nomenclatures[ID] ? this.nomenclatures[ID][`label_${lang}`] : null;
   }
 
   openModalDelete(modalDelete) {
@@ -123,7 +160,7 @@ export class OcctaxMapInfoComponent implements OnInit {
   }
 
   deleteReleve(modal) {
-    this._occtaxService.deleteReleve(this.id).subscribe(
+    this.occtaxDataService.deleteReleve(this.id).subscribe(
       () => {
         this._commonService.translateToaster(
           "success",

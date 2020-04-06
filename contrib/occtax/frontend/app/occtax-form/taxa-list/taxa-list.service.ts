@@ -26,10 +26,10 @@ export class OcctaxTaxaListService {
   constructor(
     private dataFormS: DataFormService
   ) {
-    this.getTruc();
+    this.getNomenclatures();
   }
 
-  getTruc() {
+  getNomenclatures() {
     this.dataFormS
         .getNomenclatures(NOMENCLATURES)
         .pipe(
