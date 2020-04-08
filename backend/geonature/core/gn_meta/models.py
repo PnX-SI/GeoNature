@@ -58,7 +58,22 @@ class CorAcquisitionFrameworkActor(DB.Model):
     id_organism = DB.Column(
         DB.Integer, ForeignKey("utilisateurs.bib_organismes.id_organisme")
     )
-    id_nomenclature_actor_role = DB.Column(DB.Integer)
+    id_nomenclature_actor_role = DB.Column(
+        DB.Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        default=TNomenclatures.get_default_nomenclature("ROLE_ACTEUR")
+    )
+
+    nomenclature_actor_role = DB.relationship(
+        TNomenclatures,
+        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_actor_role)
+    )
+
+    role = DB.relationship(
+        User, primaryjoin=(User.id_role == id_role), foreign_keys=[id_role]
+    )
+    
+    organism = relationship("BibOrganismes", foreign_keys=[id_organism])
 
     @staticmethod
     def get_actor(
@@ -269,10 +284,18 @@ class TAcquisitionFramework(DB.Model):
     )
     acquisition_framework_name = DB.Column(DB.Unicode)
     acquisition_framework_desc = DB.Column(DB.Unicode)
-    id_nomenclature_territorial_level = DB.Column(DB.Integer)
+    id_nomenclature_territorial_level = DB.Column(
+        DB.Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        default=TNomenclatures.get_default_nomenclature("NIVEAU_TERRITORIAL")
+    )
     territory_desc = DB.Column(DB.Unicode)
     keywords = DB.Column(DB.Unicode)
-    id_nomenclature_financing_type = DB.Column(DB.Integer)
+    id_nomenclature_financing_type = DB.Column(
+        DB.Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        default=TNomenclatures.get_default_nomenclature("TYPE_FINANCEMENT")
+    )
     target_description = DB.Column(DB.Unicode)
     ecologic_or_geologic_target = DB.Column(DB.Unicode)
     acquisition_framework_parent_id = DB.Column(DB.Integer)
@@ -371,4 +394,19 @@ class TDatasetDetails(TDatasets):
     acquisition_framework = DB.relationship(
         TAcquisitionFramework,
         primaryjoin=(TAcquisitionFramework.id_acquisition_framework == TDatasets.id_acquisition_framework)
+    )
+
+class TAcquisitionFrameworkDetails(TAcquisitionFramework):
+    """
+    Class which extends TAcquisitionFramework with nomenclatures relationships
+    """
+
+    nomenclature_territorial_level = DB.relationship(
+        TNomenclatures,
+        primaryjoin=(TNomenclatures.id_nomenclature == TAcquisitionFramework.id_nomenclature_territorial_level)
+    )
+
+    nomenclature_financing_type = DB.relationship(
+        TNomenclatures,
+        primaryjoin=(TNomenclatures.id_nomenclature == TAcquisitionFramework.id_nomenclature_financing_type)
     )
