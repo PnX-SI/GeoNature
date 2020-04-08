@@ -123,8 +123,9 @@ export class MapComponent implements OnInit {
 
     L.control.zoom({ position: 'topright' }).addTo(map);
     const baseControl = {};
-    AppConfig.MAPCONFIG.BASEMAP.forEach((basemap, index) => {
+    const BASEMAP = JSON.parse(JSON.stringify(AppConfig.MAPCONFIG.BASEMAP));
 
+    BASEMAP.forEach((basemap, index) => {
       const url = basemap.layer;
       delete basemap.layer;
       baseControl[basemap.name] = L.tileLayer.wms(url, basemap);

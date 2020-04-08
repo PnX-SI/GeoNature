@@ -227,6 +227,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       return;
     }
     this.mapservice.leafletDrawFeatureGroup.addTo(this.map);
+    this.drawControl._toolbars.draw.setOptions(this.options.draw)
     this.drawControl.addTo(this.map);
   }
 
@@ -234,7 +235,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     if (changes.geojson && changes.geojson.currentValue) {
       this.loadDrawfromGeoJson(changes.geojson.currentValue);
     }
-    if (changes.bEnable) {
+    if (changes.bEnable || (changes.options && changes.options.currentValue)) {
       if (this.bEnable) {
         this.enableDrawControl();
       } else {
