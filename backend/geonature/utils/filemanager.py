@@ -84,7 +84,7 @@ def delete_recursively(path_folder, period=1, excluded_files=[]):
 
 def generate_pdf(template, data, filename):
     template_rendered = render_template(template, data=data)
-    html_file = HTML(string=template_rendered)
+    html_file = HTML(string=template_rendered, base_url=__file__)
     html_file.write_pdf(filename)
     pdf_download = open(filename, 'rb').read()
     remove_file(filename)

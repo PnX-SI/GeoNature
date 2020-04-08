@@ -17,6 +17,7 @@ from geonature.core.gn_meta.models import (
     TDatasets,
     CorDatasetActor,
     TAcquisitionFramework,
+    TAcquisitionFrameworkDetails,
     CorAcquisitionFrameworkActor,
     CorAcquisitionFrameworkObjectif,
     CorAcquisitionFrameworkVoletSINP,
@@ -183,32 +184,32 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
         )
 
     # Recuperation des données
-    af = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
-
-    if af:
-        data = dict()
-        df = af.as_dict(True)
-        data['nom'] = df['acquisition_framework_name'] if df['acquisition_framework_name'] else ''
-        data['description'] = df['acquisition_framework_desc'] if df['acquisition_framework_desc'] else ''
-        data['mots_cles'] = df['keywords'] if df['keywords'] else ''
-        data['est_parent'] = True if df['is_parent'] else False
-        if data['est_parent']:
-            # TODO Chercher parent
-            data['cadre_parent'] = 'X'
-        # TODO Niveau territorial
-        # A chercher dans les referentiels 
-        # Endpoint trouvé mais pas de fonction existante a appellée
-        data['description_territoire'] = df['territory_desc'] if df['territory_desc'] else ''
-        # TODO Objectifs du cadre d'acquisition
-        # TODO Volets SINP
-        # TODO Type de financement
-        data['cibles_eco_ou_geo'] = df['ecologic_or_geologic_target'] if df['ecologic_or_geologic_target'] else ''
-        data['description_cible'] = df['target_description'] if df['target_description'] else ''
-        data['date_debut'] = df['acquisition_framework_start_date'] if df['acquisition_framework_start_date'] else ''
-        data['date_fin'] = df['acquisition_framework_end_date'] if df['acquisition_framework_end_date'] else ''
-        # TODO Reformater les dates : jj/mm/yyyy
-        # TODO Les acteurs sur le cote
-    else :
+    af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
+    df = af.as_dict(True)
+    if df:
+        df["nomenclature_territorial_level"] = af.nomenclature_territorial_level.as_dict()
+        df["nomenclature_financing_type"] = af.nomenclature_financing_type.as_dict()
+        if df["acquisition_framework_start_date"] :
+            start_date = dt.datetime.strptime(df["acquisition_framework_start_date"], '%Y-%m-%d')
+            df["acquisition_framework_start_date"] = start_date.strftime("%d/%m/%Y")
+        if df["acquisition_framework_end_date"] :
+            end_date = dt.datetime.strptime(df["acquisition_framework_end_date"], '%Y-%m-%d')
+            df["acquisition_framework_end_date"] = end_date.strftime("%d/%m/%Y")
+        df['css'] = {
+            "logo" : "Logo_SINP.png",
+            "bandeau" : "Bandeau_SINP.png",
+            "entite" : "sinp"
+        }
+        date = dt.datetime.now().strftime("%d/%m/%Y")
+        df['footer'] = {
+            "url" : current_app.config["URL_APPLICATION"]+"/api/meta/acquisition_frameworks/export_pdf/"+id_acquisition_framework,
+            "date" : date
+        }
+        params = {"id_acquisition_frameworks" : id_acquisition_framework}
+        jdd = get_datasets_cruved(info_role, params)
+        if jdd:
+            df['jdd'] = jdd
+    else:
         return render_template(
             'error.html',
             error='Le dataset presente des erreurs',
@@ -216,18 +217,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
 
     filename = 'cadre_acquisition_id_n_{}.pdf'.format(id_acquisition_framework)
 
-    df['css'] = {
-        "logo" : "images/Logo_SINP.png",
-        "bandeau" : "images/Bandeau_SINP.png",
-        "entite" : "sinp"
-    }
-
-    date = dt.datetime.now().strftime("%d/%m/%Y")
-
-    df['footer'] = {
-        "url" : current_app.config["URL_APPLICATION"]+"/api/meta/acquisition_frameworks/export_pdf/"+id_acquisition_framework,
-        "date" : date
-    }
+    pprint.pprint(df)
 
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf('cadre_acquisition_template_pdf.html', df, filename)
@@ -255,6 +245,25 @@ def get_acquisition_framework(id_acquisition_framework):
     af = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
     if af:
         return af.as_dict(True)
+    return None
+
+@routes.route("/acquisition_framework_details/<id_acquisition_framework>", methods=["GET"])
+@json_resp
+def get_acquisition_framework_details(id_acquisition_framework):
+    """
+    Get one AF
+
+    .. :quickref: Metadata;
+
+    :param id_acquisition_framework: the id_acquisition_framework
+    :param type: int
+    """
+    af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
+    acquisition_framework = af.as_dict(True)
+    if acquisition_framework:
+        acquisition_framework["nomenclature_territorial_level"] = af.nomenclature_territorial_level.as_dict()
+        acquisition_framework["nomenclature_financing_type"] = af.nomenclature_financing_type.as_dict()
+        return acquisition_framework
     return None
 
 @routes.route("/acquisition_framework", methods=["POST"])
