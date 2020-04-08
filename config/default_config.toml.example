@@ -25,6 +25,9 @@ SQLALCHEMY_TRACK_MODIFICATIONS = false
 # Nom de l'application dans la page d'accueil.
 appName = "GeoNature 2"
 
+# Nom du fichier du logo present dans le dossier custom/images
+LOGO_STRUCTURE_FILE = 'logo_structure.png'
+
 # Langue par défaut utilisée par l'application.
 # Utilisée pour l'instant seulement avec les nomenclatures.
 DEFAULT_LANGUAGE = "fr"
