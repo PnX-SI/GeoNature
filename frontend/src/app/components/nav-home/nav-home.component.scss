@@ -50,6 +50,7 @@ mat-icon {
 .toolbar-button {
   background-color: $navbar-color !important;
   color: $navbar-text-button-color !important;
+  outline: none;
 }
 
 .menu-button {
