@@ -31,14 +31,29 @@ END;
 $function$
 ;
 
--- application du trigger sur occtax
+-- Application du trigger sur Occtax
 CREATE TRIGGER tri_calculate_altitude
   BEFORE INSERT OR UPDATE
   ON pr_occtax.t_releves_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE ref_geo.fct_trg_calculate_alt_minmax('geom_4326');
 
-
+-- Mise à jour des URL des documentations utilisateurs
+UPDATE gn_commons.t_modules 
+   SET module_doc_url='http://docs.geonature.fr/user-manual.html' 
+   WHERE module_code='GEONATURE';
+UPDATE gn_commons.t_modules 
+   SET module_doc_url='http://docs.geonature.fr/user-manual.html#admin' 
+   WHERE module_code='ADMIN';
+UPDATE gn_commons.t_modules 
+   SET module_doc_url='http://docs.geonature.fr/user-manual.html#metadonnees' 
+   WHERE module_code='METADATA';
+UPDATE gn_commons.t_modules 
+   SET module_doc_url='http://docs.geonature.fr/user-manual.html#synthese' 
+   WHERE module_code='SYNTHESE';
+UPDATE gn_commons.t_modules 
+   SET module_doc_url='http://docs.geonature.fr/user-manual.html#occtax' 
+   WHERE module_code='OCCTAX';
 
 -- Création de la table necessaire au MAJ mobiles
 
@@ -46,7 +61,9 @@ CREATE TABLE gn_commons.t_mobile_apps(
   id_mobile_app serial,
   app_code character varying(30),
   relative_path_apk character varying(255),
-  url_apk character varying(255)
+  url_apk character varying(255),
+  package character varying(255),
+  version_code character varying(10)
 );
 
 COMMENT ON COLUMN gn_commons.t_mobile_apps.app_code IS 'Code de l''application mobile. Pas de FK vers t_modules car une application mobile ne correspond pas forcement à un module GN';
