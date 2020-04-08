@@ -215,6 +215,13 @@ def get_export_pdf_dataset(id_dataset, info_role):
         "entite" : "sinp"
     }
 
+    date = dt.datetime.now().strftime("%d/%m/%Y")
+
+    df['footer'] = {
+        "url" : current_app.config["URL_APPLICATION"]+"/api/meta/dataset/export_pdf/"+id_dataset,
+        "date" : date
+    }
+
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf('jeu_de_donnees_template_pdf.html', df, filename)
 
