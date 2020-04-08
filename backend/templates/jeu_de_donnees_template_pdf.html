@@ -4,14 +4,14 @@
 <head>
     <meta charset="utf-8" />
     <title>Cadre acquisition</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/jeu_de_donnees_template_pdf.css') }}">
+    <link rel="stylesheet" type="text/css" href="../../static/css/jeu_de_donnees_template_pdf.css">
 </head>
 
 <body>
     {% if data.css: %}
     <div class="header">
-        <img class="bandeau" src="{{ url_for('static', filename=data.css['bandeau']) }}" alt="Bandeau">
-        <img class="logo" src="{{ url_for('static', filename=data.css['logo']) }}" alt="Logo">
+        <img class="bandeau" src="../../static/images/{{ data.css['bandeau'] }}" alt="Bandeau">
+        <img class="logo" src="../../static/images/{{ data.css['logo'] }}" alt="Logo">
     </div>
     {% endif %}
     <div class="titre">
@@ -25,8 +25,8 @@
         <div class="etiquette" {% if data.css: %} id="nombre-taxons-{{data.css['entite']}}" {% else %}
             id="nombre-taxons-defaut" {% endif %}>
             <div class="etiquette-haut">
-                <img class="logo-etiquette" src="{{ url_for('static', filename='images/Taxon_icon.svg') }}"
-                    alt="test">
+                <img class="logo-etiquette" src="../../static/images/Taxon_icon.svg"
+                    alt="taxon-icon">
                 <p class="titre-etiquette">Taxons</p>
             </div>
             <div class="etiquette-bas">
@@ -36,8 +36,8 @@
         <div class="etiquette" {% if data.css: %} id="nombre-donnees-{{data.css['entite']}}" {% else %}
             id="nombre-donnees-defaut" {% endif %}>
             <div class="etiquette-haut">
-                <img class="logo-etiquette" src="{{ url_for('static', filename='images/Donnee_icon.svg') }}"
-                    alt="test">
+                <img class="logo-etiquette" src="../../static/images/Donnee_icon.svg"
+                    alt="donnee-icon">
                 <p class="titre-etiquette">Données</p>
             </div>
             <div class="etiquette-bas">
@@ -153,7 +153,7 @@
                 <p class="ca-initial">Cadre d'acquisition initial</p>
 
                 <div class="ca-initial-details">
-                    <img class="logo-ca-initial" src="{{ url_for('static', filename='images/Taxon_icon_vert.svg') }}" alt="test">
+                    <img class="logo-ca-initial" src="../../static/images/Taxon_icon_vert.svg" alt="taxon-vert-icon">
                     <p class="ca-initial-info">
                         4A9DDA1F-B770-3E13-E053-2614A8C02B7C
                         <br>

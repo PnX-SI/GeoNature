@@ -211,8 +211,8 @@ def get_export_pdf_dataset(id_dataset, info_role):
     filename = 'jeu_de_donnees_id_n_{}.pdf'.format(id_dataset)
 
     df['css'] = {
-        "logo" : "images/Logo_SINP.png",
-        "bandeau" : "images/Bandeau_SINP.png",
+        "logo" : "Logo_SINP.png",
+        "bandeau" : "Bandeau_SINP.png",
         "entite" : "sinp"
     }
 
