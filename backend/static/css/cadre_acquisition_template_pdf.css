@@ -1,24 +1,35 @@
+@page { 
+    size: A4;
+    margin: 0px;
+}
+
 body {
     font-family: Verdana, sans-serif;
 }
+
 p {
     margin: 0;
 }
+
+a {
+    color: black;
+}
+
 .bandeau {
     width: 95%;
     float: right;
 }
 
 .logo {
-    width: 250px;
+    width: 200px;
     position: absolute;
-    top: 130px;
-    left: 20px;
+    top: 105px;
+    left: 15px;
     transform: translateY(-50%);
 }
 
 div.header {
-    display: inline-block;
+    display: block;
 }
 
 div.titre {
@@ -28,7 +39,7 @@ div.titre {
 }
 
 .label-titre {
-    font-size: 150%;
+    font-size: 19px;
     font-weight: bold;
 }
 
@@ -38,35 +49,33 @@ div.titre {
 
 .ligne-titre {
     width: 55%;
-    height: 4px;
+    height: 3px;
 }
-
 
 .ligne-jeux-donnees {
     width: 90%;
-    height: 6px;
+    height: 5px;
     margin-left: 10px;
 }
 
 .etiquettes {
     display: flex;
     justify-content: space-between;
-    width: 95%;
-    margin: 30px auto 0;
+    margin: 25px 15px 0 15px;
 }
 
 .etiquette {
-    width: 220px;
-    height: 140px;
-    border: 1px solid grey;
-    border-radius: 20px;
+    width: 175px;
+    height: 110px;
+    border: 0.75px solid grey;
+    border-radius: 17px;
 }
 
 .etiquette-haut {
     display: flex;
     justify-content: space-between;
-    height: 55%;
-    margin: 15px 15px 0;
+    height: 52%;
+    margin: 12px 12px 0;
 }
 
 .etiquette-bas {
@@ -74,71 +83,71 @@ div.titre {
 }
 
 .logo-etiquette {
-    width: 65px;
-    height: 65px;
+    width: 50px;
+    height: 50px;
 }
 
 .titre-etiquette {
     font-weight: bold;
-    font-size: 16px;
+    font-size: 13px;
+    text-align: right;
     margin: 0;
 }
 
 .stat-etiquette {
     font-weight: bold;
-    font-size: 36px;
+    font-size: 30px;
     margin: 0;
 }
 
 .description {
     display: flex;
-    width: 95%;
-    margin: 30px auto 0;
+    margin: 25px 15px 0 15px;
 }
 
-.fiche-descriptive, .zone-geographique, .repartition-especes {
+.fiche-descriptive, 
+.zone-geographique, 
+.repartition-especes {
+    text-align: center;
     margin: 5px auto 20px;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: bold;
 }
 
 .liste-jdd {
-    margin: 0 auto 5px;
-    font-size: 12px;
+    text-align: center;
+    margin: 3px auto 5px;
+    font-size: 10px;
     font-weight: bold;
 }
 
-.left-block {
-    width:51%;
-}
-
 .zone, .repartition {
-    height: 300px;
+    height: 40%;
 }
 
 .jdd {
     height: 20%;
 }
 
-.informations {
-    padding-left: 20px;
-    font-size: 13px;
-    width: 49%;
-    border: 1px solid grey;
-    border-radius: 30px;
+.left-block {
+    padding-left: 15px;
+    font-size: 11px;
+    width: 48%;
+    border: 0.75px solid grey;
+    border-radius: 25px;
 }
 
 .information {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .info-titre {
     font-weight: bold;
-    margin: 0;
+    margin: 0 0 2px;
 }
 
 .info-contenu {
-    margin: 0 25px 0;
+    margin: 0 20px 0;
 }
 
 .jdd-details {
@@ -147,23 +156,29 @@ div.titre {
 }
 
 .logo-jdd {
-    height: 35px;
-    width: 35px;
+    height: 30px;
+    width: 30px;
 }
 
 .jdd-info {
-    font-size: 12px;
+    font-size: 10px;
     margin: 2px 0 0 10px;
 }
 
+.right-block {
+    width: 52%;
+}
+
 .footer {
-    width: 90%;
+    width: 95%;
     display: flex;
     justify-content: space-between;
     position: fixed;
-    top: 1370px;
-    left: 40px;
+    left: 20px;
+    bottom: 15px;
+    font-size: 12px;
 }
+
 
 /* DEFAUT */
 #ligne-titre-defaut {
