@@ -5,12 +5,6 @@
   (click)="formDisabled()">
 </div>
 
-<div class="d-xl-none">
-  <pnx-areas-intersected-modal *ngIf="geojson"
-    [geojson]="geojson"> 
-  </pnx-areas-intersected-modal>
-</div>
-
 <div class="row">
   <div class="col-xl-8 col-lg-10">
 
@@ -48,13 +42,6 @@
     </ng-template>
 
   </div>
-
-  <div class="col-md-3 d-none d-xl-block">
-    <pnx-areas-intersected-modal *ngIf="geojson"
-      [geojson]="geojson"> 
-    </pnx-areas-intersected-modal>
-  </div>
-
 </div>
 
 
@@ -143,34 +130,42 @@
 
 
 <div class="row">
-  <div class="col-xl-2 col-md-3 col-sm-4 col-6">
+  <div class="col-xl-4 col-md-6 col-sm-8 col-10">
+    <div class="row">
+      <!-- ALTITUDE MIN -->
+      <div *ngIf="occtaxConfig.form_fields.altitude_min"
+        class="col-6">
+        <small> {{ 'Releve.MinAltitude' | translate }} </small>
+        <input 
+          class="form-control form-control-sm" 
+          [ngClass]="{'is-invalid' : propertiesForm.hasError('invalidAlt')}"
+          type="number" 
+          [formControl]="propertiesForm.get('altitude_min')"
+          [disableControl]="propertiesForm.disabled">
+      </div>
 
-    <!-- ALTITUDE MIN -->
-    <div *ngIf="occtaxConfig.form_fields.altitude_min">
-      <small> {{ 'Releve.MinAltitude' | translate }} </small>
-      <input 
-        class="form-control form-control-sm" 
-        [ngClass]="{'is-invalid' : propertiesForm.hasError('invalidAlt')}"
-        type="number" 
-        [formControl]="propertiesForm.get('altitude_min')"
-        [disableControl]="propertiesForm.disabled">
+      <!-- ALTITUDE MAX -->
+      <div *ngIf="occtaxConfig.form_fields.altitude_max"
+        class="col-6">
+        <small> {{ 'Releve.MaxAltitude' | translate }} </small>
+        <input 
+          class="form-control form-control-sm" 
+          [ngClass]="{'is-invalid' : propertiesForm.hasError('invalidAlt')}"
+          type="number" 
+          [formControl]="propertiesForm.get('altitude_max')"
+          [disableControl]="propertiesForm.disabled">
+      </div>
     </div>
+
   </div>
 
-  <div class="col-xl-2 col-md-3 col-sm-4 col-6">
-    <!-- ALTITUDE MAX -->
-    <div *ngIf="occtaxConfig.form_fields.altitude_max">
-      <small> {{ 'Releve.MaxAltitude' | translate }} </small>
-      <input 
-        class="form-control form-control-sm" 
-        [ngClass]="{'is-invalid' : propertiesForm.hasError('invalidAlt')}"
-        type="number" 
-        [formControl]="propertiesForm.get('altitude_max')"
-        [disableControl]="propertiesForm.disabled">
-    </div>
+  <div class="col-1 align-self-end" style="padding-left: 0px">
+    <pnx-areas-intersected-modal *ngIf="geojson"
+      [geojson]="geojson"> 
+    </pnx-areas-intersected-modal>
   </div>
 
-  <div class="col-xl-4 col-md-6">
+  <div class="col-xl-4 col-md-5">
     <!-- TYPE REGROUPEMENT -->
     <pnx-nomenclature 
       *ngIf="occtaxConfig.form_fields.group_type" 
