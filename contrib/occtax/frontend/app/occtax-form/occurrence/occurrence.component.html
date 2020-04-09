@@ -23,7 +23,8 @@
       {{'Taxon.Errors.CdNomRequiredError' |translate}}
     </small>
   </div>
-  <div class="col-sm-6 align-self-end">
+  <div *ngIf="occtaxConfig.form_fields.display_nom_valide"
+    class="col-sm-6 align-self-end">
     <small> TAXREF - Nom valide </small>
     <span 
       class="form-control form-control-sm form-nom-complet" 

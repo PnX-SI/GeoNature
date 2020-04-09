@@ -163,3 +163,4 @@ ENABLE_UPLOAD_TOOL = true
     type_count = true
     count_min = true
     count_max = true
+    display_nom_valide = true
