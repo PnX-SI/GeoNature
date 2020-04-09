@@ -1,0 +1,144 @@
+<div class="container ">
+  <div class=" row">
+    <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
+      <button class="btn btn-secondary" routerLink="/metadata"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
+      </button>
+    </div>
+  </div>
+  <div class=" row">
+    <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3 padding-sm">
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+            <div class="col">Jeux de données</div>
+            <div class="col-auto" width="60"><img src="./assets/images/JDD_icon.svg" width="40"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3 padding-sm">
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+            <div class="col">Taxons</div>
+            <div class="col-auto" width="60"><img src="./assets/images/Taxon_icon.svg" width="40"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3 padding-sm">
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+            <div class="col">Habitats</div>
+            <div class="col-auto" width="60"><img src="./assets/images/Habitat_icon.svg" width="40"></div>
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3 padding-sm">
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+          <div class="col">Observations</div>
+          <div class="col-auto" width="60"><img src="./assets/images/Donnee_icon.svg" width="40"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-8 col-lg-8 padding-sm">
+      <div class="card">
+        <div class="card-header">
+          <h4>
+            Cadre d'acquisition
+          </h4>
+        </div>
+        <div class="card-body">
+          <div class="b">Identification :</div>
+          <div class="a"> Instance SNIP du cadre d'acquisition : {{af?.unique_acquisition_framework_id}}</div>
+          <div class="a"> Libellé du cadre d'acquisition : {{af?.acquisition_framework_name}}</div>
+          <br/>
+
+          <div class="b">Description :</div>
+          <div class="a"> Cadre de réfèrence : {{af?.acquisition_framework_name}}</div>
+          <div class="a"> Est un méta-cadre : {{af?.is_parent ? 'Oui' : 'Non'}}</div>
+          <div class="a"> Identifiant du méta-cadre : {{af?.acquisition_framework_parent_id}}</div>
+          <br/>
+
+          <div class="b">Dates :</div>
+          <div class="a"> Date de lancement du cadre d'acquisition : {{af?.acquisition_framework_start_date}}</div>
+          <div class="a"> Date de clôture du cadre d'acquisition : {{af?.acquisition_framework_end_date}}</div>
+          <br/>
+
+          <div class="b">Objectifs :</div>
+          <div *ngFor="let objectif of af?.cor_objectifs" class="a"> {{ objectif?.mnemonique }} </div>
+          <br/>
+
+          <div class="b">Territoires concernés :</div>
+          <div class="a"> Etendue territoriale : {{af?.id_nomenclature_territorial_level}}</div>
+          <div class="a"> Territoires : ??</div>
+          <div class="a"> Précision géographique : ??</div>
+          <br/>
+
+          <div class="b">Cible taxonomique :</div>
+          <div class="a"> Description : {{af?.target_description}}</div>
+          <br/>
+
+          <div class="b">Acteurs :</div>
+          <div class="a" *ngFor="let actor of af?.cor_af_actor">
+            <div> {{ actor?.nomenclature_actor_role?.mnemonique}} : {{ actor?.organism?.nom_organisme }} <span *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"> - </span> {{ actor?.role?.nom_complet }} </div>
+            <br/>
+          </div>
+
+          <div class="b">Mots-clés :</div>
+          <div class="a"> {{af?.keywords}} </div>
+          <br/>
+
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6 col-sm-4 col-md-4 col-lg-4 padding-sm">
+      <div class="card">
+        <div class="card-header">
+          <h4>
+            Zone géographique
+          </h4>
+        </div>
+      </div>
+      <div class="card ">
+        <div class="card-header">
+          <h4>
+            Réparition des espèces
+          </h4>
+        </div>
+        <div class="card-body">
+          <div style="display: block">
+            <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
+                [colors]="pieChartColors" [options]="pieChartOptions" padding="20px">
+            </canvas>
+        </div>
+       </div>
+      </div>
+      <div class="card ">
+        <div class="card-header">
+          <h4>
+            Jeux de données associés
+          </h4>
+        </div>
+          <div class="card-body">
+            <table>
+              <tr *ngFor="let dataset of datasets">
+                <td width="60"><img src="./assets/images/{{dataset?.modules[0]?.module_code=='OCCTAX' ? 'Taxon_icon_vert.svg' : 'Habitat_icon_vert.svg'}}" width="40"></td>
+                <td> {{ dataset?.dataset_name }}</td>
+              </tr>
+            </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn btn-success">Exporter au format PDF</button>
+</div>

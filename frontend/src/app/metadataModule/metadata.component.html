@@ -12,6 +12,7 @@
         </div>  
       </div>
       <div>Liste des cadres d'acquisition et des jeux de données associés</div>
+      <br>
       <mat-accordion [multi]="true">
         <ng-container *ngFor="let af of tempAF; let idx = index">
           <mat-expansion-panel *ngIf="isDisplayed(idx)" [expanded]="expandAccordions">
@@ -22,6 +23,12 @@
                   title="Editer le cadre d'acquisition"
                   [routerLink]="['/metadata/af', af.id_acquisition_framework]" >
                   <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                </a>
+                <a *ngIf="_cruvedStore.cruved?.METADATA?.cruved.U !== '0'"
+                  class="bt-edit" 
+                  title="Editer le cadre d'acquisition"
+                  [routerLink]="['/metadata/af-card', af.id_acquisition_framework]" >
+                  <i class="fa fa-info-circle" aria-hidden="true"></i>
                 </a>
                 {{af.id_acquisition_framework}}: {{ af.acquisition_framework_name | uppercase }}
               </mat-panel-title>
@@ -75,7 +82,7 @@
 
       <div>
         <a *ngIf="_cruvedStore.cruved?.METADATA?.cruved.C !== '0'" routerLink="/metadata/af" class="btn btn-primary btn-sm margin-top-sm"> Ajouter un cadre d'acquisition </a>
-        <a *ngIf="_cruvedStore.cruved?.METADATA?.cruved.C !== '0'" routerLink="/metadata/dataset" class="btn btn-primary btn-sm margin-top-sm"> Ajouter un jeu de données </a>
+        &nbsp;<a *ngIf="_cruvedStore.cruved?.METADATA?.cruved.C !== '0'" routerLink="/metadata/dataset" class="btn btn-primary btn-sm margin-top-sm"> Ajouter un jeu de données </a>
       </div>
     </div>
   </div>

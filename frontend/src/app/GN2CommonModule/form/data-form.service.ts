@@ -101,6 +101,10 @@ export class DataFormService {
     });
   }
 
+  getImports(id_dataset) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/import/by_dataset/${id_dataset}`);
+  }
+
   getObservers(idMenu) {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/menu/${idMenu}`);
   }
@@ -272,6 +276,10 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}`);
   }
 
+  getAcquisitionFrameworkDetails(id_af) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework_details/${id_af}`);
+  }
+
   getOrganisms(orderByName = true) {
     let queryString: HttpParams = new HttpParams();
     if (orderByName) {
@@ -316,10 +324,6 @@ export class DataFormService {
 
   getDatasetDetails(id) {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/dataset_details/${id}`);
-  }
-
-  getImports(id_dataset) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/import/by_dataset/${id_dataset}`);
   }
 
   getCountTaxon(id_dataset) {
