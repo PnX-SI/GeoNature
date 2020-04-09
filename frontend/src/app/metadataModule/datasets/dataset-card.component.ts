@@ -4,6 +4,7 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
 import { MetadataFormService } from '../services/metadata-form.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { BaseChartDirective } from 'ng2-charts';
+import { AppConfig } from "@geonature_config/app.config";
 
 @Component({
   selector: 'pnx-datasets-form',
@@ -16,7 +17,6 @@ export class DatasetCardComponent implements OnInit {
   public organisms: Array<any>;
   public id_dataset: number;
   public dataset: any;
-  public imports: Array<any>
   public nbTaxons: number;
   public nbObservations: number;
   
@@ -90,11 +90,6 @@ export class DatasetCardComponent implements OnInit {
   getDataset(id) {
     this._dfs.getDatasetDetails(id).subscribe(data => {
       this.dataset = data;
-
-      this._dfs.getImports(id).subscribe(data => {
-        this.imports = data;
-        console.log(this.imports);
-      })
     });
     this._dfs.getCountTaxon(id).subscribe(data => {
         this.nbTaxons = data;
@@ -114,6 +109,11 @@ export class DatasetCardComponent implements OnInit {
         this.spinner = false;
     });
     
+  }
+
+  getPdf() {
+    const url = `${AppConfig.API_ENDPOINT}/meta/datasets/export_pdf/${this.id_dataset}`;
+    window.open(url);
   }
   
 }
