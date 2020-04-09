@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DataFormService } from '@geonature_common/form/data-form.service';
+import { BaseChartDirective } from 'ng2-charts';
 
 @Component({
   selector: 'pnx-af-card',
@@ -12,6 +13,56 @@ export class AfCardComponent implements OnInit {
   public af: any;
   public acquisitionFrameworks: any;
   public datasets: any;
+  @ViewChild(BaseChartDirective) chart: BaseChartDirective;
+
+  // Type de graphe
+  public pieChartType = 'doughnut';
+  // Tableau contenant les labels du graphe
+  public pieChartLabels = ['OK', 'WARNING', 'CRITICAL', 'UNKNOWN'];
+  // Tableau contenant les données du graphe
+  public pieChartData = [12, 19, 3, 5];
+  // Tableau contenant les couleurs et la taille de bordure du graphe
+  public pieChartColors = [
+    {
+      backgroundColor: ['rgb(0,80,240)', 'rgb(80,160,240)', 'rgb(160,200,240)'],
+    }
+  ];
+  // Dictionnaire contenant les options à implémenter sur le graphe (calcul des pourcentages notamment)
+  public pieChartOptions = {
+    weight: "0.2",
+    legend: {
+      display: 'true',
+      position: 'left',
+      labels: {
+        fontSize: 15,
+        filter: function (legendItem, chartData) {
+          return chartData.datasets[0].data[legendItem.index] != 0;
+        }
+      },
+    },
+    plugins: {
+      labels: [
+        {
+          render: 'label',
+          arc: true,
+          fontSize: 14,
+          position: 'outside',
+          overlap: false
+        },
+        {
+          render: 'percentage',
+          fontColor: 'white',
+          fontSize: 14,
+          fontStyle: 'bold',
+          precision: 2,
+          textShadow: true,
+          overlap: false
+        }
+      ]
+    }
+  }
+
+  public spinner = true;
 
   constructor(
     private _dfs: DataFormService,
@@ -43,6 +94,8 @@ export class AfCardComponent implements OnInit {
         var end_date = new Date(this.af.acquisition_framework_end_date);
         this.af.acquisition_framework_end_date = end_date.toLocaleDateString();
       }
+
+      console.log(data);
     });
   }
 
@@ -51,8 +104,10 @@ export class AfCardComponent implements OnInit {
     params["id_acquisition_frameworks"] = [id_af];
     this._dfs.getDatasets(params, false).subscribe(results => {
       this.datasets = results["data"];
-      this.getImports();
+      // this.getImports();
+      console.log(this.datasets)
     });
+
   }
 
   getImports() {

@@ -191,6 +191,9 @@ def get_acquisition_framework_details(id_acquisition_framework):
     """
     af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
     acquisition_framework = af.as_dict(True)
+    print("---------------------------------------------------------------------------------------------------")
+    print(acquisition_framework)
+    print("---------------------------------------------------------------------------------------------------")
     if acquisition_framework:
         acquisition_framework["nomenclature_territorial_level"] = af.nomenclature_territorial_level.as_dict()
         acquisition_framework["nomenclature_financing_type"] = af.nomenclature_financing_type.as_dict()

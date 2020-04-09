@@ -371,3 +371,5 @@ class TAcquisitionFrameworkDetails(TAcquisitionFramework):
         TNomenclatures,
         primaryjoin=(TNomenclatures.id_nomenclature == TAcquisitionFramework.id_nomenclature_financing_type)
     )
+
+    

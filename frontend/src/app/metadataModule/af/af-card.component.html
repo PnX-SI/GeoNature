@@ -1,177 +1,144 @@
-<div class="container">
-  <button class="btn btn-secondary" routerLink="/metadata"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
-  </button>
-  <div class="card main-card">
-    <h3 class="card-header">Cadre d'acquisition</h3>
-    <div class="card-body">
+<div class="container ">
+  <div class=" row">
+    <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
+      <button class="btn btn-secondary" routerLink="/metadata"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
+      </button>
+    </div>
+  </div>
+  <div class=" row">
+    <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3 padding-sm">
       <div class="card">
-        <h5 class="card-header">Informations générales</h5>
-        <div class="card-body">
+        <div class="card-header">
           <div class="row">
-            <div class="col d-flex align-items-center d-flex align-items-center">Nom :
-            </div>
-            <div class="col d-flex align-items-center bold">{{af.acquisition_framework_name}}
-            </div>
-          </div>
-          <hr width="75%" color="grey">
-          <div class="row">
-            <div class="col d-flex align-items-center">Description :
-            </div>
-            <div class="col d-flex align-items-center bold">{{af.acquisition_framework_desc}}
-            </div>
-          </div>
-          <hr width="75%" color="grey">
-          <div class="row">
-            <div class="col d-flex align-items-center">Est parent :
-            </div>
-            <div class="col d-flex align-items-center bold">{{af.is_parent ? 'Oui' : 'Non'}}
-            </div>
-          </div>
-          <hr width="75%" color="grey">
-          <div class="row">
-            <div class="col d-flex align-items-center">Niveau territorial :
-            </div>
-            <div class="col d-flex align-items-center bold">{{af.nomenclature_territorial_level?.mnemonique}}
-            </div>
-          </div>
-          <hr width="75%" color="grey">
-          <div class="row">
-            <div class="col d-flex align-items-center">Description du territoire :
-            </div>
-            <div class="col d-flex align-items-center bold">{{af.territory_desc}}
-            </div>
-          </div>
-          <hr width="75%" color="grey">
-          <div class="row">
-            <div class="col d-flex align-items-center">Objectifs du cadre d'acquisition :
-            </div>
-            <div class="col d-flex align-items-center bold">
-              <div class="col d-flex align-items-center bold">
-                <span *ngFor="let objectif of af.cor_objectifs">{{ objectif.mnemonique }}</span>
-              </div>
-            </div>
-          </div>
-          <hr width="75%" color="grey">
-          <div class="row">
-            <div class="col d-flex align-items-center">Volets SINP :
-            </div>
-            <div class="col d-flex align-items-center bold">
-              <span *ngFor="let volet of af.cor_volets_sinp">{{ volet.mnemonique }}</span>
-            </div>
-          </div>
-          <hr width="75%" color="grey">
-          <div class="row">
-            <div class="col d-flex align-items-center">Type de financement :
-            </div>
-            <div class="col d-flex align-items-center bold">{{af.nomenclature_financing_type?.mnemonique}}
-            </div>
-          </div>
-          <hr width="75%" color="grey">
-          <div class="row">
-            <div class="col d-flex align-items-center">Cibles écologiques ou géologiques :
-            </div>
-            <div class="col d-flex align-items-center bold">{{af.ecologic_or_geologic_target}}
-            </div>
-          </div>
-          <hr width="75%" color="grey">
-          <div class="row">
-            <div class="col d-flex align-items-center">Description de la cible :
-            </div>
-            <div class="col d-flex align-items-center bold">{{af.target_description}}
-            </div>
-          </div>
-          <hr width="75%" color="grey">
-          <div class="row">
-            <div class="col d-flex align-items-center">Date début :
-            </div>
-            <div class="col d-flex align-items-center bold">{{ af.acquisition_framework_start_date }}
-            </div>
-          </div>
-          <hr width="75%" color="grey">
-          <div class="row">
-            <div class="col d-flex align-items-center">Date fin :
-            </div>
-            <div class="col d-flex align-items-center bold">{{ af.acquisition_framework_end_date }}
-            </div>
+            <div class="col">Jeux de données</div>
+            <div class="col-auto" width="60"><img src="./assets/images/JDD_icon.svg" width="40"></div>
           </div>
         </div>
       </div>
-
-
-      <hr *ngIf="af.cor_af_actor" width="75%" color="grey">
-      <div *ngIf="af.cor_af_actor" class="card">
-        <h5 class="card-header">Acteurs</h5>
-        <div class="card-body">
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Organisme</th>
-                <th scope="col">Type de role</th>
-                <th scope="col">Personne</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let actor of af.cor_af_actor">
-                <th scope="row">{{ actor.id_cafa }}</th>
-                <td>{{ actor.organism?.nom_organisme }}</td>
-                <td>{{ actor.nomenclature_actor_role?.mnemonique }}</td>
-                <td>{{ actor.role?.nom_complet }}</td>
-              </tr>
-            </tbody>
-          </table>
+    </div>
+    <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3 padding-sm">
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+            <div class="col">Taxons</div>
+            <div class="col-auto" width="60"><img src="./assets/images/Taxon_icon.svg" width="40"></div>
+          </div>
         </div>
       </div>
-      <hr *ngIf="datasets" width="75%" color="grey">
-      <div *ngIf="datasets" class="card">
-        <h5 class="card-header">Jeux de données</h5>
-        <div *ngFor="let ds of datasets" class="card-body">
-          <div class="card">
-            <div class="card-body">
-              <h6 class="card-title bold">Informations</h6>
-              <div class="row">
-                <div class="col d-flex align-items-center">id :
-                </div>
-                <div class="col d-flex align-items-center bold">{{ ds.id_dataset }}
-                </div>
-              </div>
-              <br>
-              <div class="row">
-                <div class="col d-flex align-items-center">Nom :
-                </div>
-                <div class="col d-flex align-items-center bold">{{ ds.dataset_name }}
-                </div>
-              </div>
-              <br>
-              <div class="row">
-                <div class="col d-flex align-items-center">Description :
-                </div>
-                <div class="col d-flex align-items-center bold">{{ ds.dataset_desc }}
-                </div>
-              </div>
-              <hr *ngIf="ds['imports']" width="100%" color="grey">
-              <h6 *ngIf="ds['imports']" class="card-title bold">Imports</h6>
-              <table *ngIf="ds['imports']" class="table table-bordered table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">Nom</th>
-                    <th scope="col">Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let import of ds['imports']">
-                    <th>{{ import.id_import }}</th>
-                    <td>{{ import.full_file_name }}</td>
-                    <td>{{ import.date_create_import }}</td>
-                  </tr>
-                </tbody>
-              </table>
+    </div>
+    <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3 padding-sm">
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+            <div class="col">Habitats</div>
+            <div class="col-auto" width="60"><img src="./assets/images/Habitat_icon.svg" width="40"></div>
             </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3 padding-sm">
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+          <div class="col">Observations</div>
+          <div class="col-auto" width="60"><img src="./assets/images/Donnee_icon.svg" width="40"></div>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-8 col-lg-8 padding-sm">
+      <div class="card">
+        <div class="card-header">
+          <h4>
+            Cadre d'acquisition
+          </h4>
+        </div>
+        <div class="card-body">
+          <div class="b">Identification :</div>
+          <div class="a"> Instance SNIP du cadre d'acquisition : {{af?.unique_acquisition_framework_id}}</div>
+          <div class="a"> Libellé du cadre d'acquisition : {{af?.acquisition_framework_name}}</div>
+          <br/>
+
+          <div class="b">Description :</div>
+          <div class="a"> Cadre de réfèrence : {{af?.acquisition_framework_name}}</div>
+          <div class="a"> Est un méta-cadre : {{af?.is_parent ? 'Oui' : 'Non'}}</div>
+          <div class="a"> Identifiant du méta-cadre : {{af?.acquisition_framework_parent_id}}</div>
+          <br/>
+
+          <div class="b">Dates :</div>
+          <div class="a"> Date de lancement du cadre d'acquisition : {{af?.acquisition_framework_start_date}}</div>
+          <div class="a"> Date de clôture du cadre d'acquisition : {{af?.acquisition_framework_end_date}}</div>
+          <br/>
+
+          <div class="b">Objectifs :</div>
+          <div *ngFor="let objectif of af?.cor_objectifs" class="a"> {{ objectif?.mnemonique }} </div>
+          <br/>
+
+          <div class="b">Territoires concernés :</div>
+          <div class="a"> Etendue territoriale : {{af?.id_nomenclature_territorial_level}}</div>
+          <div class="a"> Territoires : ??</div>
+          <div class="a"> Précision géographique : ??</div>
+          <br/>
+
+          <div class="b">Cible taxonomique :</div>
+          <div class="a"> Description : {{af?.target_description}}</div>
+          <br/>
+
+          <div class="b">Acteurs :</div>
+          <div class="a" *ngFor="let actor of af?.cor_af_actor">
+            <div> {{ actor?.nomenclature_actor_role?.mnemonique}} : {{ actor?.organism?.nom_organisme }} <span *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"> - </span> {{ actor?.role?.nom_complet }} </div>
+            <br/>
+          </div>
+
+          <div class="b">Mots-clés :</div>
+          <div class="a"> {{af?.keywords}} </div>
+          <br/>
+
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6 col-sm-4 col-md-4 col-lg-4 padding-sm">
+      <div class="card">
+        <div class="card-header">
+          <h4>
+            Zone géographique
+          </h4>
+        </div>
+      </div>
+      <div class="card ">
+        <div class="card-header">
+          <h4>
+            Réparition des espèces
+          </h4>
+        </div>
+        <div class="card-body">
+          <div style="display: block">
+            <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
+                [colors]="pieChartColors" [options]="pieChartOptions" padding="20px">
+            </canvas>
+        </div>
+       </div>
+      </div>
+      <div class="card ">
+        <div class="card-header">
+          <h4>
+            Jeux de données associés
+          </h4>
+        </div>
+          <div class="card-body">
+            <table>
+              <tr *ngFor="let dataset of datasets">
+                <td width="60"><img src="./assets/images/{{dataset?.modules[0]?.module_code=='OCCTAX' ? 'Taxon_icon_vert.svg' : 'Habitat_icon_vert.svg'}}" width="40"></td>
+                <td> {{ dataset?.dataset_name }}</td>
+              </tr>
+            </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <button class="btn btn-success">Exporter au format PDF</button>
 </div>
