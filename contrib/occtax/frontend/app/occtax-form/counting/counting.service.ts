@@ -5,8 +5,8 @@ import {
   Validators,
   AbstractControl
 } from "@angular/forms";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { Observable, Subscription } from "rxjs";
+import { map, filter, tap } from "rxjs/operators";
 
 import { ModuleConfig } from "../../module.config";
 import { FormService } from "@geonature_common/form/form.service";
@@ -17,6 +17,7 @@ export class OcctaxFormCountingService {
 
   // public form: FormGroup;
   counting: any;
+  synchroCountSub: Subscription;
 
   constructor(
     private fb: FormBuilder,
@@ -49,6 +50,12 @@ export class OcctaxFormCountingService {
 
     if (patchWithDefaultValues) {
       this.defaultValues.subscribe(DATA=>form.patchValue(DATA));
+      form.get('count_min')
+            .valueChanges
+            .pipe(
+              filter(()=>form.get('count_max').dirty === false) //tant que count_max n'a pas été modifié
+            )
+            .subscribe(count_min=>form.get('count_max').setValue(count_min));
     }
 
     return form;
@@ -77,10 +84,4 @@ export class OcctaxFormCountingService {
                       })
                     );
   }
-
-
-  reset() {
-    //this.form.reset(this.initialValues);
-  }
-
 }

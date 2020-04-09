@@ -81,9 +81,12 @@ export class OcctaxFormOccurrenceService {
         }),
         tap(occurrence=>{
           //mise en place des countingForm
-          if (occurrence.cor_counting_occtax) {
+          if (!occurrence.id_occurrence_occtax || !occurrence.cor_counting_occtax || occurrence.cor_counting_occtax.length === 0) {
+            //si nouvelle occurrence ou si absence de dénombrement on ajoute par defaut un form de denombrement
+            this.addCountingForm(true) //true => on patch le form avec les valeurs par defauts
+          } else {
             occurrence.cor_counting_occtax.forEach((c, i)=>{
-              this.addCountingForm(occurrence.id_occurrence_occtax === null); //si id_occurrence_occtax === null on patch le form avec les valeurs par defauts
+              this.addCountingForm(false); //false => on ne patch pas le form avec les valeurs par defauts
             })
           }
         })
@@ -154,14 +157,7 @@ export class OcctaxFormOccurrenceService {
                           id_nomenclature_observation_status: DATA["STATUT_OBS"],
                           id_nomenclature_diffusion_level: DATA["NIV_PRECIS"],
                           id_nomenclature_blurring: DATA["DEE_FLOU"],
-                          id_nomenclature_source_status: DATA["STATUT_SOURCE"],
-                          cor_counting_occtax: [{
-                            id_nomenclature_life_stage: DATA["STADE_VIE"],
-                            id_nomenclature_sex: DATA["SEXE"],
-                            id_nomenclature_obj_count: DATA["OBJ_DENBR"],
-                            id_nomenclature_type_count: DATA["TYP_DENBR"],
-                            id_nomenclature_valid_status: DATA["STATUT_VALID"]
-                          }]
+                          id_nomenclature_source_status: DATA["STATUT_SOURCE"]
                         };
                       })
                     );
