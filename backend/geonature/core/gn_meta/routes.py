@@ -6,6 +6,7 @@ from sqlalchemy import or_
 from sqlalchemy.sql import text
 
 from geonature.utils.env import DB
+from geonature.core.gn_synthese.models import Synthese
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.tools import InsufficientRightsError
@@ -107,18 +108,7 @@ def get_dataset(id_dataset):
     return dataset
 
 
-@routes.route("/dataset_details/<id_dataset>", methods=["GET"])
-@json_resp
-def get_dataset_details(id_dataset):
-    """
-    Get one dataset with nomenclatures and af
-
-    .. :quickref: Metadata;
-
-    :param id_dataset: the id_dataset
-    :param type: int
-    :returns: dict<TDatasetDetails>
-    """
+def get_dataset_details_dict(id_dataset):
     data = DB.session.query(TDatasetDetails).get(id_dataset)
     cor = data.cor_dataset_actor
     dataset = data.as_dict(True)
@@ -132,6 +122,8 @@ def get_dataset_details(id_dataset):
     for o in organisms:
         dataset["cor_dataset_actor"][i]["organism"] = o
         i = i + 1
+    if dataset["keywords"]:
+        dataset["keywords"] = dataset["keywords"].split(' ')
     dataset["data_type"] = data.data_type.as_dict()
     dataset["dataset_objectif"] = data.dataset_objectif.as_dict()
     dataset["collecting_method"] = data.collecting_method.as_dict()
@@ -139,7 +131,26 @@ def get_dataset_details(id_dataset):
     dataset["source_status"] = data.source_status.as_dict()
     dataset["resource_type"] = data.resource_type.as_dict()
     dataset["acquisition_framework"] = data.acquisition_framework.as_dict()
+    dataset["taxa_count"] = DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset == id_dataset).distinct().count()
+    dataset["observation_count"] = DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset == id_dataset).count()
     return dataset
+
+@routes.route("/dataset_details/<id_dataset>", methods=["GET"])
+@json_resp
+def get_dataset_details(id_dataset):
+    """
+    Get one dataset with nomenclatures and af
+
+    .. :quickref: Metadata;
+
+    :param id_dataset: the id_dataset
+    :param type: int
+    :returns: dict<TDatasetDetails>
+    """
+
+    return get_dataset_details_dict(id_dataset)
+
+
 
 
 @routes.route("/dataset", methods=["POST"])
