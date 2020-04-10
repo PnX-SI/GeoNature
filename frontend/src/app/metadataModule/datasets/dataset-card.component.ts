@@ -91,12 +91,6 @@ export class DatasetCardComponent implements OnInit {
     this._dfs.getDatasetDetails(id).subscribe(data => {
       this.dataset = data;
     });
-    this._dfs.getCountTaxon(id).subscribe(data => {
-        this.nbTaxons = data;
-    });
-    this._dfs.getCountObservation(id).subscribe(data => {
-        this.nbObservations = data;
-    });
     this._dfs.getRepartitionTaxons(id).subscribe(data => {
       this.pieChartData.length = 0;
       this.pieChartLabels.length = 0;
@@ -112,7 +106,7 @@ export class DatasetCardComponent implements OnInit {
   }
 
   getPdf() {
-    const url = `${AppConfig.API_ENDPOINT}/meta/datasets/export_pdf/${this.id_dataset}`;
+    const url = `${AppConfig.API_ENDPOINT}/meta/dataset/export_pdf/${this.id_dataset}`;
     window.open(url);
   }
   

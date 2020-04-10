@@ -326,17 +326,9 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/dataset_details/${id}`);
   }
 
-  getCountTaxon(id_dataset) {
-    return this._http.get<number>(`${AppConfig.API_ENDPOINT}/synthese/count_taxon_by_dataset/${id_dataset}`);
-  }
-  getCountObservation(id_dataset) {
-    return this._http.get<number>(`${AppConfig.API_ENDPOINT}/synthese/count_observation_by_dataset/${id_dataset}`);
-  }
-
   getRepartitionTaxons(id_dataset) {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/repartition_taxons_dataset/${id_dataset}`);
   }
-
 
   getModulesList(exclude: Array<string>) {
     let queryString: HttpParams = new HttpParams();

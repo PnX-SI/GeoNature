@@ -15,7 +15,7 @@
         <div class="card">
           <div class="card-body">
             <div class="row">
-              <div class="col"><h4>Taxons</h4> {{nbTaxons}} </div>
+              <div class="col"><h4>Taxons</h4> {{dataset.taxa_count}} </div>
               <div class="col-auto" width="60"><img src="./assets/images/Taxon_icon.svg" width="64"></div>
             </div>
           </div>
@@ -25,7 +25,7 @@
         <div class="card">
           <div class="card-body">
             <div class="row">
-              <div class="col"><h4>Observations</h4> {{nbObservations}} </div>
+              <div class="col"><h4>Observations</h4> {{dataset.observation_count}} </div>
               <div class="col-auto" width="60"><img src="./assets/images/Donnee_icon.svg" width="64"></div>
             </div>
           </div>
@@ -107,10 +107,12 @@
               </div>
             </div>
 
+            <br/>
+
             <div *ngIf="dataset.keywords">
-              Mots-clés :
-              <div *ngFor='let module of dataset.modules'>
-                <div class="a">{{dataset.keywords }}</div>
+              <div class="b">Mots-clés :</div>
+              <div *ngFor='let word of dataset.keywords'>
+                <div class="a">{{ word }}</div>
               </div>
             </div>
 
