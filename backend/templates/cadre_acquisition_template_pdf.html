@@ -71,12 +71,12 @@
 
     <div class="description">
         <div class="left-block">
-            <p class="fiche-descriptive">Fiche descriptive</p>
+            <p class="fiche-descriptive">Cadre d'acquisition</p>
             <div class="information">
                 <p class="info-titre">Identification</p>
                 <p class="info-contenu">
                     {% if data['unique_acquisition_framework_id']: %}
-                        {{ data['unique_acquisition_framework_id'] }}
+                    Instance SNIP du cadre d'acquisition :{{ data['unique_acquisition_framework_id'] }}
                     {% endif %}
                     <br>
                     {% if data['acquisition_framework_name']: %}

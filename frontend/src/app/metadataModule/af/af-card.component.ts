@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { BaseChartDirective } from 'ng2-charts';
+import { AppConfig } from '@geonature_config/app.config';
 
 @Component({
   selector: 'pnx-af-card',
@@ -116,5 +117,10 @@ export class AfCardComponent implements OnInit {
         this.datasets[i]['imports'] = data;
       });
     }
+  }
+
+  getPdf() {
+    const url = `${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks/export_pdf/${this.af.id_acquisition_framework}`;
+    window.open(url);
   }
 }
