@@ -75,7 +75,7 @@ export class DataFormService {
     });
   }
 
-  getDatasets(params?: ParamsDict, orderByName = true) {
+    getDatasets(params?: ParamsDict, orderByName = true) {
     let queryString: HttpParams = new HttpParams();
     if (orderByName) {
       queryString = this.addOrderBy(queryString, 'dataset_name');
@@ -328,6 +328,17 @@ export class DataFormService {
 
   getRepartitionTaxons(id_dataset) {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/repartition_taxons_dataset/${id_dataset}`);
+  }
+
+  getTaxaDistribution(datasets)
+  {
+    let params: HttpParams = new HttpParams();
+    let dataset_ids = [];
+    for (let dataset of datasets) {
+      dataset_ids.push(dataset.id_dataset);
+      params = params.append('dataset_ids[]', dataset.id_dataset);
+    }
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/taxa_distribution`, { params: {'dataset_ids': dataset_ids} });
   }
 
   getModulesList(exclude: Array<string>) {

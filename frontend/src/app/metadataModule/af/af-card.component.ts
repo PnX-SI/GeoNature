@@ -13,24 +13,23 @@ export class AfCardComponent implements OnInit {
   public id_af: number;
   public af: any;
   public acquisitionFrameworks: any;
-  public datasets: any;
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
   // Type de graphe
   public pieChartType = 'doughnut';
   // Tableau contenant les labels du graphe
-  public pieChartLabels = ['OK', 'WARNING', 'CRITICAL', 'UNKNOWN'];
+  public pieChartLabels = [];
   // Tableau contenant les données du graphe
-  public pieChartData = [12, 19, 3, 5];
+  public pieChartData = [];
   // Tableau contenant les couleurs et la taille de bordure du graphe
   public pieChartColors = [
     {
-      backgroundColor: ['rgb(0,80,240)', 'rgb(80,160,240)', 'rgb(160,200,240)'],
+      backgroundColor: ["rgb(0,80,240)", "rgb(80,160,240)", "rgb(160,200,240)"],
     }
   ];
   // Dictionnaire contenant les options à implémenter sur le graphe (calcul des pourcentages notamment)
   public pieChartOptions = {
-    weight: "0.2",
+    cutoutPercentage: 80,
     legend: {
       display: 'true',
       position: 'left',
@@ -75,7 +74,6 @@ export class AfCardComponent implements OnInit {
       this.id_af = params['id'];
       if (this.id_af) {
         this.getAf(this.id_af);
-        this.getDatasets(this.id_af);
       }
     });
     // this._dfs.getAcquisitionFrameworks({ is_parent: 'true' }).subscribe(data => {
@@ -95,28 +93,38 @@ export class AfCardComponent implements OnInit {
         var end_date = new Date(this.af.acquisition_framework_end_date);
         this.af.acquisition_framework_end_date = end_date.toLocaleDateString();
       }
-
+      if(this.af.datasets)
+      {
+        if(this.af.datasets.length > 1){
+          this._dfs.getTaxaDistribution(data.datasets).subscribe(data2 => {
+            this.pieChartData.length = 0;
+            this.pieChartLabels.length = 0;
+            this.pieChartData = [];
+            this.pieChartLabels = [];
+              for(let row of data2) {
+                this.pieChartData.push(row[0]);
+                this.pieChartLabels.push(row[1]);
+              }
+              // this.chart.chart.update();
+              // this.chart.ngOnChanges({});
+              this.spinner = false;
+          });
+        }else if(this.af.datasets.length == 1){
+          this._dfs.getRepartitionTaxons(data.datasets[0].id_dataset).subscribe(data2 => {
+            this.pieChartData.length = 0;
+            this.pieChartLabels.length = 0;
+              for(let row of data2) {
+                this.pieChartData.push(row[0]);
+                this.pieChartLabels.push(row[1]);
+              }
+              // this.chart.chart.update();
+              // this.chart.ngOnChanges({});
+              this.spinner = false;
+          });
+        }
+      }
       console.log(data);
     });
-  }
-
-  getDatasets(id_af: number) {
-    var params: { [key: string]: any; } = {};
-    params["id_acquisition_frameworks"] = [id_af];
-    this._dfs.getDatasets(params, false).subscribe(results => {
-      this.datasets = results["data"];
-      // this.getImports();
-      console.log(this.datasets)
-    });
-
-  }
-
-  getImports() {
-    for (let i = 0; i < this.datasets.length; i++) {
-      this._dfs.getImports(this.datasets[i]["id_dataset"]).subscribe(data => {
-        this.datasets[i]['imports'] = data;
-      });
-    }
   }
 
   getPdf() {
