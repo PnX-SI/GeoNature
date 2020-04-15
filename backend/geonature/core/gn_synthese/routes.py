@@ -839,7 +839,24 @@ def get_repartition_taxons(id_dataset):
     )
     data = DB.engine.execute(q, id_dataset=id_dataset)
     return [[d[0], d[1]] for d in data] # for some reason as_dict() doesn't work here
-    
+
+@routes.route("/taxa_distribution", methods=["GET"])
+@json_resp
+def get_taxa_distribution(dataset_ids=None):
+    """Get observations found in a given dataset
+    """
+    params = request.args
+    dataset_ids = [int(id) for id in params.getlist("dataset_ids")]
+
+    q = text(
+        """ SELECT count(DISTINCT synt.cd_nom), min(taxr.regne)
+            FROM gn_synthese.synthese synt
+            LEFT OUTER JOIN taxonomie.taxref taxr ON taxr.cd_nom=synt.cd_nom
+            WHERE id_dataset=any(:dataset_ids)
+            GROUP BY taxr.regne """
+    )
+    data = DB.engine.execute(q, dataset_ids=dataset_ids)
+    return [[d[0], d[1]] for d in data] # for some reason as_dict() doesn't work here
 
 # @routes.route("/test", methods=["GET"])
 # @json_resp

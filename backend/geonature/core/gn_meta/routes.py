@@ -4,7 +4,7 @@ from flask import Blueprint, current_app, request,render_template
 import pprint
 
 from sqlalchemy import or_
-from sqlalchemy.sql import text
+from sqlalchemy.sql import text,exists, select
 
 from geonature.utils.env import DB
 from geonature.core.gn_synthese.models import Synthese
@@ -359,6 +359,37 @@ def get_acquisition_framework_details(id_acquisition_framework):
     """
     af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
     acquisition_framework = af.as_dict(True)
+    
+    q = DB.session.query(TDatasets).distinct()
+    data = q.filter( \
+                TDatasets.id_acquisition_framework \
+                == id_acquisition_framework).all()
+    dataset_ids = [d.id_dataset for d in data]
+    acquisition_framework["datasets"] = [d.as_dict(True) for d in data]
+
+    nb_data = len(dataset_ids)
+    nb_taxons = DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).distinct().count()
+    nb_observations = DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).count()
+    nb_habitat = 0
+
+    # Check if pr_occhab exist
+    check_schema_query = exists(select([text("schema_name")]).select_from(text("information_schema.schemata")).
+       where(text("schema_name = 'pr_occhab'"))) 
+
+    if DB.session.query(check_schema_query).scalar() and nb_data > 0 :
+        query = "SELECT count(*) FROM pr_occhab.t_stations s, pr_occhab.t_habitats h WHERE s.id_station = h.id_station AND s.id_dataset in \
+        ("+str(dataset_ids).strip('[]')+")"
+        
+        nb_habitat  = DB.engine.execute(
+            text(query)
+        ).first()[0]
+
+    acquisition_framework["stats"] = {
+        "nb_data": nb_data,
+        "nb_taxons": nb_taxons,
+        "nb_observations": nb_observations,
+        "nb_habitats": nb_habitat
+    }
 
     if acquisition_framework:
         acquisition_framework["nomenclature_territorial_level"] = af.nomenclature_territorial_level.as_dict()
