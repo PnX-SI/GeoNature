@@ -136,8 +136,9 @@ def get_dataset_details_dict(id_dataset):
     return dataset
 
 @routes.route("/dataset_details/<id_dataset>", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
 @json_resp
-def get_dataset_details(id_dataset):
+def get_dataset_details(info_role, id_dataset):
     """
     Get one dataset with nomenclatures and af
 
