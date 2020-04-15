@@ -4,7 +4,12 @@
         <h2>JEU DE DONNÉES : {{dataset.dataset_name}}</h2>
       </div>
       <div class="col-auto" width="60">
-        <button class="btn btn-success margin-top-sm" (click)="getPdf()">Exporter au fomat PDF</button>
+      <button class="btn btn-secondary margin-top-sm" routerLink="/metadata">  
+        <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
+      </button>
+      </div>
+      <div class="col-auto" width="60">
+        <button class="btn btn-info margin-top-sm" (click)="getPdf()">Exporter au fomat PDF</button>
       </div>
     </div>
     
@@ -44,7 +49,7 @@
             <div class="a"> Instance : {{dataset.dataset_name}}</div>
             <div class="a"> Identifiant SINP du jeu de données : {{dataset.unique_dataset_id}}</div>
             <div class="a"> Libellé court : {{dataset.dataset_shortname}}</div>
-            <div class="a"> Description : <small>{{dataset.dataset_desc}}></small></div>
+            <div class="a"> Description : <small>{{dataset.dataset_desc}}</small></div>
 
             <br/>
 
@@ -158,7 +163,5 @@
       </div>
     </div>
 
-    <button class="btn btn-secondary" routerLink="/metadata">  <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
-    </button>
 </div>
 
