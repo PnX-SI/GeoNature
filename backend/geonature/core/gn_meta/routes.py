@@ -7,6 +7,7 @@ from sqlalchemy import or_
 from sqlalchemy.sql import text
 
 from geonature.utils.env import DB
+from geonature.core.gn_synthese.models import Synthese
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.tools import InsufficientRightsError
@@ -15,6 +16,7 @@ import datetime as dt
 
 from geonature.core.gn_meta.models import (
     TDatasets,
+    TDatasetDetails,
     CorDatasetActor,
     TAcquisitionFramework,
     CorAcquisitionFrameworkActor,
@@ -110,6 +112,52 @@ def get_dataset(id_dataset):
         dataset["cor_dataset_actor"][i]["organism"] = o
         i = i + 1
     return dataset
+
+
+def get_dataset_details_dict(id_dataset):
+    data = DB.session.query(TDatasetDetails).get(id_dataset)
+    cor = data.cor_dataset_actor
+    dataset = data.as_dict(True)
+    organisms = []
+    for c in cor:
+        if c.organism:
+            organisms.append(c.organism.as_dict())
+        else:
+            organisms.append(None)
+    i = 0
+    for o in organisms:
+        dataset["cor_dataset_actor"][i]["organism"] = o
+        i = i + 1
+    if dataset["keywords"]:
+        dataset["keywords"] = dataset["keywords"].split(' ')
+    dataset["data_type"] = data.data_type.as_dict()
+    dataset["dataset_objectif"] = data.dataset_objectif.as_dict()
+    dataset["collecting_method"] = data.collecting_method.as_dict()
+    dataset["data_origin"] = data.data_origin.as_dict()
+    dataset["source_status"] = data.source_status.as_dict()
+    dataset["resource_type"] = data.resource_type.as_dict()
+    dataset["acquisition_framework"] = data.acquisition_framework.as_dict()
+    dataset["taxa_count"] = DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset == id_dataset).distinct().count()
+    dataset["observation_count"] = DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset == id_dataset).count()
+    return dataset
+
+@routes.route("/dataset_details/<id_dataset>", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
+@json_resp
+def get_dataset_details(info_role, id_dataset):
+    """
+    Get one dataset with nomenclatures and af
+
+    .. :quickref: Metadata;
+
+    :param id_dataset: the id_dataset
+    :param type: int
+    :returns: dict<TDatasetDetails>
+    """
+
+    return get_dataset_details_dict(id_dataset)
+
+
 
 
 @routes.route("/dataset", methods=["POST"])

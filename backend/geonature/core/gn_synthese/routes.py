@@ -10,7 +10,7 @@ from flask import (
     Blueprint, request, current_app,
     send_from_directory, render_template
 )
-from sqlalchemy import distinct, func, desc, select
+from sqlalchemy import distinct, func, desc, select, text
 from sqlalchemy.orm import exc
 from geojson import FeatureCollection, Feature
 
@@ -808,6 +808,38 @@ def get_color_taxon():
     data = q.limit(limit).offset(page * limit).all()
     return [d.as_dict() for d in data]
 
+@routes.route("/count_taxon_by_dataset/<int:id_dataset>", methods=["GET"])
+@json_resp
+def get_count_taxon(id_dataset):
+    """Get taxons found in a given dataset
+    """
+    return DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset == id_dataset).distinct().count()
+
+
+@routes.route("/count_observation_by_dataset/<int:id_dataset>", methods=["GET"])
+@json_resp
+def get_count_observation(id_dataset):
+    """Get observations found in a given dataset
+    """
+    return DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset == id_dataset).count()
+
+
+@routes.route("/repartition_taxons_dataset/<int:id_dataset>", methods=["GET"])
+@json_resp
+def get_repartition_taxons(id_dataset):
+    """Get observations found in a given dataset
+    """
+    
+    q = text(
+        """ SELECT count(DISTINCT synt.cd_nom), min(taxr.regne)
+            FROM gn_synthese.synthese synt
+            LEFT OUTER JOIN taxonomie.taxref taxr ON taxr.cd_nom=synt.cd_nom
+            WHERE id_dataset=:id_dataset
+            GROUP BY taxr.regne """
+    )
+    data = DB.engine.execute(q, id_dataset=id_dataset)
+    return [[d[0], d[1]] for d in data] # for some reason as_dict() doesn't work here
+    
 
 # @routes.route("/test", methods=["GET"])
 # @json_resp
