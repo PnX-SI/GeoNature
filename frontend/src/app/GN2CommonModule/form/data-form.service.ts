@@ -322,6 +322,10 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/repartition_taxons_dataset/${id_dataset}`);
   }
 
+  uploadCanvas(img: any) {
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/meta/upload_canvas`, img);
+  }
+
   getModulesList(exclude: Array<string>) {
     let queryString: HttpParams = new HttpParams();
     exclude.forEach(mod_code => {

@@ -13,6 +13,7 @@ from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.tools import InsufficientRightsError
 
 import datetime as dt
+from binascii import a2b_base64
 
 from geonature.core.gn_meta.models import (
     TDatasets,
@@ -158,6 +159,19 @@ def get_dataset_details(info_role, id_dataset):
     return get_dataset_details_dict(id_dataset)
 
 
+@routes.route("/upload_canvas", methods=["POST"])
+@json_resp
+def upload_canvas():
+    """Upload the canvas as a temporary image used while generating the pdf file
+    """
+    data = request.data[22:]
+    binary_data = a2b_base64(data)
+
+    fd = open('static/images/taxa.png', 'wb')
+    fd.write(binary_data)
+    fd.close()
+
+    return "OK"
 
 
 @routes.route("/dataset", methods=["POST"])
