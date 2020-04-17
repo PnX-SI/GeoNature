@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Cadre acquisition</title>
+    <title>Jeu de données</title>
     <link rel="stylesheet" type="text/css" href="../../static/css/jeu_de_donnees_template_pdf.css">
 </head>
 
@@ -17,7 +17,11 @@
     <div class="titre">
         <label class="label-titre">Jeu de données</label>
         <br>
-        <label class="label-titre">[Titre du JDD]</label>
+        <label class="label-titre">
+            {% if data.dataset_shortname: %}
+                {{ data.dataset_shortname }}
+            {% endif %}
+        </label>
         <hr class="ligne-titre ligne" {% if data.css: %} id="ligne-titre-{{data.css['entite']}}" {% else %}
             id="ligne-titre-defaut" {% endif %}>
     </div>
@@ -30,7 +34,11 @@
                 <p class="titre-etiquette">Taxons</p>
             </div>
             <div class="etiquette-bas">
-                <p class="stat-etiquette">123</p>
+                <p class="stat-etiquette">
+                    {% if data.taxa_count: %}
+                        {{ data.taxa_count }}
+                    {% endif %}
+                </p>
             </div>
         </div>
         <div class="etiquette" {% if data.css: %} id="nombre-donnees-{{data.css['entite']}}" {% else %}
@@ -41,7 +49,11 @@
                 <p class="titre-etiquette">Données</p>
             </div>
             <div class="etiquette-bas">
-                <p class="stat-etiquette">2548</p>
+                <p class="stat-etiquette">
+                    {% if data.observation_count: %}
+                        {{ data.observation_count }}
+                    {% endif %}
+                </p>
             </div>
         </div>
     </div>
@@ -52,88 +64,111 @@
             <div class="information">
                 <p class="info-titre">Identification</p>
                 <p class="info-contenu">
-                    Identifiant SINP du jeu de données
+                    {% if data.unique_dataset_id: %}
+                        {{ data.unique_dataset_id }}
+                    {% endif %}
                     <br>
-                    Libellé
+                    {% if data.dataset_name: %}
+                        {{ data.dataset_name }}
+                    {% endif %}
                     <br>
-                    Libellé court
+                    {% if data.dataset_shortname: %}
+                        {{ data.dataset_shortname }}
+                    {% endif %}
                     <br>
-                    Instance
+                    {% if data.dataset_desc: %}
+                        {{ data.dataset_desc }}
+                    {% endif %}
                     <br>
-                    Description
-                    <br>
-                    Type de données
+                    {% if data.data_type.label_default: %}
+                        {{ data.data_type.label_default }}
+                    {% endif %}
                 </p>
             </div>
 
             <div class="information">
                 <p class="info-titre">Objectifs</p>
-                <p class="info-contenu">Objectif 1</p>
+                <p class="info-contenu">
+                    {% if data.dataset_objectif.label_default: %}
+                        {{ data.dataset_objectif.label_default }}
+                    {% endif %}
+                </p>
             </div>
 
             <div class="information">
                 <p class="info-titre">Territoires</p>
                 <p class="info-contenu">
-                    Couverture du domaine continental
+                    {% if data.terrestrial_domain: %}
+                        Domaine continental
+                    {% endif %}
                     <br>
-                    Couverture du domaine marin
+                    {% if data.marine_domain: %}
+                        Domaine marin
+                    {% endif %}
                 </p>
             </div>
 
             <div class="information">
                 <p class="info-titre">Cadre de référence</p>
                 <p class="info-contenu">
-                    Titre du cadre d’acquisition
+                    {% if data.acquisition_framework.acquisition_framework_name: %}
+                        {{ data.acquisition_framework.acquisition_framework_name }}
+                    {% endif %}
                     <br>
-                    Identifiant du cadre d’acquisition
+                    {% if data.acquisition_framework.unique_acquisition_framework_id: %}
+                        {{ data.acquisition_framework.unique_acquisition_framework_id }}
+                    {% endif %}
                 </p>
             </div>
 
             <div class="information">
                 <p class="info-titre">Processus de collecte</p>
                 <p class="info-contenu">
-                    Libellé
+                    {% if data.collecting_method.label_default: %}
+                        {{ data.collecting_method.label_default }}
+                    {% endif %}
                     <br>
-                    Description
-                    <br>
-                    Url
-                    <br>
-                    Type de protocole
-                    <br>
-                    Précisions
-                    <br>
-                    Code Campanule
+                    {% if data.collecting_method.definition_default: %}
+                        {{ data.collecting_method.definition_default }}
+                    {% endif %}
                 </p>
             </div>
 
             <div class="information">
                 <p class="info-titre">Contacts</p>
                 <p class="info-contenu">
-                    Organisme
-                    <br>
-                    SIRET
-                    <br>
-                    Nom
-                    <br>
-                    Email
-                    <br>
-                    Base de production
+                    {% if data.cor_dataset_actor: %}
+                        {% for actor in data.cor_dataset_actor -%}
+                            {% if actor.role: %}
+                                {{ actor.role.nom_role }} {{ actor.role.prenom_role }}
+                            {% endif %}
+                            <br>
+                            {% if actor.organism: %}
+                                {{ actor.organism.nom_organisme }}
+                            {% endif %}
+                            <br>
+                            {% if actor.role: %}
+                                {{ actor.role.email }}
+                            {% endif %}
+                            <br>
+                        {%- endfor %}
+                    {% endif %}
                 </p>
             </div>
 
             <div class="information">
                 <p class="info-titre">Mots-clés</p>
                 <p class="info-contenu">
-                    Mots-clés 1
-                    <br>
-                    Mots-clés 2
-                    <br>
-                    ....
+                    {% if data.keywords: %}
+                        {% for word in data.keywords -%}
+                            {{ word }} <br>
+                        {%- endfor %}
+                    {% endif %}
                 </p>
             </div>
 
             <div class="information">
-                <p class="info-titre">Attricuts additionnels</p>
+                <p class="info-titre">Attributs additionnels</p>
             </div>
             
         </div>
@@ -156,9 +191,13 @@
                 <div class="ca-initial-details">
                     <img class="logo-ca-initial" src="../../static/images/Taxon_icon_vert.svg" alt="taxon-vert-icon">
                     <p class="ca-initial-info">
-                        4A9DDA1F-B770-3E13-E053-2614A8C02B7C
+                        {% if data.acquisition_framework.unique_acquisition_framework_id: %}
+                            {{ data.acquisition_framework.unique_acquisition_framework_id }}
+                        {% endif %}
                         <br>
-                        Etude d’inventaire préalable à l’installation du parcéolien X
+                        {% if data.acquisition_framework.acquisition_framework_name: %}
+                            {{ data.acquisition_framework.acquisition_framework_name }}
+                        {% endif %}
                     </p>
                 </div>
             </div>

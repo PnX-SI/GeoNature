@@ -230,8 +230,15 @@ def get_export_pdf_dataset(id_dataset, info_role):
             403,
         )
 
-    data = DB.session.query(TDatasets).get(id_dataset)
-    df = data.as_dict(True)
+    df = get_dataset_details_dict(id_dataset)
+    if not df:
+        return render_template(
+            'error.html',
+            error='Le dataset presente des erreurs',
+            redirect=current_app.config["URL_APPLICATION"]+'/#/metadata'), 404
+
+    if len(df["dataset_desc"]) > 240:
+        df["dataset_desc"] = df["dataset_desc"][:240] + '...'
 
     filename = 'jeu_de_donnees_id_n_{}.pdf'.format(id_dataset)
 
