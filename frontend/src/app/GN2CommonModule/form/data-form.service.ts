@@ -341,6 +341,10 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/taxa_distribution`, { params: {'dataset_ids': dataset_ids} });
   }
 
+  uploadCanvas(img: any) {
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/meta/upload_canvas`, img);
+  }
+
   getModulesList(exclude: Array<string>) {
     let queryString: HttpParams = new HttpParams();
     exclude.forEach(mod_code => {

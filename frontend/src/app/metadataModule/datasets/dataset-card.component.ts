@@ -99,15 +99,20 @@ export class DatasetCardComponent implements OnInit {
           this.pieChartLabels.push(row[1]);
         }
         this.chart.chart.update();
-        this.chart.ngOnChanges({});
-        this.spinner = false;
     });
     
   }
 
   getPdf() {
+    
     const url = `${AppConfig.API_ENDPOINT}/meta/dataset/export_pdf/${this.id_dataset}`;
-    window.open(url);
+    const dataUrl = this.chart ? this.chart.ctx.canvas.toDataURL("image/png") : "";
+    this._dfs.uploadCanvas(dataUrl).subscribe(
+      data => {
+        window.open(url);
+      }
+    );
+    
   }
   
 }
