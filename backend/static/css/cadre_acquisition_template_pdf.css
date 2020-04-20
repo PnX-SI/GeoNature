@@ -20,6 +20,13 @@ a {
     float: right;
 }
 
+.taxons {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+}
+
 .logo {
     width: 200px;
     position: absolute;
@@ -66,7 +73,7 @@ div.titre {
 
 .etiquette {
     width: 175px;
-    height: 110px;
+    height: 90px;
     border: 0.75px solid grey;
     border-radius: 17px;
 }
@@ -96,7 +103,7 @@ div.titre {
 
 .stat-etiquette {
     font-weight: bold;
-    font-size: 30px;
+    font-size: 20px;
     margin: 0;
 }
 

@@ -31,6 +31,7 @@ from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_meta import mtd_utils
 from geonature.utils.errors import GeonatureApiError
 import geonature.utils.filemanager as fm
+from binascii import a2b_base64
 
 from flask.wrappers import Response
 
@@ -85,6 +86,21 @@ def get_datasets(info_role):
     if not datasets:
         return datasets_resp, 404
     return datasets_resp
+
+
+@routes.route("/upload_cadre_acquisition_rde_canvas", methods=["POST"])
+@json_resp
+def upload_cadre_acquisition_rde_canvas():
+    """Upload the canvas as a temporary image used while generating the pdf file
+    """
+    data = request.data[22:]
+    binary_data = a2b_base64(data)
+
+    fd = open('static/images/cadre-acquisition-rde.png', 'wb')
+    fd.write(binary_data)
+    fd.close()
+
+    return "OK"
 
 
 @routes.route("/dataset/<id_dataset>", methods=["GET"])
@@ -284,30 +300,60 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
 
     # Recuperation des données
     af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
-    df = af.as_dict(True)
-    if df:
-        df["nomenclature_territorial_level"] = af.nomenclature_territorial_level.as_dict()
-        df["nomenclature_financing_type"] = af.nomenclature_financing_type.as_dict()
-        if df["acquisition_framework_start_date"] :
-            start_date = dt.datetime.strptime(df["acquisition_framework_start_date"], '%Y-%m-%d')
-            df["acquisition_framework_start_date"] = start_date.strftime("%d/%m/%Y")
-        if df["acquisition_framework_end_date"] :
-            end_date = dt.datetime.strptime(df["acquisition_framework_end_date"], '%Y-%m-%d')
-            df["acquisition_framework_end_date"] = end_date.strftime("%d/%m/%Y")
-        df['css'] = {
+    acquisition_framework = af.as_dict(True)
+    
+    q = DB.session.query(TDatasets).distinct()
+    data = q.filter( \
+                TDatasets.id_acquisition_framework \
+                == id_acquisition_framework).all()
+    dataset_ids = [d.id_dataset for d in data]
+    acquisition_framework["datasets"] = [d.as_dict(True) for d in data]
+
+    nb_data = len(dataset_ids)
+    nb_taxons = DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).distinct().count()
+    nb_observations = DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).count()
+    nb_habitat = 0
+
+    # Check if pr_occhab exist
+    check_schema_query = exists(select([text("schema_name")]).select_from(text("information_schema.schemata")).
+       where(text("schema_name = 'pr_occhab'"))) 
+
+    if DB.session.query(check_schema_query).scalar() and nb_data > 0 :
+        query = "SELECT count(*) FROM pr_occhab.t_stations s, pr_occhab.t_habitats h WHERE s.id_station = h.id_station AND s.id_dataset in \
+        ("+str(dataset_ids).strip('[]')+")"
+        
+        nb_habitat  = DB.engine.execute(
+            text(query)
+        ).first()[0]
+
+    acquisition_framework["stats"] = {
+        "nb_data": nb_data,
+        "nb_taxons": nb_taxons,
+        "nb_observations": nb_observations,
+        "nb_habitats": nb_habitat
+    }
+
+    if acquisition_framework:
+        acquisition_framework["nomenclature_territorial_level"] = af.nomenclature_territorial_level.as_dict()
+        acquisition_framework["nomenclature_financing_type"] = af.nomenclature_financing_type.as_dict()
+        if acquisition_framework["acquisition_framework_start_date"] :
+            start_date = dt.datetime.strptime(acquisition_framework["acquisition_framework_start_date"], '%Y-%m-%d')
+            acquisition_framework["acquisition_framework_start_date"] = start_date.strftime("%d/%m/%Y")
+        if acquisition_framework["acquisition_framework_end_date"] :
+            end_date = dt.datetime.strptime(acquisition_framework["acquisition_framework_end_date"], '%Y-%m-%d')
+            acquisition_framework["acquisition_framework_end_date"] = end_date.strftime("%d/%m/%Y")
+        acquisition_framework['css'] = {
             "logo" : "Logo_SINP.png",
             "bandeau" : "Bandeau_SINP.png",
             "entite" : "sinp"
         }
         date = dt.datetime.now().strftime("%d/%m/%Y")
-        df['footer'] = {
+        acquisition_framework['footer'] = {
             "url" : current_app.config["URL_APPLICATION"]+"/api/meta/acquisition_frameworks/export_pdf/"+id_acquisition_framework,
             "date" : date
         }
         params = {"id_acquisition_frameworks" : id_acquisition_framework}
-        jdd = get_datasets_cruved(info_role, params)
-        if jdd:
-            df['jdd'] = jdd
+
     else:
         return render_template(
             'error.html',
@@ -316,10 +362,10 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
 
     filename = 'cadre_acquisition_id_n_{}.pdf'.format(id_acquisition_framework)
 
-    pprint.pprint(df)
+    pprint.pprint(acquisition_framework)
 
     # Appel de la methode pour generer un pdf
-    pdf_file = fm.generate_pdf('cadre_acquisition_template_pdf.html', df, filename)
+    pdf_file = fm.generate_pdf('cadre_acquisition_template_pdf.html', acquisition_framework, filename)
 
     return Response(
         pdf_file,

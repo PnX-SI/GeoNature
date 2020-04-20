@@ -409,4 +409,9 @@ export class DataFormService {
     link.click();
     document.body.removeChild(link);
   }
+
+  uploadCanvas(img: any, type: string) {
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/meta/${type}`, img);
+  }
 }
+
