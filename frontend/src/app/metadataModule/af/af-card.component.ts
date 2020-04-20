@@ -131,7 +131,7 @@ export class AfCardComponent implements OnInit {
     const url = `${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks/export_pdf/${this.af.id_acquisition_framework}`;
     // window.open(url);
     const dataUrl = this.chart ? this.chart.ctx.canvas.toDataURL('image/png') : '';
-    this._dfs.uploadCanvas(dataUrl, 'upload_cadre_acquisition_rde_canvas').subscribe(
+    this._dfs.uploadCACanvas(dataUrl, 'upload_cadre_acquisition_rde_canvas').subscribe(
       data => {
         window.open(url);
       }
