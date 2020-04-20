@@ -28,8 +28,8 @@
             </div>
             <div class="etiquette-bas">
                 <p class="stat-etiquette">
-                    {% if data.jdd: %}
-                        {{ data.jdd | count }}
+                    {% if data.stats: %}
+                        {{ data.stats["nb_data"]}}
                     {% endif %}
                 </p>
             </div>
@@ -42,7 +42,11 @@
                 <p class="titre-etiquette">Nombre de taxons</p>
             </div>
             <div class="etiquette-bas">
-                <p class="stat-etiquette">123</p>
+                <p class="stat-etiquette">
+                    {% if data.stats: %}
+                        {{ data.stats["nb_taxons"]}}
+                    {% endif %}
+                </p>
             </div>
         </div>
         <div class="etiquette" {% if data.css: %} id="nombre-habitats-{{data.css['entite']}}" {% else %}
@@ -53,7 +57,11 @@
                 <p class="titre-etiquette">Nombre d'habitats</p>
             </div>
             <div class="etiquette-bas">
-                <p class="stat-etiquette">67</p>
+                <p class="stat-etiquette">
+                    {% if data.stats: %}
+                        {{ data.stats["nb_habitats"]}}
+                    {% endif %}
+                </p>
             </div>
         </div>
         <div class="etiquette" {% if data.css: %} id="nombre-donnees-{{data.css['entite']}}" {% else %}
@@ -61,10 +69,14 @@
             <div class="etiquette-haut">
                 <img class="logo-etiquette" src="../../static/images/Donnee_icon.svg"
                     alt="donnee-icon">
-                <p class="titre-etiquette">Nombre de données</p>
+                <p class="titre-etiquette">Nombre d'observations'</p>
             </div>
             <div class="etiquette-bas">
-                <p class="stat-etiquette">2548</p>
+                <p class="stat-etiquette">
+                    {% if data.stats: %}
+                        {{ data.stats["nb_observations"]}}
+                    {% endif %}
+                </p>
             </div>
         </div>
     </div>
@@ -76,7 +88,7 @@
                 <p class="info-titre">Identification</p>
                 <p class="info-contenu">
                     {% if data['unique_acquisition_framework_id']: %}
-                    Instance SNIP du cadre d'acquisition :{{ data['unique_acquisition_framework_id'] }}
+                        {{ data['unique_acquisition_framework_id'] }}
                     {% endif %}
                     <br>
                     {% if data['acquisition_framework_name']: %}
@@ -161,17 +173,17 @@
                 <p class="info-titre">Acteurs</p>
                 <p class="info-contenu">
                     {% if data.cor_af_actor: %}
-                        {% for act in data.cor_af_actor -%}
-                                {% if act.nomenclature_actor_role: %}
-                                    {{ act.nomenclature_actor_role['definition_default'] }} : 
-                                {% endif %}
-                                {% if act.organism: %}
-                                    {{ act.organism['nom_organisme'] }} – 
-                                {% endif %}
-                                {% if act.role: %}
-                                    {{ act.role['nom_complet'] }}
-                                {% endif %}
-                                <br>
+                        {% for act in data.cor_af_actor -%} 
+                            {% if act.nomenclature_actor_role: %}
+                                {{ act.nomenclature_actor_role['mnemonique'] }} : {{ act.organism['nom_organisme'] }}
+                            {% endif %}
+                            {% if act.organism and act.role: %}
+                                -
+                            {% endif %}
+                            {% if act.role: %}
+                                {{ act.role['nom_complet'] }}
+                            {% endif %} 
+                            <br>
                         {%- endfor %}
                     {% endif %}
                 </p>
@@ -194,23 +206,24 @@
     
             <div class="repartition">
                 <p class="repartition-especes">Répartition des espèces</p>
+                <img class="taxons" src="../../static/images/cadre-acquisition-rde.png" alt="Pas d'espèces à afficher.">
             </div>
 
             <div class="jdd">
                 <hr class="ligne-jeux-donnees ligne" {% if data.css: %} id="ligne-jeux-donnees-{{data.css['entite']}}"
                 {% else %} id="ligne-jeux-donnees-defaut" {% endif %}>
                 <p class="liste-jdd">Liste des jeux de données associés au cadre</p>
-                {% if data.jdd: %}
-                    {% for jdd in data.jdd -%}
+                {% if data.datasets: %}
+                    {% for dataset in data.datasets -%}
                         <div class="jdd-details">
                             <img class="logo-jdd" src="../../static/images/Taxon_icon_vert.svg" alt="taxon-vert-icon">
                             <p class="jdd-info">
-                                {% if jdd['unique_dataset_id']: %}
-                                    {{ jdd['unique_dataset_id'] }}
+                                {% if dataset['unique_dataset_id']: %}
+                                    {{ dataset['unique_dataset_id'] }}
                                 {% endif %}
                                 <br>
-                                {% if jdd['dataset_name']: %}
-                                    {{ jdd['dataset_name'] }}
+                                {% if dataset['dataset_name']: %}
+                                    {{ dataset['dataset_name'] }}
                                 {% endif %}
                             </p>
                         </div>
