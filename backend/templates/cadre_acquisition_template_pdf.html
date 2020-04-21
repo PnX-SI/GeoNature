@@ -104,12 +104,9 @@
                 <div class="information">
                     <p class="info-titre">Cadre de référence</p>
                     <p class="info-contenu">
+                        Est un méta-cadre : {% if data['is_parent']==True: %} Oui {% else %}  Non {% endif %} 
                         {% if data['is_parent']==True: %}
-                            Est un méta-cadre
-                        {% else %}
-                            {% if data['acquisition_framework_parent_id']: %}
-                                {{ data['acquisition_framework_parent_id'] }}
-                            {% endif %}
+                            Identifiant du méta-cadre : {{ data['acquisition_framework_parent_id'] }}
                         {% endif %}                        
                     </p>
                 </div>
@@ -119,26 +116,11 @@
                 <p class="info-titre">Dates</p>
                 <p class="info-contenu">
                     {% if data['acquisition_framework_start_date']: %}
-                        {{ data['acquisition_framework_start_date'] }}
+                        Date de lancement du cadre d'acquisition : {{ data['acquisition_framework_start_date'] }}
                     {% endif %}
                     <br>
                     {% if data['acquisition_framework_end_date']: %}
-                        {{ data['acquisition_framework_end_date'] }}
-                    {% endif %}
-                </p>
-            </div>
-
-            <div class="information">
-                <p class="info-titre">Objectifs</p>
-                <p class="info-contenu">
-                    {% if data.cor_objectifs: %}
-                        {% for obj in data.cor_objectifs -%}
-                            {% if loop.nextitem: %}
-                                {{ obj['mnemonique'] }},
-                            {% else %}
-                                {{ obj['mnemonique'] }}
-                            {% endif %}
-                        {%- endfor %}
+                        Date de clôture du cadre d'acquisition : {{ data['acquisition_framework_end_date'] }}
                     {% endif %}
                 </p>
             </div>
@@ -147,18 +129,31 @@
                 <p class="info-titre">Territoires concernés</p>
                 <p class="info-contenu">
                     {% if data['id_nomenclature_territorial_level']: %}
-                        {{ data['id_nomenclature_territorial_level'] }}
+                        Etendue territoriale : {{ data['id_nomenclature_territorial_level'] }}
                     {% endif %}
                     <br>
-                    {% if data.nomenclature_territorial_level: %}
-                        {{ data.nomenclature_territorial_level['cd_nomenclature'] }}
-                    {% endif %}
+                        Territoires : ??
                     <br>
-                    {% if data.nomenclature_territorial_level: %}
-                        {{ data.nomenclature_territorial_level['definition_default'] }}
-                    {% endif %}
+                        Précision géographique : ??
                 </p>
             </div>
+
+            {% if data.cor_objectifs: %}
+            <div class="information">
+                <p class="info-titre">Objectifs</p>
+                <p class="info-contenu">  
+                        {% for obj in data.cor_objectifs -%}
+                            {% if loop.nextitem: %}
+                                {{ obj['mnemonique'] }},
+                            {% else %}
+                                {{ obj['mnemonique'] }}
+                            {% endif %}
+                        {%- endfor %}
+                </p>
+            </div>
+            {% endif %}
+
+            
 
             <div class="information">
                 <p class="info-titre">Cible taxonomique</p>
@@ -169,10 +164,10 @@
                 </p>
             </div>
 
+            {% if data.cor_af_actor: %}
             <div class="information">
                 <p class="info-titre">Acteurs</p>
                 <p class="info-contenu">
-                    {% if data.cor_af_actor: %}
                         {% for act in data.cor_af_actor -%} 
                             {% if act.nomenclature_actor_role: %}
                                 {{ act.nomenclature_actor_role['mnemonique'] }} : {{ act.organism['nom_organisme'] }}
@@ -185,19 +180,19 @@
                             {% endif %} 
                             <br>
                         {%- endfor %}
-                    {% endif %}
                 </p>
             </div>
+            {% endif %}
 
+            {% if data['keywords']: %}
             <div class="information">
                 <p class="info-titre">Mots-clés</p>
                 <p class="info-contenu">
-                    {% if data['keywords']: %}
                         {{ data['keywords'] }}
-                    {% endif %}
                 </p>
             </div>
-            
+            {% endif %}
+
         </div>
         <div class="right-block">
             <div class="zone">
