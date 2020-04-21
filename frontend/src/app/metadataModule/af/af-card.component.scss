@@ -1,11 +1,8 @@
 .btn-secondary,
+.btn-primary,
 .btn-success,
 .btn-danger {
-    margin: 1% 1% 1% 10%;
-}
-
-.bold {
-    font-weight: bold;
+    margin: 1% 1% 1% 2%;
 }
 
 .main-card {
@@ -18,10 +15,8 @@
 }
 
 
-
-
 div.a {
-	text-indent: 60px;
+	margin-left: 60px;
 	font-size: 90%;
 	line-height: 150%;
 }
@@ -36,7 +31,6 @@ div.b {
 div.c {
   text-align: right;
 }
-
 
 .card {
 	position: relative;
@@ -61,4 +55,9 @@ div.c {
 	margin-bottom: 0;
 	background-color: transparent;
 	border-bottom: 1px solid #edf2f9
+}
+
+
+.bold {
+    font-weight: bold;
 }
