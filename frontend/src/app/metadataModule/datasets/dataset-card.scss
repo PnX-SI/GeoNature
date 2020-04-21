@@ -1,8 +1,8 @@
-
-*,
-::after,
-::before {
-	box-sizing: border-box
+.btn-secondary,
+.btn-primary,
+.btn-success,
+.btn-danger {
+    margin: 1% 1% 2% 2%;
 }
 
 .main-card {
@@ -26,6 +26,10 @@ div.b {
 	font-weight: bold;
 	font-size: 90%;
 	line-height: 150%;
+}
+
+div.c {
+  text-align: right;
 }
 
 .card {
