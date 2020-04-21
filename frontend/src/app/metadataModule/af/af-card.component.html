@@ -80,43 +80,43 @@
           </h5>
         </div>
         <div class="card-body">
-          <div class="b">Identification :</div>
+          <div class="b">Identification </div>
           <div class="a"> Instance SNIP du cadre d'acquisition : {{af?.unique_acquisition_framework_id}}</div>
           <div class="a"> Libellé du cadre d'acquisition : {{af?.acquisition_framework_name}}</div>
           <br/>
 
-          <div class="b">Description :</div>
+          <div class="b">Description </div>
           <div class="a"> Cadre de réfèrence : {{af?.acquisition_framework_name}}</div>
           <div class="a"> Est un méta-cadre : {{af?.is_parent ? 'Oui' : 'Non'}}</div>
           <div class="a"> Identifiant du méta-cadre : {{af?.acquisition_framework_parent_id}}</div>
           <br/>
 
-          <div class="b">Dates :</div>
+          <div class="b">Dates </div>
           <div class="a"> Date de lancement du cadre d'acquisition : {{af?.acquisition_framework_start_date}}</div>
           <div class="a"> Date de clôture du cadre d'acquisition : {{af?.acquisition_framework_end_date}}</div>
           <br/>
 
-          <div class="b">Objectifs :</div>
+          <div *ngIf="af?.cor_objectifs"  class="b">Objectifs </div>
           <div *ngFor="let objectif of af?.cor_objectifs" class="a"> {{ objectif?.mnemonique }} </div>
           <br/>
 
-          <div class="b">Territoires concernés :</div>
+          <div class="b">Territoires concernés </div>
           <div class="a"> Etendue territoriale : {{af?.id_nomenclature_territorial_level}}</div>
           <div class="a"> Territoires : ??</div>
           <div class="a"> Précision géographique : ??</div>
           <br/>
 
-          <div class="b">Cible taxonomique :</div>
+          <div class="b">Cible taxonomique </div>
           <div class="a"> Description : {{af?.target_description}}</div>
           <br/>
 
-          <div class="b">Acteurs :</div>
+          <div *ngIf="af?.cor_af_actor"  class="b">Acteurs </div>
           <div class="a" *ngFor="let actor of af?.cor_af_actor">
             <div> {{ actor?.nomenclature_actor_role?.mnemonique}} : {{ actor?.organism?.nom_organisme }} <span *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"> - </span> {{ actor?.role?.nom_complet }} </div>
           </div>
           <br/>
 
-          <div class="b">Mots-clés :</div>
+          <div class="b">Mots-clés </div>
           <div class="a"> {{af?.keywords}} </div>
           <br/>
 
