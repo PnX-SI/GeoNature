@@ -105,6 +105,7 @@
                     <p class="info-titre">Cadre de référence</p>
                     <p class="info-contenu">
                         Est un méta-cadre : {% if data['is_parent']==True: %} Oui {% else %}  Non {% endif %} 
+                        <br>
                         {% if data['is_parent']==True: %}
                             Identifiant du méta-cadre : {{ data['acquisition_framework_parent_id'] }}
                         {% endif %}                        
