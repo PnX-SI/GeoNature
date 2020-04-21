@@ -364,7 +364,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
         }
         date = dt.datetime.now().strftime("%d/%m/%Y")
         acquisition_framework['footer'] = {
-            "url" : current_app.config["URL_APPLICATION"]+"/api/meta/acquisition_frameworks/export_pdf/"+id_acquisition_framework,
+            "url" : current_app.config["URL_APPLICATION"]+"/#/metadata/af-card/"+id_acquisition_framework,
             "date" : date
         }
         params = {"id_acquisition_frameworks" : id_acquisition_framework}
