@@ -26,6 +26,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit {
   public occtaxConfig = ModuleConfig;
   public occurrenceForm: FormGroup;
   public taxonForm: FormControl; //control permettant de rechercher un taxon TAXREF
+  public taxonFormFocus: boolean = false; //pour mieux gérer l'affichage de l'erreur required
   private advanced: string = 'collapsed';
   public countingStep: number = 0;
   
@@ -62,6 +63,11 @@ export class OcctaxFormOccurrenceComponent implements OnInit {
     //a chaque reinitialisation du formulaire on place le focus sur la zone de saisie du taxon
     this.occtaxFormOccurrenceService.occurrence
           .subscribe(()=>document.getElementById("taxonInput").focus());
+
+    //Pour gérer l'affichage de l'erreur required quand le focus est présent dans l'input
+    const taxonInput = document.getElementById("taxonInput");
+    taxonInput.addEventListener('focus', (event) => this.taxonFormFocus = true);
+    taxonInput.addEventListener('blur', (event) => this.taxonFormFocus = false);
   }
 
   setExistProofData(data) {
@@ -136,5 +142,9 @@ export class OcctaxFormOccurrenceComponent implements OnInit {
 
   collapse() {
     this.advanced = (this.advanced === 'collapsed' ? 'expanded' : 'collapsed');
+  }
+
+  console() {
+    console.log("coucou")
   }
 }

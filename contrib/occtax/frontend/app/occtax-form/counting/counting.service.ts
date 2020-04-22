@@ -11,6 +11,7 @@ import { map, filter, tap } from "rxjs/operators";
 import { ModuleConfig } from "../../module.config";
 import { FormService } from "@geonature_common/form/form.service";
 import { OcctaxFormService } from '../occtax-form.service';
+import { OcctaxFormParamService } from '../form-param/form-param.service';
 
 @Injectable()
 export class OcctaxFormCountingService {
@@ -23,15 +24,9 @@ export class OcctaxFormCountingService {
     private fb: FormBuilder,
     private coreFormService: FormService,
     private occtaxFormService: OcctaxFormService,
+    private occtaxParamS: OcctaxFormParamService
   ) 
   { }
-
-  private get initialValues() {
-    return {
-      count_min: 1,
-      count_max: 1
-    };
-  }
 
   createForm(patchWithDefaultValues: boolean = false): FormGroup {
     const form = this.fb.group({
@@ -45,8 +40,6 @@ export class OcctaxFormCountingService {
     });
 
     form.setValidators([this.countingValidator]);
-
-    form.patchValue(this.initialValues);
 
     if (patchWithDefaultValues) {
       this.defaultValues.subscribe(DATA=>form.patchValue(DATA));
@@ -75,11 +68,13 @@ export class OcctaxFormCountingService {
                     .pipe(
                       map(DATA=> {
                         return {
-                          id_nomenclature_life_stage: DATA["STADE_VIE"],
-                          id_nomenclature_sex: DATA["SEXE"],
-                          id_nomenclature_obj_count: DATA["OBJ_DENBR"],
-                          id_nomenclature_type_count: DATA["TYP_DENBR"],
-                          id_nomenclature_valid_status: DATA["STATUT_VALID"]
+                          count_min: this.occtaxParamS.get('counting.count_min')||1,
+                          count_max: this.occtaxParamS.get('counting.count_max')||1,
+                          id_nomenclature_life_stage: this.occtaxParamS.get('counting.id_nomenclature_life_stage')||DATA["STADE_VIE"],
+                          id_nomenclature_sex: this.occtaxParamS.get('counting.id_nomenclature_sex')||DATA["SEXE"],
+                          id_nomenclature_obj_count: this.occtaxParamS.get('counting.id_nomenclature_obj_count')||DATA["OBJ_DENBR"],
+                          id_nomenclature_type_count: this.occtaxParamS.get('counting.id_nomenclature_type_count')||DATA["TYP_DENBR"],
+                          id_nomenclature_valid_status: this.occtaxParamS.get('counting.id_nomenclature_valid_status')||DATA["STATUT_VALID"]
                         };
                       })
                     );

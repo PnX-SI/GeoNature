@@ -1,4 +1,4 @@
-<h5>{{'Taxon.Observation' |translate}}</h5>
+<h5> Ajout d'une observation </h5>
 <div class="row">
   <div class="col-sm-6">
     <pnx-taxonomy 
@@ -11,7 +11,7 @@
       displayLabel="search_name">
     </pnx-taxonomy>
     <small 
-      *ngIf="occurrenceForm.get('nom_cite').hasError('required') && taxonForm.touched" 
+      *ngIf="(occurrenceForm.get('nom_cite').hasError('required') && taxonForm.touched) && !taxonFormFocus" 
       class="error" 
       style="color:red">
       {{'Taxon.Errors.NomCiteRequiredError' |translate}}
@@ -339,7 +339,7 @@
         diameter="25"
         strokeWidth="2">
       </mat-spinner>
-      Enregistrer le taxon
+      Ajouter cette observation au relevé
     </button> 
   </ng-container>
   <ng-template #modifButton>
@@ -353,7 +353,7 @@
         diameter="25"
         strokeWidth="2">
       </mat-spinner>
-      Modifier le taxon
+      Modifier cette observation
     </button> 
   </ng-template>
 </div>

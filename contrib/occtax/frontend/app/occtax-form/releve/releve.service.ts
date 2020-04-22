@@ -17,6 +17,7 @@ import { DataFormService } from "@geonature_common/form/data-form.service";
 import { OcctaxFormService } from '../occtax-form.service';
 import { OcctaxFormMapService } from '../map/map.service';
 import { OcctaxDataService } from '../../services/occtax-data.service';
+import { OcctaxFormParamService } from '../form-param/form-param.service';
 
 @Injectable()
 export class OcctaxFormReleveService {
@@ -40,7 +41,8 @@ export class OcctaxFormReleveService {
     private dataFormService: DataFormService,
     private occtaxFormService: OcctaxFormService,
     private occtaxFormMapService: OcctaxFormMapService,
-    private occtaxDataService: OcctaxDataService
+    private occtaxDataService: OcctaxDataService,
+    private occtaxParamS: OcctaxFormParamService
   ) {
     this.initPropertiesForm();
     this.setObservables();
@@ -62,7 +64,6 @@ export class OcctaxFormReleveService {
   initPropertiesForm(): void {
     //FORM
     this.propertiesForm = this.fb.group({
-      // id_releve_occtax: null,
       id_dataset: [null, Validators.required],
       id_digitiser: null,
       date_min: [null, Validators.required],
@@ -199,8 +200,19 @@ export class OcctaxFormReleveService {
                     .pipe(
                       map(data=> {
                         return {
-                          id_nomenclature_grp_typ: data["TYP_GRP"],
-                          id_nomenclature_obs_technique: data["TECHNIQUE_OBS"]
+                          id_dataset: this.occtaxParamS.get('releve.id_dataset'),
+                          date_min: this.occtaxParamS.get('releve.date_min'),
+                          date_max: this.occtaxParamS.get('releve.date_max'),
+                          hour_min: this.occtaxParamS.get('releve.hour_min'),
+                          hour_max: this.occtaxParamS.get('releve.hour_max'),
+                          altitude_min: this.occtaxParamS.get('releve.altitude_min'),
+                          altitude_max: this.occtaxParamS.get('releve.altitude_max'),
+                          meta_device_entry: "web",
+                          comment: this.occtaxParamS.get('releve.comment'),
+                          observers: this.occtaxParamS.get('releve.observers')||[this.occtaxFormService.currentUser],
+                          observers_txt: this.occtaxParamS.get('releve.observers_txt'),
+                          id_nomenclature_grp_typ: this.occtaxParamS.get('releve.id_nomenclature_grp_typ')||data["TYP_GRP"],
+                          id_nomenclature_obs_technique: this.occtaxParamS.get('releve.id_nomenclature_obs_technique')||data["TECHNIQUE_OBS"]
                         };
                       })
                     );

@@ -1,5 +1,6 @@
 import { Component, OnInit, HostListener, Inject, AfterViewInit } from "@angular/core";
 import { DOCUMENT } from '@angular/common';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig } from '@angular/material';
 import { ActivatedRoute, Router } from "@angular/router";
 import { BehaviorSubject } from 'rxjs';
 import { ModuleConfig } from "../module.config";
@@ -8,6 +9,8 @@ import { DataFormService } from "@geonature_common/form/data-form.service";
 import { MarkerComponent } from "@geonature_common/map/marker/marker.component";
 import { AuthService } from "@geonature/components/auth/auth.service";
 import { NavHomeComponent } from "@geonature/components/nav-home/nav-home.component";
+import { OcctaxFormParamDialog } from './form-param/form-param.dialog';
+import { OcctaxFormParamService } from './form-param/form-param.service';
 
 @Component({
   selector: "pnx-occtax-form",
@@ -25,11 +28,13 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
 
   constructor(
     @Inject(DOCUMENT) document,
+    public dialog: MatDialog,
     private _route: ActivatedRoute,
     private _router: Router,
     public occtaxFormService: OcctaxFormService,
     private _dfs: DataFormService,
-    private _authService: AuthService
+    private _authService: AuthService,
+    public occtaxFormParamService: OcctaxFormParamService
   ) { }
   
   ngOnInit() {
@@ -73,5 +78,16 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
 
     let height = wH -(tbH + nbH + 40);
     this.cardContentHeight = height >= 350 ? height : 350;
+  }
+
+  openDialog(): void {
+
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.data = {};
+    dialogConfig.maxHeight = (window.innerHeight - 20)+'px';
+    dialogConfig.position = {top: '30px'};
+
+    const dialogRef = this.dialog.open(OcctaxFormParamDialog, dialogConfig);
   }
 }

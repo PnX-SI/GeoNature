@@ -8,6 +8,7 @@ import { OcctaxFormService } from '../occtax-form.service';
 import { OcctaxFormCountingService } from '../counting/counting.service';
 import { FormService } from "@geonature_common/form/form.service";
 import { OcctaxDataService } from '../../services/occtax-data.service';
+import { OcctaxFormParamService } from '../form-param/form-param.service';
 
 @Injectable()
 export class OcctaxFormOccurrenceService {
@@ -25,16 +26,11 @@ export class OcctaxFormOccurrenceService {
     private coreFormService: FormService,
     private occtaxFormService: OcctaxFormService,
     private occtaxFormCountingService: OcctaxFormCountingService,
-    private occtaxDataService: OcctaxDataService
+    private occtaxDataService: OcctaxDataService,
+    private occtaxParamS: OcctaxFormParamService
   ) {
     this.initForm();
     this.setObservables();
-  }
-
-  private get initialValues() {
-    return {
-      determiner: this.occtaxFormService.currentUser.nom_complet
-    };
   }
 
   initForm(): void {
@@ -59,8 +55,6 @@ export class OcctaxFormOccurrenceService {
       comment: null,
       cor_counting_occtax: this.fb.array([], Validators.required)
     });
-
-    this.form.patchValue(this.initialValues);
   }
 
   /**
@@ -148,16 +142,19 @@ export class OcctaxFormOccurrenceService {
                     .pipe(
                       map(DATA=> {
                         return {
-                          id_nomenclature_bio_condition: DATA["ETA_BIO"],
-                          id_nomenclature_naturalness: DATA["NATURALITE"],
-                          id_nomenclature_obs_meth: DATA["METH_OBS"],
-                          id_nomenclature_bio_status: DATA["STATUT_BIO"],
-                          id_nomenclature_exist_proof: DATA["PREUVE_EXIST"],
-                          id_nomenclature_determination_method: DATA["METH_DETERMIN"],
-                          id_nomenclature_observation_status: DATA["STATUT_OBS"],
-                          id_nomenclature_diffusion_level: DATA["NIV_PRECIS"],
-                          id_nomenclature_blurring: DATA["DEE_FLOU"],
-                          id_nomenclature_source_status: DATA["STATUT_SOURCE"]
+                          determiner: this.occtaxParamS.get('occurrence.determiner')||this.occtaxFormService.currentUser.nom_complet,
+                          sample_number_proof: this.occtaxParamS.get('occurrence.sample_number_proof'),
+                          comment: this.occtaxParamS.get('occurrence.comment'),
+                          id_nomenclature_bio_condition: this.occtaxParamS.get('occurrence.id_nomenclature_bio_condition')||DATA["ETA_BIO"],
+                          id_nomenclature_naturalness: this.occtaxParamS.get('occurrence.id_nomenclature_naturalness')||DATA["NATURALITE"],
+                          id_nomenclature_obs_meth: this.occtaxParamS.get('occurrence.id_nomenclature_obs_meth')||DATA["METH_OBS"],
+                          id_nomenclature_bio_status: this.occtaxParamS.get('occurrence.id_nomenclature_bio_status')||DATA["STATUT_BIO"],
+                          id_nomenclature_exist_proof: this.occtaxParamS.get('occurrence.id_nomenclature_exist_proof')||DATA["PREUVE_EXIST"],
+                          id_nomenclature_determination_method: this.occtaxParamS.get('occurrence.id_nomenclature_determination_method')||DATA["METH_DETERMIN"],
+                          id_nomenclature_observation_status: this.occtaxParamS.get('occurrence.id_nomenclature_observation_status')||DATA["STATUT_OBS"],
+                          id_nomenclature_diffusion_level: this.occtaxParamS.get('occurrence.id_nomenclature_diffusion_level')||DATA["NIV_PRECIS"],
+                          id_nomenclature_blurring: this.occtaxParamS.get('occurrence.id_nomenclature_blurring')||DATA["DEE_FLOU"],
+                          id_nomenclature_source_status: this.occtaxParamS.get('occurrence.id_nomenclature_source_status')||DATA["STATUT_SOURCE"]
                         };
                       })
                     );
@@ -227,7 +224,7 @@ export class OcctaxFormOccurrenceService {
   }
 
   reset() {
-    this.form.reset(this.initialValues);
+    this.form.reset();
     this.occurrence.next(null);
   }
 

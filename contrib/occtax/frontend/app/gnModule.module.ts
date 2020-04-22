@@ -15,6 +15,8 @@ import { OcctaxFormReleveComponent } from "./occtax-form/releve/releve.component
 import { OcctaxFormOccurrenceComponent } from "./occtax-form/occurrence/occurrence.component";
 import { OcctaxFormTaxaListComponent } from "./occtax-form/taxa-list/taxa-list.component";
 import { OcctaxFormCountingComponent } from "./occtax-form/counting/counting.component";
+import { OcctaxFormParamDialog } from "./occtax-form/form-param/form-param.dialog";
+
 // Service
 import { OcctaxDataService } from "./services/occtax-data.service";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
@@ -25,6 +27,7 @@ import { OcctaxFormReleveService } from "./occtax-form/releve/releve.service";
 import { OcctaxFormOccurrenceService } from "./occtax-form/occurrence/occurrence.service";
 import { OcctaxFormCountingService } from "./occtax-form/counting/counting.service";
 import { OcctaxTaxaListService } from "./occtax-form/taxa-list/taxa-list.service";
+import { OcctaxFormParamService } from "./occtax-form/form-param/form-param.service";
 
 import {
   MatSlideToggleModule,
@@ -63,7 +66,11 @@ const routes: Routes = [
     OcctaxFormReleveComponent,
     OcctaxFormOccurrenceComponent,
     OcctaxFormTaxaListComponent,
-    OcctaxFormCountingComponent
+    OcctaxFormCountingComponent,
+    OcctaxFormParamDialog
+  ],
+  entryComponents: [ 
+    OcctaxFormParamDialog
   ],
   providers: [
     OcctaxDataService, 
@@ -73,7 +80,8 @@ const routes: Routes = [
     OcctaxFormReleveService,
     OcctaxFormOccurrenceService,
     OcctaxFormCountingService,
-    OcctaxTaxaListService
+    OcctaxTaxaListService,
+    OcctaxFormParamService
   ]
 })
 export class GeonatureModule { }
