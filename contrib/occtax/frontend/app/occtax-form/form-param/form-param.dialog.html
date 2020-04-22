@@ -71,14 +71,23 @@
 	<!-- GEOSJON -->
   <mat-tab 
   	label="Localisation"
-  	[disabled]="!(occtaxFormParamService.geojsonState|async)">
+  	[disabled]="!(occtaxFormParamService.geometryState|async)">
 
-  	<div style="margin-top:10px;">
+  	<div style="display: inline-block; margin-top:10px;">
 			<button 
 				class="btn btn-primary" 
 				(click)="geometryFormMapper()">
 				Copier la localisation du relevé en cours
 			</button>
+		</div>
+
+		<div class="copied-geometry">
+			<ng-container *ngIf="paramsForm.get('geometry').value !== null; else noGeometryBlock">
+				<mat-icon style="color: green">check</mat-icon> Une géométrie est proposée par défaut
+			</ng-container>
+			<ng-template #noGeometryBlock>
+				<mat-icon style="color: red">close</mat-icon>Aucune géométrie n'a été copiée pour le moment
+			</ng-template>
 		</div>
 
   </mat-tab>

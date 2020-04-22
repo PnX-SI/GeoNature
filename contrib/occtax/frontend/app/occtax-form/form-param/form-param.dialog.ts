@@ -137,7 +137,6 @@ export class OcctaxFormParamDialog implements OnInit {
   }
 
   geometryFormMapper() {
-    console.log("patch")
     this.paramsForm.get('geometry').patchValue(this.occtaxFormMapService.geometry.value);
   }
 
