@@ -1,6 +1,40 @@
-<h4>Paramétrage de la valeur par défaut des champs du formulaire</h4>
-<p>Afficher l'aide</p>
-<p>Cet espace permet d'activer et de spécifier des valeurs de pré-remplissage du formulaire.</p>
+<h4>
+	Paramétrage de la valeur par défaut des champs du formulaire
+	<span class="pull-right">
+		<button 
+			class="close-parameter-w"
+			mat-icon-button
+			matTooltip="Fermer la fenêtre"
+			(click)="dialogRef.close()">
+			<mat-icon >close</mat-icon>
+		</button>
+	</span>
+</h4>
+<div class="help">
+	<div class="display-help" (click)='collapse()'>
+		<ng-container *ngIf="state === 'collapsed'; else hideBlock">
+			Afficher l'aide <mat-icon>arrow_drop_down</mat-icon>
+		</ng-container>
+		<ng-template #hideBlock>
+			Masquer l'aide <mat-icon>arrow_drop_up</mat-icon>
+		</ng-template>
+	</div>
+	<p [@detailExpand]='state'>
+		Cet espace permet de spécifier une valeur de remplacement par défaut pour certains champs du formulaire.<br>
+		Les 3 boutons ci-dessous permettent d'activer ou de désactiver cette fonctionnalité pour les différentes parties du formulaire concernées.<br>
+		Un champ laissé vide n'affectera pas le formulaire qui continuera de prendre la valeur définie par défaut au niveau de GeoNature.
+	</p>
+</div>
+
+<div>
+	<mat-slide-toggle 
+		labelPosition="after"
+		[checked]="occtaxFormParamService.geometryState|async"
+		(change)="occtaxFormParamService.geometryState.next(!occtaxFormParamService.geometryState.getValue())"
+		color="primary">
+		Activer pour la geométrie
+	</mat-slide-toggle>
+</div>
 <div>
 	<mat-slide-toggle 
 		labelPosition="after"
@@ -16,28 +50,51 @@
 		[checked]="occtaxFormParamService.occurrenceState|async"
 		(change)="occtaxFormParamService.occurrenceState.next(!occtaxFormParamService.occurrenceState.getValue())"
 		color="primary">
-		Activer pour les informations de l'obervation
+		Activer pour les informations du taxon
 	</mat-slide-toggle>
 </div>
 <div>
-<mat-slide-toggle 
-	labelPosition="after"
-	[checked]="occtaxFormParamService.countingState|async"
-	(change)="occtaxFormParamService.countingState.next(!occtaxFormParamService.countingState.getValue())"
-	color="primary">
-	Activer pour les informations du dénombrement
-</mat-slide-toggle>
+	<mat-slide-toggle 
+		labelPosition="after"
+		[checked]="occtaxFormParamService.countingState|async"
+		(change)="occtaxFormParamService.countingState.next(!occtaxFormParamService.countingState.getValue())"
+		color="primary">
+		Activer pour les informations du dénombrement
+	</mat-slide-toggle>
 </div>
-{{selectedIndex|json}}
+
 <mat-tab-group 
 	*ngIf="occtaxFormParamService.numberOfActive > 0"
 	[(selectedIndex)]="selectedIndex"
 	backgroundColor="primary">
 
+	<!-- GEOSJON -->
+  <mat-tab 
+  	label="Localisation"
+  	[disabled]="!(occtaxFormParamService.geojsonState|async)">
+
+  	<div style="margin-top:10px;">
+			<button 
+				class="btn btn-primary" 
+				(click)="geometryFormMapper()">
+				Copier la localisation du relevé en cours
+			</button>
+		</div>
+
+  </mat-tab>
+
 	<!-- RELEVE -->
   <mat-tab 
   	[label]="'Releve.Releve' | translate"
   	[disabled]="!(occtaxFormParamService.releveState|async)">
+
+		<div style="margin-top:10px;">
+			<button 
+				class="btn btn-primary" 
+				(click)="releveFormMapper()">
+				Copier les informations du relevé en cours
+			</button>
+		</div>
 
   	<pnx-observers 
       *ngIf="!occtaxConfig.observers_txt; else elseBlock"
@@ -130,16 +187,20 @@
 		  </textarea>
 		</div>
 
-		<div class="text-center" style="margin-top:10px;">
-			<button class="btn btn-primary">Renseigner le formulaire en cours par ces données</button>
-		</div>
-
   </mat-tab>
 
   <!-- OCCTURRENCE -->
   <mat-tab 
   	[label]="'Taxon.Observation' | translate"
   	[disabled]="!(occtaxFormParamService.occurrenceState|async)">
+
+  	<div style="margin-top:10px;">
+			<button 
+				class="btn btn-primary" 
+				(click)="occurrenceFormMapper()">
+				Copier les informations du taxon en cours
+			</button>
+		</div>
 
   	<div class="row">
 		  <div 

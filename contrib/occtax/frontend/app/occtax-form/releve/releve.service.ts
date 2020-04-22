@@ -304,5 +304,6 @@ export class OcctaxFormReleveService {
 
   reset() {
     this.propertiesForm.reset(this.initialValues);
+    this.propertiesForm.disable();
   }
 }

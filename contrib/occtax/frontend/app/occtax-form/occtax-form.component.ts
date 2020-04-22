@@ -11,6 +11,9 @@ import { AuthService } from "@geonature/components/auth/auth.service";
 import { NavHomeComponent } from "@geonature/components/nav-home/nav-home.component";
 import { OcctaxFormParamDialog } from './form-param/form-param.dialog';
 import { OcctaxFormParamService } from './form-param/form-param.service';
+import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
+import { OcctaxFormReleveService } from "./releve/releve.service";
+import { OcctaxFormOccurrenceService } from "./occurrence/occurrence.service";
 
 @Component({
   selector: "pnx-occtax-form",
@@ -34,7 +37,9 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     public occtaxFormService: OcctaxFormService,
     private _dfs: DataFormService,
     private _authService: AuthService,
-    public occtaxFormParamService: OcctaxFormParamService
+    public occtaxFormParamService: OcctaxFormParamService,
+    private occtaxFormReleveService: OcctaxFormReleveService,
+    private occtaxFormOccurrenceService: OcctaxFormOccurrenceService
   ) { }
   
   ngOnInit() {
@@ -80,7 +85,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     this.cardContentHeight = height >= 350 ? height : 350;
   }
 
-  openDialog(): void {
+  openParametersDialog(): void {
 
     const dialogConfig = new MatDialogConfig();
 
@@ -89,5 +94,28 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     dialogConfig.position = {top: '30px'};
 
     const dialogRef = this.dialog.open(OcctaxFormParamDialog, dialogConfig);
+  }
+
+  leaveTheForm(url: Array<any>) {
+    if (
+      (this.currentTab === "releve" && this.occtaxFormReleveService.releveForm.dirty)
+      ||(this.currentTab === "taxons" && this.occtaxFormOccurrenceService.form.dirty)
+    ) {
+      //si un des 2 formulaires a été modifié mais non sauvegardé
+      const message = "Êtes-vous sûr de vouloir fermer le formulaire ?<br>Des modifications non sauvegardées seront perdues.";
+      const dialogRef = this.dialog.open(ConfirmationDialog, {
+        width: 'auto',
+        position: {top: '5%'},
+        data: {message: message}
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if(result) {
+          this._router.navigate(url);
+        }
+      });
+    } else {
+      this._router.navigate(url);
+    }
   }
 }

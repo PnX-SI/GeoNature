@@ -20,14 +20,18 @@
   flex-wrap: wrap;
 }
 
-.tab a.to-list-btn {
+.tab button {
+  outline: none;
+}
+
+.tab .to-list-btn {
   vertical-align: middle;
   margin: 0px 20px 0px 10px;
   background-color: #333;
   color: #fff;
 }
 
-.tab a.to-list-btn:hover {
+.tab .to-list-btn:hover {
   background-color: #dedede;
   color: #333;
 }
@@ -89,27 +93,27 @@
   padding-bottom: 8px;
 }
 
-.tab a.clos-new-rel-btn {
+.tab .clos-new-rel-btn {
   margin-right: 20px;
   margin-left: 10px;
 }
 
-.tab a.clos-new-rel-btn:hover {
+.tab .clos-new-rel-btn:hover {
   color: #b90000;
 }
 
-.tab a.clos-new-rel-btn mat-icon {
+.tab .clos-new-rel-btn mat-icon {
   font-size: 45px;
   height: 45px;
   width: 45px;
   line-height: 40px;
 }
 
-.tab button.setting-btn {
+.tab .setting-btn {
   margin-left: 10px;
 }
 
-.tab button.setting-btn mat-icon {
+.tab .setting-btn mat-icon {
   font-size: 35px;
   height: 35px;
   width: 35px;

@@ -2,13 +2,13 @@
 	<div class="occtax-form">
 		<div class="tab">
 			<div class="tab-left">
-				<a mat-mini-fab
+				<button mat-mini-fab
 					class="to-list-btn"
-			  	[routerLink]="['..']"
 			  	matTooltip="Retour vers la liste des relevés"
-			  	[class.active]="false">
+			  	[class.active]="false"
+			  	(click)="leaveTheForm(['/occtax'])">
 			  	<mat-icon class="example-tab-icon">arrow_back</mat-icon>
-			  </a>
+			  </button>
 			  <a 
 			  	[routerLink]="releveUrl"
 			  	class="tablinks" 
@@ -45,7 +45,7 @@
 
 				<button mat-icon-button 
 					class="setting-btn"
-					(click)="openDialog()"
+					(click)="openParametersDialog()"
 					matTooltip="Paramétrer la valeur par défaut des différents champs">
 					<mat-icon 
 						[matBadge]="occtaxFormParamService.numberOfActive" 
@@ -56,20 +56,21 @@
 				</button>
 
 				<ng-container *ngIf="!occtaxFormService.chainRecording; else newRelButton">
-					<a mat-icon-button
+					<button 
+						mat-icon-button
 						class="clos-new-rel-btn"
-				  	[routerLink]="['/occtax']"
-				  	matTooltip="Fermer le formulaire et retourner à la liste des relevés">
-				  	<mat-icon class="example-tab-icon">close</mat-icon>
-				  </a>
+				  	matTooltip="Fermer le formulaire et retourner à la liste des relevés"
+						(click)="leaveTheForm(['/occtax'])">
+				  	<mat-icon>close</mat-icon>
+				  </button>
 				</ng-container>
 				<ng-template #newRelButton>
-					<a mat-icon-button
+					<button mat-icon-button
 						class="clos-new-rel-btn"
-				  	[routerLink]="['/', 'occtax', 'form']"
-				  	matTooltip="Créer un nouveau relevé">
-				  	<mat-icon class="example-tab-icon">refresh</mat-icon>
-				  </a>
+				  	matTooltip="Créer un nouveau relevé"
+				  	(click)="leaveTheForm(['/', 'occtax', 'form'])">
+				  	<mat-icon>refresh</mat-icon>
+				  </button>
 				</ng-template>
 			</div>
 		</div>

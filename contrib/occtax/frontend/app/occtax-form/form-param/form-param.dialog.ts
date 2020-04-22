@@ -1,28 +1,46 @@
 import { Component, OnInit } from "@angular/core";
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { MatDialogRef } from '@angular/material';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { combineLatest } from "rxjs";
 import { filter, map } from "rxjs/operators";
 import { ModuleConfig } from "../../module.config";  
+import { OcctaxFormMapService } from '../map/map.service';
+import { OcctaxFormReleveService } from '../releve/releve.service';
+import { OcctaxFormOccurrenceService } from '../occurrence/occurrence.service';
 import { OcctaxFormParamService } from './form-param.service';
 
 
 @Component({
   selector: "pnx-occtax-form-param",
   templateUrl: "./form-param.dialog.html",
-  styleUrls: ["./form-param.dialog.scss"]
+  styleUrls: ["./form-param.dialog.scss"],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0', margin: '-1px', overflow: 'hidden', padding: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class OcctaxFormParamDialog implements OnInit {
 
   public occtaxConfig: any;
   public paramsForm: FormGroup;
   public selectedIndex: number = null;
+  public state: string = 'collapsed';
 
+  get geometryParamForm() { return this.paramsForm.get('geometry'); }
   get releveParamForm() { return this.paramsForm.get('releve'); }
   get occurrenceParamForm() { return this.paramsForm.get('occurrence'); }
   get countingParamForm() { return this.paramsForm.get('counting'); }
 
   constructor(
+    public dialogRef: MatDialogRef<OcctaxFormParamDialog>,
     private fb: FormBuilder,
+    private occtaxFormMapService: OcctaxFormMapService,
+    private occtaxFormReleveService: OcctaxFormReleveService,
+    private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     public occtaxFormParamService: OcctaxFormParamService
   ) {
     this.occtaxConfig = ModuleConfig;
@@ -31,6 +49,7 @@ export class OcctaxFormParamDialog implements OnInit {
   ngOnInit() {
 
     this.paramsForm = this.fb.group({
+      geometry:null,
       releve: this.fb.group({
         id_dataset: null,
         date_min: null,
@@ -70,31 +89,69 @@ export class OcctaxFormParamDialog implements OnInit {
     
     this.paramsForm.patchValue(this.occtaxFormParamService.parameters);
 
+    //a chaque changement du formulairen on patch le service des paramètres
     this.paramsForm.valueChanges
                 .pipe(
                   filter(()=>this.paramsForm.valid)
                 )
                 .subscribe(values=>this.occtaxFormParamService.parameters = values);
 
-    combineLatest(this.occtaxFormParamService.releveState, this.occtaxFormParamService.occurrenceState, this.occtaxFormParamService.countingState)
+    //Observe l'état des switchs pour activer ou non le formulaire
+    this.occtaxFormParamService.releveState
+        .subscribe((value: boolean)=>{value ? this.paramsForm.get('releve').enable() : this.paramsForm.get('releve').disable()});
+    this.occtaxFormParamService.occurrenceState
+        .subscribe((value: boolean)=>{value ? this.paramsForm.get('occurrence').enable() : this.paramsForm.get('occurrence').disable()});
+    this.occtaxFormParamService.countingState
+        .subscribe((value: boolean)=>{value ? this.paramsForm.get('counting').enable() : this.paramsForm.get('counting').disable()});
+
+    //On observe les cases cochées pour savoir quel onglet affiché
+    //Uniquement si un seul switch est activé
+    combineLatest(
+      this.occtaxFormParamService.geometryState, 
+      this.occtaxFormParamService.releveState, 
+      this.occtaxFormParamService.occurrenceState, 
+      this.occtaxFormParamService.countingState
+    )
       .pipe(
-        filter(([releveState, occurrenceState, countingState])=>(releveState+occurrenceState+countingState)===1), //si une seul est cochée
-        map(([releveState, occurrenceState, countingState])=>{
+        filter(([geometryState, releveState, occurrenceState, countingState])=>{
+          //si un unique switch est activé
+          return ((geometryState ? 1 : 0) + (releveState ? 1 : 0) + (occurrenceState ? 1 : 0) + (countingState ? 1 : 0)) === 1
+        }), 
+        map(([geometryState, releveState, occurrenceState, countingState])=>{
           //convertit la case coché en index de tab à activer
-          if (releveState) {
+          if (geometryState) {
             return 0;
           }
-          if (occurrenceState) {
+          if (releveState) {
             return 1;
           }
-          if (countingState) {
+          if (occurrenceState) {
             return 2;
+          }
+          if (countingState) {
+            return 3;
           }
         })
       )
       .subscribe(index=>this.selectedIndex = index)
   }
 
+  geometryFormMapper() {
+    console.log("patch")
+    this.paramsForm.get('geometry').patchValue(this.occtaxFormMapService.geometry.value);
+  }
+
+  releveFormMapper() {
+    this.paramsForm.get('releve').patchValue(this.occtaxFormReleveService.propertiesForm.value);
+  }
+
+  occurrenceFormMapper() {
+    this.paramsForm.get('occurrence').patchValue(this.occtaxFormOccurrenceService.form.value);
+  }
+
+  collapse(){
+    this.state = (this.state === 'collapsed' ? 'expanded' : 'collapsed');
+  }
 
 
 }

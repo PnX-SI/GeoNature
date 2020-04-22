@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject } from 'rxjs';
 
 interface OCCTAX_FORM_PARAM {
+  geometry?: any,
   releve?: {
     id_dataset?: number,
     id_digitiser?: number,
@@ -47,6 +48,7 @@ interface OCCTAX_FORM_PARAM {
 export class OcctaxFormParamService {
 
   parameters: OCCTAX_FORM_PARAM = {
+                                    geometry: null,
                                     releve: {
                                       id_dataset: null,
                                       id_digitiser: null,
@@ -88,10 +90,14 @@ export class OcctaxFormParamService {
                                     }
                                   };
 
+  geometryState: BehaviorSubject<boolean> = new BehaviorSubject(false);
   releveState: BehaviorSubject<boolean> = new BehaviorSubject(false);
   occurrenceState: BehaviorSubject<boolean> = new BehaviorSubject(false);
   countingState: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
+  get geometry() {
+    return this.geometryState.getValue() ? this.parameters.geometry : null;
+  }
   get releve() {
     return this.releveState.getValue() ? this.parameters.releve : null;
   }
@@ -103,7 +109,7 @@ export class OcctaxFormParamService {
   }
 
   get numberOfActive() {
-    return this.releveState.getValue() + this.occurrenceState.getValue() + this.countingState.getValue();
+    return (this.geometryState.getValue() ? 1 : 0) + (this.releveState.getValue() ? 1 : 0) + (this.occurrenceState.getValue() ? 1 : 0) + (this.countingState.getValue() ? 1 : 0);
   }
 
   constructor() { }
