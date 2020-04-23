@@ -1,10 +1,11 @@
 import { distinctUntilChanged } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
-import { arrayMinLengthValidator } from '@geonature/services/validators/validators';
+import { arrayMinLengthValidator, isObjectValidator } from '@geonature/services/validators/validators';
 
 @Injectable()
 export class DynamicFormService {
+
   constructor() {}
 
   toFormGroup(formsDef: Array<any>) {
@@ -46,6 +47,9 @@ export class DynamicFormService {
         }
       }
 
+      if (formDef.type_widget === 'taxonomy' && formDef.required) {
+        validators.push(isObjectValidator());
+      }
     }
 
     return new FormControl({ value: value, disabled: formDef.disabled}, validators);
@@ -54,4 +58,5 @@ export class DynamicFormService {
   addNewControl(formDef, formGroup: FormGroup) {
     formGroup.addControl(formDef.attribut_name, this.createControl(formDef));
   }
+
 }

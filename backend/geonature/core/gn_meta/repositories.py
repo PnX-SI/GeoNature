@@ -5,7 +5,8 @@ from sqlalchemy.orm import joinedload
 from flask import request
 
 from geonature.utils.env import DB
-from geonature.utils.utilssqlalchemy import test_type_and_generate_query, testDataType
+from utils_flask_sqla.serializers import serializable
+from utils_flask_sqla.generic import test_type_and_generate_query, testDataType
 
 from geonature.utils.errors import GeonatureApiError
 

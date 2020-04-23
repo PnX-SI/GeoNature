@@ -43,7 +43,7 @@ GN_MODULE_FE_FILE = "frontend/app/gnModule.module"
 
 def in_virtualenv():
     """ Return if we are in a virtualenv """
-    return hasattr(sys, "real_prefix")
+    return 'VIRTUAL_ENV' in os.environ
 
 
 def virtualenv_status():

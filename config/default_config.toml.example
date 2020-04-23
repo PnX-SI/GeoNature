@@ -1,81 +1,127 @@
-############################################################
-# Liste des paramètres et de leurs valeurs par défaut, 
-# surcouchables dans le fichier config/geonature_config.toml
-/!\ Les paramètres qui ne sont pas dans une section (entre crochets) doivent être au début du fichier
-############################################################
+###############################################################################
+# Liste complète des paramètres et de leurs valeurs par défaut
+# 
+# UTILISATION : piochez des paramètres dans ce fichier et intégrez les au
+#     fichier 'config/geonature_config.toml'.
+#
+# ATTENTION : Les paramètres qui ne sont pas dans une section (entre crochets) 
+#     doivent être au début du fichier !
+#     Les paramètres dans une section doivent être maintenus dans leur section.
+#
+# NOTES : après toute modification dans ce fichier, il est nécessaire de 
+#     mettre à jour GeoNature à l'aide de la commande :
+#     `geonature update_configuration`
+###############################################################################
 
-# Database
-
+# Base de données
+# URI de connexion à la base Postgresql utilisé par Psycopg2
 SQLALCHEMY_DATABASE_URI = "postgresql://monuser:monpassachanger@localhost:monport/mondbname"
+# Active (=true) ou pas (=false) le système de suivi de modification de SQLAlchemy
+# Note : l'API event de SQLAchemy n'étant pas utilisée, la désactivation économise des ressources.
 SQLALCHEMY_TRACK_MODIFICATIONS = false
 
 # Application
 
-appName = 'GeoNature 2'                               # Application name in the home page
-DEFAULT_LANGUAGE = 'fr'
-PASS_METHOD = 'hash'                                  # Authentification password encoding method (hash or md5)
+# Nom de l'application dans la page d'accueil.
+appName = "GeoNature 2"
+
+# Langue par défaut utilisée par l'application.
+# Utilisée pour l'instant seulement avec les nomenclatures.
+DEFAULT_LANGUAGE = "fr"
+
+# Méthode d'encodage du mot de passe nécessaire à l'identification (hash ou md5)
+PASS_METHOD = "hash"
+
+# Active le déboguage en mode développement avec Gunicorn
 DEBUG = true
-URL_APPLICATION = 'http://url.com/geonature'          # Replace my_url.com by your domain or IP
-API_ENDPOINT = 'http://url.com/geonature/api'         # Replace my_url.com by your domain or IP
-API_TAXHUB ='http://127.0.0.1:5000/api/'
-ID_APPLICATION_GEONATURE = 3                         # id_application of GeoNature in UsersHub
-SESSION_TYPE = 'filesystem'
-SECRET_KEY = 'super secret key'
+
+# URL de l'application GeoNature. Remplacer "url.com" par votre domaine ou IP.
+URL_APPLICATION = "http://url.com/geonature"
+
+# URL de l'API de GeoNature. Remplacer "url.com" par votre domaine ou IP
+API_ENDPOINT = "http://url.com/geonature/api"
+
+# URL de l'API de Taxhub
+API_TAXHUB = "http://127.0.0.1:5000/api/"
+
+# Identifiant de l'appplication GeoNature (id_application) dans UsersHub
+ID_APPLICATION_GEONATURE = 3
+
+# Type de session
+SESSION_TYPE = "filesystem"
+
+# Clé de salage utilisée pour la session. Remplacer 'super secret key' par un UUID par exemple.
+SECRET_KEY = "super secret key"
+
+# Temps de validité d'un cookie en secondes
 COOKIE_EXPIRATION = 7200
+
+# Activer (=true) ou pas (=false) le renouvellement automatique du cookie
 COOKIE_AUTORENEW = true
+
+# Capturer toutes les exceptions (=true) ou pas (=false)
 TRAP_ALL_EXCEPTIONS = false
-# Log level for API. Default set to ERROR (40) (see https://docs.python.org/3/library/logging.html#logging-levels)
+
+# Niveau de Log pour l'API. Par défaut ERROR (=40)
+# Cf. https://docs.python.org/3/library/logging.html#logging-levels
 API_LOG_LEVEL = 40
-# code EPSG des geom local de la BDD
+
+# Code EPSG pour les geom locaux en base de données
 LOCAL_SRID = 2154
 
-[USERSHUB]
-    URL_USERSHUB = "http://127.0.0.1:5001"
-    # Administrateur de mon application
-    ADMIN_APPLICATION_LOGIN = "login_admin_usershub"
-    ADMIN_APPLICATION_PASSWORD = "password_admin_usershub"
-
-# MTD
+# MTD (pour la connexion au webservice de métadonnées de l'INPN)
 XML_NAMESPACE = "{http://inpn.mnhn.fr/mtd}"
 MTD_API_ENDPOINT = "https://preprod-inpn.mnhn.fr/mtd"
 
-# File
+# Fichiers
 # BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-UPLOAD_FOLDER = 'static/medias'
+# Chemin du dossier où stocker les fichiers depuis la racine du dossier 'backend'
+UPLOAD_FOLDER = "static/medias"
 
-# Enable logging email error (must fill the mail config bellow if true)
+# Active (=true) ou pas (=false) l'envoi d'email pour chaque erreur du backend de GeoNature
+# Attention : si activé, il est nécessaire de remplir la secetion 'MAIL_CONFIG'.
 MAIL_ON_ERROR = false
-# mail configuration for FlaskMail and error logging
+
+[USERSHUB]
+    # URL de l'application Usershub
+    URL_USERSHUB = "http://127.0.0.1:5001"
+    # Identifiant et mot de passe d'un compte 'Administrateur' dans UsersHub
+    ADMIN_APPLICATION_LOGIN = "login_admin_usershub"
+    ADMIN_APPLICATION_PASSWORD = "password_admin_usershub"
+
+# Configuration de l'envoi d'email pour FlaskMail et l'envoi par email des logs d'erreur
+# Cf. https://flask-mail.readthedocs.io/en/latest/#configuring-flask-mail
 [MAIL_CONFIG]
-    MAIL_SERVER = 'my_email_server'
+    MAIL_SERVER = "my_email_server"
     MAIL_PORT = 465
     MAIL_USE_TLS = false
     MAIL_USE_SSL = true
-    MAIL_USERNAME = 'my_user_name - email address of the sender'
-    MAIL_PASSWORD = 'my_pass'
-    MAIL_DEFAULT_SENDER = 'my_email@email.com'
+    MAIL_USERNAME = "my_user_name - email address of the sender"
+    MAIL_PASSWORD = "my_pass"
+    MAIL_DEFAULT_SENDER = "my_email@email.com"
     MAIL_MAX_EMAILS = <int>
     MAIL_ASCII_ATTACHMENTS = false
-    # email(s) to the administrator for the email logging
-    ERROR_MAIL_TO = [email@email.com, email2@email.com]
+    # Email(s) où envoyer les erreurs générées par le backend de GeoNature
+    ERROR_MAIL_TO = ["email@email.com", "email2@email.com"]
 
-# CAS authentification (Optional, instead of UsersHub local authentification)
+# CAS authentification (Optionnel, remplace l'authentification locale via UsersHub)
 [CAS_PUBLIC]
     CAS_AUTHENTIFICATION = false
-    CAS_URL_LOGIN = 'https://preprod-inpn.mnhn.fr/auth/login'
-    CAS_URL_LOGOUT = 'https://preprod-inpn.mnhn.fr/auth/logout'
+    CAS_URL_LOGIN = "https://preprod-inpn.mnhn.fr/auth/login"
+    CAS_URL_LOGOUT = "https://preprod-inpn.mnhn.fr/auth/logout"
 
 [CAS]
-CAS_URL_VALIDATION = 'https://preprod-inpn.mnhn.fr/auth/serviceValidate'
+    CAS_URL_VALIDATION = "https://preprod-inpn.mnhn.fr/auth/serviceValidate"
+
 [CAS.CAS_USER_WS]
-    URL = 'https://inpn2.mnhn.fr/authentication/information'
-    ID = 'mon_id'
-    PASSWORD = 'mon_pass'
+    URL = "https://inpn2.mnhn.fr/authentication/information"
+    ID = "mon_id"
+    PASSWORD = "mon_pass"
 
 [BDD]
-id_area_type_municipality = 25
-ID_USER_SOCLE_1 = 8
-ID_USER_SOCLE_2 = 6
+    id_area_type_municipality = 25
+    ID_USER_SOCLE_1 = 8
+    ID_USER_SOCLE_2 = 6
 
 [RIGHTS]
     NOTHING = 0
@@ -83,51 +129,65 @@ ID_USER_SOCLE_2 = 6
     MY_ORGANISM_DATA = 2
     ALL_DATA = 3
 
-# Front end configuration
+# Configuration générale de l'interface de GeoNature
 [FRONTEND]
-    # passe le frontend en mode production (message de la console moins parlant en développement)
-    PROD_MOD = false
+    # En mode production (=true) moins de message dans la Console navigateur
+    PROD_MOD = true
+
     # Affiche le composant 'custom/components/footer' sur la page d'accueil
     DISPLAY_FOOTER = false
-    # Affiche un bloc ce stat sur la page d'accueil
+
+    # Affiche un bloc de stat sur la page d'accueil
     DISPLAY_STAT_BLOC = true
-    # Affiche la carte des 100 obs sur la page d'accueil
+
+    # Affiche la carte des 100 dernieres observations sur la page d'accueil
     DISPLAY_MAP_LAST_OBS = true
-    # Passe le frontend en mode multilingue
+
+    # Passe le frontend en mode multilingue (non implémenté pour l'instant)
     MULTILINGUAL = false
 
-
-
-# map configuration
+# Configuration de l'affichage des cartes dans GeoNature
 [MAPCONFIG]
+    # Liste des fonds de carte proposés sur les cartes de GeoNature
     BASEMAP = [
         {"name" = "OpenStreetMap", "layer" = "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png", "attribution" = "&copy OpenStreetMap"},
         {"name"= "OpenTopoMap", "layer" = "//a.tile.opentopomap.org/{z}/{x}/{y}.png", "attribution" = "© OpenTopoMap"},
-        {"name" = "GoogleSatellite", "layer" = "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}","subdomains" = ["mt0", "mt1", "mt2", "mt3"],"attribution" = "© GoogleMap"}
+        {"name" = "GoogleSatellite", "layer" = "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}", "subdomains" = ["mt0", "mt1", "mt2", "mt3"], "attribution" = "© GoogleMap"}
     ]
-    # Attention: les coordonnées sont au format [Y, X] - cf leaflet configuration (https://leafletjs.com/reference-1.4.0.html#latlng-l-latlng)
+
+    # Coordonnées par défaut du centre de la carte à afficher
+    # Attention : les coordonnées sont au format [Y, X]
+    # Cf Leaflet configuration (https://leafletjs.com/reference-1.4.0.html#latlng-l-latlng)
     CENTER = [46.52863469527167, 2.43896484375]
+
     # Zoom par défaut
     ZOOM_LEVEL = 6
-    # Zoom à partir duquel on peut pointer un releve
+
+    # Zoom à partir duquel on peut pointer un relevé
     ZOOM_LEVEL_RELEVE = 15
-    # zoom appliqué sur la carte lorsque l'on clique sur une liste
+
+    # Zoom appliqué sur la carte lors du clic sur une liste
     ZOOM_ON_CLICK = 16
 
-    
 
-# Synthese configuration
+# Configuration du module Synthese
 [SYNTHESE]
-    # Liste des entités géographiques sur lesquels les filtres
-    # géographiques de la synthese s'appuient (id_area = id de l'entité géo, table ref_geo.bib_areas_types)
-    # ATTENTION : Si de nouveaux types d'entités géographiques sont intégrés dans la table ref_geo.l_areas, il faut bien recalculer les valeurs de la table gn_synthese.cor_area_synthese en conséquence pour que les données déjà présentes dans la synthèse soient associées à ces nouvelles géométries.
+    # Liste des entités géographiques sur lesquelles les filtres
+    # géographiques de la synthese s'appuient 
+    # (id_area = id de l'entité géo, table ref_geo.bib_areas_types).
+    # ATTENTION : Si de nouveaux types d'entités géographiques sont intégrés
+    # dans la table ref_geo.l_areas, il faut bien recalculer les valeurs de 
+    # la table gn_synthese.cor_area_synthese en conséquence pour que 
+    # les données déjà présentes dans la synthèse soient associées à 
+    # ces nouvelles géométries.
     AREA_FILTERS = [
         { label = "Communes", id_type = 25 }
     ]
 
-    # Colonne à afficher par défaut sur la liste des resultats de la synthese
-    # choisir le champ 'prop' parmis les colonnes suivante (id_synthese, date_min, cd_nom, lb_nom, nom_vern_or_lb_nom, st_asgeojson, observers, dataset_name, url_source)
-    
+    # Colonne à afficher par défaut sur la liste des résultats de la synthese
+    # Choisir le champ 'prop' parmis les colonnes suivantes :
+    # id_synthese, date_min, cd_nom, lb_nom, nom_vern_or_lb_nom, st_asgeojson, 
+    # observers, dataset_name, url_source
     LIST_COLUMNS_FRONTEND = [
         { prop = "nom_vern_or_lb_nom", name = "Taxon" },
         { prop = "date_min", name = "Date début" },
@@ -135,39 +195,58 @@ ID_USER_SOCLE_2 = 6
         { prop = "dataset_name", name = "Jeu de données" }
     ]
     
-    # Nombre de résultat à afficher pour la rechercher autocompleté de taxon
+    # Nombre de résultats à afficher pour la recherche autocompletée de taxon
     TAXON_RESULT_NUMBER = 20
 
-    # id_attribut taxhub pour l'affichage dans la modale du détail d'une observation et dans les filtres taxonomique avancés
+    # Liste de 'id_attribut' TaxHub à afficher dans :
+    # - la modale du détail d'une observation 
+    # - les filtres taxonomique avancés
     ID_ATTRIBUT_TAXHUB = [102, 103]
 
-    # Colonne de la table gn_synthese.synthese que l'on veut masquer dans les filtres du formulaire 'occurrence avancé'. Par défaut, c'est un tableau vide. Exemple: 
-    EXCLUDED_COLUMNS = ['non_digital_proof'] pour enlever le filtre 'preuve non numérique'
-    # Affiche ou masque l'arbre de recherche taxonomique (recherche taxonommique avancé)
-    # Cette fonctionnalité n'est actuallement pas stable sur un grand nombre de taxon, passer à false si le temps de chargement est trop long
+    # Colonne de la table `gn_synthese.synthese` à masquer dans les filtres
+    # du formulaire 'occurrence avancé'. Par défaut, c'est un tableau vide. 
+    # Exemple : pour enlever le filtre 'preuve non numérique'
+    EXCLUDED_COLUMNS = ["non_digital_proof"]
+
+    # Affiche (=true) ou masque (=false) l'arbre de recherche taxonomique 
+    # dans la recherche taxonomique avancée.
+    # Cette fonctionnalité n'est pas actuallement stable sur un grand nombre de taxons.
+    # Passer à 'false' si le temps de chargement est trop long.
     DISPLAY_TAXON_TREE = true
-    # Active le fait de rechercher sur le nom d'observateur en ILIKE sur les portée 1 et 2 du CRUVED
+
+    # Active (=true) ou pas (=false) le fait de rechercher sur le nom d'observateur 
+    # en 'ILIKE' sur les portées 1 et 2 du CRUVED
     CRUVED_SEARCH_WITH_OBSERVER_AS_TXT = false
-    # Activer la clusterisation des couches sur la carte
-    # si false, passez le NB_MAX_OBS_MAP à 10000 pour des question de performances des navigateurs
+
+    # Activer (=true) ou pas (=false) la clusterisation des objets sur la carte
+    # Si 'false', passez le NB_MAX_OBS_MAP à 10000 pour éviter 
+    # de surcharger les navigateurs des clients (question de performances).
     ENABLE_LEAFLET_CLUSTER = true
-    # Nombre d'observation maximum à afficher sur la carte après une recherche
+
+    # Nombre d'observations maximum à afficher sur la carte après une recherche
     NB_MAX_OBS_MAP = 50000
-    # Nombre des dernières observations affichées par défaut quand on arrive sur la synthese 
+
+    # Nombre des dernières observations affichées par défaut
+    # sur la page d'accueil de la Synthèse 
     NB_LAST_OBS = 100
-    # Nombre max d'observation dans les exports
+
+    # Nombre max d'observations dans les exports
     NB_MAX_OBS_EXPORT = 50000
-    # Nom des colonnes obligatoires de la vue ``gn_synthese.v_synthese_for_export``
+
+    # Noms des colonnes obligatoires de la vue ``gn_synthese.v_synthese_for_export``
     EXPORT_ID_SYNTHESE_COL = "idSynthese"
     EXPORT_ID_DATASET_COL = "jddId"
     EXPORT_ID_DIGITISER_COL = "id_digitiser"
     EXPORT_OBSERVERS_COL = "observer"
     EXPORT_GEOJSON_4326_COL = "geojson_4326"
     EXPORT_GEOJSON_LOCAL_COL = "geojson_local"
-    # Nom de la colonne id_dataset de la vue ``gn_synthese.v_metadata_for_export``
+
+    # Noms des colonnes obligatoires de la vue ``gn_synthese.v_metadata_for_export``
     EXPORT_METADATA_ID_DATASET_COL = "jdd_id"
     EXPORT_METADATA_ACTOR_COL = "acteurs"
-    # Champs à afficher dans l'export / voir non des champs de la vue gn_synthese.v_synthese_for_export dans la base
+
+    # Champs à afficher dans l'export 
+    # Voir les noms des champs de la ``vue gn_synthese.v_synthese_for_export``
     EXPORT_COLUMNS   = [
         "idSynthese",
         "permId",
@@ -213,56 +292,59 @@ ID_USER_SOCLE_2 = 6
         "validateur"
     ]
 
-
+# Gestion des demandes d'inscription
 [ACCOUNT_MANAGEMENT]
+    # Activer l'affichage du lien vers le formulaire d'inscription
     ENABLE_SIGN_UP = false
+
+    # Activer l'affichage de l'onglet de gestion des demandes de compte utilisateur
     ENABLE_USER_MANAGEMENT = false
+
+    # Valider automatiquement la demande de création de compte (=true), sinon nécessite une validation (=false)
     AUTO_ACCOUNT_CREATION = true
+
+    # Créer automatiquement (=true) un nouveau jeu de données pour chaque compte utilisateur
     AUTO_DATASET_CREATION = true
-    # email du validateur si auto_account_creation = false
-    VALIDATOR_EMAIL = 'email@validateur.io'
+
+    # Email du validateur si auto_account_creation = false
+    VALIDATOR_EMAIL = "email@validateur.io"
+
     # Configuration de la customisation du formulaire d'inscription
-    # chaque section [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]] correspond à un champ (de type checkbox, select etc...)
+    # Chaque section [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]] correspond à un champ (de type checkbox, select etc...)
     [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]]
         type_widget = "checkbox"
         attribut_label = "<a target="_blank" href='http://docs.geonature.fr'>J'ai lu et j'accepte la charte</a>"
         attribut_name = "validate_charte"
         values = [true] 
         required = true
-
     [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]]
         type_widget = "text"
         attribut_label = "Remarque"
         attribut_name = "remarque"
         required = false
-
     [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]]
         type_widget = "select"
         attribut_label = "Exemple select"
         attribut_name = "select_test"
         values = ["value1", "value2"]
         required = false
-
     [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]]
         type_widget = "textarea"
         attribut_label = "Qui êtes vous ?"
         attribut_name = "comment_area"
         required = false
-
     [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]]
         type_widget = "radio"
         attribut_label = "Type de structure"
         attribut_name = "structure_type"
         values = ["Privée", "Publique"]
         required = true
-
     [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]]
         type_widget = "nomenclature"
         attribut_label = "Exemple nomenclature"
         attribut_name = "id_nomenclature_typ_grp"
         code_nomenclature_type = "TYP_GRP"
         required = false
-
 
 [SERVER]
     LOG_LEVEL = 20

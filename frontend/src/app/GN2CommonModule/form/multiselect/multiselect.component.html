@@ -1,9 +1,13 @@
 <small> {{label }} </small>
 <div class="input-group">
-  <div class="dropdown-toggle btn-white full-width clickable" 
-    data-toggle="dropdown" 
-    aria-expanded="true" 
+  <div class="dropdown-toggle btn-white full-width clickable"
+    #button_input
+    data-toggle="dropdown"
+    tabindex="0"
+    aria-expanded="true"
     [ngClass]="{'disabled': disabled, 'custom-invalid' : parentFormControl.invalid && !disabled}"
+    (focus)="onFocus($event)"
+    (blur)="onBlur($event)"
     style="white-space: normal;"
     id="button-input">
     <span *ngFor="let item of selectedItems" class="filter-option input-value pull-left"> {{item[keyLabel]}}
@@ -20,7 +24,7 @@
     <ul>
       <li *ngIf="displayAll" (click)="addItem('all')" class="clickable li-dropdown li-label padded-multiline">
         {{'AllItems' | translate}} </li>
-      <li *ngFor="let val of values" (click)="addItem(val)" class="clickable li-dropdown padded-multiline">
+    <li *ngFor="let val of values" tabindex="0" (focus)="setValSave(val)" (blur)="setValSave()" (click)="addItem(val)" class="clickable li-dropdown padded-multiline">
         <span class="li-label">{{val[keyLabel]}} </span>
       </li>
     </ul>

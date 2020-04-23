@@ -10,8 +10,8 @@ from geoalchemy2 import Geometry
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
 from utils_flask_sqla.serializers import serializable
+from utils_flask_sqla_geo.serializers import geoserializable
 
-from geonature.utils.utilssqlalchemy import geoserializable
 from geonature.utils.env import DB
 
 # from geonature.core.gn_meta.models import TDatasets
@@ -176,3 +176,15 @@ class THistoryActions(DB.Model):
     operation_type = DB.Column(DB.Unicode)
     operation_date = DB.Column(DB.DateTime)
     table_content = DB.Column(DB.Unicode)
+
+
+@serializable
+class TMobileApps(DB.Model):
+    __tablename__ = "t_mobile_apps"
+    __table_args__ = {"schema": "gn_commons"}
+    id_mobile_app = DB.Column(DB.Integer, primary_key=True)
+    app_code = DB.Column(DB.Unicode)
+    relative_path_apk = DB.Column(DB.Unicode)
+    url_apk = DB.Column(DB.Unicode)
+    package = DB.Column(DB.Unicode)
+    version_code = DB.Column(DB.Unicode)

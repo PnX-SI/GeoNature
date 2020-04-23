@@ -109,7 +109,7 @@
                   *ngFor="let occ of releve?.properties.t_occurrences_occtax; let i = index"
                   [ngClass]="{'table-success': i == selectedIndex}" 
                   (click)="selectOccurrence(occ, i)">
-                  <td class="selected-taxon">{{occ.taxref?.nom_complet}}</td>
+                  <td class="selected-taxon">{{(occ.taxref?.nom_vern!==null) ? occ.taxref?.nom_vern+' - ' : ''}}{{occ.taxref?.nom_complet}}</td>
                   <td>
                     <i class="fa fa-eye clickable" aria-hidden="true"></i>
                   </td>
