@@ -90,6 +90,7 @@ export class DatasetCardComponent implements OnInit {
   getDataset(id) {
     this._dfs.getDatasetDetails(id).subscribe(data => {
       this.dataset = data;
+      this.dataset.modules = this.dataset.modules.map(e => e.module_code).join(", ");
     });
     this._dfs.getRepartitionTaxons(id).subscribe(data => {
       this.pieChartData.length = 0;
