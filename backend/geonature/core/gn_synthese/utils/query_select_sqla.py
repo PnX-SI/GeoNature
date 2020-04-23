@@ -1,4 +1,6 @@
 """
+Utility function to manage cruved and all filter of Synthese
+Use these functions rather than query.py 
 Filter the query of synthese using SQLA expression language and 'select' object 
 https://docs.sqlalchemy.org/en/latest/core/tutorial.html#selecting
 much more efficient
@@ -12,8 +14,9 @@ from sqlalchemy.orm import aliased
 from shapely.wkt import loads
 from geoalchemy2.shape import from_shape
 
+from utils_flask_sqla_geo.utilsgeometry import circle_from_point
+
 from geonature.utils.env import DB
-from geonature.utils.utilsgeometry import circle_from_point
 from geonature.core.taxonomie.models import Taxref, CorTaxonAttribut, TaxrefLR
 from geonature.core.gn_synthese.models import (
     Synthese,
@@ -283,7 +286,6 @@ class SyntheseQuery:
                     ),
                 )
             )
-
         # generic filters
         for colname, value in self.filters.items():
             if colname.startswith("area"):

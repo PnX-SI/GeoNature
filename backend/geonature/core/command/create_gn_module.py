@@ -28,6 +28,7 @@ from geonature.utils.gn_module_import import (
     gn_module_register_config,
     gn_module_activate,
     gn_module_deactivate,
+    install_frontend_dependencies,
     check_codefile_validity,
     create_external_assets_symlink,
     add_application_db,
@@ -97,6 +98,7 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                 enable_frontend = create_external_assets_symlink(
                     module_path, module_code.lower()
                 )
+
                 # ajout du module dans la table gn_commons.t_modules
                 add_application_db(
                     app, module_code, url, enable_frontend, enable_backend
@@ -108,6 +110,7 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                 gn_module_register_config(module_code.lower())
 
                 if enable_frontend:
+                    install_frontend_dependencies(module_path)
                     # generation du fichier tsconfig.app.json
                     tsconfig_app_templating(app)
                     # generation du routing du frontend
@@ -244,3 +247,16 @@ def update_module_configuration(module_code, build, prod):
         subprocess.call(["sudo", "supervisorctl", "reload"])
     app = get_app_for_cmd(with_external_mods=False)
     create_module_config(app, module_code.lower(), build=build)
+
+
+@main.command()
+@click.argument('module_path')
+def test(module_path):
+    import json
+    with open(module_path) as f:
+        package_json = json.load(f)
+        dependencies = package_json['dependencies']
+        print(dependencies)
+        for lib, version in dependencies.items():
+            print(lib)
+            print(version)

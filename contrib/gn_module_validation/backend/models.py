@@ -1,9 +1,10 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
+
 from utils_flask_sqla.serializers import serializable
+from utils_flask_sqla_geo.serializers import geoserializable
 
 from geonature.utils.env import DB
-from geonature.utils.utilssqlalchemy import geoserializable
 from geoalchemy2 import Geometry
 
 

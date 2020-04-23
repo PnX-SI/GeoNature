@@ -29,9 +29,9 @@ then
     exit 1
 fi
 
-if [ "$OS_VERSION" != "8" ] && [ "$OS_VERSION" != "9" ] && [ "$OS_VERSION" != "18.04" ] && [ "$OS_VERSION" != "16.04" ]
+if [ "$OS_VERSION" != "9" ] && [ "$OS_VERSION" != "10" ] && [ "$OS_VERSION" != "18.04" ] && [ "$OS_VERSION" != "16.04" ]
 then
-    echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour Debian 8/9 et Ubuntu 16.04/18.04\e[0m" >&2
+    echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour Debian 9/10 et Ubuntu 16.04/18.04\e[0m" >&2
     exit 1
 fi
 
@@ -65,15 +65,24 @@ sudo apt-get install -y apache2 libapache2-mod-wsgi libapache2-mod-perl2
 sudo apt-get install -y postgresql 
 sudo apt-get install -y postgresql-contrib
 sudo apt-get install -y wget
+
+# NVM installation (to install node and npm)
+wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+
 if [ "$OS_VERSION" == "9" ]
 then
     sudo apt-get install -y postgresql-server-dev-9.6 
     sudo apt install -y postgis-2.3 postgis postgresql-9.6-postgis-2.3 
 fi
-if [ "$OS_VERSION" == "8" ]
+if [ "$OS_VERSION" == "10" ]
 then
-    sudo apt-get install -y postgresql-server-dev-9.4 
-    sudo apt install -y postgis-2.3 postgis 
+    sudo apt-get install -y postgresql-server-dev-11
+    sudo apt-get install -y postgis-2.5 postgis postgresql-11-postgis-2.5
 fi
 
 if [ "$OS_VERSION" == "18.04" ]
@@ -94,35 +103,21 @@ sudo service postgresql restart
 sudo apt-get install -y python3 
 sudo apt-get install -y python3-dev 
 sudo apt-get install -y python3-setuptools 
-sudo apt-get install -y python-pip 
+sudo apt-get install -y python3-pip 
 sudo apt-get install -y libpq-dev 
 sudo apt-get install -y libgdal-dev 
 sudo apt-get install -y python-gdal 
-sudo apt-get install -y python3-virtualenv virtualenv 
 sudo apt-get install -y build-essential 
-sudo pip install --upgrade pip virtualenv virtualenvwrapper 
+python3 -m pip install pip==20.0.2
+pip3 install virtualenv==20.0.1
+# sudo pip install --upgrade pip virtualenv virtualenvwrapper 
 
-if [ "$OS_VERSION" == "9" ]
-then
-    sudo curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
-    sudo apt-get install nodejs
-    fi
-if [ "$OS_VERSION" == "8" ]
-then
-    sudo apt-get install -y npm 
-fi
-
-if [ "$OS_VERSION" == "16.04" ] || [ "$OS_VERSION" == "18.04" ]
-then
-    sudo apt-get install -y nodejs
-    sudo apt-get install -y npm
-fi
 
 sudo apt-get install -y supervisor 
 
-# To make opencv (TaxHub) work on Debian 8
+#TODO: test de le virer
+# To make opencv (TaxHub) work on Debian 10
 sudo apt-get install -y libsm6 libxrender1 libfontconfig1 
-sudo apt-get install -y python-qt4 
 
 # Creating PostgreSQL user
 echo "Création de l'utilisateur PostgreSQL..."
@@ -179,7 +174,8 @@ cd install/
 ./install_db.sh
 
 # Installation and configuration of GeoNature application
-./install_app.sh
+# lance install_app en le sourcant pour que la commande NVM soit disponible
+[ -s "install_app.sh" ] && \. "install_app.sh" 
 
 cd ../
 
@@ -270,7 +266,9 @@ sudo a2enmod proxy
 sudo a2enmod proxy_http
 
 # Installation of TaxHub
+# lance install_app en le sourcant pour que la commande NVM soit disponible
 ./install_app.sh
+
 
 # Installation and configuration of UsersHub application (if activated)
 if [ "$install_usershub_app" = true ]; then
@@ -291,7 +289,8 @@ if [ "$install_usershub_app" = true ]; then
     sed -i 's#url_application=.*#url_application='$my_url'usershub#g' config/settings.ini
 
     # Installation of UsersHub application
-    ./install_app.sh
+    # lance install_app en le sourcant pour que la commande NVM soit disponible
+    ./install_app.sh 
 
     # Apache configuration of UsersHub
     if [ -f  /etc/apache2/sites-available/usershub.conf ]; then
@@ -310,4 +309,7 @@ fi
 sudo apache2ctl restart
 
 
+# fix nvm version
+cd /home/`whoami`/geonature/frontend 
+nvm alias default
 echo "L'installation est terminée!"

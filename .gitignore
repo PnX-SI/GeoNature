@@ -3,6 +3,7 @@ settings.ini
 config/geonature_config.toml
 
 **/conf_gn_module.toml
+**/module.config.ts
 
 log/*
 .vscode/
@@ -139,7 +140,6 @@ ENV/
 .mypy_cache/
 
 *.pid
-package-lock.json
 *.orig
 
 

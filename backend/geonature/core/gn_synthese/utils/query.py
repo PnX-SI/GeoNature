@@ -1,3 +1,9 @@
+"""
+Utility function to manage cruved and all filter of Synthese
+Depreciated (but still use in validation module and export taxon in synthese)
+For performance reason, use query_select_sqla.py
+"""
+
 import datetime
 
 from flask import current_app, request
@@ -7,8 +13,9 @@ from sqlalchemy import func, or_, and_, select
 from sqlalchemy.sql import text
 from sqlalchemy.orm import aliased
 
+from utils_flask_sqla_geo.utilsgeometry import circle_from_point
+
 from geonature.utils.env import DB
-from geonature.utils.utilsgeometry import circle_from_point
 from geonature.core.taxonomie.models import Taxref, CorTaxonAttribut, TaxrefLR
 from geonature.core.gn_synthese.models import (
     Synthese,

@@ -23,3 +23,10 @@ DELETE FROM gn_permissions.t_filters WHERE id_filter = 500;
 -- test register 
 DELETE FROM utilisateurs.t_roles WHERE identifiant = 'hello_test';
 DELETE FROM utilisateurs.temp_users WHERE identifiant = 'hello_test';
+
+
+----------------
+-- GN_COMMONS --
+----------------
+
+DELETE FROM gn_commons.t_mobile_apps WHERE app_code = 'OCCTAX';

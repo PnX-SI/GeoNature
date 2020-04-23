@@ -4,29 +4,26 @@ MANUEL UTILISATEUR
 Authentification
 ----------------
 
-Accéder à l'application sur http://demo.geonature.fr/geonature
+Accéder à l'application de démonstration à l'adresse http://demo.geonature.fr/geonature.
 
-Si vous n'êtes pas déjà authentifié avec votre compte INPN, vous serez invité à le faire : 
-
-.. image :: http://geonature.fr/docs/img/user-manual/00-login-inpn.jpg
+Connectez-vous avec l'utilisateur ``admin`` et le mot de passe ``admin``.
 
 Accueil
 -------
 
-Vous accédez alors à la page d'accueil de l'application GeoNature, permettant la saisie puis l'export 
-de données brutes de biodiversité. 
+Vous accédez alors à la page d'accueil de l'application GeoNature. 
 
 .. image :: http://geonature.fr/docs/img/user-manual/01-home-MTES.jpg
 
-Le Menu de navigation à gauche permet d'accéder aux différents modules de l'application
+Le Menu de navigation à gauche permet d'accéder aux différents modules de l'application.
 
 .. image :: http://geonature.fr/docs/img/user-manual/01-home-menu.jpg
 
-Le bouton à gauche du nom de la page permet de rabattre ou d'ouvrir le Menu de navigation
+Le bouton à gauche du nom de la page permet de rabattre ou d'ouvrir le Menu de navigation.
 
 .. image :: http://geonature.fr/docs/img/user-manual/01-home-sidebar.jpg
 
-Un bouton en haut à droite permet de se déconnecter de l'application
+Un bouton en haut à droite permet de se déconnecter de l'application.
 
 .. image :: http://geonature.fr/docs/img/user-manual/01-home-logout.jpg
 
@@ -100,7 +97,7 @@ Si vous affichez un relevé, vous accéderez à sa fiche complète :
 
 .. image :: http://geonature.fr/docs/img/user-manual/03-occtax-detail.jpg
 
-Si vous cliquez sur un des taxons observé dans ce relevé, cela affichera le détail de l'observation du taxon : 
+Si vous cliquez sur un des taxons observés dans ce relevé, cela affichera le détail de l'observation du taxon : 
 
 .. image :: http://geonature.fr/docs/img/user-manual/03-occtax-detail-info.jpg
 
@@ -260,6 +257,140 @@ Ce module permet de consulter, rechercher et exporter les données provenant des
 Il permet aussi d'afficher la fiche détaillée de chaque occurrence et de revenir à sa fiche source si elle a été saisie dans un module de GeoNature.
 
 .. image :: http://geonature.fr/docs/img/user-manual/2018-09-geonature-synthese.gif
+
+Accéder à la synthèse
+"""""""""""""""""""""
+
+Cliquez sur le module Synthèse, dans le menu de navigation : 
+
+.. image :: https://geonature.fr/docs/img/user-manual/synthese/01-acces-synthese.jpg
+
+Présentation de la synthèse
+"""""""""""""""""""""""""""
+
+La page principale de la synthèse est composée de 3 blocs :
+
+- Rechercher dans les résultats
+- Visualiser les résultats sur la carte
+- Visualiser les résultats en liste
+
+.. image :: https://geonature.fr/docs/img/user-manual/synthese/02-presentation-synthese.jpg
+
+Par défaut, la synthèse affiche les 100 observations les plus récentes. Il est possible d’accéder aux données souhaitées en appliquant un ensemble de filtres.
+
+Détail d’une observation
+""""""""""""""""""""""""
+
+Il est possible d’accéder au détail d’une observation en cliquant sur le symbole (i) à gauche d’une observation. Le détail d’une observation correspond à l’ensemble des informations contenues dans la synthèse pour cette observation. 
+
+Une observation au sens de la synthèse ne correspond pas tout à fait à la donnée saisie initialement. C’est une représentation simplifiée et unifiée des données qui repose sur le standard SINP et qui répond aux questions suivantes : 
+
+- Où ? 
+- Quand ? : Date et heure de l’observation
+- Qui ? : Observateur 
+- Quoi ? : Taxon, nombre et type d’individus, état biologique, ...
+- Dans quel cadre ? 
+
+Toutes les données de la synthèse sont ramenées au niveau du dénombrement de taxon (exemple : 1 individu mâle adulte de Chevêche). Si une occurrence est constituée de 2 dénombrements, il y aura 2 enregistrements dans la synthèse (exemple : 1 individu mâle adulte et 1 individu femelle indéterminée de Chevêche).
+
+.. image :: https://geonature.fr/docs/img/user-manual/synthese/03-detail-synthese.jpg
+
+Rechercher des observations
+"""""""""""""""""""""""""""
+
+**1. Filtrer les données géographiquement :**
+
+Il y a 3 façons de filtrer géographiquement les données :
+ 
+- en sélectionnant une commune
+- en dessinant une zone sur la carte à l’aide des outils de dessin (rectangle, polygone ou cercle)
+- en important un fichier de la zone
+
+**Filtrer par communes :**
+
+Dans le panneau filtre : 
+
+- cliquez sur le champ Communes
+- saisissez les premières lettre de la commune
+- sélectionnez la commune souhaitée
+
+Il est possible de sélectionner plusieurs communes.
+
+.. image :: https://geonature.fr/docs/img/user-manual/synthese/04-recherche-communes.jpg
+
+**Dessiner une zone :**
+
+Sur la carte, choisir un outil de dessin (rectangle, polygone ou cercle) et réaliser votre selection sur la carte.
+
+.. image :: https://geonature.fr/docs/img/user-manual/synthese/05-recherche-polygone.jpg
+
+Après avoir dessiné une zone, il est nécessaire de cliquer sur le bouton Rechercher.
+
+**Importer un fichier :**
+
+Il est possible d'importer une/des zone(s) de sélection directement à partir d’un fichier GeoJson.
+
+Vous pouvez préparer ce fichier avec QGIS depuis un fichier SHP ou autre. Le fichier doit être enregistré au format GeoJson (projection 4326).
+
+Sur la couche souhaitée :
+
+- Faire un clic droit sur la couche puis sélectionner Exporter > Sauvegarder les entités sous...
+
+.. image :: https://geonature.fr/docs/img/user-manual/synthese/06-qgis-geojson.jpg
+
+- Enregistrer le fichier en sélectionnant les bons paramètres :
+   - Format : GeoJson
+   -  SCR : WGS 84 (4326)
+   - Pour des questions de performance il est possible de ne pas exporter les données attributaires
+   
+.. image :: https://geonature.fr/docs/img/user-manual/synthese/06b-qgis-geojson.jpg
+
+Importer le fichier dans la synthèse GeoNature :
+
+- Cliquer sur l’icône ouvrir un fichier
+- Sélectionner le fichier
+- La ou les zone(s) apparaissent sur la carte
+- Lancer la recherche
+
+.. image :: https://geonature.fr/docs/img/user-manual/synthese/07-filtre-geojson.jpg
+
+**2. Filtrer les données via la taxonomie**
+
+Il est possible de rechercher les données en utilisant des critères taxonomiques, en recherchant soit sur un taxon ou un groupe taxonomique en particulier, soit en se basant sur des critères taxonomiques (statut de protection, attributs)
+
+**Recherche simple :**
+
+Dans le panneau filtre : 
+
+- cliquez sur le champ taxon
+- saisissez les premières lettre du taxon
+- sélectionnez le taxon souhaité
+
+Il est possible de sélectionner plusieurs taxons.
+
+.. image :: https://geonature.fr/docs/img/user-manual/synthese/08-filtre-taxons.jpg
+
+**Recherche avancée :**
+
+Dans le panneau filtre dans la section « Quoi ? » cliquer sur Avancé.
+
+Vous pourrez :
+
+- Sélectionner un ou des groupes taxonomiques (exemple Chiroptera)
+- Filtrer sur les listes rouge UICN,...
+- Filtrer sur des attributs spécifiés dans TaxHub : patrimonialité, enjeu prioritaire, ...
+
+.. image :: https://geonature.fr/docs/img/user-manual/synthese/08-filtre-taxons-avances.jpg
+
+**3. Autres filtres**
+
+Il est également possible de filtrer :
+
+- sur une date ou une période donnée
+- sur un observateur
+- sur un jeu de données
+
+.. image :: https://geonature.fr/docs/img/user-manual/synthese/09-filtre-autres.jpg
 
 Admin
 -----
