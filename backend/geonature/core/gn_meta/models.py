@@ -122,12 +122,20 @@ class CorDatasetActor(DB.Model):
     id_organism = DB.Column(
         DB.Integer, ForeignKey("utilisateurs.bib_organismes.id_organisme")
     )
-
-    id_nomenclature_actor_role = DB.Column(DB.Integer)
+    
     role = DB.relationship(
         User, primaryjoin=(User.id_role == id_role), foreign_keys=[id_role]
     )
     organism = relationship("BibOrganismes", foreign_keys=[id_organism])
+
+    id_nomenclature_actor_role = DB.Column(DB.Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        default=TNomenclatures.get_default_nomenclature("ROLE_ACTEUR")
+    )
+    nomenclature_actor_role = DB.relationship(
+        TNomenclatures,
+        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_actor_role)
+    )
 
     @staticmethod
     def get_actor(

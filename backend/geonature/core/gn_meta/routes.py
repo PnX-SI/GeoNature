@@ -148,8 +148,8 @@ def get_dataset_details_dict(id_dataset):
     for o in organisms:
         dataset["cor_dataset_actor"][i]["organism"] = o
         i = i + 1
-    if dataset["keywords"]:
-        dataset["keywords"] = dataset["keywords"].split(' ')
+    #if dataset["keywords"]:
+    #    dataset["keywords"] = dataset["keywords"].split(', ')
     dataset["data_type"] = data.data_type.as_dict()
     dataset["dataset_objectif"] = data.dataset_objectif.as_dict()
     dataset["collecting_method"] = data.collecting_method.as_dict()

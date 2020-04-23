@@ -42,7 +42,7 @@
         </div>
         <div class="card-body">
 
-          <div class="b">Identification :</div>
+          <div class="b">Identification</div>
           <div class="a"> Instance : {{dataset.dataset_name}}</div>
           <div class="a"> Identifiant SINP du jeu de données : {{dataset.unique_dataset_id}}</div>
           <div class="a"> Libellé court : {{dataset.dataset_shortname}}</div>
@@ -50,12 +50,16 @@
 
           <br/>
 
-          <div class="b">Type de données : {{dataset.data_type.label_default}} </div>
-          <div class="b"> Objectifs : {{dataset.dataset_objectif.label_default}} </div>
+          <div class="b">Type de données</div>
+          <div class="a"> {{dataset.data_type.label_default}}</div>
+
+          <br/>
+          <div class="b"> Objectifs </div>
+          <div class="a"> {{dataset.dataset_objectif.label_default}}</div>
           
           <br/>
 
-          <div class="b">Territoires :</div>
+          <div class="b">Territoires</div>
           <div class="a"> Couverture du territoire terrestre : {{dataset.terrestrial_domain ? "oui" : "non"}} </div>
           <div class="a"> Couverture du territoire marin : {{dataset.marine_domain ? "oui" : "non"}} </div>
 
@@ -67,7 +71,7 @@
 
           <br/>
           
-          <div class="b">Processus de collecte :</div>
+          <div class="b">Processus de collecte</div>
           <div class="a"> Libellé : {{dataset.collecting_method.label_default}} </div>
           <div class="a"> Description : {{dataset.collecting_method.definition_default}} </div>
           <!--div class="a"> Url : ??? </div-->
@@ -79,12 +83,8 @@
 
           <div *ngIf="dataset.cor_dataset_actor">
           <div class="b">Contacts </div>
-            <div *ngFor="let actor of dataset.cor_dataset_actor">
-              <div *ngIf="actor.role" class="a">Nom : {{ actor.role.nom_role }} {{ actor.role.prenom_role }}</div>
-              <div *ngIf="actor.organism" class="a">Organisme : {{ actor.organism.nom_organisme }}</div>
-              <!--div class="a">Base de production : ???</div-->
-              <div class="a">Email : {{ actor.role?.email }}</div>
-              <br/>
+            <div class="a" *ngFor="let actor of dataset.cor_dataset_actor">
+              <div> {{ actor.nomenclature_actor_role?.mnemonique}} : {{ actor.organism?.nom_organisme }} <span *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"> - </span> {{ actor.role?.nom_complet }} </div>
             </div>
           </div>
 
@@ -102,18 +102,14 @@
       
           <div *ngIf="dataset.modules">
             <div class="b">Module(s) GeoNature associé(s) au jeu de données :</div>
-            <div *ngFor='let module of dataset.modules'>
-              <div class="a">{{ module.module_code }}</div>
-            </div>
+            <div class="a">{{ dataset.modules }}</div>
           </div>
 
           <br/>
 
           <div *ngIf="dataset.keywords">
             <div class="b">Mots-clés :</div>
-            <div *ngFor='let word of dataset.keywords'>
-              <div class="a">{{ word }}</div>
-            </div>
+            <div class="a"> {{dataset.keywords}} </div>
           </div>
 
         </div>
