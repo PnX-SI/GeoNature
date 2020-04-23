@@ -134,22 +134,27 @@
                 </p>
             </div>
 
-            {% if not (data.cor_dataset_actor and data.cor_dataset_actor[4]) : %}
+            {% if not (data.cor_dataset_actor and data.cor_dataset_actor[3]) : %}
                 <div class="information">
                     <p class="info-titre">Contacts</p>
                     <p class="info-contenu">
                         {% if data.cor_dataset_actor: %}
                             {% for actor in data.cor_dataset_actor -%}
+                                {% if actor.nomenclature_actor_role: %}
+                                    {{ actor.nomenclature_actor_role.mnemonique }} :
+                                    <br>
+                                {% endif %}
                                 {% if actor.role: %}
                                     {{ actor.role.nom_role }} {{ actor.role.prenom_role }}
+                                    <br>
                                 {% endif %}
-                                <br>
                                 {% if actor.organism: %}
                                     {{ actor.organism.nom_organisme }}
+                                    <br>
                                 {% endif %}
-                                <br>
-                                {% if actor.role: %}
+                                {% if actor.role and actor.role.email: %}
                                     {{ actor.role.email }}
+                                    <br>
                                 {% endif %}
                                 <br>
                             {%- endfor %}
@@ -157,16 +162,14 @@
                     </p>
                 </div>
 
-                <div class="information">
-                    <p class="info-titre">Mots-clés</p>
-                    <p class="info-contenu">
-                        {% if data.keywords: %}
-                            {% for word in data.keywords -%}
-                                {{ word }} <br>
-                            {%- endfor %}
-                        {% endif %}
-                    </p>
-                </div>
+                {% if data.keywords: %}
+                    <div class="information">
+                        <p class="info-titre">Mots-clés</p>
+                        <p class="info-contenu">
+                            {{ data.keywords }}
+                        </p>
+                    </div>
+                {% endif %}
 
                 <div class="information">
                     <p class="info-titre">Attributs additionnels</p>
@@ -210,31 +213,38 @@
     </div>
 
     <div class="footer">
-        <a href="{{data.footer['url']}}">Lien de téléchargement</a>
+        <a href="{{data.footer['url']}}">Lien de téléchargement : {{data.footer['url']}}</a>
         <span>{{data.footer['date']}}</span>
     </div>
 
-    {% if data.cor_dataset_actor and data.cor_dataset_actor[4] : %}
+    {% if data.cor_dataset_actor and data.cor_dataset_actor[3] : %}
         <br/>
         <div class="description" style="transform: translateY(40px);">
             <div class="left-block">
                 <div class="information">
                     <p class="info-titre">Contacts</p>
                     <p class="info-contenu">
-                        {% for actor in data.cor_dataset_actor -%}
-                            {% if actor.role: %}
-                                {{ actor.role.nom_role }} {{ actor.role.prenom_role }}
-                            {% endif %}
-                            <br>
-                            {% if actor.organism: %}
-                                {{ actor.organism.nom_organisme }}
-                            {% endif %}
-                            <br>
-                            {% if actor.role: %}
-                                {{ actor.role.email }}
-                            {% endif %}
-                            <br>
-                        {%- endfor %}
+                        {% if data.cor_dataset_actor: %}
+                            {% for actor in data.cor_dataset_actor -%}
+                                {% if actor.nomenclature_actor_role: %}
+                                    {{ actor.nomenclature_actor_role.mnemonique }} :
+                                    <br>
+                                {% endif %}
+                                {% if actor.role: %}
+                                    {{ actor.role.nom_role }} {{ actor.role.prenom_role }}
+                                    <br>
+                                {% endif %}
+                                {% if actor.organism: %}
+                                    {{ actor.organism.nom_organisme }}
+                                    <br>
+                                {% endif %}
+                                {% if actor.role and actor.role.email: %}
+                                    {{ actor.role.email }}
+                                    <br>
+                                {% endif %}
+                                <br>
+                            {%- endfor %}
+                        {% endif %}
                     </p>
                 </div>
 

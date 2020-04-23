@@ -270,7 +270,7 @@ def get_export_pdf_dataset(id_dataset, info_role):
     date = dt.datetime.now().strftime("%d/%m/%Y")
 
     df['footer'] = {
-        "url" : current_app.config["URL_APPLICATION"]+"/api/meta/dataset/export_pdf/"+id_dataset,
+        "url" : current_app.config["URL_APPLICATION"]+"/#/metadata/dataset_detail/"+id_dataset,
         "date" : date
     }
 
