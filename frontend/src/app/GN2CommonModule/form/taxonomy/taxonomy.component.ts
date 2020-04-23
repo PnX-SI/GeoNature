@@ -65,6 +65,8 @@ export class TaxonomyComponent implements OnInit {
   @Input() charNumber: number;
   //**ombre de résultat affiché */
   @Input() listLength = 20;
+  //** Pour changer la valeur affichée */
+  @Input() displayLabel: string = "nom_valide";
   /** Afficher ou non les filtres par regne et groupe INPN qui controle l'autocomplétion */
   @Input() displayAdvancedFilters = false;
   searchString: any;
@@ -112,8 +114,8 @@ export class TaxonomyComponent implements OnInit {
     this.onChange.emit(e);
   }
 
-  formatter(taxon) {
-    return taxon.nom_valide;
+  formatter = (taxon: any) => {
+    return (taxon[this.displayLabel]).replace(/<[^>]*>/g, ''); //supprime les balises HTML
   }
 
   searchTaxon = (text$: Observable<string>) =>

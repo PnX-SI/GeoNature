@@ -51,6 +51,7 @@
     "leaflet-draw": "^1.0.4",
     "leaflet-filelayer": "^1.2.0",
     "leaflet.markercluster": "^1.4.1",
+    "lodash": "^4.17.15",
     "ng2-cookies": "^1.0.12",
     "ngx-bootstrap": "^4.0.0",
     "ngx-toastr": "^10.0.2",

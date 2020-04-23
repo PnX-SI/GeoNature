@@ -253,7 +253,7 @@
               matTooltipPosition="left"
             >
               <span>
-                  <span class='badge badge-dark'> {{row.t_occurrences_occtax?.length}} </span> {{displayTaxonsTooltip(row)}}
+                  <span class='badge badge-dark'> {{row.t_occurrences_occtax?.length || '0' }} </span> {{displayTaxonsTooltip(row)}}
               </span>
             </span> 
           </ng-template>

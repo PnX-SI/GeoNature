@@ -259,7 +259,7 @@ def getViewReleveOccurrence(info_role):
 @blueprint.route("/releve", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="OCCTAX")
 @json_resp
-def insertOrUpdateOneReleve(info_role):
+def createReleve(info_role):
     """
     Post one Occtax data (Releve + Occurrence + Counting)
 
@@ -290,10 +290,7 @@ def insertOrUpdateOneReleve(info_role):
 
     releveRepository = ReleveRepository(TRelevesOccurrence)
     data = dict(request.get_json())
-    occurrences_occtax = None
-    if "t_occurrences_occtax" in data["properties"]:
-        occurrences_occtax = data["properties"]["t_occurrences_occtax"]
-        data["properties"].pop("t_occurrences_occtax")
+    
     observersList = None
     if "observers" in data["properties"]:
         observersList = data["properties"]["observers"]
@@ -316,71 +313,189 @@ def insertOrUpdateOneReleve(info_role):
         for o in observers:
             releve.observers.append(o)
 
-    for occ in occurrences_occtax:
-        cor_counting_occtax = []
-        if "cor_counting_occtax" in occ:
-            cor_counting_occtax = occ["cor_counting_occtax"]
-            occ.pop("cor_counting_occtax")
+    # set id_digitiser
+    releve.id_digitiser = info_role.id_role
+    if info_role.value_filter in ("0", "1", "2"):
+        # Check if user can add a releve in the current dataset
+        allowed = releve.user_is_in_dataset_actor(info_role)
+        if not allowed:
+            raise InsufficientRightsError(
+                "User {} has no right in dataset {}".format(
+                    info_role.id_role, releve.id_dataset
+                ),
+                403,
+            )
 
-        # Test et suppression
-        #   des propriétés inexistantes de TOccurrencesOccurrence
-        attliste = [k for k in occ]
-        for att in attliste:
-            if not getattr(TOccurrencesOccurrence, att, False):
-                occ.pop(att)
-        # pop the id if None. otherwise DB.merge is not OK
-        if "id_occurrence_occtax" in occ and occ["id_occurrence_occtax"] is None:
-            occ.pop("id_occurrence_occtax")
-        occtax = TOccurrencesOccurrence(**occ)
-
-        for cnt in cor_counting_occtax:
-            # Test et suppression
-            # des propriétés inexistantes de CorCountingOccurrence
-            attliste = [k for k in cnt]
-            for att in attliste:
-                if not getattr(CorCountingOccurrence, att, False):
-                    cnt.pop(att)
-            # pop the id if None. otherwise DB.merge is not OK
-            if "id_counting_occtax" in cnt and cnt["id_counting_occtax"] is None:
-                cnt.pop("id_counting_occtax")
-            countingOccurrence = CorCountingOccurrence(**cnt)
-            occtax.cor_counting_occtax.append(countingOccurrence)
-        releve.t_occurrences_occtax.append(occtax)
-
-    # if its a update
-    if releve.id_releve_occtax:
-        # get update right of the user
-        user_cruved = get_or_fetch_user_cruved(
-            session=session, id_role=info_role.id_role, module_code="OCCTAX"
-        )
-        update_code_filter = user_cruved["U"]
-        # info_role.code_action = update_data_scope
-        user = UserRigth(
-            id_role=info_role.id_role,
-            value_filter=update_code_filter,
-            code_action="U",
-            id_organisme=info_role.id_organisme,
-        )
-        releve = releveRepository.update(releve, user, shape)
-    # if its a simple post
-    else:
-        # set id_digitiser
-        releve.id_digitiser = info_role.id_role
-        if info_role.value_filter in ("0", "1", "2"):
-            # Check if user can add a releve in the current dataset
-            allowed = releve.user_is_in_dataset_actor(info_role)
-            if not allowed:
-                raise InsufficientRightsError(
-                    "User {} has no right in dataset {}".format(
-                        info_role.id_role, releve.id_dataset
-                    ),
-                    403,
-                )
-        DB.session.add(releve)
+    DB.session.add(releve)
     DB.session.commit()
     DB.session.flush()
 
     return releve.get_geofeature()
+
+@blueprint.route("/releve/<int:id_releve>", methods=["POST"])
+@permissions.check_cruved_scope("U", True, module_code="OCCTAX")
+@json_resp
+def updateReleve(id_releve, info_role):
+    """
+    Post one Occurrence data (Occurrence + Counting) for add to Releve
+
+    """
+    #get releve by id_releve
+    q = DB.session.query(TRelevesOccurrence)
+
+    try:
+        releve = q.get(id_releve)
+    except Exception as e:
+        DB.session.rollback()
+        raise
+
+    if not releve:
+        return {"message": "not found"}, 404
+
+    #Test des droits d'édition du relevé
+    user_cruved = get_or_fetch_user_cruved(
+        session=session, id_role=info_role.id_role, module_code="OCCTAX"
+    )
+    update_code_filter = user_cruved["U"]
+    # info_role.code_action = update_data_scope
+    user = UserRigth(
+        id_role=info_role.id_role,
+        value_filter=update_code_filter,
+        code_action="U",
+        id_organisme=info_role.id_organisme,
+    )
+
+    releve = releve.get_releve_if_allowed(user)
+    #fin test, si ici => c'est ok
+
+    rel_data = dict(request.get_json())
+    releve.set_columns(**rel_data.get("properties"))
+    shape = asShape(rel_data.get("geometry"))
+    two_dimension_geom = remove_third_dimension(shape)
+    releve.geom_4326 = from_shape(two_dimension_geom, srid=4326)
+
+    observersList = rel_data.get("properties").get("observers", [])
+    releve.observers = []
+    if observersList is not None:
+        observers = DB.session.query(User).filter(
+            User.id_role.in_(observersList)).all()
+        [releve.observers.append(o) for o in observers]
+    
+    DB.session.commit()
+    DB.session.flush()
+
+    return releve.get_geofeature()
+
+
+@blueprint.route("/releve/<int:id_releve>/occurrence", methods=["POST"])
+@permissions.check_cruved_scope("C", True, module_code="OCCTAX")
+@json_resp
+def createOccurrence(id_releve, info_role):
+    """
+    Post one Occurrence data (Occurrence + Counting) for add to Releve
+
+    """
+    #get releve by id_releve
+    releve_repository = ReleveRepository(TRelevesOccurrence)
+    releve_model, releve_geojson = releve_repository.get_one(
+        id_releve, info_role)
+
+    user_cruved = get_or_fetch_user_cruved(
+        session=session, id_role=info_role.id_role, module_code="OCCTAX"
+    )
+    
+    if info_role.value_filter in ("0", "1", "2"):
+        # Check if user can add a releve in the current dataset
+        allowed = releve_model.user_is_in_dataset_actor(info_role)
+        if not allowed:
+          raise InsufficientRightsError(
+              "User {} has no right in dataset {}".format(
+                  info_role.id_role, releve.id_dataset
+              ),
+              403,
+          )
+
+    occ = dict(request.get_json())
+
+    cor_counting_occtax = []
+    if "cor_counting_occtax" in occ:
+      cor_counting_occtax = occ["cor_counting_occtax"]
+      occ.pop("cor_counting_occtax")
+
+    # Test et suppression des propriétés inexistantes de TOccurrencesOccurrence
+    attliste = [k for k in occ]
+    for att in attliste:
+      if not getattr(TOccurrencesOccurrence, att, False):
+          occ.pop(att)
+
+    occurrence = TOccurrencesOccurrence(**occ)
+    occurrence.id_releve_occtax = releve_model.id_releve_occtax
+
+    for cnt in cor_counting_occtax:
+      # Test et suppression
+      # des propriétés inexistantes de CorCountingOccurrence
+      attliste = [k for k in cnt]
+      for att in attliste:
+          if not getattr(CorCountingOccurrence, att, False):
+              cnt.pop(att)
+      # pop the id if None. otherwise DB.merge is not OK
+      if "id_counting_occtax" in cnt and cnt["id_counting_occtax"] is None:
+          cnt.pop("id_counting_occtax")
+      countingOccurrence = CorCountingOccurrence(**cnt)
+      occurrence.cor_counting_occtax.append(countingOccurrence)
+    
+    DB.session.add(occurrence)
+    DB.session.commit()
+    DB.session.flush()
+
+    return occurrence.as_dict(True)
+    return releve.get_geofeature()
+
+@blueprint.route("/occurrence/<int:id_occurrence>", methods=["POST"])
+@permissions.check_cruved_scope("U", True, module_code="OCCTAX")
+@json_resp
+def updateOccurrence(id_occurrence, info_role):
+    """
+    Post one Occurrence data (Occurrence + Counting) for add to Releve
+
+    """
+    #get releve by id_releve
+    q = DB.session.query(TOccurrencesOccurrence)
+
+    try:
+        occurrence = q.get(id_occurrence)
+        releve = DB.session.query(TRelevesOccurrence).get(occurrence.id_releve_occtax)
+    except Exception as e:
+        DB.session.rollback()
+        raise
+
+    if not occurrence or not releve:
+        return {"message": "not found"}, 404
+
+    #Test des droits d'édition du relevé
+    user_cruved = get_or_fetch_user_cruved(
+        session=session, id_role=info_role.id_role, module_code="OCCTAX"
+    )
+    update_code_filter = user_cruved["U"]
+    # info_role.code_action = update_data_scope
+    user = UserRigth(
+        id_role=info_role.id_role,
+        value_filter=update_code_filter,
+        code_action="U",
+        id_organisme=info_role.id_organisme,
+    )
+
+    releve = releve.get_releve_if_allowed(user)
+    #fin test, si ici => c'est ok
+
+    occ = dict(request.get_json())
+    occurrence.set_columns(**occ)
+    
+    DB.session.commit()
+    DB.session.flush()
+
+    return occurrence.as_dict(True)
+
 
 
 @blueprint.route("/releve/<int:id_releve>", methods=["DELETE"])
@@ -400,7 +515,7 @@ def deleteOneReleve(id_releve, info_role):
     return {"message": "delete with success"}, 200
 
 
-@blueprint.route("/releve/occurrence/<int:id_occ>", methods=["DELETE"])
+@blueprint.route("/occurrence/<int:id_occ>", methods=["DELETE"])
 @permissions.check_cruved_scope("D", module_code="OCCTAX")
 @json_resp
 def deleteOneOccurence(id_occ):

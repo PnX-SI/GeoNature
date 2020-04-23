@@ -34,11 +34,13 @@ export interface DateStruc {
     '(document:click)': 'onClick($event)'
   },
   templateUrl: 'date.component.html',
+  styleUrls: ["./date.component.scss"],
   providers: [{ provide: NgbDateParserFormatter, useClass: NgbDateFRParserFormatter }]
 })
 export class DateComponent implements OnInit, OnDestroy {
   public elementRef: ElementRef;
   @Input() label: string;
+  @Input() isInvalid: string;
   @Input() disabled: boolean;
   @Input() parentFormControl: FormControl;
   @Input() defaultToday = false;

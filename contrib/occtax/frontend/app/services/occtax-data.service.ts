@@ -23,4 +23,24 @@ export class OcctaxDataService {
       `${AppConfig.API_ENDPOINT}/occtax/counting/${id_counting}`
     );
   }
+
+  createReleve(form) {
+    return this._api.post(`${AppConfig.API_ENDPOINT}/occtax/releve`, form);
+  }
+
+  updateReleve(id_releve, form) {
+    return this._api.post(`${AppConfig.API_ENDPOINT}/occtax/releve/${id_releve}`, form);
+  }
+
+  createOccurrence(id_releve, form) {
+    return this._api.post(`${AppConfig.API_ENDPOINT}/occtax/releve/${id_releve}/occurrence`, form);
+  }
+
+  updateOccurrence(id_occurrence, form) {
+    return this._api.post(`${AppConfig.API_ENDPOINT}/occtax/occurrence/${id_occurrence}`, form);
+  }
+
+  deleteOccurrence(id) {
+    return this._api.delete(`${AppConfig.API_ENDPOINT}/occtax/occurrence/${id}`);
+  }
 }
