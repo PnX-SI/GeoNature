@@ -14,7 +14,6 @@ export class AfCardComponent implements OnInit {
   public af: any;
   public acquisitionFrameworks: any;
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
-
   // Type de graphe
   public pieChartType = 'doughnut';
   // Tableau contenant les labels du graphe

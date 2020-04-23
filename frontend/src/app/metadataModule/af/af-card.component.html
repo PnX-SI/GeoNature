@@ -139,6 +139,14 @@
           <h5>
             Zone géographique
           </h5>
+          <div class="card-body">
+            <pnx-map height="40vh" searchBar="false" zoom="5">
+              <pnx-geojson
+                [geojson]="af?.geojsonData"
+              >
+              </pnx-geojson>
+            </pnx-map>
+        </div>
         </div>
       </div>
       <div class="card ">

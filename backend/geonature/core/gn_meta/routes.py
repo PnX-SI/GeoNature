@@ -5,6 +5,8 @@ import pprint
 
 from sqlalchemy import or_
 from sqlalchemy.sql import text,exists, select
+from sqlalchemy.sql.functions import func
+
 
 from geonature.utils.env import DB
 from geonature.core.gn_synthese.models import Synthese
@@ -427,6 +429,7 @@ def get_acquisition_framework_details(id_acquisition_framework):
                 == id_acquisition_framework).all()
     dataset_ids = [d.id_dataset for d in data]
     acquisition_framework["datasets"] = [d.as_dict(True) for d in data]
+    acquisition_framework["geojsonData"] = json.loads(DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_point))).filter(Synthese.id_dataset.in_(dataset_ids)).first()[0])
 
     nb_data = len(dataset_ids)
     nb_taxons = DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).distinct().count()
