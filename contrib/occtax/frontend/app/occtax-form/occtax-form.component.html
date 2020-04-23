@@ -43,7 +43,9 @@
 					Enchainer les relevés
 				</mat-slide-toggle>
 
-				<button mat-icon-button 
+				<button 
+					*ngIf="occtaxConfig.DISPLAY_SETTINGS_TOOLS"
+					mat-icon-button 
 					class="setting-btn"
 					(click)="openParametersDialog()"
 					matTooltip="Paramétrer la valeur par défaut des différents champs">

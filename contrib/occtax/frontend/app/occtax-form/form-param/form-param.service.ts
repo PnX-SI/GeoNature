@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject } from 'rxjs';
+import { ModuleConfig } from "../../module.config";
 
 interface OCCTAX_FORM_PARAM {
   geometry?: any,
@@ -47,6 +48,7 @@ interface OCCTAX_FORM_PARAM {
 @Injectable()
 export class OcctaxFormParamService {
 
+  private occtaxConfig = ModuleConfig;
   parameters: OCCTAX_FORM_PARAM = {
                                     geometry: null,
                                     releve: {
@@ -118,24 +120,29 @@ export class OcctaxFormParamService {
     let keys = element.split('.');
     let temp_value = this.parameters;
     let value = null;
-    for (let i=0; i<keys.length; i++) {
-      //si les changement de paramètre sont désactivé ou si la clé fournie n'existe pas
-      if (temp_value === null || temp_value[keys[i]] === undefined) {
-        break;
+    //vérification de l'activation du paramètre en config occtax 
+    if (this.occtaxConfig.DISPLAY_SETTINGS_TOOLS) {
+
+      for (let i=0; i<keys.length; i++) {
+        //si les changement de paramètre sont désactivé ou si la clé fournie n'existe pas
+        if (temp_value === null || temp_value[keys[i]] === undefined) {
+          break;
+        }
+
+        if (temp_value[keys[i]] !== undefined) {
+          if( i == 0 ) {
+            temp_value = this[keys[i]];
+          } else {
+            temp_value = temp_value[keys[i]];
+          }
+
+          if (keys.length == i+1 ) {
+            value = temp_value;
+          }
+        } 
       }
-
-      if (temp_value[keys[i]] !== undefined) {
-        if( i == 0 ) {
-          temp_value = this[keys[i]];
-        } else {
-          temp_value = temp_value[keys[i]];
-        }
-
-        if (keys.length == i+1 ) {
-          value = temp_value;
-        }
-      } 
     }
+
     return value;
   }
 
