@@ -101,8 +101,23 @@
 					<pnx-occtax-form-occurrence></pnx-occtax-form-occurrence>
 				</div>
 				<div class="col-md-5">
-					<h5>Observations enregistrées</h5>
+					<h5>
+						Observations enregistrées 
+						<mat-icon 
+							style="vertical-align: middle;" 
+							matTooltip="Les taxons affichés ici ont été enregistrés dans la base GeoNature.">
+							info
+						</mat-icon>
+					</h5>
 					<pnx-occtax-form-taxa-list></pnx-occtax-form-taxa-list>
+					<div style="margin-top: 15px;" class="text-center">
+						<button 
+							class="btn btn-secondary"
+					  	matTooltip="Fermer le formulaire et retourner à la liste des relevés"
+							(click)="leaveTheForm(['/occtax'])">
+					  	Quitter le formulaire
+					  </button>
+					</div>
 				</div>
 			</div>
 		</div>
