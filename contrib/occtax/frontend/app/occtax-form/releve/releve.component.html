@@ -225,7 +225,7 @@
         diameter="25"
         strokeWidth="2">
       </mat-spinner>
-      Suivant
+      Enregistrer le relevé pour saisir vos observations
     </button> 
   </ng-container>
   <ng-template #modifButton>
@@ -233,7 +233,7 @@
       class="btn"
       [ngClass]="releveForm.dirty ? 'btn-primary' : 'btn-light'"
       matTooltip="Modifier le relevé"
-      [disabled]="propertiesForm.invalid || occtaxFormReleveService.waiting"
+      [disabled]="propertiesForm.invalid || occtaxFormReleveService.waiting || ((occtaxFormService.editionMode|async) && propertiesForm.pristine)"
       (click)="submitReleveForm()">
       Modifier
     </button> 
