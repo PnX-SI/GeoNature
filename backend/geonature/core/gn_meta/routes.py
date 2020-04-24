@@ -148,8 +148,8 @@ def get_dataset_details_dict(id_dataset):
     for o in organisms:
         dataset["cor_dataset_actor"][i]["organism"] = o
         i = i + 1
-    if dataset["keywords"]:
-        dataset["keywords"] = dataset["keywords"].split(' ')
+    #if dataset["keywords"]:
+    #    dataset["keywords"] = dataset["keywords"].split(', ')
     dataset["data_type"] = data.data_type.as_dict()
     dataset["dataset_objectif"] = data.dataset_objectif.as_dict()
     dataset["collecting_method"] = data.collecting_method.as_dict()
@@ -270,7 +270,7 @@ def get_export_pdf_dataset(id_dataset, info_role):
     date = dt.datetime.now().strftime("%d/%m/%Y")
 
     df['footer'] = {
-        "url" : current_app.config["URL_APPLICATION"]+"/api/meta/dataset/export_pdf/"+id_dataset,
+        "url" : current_app.config["URL_APPLICATION"]+"/#/metadata/dataset_detail/"+id_dataset,
         "date" : date
     }
 
