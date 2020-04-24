@@ -139,7 +139,7 @@
           <h5>
             Zone géographique
           </h5>
-          <div class="card-body">
+          <div *ngIf="af?.stats?.nb_data > 0" class="card-body">
             <pnx-map height="40vh" searchBar="false" zoom="5">
               <pnx-geojson
                 [geojson]="af?.geojsonData"
