@@ -1,3 +1,15 @@
+::ng-deep .mat-progress-spinner circle, 
+.mat-spinner circle {
+  stroke: #fff !important;
+}
+
+button .mat-progress-spinner, 
+button .mat-spinner {
+  display: inline-block;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
 .form-nom-complet {
 	background-color: #eee;
 }
