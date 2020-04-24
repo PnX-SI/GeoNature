@@ -149,3 +149,12 @@ SELECT  s.id_synthese,
         LIMIT 1
     ) v ON true
   WHERE d.validable = true;
+
+
+-- Ajout du type de jeu de donnees
+
+ALTER TABLE gn_meta.t_datasets add column
+id_nomenclature_jdd_data_type integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value('JDD_DATA_TYPE');
+
+ALTER TABLE only gn_meta.t_datasets add CONSTRAINT
+fk_t_datasets_jdd_data_type FOREIGN KEY (id_nomenclature_jdd_data_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
