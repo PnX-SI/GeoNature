@@ -16,6 +16,7 @@ CHANGELOG
 **⚠️ Notes de version**
 
 * SQL d'update de la BDD...
+* Le fichier ``2.3.2to2.3.3.sql`` ne peut être exécuté qu'après le fichier ``update1.3.2to1.3.3.sql`` du module ``Nomenclature-api-module``, sans quoi les contraintes sur la colonne ``t_datasets.id_nomenclature_jdd_data_type`` ne peuvent pas être respectées
 
 2.3.2 (2020-02-24)
 ------------------
