@@ -248,20 +248,14 @@
                     </p>
                 </div>
 
-                <div class="information">
-                    <p class="info-titre">Mots-clés</p>
-                    <p class="info-contenu">
-                        {% if data.keywords: %}
-                            {% for word in data.keywords -%}
-                                {{ word }} <br>
-                            {%- endfor %}
-                        {% endif %}
-                    </p>
-                </div>
-
-                <div class="information">
-                    <p class="info-titre">Attributs additionnels</p>
-                </div>
+                {% if data.keywords: %}
+                    <div class="information">
+                        <p class="info-titre">Mots-clés</p>
+                        <p class="info-contenu">
+                            {{ data.keywords }}
+                        </p>
+                    </div>
+                {% endif %}
             </div>
         </div>
     {% endif %}
