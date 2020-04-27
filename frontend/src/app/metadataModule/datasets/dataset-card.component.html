@@ -9,7 +9,7 @@
       <button class="btn btn-primary" (click)="getPdf()">Export PDF</button>
     </div>
   </div>
-  
+
   <div *ngIf="dataset.taxa_count" class="row">
     <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 ">
       <div class="card">
@@ -50,6 +50,7 @@
 
           <br/>
 
+<<<<<<< HEAD
           <div class="b">Type de données</div>
           <div class="a"> {{dataset.data_type.label_default}}</div>
 
@@ -57,6 +58,11 @@
           <div class="b"> Objectifs </div>
           <div class="a"> {{dataset.dataset_objectif.label_default}}</div>
           
+=======
+          <div class="b">Type de données : {{dataset.data_type.label_default}} </div>
+          <div class="b"> Objectifs : {{dataset.dataset_objectif.label_default}} </div>
+
+>>>>>>> feature/GINCO2-39
           <br/>
 
           <div class="b">Territoires</div>
@@ -70,8 +76,13 @@
           <div class="a"> Identifiant du cadre d'acquisition : {{dataset.acquisition_framework.unique_acquisition_framework_id }} </div>
 
           <br/>
+<<<<<<< HEAD
           
           <div class="b">Processus de collecte</div>
+=======
+
+          <div class="b">Processus de collecte :</div>
+>>>>>>> feature/GINCO2-39
           <div class="a"> Libellé : {{dataset.collecting_method.label_default}} </div>
           <div class="a"> Description : {{dataset.collecting_method.definition_default}} </div>
           <!--div class="a"> Url : ??? </div-->
@@ -93,13 +104,13 @@
           <div class="a">Validable : {{dataset.validable ? 'Oui' : 'Non'}} </div>
 
           <br/>
-          
+
           <!--div class="a">Origine des données : {{dataset.data_origin.label_default}} </div>
           <div class="a">Statut source : {{dataset.source_status.label_default}} </div>
           <div class="a">Type de ressource : {{dataset.resource_type.label_default}} </div>
 
           <br/-->
-      
+
           <div *ngIf="dataset.modules">
             <div class="b">Module(s) GeoNature associé(s) au jeu de données :</div>
             <div class="a">{{ dataset.modules }}</div>
@@ -121,8 +132,13 @@
         <div class="card-header">
           <h5>Périmètre géographique</h5>
         </div>
-        <div *ngIf="false" class="card-body"> <!-- changer la valeur du ngif quand la carte sera prete -->
-          <div id="world-map" style="height: 250px;"></div>
+        <div *ngIf="this.geojsonData" class="card-body"> <!-- changer la valeur du ngif quand la carte sera prete -->
+          <pnx-map height="40vh" searchBar="false" zoom="5">
+            <pnx-geojson
+              [geojson]="this.geojsonData"
+            >
+            </pnx-geojson>
+          </pnx-map>
         </div>
       </div>
       <div class="card ">

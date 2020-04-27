@@ -326,6 +326,10 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/dataset_details/${id}`);
   }
 
+  getGeojsonData(id) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/geojson_data/${id}`);
+  }
+
   getRepartitionTaxons(id_dataset) {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/repartition_taxons_dataset/${id_dataset}`);
   }
