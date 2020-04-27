@@ -83,7 +83,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit {
           .valueChanges
           .pipe(
             tap(()=>this.occtaxFormOccurrenceService.taxref.next(null)),
-            filter(taxon=>taxon !== null),
+            filter(taxon=>taxon !== null && taxon.cd_nom !== undefined),
             tap(taxon=>this.occtaxFormOccurrenceService.taxref.next(taxon)),
             map(taxon=>{
               let nom_cite = null;
