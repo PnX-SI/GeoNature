@@ -134,7 +134,7 @@
                 </p>
             </div>
 
-            {% if not (data.cor_dataset_actor and data.cor_dataset_actor[3]) : %}
+            {% if not (data.cor_dataset_actor and data.cor_dataset_actor[5]) : %}
                 <div class="information">
                     <p class="info-titre">Contacts</p>
                     <p class="info-contenu">
@@ -142,13 +142,12 @@
                             {% for actor in data.cor_dataset_actor -%}
                                 {% if actor.nomenclature_actor_role: %}
                                     {{ actor.nomenclature_actor_role.mnemonique }} :
-                                    <br>
                                 {% endif %}
                                 {% if actor.role: %}
                                     {{ actor.role.nom_role }} {{ actor.role.prenom_role }}
                                     <br>
                                 {% endif %}
-                                {% if actor.organism: %}
+                                {% if actor.organism and actor.organism.nom_organisme: %}
                                     {{ actor.organism.nom_organisme }}
                                     <br>
                                 {% endif %}
@@ -217,7 +216,7 @@
         <span>{{data.footer['date']}}</span>
     </div>
 
-    {% if data.cor_dataset_actor and data.cor_dataset_actor[3] : %}
+    {% if data.cor_dataset_actor and data.cor_dataset_actor[5] : %}
         <br/>
         <div class="description" style="transform: translateY(40px);">
             <div class="left-block">
@@ -228,13 +227,12 @@
                             {% for actor in data.cor_dataset_actor -%}
                                 {% if actor.nomenclature_actor_role: %}
                                     {{ actor.nomenclature_actor_role.mnemonique }} :
-                                    <br>
                                 {% endif %}
                                 {% if actor.role: %}
                                     {{ actor.role.nom_role }} {{ actor.role.prenom_role }}
                                     <br>
                                 {% endif %}
-                                {% if actor.organism: %}
+                                {% if actor.organism and actor.organism.nom_organisme: %}
                                     {{ actor.organism.nom_organisme }}
                                     <br>
                                 {% endif %}
