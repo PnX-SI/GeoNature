@@ -47,42 +47,28 @@
           <div class="a"> Identifiant SINP du jeu de données : {{dataset.unique_dataset_id}}</div>
           <div class="a"> Libellé court : {{dataset.dataset_shortname}}</div>
           <div class="a"> Description : {{dataset.dataset_desc}}</div>
-
           <br/>
 
-<<<<<<< HEAD
           <div class="b">Type de données</div>
           <div class="a"> {{dataset.data_type.label_default}}</div>
-
           <br/>
+
           <div class="b"> Objectifs </div>
           <div class="a"> {{dataset.dataset_objectif.label_default}}</div>
-          
-=======
-          <div class="b">Type de données : {{dataset.data_type.label_default}} </div>
-          <div class="b"> Objectifs : {{dataset.dataset_objectif.label_default}} </div>
-
->>>>>>> feature/GINCO2-39
           <br/>
 
           <div class="b">Territoires</div>
           <div class="a"> Couverture du territoire terrestre : {{dataset.terrestrial_domain ? "oui" : "non"}} </div>
           <div class="a"> Couverture du territoire marin : {{dataset.marine_domain ? "oui" : "non"}} </div>
-
           <br/>
 
           <div class="b">Cadre de référence</div>
           <div class="a"> Titre du cadre d'acquisition : {{dataset.acquisition_framework.acquisition_framework_name}} </div>
           <div class="a"> Identifiant du cadre d'acquisition : {{dataset.acquisition_framework.unique_acquisition_framework_id }} </div>
-
           <br/>
-<<<<<<< HEAD
-          
-          <div class="b">Processus de collecte</div>
-=======
 
-          <div class="b">Processus de collecte :</div>
->>>>>>> feature/GINCO2-39
+
+          <div class="b">Processus de collecte</div>
           <div class="a"> Libellé : {{dataset.collecting_method.label_default}} </div>
           <div class="a"> Description : {{dataset.collecting_method.definition_default}} </div>
           <!--div class="a"> Url : ??? </div-->
