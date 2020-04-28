@@ -88,15 +88,15 @@
                 <p class="info-titre">Identification</p>
                 <p class="info-contenu">
                     {% if data['unique_acquisition_framework_id']: %}
-                        {{ data['unique_acquisition_framework_id'] }}
+                        Instance SNIP du cadre d'acquisition : {{ data['unique_acquisition_framework_id'] }}
                     {% endif %}
                     <br>
                     {% if data['acquisition_framework_name']: %}
-                        {{ data['acquisition_framework_name'] }}
+                        Libellé du cadre d'acquisition : {{ data['acquisition_framework_name'] }}
                     {% endif %}
                     <br>
                     {% if data['acquisition_framework_desc']: %}
-                        {{ data['acquisition_framework_desc'] }}
+                        Description : {{ data['acquisition_framework_desc'] }}
                     {% endif %}
                 </p>
             </div>
@@ -132,10 +132,10 @@
                     {% if data['id_nomenclature_territorial_level']: %}
                         Etendue territoriale : {{ data['id_nomenclature_territorial_level'] }}
                     {% endif %}
-                    <br>
+                    <!-- <br>
                         Territoires : ??
                     <br>
-                        Précision géographique : ??
+                        Précision géographique : ?? -->
                 </p>
             </div>
 

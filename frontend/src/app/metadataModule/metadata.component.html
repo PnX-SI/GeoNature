@@ -27,7 +27,7 @@
                 <a *ngIf="_cruvedStore.cruved?.METADATA?.cruved.U !== '0'"
                   class="bt-edit"
                   title="Visualiser le cadre d'acquisition"
-                  [routerLink]="['/metadata/af-card', af.id_acquisition_framework]" >
+                  [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]" >
                   <i class="fa fa-info-circle" aria-hidden="true"></i>
                 </a>
                 {{af.id_acquisition_framework}}: {{ af.acquisition_framework_name | uppercase }}

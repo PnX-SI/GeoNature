@@ -121,9 +121,10 @@
           <h5>Périmètre géographique</h5>
         </div>
         <div *ngIf="this.geojsonData" class="card-body"> <!-- changer la valeur du ngif quand la carte sera prete -->
-          <pnx-map height="40vh" searchBar="false" zoom="5">
+          <pnx-map height="40vh" searchBar="false">
             <pnx-geojson
               [geojson]="this.geojsonData"
+              [zoomOnFirstTime]="true"
             >
             </pnx-geojson>
           </pnx-map>
@@ -149,7 +150,7 @@
           <div class="row">
             <div class="col-auto" width="60"><img src="./assets/images/Taxon_icon_vert.svg" width="64"></div>
             <div class="col">
-              <div><a [routerLink]="['/metadata/af-card', dataset.id_acquisition_framework]" style="color:black">
+              <div><a [routerLink]="['/metadata/af_detail', dataset.id_acquisition_framework]" style="color:black">
                 {{dataset.acquisition_framework.acquisition_framework_name}}
               </a></div>
               <div><small>{{dataset.acquisition_framework.unique_acquisition_framework_id}}</small></div>

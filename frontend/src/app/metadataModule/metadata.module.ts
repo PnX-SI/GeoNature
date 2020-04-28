@@ -24,7 +24,7 @@ const routes: Routes = [
   { path: 'afs', component: AfListComponent },
   { path: 'af', component: AfFormComponent },
   { path: 'af/:id', component: AfFormComponent },
-  { path: 'af-card/:id', component: AfCardComponent }
+  { path: 'af_detail/:id', component: AfCardComponent }
 ];
 
 @NgModule({

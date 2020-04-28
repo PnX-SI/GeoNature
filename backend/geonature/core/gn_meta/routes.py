@@ -386,7 +386,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
             error='Le dataset presente des erreurs',
             redirect=current_app.config["URL_APPLICATION"]+'/#/metadata'), 404
 
-    filename = 'cadre_acquisition_id_n_{}.pdf'.format(id_acquisition_framework)
+    filename = '{}_{}_{}.pdf'.format(id_acquisition_framework, acquisition_framework["acquisition_framework_name"][0:31].replace(" ", "_") , dt.datetime.now().strftime("%d%m%Y_%H%M%S"))
 
     pprint.pprint(acquisition_framework)
 
