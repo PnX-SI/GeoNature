@@ -255,7 +255,7 @@ def get_export_pdf_dataset(id_dataset, info_role):
 
     filename = 'jdd_{}_{}_{}.pdf'.format(
         id_dataset,
-        df["dataset_name"].replace(" ", "_"),
+        df["dataset_shortname"].replace(" ", "_"),
         dt.datetime.now().strftime("%d%m%Y_%H%M%S")
     )
 
