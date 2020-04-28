@@ -240,8 +240,6 @@ def get_export_pdf_dataset(id_dataset, info_role):
     if len(df["dataset_desc"]) > 240:
         df["dataset_desc"] = df["dataset_desc"][:240] + '...'
 
-    filename = 'jeu_de_donnees_id_n_{}.pdf'.format(id_dataset)
-
     df['css'] = {
         "logo" : "Logo_SINP.png",
         "bandeau" : "Bandeau_SINP.png",
@@ -254,6 +252,12 @@ def get_export_pdf_dataset(id_dataset, info_role):
         "url" : current_app.config["URL_APPLICATION"]+"/#/metadata/dataset_detail/"+id_dataset,
         "date" : date
     }
+
+    filename = 'jdd_{}_{}_{}.pdf'.format(
+        id_dataset,
+        df["dataset_name"].replace(" ", "_"),
+        dt.datetime.now().strftime("%d%m%Y_%H%M%S")
+    )
 
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf('jeu_de_donnees_template_pdf.html', df, filename)
