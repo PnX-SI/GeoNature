@@ -19,7 +19,8 @@ export class DatasetCardComponent implements OnInit {
   public dataset: any;
   public nbTaxons: number;
   public nbObservations: number;
-  
+  public geojsonData: any = null;
+
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
   // Type de graphe
@@ -68,7 +69,7 @@ export class DatasetCardComponent implements OnInit {
       ]
     }
   }
-  
+
   public spinner = true;
 
   constructor(
@@ -90,6 +91,7 @@ export class DatasetCardComponent implements OnInit {
   getDataset(id) {
     this._dfs.getDatasetDetails(id).subscribe(data => {
       this.dataset = data;
+      this.dataset.modules = this.dataset.modules.map(e => e.module_code).join(", ");
     });
     this._dfs.getRepartitionTaxons(id).subscribe(data => {
       this.pieChartData.length = 0;
@@ -99,15 +101,24 @@ export class DatasetCardComponent implements OnInit {
           this.pieChartLabels.push(row[1]);
         }
         this.chart.chart.update();
-        this.chart.ngOnChanges({});
-        this.spinner = false;
     });
-    
+
+    this._dfs.getGeojsonData(id).subscribe(data => {
+      this.geojsonData = data;
+    });
+
   }
 
   getPdf() {
+
     const url = `${AppConfig.API_ENDPOINT}/meta/dataset/export_pdf/${this.id_dataset}`;
-    window.open(url);
+    const dataUrl = this.chart ? this.chart.ctx.canvas.toDataURL("image/png") : "";
+    this._dfs.uploadCanvas(dataUrl).subscribe(
+      data => {
+        window.open(url);
+      }
+    );
+
   }
-  
+
 }

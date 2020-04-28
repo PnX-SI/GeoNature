@@ -5,6 +5,8 @@ import pprint
 
 from sqlalchemy import or_
 from sqlalchemy.sql import text,exists, select
+from sqlalchemy.sql.functions import func
+
 
 from geonature.utils.env import DB
 from geonature.core.gn_synthese.models import Synthese
@@ -13,6 +15,7 @@ from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.tools import InsufficientRightsError
 
 import datetime as dt
+from binascii import a2b_base64
 
 from geonature.core.gn_meta.models import (
     TDatasets,
@@ -145,8 +148,8 @@ def get_dataset_details_dict(id_dataset):
     for o in organisms:
         dataset["cor_dataset_actor"][i]["organism"] = o
         i = i + 1
-    if dataset["keywords"]:
-        dataset["keywords"] = dataset["keywords"].split(' ')
+    #if dataset["keywords"]:
+    #    dataset["keywords"] = dataset["keywords"].split(', ')
     dataset["data_type"] = data.data_type.as_dict()
     dataset["dataset_objectif"] = data.dataset_objectif.as_dict()
     dataset["collecting_method"] = data.collecting_method.as_dict()
@@ -159,8 +162,9 @@ def get_dataset_details_dict(id_dataset):
     return dataset
 
 @routes.route("/dataset_details/<id_dataset>", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
 @json_resp
-def get_dataset_details(id_dataset):
+def get_dataset_details(info_role, id_dataset):
     """
     Get one dataset with nomenclatures and af
 
@@ -173,7 +177,29 @@ def get_dataset_details(id_dataset):
 
     return get_dataset_details_dict(id_dataset)
 
+@routes.route("/geojson_data/<id_dataset>", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
+@json_resp
+def get_geojson_data(info_role, id_dataset):
+    geojsonData = DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326))).filter(Synthese.id_dataset == id_dataset).first()[0]
+    if geojsonData:
+        return json.loads(geojsonData)
+    return None, 404
 
+
+@routes.route("/upload_canvas", methods=["POST"])
+@json_resp
+def upload_canvas():
+    """Upload the canvas as a temporary image used while generating the pdf file
+    """
+    data = request.data[22:]
+    binary_data = a2b_base64(data)
+
+    fd = open('static/images/taxa.png', 'wb')
+    fd.write(binary_data)
+    fd.close()
+
+    return "OK"
 
 
 @routes.route("/dataset", methods=["POST"])
@@ -253,7 +279,7 @@ def get_export_pdf_dataset(id_dataset, info_role):
     date = dt.datetime.now().strftime("%d/%m/%Y")
 
     df['footer'] = {
-        "url" : current_app.config["URL_APPLICATION"]+"/api/meta/dataset/export_pdf/"+id_dataset,
+        "url" : current_app.config["URL_APPLICATION"]+"/#/metadata/dataset_detail/"+id_dataset,
         "date" : date
     }
 
@@ -412,7 +438,10 @@ def get_acquisition_framework_details(id_acquisition_framework):
                 == id_acquisition_framework).all()
     dataset_ids = [d.id_dataset for d in data]
     acquisition_framework["datasets"] = [d.as_dict(True) for d in data]
-
+    geojsonData = DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326))).filter(Synthese.id_dataset.in_(dataset_ids)).first()[0]
+    if geojsonData:
+        acquisition_framework["geojsonData"] = json.loads(geojsonData)
+    
     nb_data = len(dataset_ids)
     nb_taxons = DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).distinct().count()
     nb_observations = DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).count()

@@ -326,6 +326,10 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/dataset_details/${id}`);
   }
 
+  getGeojsonData(id) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/geojson_data/${id}`);
+  }
+
   getRepartitionTaxons(id_dataset) {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/repartition_taxons_dataset/${id_dataset}`);
   }
@@ -339,6 +343,10 @@ export class DataFormService {
       params = params.append('dataset_ids[]', dataset.id_dataset);
     }
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/taxa_distribution`, { params: {'dataset_ids': dataset_ids} });
+  }
+
+  uploadCanvas(img: any) {
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/meta/upload_canvas`, img);
   }
 
   getModulesList(exclude: Array<string>) {
@@ -410,7 +418,7 @@ export class DataFormService {
     document.body.removeChild(link);
   }
 
-  uploadCanvas(img: any, type: string) {
+  uploadCACanvas(img: any, type: string) {
     return this._http.post<any>(`${AppConfig.API_ENDPOINT}/meta/${type}`, img);
   }
 }

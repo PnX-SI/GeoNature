@@ -28,6 +28,13 @@ a {
     transform: translateY(-50%);
 }
 
+.taxons {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+}
+
 div.header {
     display: block;
 }
@@ -66,7 +73,7 @@ div.titre {
 
 .etiquette {
     width: 175px;
-    height: 110px;
+    height: 75px;
     border: 0.75px solid grey;
     border-radius: 17px;  
 }
@@ -80,6 +87,10 @@ div.titre {
 
 .etiquette-bas {
     text-align: center;
+    margin: 0 6px 0;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 24px;
 }
 
 .logo-etiquette {
@@ -96,13 +107,14 @@ div.titre {
 
 .stat-etiquette {
     font-weight: bold;
-    font-size: 30px;
+    font-size: 20px;
     margin: 0;
 }
 
 .description {
     display: flex;
     margin: 20px 15px 0 15px;
+    vertical-align: middle;
 }
 
 .fiche-descriptive, 
@@ -123,6 +135,7 @@ div.titre {
 
 .right-block {
     width:52%;
+    height:600px;
 }
 
 .zone, .repartition {
