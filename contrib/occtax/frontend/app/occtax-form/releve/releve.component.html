@@ -228,7 +228,7 @@
       class="btn"
       [ngClass]="releveForm.dirty ? 'btn-primary' : 'btn-light'"
       matTooltip="Modifier le relevé"
-      [disabled]="propertiesForm.invalid || occtaxFormReleveService.waiting || ((occtaxFormService.editionMode|async) && propertiesForm.pristine)"
+      [disabled]="releveForm.invalid || occtaxFormReleveService.waiting || ((occtaxFormService.editionMode|async) && releveForm.pristine)"
       (click)="submitReleveForm()">
       Modifier
     </button> 
