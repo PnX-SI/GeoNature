@@ -208,8 +208,7 @@ class Synthese(DB.Model):
     altitude_max = DB.Column(DB.Unicode)
     the_geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
     the_geom_point = DB.Column(Geometry("GEOMETRY", 4326))
-    the_geom_local = DB.Column(
-        Geometry("GEOMETRY", current_app.config["LOCAL_SRID"]))
+    the_geom_local = DB.Column(Geometry("GEOMETRY", current_app.config["LOCAL_SRID"]))
     date_min = DB.Column(DB.DateTime)
     date_max = DB.Column(DB.DateTime)
     validator = DB.Column(DB.Unicode)
@@ -332,6 +331,7 @@ class VSyntheseForWebApp(DB.Model):
     id_nomenclature_blurring = DB.Column(DB.Integer)
     id_nomenclature_source_status = DB.Column(DB.Integer)
     id_nomenclature_valid_status = DB.Column(DB.Integer)
+    reference_biblio = DB.Column(DB.Unicode)
     name_source = DB.Column(DB.Unicode)
     url_source = DB.Column(DB.Unicode)
     st_asgeojson = DB.Column(DB.Unicode)
@@ -434,8 +434,7 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
         secondary=corAreaSynthese,
         primaryjoin=(corAreaSynthese.c.id_synthese == id_synthese),
         secondaryjoin=(corAreaSynthese.c.id_area == LAreas.id_area),
-        foreign_keys=[corAreaSynthese.c.id_synthese,
-                      corAreaSynthese.c.id_area],
+        foreign_keys=[corAreaSynthese.c.id_synthese, corAreaSynthese.c.id_area],
     )
     datasets = DB.relationship(
         "TDatasets",
