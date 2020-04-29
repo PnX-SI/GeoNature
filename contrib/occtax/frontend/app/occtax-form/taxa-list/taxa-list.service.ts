@@ -22,6 +22,7 @@ const NOMENCLATURES = [
 export class OcctaxTaxaListService {
 
   nomenclatures: Array<any> = [];
+  rec_occurrences_in_progress: Array<any> = [];
 
   constructor(
     private dataFormS: DataFormService
@@ -53,5 +54,31 @@ export class OcctaxTaxaListService {
   getCdNomenclatureByID(ID: number) {
     return this.nomenclatures[ID] ? this.nomenclatures[ID]['cd_nomenclature'] : null;
   }
-  
+
+  addOccurrenceInProgress(temp_id, occurrence) {
+    let data = {
+      id: temp_id, 
+      data: occurrence,
+      state: "in_progress"
+    }
+    this.rec_occurrences_in_progress.push(data)
+  }
+
+  removeOccurrenceInProgress(temp_id) {
+    for (let i=0; i<this.rec_occurrences_in_progress.length; i++) {
+      if ( this.rec_occurrences_in_progress[i].id === temp_id) {
+        this.rec_occurrences_in_progress.splice(i, 1);
+        break;
+      }
+    }
+  }
+
+  errorOccurrenceInProgress(temp_id) {
+    for (let i=0; i<this.rec_occurrences_in_progress.length; i++) {
+      if ( this.rec_occurrences_in_progress[i].id === temp_id) {
+        this.rec_occurrences_in_progress[i].state = 'error';
+        break;
+      }
+    }
+  }  
 }

@@ -71,15 +71,24 @@ export class OcctaxFormTaxaListComponent implements OnInit {
     });
   }
 
+  /**
+  *  Test si un taxon déjà enregistré est actuellement dans le formulaire => modif en cours et suppression de la liste des taxons enregistrés
+  **/
   get occIDInEdit() {
     let occurrence = this.occtaxFormOccurrenceService.occurrence.getValue();
     return occurrence ? occurrence.id_occurrence_occtax : null;
   }
 
+  /**
+  *  Supprime les balises HTML d'un string
+  **/
   removeHtml(str: string): string  {
     return str.replace(/<[^>]*>/g, '')
   }
 
+  /**
+  *  Return un titre formaté sans balise HTML
+  **/
   taxonTitle(occurrence) {
     if (occurrence.taxref) {
       occurrence.taxref.nom_complet
@@ -88,5 +97,17 @@ export class OcctaxFormTaxaListComponent implements OnInit {
               occurrence.taxref.nom_complet;
     }
     return this.removeHtml(occurrence.nom_cite);
+  }
+
+  /**
+  *  Permet de replacer un taxon ayant subit une erreur dans le formulaire pour modif et réenregistrement
+  **/
+  inProgressErrorToForm(occ_in_progress){
+    if (occ_in_progress.state !== 'error') {
+      return;
+    }
+
+    this.editOccurrence(occ_in_progress.data);
+    this.occtaxTaxaListService.removeOccurrenceInProgress(occ_in_progress.id);
   }
 }

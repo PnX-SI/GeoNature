@@ -1,14 +1,15 @@
 import { Injectable } from "@angular/core";
 import { FormBuilder, FormGroup, Validators, FormArray, ValidatorFn, ValidationErrors, AbstractControl
  } from "@angular/forms";
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map, filter, switchMap, tap, pairwise } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, combineLatest  } from 'rxjs';
+import { map, filter, switchMap, tap, pairwise, retry } from 'rxjs/operators';
 import { CommonService } from "@geonature_common/service/common.service";
 import { OcctaxFormService } from '../occtax-form.service';
 import { OcctaxFormCountingService } from '../counting/counting.service';
 import { FormService } from "@geonature_common/form/form.service";
 import { OcctaxDataService } from '../../services/occtax-data.service';
 import { OcctaxFormParamService } from '../form-param/form-param.service';
+import { OcctaxTaxaListService } from '../taxa-list/taxa-list.service';
 
 @Injectable()
 export class OcctaxFormOccurrenceService {
@@ -27,7 +28,8 @@ export class OcctaxFormOccurrenceService {
     private occtaxFormService: OcctaxFormService,
     private occtaxFormCountingService: OcctaxFormCountingService,
     private occtaxDataService: OcctaxDataService,
-    private occtaxParamS: OcctaxFormParamService
+    private occtaxParamS: OcctaxFormParamService,
+    private occtaxTaxaListService: OcctaxTaxaListService
   ) {
     this.initForm();
     this.setObservables();
@@ -178,49 +180,75 @@ export class OcctaxFormOccurrenceService {
 
   submitOccurrence() {
     let id_releve = this.occtaxFormService.id_releve_occtax.getValue();
-    this.saveWaiting = true;
+    let TEMP_ID_OCCURRENCE = this.uuidv4();
+    let occurrence = this.form.value;
+    this.occtaxTaxaListService.addOccurrenceInProgress(TEMP_ID_OCCURRENCE, occurrence);
+    this.reset();
+
     if (this.occurrence.getValue()) {
       //update
       this.occtaxDataService
-                .updateOccurrence((this.occurrence.getValue()).id_occurrence_occtax, this.form.value)
-                .pipe(
-                  tap(()=>this.saveWaiting = false)
-                )
-                .subscribe(occurrence=>{
-                  this.commonService.translateToaster(
-                    "info",
-                    "Taxon.UpdateDone"
-                  );
-                 this.occtaxFormService.replaceOccurrenceData(occurrence);
-                 this.reset();
-                });
+          .updateOccurrence((this.occurrence.getValue()).id_occurrence_occtax, occurrence)
+          .pipe(retry(3))
+          .subscribe(
+            occurrence=>{
+              this.occtaxTaxaListService.removeOccurrenceInProgress(TEMP_ID_OCCURRENCE);
+              this.commonService.translateToaster(
+                "info",
+                "Taxon.UpdateDone"
+              );
+              this.occtaxFormService.replaceOccurrenceData(occurrence);
+            },
+            error => {
+              this.commonService.translateToaster(
+                "error",
+                "ErrorMessage"
+              );
+              this.occtaxTaxaListService.errorOccurrenceInProgress(TEMP_ID_OCCURRENCE)
+            }
+          );
     } else {
       //create
       this.occtaxDataService
-                .createOccurrence(id_releve, this.form.value)
-                .pipe(
-                  tap(()=>this.saveWaiting = false)
-                )
-                .subscribe(occurrence=>{
-                  this.commonService.translateToaster(
-                    "info",
-                    "Taxon.CreateDone"
-                  );
-                  this.occtaxFormService.addOccurrenceData(occurrence);
-                  this.reset();
-                });
+          .createOccurrence(id_releve, occurrence)
+          .pipe(retry(3))
+          .subscribe(
+            occurrence=>{
+              this.occtaxTaxaListService.removeOccurrenceInProgress(TEMP_ID_OCCURRENCE);
+              this.commonService.translateToaster(
+                "info",
+                "Taxon.CreateDone"
+              );
+              this.occtaxFormService.addOccurrenceData(occurrence);
+            },
+            error => {
+              this.commonService.translateToaster(
+                "error",
+                "ErrorMessage"
+              );
+              this.occtaxTaxaListService.errorOccurrenceInProgress(TEMP_ID_OCCURRENCE)
+            }
+          );
     }
   }
 
   deleteOccurrence(occurrence) {
     this.occtaxDataService.deleteOccurrence(occurrence.id_occurrence_occtax)
-              .subscribe((confirm:boolean)=>{
-                this.occtaxFormService.removeOccurrenceData(occurrence.id_occurrence_occtax);
-                this.commonService.translateToaster(
-                  "info",
-                  "Taxon.DeleteDone"
-                );
-              });
+              .subscribe(
+                (confirm:boolean)=>{
+                  this.occtaxFormService.removeOccurrenceData(occurrence.id_occurrence_occtax);
+                  this.commonService.translateToaster(
+                    "info",
+                    "Taxon.DeleteDone"
+                  );
+                },
+                error => {
+                  this.commonService.translateToaster(
+                    "error",
+                    "ErrorMessage"
+                  );
+                }
+              );
   }
 
   reset() {
@@ -233,6 +261,14 @@ export class OcctaxFormOccurrenceService {
       formArray.removeAt(0)
     }
   }
+
+  private uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+
 }
 
 

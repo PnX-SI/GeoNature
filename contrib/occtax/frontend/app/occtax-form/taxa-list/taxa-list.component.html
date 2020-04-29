@@ -1,4 +1,29 @@
-<ng-container *ngIf="occurrences.length; else zeroOccurrenceBlk">
+<ng-container *ngIf="occurrences.length || occtaxTaxaListService.rec_occurrences_in_progress.length; else zeroOccurrenceBlk">
+
+  <ng-container *ngFor="let occ_in_progress of occtaxTaxaListService.rec_occurrences_in_progress">
+    <div 
+      class="in-progress-panel"
+      [ngClass]="occ_in_progress.state"
+      [matTooltip]="occ_in_progress.state == 'in_progress' ? 'Enregistrement en cours': 'Une erreur est survenue lors de l\'enregistrement'"
+      matTooltipPosition="left"
+      (click)="inProgressErrorToForm(occ_in_progress)">
+      
+      <mat-spinner 
+        *ngIf="occ_in_progress.state == 'in_progress'"
+        diameter="20"
+        strokeWidth="2">
+      </mat-spinner>
+      <mat-icon *ngIf="occ_in_progress.state == 'error'">warning</mat-icon>
+      <span [innerHTML]="taxonTitle(occ_in_progress.data)"></span>
+      <div 
+        *ngIf="occ_in_progress.state == 'error'"
+        style="font-size: 12px;">
+        Erreur : cliquez pour reprendre ce taxon
+      </div>
+    </div>  
+  </ng-container>
+
+
   <div
     *ngFor="let occurrence of occurrences"
     displayMouseOver 
