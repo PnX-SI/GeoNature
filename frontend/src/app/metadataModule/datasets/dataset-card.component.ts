@@ -92,12 +92,12 @@ export class DatasetCardComponent implements OnInit {
       this.dataset = data;
       this.dataset.modules = this.dataset.modules.map(e => e.module_code).join(", ");
     });
-    this._dfs.getRepartitionTaxons(id).subscribe(data => {
+    this._dfs.getTaxaDistribution(id).subscribe(data => {
       this.pieChartData.length = 0;
       this.pieChartLabels.length = 0;
         for(let row of data) {
-          this.pieChartData.push(row[0]);
-          this.pieChartLabels.push(row[1]);
+          this.pieChartData.push(row["count"]);
+          this.pieChartLabels.push(row["regne"]);
         }
         this.chart.chart.update();
         this.chart.ngOnChanges({});

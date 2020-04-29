@@ -318,8 +318,8 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/dataset_details/${id}`);
   }
 
-  getRepartitionTaxons(id_dataset) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/repartition_taxons_dataset/${id_dataset}`);
+  getTaxaDistribution(id_dataset) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/dataset_taxa_distribution/${id_dataset}`);
   }
 
   getModulesList(exclude: Array<string>) {
