@@ -796,20 +796,43 @@ def get_color_taxon():
         q = q.filter(VColorAreaTaxon.cd_nom.in_(tuple(cd_noms)))
     return [d.as_dict() for d in q.all()]
 
-@routes.route("/count_taxon_by_dataset/<int:id_dataset>", methods=["GET"])
+
+@routes.route("/taxa_count", methods=["GET"])
 @json_resp
-def get_count_taxon(id_dataset):
-    """Get taxons found in a given dataset
-    """
-    return DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset == id_dataset).distinct().count()
+def get_taxa_count():
+    
+    params = request.args
+    
+    query = DB.session.query(
+        func.count(distinct(Synthese.cd_nom))
+    ).select_from(
+        Synthese
+    )
+    
+    if 'id_dataset' in params:
+        query = query.filter(Synthese.id_dataset == params['id_dataset'])
+
+    return query.one()
 
 
-@routes.route("/count_observation_by_dataset/<int:id_dataset>", methods=["GET"])
+@routes.route("/observation_count", methods=["GET"])
 @json_resp
-def get_count_observation(id_dataset):
+def get_observation_count():
     """Get observations found in a given dataset
     """
-    return DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset == id_dataset).count()
+    
+    params = request.args
+    
+    query = DB.session.query(
+        func.count(Synthese.cd_nom)
+    ).select_from(
+        Synthese
+    )
+    
+    if 'id_dataset' in params:
+        query = query.filter(Synthese.id_dataset == params['id_dataset'])
+
+    return query.one()
 
 
 @routes.route("/dataset_taxa_distribution/<int:id_dataset>", methods=["GET"])
