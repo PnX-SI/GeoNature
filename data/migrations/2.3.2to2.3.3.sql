@@ -155,6 +155,7 @@ SELECT  s.id_synthese,
     ) v ON true
   WHERE d.validable = true;
 
+<<<<<<< HEAD
 DROP view gn_synthese.v_synthese_for_web_app;
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
  SELECT s.id_synthese,
@@ -221,3 +222,13 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
      JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
      JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source;
+=======
+
+-- Ajout du type de jeu de donnees
+
+ALTER TABLE gn_meta.t_datasets add column
+id_nomenclature_jdd_data_type integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value('JDD_DATA_TYPE');
+
+ALTER TABLE only gn_meta.t_datasets add CONSTRAINT
+fk_t_datasets_jdd_data_type FOREIGN KEY (id_nomenclature_jdd_data_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+>>>>>>> a34f01d2318ea2b9fd372f8baf106a41991b1f3c
