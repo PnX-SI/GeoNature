@@ -55,7 +55,7 @@ class TMediaRepository():
             self.data['isFile'] = True
             self.media_data['media_path'] = self.upload_file()
             self.media_data['media_url'] = None
-        elif self.data['media_path'] != '':
+        elif self.data.get('media_path') != '':
             self.data['isFile'] = True
             self.media_data['media_url'] = None
         else:
