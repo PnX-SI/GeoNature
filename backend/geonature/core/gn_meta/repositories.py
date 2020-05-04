@@ -15,7 +15,9 @@ from geonature.core.gn_meta.models import (
     CorDatasetActor,
     TAcquisitionFramework,
     CorAcquisitionFrameworkActor,
+    TDatasetDetails,
 )
+from geonature.core.gn_synthese.models import Synthese
 
 log = logging.getLogger()
 
@@ -31,8 +33,7 @@ def get_datasets_cruved(info_role, params=dict()):
 
     # filters with cruved
     if info_role.value_filter == "2":
-        q = q.join(CorDatasetActor, CorDatasetActor.id_dataset ==
-                   TDatasets.id_dataset)
+        q = q.join(CorDatasetActor, CorDatasetActor.id_dataset == TDatasets.id_dataset)
         # if organism is None => do not filter on id_organism even if level = 2
         if info_role.id_organisme is None:
             q = q.filter(CorDatasetActor.id_role == info_role.id_role)
@@ -56,8 +57,7 @@ def get_datasets_cruved(info_role, params=dict()):
         if type(request.args["id_acquisition_framework"]) is list:
             q = q.filter(
                 TDatasets.id_acquisition_framework.in_(
-                    [int(id_af)
-                     for id_af in params["id_acquisition_framework"]]
+                    [int(id_af) for id_af in params["id_acquisition_framework"]]
                 )
             )
         else:
@@ -86,6 +86,28 @@ def get_datasets_cruved(info_role, params=dict()):
     return [d.as_dict(True) for d in data]
 
 
+def get_dataset_details_dict(id_dataset):
+    """
+    Return a dataset from TDatasetDetails model (with all relationships)
+    return also the number of taxon and observation of the dataset
+    Use for get_one datasert
+    """
+    data = DB.session.query(TDatasetDetails).get(id_dataset)
+    dataset = data.as_dict(True)
+    dataset["taxa_count"] = (
+        DB.session.query(Synthese.cd_nom)
+        .filter(Synthese.id_dataset == id_dataset)
+        .distinct()
+        .count()
+    )
+    dataset["observation_count"] = (
+        DB.session.query(Synthese.cd_nom)
+        .filter(Synthese.id_dataset == id_dataset)
+        .count()
+    )
+    return dataset
+
+
 def get_af_cruved(info_role, params={}):
     """
         Return the datasets filtered with cruved
@@ -105,8 +127,7 @@ def get_af_cruved(info_role, params={}):
         )
         # if organism is None => do not filter on id_organism even if level = 2
         if info_role.id_organisme is None:
-            q = q.filter(CorAcquisitionFrameworkActor.id_role ==
-                         info_role.id_role)
+            q = q.filter(CorAcquisitionFrameworkActor.id_role == info_role.id_role)
         else:
             q = q.filter(
                 or_(

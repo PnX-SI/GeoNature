@@ -812,7 +812,13 @@ def get_color_taxon():
 @routes.route("/taxa_count", methods=["GET"])
 @json_resp
 def get_taxa_count():
-    
+    """
+    Get taxa count in synthese filtering with generic parameters
+
+    :query int id_dataset: filter by id_dataset
+
+    :returns int: the number of taxa found
+    """
     params = request.args
     
     query = DB.session.query(
@@ -823,7 +829,7 @@ def get_taxa_count():
     
     if 'id_dataset' in params:
         query = query.filter(Synthese.id_dataset == params['id_dataset'])
-
+    print(query.one())
     return query.one()
 
 
@@ -832,7 +838,6 @@ def get_taxa_count():
 def get_observation_count():
     """Get observations found in a given dataset
     """
-    
     params = request.args
     
     query = DB.session.query(
