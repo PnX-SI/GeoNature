@@ -215,7 +215,7 @@ def post_dataset(info_role):
     return dataset.as_dict(True)
 
 @routes.route("/dataset/export_pdf/<id_dataset>", methods=["GET"])
-@permissions.check_cruved_scope("C", True, module_code="METADATA")
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
 def get_export_pdf_dataset(id_dataset, info_role):
     """
     Get a PDF export of one dataset
@@ -231,6 +231,24 @@ def get_export_pdf_dataset(id_dataset, info_role):
         )
 
     df = get_dataset_details_dict(id_dataset)
+
+    if info_role.value_filter != '3':
+        try:
+            if info_role.value_filter == '1':
+                actors = [cor["id_role"] for cor in df["cor_dataset_actor"]]
+                assert info_role.id_role in actors
+            elif info_role.value_filter == '2':
+                actors = [cor["id_role"] for cor in df["cor_dataset_actor"]]
+                organisms = [cor["id_organism"] for cor in df["cor_dataset_actor"]]
+                assert info_role.id_role in actors or info_role.id_organisme in organisms
+        except AssertionError:
+            raise InsufficientRightsError(
+                ('User "{}" cannot read this current dataset').format(
+                    info_role.id_role
+                ),
+                403,
+            )
+
     if not df:
         return render_template(
             'error.html',
