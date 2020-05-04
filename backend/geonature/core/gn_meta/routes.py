@@ -22,6 +22,7 @@ from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_meta.repositories import get_datasets_cruved, get_af_cruved
 from utils_flask_sqla.response import json_resp
 from geonature.core.gn_permissions import decorators as permissions
+from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from geonature.core.gn_meta import mtd_utils
 from geonature.utils.errors import GeonatureApiError
 
@@ -71,6 +72,55 @@ def get_datasets(info_role):
     params = request.args.to_dict()
     datasets = get_datasets_cruved(info_role, params)
     datasets_resp = {"data": datasets}
+    if with_mtd_error:
+        datasets_resp["with_mtd_errors"] = True
+    if not datasets:
+        return datasets_resp, 404
+    return datasets_resp
+
+
+@routes.route("/datasets_metadata", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
+@json_resp
+def get_datasets_metadata(info_role):
+    """
+    Get datasets list with metadata module CRUVED
+    Use in maplist
+    Add the CRUVED permission for each row
+    
+    .. :quickref: Metadata;
+
+    :param info_role: add with kwargs
+    :type info_role: TRole
+    :returns:  `dict{'data':list<TDatasets>, 'with_erros': <boolean>}`
+    """
+    with_mtd_error = False
+    if current_app.config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
+        # synchronise the CA and JDD from the MTD WS
+        try:
+            mtd_utils.post_jdd_from_user(
+                id_user=info_role.id_role, id_organism=info_role.id_organisme
+            )
+        except Exception as e:
+            gunicorn_error_logger.info(e)
+            log.error(e)
+            with_mtd_error = True
+    params = request.args.to_dict()
+    datasets = get_datasets_cruved(info_role, params, as_model=True)
+
+    id_dataset_user = TDatasets.get_user_datasets(info_role, only_user=True)
+    id_dataset_organisms = TDatasets.get_user_datasets(info_role, only_user=False)
+    user_cruved = cruved_scope_for_user_in_module(
+        id_role=info_role.id_role, module_code="METADATA",
+    )[0]
+    datasets_dict = []
+    for d in datasets:
+        dataset_dict = d.as_dict(True)
+        dataset_dict["cruved"] = d.get_object_cruved(
+            user_cruved, d.id_dataset, id_dataset_user, id_dataset_organisms,
+        )
+        datasets_dict.append(dataset_dict)
+    datasets_resp = {"data": datasets_dict}
     if with_mtd_error:
         datasets_resp["with_mtd_errors"] = True
     if not datasets:
@@ -159,6 +209,38 @@ def get_acquisition_frameworks(info_role):
     """
     params = request.args
     return get_af_cruved(info_role, params)
+
+
+@routes.route("/acquisition_frameworks_metadata", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
+@json_resp
+def get_acquisition_frameworks_metadata(info_role):
+    """
+    Get all AF with cruved filter
+    Use for metadata module. 
+    Add the cruved permission for each row
+
+    .. :quickref: Metadata;
+
+    """
+    params = request.args
+    afs = get_af_cruved(info_role, params, as_model=True)
+    id_afs_user = TAcquisitionFramework.get_user_af(info_role, only_user=True)
+    id_afs_org = TAcquisitionFramework.get_user_af(info_role, only_user=False)
+    user_cruved = cruved_scope_for_user_in_module(
+        id_role=info_role.id_role, module_code="METADATA",
+    )[0]
+    afs_dict = []
+    for af in afs:
+        af_dict = af.as_dict()
+        af_dict["cruved"] = af.get_object_cruved(
+            user_cruved=user_cruved,
+            id_object=af.id_acquisition_framework,
+            ids_object_user=id_afs_user,
+            ids_object_organism=id_afs_org,
+        )
+        afs_dict.append(af_dict)
+    return afs_dict
 
 
 @routes.route("/acquisition_framework/<id_acquisition_framework>", methods=["GET"])

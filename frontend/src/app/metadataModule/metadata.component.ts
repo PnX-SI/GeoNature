@@ -46,7 +46,7 @@ export class MetadataComponent implements OnInit {
   activePage: number = 0;
   pageSizeOptions: Array<number> = [10, 25, 50, 100];
 
-  constructor(public _cruvedStore: CruvedStoreService, private _dfs: DataFormService) {}
+  constructor(public _cruvedStore: CruvedStoreService, private _dfs: DataFormService) { }
 
   ngOnInit() {
     this.getAcquisitionFrameworks();
@@ -54,7 +54,7 @@ export class MetadataComponent implements OnInit {
 
   //recuperation cadres d'acquisition
   getAcquisitionFrameworks() {
-    this._dfs.getAcquisitionFrameworks().subscribe(data => {
+    this._dfs.getAcquisitionFrameworksMetadata().subscribe(data => {
       this.acquisitionFrameworks = data;
       this.tempAF = this.acquisitionFrameworks;
       this.getDatasets();
@@ -63,9 +63,11 @@ export class MetadataComponent implements OnInit {
 
   //recuperation des jeux de données
   getDatasets() {
-    this._dfs.getDatasets().subscribe(results => {
+    this._dfs.getDatasetListMetadata().subscribe(results => {
       //attribut les jdds au ca respectif
       for (var i = 0; i < results['data'].length; i++) {
+        console.log(results['data'][i])
+        console.log(this.findAcquisitionFrameworkById(results['data'][i].id_acquisition_framework))
         let af = this.findAcquisitionFrameworkById(results['data'][i].id_acquisition_framework);
         if (!('datasets' in af)) {
           af['datasets'] = new Array();
@@ -83,6 +85,9 @@ export class MetadataComponent implements OnInit {
    *	Retourne le cadre d'acquisition à partir de son ID
    **/
   private findAcquisitionFrameworkById(id: number) {
+    console.log('LAAAA')
+    console.log(this.acquisitionFrameworks);
+
     return this.acquisitionFrameworks.find(af => af.id_acquisition_framework == id);
   }
 
