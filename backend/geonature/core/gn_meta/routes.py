@@ -79,20 +79,22 @@ def get_datasets(info_role):
     return datasets_resp
 
 
-@routes.route("/datasets_metadata", methods=["GET"])
+@routes.route("/af_datasets_metadata", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="METADATA")
 @json_resp
-def get_datasets_metadata(info_role):
+def get_af_and_ds_metadata(info_role):
     """
-    Get datasets list with metadata module CRUVED
+    Get all AF with their datasets 
+    The Cruved in only apply on dataset in order to see all the AF
+    where the user have rights with its dataset
     Use in maplist
-    Add the CRUVED permission for each row
+    Add the CRUVED permission for each row (Dataset and AD)
     
     .. :quickref: Metadata;
 
     :param info_role: add with kwargs
     :type info_role: TRole
-    :returns:  `dict{'data':list<TDatasets>, 'with_erros': <boolean>}`
+    :returns:  `dict{'data':list<AF with Datasets>, 'with_erros': <boolean>}`
     """
     with_mtd_error = False
     if current_app.config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
@@ -107,25 +109,59 @@ def get_datasets_metadata(info_role):
             with_mtd_error = True
     params = request.args.to_dict()
     datasets = get_datasets_cruved(info_role, params, as_model=True)
-
-    id_dataset_user = TDatasets.get_user_datasets(info_role, only_user=True)
-    id_dataset_organisms = TDatasets.get_user_datasets(info_role, only_user=False)
+    ids_dataset_user = TDatasets.get_user_datasets(info_role, only_user=True)
+    ids_dataset_organisms = TDatasets.get_user_datasets(info_role, only_user=False)
+    ids_afs_user = TAcquisitionFramework.get_user_af(info_role, only_user=True)
+    ids_afs_org = TAcquisitionFramework.get_user_af(info_role, only_user=False)
     user_cruved = cruved_scope_for_user_in_module(
         id_role=info_role.id_role, module_code="METADATA",
     )[0]
-    datasets_dict = []
-    for d in datasets:
-        dataset_dict = d.as_dict(True)
-        dataset_dict["cruved"] = d.get_object_cruved(
-            user_cruved, d.id_dataset, id_dataset_user, id_dataset_organisms,
+
+    # get all af from the JDD filtered with cruved
+    afs = (
+        DB.session.query(TAcquisitionFramework)
+        .filter(
+            TAcquisitionFramework.id_acquisition_framework.in_(
+                [d.id_acquisition_framework for d in datasets]
+            )
         )
-        datasets_dict.append(dataset_dict)
-    datasets_resp = {"data": datasets_dict}
+        .all()
+    )
+
+    afs_dict = []
+    # get cruved for each AF and prepare dataset
+    for af in afs:
+        af_dict = af.as_dict()
+        af_dict["cruved"] = af.get_object_cruved(
+            user_cruved, af.id_acquisition_framework, ids_afs_user, ids_afs_org,
+        )
+        af_dict["datasets"] = []
+        afs_dict.append(af_dict)
+
+    # get cruved for each ds and push them in the af
+    for d in datasets:
+        dataset_dict = d.as_dict()
+        dataset_dict["cruved"] = d.get_object_cruved(
+            user_cruved, d.id_dataset, ids_dataset_user, ids_dataset_organisms,
+        )
+        af_of_dataset = get_af_from_id(d.id_acquisition_framework, afs_dict)
+        af_of_dataset["datasets"].append(dataset_dict)
+
+    afs_resp = {"data": afs_dict}
     if with_mtd_error:
-        datasets_resp["with_mtd_errors"] = True
+        afs_resp["with_mtd_errors"] = True
     if not datasets:
-        return datasets_resp, 404
-    return datasets_resp
+        return afs_resp, 404
+    return afs_resp
+
+
+def get_af_from_id(id_af, af_list):
+    found_af = None
+    for af in af_list:
+        if af["id_acquisition_framework"] == id_af:
+            found_af = af
+            break
+    return found_af
 
 
 @routes.route("/dataset/<id_dataset>", methods=["GET"])

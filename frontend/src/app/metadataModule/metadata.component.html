@@ -17,12 +17,12 @@
           <mat-expansion-panel *ngIf="isDisplayed(idx)" [expanded]="expandAccordions">
             <mat-expansion-panel-header>
               <mat-panel-title>
-                <a *ngIf="_cruvedStore.cruved?.METADATA?.cruved.U !== '0'"
-                  class="bt-edit" 
+                <button [disabled]="af.cruved.U == false"
+                  class="bt-edit btn-ghost btn-no-padding" 
                   title="Editer le cadre d'acquisition"
                   [routerLink]="['/metadata/af', af.id_acquisition_framework]" >
                   <i class="fa fa-pencil-square" aria-hidden="true"></i>
-                </a>
+              </button>
                 {{af.id_acquisition_framework}}: {{ af.acquisition_framework_name | uppercase }}
               </mat-panel-title>
               <mat-panel-description *ngIf="af.acquisition_framework_name != af.acquisition_framework_desc">
@@ -32,8 +32,8 @@
             <table class="table">
               <thead class="bold">
                 <tr>
-                    <td>#</td>
-                    <td>
+                    <td style="width:1%">#</td>
+                    <td style="width:1%">
                       Id
                     </td>
                     <td>Nom du JDD</td>
@@ -42,13 +42,13 @@
               <tbody>
                 <tr *ngFor="let ds of af.datasetsTemp; let last = last">
                     <td> 
-                      <a *ngIf="_cruvedStore.cruved?.METADATA?.cruved.U !== '0'"
-                      class="bt-edit" 
+                      <button 
+                      class="bt-edit btn-ghost btn-no-padding" 
                       title="Editer le jeu de données"
                       [routerLink]="['/metadata/dataset', ds.id_dataset]" >
                       ↳
                       <i class="fa fa-pencil-square" aria-hidden="true"></i>
-                      </a> 
+                    </button> 
                     </td>
                     <td> {{ds.id_dataset}}</td>
                     <td> {{ ds.dataset_name }} </td>

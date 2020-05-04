@@ -103,8 +103,8 @@ export class DataFormService {
   /**
    * Get dataset list for metadata modules
    */
-  getDatasetListMetadata() {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/datasets_metadata`, {
+  getAfAndDatasetListMetadata() {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/af_datasets_metadata`, {
     });
   }
 

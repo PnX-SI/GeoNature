@@ -49,46 +49,20 @@ export class MetadataComponent implements OnInit {
   constructor(public _cruvedStore: CruvedStoreService, private _dfs: DataFormService) { }
 
   ngOnInit() {
-    this.getAcquisitionFrameworks();
+    this.getAcquisitionFrameworksAndDatasets();
   }
 
   //recuperation cadres d'acquisition
-  getAcquisitionFrameworks() {
-    this._dfs.getAcquisitionFrameworksMetadata().subscribe(data => {
-      this.acquisitionFrameworks = data;
+  getAcquisitionFrameworksAndDatasets() {
+    this._dfs.getAfAndDatasetListMetadata().subscribe(data => {
+      this.acquisitionFrameworks = data.data;
       this.tempAF = this.acquisitionFrameworks;
-      this.getDatasets();
+      //this.getDatasets();
+      this.acquisitionFrameworks.forEach(af => {
+        af['datasetsTemp'] = af['datasets'];
+      })
+
     });
-  }
-
-  //recuperation des jeux de données
-  getDatasets() {
-    this._dfs.getDatasetListMetadata().subscribe(results => {
-      //attribut les jdds au ca respectif
-      for (var i = 0; i < results['data'].length; i++) {
-        console.log(results['data'][i])
-        console.log(this.findAcquisitionFrameworkById(results['data'][i].id_acquisition_framework))
-        let af = this.findAcquisitionFrameworkById(results['data'][i].id_acquisition_framework);
-        if (!('datasets' in af)) {
-          af['datasets'] = new Array();
-          af['datasetsTemp'] = new Array();
-        }
-        af['datasets'].push(results['data'][i]);
-        af['datasetsTemp'].push(results['data'][i]);
-      }
-      // cache our list
-      this.datasets = results['data'];
-    });
-  }
-
-  /**
-   *	Retourne le cadre d'acquisition à partir de son ID
-   **/
-  private findAcquisitionFrameworkById(id: number) {
-    console.log('LAAAA')
-    console.log(this.acquisitionFrameworks);
-
-    return this.acquisitionFrameworks.find(af => af.id_acquisition_framework == id);
   }
 
   /**
