@@ -74,10 +74,10 @@ install_module_occhab=true
 # Est ce que le schéma utilisateurs doit être installé ? (mettre à 'non' que si vos avez un schéma utilisateur dans une autre BDD  et que vous avez déjàmis en place un mecanisme de foreign data wrapper)
 install_usershub_schema=true
 # Définir dans quelle version de UsersHub (release, branche ou tag) prendre le code SQL permettant la création du schéma utilisateurs de la base de données de GeoNature
-usershub_release=2.1.0
+usershub_release=2.1.1
 
 # Définir dans quelle version de TaxHub (release, branche ou tag) prendre le code SQL permettant la création du schéma taxonomie de la base de données de GeoNature
-taxhub_release=1.6.3
+taxhub_release=1.6.5
 
 # Définir dans quelle version de Habref-api-module (release, branche ou tag) prendre le code SQL permettant la création du schéma ref_habitats de la base de données de GeoNature
 habref_api_release=0.1.2
@@ -105,3 +105,4 @@ venv_dir=venv
 gun_num_workers=4
 gun_host=0.0.0.0
 gun_port=8000
+gun_timeout=30

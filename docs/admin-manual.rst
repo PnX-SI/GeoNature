@@ -7,12 +7,12 @@ Architecture
 GeoNature possède une architecture modulaire et s'appuie sur plusieurs "services" indépendants pour fonctionner :
 
 - UsersHub et son sous-module d'authentification Flask (https://github.com/PnX-SI/UsersHub-authentification-module) sont utilisés pour gérer le schéma de BDD ``ref_users`` (actuellement nommé ``utilisateurs``) et l'authentification. UsersHub permet une gestion centralisée de ses utilisateurs (listes, organismes, droits), utilisable par les différentes applications de son système d'information.
-- TaxHub (https://github.com/PnX-SI/TaxHub) est utilisé pour la gestion du schéma de BDD ``ref_taxonomy`` (actuellement nommé ``taxonomie``). L'API de TaxHub est utilisée pour récupérer des informations sur les espèces et la taxonomie en générale.
+- TaxHub (https://github.com/PnX-SI/TaxHub) est utilisé pour la gestion du schéma de BDD ``ref_taxonomy`` (actuellement nommé ``taxonomie``). L'API de TaxHub est utilisée pour récupérer des informations sur les espèces et la taxonomie en général.
 - Un sous-module Flask (https://github.com/PnX-SI/Nomenclature-api-module/) a été créé pour une gestion centralisée des nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module/), il pilote le schéma ``ref_nomenclature``.
 - ``ref_geo`` est le schéma de base de données qui gère le référentiel géographique. Il est utilisé pour gérer les zonages, les communes, le calcul automatique d'altitude et les intersections spatiales.
 
 GeoNature a également une séparation claire entre le backend (API: intéraction avec la base de données) et le frontend (interface utilisateur). Le backend peut être considéré comme un "service" dont se sert le frontend pour récupérer ou poster des données. 
-NB: Le backend en le frontend se lancent séparement dans GeoNature.
+NB: Le backend et le frontend se lancent séparement dans GeoNature.
 
 .. image :: http://geonature.fr/docs/img/admin-manual/design-geonature.png
 
@@ -57,9 +57,9 @@ Les relations complexes entre les schémas ont été grisées pour faciliter la 
 Gestion des droits
 """"""""""""""""""
 
-L'accès des utilisateurs à l'application GeoNature est gérée de manière centralisée dans UsersHub. 
+Les comptes des utilisateurs, leur mot de passe, email, groupes et leur accès à l'application GeoNature est géré de manière centralisée dans UsersHub. Pour qu'un rôle (utilisateur ou groupe) ait accès à GeoNature, il faut lui attribuer un profil de "Lecteur" dans l'application GeoNature, grâce à l'application UsersHub.
 
-La gestion des droits (permissions), spécifique à GeoNature, est gérée dans un schéma (``gn_permissions``) et un module de GeoNature dédié. Dans la version 1 de GeoNature, il était possible d'attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour étendre les possibilités d'attribution de droits et les rendre plus génériques. 
+La gestion des droits (permissions) des rôles, spécifique à GeoNature, est ensuite gérée dans un schéma (``gn_permissions``) et un module de GeoNature dédié. Dans la version 1 de GeoNature, il était possible d'attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour étendre les possibilités d'attribution de droits et les rendre plus génériques. 
 
 La gestion des droits dans GeoNature, comme dans beaucoup d'applications, est liée à des actions (Create / Read / Update / Delete aka CRUD). Pour les besoins  métiers de l'application nous avons rajouté deux actions : "Valider" et "Exporter", ce qui donne le CRUVED : Create / Read / Update / Validate / Export / Delete.
 
@@ -83,14 +83,14 @@ Enfin ces permissions vont pouvoir s'attribuer à l'ensemble de l'application Ge
 
 On a donc le quatriptique : Un utilisateur / Une action / Un filtre / Un module 
 
-Pour l'instant les filtres de type groupe taxonomique, précisions et géographique existent dans la base de données mais ne sont pas implémentées au niveau de l'application GeoNature, donc ils n'ont aucun effet.
+Pour l'instant les filtres de type groupe taxonomique, précisions et géographique existent dans la base de données mais ne sont pas implémentés au niveau de l'application GeoNature, donc ils n'ont aucun effet.
 
 Récapitulatif :
 
-- Dans GeoNature V2 on peut attribuer à une role des actions possibles, sur lesquels on peut ajouter des filtres, dans un module ou sur toute l'application GeoNature (définis dans ``gn_permissions.cor_role_action_filter_module_object``).
+- Dans GeoNature V2 on peut attribuer à un role des actions possibles, sur lesquels on peut ajouter des filtres, dans un module ou sur toute l'application GeoNature (définis dans ``gn_permissions.cor_role_action_filter_module_object``).
 - 6 actions sont possibles dans GeoNature : Create / Read / Update / Validate / Export / Delete (aka CRUVED).
-- Différents types de filtre existent. Le plus courant est le filtre de type "SCOPE" (portée) : 3 portée sont attribuables à des actions: Mes données / Les données de mon organisme / Toutes les données.
-- Une vue permet de retourner toutes les actions, leur filtres et leur modules de GeoNature pour tous les rôles (``gn_permissions.v_users_permissions``)
+- Différents types de filtre existent. Le plus courant est le filtre de type "SCOPE" (portée) : 3 portées sont attribuables à des actions: Mes données / Les données de mon organisme / Toutes les données.
+- Une vue permet de retourner toutes les actions, leurs filtres et leurs modules de GeoNature pour tous les rôles (``gn_permissions.v_users_permissions``)
 - Des fonctions PostgreSQL ont aussi été intégrées pour faciliter la récupération de ces informations (``gn_permissions.cruved_for_user_in_module``, ``gn_permissions.does_user_have_scope_permission``, ...)
 - Les permissions attribuées à un module surchargent les permission attribuées sur l'ensemble de l'application par un mécanisme d'héritage. Par défaut et en l'absence de permissions, tous les modules héritent des permissions de GeoNature. Attention cependant aux utilisateurs appartenant à plusieurs groupes. Si un CRUVED est définit pour un module à un seul de ses groupes, c'est ce CRUVED qui sera pris en compte. En effet, le mécanisme d'héritage ne fonctionne plus lorsqu'on surcouche implicitement le CRUVED d'un module pour un groupe.
 - Si un utilisateur n'a aucune action possible sur un module, alors il ne lui sera pas affiché et il ne pourra pas y accéder
@@ -131,7 +131,7 @@ Données SIG
 - Il contient une table des zonages, des types de zonages, des communes, des grilles (mailles) et un MNT raster ou vectorisé (https://github.com/PnX-SI/GeoNature/issues/235)
 - La fonction ``ref_geo.fct_get_area_intersection`` permet de renvoyer les zonages intersectés par une observation en fournissant sa géométrie
 - La fonction ``ref_geo.fct_get_altitude_intersection`` permet de renvoyer l'altitude min et max d'une observation en fournissant sa géométrie
-- L'intersection d'une observation avec les zonages sont stockés au niveau de la synthèse (``gn_synthese.cor_area_synthese``) et pas de la donnée source pour alléger et simplifier leur gestion
+- Les intersections d'une observation avec les zonages sont stockées au niveau de la synthèse (``gn_synthese.cor_area_synthese``) et non au niveau de la donnée source pour alléger et simplifier leur gestion
 
 Fonctions
 """""""""
@@ -261,7 +261,7 @@ GeoNature contient aussi des tables de stockage transversales qui peuvent être 
 
 Cela permet de ne pas avoir à mettre en place des tables et mécanismes dans chaque module, mais de s'appuyer sur un stockage, des fonctions et développements factorisés, centralisés et partagés.
 
-Ces tables utilisent notamment le mécanisme des UUID (identifiant unique) pour retrouver les enregistrements. Depuis une table source (Occtax ou un autre module) on peut retrouver les enregistrments stockées dans les table transversale en utilisant un ``WHERE <TABLE_TRANSVERSALE>.uuid_attached_row = <MON_UUID_SOURCE>`` et ainsi retrouver l'historique de validation, les médias ou encore la sensibilité associé à une donnée.
+Ces tables utilisent notamment le mécanisme des UUID (identifiant unique) pour retrouver les enregistrements. Depuis une table source (Occtax ou un autre module) on peut retrouver les enregistrements stockées dans les tables transversales en utilisant un ``WHERE <TABLE_TRANSVERSALE>.uuid_attached_row = <MON_UUID_SOURCE>`` et ainsi retrouver l'historique de validation, les médias ou encore la sensibilité associés à une donnée.
 
 Voir https://github.com/PnX-SI/GeoNature/issues/339
 
@@ -275,8 +275,8 @@ Cheminement d'une donnée Occtax :
 1. Formulaire Occtax
 2. Ecriture dans la table ``cor_counting_occtax`` et génération d'un nouvel UUID 
 3. Trigger d'écriture dans la table verticale ``t_validations`` à partir de la valeur par défaut de la nomenclature de validation (``gn_common.ref_nomenclatures.defaults_nomenclatures_value``)
-4. Trigger d'écriture d'Occtax vers la synthese (on ne maitrise pas l'ordre de ces 2 triggers qui sont lancés en même temps)
-5. Trigger de rapatriement du dernier statut de validation de la table verticale vers la synthese.
+4. Trigger d'écriture d'Occtax vers la synthèse (on ne maitrise pas l'ordre de ces 2 triggers qui sont lancés en même temps)
+5. Trigger de rapatriement du dernier statut de validation de la table verticale vers la synthèse.
         
 
 Triggers dans la synthèse
@@ -347,7 +347,7 @@ Table contenant l’ensemble des id_areas intersectant les enregistrements de la
   - Actions :
   
     1. Récupération du cd_nom en lien avec l’enregistrement ``cor_area_synthese``
-    2. Suppression des données de ``cor_area_taxon`` avec le ``cd_nom`` et ``id_area`` concerné
+    2. Suppression des données de ``cor_area_taxon`` avec le ``cd_nom`` et ``id_area`` concernés
     3. Insertion des données dans ``cor_area_taxon`` en lien avec le ``cd_nom`` et ``id_area``
 
 **Table : cor_observer_synthese**
@@ -386,7 +386,7 @@ Côté Backend, chaque module a aussi son modèle et ses routes : https://github
 
 Idem côté Frontend, où chaque module a sa configuration et ses composants : https://github.com/PnX-SI/GeoNature/tree/develop/contrib/occtax/frontend/app
 
-Mais en pouvant utiliser des composants du Coeur comme expliqué dans la documentation Developpeur.
+Mais en pouvant utiliser des composants du Cœur comme expliqué dans la documentation Developpeur.
 
 Plus d'infos sur le développement d'un module : https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#d%C3%A9velopper-et-installer-un-gn_module
 
@@ -398,7 +398,7 @@ Pour configurer GeoNature, actuellement il y a :
 
 - Une configuration pour l'installation : ``config/settings.ini``
 - Une configuration globale de l'application : ``<GEONATURE_DIRECTORY>/config/geonature_config.toml`` (générée lors de l'installation de GeoNature)
-- Une configuration par module : ``<GEONATURE_DIRECTORY>/external_modules/<nom_module>/config/conf_gn_module.toml`` (générée lors de l'instalation d'un module)
+- Une configuration par module : ``<GEONATURE_DIRECTORY>/external_modules/<nom_module>/config/conf_gn_module.toml`` (générée lors de l'installation d'un module)
 - Une table ``gn_commons.t_parameters`` pour des paramètres gérés dans la BDD
 
 .. image :: http://geonature.fr/docs/img/admin-manual/administration-geonature.png
@@ -449,7 +449,7 @@ Les logs de GeoNature sont dans le répertoire ``<GEONATURE_DIRECTORY>/var/log/`
 - Logs d'installation de la BDD d'un module : ``install_<nom_module>_schema.log``
 - Logs de l'API : ``gn-errors.log``
 
-Les logs de TaxHub sont dans le repertoire ``/var/log/taxhub``:
+Les logs de TaxHub sont dans le répertoire ``/var/log/taxhub``:
 
 - Logs de l'API de TaxHub : ``taxhub-errors.log``
 
@@ -466,7 +466,7 @@ Pour les exécuter, il est nécessaire d'être dans le virtualenv python de GeoN
 
 Le préfixe (venv) se met alors au début de votre invite de commande.
 
-Voici la liste des commandes disponible (aussi disponible en tapant la commande ``geonature --help``) :
+Voici la liste des commandes disponibles (aussi disponibles en tapant la commande ``geonature --help``) :
 
 - activate_gn_module : Active un gn_module installé (Possibilité d'activer seulement le backend ou le frontend)
 - deactivate_gn_module : Désactive gn_un module activé (Possibilté de désactiver seulement le backend ou le frontend)
@@ -476,12 +476,12 @@ Voici la liste des commandes disponible (aussi disponible en tapant la commande 
 - install_gn_module : Installe un gn_module 
 - start_gunicorn : Lance l'API du backend avec gunicorn
 - supervisor : Exécute les commandes supervisor (``supervisor stop <service>``, ``supervisor reload``)
-- update_configuration : Met à jour la configuration du coeur de l'application. A exécuter suite à un modification du fichier ``geonature_config.toml``
+- update_configuration : Met à jour la configuration du cœur de l'application. A exécuter suite à une modification du fichier ``geonature_config.toml``
 - update_module_configuration : Met à jour la configuration d'un module. A exécuter suite à une modification du fichier ``conf_gn_module.toml``.
 
 Effectuez ``geonature <nom_commande> --help`` pour accéder à la documentation et à des exemples d'utilisation de chaque commande.
 
-Verification des services
+Vérification des services
 """""""""""""""""""""""""
 
 Les API de GeoNature et de TaxHub sont lancées par deux serveurs http python indépendants (Gunicorn), eux-mêmes controlés par le supervisor.
@@ -511,7 +511,7 @@ et 4 fois la ligne suivante pour TaxHub :
     
 Chaque ligne correspond à un worker Gunicorn.
 
-Si ces lignes n'apparaissent pas, cela signigie qu'une des deux API n'a pas été lancée ou a connu un problème à son lancement. Voir les logs des API pour plus d'informations.
+Si ces lignes n'apparaissent pas, cela signifie qu'une des deux API n'a pas été lancée ou a connu un problème à son lancement. Voir les logs des API pour plus d'informations.
 
 Supervision des services
 """"""""""""""""""""""""
@@ -653,7 +653,7 @@ Restauration
 
 * Restauration de la configuration et de la customisation :
 
-  - Décomprésser les fichiers précedemment sauvegardés pour les remettre au bon emplacement :
+  - Décompresser les fichiers précedemment sauvegardés pour les remettre au bon emplacement :
 
     .. code-block:: console
 
@@ -688,13 +688,13 @@ Pour cela exécuter la commande suivante depuis le répertoire ``frontend``
 
     npm run start -- --host=0.0.0.0 --disable-host-check
 
-L'application est désormais disponible sur une serveur de développement à la même addresse que précedemment, mais sur le port 4200 : http://test.geonature.fr:4200
+L'application est désormais disponible sur une serveur de développement à la même addresse que précédemment, mais sur le port 4200 : http://test.geonature.fr:4200
 
 Ouvrez un nouveau terminal (pour laisser tourner le serveur de développement), puis modifier la variable ``URL_APPLICATION`` dans le fichier ``geonature_config.toml`` en mettant l'adresse ci-dessus et relancer l'application (``sudo supervisorctl restart geonature2``)
 
 A chaque modification d'un fichier du frontend, une compilation rapide est relancée et votre navigateur se rafraichit automatiquement en intégrant les dernières modifications.
 
-Une fois les modifications terminées, remodifier le fichier ``geonature_config.toml`` pour remettre l'URL initiale, relancez l'application (``sudo supervisorctl restart geonature2``), puis relancez la compliation du frontend (``npm run build``). Faites enfin un ``ctrl+c`` dans le terminal ou le frontend a été lancé pour stopper le serveur de développement.
+Une fois les modifications terminées, remodifier le fichier ``geonature_config.toml`` pour remettre l'URL initiale, relancez l'application (``sudo supervisorctl restart geonature2``), puis relancez la compilation du frontend (``npm run build``). Faites enfin un ``ctrl+c`` dans le terminal ou le frontend a été lancé pour stopper le serveur de développement.
 
 Si la manipulation vous parait compliquée, vous pouvez suivre la documentation qui suit, qui fait relancer la compilation du frontend à chaque modification.
 
@@ -751,7 +751,7 @@ De la même manière, il est nécessaire de relancer les commandes suivantes pou
 Customiser l'aspect esthétique
 """"""""""""""""""""""""""""""
 
-Les couleurs de textes, couleurs de fonds, forme des boutons etc peuvent être adaptés en renseignant le fichier ``custom.scss``, situé dans le répertoire ``geonature/frontend/src/custom``. 
+Les couleurs de textes, couleurs de fonds, forme des boutons etc peuvent être adaptées en renseignant le fichier ``custom.scss``, situé dans le répertoire ``geonature/frontend/src/custom``. 
 
 Pour remplacer la couleur de fond du bandeau de navigation par une image, on peut par exemple apporter la modification suivante :
 
@@ -894,7 +894,7 @@ Les fonctionnalités de création de compte nécessitent l'envoi d'emails pour v
         MAIL_USE_TLS = false
         MAIL_USE_SSL = true
         MAIL_USERNAME = 'mon_email@email.io'
-        MAIL_PASSWORD = 'M@rm0tt3'
+        MAIL_PASSWORD = 'monpassword'
         MAIL_DEFAULT_SENDER = 'mon_email@email.io'
         MAIL_ASCII_ATTACHMENTS = false
 
@@ -1191,6 +1191,74 @@ Pour ne pas afficher le module Occtax à un utilisateur où à un groupe, il fau
 
 L'administration des droits des utilisateurs pour le module Occtax se fait dans le backoffice de gestion des permissions de GeoNature.
 
+
+Module OCCHAB
+-------------
+
+Installer le module
+"""""""""""""""""""
+
+Le module OCCHAB fait parti du coeur de GeoNature. Son installation est au choix de l'administrateur.
+
+Pour l'installer, lancer les commande suivante:
+
+.. code-block:: console
+
+    cd backend
+    source venv/bin/activate
+    geonature install_gn_module /home/`whoami`/geonature/contrib/gn_module_occhab occtax
+
+
+Base de données
+"""""""""""""""
+
+Le module s'appuie sur deux schémas.: 
+``ref_habitats``:  Le réferentiel habitat du MNHN 
+``pr_occhab``: le schéma qui contient les données d'occurrence d'habitat, basé sur standard du MNHN
+
+Configuration
+""""""""""""""
+
+Le parametrage du module OCCHAB se fait depuis le fichier ``/home/`whoami`/geonature/contrib/config/conf_gn_module.toml``
+Après toute modification de la configuration d'un module, il faut regénérer le fichier de configuration du frontend comme expliqué ici : `Configuration d'un gn_module`_
+
+
+Formulaire
+***********
+
+- La liste des habitats fournit pour la saisie est basé sur une liste définit en base de données (table ``ref_habitat.cor_list_habitat`` et ``ref_habitat.bib_list_habitat``). Il est possible d'éditer cette liste directement den base de données, d'en créer une autre et de changer la liste utiliser par le module. Editer alors ce paramètre:
+
+``ID_LIST_HABITAT = 1``
+
+- Le formulaire permet de saisir des observateur basés sur le referentiel utilisateurs ( ``false``) ou de les saisir en texte libre (``true``). 
+
+``OBSERVER_AS_TXT = false``
+
+- L'ensemble des champs du formulaire son masquables. Pour en masquer certains, passer à ``false`` les variables suivantes:
+
+::
+
+    [formConfig]
+      date_min = true
+      date_max = true
+      depth_min = true
+      depth_max = true
+      altitude_min = true
+      altitude_max = true
+      exposure = true
+      area = true
+      comment = true
+      area_surface_calculation = true
+      geographic_object = true
+      determination_type = true
+      determiner = true
+      collection_technique = true
+      technical_precision = true
+      recovery_percentage = true
+      abundance = true
+      community_interest = true
+
+Voir le fichier ``conf_gn_module.toml.example`` qui liste l'ensemble des paramètres de configuration du module.
 
 Module SYNTHESE
 ---------------

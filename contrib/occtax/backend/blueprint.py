@@ -19,11 +19,14 @@ from geojson import FeatureCollection
 from shapely.geometry import asShape
 from geoalchemy2.shape import from_shape
 
+from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 
 from geonature.utils.env import DB, ROOT_DIR
-from geonature.utils.utilsgeometry import remove_third_dimension
 from pypnusershub.db.models import User
 from pypnusershub.db.tools import InsufficientRightsError
+from utils_flask_sqla_geo.generic import GenericTableGeo
+from utils_flask_sqla.generic import testDataType
+
 
 from geonature.utils import filemanager
 from .models import (
@@ -41,7 +44,6 @@ from .repositories import (
 )
 from .utils import get_nomenclature_filters
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, csv_resp, json_resp
-from geonature.utils.utilssqlalchemy import testDataType, GenericTable
 from geonature.utils.errors import GeonatureApiError
 from geonature.core.users.models import UserRigth
 from geonature.core.gn_meta.models import TDatasets, CorDatasetActor
@@ -520,12 +522,17 @@ def export(info_role):
     """
     export_view_name = blueprint.config["export_view_name"]
     export_geom_column = blueprint.config["export_geom_columns_name"]
-    export_id_column_name = blueprint.config["export_id_column_name"]
     export_columns = blueprint.config["export_columns"]
     export_srid = blueprint.config["export_srid"]
-    export_view = GenericTable(
-        export_view_name, "pr_occtax", export_geom_column, export_srid
+
+    export_view = GenericTableGeo(
+        tableName=export_view_name,
+        schemaName="pr_occtax",
+        engine=DB.engine,
+        geometry_field=export_geom_column,
+        srid=export_srid
     )
+
     releve_repository = ReleveRepository(export_view)
     q = releve_repository.get_filtered_query(
         info_role, from_generic_table=True)

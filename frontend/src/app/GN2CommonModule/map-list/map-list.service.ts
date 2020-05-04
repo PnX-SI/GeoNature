@@ -214,8 +214,6 @@ export class MapListService {
 
   deleteObsFront(idDelete: number) {
     // supprimer une observation sur la carte et la liste en front seulement
-    console.log('LAAAAAAAAA');
-    console.log(idDelete);
     this.tableData = this.tableData.filter(row => {
       return row[this.idName] !== idDelete;
     });

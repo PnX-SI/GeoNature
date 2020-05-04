@@ -14,10 +14,9 @@ import {
   MatProgressSpinnerModule,
   MatButtonModule
 } from '@angular/material';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-import { NgbModule, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { AutoCompleteModule } from 'primeng/primeng';
 import { TreeModule } from 'angular-tree-component';
 

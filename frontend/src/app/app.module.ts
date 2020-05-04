@@ -2,7 +2,12 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-import { HttpClientModule, HttpClient, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import {
+  HttpClientModule,
+  HttpClient,
+  HttpClientXsrfModule,
+  HTTP_INTERCEPTORS
+} from '@angular/common/http';
 
 // For Angular Dependencies
 import 'hammerjs';
@@ -11,7 +16,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { ChartModule } from 'angular2-chartjs';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { ToastrModule, ToastrService, Toast } from 'ngx-toastr';
+import { ToastrModule, ToastrService } from 'ngx-toastr';
 
 // Modules
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
@@ -49,7 +54,7 @@ import { MyCustomInterceptor } from './services/http.interceptor';
 import { GlobalSubService } from './services/global-sub.service';
 
 export function createTranslateLoader(http: HttpClient) {
-    return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
 @NgModule({
@@ -69,9 +74,9 @@ export function createTranslateLoader(http: HttpClient) {
     GN2CommonModule,
     TranslateModule.forRoot({
       loader: {
-          provide: TranslateLoader,
-          useFactory: (createTranslateLoader),
-          deps: [HttpClient]
+        provide: TranslateLoader,
+        useFactory: createTranslateLoader,
+        deps: [HttpClient]
       }
     })
   ],

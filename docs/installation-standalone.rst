@@ -9,7 +9,7 @@ Prérequis
 
 Ressources minimum serveur :
 
-- Un serveur Linux **architecture 64-bits** disposant d’au moins de 2 Go RAM et de 20 Go d’espace disque.
+- Un serveur Linux **architecture 64-bits** disposant d’au moins de 4 Go RAM et de 20 Go d’espace disque.
 
 GeoNature utilise les technologies suivantes:
 
@@ -17,7 +17,7 @@ GeoNature utilise les technologies suivantes:
 - Python 3 et dépendances Python nécessaires à l'application
 - Flask (framework web Python)
 - Apache
-- Angular 4, Angular CLI, NodeJS
+- Angular 7, Angular CLI, NodeJS
 - Librairies javascript (Leaflet, ChartJS)
 - Librairies CSS (Bootstrap, Material Design)
 
@@ -48,19 +48,26 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
 * Se reconnecter en SSH au serveur avec le nouvel utilisateur pour ne pas faire l'installation en ``root``. On ne se connectera plus en ``root``. Si besoin d'éxecuter des commandes avec des droits d'administrateur, on les précède de ``sudo``. Il est d'ailleurs possible renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec root. Voir https://docs.ovh.com/fr/vps/conseils-securisation-vps/ pour plus d'informations sur le sécurisation du serveur.
 
-* Lancez les commandes suivantes pour installer les dépendances de GeoNature (debian 9) :
+* Lancez les commandes suivantes pour installer les dépendances de GeoNature (Debian 9) :
 
   ::  
     
-    sudo apt-get install wget
+    sudo apt-get install wget git
     sudo apt-get install -y postgresql postgis postgresql-server-dev-9.6
-    sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev libgdal-dev python-gdal python-virtualenv build-essential
-    sudo pip install --upgrade pip virtualenv virtualenvwrapper
-    sudo apt-get install -y npm
+    sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev libgdal-dev python-gdal build-essential
+    python3 -m pip install pip==20.0.2
+    pip3 install virtualenv==20.0.1
     sudo apt-get install -y supervisor
     sudo apt-get install -y apache2
+    # installation de NVM
+    wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
+
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
     
-Sur Ubuntu 18, installez la version 10 de postgresql-server-dev ``sudo apt-get install postgresql-server-dev-10``. La version est à adapter sur les autres versions de Debian ou Ubuntu
+Sur Ubuntu 18, installez la version 10 de postgresql-server-dev ``sudo apt-get install postgresql-server-dev-10``. La version est à adapter sur les autres versions de Debian ou Ubuntu.
 
 Installation de l'application
 -----------------------------
@@ -84,7 +91,7 @@ Installation de l'application
 
   ::
 
-    mv GeoNature-X.Y.Z /home/<mon_user>/geonature/
+    mv GeoNature-X.Y.Z /home/`whoami`/geonature/
     cd geonature
 
 * Copier puis mettre à jour le fichier de configuration (``config/settings.ini``) comportant les informations relatives à votre environnement serveur :
@@ -198,6 +205,7 @@ Télécharger Taxhub depuis le dépôt github depuis la racine de votre utilisat
     cd ~
     wget https://github.com/PnX-SI/TaxHub/archive/X.Y.Z.zip
     unzip X.Y.Z.zip
+    rm X.Y.Z.zip
     
 en mode développeur: 
 

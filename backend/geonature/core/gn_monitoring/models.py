@@ -4,19 +4,20 @@
         relatifs aux protocoles de suivis
 """
 
+from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import select, func
 
-from geoalchemy2 import Geometry
+
 from pypnusershub.db.models import User
 from utils_flask_sqla.serializers import serializable
+from utils_flask_sqla_geo.serializers import geoserializable
 
-from geonature.utils.utilssqlalchemy import geoserializable
-from geonature.utils.env import DB
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_meta.models import TDatasets
+from geonature.utils.env import DB
 
 
 corVisitObserver = DB.Table(
@@ -120,7 +121,8 @@ class TBaseVisits(DB.Model):
         secondary=corVisitObserver,
         primaryjoin=(corVisitObserver.c.id_base_visit == id_base_visit),
         secondaryjoin=(corVisitObserver.c.id_role == User.id_role),
-        foreign_keys=[corVisitObserver.c.id_base_visit, corVisitObserver.c.id_role],
+        foreign_keys=[corVisitObserver.c.id_base_visit,
+                      corVisitObserver.c.id_role],
     )
 
     dataset = relationship(

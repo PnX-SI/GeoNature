@@ -13,16 +13,15 @@ from werkzeug.exceptions import NotFound
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
-from utils_flask_sqla.serializers import serializable
+from pypnusershub.db.tools import InsufficientRightsError
+from utils_flask_sqla.serializers import serializable, SERIALIZERS
+from utils_flask_sqla_geo.serializers import geoserializable, shapeserializable
 
-from geonature.utils.utilssqlalchemy import geoserializable, SERIALIZERS
-from geonature.utils.utilsgeometry import shapeserializable
-from geonature.utils.env import DB
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
 from geonature.core.ref_geo.models import LAreas
 from geonature.core.ref_geo.models import LiMunicipalities
 from geonature.core.gn_commons.models import THistoryActions, TValidations
-from pypnusershub.db.tools import InsufficientRightsError
+from geonature.utils.env import DB
 
 
 class SyntheseCruved(DB.Model):
@@ -332,6 +331,7 @@ class VSyntheseForWebApp(DB.Model):
     id_nomenclature_blurring = DB.Column(DB.Integer)
     id_nomenclature_source_status = DB.Column(DB.Integer)
     id_nomenclature_valid_status = DB.Column(DB.Integer)
+    reference_biblio = DB.Column(DB.Unicode)
     name_source = DB.Column(DB.Unicode)
     url_source = DB.Column(DB.Unicode)
     st_asgeojson = DB.Column(DB.Unicode)

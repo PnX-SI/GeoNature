@@ -391,3 +391,10 @@ INSERT INTO gn_synthese.synthese (id_dataset, nom_cite, date_min, date_max, the_
   (1, 'test', '01-01-2018', '01-01-2018', NULL),
   (1 ,'test', '01-01-2018', '01-01-2018', '0101000020E61000000000000000001A40CDCCCCCCCC6C4640')
 ;
+
+----------------
+-- GN_COMMONS --
+----------------
+
+INSERT INTO gn_commons.t_mobile_apps(app_code, relative_path_apk) VALUES
+('OCCTAX', '/occtax');

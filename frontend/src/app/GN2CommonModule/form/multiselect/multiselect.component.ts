@@ -70,7 +70,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
 
   @ViewChild('button_input') el: ElementRef;
 
-  valSave;
+  public valSave; // pour la selection au clavier
 
   constructor(private _translate: TranslateService) {}
 
@@ -229,23 +229,21 @@ export class MultiSelectComponent implements OnInit, OnChanges {
 
   onFocus(event) {
     this.valSave = ' ';
-
   }
 
   onBlur(event) {
     this.valSave = null;
   }
 
-
   setValSave(val = null) {
     this.valSave = val;
-    console.log('valSave', this.valSave);
   }
 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
+    // gestion des touches pour la selection au clavier
 
-    // enter
+    // enter (parmet d'ouvrir le composant pour choisir un item)
     if (event.keyCode === 13) {
       if (this.valSave) {
         const valSave = JSON.parse(JSON.stringify(this.valSave));
@@ -256,6 +254,8 @@ export class MultiSelectComponent implements OnInit, OnChanges {
         }
       }
     }
+
+    // les touche bas et haut pour permettre de se déplacer dans la liste item
 
     // bas
     if (event.keyCode === 40) {

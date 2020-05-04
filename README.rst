@@ -10,7 +10,7 @@ GeoNature V2 est une refonte complète de la BDD et changement de technologies :
 * Python
 * Flask
 * Leaflet
-* Angular 4
+* Angular 7
 * Bootstrap
 
 Documentation sur http://docs.geonature.fr.
@@ -48,14 +48,17 @@ Modules et projets liés
 * GeoNature-atlas (portail web de diffusion des observations) : https://github.com/PnX-SI/GeoNature-atlas
 * GeoNature-mobile (saisie mobile dans les protocoles de GeoNature v1) : https://github.com/PnEcrins/GeoNature-mobile
 * Occtax-mobile (saisie mobile dans le module Occtax) : https://github.com/PnX-SI/gn_mobile_occtax
-* GeoNature module Interopérabilité/export : https://github.com/PnX-SI/gn_module_export
+* Sync-mobile (synchronisation des données mobiles) : https://github.com/PnX-SI/gn_mobile_core
+* GeoNature module Export : https://github.com/PnX-SI/gn_module_export
 * GeoNature module Import : https://github.com/PnX-SI/gn_module_import
 * GeoNature module Dashboard : https://github.com/PnX-SI/gn_module_dashboard
 * GeoNature module Validation : https://github.com/PnX-SI/gn_module_validation
 * GeoNature module Suivi des habitats : https://github.com/PnX-SI/gn_module_suivi_habitat_territoire
 * GeoNature module Suivi des stations d'habitat : https://github.com/PnX-SI/gn_module_suivi_habitat_station
 * GeoNature module Suivi de la flore territoire : https://github.com/PnX-SI/gn_module_suivi_flore_territoire
+* API Flask d'interrogation du référentiel Habref : https://github.com/PnX-SI/Habref-api-module
 * Suivi-Flore-Territoire-mobile : https://github.com/PnX-SI/gn_mobile_sft
+* GeoNature module générique de suivis : https://github.com/PnX-SI/gn_module_monitoring
 * GeoNature module Suivi chiroptères : https://github.com/PnCevennes/gn_module_suivi_chiro
 * Protocoles de suivi (frontend) : https://github.com/PnCevennes/projet_suivis_frontend
 * GeoNature-citizen (portail de collecte citoyenne) : https://github.com/PnX-SI/GeoNature-citizen

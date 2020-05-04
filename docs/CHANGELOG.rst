@@ -2,14 +2,68 @@
 CHANGELOG
 =========
 
-
-2.3.1 (Unreleased)
+2.3.3 (Unreleased)
 ------------------
+
+**🚀 Nouveautés**
+
+* Réécriture du trigger générique de calcul de l'altitude. N'est executé que si l'altitude n'est pas postée
+* Ajout d'un offset sur la route de la couleur des taxons
+* Support des fonds de carte au format WMS (https://leafletjs.com/reference-1.6.0.html#tilelayer-wms-l-tilelayer-wms), PR#890 @jbdesbas 
+* Ajout du champs "reference_biblio" dans la synthese
 
 **🐛 Corrections**
 
-* Ajout d'un reference de l'objet Leaflet `L` afin qu'il soit utilisé dans les modules
+**⚠️ Notes de version**
 
+* SQL d'update de la BDD...
+* Le fichier ``2.3.2to2.3.3.sql`` ne peut être exécuté qu'après le fichier ``update1.3.2to1.3.3.sql`` du module ``Nomenclature-api-module``, sans quoi les contraintes sur la colonne ``t_datasets.id_nomenclature_jdd_data_type`` ne peuvent pas être respectées
+
+2.3.2 (2020-02-24)
+------------------
+
+**🚀 Nouveautés**
+
+* Possibilité de charger les commandes d'un module dans les commandes de GeoNature
+* Ajout de commentaires dans le fichier d'exemple de configuration ``config/default_config.toml.example``
+
+**🐛 Corrections**
+
+* Correction d'une incohérence dans le décompte des JDD sur la page d'accueil en leur appliquant le CRUVED (#752)
+* Montée de version de la librairie ``utils-flask-sqlalchemy-geo`` pour compatibilité avec la version 1.0.0 du module d'export
+
+2.3.1 (2020-02-18)
+------------------
+
+**🚀 Nouveautés**
+
+* Installation globale : Compatibilité Debian 10 (PostgreSQL 11, PostGIS 2.5)
+* Installation globale : Passage à Taxhub 1.6.4 et UsersHub 2.1.1
+* Utilisation généralisée des nouvelles librairies externalisées de sérialisation (https://github.com/PnX-SI/Utils-Flask-SQLAlchemy et https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo)
+* Possibilité de régler le timeout de Gunicorn pour éviter le plantage lors de requêtes longues
+* Ne pas zoomer sur les observations au premier chargement de la carte (#838)
+* Leaflet-draw : Ajout de la possibilité de zoomer sur le point (par @joelclems)
+* Ajout du nom vernaculaire dans les fiches d'information des relevés d'Occtax (par @FloVollmer / #826)
+
+**🐛 Corrections**
+
+* Correction de l'installation de Node.js et npm par l'utilisation généralisée de nvm (#832 et #837)
+* Fixation de la version de Node.js en 10.15.3 (dans le fichier ``fronted/.nvmrc``)
+* Ajout d'une référence de l'objet Leaflet ``L`` afin qu'il soit utilisé dans les modules et changement du typage de l'évenement Leaflet ``MouseEvent`` en ``L.LeafletMouseEvent``
+* Fixation de la version de vitualenv en 20.0.1 (par @sogalgeeko)
+* Corrections de typos dans la documentation d'administration (#840 - par @sogalgeeko)
+
+**⚠️ Notes de version**
+
+* Vous pouvez passer directement à cette version depuis la 2.2.x, mais en suivant les notes des versions intermédiaires (NB : il n'est pas nécessaire d’exécuter le script ``migrate.sh`` des versions précédentes)
+* Installez ``pip3`` et ``virtualenv``
+::
+
+    sudo apt-get update
+    sudo apt-get install python3-pip
+    sudo pip3 install virtualenv==20.0.1
+* Rajoutez la ligne ``gun_timeout=30`` au fichier ``config/settings.ini``. Il s'agit du temps maximal (en seconde) autorisé pour chaque requête. A augmenter, si vous avez déjà rencontré des problèmes de timeout.
+* Depuis le répertoire ``frontend``, lancez la commande ``nvm install``
 
 2.3.0 - Occhab de Noël (2019-12-27)
 -----------------------------------
@@ -29,14 +83,14 @@ CHANGELOG
   - Gestion des droits (en fonction du CRUVED de l'utilisateur connecté)
   - Définition des valeurs par défaut dans la BDD (paramétrable par organisme)
   - Possibilité de masquer des champs du formulaire
-  
-* Création d'un sous-module autonome ou intégré pour gérer l'API d'Habref (https://github.com/PnX-SI/Habref-api-module) pour : 
+
+* Création d'un sous-module autonome ou intégré pour gérer l'API d'Habref (https://github.com/PnX-SI/Habref-api-module) pour :
 
   - Rechercher un habitat dans Habref (avec usage du trigramme pour la pertinence du résultat)
   - Obtenir les infos d'un habitat et de ses correspondances à partir de son cd_hab
   - Obtenir les habitats d'une liste (avec ou sans leur code en plus de leur nom et filtrable par typologie)
   - Obtenir la liste des typologies (filtrable par liste d'habitats)
-  
+
 * Mise à jour du module des nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module) en version 1.3.2 incluant notamment :
 
   - Ajout de nomenclatures SINP concernant les habitats
@@ -57,7 +111,7 @@ CHANGELOG
 * Ajout des dates de creation et de modification dans les tables ``gn_monitoring.t_base_sites`` et ``gn_monitoring.t_base_visits`` et triggers pour les calculer automatiquement
 * Ajout des champs ``geom_local``, ``altitude_min`` et ``altitude_max`` dans la table ``gn_monitoring.t_base_sites`` et triggers pour les calculer automatiquement (#812)
 * Ajout des champs ``id_dataset``, ``id_module``, ``id_nomenclature_obs_technique`` et ``id_nomenclature_grp_typ`` dans la table ``gn_monitoring.t_base_visits`` (#812)
-* Le composant générique FileLayer expose un ``output`` pour récuperer la géométrie sélectionnée (un observable de MapService était utilisé auparavant) 
+* Le composant générique FileLayer expose un ``output`` pour récuperer la géométrie sélectionnée (un observable de MapService était utilisé auparavant)
 * Support des markers sur le composant ``leaflet-draw``
 * Possibilité de ne pas activer le composant ``marker`` au lancement lorsque celui-ci est utilisé (input ``defaultEnable``)
 * Ajout d'inputs ``time`` et ``number`` au composant DynamicForm permettant de générer des formulaires dynamiques.
@@ -89,25 +143,9 @@ CHANGELOG
 
 **⚠️ Notes de version**
 
-* Suivez les instructions suivantes pour effectuer la migration :
+NB: La version 2.3.0 n'est pas compatible avec le module Dashboard. Si vous avez le module dashboard installé, ne passez pas à cette nouvelle version. Compatibilité dans la 2.3.1.
 
-Télécharger la nouvelle version :
-
-::
-
-    wget https://github.com/PnX-SI/GeoNature/archive/2.3.0.zip
-    unzip 2.3.0.zip
-    rm 2.3.0.zip
-  
-Renommer l’ancien répertoire de l'application, ainsi que le nouveau :
-
-::
-
-    mv /home/`whoami`/geonature/ /home/`whoami`/geonature_old/
-    mv GeoNature-2.3.0 /home/`whoami`/geonature/
-    cd geonature
-  
-* Lancer le script de migration SQL qui va installer et remplir le nouveau schéma ``ref_habitats`` avec Habref et mettre à jour le schéma ``ref_nomenclatures`` :
+* Lancer le script de migration qui va installer et remplir le nouveau schéma ``ref_habitats`` avec Habref et mettre à jour le schéma ``ref_nomenclatures`` :
 
 ::
 
@@ -119,43 +157,15 @@ Vérifier que la migration s'est bien déroulée dans le fichier ``var/log/2.2.1
 
 * Lancer le script SQL de mise à jour de la BDD de GeoNature https://raw.githubusercontent.com/PnX-SI/GeoNature/2.3.0/data/migrations/2.2.1to2.3.0.sql
 
-* Lancer enfin le script de migration habituel :
-
-::
-
-    cd /home/`whoami`/geonature 
-    ./install/migration/migration.sh
-
-* Lancer cette commande pour définir la nouvelle version de NodeJS par défaut :
-
-::
-
-    nvm alias default 10.15.3
-
-En cas d'erreur sur la version de NodeJS, voir https://github.com/PnX-SI/GeoNature/issues/832.
-
 * Vous pouvez installer le nouveau module Occhab (Occurrences d'habitats) si vous le souhaitez :
 
 ::
 
     cd /home/`whoami`/geonature/backend
-    source venv/bin/activate 
+    source venv/bin/activate
     geonature install_gn_module /home/`whoami`/geonature/contrib/gn_module_occhab /occhab
-    
+
 * Lors de la migration (``/data/migrations/2.2.1to2.3.0.sql``), tous les JDD actifs sont associés par défaut au module Occtax (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.2.1to2.3.0.sql#L17-L22). A chacun d'adapter si besoin, en en retirant certains. Pour utiliser le module Occhab, vous devez y associer au moins un JDD.
-
-* NB : Si vous avez installé des modules externes autres que les modules du cœur (Occtax, Validation et Occhab), il faut recréer à la main des liens symboliques vers le repertoire ``node_modules`` du cœur pour chacun d'entre eux.
-
-::
-
-    ln -s /home/`whoami`/geonature/frontend/node_modules /home/`whoami`/<MODULE_NAME>/frontend/
-
-Relancer ensuite la compilation du frontend :
-
-:: 
-
-    cd frontend 
-    npm run build
 
 2.2.1 (2019-10-09)
 ------------------
@@ -210,7 +220,7 @@ Relancer ensuite la compilation du frontend :
 **🐛 Corrections**
 
 * SYNTHESE : Correction d'une URL en dur pour la recherche de rangs taxonomiques
-* OCCTAX : Affichage uniquement des JDD actifs 
+* OCCTAX : Affichage uniquement des JDD actifs
 * VALIDATION : Abaissement de la limite d'affichage de données sur la carte par défaut + message indicatif
 * Migration : Suppression d'un lien symbolique qui créait des liens en cascade
 * Amélioration de la documentation (@dthonon)
@@ -218,7 +228,7 @@ Relancer ensuite la compilation du frontend :
 * BACKOFFICE : Correction d'une URL incorrecte et customisation
 
 **⚠️ Notes de version**
-  
+
 Ceci est une version corrective mineure. Si vous migrez depuis la 2.1.0, passez directement à cette version en suivant les notes de version de la 2.1.1.
 
 2.1.1 (2019-07-18)
@@ -243,13 +253,13 @@ Ceci est une version corrective mineure. Si vous migrez depuis la 2.1.0, passez 
 * Complément, correction et compatibilité 2.1.0 des scripts de migration ``data/migrations/v1tov2``
 
 **🐛 Corrections**
-  
+
 * Nombreuses corrections du module de validation (non utilisation des id_nomenclature, simplification des vues et de la table ``gn_commons.t_validations``)
 * Ordonnancement de listes déroulantes (#685)
 * OCCTAX : correction de l'édition d'un relevé à la géométrie de type Polyline (#684)
 * OCCTAX : correction l'édition et du contrôle conditionnel des champs de "preuves" (preuve d'existence numérique / non numérique) (#679)
 * OCCTAX : correction du parametre ``DATE_FORM_WITH_TODAY`` non pris en compte (#670)
-* OCCTAX: correction de la date_max non remplie lorsque ``DATE_FORM_WITH_TODAY = false`` 
+* OCCTAX: correction de la date_max non remplie lorsque ``DATE_FORM_WITH_TODAY = false``
 * OCCTAX: correction d'un bug lors de l'enchainement de relevé lorsque l'heure est remplie
 * SYNTHESE: correction des doublons lorsqu'il y a plusieurs observateurs
 * Correction du composant ``dynamicForm`` sur les champs de recherche de type texte (recherche sur Preuve numérique) (#530)
@@ -312,7 +322,7 @@ Ceci est une version corrective mineure. Si vous migrez depuis la 2.1.0, passez 
 
     cd /home/`whoami`/geonature/data/migrations
     # avec les mailles
-    ./2.0.1to2.1.0.sh 
+    ./2.0.1to2.1.0.sh
     # sans les mailles:
     # ./2.0.1to2.1.0.sh no-grid
 
@@ -331,7 +341,7 @@ Ceci est une version corrective mineure. Si vous migrez depuis la 2.1.0, passez 
 
     geonature install_gn_module /home/`whoami`/geonature/contrib/gn_module_validation/ /validation
     deactivate
-    
+
 2.0.1 (2019-03-18)
 ------------------
 
@@ -420,9 +430,9 @@ Pour plus de détails sur les évolutions apportées dans la version 2, consulte
 
 **Notes de version**
 
-**1.** Pour les utilisateurs utilisant la version 1 de GeoNature : 
+**1.** Pour les utilisateurs utilisant la version 1 de GeoNature :
 
-Il ne s'agit pas de mettre à jour GeoNature mais d'en installer une nouvelle version. En effet, il s'agit d'une refonte complète. 
+Il ne s'agit pas de mettre à jour GeoNature mais d'en installer une nouvelle version. En effet, il s'agit d'une refonte complète.
 
 * Sauvegarder toutes ses données car l'opération est complexe et non-automatisée
 * Passer à la dernière version 1 de GeoNature (1.9.1)
@@ -430,7 +440,7 @@ Il ne s'agit pas de mettre à jour GeoNature mais d'en installer une nouvelle ve
 * Installer GeoNature standalone ou refaire une installation complète
 * Adaptez les scripts présents dans ``/data/migrations/v1tov2`` et exécutez-les pas à pas. Attention ces scripts ont été faits pour la version 2.0.0-rc.1 et sont donc à ajuster, tester, compléter et adapter à votre contexte
 
-**2.** Pour les utilisateurs utilisant une version RC de GeoNature 2 : 
+**2.** Pour les utilisateurs utilisant une version RC de GeoNature 2 :
 
 Veuillez bien lire ces quelques consignes avant de vous lancer dans la migration.
 
@@ -804,9 +814,9 @@ Module d'administration des tables centrales de GeoNature
 
 **Notes de version**
 
-**1.** Pour les utilisateurs utilisant la version 1 de GeoNature : 
+**1.** Pour les utilisateurs utilisant la version 1 de GeoNature :
 
-Il ne s'agit pas de mettre à jour GeoNature mais d'en installer une nouvelle version. En effet, il s'agit d'une refonte complète. 
+Il ne s'agit pas de mettre à jour GeoNature mais d'en installer une nouvelle version. En effet, il s'agit d'une refonte complète.
 
 * Passer à la dernière version 1 de GeoNature (1.9.1)
 * Idem pour UsersHub et TaxHub
@@ -815,7 +825,7 @@ Il ne s'agit pas de mettre à jour GeoNature mais d'en installer une nouvelle ve
 
 *TODO : MAJ depuis V1 à  tester et compléter*
 
-**2.** Pour les utilisateurs utilisant la version 2.0.0.beta5 : 
+**2.** Pour les utilisateurs utilisant la version 2.0.0.beta5 :
 
 * Supprimer le schéma ``gn_synthese`` puis le recréer dans sa version RC1 (#430)
 * Exécuter l'update de la BDD GeoNature (``data/migrations/2.0.0beta5-to-2.0.0rc1.sql``) ainsi que celui du sous-module Nomenclature (https://github.com/PnX-SI/Nomenclature-api-module/blob/1.2.1/data/update1.1.0to1.2.1.sql)
@@ -863,11 +873,11 @@ Il ne s'agit pas de mettre à jour GeoNature mais d'en installer une nouvelle ve
 * Correction de la gestion générique des médias
 * Suppression du lien entre ``ref_geo`` et ``ref_nomenclatures`` (#374)
 * Compléments et relecture de la documentation
-* Correction 
+* Correction
 
 **Notes de version**
 
-Si vous mettez à jour votre GeoNature depuis une Beta4 : 
+Si vous mettez à jour votre GeoNature depuis une Beta4 :
 
 * Téléchargez la beta5 et renommer les répertoires :
 
@@ -1035,7 +1045,7 @@ Documentation complète disponible sur http://geonature.fr/docs/2-0-0-beta1
 
 **Notes de version**
 
-* Vous pouvez passer directement d'une 1.7.X à la 1.9.1, en prenant en compte les notes des différentes versions intermédiaires, notamment les scripts de mise à jour de la BDD ainsi que les éventuels nouveaux paramètres à ajouter. 
+* Vous pouvez passer directement d'une 1.7.X à la 1.9.1, en prenant en compte les notes des différentes versions intermédiaires, notamment les scripts de mise à jour de la BDD ainsi que les éventuels nouveaux paramètres à ajouter.
 * Exécuter le script de mise à jour de la BDD ``data/update_1.9.0to1.9.1.sql``
 
 
@@ -1061,7 +1071,7 @@ IMPORTANT : toutes les couches SIG insérées dans le schéma ``layers`` doivent
 **Notes de versions**
 
 * Vous pouvez ajouter les paramètres ``srid_local``, ``install_sig_layers`` et ``add_sample_data`` au fichier ``config/settings.ini`` en vous inspirant du fichier ``config/settings.ini.sample``. Toutefois ces paramètres ne sont utilisés que pour une nouvelle installation et notamment pour l'installation de la base.
-* Vous pouvez passer directement d'une 1.7.X à la 1.9.0, en prenant en compte les notes des différentes versions intermédiaires, notamment les scripts de mise à jour de la BDD ainsi que les éventuels nouveaux paramètres à ajouter. 
+* Vous pouvez passer directement d'une 1.7.X à la 1.9.0, en prenant en compte les notes des différentes versions intermédiaires, notamment les scripts de mise à jour de la BDD ainsi que les éventuels nouveaux paramètres à ajouter.
 * Si vous migrez depuis la version 1.8.3, exécutez le fichier SQL ``data/update_1.8.3to1.9.0.sql``. Comme GeoNature ne fonctionne jusque là que pour des structures de métropole, il est basé sur le fait que le champ ``the_geom_local`` reste en Lambert 93 (2154). Assurez-vous que le paramètre ``$srid_local`` dans ``lib/sfGeonatureConfig.php`` est égal à ``2154``.
   ATTENTION : ce script SQL renomme tous les champs ``the_geom_2154`` en ``the_geom_local`` de la BDD de GeoNature. Ceci affecte de nombreuses tables, de nombreux triggers et de nombreuses vues de la base. Le script n'intègre que les vues fournies par défaut. Si vous avez créé des vues spécifiques, notamment pour le module d'export, ou si vous avez modifié des vues fournies, vous devez adapter/compléter le script. Vous pouvez vous inspirer de son contenu.
 * RAPPEL : Ceci affecte également la webapi des applications mobiles. Vous devez donc mettre à jour votre webapi si vous utilisez la saisie sur les applications mobiles. Une release de la webapi devrait sortir bientôt.
@@ -1082,7 +1092,7 @@ IMPORTANT : toutes les couches SIG insérées dans le schéma ``layers`` doivent
 **Nouveautés**
 
 * Multi-organisme : l'organisme associé à la donnée est désormais celui de l'utilisateur connecté dans l'application (lors de la création d'une observation uniquement).
-* Taxonomie : création d'une liste ``Saisie possible``, remplaçant l'attribut ``Saisie``. Cela permet de choisir les synonymes que l'on peut saisir ou non dans GeoNature en se basant sur les ``cd_nom`` (``bib_listes`` et ``cor_nom_liste``) et non plus sur les ``cd_ref`` (``bib_attributs`` et ``cor_taxon_attribut``). Voir le script de migration SQL ``data/update_1.8.2to1.8.3.sql`` pour bien basculer les informations de l'attribut dans la nouvelle liste. 
+* Taxonomie : création d'une liste ``Saisie possible``, remplaçant l'attribut ``Saisie``. Cela permet de choisir les synonymes que l'on peut saisir ou non dans GeoNature en se basant sur les ``cd_nom`` (``bib_listes`` et ``cor_nom_liste``) et non plus sur les ``cd_ref`` (``bib_attributs`` et ``cor_taxon_attribut``). Voir le script de migration SQL ``data/update_1.8.2to1.8.3.sql`` pour bien basculer les informations de l'attribut dans la nouvelle liste.
 * Correction de la vue ``synthese.v_tree_taxons_synthese`` potentiellement bloquante à l'ouverture de la synthèse.
 * Suppression de la table ``utilisateurs.bib_observateurs`` inutile.
 * Création des index spatiaux manquants (performances)
@@ -1094,7 +1104,7 @@ IMPORTANT : toutes les couches SIG insérées dans le schéma ``layers`` doivent
 
 Vous pouvez supprimer les lignes concernant le paramètre ``public static $id_organisme = ...`` dans ``lib/sfGeonatureConfig.php``, l'organisme n'étant plus un paramètre fixe mais désormais celui de l'utilisateur connecté.
 
-Vous pouvez passer directement d'une 1.7.X à la 1.8.3, en prenant en compte les notes des différentes versions intermédiaires. 
+Vous pouvez passer directement d'une 1.7.X à la 1.8.3, en prenant en compte les notes des différentes versions intermédiaires.
 
 Si vous migrez depuis la version 1.8.2, éxécutez le fichier SQL ``data/update_1.8.2to1.8.3.sql``.
 
@@ -1110,7 +1120,7 @@ Si vous migrez depuis la version 1.8.2, éxécutez le fichier SQL ``data/update_
 
 **Notes de versions**
 
-Vous pouvez passer directement d'une 1.7.X à la 1.8.2, en prenant en compte les notes des différentes versions intermédiaires. 
+Vous pouvez passer directement d'une 1.7.X à la 1.8.2, en prenant en compte les notes des différentes versions intermédiaires.
 
 Si vous migrez depuis la version 1.8.1, éxécutez le fichier ``data/update_1.8.1to1.8.2.sql``. Consultez les dernières lignes de ce fichier : vous devez évaluer si la requête d'insertion dans la table ``taxonomie.cor_taxon_attribut`` doit être faite ou non (vous pourriez avoir déjà constaté et corrigé cette erreur lors d'une précédente migration). Cela corrige l'absence de taxons protégés dans votre synthese en récupérant les informations de protection présentes dans le champ ``filtre3`` de la table ``save.bib_taxons``
 
@@ -1127,7 +1137,7 @@ Si vous migrez depuis la version 1.8.1, éxécutez le fichier ``data/update_1.8.
 
 **Notes de versions**
 
-Vous pouvez passer directement d'une 1.7.X à la 1.8.1, en prenant en compte les notes des différentes versions intermédiaires. 
+Vous pouvez passer directement d'une 1.7.X à la 1.8.1, en prenant en compte les notes des différentes versions intermédiaires.
 
 Si vous migrez depuis la version 1.8.0, éxécutez le fichier ``data/update_1.8to1.8.1.sql``
 
@@ -1166,7 +1176,7 @@ Si vous migrez depuis la version 1.8.0, éxécutez le fichier ``data/update_1.8t
 
 L'application TaxHub (https://github.com/PnX-SI/TaxHub) est désormais fonctionnelle, documenté et installable.
 
-Elle vous aidera à gérer vos taxons et l'ensemble du schéma ``taxonomie``, présent dans la BDD de GeoNature. 
+Elle vous aidera à gérer vos taxons et l'ensemble du schéma ``taxonomie``, présent dans la BDD de GeoNature.
 
 TaxHub évoluera pour intégrer progressivement de nouvelles fonctionnalités.
 
@@ -1175,10 +1185,10 @@ Il est conseillé de ne pas installer la base de données de TaxHub indépendamm
 **GeoNature-atlas**
 
 GeoNature-atlas est également basé sur le schéma ``taxonomie`` de TaxHub. Ainsi TaxHub permet la saisie des informations relatives aux taxons (descriptions, milieux, photos, liens, PDF...). GeoNature-atlas dispose de sa propre base de données mais pour fonctionner en connexion avec le contenu de la base GeoNature il faut à minima disposer d'une version 1.8 de GeoNature.
-  
+
 :notes:
 
-    Une régression dans le contenu de Taxref V9 conduit à la suppression de l'information concernant le niveau de protection des espèces (régional, national, international,...). 
+    Une régression dans le contenu de Taxref V9 conduit à la suppression de l'information concernant le niveau de protection des espèces (régional, national, international,...).
     Cette information était utilisée par GeoNature, notamment pour définir les textes à retenir pour la colonne ``concerne_mon_territoire`` de la table ``taxonomie.taxref_protection_articles``.
     Vous devez désormais remplir cette colonne manuellement.
 
@@ -1260,8 +1270,8 @@ Rappel : commencez par suivre la procédure classique de mise à jour. http://ge
 Rappel : commencez par suivre la procédure classique de mise à jour. http://geonature.readthedocs.org/fr/latest/update.html
 
 **1.** Modification des identifiants des listes de taxons pour compatibilité avec les applications GeoNature-Mobile.
-   
-Dans GeoNature-Mobile, les taxons sont filtrables par classe sur la base d'un ``id_classe``. Ces id sont inscrits en dur dans le code des applications mobiles. 
+
+Dans GeoNature-Mobile, les taxons sont filtrables par classe sur la base d'un ``id_classe``. Ces id sont inscrits en dur dans le code des applications mobiles.
 
 Dans la base GeoNature les classes taxonomiques sont configurables grace au vues ``v_nomade_classes`` qui utilisent les listes (``taxonomie.bib_listes``).
 
@@ -1279,20 +1289,20 @@ Voir le script SQL d'update ``data/update_1.6to1.7.sql`` et LIRE ATTENTIVEMENT L
 * Ajouter les variables ``$id_lot_cflore  = 7``, ``$id_protocole_cflore  = 7``, ``$id_source_cflore = 7`` et ``$appname_cflore = 'Contact flore - GeoNature';`` dans ``lib/sfGeonatureConfig.php`` (voir le fichier d'exemple ``lib/sfGeonatureConfig.php.sample``)
 * Ajouter les variables  ``id_lot_contact_flore = 7``, ``id_protocole_contact_flore = 7``, ``id_source_contactflore = 7`` dans ``web/js/config.js`` (voir le fichier d'exemple ``web/js/config.js.sample``)
 * l'enregistrement correspondant au contact flore dans la table ``synthese.bib_sources`` doit être actif (dernière colonne) pour que le contact flore soit accessible depuis la page d'accueil.
-            
-**3.** Afin de mettre à jour la configuration WMS, vous devez exécuter le fichier ``wms/update1.6to1.7.sh``. 
+
+**3.** Afin de mettre à jour la configuration WMS, vous devez exécuter le fichier ``wms/update1.6to1.7.sh``.
 
 Au préalable, assurez vous que les informations renseignées dans le fichier ``config/settings.ini`` sont à jour. L'ancien fichier sera sauvegardé sous ``wms/wms_1.6.map``. Vous pourrez faire le choix de conserver ou de supprimer ce fichier de sauvegarde qui ne sera pas utilisé par l'application.
 
-   :: 
+   ::
 
       ./wms/update1.6to1.7.sh
-        
-**4.** Mise en place du module d'export 
+
+**4.** Mise en place du module d'export
 
 * Créer les vues retournant les données attendues.
 * Configurer le module dans le fichier ``lib/sfGeonatureConfig.php`` à partir de l'exemple du fichier ``lib/sfGeonatureConfig.php.sample``); section ``configuration du module d'export``
-   
+
    * Vous pouvez paramétrer plusieurs modules avec un nom pour chacun grace au paramètre ``exportname``
    * Pour chacun des modules seuls les utilisateurs de geonature dont le ``id_role`` figure dans le tableau ``authorized_roles_ids`` peuvent exporter les données mises à disposition par le module d'export.
    * Chaque module peut comporter autant que vues que nécessaire (un bouton par vue générera un fichier zip par vue). Renseigner le tableau ``views`` pour chacun des modules.
@@ -1300,11 +1310,11 @@ Au préalable, assurez vous que les informations renseignées dans le fichier ``
 
 * Attribution des droits nécessaires pour le répertoire permettant l'enregistrement temporaire des fichiers générés par le module d'export.
 
-   :: 
+   ::
 
       chmod -R 775 web/uploads/exports
-        
-* Rétablir les droits d'écriture et vider le cache 
+
+* Rétablir les droits d'écriture et vider le cache
 
    ::
 
@@ -1322,14 +1332,14 @@ Au préalable, assurez vous que les informations renseignées dans le fichier ``
 * Mise à jour de la configuration Apache. Modifier le fichier ``apache/wms.conf`` en vous basant sur l'exemple https://github.com/PnEcrins/GeoNature/blob/master/apache/wms.conf.sample#L16-L17
 * Ajouter le paramètre ``$id_application`` dans ``lib/sfGeonatureConfig.php.php`` (voir la valeur utilisée pour GeoNature dans les tables ``utilisateurs.t_applications`` et ``utilisateurs.cor_role_droit_application``)
 * Ajouter le paramètre ``import_shp_projection`` dans ``web/js/configmap.map`` - voir l'exemple dans le fichier ``https://github.com/PnEcrins/GeoNature/blob/master/web/js/configmap.js.sample#L35``
-* Supprimer toute référence à gps_user_projection dans ``web/js/configmap.map`` 
+* Supprimer toute référence à gps_user_projection dans ``web/js/configmap.map``
 * Ajouter un tableau JSON des projections disponibles pour l'outil de pointage GPS : ``gps_user_projections`` dans ``web/js/configmap.map``. Respecter la structure définie dans ``https://github.com/PnEcrins/GeoNature/blob/master/web/js/configmap.js.sample#L7-L14``. Attention de bien respecter la structure du tableau JSON et notamment sa syntaxe (accolades, virgules, nom des objects, etc...)
 * Ajouter les ``id_liste`` pour les classes faune filtrables dans les formulaires de saisie dans le fichier ``web/js/config.map``. Ceci concerne les variables ``id_classe_oiseaux``, ``id_classe_mammiferes``, ``id_classe_amphibiens``, ``id_classe_reptiles``, ``id_classe_poissons`` et ``id_classe_ecrevisses``, ``id_classe_insectes``, ``id_classe_arachnides``, ``id_classe_myriapodes`` et  ``id_classe_mollusques``. Voir l'exemple dans le fichier ``https://github.com/PnEcrins/GeoNature/blob/master/web/js/config.js.sample#L32-44``
 * Taxref a été mis à jour de la version 7 à 8. GeoNature 1.6.0 peut fonctionner avec la version 7. Cependant il est conseillé de passer en taxref V8 en mettant à jour la table ``synthese.taxref`` avec la version 8. Cette mise à jour pouvant avoir un impact fort sur vos données, son automatisation n'a pas été prévue. Le script SQL de migration de vos données de taxref V7 vers taxref V8 n'est donc pas fourni. Pour une installation nouvelle de la base de données, GeoNature 1.6.0 est fourni avec taxref V8.
 * Le routing a été mis à jour, vous devez vider le cache de Symfony pour qu'il soit pris en compte. Pour cela, placez vous dans le répertoire racine de l'application et effectuez la commande suivante :
 
     ::
-    
+
         php symfony cc
 
 **Changements**
@@ -1338,14 +1348,14 @@ Au préalable, assurez vous que les informations renseignées dans le fichier ``
 * Passage de taxref V7 à Taxref V8 - Fix #34
 * Intégration de la première version de l'API permettant d'intégrer des données dans la synthèse depuis une source externe - https://github.com/PnEcrins/GeoNature/blob/master/docs/geonature_webapi_doc.rst
 * Mise en paramètre du ``id_application`` dans ``lib/sfGeonatureConfig.php.php`` - Fix #105
-* Recharger la synthese après suppression d'un enregistrement - Fix #94 
-* L'utilisateur peut lui-même définir le système de coordonnées dans l'outil de pointage GPS - Fix #107 
+* Recharger la synthese après suppression d'un enregistrement - Fix #94
+* L'utilisateur peut lui-même définir le système de coordonnées dans l'outil de pointage GPS - Fix #107
 * Mise en paramètre de la projection de la shape importée comme zone de recherche dans la synthèse
 * Les exports XLS et SHP comportent le ``cd_nom`` ET le ``cd_ref`` de tous les synonymes du nom recherché ainsi que le nom_latin (bib_taxons) ET le nom_valide (taxref) - Fix #92
 * SAISIE invertébrés - Ajout d'un filtre Mollusques - Fix #117
 * Amélioration du vocabulaire utilisé sur la page d'accueil - #118
 * Affichage d'un message pendant le chargement des exports
-* Mise en place de statistiques automatiques sur la page d'accueil, basées sur les listes de taxons. A compléter. 
+* Mise en place de statistiques automatiques sur la page d'accueil, basées sur les listes de taxons. A compléter.
 
 **Corrections de bug**
 
@@ -1353,7 +1363,7 @@ Au préalable, assurez vous que les informations renseignées dans le fichier ``
 * Correction d'une erreur lors de l'enregistrement de la saisie invertébrés - Fix #104
 * Correction d'une erreur de redirection si on choisit "Quitter" après la saisie de l'enregistrement (contact faune, mortalité et invertébrés) - Fix #102
 * Correction du trigger ``contactfaune.synthese_update_cor_role_fiche_cf()`` - Fix #95
-* Correction d'un bug dans les listes déroulantes des taxons filtrée par classe qui n'affichaient rien - Fix #109 
+* Correction d'un bug dans les listes déroulantes des taxons filtrée par classe qui n'affichaient rien - Fix #109
 * Correction d'un bug sur le contenu des exports shape avec le critère de protection activé - Fix #114
 * Correction et adaptation faune-flore des exports shape
 * SYNTHESE - Correction de la liste des taxons sans nom français - Fix #116
@@ -1382,9 +1392,9 @@ Au préalable, assurez vous que les informations renseignées dans le fichier ``
 * Le loup et le lynx sont retirés par défaut de la saisie (saisie recommandée dans le protocole national du réseau grands prédateurs)
 * Le cerf, chamois et le bouquetin doivent être saisis selon 6 critères de sexe et age et non 5 comme les autres taxons. Comportement peut-être changé en modifiant la vue ``contactfaune.v_nomade_taxons_faune``.
 * Mortailité est désormais une source à part entière alors qu'elles étaient mélangées avec la source ContactFaune précédemment. Si vous avez déjà des données de mortalité enregistrées, vous devez adapter la requête SQL ci-dessous avec votre ``id_source`` pour Mortalité et l'exécuter :
-    
+
     ::
-    
+
         UPDATE synthese.syntheseff SET id_source = 2 WHERE id_source = 1 AND id_critere_synthese = 2;
 
 **Changements**
@@ -1410,9 +1420,9 @@ Au préalable, assurez vous que les informations renseignées dans le fichier ``
 * Calcul de l'altitude à partir du service "Alticodage" de l'API GeoPortail de l'IGN.
 * Factorisation et généralisation du module permettant un positionnement des pointages par saisie de coordonnées selon projection et bbox fournies en paramètres de config.
 * Création d'une configuration javascript carto dédiée (``configmap.js``).
- 
+
 **Corrections de bug**
- 
+
 * Correction des problèmes de saisie de la version 1.4.0 liés à la migration de la taxonomie.
 * Correction de bugs dans Flore Station et Bryophytes (Zoom, recherche
 
@@ -1455,7 +1465,7 @@ Pré-Version de GeoNature - Faune ET Flore. Le fonctionnement de l'ensemble n'a 
 * Ajout du référentiel géographique de toutes les communes de France métropolitaine
 * Ajout des zones à statuts juridiques de la région sud-est (national à venir)
 * Bugs fix
- 
+
 **BUG à identifier**
 
 Installation :

@@ -958,6 +958,12 @@ CREATE TRIGGER tri_calculate_geom_local
   FOR EACH ROW
   EXECUTE PROCEDURE ref_geo.fct_trg_calculate_geom_local('geom_4326', 'geom_local');
 
+CREATE TRIGGER tri_calculate_altitude
+  BEFORE INSERT OR UPDATE
+  ON pr_occtax.t_releves_occtax
+  FOR EACH ROW
+  EXECUTE PROCEDURE ref_geo.fct_trg_calculate_alt_minmax('geom_4326');
+
 -- Triggers vers la synthese
 
 DROP TRIGGER IF EXISTS tri_insert_synthese_cor_counting_occtax ON pr_occtax.cor_counting_occtax;
