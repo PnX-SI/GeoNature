@@ -135,11 +135,11 @@ def get_dataset_details(info_role, id_dataset):
             elif info_role.value_filter == '2':
                 actors = [cor["id_role"] for cor in dataset["cor_dataset_actor"]]
                 organisms = [cor["id_organism"] for cor in dataset["cor_dataset_actor"]]
-                assert info_role.id_role in actors or info_role.id_organism in organisms
+                assert info_role.id_role in actors or info_role.id_organisme in organisms
         except AssertionError:
             raise InsufficientRightsError(
-                ('User "{}" cannot delete this current releve').format(
-                    user.id_role
+                ('User "{}" cannot read this current dataset').format(
+                    info_role.id_role
                 ),
                 403,
             )
