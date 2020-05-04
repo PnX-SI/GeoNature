@@ -14,6 +14,7 @@ import { OcctaxFormParamService } from './form-param/form-param.service';
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
 import { OcctaxFormReleveService } from "./releve/releve.service";
 import { OcctaxFormOccurrenceService } from "./occurrence/occurrence.service";
+import { OcctaxTaxaListService } from "./taxa-list/taxa-list.service";
 
 @Component({
   selector: "pnx-occtax-form",
@@ -39,7 +40,8 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     private _authService: AuthService,
     public occtaxFormParamService: OcctaxFormParamService,
     private occtaxFormReleveService: OcctaxFormReleveService,
-    private occtaxFormOccurrenceService: OcctaxFormOccurrenceService
+    private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
+    private occtaxTaxaListService: OcctaxTaxaListService
   ) { }
   
   ngOnInit() {
@@ -112,10 +114,12 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
       dialogRef.afterClosed().subscribe(result => {
         if(result) {
           this._router.navigate(url);
+          this.occtaxTaxaListService.cleanOccurrenceInProgress();
         }
       });
     } else {
       this._router.navigate(url);
+      this.occtaxTaxaListService.cleanOccurrenceInProgress();  
     }
   }
 }

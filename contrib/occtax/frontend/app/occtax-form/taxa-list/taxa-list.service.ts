@@ -80,5 +80,9 @@ export class OcctaxTaxaListService {
         break;
       }
     }
-  }  
+  }
+
+  cleanOccurrenceInProgress() {
+    this.rec_occurrences_in_progress = [];
+  }
 }
