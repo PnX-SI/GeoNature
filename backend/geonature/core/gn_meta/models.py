@@ -58,7 +58,22 @@ class CorAcquisitionFrameworkActor(DB.Model):
     id_organism = DB.Column(
         DB.Integer, ForeignKey("utilisateurs.bib_organismes.id_organisme")
     )
-    id_nomenclature_actor_role = DB.Column(DB.Integer)
+    id_nomenclature_actor_role = DB.Column(
+        DB.Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        default=TNomenclatures.get_default_nomenclature("ROLE_ACTEUR")
+    )
+
+    nomenclature_actor_role = DB.relationship(
+        TNomenclatures,
+        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_actor_role)
+    )
+
+    role = DB.relationship(
+        User, primaryjoin=(User.id_role == id_role), foreign_keys=[id_role]
+    )
+    
+    organism = relationship("BibOrganismes", foreign_keys=[id_organism])
 
     @staticmethod
     def get_actor(
@@ -94,7 +109,7 @@ class CorAcquisitionFrameworkActor(DB.Model):
                 )
         except exc.NoResultFound:
             return None
-
+    
 
 @serializable
 class CorDatasetActor(DB.Model):
@@ -107,12 +122,20 @@ class CorDatasetActor(DB.Model):
     id_organism = DB.Column(
         DB.Integer, ForeignKey("utilisateurs.bib_organismes.id_organisme")
     )
-
-    id_nomenclature_actor_role = DB.Column(DB.Integer)
+    
     role = DB.relationship(
         User, primaryjoin=(User.id_role == id_role), foreign_keys=[id_role]
     )
     organism = relationship("BibOrganismes", foreign_keys=[id_organism])
+
+    id_nomenclature_actor_role = DB.Column(DB.Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        default=TNomenclatures.get_default_nomenclature("ROLE_ACTEUR")
+    )
+    nomenclature_actor_role = DB.relationship(
+        TNomenclatures,
+        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_actor_role)
+    )
 
     @staticmethod
     def get_actor(
@@ -163,34 +186,41 @@ class TDatasets(DB.Model):
     dataset_shortname = DB.Column(DB.Unicode)
     dataset_desc = DB.Column(DB.Unicode)
     id_nomenclature_data_type = DB.Column(
-        DB.Integer, default=TNomenclatures.get_default_nomenclature("DATA_TYP")
+        DB.Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        default=TNomenclatures.get_default_nomenclature("DATA_TYP")
     )
     keywords = DB.Column(DB.Unicode)
     marine_domain = DB.Column(DB.Boolean)
     terrestrial_domain = DB.Column(DB.Boolean)
     id_nomenclature_dataset_objectif = DB.Column(
-        DB.Integer, default=TNomenclatures.get_default_nomenclature(
-            "JDD_OBJECTIFS")
+        DB.Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        default=TNomenclatures.get_default_nomenclature("JDD_OBJECTIFS")
     )
     bbox_west = DB.Column(DB.Float)
     bbox_east = DB.Column(DB.Float)
     bbox_south = DB.Column(DB.Float)
     bbox_north = DB.Column(DB.Float)
     id_nomenclature_collecting_method = DB.Column(
-        DB.Integer, default=TNomenclatures.get_default_nomenclature(
-            "METHO_RECUEIL")
+        DB.Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        default=TNomenclatures.get_default_nomenclature("METHO_RECUEIL")
     )
     id_nomenclature_data_origin = DB.Column(
-        DB.Integer, default=TNomenclatures.get_default_nomenclature(
-            "DS_PUBLIQUE")
+        DB.Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        default=TNomenclatures.get_default_nomenclature("DS_PUBLIQUE")
     )
     id_nomenclature_source_status = DB.Column(
-        DB.Integer, default=TNomenclatures.get_default_nomenclature(
-            "STATUT_SOURCE")
+        DB.Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        default=TNomenclatures.get_default_nomenclature("STATUT_SOURCE")
     )
     id_nomenclature_resource_type = DB.Column(
-        DB.Integer, default=TNomenclatures.get_default_nomenclature(
-            "RESOURCE_TYP")
+        DB.Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        default=TNomenclatures.get_default_nomenclature("RESOURCE_TYP")
     )
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
@@ -262,10 +292,18 @@ class TAcquisitionFramework(DB.Model):
     )
     acquisition_framework_name = DB.Column(DB.Unicode)
     acquisition_framework_desc = DB.Column(DB.Unicode)
-    id_nomenclature_territorial_level = DB.Column(DB.Integer)
+    id_nomenclature_territorial_level = DB.Column(
+        DB.Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        default=TNomenclatures.get_default_nomenclature("NIVEAU_TERRITORIAL")
+    )
     territory_desc = DB.Column(DB.Unicode)
     keywords = DB.Column(DB.Unicode)
-    id_nomenclature_financing_type = DB.Column(DB.Integer)
+    id_nomenclature_financing_type = DB.Column(
+        DB.Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        default=TNomenclatures.get_default_nomenclature("TYPE_FINANCEMENT")
+    )
     target_description = DB.Column(DB.Unicode)
     ecologic_or_geologic_target = DB.Column(DB.Unicode)
     acquisition_framework_parent_id = DB.Column(DB.Integer)
@@ -281,7 +319,7 @@ class TAcquisitionFramework(DB.Model):
         lazy="select",
         cascade="save-update, merge, delete, delete-orphan",
     )
-
+    
     cor_objectifs = DB.relationship(
         TNomenclatures,
         secondary=CorAcquisitionFrameworkObjectif.__table__,
@@ -332,3 +370,53 @@ class TAcquisitionFramework(DB.Model):
         if a_f:
             return a_f[0]
         return a_f
+
+class TDatasetDetails(TDatasets):
+    """
+    Class which extends TDatasets with nomenclatures relationships
+    """
+    data_type = DB.relationship(
+        TNomenclatures,
+        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_data_type)
+    )
+    dataset_objectif = DB.relationship(
+        TNomenclatures,
+        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_dataset_objectif)
+    )
+    collecting_method = DB.relationship(
+        TNomenclatures,
+        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_collecting_method)
+    )
+    data_origin = DB.relationship(
+        TNomenclatures,
+        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_data_origin)
+    )
+    source_status = DB.relationship(
+        TNomenclatures,
+        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_source_status)
+    )
+    resource_type = DB.relationship(
+        TNomenclatures,
+        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_resource_type)
+    )
+    acquisition_framework = DB.relationship(
+        TAcquisitionFramework,
+        primaryjoin=(TAcquisitionFramework.id_acquisition_framework == TDatasets.id_acquisition_framework)
+    )
+
+class TAcquisitionFrameworkDetails(TAcquisitionFramework):
+    """
+    Class which extends TAcquisitionFramework with nomenclatures relationships
+    """
+
+    nomenclature_territorial_level = DB.relationship(
+        TNomenclatures,
+        primaryjoin=(TNomenclatures.id_nomenclature == TAcquisitionFramework.id_nomenclature_territorial_level)
+    )
+
+    nomenclature_financing_type = DB.relationship(
+        TNomenclatures,
+        primaryjoin=(TNomenclatures.id_nomenclature == TAcquisitionFramework.id_nomenclature_financing_type)
+    )
+
+    

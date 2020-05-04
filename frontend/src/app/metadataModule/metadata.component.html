@@ -33,6 +33,7 @@
               <thead class="bold">
                 <tr>
                     <td>#</td>
+                    <td>#</td>
                     <td>
                       Id
                     </td>
@@ -41,7 +42,7 @@
               </thead>
               <tbody>
                 <tr *ngFor="let ds of af.datasetsTemp; let last = last">
-                    <td> 
+                    <td style="width:24px">
                       <a *ngIf="_cruvedStore.cruved?.METADATA?.cruved.U !== '0'"
                       class="bt-edit" 
                       title="Editer le jeu de données"
@@ -49,6 +50,14 @@
                       ↳
                       <i class="fa fa-pencil-square" aria-hidden="true"></i>
                       </a> 
+                    </td>
+                    <td>
+                      <a *ngIf="_cruvedStore.cruved?.METADATA?.cruved.U !== '0'"
+                      class="bt-edit" 
+                      title="Fiche du jeu de données"
+                      [routerLink]="['/metadata/dataset_detail', ds.id_dataset]" >
+                      <i class="fa fa-info-circle" aria-hidden="true"></i>
+                      </a>
                     </td>
                     <td> {{ds.id_dataset}}</td>
                     <td> {{ ds.dataset_name }} </td>
