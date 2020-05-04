@@ -181,14 +181,16 @@ export class OcctaxFormOccurrenceService {
   submitOccurrence() {
     let id_releve = this.occtaxFormService.id_releve_occtax.getValue();
     let TEMP_ID_OCCURRENCE = this.uuidv4();
-    let occurrence = this.form.value;
-    this.occtaxTaxaListService.addOccurrenceInProgress(TEMP_ID_OCCURRENCE, occurrence);
-    this.reset();
 
-    if (this.occurrence.getValue()) {
+    this.occtaxTaxaListService.addOccurrenceInProgress(
+      TEMP_ID_OCCURRENCE, 
+      this.occurrence.getValue() !== null ? Object.assign(this.occurrence.getValue(), this.form.value) : this.form.value //pour gerer la modification si erreur
+    );
+
+    if (this.occurrence.getValue() && (this.occurrence.getValue()).id_occurrence_occtax) {
       //update
       this.occtaxDataService
-          .updateOccurrence((this.occurrence.getValue()).id_occurrence_occtax, occurrence)
+          .updateOccurrence((this.occurrence.getValue()).id_occurrence_occtax, this.form.value)
           .pipe(retry(3))
           .subscribe(
             occurrence=>{
@@ -210,7 +212,7 @@ export class OcctaxFormOccurrenceService {
     } else {
       //create
       this.occtaxDataService
-          .createOccurrence(id_releve, occurrence)
+          .createOccurrence(id_releve, this.form.value)
           .pipe(retry(3))
           .subscribe(
             occurrence=>{
@@ -230,6 +232,8 @@ export class OcctaxFormOccurrenceService {
             }
           );
     }
+    //vide le formulaire
+    this.reset();
   }
 
   deleteOccurrence(occurrence) {
