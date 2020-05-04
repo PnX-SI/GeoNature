@@ -17,7 +17,8 @@
     <ng-template #elseBlock>
       <pnx-observers 
         label="{{ 'Releve.Observers' | translate }}"
-        [parentFormControl]="dynamicFormGroup.controls.observers" 
+        [parentFormControl]="dynamicFormGroup.controls.observers"
+        [multiSelect]="true"
         [idMenu]="occtaxConfig.id_observers_list">
       </pnx-observers>
     </ng-template>
