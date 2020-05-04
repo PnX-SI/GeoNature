@@ -125,7 +125,26 @@ def get_dataset_details(info_role, id_dataset):
     :returns: dict<TDatasetDetails>
     """
 
-    return get_dataset_details_dict(id_dataset)
+    dataset = get_dataset_details_dict(id_dataset)
+
+    if info_role.value_filter != '3':
+        try:
+            if info_role.value_filter == '1':
+                actors = [cor["id_role"] for cor in dataset["cor_dataset_actor"]]
+                assert info_role.id_role in actors
+            elif info_role.value_filter == '2':
+                actors = [cor["id_role"] for cor in dataset["cor_dataset_actor"]]
+                organisms = [cor["id_organism"] for cor in dataset["cor_dataset_actor"]]
+                assert info_role.id_role in actors or info_role.id_organism in organisms
+        except AssertionError:
+            raise InsufficientRightsError(
+                ('User "{}" cannot delete this current releve').format(
+                    user.id_role
+                ),
+                403,
+            )
+
+    return dataset
 
 
 @routes.route("/dataset", methods=["POST"])
