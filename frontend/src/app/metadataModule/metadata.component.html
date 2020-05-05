@@ -29,10 +29,11 @@
                 {{ af.acquisition_framework_desc }} 
               </mat-panel-description>
             </mat-expansion-panel-header>
-            <table class="table">
+            <table class="table table-bordered">
               <thead class="bold">
                 <tr>
-                    <td style="width:1%">#</td>
+                    <td style="width:10%"> #</td>
+                    <!-- <td style="width:1%"></td> -->
                     <td style="width:1%">
                       Id
                     </td>
@@ -41,14 +42,23 @@
               </thead>
               <tbody>
                 <tr *ngFor="let ds of af.datasetsTemp; let last = last">
-                    <td> 
-                      <button 
-                      class="bt-edit btn-ghost btn-no-padding" 
-                      title="Editer le jeu de données"
-                      [routerLink]="['/metadata/dataset', ds.id_dataset]" >
-                      ↳
-                      <i class="fa fa-pencil-square" aria-hidden="true"></i>
-                    </button> 
+                    <td >
+                      <div class="btn-group">
+                          <button [disabled]="ds.cruved.U == false"
+                          class="bt-edit btn-ghost btn-no-padding" 
+                          title="Editer le jeu de données"
+                          [routerLink]="['/metadata/dataset', ds.id_dataset]" >
+                          <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                        </button> 
+                        <button 
+                          [disabled]="ds.cruved.R == false"
+                          class="bt-edit btn-ghost btn-no-padding" 
+                          title="Fiche du jeu de données"
+                          [routerLink]="['/metadata/dataset_detail', ds.id_dataset]" >
+                          <i class="fa fa-info-circle" aria-hidden="true"></i>
+                        </button>
+                      </div>
+
                     </td>
                     <td> {{ds.id_dataset}}</td>
                     <td> {{ ds.dataset_name }} </td>

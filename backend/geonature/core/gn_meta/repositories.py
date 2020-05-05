@@ -15,7 +15,9 @@ from geonature.core.gn_meta.models import (
     CorDatasetActor,
     TAcquisitionFramework,
     CorAcquisitionFrameworkActor,
+    TDatasetDetails,
 )
+from geonature.core.gn_synthese.models import Synthese
 
 log = logging.getLogger()
 
@@ -91,7 +93,29 @@ def get_datasets_cruved(info_role, params=dict(), as_model=False):
     return [d.as_dict(True) for d in data]
 
 
-def get_af_cruved(info_role, params={}, as_model=False):
+def get_dataset_details_dict(id_dataset):
+    """
+    Return a dataset from TDatasetDetails model (with all relationships)
+    return also the number of taxon and observation of the dataset
+    Use for get_one datasert
+    """
+    data = DB.session.query(TDatasetDetails).get(id_dataset)
+    dataset = data.as_dict(True)
+    dataset["taxa_count"] = (
+        DB.session.query(Synthese.cd_nom)
+        .filter(Synthese.id_dataset == id_dataset)
+        .distinct()
+        .count()
+    )
+    dataset["observation_count"] = (
+        DB.session.query(Synthese.cd_nom)
+        .filter(Synthese.id_dataset == id_dataset)
+        .count()
+    )
+    return dataset
+
+
+def get_af_cruved(info_role, params={}):
     """
         Return the datasets filtered with cruved
         Params:

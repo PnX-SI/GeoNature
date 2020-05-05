@@ -6,6 +6,7 @@ from sqlalchemy import or_
 from sqlalchemy.sql import text
 
 from geonature.utils.env import DB
+from geonature.core.gn_synthese.models import Synthese
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.tools import InsufficientRightsError
@@ -19,7 +20,11 @@ from geonature.core.gn_meta.models import (
     CorAcquisitionFrameworkVoletSINP,
 )
 from geonature.core.gn_commons.models import TModules
-from geonature.core.gn_meta.repositories import get_datasets_cruved, get_af_cruved
+from geonature.core.gn_meta.repositories import (
+    get_datasets_cruved,
+    get_af_cruved,
+    get_dataset_details_dict,
+)
 from utils_flask_sqla.response import json_resp
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
@@ -189,6 +194,42 @@ def get_dataset(id_dataset):
     for o in organisms:
         dataset["cor_dataset_actor"][i]["organism"] = o
         i = i + 1
+    return dataset
+
+
+@routes.route("/dataset_details/<id_dataset>", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
+@json_resp
+def get_dataset_details(info_role, id_dataset):
+    """
+    Get one dataset with nomenclatures and af
+
+    .. :quickref: Metadata;
+
+    :param id_dataset: the id_dataset
+    :param type: int
+    :returns: dict<TDatasetDetails>
+    """
+
+    dataset = get_dataset_details_dict(id_dataset)
+
+    if info_role.value_filter != '3':
+        try:
+            if info_role.value_filter == '1':
+                actors = [cor["id_role"] for cor in dataset["cor_dataset_actor"]]
+                assert info_role.id_role in actors
+            elif info_role.value_filter == '2':
+                actors = [cor["id_role"] for cor in dataset["cor_dataset_actor"]]
+                organisms = [cor["id_organism"] for cor in dataset["cor_dataset_actor"]]
+                assert info_role.id_role in actors or info_role.id_organisme in organisms
+        except AssertionError:
+            raise InsufficientRightsError(
+                ('User "{}" cannot read this current dataset').format(
+                    info_role.id_role
+                ),
+                403,
+            )
+
     return dataset
 
 

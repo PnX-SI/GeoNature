@@ -21,6 +21,10 @@
   color: blue;
 }
 
+.bt-edit:disabled {
+  color: grey;
+}
+
 .bt-edit:hover {
   text-decoration: none;
 }

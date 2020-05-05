@@ -10,7 +10,7 @@ from flask import (
     Blueprint, request, current_app,
     send_from_directory, render_template
 )
-from sqlalchemy import distinct, func, desc, select
+from sqlalchemy import distinct, func, desc, select, text
 from sqlalchemy.orm import exc
 from geojson import FeatureCollection, Feature
 
@@ -808,6 +808,69 @@ def get_color_taxon():
     data = q.limit(limit).offset(page * limit).all()
     return [d.as_dict() for d in data]
 
+
+@routes.route("/taxa_count", methods=["GET"])
+@json_resp
+def get_taxa_count():
+    """
+    Get taxa count in synthese filtering with generic parameters
+
+    :query int id_dataset: filter by id_dataset
+
+    :returns int: the number of taxa found
+    """
+    params = request.args
+    
+    query = DB.session.query(
+        func.count(distinct(Synthese.cd_nom))
+    ).select_from(
+        Synthese
+    )
+    
+    if 'id_dataset' in params:
+        query = query.filter(Synthese.id_dataset == params['id_dataset'])
+    print(query.one())
+    return query.one()
+
+
+@routes.route("/observation_count", methods=["GET"])
+@json_resp
+def get_observation_count():
+    """Get observations found in a given dataset
+    """
+    params = request.args
+    
+    query = DB.session.query(
+        func.count(Synthese.cd_nom)
+    ).select_from(
+        Synthese
+    )
+    
+    if 'id_dataset' in params:
+        query = query.filter(Synthese.id_dataset == params['id_dataset'])
+
+    return query.one()
+
+
+@routes.route("/dataset_taxa_distribution/<int:id_dataset>", methods=["GET"])
+@json_resp
+def get_taxa_distribution(id_dataset):
+    """Get observations found in a given dataset
+    """
+
+    data = DB.session.query(
+        func.count(distinct(Synthese.cd_nom)),
+        Taxref.regne
+    ).select_from(
+        Synthese
+    ).outerjoin(
+        Taxref, Taxref.cd_nom == Synthese.cd_nom
+    ).filter(
+        Synthese.id_dataset == id_dataset
+    ).group_by(Taxref.regne).all()
+
+    return [{"count" : d[0], "regne": d[1]} for d in data]
+    
 
 # @routes.route("/test", methods=["GET"])
 # @json_resp
