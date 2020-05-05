@@ -431,7 +431,6 @@ def get_acquisition_framework_details(id_acquisition_framework):
     """
     af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
     acquisition_framework = af.as_dict(True)
-    
     q = DB.session.query(TDatasets).distinct()
     data = q.filter( \
                 TDatasets.id_acquisition_framework \
