@@ -15,14 +15,21 @@ from geonature.core.gn_meta.models import (
     CorDatasetActor,
     TAcquisitionFramework,
     CorAcquisitionFrameworkActor,
+    TDatasetDetails,
 )
+from geonature.core.gn_synthese.models import Synthese
 
 log = logging.getLogger()
 
 
-def get_datasets_cruved(info_role, params=dict()):
+def get_datasets_cruved(info_role, params=dict(), as_model=False):
     """
         Return the datasets filtered with cruved
+
+        Params:
+            params (dict): parameter to add where clause
+            as_model (boolean): default false, if truereturn an array of model
+                                instead of an array of dict
     """
     q = DB.session.query(TDatasets).distinct()
     # filter with modules
@@ -31,8 +38,7 @@ def get_datasets_cruved(info_role, params=dict()):
 
     # filters with cruved
     if info_role.value_filter == "2":
-        q = q.join(CorDatasetActor, CorDatasetActor.id_dataset ==
-                   TDatasets.id_dataset)
+        q = q.join(CorDatasetActor, CorDatasetActor.id_dataset == TDatasets.id_dataset)
         # if organism is None => do not filter on id_organism even if level = 2
         if info_role.id_organisme is None:
             q = q.filter(CorDatasetActor.id_role == info_role.id_role)
@@ -56,8 +62,7 @@ def get_datasets_cruved(info_role, params=dict()):
         if type(request.args["id_acquisition_framework"]) is list:
             q = q.filter(
                 TDatasets.id_acquisition_framework.in_(
-                    [int(id_af)
-                     for id_af in params["id_acquisition_framework"]]
+                    [int(id_af) for id_af in params["id_acquisition_framework"]]
                 )
             )
         else:
@@ -83,7 +88,31 @@ def get_datasets_cruved(info_role, params=dict()):
         except AttributeError:
             log.error("the attribute to order on does not exist")
     data = q.distinct().all()
+    if as_model:
+        return data
     return [d.as_dict(True) for d in data]
+
+
+def get_dataset_details_dict(id_dataset):
+    """
+    Return a dataset from TDatasetDetails model (with all relationships)
+    return also the number of taxon and observation of the dataset
+    Use for get_one datasert
+    """
+    data = DB.session.query(TDatasetDetails).get(id_dataset)
+    dataset = data.as_dict(True)
+    dataset["taxa_count"] = (
+        DB.session.query(Synthese.cd_nom)
+        .filter(Synthese.id_dataset == id_dataset)
+        .distinct()
+        .count()
+    )
+    dataset["observation_count"] = (
+        DB.session.query(Synthese.cd_nom)
+        .filter(Synthese.id_dataset == id_dataset)
+        .count()
+    )
+    return dataset
 
 
 def get_af_cruved(info_role, params={}):
@@ -94,8 +123,6 @@ def get_af_cruved(info_role, params={}):
             params (dict): get parameters for filter
     """
     q = DB.session.query(TAcquisitionFramework).distinct()
-    if "module_code" in params:
-        q = q.filter()
     # filter with cruved
     if info_role.value_filter == "2":
         q = q.join(
@@ -105,8 +132,7 @@ def get_af_cruved(info_role, params={}):
         )
         # if organism is None => do not filter on id_organism even if level = 2
         if info_role.id_organisme is None:
-            q = q.filter(CorAcquisitionFrameworkActor.id_role ==
-                         info_role.id_role)
+            q = q.filter(CorAcquisitionFrameworkActor.id_role == info_role.id_role)
         else:
             q = q.filter(
                 or_(
@@ -134,5 +160,8 @@ def get_af_cruved(info_role, params={}):
     # Generic Filters
     for key, value in params.items():
         q = test_type_and_generate_query(key, value, TAcquisitionFramework, q)
+    print(q)
     data = q.all()
+    if as_model:
+        return data
     return [d.as_dict(True) for d in data]

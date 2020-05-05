@@ -175,6 +175,7 @@ CREATE TABLE t_datasets (
     dataset_shortname character varying(255) NOT NULL,
     dataset_desc text NOT NULL,
     id_nomenclature_data_type integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value('DATA_TYP'),
+    id_nomenclature_jdd_data_type integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value('JDD_DATA_TYPE'),
     keywords text,
     marine_domain boolean NOT NULL,
     terrestrial_domain boolean NOT NULL,
@@ -353,6 +354,9 @@ ALTER TABLE ONLY t_datasets
     ADD CONSTRAINT fk_t_datasets_data_type FOREIGN KEY (id_nomenclature_data_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_datasets
+    ADD CONSTRAINT fk_t_datasets_jdd_data_type FOREIGN KEY (id_nomenclature_jdd_data_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY t_datasets
     ADD CONSTRAINT fk_t_datasets_objectif FOREIGN KEY (id_nomenclature_dataset_objectif) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_datasets
@@ -511,7 +515,7 @@ CREATE OR REPLACE VIEW v_acquisition_frameworks_territories AS
 -------------
 
 INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module_desc, module_path, module_target, active_frontend, active_backend, module_doc_url) VALUES
-('METADATA', 'Metadonnées', 'fa-book', 'Module de gestion des métadonnées', 'metadata', '_self', TRUE, TRUE, 'https://geonature.readthedocs.io/fr/latest/user-manual.html#metadonnees')
+('METADATA', 'Metadonnées', 'fa-book', 'Module de gestion des métadonnées', 'metadata', '_self', TRUE, TRUE, 'http://docs.geonature.fr/user-manual.html#metadonnees')
 ;
 
 -----------------------

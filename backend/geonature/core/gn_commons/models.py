@@ -77,8 +77,7 @@ class TMedias(DB.Model):
         # ForeignKey('ref_nomenclatures.t_nomenclatures.id_nomenclature')
     )
     id_table_location = DB.Column(
-        DB.Integer, ForeignKey(
-            "gn_commons.bib_tables_location.id_table_location")
+        DB.Integer, ForeignKey("gn_commons.bib_tables_location.id_table_location")
     )
     unique_id_media = DB.Column(
         UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
@@ -129,8 +128,7 @@ class TValidations(DB.Model):
     validation_auto = DB.Column(DB.Boolean)
     validation_label = DB.relationship(
         TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature ==
-                     id_nomenclature_valid_status),
+        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_valid_status),
         foreign_keys=[id_nomenclature_valid_status],
     )
     validator_role = DB.relationship(
@@ -188,3 +186,5 @@ class TMobileApps(DB.Model):
     app_code = DB.Column(DB.Unicode)
     relative_path_apk = DB.Column(DB.Unicode)
     url_apk = DB.Column(DB.Unicode)
+    package = DB.Column(DB.Unicode)
+    version_code = DB.Column(DB.Unicode)

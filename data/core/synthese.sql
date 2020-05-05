@@ -160,6 +160,7 @@ CREATE TABLE synthese (
     id_nomenclature_blurring integer DEFAULT get_default_nomenclature_value('DEE_FLOU'),
     id_nomenclature_source_status integer DEFAULT get_default_nomenclature_value('STATUT_SOURCE'),
     id_nomenclature_info_geo_type integer DEFAULT get_default_nomenclature_value('TYP_INF_GEO'),
+    reference_biblio character varying(255),
     count_min integer,
     count_max integer,
     cd_nom integer,
@@ -922,6 +923,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
     s.id_nomenclature_blurring,
     s.id_nomenclature_source_status,
     s.id_nomenclature_determination_method,
+    s.reference_biblio,
     sources.name_source,
     sources.url_source,
     t.cd_nom,
@@ -1132,6 +1134,6 @@ CREATE TRIGGER tri_update_cor_area_taxon_update_cd_nom
 --DATA--
 --------
 
-INSERT INTO gn_commons.t_modules (module_code, module_label, module_picto, module_desc, module_path, module_target, active_frontend, active_backend) VALUES
-('SYNTHESE', 'Synthese', 'fa-search', 'Application synthese', 'synthese', '_self', 'true', 'true');
+INSERT INTO gn_commons.t_modules (module_code, module_label, module_picto, module_desc, module_path, module_target, active_frontend, active_backend, module_doc_url) VALUES
+('SYNTHESE', 'Synthese', 'fa-search', 'Application synthese', 'synthese', '_self', 'true', 'true', 'http://docs.geonature.fr/user-manual.html#synthese');
 

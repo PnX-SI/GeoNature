@@ -808,37 +808,68 @@ def get_color_taxon():
     data = q.limit(limit).offset(page * limit).all()
     return [d.as_dict() for d in data]
 
-@routes.route("/count_taxon_by_dataset/<int:id_dataset>", methods=["GET"])
+
+@routes.route("/taxa_count", methods=["GET"])
 @json_resp
-def get_count_taxon(id_dataset):
-    """Get taxons found in a given dataset
+def get_taxa_count():
     """
-    return DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset == id_dataset).distinct().count()
+    Get taxa count in synthese filtering with generic parameters
 
+    :query int id_dataset: filter by id_dataset
 
-@routes.route("/count_observation_by_dataset/<int:id_dataset>", methods=["GET"])
-@json_resp
-def get_count_observation(id_dataset):
-    """Get observations found in a given dataset
+    :returns int: the number of taxa found
     """
-    return DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset == id_dataset).count()
-
-
-@routes.route("/repartition_taxons_dataset/<int:id_dataset>", methods=["GET"])
-@json_resp
-def get_repartition_taxons(id_dataset):
-    """Get observations found in a given dataset
-    """
+    params = request.args
     
-    q = text(
-        """ SELECT count(DISTINCT synt.cd_nom), min(taxr.regne)
-            FROM gn_synthese.synthese synt
-            LEFT OUTER JOIN taxonomie.taxref taxr ON taxr.cd_nom=synt.cd_nom
-            WHERE id_dataset=:id_dataset
-            GROUP BY taxr.regne """
+    query = DB.session.query(
+        func.count(distinct(Synthese.cd_nom))
+    ).select_from(
+        Synthese
     )
-    data = DB.engine.execute(q, id_dataset=id_dataset)
-    return [[d[0], d[1]] for d in data] # for some reason as_dict() doesn't work here
+    
+    if 'id_dataset' in params:
+        query = query.filter(Synthese.id_dataset == params['id_dataset'])
+    print(query.one())
+    return query.one()
+
+
+@routes.route("/observation_count", methods=["GET"])
+@json_resp
+def get_observation_count():
+    """Get observations found in a given dataset
+    """
+    params = request.args
+    
+    query = DB.session.query(
+        func.count(Synthese.cd_nom)
+    ).select_from(
+        Synthese
+    )
+    
+    if 'id_dataset' in params:
+        query = query.filter(Synthese.id_dataset == params['id_dataset'])
+
+    return query.one()
+
+
+@routes.route("/dataset_taxa_distribution/<int:id_dataset>", methods=["GET"])
+@json_resp
+def get_taxa_distribution(id_dataset):
+    """Get observations found in a given dataset
+    """
+
+    data = DB.session.query(
+        func.count(distinct(Synthese.cd_nom)),
+        Taxref.regne
+    ).select_from(
+        Synthese
+    ).outerjoin(
+        Taxref, Taxref.cd_nom == Synthese.cd_nom
+    ).filter(
+        Synthese.id_dataset == id_dataset
+    ).group_by(Taxref.regne).all()
+
+    return [{"count" : d[0], "regne": d[1]} for d in data]
     
 
 # @routes.route("/test", methods=["GET"])

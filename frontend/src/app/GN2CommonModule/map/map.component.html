@@ -1,4 +1,4 @@
-<div class="map-container">
+<div class="map-container" [ngStyle]="{'height': height}">
 
     <div class="form-row" *ngIf="searchBar">
         <div class="form-group col-md-12">
@@ -18,7 +18,7 @@
             </ng-template>
         </div>
     </div>
-    <div id="map" [ngStyle]="{'height': height}" ></div>
+    <div id="map"></div>
 </div>
 
 

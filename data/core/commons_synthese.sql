@@ -1,7 +1,9 @@
 
 -- vue validation de gn_commons necessitant le schéma synthese
 CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS 
- SELECT DISTINCT ON (s.id_synthese) s.id_synthese,
+ 
+CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp
+AS SELECT  s.id_synthese,
     s.unique_id_sinp,
     s.unique_id_sinp_grp,
     s.id_source,
@@ -50,6 +52,7 @@ CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS
     s.id_nomenclature_blurring,
     s.id_nomenclature_source_status,
     s.id_nomenclature_valid_status,
+    s.reference_biblio,
     t.cd_nom,
     t.cd_ref,
     t.nom_valide,
@@ -61,11 +64,16 @@ CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS
     v.validation_auto,
     v.validation_date
    FROM gn_synthese.synthese s
-     JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
-     JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
-     LEFT JOIN ref_nomenclatures.t_nomenclatures n ON n.id_nomenclature = s.id_nomenclature_valid_status
-     LEFT JOIN gn_commons.t_validations v ON v.uuid_attached_row = s.unique_id_sinp
-  WHERE d.validable = true
-  ORDER BY s.id_synthese, v.validation_date DESC;
-
+    JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
+    JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
+    LEFT JOIN ref_nomenclatures.t_nomenclatures n ON n.id_nomenclature = s.id_nomenclature_valid_status
+    LEFT JOIN LATERAL (
+        SELECT v.validation_auto, v.validation_date
+        FROM gn_commons.t_validations v
+        WHERE v.uuid_attached_row = s.unique_id_sinp
+        ORDER BY v.validation_date DESC
+        LIMIT 1
+    ) v ON true
+  WHERE d.validable = true;
+  
 COMMENT ON VIEW gn_commons.v_synthese_validation_forwebapp  IS 'Vue utilisée pour le module validation. Prend l''id_nomenclature dans la table synthese ainsi que toutes les colonnes de la synthese pour les filtres. On JOIN sur la vue latest_validation pour voir si la validation est auto';

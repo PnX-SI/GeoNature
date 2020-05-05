@@ -31,6 +31,9 @@ psql -h $db_host -U $geonature_pg_user -d $geonature_db_name -v GINCO_TABLE=$gin
 
 psql -h $db_host -U $geonature_pg_user -d $geonature_db_name -f synthese_after_insert.sql  &>> log/insert_data.log
 
+write_log "Occtax"
+psql -h $db_host -U $geonature_pg_user -d $geonature_db_name -f occtax.sql  &>> log/insert_data.log
+
 echo "OK"
 
 write_log "PERMISSIONS"

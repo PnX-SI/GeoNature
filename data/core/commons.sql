@@ -438,7 +438,9 @@ CREATE TABLE t_mobile_apps(
   id_mobile_app serial,
   app_code character varying(30),
   relative_path_apk character varying(255),
-  url_apk character varying(255)
+  url_apk character varying(255),
+  package character varying(255),
+  version_code character varying(10)
 );
 
 COMMENT ON COLUMN t_mobile_apps.app_code IS 'Code de l''application mobile. Pas de FK vers t_modules car une application mobile ne correspond pas forcement à un module GN';
@@ -562,13 +564,13 @@ INSERT INTO t_parameters (id_organism, parameter_name, parameter_desc, parameter
 ,(0,'annee_ref_commune', 'Année du référentiel géographique des communes utilisé', '2017', NULL)
 ;
 
--- insertion du module parent à tous: GeoNature
+-- Insertion du module parent à tous : GeoNature
 INSERT INTO gn_commons.t_modules(id_module, module_code, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend, module_doc_url) VALUES
-(0, 'GEONATURE', 'GeoNature', '', 'Module parent de tous les modules sur lequel on peut associer un CRUVED. NB: mettre active_frontend et active_backend à false pour qu''il ne s''affiche pas dans la barre latérale des modules', '/geonature', '', '', FALSE, FALSE, 'https://geonature.readthedocs.io/fr/latest/user-manual.html')
+(0, 'GEONATURE', 'GeoNature', '', 'Module parent de tous les modules sur lequel on peut associer un CRUVED. NB: mettre active_frontend et active_backend à false pour qu''il ne s''affiche pas dans la barre latérale des modules', '/geonature', '', '', FALSE, FALSE, 'http://docs.geonature.fr/user-manual.html')
 ;
--- insertion du module Admin
+-- Insertion du module Admin
 INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend, module_doc_url) VALUES
-('ADMIN', 'Admin', 'fa-cog', 'Backoffice de GeoNature', 'admin', '_self', 'Administration des métadonnées et des nomenclatures', TRUE, FALSE, 'https://geonature.readthedocs.io/fr/latest/user-manual.html#admin')
+('ADMIN', 'Admin', 'fa-cog', 'Backoffice de GeoNature', 'admin', '_self', 'Administration des métadonnées et des nomenclatures', TRUE, FALSE, 'http://docs.geonature.fr/user-manual.html#admin')
 ;
 
 

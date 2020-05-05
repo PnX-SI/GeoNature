@@ -894,7 +894,7 @@ Les fonctionnalités de création de compte nécessitent l'envoi d'emails pour v
         MAIL_USE_TLS = false
         MAIL_USE_SSL = true
         MAIL_USERNAME = 'mon_email@email.io'
-        MAIL_PASSWORD = 'M@rm0tt3'
+        MAIL_PASSWORD = 'monpassword'
         MAIL_DEFAULT_SENDER = 'mon_email@email.io'
         MAIL_ASCII_ATTACHMENTS = false
 
