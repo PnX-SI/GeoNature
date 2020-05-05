@@ -30,7 +30,7 @@ const PARAMS = new HttpParams({
 
 @Injectable()
 export class NominatimService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   search(term: string) {
     if (term === '') {
@@ -123,11 +123,12 @@ export class MapComponent implements OnInit {
 
     L.control.zoom({ position: 'topright' }).addTo(map);
     const baseControl = {};
-    AppConfig.MAPCONFIG.BASEMAP.forEach((basemap, index) => {
-      const configObj = (basemap as any).subdomains
-        ? { attribution: basemap.attribution, subdomains: (basemap as any).subdomains }
-        : { attribution: basemap.attribution };
-      baseControl[basemap.name] = L.tileLayer(basemap.layer, configObj);
+    const BASEMAP = JSON.parse(JSON.stringify(AppConfig.MAPCONFIG.BASEMAP));
+
+    BASEMAP.forEach((basemap, index) => {
+      const url = basemap.layer;
+      delete basemap.layer;
+      baseControl[basemap.name] = L.tileLayer.wms(url, basemap);
       if (index === 0) {
         map.addLayer(baseControl[basemap.name]);
       }
