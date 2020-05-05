@@ -852,24 +852,26 @@ def get_observation_count():
     return query.one()
 
 
-@routes.route("/dataset_taxa_distribution/<int:id_dataset>", methods=["GET"])
+@routes.route("/taxa_per_dataset/<int:id_dataset>/<string:taxa_rank>", methods=["GET"])
 @json_resp
-def get_taxa_distribution(id_dataset):
+def get_taxa_per_dataset(id_dataset, taxa_rank):
     """Get observations found in a given dataset
     """
 
+    rank = getattr(Taxref.__table__.columns, taxa_rank)
+
     data = DB.session.query(
         func.count(distinct(Synthese.cd_nom)),
-        Taxref.regne
+        rank
     ).select_from(
         Synthese
     ).outerjoin(
         Taxref, Taxref.cd_nom == Synthese.cd_nom
     ).filter(
         Synthese.id_dataset == id_dataset
-    ).group_by(Taxref.regne).all()
+    ).group_by(rank).all()
 
-    return [{"count" : d[0], "regne": d[1]} for d in data]
+    return [{"count" : d[0], "group": d[1]} for d in data]
     
 
 # @routes.route("/test", methods=["GET"])

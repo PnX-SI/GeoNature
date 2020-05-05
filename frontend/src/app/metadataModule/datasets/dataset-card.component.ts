@@ -27,11 +27,7 @@ export class DatasetCardComponent implements OnInit {
   // Tableau contenant les données du graphe
   public pieChartData = [];
   // Tableau contenant les couleurs et la taille de bordure du graphe
-  public pieChartColors = [
-    {
-      backgroundColor: ["rgb(0,80,240)", "rgb(80,160,240)", "rgb(160,200,240)"],
-    }
-  ];
+  public pieChartColors = [];
   // Dictionnaire contenant les options à implémenter sur le graphe (calcul des pourcentages notamment)
   public pieChartOptions = {
     cutoutPercentage: 80,
@@ -92,13 +88,26 @@ export class DatasetCardComponent implements OnInit {
         this.dataset.modules = this.dataset.modules.map(e => e.module_code).join(", ");
       }
     });
-    this._dfs.getTaxaDistribution(id).subscribe(data => {
+    this._dfs.getTaxaDistribution(id, 'group2_inpn').subscribe(data => {
+      /*const rStart=0, gStart=80, bStart=240, rEnd=240, gEnd=240, bEnd=240;
+      var iColor = 0;
+      var tempColors = [];
+      this.pieChartColors = [];
+      this.pieChartColors.length = 0;*/
       this.pieChartData.length = 0;
       this.pieChartLabels.length = 0;
       for (let row of data) {
+        /*tempColors.push("rgb("
+          + (rEnd*iColor + rStart*(data.length-iColor))/data.length + ","
+          + (gEnd*iColor + gStart*(data.length-iColor))/data.length + ","
+          + (bEnd*iColor + bStart*(data.length-iColor))/data.length + ")");
+        ++iColor;*/
         this.pieChartData.push(row["count"]);
-        this.pieChartLabels.push(row["regne"]);
+        this.pieChartLabels.push(row["group"]);
       }
+      /*this.pieChartColors = [{
+        backgroundColor: tempColors,
+      }];*/
       this.chart.chart.update();
       this.chart.ngOnChanges({});
       this.spinner = false;

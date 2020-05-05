@@ -338,8 +338,8 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/dataset_details/${id}`);
   }
 
-  getTaxaDistribution(id_dataset) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/dataset_taxa_distribution/${id_dataset}`);
+  getTaxaDistribution(id_dataset, id_rang) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/taxa_per_dataset/${id_dataset}/${id_rang}`);
   }
 
   getModulesList(exclude: Array<string>) {
