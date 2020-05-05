@@ -16,8 +16,15 @@
     {% endif %}
     <div class="titre">
         <label class="label-titre">Cadre d'acquisition des données</label>
+        <br>
+        <label class="label-titre">
+            {% if data['acquisition_framework_name']: %}
+                 {{ data['acquisition_framework_name'] }}
+            {% endif %}
+        </label>
         <hr class="ligne-titre ligne" {% if data.css: %} id="ligne-titre-{{data.css['entite']}}" {% else %}
             id="ligne-titre-defaut" {% endif %}>
+            
     </div>
     <div class="etiquettes">
         <div class="etiquette" {% if data.css: %} id="jeux-donnees-{{data.css['entite']}}" {% else %}
