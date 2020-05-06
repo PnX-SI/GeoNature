@@ -1,6 +1,7 @@
 import json
 import logging
-from flask import Blueprint, current_app, request
+from flask import Blueprint, current_app, request,render_template
+import pprint
 
 from sqlalchemy import or_
 from sqlalchemy.sql import text
@@ -10,6 +11,9 @@ from geonature.core.gn_synthese.models import Synthese
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.tools import InsufficientRightsError
+
+import datetime as dt
+from binascii import a2b_base64
 
 from geonature.core.gn_meta.models import (
     TDatasets,
@@ -30,6 +34,11 @@ from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from geonature.core.gn_meta import mtd_utils
 from geonature.utils.errors import GeonatureApiError
+from geonature.utils.env import BACKEND_DIR
+
+import geonature.utils.filemanager as fm
+
+from flask.wrappers import Response
 
 routes = Blueprint("gn_meta", __name__)
 
@@ -233,6 +242,20 @@ def get_dataset_details(info_role, id_dataset):
     return dataset
 
 
+@routes.route("/upload_canvas", methods=["POST"])
+@json_resp
+def upload_canvas():
+    """Upload the canvas as a temporary image used while generating the pdf file
+    """
+    data = request.data[22:]
+    binary_data = a2b_base64(data)
+    fd = open(str(BACKEND_DIR) + '/static/images/taxa.png', 'wb')
+    fd.write(binary_data)
+    fd.close()
+
+    return "OK"
+
+
 @routes.route("/dataset", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="METADATA")
 @json_resp
@@ -273,6 +296,80 @@ def post_dataset(info_role):
     DB.session.commit()
     return dataset.as_dict(True)
 
+@routes.route("/dataset/export_pdf/<id_dataset>", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
+def get_export_pdf_dataset(id_dataset, info_role):
+    """
+    Get a PDF export of one dataset
+    """
+    
+    #Verification des droits
+    if info_role.value_filter == "0":
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" a dataset').format(
+                info_role.id_role, 'export'
+            ),
+            403,
+        )
+
+    df = get_dataset_details_dict(id_dataset)
+
+    if info_role.value_filter != '3':
+        try:
+            if info_role.value_filter == '1':
+                actors = [cor["id_role"] for cor in df["cor_dataset_actor"]]
+                assert info_role.id_role in actors
+            elif info_role.value_filter == '2':
+                actors = [cor["id_role"] for cor in df["cor_dataset_actor"]]
+                organisms = [cor["id_organism"] for cor in df["cor_dataset_actor"]]
+                assert info_role.id_role in actors or info_role.id_organisme in organisms
+        except AssertionError:
+            raise InsufficientRightsError(
+                ('User "{}" cannot read this current dataset').format(
+                    info_role.id_role
+                ),
+                403,
+            )
+
+    if not df:
+        return render_template(
+            'error.html',
+            error='Le dataset presente des erreurs',
+            redirect=current_app.config["URL_APPLICATION"]+'/#/metadata'), 404
+
+    if len(df["dataset_desc"]) > 240:
+        df["dataset_desc"] = df["dataset_desc"][:240] + '...'
+
+    df['css'] = {
+        "logo" : "Logo_SINP.png",
+        "bandeau" : "Bandeau_SINP.png",
+        "entite" : "sinp"
+    }
+
+    date = dt.datetime.now().strftime("%d/%m/%Y")
+
+    df['footer'] = {
+        "url" : current_app.config["URL_APPLICATION"]+"/#/metadata/dataset_detail/"+id_dataset,
+        "date" : date
+    }
+
+    filename = 'jdd_{}_{}_{}.pdf'.format(
+        id_dataset,
+        df["dataset_shortname"].replace(" ", "_"),
+        dt.datetime.now().strftime("%d%m%Y_%H%M%S")
+    )
+
+    # Appel de la methode pour generer un pdf
+    pdf_file = fm.generate_pdf('jeu_de_donnees_template_pdf.html', df, filename)
+
+    return Response(
+        pdf_file,
+        mimetype="application/pdf",
+        headers={
+            "Content-disposition": "attachment; filename=" + filename,
+            "Content-type": "application/pdf"
+        }
+    )
 
 @routes.route("/acquisition_frameworks", methods=["GET"])
 @permissions.check_cruved_scope("R", True)
