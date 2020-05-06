@@ -9,7 +9,7 @@
       <button class="btn btn-primary" (click)="getPdf()">Export PDF</button>
     </div>
   </div>
-  
+
   <div *ngIf="dataset.taxa_count" class="row">
     <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 ">
       <div class="card">
@@ -47,30 +47,27 @@
           <div class="a"> Identifiant SINP du jeu de données : {{dataset.unique_dataset_id}}</div>
           <div class="a"> Libellé court : {{dataset.dataset_shortname}}</div>
           <div class="a"> Description : {{dataset.dataset_desc}}</div>
-
           <br/>
 
           <div class="b">Type de données</div>
           <div class="a"> {{dataset.data_type.label_default}}</div>
-
           <br/>
+
           <div class="b"> Objectifs </div>
           <div class="a"> {{dataset.dataset_objectif.label_default}}</div>
-          
           <br/>
 
           <div class="b">Territoires</div>
           <div class="a"> Couverture du territoire terrestre : {{dataset.terrestrial_domain ? "oui" : "non"}} </div>
           <div class="a"> Couverture du territoire marin : {{dataset.marine_domain ? "oui" : "non"}} </div>
-
           <br/>
 
           <div class="b">Cadre de référence</div>
           <div class="a"> Titre du cadre d'acquisition : {{dataset.acquisition_framework.acquisition_framework_name}} </div>
           <div class="a"> Identifiant du cadre d'acquisition : {{dataset.acquisition_framework.unique_acquisition_framework_id }} </div>
-
           <br/>
-          
+
+
           <div class="b">Processus de collecte</div>
           <div class="a"> Libellé : {{dataset.collecting_method.label_default}} </div>
           <div class="a"> Description : {{dataset.collecting_method.definition_default}} </div>
@@ -98,13 +95,13 @@
           <div class="a">Validable : {{dataset.validable ? 'Oui' : 'Non'}} </div>
 
           <br/>
-          
+
           <!--div class="a">Origine des données : {{dataset.data_origin.label_default}} </div>
           <div class="a">Statut source : {{dataset.source_status.label_default}} </div>
           <div class="a">Type de ressource : {{dataset.resource_type.label_default}} </div>
 
           <br/-->
-      
+
           <div *ngIf="dataset.modules">
             <div class="b">Module(s) GeoNature associé(s) au jeu de données :</div>
             <div class="a">{{ dataset.modules }}</div>
@@ -126,8 +123,14 @@
         <div class="card-header">
           <h5>Périmètre géographique</h5>
         </div>
-        <div *ngIf="false" class="card-body"> <!-- changer la valeur du ngif quand la carte sera prete -->
-          <div id="world-map" style="height: 250px;"></div>
+        <div *ngIf="this.geojsonData" class="card-body"> <!-- changer la valeur du ngif quand la carte sera prete -->
+          <pnx-map height="40vh" searchBar="false">
+            <pnx-geojson
+              [geojson]="this.geojsonData"
+              [zoomOnFirstTime]="true"
+            >
+            </pnx-geojson>
+          </pnx-map>
         </div>
       </div>
       <div class="card ">
@@ -150,7 +153,7 @@
           <div class="row">
             <div class="col-auto" width="60"><img src="./assets/images/Taxon_icon_vert.svg" width="64"></div>
             <div class="col">
-              <div><a [routerLink]="['/metadata/af-card', dataset.id_acquisition_framework]" style="color:black">
+              <div><a [routerLink]="['/metadata/af_detail', dataset.id_acquisition_framework]" style="color:black">
                 {{dataset.acquisition_framework.acquisition_framework_name}}
               </a></div>
               <div><small>{{dataset.acquisition_framework.unique_acquisition_framework_id}}</small></div>

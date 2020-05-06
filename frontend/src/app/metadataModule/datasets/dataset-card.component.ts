@@ -17,6 +17,7 @@ export class DatasetCardComponent implements OnInit {
   public dataset: any;
   public nbTaxons: number;
   public nbObservations: number;
+  public geojsonData: any = null;
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
@@ -102,10 +103,14 @@ export class DatasetCardComponent implements OnInit {
       this.chart.chart.update();
     });
 
+    this._dfs.getGeojsonData(id).subscribe(data => {
+      this.geojsonData = data;
+    });
+
   }
 
   getPdf() {
-    
+
     const url = `${AppConfig.API_ENDPOINT}/meta/dataset/export_pdf/${this.id_dataset}`;
     const dataUrl = this.chart ? this.chart.ctx.canvas.toDataURL("image/png") : "";
     this._dfs.uploadCanvas(dataUrl).subscribe(
@@ -113,7 +118,7 @@ export class DatasetCardComponent implements OnInit {
         window.open(url);
       }
     );
-    
+
   }
 
 }

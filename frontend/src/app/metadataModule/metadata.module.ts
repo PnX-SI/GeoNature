@@ -11,7 +11,8 @@ import { AfListComponent } from './af/af-list.component';
 import { AfFormComponent } from './af/af-form.component';
 import { ActorComponent } from './actors/actors.component';
 import { MetadataComponent } from './metadata.component';
-import { ChartsModule } from "ng2-charts/ng2-charts";
+import { AfCardComponent } from './af/af-card.component';
+import { ChartsModule } from 'ng2-charts/ng2-charts';
 import { ChartModule } from 'angular2-chartjs';
 
 const routes: Routes = [
@@ -22,7 +23,8 @@ const routes: Routes = [
   { path: 'dataset_detail/:id', component: DatasetCardComponent },
   { path: 'afs', component: AfListComponent },
   { path: 'af', component: AfFormComponent },
-  { path: 'af/:id', component: AfFormComponent }
+  { path: 'af/:id', component: AfFormComponent },
+  { path: 'af_detail/:id', component: AfCardComponent }
 ];
 
 @NgModule({
@@ -33,9 +35,9 @@ const routes: Routes = [
     }),
     CommonModule,
     GN2CommonModule,
-    RouterModule.forChild(routes),
+    ChartsModule,
     ChartModule,
-    ChartsModule
+    RouterModule.forChild(routes)
   ],
   exports: [],
   declarations: [
@@ -45,7 +47,8 @@ const routes: Routes = [
     DatasetCardComponent,
     AfListComponent,
     AfFormComponent,
-    ActorComponent
+    ActorComponent,
+    AfCardComponent
   ],
   providers: []
 })

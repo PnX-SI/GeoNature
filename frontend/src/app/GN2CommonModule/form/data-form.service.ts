@@ -110,6 +110,10 @@ export class DataFormService {
 
 
 
+  getImports(id_dataset) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/import/by_dataset/${id_dataset}`);
+  }
+
   getObservers(idMenu) {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/menu/${idMenu}`);
   }
@@ -292,6 +296,10 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}`);
   }
 
+  getAcquisitionFrameworkDetails(id_af) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework_details/${id_af}`);
+  }
+
   getOrganisms(orderByName = true) {
     let queryString: HttpParams = new HttpParams();
     if (orderByName) {
@@ -338,8 +346,25 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/dataset_details/${id}`);
   }
 
-  getTaxaDistribution(id_dataset) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/dataset_taxa_distribution/${id_dataset}`);
+  // getTaxaDistribution(id_dataset) {
+  //   return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/dataset_taxa_distribution/${id_dataset}`);
+  // }
+  getGeojsonData(id) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/geojson_data/${id}`);
+  }
+
+  getRepartitionTaxons(id_dataset) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/repartition_taxons_dataset/${id_dataset}`);
+  }
+
+  getTaxaDistribution(datasets) {
+    let params: HttpParams = new HttpParams();
+    let dataset_ids = [];
+    for (let dataset of datasets) {
+      dataset_ids.push(dataset.id_dataset);
+      params = params.append('dataset_ids[]', dataset.id_dataset);
+    }
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/taxa_distribution`, { params: { 'dataset_ids': dataset_ids } });
   }
 
   uploadCanvas(img: any) {
@@ -414,4 +439,9 @@ export class DataFormService {
     link.click();
     document.body.removeChild(link);
   }
+
+  uploadCACanvas(img: any, type: string) {
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/meta/${type}`, img);
+  }
 }
+

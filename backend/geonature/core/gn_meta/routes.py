@@ -4,7 +4,9 @@ from flask import Blueprint, current_app, request,render_template
 import pprint
 
 from sqlalchemy import or_
-from sqlalchemy.sql import text
+from sqlalchemy.sql import text,exists, select
+from sqlalchemy.sql.functions import func
+
 
 from geonature.utils.env import DB
 from geonature.core.gn_synthese.models import Synthese
@@ -19,6 +21,7 @@ from geonature.core.gn_meta.models import (
     TDatasets,
     CorDatasetActor,
     TAcquisitionFramework,
+    TAcquisitionFrameworkDetails,
     CorAcquisitionFrameworkActor,
     CorAcquisitionFrameworkObjectif,
     CorAcquisitionFrameworkVoletSINP,
@@ -37,6 +40,7 @@ from geonature.utils.errors import GeonatureApiError
 from geonature.utils.env import BACKEND_DIR
 
 import geonature.utils.filemanager as fm
+from binascii import a2b_base64
 
 from flask.wrappers import Response
 
@@ -176,6 +180,19 @@ def get_af_from_id(id_af, af_list):
             found_af = af
             break
     return found_af
+@routes.route("/upload_cadre_acquisition_rde_canvas", methods=["POST"])
+@json_resp
+def upload_cadre_acquisition_rde_canvas():
+    """Upload the canvas as a temporary image used while generating the pdf file
+    """
+    data = request.data[22:]
+    binary_data = a2b_base64(data)
+
+    fd = open('static/images/cadre-acquisition-rde.png', 'wb')
+    fd.write(binary_data)
+    fd.close()
+
+    return "OK"
 
 
 @routes.route("/dataset/<id_dataset>", methods=["GET"])
@@ -240,6 +257,15 @@ def get_dataset_details(info_role, id_dataset):
             )
 
     return dataset
+
+@routes.route("/geojson_data/<id_dataset>", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
+@json_resp
+def get_geojson_data(info_role, id_dataset):
+    geojsonData = DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326))).filter(Synthese.id_dataset == id_dataset).first()[0]
+    if geojsonData:
+        return json.loads(geojsonData)
+    return None, 404
 
 
 @routes.route("/upload_canvas", methods=["POST"])
@@ -384,6 +410,99 @@ def get_acquisition_frameworks(info_role):
     params = request.args
     return get_af_cruved(info_role, params)
 
+@routes.route("/acquisition_frameworks/export_pdf/<id_acquisition_framework>", methods=["GET"])
+@permissions.check_cruved_scope("C", True, module_code="METADATA")
+def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
+    """
+    Get a PDF export of one acquisition
+    """
+    
+    #Verification des droits
+    if info_role.value_filter == "0":
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" a dataset').format(
+                info_role.id_role, 'export'
+            ),
+            403,
+        )
+
+    # Recuperation des données
+    af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
+    acquisition_framework = af.as_dict(True)
+    
+    q = DB.session.query(TDatasets).distinct()
+    data = q.filter( \
+                TDatasets.id_acquisition_framework \
+                == id_acquisition_framework).all()
+    dataset_ids = [d.id_dataset for d in data]
+    acquisition_framework["datasets"] = [d.as_dict(True) for d in data]
+
+    nb_data = len(dataset_ids)
+    nb_taxons = DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).distinct().count()
+    nb_observations = DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).count()
+    nb_habitat = 0
+
+    # Check if pr_occhab exist
+    check_schema_query = exists(select([text("schema_name")]).select_from(text("information_schema.schemata")).
+       where(text("schema_name = 'pr_occhab'"))) 
+
+    if DB.session.query(check_schema_query).scalar() and nb_data > 0 :
+        query = "SELECT count(*) FROM pr_occhab.t_stations s, pr_occhab.t_habitats h WHERE s.id_station = h.id_station AND s.id_dataset in \
+        ("+str(dataset_ids).strip('[]')+")"
+        
+        nb_habitat  = DB.engine.execute(
+            text(query)
+        ).first()[0]
+
+    acquisition_framework["stats"] = {
+        "nb_data": nb_data,
+        "nb_taxons": nb_taxons,
+        "nb_observations": nb_observations,
+        "nb_habitats": nb_habitat
+    }
+
+    if acquisition_framework:
+        acquisition_framework["nomenclature_territorial_level"] = af.nomenclature_territorial_level.as_dict()
+        acquisition_framework["nomenclature_financing_type"] = af.nomenclature_financing_type.as_dict()
+        if acquisition_framework["acquisition_framework_start_date"] :
+            start_date = dt.datetime.strptime(acquisition_framework["acquisition_framework_start_date"], '%Y-%m-%d')
+            acquisition_framework["acquisition_framework_start_date"] = start_date.strftime("%d/%m/%Y")
+        if acquisition_framework["acquisition_framework_end_date"] :
+            end_date = dt.datetime.strptime(acquisition_framework["acquisition_framework_end_date"], '%Y-%m-%d')
+            acquisition_framework["acquisition_framework_end_date"] = end_date.strftime("%d/%m/%Y")
+        acquisition_framework['css'] = {
+            "logo" : "Logo_SINP.png",
+            "bandeau" : "Bandeau_SINP.png",
+            "entite" : "sinp"
+        }
+        date = dt.datetime.now().strftime("%d/%m/%Y")
+        acquisition_framework['footer'] = {
+            "url" : current_app.config["URL_APPLICATION"]+"/#/metadata/af-card/"+id_acquisition_framework,
+            "date" : date
+        }
+        params = {"id_acquisition_frameworks" : id_acquisition_framework}
+
+    else:
+        return render_template(
+            'error.html',
+            error='Le dataset presente des erreurs',
+            redirect=current_app.config["URL_APPLICATION"]+'/#/metadata'), 404
+
+    filename = '{}_{}_{}.pdf'.format(id_acquisition_framework, acquisition_framework["acquisition_framework_name"][0:31].replace(" ", "_") , dt.datetime.now().strftime("%d%m%Y_%H%M%S"))
+
+    pprint.pprint(acquisition_framework)
+
+    # Appel de la methode pour generer un pdf
+    pdf_file = fm.generate_pdf('cadre_acquisition_template_pdf.html', acquisition_framework, filename)
+
+    return Response(
+        pdf_file,
+        mimetype="application/pdf",
+        headers={
+            "Content-disposition": "attachment; filename=" + filename,
+            "Content-type": "application/pdf"
+        }
+    )
 
 @routes.route("/acquisition_frameworks_metadata", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="METADATA")
@@ -433,6 +552,58 @@ def get_acquisition_framework(id_acquisition_framework):
         return af.as_dict(True)
     return None
 
+@routes.route("/acquisition_framework_details/<id_acquisition_framework>", methods=["GET"])
+@json_resp
+def get_acquisition_framework_details(id_acquisition_framework):
+    """
+    Get one AF
+
+    .. :quickref: Metadata;
+
+    :param id_acquisition_framework: the id_acquisition_framework
+    :param type: int
+    """
+    af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
+    acquisition_framework = af.as_dict(True)
+    q = DB.session.query(TDatasets).distinct()
+    data = q.filter( \
+                TDatasets.id_acquisition_framework \
+                == id_acquisition_framework).all()
+    dataset_ids = [d.id_dataset for d in data]
+    acquisition_framework["datasets"] = [d.as_dict(True) for d in data]
+    geojsonData = DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326))).filter(Synthese.id_dataset.in_(dataset_ids)).first()[0]
+    if geojsonData:
+        acquisition_framework["geojsonData"] = json.loads(geojsonData)
+    
+    nb_data = len(dataset_ids)
+    nb_taxons = DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).distinct().count()
+    nb_observations = DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).count()
+    nb_habitat = 0
+
+    # Check if pr_occhab exist
+    check_schema_query = exists(select([text("schema_name")]).select_from(text("information_schema.schemata")).
+       where(text("schema_name = 'pr_occhab'"))) 
+
+    if DB.session.query(check_schema_query).scalar() and nb_data > 0 :
+        query = "SELECT count(*) FROM pr_occhab.t_stations s, pr_occhab.t_habitats h WHERE s.id_station = h.id_station AND s.id_dataset in \
+        ("+str(dataset_ids).strip('[]')+")"
+        
+        nb_habitat  = DB.engine.execute(
+            text(query)
+        ).first()[0]
+
+    acquisition_framework["stats"] = {
+        "nb_data": nb_data,
+        "nb_taxons": nb_taxons,
+        "nb_observations": nb_observations,
+        "nb_habitats": nb_habitat
+    }
+
+    if acquisition_framework:
+        acquisition_framework["nomenclature_territorial_level"] = af.nomenclature_territorial_level.as_dict()
+        acquisition_framework["nomenclature_financing_type"] = af.nomenclature_financing_type.as_dict()
+        return acquisition_framework
+    return None
 
 @routes.route("/acquisition_framework", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="METADATA")
@@ -520,4 +691,5 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
     .. :quickref: Metadata;
     """
     return mtd_utils.post_jdd_from_user(id_user=id_user, id_organism=id_organism)
+
 
