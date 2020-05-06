@@ -18,8 +18,8 @@
         <label class="label-titre">Jeu de données</label>
         <br>
         <label class="label-titre">
-            {% if data.dataset_shortname: %}
-                {{ data.dataset_shortname }}
+            {% if data.dataset_name: %}
+                {{ data.dataset_name }}
             {% endif %}
         </label>
         <hr class="ligne-titre ligne" {% if data.css: %} id="ligne-titre-{{data.css['entite']}}" {% else %}
