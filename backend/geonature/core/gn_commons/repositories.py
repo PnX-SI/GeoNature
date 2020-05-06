@@ -55,12 +55,13 @@ class TMediaRepository():
             self.data['isFile'] = True
             self.media_data['media_path'] = self.upload_file()
             self.media_data['media_url'] = None
-        elif self.data['media_path'] != '':
+        elif self.data.get('media_path') not in ['', None]:
             self.data['isFile'] = True
             self.media_data['media_url'] = None
         else:
             self.data['isFile'] = False
             self.media_data['media_path'] = None
+            self.media_data['media_url'] = self.data['media_url']
 
         # Si le média avait un fichier associé
         # et qu'il a été remplacé par une url

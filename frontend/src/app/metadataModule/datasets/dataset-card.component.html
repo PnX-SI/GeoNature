@@ -81,7 +81,10 @@
           <div *ngIf="dataset.cor_dataset_actor">
           <div class="b">Contacts </div>
             <div class="a" *ngFor="let actor of dataset.cor_dataset_actor">
-              <div> {{ actor.nomenclature_actor_role?.mnemonique}} : {{ actor.organism?.nom_organisme }} <span *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"> - </span> {{ actor.role?.nom_complet }} </div>
+              <div> {{ actor.nomenclature_actor_role?.mnemonique}} : {{ actor.organism?.nom_organisme }} 
+                <span *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"> - </span> 
+                {{ actor.role?.nom_complet }}
+             </div>
             </div>
           </div>
 

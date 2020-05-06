@@ -95,7 +95,7 @@ export class AfCardComponent implements OnInit {
       if(this.af.datasets)
       {
         if(this.af.datasets.length > 1){
-          this._dfs.getTaxaDistribution(data.datasets).subscribe(data2 => {
+          this._dfs.getTaxaDistributionDatasets(data.datasets).subscribe(data2 => {
             this.pieChartData.length = 0;
             this.pieChartLabels.length = 0;
             this.pieChartData = [];
@@ -109,13 +109,13 @@ export class AfCardComponent implements OnInit {
               this.spinner = false;
           });
         }else if(this.af.datasets.length == 1){
-          this._dfs.getRepartitionTaxons(data.datasets[0].id_dataset).subscribe(data2 => {
+          this._dfs.getTaxaDistributionDataset(id).subscribe(data => {
             this.pieChartData.length = 0;
             this.pieChartLabels.length = 0;
-              for(let row of data2) {
-                this.pieChartData.push(row[0]);
-                this.pieChartLabels.push(row[1]);
-              }
+            for (let row of data) {
+              this.pieChartData.push(row["count"]);
+              this.pieChartLabels.push(row["regne"]);
+            }
               // this.chart.chart.update();
               // this.chart.ngOnChanges({});
               this.spinner = false;

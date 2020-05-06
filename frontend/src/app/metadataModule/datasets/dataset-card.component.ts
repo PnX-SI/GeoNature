@@ -1,16 +1,14 @@
-import { Component, OnInit , ViewChild} from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { MetadataFormService } from '../services/metadata-form.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { BaseChartDirective } from 'ng2-charts';
 import { AppConfig } from "@geonature_config/app.config";
 
 @Component({
-  selector: 'pnx-datasets-form',
+  selector: 'pnx-datasets-card',
   templateUrl: './dataset-card.component.html',
   styleUrls: ['./dataset-card.scss'],
-  providers: [MetadataFormService]
 })
 
 export class DatasetCardComponent implements OnInit {
@@ -76,7 +74,7 @@ export class DatasetCardComponent implements OnInit {
     private _route: ActivatedRoute,
     private _dfs: DataFormService,
     public moduleService: ModuleService
-  ) {}
+  ) { }
 
   ngOnInit() {
     // get the id from the route
@@ -91,20 +89,20 @@ export class DatasetCardComponent implements OnInit {
   getDataset(id) {
     this._dfs.getDatasetDetails(id).subscribe(data => {
       this.dataset = data;
-      this.dataset.modules = this.dataset.modules.map(e => e.module_code).join(", ");
+      if (this.dataset.modules) {
+        this.dataset.modules = this.dataset.modules.map(e => e.module_code).join(", ");
+      }
     });
-    this._dfs.getRepartitionTaxons(id).subscribe(data => {
+    this._dfs.getTaxaDistributionDataset(id).subscribe(data => {
       this.pieChartData.length = 0;
       this.pieChartLabels.length = 0;
-        for(let row of data) {
-          this.pieChartData.push(row[0]);
-          this.pieChartLabels.push(row[1]);
-        }
-        this.chart.chart.update();
-    });
-
-    this._dfs.getGeojsonData(id).subscribe(data => {
-      this.geojsonData = data;
+      for (let row of data) {
+        this.pieChartData.push(row["count"]);
+        this.pieChartLabels.push(row["regne"]);
+      }
+      this.chart.chart.update();
+      this.chart.ngOnChanges({});
+      this.spinner = false;
     });
 
   }
