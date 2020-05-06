@@ -258,15 +258,6 @@ def get_dataset_details(info_role, id_dataset):
 
     return dataset
 
-@routes.route("/geojson_data/<id_dataset>", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="METADATA")
-@json_resp
-def get_geojson_data(info_role, id_dataset):
-    geojsonData = DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326))).filter(Synthese.id_dataset == id_dataset).first()[0]
-    if geojsonData:
-        return json.loads(geojsonData)
-    return None, 404
-
 
 @routes.route("/upload_canvas", methods=["POST"])
 @json_resp
@@ -564,17 +555,18 @@ def get_acquisition_framework_details(id_acquisition_framework):
     :param type: int
     """
     af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
+    if not af:
+        return None
     acquisition_framework = af.as_dict(True)
     q = DB.session.query(TDatasets).distinct()
-    data = q.filter( \
-                TDatasets.id_acquisition_framework \
-                == id_acquisition_framework).all()
-    dataset_ids = [d.id_dataset for d in data]
-    acquisition_framework["datasets"] = [d.as_dict(True) for d in data]
-    geojsonData = DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326))).filter(Synthese.id_dataset.in_(dataset_ids)).first()[0]
+
+    datasets = acquisition_framework['datasets'] if 'datasets' in acquisition_framework else []
+    dataset_ids = [d['id_dataset'] for d in datasets]
+    geojsonData = DB.session.query(
+        func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326))
+    ).filter(Synthese.id_dataset.in_(dataset_ids)).first()[0]
     if geojsonData:
-        acquisition_framework["geojsonData"] = json.loads(geojsonData)
-    
+        acquisition_framework["bbox"] = json.loads(geojsonData)
     nb_data = len(dataset_ids)
     nb_taxons = DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).distinct().count()
     nb_observations = DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).count()
@@ -600,8 +592,6 @@ def get_acquisition_framework_details(id_acquisition_framework):
     }
 
     if acquisition_framework:
-        acquisition_framework["nomenclature_territorial_level"] = af.nomenclature_territorial_level.as_dict()
-        acquisition_framework["nomenclature_financing_type"] = af.nomenclature_financing_type.as_dict()
         return acquisition_framework
     return None
 

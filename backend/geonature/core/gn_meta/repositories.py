@@ -1,7 +1,10 @@
 import logging
+import json
 
 from sqlalchemy import or_
 from sqlalchemy.orm import joinedload
+from sqlalchemy.sql.functions import func
+
 from flask import request
 
 from geonature.utils.env import DB
@@ -112,6 +115,13 @@ def get_dataset_details_dict(id_dataset):
         .filter(Synthese.id_dataset == id_dataset)
         .count()
     )
+    geojsonData = (
+        DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
+        .filter(Synthese.id_dataset == id_dataset)
+        .first()[0]
+    )
+    if geojsonData:
+        dataset["bbox"] = json.loads(geojsonData)
     return dataset
 
 

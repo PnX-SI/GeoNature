@@ -92,38 +92,22 @@ export class AfCardComponent implements OnInit {
         var end_date = new Date(this.af.acquisition_framework_end_date);
         this.af.acquisition_framework_end_date = end_date.toLocaleDateString();
       }
-      if(this.af.datasets)
-      {
-        if(this.af.datasets.length > 1){
-          this._dfs.getTaxaDistribution(data.datasets).subscribe(data2 => {
-            this.pieChartData.length = 0;
-            this.pieChartLabels.length = 0;
-            this.pieChartData = [];
-            this.pieChartLabels = [];
-              for(let row of data2) {
-                this.pieChartData.push(row[0]);
-                this.pieChartLabels.push(row[1]);
-              }
-              // this.chart.chart.update();
-              // this.chart.ngOnChanges({});
-              this.spinner = false;
-          });
-        }else if(this.af.datasets.length == 1){
-          this._dfs.getRepartitionTaxons(data.datasets[0].id_dataset).subscribe(data2 => {
-            this.pieChartData.length = 0;
-            this.pieChartLabels.length = 0;
-              for(let row of data2) {
-                this.pieChartData.push(row[0]);
-                this.pieChartLabels.push(row[1]);
-              }
-              // this.chart.chart.update();
-              // this.chart.ngOnChanges({});
-              this.spinner = false;
-          });
-        }
+      if (this.af.datasets) {
+        this._dfs.getTaxaDistribution('group2_inpn', { 'id_af': this.af.id_acquisition_framework }).subscribe(data2 => {
+          this.pieChartData.length = 0;
+          this.pieChartLabels.length = 0;
+          this.pieChartData = [];
+          this.pieChartLabels = [];
+          for (let row of data2) {
+            this.pieChartData.push(row[0]);
+            this.pieChartLabels.push(row[1]);
+          }
+          // this.chart.chart.update();
+          // this.chart.ngOnChanges({});
+          this.spinner = false;
+        });
       }
-      console.log(data);
-    });
+    })
   }
 
   getPdf() {

@@ -513,12 +513,12 @@ class TDatasetDetails(TDatasets):
         ),
     )
 
-
+@serializable
 class TAcquisitionFrameworkDetails(TAcquisitionFramework):
     """
     Class which extends TAcquisitionFramework with nomenclatures relationships
     """
-
+    datasets = DB.relationship(TDatasets, lazy="joined")
     nomenclature_territorial_level = DB.relationship(
         TNomenclatures,
         primaryjoin=(

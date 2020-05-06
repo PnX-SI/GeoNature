@@ -142,7 +142,7 @@
           <div *ngIf="af?.stats?.nb_data > 0" class="card-body">
             <pnx-map height="40vh" searchBar="false">
               <pnx-geojson
-                [geojson]="af?.geojsonData"
+                [geojson]="af?.bbox"
                 [zoomOnFirstTime]="true"
               >
               </pnx-geojson>

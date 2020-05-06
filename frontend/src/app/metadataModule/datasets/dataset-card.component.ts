@@ -88,32 +88,19 @@ export class DatasetCardComponent implements OnInit {
       if (this.dataset.modules) {
         this.dataset.modules = this.dataset.modules.map(e => e.module_code).join(", ");
       }
+      if ('bbox' in data) {
+        this.geojsonData = data['bbox']
+      }
     });
-    this._dfs.getTaxaDistribution(id, 'group2_inpn').subscribe(data => {
-      /*const rStart=0, gStart=80, bStart=240, rEnd=240, gEnd=240, bEnd=240;
-      var iColor = 0;
-      var tempColors = [];
-      this.pieChartColors = [];
-      this.pieChartColors.length = 0;*/
+    this._dfs.getTaxaDistribution('group2_inpn', { 'id_dataset': id }).subscribe(data => {
+
       this.pieChartData.length = 0;
       this.pieChartLabels.length = 0;
       for (let row of data) {
-        /*tempColors.push("rgb("
-          + (rEnd*iColor + rStart*(data.length-iColor))/data.length + ","
-          + (gEnd*iColor + gStart*(data.length-iColor))/data.length + ","
-          + (bEnd*iColor + bStart*(data.length-iColor))/data.length + ")");
-        ++iColor;*/
         this.pieChartData.push(row["count"]);
         this.pieChartLabels.push(row["group"]);
       }
-      /*this.pieChartColors = [{
-        backgroundColor: tempColors,
-      }];*/
-      this.chart.chart.update();
-    });
-
-    this._dfs.getGeojsonData(id).subscribe(data => {
-      this.geojsonData = data;
+      //this.chart.chart.update();
     });
 
   }

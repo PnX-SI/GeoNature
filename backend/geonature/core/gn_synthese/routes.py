@@ -893,7 +893,8 @@ def get_taxa_distribution():
         )
 
     data = query.group_by(rank).all()
-
+    print('LAA')
+    print(data)
     return [{"count" : d[0], "group": d[1]} for d in data]
     
 
