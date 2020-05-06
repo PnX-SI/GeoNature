@@ -357,18 +357,20 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/repartition_taxons_dataset/${id_dataset}`);
   }
 
-  getTaxaDistribution(datasets) {
-    let params: HttpParams = new HttpParams();
-    let dataset_ids = [];
-    for (let dataset of datasets) {
-      dataset_ids.push(dataset.id_dataset);
-      params = params.append('dataset_ids[]', dataset.id_dataset);
-    }
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/taxa_distribution`, { params: { 'dataset_ids': dataset_ids } });
-  }
-
   uploadCanvas(img: any) {
     return this._http.post<any>(`${AppConfig.API_ENDPOINT}/meta/upload_canvas`, img);
+  }
+  getTaxaDistribution(taxa_rank, params?: ParamsDict) {
+    let queryString = new HttpParams();
+    queryString = queryString.set('taxa_rank', taxa_rank);
+    for (let key in params) {
+      queryString = queryString.set(key, params[key])
+    }
+    console.log(queryString.toString());
+
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/taxa_distribution`, {
+      params: queryString
+    });
   }
 
   getModulesList(exclude: Array<string>) {
