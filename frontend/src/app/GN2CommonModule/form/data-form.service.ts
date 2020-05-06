@@ -366,7 +366,6 @@ export class DataFormService {
     for (let key in params) {
       queryString = queryString.set(key, params[key])
     }
-    console.log(queryString.toString());
 
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/taxa_distribution`, {
       params: queryString

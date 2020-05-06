@@ -558,7 +558,6 @@ def get_acquisition_framework_details(id_acquisition_framework):
     if not af:
         return None
     acquisition_framework = af.as_dict(True)
-    q = DB.session.query(TDatasets).distinct()
 
     datasets = acquisition_framework['datasets'] if 'datasets' in acquisition_framework else []
     dataset_ids = [d['id_dataset'] for d in datasets]

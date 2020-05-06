@@ -171,15 +171,19 @@
           </h5>
         </div>
           <div *ngIf="af?.stats?.nb_data > 0"  class="card-body">
-            <!-- <table>
+            <table>
               <tr *ngFor="let dataset of af?.datasets">
-                <td width="60"><img src="./assets/images/{{dataset?.modules[0]?.module_code=='OCCTAX' ? 'Taxon_icon_vert.svg' : 'Habitat_icon_vert.svg'}}" width="40"></td>
+                <td [ngSwitch]="dataset.jdd_data_type.cd_nomenclature">
+                  <img width="60" *ngSwitchCase="'Tax'" src="./assets/images/Taxon_icon_vert.svg" alt="">
+                  <img width="60" *ngSwitchCase="'Hab'" src="./assets/images/Habitat_icon_vert.svg" alt="">
+                  <img width="60" *ngSwitchDefault src="./assets/images/Taxon_icon_vert.svg" alt="">
+                </td>
                 <td> <a [routerLink]="['/metadata/dataset_detail', dataset?.id_dataset]" style="color:black">{{ dataset?.dataset_name }}</a>
                   <div><small>{{dataset?.unique_dataset_id}}</small>
                   </div>
                 </td>
               </tr>
-            </table> -->
+            </table>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { BaseChartDirective } from 'ng2-charts';
@@ -67,7 +67,6 @@ export class AfCardComponent implements OnInit {
     private _dfs: DataFormService,
     private _route: ActivatedRoute
   ) { }
-
   ngOnInit() {
     this._route.params.subscribe(params => {
       this.id_af = params['id'];
@@ -75,11 +74,6 @@ export class AfCardComponent implements OnInit {
         this.getAf(this.id_af);
       }
     });
-    // this._dfs.getAcquisitionFrameworks({ is_parent: 'true' }).subscribe(data => {
-    //   this.acquisitionFrameworks = data;
-    // });
-
-    // console.log(this.acquisitionFrameworks);
   }
   getAf(id_af: number) {
     this._dfs.getAcquisitionFrameworkDetails(id_af).subscribe(data => {
@@ -99,11 +93,9 @@ export class AfCardComponent implements OnInit {
           this.pieChartData = [];
           this.pieChartLabels = [];
           for (let row of data2) {
-            this.pieChartData.push(row[0]);
-            this.pieChartLabels.push(row[1]);
+            this.pieChartData.push(row["count"]);
+            this.pieChartLabels.push(row["group"]);
           }
-          // this.chart.chart.update();
-          // this.chart.ngOnChanges({});
           this.spinner = false;
         });
       }

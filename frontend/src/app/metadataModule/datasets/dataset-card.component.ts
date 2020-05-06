@@ -83,6 +83,8 @@ export class DatasetCardComponent implements OnInit {
   }
 
   getDataset(id) {
+    console.log(this.chart);
+
     this._dfs.getDatasetDetails(id).subscribe(data => {
       this.dataset = data;
       if (this.dataset.modules) {
