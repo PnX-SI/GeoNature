@@ -852,24 +852,47 @@ def get_observation_count():
     return query.one()
 
 
-@routes.route("/taxa_per_dataset/<int:id_dataset>/<string:taxa_rank>", methods=["GET"])
+@routes.route("/taxa_distribution", methods=["GET"])
 @json_resp
-def get_taxa_per_dataset(id_dataset, taxa_rank):
-    """Get observations found in a given dataset
+def get_taxa_distribution():
+    """
+    Get taxa distribution for a given dataset or acquisition framework
+    and grouped by a certain taxa rank
     """
 
-    rank = getattr(Taxref.__table__.columns, taxa_rank)
+    id_dataset = request.args.get("id_dataset")
+    id_af = request.args.get("id_af")
 
-    data = DB.session.query(
-        func.count(distinct(Synthese.cd_nom)),
-        rank
-    ).select_from(
-        Synthese
-    ).outerjoin(
-        Taxref, Taxref.cd_nom == Synthese.cd_nom
-    ).filter(
-        Synthese.id_dataset == id_dataset
-    ).group_by(rank).all()
+    rank = request.args.get("taxa_rank")
+    if not rank:
+        rank = "regne"
+
+    rank = getattr(Taxref.__table__.columns, rank)
+
+    Taxref.group2_inpn
+
+    query = DB.session.query(
+            func.count(distinct(Synthese.cd_nom)),
+            rank
+        ).select_from(
+            Synthese
+        ).outerjoin(
+            Taxref, Taxref.cd_nom == Synthese.cd_nom
+        )
+
+    if id_dataset:
+        query = query.filter(
+            Synthese.id_dataset == id_dataset
+        )
+
+    elif id_af:
+        query = query.outerjoin(
+            TDatasets, TDatasets.id_dataset == Synthese.id_dataset
+        ).filter(
+            TDatasets.id_acquisition_framework == id_af
+        )
+
+    data = query.group_by(rank).all()
 
     return [{"count" : d[0], "group": d[1]} for d in data]
     
