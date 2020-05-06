@@ -34,6 +34,8 @@ from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from geonature.core.gn_meta import mtd_utils
 from geonature.utils.errors import GeonatureApiError
+from geonature.utils.env import BACKEND_DIR
+
 import geonature.utils.filemanager as fm
 
 from flask.wrappers import Response
@@ -247,8 +249,7 @@ def upload_canvas():
     """
     data = request.data[22:]
     binary_data = a2b_base64(data)
-
-    fd = open('static/images/taxa.png', 'wb')
+    fd = open(str(BACKEND_DIR) + '/static/images/taxa.png', 'wb')
     fd.write(binary_data)
     fd.close()
 
