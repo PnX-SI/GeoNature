@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ModuleService } from '@geonature/services/module.service';
@@ -19,7 +19,7 @@ export class DatasetCardComponent implements OnInit {
   public nbObservations: number;
   public geojsonData: any = null;
 
-  @ViewChild(BaseChartDirective) chart: BaseChartDirective;
+  @ViewChild(BaseChartDirective) public chart: BaseChartDirective;
 
   // Type de graphe
   public pieChartType = 'doughnut';
@@ -83,7 +83,6 @@ export class DatasetCardComponent implements OnInit {
   }
 
   getDataset(id) {
-    console.log(this.chart);
 
     this._dfs.getDatasetDetails(id).subscribe(data => {
       this.dataset = data;
@@ -96,13 +95,17 @@ export class DatasetCardComponent implements OnInit {
     });
     this._dfs.getTaxaDistribution('group2_inpn', { 'id_dataset': id }).subscribe(data => {
 
-      this.pieChartData.length = 0;
-      this.pieChartLabels.length = 0;
+      this.pieChartData = []
+      this.pieChartLabels = []
       for (let row of data) {
         this.pieChartData.push(row["count"]);
         this.pieChartLabels.push(row["group"]);
       }
-      //this.chart.chart.update();
+      // in order to have chart instance
+      setTimeout(() => {
+        this.chart.chart.update();
+
+      }, 1000)
     });
 
   }

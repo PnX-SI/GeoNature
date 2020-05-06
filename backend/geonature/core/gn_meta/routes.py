@@ -180,20 +180,7 @@ def get_af_from_id(id_af, af_list):
             found_af = af
             break
     return found_af
-@routes.route("/upload_cadre_acquisition_rde_canvas", methods=["POST"])
-@json_resp
-def upload_cadre_acquisition_rde_canvas():
-    """Upload the canvas as a temporary image used while generating the pdf file
-    """
-    data = request.data[22:]
-    binary_data = a2b_base64(data)
-
-    fd = open('static/images/cadre-acquisition-rde.png', 'wb')
-    fd.write(binary_data)
-    fd.close()
-
-    return "OK"
-
+    
 
 @routes.route("/dataset/<id_dataset>", methods=["GET"])
 @json_resp
