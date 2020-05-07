@@ -11,7 +11,7 @@
 ################################################################################
 
 
-https://github.com/PnX-SI/UsersHub-authentification-module/archive/1.4.3.zip
+https://github.com/PnX-SI/UsersHub-authentification-module/archive/develop.zip
 https://github.com/PnX-SI/Nomenclature-api-module/archive/develop.zip
 https://github.com/PnX-SI/Habref-api-module/archive/0.1.2.zip
 utils-flask-sqlalchemy==0.1.0
