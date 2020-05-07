@@ -178,7 +178,10 @@
                 <p class="info-contenu">
                         {% for act in data.cor_af_actor -%} 
                             {% if act.nomenclature_actor_role: %}
-                                {{ act.nomenclature_actor_role['mnemonique'] }} : {{ act.organism['nom_organisme'] }}
+                                {{ act.nomenclature_actor_role['mnemonique'] }} :
+                            {% endif %}
+                            {% if act.organism: %}
+                                {{ act.organism['nom_organisme'] }}
                             {% endif %}
                             {% if act.organism and act.role: %}
                                 -
@@ -209,7 +212,7 @@
     
             <div class="repartition">
                 <p class="repartition-especes">Répartition des espèces</p>
-                <img class="taxons" src="../../static/images/cadre-acquisition-rde.png" alt="Pas d'espèces à afficher.">
+                <img class="taxons" src="../../static/images/taxa.png" alt="Pas d'espèces à afficher.">
             </div>
 
             <div class="jdd">
