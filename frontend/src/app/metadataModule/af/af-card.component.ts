@@ -21,11 +21,7 @@ export class AfCardComponent implements OnInit {
   // Tableau contenant les données du graphe
   public pieChartData = [];
   // Tableau contenant les couleurs et la taille de bordure du graphe
-  public pieChartColors = [
-    {
-      backgroundColor: ["rgb(0,80,240)", "rgb(80,160,240)", "rgb(160,200,240)"],
-    }
-  ];
+  public pieChartColors = [];
   // Dictionnaire contenant les options à implémenter sur le graphe (calcul des pourcentages notamment)
   public pieChartOptions = {
     cutoutPercentage: 80,
