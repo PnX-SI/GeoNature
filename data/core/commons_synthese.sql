@@ -1,7 +1,5 @@
 
 -- vue validation de gn_commons necessitant le schéma synthese
-CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS 
- 
 CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp
 AS SELECT  s.id_synthese,
     s.unique_id_sinp,
