@@ -125,7 +125,7 @@ def get_dataset_details_dict(id_dataset):
     return dataset
 
 
-def get_af_cruved(info_role, params={}):
+def get_af_cruved(info_role, params={}, as_model=False):
     """
         Return the datasets filtered with cruved
         Params:
