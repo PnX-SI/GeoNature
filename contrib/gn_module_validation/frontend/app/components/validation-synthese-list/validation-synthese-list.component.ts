@@ -56,7 +56,7 @@ export class ValidationSyntheseListComponent
     public ref: ChangeDetectorRef,
     private _ms: MapService,
     public formService: SyntheseFormService,
-  ) {}
+  ) { }
 
   ngOnInit() {
     // get wiewport height to set the number of rows in the tabl
@@ -72,34 +72,44 @@ export class ValidationSyntheseListComponent
   onMapClick() {
     this.mapListService.onMapClik$.subscribe(id => {
       // create list of observation ids having coordinates = to id value
+
+
       const selected_id_coordinates = this.mapListService.layerDict[id].feature
         .geometry.coordinates;
       this.id_same_coordinates = [];
-      for (let obs in this.mapListService.geojsonData.features) {
-        if (
-          JSON.stringify(selected_id_coordinates) ==
-          JSON.stringify(
-            this.mapListService.geojsonData.features[obs].geometry.coordinates
-          )
-        ) {
-          this.id_same_coordinates.push(
-            parseInt(this.mapListService.geojsonData.features[obs].id)
-          );
-        }
-      }
+      console.log(this.mapListService.geojsonData.features);
+
+      // for (let obs in this.mapListService.geojsonData.features) {
+      //   console.log(obs);
+
+      //   if (
+      //     JSON.stringify(selected_id_coordinates) ==
+      //     JSON.stringify(
+      //       this.mapListService.geojsonData.features[obs].geometry.coordinates
+      //     )
+      //   ) {
+      //     this.id_same_coordinates.push(
+      //       parseInt(this.mapListService.geojsonData.features[obs].id)
+      //     );
+      //   }
+      // }
 
       // select rows having id_synthese = to one of the id_same_coordinates values
       this.mapListService.selectedRow = [];
-      for (let id of this.id_same_coordinates) {
-        for (let i = 0; i < this.mapListService.tableData.length; i++) {
-          if (this.mapListService.tableData[i]["id_synthese"] === id) {
-            this.mapListService.selectedRow.push(
-              this.mapListService.tableData[i]
-            );
-          }
+      for (let i = 0; i < this.mapListService.tableData.length; i++) {
+        if (this.mapListService.tableData[i]["id_synthese"] === id) {
+          this.mapListService.selectedRow.push(
+            this.mapListService.tableData[i]
+          );
+          break;
         }
+        const page = Math.trunc(i / this.rowNumber);
+        console.log(page);
+
+        this.table.offset = page;
       }
-      this.setSelectedObs();
+
+      //this.setSelectedObs();
     });
   }
 

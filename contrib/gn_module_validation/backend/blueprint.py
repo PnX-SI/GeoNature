@@ -77,7 +77,7 @@ def get_synthese_data(info_role):
         result_limit = filters.pop("limit")[0]
     else:
         result_limit = blueprint.config["NB_MAX_OBS_MAP"]
-    print('')
+    print("")
 
     # q = DB.session.query(VSyntheseValidation)
     query = (
@@ -96,9 +96,11 @@ def get_synthese_data(info_role):
                 VSyntheseValidation.validation_date,
                 VSyntheseValidation.nom_vern,
                 VSyntheseValidation.lb_nom,
+                VSyntheseValidation.cd_nom,
                 VSyntheseValidation.comment_description,
                 VSyntheseValidation.altitude_min,
                 VSyntheseValidation.altitude_max,
+                VSyntheseValidation.unique_id_sinp,
             ]
         )
         .where(VSyntheseValidation.the_geom_4326.isnot(None))
@@ -120,10 +122,10 @@ def get_synthese_data(info_role):
 
     for r in result:
         properties = {
+            "id_synthese": r["id_synthese"],
             "cd_nomenclature_validation_status": r["cd_nomenclature_validation_status"],
             "dataset_name": r["dataset_name"],
             "date_min": str(r["date_min"]),
-            # "id_nomenclature_valid_status": r["id_nomenclature_valid_status"],
             "id_synthese": r["id_synthese"],
             "nom_vern_or_lb_nom": r["nom_vern"] if r["nom_vern"] else r["lb_nom"],
             "observers": r["observers"],
@@ -132,6 +134,8 @@ def get_synthese_data(info_role):
             "altitude_min": r["altitude_min"],
             "altitude_max": r["altitude_max"],
             "comment": r["comment_description"],
+            "cd_nom": r["cd_nom"],
+            "unique_id_sinp": str(r["unique_id_sinp"]),
         }
         geojson = ast.literal_eval(r["geojson"])
         geojson["properties"] = properties
