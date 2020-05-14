@@ -1,9 +1,10 @@
 import logging
+import ast
+import re
+
 from flask import Blueprint, current_app, request
 
 from operator import itemgetter
-
-import re
 
 from sqlalchemy import select, desc, cast, DATE, func
 
@@ -21,6 +22,7 @@ from geonature.core.gn_synthese.models import (
     VMTaxonsSyntheseAutocomplete,
     VSyntheseForWebApp,
 )
+from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 from geonature.core.gn_commons.models import BibTablesLocation
 
@@ -32,8 +34,6 @@ from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_commons.models import TValidations
 
 from .models import VSyntheseValidation
-
-# from geonature.core.gn_synthese.utils import query as synthese_query
 
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
@@ -67,50 +67,87 @@ def get_synthese_data(info_role):
 
     """
 
-    try:
-        filters = {
-            key: request.args.getlist(key) for key, value in request.args.items()
-        }
-        for key, value in filters.items():
-            if "," in value[0] and key != "geoIntersection":
-                filters[key] = value[0].split(",")
+    # try:
+    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
+    for key, value in filters.items():
+        if "," in value[0] and key != "geoIntersection":
+            filters[key] = value[0].split(",")
 
+    if "limit" in filters:
+        result_limit = filters.pop("limit")[0]
+    else:
         result_limit = blueprint.config["NB_MAX_OBS_MAP"]
+    print('')
 
-        q = DB.session.query(VSyntheseValidation)
-
-        q = filter_query_all_filters(VSyntheseValidation, q, filters, info_role)
-
-        q = q.order_by(VSyntheseValidation.date_min.desc())
-
-        nb_total = 0
-
-        data = q.limit(result_limit)
-        columns = (
-            blueprint.config["COLUMNS_API_VALIDATION_WEB_APP"]
-            + blueprint.config["MANDATORY_COLUMNS"]
+    # q = DB.session.query(VSyntheseValidation)
+    query = (
+        select(
+            [
+                VSyntheseValidation.cd_nomenclature_validation_status,
+                VSyntheseValidation.dataset_name,
+                VSyntheseValidation.date_min,
+                VSyntheseValidation.id_nomenclature_valid_status,
+                VSyntheseValidation.id_synthese,
+                VSyntheseValidation.nom_valide,
+                VSyntheseValidation.nom_vern,
+                VSyntheseValidation.geojson,
+                VSyntheseValidation.observers,
+                VSyntheseValidation.validation_auto,
+                VSyntheseValidation.validation_date,
+                VSyntheseValidation.nom_vern,
+                VSyntheseValidation.lb_nom,
+                VSyntheseValidation.comment_description,
+                VSyntheseValidation.altitude_min,
+                VSyntheseValidation.altitude_max,
+            ]
         )
+        .where(VSyntheseValidation.the_geom_4326.isnot(None))
+        .order_by(VSyntheseValidation.date_min.desc())
+    )
+    validation_query_class = SyntheseQuery(VSyntheseValidation, query, filters)
+    validation_query_class.filter_query_all_filters(info_role)
 
-        features = []
+    result = DB.engine.execute(validation_query_class.query.limit(result_limit))
 
-        for d in data:
-            feature = d.get_geofeature(columns=columns)
-            feature["properties"]["nom_vern_or_lb_nom"] = (
-                d.nom_vern if d.lb_nom is None else d.lb_nom
-            )
-            features.append(feature)
+    nb_total = 0
 
-        return {
-            "data": FeatureCollection(features),
-            "nb_obs_limited": nb_total == blueprint.config["NB_MAX_OBS_MAP"],
-            "nb_total": nb_total,
+    columns = (
+        blueprint.config["COLUMNS_API_VALIDATION_WEB_APP"]
+        + blueprint.config["MANDATORY_COLUMNS"]
+    )
+
+    geojson_features = []
+
+    for r in result:
+        properties = {
+            "cd_nomenclature_validation_status": r["cd_nomenclature_validation_status"],
+            "dataset_name": r["dataset_name"],
+            "date_min": str(r["date_min"]),
+            # "id_nomenclature_valid_status": r["id_nomenclature_valid_status"],
+            "id_synthese": r["id_synthese"],
+            "nom_vern_or_lb_nom": r["nom_vern"] if r["nom_vern"] else r["lb_nom"],
+            "observers": r["observers"],
+            "validation_auto": r["validation_auto"],
+            "validation_date": str(r["validation_date"]),
+            "altitude_min": r["altitude_min"],
+            "altitude_max": r["altitude_max"],
+            "comment": r["comment_description"],
         }
-    except Exception as e:
-        log.error(e)
-        return (
-            'INTERNAL SERVER ERROR ("get_synthese_data() error"): contactez l\'administrateur du site',
-            500,
-        )
+        geojson = ast.literal_eval(r["geojson"])
+        geojson["properties"] = properties
+        geojson["id"] = r["id_synthese"]
+        geojson_features.append(geojson)
+    return {
+        "data": FeatureCollection(geojson_features),
+        "nb_obs_limited": nb_total == blueprint.config["NB_MAX_OBS_MAP"],
+        "nb_total": nb_total,
+    }
+    # except Exception as e:
+    #     log.error(e)
+    #     return (
+    #         'INTERNAL SERVER ERROR ("get_synthese_data() error"): contactez l\'administrateur du site',
+    #         500,
+    #     )
 
 
 @blueprint.route("/statusNames", methods=["GET"])

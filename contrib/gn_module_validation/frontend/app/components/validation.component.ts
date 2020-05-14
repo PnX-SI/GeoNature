@@ -21,7 +21,7 @@ export class ValidationComponent implements OnInit {
     private _mapListService: MapListService,
     private _commonService: CommonService,
     private _fs: SyntheseFormService
-  ) {}
+  ) { }
 
   ngOnInit() {
     // reinitialize the form
@@ -30,8 +30,9 @@ export class ValidationComponent implements OnInit {
     this._fs.selectedTaxonFromRankInput = [];
     this._fs.selectedtaxonFromComponent = [];
     this.getStatusNames();
-    this._commonService.translateToaster("info", "Le nombre d'observations affiché sur la carte est limité à " +
-        ModuleConfig.NB_MAX_OBS_MAP);
+    this._commonService.translateToaster("info", "La limite de nombre d'observations affichable dans le module est de " +
+      ModuleConfig.NB_MAX_OBS_MAP);
+    this._commonService.translateToaster("info", "Les 100 dernières observations");
   }
 
   getStatusNames() {
@@ -56,7 +57,8 @@ export class ValidationComponent implements OnInit {
         }
       },
       () => {
-        const initialData = {};
+        const initialData = { 'limit': 100 };
+
         this.loadAndStoreData(initialData);
       }
     );
@@ -84,7 +86,7 @@ export class ValidationComponent implements OnInit {
           this._commonService.translateToaster("error", err.error);
         }
       },
-      () => {}
+      () => { }
     );
   }
 

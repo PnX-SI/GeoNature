@@ -80,7 +80,7 @@ ADD COLUMN reference_biblio character varying(255);
 
 -- Amélioration des performances de la vue v_synthese_validation_forwebapp
 
-DROP gn_commons.v_synthese_validation_forwebapp;
+DROP VIEW gn_commons.v_synthese_validation_forwebapp;
 CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS
 SELECT  s.id_synthese,
     s.unique_id_sinp,
@@ -141,7 +141,8 @@ SELECT  s.id_synthese,
     n.cd_nomenclature AS cd_nomenclature_validation_status,
     n.label_default,
     v.validation_auto,
-    v.validation_date
+    v.validation_date,
+    ST_asgeojson(s.the_geom_4326) as geojson
    FROM gn_synthese.synthese s
     JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
     JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
