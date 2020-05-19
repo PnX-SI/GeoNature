@@ -71,6 +71,7 @@ import { CommonService } from './service/common.service';
 import { FormService } from './form/form.service';
 import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
+import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 
 // add all rxjs operators
 import 'rxjs/Rx';
@@ -143,7 +144,8 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     FormService,
     DynamicFormService,
     NgbDatePeriodParserFormatter,
-    SyntheseDataService
+    SyntheseDataService,
+    CruvedStoreService
   ],
   entryComponents: [TaxonAdvancedModalComponent],
   exports: [
@@ -199,4 +201,4 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     GeometryFormComponent
   ]
 })
-export class GN2CommonModule {}
+export class GN2CommonModule { }

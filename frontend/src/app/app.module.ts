@@ -47,7 +47,7 @@ import {
   UserManagementGuard
 } from '@geonature/routing/routes-guards.service';
 import { ModuleService } from './services/module.service';
-import { CruvedStoreService } from './services/cruved-store.service';
+import { CruvedStoreService } from './GN2CommonModule/service/cruved-store.service';
 import { SideNavService } from './components/sidenav-items/sidenav-service';
 
 import { MyCustomInterceptor } from './services/http.interceptor';
@@ -109,4 +109,4 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }
