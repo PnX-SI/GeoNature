@@ -89,10 +89,15 @@ def insert_or_update_media(id_media=None):
         formData = dict(request.form)
         for key in formData:
             data[key] = formData[key]
+            if isinstance(data[key], list):
+                data[key] = data[key][0]
+            if key in ['id_table_location', 'id_nomenclature_media_type', 'id_media']:
+                data[key] = int(data[key])
             if data[key] == "true":
                 data[key] = True
             if data[key] == "false":
                 data[key] = False
+
     else:
         data = request.get_json(silent=True)
 

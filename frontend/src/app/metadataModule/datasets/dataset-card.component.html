@@ -1,0 +1,167 @@
+<div *ngIf="dataset" class="container-fluid mt-4">
+  <div class="row">
+    <div class="col-xs-12 col-sm-6 col-lg-8">
+      <h3>JEU DE DONNÉES : {{dataset.dataset_name}}</h3>
+    </div>
+    <div class="c col-xs-6 col-lg-4">
+      <button class="btn btn-secondary" routerLink="/metadata"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
+      </button>
+      <button class="btn btn-primary" (click)="getPdf()">Export PDF</button>
+    </div>
+  </div>
+
+  <div *ngIf="dataset.taxa_count" class="row">
+    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 ">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col"><h5>Taxons</h5> {{dataset.taxa_count}} </div>
+            <div class="col-auto" width="60"><img src="./assets/images/Taxon_icon.svg" width="60"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col"><h5>Observations</h5> {{dataset.observation_count}} </div>
+            <div class="col-auto" width="60"><img src="./assets/images/Donnee_icon.svg" width="64"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 ">
+      <div class="card">
+        <div class="card-header">
+          <h5>
+            Fiche descriptive
+          </h5>
+        </div>
+        <div class="card-body">
+
+          <div class="b">Identification</div>
+          <div class="a"> Instance : {{dataset.dataset_name}}</div>
+          <div class="a"> Identifiant SINP du jeu de données : {{dataset.unique_dataset_id}}</div>
+          <div class="a"> Libellé court : {{dataset.dataset_shortname}}</div>
+          <div class="a"> Description : {{dataset.dataset_desc}}</div>
+          <br/>
+
+          <div class="b">Type de données</div>
+          <div class="a"> {{dataset.data_type.label_default}}</div>
+          <br/>
+
+          <div class="b"> Objectifs </div>
+          <div class="a"> {{dataset.dataset_objectif.label_default}}</div>
+          <br/>
+
+          <div class="b">Territoires</div>
+          <div class="a"> Couverture du territoire terrestre : {{dataset.terrestrial_domain ? "oui" : "non"}} </div>
+          <div class="a"> Couverture du territoire marin : {{dataset.marine_domain ? "oui" : "non"}} </div>
+          <br/>
+
+          <div class="b">Cadre de référence</div>
+          <div class="a"> Titre du cadre d'acquisition : {{dataset.acquisition_framework.acquisition_framework_name}} </div>
+          <div class="a"> Identifiant du cadre d'acquisition : {{dataset.acquisition_framework.unique_acquisition_framework_id }} </div>
+          <br/>
+
+
+          <div class="b">Processus de collecte</div>
+          <div class="a"> Libellé : {{dataset.collecting_method.label_default}} </div>
+          <div class="a"> Description : {{dataset.collecting_method.definition_default}} </div>
+          <!--div class="a"> Url : ??? </div-->
+          <!--div class="a"> Type de protocole : ??? </div-->
+          <!--div class="a"> Précisions : ??? </div-->
+          <div class="a"> Code : {{dataset.collecting_method.cd_nomenclature}} </div>
+
+          <br/>
+
+          <div *ngIf="dataset.cor_dataset_actor">
+          <div class="b">Contacts </div>
+            <div class="a" *ngFor="let actor of dataset.cor_dataset_actor">
+              <div> {{ actor.nomenclature_actor_role?.mnemonique}} : {{ actor.organism?.nom_organisme }} 
+                <span *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"> - </span> 
+                {{ actor.role?.nom_complet }}
+             </div>
+            </div>
+          </div>
+
+          <br/>
+
+          <div class="b">Attribut additionnels</div>
+          <div class="a">Actif : {{dataset.active ? 'Oui' : 'Non'}} </div>
+          <div class="a">Validable : {{dataset.validable ? 'Oui' : 'Non'}} </div>
+
+          <br/>
+
+          <!--div class="a">Origine des données : {{dataset.data_origin.label_default}} </div>
+          <div class="a">Statut source : {{dataset.source_status.label_default}} </div>
+          <div class="a">Type de ressource : {{dataset.resource_type.label_default}} </div>
+
+          <br/-->
+
+          <div *ngIf="dataset.modules">
+            <div class="b">Module(s) GeoNature associé(s) au jeu de données :</div>
+            <div class="a">{{ dataset.modules }}</div>
+          </div>
+
+          <br/>
+
+          <div *ngIf="dataset.keywords">
+            <div class="b">Mots-clés :</div>
+            <div class="a"> {{dataset.keywords}} </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-4">
+      <div class="card ">
+        <div class="card-header">
+          <h5>Périmètre géographique</h5>
+        </div>
+        <div *ngIf="this.geojsonData" class="card-body"> <!-- changer la valeur du ngif quand la carte sera prete -->
+          <pnx-map height="40vh" searchBar="false">
+            <pnx-geojson
+              [geojson]="this.geojsonData"
+              [zoomOnFirstTime]="true"
+            >
+            </pnx-geojson>
+          </pnx-map>
+        </div>
+      </div>
+      <div class="card ">
+        <div class="card-header">
+          <h5>Répartition des espèces</h5>
+        </div>
+        <div *ngIf="dataset.taxa_count" class="card-body">
+          <div style="display: block">
+              <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
+                  [colors]="pieChartColors" [options]="pieChartOptions" padding="20px">
+              </canvas>
+          </div>
+        </div>
+      </div>
+      <div class="card ">
+        <div class="card-header">
+          <h5>Cadre d'acquisition initial</h5>
+        </div>
+          <div class="card-body">
+          <div class="row">
+            <div class="col-auto" width="60"><img src="./assets/images/Taxon_icon_vert.svg" width="64"></div>
+            <div class="col">
+              <div><a [routerLink]="['/metadata/af_detail', dataset.id_acquisition_framework]" style="color:black">
+                {{dataset.acquisition_framework.acquisition_framework_name}}
+              </a></div>
+              <div><small>{{dataset.acquisition_framework.unique_acquisition_framework_id}}</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

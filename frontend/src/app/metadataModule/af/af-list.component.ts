@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { Router } from '@angular/router';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
-import { CruvedStoreService } from '../../services/cruved-store.service';
+import { CruvedStoreService } from '../../GN2CommonModule/service/cruved-store.service';
 
 @Component({
   selector: 'pnx-af-list',
@@ -17,7 +17,7 @@ export class AfListComponent implements OnInit {
     private _dfs: DataFormService,
     private _router: Router,
     public cruvedStore: CruvedStoreService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this._dfs.getAcquisitionFrameworks().subscribe(data => {
@@ -30,7 +30,7 @@ export class AfListComponent implements OnInit {
     const val = event.target.value.toLowerCase();
 
     // filter our data
-    this.acquisitionFrameworks = this.temp.filter(function(d) {
+    this.acquisitionFrameworks = this.temp.filter(function (d) {
       return d.acquisition_framework_name.toLowerCase().indexOf(val) !== -1 || !val;
     });
 

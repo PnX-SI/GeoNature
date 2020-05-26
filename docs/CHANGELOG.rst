@@ -10,12 +10,15 @@ CHANGELOG
 * Réécriture du trigger générique de calcul de l'altitude. N'est executé que si l'altitude n'est pas postée
 * Ajout d'un offset sur la route de la couleur des taxons
 * Support des fonds de carte au format WMS (https://leafletjs.com/reference-1.6.0.html#tilelayer-wms-l-tilelayer-wms), PR#890 @jbdesbas 
+* Ajout du champs "reference_biblio" dans la synthese
+* Amélioration des perfomances du module de validation
 
 **🐛 Corrections**
 
 **⚠️ Notes de version**
 
 * SQL d'update de la BDD...
+* Le fichier ``2.3.2to2.3.3.sql`` ne peut être exécuté qu'après le fichier ``update1.3.2to1.3.3.sql`` du module ``Nomenclature-api-module``, sans quoi les contraintes sur la colonne ``t_datasets.id_nomenclature_jdd_data_type`` ne peuvent pas être respectées
 
 2.3.2 (2020-02-24)
 ------------------
