@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { Router } from '@angular/router';
-import { CruvedStoreService } from '../../services/cruved-store.service';
+import { CruvedStoreService } from '../../GN2CommonModule/service/cruved-store.service';
 
 @Component({
   selector: 'pnx-dataset-list',
@@ -22,7 +22,7 @@ export class DatasetListComponent implements OnInit {
     private _dfs: DataFormService,
     private _router: Router,
     public cruvedStore: CruvedStoreService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this._dfs.getDatasets().subscribe(results => {
@@ -40,7 +40,7 @@ export class DatasetListComponent implements OnInit {
     const val = event.target.value.toLowerCase();
 
     // filter our data
-    this.datasets = this.temp.filter(function(d) {
+    this.datasets = this.temp.filter(function (d) {
       return d.dataset_name.toLowerCase().indexOf(val) !== -1 || !val;
     });
 

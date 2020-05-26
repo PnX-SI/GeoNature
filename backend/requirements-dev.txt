@@ -22,6 +22,7 @@ decorator==4.2.1
 docutils==0.14
 enum34==1.1.6
 flake8==3.5.0
+Flask-WeasyPrint==0.6
 funcsigs==1.0.2
 idna==2.6
 imagesize==0.7.1
@@ -29,7 +30,7 @@ ipdb==0.10.3
 ipython-genutils==0.2.0
 ipython==5.5.0
 jinja2==2.10.1
-markupsafe==1.0
+markupsafe==1.1
 mccabe==0.6.1
 mypy==0.560
 pathlib2==2.3.0

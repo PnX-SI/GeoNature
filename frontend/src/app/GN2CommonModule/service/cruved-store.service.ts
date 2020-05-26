@@ -6,6 +6,8 @@ export class CruvedStoreService {
   public cruved: any;
   constructor(private _api: DataFormService) {
     this._api.getCruved().subscribe(data => {
+      console.log('store');
+
       this.cruved = data;
     });
   }

@@ -1,0 +1,63 @@
+.btn-secondary,
+.btn-primary,
+.btn-success,
+.btn-danger {
+    margin: 1% 1% 1% 2%;
+}
+
+.main-card {
+    width: 80%;
+    margin: auto;
+}
+
+.card-body {
+    font-size: 14px;
+}
+
+
+div.a {
+	margin-left: 60px;
+	font-size: 90%;
+	line-height: 150%;
+}
+
+div.b {
+	text-indent: 20px;
+	font-weight: bold;
+	font-size: 90%;
+	line-height: 150%;
+}
+
+div.c {
+  text-align: right;
+}
+
+.card {
+	position: relative;
+	display: -webkit-box;
+	display: flex;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	flex-direction: column;
+	min-width: 0;
+	word-wrap: break-word;
+	background-color: #fff;
+	background-clip: border-box;
+	border: 1px solid #edf2f9;
+	border-radius: .5rem;
+	margin-bottom: 1.5rem;
+	border-color: #edf2f9;
+	box-shadow: 0 .75rem 1.5rem rgba(18, 38, 63, .03)
+}
+
+.card-header {
+	padding: 1rem 1.5rem;
+	margin-bottom: 0;
+	background-color: transparent;
+	border-bottom: 1px solid #edf2f9
+}
+
+
+.bold {
+    font-weight: bold;
+}

@@ -10,7 +10,7 @@ from flask import (
     Blueprint, request, current_app,
     send_from_directory, render_template
 )
-from sqlalchemy import distinct, func, desc, select
+from sqlalchemy import distinct, func, desc, select, text
 from sqlalchemy.orm import exc
 from geojson import FeatureCollection, Feature
 
@@ -808,6 +808,95 @@ def get_color_taxon():
     data = q.limit(limit).offset(page * limit).all()
     return [d.as_dict() for d in data]
 
+
+@routes.route("/taxa_count", methods=["GET"])
+@json_resp
+def get_taxa_count():
+    """
+    Get taxa count in synthese filtering with generic parameters
+
+    :query int id_dataset: filter by id_dataset
+
+    :returns int: the number of taxa found
+    """
+    params = request.args
+    
+    query = DB.session.query(
+        func.count(distinct(Synthese.cd_nom))
+    ).select_from(
+        Synthese
+    )
+    
+    if 'id_dataset' in params:
+        query = query.filter(Synthese.id_dataset == params['id_dataset'])
+    print(query.one())
+    return query.one()
+
+
+@routes.route("/observation_count", methods=["GET"])
+@json_resp
+def get_observation_count():
+    """Get observations found in a given dataset
+    """
+    params = request.args
+    
+    query = DB.session.query(
+        func.count(Synthese.cd_nom)
+    ).select_from(
+        Synthese
+    )
+    
+    if 'id_dataset' in params:
+        query = query.filter(Synthese.id_dataset == params['id_dataset'])
+
+    return query.one()
+
+
+@routes.route("/taxa_distribution", methods=["GET"])
+@json_resp
+def get_taxa_distribution():
+    """
+    Get taxa distribution for a given dataset or acquisition framework
+    and grouped by a certain taxa rank
+    """
+
+    id_dataset = request.args.get("id_dataset")
+    id_af = request.args.get("id_af")
+
+    rank = request.args.get("taxa_rank")
+    if not rank:
+        rank = "regne"
+
+    rank = getattr(Taxref.__table__.columns, rank)
+
+    Taxref.group2_inpn
+
+    query = DB.session.query(
+            func.count(distinct(Synthese.cd_nom)),
+            rank
+        ).select_from(
+            Synthese
+        ).outerjoin(
+            Taxref, Taxref.cd_nom == Synthese.cd_nom
+        )
+
+    if id_dataset:
+        query = query.filter(
+            Synthese.id_dataset == id_dataset
+        )
+
+    elif id_af:
+        query = query.outerjoin(
+            TDatasets, TDatasets.id_dataset == Synthese.id_dataset
+        ).filter(
+            TDatasets.id_acquisition_framework == id_af
+        )
+
+    data = query.group_by(rank).all()
+    print('LAA')
+    print(data)
+    return [{"count" : d[0], "group": d[1]} for d in data]
+    
 
 # @routes.route("/test", methods=["GET"])
 # @json_resp

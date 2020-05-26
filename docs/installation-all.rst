@@ -53,7 +53,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
 * Mettre à jour les sources-list (Debian uniquement) : 
 
-A l'installation de l'OS, les sources-list (liste des sources à partir desquelles sont téléchargés les paquets) ne sont pas toujours correctes.
+A l'installation de l'OS, les sources-list (liste des sources à partir desquelles sont téléchargés les paquets) ne sont pas toujours adaptés. Pour Debian 10, les sources-list par défaut sont compatibles et il n'est donc pas nécessaire de les compléter.
 
 ::
         
@@ -72,7 +72,7 @@ Pour Debian 9 :
         deb http://deb.debian.org/debian stretch main contrib non-free
         deb-src http://deb.debian.org/debian stretch main contrib non-free
 
-Pour Debian 8 :
+Pour Debian 8 (support non testé) :
 
 ::
 
@@ -114,7 +114,7 @@ Pour Debian 8 :
 
 * Configuration de la locale du serveur
 
-Certains serveurs sont livrés sans "locale" (langue par défaut). Pour l'installation de GeoNature, il est necessaire de bien configurer la locale. Si la commande ``locale`` renvoie ceci:
+Certains serveurs sont livrés sans "locale" (langue par défaut). Pour l'installation de GeoNature, il est nécessaire de bien configurer la locale. Si la commande ``locale`` renvoie ceci :
 
 ::
 
@@ -134,11 +134,11 @@ Certains serveurs sont livrés sans "locale" (langue par défaut). Pour l'instal
     LC_IDENTIFICATION="fr_FR.UTF-8"
     LC_ALL=fr_FR.UTF-8
 
-vous pouvez alors passer cette étape de configuration des locale.
+Vous pouvez alors passer cette étape de configuration des locales.
 
-Exécuter la commande ``dpkg-reconfigure locales``. Une fenêtre s'affiche dans votre console. Dans la liste déroulante, sélectionnez ``fr_FR.UTF-8 UTF-8`` avec ``Espace``, puis cliquez sur OK. Une 2ème fenêtre s'affiche avec une liste de locale activées (``fr_FR.UTF-8`` doit être présent dans la liste), confirmez votre choix, en cliquant sur OK, puis attendez que la locale s'installe.
+Sinon exécuter la commande ``dpkg-reconfigure locales``. Une fenêtre s'affiche dans votre console. Dans la liste déroulante, sélectionnez ``fr_FR.UTF-8 UTF-8`` avec ``Espace``, puis cliquez sur OK. Une 2ème fenêtre s'affiche avec une liste de locale activées (``fr_FR.UTF-8`` doit être présent dans la liste), confirmez votre choix, en cliquant sur OK, puis attendez que la locale s'installe.
 
-Passer alors sur l'utilisateur ``geonatureadmin``: ``su geonatureadmin`` et executer ensuite ces commandes:
+Passer alors sur l'utilisateur ``geonatureadmin`` avec la commande ``su geonatureadmin`` et exécuter ensuite ces commandes :
 
 ::
 
@@ -147,9 +147,9 @@ Passer alors sur l'utilisateur ``geonatureadmin``: ``su geonatureadmin`` et exec
     export LANG=fr_FR.UTF-8
 
 
-Pour la suite de la documentation et pour l'administration courante de GeoNature, **on n'utilisera plus jamais l'utilisateur** ``root`` (utiliser `geonatureadmin` dans l'exemple de la documentation. ``su geonatureadmin`` pour change d'utilisateur). Si besoin d'exécuter des commandes avec des droits d'administrateur, on les précède de ``sudo``.
+Pour la suite de la documentation et pour l'administration courante de GeoNature, **on n'utilisera plus jamais l'utilisateur** ``root`` (utiliser ``geonatureadmin`` dans l'exemple de la documentation; ``su geonatureadmin`` pour change d'utilisateur). Si besoin d'exécuter des commandes avec des droits d'administrateur, on les précède de ``sudo``.
 
-Il est d'ailleurs possible de renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec ``root``.
+Il est d'ailleurs possible de renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec l'utilisateur ``root``.
 
 Voir https://docs.ovh.com/fr/vps/conseils-securisation-vps/ pour plus d'informations sur le sécurisation du serveur (port SSH, désactiver root, fail2ban, pare-feu, sauvegarde...).
 
@@ -245,17 +245,17 @@ Lancez ensuite la commande ``geonature install_gn_module <mon_chemin_absolu_vers
 
 Le premier paramètre est l'emplacement absolu du module sur votre serveur et le deuxième est le chemin derrière lequel on accédera au module dans le navigateur.
 
-Exemple pour un module de validation :
+Exemple pour un module Import :
 
 ::
 
-    geonature install_gn_module /home/gn_module_validation validation
+    geonature install_gn_module /home/gn_module_import import
 
-Le module sera disponible à l'adresse ``http://mon-geonature.fr/geonature/validation``
+Le module sera disponible à l'adresse ``http://mon-geonature.fr/geonature/#/validation``
 
-L'API du module sera disponible à l'adresse ``http://mon-geonature.fr/api/geonature/validation``
+L'API du module sera disponible à l'adresse ``http://mon-geonature.fr/api/import``
 
-Cette commande éxecute les actions suivantes :
+Cette commande exécute les actions suivantes :
 
 - Vérification de la conformité de la structure du module (présence des fichiers et dossiers obligatoires)
 - Intégration du blueprint du module dans l'API de GeoNature

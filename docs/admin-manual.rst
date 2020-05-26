@@ -894,7 +894,7 @@ Les fonctionnalités de création de compte nécessitent l'envoi d'emails pour v
         MAIL_USE_TLS = false
         MAIL_USE_SSL = true
         MAIL_USERNAME = 'mon_email@email.io'
-        MAIL_PASSWORD = 'M@rm0tt3'
+        MAIL_PASSWORD = 'monpassword'
         MAIL_DEFAULT_SENDER = 'mon_email@email.io'
         MAIL_ASCII_ATTACHMENTS = false
 
@@ -1191,6 +1191,74 @@ Pour ne pas afficher le module Occtax à un utilisateur où à un groupe, il fau
 
 L'administration des droits des utilisateurs pour le module Occtax se fait dans le backoffice de gestion des permissions de GeoNature.
 
+
+Module OCCHAB
+-------------
+
+Installer le module
+"""""""""""""""""""
+
+Le module OCCHAB fait parti du coeur de GeoNature. Son installation est au choix de l'administrateur.
+
+Pour l'installer, lancer les commande suivante:
+
+.. code-block:: console
+
+    cd backend
+    source venv/bin/activate
+    geonature install_gn_module /home/`whoami`/geonature/contrib/gn_module_occhab occtax
+
+
+Base de données
+"""""""""""""""
+
+Le module s'appuie sur deux schémas.: 
+``ref_habitats``:  Le réferentiel habitat du MNHN 
+``pr_occhab``: le schéma qui contient les données d'occurrence d'habitat, basé sur standard du MNHN
+
+Configuration
+""""""""""""""
+
+Le parametrage du module OCCHAB se fait depuis le fichier ``/home/`whoami`/geonature/contrib/config/conf_gn_module.toml``
+Après toute modification de la configuration d'un module, il faut regénérer le fichier de configuration du frontend comme expliqué ici : `Configuration d'un gn_module`_
+
+
+Formulaire
+***********
+
+- La liste des habitats fournit pour la saisie est basé sur une liste définit en base de données (table ``ref_habitat.cor_list_habitat`` et ``ref_habitat.bib_list_habitat``). Il est possible d'éditer cette liste directement den base de données, d'en créer une autre et de changer la liste utiliser par le module. Editer alors ce paramètre:
+
+``ID_LIST_HABITAT = 1``
+
+- Le formulaire permet de saisir des observateur basés sur le referentiel utilisateurs ( ``false``) ou de les saisir en texte libre (``true``). 
+
+``OBSERVER_AS_TXT = false``
+
+- L'ensemble des champs du formulaire son masquables. Pour en masquer certains, passer à ``false`` les variables suivantes:
+
+::
+
+    [formConfig]
+      date_min = true
+      date_max = true
+      depth_min = true
+      depth_max = true
+      altitude_min = true
+      altitude_max = true
+      exposure = true
+      area = true
+      comment = true
+      area_surface_calculation = true
+      geographic_object = true
+      determination_type = true
+      determiner = true
+      collection_technique = true
+      technical_precision = true
+      recovery_percentage = true
+      abundance = true
+      community_interest = true
+
+Voir le fichier ``conf_gn_module.toml.example`` qui liste l'ensemble des paramètres de configuration du module.
 
 Module SYNTHESE
 ---------------

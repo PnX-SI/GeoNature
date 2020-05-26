@@ -6,19 +6,25 @@ import { HttpClientModule, HttpClientXsrfModule, HTTP_INTERCEPTORS } from '@angu
 
 import { DatasetListComponent } from './datasets/dataset-list.component';
 import { DatasetFormComponent } from './datasets/dataset-form.component';
+import { DatasetCardComponent } from './datasets/dataset-card.component';
 import { AfListComponent } from './af/af-list.component';
 import { AfFormComponent } from './af/af-form.component';
 import { ActorComponent } from './actors/actors.component';
 import { MetadataComponent } from './metadata.component';
+import { AfCardComponent } from './af/af-card.component';
+import { ChartsModule } from 'ng2-charts/ng2-charts';
+import { ChartModule } from 'angular2-chartjs';
 
 const routes: Routes = [
   { path: '', component: MetadataComponent },
   { path: 'dataset', component: DatasetFormComponent },
   { path: 'datasets', component: DatasetListComponent },
   { path: 'dataset/:id', component: DatasetFormComponent },
+  { path: 'dataset_detail/:id', component: DatasetCardComponent },
   { path: 'afs', component: AfListComponent },
   { path: 'af', component: AfFormComponent },
-  { path: 'af/:id', component: AfFormComponent }
+  { path: 'af/:id', component: AfFormComponent },
+  { path: 'af_detail/:id', component: AfCardComponent }
 ];
 
 @NgModule({
@@ -29,6 +35,8 @@ const routes: Routes = [
     }),
     CommonModule,
     GN2CommonModule,
+    ChartsModule,
+    ChartModule,
     RouterModule.forChild(routes)
   ],
   exports: [],
@@ -36,9 +44,11 @@ const routes: Routes = [
     MetadataComponent,
     DatasetListComponent,
     DatasetFormComponent,
+    DatasetCardComponent,
     AfListComponent,
     AfFormComponent,
-    ActorComponent
+    ActorComponent,
+    AfCardComponent
   ],
   providers: []
 })

@@ -24,7 +24,7 @@ export const FormatMapMime = new Map([
 @Injectable()
 export class DataFormService {
   private _blob: Blob;
-  constructor(private _http: HttpClient) {}
+  constructor(private _http: HttpClient) { }
 
   getNomenclature(
     codeNomenclatureType: string,
@@ -95,10 +95,23 @@ export class DataFormService {
         }
       }
     }
-
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/datasets`, {
       params: queryString
     });
+  }
+
+  /**
+   * Get dataset list for metadata modules
+   */
+  getAfAndDatasetListMetadata() {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/af_datasets_metadata`, {
+    });
+  }
+
+
+
+  getImports(id_dataset) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/import/by_dataset/${id_dataset}`);
   }
 
   getObservers(idMenu) {
@@ -268,8 +281,23 @@ export class DataFormService {
     });
   }
 
+  /**
+   * Return all AF with cruved for map-list
+   */
+  getAcquisitionFrameworksMetadata(orderByName = true) {
+    let queryString: HttpParams = new HttpParams();
+    if (orderByName) {
+      queryString = this.addOrderBy(queryString, 'acquisition_framework_name');
+    }
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks_metadata`, { params: queryString });
+  }
+
   getAcquisitionFramework(id_af) {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}`);
+  }
+
+  getAcquisitionFrameworkDetails(id_af) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework_details/${id_af}`);
   }
 
   getOrganisms(orderByName = true) {
@@ -312,6 +340,36 @@ export class DataFormService {
 
   getDataset(id) {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/dataset/${id}`);
+  }
+
+  getDatasetDetails(id) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/dataset_details/${id}`);
+  }
+
+  // getTaxaDistribution(id_dataset) {
+  //   return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/dataset_taxa_distribution/${id_dataset}`);
+  // }
+  getGeojsonData(id) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/geojson_data/${id}`);
+  }
+
+  getRepartitionTaxons(id_dataset) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/repartition_taxons_dataset/${id_dataset}`);
+  }
+
+  uploadCanvas(img: any) {
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/meta/upload_canvas`, img);
+  }
+  getTaxaDistribution(taxa_rank, params?: ParamsDict) {
+    let queryString = new HttpParams();
+    queryString = queryString.set('taxa_rank', taxa_rank);
+    for (let key in params) {
+      queryString = queryString.set(key, params[key])
+    }
+
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/taxa_distribution`, {
+      params: queryString
+    });
   }
 
   getModulesList(exclude: Array<string>) {
@@ -382,4 +440,6 @@ export class DataFormService {
     link.click();
     document.body.removeChild(link);
   }
+
 }
+
