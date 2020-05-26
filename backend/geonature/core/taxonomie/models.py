@@ -108,3 +108,18 @@ class TaxrefLR(DB.Model):
     annee_publication = DB.Column(DB.Unicode)
     categorie_lr_europe = DB.Column(DB.Unicode)
     categorie_lr_mondiale = DB.Column(DB.Unicode)
+
+@serializable
+class VMTaxrefListForautocomplete(DB.Model):
+    __tablename__ = "vm_taxref_list_forautocomplete"
+    __table_args__ = {"schema": "taxonomie"}
+    cd_nom = DB.Column(DB.Integer, primary_key=True)
+    search_name = DB.Column(DB.Unicode, primary_key=True)
+    cd_ref = DB.Column(DB.Integer)
+    nom_valide = DB.Column(DB.Unicode)
+    lb_nom = DB.Column(DB.Unicode)
+    regne = DB.Column(DB.Unicode)
+    group2_inpn = DB.Column(DB.Unicode)
+
+    def __repr__(self):
+        return "<VMTaxrefListForautocomplete  %r>" % self.search_name

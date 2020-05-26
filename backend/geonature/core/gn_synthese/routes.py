@@ -31,15 +31,15 @@ from geonature.core.gn_synthese.models import (
     TSources,
     DefaultsNomenclaturesValue,
     SyntheseOneRecord,
-    VMTaxonsSyntheseAutocomplete,
     VSyntheseForWebApp,
-    VColorAreaTaxon,
+    VColorAreaTaxon
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from geonature.core.taxonomie.models import (
     Taxref,
     TaxrefProtectionArticles,
     TaxrefProtectionEspeces,
+    VMTaxrefListForautocomplete
 )
 from geonature.core.ref_geo.models import LAreas, BibAreasTypes
 from geonature.core.gn_synthese.utils import query as synthese_query
@@ -693,26 +693,26 @@ def get_autocomplete_taxons_synthese():
     """
     search_name = request.args.get("search_name", "")
     q = DB.session.query(
-        VMTaxonsSyntheseAutocomplete,
-        func.similarity(VMTaxonsSyntheseAutocomplete.search_name, search_name).label(
+        VMTaxrefListForautocomplete,
+        func.similarity(VMTaxrefListForautocomplete.search_name, search_name).label(
             "idx_trgm"
         ),
-    )
+    ).distinct().join(Synthese, Synthese.cd_nom == VMTaxrefListForautocomplete.cd_nom)
     search_name = search_name.replace(" ", "%")
     q = q.filter(
-        VMTaxonsSyntheseAutocomplete.search_name.ilike("%" + search_name + "%")
+        VMTaxrefListForautocomplete.search_name.ilike("%" + search_name + "%")
     )
     regne = request.args.get("regne")
     if regne:
-        q = q.filter(VMTaxonsSyntheseAutocomplete.regne == regne)
+        q = q.filter(VMTaxrefListForautocomplete.regne == regne)
 
     group2_inpn = request.args.get("group2_inpn")
     if group2_inpn:
-        q = q.filter(VMTaxonsSyntheseAutocomplete.group2_inpn == group2_inpn)
+        q = q.filter(VMTaxrefListForautocomplete.group2_inpn == group2_inpn)
 
     q = q.order_by(
-        desc(VMTaxonsSyntheseAutocomplete.cd_nom ==
-             VMTaxonsSyntheseAutocomplete.cd_ref)
+        desc(VMTaxrefListForautocomplete.cd_nom ==
+             VMTaxrefListForautocomplete.cd_ref)
     )
     limit = request.args.get("limit", 20)
     data = q.order_by(desc("idx_trgm")).limit(20).all()

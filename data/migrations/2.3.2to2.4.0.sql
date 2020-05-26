@@ -251,3 +251,6 @@ id_nomenclature_jdd_data_type integer NOT NULL DEFAULT ref_nomenclatures.get_def
 
 ALTER TABLE only gn_meta.t_datasets add CONSTRAINT
 fk_t_datasets_jdd_data_type FOREIGN KEY (id_nomenclature_jdd_data_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+-- Usage de la table vm_taxref_list_forautocomplete du schéma taxonomie
+DROP TABLE taxonomie.taxons_synthese_autocomplete;
