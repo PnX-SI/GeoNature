@@ -73,29 +73,7 @@ ALTER TABLE ONLY gn_commons.t_mobile_apps
 ALTER TABLE gn_commons.t_mobile_apps
     ADD CONSTRAINT unique_t_mobile_apps_app_code UNIQUE (app_code);
 
---Création de la table de versionning
-CREATE TABLE gn_commons.t_soft_versions
-(
-  id_soft integer NOT NULL,
-  soft_code varchar (10) NOT NULL,
-  soft_name varchar (100) NOT NULL,
-  soft_installed_version varchar (20) NOT NULL,
-  install_date timestamp without time zone,
-  commentaire text
-);
-COMMENT ON COLUMN gn_commons.t_soft_versions.soft_code IS 'code unique et permanent de l''application ou du module. Utiliser si possible le même code que celui défini dans utilisateurs.t_applications ou dans gn_commons.t_modules';
-COMMENT ON COLUMN gn_commons.t_soft_versions.soft_name IS 'Nom de l''application ou du module';
-COMMENT ON COLUMN gn_commons.t_soft_versions.soft_installed_version IS 'Version de l''application ou du module auquel la base correspond';
-COMMENT ON COLUMN gn_commons.t_soft_versions.install_date IS 'date à laquelle la version actuelle a été mise à jour';
-ALTER TABLE ONLY gn_commons.t_soft_versions
-    ADD CONSTRAINT pk_t_soft_versions PRIMARY KEY (id_soft);
--- insertion initial des modules et applications dans le versionning
-INSERT INTO gn_commons.t_soft_versions(id_soft, soft_code, soft_name, soft_installed_version, install_date, commentaire) VALUES
-(1,'UH', 'UsersHub', '2.1.1', now(), NULL)
-,(2,'TH', 'TaxHub', '1.6.5', now(), NULL)
-,(3,'GN', 'GeoNAture', '2.4.0', now(), NULL)
-;
--- ajout du champs reference_biblio  dans la synthese
+-- Ajout du champs reference_biblio dans la synthese
 ALTER TABLE gn_synthese.synthese 
 ADD COLUMN reference_biblio character varying(255);
 
