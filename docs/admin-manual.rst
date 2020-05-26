@@ -296,15 +296,6 @@ Respecte le standard Occurrence de taxon du SINP.
   - BEFORE INSERT OR UPDATE
   - Mise à jour des champs ``meta_create_date`` et ``meta_update_date``
 
-* trg_refresh_taxons_forautocomplete
-   
-  - AFTER INSERT OR UPDATE OF cd_nom OR DELETE
-  - Mise à jour de la table ``taxons_synthese_autocomplete``
-  - Actions :
-  
-    1. Si suppression ou update : suppression des enregistrements avec le cd_nom concerné dans la table ``gn_synthese.taxons_synthese_autocomplete auto``. *Si un cd_nom est présent dans plusieurs enregistrements, il sera supprimé également. Il manque un test pour savoir si la suppression doit ou non être activée.*
-    2. Insertion des informations taxonomiques du cd_nom concerné dans la table ``gn_synthese.taxons_synthese_autocomplete auto``
-
 * tri_insert_cor_area_synthese
 
   - AFTER INSERT OR UPDATE OF the_geom_local
