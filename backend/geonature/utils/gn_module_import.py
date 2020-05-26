@@ -326,6 +326,10 @@ def install_frontend_dependencies(module_path):
         try:
             # To avoid Maximum call stack size exceeded on npm install - clear cache...
             assert subprocess.call(
+                ['/bin/bash', '-i', '-c', 'nvm use'],
+                cwd=str(ROOT_DIR / "frontend")
+            ) == 0
+            assert subprocess.call(
                 ['npm', 'install', str(frontend_module_path), '--no-save'],
                 cwd=str(ROOT_DIR / "frontend")
             ) == 0
