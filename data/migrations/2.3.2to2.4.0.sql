@@ -56,7 +56,6 @@ UPDATE gn_commons.t_modules
    WHERE module_code='OCCTAX';
 
 -- Création de la table necessaire au MAJ mobiles
-
 CREATE TABLE gn_commons.t_mobile_apps(
   id_mobile_app serial,
   app_code character varying(30),
@@ -74,7 +73,7 @@ ALTER TABLE ONLY gn_commons.t_mobile_apps
 ALTER TABLE gn_commons.t_mobile_apps
     ADD CONSTRAINT unique_t_mobile_apps_app_code UNIQUE (app_code);
 
--- ajout du champs reference_biblio  dans la synthese
+-- Ajout du champs reference_biblio dans la synthese
 ALTER TABLE gn_synthese.synthese 
 ADD COLUMN reference_biblio character varying(255);
 
@@ -230,3 +229,6 @@ id_nomenclature_jdd_data_type integer NOT NULL DEFAULT ref_nomenclatures.get_def
 
 ALTER TABLE only gn_meta.t_datasets add CONSTRAINT
 fk_t_datasets_jdd_data_type FOREIGN KEY (id_nomenclature_jdd_data_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+-- Usage de la table vm_taxref_list_forautocomplete du schéma taxonomie
+DROP TABLE taxonomie.taxons_synthese_autocomplete;

@@ -241,39 +241,6 @@ CREATE TABLE gn_synthese.cor_area_taxon (
   last_date timestamp without time zone NOT NULL
 );
 
-CREATE TABLE gn_synthese.taxons_synthese_autocomplete AS
-SELECT t.cd_nom,
-  t.cd_ref,
-  t.search_name,
-  t.nom_valide,
-  t.lb_nom,
-  t.regne,
-  t.group2_inpn
-FROM (
-  SELECT t_1.cd_nom,
-        t_1.cd_ref,
-        concat(t_1.lb_nom, ' =  <i> ', t_1.nom_valide, '</i>', ' - [', t_1.id_rang, ' - ', t_1.cd_nom , ']' ) AS search_name,
-        t_1.nom_valide,
-        t_1.lb_nom,
-        t_1.regne,
-        t_1.group2_inpn
-  FROM taxonomie.taxref t_1
-
-  UNION
-  SELECT t_1.cd_nom,
-        t_1.cd_ref,
-        concat(t_1.nom_vern, ' =  <i> ', t_1.nom_valide, '</i>', ' - [', t_1.id_rang, ' - ', t_1.cd_nom , ']' ) AS search_name,
-        t_1.nom_valide,
-        t_1.lb_nom,
-        t_1.regne,
-        t_1.group2_inpn
-  FROM taxonomie.taxref t_1
-  WHERE t_1.nom_vern IS NOT NULL AND t_1.cd_nom = t_1.cd_ref
-) t
-  WHERE t.cd_nom IN (SELECT DISTINCT cd_nom FROM gn_synthese.synthese);
-
-  COMMENT ON TABLE taxons_synthese_autocomplete
-     IS 'Table construite à partir d''une requete sur la base et mise à jour via le trigger trg_refresh_taxons_forautocomplete de la table gn_synthese';
 
 ---------------
 --PRIMARY KEY--
@@ -289,8 +256,6 @@ ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT pk_gn_synthese_defaults_nomenclatures_value PRIMARY KEY (mnemonique_type, id_organism, regne, group2_inpn);
 
 ALTER TABLE ONLY cor_observer_synthese ADD CONSTRAINT pk_cor_observer_synthese PRIMARY KEY (id_synthese, id_role);
-
-ALTER TABLE ONLY taxons_synthese_autocomplete ADD CONSTRAINT pk_taxons_synthese_autocomplete PRIMARY KEY (cd_nom, search_name);
 
 ALTER TABLE cor_area_taxon
   ADD CONSTRAINT pk_cor_area_taxon PRIMARY KEY (id_area, cd_nom);
@@ -390,9 +355,6 @@ ALTER TABLE ONLY cor_observer_synthese
 
 ALTER TABLE ONLY cor_observer_synthese
     ADD CONSTRAINT fk_gn_synthese_id_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY taxons_synthese_autocomplete
-    ADD CONSTRAINT fk_taxons_synthese_autocomplete FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
 
 ALTER TABLE cor_area_taxon
   ADD CONSTRAINT fk_cor_area_taxon_cd_nom FOREIGN KEY (cd_nom)
@@ -555,11 +517,6 @@ CREATE INDEX i_synthese_the_geom_point ON synthese USING gist (the_geom_point);
 CREATE UNIQUE INDEX i_unique_cd_ref_vm_min_max_for_taxons ON gn_synthese.vm_min_max_for_taxons USING btree (cd_ref);
 --REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.vm_min_max_for_taxons;
 
-CREATE INDEX i_taxons_synthese_autocomplete_cd_nom
-  ON taxons_synthese_autocomplete (cd_nom ASC NULLS LAST);
-
-CREATE INDEX i_tri_taxons_synthese_autocomplete_search_name
-  ON taxons_synthese_autocomplete USING GIST (search_name gist_trgm_ops);
 
 -------------
 --FUNCTIONS--
@@ -653,52 +610,6 @@ $BODY$
   RETURN NULL;
   END;
   $BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-
-
-CREATE OR REPLACE FUNCTION gn_synthese.fct_trg_refresh_taxons_forautocomplete()
-  RETURNS trigger AS
-$BODY$
- DECLARE
-  thenomvern VARCHAR;
-  BEGIN
-    IF TG_OP in ('DELETE', 'TRUNCATE', 'UPDATE') AND OLD.cd_nom NOT IN (SELECT DISTINCT cd_nom FROM gn_synthese.synthese) THEN
-        DELETE FROM gn_synthese.taxons_synthese_autocomplete auto
-        WHERE auto.cd_nom = OLD.cd_nom;
-    END IF;
-
-    IF TG_OP in ('INSERT', 'UPDATE') AND NEW.cd_nom NOT IN (SELECT DISTINCT cd_nom FROM gn_synthese.taxons_synthese_autocomplete) THEN
-      INSERT INTO gn_synthese.taxons_synthese_autocomplete
-      SELECT t.cd_nom,
-              t.cd_ref,
-          concat(t.lb_nom, ' = <i>', t.nom_valide, '</i>', ' - [', t.id_rang, ' - ', t.cd_nom , ']') AS search_name,
-          t.nom_valide,
-          t.lb_nom,
-          t.regne,
-          t.group2_inpn
-      FROM taxonomie.taxref t WHERE cd_nom = NEW.cd_nom;
-      --On insère une seule fois le nom_vern car il est le même pour tous les synonymes
-      SELECT INTO thenomvern t.cd_nom
-      FROM gn_synthese.taxons_synthese_autocomplete a
-      JOIN taxonomie.taxref t ON t.cd_nom = a.cd_nom
-      WHERE a.cd_ref = taxonomie.find_cdref(NEW.cd_nom)
-      AND a.search_name ILIKE t.nom_vern||'%';
-      IF thenomvern IS NULL THEN
-        INSERT INTO gn_synthese.taxons_synthese_autocomplete
-        SELECT t.cd_nom,
-          t.cd_ref,
-          concat(t.nom_vern, ' =  <i> ', t.nom_valide, '</i>', ' - [', t.id_rang, ' - ', t.cd_nom , ']' ) AS search_name,
-          t.nom_valide,
-          t.lb_nom,
-          t.regne,
-          t.group2_inpn
-        FROM taxonomie.taxref t WHERE t.nom_vern IS NOT NULL AND cd_nom = NEW.cd_nom;
-      END IF;
-    END IF;
-  RETURN NULL;
-  END;
-$BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
@@ -1102,12 +1013,6 @@ CREATE TRIGGER tri_insert_cor_area_synthese
   ON gn_synthese.synthese
   FOR EACH ROW
   EXECUTE PROCEDURE gn_synthese.fct_trig_insert_in_cor_area_synthese();
-
-CREATE TRIGGER trg_refresh_taxons_forautocomplete
-  AFTER INSERT OR UPDATE OF cd_nom OR DELETE
-  ON gn_synthese.synthese
-  FOR EACH ROW
-  EXECUTE PROCEDURE gn_synthese.fct_trg_refresh_taxons_forautocomplete();
 
 -- trigger insertion ou update sur cor_area_syntese - déclenché après insert ou update sur cor_area_synthese
 CREATE TRIGGER tri_maj_cor_area_taxon

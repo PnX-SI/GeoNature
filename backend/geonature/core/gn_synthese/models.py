@@ -250,22 +250,6 @@ class DefaultsNomenclaturesValue(DB.Model):
 
 
 @serializable
-class VMTaxonsSyntheseAutocomplete(DB.Model):
-    __tablename__ = "taxons_synthese_autocomplete"
-    __table_args__ = {"schema": "gn_synthese"}
-    cd_nom = DB.Column(DB.Integer, primary_key=True)
-    search_name = DB.Column(DB.Unicode, primary_key=True)
-    cd_ref = DB.Column(DB.Integer)
-    nom_valide = DB.Column(DB.Unicode)
-    lb_nom = DB.Column(DB.Unicode)
-    regne = DB.Column(DB.Unicode)
-    group2_inpn = DB.Column(DB.Unicode)
-
-    def __repr__(self):
-        return "<VMTaxonsSyntheseAutocomplete  %r>" % self.search_name
-
-
-@serializable
 @geoserializable
 class VSyntheseForWebApp(DB.Model):
     __tablename__ = "v_synthese_for_web_app"
