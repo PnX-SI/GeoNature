@@ -30,7 +30,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   @Input() geojson: GeoJSON;
   /* Boolean qui controle le zoom au point*/
   @Input() bZoomOnPoint = true;
-  @Input() zoomLevelOnPoint = 8;
+  @Input() zoomLevelOnPoint = 18;
   /**
    *  Objet permettant de paramettrer le plugin et les différentes formes dessinables (point, ligne, cercle etc...)
    *
