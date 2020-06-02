@@ -22,29 +22,28 @@ from geonature.utils.env import DB
 
 corVisitObserver = DB.Table(
     "cor_visit_observer",
-    DB.MetaData(schema="gn_monitoring"),
     DB.Column(
         "id_base_visit",
         DB.Integer,
-        ForeignKey("gn_monitoring.cor_visit_observer.id_base_visit"),
+        ForeignKey("gn_monitoring.t_base_visits.id_base_visit"),
         primary_key=True,
     ),
     DB.Column(
         "id_role",
         DB.Integer,
-        # ForeignKey("utilisateurs.t_roles.id_role"),
+        ForeignKey("utilisateurs.t_roles.id_role"),
         primary_key=True,
     ),
+    schema="gn_monitoring"
 )
 
 
 corSiteModule = DB.Table(
     "cor_site_module",
-    DB.MetaData(schema="gn_monitoring"),
     DB.Column(
         "id_base_site",
         DB.Integer,
-        ForeignKey("gn_monitoring.cor_site_module.id_base_site"),
+        ForeignKey("gn_monitoring.t_base_sites.id_base_site"),
         primary_key=True,
     ),
     DB.Column(
@@ -53,15 +52,15 @@ corSiteModule = DB.Table(
         ForeignKey("gn_commons.t_modules.id_module"),
         primary_key=True,
     ),
+    schema="gn_monitoring"
 )
 
 corSiteArea = DB.Table(
     "cor_site_area",
-    DB.MetaData(schema="gn_monitoring"),
     DB.Column(
         "id_base_site",
         DB.Integer,
-        ForeignKey("gn_monitoring.cor_site_module.id_base_site"),
+        ForeignKey("gn_monitoring.t_base_sites.id_base_site"),
         primary_key=True,
     ),
     DB.Column(
@@ -70,8 +69,8 @@ corSiteArea = DB.Table(
         ForeignKey("ref_geo.l_areas.id_area"),
         primary_key=True
     ),
+    schema="gn_monitoring"
 )
-
 
 @serializable
 class TBaseVisits(DB.Model):
