@@ -4,6 +4,7 @@ from sqlalchemy import ForeignKey, not_
 from sqlalchemy.sql import select, func, and_
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.inspection import inspect
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.tools import InsufficientRightsError
@@ -26,8 +27,6 @@ class OcctaxModel(DB.Model):
     """
     __abstract__ = True
 
-    _changes = {}
-
     def __init__(self, **kwargs):
         kwargs['_force'] = True
         self._set_columns(**kwargs)
@@ -41,8 +40,6 @@ class OcctaxModel(DB.Model):
         if hasattr(self, 'hidden_fields'):
             readonly += self.hidden_fields
 
-        changes = {}
-
         columns = self.__table__.columns.keys()
         relationships = self.__mapper__.relationships.keys()
 
@@ -52,7 +49,6 @@ class OcctaxModel(DB.Model):
             if allowed and exists:
                 val = getattr(self, key)
                 if val != kwargs[key]:
-                    changes[key] = {'old': val, 'new': kwargs[key]}
                     setattr(self, key, kwargs[key])
 
         for rel in relationships:
@@ -62,63 +58,38 @@ class OcctaxModel(DB.Model):
                 is_list = self.__mapper__.relationships[rel].uselist
                 if is_list:
                     valid_ids = []
-                    query = getattr(self, rel)
                     cls = self.__mapper__.relationships[rel].argument()
                     pk = cls.__table__.primary_key.columns.keys()[0]
+                    query = getattr(self, rel)
                     for item in kwargs[rel]:
-                        if pk in item and query.filter(getattr(cls, pk) == item.get(pk)).limit(1).count() == 1:
+                        if pk in item and item.get(pk) is not None and query.filter(getattr(cls, pk) == item.get(pk)).limit(1).count() == 1:
                             obj = cls.query.filter(getattr(cls, pk) == item.get(pk)).first()
-                            col_changes = obj.set_columns(**item)
-                            if col_changes:
-                                col_changes[pk] = str(item.get(pk))
-                                if rel in changes:
-                                    changes[rel].append(col_changes)
-                                else:
-                                    changes.update({rel: [col_changes]})
+                            obj.set_columns(**item)
                             valid_ids.append(str(item.get(pk)))
                         else:
                             col = cls()
-                            col_changes = col.set_columns(**item)
+                            col.set_columns(**item)
                             query.append(col)
                             DB.session.flush()
-                            if col_changes:
-                                col_changes[pk] = str(getattr(col, pk))
-                                if rel in changes:
-                                    changes[rel].append(col_changes)
-                                else:
-                                    changes.update({rel: [col_changes]})
                             valid_ids.append(str(getattr(col, pk)))
 
                     # delete related rows that were not in kwargs[rel]
-                    for item in query.filter(not_(getattr(cls, pk).in_(valid_ids))).all():
-                        print(item)
-                        col_changes = {
-                            pk: str(getattr(item, pk)),
-                            'deleted': True,
-                        }
-                        if rel in changes:
-                            changes[rel].append(col_changes)
-                        else:
-                            changes.update({rel: [col_changes]})
-                        DB.session.delete(item)
-
+                    if inspect(self).identity is not None:
+                        for item in query.filter(not_(getattr(cls, pk).in_(valid_ids))).all():
+                            query.remove(item)
                 else:
                     val = getattr(self, rel)
                     if self.__mapper__.relationships[rel].query_class is not None:
                         if val is not None:
-                            col_changes = val.set_columns(**kwargs[rel])
-                            if col_changes:
-                                changes.update({rel: col_changes})
+                            val.set_columns(**kwargs[rel])
                     else:
                         if val != kwargs[rel]:
                             setattr(self, rel, kwargs[rel])
-                            changes[rel] = {'old': val, 'new': kwargs[rel]}
-
-        return changes
+        return self
 
     def set_columns(self, **kwargs):
-        self._changes = self._set_columns(**kwargs)
-        return self._changes
+        self._set_columns(**kwargs)
+        return self
 
 class ReleveModel(OcctaxModel):
     """

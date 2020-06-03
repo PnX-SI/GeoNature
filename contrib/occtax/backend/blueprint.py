@@ -415,41 +415,16 @@ def createOccurrence(id_releve, info_role):
               403,
           )
 
+    occurrence = TOccurrencesOccurrence()
     occ = dict(request.get_json())
 
-    cor_counting_occtax = []
-    if "cor_counting_occtax" in occ:
-      cor_counting_occtax = occ["cor_counting_occtax"]
-      occ.pop("cor_counting_occtax")
-
-    # Test et suppression des propriétés inexistantes de TOccurrencesOccurrence
-    attliste = [k for k in occ]
-    for att in attliste:
-      if not getattr(TOccurrencesOccurrence, att, False):
-          occ.pop(att)
-
-    occurrence = TOccurrencesOccurrence(**occ)
+    occurrence.set_columns(**occ)
     occurrence.id_releve_occtax = releve_model.id_releve_occtax
 
-    for cnt in cor_counting_occtax:
-      # Test et suppression
-      # des propriétés inexistantes de CorCountingOccurrence
-      attliste = [k for k in cnt]
-      for att in attliste:
-          if not getattr(CorCountingOccurrence, att, False):
-              cnt.pop(att)
-      # pop the id if None. otherwise DB.merge is not OK
-      if "id_counting_occtax" in cnt and cnt["id_counting_occtax"] is None:
-          cnt.pop("id_counting_occtax")
-      countingOccurrence = CorCountingOccurrence(**cnt)
-      occurrence.cor_counting_occtax.append(countingOccurrence)
-    
     DB.session.add(occurrence)
     DB.session.commit()
-    DB.session.flush()
 
     return occurrence.as_dict(True)
-    return releve.get_geofeature()
 
 @blueprint.route("/occurrence/<int:id_occurrence>", methods=["POST"])
 @permissions.check_cruved_scope("U", True, module_code="OCCTAX")
@@ -492,7 +467,6 @@ def updateOccurrence(id_occurrence, info_role):
     occurrence.set_columns(**occ)
     
     DB.session.commit()
-    DB.session.flush()
 
     return occurrence.as_dict(True)
 
