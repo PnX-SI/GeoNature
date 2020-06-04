@@ -119,11 +119,11 @@
     </div>
 
     <div class="col-xs-12 col-sm-12 col-md-8 col-lg-4">
-      <div class="card ">
+      <div *ngIf="this.geojsonData" class="card"> <!-- changer la valeur du ngif quand la carte sera prete -->
         <div class="card-header">
           <h5>Périmètre géographique</h5>
         </div>
-        <div *ngIf="this.geojsonData" class="card-body"> <!-- changer la valeur du ngif quand la carte sera prete -->
+        <div class="card-body">
           <pnx-map height="40vh" searchBar="false">
             <pnx-geojson
               [geojson]="this.geojsonData"
@@ -133,11 +133,11 @@
           </pnx-map>
         </div>
       </div>
-      <div class="card ">
+      <div *ngIf="dataset.taxa_count" class="card">
         <div class="card-header">
           <h5>Répartition des espèces</h5>
         </div>
-        <div *ngIf="dataset.taxa_count" class="card-body">
+        <div class="card-body">
           <div style="display: block">
               <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
                   [colors]="pieChartColors" [options]="pieChartOptions" padding="20px">

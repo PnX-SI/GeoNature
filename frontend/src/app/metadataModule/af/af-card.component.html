@@ -134,12 +134,12 @@
       </div>
     </div>
     <div class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
-      <div class="card">
+      <div *ngIf="af?.stats?.nb_data > 0" class="card">
         <div class="card-header">
           <h5>
             Zone géographique
           </h5>
-          <div *ngIf="af?.stats?.nb_data > 0" class="card-body">
+          <div class="card-body">
             <pnx-map height="40vh" searchBar="false">
               <pnx-geojson
                 [geojson]="af?.bbox"
@@ -150,13 +150,13 @@
         </div>
         </div>
       </div>
-      <div class="card ">
+      <div *ngIf="this.pieChartLabels.length > 0 && af?.stats?.nb_data > 0" class="card">
         <div class="card-header">
           <h5>
             Réparition des espèces
           </h5>
         </div>
-        <div *ngIf="this.pieChartLabels.length > 0 && af?.stats?.nb_data > 0"  class="card-body">
+        <div class="card-body">
           <div style="display: block">
             <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
                 [colors]="pieChartColors" [options]="pieChartOptions" padding="20px">
@@ -164,13 +164,13 @@
         </div>
        </div>
       </div>
-      <div class="card ">
+      <div *ngIf="af?.stats?.nb_data > 0" class="card">
         <div class="card-header">
           <h5>
             Jeux de données associés
           </h5>
         </div>
-          <div *ngIf="af?.stats?.nb_data > 0"  class="card-body">
+          <div class="card-body">
             <table>
               <tr *ngFor="let dataset of af?.datasets">
                 <td [ngSwitch]="dataset.jdd_data_type.cd_nomenclature">

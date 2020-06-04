@@ -174,21 +174,23 @@
                             {{ data.keywords }}
                         </p>
                     </div>
-                {% endif %}
-                
+                {% endif %}  
             {% endif %}
             
         </div>
         <div class="right-block">
-            <div class="zone">
+            <!-- <div class="zone">
                 <p class="zone-geographique">Zone géographique</p>
                 <div class="map"></div>
-            </div>
-    
-            <div class="repartition">
-                <p class="repartition-especes">Répartition des espèces</p>
-                <img class="taxons" src="../../static/images/taxa.png" alt="Pas d'espèces à afficher.">
-            </div>
+            </div> --> 
+            <!-- A modifier lorsque la carte sera prete -->
+
+            {% if data['chart']: %}
+                <div class="repartition">
+                    <p class="repartition-especes">Répartition des espèces</p>
+                    <img class="taxons" src="../../static/images/taxa.png" alt="Pas d'espèces à afficher.">
+                </div>
+            {% endif %}
 
             <div class="ca">
                 <hr class="ligne-ca-initial ligne" {% if data.css: %} id="ligne-ca-initial-{{data.css['entite']}}"
