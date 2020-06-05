@@ -8,23 +8,23 @@ DECLARE
   thelocalsrid int;
 BEGIN
 	-- si c'est un insert et que l'altitude min ou max est null -> on calcule
-	IF (TG_OP = 'INSERT' and (new.altitude_min IS NULL or new.altitude_max IS NULL)) THEN 
+	IF (TG_OP = 'INSERT' and (new.altitude_min IS NULL or new.altitude_max IS NULL)) THEN
 		--récupérer le srid local
 		SELECT INTO thelocalsrid parameter_value::int FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid';
 		--Calcul de l'altitude
-		
+
     SELECT (ref_geo.fct_get_altitude_intersection(st_transform(hstore(NEW)-> the4326geomcol,thelocalsrid))).*  INTO NEW.altitude_min, NEW.altitude_max;
     -- si c'est un update et que la geom a changé
   ELSIF (TG_OP = 'UPDATE' AND NOT public.ST_EQUALS(hstore(OLD)-> the4326geomcol, hstore(NEW)-> the4326geomcol)) then
-	 -- on vérifie que les altitude ne sont pas null 
+	 -- on vérifie que les altitude ne sont pas null
    -- OU si les altitudes ont changé, si oui =  elles ont déjà été calculés - on ne relance pas le calcul
-	   IF (new.altitude_min is null or new.altitude_max is null) OR (NOT OLD.altitude_min = NEW.altitude_min or NOT OLD.altitude_max = OLD.altitude_max) THEN 
-	   --récupérer le srid local	
+	   IF (new.altitude_min is null or new.altitude_max is null) OR (NOT OLD.altitude_min = NEW.altitude_min or NOT OLD.altitude_max = OLD.altitude_max) THEN
+	   --récupérer le srid local
 	   SELECT INTO thelocalsrid parameter_value::int FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid';
 		--Calcul de l'altitude
         SELECT (ref_geo.fct_get_altitude_intersection(st_transform(hstore(NEW)-> the4326geomcol,thelocalsrid))).*  INTO NEW.altitude_min, NEW.altitude_max;
 	   end IF;
-	 else 
+	 else
 	 END IF;
   RETURN NEW;
 END;
@@ -39,20 +39,20 @@ CREATE TRIGGER tri_calculate_altitude
   EXECUTE PROCEDURE ref_geo.fct_trg_calculate_alt_minmax('geom_4326');
 
 -- Mise à jour des URL des documentations utilisateurs
-UPDATE gn_commons.t_modules 
-   SET module_doc_url='http://docs.geonature.fr/user-manual.html' 
+UPDATE gn_commons.t_modules
+   SET module_doc_url='http://docs.geonature.fr/user-manual.html'
    WHERE module_code='GEONATURE';
-UPDATE gn_commons.t_modules 
-   SET module_doc_url='http://docs.geonature.fr/user-manual.html#admin' 
+UPDATE gn_commons.t_modules
+   SET module_doc_url='http://docs.geonature.fr/user-manual.html#admin'
    WHERE module_code='ADMIN';
-UPDATE gn_commons.t_modules 
-   SET module_doc_url='http://docs.geonature.fr/user-manual.html#metadonnees' 
+UPDATE gn_commons.t_modules
+   SET module_doc_url='http://docs.geonature.fr/user-manual.html#metadonnees'
    WHERE module_code='METADATA';
-UPDATE gn_commons.t_modules 
-   SET module_doc_url='http://docs.geonature.fr/user-manual.html#synthese' 
+UPDATE gn_commons.t_modules
+   SET module_doc_url='http://docs.geonature.fr/user-manual.html#synthese'
    WHERE module_code='SYNTHESE';
-UPDATE gn_commons.t_modules 
-   SET module_doc_url='http://docs.geonature.fr/user-manual.html#occtax' 
+UPDATE gn_commons.t_modules
+   SET module_doc_url='http://docs.geonature.fr/user-manual.html#occtax'
    WHERE module_code='OCCTAX';
 
 -- Création de la table necessaire au MAJ mobiles
@@ -74,7 +74,7 @@ ALTER TABLE gn_commons.t_mobile_apps
     ADD CONSTRAINT unique_t_mobile_apps_app_code UNIQUE (app_code);
 
 -- Ajout du champs reference_biblio dans la synthese
-ALTER TABLE gn_synthese.synthese 
+ALTER TABLE gn_synthese.synthese
 ADD COLUMN reference_biblio character varying(255);
 
 -- Amélioration des performances de la vue v_synthese_validation_forwebapp
@@ -366,20 +366,39 @@ $BODY$
 
 
 
+
 CREATE OR REPLACE FUNCTION gn_synthese.import_row_from_table(
-  select_col_name varchar,
-  select_col_val varchar,
-  table_name varchar
+    select_col_name character varying,
+    select_col_val character varying,
+    tbl_name character varying
 )
 RETURNS boolean AS
 $BODY$
-  DECLARE
-    select_sql text;
-    import_rec record;
-  BEGIN
+DECLARE
+  select_sql text;
+  import_rec record;
+BEGIN
+
+  --test que la table/vue existe bien
+  --42P01 	undefined_table
+  IF EXISTS (
+      SELECT 1 FROM information_schema.tables t  WHERE t.table_schema ||'.'|| t.table_name = tbl_name
+  ) IS FALSE THEN
+      RAISE 'Undefined table: %', tbl_name USING ERRCODE = '42P01';
+	END IF ;
+
+  --test que la colonne existe bien
+  --42703 	undefined_column
+  IF EXISTS (
+      SELECT * FROM information_schema.columns  t  WHERE  t.table_schema ||'.'|| t.table_name = tbl_name AND column_name = select_col_name
+  ) IS FALSE THEN
+      RAISE 'Undefined column: %', select_col_name USING ERRCODE = '42703';
+	END IF ;
+
+
     -- TODO transtypage en text pour des questions de généricité. A réflechir
     select_sql := 'SELECT row_to_json(c)::jsonb d
-        FROM ' || table_name || ' c
+        FROM ' || tbl_name || ' c
         WHERE ' ||  select_col_name|| '::text = ''' || select_col_val || '''' ;
 
     FOR import_rec IN EXECUTE select_sql LOOP
