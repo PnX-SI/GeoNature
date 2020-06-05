@@ -31,7 +31,7 @@ export class MarkerComponent implements OnInit, OnChanges {
   /** Contrôle si le marker est activé par défaut au lancement du composant */
   @Input() defaultEnable = true;
   @Output() markerChanged = new EventEmitter<GeoJson>();
-  constructor(public mapservice: MapService, private _commonService: CommonService) {}
+  constructor(public mapservice: MapService, private _commonService: CommonService) { }
 
   ngOnInit() {
     this.map = this.mapservice.map;
@@ -51,9 +51,11 @@ export class MarkerComponent implements OnInit, OnChanges {
     //Observable pour gérer de l'affichage du marker
     this._coordinates
       .pipe(
-        filter((coords)=>(this.map !== undefined && coords !== null))
+        filter((coords) => (this.map !== undefined && coords != null))
       )
-      .subscribe(coords=>{
+      .subscribe(coords => {
+        console.log(coords);
+
         this.mapservice.zoomOnMarker(coords, this.zoomToLocationLevel);
         this.previousCoord = coords;
         this.generateMarkerAndEvent(coords[0], coords[1]);
