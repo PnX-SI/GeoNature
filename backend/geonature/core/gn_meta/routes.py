@@ -252,11 +252,13 @@ def upload_canvas():
     """Upload the canvas as a temporary image used while generating the pdf file
     """
     data = request.data[22:]
-    binary_data = a2b_base64(data)
-    fd = open(str(BACKEND_DIR) + '/static/images/taxa.png', 'wb')
-    fd.write(binary_data)
-    fd.close()
-
+    filepath = str(BACKEND_DIR) + '/static/images/taxa.png'
+    fm.remove_file(filepath)
+    if data:
+        binary_data = a2b_base64(data)
+        fd = open(filepath, 'wb')
+        fd.write(binary_data)
+        fd.close()
     return "OK"
 
 
@@ -363,6 +365,13 @@ def get_export_pdf_dataset(id_dataset, info_role):
         dt.datetime.now().strftime("%d%m%Y_%H%M%S")
     )
 
+    try:
+        f = open(str(BACKEND_DIR) + '/static/images/taxa.png')
+        f.close()
+        df["chart"] = True
+    except IOError:
+        df["chart"] = False
+
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf('jeu_de_donnees_template_pdf.html', df, filename)
 
@@ -468,10 +477,17 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
 
     filename = '{}_{}_{}.pdf'.format(id_acquisition_framework, acquisition_framework["acquisition_framework_name"][0:31].replace(" ", "_") , dt.datetime.now().strftime("%d%m%Y_%H%M%S"))
 
-    pprint.pprint(acquisition_framework)
+    try:
+        f = open(str(BACKEND_DIR) + '/static/images/taxa.png')
+        f.close()
+        acquisition_framework["chart"] = True
+    except IOError:
+        acquisition_framework["chart"] = False
 
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf('cadre_acquisition_template_pdf.html', acquisition_framework, filename)
+
+    # pprint.pprint(acquisition_framework)
 
     return Response(
         pdf_file,

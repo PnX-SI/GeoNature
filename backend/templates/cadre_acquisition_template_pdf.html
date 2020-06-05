@@ -206,20 +206,24 @@
 
         </div>
         <div class="right-block">
-            <div class="zone">
-                <p class="zone-geographique">Zone géographique</p>
-            </div>
-    
-            <div class="repartition">
-                <p class="repartition-especes">Répartition des espèces</p>
-                <img class="taxons" src="../../static/images/taxa.png" alt="Pas d'espèces à afficher.">
-            </div>
 
-            <div class="jdd">
-                <hr class="ligne-jeux-donnees ligne" {% if data.css: %} id="ligne-jeux-donnees-{{data.css['entite']}}"
-                {% else %} id="ligne-jeux-donnees-defaut" {% endif %}>
-                <p class="liste-jdd">Liste des jeux de données associés au cadre</p>
-                {% if data.datasets: %}
+            <!-- <div class="zone">
+                <p class="zone-geographique">Zone géographique</p>
+            </div> -->
+            <!-- A modifier lorsque la carte sera prete -->
+
+            {% if data['chart']: %}
+                <div class="repartition">
+                    <p class="repartition-especes">Répartition des espèces</p>
+                    <img class="taxons" src="../../static/images/taxa.png" alt="Pas d'espèces à afficher.">
+                </div>
+            {% endif %}
+
+            {% if data.datasets: %}
+                <div class="jdd">
+                    <hr class="ligne-jeux-donnees ligne" {% if data.css: %} id="ligne-jeux-donnees-{{data.css['entite']}}"
+                    {% else %} id="ligne-jeux-donnees-defaut" {% endif %}>
+                    <p class="liste-jdd">Liste des jeux de données associés au cadre</p>
                     {% for dataset in data.datasets -%}
                         <div class="jdd-details">
                             <img class="logo-jdd" src="../../static/images/Taxon_icon_vert.svg" alt="taxon-vert-icon">
@@ -234,8 +238,8 @@
                             </p>
                         </div>
                     {%- endfor %}
-                {% endif %}
-            </div>
+                </div>
+            {% endif %}
         </div>
         
     </div>
