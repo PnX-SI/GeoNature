@@ -190,15 +190,19 @@ class CorCountingOccurrence(OcctaxModel):
     __table_args__ = {"schema": "pr_occtax"}
     id_counting_occtax = DB.Column(DB.Integer, primary_key=True)
     unique_id_sinp_occtax = DB.Column(
-        UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
+        UUID(as_uuid=True), default=select([func.uuid_generate_v4()]), nullable=False
     )
     id_occurrence_occtax = DB.Column(
-        DB.Integer, ForeignKey(
-            "pr_occtax.t_occurrences_occtax.id_occurrence_occtax")
+        DB.Integer, 
+        ForeignKey("pr_occtax.t_occurrences_occtax.id_occurrence_occtax"),
+        nullable=False
     )
-    id_nomenclature_life_stage = DB.Column(DB.Integer)
-    id_nomenclature_sex = DB.Column(DB.Integer)
-    id_nomenclature_obj_count = DB.Column(DB.Integer)
+    id_nomenclature_life_stage = DB.Column(
+        DB.Integer, 
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        nullable=False)
+    id_nomenclature_sex = DB.Column(DB.Integer, nullable=False)
+    id_nomenclature_obj_count = DB.Column(DB.Integer, nullable=False)
     id_nomenclature_type_count = DB.Column(DB.Integer)
     count_min = DB.Column(DB.Integer)
     count_max = DB.Column(DB.Integer)
@@ -246,6 +250,7 @@ class TOccurrencesOccurrence(OcctaxModel):
         lazy="dynamic",
         cascade="all,delete-orphan",
         uselist=True,
+        backref="counting"
     )
 
     taxref = relationship("Taxref", lazy="joined")

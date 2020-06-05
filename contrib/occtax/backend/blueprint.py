@@ -27,7 +27,6 @@ from pypnusershub.db.tools import InsufficientRightsError
 from utils_flask_sqla_geo.generic import GenericTableGeo
 from utils_flask_sqla.generic import testDataType
 
-
 from geonature.utils import filemanager
 from .models import (
     TRelevesOccurrence,
@@ -41,6 +40,9 @@ from .repositories import (
     ReleveRepository,
     get_query_occtax_filters,
     get_query_occtax_order,
+)
+from .form import (
+    CountingValidatorSchema
 )
 from .utils import get_nomenclature_filters
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, csv_resp, json_resp
@@ -415,14 +417,25 @@ def createOccurrence(id_releve, info_role):
               403,
           )
 
-    occurrence = TOccurrencesOccurrence()
-    occ = dict(request.get_json())
+    schemaValidator = CountingValidatorSchema()
+    resultValidator = schemaValidator.load(request.get_json())
 
-    occurrence.set_columns(**occ)
-    occurrence.id_releve_occtax = releve_model.id_releve_occtax
+    print(resultValidator.errors)
+    if bool(resultValidator.errors):
+        return resultValidator.errors
+    
+    return "pas error"
+    #return resultValidator.data.as_dict(True)
 
-    DB.session.add(occurrence)
-    DB.session.commit()
+    #occurrence = TOccurrencesOccurrence()
+
+    #occ = dict(request.get_json())
+#
+#    #occurrence.set_columns(**occ)
+    #occurrence.id_releve_occtax = releve_model.id_releve_occtax
+
+    #DB.session.add(occurrence)
+    #DB.session.commit()
 
     return occurrence.as_dict(True)
 

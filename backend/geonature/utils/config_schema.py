@@ -90,8 +90,7 @@ class GnPySchemaConf(Schema):
         validate=Regexp(
             "^postgresql:\/\/.*:.*@[^:]+:\w+\/\w+$",
             0,
-            """Database uri is invalid ex:
-             postgresql://monuser:monpass@server:port/db_name""",
+            "Database uri is invalid ex: postgresql://monuser:monpass@server:port/db_name"
         ),
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = fields.Boolean(missing=False)
