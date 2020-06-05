@@ -1,6 +1,3 @@
-@import '../../../conf/names_variables.scss';
-@import '../../../custom/custom.scss';
-
 #documentation_link {
   color: black !important;
 }
@@ -9,9 +6,6 @@
   padding: 0 15px;
 }
 
-#app-toolbar {
-  background-color: $navbar-color;
-}
 
 .appnav {
   width: 220px;
@@ -48,8 +42,7 @@ mat-icon {
 }
 
 .toolbar-button {
-  background-color: $navbar-color !important;
-  color: $navbar-text-button-color !important;
+  background-color: white !important;
   outline: none;
 }
 
