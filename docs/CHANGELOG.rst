@@ -12,6 +12,7 @@ CHANGELOG
 * Support des fonds de carte au format WMS (https://leafletjs.com/reference-1.6.0.html#tilelayer-wms-l-tilelayer-wms), PR#890 @jbdesbas 
 * Ajout du champs "reference_biblio" dans la synthese
 * Amélioration des perfomances du module de validation
+* Ajout d'une fonction SQL d'insertion de données dans la synthese (et une fonction python associée)
 
 **🐛 Corrections**
 
