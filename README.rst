@@ -53,11 +53,12 @@ Modules et projets liés
 * GeoNature module Import : https://github.com/PnX-SI/gn_module_import
 * GeoNature module Dashboard : https://github.com/PnX-SI/gn_module_dashboard
 * GeoNature module Validation : https://github.com/PnX-SI/gn_module_validation
+* GeoNature module Flore prioritaire : https://github.com/PnX-SI/gn_module_flore_prioritaire
 * GeoNature module Suivi des habitats : https://github.com/PnX-SI/gn_module_suivi_habitat_territoire
 * GeoNature module Suivi des stations d'habitat : https://github.com/PnX-SI/gn_module_suivi_habitat_station
 * GeoNature module Suivi de la flore territoire : https://github.com/PnX-SI/gn_module_suivi_flore_territoire
-* API Flask d'interrogation du référentiel Habref : https://github.com/PnX-SI/Habref-api-module
 * Suivi-Flore-Territoire-mobile : https://github.com/PnX-SI/gn_mobile_sft
+* API Flask d'interrogation du référentiel Habref : https://github.com/PnX-SI/Habref-api-module
 * GeoNature module générique de suivis : https://github.com/PnX-SI/gn_module_monitoring
 * GeoNature module Suivi chiroptères : https://github.com/PnCevennes/gn_module_suivi_chiro
 * Protocoles de suivi (frontend) : https://github.com/PnCevennes/projet_suivis_frontend
