@@ -1,9 +1,16 @@
+@import '../../../conf/names_variables.scss';
+@import '../../../custom/custom.scss';
+
 #documentation_link {
   color: black !important;
 }
 
 .toolbar-icon {
   padding: 0 15px;
+}
+
+#app-toolbar {
+  background-color: $navbar-color;
 }
 
 .appnav {
@@ -38,4 +45,18 @@ mat-icon {
 
 .dropdown-item .fa {
   margin-right: 12px;
+}
+
+.toolbar-button {
+  background-color: $navbar-color !important;
+  color: $navbar-text-button-color !important;
+  outline: none;
+}
+
+.menu-button {
+  margin-right: 10px;
+}
+
+.menu-button mat-icon.menu-icon {
+  margin: 0;
 }
