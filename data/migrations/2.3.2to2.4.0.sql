@@ -410,3 +410,185 @@ BEGIN
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+
+
+
+-- Correction des trigger / inversion jour et mois
+
+CREATE OR REPLACE FUNCTION insert_in_synthese(my_id_counting integer)
+  RETURNS integer[] AS
+$BODY$
+DECLARE
+new_count RECORD;
+occurrence RECORD;
+releve RECORD;
+id_source integer;
+id_module integer;
+id_nomenclature_source_status integer;
+myobservers RECORD;
+id_role_loop integer;
+
+BEGIN
+--recupération du counting à partir de son ID
+SELECT INTO new_count * FROM pr_occtax.cor_counting_occtax WHERE id_counting_occtax = my_id_counting;
+
+-- Récupération de l'occurrence
+SELECT INTO occurrence * FROM pr_occtax.t_occurrences_occtax occ WHERE occ.id_occurrence_occtax = new_count.id_occurrence_occtax;
+
+-- Récupération du relevé
+SELECT INTO releve * FROM pr_occtax.t_releves_occtax rel WHERE occurrence.id_releve_occtax = rel.id_releve_occtax;
+
+-- Récupération de la source
+SELECT INTO id_source s.id_source FROM gn_synthese.t_sources s WHERE name_source ILIKE 'occtax';
+
+-- Récupération de l'id_module
+SELECT INTO id_module gn_commons.get_id_module_bycode('OCCTAX');
+
+
+-- Récupération du status_sgn_synthesebservers_id
+FROM pr_occtax.cor_role_releves_occtax cor
+JOIN utilisateurs.t_roles rol ON rol.id_role = cor.id_role
+WHERE cor.id_releve_occtax = releve.id_releve_occtax;
+
+-- insertion dans la synthese
+INSERT INTO gn_synthese.synthese (
+unique_id_sinp,
+unique_id_sinp_grp,
+id_source,
+entity_source_pk_value,
+id_dataset,
+id_module,
+id_nomenclature_geo_object_nature,
+id_nomenclature_grp_typ,
+id_nomenclature_obs_meth,
+id_nomenclature_obs_technique,
+id_nomenclature_bio_status,
+id_nomenclature_bio_condition,
+id_nomenclature_naturalness,
+id_nomenclature_exist_proof,
+id_nomenclature_diffusion_level,
+id_nomenclature_life_stage,
+id_nomenclature_sex,
+id_nomenclature_obj_count,
+id_nomenclature_type_count,
+id_nomenclature_observation_status,
+id_nomenclature_blurring,
+id_nomenclature_source_status,
+id_nomenclature_info_geo_type,
+count_min,
+count_max,
+cd_nom,
+nom_cite,
+meta_v_taxref,
+sample_number_proof,
+digital_proof,
+non_digital_proof,
+altitude_min,
+altitude_max,
+the_geom_4326,
+the_geom_point,
+the_geom_local,
+date_min,
+date_max,
+observers,
+determiner,
+id_digitiser,
+id_nomenclature_determination_method,
+comment_context,
+comment_description,
+last_action
+)
+VALUES(
+  new_count.unique_id_sinp_occtax,
+  releve.unique_id_sinp_grp,
+  id_source,
+  new_count.id_counting_occtax,
+  releve.id_dataset,
+  id_module,
+  --nature de l'objet geo: id_nomenclature_geo_object_nature Le taxon observé est présent quelque part dans l'objet géographique - NSP par défault
+  pr_occtax.get_default_nomenclature_value('NAT_OBJ_GEO'),
+  releve.id_nomenclature_grp_typ,
+  occurrence.id_nomenclature_obs_meth,
+  releve.id_nomenclature_obs_technique,
+  occurrence.id_nomenclature_bio_status,
+  occurrence.id_nomenclature_bio_condition,
+  occurrence.id_nomenclature_naturalness,
+  occurrence.id_nomenclature_exist_proof,
+  occurrence.id_nomenclature_diffusion_level,
+  new_count.id_nomenclature_life_stage,
+  new_count.id_nomenclature_sex,
+  new_count.id_nomenclature_obj_count,
+  new_count.id_nomenclature_type_count,
+  occurrence.id_nomenclature_observation_status,
+  occurrence.id_nomenclature_blurring,
+  -- status_source récupéré depuis le JDD
+  id_nomenclature_source_status,
+  -- id_nomenclature_info_geo_type: type de rattachement = géoréferencement
+  ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO', '1')	,
+  new_count.count_min,
+  new_count.count_max,
+  occurrence.cd_nom,
+  occurrence.nom_cite,
+  occurrence.meta_v_taxref,
+  occurrence.sample_number_proof,
+  occurrence.digital_proof,
+  occurrence.non_digital_proof,
+  releve.altitude_min,
+  releve.altitude_max,
+  releve.geom_4326,
+  ST_CENTROID(releve.geom_4326),
+  releve.geom_local,
+  date_trunc('day',releve.date_min)+COALESCE(releve.hour_min,'00:00:00'::time),
+  date_trunc('day',releve.date_max)+COALESCE(releve.hour_max,'00:00:00'::time),
+  COALESCE (myobservers.observers_name, releve.observers_txt),
+  occurrence.determiner,
+  releve.id_digitiser,
+  occurrence.id_nomenclature_determination_method,
+  releve.comment,
+  occurrence.comment,
+  'I'
+);
+
+  RETURN myobservers.observers_id ;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+
+CREATE OR REPLACE FUNCTION fct_tri_synthese_update_releve()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+  myobservers text;
+BEGIN
+  --calcul de l'observateur. On privilégie le ou les observateur(s) de cor_role_releves_occtax
+  --Récupération et formatage des observateurs
+  SELECT INTO myobservers array_to_string(array_agg(rol.nom_role || ' ' || rol.prenom_role), ', ')
+  FROM pr_occtax.cor_role_releves_occtax cor
+  JOIN utilisateurs.t_roles rol ON rol.id_role = cor.id_role
+  WHERE cor.id_releve_occtax = NEW.id_releve_occtax;
+  IF myobservers IS NULL THEN
+    myobservers = NEW.observers_txt;
+  END IF;
+  --mise à jour en synthese des informations correspondant au relevé uniquement
+  UPDATE gn_synthese.synthese SET
+      id_dataset = NEW.id_dataset,
+      observers = myobservers,
+      id_digitiser = NEW.id_digitiser,
+      id_nomenclature_obs_technique = NEW.id_nomenclature_obs_technique,
+      id_nomenclature_grp_typ = NEW.id_nomenclature_grp_typ,
+      date_min = date_trunc('day',NEW.date_min)+COALESCE(NEW.hour_min,'00:00:00'::time),
+      date_max = date_trunc('day',NEW.date_max)+COALESCE(NEW.hour_max,'00:00:00'::time),
+      altitude_min = NEW.altitude_min,
+      altitude_max = NEW.altitude_max,
+      the_geom_4326 = NEW.geom_4326,
+      the_geom_point = ST_CENTROID(NEW.geom_4326),
+      last_action = 'U',
+      comment_context = NEW.comment
+  WHERE unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer)));
+  RETURN NULL;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;

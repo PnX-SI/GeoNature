@@ -1,4 +1,4 @@
-<div id="cover-spin" *ngIf="!_ds.dataLoaded"> 
+<div id="cover-spin" *ngIf="!_ds.dataLoaded">
 </div>
 
 
@@ -17,7 +17,7 @@
 
 
 
-      <div class="col-sm-12 col-md-5 padding-sm middle">
+      <div class="col-sm-12 col-md-7 padding-sm middle">
             <button #buttonToggle
             [style.left.px]="marginButton"
             (click)="searchBarHidden = !searchBarHidden"
@@ -28,7 +28,7 @@
             </button>
           <pnx-validation-synthese-list [inputSyntheseData]="_mapListService.tableData" [validationStatus]="validationStatus"></pnx-validation-synthese-list>
 
-          <!-- select only observations with awaiting validation status 
+          <!-- select only observations with awaiting validation status
           <div id="awaitingObs" [formGroup]="awaitingForm">
           <input (change)="onAwaitingClick()" id="awaiting_checkbox" value="awaiting" formControlName="awaiting" type="checkbox" checked/>
           <label for="awaiting_checkbox"> Observations en attente de validation </label>
@@ -36,7 +36,7 @@
           -->
 
       </div>
-      <div class="col-sm-12 col-md-7 padding-sm last">
+      <div class="col-sm-12 col-md-5 padding-sm last">
           <pnx-validation-synthese-carte [inputSyntheseData]="_mapListService.geojsonData"></pnx-validation-synthese-carte>
       </div>
 
