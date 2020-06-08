@@ -21,6 +21,15 @@ CHANGELOG
 * SQL d'update de la BDD...
 * Le fichier ``2.3.2to2.3.3.sql`` ne peut être exécuté qu'après le fichier ``update1.3.2to1.3.3.sql`` du module ``Nomenclature-api-module``, sans quoi les contraintes sur la colonne ``t_datasets.id_nomenclature_jdd_data_type`` ne peuvent pas être respectées
 
+* Script update correction #719:
+
+-- Correction sur les données antérieures
+DELETE FROM gn_synthese.cor_area_synthese cas
+USING gn_synthese.synthese s , ref_geo.l_areas a
+WHERE cas.id_synthese = s.id_synthese AND a.id_area = cas.id_area
+AND public.ST_TOUCHES(s.the_geom_local,a.geom);
+
+
 2.3.2 (2020-02-24)
 ------------------
 
