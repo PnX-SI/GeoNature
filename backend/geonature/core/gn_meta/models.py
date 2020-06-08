@@ -505,12 +505,6 @@ class TDatasetDetails(TDatasets):
             TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_resource_type
         ),
     )
-    jdd_data_type = DB.relationship(
-        TNomenclatures,
-        primaryjoin=(
-            TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_jdd_data_type
-        )
-    )
     acquisition_framework = DB.relationship(
         TAcquisitionFramework,
         primaryjoin=(
