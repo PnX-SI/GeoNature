@@ -174,8 +174,8 @@
             <table>
               <tr *ngFor="let dataset of af?.datasets">
                 <td [ngSwitch]="dataset.data_type.cd_nomenclature">
-                  <img width="60" *ngSwitchCase="'Tax'" src="./assets/images/Taxon_icon_vert.svg" alt="">
-                  <img width="60" *ngSwitchCase="'Hab'" src="./assets/images/Habitat_icon_vert.svg" alt="">
+                  <img width="60" *ngSwitchCase="'1'" src="./assets/images/Taxon_icon_vert.svg" alt="">
+                  <img width="60" *ngSwitchCase="'2'" src="./assets/images/Habitat_icon_vert.svg" alt="">
                   <img width="60" *ngSwitchDefault src="./assets/images/Taxon_icon_vert.svg" alt="">
                 </td>
                 <td> <a [routerLink]="['/metadata/dataset_detail', dataset?.id_dataset]" style="color:black">{{ dataset?.dataset_name }}</a>
