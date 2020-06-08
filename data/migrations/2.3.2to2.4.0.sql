@@ -222,16 +222,6 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
      JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source;
 
--- Ajout du type de jeu de donnees
-
-ALTER TABLE gn_meta.t_datasets add column
-id_nomenclature_jdd_data_type integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value('JDD_DATA_TYPE');
-
-ALTER TABLE only gn_meta.t_datasets add CONSTRAINT
-fk_t_datasets_jdd_data_type FOREIGN KEY (id_nomenclature_jdd_data_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
--- Usage de la table vm_taxref_list_forautocomplete du schéma taxonomie
-DROP TABLE taxonomie.taxons_synthese_autocomplete;
 
 -- Fonctions import dans la synthese
 

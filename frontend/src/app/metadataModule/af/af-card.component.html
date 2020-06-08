@@ -173,7 +173,7 @@
           <div *ngIf="af?.stats?.nb_data > 0"  class="card-body">
             <table>
               <tr *ngFor="let dataset of af?.datasets">
-                <td [ngSwitch]="dataset.jdd_data_type.cd_nomenclature">
+                <td [ngSwitch]="dataset.data_type.cd_nomenclature">
                   <img width="60" *ngSwitchCase="'Tax'" src="./assets/images/Taxon_icon_vert.svg" alt="">
                   <img width="60" *ngSwitchCase="'Hab'" src="./assets/images/Habitat_icon_vert.svg" alt="">
                   <img width="60" *ngSwitchDefault src="./assets/images/Taxon_icon_vert.svg" alt="">
