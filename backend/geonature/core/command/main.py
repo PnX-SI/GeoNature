@@ -26,6 +26,10 @@ from geonature.utils.command import (
     update_app_configuration
 )
 
+from rq import Queue, Connection, Worker
+import redis
+from flask import Flask
+
 
 log = logging.getLogger()
 
@@ -84,6 +88,18 @@ def install_command(ctx):
                 'stick to using "python geonature_cmd.py" manually.'
             ).format(DEFAULT_VIRTUALENV_DIR)
         )
+
+
+@main.command()
+def launch_redis_worker():
+    """ launch redis worker
+    """
+    app = get_app_for_cmd(DEFAULT_CONFIG_FILE)
+    with app.app_context():
+        with Connection(redis.Redis(host='localhost', port='6379')):
+            q = Queue()
+            w = Worker(q)
+            w.work()
 
 
 @main.command()
