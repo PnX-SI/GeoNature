@@ -95,8 +95,21 @@
     <fieldset>
       <legend> Qui ?</legend>
 
-      <pnx-observers-text label=" {{'Releve.Observer' | translate }} " [parentFormControl]="formService.searchForm.controls.observers">
-      </pnx-observers-text>
+      <ng-container *ngIf="AppConfig.SYNTHESE.SEARCH_OBSERVER_WITH_LIST; else observersTxtBlock">
+        <pnx-observers 
+          [parentFormControl]="formService.searchForm.get('observers_list')" 
+          [idMenu]="AppConfig.SYNTHESE.ID_SEARCH_OBSERVER_LIST"
+          [label]="'Releve.Observers' | translate" 
+          [bindAllItem]="true">
+        </pnx-observers>
+      </ng-container>
+
+      <ng-template #observersTxtBlock>
+        <pnx-observers-text 
+          [label]="'Releve.Observer' | translate" 
+          [parentFormControl]="formService.searchForm.get('observers')">
+        </pnx-observers-text>
+      </ng-template>
 
       
       <pnx-multiselect [values]="organisms" [parentFormControl]="formService.searchForm.controls.id_organism" keyLabel="nom_organisme" keyValue="id_organisme"

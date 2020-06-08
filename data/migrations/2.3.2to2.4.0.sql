@@ -222,16 +222,6 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
      JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source;
 
--- Ajout du type de jeu de donnees
-
-ALTER TABLE gn_meta.t_datasets add column
-id_nomenclature_jdd_data_type integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value('JDD_DATA_TYPE');
-
-ALTER TABLE only gn_meta.t_datasets add CONSTRAINT
-fk_t_datasets_jdd_data_type FOREIGN KEY (id_nomenclature_jdd_data_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
--- Usage de la table vm_taxref_list_forautocomplete du schéma taxonomie
-DROP TABLE taxonomie.taxons_synthese_autocomplete;
 
 -- Fonctions import dans la synthese
 
@@ -590,5 +580,71 @@ BEGIN
   RETURN NULL;
 END;
 $BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+-- ##########################################################
+-- Mise à jour de la vue gn_commons.v_meta_actions_on_object
+-- ##########################################################
+
+CREATE OR REPLACE VIEW gn_commons.v_meta_actions_on_object AS
+WITH insert_a AS (
+	SELECT
+		id_history_action, id_table_location, uuid_attached_row, operation_type, operation_date, (table_content ->> 'id_digitiser')::int as id_creator
+	FROM gn_commons.t_history_actions
+	WHERE operation_type = 'I'
+),
+delete_a AS (
+	SELECT
+		id_history_action, id_table_location, uuid_attached_row, operation_type, operation_date
+	FROM gn_commons.t_history_actions
+	WHERE operation_type = 'D'
+),
+last_update_a AS (
+	SELECT DISTINCT ON (uuid_attached_row)
+		id_history_action, id_table_location, uuid_attached_row, operation_type, operation_date
+	FROM gn_commons.t_history_actions
+	WHERE operation_type = 'U'
+	ORDER BY uuid_attached_row, operation_date DESC
+)
+SELECT
+	i.id_table_location, i.uuid_attached_row, i.operation_date as meta_create_date, i.id_creator, u.operation_date as meta_update_date,
+	d.operation_date as meta_delete_date
+FROM insert_a i
+LEFT OUTER JOIN last_update_a u ON i.uuid_attached_row = u.uuid_attached_row
+LEFT OUTER JOIN delete_a d ON i.uuid_attached_row = d.uuid_attached_row;
+
+
+
+-- Ne plus considérer les géométries parfaitement limitrophes comme intersectantes
+CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese()
+  RETURNS trigger AS
+$BODY$
+  DECLARE
+  id_area_loop integer;
+  geom_change boolean;
+  BEGIN
+  geom_change = false;
+  IF(TG_OP = 'UPDATE') THEN
+	SELECT INTO geom_change NOT public.ST_EQUALS(OLD.the_geom_local, NEW.the_geom_local);
+  END IF;
+
+  IF (geom_change) THEN
+	DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = NEW.id_synthese;
+  END IF;
+
+  -- intersection avec toutes les areas et écriture dans cor_area_synthese
+    IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND geom_change )) THEN
+      INSERT INTO gn_synthese.cor_area_synthese SELECT
+	      s.id_synthese AS id_synthese,
+        a.id_area AS id_area
+        FROM ref_geo.l_areas a
+        JOIN gn_synthese.synthese s 
+        	ON public.ST_INTERSECTS(s.the_geom_local, a.geom)  AND NOT public.ST_TOUCHES(s.the_geom_local,a.geom)
+        WHERE s.id_synthese = NEW.id_synthese AND a.enable IS true;
+    END IF;
+  RETURN NULL;
+  END;
+  $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
