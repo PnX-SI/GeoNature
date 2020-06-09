@@ -61,6 +61,19 @@ A l'installation de l'OS, les sources-list (liste des sources à partir desquell
 
 Coller la liste des dépôts suivants :
 
+Pour Debian 10 :
+
+::
+
+        deb http://deb.debian.org/debian buster main contrib non-free
+        deb-src http://deb.debian.org/debian buster main contrib non-free
+
+        deb http://deb.debian.org/debian-security/ buster/updates main contrib non-free
+        deb-src http://deb.debian.org/debian-security/ buster/updates main contrib non-free
+
+        deb http://deb.debian.org/debian buster-updates main contrib non-free
+        deb-src http://deb.debian.org/debian buster-updates main contrib non-free
+
 Pour Debian 9 :
 
 ::
@@ -72,13 +85,6 @@ Pour Debian 9 :
         deb http://deb.debian.org/debian stretch main contrib non-free
         deb-src http://deb.debian.org/debian stretch main contrib non-free
 
-Pour Debian 8 (support non testé) :
-
-::
-
-        deb http://deb.debian.org/debian/ jessie main contrib non-free
-        deb http://security.debian.org/ jessie/updates main contrib non-free
-        deb http://deb.debian.org/debian/ jessie-updates main contrib non-free
 
 * Mettre à jour de la liste des dépôts Linux :
 
