@@ -2,15 +2,20 @@
 CHANGELOG
 =========
 
-2.3.3 (Unreleased)
+2.4.0 (Unreleased)
 ------------------
+
+**TO CHECK**
+
+* MAJ TaxHub obligatoire avant ? VM_autocomplete et synthese
+* MAJ Taxref obligatoire ?
 
 **🚀 Nouveautés**
 
-* Réécriture du trigger générique de calcul de l'altitude. N'est executé que si l'altitude n'est pas postée
+* Occtax : Réécriture du trigger générique de calcul de l'altitude. N'est executé que si l'altitude n'est pas postée
 * Ajout d'un offset sur la route de la couleur des taxons
-* Support des fonds de carte au format WMS (https://leafletjs.com/reference-1.6.0.html#tilelayer-wms-l-tilelayer-wms), PR#890 @jbdesbas 
-* Ajout du champs "reference_biblio" dans la synthese
+* Support des fonds de carte au format WMS (https://leafletjs.com/reference-1.6.0.html#tilelayer-wms-l-tilelayer-wms), (PR#890 par @jbdesbas)
+* Ajout du champs ``reference_biblio`` dans la synthèse
 * Amélioration des perfomances du module de validation
 * Ajout d'une fonction SQL d'insertion de données dans la synthese (et une fonction python associée)
 
@@ -18,7 +23,10 @@ CHANGELOG
 
 **⚠️ Notes de version**
 
+* SQL update Nomenclatures
 * SQL d'update de la BDD...
+* Update et installation dépendances Weasyprint
+* Migrate et contenu de ``backend/static``
 
 * Script update correction #719:
 
