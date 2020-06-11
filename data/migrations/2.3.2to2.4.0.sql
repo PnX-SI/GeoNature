@@ -405,7 +405,7 @@ $BODY$
 
 -- Correction des trigger / inversion jour et mois
 
-CREATE OR REPLACE FUNCTION insert_in_synthese(my_id_counting integer)
+CREATE OR REPLACE FUNCTION pr_occtax.insert_in_synthese(my_id_counting integer)
   RETURNS integer[] AS
 $BODY$
 DECLARE
@@ -435,7 +435,12 @@ SELECT INTO id_source s.id_source FROM gn_synthese.t_sources s WHERE name_source
 SELECT INTO id_module gn_commons.get_id_module_bycode('OCCTAX');
 
 
--- Récupération du status_sgn_synthesebservers_id
+-- Récupération du status_source depuis le JDD
+SELECT INTO id_nomenclature_source_status d.id_nomenclature_source_status FROM gn_meta.t_datasets d WHERE id_dataset = releve.id_dataset;
+
+--Récupération et formatage des observateurs
+SELECT INTO myobservers array_to_string(array_agg(rol.nom_role || ' ' || rol.prenom_role), ', ') AS observers_name,
+array_agg(rol.id_role) AS observers_id
 FROM pr_occtax.cor_role_releves_occtax cor
 JOIN utilisateurs.t_roles rol ON rol.id_role = cor.id_role
 WHERE cor.id_releve_occtax = releve.id_releve_occtax;
@@ -546,7 +551,7 @@ $BODY$
   COST 100;
 
 
-CREATE OR REPLACE FUNCTION fct_tri_synthese_update_releve()
+CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_releve()
   RETURNS trigger AS
 $BODY$
 DECLARE
