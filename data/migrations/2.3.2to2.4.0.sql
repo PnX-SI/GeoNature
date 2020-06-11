@@ -653,3 +653,8 @@ $BODY$
   $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+
+-- suppression synthese autocomplete
+DROP TRIGGER trg_refresh_taxons_forautocomplete ON gn_synthese.synthese;
+DROP TABLE gn_synthese.taxons_synthese_autocomplete;
+DROP FUNCTION gn_synthese.fct_trg_refresh_taxons_forautocomplete() CASCADE;
