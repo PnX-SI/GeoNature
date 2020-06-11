@@ -7,8 +7,8 @@ CHANGELOG
 
 **TO CHECK**
 
-* MAJ TaxHub obligatoire avant ? VM_autocomplete et synthese
-* MAJ Taxref obligatoire ?
+* MAJ TaxHub non obligatoire
+* MAJ Taxref non obligatoire
 
 **🚀 Nouveautés**
 
@@ -26,6 +26,18 @@ CHANGELOG
 * SQL update Nomenclatures
 * SQL d'update de la BDD...
 * Update et installation dépendances Weasyprint
+
+Installer les dépendances suivantes:
+
+::
+
+    sudo apt-get install -y libcairo2
+    sudo apt-get install -y libpango-1.0-0
+    sudo apt-get install -y libpangocairo-1.0-0
+    sudo apt-get install -y libgdk-pixbuf2.0-0
+    sudo apt-get install -y libffi-dev
+    sudo apt-get install -y shared-mime-info
+    
 * Migrate et contenu de ``backend/static``
 
 * Script update correction #719:
