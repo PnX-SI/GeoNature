@@ -9,6 +9,7 @@ CHANGELOG
 
 * MAJ TaxHub non obligatoire
 * MAJ Taxref non obligatoire
+* Release Utils-Flask
 
 **🚀 Nouveautés**
 
