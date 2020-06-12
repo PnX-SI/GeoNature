@@ -23,11 +23,13 @@ CHANGELOG
 
 **⚠️ Notes de version**
 
-* SQL update Nomenclatures
-* SQL d'update de la BDD...
+* Vous pouvez mettre à jour TaxHub et UsersHub au préalable
+* Si vous mettez à jour TaxHub, vous pouvez mettre à jour Taxref en version 13. Il est aussi possible de le faire en différé, plus tard.
+* SQL update Nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module/blob/develop/data/update1.3.2to1.3.3.sql) avec partie Taxref v13 qui ne passera que si Taxref migré en v13 préalablement. Sinon jouez https://github.com/PnX-SI/Nomenclature-api-module/blob/develop/data/maj_taxref_v13.sql plus tard, après avoir mis à jour Taxref en version 13.
+* SQL d'update de la BDD (``data/migrations/2.3.2to2.4.0.sql``)
 * Update et installation dépendances Weasyprint
 
-Installer les dépendances suivantes:
+Installer les dépendances suivantes :
 
 ::
 
