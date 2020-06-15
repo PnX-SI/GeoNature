@@ -294,7 +294,7 @@ class TDatasets(CruvedHelper):
     active = DB.Column(DB.Boolean, default=True)
     validable = DB.Column(DB.Boolean)
 
-    modules = DB.relationship("TModules", secondary=cor_module_dataset)
+    modules = DB.relationship("TModules", secondary=cor_module_dataset, lazy="select")
 
     # HACK: the relationship is not well defined for many to many relationship
     # because CorDatasetActor could be an User or an Organisme object...
