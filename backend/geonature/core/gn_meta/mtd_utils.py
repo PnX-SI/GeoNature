@@ -21,10 +21,18 @@ from geonature.core.gn_meta.models import (
     TAcquisitionFramework,
     CorAcquisitionFrameworkActor,
 )
+from geonature.core.gn_commons.models import TModules
 
 
 namespace = current_app.config["XML_NAMESPACE"]
 api_endpoint = current_app.config["MTD_API_ENDPOINT"]
+
+NOMENCLATURE_MAPPING = {
+    "id_nomenclature_data_type": "JDD_TYP",
+    "id_nomenclature_dataset_objectif": "JDD_OBJECTIFS",
+    "id_nomenclature_data_origin": "DS_PUBLIQUE",
+    "id_nomenclature_source_status": "STATUT_SOURCE",
+}
 
 # get the root logger
 log = logging.getLogger()
@@ -135,6 +143,7 @@ def parse_jdd_xml(xml):
         dataset_desc = get_tag_content(jdd, "description", default_value="")
         terrestrial_domain = get_tag_content(jdd, "domaineTerrestre")
         marine_domain = get_tag_content(jdd, "domaineMarin")
+        jdd_type = get_tag_content(jdd, "typeDonnees")
 
         current_jdd = {
             "unique_dataset_id": jdd_uuid,
@@ -144,6 +153,7 @@ def parse_jdd_xml(xml):
             "dataset_desc": dataset_desc,
             "terrestrial_domain": json.loads(terrestrial_domain),
             "marine_domain": json.loads(marine_domain),
+            "id_nomenclature_jdd_type": jdd_type,
         }
 
         jdd_list.append(current_jdd)
@@ -279,6 +289,12 @@ def post_jdd_from_user(id_user=None, id_organism=None):
             # get the id of the dataset to check if exists
             id_dataset = TDatasets.get_id(ds["unique_dataset_id"])
             ds["id_dataset"] = id_dataset
+            # search nomenclature
+            for key, value in ds.items():
+                if key.startwith("id_nomenclature"):
+                    value = func.ref_nomenclatures.get_id_nomenclature(
+                        NOMENCLATURE_MAPPING.get(key), value
+                    )
             dataset = TDatasets(**ds)
 
             # if the dataset already exist
@@ -344,10 +360,26 @@ def post_jdd_from_user(id_user=None, id_organism=None):
 
         try:
             DB.session.commit()
+            DB.session.flush()
+            #  suppression et ajout dans cor_dataset_module
+            # TODO: test si dataset a un ID
+            dataset_obj = DB.session.query(TDatasets).filter_by(
+                unique_dataset_id=ds["unique_dataset_id"]
+            )
+            modules = dataset_obj.modules
+            if not modules:
+                modules.append(
+                    DB.session.query(TModules).fillter(
+                        TModules.module_code.in_(
+                            current_app.config["CAS"]["JDD_MODULE_CODE_ASSOCIATION"]
+                        )
+                    )
+                )
+            DB.session.merge(dataset_obj)
+            DB.session.commit()
             dataset_list_model.append(dataset)
         except SQLAlchemyError as e:
-            DB.session.commit()
-            DB.session.flush()
+            DB.session.rollback()
             error_msg = """
             Error posting JDD {} \n\n Trace: \n {}
             """.format(
