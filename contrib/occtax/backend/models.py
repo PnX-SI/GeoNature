@@ -5,17 +5,18 @@ from sqlalchemy.sql import select, func, and_
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.inspection import inspect
+from geoalchemy2.shape import to_shape
+from geoalchemy2.elements import WKBElement, WKTElement
+from geojson import Feature, FeatureCollection
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.tools import InsufficientRightsError
 from pypnusershub.db.models import User
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
-from utils_flask_sqla_geo.serializers import geoserializable
 
 from geonature.core.taxonomie.models import Taxref
 from geonature.core.gn_meta.models import TDatasets
-from geonature.core.taxonomie.models import Taxref
 from geonature.utils.env import DB
 
 
@@ -91,7 +92,7 @@ class OcctaxModel(DB.Model):
         self._set_columns(**kwargs)
         return self
 
-class ReleveModel(OcctaxModel):
+class ReleveModel(DB.Model):
     """
         Classe abstraite permettant d'ajout des méthodes
         de controle d'accès à la donnée en fonction
@@ -161,7 +162,7 @@ class ReleveModel(OcctaxModel):
         }
 
 
-class corRoleRelevesOccurrence(OcctaxModel):
+class corRoleRelevesOccurrence(DB.Model):
     __tablename__ = "cor_role_releves_occtax"
     __table_args__ = {"schema": "pr_occtax"}
     unique_id_cor_role_releve = DB.Column(
@@ -185,7 +186,7 @@ class corRoleRelevesOccurrence(OcctaxModel):
 
 
 @serializable
-class CorCountingOccurrence(OcctaxModel):
+class CorCountingOccurrence(DB.Model):
     __tablename__ = "cor_counting_occtax"
     __table_args__ = {"schema": "pr_occtax"}
     id_counting_occtax = DB.Column(DB.Integer, primary_key=True)
@@ -197,10 +198,7 @@ class CorCountingOccurrence(OcctaxModel):
         ForeignKey("pr_occtax.t_occurrences_occtax.id_occurrence_occtax"),
         nullable=False
     )
-    id_nomenclature_life_stage = DB.Column(
-        DB.Integer, 
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        nullable=False)
+    id_nomenclature_life_stage = DB.Column(DB.Integer, nullable=False)
     id_nomenclature_sex = DB.Column(DB.Integer, nullable=False)
     id_nomenclature_obj_count = DB.Column(DB.Integer, nullable=False)
     id_nomenclature_type_count = DB.Column(DB.Integer)
@@ -215,7 +213,7 @@ class CorCountingOccurrence(OcctaxModel):
 
 
 @serializable
-class TOccurrencesOccurrence(OcctaxModel):
+class TOccurrencesOccurrence(DB.Model):
     __tablename__ = "t_occurrences_occtax"
     __table_args__ = {"schema": "pr_occtax"}
     id_occurrence_occtax = DB.Column(DB.Integer, primary_key=True)
@@ -247,10 +245,10 @@ class TOccurrencesOccurrence(OcctaxModel):
 
     cor_counting_occtax = relationship(
         "CorCountingOccurrence",
-        lazy="dynamic",
+        lazy="joined",
         cascade="all,delete-orphan",
         uselist=True,
-        backref="counting"
+        backref=DB.backref("occurence", lazy='joined')
     )
 
     taxref = relationship("Taxref", lazy="joined")
