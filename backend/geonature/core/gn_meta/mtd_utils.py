@@ -28,7 +28,7 @@ namespace = current_app.config["XML_NAMESPACE"]
 api_endpoint = current_app.config["MTD_API_ENDPOINT"]
 
 NOMENCLATURE_MAPPING = {
-    "id_nomenclature_data_type": "JDD_TYP",
+    "id_nomenclature_data_type": "DATA_TYP",
     "id_nomenclature_dataset_objectif": "JDD_OBJECTIFS",
     "id_nomenclature_data_origin": "DS_PUBLIQUE",
     "id_nomenclature_source_status": "STATUT_SOURCE",
@@ -143,7 +143,7 @@ def parse_jdd_xml(xml):
         dataset_desc = get_tag_content(jdd, "description", default_value="")
         terrestrial_domain = get_tag_content(jdd, "domaineTerrestre")
         marine_domain = get_tag_content(jdd, "domaineMarin")
-        jdd_type = get_tag_content(jdd, "typeDonnees")
+        data_type = get_tag_content(jdd, "typeDonnees")
 
         current_jdd = {
             "unique_dataset_id": jdd_uuid,
@@ -153,7 +153,7 @@ def parse_jdd_xml(xml):
             "dataset_desc": dataset_desc,
             "terrestrial_domain": json.loads(terrestrial_domain),
             "marine_domain": json.loads(marine_domain),
-            "id_nomenclature_jdd_type": jdd_type,
+            "id_nomenclature_data_type": data_type,
         }
 
         jdd_list.append(current_jdd)
@@ -264,7 +264,8 @@ def post_jdd_from_user(id_user=None, id_organism=None):
     xml_jdd = None
     xml_jdd = get_jdd_by_user_id(id_user)
     dataset_list_model = []
-
+    print("STAAAAAART")
+    print(xml_jdd)
     if xml_jdd:
         dataset_list = parse_jdd_xml(xml_jdd)
         posted_af_uuid = {}
@@ -291,8 +292,8 @@ def post_jdd_from_user(id_user=None, id_organism=None):
             ds["id_dataset"] = id_dataset
             # search nomenclature
             for key, value in ds.items():
-                if key.startwith("id_nomenclature"):
-                    value = func.ref_nomenclatures.get_id_nomenclature(
+                if key.startswith("id_nomenclature"):
+                    ds[key] = func.ref_nomenclatures.get_id_nomenclature(
                         NOMENCLATURE_MAPPING.get(key), value
                     )
             dataset = TDatasets(**ds)
@@ -361,20 +362,23 @@ def post_jdd_from_user(id_user=None, id_organism=None):
         try:
             DB.session.commit()
             DB.session.flush()
-            #  suppression et ajout dans cor_dataset_module
-            # TODO: test si dataset a un ID
-            dataset_obj = DB.session.query(TDatasets).filter_by(
-                unique_dataset_id=ds["unique_dataset_id"]
+            dataset_obj = (
+                DB.session.query(TDatasets)
+                .filter_by(unique_dataset_id=ds["unique_dataset_id"])
+                .one_or_none()
             )
-            modules = dataset_obj.modules
-            if not modules:
-                modules.append(
-                    DB.session.query(TModules).fillter(
-                        TModules.module_code.in_(
-                            current_app.config["CAS"]["JDD_MODULE_CODE_ASSOCIATION"]
+            if dataset_obj:
+                modules = dataset_obj.modules
+                if not modules:
+                    dataset_obj.modules.extend(
+                        DB.session.query(TModules)
+                        .filter(
+                            TModules.module_code.in_(
+                                current_app.config["CAS"]["JDD_MODULE_CODE_ASSOCIATION"]
+                            )
                         )
+                        .all()
                     )
-                )
             DB.session.merge(dataset_obj)
             DB.session.commit()
             dataset_list_model.append(dataset)
