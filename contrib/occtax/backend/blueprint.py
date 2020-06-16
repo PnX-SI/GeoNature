@@ -402,18 +402,17 @@ def insertOrUpdateOneReleve(info_role):
     return releve.get_geofeature()
 
 
-def releveHandler(request, *, releve, info_role, with_occurrence=False):
+def releveHandler(request, *, releve, info_role):
 
     #Test des droits d'édition du relevé
     if releve.id_releve_occtax is not None:
         user_cruved = get_or_fetch_user_cruved(
             session=session, id_role=info_role.id_role, module_code="OCCTAX"
         )
-        update_code_filter = user_cruved["U"]
         # info_role.code_action = update_data_scope
         user = UserRigth(
             id_role=info_role.id_role,
-            value_filter=update_code_filter,
+            value_filter=user_cruved["U"],
             code_action="U",
             id_organisme=info_role.id_organisme,
         )
@@ -457,7 +456,6 @@ def releveHandler(request, *, releve, info_role, with_occurrence=False):
 
 @blueprint.route("/only/releve", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="OCCTAX")
-#@json_resp
 def createReleve(info_role):
     """
     Post one Occtax data (Releve + Occurrence + Counting)
@@ -498,7 +496,6 @@ def createReleve(info_role):
 
 @blueprint.route("/only/releve/<int:id_releve>", methods=["POST"])
 @permissions.check_cruved_scope("U", True, module_code="OCCTAX")
-@json_resp
 def updateReleve(id_releve, info_role):
     """
     Post one Occurrence data (Occurrence + Counting) for add to Releve
@@ -525,71 +522,34 @@ def updateReleve(id_releve, info_role):
     }
 
 
-@blueprint.route("/releve/<int:id_releve>/occurrence", methods=["POST"])
-@permissions.check_cruved_scope("C", True, module_code="OCCTAX")
-#@json_resp
-def createOccurrence(id_releve, info_role):
-    """
-    Post one Occurrence data (Occurrence + Counting) for add to Releve
-
-    """
-    #get releve by id_releve
-    releve = DB.session.query(TRelevesOccurrence).get(id_releve)
-
-    if not releve:
-        raise NotFound('The releve "{}" does not exist'.format(id_releve))
-
-    # vérification des droits utilisateurs pour modifier le relevé et créer une occurrence 
-    releve = releve.get_releve_if_allowed(info_role)
-
-    occurrenceSchema = OccurrenceSchema()
-    occurrence, errors = occurrenceSchema.load(request.get_json())
-
-    if bool(errors):
-        return errors, 422
-
-    occurrence.id_releve_occtax = releve.id_releve_occtax
-
-    DB.session.add(occurrence)
-    DB.session.commit()
-    
-    return occurrenceSchema.dump(occurrence)
-
-@blueprint.route("/occurrence/<int:id_occurrence>", methods=["POST"])
-@permissions.check_cruved_scope("U", True, module_code="OCCTAX")
-#@json_resp
-def updateOccurrence(id_occurrence, info_role):
-    """
-    Post one Occurrence data (Occurrence + Counting) for add to Releve
-
-    """
-    #get releve by id_releve
-    q = DB.session.query(TOccurrencesOccurrence)
+def occurrenceHandler(request, *, occurrence, info_role):
 
     try:
-        occurrence = q.get(id_occurrence)
         releve = DB.session.query(TRelevesOccurrence).get(occurrence.id_releve_occtax)
     except Exception as e:
         DB.session.rollback()
         raise
 
-    if not occurrence or not releve:
-        return {"message": "not found"}, 404
+    if not releve:
+        raise InsufficientRightsError(
+            {"message": "not found"},
+            404,
+        )
 
-    #Test des droits d'édition du relevé
-    user_cruved = get_or_fetch_user_cruved(
-        session=session, id_role=info_role.id_role, module_code="OCCTAX"
-    )
-    update_code_filter = user_cruved["U"]
-    # info_role.code_action = update_data_scope
-    user = UserRigth(
-        id_role=info_role.id_role,
-        value_filter=update_code_filter,
-        code_action="U",
-        id_organisme=info_role.id_organisme,
-    )
+    #Test des droits d'édition du relevé si modification
+    if occurrence.id_occurrence_occtax is not None:
+        user_cruved = get_or_fetch_user_cruved(
+            session=session, id_role=info_role.id_role, module_code="OCCTAX"
+        )
+        # info_role.code_action = update_data_scope
+        info_role = UserRigth(
+            id_role=info_role.id_role,
+            value_filter=user_cruved["U"],
+            code_action="U",
+            id_organisme=info_role.id_organisme,
+        )
 
-    releve = releve.get_releve_if_allowed(user)
+    releve = releve.get_releve_if_allowed(info_role)
     #fin test, si ici => c'est ok
 
     occurrenceSchema = OccurrenceSchema()
@@ -598,9 +558,42 @@ def updateOccurrence(id_occurrence, info_role):
     if bool(errors):
         return errors, 422
     
+    DB.session.add(occurrence)
     DB.session.commit()
 
-    return occurrenceSchema.dump(occurrence)
+    return occurrence
+
+
+@blueprint.route("/releve/<int:id_releve>/occurrence", methods=["POST"])
+@permissions.check_cruved_scope("C", True, module_code="OCCTAX")
+def createOccurrence(id_releve, info_role):
+    """
+    Post one Occurrence data (Occurrence + Counting) for add to Releve
+
+    """
+    #get releve by id_releve
+    occurrence = TOccurrencesOccurrence()
+    occurrence.id_releve_occtax = id_releve
+
+    return OccurrenceSchema().dump(occurrenceHandler(request=request, occurrence=occurrence, info_role=info_role))
+
+@blueprint.route("/occurrence/<int:id_occurrence>", methods=["POST"])
+@permissions.check_cruved_scope("U", True, module_code="OCCTAX")
+def updateOccurrence(id_occurrence, info_role):
+    """
+    Post one Occurrence data (Occurrence + Counting) for add to Releve
+
+    """
+    try:
+        occurrence = DB.session.query(TOccurrencesOccurrence).get(id_occurrence)
+    except Exception as e:
+        DB.session.rollback()
+        raise
+
+    if not occurrence:
+        return {"message": "not found"}, 404
+        
+    return OccurrenceSchema().dump(occurrenceHandler(request=request, occurrence=occurrence, info_role=info_role))
 
 
 
