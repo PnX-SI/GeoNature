@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { FormControl, FormGroup, FormArray, Validators } from "@angular/forms";
 import { map, filter, tap } from 'rxjs/operators';
@@ -21,7 +21,7 @@ import { Taxon } from "@geonature_common/form/taxonomy/taxonomy.component";
     ]),
   ],
 })
-export class OcctaxFormOccurrenceComponent implements OnInit {
+export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   
   public occtaxConfig = ModuleConfig;
   public occurrenceForm: FormGroup;
@@ -38,7 +38,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit {
     private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     private occtaxFormService: OcctaxFormService
   ) {}
-
+  
   ngOnInit() {
     this.occurrenceForm = this.occtaxFormOccurrenceService.form;
 
@@ -132,6 +132,10 @@ export class OcctaxFormOccurrenceComponent implements OnInit {
     this.occtaxFormOccurrenceService.reset();
   }
 
+  ngOnDestroy() {
+    this.resetOccurrenceForm()
+  }
+
   addCounting() {
     this.occtaxFormOccurrenceService.addCountingForm(true); //patchwithdefaultvalue
   }
@@ -142,9 +146,5 @@ export class OcctaxFormOccurrenceComponent implements OnInit {
 
   collapse() {
     this.advanced = (this.advanced === 'collapsed' ? 'expanded' : 'collapsed');
-  }
-
-  console() {
-    console.log("coucou")
   }
 }

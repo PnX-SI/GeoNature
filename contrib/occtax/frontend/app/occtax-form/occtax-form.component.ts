@@ -43,7 +43,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     private occtaxTaxaListService: OcctaxTaxaListService
   ) { }
-  
+
   ngOnInit() {
     //si modification, récuperation de l'ID du relevé
     let id = this._route.snapshot.paramMap.get('id');
