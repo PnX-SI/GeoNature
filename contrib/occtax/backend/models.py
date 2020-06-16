@@ -4,10 +4,6 @@ from sqlalchemy import ForeignKey, not_
 from sqlalchemy.sql import select, func, and_
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.inspection import inspect
-from geoalchemy2.shape import to_shape
-from geoalchemy2.elements import WKBElement, WKTElement
-from geojson import Feature, FeatureCollection
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.tools import InsufficientRightsError
