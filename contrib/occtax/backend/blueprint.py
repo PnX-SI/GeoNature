@@ -273,6 +273,135 @@ def getViewReleveOccurrence(info_role):
         }
     return {"message": "not found"}, 404
 
+
+@blueprint.route("/releve", methods=["POST"])
+@permissions.check_cruved_scope("C", True, module_code="OCCTAX")
+@json_resp
+def insertOrUpdateOneReleve(info_role):
+    """
+    Route utilisée depuis l'appli mobile => depreciée et non utilisée par l'appli web
+    Post one Occtax data (Releve + Occurrence + Counting)
+
+    .. :quickref: Occtax; Post one Occtax data (Releve + Occurrence + Counting)
+
+    **Request JSON object:**
+
+    .. sourcecode:: http
+
+        {
+        "geometry":
+            {"type":"Point",
+            "coordinates":[0.9008789062500001,47.14489748555398]},
+            "properties":
+                {
+                "id_releve_occtax":null,"id_dataset":1,"id_digitiser":1,"date_min":"2019-05-09","date_max":"2019-05-09","hour_min":null,"hour_max":null,"altitude_min":null,"altitude_max":null,"meta_device_entry":"web","comment":null,"id_nomenclature_obs_technique":316,"observers":[1],"observers_txt":null,"id_nomenclature_grp_typ":132,
+                "t_occurrences_occtax":[{
+                    "id_releve_occtax":null,"id_occurrence_occtax":null,"id_nomenclature_obs_meth":41,"id_nomenclature_bio_condition":157,"id_nomenclature_bio_status":29,"id_nomenclature_naturalness":160,"id_nomenclature_exist_proof":81,"id_nomenclature_observation_status":88,"id_nomenclature_blurring":175,"id_nomenclature_source_status":75,"determiner":null,"id_nomenclature_determination_method":445,"cd_nom":67111,"nom_cite":"Ablette =  <i> Alburnus alburnus (Linnaeus, 1758)</i> - [ES - 67111]","meta_v_taxref":null,"sample_number_proof":null,"comment":null,
+                "cor_counting_occtax":[{
+                    "id_counting_occtax":null,"id_nomenclature_life_stage":1,"id_nomenclature_sex":171,"id_nomenclature_obj_count":146,"id_nomenclature_type_count":94,"id_occurrence_occtax":null,"count_min":1,"count_max":1   
+                    }]    
+                }]
+            }
+        }
+
+    :returns: GeoJson<TRelevesOccurrence>
+    """
+
+    releveRepository = ReleveRepository(TRelevesOccurrence)
+    data = dict(request.get_json())
+    occurrences_occtax = None
+    if "t_occurrences_occtax" in data["properties"]:
+        occurrences_occtax = data["properties"]["t_occurrences_occtax"]
+        data["properties"].pop("t_occurrences_occtax")
+    observersList = None
+    if "observers" in data["properties"]:
+        observersList = data["properties"]["observers"]
+        data["properties"].pop("observers")
+
+    # Test et suppression des propriétés inexistantes de TRelevesOccurrence
+    attliste = [k for k in data["properties"]]
+    for att in attliste:
+        if not getattr(TRelevesOccurrence, att, False):
+            data["properties"].pop(att)
+
+    releve = TRelevesOccurrence(**data["properties"])
+    shape = asShape(data["geometry"])
+    two_dimension_geom = remove_third_dimension(shape)
+    releve.geom_4326 = from_shape(two_dimension_geom, srid=4326)
+
+    if observersList is not None:
+        observers = DB.session.query(User).filter(
+            User.id_role.in_(observersList)).all()
+        for o in observers:
+            releve.observers.append(o)
+
+    for occ in occurrences_occtax:
+        cor_counting_occtax = []
+        if "cor_counting_occtax" in occ:
+            cor_counting_occtax = occ["cor_counting_occtax"]
+            occ.pop("cor_counting_occtax")
+
+        # Test et suppression
+        #   des propriétés inexistantes de TOccurrencesOccurrence
+        attliste = [k for k in occ]
+        for att in attliste:
+            if not getattr(TOccurrencesOccurrence, att, False):
+                occ.pop(att)
+        # pop the id if None. otherwise DB.merge is not OK
+        if "id_occurrence_occtax" in occ and occ["id_occurrence_occtax"] is None:
+            occ.pop("id_occurrence_occtax")
+        occtax = TOccurrencesOccurrence(**occ)
+
+        for cnt in cor_counting_occtax:
+            # Test et suppression
+            # des propriétés inexistantes de CorCountingOccurrence
+            attliste = [k for k in cnt]
+            for att in attliste:
+                if not getattr(CorCountingOccurrence, att, False):
+                    cnt.pop(att)
+            # pop the id if None. otherwise DB.merge is not OK
+            if "id_counting_occtax" in cnt and cnt["id_counting_occtax"] is None:
+                cnt.pop("id_counting_occtax")
+            countingOccurrence = CorCountingOccurrence(**cnt)
+            occtax.cor_counting_occtax.append(countingOccurrence)
+        releve.t_occurrences_occtax.append(occtax)
+
+    # if its a update
+    if releve.id_releve_occtax:
+        # get update right of the user
+        user_cruved = get_or_fetch_user_cruved(
+            session=session, id_role=info_role.id_role, module_code="OCCTAX"
+        )
+        update_code_filter = user_cruved["U"]
+        # info_role.code_action = update_data_scope
+        user = UserRigth(
+            id_role=info_role.id_role,
+            value_filter=update_code_filter,
+            code_action="U",
+            id_organisme=info_role.id_organisme,
+        )
+        releve = releveRepository.update(releve, user, shape)
+    # if its a simple post
+    else:
+        # set id_digitiser
+        releve.id_digitiser = info_role.id_role
+        if info_role.value_filter in ("0", "1", "2"):
+            # Check if user can add a releve in the current dataset
+            allowed = releve.user_is_in_dataset_actor(info_role)
+            if not allowed:
+                raise InsufficientRightsError(
+                    "User {} has no right in dataset {}".format(
+                        info_role.id_role, releve.id_dataset
+                    ),
+                    403,
+                )
+        DB.session.add(releve)
+    DB.session.commit()
+    DB.session.flush()
+
+    return releve.get_geofeature()
+
+
 def releveHandler(request, *, releve, info_role, with_occurrence=False):
 
     #Test des droits d'édition du relevé
@@ -326,7 +455,7 @@ def releveHandler(request, *, releve, info_role, with_occurrence=False):
     DB.session.flush()
     return releve
 
-@blueprint.route("/releve", methods=["POST"])
+@blueprint.route("/only/releve", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="OCCTAX")
 #@json_resp
 def createReleve(info_role):
@@ -367,7 +496,7 @@ def createReleve(info_role):
         "id": releve["id_releve_occtax"]
     }
 
-@blueprint.route("/releve/<int:id_releve>", methods=["POST"])
+@blueprint.route("/only/releve/<int:id_releve>", methods=["POST"])
 @permissions.check_cruved_scope("U", True, module_code="OCCTAX")
 @json_resp
 def updateReleve(id_releve, info_role):
