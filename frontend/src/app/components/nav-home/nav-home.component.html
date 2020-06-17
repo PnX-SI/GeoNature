@@ -7,8 +7,7 @@
 
   <mat-sidenav-content>
     <mat-toolbar id="app-toolbar" class="row">
-
-      <button class="menu-button toolbar-button" mat-fab (click)="closeSideBar()">
+      <button class="menu-button toolbar-button mat-elevation-z0" id="btn-toolbar" mat-mini-fab (click)="closeSideBar()">
         <mat-icon class="menu-icon" aria-label="Ouvrir le menu">menu</mat-icon>
       </button>
       <span id="module-name"> {{moduleName}}</span>
