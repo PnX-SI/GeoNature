@@ -1,7 +1,6 @@
 import json
 import logging
 from flask import Blueprint, current_app, request, render_template
-import pprint
 
 from sqlalchemy import or_
 from sqlalchemy.sql import text, exists, select
@@ -352,8 +351,8 @@ def get_export_pdf_dataset(id_dataset, info_role):
         df["dataset_desc"] = df["dataset_desc"][:240] + "..."
 
     df["css"] = {
-        "logo": "Logo_SINP.png",
-        "bandeau": "Bandeau_SINP.png",
+        "logo": "Logo_pdf.png",
+        "bandeau": "Bandeau_pdf.png",
         "entite": "sinp",
     }
 
@@ -486,8 +485,8 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
                 "%d/%m/%Y"
             )
         acquisition_framework["css"] = {
-            "logo": "Logo_SINP.png",
-            "bandeau": "Bandeau_SINP.png",
+            "logo": "Logo_pdf.png",
+            "bandeau": "Bandeau_pdf.png",
             "entite": "sinp",
         }
         date = dt.datetime.now().strftime("%d/%m/%Y")
@@ -515,7 +514,6 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
         dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
     )
 
-    pprint.pprint(acquisition_framework)
 
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf(
