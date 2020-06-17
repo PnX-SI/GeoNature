@@ -3,30 +3,43 @@ CHANGELOG
 =========
 
 2.4.0 (Unreleased)
-------------------
+----------------
 
 **TO CHECK**
 
-* MAJ TaxHub non obligatoire
-* MAJ Taxref non obligatoire
-* Release Utils-Flask
+* https://github.com/ouidou/GeoNature/blob/develop/backend/geonature/core/gn_meta/routes.py#L350
+* Hum... https://github.com/ouidou/GeoNature/blob/develop/backend/static/css/jeu_de_donnees_template_pdf.css
 
 **🚀 Nouveautés**
 
-* Occtax : Réécriture du trigger générique de calcul de l'altitude. N'est executé que si l'altitude n'est pas postée
-* Ajout d'un offset sur la route de la couleur des taxons
-* Support des fonds de carte au format WMS (https://leafletjs.com/reference-1.6.0.html#tilelayer-wms-l-tilelayer-wms), (PR#890 par @jbdesbas)
+* Métadonnées : Ajout d'une fiche pour chaque jeu de données et cadres d'acquisition (#846 par @FloVollmer)
+* Métadonnées : Possibilité d'exporter les fiches des JDD et des CA en PDF, générés par le serveur avec WeasyPrint. Logo et entêtes modifiables dans le dossier ``backend/static/images/`` (#882 par @FloVollmer)
+* Compatible avec TaxHub 1.7.0 qui inclut notamment la migration (optionnelle) vers Taxref version 13
+* Synthèse et zonages : Ne pas inclure l'association aux zonages limitrophes d'une observation quand sa géométrie est égale à un zonage (maille, commune...) (#716 par @jbdesbas)
+* Synthèse : Ajout de la possibilité d'activer la recherche par observateur à travers une liste, avec ajout des paramètres ``SEARCH_OBSERVER_WITH_LIST`` (``False`` par défaut) et ``ID_SEARCH_OBSERVER_LIST`` (#834 par @jbrieuclp)
+* Synthèse : Amélioration de la recherche des observateurs. Non prise en compte de l'ordre des noms saisis (#834 par @jbrieuclp)
+* Synthèse : Ajout de filtres avancés (``Saisie par`` basé sur ``id_digitiser``, ``Commentaire`` du relevé et de l'occurrence, ``Déterminateur``) (#834 par @jbrieuclp)
+* Occtax : Création d'un trigger générique de calcul de l'altitude qui n'est exécuté que si l'altitude n'est pas postée (#848)
+* Ajout d'une table ``gn_commons.t_mobile_apps`` permettant de lister les applications mobiles, l'URL de leur APK et d'une API pour interroger le contenu de cette table. Les fichiers des applications et leurs fichiers de configurations peuvent être chargés dans le dossier ``backend/static/mobile`` (#852)
+* Ajout d'un offset et d'une limite sur la route de la couleur des taxons (utilisée uniquement par Occtax-mobile actuellement)
+* Support des fonds de carte au format WMS (https://leafletjs.com/reference-1.6.0.html#tilelayer-wms-l-tilelayer-wms), (PR #890 par @jbdesbas)
 * Ajout du champs ``reference_biblio`` dans la synthèse
 * Amélioration des perfomances du module de validation
 * Ajout d'une fonction SQL d'insertion de données dans la synthese (et une fonction python associée)
+* Compléments de la documentation (Permissions des utilisateurs, Occhab)
+* Ajout de scripts de migration des données de GINCO1 vers GeoNature (``data/scripts/import_ginco``)
 
 **🐛 Corrections**
 
+* Validation : Correction de l'ouverture de la fiche d'information d'une observation (#858)
+* Modification de l'attribution de la hauteur du composant ``map-container`` pour permettre d'adapter la hauteur de la carte si la hauteur d'un conteneur parent est modifié. Et que ``<pnx-map height="100%">`` fonctionne (#844 par @jbrieuclp)
+
 **⚠️ Notes de version**
 
-* Vous pouvez mettre à jour TaxHub et UsersHub au préalable
-* Si vous mettez à jour TaxHub, vous pouvez mettre à jour Taxref en version 13. Il est aussi possible de le faire en différé, plus tard.
-* SQL update Nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module/blob/develop/data/update1.3.2to1.3.3.sql) avec partie Taxref v13 qui ne passera que si Taxref migré en v13 préalablement. Sinon jouez https://github.com/PnX-SI/Nomenclature-api-module/blob/develop/data/maj_taxref_v13.sql plus tard, après avoir mis à jour Taxref en version 13.
+* Vous devez mettre à jour TaxHub en version 1.7.0
+* Si vous mettez à jour TaxHub, vous pouvez mettre à jour Taxref en version 13. Il est aussi possible de le faire en différé, plus tard
+* Vous pouvez mettre à jour UsersHub en version 2.1.2
+* SQL update Nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module/blob/develop/data/update1.3.2to1.3.3.sql). Si vous avez mis à jour Taxref en version, répercutez les évolutions au niveau des nomenclatures avec le script SQL https://github.com/PnX-SI/Nomenclature-api-module/blob/develop/data/update_taxref_v13.sql. Sinon vous devrez l'exécuter plus tard, après avoir mis à jour Taxref en version 13.
 * SQL d'update de la BDD (``data/migrations/2.3.2to2.4.0.sql``)
 * Update et installation dépendances Weasyprint
 
@@ -45,11 +58,13 @@ Installer les dépendances suivantes :
 
 * Script update correction #719:
 
--- Correction sur les données antérieures
-DELETE FROM gn_synthese.cor_area_synthese cas
-USING gn_synthese.synthese s , ref_geo.l_areas a
-WHERE cas.id_synthese = s.id_synthese AND a.id_area = cas.id_area
-AND public.ST_TOUCHES(s.the_geom_local,a.geom);
+::
+
+    -- Correction sur les données antérieures
+    DELETE FROM gn_synthese.cor_area_synthese cas
+    USING gn_synthese.synthese s , ref_geo.l_areas a
+    WHERE cas.id_synthese = s.id_synthese AND a.id_area = cas.id_area
+    AND public.ST_TOUCHES(s.the_geom_local,a.geom);
 
 
 2.3.2 (2020-02-24)
