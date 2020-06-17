@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.4.1 (Unreleased)
+------------------
+
+**🚀 Nouveautés**
+
+* Intégration de profils de taxons paramétrables (#917)
+
+**⚠️ Notes de version**
+
+* De nouvelles fonctions de TaxHub sont requises pour les profils de taxons (taxonomie.check_is_cd_ref & taxonomie.find_all_taxons_parents), assurez-vous d'être à jour sur l'intégration de ces fonctions
+* SQL de création des profils de taxons à lancer (data/core/gn_profiles.sql)
+
+
 2.4.0 (Unreleased)
 ------------------
 
