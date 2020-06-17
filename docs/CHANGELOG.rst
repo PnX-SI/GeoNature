@@ -12,7 +12,9 @@ CHANGELOG
 **⚠️ Notes de version**
 
 * De nouvelles fonctions de TaxHub sont requises pour les profils de taxons (taxonomie.check_is_cd_ref & taxonomie.find_all_taxons_parents), assurez-vous d'être à jour sur l'intégration de ces fonctions
-* SQL de création des profils de taxons à lancer (data/core/gn_profiles.sql)
+* SQL de création des profils de taxons à lancer (``data/core/gn_profiles.sql``)
+* SQL d'update de la BDD (``data/migrations/2.4.0to2.4.1.sql``)
+
 
 
 2.4.0 (Unreleased)
