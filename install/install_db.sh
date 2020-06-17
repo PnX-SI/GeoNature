@@ -164,7 +164,7 @@ then
     sudo -n -u postgres -s psql -d $db_name -f tmp/taxhub/data_inpn_taxhub.sql &>> var/log/install_db.log
     
     write_log "Creating des fonctions utilitaires..."
-    sudo -n -u postgres -s psql -d $db_name -f tmp/taxhub/generic_drop_and_restore_deps_views.sql &>> var/log/install_db.log
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/taxhub/generic_drop_and_restore_deps_views.sql  &>> var/log/install_db.log
 
     write_log "Creating dictionaries data for taxonomic schema..."
 
