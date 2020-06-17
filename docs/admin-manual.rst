@@ -138,14 +138,14 @@ Profils de taxons
 """""""""""""""""
 
 GeoNature dispose d'un mécanisme permettant de calculer des profils pour chaque taxon, en se basant sur les données présentes dans l'instance. Pour chaque taxon présent dans la synthèse, ces profils comportent :
-Dans la vue matérialisée gn_profiles.vm_valid_profiles
+Dans la vue matérialisée ``gn_profiles.vm_valid_profiles``
 
 - Aire d'occurrence
 - Altitudes (min et max)
 - Nombre de données valides pour le taxon considéré
 - Dates de première et de dernière observation
 
-Dans la vue matérialisée gn_profiles.vm_cor_taxon_phenology, les informations de phénologie s'appuyant sur les combinaisons entre les variables suivantes :
+Dans la vue matérialisée ``gn_profiles.vm_cor_taxon_phenology``, les informations de phénologie s'appuyant sur les combinaisons entre les variables suivantes :
 
 - La période d'observation
 - La classe altitudinale
@@ -170,13 +170,13 @@ Plusieurs fonctions permettent de "checker" si une donnée de la synthèse est c
 
 Le calcul des profils de taxons repose sur un certain nombre de variables, paramétrables soit pour tout le mécanisme, soit pour des taxons donnés.
 
-*Paramètres généraux la table gn_profiles.t_profiles_parameters :*
+*Paramètres généraux la table* ``gn_profiles.t_profiles_parameters`` :
 
-- Le paramètre ``id_valid_status_for_profils`` permet de lister les identifiants des nomenclatures des statuts de validation à prendre en compte pour les calculs des profils. Par exemple, en ne listant que les identifiants des nomenclatures "Certain -très probable" et "Probable", seules les données certaines et probables seront prises en compte lors du calcul des profils (comportement par défaut). En listant tous les identifiants des nomenclatures des statuts de validation, l'ensemble des données alimenteront les profils de taxons.
-- Pour chaque combinaison phénologique (période, classe altitudinale, stade de vie) d'un taxon, le nombre de données qui confirment la règle est stocké. Le paramètre ``min_occurrence_check_profil_phenology`` permet de définir à partir de combien d'occurences une combinaison phénologique est considérée comme fiable. L'objectif de ce paramètre est que des données exceptionnellement précoces ou tardives (ou des données imprécises) puissent être validées sans pour autant que leur phénologie devienne "une norme" admise pour le taxon.
+- Le paramètre id_valid_status_for_profils permet de lister les identifiants des nomenclatures des statuts de validation à prendre en compte pour les calculs des profils. Par exemple, en ne listant que les identifiants des nomenclatures "Certain -très probable" et "Probable", seules les données certaines et probables seront prises en compte lors du calcul des profils (comportement par défaut). En listant tous les identifiants des nomenclatures des statuts de validation, l'ensemble des données alimenteront les profils de taxons.
+- Pour chaque combinaison phénologique (période, classe altitudinale, stade de vie) d'un taxon, le nombre de données qui confirment la règle est stocké. Le paramètre min_occurrence_check_profil_phenology permet de définir à partir de combien d'occurences une combinaison phénologique est considérée comme fiable. L'objectif de ce paramètre est que des données exceptionnellement précoces ou tardives (ou des données imprécises) puissent être validées sans pour autant que leur phénologie devienne "une norme" admise pour le taxon.
 
-*Paramètres par taxon dans la table gn_profiles.cor_taxons_profiles_parameters :*
-Les profils peuvent être calculés selon différents paramètres en fonction des taxons. En effet, les paramètres peuvent être définis au niveau du cd_ref (quelque soit le rang : espèce, famille, règne etc), et ils s'appliqueront à tous les taxons situés "sous" ce cd_ref. Par exemple, s'il existe des paramètres pour les "Animalia" (cd_ref 183716) et des paramètres pour le renard cd_ref 60585), les paramètres du renard surcoucheront les paramètres Animalia pour cette espèces, mais les paramètres Animalia s'appliqueront à tous les autres animaux. Les règles appliquables à chaque taxon sont récupérées par la fonction gn_commons.get_profils_parameters(cdnom). 
+*Paramètres par taxon dans la table* ``gn_profiles.cor_taxons_profiles_parameters`` :
+Les profils peuvent être calculés selon différents paramètres en fonction des taxons. En effet, les paramètres peuvent être définis au niveau du cd_ref (quelque soit le rang : espèce, famille, règne etc), et ils s'appliqueront à tous les taxons situés "sous" ce cd_ref. Par exemple, s'il existe des paramètres pour les "Animalia" (cd_ref 183716) et des paramètres pour le renard cd_ref 60585), les paramètres du renard surcoucheront les paramètres Animalia pour cette espèces, mais les paramètres Animalia s'appliqueront à tous les autres animaux. Les règles appliquables à chaque taxon sont récupérées par la fonction ``gn_profiles.get_profiles_parameters(cdnom)``. 
 Pour chaque cd_ref, il est possible de définir :
 
 - spatial_precision : La précision spatiale utilisée pour calculer les profils. Elle est exprimée selon l'unité de mesure de la projection locale de l'instance geonature : mètres pour le Lambert93, degré pour le WGS84 etc. Elle définit à la fois la taille de la zone tampon appliquée autour de chaque observation pour définir l'aire d'occurrences du taxon, ainsi que la distance maximale admise entre le centroide et les limites d'une observation pour qu'elle soit prise en compte lors du calcul des profils (évite qu'une donnée imprécise valide à elle seule une grande zone).
