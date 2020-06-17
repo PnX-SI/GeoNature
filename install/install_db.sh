@@ -156,11 +156,15 @@ then
     wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata.sql -P tmp/taxhub
     wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata_atlas.sql -P tmp/taxhub
     wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/materialized_views.sql -P tmp/taxhub
+    wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/generic_drop_and_restore_deps_views.sql -P tmp/taxhub
 
     write_log "Creating 'taxonomie' schema..."
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/taxhub/taxhubdb.sql  &>> var/log/install_db.log
     write_log "Inserting INPN taxonomic data... (This may take a few minutes)"
     sudo -n -u postgres -s psql -d $db_name -f tmp/taxhub/data_inpn_taxhub.sql &>> var/log/install_db.log
+    
+    write_log "Creating des fonctions utilitaires..."
+    sudo -n -u postgres -s psql -d $db_name -f tmp/taxhub/generic_drop_and_restore_deps_views.sql &>> var/log/install_db.log
 
     write_log "Creating dictionaries data for taxonomic schema..."
 
