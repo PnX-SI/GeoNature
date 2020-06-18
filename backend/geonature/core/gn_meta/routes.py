@@ -376,7 +376,7 @@ def get_export_pdf_dataset(id_dataset, info_role):
     pdf_file = fm.generate_pdf("jeu_de_donnees_template_pdf.html", df, filename)
     pdf_file_posix = Path(pdf_file)
     return send_from_directory(
-        pdf_file_posix.parent,
+        str(pdf_file_posix.parent),
         pdf_file_posix.name,
         as_attachment=True
     )
@@ -519,7 +519,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
     )
     pdf_file_posix = Path(pdf_file)
     return send_from_directory(
-        pdf_file_posix.parent,
+        str(pdf_file_posix.parent),
         pdf_file_posix.name,
         as_attachment=True
     )
