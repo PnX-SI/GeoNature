@@ -14,7 +14,7 @@ CHANGELOG
 
 **🚀 Nouveautés**
 
-* Métadonnées : Ajout d'une fiche pour chaque jeu de données et cadres d'acquisition (#846 par @FloVollmer)
+* Métadonnées : Ajout d'une fiche pour chaque jeu de données et cadres d'acquisition, incluant une carte de l'étendue des observations et un graphique de répartition des taxons par Groupe INPN (#846 par @FloVollmer)
 * Métadonnées : Possibilité d'exporter les fiches des JDD et des CA en PDF, générés par le serveur avec WeasyPrint. Logo et entêtes modifiables dans le dossier ``backend/static/images/`` (#882 par @FloVollmer)
 * Compatible avec TaxHub 1.7.0 qui inclut notamment la migration (optionnelle) vers Taxref version 13
 * Synthèse et zonages : Ne pas inclure l'association aux zonages limitrophes d'une observation quand sa géométrie est égale à un zonage (maille, commune...) (#716 par @jbdesbas)
@@ -25,13 +25,14 @@ CHANGELOG
 * Ajout d'une table ``gn_commons.t_mobile_apps`` permettant de lister les applications mobiles, l'URL de leur APK et d'une API pour interroger le contenu de cette table. Les fichiers des applications et leurs fichiers de configurations peuvent être chargés dans le dossier ``backend/static/mobile`` (#852)
 * Ajout d'un offset et d'une limite sur la route de la couleur des taxons (utilisée uniquement par Occtax-mobile actuellement)
 * Support des fonds de carte au format WMS (https://leafletjs.com/reference-1.6.0.html#tilelayer-wms-l-tilelayer-wms), (#890 par @jbdesbas)
-* Ajout du champs ``reference_biblio`` dans la synthèse
+* Ajout d'un champs texte ``reference_biblio`` dans la table ``gn_synthese``
 * Amélioration des perfomances du module de validation, en revoyant la vue ``gn_commons.v_synthese_validation_forwebapp``
 * Ajout d'une fonction SQL d'insertion de données dans la synthese (et une fonction python associée)
 * Compléments de la documentation (Permissions des utilisateurs, Occhab)
 * Ajout de scripts de migration des données de GINCO1 vers GeoNature (``data/scripts/import_ginco``)
 * Trigger Occtax vers Synthèse : Amélioration du formatage des heures avec ``date_trunc()`` dans la fonction ``pr_occtax.insert_in_synthese()`` (#896 par @jbdesbas)
 * Barre de navigation : Clarification de l'icône d'ouverture du menu, ajout d'un paramètre ``LOGO_STRUCTURE_FILE`` permettant de changer le nom du fichier du logo de l'application (#897 par @jbrieuclp)
+* Médias : Amélioration des fonctions backend
 
 **🐛 Corrections**
 
