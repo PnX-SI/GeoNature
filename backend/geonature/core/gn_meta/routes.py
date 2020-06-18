@@ -1,7 +1,8 @@
 import json
 import logging
-from flask import Blueprint, current_app, request, render_template
+from pathlib import Path
 
+from flask import Blueprint, current_app, request, render_template, send_from_directory
 from sqlalchemy import or_
 from sqlalchemy.sql import text, exists, select
 from sqlalchemy.sql.functions import func
@@ -303,7 +304,7 @@ def post_dataset(info_role):
 
 
 @routes.route("/dataset/export_pdf/<id_dataset>", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="METADATA")
+@permissions.check_cruved_scope("E", True, module_code="METADATA")
 def get_export_pdf_dataset(id_dataset, info_role):
     """
     Get a PDF export of one dataset
@@ -373,14 +374,11 @@ def get_export_pdf_dataset(id_dataset, info_role):
 
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf("jeu_de_donnees_template_pdf.html", df, filename)
-
-    return Response(
-        pdf_file,
-        mimetype="application/pdf",
-        headers={
-            "Content-disposition": "attachment; filename=" + filename,
-            "Content-type": "application/pdf",
-        },
+    pdf_file_posix = Path(pdf_file)
+    return send_from_directory(
+        pdf_file_posix.parent,
+        pdf_file_posix.name,
+        as_attachment=True
     )
 
 
@@ -401,7 +399,7 @@ def get_acquisition_frameworks(info_role):
 @routes.route(
     "/acquisition_frameworks/export_pdf/<id_acquisition_framework>", methods=["GET"]
 )
-@permissions.check_cruved_scope("C", True, module_code="METADATA")
+@permissions.check_cruved_scope("E", True, module_code="METADATA")
 def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
     """
     Get a PDF export of one acquisition
@@ -519,14 +517,11 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
     pdf_file = fm.generate_pdf(
         "cadre_acquisition_template_pdf.html", acquisition_framework, filename
     )
-
-    return Response(
-        pdf_file,
-        mimetype="application/pdf",
-        headers={
-            "Content-disposition": "attachment; filename=" + filename,
-            "Content-type": "application/pdf",
-        },
+    pdf_file_posix = Path(pdf_file)
+    return send_from_directory(
+        pdf_file_posix.parent,
+        pdf_file_posix.name,
+        as_attachment=True
     )
 
 
