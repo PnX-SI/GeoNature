@@ -9,6 +9,8 @@ CHANGELOG
 
 * https://github.com/ouidou/GeoNature/blob/develop/backend/geonature/core/gn_meta/routes.py#L350
 * Hum... https://github.com/ouidou/GeoNature/blob/develop/backend/static/css/jeu_de_donnees_template_pdf.css
+* https://github.com/PnX-SI/GeoNature/commit/202551eed6c19bb2f8b06ca9ada16ed3675d6613 >> On perd des colonnes...
+* http://87.98.168.87/geonature/#/validation / Filtre données modifiées depuis dernière validation : Tourne en boucle. Et l'info ne semble plus remonter
 
 **🚀 Nouveautés**
 
@@ -22,17 +24,24 @@ CHANGELOG
 * Occtax : Création d'un trigger générique de calcul de l'altitude qui n'est exécuté que si l'altitude n'est pas postée (#848)
 * Ajout d'une table ``gn_commons.t_mobile_apps`` permettant de lister les applications mobiles, l'URL de leur APK et d'une API pour interroger le contenu de cette table. Les fichiers des applications et leurs fichiers de configurations peuvent être chargés dans le dossier ``backend/static/mobile`` (#852)
 * Ajout d'un offset et d'une limite sur la route de la couleur des taxons (utilisée uniquement par Occtax-mobile actuellement)
-* Support des fonds de carte au format WMS (https://leafletjs.com/reference-1.6.0.html#tilelayer-wms-l-tilelayer-wms), (PR #890 par @jbdesbas)
+* Support des fonds de carte au format WMS (https://leafletjs.com/reference-1.6.0.html#tilelayer-wms-l-tilelayer-wms), (#890 par @jbdesbas)
 * Ajout du champs ``reference_biblio`` dans la synthèse
-* Amélioration des perfomances du module de validation
+* Amélioration des perfomances du module de validation, en revoyant la vue ``gn_commons.v_synthese_validation_forwebapp``
 * Ajout d'une fonction SQL d'insertion de données dans la synthese (et une fonction python associée)
 * Compléments de la documentation (Permissions des utilisateurs, Occhab)
 * Ajout de scripts de migration des données de GINCO1 vers GeoNature (``data/scripts/import_ginco``)
+* Trigger Occtax vers Synthèse : Amélioration du formatage des heures avec ``date_trunc()`` dans la fonction ``pr_occtax.insert_in_synthese()`` (#896 par @jbdesbas)
+* Barre de navigation : Clarification de l'icône d'ouverture du menu, ajout d'un paramètre ``LOGO_STRUCTURE_FILE`` permettant de changer le nom du fichier du logo de l'application (#897 par @jbrieuclp)
 
 **🐛 Corrections**
 
+* Mise à jour des URL de la documentation utilisateur des modules, renvoyant vers http://docs.geonature.fr
 * Validation : Correction de l'ouverture de la fiche d'information d'une observation (#858)
 * Modification de l'attribution de la hauteur du composant ``map-container`` pour permettre d'adapter la hauteur de la carte si la hauteur d'un conteneur parent est modifié. Et que ``<pnx-map height="100%">`` fonctionne (#844 par @jbrieuclp)
+* Mise à jour de la librairie python Markupsafe en version 1.1, corrigeant un problème de setuptools (#881)
+* Page Maintenance : Correction de l'affichage de l'image (par @jpm-cbna)
+* Correction du multiselect du composant ``pnx-nomenclatures`` (#885 par @jpm-cbna)
+* Correction de l'``input('coordinates')`` du composant ``marker`` (#901 par @jbrieuclp)
 
 **⚠️ Notes de version**
 
