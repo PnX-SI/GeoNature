@@ -307,6 +307,8 @@ def post_jdd_from_user(id_user=None, id_organism=None):
                     ds[key] = func.ref_nomenclatures.get_id_nomenclature(
                         NOMENCLATURE_MAPPING.get(key), value
                     )
+            #  set validable = true
+            ds["validable"] = True
             dataset = TDatasets(**ds)
             # if the dataset already exist
             if id_dataset:
