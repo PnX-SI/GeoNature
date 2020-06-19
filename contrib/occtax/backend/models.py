@@ -2,7 +2,7 @@ from flask import current_app
 from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
 from sqlalchemy.sql import select, func, and_
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship, backref, remote, foreign
 from sqlalchemy.dialects.postgresql import UUID
 
 from pypnnomenclature.models import TNomenclatures
@@ -10,11 +10,9 @@ from pypnusershub.db.tools import InsufficientRightsError
 from pypnusershub.db.models import User
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
-from utils_flask_sqla_geo.serializers import geoserializable
 
 from geonature.core.taxonomie.models import Taxref
 from geonature.core.gn_meta.models import TDatasets
-from geonature.core.taxonomie.models import Taxref
 from geonature.utils.env import DB
 
 
@@ -150,7 +148,7 @@ class TOccurrencesOccurrence(DB.Model):
     id_nomenclature_source_status = DB.Column(DB.Integer)
     determiner = DB.Column(DB.Unicode)
     id_nomenclature_determination_method = DB.Column(DB.Integer)
-    cd_nom = DB.Column(DB.Integer, ForeignKey(Taxref.cd_nom))
+    cd_nom = DB.Column(DB.Integer)
     nom_cite = DB.Column(DB.Unicode)
     meta_v_taxref = DB.Column(
         DB.Unicode,
@@ -169,7 +167,11 @@ class TOccurrencesOccurrence(DB.Model):
         uselist=True,
     )
 
-    taxref = relationship("Taxref", lazy="joined")
+    taxref = relationship(
+        "Taxref",
+        primaryjoin=remote(Taxref.cd_nom) == foreign(cd_nom),
+        lazy="joined",
+    )
 
 
 @serializable
