@@ -6,6 +6,17 @@
   padding: 0 15px;
 }
 
+#btn-toolbar:hover {
+    background-color: #c5c5c5!important;
+}
+
+#btn-toolbar {
+  box-shadow: 3px 3px 5px 0px #ccc !important;
+}
+
+
+
+
 .appnav {
   width: 220px;
   min-width: 65px;
@@ -38,4 +49,17 @@ mat-icon {
 
 .dropdown-item .fa {
   margin-right: 12px;
+}
+
+.toolbar-button {
+  background-color: white !important;
+  outline: none;
+}
+
+.menu-button {
+  margin-right: 10px;
+}
+
+.menu-button mat-icon.menu-icon {
+  margin: 0;
 }

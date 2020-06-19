@@ -125,7 +125,7 @@ def get_dataset_details_dict(id_dataset):
     return dataset
 
 
-def get_af_cruved(info_role, params={}, as_model=False):
+def get_af_cruved(info_role, params=None, as_model=False):
     """
         Return the datasets filtered with cruved
         Params:
@@ -157,20 +157,20 @@ def get_af_cruved(info_role, params={}, as_model=False):
             == TAcquisitionFramework.id_acquisition_framework,
         ).filter(CorAcquisitionFrameworkActor.id_role == info_role.id_role)
 
-    params = params.to_dict()
-    if "orderby" in params:
-        try:
-            order_col = getattr(
-                TAcquisitionFramework.__table__.columns, params.pop("orderby")
-            )
-            q = q.order_by(order_col)
-        except AttributeError:
-            log.error("the attribute to order on does not exist")
+    if params:
+        params = params.to_dict()
+        if "orderby" in params:
+            try:
+                order_col = getattr(
+                    TAcquisitionFramework.__table__.columns, params.pop("orderby")
+                )
+                q = q.order_by(order_col)
+            except AttributeError:
+                log.error("the attribute to order on does not exist")
 
-    # Generic Filters
-    for key, value in params.items():
-        q = test_type_and_generate_query(key, value, TAcquisitionFramework, q)
-    print(q)
+        # Generic Filters
+        for key, value in params.items():
+            q = test_type_and_generate_query(key, value, TAcquisitionFramework, q)
     data = q.all()
     if as_model:
         return data

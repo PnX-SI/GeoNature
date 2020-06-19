@@ -108,15 +108,15 @@ sudo apt-get install -y libpq-dev
 sudo apt-get install -y libgdal-dev 
 sudo apt-get install -y python-gdal 
 sudo apt-get install -y build-essential 
-sudo apt-get install python3-wheel
-sudo apt-get install python3-cffi
+sudo apt-get install -y python3-wheel
+sudo apt-get install -y python3-cffi
 # for weasy print (lib python for pdf)
-sudo apt-get install libcairo2
-sudo apt-get install libpango-1.0-0
-sudo apt-get install libpangocairo-1.0-0
-sudo apt-get install libgdk-pixbuf2.0-0
-sudo apt-get install libffi-dev
-sudo apt-get install shared-mime-info
+sudo apt-get install -y libcairo2
+sudo apt-get install -y libpango-1.0-0
+sudo apt-get install -y libpangocairo-1.0-0
+sudo apt-get install -y libgdk-pixbuf2.0-0
+sudo apt-get install -y libffi-dev
+sudo apt-get install -y shared-mime-info
 python3 -m pip install pip==20.0.2
 pip3 install virtualenv==20.0.1
 # sudo pip install --upgrade pip virtualenv virtualenvwrapper 

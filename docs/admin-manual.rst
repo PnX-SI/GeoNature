@@ -1144,7 +1144,7 @@ Par exemple, pour contraindre la saisie à l'affichage de la carte IGN au 1/2500
 Gestion des exports
 """""""""""""""""""
 
-Les exports du module sont basés sur une vue (par défaut ``pr_occtax.export_occtax_dlb``)
+Les exports du module sont basés sur une vue (par défaut ``pr_occtax.export_occtax_sinp``)
 
 Il est possible de définir une autre vue pour avoir des exports personnalisés.
 Pour cela, créer votre vue, et modifier les paramètres suivants :
@@ -1152,7 +1152,7 @@ Pour cela, créer votre vue, et modifier les paramètres suivants :
 ::
 
     # Name of the view based export
-    export_view_name = 'ViewExportDLB'
+    export_view_name = 'export_occtax_sinp'
 
     # Name of the geometry columns of the view
     export_geom_columns_name = 'geom_4326'
@@ -1365,7 +1365,7 @@ La vue ``gn_synthese.v_synthese_for_web_app`` est taillée pour l'interface web,
 
 **Export des métadonnées**
 
-En plus des observations brutes, il est possible d'effectuer un export des métadonnées associées à ses observations. L'export est au format CSV et est construit à partir de la table ``gn_synthese.v_metadata_for_export``. Vous pouvez modifier le SQL de création de cette vue pour customiser votre export (niveau SQL avancé).
+En plus des observations brutes, il est possible d'effectuer un export des métadonnées associées aux observations. L'export est au format CSV et est construit à partir de la table ``gn_synthese.v_metadata_for_export``. Vous pouvez modifier le SQL de création de cette vue pour customiser votre export (niveau SQL avancé).
 
 Deux champs sont cependant obligatoire dans la vue : 
 
