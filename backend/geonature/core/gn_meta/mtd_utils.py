@@ -259,6 +259,19 @@ def post_acquisition_framework(uuid=None, id_user=None, id_organism=None):
     return {"message": "Not found"}, 404
 
 
+def add_dataset_module(dataset_obj):
+    if not dataset_obj.modules:
+        dataset_obj.modules.extend(
+            DB.session.query(TModules)
+            .filter(
+                TModules.module_code.in_(
+                    current_app.config["CAS"]["JDD_MODULE_CODE_ASSOCIATION"]
+                )
+            )
+            .all()
+        )
+
+
 def post_jdd_from_user(id_user=None, id_organism=None):
     """ Post a jdd from the mtd XML"""
     xml_jdd = None
@@ -295,7 +308,6 @@ def post_jdd_from_user(id_user=None, id_organism=None):
                         NOMENCLATURE_MAPPING.get(key), value
                     )
             dataset = TDatasets(**ds)
-
             # if the dataset already exist
             if id_dataset:
                 # check if actor exist:
@@ -333,7 +345,7 @@ def post_jdd_from_user(id_user=None, id_organism=None):
                             ),
                         )
                         dataset.cor_dataset_actor.append(actor)
-
+                add_dataset_module(dataset)
                 # finnaly merge
                 DB.session.merge(dataset)
             # if not dataset already in database
@@ -354,31 +366,12 @@ def post_jdd_from_user(id_user=None, id_organism=None):
                         ),
                     )
                     dataset.cor_dataset_actor.append(actor)
-
+                add_dataset_module(dataset)
                 DB.session.add(dataset)
 
         try:
             DB.session.commit()
             DB.session.flush()
-            dataset_obj = (
-                DB.session.query(TDatasets)
-                .filter_by(unique_dataset_id=ds["unique_dataset_id"])
-                .one_or_none()
-            )
-            if dataset_obj:
-                modules = dataset_obj.modules
-                if not modules:
-                    dataset_obj.modules.extend(
-                        DB.session.query(TModules)
-                        .filter(
-                            TModules.module_code.in_(
-                                current_app.config["CAS"]["JDD_MODULE_CODE_ASSOCIATION"]
-                            )
-                        )
-                        .all()
-                    )
-            DB.session.merge(dataset_obj)
-            DB.session.commit()
             dataset_list_model.append(dataset)
         except SQLAlchemyError as e:
             DB.session.rollback()
