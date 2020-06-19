@@ -7,8 +7,7 @@ CHANGELOG
 
 **TO CHECK**
 
-* https://github.com/ouidou/GeoNature/blob/develop/backend/geonature/core/gn_meta/routes.py#L350
-* Hum... https://github.com/ouidou/GeoNature/blob/develop/backend/static/css/jeu_de_donnees_template_pdf.css
+* Renommer https://github.com/ouidou/GeoNature/blob/develop/backend/static/css/jeu_de_donnees_template_pdf.css
 * Et renommer aussi https://github.com/PnX-SI/GeoNature/blob/develop/backend/templates/cadre_acquisition_template_pdf.html
 * https://github.com/PnX-SI/GeoNature/commit/202551eed6c19bb2f8b06ca9ada16ed3675d6613 >> On perd des colonnes...
 * http://87.98.168.87/geonature/#/validation / Filtre données modifiées depuis dernière validation : Tourne en boucle. Et l'info ne semble plus remonter
@@ -21,6 +20,7 @@ CHANGELOG
 * Métadonnées : Implémentation du CRUVED sur la liste des CA et JDD (#911)
 * Métadonnées : Affichage de tous les CA des JDD pour lequels l'utilisateur connecté a des droits (#908)
 * Compatible avec TaxHub 1.7.0 qui inclut notamment la migration (optionnelle) vers Taxref version 13
+* Installation globale migrée de Taxref vesion 11 à 13
 * Synthèse et zonages : Ne pas inclure l'association aux zonages limitrophes d'une observation quand sa géométrie est égale à un zonage (maille, commune...) (#716 par @jbdesbas)
 * Synthèse : Ajout de la possibilité d'activer la recherche par observateur à travers une liste, avec ajout des paramètres ``SEARCH_OBSERVER_WITH_LIST`` (``False`` par défaut) et ``ID_SEARCH_OBSERVER_LIST`` (#834 par @jbrieuclp)
 * Synthèse : Amélioration de la recherche des observateurs. Non prise en compte de l'ordre des noms saisis (#834 par @jbrieuclp)
