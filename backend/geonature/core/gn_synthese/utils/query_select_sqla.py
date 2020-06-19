@@ -286,6 +286,11 @@ class SyntheseQuery:
                     ),
                 )
             )
+        # use for validation module since the class is factorized
+        if "modif_since_validation" in self.filters:
+            self.query = self.query.where(self.model.meta_update_date > self.model.validation_date)
+            self.filters.pop("modif_since_validation")
+
         # generic filters
         for colname, value in self.filters.items():
             if colname.startswith("area"):

@@ -76,9 +76,7 @@ def get_synthese_data(info_role):
         result_limit = filters.pop("limit")[0]
     else:
         result_limit = blueprint.config["NB_MAX_OBS_MAP"]
-    print("")
 
-    # q = DB.session.query(VSyntheseValidation)
     query = (
         select(
             [
@@ -100,6 +98,7 @@ def get_synthese_data(info_role):
                 VSyntheseValidation.altitude_min,
                 VSyntheseValidation.altitude_max,
                 VSyntheseValidation.unique_id_sinp,
+                VSyntheseValidation.meta_update_date,
             ]
         )
         .where(VSyntheseValidation.the_geom_4326.isnot(None))
@@ -107,7 +106,6 @@ def get_synthese_data(info_role):
     )
     validation_query_class = SyntheseQuery(VSyntheseValidation, query, filters)
     validation_query_class.filter_query_all_filters(info_role)
-
     result = DB.engine.execute(validation_query_class.query.limit(result_limit))
 
     nb_total = 0
@@ -118,7 +116,6 @@ def get_synthese_data(info_role):
     )
 
     geojson_features = []
-
     for r in result:
         properties = {
             "id_synthese": r["id_synthese"],
@@ -135,6 +132,7 @@ def get_synthese_data(info_role):
             "comment": r["comment_description"],
             "cd_nom": r["cd_nom"],
             "unique_id_sinp": str(r["unique_id_sinp"]),
+            "meta_update_date": str(r["meta_update_date"]),
         }
         geojson = ast.literal_eval(r["geojson"])
         geojson["properties"] = properties
