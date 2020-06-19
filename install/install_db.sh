@@ -74,7 +74,6 @@ function write_log() {
     echo $1 &>> var/log/install_db.log
     echo "--------------------" &>> var/log/install_db.log
 }
-
 if database_exists $db_name
 then
         if $drop_apps_db
@@ -88,6 +87,8 @@ fi
 
 if ! database_exists $db_name
 then
+    sudo sed -e "s/datestyle =.*$/datestyle = 'ISO, DMY'/g" -i /etc/postgresql/*/main/postgresql.conf
+    sudo service postgresql restart
     echo "--------------------" &> var/log/install_db.log
     write_log "Creating GeoNature database..."
     sudo -n -u postgres -s createdb -O $user_pg $db_name -T template0 -E UTF-8 -l $my_local
