@@ -264,8 +264,6 @@ def post_jdd_from_user(id_user=None, id_organism=None):
     xml_jdd = None
     xml_jdd = get_jdd_by_user_id(id_user)
     dataset_list_model = []
-    print("STAAAAAART")
-    print(xml_jdd)
     if xml_jdd:
         dataset_list = parse_jdd_xml(xml_jdd)
         posted_af_uuid = {}

@@ -829,7 +829,6 @@ def get_taxa_count():
     
     if 'id_dataset' in params:
         query = query.filter(Synthese.id_dataset == params['id_dataset'])
-    print(query.one())
     return query.one()
 
 
@@ -893,8 +892,6 @@ def get_taxa_distribution():
         )
 
     data = query.group_by(rank).all()
-    print('LAA')
-    print(data)
     return [{"count" : d[0], "group": d[1]} for d in data]
     
 

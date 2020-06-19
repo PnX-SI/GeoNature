@@ -286,7 +286,7 @@ def post_dataset(info_role):
     dataset = TDatasets(**data)
     for cor in cor_dataset_actor:
         # remove id_cda if None otherwise merge no working well
-        if "id_cda" in cor and cor["id_cda"] is None:
+        if "id_cda" in cor and cor.get("id_cda") is None:
             cor.pop("id_cda")
         dataset.cor_dataset_actor.append(CorDatasetActor(**cor))
 

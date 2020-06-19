@@ -779,9 +779,6 @@ for ds_iter in range(len(ds_uuid_list)):
 		action='update'
 	# Get and parse corresponding XML File
 	ds_URL = "https://inpn.mnhn.fr/mtd/cadre/jdd/export/xml/GetRecordById?id={}".format(cur_ds_uuid.upper())
-	print('LAAA')
-	print(ds_URL)
-	print(ds_URL)
 	open('{}.xml'.format(cur_ds_uuid), 'wb').write(requests.get(ds_URL).content)
 	CURRENT_DS_ROOT = ET.parse('{}.xml'.format(cur_ds_uuid)).getroot()
 	# insertion des CA
