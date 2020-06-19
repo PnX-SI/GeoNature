@@ -326,7 +326,7 @@ then
     if [ ! -f 'tmp/geonature/referentiel_donnees_sensibles_v13.csv' ]
         then
             wget --cache=off https://geonature.fr/data/inpn/sensitivity/referentiel_donnees_sensibles_v13.csv -P tmp/geonature/
-            mv tmp/geonature/referentiel_donnees_sensibles_v13.csv tmp/geonature/referentiel_donnees_sensiblees.csv
+            mv tmp/geonature/referentiel_donnees_sensibles_v13.csv tmp/geonature/referentiel_donnees_sensibles.csv
         else
             echo "tmp/geonature/referentiel_donnees_sensibles.csv already exist"
     fi
