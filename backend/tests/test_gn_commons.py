@@ -18,13 +18,10 @@ from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.utils.env import BACKEND_DIR, DB
 
 
-@pytest.mark.usefixtures('client_class')
+@pytest.mark.usefixtures("client_class")
 class TestAPIMedias:
-
     def _get_media(self, id_media):
-        response = self.client.get(
-            url_for('gn_commons.get_media', id_media=id_media)
-        )
+        response = self.client.get(url_for("gn_commons.get_media", id_media=id_media))
 
         assert response.status_code == 200
 
@@ -36,46 +33,44 @@ class TestAPIMedias:
         for r in result:
             id_nomenclature_media = r[0]
         data = {
-            'file': (io.BytesIO(b'my file contents'), 'hello world.txt'),
+            "file": (io.BytesIO(b"my file contents"), "hello world.txt"),
             "isFile": True,
             "id_nomenclature_media_type": id_nomenclature_media,
             "id_table_location": 1,
             "uuid_attached_row": "cfecc9af-3949-44ab-bde5-8d1ecd1ab581",
-            "title_fr": "Super test"
+            "title_fr": "Super test",
         }
 
         response = self.client.post(
-            url_for('gn_commons.insert_or_update_media',),
+            url_for("gn_commons.insert_or_update_media",),
             data=data,
-            content_type='multipart/form-data'
+            content_type="multipart/form-data",
         )
 
         assert response.status_code == 200
 
         media_data = json_of_response(response)
 
-        if not os.path.isfile(os.path.join(
-            config['BASE_DIR'],
-            media_data['media_path']
-        )):
+        if not os.path.isfile(
+            os.path.join(config["BASE_DIR"], media_data["media_path"])
+        ):
             assert False
 
         return media_data
 
     def _update_media(self, data):
-        data['isFile'] = False
-        data['url'] = 'http://codebasicshub.com/uploads/lang/py_pandas.png'
+        data["isFile"] = False
+        data["url"] = "http://codebasicshub.com/uploads/lang/py_pandas.png"
         response = post_json(
             self.client,
-            url_for('gn_commons.insert_or_update_media',
-                    id_media=data['id_media']),
-            data
+            url_for("gn_commons.insert_or_update_media", id_media=data["id_media"]),
+            data,
         )
         assert response.status_code == 200
 
     def _delete_media(self, id_media):
         response = self.client.delete(
-            url_for('gn_commons.insert_or_update_media', id_media=id_media),
+            url_for("gn_commons.insert_or_update_media", id_media=id_media),
         )
         # response = requests.delete(
         #     '{}/gn_commons/media/{}'.format(
@@ -86,24 +81,26 @@ class TestAPIMedias:
 
     def test_media_action(self, config):
         data = self._save_media(config)
-        self._get_media(data['id_media'])
+        self._get_media(data["id_media"])
         self._update_media(data)
-        self._get_media(data['id_media'])
-        self._delete_media(data['id_media'])
+        self._get_media(data["id_media"])
+        self._delete_media(data["id_media"])
 
 
-@pytest.mark.usefixtures('client_class')
+@pytest.mark.usefixtures("client_class")
 class TestAPIGNCommons:
     def test_get_t_mobile_apps(self):
-        query_string = {
-            'app_code': 'OCCTAX'
-        }
+        #  with app code query string must return a dict
+        query_string = {"app_code": "OCCTAX"}
         response = self.client.get(
-            url_for(
-                'gn_commons.get_t_mobile_apps'
-            ),
-            query_string=query_string
+            url_for("gn_commons.get_t_mobile_apps"), query_string=query_string
         )
         assert response.status_code == 200
         data = json_of_response(response)
-        assert len(data) == 1
+        assert type(data) is dict
+
+        # with to app_code must return an array
+        response = self.client.get(url_for("gn_commons.get_t_mobile_apps"))
+        assert response.status_code == 200
+        data = json_of_response(response)
+        assert type(data) is list
