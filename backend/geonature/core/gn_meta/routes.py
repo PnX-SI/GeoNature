@@ -373,7 +373,7 @@ def get_export_pdf_dataset(id_dataset, info_role):
     )
 
     # Appel de la methode pour generer un pdf
-    pdf_file = fm.generate_pdf("jeu_de_donnees_template_pdf.html", df, filename)
+    pdf_file = fm.generate_pdf("dataset_template_pdf.html", df, filename)
     pdf_file_posix = Path(pdf_file)
     return send_from_directory(
         str(pdf_file_posix.parent),
@@ -515,7 +515,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
 
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf(
-        "cadre_acquisition_template_pdf.html", acquisition_framework, filename
+        "acquisition_framework_template_pdf.html", acquisition_framework, filename
     )
     pdf_file_posix = Path(pdf_file)
     return send_from_directory(

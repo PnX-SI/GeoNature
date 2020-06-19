@@ -5,11 +5,6 @@ CHANGELOG
 2.4.0 (Unreleased)
 ----------------
 
-**TO CHECK**
-
-* Renommer https://github.com/ouidou/GeoNature/blob/develop/backend/static/css/jeu_de_donnees_template_pdf.css
-* Et renommer aussi https://github.com/PnX-SI/GeoNature/blob/develop/backend/templates/cadre_acquisition_template_pdf.html
-* Installation standalone et dépendances WeasyPrint ?
 
 **🚀 Nouveautés**
 
