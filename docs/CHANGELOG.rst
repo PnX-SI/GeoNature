@@ -9,8 +9,6 @@ CHANGELOG
 
 * Renommer https://github.com/ouidou/GeoNature/blob/develop/backend/static/css/jeu_de_donnees_template_pdf.css
 * Et renommer aussi https://github.com/PnX-SI/GeoNature/blob/develop/backend/templates/cadre_acquisition_template_pdf.html
-* https://github.com/PnX-SI/GeoNature/commit/202551eed6c19bb2f8b06ca9ada16ed3675d6613 >> On perd des colonnes...
-* http://87.98.168.87/geonature/#/validation / Filtre données modifiées depuis dernière validation : Tourne en boucle. Et l'info ne semble plus remonter
 * Installation standalone et dépendances WeasyPrint ?
 
 **🚀 Nouveautés**
@@ -56,6 +54,7 @@ CHANGELOG
 * Correction de l'``input('coordinates')`` du composant ``marker`` (#901 par @jbrieuclp)
 * Utilisation de NVM quand on installe les dépendances javascript (#926 par @jpm-cbna)
 * Formulaire JDD : Correction de l'affichage de la liste des modules (#861)
+* Correction de l'utilisation des paramètres du proxy (#944)
 
 **⚠️ Notes de version**
 
@@ -76,6 +75,21 @@ CHANGELOG
     sudo apt-get install -y libffi-dev
     sudo apt-get install -y shared-mime-info
     
+* Corriger l'utilisation des paramètres du proxy (#944) dans le fichier ``backend/gunicorn_start.sh`` en remplaçant les 2 lignes :
+
+::
+
+    export HTTP_PROXY="'$proxy_http'"
+    export HTTPS_PROXY="'$proxy_https'"
+
+par :
+
+::
+
+    # Activation de la configuration des proxy si necessaire
+    [[ -z "$proxy_http" ]] || export HTTP_PROXY="'$proxy_http'"
+    [[ -z "$proxy_https" ]] || export HTTPS_PROXY="'$proxy_https'"
+
 * Vous pouvez supprimer les associations des observations de la synthèse aux zonages limitrophes, si vous n'avez pas d'observations sans géométrie (#719) :
 
 ::
