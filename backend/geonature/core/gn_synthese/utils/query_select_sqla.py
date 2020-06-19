@@ -124,7 +124,6 @@ class SyntheseQuery:
         """
         cd_ref_childs = []
         if "cd_ref_parent" in self.filters:
-            print(self.filters["cd_ref_parent"])
             # find all taxon child from cd_ref parent
             cd_ref_parent_int = list(
                 map(lambda x: int(x), self.filters.pop("cd_ref_parent"))
