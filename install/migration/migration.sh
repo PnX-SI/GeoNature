@@ -115,8 +115,8 @@ for D in $(find ../external_modules  -type l | xargs readlink) ; do
     fi
 done
 
-cd $myrootpath
-python ../geonature_cmd.py install_command
+cd $myrootpath/$currentdir/
+python geonature_cmd.py install_command
 
 echo "Update configurations"
 geonature update_configuration --build=false
