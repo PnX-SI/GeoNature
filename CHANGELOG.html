@@ -110,6 +110,7 @@
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">CHANGELOG</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#fiches-de-metadonnees-2020-06-22">2.4.0 - Fiches de métadonnées (2020-06-22)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id1">2.3.2 (2020-02-24)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id2">2.3.1 (2020-02-18)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#occhab-de-noel-2019-12-27">2.3.0 - Occhab de Noël (2019-12-27)</a></li>
@@ -220,6 +221,98 @@
             
   <div class="section" id="changelog">
 <h1>CHANGELOG<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="fiches-de-metadonnees-2020-06-22">
+<h2>2.4.0 - Fiches de métadonnées (2020-06-22)<a class="headerlink" href="#fiches-de-metadonnees-2020-06-22" title="Permalink to this headline">¶</a></h2>
+<p><strong>🚀 Nouveautés</strong></p>
+<ul class="simple">
+<li>Métadonnées : Ajout d’une fiche pour chaque jeu de données et cadres d’acquisition, incluant une carte de l’étendue des observations et un graphique de répartition des taxons par Groupe INPN (#846 par &#64;FloVollmer)</li>
+<li>Métadonnées : Possibilité d’exporter les fiches des JDD et des CA en PDF, générés par le serveur avec WeasyPrint. Logo et entêtes modifiables dans le dossier <code class="docutils literal"><span class="pre">backend/static/images/</span></code> (#882 par &#64;FloVollmer)</li>
+<li>Métadonnées : Implémentation du CRUVED sur la liste des CA et JDD (#911)</li>
+<li>Métadonnées : Affichage de tous les CA des JDD pour lequels l’utilisateur connecté a des droits (#908)</li>
+<li>Compatible avec TaxHub 1.7.0 qui inclut notamment la migration (optionnelle) vers Taxref version 13</li>
+<li>Installation globale migrée de Taxref vesion 11 à 13</li>
+<li>Synthèse et zonages : Ne pas inclure l’association aux zonages limitrophes d’une observation quand sa géométrie est égale à un zonage (maille, commune…) (#716 par &#64;jbdesbas)</li>
+<li>Synthèse : Ajout de la possibilité d’activer la recherche par observateur à travers une liste, avec ajout des paramètres <code class="docutils literal"><span class="pre">SEARCH_OBSERVER_WITH_LIST</span></code> (<code class="docutils literal"><span class="pre">False</span></code> par défaut) et <code class="docutils literal"><span class="pre">ID_SEARCH_OBSERVER_LIST</span></code> (#834 par &#64;jbrieuclp)</li>
+<li>Synthèse : Amélioration de la recherche des observateurs. Non prise en compte de l’ordre des noms saisis (#834 par &#64;jbrieuclp)</li>
+<li>Synthèse : Ajout de filtres avancés (<code class="docutils literal"><span class="pre">Saisie</span> <span class="pre">par</span></code> basé sur <code class="docutils literal"><span class="pre">id_digitiser</span></code>, <code class="docutils literal"><span class="pre">Commentaire</span></code> du relevé et de l’occurrence, <code class="docutils literal"><span class="pre">Déterminateur</span></code>) (#834 par &#64;jbrieuclp)</li>
+<li>Occtax : Création d’un trigger générique de calcul de l’altitude qui n’est exécuté que si l’altitude n’est pas postée (#848)</li>
+<li>Ajout d’une table <code class="docutils literal"><span class="pre">gn_commons.t_mobile_apps</span></code> permettant de lister les applications mobiles, l’URL de leur APK et d’une API pour interroger le contenu de cette table. Les fichiers des applications et leurs fichiers de configurations peuvent être chargés dans le dossier <code class="docutils literal"><span class="pre">backend/static/mobile</span></code> (#852)</li>
+<li>Ajout d’un offset et d’une limite sur la route de la couleur des taxons (utilisée uniquement par Occtax-mobile actuellement)</li>
+<li>Support des fonds de carte au format WMS (<a class="reference external" href="https://leafletjs.com/reference-1.6.0.html#tilelayer-wms-l-tilelayer-wms">https://leafletjs.com/reference-1.6.0.html#tilelayer-wms-l-tilelayer-wms</a>), (#890 par &#64;jbdesbas)</li>
+<li>Ajout d’un champs texte <code class="docutils literal"><span class="pre">reference_biblio</span></code> dans la table <code class="docutils literal"><span class="pre">gn_synthese</span></code></li>
+<li>Amélioration des perfomances du module de validation, en revoyant la vue <code class="docutils literal"><span class="pre">gn_commons.v_synthese_validation_forwebapp</span></code>, en revoyant les requêtes et en générant le GeoJSON au niveau de la BDD (#923)</li>
+<li>Ajout d’une fonction SQL d’insertion de données dans la synthese (et une fonction python associée)</li>
+<li>Compléments de la documentation (Permissions des utilisateurs, Occhab…)</li>
+<li>Ajout de scripts de migration des données de GINCO1 vers GeoNature (<code class="docutils literal"><span class="pre">data/scripts/import_ginco</span></code>)</li>
+<li>Trigger Occtax vers Synthèse : Amélioration du formatage des heures avec <code class="docutils literal"><span class="pre">date_trunc()</span></code> dans la fonction <code class="docutils literal"><span class="pre">pr_occtax.insert_in_synthese()</span></code> (#896 par &#64;jbdesbas)</li>
+<li>Barre de navigation : Clarification de l’icône d’ouverture du menu, ajout d’un paramètre <code class="docutils literal"><span class="pre">LOGO_STRUCTURE_FILE</span></code> permettant de changer le nom du fichier du logo de l’application (#897 par &#64;jbrieuclp)</li>
+<li>Médias : Amélioration des fonctions backend</li>
+<li>Mise à jour de jQuery en version 3.5.0</li>
+<li>Suppression de la table <code class="docutils literal"><span class="pre">gn_synthese.taxons_synthese_autocomplete</span></code> et du trigger sur la Synthèse qui la remplissait pour utiliser la vue matérialisée <code class="docutils literal"><span class="pre">taxonomie.vm_taxref_list_forautocomplete</span></code> listant les noms de recherche de tous les taxons de Taxref, entièrement revue dans TaxHub 1.7.0</li>
+<li>Monitoring : Correction du backend pour utiliser la nouvelle syntaxe de jointure des tables</li>
+<li>Ajout de fonctions SQL d’insertion de données dans la Synthèse (<code class="docutils literal"><span class="pre">gn_synthese.import_json_row()</span></code> et <code class="docutils literal"><span class="pre">gn_synthese.import_row_from_table()</span></code>) et de la fonction Python associée (<code class="docutils literal"><span class="pre">import_from_table(schema_name,</span> <span class="pre">table_name,</span> <span class="pre">field_name,</span> <span class="pre">value)</span></code>) pour l’API permettant de poster dans la Synthèse (#736). Utilisée par le module Monitoring.</li>
+<li>Ajout du plugin Leaflet.Deflate (#934  par &#64;jpm-cbna)</li>
+<li>Connexion au CAS INPN : Association des JDD aux modules Occtax et Occhab (paramétrable) quand on importe les JDD de l’utilisateur qui se connecte (dans la table <code class="docutils literal"><span class="pre">gn_commons.cor_module_dataset</span></code>)</li>
+<li>Mise à jour des librairies Python Utils-Flask-SQLAlchemy (en version 0.1.1) et Utils-Flask-SQLAlchemy-Geo (en version 0.1.0) permettant de mettre en place les exports au format GeoPackage et corrigeant les exports de SHP contenant des géométries multiples</li>
+</ul>
+<p><strong>🐛 Corrections</strong></p>
+<ul class="simple">
+<li>Mise à jour des URL de la documentation utilisateur des modules, renvoyant vers <a class="reference external" href="http://docs.geonature.fr">http://docs.geonature.fr</a></li>
+<li>Validation : Correction de l’ouverture de la fiche d’information d’une observation (#858)</li>
+<li>Modification de l’attribution de la hauteur du composant <code class="docutils literal"><span class="pre">map-container</span></code> pour permettre d’adapter la hauteur de la carte si la hauteur d’un conteneur parent est modifié. Et que <code class="docutils literal"><span class="pre">&lt;pnx-map</span> <span class="pre">height=&quot;100%&quot;&gt;</span></code> fonctionne (#844 par &#64;jbrieuclp)</li>
+<li>Mise à jour de la librairie python Markupsafe en version 1.1, corrigeant un problème de setuptools (#881)</li>
+<li>Page Maintenance : Correction de l’affichage de l’image (par &#64;jpm-cbna)</li>
+<li>Correction du multiselect du composant <code class="docutils literal"><span class="pre">pnx-nomenclatures</span></code> (#885 par &#64;jpm-cbna)</li>
+<li>Correction de l’<code class="docutils literal"><span class="pre">input('coordinates')</span></code> du composant <code class="docutils literal"><span class="pre">marker</span></code> (#901 par &#64;jbrieuclp)</li>
+<li>Utilisation de NVM quand on installe les dépendances javascript (#926 par &#64;jpm-cbna)</li>
+<li>Formulaire JDD : Correction de l’affichage de la liste des modules (#861)</li>
+<li>Correction de l’utilisation des paramètres du proxy (#944)</li>
+</ul>
+<p><strong>⚠️ Notes de version</strong></p>
+<p>Si vous mettez à jour GeoNature.</p>
+<ul class="simple">
+<li>Vous devez d’abord mettre à jour TaxHub en version 1.7.0</li>
+<li>Si vous mettez à jour TaxHub, vous pouvez mettre à jour Taxref en version 13. Il est aussi possible de le faire en différé, plus tard</li>
+<li>Vous pouvez mettre à jour UsersHub en version 2.1.2</li>
+<li>Exécuter le script SQL de mise à jour des nomenclatures (<a class="reference external" href="https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.2to1.3.3.sql">https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.2to1.3.3.sql</a>).</li>
+<li>Si vous avez mis à jour Taxref en version, répercutez les évolutions au niveau des nomenclatures avec le script SQL <a class="reference external" href="https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update_taxref_v13.sql">https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update_taxref_v13.sql</a>. Sinon vous devrez l’exécuter plus tard, après avoir mis à jour Taxref en version 13.</li>
+<li>Exécuter le script SQL de mise à jour de la BDD de GeoNature (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.3.2to2.4.0.sql">https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.3.2to2.4.0.sql</a>)</li>
+<li>Installer les dépendances de la librairie Python WeasyPrint :</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">libcairo2</span>
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">libpango</span><span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="mi">0</span>
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">libpangocairo</span><span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="mi">0</span>
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">libgdk</span><span class="o">-</span><span class="n">pixbuf2</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="mi">0</span>
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">libffi</span><span class="o">-</span><span class="n">dev</span>
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">shared</span><span class="o">-</span><span class="n">mime</span><span class="o">-</span><span class="n">info</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Corriger l’utilisation des paramètres du proxy (#944) dans le fichier <code class="docutils literal"><span class="pre">backend/gunicorn_start.sh</span></code> en remplaçant les 2 lignes :</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">HTTP_PROXY</span><span class="o">=</span><span class="s2">&quot;&#39;$proxy_http&#39;&quot;</span>
+<span class="n">export</span> <span class="n">HTTPS_PROXY</span><span class="o">=</span><span class="s2">&quot;&#39;$proxy_https&#39;&quot;</span>
+</pre></div>
+</div>
+<p>par :</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Activation de la configuration des proxy si necessaire</span>
+<span class="p">[[</span> <span class="o">-</span><span class="n">z</span> <span class="s2">&quot;$proxy_http&quot;</span> <span class="p">]]</span> <span class="o">||</span> <span class="n">export</span> <span class="n">HTTP_PROXY</span><span class="o">=</span><span class="s2">&quot;&#39;$proxy_http&#39;&quot;</span>
+<span class="p">[[</span> <span class="o">-</span><span class="n">z</span> <span class="s2">&quot;$proxy_https&quot;</span> <span class="p">]]</span> <span class="o">||</span> <span class="n">export</span> <span class="n">HTTPS_PROXY</span><span class="o">=</span><span class="s2">&quot;&#39;$proxy_https&#39;&quot;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Vous pouvez supprimer les associations des observations de la synthèse aux zonages limitrophes, si vous n’avez pas d’observations sans géométrie (#719) :</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">DELETE</span> <span class="n">FROM</span> <span class="n">gn_synthese</span><span class="o">.</span><span class="n">cor_area_synthese</span> <span class="n">cas</span>
+<span class="n">USING</span> <span class="n">gn_synthese</span><span class="o">.</span><span class="n">synthese</span> <span class="n">s</span><span class="p">,</span> <span class="n">ref_geo</span><span class="o">.</span><span class="n">l_areas</span> <span class="n">a</span>
+<span class="n">WHERE</span> <span class="n">cas</span><span class="o">.</span><span class="n">id_synthese</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">id_synthese</span> <span class="n">AND</span> <span class="n">a</span><span class="o">.</span><span class="n">id_area</span> <span class="o">=</span> <span class="n">cas</span><span class="o">.</span><span class="n">id_area</span>
+<span class="n">AND</span> <span class="n">public</span><span class="o">.</span><span class="n">ST_TOUCHES</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">the_geom_local</span><span class="p">,</span><span class="n">a</span><span class="o">.</span><span class="n">geom</span><span class="p">);</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Suivez ensuite la procédure classique de mise à jour de GeoNature (<a class="reference external" href="http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application">http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application</a>)</li>
+</ul>
+</div>
 <div class="section" id="id1">
 <h2>2.3.2 (2020-02-24)<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
@@ -255,8 +348,17 @@
 </ul>
 <p><strong>⚠️ Notes de version</strong></p>
 <ul class="simple">
-<li>Vous pouvez passer directement à cette version depuis la 2.2.x, mais en suivant les notes de version des versions intermédiaires (NB: il n’est pas necessaire passer le script <code class="docutils literal"><span class="pre">migrate.sh</span></code> des versions précedentes)</li>
-<li>Rajouter la ligne <code class="docutils literal"><span class="pre">gun_timeout=30</span></code> au fichier <code class="docutils literal"><span class="pre">config/settings.ini</span></code>. Il s’agit du temps maximal (en seconde) autorisé pour chaque requête. A augmenter, si vous avez déjà rencontré des problèmes de timeout.</li>
+<li>Vous pouvez passer directement à cette version depuis la 2.2.x, mais en suivant les notes des versions intermédiaires (NB : il n’est pas nécessaire d’exécuter le script <code class="docutils literal"><span class="pre">migrate.sh</span></code> des versions précédentes)</li>
+<li>Installez <code class="docutils literal"><span class="pre">pip3</span></code> et <code class="docutils literal"><span class="pre">virtualenv</span></code></li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span>
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">python3</span><span class="o">-</span><span class="n">pip</span>
+<span class="n">sudo</span> <span class="n">pip3</span> <span class="n">install</span> <span class="n">virtualenv</span><span class="o">==</span><span class="mf">20.0</span><span class="o">.</span><span class="mi">1</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Rajoutez la ligne <code class="docutils literal"><span class="pre">gun_timeout=30</span></code> au fichier <code class="docutils literal"><span class="pre">config/settings.ini</span></code>. Il s’agit du temps maximal (en seconde) autorisé pour chaque requête. A augmenter, si vous avez déjà rencontré des problèmes de timeout.</li>
+<li>Depuis le répertoire <code class="docutils literal"><span class="pre">frontend</span></code>, lancez la commande <code class="docutils literal"><span class="pre">nvm</span> <span class="pre">install</span></code></li>
 </ul>
 </div>
 <div class="section" id="occhab-de-noel-2019-12-27">

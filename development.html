@@ -268,19 +268,19 @@ métadonnées, intersections géographiques, exports…)</li>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#get--monitorings-test_permission">GET /monitorings/test_permission</a></td>
+<td><a class="reference external" href="#get--validation-definitions">GET /validation/definitions</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#get--monitorings-routes_list">GET /monitorings/routes_list</a></td>
+<td><a class="reference external" href="#get--synthese-observation_count">GET /synthese/observation_count</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#get--monitorings-modules">GET /monitorings/modules</a></td>
+<td><a class="reference external" href="#get--synthese-taxa_distribution">GET /synthese/taxa_distribution</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#get--validation-definitions">GET /validation/definitions</a></td>
+<td><a class="reference external" href="#get--synthese-taxa_count">GET /synthese/taxa_count</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
@@ -296,67 +296,35 @@ métadonnées, intersections géographiques, exports…)</li>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#get--monitorings-object-module">GET /monitorings/object/module</a></td>
+<td><a class="reference external" href="#post--meta-upload_canvas">POST /meta/upload_canvas</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#get--monitorings-object-(string-module_path)-(string-object_type)">GET /monitorings/object/(string:module_path)/(string:object_type)</a></td>
+<td><a class="reference external" href="#get--meta-acquisition_frameworks-export_pdf-(id_acquisition_framework)">GET /meta/acquisition_frameworks/export_pdf/(id_acquisition_framework)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#get--monitorings-object-(string-module_path)-(string-object_type)-(int-id)">GET /monitorings/object/(string:module_path)/(string:object_type)/(int:id)</a></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#get--monitorings-config-test-(string-module_path)">GET /monitorings/config/test/(string:module_path)</a></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#get--monitorings-util-nomenclature-(string-code_nomenclature_type)-(string-cd_nomenclature)">GET /monitorings/util/nomenclature/(string:code_nomenclature_type)/(string:cd_nomenclature)</a></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#post--pypn-register-post_usershub-(string-type_action)">POST /pypn/register/post_usershub/(string:type_action)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#get--monitorings-module-(value)">GET /monitorings/module/(value)</a></td>
-<td>&#160;</td>
-</tr>
 <tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#get--monitorings-config">GET /monitorings/config</a></td>
+<td><a class="reference external" href="#get--meta-dataset-export_pdf-(id_dataset)">GET /meta/dataset/export_pdf/(id_dataset)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#get--monitorings-config-(string-module_path)">GET /monitorings/config/(string:module_path)</a></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#get--monitorings-util-(string-type_util)-(int-id)">GET /monitorings/util/(string:type_util)/(int:id)</a></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#get--monitorings-util-(string-type_util)-(string-ids)">GET /monitorings/util/(string:type_util)/(string:ids)</a></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--validation-date-(uuid)">GET /validation/date/(uuid)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>Commons</td>
+<tr class="row-even"><td>Commons</td>
 <td><a class="reference external" href="#get--gn_commons-list-parameters">GET /gn_commons/list/parameters</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#get--gn_commons-t_mobile_apps">GET /gn_commons/t_mobile_apps</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--gn_commons-modules">GET /gn_commons/modules</a></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#put--gn_commons-media-(int-id_media)">PUT /gn_commons/media/(int:id_media)</a></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#put--gn_commons-media">PUT /gn_commons/media</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
@@ -365,6 +333,14 @@ métadonnées, intersections géographiques, exports…)</li>
 </tr>
 <tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#post--gn_commons-media">POST /gn_commons/media</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#put--gn_commons-media-(int-id_media)">PUT /gn_commons/media/(int:id_media)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#put--gn_commons-media">PUT /gn_commons/media</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
@@ -404,11 +380,19 @@ métadonnées, intersections géographiques, exports…)</li>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>Metadata</td>
-<td><a class="reference external" href="#get--meta-acquisition_frameworks">GET /meta/acquisition_frameworks</a></td>
+<td><a class="reference external" href="#get--meta-acquisition_frameworks_metadata">GET /meta/acquisition_frameworks_metadata</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#get--meta-acquisition_frameworks">GET /meta/acquisition_frameworks</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#post--meta-acquisition_framework">POST /meta/acquisition_framework</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#get--meta-af_datasets_metadata">GET /meta/af_datasets_metadata</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
@@ -420,11 +404,19 @@ métadonnées, intersections géographiques, exports…)</li>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#post--meta-aquisition_framework_mtd-(uuid_af)">POST /meta/aquisition_framework_mtd/(uuid_af)</a></td>
+<td><a class="reference external" href="#get--meta-acquisition_framework_details-(id_acquisition_framework)">GET /meta/acquisition_framework_details/(id_acquisition_framework)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#post--meta-aquisition_framework_mtd-(uuid_af)">POST /meta/aquisition_framework_mtd/(uuid_af)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--meta-acquisition_framework-(id_acquisition_framework)">GET /meta/acquisition_framework/(id_acquisition_framework)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#get--meta-dataset_details-(id_dataset)">GET /meta/dataset_details/(id_dataset)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
@@ -735,8 +727,7 @@ métadonnées, intersections géographiques, exports…)</li>
 <dl class="get">
 <dt id="get--gn_commons-list-parameters">
 <code class="descname">GET </code><code class="descname">/gn_commons/list/parameters</code><a class="headerlink" href="#get--gn_commons-list-parameters" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get all parameters from gn_commons.t_parameters
-.. :quickref: Commons;</p>
+<dd><p>Get all parameters from gn_commons.t_parameters</p>
 </dd></dl>
 
 <dl class="put">
@@ -809,29 +800,11 @@ Possibilité de filtrer par regne et group2Inpn</p>
 </dd></dl>
 
 <dl class="get">
-<dt id="get--monitorings-test_permission">
-<code class="descname">GET </code><code class="descname">/monitorings/test_permission</code><a class="headerlink" href="#get--monitorings-test_permission" title="Permalink to this definition">¶</a></dt>
-<dd><p>tests sur les permissions</p>
-</dd></dl>
-
-<dl class="get">
 <dt id="get--permissions-logout_cruved">
 <code class="descname">GET </code><code class="descname">/permissions/logout_cruved</code><a class="headerlink" href="#get--permissions-logout_cruved" title="Permalink to this definition">¶</a></dt>
 <dd><p>Route to logout with cruved</p>
 <p>To avoid multiples server call, we store the cruved in the session  
 when the user logout we need clear the session to get the new cruved session</p>
-</dd></dl>
-
-<dl class="get">
-<dt id="get--monitorings-routes_list">
-<code class="descname">GET </code><code class="descname">/monitorings/routes_list</code><a class="headerlink" href="#get--monitorings-routes_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>retourne la liste des routes du module</p>
-</dd></dl>
-
-<dl class="get">
-<dt id="get--monitorings-modules">
-<code class="descname">GET </code><code class="descname">/monitorings/modules</code><a class="headerlink" href="#get--monitorings-modules" title="Permalink to this definition">¶</a></dt>
-<dd><p>Renvoie la liste des modules de suivi</p>
 </dd></dl>
 
 <dl class="get">
@@ -854,6 +827,27 @@ when the user logout we need clear the session to get the new cruved session</p>
 </dd></dl>
 
 <dl class="get">
+<dt id="get--gn_commons-t_mobile_apps">
+<code class="descname">GET </code><code class="descname">/gn_commons/t_mobile_apps</code><a class="headerlink" href="#get--gn_commons-t_mobile_apps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all mobile applications</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Query Parameters:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><ul class="first simple">
+<li><strong>app_code</strong> (<em>str</em>) – the app code</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Array&lt;dict&lt;TMobileApps&gt;&gt;</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="get">
 <dt id="get--validation-definitions">
 <code class="descname">GET </code><code class="descname">/validation/definitions</code><a class="headerlink" href="#get--validation-definitions" title="Permalink to this definition">¶</a></dt>
 <dd><p>return validation status definitions stored in t_nomenclatures</p>
@@ -866,18 +860,6 @@ when the user logout we need clear the session to get the new cruved session</p>
 .. :quickref: Commons;</p>
 </dd></dl>
 
-<dl class="put">
-<dt id="put--gn_commons-media-(int-id_media)">
-<code class="descname">PUT </code><code class="descname">/gn_commons/media/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_media</em><span class="sig-paren">)</span><a class="headerlink" href="#put--gn_commons-media-(int-id_media)" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="put">
-<dt id="put--gn_commons-media">
-<code class="descname">PUT </code><code class="descname">/gn_commons/media</code><a class="headerlink" href="#put--gn_commons-media" title="Permalink to this definition">¶</a></dt>
-<dd><p>Insertion ou mise à jour d’un média
-avec prise en compte des fichiers joints</p>
-</dd></dl>
-
 <dl class="post">
 <dt id="post--gn_commons-media-(int-id_media)">
 <code class="descname">POST </code><code class="descname">/gn_commons/media/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_media</em><span class="sig-paren">)</span><a class="headerlink" href="#post--gn_commons-media-(int-id_media)" title="Permalink to this definition">¶</a></dt>
@@ -886,6 +868,18 @@ avec prise en compte des fichiers joints</p>
 <dl class="post">
 <dt id="post--gn_commons-media">
 <code class="descname">POST </code><code class="descname">/gn_commons/media</code><a class="headerlink" href="#post--gn_commons-media" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insertion ou mise à jour d’un média
+avec prise en compte des fichiers joints</p>
+</dd></dl>
+
+<dl class="put">
+<dt id="put--gn_commons-media-(int-id_media)">
+<code class="descname">PUT </code><code class="descname">/gn_commons/media/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_media</em><span class="sig-paren">)</span><a class="headerlink" href="#put--gn_commons-media-(int-id_media)" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="put">
+<dt id="put--gn_commons-media">
+<code class="descname">PUT </code><code class="descname">/gn_commons/media</code><a class="headerlink" href="#put--gn_commons-media" title="Permalink to this definition">¶</a></dt>
 <dd><p>Insertion ou mise à jour d’un média
 avec prise en compte des fichiers joints</p>
 </dd></dl>
@@ -950,6 +944,19 @@ Some columns are mandatory: id_synthese, geojson and geojson_local to generate t
 </tbody>
 </table>
 <p>:query str group2_inpn : filter with INPN group 2</p>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--synthese-observation_count">
+<code class="descname">GET </code><code class="descname">/synthese/observation_count</code><a class="headerlink" href="#get--synthese-observation_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get observations found in a given dataset</p>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--synthese-taxa_distribution">
+<code class="descname">GET </code><code class="descname">/synthese/taxa_distribution</code><a class="headerlink" href="#get--synthese-taxa_distribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get taxa distribution for a given dataset or acquisition framework
+and grouped by a certain taxa rank</p>
 </dd></dl>
 
 <dl class="get">
@@ -1032,6 +1039,27 @@ Some columns are mandatory: cd_ref</p>
 </table>
 <p>Those three parameters can be multiples
 :returns: Array&lt;dict&lt;VColorAreaTaxon&gt;&gt;</p>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--synthese-taxa_count">
+<code class="descname">GET </code><code class="descname">/synthese/taxa_count</code><a class="headerlink" href="#get--synthese-taxa_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get taxa count in synthese filtering with generic parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Query Parameters:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><ul class="first simple">
+<li><strong>id_dataset</strong> (<em>int</em>) – filter by id_dataset</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns int:</th><td class="field-body"><p class="first last">the number of taxa found</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="get">
@@ -1395,6 +1423,14 @@ Utilisé dans l’authentification du CAS INPN</p>
 </dd></dl>
 
 <dl class="get">
+<dt id="get--meta-acquisition_frameworks_metadata">
+<code class="descname">GET </code><code class="descname">/meta/acquisition_frameworks_metadata</code><a class="headerlink" href="#get--meta-acquisition_frameworks_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all AF with cruved filter
+Use for metadata module. 
+Add the cruved permission for each row</p>
+</dd></dl>
+
+<dl class="get">
 <dt id="get--meta-acquisition_frameworks">
 <code class="descname">GET </code><code class="descname">/meta/acquisition_frameworks</code><a class="headerlink" href="#get--meta-acquisition_frameworks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all AF with cruved filter</p>
@@ -1405,6 +1441,36 @@ Utilisé dans l’authentification du CAS INPN</p>
 <code class="descname">POST </code><code class="descname">/meta/acquisition_framework</code><a class="headerlink" href="#post--meta-acquisition_framework" title="Permalink to this definition">¶</a></dt>
 <dd><p>Post a dataset
 .. :quickref: Metadata;</p>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--meta-af_datasets_metadata">
+<code class="descname">GET </code><code class="descname">/meta/af_datasets_metadata</code><a class="headerlink" href="#get--meta-af_datasets_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all AF with their datasets 
+The Cruved in only apply on dataset in order to see all the AF
+where the user have rights with its dataset
+Use in maplist
+Add the CRUVED permission for each row (Dataset and AD)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>info_role</strong> (<em>TRole</em>) – add with kwargs</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><cite>dict{‘data’:list&lt;AF with Datasets&gt;, ‘with_erros’: &lt;boolean&gt;}</cite></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="post">
+<dt id="post--meta-upload_canvas">
+<code class="descname">POST </code><code class="descname">/meta/upload_canvas</code><a class="headerlink" href="#post--meta-upload_canvas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload the canvas as a temporary image used while generating the pdf file</p>
 </dd></dl>
 
 <dl class="get">
@@ -1631,77 +1697,6 @@ Params must have same synthese fields names</p>
 <code class="descname">GET </code><code class="descname">/permissions_backoffice/filter_list/id_filter_type/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_filter_type</em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-filter_list-id_filter_type-(int-id_filter_type)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="get">
-<dt id="get--monitorings-object-module">
-<code class="descname">GET </code><code class="descname">/monitorings/object/module</code><a class="headerlink" href="#get--monitorings-object-module" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="get">
-<dt id="get--monitorings-object-(string-module_path)-(string-object_type)">
-<code class="descname">GET </code><code class="descname">/monitorings/object/</code><span class="sig-paren">(</span><em class="property">string: </em><em>module_path</em><span class="sig-paren">)</span><code class="descname">/</code><span class="sig-paren">(</span><em class="property">string: </em><em>object_type</em><span class="sig-paren">)</span><a class="headerlink" href="#get--monitorings-object-(string-module_path)-(string-object_type)" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="get">
-<dt id="get--monitorings-object-(string-module_path)-(string-object_type)-(int-id)">
-<code class="descname">GET </code><code class="descname">/monitorings/object/</code><span class="sig-paren">(</span><em class="property">string: </em><em>module_path</em><span class="sig-paren">)</span><code class="descname">/</code><span class="sig-paren">(</span><em class="property">string: </em><em>object_type</em><span class="sig-paren">)</span><code class="descname">/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id</em><span class="sig-paren">)</span><a class="headerlink" href="#get--monitorings-object-(string-module_path)-(string-object_type)-(int-id)" title="Permalink to this definition">¶</a></dt>
-<dd><p>renvoie un object, à partir de type de l’object et de son id</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>module_path</strong> – reference le module concerne</li>
-<li><strong>object_type</strong> – le type d’object (site, visit, obervation)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>:param id : l’identifiant de l’object (de id_base_site pour site)
-:type module_path: str
-:type object_type: str
-:type id: int</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return:</th><td class="field-body">renvoie l’object requis</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Rtype:</th><td class="field-body">dict</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="get">
-<dt id="get--monitorings-config-test-(string-module_path)">
-<code class="descname">GET </code><code class="descname">/monitorings/config/test/</code><span class="sig-paren">(</span><em class="property">string: </em><em>module_path</em><span class="sig-paren">)</span><a class="headerlink" href="#get--monitorings-config-test-(string-module_path)" title="Permalink to this definition">¶</a></dt>
-<dd><p>route qui renvoie la config pour un module donné et un object donné (pour debug)</p>
-</dd></dl>
-
-<dl class="get">
-<dt id="get--monitorings-util-nomenclature-(string-code_nomenclature_type)-(string-cd_nomenclature)">
-<code class="descname">GET </code><code class="descname">/monitorings/util/nomenclature/</code><span class="sig-paren">(</span><em class="property">string: </em><em>code_nomenclature_type</em><span class="sig-paren">)</span><code class="descname">/</code><span class="sig-paren">(</span><em class="property">string: </em><em>cd_nomenclature</em><span class="sig-paren">)</span><a class="headerlink" href="#get--monitorings-util-nomenclature-(string-code_nomenclature_type)-(string-cd_nomenclature)" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>revoie un champ d’un object de type nomenclature</dt>
-<dd>à partir de son type  et de son cd_nomenclature</dd>
-</dl>
-<p>renvoie l’objet entier si field_name renseigné en paramètre de route est ‘all’</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>code_nomenclature_type</strong> – </li>
-<li><strong>cd_nomenclature</strong> – </li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>:return object entier si field_name = all, la valeur du champs defini par field_name sinon</p>
-</dd></dl>
-
 <dl class="delete">
 <dt id="delete--occtax-releve-occurrence_counting-(int-id_count)">
 <code class="descname">DELETE </code><code class="descname">/occtax/releve/occurrence_counting/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_count</em><span class="sig-paren">)</span><a class="headerlink" href="#delete--occtax-releve-occurrence_counting-(int-id_count)" title="Permalink to this definition">¶</a></dt>
@@ -1732,11 +1727,23 @@ Params must have same synthese fields names</p>
 </table>
 </dd></dl>
 
+<dl class="get">
+<dt id="get--meta-acquisition_frameworks-export_pdf-(id_acquisition_framework)">
+<code class="descname">GET </code><code class="descname">/meta/acquisition_frameworks/export_pdf/</code><span class="sig-paren">(</span><em>id_acquisition_framework</em><span class="sig-paren">)</span><a class="headerlink" href="#get--meta-acquisition_frameworks-export_pdf-(id_acquisition_framework)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a PDF export of one acquisition</p>
+</dd></dl>
+
 <dl class="post">
 <dt id="post--pypn-register-post_usershub-(string-type_action)">
 <code class="descname">POST </code><code class="descname">/pypn/register/post_usershub/</code><span class="sig-paren">(</span><em class="property">string: </em><em>type_action</em><span class="sig-paren">)</span><a class="headerlink" href="#post--pypn-register-post_usershub-(string-type_action)" title="Permalink to this definition">¶</a></dt>
 <dd><p>route generique pour appeler les routes UsersHub en tant qu’administrateur de l’appli en cours
 ex : post_usershub/test_connexion appelle la route URL_USERSHUB/api_register/test_connexion</p>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--meta-dataset-export_pdf-(id_dataset)">
+<code class="descname">GET </code><code class="descname">/meta/dataset/export_pdf/</code><span class="sig-paren">(</span><em>id_dataset</em><span class="sig-paren">)</span><a class="headerlink" href="#get--meta-dataset-export_pdf-(id_dataset)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a PDF export of one dataset</p>
 </dd></dl>
 
 <dl class="get">
@@ -1808,78 +1815,6 @@ Possibilité de filtrer par regne et group2Inpn</p>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="get">
-<dt id="get--monitorings-module-(value)">
-<code class="descname">GET </code><code class="descname">/monitorings/module/</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#get--monitorings-module-(value)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Renvoie un module référencé par son champ module_path
-par default cherche par id_module
-on peut preciser field_name en parametre de requete GET
-?field_name=module_path pour avoir unmodule depuis son champs module_path</p>
-</dd></dl>
-
-<dl class="get">
-<dt id="get--monitorings-config">
-<code class="descname">GET </code><code class="descname">/monitorings/config</code><a class="headerlink" href="#get--monitorings-config" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="get">
-<dt id="get--monitorings-config-(string-module_path)">
-<code class="descname">GET </code><code class="descname">/monitorings/config/</code><span class="sig-paren">(</span><em class="property">string: </em><em>module_path</em><span class="sig-paren">)</span><a class="headerlink" href="#get--monitorings-config-(string-module_path)" title="Permalink to this definition">¶</a></dt>
-<dd><p>route qui renvoie la config pour un module donné</p>
-</dd></dl>
-
-<dl class="get">
-<dt id="get--monitorings-util-(string-type_util)-(int-id)">
-<code class="descname">GET </code><code class="descname">/monitorings/util/</code><span class="sig-paren">(</span><em class="property">string: </em><em>type_util</em><span class="sig-paren">)</span><code class="descname">/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id</em><span class="sig-paren">)</span><a class="headerlink" href="#get--monitorings-util-(string-type_util)-(int-id)" title="Permalink to this definition">¶</a></dt>
-<dd><p>revoie un champ d’un object de type nomenclature, taxonomy, utilisateur, …
-renvoie l’objet entier si field_name renseigné en paramètre de route est ‘all’</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>type_util</strong> (<em>str</em>) – ‘nomenclaure’ | ‘taoxonomy’ | ‘utilisateur’</li>
-<li><strong>id</strong> (<em>int</em>) – id de l’object requis</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>:return object entier si field_name = all, la valeur du champs defini par field_name sinon</p>
-</dd></dl>
-
-<dl class="get">
-<dt id="get--monitorings-util-(string-type_util)-(string-ids)">
-<code class="descname">GET </code><code class="descname">/monitorings/util/</code><span class="sig-paren">(</span><em class="property">string: </em><em>type_util</em><span class="sig-paren">)</span><code class="descname">/</code><span class="sig-paren">(</span><em class="property">string: </em><em>ids</em><span class="sig-paren">)</span><a class="headerlink" href="#get--monitorings-util-(string-type_util)-(string-ids)" title="Permalink to this definition">¶</a></dt>
-<dd><p>variante de get_util_from_id_api pour plusieurs id
-renvoie un tableau de valeur (ou de dictionnaire si key est ‘all’)</p>
-<dl class="docutils">
-<dt>parametre get</dt>
-<dd><dl class="first last docutils">
-<dt>key: all renvoie tout l’objet</dt>
-<dd>sinon renvoie un champ</dd>
-<dt>separator_out:</dt>
-<dd>pour reformer une chaine de caractere a partir du tableau résultat de la requete
-si separator_out == ‘ ,’
-alors [‘jean’, ‘pierre’, ‘paul’].join(separator_out) -&gt; ‘jean, pierre, paul’</dd>
-</dl>
-</dd>
-</dl>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>type_util</strong> (<em>str</em>) – ‘nomenclaure’ | ‘taoxonomy’ | ‘utilisateur’</li>
-<li><strong>ids</strong> (<em>str</em>) – plusieurs id reliée par des ‘-‘ (ex: 1-123-3-4)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>:return list si key=all ou chaine de caratere</p>
 </dd></dl>
 
 <dl class="get">
@@ -2132,6 +2067,24 @@ Use trigram algo to add relevance</p>
 </table>
 </dd></dl>
 
+<dl class="get">
+<dt id="get--meta-acquisition_framework_details-(id_acquisition_framework)">
+<code class="descname">GET </code><code class="descname">/meta/acquisition_framework_details/</code><span class="sig-paren">(</span><em>id_acquisition_framework</em><span class="sig-paren">)</span><a class="headerlink" href="#get--meta-acquisition_framework_details-(id_acquisition_framework)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get one AF</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>id_acquisition_framework</strong> – the id_acquisition_framework</li>
+<li><strong>type</strong> – int</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="post">
 <dt id="post--meta-aquisition_framework_mtd-(uuid_af)">
 <code class="descname">POST </code><code class="descname">/meta/aquisition_framework_mtd/</code><span class="sig-paren">(</span><em>uuid_af</em><span class="sig-paren">)</span><a class="headerlink" href="#post--meta-aquisition_framework_mtd-(uuid_af)" title="Permalink to this definition">¶</a></dt>
@@ -2151,6 +2104,27 @@ Use trigram algo to add relevance</p>
 <li><strong>id_acquisition_framework</strong> – the id_acquisition_framework</li>
 <li><strong>type</strong> – int</li>
 </ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--meta-dataset_details-(id_dataset)">
+<code class="descname">GET </code><code class="descname">/meta/dataset_details/</code><span class="sig-paren">(</span><em>id_dataset</em><span class="sig-paren">)</span><a class="headerlink" href="#get--meta-dataset_details-(id_dataset)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get one dataset with nomenclatures and af</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>id_dataset</strong> – the id_dataset</li>
+<li><strong>type</strong> – int</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">dict&lt;TDatasetDetails&gt;</p>
 </td>
 </tr>
 </tbody>

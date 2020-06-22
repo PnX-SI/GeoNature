@@ -188,7 +188,6 @@
    <a href="#cap-/gn_monitoring"><strong>/gn_monitoring</strong></a> | 
    <a href="#cap-/habref"><strong>/habref</strong></a> | 
    <a href="#cap-/meta"><strong>/meta</strong></a> | 
-   <a href="#cap-/monitorings"><strong>/monitorings</strong></a> | 
    <a href="#cap-/nomenclatures/nomenclature"><strong>/nomenclatures/nomenclature</strong></a> | 
    <a href="#cap-/nomenclatures/nomenclatures"><strong>/nomenclatures/nomenclatures</strong></a> | 
    <a href="#cap-/occhab"><strong>/occhab</strong></a> | 
@@ -285,6 +284,11 @@
      <tr>
        <td></td>
        <td>
+       <a href="development.html#get--gn_commons-t_mobile_apps"><code class="xref">GET /gn_commons/t_mobile_apps</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
        <a href="development.html#post--gn_commons-media"><code class="xref">POST /gn_commons/media</code></a></td><td>
        <em></em></td></tr>
      <tr>
@@ -364,12 +368,42 @@
      <tr>
        <td></td>
        <td>
+       <a href="development.html#get--meta-acquisition_framework_details-(id_acquisition_framework)"><code class="xref">GET /meta/acquisition_framework_details/(id_acquisition_framework)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
        <a href="development.html#get--meta-acquisition_frameworks"><code class="xref">GET /meta/acquisition_frameworks</code></a></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>
        <td>
+       <a href="development.html#get--meta-acquisition_frameworks-export_pdf-(id_acquisition_framework)"><code class="xref">GET /meta/acquisition_frameworks/export_pdf/(id_acquisition_framework)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--meta-acquisition_frameworks_metadata"><code class="xref">GET /meta/acquisition_frameworks_metadata</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--meta-af_datasets_metadata"><code class="xref">GET /meta/af_datasets_metadata</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
        <a href="development.html#get--meta-dataset-(id_dataset)"><code class="xref">GET /meta/dataset/(id_dataset)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--meta-dataset-export_pdf-(id_dataset)"><code class="xref">GET /meta/dataset/export_pdf/(id_dataset)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--meta-dataset_details-(id_dataset)"><code class="xref">GET /meta/dataset_details/(id_dataset)</code></a></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>
@@ -401,73 +435,10 @@
        <td>
        <a href="development.html#post--meta-dataset_mtd-(id_user)-(id_organism)"><code class="xref">POST /meta/dataset_mtd/(id_user)/(id_organism)</code></a></td><td>
        <em></em></td></tr>
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-/monitorings"><td></td><td>
-       <strong>/monitorings</strong></td><td></td></tr>
      <tr>
        <td></td>
        <td>
-       <a href="development.html#get--monitorings-config"><code class="xref">GET /monitorings/config</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--monitorings-config-(string-module_path)"><code class="xref">GET /monitorings/config/(string:module_path)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--monitorings-config-test-(string-module_path)"><code class="xref">GET /monitorings/config/test/(string:module_path)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--monitorings-module-(value)"><code class="xref">GET /monitorings/module/(value)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--monitorings-modules"><code class="xref">GET /monitorings/modules</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--monitorings-object-(string-module_path)-(string-object_type)"><code class="xref">GET /monitorings/object/(string:module_path)/(string:object_type)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--monitorings-object-(string-module_path)-(string-object_type)-(int-id)"><code class="xref">GET /monitorings/object/(string:module_path)/(string:object_type)/(int:id)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--monitorings-object-module"><code class="xref">GET /monitorings/object/module</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--monitorings-routes_list"><code class="xref">GET /monitorings/routes_list</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--monitorings-test_permission"><code class="xref">GET /monitorings/test_permission</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--monitorings-util-(string-type_util)-(int-id)"><code class="xref">GET /monitorings/util/(string:type_util)/(int:id)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--monitorings-util-(string-type_util)-(string-ids)"><code class="xref">GET /monitorings/util/(string:type_util)/(string:ids)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--monitorings-util-nomenclature-(string-code_nomenclature_type)-(string-cd_nomenclature)"><code class="xref">GET /monitorings/util/nomenclature/(string:code_nomenclature_type)/(string:cd_nomenclature)</code></a></td><td>
+       <a href="development.html#post--meta-upload_canvas"><code class="xref">POST /meta/upload_canvas</code></a></td><td>
        <em></em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-/nomenclatures/nomenclature"><td></td><td>
@@ -726,7 +697,22 @@
      <tr>
        <td></td>
        <td>
+       <a href="development.html#get--synthese-observation_count"><code class="xref">GET /synthese/observation_count</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
        <a href="development.html#get--synthese-sources"><code class="xref">GET /synthese/sources</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--synthese-taxa_count"><code class="xref">GET /synthese/taxa_count</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--synthese-taxa_distribution"><code class="xref">GET /synthese/taxa_distribution</code></a></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>

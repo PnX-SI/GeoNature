@@ -138,6 +138,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#integrer-son-logo">Intégrer son logo</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#customiser-le-contenu">Customiser le contenu</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#customiser-l-aspect-esthetique">Customiser l’aspect esthétique</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#customiser-les-exports-pdf">Customiser les exports PDF</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#integrer-des-donnees">Intégrer des données</a><ul>
@@ -166,8 +167,17 @@
 <li class="toctree-l3"><a class="reference internal" href="#attribuer-des-droits">Attribuer des droits</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#module-occhab">Module OCCHAB</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Installer le module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Base de données</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Configuration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#formulaire">Formulaire</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#module-synthese">Module SYNTHESE</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id1">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Configuration</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-validation">Module VALIDATION</a></li>
@@ -255,18 +265,18 @@
 <li>UsersHub et son sous-module d’authentification Flask (<a class="reference external" href="https://github.com/PnX-SI/UsersHub-authentification-module">https://github.com/PnX-SI/UsersHub-authentification-module</a>) sont utilisés pour gérer le schéma de BDD <code class="docutils literal"><span class="pre">ref_users</span></code> (actuellement nommé <code class="docutils literal"><span class="pre">utilisateurs</span></code>) et l’authentification. UsersHub permet une gestion centralisée de ses utilisateurs (listes, organismes, droits), utilisable par les différentes applications de son système d’information.</li>
 <li>TaxHub (<a class="reference external" href="https://github.com/PnX-SI/TaxHub">https://github.com/PnX-SI/TaxHub</a>) est utilisé pour la gestion du schéma de BDD <code class="docutils literal"><span class="pre">ref_taxonomy</span></code> (actuellement nommé <code class="docutils literal"><span class="pre">taxonomie</span></code>). L’API de TaxHub est utilisée pour récupérer des informations sur les espèces et la taxonomie en général.</li>
 <li>Un sous-module Flask (<a class="reference external" href="https://github.com/PnX-SI/Nomenclature-api-module/">https://github.com/PnX-SI/Nomenclature-api-module/</a>) a été créé pour une gestion centralisée des nomenclatures (<a class="reference external" href="https://github.com/PnX-SI/Nomenclature-api-module/">https://github.com/PnX-SI/Nomenclature-api-module/</a>), il pilote le schéma <code class="docutils literal"><span class="pre">ref_nomenclature</span></code>.</li>
-<li><code class="docutils literal"><span class="pre">ref_geo</span></code> est le schéma de base de données qui gère le référentiel géographique. Il est utilisé pour gérer les zonages, les communes, le calcul automatique d’altitude et les intersections spatiales.</li>
+<li><code class="docutils literal"><span class="pre">ref_geo</span></code> est le schéma de base de données qui gère le référentiel géographique. Il est utilisé pour gérer les zonages, les communes, le MNT, le calcul automatique d’altitude et les intersections spatiales.</li>
 </ul>
 <p>GeoNature a également une séparation claire entre le backend (API: intéraction avec la base de données) et le frontend (interface utilisateur). Le backend peut être considéré comme un “service” dont se sert le frontend pour récupérer ou poster des données.
-NB: Le backend et le frontend se lancent séparement dans GeoNature.</p>
+NB : Le backend et le frontend se lancent séparément dans GeoNature.</p>
 <img alt="http://geonature.fr/docs/img/admin-manual/design-geonature.png" src="http://geonature.fr/docs/img/admin-manual/design-geonature.png" />
 </div>
 <div class="section" id="base-de-donnees">
 <h2>Base de données<a class="headerlink" href="#base-de-donnees" title="Permalink to this headline">¶</a></h2>
 <p>Dans la continuité de sa version 1, GeoNature V2 utilise le SGBD PostgreSQL et sa cartouche spatiale PostGIS. Cependant l’architecture du modèle de données a été complétement revue.</p>
-<p>La base de données a notamment été refondue pour s’appuyer au maximum sur des standards, comme le standard d’Occurrences de Taxon du SINP (Voir <a class="reference external" href="https://github.com/PnX-SI/GeoNature/issues/183">https://github.com/PnX-SI/GeoNature/issues/183</a>).</p>
+<p>La base de données a notamment été refondue pour s’appuyer au maximum sur des standards, comme le standard d’Occurrences de taxons du SINP (Voir <a class="reference external" href="http://standards-sinp.mnhn.fr/category/standards/occurrences-de-taxons/">http://standards-sinp.mnhn.fr/category/standards/occurrences-de-taxons/</a>).</p>
 <p>La base de données a également été traduite en Anglais et supporte désormais le multilangue.</p>
-<p>Les préfixes des schémas de BDD sont désormais standardisés : <code class="docutils literal"><span class="pre">ref_</span></code> concerne les référentiels externes, <code class="docutils literal"><span class="pre">gn</span></code> concerne les schémas du coeur de GeoNature et <code class="docutils literal"><span class="pre">pr</span></code> les schémas des protocoles.</p>
+<p>Les préfixes des schémas de BDD sont désormais standardisés : <code class="docutils literal"><span class="pre">ref_</span></code> concerne les référentiels externes, <code class="docutils literal"><span class="pre">gn_</span></code> concerne les schémas du coeur de GeoNature et <code class="docutils literal"><span class="pre">pr_</span></code> les schémas des protocoles.</p>
 <p>Autres standards :</p>
 <ul class="simple">
 <li>Noms de tables, commentaires et fonctions en anglais</li>
@@ -289,8 +299,8 @@ NB: Le backend et le frontend se lancent séparement dans GeoNature.</p>
 <p>Les relations complexes entre les schémas ont été grisées pour faciliter la lisibilité.</p>
 <div class="section" id="gestion-des-droits">
 <h3>Gestion des droits<a class="headerlink" href="#gestion-des-droits" title="Permalink to this headline">¶</a></h3>
-<p>L’accès des utilisateurs à l’application GeoNature est géré de manière centralisée dans UsersHub.</p>
-<p>La gestion des droits (permissions), spécifique à GeoNature, est gérée dans un schéma (<code class="docutils literal"><span class="pre">gn_permissions</span></code>) et un module de GeoNature dédié. Dans la version 1 de GeoNature, il était possible d’attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour étendre les possibilités d’attribution de droits et les rendre plus génériques.</p>
+<p>Les comptes des utilisateurs, leur mot de passe, email, groupes et leur accès à l’application GeoNature est géré de manière centralisée dans UsersHub. Pour qu’un rôle (utilisateur ou groupe) ait accès à GeoNature, il faut lui attribuer un profil de “Lecteur” dans l’application GeoNature, grâce à l’application UsersHub.</p>
+<p>La gestion des droits (permissions) des rôles, spécifique à GeoNature, est ensuite gérée dans un schéma (<code class="docutils literal"><span class="pre">gn_permissions</span></code>) et un module de GeoNature dédié. Dans la version 1 de GeoNature, il était possible d’attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour étendre les possibilités d’attribution de droits et les rendre plus génériques.</p>
 <p>La gestion des droits dans GeoNature, comme dans beaucoup d’applications, est liée à des actions (Create / Read / Update / Delete aka CRUD). Pour les besoins  métiers de l’application nous avons rajouté deux actions : “Valider” et “Exporter”, ce qui donne le CRUVED : Create / Read / Update / Validate / Export / Delete.</p>
 <p>Sur ces actions, on va pouvoir appliquer des filtres de manière générique.</p>
 <p>Le filtre le plus courant est celui de la “portée”. On autorise des actions à un utilisateur sur une portée : “Ses données”, “Les données de son organisme”, “Toutes les données”.</p>
@@ -474,7 +484,7 @@ d’une observation avec tous les zonages</td>
 <span class="o">--</span><span class="n">USAGE</span> <span class="p">:</span> <span class="n">SELECT</span> <span class="n">ref_nomenclatures</span><span class="o">.</span><span class="n">calculate_sensitivity</span><span class="p">(</span><span class="mi">240</span><span class="p">,</span><span class="mi">21</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>TODO : A compléter… A voir si on mentionne les triggers ou pas…</p>
+<p>TODO : A compléter…</p>
 </div>
 <div class="section" id="tables-transversales">
 <h3>Tables transversales<a class="headerlink" href="#tables-transversales" title="Permalink to this headline">¶</a></h3>
@@ -508,16 +518,6 @@ Respecte le standard Occurrence de taxon du SINP.</p>
 <li>Mise à jour des champs <code class="docutils literal"><span class="pre">meta_create_date</span></code> et <code class="docutils literal"><span class="pre">meta_update_date</span></code></li>
 </ul>
 </li>
-<li>trg_refresh_taxons_forautocomplete<ul>
-<li>AFTER INSERT OR UPDATE OF cd_nom OR DELETE</li>
-<li>Mise à jour de la table <code class="docutils literal"><span class="pre">taxons_synthese_autocomplete</span></code></li>
-<li>Actions :<ol class="arabic">
-<li>Si suppression ou update : suppression des enregistrements avec le cd_nom concerné dans la table <code class="docutils literal"><span class="pre">gn_synthese.taxons_synthese_autocomplete</span> <span class="pre">auto</span></code>. <em>Si un cd_nom est présent dans plusieurs enregistrements, il sera supprimé également. Il manque un test pour savoir si la suppression doit ou non être activée.</em></li>
-<li>Insertion des informations taxonomiques du cd_nom concerné dans la table <code class="docutils literal"><span class="pre">gn_synthese.taxons_synthese_autocomplete</span> <span class="pre">auto</span></code></li>
-</ol>
-</li>
-</ul>
-</li>
 <li>tri_insert_cor_area_synthese<ul>
 <li>AFTER INSERT OR UPDATE OF the_geom_local</li>
 <li>Mise à jour de la table <code class="docutils literal"><span class="pre">cor_area_synthese</span></code></li>
@@ -535,7 +535,7 @@ Respecte le standard Occurrence de taxon du SINP.</p>
 <li>Récupération de l’ensemble des aires intersectant la donnée de synthèse</li>
 <li>Suppression des enregistrement de <code class="docutils literal"><span class="pre">cor_area_taxon</span></code> avec le cd_nom et les aires concernés</li>
 <li>Insertion dans <code class="docutils literal"><span class="pre">cor_area_taxon</span></code> recalculant les max, nb_obs et couleur pour chaque aire pour l’ensemble des données avec les aires concernées et le cd_nom concerné ne correspondant pas à la donnée supprimée</li>
-<li>Suppression des enregistrements de gn_synthese.cor_area_synthese</li>
+<li>Suppression des enregistrements de <code class="docutils literal"><span class="pre">gn_synthese.cor_area_synthese</span></code></li>
 </ol>
 </li>
 </ul>
@@ -926,6 +926,10 @@ chmod g+rwx /home/`whoami`/backup
 </pre></div>
 </div>
 </div>
+<div class="section" id="customiser-les-exports-pdf">
+<h3>Customiser les exports PDF<a class="headerlink" href="#customiser-les-exports-pdf" title="Permalink to this headline">¶</a></h3>
+<p>Vous pouvez modifier le bandeau et le logo fournis par défaut dans les exports PDF en modifiant les images <code class="docutils literal"><span class="pre">Bandeau_pdf.png</span></code> et <code class="docutils literal"><span class="pre">Logo_pdf.png</span></code> dans <code class="docutils literal"><span class="pre">backend/static/images</span></code>. Les fichiers CSS des exports PDF sont dans <code class="docutils literal"><span class="pre">backend/static/css</span></code>.</p>
+</div>
 </div>
 <div class="section" id="integrer-des-donnees">
 <h2>Intégrer des données<a class="headerlink" href="#integrer-des-donnees" title="Permalink to this headline">¶</a></h2>
@@ -1023,7 +1027,7 @@ Renseigner les paramètres suivants dans le fichier de configuration (<code clas
     <span class="n">MAIL_USE_TLS</span> <span class="o">=</span> <span class="n">false</span>
     <span class="n">MAIL_USE_SSL</span> <span class="o">=</span> <span class="n">true</span>
     <span class="n">MAIL_USERNAME</span> <span class="o">=</span> <span class="s1">&#39;mon_email@email.io&#39;</span>
-    <span class="n">MAIL_PASSWORD</span> <span class="o">=</span> <span class="s1">&#39;M@rm0tt3&#39;</span>
+    <span class="n">MAIL_PASSWORD</span> <span class="o">=</span> <span class="s1">&#39;monpassword&#39;</span>
     <span class="n">MAIL_DEFAULT_SENDER</span> <span class="o">=</span> <span class="s1">&#39;mon_email@email.io&#39;</span>
     <span class="n">MAIL_ASCII_ATTACHMENTS</span> <span class="o">=</span> <span class="n">false</span>
 </pre></div>
@@ -1048,7 +1052,7 @@ Renseigner les paramètres suivants dans le fichier de configuration (<code clas
 </pre></div>
 </div>
 <p>L’utilisateur qui demande la création de compte est automatiquement mis dans un “groupe” UsersHub (par défaut, il s’agit du groupe “En poste”). Ce groupe est paramétrable depuis la table <code class="docutils literal"><span class="pre">utilisateurs.cor_role_app_profil</span></code>. (La ligne où <code class="docutils literal"><span class="pre">is_default_group_for_app</span> <span class="pre">=</span> <span class="pre">true</span></code> sera utilisée comme groupe par défaut pour GeoNature). Il n’est pas en paramètre de GeoNature pusqu’il serait falsifiable via l’API. ⚠️ <strong>Attention</strong>, si vous effectuez une migration depuis une version de GeoNature &lt; 2.2.0, aucun groupe par défaut n’est défini, vous devez définir à la main le groupe par défaut pour l’application GeoNature dans la table <code class="docutils literal"><span class="pre">utilisateurs.cor_role_app_profil</span></code>.</p>
-<p>Il est également possible de créer automatiquement un jeu de données et un cadre d’acquisition “personnel” à l’utilisateur afin qu’il puisse saisir des données dès sa création de compte via le paramètre <cite>AUTO_DATASET_CREATION</cite>. Par la suite l’administrateur pourra rattacher l’utilisateur à des JDD et CA via son organisme.</p>
+<p>Il est également possible de créer automatiquement un jeu de données et un cadre d’acquisition “personnel” à l’utilisateur afin qu’il puisse saisir des données dès sa création de compte via le paramètre <code class="docutils literal"><span class="pre">AUTO_DATASET_CREATION</span></code>. Par la suite l’administrateur pourra rattacher l’utilisateur à des JDD et CA via son organisme.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">ACCOUNT_MANAGEMENT</span><span class="p">]</span>
     <span class="n">AUTO_ACCOUNT_CREATION</span> <span class="o">=</span> <span class="n">true</span>
     <span class="n">ENABLE_SIGN_UP</span> <span class="o">=</span> <span class="n">true</span>
@@ -1058,7 +1062,7 @@ Renseigner les paramètres suivants dans le fichier de configuration (<code clas
 </div>
 <div class="section" id="customisation-du-formulaire">
 <h3>Customisation du formulaire<a class="headerlink" href="#customisation-du-formulaire" title="Permalink to this headline">¶</a></h3>
-<p>Le formulaire de création de compte est par défaut assez minimaliste (nom, prénom, email, mdp, organisme, remarque).</p>
+<p>Le formulaire de création de compte est par défaut assez minimaliste (nom, prénom, email, mot de passe, organisme, remarque).</p>
 <p><em>NB</em> l’organisme est demandé à l’utilisateur à titre “informatif”, c’est à l’administrateur de rattacher individuellement l’utilisateur à son organisme, et éventuellement de le créer, s’il n’existe pas.</p>
 <p>Il est possible d’ajouter des champs au formulaire grâce à un générateur controlé par la configuration. Plusieurs type de champs peuvent être ajoutés (text, textarea, number, select, checkbox mais aussi taxonomy, nomenclature etc…).</p>
 <p>L’exemple ci-dessous permet de créer un champs de type “checkbox” obligatoire, avec un lien vers un document (une charte par exemple) et un champ de type “select”, non obligatoire. (voir le fichier <code class="docutils literal"><span class="pre">geonature_config.toml.example</span></code> pour un exemple plus exhaustif).</p>
@@ -1223,11 +1227,11 @@ Par exemple, pour contraindre la saisie à l’affichage de la carte IGN au 1/25
 </div>
 <div class="section" id="gestion-des-exports">
 <h3>Gestion des exports<a class="headerlink" href="#gestion-des-exports" title="Permalink to this headline">¶</a></h3>
-<p>Les exports du module sont basés sur une vue (par défaut <code class="docutils literal"><span class="pre">pr_occtax.export_occtax_dlb</span></code>)</p>
+<p>Les exports du module sont basés sur une vue (par défaut <code class="docutils literal"><span class="pre">pr_occtax.export_occtax_sinp</span></code>)</p>
 <p>Il est possible de définir une autre vue pour avoir des exports personnalisés.
 Pour cela, créer votre vue, et modifier les paramètres suivants :</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Name of the view based export</span>
-<span class="n">export_view_name</span> <span class="o">=</span> <span class="s1">&#39;ViewExportDLB&#39;</span>
+<span class="n">export_view_name</span> <span class="o">=</span> <span class="s1">&#39;export_occtax_sinp&#39;</span>
 
 <span class="c1"># Name of the geometry columns of the view</span>
 <span class="n">export_geom_columns_name</span> <span class="o">=</span> <span class="s1">&#39;geom_4326&#39;</span>
@@ -1255,11 +1259,71 @@ Pour cela, créer votre vue, et modifier les paramètres suivants :</p>
 <p>L’administration des droits des utilisateurs pour le module Occtax se fait dans le backoffice de gestion des permissions de GeoNature.</p>
 </div>
 </div>
+<div class="section" id="module-occhab">
+<h2>Module OCCHAB<a class="headerlink" href="#module-occhab" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>Installer le module<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>Le module OCCHAB fait parti du coeur de GeoNature. Son installation est au choix de l’administrateur.</p>
+<p>Pour l’installer, lancer les commande suivante:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">cd backend</span>
+<span class="go">source venv/bin/activate</span>
+<span class="go">geonature install_gn_module /home/`whoami`/geonature/contrib/gn_module_occhab occtax</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id2">
+<h3>Base de données<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>Le module s’appuie sur deux schémas.:
+<code class="docutils literal"><span class="pre">ref_habitats</span></code>:  Le réferentiel habitat du MNHN
+<code class="docutils literal"><span class="pre">pr_occhab</span></code>: le schéma qui contient les données d’occurrence d’habitat, basé sur standard du MNHN</p>
+</div>
+<div class="section" id="id3">
+<h3>Configuration<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>Le parametrage du module OCCHAB se fait depuis le fichier <code class="docutils literal"><span class="pre">/home/`whoami`/geonature/contrib/config/conf_gn_module.toml</span></code>
+Après toute modification de la configuration d’un module, il faut regénérer le fichier de configuration du frontend comme expliqué ici : <a class="reference internal" href="#configuration-d-un-gn-module">Configuration d’un gn_module</a></p>
+<div class="section" id="formulaire">
+<h4>Formulaire<a class="headerlink" href="#formulaire" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>La liste des habitats fournit pour la saisie est basé sur une liste définit en base de données (table <code class="docutils literal"><span class="pre">ref_habitat.cor_list_habitat</span></code> et <code class="docutils literal"><span class="pre">ref_habitat.bib_list_habitat</span></code>). Il est possible d’éditer cette liste directement den base de données, d’en créer une autre et de changer la liste utiliser par le module. Editer alors ce paramètre:</li>
+</ul>
+<p><code class="docutils literal"><span class="pre">ID_LIST_HABITAT</span> <span class="pre">=</span> <span class="pre">1</span></code></p>
+<ul class="simple">
+<li>Le formulaire permet de saisir des observateur basés sur le referentiel utilisateurs ( <code class="docutils literal"><span class="pre">false</span></code>) ou de les saisir en texte libre (<code class="docutils literal"><span class="pre">true</span></code>).</li>
+</ul>
+<p><code class="docutils literal"><span class="pre">OBSERVER_AS_TXT</span> <span class="pre">=</span> <span class="pre">false</span></code></p>
+<ul class="simple">
+<li>L’ensemble des champs du formulaire son masquables. Pour en masquer certains, passer à <code class="docutils literal"><span class="pre">false</span></code> les variables suivantes:</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">formConfig</span><span class="p">]</span>
+  <span class="n">date_min</span> <span class="o">=</span> <span class="n">true</span>
+  <span class="n">date_max</span> <span class="o">=</span> <span class="n">true</span>
+  <span class="n">depth_min</span> <span class="o">=</span> <span class="n">true</span>
+  <span class="n">depth_max</span> <span class="o">=</span> <span class="n">true</span>
+  <span class="n">altitude_min</span> <span class="o">=</span> <span class="n">true</span>
+  <span class="n">altitude_max</span> <span class="o">=</span> <span class="n">true</span>
+  <span class="n">exposure</span> <span class="o">=</span> <span class="n">true</span>
+  <span class="n">area</span> <span class="o">=</span> <span class="n">true</span>
+  <span class="n">comment</span> <span class="o">=</span> <span class="n">true</span>
+  <span class="n">area_surface_calculation</span> <span class="o">=</span> <span class="n">true</span>
+  <span class="n">geographic_object</span> <span class="o">=</span> <span class="n">true</span>
+  <span class="n">determination_type</span> <span class="o">=</span> <span class="n">true</span>
+  <span class="n">determiner</span> <span class="o">=</span> <span class="n">true</span>
+  <span class="n">collection_technique</span> <span class="o">=</span> <span class="n">true</span>
+  <span class="n">technical_precision</span> <span class="o">=</span> <span class="n">true</span>
+  <span class="n">recovery_percentage</span> <span class="o">=</span> <span class="n">true</span>
+  <span class="n">abundance</span> <span class="o">=</span> <span class="n">true</span>
+  <span class="n">community_interest</span> <span class="o">=</span> <span class="n">true</span>
+</pre></div>
+</div>
+<p>Voir le fichier <code class="docutils literal"><span class="pre">conf_gn_module.toml.example</span></code> qui liste l’ensemble des paramètres de configuration du module.</p>
+</div>
+</div>
+</div>
 <div class="section" id="module-synthese">
 <h2>Module SYNTHESE<a class="headerlink" href="#module-synthese" title="Permalink to this headline">¶</a></h2>
 <p>Le module Synthèse est un module du coeur de GeoNature, fourni par défaut lors de l’installation.</p>
-<div class="section" id="id1">
-<h3>Configuration<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id4">
+<h3>Configuration<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>L’ensemble des paramètres de configuration du module se trouve dans le fichier général de configuration de GeoNature <code class="docutils literal"><span class="pre">config/geonature_config.toml</span></code> puisqu’il s’agit d’un module du coeur.</p>
 <p><strong>1.</strong> Modifier les filtres géographiques disponibles par défaut dans l’interface de recherche.</p>
 <p>Editer la variable <code class="docutils literal"><span class="pre">AREA_FILTERS</span></code> en y ajoutant le label et l’ID du type d’entité géographique que vous souhaitez rajouter. Voir table <code class="docutils literal"><span class="pre">ref_geo.bib_areas_types</span></code>. Dans l’exemple on ajoute le type ZNIEFF1 (<code class="docutils literal"><span class="pre">id_type</span> <span class="pre">=</span> <span class="pre">3</span></code>). Attention, dans ce cas les entités géographiques correspondantes au type 3, doivent également être présentes dans la table <code class="docutils literal"><span class="pre">ref_geo.l_areas</span></code>.
@@ -1348,10 +1412,10 @@ Attention : Si des données sont déjà présentes dans la synthèse et que l’
 </ul>
 <p>Ces champs doivent impérativement être présents dans la vue, mais ne seront pas nécessairement dans le fichier d’export si ils ne figurent pas dans la variable <code class="docutils literal"><span class="pre">EXPORT_COLUMNS</span></code>. De manière générale, préférez rajouter des champs plutôt que d’en enlever !</p>
 <p>Le nom de ces champs peuvent cependant être modifié. Dans ce cas, modifiez le fichier <code class="docutils literal"><span class="pre">geonature_config.toml</span></code>, section <code class="docutils literal"><span class="pre">SYNTHESE</span></code> parmis les variables suivantes (<code class="docutils literal"><span class="pre">EXPORT_ID_SYNTHESE_COL,</span> <span class="pre">EXPORT_ID_DATASET_COL,</span> <span class="pre">EXPORT_ID_DIGITISER_COL,</span> <span class="pre">EXPORT_OBSERVERS_COL,</span> <span class="pre">EXPORT_GEOJSON_4326_COL,</span> <span class="pre">EXPORT_GEOJSON_LOCAL_COL</span></code>).</p>
-<p>NB: Lorsqu’on effectue une recherche dans la synthèse, on interroge la vue <code class="docutils literal"><span class="pre">gn_synthese.v_synthese_for_web_app</span></code>. L’interface web passe ensuite une liste d’<code class="docutils literal"><span class="pre">id_synthese</span></code> à la vue <a href="#id2"><span class="problematic" id="id3">``</span></a>gn_synthese.v_synthese_for_export``correspondant à la recherche précedemment effectuée (ce qui permet à cette seconde vue d’être totalement modifiable).</p>
+<p>NB: Lorsqu’on effectue une recherche dans la synthèse, on interroge la vue <code class="docutils literal"><span class="pre">gn_synthese.v_synthese_for_web_app</span></code>. L’interface web passe ensuite une liste d’<code class="docutils literal"><span class="pre">id_synthese</span></code> à la vue <a href="#id5"><span class="problematic" id="id6">``</span></a>gn_synthese.v_synthese_for_export``correspondant à la recherche précedemment effectuée (ce qui permet à cette seconde vue d’être totalement modifiable).</p>
 <p>La vue <code class="docutils literal"><span class="pre">gn_synthese.v_synthese_for_web_app</span></code> est taillée pour l’interface web, il ne faut donc PAS la modifier.</p>
 <p><strong>Export des métadonnées</strong></p>
-<p>En plus des observations brutes, il est possible d’effectuer un export des métadonnées associées à ses observations. L’export est au format CSV et est construit à partir de la table <code class="docutils literal"><span class="pre">gn_synthese.v_metadata_for_export</span></code>. Vous pouvez modifier le SQL de création de cette vue pour customiser votre export (niveau SQL avancé).</p>
+<p>En plus des observations brutes, il est possible d’effectuer un export des métadonnées associées aux observations. L’export est au format CSV et est construit à partir de la table <code class="docutils literal"><span class="pre">gn_synthese.v_metadata_for_export</span></code>. Vous pouvez modifier le SQL de création de cette vue pour customiser votre export (niveau SQL avancé).</p>
 <p>Deux champs sont cependant obligatoire dans la vue :</p>
 <ul class="simple">
 <li><code class="docutils literal"><span class="pre">jdd_id</span></code> (qui corespond à l’id du JDD de la table <code class="docutils literal"><span class="pre">gn_meta.t_datasets</span></code>). Le nom de ce champs est modifiable. Si vous le modifiez, éditez la variable <code class="docutils literal"><span class="pre">EXPORT_METADATA_ID_DATASET_COL</span></code>.</li>

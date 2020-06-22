@@ -231,11 +231,22 @@
 <ul class="simple">
 <li>Mettre à jour les sources-list (Debian uniquement) :</li>
 </ul>
-<p>A l’installation de l’OS, les sources-list (liste des sources à partir desquelles sont téléchargés les paquets) ne sont pas toujours correctes.</p>
+<p>A l’installation de l’OS, les sources-list (liste des sources à partir desquelles sont téléchargés les paquets) ne sont pas toujours adaptés. Pour Debian 10, les sources-list par défaut sont compatibles et il n’est donc pas nécessaire de les compléter.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">nano</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">apt</span><span class="o">/</span><span class="n">sources</span><span class="o">.</span><span class="n">list</span>
 </pre></div>
 </div>
 <p>Coller la liste des dépôts suivants :</p>
+<p>Pour Debian 10 :</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">deb</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">deb</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span> <span class="n">buster</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
+<span class="n">deb</span><span class="o">-</span><span class="n">src</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">deb</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span> <span class="n">buster</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
+
+<span class="n">deb</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">deb</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span><span class="o">-</span><span class="n">security</span><span class="o">/</span> <span class="n">buster</span><span class="o">/</span><span class="n">updates</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
+<span class="n">deb</span><span class="o">-</span><span class="n">src</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">deb</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span><span class="o">-</span><span class="n">security</span><span class="o">/</span> <span class="n">buster</span><span class="o">/</span><span class="n">updates</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
+
+<span class="n">deb</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">deb</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span> <span class="n">buster</span><span class="o">-</span><span class="n">updates</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
+<span class="n">deb</span><span class="o">-</span><span class="n">src</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">deb</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span> <span class="n">buster</span><span class="o">-</span><span class="n">updates</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
+</pre></div>
+</div>
 <p>Pour Debian 9 :</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">deb</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">security</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span><span class="o">-</span><span class="n">security</span> <span class="n">stretch</span><span class="o">/</span><span class="n">updates</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
 <span class="n">deb</span><span class="o">-</span><span class="n">src</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">security</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span><span class="o">-</span><span class="n">security</span> <span class="n">stretch</span><span class="o">/</span><span class="n">updates</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
@@ -243,12 +254,6 @@
 <span class="n">deb</span><span class="o">-</span><span class="n">src</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">deb</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span><span class="o">/</span> <span class="n">stretch</span><span class="o">-</span><span class="n">updates</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
 <span class="n">deb</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">deb</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span> <span class="n">stretch</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
 <span class="n">deb</span><span class="o">-</span><span class="n">src</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">deb</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span> <span class="n">stretch</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
-</pre></div>
-</div>
-<p>Pour Debian 8 :</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">deb</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">deb</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span><span class="o">/</span> <span class="n">jessie</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
-<span class="n">deb</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">security</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span> <span class="n">jessie</span><span class="o">/</span><span class="n">updates</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
-<span class="n">deb</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">deb</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span><span class="o">/</span> <span class="n">jessie</span><span class="o">-</span><span class="n">updates</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -285,7 +290,7 @@
 <ul class="simple">
 <li>Configuration de la locale du serveur</li>
 </ul>
-<p>Certains serveurs sont livrés sans “locale” (langue par défaut). Pour l’installation de GeoNature, il est necessaire de bien configurer la locale. Si la commande <code class="docutils literal"><span class="pre">locale</span></code> renvoie ceci:</p>
+<p>Certains serveurs sont livrés sans “locale” (langue par défaut). Pour l’installation de GeoNature, il est nécessaire de bien configurer la locale. Si la commande <code class="docutils literal"><span class="pre">locale</span></code> renvoie ceci :</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">LANG</span><span class="o">=</span><span class="n">fr_FR</span><span class="o">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
 <span class="n">LANGUAGE</span><span class="o">=</span><span class="n">fr_FR</span><span class="o">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
 <span class="n">LC_CTYPE</span><span class="o">=</span><span class="s2">&quot;fr_FR.UTF-8&quot;</span>
@@ -303,25 +308,28 @@
 <span class="n">LC_ALL</span><span class="o">=</span><span class="n">fr_FR</span><span class="o">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
 </pre></div>
 </div>
-<p>vous pouvez alors passer cette étape de configuration des locale.</p>
-<p>Exécuter la commande <code class="docutils literal"><span class="pre">dpkg-reconfigure</span> <span class="pre">locales</span></code>. Une fenêtre s’affiche dans votre console. Dans la liste déroulante, sélectionnez <code class="docutils literal"><span class="pre">fr_FR.UTF-8</span> <span class="pre">UTF-8</span></code> avec <code class="docutils literal"><span class="pre">Espace</span></code>, puis cliquez sur OK. Une 2ème fenêtre s’affiche avec une liste de locale activées (<code class="docutils literal"><span class="pre">fr_FR.UTF-8</span></code> doit être présent dans la liste), confirmez votre choix, en cliquant sur OK, puis attendez que la locale s’installe.</p>
-<p>Passer alors sur l’utilisateur <code class="docutils literal"><span class="pre">geonatureadmin</span></code>: <code class="docutils literal"><span class="pre">su</span> <span class="pre">geonatureadmin</span></code> et executer ensuite ces commandes:</p>
+<p>Vous pouvez alors passer cette étape de configuration des locales.</p>
+<p>Sinon exécuter la commande <code class="docutils literal"><span class="pre">dpkg-reconfigure</span> <span class="pre">locales</span></code>. Une fenêtre s’affiche dans votre console. Dans la liste déroulante, sélectionnez <code class="docutils literal"><span class="pre">fr_FR.UTF-8</span> <span class="pre">UTF-8</span></code> avec <code class="docutils literal"><span class="pre">Espace</span></code>, puis cliquez sur OK. Une 2ème fenêtre s’affiche avec une liste de locale activées (<code class="docutils literal"><span class="pre">fr_FR.UTF-8</span></code> doit être présent dans la liste), confirmez votre choix, en cliquant sur OK, puis attendez que la locale s’installe.</p>
+<p>Passer alors sur l’utilisateur <code class="docutils literal"><span class="pre">geonatureadmin</span></code> avec la commande <code class="docutils literal"><span class="pre">su</span> <span class="pre">geonatureadmin</span></code> et exécuter ensuite ces commandes :</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">LC_ALL</span><span class="o">=</span><span class="n">fr_FR</span><span class="o">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
 <span class="n">export</span> <span class="n">LANGUAGE</span><span class="o">=</span><span class="n">fr_FR</span><span class="o">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
 <span class="n">export</span> <span class="n">LANG</span><span class="o">=</span><span class="n">fr_FR</span><span class="o">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
 </pre></div>
 </div>
-<p>Pour la suite de la documentation et pour l’administration courante de GeoNature, <strong>on n’utilisera plus jamais l’utilisateur</strong> <code class="docutils literal"><span class="pre">root</span></code> (utiliser <cite>geonatureadmin</cite> dans l’exemple de la documentation. <code class="docutils literal"><span class="pre">su</span> <span class="pre">geonatureadmin</span></code> pour change d’utilisateur). Si besoin d’exécuter des commandes avec des droits d’administrateur, on les précède de <code class="docutils literal"><span class="pre">sudo</span></code>.</p>
-<p>Il est d’ailleurs possible de renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec <code class="docutils literal"><span class="pre">root</span></code>.</p>
+<p>Pour la suite de la documentation et pour l’administration courante de GeoNature, <strong>on n’utilisera plus jamais l’utilisateur</strong> <code class="docutils literal"><span class="pre">root</span></code> (utiliser <code class="docutils literal"><span class="pre">geonatureadmin</span></code> dans l’exemple de la documentation; <code class="docutils literal"><span class="pre">su</span> <span class="pre">geonatureadmin</span></code> pour change d’utilisateur). Si besoin d’exécuter des commandes avec des droits d’administrateur, on les précède de <code class="docutils literal"><span class="pre">sudo</span></code>.</p>
+<p>Il est d’ailleurs possible de renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec l’utilisateur <code class="docutils literal"><span class="pre">root</span></code>.</p>
 <p>Voir <a class="reference external" href="https://docs.ovh.com/fr/vps/conseils-securisation-vps/">https://docs.ovh.com/fr/vps/conseils-securisation-vps/</a> pour plus d’informations sur le sécurisation du serveur (port SSH, désactiver root, fail2ban, pare-feu, sauvegarde…).</p>
 <p>Il est aussi important de configurer l’accès au serveur en HTTPS plutôt qu’en HTTP pour crypter le contenu des échanges entre le navigateur et le serveur (<a class="reference external" href="https://docs.ovh.com/fr/hosting/les-certificats-ssl-sur-les-hebergements-web/">https://docs.ovh.com/fr/hosting/les-certificats-ssl-sur-les-hebergements-web/</a>).</p>
 <ul class="simple">
-<li>Récupérer les scripts d’installation (X.Y.Z à remplacer par le numéro de la <a class="reference external" href="https://github.com/PnEcrins/GeoNature/releases">dernière version stable de GeoNature</a>). Ces scripts installent les applications GeoNature, TaxHub et UsersHub (en option) ainsi que leurs bases de données (uniquement les schémas du coeur) :</li>
+<li>Se placer à la racine du <cite>home</cite> de l’utilisateur puis récupérer les scripts d’installation (X.Y.Z à remplacer par le numéro de la <a class="reference external" href="https://github.com/PnEcrins/GeoNature/releases">dernière version stable de GeoNature</a>). Ces scripts installent les applications GeoNature, TaxHub et UsersHub (en option) ainsi que leurs bases de données (uniquement les schémas du coeur) :</li>
 </ul>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">PnX</span><span class="o">-</span><span class="n">SI</span><span class="o">/</span><span class="n">GeoNature</span><span class="o">/</span><span class="n">X</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Z</span><span class="o">/</span><span class="n">install</span><span class="o">/</span><span class="n">install_all</span><span class="o">/</span><span class="n">install_all</span><span class="o">.</span><span class="n">ini</span>
-<span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">PnX</span><span class="o">-</span><span class="n">SI</span><span class="o">/</span><span class="n">GeoNature</span><span class="o">/</span><span class="n">X</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Z</span><span class="o">/</span><span class="n">install</span><span class="o">/</span><span class="n">install_all</span><span class="o">/</span><span class="n">install_all</span><span class="o">.</span><span class="n">sh</span>
-</pre></div>
-</div>
+<dl class="docutils">
+<dt>::</dt>
+<dd>cd ~
+wget <a class="reference external" href="https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.ini">https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.ini</a>
+wget <a class="reference external" href="https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.sh">https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.sh</a></dd>
+</dl>
+<p><em>Attention</em>: l’installation globale fonctionne uniquement si les scripts sont placés à la racine du <cite>home</cite> de l’utilisateur courant.</p>
 <ul class="simple">
 <li>Configurez votre installation en adaptant le fichier <code class="docutils literal"><span class="pre">install_all.ini</span></code> :</li>
 </ul>
@@ -398,13 +406,13 @@
 </div>
 <p>Lancez ensuite la commande <code class="docutils literal"><span class="pre">geonature</span> <span class="pre">install_gn_module</span> <span class="pre">&lt;mon_chemin_absolu_vers_le_module&gt;</span> <span class="pre">&lt;url_relative_du_module&gt;</span></code></p>
 <p>Le premier paramètre est l’emplacement absolu du module sur votre serveur et le deuxième est le chemin derrière lequel on accédera au module dans le navigateur.</p>
-<p>Exemple pour un module de validation :</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">geonature</span> <span class="n">install_gn_module</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">gn_module_validation</span> <span class="n">validation</span>
+<p>Exemple pour un module Import :</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">geonature</span> <span class="n">install_gn_module</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">gn_module_import</span> <span class="kn">import</span>
 </pre></div>
 </div>
-<p>Le module sera disponible à l’adresse <code class="docutils literal"><span class="pre">http://mon-geonature.fr/geonature/validation</span></code></p>
-<p>L’API du module sera disponible à l’adresse <code class="docutils literal"><span class="pre">http://mon-geonature.fr/api/geonature/validation</span></code></p>
-<p>Cette commande éxecute les actions suivantes :</p>
+<p>Le module sera disponible à l’adresse <code class="docutils literal"><span class="pre">http://mon-geonature.fr/geonature/#/validation</span></code></p>
+<p>L’API du module sera disponible à l’adresse <code class="docutils literal"><span class="pre">http://mon-geonature.fr/api/import</span></code></p>
+<p>Cette commande exécute les actions suivantes :</p>
 <ul class="simple">
 <li>Vérification de la conformité de la structure du module (présence des fichiers et dossiers obligatoires)</li>
 <li>Intégration du blueprint du module dans l’API de GeoNature</li>
