@@ -127,8 +127,6 @@ export class MapComponent implements OnInit {
 
     BASEMAP.forEach((basemap, index) => {
       const formatedBasemap = this.formatBaseMapConfig(basemap);
-      console.log(formatedBasemap);
-
       if (basemap.service === 'wms') {
         baseControl[formatedBasemap.name] = L.tileLayer.wms(
           formatedBasemap.url,
@@ -169,8 +167,6 @@ export class MapComponent implements OnInit {
   formatBaseMapConfig(baseMap) {
     // tslint:disable-next-line:forin
     for (let attr in baseMap) {
-      console.log(attr);
-
       if (attr === 'layer') {
         baseMap['url'] = baseMap[attr];
         delete baseMap['layer'];
