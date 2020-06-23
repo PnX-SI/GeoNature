@@ -22,8 +22,10 @@ class CasUserSchemaConf(Schema):
 
 class CasFrontend(Schema):
     CAS_AUTHENTIFICATION = fields.Boolean(missing="false")
-    CAS_URL_LOGIN = fields.Url(missing="https://preprod-inpn.mnhn.fr/auth/login")
-    CAS_URL_LOGOUT = fields.Url(missing="https://preprod-inpn.mnhn.fr/auth/logout")
+    CAS_URL_LOGIN = fields.Url(
+        missing="https://preprod-inpn.mnhn.fr/auth/login")
+    CAS_URL_LOGOUT = fields.Url(
+        missing="https://preprod-inpn.mnhn.fr/auth/logout")
 
 
 class CasSchemaConf(Schema):
@@ -169,7 +171,8 @@ id_municipality = BddConfig().load({}).data.get("id_area_type_municipality")
 
 class Synthese(Schema):
     AREA_FILTERS = fields.List(
-        fields.Dict, missing=[{"label": "Communes", "id_type": id_municipality}]
+        fields.Dict, missing=[
+            {"label": "Communes", "id_type": id_municipality}]
     )
     # Listes des champs renvoyés par l'API synthese '/synthese'
     # Si on veut afficher des champs personnalisés dans le frontend (paramètre LIST_COLUMNS_FRONTEND) il faut
@@ -179,8 +182,10 @@ class Synthese(Schema):
         fields.String, missing=DEFAULT_COLUMNS_API_SYNTHESE
     )
     # Colonnes affichées sur la liste des résultats de la sytnthese
-    LIST_COLUMNS_FRONTEND = fields.List(fields.Dict, missing=DEFAULT_LIST_COLUMN)
-    EXPORT_COLUMNS = fields.List(fields.String(), missing=DEFAULT_EXPORT_COLUMNS)
+    LIST_COLUMNS_FRONTEND = fields.List(
+        fields.Dict, missing=DEFAULT_LIST_COLUMN)
+    EXPORT_COLUMNS = fields.List(
+        fields.String(), missing=DEFAULT_EXPORT_COLUMNS)
     # Certaines colonnes sont obligatoires pour effectuer les filtres CRUVED
     EXPORT_ID_SYNTHESE_COL = fields.String(missing="idSynthese")
     EXPORT_ID_DATASET_COL = fields.String(missing="jddId")
@@ -228,26 +233,48 @@ cookie_expiration = GnPySchemaConf().load({}).data.get("COOKIE_EXPIRATION")
 BASEMAP = [
     {
         "name": "OpenStreetMap",
-        "layer": "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
-        "attribution": "&copy OpenStreetMap",
+        "url": "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+        "options": {
+            "attribution": "&copy OpenStreetMap",
+        }
     },
     {
         "name": "OpenTopoMap",
-        "layer": "//a.tile.opentopomap.org/{z}/{x}/{y}.png",
-        "attribution": "© OpenTopoMap",
+        "url": "//a.tile.opentopomap.org/{z}/{x}/{y}.png",
+        "options": {
+            "attribution": "© OpenTopoMap",
+        }
     },
     {
         "name": "GoogleSatellite",
         "layer": "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-        "subdomains": ["mt0", "mt1", "mt2", "mt3"],
-        "attribution": "© GoogleMap",
+        "options": {
+            "subdomains": ["mt0", "mt1", "mt2", "mt3"],
+            "attribution": "© GoogleMap",
+        }
+
     },
 ]
 
 
+class BaseMapConfig(Schema):
+    name = fields.String(required=True)
+    url = fields.String()
+    layer = fields.String()
+    options = fields.Dict()
+
+    @validates_schema
+    def validate_url_layer(self, data):
+        if data.get("url") is None and data.get('layer') is None:
+            raise ValidationError(
+                "Veuillez renseigner le paramètre 'url' ou 'layer' pour chaque fond de carte"
+            )
+
+
 class MapConfig(Schema):
-    BASEMAP = fields.List(fields.Dict, missing=BASEMAP)
-    CENTER = fields.List(fields.Float, missing=[46.52863469527167, 2.43896484375])
+    BASEMAP = fields.List(fields.Nested(BaseMapConfig, missing=BASEMAP))
+    CENTER = fields.List(fields.Float, missing=[
+                         46.52863469527167, 2.43896484375])
     ZOOM_LEVEL = fields.Integer(missing=6)
     ZOOM_LEVEL_RELEVE = fields.Integer(missing=15)
     # zoom appliqué sur la carte lorsque l'on clique sur une liste
@@ -261,7 +288,8 @@ class GnGeneralSchemaConf(Schema):
     LOGO_STRUCTURE_FILE = fields.String(missing="logo_structure.png")
     GEONATURE_VERSION = fields.String(missing=GEONATURE_VERSION.strip())
     DEFAULT_LANGUAGE = fields.String(missing="fr")
-    PASS_METHOD = fields.String(missing="hash", validate=OneOf(["hash", "md5"]))
+    PASS_METHOD = fields.String(
+        missing="hash", validate=OneOf(["hash", "md5"]))
     DEBUG = fields.Boolean(missing=False)
     URL_APPLICATION = fields.Url(required=True)
     API_ENDPOINT = fields.Url(required=True)
