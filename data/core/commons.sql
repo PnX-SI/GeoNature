@@ -438,12 +438,12 @@ CREATE TABLE t_mobile_apps(
   id_mobile_app serial,
   app_code character varying(30),
   relative_path_apk character varying(255),
-  url_apk character varying(255)
+  url_apk character varying(255),
+  package character varying(255),
+  version_code character varying(10)
 );
 
 COMMENT ON COLUMN t_mobile_apps.app_code IS 'Code de l''application mobile. Pas de FK vers t_modules car une application mobile ne correspond pas forcement à un module GN';
-
-
 
 ---------------
 --PRIMARY KEY--
@@ -469,7 +469,6 @@ ALTER TABLE ONLY t_modules
 
 ALTER TABLE ONLY t_mobile_apps
     ADD CONSTRAINT pk_t_moobile_apps PRIMARY KEY (id_mobile_app);
-
 
 ----------------
 --FOREIGN KEYS--
@@ -551,7 +550,7 @@ CREATE TRIGGER tri_insert_synthese_update_validation_status
 --DATAS--
 ---------
 
--- On ne défini pas d'id pour la PK, la séquence s'en charge
+-- On ne définit pas d'id pour la PK, la séquence s'en charge
 INSERT INTO bib_tables_location (table_desc, schema_name, table_name, pk_field, uuid_field_name) VALUES
 ('Regroupement de tous les médias de GeoNature', 'gn_commons', 't_medias', 'id_media', 'unique_id_media')
 ;
@@ -562,16 +561,14 @@ INSERT INTO t_parameters (id_organism, parameter_name, parameter_desc, parameter
 ,(0,'annee_ref_commune', 'Année du référentiel géographique des communes utilisé', '2017', NULL)
 ;
 
--- insertion du module parent à tous: GeoNature
+-- Insertion du module parent à tous : GeoNature
 INSERT INTO gn_commons.t_modules(id_module, module_code, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend, module_doc_url) VALUES
-(0, 'GEONATURE', 'GeoNature', '', 'Module parent de tous les modules sur lequel on peut associer un CRUVED. NB: mettre active_frontend et active_backend à false pour qu''il ne s''affiche pas dans la barre latérale des modules', '/geonature', '', '', FALSE, FALSE, 'https://geonature.readthedocs.io/fr/latest/user-manual.html')
+(0, 'GEONATURE', 'GeoNature', '', 'Module parent de tous les modules sur lequel on peut associer un CRUVED. NB: mettre active_frontend et active_backend à false pour qu''il ne s''affiche pas dans la barre latérale des modules', '/geonature', '', '', FALSE, FALSE, 'http://docs.geonature.fr/user-manual.html')
 ;
--- insertion du module Admin
+-- Insertion du module Admin
 INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module_desc, module_path, module_target, module_comment, active_frontend, active_backend, module_doc_url) VALUES
-('ADMIN', 'Admin', 'fa-cog', 'Backoffice de GeoNature', 'admin', '_self', 'Administration des métadonnées et des nomenclatures', TRUE, FALSE, 'https://geonature.readthedocs.io/fr/latest/user-manual.html#admin')
+('ADMIN', 'Admin', 'fa-cog', 'Backoffice de GeoNature', 'admin', '_self', 'Administration des métadonnées et des nomenclatures', TRUE, FALSE, 'http://docs.geonature.fr/user-manual.html#admin')
 ;
-
-
 
 ---------
 --VIEWS--
@@ -580,7 +577,7 @@ INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module
 CREATE VIEW gn_commons.v_meta_actions_on_object AS
 WITH insert_a AS (
 	SELECT
-		id_history_action, id_table_location, uuid_attached_row, operation_type, operation_date, (table_content -> 'id_digitiser')::text::int as id_creator
+		id_history_action, id_table_location, uuid_attached_row, operation_type, operation_date, (table_content ->> 'id_digitiser')::int as id_creator
 	FROM gn_commons.t_history_actions
 	WHERE operation_type = 'I'
 ),

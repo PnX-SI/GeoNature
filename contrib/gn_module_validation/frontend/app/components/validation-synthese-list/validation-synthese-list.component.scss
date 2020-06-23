@@ -79,6 +79,10 @@ ngx-datatable {
   // overflow:scroll;
 }
 
+:host /deep/ .datatable-body {
+  overflow-x: auto;
+}
+
 :host /deep/ .datatable-body-row {
   height: 30px !important;
   &.active .datatable-row-group {

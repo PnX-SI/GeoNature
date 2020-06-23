@@ -1,0 +1,192 @@
+<div class="container-fluid mt-4 ">
+  <div class="row">
+    <div class="col-xs-12 col-sm-6 col-lg-8">
+      <h3>CADRE D'ACQUISITION : {{af?.acquisition_framework_name}}</h3>
+    </div>
+    <div class="c col-xs-6 col-lg-4">
+      <button class="btn btn-secondary" routerLink="/metadata"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
+      </button>
+      <button class="btn btn-primary" (click)="getPdf()">Export PDF</button>
+    </div>
+  </div>
+  <br>
+  <!--div-- class=" row">
+    <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
+      <button class="btn btn-secondary" routerLink="/metadata"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
+      </button>
+    </div>
+  </!--div-->
+  <div class=" row">
+    <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+            <div class="col"><h5>Jeux de données</h5>
+              <br>
+              <div class="center">{{af?.stats?.nb_data}}</div>
+            </div>
+            <div class="col-auto" width="60"><img src="./assets/images/JDD_icon.svg" width="60"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="af?.stats?.nb_taxons > 0" class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+            <div class="col"><h5>Taxons</h5>
+              <br>
+              <div class="center">{{af?.stats?.nb_taxons}}</div>
+            </div>
+            <div class="col-auto" width="60"><img src="./assets/images/Taxon_icon.svg" width="60"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="af?.stats?.nb_habitats > 0" class="col-xs-6 col-sm-3 col-md-3 col-lg-3 ">
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+            <div class="col"><h5>Habitats</h5>
+              <br>
+              <div class="center">{{af?.stats?.nb_habitats}}</div>
+            </div>
+            <div class="col-auto" width="60"><img src="./assets/images/Habitat_icon.svg" width="60"></div>
+            </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="af?.stats?.nb_observations > 0 && af?.stats?.nb_taxons > 0"  class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+          <div class="col"><h5>Observations</h5>
+            <br>
+            <div class="center">{{af?.stats?.nb_observations}}</div>
+          </div>
+          <div class="col-auto" width="60"><img src="./assets/images/Donnee_icon.svg" width="60"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-8 col-lg-8">
+      <div class="card">
+        <div class="card-header">
+          <h5>
+            Fiche descriptive
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="b">Identification </div>
+          <div class="a"> Instance SNIP du cadre d'acquisition : {{af?.unique_acquisition_framework_id}}</div>
+          <div class="a"> Libellé du cadre d'acquisition : {{af?.acquisition_framework_name}}</div>
+          <br/>
+
+          <div class="b">Description </div>
+          <div class="a"> Cadre de réfèrence : {{af?.acquisition_framework_name}}</div>
+          <div class="a"> Est un méta-cadre : {{af?.is_parent ? 'Oui' : 'Non'}}</div>
+          <div class="a" *ngIf="af?.is_parent" > Identifiant du méta-cadre : {{af?.acquisition_framework_parent_id}}</div>
+          <br/>
+
+          <div class="b">Dates </div>
+          <div class="a"> Date de lancement du cadre d'acquisition : {{af?.acquisition_framework_start_date}}</div>
+          <div class="a"> Date de clôture du cadre d'acquisition : {{af?.acquisition_framework_end_date}}</div>
+          <br/>
+
+          <div *ngIf="af?.cor_objectifs">
+            <div class="b">Objectifs </div>
+            <div *ngFor="let objectif of af?.cor_objectifs" class="a"> {{ objectif?.mnemonique }} </div>
+            <br/>
+          </div>
+
+          <div>
+            <div class="b">Territoires concernés </div>
+            <div class="a"> Etendue territoriale : {{af?.id_nomenclature_territorial_level}}</div>
+            <!-- <div class="a"> Territoires : ??</div>
+            <div class="a"> Précision géographique : ??</div> -->
+            <br/>
+          </div>
+
+          <div *ngIf="af?.target_description" >
+            <div class="b">Cible taxonomique </div>
+            <div class="a"> Description : {{af?.target_description}}</div>
+            <br/>
+          </div>
+
+          <div *ngIf="af?.cor_af_actor" >
+            <div class="b">Acteurs </div>
+            <div class="a" *ngFor="let actor of af?.cor_af_actor">
+              <div> {{ actor?.nomenclature_actor_role?.mnemonique}} : {{ actor?.organism?.nom_organisme }} <span *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"> - </span> {{ actor?.role?.nom_complet }} </div>
+            </div>
+            <br/>
+          </div>
+
+          <div *ngIf="af?.keywords">
+            <div class="b">Mots-clés </div>
+            <div class="a"> {{af?.keywords}} </div>
+            <br/>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
+      <div class="card">
+        <div class="card-header">
+          <h5>
+            Zone géographique
+          </h5>
+          <div *ngIf="af?.stats?.nb_data > 0" class="card-body">
+            <pnx-map height="40vh" searchBar="false">
+              <pnx-geojson
+                [geojson]="af?.bbox"
+                [zoomOnFirstTime]="true"
+              >
+              </pnx-geojson>
+            </pnx-map>
+        </div>
+        </div>
+      </div>
+      <div class="card ">
+        <div class="card-header">
+          <h5>
+            Réparition des espèces
+          </h5>
+        </div>
+        <div *ngIf="this.pieChartLabels.length > 0 && af?.stats?.nb_data > 0"  class="card-body">
+          <div style="display: block">
+            <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
+                [colors]="pieChartColors" [options]="pieChartOptions" padding="20px">
+            </canvas>
+        </div>
+       </div>
+      </div>
+      <div class="card ">
+        <div class="card-header">
+          <h5>
+            Jeux de données associés
+          </h5>
+        </div>
+          <div *ngIf="af?.stats?.nb_data > 0"  class="card-body">
+            <table>
+              <tr *ngFor="let dataset of af?.datasets">
+                <td [ngSwitch]="dataset.data_type.cd_nomenclature">
+                  <img width="60" *ngSwitchCase="'1'" src="./assets/images/Taxon_icon_vert.svg" alt="">
+                  <img width="60" *ngSwitchCase="'2'" src="./assets/images/Habitat_icon_vert.svg" alt="">
+                  <img width="60" *ngSwitchDefault src="./assets/images/Taxon_icon_vert.svg" alt="">
+                </td>
+                <td> <a [routerLink]="['/metadata/dataset_detail', dataset?.id_dataset]" style="color:black">{{ dataset?.dataset_name }}</a>
+                  <div><small>{{dataset?.unique_dataset_id}}</small>
+                  </div>
+                </td>
+              </tr>
+            </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

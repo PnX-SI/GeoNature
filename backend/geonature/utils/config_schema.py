@@ -34,6 +34,10 @@ class CasSchemaConf(Schema):
     )
     CAS_USER_WS = fields.Nested(CasUserSchemaConf, missing=dict())
     USERS_CAN_SEE_ORGANISM_DATA = fields.Boolean(missing=False)
+    # Quel modules seront associés au JDD récupérés depuis MTD
+    JDD_MODULE_CODE_ASSOCIATION = fields.List(
+        fields.String, missing=["OCCTAX", "OCCHAB"]
+    )
 
 
 class BddConfig(Schema):
@@ -80,6 +84,7 @@ class UsersHubConfig(Schema):
 
 class ServerConfig(Schema):
     LOG_LEVEL = fields.Integer(missing=20)
+
 
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
 
@@ -206,6 +211,10 @@ class Synthese(Schema):
     DISPLAY_TAXON_TREE = fields.Boolean(missing=True)
     # rajoute le filtre sur l'observers_txt en ILIKE sur les portée 1 et 2 du CRUVED
     CRUVED_SEARCH_WITH_OBSERVER_AS_TXT = fields.Boolean(missing=False)
+    # Switch the observer form input in free text input (true) or in select input (false)
+    SEARCH_OBSERVER_WITH_LIST = fields.Boolean(missing=False)
+    # id of the observer list -- utilisateurs.t_menus
+    ID_SEARCH_OBSERVER_LIST = fields.Integer(missing=1)
     # Nombre max d'observation à afficher sur la carte
     NB_MAX_OBS_MAP = fields.Integer(missing=50000)
     # clusteriser les layers sur la carte
@@ -224,25 +233,46 @@ cookie_expiration = GnPySchemaConf().load({}).data.get("COOKIE_EXPIRATION")
 BASEMAP = [
     {
         "name": "OpenStreetMap",
-        "layer": "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
-        "attribution": "&copy OpenStreetMap",
+        "url": "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+        "options": {
+            "attribution": "&copy OpenStreetMap",
+        }
     },
     {
         "name": "OpenTopoMap",
-        "layer": "//a.tile.opentopomap.org/{z}/{x}/{y}.png",
-        "attribution": "© OpenTopoMap",
+        "url": "//a.tile.opentopomap.org/{z}/{x}/{y}.png",
+        "options": {
+            "attribution": "© OpenTopoMap",
+        }
     },
     {
         "name": "GoogleSatellite",
         "layer": "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-        "subdomains": ["mt0", "mt1", "mt2", "mt3"],
-        "attribution": "© GoogleMap",
+        "options": {
+            "subdomains": ["mt0", "mt1", "mt2", "mt3"],
+            "attribution": "© GoogleMap",
+        }
+
     },
 ]
 
 
+class BaseMapConfig(Schema):
+    name = fields.String(required=True)
+    url = fields.String()
+    layer = fields.String()
+    options = fields.Dict()
+
+    @validates_schema
+    def validate_url_layer(self, data):
+        if data.get("url") is None and data.get('layer') is None:
+            raise ValidationError(
+                "Veuillez renseigner le paramètre 'url' ou 'layer' pour chaque fond de carte"
+            )
+
+
 class MapConfig(Schema):
-    BASEMAP = fields.List(fields.Dict, missing=BASEMAP)
+    BASEMAP = fields.List(fields.Nested(BaseMapConfig, missing=BASEMAP))
     CENTER = fields.List(fields.Float, missing=[
                          46.52863469527167, 2.43896484375])
     ZOOM_LEVEL = fields.Integer(missing=6)
@@ -255,6 +285,7 @@ class MapConfig(Schema):
 # class a utiliser pour les paramètres que l'on veut passer au frontend
 class GnGeneralSchemaConf(Schema):
     appName = fields.String(missing="GeoNature2")
+    LOGO_STRUCTURE_FILE = fields.String(missing="logo_structure.png")
     GEONATURE_VERSION = fields.String(missing=GEONATURE_VERSION.strip())
     DEFAULT_LANGUAGE = fields.String(missing="fr")
     PASS_METHOD = fields.String(

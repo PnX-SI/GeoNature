@@ -13,6 +13,8 @@ ginco_data_table_name=model_592e825dab701_observation
 # code insee de la région des données Ginco (pour ref_geo GeoNature)
 code_insee_reg=34
 
+sql_dump_path=./path_to_sql_file.sql
+
 # Information de la base de donnée GeoNature cible
 geonature_db_name=geonature2db
 geonature_pg_user=geonatadmin

@@ -2,19 +2,107 @@
 CHANGELOG
 =========
 
-2.3.3 (Unreleased)
-------------------
-
-**🚀 Nouveautés**
-
-* Réécriture du trigger générique de calcul de l'altitude. N'est executé que si l'altitude n'est pas postée
-* Ajout d'un offset sur la route de la couleur des taxons
+2.4.1 (unreleased)
+------------------------------------------
 
 **🐛 Corrections**
 
+* 
+
+2.4.0 - Fiches de métadonnées (2020-06-22)
+------------------------------------------
+
+**🚀 Nouveautés**
+
+* Métadonnées : Ajout d'une fiche pour chaque jeu de données et cadres d'acquisition, incluant une carte de l'étendue des observations et un graphique de répartition des taxons par Groupe INPN (#846 par @FloVollmer)
+* Métadonnées : Possibilité d'exporter les fiches des JDD et des CA en PDF, générés par le serveur avec WeasyPrint. Logo et entêtes modifiables dans le dossier ``backend/static/images/`` (#882 par @FloVollmer)
+* Métadonnées : Implémentation du CRUVED sur la liste des CA et JDD (#911)
+* Métadonnées : Affichage de tous les CA des JDD pour lequels l'utilisateur connecté a des droits (#908)
+* Compatible avec TaxHub 1.7.0 qui inclut notamment la migration (optionnelle) vers Taxref version 13
+* Installation globale migrée de Taxref vesion 11 à 13
+* Synthèse et zonages : Ne pas inclure l'association aux zonages limitrophes d'une observation quand sa géométrie est égale à un zonage (maille, commune...) (#716 par @jbdesbas)
+* Synthèse : Ajout de la possibilité d'activer la recherche par observateur à travers une liste, avec ajout des paramètres ``SEARCH_OBSERVER_WITH_LIST`` (``False`` par défaut) et ``ID_SEARCH_OBSERVER_LIST`` (#834 par @jbrieuclp)
+* Synthèse : Amélioration de la recherche des observateurs. Non prise en compte de l'ordre des noms saisis (#834 par @jbrieuclp)
+* Synthèse : Ajout de filtres avancés (``Saisie par`` basé sur ``id_digitiser``, ``Commentaire`` du relevé et de l'occurrence, ``Déterminateur``) (#834 par @jbrieuclp)
+* Occtax : Création d'un trigger générique de calcul de l'altitude qui n'est exécuté que si l'altitude n'est pas postée (#848)
+* Ajout d'une table ``gn_commons.t_mobile_apps`` permettant de lister les applications mobiles, l'URL de leur APK et d'une API pour interroger le contenu de cette table. Les fichiers des applications et leurs fichiers de configurations peuvent être chargés dans le dossier ``backend/static/mobile`` (#852)
+* Ajout d'un offset et d'une limite sur la route de la couleur des taxons (utilisée uniquement par Occtax-mobile actuellement)
+* Support des fonds de carte au format WMS (https://leafletjs.com/reference-1.6.0.html#tilelayer-wms-l-tilelayer-wms), (#890 par @jbdesbas)
+* Ajout d'un champs texte ``reference_biblio`` dans la table ``gn_synthese``
+* Amélioration des perfomances du module de validation, en revoyant la vue ``gn_commons.v_synthese_validation_forwebapp``, en revoyant les requêtes et en générant le GeoJSON au niveau de la BDD (#923)
+* Ajout d'une fonction SQL d'insertion de données dans la synthese (et une fonction python associée)
+* Compléments de la documentation (Permissions des utilisateurs, Occhab...)
+* Ajout de scripts de migration des données de GINCO1 vers GeoNature (``data/scripts/import_ginco``)
+* Trigger Occtax vers Synthèse : Amélioration du formatage des heures avec ``date_trunc()`` dans la fonction ``pr_occtax.insert_in_synthese()`` (#896 par @jbdesbas)
+* Barre de navigation : Clarification de l'icône d'ouverture du menu, ajout d'un paramètre ``LOGO_STRUCTURE_FILE`` permettant de changer le nom du fichier du logo de l'application (#897 par @jbrieuclp)
+* Médias : Amélioration des fonctions backend
+* Mise à jour de jQuery en version 3.5.0
+* Suppression de la table ``gn_synthese.taxons_synthese_autocomplete`` et du trigger sur la Synthèse qui la remplissait pour utiliser la vue matérialisée ``taxonomie.vm_taxref_list_forautocomplete`` listant les noms de recherche de tous les taxons de Taxref, entièrement revue dans TaxHub 1.7.0
+* Monitoring : Correction du backend pour utiliser la nouvelle syntaxe de jointure des tables
+* Ajout de fonctions SQL d'insertion de données dans la Synthèse (``gn_synthese.import_json_row()`` et ``gn_synthese.import_row_from_table()``) et de la fonction Python associée (``import_from_table(schema_name, table_name, field_name, value)``) pour l'API permettant de poster dans la Synthèse (#736). Utilisée par le module Monitoring.
+* Ajout du plugin Leaflet.Deflate (#934  par @jpm-cbna)
+* Connexion au CAS INPN : Association des JDD aux modules Occtax et Occhab (paramétrable) quand on importe les JDD de l'utilisateur qui se connecte (dans la table ``gn_commons.cor_module_dataset``)
+* Mise à jour des librairies Python Utils-Flask-SQLAlchemy (en version 0.1.1) et Utils-Flask-SQLAlchemy-Geo (en version 0.1.0) permettant de mettre en place les exports au format GeoPackage et corrigeant les exports de SHP contenant des géométries multiples
+
+**🐛 Corrections**
+
+* Mise à jour des URL de la documentation utilisateur des modules, renvoyant vers http://docs.geonature.fr
+* Validation : Correction de l'ouverture de la fiche d'information d'une observation (#858)
+* Modification de l'attribution de la hauteur du composant ``map-container`` pour permettre d'adapter la hauteur de la carte si la hauteur d'un conteneur parent est modifié. Et que ``<pnx-map height="100%">`` fonctionne (#844 par @jbrieuclp)
+* Mise à jour de la librairie python Markupsafe en version 1.1, corrigeant un problème de setuptools (#881)
+* Page Maintenance : Correction de l'affichage de l'image (par @jpm-cbna)
+* Correction du multiselect du composant ``pnx-nomenclatures`` (#885 par @jpm-cbna)
+* Correction de l'``input('coordinates')`` du composant ``marker`` (#901 par @jbrieuclp)
+* Utilisation de NVM quand on installe les dépendances javascript (#926 par @jpm-cbna)
+* Formulaire JDD : Correction de l'affichage de la liste des modules (#861)
+* Correction de l'utilisation des paramètres du proxy (#944)
+
 **⚠️ Notes de version**
 
-* SQL d'update de la BDD...
+Si vous mettez à jour GeoNature.
+
+* Vous devez d'abord mettre à jour TaxHub en version 1.7.0
+* Si vous mettez à jour TaxHub, vous pouvez mettre à jour Taxref en version 13. Il est aussi possible de le faire en différé, plus tard
+* Vous pouvez mettre à jour UsersHub en version 2.1.2
+* Exécuter le script SQL de mise à jour des nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.2to1.3.3.sql). 
+* Si vous avez mis à jour Taxref en version, répercutez les évolutions au niveau des nomenclatures avec le script SQL https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update_taxref_v13.sql. Sinon vous devrez l'exécuter plus tard, après avoir mis à jour Taxref en version 13.
+* Exécuter le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.3.2to2.4.0.sql)
+* Installer les dépendances de la librairie Python WeasyPrint :
+
+::
+
+    sudo apt-get install -y libcairo2
+    sudo apt-get install -y libpango-1.0-0
+    sudo apt-get install -y libpangocairo-1.0-0
+    sudo apt-get install -y libgdk-pixbuf2.0-0
+    sudo apt-get install -y libffi-dev
+    sudo apt-get install -y shared-mime-info
+    
+* Corriger l'utilisation des paramètres du proxy (#944) dans le fichier ``backend/gunicorn_start.sh`` en remplaçant les 2 lignes :
+
+::
+
+    export HTTP_PROXY="'$proxy_http'"
+    export HTTPS_PROXY="'$proxy_https'"
+
+par :
+
+::
+
+    # Activation de la configuration des proxy si necessaire
+    [[ -z "$proxy_http" ]] || export HTTP_PROXY="'$proxy_http'"
+    [[ -z "$proxy_https" ]] || export HTTPS_PROXY="'$proxy_https'"
+
+* Vous pouvez supprimer les associations des observations de la synthèse aux zonages limitrophes, si vous n'avez pas d'observations sans géométrie (#719) :
+
+::
+
+    DELETE FROM gn_synthese.cor_area_synthese cas
+    USING gn_synthese.synthese s, ref_geo.l_areas a
+    WHERE cas.id_synthese = s.id_synthese AND a.id_area = cas.id_area
+    AND public.ST_TOUCHES(s.the_geom_local,a.geom);
+
+* Suivez ensuite la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 
 2.3.2 (2020-02-24)
 ------------------

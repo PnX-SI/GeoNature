@@ -123,11 +123,21 @@ export class MapComponent implements OnInit {
 
     L.control.zoom({ position: 'topright' }).addTo(map);
     const baseControl = {};
-    AppConfig.MAPCONFIG.BASEMAP.forEach((basemap, index) => {
-      const configObj = (basemap as any).subdomains
-        ? { attribution: basemap.attribution, subdomains: (basemap as any).subdomains }
-        : { attribution: basemap.attribution };
-      baseControl[basemap.name] = L.tileLayer(basemap.layer, configObj);
+    const BASEMAP = JSON.parse(JSON.stringify(AppConfig.MAPCONFIG.BASEMAP));
+
+    BASEMAP.forEach((basemap, index) => {
+      const formatedBasemap = this.formatBaseMapConfig(basemap);
+      if (basemap.service === 'wms') {
+        baseControl[formatedBasemap.name] = L.tileLayer.wms(
+          formatedBasemap.url,
+          formatedBasemap.options
+        );
+      } else {
+        baseControl[formatedBasemap.name] = L.tileLayer(
+          formatedBasemap.url,
+          formatedBasemap.options
+        );
+      }
       if (index === 0) {
         map.addLayer(baseControl[basemap.name]);
       }
@@ -138,6 +148,38 @@ export class MapComponent implements OnInit {
 
     this.mapService.setMap(map);
     this.mapService.initializeLeafletDrawFeatureGroup();
+  }
+
+  /** Retrocompatibility hack to format map config to the expected format:
+   * 
+   {
+    name: string,
+    url: string,
+    service?: wms|wmts|null
+    options?: {
+        layer?: string,
+        attribution?: string,
+        format?: string
+        [...]
+    }
+  }
+   */
+  formatBaseMapConfig(baseMap) {
+    // tslint:disable-next-line:forin
+    for (let attr in baseMap) {
+      if (attr === 'layer') {
+        baseMap['url'] = baseMap[attr];
+        delete baseMap['layer'];
+      }
+      if (!['url', 'layer', 'name', 'service', 'options'].includes(attr)) {
+        if (!baseMap['options']) {
+          baseMap['options'] = {};
+        }
+        baseMap['options'][attr] = baseMap[attr];
+        delete baseMap[attr];
+      }
+    }
+    return baseMap;
   }
 
   formatter(nominatim) {
