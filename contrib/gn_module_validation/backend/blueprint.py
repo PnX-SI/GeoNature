@@ -44,7 +44,6 @@ log = logging.getLogger()
 @permissions.check_cruved_scope("R", True, module_code="VALIDATION")
 @json_resp
 def get_synthese_data(info_role):
-
     """
     Return synthese and t_validations data filtered by form params
     Params must have same synthese fields names
@@ -57,7 +56,7 @@ def get_synthese_data(info_role):
         Information about the user asking the route. Auto add with kwargs
     truc (int): 
         essai
-    
+
 
     Returns
     -------
@@ -67,7 +66,8 @@ def get_synthese_data(info_role):
     """
 
     # try:
-    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
+    filters = {key: request.args.getlist(key)
+               for key, value in request.args.items()}
     for key, value in filters.items():
         if "," in value[0] and key != "geoIntersection":
             filters[key] = value[0].split(",")
@@ -106,7 +106,8 @@ def get_synthese_data(info_role):
     )
     validation_query_class = SyntheseQuery(VSyntheseValidation, query, filters)
     validation_query_class.filter_query_all_filters(info_role)
-    result = DB.engine.execute(validation_query_class.query.limit(result_limit))
+    result = DB.engine.execute(
+        validation_query_class.query.limit(result_limit))
 
     nb_total = 0
 
@@ -122,7 +123,6 @@ def get_synthese_data(info_role):
             "cd_nomenclature_validation_status": r["cd_nomenclature_validation_status"],
             "dataset_name": r["dataset_name"],
             "date_min": str(r["date_min"]),
-            "id_synthese": r["id_synthese"],
             "nom_vern_or_lb_nom": r["nom_vern"] if r["nom_vern"] else r["lb_nom"],
             "observers": r["observers"],
             "validation_auto": r["validation_auto"],
@@ -367,4 +367,3 @@ def get_validation_date(uuid):
             'INTERNAL SERVER ERROR ("get_validation_date(uuid) error"): contactez l\'administrateur du site',
             500,
         )
-
