@@ -4,7 +4,13 @@
 
 import os
 
-from marshmallow import Schema, fields, validates_schema, ValidationError, post_load
+from marshmallow import (
+    Schema,
+    fields,
+    validates_schema,
+    ValidationError,
+    post_load,
+)
 from marshmallow.validate import OneOf, Regexp, Email
 from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_EXPORT_COLUMNS,
@@ -247,22 +253,8 @@ BASEMAP = [
 ]
 
 
-class BaseMapConfig(Schema):
-    name = fields.String(required=True)
-    url = fields.String()
-    layer = fields.String()
-    options = fields.Dict()
-
-    @validates_schema
-    def validate_url_layer(self, data):
-        if data.get("url") is None and data.get("layer") is None:
-            raise ValidationError(
-                "Veuillez renseigner le paramètre 'url' ou 'layer' pour chaque fond de carte"
-            )
-
-
 class MapConfig(Schema):
-    BASEMAP = fields.List(fields.Nested(BaseMapConfig), missing=BASEMAP)
+    BASEMAP = fields.List(fields.Dict(), missing=BASEMAP)
     CENTER = fields.List(fields.Float, missing=[46.52863469527167, 2.43896484375])
     ZOOM_LEVEL = fields.Integer(missing=6)
     ZOOM_LEVEL_RELEVE = fields.Integer(missing=15)
