@@ -31,6 +31,6 @@ CREATE OR REPLACE FUNCTION ref_geo.fct_tri_calculate_geojson()
 
 DROP TRIGGER IF EXISTS tri_calculate_geojson ON ref_geo.l_areas;
 CREATE TRIGGER tri_calculate_geojson
-    BEFORE INSERT OR UPDATE OF geojson_4326 ON ref_geo.l_areas
+    BEFORE INSERT OR UPDATE OF geom ON ref_geo.l_areas
     FOR EACH ROW
     EXECUTE PROCEDURE ref_geo.fct_tri_calculate_geojson();
