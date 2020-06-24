@@ -46,6 +46,150 @@ $BODY$
   COST 100;
 
 
+CREATE OR REPLACE FUNCTION ref_geo.fct_tri_calculate_geojson() 
+   RETURNS trigger AS
+  $BODY$
+    BEGIN
+      NEW.geojson_4326 = public.ST_asgeojson(public.st_transform(NEW.geom, 4326));
+      RETURN NEW;
+    END;
+  $BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+CREATE OR REPLACE FUNCTION ref_geo.fct_get_altitude_intersection(IN mygeom public.geometry)
+  RETURNS TABLE(altitude_min integer, altitude_max integer) AS
+$BODY$
+DECLARE
+    thesrid int;
+    is_vectorized int;
+BEGIN
+  SELECT gn_commons.get_default_parameter('local_srid', NULL) INTO thesrid;
+  SELECT COALESCE(gid, NULL) FROM ref_geo.dem_vector LIMIT 1 INTO is_vectorized;
+
+  IF is_vectorized IS NULL THEN
+    -- Use dem
+    RETURN QUERY
+    SELECT min((altitude).val)::integer AS altitude_min, max((altitude).val)::integer AS altitude_max
+    FROM (
+	SELECT public.ST_DumpAsPolygons(public.ST_clip(
+    rast,
+    1,
+	  public.st_transform(myGeom,thesrid),
+    true)
+  ) AS altitude
+	FROM ref_geo.dem AS altitude
+	WHERE public.st_intersects(rast,public.st_transform(myGeom,thesrid))
+    ) AS a;
+  -- Use dem_vector
+  ELSE
+    RETURN QUERY
+    WITH d  as (
+        SELECT public.st_transform(myGeom,thesrid) a
+     )
+    SELECT min(val)::int as altitude_min, max(val)::int as altitude_max
+    FROM ref_geo.dem_vector, d
+    WHERE public.st_intersects(a,geom);
+  END IF;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100
+  ROWS 1000;
+
+
+CREATE OR REPLACE FUNCTION fct_get_area_intersection(
+  IN mygeom public.geometry,
+  IN myidtype integer DEFAULT NULL::integer)
+RETURNS TABLE(id_area integer, id_type integer, area_code character varying, area_name character varying) AS
+$BODY$
+DECLARE
+  isrid int;
+BEGIN
+  SELECT gn_commons.get_default_parameter('local_srid', NULL) INTO isrid;
+  RETURN QUERY
+  WITH d  as (
+      SELECT public.st_transform(myGeom,isrid) geom_trans
+  )
+  SELECT a.id_area, a.id_type, a.area_code, a.area_name
+  FROM ref_geo.l_areas a, d
+  WHERE public.st_intersects(geom_trans, a.geom)
+    AND (myIdType IS NULL OR a.id_type = myIdType)
+    AND enable=true;
+END;
+$BODY$
+LANGUAGE plpgsql VOLATILE
+COST 100
+ROWS 1000;
+
+
+CREATE OR REPLACE FUNCTION ref_geo.get_id_area_type(mytype character varying)
+  RETURNS integer AS
+$BODY$
+--Function which return the id_type_area from the type_code of an area type
+DECLARE theidtype character varying;
+  BEGIN
+SELECT INTO theidtype id_type FROM ref_geo.bib_areas_types WHERE type_code = mytype;
+return theidtype;
+  END;
+$BODY$
+  LANGUAGE plpgsql IMMUTABLE
+  COST 100;
+
+
+CREATE OR REPLACE FUNCTION ref_geo.fct_trg_calculate_alt_minmax()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+	the4326geomcol text := quote_ident(TG_ARGV[0]);
+  thelocalsrid int;
+BEGIN
+	-- si c'est un insert ou que c'est un UPDATE ET que le geom_4326 a été modifié
+	IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NOT public.ST_EQUALS(hstore(OLD)-> the4326geomcol, hstore(NEW)-> the4326geomcol))) THEN
+		--récupérer le srid local
+		SELECT INTO thelocalsrid parameter_value::int FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid';
+		--Calcul de l'altitude
+        SELECT (ref_geo.fct_get_altitude_intersection(st_transform(hstore(NEW)-> the4326geomcol,thelocalsrid))).*  INTO NEW.altitude_min, NEW.altitude_max ;
+
+	END IF;
+  RETURN NEW;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+
+CREATE OR REPLACE FUNCTION ref_geo.fct_trg_calculate_alt_minmax()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+DECLARE
+	the4326geomcol text := quote_ident(TG_ARGV[0]);
+  thelocalsrid int;
+BEGIN
+	-- si c'est un insert et que l'altitude min ou max est null -> on calcule
+	IF (TG_OP = 'INSERT' and (new.altitude_min IS NULL or new.altitude_max IS NULL)) THEN 
+		--récupérer le srid local
+		SELECT INTO thelocalsrid parameter_value::int FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid';
+		--Calcul de l'altitude
+		
+    SELECT (ref_geo.fct_get_altitude_intersection(st_transform(hstore(NEW)-> the4326geomcol,thelocalsrid))).*  INTO NEW.altitude_min, NEW.altitude_max;
+    -- si c'est un update et que la geom a changé
+  ELSIF (TG_OP = 'UPDATE' AND NOT public.ST_EQUALS(hstore(OLD)-> the4326geomcol, hstore(NEW)-> the4326geomcol)) then
+	 -- on vérifie que les altitude ne sont pas null 
+   -- OU si les altitudes ont changé, si oui =  elles ont déjà été calculés - on ne relance pas le calcul
+	   IF (new.altitude_min is null or new.altitude_max is null) OR (NOT OLD.altitude_min = NEW.altitude_min or NOT OLD.altitude_max = OLD.altitude_max) THEN 
+	   --récupérer le srid local	
+	   SELECT INTO thelocalsrid parameter_value::int FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid';
+		--Calcul de l'altitude
+        SELECT (ref_geo.fct_get_altitude_intersection(st_transform(hstore(NEW)-> the4326geomcol,thelocalsrid))).*  INTO NEW.altitude_min, NEW.altitude_max;
+	   end IF;
+	 else 
+	 END IF;
+  RETURN NEW;
+END;
+$function$
+;
 
 ----------------------
 --TABLES & SEQUENCES--
@@ -204,144 +348,11 @@ CREATE INDEX index_dem_vector_geom ON dem_vector USING gist (geom);
 CREATE TRIGGER tri_meta_dates_change_l_areas BEFORE INSERT OR UPDATE ON l_areas FOR EACH ROW EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 CREATE TRIGGER tri_meta_dates_change_li_municipalities BEFORE INSERT OR UPDATE ON li_municipalities FOR EACH ROW EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
-
--------------
---FUNCTIONS--
--------------
-CREATE OR REPLACE FUNCTION ref_geo.fct_get_altitude_intersection(IN mygeom public.geometry)
-  RETURNS TABLE(altitude_min integer, altitude_max integer) AS
-$BODY$
-DECLARE
-    thesrid int;
-    is_vectorized int;
-BEGIN
-  SELECT gn_commons.get_default_parameter('local_srid', NULL) INTO thesrid;
-  SELECT COALESCE(gid, NULL) FROM ref_geo.dem_vector LIMIT 1 INTO is_vectorized;
-
-  IF is_vectorized IS NULL THEN
-    -- Use dem
-    RETURN QUERY
-    SELECT min((altitude).val)::integer AS altitude_min, max((altitude).val)::integer AS altitude_max
-    FROM (
-	SELECT public.ST_DumpAsPolygons(public.ST_clip(
-    rast,
-    1,
-	  public.st_transform(myGeom,thesrid),
-    true)
-  ) AS altitude
-	FROM ref_geo.dem AS altitude
-	WHERE public.st_intersects(rast,public.st_transform(myGeom,thesrid))
-    ) AS a;
-  -- Use dem_vector
-  ELSE
-    RETURN QUERY
-    WITH d  as (
-        SELECT public.st_transform(myGeom,thesrid) a
-     )
-    SELECT min(val)::int as altitude_min, max(val)::int as altitude_max
-    FROM ref_geo.dem_vector, d
-    WHERE public.st_intersects(a,geom);
-  END IF;
-END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100
-  ROWS 1000;
-
-
-CREATE OR REPLACE FUNCTION fct_get_area_intersection(
-  IN mygeom public.geometry,
-  IN myidtype integer DEFAULT NULL::integer)
-RETURNS TABLE(id_area integer, id_type integer, area_code character varying, area_name character varying) AS
-$BODY$
-DECLARE
-  isrid int;
-BEGIN
-  SELECT gn_commons.get_default_parameter('local_srid', NULL) INTO isrid;
-  RETURN QUERY
-  WITH d  as (
-      SELECT public.st_transform(myGeom,isrid) geom_trans
-  )
-  SELECT a.id_area, a.id_type, a.area_code, a.area_name
-  FROM ref_geo.l_areas a, d
-  WHERE public.st_intersects(geom_trans, a.geom)
-    AND (myIdType IS NULL OR a.id_type = myIdType)
-    AND enable=true;
-END;
-$BODY$
-LANGUAGE plpgsql VOLATILE
-COST 100
-ROWS 1000;
-
-
-CREATE OR REPLACE FUNCTION ref_geo.get_id_area_type(mytype character varying)
-  RETURNS integer AS
-$BODY$
---Function which return the id_type_area from the type_code of an area type
-DECLARE theidtype character varying;
-  BEGIN
-SELECT INTO theidtype id_type FROM ref_geo.bib_areas_types WHERE type_code = mytype;
-return theidtype;
-  END;
-$BODY$
-  LANGUAGE plpgsql IMMUTABLE
-  COST 100;
-
-
-CREATE OR REPLACE FUNCTION ref_geo.fct_trg_calculate_alt_minmax()
-  RETURNS trigger AS
-$BODY$
-DECLARE
-	the4326geomcol text := quote_ident(TG_ARGV[0]);
-  thelocalsrid int;
-BEGIN
-	-- si c'est un insert ou que c'est un UPDATE ET que le geom_4326 a été modifié
-	IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NOT public.ST_EQUALS(hstore(OLD)-> the4326geomcol, hstore(NEW)-> the4326geomcol))) THEN
-		--récupérer le srid local
-		SELECT INTO thelocalsrid parameter_value::int FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid';
-		--Calcul de l'altitude
-        SELECT (ref_geo.fct_get_altitude_intersection(st_transform(hstore(NEW)-> the4326geomcol,thelocalsrid))).*  INTO NEW.altitude_min, NEW.altitude_max ;
-
-	END IF;
-  RETURN NEW;
-END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-
-
-CREATE OR REPLACE FUNCTION ref_geo.fct_trg_calculate_alt_minmax()
- RETURNS trigger
- LANGUAGE plpgsql
-AS $function$
-DECLARE
-	the4326geomcol text := quote_ident(TG_ARGV[0]);
-  thelocalsrid int;
-BEGIN
-	-- si c'est un insert et que l'altitude min ou max est null -> on calcule
-	IF (TG_OP = 'INSERT' and (new.altitude_min IS NULL or new.altitude_max IS NULL)) THEN 
-		--récupérer le srid local
-		SELECT INTO thelocalsrid parameter_value::int FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid';
-		--Calcul de l'altitude
-		
-    SELECT (ref_geo.fct_get_altitude_intersection(st_transform(hstore(NEW)-> the4326geomcol,thelocalsrid))).*  INTO NEW.altitude_min, NEW.altitude_max;
-    -- si c'est un update et que la geom a changé
-  ELSIF (TG_OP = 'UPDATE' AND NOT public.ST_EQUALS(hstore(OLD)-> the4326geomcol, hstore(NEW)-> the4326geomcol)) then
-	 -- on vérifie que les altitude ne sont pas null 
-   -- OU si les altitudes ont changé, si oui =  elles ont déjà été calculés - on ne relance pas le calcul
-	   IF (new.altitude_min is null or new.altitude_max is null) OR (NOT OLD.altitude_min = NEW.altitude_min or NOT OLD.altitude_max = OLD.altitude_max) THEN 
-	   --récupérer le srid local	
-	   SELECT INTO thelocalsrid parameter_value::int FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid';
-		--Calcul de l'altitude
-        SELECT (ref_geo.fct_get_altitude_intersection(st_transform(hstore(NEW)-> the4326geomcol,thelocalsrid))).*  INTO NEW.altitude_min, NEW.altitude_max;
-	   end IF;
-	 else 
-	 END IF;
-  RETURN NEW;
-END;
-$function$
-;
-
+DROP TRIGGER IF EXISTS tri_calculate_geojson ON ref_geo.l_areas;
+CREATE TRIGGER tri_calculate_geojson
+    BEFORE INSERT OR UPDATE OF geojson_4326 ON ref_geo.l_areas
+    FOR EACH ROW
+    EXECUTE PROCEDURE ref_geo.fct_tri_calculate_geojson();
 
 
 -- Fonction trigger pour conserver l'intégriter entre deux champs géom

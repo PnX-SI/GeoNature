@@ -258,9 +258,11 @@ then
         fi
         write_log "Insert departements"
         unzip tmp/geonature/departement_admin_express_2020-02.zip -d tmp/geonature
-        export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/geonature/fr_departements.sql  &>> var/log/install_db.log
-        export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/ref_geo_departements.sql  &>> var/log/install_db.log
-        
+
+        sudo -n -u postgres -s psql -d $db_name -f tmp/geonature/fr_departements.sql &>> var/log/install_db.log
+        write_log "Restore $user_pg owner"
+        sudo -n -u postgres -s psql -d $db_name -c "ALTER TABLE ref_geo.temp_fr_departements OWNER TO $user_pg;" &>> var/log/install_db.log
+        export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/ref_geo_departements.sql &>> var/log/install_db.log
         write_log "Drop french departements temp table"
         sudo -n -u postgres -s psql -d $db_name -c "DROP TABLE ref_geo.temp_fr_departements;" &>> var/log/install_db.log
     fi
@@ -270,7 +272,7 @@ then
         write_log "Insert INPN grids"
         if [ ! -f 'tmp/geonature/inpn_grids.zip' ]
         then
-            wget  --cache=off https://geonature.fr/data/inpn/layers/2019/inpn_grids.zip -P tmp/geonature
+            wget  --cache=off https://geonature.fr/data/inpn/layers/2020/inpn_grids.zip -P tmp/geonature
         else
             echo "tmp/geonature/inpn_grids.zip already exist"
         fi
@@ -375,9 +377,9 @@ fi
 echo "Cleaning files..."
 rm tmp/geonature/*.sql
 rm tmp/usershub/*.sql
-rm tmp/taxhub/*.txt
-rm tmp/taxhub/*.sql
+rm -r tmp/taxhub/TAXREF_INPN_v13
 rm tmp/taxhub/*.csv
+rm tmp/taxhub/*.sql
 rm tmp/habref/*.csv
 rm tmp/habref/*.pdf
 rm tmp/habref/*.sql

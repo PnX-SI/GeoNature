@@ -21,7 +21,7 @@ JOIN ref_geo.l_areas l ON l.area_code = cd_sig;
 
 
 INSERT INTO ref_geo.l_areas (id_type, area_code, area_name, geom, geojson_4326)
-SELECT ref_geo.get_id_area_type('M5') AS id_type, cd_sig, code5km,  geom 
+SELECT ref_geo.get_id_area_type('M5') AS id_type, cd_sig, code5km,  geom, geojson
 FROM ref_geo.temp_grids_5;
 
 INSERT INTO ref_geo.li_grids(id_grid, id_area, cxmin, cxmax, cymin, cymax)
