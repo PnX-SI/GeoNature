@@ -5,9 +5,19 @@ CHANGELOG
 2.4.1 (unreleased)
 ------------------------------------------
 
+* MAJ doc carto + MAJ example conf avec nouveau modèle de paramètres
+
 **🐛 Corrections**
 
-* 
+* Fix WMTS IGN
+* No-geom et import Départements
+* Import des communes février 2020 pour nouvelle installation
+
+**⚠️ Notes de version**
+
+* Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
+* Update SQL
+* .sh d'insertion des départements (optionnel)
 
 2.4.0 - Fiches de métadonnées (2020-06-22)
 ------------------------------------------
