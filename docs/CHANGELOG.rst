@@ -12,12 +12,15 @@ CHANGELOG
 * Fix WMTS IGN
 * No-geom et import Départements
 * Import des communes février 2020 pour nouvelle installation
+* Ajout d'une colonne `geojson` dans la table `ref_geo.l_areas`
 
 **⚠️ Notes de version**
 
+* Executer le script de migration SQL: https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.0to2.4.1.sql
+* Vous pouvez ensuite lancer le script d'insertion des départements dans le réferentiel géographique (optionnel): https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.0to2.4.1_insert_departments.sh
 * Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
-* Update SQL
-* .sh d'insertion des départements (optionnel)
+* Suivez ensuite la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
+
 
 2.4.0 - Fiches de métadonnées (2020-06-22)
 ------------------------------------------
