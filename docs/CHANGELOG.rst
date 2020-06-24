@@ -3,24 +3,28 @@ CHANGELOG
 =========
 
 2.4.1 (unreleased)
-------------------------------------------
+------------------
 
-* MAJ doc carto + MAJ example conf avec nouveau modèle de paramètres
+**🚀 Nouveautés**
+
+* Occurrences sans géométrie précise : Ajout d'un champs ``id_area_attachment`` dans la table ``gn_synthese.synthese`` permettant d'associer une observation à un zonage dans le référentiel géographique (``ref_geo.l_areas.id_area``) (#845 et #867)
+* Ajout d'un champs ``geojson_4326`` dans la table ``ref_geo.l_areas`` pour pouvoir afficher les zonages du référentiel géographique sur les cartes (#867)
+* Ajout de l'import par défaut des départements de France métropole dans le référentiel géographique lors de l'installation de GeoNature (en plus des actuelles communes et grilles 
+* Mise à jour des communes importées sur la version de février 2020 d'Admin express IGN pour nouvelle installation
 
 **🐛 Corrections**
 
-* Fix WMTS IGN
-* No-geom et import Départements
-* Import des communes février 2020 pour nouvelle installation
-* Ajout d'une colonne `geojson` dans la table `ref_geo.l_areas`
+* Correction d'un bug d'affichage des fonds de carte WMTS de l'IGN, apparu dans la version 2.4.0 avec l'ajout du support des fonds WMS (#890)
+* Gestion des exceptions de type ``FileNotFoundError`` lors de l'import des commandes d'un module
 
 **⚠️ Notes de version**
 
-* Executer le script de migration SQL: https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.0to2.4.1.sql
-* Vous pouvez ensuite lancer le script d'insertion des départements dans le réferentiel géographique (optionnel): https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.0to2.4.1_insert_departments.sh
-* Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
-* Suivez ensuite la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
+Si vous mettez à jour GeoNature :
 
+* Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
+* Exécuter le script SQL de mise à jour de la BDD de GeoNature : https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.0to2.4.1.sql
+* Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
+* Vous pouvez alors lancer le script d'insertion des départements de France métropole dans le réferentiel géographique (optionnel) : https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.0to2.4.1_insert_departments.sh. Vérifier le déroulement de l'import dans le fichier ``var/log/insert_departements.log```
 
 2.4.0 - Fiches de métadonnées (2020-06-22)
 ------------------------------------------
