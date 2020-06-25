@@ -25,7 +25,7 @@
     </ng-template>
 
     <!-- DATASET -->
-    <ng-container *ngIf="!dataset?.active; else elseblocDatasetForm">
+    <ng-container *ngIf="dataset?.active === false || !isDatasetUser(dataset?.id_dataset); else elseblocDatasetForm">
       <div class="dataset-inactive">
         <span style="display: block; font-size: 80%;"> {{ 'MetaData.Datasets' | translate }} </span>
         <span 
@@ -40,6 +40,7 @@
         label="{{ 'MetaData.Datasets' | translate }}" 
         [parentFormControl]="propertiesForm.get('id_dataset')"
         [disabled]="propertiesForm.disabled"
+        (valueLoaded)="userDatasets = $event.value"
         moduleCode="OCCTAX">
       </pnx-datasets>
     </ng-template>
