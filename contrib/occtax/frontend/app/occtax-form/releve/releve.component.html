@@ -25,20 +25,23 @@
     </ng-template>
 
     <!-- DATASET -->
-    <pnx-datasets 
-      *ngIf="dataset?.active || true; else elseblocDataset"
-      label="{{ 'MetaData.Datasets' | translate }}" 
-      [parentFormControl]="propertiesForm.get('id_dataset')"
-      [disabled]="propertiesForm.disabled"
-      moduleCode="OCCTAX">
-    </pnx-datasets>
-    <ng-template #elseblocDataset>
+    <ng-container *ngIf="!dataset?.active; else elseblocDatasetForm">
       <div class="dataset-inactive">
-        <small> {{ 'MetaData.Datasets' | translate }}:  </small>
-        <small>
-          <b> {{ dataset?.dataset_name}}</b>
-        </small> 
+        <span style="display: block; font-size: 80%;"> {{ 'MetaData.Datasets' | translate }} </span>
+        <span 
+          class="dataset-block"
+          matTooltip="Le jeu de donnée n'est pas modifiable"> 
+          {{ dataset?.dataset_name}} 
+        </span> 
       </div>
+    </ng-container>
+    <ng-template #elseblocDatasetForm>
+      <pnx-datasets 
+        label="{{ 'MetaData.Datasets' | translate }}" 
+        [parentFormControl]="propertiesForm.get('id_dataset')"
+        [disabled]="propertiesForm.disabled"
+        moduleCode="OCCTAX">
+      </pnx-datasets>
     </ng-template>
 
   </div>
