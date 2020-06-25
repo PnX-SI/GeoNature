@@ -29,6 +29,7 @@ export class ReleveComponent implements OnInit, OnDestroy {
   public occtaxConfig: any;
   private geojsonSubscription$: Subscription;
   public isEditionSub$: Subscription;
+  public userDatasets: Array<any> = [];
 
   constructor(
     private _ms: MapService,
@@ -110,6 +111,18 @@ export class ReleveComponent implements OnInit, OnDestroy {
             .properties as FormGroup).controls.hour_max.reset();
       });
   } // END INIT
+
+  isDatasetUser(id_dataset: number = null): boolean {
+    if (id_dataset === null) {
+      return true;
+    }
+    for (let i = 0; i < this.userDatasets.length; i++) {
+      if ( this.userDatasets[i].id_dataset == id_dataset )
+        return true;
+    }
+    
+    return false;
+  }
 
   toggleTime() {
     this.showTime = !this.showTime;

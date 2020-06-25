@@ -41,7 +41,7 @@
   <div class="row row-0">
     <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 padding-sm">
       <div 
-        *ngIf="fs.currentReleve?.releve?.properties?.dataset.active == false; else elseblocDataset"
+        *ngIf=" fs.currentReleve?.releve?.properties?.dataset.active === false || !isDatasetUser(fs.currentReleve?.releve?.properties?.dataset.id_dataset); else elseblocDataset"
         class="dataset-inactive">
         <small> {{ 'MetaData.Datasets' | translate }}:  </small>
         <small>
@@ -53,6 +53,7 @@
           label="{{ 'MetaData.Datasets' | translate }}" 
           [parentFormControl]="releveForm.controls.properties.controls.id_dataset"
           [disabled]="fs.disabled"
+          (valueLoaded)="userDatasets = $event.value"
           moduleCode="OCCTAX">
         </pnx-datasets>
       </ng-template>
