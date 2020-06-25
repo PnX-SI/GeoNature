@@ -9,7 +9,7 @@ CHANGELOG
 
 * Occurrences sans géométrie précise : Ajout d'un champs ``id_area_attachment`` dans la table ``gn_synthese.synthese`` permettant d'associer une observation à un zonage dans le référentiel géographique (``ref_geo.l_areas.id_area``) (#845 et #867)
 * Ajout d'un champs ``geojson_4326`` dans la table ``ref_geo.l_areas`` pour pouvoir afficher les zonages du référentiel géographique sur les cartes (#867)
-* Ajout de l'import par défaut des départements de France métropole dans le référentiel géographique lors de l'installation de GeoNature (en plus des actuelles communes et grilles 
+* Ajout de l'import par défaut des départements de France métropole dans le référentiel géographique lors de l'installation de GeoNature (en plus des actuelles communes et grilles)
 * Mise à jour des communes importées sur la version de février 2020 d'Admin express IGN pour les nouvelles installations
 
 **🐛 Corrections**
