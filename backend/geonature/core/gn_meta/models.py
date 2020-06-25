@@ -289,17 +289,12 @@ class TDatasets(CruvedHelper):
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=TNomenclatures.get_default_nomenclature("RESOURCE_TYP"),
     )
-    id_nomenclature_jdd_data_type = DB.Column(
-        DB.Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=TNomenclatures.get_default_nomenclature("JDD_DATA_TYPE"),
-    )
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
     active = DB.Column(DB.Boolean, default=True)
     validable = DB.Column(DB.Boolean)
 
-    modules = DB.relationship("TModules", secondary=cor_module_dataset)
+    modules = DB.relationship("TModules", secondary=cor_module_dataset, lazy="select")
 
     # HACK: the relationship is not well defined for many to many relationship
     # because CorDatasetActor could be an User or an Organisme object...
@@ -509,12 +504,6 @@ class TDatasetDetails(TDatasets):
         primaryjoin=(
             TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_resource_type
         ),
-    )
-    jdd_data_type = DB.relationship(
-        TNomenclatures,
-        primaryjoin=(
-            TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_jdd_data_type
-        )
     )
     acquisition_framework = DB.relationship(
         TAcquisitionFramework,

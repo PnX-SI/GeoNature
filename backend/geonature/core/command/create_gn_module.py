@@ -249,14 +249,3 @@ def update_module_configuration(module_code, build, prod):
     create_module_config(app, module_code.lower(), build=build)
 
 
-@main.command()
-@click.argument('module_path')
-def test(module_path):
-    import json
-    with open(module_path) as f:
-        package_json = json.load(f)
-        dependencies = package_json['dependencies']
-        print(dependencies)
-        for lib, version in dependencies.items():
-            print(lib)
-            print(version)

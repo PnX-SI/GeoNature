@@ -29,6 +29,10 @@ ngx-datatable {
   font-size: 12px;
 }
 
+:host /deep/ .datatable-body {
+  overflow-x: scroll;
+}
+
 ngx-datatable {
   box-shadow: none !important;
 }

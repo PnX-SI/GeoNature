@@ -577,7 +577,7 @@ INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module
 CREATE VIEW gn_commons.v_meta_actions_on_object AS
 WITH insert_a AS (
 	SELECT
-		id_history_action, id_table_location, uuid_attached_row, operation_type, operation_date, (table_content -> 'id_digitiser')::text::int as id_creator
+		id_history_action, id_table_location, uuid_attached_row, operation_type, operation_date, (table_content ->> 'id_digitiser')::int as id_creator
 	FROM gn_commons.t_history_actions
 	WHERE operation_type = 'I'
 ),

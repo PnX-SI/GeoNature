@@ -4,7 +4,13 @@
 
 import os
 
-from marshmallow import Schema, fields, validates_schema, ValidationError, post_load
+from marshmallow import (
+    Schema,
+    fields,
+    validates_schema,
+    ValidationError,
+    post_load,
+)
 from marshmallow.validate import OneOf, Regexp, Email
 from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_EXPORT_COLUMNS,
@@ -22,10 +28,8 @@ class CasUserSchemaConf(Schema):
 
 class CasFrontend(Schema):
     CAS_AUTHENTIFICATION = fields.Boolean(missing="false")
-    CAS_URL_LOGIN = fields.Url(
-        missing="https://preprod-inpn.mnhn.fr/auth/login")
-    CAS_URL_LOGOUT = fields.Url(
-        missing="https://preprod-inpn.mnhn.fr/auth/logout")
+    CAS_URL_LOGIN = fields.Url(missing="https://preprod-inpn.mnhn.fr/auth/login")
+    CAS_URL_LOGOUT = fields.Url(missing="https://preprod-inpn.mnhn.fr/auth/logout")
 
 
 class CasSchemaConf(Schema):
@@ -34,6 +38,10 @@ class CasSchemaConf(Schema):
     )
     CAS_USER_WS = fields.Nested(CasUserSchemaConf, missing=dict())
     USERS_CAN_SEE_ORGANISM_DATA = fields.Boolean(missing=False)
+    # Quel modules seront associés au JDD récupérés depuis MTD
+    JDD_MODULE_CODE_ASSOCIATION = fields.List(
+        fields.String, missing=["OCCTAX", "OCCHAB"]
+    )
 
 
 class BddConfig(Schema):
@@ -80,6 +88,7 @@ class UsersHubConfig(Schema):
 
 class ServerConfig(Schema):
     LOG_LEVEL = fields.Integer(missing=20)
+
 
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
 
@@ -165,8 +174,7 @@ id_municipality = BddConfig().load({}).data.get("id_area_type_municipality")
 
 class Synthese(Schema):
     AREA_FILTERS = fields.List(
-        fields.Dict, missing=[
-            {"label": "Communes", "id_type": id_municipality}]
+        fields.Dict, missing=[{"label": "Communes", "id_type": id_municipality}]
     )
     # Listes des champs renvoyés par l'API synthese '/synthese'
     # Si on veut afficher des champs personnalisés dans le frontend (paramètre LIST_COLUMNS_FRONTEND) il faut
@@ -176,10 +184,8 @@ class Synthese(Schema):
         fields.String, missing=DEFAULT_COLUMNS_API_SYNTHESE
     )
     # Colonnes affichées sur la liste des résultats de la sytnthese
-    LIST_COLUMNS_FRONTEND = fields.List(
-        fields.Dict, missing=DEFAULT_LIST_COLUMN)
-    EXPORT_COLUMNS = fields.List(
-        fields.String(), missing=DEFAULT_EXPORT_COLUMNS)
+    LIST_COLUMNS_FRONTEND = fields.List(fields.Dict, missing=DEFAULT_LIST_COLUMN)
+    EXPORT_COLUMNS = fields.List(fields.String(), missing=DEFAULT_EXPORT_COLUMNS)
     # Certaines colonnes sont obligatoires pour effectuer les filtres CRUVED
     EXPORT_ID_SYNTHESE_COL = fields.String(missing="idSynthese")
     EXPORT_ID_DATASET_COL = fields.String(missing="jddId")
@@ -205,6 +211,10 @@ class Synthese(Schema):
     DISPLAY_TAXON_TREE = fields.Boolean(missing=True)
     # rajoute le filtre sur l'observers_txt en ILIKE sur les portée 1 et 2 du CRUVED
     CRUVED_SEARCH_WITH_OBSERVER_AS_TXT = fields.Boolean(missing=False)
+    # Switch the observer form input in free text input (true) or in select input (false)
+    SEARCH_OBSERVER_WITH_LIST = fields.Boolean(missing=False)
+    # id of the observer list -- utilisateurs.t_menus
+    ID_SEARCH_OBSERVER_LIST = fields.Integer(missing=1)
     # Nombre max d'observation à afficher sur la carte
     NB_MAX_OBS_MAP = fields.Integer(missing=50000)
     # clusteriser les layers sur la carte
@@ -223,27 +233,28 @@ cookie_expiration = GnPySchemaConf().load({}).data.get("COOKIE_EXPIRATION")
 BASEMAP = [
     {
         "name": "OpenStreetMap",
-        "layer": "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
-        "attribution": "&copy OpenStreetMap",
+        "url": "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+        "options": {"attribution": "&copy OpenStreetMap",},
     },
     {
         "name": "OpenTopoMap",
-        "layer": "//a.tile.opentopomap.org/{z}/{x}/{y}.png",
-        "attribution": "© OpenTopoMap",
+        "url": "//a.tile.opentopomap.org/{z}/{x}/{y}.png",
+        "options": {"attribution": "© OpenTopoMap",},
     },
     {
         "name": "GoogleSatellite",
         "layer": "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-        "subdomains": ["mt0", "mt1", "mt2", "mt3"],
-        "attribution": "© GoogleMap",
+        "options": {
+            "subdomains": ["mt0", "mt1", "mt2", "mt3"],
+            "attribution": "© GoogleMap",
+        },
     },
 ]
 
 
 class MapConfig(Schema):
-    BASEMAP = fields.List(fields.Dict, missing=BASEMAP)
-    CENTER = fields.List(fields.Float, missing=[
-                         46.52863469527167, 2.43896484375])
+    BASEMAP = fields.List(fields.Dict(), missing=BASEMAP)
+    CENTER = fields.List(fields.Float, missing=[46.52863469527167, 2.43896484375])
     ZOOM_LEVEL = fields.Integer(missing=6)
     ZOOM_LEVEL_RELEVE = fields.Integer(missing=15)
     # zoom appliqué sur la carte lorsque l'on clique sur une liste
@@ -257,8 +268,7 @@ class GnGeneralSchemaConf(Schema):
     LOGO_STRUCTURE_FILE = fields.String(missing="logo_structure.png")
     GEONATURE_VERSION = fields.String(missing=GEONATURE_VERSION.strip())
     DEFAULT_LANGUAGE = fields.String(missing="fr")
-    PASS_METHOD = fields.String(
-        missing="hash", validate=OneOf(["hash", "md5"]))
+    PASS_METHOD = fields.String(missing="hash", validate=OneOf(["hash", "md5"]))
     DEBUG = fields.Boolean(missing=False)
     URL_APPLICATION = fields.Url(required=True)
     API_ENDPOINT = fields.Url(required=True)

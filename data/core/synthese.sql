@@ -119,6 +119,7 @@ BEGIN
 END;
 $$;
 
+
 ------------------------
 --TABLES AND SEQUENCES--
 ------------------------
@@ -174,6 +175,7 @@ CREATE TABLE synthese (
     the_geom_4326 public.geometry(Geometry,4326),
     the_geom_point public.geometry(Point,4326),
     the_geom_local public.geometry(Geometry,MYLOCALSRID),
+    id_area_attachment integer,
     date_min timestamp without time zone NOT NULL,
     date_max timestamp without time zone NOT NULL,
     validator character varying(1000),
@@ -205,6 +207,8 @@ COMMENT ON COLUMN gn_synthese.synthese.comment_context
   IS 'Commentaire du releve (ou regroupement)';
 COMMENT ON COLUMN gn_synthese.synthese.comment_description
   IS 'Commentaire de l''occurrence';
+COMMENT ON COLUMN gn_synthese.synthese.id_area_attachment
+  IS 'Id area du rattachement géographique - cas des observation sans géométrie précise';
 
 CREATE SEQUENCE synthese_id_synthese_seq
     START WITH 1
@@ -336,6 +340,10 @@ ALTER TABLE ONLY synthese
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_digitiser FOREIGN KEY (id_digitiser) REFERENCES utilisateurs.t_roles (id_role) ON UPDATE CASCADE;
 
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_area_attachment FOREIGN KEY (id_area_attachment) REFERENCES ref_geo.l_areas (id_area) ON UPDATE CASCADE;
+
+
 
 ALTER TABLE ONLY cor_area_synthese
     ADD CONSTRAINT fk_cor_area_synthese_id_synthese FOREIGN KEY (id_synthese) REFERENCES synthese(id_synthese) ON UPDATE CASCADE ON DELETE CASCADE;
@@ -436,7 +444,7 @@ ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_source_status CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_source_status,'STATUT_SOURCE')) NOT VALID;
 
 ALTER TABLE synthese
-  ADD CONSTRAINT check_synthese_info_geo_type CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_info_geo_type,'TYP_INF_GEO')) NOT VALID;
+  ADD CONSTRAINT check_synthese_info_geo_type_id_area_attachment CHECK (NOT (ref_nomenclatures.get_cd_nomenclature(id_nomenclature_info_geo_type) = '2'  AND id_area_attachment IS NULL )) NOT VALID;
 
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT check_gn_synthese_defaults_nomenclatures_value_is_nomenclature_in_type CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature, mnemonique_type)) NOT VALID;
@@ -604,7 +612,8 @@ $BODY$
 	      s.id_synthese AS id_synthese,
         a.id_area AS id_area
         FROM ref_geo.l_areas a
-        JOIN gn_synthese.synthese s ON public.ST_INTERSECTS(s.the_geom_local, a.geom)
+        JOIN gn_synthese.synthese s 
+        	ON public.ST_INTERSECTS(s.the_geom_local, a.geom)  AND NOT public.ST_TOUCHES(s.the_geom_local,a.geom)
         WHERE s.id_synthese = NEW.id_synthese AND a.enable IS true;
     END IF;
   RETURN NULL;
@@ -1177,19 +1186,36 @@ $BODY$
 
 
 CREATE OR REPLACE FUNCTION gn_synthese.import_row_from_table(
-  select_col_name varchar,
-  select_col_val varchar,
-  table_name varchar
-)
-RETURNS boolean AS
+    select_col_name character varying,
+    select_col_val character varying,
+    tbl_name character varying)
+  RETURNS boolean AS
 $BODY$
-  DECLARE
-    select_sql text;
-    import_rec record;
-  BEGIN
+DECLARE
+  select_sql text;
+  import_rec record;
+BEGIN
+
+  --test que la table/vue existe bien
+  --42P01 	undefined_table
+  IF EXISTS (
+      SELECT 1 FROM information_schema.tables t  WHERE t.table_schema ||'.'|| t.table_name = tbl_name
+  ) IS FALSE THEN
+      RAISE 'Undefined table: %', tbl_name USING ERRCODE = '42P01';
+	END IF ;
+
+  --test que la colonne existe bien
+  --42703 	undefined_column
+  IF EXISTS (
+      SELECT * FROM information_schema.columns  t  WHERE  t.table_schema ||'.'|| t.table_name = tbl_name AND column_name = select_col_name
+  ) IS FALSE THEN
+      RAISE 'Undefined column: %', select_col_name USING ERRCODE = '42703';
+	END IF ;
+
+
     -- TODO transtypage en text pour des questions de généricité. A réflechir
     select_sql := 'SELECT row_to_json(c)::jsonb d
-        FROM ' || table_name || ' c
+        FROM ' || tbl_name || ' c
         WHERE ' ||  select_col_name|| '::text = ''' || select_col_val || '''' ;
 
     FOR import_rec IN EXECUTE select_sql LOOP
