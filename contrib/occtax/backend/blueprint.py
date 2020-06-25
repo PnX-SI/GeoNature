@@ -44,7 +44,6 @@ from .repositories import (
 from .schemas import (
     OccurrenceSchema,
     ReleveCruvedSchema,
-    GeojsonReleveSchema,
     ReleveSchema
 )
 from .utils import get_nomenclature_filters
@@ -175,7 +174,6 @@ def getOneCounting(id_counting):
 
 @blueprint.route("/releve/<int:id_releve>", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="OCCTAX")
-#@json_resp
 def getOneReleve(id_releve, info_role):
     """
     Get one releve
@@ -502,13 +500,7 @@ def updateReleve(id_releve, info_role):
 
     """
     #get releve by id_releve
-    q = DB.session.query(TRelevesOccurrence)
-
-    try:
-        releve = q.get(id_releve)
-    except Exception as e:
-        DB.session.rollback()
-        raise
+    releve = DB.session.query(TRelevesOccurrence).get(id_releve)
 
     if not releve:
         return {"message": "not found"}, 404
@@ -592,7 +584,7 @@ def updateOccurrence(id_occurrence, info_role):
 
     if not occurrence:
         return {"message": "not found"}, 404
-        
+
     return OccurrenceSchema().dump(occurrenceHandler(request=request, occurrence=occurrence, info_role=info_role))
 
 
