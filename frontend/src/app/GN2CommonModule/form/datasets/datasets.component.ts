@@ -6,7 +6,7 @@ import {
   IterableDiffer
 } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { DataFormService } from '../data-form.service';
 import { AppConfig } from '../../../../conf/app.config';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
@@ -93,7 +93,9 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit {
                                     this._commonService.translateToaster('warning', 'MetaData.NoJDD');
                                   }
                                 }
-                              })
+                              }
+                            ),
+                            tap(datasets=>this.valueLoaded.emit({ value: datasets }))
                           );
   }
 }

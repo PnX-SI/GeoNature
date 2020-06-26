@@ -445,8 +445,6 @@ CREATE TABLE t_mobile_apps(
 
 COMMENT ON COLUMN t_mobile_apps.app_code IS 'Code de l''application mobile. Pas de FK vers t_modules car une application mobile ne correspond pas forcement à un module GN';
 
-
-
 ---------------
 --PRIMARY KEY--
 ---------------
@@ -471,7 +469,6 @@ ALTER TABLE ONLY t_modules
 
 ALTER TABLE ONLY t_mobile_apps
     ADD CONSTRAINT pk_t_moobile_apps PRIMARY KEY (id_mobile_app);
-
 
 ----------------
 --FOREIGN KEYS--
@@ -553,7 +550,7 @@ CREATE TRIGGER tri_insert_synthese_update_validation_status
 --DATAS--
 ---------
 
--- On ne défini pas d'id pour la PK, la séquence s'en charge
+-- On ne définit pas d'id pour la PK, la séquence s'en charge
 INSERT INTO bib_tables_location (table_desc, schema_name, table_name, pk_field, uuid_field_name) VALUES
 ('Regroupement de tous les médias de GeoNature', 'gn_commons', 't_medias', 'id_media', 'unique_id_media')
 ;
@@ -573,8 +570,6 @@ INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module
 ('ADMIN', 'Admin', 'fa-cog', 'Backoffice de GeoNature', 'admin', '_self', 'Administration des métadonnées et des nomenclatures', TRUE, FALSE, 'http://docs.geonature.fr/user-manual.html#admin')
 ;
 
-
-
 ---------
 --VIEWS--
 ---------
@@ -582,7 +577,7 @@ INSERT INTO gn_commons.t_modules(module_code, module_label, module_picto, module
 CREATE VIEW gn_commons.v_meta_actions_on_object AS
 WITH insert_a AS (
 	SELECT
-		id_history_action, id_table_location, uuid_attached_row, operation_type, operation_date, (table_content -> 'id_digitiser')::text::int as id_creator
+		id_history_action, id_table_location, uuid_attached_row, operation_type, operation_date, (table_content ->> 'id_digitiser')::int as id_creator
 	FROM gn_commons.t_history_actions
 	WHERE operation_type = 'I'
 ),

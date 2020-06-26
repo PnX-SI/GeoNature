@@ -21,10 +21,18 @@ from geonature.core.gn_meta.models import (
     TAcquisitionFramework,
     CorAcquisitionFrameworkActor,
 )
+from geonature.core.gn_commons.models import TModules
 
 
 namespace = current_app.config["XML_NAMESPACE"]
 api_endpoint = current_app.config["MTD_API_ENDPOINT"]
+
+NOMENCLATURE_MAPPING = {
+    "id_nomenclature_data_type": "DATA_TYP",
+    "id_nomenclature_dataset_objectif": "JDD_OBJECTIFS",
+    "id_nomenclature_data_origin": "DS_PUBLIQUE",
+    "id_nomenclature_source_status": "STATUT_SOURCE",
+}
 
 # get the root logger
 log = logging.getLogger()
@@ -135,6 +143,7 @@ def parse_jdd_xml(xml):
         dataset_desc = get_tag_content(jdd, "description", default_value="")
         terrestrial_domain = get_tag_content(jdd, "domaineTerrestre")
         marine_domain = get_tag_content(jdd, "domaineMarin")
+        data_type = get_tag_content(jdd, "typeDonnees")
 
         current_jdd = {
             "unique_dataset_id": jdd_uuid,
@@ -144,6 +153,7 @@ def parse_jdd_xml(xml):
             "dataset_desc": dataset_desc,
             "terrestrial_domain": json.loads(terrestrial_domain),
             "marine_domain": json.loads(marine_domain),
+            "id_nomenclature_data_type": data_type,
         }
 
         jdd_list.append(current_jdd)
@@ -249,12 +259,24 @@ def post_acquisition_framework(uuid=None, id_user=None, id_organism=None):
     return {"message": "Not found"}, 404
 
 
+def add_dataset_module(dataset_obj):
+    if not dataset_obj.modules:
+        dataset_obj.modules.extend(
+            DB.session.query(TModules)
+            .filter(
+                TModules.module_code.in_(
+                    current_app.config["CAS"]["JDD_MODULE_CODE_ASSOCIATION"]
+                )
+            )
+            .all()
+        )
+
+
 def post_jdd_from_user(id_user=None, id_organism=None):
     """ Post a jdd from the mtd XML"""
     xml_jdd = None
     xml_jdd = get_jdd_by_user_id(id_user)
     dataset_list_model = []
-
     if xml_jdd:
         dataset_list = parse_jdd_xml(xml_jdd)
         posted_af_uuid = {}
@@ -279,8 +301,15 @@ def post_jdd_from_user(id_user=None, id_organism=None):
             # get the id of the dataset to check if exists
             id_dataset = TDatasets.get_id(ds["unique_dataset_id"])
             ds["id_dataset"] = id_dataset
+            # search nomenclature
+            for key, value in ds.items():
+                if key.startswith("id_nomenclature"):
+                    ds[key] = func.ref_nomenclatures.get_id_nomenclature(
+                        NOMENCLATURE_MAPPING.get(key), value
+                    )
+            #  set validable = true
+            ds["validable"] = True
             dataset = TDatasets(**ds)
-
             # if the dataset already exist
             if id_dataset:
                 # check if actor exist:
@@ -318,7 +347,7 @@ def post_jdd_from_user(id_user=None, id_organism=None):
                             ),
                         )
                         dataset.cor_dataset_actor.append(actor)
-
+                add_dataset_module(dataset)
                 # finnaly merge
                 DB.session.merge(dataset)
             # if not dataset already in database
@@ -339,15 +368,15 @@ def post_jdd_from_user(id_user=None, id_organism=None):
                         ),
                     )
                     dataset.cor_dataset_actor.append(actor)
-
+                add_dataset_module(dataset)
                 DB.session.add(dataset)
 
         try:
             DB.session.commit()
+            DB.session.flush()
             dataset_list_model.append(dataset)
         except SQLAlchemyError as e:
-            DB.session.commit()
-            DB.session.flush()
+            DB.session.rollback()
             error_msg = """
             Error posting JDD {} \n\n Trace: \n {}
             """.format(

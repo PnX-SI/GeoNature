@@ -27,7 +27,6 @@ from pypnusershub.db.tools import InsufficientRightsError
 from utils_flask_sqla_geo.generic import GenericTableGeo
 from utils_flask_sqla.generic import testDataType
 
-
 from geonature.utils import filemanager
 from .models import (
     TRelevesOccurrence,
@@ -41,6 +40,11 @@ from .repositories import (
     ReleveRepository,
     get_query_occtax_filters,
     get_query_occtax_order,
+)
+from .schemas import (
+    OccurrenceSchema,
+    ReleveCruvedSchema,
+    ReleveSchema
 )
 from .utils import get_nomenclature_filters
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, csv_resp, json_resp
@@ -170,7 +174,6 @@ def getOneCounting(id_counting):
 
 @blueprint.route("/releve/<int:id_releve>", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="OCCTAX")
-@json_resp
 def getOneReleve(id_releve, info_role):
     """
     Get one releve
@@ -182,16 +185,29 @@ def getOneReleve(id_releve, info_role):
     :returns: Return a releve with its attached Cruved
     :rtype: `dict{'releve':<TRelevesOccurrence>, 'cruved': Cruved}` 
     """
-    releve_repository = ReleveRepository(TRelevesOccurrence)
-    releve_model, releve_geojson = releve_repository.get_one(
-        id_releve, info_role)
+    releveCruvedSchema = ReleveCruvedSchema()
+
+    releve = DB.session.query(TRelevesOccurrence).get(id_releve)
+
+    if not releve:
+        raise NotFound('The releve "{}" does not exist'.format(id_releve))
+    # check if the user is autorized
+    releve = releve.get_releve_if_allowed(info_role)
+
     user_cruved = get_or_fetch_user_cruved(
         session=session, id_role=info_role.id_role, module_code="OCCTAX"
     )
-    dataset = DB.session.query(TDatasets).get(releve_model.id_dataset)
-    releve_geojson["properties"]["dataset"] = dataset.as_dict()
-    releve_cruved = releve_model.get_releve_cruved(info_role, user_cruved)
-    return {"releve": releve_geojson, "cruved": releve_cruved}
+
+    releve_cruved = {
+        "releve": {
+            "properties": releve,
+            "id": releve.id_releve_occtax,
+            "geometry": releve.geom_4326
+        },
+        "cruved": releve.get_releve_cruved(info_role, user_cruved)
+    }
+
+    return releveCruvedSchema.dump(releve_cruved)
 
 
 @blueprint.route("/vreleveocctax", methods=["GET"])
@@ -259,8 +275,9 @@ def getViewReleveOccurrence(info_role):
 @blueprint.route("/releve", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="OCCTAX")
 @json_resp
-def createReleve(info_role):
+def insertOrUpdateOneReleve(info_role):
     """
+    Route utilisée depuis l'appli mobile => depreciée et non utilisée par l'appli web
     Post one Occtax data (Releve + Occurrence + Counting)
 
     .. :quickref: Occtax; Post one Occtax data (Releve + Occurrence + Counting)
@@ -290,7 +307,10 @@ def createReleve(info_role):
 
     releveRepository = ReleveRepository(TRelevesOccurrence)
     data = dict(request.get_json())
-    
+    occurrences_occtax = None
+    if "t_occurrences_occtax" in data["properties"]:
+        occurrences_occtax = data["properties"]["t_occurrences_occtax"]
+        data["properties"].pop("t_occurrences_occtax")
     observersList = None
     if "observers" in data["properties"]:
         observersList = data["properties"]["observers"]
@@ -313,6 +333,107 @@ def createReleve(info_role):
         for o in observers:
             releve.observers.append(o)
 
+    for occ in occurrences_occtax:
+        cor_counting_occtax = []
+        if "cor_counting_occtax" in occ:
+            cor_counting_occtax = occ["cor_counting_occtax"]
+            occ.pop("cor_counting_occtax")
+
+        # Test et suppression
+        #   des propriétés inexistantes de TOccurrencesOccurrence
+        attliste = [k for k in occ]
+        for att in attliste:
+            if not getattr(TOccurrencesOccurrence, att, False):
+                occ.pop(att)
+        # pop the id if None. otherwise DB.merge is not OK
+        if "id_occurrence_occtax" in occ and occ["id_occurrence_occtax"] is None:
+            occ.pop("id_occurrence_occtax")
+        occtax = TOccurrencesOccurrence(**occ)
+
+        for cnt in cor_counting_occtax:
+            # Test et suppression
+            # des propriétés inexistantes de CorCountingOccurrence
+            attliste = [k for k in cnt]
+            for att in attliste:
+                if not getattr(CorCountingOccurrence, att, False):
+                    cnt.pop(att)
+            # pop the id if None. otherwise DB.merge is not OK
+            if "id_counting_occtax" in cnt and cnt["id_counting_occtax"] is None:
+                cnt.pop("id_counting_occtax")
+            countingOccurrence = CorCountingOccurrence(**cnt)
+            occtax.cor_counting_occtax.append(countingOccurrence)
+        releve.t_occurrences_occtax.append(occtax)
+
+    # if its a update
+    if releve.id_releve_occtax:
+        # get update right of the user
+        user_cruved = get_or_fetch_user_cruved(
+            session=session, id_role=info_role.id_role, module_code="OCCTAX"
+        )
+        update_code_filter = user_cruved["U"]
+        # info_role.code_action = update_data_scope
+        user = UserRigth(
+            id_role=info_role.id_role,
+            value_filter=update_code_filter,
+            code_action="U",
+            id_organisme=info_role.id_organisme,
+        )
+        releve = releveRepository.update(releve, user, shape)
+    # if its a simple post
+    else:
+        # set id_digitiser
+        releve.id_digitiser = info_role.id_role
+        if info_role.value_filter in ("0", "1", "2"):
+            # Check if user can add a releve in the current dataset
+            allowed = releve.user_is_in_dataset_actor(info_role)
+            if not allowed:
+                raise InsufficientRightsError(
+                    "User {} has no right in dataset {}".format(
+                        info_role.id_role, releve.id_dataset
+                    ),
+                    403,
+                )
+        DB.session.add(releve)
+    DB.session.commit()
+    DB.session.flush()
+
+    return releve.get_geofeature()
+
+
+def releveHandler(request, *, releve, info_role):
+
+    #Test des droits d'édition du relevé
+    if releve.id_releve_occtax is not None:
+        user_cruved = get_or_fetch_user_cruved(
+            session=session, id_role=info_role.id_role, module_code="OCCTAX"
+        )
+        # info_role.code_action = update_data_scope
+        user = UserRigth(
+            id_role=info_role.id_role,
+            value_filter=user_cruved["U"],
+            code_action="U",
+            id_organisme=info_role.id_organisme,
+        )
+
+        releve = releve.get_releve_if_allowed(user)
+        #fin test, si ici => c'est ok
+
+    #creation du relevé à partir du POST
+    releveSchema = ReleveSchema()
+
+    #Modification de la requete geojson en releve
+    json_req = request.get_json()
+    json_req['properties']['geom_4326'] = json_req['geometry']
+
+    # chargement des données POST et merge avec relevé initial
+    releve, errors = releveSchema.load(json_req['properties'], instance=releve)
+
+    if bool(errors):
+        raise InsufficientRightsError(
+            errors,
+            422,
+        )
+
     # set id_digitiser
     releve.id_digitiser = info_role.id_role
     if info_role.value_filter in ("0", "1", "2"):
@@ -329,172 +450,142 @@ def createReleve(info_role):
     DB.session.add(releve)
     DB.session.commit()
     DB.session.flush()
+    return releve
 
-    return releve.get_geofeature()
+@blueprint.route("/only/releve", methods=["POST"])
+@permissions.check_cruved_scope("C", True, module_code="OCCTAX")
+def createReleve(info_role):
+    """
+    Post one Occtax data (Releve + Occurrence + Counting)
 
-@blueprint.route("/releve/<int:id_releve>", methods=["POST"])
+    .. :quickref: Occtax; Post one Occtax data (Releve + Occurrence + Counting)
+
+    **Request JSON object:**
+
+    .. sourcecode:: http
+
+        {
+        "geometry":
+            {"type":"Point",
+            "coordinates":[0.9008789062500001,47.14489748555398]},
+            "properties":
+                {
+                "id_releve_occtax":null,"id_dataset":1,"id_digitiser":1,"date_min":"2019-05-09","date_max":"2019-05-09","hour_min":null,"hour_max":null,"altitude_min":null,"altitude_max":null,"meta_device_entry":"web","comment":null,"id_nomenclature_obs_technique":316,"observers":[1],"observers_txt":null,"id_nomenclature_grp_typ":132,
+                "t_occurrences_occtax":[{
+                    "id_releve_occtax":null,"id_occurrence_occtax":null,"id_nomenclature_obs_meth":41,"id_nomenclature_bio_condition":157,"id_nomenclature_bio_status":29,"id_nomenclature_naturalness":160,"id_nomenclature_exist_proof":81,"id_nomenclature_observation_status":88,"id_nomenclature_blurring":175,"id_nomenclature_source_status":75,"determiner":null,"id_nomenclature_determination_method":445,"cd_nom":67111,"nom_cite":"Ablette =  <i> Alburnus alburnus (Linnaeus, 1758)</i> - [ES - 67111]","meta_v_taxref":null,"sample_number_proof":null,"comment":null,
+                "cor_counting_occtax":[{
+                    "id_counting_occtax":null,"id_nomenclature_life_stage":1,"id_nomenclature_sex":171,"id_nomenclature_obj_count":146,"id_nomenclature_type_count":94,"id_occurrence_occtax":null,"count_min":1,"count_max":1   
+                    }]    
+                }]
+            }
+        }
+
+    :returns: GeoJson<TRelevesOccurrence>
+    """
+    # nouveau releve vide
+    releve = TRelevesOccurrence()
+    releve = ReleveSchema().dump(releveHandler(request=request, releve=releve, info_role=info_role)).data
+
+    return {
+        "geometry": releve.pop('geom_4326', None),
+        "properties": releve,
+        "id": releve["id_releve_occtax"]
+    }
+
+@blueprint.route("/only/releve/<int:id_releve>", methods=["POST"])
 @permissions.check_cruved_scope("U", True, module_code="OCCTAX")
-@json_resp
 def updateReleve(id_releve, info_role):
     """
     Post one Occurrence data (Occurrence + Counting) for add to Releve
 
     """
     #get releve by id_releve
-    q = DB.session.query(TRelevesOccurrence)
+    releve = DB.session.query(TRelevesOccurrence).get(id_releve)
+
+    if not releve:
+        return {"message": "not found"}, 404
+
+    releve = ReleveSchema().dump(releveHandler(request=request, releve=releve, info_role=info_role)).data
+
+    return {
+        "geometry": releve.pop('geom_4326', None),
+        "properties": releve,
+        "id": releve["id_releve_occtax"]
+    }
+
+
+def occurrenceHandler(request, *, occurrence, info_role):
 
     try:
-        releve = q.get(id_releve)
+        releve = DB.session.query(TRelevesOccurrence).get(occurrence.id_releve_occtax)
     except Exception as e:
         DB.session.rollback()
         raise
 
     if not releve:
-        return {"message": "not found"}, 404
+        raise InsufficientRightsError(
+            {"message": "not found"},
+            404,
+        )
 
-    #Test des droits d'édition du relevé
-    user_cruved = get_or_fetch_user_cruved(
-        session=session, id_role=info_role.id_role, module_code="OCCTAX"
-    )
-    update_code_filter = user_cruved["U"]
-    # info_role.code_action = update_data_scope
-    user = UserRigth(
-        id_role=info_role.id_role,
-        value_filter=update_code_filter,
-        code_action="U",
-        id_organisme=info_role.id_organisme,
-    )
+    #Test des droits d'édition du relevé si modification
+    if occurrence.id_occurrence_occtax is not None:
+        user_cruved = get_or_fetch_user_cruved(
+            session=session, id_role=info_role.id_role, module_code="OCCTAX"
+        )
+        # info_role.code_action = update_data_scope
+        info_role = UserRigth(
+            id_role=info_role.id_role,
+            value_filter=user_cruved["U"],
+            code_action="U",
+            id_organisme=info_role.id_organisme,
+        )
 
-    releve = releve.get_releve_if_allowed(user)
+    releve = releve.get_releve_if_allowed(info_role)
     #fin test, si ici => c'est ok
 
-    rel_data = dict(request.get_json())
-    releve.set_columns(**rel_data.get("properties"))
-    shape = asShape(rel_data.get("geometry"))
-    two_dimension_geom = remove_third_dimension(shape)
-    releve.geom_4326 = from_shape(two_dimension_geom, srid=4326)
+    occurrenceSchema = OccurrenceSchema()
+    occurrence, errors = occurrenceSchema.load(request.get_json(), instance=occurrence)
 
-    observersList = rel_data.get("properties").get("observers", [])
-    releve.observers = []
-    if observersList is not None:
-        observers = DB.session.query(User).filter(
-            User.id_role.in_(observersList)).all()
-        [releve.observers.append(o) for o in observers]
+    if bool(errors):
+        return errors, 422
     
+    DB.session.add(occurrence)
     DB.session.commit()
-    DB.session.flush()
 
-    return releve.get_geofeature()
+    return occurrence
 
 
 @blueprint.route("/releve/<int:id_releve>/occurrence", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="OCCTAX")
-@json_resp
 def createOccurrence(id_releve, info_role):
     """
     Post one Occurrence data (Occurrence + Counting) for add to Releve
 
     """
     #get releve by id_releve
-    releve_repository = ReleveRepository(TRelevesOccurrence)
-    releve_model, releve_geojson = releve_repository.get_one(
-        id_releve, info_role)
+    occurrence = TOccurrencesOccurrence()
+    occurrence.id_releve_occtax = id_releve
 
-    user_cruved = get_or_fetch_user_cruved(
-        session=session, id_role=info_role.id_role, module_code="OCCTAX"
-    )
-    
-    if info_role.value_filter in ("0", "1", "2"):
-        # Check if user can add a releve in the current dataset
-        allowed = releve_model.user_is_in_dataset_actor(info_role)
-        if not allowed:
-          raise InsufficientRightsError(
-              "User {} has no right in dataset {}".format(
-                  info_role.id_role, releve.id_dataset
-              ),
-              403,
-          )
-
-    occ = dict(request.get_json())
-
-    cor_counting_occtax = []
-    if "cor_counting_occtax" in occ:
-      cor_counting_occtax = occ["cor_counting_occtax"]
-      occ.pop("cor_counting_occtax")
-
-    # Test et suppression des propriétés inexistantes de TOccurrencesOccurrence
-    attliste = [k for k in occ]
-    for att in attliste:
-      if not getattr(TOccurrencesOccurrence, att, False):
-          occ.pop(att)
-
-    occurrence = TOccurrencesOccurrence(**occ)
-    occurrence.id_releve_occtax = releve_model.id_releve_occtax
-
-    for cnt in cor_counting_occtax:
-      # Test et suppression
-      # des propriétés inexistantes de CorCountingOccurrence
-      attliste = [k for k in cnt]
-      for att in attliste:
-          if not getattr(CorCountingOccurrence, att, False):
-              cnt.pop(att)
-      # pop the id if None. otherwise DB.merge is not OK
-      if "id_counting_occtax" in cnt and cnt["id_counting_occtax"] is None:
-          cnt.pop("id_counting_occtax")
-      countingOccurrence = CorCountingOccurrence(**cnt)
-      occurrence.cor_counting_occtax.append(countingOccurrence)
-    
-    DB.session.add(occurrence)
-    DB.session.commit()
-    DB.session.flush()
-
-    return occurrence.as_dict(True)
-    return releve.get_geofeature()
+    return OccurrenceSchema().dump(occurrenceHandler(request=request, occurrence=occurrence, info_role=info_role))
 
 @blueprint.route("/occurrence/<int:id_occurrence>", methods=["POST"])
 @permissions.check_cruved_scope("U", True, module_code="OCCTAX")
-@json_resp
 def updateOccurrence(id_occurrence, info_role):
     """
     Post one Occurrence data (Occurrence + Counting) for add to Releve
 
     """
-    #get releve by id_releve
-    q = DB.session.query(TOccurrencesOccurrence)
-
     try:
-        occurrence = q.get(id_occurrence)
-        releve = DB.session.query(TRelevesOccurrence).get(occurrence.id_releve_occtax)
+        occurrence = DB.session.query(TOccurrencesOccurrence).get(id_occurrence)
     except Exception as e:
         DB.session.rollback()
         raise
 
-    if not occurrence or not releve:
+    if not occurrence:
         return {"message": "not found"}, 404
 
-    #Test des droits d'édition du relevé
-    user_cruved = get_or_fetch_user_cruved(
-        session=session, id_role=info_role.id_role, module_code="OCCTAX"
-    )
-    update_code_filter = user_cruved["U"]
-    # info_role.code_action = update_data_scope
-    user = UserRigth(
-        id_role=info_role.id_role,
-        value_filter=update_code_filter,
-        code_action="U",
-        id_organisme=info_role.id_organisme,
-    )
-
-    releve = releve.get_releve_if_allowed(user)
-    #fin test, si ici => c'est ok
-
-    occ = dict(request.get_json())
-    occurrence.set_columns(**occ)
-    
-    DB.session.commit()
-    DB.session.flush()
-
-    return occurrence.as_dict(True)
+    return OccurrenceSchema().dump(occurrenceHandler(request=request, occurrence=occurrence, info_role=info_role))
 
 
 

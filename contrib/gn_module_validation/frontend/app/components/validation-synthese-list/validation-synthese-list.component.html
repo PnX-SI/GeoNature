@@ -12,14 +12,13 @@
 
       <ng-template ngx-datatable-header-template>
         <label class="datatable-checkbox">
-          <input type="checkbox" (click)="toggleSelection($event)" matTooltip="Séléctionner/désélectionner tout"> 
+          <input type="checkbox" (click)="toggleSelection($event)" matTooltip="Sélectionner/déselectionner tout">
         </label>
         </ng-template>
-      
+
   </ngx-datatable-column>
 
   <ngx-datatable-column maxWidth="5">
-
     <ng-template let-column="column" ngx-datatable-header-template>
       <span></span>
     </ng-template>
@@ -32,13 +31,21 @@
         <span [ngStyle]="{'background': 'white'}" *ngIf="row.meta_update_date > row.validation_date" class="modif_data">{{modif_text}}</span>
       </div>
       </ng-template>
-  
+    </ngx-datatable-column>
+    <ngx-datatable-column maxWidth="60">
+      <ng-template let-column="column"   ngx-datatable-header-template>
+        <span>Détails</span>
+      </ng-template>
+       <ng-template let-row="row" ngx-datatable-cell-template>
+          <button #ValidationModalInfoObs id="details" type="button" (click)="openInfoModal(row)" class="btn btn-info fa fa-info-circle" title="details">
+          </button>
+       </ng-template>
     </ngx-datatable-column>
 
   <ngx-datatable-column *ngFor="let col of VALIDATION_CONFIG.LIST_COLUMNS_FRONTEND" name="{{col.name}}" prop="{{col.prop}}"
-    maxWidth="{{col.max_width}}">
+    maxWidth="{{col.max_width||10000}}" minWidth="{{col.min_width||10}}">
     <ng-template *ngIf="col.prop === 'id_nomenclature_valid_status'" let-row="row" ngx-datatable-cell-template>
-      <div class="statusContent"> 
+      <div class="statusContent">
         <span class="validationCircle" [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.cd_nomenclature_validation_status]?.color}">
           <i class="material-icons">{{row.validation_auto}}</i></span>
         <div [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.cd_nomenclature_validation_status]?.color}" class="statusName">
@@ -48,15 +55,7 @@
     </ng-template>
   </ngx-datatable-column>
 
-  <ngx-datatable-column maxWidth="60">
-    <ng-template let-column="column"   ngx-datatable-header-template>
-      <span>Détails</span>
-    </ng-template>
-     <ng-template let-row="row" ngx-datatable-cell-template>
-        <button #ValidationModalInfoObs id="details" type="button" (click)="openInfoModal(row)" class="btn btn-info fa fa-info-circle" title="details">
-        </button> 
-     </ng-template>
-  </ngx-datatable-column>
+
 
 
   <ngx-datatable-footer>
@@ -89,8 +88,8 @@
 
 </ngx-datatable>
 
-<pnx-validation-popup [selectedPages]="selectedPages" [currentPage]="npage" 
-  [nbTotalObservation]="nbTotalObservation" [observations]="selectedObs" 
+<pnx-validation-popup [selectedPages]="selectedPages" [currentPage]="npage"
+  [nbTotalObservation]="nbTotalObservation" [observations]="selectedObs"
   [validationStatus]="validationStatus"
   (valStatus)="onStatusChange($event)" (valDate)="onValidationDateChange($event)">
 </pnx-validation-popup>

@@ -18,6 +18,11 @@
   font-size: 22px;
   margin-right: 8px;
   display: flex;
+  color: blue;
+}
+
+.bt-edit:disabled {
+  color: grey;
 }
 
 .bt-edit:hover {

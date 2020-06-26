@@ -36,7 +36,7 @@ export class DatasetFormComponent implements OnInit {
     private _dfs: DataFormService,
     private _formService: MetadataFormService,
     public moduleService: ModuleService
-  ) {}
+  ) { }
 
   ngOnInit() {
     // get the id from the route
@@ -46,6 +46,10 @@ export class DatasetFormComponent implements OnInit {
         this.getDataset(this.id_dataset);
       }
     });
+    // get Modules
+    if (!this.moduleService.modules) {
+      this.moduleService.fetchModules();
+    }
     this.datasetForm = this._fb.group({
       id_acquisition_framework: [null, Validators.required],
       id_dataset: null,
@@ -140,4 +144,5 @@ export class DatasetFormComponent implements OnInit {
       );
     }
   }
+
 }

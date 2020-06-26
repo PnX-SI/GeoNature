@@ -1,9 +1,10 @@
 import logging
+import ast
+import re
+
 from flask import Blueprint, current_app, request
 
 from operator import itemgetter
-
-import re
 
 from sqlalchemy import select, desc, cast, DATE, func
 
@@ -18,9 +19,9 @@ from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_synthese.models import (
     Synthese,
     TSources,
-    VMTaxonsSyntheseAutocomplete,
     VSyntheseForWebApp,
 )
+from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 from geonature.core.gn_commons.models import BibTablesLocation
 
@@ -33,8 +34,6 @@ from geonature.core.gn_commons.models import TValidations
 
 from .models import VSyntheseValidation
 
-# from geonature.core.gn_synthese.utils import query as synthese_query
-
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
 blueprint = Blueprint("validation", __name__)
@@ -45,7 +44,6 @@ log = logging.getLogger()
 @permissions.check_cruved_scope("R", True, module_code="VALIDATION")
 @json_resp
 def get_synthese_data(info_role):
-
     """
     Return synthese and t_validations data filtered by form params
     Params must have same synthese fields names
@@ -58,7 +56,7 @@ def get_synthese_data(info_role):
         Information about the user asking the route. Auto add with kwargs
     truc (int): 
         essai
-    
+
 
     Returns
     -------
@@ -67,50 +65,90 @@ def get_synthese_data(info_role):
 
     """
 
-    try:
-        filters = {
-            key: request.args.getlist(key) for key, value in request.args.items()
-        }
-        for key, value in filters.items():
-            if "," in value[0] and key != "geoIntersection":
-                filters[key] = value[0].split(",")
+    # try:
+    filters = {key: request.args.getlist(key)
+               for key, value in request.args.items()}
+    for key, value in filters.items():
+        if "," in value[0] and key != "geoIntersection":
+            filters[key] = value[0].split(",")
 
+    if "limit" in filters:
+        result_limit = filters.pop("limit")[0]
+    else:
         result_limit = blueprint.config["NB_MAX_OBS_MAP"]
 
-        q = DB.session.query(VSyntheseValidation)
-
-        q = filter_query_all_filters(VSyntheseValidation, q, filters, info_role)
-
-        q = q.order_by(VSyntheseValidation.date_min.desc())
-
-        nb_total = 0
-
-        data = q.limit(result_limit)
-        columns = (
-            blueprint.config["COLUMNS_API_VALIDATION_WEB_APP"]
-            + blueprint.config["MANDATORY_COLUMNS"]
+    query = (
+        select(
+            [
+                VSyntheseValidation.cd_nomenclature_validation_status,
+                VSyntheseValidation.dataset_name,
+                VSyntheseValidation.date_min,
+                VSyntheseValidation.id_nomenclature_valid_status,
+                VSyntheseValidation.id_synthese,
+                VSyntheseValidation.nom_valide,
+                VSyntheseValidation.nom_vern,
+                VSyntheseValidation.geojson,
+                VSyntheseValidation.observers,
+                VSyntheseValidation.validation_auto,
+                VSyntheseValidation.validation_date,
+                VSyntheseValidation.nom_vern,
+                VSyntheseValidation.lb_nom,
+                VSyntheseValidation.cd_nom,
+                VSyntheseValidation.comment_description,
+                VSyntheseValidation.altitude_min,
+                VSyntheseValidation.altitude_max,
+                VSyntheseValidation.unique_id_sinp,
+                VSyntheseValidation.meta_update_date,
+            ]
         )
+        .where(VSyntheseValidation.the_geom_4326.isnot(None))
+        .order_by(VSyntheseValidation.date_min.desc())
+    )
+    validation_query_class = SyntheseQuery(VSyntheseValidation, query, filters)
+    validation_query_class.filter_query_all_filters(info_role)
+    result = DB.engine.execute(
+        validation_query_class.query.limit(result_limit))
 
-        features = []
+    nb_total = 0
 
-        for d in data:
-            feature = d.get_geofeature(columns=columns)
-            feature["properties"]["nom_vern_or_lb_nom"] = (
-                d.nom_vern if d.lb_nom is None else d.lb_nom
-            )
-            features.append(feature)
+    columns = (
+        blueprint.config["COLUMNS_API_VALIDATION_WEB_APP"]
+        + blueprint.config["MANDATORY_COLUMNS"]
+    )
 
-        return {
-            "data": FeatureCollection(features),
-            "nb_obs_limited": nb_total == blueprint.config["NB_MAX_OBS_MAP"],
-            "nb_total": nb_total,
+    geojson_features = []
+    for r in result:
+        properties = {
+            "id_synthese": r["id_synthese"],
+            "cd_nomenclature_validation_status": r["cd_nomenclature_validation_status"],
+            "dataset_name": r["dataset_name"],
+            "date_min": str(r["date_min"]),
+            "nom_vern_or_lb_nom": r["nom_vern"] if r["nom_vern"] else r["lb_nom"],
+            "observers": r["observers"],
+            "validation_auto": r["validation_auto"],
+            "validation_date": str(r["validation_date"]),
+            "altitude_min": r["altitude_min"],
+            "altitude_max": r["altitude_max"],
+            "comment": r["comment_description"],
+            "cd_nom": r["cd_nom"],
+            "unique_id_sinp": str(r["unique_id_sinp"]),
+            "meta_update_date": str(r["meta_update_date"]),
         }
-    except Exception as e:
-        log.error(e)
-        return (
-            'INTERNAL SERVER ERROR ("get_synthese_data() error"): contactez l\'administrateur du site',
-            500,
-        )
+        geojson = ast.literal_eval(r["geojson"])
+        geojson["properties"] = properties
+        geojson["id"] = r["id_synthese"]
+        geojson_features.append(geojson)
+    return {
+        "data": FeatureCollection(geojson_features),
+        "nb_obs_limited": nb_total == blueprint.config["NB_MAX_OBS_MAP"],
+        "nb_total": nb_total,
+    }
+    # except Exception as e:
+    #     log.error(e)
+    #     return (
+    #         'INTERNAL SERVER ERROR ("get_synthese_data() error"): contactez l\'administrateur du site',
+    #         500,
+    #     )
 
 
 @blueprint.route("/statusNames", methods=["GET"])
@@ -256,31 +294,6 @@ def get_definitions(info_role):
         )
 
 
-@blueprint.route("/taxons_autocomplete", methods=["GET"])
-@json_resp
-def get_autocomplete_taxons_synthese():
-
-    search_name = request.args.get("search_name")
-    q = DB.session.query(VMTaxonsSyntheseAutocomplete)
-    if search_name:
-        search_name = search_name.replace(" ", "%")
-        q = q.filter(VMTaxonsSyntheseAutocomplete.search_name.ilike(search_name + "%"))
-    regne = request.args.get("regne")
-    if regne:
-        q = q.filter(VMTaxonsSyntheseAutocomplete.regne == regne)
-
-    group2_inpn = request.args.get("group2_inpn")
-    if group2_inpn:
-        q = q.filter(VMTaxonsSyntheseAutocomplete.group2_inpn == group2_inpn)
-
-    q = q.order_by(
-        desc(VMTaxonsSyntheseAutocomplete.cd_nom == VMTaxonsSyntheseAutocomplete.cd_ref)
-    )
-
-    data = q.limit(20).all()
-    return [d.as_dict() for d in data]
-
-
 @blueprint.route("/history/<uuid_attached_row>", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="VALIDATION")
 @json_resp
@@ -354,4 +367,3 @@ def get_validation_date(uuid):
             'INTERNAL SERVER ERROR ("get_validation_date(uuid) error"): contactez l\'administrateur du site',
             500,
         )
-

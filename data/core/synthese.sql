@@ -119,6 +119,7 @@ BEGIN
 END;
 $$;
 
+
 ------------------------
 --TABLES AND SEQUENCES--
 ------------------------
@@ -160,6 +161,7 @@ CREATE TABLE synthese (
     id_nomenclature_blurring integer DEFAULT get_default_nomenclature_value('DEE_FLOU'),
     id_nomenclature_source_status integer DEFAULT get_default_nomenclature_value('STATUT_SOURCE'),
     id_nomenclature_info_geo_type integer DEFAULT get_default_nomenclature_value('TYP_INF_GEO'),
+    reference_biblio character varying(255),
     count_min integer,
     count_max integer,
     cd_nom integer,
@@ -173,6 +175,7 @@ CREATE TABLE synthese (
     the_geom_4326 public.geometry(Geometry,4326),
     the_geom_point public.geometry(Point,4326),
     the_geom_local public.geometry(Geometry,MYLOCALSRID),
+    id_area_attachment integer,
     date_min timestamp without time zone NOT NULL,
     date_max timestamp without time zone NOT NULL,
     validator character varying(1000),
@@ -204,6 +207,8 @@ COMMENT ON COLUMN gn_synthese.synthese.comment_context
   IS 'Commentaire du releve (ou regroupement)';
 COMMENT ON COLUMN gn_synthese.synthese.comment_description
   IS 'Commentaire de l''occurrence';
+COMMENT ON COLUMN gn_synthese.synthese.id_area_attachment
+  IS 'Id area du rattachement géographique - cas des observation sans géométrie précise';
 
 CREATE SEQUENCE synthese_id_synthese_seq
     START WITH 1
@@ -240,39 +245,6 @@ CREATE TABLE gn_synthese.cor_area_taxon (
   last_date timestamp without time zone NOT NULL
 );
 
-CREATE TABLE gn_synthese.taxons_synthese_autocomplete AS
-SELECT t.cd_nom,
-  t.cd_ref,
-  t.search_name,
-  t.nom_valide,
-  t.lb_nom,
-  t.regne,
-  t.group2_inpn
-FROM (
-  SELECT t_1.cd_nom,
-        t_1.cd_ref,
-        concat(t_1.lb_nom, ' =  <i> ', t_1.nom_valide, '</i>', ' - [', t_1.id_rang, ' - ', t_1.cd_nom , ']' ) AS search_name,
-        t_1.nom_valide,
-        t_1.lb_nom,
-        t_1.regne,
-        t_1.group2_inpn
-  FROM taxonomie.taxref t_1
-
-  UNION
-  SELECT t_1.cd_nom,
-        t_1.cd_ref,
-        concat(t_1.nom_vern, ' =  <i> ', t_1.nom_valide, '</i>', ' - [', t_1.id_rang, ' - ', t_1.cd_nom , ']' ) AS search_name,
-        t_1.nom_valide,
-        t_1.lb_nom,
-        t_1.regne,
-        t_1.group2_inpn
-  FROM taxonomie.taxref t_1
-  WHERE t_1.nom_vern IS NOT NULL AND t_1.cd_nom = t_1.cd_ref
-) t
-  WHERE t.cd_nom IN (SELECT DISTINCT cd_nom FROM gn_synthese.synthese);
-
-  COMMENT ON TABLE taxons_synthese_autocomplete
-     IS 'Table construite à partir d''une requete sur la base et mise à jour via le trigger trg_refresh_taxons_forautocomplete de la table gn_synthese';
 
 ---------------
 --PRIMARY KEY--
@@ -288,8 +260,6 @@ ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT pk_gn_synthese_defaults_nomenclatures_value PRIMARY KEY (mnemonique_type, id_organism, regne, group2_inpn);
 
 ALTER TABLE ONLY cor_observer_synthese ADD CONSTRAINT pk_cor_observer_synthese PRIMARY KEY (id_synthese, id_role);
-
-ALTER TABLE ONLY taxons_synthese_autocomplete ADD CONSTRAINT pk_taxons_synthese_autocomplete PRIMARY KEY (cd_nom, search_name);
 
 ALTER TABLE cor_area_taxon
   ADD CONSTRAINT pk_cor_area_taxon PRIMARY KEY (id_area, cd_nom);
@@ -370,6 +340,10 @@ ALTER TABLE ONLY synthese
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_digitiser FOREIGN KEY (id_digitiser) REFERENCES utilisateurs.t_roles (id_role) ON UPDATE CASCADE;
 
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_area_attachment FOREIGN KEY (id_area_attachment) REFERENCES ref_geo.l_areas (id_area) ON UPDATE CASCADE;
+
+
 
 ALTER TABLE ONLY cor_area_synthese
     ADD CONSTRAINT fk_cor_area_synthese_id_synthese FOREIGN KEY (id_synthese) REFERENCES synthese(id_synthese) ON UPDATE CASCADE ON DELETE CASCADE;
@@ -389,9 +363,6 @@ ALTER TABLE ONLY cor_observer_synthese
 
 ALTER TABLE ONLY cor_observer_synthese
     ADD CONSTRAINT fk_gn_synthese_id_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY taxons_synthese_autocomplete
-    ADD CONSTRAINT fk_taxons_synthese_autocomplete FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
 
 ALTER TABLE cor_area_taxon
   ADD CONSTRAINT fk_cor_area_taxon_cd_nom FOREIGN KEY (cd_nom)
@@ -473,7 +444,7 @@ ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_source_status CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_source_status,'STATUT_SOURCE')) NOT VALID;
 
 ALTER TABLE synthese
-  ADD CONSTRAINT check_synthese_info_geo_type CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_info_geo_type,'TYP_INF_GEO')) NOT VALID;
+  ADD CONSTRAINT check_synthese_info_geo_type_id_area_attachment CHECK (NOT (ref_nomenclatures.get_cd_nomenclature(id_nomenclature_info_geo_type) = '2'  AND id_area_attachment IS NULL )) NOT VALID;
 
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT check_gn_synthese_defaults_nomenclatures_value_is_nomenclature_in_type CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature, mnemonique_type)) NOT VALID;
@@ -554,11 +525,6 @@ CREATE INDEX i_synthese_the_geom_point ON synthese USING gist (the_geom_point);
 CREATE UNIQUE INDEX i_unique_cd_ref_vm_min_max_for_taxons ON gn_synthese.vm_min_max_for_taxons USING btree (cd_ref);
 --REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.vm_min_max_for_taxons;
 
-CREATE INDEX i_taxons_synthese_autocomplete_cd_nom
-  ON taxons_synthese_autocomplete (cd_nom ASC NULLS LAST);
-
-CREATE INDEX i_tri_taxons_synthese_autocomplete_search_name
-  ON taxons_synthese_autocomplete USING GIST (search_name gist_trgm_ops);
 
 -------------
 --FUNCTIONS--
@@ -646,58 +612,13 @@ $BODY$
 	      s.id_synthese AS id_synthese,
         a.id_area AS id_area
         FROM ref_geo.l_areas a
-        JOIN gn_synthese.synthese s ON public.ST_INTERSECTS(s.the_geom_local, a.geom)
+        JOIN gn_synthese.synthese s 
+        	ON public.ST_INTERSECTS(s.the_geom_local, a.geom)  AND NOT public.ST_TOUCHES(s.the_geom_local,a.geom)
         WHERE s.id_synthese = NEW.id_synthese AND a.enable IS true;
     END IF;
   RETURN NULL;
   END;
   $BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-
-
-CREATE OR REPLACE FUNCTION gn_synthese.fct_trg_refresh_taxons_forautocomplete()
-  RETURNS trigger AS
-$BODY$
- DECLARE
-  thenomvern VARCHAR;
-  BEGIN
-    IF TG_OP in ('DELETE', 'TRUNCATE', 'UPDATE') AND OLD.cd_nom NOT IN (SELECT DISTINCT cd_nom FROM gn_synthese.synthese) THEN
-        DELETE FROM gn_synthese.taxons_synthese_autocomplete auto
-        WHERE auto.cd_nom = OLD.cd_nom;
-    END IF;
-
-    IF TG_OP in ('INSERT', 'UPDATE') AND NEW.cd_nom NOT IN (SELECT DISTINCT cd_nom FROM gn_synthese.taxons_synthese_autocomplete) THEN
-      INSERT INTO gn_synthese.taxons_synthese_autocomplete
-      SELECT t.cd_nom,
-              t.cd_ref,
-          concat(t.lb_nom, ' = <i>', t.nom_valide, '</i>', ' - [', t.id_rang, ' - ', t.cd_nom , ']') AS search_name,
-          t.nom_valide,
-          t.lb_nom,
-          t.regne,
-          t.group2_inpn
-      FROM taxonomie.taxref t WHERE cd_nom = NEW.cd_nom;
-      --On insère une seule fois le nom_vern car il est le même pour tous les synonymes
-      SELECT INTO thenomvern t.cd_nom
-      FROM gn_synthese.taxons_synthese_autocomplete a
-      JOIN taxonomie.taxref t ON t.cd_nom = a.cd_nom
-      WHERE a.cd_ref = taxonomie.find_cdref(NEW.cd_nom)
-      AND a.search_name ILIKE t.nom_vern||'%';
-      IF thenomvern IS NULL THEN
-        INSERT INTO gn_synthese.taxons_synthese_autocomplete
-        SELECT t.cd_nom,
-          t.cd_ref,
-          concat(t.nom_vern, ' =  <i> ', t.nom_valide, '</i>', ' - [', t.id_rang, ' - ', t.cd_nom , ']' ) AS search_name,
-          t.nom_valide,
-          t.lb_nom,
-          t.regne,
-          t.group2_inpn
-        FROM taxonomie.taxref t WHERE t.nom_vern IS NOT NULL AND cd_nom = NEW.cd_nom;
-      END IF;
-    END IF;
-  RETURN NULL;
-  END;
-$BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
@@ -922,6 +843,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
     s.id_nomenclature_blurring,
     s.id_nomenclature_source_status,
     s.id_nomenclature_determination_method,
+    s.reference_biblio,
     sources.name_source,
     sources.url_source,
     t.cd_nom,
@@ -1101,12 +1023,6 @@ CREATE TRIGGER tri_insert_cor_area_synthese
   FOR EACH ROW
   EXECUTE PROCEDURE gn_synthese.fct_trig_insert_in_cor_area_synthese();
 
-CREATE TRIGGER trg_refresh_taxons_forautocomplete
-  AFTER INSERT OR UPDATE OF cd_nom OR DELETE
-  ON gn_synthese.synthese
-  FOR EACH ROW
-  EXECUTE PROCEDURE gn_synthese.fct_trg_refresh_taxons_forautocomplete();
-
 -- trigger insertion ou update sur cor_area_syntese - déclenché après insert ou update sur cor_area_synthese
 CREATE TRIGGER tri_maj_cor_area_taxon
 AFTER INSERT OR UPDATE
@@ -1135,3 +1051,179 @@ CREATE TRIGGER tri_update_cor_area_taxon_update_cd_nom
 INSERT INTO gn_commons.t_modules (module_code, module_label, module_picto, module_desc, module_path, module_target, active_frontend, active_backend, module_doc_url) VALUES
 ('SYNTHESE', 'Synthese', 'fa-search', 'Application synthese', 'synthese', '_self', 'true', 'true', 'http://docs.geonature.fr/user-manual.html#synthese');
 
+
+-- Fonctions import dans la synthese
+
+CREATE OR REPLACE FUNCTION gn_synthese.import_json_row(
+	datain jsonb,
+  datageojson text default NULL -- données géographique sous la forme d'un geojson TODO a voir le paramètre du type text ou json
+)
+RETURNS boolean AS
+$BODY$
+  DECLARE
+    insert_columns text;
+    select_columns text;
+    update_columns text;
+
+    geom geometry;
+    geom_data jsonb;
+    local_srid int;
+BEGIN
+
+
+  -- Import des données dans une table temporaire pour faciliter le traitement
+  DROP TABLE IF EXISTS tmp_process_import;
+  CREATE TABLE tmp_process_import (
+      id_synthese int,
+      datain jsonb,
+      action char(1)
+  );
+  INSERT INTO tmp_process_import (datain)
+  SELECT datain;
+
+  -- Cas ou la geométrie est passé en geojson
+  IF NOT datageojson IS NULL THEN
+    geom := (SELECT ST_setsrid(ST_GeomFromGeoJSON(datageojson), 4326));
+    local_srid := (SELECT parameter_value FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid');
+    geom_data := (
+        SELECT json_build_object(
+            'the_geom_4326',geom,
+            'the_geom_point',(SELECT ST_centroid(geom)),
+            'the_geom_local',(SELECT ST_transform(geom, local_srid))
+        )
+    );
+
+    UPDATE tmp_process_import d
+      SET datain = d.datain || geom_data;
+  END IF;
+
+-- ############ TEST
+
+  -- colonne unique_id_sinp exists
+  IF EXISTS (
+        SELECT 1 FROM jsonb_object_keys(datain) column_name WHERE column_name =  'unique_id_sinp'
+    ) IS FALSE THEN
+        RAISE NOTICE 'Column unique_id_sinp is mandatory';
+        RETURN FALSE;
+  END IF ;
+
+-- ############ mapping colonnes
+
+  WITH import_col AS (
+    SELECT jsonb_object_keys(datain) AS column_name
+  ), synt_col AS (
+      SELECT column_name, column_default, CASE WHEN data_type = 'USER-DEFINED' THEN NULL ELSE data_type END as data_type
+      FROM information_schema.columns
+      WHERE table_schema || '.' || table_name = 'gn_synthese.synthese'
+  )
+  SELECT
+      string_agg(s.column_name, ',')  as insert_columns,
+      string_agg(
+          CASE
+              WHEN NOT column_default IS NULL THEN 'COALESCE((datain->>''' || i.column_name  || ''')' || COALESCE('::' || data_type, '') || ', ' || column_default || ') as ' || i.column_name
+          ELSE '(datain->>''' || i.column_name  || ''')' || COALESCE('::' || data_type, '')
+          END, ','
+      ) as select_columns ,
+      string_agg(
+          s.column_name || '=' || CASE
+              WHEN NOT column_default IS NULL THEN 'COALESCE((datain->>''' || i.column_name  || ''')' || COALESCE('::' || data_type, '') || ', ' || column_default || ') '
+          ELSE '(datain->>''' || i.column_name  || ''')' || COALESCE('::' || data_type, '')
+          END
+      , ',')
+  INTO insert_columns, select_columns, update_columns
+  FROM synt_col s
+  JOIN import_col i
+  ON i.column_name = s.column_name;
+
+  -- ############# IMPORT DATA
+  IF EXISTS (
+      SELECT 1
+      FROM   gn_synthese.synthese
+      WHERE  unique_id_sinp = (datain->>'unique_id_sinp')::uuid
+  ) IS TRUE THEN
+    -- Update
+    EXECUTE ' WITH i_row AS (
+          UPDATE gn_synthese.synthese s SET ' || update_columns ||
+          ' FROM  tmp_process_import
+          WHERE s.unique_id_sinp =  (datain->>''unique_id_sinp'')::uuid
+          RETURNING s.id_synthese, s.unique_id_sinp
+          )
+          UPDATE tmp_process_import d SET id_synthese = i_row.id_synthese
+          FROM i_row
+          WHERE unique_id_sinp = i_row.unique_id_sinp
+          ' ;
+  ELSE
+    -- Insert
+    EXECUTE 'WITH i_row AS (
+          INSERT INTO gn_synthese.synthese ( ' || insert_columns || ')
+          SELECT ' || select_columns ||
+          ' FROM tmp_process_import
+          RETURNING id_synthese, unique_id_sinp
+          )
+          UPDATE tmp_process_import d SET id_synthese = i_row.id_synthese
+          FROM i_row
+          WHERE unique_id_sinp = i_row.unique_id_sinp
+          ' ;
+  END IF;
+
+  -- Import des cor_observers
+  DELETE FROM gn_synthese.cor_observer_synthese
+  USING tmp_process_import
+  WHERE cor_observer_synthese.id_synthese = tmp_process_import.id_synthese;
+
+  IF jsonb_typeof(datain->'ids_observers') = 'array' THEN
+    INSERT INTO gn_synthese.cor_observer_synthese (id_synthese, id_role)
+    SELECT DISTINCT id_synthese, (jsonb_array_elements(t.datain->'ids_observers'))::text::int
+    FROM tmp_process_import t;
+  END IF;
+
+  RETURN TRUE;
+  END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+
+
+CREATE OR REPLACE FUNCTION gn_synthese.import_row_from_table(
+    select_col_name character varying,
+    select_col_val character varying,
+    tbl_name character varying)
+  RETURNS boolean AS
+$BODY$
+DECLARE
+  select_sql text;
+  import_rec record;
+BEGIN
+
+  --test que la table/vue existe bien
+  --42P01 	undefined_table
+  IF EXISTS (
+      SELECT 1 FROM information_schema.tables t  WHERE t.table_schema ||'.'|| t.table_name = tbl_name
+  ) IS FALSE THEN
+      RAISE 'Undefined table: %', tbl_name USING ERRCODE = '42P01';
+	END IF ;
+
+  --test que la colonne existe bien
+  --42703 	undefined_column
+  IF EXISTS (
+      SELECT * FROM information_schema.columns  t  WHERE  t.table_schema ||'.'|| t.table_name = tbl_name AND column_name = select_col_name
+  ) IS FALSE THEN
+      RAISE 'Undefined column: %', select_col_name USING ERRCODE = '42703';
+	END IF ;
+
+
+    -- TODO transtypage en text pour des questions de généricité. A réflechir
+    select_sql := 'SELECT row_to_json(c)::jsonb d
+        FROM ' || tbl_name || ' c
+        WHERE ' ||  select_col_name|| '::text = ''' || select_col_val || '''' ;
+
+    FOR import_rec IN EXECUTE select_sql LOOP
+        PERFORM gn_synthese.import_json_row(import_rec.d);
+    END LOOP;
+
+  RETURN TRUE;
+  END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;

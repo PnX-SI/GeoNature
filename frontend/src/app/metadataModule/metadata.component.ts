@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PageEvent, MatPaginator, MatPaginatorIntl } from '@angular/material';
-import { CruvedStoreService } from '../services/cruved-store.service';
+import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 
 export class MetadataPaginator extends MatPaginatorIntl {
@@ -46,44 +46,23 @@ export class MetadataComponent implements OnInit {
   activePage: number = 0;
   pageSizeOptions: Array<number> = [10, 25, 50, 100];
 
-  constructor(public _cruvedStore: CruvedStoreService, private _dfs: DataFormService) {}
+  constructor(public _cruvedStore: CruvedStoreService, private _dfs: DataFormService) { }
 
   ngOnInit() {
-    this.getAcquisitionFrameworks();
+    this.getAcquisitionFrameworksAndDatasets();
   }
 
   //recuperation cadres d'acquisition
-  getAcquisitionFrameworks() {
-    this._dfs.getAcquisitionFrameworks().subscribe(data => {
-      this.acquisitionFrameworks = data;
+  getAcquisitionFrameworksAndDatasets() {
+    this._dfs.getAfAndDatasetListMetadata().subscribe(data => {
+      this.acquisitionFrameworks = data.data;
       this.tempAF = this.acquisitionFrameworks;
-      this.getDatasets();
-    });
-  }
+      //this.getDatasets();
+      this.acquisitionFrameworks.forEach(af => {
+        af['datasetsTemp'] = af['datasets'];
+      })
 
-  //recuperation des jeux de données
-  getDatasets() {
-    this._dfs.getDatasets().subscribe(results => {
-      //attribut les jdds au ca respectif
-      for (var i = 0; i < results['data'].length; i++) {
-        let af = this.findAcquisitionFrameworkById(results['data'][i].id_acquisition_framework);
-        if (!('datasets' in af)) {
-          af['datasets'] = new Array();
-          af['datasetsTemp'] = new Array();
-        }
-        af['datasets'].push(results['data'][i]);
-        af['datasetsTemp'].push(results['data'][i]);
-      }
-      // cache our list
-      this.datasets = results['data'];
     });
-  }
-
-  /**
-   *	Retourne le cadre d'acquisition à partir de son ID
-   **/
-  private findAcquisitionFrameworkById(id: number) {
-    return this.acquisitionFrameworks.find(af => af.id_acquisition_framework == id);
   }
 
   /**

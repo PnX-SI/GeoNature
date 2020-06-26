@@ -10,117 +10,13 @@ from pypnusershub.db.tools import InsufficientRightsError
 from pypnusershub.db.models import User
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
-from utils_flask_sqla_geo.serializers import geoserializable
 
 from geonature.core.taxonomie.models import Taxref
 from geonature.core.gn_meta.models import TDatasets
-from geonature.core.taxonomie.models import Taxref
 from geonature.utils.env import DB
 
 
-class OcctaxModel(DB.Model):
-    """
-        Classe abstraite permettant d'ajout des méthodes
-        de controle d'accès à la donnée en fonction
-        des droits associés à un utilisateur
-    """
-    __abstract__ = True
-
-    _changes = {}
-
-    def __init__(self, **kwargs):
-        kwargs['_force'] = True
-        self._set_columns(**kwargs)
-
-    def _set_columns(self, **kwargs):
-        force = kwargs.get('_force')
-
-        readonly = []
-        if hasattr(self, 'readonly_fields'):
-            readonly = self.readonly_fields
-        if hasattr(self, 'hidden_fields'):
-            readonly += self.hidden_fields
-
-        changes = {}
-
-        columns = self.__table__.columns.keys()
-        relationships = self.__mapper__.relationships.keys()
-
-        for key in columns:
-            allowed = True if force or key not in readonly else False
-            exists = True if key in kwargs else False
-            if allowed and exists:
-                val = getattr(self, key)
-                if val != kwargs[key]:
-                    changes[key] = {'old': val, 'new': kwargs[key]}
-                    setattr(self, key, kwargs[key])
-
-        for rel in relationships:
-            allowed = True if force or rel not in readonly else False
-            exists = True if rel in kwargs else False
-            if allowed and exists:
-                is_list = self.__mapper__.relationships[rel].uselist
-                if is_list:
-                    valid_ids = []
-                    query = getattr(self, rel)
-                    cls = self.__mapper__.relationships[rel].argument()
-                    pk = cls.__table__.primary_key.columns.keys()[0]
-                    for item in kwargs[rel]:
-                        if pk in item and query.filter(getattr(cls, pk) == item.get(pk)).limit(1).count() == 1:
-                            obj = cls.query.filter(getattr(cls, pk) == item.get(pk)).first()
-                            col_changes = obj.set_columns(**item)
-                            if col_changes:
-                                col_changes[pk] = str(item.get(pk))
-                                if rel in changes:
-                                    changes[rel].append(col_changes)
-                                else:
-                                    changes.update({rel: [col_changes]})
-                            valid_ids.append(str(item.get(pk)))
-                        else:
-                            col = cls()
-                            col_changes = col.set_columns(**item)
-                            query.append(col)
-                            DB.session.flush()
-                            if col_changes:
-                                col_changes[pk] = str(getattr(col, pk))
-                                if rel in changes:
-                                    changes[rel].append(col_changes)
-                                else:
-                                    changes.update({rel: [col_changes]})
-                            valid_ids.append(str(getattr(col, pk)))
-
-                    # delete related rows that were not in kwargs[rel]
-                    for item in query.filter(not_(getattr(cls, pk).in_(valid_ids))).all():
-                        print(item)
-                        col_changes = {
-                            pk: str(getattr(item, pk)),
-                            'deleted': True,
-                        }
-                        if rel in changes:
-                            changes[rel].append(col_changes)
-                        else:
-                            changes.update({rel: [col_changes]})
-                        DB.session.delete(item)
-
-                else:
-                    val = getattr(self, rel)
-                    if self.__mapper__.relationships[rel].query_class is not None:
-                        if val is not None:
-                            col_changes = val.set_columns(**kwargs[rel])
-                            if col_changes:
-                                changes.update({rel: col_changes})
-                    else:
-                        if val != kwargs[rel]:
-                            setattr(self, rel, kwargs[rel])
-                            changes[rel] = {'old': val, 'new': kwargs[rel]}
-
-        return changes
-
-    def set_columns(self, **kwargs):
-        self._changes = self._set_columns(**kwargs)
-        return self._changes
-
-class ReleveModel(OcctaxModel):
+class ReleveModel(DB.Model):
     """
         Classe abstraite permettant d'ajout des méthodes
         de controle d'accès à la donnée en fonction
@@ -190,7 +86,7 @@ class ReleveModel(OcctaxModel):
         }
 
 
-class corRoleRelevesOccurrence(OcctaxModel):
+class corRoleRelevesOccurrence(DB.Model):
     __tablename__ = "cor_role_releves_occtax"
     __table_args__ = {"schema": "pr_occtax"}
     unique_id_cor_role_releve = DB.Column(
@@ -214,20 +110,21 @@ class corRoleRelevesOccurrence(OcctaxModel):
 
 
 @serializable
-class CorCountingOccurrence(OcctaxModel):
+class CorCountingOccurrence(DB.Model):
     __tablename__ = "cor_counting_occtax"
     __table_args__ = {"schema": "pr_occtax"}
     id_counting_occtax = DB.Column(DB.Integer, primary_key=True)
     unique_id_sinp_occtax = DB.Column(
-        UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
+        UUID(as_uuid=True), default=select([func.uuid_generate_v4()]), nullable=False
     )
     id_occurrence_occtax = DB.Column(
-        DB.Integer, ForeignKey(
-            "pr_occtax.t_occurrences_occtax.id_occurrence_occtax")
+        DB.Integer, 
+        ForeignKey("pr_occtax.t_occurrences_occtax.id_occurrence_occtax"),
+        nullable=False
     )
-    id_nomenclature_life_stage = DB.Column(DB.Integer)
-    id_nomenclature_sex = DB.Column(DB.Integer)
-    id_nomenclature_obj_count = DB.Column(DB.Integer)
+    id_nomenclature_life_stage = DB.Column(DB.Integer, nullable=False)
+    id_nomenclature_sex = DB.Column(DB.Integer, nullable=False)
+    id_nomenclature_obj_count = DB.Column(DB.Integer, nullable=False)
     id_nomenclature_type_count = DB.Column(DB.Integer)
     count_min = DB.Column(DB.Integer)
     count_max = DB.Column(DB.Integer)
@@ -240,7 +137,7 @@ class CorCountingOccurrence(OcctaxModel):
 
 
 @serializable
-class TOccurrencesOccurrence(OcctaxModel):
+class TOccurrencesOccurrence(DB.Model):
     __tablename__ = "t_occurrences_occtax"
     __table_args__ = {"schema": "pr_occtax"}
     id_occurrence_occtax = DB.Column(DB.Integer, primary_key=True)
@@ -272,9 +169,10 @@ class TOccurrencesOccurrence(OcctaxModel):
 
     cor_counting_occtax = relationship(
         "CorCountingOccurrence",
-        lazy="dynamic",
+        lazy="joined",
         cascade="all,delete-orphan",
         uselist=True,
+        backref=DB.backref("occurence", lazy='joined')
     )
 
     taxref = relationship("Taxref", lazy="joined")
