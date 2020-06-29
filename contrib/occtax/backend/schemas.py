@@ -44,7 +44,7 @@ class ObserverSchema(MA.SQLAlchemyAutoSchema):
 		load_instance = True
 		exclude = ('_password', '_password_plus', 'active', 'date_insert', 'date_update', 'desc_role', 'email', 'groupe', 'remarques', 'identifiant')
 	
-	nom_complet = fields.Function(lambda obj: obj.nom_role + ' ' + obj.prenom_role)
+	nom_complet = fields.Function(lambda obj: (obj.nom_role if obj.nom_role else "") + (" " + obj.prenom_role if obj.prenom_role else ""))
 
 	@pre_load
 	def make_observer(self, data, **kwargs):
