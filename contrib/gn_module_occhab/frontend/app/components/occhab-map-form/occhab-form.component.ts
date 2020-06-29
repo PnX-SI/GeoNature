@@ -11,6 +11,7 @@ import { CommonService } from "@geonature_common/service/common.service";
 import { AppConfig } from "@geonature_config/app.config";
 import { ModuleConfig } from "../../module.config";
 import { filter } from "rxjs/operators";
+
 @Component({
   selector: "pnx-occhab-form",
   templateUrl: "occhab-form.component.html",
@@ -37,6 +38,8 @@ export class OccHabFormComponent implements OnInit {
   public currentEditingStation: any;
   // boolean tocheck if the station has at least one hab (control the validity of the form)
   public atLeastOneHab = false;
+  public datasets: Array<any>;
+  public currentStations: any;
 
   constructor(
     public occHabForm: OcchabFormService,
@@ -50,6 +53,13 @@ export class OccHabFormComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // Récupère les datasets compatibles avec OccHab
+    this._gnDataService.getDatasets({ 'module_code': 'OCCHAB' }).subscribe(data => {
+      this.datasets = data.data;
+      for (let dataset of this.datasets) {
+        this.fetchDatasetStations(dataset);
+      };
+    })
     this.leafletDrawOptions;
     leafletDrawOption.draw.polyline = false;
     leafletDrawOption.draw.circle = false;
@@ -89,6 +99,16 @@ export class OccHabFormComponent implements OnInit {
           });
       }
     });
+  }
+
+  // Récupère les stations du dataset ciblé
+  fetchDatasetStations(dataset) {
+    this._occHabDataService.getStations(
+      { 'id_dataset': dataset.id_dataset }
+    ).subscribe(geojsonStations => {
+      this.currentStations = geojsonStations;
+      this._mapService.setDatasetOnLayers(dataset.dataset_name, this.currentStations);
+    })
   }
 
   formIsDisable() {
@@ -134,6 +154,15 @@ export class OccHabFormComponent implements OnInit {
   toggleDepth() {
     this.showDepth = !this.showDepth;
   }
+
+  //getStationsDataset() {
+  //  let dataset_id = ""
+  //  if (dataset_id) {
+  //    return this._occHabDataService.getStations({id_dataset_column: dataset_id});
+  //  } else {
+  //    return this._occHabDataService.getStations();
+  //  }
+  //}
 
   postStation() {
     const station = this.occHabForm.formatStationBeforePost();

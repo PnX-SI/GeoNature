@@ -75,6 +75,12 @@ export class MapService {
     }
   }
 
+  setDatasetOnLayers(datasetName, dataset) {
+    var stationsLayerGroup = L.geoJSON().addTo(this.map);
+    stationsLayerGroup.addData(dataset);
+    this.layerControl.addOverlay(stationsLayerGroup, datasetName);
+  }
+
   zoomOnMarker(coordinates, zoomLevel = 15) {
     this.map.setView(new L.LatLng(coordinates[1], coordinates[0]), zoomLevel);
   }
