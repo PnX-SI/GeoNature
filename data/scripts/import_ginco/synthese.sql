@@ -85,7 +85,6 @@ CREATE MATERIALIZED VIEW ginco_migration.vm_data_model_source AS
     m.sensialerte,
     m.sensidateattribution,
     m.nomcommunecalcule,
-    m.ogam_id_table_592e825e837af,
     m.nomvalide,
     m.sensireferentiel,
     m.sensible,
