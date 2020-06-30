@@ -41,7 +41,7 @@ srid_local=2154
 # availaible language value : fr
 default_language=fr
 
-# Permet l'installation des couches SIG des communes
+# Permet l'installation des couches SIG des communes et départements
 # Seules les couches de métropole en 2154 sont fournies (false conseillé hors métropole)
 install_sig_layers=true
 

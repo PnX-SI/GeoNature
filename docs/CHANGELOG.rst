@@ -2,9 +2,32 @@
 CHANGELOG
 =========
 
-2.4.0 (Unreleased)
-----------------
+2.4.1 (2020-06-25)
+------------------
 
+**🚀 Nouveautés**
+
+* Occurrences sans géométrie précise : Ajout d'un champs ``id_area_attachment`` dans la table ``gn_synthese.synthese`` permettant d'associer une observation à un zonage dans le référentiel géographique (``ref_geo.l_areas.id_area``) (#845 et #867)
+* Ajout d'un champs ``geojson_4326`` dans la table ``ref_geo.l_areas`` pour pouvoir afficher les zonages du référentiel géographique sur les cartes (#867)
+* Ajout de l'import par défaut des départements de France métropole dans le référentiel géographique lors de l'installation de GeoNature (en plus des actuelles communes et grilles)
+* Mise à jour des communes importées sur la version de février 2020 d'Admin express IGN pour les nouvelles installations
+
+**🐛 Corrections**
+
+* Correction d'un bug d'affichage des fonds de carte WMTS de l'IGN, apparu dans la version 2.4.0 avec l'ajout du support des fonds WMS (#890)
+* Gestion des exceptions de type ``FileNotFoundError`` lors de l'import des commandes d'un module
+
+**⚠️ Notes de version**
+
+Si vous mettez à jour GeoNature :
+
+* Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
+* Exécuter le script SQL de mise à jour de la BDD de GeoNature : https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.0to2.4.1.sql
+* Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
+* Vous pouvez alors lancer le script d'insertion des départements de France métropole dans le réferentiel géographique (optionnel) : https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.0to2.4.1_insert_departments.sh. Vérifier le déroulement de l'import dans le fichier ``var/log/insert_departements.log```
+
+2.4.0 - Fiches de métadonnées (2020-06-22)
+------------------------------------------
 
 **🚀 Nouveautés**
 
@@ -25,7 +48,7 @@ CHANGELOG
 * Ajout d'un champs texte ``reference_biblio`` dans la table ``gn_synthese``
 * Amélioration des perfomances du module de validation, en revoyant la vue ``gn_commons.v_synthese_validation_forwebapp``, en revoyant les requêtes et en générant le GeoJSON au niveau de la BDD (#923)
 * Ajout d'une fonction SQL d'insertion de données dans la synthese (et une fonction python associée)
-* Compléments de la documentation (Permissions des utilisateurs, Occhab)
+* Compléments de la documentation (Permissions des utilisateurs, Occhab...)
 * Ajout de scripts de migration des données de GINCO1 vers GeoNature (``data/scripts/import_ginco``)
 * Trigger Occtax vers Synthèse : Amélioration du formatage des heures avec ``date_trunc()`` dans la fonction ``pr_occtax.insert_in_synthese()`` (#896 par @jbdesbas)
 * Barre de navigation : Clarification de l'icône d'ouverture du menu, ajout d'un paramètre ``LOGO_STRUCTURE_FILE`` permettant de changer le nom du fichier du logo de l'application (#897 par @jbrieuclp)
@@ -35,7 +58,7 @@ CHANGELOG
 * Monitoring : Correction du backend pour utiliser la nouvelle syntaxe de jointure des tables
 * Ajout de fonctions SQL d'insertion de données dans la Synthèse (``gn_synthese.import_json_row()`` et ``gn_synthese.import_row_from_table()``) et de la fonction Python associée (``import_from_table(schema_name, table_name, field_name, value)``) pour l'API permettant de poster dans la Synthèse (#736). Utilisée par le module Monitoring.
 * Ajout du plugin Leaflet.Deflate (#934  par @jpm-cbna)
-* Connexion au CAS INPN : Renseigner automatiquement ``gn_commons.cor_module_dataset``
+* Connexion au CAS INPN : Association des JDD aux modules Occtax et Occhab (paramétrable) quand on importe les JDD de l'utilisateur qui se connecte (dans la table ``gn_commons.cor_module_dataset``)
 * Mise à jour des librairies Python Utils-Flask-SQLAlchemy (en version 0.1.1) et Utils-Flask-SQLAlchemy-Geo (en version 0.1.0) permettant de mettre en place les exports au format GeoPackage et corrigeant les exports de SHP contenant des géométries multiples
 
 **🐛 Corrections**
@@ -53,12 +76,14 @@ CHANGELOG
 
 **⚠️ Notes de version**
 
+Si vous mettez à jour GeoNature.
+
 * Vous devez d'abord mettre à jour TaxHub en version 1.7.0
 * Si vous mettez à jour TaxHub, vous pouvez mettre à jour Taxref en version 13. Il est aussi possible de le faire en différé, plus tard
 * Vous pouvez mettre à jour UsersHub en version 2.1.2
 * Exécuter le script SQL de mise à jour des nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.2to1.3.3.sql). 
 * Si vous avez mis à jour Taxref en version, répercutez les évolutions au niveau des nomenclatures avec le script SQL https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update_taxref_v13.sql. Sinon vous devrez l'exécuter plus tard, après avoir mis à jour Taxref en version 13.
-* Exécuter le script SQL de mise à jour de la BDD de GeoNature (``data/migrations/2.3.2to2.4.0.sql``)
+* Exécuter le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.3.2to2.4.0.sql)
 * Installer les dépendances de la librairie Python WeasyPrint :
 
 ::
@@ -90,7 +115,7 @@ par :
 ::
 
     DELETE FROM gn_synthese.cor_area_synthese cas
-    USING gn_synthese.synthese s , ref_geo.l_areas a
+    USING gn_synthese.synthese s, ref_geo.l_areas a
     WHERE cas.id_synthese = s.id_synthese AND a.id_area = cas.id_area
     AND public.ST_TOUCHES(s.the_geom_local,a.geom);
 

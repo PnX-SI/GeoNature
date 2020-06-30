@@ -119,6 +119,7 @@ BEGIN
 END;
 $$;
 
+
 ------------------------
 --TABLES AND SEQUENCES--
 ------------------------
@@ -174,6 +175,7 @@ CREATE TABLE synthese (
     the_geom_4326 public.geometry(Geometry,4326),
     the_geom_point public.geometry(Point,4326),
     the_geom_local public.geometry(Geometry,MYLOCALSRID),
+    id_area_attachment integer,
     date_min timestamp without time zone NOT NULL,
     date_max timestamp without time zone NOT NULL,
     validator character varying(1000),
@@ -205,6 +207,8 @@ COMMENT ON COLUMN gn_synthese.synthese.comment_context
   IS 'Commentaire du releve (ou regroupement)';
 COMMENT ON COLUMN gn_synthese.synthese.comment_description
   IS 'Commentaire de l''occurrence';
+COMMENT ON COLUMN gn_synthese.synthese.id_area_attachment
+  IS 'Id area du rattachement géographique - cas des observation sans géométrie précise';
 
 CREATE SEQUENCE synthese_id_synthese_seq
     START WITH 1
@@ -336,6 +340,10 @@ ALTER TABLE ONLY synthese
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_digitiser FOREIGN KEY (id_digitiser) REFERENCES utilisateurs.t_roles (id_role) ON UPDATE CASCADE;
 
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_area_attachment FOREIGN KEY (id_area_attachment) REFERENCES ref_geo.l_areas (id_area) ON UPDATE CASCADE;
+
+
 
 ALTER TABLE ONLY cor_area_synthese
     ADD CONSTRAINT fk_cor_area_synthese_id_synthese FOREIGN KEY (id_synthese) REFERENCES synthese(id_synthese) ON UPDATE CASCADE ON DELETE CASCADE;
@@ -436,7 +444,7 @@ ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_source_status CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_source_status,'STATUT_SOURCE')) NOT VALID;
 
 ALTER TABLE synthese
-  ADD CONSTRAINT check_synthese_info_geo_type CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_info_geo_type,'TYP_INF_GEO')) NOT VALID;
+  ADD CONSTRAINT check_synthese_info_geo_type_id_area_attachment CHECK (NOT (ref_nomenclatures.get_cd_nomenclature(id_nomenclature_info_geo_type) = '2'  AND id_area_attachment IS NULL )) NOT VALID;
 
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT check_gn_synthese_defaults_nomenclatures_value_is_nomenclature_in_type CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature, mnemonique_type)) NOT VALID;

@@ -141,10 +141,10 @@ then
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/usershub/usershub-data.sql  &>> var/log/install_db.log
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/usershub/usershub-dataset.sql  &>> var/log/install_db.log
         write_log "Insertion of data for usershub..."
-        # Insert GeoNature data for UsersHub
-        export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/utilisateurs/adds_for_usershub.sql  &>> var/log/install_db.log
         # First insert TaxHub data for UsersHub
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/taxhub/adds_for_usershub.sql  &>> var/log/install_db.log
+        # Insert GeoNature data for UsersHub
+        export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/utilisateurs/adds_for_usershub.sql  &>> var/log/install_db.log
 
     fi
 
@@ -253,13 +253,13 @@ then
     if [ "$install_sig_layers" = true ];
     then
         write_log "Insert default French municipalities (IGN admin-express)"
-        if [ ! -f 'tmp/geonature/communes_fr_admin_express_2019-01.zip' ]
+        if [ ! -f 'tmp/geonature/communes_fr_admin_express_2020-02.zip' ]
         then
-            wget  --cache=off http://geonature.fr/data/ign/communes_fr_admin_express_2019-01.zip -P tmp/geonature
+            wget  --cache=off http://geonature.fr/data/ign/communes_fr_admin_express_2020-02.zip -P tmp/geonature
         else
-            echo "tmp/geonature/communes_fr_admin_express_2019-01.zip already exist"
+            echo "tmp/geonature/communes_fr_admin_express_2020-02.zip already exist"
         fi
-        unzip tmp/geonature/communes_fr_admin_express_2019-01.zip -d tmp/geonature
+        unzip tmp/geonature/communes_fr_admin_express_2020-02.zip -d tmp/geonature
         sudo -n -u postgres -s psql -d $db_name -f tmp/geonature/fr_municipalities.sql &>> var/log/install_db.log
         write_log "Restore $user_pg owner"
         sudo -n -u postgres -s psql -d $db_name -c "ALTER TABLE ref_geo.temp_fr_municipalities OWNER TO $user_pg;" &>> var/log/install_db.log
@@ -267,6 +267,22 @@ then
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/ref_geo_municipalities.sql  &>> var/log/install_db.log
         write_log "Drop French municipalities temp table"
         sudo -n -u postgres -s psql -d $db_name -c "DROP TABLE ref_geo.temp_fr_municipalities;" &>> var/log/install_db.log
+
+        if [ ! -f 'tmp/geonature/departement_admin_express_2020-02.zip' ]
+        then
+            wget  --cache=off http://geonature.fr/data/ign/departement_admin_express_2020-02.zip -P tmp/geonature
+        else
+            echo "tmp/geonature/departement_admin_express_2020-02.zip already exist"
+        fi
+        write_log "Insert departements"
+        unzip tmp/geonature/departement_admin_express_2020-02.zip -d tmp/geonature
+
+        sudo -n -u postgres -s psql -d $db_name -f tmp/geonature/fr_departements.sql &>> var/log/install_db.log
+        write_log "Restore $user_pg owner"
+        sudo -n -u postgres -s psql -d $db_name -c "ALTER TABLE ref_geo.temp_fr_departements OWNER TO $user_pg;" &>> var/log/install_db.log
+        export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/ref_geo_departements.sql &>> var/log/install_db.log
+        write_log "Drop french departements temp table"
+        sudo -n -u postgres -s psql -d $db_name -c "DROP TABLE ref_geo.temp_fr_departements;" &>> var/log/install_db.log
     fi
 
     if [ "$install_grid_layer" = true ];
@@ -274,7 +290,7 @@ then
         write_log "Insert INPN grids"
         if [ ! -f 'tmp/geonature/inpn_grids.zip' ]
         then
-            wget  --cache=off https://geonature.fr/data/inpn/layers/2019/inpn_grids.zip -P tmp/geonature
+            wget  --cache=off https://geonature.fr/data/inpn/layers/2020/inpn_grids.zip -P tmp/geonature
         else
             echo "tmp/geonature/inpn_grids.zip already exist"
         fi
@@ -344,7 +360,7 @@ then
     if [ ! -f 'tmp/geonature/referentiel_donnees_sensibles_v13.csv' ]
         then
             wget --cache=off https://geonature.fr/data/inpn/sensitivity/referentiel_donnees_sensibles_v13.csv -P tmp/geonature/
-            mv tmp/geonature/referentiel_donnees_sensibles_v13.csv tmp/geonature/referentiel_donnees_sensiblees.csv
+            mv tmp/geonature/referentiel_donnees_sensibles_v13.csv tmp/geonature/referentiel_donnees_sensibles.csv
         else
             echo "tmp/geonature/referentiel_donnees_sensibles.csv already exist"
     fi
@@ -379,9 +395,9 @@ fi
 echo "Cleaning files..."
 rm tmp/geonature/*.sql
 rm tmp/usershub/*.sql
-rm tmp/taxhub/*.txt
-rm tmp/taxhub/*.sql
+rm -r tmp/taxhub/TAXREF_INPN_v13
 rm tmp/taxhub/*.csv
+rm tmp/taxhub/*.sql
 rm tmp/habref/*.csv
 rm tmp/habref/*.pdf
 rm tmp/habref/*.sql

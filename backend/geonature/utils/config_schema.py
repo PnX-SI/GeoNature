@@ -4,7 +4,13 @@
 
 import os
 
-from marshmallow import Schema, fields, validates_schema, ValidationError, post_load
+from marshmallow import (
+    Schema,
+    fields,
+    validates_schema,
+    ValidationError,
+    post_load,
+)
 from marshmallow.validate import OneOf, Regexp, Email
 from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_EXPORT_COLUMNS,
@@ -228,25 +234,27 @@ cookie_expiration = GnPySchemaConf().load({}).data.get("COOKIE_EXPIRATION")
 BASEMAP = [
     {
         "name": "OpenStreetMap",
-        "layer": "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
-        "attribution": "&copy OpenStreetMap",
+        "url": "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+        "options": {"attribution": "&copy OpenStreetMap",},
     },
     {
         "name": "OpenTopoMap",
-        "layer": "//a.tile.opentopomap.org/{z}/{x}/{y}.png",
-        "attribution": "© OpenTopoMap",
+        "url": "//a.tile.opentopomap.org/{z}/{x}/{y}.png",
+        "options": {"attribution": "© OpenTopoMap",},
     },
     {
         "name": "GoogleSatellite",
         "layer": "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-        "subdomains": ["mt0", "mt1", "mt2", "mt3"],
-        "attribution": "© GoogleMap",
+        "options": {
+            "subdomains": ["mt0", "mt1", "mt2", "mt3"],
+            "attribution": "© GoogleMap",
+        },
     },
 ]
 
 
 class MapConfig(Schema):
-    BASEMAP = fields.List(fields.Dict, missing=BASEMAP)
+    BASEMAP = fields.List(fields.Dict(), missing=BASEMAP)
     CENTER = fields.List(fields.Float, missing=[46.52863469527167, 2.43896484375])
     ZOOM_LEVEL = fields.Integer(missing=6)
     ZOOM_LEVEL_RELEVE = fields.Integer(missing=15)
