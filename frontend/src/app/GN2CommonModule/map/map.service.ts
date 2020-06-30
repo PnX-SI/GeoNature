@@ -253,4 +253,31 @@ export class MapService {
       this.setGeojsonCoord(geojson);
     }
   }
+  
+  //--------------------------------------------------------------------------------------
+//----------------Geofit additional code map.service.ts
+ //liste des lieux
+ getLieux(): Observable<any> {
+  return this.http.get<any>(`${AppConfig.API_ENDPOINT}/occtax/lieux`);
+}
+
+//Afficher lieu
+afficheLieux(lieu:GeoJSON.Feature){
+ L.geoJSON(lieu).addTo(this.map);
+ const geojson = L.geoJSON(lieu);
+ this.map.fitBounds(geojson.getBounds());
+// this.map.setView(geojson.getBounds().getCenter(),12)
+}
+
+// Supprimer lieu
+deleteLieu(nom:String): Observable<{}> {
+const url=`${AppConfig.API_ENDPOINT}/occtax/dellieu/${nom}`;
+return this.http.delete(url);
+}
+
+  //Ajouter lieu
+  addLieu(lieu:GeoJSON.Feature): Observable<any>{
+      
+    return this.http.post<GeoJSON.Feature>(`${AppConfig.API_ENDPOINT}/occtax/addlieu`,lieu);
+  } 
 }

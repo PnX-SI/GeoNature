@@ -36,6 +36,7 @@ from .models import (
     VReleveOccurrence,
     corRoleRelevesOccurrence,
     DefaultNomenclaturesValue,
+    TLieux,
 )
 from .repositories import (
     ReleveRepository,
@@ -591,3 +592,58 @@ def export(info_role):
             error=message,
             redirect=current_app.config["URL_APPLICATION"] + "/#/occtax",
         )
+#######################################################################################
+#----------------Geofit additional code  blueprint.py 
+#######################################################################################
+#######################################################################################
+# recuperer les lieux
+@blueprint.route("/lieux", methods=["GET"])
+@permissions.check_cruved_scope("R",True, module_code="OCCTAX")
+@json_resp
+def getLieux(info_role):
+    id_role = info_role.id_role
+    data = DB.session.query(TLieux).filter(TLieux.id_role==id_role).all()
+    return [n.as_geofeature('geom_lieu', 'nom_lieu') for n in data]
+
+#######################################################################################
+# supprimer un lieu
+@blueprint.route("/dellieu/<string:nom>", methods=["DELETE"])
+@permissions.check_cruved_scope("D",True, module_code="OCCTAX")
+@json_resp
+def delOneLieu(nom, info_role):
+    user_id = info_role.id_role
+    print(user_id)
+    DB.session.query(TLieux).filter(TLieux.id_role==user_id, TLieux.nom_lieu==nom).delete()
+    DB.session.commit()
+
+    return {"message": "suppression du lieu avec succés"}
+
+#######################################################################################
+# ajouter un lieu
+@blueprint.route("/addlieu", methods=["POST"])
+@permissions.check_cruved_scope("C",True, module_code="OCCTAX")
+@json_resp
+def addOneLieu(info_role):
+    user_id = info_role.id_role
+    
+    #data = dict(request.get_json())
+    
+    #data["properties"]["observers"]
+    
+    data = request.get_json()
+    #print(data.is_json)
+    print (data)
+    nom_lieu=data['id']
+    shape = asShape(data["geometry"])
+    two_dimension_geom = remove_third_dimension(shape)
+    geom_lieu = from_shape(two_dimension_geom, srid=4326)
+    lieu_nom=data['id']
+
+
+    lieu = TLieux(id_role = user_id, nom_lieu = nom_lieu, geom_lieu=geom_lieu)
+    DB.session.add(lieu)
+    DB.session.commit()
+
+    return {"message": "Ajout du lieu avec succés"}
+#######################################################################################
+#######################################################################################

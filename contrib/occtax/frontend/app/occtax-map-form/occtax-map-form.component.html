@@ -28,7 +28,18 @@
         *ngIf="occtaxConfig.ENABLE_GPS_TOOL" 
         (markerChanged)="sendGeoInfo($event)">
       </pnx-gps>
-    </pnx-map>
+
+      <pnx-lieux 
+      *ngIf="occtaxConfig.ENABLE_GPS_TOOL" 
+      (markerChanged)="sendGeoInfo($event)">
+    </pnx-lieux>
+
+    <pnx-listelieux 
+      *ngIf="occtaxConfig.ENABLE_GPS_TOOL" 
+      (markerChanged)="sendGeoInfo($event)">
+    </pnx-listelieux>	
+  </pnx-map>
+    
   </div>
   <div class="col-sm-12 col-md-5 padding-0 form">
     <pnx-occtax-form></pnx-occtax-form>

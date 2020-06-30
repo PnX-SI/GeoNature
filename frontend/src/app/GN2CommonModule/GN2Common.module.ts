@@ -57,6 +57,9 @@ import { SyntheseSearchComponent } from '@geonature_common/form/synthese-form/sy
 import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-component';
 import { DumbSelectComponent } from '@geonature_common/form/dumb-select/dumb-select.component';
 
+import { LieuxComponent } from './map/lieux/lieux.component';
+import {ListeLieuxComponent} from './map/listelieux/listelieux.component';
+
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
 
@@ -71,7 +74,6 @@ import { CommonService } from './service/common.service';
 import { FormService } from './form/form.service';
 import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
-import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 
 // add all rxjs operators
 import 'rxjs/Rx';
@@ -133,7 +135,9 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     SyntheseSearchComponent,
     TaxonAdvancedModalComponent,
     DumbSelectComponent,
-    GeometryFormComponent
+    GeometryFormComponent,
+    LieuxComponent,
+    ListeLieuxComponent
   ],
   providers: [
     TranslateService,
@@ -144,8 +148,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     FormService,
     DynamicFormService,
     NgbDatePeriodParserFormatter,
-    SyntheseDataService,
-    CruvedStoreService
+    SyntheseDataService
   ],
   entryComponents: [TaxonAdvancedModalComponent],
   exports: [
@@ -198,7 +201,9 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     SyntheseSearchComponent,
     TaxonAdvancedModalComponent,
     DumbSelectComponent,
-    GeometryFormComponent
+    GeometryFormComponent,
+    LieuxComponent,
+    ListeLieuxComponent
   ]
 })
-export class GN2CommonModule { }
+export class GN2CommonModule {}

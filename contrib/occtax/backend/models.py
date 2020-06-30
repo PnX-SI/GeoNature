@@ -311,3 +311,17 @@ class DefaultNomenclaturesValue(DB.Model):
     mnemonique_type = DB.Column(DB.Integer, primary_key=True)
     id_organism = DB.Column(DB.Integer, primary_key=True)
     id_nomenclature = DB.Column(DB.Integer, primary_key=True)
+	
+#######################################################################################
+#----------------Geofit additional code  models.py 
+#######################################################################################   
+@serializable
+@geoserializable
+class TLieux(DB.Model):
+    __tablename__ = "t_lieux"
+    __table_args__ = {"schema": "gn_commons"}
+    id_role = DB.Column(DB.Integer, primary_key=True)
+    nom_lieu = DB.Column(DB.String, primary_key=True)
+    geom_lieu = DB.Column(Geometry("GEOMETRY", 4326))
+    def get_geofeature(self, recursif=True):
+        return self.as_geofeature("geom_lieu", "nom_lieu", recursif) 
