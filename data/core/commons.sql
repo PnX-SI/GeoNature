@@ -529,6 +529,9 @@ ALTER TABLE t_modules
 ALTER TABLE t_mobile_apps
     ADD CONSTRAINT unique_t_mobile_apps_app_code UNIQUE (app_code);
 
+ALTER TABLE bib_tables_location
+  ADD CONTRAINT unique_bib_table_location_schema_name_table_name UNIQUE (schema_name, table_name)
+
 ------------
 --TRIGGERS--
 ------------
