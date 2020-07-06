@@ -175,7 +175,6 @@ CREATE TABLE t_datasets (
     dataset_shortname character varying(255) NOT NULL,
     dataset_desc text NOT NULL,
     id_nomenclature_data_type integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value('DATA_TYP'),
-    id_nomenclature_jdd_data_type integer NOT NULL DEFAULT ref_nomenclatures.get_default_nomenclature_value('JDD_DATA_TYPE'),
     keywords text,
     marine_domain boolean NOT NULL,
     terrestrial_domain boolean NOT NULL,
@@ -352,9 +351,6 @@ ALTER TABLE ONLY t_datasets
 
 ALTER TABLE ONLY t_datasets
     ADD CONSTRAINT fk_t_datasets_data_type FOREIGN KEY (id_nomenclature_data_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_t_datasets_jdd_data_type FOREIGN KEY (id_nomenclature_jdd_data_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_datasets
     ADD CONSTRAINT fk_t_datasets_objectif FOREIGN KEY (id_nomenclature_dataset_objectif) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;

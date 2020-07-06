@@ -9,10 +9,10 @@ GeoNature possède une architecture modulaire et s'appuie sur plusieurs "service
 - UsersHub et son sous-module d'authentification Flask (https://github.com/PnX-SI/UsersHub-authentification-module) sont utilisés pour gérer le schéma de BDD ``ref_users`` (actuellement nommé ``utilisateurs``) et l'authentification. UsersHub permet une gestion centralisée de ses utilisateurs (listes, organismes, droits), utilisable par les différentes applications de son système d'information.
 - TaxHub (https://github.com/PnX-SI/TaxHub) est utilisé pour la gestion du schéma de BDD ``ref_taxonomy`` (actuellement nommé ``taxonomie``). L'API de TaxHub est utilisée pour récupérer des informations sur les espèces et la taxonomie en général.
 - Un sous-module Flask (https://github.com/PnX-SI/Nomenclature-api-module/) a été créé pour une gestion centralisée des nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module/), il pilote le schéma ``ref_nomenclature``.
-- ``ref_geo`` est le schéma de base de données qui gère le référentiel géographique. Il est utilisé pour gérer les zonages, les communes, le calcul automatique d'altitude et les intersections spatiales.
+- ``ref_geo`` est le schéma de base de données qui gère le référentiel géographique. Il est utilisé pour gérer les zonages, les communes, le MNT, le calcul automatique d'altitude et les intersections spatiales.
 
 GeoNature a également une séparation claire entre le backend (API: intéraction avec la base de données) et le frontend (interface utilisateur). Le backend peut être considéré comme un "service" dont se sert le frontend pour récupérer ou poster des données. 
-NB: Le backend et le frontend se lancent séparement dans GeoNature.
+NB : Le backend et le frontend se lancent séparément dans GeoNature.
 
 .. image :: http://geonature.fr/docs/img/admin-manual/design-geonature.png
 
@@ -21,11 +21,11 @@ Base de données
 
 Dans la continuité de sa version 1, GeoNature V2 utilise le SGBD PostgreSQL et sa cartouche spatiale PostGIS. Cependant l'architecture du modèle de données a été complétement revue.
 
-La base de données a notamment été refondue pour s'appuyer au maximum sur des standards, comme le standard d'Occurrences de Taxon du SINP (Voir https://github.com/PnX-SI/GeoNature/issues/183).
+La base de données a notamment été refondue pour s'appuyer au maximum sur des standards, comme le standard d'Occurrences de taxons du SINP (Voir http://standards-sinp.mnhn.fr/category/standards/occurrences-de-taxons/).
 
 La base de données a également été traduite en Anglais et supporte désormais le multilangue.
 
-Les préfixes des schémas de BDD sont désormais standardisés : ``ref_`` concerne les référentiels externes, ``gn`` concerne les schémas du coeur de GeoNature et ``pr`` les schémas des protocoles. 
+Les préfixes des schémas de BDD sont désormais standardisés : ``ref_`` concerne les référentiels externes, ``gn_`` concerne les schémas du coeur de GeoNature et ``pr_`` les schémas des protocoles. 
 
 Autres standards :
 
@@ -252,7 +252,7 @@ La base de données contient de nombreuses fonctions.
   --Function to return id_nomenclature depending on observation sensitivity
   --USAGE : SELECT ref_nomenclatures.calculate_sensitivity(240,21);
 
-TODO : A compléter... A voir si on mentionne les triggers ou pas...
+TODO : A compléter...
 
 Tables transversales
 """"""""""""""""""""
@@ -277,7 +277,6 @@ Cheminement d'une donnée Occtax :
 3. Trigger d'écriture dans la table verticale ``t_validations`` à partir de la valeur par défaut de la nomenclature de validation (``gn_common.ref_nomenclatures.defaults_nomenclatures_value``)
 4. Trigger d'écriture d'Occtax vers la synthèse (on ne maitrise pas l'ordre de ces 2 triggers qui sont lancés en même temps)
 5. Trigger de rapatriement du dernier statut de validation de la table verticale vers la synthèse.
-        
 
 Triggers dans la synthèse
 """""""""""""""""""""""""
@@ -314,7 +313,7 @@ Respecte le standard Occurrence de taxon du SINP.
     1. Récupération de l’ensemble des aires intersectant la donnée de synthèse
     2. Suppression des enregistrement de ``cor_area_taxon`` avec le cd_nom et les aires concernés
     3. Insertion dans ``cor_area_taxon`` recalculant les max, nb_obs et couleur pour chaque aire pour l’ensemble des données avec les aires concernées et le cd_nom concerné ne correspondant pas à la donnée supprimée
-    4. Suppression des enregistrements de gn_synthese.cor_area_synthese
+    4. Suppression des enregistrements de ``gn_synthese.cor_area_synthese``
     
 * tri_update_cor_area_taxon_update_cd_nom
 
@@ -555,13 +554,11 @@ A la fin de l'opération de maintenance, effectuer la manipulation inverse :
     
 Attention : ne pas stopper le backend (des opérations en BDD en cours pourraient être corrompues)
 
-
 - Redémarrage de PostgreSQL
 
   Si vous effectuez des manipulations de PostgreSQL qui nécessitent un redémarrage du SGBD (``sudo service postgresql restart``), il faut impérativement lancer un redémarrage des API GeoNature et TaxHub pour que celles-ci continuent de fonctionner. Pour cela, lancez la commande ``sudo supervisorctl reload``. 
   
   **NB**: Ne pas faire ces manipulations sans avertir les utilisateurs d'une perturbation temporaire des applications.
-
 
 Sauvegarde et restauration
 --------------------------
@@ -679,7 +676,7 @@ Pour cela exécuter la commande suivante depuis le répertoire ``frontend``
 
     npm run start -- --host=0.0.0.0 --disable-host-check
 
-L'application est désormais disponible sur une serveur de développement à la même addresse que précédemment, mais sur le port 4200 : http://test.geonature.fr:4200
+L'application est désormais disponible sur un serveur de développement à la même addresse que précédemment, mais sur le port 4200 : http://test.geonature.fr:4200
 
 Ouvrez un nouveau terminal (pour laisser tourner le serveur de développement), puis modifier la variable ``URL_APPLICATION`` dans le fichier ``geonature_config.toml`` en mettant l'adresse ci-dessus et relancer l'application (``sudo supervisorctl restart geonature2``)
 
@@ -738,7 +735,6 @@ De la même manière, il est nécessaire de relancer les commandes suivantes pou
     cd /home/`whoami`/geonature/frontend
     npm run build
     
-    
 Customiser l'aspect esthétique
 """"""""""""""""""""""""""""""
 
@@ -754,7 +750,7 @@ Pour remplacer la couleur de fond du bandeau de navigation par une image, on peu
       url(bandeau_test.jpg)
    }
 
-Dans ce cas, l’image ``bandeau_test.jpg`` doit se trouver dans le répertoire ``>geonature/frontend/src`` .
+Dans ce cas, l’image ``bandeau_test.jpg`` doit se trouver dans le répertoire ``geonature/frontend/src``.
 
 Comme pour la modification des contenus, il est nécessaire de relancer la commande suivante pour que les modifications soient prises en compte :
 
@@ -763,6 +759,41 @@ Comme pour la modification des contenus, il est nécessaire de relancer la comma
     cd /home/`whoami`/geonature/frontend
     npm run build
 
+Customiser les noms et pictos des modules
+"""""""""""""""""""""""""""""""""""""""""
+
+Vous pouvez modifier l'intitulé et le pictogramme des modules dans le menu des modules. Pour cela, adaptez le contenu des champs ``module_label`` et ``module_picto`` (avec des icones de la librairie Font Awesome - https://fontawesome.com) dans la table ``gn_commons.t_modules``. 
+
+Exemple :
+
+.. code-block:: SQL
+
+    -- Module Occtax
+    UPDATE gn_commons.t_modules SET module_label = 'Occtax' WHERE module_code = 'OCCTAX';
+    UPDATE gn_commons.t_modules SET module_picto = 'fa-map-marker' WHERE module_code = 'OCCTAX';
+    -- Module Occhab
+    UPDATE gn_commons.t_modules SET module_label = 'Occhab' WHERE module_code = 'OCCHAB';
+    UPDATE gn_commons.t_modules SET module_picto = 'fa-leaf' WHERE module_code = 'OCCHAB';
+    -- Module Import
+    UPDATE gn_commons.t_modules SET module_label = 'Import' WHERE module_code = 'IMPORT';
+    UPDATE gn_commons.t_modules SET module_picto = 'fa-upload' WHERE module_code = 'IMPORT';
+    -- Module Export
+    UPDATE gn_commons.t_modules SET module_label = 'Export' WHERE module_code = 'EXPORTS';
+    UPDATE gn_commons.t_modules SET module_picto = 'fa-download' WHERE module_code = 'EXPORTS';
+    -- Module Dashboard
+    UPDATE gn_commons.t_modules SET module_label = 'Dashboard' WHERE module_code = 'DASHBOARD';
+    UPDATE gn_commons.t_modules SET module_picto = 'fa-bar-chart' WHERE module_code = 'DASHBOARD';
+    -- Module Validation
+    UPDATE gn_commons.t_modules SET module_label = 'Validation' WHERE module_code = 'VALIDATION';
+    UPDATE gn_commons.t_modules SET module_picto = 'fa-check' WHERE module_code = 'VALIDATION';
+    -- Module Monitorings (Suivis)
+    UPDATE gn_commons.t_modules SET module_label = 'Suivis' WHERE module_code = 'MONITORINGS';
+    UPDATE gn_commons.t_modules SET module_picto = 'fa-eye' WHERE module_code = 'MONITORINGS';
+
+Customiser les exports PDF
+""""""""""""""""""""""""""
+
+Vous pouvez modifier le bandeau et le logo fournis par défaut dans les exports PDF en modifiant les images ``Bandeau_pdf.png`` et ``Logo_pdf.png`` dans ``backend/static/images``. Les fichiers CSS des exports PDF sont dans ``backend/static/css``.
 
 Intégrer des données
 --------------------
@@ -779,7 +810,6 @@ GeoNature est fourni avec des données géographiques de base sur la métropôle
 * Suivez la procédure de chargement du MNT en l'adaptant : https://github.com/PnX-SI/GeoNature/blob/master/install/install_db.sh#L295-L299
 
 *TODO : Procédure à améliorer et simplifier : https://github.com/PnX-SI/GeoNature/issues/235*
-
 
 Si vous n'avez pas choisi d'intégrer le raster MNT national à 250m fourni par défaut lors de l'installation ou que vous souhaitez le remplacer, voici les commandes qui vous permettront de le faire.
 
@@ -855,7 +885,6 @@ Vous pouvez aussi vous inspirer des exemples avancés de migration des données 
 * Import continu : https://github.com/PnX-SI/Ressources-techniques/tree/master/GeoNature/migration/generic
 * Import d'un CSV historique (Flavia) : https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/2018-12-csv-vers-synthese-FLAVIA.sql
 
-
 Création de compte
 ------------------
 
@@ -913,10 +942,9 @@ Deux modes sont alors disponibles. Soit l'utilisateur est automatiquement accept
         AUTO_ACCOUNT_CREATION = false
         VALIDATOR_EMAIL = 'email@validateur.io'
 
-
 L'utilisateur qui demande la création de compte est automatiquement mis dans un "groupe" UsersHub (par défaut, il s'agit du groupe "En poste"). Ce groupe est paramétrable depuis la table ``utilisateurs.cor_role_app_profil``. (La ligne où ``is_default_group_for_app = true`` sera utilisée comme groupe par défaut pour GeoNature). Il n'est pas en paramètre de GeoNature pusqu'il serait falsifiable via l'API. ⚠️ **Attention**, si vous effectuez une migration depuis une version de GeoNature < 2.2.0, aucun groupe par défaut n'est défini, vous devez définir à la main le groupe par défaut pour l'application GeoNature dans la table ``utilisateurs.cor_role_app_profil``.
 
-Il est également possible de créer automatiquement un jeu de données et un cadre d'acquisition "personnel" à l'utilisateur afin qu'il puisse saisir des données dès sa création de compte via le paramètre `AUTO_DATASET_CREATION`. Par la suite l'administrateur pourra rattacher l'utilisateur à des JDD et CA via son organisme.
+Il est également possible de créer automatiquement un jeu de données et un cadre d'acquisition "personnel" à l'utilisateur afin qu'il puisse saisir des données dès sa création de compte via le paramètre ``AUTO_DATASET_CREATION``. Par la suite l'administrateur pourra rattacher l'utilisateur à des JDD et CA via son organisme.
 
 ::
 
@@ -929,7 +957,7 @@ Il est également possible de créer automatiquement un jeu de données et un ca
 Customisation du formulaire
 """""""""""""""""""""""""""
 
-Le formulaire de création de compte est par défaut assez minimaliste (nom, prénom, email, mdp, organisme, remarque).
+Le formulaire de création de compte est par défaut assez minimaliste (nom, prénom, email, mot de passe, organisme, remarque).
 
 *NB* l'organisme est demandé à l'utilisateur à titre "informatif", c'est à l'administrateur de rattacher individuellement l'utilisateur à son organisme, et éventuellement de le créer, s'il n'existe pas.
 
@@ -1144,7 +1172,7 @@ Par exemple, pour contraindre la saisie à l'affichage de la carte IGN au 1/2500
 Gestion des exports
 """""""""""""""""""
 
-Les exports du module sont basés sur une vue (par défaut ``pr_occtax.export_occtax_dlb``)
+Les exports du module sont basés sur une vue (par défaut ``pr_occtax.export_occtax_sinp``)
 
 Il est possible de définir une autre vue pour avoir des exports personnalisés.
 Pour cela, créer votre vue, et modifier les paramètres suivants :
@@ -1152,7 +1180,7 @@ Pour cela, créer votre vue, et modifier les paramètres suivants :
 ::
 
     # Name of the view based export
-    export_view_name = 'ViewExportDLB'
+    export_view_name = 'export_occtax_sinp'
 
     # Name of the geometry columns of the view
     export_geom_columns_name = 'geom_4326'
@@ -1365,7 +1393,7 @@ La vue ``gn_synthese.v_synthese_for_web_app`` est taillée pour l'interface web,
 
 **Export des métadonnées**
 
-En plus des observations brutes, il est possible d'effectuer un export des métadonnées associées à ses observations. L'export est au format CSV et est construit à partir de la table ``gn_synthese.v_metadata_for_export``. Vous pouvez modifier le SQL de création de cette vue pour customiser votre export (niveau SQL avancé).
+En plus des observations brutes, il est possible d'effectuer un export des métadonnées associées aux observations. L'export est au format CSV et est construit à partir de la table ``gn_synthese.v_metadata_for_export``. Vous pouvez modifier le SQL de création de cette vue pour customiser votre export (niveau SQL avancé).
 
 Deux champs sont cependant obligatoire dans la vue : 
 

@@ -1,16 +1,24 @@
 import { Injectable } from '@angular/core';
 import { DataFormService } from '@geonature_common/form/data-form.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class ModuleService {
   // all active modules
-  public modules: Array<any>;
   // all modules exepted GEONATURE, for sidebar display
   public displayedModules: Array<any>;
-
+  private $module: BehaviorSubject<Array<any>> = new BehaviorSubject(null);
   constructor(private _api: DataFormService) {
+    this.fetchModules();
+  }
+
+  get modules(): Array<any> {
+    return this.$module.getValue()
+  }
+
+  fetchModules() {
     this._api.getModulesList([]).subscribe(data => {
-      this.modules = data;
+      this.$module.next(data);
       this.displayedModules = data.filter(mod => {
         return (mod.module_code.toLowerCase() !== 'geonature') && (mod.active_frontend || mod.module_external_url);
       });
@@ -20,6 +28,10 @@ export class ModuleService {
 
   setModulesLocalStorage(modules) {
     localStorage.setItem('modules', JSON.stringify(modules));
+  }
+
+  getModules() {
+    return localStorage.getItem('modules')
   }
 
   /**

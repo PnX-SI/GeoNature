@@ -397,4 +397,5 @@ INSERT INTO gn_synthese.synthese (id_dataset, nom_cite, date_min, date_max, the_
 ----------------
 
 INSERT INTO gn_commons.t_mobile_apps(app_code, relative_path_apk) VALUES
-('OCCTAX', '/occtax');
+('OCCTAX', 'static/mobile/occtax/my_apk.apk'),
+('SYNC', 'static/mobile/occtax/my_apk2.apk');

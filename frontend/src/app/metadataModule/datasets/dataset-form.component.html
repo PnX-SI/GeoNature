@@ -25,7 +25,7 @@
               <div class="form-group">
                   <div class="input-group">
                       <input class="form-control form-control-sm"
-                        type="text" name="" id="" [formControl]="datasetForm.controls.dataset_name">
+                        type="text" [formControl]="datasetForm.controls.dataset_name">
                     </div>
                 <small *ngIf="datasetForm.controls.dataset_name.errors?.maxlength" class="error" style="color:red">
                   Le nom du JDD doit être inférieur ou égal à 150 caractères
@@ -36,7 +36,7 @@
               <div class="form-group">
                   <div class="input-group">
                       <input class="form-control form-control-sm"
-                        type="text" name="" id="" [formControl]="datasetForm.controls.dataset_shortname">
+                        type="text" [formControl]="datasetForm.controls.dataset_shortname">
       
                     </div>
                 <small *ngIf="datasetForm.controls.dataset_shortname.errors?.maxlength" class="error" style="color:red">
@@ -47,7 +47,7 @@
               <small>Description</small>
               <div class="input-group">
                 <input class="form-control form-control-sm"
-                  type="text" name="" id="" [formControl]="datasetForm.controls.dataset_desc">
+                  type="text" [formControl]="datasetForm.controls.dataset_desc">
               </div>
       
               <small>Domaine</small>
@@ -101,10 +101,14 @@
                 Validable
               </small>
               <br>
-              <pnx-multiselect [values]="moduleService.modules" [parentFormControl]="datasetForm.get('modules')" keyLabel="module_label" keyValue="id_module"
+              <pnx-multiselect 
+                [values]="moduleService.modules" 
+                [parentFormControl]="datasetForm.get('modules')" 
+                keyLabel="module_label" 
+                keyValue="id_module"
                 label="Module(s) GeoNature associé(s) au jeu de données" [bindAllItem]="true">
               </pnx-multiselect>
-
+              
             </div>
       
           </div>
@@ -130,7 +134,7 @@
       
       <button [disabled]="datasetForm.invalid || cor_dataset_actor_array.invalid" class="btn btn-success margin-top-sm"
         (click)="postDataset()"> Enregistrer le jeu de données</button>
-      <button class="btn btn-danger margin-top-sm" routerLink="/metadata/datasets"> Annuler</button>
+      <button class="btn btn-danger margin-top-sm" routerLink="/metadata"> Annuler</button>
       
 </div>
 

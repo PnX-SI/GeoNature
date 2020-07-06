@@ -3,6 +3,21 @@
 -------------------
 -- Creation d'une vue materialisée avec seulement les données avec geom 
 -- et qui n'appartiennent pas à un JDD suppriméé
+CREATE OR REPLACE FUNCTION convert_to_integer(v_input text)
+RETURNS INTEGER AS $$
+DECLARE v_int_value INTEGER DEFAULT NULL;
+BEGIN
+    BEGIN
+        v_int_value := v_input::INTEGER;
+    EXCEPTION WHEN OTHERS THEN
+        RAISE NOTICE 'Invalid integer value: "%".  Returning NULL.', v_input;
+        RETURN NULL;
+    END;
+RETURN v_int_value;
+END;
+$$ LANGUAGE plpgsql;
+
+
 DROP MATERIALIZED VIEW IF exists ginco_migration.vm_data_model_source CASCADE;
 DROP SEQUENCE IF EXISTS vm_data_model_source;
 CREATE SEQUENCE vm_data_model_source CYCLE;
@@ -10,7 +25,7 @@ CREATE MATERIALIZED VIEW ginco_migration.vm_data_model_source AS
  SELECT nextval('vm_data_model_source'::regclass) AS id,
     m.anneerefcommune,
     m.typeinfogeomaille,
-    m.cdnom::integer AS cdnom,
+    convert_to_integer(m.cdnom) AS cdnom,
     m.jourdatedebut,
     m.statutobservation,
     m.occnaturalite,
@@ -70,7 +85,6 @@ CREATE MATERIALIZED VIEW ginco_migration.vm_data_model_source AS
     m.sensialerte,
     m.sensidateattribution,
     m.nomcommunecalcule,
-    m.ogam_id_table_592e825e837af,
     m.nomvalide,
     m.sensireferentiel,
     m.sensible,
@@ -83,7 +97,7 @@ CREATE MATERIALIZED VIEW ginco_migration.vm_data_model_source AS
     m.taxomodif,
     m.taxoalerte,
     m.user_login
-   FROM ginco_migration.:GINCO_TABLE m
+   FROM ginco_migration.model_592e825dab701_observation m
    -- on ne prend que les JDD non supprimé car la table gn_meta.t_datasets ne comprend que les JDD non supprimé
    join gn_meta.t_datasets d on d.unique_dataset_id = m.jddmetadonneedeeid::uuid
     where m.geometrie is not null
@@ -96,7 +110,6 @@ CREATE MATERIALIZED VIEW ginco_migration.vm_data_model_source AS
       and f."key" = 'metadataId'
      )
    ;
-
 
 
 -- Insertion des données
@@ -182,7 +195,7 @@ SELECT
   m.denombrementmax,
   tax.cd_nom,
   m.nomcite,
-  m.versiontaxref,
+  substring(m.versiontaxref from 1 for 50),
   m.geometrie,
   public.st_centroid(m.geometrie),
   public.st_transform(m.geometrie, 2154),

@@ -124,7 +124,6 @@ class SyntheseQuery:
         """
         cd_ref_childs = []
         if "cd_ref_parent" in self.filters:
-            print(self.filters["cd_ref_parent"])
             # find all taxon child from cd_ref parent
             cd_ref_parent_int = list(
                 map(lambda x: int(x), self.filters.pop("cd_ref_parent"))
@@ -208,9 +207,15 @@ class SyntheseQuery:
                 self.model.id_dataset.in_(self.filters.pop("id_dataset"))
             )
         if "observers" in self.filters:
+            #découpe des éléments saisies par les espaces
+            observers = (self.filters.pop("observers")[0]).split()
             self.query = self.query.where(
-                self.model.observers.ilike(
-                    "%" + self.filters.pop("observers")[0] + "%")
+                and_(*[self.model.observers.ilike("%" + observer + "%") for observer in observers])
+            )
+
+        if "observers_list" in self.filters:
+            self.query = self.query.where(
+                and_(*[self.model.observers.ilike("%" + observer.get('nom_complet') + "%") for observer in self.filters.pop("observers_list")])
             )
 
         if "id_organism" in self.filters:
@@ -280,6 +285,11 @@ class SyntheseQuery:
                     ),
                 )
             )
+        # use for validation module since the class is factorized
+        if "modif_since_validation" in self.filters:
+            self.query = self.query.where(self.model.meta_update_date > self.model.validation_date)
+            self.filters.pop("modif_since_validation")
+
         # generic filters
         for colname, value in self.filters.items():
             if colname.startswith("area"):
@@ -288,9 +298,12 @@ class SyntheseQuery:
                 )
                 self.query = self.query.where(
                     CorAreaSynthese.id_area.in_(value))
-            else:
+            elif colname.startswith("id_"):
                 col = getattr(self.model.__table__.columns, colname)
                 self.query = self.query.where(col.in_(value))
+            else:
+                col = getattr(self.model.__table__.columns, colname)
+                self.query = self.query.where(col.ilike("%{}%".format(value[0])))
 
     def filter_query_all_filters(self, user):
         """High level function to manage query with all filters.

@@ -447,7 +447,7 @@ def insert_cor_af_territory(cur_af_uuid,cur_territory):
 def insert_cor_af_publications(cur_af_uuid,af_publications):
 	cur_insert_query='INSERT INTO gn_meta.cor_acquisition_framework_publication (id_acquisition_framework,id_publication)' \
 		+'VALUES ((SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE unique_acquisition_framework_id=\''+cur_af_uuid+'\'), '\
-		+'(SELECT id_publication FROM gn_meta.sinp_datatype_publications WHERE publication_reference='+cur_publication+'))'
+		+'(SELECT id_publication FROM gn_meta.sinp_datatype_publications WHERE publication_reference='+af_publications+'))'
 	cursor.execute(cur_insert_query)
 	conn.commit()
 
@@ -779,9 +779,6 @@ for ds_iter in range(len(ds_uuid_list)):
 		action='update'
 	# Get and parse corresponding XML File
 	ds_URL = "https://inpn.mnhn.fr/mtd/cadre/jdd/export/xml/GetRecordById?id={}".format(cur_ds_uuid.upper())
-	print('LAAA')
-	print(ds_URL)
-	print(ds_URL)
 	open('{}.xml'.format(cur_ds_uuid), 'wb').write(requests.get(ds_URL).content)
 	CURRENT_DS_ROOT = ET.parse('{}.xml'.format(cur_ds_uuid)).getroot()
 	# insertion des CA

@@ -1,10 +1,10 @@
 import json
 import logging
-from flask import Blueprint, current_app, request,render_template
-import pprint
+from pathlib import Path
 
+from flask import Blueprint, current_app, request, render_template, send_from_directory
 from sqlalchemy import or_
-from sqlalchemy.sql import text,exists, select
+from sqlalchemy.sql import text, exists, select
 from sqlalchemy.sql.functions import func
 
 
@@ -135,19 +135,19 @@ def get_af_and_ds_metadata(info_role):
         id_role=info_role.id_role, module_code="METADATA",
     )[0]
 
-    # get all af from the JDD filtered with cruved
+    #  get all af from the JDD filtered with cruved or af where users has rights
+    ids_afs_cruved = [
+        d.id_acquisition_framework for d in get_af_cruved(info_role, as_model=True)
+    ]
+    list_id_af = [d.id_acquisition_framework for d in datasets] + ids_afs_cruved
     afs = (
         DB.session.query(TAcquisitionFramework)
-        .filter(
-            TAcquisitionFramework.id_acquisition_framework.in_(
-                [d.id_acquisition_framework for d in datasets]
-            )
-        )
+        .filter(TAcquisitionFramework.id_acquisition_framework.in_(list_id_af))
         .all()
     )
 
     afs_dict = []
-    # get cruved for each AF and prepare dataset
+    #  get cruved for each AF and prepare dataset
     for af in afs:
         af_dict = af.as_dict()
         af_dict["cruved"] = af.get_object_cruved(
@@ -156,7 +156,7 @@ def get_af_and_ds_metadata(info_role):
         af_dict["datasets"] = []
         afs_dict.append(af_dict)
 
-    # get cruved for each ds and push them in the af
+    #  get cruved for each ds and push them in the af
     for d in datasets:
         dataset_dict = d.as_dict()
         dataset_dict["cruved"] = d.get_object_cruved(
@@ -180,7 +180,7 @@ def get_af_from_id(id_af, af_list):
             found_af = af
             break
     return found_af
-    
+
 
 @routes.route("/dataset/<id_dataset>", methods=["GET"])
 @json_resp
@@ -226,15 +226,17 @@ def get_dataset_details(info_role, id_dataset):
 
     dataset = get_dataset_details_dict(id_dataset)
 
-    if info_role.value_filter != '3':
+    if info_role.value_filter != "3":
         try:
-            if info_role.value_filter == '1':
+            if info_role.value_filter == "1":
                 actors = [cor["id_role"] for cor in dataset["cor_dataset_actor"]]
                 assert info_role.id_role in actors
-            elif info_role.value_filter == '2':
+            elif info_role.value_filter == "2":
                 actors = [cor["id_role"] for cor in dataset["cor_dataset_actor"]]
                 organisms = [cor["id_organism"] for cor in dataset["cor_dataset_actor"]]
-                assert info_role.id_role in actors or info_role.id_organisme in organisms
+                assert (
+                    info_role.id_role in actors or info_role.id_organisme in organisms
+                )
         except AssertionError:
             raise InsufficientRightsError(
                 ('User "{}" cannot read this current dataset').format(
@@ -286,7 +288,7 @@ def post_dataset(info_role):
     dataset = TDatasets(**data)
     for cor in cor_dataset_actor:
         # remove id_cda if None otherwise merge no working well
-        if "id_cda" in cor and cor["id_cda"] is None:
+        if "id_cda" in cor and cor.get("id_cda") is None:
             cor.pop("id_cda")
         dataset.cor_dataset_actor.append(CorDatasetActor(**cor))
 
@@ -302,33 +304,34 @@ def post_dataset(info_role):
     DB.session.commit()
     return dataset.as_dict(True)
 
+
 @routes.route("/dataset/export_pdf/<id_dataset>", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="METADATA")
+@permissions.check_cruved_scope("E", True, module_code="METADATA")
 def get_export_pdf_dataset(id_dataset, info_role):
     """
     Get a PDF export of one dataset
     """
-    
-    #Verification des droits
+
+    # Verification des droits
     if info_role.value_filter == "0":
         raise InsufficientRightsError(
-            ('User "{}" cannot "{}" a dataset').format(
-                info_role.id_role, 'export'
-            ),
+            ('User "{}" cannot "{}" a dataset').format(info_role.id_role, "export"),
             403,
         )
 
     df = get_dataset_details_dict(id_dataset)
 
-    if info_role.value_filter != '3':
+    if info_role.value_filter != "3":
         try:
-            if info_role.value_filter == '1':
+            if info_role.value_filter == "1":
                 actors = [cor["id_role"] for cor in df["cor_dataset_actor"]]
                 assert info_role.id_role in actors
-            elif info_role.value_filter == '2':
+            elif info_role.value_filter == "2":
                 actors = [cor["id_role"] for cor in df["cor_dataset_actor"]]
                 organisms = [cor["id_organism"] for cor in df["cor_dataset_actor"]]
-                assert info_role.id_role in actors or info_role.id_organisme in organisms
+                assert (
+                    info_role.id_role in actors or info_role.id_organisme in organisms
+                )
         except AssertionError:
             raise InsufficientRightsError(
                 ('User "{}" cannot read this current dataset').format(
@@ -338,31 +341,37 @@ def get_export_pdf_dataset(id_dataset, info_role):
             )
 
     if not df:
-        return render_template(
-            'error.html',
-            error='Le dataset presente des erreurs',
-            redirect=current_app.config["URL_APPLICATION"]+'/#/metadata'), 404
+        return (
+            render_template(
+                "error.html",
+                error="Le dataset presente des erreurs",
+                redirect=current_app.config["URL_APPLICATION"] + "/#/metadata",
+            ),
+            404,
+        )
 
     if len(df["dataset_desc"]) > 240:
-        df["dataset_desc"] = df["dataset_desc"][:240] + '...'
+        df["dataset_desc"] = df["dataset_desc"][:240] + "..."
 
-    df['css'] = {
-        "logo" : "Logo_SINP.png",
-        "bandeau" : "Bandeau_SINP.png",
-        "entite" : "sinp"
+    df["css"] = {
+        "logo": "Logo_pdf.png",
+        "bandeau": "Bandeau_pdf.png",
+        "entite": "sinp",
     }
 
     date = dt.datetime.now().strftime("%d/%m/%Y")
 
-    df['footer'] = {
-        "url" : current_app.config["URL_APPLICATION"]+"/#/metadata/dataset_detail/"+id_dataset,
-        "date" : date
+    df["footer"] = {
+        "url": current_app.config["URL_APPLICATION"]
+        + "/#/metadata/dataset_detail/"
+        + id_dataset,
+        "date": date,
     }
 
-    filename = 'jdd_{}_{}_{}.pdf'.format(
+    filename = "jdd_{}_{}_{}.pdf".format(
         id_dataset,
         df["dataset_shortname"].replace(" ", "_"),
-        dt.datetime.now().strftime("%d%m%Y_%H%M%S")
+        dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
     )
 
     try:
@@ -373,16 +382,14 @@ def get_export_pdf_dataset(id_dataset, info_role):
         df["chart"] = False
 
     # Appel de la methode pour generer un pdf
-    pdf_file = fm.generate_pdf('jeu_de_donnees_template_pdf.html', df, filename)
-
-    return Response(
-        pdf_file,
-        mimetype="application/pdf",
-        headers={
-            "Content-disposition": "attachment; filename=" + filename,
-            "Content-type": "application/pdf"
-        }
+    pdf_file = fm.generate_pdf("dataset_template_pdf.html", df, filename)
+    pdf_file_posix = Path(pdf_file)
+    return send_from_directory(
+        str(pdf_file_posix.parent),
+        pdf_file_posix.name,
+        as_attachment=True
     )
+
 
 @routes.route("/acquisition_frameworks", methods=["GET"])
 @permissions.check_cruved_scope("R", True)
@@ -397,85 +404,122 @@ def get_acquisition_frameworks(info_role):
     params = request.args
     return get_af_cruved(info_role, params)
 
-@routes.route("/acquisition_frameworks/export_pdf/<id_acquisition_framework>", methods=["GET"])
-@permissions.check_cruved_scope("C", True, module_code="METADATA")
+
+@routes.route(
+    "/acquisition_frameworks/export_pdf/<id_acquisition_framework>", methods=["GET"]
+)
+@permissions.check_cruved_scope("E", True, module_code="METADATA")
 def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
     """
     Get a PDF export of one acquisition
     """
-    
-    #Verification des droits
+
+    # Verification des droits
     if info_role.value_filter == "0":
         raise InsufficientRightsError(
-            ('User "{}" cannot "{}" a dataset').format(
-                info_role.id_role, 'export'
-            ),
+            ('User "{}" cannot "{}" a dataset').format(info_role.id_role, "export"),
             403,
         )
 
     # Recuperation des données
     af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
     acquisition_framework = af.as_dict(True)
-    
+
     q = DB.session.query(TDatasets).distinct()
-    data = q.filter( \
-                TDatasets.id_acquisition_framework \
-                == id_acquisition_framework).all()
+    data = q.filter(
+        TDatasets.id_acquisition_framework == id_acquisition_framework
+    ).all()
     dataset_ids = [d.id_dataset for d in data]
     acquisition_framework["datasets"] = [d.as_dict(True) for d in data]
 
     nb_data = len(dataset_ids)
-    nb_taxons = DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).distinct().count()
-    nb_observations = DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).count()
+    nb_taxons = (
+        DB.session.query(Synthese.cd_nom)
+        .filter(Synthese.id_dataset.in_(dataset_ids))
+        .distinct()
+        .count()
+    )
+    nb_observations = (
+        DB.session.query(Synthese.cd_nom)
+        .filter(Synthese.id_dataset.in_(dataset_ids))
+        .count()
+    )
     nb_habitat = 0
 
     # Check if pr_occhab exist
-    check_schema_query = exists(select([text("schema_name")]).select_from(text("information_schema.schemata")).
-       where(text("schema_name = 'pr_occhab'"))) 
+    check_schema_query = exists(
+        select([text("schema_name")])
+        .select_from(text("information_schema.schemata"))
+        .where(text("schema_name = 'pr_occhab'"))
+    )
 
-    if DB.session.query(check_schema_query).scalar() and nb_data > 0 :
-        query = "SELECT count(*) FROM pr_occhab.t_stations s, pr_occhab.t_habitats h WHERE s.id_station = h.id_station AND s.id_dataset in \
-        ("+str(dataset_ids).strip('[]')+")"
-        
-        nb_habitat  = DB.engine.execute(
-            text(query)
-        ).first()[0]
+    if DB.session.query(check_schema_query).scalar() and nb_data > 0:
+        query = (
+            "SELECT count(*) FROM pr_occhab.t_stations s, pr_occhab.t_habitats h WHERE s.id_station = h.id_station AND s.id_dataset in \
+        ("
+            + str(dataset_ids).strip("[]")
+            + ")"
+        )
+
+        nb_habitat = DB.engine.execute(text(query)).first()[0]
 
     acquisition_framework["stats"] = {
         "nb_data": nb_data,
         "nb_taxons": nb_taxons,
         "nb_observations": nb_observations,
-        "nb_habitats": nb_habitat
+        "nb_habitats": nb_habitat,
     }
 
     if acquisition_framework:
-        acquisition_framework["nomenclature_territorial_level"] = af.nomenclature_territorial_level.as_dict()
-        acquisition_framework["nomenclature_financing_type"] = af.nomenclature_financing_type.as_dict()
-        if acquisition_framework["acquisition_framework_start_date"] :
-            start_date = dt.datetime.strptime(acquisition_framework["acquisition_framework_start_date"], '%Y-%m-%d')
-            acquisition_framework["acquisition_framework_start_date"] = start_date.strftime("%d/%m/%Y")
-        if acquisition_framework["acquisition_framework_end_date"] :
-            end_date = dt.datetime.strptime(acquisition_framework["acquisition_framework_end_date"], '%Y-%m-%d')
-            acquisition_framework["acquisition_framework_end_date"] = end_date.strftime("%d/%m/%Y")
-        acquisition_framework['css'] = {
-            "logo" : "Logo_SINP.png",
-            "bandeau" : "Bandeau_SINP.png",
-            "entite" : "sinp"
+        acquisition_framework[
+            "nomenclature_territorial_level"
+        ] = af.nomenclature_territorial_level.as_dict()
+        acquisition_framework[
+            "nomenclature_financing_type"
+        ] = af.nomenclature_financing_type.as_dict()
+        if acquisition_framework["acquisition_framework_start_date"]:
+            start_date = dt.datetime.strptime(
+                acquisition_framework["acquisition_framework_start_date"], "%Y-%m-%d"
+            )
+            acquisition_framework[
+                "acquisition_framework_start_date"
+            ] = start_date.strftime("%d/%m/%Y")
+        if acquisition_framework["acquisition_framework_end_date"]:
+            end_date = dt.datetime.strptime(
+                acquisition_framework["acquisition_framework_end_date"], "%Y-%m-%d"
+            )
+            acquisition_framework["acquisition_framework_end_date"] = end_date.strftime(
+                "%d/%m/%Y"
+            )
+        acquisition_framework["css"] = {
+            "logo": "Logo_pdf.png",
+            "bandeau": "Bandeau_pdf.png",
+            "entite": "sinp",
         }
         date = dt.datetime.now().strftime("%d/%m/%Y")
-        acquisition_framework['footer'] = {
-            "url" : current_app.config["URL_APPLICATION"]+"/#/metadata/af-card/"+id_acquisition_framework,
-            "date" : date
+        acquisition_framework["footer"] = {
+            "url": current_app.config["URL_APPLICATION"]
+            + "/#/metadata/af-card/"
+            + id_acquisition_framework,
+            "date": date,
         }
-        params = {"id_acquisition_frameworks" : id_acquisition_framework}
+        params = {"id_acquisition_frameworks": id_acquisition_framework}
 
     else:
-        return render_template(
-            'error.html',
-            error='Le dataset presente des erreurs',
-            redirect=current_app.config["URL_APPLICATION"]+'/#/metadata'), 404
+        return (
+            render_template(
+                "error.html",
+                error="Le dataset presente des erreurs",
+                redirect=current_app.config["URL_APPLICATION"] + "/#/metadata",
+            ),
+            404,
+        )
 
-    filename = '{}_{}_{}.pdf'.format(id_acquisition_framework, acquisition_framework["acquisition_framework_name"][0:31].replace(" ", "_") , dt.datetime.now().strftime("%d%m%Y_%H%M%S"))
+    filename = "{}_{}_{}.pdf".format(
+        id_acquisition_framework,
+        acquisition_framework["acquisition_framework_name"][0:31].replace(" ", "_"),
+        dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
+    )
 
     try:
         f = open(str(BACKEND_DIR) + '/static/images/taxa.png')
@@ -497,6 +541,13 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
             "Content-type": "application/pdf"
         }
     )
+    pdf_file_posix = Path(pdf_file)
+    return send_from_directory(
+        str(pdf_file_posix.parent),
+        pdf_file_posix.name,
+        as_attachment=True
+    )
+
 
 @routes.route("/acquisition_frameworks_metadata", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="METADATA")
@@ -546,7 +597,10 @@ def get_acquisition_framework(id_acquisition_framework):
         return af.as_dict(True)
     return None
 
-@routes.route("/acquisition_framework_details/<id_acquisition_framework>", methods=["GET"])
+
+@routes.route(
+    "/acquisition_framework_details/<id_acquisition_framework>", methods=["GET"]
+)
 @json_resp
 def get_acquisition_framework_details(id_acquisition_framework):
     """
@@ -562,40 +616,59 @@ def get_acquisition_framework_details(id_acquisition_framework):
         return None
     acquisition_framework = af.as_dict(True)
 
-    datasets = acquisition_framework['datasets'] if 'datasets' in acquisition_framework else []
-    dataset_ids = [d['id_dataset'] for d in datasets]
-    geojsonData = DB.session.query(
-        func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326))
-    ).filter(Synthese.id_dataset.in_(dataset_ids)).first()[0]
+    datasets = (
+        acquisition_framework["datasets"] if "datasets" in acquisition_framework else []
+    )
+    dataset_ids = [d["id_dataset"] for d in datasets]
+    geojsonData = (
+        DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
+        .filter(Synthese.id_dataset.in_(dataset_ids))
+        .first()[0]
+    )
     if geojsonData:
         acquisition_framework["bbox"] = json.loads(geojsonData)
     nb_data = len(dataset_ids)
-    nb_taxons = DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).distinct().count()
-    nb_observations = DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).count()
+    nb_taxons = (
+        DB.session.query(Synthese.cd_nom)
+        .filter(Synthese.id_dataset.in_(dataset_ids))
+        .distinct()
+        .count()
+    )
+    nb_observations = (
+        DB.session.query(Synthese.cd_nom)
+        .filter(Synthese.id_dataset.in_(dataset_ids))
+        .count()
+    )
     nb_habitat = 0
 
     # Check if pr_occhab exist
-    check_schema_query = exists(select([text("schema_name")]).select_from(text("information_schema.schemata")).
-       where(text("schema_name = 'pr_occhab'"))) 
+    check_schema_query = exists(
+        select([text("schema_name")])
+        .select_from(text("information_schema.schemata"))
+        .where(text("schema_name = 'pr_occhab'"))
+    )
 
-    if DB.session.query(check_schema_query).scalar() and nb_data > 0 :
-        query = "SELECT count(*) FROM pr_occhab.t_stations s, pr_occhab.t_habitats h WHERE s.id_station = h.id_station AND s.id_dataset in \
-        ("+str(dataset_ids).strip('[]')+")"
-        
-        nb_habitat  = DB.engine.execute(
-            text(query)
-        ).first()[0]
+    if DB.session.query(check_schema_query).scalar() and nb_data > 0:
+        query = (
+            "SELECT count(*) FROM pr_occhab.t_stations s, pr_occhab.t_habitats h WHERE s.id_station = h.id_station AND s.id_dataset in \
+        ("
+            + str(dataset_ids).strip("[]")
+            + ")"
+        )
+
+        nb_habitat = DB.engine.execute(text(query)).first()[0]
 
     acquisition_framework["stats"] = {
         "nb_data": nb_data,
         "nb_taxons": nb_taxons,
         "nb_observations": nb_observations,
-        "nb_habitats": nb_habitat
+        "nb_habitats": nb_habitat,
     }
 
     if acquisition_framework:
         return acquisition_framework
     return None
+
 
 @routes.route("/acquisition_framework", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="METADATA")
@@ -683,5 +756,4 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
     .. :quickref: Metadata;
     """
     return mtd_utils.post_jdd_from_user(id_user=id_user, id_organism=id_organism)
-
 

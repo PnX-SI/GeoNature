@@ -86,10 +86,9 @@ def delete_recursively(path_folder, period=1, excluded_files=[]):
 
 
 def generate_pdf(template, data, filename):
+    delete_recursively(str(BACKEND_DIR) + "/static/pdf/")
     template_rendered = render_template(template, data=data)
-    html_file = HTML(string=template_rendered, base_url=__file__)
-    file_abs_path = str(BACKEND_DIR) + "/static/exports/" + filename
+    html_file = HTML(string=template_rendered, base_url=__file__, encoding="utf-8")
+    file_abs_path = str(BACKEND_DIR) + "/static/pdf/" + filename
     html_file.write_pdf(file_abs_path)
-    pdf_download = open(file_abs_path, "rb").read()
-    remove_file(file_abs_path, absolute_path=True)
-    return pdf_download
+    return file_abs_path
