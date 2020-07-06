@@ -1,0 +1,475 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>INSTALLATION GLOBALE &mdash; GeoNature 2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'./',
+              VERSION:'2.0',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="INSTALLATION AUTONOME" href="installation-standalone.html" />
+    <link rel="prev" title="Bienvenue dans la documentation de GeoNature" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> GeoNature
+          
+
+          
+            
+            <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">INSTALLATION GLOBALE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#prerequis">Prérequis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration-serveur">Configuration serveur</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation-de-l-application">Installation de l’application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation-d-un-module-geonature">Installation d’un module GeoNature</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation-standalone.html">INSTALLATION AUTONOME</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation-mtes.html">SPECIFICITES DEPOBIO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="import-level-1.html">IMPORT NIVEAU 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="import-level-2.html">IMPORT NIVEAU 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="versions-compatibility.html">COMPATIBILITE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conf-apache.html">CONFIGURATION APACHE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="https.html">HTTPS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GeoNature</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>INSTALLATION GLOBALE</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/installation-all.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="installation-globale">
+<h1>INSTALLATION GLOBALE<a class="headerlink" href="#installation-globale" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="prerequis">
+<h2>Prérequis<a class="headerlink" href="#prerequis" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Ressources minimum serveur :</li>
+</ul>
+<p>Un serveur Linux (Debian 9 ou 10 ou Ubuntu 16 ou 18 <strong>architecture 64-bits</strong>) disposant d’au moins de 4 Go RAM et de 20 Go d’espace disque.</p>
+<p>Le script global d’installation de GeoNature va aussi se charger d’installer les dépendances nécessaires :</p>
+<ul class="simple">
+<li>PostgreSQL / PostGIS</li>
+<li>Python 3 et dépendances Python nécessaires à l’application</li>
+<li>Flask (framework web Python)</li>
+<li>Apache</li>
+<li>Angular 7, Angular CLI, NodeJS</li>
+<li>Librairies javascript (Leaflet, ChartJS)</li>
+<li>Librairies CSS (Bootstrap, Material Design)</li>
+</ul>
+</div>
+<div class="section" id="configuration-serveur">
+<h2>Configuration serveur<a class="headerlink" href="#configuration-serveur" title="Permalink to this headline">¶</a></h2>
+<p>GeoNature se sert de flux internet externes durant son installation et son fonctionnement. Le serveur hébergeant l’application doit autoriser les flux externes suivants :</p>
+<ul class="simple">
+<li><a class="reference external" href="https://pypi.python.org">https://pypi.python.org</a></li>
+<li><a class="reference external" href="http://geonature.fr/">http://geonature.fr/</a></li>
+<li><a class="reference external" href="https://codeload.github.com/">https://codeload.github.com/</a></li>
+<li><a class="reference external" href="https://nodejs.org/dist">https://nodejs.org/dist</a></li>
+<li><a class="reference external" href="https://registry.npmjs.org">https://registry.npmjs.org</a></li>
+<li><a class="reference external" href="https://www.npmjs.com">https://www.npmjs.com</a></li>
+<li><a class="reference external" href="https://raw.githubusercontent.com/">https://raw.githubusercontent.com/</a></li>
+<li><a class="reference external" href="https://inpn.mnhn.fr/mtd">https://inpn.mnhn.fr/mtd</a></li>
+<li><a class="reference external" href="https://preprod-inpn.mnhn.fr/mtd">https://preprod-inpn.mnhn.fr/mtd</a></li>
+<li><a class="reference external" href="https://wxs.ign.fr/">https://wxs.ign.fr/</a></li>
+</ul>
+</div>
+<div class="section" id="installation-de-l-application">
+<h2>Installation de l’application<a class="headerlink" href="#installation-de-l-application" title="Permalink to this headline">¶</a></h2>
+<p>Ce document décrit une procédure d’installation packagée de GeoNature.</p>
+<p>En lançant le script d’installation ci-dessous, l’application GeoNature ainsi que ses dépendances seront installées sur un seul et même serveur au sein d’une seule base de données.</p>
+<p>Les applications suivantes seront installées :</p>
+<ul class="simple">
+<li>GeoNature</li>
+<li><a class="reference external" href="https://github.com/PnX-SI/TaxHub">TaxHub</a> qui pilote le schéma <code class="docutils literal"><span class="pre">taxonomie</span></code></li>
+<li><a class="reference external" href="https://github.com/PnEcrins/UsersHub">UsersHub</a> qui pilote le schéma <code class="docutils literal"><span class="pre">utilisateurs</span></code> (le paramètre <code class="docutils literal"><span class="pre">install_usershub_app</span></code> du fichier de configuration <code class="docutils literal"><span class="pre">install_all.ini</span></code> permet de désactiver l’installation de l’application. Il est cependant recommandé d’installer l’application pour disposer d’une interface pour gérer les utilisateurs dans GeoNature)</li>
+</ul>
+<p>Si vous disposez déjà de Taxhub ou de UsersHub sur un autre serveur ou une autre base de données et que vous souhaitez installer simplement GeoNature, veuillez suivre la documentation INSTALLATION AUTONOME.</p>
+<p>Commencer la procédure en se connectant au serveur en SSH avec l’utilisateur linux <code class="docutils literal"><span class="pre">root</span></code>.</p>
+<ul class="simple">
+<li>Mettre à jour les sources-list (Debian uniquement) :</li>
+</ul>
+<p>A l’installation de l’OS, les sources-list (liste des sources à partir desquelles sont téléchargés les paquets) ne sont pas toujours adaptés. Pour Debian 10, les sources-list par défaut sont compatibles et il n’est donc pas nécessaire de les compléter.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">nano</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">apt</span><span class="o">/</span><span class="n">sources</span><span class="o">.</span><span class="n">list</span>
+</pre></div>
+</div>
+<p>Coller la liste des dépôts suivants :</p>
+<p>Pour Debian 10 :</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">deb</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">deb</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span> <span class="n">buster</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
+<span class="n">deb</span><span class="o">-</span><span class="n">src</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">deb</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span> <span class="n">buster</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
+
+<span class="n">deb</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">deb</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span><span class="o">-</span><span class="n">security</span><span class="o">/</span> <span class="n">buster</span><span class="o">/</span><span class="n">updates</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
+<span class="n">deb</span><span class="o">-</span><span class="n">src</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">deb</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span><span class="o">-</span><span class="n">security</span><span class="o">/</span> <span class="n">buster</span><span class="o">/</span><span class="n">updates</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
+
+<span class="n">deb</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">deb</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span> <span class="n">buster</span><span class="o">-</span><span class="n">updates</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
+<span class="n">deb</span><span class="o">-</span><span class="n">src</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">deb</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span> <span class="n">buster</span><span class="o">-</span><span class="n">updates</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
+</pre></div>
+</div>
+<p>Pour Debian 9 :</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">deb</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">security</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span><span class="o">-</span><span class="n">security</span> <span class="n">stretch</span><span class="o">/</span><span class="n">updates</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
+<span class="n">deb</span><span class="o">-</span><span class="n">src</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">security</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span><span class="o">-</span><span class="n">security</span> <span class="n">stretch</span><span class="o">/</span><span class="n">updates</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
+<span class="n">deb</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">deb</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span><span class="o">/</span> <span class="n">stretch</span><span class="o">-</span><span class="n">updates</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
+<span class="n">deb</span><span class="o">-</span><span class="n">src</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">deb</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span><span class="o">/</span> <span class="n">stretch</span><span class="o">-</span><span class="n">updates</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
+<span class="n">deb</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">deb</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span> <span class="n">stretch</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
+<span class="n">deb</span><span class="o">-</span><span class="n">src</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">deb</span><span class="o">.</span><span class="n">debian</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">debian</span> <span class="n">stretch</span> <span class="n">main</span> <span class="n">contrib</span> <span class="n">non</span><span class="o">-</span><span class="n">free</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Mettre à jour de la liste des dépôts Linux :</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span>
+<span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">upgrade</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Installer sudo :</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">sudo</span> <span class="n">ca</span><span class="o">-</span><span class="n">certificates</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Créer un utilisateur linux (nommé <code class="docutils literal"><span class="pre">geonatureadmin</span></code> dans notre cas) pour ne pas travailler en <code class="docutils literal"><span class="pre">root</span></code> :</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">adduser</span> <span class="n">geonatureadmin</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Lui donner ensuite des droits <code class="docutils literal"><span class="pre">sudo</span></code> :</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">adduser</span> <span class="n">geonatureadmin</span> <span class="n">sudo</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>L’ajouter aussi aux groupes <code class="docutils literal"><span class="pre">www-data</span></code> (Seulement si version &lt; 2.0.0-rc4 -&gt; plus nécessaire après passage à UsersHub v2) :</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">usermod</span> <span class="o">-</span><span class="n">g</span> <span class="n">www</span><span class="o">-</span><span class="n">data</span> <span class="n">geonatureadmin</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Configuration de la locale du serveur</li>
+</ul>
+<p>Certains serveurs sont livrés sans “locale” (langue par défaut). Pour l’installation de GeoNature, il est nécessaire de bien configurer la locale. Si la commande <code class="docutils literal"><span class="pre">locale</span></code> renvoie ceci :</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">LANG</span><span class="o">=</span><span class="n">fr_FR</span><span class="o">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
+<span class="n">LANGUAGE</span><span class="o">=</span><span class="n">fr_FR</span><span class="o">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
+<span class="n">LC_CTYPE</span><span class="o">=</span><span class="s2">&quot;fr_FR.UTF-8&quot;</span>
+<span class="n">LC_NUMERIC</span><span class="o">=</span><span class="s2">&quot;fr_FR.UTF-8&quot;</span>
+<span class="n">LC_TIME</span><span class="o">=</span><span class="s2">&quot;fr_FR.UTF-8&quot;</span>
+<span class="n">LC_COLLATE</span><span class="o">=</span><span class="s2">&quot;fr_FR.UTF-8&quot;</span>
+<span class="n">LC_MONETARY</span><span class="o">=</span><span class="s2">&quot;fr_FR.UTF-8&quot;</span>
+<span class="n">LC_MESSAGES</span><span class="o">=</span><span class="s2">&quot;fr_FR.UTF-8&quot;</span>
+<span class="n">LC_PAPER</span><span class="o">=</span><span class="s2">&quot;fr_FR.UTF-8&quot;</span>
+<span class="n">LC_NAME</span><span class="o">=</span><span class="s2">&quot;fr_FR.UTF-8&quot;</span>
+<span class="n">LC_ADDRESS</span><span class="o">=</span><span class="s2">&quot;fr_FR.UTF-8&quot;</span>
+<span class="n">LC_TELEPHONE</span><span class="o">=</span><span class="s2">&quot;fr_FR.UTF-8&quot;</span>
+<span class="n">LC_MEASUREMENT</span><span class="o">=</span><span class="s2">&quot;fr_FR.UTF-8&quot;</span>
+<span class="n">LC_IDENTIFICATION</span><span class="o">=</span><span class="s2">&quot;fr_FR.UTF-8&quot;</span>
+<span class="n">LC_ALL</span><span class="o">=</span><span class="n">fr_FR</span><span class="o">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
+</pre></div>
+</div>
+<p>Vous pouvez alors passer cette étape de configuration des locales.</p>
+<p>Sinon exécuter la commande <code class="docutils literal"><span class="pre">dpkg-reconfigure</span> <span class="pre">locales</span></code>. Une fenêtre s’affiche dans votre console. Dans la liste déroulante, sélectionnez <code class="docutils literal"><span class="pre">fr_FR.UTF-8</span> <span class="pre">UTF-8</span></code> avec <code class="docutils literal"><span class="pre">Espace</span></code>, puis cliquez sur OK. Une 2ème fenêtre s’affiche avec une liste de locale activées (<code class="docutils literal"><span class="pre">fr_FR.UTF-8</span></code> doit être présent dans la liste), confirmez votre choix, en cliquant sur OK, puis attendez que la locale s’installe.</p>
+<p>Passer alors sur l’utilisateur <code class="docutils literal"><span class="pre">geonatureadmin</span></code> avec la commande <code class="docutils literal"><span class="pre">su</span> <span class="pre">geonatureadmin</span></code> et exécuter ensuite ces commandes :</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">LC_ALL</span><span class="o">=</span><span class="n">fr_FR</span><span class="o">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
+<span class="n">export</span> <span class="n">LANGUAGE</span><span class="o">=</span><span class="n">fr_FR</span><span class="o">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
+<span class="n">export</span> <span class="n">LANG</span><span class="o">=</span><span class="n">fr_FR</span><span class="o">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
+</pre></div>
+</div>
+<p>Pour la suite de la documentation et pour l’administration courante de GeoNature, <strong>on n’utilisera plus jamais l’utilisateur</strong> <code class="docutils literal"><span class="pre">root</span></code> (utiliser <code class="docutils literal"><span class="pre">geonatureadmin</span></code> dans l’exemple de la documentation; <code class="docutils literal"><span class="pre">su</span> <span class="pre">geonatureadmin</span></code> pour change d’utilisateur). Si besoin d’exécuter des commandes avec des droits d’administrateur, on les précède de <code class="docutils literal"><span class="pre">sudo</span></code>.</p>
+<p>Il est d’ailleurs possible de renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec l’utilisateur <code class="docutils literal"><span class="pre">root</span></code>.</p>
+<p>Voir <a class="reference external" href="https://docs.ovh.com/fr/vps/conseils-securisation-vps/">https://docs.ovh.com/fr/vps/conseils-securisation-vps/</a> pour plus d’informations sur le sécurisation du serveur (port SSH, désactiver root, fail2ban, pare-feu, sauvegarde…).</p>
+<p>Il est aussi important de configurer l’accès au serveur en HTTPS plutôt qu’en HTTP pour crypter le contenu des échanges entre le navigateur et le serveur (<a class="reference external" href="https://docs.ovh.com/fr/hosting/les-certificats-ssl-sur-les-hebergements-web/">https://docs.ovh.com/fr/hosting/les-certificats-ssl-sur-les-hebergements-web/</a>).</p>
+<ul class="simple">
+<li>Se placer à la racine du <code class="docutils literal"><span class="pre">home</span></code> de l’utilisateur puis récupérer les scripts d’installation (X.Y.Z à remplacer par le numéro de la <a class="reference external" href="https://github.com/PnEcrins/GeoNature/releases">dernière version stable de GeoNature</a>). Ces scripts installent les applications GeoNature, TaxHub et UsersHub (en option) ainsi que leurs bases de données (uniquement les schémas du coeur) :</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~</span>
+<span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">PnX</span><span class="o">-</span><span class="n">SI</span><span class="o">/</span><span class="n">GeoNature</span><span class="o">/</span><span class="n">X</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Z</span><span class="o">/</span><span class="n">install</span><span class="o">/</span><span class="n">install_all</span><span class="o">/</span><span class="n">install_all</span><span class="o">.</span><span class="n">ini</span>
+<span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">PnX</span><span class="o">-</span><span class="n">SI</span><span class="o">/</span><span class="n">GeoNature</span><span class="o">/</span><span class="n">X</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Z</span><span class="o">/</span><span class="n">install</span><span class="o">/</span><span class="n">install_all</span><span class="o">/</span><span class="n">install_all</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p><em>Attention</em> : l’installation globale fonctionne uniquement si les scripts sont placés à la racine du <code class="docutils literal"><span class="pre">home</span></code> de l’utilisateur courant.</p>
+<ul class="simple">
+<li>Configurez votre installation en adaptant le fichier <code class="docutils literal"><span class="pre">install_all.ini</span></code> :</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">nano</span> <span class="n">install_all</span><span class="o">.</span><span class="n">ini</span>
+</pre></div>
+</div>
+<p>Renseignez à minima votre utilisateur linux, l’URL (ou IP) de votre serveur (avec un <code class="docutils literal"><span class="pre">/</span></code> à la fin) ainsi que l’utilisateur PostgreSQL que vous souhaitez et son mot de passe. Le script se chargera d’installer PostgreSQL et de créer l’utilisateur de base de données que vous avez renseigné.</p>
+<p>Pour la définition des numéros de version des dépendances, voir le <a class="reference external" href="versions-compatibility.rst">tableau de compatibilité</a> des versions de GeoNature avec ses dépendances. Il est déconseillé de modifier ces versions, chaque nouvelle version de GeoNature étant fournie avec les versions adaptées de ses dépendances.</p>
+<ul class="simple">
+<li>Lancer l’installation :</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">touch</span> <span class="n">install_all</span><span class="o">.</span><span class="n">log</span>
+<span class="n">chmod</span> <span class="o">+</span><span class="n">x</span> <span class="n">install_all</span><span class="o">.</span><span class="n">sh</span>
+<span class="o">./</span><span class="n">install_all</span><span class="o">.</span><span class="n">sh</span> <span class="mi">2</span><span class="o">&gt;&amp;</span><span class="mi">1</span> <span class="o">|</span> <span class="n">tee</span> <span class="n">install_all</span><span class="o">.</span><span class="n">log</span>
+</pre></div>
+</div>
+<p>Une fois l’installation terminée, lancez la commande suivante:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">exec</span> <span class="n">bash</span>
+</pre></div>
+</div>
+<p>Les applications sont disponibles aux adresses suivantes :</p>
+<ul class="simple">
+<li><a class="reference external" href="http://monip.com/geonature">http://monip.com/geonature</a></li>
+<li><a class="reference external" href="http://monip.com/taxhub/">http://monip.com/taxhub/</a></li>
+<li><a class="reference external" href="http://monip.com/usershub">http://monip.com/usershub</a> (en option)</li>
+</ul>
+<p>Vous pouvez vous connecter avec l’utilisateur intégré par défaut (admin/admin).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Note:</th><td class="field-body"><p class="first">Pour en savoir plus TaxHub, sa configuration et son utilisation, reportez-vous à sa documentation : <a class="reference external" href="https://taxhub.readthedocs.io">https://taxhub.readthedocs.io</a>. Idem pour UsersHub et sa documentation : <a class="reference external" href="https://usershub.readthedocs.io">https://usershub.readthedocs.io</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Note:</th><td class="field-body"><ul class="first simple">
+<li><strong>GeoNature-atlas</strong> : Comme dans la V1, le script <code class="docutils literal"><span class="pre">install_all.sh</span></code> permettra à terme d’installer automatiquement GeoNature-atlas (en option)</li>
+<li>Une première version de GeoNature-atlas compatible avec GeoNature V2 est disponible : <a class="reference external" href="https://github.com/PnEcrins/GeoNature-atlas">https://github.com/PnEcrins/GeoNature-atlas</a></li>
+<li>Vous pouvez utiliser le schéma <code class="docutils literal"><span class="pre">ref_geo</span></code> de GeoNature pour votre territoire, les communes et les mailles, si vous les avez intégré dans <code class="docutils literal"><span class="pre">ref_geo.l_areas</span></code> au préalable.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Note:</th><td class="field-body"><p class="first last">Une version expérimentale du calcul automatique de la sensibilité est disponible : <a class="reference external" href="https://github.com/PnX-SI/GeoNature/issues/284">https://github.com/PnX-SI/GeoNature/issues/284</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Si vous rencontrez une erreur, se reporter aux fichiers de logs :</p>
+<ul class="simple">
+<li>Logs de l’installation de la base de données : <code class="docutils literal"><span class="pre">/home/&lt;MY_USER&gt;/geonature/var/log/install_db.log</span></code></li>
+<li>Log général de l’installation de l’application : <code class="docutils literal"><span class="pre">/home/&lt;MY_USER&gt;/install_all.log</span></code></li>
+</ul>
+<p>Si vous souhaitez que GeoNature soit à la racine du serveur, ou à une autre adresse, editez le fichier de configuration Apache (<code class="docutils literal"><span class="pre">/etc/apache2/sites-available/geonature.conf</span></code>) en modifiant l’alias :</p>
+<ul class="simple">
+<li>Pour <code class="docutils literal"><span class="pre">/</span></code>: <code class="docutils literal"><span class="pre">Alias</span> <span class="pre">/</span> <span class="pre">/home/test/geonature/frontend/dist</span></code></li>
+<li>Pour <code class="docutils literal"><span class="pre">/saisie</span></code> : <code class="docutils literal"><span class="pre">Alias</span> <span class="pre">/saisie</span> <span class="pre">/home/test/geonature/frontend/dist</span></code></li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Note:</th><td class="field-body">Par défaut la base de données est accessible uniquement localement par la machine où elle est installée. Pour y accéder depuis une autre machine (pour s’y connecter avec QGIS, pgAdmin ou autre), ouvrez-en les connexions. Voir la documentation <a class="reference external" href="https://github.com/PnEcrins/GeoNature-atlas/blob/master/docs/installation.rst#acc%C3%A9der-%C3%A0-votre-bdd">https://github.com/PnEcrins/GeoNature-atlas/blob/master/docs/installation.rst#acc%C3%A9der-%C3%A0-votre-bdd</a>. Attention si vous redémarrez PostgreSQL (<code class="docutils literal"><span class="pre">sudo</span> <span class="pre">service</span> <span class="pre">postgresql</span> <span class="pre">restart</span></code>), il faut ensuite redémarrer les API GeoNature et TaxHub (<code class="docutils literal"><span class="pre">sudo</span> <span class="pre">supervisorctl</span> <span class="pre">reload</span></code>).</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="installation-d-un-module-geonature">
+<h2>Installation d’un module GeoNature<a class="headerlink" href="#installation-d-un-module-geonature" title="Permalink to this headline">¶</a></h2>
+<p>L’installation de GeoNature n’est livrée qu’avec les schémas de base de données et les modules du coeur (NB : le module Occurrence de Taxon - Occtax - est fourni par défaut). Pour ajouter un gn_module externe, il est nécessaire de l’installer :</p>
+<p><strong>1.</strong> Téléchargez le module depuis son dépôt Github puis dézippez-le.</p>
+<p><strong>2.</strong> Renseignez l’éventuel fichier <code class="docutils literal"><span class="pre">config/settings.ini</span></code> du module.</p>
+<p><strong>3.</strong> Installez le module. Rendez-vous dans le répertoire <code class="docutils literal"><span class="pre">backend</span></code> de GeoNature et activez le virtualenv pour rendre disponible les commandes GeoNature :</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+</pre></div>
+</div>
+<p>Lancez ensuite la commande <code class="docutils literal"><span class="pre">geonature</span> <span class="pre">install_gn_module</span> <span class="pre">&lt;mon_chemin_absolu_vers_le_module&gt;</span> <span class="pre">&lt;url_relative_du_module&gt;</span></code></p>
+<p>Le premier paramètre est l’emplacement absolu du module sur votre serveur et le deuxième est le chemin derrière lequel on accédera au module dans le navigateur.</p>
+<p>Exemple pour un module Import :</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">geonature</span> <span class="n">install_gn_module</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">gn_module_import</span> <span class="kn">import</span>
+</pre></div>
+</div>
+<p>Le module sera disponible à l’adresse <code class="docutils literal"><span class="pre">http://mon-geonature.fr/geonature/#/validation</span></code></p>
+<p>L’API du module sera disponible à l’adresse <code class="docutils literal"><span class="pre">http://mon-geonature.fr/api/import</span></code></p>
+<p>Cette commande exécute les actions suivantes :</p>
+<ul class="simple">
+<li>Vérification de la conformité de la structure du module (présence des fichiers et dossiers obligatoires)</li>
+<li>Intégration du blueprint du module dans l’API de GeoNature</li>
+<li>Vérification de la conformité des paramètres utilisateurs</li>
+<li>Génération du routing Angular pour le frontend</li>
+<li>Re-build du frontend pour une mise en production</li>
+</ul>
+<p><strong>4.</strong> Complétez l’éventuelle configuration du module (<code class="docutils literal"><span class="pre">config/conf_gn_module.toml</span></code>) à partir des paramètres présents dans <code class="docutils literal"><span class="pre">config/conf_gn_module.toml.example</span></code> dont vous pouvez surcoucher les valeurs par défaut. Puis relancez la mise à jour de la configuration (depuis le répertoire <code class="docutils literal"><span class="pre">geonature/backend</span></code> et une fois dans le venv (<code class="docutils literal"><span class="pre">source</span> <span class="pre">venv/bin/activate</span></code>) : <code class="docutils literal"><span class="pre">geonature</span> <span class="pre">update_module_configuration</span> <span class="pre">nom_du_module</span></code>)</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="installation-standalone.html" class="btn btn-neutral float-right" title="INSTALLATION AUTONOME" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Bienvenue dans la documentation de GeoNature" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018-2019, PnE, PnC
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
