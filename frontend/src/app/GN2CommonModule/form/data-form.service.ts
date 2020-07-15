@@ -441,5 +441,9 @@ export class DataFormService {
     document.body.removeChild(link);
   }
 
+  deleteAf(af_id) {
+    this._http.delete<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${af_id}`).subscribe();
+  }
+
 }
 

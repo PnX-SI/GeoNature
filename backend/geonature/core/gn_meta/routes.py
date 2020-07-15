@@ -687,12 +687,41 @@ def get_acquisition_framework_details(id_acquisition_framework):
     return None
 
 
+@routes.route("/acquisition_framework/<int:af_id>", methods=["DELETE"])
+@permissions.check_cruved_scope("D", True, module_code="METADATA")
+@json_resp
+def delete_acquisition_framework(info_role, af_id):
+    """
+    Delete an acquisition framework
+    .. :quickref: Metadata;
+    """
+    if info_role.value_filter == "0":
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" a dataset').format(
+                info_role.id_role, info_role.code_action
+            ),
+            403,
+        )
+
+    todelete = DB.session.query(CorAcquisitionFrameworkActor).filter(
+        CorAcquisitionFrameworkActor.id_acquisition_framework == af_id
+    ).delete()
+    
+    DB.session.query(TAcquisitionFramework).filter(
+        TAcquisitionFramework.id_acquisition_framework == af_id
+    ).delete()
+
+    DB.session.commit()
+
+    return "Done"
+
+
 @routes.route("/acquisition_framework", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="METADATA")
 @json_resp
 def post_acquisition_framework(info_role):
     """
-    Post a dataset
+    Post an acquisition framework
     .. :quickref: Metadata;
     """
     if info_role.value_filter == "0":

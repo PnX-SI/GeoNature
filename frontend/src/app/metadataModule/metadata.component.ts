@@ -118,4 +118,11 @@ export class MetadataComponent implements OnInit {
     this.pageSize = event.pageSize;
     this.activePage = event.pageIndex;
   }
+
+  deleteAf(af_id) {
+    console.log("deleteAf(" + af_id + ")");
+    this._dfs.deleteAf(af_id);
+    this.getAcquisitionFrameworksAndDatasets();
+  }
+
 }

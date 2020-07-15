@@ -60,7 +60,7 @@
               <span class="mat-cell">
                 <img src="./assets/images/Editer.svg" [routerLink]="['/metadata/af', af.id_acquisition_framework]">  
                 <img src="./assets/images/Donnees_map.svg" [routerLink]="['/synthese']" >
-                <img src="./assets/images/Poubelle.svg" >
+                <img src="./assets/images/Poubelle.svg" (click)="deleteAf(af.id_acquisition_framework)">
               </span>
             </mat-expansion-panel-header>
             <table class="table table-bordered">
