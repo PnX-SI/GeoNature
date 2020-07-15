@@ -13,28 +13,55 @@
       </div>
       <div>Liste des cadres d'acquisition et des jeux de données associés</div>
       <br>
-      <mat-accordion [multi]="true">
+      
+      <mat-accordion displayMode="flat" multi class="mat-table">
+        <section matSort class="mat-elevation-z2 mat-header-row">
+          <span class="mat-header-cell">
+            ID
+          </span>
+          <span class="mat-header-cell" style="min-width: 480px" >
+            Titre
+          </span>
+          <span class="mat-header-cell">
+            Date de lancement
+          </span>
+          <span class="mat-header-cell">
+            Créateur
+          </span>
+          <span class="mat-header-cell">
+            Maître d'ouvrage
+          </span>
+          <span class="mat-header-cell">
+            Actions
+          </span>
+        </section>
         <ng-container *ngFor="let af of tempAF; let idx = index">
           <mat-expansion-panel *ngIf="isDisplayed(idx)" [expanded]="expandAccordions">
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                <button [disabled]="af.cruved.U == false"
-                  class="bt-edit btn-ghost btn-no-padding" 
-                  title="Editer le cadre d'acquisition"
-                  [routerLink]="['/metadata/af', af.id_acquisition_framework]" >
-                  <i class="fa fa-pencil-square" aria-hidden="true"></i>
-              </button>
-                <button [disabled]="af.cruved.R == false"
-                  class="bt-edit btn-ghost btn-no-padding"
-                  title="Visualiser le cadre d'acquisition"
-                  [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]" >
-                  <i class="fa fa-info-circle" aria-hidden="true"></i>
-            </button>
-                {{af.id_acquisition_framework}}: {{ af.acquisition_framework_name | uppercase }}
-              </mat-panel-title>
-              <mat-panel-description *ngIf="af.acquisition_framework_name != af.acquisition_framework_desc">
-                {{ af.acquisition_framework_desc }}
-              </mat-panel-description>
+            <mat-expansion-panel-header class="mat-row">
+              <span class="mat-cell" [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]">
+                <a [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]">
+                  {{af.id_acquisition_framework}}
+                </a>
+              </span>
+              <span class="mat-cell" style="min-width: 480px; text-align: left">
+                <a [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]">
+                  {{af.acquisition_framework_name}}
+                </a>
+              </span>
+              <span class="mat-cell">
+                {{af.acquisition_framework_start_date}}
+              </span>
+              <span class="mat-cell">
+                <a href="mailto:{{af.mail_createur}}"> {{af.mail_createur}} </a>
+              </span>
+              <span class="mat-cell">
+                {{af.nom_maitre_ouvrage}}
+              </span>
+              <span class="mat-cell">
+                <img src="./assets/images/Editer.svg" [routerLink]="['/metadata/af', af.id_acquisition_framework]">  
+                <img src="./assets/images/Donnees_map.svg" [routerLink]="['/synthese']" >
+                <img src="./assets/images/Poubelle.svg" >
+              </span>
             </mat-expansion-panel-header>
             <table class="table table-bordered">
               <thead class="bold">

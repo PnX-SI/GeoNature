@@ -146,15 +146,32 @@ def get_af_and_ds_metadata(info_role):
         .all()
     )
 
+
     afs_dict = []
     #  get cruved for each AF and prepare dataset
     for af in afs:
-        af_dict = af.as_dict()
+        af_dict = af.as_dict(True)
         af_dict["cruved"] = af.get_object_cruved(
             user_cruved, af.id_acquisition_framework, ids_afs_user, ids_afs_org,
         )
         af_dict["datasets"] = []
+
+        iCreateur = -1
+        iMaitreOuvrage = -1
+        if af.cor_af_actor:
+            for index, actor in enumerate(af.cor_af_actor):
+                if actor.nomenclature_actor_role.mnemonique == "Maître d'ouvrage":
+                    iMaitreOuvrage = index
+                elif actor.nomenclature_actor_role.mnemonique == "Producteur du jeu de données":
+                    iCreateur = index
+
+
+        #af_dict["nom_createur"] = af.cor_af_actor[iCreateur].role.nom_role if iCreateur!=-1 else "Non renseigné"
+        af_dict["mail_createur"] = af.cor_af_actor[iCreateur].role.email if iCreateur!=-1 else ""
+        af_dict["nom_maitre_ouvrage"] = af.cor_af_actor[iMaitreOuvrage].organism.nom_organisme if iMaitreOuvrage!=-1 else "Non renseigné"
         afs_dict.append(af_dict)
+
+    print(afs_dict[0])
 
     #  get cruved for each ds and push them in the af
     for d in datasets:

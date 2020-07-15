@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   viewBox="0 0 261.019 261.019"
+   enable-background="new 0 0 261.019 261.019"
+   id="svg10"
+   sodipodi:docname="Rapport_UUID.svg"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
+  <metadata
+     id="metadata16">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs14" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1027"
+     id="namedview12"
+     showgrid="false"
+     inkscape:zoom="0.9041487"
+     inkscape:cx="-408.67172"
+     inkscape:cy="130.50951"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg10"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <sodipodi:guide
+       position="381.57439,110.60127"
+       orientation="0,1"
+       id="guide6129"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="233.36868,182.4921"
+       orientation="0,1"
+       id="guide6131"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <g
+     id="g827">
+    <g
+       id="g8">
+      <g
+         id="g6">
+        <path
+           style="fill:#2c7be5;fill-opacity:1"
+           id="path4"
+           d="m252.318,174.013c-5.22,0-8.701,3.48-8.701,8.701v34.802c0,13.921-12.181,26.102-26.102,26.102h-174.012c-13.921,0-26.102-12.181-26.102-26.102v-34.802c0-5.22-3.48-8.701-8.701-8.701s-8.7,3.48-8.7,8.7v34.802c0,24.362 19.141,43.503 43.503,43.503h174.012c24.362,0 43.503-19.141 43.503-43.503v-34.802c0-5.22-3.48-8.7-8.7-8.7z" />
+      </g>
+    </g>
+    <flowRoot
+       transform="matrix(1.3048466,0,0,1.3048466,-59.676988,-181.63844)"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#2c7be5;fill-opacity:1;stroke:none"
+       id="flowRoot5538"
+       xml:space="preserve"><flowRegion
+         style="fill:#2c7be5;fill-opacity:1"
+         id="flowRegion5540"><rect
+           style="fill:#2c7be5;fill-opacity:1"
+           y="186.36766"
+           x="54.508476"
+           height="119.59322"
+           width="213.15254"
+           id="rect5542" /></flowRegion><flowPara
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:74.66666412px;font-family:Arial;-inkscape-font-specification:'Arial Bold';fill:#2c7be5;fill-opacity:1"
+         id="flowPara5544">UUID</flowPara></flowRoot>  </g>
+</svg>
