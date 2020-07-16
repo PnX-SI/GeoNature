@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { PageEvent, MatPaginator, MatPaginatorIntl } from '@angular/material';
 import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
+import {Router, NavigationExtras} from "@angular/router";
 
 export class MetadataPaginator extends MatPaginatorIntl {
   constructor() {
@@ -46,7 +47,7 @@ export class MetadataComponent implements OnInit {
   activePage: number = 0;
   pageSizeOptions: Array<number> = [10, 25, 50, 100];
 
-  constructor(public _cruvedStore: CruvedStoreService, private _dfs: DataFormService) { }
+  constructor(public _cruvedStore: CruvedStoreService, private _dfs: DataFormService, private _router: Router) { }
 
   ngOnInit() {
     this.getAcquisitionFrameworksAndDatasets();
@@ -123,6 +124,15 @@ export class MetadataComponent implements OnInit {
     console.log("deleteAf(" + af_id + ")");
     this._dfs.deleteAf(af_id);
     this.getAcquisitionFrameworksAndDatasets();
+  }
+
+  syntheseAf(af_id) {
+    let navigationExtras: NavigationExtras = {
+      queryParams: {
+          "id_acquisition_framework": af_id
+      }
+    };
+    this._router.navigate(['/synthese'], navigationExtras);
   }
 
 }
