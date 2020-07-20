@@ -12,7 +12,7 @@
 
       <ng-template ngx-datatable-header-template>
         <label class="datatable-checkbox">
-          <input type="checkbox" (click)="toggleSelection($event)" matTooltip="Sélectionner/déselectionner tout">
+          <input type="checkbox" (click)="toggleSelection($event)" matTooltip="Sélectionner/déselectionner tout" >
         </label>
         </ng-template>
 
@@ -37,7 +37,9 @@
         <span>Détails</span>
       </ng-template>
        <ng-template let-row="row" ngx-datatable-cell-template>
-          <button #ValidationModalInfoObs id="details" type="button" (click)="openInfoModal(row)" class="btn btn-info fa fa-info-circle" title="details">
+          <button #ValidationModalInfoObs id="details" type="button" (click)="openInfoModal(row)" class="btn btn-info fa fa-info-circle" title="details"
+            [disabled]="row.unique_id_sinp == 'None'"
+          >
           </button>
        </ng-template>
     </ngx-datatable-column>

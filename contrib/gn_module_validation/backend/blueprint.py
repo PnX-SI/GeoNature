@@ -2,7 +2,6 @@
 import ast
 import logging
 import datetime
-
 from operator import itemgetter
 from sqlalchemy import select
 from flask import Blueprint, request
@@ -13,6 +12,7 @@ from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
 
 from geonature.utils.env import DB
+from geonature.utils.utilssqlalchemy import test_is_uuid
 from geonature.core.gn_synthese.models import Synthese
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from geonature.core.gn_permissions import decorators as permissions
@@ -283,6 +283,13 @@ def get_definitions(info_role):
 @json_resp
 def get_hist(info_role, uuid_attached_row):
 
+    # Test if uuid_attached_row is uuid
+    if not test_is_uuid(uuid_attached_row):
+        return (
+            'Value error uuid_attached_row is not valid',
+            500,
+        )
+
     try:
         data = (
             DB.session.query(
@@ -338,6 +345,14 @@ def get_validation_date(uuid):
         Retourne la date de validation
         pour l'observation uuid
     """
+
+    # Test if uuid_attached_row is uuid
+    if not test_is_uuid(uuid):
+        return (
+            'Value error uuid is not valid',
+            500,
+        )
+
     try:
         date = DB.session.execute(
             select([VSyntheseValidation.validation_date]).where(
