@@ -1,40 +1,24 @@
-import logging
+
 import ast
-import re
-
-from flask import Blueprint, current_app, request
-
-from operator import itemgetter
-
-from sqlalchemy import select, desc, cast, DATE, func
-
+import logging
 import datetime
 
+from operator import itemgetter
+from sqlalchemy import select
+from flask import Blueprint, request
 from geojson import FeatureCollection
 
 from utils_flask_sqla.response import json_resp
+from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
-from geonature.core.gn_meta.models import TDatasets
-
-from geonature.core.gn_synthese.models import (
-    Synthese,
-    TSources,
-    VSyntheseForWebApp,
-)
-from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
-
-from geonature.core.gn_commons.models import BibTablesLocation
-
-from .query import filter_query_all_filters
 
 from geonature.utils.env import DB
-
+from geonature.core.gn_synthese.models import Synthese
+from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_commons.models import TValidations
 
 from .models import VSyntheseValidation
-
-from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
 blueprint = Blueprint("validation", __name__)
 log = logging.getLogger()
@@ -52,9 +36,9 @@ def get_synthese_data(info_role):
 
     Parameters:
     ------------
-    info_role (User): 
+    info_role (User):
         Information about the user asking the route. Auto add with kwargs
-    truc (int): 
+    truc (int):
         essai
 
 
