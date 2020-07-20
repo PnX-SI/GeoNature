@@ -6,7 +6,7 @@
       <div id="inpn">
         <a target="_blank " href="https://inpn.mnhn.fr/espece/cd_nom/{{ selectedObsTaxonDetail?.cd_nom }} ">
           <button type="button"  *ngIf="oneObsSynthese?.url_source" class="btn btn-light">
-            Voir la fiche INPN du taxon 
+            Voir la fiche INPN du taxon
           </button>
         </a>
       </div>
@@ -67,7 +67,7 @@
             <i class="material-icons" id="modify"> edit </i> modifier le statut de validation
           </button>
           <br>
-          <b> Observation de : </b> {{selectedObs?.observers}} 
+          <b> Observation de : </b> {{selectedObs?.observers}}
           <span *ngIf="selectedObs?.cor_observers?.length > 0">
             (
             <span *ngFor="let observers of selectedObs?.cor_observers; let i = index">
@@ -106,7 +106,7 @@
             <td width="20%"> <span class="validationCircle" [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.cd_nomenclature]?.color}"><i class="material-icons" id="auto" style="font-size: 13px;padding-top: 3px;padding-left:1px;" *ngIf="row.typeValidation == 'True'">computer</i></span>
               <div class="statusName">
                 {{row.label_default}}
-              </div> 
+              </div>
             </td>
             <td width="20%"> <span> {{row.validator}} </span> </td>
             <td> {{row.comment}} </td>
@@ -171,8 +171,12 @@
         </tr>
 
         <tr>
-          <td> Commentaire </td>
-          <td> {{selectedObs?.comments}} </td>
+          <td> Commentaire relevé </td>
+          <td> {{selectedObs?.comment_context}} </td>
+        </tr>
+        <tr>
+          <td> Commentaire observation</td>
+          <td> {{selectedObs?.comment_description}} </td>
         </tr>
 
         <tr>
@@ -345,7 +349,7 @@
           <button [disabled]="!isPrevButtonValid" class="btn btn-sm" (click)="decreaseObs()">
             <i class="material-icons">navigate_before</i>
           </button>
-      
+
           <button [disabled]="!isNextButtonValid" class="btn btn-sm" (click)="increaseObs()">
             <i class="material-icons">navigate_next</i>
           </button>
