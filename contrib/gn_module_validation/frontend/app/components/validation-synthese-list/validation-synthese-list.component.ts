@@ -56,7 +56,8 @@ export class ValidationSyntheseListComponent
     public ref: ChangeDetectorRef,
     private _ms: MapService,
     public formService: SyntheseFormService,
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
     // get wiewport height to set the number of rows in the tabl
@@ -77,7 +78,6 @@ export class ValidationSyntheseListComponent
       const selected_id_coordinates = this.mapListService.layerDict[id].feature
         .geometry.coordinates;
       this.id_same_coordinates = [];
-      console.log(this.mapListService.geojsonData.features);
 
       // for (let obs in this.mapListService.geojsonData.features) {
       //   console.log(obs);
@@ -104,7 +104,6 @@ export class ValidationSyntheseListComponent
           break;
         }
         const page = Math.trunc(i / this.rowNumber);
-        console.log(page);
 
         this.table.offset = page;
       }
@@ -288,5 +287,15 @@ export class ValidationSyntheseListComponent
       }
       this.mapListService.selectedRow = [...this.mapListService.selectedRow];
     });
+  }
+
+  getValidationStatusMnemonique(code) {
+    var statusF = this.validationStatus.filter((st) => st.cd_nomenclature  == code);
+    if (statusF.length > 0) {
+      return statusF[0].mnemonique;
+    }
+    else {
+      return null;
+    }
   }
 }
