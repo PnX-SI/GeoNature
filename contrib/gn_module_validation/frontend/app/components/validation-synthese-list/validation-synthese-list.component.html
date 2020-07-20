@@ -44,8 +44,24 @@
        </ng-template>
     </ngx-datatable-column>
 
-  <ngx-datatable-column *ngFor="let col of VALIDATION_CONFIG.LIST_COLUMNS_FRONTEND" name="{{col.name}}" prop="{{col.prop}}"
-    maxWidth="{{col.max_width||10000}}" minWidth="{{col.min_width||10}}">
+
+  <ngx-datatable-column
+    *ngFor="let col of VALIDATION_CONFIG.LIST_COLUMNS_FRONTEND"
+    name="{{col.name}}"
+    prop="{{col.prop}}"
+    maxWidth="{{col.max_width||10000}}"
+    minWidth="{{col.min_width||10}}"
+  >
+    <ng-template
+      *ngIf="[
+            'date_min', 'date_max',
+            'meta_validation_date', 'meta_create_date', 'meta_update_date',
+            'validation_date'
+          ].includes(col.prop)"
+      let-row="row" ngx-datatable-cell-template
+    >
+      {{row[col.prop] | date:'dd-MM-yyyy'}}
+    </ng-template>
     <ng-template *ngIf="col.prop === 'id_nomenclature_valid_status'" let-row="row" ngx-datatable-cell-template>
       <div class="statusContent">
         <span class="validationCircle" [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.cd_nomenclature_validation_status]?.color}">
