@@ -68,12 +68,12 @@
           </button>
           <br>
           <b> Observation de : </b> {{selectedObs?.observers}}
-          <span *ngIf="selectedObs?.cor_observers?.length > 0">
+          <span *ngIf="selectedObs?.cor_observers?.length > 0 && mailto">
             (
             <span *ngFor="let observers of selectedObs?.cor_observers; let i = index">
               {{ observers.email}} <span *ngIf="i != selectedObs?.cor_observers.length -1">, </span>
             </span>
-            <button> <a href="{{mailto}}"><i class="fa fa-envelope-o" aria-hidden="true"></i></a> </button>
+            <button> <a href="{{mailto}}" ><i class="fa fa-envelope-o" aria-hidden="true"></i></a> </button>
           )
           </span>
           <br>

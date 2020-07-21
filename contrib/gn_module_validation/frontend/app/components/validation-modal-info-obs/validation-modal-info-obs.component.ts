@@ -139,10 +139,20 @@ export class ValidationModalInfoObsComponent implements OnInit {
         const date_max = new Date(this.selectedObs.date_max);
         this.selectedObs.date_max = date_max.toLocaleDateString("fr-FR");
         if (this.selectedObs.cor_observers) {
+          this.mailto = null;
           this.email = this.selectedObs.cor_observers
             .map(el => el.email)
             .join();
-          this.mailto = String("mailto:" + this.email);
+            console.log(this.email.length)
+          if (this.email.length > 0 ) {
+            const mail_subject = `[GeoNature Validation]Donnée du ${this.selectedObs.date_min} - ${ this.selectedObsTaxonDetail.nom_vern } - ${ this.selectedObsTaxonDetail.nom_valide }`;
+            const mail_body = ` La donnée en date du ${this.selectedObs.date_min} relative au taxon ${ this.selectedObsTaxonDetail.nom_vern } - ${ this.selectedObsTaxonDetail.nom_valide } semble erronée
+              \n\r
+              Merci de contacter la personne en charge de la validation`;
+            let mailto = encodeURI("mailto:" + this.email + "?subject=" + mail_subject+ "&body=" + mail_body)
+            mailto = mailto.replace(/,/g, '%2c');
+            this.mailto = mailto;
+          }
         }
       });
 
@@ -222,7 +232,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
       this.filteredIds.indexOf(this.id_synthese) + 1
     ];
     const syntheseRow = this.mapListService.tableData[this.position]
-    
+
     this.loadOneSyntheseReleve(syntheseRow);
     this.loadValidationHistory(syntheseRow.unique_id_sinp);
     this.isPrevButtonValid = true;
