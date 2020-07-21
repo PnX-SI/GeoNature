@@ -150,7 +150,7 @@ def get_af_and_ds_metadata(info_role):
     afs_dict = []
     #  get cruved for each AF and prepare dataset
     for af in afs:
-        af_dict = af.as_dict(True)
+        af_dict = af.as_dict()
         af_dict["cruved"] = af.get_object_cruved(
             user_cruved, af.id_acquisition_framework, ids_afs_user, ids_afs_org,
         )

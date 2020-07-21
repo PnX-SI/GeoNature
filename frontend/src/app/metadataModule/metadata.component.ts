@@ -84,7 +84,11 @@ export class MetadataComponent implements OnInit {
       } else {
         // expand tout les accordion recherchés pour voir le JDD des CA
         this.expandAccordions = true;
-        if (af.acquisition_framework_name.toLowerCase().indexOf(this.researchTerm) !== -1) {
+        if ((af.id_acquisition_framework+' ').toLowerCase().indexOf(this.researchTerm) !== -1
+          || af.acquisition_framework_name.toLowerCase().indexOf(this.researchTerm) !== -1
+          || af.acquisition_framework_start_date.toLowerCase().indexOf(this.researchTerm) !== -1
+          || af.mail_createur.toLowerCase().indexOf(this.researchTerm) !== -1
+          || af.nom_maitre_ouvrage.toLowerCase().indexOf(this.researchTerm) !== -1 ) {
           //si un cadre matche on affiche tout ses JDD
           af.datasetsTemp = af.datasets;
           return true;
@@ -93,7 +97,9 @@ export class MetadataComponent implements OnInit {
         //Sinon on on filtre les JDD qui matchent eventuellement.
         if (af.datasets) {
           af.datasetsTemp = af.datasets.filter(
-            ds => ds.dataset_name.toLowerCase().indexOf(this.researchTerm) !== -1
+            ds => ((ds.id_dataset+' ').toLowerCase().indexOf(this.researchTerm) !== -1
+                || ds.dataset_name.toLowerCase().indexOf(this.researchTerm) !== -1
+                || ds.meta_create_date.toLowerCase().indexOf(this.researchTerm) !== -1)
           );
           return af.datasetsTemp.length;
         }
