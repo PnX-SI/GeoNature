@@ -3,6 +3,7 @@ import { PageEvent, MatPaginator, MatPaginatorIntl } from '@angular/material';
 import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import {Router, NavigationExtras} from "@angular/router";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 export class MetadataPaginator extends MatPaginatorIntl {
   constructor() {
@@ -47,7 +48,12 @@ export class MetadataComponent implements OnInit {
   activePage: number = 0;
   pageSizeOptions: Array<number> = [10, 25, 50, 100];
 
-  constructor(public _cruvedStore: CruvedStoreService, private _dfs: DataFormService, private _router: Router) { }
+  constructor(
+    public _cruvedStore: CruvedStoreService,
+    private _dfs: DataFormService,
+    private _router: Router,
+    private modal: NgbModal
+  ) { }
 
   ngOnInit() {
     this.getAcquisitionFrameworksAndDatasets();
@@ -109,6 +115,10 @@ export class MetadataComponent implements OnInit {
     //retour à la premiere page du tableau pour voir les résultats
     this.paginator.pageIndex = 0;
     this.activePage = 0;
+  }
+
+  openSearchModal(searchModal) {
+    this.modal.open(searchModal);
   }
 
   isDisplayed(idx: number) {
