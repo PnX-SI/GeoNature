@@ -99,6 +99,38 @@
                 </tr>
               </tbody>
             </table>
+           
+             <!--Fiche récapitulative d'un JDD -->
+              <table *ngIf="!empty" class="table table-bordered tabRecap">
+                <thead class="bold">
+                  <tr>
+                      <td>Source</td>
+                      <td>Nombre de données</td>
+                      <td>Importé le</td>
+                      <td>Statut</td>
+                      <td>Rapport</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor='let ListImport of history'>
+                      <td>{{ListImport.import_table}}</td>
+                      <td>{{ListImport.source_count}} </td>
+                      <td>{{ListImport.date_create_import | date: 'd/mm/yyyy h:mm:ss a'}}</td>
+                      <td>
+                        <div class="imgStatus">
+                          <img class='imgImportSuccess'*ngIf="ListImport.is_finished" src="../../assets/images/tick.png"/>
+                          <img class='importImportFail' *ngIf="!ListImport.is_finished" src="../../assets/images/close.png"/>
+                        </div>
+                      </td>
+                      <td>
+                        <div class='imgRapport'>
+                          <img class='imgSensibles' src="../../assets/images/Rapport_Sensibles.svg"/>
+                          <img class='imgUUID' src="../../assets/images/Rapport_UUID.svg"/>
+                        </div>
+                      </td>
+                  </tr>
+                </tbody>
+              </table>
           </mat-expansion-panel>
         </ng-container>
       </mat-accordion>

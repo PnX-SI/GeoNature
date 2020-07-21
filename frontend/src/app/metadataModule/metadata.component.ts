@@ -2,8 +2,11 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { PageEvent, MatPaginator, MatPaginatorIntl } from '@angular/material';
 import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import {Router, NavigationExtras} from "@angular/router";
+import { Router, NavigationExtras } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+
+import { DataService } from "../../../../external_modules/import/frontend/app/services/data.service";
+import { CommonService } from "@geonature_common/service/common.service";
 
 export class MetadataPaginator extends MatPaginatorIntl {
   constructor() {
@@ -30,17 +33,20 @@ export class MetadataPaginator extends MatPaginatorIntl {
   styleUrls: ['./metadata.component.scss'],
   providers: [
     {
-      provide: MatPaginatorIntl,
+      provide:MatPaginatorIntl,
       useClass: MetadataPaginator
     }
+
   ]
 })
-export class MetadataComponent implements OnInit {
+export class MetadataComponent /* extends ImportComponent */ implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   datasets = [];
   acquisitionFrameworks = [];
   tempAF = [];
+  public history;
+  public empty: boolean = false;
   expandAccordions = false;
   private researchTerm: string = '';
 
@@ -52,11 +58,14 @@ export class MetadataComponent implements OnInit {
     public _cruvedStore: CruvedStoreService,
     private _dfs: DataFormService,
     private _router: Router,
-    private modal: NgbModal
+    private modal: NgbModal,
+    public _ds: DataService,
+    private _commonService: CommonService
   ) { }
 
   ngOnInit() {
     this.getAcquisitionFrameworksAndDatasets();
+    this.getImportList();
   }
 
   //recuperation cadres d'acquisition
@@ -71,6 +80,29 @@ export class MetadataComponent implements OnInit {
 
     });
   }
+
+  // recuperer la liste des imports 
+  getImportList() {
+    this._ds.getImportList().subscribe(
+      res => {
+        this.history = res.history;
+        this.empty = res.empty;
+      },
+      error => {
+        if (error.statusText === "Unknown Error") {
+          // show error message if no connexion
+          this._commonService.regularToaster(
+            "error",
+            "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connexion)"
+          );
+        } else {
+          // show error message if other server error
+          this._commonService.regularToaster("error", error.error.message);
+        }
+      }
+    );
+  }
+  
 
   /**
    *	Filtre les éléments CA et JDD selon la valeur de la barre de recherche
