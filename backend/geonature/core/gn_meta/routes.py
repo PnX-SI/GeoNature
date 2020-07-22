@@ -167,8 +167,9 @@ def get_af_and_ds_metadata(info_role):
 
 
         #af_dict["nom_createur"] = af.cor_af_actor[iCreateur].role.nom_role if iCreateur!=-1 else "Non renseigné"
-        af_dict["mail_createur"] = af.cor_af_actor[iCreateur].role.email if iCreateur!=-1 else ""
+        af_dict["mail_createur"] = af.cor_af_actor[iCreateur].role.email if (iCreateur!=-1 and af.cor_af_actor[iCreateur].role) else ""
         af_dict["nom_maitre_ouvrage"] = af.cor_af_actor[iMaitreOuvrage].organism.nom_organisme if iMaitreOuvrage!=-1 else "Non renseigné"
+        af_dict["deletable"] = is_af_deletable(af.id_acquisition_framework)
         afs_dict.append(af_dict)
 
     #  get cruved for each ds and push them in the af
@@ -177,6 +178,7 @@ def get_af_and_ds_metadata(info_role):
         dataset_dict["cruved"] = d.get_object_cruved(
             user_cruved, d.id_dataset, ids_dataset_user, ids_dataset_organisms,
         )
+        dataset_dict["deletable"] = is_dataset_deletable(d.id_dataset)
         af_of_dataset = get_af_from_id(d.id_acquisition_framework, afs_dict)
         af_of_dataset["datasets"].append(dataset_dict)
 
@@ -186,6 +188,26 @@ def get_af_and_ds_metadata(info_role):
     if not datasets:
         return afs_resp, 404
     return afs_resp
+
+def is_dataset_deletable(id_dataset):
+    datas = (
+        DB.session.query(Synthese.id_synthese)
+        .filter(Synthese.id_dataset == id_dataset)
+        .all()
+    )
+    if datas:
+        return False
+    return True
+
+def is_af_deletable(id_af):
+    datasets = (
+        DB.session.query(TDatasets.id_dataset)
+        .filter(TDatasets.id_acquisition_framework == id_af)
+        .all()
+    )
+    if datasets:
+        return False
+    return True
 
 
 def get_af_from_id(id_af, af_list):
@@ -294,6 +316,12 @@ def delete_dataset(info_role, ds_id):
                 info_role.id_role, info_role.code_action
             ),
             403,
+        )
+    
+    if not is_dataset_deletable(ds_id):
+        raise GeonatureApiError(
+            "La suppression du jeu de données n'est pas possible car des données y sont rattachées dans la Synthèse",
+            500
         )
 
     DB.session.query(CorDatasetActor).filter(
@@ -751,6 +779,12 @@ def delete_acquisition_framework(info_role, af_id):
                 info_role.id_role, info_role.code_action
             ),
             403,
+        )
+
+    if not is_af_deletable(af_id):
+        raise GeonatureApiError(
+            "La suppression du cadre d'acquisition n'est pas possible car des jeux de données y sont rattachées",
+            500
         )
 
     DB.session.query(CorAcquisitionFrameworkActor).filter(

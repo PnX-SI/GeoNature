@@ -170,8 +170,9 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
 
   deleteAf(af_id) {
     console.log("deleteAf(" + af_id + ")");
-    this._dfs.deleteAf(af_id);
-    this.getAcquisitionFrameworksAndDatasets();
+    this._dfs.deleteAf(af_id).subscribe(
+      res => this.getAcquisitionFrameworksAndDatasets()
+    );
   }
 
   syntheseAf(af_id) {
@@ -185,14 +186,16 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
 
   deleteDs(ds_id) {
     console.log("deleteDs(" + ds_id + ")");
-    this._dfs.deleteDs(ds_id);
-    this.getAcquisitionFrameworksAndDatasets();
+    this._dfs.deleteDs(ds_id).subscribe(
+      res => this.getAcquisitionFrameworksAndDatasets()
+    );
   }
 
   activateDs(ds_id, active) {
     console.log("activateDs(" + ds_id + ", " + active + ")");
-    this._dfs.activateDs(ds_id, active);
-    this.getAcquisitionFrameworksAndDatasets();
+    this._dfs.activateDs(ds_id, active).subscribe(
+      res => this.getAcquisitionFrameworksAndDatasets()
+    );
   }
 
   syntheseDs(ds_id) {
