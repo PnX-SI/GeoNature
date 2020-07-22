@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { MarkerComponent } from '../marker/marker.component';
 import { MapService } from '../map.service';
 import { MapListService } from '../../map-list/map-list.service';
@@ -8,6 +8,7 @@ import * as L from 'leaflet';
 import { Subscription } from "rxjs/Subscription";
 import { Observable, throwError } from 'rxjs';
 import { Map, GeoJSON, Layer, FeatureGroup, Marker, LatLng } from 'leaflet';
+import { LieuxComponent } from '../lieux/lieux.component';
 
 
 
@@ -31,7 +32,7 @@ export class ListeLieuxComponent extends MarkerComponent implements OnInit, OnDe
   public delLieuSub: Subscription;
   public delLieuxRes:string;
   
-  
+  @Output() layerDrawed = new EventEmitter<GeoJSON>();
 
   constructor(
     public mapService: MapService,
@@ -59,8 +60,9 @@ export class ListeLieuxComponent extends MarkerComponent implements OnInit, OnDe
       'url(assets/images/liste.png)'
     );
     this.map.addControl(new LieuxLegend());
+    document.getElementById('ListeLieuxLegend').title = "Liste des lieux";
     L.DomEvent.disableClickPropagation(document.getElementById('ListeLieuxLegend'));
-    document.getElementById('ListeLieuxLegend').onclick = () => {
+       document.getElementById('ListeLieuxLegend').onclick = () => {
 
      this.listLieuSub = this.mapService.
       getLieux()
@@ -80,24 +82,31 @@ export class ListeLieuxComponent extends MarkerComponent implements OnInit, OnDe
   onSelectLieu(lieu:GeoJSON.Feature){
     //alert(lieu.id.toString());
     this.selectedLieu=lieu;
-    this.mapService.afficheLieux(lieu);
+    //this.mapService.afficheLieux(lieu);
+    this.mapService.removeAllLayers(this.mapService.map, this.mapService.leafletDrawFeatureGroup);
+    this.mapservice.firstLayerFromMap = false;
+    this.layerDrawed.emit(L.geoJSON(lieu));
+    this.mapService.loadGeometryReleve(lieu, true);
     
    
   }
 
   deleteLieu(){
-    //alert(this.selectedLieu.id);
-    this.mapService.deleteLieu(this.selectedLieu.id.toString()).subscribe();
-    this.modalService.dismissAll();
-    this.listLieuSub = this.mapService.
-    getLieux()
-    .subscribe(res => {
-        this.lieux = res;
-      },
-      console.error
-    );
-    this.modalService.open(this.modalContent);
-    alert(this.selectedLieu.id.toString()+" est supprimé");
+    if(confirm("Êtes-vous sûr de vouloir supprimer?")) {
+      
+        //alert(this.selectedLieu.id);
+        this.mapService.deleteLieu(this.selectedLieu.id.toString()).subscribe();
+        this.modalService.dismissAll();
+        this.listLieuSub = this.mapService.
+        getLieux()
+        .subscribe(res => {
+            this.lieux = res;
+          },
+          console.error
+        );
+        this.modalService.open(this.modalContent);
+        //alert(this.selectedLieu.id.toString()+" est supprimé");
+    }
    }
 
 

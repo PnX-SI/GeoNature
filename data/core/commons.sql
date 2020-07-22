@@ -610,5 +610,17 @@ SELECT uuid_attached_row, max(validation_date) as max_date
 FROM gn_commons.t_validations
 GROUP BY uuid_attached_row
 ) last_val
-ON v.uuid_attached_row = last_val.uuid_attached_row AND v.validation_date = last_val.max_date
+ON v.uuid_attached_row = last_val.uuid_attached_row AND v.validation_date = last_val.max_date;
 
+--MET 22/07/2020 Table t_lieux pour la fonctionnalité mes-lieux
+CREATE TABLE gn_commons.t_lieux
+(
+    id_role integer NOT NULL,
+    nom_lieu character varying(100),
+	geom_lieu geometry,
+    CONSTRAINT pk_t_lieux PRIMARY KEY (id_role,nom_lieu),
+    CONSTRAINT t_lieux_id_role_fkey FOREIGN KEY (id_role)
+        REFERENCES utilisateurs.t_roles (id_role) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);

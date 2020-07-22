@@ -67,10 +67,10 @@ export class LieuxComponent extends MarkerComponent implements OnInit {
     const LieuxLegend = this.mapservice.addCustomLegend(
       'topleft',
       'LieuxLegend',
-      'url(assets/images/location-pointer.png)'
+      'url(assets/images/location-save.png)'
     );
     this.map.addControl(new LieuxLegend());
-    
+    document.getElementById('LieuxLegend').title = "Enregistrer un lieu";
     L.DomEvent.disableClickPropagation(document.getElementById('LieuxLegend'));
     document.getElementById('LieuxLegend').onclick = () => {
       
