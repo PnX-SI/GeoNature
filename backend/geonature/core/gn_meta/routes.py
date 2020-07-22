@@ -171,8 +171,6 @@ def get_af_and_ds_metadata(info_role):
         af_dict["nom_maitre_ouvrage"] = af.cor_af_actor[iMaitreOuvrage].organism.nom_organisme if iMaitreOuvrage!=-1 else "Non renseigné"
         afs_dict.append(af_dict)
 
-    print(afs_dict[0])
-
     #  get cruved for each ds and push them in the af
     for d in datasets:
         dataset_dict = d.as_dict()
@@ -279,6 +277,58 @@ def upload_canvas():
         fd.write(binary_data)
         fd.close()
     return "OK"
+
+
+@routes.route("/dataset/<int:ds_id>", methods=["DELETE"])
+@permissions.check_cruved_scope("D", True, module_code="METADATA")
+@json_resp
+def delete_dataset(info_role, ds_id):
+    """
+    Delete a dataset
+
+    .. :quickref: Metadata;
+    """
+    if info_role.value_filter == "0":
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" a dataset').format(
+                info_role.id_role, info_role.code_action
+            ),
+            403,
+        )
+
+    DB.session.query(CorDatasetActor).filter(
+        CorDatasetActor.id_dataset == ds_id
+    ).delete()
+    
+    DB.session.query(TDatasets).filter(
+        TDatasets.id_dataset == ds_id
+    ).delete()
+
+    DB.session.commit()
+
+    return "OK"
+
+
+@routes.route("/activate_dataset/<int:ds_id>/<string:active>", methods=["POST"])
+@permissions.check_cruved_scope("U", True, module_code="METADATA")
+@json_resp
+def activate_dataset(info_role, ds_id, active):
+    """
+    Activate or deactivate a dataset
+
+    .. :quickref: Metadata;
+    """
+    if info_role.value_filter == "0":
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" a dataset').format(
+                info_role.id_role, info_role.code_action
+            ),
+            403,
+        )
+
+    DB.session.query(TDatasets).filter(TDatasets.id_dataset == ds_id).update({'active' : active=='true'})
+    DB.session.commit()
+    return "activated" if active else "deactivated"
 
 
 @routes.route("/dataset", methods=["POST"])
@@ -697,13 +747,13 @@ def delete_acquisition_framework(info_role, af_id):
     """
     if info_role.value_filter == "0":
         raise InsufficientRightsError(
-            ('User "{}" cannot "{}" a dataset').format(
+            ('User "{}" cannot "{}" an acquisition_framework').format(
                 info_role.id_role, info_role.code_action
             ),
             403,
         )
 
-    todelete = DB.session.query(CorAcquisitionFrameworkActor).filter(
+    DB.session.query(CorAcquisitionFrameworkActor).filter(
         CorAcquisitionFrameworkActor.id_acquisition_framework == af_id
     ).delete()
     
@@ -713,7 +763,7 @@ def delete_acquisition_framework(info_role, af_id):
 
     DB.session.commit()
 
-    return "Done"
+    return "OK"
 
 
 @routes.route("/acquisition_framework", methods=["POST"])

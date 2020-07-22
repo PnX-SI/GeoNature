@@ -183,4 +183,25 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
     this._router.navigate(['/synthese'], navigationExtras);
   }
 
+  deleteDs(ds_id) {
+    console.log("deleteDs(" + ds_id + ")");
+    this._dfs.deleteDs(ds_id);
+    this.getAcquisitionFrameworksAndDatasets();
+  }
+
+  activateDs(ds_id, active) {
+    console.log("activateDs(" + ds_id + ", " + active + ")");
+    this._dfs.activateDs(ds_id, active);
+    this.getAcquisitionFrameworksAndDatasets();
+  }
+
+  syntheseDs(ds_id) {
+    let navigationExtras: NavigationExtras = {
+      queryParams: {
+          "id_dataset": ds_id
+      }
+    };
+    this._router.navigate(['/synthese'], navigationExtras);
+  }
+
 }

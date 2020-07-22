@@ -445,5 +445,13 @@ export class DataFormService {
     this._http.delete<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${af_id}`).subscribe();
   }
 
+  deleteDs(ds_id) {
+    this._http.delete<any>(`${AppConfig.API_ENDPOINT}/meta/dataset/${ds_id}`).subscribe();
+  }
+
+  activateDs(ds_id, active) {
+    this._http.post<any>(`${AppConfig.API_ENDPOINT}/meta/activate_dataset/${ds_id}/${active}`, {}).subscribe();
+  }
+
 }
 
