@@ -86,8 +86,9 @@
                       <a [routerLink]="['/metadata/dataset_detail', ds.id_dataset]"> {{ds.dataset_name}} </a>
                     </td>
                     <td> {{ds.meta_create_date}} </td>
-                    <td> Nombre de données </td>
-                    <td> Créateur </td>
+                    <td> {{ds.observation_count}} </td>
+                    <td> {{ ds.createur?.organism?.nom_organisme }} 
+                      <span *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"> - </span> {{ ds.createur?.role?.nom_complet }} </td>
                     <td>
                       <img src="../../assets/images/Rapport_Sensibles.svg"/>
                       <img src="../../assets/images/Rapport_UUID.svg"/>

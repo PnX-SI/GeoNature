@@ -179,6 +179,17 @@ def get_af_and_ds_metadata(info_role):
             user_cruved, d.id_dataset, ids_dataset_user, ids_dataset_organisms,
         )
         dataset_dict["deletable"] = is_dataset_deletable(d.id_dataset)
+        dataset_dict["observation_count"] = (
+            DB.session.query(Synthese.cd_nom)
+            .filter(Synthese.id_dataset == d.id_dataset)
+            .count()
+        )
+        iCreateur = -1
+        if d.cor_dataset_actor:
+            for index, actor in enumerate(d.cor_dataset_actor):
+                if actor.nomenclature_actor_role.mnemonique == "Producteur du jeu de données":
+                    iCreateur = index
+        dataset_dict["createur"] = d.cor_dataset_actor[iCreateur].as_dict(True) if iCreateur!=-1 else None
         af_of_dataset = get_af_from_id(d.id_acquisition_framework, afs_dict)
         af_of_dataset["datasets"].append(dataset_dict)
 
