@@ -93,17 +93,17 @@
                     <td> {{ ds.createur?.organism?.nom_organisme }} 
                       <span *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"> - </span> {{ ds.createur?.role?.nom_complet }} </td>
                     <td>
-                      <img src="../../assets/images/Rapport_Sensibles.svg"/>
-                      <img src="../../assets/images/Rapport_UUID.svg"/>
+                      <img src="./assets/images/Rapport_Sensibles.svg"/>
+                      <img src="./assets/images/Rapport_UUID.svg"/>
                     </td>
                     <td>
-                      <img src="../../assets/images/Editer.svg" [routerLink]="['/metadata/dataset', ds.id_dataset]"/>
-                      <img *ngIf="ds.active" src="../../assets/images/Actif.svg" (click)="activateDs(ds.id_dataset, false)"/>
-                      <img *ngIf="!ds.active" src="../../assets/images/Actif_Off.svg" (click)="activateDs(ds.id_dataset, true)"/>
+                      <img src="./assets/images/Editer.svg" [routerLink]="['/metadata/dataset', ds.id_dataset]"/>
+                      <img *ngIf="ds.active" src="./assets/images/Actif.svg" (click)="activateDs(ds.id_dataset, false)"/>
+                      <img *ngIf="!ds.active" src="./assets/images/Actif_Off.svg" (click)="activateDs(ds.id_dataset, true)"/>
                       <img src="./assets/images/Import.svg">
                       <img src="./assets/images/Donnees_map.svg" (click)="syntheseDs(ds.id_dataset)" >
-                      <img *ngIf="ds.deletable" src="../../assets/images/Poubelle.svg" (click)="deleteDs(ds.id_dataset)">
-                      <img *ngIf="!ds.deletable" src="../../assets/images/Poubelle_Off.svg"
+                      <img *ngIf="ds.deletable" src="./assets/images/Poubelle.svg" (click)="deleteDs(ds.id_dataset)">
+                      <img *ngIf="!ds.deletable" src="./assets/images/Poubelle_Off.svg"
                         matTooltip="La suppression du jeu de données n'est pas possible car des données y sont rattachées dans la Synthèse">
                     </td>
                 </tr>
