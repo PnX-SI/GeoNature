@@ -146,6 +146,7 @@ def get_af_and_ds_metadata(info_role):
         .all()
     )
 
+
     afs_dict = []
     #  get cruved for each AF and prepare dataset
     for af in afs:
@@ -154,6 +155,21 @@ def get_af_and_ds_metadata(info_role):
             user_cruved, af.id_acquisition_framework, ids_afs_user, ids_afs_org,
         )
         af_dict["datasets"] = []
+
+        iCreateur = -1
+        iMaitreOuvrage = -1
+        if af.cor_af_actor:
+            for index, actor in enumerate(af.cor_af_actor):
+                if actor.nomenclature_actor_role.mnemonique == "Maître d'ouvrage":
+                    iMaitreOuvrage = index
+                elif actor.nomenclature_actor_role.mnemonique == "Producteur du jeu de données":
+                    iCreateur = index
+
+
+        #af_dict["nom_createur"] = af.cor_af_actor[iCreateur].role.nom_role if iCreateur!=-1 else "Non renseigné"
+        af_dict["mail_createur"] = af.cor_af_actor[iCreateur].role.email if (iCreateur!=-1 and af.cor_af_actor[iCreateur].role) else ""
+        af_dict["nom_maitre_ouvrage"] = af.cor_af_actor[iMaitreOuvrage].organism.nom_organisme if iMaitreOuvrage!=-1 else "Non renseigné"
+        af_dict["deletable"] = is_af_deletable(af.id_acquisition_framework)
         afs_dict.append(af_dict)
 
     #  get cruved for each ds and push them in the af
@@ -162,6 +178,18 @@ def get_af_and_ds_metadata(info_role):
         dataset_dict["cruved"] = d.get_object_cruved(
             user_cruved, d.id_dataset, ids_dataset_user, ids_dataset_organisms,
         )
+        dataset_dict["deletable"] = is_dataset_deletable(d.id_dataset)
+        dataset_dict["observation_count"] = (
+            DB.session.query(Synthese.cd_nom)
+            .filter(Synthese.id_dataset == d.id_dataset)
+            .count()
+        )
+        iCreateur = -1
+        if d.cor_dataset_actor:
+            for index, actor in enumerate(d.cor_dataset_actor):
+                if actor.nomenclature_actor_role.mnemonique == "Producteur du jeu de données":
+                    iCreateur = index
+        dataset_dict["createur"] = d.cor_dataset_actor[iCreateur].as_dict(True) if iCreateur!=-1 else None
         af_of_dataset = get_af_from_id(d.id_acquisition_framework, afs_dict)
         af_of_dataset["datasets"].append(dataset_dict)
 
@@ -171,6 +199,26 @@ def get_af_and_ds_metadata(info_role):
     if not datasets:
         return afs_resp, 404
     return afs_resp
+
+def is_dataset_deletable(id_dataset):
+    datas = (
+        DB.session.query(Synthese.id_synthese)
+        .filter(Synthese.id_dataset == id_dataset)
+        .all()
+    )
+    if datas:
+        return False
+    return True
+
+def is_af_deletable(id_af):
+    datasets = (
+        DB.session.query(TDatasets.id_dataset)
+        .filter(TDatasets.id_acquisition_framework == id_af)
+        .all()
+    )
+    if datasets:
+        return False
+    return True
 
 
 def get_af_from_id(id_af, af_list):
@@ -262,6 +310,64 @@ def upload_canvas():
         fd.write(binary_data)
         fd.close()
     return "OK"
+
+
+@routes.route("/dataset/<int:ds_id>", methods=["DELETE"])
+@permissions.check_cruved_scope("D", True, module_code="METADATA")
+@json_resp
+def delete_dataset(info_role, ds_id):
+    """
+    Delete a dataset
+
+    .. :quickref: Metadata;
+    """
+    if info_role.value_filter == "0":
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" a dataset').format(
+                info_role.id_role, info_role.code_action
+            ),
+            403,
+        )
+    
+    if not is_dataset_deletable(ds_id):
+        raise GeonatureApiError(
+            "La suppression du jeu de données n'est pas possible car des données y sont rattachées dans la Synthèse",
+            500
+        )
+
+    DB.session.query(CorDatasetActor).filter(
+        CorDatasetActor.id_dataset == ds_id
+    ).delete()
+    
+    DB.session.query(TDatasets).filter(
+        TDatasets.id_dataset == ds_id
+    ).delete()
+
+    DB.session.commit()
+
+    return "OK"
+
+
+@routes.route("/activate_dataset/<int:ds_id>/<string:active>", methods=["POST"])
+@permissions.check_cruved_scope("U", True, module_code="METADATA")
+@json_resp
+def activate_dataset(info_role, ds_id, active):
+    """
+    Activate or deactivate a dataset
+
+    .. :quickref: Metadata;
+    """
+    if info_role.value_filter == "0":
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" a dataset').format(
+                info_role.id_role, info_role.code_action
+            ),
+            403,
+        )
+
+    DB.session.query(TDatasets).filter(TDatasets.id_dataset == ds_id).update({'active' : active=='true'})
+    DB.session.commit()
+    return "activated" if active else "deactivated"
 
 
 @routes.route("/dataset", methods=["POST"])
@@ -670,12 +776,47 @@ def get_acquisition_framework_details(id_acquisition_framework):
     return None
 
 
+@routes.route("/acquisition_framework/<int:af_id>", methods=["DELETE"])
+@permissions.check_cruved_scope("D", True, module_code="METADATA")
+@json_resp
+def delete_acquisition_framework(info_role, af_id):
+    """
+    Delete an acquisition framework
+    .. :quickref: Metadata;
+    """
+    if info_role.value_filter == "0":
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" an acquisition_framework').format(
+                info_role.id_role, info_role.code_action
+            ),
+            403,
+        )
+
+    if not is_af_deletable(af_id):
+        raise GeonatureApiError(
+            "La suppression du cadre d'acquisition n'est pas possible car des jeux de données y sont rattachées",
+            500
+        )
+
+    DB.session.query(CorAcquisitionFrameworkActor).filter(
+        CorAcquisitionFrameworkActor.id_acquisition_framework == af_id
+    ).delete()
+    
+    DB.session.query(TAcquisitionFramework).filter(
+        TAcquisitionFramework.id_acquisition_framework == af_id
+    ).delete()
+
+    DB.session.commit()
+
+    return "OK"
+
+
 @routes.route("/acquisition_framework", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="METADATA")
 @json_resp
 def post_acquisition_framework(info_role):
     """
-    Post a dataset
+    Post an acquisition framework
     .. :quickref: Metadata;
     """
     if info_role.value_filter == "0":
