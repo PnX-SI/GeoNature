@@ -8,7 +8,10 @@
       <div class="row">
         <div class="form-group col-sm-7">
           <input class="form-control form-control-sm"
-            type="text" name="" id="" placeholder="Rechercher" (keyup)="updateSearchbar($event)" (click)="openSearchModal(searchModal)">
+            type="text" name="" id="" placeholder="Rechercher" (keyup)="updateSearchbar($event)">
+        </div>
+        <div class="col-sm-3">
+          <button class="mat-stroked-button" (click)="openSearchModal(searchModal)"> Recherche avancée </button>
         </div>
       </div>
       <div>Liste des cadres d'acquisition et des jeux de données associés</div>
@@ -127,12 +130,63 @@
 
 <ng-template #searchModal let-c="close" let-d="dismiss">
   <div class="modal-header">
-    <h5 class="modal-title" id="exampleModalLabel"> Rechercher dans le catalogue des jeux de données </h5>
+    <h5 class="modal-title" id="exampleModalLabel"> Rechercher </h5>
   </div>
-  <div class="modal-body">
-    <div class="form-group col-sm-7">
-      <input class="form-control form-control-sm"
-        type="text" name="" id="" placeholder="Rechercher" (keyup)="updateSearchbar($event)">
+  <div class="modal-body" style="align-items: flex-end;">
+    <div class="row">
+      <div class="col">
+        n° Dossier
+      </div>
+      <div class="col">
+        <input class="form-control form-control-sm"
+          type="text" name="" id="" placeholder="n° Dossier" (keyup)="updateAdvancedSearch($event, 'num')">
+      </div>
     </div>
+    <div class="row">
+      <div class="col">
+        Titre / Identifiant
+      </div>
+      <div class="col">
+        <input class="form-control form-control-sm"
+          type="text" name="" id="" placeholder="Titre / Identifiant" (keyup)="updateAdvancedSearch($event, 'title1')">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        Titre / Identifiant
+      </div>
+      <div class="col">
+        <input class="form-control form-control-sm"
+          type="text" name="" id="" placeholder="Titre / Identifiant" (keyup)="updateAdvancedSearch($event, 'title2')">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        Crée le
+      </div>
+      <div class="col">
+        <input class="form-control form-control-sm"
+          type="text" name="" id="" placeholder="Crée le" (keyup)="updateAdvancedSearch($event, 'start_date')">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        Organisme / Utilisateur
+      </div>
+      <div class="col">
+        <input class="form-control form-control-sm"
+          type="text" name="" id="" placeholder="Organisme / Utilisateur" (keyup)="updateAdvancedSearch($event,'actor')">
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col">
+      </div>
+      <div class="col">
+        <button class="mat-stroked-button" (click)="closeSearchModal(searchModal)"> Fermer </button>
+      </div>
+    </div>
+
   </div>
 </ng-template>

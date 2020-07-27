@@ -54,6 +54,8 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
   activePage: number = 0;
   pageSizeOptions: Array<number> = [10, 25, 50, 100];
 
+  searchTerms : any = {};
+
   constructor(
     public _cruvedStore: CruvedStoreService,
     private _dfs: DataFormService,
@@ -102,7 +104,6 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
       }
     );
   }
-  
 
   /**
    *	Filtre les éléments CA et JDD selon la valeur de la barre de recherche
@@ -149,8 +150,112 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
     this.activePage = 0;
   }
 
+  matchAf(af, criteria, value) {
+
+    switch (criteria) {
+      case 'num':
+        if ((af.id_acquisition_framework+' ').toLowerCase().indexOf(value) !== -1)
+          return true;
+        break;
+      case 'title1':
+      case 'title2':
+        if (af.acquisition_framework_name.toLowerCase().indexOf(value) !== -1)
+          return true;
+        break;
+      case 'start_date':
+        if (af.acquisition_framework_start_date.toLowerCase().indexOf(value) !== -1)
+          return true;
+        break;
+      case 'actor':
+        if (af.mail_createur.toLowerCase().indexOf(value) !== -1
+          || af.nom_maitre_ouvrage.toLowerCase().indexOf(value) !== -1)
+          return true;
+        break;
+      default:
+        return true;
+    }
+
+    if (af.datasets) {
+      af.datasetsTemp = af.datasets.filter(
+        ds => this.matchDs(ds, criteria, value)
+      );
+      return (af.datasetsTemp.length > 0);
+    }
+
+    return false;
+    
+  }
+
+  matchDs(ds, criteria, value) {
+
+    ((ds.id_dataset+' ').toLowerCase().indexOf(value) !== -1
+                || ds.dataset_name.toLowerCase().indexOf(value) !== -1
+                || ds.meta_create_date.toLowerCase().indexOf(value) !== -1)
+
+    switch (criteria) {
+      case 'num':
+          if ((ds.id_dataset+' ').toLowerCase().indexOf(value) !== -1)
+            return true;
+          break;
+        case 'title1':
+        case 'title2':
+          if (ds.dataset_name.toLowerCase().indexOf(value) !== -1)
+            return true;
+          break;
+        case 'start_date':
+          if (ds.meta_create_date.toLowerCase().indexOf(value) !== -1)
+            return true;
+          break;
+        case 'actor':
+          if (true)
+            return true;
+          break;
+        default:
+          return true;
+    }
+
+    return false;
+  }
+
+  updateAdvancedSearch(event, criteria) {
+
+    this.searchTerms[criteria] = event.target.value.toLowerCase();
+    this.researchTerm = event.target.value.toLowerCase();
+
+    //recherche des cadres d'acquisition qui matchent
+    this.tempAF = this.acquisitionFrameworks.filter(af => {
+      //si vide => affiche tout et ferme le panel
+      if (this.researchTerm === '') {
+        // 'dé-expand' les accodions pour prendre moins de place
+        this.expandAccordions = false;
+        //af.datasets.filter(ds=>true);
+        af.datasetsTemp = af.datasets;
+        return true;
+      } else {
+        // expand tout les accordion recherchés pour voir le JDD des CA
+        this.expandAccordions = true;
+
+        for (let cr of ['num', 'title1', 'title2', 'start_date', 'actor']) {
+          if (this.searchTerms[cr]) {
+            if (!this.matchAf(af, cr, this.searchTerms[cr]))
+              return false;
+          }
+        }
+
+        return true;
+      }
+    });
+    //retour à la premiere page du tableau pour voir les résultats
+    this.paginator.pageIndex = 0;
+    this.activePage = 0;
+  }
+
   openSearchModal(searchModal) {
     this.modal.open(searchModal);
+  }
+
+  closeSearchModal(searchModal) {
+    this.modal.dismissAll(searchModal);
   }
 
   isDisplayed(idx: number) {
@@ -169,7 +274,6 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
   }
 
   deleteAf(af_id) {
-    console.log("deleteAf(" + af_id + ")");
     this._dfs.deleteAf(af_id).subscribe(
       res => this.getAcquisitionFrameworksAndDatasets()
     );
@@ -185,14 +289,12 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
   }
 
   deleteDs(ds_id) {
-    console.log("deleteDs(" + ds_id + ")");
     this._dfs.deleteDs(ds_id).subscribe(
       res => this.getAcquisitionFrameworksAndDatasets()
     );
   }
 
   activateDs(ds_id, active) {
-    console.log("activateDs(" + ds_id + ", " + active + ")");
     this._dfs.activateDs(ds_id, active).subscribe(
       res => this.getAcquisitionFrameworksAndDatasets()
     );
