@@ -12,7 +12,7 @@
 
       <ng-template ngx-datatable-header-template>
         <label class="datatable-checkbox">
-          <input type="checkbox" (click)="toggleSelection($event)" matTooltip="Sélectionner/déselectionner tout">
+          <input type="checkbox" (click)="toggleSelection($event)" matTooltip="Sélectionner/déselectionner tout" >
         </label>
         </ng-template>
 
@@ -37,19 +37,37 @@
         <span>Détails</span>
       </ng-template>
        <ng-template let-row="row" ngx-datatable-cell-template>
-          <button #ValidationModalInfoObs id="details" type="button" (click)="openInfoModal(row)" class="btn btn-info fa fa-info-circle" title="details">
+          <button #ValidationModalInfoObs id="details" type="button" (click)="openInfoModal(row)" class="btn btn-info fa fa-info-circle" title="details"
+            [disabled]="row.unique_id_sinp == 'None'"
+          >
           </button>
        </ng-template>
     </ngx-datatable-column>
 
-  <ngx-datatable-column *ngFor="let col of VALIDATION_CONFIG.LIST_COLUMNS_FRONTEND" name="{{col.name}}" prop="{{col.prop}}"
-    maxWidth="{{col.max_width||10000}}" minWidth="{{col.min_width||10}}">
+
+  <ngx-datatable-column
+    *ngFor="let col of VALIDATION_CONFIG.LIST_COLUMNS_FRONTEND"
+    name="{{col.name}}"
+    prop="{{col.prop}}"
+    maxWidth="{{col.max_width||10000}}"
+    minWidth="{{col.min_width||10}}"
+  >
+    <ng-template
+      *ngIf="[
+            'date_min', 'date_max',
+            'meta_validation_date', 'meta_create_date', 'meta_update_date',
+            'validation_date'
+          ].includes(col.prop)"
+      let-row="row" ngx-datatable-cell-template
+    >
+      {{row[col.prop] | date:'dd-MM-yyyy'}}
+    </ng-template>
     <ng-template *ngIf="col.prop === 'id_nomenclature_valid_status'" let-row="row" ngx-datatable-cell-template>
       <div class="statusContent">
         <span class="validationCircle" [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.cd_nomenclature_validation_status]?.color}">
           <i class="material-icons">{{row.validation_auto}}</i></span>
         <div [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.cd_nomenclature_validation_status]?.color}" class="statusName">
-          <span>{{row.label_default}}</span><span *ngIf="row.validation_auto"> (automatique)</span>
+          <span>{{getValidationStatusMnemonique(row.cd_nomenclature_validation_status)}}</span><span *ngIf="row.validation_auto"> (automatique)</span>
         </div>
       </div>
     </ng-template>
