@@ -57,8 +57,8 @@ import { SyntheseSearchComponent } from '@geonature_common/form/synthese-form/sy
 import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-component';
 import { DumbSelectComponent } from '@geonature_common/form/dumb-select/dumb-select.component';
 
-import { LieuxComponent } from './map/lieux/lieux.component';
-import {ListeLieuxComponent} from './map/listelieux/listelieux.component';
+import { PlacesComponent } from './map/places/places.component';
+import {PlacesListComponent} from './map/placesList/placesList.component';
 
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
@@ -136,8 +136,8 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     TaxonAdvancedModalComponent,
     DumbSelectComponent,
     GeometryFormComponent,
-    LieuxComponent,
-    ListeLieuxComponent
+    PlacesComponent,
+    PlacesListComponent
   ],
   providers: [
     TranslateService,
@@ -202,8 +202,8 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     TaxonAdvancedModalComponent,
     DumbSelectComponent,
     GeometryFormComponent,
-    LieuxComponent,
-    ListeLieuxComponent
+    PlacesComponent,
+    PlacesListComponent
   ]
 })
 export class GN2CommonModule {}

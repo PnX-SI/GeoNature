@@ -29,15 +29,15 @@
         (markerChanged)="sendGeoInfo($event)">
       </pnx-gps>
 
-      <pnx-lieux 
+      <pnx-places 
       *ngIf="occtaxConfig.ENABLE_GPS_TOOL" 
       (markerChanged)="sendGeoInfo($event)">
-    </pnx-lieux>
+    </pnx-places>
 
-    <pnx-listelieux 
+    <pnx-placesList 
       *ngIf="occtaxConfig.ENABLE_GPS_TOOL" 
       (markerChanged)="sendGeoInfo($event)">
-    </pnx-listelieux>	
+    </pnx-placesList>	
   </pnx-map>
     
   </div>

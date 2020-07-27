@@ -612,15 +612,15 @@ GROUP BY uuid_attached_row
 ) last_val
 ON v.uuid_attached_row = last_val.uuid_attached_row AND v.validation_date = last_val.max_date;
 
---MET 22/07/2020 Table t_lieux pour la fonctionnalité mes-lieux
-CREATE TABLE gn_commons.t_lieux
+--MET 22/07/2020 Table t_places pour la fonctionnalité mes-lieux
+CREATE TABLE gn_commons.t_places
 (
     id_role integer NOT NULL,
-    nom_lieu character varying(100),
-	geom_lieu geometry,
-    CONSTRAINT pk_t_lieux PRIMARY KEY (id_role,nom_lieu),
-    CONSTRAINT t_lieux_id_role_fkey FOREIGN KEY (id_role)
-        REFERENCES utilisateurs.t_roles (id_role) MATCH SIMPLE
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
+    place_name character varying(100),
+	  place_geom geometry,
+      CONSTRAINT pk_t_places PRIMARY KEY (id_role,place_name),
+      CONSTRAINT t_places_id_role_fkey FOREIGN KEY (id_role)
+          REFERENCES utilisateurs.t_roles (id_role) MATCH SIMPLE
+          ON UPDATE CASCADE
+          ON DELETE CASCADE
 );

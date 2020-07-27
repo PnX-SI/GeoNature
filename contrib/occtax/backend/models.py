@@ -317,11 +317,11 @@ class DefaultNomenclaturesValue(DB.Model):
 #######################################################################################   
 @serializable
 @geoserializable
-class TLieux(DB.Model):
-    __tablename__ = "t_lieux"
+class TPlaces(DB.Model):
+    __tablename__ = "t_places"
     __table_args__ = {"schema": "gn_commons"}
     id_role = DB.Column(DB.Integer, primary_key=True)
-    nom_lieu = DB.Column(DB.String, primary_key=True)
-    geom_lieu = DB.Column(Geometry("GEOMETRY", 4326))
+    place_name = DB.Column(DB.String, primary_key=True)
+    place_geom = DB.Column(Geometry("GEOMETRY", 4326))
     def get_geofeature(self, recursif=True):
-        return self.as_geofeature("geom_lieu", "nom_lieu", recursif) 
+        return self.as_geofeature("place_geom", "place_name", recursif) 
