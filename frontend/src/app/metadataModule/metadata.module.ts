@@ -13,6 +13,7 @@ import { AfCardComponent } from './af/af-card.component';
 import { ChartsModule } from 'ng2-charts/ng2-charts';
 import { ChartModule } from 'angular2-chartjs';
 import { DataService } from "../../../../external_modules/import/frontend/app/services/data.service";
+import { StepsService } from "../../../../external_modules/import/frontend/app/components/import_process/steps.service";
 
 const routes: Routes = [
   { path: '', component: MetadataComponent },
@@ -45,6 +46,6 @@ const routes: Routes = [
     ActorComponent,
     AfCardComponent
   ],
-  providers: [DataService]
+  providers: [DataService,StepsService]
 })
 export class MetadataModule { }
