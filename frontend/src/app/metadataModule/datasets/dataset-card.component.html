@@ -116,6 +116,46 @@
 
         </div>
       </div>
+      <div class="card" *ngIf="!empty">
+        <div class="card-header">
+          <h5>
+            Fiche récapitulative
+          </h5>
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered tabRecap">
+            <thead class="bold">
+              <tr>
+                  <td class="textCenter">Source</td>
+                  <td class="textCenter">Nombre de données</td>
+                  <td class="textCenter">Importé le</td>
+                  <td class="textCenter">Statut</td>
+                  <td class="textCenter">Rapport</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let ListImport of history'>
+                 <td class="textCenter">{{ListImport.import_table}}</td>
+                 <td class="textCenter"> [ {{ListImport.source_count}} ]</td>
+                 <td class="textCenter">{{ListImport.date_create_import | date: 'd/mm/yyyy h:mm:ss a'}}</td>
+                 <td class="textCenter">
+                    <div class="imgStatus">
+                    <img class='imgImportSuccess'*ngIf="ListImport.is_finished" src="../../assets/images/tick.png"/>
+                    <img class='importImportFail' *ngIf="!ListImport.is_finished" src="../../assets/images/close.png"/>
+                   </div>
+                 </td>
+                 <td>
+                  <div class='imgRapport'>
+                      <img class='imgSensibles' src="../../assets/images/Rapport_Sensibles.svg"/>
+                      <img class='imgUUID' src="../../assets/images/Rapport_UUID.svg"/>
+                    </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
     </div>
 
     <div class="col-xs-12 col-sm-12 col-md-8 col-lg-4">

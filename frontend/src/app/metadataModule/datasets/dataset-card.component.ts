@@ -4,6 +4,7 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { BaseChartDirective } from 'ng2-charts';
 import { AppConfig } from "@geonature_config/app.config";
+import { CommonService } from '@geonature_common/service/common.service';
 
 @Component({
   selector: 'pnx-datasets-card',
@@ -18,6 +19,8 @@ export class DatasetCardComponent implements OnInit {
   public nbTaxons: number;
   public nbObservations: number;
   public geojsonData: any = null;
+  public history;
+  public empty: boolean = false;
 
   @ViewChild(BaseChartDirective) public chart: BaseChartDirective;
 
@@ -69,7 +72,8 @@ export class DatasetCardComponent implements OnInit {
   constructor(
     private _route: ActivatedRoute,
     private _dfs: DataFormService,
-    public moduleService: ModuleService
+    public moduleService: ModuleService,
+    private _commonService: CommonService
   ) { }
 
   ngOnInit() {
@@ -78,8 +82,31 @@ export class DatasetCardComponent implements OnInit {
       this.id_dataset = params['id'];
       if (this.id_dataset) {
         this.getDataset(this.id_dataset);
+        this.getImportList(this.id_dataset);
       }
     });
+  }
+
+  getImportList(id_dataset) {
+    this._dfs.getImports(id_dataset).subscribe(
+      res => {
+        this.history = res;
+        this.empty = (res.length==0);
+      },
+      error => {
+        this.empty = true;
+        if (error.statusText === "Unknown Error") {
+          // show error message if no connexion
+          this._commonService.regularToaster(
+            "error",
+            "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connexion)"
+          );
+        } else {
+          // show error message if other server error
+          this._commonService.regularToaster("error", error.error.message);
+        }
+      }
+    );
   }
 
   getDataset(id) {
