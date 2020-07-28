@@ -4,6 +4,7 @@ import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.serv
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { Router, NavigationExtras } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { StepsService } from "../../../../external_modules/import/frontend/app/components/import_process/steps.service";
 
 import { DataService } from "../../../../external_modules/import/frontend/app/services/data.service";
 import { CommonService } from "@geonature_common/service/common.service";
@@ -62,7 +63,8 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
     private _router: Router,
     private modal: NgbModal,
     public _ds: DataService,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private stepService: StepsService
   ) { }
 
   ngOnInit() {
@@ -310,6 +312,7 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
   }
 
   importDs(ds_id){
+    this.stepService.setStepData(1);
     this._router.navigate([`/import/process/step/1`], {
       queryParams: { datasetId: ds_id }
     });
