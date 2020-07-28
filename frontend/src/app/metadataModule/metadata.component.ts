@@ -309,4 +309,13 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
     this._router.navigate(['/synthese'], navigationExtras);
   }
 
+  importDs(ds_id){
+    let navigationExtras: NavigationExtras = {
+      queryParams: {
+          "datasetId": ds_id
+      }
+    };
+    this._router.navigate(['/import/process/step/1'], navigationExtras);
+  }
+
 }
