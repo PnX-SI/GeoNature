@@ -100,7 +100,7 @@
                       <img src="./assets/images/Editer.svg" [routerLink]="['/metadata/dataset', ds.id_dataset]"/>
                       <img *ngIf="ds.active" src="./assets/images/Actif.svg" (click)="activateDs(ds.id_dataset, false)"/>
                       <img *ngIf="!ds.active" src="./assets/images/Actif_Off.svg" (click)="activateDs(ds.id_dataset, true)"/>
-                      <img src="./assets/images/Import.svg">
+                      <img src="./assets/images/Import.svg" (click)="importDs(ds.id_dataset)"> 
                       <img src="./assets/images/Donnees_map.svg" (click)="syntheseDs(ds.id_dataset)" >
                       <img *ngIf="ds.deletable" src="./assets/images/Poubelle.svg" (click)="deleteDs(ds.id_dataset)">
                       <img *ngIf="!ds.deletable" src="./assets/images/Poubelle_Off.svg"
