@@ -310,12 +310,10 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
   }
 
   importDs(ds_id){
-    let navigationExtras: NavigationExtras = {
-      queryParams: {
-          "datasetId": ds_id
-      }
-    };
-    this._router.navigate(['/import/process/step/1'], navigationExtras);
+    this._router.navigate([`/import/process/step/1`], {
+      queryParams: { datasetId: ds_id }
+    });
   }
 
 }
+
