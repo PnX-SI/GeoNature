@@ -19,8 +19,6 @@ export class DatasetCardComponent implements OnInit {
   public nbTaxons: number;
   public nbObservations: number;
   public geojsonData: any = null;
-  public history;
-  public empty: boolean = false;
 
   @ViewChild(BaseChartDirective) public chart: BaseChartDirective;
 
@@ -82,31 +80,8 @@ export class DatasetCardComponent implements OnInit {
       this.id_dataset = params['id'];
       if (this.id_dataset) {
         this.getDataset(this.id_dataset);
-        this.getImportList(this.id_dataset);
       }
     });
-  }
-
-  getImportList(id_dataset) {
-    this._dfs.getImports(id_dataset).subscribe(
-      res => {
-        this.history = res;
-        this.empty = (res.length==0);
-      },
-      error => {
-        this.empty = true;
-        if (error.statusText === "Unknown Error") {
-          // show error message if no connexion
-          this._commonService.regularToaster(
-            "error",
-            "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connexion)"
-          );
-        } else {
-          // show error message if other server error
-          this._commonService.regularToaster("error", error.error.message);
-        }
-      }
-    );
   }
 
   getDataset(id) {

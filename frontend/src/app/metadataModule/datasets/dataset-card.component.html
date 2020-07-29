@@ -116,7 +116,7 @@
 
         </div>
       </div>
-      <div class="card" *ngIf="!empty">
+      <div class="card" *ngIf="dataset.imports.length>0">
         <div class="card-header">
           <h5>
             Fiche récapitulative
@@ -134,14 +134,14 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor='let ListImport of history'>
-                 <td class="textCenter">{{ListImport.import_table}}</td>
-                 <td class="textCenter"> [ {{ListImport.source_count}} ]</td>
-                 <td class="textCenter">{{ListImport.date_create_import | date: 'd/mm/yyyy h:mm:ss a'}}</td>
+              <tr *ngFor='let import of dataset.imports'>
+                 <td class="textCenter">{{import.import_table}}</td>
+                 <td class="textCenter"> [ {{import.source_count}} ]</td>
+                 <td class="textCenter">{{import.date_create_import | date: 'd/mm/yyyy h:mm:ss a'}}</td>
                  <td class="textCenter">
                     <div class="imgStatus">
-                    <img class='imgImportSuccess'*ngIf="ListImport.is_finished" src="./assets/images/tick.png"/>
-                    <img class='importImportFail' *ngIf="!ListImport.is_finished" src="./assets/images/close.png"/>
+                    <img class='imgImportSuccess'*ngIf="import.is_finished" src="./assets/images/tick.png"/>
+                    <img class='importImportFail' *ngIf="!import.is_finished" src="./assets/images/close.png"/>
                    </div>
                  </td>
                  <td>
