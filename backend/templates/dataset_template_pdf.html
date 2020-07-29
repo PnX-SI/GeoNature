@@ -260,6 +260,37 @@
             </div>
         </div>
     {% endif %}
+
+
+    {% if data.imports and data.imports[0]: %}
+        <br/>
+        <div class="description" style="transform: translateY(40px);">
+            <div class="left-block">
+                <p class="info-titre">Imports</p>
+                <table style="width:100%, border=1">
+                    <tr>
+                        <th>Source</th>
+                        <th>Nb. données</th>
+                        <th>Importé le</th>
+                        <th>Statut</th>
+                    </tr>
+                    {% for import in data.imports -%}
+                        <tr>
+                            <td>{{ import.import_table[:20] }}</td>
+                            <td>{{ import.source_count }}</td>
+                            <td>{{ import.date_create_import[:10] }}</td>
+                            <td>{% if import.is_finished: %} 
+                                <img class="import-state" src="../../static/images/tick.png" alt="tick-icon">
+                                {% else %}
+                                <img class="import-state" src="../../static/images/close.png" alt="close-icon">
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {%- endfor %}
+                </table>
+            </div>
+        </div>
+    {% endif %}
 </body>
 
 </html>

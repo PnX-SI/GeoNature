@@ -177,6 +177,16 @@ div.titre {
     width: 30px;
 }
 
+.import-state {
+    height: 24px;
+    width: 24px;
+}
+
+td {
+    text-align: center;
+}
+
+
 .ca-initial-info {
     font-size: 10px;
     margin: 2px 0 0 10px;

@@ -137,7 +137,7 @@
               <tr *ngFor='let import of dataset.imports'>
                  <td class="textCenter">{{import.import_table}}</td>
                  <td class="textCenter"> [ {{import.source_count}} ]</td>
-                 <td class="textCenter">{{import.date_create_import | date: 'd/mm/yyyy h:mm:ss a'}}</td>
+                 <td class="textCenter">{{import.date_create_import | date: 'd/mm/yyyy h:mm a'}}</td>
                  <td class="textCenter">
                     <div class="imgStatus">
                     <img class='imgImportSuccess'*ngIf="import.is_finished" src="./assets/images/tick.png"/>
