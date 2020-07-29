@@ -993,7 +993,7 @@ JOIN taxonomie.taxref ref ON t.cd_ref = ref.cd_nom;
 --TRIGGERS--
 ------------
 CREATE TRIGGER tri_meta_dates_change_synthese
-  BEFORE INSERT OR UPDATE
+  BEFORE UPDATE
   ON synthese
   FOR EACH ROW
   EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
