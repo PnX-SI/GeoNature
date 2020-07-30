@@ -299,6 +299,7 @@ CREATE SEQUENCE t_parameters_id_parameter_seq
 ALTER SEQUENCE t_parameters_id_parameter_seq OWNED BY t_parameters.id_parameter;
 ALTER TABLE ONLY t_parameters ALTER COLUMN id_parameter SET DEFAULT nextval('t_parameters_id_parameter_seq'::regclass);
 SELECT pg_catalog.setval('t_parameters_id_parameter_seq', 1, false);
+ALTER TABLE t_parameters ADD CONSTRAINT unique_t_parameters_id_organism_parameter_name UNIQUE (id_organism, parameter_name);
 
 
 CREATE TABLE bib_tables_location

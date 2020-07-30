@@ -76,3 +76,7 @@ SELECT  s.id_synthese,
   WHERE d.validable = true AND NOT s.unique_id_sinp IS NULL;
 
 COMMENT ON VIEW gn_commons.v_synthese_validation_forwebapp  IS 'Vue utilisée pour le module validation. Prend l''id_nomenclature dans la table synthese ainsi que toutes les colonnes de la synthese pour les filtres. On JOIN sur la vue latest_validation pour voir si la validation est auto';
+
+-- Ajout d'une contrainte d'unicité sur la table gn_commons.t_parameters sur le duo de champs id_organism, parameter_name
+
+ALTER TABLE gn_commons.t_parameters ADD CONSTRAINT unique_t_parameters_id_organism_parameter_name UNIQUE (id_organism, parameter_name);
