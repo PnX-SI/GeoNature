@@ -4,29 +4,31 @@
 
 from marshmallow import Schema, fields
 
-#
+
 DEFAULT_COLUMNS_API_VALIDATION = [
     "validation_auto",
     "id_nomenclature_valid_status",
-    "id_synthese",
     "date_min",
     "observers",
     "nom_valide",
     "dataset_name",
     "validation_date",
+    "nom_vern_or_lb_nom"
 ]
 
 # Colonnes renvoyees par l'API synthese qui sont obligatoires pour que les fonctionnalités
 #  front fonctionnent
 MANDATORY_COLUMNS = [
+    "id_synthese",
     "entity_source_pk_value",
-    "url_source",
     "cd_nom",
     "meta_update_date",
     "cd_nomenclature_validation_status",
     "mnemonique",
     "label_default",
     "unique_id_sinp",
+    "geojson"
+
 ]
 
 # CONFIG MAP-LIST
