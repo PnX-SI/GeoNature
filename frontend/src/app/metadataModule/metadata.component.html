@@ -18,26 +18,33 @@
       <br>
       
       <mat-accordion displayMode="flat" multi class="mat-table">
-        <section matSort class="mat-elevation-z2 mat-header-row">
-          <span class="mat-header-cell">
-            ID
-          </span>
-          <span class="mat-header-cell" style="min-width: 480px" >
-            Titre
-          </span>
-          <span class="mat-header-cell">
-            Date de lancement
-          </span>
-          <span class="mat-header-cell">
-            Créateur
-          </span>
-          <span class="mat-header-cell">
-            Maître d'ouvrage
-          </span>
-          <span class="mat-header-cell">
-            Actions
-          </span>
-        </section>
+        <div class='mat-elevation-z2'>
+          <section matSort class="mat-header-row">
+            <span class="mat-header-cell" style="margin-right: 8px">
+              Cadres d'acquisition
+            </span>
+          </section>
+          <section matSort class="mat-header-row">
+            <span class="mat-header-cell">
+              ID
+            </span>
+            <span class="mat-header-cell" style="min-width: 480px" >
+              Titre
+            </span>
+            <span class="mat-header-cell">
+              Date de lancement
+            </span>
+            <span class="mat-header-cell">
+              Créateur
+            </span>
+            <span class="mat-header-cell">
+              Maître d'ouvrage
+            </span>
+            <span class="mat-header-cell" style="min-width: 268px; margin-right: 8px">
+              Actions
+            </span>
+          </section>
+        </div>
         <ng-container *ngFor="let af of tempAF; let idx = index">
           <mat-expansion-panel *ngIf="isDisplayed(idx)" [expanded]="expandAccordions">
             <mat-expansion-panel-header class="mat-row">
@@ -46,10 +53,12 @@
                   {{af.id_acquisition_framework}}
                 </a>
               </span>
-              <span class="mat-cell" style="min-width: 480px; text-align: left">
+              <span class="mat-cell" style="min-width: 480px">
                 <a [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]">
                   {{af.acquisition_framework_name}}
-                </a>
+                  <br/>
+                  <span style="color: gray"> {{af.unique_acquisition_framework_id}} </span>
+              </a>
               </span>
               <span class="mat-cell">
                 {{af.acquisition_framework_start_date}}
@@ -60,7 +69,7 @@
               <span class="mat-cell">
                 {{af.nom_maitre_ouvrage}}
               </span>
-              <span class="mat-cell">
+              <span class="mat-cell" style="min-width: 268px; margin-right: 10px">
                 <img src="./assets/images/Editer.svg" [routerLink]="['/metadata/af', af.id_acquisition_framework]">  
                 <img src="./assets/images/Donnees_map.svg" (click)="syntheseAf(af.id_acquisition_framework)" >
                 <img *ngIf="af.deletable" src="./assets/images/Poubelle.svg" (click)="deleteAf(af.id_acquisition_framework)">
@@ -68,25 +77,37 @@
                   matTooltip="La suppression du cadre d'acquisition n'est pas possible car des jeux de données y sont rattachées">
               </span>
             </mat-expansion-panel-header>
-            <table class="table table-bordered">
+            <table class="table" style="margin: 2px">
               <thead class="bold">
-                <tr>
+                  <td class="filling" style="min-width: 100px"> </td>
+                  <td class="mat-header-cell" style="min-width: 100%"> Id </td>
+                  <td class="filling" style="min-width: 16px"> </td>
+              </thead>
+            </table>
+            <table class="table">
+              <thead class="bold">
+                  <td class="filling" style="width: 100px"> </td>
                   <td class="mat-header-cell"> Id </td>
-                  <td class="mat-header-cell"> Nom du JDD </td>
+                  <td class="mat-header-cell" style="min-width: 440px"> Nom du JDD </td>
                   <td class="mat-header-cell"> Date de création </td>
                   <td class="mat-header-cell"> Nombre de données </td>
                   <td class="mat-header-cell"> Créateur </td>
-                  <td class="mat-header-cell"> Rapports </td>
-                  <td class="mat-header-cell"> Actions </td>
-                </tr>
+                  <td class="mat-header-cell" style="min-width: 122px"> Rapports </td>
+                  <td class="mat-header-cell" style="min-width: 268px"> Actions </td>
+                  <td class="filling" style="width: 16px"> </td>
               </thead>
               <tbody>
                 <tr *ngFor="let ds of af.datasetsTemp; let last = last">
+                    <td class="filling"> </td>
                     <td> 
                       <a [routerLink]="['/metadata/dataset_detail', ds.id_dataset]"> {{ds.id_dataset}} </a>
                     </td>
-                    <td style="text-align: left"> 
-                      <a [routerLink]="['/metadata/dataset_detail', ds.id_dataset]"> {{ds.dataset_name}} </a>
+                    <td> 
+                      <a [routerLink]="['/metadata/dataset_detail', ds.id_dataset]">
+                        {{ds.dataset_name}} 
+                        <br/>
+                        <span style="color: gray"> {{ds.unique_dataset_id}} </span>
+                      </a>
                     </td>
                     <td> {{ds.meta_create_date}} </td>
                     <td> {{ds.observation_count}} </td>
@@ -96,7 +117,7 @@
                       <img src="./assets/images/Rapport_Sensibles.svg"/>
                       <img src="./assets/images/Rapport_UUID.svg"/>
                     </td>
-                    <td>
+                    <td style="min-width: 268px">
                       <img src="./assets/images/Editer.svg" [routerLink]="['/metadata/dataset', ds.id_dataset]"/>
                       <img *ngIf="ds.active" src="./assets/images/Actif.svg" (click)="activateDs(ds.id_dataset, false)"/>
                       <img *ngIf="!ds.active" src="./assets/images/Actif_Off.svg" (click)="activateDs(ds.id_dataset, true)"/>
@@ -106,6 +127,7 @@
                       <img *ngIf="!ds.deletable" src="./assets/images/Poubelle_Off.svg"
                         matTooltip="La suppression du jeu de données n'est pas possible car des données y sont rattachées dans la Synthèse">
                     </td>
+                    <td class="filling"> </td>
                 </tr>
               </tbody>
             </table>

@@ -42,6 +42,7 @@
 
 .mat-expansion-panel-header.mat-row {
   border-bottom: none;
+  align-items: stretch;
 }
 
 //copied from https://github.com/angular/material2/blob/master/src/lib/table/table.scss
@@ -59,6 +60,9 @@ $mat-row-horizontal-padding: 24px;
 
 .mat-row {
   min-height: $mat-row-height;
+  align-items: stretch;
+  align-self: stretch;
+  align-content: stretch;
 }
 
 .mat-row, .mat-header-row {
@@ -85,6 +89,8 @@ $mat-row-horizontal-padding: 24px;
   word-wrap: break-word;
   text-align: center;
   border: 1px solid #808080;
+  padding-left: 16px;
+  padding-right:16px
 }
 
 .mat-header-cell {
@@ -93,7 +99,16 @@ $mat-row-horizontal-padding: 24px;
   font-size: 16px;
   height: 48px;
   border: 2px solid #ffffff;
+  border-top: 0px;
+  border-bottom: 0px;
   padding: 8px
+}
+
+.filling {
+  background-color: #ffffff;
+  color: #ffffff;
+  border: 0px;
+  padding: 0px
 }
 
 img {
