@@ -145,10 +145,10 @@ export class ValidationModalInfoObsComponent implements OnInit {
             .join();
             console.log(this.email.length)
           if (this.email.length > 0 ) {
-            const mail_subject = `[GeoNature Validation]Donnée du ${this.selectedObs.date_min} - ${ this.selectedObsTaxonDetail.nom_vern } - ${ this.selectedObsTaxonDetail.nom_valide }`;
-            const mail_body = ` La donnée en date du ${this.selectedObs.date_min} relative au taxon ${ this.selectedObsTaxonDetail.nom_vern } - ${ this.selectedObsTaxonDetail.nom_valide } semble erronée
-              \n\r
-              Merci de contacter la personne en charge de la validation`;
+            let d = { ...this.selectedObsTaxonDetail, ...this.selectedObs};
+
+            const mail_subject = eval('`' + ModuleConfig.MAIL_SUBJECT + '`');
+            const mail_body = eval('`' + ModuleConfig.MAIL_BODY + '`');
             let mailto = encodeURI("mailto:" + this.email + "?subject=" + mail_subject+ "&body=" + mail_body)
             mailto = mailto.replace(/,/g, '%2c');
             this.mailto = mailto;

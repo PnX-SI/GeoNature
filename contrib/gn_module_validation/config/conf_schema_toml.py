@@ -74,6 +74,8 @@ ID_ATTRIBUT_TAXHUB = [1, 2]
 
 AREA_FILTERS = [{"label": "Communes", "id_type": 25}]
 
+MAIL_BODY = "La donnée en date du ${ d.date_min } relative au taxon ${ d.nom_vern } - ${ d.nom_valide } pose question\n\rMerci de contacter la personne en charge de la validation"
+MAIL_SUBJECT = "[GeoNature Validation]Donnée du ${ d.date_min } - ${ d.nom_vern } - ${ d.nom_valide }"
 
 class GnModuleSchemaConf(Schema):
     MANDATORY_COLUMNS = fields.List(fields.String(), missing=MANDATORY_COLUMNS)
@@ -90,3 +92,5 @@ class GnModuleSchemaConf(Schema):
     DISPLAY_TAXON_TREE = fields.Boolean(missing=True)
     ID_ATTRIBUT_TAXHUB = fields.List(fields.Integer, missing=ID_ATTRIBUT_TAXHUB)
     AREA_FILTERS = fields.List(fields.Dict, missing=AREA_FILTERS)
+    MAIL_BODY = fields.String(missing=MAIL_BODY)
+    MAIL_SUBJECT = fields.String(missing=MAIL_SUBJECT)
