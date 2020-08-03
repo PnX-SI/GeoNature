@@ -128,8 +128,8 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
         if ((af.id_acquisition_framework+' ').toLowerCase().indexOf(this.researchTerm) !== -1
           || af.acquisition_framework_name.toLowerCase().indexOf(this.researchTerm) !== -1
           || af.acquisition_framework_start_date.toLowerCase().indexOf(this.researchTerm) !== -1
-          || af.mail_createur.toLowerCase().indexOf(this.researchTerm) !== -1
-          || af.nom_maitre_ouvrage.toLowerCase().indexOf(this.researchTerm) !== -1 ) {
+          || af.creator_mail.toLowerCase().indexOf(this.researchTerm) !== -1
+          || af.project_owner_name.toLowerCase().indexOf(this.researchTerm) !== -1 ) {
           //si un cadre matche on affiche tout ses JDD
           af.datasetsTemp = af.datasets;
           return true;
@@ -169,8 +169,8 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
           return true;
         break;
       case 'actor':
-        if (af.mail_createur.toLowerCase().indexOf(value) !== -1
-          || af.nom_maitre_ouvrage.toLowerCase().indexOf(value) !== -1)
+        if (af.creator_mail.toLowerCase().indexOf(value) !== -1
+          || af.project_owner_name.toLowerCase().indexOf(value) !== -1)
           return true;
         break;
       default:

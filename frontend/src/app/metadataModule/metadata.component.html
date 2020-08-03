@@ -40,7 +40,7 @@
             <span class="mat-header-cell">
               Maître d'ouvrage
             </span>
-            <span class="mat-header-cell" style="min-width: 268px; margin-right: 8px">
+            <span class="mat-header-cell" style="min-width: 264px; margin-right: 8px">
               Actions
             </span>
           </section>
@@ -64,12 +64,12 @@
                 {{af.acquisition_framework_start_date}}
               </span>
               <span class="mat-cell">
-                <a href="mailto:{{af.mail_createur}}"> {{af.mail_createur}} </a>
+                <a href="mailto:{{af.creator_mail}}"> {{af.creator_mail}} </a>
               </span>
               <span class="mat-cell">
-                {{af.nom_maitre_ouvrage}}
+                {{af.project_owner_name}}
               </span>
-              <span class="mat-cell" style="min-width: 268px; margin-right: 10px">
+              <span class="mat-cell" style="margin-right: 10px; width: 264px">
                 <img src="./assets/images/Editer.svg" [routerLink]="['/metadata/af', af.id_acquisition_framework]">  
                 <img src="./assets/images/Donnees_map.svg" (click)="syntheseAf(af.id_acquisition_framework)" >
                 <img *ngIf="af.deletable" src="./assets/images/Poubelle.svg" (click)="deleteAf(af.id_acquisition_framework)">
@@ -80,7 +80,7 @@
             <table class="table" style="margin: 2px">
               <thead class="bold">
                   <td class="filling" style="min-width: 100px"> </td>
-                  <td class="mat-header-cell" style="min-width: 100%"> Id </td>
+                  <td class="mat-header-cell" style="min-width: 100%"> Jeu(x) de données </td>
                   <td class="filling" style="min-width: 16px"> </td>
               </thead>
             </table>
@@ -92,8 +92,8 @@
                   <td class="mat-header-cell"> Date de création </td>
                   <td class="mat-header-cell"> Nombre de données </td>
                   <td class="mat-header-cell"> Créateur </td>
-                  <td class="mat-header-cell" style="min-width: 122px"> Rapports </td>
-                  <td class="mat-header-cell" style="min-width: 268px"> Actions </td>
+                  <td class="mat-header-cell" style="min-width: 118px"> Rapports </td>
+                  <td class="mat-header-cell" style="width: 264px"> Actions </td>
                   <td class="filling" style="width: 16px"> </td>
               </thead>
               <tbody>
@@ -113,11 +113,11 @@
                     <td> {{ds.observation_count}} </td>
                     <td> {{ ds.createur?.organism?.nom_organisme }} 
                       <span *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"> - </span> {{ ds.createur?.role?.nom_complet }} </td>
-                    <td>
+                    <td style="padding: 0px">
                       <img src="./assets/images/Rapport_Sensibles.svg"/>
                       <img src="./assets/images/Rapport_UUID.svg"/>
                     </td>
-                    <td style="min-width: 268px">
+                    <td  style="width: 264px; padding-left: 0px; padding-right: 0px">
                       <img src="./assets/images/Editer.svg" [routerLink]="['/metadata/dataset', ds.id_dataset]"/>
                       <img *ngIf="ds.active" src="./assets/images/Actif.svg" (click)="activateDs(ds.id_dataset, false)"/>
                       <img *ngIf="!ds.active" src="./assets/images/Actif_Off.svg" (click)="activateDs(ds.id_dataset, true)"/>

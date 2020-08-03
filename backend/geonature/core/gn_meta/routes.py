@@ -167,8 +167,8 @@ def get_af_and_ds_metadata(info_role):
 
 
         #af_dict["nom_createur"] = af.cor_af_actor[iCreateur].role.nom_role if iCreateur!=-1 else "Non renseigné"
-        af_dict["mail_createur"] = af.cor_af_actor[iCreateur].role.email if (iCreateur!=-1 and af.cor_af_actor[iCreateur].role) else ""
-        af_dict["nom_maitre_ouvrage"] = af.cor_af_actor[iMaitreOuvrage].organism.nom_organisme if iMaitreOuvrage!=-1 else "Non renseigné"
+        af_dict["creator_mail"] = af.cor_af_actor[iCreateur].role.email if (iCreateur!=-1 and af.cor_af_actor[iCreateur].role) else ""
+        af_dict["project_owner_name"] = af.cor_af_actor[iMaitreOuvrage].organism.nom_organisme if iMaitreOuvrage!=-1 else "Non renseigné"
         af_dict["deletable"] = is_af_deletable(af.id_acquisition_framework)
         afs_dict.append(af_dict)
 
