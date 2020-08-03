@@ -634,19 +634,10 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
     except IOError:
         acquisition_framework["chart"] = False
 
+    
+
     # Appel de la methode pour generer un pdf
-    pdf_file = fm.generate_pdf('cadre_acquisition_template_pdf.html', acquisition_framework, filename)
-
-    # pprint.pprint(acquisition_framework)
-
-    return Response(
-        pdf_file,
-        mimetype="application/pdf",
-        headers={
-            "Content-disposition": "attachment; filename=" + filename,
-            "Content-type": "application/pdf"
-        }
-    )
+    pdf_file = fm.generate_pdf('acquisition_framework_template_pdf.html', acquisition_framework, filename)
     pdf_file_posix = Path(pdf_file)
     return send_from_directory(
         str(pdf_file_posix.parent),
