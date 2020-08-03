@@ -10,7 +10,11 @@
           </button>
         </a>
       </div>
-
+  </div>
+  <div *ngIf="selectedObs?.source?.url_source">
+    <a class="btn btn-sm btn-primary"href="{{selectedObs?.source?.url_source}}/{{selectedObs?.entity_source_pk_value}}" target="_blank">
+      <i matTooltip="Voir l'observation dans le module de saisie" class="fa fa-file-text" aria-hidden="true"></i>
+    </a>
   </div>
 
   <button type="button" class="close" aria-label="Close" (click)="closeModal()">
@@ -76,6 +80,7 @@
             <button> <a href="{{mailto}}" ><i class="fa fa-envelope-o" aria-hidden="true"></i></a> </button>
           )
           </span>
+
           <br>
 
           <span *ngIf="selectedObs?.date_min != selectedObs?.date_max; else elseBlock">

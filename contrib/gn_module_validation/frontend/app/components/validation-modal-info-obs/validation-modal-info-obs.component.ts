@@ -143,10 +143,19 @@ export class ValidationModalInfoObsComponent implements OnInit {
           this.email = this.selectedObs.cor_observers
             .map(el => el.email)
             .join();
-            console.log(this.email.length)
+
           if (this.email.length > 0 ) {
             let d = { ...this.selectedObsTaxonDetail, ...this.selectedObs};
-
+            if (this.selectedObs.source.url_source) {
+              d['data_link'] = "Lien vers l'observation : " + [
+                this.APP_CONFIG.URL_APPLICATION,
+                this.selectedObs.source.url_source,
+                this.selectedObs.entity_source_pk_value
+              ].join("/");
+            }
+            else {
+              d['data_link'] = "";
+            }
             const mail_subject = eval('`' + ModuleConfig.MAIL_SUBJECT + '`');
             const mail_body = eval('`' + ModuleConfig.MAIL_BODY + '`');
             let mailto = encodeURI("mailto:" + this.email + "?subject=" + mail_subject+ "&body=" + mail_body)
