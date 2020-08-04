@@ -14,7 +14,7 @@
           *ngIf="!bEditMedias[i]"
           class="btn btn-primary btn-sm"
           id="valid-media-btn"
-          [disabled]="freeze"
+          [disabled]="freeze || bLoading"
           (click)="editMedia(i)"
           title="{{ 'Media.edit' | translate }}"
         >
@@ -26,6 +26,7 @@
           class="btn btn-primary btn-sm"
           id="valid-media-btn"
           (click)="cancelMedia(i)"
+          [disabled]="bLoading"
           title="{{ 'Media.undo' | translate }}"
         >
           <i id="icon-undo" class="fa fa-undo" aria-hidden="true"></i>
@@ -35,7 +36,7 @@
           *ngIf="bEditMedias[i]"
           class="btn btn-success btn-sm"
           id="valid-media-btn"
-          [disabled]="freeze && !bValidMedias[i]"
+          [disabled]="freeze && !bValidMedias[i] || bLoading"
           (click)="validMedia(i)"
           title="{{ 'Media.valid' | translate }}"
         >
@@ -45,12 +46,17 @@
         <button
           class="btn btn-danger btn-sm"
           id="delete-media-btn"
-          [disabled]="freeze && !bEditMedias[i]"
+          [disabled]="freeze && !bEditMedias[i] || bLoading"
           (click)="deleteMedia(i)"
           title="{{ 'Media.delete' | translate }}"
         >
           <i id="icon-delete" class="fa fa-times" aria-hidden="true"></i>
         </button>
+
+        <span *ngIf="bLoading">
+          {{ 'Media.loading' | translate }}
+          <i  id="icon-loading" class="fa fa-cog fa-spin"></i>
+        </span>
       </div>
     </div>
   </div>
@@ -59,7 +65,7 @@
       *ngIf="bEdit"
       class="btn btn-success btn-sm"
       id="add-media-btn"
-      [disabled]="freeze"
+      [disabled]="freeze || bLoading"
       (click)="addMedia()"
     >
       <i id="icon-add" class="fa fa-plus" aria-hidden="true"></i>

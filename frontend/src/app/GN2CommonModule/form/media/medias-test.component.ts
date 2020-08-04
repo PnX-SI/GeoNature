@@ -13,6 +13,7 @@ export class MediasTestComponent implements OnInit {
   medias:Array<Media> = [];
   bValidForms:boolean = true;
 
+
   ngOnInit() {
     const media = new Media(  {
       "id_media": null,
@@ -32,12 +33,6 @@ export class MediasTestComponent implements OnInit {
 
   onValidFormsChange(event) {
     this.bValidForms=event;
-  }
-
-  validMedias() {
-    console.log('valid média')
-
-    // route + etc...
   }
 
 }

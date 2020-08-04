@@ -175,6 +175,8 @@
     "edit": "Edit media",
     "valid": "Validate media",
     "delete": "Delete media",
-    "undo": "Undo changes"
+    "undo": "Undo changes",
+    "loading": "Loading media"
+
   }
 }

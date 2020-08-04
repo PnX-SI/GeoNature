@@ -64,7 +64,12 @@ def get_media(id_media):
         Retourne un media
         .. :quickref: Commons;
     """
-    m = TMediaRepository(id_media=id_media).media
+
+    # gestion des parametres de route
+    params = request.args
+    temp = params.get('temp', False)
+
+    m = TMediaRepository(id_media=id_media, temp=temp).media
     if m:
         return m.as_dict()
 
@@ -79,6 +84,11 @@ def insert_or_update_media(id_media=None):
 
         .. :quickref: Commons;
     """
+
+    # gestion des parametres de route
+    params = request.args
+    temp = params.get('temp', False)
+
     if request.files:
         file = request.files["file"]
     else:
@@ -102,7 +112,7 @@ def insert_or_update_media(id_media=None):
         data = request.get_json(silent=True)
 
     m = TMediaRepository(
-        data=data, file=file, id_media=id_media
+        data=data, file=file, id_media=id_media, temp=temp
     ).create_or_update_media()
     return m.as_dict()
 
@@ -115,7 +125,12 @@ def delete_media(id_media):
 
         .. :quickref: Commons;
     """
-    TMediaRepository(id_media=id_media).delete()
+
+    # gestion des parametres de route
+    params = request.args
+    temp = params.get('temp', False)
+
+    TMediaRepository(id_media=id_media, temp=temp).delete()
     return {"resp": "media {} deleted".format(id_media)}
 
 

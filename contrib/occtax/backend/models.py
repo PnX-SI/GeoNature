@@ -12,7 +12,7 @@ from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
 from utils_flask_sqla_geo.serializers import geoserializable
 
-from geonature.core.taxonomie.models import Taxref
+from geonature.core.gn_commons.models import TMedias
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.taxonomie.models import Taxref
 from geonature.utils.env import DB
@@ -161,13 +161,21 @@ class TOccurrencesOccurrence(DB.Model):
     digital_proof = DB.Column(DB.Unicode)
     non_digital_proof = DB.Column(DB.Unicode)
     comment = DB.Column(DB.Unicode)
-
+    unique_id_occurence_occtax = DB.Column(
+        UUID(as_uuid=True),
+        default=select([func.uuid_generate_v4()]),
+    )
     cor_counting_occtax = relationship(
         "CorCountingOccurrence",
         lazy="joined",
         cascade="all,delete-orphan",
         uselist=True,
     )
+
+    medias = DB.relationship(
+        TMedias,
+        primaryjoin=(TMedias.uuid_attached_row == unique_id_occurence_occtax),
+        foreign_keys=[TMedias.uuid_attached_row])
 
     taxref = relationship("Taxref", lazy="joined")
 

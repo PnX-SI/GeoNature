@@ -100,6 +100,11 @@ class TMedias(DB.Model):
 
 
 @serializable
+class TMediasTemp(TMedias):
+    __tablename__ = "t_medias_temp"
+
+
+@serializable
 class TParameters(DB.Model):
     __tablename__ = "t_parameters"
     __table_args__ = {"schema": "gn_commons"}

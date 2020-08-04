@@ -76,3 +76,28 @@ SELECT  s.id_synthese,
   WHERE d.validable = true AND NOT s.unique_id_sinp IS NULL;
 
 COMMENT ON VIEW gn_commons.v_synthese_validation_forwebapp  IS 'Vue utilisée pour le module validation. Prend l''id_nomenclature dans la table synthese ainsi que toutes les colonnes de la synthese pour les filtres. On JOIN sur la vue latest_validation pour voir si la validation est auto';
+
+
+CREATE TABLE gn_commons.t_medias_temp
+(
+  id_media integer NOT NULL,
+  unique_id_media uuid NOT NULL DEFAULT public.uuid_generate_v4(),
+  id_nomenclature_media_type integer NOT NULL,
+  id_table_location integer NOT NULL,
+  uuid_attached_row uuid,
+  title_fr character varying(255),
+  title_en character varying(255),
+  title_it character varying(255),
+  title_es character varying(255),
+  title_de character varying(255),
+  media_url character varying(255),
+  media_path character varying(255),
+  author character varying(100),
+  description_fr text,
+  description_en text,
+  description_it text,
+  description_es text,
+  description_de text,
+  is_public boolean NOT NULL DEFAULT true
+);
+COMMENT ON COLUMN gn_commons.t_medias_temp.id_nomenclature_media_type IS 'Table temporaire des medias';

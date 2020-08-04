@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Media } from './media';
+import { MediaService } from '@geonature_commons/services/media-service
 
 @Component({
   selector: 'pnx-medias',
@@ -13,12 +14,14 @@ export class MediasComponent implements OnInit {
   public bEditMedias: Array<boolean> = [];
   public bValidMedias: Array<boolean> = [];
   public mediaSave: Media;
+  public bLoading:boolean = false;
 
   @Input() medias: Array<Media> = []; /** list of medias */
   @Input() bEdit: boolean = false; /** component is editable */
 
   @Output() onValidFormsChange = new EventEmitter<boolean>();
 
+  constructor(private _mediaService: MediaService) { }
 
   ngOnInit() {
     this.initMedias()
@@ -31,7 +34,6 @@ export class MediasComponent implements OnInit {
 
   onValidMediaChange(event, index) {
     this.bValidMedias[index] = event
-    console.log(this.validMedia);
     this.emitFormsChange();
   }
 
@@ -49,9 +51,14 @@ export class MediasComponent implements OnInit {
   }
 
   validMedia(index) {
+    this.bLoading = true;
     this.bEditMedias[index] = false;
     this.freeze = false;
-    this.emitFormsChange()
+    this.mediaService
+    setTimeout(() => {
+      this.emitFormsChange();
+      this.bLoading = false;
+    }, 1000);
   }
 
   deleteMedia(index) {
@@ -69,7 +76,6 @@ export class MediasComponent implements OnInit {
     }
 
     this.medias[index] = new Media(this.mediaSave)
-    console.log('media aa')
     this.bEditMedias[index] = false;
     this.freeze = false;
     this.mediaSave = null;

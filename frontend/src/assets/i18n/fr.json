@@ -178,6 +178,7 @@
     "edit": "Editer le média",
     "valid": "Valider le média",
     "delete": "Supprimer le média",
-    "undo": "Rétablir le média"
+    "undo": "Rétablir le média",
+    "loading": "Chargement du média en cours"
   }
 }
