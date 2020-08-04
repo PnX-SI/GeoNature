@@ -1,0 +1,69 @@
+<div>
+  <div>
+    <div *ngFor="let media of medias; let i = index" class="media-list">
+      <div class='media'>
+        <pnx-media
+          [media]="media"
+          [bEdit]="bEditMedias[i]"
+          (onValidMediaChange)="onValidMediaChange($event, i)"
+        >
+        </pnx-media>
+      </div>
+      <div *ngIf="bEdit" class="side-btns">
+        <button
+          *ngIf="!bEditMedias[i]"
+          class="btn btn-primary btn-sm"
+          id="valid-media-btn"
+          [disabled]="freeze"
+          (click)="editMedia(i)"
+          title="{{ 'Media.edit' | translate }}"
+        >
+          <i id="icon-edit" class="fa fa-pencil" aria-hidden="true"></i>
+        </button>
+
+        <button
+          *ngIf="bEditMedias[i]"
+          class="btn btn-primary btn-sm"
+          id="valid-media-btn"
+          (click)="cancelMedia(i)"
+          title="{{ 'Media.undo' | translate }}"
+        >
+          <i id="icon-undo" class="fa fa-undo" aria-hidden="true"></i>
+        </button>
+
+        <button
+          *ngIf="bEditMedias[i]"
+          class="btn btn-success btn-sm"
+          id="valid-media-btn"
+          [disabled]="freeze && !bValidMedias[i]"
+          (click)="validMedia(i)"
+          title="{{ 'Media.valid' | translate }}"
+        >
+          <i id="icon-valid" class="fa fa-check" aria-hidden="true"></i>
+        </button>
+
+        <button
+          class="btn btn-danger btn-sm"
+          id="delete-media-btn"
+          [disabled]="freeze && !bEditMedias[i]"
+          (click)="deleteMedia(i)"
+          title="{{ 'Media.delete' | translate }}"
+        >
+          <i id="icon-delete" class="fa fa-times" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="add-btn">
+    <button
+      *ngIf="bEdit"
+      class="btn btn-success btn-sm"
+      id="add-media-btn"
+      [disabled]="freeze"
+      (click)="addMedia()"
+    >
+      <i id="icon-add" class="fa fa-plus" aria-hidden="true"></i>
+      {{ 'Media.add' | translate }}
+    </button>
+  </div>
+</div>

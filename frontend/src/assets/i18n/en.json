@@ -168,5 +168,13 @@
   "ForgotPasswordOrLogin": "Loggin or password forgotten",
   "AutoAccountEmailConfirmation": "An email has been sent to confirm your account",
   "AdminAccountEmailConfirmation": "Your demand has been saved, an administrator will answer to you soon",
-  "PasswordAndLoginRecovery": "An email has been sent to recover your login and password"
+  "PasswordAndLoginRecovery": "An email has been sent to recover your login and password",
+  "Medias": {
+    "Medias": "Medias",
+    "add": "Add media",
+    "edit": "Edit media",
+    "valid": "Validate media",
+    "delete": "Delete media",
+    "undo": "Undo changes"
+  }
 }

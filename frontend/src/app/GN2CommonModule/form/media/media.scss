@@ -1,0 +1,32 @@
+/** Patch dynamic form */
+:host /deep/ .padding-sm {
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+}
+
+.media-list {
+  display: flex;
+  margin-bottom: 5px;
+}
+
+.media {
+  margin-bottom: 5px;
+}
+
+.side-btns {
+  margin-left: 10px;
+}
+
+
+.side-btns > button {
+  margin-right: 2px;
+}
+
+.add-btn {
+  margin-bottom: 5px;
+}
+
+
+.test-medias {
+  margin: 20px
+}

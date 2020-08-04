@@ -1,0 +1,24 @@
+<div class="test-medias">
+  <h1>Test Médias</h1>
+
+  <div>
+    <pnx-medias [bEdit]="true" [medias]="medias" (onValidFormsChange)="onValidFormsChange($event)"> </pnx-medias>
+  </div>
+
+<div>
+  <button
+  class="btn btn-success btn-sm"
+  id="valid-medias-btn"
+  [disabled]="!bValidForms"
+  (click)="validMedias()"
+  title="Valider les médias"
+>
+  Valider <i id="icon-delete" class="fa fa-check" aria-hidden="true"></i>
+</button></div>
+
+
+<h2>Debug</h2>
+  Medias : <pre>{{medias|json}}</pre>
+</div>
+
+

@@ -171,5 +171,13 @@
   "ForgotPasswordOrLogin": "Identifiant ou mot de passe oublié ?",
   "AutoAccountEmailConfirmation": "Un email vient de vous être envoyé pour activer votre compte",
   "AdminAccountEmailConfirmation": "Votre demande de création de compte a bien été prise en compte, elle va être évaluée par un administrateur",
-  "PasswordAndLoginRecovery": "Un email vient de vous être envoyé pour récupérer votre identifiant et/ou renouveler votre mot de passe"
+  "PasswordAndLoginRecovery": "Un email vient de vous être envoyé pour récupérer votre identifiant et/ou renouveler votre mot de passe",
+  "Media": {
+    "Medias": "Médias",
+    "add": "Ajouter un Média",
+    "edit": "Editer le média",
+    "valid": "Valider le média",
+    "delete": "Supprimer le média",
+    "undo": "Rétablir le média"
+  }
 }

@@ -380,6 +380,8 @@ def insertOrUpdateOneReleve(info_role):
     DB.session.commit()
     DB.session.flush()
 
+    # gestion des medias ici
+
     return releve.get_geofeature()
 
 
