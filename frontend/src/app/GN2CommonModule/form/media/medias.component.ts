@@ -32,7 +32,7 @@ export class MediasComponent implements OnInit {
   onValidMediaChange(event, index) {
     this.bValidMedias[index] = event
     console.log(this.validMedia);
-    this.emitFormsChange()
+    this.emitFormsChange();
   }
 
   emitFormsChange() {
@@ -68,7 +68,8 @@ export class MediasComponent implements OnInit {
       return this.deleteMedia(index)
     }
 
-    this.medias[index].setValues(this.mediaSave)
+    this.medias[index] = new Media(this.mediaSave)
+    console.log('media aa')
     this.bEditMedias[index] = false;
     this.freeze = false;
     this.mediaSave = null;

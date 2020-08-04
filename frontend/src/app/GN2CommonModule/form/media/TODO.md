@@ -1,9 +1,12 @@
 
-
+# BUGS
 - bug cancel change form values
+- Error DOM exception
+
 
 # SQL 
 - media_temp
+
 
 # Python
 

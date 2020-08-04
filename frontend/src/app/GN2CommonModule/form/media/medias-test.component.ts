@@ -1,5 +1,3 @@
-import { divIcon } from "leaflet";
-
 import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Media } from './media';
@@ -29,8 +27,6 @@ export class MediasTestComponent implements OnInit {
       "file": "C:\\fakepath\\qgis.desktop"
     })
     this.medias.push(media);
-
-    this.
 
   }
 
