@@ -51,9 +51,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
 
   constructor(
     public fs: OcctaxFormService,
-    private _commonService: CommonService,
-    private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
-    private occtaxFormService: OcctaxFormService
+    private occtaxFormOccurrenceService: OcctaxFormOccurrenceService
   ) {}
 
   ngOnInit() {

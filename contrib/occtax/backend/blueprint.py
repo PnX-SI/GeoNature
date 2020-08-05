@@ -41,11 +41,7 @@ from .repositories import (
     get_query_occtax_filters,
     get_query_occtax_order,
 )
-from .schemas import (
-    OccurrenceSchema,
-    ReleveCruvedSchema,
-    ReleveSchema
-)
+from .schemas import OccurrenceSchema, ReleveCruvedSchema, ReleveSchema
 from .utils import get_nomenclature_filters
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, csv_resp, json_resp
 from geonature.utils.errors import GeonatureApiError
@@ -150,8 +146,7 @@ def getOneCounting(id_counting):
     """
     try:
         data = (
-            DB.session.query(CorCountingOccurrence,
-                             TRelevesOccurrence.id_releve_occtax)
+            DB.session.query(CorCountingOccurrence, TRelevesOccurrence.id_releve_occtax)
             .join(
                 TOccurrencesOccurrence,
                 TOccurrencesOccurrence.id_occurrence_occtax
@@ -202,9 +197,9 @@ def getOneReleve(id_releve, info_role):
         "releve": {
             "properties": releve,
             "id": releve.id_releve_occtax,
-            "geometry": releve.geom_4326
+            "geometry": releve.geom_4326,
         },
-        "cruved": releve.get_releve_cruved(info_role, user_cruved)
+        "cruved": releve.get_releve_cruved(info_role, user_cruved),
     }
 
     return releveCruvedSchema.dump(releve_cruved)
@@ -328,8 +323,7 @@ def insertOrUpdateOneReleve(info_role):
     releve.geom_4326 = from_shape(two_dimension_geom, srid=4326)
 
     if observersList is not None:
-        observers = DB.session.query(User).filter(
-            User.id_role.in_(observersList)).all()
+        observers = DB.session.query(User).filter(User.id_role.in_(observersList)).all()
         for o in observers:
             releve.observers.append(o)
 
@@ -402,7 +396,7 @@ def insertOrUpdateOneReleve(info_role):
 
 def releveHandler(request, *, releve, info_role):
 
-    #Test des droits d'édition du relevé
+    # Test des droits d'édition du relevé
     if releve.id_releve_occtax is not None:
         user_cruved = get_or_fetch_user_cruved(
             session=session, id_role=info_role.id_role, module_code="OCCTAX"
@@ -416,22 +410,21 @@ def releveHandler(request, *, releve, info_role):
         )
 
         releve = releve.get_releve_if_allowed(user)
-        #fin test, si ici => c'est ok
+        # fin test, si ici => c'est ok
 
-    #creation du relevé à partir du POST
+    # creation du relevé à partir du POST
     releveSchema = ReleveSchema()
 
-    #Modification de la requete geojson en releve
+    # Modification de la requete geojson en releve
     json_req = request.get_json()
-    json_req['properties']['geom_4326'] = json_req['geometry']
+    json_req["properties"]["geom_4326"] = json_req["geometry"]
 
     # chargement des données POST et merge avec relevé initial
-    releve, errors = releveSchema.load(json_req['properties'], instance=releve)
+    releve, errors = releveSchema.load(json_req["properties"], instance=releve)
 
     if bool(errors):
         raise InsufficientRightsError(
-            errors,
-            422,
+            errors, 422,
         )
 
     # set id_digitiser
@@ -451,6 +444,7 @@ def releveHandler(request, *, releve, info_role):
     DB.session.commit()
     DB.session.flush()
     return releve
+
 
 @blueprint.route("/only/releve", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="OCCTAX")
@@ -484,13 +478,18 @@ def createReleve(info_role):
     """
     # nouveau releve vide
     releve = TRelevesOccurrence()
-    releve = ReleveSchema().dump(releveHandler(request=request, releve=releve, info_role=info_role)).data
+    releve = (
+        ReleveSchema()
+        .dump(releveHandler(request=request, releve=releve, info_role=info_role))
+        .data
+    )
 
     return {
-        "geometry": releve.pop('geom_4326', None),
+        "geometry": releve.pop("geom_4326", None),
         "properties": releve,
-        "id": releve["id_releve_occtax"]
+        "id": releve["id_releve_occtax"],
     }
+
 
 @blueprint.route("/only/releve/<int:id_releve>", methods=["POST"])
 @permissions.check_cruved_scope("U", True, module_code="OCCTAX")
@@ -499,18 +498,22 @@ def updateReleve(id_releve, info_role):
     Post one Occurrence data (Occurrence + Counting) for add to Releve
 
     """
-    #get releve by id_releve
+    # get releve by id_releve
     releve = DB.session.query(TRelevesOccurrence).get(id_releve)
 
     if not releve:
         return {"message": "not found"}, 404
 
-    releve = ReleveSchema().dump(releveHandler(request=request, releve=releve, info_role=info_role)).data
+    releve = (
+        ReleveSchema()
+        .dump(releveHandler(request=request, releve=releve, info_role=info_role))
+        .data
+    )
 
     return {
-        "geometry": releve.pop('geom_4326', None),
+        "geometry": releve.pop("geom_4326", None),
         "properties": releve,
-        "id": releve["id_releve_occtax"]
+        "id": releve["id_releve_occtax"],
     }
 
 
@@ -524,11 +527,10 @@ def occurrenceHandler(request, *, occurrence, info_role):
 
     if not releve:
         raise InsufficientRightsError(
-            {"message": "not found"},
-            404,
+            {"message": "not found"}, 404,
         )
 
-    #Test des droits d'édition du relevé si modification
+    # Test des droits d'édition du relevé si modification
     if occurrence.id_occurrence_occtax is not None:
         user_cruved = get_or_fetch_user_cruved(
             session=session, id_role=info_role.id_role, module_code="OCCTAX"
@@ -542,14 +544,14 @@ def occurrenceHandler(request, *, occurrence, info_role):
         )
 
     releve = releve.get_releve_if_allowed(info_role)
-    #fin test, si ici => c'est ok
+    # fin test, si ici => c'est ok
 
     occurrenceSchema = OccurrenceSchema()
     occurrence, errors = occurrenceSchema.load(request.get_json(), instance=occurrence)
 
     if bool(errors):
         return errors, 422
-    
+
     DB.session.add(occurrence)
     DB.session.commit()
 
@@ -563,11 +565,13 @@ def createOccurrence(id_releve, info_role):
     Post one Occurrence data (Occurrence + Counting) for add to Releve
 
     """
-    #get releve by id_releve
+    # get releve by id_releve
     occurrence = TOccurrencesOccurrence()
     occurrence.id_releve_occtax = id_releve
 
-    return OccurrenceSchema().dump(occurrenceHandler(request=request, occurrence=occurrence, info_role=info_role))
+    return OccurrenceSchema().dump(
+        occurrenceHandler(request=request, occurrence=occurrence, info_role=info_role)
+    )
 
 
 @blueprint.route("/occurrence/<int:id_occurrence>", methods=["POST"])
@@ -586,8 +590,9 @@ def updateOccurrence(id_occurrence, info_role):
     if not occurrence:
         return {"message": "not found"}, 404
 
-    return OccurrenceSchema().dump(occurrenceHandler(request=request, occurrence=occurrence, info_role=info_role))
-
+    return OccurrenceSchema().dump(
+        occurrenceHandler(request=request, occurrence=occurrence, info_role=info_role)
+    )
 
 
 @blueprint.route("/releve/<int:id_releve>", methods=["DELETE"])
@@ -700,8 +705,7 @@ def getDefaultNomenclatures():
         ),
     )
     if len(types) > 0:
-        q = q.filter(
-            DefaultNomenclaturesValue.mnemonique_type.in_(tuple(types)))
+        q = q.filter(DefaultNomenclaturesValue.mnemonique_type.in_(tuple(types)))
     try:
         data = q.all()
     except Exception:
@@ -737,19 +741,17 @@ def export(info_role):
         schemaName="pr_occtax",
         engine=DB.engine,
         geometry_field=export_geom_column,
-        srid=export_srid
+        srid=export_srid,
     )
 
     releve_repository = ReleveRepository(export_view)
-    q = releve_repository.get_filtered_query(
-        info_role, from_generic_table=True)
+    q = releve_repository.get_filtered_query(info_role, from_generic_table=True)
     q = get_query_occtax_filters(
         request.args,
         export_view,
         q,
         from_generic_table=True,
-        obs_txt_column=blueprint.config['export_observer_txt_column']
-
+        obs_txt_column=blueprint.config["export_observer_txt_column"],
     )
 
     data = q.all()
@@ -769,8 +771,7 @@ def export(info_role):
         )
     elif export_format == "geojson":
         results = FeatureCollection(
-            [export_view.as_geofeature(d, columns=export_columns)
-             for d in data]
+            [export_view.as_geofeature(d, columns=export_columns) for d in data]
         )
         return to_json_resp(
             results, as_file=True, filename=file_name, indent=4, extension="geojson"
