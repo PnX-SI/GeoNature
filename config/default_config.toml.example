@@ -25,6 +25,9 @@ SQLALCHEMY_TRACK_MODIFICATIONS = false
 # Nom de l'application dans la page d'accueil.
 appName = "GeoNature 2"
 
+# Nom du fichier du logo present dans le dossier custom/images
+LOGO_STRUCTURE_FILE = 'logo_structure.png'
+
 # Langue par défaut utilisée par l'application.
 # Utilisée pour l'instant seulement avec les nomenclatures.
 DEFAULT_LANGUAGE = "fr"
@@ -148,12 +151,6 @@ MAIL_ON_ERROR = false
 
 # Configuration de l'affichage des cartes dans GeoNature
 [MAPCONFIG]
-    # Liste des fonds de carte proposés sur les cartes de GeoNature
-    BASEMAP = [
-        {"name" = "OpenStreetMap", "layer" = "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png", "attribution" = "&copy OpenStreetMap"},
-        {"name"= "OpenTopoMap", "layer" = "//a.tile.opentopomap.org/{z}/{x}/{y}.png", "attribution" = "© OpenTopoMap"},
-        {"name" = "GoogleSatellite", "layer" = "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}", "subdomains" = ["mt0", "mt1", "mt2", "mt3"], "attribution" = "© GoogleMap"}
-    ]
 
     # Coordonnées par défaut du centre de la carte à afficher
     # Attention : les coordonnées sont au format [Y, X]
@@ -168,6 +165,28 @@ MAIL_ON_ERROR = false
 
     # Zoom appliqué sur la carte lors du clic sur une liste
     ZOOM_ON_CLICK = 16
+
+# Liste des fonds de carte proposés sur les cartes de GeoNature
+# chaque section [[MAPCONFIG.BASEMAP]] définit un fond de carte
+# l'option service est obligatoire uniquement pour les wms 
+# l'ensemble des paramètre WMS peuvent être passé dans cette section
+[[MAPCONFIG.BASEMAP]]
+    name = "OpenstreetMap"
+    url = "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
+    attributions = "OSM contributors"
+[[MAPCONFIG.BASEMAP]]
+    name = "WMS"
+    url = "https://mon_flux_wms"
+    service = "wms"
+    layers = 'ma_layer'
+    attribution = 'lala'
+[[MAPCONFIG.BASEMAP]]
+    attributions = "GoogleSatellite"
+    name = "google"
+    url = "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
+    subdomains = ["mt0", "mt1", "mt2", "mt3"]
+
+
 
 
 # Configuration du module Synthese
@@ -217,6 +236,11 @@ MAIL_ON_ERROR = false
     # Active (=true) ou pas (=false) le fait de rechercher sur le nom d'observateur 
     # en 'ILIKE' sur les portées 1 et 2 du CRUVED
     CRUVED_SEARCH_WITH_OBSERVER_AS_TXT = false
+
+    # Switch the observer form input in free text input (false by default) or in select input (true)
+    SEARCH_OBSERVER_WITH_LIST = false
+    # id of the observer list -- utilisateurs.t_menus
+    ID_SEARCH_OBSERVER_LIST = 1
 
     # Activer (=true) ou pas (=false) la clusterisation des objets sur la carte
     # Si 'false', passez le NB_MAX_OBS_MAP à 10000 pour éviter 

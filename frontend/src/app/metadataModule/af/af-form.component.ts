@@ -33,7 +33,7 @@ export class AfFormComponent implements OnInit {
     private _router: Router,
     private _toaster: ToastrService,
     private _dateParser: NgbDateParserFormatter
-  ) {}
+  ) { }
 
   ngOnInit() {
     this._route.params.subscribe(params => {
@@ -73,6 +73,8 @@ export class AfFormComponent implements OnInit {
         this.afForm.get('acquisition_framework_end_date')
       )
     ]);
+
+    console.log(this.af);
   }
 
   getAf(id_af) {
@@ -103,6 +105,7 @@ export class AfFormComponent implements OnInit {
   addFormArray(): void {
     this.cor_af_actor.push(this._formService.generateCorAfActorForm());
   }
+
   postAf() {
     const cor_af_actor = JSON.parse(JSON.stringify(this.cor_af_actor.value));
     const af = Object.assign({}, this.afForm.value);
@@ -145,5 +148,10 @@ export class AfFormComponent implements OnInit {
         }
       );
     }
+  }
+
+  getPdf() {
+    const url = `${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks/export_pdf/${this.af.id_acquisition_framework}`;
+    window.open(url);
   }
 }

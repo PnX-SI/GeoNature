@@ -25,11 +25,11 @@ export class OcctaxDataService {
   }
 
   createReleve(form) {
-    return this._api.post(`${AppConfig.API_ENDPOINT}/occtax/releve`, form);
+    return this._api.post(`${AppConfig.API_ENDPOINT}/occtax/only/releve`, form);
   }
 
   updateReleve(id_releve, form) {
-    return this._api.post(`${AppConfig.API_ENDPOINT}/occtax/releve/${id_releve}`, form);
+    return this._api.post(`${AppConfig.API_ENDPOINT}/occtax/only/releve/${id_releve}`, form);
   }
 
   createOccurrence(id_releve, form) {

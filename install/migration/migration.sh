@@ -25,6 +25,9 @@ echo "OK, let's migrate GeoNature version..."
 cp $myrootpath/geonature_old/config/settings.ini config/settings.ini
 cp $myrootpath/geonature_old/config/geonature_config.toml config/geonature_config.toml
 cp -r $myrootpath/geonature_old/frontend/src/custom/* frontend/src/custom/
+cp -r $myrootpath/geonature_old/backend/static/images/* backend/static/images
+cp -r $myrootpath/geonature_old/backend/static/mobile/* backend/static/mobile
+cp -r $myrootpath/geonature_old/backend/static/exports/* backend/static/exports
 cp $myrootpath/geonature_old/frontend/src/favicon.ico frontend/src/favicon.ico
 cp -r $myrootpath/geonature_old/external_modules/* external_modules
 # On supprime le lien symbolique qui pointe vers geonature_old/contrib/occtax et validation
@@ -98,12 +101,25 @@ fi
 
 source venv/bin/activate
 pip install -r requirements.txt
+# installation des dépendances des modules
+# boucle sur les liens symbolique de external_module
+for D in $(find ../external_modules  -type l | xargs readlink) ; do
+    # si le lien symbolique exisite
+    if [ -e "$D" ] ; then
+        cd ${D}
+        cd backend   
+        if [ -f 'requirements.txt' ]
+        then
+            pip install -r requirements.txt
+        fi
+    fi
+done
 
-python ../geonature_cmd.py install_command
+cd $myrootpath/$currentdir/
+python geonature_cmd.py install_command
 
 echo "Update configurations"
 geonature update_configuration --build=false
-#geonature generate_frontend_config --build=false
 geonature generate_frontend_modules_route
 geonature generate_frontend_tsconfig_app
 geonature generate_frontend_tsconfig

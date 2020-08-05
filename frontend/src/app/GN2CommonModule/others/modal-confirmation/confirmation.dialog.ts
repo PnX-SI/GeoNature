@@ -22,7 +22,6 @@ export class ConfirmationDialog {
     @Inject(MAT_DIALOG_DATA) public options: any
   ) { 
     this.data = options;
-    console.log(this.yesColor);
   }
 
   onNoClick(): void {

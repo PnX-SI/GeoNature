@@ -127,8 +127,6 @@ geonature generate_frontend_config --conf-file ${BASE_DIR}/config/geonature_conf
 # Lancement de l'application
 echo "Configuration de l'application api backend dans supervisor..."
 DIR=$(readlink -e "${0%/*}")
-cp gunicorn_start.sh.sample gunicorn_start.sh
-sudo -s sed -i "s%APP_PATH%${BASE_DIR}%" gunicorn_start.sh
 sudo -s cp geonature-service.conf /etc/supervisor/conf.d/
 sudo -s sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/geonature-service.conf
 sudo -s sed -i "s%ROOT_DIR%${BASE_DIR}%" /etc/supervisor/conf.d/geonature-service.conf

@@ -101,6 +101,8 @@ def loginCas():
                 "nom_role": info_user["nom"],
                 "prenom_role": info_user["prenom"],
                 "id_organisme": organism_id,
+                "email": info_user["email"],
+                "active": True,
             }
             try:
                 resp = users.insert_role(user)

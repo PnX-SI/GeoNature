@@ -29,4 +29,4 @@ DELETE FROM utilisateurs.temp_users WHERE identifiant = 'hello_test';
 -- GN_COMMONS --
 ----------------
 
-DELETE FROM gn_commons.t_mobile_apps WHERE app_code = 'OCCTAX';
+DELETE FROM gn_commons.t_mobile_apps;

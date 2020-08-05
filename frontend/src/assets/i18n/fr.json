@@ -84,9 +84,6 @@
     "Dataset": "Jeu de données",
     "Comment": "Commentaire",
     "SaveReleve": "Enregistrer le relevé",
-    "DateMaxError": "La date de début ne peut pas être supérieure à la date de fin",
-    "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
-    "HourMaxError": "L'heure de début ne peut pas être supérieure à l'heure de fin",
     "SavedTaxon": "Taxon(s) enregistré(s)",
     "InfoGeo": "Informations géographiques du relevé",
     "Edit": "Editer le relevé",
@@ -101,7 +98,16 @@
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire",
     "GroupType": "Type de regroupement",
     "DoesNotExist": "Ce relevé n'existe pas",
-    "StayOnFormInterface": "Enchainer les relevés sans retourner à l'interface carte/liste"
+    "StayOnFormInterface": "Enchainer les relevés sans retourner à l'interface carte/liste",
+    "Infos": {
+      "ReleveAdded": "Relevé ajouté",
+      "ReleveModified": "Relevé modifié"
+    },
+    "Errors": {
+      "DateMaxError": "La date de début ne peut pas être postérieur à la date de fin",
+      "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
+      "HourMaxError": "L'heure de début ne peut pas être supérieure à l'heure de fin"
+    }
   },
   "Taxon": {
     "ObservedTaxon": "Taxon(s) observé(s)",
