@@ -389,8 +389,12 @@ def uuid_report(info_role):
     params = request.args
     ds_id = params.get("ds_id")
     id_import = params.get("id_import")
+    id_module = params.get("id_module")
 
     query = DB.session.query(Synthese).select_from(Synthese)
+        
+    if id_module:
+        query = query.filter(Synthese.id_module == id_module)
 
     if ds_id:
         query = query.filter(Synthese.id_dataset == ds_id)
