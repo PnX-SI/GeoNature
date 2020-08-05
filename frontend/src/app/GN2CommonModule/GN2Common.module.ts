@@ -152,7 +152,8 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     DynamicFormService,
     NgbDatePeriodParserFormatter,
     SyntheseDataService,
-    CruvedStoreService
+    CruvedStoreService,
+    MediaService
   ],
   entryComponents: [TaxonAdvancedModalComponent],
   exports: [

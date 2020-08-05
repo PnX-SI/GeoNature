@@ -64,6 +64,9 @@ export class OcctaxMapFormComponent
 
     // patch default values in ajax
     this.fs.patchAllDefaultNomenclature();
+
+    // get IdTableLocation for pr_occtax.t_occurrences_occtax
+    this.fs.getIdTableLocationOccurences()
   }
 
   ngAfterViewInit() {

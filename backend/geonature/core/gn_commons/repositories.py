@@ -36,13 +36,15 @@ class TMediaRepository():
         self.file = file
 
         # Chargement du média
-        if 'id_media' in self.media_data:
+        if self.media_data.get('id_media'):
             self.media = self._load_from_id(self.media_data['id_media'])
         elif id_media is not None:
             self.media = self._load_from_id(id_media)
         else:
             self.new = True
+            print(self.TModel, temp)
             self.media = self.TModel(**self.media_data)
+            print(self.media.id_media)
 
     def create_or_update_media(self):
         '''
@@ -55,6 +57,7 @@ class TMediaRepository():
                 self._persist_media_db()
             except Exception as e:
                 raise e
+
         # Si le média à un fichier associé
         if self.file:
             self.data['isFile'] = True
@@ -77,10 +80,12 @@ class TMediaRepository():
         ):
             remove_file(self.media.media_path)
 
+
         for k in self.media_data:
             setattr(self.media, k, self.media_data[k])
 
         self._persist_media_db()
+
         return self.media
 
     def _persist_media_db(self):
@@ -91,6 +96,8 @@ class TMediaRepository():
         try:
             DB.session.add(self.media)
             DB.session.commit()
+            for k in self.media_data:
+                self.media_data[k] = getattr(self.media, k)
         except IntegrityError as exp:
             # @TODO A revoir avec les nouvelles contrainte
             DB.session.rollback()
@@ -101,7 +108,6 @@ class TMediaRepository():
             if 'fk_t_medias_check_entity_value' in exp.args[0]:
                 raise Exception(
                     "id {} of {} doesn't exists".format(
-                        self.data['uuid_attached_row'],
                         self.data['id_table_location']
                     )
                 )

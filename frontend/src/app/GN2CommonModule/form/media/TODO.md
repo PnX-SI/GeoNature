@@ -1,12 +1,12 @@
 
 # BUGS
 - ~~bug cancel change form values~~
-- Error DOM exception
-
+- **Error DOM exception??????**
+- ~~**pas de bug fake_path securite du navigateur** file component + css~~
 
 # ~~SQL~~
 - ~~media_temp~~
-
+- besoin de media temp ????
 
 # Python
 
@@ -14,8 +14,15 @@
 - ~~ajouter media taxon~~
 
 ## Media
-- route pour creer/modifier supprimer medias temporaire (dans repo) 
+- cohérence url / path type de media
+- sync media temp (supprimer si media temp > 24h)
+- sync medias (si objet associé n'existe plus => suppimer le media)
+- sync medias qui fait les deux ?
+- ~~route pour creer/modifier supprimer medias temporaire (dans repo)~~
 - faire une fonction pour gerer media temp / media
+
+# Table location
+- route pour obtenir id_table_location depuis shema_name.table_name
 
 ## OccTax
 - gerer medias apres le flush
@@ -24,7 +31,8 @@
 # Front
 
 # Media
-- passer bouttons etc dans media.component
+- prendre en compte les type media, adapter le formulaire (condition+++++)
+- ~~passer bouttons etc dans media.component~~
 
 ## Test Media
 

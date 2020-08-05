@@ -346,6 +346,15 @@ CREATE TABLE t_medias
 );
 COMMENT ON COLUMN t_medias.id_nomenclature_media_type IS 'Correspondance nomenclature GEONATURE = TYPE_MEDIA (117)';
 
+CREATE SEQUENCE t_medias_id_media_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE t_medias_id_media_seq OWNED BY t_medias.id_media;
+ALTER TABLE ONLY t_medias ALTER COLUMN id_media SET DEFAULT nextval('t_medias_id_media_seq'::regclass);
+SELECT pg_catalog.setval('t_medias_id_media_seq', 1, false);
 
 CREATE TABLE t_medias_temp
 (
@@ -371,16 +380,15 @@ CREATE TABLE t_medias_temp
 );
 COMMENT ON COLUMN t_medias.id_nomenclature_media_type IS 'Table temporaire des medias';
 
-
-CREATE SEQUENCE t_medias_id_media_seq
+CREATE SEQUENCE t_medias_temp_id_media_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE t_medias_id_media_seq OWNED BY t_medias.id_media;
-ALTER TABLE ONLY t_medias ALTER COLUMN id_media SET DEFAULT nextval('t_medias_id_media_seq'::regclass);
-SELECT pg_catalog.setval('t_medias_id_media_seq', 1, false);
+ALTER SEQUENCE t_medias_temp_id_media_seq OWNED BY t_medias.id_media;
+ALTER TABLE ONLY t_medias ALTER COLUMN id_media SET DEFAULT nextval('t_medias_temp_id_media_seq'::regclass);
+SELECT pg_catalog.setval('t_medias_temp_id_media_seq', 1, false);
 
 
 CREATE TABLE t_validations
@@ -484,6 +492,9 @@ ALTER TABLE ONLY bib_tables_location
 ALTER TABLE ONLY t_medias
     ADD CONSTRAINT pk_t_medias PRIMARY KEY (id_media);
 
+ALTER TABLE ONLY t_medias_temp
+    ADD CONSTRAINT pk_t_medias_temp PRIMARY KEY (id_media);
+
 ALTER TABLE ONLY t_validations
     ADD CONSTRAINT pk_t_validations PRIMARY KEY (id_validation);
 
@@ -508,6 +519,14 @@ ALTER TABLE ONLY t_medias
 
 ALTER TABLE ONLY t_medias
   ADD CONSTRAINT fk_t_medias_bib_tables_location FOREIGN KEY (id_table_location) REFERENCES bib_tables_location (id_table_location) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY t_medias_temp
+    ADD CONSTRAINT fk_t_medias_temp_media_type FOREIGN KEY (id_nomenclature_media_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY t_medias_temp
+  ADD CONSTRAINT fk_t_medias_temp_bib_tables_location FOREIGN KEY (id_table_location) REFERENCES bib_tables_location (id_table_location) ON UPDATE CASCADE;
+
+
 
 ALTER TABLE ONLY t_validations
     ADD CONSTRAINT fk_t_validations_t_roles FOREIGN KEY (id_validator) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;

@@ -16,7 +16,6 @@ import { AppConfig } from '@geonature_config/app.config';
  *
  * @param File fichier ???
  * @param media post data pour le media
- * @param temp temp si media temporaire (pas encore d'uuid_attached_row)
  *
  */
 @Injectable()
@@ -24,26 +23,26 @@ export class MediaService {
 
   constructor(private _http: HttpClient) { }
 
-  uploadFile(file: File, media, temp=false): Observable<HttpEvent<any>> {
+  postMedia(file: File, media): Observable<HttpEvent<any>> {
     const formData = new FormData();
     const postData = media;
     for (const p in postData) {
-      if (postData[p]) {
+      if (typeof postData[p] != 'function') {
         formData.append(p, postData[p]);
       }
     }
 
     formData.append('file', file);
     const params = new HttpParams();
-    params.set('temp', temp.toString())
-    const options = {
-      params: params,
-      reportProgress: true,
-    };
+
 
     const url = `${AppConfig.API_ENDPOINT}/gn_commons/media`;
 
-    const req = new HttpRequest('POST', url, formData, options);
+    const req = new HttpRequest('POST', url, formData, {
+      params: params,
+      reportProgress: true,
+      responseType: 'json',
+    });
     return this._http.request(req);
   }
 }

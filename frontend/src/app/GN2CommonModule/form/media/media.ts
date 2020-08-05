@@ -1,6 +1,8 @@
+import { AppConfig } from '@geonature_config/app.config';
+
 class Media {
 
-  public id_media:number;
+  public id_media: number;
   public id_table_location: number;
   public uuid_attached_row: string;
   public unique_id_media: string;
@@ -10,14 +12,20 @@ class Media {
   public media_path: string;
   public id_nomenclature_media_type: number;
 
-  constructor(values={}) {
+  constructor(values = {}) {
     this.setValues(values)
   }
 
   setValues(values: Object) {
     for (const key of Object.keys(values)) {
-        this[key] = values[key];
+      this[key] = values[key];
     }
+  }
+
+  href() {
+    return this.media_path
+      ? `${AppConfig.API_ENDPOINT}/${this.media_path}`
+      : this.media_url
   }
 
 }

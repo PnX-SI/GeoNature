@@ -5,13 +5,16 @@
   (click)="fs.formDisabled()">
 </div>
 
+<div>
+</div>
 <div id="form">
   <div class="card line-height-sm">
     <h5 
-      class="card-header" 
-      [class.disabled]="fs.disabled">
-      <i class="fa fa-pencil" aria-hidden="true"></i>
-      <b>{{ 'Releve.Releve' | translate }} </b>
+    class="card-header" 
+    [class.disabled]="fs.disabled">
+    <i class="fa fa-pencil" aria-hidden="true"></i>
+    <b>{{ 'Releve.Releve' | translate }} </b>
+    idTableLocation {{fs.idTableLocation}}
       <span 
         *ngIf="!fs.editionMode" 
         id="toggle-btn" 

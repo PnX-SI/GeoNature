@@ -8,6 +8,7 @@ from flask import Blueprint, request, current_app
 import requests
 
 from geonature.core.gn_commons.repositories import TMediaRepository
+from geonature.core.gn_commons.repositories import get_table_location_id
 from geonature.core.gn_commons.models import TModules, TParameters, TMobileApps
 from geonature.utils.env import DB, BACKEND_DIR
 from geonature.utils.errors import GeonatureApiError
@@ -65,11 +66,7 @@ def get_media(id_media):
         .. :quickref: Commons;
     """
 
-    # gestion des parametres de route
-    params = request.args
-    temp = params.get('temp', False)
-
-    m = TMediaRepository(id_media=id_media, temp=temp).media
+    m = TMediaRepository(id_media=id_media).media
     if m:
         return m.as_dict()
 
@@ -86,8 +83,6 @@ def insert_or_update_media(id_media=None):
     """
 
     # gestion des parametres de route
-    params = request.args
-    temp = params.get('temp', False)
 
     if request.files:
         file = request.files["file"]
@@ -99,9 +94,11 @@ def insert_or_update_media(id_media=None):
         formData = dict(request.form)
         for key in formData:
             data[key] = formData[key]
+            if data[key] in ['null', 'undefined']:
+                data[key]=None
             if isinstance(data[key], list):
                 data[key] = data[key][0]
-            if key in ['id_table_location', 'id_nomenclature_media_type', 'id_media']:
+            if key in ['id_table_location', 'id_nomenclature_media_type', 'id_media'] and data[key] is not None:
                 data[key] = int(data[key])
             if data[key] == "true":
                 data[key] = True
@@ -110,6 +107,8 @@ def insert_or_update_media(id_media=None):
 
     else:
         data = request.get_json(silent=True)
+
+    temp = not data.get('uuid_attached_row')
 
     m = TMediaRepository(
         data=data, file=file, id_media=id_media, temp=temp
@@ -126,11 +125,7 @@ def delete_media(id_media):
         .. :quickref: Commons;
     """
 
-    # gestion des parametres de route
-    params = request.args
-    temp = params.get('temp', False)
-
-    TMediaRepository(id_media=id_media, temp=temp).delete()
+    TMediaRepository(id_media=id_media).delete()
     return {"resp": "media {} deleted".format(id_media)}
 
 
@@ -220,3 +215,14 @@ def get_t_mobile_apps():
     if len(mobile_apps) == 1:
         return mobile_apps[0]
     return mobile_apps
+
+
+# Table Location
+
+@routes.route("/get_id_table_location/<string:schema_name>/<string:table_name>", methods=["GET"])
+@json_resp
+def api_get_id_table_location(schema_name, table_name):
+    
+    return {
+        'id_table_location': get_table_location_id(schema_name, table_name)
+    }

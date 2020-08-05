@@ -54,6 +54,8 @@ export class OcctaxFormService {
   public currentCdExistProot = null;
   public currentExistProofLabels = null;
 
+  public idTableLocation = null;
+
   constructor(
     private _fb: FormBuilder,
     private _http: HttpClient,
@@ -93,6 +95,13 @@ export class OcctaxFormService {
         params: params
       }
     );
+  }
+
+  /** pour obtennir le id_table_location de  pr_occtax.bib_tables_location */
+  getIdTableLocationOccurences() {
+    return this._http
+      .get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/get_id_table_location/pr_occtax/bib_tables_location`)
+      .subscribe( ( data ) => { this.idTableLocation = data.id_table_location } )
   }
 
   initReleveForm(): FormGroup {

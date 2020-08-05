@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormArray, FormControl } from '@angular/forms';
 
 @Component({
@@ -10,9 +10,21 @@ export class DynamicFormComponent implements OnInit {
   @Input() formDef: any;
   @Input() form: FormGroup;
 
+  @Output() fileChange = new EventEmitter<any>();
+
   constructor() {}
 
   ngOnInit() {}
+
+  onFileChange(event) {
+    console.log('onFileChange', event)
+    const files: FileList = event.target.files;
+    if (files && files.length === 0) {
+      return;
+    }
+    const file: File = files[0];
+    this.fileChange.emit({file, attribut_name: this.formDef.attribut_name});
+  }
 
   onCheckChange(event, formControl: FormControl) {
     const currentFormValue = Object.assign([], formControl.value);

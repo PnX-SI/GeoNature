@@ -1,7 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation, SimpleChanges } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
 import { Media } from './media';
-import { MediaService } from '@geonature_commons/services/media-service
 
 @Component({
   selector: 'pnx-medias',
@@ -10,22 +8,36 @@ import { MediaService } from '@geonature_commons/services/media-service
 })
 export class MediasComponent implements OnInit {
 
-  public freeze: boolean = false;
+  public bFreeze: boolean = false;
   public bEditMedias: Array<boolean> = [];
   public bValidMedias: Array<boolean> = [];
   public mediaSave: Media;
   public bLoading:boolean = false;
 
   @Input() medias: Array<Media> = []; /** list of medias */
-  @Input() bEdit: boolean = false; /** component is editable */
+  @Output() mediasChange = new EventEmitter<Array<Media>>();
+  @Input() bEditable: boolean = false; /** component is editable */
 
-  @Output() onValidFormsChange = new EventEmitter<boolean>();
+  @Input() idTableLocation: number;
+  @Input() uuidAttachedRow: string;
 
-  constructor(private _mediaService: MediaService) { }
+  @Output() validFormsChange = new EventEmitter<boolean>();
+
 
   ngOnInit() {
     this.initMedias()
   };
+
+  onActionProcessed(event, index) {
+    switch (event) {
+      case 'delete':
+        this.deleteMedia(index);
+        break;
+
+      default:
+        break;
+    }
+  }
 
   initMedias() {
     this.bEditMedias = this.medias.map(() => false);
@@ -38,54 +50,30 @@ export class MediasComponent implements OnInit {
   }
 
   emitFormsChange() {
-    this.onValidFormsChange.emit(this.bValidMedias.every(v => v) && this.bEditMedias.every(v => !v))
+    this.validFormsChange.emit(this.bValidMedias.every(v => v) && this.bEditMedias.every(v => !v))
   }
 
   addMedia() {
-    this.mediaSave = null;
     this.medias.push(new Media());
     this.bEditMedias.push(true);
     this.bValidMedias.push(false);
-    this.freeze = true;
+    this.bFreeze = true;
     this.emitFormsChange()
-  }
-
-  validMedia(index) {
-    this.bLoading = true;
-    this.bEditMedias[index] = false;
-    this.freeze = false;
-    this.mediaService
-    setTimeout(() => {
-      this.emitFormsChange();
-      this.bLoading = false;
-    }, 1000);
   }
 
   deleteMedia(index) {
     this.medias.splice(index, 1);
     this.bEditMedias.splice(index, 1);
     this.bValidMedias.splice(index, 1);
-    this.freeze = false;
-    this.mediaSave = null;
+    this.bFreeze = false;
     this.emitFormsChange()
   }
 
   cancelMedia(index) {
-    if (!this.mediaSave) {
-      return this.deleteMedia(index)
-    }
-
-    this.medias[index] = new Media(this.mediaSave)
-    this.bEditMedias[index] = false;
-    this.freeze = false;
-    this.mediaSave = null;
     this.emitFormsChange()
   }
 
   editMedia(index) {
-    this.mediaSave = new Media(this.medias[index])
-    this.bEditMedias[index] = true;
-    this.freeze = true;
     this.emitFormsChange()
   }
 

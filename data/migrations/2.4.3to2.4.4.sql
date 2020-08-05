@@ -101,3 +101,24 @@ CREATE TABLE gn_commons.t_medias_temp
   is_public boolean NOT NULL DEFAULT true
 );
 COMMENT ON COLUMN gn_commons.t_medias_temp.id_nomenclature_media_type IS 'Table temporaire des medias';
+
+CREATE SEQUENCE gn_commons.t_medias_temp_id_media_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE gn_commons.t_medias_temp_id_media_seq OWNED BY gn_commons.t_medias_temp.id_media;
+ALTER TABLE ONLY gn_commons.t_medias_temp ALTER COLUMN id_media SET DEFAULT nextval('gn_commons.t_medias_temp_id_media_seq'::regclass);
+SELECT pg_catalog.setval('gn_commons.t_medias_temp_id_media_seq', 1, false);
+
+ALTER TABLE ONLY gn_commons.t_medias_temp
+    ADD CONSTRAINT pk_t_medias_temp PRIMARY KEY (id_media);
+
+ALTER TABLE ONLY gn_commons.t_medias_temp
+    ADD CONSTRAINT fk_t_medias_temp_media_type FOREIGN KEY (id_nomenclature_media_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY gn_commons.t_medias_temp
+  ADD CONSTRAINT fk_t_medias_temp_bib_tables_location FOREIGN KEY (id_table_location) REFERENCES gn_commons.bib_tables_location (id_table_location) ON UPDATE CASCADE;
+
+
