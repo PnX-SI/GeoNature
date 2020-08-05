@@ -32,7 +32,7 @@ from geonature.core.gn_meta.repositories import (
     get_af_cruved,
     get_dataset_details_dict,
 )
-from utils_flask_sqla.response import json_resp
+from utils_flask_sqla.response import json_resp, to_csv_resp
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from geonature.core.gn_meta import mtd_utils
@@ -368,6 +368,43 @@ def activate_dataset(info_role, ds_id, active):
     DB.session.query(TDatasets).filter(TDatasets.id_dataset == ds_id).update({'active' : active=='true'})
     DB.session.commit()
     return "activated" if active else "deactivated"
+
+@routes.route("/uuid_report/<int:ds_id>", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
+def uuid_report(info_role, ds_id):
+    """
+    get the UUID report of a dataset
+
+    .. :quickref: Metadata;
+    """
+
+    if info_role.value_filter == "0":
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" a dataset').format(
+                info_role.id_role, info_role.code_action
+            ),
+            403,
+        )
+
+    data = DB.session.query(Synthese).filter(Synthese.id_dataset == ds_id).all()
+    data = [ {
+        "identifiantOrigine": row.id_source,
+        "identifiant_gn": row.id_synthese,
+        "identifiantPermanent (SINP)": row.unique_id_sinp,
+        "nomcite": row.nom_cite,
+        "jourDateDebut": row.date_min,
+        "jourDatefin": row.date_max,
+        "observateurIdentite": row.observers
+    } for row in data ]
+    
+    return to_csv_resp(
+        filename = "filename",
+        data = data,
+        columns = [
+            "identifiantOrigine", "identifiant_gn", "identifiantPermanent (SINP)",
+            "nomcite", "jourDateDebut", "jourDatefin", "observateurIdentite"
+        ]
+    )
 
 
 @routes.route("/dataset", methods=["POST"])

@@ -8,6 +8,7 @@ import { StepsService } from "../../../../external_modules/import/frontend/app/c
 
 import { DataService } from "../../../../external_modules/import/frontend/app/services/data.service";
 import { CommonService } from "@geonature_common/service/common.service";
+import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 
 export class MetadataPaginator extends MatPaginatorIntl {
   constructor() {
@@ -64,6 +65,7 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
     private modal: NgbModal,
     public _ds: DataService,
     private _commonService: CommonService,
+    public _dataService: SyntheseDataService,
     private stepService: StepsService
   ) { }
 
@@ -77,9 +79,10 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
     this._dfs.getAfAndDatasetListMetadata().subscribe(data => {
       this.acquisitionFrameworks = data.data;
       this.tempAF = this.acquisitionFrameworks;
-      //this.getDatasets();
+      this.datasets = [];
       this.acquisitionFrameworks.forEach(af => {
         af['datasetsTemp'] = af['datasets'];
+        this.datasets = this.datasets.concat(af['datasets']);
       })
 
     });
@@ -297,6 +300,7 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
   }
 
   activateDs(ds_id, active) {
+    console.log("activateDs(" + ds_id + ")");
     this._dfs.activateDs(ds_id, active).subscribe(
       res => this.getAcquisitionFrameworksAndDatasets()
     );
@@ -316,6 +320,24 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
     this._router.navigate([`/import/process/step/1`], {
       queryParams: { datasetId: ds_id }
     });
+  }
+
+  uuidReport(ds_id) {
+    console.log("uuidReport(" + ds_id + ")");
+    /*this._dataService.subscribeAndDownload(
+      this._dfs.uuidReport(ds_id),
+      "filename",
+      "csv"
+    )*/
+    console.log('datasets');
+    console.log(this.datasets);
+    console.log('ds_id');
+    console.log(ds_id);
+    const ds = this.datasets.find(ds => ds.id_dataset == ds_id);
+    this._dataService.downloadUuidReport(ds_id,
+      `UUID_JDD-${ds.id_dataset}_${ds.unique_dataset_id}`
+    );
+    
   }
 
 }

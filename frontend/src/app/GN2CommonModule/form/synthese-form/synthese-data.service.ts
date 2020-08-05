@@ -118,10 +118,21 @@ export class SyntheseDataService {
     this.subscribeAndDownload(source, filename, format);
   }
 
+  downloadUuidReport(ds_id: number, filename: string) {
+    const source = this._api.get(`${AppConfig.API_ENDPOINT}/meta/uuid_report/${ds_id}`, {
+      headers: new HttpHeaders().set('Content-Type', 'text/csv'),
+      observe: 'events',
+      responseType: 'blob',
+      reportProgress: true
+    });
+    this.subscribeAndDownload(source, filename, "csv", false);
+  }
+
   subscribeAndDownload(
     source: Observable<HttpEvent<Blob>>,
     fileName: string,
-    format: string
+    format: string,
+    addDateToFilename: boolean=true
   ): void {
     const subscription = source.subscribe(
       event => {
@@ -138,7 +149,9 @@ export class SyntheseDataService {
         this.isDownloading = false;
         const date = new Date();
         const extension = format === 'shapefile' ? 'zip' : format;
-        this.saveBlob(this._blob, `${fileName}_${date.toISOString()}.${extension}`);
+        this.saveBlob(this._blob, 
+          `${fileName}${addDateToFilename ? '_' + date.toISOString() : ''}.${extension}`
+        );
         subscription.unsubscribe();
       }
     );
