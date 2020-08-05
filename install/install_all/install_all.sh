@@ -98,8 +98,14 @@ then
     sudo apt install -y postgis postgis postgresql-9.5-postgis-2.2
 fi
 
+cd /opt
+sudo wget https://www.python.org/ftp/python/3.8.3/Python-3.8.3.tgz
+sudo tar xzf Python-3.8.3.tgz
+cd Python-3.8.3
+sudo ./configure --enable-optimizations
+sudo make altinstall
+cd 
 
-sudo apt-get install -y python3
 sudo apt-get install -y python3-dev
 sudo apt-get install -y python3-setuptools
 sudo apt-get install -y python3-pip
