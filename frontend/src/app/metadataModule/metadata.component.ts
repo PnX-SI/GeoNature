@@ -323,19 +323,10 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
   }
 
   uuidReport(ds_id) {
-    console.log("uuidReport(" + ds_id + ")");
-    /*this._dataService.subscribeAndDownload(
-      this._dfs.uuidReport(ds_id),
-      "filename",
-      "csv"
-    )*/
-    console.log('datasets');
-    console.log(this.datasets);
-    console.log('ds_id');
-    console.log(ds_id);
     const ds = this.datasets.find(ds => ds.id_dataset == ds_id);
-    this._dataService.downloadUuidReport(ds_id,
-      `UUID_JDD-${ds.id_dataset}_${ds.unique_dataset_id}`
+    this._dataService.downloadUuidReport(
+      `UUID_JDD-${ds.id_dataset}_${ds.unique_dataset_id}`,
+      {ds_id: ds_id}
     );
     
   }

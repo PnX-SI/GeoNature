@@ -118,12 +118,18 @@ export class SyntheseDataService {
     this.subscribeAndDownload(source, filename, format);
   }
 
-  downloadUuidReport(ds_id: number, filename: string) {
-    const source = this._api.get(`${AppConfig.API_ENDPOINT}/meta/uuid_report/${ds_id}`, {
+  downloadUuidReport(filename: string, args: { [key: string]: string }) {
+    let queryString: HttpParams = new HttpParams();
+    // tslint:disable-next-line:forin
+    for (const key in args) {
+      queryString = queryString.set(key, args[key].toString());
+    }
+    const source = this._api.get(`${AppConfig.API_ENDPOINT}/meta/uuid_report`, {
       headers: new HttpHeaders().set('Content-Type', 'text/csv'),
       observe: 'events',
       responseType: 'blob',
-      reportProgress: true
+      reportProgress: true,
+      params: queryString
     });
     this.subscribeAndDownload(source, filename, "csv", false);
   }

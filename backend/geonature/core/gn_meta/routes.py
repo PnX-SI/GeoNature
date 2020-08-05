@@ -9,7 +9,7 @@ from sqlalchemy.sql.functions import func
 
 
 from geonature.utils.env import DB
-from geonature.core.gn_synthese.models import Synthese
+from geonature.core.gn_synthese.models import Synthese, TSources
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.tools import InsufficientRightsError
@@ -369,9 +369,9 @@ def activate_dataset(info_role, ds_id, active):
     DB.session.commit()
     return "activated" if active else "deactivated"
 
-@routes.route("/uuid_report/<int:ds_id>", methods=["GET"])
+@routes.route("/uuid_report", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="METADATA")
-def uuid_report(info_role, ds_id):
+def uuid_report(info_role):
     """
     get the UUID report of a dataset
 
@@ -386,7 +386,24 @@ def uuid_report(info_role, ds_id):
             403,
         )
 
-    data = DB.session.query(Synthese).filter(Synthese.id_dataset == ds_id).all()
+    params = request.args
+    ds_id = params.get("ds_id")
+    id_import = params.get("id_import")
+
+    query = DB.session.query(Synthese).select_from(Synthese)
+
+    if ds_id:
+        query = query.filter(Synthese.id_dataset == ds_id)
+
+    if id_import:
+        query = query.outerjoin(
+            TSources, TSources.id_source == Synthese.id_source
+        ).filter(
+            TSources.name_source == 'Import(id={})'.format(id_import)
+        )
+
+    data = query.all()
+
     data = [ {
         "identifiantOrigine": row.id_source,
         "identifiant_gn": row.id_synthese,
@@ -395,7 +412,7 @@ def uuid_report(info_role, ds_id):
         "jourDateDebut": row.date_min,
         "jourDatefin": row.date_max,
         "observateurIdentite": row.observers
-    } for row in data ]
+    } for row in query.all() ]
     
     return to_csv_resp(
         filename = "filename",
