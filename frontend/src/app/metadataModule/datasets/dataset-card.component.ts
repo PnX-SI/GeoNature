@@ -5,6 +5,7 @@ import { ModuleService } from '@geonature/services/module.service';
 import { BaseChartDirective } from 'ng2-charts';
 import { AppConfig } from "@geonature_config/app.config";
 import { CommonService } from '@geonature_common/service/common.service';
+import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 
 @Component({
   selector: 'pnx-datasets-card',
@@ -71,7 +72,8 @@ export class DatasetCardComponent implements OnInit {
     private _route: ActivatedRoute,
     private _dfs: DataFormService,
     public moduleService: ModuleService,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    public _dataService: SyntheseDataService
   ) { }
 
   ngOnInit() {
@@ -122,6 +124,14 @@ export class DatasetCardComponent implements OnInit {
       }
     );
 
+  }
+
+  uuidReport(id_import) {
+    const imp = this.dataset.imports.find(imp => imp.id_import == id_import);
+    this._dataService.downloadUuidReport(
+      `UUID_Import-${id_import}_JDD-${imp.id_dataset}`,
+      {id_import: id_import}
+    );
   }
 
 }
