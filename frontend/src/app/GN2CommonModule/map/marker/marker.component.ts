@@ -54,6 +54,7 @@ export class MarkerComponent implements OnInit, OnChanges {
         filter((coords) => (this.map !== undefined && coords != null))
       )
       .subscribe(coords => {
+        this.mapservice.zoomOnMarker(coords, this.zoomToLocationLevel);
         this.previousCoord = coords;
         this.generateMarkerAndEvent(coords[0], coords[1]);
       });
@@ -148,7 +149,7 @@ export class MarkerComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes) {
-    if (changes.coordinates && changes.coordinates.currentValue) {
+    if (this.map && changes.coordinates && changes.coordinates.currentValue) {
       const coords = changes.coordinates.currentValue;
       this.coordinates = coords;
     }

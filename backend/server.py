@@ -9,7 +9,7 @@ from flask_mail import Mail, Message
 from flask_cors import CORS
 from sqlalchemy import exc as sa_exc
 
-from geonature.utils.env import DB, list_and_import_gn_modules
+from geonature.utils.env import DB, MA, list_and_import_gn_modules
 
 
 MAIL = Mail()
@@ -46,8 +46,12 @@ def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
     app = Flask(__name__)
     app.config.update(config)
 
+
     # Bind app to DB
     DB.init_app(app)
+
+    # Bind app to MA
+    MA.init_app(app)
 
     # pass parameters to the usershub authenfication sub-module, DONT CHANGE THIS
     app.config["DB"] = DB

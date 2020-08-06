@@ -1,6 +1,6 @@
 from flask import current_app
 from geoalchemy2 import Geometry
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, not_
 from sqlalchemy.sql import select, func, and_
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects.postgresql import UUID
@@ -10,11 +10,9 @@ from pypnusershub.db.tools import InsufficientRightsError
 from pypnusershub.db.models import User
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
-from utils_flask_sqla_geo.serializers import geoserializable
 
 from geonature.core.gn_commons.models import TMedias
 from geonature.core.gn_meta.models import TDatasets
-from geonature.core.taxonomie.models import Taxref
 from geonature.utils.env import DB
 
 
@@ -117,18 +115,25 @@ class CorCountingOccurrence(DB.Model):
     __table_args__ = {"schema": "pr_occtax"}
     id_counting_occtax = DB.Column(DB.Integer, primary_key=True)
     unique_id_sinp_occtax = DB.Column(
-        UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
+        UUID(as_uuid=True), default=select([func.uuid_generate_v4()]), nullable=False
     )
     id_occurrence_occtax = DB.Column(
-        DB.Integer, ForeignKey(
-            "pr_occtax.t_occurrences_occtax.id_occurrence_occtax")
+        DB.Integer, 
+        ForeignKey("pr_occtax.t_occurrences_occtax.id_occurrence_occtax"),
+        nullable=False
     )
-    id_nomenclature_life_stage = DB.Column(DB.Integer)
-    id_nomenclature_sex = DB.Column(DB.Integer)
-    id_nomenclature_obj_count = DB.Column(DB.Integer)
+    id_nomenclature_life_stage = DB.Column(DB.Integer, nullable=False)
+    id_nomenclature_sex = DB.Column(DB.Integer, nullable=False)
+    id_nomenclature_obj_count = DB.Column(DB.Integer, nullable=False)
     id_nomenclature_type_count = DB.Column(DB.Integer)
     count_min = DB.Column(DB.Integer)
     count_max = DB.Column(DB.Integer)
+
+    readonly_fields = [
+        'id_counting_occtax',
+        'unique_id_sinp_occtax',
+        'id_occurrence_occtax'
+    ]
 
 
 @serializable
@@ -170,6 +175,7 @@ class TOccurrencesOccurrence(DB.Model):
         lazy="joined",
         cascade="all,delete-orphan",
         uselist=True,
+        backref=DB.backref("occurence", lazy='joined')
     )
 
     medias = DB.relationship(
@@ -178,6 +184,12 @@ class TOccurrencesOccurrence(DB.Model):
         foreign_keys=[TMedias.uuid_attached_row])
 
     taxref = relationship("Taxref", lazy="joined")
+
+    readonly_fields = [
+        'id_occurrence_occtax',
+        'id_releve_occtax',
+        'taxref'
+    ]
 
 
 @serializable
@@ -229,6 +241,12 @@ class TRelevesOccurrence(ReleveModel):
     dataset = relationship(
         TDatasets, lazy="joined", primaryjoin=(TDatasets.id_dataset == id_dataset), foreign_keys=[id_dataset]
     )
+
+    readonly_fields = [
+        'id_releve_occtax',
+        't_occurrences_occtax',
+        'observers'
+    ]
 
     def get_geofeature(self, recursif=True):
         return self.as_geofeature("geom_4326", "id_releve_occtax", recursif)

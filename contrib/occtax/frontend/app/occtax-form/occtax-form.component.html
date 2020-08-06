@@ -1,0 +1,113 @@
+<div class="container-fluid">
+	<div class="occtax-form">
+		<div class="tab">
+			<div class="tab-left">
+				<button mat-mini-fab
+					class="to-list-btn"
+			  	matTooltip="Retour vers la liste des relevés"
+			  	[class.active]="false"
+			  	(click)="leaveTheForm(['/occtax'])">
+			  	<mat-icon class="example-tab-icon">arrow_back</mat-icon>
+			  </button>
+			  <a 
+			  	[routerLink]="releveUrl"
+			  	class="tablinks" 
+			  	[class.active]="currentTab === 'releve'">
+			  	<mat-icon class="example-tab-icon">place</mat-icon>
+					Relevé
+			  </a>
+			  <ng-container *ngIf="(occtaxFormService.editionMode|async); else buttonBlock">
+				  <a 
+				  	[routerLink]="[releveUrl, 'taxons']"
+				  	class="tablinks" 
+				  	[ngClass]="{'active': currentTab === 'taxons'}">
+				  	<mat-icon class="example-tab-icon">emoji_nature</mat-icon>
+						Taxons
+				  </a>
+				</ng-container>
+				<ng-template #buttonBlock>
+					<a class="tablinks disabled">
+				  	<mat-icon class="example-tab-icon">emoji_nature</mat-icon>
+						Taxons
+				  </a>
+				</ng-template>
+			</div>
+
+			<div class="tab-right">
+				<mat-slide-toggle 
+					labelPosition="before"
+					matTooltip="Enchainer les relevés sans retourner à la liste des relevés"
+					[checked]="occtaxFormService.chainRecording"
+					(change)="occtaxFormService.chainRecording=!occtaxFormService.chainRecording"
+					color="primary">
+					Enchainer les relevés
+				</mat-slide-toggle>
+
+				<button 
+					*ngIf="occtaxConfig.DISPLAY_SETTINGS_TOOLS"
+					mat-icon-button 
+					class="setting-btn"
+					(click)="openParametersDialog()"
+					matTooltip="Paramétrer la valeur par défaut des différents champs">
+					<mat-icon 
+						[matBadge]="occtaxFormParamService.numberOfActive" 
+						matBadgeColor="primary"
+						class="example-tab-icon">
+						settings
+					</mat-icon>
+				</button>
+			</div>
+		</div>
+
+		<div 
+			*ngIf="currentTab === 'releve'"
+			class="occtax-form-content" 
+			[ngStyle]="{'min-height.px': cardContentHeight}">
+			<div class="row">
+				<div class="col-xl-6 col-lg-7 col-sm-6"
+				 [ngStyle]="{'min-height.px': cardContentHeight}">
+					<pnx-occtax-form-map></pnx-occtax-form-map>
+				</div>
+				<div class="col-xl-6 col-lg-5 col-sm-6">
+					<pnx-occtax-form-releve></pnx-occtax-form-releve>
+				</div>
+				<!-- <pnx-occtax-form-param></pnx-occtax-form-param> -->
+			</div>
+		</div>
+
+		<div 
+			*ngIf="currentTab === 'taxons'"
+			class="occtax-form-content" >
+			<div class="row">
+				<div class="col-md-7">
+					<pnx-occtax-form-occurrence></pnx-occtax-form-occurrence>
+				</div>
+				<div
+					id="saved-obs" 
+					class="col-md-5">
+					<h5>
+						Observations enregistrées 
+						<mat-icon 
+							style="vertical-align: middle;" 
+							matTooltip="Les taxons affichés ici ont été enregistrés dans la base GeoNature.">
+							info
+						</mat-icon>
+					</h5>
+					<pnx-occtax-form-taxa-list></pnx-occtax-form-taxa-list>
+					<div style="margin-top: 15px;" class="text-center">
+						<button 
+							class="btn btn-success hard-shadow btn-action"
+							(click)="leaveTheForm()">
+					  	Valider la saisie
+					  </button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+
+
+

@@ -29,7 +29,7 @@ idna==2.6
 itsdangerous==0.24
 jinja2==2.10.1
 markupsafe==1.1
-marshmallow==2.15.1
+marshmallow==2.15.2
 packaging==16.8
 pip==20.0.2
 psycopg2==2.7.5
@@ -47,3 +47,5 @@ fiona==1.8.13.post1
 flask_wtf==0.14.2
 lxml==4.2.5
 Flask-Mail==0.9.1
+flask-marshmallow==0.12.0
+marshmallow-sqlalchemy==0.23.1

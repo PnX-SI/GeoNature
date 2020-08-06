@@ -23,6 +23,8 @@
   "Columns": "Colonnes",
   "Cancel": "Annuler",
   "Delete": "Supprimer",
+  "Yes": "Oui",
+  "No": "Non",
   "NotAllowed": "Vous n'avez pas les droits pour effectuer cette action",
   "LoginError": "Identifiant ou mot de passe incorrect",
   "Downloading": "Téléchargement en cours",
@@ -82,9 +84,6 @@
     "Dataset": "Jeu de données",
     "Comment": "Commentaire",
     "SaveReleve": "Enregistrer le relevé",
-    "DateMaxError": "La date de début ne peut pas être supérieure à la date de fin",
-    "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
-    "HourMaxError": "L'heure de début ne peut pas être supérieure à l'heure de fin",
     "SavedTaxon": "Taxon(s) enregistré(s)",
     "InfoGeo": "Informations géographiques du relevé",
     "Edit": "Editer le relevé",
@@ -99,7 +98,16 @@
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire",
     "GroupType": "Type de regroupement",
     "DoesNotExist": "Ce relevé n'existe pas",
-    "StayOnFormInterface": "Enchainer les relevés sans retourner à l'interface carte/liste"
+    "StayOnFormInterface": "Enchainer les relevés sans retourner à l'interface carte/liste",
+    "Infos": {
+      "ReleveAdded": "Relevé ajouté",
+      "ReleveModified": "Relevé modifié"
+    },
+    "Errors": {
+      "DateMaxError": "La date de début ne peut pas être postérieur à la date de fin",
+      "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
+      "HourMaxError": "L'heure de début ne peut pas être supérieure à l'heure de fin"
+    }
   },
   "Taxon": {
     "ObservedTaxon": "Taxon(s) observé(s)",
@@ -111,6 +119,7 @@
     "Priority": "Prioritaire",
     "Optional": "Facultatif",
     "Taxon": "Taxon",
+    "NomCite": "Nom cité",
     "Taxons": "Taxons",
     "TaxonName": "Nom du taxon",
     "ObsMethod": "Méthode d'observation",
@@ -133,10 +142,22 @@
     "Blurring": "Floutage",
     "CurrentlyEditing": "Veuillez enregistrer le taxon en cours d'édition avant d'en éditer un nouveau",
     "NoTaxonFound": "Aucun taxon trouvé pour cette recherche",
-    "ExistProofValidation": "Ce champs doit débuter par 'http://', 'https://', ou 'ftp://'",
-    "NoExistProofError": "Si 'preuve d'existence = Oui', un des deux champs de preuve doit être rempli",
-    "ExistproofError": "Les preuves d'existence ne peuvent être remplies seulement si 'preuve d'existence = Oui'",
-    "StatusSource": "Statut source"
+    "StatusSource": "Statut source",
+    "DeleteDone": "Taxon supprimé",
+    "CreateDone": "Taxon ajouté au relevé",
+    "UpdateDone": "Taxon mis à jour",
+    "Errors": {
+      "ExistProofValidation": "Ce champs doit débuter par 'http://', 'https://', ou 'ftp://'",
+      "NoExistProofError": "Si 'preuve d'existence = Oui', un des deux champs de preuve doit être rempli",
+      "ExistproofError": "Les preuves d'existence ne peuvent être remplies seulement si 'preuve d'existence = Oui'",
+      "NomCiteRequiredError": "Veuillez renseigner un taxon",
+      "CdNomRequiredError": "Veuillez selectionner taxon présent dans le référentiel Taxref",
+      "DeterminerRequiredError": "Veuillez indiquer un déterminateur",
+      "DeterminationMethodRequiredError": "Veuillez indiquer la méthode de détermination",
+      "ObsMethodRequiredError": "Veuillez indiquer la méthode d'observation",
+      "BiologicalConditionRequiredError": "Veuillez indiquer l'état biologique",
+      "CountingRequiredError": "Veuillez renseigner un dénombrement"
+    }
   },
   "Counting": {
     "Counting": "Dénombrement",
@@ -151,7 +172,12 @@
     "CountingType": "Type de dénombrement",
     "Numbers": "Effectif",
     "Total": "Total",
-    "CountError": "Le dénombrement maximum ne peut pas être inférieur au dénombrement minimum"
+    "Errors": {
+      "CountError": "Le dénombrement maximum ne peut pas être inférieur au dénombrement minimum",
+      "LifeStageRequiredError": "Veuillez indiquer le stade de vie",
+      "SexRequiredError": "Veuillez indiquer le sexe",
+      "CountingObjectRequiredError": "Veuillez indiquer le type de dénombrement"
+    }
   },
   "Geo": {
     "Municipalities": "Communes"

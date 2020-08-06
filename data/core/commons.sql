@@ -483,14 +483,6 @@ ALTER TABLE ONLY t_medias
 ALTER TABLE ONLY t_medias
   ADD CONSTRAINT fk_t_medias_bib_tables_location FOREIGN KEY (id_table_location) REFERENCES bib_tables_location (id_table_location) ON UPDATE CASCADE;
 
-ALTER TABLE ONLY t_medias_temp
-    ADD CONSTRAINT fk_t_medias_temp_media_type FOREIGN KEY (id_nomenclature_media_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY t_medias_temp
-  ADD CONSTRAINT fk_t_medias_temp_bib_tables_location FOREIGN KEY (id_table_location) REFERENCES bib_tables_location (id_table_location) ON UPDATE CASCADE;
-
-
-
 ALTER TABLE ONLY t_validations
     ADD CONSTRAINT fk_t_validations_t_roles FOREIGN KEY (id_validator) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
