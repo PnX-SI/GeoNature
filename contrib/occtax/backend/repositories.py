@@ -263,6 +263,7 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False, obs_
         params
     )
     if len(releve_filters) > 0:
+        # if not from generic table, the FROM clause is already from TRelevesOccurrences
         if from_generic_table:
             q = q.join(
                 TRelevesOccurrence,

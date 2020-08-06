@@ -1,27 +1,26 @@
-// #redirect {
-//   position: absolute;
-//   right: 1%;
-//   z-index: 1000;
-//   margin-left: 15px;
-//   margin-top: 15px;
-//   padding-right: 0px;
-//   padding-left: 0px;
-//   cursor: pointer;
-//   height: 40px;
-//   width: 40px;
-//   border-radius: 30px;
-//   //padding: 0px;
-// }
+.float-btns {
+  position: absolute;
+  z-index: 10000;
+  margin-top: 5px;
+  margin-left: 5px;
+}
 
+.map-list-container {
+  background-color: #fff;
+  border: 1px solid #f1f1f1;
+  border-radius: 2px;
+  padding: 10px 15px;
+  box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+    0 1px 3px 0 rgba(0, 0, 0, 0.12);
+  height: 100%;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
 .action-btn {
   font-size: 18px;
 }
-// #search-btn {
-//   height: 35px;
-//   font-size: 15px;
-//   margin-top: 20px;
-//   margin-left: 3px;
-// }
 
 #download-btn {
   margin-top: 5px;
@@ -33,40 +32,10 @@
   padding-left: 10px;
 }
 
-// #refresh-filter {
-//   color: red;
-// }
-
-// .actions {
-//   height: 35px;
-//   margin-left: 5px;
-//   margin-top: 21px;
-//   padding: 8px;
-// }
-
-// .filter-control {
-//   height: 2.1rem !important;
-// }
-
-// .dynamic-form {
-//   display: flex;
-//   margin-right: 5px;
-//   max-width: 15%;
-// }
-
-// .trash-btn {
-//   margin-top: 30px;
-//   margin-left: 5px;
-// }
-
 #specific-filter {
   margin-top: -5px;
   padding-bottom: 5px;
 }
-
-// :host /deep/ #button-input {
-//   height: 2rem;
-// }
 
 .col-list {
   list-style: none;
@@ -81,18 +50,10 @@
   height: 80vh;
 }
 ngx-datatable {
-  max-height: 79vh !important;
+  // max-height: 79vh !important;
   box-shadow: none !important;
-  overflow-y: scroll;
+  // overflow-y: scroll;
 }
-
-// .form-control-sm {
-//   height: 5rem !important;
-// }
-
-// :host /deep/ #dataset-form  {
-//   height: 2.05rem !important;
-// }
 
 :host /deep/ .ngx-datatable.material .datatable-footer .page-count {
   padding: 5px;
@@ -100,16 +61,9 @@ ngx-datatable {
   height: 40px;
 }
 
-// .modal-body {
-//   text-align: center;
-// }
 :host /deep/ .datatable-body-row.active .datatable-row-group {
   background-color: rgb(117, 227, 118) !important;
 }
-// .card-padding {
-//   background-color: white;
-//   padding: 10px;
-// }
 
 .ngx-datatable.material {
   box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
@@ -158,6 +112,6 @@ ngx-datatable {
 }
 
 :host /deep/ .datatable-row-detail {
-  height: auto!important;
+  height: auto !important;
   font-size: 0.8em;
 }

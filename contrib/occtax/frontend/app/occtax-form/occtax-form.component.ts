@@ -101,7 +101,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     if (this._mapService.map) {
       setTimeout(() => {
         this._mapService.map.invalidateSize();
-      }, 400);
+      }, 10);
     }
   }
 
