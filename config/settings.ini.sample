@@ -92,7 +92,7 @@ proxy_https=
 
 #Configuration python
 ###########################
-python_path=/usr/bin/python3.8
+python_path=/usr/local/bin/python3
 
 
 #####################

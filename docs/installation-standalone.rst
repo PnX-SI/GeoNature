@@ -57,8 +57,8 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
     sudo tar xzf Python-3.8.3.tgz
     cd Python-3.8.3
     sudo ./configure --enable-optimizations
-    sudo make altinstall
-    
+    sudo make install
+
 * Lancez les commandes suivantes pour installer les dépendances de GeoNature (Debian 9) :
 
   ::  
