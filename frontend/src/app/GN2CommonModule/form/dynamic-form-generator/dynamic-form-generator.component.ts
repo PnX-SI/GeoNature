@@ -24,9 +24,6 @@ export class GenericFormGeneratorComponent implements OnInit {
   public formsSelected = [];
   public formsSelectedHidden = [];
 
-  @Output() fileChange = new EventEmitter<any>();
-
-
   constructor(private _dynformService: DynamicFormService) {}
 
   ngOnInit() {
@@ -51,11 +48,6 @@ export class GenericFormGeneratorComponent implements OnInit {
       });
     }
     this.formControlBuilded = true;
-  }
-
-  onFileChange(event) {
-    console.log('onFileChange', event)
-    this.fileChange.emit(event);
   }
 
   removeFormControl(i) {

@@ -47,6 +47,5 @@ export const mediaFormDefinitionsDict = {
     "file": {
       "attribut_label": "Choisir un fichier",
       "type_widget": "file",
-      "required": true,
   }
 }

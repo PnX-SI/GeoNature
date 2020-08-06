@@ -25,8 +25,6 @@ export class MediaComponent implements OnInit {
   public mediaFormInitialized;
   public watchChangeForm: boolean = true;
 
-  public file: File;
-
   public uploadPercentDone: number;
 
   @Input() idTableLocation: number;
@@ -68,13 +66,6 @@ export class MediaComponent implements OnInit {
     this.bLoadingChange.emit(this.bLoading);
     this.bEditChange.emit(this.bEdit);
     this.validMediaChange.emit(this.mediaForm.valid);
-  }
-
-  onFileChange(event) {
-    console.log('onFileChange', event)
-    if (event.attribut_name && event.attribut_name == 'file') {
-      this.file = event.file;
-    }
   }
 
   initForm() {
@@ -127,7 +118,7 @@ export class MediaComponent implements OnInit {
     this.bFreeze = false;
     this.bLoading = true;
     this._mediaService
-      .postMedia(this.file, this.media)
+      .postMedia(this.mediaForm.value.file, this.media)
       .subscribe(
         (event) => {
           if (event.type == HttpEventType.UploadProgress) {
@@ -137,7 +128,7 @@ export class MediaComponent implements OnInit {
             console.log(event)
             this.media.setValues(event.body);
             this.bLoading = false;
-            this.file=null;
+            this.mediaForm.patchValue({file: null});
             this.emitAction('valid');
           }
         },

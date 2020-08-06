@@ -10,12 +10,11 @@ export class DynamicFormComponent implements OnInit {
   @Input() formDef: any;
   @Input() form: FormGroup;
 
-  @Output() fileChange = new EventEmitter<any>();
-
   constructor() {}
 
   ngOnInit() {}
 
+  /** On ne gère ici que les fichiers uniques */
   onFileChange(event) {
     console.log('onFileChange', event)
     const files: FileList = event.target.files;
@@ -23,7 +22,9 @@ export class DynamicFormComponent implements OnInit {
       return;
     }
     const file: File = files[0];
-    this.fileChange.emit({file, attribut_name: this.formDef.attribut_name});
+    const value = {};
+    value[this.formDef.attribut_name] = file;
+    this.form.patchValue(value);
   }
 
   onCheckChange(event, formControl: FormControl) {
