@@ -18,7 +18,7 @@ export class MediasComponent implements OnInit {
   @Output() mediasChange = new EventEmitter<Array<Media>>();
   @Input() bEditable: boolean = false; /** component is editable */
 
-  @Input() idTableLocation: number;
+  @Input() schemaDotTable: string;
   @Input() uuidAttachedRow: string;
 
   @Output() validFormsChange = new EventEmitter<boolean>();

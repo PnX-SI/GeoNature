@@ -217,10 +217,11 @@ def get_t_mobile_apps():
 
 # Table Location
 
-@routes.route("/get_id_table_location/<string:schema_name>/<string:table_name>", methods=["GET"])
+@routes.route("/get_id_table_location/<string:schema_dot_table>", methods=["GET"])
 @json_resp
-def api_get_id_table_location(schema_name, table_name):
-    
-    return {
-        'id_table_location': get_table_location_id(schema_name, table_name)
-    }
+# schema_dot_table gn_commons.t_modules
+def api_get_id_table_location(schema_dot_table):
+
+    schema_name = schema_dot_table.split('.')[0]
+    table_name = schema_dot_table.split('.')[1]
+    return get_table_location_id(schema_name, table_name)

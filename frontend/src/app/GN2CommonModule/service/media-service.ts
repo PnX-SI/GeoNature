@@ -45,4 +45,9 @@ export class MediaService {
     });
     return this._http.request(req);
   }
+
+  getIdTableLocation(schemaDotTable): Observable<number> {
+    return this._http
+      .get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/get_id_table_location/${schemaDotTable}`)
+  }
 }

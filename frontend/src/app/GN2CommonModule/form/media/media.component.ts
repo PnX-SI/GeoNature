@@ -27,7 +27,9 @@ export class MediaComponent implements OnInit {
 
   public uploadPercentDone: number;
 
-  @Input() idTableLocation: number;
+  public idTableLocation: number;
+
+  @Input() schemaDotTable: string;
   @Input() uuidAttachedRow: string;
 
   // manageState
@@ -57,8 +59,20 @@ export class MediaComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.initIdTableLocation(this.schemaDotTable)
     this.initForm();
   };
+
+  initIdTableLocation(schemaDotTable) {
+    if (!this.schemaDotTable) return;
+    this._mediaService
+      .getIdTableLocation(schemaDotTable)
+      .subscribe((idTableLocation) => {
+        this.idTableLocation = idTableLocation;
+      });
+    this.initForm();
+
+  }
 
   emitChanges() {
     console.log('emit changes', this.mediaForm.valid)
@@ -156,6 +170,10 @@ export class MediaComponent implements OnInit {
 
       if (['media', 'bEdit', 'idTableLocation', 'uuidAttachedRow'].includes(propName)) {
         this.initForm();
+      }
+
+      if(['schemaDotTable']) {
+        this.initIdTableLocation(this.schemaDotTable);
       }
 
     }
