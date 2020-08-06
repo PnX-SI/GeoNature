@@ -1,7 +1,7 @@
 from sqlalchemy.exc import IntegrityError
 
 from geonature.utils.env import DB
-from geonature.core.gn_commons.models import TMedias, TMediasTemp, BibTablesLocation
+from geonature.core.gn_commons.models import TMedias, BibTablesLocation
 from geonature.core.gn_commons.file_manager import (
     upload_file, remove_file,
     rename_file
@@ -19,19 +19,16 @@ class TMediaRepository():
     file = None
     media = None
     new = False
-    temp = False
-    TModel = TMedias
 
     def __init__(self, data=None, file=None, id_media=None, temp=False):
         self.data = data or {}
 
         # choix du modele sqla (temporaire ou non)
-        self.TModel = TMediasTemp if temp else TMedias
 
         # filtrer les données du dict qui
         # vont être insérées dans l'objet Model
         self.media_data = {
-            k: self.data[k] for k in self.TModel.__mapper__.c.keys() if k in self.data
+            k: self.data[k] for k in TMedias.__mapper__.c.keys() if k in self.data
         }
         self.file = file
 
@@ -42,8 +39,8 @@ class TMediaRepository():
             self.media = self._load_from_id(id_media)
         else:
             self.new = True
-            print(self.TModel, temp)
-            self.media = self.TModel(**self.media_data)
+            print(TMedias, temp)
+            self.media = TMedias(**self.media_data)
             print(self.media.id_media)
 
     def create_or_update_media(self):
@@ -166,7 +163,7 @@ class TMediaRepository():
         '''
             Charge un média de la base à partir de son identifiant
         '''
-        media = DB.session.query(self.TModel).get(id_media)
+        media = DB.session.query(TMedias).get(id_media)
         return media
 
 
@@ -181,8 +178,8 @@ class TMediumRepository():
             Retourne la liste des médias pour un objet
             en fonction de son uuid
         '''
-        medium = DB.session.query(self.TModel).filter(
-            self.TModel.uuid_attached_row == entity_uuid
+        medium = DB.session.query(TMedias).filter(
+            TMedias.uuid_attached_row == entity_uuid
         ).all()
         return medium
 

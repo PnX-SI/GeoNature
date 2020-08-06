@@ -356,40 +356,6 @@ ALTER SEQUENCE t_medias_id_media_seq OWNED BY t_medias.id_media;
 ALTER TABLE ONLY t_medias ALTER COLUMN id_media SET DEFAULT nextval('t_medias_id_media_seq'::regclass);
 SELECT pg_catalog.setval('t_medias_id_media_seq', 1, false);
 
-CREATE TABLE t_medias_temp
-(
-  id_media integer NOT NULL,
-  unique_id_media uuid NOT NULL DEFAULT public.uuid_generate_v4(),
-  id_nomenclature_media_type integer NOT NULL,
-  id_table_location integer NOT NULL,
-  uuid_attached_row uuid,
-  title_fr character varying(255),
-  title_en character varying(255),
-  title_it character varying(255),
-  title_es character varying(255),
-  title_de character varying(255),
-  media_url character varying(255),
-  media_path character varying(255),
-  author character varying(100),
-  description_fr text,
-  description_en text,
-  description_it text,
-  description_es text,
-  description_de text,
-  is_public boolean NOT NULL DEFAULT true
-);
-COMMENT ON COLUMN t_medias.id_nomenclature_media_type IS 'Table temporaire des medias';
-
-CREATE SEQUENCE t_medias_temp_id_media_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-ALTER SEQUENCE t_medias_temp_id_media_seq OWNED BY t_medias.id_media;
-ALTER TABLE ONLY t_medias ALTER COLUMN id_media SET DEFAULT nextval('t_medias_temp_id_media_seq'::regclass);
-SELECT pg_catalog.setval('t_medias_temp_id_media_seq', 1, false);
-
 
 CREATE TABLE t_validations
 (
@@ -491,9 +457,6 @@ ALTER TABLE ONLY bib_tables_location
 
 ALTER TABLE ONLY t_medias
     ADD CONSTRAINT pk_t_medias PRIMARY KEY (id_media);
-
-ALTER TABLE ONLY t_medias_temp
-    ADD CONSTRAINT pk_t_medias_temp PRIMARY KEY (id_media);
 
 ALTER TABLE ONLY t_validations
     ADD CONSTRAINT pk_t_validations PRIMARY KEY (id_validation);

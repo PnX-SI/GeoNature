@@ -108,10 +108,8 @@ def insert_or_update_media(id_media=None):
     else:
         data = request.get_json(silent=True)
 
-    temp = not data.get('uuid_attached_row')
-
     m = TMediaRepository(
-        data=data, file=file, id_media=id_media, temp=temp
+        data=data, file=file, id_media=id_media
     ).create_or_update_media()
     return m.as_dict()
 

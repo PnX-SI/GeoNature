@@ -100,38 +100,6 @@ class TMedias(DB.Model):
 
 
 @serializable
-class TMediasTemp(DB.Model):
-    __tablename__ = "t_medias_temp"
-    __table_args__ = {"schema": "gn_commons"}
-    id_media = DB.Column(DB.Integer, primary_key=True)
-    id_nomenclature_media_type = DB.Column(
-        DB.Integer
-        # ,
-        # ForeignKey('ref_nomenclatures.t_nomenclatures.id_nomenclature')
-    )
-    id_table_location = DB.Column(
-        DB.Integer, ForeignKey("gn_commons.bib_tables_location.id_table_location")
-    )
-    unique_id_media = DB.Column(
-        UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
-    )
-    uuid_attached_row = DB.Column(UUID(as_uuid=True))
-    title_fr = DB.Column(DB.Unicode)
-    title_en = DB.Column(DB.Unicode)
-    title_it = DB.Column(DB.Unicode)
-    title_es = DB.Column(DB.Unicode)
-    title_de = DB.Column(DB.Unicode)
-    media_url = DB.Column(DB.Unicode)
-    media_path = DB.Column(DB.Unicode)
-    author = DB.Column(DB.Unicode)
-    description_fr = DB.Column(DB.Unicode)
-    description_en = DB.Column(DB.Unicode)
-    description_it = DB.Column(DB.Unicode)
-    description_es = DB.Column(DB.Unicode)
-    description_de = DB.Column(DB.Unicode)
-    is_public = DB.Column(DB.Boolean, default=True)
-
-@serializable
 class TParameters(DB.Model):
     __tablename__ = "t_parameters"
     __table_args__ = {"schema": "gn_commons"}
