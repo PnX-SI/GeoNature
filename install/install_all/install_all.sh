@@ -109,9 +109,9 @@ sudo apt-get install -y python3-cffi
 sudo apt-get install -y libbz2-dev
 
 cd /opt
-sudo wget https://www.python.org/ftp/python/3.7.2/Python-3.7.2.tgz
-sudo tar xzf Python-3.7.2.tgz
-cd Python-3.7.2
+sudo wget https://www.python.org/ftp/python/3.7.7/Python-3.7.7.tgz
+sudo tar xzf Python-3.7.7.tgz
+cd Python-3.7.7
 sudo ./configure --enable-optimizations
 sudo make install
 cd 
@@ -129,7 +129,7 @@ sudo apt-get install -y libffi-dev
 sudo apt-get install -y libxslt-dev
 sudo apt-get install -y shared-mime-info
 sudo python3 -m pip install pip==20.0.2
-pip3 install virtualenv==20.0.1
+/usr/local/bin/python3 -m pip install virtualenv==20.0.1
 # sudo pip install --upgrade pip virtualenv virtualenvwrapper
 
 

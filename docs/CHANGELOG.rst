@@ -23,7 +23,7 @@ Suivez la procédure suivante pour passer à Python 3.8
     sudo ./configure --enable-optimizations
     sudo make install
     sudo python3 -m pip install pip==20.0.2
-    pip3 install virtualenv==20.0.1
+    /usr/local/bin/python3 -m pip install virtualenv==20.0.1
 
 
 Editer la variable python_path du fichier ``settings.ini`` et mettre ``/usr/local/bin/python3``.
