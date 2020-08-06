@@ -263,10 +263,11 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False, obs_
         params
     )
     if len(releve_filters) > 0:
-        q = q.join(
-            TRelevesOccurrence,
-            mappedView.id_releve_occtax == TRelevesOccurrence.id_releve_occtax,
-        )
+        if from_generic_table:
+            q = q.join(
+                TRelevesOccurrence,
+                mappedView.id_releve_occtax == TRelevesOccurrence.id_releve_occtax,
+            )
         for nomenclature in releve_filters:
             col = getattr(TRelevesOccurrence.__table__.columns, nomenclature)
             q = q.filter(col == params.pop(nomenclature))

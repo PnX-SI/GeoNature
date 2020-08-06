@@ -75,7 +75,7 @@ def getReleves(info_role):
 
     # Filters
     q = get_query_occtax_filters(parameters, TRelevesOccurrence, q)
-
+    query_without_limit = q
     # Order by
     q = get_query_occtax_order(orderby, TRelevesOccurrence, q)
     try:
@@ -86,11 +86,7 @@ def getReleves(info_role):
 
     # Pour obtenir le nombre de résultat de la requete sans le LIMIT
     try:
-        nbResultsQuery = releve_repository.get_filtered_query(info_role)
-        nbResultsQuery = get_query_occtax_filters(
-            parameters, TRelevesOccurrence, nbResultsQuery
-        )
-        nbResultsWithoutFilter = nbResultsQuery.count()
+        nb_results_without_limit = query_without_limit.count()
     except Exception as e:
         DB.session.rollback()
         raise
@@ -107,7 +103,7 @@ def getReleves(info_role):
         feature["properties"]["rights"] = releve_cruved
         featureCollection.append(feature)
     return {
-        "total": nbResultsWithoutFilter,
+        "total": nb_results_without_limit,
         "total_filtered": len(data),
         "page": page,
         "limit": limit,
