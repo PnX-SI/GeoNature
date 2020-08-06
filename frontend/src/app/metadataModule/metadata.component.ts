@@ -329,7 +329,14 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
       `UUID_JDD-${ds.id_dataset}_${ds.unique_dataset_id}`,
       {ds_id: ds_id}
     );
-    
+  }
+
+  sensiReport(ds_id) {
+    const ds = this.datasets.find(ds => ds.id_dataset == ds_id);
+    this._dataService.downloadSensiReport(
+      `Sensibilite_JDD-${ds.id_dataset}_${ds.unique_dataset_id}`,
+      {ds_id: ds_id}
+    );
   }
 
 }

@@ -114,7 +114,7 @@
                     <td> {{ ds.createur?.organism?.nom_organisme }} 
                       <span *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"> - </span> {{ ds.createur?.role?.nom_complet }} </td>
                     <td style="padding-left: 0px; padding-right: 0px">
-                      <img src="./assets/images/Rapport_Sensibles.svg"/>
+                      <img src="./assets/images/Rapport_Sensibles.svg" (click)="sensiReport(ds.id_dataset)"/>
                       <img src="./assets/images/Rapport_UUID.svg" (click)="uuidReport(ds.id_dataset)"/>
                     </td>
                     <td  style="width: 264px; padding-left: 0px; padding-right: 0px">

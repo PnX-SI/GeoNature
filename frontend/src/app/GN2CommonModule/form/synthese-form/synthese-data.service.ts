@@ -134,6 +134,10 @@ export class SyntheseDataService {
     this.subscribeAndDownload(source, filename, "csv", false);
   }
 
+  downloadSensiReport(filename: string, args: { [key: string]: string }) {
+    console.log(`downloading ${filename}`);
+  }
+
   subscribeAndDownload(
     source: Observable<HttpEvent<Blob>>,
     fileName: string,

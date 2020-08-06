@@ -127,9 +127,19 @@ export class DatasetCardComponent implements OnInit {
   }
 
   uuidReport(id_import) {
+    console.log("OK");
     const imp = this.dataset.imports.find(imp => imp.id_import == id_import);
     this._dataService.downloadUuidReport(
       `UUID_Import-${id_import}_JDD-${imp.id_dataset}`,
+      {id_import: id_import}
+    );
+  }
+
+  sensiReport(id_import) {
+    console.log("OK");
+    const imp = this.dataset.imports.find(imp => imp.id_import == id_import);
+    this._dataService.downloadSensiReport(
+      `Sensibilite_Import-${id_import}_JDD-${imp.id_dataset}`,
       {id_import: id_import}
     );
   }
