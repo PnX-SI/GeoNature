@@ -409,7 +409,7 @@ def uuid_report(info_role):
     data = query.all()
 
     data = [ {
-        "identifiantOrigine": row.id_source,
+        "identifiantOrigine": row.entity_source_pk_value,
         "identifiant_gn": row.id_synthese,
         "identifiantPermanent (SINP)": row.unique_id_sinp,
         "nomcite": row.nom_cite,
