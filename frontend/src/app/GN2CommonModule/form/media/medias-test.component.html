@@ -1,13 +1,8 @@
 <div class="test-medias">
   <h1>Test Médias</h1>
 
-  <p>
-    uuidAttachedRow {{uuidAttachedRow}}
-  </p>
-
   <div>
     <pnx-medias
-      [bEditable]="true"
       [(medias)]="medias"
       (onValidFormsChange)="onValidFormsChange($event)"
       [schemaDotTable]="schemaDotTable"

@@ -1,34 +1,47 @@
 <div>
   <div>
-    <div *ngFor="let media of medias; let i = index" class="media-list">
+<mat-accordion [multi]="true">
+
+    <div *ngFor="let media of medias; let i = index">
+      <button
+      mat-icon-button
+      class="btn-clear d-none"
+      (click)="deleteMedia(i)">
+      <mat-icon matTooltip="Supprimer ce media">clear</mat-icon>
+    </button>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{media.title_fr}}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
       <pnx-media
         [(media)]="media"
         [(bEdit)]="bEditMedias[i]"
         [(bFreeze)]="bFreeze"
         [(bLoading)]="bLoading"
-        [bEditable]="bEditable"
         (validMediaChange)="onValidMediaChange($event, i)"
         (actionProcessed)="onActionProcessed($event)"
         [schemaDotTable]="schemaDotTable"
         [uuidAttachedRow]="uuidAttachedRow"
       >
       </pnx-media>
+      </mat-expansion-panel>
     </div>
+    </mat-accordion>
   </div>
   <div class="add-btn">
+
     <button
-      *ngIf="bEditable"
-      class="btn btn-success btn-sm"
+      mat-mini-fab
+      color="primary"
+      class="btn-add-media"
       id="add-media-btn"
       [disabled]="bFreeze || bLoading"
       (click)="addMedia()"
     >
-      <i id="icon-add" class="fa fa-plus" aria-hidden="true"></i>
-      {{ 'Media.add' | translate }}
+      <mat-icon matTooltip="{{ 'Media.add' | translate }}">add</mat-icon>
     </button>
   </div>
-  <!-- bFreeze {{bFreeze}} <br>
-  bLoading {{bLoading}} <br>
-  bEditMedias {{bEditMedias | json}}<br>
-  bValidMedias {{bValidMedias | json}}<br> -->
 </div>

@@ -44,6 +44,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   public taxonForm: FormControl; //control permettant de rechercher un taxon TAXREF
   public taxonFormFocus: boolean = false; //pour mieux gérer l'affichage de l'erreur required
   private advanced: string = "collapsed";
+  private medias: string = "collapsed";
   public countingStep: number = 0;
 
   public displayProofFromElements: boolean = false;
@@ -182,7 +183,23 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     }, 50);
   }
 
-  collapse() {
-    this.advanced = this.advanced === "collapsed" ? "expanded" : "collapsed";
+  collapse(keyIn) {
+
+    for (const key of ['medias', 'advanced'] ){
+      if(key == keyIn) {
+        this[key] = this[key] === "collapsed" ? "expanded" : "collapsed"
+      } else {
+        this[key] = 'collapsed'
+      }
+    }
+  }
+
+  /* Gestion des medias */
+  onMediasChange(event) {
+    this.occurrenceForm.patchValue(
+      {
+        medias:event
+      }
+    );
   }
 }

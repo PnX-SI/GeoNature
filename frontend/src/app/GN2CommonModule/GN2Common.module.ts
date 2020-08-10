@@ -221,7 +221,8 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     TaxonAdvancedModalComponent,
     DumbSelectComponent,
     GeometryFormComponent,
-    ConfirmationDialog
+    ConfirmationDialog,
+    MediasComponent
   ]
 })
 export class GN2CommonModule { }

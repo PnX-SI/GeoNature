@@ -11,6 +11,7 @@ from pypnusershub.db.models import User
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
 
+from geonature.core.taxonomie.models import Taxref
 from geonature.core.gn_commons.models import TMedias
 from geonature.core.gn_meta.models import TDatasets
 from geonature.utils.env import DB

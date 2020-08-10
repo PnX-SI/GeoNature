@@ -32,10 +32,6 @@ export class MediaComponent implements OnInit {
   @Input() schemaDotTable: string;
   @Input() uuidAttachedRow: string;
 
-  // manageState
-  @Input() bEditable: boolean; //
-  @Output() bEditableChange = new EventEmitter<boolean>();
-
   @Input() bEdit: boolean;
   @Output() bEditChange = new EventEmitter<boolean>();
 
@@ -44,7 +40,6 @@ export class MediaComponent implements OnInit {
 
   @Input() bLoading: boolean;
   @Output() bLoadingChange = new EventEmitter<boolean>();
-
 
   @Input() media: Media;
   @Output() MediaChange = new EventEmitter<boolean>();
@@ -69,13 +64,12 @@ export class MediaComponent implements OnInit {
       .getIdTableLocation(schemaDotTable)
       .subscribe((idTableLocation) => {
         this.idTableLocation = idTableLocation;
+        this.initForm();
       });
-    this.initForm();
 
   }
 
   emitChanges() {
-    console.log('emit changes', this.mediaForm.valid)
     this.bFreezeChange.emit(this.bFreeze);
     this.bLoadingChange.emit(this.bLoading);
     this.bEditChange.emit(this.bEdit);
@@ -90,11 +84,14 @@ export class MediaComponent implements OnInit {
     }
 
     this.mediaFormDefinition = Object.keys(mediaFormDefinitionsDict).map((key) => ({ ...mediaFormDefinitionsDict[key], attribut_name: key }))
-    this.mediaForm = this._formBuilder.group({});
+
+    if(! this.mediaForm) {
+      this.mediaForm = this._formBuilder.group({});
+    }
 
     if (this.media) {
-      this.media.id_table_location = this.media.id_table_location || this.idTableLocation;
-      this.media.uuid_attached_row = this.media.uuid_attached_row || this.uuidAttachedRow;
+      this.media.id_table_location = this.media.id_table_location || this.idTableLocation;
+      this.media.uuid_attached_row = this.media.uuid_attached_row || this.uuidAttachedRow;
       this.mediaForm.patchValue(this.media);
     }
 
@@ -138,11 +135,10 @@ export class MediaComponent implements OnInit {
           if (event.type == HttpEventType.UploadProgress) {
             this.uploadPercentDone = Math.round(100 * event.loaded / event.total);
           } else if (event instanceof HttpResponse) {
-            console.log('file downloaded')
-            console.log(event)
             this.media.setValues(event.body);
+            this.mediaForm.patchValue(this.media);
             this.bLoading = false;
-            this.mediaForm.patchValue({file: null});
+            this.mediaForm.patchValue({ file: null });
             this.emitAction('valid');
           }
         },
@@ -172,7 +168,7 @@ export class MediaComponent implements OnInit {
         this.initForm();
       }
 
-      if(['schemaDotTable']) {
+      if (propName === 'schemaDotTable') {
         this.initIdTableLocation(this.schemaDotTable);
       }
 

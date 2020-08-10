@@ -16,7 +16,6 @@ export class MediasComponent implements OnInit {
 
   @Input() medias: Array<Media> = []; /** list of medias */
   @Output() mediasChange = new EventEmitter<Array<Media>>();
-  @Input() bEditable: boolean = false; /** component is editable */
 
   @Input() schemaDotTable: string;
   @Input() uuidAttachedRow: string;
@@ -37,16 +36,23 @@ export class MediasComponent implements OnInit {
       default:
         break;
     }
+    this.emitChanges()
+  }
+
+  emitChanges() {
+    this.mediasChange.emit(this.medias)
+    this.emitFormsChange();
   }
 
   initMedias() {
+    this.medias=this.medias.map(media => new Media(media))
     this.bEditMedias = this.medias.map(() => false);
     this.bValidMedias = this.medias.map(() => true);
   }
 
   onValidMediaChange(event, index) {
     this.bValidMedias[index] = event
-    this.emitFormsChange();
+    this.emitChanges();
   }
 
   emitFormsChange() {
@@ -58,7 +64,7 @@ export class MediasComponent implements OnInit {
     this.bEditMedias.push(true);
     this.bValidMedias.push(false);
     this.bFreeze = true;
-    this.emitFormsChange()
+    this.emitChanges()
   }
 
   deleteMedia(index) {
@@ -66,15 +72,15 @@ export class MediasComponent implements OnInit {
     this.bEditMedias.splice(index, 1);
     this.bValidMedias.splice(index, 1);
     this.bFreeze = false;
-    this.emitFormsChange()
+    this.emitChanges()
   }
 
   cancelMedia(index) {
-    this.emitFormsChange()
+    this.emitChanges()
   }
 
   editMedia(index) {
-    this.emitFormsChange()
+    this.emitChanges()
   }
 
   ngOnChanges(changes: SimpleChanges) {

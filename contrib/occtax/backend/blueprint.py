@@ -553,6 +553,12 @@ def occurrenceHandler(request, *, occurrence, info_role):
     DB.session.add(occurrence)
     DB.session.commit()
 
+    # set Medias UUID
+    for media in occurrence.medias or []:
+        media.uuid_attached_row = occurrence.unique_id_occurence_occtax
+
+    DB.session.commit()
+
     return occurrence
 
 

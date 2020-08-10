@@ -74,10 +74,19 @@
   <button 
     type="button" 
     class="btn btn-outline-shadow btn-sm"
-    (click)='collapse()'>
+    (click)='collapse("advanced")'>
     <i class="fa fa-cog" aria-hidden="true"></i>
     {{ 'Taxon.Advanced' | translate }}
   </button>
+
+  <button 
+  style="margin-left: 10px"
+  type="button" 
+  class="btn btn-outline-shadow btn-sm"
+  (click)='collapse("medias")'>
+  <i class="fa fa-picture-o" aria-hidden="true"></i>
+  {{ 'Media.Medias' | translate }} ({{ (occurrenceForm.value.medias || []).length }})
+</button>
 </div>
 
 <div [@detailExpand]='advanced'>
@@ -259,7 +268,19 @@
     </textarea>
   </div>
 </div>
-      
+     
+<div [@detailExpand]='medias'>
+  <h5 style="margin-top: 15px;">
+    <span [matBadge]="(occurrenceForm.value.medias || []).length" matBadgeOverlap="false">
+      {{'Media.Medias' |translate}}
+    </span>
+  </h5>  
+  <pnx-medias
+    schemaDotTable="pr_occtax.t_occurrences_occtax"
+    [medias]="occurrenceForm.value.medias || []"
+    (mediasChange)="onMediasChange($event)"
+  ></pnx-medias>
+</div>
   
 <h5 style="margin-top: 15px;">
   <span [matBadge]="countingControls.length" matBadgeOverlap="false">

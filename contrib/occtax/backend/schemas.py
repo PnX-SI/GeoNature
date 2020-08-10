@@ -13,6 +13,7 @@ from .models import (
 	TOccurrencesOccurrence, 
 	TRelevesOccurrence
 )
+from geonature.core.gn_commons.models import TMedias
 from geonature.core.gn_meta.schemas import DatasetSchema
 from geonature.core.taxonomie.schemas import TaxrefSchema
 from pypnusershub.db.models import User
@@ -64,14 +65,28 @@ class CountingSchema(MA.SQLAlchemyAutoSchema):
 		return data
 
 
-class OccurrenceSchema(MA.SQLAlchemyAutoSchema):
-	class Meta:
-		model = TOccurrencesOccurrence
-		load_instance = True
-		include_fk = True
+class MediaSchema(MA.SQLAlchemyAutoSchema):
+    class Meta:
+        model = TMedias
+        load_instance = True
+        include_fk = True
 
-	cor_counting_occtax = MA.Nested(CountingSchema, many=True)
-	taxref = MA.Nested(TaxrefSchema, dump_only=True)
+    @pre_load
+    def make_releve(self, data, **kwargs):
+        if data.get('id_media') is None:
+            data.pop('id_media', None)
+        return data
+
+
+class OccurrenceSchema(MA.SQLAlchemyAutoSchema):
+    class Meta:
+        model = TOccurrencesOccurrence
+        load_instance = True
+        include_fk = True
+
+    cor_counting_occtax = MA.Nested(CountingSchema, many=True)
+    medias = MA.Nested(MediaSchema, many=True)
+    taxref = MA.Nested(TaxrefSchema, dump_only=True)
 
 
 class ReleveSchema(MA.SQLAlchemyAutoSchema):

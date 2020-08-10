@@ -13,7 +13,7 @@ export class MediasTestComponent implements OnInit {
 
   medias: Array<Media> = [];
   bValidForms: boolean = true;
-  schemaDotTable:string = 'pr_occtax.t_occurences_occtax';
+  schemaDotTable:string = 'pr_occtax.t_occurrences_occtax';
   uuidAttachedRow: string;
 
   constructor(private _route: ActivatedRoute,) {}

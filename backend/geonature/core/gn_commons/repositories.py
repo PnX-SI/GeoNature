@@ -39,9 +39,7 @@ class TMediaRepository():
             self.media = self._load_from_id(id_media)
         else:
             self.new = True
-            print(TMedias, temp)
             self.media = TMedias(**self.media_data)
-            print(self.media.id_media)
 
     def create_or_update_media(self):
         '''
@@ -185,6 +183,7 @@ class TMediumRepository():
 
 
 def get_table_location_id(schema_name, table_name):
+    print(schema_name, table_name)
     try:
         location = DB.session.query(BibTablesLocation).filter(
             BibTablesLocation.schema_name == schema_name

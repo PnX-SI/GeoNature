@@ -82,6 +82,6 @@ const routes: Routes = [
     OcctaxFormCountingService,
     OcctaxTaxaListService,
     OcctaxFormParamService
-  ]
+  ],
 })
 export class GeonatureModule { }

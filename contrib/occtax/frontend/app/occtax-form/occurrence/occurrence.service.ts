@@ -59,6 +59,7 @@ export class OcctaxFormOccurrenceService {
       non_digital_proof: null,
       comment: null,
       cor_counting_occtax: this.fb.array([], Validators.required),
+      medias: []
     });
   }
 
@@ -96,6 +97,7 @@ export class OcctaxFormOccurrenceService {
         })
       )
       .subscribe((values) => {
+        console.log('setObs', values)
         this.form.patchValue(values);
       });
 
@@ -308,6 +310,7 @@ export class OcctaxFormOccurrenceService {
   }
 
   reset() {
+    console.log('reset')
     this.form.reset();
     this.occurrence.next(null);
   }
