@@ -10,8 +10,6 @@ import { MatDialog, MatDialogConfig } from "@angular/material";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ModuleConfig } from "../module.config";
 import { OcctaxFormService } from "./occtax-form.service";
-import { DataFormService } from "@geonature_common/form/data-form.service";
-import { AuthService } from "@geonature/components/auth/auth.service";
 import { MapService } from "@geonature_common/map/map.service";
 import { OcctaxFormParamDialog } from "./form-param/form-param.dialog";
 import { OcctaxFormParamService } from "./form-param/form-param.service";
@@ -39,8 +37,6 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     private _route: ActivatedRoute,
     private _router: Router,
     public occtaxFormService: OcctaxFormService,
-    private _dfs: DataFormService,
-    private _authService: AuthService,
     private _mapService: MapService,
     public occtaxFormParamService: OcctaxFormParamService,
     private occtaxFormReleveService: OcctaxFormReleveService,

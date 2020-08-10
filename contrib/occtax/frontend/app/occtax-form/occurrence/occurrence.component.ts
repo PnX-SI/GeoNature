@@ -9,7 +9,6 @@ import {
 import { FormControl, FormGroup, FormArray, Validators } from "@angular/forms";
 import { map, filter, tap } from "rxjs/operators";
 import { OcctaxFormService } from "../occtax-form.service";
-import { CommonService } from "@geonature_common/service/common.service";
 import { ModuleConfig } from "../../module.config";
 import { OcctaxFormOccurrenceService } from "./occurrence.service";
 import { Taxon } from "@geonature_common/form/taxonomy/taxonomy.component";
@@ -34,7 +33,7 @@ import { Taxon } from "@geonature_common/form/taxonomy/taxonomy.component";
       state("expanded", style({ height: "*" })),
       transition(
         "expanded <=> collapsed",
-        animate("225ms cubic-bezier(0.4, 0.0, 0.2, 1)")
+        animate("250ms cubic-bezier(0.4, 0.0, 0.2, 1)")
       ),
     ]),
   ],
@@ -109,6 +108,8 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
         filter((taxon) => taxon !== null && taxon.cd_nom !== undefined),
         tap((taxon) => this.occtaxFormOccurrenceService.taxref.next(taxon)),
         map((taxon) => {
+          // mark the occform as dirty
+          this.occtaxFormOccurrenceService.form.markAsDirty();
           let nom_cite = null;
           let cd_nom = null;
           if (typeof taxon === "string") {
@@ -172,6 +173,13 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     (this.occurrenceForm.get("cor_counting_occtax") as FormArray).removeAt(
       index
     );
+  }
+
+  /** A la selection d'un taxon, focus sur le bouton ajouter */
+  selectAddOcc() {
+    setTimeout(() => {
+      document.getElementById("add-occ").focus();
+    }, 50);
   }
 
   collapse() {
