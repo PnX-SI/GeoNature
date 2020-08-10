@@ -96,6 +96,7 @@
 					<pnx-occtax-form-taxa-list></pnx-occtax-form-taxa-list>
 					<div style="margin-top: 15px;" class="text-center">
 						<button 
+							[disabled]="occtaxFormOccurrenceService.isEditing"
 							class="btn btn-success hard-shadow btn-action"
 							(click)="leaveTheForm()">
 					  	Valider la saisie

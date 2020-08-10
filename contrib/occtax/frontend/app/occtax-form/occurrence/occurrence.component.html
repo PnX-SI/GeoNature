@@ -8,7 +8,8 @@
       [charNumber]="3" 
       [listLength]="occtaxConfig.taxon_result_number" 
       displayAdvancedFilters="true"
-      displayLabel="search_name">
+      displayLabel="search_name"
+      (onChange)="selectAddOcc()">
     </pnx-taxonomy>
     <small 
       *ngIf="(occurrenceForm.get('nom_cite').hasError('required') && taxonForm.touched) && !taxonFormFocus" 
@@ -301,7 +302,7 @@
 
     </mat-expansion-panel>
 
-    <button 
+    <button   
       *ngIf="i == countingControls.length - 1"
       mat-mini-fab
       color="primary"
@@ -322,6 +323,7 @@
 
 <div class="text-center" style="margin-top: 10px;"> 
   <button 
+  
       class="btn btn-light"
       matTooltip="Annuler la saisie"
       style="margin-right: 10px;"
@@ -330,6 +332,7 @@
     </button> 
   <ng-container *ngIf="!(occtaxFormOccurrenceService.occurrence|async); else modifButton">
     <button 
+      id="add-occ"
       class="btn btn-primary"
       matTooltip="Enregistrer cette occurrence"
       [disabled]="occurrenceForm.invalid"
