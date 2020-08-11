@@ -24,7 +24,7 @@ const NOMENCLATURES = [
 export class OcctaxTaxaListService {
   nomenclatures: Array<any> = [];
   rec_occurrences_in_progress: Array<any> = [];
-  public occurrences$: BehaviorSubject<Array<any>> = new BehaviorSubject(null);
+  public occurrences$: BehaviorSubject<Array<any>> = new BehaviorSubject([]);
 
   constructor(private dataFormS: DataFormService) {
     this.getNomenclatures();

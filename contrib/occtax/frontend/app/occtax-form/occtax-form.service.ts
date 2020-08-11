@@ -42,19 +42,19 @@ export class OcctaxFormService {
   }
 
   getOcctaxData(id) {
-    this._dataS
-      .getOneReleve(id)
-      .pipe()
-      .subscribe(
-        (data) => {
-          this.occtaxData.next(data);
-          this.editionMode.next(true);
-        },
-        (error) => {
-          this._commonService.translateToaster("error", "Releve.DoesNotExist");
-          this._router.navigate(["occtax/form"]);
-        }
-      );
+    this._dataS.getOneReleve(id).subscribe(
+      (data) => {
+        console.log("get data");
+        console.log(data);
+
+        this.occtaxData.next(data);
+        this.editionMode.next(true);
+      },
+      (error) => {
+        this._commonService.translateToaster("error", "Releve.DoesNotExist");
+        this._router.navigate(["occtax/form"]);
+      }
+    );
   }
 
   getDefaultValues(idOrg?: number, regne?: string, group2_inpn?: string) {

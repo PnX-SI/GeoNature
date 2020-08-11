@@ -8,6 +8,7 @@ import {
 import { DOCUMENT } from "@angular/common";
 import { MatDialog, MatDialogConfig } from "@angular/material";
 import { ActivatedRoute, Router } from "@angular/router";
+import { first } from "rxjs/operators";
 import { ModuleConfig } from "../module.config";
 import { OcctaxFormService } from "./occtax-form.service";
 import { MapService } from "@geonature_common/map/map.service";
@@ -15,17 +16,23 @@ import { OcctaxFormParamDialog } from "./form-param/form-param.dialog";
 import { OcctaxFormParamService } from "./form-param/form-param.service";
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
 import { OcctaxFormReleveService } from "./releve/releve.service";
+import { OcctaxFormCountingService } from "./counting/counting.service";
 import { OcctaxFormOccurrenceService } from "./occurrence/occurrence.service";
 import { OcctaxTaxaListService } from "./taxa-list/taxa-list.service";
-
+import { OcctaxDataService } from "../services/occtax-data.service";
+import { OcctaxFormMapService } from "../occtax-form/map/map.service";
 @Component({
   selector: "pnx-occtax-form",
   templateUrl: "./occtax-form.component.html",
   styleUrls: ["./occtax-form.component.scss"],
+  // le composant doit initié les services suivants pour le bon fonctionnemment du formulaire
+  // et le rechargemernt des données
+  providers: [OcctaxTaxaListService, OcctaxFormService, OcctaxFormMapService],
 })
 export class OcctaxFormComponent implements OnInit, AfterViewInit {
   public occtaxConfig = ModuleConfig;
   public id;
+  public disableCancel = false;
   releveUrl: string = null;
   currentTab: "releve" | "taxons";
   cardHeight: number;
@@ -41,7 +48,8 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     public occtaxFormParamService: OcctaxFormParamService,
     private occtaxFormReleveService: OcctaxFormReleveService,
     private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
-    private occtaxTaxaListService: OcctaxTaxaListService
+    private occtaxTaxaListService: OcctaxTaxaListService,
+    private _ds: OcctaxDataService
   ) {}
 
   ngOnInit() {
@@ -110,14 +118,17 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
 
     const dialogRef = this.dialog.open(OcctaxFormParamDialog, dialogConfig);
   }
+  /**
+   *
+   * @param cancel : boolean. Action vient du bouton annuler = true, sinon false
+   */
+  leaveTheForm(cancel) {
+    this.disableCancel = true;
+    const url = this.occtaxFormService.chainRecording
+      ? ["/occtax/form"]
+      : ["/occtax"];
 
-  leaveTheForm(url?) {
-    if (!url) {
-      url = this.occtaxFormService.chainRecording
-        ? ["/occtax/form"]
-        : (url = ["/occtax"]);
-    }
-
+    // si le formulair est en cour d'édition
     if (
       (this.currentTab === "releve" &&
         this.occtaxFormReleveService.releveForm.dirty) ||
@@ -138,6 +149,9 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
           if (this.occtaxFormService.chainRecording) {
             this.currentTab = "releve";
           }
+          if (cancel) {
+            this.deleteReleveIfNoOcc();
+          }
           this._router.navigate(url);
           this.occtaxTaxaListService.cleanOccurrenceInProgress();
         }
@@ -146,8 +160,24 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
       if (this.occtaxFormService.chainRecording) {
         this.currentTab = "releve";
       }
+      if (cancel) {
+        this.deleteReleveIfNoOcc();
+      }
       this._router.navigate(url);
       this.occtaxTaxaListService.cleanOccurrenceInProgress();
+    }
+  }
+
+  /** Action sur le bouton annuler
+   * Redirige vers la liste occtax
+   * Si aucun taxon saisi, alors on supprime le releve
+   */
+  deleteReleveIfNoOcc() {
+    const occ = this.occtaxTaxaListService.occurrences$.getValue();
+    if (occ.length === 0) {
+      this._ds
+        .deleteReleve(this.occtaxFormService.id_releve_occtax.getValue())
+        .subscribe((d) => {});
     }
   }
 }

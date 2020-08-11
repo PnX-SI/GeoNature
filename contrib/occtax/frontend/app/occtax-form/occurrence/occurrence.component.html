@@ -1,5 +1,5 @@
 <h5> Ajout d'un taxon </h5>
-<div class="row">
+<div class="row" style="height:70px!important">
   <div class="col-sm-6">
     <pnx-taxonomy 
       label="{{ 'Taxon.NomCite' | translate }}" 
@@ -25,7 +25,7 @@
     </small>
   </div>
   <div *ngIf="occtaxConfig.form_fields.display_nom_valide"
-    class="col-sm-6 align-self-end">
+    class="col-sm-6">
     <small> TAXREF - Nom valide </small>
     <span 
       class="form-control form-control-sm form-nom-complet" 

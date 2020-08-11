@@ -11,15 +11,14 @@ import { OcctaxFormMapService } from "../map/map.service";
 @Component({
   selector: "pnx-occtax-form-releve",
   templateUrl: "releve.component.html",
-  styleUrls: ["./releve.component.scss"]
+  styleUrls: ["./releve.component.scss"],
 })
 export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
-
   public occtaxConfig: any;
   public geojson: GeoJSON;
   public showTime: boolean = false; //gestion de l'affichage des infos complémentaires de temps
   public userDatasets: Array<any>;
-  
+
   public releveForm: FormGroup;
 
   constructor(
@@ -35,11 +34,11 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.releveForm = this.occtaxFormReleveService.releveForm;
 
-    this.occtaxFormMapService.geojson
-                    .subscribe(geojson=>this.geojson = geojson);
+    this.occtaxFormMapService.geojson.subscribe(
+      (geojson) => (this.geojson = geojson)
+    );
 
     this.occtaxFormReleveService.route = this.route;
-
   } // END INIT
 
   get dataset(): any {
@@ -51,7 +50,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   }
 
   get propertiesForm(): any {
-    return this.releveForm.get('properties');
+    return this.releveForm.get("properties");
   }
 
   isDatasetUser(id_dataset: number = null): boolean {
@@ -60,11 +59,11 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     }
 
     for (let i = 0; i < this.userDatasets.length; i++) {
-      if ( this.userDatasets[i].id_dataset == id_dataset ){
+      if (this.userDatasets[i].id_dataset == id_dataset) {
         return true;
       }
     }
-    
+
     return false;
   }
 

@@ -2,13 +2,6 @@
 	<div class="occtax-form">
 		<div class="tab">
 			<div class="tab-left">
-				<button mat-mini-fab
-					class="to-list-btn"
-			  	matTooltip="Retour vers la liste des relevés"
-			  	[class.active]="false"
-			  	(click)="leaveTheForm(['/occtax'])">
-			  	<mat-icon class="example-tab-icon">arrow_back</mat-icon>
-			  </button>
 			  <a 
 			  	[routerLink]="releveUrl"
 			  	class="tablinks" 
@@ -71,7 +64,6 @@
 				<div class="col-xl-6 col-lg-5 col-sm-6">
 					<pnx-occtax-form-releve></pnx-occtax-form-releve>
 				</div>
-				<!-- <pnx-occtax-form-param></pnx-occtax-form-param> -->
 			</div>
 		</div>
 
@@ -103,17 +95,18 @@
 			</div>
 			<div class="btn-releve">
 				<button 
+					[disabled]="disableCancel"
 					id="btn-cancel"
 					matTooltip="Annuler la saisie"
 					class="btn btn-danger hard-shadow btn-action uppercase"
-					(click)="cancelAndDelete()">
+					(click)="leaveTheForm(true)">
 					Annuler
 				</button>
 				<button 
-					[disabled]="(occtaxTaxaListService.occurrences$ | async) == null || (occtaxTaxaListService.occurences$ | async)?.length == 0"
+					[disabled]="(occtaxTaxaListService.occurrences$ | async)?.length === 0 "
 					class="btn btn-success hard-shadow btn-action uppercase"
 					matTooltip="Valider la saisie"
-					(click)="leaveTheForm()">
+					(click)="leaveTheForm(false)">
 					Valider
 				</button>
 			</div>
@@ -122,3 +115,4 @@
 
 	</div>
 </div>
+
