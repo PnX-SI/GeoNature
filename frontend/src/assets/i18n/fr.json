@@ -104,7 +104,7 @@
       "ReleveModified": "Relevé modifié"
     },
     "Errors": {
-      "DateMaxError": "La date de début ne peut pas être postérieur à la date de fin",
+      "DateMaxError": "La date de début ne peut pas être postérieure à la date de fin",
       "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
       "HourMaxError": "L'heure de début ne peut pas être supérieure à l'heure de fin"
     }
