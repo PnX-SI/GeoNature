@@ -1,4 +1,4 @@
-<ng-container *ngIf="occurrences.length || occtaxTaxaListService.rec_occurrences_in_progress.length; else zeroOccurrenceBlk">
+<ng-container *ngIf="(occtaxTaxaListService.occurrences$ | async)?.length || occtaxTaxaListService.rec_occurrences_in_progress.length; else zeroOccurrenceBlk">
 
   <ng-container *ngFor="let occ_in_progress of occtaxTaxaListService.rec_occurrences_in_progress">
     <div 
@@ -25,7 +25,7 @@
 
 
   <div
-    *ngFor="let occurrence of occurrences"
+    *ngFor="let occurrence of occtaxTaxaListService.occurrences$ | async; let i=index"
     displayMouseOver 
     selector=".btn-actions">
 
@@ -37,6 +37,7 @@
         <mat-icon matTooltip="Editer la donnée">edit</mat-icon>
       </button>
       <button 
+        *ngIf="(occtaxTaxaListService.occurrences$ |async)?.length != 1 || i != 0"
         mat-icon-button 
         class="btn-clear"
         (click)="deleteOccurrence(occurrence)">
@@ -56,14 +57,6 @@
         <!-- <ng-container *ngIf="(getStatuts(taxon.statuts)).length">
           <mat-icon class="nb-statut" [matBadge]="(getStatuts(taxon.statuts)).length" [matTooltip]="(getStatuts(taxon.statuts)).length + ' statuts'">star</mat-icon>
         </ng-container> -->
-        <a 
-        	*ngIf="occurrence.taxref"
-    	    [href]="occurrence.taxref.url" 
-    	     class="btn-inpn"
-    	    target="_BLANK" 
-    	    mat-icon-button>
-          <mat-icon matTooltip="Vers fiche Taxref INPN">open_in_new</mat-icon>
-        </a>
       </div>
       <div class="gn-panel-content">
 
@@ -238,7 +231,7 @@
                 <div class="value">{{ occurrence.taxref.nom_vern_eng }}</div>
               </div>
               <div>
-                <div class="label">URL :</div>
+                <div class="label">Fiche INPN :</div>
                 <div class="value">
                   <a href="{{ occurrence.taxref.url }}" target="_BLANK">{{ occurrence.taxref.url }}</a>
                 </div>

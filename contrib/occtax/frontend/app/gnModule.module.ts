@@ -2,7 +2,7 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { GN2CommonModule } from "@geonature_common/GN2Common.module";
 import { Routes, RouterModule } from "@angular/router";
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { GNPanelModule } from "@geonature/templates/gn-panel/gn-panel.module";
 // Components
 import { OcctaxMapListComponent } from "./occtax-map-list/occtax-map-list.component";
@@ -29,33 +29,34 @@ import { OcctaxFormCountingService } from "./occtax-form/counting/counting.servi
 import { OcctaxTaxaListService } from "./occtax-form/taxa-list/taxa-list.service";
 import { OcctaxFormParamService } from "./occtax-form/form-param/form-param.service";
 
-import {
-  MatSlideToggleModule,
-  MatTabsModule
-} from '@angular/material';
+import { MatSlideToggleModule, MatTabsModule } from "@angular/material";
 
 const routes: Routes = [
   { path: "", component: OcctaxMapListComponent },
   { path: "form", component: OcctaxFormComponent },
   { path: "form/:id", component: OcctaxFormComponent, pathMatch: "full" },
-  { path: "form/:id/taxons", component: OcctaxFormComponent, pathMatch: "full" },
+  {
+    path: "form/:id/taxons",
+    component: OcctaxFormComponent,
+    pathMatch: "full",
+  },
   { path: "info/:id", component: OcctaxMapInfoComponent, pathMatch: "full" },
   {
     path: "info/id_counting/:id_counting",
     component: OcctaxMapInfoComponent,
-    pathMatch: "full"
-  }
+    pathMatch: "full",
+  },
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forChild(routes), 
-    GN2CommonModule, 
-    CommonModule, 
-    MatSlideToggleModule, 
+    RouterModule.forChild(routes),
+    GN2CommonModule,
+    CommonModule,
+    MatSlideToggleModule,
     MatTabsModule,
     NgbModule,
-    GNPanelModule
+    GNPanelModule,
   ],
   declarations: [
     OcctaxFormComponent,
@@ -67,21 +68,19 @@ const routes: Routes = [
     OcctaxFormOccurrenceComponent,
     OcctaxFormTaxaListComponent,
     OcctaxFormCountingComponent,
-    OcctaxFormParamDialog
+    OcctaxFormParamDialog,
   ],
-  entryComponents: [ 
-    OcctaxFormParamDialog
-  ],
+  entryComponents: [OcctaxFormParamDialog],
   providers: [
-    OcctaxDataService, 
-    MapListService, 
+    OcctaxDataService,
+    MapListService,
     OcctaxFormService,
     OcctaxFormMapService,
     OcctaxFormReleveService,
     OcctaxFormOccurrenceService,
     OcctaxFormCountingService,
     OcctaxTaxaListService,
-    OcctaxFormParamService
+    OcctaxFormParamService,
   ],
 })
-export class GeonatureModule { }
+export class GeonatureModule {}

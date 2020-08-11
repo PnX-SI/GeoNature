@@ -122,7 +122,6 @@ export class OcctaxMapListComponent
 
     this.cardContentHeight = height >= 350 ? height : 350;
     // resize map after resize container
-
     if (this._mapService.map) {
       setTimeout(() => {
         this._mapService.map.invalidateSize();

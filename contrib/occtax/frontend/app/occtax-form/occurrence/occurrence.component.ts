@@ -12,6 +12,10 @@ import { OcctaxFormService } from "../occtax-form.service";
 import { ModuleConfig } from "../../module.config";
 import { OcctaxFormOccurrenceService } from "./occurrence.service";
 import { Taxon } from "@geonature_common/form/taxonomy/taxonomy.component";
+import { FormService } from "@geonature_common/form/form.service";
+import { OcctaxTaxaListService } from "../taxa-list/taxa-list.service";
+import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
+import { MatDialog } from "@angular/material";
 
 @Component({
   selector: "pnx-occtax-form-occurrence",
@@ -51,7 +55,10 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
 
   constructor(
     public fs: OcctaxFormService,
-    private occtaxFormOccurrenceService: OcctaxFormOccurrenceService
+    private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
+    private _coreFormService: FormService,
+    private _occtaxTaxaListService: OcctaxTaxaListService,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -99,7 +106,10 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   }
 
   initTaxrefSearch() {
-    this.taxonForm = new FormControl(null, Validators.required);
+    this.taxonForm = new FormControl(null, [
+      Validators.required,
+      this._coreFormService.taxonValidator,
+    ]);
 
     //attribut le cd_nom au formulaire si un taxon est selectionné
     //gère le taxon en cours pour filtrer les valeurs des differents select
@@ -126,8 +136,31 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe((values: any) => {
-        this.occurrenceForm.get("nom_cite").setValue(values.nom_cite);
-        this.occurrenceForm.get("cd_nom").setValue(values.cd_nom);
+        // check if the taxon is not already in the list
+        const currentTaxaList = this._occtaxTaxaListService.occurrences$.getValue();
+        const alreadyExistingTax = currentTaxaList.find(
+          (tax) => tax.cd_nom === this.taxonForm.value.cd_nom
+        );
+        if (alreadyExistingTax) {
+          const message =
+            "Le taxon saisi est déjà dans la liste des taxon enregistré. Voulez-vous continuez ?";
+          const dialogRef = this.dialog.open(ConfirmationDialog, {
+            width: "auto",
+            position: { top: "5%" },
+            data: { message: message, yesColor: "basic", noColor: "warn" },
+          });
+          dialogRef.afterClosed().subscribe((result) => {
+            if (!result) {
+              this.taxonForm.reset();
+            } else {
+              this.occurrenceForm.get("nom_cite").setValue(values.nom_cite);
+              this.occurrenceForm.get("cd_nom").setValue(values.cd_nom);
+            }
+          });
+        } else {
+          this.occurrenceForm.get("nom_cite").setValue(values.nom_cite);
+          this.occurrenceForm.get("cd_nom").setValue(values.cd_nom);
+        }
       });
 
     this.occtaxFormOccurrenceService.occurrence

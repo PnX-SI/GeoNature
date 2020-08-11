@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy, Input } from "@angular/core";
-import { filter, map } from "rxjs/operators";
+import { filter, map, first } from "rxjs/operators";
 import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
 import { CommonService } from "@geonature_common/service/common.service";
-import { GeoJSON } from "leaflet";
 import { ModuleConfig } from "../../module.config";
 import { OcctaxFormMapService } from "./map.service";
+import { OcctaxFormService } from "../occtax-form.service";
 
 @Component({
   selector: "pnx-occtax-form-map",
@@ -17,10 +17,12 @@ export class OcctaxFormMapComponent implements OnInit, OnDestroy {
 
   public coordinates = null;
   public geometry = null;
+  public firstGeom = true;
 
   constructor(
     private ms: OcctaxFormMapService,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private _occtaxFormService: OcctaxFormService
   ) {}
 
   ngOnInit() {
@@ -32,15 +34,18 @@ export class OcctaxFormMapComponent implements OnInit, OnDestroy {
     leafletDrawOption.draw.polyline = true;
     leafletDrawOption.edit.remove = false;
     this.leafletDrawOptions = leafletDrawOption;
-
+    // set the input for the marker component
+    // set the coord only when load data
+    // after the marker component does it by itself whith the ouput
+    // when modifie the coordinates, it create twice the marker
     this.ms.geojson
       .pipe(
         filter((geojson) => geojson !== null),
-        map((geojson) => geojson.geometry)
+        map((geojson) => geojson.geometry),
+        first()
       )
       .subscribe((geometry) => {
         if (geometry.type == "Point") {
-          // set the input for the marker component
           this.coordinates = geometry.coordinates;
         } else {
           // set the input for leafletdraw component

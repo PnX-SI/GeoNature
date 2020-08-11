@@ -5,6 +5,9 @@
   (click)="formDisabled()">
 </div>
 
+<div>
+  
+</div>
 <div class="row">
   <div class="col-xl-8 col-lg-10">
 
@@ -47,7 +50,7 @@
 
   </div>
 </div>
-
+{{propertiesForm.value |json}}
 
 <div class="row">
   <div class="col-xl-4 col-md-6 col-sm-8 col-11">
@@ -213,21 +216,27 @@
 </div>
 
 <div class="text-center" style="margin-top: 10px;"> 
-  <ng-container *ngIf="!(occtaxFormService.editionMode|async); else modifButton">
+
+  <ng-container >
     <button 
-      class="btn btn-primary"
-      matTooltip="Enregistrer le relevé et saisir les taxons"
-      [disabled]="releveForm.invalid || occtaxFormReleveService.waiting"
-      (click)="submitReleveForm()">
-      <mat-spinner 
-        *ngIf="occtaxFormReleveService.waiting"
-        diameter="25"
-        strokeWidth="2">
-      </mat-spinner>
-      Enregistrer le relevé pour saisir vos observations
+      class="btn btn-danger mr-1"
+      [routerLink]="['/occtax']">
+      Annuler
     </button> 
+  <button 
+    class="btn btn-primary"
+    matTooltip="Enregistrer le relevé et saisir les taxons"
+    [disabled]="releveForm.invalid || occtaxFormReleveService.waiting"
+    (click)="submitReleveForm()">
+    <mat-spinner 
+      *ngIf="occtaxFormReleveService.waiting"
+      diameter="25"
+      strokeWidth="2">
+    </mat-spinner>
+    Suivant
+  </button> 
   </ng-container>
-  <ng-template #modifButton>
+  <!-- <ng-template #modifButton>
     <button 
       class="btn"
       [ngClass]="releveForm.dirty ? 'btn-primary' : 'btn-light'"
@@ -236,5 +245,5 @@
       (click)="submitReleveForm()">
       Modifier
     </button> 
-  </ng-template>
+  </ng-template> -->
 </div>

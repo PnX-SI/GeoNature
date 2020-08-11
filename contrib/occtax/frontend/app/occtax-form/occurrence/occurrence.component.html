@@ -1,5 +1,5 @@
-<h5> Ajout d'une observation </h5>
-<div class="row">
+<h5> Ajout d'un taxon </h5>
+<div class="row" style="height:70px!important">
   <div class="col-sm-6">
     <pnx-taxonomy 
       label="{{ 'Taxon.NomCite' | translate }}" 
@@ -25,7 +25,7 @@
     </small>
   </div>
   <div *ngIf="occtaxConfig.form_fields.display_nom_valide"
-    class="col-sm-6 align-self-end">
+    class="col-sm-6">
     <small> TAXREF - Nom valide </small>
     <span 
       class="form-control form-control-sm form-nom-complet" 
@@ -343,14 +343,16 @@
 
 
 <div class="text-center" style="margin-top: 10px;"> 
-  <button 
-  
-      class="btn btn-light"
-      matTooltip="Annuler la saisie"
+  <!-- <button 
+      class="btn btn-danger"
+      matTooltip="Raffraichir"
       style="margin-right: 10px;"
       (click)="resetOccurrenceForm()">
-      Annuler
-    </button> 
+      <mat-icon
+        style="vertical-align: middle;"> 
+        refresh 
+    </mat-icon>
+  </button>  -->
   <ng-container *ngIf="!(occtaxFormOccurrenceService.occurrence|async); else modifButton">
     <button 
       id="add-occ"
@@ -363,7 +365,9 @@
         diameter="25"
         strokeWidth="2">
       </mat-spinner>
-      Ajouter cette observation au relevé
+      
+      Ajouter ce taxon au relevé 
+      <mat-icon style="vertical-align: middle;" > add_circle</mat-icon>
     </button> 
   </ng-container>
   <ng-template #modifButton>

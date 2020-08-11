@@ -23,6 +23,7 @@ export class OcctaxFormReleveService {
   public releve: any;
   public geojson: GeoJSON;
   public releveForm: FormGroup;
+  public formReady = false;
 
   public waiting: boolean = false;
   public route: ActivatedRoute;
@@ -113,6 +114,8 @@ export class OcctaxFormReleveService {
 
     //on desactive le form, il sera réactivé si la geom est ok
     this.propertiesForm.disable();
+
+    this.formReady = true;
   }
 
   /**
@@ -138,7 +141,11 @@ export class OcctaxFormReleveService {
           return editionMode ? this.releveValues : this.defaultValues;
         })
       )
-      .subscribe((values) => this.propertiesForm.patchValue(values)); //filter((editionMode: boolean) => !editionMode))
+      .subscribe((values) => {
+        console.log(values);
+
+        this.propertiesForm.patchValue(values);
+      }); //filter((editionMode: boolean) => !editionMode))
 
     //Observation de la geometry pour récupere les info d'altitudes
     this.occtaxFormMapService.geojson
@@ -203,6 +210,19 @@ export class OcctaxFormReleveService {
     );
   }
 
+  private defaultDateWithToday() {
+    if (!ModuleConfig.DATE_FORM_WITH_TODAY) {
+      return null;
+    } else {
+      const today = new Date();
+      return {
+        year: today.getFullYear(),
+        month: today.getMonth() + 1,
+        day: today.getDate(),
+      };
+    }
+  }
+
   private get defaultValues(): Observable<any> {
     return this.occtaxFormService
       .getDefaultValues(this.occtaxFormService.currentUser.id_organisme)
@@ -210,7 +230,9 @@ export class OcctaxFormReleveService {
         map((data) => {
           return {
             id_dataset: this.occtaxParamS.get("releve.id_dataset"),
-            date_min: this.occtaxParamS.get("releve.date_min"),
+            date_min:
+              this.occtaxParamS.get("releve.date_min") ||
+              this.defaultDateWithToday(),
             date_max: this.occtaxParamS.get("releve.date_max"),
             hour_min: this.occtaxParamS.get("releve.hour_min"),
             hour_max: this.occtaxParamS.get("releve.hour_max"),
@@ -285,6 +307,9 @@ export class OcctaxFormReleveService {
             );
             this.occtaxFormService.replaceReleveData(data);
             this.releveForm.markAsPristine();
+            this.router.navigate(["taxons"], {
+              relativeTo: this.route,
+            });
           },
           (err) => {
             this.waiting = false;
