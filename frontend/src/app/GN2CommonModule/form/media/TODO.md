@@ -33,13 +33,13 @@
 
 # Media
 - service:
-  - cache pour idTableLocation
+  - cache pour idTableLocation !! impt
 - prendre en compte les type media, adapter le formulaire (condition+++++)
 - ~~passer bouttons etc dans media.component~~
 - cohérence avec OccTax
   - croix à droite
   - mat-expension-panel
-  - valider quand upload à faire et freezer le reste ???
+  - valider quand upload à faire et freezer le reste ??? upload au choix du fichier (non bloquant et possibilité annulation)
 - 
 
 ## Test Media

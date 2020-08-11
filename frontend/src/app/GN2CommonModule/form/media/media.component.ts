@@ -32,9 +32,6 @@ export class MediaComponent implements OnInit {
   @Input() schemaDotTable: string;
   @Input() uuidAttachedRow: string;
 
-  @Input() bEdit: boolean;
-  @Output() bEditChange = new EventEmitter<boolean>();
-
   @Input() bFreeze: boolean;
   @Output() bFreezeChange = new EventEmitter<boolean>();
 
@@ -72,7 +69,6 @@ export class MediaComponent implements OnInit {
   emitChanges() {
     this.bFreezeChange.emit(this.bFreeze);
     this.bLoadingChange.emit(this.bLoading);
-    this.bEditChange.emit(this.bEdit);
     this.validMediaChange.emit(this.mediaForm.valid);
   }
 
@@ -113,19 +109,16 @@ export class MediaComponent implements OnInit {
 
   editMedia() {
     this.mediaSave = new Media(this.media)
-    this.bEdit = true;
     this.bFreeze = true;
     this.emitAction('edit');
   }
 
   deleteMedia() {
-    this.bEdit = false;
     this.bFreeze = false;
     this.emitAction('delete')
   }
 
   validMedia() {
-    this.bEdit = false;
     this.bFreeze = false;
     this.bLoading = true;
     this._mediaService

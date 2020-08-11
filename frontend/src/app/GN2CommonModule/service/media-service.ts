@@ -21,6 +21,8 @@ import { AppConfig } from '@geonature_config/app.config';
 @Injectable()
 export class MediaService {
 
+  idTableLocations: {};
+
   constructor(private _http: HttpClient) { }
 
   postMedia(file: File, media): Observable<HttpEvent<any>> {
@@ -47,7 +49,17 @@ export class MediaService {
   }
 
   getIdTableLocation(schemaDotTable): Observable<number> {
-    return this._http
+    let idTableLocation = this.idTableLocations[schemaDotTable];
+    if (idTableLocation) {
+      return of(idTableLocation)
+    } else {
+      return this._http
       .get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/get_id_table_location/${schemaDotTable}`)
+      .pipe()
+      .switchMap((idTableLocation) => {
+        this.idTableLocations[schemaDotTable] = idTableLocation;
+        return of(idTableLocation)
+      })
+    }
   }
 }
