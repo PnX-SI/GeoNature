@@ -164,6 +164,15 @@ class TMediaRepository():
         media = DB.session.query(TMedias).get(id_media)
         return media
 
+    def sync_medias(self):
+        '''
+            Met à jour les médias
+              - supprime les médias sans uuid_attached_row plus vieux que 24h
+              - supprimes les médias dont l'object attaché n'existe plus 
+        '''
+
+        
+
 
 class TMediumRepository():
     '''

@@ -342,7 +342,9 @@ CREATE TABLE t_medias
   description_it text,
   description_es text,
   description_de text,
-  is_public boolean NOT NULL DEFAULT true
+  is_public boolean NOT NULL DEFAULT true,
+  meta_create_date timestamp without time zone DEFAULT now(),
+  meta_update_date timestamp without time zone DEFAULT now()
 );
 COMMENT ON COLUMN t_medias.id_nomenclature_media_type IS 'Correspondance nomenclature GEONATURE = TYPE_MEDIA (117)';
 
@@ -355,6 +357,12 @@ CREATE SEQUENCE t_medias_id_media_seq
 ALTER SEQUENCE t_medias_id_media_seq OWNED BY t_medias.id_media;
 ALTER TABLE ONLY t_medias ALTER COLUMN id_media SET DEFAULT nextval('t_medias_id_media_seq'::regclass);
 SELECT pg_catalog.setval('t_medias_id_media_seq', 1, false);
+
+CREATE TRIGGER tri_meta_dates_change_t_medias
+  BEFORE INSERT OR UPDATE
+  ON t_medias
+  FOR EACH ROW
+  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
 
 CREATE TABLE t_validations

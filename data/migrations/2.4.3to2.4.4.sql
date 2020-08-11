@@ -76,3 +76,15 @@ SELECT  s.id_synthese,
   WHERE d.validable = true AND NOT s.unique_id_sinp IS NULL;
 
 COMMENT ON VIEW gn_commons.v_synthese_validation_forwebapp  IS 'Vue utilisée pour le module validation. Prend l''id_nomenclature dans la table synthese ainsi que toutes les colonnes de la synthese pour les filtres. On JOIN sur la vue latest_validation pour voir si la validation est auto';
+
+
+-- add date on medias
+
+ALTER TABLE gn_commons.t_medias ADD COLUMN meta_create_date timestamp without time zone DEFAULT now();
+ALTER TABLE gn_commons.t_medias ADD COLUMN   meta_update_date timestamp without time zone DEFAULT now();
+
+CREATE TRIGGER tri_meta_dates_change_t_medias
+  BEFORE INSERT OR UPDATE
+  ON gn_commons.t_medias
+  FOR EACH ROW
+  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();

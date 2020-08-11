@@ -18,10 +18,18 @@
 - *repo / routes PATCH POST (compatibilité chiro????) ???*
 - cohérence url / path type de media
 - sync media temp (supprimer si media temp > 24h)
-- sync medias (si objet associé n'existe plus => suppimer le media)
+- sync medias (si objet associé n'existe plus => supprimer le media)
+- si fichier associé n'est plus présent -> supprimer le media
 - sync medias qui fait les deux ?
-- ~~route pour creer/modifier supprimer medias temporaire (dans repo)~~
-- faire une fonction pour gerer media temp / media (sync)
+  - SQL
+    - ~~ajouter la date pour les medias~~
+    - ~~ajouter trigger sur la date~~
+    - fonction test UUID
+    - requete pour savoir si UUID existe plus
+    - delete
+    - trigger sur toute action sur les médias ??? 
+- requete (sql text pour l'instant) pour avoir la liste de medias (dans les deux cas)
+- delete a partir de cette liste  
 
 # Table location
 - ~~route pour obtenir id_table_location depuis shema_name.table_name~~
