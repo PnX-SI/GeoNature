@@ -91,7 +91,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
         )).offsetHeight
       : 0;
 
-    let height = wH - (tbH + nbH + 40);
+    let height = wH - (tbH + nbH + 70);
     this.cardContentHeight = height >= 350 ? height : 350;
     // resize map after resize container
     if (this._mapService.map) {

@@ -14,6 +14,19 @@
 
 #saved-obs {
   border-left: solid 1px #0000003b;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-bottom: 45px;
+}
+
+.btn-releve {
+  position: absolute;
+  left: 75%;
+  margin-top: -35px;
+}
+
+#btn-cancel {
+  margin-right: 10px;
 }
 
 /* Style the tab */
