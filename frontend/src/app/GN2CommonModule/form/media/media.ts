@@ -11,6 +11,8 @@ class Media {
   public media_url: string;
   public media_path: string;
   public id_nomenclature_media_type: number;
+  public bLoading: boolean=false;
+  public uploadPercentDone:number = 0;
 
   constructor(values = {}) {
     this.setValues(values)
@@ -22,10 +24,18 @@ class Media {
     }
   }
 
-  href() {
+  href(): string {
     return this.media_path
       ? `${AppConfig.API_ENDPOINT}/${this.media_path}`
       : this.media_url
+  }
+
+  valid(): boolean {
+    return !!(this.title_fr && this.description_fr && this.href());
+  }
+
+  readyForUpload(): boolean {
+    return !!(this.title_fr && this.description_fr && !this.bLoading)
   }
 
 }

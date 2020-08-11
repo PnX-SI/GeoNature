@@ -4,29 +4,47 @@
   padding-left: 0px !important;
 }
 
-.media-list {
-  display: flex;
-  margin-bottom: 5px;
-}
-
-.media {
-  margin-bottom: 5px;
-}
-
-.side-btns {
-  margin-left: 10px;
-}
-
-
-.side-btns > button {
-  margin-right: 2px;
-}
-
-.add-btn {
-  margin-bottom: 5px;
-}
-
-
 .test-medias {
   margin: 20px
+}
+
+.blc-expansion-panel {
+	position: relative;
+}
+
+.link-media {
+	position: absolute;
+	top: 10px;
+	right: 3px;
+}
+
+.btn-clear {
+	position: absolute;
+	color: #d40303;
+}
+
+.btn-upload {
+  color: orange;
+}
+
+.valid {
+  color: green
+}
+
+.not-valid {
+	color: orange;
+
+}
+
+.loading {
+  color: orange;
+}
+
+.mat-expansion-panel {
+	margin-left: 45px !important;
+	margin-right: 50px !important;
+}
+
+.mat-accordeon {
+  position: relative;
 }

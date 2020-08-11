@@ -14,11 +14,24 @@ export class MediasTestComponent implements OnInit {
   medias: Array<Media> = [];
   bValidForms: boolean = true;
   schemaDotTable:string = 'pr_occtax.t_occurrences_occtax';
-  uuidAttachedRow: string;
 
   constructor(private _route: ActivatedRoute,) {}
 
   ngOnInit() {
+    this.medias=[
+      new Media({
+        "bLoading": false,
+        "uploadPercentDone": 0,
+        "id_table_location": 5,
+        "id_media": null,
+        "title_fr": "zer",
+        "description_fr": "zer",
+        "uuid_attached_row": null,
+        "media_url": null,
+        "media_path": null,
+        "id_nomenclature_media_type": 471,
+      })
+    ]
   }
 
   onValidFormsChange(event) {

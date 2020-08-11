@@ -14,8 +14,9 @@ import { HttpEventType, HttpResponse } from '@angular/common/http';
 })
 export class MediaComponent implements OnInit {
 
-  public mediaFormDefinition = [];
   public mediaForm: FormGroup;
+
+  public mediaFormDefinition = [];
 
   public mediaFormChange: Subscription = null;
 
@@ -25,25 +26,14 @@ export class MediaComponent implements OnInit {
   public mediaFormInitialized;
   public watchChangeForm: boolean = true;
 
-  public uploadPercentDone: number;
-
   public idTableLocation: number;
 
   @Input() schemaDotTable: string;
-  @Input() uuidAttachedRow: string;
-
-  @Input() bFreeze: boolean;
-  @Output() bFreezeChange = new EventEmitter<boolean>();
-
-  @Input() bLoading: boolean;
-  @Output() bLoadingChange = new EventEmitter<boolean>();
 
   @Input() media: Media;
-  @Output() MediaChange = new EventEmitter<boolean>();
+  @Output() mediaChange = new EventEmitter<Media>();
 
   @Output() validMediaChange = new EventEmitter<boolean>();
-
-  @Output() actionProcessed = new EventEmitter<boolean>();
 
   constructor(
     private _formBuilder: FormBuilder,
@@ -66,37 +56,42 @@ export class MediaComponent implements OnInit {
 
   }
 
-  emitChanges() {
-    this.bFreezeChange.emit(this.bFreeze);
-    this.bLoadingChange.emit(this.bLoading);
-    this.validMediaChange.emit(this.mediaForm.valid);
-  }
-
   initForm() {
     this.mediaFormInitialized = false;
+
+    this.mediaFormDefinition = Object.keys(mediaFormDefinitionsDict)
+    .map((key) => ({ ...mediaFormDefinitionsDict[key], attribut_name: key }))
 
     if (this.mediaFormChange) {
       this.mediaFormChange.unsubscribe()
     }
 
-    this.mediaFormDefinition = Object.keys(mediaFormDefinitionsDict).map((key) => ({ ...mediaFormDefinitionsDict[key], attribut_name: key }))
-
-    if(! this.mediaForm) {
+    if (!this.mediaForm) {
       this.mediaForm = this._formBuilder.group({});
     }
 
     if (this.media) {
       this.media.id_table_location = this.media.id_table_location || this.idTableLocation;
-      this.media.uuid_attached_row = this.media.uuid_attached_row || this.uuidAttachedRow;
       this.mediaForm.patchValue(this.media);
     }
 
     this.mediaFormChange = this.mediaForm.valueChanges.subscribe((values) => {
+
       if (Object.keys(this.mediaFormDefinition).length == Object.keys(this.mediaForm.value).length && this.watchChangeForm) {
 
         if (this.mediaFormInitialized) {
           this.media.setValues(values);
-          this.emitChanges();
+          if (values.file && (values.media_path || values.media_url)) {
+            this.mediaForm.patchValue({
+              media_path: null,
+              media_url: null,
+            });
+            this.media.setValues({
+              media_path: null,
+              media_url: null,
+            })
+          }
+          this.mediaChange.emit(this.media);
         } else {
           this.watchChangeForm = false;
           this.mediaForm.patchValue(this.media);
@@ -107,48 +102,23 @@ export class MediaComponent implements OnInit {
     })
   }
 
-  editMedia() {
-    this.mediaSave = new Media(this.media)
-    this.bFreeze = true;
-    this.emitAction('edit');
-  }
-
-  deleteMedia() {
-    this.bFreeze = false;
-    this.emitAction('delete')
-  }
-
-  validMedia() {
-    this.bFreeze = false;
-    this.bLoading = true;
+  uploadMedia() {
+    this.media.bLoading = true;
     this._mediaService
       .postMedia(this.mediaForm.value.file, this.media)
       .subscribe(
         (event) => {
           if (event.type == HttpEventType.UploadProgress) {
-            this.uploadPercentDone = Math.round(100 * event.loaded / event.total);
+            this.media.uploadPercentDone = Math.round(100 * event.loaded / event.total);
+            this.mediaChange.emit(this.media);
           } else if (event instanceof HttpResponse) {
             this.media.setValues(event.body);
-            this.mediaForm.patchValue(this.media);
-            this.bLoading = false;
-            this.mediaForm.patchValue({ file: null });
-            this.emitAction('valid');
+            this.mediaForm.patchValue({ ...this.media, file: null });
+            this.media.bLoading = false;
+            this.mediaChange.emit(this.media);
           }
         },
         (err) => { console.log('Error on upload', err) });
-  }
-
-  cancelMedia() {
-    this.media.setValues(this.mediaSave)
-    this.mediaForm.patchValue(this.media);
-    this.bFreeze = false;
-    this.bEdit = false;
-    this.emitAction('cancel')
-  }
-
-  emitAction(actionType) {
-    this.emitChanges()
-    this.actionProcessed.emit(actionType);
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -157,7 +127,7 @@ export class MediaComponent implements OnInit {
       let cur = JSON.stringify(chng.currentValue);
       let prev = JSON.stringify(chng.previousValue);
 
-      if (['media', 'bEdit', 'idTableLocation', 'uuidAttachedRow'].includes(propName)) {
+      if (['media'].includes(propName)) {
         this.initForm();
       }
 

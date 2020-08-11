@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation, SimpleChanges } from '@angular/core';
 import { Media } from './media';
+import { MediaService } from '@geonature_common/service/media-service'
 
 @Component({
   selector: 'pnx-medias',
@@ -8,79 +9,54 @@ import { Media } from './media';
 })
 export class MediasComponent implements OnInit {
 
-  public bFreeze: boolean = false;
-  public bEditMedias: Array<boolean> = [];
-  public bValidMedias: Array<boolean> = [];
-  public mediaSave: Media;
-  public bLoading:boolean = false;
 
   @Input() medias: Array<Media> = []; /** list of medias */
   @Output() mediasChange = new EventEmitter<Array<Media>>();
 
   @Input() schemaDotTable: string;
-  @Input() uuidAttachedRow: string;
 
   @Output() validFormsChange = new EventEmitter<boolean>();
 
+  constructor(
+    private _mediaService: MediaService
+  ) { }
 
   ngOnInit() {
     this.initMedias()
   };
 
-  onActionProcessed(event, index) {
-    switch (event) {
-      case 'delete':
-        this.deleteMedia(index);
-        break;
-
-      default:
-        break;
-    }
-    this.emitChanges()
-  }
-
   emitChanges() {
     this.mediasChange.emit(this.medias)
-    this.emitFormsChange();
+    this.validFormsChange.emit(this.valid())
   }
+
+  valid() {
+    // renvoie si tous les médias sont valides et on fini de charger
+    return this.medias.every((media) => media.valid() && !media.bLoading)
+  }
+
 
   initMedias() {
-    this.medias=this.medias.map(media => new Media(media))
-    this.bEditMedias = this.medias.map(() => false);
-    this.bValidMedias = this.medias.map(() => true);
-  }
-
-  onValidMediaChange(event, index) {
-    this.bValidMedias[index] = event
-    this.emitChanges();
-  }
-
-  emitFormsChange() {
-    this.validFormsChange.emit(this.bValidMedias.every(v => v) && this.bEditMedias.every(v => !v))
+    for (const index in this.medias) {
+      if (!(this.medias[index] instanceof Media)) {
+        this.medias[index] = new Media(this.medias[index]);
+      }
+    }
   }
 
   addMedia() {
     this.medias.push(new Media());
-    this.bEditMedias.push(true);
-    this.bValidMedias.push(false);
-    this.bFreeze = true;
     this.emitChanges()
   }
 
   deleteMedia(index) {
-    this.medias.splice(index, 1);
-    this.bEditMedias.splice(index, 1);
-    this.bValidMedias.splice(index, 1);
-    this.bFreeze = false;
-    this.emitChanges()
-  }
-
-  cancelMedia(index) {
-    this.emitChanges()
-  }
-
-  editMedia(index) {
-    this.emitChanges()
+    const media = this.medias.splice(index, 1)[0];
+    this.emitChanges();
+    if(media.id_media) {
+      this._mediaService.deleteMedia(media.id_media).subscribe((response) => {
+        console.log(`delete media ${media.id_media}: ${response}`)
+      });
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {

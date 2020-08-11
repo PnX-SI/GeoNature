@@ -1,44 +1,58 @@
 <div>
-  <div>
-<mat-accordion [multi]="true">
-
-    <div *ngFor="let media of medias; let i = index">
-      <button
-      mat-icon-button
-      class="btn-clear d-none"
-      (click)="deleteMedia(i)">
-      <mat-icon matTooltip="Supprimer ce media">clear</mat-icon>
-    </button>
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          {{media.title_fr}}
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-
-      <pnx-media
-        [(media)]="media"
-        [(bEdit)]="bEditMedias[i]"
-        [(bFreeze)]="bFreeze"
-        [(bLoading)]="bLoading"
-        (validMediaChange)="onValidMediaChange($event, i)"
-        (actionProcessed)="onActionProcessed($event)"
-        [schemaDotTable]="schemaDotTable"
-        [uuidAttachedRow]="uuidAttachedRow"
+  <div class="mat-accordeon">
+    <mat-accordion>
+      <div
+        *ngFor="let media of medias; let i = index"
+        class="blc-expansion-panel"
+        selector=".btn-clear"
       >
-      </pnx-media>
-      </mat-expansion-panel>
-    </div>
-    </mat-accordion>
-  </div>
-  <div class="add-btn">
+        <button mat-icon-button class="btn-clear" (click)="deleteMedia(i)">
+          <mat-icon matTooltip="Supprimer ce media">clear</mat-icon>
+        </button>
+        <mat-expansion-panel [expanded]="medias.length === i + 1">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <div style='display:block; width:100%'>
+                <div>
+                  <mat-icon
+                    *ngIf="!media.valid() && !media.bLoading"
+                    [matTooltip]="'Veuillez compléter le formulaire.'"
+                    class="not-valid"
+                    >error</mat-icon
+                  >
+                  <mat-icon
+                    *ngIf="media.valid() && !media.bLoading"
+                    matTooltip="Le media est valide"
+                    class="valid"
+                    >check</mat-icon
+                  >
+                  <mat-icon
+                    *ngIf="media.bLoading"
+                    matTooltip="Upload en cours"
+                    class="loading"
+                    >hourglass_top</mat-icon
+                  >
 
+                  {{ media.title_fr }}
+                </div>
+                <div>
+                  <mat-progress-bar *ngIf="media.bLoading" mode="determinate" [value]="media.uploadPercentDone"></mat-progress-bar>
+                </div>
+              </div>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <pnx-media [(media)]="media" [schemaDotTable]="schemaDotTable"> </pnx-media>
+        </mat-expansion-panel>
+        <a *ngIf="media.href()" target="_blank" class="link-media" [href]="media.href()"
+          ><mat-icon matTooltip="Lien vers le média">link</mat-icon></a
+        >
+      </div>
+    </mat-accordion>
     <button
       mat-mini-fab
       color="primary"
       class="btn-add-media"
       id="add-media-btn"
-      [disabled]="bFreeze || bLoading"
       (click)="addMedia()"
     >
       <mat-icon matTooltip="{{ 'Media.add' | translate }}">add</mat-icon>
