@@ -30,7 +30,7 @@
                     >hourglass_top</mat-icon
                   >
 
-                  {{ media.title_fr }}
+                  <b>{{ media.title_fr }}</b>
                 </div>
                 <div>
                   <mat-progress-bar
@@ -42,7 +42,12 @@
               </div>
             </mat-panel-title>
           </mat-expansion-panel-header>
-          <pnx-media [(media)]="media" [schemaDotTable]="schemaDotTable"> </pnx-media>
+          <pnx-media
+            [(media)]="media"
+            (mediaChange)="onMediaChange()"
+            [schemaDotTable]="schemaDotTable"
+          >
+          </pnx-media>
         </mat-expansion-panel>
         <a *ngIf="media.href()" target="_blank" class="link-media" [href]="media.href()"
           ><mat-icon matTooltip="Lien vers le média">link</mat-icon></a

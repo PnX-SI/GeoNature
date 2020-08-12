@@ -116,7 +116,7 @@ export class MediaComponent implements OnInit {
             });
           }
 
-
+          this.mediaChange.emit(this.media);
           this.watchChangeForm = true;
         } else {
           // init forms
@@ -146,7 +146,7 @@ export class MediaComponent implements OnInit {
             this.media.setValues(event.body);
             this.mediaForm.patchValue({ ...this.media, file: null });
             this.media.bLoading = false;
-            // this.mediaChange.emit(this.media);
+            this.mediaChange.emit(this.media);
             this.media.pendingRequest = null;
           }
         },

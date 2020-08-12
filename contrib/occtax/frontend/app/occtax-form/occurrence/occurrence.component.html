@@ -78,7 +78,6 @@
     <i class="fa fa-cog" aria-hidden="true"></i>
     {{ 'Taxon.Advanced' | translate }}
   </button>
-
 </div>
 
 <div [@detailExpand]='advanced'>
@@ -260,7 +259,7 @@
     </textarea>
   </div>
 </div>
-     
+
   
 <h5 style="margin-top: 15px;">
   <span [matBadge]="countingControls.length" matBadgeOverlap="false">
@@ -326,9 +325,7 @@
     <span [matBadge]="(occurrenceForm.value.medias || []).length" matBadgeOverlap="false">
       {{'Media.Medias' |translate}}
     </span>
-    {{service}}
   </h5>
-
 
   <pnx-medias
     schemaDotTable="pr_occtax.t_occurrences_occtax"

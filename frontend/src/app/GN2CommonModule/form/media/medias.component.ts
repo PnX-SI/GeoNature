@@ -15,8 +15,6 @@ export class MediasComponent implements OnInit {
 
   @Input() schemaDotTable: string;
 
-  @Output() validFormsChange = new EventEmitter<boolean>();
-
   constructor(
     private _mediaService: MediaService
   ) { }
@@ -24,16 +22,6 @@ export class MediasComponent implements OnInit {
   ngOnInit() {
     this.initMedias()
   };
-
-  emitChanges() {
-    this.mediasChange.emit(this.medias)
-    this.validFormsChange.emit(this.valid())
-  }
-
-  valid() {
-    // renvoie si tous les médias sont valides et on fini de charger
-    return this.medias.every((media) => media.valid() && !media.bLoading)
-  }
 
 
   initMedias() {
@@ -44,9 +32,13 @@ export class MediasComponent implements OnInit {
     }
   }
 
+  onMediaChange() {
+    this.mediasChange.emit(this.medias)
+  }
+
   addMedia() {
     this.medias.push(new Media());
-    this.emitChanges()
+    this.mediasChange.emit(this.medias)
   }
 
   deleteMedia(index) {
@@ -64,7 +56,8 @@ export class MediasComponent implements OnInit {
         console.log(`delete media ${media.id_media}: ${response}`)
       });
     }
-    this.emitChanges();
+    this.mediasChange.emit(this.medias)
+
   }
 
   ngOnChanges(changes: SimpleChanges) {
