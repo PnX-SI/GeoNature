@@ -45,6 +45,7 @@ export class MediaService {
       reportProgress: true,
       responseType: 'json',
     });
+    const id_request = String(Math.random())
     return this._http.request(req);
   }
 

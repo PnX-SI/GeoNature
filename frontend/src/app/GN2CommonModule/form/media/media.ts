@@ -1,7 +1,9 @@
+import { Subscription } from 'rxjs';
 import { AppConfig } from '@geonature_config/app.config';
 
 class Media {
 
+  // media data
   public id_media: number;
   public id_table_location: number;
   public uuid_attached_row: string;
@@ -11,8 +13,10 @@ class Media {
   public media_url: string;
   public media_path: string;
   public id_nomenclature_media_type: number;
+
   public bLoading: boolean=false;
   public uploadPercentDone:number = 0;
+  public pendingRequest: Subscription; // pour pouvoir couper l'upload si on supprime le media pendant l'upload
 
   constructor(values = {}) {
     this.setValues(values)

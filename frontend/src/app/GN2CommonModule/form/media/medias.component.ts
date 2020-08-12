@@ -51,12 +51,22 @@ export class MediasComponent implements OnInit {
 
   deleteMedia(index) {
     const media = this.medias.splice(index, 1)[0];
-    this.emitChanges();
+
+    // si l upload est en cours
+    console.log(media.pendingRequest)
+    if(media.pendingRequest) {
+      console.log("mediaPendingRequest")
+      media.pendingRequest.unsubscribe()
+      media.pendingRequest = null;
+    }
+
+    // si le media existe déjà en base => route DELETE
     if(media.id_media) {
       this._mediaService.deleteMedia(media.id_media).subscribe((response) => {
         console.log(`delete media ${media.id_media}: ${response}`)
       });
     }
+    this.emitChanges();
   }
 
   ngOnChanges(changes: SimpleChanges) {

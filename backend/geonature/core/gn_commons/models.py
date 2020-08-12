@@ -97,6 +97,8 @@ class TMedias(DB.Model):
     description_es = DB.Column(DB.Unicode)
     description_de = DB.Column(DB.Unicode)
     is_public = DB.Column(DB.Boolean, default=True)
+    meta_create_date = DB.Column(DB.DateTime)
+    meta_update_date = DB.Column(DB.DateTime)
 
 
 @serializable

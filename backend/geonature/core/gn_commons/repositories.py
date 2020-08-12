@@ -7,6 +7,7 @@ from geonature.core.gn_commons.file_manager import (
     rename_file
 )
 
+import datetime
 
 class TMediaRepository():
     '''
@@ -20,11 +21,9 @@ class TMediaRepository():
     media = None
     new = False
 
-    def __init__(self, data=None, file=None, id_media=None, temp=False):
+    def __init__(self, data=None, file=None, id_media=None):
         self.data = data or {}
-
-        # choix du modele sqla (temporaire ou non)
-
+    
         # filtrer les données du dict qui
         # vont être insérées dans l'objet Model
         self.media_data = {
@@ -164,14 +163,7 @@ class TMediaRepository():
         media = DB.session.query(TMedias).get(id_media)
         return media
 
-    def sync_medias(self):
-        '''
-            Met à jour les médias
-              - supprime les médias sans uuid_attached_row plus vieux que 24h
-              - supprimes les médias dont l'object attaché n'existe plus 
-        '''
-
-        
+    
 
 
 class TMediumRepository():
@@ -189,6 +181,28 @@ class TMediumRepository():
             TMedias.uuid_attached_row == entity_uuid
         ).all()
         return medium
+    
+    def sync_medias():
+        '''
+            Met à jour les médias
+              - supprime les médias sans uuid_attached_row plus vieux que 24h
+              - supprimes les médias dont l'object attaché n'existe plus 
+        '''
+
+
+        # delete media temp > 24h
+        res_medias_temp = (
+            DB.session.query(TMedias.id_media)
+            .filter(
+                TMedias.meta_update_date < (datetime.datetime.now() - datetime.timedelta(hours=24))
+            )
+            .all()
+        )
+
+        id_medias_temp = [ res.id_media for res in res_medias_temp]
+
+        for id_media in id_medias_temp:
+            TMediaRepository(id_media=id_media).delete()
 
 
 def get_table_location_id(schema_name, table_name):

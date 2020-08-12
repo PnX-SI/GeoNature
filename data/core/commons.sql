@@ -67,6 +67,31 @@ $BODY$
 --USAGE
 --SELECT gn_commons.check_entity_value_exist('pr_occtax.t_releves_occtax.id_releve_occtax', 2);
 
+
+CREATE OR REPLACE FUNCTION gn_commons.check_entity_uuid_exist(myentity character varying, myvalue uuid)
+  RETURNS boolean AS
+$BODY$
+--Function that allows to check if a uuid exists in the field of a table type.
+--USAGE : SELECT gn_commons.check_entity_uuid_exist('schema.table.field', uuid);
+  DECLARE
+    entity_array character varying(255)[];
+    r record;
+    _row_ct integer;
+  BEGIN
+
+
+    entity_array = string_to_array(myentity,'.');
+    EXECUTE 'SELECT '||entity_array[3]|| ' FROM '||entity_array[1]||'.'||entity_array[2]||' WHERE '||entity_array[3]||'=''' ||myvalue || '''' INTO r;
+    GET DIAGNOSTICS _row_ct = ROW_COUNT;
+      IF _row_ct > 0 THEN
+        RETURN true;
+      END IF;
+    RETURN false;
+  END;
+$BODY$
+  LANGUAGE plpgsql IMMUTABLE
+  COST 100;
+
 CREATE OR REPLACE FUNCTION get_table_location_id(myschema text, mytable text)
   RETURNS integer AS
 $BODY$

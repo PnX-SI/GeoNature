@@ -7,7 +7,7 @@ import json
 from flask import Blueprint, request, current_app
 import requests
 
-from geonature.core.gn_commons.repositories import TMediaRepository
+from geonature.core.gn_commons.repositories import TMediaRepository, TMediumRepository
 from geonature.core.gn_commons.repositories import get_table_location_id
 from geonature.core.gn_commons.models import TModules, TParameters, TMobileApps
 from geonature.utils.env import DB, BACKEND_DIR
@@ -111,6 +111,9 @@ def insert_or_update_media(id_media=None):
     m = TMediaRepository(
         data=data, file=file, id_media=id_media
     ).create_or_update_media()
+
+    TMediumRepository.sync_medias()
+
     return m.as_dict()
 
 
@@ -123,7 +126,11 @@ def delete_media(id_media):
         .. :quickref: Commons;
     """
 
+
     TMediaRepository(id_media=id_media).delete()
+
+    TMediumRepository.sync_medias()
+
     return {"resp": "media {} deleted".format(id_media)}
 
 

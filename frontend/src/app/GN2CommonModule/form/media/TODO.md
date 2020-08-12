@@ -52,7 +52,8 @@
   - ~~croix à droite~~
   - ~~mat-expension-panel~~
   - ~~valider quand upload à faire et freezer le reste ??? upload au choix du fichier (non bloquant et possibilité annulation)~~ 
-
+-form dynamique:
+  - value de bFile (changer si media à une url)
 ## Test Media
 
 ### ~~Medias temps~~

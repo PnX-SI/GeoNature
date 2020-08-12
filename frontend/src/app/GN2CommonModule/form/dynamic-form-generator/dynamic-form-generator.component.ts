@@ -50,14 +50,20 @@ export class GenericFormGeneratorComponent implements OnInit {
   }
 
   formsDisplayed() {
-    const formsDisplayed = this.formsSelected.filter(formDef => typeof formDef.hidden == 'function' ? !formDef.hidden({value: this.myFormGroup.value}) : !formDef.hidden);
-    console.log('d', formsDisplayed.map(a => a.attribut_name))
+    const formsDisplayed = this.formsSelected
+      .filter(formDef => typeof formDef.hidden == 'function'
+        ? !formDef.hidden({value: this.myFormGroup.value})
+        : !formDef.hidden
+      );
     return formsDisplayed;
   }
 
   formsHidden() {
-    const formsHidden = this.formsSelected.filter(formDef => typeof formDef.hidden == 'function' ? formDef.hidden({value: this.myFormGroup.value}) : formDef.hidden);
-    console.log('bb', formsHidden.map(a => a.attribut_name));
+    const formsHidden = this.formsSelected
+      .filter(formDef => typeof formDef.hidden == 'function'
+        ? formDef.hidden({value: this.myFormGroup.value})
+          : formDef.hidden
+        );
     return formsHidden;
   }
 

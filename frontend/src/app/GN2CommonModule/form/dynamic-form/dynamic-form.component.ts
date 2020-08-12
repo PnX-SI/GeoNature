@@ -23,9 +23,6 @@ export class DynamicFormComponent implements OnInit {
         ? this.formDef[key]({ value: this.form.value })
         : this.formDef[key]
     }
-    if(formDefComp.hidden) {
-      console.log(formDefComp.attribut_name, formDefComp.hidden)
-    }
     this._dynformService.setControl(this.form.controls[this.formDef.attribut_name], formDefComp)
     return formDefComp;
   }
