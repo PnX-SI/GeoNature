@@ -1,8 +1,7 @@
 import { distinctUntilChanged } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { FormControl, FormGroup, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 import { arrayMinLengthValidator, isObjectValidator } from '@geonature/services/validators/validators';
-
 @Injectable()
 export class DynamicFormService {
 
@@ -33,6 +32,13 @@ export class DynamicFormService {
       }
       if (formDef.max_length && formDef.max_length > 0) {
         validators.push(Validators.maxLength(formDef.max_length));
+      }
+
+      // contraintes pour file
+      if(formDef.type_widget === 'file') {
+        if(formDef.sizeMax) {
+          validators.push(this.fileSizeMaxValidator(formDef.sizeMax));
+        }
       }
 
       // contraintes min et max pour "number"
@@ -72,6 +78,14 @@ export class DynamicFormService {
 
   addNewControl(formDef, formGroup: FormGroup) {
     formGroup.addControl(formDef.attribut_name, this.createControl(formDef));
+  }
+
+  fileSizeMaxValidator(sizeMax): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: boolean } | null => {
+      const file = control.value;
+      const valid = !(file && file.size) || file.size > sizeMax;
+      return !valid ? {file: true} : null;
+    }
   }
 
 }

@@ -51,6 +51,7 @@
             [(media)]="media"
             (mediaChange)="onMediaChange()"
             [schemaDotTable]="schemaDotTable"
+            [sizeMax]="sizeMax"
           >
           </pnx-media>
         </mat-expansion-panel>
@@ -66,9 +67,7 @@
           <mat-icon matTooltip="{{ 'Media.add' | translate }}">add</mat-icon>
         </button>
 
-        <!-- <a *ngIf="media.href()" target="_blank" class="link-media" [href]="media.href()"
-          ><mat-icon matTooltip="Lien vers le média">link</mat-icon></a
-        > -->
+
       </div>
     </mat-accordion>
     <button

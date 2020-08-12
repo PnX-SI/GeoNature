@@ -14,6 +14,7 @@ export class MediasComponent implements OnInit {
   @Output() mediasChange = new EventEmitter<Array<Media>>();
 
   @Input() schemaDotTable: string;
+  @Input() sizeMax: number;
 
   constructor(
     private _mediaService: MediaService

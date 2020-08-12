@@ -28,10 +28,14 @@ export class MediaComponent implements OnInit {
 
   public idTableLocation: number;
 
+  public bValidSizeMax: boolean = true;
+
   @Input() schemaDotTable: string;
 
   @Input() media: Media;
   @Output() mediaChange = new EventEmitter<Media>();
+
+  @Input() sizeMax: number;
 
   @Output() validMediaChange = new EventEmitter<boolean>();
 
@@ -59,6 +63,10 @@ export class MediaComponent implements OnInit {
   initForm() {
     this.mediaFormInitialized = false;
 
+    if(this.sizeMax) {
+      mediaFormDefinitionsDict.file.sizeMax=this.sizeMax;
+    }
+
     this.mediaFormDefinition = Object.keys(mediaFormDefinitionsDict)
     .map((key) => ({ ...mediaFormDefinitionsDict[key], attribut_name: key }))
 
@@ -84,6 +92,8 @@ export class MediaComponent implements OnInit {
 
         if (this.mediaFormInitialized) {
           this.watchChangeForm = false;
+
+          this.bValidSizeMax = (!(values.file && this.sizeMax)) || (values.file.size < this.sizeMax)
 
           this.media.setValues(values);
           if (values.bFile == 'Renseigner une url' && (values.media_path || values.file)) {
@@ -159,7 +169,7 @@ export class MediaComponent implements OnInit {
       let cur = JSON.stringify(chng.currentValue);
       let prev = JSON.stringify(chng.previousValue);
 
-      if (['media'].includes(propName)) {
+      if (['media', 'sizeMax'].includes(propName)) {
         this.initForm();
       }
 

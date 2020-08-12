@@ -34,6 +34,7 @@ export const mediaFormDefinitionsDict = {
     "type_widget": "file",
     "hidden": ({value}) => value.bFile != "Uploader un fichier",
     "required": ({value}) => value.bFile == "Uploader un fichier",
+    "sizeMax": 2000
   },
   "id_media": {
     "attribut_label": "ID media",

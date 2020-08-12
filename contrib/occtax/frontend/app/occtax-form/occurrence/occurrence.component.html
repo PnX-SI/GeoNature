@@ -331,6 +331,7 @@
     schemaDotTable="pr_occtax.t_occurrences_occtax"
     [medias]="occurrenceForm.value.medias || []"
     (mediasChange)="onMediasChange($event)"
+    [sizeMax]="occtaxConfig.MEDIA_SIZE_MAX"
   ></pnx-medias>
 </div>
 
