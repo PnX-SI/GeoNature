@@ -319,7 +319,7 @@
 
 </mat-accordion>
 
-<div id='occurence-medias'>
+<div id='occurence-medias' *ngIf="occtaxConfig.ENABLE_MEDIAS">
 
   <h5 style="margin-top: 15px;">
     <span [matBadge]="(occurrenceForm.value.medias || []).length" matBadgeOverlap="false">

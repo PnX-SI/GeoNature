@@ -61,7 +61,7 @@ export class OcctaxFormOccurrenceService {
       non_digital_proof: null,
       comment: null,
       cor_counting_occtax: this.fb.array([], Validators.required),
-      medias: [null, this.mediaService.mediasValidator()],
+      medias: [[], this.mediaService.mediasValidator()],
       // medias: [null],
     });
   }

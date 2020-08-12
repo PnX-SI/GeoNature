@@ -167,3 +167,7 @@ ENABLE_UPLOAD_TOOL = true
     count_min = true
     count_max = true
     display_nom_valide = true
+
+# ------------- MEDIAS PARAMETER ---------------
+
+ENABLE_MEDIAS=true
