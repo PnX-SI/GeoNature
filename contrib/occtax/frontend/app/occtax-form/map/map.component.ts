@@ -35,12 +35,16 @@ export class OcctaxFormMapComponent implements OnInit, OnDestroy {
     leafletDrawOption.edit.remove = false;
     this.leafletDrawOptions = leafletDrawOption;
     // set the input for the marker component
-    // set the coord only when load data
+    // set the coord only when load data and when its edition mode (id_releve)
     // after the marker component does it by itself whith the ouput
-    // when modifie the coordinates, it create twice the marker
+    // when modifie the coordinates innput, it create twice the marker
     this.ms.geojson
       .pipe(
-        filter((geojson) => geojson !== null),
+        filter(
+          (geojson) =>
+            geojson !== null &&
+            this._occtaxFormService.id_releve_occtax.getValue() !== null
+        ),
         map((geojson) => geojson.geometry),
         first()
       )
@@ -63,6 +67,8 @@ export class OcctaxFormMapComponent implements OnInit, OnDestroy {
   }
 
   sendGeoInfo(geojson) {
+    console.log("SEND IT");
+
     this.ms.geometry = geojson;
   }
 

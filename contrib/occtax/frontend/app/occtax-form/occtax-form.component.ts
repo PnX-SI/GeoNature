@@ -27,7 +27,14 @@ import { OcctaxFormMapService } from "../occtax-form/map/map.service";
   styleUrls: ["./occtax-form.component.scss"],
   // le composant doit initié les services suivants pour le bon fonctionnemment du formulaire
   // et le rechargemernt des données
-  providers: [OcctaxTaxaListService, OcctaxFormService, OcctaxFormMapService],
+  providers: [
+    OcctaxTaxaListService,
+    OcctaxFormService,
+    OcctaxFormMapService,
+    OcctaxFormReleveService,
+    OcctaxFormCountingService,
+    OcctaxFormOccurrenceService,
+  ],
 })
 export class OcctaxFormComponent implements OnInit, AfterViewInit {
   public occtaxConfig = ModuleConfig;
