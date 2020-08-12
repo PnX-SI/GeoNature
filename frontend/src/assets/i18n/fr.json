@@ -205,6 +205,7 @@
     "valid": "Valider le média",
     "delete": "Supprimer le média",
     "undo": "Rétablir le média",
-    "loading": "Chargement du média en cours"
+    "loading": "Chargement du média en cours",
+    "link": "Lien vers le media"
   }
 }

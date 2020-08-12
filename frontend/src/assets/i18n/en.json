@@ -201,7 +201,7 @@
     "valid": "Validate media",
     "delete": "Delete media",
     "undo": "Undo changes",
-    "loading": "Loading media"
-
+    "loading": "Loading media",
+    "link": "Link to the media"
   }
 }

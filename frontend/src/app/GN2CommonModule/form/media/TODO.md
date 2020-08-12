@@ -16,18 +16,17 @@
 
 ## Media
 - *repo / routes PATCH POST (compatibilité chiro????) ???*
-- cohérence url / path type de media
-- sync media temp (supprimer si media temp > 24h)
+- ~~cohérence url / path type de media~~
+- ~~sync media temp (supprimer si media temp > 24h)~~
 - sync medias (si objet associé n'existe plus => supprimer le media)
 - si fichier associé n'est plus présent -> supprimer le media
 - sync medias qui fait les deux ?
   - SQL
     - ~~ajouter la date pour les medias~~
     - ~~ajouter trigger sur la date~~
-    - fonction test UUID
+    - ~~fonction test UUID~~
     - requete pour savoir si UUID existe plus
     - delete
-    - trigger sur toute action sur les médias ??? 
 - requete (sql text pour l'instant) pour avoir la liste de medias (dans les deux cas)
 - delete a partir de cette liste  
 
@@ -35,7 +34,7 @@
 - ~~route pour obtenir id_table_location depuis shema_name.table_name~~
 
 ## OccTax
-- gerer medias apres le commit
+- ~~gerer medias apres le commit~~
 
 
 # Front
@@ -46,7 +45,7 @@
 # Media
 - service:
   - ~~cache pour idTableLocation !! impt~~
-- prendre en compte les type media, adapter le formulaire (condition+++++)
+- prendre en compte les type media, adapter le formulaire ~~(condition+++++)~~ **hidden = function +++**
 - ~~passer bouttons etc dans media.component~~
 - ~~cohérence avec OccTax~~
   - ~~croix à droite~~
@@ -62,4 +61,6 @@
   - ~~report progress~~
 
 ## Occtax
--ajout composant médias
+-~~ajout composant médias~~
+- boutton comme dénombrement
+- link ailleur (accordeon titre ? ou dedans)

@@ -74,7 +74,16 @@ export class MediaService {
     !medias.length ||
     medias.every((mediaData) => {
       const media = new Media(mediaData);
-      return media.valid() && !media.bLoading
+      return media.valid();
+    });
+  }
+
+  validOrLoadingMedias(medias) {
+    return !medias ||
+    !medias.length ||
+    medias.every((mediaData) => {
+      const media = new Media(mediaData);
+      return media.valid() || media.bLoading;
     });
   }
 

@@ -5,11 +5,12 @@
         *ngFor="let media of medias; let i = index"
         class="blc-expansion-panel"
         selector=".btn-clear"
+        displayMouseOver
       >
-        <button mat-icon-button class="btn-clear" (click)="deleteMedia(i)">
+        <button mat-icon-button class="btn-clear d-none" (click)="deleteMedia(i)">
           <mat-icon matTooltip="Supprimer ce media">clear</mat-icon>
         </button>
-        <mat-expansion-panel [expanded]="medias.length === i + 1 && !medias[i].id_media">
+        <mat-expansion-panel [expanded]="medias.length === i + 1">
           <mat-expansion-panel-header>
             <mat-panel-title>
               <div style="display: block; width: 100%;">
@@ -29,8 +30,7 @@
                   <mat-icon *ngIf="media.bLoading" matTooltip="Upload en cours" class="loading"
                     >hourglass_top</mat-icon
                   >
-
-                  <b>{{ media.title_fr }}</b>
+                  {{ media.title_fr }}
                 </div>
                 <div>
                   <mat-progress-bar
@@ -49,15 +49,27 @@
           >
           </pnx-media>
         </mat-expansion-panel>
-        <a *ngIf="media.href()" target="_blank" class="link-media" [href]="media.href()"
-          ><mat-icon matTooltip="Lien vers le média">link</mat-icon></a
+        <button
+          *ngIf="medias.length === i + 1"
+          mat-mini-fab
+          color="primary"
+          class="btn-add-media"
+          id="add-media-btn"
+          (click)="addMedia()"
+          [disabled]="!validOrLoadingMedias()"
         >
+          <mat-icon matTooltip="{{ 'Media.add' | translate }}">add</mat-icon>
+        </button>
+
+        <!-- <a *ngIf="media.href()" target="_blank" class="link-media" [href]="media.href()"
+          ><mat-icon matTooltip="Lien vers le média">link</mat-icon></a
+        > -->
       </div>
     </mat-accordion>
     <button
+      *ngIf="!(medias && medias.length)"
       mat-mini-fab
       color="primary"
-      class="btn-add-media"
       id="add-media-btn"
       (click)="addMedia()"
     >

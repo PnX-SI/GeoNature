@@ -32,6 +32,10 @@ export class MediasComponent implements OnInit {
     }
   }
 
+  validOrLoadingMedias() {
+    return this._mediaService.validOrLoadingMedias(this.medias);
+  }
+
   onMediaChange() {
     this.mediasChange.emit(this.medias)
   }
