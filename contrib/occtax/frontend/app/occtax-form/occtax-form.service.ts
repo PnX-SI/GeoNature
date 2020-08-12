@@ -44,9 +44,6 @@ export class OcctaxFormService {
   getOcctaxData(id) {
     this._dataS.getOneReleve(id).subscribe(
       (data) => {
-        console.log("get data");
-        console.log(data);
-
         this.occtaxData.next(data);
         this.editionMode.next(true);
       },

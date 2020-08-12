@@ -1,50 +1,54 @@
 ::ng-deep .gn-panel {
-	margin-left: 60px!important;
+  margin-left: 60px !important;
+}
+
+::ng-deep ._gn-panel-header {
+  min-height: 15px !important;
 }
 
 .mat-icon-button {
-	width: 26px;
+  width: 26px;
   height: 26px;
   line-height: 26px;
   vertical-align: 1px;
 }
 
 .btn-actions {
-	position: absolute;
-	padding-top: 8px;
+  position: absolute;
+  padding-top: 8px;
 }
 
 .btn-edit {
-	color: #5343da;
+  color: #5343da;
 }
 
 .btn-clear {
-	margin-right: 8px;
-	color: #d40303;
+  margin-right: 8px;
+  color: #d40303;
 }
 
 .btn-inpn {
-	margin-left: 15px;
-	color: #555;
+  margin-left: 15px;
+  color: #555;
 }
 
 .list-values > div {
-	padding: 1px 7px;
+  padding: 1px 7px;
 }
 
 .list-values > div:nth-child(odd) {
-	background-color: #eee;
+  background-color: #eee;
 }
 
 .label {
-	font-weight: bold;
-	display: inline-block;
-	color: #333;
+  font-weight: bold;
+  display: inline-block;
+  color: #333;
 }
 
 .value {
-	display: inline-block;
-	padding-left: 5px;
+  display: inline-block;
+  padding-left: 5px;
 }
 
 .counting-title {
@@ -56,9 +60,12 @@
 }
 
 .in-progress-panel {
-	box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-  -moz-box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-  -webkit-box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  -moz-box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
+    0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  -webkit-box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
+    0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 2px;
@@ -80,17 +87,17 @@
   cursor: pointer;
 }
 
-.in-progress-panel.error .mat-icon{
+.in-progress-panel.error .mat-icon {
   vertical-align: -6px;
   margin-right: 10px;
 }
 
-::ng-deep .in-progress-panel .mat-progress-spinner circle, 
+::ng-deep .in-progress-panel .mat-progress-spinner circle,
 .in-progress-panel .mat-spinner circle {
   stroke: #333 !important;
 }
 
-.in-progress-panel .mat-progress-spinner, 
+.in-progress-panel .mat-progress-spinner,
 .in-progress-panel .mat-spinner {
   display: inline-block;
   margin-right: 10px;

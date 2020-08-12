@@ -65,12 +65,7 @@ export class OcctaxFormMapService {
   private get releveGeojsonValue(): Observable<any> {
     return this.occtaxFormService.occtaxData.pipe(
       filter((data) => data && data.releve.geometry),
-      map((data) => {
-        console.log("LAAA");
-        console.log(data);
-
-        return data.releve.geometry;
-      })
+      map((data) => data.releve.geometry)
     );
   }
 
