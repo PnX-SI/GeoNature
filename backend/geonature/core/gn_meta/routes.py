@@ -496,6 +496,72 @@ def sensi_report(info_role):
         ]
     )
 
+@routes.route("/update_sensitivity", methods=["GET"])
+@permissions.check_cruved_scope("C", True, module_code="METADATA")
+def update_sensitivity(info_role):
+    """
+    Update sensitivity of all datasets
+
+    .. :quickref: Metadata;
+    """
+    if info_role.value_filter == "0":
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" a dataset').format(
+                info_role.id_role, info_role.code_action
+            ),
+            403,
+        )
+
+    params = request.args
+    id_import = params.get("id_import")
+    id_source = params.get("id_source")
+    ds_id = params.get("ds_id")
+    id_module = params.get("id_module")
+    id_synthese = params.get("id_synthese")
+
+    query = DB.session.query(Synthese.id_synthese).select_from(Synthese)
+        
+    if id_source:
+        query = query.filter(Synthese.id_source == id_source)
+        
+    if id_synthese:
+        query = query.filter(Synthese.id_synthese == id_synthese)
+        
+    if id_module:
+        query = query.filter(Synthese.id_module == id_module)
+
+    if ds_id:
+        query = query.filter(Synthese.id_dataset == ds_id)
+
+    if id_import:
+        query = query.outerjoin(
+            TSources, TSources.id_source == Synthese.id_source
+        ).filter(
+            TSources.name_source == 'Import(id={})'.format(id_import)
+        )
+
+    id_syntheses = query.all()
+
+    #id_syntheses = DB.session.query(Synthese.id_synthese).all()
+    id_syntheses = [id[0] for id in id_syntheses]
+
+    if not id_syntheses:
+        return "OK"
+    #id_syntheses = [id for id in np.arange(0, 5000000, 1)]
+
+    queryStr = """
+        UPDATE gn_synthese.synthese SET id_nomenclature_sensitivity = gn_sensitivity.get_id_nomenclature_sensitivity(
+            date_min::date,
+            taxonomie.find_cdref(cd_nom),
+            the_geom_local,
+            ('{"STATUT_BIO": ' || id_nomenclature_bio_status::text || '}')::jsonb)
+            where id_synthese in (""" + str(id_syntheses).strip("[]") + """)
+        ; """
+    
+    DB.engine.execute(queryStr)
+
+    return "OK"
+
 
 @routes.route("/dataset", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="METADATA")
