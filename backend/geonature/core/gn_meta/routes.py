@@ -428,6 +428,75 @@ def uuid_report(info_role):
     )
 
 
+@routes.route("/sensi_report", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
+def sensi_report(info_role):
+    """
+    get the UUID report of a dataset
+
+    .. :quickref: Metadata;
+    """
+    """
+    get the UUID report of a dataset
+
+    .. :quickref: Metadata;
+    """
+
+    if info_role.value_filter == "0":
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" a dataset').format(
+                info_role.id_role, info_role.code_action
+            ),
+            403,
+        )
+
+    params = request.args
+    ds_id = params.get("ds_id")
+    id_import = params.get("id_import")
+    id_module = params.get("id_module")
+
+    query = DB.session.query(Synthese).select_from(Synthese)
+        
+    if id_module:
+        query = query.filter(Synthese.id_module == id_module)
+
+    if ds_id:
+        query = query.filter(Synthese.id_dataset == ds_id)
+
+    if id_import:
+        query = query.outerjoin(
+            TSources, TSources.id_source == Synthese.id_source
+        ).filter(
+            TSources.name_source == 'Import(id={})'.format(id_import)
+        )
+
+    data = query.all()
+
+    data = [ {
+        "cdNom": row.cd_nom,
+        "cdRef": "undefined",
+        "codeDepartementCalcule": "undefined",
+        "identifiantOrigine": row.entity_source_pk_value,
+        "identifiantPermanent": row.unique_id_sinp,
+        "sensiAlerte": "undefined",
+        "sensible": "undefined",
+        "sensiDateAttribution": "undefined",
+        "sensiNiveau": "undefined",
+        "sensiReferentiel": "undefined",
+        "sensiVersionReferentiel": "undefined"
+    } for row in query.all() ]
+
+    return to_csv_resp(
+        filename = "filename",
+        data = data,
+        columns = [
+            "cdNom", "cdRef", "codeDepartementCalcule", "identifiantOrigine",
+            "identifiantPermanent", "sensiAlerte", "sensible", "sensiDateAttribution",
+            "sensiNiveau", "sensiReferentiel", "sensiVersionReferentiel"
+        ]
+    )
+
+
 @routes.route("/dataset", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="METADATA")
 @json_resp

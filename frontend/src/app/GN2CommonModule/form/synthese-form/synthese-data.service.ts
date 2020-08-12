@@ -135,7 +135,19 @@ export class SyntheseDataService {
   }
 
   downloadSensiReport(filename: string, args: { [key: string]: string }) {
-    console.log(`downloading ${filename}`);
+    let queryString: HttpParams = new HttpParams();
+    // tslint:disable-next-line:forin
+    for (const key in args) {
+      queryString = queryString.set(key, args[key].toString());
+    }
+    const source = this._api.get(`${AppConfig.API_ENDPOINT}/meta/sensi_report`, {
+      headers: new HttpHeaders().set('Content-Type', 'text/csv'),
+      observe: 'events',
+      responseType: 'blob',
+      reportProgress: true,
+      params: queryString
+    });
+    this.subscribeAndDownload(source, filename, "csv", false);
   }
 
   subscribeAndDownload(
