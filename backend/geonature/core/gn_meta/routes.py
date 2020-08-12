@@ -2,7 +2,7 @@ import json
 import logging
 from pathlib import Path
 
-from flask import Blueprint, current_app, request, render_template, send_from_directory
+from flask import Blueprint, current_app, request, render_template, send_from_directory, copy_current_request_context
 from sqlalchemy import or_
 from sqlalchemy.sql import text, exists, select
 from sqlalchemy.sql.functions import func
@@ -43,6 +43,8 @@ import geonature.utils.filemanager as fm
 from binascii import a2b_base64
 
 from flask.wrappers import Response
+
+import threading
 
 routes = Blueprint("gn_meta", __name__)
 
@@ -548,6 +550,25 @@ def update_sensitivity(info_role):
     if not id_syntheses:
         return "OK"
     #id_syntheses = [id for id in np.arange(0, 5000000, 1)]
+
+    if len(id_syntheses) > 1000000 :
+
+        @copy_current_request_context
+        def update_sensitivity_task(id_syntheses):
+            return update_sensitivity_query(id_syntheses)
+
+        a = threading.Thread(
+            name="update_sensitivity_task", target=update_sensitivity_task, kwargs={"id_syntheses": id_syntheses}
+        )
+        a.start()
+
+        return "Processing"
+
+    else:
+        return update_sensitivity_query(id_syntheses)
+
+
+def update_sensitivity_query(id_syntheses):
 
     queryStr = """
         UPDATE gn_synthese.synthese SET id_nomenclature_sensitivity = gn_sensitivity.get_id_nomenclature_sensitivity(
