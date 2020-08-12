@@ -4,9 +4,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Media } from './media'
 import { mediaFormDefinitionsDict } from './media-form-definition';
 import { FormBuilder } from '@angular/forms';
-import { MediaService } from '@geonature_common/service/media-service'
+import { MediaService } from '@geonature_common/service/media.service'
 import { HttpEventType, HttpResponse } from '@angular/common/http';
-import value from '*.json';
 
 @Component({
   selector: 'pnx-media',
@@ -72,38 +71,63 @@ export class MediaComponent implements OnInit {
     }
 
     if (this.media) {
+      if( this.media.media_url) {
+        this.media.bFile = 'Renseigner une url';
+      }
       this.media.id_table_location = this.media.id_table_location || this.idTableLocation;
+
       this.mediaForm.patchValue(this.media);
     }
 
     this.mediaFormChange = this.mediaForm.valueChanges.subscribe((values) => {
-
       if (Object.keys(this.mediaFormDefinition).length == Object.keys(this.mediaForm.value).length && this.watchChangeForm) {
 
         if (this.mediaFormInitialized) {
+          this.watchChangeForm = false;
+
           this.media.setValues(values);
-          if (values.file && (values.media_path || values.media_url)) {
+          if (values.bFile == 'Renseigner une url' && (values.media_path || values.file)) {
             this.mediaForm.patchValue({
               media_path: null,
-              media_url: null,
+              file: null,
             });
             this.media.setValues({
               media_path: null,
+              file: null,
+            });
+          }
+
+          if (values.bFile == 'Uploader un fichier' && (values.media_url)) {
+            this.watchChangeForm = false;
+            this.mediaForm.patchValue({
               media_url: null,
-            })
+            });
+            this.media.setValues({
+              media_url: null,
+            });
           }
 
-          // Patch pourris pour les cas ou url est renseigné quadn le media existe
-          if( this.media.id_media && this.media.url && this.media.bFile === 'Uploader un fichier') {
-            this.mediaForm.patchValue({bFile: 'Renseigner une url'})
+          if (values.file && values.media_path) {
+            this.mediaForm.patchValue({
+              media_path: null,
+            });
+            this.media.setValues({
+              media_path: null,
+            });
           }
 
-          this.mediaChange.emit(this.media);
+
+          this.watchChangeForm = true;
         } else {
+          // init forms
+          if( this.media.media_url) {
+            this.media.bFile = 'Renseigner une url';
+          }
           this.watchChangeForm = false;
           this.mediaForm.patchValue(this.media);
-          this.watchChangeForm = true;
           this.mediaFormInitialized = true;
+          this.watchChangeForm = true;
+
         }
       }
     })
@@ -117,12 +141,12 @@ export class MediaComponent implements OnInit {
         (event) => {
           if (event.type == HttpEventType.UploadProgress) {
             this.media.uploadPercentDone = Math.round(100 * event.loaded / event.total);
-            this.mediaChange.emit(this.media);
+            // this.mediaChange.emit(this.media);
           } else if (event instanceof HttpResponse) {
             this.media.setValues(event.body);
             this.mediaForm.patchValue({ ...this.media, file: null });
             this.media.bLoading = false;
-            this.mediaChange.emit(this.media);
+            // this.mediaChange.emit(this.media);
             this.media.pendingRequest = null;
           }
         },

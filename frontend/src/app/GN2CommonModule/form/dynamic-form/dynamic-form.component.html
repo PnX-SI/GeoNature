@@ -38,7 +38,7 @@
         class="form-control"
         [id]="formDefComp().attribut_name"
         [formControl]="form.get(formDefComp().attribut_name)">
-          <option  [value]="null"> - </option>
+          <option  [value]="null" *ngIf="!formDefComp().noNullOption"> - </option>
           <option *ngFor="let val of formDefComp().values" [value]="val">{{val}}</option>
       </select>
 

@@ -17,10 +17,11 @@ export const mediaFormDefinitionsDict = {
   },
   "bFile":{
     "attribut_label": "Import du média",
-    "type_widget": 'radio',
+    "type_widget": 'select',
     "values": ["Uploader un fichier", "Renseigner une url"],
     "value": "Uploader un fichier",
-    "hidden": false
+    "noNullOption": true,
+    "required": true,
   },
   "media_url": {
     "attribut_label": "Url",

@@ -186,7 +186,7 @@ class TMediumRepository():
         '''
             Met à jour les médias
               - supprime les médias sans uuid_attached_row plus vieux que 24h
-              - supprimes les médias dont l'object attaché n'existe plus 
+              - supprimes les médias dont l'object attaché n'existe plus TODO
         '''
 
 

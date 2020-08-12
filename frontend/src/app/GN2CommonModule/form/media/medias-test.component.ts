@@ -27,7 +27,7 @@ export class MediasTestComponent implements OnInit {
         "title_fr": "zer",
         "description_fr": "zer",
         "uuid_attached_row": null,
-        "media_url": null,
+        "media_url": 'https://www.google.com',
         "media_path": null,
         "id_nomenclature_media_type": 471,
       })

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation, SimpleChanges } from '@angular/core';
 import { Media } from './media';
-import { MediaService } from '@geonature_common/service/media-service'
+import { MediaService } from '@geonature_common/service/media.service'
 
 @Component({
   selector: 'pnx-medias',
@@ -53,9 +53,7 @@ export class MediasComponent implements OnInit {
     const media = this.medias.splice(index, 1)[0];
 
     // si l upload est en cours
-    console.log(media.pendingRequest)
     if(media.pendingRequest) {
-      console.log("mediaPendingRequest")
       media.pendingRequest.unsubscribe()
       media.pendingRequest = null;
     }

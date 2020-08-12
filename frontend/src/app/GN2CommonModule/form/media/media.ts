@@ -14,8 +14,9 @@ class Media {
   public media_path: string;
   public id_nomenclature_media_type: number;
 
-  public bLoading: boolean=false;
-  public uploadPercentDone:number = 0;
+  public bFile: string;
+  public bLoading: boolean = false;
+  public uploadPercentDone: number = 0;
   public pendingRequest: Subscription; // pour pouvoir couper l'upload si on supprime le media pendant l'upload
 
   constructor(values = {}) {
@@ -28,6 +29,15 @@ class Media {
     }
   }
 
+  data() {
+    const data = {};
+    for (const key of Object.keys(this)) {
+      if (['pendingRequest'].includes(key)) continue;
+      data[key] = this[key]
+    }
+    return data
+  }
+
   href(): string {
     return this.media_path
       ? `${AppConfig.API_ENDPOINT}/${this.media_path}`
@@ -35,7 +45,7 @@ class Media {
   }
 
   valid(): boolean {
-    return !!(this.title_fr && this.description_fr && this.href());
+    return !!(this.title_fr && this.description_fr && this.href() && this.id_nomenclature_media_type);
   }
 
   readyForUpload(): boolean {

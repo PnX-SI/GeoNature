@@ -80,7 +80,7 @@ import { FormService } from './form/form.service';
 import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
-import { MediaService } from '@geonature_common/service/media-service'
+import { MediaService } from '@geonature_common/service/media.service'
 
 // add all rxjs operators
 import 'rxjs/Rx';

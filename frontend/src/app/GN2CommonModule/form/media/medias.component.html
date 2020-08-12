@@ -9,10 +9,10 @@
         <button mat-icon-button class="btn-clear" (click)="deleteMedia(i)">
           <mat-icon matTooltip="Supprimer ce media">clear</mat-icon>
         </button>
-        <mat-expansion-panel [expanded]="medias.length === i + 1">
+        <mat-expansion-panel [expanded]="medias.length === i + 1 && !medias[i].id_media">
           <mat-expansion-panel-header>
             <mat-panel-title>
-              <div style='display:block; width:100%'>
+              <div style="display: block; width: 100%;">
                 <div>
                   <mat-icon
                     *ngIf="!media.valid() && !media.bLoading"
@@ -26,17 +26,18 @@
                     class="valid"
                     >check</mat-icon
                   >
-                  <mat-icon
-                    *ngIf="media.bLoading"
-                    matTooltip="Upload en cours"
-                    class="loading"
+                  <mat-icon *ngIf="media.bLoading" matTooltip="Upload en cours" class="loading"
                     >hourglass_top</mat-icon
                   >
 
                   {{ media.title_fr }}
                 </div>
                 <div>
-                  <mat-progress-bar *ngIf="media.bLoading" mode="determinate" [value]="media.uploadPercentDone"></mat-progress-bar>
+                  <mat-progress-bar
+                    *ngIf="media.bLoading"
+                    mode="determinate"
+                    [value]="media.uploadPercentDone"
+                  ></mat-progress-bar>
                 </div>
               </div>
             </mat-panel-title>

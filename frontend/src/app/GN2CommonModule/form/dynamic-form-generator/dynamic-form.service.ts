@@ -18,9 +18,7 @@ export class DynamicFormService {
 
   setControl(control:AbstractControl, formDef, value=null) {
     if(![null, undefined].includes(value)) {
-      console.log('yarglou', value)
       control.setValue(value)
-      console.log(control.value)
     }
 
     const validators = [];
@@ -67,7 +65,6 @@ export class DynamicFormService {
   createControl(formDef): AbstractControl {
     const formControl = new FormControl();
     let value = formDef.value || null;
-    console.log('Create control', formDef.attribut_name, value)
     this.setControl(formControl, formDef, value);
     return formControl;
 
