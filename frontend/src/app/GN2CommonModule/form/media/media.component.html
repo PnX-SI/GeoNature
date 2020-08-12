@@ -1,8 +1,8 @@
 <div>
   <p *ngIf="media.href()">
-    <a [href]="media.href()">
-      {{ 'Media.link' | translate }}
-    </a>
+    <a target="_blank" class="link-media" [href]="media.href()"
+      ><mat-icon matTooltip="{{ 'Medias.link' | translate }}">link</mat-icon></a
+    >
   </p>
   <pnx-dynamic-form-generator
     #dynamicForm

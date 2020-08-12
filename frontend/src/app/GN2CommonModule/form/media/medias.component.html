@@ -25,12 +25,17 @@
                     *ngIf="media.valid() && !media.bLoading"
                     matTooltip="Le media est valide"
                     class="valid"
-                    >check</mat-icon
-                  >
-                  <mat-icon *ngIf="media.bLoading" matTooltip="Upload en cours" class="loading"
-                    >hourglass_top</mat-icon
-                  >
-                  {{ media.title_fr }}
+                    >check</mat-icon>
+
+                    <mat-icon
+                    *ngIf="media.bLoading"
+                    matTooltip="chargement en cours"
+                    class="fa-spin"
+                    >settings</mat-icon>
+
+                  {{ 'Media.Medias' | translate}} - {{ i }} {{ media.title_fr }}
+
+
                 </div>
                 <div>
                   <mat-progress-bar
