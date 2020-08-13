@@ -32,7 +32,8 @@ from geonature.core.gn_meta.repositories import (
     get_af_cruved,
     get_dataset_details_dict,
 )
-from utils_flask_sqla.response import json_resp, to_csv_resp
+from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_content
+from werkzeug.datastructures import Headers
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from geonature.core.gn_meta import mtd_utils
@@ -474,6 +475,21 @@ def sensi_report(info_role):
 
     data = query.all()
 
+    dataset = None
+    createurStr = ""
+    if len(data) > 0:
+        dataset = DB.session.query(TDatasets).filter(TDatasets.id_dataset == data[0].id_dataset).first()
+        iCreateur = -1
+        if dataset.cor_dataset_actor:
+            for index, actor in enumerate(dataset.cor_dataset_actor):
+                if actor.nomenclature_actor_role.mnemonique == "Producteur du jeu de données":
+                    iCreateur = index
+        createur = dataset.cor_dataset_actor[iCreateur] if iCreateur!=-1 else None
+        createurStr = ""
+        if (createur.organism and createur.organism.nom_organisme):
+            createurStr = createur.organism.nom_organisme
+            
+        
     data = [ {
         "cdNom": row.cd_nom,
         "cdRef": "undefined",
@@ -488,15 +504,48 @@ def sensi_report(info_role):
         "sensiVersionReferentiel": "undefined"
     } for row in query.all() ]
 
-    return to_csv_resp(
+
+    return my_csv_resp(
         filename = "filename",
         data = data,
         columns = [
             "cdNom", "cdRef", "codeDepartementCalcule", "identifiantOrigine",
             "identifiantPermanent", "sensiAlerte", "sensible", "sensiDateAttribution",
             "sensiNiveau", "sensiReferentiel", "sensiVersionReferentiel"
-        ]
+        ],
+        entete = """"Rapport de sensibilité"
+            "Jeux de données";"{}"
+            "Identifiant interne";"{}"
+            "Identifiant SINP";"{}"
+            "Organisme Fournisseur (organisme de l’utilisateur)";"{}"
+            "Identifiant de la soumission";"{}"
+            "Date de création du rapport";"{}"
+            "Nombre de données sensibles";"{}"
+            "Nombre de données total dans le fichier";"{}"
+
+            """.format(
+                dataset.dataset_name if dataset else "",
+                dataset.id_dataset if dataset else "",
+                dataset.unique_dataset_id if dataset else "",
+                createurStr,
+                "undefined",
+                dt.datetime.now().strftime("%d/%m/%Y %Hh%M"),
+                "undefined",
+                len(data)
+            )
     )
+
+
+def my_csv_resp(filename, data, columns, entete, separator=";"):
+
+    headers = Headers()
+    headers.add("Content-Type", "text/plain")
+    headers.add(
+        "Content-Disposition", "attachment", filename="export_%s.csv" % filename
+    )
+    out = entete + generate_csv_content(columns, data, separator)
+    return Response(out, headers=headers)
+    
 
 @routes.route("/update_sensitivity", methods=["GET"])
 @permissions.check_cruved_scope("C", True, module_code="METADATA")
