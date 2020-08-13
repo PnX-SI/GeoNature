@@ -89,7 +89,8 @@ class UsersHubConfig(Schema):
 class ServerConfig(Schema):
     LOG_LEVEL = fields.Integer(missing=20)
 
-
+class MediasConfig(Schema):
+    MEDIA_SIZE_MAX = fields.Integer(missing=20)
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
 
 
@@ -123,6 +124,7 @@ class GnPySchemaConf(Schema):
     ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, missing={})
     USERSHUB = fields.Nested(UsersHubConfig, missing={})
     SERVER = fields.Nested(ServerConfig, missing={})
+    MEDIAS = fields.Nested(MediasConfig, missing={})
 
     @post_load()
     def unwrap_usershub(self, data):
