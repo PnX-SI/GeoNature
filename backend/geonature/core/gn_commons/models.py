@@ -13,6 +13,9 @@ from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
 
 from geonature.utils.env import DB
+from geonature.core.gn_commons.file_manager import (
+    rename_file
+)
 
 # from geonature.core.gn_meta.models import TDatasets
 
@@ -99,6 +102,25 @@ class TMedias(DB.Model):
     is_public = DB.Column(DB.Boolean, default=True)
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
+
+    def __before_commit_delete__(self):
+        # déclenché sur un DELETE : on supprime le fichier
+        print(self, 'DELETE', self.media_path)
+        if self.media_path:
+            initial_path = self.media_path
+            (inv_file_name, inv_file_path) = initial_path[::-1].split('/', 1)
+            file_name = inv_file_name[::-1]
+            file_path = inv_file_path[::-1]
+
+            try:
+                self.media_path = rename_file(
+                    self.media_path, "{}/deleted_{}".format(
+                        file_path, file_name
+                    )
+                )
+            except FileNotFoundError:
+                raise Exception('Unable to delete file {}'.format(initial_path))
+
 
 
 @serializable

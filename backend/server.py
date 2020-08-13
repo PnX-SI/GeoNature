@@ -8,6 +8,7 @@ from flask import Flask
 from flask_mail import Mail, Message
 from flask_cors import CORS
 from sqlalchemy import exc as sa_exc
+from flask_sqlalchemy import before_models_committed
 
 from geonature.utils.env import DB, MA, list_and_import_gn_modules
 
@@ -49,6 +50,14 @@ def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
 
     # Bind app to DB
     DB.init_app(app)
+
+    # pour la suppression des fichier sur un delete de media
+    @before_models_committed.connect_via(app)
+    def on_before_models_committed(sender, changes):
+        for obj, change in changes:
+            print('before', obj, change)
+            if change == 'delete' and hasattr(obj, '__before_commit_delete__'):
+                obj.__before_commit_delete__()
 
     # Bind app to MA
     MA.init_app(app)

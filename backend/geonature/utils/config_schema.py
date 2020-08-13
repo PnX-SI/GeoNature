@@ -91,6 +91,8 @@ class ServerConfig(Schema):
 
 class MediasConfig(Schema):
     MEDIAS_SIZE_MAX = fields.Integer(missing=10000)
+
+
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
 
 
@@ -103,7 +105,7 @@ class GnPySchemaConf(Schema):
             "Database uri is invalid ex: postgresql://monuser:monpass@server:port/db_name"
         ),
     )
-    SQLALCHEMY_TRACK_MODIFICATIONS = fields.Boolean(missing=False)
+    SQLALCHEMY_TRACK_MODIFICATIONS = fields.Boolean(missing=True)
     SESSION_TYPE = fields.String(missing="filesystem")
     SECRET_KEY = fields.String(required=True)
     # le cookie expire toute les 7 jours par défaut

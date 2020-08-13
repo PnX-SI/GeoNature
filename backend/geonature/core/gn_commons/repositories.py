@@ -1,3 +1,5 @@
+from flask import current_app
+
 from sqlalchemy.exc import IntegrityError
 
 from geonature.utils.env import DB
@@ -128,21 +130,17 @@ class TMediaRepository():
         return filepath
 
     def delete(self):
+        # Note si SQLALCHEMY_TRACK_MODIFICATIONS  = true alors suppression du fichier gérée automatiquement
+
         # Suppression du média physiquement
         # En réalité renommage
-        if self.media.media_path:
-            initial_path = self.media.media_path
-            (inv_file_name, inv_file_path) = initial_path[::-1].split('/', 1)
-            file_name = inv_file_name[::-1]
-            file_path = inv_file_path[::-1]
+        initial_path = self.media.media_path
 
+        if self.media.media_path and not current_app.config['SQLALCHEMY_TRACK_MODIFICATIONS']:
+            print('yakou')
             try:
-                new_path = rename_file(
-                    self.media.media_path, "{}/deleted_{}".format(
-                        file_path, file_name
-                    )
-                )
-                self.media.media_path = new_path
+                self.media.__before_commit_delete__()
+
             except FileNotFoundError:
                 raise Exception('Unable to delete file')
 
@@ -151,10 +149,11 @@ class TMediaRepository():
             DB.session.delete(self.media)
             DB.session.commit()
         except Exception:
-            new_path = rename_file(
-                "{}/deleted_{}".format(file_path, file_name),
-                initial_path
-            )
+            if initial_path:
+                new_path = rename_file(
+                    self.media.media_path,
+                    initial_path
+                )
 
     def _load_from_id(self, id_media):
         '''
