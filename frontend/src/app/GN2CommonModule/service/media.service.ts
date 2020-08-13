@@ -24,7 +24,7 @@ import { Media } from '@geonature_common/form/media/media';
 @Injectable()
 export class MediaService {
 
-  idTableLocations = {};
+  idTableLocations = [];
   nomenclatures = null;
 
   constructor(private _http: HttpClient, private _dataFormService: DataFormService) { }
@@ -41,6 +41,18 @@ export class MediaService {
           }
         )
       )
+  }
+
+  /** une fois que la nomenclature est chargées */
+  getNomenclature(value, fieldName = "id_nomenclature", nomenclatureType = null) {
+    if (!this.nomenclatures) return null;
+    const res = this.nomenclatures
+      .filter( N => (!nomenclatureType) || N.mnemonique === nomenclatureType)
+      .map( N =>
+        N.values.find(n => n[fieldName] === value)
+      )
+      .filter( n => n);
+    return res && res.length == 1 ? res[0] : null;
   }
 
   postMedia(file: File, media): Observable<HttpEvent<any>> {

@@ -291,6 +291,19 @@
             </ng-container>
 
           </mat-tab>
+
+          <-- TAB pour afficher les médias -->
+          <mat-tab *ngIf="occurrence.medias.length"> 
+            <ng-template mat-tab-label>
+              <span [matBadge]="occurrence.medias.length" matBadgeOverlap="false">
+                {{'Media.Medias' | translate }}
+              </span>
+            </ng-template>
+
+            <pnx-display-medias
+              [medias]='occurrence.medias'
+            ></pnx-display-medias>
+          </mat-tab>
         </mat-tab-group>
 
       </div>

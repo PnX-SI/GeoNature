@@ -1,0 +1,13 @@
+<!-- <h1 mat-dialog-title>{{data.media.title_fr}} {{}}</h1> -->
+<div mat-dialog-content>
+  <mat-card>
+    <mat-card-title>{{ data.media.title_fr }}</mat-card-title>
+    <img mat-card-image [src]="data.media.href()" />
+    <mat-card-content>
+      {{ data.media.description_fr }}
+    </mat-card-content>
+    <mat-card-subtitle>
+      ({{ nomenclature(data.media.id_nomenclature_media_type)?.label_fr }}, @{{ data.media.author }})
+    </mat-card-subtitle>
+  </mat-card>
+</div>

@@ -1,3 +1,4 @@
-<div>
-  <div></div>
+<div *ngIf="bInitialized">
+  <pnx-display-media *ngFor="let media of medias" [media]="media">
+  </pnx-display-media>
 </div>

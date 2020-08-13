@@ -137,7 +137,6 @@ class TMediaRepository():
         initial_path = self.media.media_path
 
         if self.media.media_path and not current_app.config['SQLALCHEMY_TRACK_MODIFICATIONS']:
-            print('yakou')
             try:
                 self.media.__before_commit_delete__()
 

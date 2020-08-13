@@ -31,7 +31,8 @@ export class MediasTestComponent implements OnInit {
         "description_fr": "zer",
         "uuid_attached_row": null,
         "media_path": null,
-        "id_nomenclature_media_type": 471,
+        "media_url":"https://www.monpetitcoinvert.com/blog/wp-content/uploads/2019/05/oiseau-mesange-bleue-730x420.jpg",
+        "author": 'jacky jack'
       })
     ]
   }

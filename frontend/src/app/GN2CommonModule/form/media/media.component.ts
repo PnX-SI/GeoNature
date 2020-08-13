@@ -84,6 +84,9 @@ export class MediaComponent implements OnInit {
       }
       this.media.id_table_location = this.media.id_table_location || this.idTableLocation;
 
+      // PHOTO par defaut
+      this.media.id_nomenclature_media_type = this.media.id_nomenclature_media_type || this._mediaService.getNomenclature('Photo', 'mnemonique', 'TYPE_MEDIA').id_nomenclature
+
       this.mediaForm.patchValue(this.media);
     }
 

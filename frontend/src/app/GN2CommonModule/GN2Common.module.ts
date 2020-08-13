@@ -61,7 +61,9 @@ import { SyntheseSearchComponent } from '@geonature_common/form/synthese-form/sy
 import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-component';
 import { DumbSelectComponent } from '@geonature_common/form/dumb-select/dumb-select.component';
 import { DisplayMediasComponent } from '@geonature_common/form/media/display-medias.component';
+import { DisplayMediaComponent } from '@geonature_common/form/media/display-media.component';
 import { MediaComponent } from '@geonature_common/form/media/media.component';
+import { MediaDialog } from '@geonature_common/form/media/media-dialog.component';
 import { MediasComponent } from '@geonature_common/form/media/medias.component';
 import { MediasTestComponent } from '@geonature_common/form/media/medias-test.component';
 
@@ -149,7 +151,9 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     DumbSelectComponent,
     GeometryFormComponent,
     DisplayMediasComponent,
+    DisplayMediaComponent,
     MediaComponent,
+    MediaDialog,
     MediasComponent,
     MediasTestComponent,
     ConfirmationDialog
@@ -169,7 +173,8 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
   ],
   entryComponents: [
     TaxonAdvancedModalComponent,
-    ConfirmationDialog
+    ConfirmationDialog,
+    MediaDialog,
   ],
   exports: [
     MunicipalitiesComponent,
@@ -228,6 +233,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     GeometryFormComponent,
     ConfirmationDialog,
     MediasComponent,
+    MediaDialog,
     DisplayMediasComponent,
   ]
 })

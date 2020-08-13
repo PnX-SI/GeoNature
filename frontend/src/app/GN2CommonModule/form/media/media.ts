@@ -13,6 +13,7 @@ class Media {
   public media_url: string;
   public media_path: string;
   public id_nomenclature_media_type: number;
+  public author: string;
 
   public bFile: string;
   public bLoading: boolean = false;

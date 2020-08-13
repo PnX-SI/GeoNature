@@ -25,17 +25,14 @@
                     *ngIf="media.valid() && !media.bLoading"
                     matTooltip="Le media est valide"
                     class="valid"
-                    >check</mat-icon>
+                    >check</mat-icon
+                  >
 
-                    <mat-icon
-                    *ngIf="media.bLoading"
-                    matTooltip="chargement en cours"
-                    class="fa-spin"
-                    >settings</mat-icon>
+                  <mat-icon *ngIf="media.bLoading" matTooltip="chargement en cours" class="fa-spin"
+                    >settings</mat-icon
+                  >
 
-                  {{ 'Media.Media' | translate}} #{{ i }} : {{ media.title_fr }}
-
-
+                  <pnx-display-media [media]="media" display="form-title"></pnx-display-media>
                 </div>
                 <div>
                   <mat-progress-bar
@@ -66,8 +63,6 @@
         >
           <mat-icon matTooltip="{{ 'Media.add' | translate }}">add</mat-icon>
         </button>
-
-
       </div>
     </mat-accordion>
     <button

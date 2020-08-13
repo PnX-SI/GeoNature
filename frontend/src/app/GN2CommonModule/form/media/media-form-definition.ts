@@ -9,11 +9,16 @@ export const mediaFormDefinitionsDict = {
     "type_widget": "text",
     "required": true
   },
+  "author": {
+    "attribut_label": "Auteur",
+    "type_widget": "text",
+    "required": true
+  },
   "id_nomenclature_media_type": {
     "attribut_label": "Type de média",
     "type_widget": "nomenclature",
     "required": true,
-    "code_nomenclature_type": "TYPE_MEDIA"
+    "code_nomenclature_type": "TYPE_MEDIA",
   },
   "bFile":{
     "attribut_label": "Import du média",

@@ -3,7 +3,7 @@ import { Media } from './media';
 import { MediaService } from '@geonature_common/service/media.service'
 
 @Component({
-  selector: 'pnx-dispay-medias',
+  selector: 'pnx-display-medias',
   templateUrl: './display-medias.component.html',
   styleUrls: ['./media.scss'],
 })
@@ -19,6 +19,33 @@ export class DisplayMediasComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this._mediaService.getNomenclatures().subscribe(() => this.bInitialized = true);
+    this._mediaService.getNomenclatures().subscribe(() => {this.bInitialized = true; this.initMedias() });
   }
+
+  nomenclature(id_nomenclature) {
+    return this._mediaService.getNomenclature(id_nomenclature)
+  }
+
+  initMedias() {
+    if (!this.bInitialized) return;
+    for (const index in this.medias) {
+      if (!(this.medias[index] instanceof Media)) {
+        this.medias[index] = new Media(this.medias[index]);
+      }
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    for (let propName in changes) {
+      let chng = changes[propName];
+      let cur = JSON.stringify(chng.currentValue);
+      let prev = JSON.stringify(chng.previousValue);
+
+      if (propName === 'medias') {
+        this.initMedias()
+      }
+    }
+  }
+
+
 }
