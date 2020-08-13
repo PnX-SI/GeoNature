@@ -1,11 +1,11 @@
 <div class="test-medias">
   <h1>Test Médias</h1>
-
+<p>App Config {{appConfig.MEDIAS | json}}</p>
   <div>
     <pnx-medias
       [(medias)]="medias"
       [schemaDotTable]="schemaDotTable"
-      [sizeMax]="1000"
+      [sizeMax]="appConfig.MEDIAS.MEDIAS_SIZE_MAX"
     >
     </pnx-medias>
   </div>

@@ -90,7 +90,7 @@ class ServerConfig(Schema):
     LOG_LEVEL = fields.Integer(missing=20)
 
 class MediasConfig(Schema):
-    MEDIA_SIZE_MAX = fields.Integer(missing=20)
+    MEDIAS_SIZE_MAX = fields.Integer(missing=10000)
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
 
 
@@ -289,6 +289,7 @@ class GnGeneralSchemaConf(Schema):
     BDD = fields.Nested(BddConfig, missing=dict())
     URL_USERSHUB = fields.Url(required=False)
     ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, missing={})
+    MEDIAS = fields.Nested(MediasConfig, missing={})
 
     @validates_schema
     def validate_enable_sign_up(self, data):

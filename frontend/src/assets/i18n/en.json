@@ -196,6 +196,7 @@
   "PasswordAndLoginRecovery": "An email has been sent to recover your login and password",
   "Medias": {
     "Medias": "Medias",
+    "Media": "Media",
     "add": "Add media",
     "edit": "Edit media",
     "valid": "Validate media",

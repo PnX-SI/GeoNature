@@ -93,7 +93,7 @@ export class MediaComponent implements OnInit {
         if (this.mediaFormInitialized) {
           this.watchChangeForm = false;
 
-          this.bValidSizeMax = (!(values.file && this.sizeMax)) || (values.file.size < this.sizeMax)
+          this.bValidSizeMax = (!(values.file && this.sizeMax)) || ((values.file.size / 1000) < this.sizeMax)
 
           this.media.setValues(values);
           if (values.bFile == 'Renseigner une url' && (values.media_path || values.file)) {
@@ -178,6 +178,11 @@ export class MediaComponent implements OnInit {
       }
 
     }
+  }
+
+  round(val, dec) {
+    const decPow = Math.pow(10, dec)
+    return Math.round(val * decPow) / decPow;
   }
 
 }

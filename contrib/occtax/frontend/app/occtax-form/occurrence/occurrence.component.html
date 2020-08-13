@@ -326,13 +326,11 @@
       {{'Media.Medias' |translate}}
     </span>
   </h5>
-occ {{occtaxConfig.MEDIA_SIZE_MAX}} <br>
-app {{appConfig.MEDIA_SIZE_MAX}} <br>
   <pnx-medias
     schemaDotTable="pr_occtax.t_occurrences_occtax"
     [medias]="occurrenceForm.value.medias || []"
     (mediasChange)="onMediasChange($event)"
-    [sizeMax]="occtaxConfig.MEDIA_SIZE_MAX || appConfig.MEDIA_SIZE_MAX"
+    [sizeMax]="occtaxConfig.MEDIAS_SIZE_MAX"
   ></pnx-medias>
 </div>
 

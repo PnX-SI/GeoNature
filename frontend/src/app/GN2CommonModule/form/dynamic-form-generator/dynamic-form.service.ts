@@ -83,7 +83,7 @@ export class DynamicFormService {
   fileSizeMaxValidator(sizeMax): ValidatorFn {
     return (control: AbstractControl): { [key: string]: boolean } | null => {
       const file = control.value;
-      const valid = !(file && file.size) || file.size > sizeMax;
+      const valid = !(file && file.size) || (file.size / 1000) > sizeMax;
       return !valid ? {file: true} : null;
     }
   }

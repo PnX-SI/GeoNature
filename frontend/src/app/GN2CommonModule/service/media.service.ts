@@ -1,9 +1,11 @@
+import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpEvent, HttpParams, HttpRequest } from '@angular/common/http';
 import { Observable, of, Subject } from '@librairies/rxjs';
+import { map, filter, switchMap, tap, pairwise, retry } from "rxjs/operators";
 import { AppConfig } from '@geonature_config/app.config';
-import { Media } from '../form/media/media';
+import { Media } from '@geonature_common/form/media/media';
 /**
  *
  *  Ce service référence les méthodes pour la gestion des medias
@@ -23,8 +25,23 @@ import { Media } from '../form/media/media';
 export class MediaService {
 
   idTableLocations = {};
+  nomenclatures = null;
 
-  constructor(private _http: HttpClient) { }
+  constructor(private _http: HttpClient, private _dataFormService: DataFormService) { }
+
+  getNomenclatures(): Observable<any> {
+    if (this.nomenclatures) return of(this.nomenclatures)
+    return this._dataFormService
+      .getNomenclatures(['TYPE_MEDIA'])
+      .pipe(
+        switchMap(
+          (nomenclatures) => {
+            this.nomenclatures = nomenclatures;
+            return of(nomenclatures);
+          }
+        )
+      )
+  }
 
   postMedia(file: File, media): Observable<HttpEvent<any>> {
     const formData = new FormData();
@@ -71,26 +88,26 @@ export class MediaService {
 
   validMedias(medias) {
     return !medias ||
-    !medias.length ||
-    medias.every((mediaData) => {
-      const media = new Media(mediaData);
-      return media.valid();
-    });
+      !medias.length ||
+      medias.every((mediaData) => {
+        const media = new Media(mediaData);
+        return media.valid();
+      });
   }
 
   validOrLoadingMedias(medias) {
     return !medias ||
-    !medias.length ||
-    medias.every((mediaData) => {
-      const media = new Media(mediaData);
-      return media.valid() || media.bLoading;
-    });
+      !medias.length ||
+      medias.every((mediaData) => {
+        const media = new Media(mediaData);
+        return media.valid() || media.bLoading;
+      });
   }
 
   mediasValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: boolean } | null => {
       const medias = control.value;
-      return !this.validMedias(medias) ? {medias: true} : null;
+      return !this.validMedias(medias) ? { medias: true } : null;
     }
   }
 

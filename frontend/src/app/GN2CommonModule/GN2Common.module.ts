@@ -60,9 +60,10 @@ import { AutoCompleteComponent } from '@geonature_common/form/autocomplete/autoc
 import { SyntheseSearchComponent } from '@geonature_common/form/synthese-form/synthese-form.component';
 import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-component';
 import { DumbSelectComponent } from '@geonature_common/form/dumb-select/dumb-select.component';
-import { MediaComponent } from '@geonature_common/form/media/media.component'
-import { MediasComponent } from '@geonature_common/form/media/medias.component'
-import { MediasTestComponent } from '@geonature_common/form/media/medias-test.component'
+import { DisplayMediasComponent } from '@geonature_common/form/media/display-medias.component';
+import { MediaComponent } from '@geonature_common/form/media/media.component';
+import { MediasComponent } from '@geonature_common/form/media/medias.component';
+import { MediasTestComponent } from '@geonature_common/form/media/medias-test.component';
 
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
@@ -147,6 +148,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     TaxonAdvancedModalComponent,
     DumbSelectComponent,
     GeometryFormComponent,
+    DisplayMediasComponent,
     MediaComponent,
     MediasComponent,
     MediasTestComponent,
@@ -225,7 +227,8 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     DumbSelectComponent,
     GeometryFormComponent,
     ConfirmationDialog,
-    MediasComponent
+    MediasComponent,
+    DisplayMediasComponent,
   ]
 })
 export class GN2CommonModule { }

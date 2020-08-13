@@ -18,6 +18,8 @@ import { NewPasswordComponent } from '../components/new-password/new-password.co
 import { LoginComponent } from '../components/login/login.component';
 import { NavHomeComponent } from '../components/nav-home/nav-home.component';
 
+import { MediasTestComponent } from '@geonature_common/form/media/medias-test.component';
+
 
 const defaultRoutes: Routes = [
   { path: 'login',  component: LoginComponent},
@@ -48,6 +50,9 @@ const defaultRoutes: Routes = [
       {% if enable_user_management %}
       { path: 'user',data: { module_code: 'user' }, loadChildren: '@geonature/userModule/user.module#UserModule'},
       {% endif %}
+
+      { path: 'test/medias', component: MediasTestComponent},
+
       { path: '**',  component: PageNotFoundComponent },
      ] },
 ];

@@ -2,6 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } fro
 import { FormControl, FormGroup } from '@angular/forms';
 import { Media } from './media';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { AppConfig } from "@geonature_config/app.config";
+
 
 @Component({
   selector: 'pnx-medias-test',
@@ -14,6 +16,7 @@ export class MediasTestComponent implements OnInit {
   medias: Array<Media> = [];
   bValidForms: boolean = true;
   schemaDotTable:string = 'pr_occtax.t_occurrences_occtax';
+  public appConfig = AppConfig;
 
   constructor(private _route: ActivatedRoute,) {}
 

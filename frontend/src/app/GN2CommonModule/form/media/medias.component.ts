@@ -16,16 +16,23 @@ export class MediasComponent implements OnInit {
   @Input() schemaDotTable: string;
   @Input() sizeMax: number;
 
+  public bInitialized: boolean;
+
   constructor(
     private _mediaService: MediaService
   ) { }
 
   ngOnInit() {
-    this.initMedias()
+    this._mediaService.getNomenclatures()
+    .subscribe(() => {
+      this.bInitialized = true;
+      this.initMedias()
+    });
   };
 
 
   initMedias() {
+    if (!this.bInitialized) return;
     for (const index in this.medias) {
       if (!(this.medias[index] instanceof Media)) {
         this.medias[index] = new Media(this.medias[index]);
@@ -50,13 +57,13 @@ export class MediasComponent implements OnInit {
     const media = this.medias.splice(index, 1)[0];
 
     // si l upload est en cours
-    if(media.pendingRequest) {
+    if (media.pendingRequest) {
       media.pendingRequest.unsubscribe()
       media.pendingRequest = null;
     }
 
     // si le media existe déjà en base => route DELETE
-    if(media.id_media) {
+    if (media.id_media) {
       this._mediaService.deleteMedia(media.id_media).subscribe((response) => {
         console.log(`delete media ${media.id_media}: ${response}`)
       });

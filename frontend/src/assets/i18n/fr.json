@@ -200,6 +200,7 @@
   "PasswordAndLoginRecovery": "Un email vient de vous être envoyé pour récupérer votre identifiant et/ou renouveler votre mot de passe",
   "Media": {
     "Medias": "Médias",
+    "Media": "Média",
     "add": "Ajouter un Média",
     "edit": "Editer le média",
     "valid": "Valider le média",

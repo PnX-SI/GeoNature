@@ -1,4 +1,4 @@
-<div>
+<div *ngIf="bInitialized">
   <div class="mat-accordeon">
     <mat-accordion>
       <div
@@ -33,7 +33,7 @@
                     class="fa-spin"
                     >settings</mat-icon>
 
-                  {{ 'Media.Medias' | translate}} - {{ i }} {{ media.title_fr }}
+                  {{ 'Media.Media' | translate}} #{{ i }} : {{ media.title_fr }}
 
 
                 </div>
