@@ -1,3 +1,4 @@
+import { AppConfig } from './../../../../../../frontend/src/conf/app.config';
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import {
   animate,
@@ -16,6 +17,8 @@ import { FormService } from "@geonature_common/form/form.service";
 import { OcctaxTaxaListService } from "../taxa-list/taxa-list.service";
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
 import { MatDialog } from "@angular/material";
+import { AppConfig } from "@geonature_config/app.config";
+
 
 @Component({
   selector: "pnx-occtax-form-occurrence",
@@ -44,11 +47,13 @@ import { MatDialog } from "@angular/material";
 })
 export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   public occtaxConfig = ModuleConfig;
+  public appConfig = AppConfig;
   public occurrenceForm: FormGroup;
   public taxonForm: FormControl; //control permettant de rechercher un taxon TAXREF
   public taxonFormFocus: boolean = false; //pour mieux gérer l'affichage de l'erreur required
   private advanced: string = "collapsed";
   public countingStep: number = 0;
+
 
   public displayProofFromElements: boolean = false;
 

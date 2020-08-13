@@ -372,3 +372,8 @@ MAIL_ON_ERROR = false
 
 [SERVER]
     LOG_LEVEL = 20
+
+
+[MEDIAS]
+    # Taille maximale pour l'upload des médias
+    MEDIA_SIZE_MAX = 10000
