@@ -10,7 +10,7 @@
         <button mat-icon-button class="btn-clear d-none" (click)="deleteMedia(i)">
           <mat-icon matTooltip="Supprimer ce media">clear</mat-icon>
         </button>
-        <mat-expansion-panel [expanded]="medias.length === i + 1">
+        <mat-expansion-panel [expanded]="medias.length === i + 1 && !media.id_media">
           <mat-expansion-panel-header>
             <mat-panel-title>
               <div style="display: block; width: 100%;">

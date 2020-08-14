@@ -183,7 +183,8 @@ class TOccurrencesOccurrence(DB.Model):
         TMedias,
         primaryjoin=(TMedias.uuid_attached_row == unique_id_occurence_occtax),
         foreign_keys=[TMedias.uuid_attached_row],
-        cascade="all,delete-orphan"
+        cascade="all",
+        lazy="select"
     )
 
     taxref = relationship("Taxref", lazy="joined")
