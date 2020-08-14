@@ -1,4 +1,115 @@
-<div *ngIf="bInitialized">
-  <pnx-display-media *ngFor="let media of medias" [media]="media">
-  </pnx-display-media>
-</div>
+<ng-container *ngIf="bInitialized">
+  <div *ngIf="display === 'taxa-list'">
+    <ng-container *ngFor="let media of medias; index as i">
+      <h5 class="counting-title">{{ 'Media.Media' | translate }} #{{ i + 1 }}</h5>
+      <div class="list-values">
+        <div>
+          <div class="label">ID {{ 'Media.Media' | translate }} :</div>
+          <div class="value">{{ media.id_media }}</div>
+        </div>
+        <div>
+          <div class="label">{{ 'Media.title' | translate }} :</div>
+          <div class="value">{{ media.title_fr }}</div>
+        </div>
+        <div>
+          <div class="label">{{ 'Media.description' | translate }} :</div>
+          <div class="value">{{ media.description_fr }}</div>
+        </div>
+        <div>
+          <div class="label">{{ 'Media.author' | translate }} :</div>
+          <div class="value">{{ media.author }}</div>
+        </div>
+        <div>
+          <div class="label">{{ 'Media.type' | translate }} :</div>
+          <div class="value">{{ nomenclature(media.id_nomenclature_media_type)?.label_fr }}</div>
+        </div>
+        <div>
+          <div class="label">{{ 'Media.link' | translate }} :</div>
+          <div class="value">
+            <a *ngIf="media.href()" target="_blank" class="link-media" [href]="media.href()"
+              ><mat-icon matTooltip="{{ 'Medias.link' | translate }}">link</mat-icon>
+            </a>
+          </div>
+        </div>
+        <div>
+          <div>
+            <div class="flex-container">
+              <img
+                class="media-medium media-center"
+                *ngIf="
+                  nomenclature(media.id_nomenclature_media_type)?.label_fr == 'Photo' &&
+                  media.href()
+                "
+                [src]="media.href()"
+                alt="{{ media.title_fr }}"
+                matTooltip="Cliquer pour agrandir l'image"
+                (click)="openDialog(i)"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+  <div *ngIf="display === 'occtax-map-info'">
+    <div *ngFor="let media of medias; index as i">
+      <div class="row row-sm">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
+          <div class="form-group">
+            <label>{{ 'Media.title' | translate }}:</label>
+            <input class="form-control" [value]="media.title_fr" disabled />
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
+          <div class="form-group">
+            <label>{{ 'Media.author' | translate }}:</label>
+            <input class="form-control" [value]="media.author" disabled />
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
+          <div class="form-group">
+            <label>{{ 'Media.type' | translate }}:</label>
+            <input
+              class="form-control"
+              [value]="nomenclature(media.id_nomenclature_media_type)?.label_fr"
+              disabled
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row row-sm">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-8 padding-sm">
+          <div class="form-group">
+            <label>{{ 'Media.description' | translate }}:</label>
+            <input class="form-control" [value]="media.description_fr" disabled />
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
+          <div class="form-group">
+            <label>{{ 'Media.link' | translate }}:</label>
+            <a *ngIf="media.href()" target="_blank" class="link-media" [href]="media.href()"
+              ><mat-icon matTooltip="{{ 'Medias.link' | translate }}">link</mat-icon>
+            </a>
+            <!-- <input class="form-control" [value]="media.description_fr" disabled /> -->
+          </div>
+        </div>
+      </div>
+      <div class="row row-sm">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 padding-sm">
+          <div class="flex-container">
+            <img
+              class="media-medium media-center"
+              *ngIf="
+                nomenclature(media.id_nomenclature_media_type)?.label_fr == 'Photo' && media.href()
+              "
+              [src]="media.href()"
+              alt="{{ media.title_fr }}"
+              matTooltip="Cliquer pour agrandir l'image"
+              (click)="openDialog(i)"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>

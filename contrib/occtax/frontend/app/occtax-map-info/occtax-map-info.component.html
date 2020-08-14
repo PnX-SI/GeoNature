@@ -136,7 +136,16 @@
                 data-toggle="tab" 
                 href="#counting" 
                 role="tab">
-                Dénombrement
+                Dénombrement ({{(displayOccurrence|async).cor_counting_occtax.length}})
+              </a>
+            </li>
+            <li class="nav-item">
+              <a 
+                class="nav-link" 
+                data-toggle="tab" 
+                href="#medias" 
+                role="tab">
+                {{ 'Media.Medias' | translate }} ({{(displayOccurrence|async).medias.length}})
               </a>
             </li>
           </ul>
@@ -377,6 +386,9 @@
                 </div>
                 <hr>
               </div>
+            </div>
+            <div class="tab-pane" id="medias" role="tabpanel">
+              <pnx-display-medias [medias]="(displayOccurrence|async).medias" display="taxa-list"></pnx-display-medias>
             </div>
           </div>
         </div>

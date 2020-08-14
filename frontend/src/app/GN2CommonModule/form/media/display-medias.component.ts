@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation, SimpleChanges } from '@angular/core';
 import { Media } from './media';
 import { MediaService } from '@geonature_common/service/media.service'
-
+import { MatDialog } from "@angular/material";
+import {MediaDialog} from './media-dialog.component';
 @Component({
   selector: 'pnx-display-medias',
   templateUrl: './display-medias.component.html',
@@ -9,13 +10,14 @@ import { MediaService } from '@geonature_common/service/media.service'
 })
 export class DisplayMediasComponent implements OnInit {
 
-
   public bInitialized:boolean;
 
   @Input() medias: Array<Media> = []; /** list of medias */
+  @Input() display: string = '';
 
   constructor(
-    private _mediaService: MediaService
+    private _mediaService: MediaService,
+    public dialog: MatDialog,
   ) { }
 
   ngOnInit() {
@@ -47,5 +49,11 @@ export class DisplayMediasComponent implements OnInit {
     }
   }
 
+  openDialog(index) {
+    const dialogRef = this.dialog.open(MediaDialog, {
+      width: '800px',
+      data: { medias: this.medias, index },
+    });
+  }
 
 }

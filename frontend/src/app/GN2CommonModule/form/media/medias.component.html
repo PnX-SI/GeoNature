@@ -31,8 +31,20 @@
                   <mat-icon *ngIf="media.bLoading" matTooltip="chargement en cours" class="fa-spin"
                     >settings</mat-icon
                   >
+                  <img
+                  class="media-miniature"
+                  *ngIf="nomenclature(media.id_nomenclature_media_type)?.label_fr == 'Photo' && media.href()"
+                  [src]="media.href()"
+                  alt="{{ media.title_fr }}"
+                />
 
-                  <pnx-display-media [media]="media" display="form-title"></pnx-display-media>
+                <span class="media-title">
+                  Titre: {{ media.title_fr }} ({{ nomenclature(media.id_nomenclature_media_type)?.label_fr
+                  }}<ng-container *ngIf="media.author"
+                    >, <i>@{{ media.author }}</i></ng-container
+                  >)
+                </span>
+
                 </div>
                 <div>
                   <mat-progress-bar

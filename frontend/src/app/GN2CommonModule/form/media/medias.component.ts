@@ -72,6 +72,10 @@ export class MediasComponent implements OnInit {
 
   }
 
+  nomenclature(id_nomenclature) {
+    return this._mediaService.getNomenclature(id_nomenclature)
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     for (let propName in changes) {
       let chng = changes[propName];

@@ -6,6 +6,8 @@ import { mediaFormDefinitionsDict } from './media-form-definition';
 import { FormBuilder } from '@angular/forms';
 import { MediaService } from '@geonature_common/service/media.service'
 import { HttpEventType, HttpResponse } from '@angular/common/http';
+import { MatDialog } from "@angular/material";
+import { MediaDialog } from './media-dialog.component';
 
 @Component({
   selector: 'pnx-media',
@@ -19,8 +21,6 @@ export class MediaComponent implements OnInit {
   public mediaFormDefinition = [];
 
   public mediaFormChange: Subscription = null;
-
-  public mediaSave: Media;
 
   // manage form loading TODO in dynamic from
   public mediaFormInitialized;
@@ -41,7 +41,8 @@ export class MediaComponent implements OnInit {
 
   constructor(
     private _formBuilder: FormBuilder,
-    private _mediaService: MediaService
+    private _mediaService: MediaService,
+    public dialog: MatDialog,
   ) { }
 
   ngOnInit() {
@@ -63,12 +64,12 @@ export class MediaComponent implements OnInit {
   initForm() {
     this.mediaFormInitialized = false;
 
-    if(this.sizeMax) {
-      mediaFormDefinitionsDict.file.sizeMax=this.sizeMax;
+    if (this.sizeMax) {
+      mediaFormDefinitionsDict.file.sizeMax = this.sizeMax;
     }
 
     this.mediaFormDefinition = Object.keys(mediaFormDefinitionsDict)
-    .map((key) => ({ ...mediaFormDefinitionsDict[key], attribut_name: key }))
+      .map((key) => ({ ...mediaFormDefinitionsDict[key], attribut_name: key }))
 
     if (this.mediaFormChange) {
       this.mediaFormChange.unsubscribe()
@@ -79,7 +80,7 @@ export class MediaComponent implements OnInit {
     }
 
     if (this.media) {
-      if( this.media.media_url) {
+      if (this.media.media_url) {
         this.media.bFile = 'Renseigner une url';
       }
       this.media.id_table_location = this.media.id_table_location || this.idTableLocation;
@@ -133,7 +134,7 @@ export class MediaComponent implements OnInit {
           this.watchChangeForm = true;
         } else {
           // init forms
-          if( this.media.media_url) {
+          if (this.media.media_url) {
             this.media.bFile = 'Renseigner une url';
           }
           this.watchChangeForm = false;
@@ -162,8 +163,11 @@ export class MediaComponent implements OnInit {
             this.mediaChange.emit(this.media);
             this.media.pendingRequest = null;
           }
-        },
-        (err) => { console.log('Error on upload', err) });
+        });
+  }
+
+  nomenclature(id_nomenclature) {
+    return this._mediaService.getNomenclature(id_nomenclature)
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -181,6 +185,13 @@ export class MediaComponent implements OnInit {
       }
 
     }
+  }
+
+  openDialog() {
+    const dialogRef = this.dialog.open(MediaDialog, {
+      width: '800px',
+      data: { medias: [this.media], index: 0 },
+    });
   }
 
   round(val, dec) {

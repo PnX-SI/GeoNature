@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation, SimpleChanges, Inject } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Media } from './media';
 import { MediaService } from '@geonature_common/service/media.service'
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
+import { MatDialog } from "@angular/material";
 import {MediaDialog} from './media-dialog.component';
 
 
@@ -35,5 +35,3 @@ export class DisplayMediaComponent implements OnInit {
   }
 
 }
-
-

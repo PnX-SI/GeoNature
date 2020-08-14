@@ -1,3 +1,5 @@
+@import '../../../../../../contrib/occtax/frontend/app/occtax-form/taxa-list/taxa-list.component.scss';
+
 /** Patch dynamic form */
 :host /deep/ .padding-sm {
   padding-right: 0px !important;
@@ -5,29 +7,30 @@
 }
 
 .test-medias {
-  margin: 20px
+  margin: 20px;
 }
 
 .blc-expansion-panel {
-	position: relative;
+  position: relative;
 }
 
 .btn-add-media {
-	position: absolute;
-	bottom: 3px;
-	right: 3px;
+  position: absolute;
+  bottom: 3px;
+  right: 3px;
 }
 
 .btn-clear {
-	position: absolute;
-	color: #d40303;
+  position: absolute;
+  color: #d40303;
 }
 
 .error {
-	color: #d40303;
+  color: #d40303;
 }
 
-.btn-upload, .icon-loading {
+.btn-upload,
+.icon-loading {
   color: orange;
 }
 
@@ -35,11 +38,11 @@
   float: right;
 }
 .valid {
-  color: green
+  color: green;
 }
 
 .not-valid {
-	color: orange;
+  color: orange;
 }
 
 .media-title {
@@ -67,14 +70,48 @@
 .media-medium {
   height: 200px;
   margin-bottom: 10px;
+  margin-top: 5px;
 }
 
-
 .mat-expansion-panel {
-	margin-left: 45px !important;
-	margin-right: 50px !important;
+  margin-left: 45px !important;
+  margin-right: 50px !important;
 }
 
 .mat-accordeon {
   position: relative;
+}
+
+.media-dialog {
+  position: relative;
+}
+
+.media-dialog-arrow {
+  position: absolute;
+  top: 50%;
+  opacity: 0.3;
+}
+
+.media-dialog-arrow:hover {
+  opacity: 0.8;
+}
+
+.left-arrow {
+  left: 20px;
+}
+
+.right-arrow {
+  right: 20px;
+}
+
+.media-dialog-fade-in {
+  opacity: 1;
+  transition-property: opacity;
+  transition-duration: 0.2s;
+}
+
+.media-dialog-fade-out {
+  opacity: 0;
+  transition-property: opacity;
+  transition-duration: 0.2s;
 }

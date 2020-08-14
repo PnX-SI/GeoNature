@@ -1,57 +1,77 @@
-<ng-container *ngIf="(occtaxTaxaListService.occurrences$ | async)?.length || occtaxTaxaListService.rec_occurrences_in_progress.length; else zeroOccurrenceBlk">
-
-  <ng-container *ngFor="let occ_in_progress of occtaxTaxaListService.rec_occurrences_in_progress">
-    <div 
+<ng-container
+  *ngIf="
+    (occtaxTaxaListService.occurrences$ | async)?.length ||
+      occtaxTaxaListService.rec_occurrences_in_progress.length;
+    else zeroOccurrenceBlk
+  "
+>
+  <ng-container
+    *ngFor="
+      let occ_in_progress of occtaxTaxaListService.rec_occurrences_in_progress
+    "
+  >
+    <div
       class="in-progress-panel"
       [ngClass]="occ_in_progress.state"
-      [matTooltip]="occ_in_progress.state == 'in_progress' ? 'Enregistrement en cours': 'Une erreur est survenue lors de l\'enregistrement'"
+      [matTooltip]="
+        occ_in_progress.state == 'in_progress'
+          ? 'Enregistrement en cours'
+          : 'Une erreur est survenue lors de l\'enregistrement'
+      "
       matTooltipPosition="left"
-      (click)="inProgressErrorToForm(occ_in_progress)">
-      
-      <mat-spinner 
+      (click)="inProgressErrorToForm(occ_in_progress)"
+    >
+      <mat-spinner
         *ngIf="occ_in_progress.state == 'in_progress'"
         diameter="20"
-        strokeWidth="2">
+        strokeWidth="2"
+      >
       </mat-spinner>
       <mat-icon *ngIf="occ_in_progress.state == 'error'">warning</mat-icon>
       <span [innerHTML]="taxonTitle(occ_in_progress.data)"></span>
-      <div 
-        *ngIf="occ_in_progress.state == 'error'"
-        style="font-size: 12px;">
+      <div *ngIf="occ_in_progress.state == 'error'" style="font-size: 12px;">
         Erreur : cliquez pour reprendre ce taxon
       </div>
-    </div>  
+    </div>
   </ng-container>
 
-
   <div
-    *ngFor="let occurrence of occtaxTaxaListService.occurrences$ | async; let i=index"
-    displayMouseOver 
-    selector=".btn-actions">
-
+    *ngFor="
+      let occurrence of occtaxTaxaListService.occurrences$ | async;
+      let i = index
+    "
+    displayMouseOver
+    selector=".btn-actions"
+  >
     <span class="btn-actions d-none">
-      <button 
-        mat-icon-button 
+      <button
+        mat-icon-button
         class="btn-edit"
-        (click)="editOccurrence(occurrence)">
+        (click)="editOccurrence(occurrence)"
+      >
         <mat-icon matTooltip="Editer le taxon">edit</mat-icon>
       </button>
-      <button 
-        *ngIf="(occtaxTaxaListService.occurrences$ |async)?.length != 1 || i != 0"
-        mat-icon-button 
+      <button
+        *ngIf="
+          (occtaxTaxaListService.occurrences$ | async)?.length != 1 || i != 0
+        "
+        mat-icon-button
         class="btn-clear"
-        (click)="deleteOccurrence(occurrence)">
+        (click)="deleteOccurrence(occurrence)"
+      >
         <mat-icon matTooltip="Supprimer le taxon">clear</mat-icon>
       </button>
     </span>
 
     <gn-panel>
       <div class="gn-panel-header">
-    	  
-        <span 
-          [innerHTML]="taxonTitle(occurrence)" 
-          [matTooltip]="occurrence.taxref?.nom_valide || removeHtml(occurrence.nom_cite)"
-          class="header-title">
+        <span
+          [innerHTML]="taxonTitle(occurrence)"
+          [matTooltip]="
+            occurrence.taxref?.nom_valide || removeHtml(occurrence.nom_cite)
+          "
+          class="header-title"
+        >
         </span>
 
         <!-- <ng-container *ngIf="(getStatuts(taxon.statuts)).length">
@@ -59,7 +79,6 @@
         </ng-container> -->
       </div>
       <div class="gn-panel-content">
-
         <mat-tab-group>
           <mat-tab label="Occurrence">
             <div class="list-values">
@@ -69,96 +88,184 @@
               </div>
 
               <div>
-                <div class="label">{{ 'Taxon.NomCite' | translate }} :</div>
+                <div class="label">{{ "Taxon.NomCite" | translate }} :</div>
                 <div class="value">{{ removeHtml(occurrence.nom_cite) }}</div>
               </div>
 
               <div>
                 <div class="label">Taxref (nom complet) :</div>
-                <div class="value">{{occurrence?.taxref?.nom_complet}}</div>
+                <div class="value">{{ occurrence?.taxref?.nom_complet }}</div>
               </div>
 
               <div>
-                <div class="label">{{ 'Taxon.Determiner' | translate }} :</div>
+                <div class="label">{{ "Taxon.Determiner" | translate }} :</div>
                 <div class="value">{{ occurrence?.determiner || "-" }}</div>
               </div>
 
               <div>
-                <div class="label">{{ 'Taxon.DeterminationMethod' | translate }} :</div>
-                <div class="value">{{ occtaxTaxaListService.getLibelleByID(occurrence?.id_nomenclature_determination_method) || "-"  }}</div>
+                <div class="label">
+                  {{ "Taxon.DeterminationMethod" | translate }} :
+                </div>
+                <div class="value">
+                  {{
+                    occtaxTaxaListService.getLibelleByID(
+                      occurrence?.id_nomenclature_determination_method
+                    ) || "-"
+                  }}
+                </div>
               </div>
 
               <div>
-                <div class="label">{{ 'Taxon.ObservationStatus' | translate }} :</div>
-                <div class="value">{{ occtaxTaxaListService.getLibelleByID(occurrence?.id_nomenclature_observation_status) || "-" }}</div>
+                <div class="label">
+                  {{ "Taxon.ObservationStatus" | translate }} :
+                </div>
+                <div class="value">
+                  {{
+                    occtaxTaxaListService.getLibelleByID(
+                      occurrence?.id_nomenclature_observation_status
+                    ) || "-"
+                  }}
+                </div>
               </div>
 
               <div>
-                <div class="label">{{ 'Taxon.ObsMethod' | translate }} :</div>
-                <div class="value">{{ occtaxTaxaListService.getLibelleByID(occurrence?.id_nomenclature_obs_meth) || "-" }}</div>
+                <div class="label">{{ "Taxon.ObsMethod" | translate }} :</div>
+                <div class="value">
+                  {{
+                    occtaxTaxaListService.getLibelleByID(
+                      occurrence?.id_nomenclature_obs_meth
+                    ) || "-"
+                  }}
+                </div>
               </div>
 
               <div>
-                <div class="label">{{ 'Taxon.BiologicalCondition' | translate }} :</div>
-                <div class="value">{{ occtaxTaxaListService.getLibelleByID(occurrence?.id_nomenclature_bio_condition) || "-" }}</div>
+                <div class="label">
+                  {{ "Taxon.BiologicalCondition" | translate }} :
+                </div>
+                <div class="value">
+                  {{
+                    occtaxTaxaListService.getLibelleByID(
+                      occurrence?.id_nomenclature_bio_condition
+                    ) || "-"
+                  }}
+                </div>
               </div>
 
               <div>
-                <div class="label">{{ 'Taxon.Naturalness' | translate }} :</div>
-                <div class="value">{{ occtaxTaxaListService.getLibelleByID(occurrence?.id_nomenclature_naturalness) || "-" }}</div>
+                <div class="label">{{ "Taxon.Naturalness" | translate }} :</div>
+                <div class="value">
+                  {{
+                    occtaxTaxaListService.getLibelleByID(
+                      occurrence?.id_nomenclature_naturalness
+                    ) || "-"
+                  }}
+                </div>
               </div>
 
               <div>
-                <div class="label">{{ 'Taxon.BiologicalStatus' | translate }} :</div>
-                <div class="value">{{ occtaxTaxaListService.getLibelleByID(occurrence?.id_nomenclature_bio_status) || "-" }}</div>
+                <div class="label">
+                  {{ "Taxon.BiologicalStatus" | translate }} :
+                </div>
+                <div class="value">
+                  {{
+                    occtaxTaxaListService.getLibelleByID(
+                      occurrence?.id_nomenclature_bio_status
+                    ) || "-"
+                  }}
+                </div>
               </div>
 
               <div>
-                <div class="label">{{ 'Taxon.StatusSource' | translate }} :</div>
-                <div class="value">{{ occtaxTaxaListService.getLibelleByID(occurrence?.id_nomenclature_source_status) || "-" }}</div>
+                <div class="label">
+                  {{ "Taxon.StatusSource" | translate }} :
+                </div>
+                <div class="value">
+                  {{
+                    occtaxTaxaListService.getLibelleByID(
+                      occurrence?.id_nomenclature_source_status
+                    ) || "-"
+                  }}
+                </div>
               </div>
 
               <div>
-                <div class="label">{{ 'Taxon.DiffusionLevel' | translate }} :</div>
-                <div class="value">{{ occtaxTaxaListService.getLibelleByID(occurrence?.id_nomenclature_diffusion_level) || "-" }}</div>
+                <div class="label">
+                  {{ "Taxon.DiffusionLevel" | translate }} :
+                </div>
+                <div class="value">
+                  {{
+                    occtaxTaxaListService.getLibelleByID(
+                      occurrence?.id_nomenclature_diffusion_level
+                    ) || "-"
+                  }}
+                </div>
               </div>
 
               <div>
-                <div class="label">{{ 'Taxon.Blurring' | translate }} :</div>
-                <div class="value">{{ occtaxTaxaListService.getLibelleByID(occurrence?.id_nomenclature_blurring) || "-" }}</div>
+                <div class="label">{{ "Taxon.Blurring" | translate }} :</div>
+                <div class="value">
+                  {{
+                    occtaxTaxaListService.getLibelleByID(
+                      occurrence?.id_nomenclature_blurring
+                    ) || "-"
+                  }}
+                </div>
               </div>
 
               <div>
                 <div class="label">sample_number_proof :</div>
-                <div class="value">{{ occurrence?.sample_number_proof || "-"}}</div>
+                <div class="value">
+                  {{ occurrence?.sample_number_proof || "-" }}
+                </div>
               </div>
 
               <div>
-                <div class="label">{{ 'Taxon.ExistProof' | translate }} :</div>
-                <div class="value">{{ occtaxTaxaListService.getLibelleByID(occurrence?.id_nomenclature_exist_proof) || "-" }}</div>
+                <div class="label">{{ "Taxon.ExistProof" | translate }} :</div>
+                <div class="value">
+                  {{
+                    occtaxTaxaListService.getLibelleByID(
+                      occurrence?.id_nomenclature_exist_proof
+                    ) || "-"
+                  }}
+                </div>
               </div>
 
-              <ng-container *ngIf="occtaxTaxaListService.getCdNomenclatureByID(occurrence?.id_nomenclature_exist_proof) === 1">
+              <ng-container
+                *ngIf="
+                  occtaxTaxaListService.getCdNomenclatureByID(
+                    occurrence?.id_nomenclature_exist_proof
+                  ) === 1
+                "
+              >
                 <div>
-                  <div class="label">{{ 'Taxon.DigitalProof' | translate }} :</div>
-                  <div class="value">{{ occurrence?.digital_proof || "-" }}</div>
+                  <div class="label">
+                    {{ "Taxon.DigitalProof" | translate }} :
+                  </div>
+                  <div class="value">
+                    {{ occurrence?.digital_proof || "-" }}
+                  </div>
                 </div>
 
                 <div>
-                  <div class="label">{{ 'Taxon.NonDigitalProof' | translate }} :</div>
-                  <div class="value">{{ occurrence?.non_digital_proof || "-" }}</div>
+                  <div class="label">
+                    {{ "Taxon.NonDigitalProof" | translate }} :
+                  </div>
+                  <div class="value">
+                    {{ occurrence?.non_digital_proof || "-" }}
+                  </div>
                 </div>
               </ng-container>
 
               <div>
-                <div class="label">{{ 'Taxon.Comment' | translate }} :</div>
+                <div class="label">{{ "Taxon.Comment" | translate }} :</div>
                 <div class="value">{{ occurrence?.comment || "-" }}</div>
               </div>
-
             </div>
           </mat-tab>
 
-          <-- TAB des information taxref (uniquement si une valeur taxref est fournie) -->
+          <-- TAB des information taxref (uniquement si une valeur taxref est
+          fournie) -->
           <mat-tab label="Taxon" *ngIf="occurrence.taxref">
             <div class="list-values">
               <div>
@@ -233,26 +340,42 @@
               <div>
                 <div class="label">Fiche INPN :</div>
                 <div class="value">
-                  <a href="{{ occurrence.taxref.url }}" target="_BLANK">{{ occurrence.taxref.url }}</a>
+                  <a href="{{ occurrence.taxref.url }}" target="_BLANK">{{
+                    occurrence.taxref.url
+                  }}</a>
                 </div>
               </div>
             </div>
           </mat-tab>
 
           <-- TAB pour afficher les infos de dénombrements -->
-          <mat-tab *ngIf="occurrence.cor_counting_occtax"> 
+          <mat-tab *ngIf="occurrence.cor_counting_occtax">
             <ng-template mat-tab-label>
-              <span [matBadge]="occurrence.cor_counting_occtax.length" matBadgeOverlap="false">
-                Dénombrement<ng-container *ngIf="occurrence.cor_counting_occtax.length > 1">s</ng-container>
+              <span
+                [matBadge]="occurrence.cor_counting_occtax.length"
+                matBadgeOverlap="false"
+              >
+                Dénombrement<ng-container
+                  *ngIf="occurrence.cor_counting_occtax.length > 1"
+                  >s</ng-container
+                >
               </span>
             </ng-template>
 
-            
-            <ng-container *ngFor="let counting of occurrence.cor_counting_occtax; index as i">
-              <h5 class="counting-title">{{ 'Counting.Counting' | translate }} #{{ i + 1 }}</h5>
+            <ng-container
+              *ngFor="
+                let counting of occurrence.cor_counting_occtax;
+                index as i
+              "
+            >
+              <h5 class="counting-title">
+                {{ "Counting.Counting" | translate }} #{{ i + 1 }}
+              </h5>
               <div class="list-values">
                 <div>
-                  <div class="label">ID {{ 'Counting.Counting' | translate }} :</div>
+                  <div class="label">
+                    ID {{ "Counting.Counting" | translate }} :
+                  </div>
                   <div class="value">{{ counting.id_counting_occtax }}</div>
                 </div>
                 <div>
@@ -260,28 +383,62 @@
                   <div class="value">{{ counting.unique_id_sinp_occtax }}</div>
                 </div>
                 <div>
-                  <div class="label">{{ 'Counting.LifeStage' | translate }} :</div>
-                  <div class="value">{{ occtaxTaxaListService.getLibelleByID(counting.id_nomenclature_life_stage) || "-" }}</div>
+                  <div class="label">
+                    {{ "Counting.LifeStage" | translate }} :
+                  </div>
+                  <div class="value">
+                    {{
+                      occtaxTaxaListService.getLibelleByID(
+                        counting.id_nomenclature_life_stage
+                      ) || "-"
+                    }}
+                  </div>
                 </div>
                 <div>
-                  <div class="label">{{ 'Counting.Sex' | translate }} :</div>
-                  <div class="value">{{ occtaxTaxaListService.getLibelleByID(counting.id_nomenclature_sex) || "-" }}</div>
+                  <div class="label">{{ "Counting.Sex" | translate }} :</div>
+                  <div class="value">
+                    {{
+                      occtaxTaxaListService.getLibelleByID(
+                        counting.id_nomenclature_sex
+                      ) || "-"
+                    }}
+                  </div>
                 </div>
                 <div>
-                  <div class="label">{{ 'Counting.NumberMin' | translate }} :</div>
+                  <div class="label">
+                    {{ "Counting.NumberMin" | translate }} :
+                  </div>
                   <div class="value">{{ counting.count_min || "-" }}</div>
                 </div>
                 <div>
-                  <div class="label">{{ 'Counting.NumberMax' | translate }} :</div>
+                  <div class="label">
+                    {{ "Counting.NumberMax" | translate }} :
+                  </div>
                   <div class="value">{{ counting.count_max || "-" }}</div>
                 </div>
                 <div>
-                  <div class="label">{{ 'Counting.CountingObject' | translate }} :</div>
-                  <div class="value">{{ occtaxTaxaListService.getLibelleByID(counting.id_nomenclature_obj_count) || "-" }}</div>
+                  <div class="label">
+                    {{ "Counting.CountingObject" | translate }} :
+                  </div>
+                  <div class="value">
+                    {{
+                      occtaxTaxaListService.getLibelleByID(
+                        counting.id_nomenclature_obj_count
+                      ) || "-"
+                    }}
+                  </div>
                 </div>
                 <div>
-                  <div class="label">{{ 'Counting.CountingType' | translate }} :</div>
-                  <div class="value">{{ occtaxTaxaListService.getLibelleByID(counting.id_nomenclature_type_count) || "-" }}</div>
+                  <div class="label">
+                    {{ "Counting.CountingType" | translate }} :
+                  </div>
+                  <div class="value">
+                    {{
+                      occtaxTaxaListService.getLibelleByID(
+                        counting.id_nomenclature_type_count
+                      ) || "-"
+                    }}
+                  </div>
                 </div>
                 <!-- <div>
                   <div class="label">validation_status</div>
@@ -289,26 +446,24 @@
                 </div> -->
               </div>
             </ng-container>
-
           </mat-tab>
 
           <-- TAB pour afficher les médias -->
-          <mat-tab *ngIf="occurrence.medias.length"> 
+          <mat-tab>
             <ng-template mat-tab-label>
-              <span [matBadge]="occurrence.medias.length" matBadgeOverlap="false">
-                {{'Media.Medias' | translate }}
+              <span
+                [matBadge]="occurrence.medias.length"
+                matBadgeOverlap="false"
+              >
+                {{ "Media.Medias" | translate }}
               </span>
             </ng-template>
-
-            <pnx-display-medias
-              [medias]='occurrence.medias'
-            ></pnx-display-medias>
+            <pnx-display-medias [medias]="occurrence.medias" display="taxa-list">
+            </pnx-display-medias>
           </mat-tab>
         </mat-tab-group>
-
       </div>
     </gn-panel>
-
   </div>
 </ng-container>
 <ng-template #zeroOccurrenceBlk>

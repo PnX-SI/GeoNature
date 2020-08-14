@@ -207,6 +207,12 @@
     "delete": "Supprimer le média",
     "undo": "Rétablir le média",
     "loading": "Chargement du média en cours",
-    "link": "Lien vers le media"
+    "link": "Lien vers le media",
+    "title": "Titre",
+    "description": "Description",
+    "author": "Auteur",
+    "type": "Type de média",
+    "next": "Voir le média suivant",
+    "previous": "Voir le média précédent"
   }
 }

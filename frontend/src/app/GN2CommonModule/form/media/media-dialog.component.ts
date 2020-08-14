@@ -4,7 +4,8 @@ import { Media } from './media';
 import { MediaService } from '@geonature_common/service/media.service'
 
 export interface MediaDialogData {
-  media: Media;
+  medias: Array<Media>;
+  index: number;
 }
 
 @Component({
@@ -19,6 +20,19 @@ export class MediaDialog {
     public dialogRef: MatDialogRef<MediaDialog>,
     @Inject(MAT_DIALOG_DATA) public data: MediaDialogData) { }
 
+
+
+  public media: Media;
+  public medias;
+  public curIndex;
+  public bDisplay=true;
+
+  ngOnInit() {
+    this.curIndex = this.data.index;
+    this.medias = this.data.medias;
+    this.media=this.medias[this.curIndex];
+  }
+
   onNoClick(): void {
     this.dialogRef.close();
   }
@@ -27,4 +41,12 @@ export class MediaDialog {
     return this._mediaService.getNomenclature(id_nomenclature)
   }
 
+  changeMedia(step) {
+    this.bDisplay=false;
+    setTimeout(() => {
+      this.curIndex = ( ( (this.curIndex + step) % this.medias.length) + this.medias.length ) % this.medias.length;
+      this.media = this.medias[this.curIndex];
+      this.bDisplay=true;
+    }, 250);
+  }
 }
