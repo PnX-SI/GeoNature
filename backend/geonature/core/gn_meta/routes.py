@@ -610,7 +610,7 @@ def update_sensitivity(info_role):
         return "OK"
     #id_syntheses = [id for id in np.arange(0, 5000000, 1)]
 
-    if len(id_syntheses) > 1000000 :
+    if len(id_syntheses) > current_app.config["NB_MAX_DATA_SENSITIVITY_REPORT"] :
 
         @copy_current_request_context
         def update_sensitivity_task(id_syntheses):
