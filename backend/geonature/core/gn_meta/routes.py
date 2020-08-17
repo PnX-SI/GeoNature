@@ -20,6 +20,8 @@ from binascii import a2b_base64
 from geonature.core.gn_meta.models import (
     TDatasets,
     CorDatasetActor,
+    CorDatasetProtocol,
+    CorDatasetTerritory,
     TAcquisitionFramework,
     TAcquisitionFrameworkDetails,
     CorAcquisitionFrameworkActor,
@@ -340,6 +342,14 @@ def delete_dataset(info_role, ds_id):
 
     DB.session.query(CorDatasetActor).filter(
         CorDatasetActor.id_dataset == ds_id
+    ).delete()
+
+    DB.session.query(CorDatasetProtocol).filter(
+        CorDatasetProtocol.id_dataset == ds_id
+    ).delete()
+
+    DB.session.query(CorDatasetTerritory).filter(
+        CorDatasetTerritory.id_dataset == ds_id
     ).delete()
     
     DB.session.query(TDatasets).filter(
@@ -1054,6 +1064,14 @@ def delete_acquisition_framework(info_role, af_id):
 
     DB.session.query(CorAcquisitionFrameworkActor).filter(
         CorAcquisitionFrameworkActor.id_acquisition_framework == af_id
+    ).delete()
+
+    DB.session.query(CorAcquisitionFrameworkObjectif).filter(
+        CorAcquisitionFrameworkObjectif.id_acquisition_framework == af_id
+    ).delete()
+
+    DB.session.query(CorAcquisitionFrameworkVoletSINP).filter(
+        CorAcquisitionFrameworkVoletSINP.id_acquisition_framework == af_id
     ).delete()
     
     DB.session.query(TAcquisitionFramework).filter(
