@@ -10,6 +10,7 @@ import { map, filter, tap } from "rxjs/operators";
 
 import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
+import { MediaService } from '@geonature_common/service/media.service';
 
 @Injectable()
 export class OcctaxFormCountingService {
@@ -20,7 +21,8 @@ export class OcctaxFormCountingService {
   constructor(
     private fb: FormBuilder,
     private occtaxFormService: OcctaxFormService,
-    private occtaxParamS: OcctaxFormParamService
+    private occtaxParamS: OcctaxFormParamService,
+    private mediaService: MediaService
   ) {}
 
   createForm(patchWithDefaultValues: boolean = false): FormGroup {
@@ -32,6 +34,7 @@ export class OcctaxFormCountingService {
       id_nomenclature_type_count: null,
       count_min: [null, [Validators.required, Validators.pattern("[0-9]+")]],
       count_max: [null, [Validators.required, Validators.pattern("[0-9]+")]],
+      medias: [[], this.mediaService.mediasValidator()],
     });
 
     form.setValidators([this.countingValidator]);

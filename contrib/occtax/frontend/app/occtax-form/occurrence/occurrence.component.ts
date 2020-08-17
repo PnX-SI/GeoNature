@@ -223,12 +223,4 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     this.advanced = this.advanced === "collapsed" ? "expanded" : "collapsed";
   }
 
-  /* Gestion des medias */
-  onMediasChange(event) {
-    this.occurrenceForm.patchValue(
-      {
-        medias:event
-      }
-    );
-  }
 }

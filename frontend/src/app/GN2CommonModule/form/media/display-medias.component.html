@@ -1,7 +1,7 @@
 <ng-container *ngIf="bInitialized">
-  <div *ngIf="display === 'taxa-list'">
+  <div *ngIf="display === 'taxa-list'" class="medias-taxa-list">
     <ng-container *ngFor="let media of medias; index as i">
-      <h5 class="counting-title">{{ 'Media.Media' | translate }} #{{ i + 1 }}</h5>
+      <b>{{ 'Media.Media' | translate }} #{{ i + 1 }}</b>
       <div class="list-values">
         <div>
           <div class="label">ID {{ 'Media.Media' | translate }} :</div>

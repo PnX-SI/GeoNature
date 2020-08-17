@@ -440,15 +440,19 @@
                     }}
                   </div>
                 </div>
+
                 <!-- <div>
                   <div class="label">validation_status</div>
                   <div class="value"></div>
                 </div> -->
               </div>
+            <pnx-display-medias [medias]="counting.medias" display="taxa-list"></pnx-display-medias>
+
             </ng-container>
           </mat-tab>
 
           <-- TAB pour afficher les médias -->
+          <!--
           <mat-tab>
             <ng-template mat-tab-label>
               <span
@@ -461,7 +465,8 @@
             <pnx-display-medias [medias]="occurrence.medias" display="taxa-list">
             </pnx-display-medias>
           </mat-tab>
-        </mat-tab-group>
+        -->
+        </mat-tab-group> 
       </div>
     </gn-panel>
   </div>

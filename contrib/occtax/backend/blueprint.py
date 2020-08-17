@@ -99,7 +99,18 @@ def getReleves(info_role):
     featureCollection = []
     for n in data:
         releve_cruved = n.get_releve_cruved(user, user_cruved)
-        feature = n.get_geofeature()
+        feature = n.get_geofeature(
+            relationships=(
+                't_occurrences_occtax',
+                'cor_counting_occtax',
+                'taxref',
+                'observers',
+                'digitiser',
+                'dataset',
+                'right',
+                'medias'
+            )
+        )
         feature["properties"]["rights"] = releve_cruved
         featureCollection.append(feature)
     return {
@@ -386,8 +397,6 @@ def insertOrUpdateOneReleve(info_role):
         DB.session.add(releve)
     DB.session.commit()
     DB.session.flush()
-
-    # gestion des medias ici
 
     return releve.get_geofeature()
 

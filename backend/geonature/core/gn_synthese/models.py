@@ -20,7 +20,7 @@ from utils_flask_sqla_geo.serializers import geoserializable, shapeserializable
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
 from geonature.core.ref_geo.models import LAreas
 from geonature.core.ref_geo.models import LiMunicipalities
-from geonature.core.gn_commons.models import THistoryActions, TValidations
+from geonature.core.gn_commons.models import THistoryActions, TValidations, TMedias
 from geonature.utils.env import DB
 
 
@@ -443,6 +443,7 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
         primaryjoin=(CorObserverSynthese.id_synthese == id_synthese),
         secondaryjoin=(User.id_role == CorObserverSynthese.id_role),
     )
+
     validations = DB.relationship(
         "TValidations",
         primaryjoin=(TValidations.uuid_attached_row == unique_id_sinp),
@@ -450,6 +451,12 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
         uselist=True,
     )
 
+    # medias = DB.relationship(
+    #     TMedias,
+    #     primaryjoin=(func.gn_commons.check_entity_uuid_exist( VSyntheseDecodeNomenclatures.source.schema_name + '.' + VSyntheseDecodeNomenclatures.source.table + '.' + VSyntheseDecodeNomenclatures.source., TMedias.uuid_attached_row),
+    #     foreign_keys=[TMedias.uuid_attached_row],
+    # )
+    
 
 @serializable
 class VColorAreaTaxon(DB.Model):

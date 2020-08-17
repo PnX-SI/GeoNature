@@ -20,4 +20,14 @@ export class OcctaxFormCountingComponent{
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService
   ) {}
 
+  /* Gestion des medias */
+  onMediasChange(event) {
+    this.countingForm.patchValue(
+      {
+        medias:event
+      }
+    );
+  }
+
+
 }

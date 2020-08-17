@@ -136,6 +136,13 @@ class CorCountingOccurrence(DB.Model):
         'id_occurrence_occtax'
     ]
 
+    medias = DB.relationship(
+        TMedias,
+        primaryjoin=('TMedias.uuid_attached_row == CorCountingOccurrence.unique_id_sinp_occtax'),
+        foreign_keys=[TMedias.uuid_attached_row],
+        cascade="all",
+        lazy="select",
+    )
 
 @serializable
 class TOccurrencesOccurrence(DB.Model):
@@ -177,14 +184,6 @@ class TOccurrencesOccurrence(DB.Model):
         cascade="all,delete-orphan",
         uselist=True,
         backref=DB.backref("occurence", lazy='joined')
-    )
-
-    medias = DB.relationship(
-        TMedias,
-        primaryjoin=(TMedias.uuid_attached_row == unique_id_occurence_occtax),
-        foreign_keys=[TMedias.uuid_attached_row],
-        cascade="all",
-        lazy="joined"
     )
 
     taxref = relationship("Taxref", lazy="joined")
@@ -252,8 +251,8 @@ class TRelevesOccurrence(ReleveModel):
         'observers'
     ]
 
-    def get_geofeature(self, recursif=True):
-        return self.as_geofeature("geom_4326", "id_releve_occtax", recursif)
+    def get_geofeature(self, recursif=True, relationships=()):
+        return self.as_geofeature("geom_4326", "id_releve_occtax", recursif, relationships=relationships)
 
 
 @serializable
@@ -329,9 +328,9 @@ class VReleveList(ReleveModel):
         ],
     )
 
-    def get_geofeature(self, recursif=True):
+    def get_geofeature(self, recursif=True, exclude=()):
 
-        return self.as_geofeature("geom_4326", "id_releve_occtax", recursif)
+        return self.as_geofeature("geom_4326", "id_releve_occtax", recursif, exclude=exclude)
 
 
 @serializable

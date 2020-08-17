@@ -319,23 +319,6 @@
 
 </mat-accordion>
 
-<div id='occurrence-medias' *ngIf="occtaxConfig.ENABLE_MEDIAS">
-
-  <h5 style="margin-top: 15px;">
-    <span [matBadge]="(occurrenceForm.value.medias || []).length" matBadgeOverlap="false">
-      {{'Media.Medias' |translate}}
-    </span>
-  </h5>
-  <pnx-medias
-    schemaDotTable="pr_occtax.t_occurrences_occtax"
-    [medias]="occurrenceForm.value.medias || []"
-    (mediasChange)="onMediasChange($event)"
-    [sizeMax]="occtaxConfig.MEDIAS_SIZE_MAX"
-  ></pnx-medias>
-</div>
-
-
-
 <div class="text-center" style="margin-top: 10px;"> 
   <!-- <button 
       class="btn btn-danger"

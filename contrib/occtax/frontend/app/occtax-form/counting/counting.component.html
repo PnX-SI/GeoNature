@@ -93,6 +93,24 @@
       </div>
 
     </div>
+<div class="row">
+  <div id='occurrence-medias' *ngIf="occtaxConfig.ENABLE_MEDIAS" class="col-sm-12">
+
+    <h5 style="margin-top: 15px;">
+      <span [matBadge]="(countingForm.value.medias || []).length" matBadgeOverlap="false">
+        {{'Media.Medias' |translate}}
+      </span>
+    </h5>
+    <pnx-medias
+      schemaDotTable="pr_occtax.t_occurrences_occtax"
+      [medias]="countingForm.value.medias || []"
+      (mediasChange)="onMediasChange($event)"
+      [sizeMax]="occtaxConfig.MEDIAS_SIZE_MAX"
+    ></pnx-medias>
+  </div>
+  
+</div>
+
     <small 
       *ngIf="countingForm.get('id_nomenclature_obj_count').hasError('required') && countingForm.get('id_nomenclature_obj_count').touched" 
       class="error" 

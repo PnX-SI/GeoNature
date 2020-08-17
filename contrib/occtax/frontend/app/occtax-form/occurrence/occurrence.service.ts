@@ -16,7 +16,6 @@ import { OcctaxFormCountingService } from "../counting/counting.service";
 import { OcctaxDataService } from "../../services/occtax-data.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
 import { OcctaxTaxaListService } from "../taxa-list/taxa-list.service";
-import { MediaService } from '@geonature_common/service/media.service';
 
 @Injectable()
 export class OcctaxFormOccurrenceService {
@@ -34,7 +33,6 @@ export class OcctaxFormOccurrenceService {
     private occtaxDataService: OcctaxDataService,
     private occtaxParamS: OcctaxFormParamService,
     private occtaxTaxaListService: OcctaxTaxaListService,
-    private mediaService: MediaService
   ) {
     this.initForm();
     this.setObservables();
@@ -61,8 +59,6 @@ export class OcctaxFormOccurrenceService {
       non_digital_proof: null,
       comment: null,
       cor_counting_occtax: this.fb.array([], Validators.required),
-      medias: [[], this.mediaService.mediasValidator()],
-      // medias: [null],
     });
   }
 
