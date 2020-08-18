@@ -535,7 +535,7 @@ ALTER TABLE t_occurrences_occtax
   ADD CONSTRAINT check_t_occurrences_occtax_determination_method CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_determination_method,'METH_DETERMIN')) NOT VALID;
 
 ALTER TABLE t_occurrences_occtax
-  ADD CONSTRAINT check_t_occurrences_occtax_behavior CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_determination_method,'OCC_COMPORTEMENT')) NOT VALID;
+  ADD CONSTRAINT check_t_occurrences_occtax_behavior CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behavior,'OCC_COMPORTEMENT')) NOT VALID;
 
 
 ALTER TABLE ONLY cor_counting_occtax
@@ -1178,6 +1178,7 @@ INSERT INTO pr_occtax.defaults_nomenclatures_value (mnemonique_type, id_organism
 ,('TECHNIQUE_OBS',0,0,0, ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'))
 ,('STATUT_SOURCE',0, 0, 0,  ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE', 'Te'))
 ,('NAT_OBJ_GEO',0, 0, 0,  ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO', 'NSP'))
+,('OCC_COMPORTEMENT', ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '0'))
 ;
 
 -- Creation d'une liste 'observateur occtax'

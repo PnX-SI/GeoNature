@@ -149,7 +149,6 @@ class TOccurrencesOccurrence(DB.Model):
     id_nomenclature_bio_status = DB.Column(DB.Integer)
     id_nomenclature_naturalness = DB.Column(DB.Integer)
     id_nomenclature_exist_proof = DB.Column(DB.Integer)
-    id_nomenclature_diffusion_level = DB.Column(DB.Integer)
     id_nomenclature_observation_status = DB.Column(DB.Integer)
     id_nomenclature_blurring = DB.Column(DB.Integer)
     id_nomenclature_source_status = DB.Column(DB.Integer)
