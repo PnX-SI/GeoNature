@@ -10,7 +10,7 @@
       >
       {{ media.title_fr }}</mat-card-title
     >
-    <img mat-card-image [src]="media.href()" />
+    <img *ngIf='ms.isImg(media)' mat-card-image [src]="media.href()" />
     <mat-card-content>
       <a *ngIf="media.href()" target="_blank" class="link-media float-right" [href]="media.href()"
         ><mat-icon matTooltip="{{ 'Media.link' | translate }}">link</mat-icon>
@@ -18,7 +18,7 @@
       {{ media.description_fr }}
     </mat-card-content>
     <mat-card-subtitle>
-      ({{ nomenclature(media.id_nomenclature_media_type)?.label_fr }}, @{{ media.author }})
+      ({{ ms.typeMedia(media) }}, @{{ media.author }})
     </mat-card-subtitle>
 
     <button

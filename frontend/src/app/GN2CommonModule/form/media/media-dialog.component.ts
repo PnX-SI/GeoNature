@@ -16,7 +16,7 @@ export interface MediaDialogData {
 export class MediaDialog {
 
   constructor(
-    private _mediaService: MediaService,
+    public ms: MediaService,
     public dialogRef: MatDialogRef<MediaDialog>,
     @Inject(MAT_DIALOG_DATA) public data: MediaDialogData) { }
 
@@ -35,10 +35,6 @@ export class MediaDialog {
 
   onNoClick(): void {
     this.dialogRef.close();
-  }
-
-  nomenclature(id_nomenclature) {
-    return this._mediaService.getNomenclature(id_nomenclature)
   }
 
   changeMedia(step) {

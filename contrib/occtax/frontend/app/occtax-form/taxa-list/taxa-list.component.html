@@ -446,7 +446,7 @@
                   <ng-container *ngFor="let media of counting.medias; index as i">
                     <div [matTooltip]="ms.toString(media)">
                       <a                       
-                      [href]="ms.href(media)"
+                      [href]="ms.href(media)" target=blank
                       >{{ media.title_fr }}</a> 
                       <i>
                         ({{ ms.typeMedia(media) }}, @{{ media.author }})

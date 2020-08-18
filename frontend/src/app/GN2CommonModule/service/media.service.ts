@@ -145,4 +145,8 @@ export class MediaService {
     return this.getNomenclature(media.id_nomenclature_media_type).label_fr
   }
 
+  isImg(media) {
+    return this.typeMedia(media) === 'Photo';
+  }
+
 }

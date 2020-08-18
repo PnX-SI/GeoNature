@@ -1,7 +1,7 @@
 <div class="flex-container">
   <img
     *ngIf="
-      ms.getNomenclature(medias[index].id_nomenclature_media_type)?.label_fr == 'Photo' && medias[index].href()
+      ms.isImg(medias[index]) && medias[index].href()
     "
     class="media-medium media-center"
     [src]="medias[index].href()"
