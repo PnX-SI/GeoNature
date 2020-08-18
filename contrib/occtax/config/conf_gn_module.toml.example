@@ -171,4 +171,3 @@ ENABLE_UPLOAD_TOOL = true
 # ------------- MEDIAS PARAMETER ---------------
 
 ENABLE_MEDIAS = true
-MEDIAS_SIZE_MAX = 1000
