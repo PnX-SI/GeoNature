@@ -150,7 +150,6 @@ id_nomenclature_bio_status,
 id_nomenclature_bio_condition,
 id_nomenclature_naturalness,
 id_nomenclature_exist_proof,
-id_nomenclature_diffusion_level,
 id_nomenclature_life_stage,
 id_nomenclature_sex,
 id_nomenclature_obj_count,
@@ -159,9 +158,11 @@ id_nomenclature_observation_status,
 id_nomenclature_blurring,
 id_nomenclature_source_status,
 id_nomenclature_info_geo_type,
+id_nomenclature_behavior,
 count_min,
 count_max,
 cd_nom,
+cd_hab,
 nom_cite,
 meta_v_taxref,
 sample_number_proof,
@@ -189,8 +190,9 @@ VALUES(
   new_count.id_counting_occtax,
   releve.id_dataset,
   id_module,
-  --nature de l'objet geo: id_nomenclature_geo_object_nature Le taxon observé est présent quelque part dans l'objet géographique - NSP par défault
-  pr_occtax.get_default_nomenclature_value('NAT_OBJ_GEO'),
+  releve.id_nomenclature_geo_object_nature,
+  releve.cd_hab,
+  releve.id_nomenclature_geo_object_nature,
   releve.id_nomenclature_grp_typ,
   occurrence.id_nomenclature_obs_meth,
   releve.id_nomenclature_obs_technique,
@@ -198,7 +200,6 @@ VALUES(
   occurrence.id_nomenclature_bio_condition,
   occurrence.id_nomenclature_naturalness,
   occurrence.id_nomenclature_exist_proof,
-  occurrence.id_nomenclature_diffusion_level,
   new_count.id_nomenclature_life_stage,
   new_count.id_nomenclature_sex,
   new_count.id_nomenclature_obj_count,
@@ -208,7 +209,8 @@ VALUES(
   -- status_source récupéré depuis le JDD
   id_nomenclature_source_status,
   -- id_nomenclature_info_geo_type: type de rattachement = géoréferencement
-  ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO', '1')	,
+  ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO', '1'),
+  occurrence.id_nomenclature_behavior,
   new_count.count_min,
   new_count.count_max,
   occurrence.cd_nom,
@@ -253,6 +255,7 @@ CREATE TABLE t_releves_occtax (
     observers_txt varchar(500),
     id_nomenclature_obs_technique integer NOT NULL,
     id_nomenclature_grp_typ integer NOT NULL,
+    grp_method varchar(255),
     date_min timestamp without time zone DEFAULT now() NOT NULL,
     date_max timestamp without time zone DEFAULT now() NOT NULL,
     hour_min time,
@@ -263,6 +266,7 @@ CREATE TABLE t_releves_occtax (
     comment text,
     geom_local public.geometry(Geometry,MYLOCALSRID),
     geom_4326 public.geometry(Geometry,4326),
+    id_nomenclature_geo_object_nature integer NOT NULL,
     precision integer DEFAULT 100,
     CONSTRAINT enforce_dims_geom_4326 CHECK ((public.st_ndims(geom_4326) = 2)),
     CONSTRAINT enforce_dims_geom_local CHECK ((public.st_ndims(geom_local) = 2)),
@@ -292,10 +296,10 @@ CREATE TABLE t_occurrences_occtax (
     id_nomenclature_bio_status integer,
     id_nomenclature_naturalness integer,
     id_nomenclature_exist_proof integer,
-    id_nomenclature_diffusion_level integer,
     id_nomenclature_observation_status integer,
     id_nomenclature_blurring integer,
     id_nomenclature_source_status integer,
+    id_nomenclature_behavior integer,
     determiner character varying(255),
     id_nomenclature_determination_method integer,
     cd_nom integer,
@@ -311,7 +315,6 @@ COMMENT ON COLUMN t_occurrences_occtax.id_nomenclature_bio_condition IS 'Corresp
 COMMENT ON COLUMN t_occurrences_occtax.id_nomenclature_bio_status IS 'Correspondance nomenclature INPN = statut_bio';
 COMMENT ON COLUMN t_occurrences_occtax.id_nomenclature_naturalness IS 'Correspondance nomenclature INPN = naturalite';
 COMMENT ON COLUMN t_occurrences_occtax.id_nomenclature_exist_proof IS 'Correspondance nomenclature INPN = preuve_exist';
-COMMENT ON COLUMN t_occurrences_occtax.id_nomenclature_diffusion_level IS 'Correspondance nomenclature INPN = niv_precis';
 COMMENT ON COLUMN t_occurrences_occtax.id_nomenclature_observation_status IS 'Correspondance nomenclature INPN = statut_obs';
 COMMENT ON COLUMN t_occurrences_occtax.id_nomenclature_blurring IS 'Correspondance nomenclature INPN = dee_flou';
 COMMENT ON COLUMN t_occurrences_occtax.id_nomenclature_determination_method IS 'Correspondance nomenclature GEONATURE = meth_determin';
@@ -392,6 +395,7 @@ ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT pk_pr_occtax_defaults_nomenclatures_value PRIMARY KEY (mnemonique_type, id_organism, regne, group2_inpn);
 
 
+
 ----------------
 --FOREIGN KEYS--
 ----------------
@@ -407,6 +411,13 @@ ALTER TABLE ONLY t_releves_occtax
 
 ALTER TABLE ONLY t_releves_occtax
     ADD CONSTRAINT fk_t_releves_occtax_regroupement_typ FOREIGN KEY (id_nomenclature_grp_typ) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY t_releves_occtax
+  ADD CONSTRAINT fk_t_releves_occtax_id_nomenclature_geo_object_nature FOREIGN KEY (id_nomenclature_geo_object_nature) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY t_releves_occtax
+  ADD CONSTRAINT fk_t_releves_occtax_cd_hab FOREIGN KEY (cd_hab) REFERENCES ref_habitats.habref(cd_hab) ON UPDATE CASCADE;
+
 
 ALTER TABLE ONLY t_occurrences_occtax
     ADD CONSTRAINT fk_t_occurrences_occtax_t_releves_occtax FOREIGN KEY (id_releve_occtax) REFERENCES t_releves_occtax(id_releve_occtax) ON UPDATE CASCADE ON DELETE CASCADE;
@@ -430,9 +441,6 @@ ALTER TABLE ONLY t_occurrences_occtax
     ADD CONSTRAINT fk_t_occurrences_occtax_exist_proof FOREIGN KEY (id_nomenclature_exist_proof) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_occtax
-    ADD CONSTRAINT fk_t_occurrences_occtax_diffusion_level FOREIGN KEY (id_nomenclature_diffusion_level) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY t_occurrences_occtax
     ADD CONSTRAINT fk_t_occurrences_occtax_observation_status FOREIGN KEY (id_nomenclature_observation_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_occtax
@@ -442,6 +450,9 @@ ALTER TABLE ONLY t_occurrences_occtax
 
 ALTER TABLE ONLY t_occurrences_occtax
     ADD CONSTRAINT fk_t_occurrences_occtax_determination_method FOREIGN KEY (id_nomenclature_determination_method) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY t_occurrences_occtax
+    ADD CONSTRAINT fk_t_occurrences_occtax_behavior FOREIGN KEY (id_nomenclature_behavior) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY cor_counting_occtax
     ADD CONSTRAINT fk_cor_stage_number_id_taxon FOREIGN KEY (id_occurrence_occtax) REFERENCES t_occurrences_occtax(id_occurrence_occtax) ON UPDATE CASCADE ON DELETE CASCADE;
@@ -493,6 +504,9 @@ ALTER TABLE t_releves_occtax
 ALTER TABLE t_releves_occtax
   ADD CONSTRAINT check_t_releves_occtax_regroupement_typ CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_grp_typ,'TYP_GRP')) NOT VALID;
 
+ALTER TABLE t_releves_occtax
+  ADD CONSTRAINT check_t_releves_occtax_geo_object_nature CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_geo_object_nature,'NAT_OBJ_GEO')) NOT VALID;
+
 ALTER TABLE t_occurrences_occtax
   ADD CONSTRAINT check_t_occurrences_occtax_obs_meth CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_obs_meth,'METH_OBS')) NOT VALID;
 
@@ -509,9 +523,6 @@ ALTER TABLE t_occurrences_occtax
   ADD CONSTRAINT check_t_occurrences_occtax_exist_proof CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_exist_proof,'PREUVE_EXIST')) NOT VALID;
 
 ALTER TABLE t_occurrences_occtax
-  ADD CONSTRAINT check_t_occurrences_occtax_accur_level CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_diffusion_level,'NIV_PRECIS')) NOT VALID;
-
-ALTER TABLE t_occurrences_occtax
   ADD CONSTRAINT check_t_occurrences_occtax_obs_status CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_observation_status,'STATUT_OBS')) NOT VALID;
 
 ALTER TABLE t_occurrences_occtax
@@ -522,6 +533,9 @@ ALTER TABLE t_occurrences_occtax
 
 ALTER TABLE t_occurrences_occtax
   ADD CONSTRAINT check_t_occurrences_occtax_determination_method CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_determination_method,'METH_DETERMIN')) NOT VALID;
+
+ALTER TABLE t_occurrences_occtax
+  ADD CONSTRAINT check_t_occurrences_occtax_behavior CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_determination_method,'OCC_COMPORTEMENT')) NOT VALID;
 
 
 ALTER TABLE ONLY cor_counting_occtax
@@ -721,7 +735,6 @@ $BODY$
   COST 100;
 
 -- UPDATE Occurrence
--- TODO: SENSIBILITE NON GEREE
 CREATE OR REPLACE FUNCTION fct_tri_synthese_update_occ()
   RETURNS trigger AS
 $BODY$
@@ -733,12 +746,12 @@ BEGIN
     id_nomenclature_bio_status = NEW.id_nomenclature_bio_status,
     id_nomenclature_naturalness = NEW.id_nomenclature_naturalness,
     id_nomenclature_exist_proof = NEW.id_nomenclature_exist_proof,
-    id_nomenclature_diffusion_level = NEW.id_nomenclature_diffusion_level,
     id_nomenclature_observation_status = NEW.id_nomenclature_observation_status,
     id_nomenclature_blurring = NEW.id_nomenclature_blurring,
     id_nomenclature_source_status = NEW.id_nomenclature_source_status,
     determiner = NEW.determiner,
     id_nomenclature_determination_method = NEW.id_nomenclature_determination_method,
+    id_nomenclature_behavior = id_nomenclature_behavior,
     cd_nom = NEW.cd_nom,
     nom_cite = NEW.nom_cite,
     meta_v_taxref = NEW.meta_v_taxref,
@@ -811,6 +824,7 @@ BEGIN
       observers = myobservers,
       id_digitiser = NEW.id_digitiser,
       id_nomenclature_obs_technique = NEW.id_nomenclature_obs_technique,
+      grp_method = NEW.grp_method,
       id_nomenclature_grp_typ = NEW.id_nomenclature_grp_typ,
       date_min = date_trunc('day',NEW.date_min)+COALESCE(NEW.hour_min,'00:00:00'::time),
       date_max = date_trunc('day',NEW.date_max)+COALESCE(NEW.hour_max,'00:00:00'::time), 
@@ -818,6 +832,7 @@ BEGIN
       altitude_max = NEW.altitude_max,
       the_geom_4326 = NEW.geom_4326,
       the_geom_point = ST_CENTROID(NEW.geom_4326),
+      id_nomenclature_geo_object_nature = NEW.id_nomenclature_geo_object_nature,
       last_action = 'U',
       comment_context = NEW.comment
   WHERE unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer)));
