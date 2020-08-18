@@ -55,7 +55,6 @@ def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
     @before_models_committed.connect_via(app)
     def on_before_models_committed(sender, changes):
         for obj, change in changes:
-            print('before', obj, change)
             if change == 'delete' and hasattr(obj, '__before_commit_delete__'):
                 obj.__before_commit_delete__()
 
