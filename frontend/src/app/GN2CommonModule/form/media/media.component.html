@@ -5,7 +5,7 @@
   <div class="flex-container">
     <img
       class="media-medium media-center"
-      *ngIf="nomenclature(media.id_nomenclature_media_type)?.label_fr == 'Photo' && media.href()"
+      *ngIf="ms.getNomenclature(media.id_nomenclature_media_type)?.label_fr == 'Photo' && media.href()"
       [src]="media.href()"
       alt="{{ media.title_fr }}"
       matTooltip="Cliquer pour agrandir l'image"

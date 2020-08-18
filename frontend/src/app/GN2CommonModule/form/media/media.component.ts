@@ -41,7 +41,7 @@ export class MediaComponent implements OnInit {
 
   constructor(
     private _formBuilder: FormBuilder,
-    private _mediaService: MediaService,
+    public ms: MediaService,
     public dialog: MatDialog,
   ) { }
 
@@ -52,7 +52,7 @@ export class MediaComponent implements OnInit {
 
   initIdTableLocation(schemaDotTable) {
     if (!this.schemaDotTable) return;
-    this._mediaService
+    this.ms
       .getIdTableLocation(schemaDotTable)
       .subscribe((idTableLocation) => {
         this.idTableLocation = idTableLocation;
@@ -86,7 +86,7 @@ export class MediaComponent implements OnInit {
       this.media.id_table_location = this.media.id_table_location || this.idTableLocation;
 
       // PHOTO par defaut
-      this.media.id_nomenclature_media_type = this.media.id_nomenclature_media_type || this._mediaService.getNomenclature('Photo', 'mnemonique', 'TYPE_MEDIA').id_nomenclature
+      this.media.id_nomenclature_media_type = this.media.id_nomenclature_media_type || this.ms.getNomenclature('Photo', 'mnemonique', 'TYPE_MEDIA').id_nomenclature
 
       this.mediaForm.patchValue(this.media);
     }
@@ -149,7 +149,7 @@ export class MediaComponent implements OnInit {
 
   uploadMedia() {
     this.media.bLoading = true;
-    this.media.pendingRequest = this._mediaService
+    this.media.pendingRequest = this.ms
       .postMedia(this.mediaForm.value.file, this.media)
       .subscribe(
         (event) => {
@@ -164,10 +164,6 @@ export class MediaComponent implements OnInit {
             this.media.pendingRequest = null;
           }
         });
-  }
-
-  nomenclature(id_nomenclature) {
-    return this._mediaService.getNomenclature(id_nomenclature)
   }
 
   ngOnChanges(changes: SimpleChanges) {
