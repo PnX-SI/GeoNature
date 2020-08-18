@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation, SimpleChanges } from '@angular/core';
+import { FormControl } from "@angular/forms";
 import { Media } from './media';
 import { MediaService } from '@geonature_common/service/media.service'
 
@@ -10,20 +11,22 @@ import { MediaService } from '@geonature_common/service/media.service'
 export class MediasComponent implements OnInit {
 
 
-  @Input() medias: Array<Media> = []; /** list of medias */
-  @Output() mediasChange = new EventEmitter<Array<Media>>();
+//  @Input() medias: Array<Media> = []; /** list of medias */
+//  @Output() mediasChange = new EventEmitter<Array<Media>>();
 
   @Input() schemaDotTable: string;
   @Input() sizeMax: number;
 
+  @Input() parentFormControl: FormControl;
+
   public bInitialized: boolean;
 
   constructor(
-    private _mediaService: MediaService
+    public ms: MediaService
   ) { }
 
   ngOnInit() {
-    this._mediaService.getNomenclatures()
+    this.ms.getNomenclatures()
     .subscribe(() => {
       this.bInitialized = true;
       this.initMedias()
@@ -33,28 +36,28 @@ export class MediasComponent implements OnInit {
 
   initMedias() {
     if (!this.bInitialized) return;
-    for (const index in this.medias) {
-      if (!(this.medias[index] instanceof Media)) {
-        this.medias[index] = new Media(this.medias[index]);
+    for (const index in this.parentFormControl.value) {
+      if (!(this.parentFormControl.value[index] instanceof Media)) {
+        this.parentFormControl.value[index] = new Media(this.parentFormControl.value[index]);
       }
     }
   }
 
   validOrLoadingMedias() {
-    return this._mediaService.validOrLoadingMedias(this.medias);
+    return this.ms.validOrLoadingMedias(this.parentFormControl.value);
   }
 
   onMediaChange() {
-    this.mediasChange.emit(this.medias)
+    this.parentFormControl.patchValue(this.parentFormControl.value);
   }
 
   addMedia() {
-    this.medias.push(new Media());
-    this.mediasChange.emit(this.medias)
+    this.parentFormControl.value.push(new Media());
+    this.parentFormControl.patchValue(this.parentFormControl.value);
   }
 
   deleteMedia(index) {
-    const media = this.medias.splice(index, 1)[0];
+    const media = this.parentFormControl.value.splice(index, 1)[0];
 
     // si l upload est en cours
     if (media.pendingRequest) {
@@ -64,25 +67,18 @@ export class MediasComponent implements OnInit {
 
     // si le media existe déjà en base => route DELETE
     if (media.id_media) {
-      this._mediaService.deleteMedia(media.id_media).subscribe((response) => {
+      this.ms.deleteMedia(media.id_media).subscribe((response) => {
         console.log(`delete media ${media.id_media}: ${response}`)
       });
     }
-    this.mediasChange.emit(this.medias)
-
-  }
-
-  nomenclature(id_nomenclature) {
-    return this._mediaService.getNomenclature(id_nomenclature)
+    this.parentFormControl.patchValue(this.parentFormControl.value);
   }
 
   ngOnChanges(changes: SimpleChanges) {
     for (let propName in changes) {
       let chng = changes[propName];
-      let cur = JSON.stringify(chng.currentValue);
-      let prev = JSON.stringify(chng.previousValue);
 
-      if (propName === 'medias') {
+      if (propName === 'parentFormControl') {
         this.initMedias()
       }
     }

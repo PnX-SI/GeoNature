@@ -2,7 +2,7 @@
   <div class="mat-accordeon">
     <mat-accordion>
       <div
-        *ngFor="let media of medias; let i = index"
+        *ngFor="let media of parentFormControl.value; let i = index"
         class="blc-expansion-panel"
         selector=".btn-clear"
         displayMouseOver
@@ -10,7 +10,7 @@
         <button mat-icon-button class="btn-clear d-none" (click)="deleteMedia(i)">
           <mat-icon matTooltip="Supprimer ce media">clear</mat-icon>
         </button>
-        <mat-expansion-panel [expanded]="medias.length === i + 1 && !media.id_media">
+        <mat-expansion-panel [expanded]="parentFormControl.value.length === i + 1 && !media.id_media">
           <mat-expansion-panel-header>
             <mat-panel-title>
               <div style="display: block; width: 100%;">
@@ -33,13 +33,13 @@
                   >
                   <img
                   class="media-miniature"
-                  *ngIf="nomenclature(media.id_nomenclature_media_type)?.label_fr == 'Photo' && media.href()"
+                  *ngIf="ms.getNomenclature(media.id_nomenclature_media_type)?.label_fr == 'Photo' && media.href()"
                   [src]="media.href()"
                   alt="{{ media.title_fr }}"
                 />
 
                 <span class="media-title">
-                  Titre: {{ media.title_fr }} ({{ nomenclature(media.id_nomenclature_media_type)?.label_fr
+                  Titre: {{ media.title_fr }} ({{ ms.getNomenclature(media.id_nomenclature_media_type)?.label_fr
                   }}<ng-container *ngIf="media.author"
                     >, <i>@{{ media.author }}</i></ng-container
                   >)
@@ -65,7 +65,7 @@
           </pnx-media>
         </mat-expansion-panel>
         <button
-          *ngIf="medias.length === i + 1"
+          *ngIf="parentFormControl.value.length === i + 1"
           mat-mini-fab
           color="primary"
           class="btn-add-media"
@@ -78,7 +78,7 @@
       </div>
     </mat-accordion>
     <button
-      *ngIf="!(medias && medias.length)"
+      *ngIf="!(parentFormControl.value && parentFormControl.value.length)"
       mat-mini-fab
       color="primary"
       id="add-media-btn"
