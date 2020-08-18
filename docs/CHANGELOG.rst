@@ -10,7 +10,11 @@ CHANGELOG
  * Refonte de l'ergonomie d'Occtax 
  
 GeoNature n'est plus compatbile avec le version de Python 3.5 (qui ne sera plus maintenu en novembre 2020).
-Suivez la procédure suivante pour passer à Python 3.8
+Suivez la procédure suivante pour passer à Python 3.7
+
+Notes:
+ajout de champs lié au passage occtax v2: MAJ des vues pas faites dans l'update ?
+A mettre ici
 
 
 ::

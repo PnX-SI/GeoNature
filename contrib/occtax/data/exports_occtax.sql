@@ -9,6 +9,9 @@ SET search_path = public;
 
 CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS 
  SELECT 
+    rel.unique_id_sinp as "idSINPRegroupement",
+    ref_nomenclatures.get_cd_nomenclature(rel.id_nomenclature_grp_typ) AS "typeRegroupement",
+    rel.grp_type AS "methodeRegroupement",
     ccc.unique_id_sinp_occtax AS "permId",
     ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_observation_status) AS "statObs",
     occ.nom_cite AS "nomCite",
@@ -24,7 +27,6 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     'NSP'::text AS "dSPublique",
     d.unique_dataset_id AS "jddMetaId",
     ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_source_status) AS "statSource",
-    '0'::text AS "difNivPrec",
     ccc.unique_id_sinp_occtax AS "idOrigine",
     d.dataset_name AS "jddCode",
     d.unique_dataset_id AS "jddId",
@@ -38,6 +40,7 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     COALESCE(ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_bio_status), '0'::text::character varying) AS "ocStatBio",
     COALESCE(ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_exist_proof), '0'::text::character varying) AS "preuveOui",
     ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_determination_method, 'fr'::character varying) AS "ocMethDet",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_behavior, 'fr'::character varying) AS "ocMethDet",
     occ.digital_proof AS "preuvNum",
     occ.non_digital_proof AS "preuvNoNum",
     rel.comment AS "obsCtx",
@@ -52,10 +55,15 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     COALESCE(string_agg(DISTINCT (r.nom_role::text || ' '::text) || r.prenom_role::text, ','::text), rel.observers_txt::text) AS "obsId",
     COALESCE(string_agg(DISTINCT o.nom_organisme::text, ','::text), 'NSP'::text) AS "obsNomOrg",
     COALESCE(occ.determiner, 'Inconnu'::character varying) AS "detId",
+    ref_nomenclatures.get_cd_nomenclature(rel.id_nomenclature_geo_object_nature) AS "natureObjGeo",
     'NSP'::text AS "detNomOrg",
     'NSP'::text AS "orgGestDat",
     st_astext(rel.geom_4326) AS "WKT",
     'In'::text AS "natObjGeo",
+    tax.lb_nom AS "nomScienti",
+    tax.nom_vern AS "nomVern",
+    hab.lb_code AS "codeHab",
+    hab.lb_hab_fr AS "nomHab",
     rel.date_min,
     rel.date_max,
     rel.id_dataset,
@@ -71,6 +79,7 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
      LEFT JOIN pr_occtax.cor_role_releves_occtax cr ON cr.id_releve_occtax = rel.id_releve_occtax
      LEFT JOIN utilisateurs.t_roles r ON r.id_role = cr.id_role
      LEFT JOIN utilisateurs.bib_organismes o ON o.id_organisme = r.id_organisme
+     LEFT JOIN ref_habitats.habref hab ON hab.cd_nom = rel.cd_hab
    GROUP BY ccc.id_counting_occtax,occ.id_occurrence_occtax,rel.id_releve_occtax,d.id_dataset;
 
 

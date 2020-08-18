@@ -144,6 +144,7 @@ CREATE TABLE synthese (
     id_dataset integer,
     id_nomenclature_geo_object_nature integer DEFAULT get_default_nomenclature_value('NAT_OBJ_GEO'),
     id_nomenclature_grp_typ integer DEFAULT get_default_nomenclature_value('TYP_GRP'),
+    grp_method character varying(255)
     id_nomenclature_obs_meth integer DEFAULT get_default_nomenclature_value('METH_OBS'),
     id_nomenclature_obs_technique integer DEFAULT get_default_nomenclature_value('TECHNIQUE_OBS'),
     id_nomenclature_bio_status integer DEFAULT get_default_nomenclature_value('STATUT_BIO'),
@@ -867,6 +868,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
  SELECT s.id_synthese AS "idSynthese",
     s.unique_id_sinp AS "permId",
     s.unique_id_sinp_grp AS "permIdGrp",
+    s.grp_type AS "methodeRegroupement",
     s.count_min AS "denbrMin",
     s.count_max AS "denbrMax",
     s.meta_v_taxref AS "vTAXREF",
@@ -893,6 +895,8 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     t.cd_ref AS "cdRef",
     t.nom_valide AS "nomValide",
     s.nom_cite AS "nomCite",
+    hab.lb_code AS "codeHab",
+    hab.lb_hab_fr AS "nomHab",
     public.ST_x(public.ST_transform(s.the_geom_point, 2154)) AS x_centroid,
     public.ST_y(public.ST_transform(s.the_geom_point, 2154)) AS y_centroid,
     COALESCE(s.meta_update_date, s.meta_create_date) AS lastact,
@@ -939,7 +943,9 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
      LEFT JOIN ref_nomenclatures.t_nomenclatures n16 ON s.id_nomenclature_blurring = n16.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n17 ON s.id_nomenclature_source_status = n17.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n18 ON s.id_nomenclature_info_geo_type = n18.id_nomenclature
-     LEFT JOIN ref_nomenclatures.t_nomenclatures n19 ON s.id_nomenclature_determination_method = n19.id_nomenclature;
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n19 ON s.id_nomenclature_determination_method = n19.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n20 ON s.id_nomenclature_behavior = n20.id_nomenclature
+     LEFT JOIN ref_habitats.habref s ON hab.cd_nom = s.cd_hab
 
 
 CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS
