@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { FormGroup, FormArray, FormControl } from '@angular/forms';
 import { DynamicFormService } from '../dynamic-form-generator/dynamic-form.service';
+import { AppConfig } from '@geonature_config/app.config'
 
 @Component({
   selector: 'pnx-dynamic-form',
@@ -8,11 +9,13 @@ import { DynamicFormService } from '../dynamic-form-generator/dynamic-form.servi
   styleUrls: ['./dynamic-form.component.scss']
 })
 export class DynamicFormComponent implements OnInit {
+
   @Input() formDef: any;
   @Input() form: FormGroup;
 
-  constructor(private _dynformService: DynamicFormService) {}
+  public appConfig = AppConfig;
 
+  constructor(private _dynformService: DynamicFormService) {}
 
   ngOnInit() {}
 

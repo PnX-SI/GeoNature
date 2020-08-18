@@ -7,8 +7,16 @@
         || formDefComp().type_widget == 'time'
         || formDefComp().type_widget == 'number'
         || formDefComp().type_widget == 'file'
+        || formDefComp().type_widget == 'medias'
         " [attr.for]="formDefComp().attribut_name">{{formDefComp().attribut_label}}</small>
     <div [ngSwitch]="formDefComp().type_widget">
+
+      <pnx-medias
+        *ngSwitchCase="'medias'"
+        [schemaDotTable]="formDefComp().schema_dot_table"
+        [parentFormControl]="form.get(formDefComp().attribut_name)"
+        [sizeMax]="appConfig.MEDIAS.MEDIAS_SIZE_MAX"
+      ></pnx-medias>
 
       <input
         *ngSwitchCase="'file'"

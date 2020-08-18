@@ -128,7 +128,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
               this.addItem(item, false);
             } else {
               // if not bind all item (the formControl send an integer) we must find in the values array the current item
-              for (let i = 0; i < this.values.length; i++) {
+              for (let i = 0; i < (this.values || []).length; i++) {
                 if (this.values[i][this.keyValue] === item) {
                   this.addItem(this.values[i], false);
                   break;
