@@ -161,10 +161,12 @@ CREATE TABLE synthese (
     id_nomenclature_blurring integer DEFAULT get_default_nomenclature_value('DEE_FLOU'),
     id_nomenclature_source_status integer DEFAULT get_default_nomenclature_value('STATUT_SOURCE'),
     id_nomenclature_info_geo_type integer DEFAULT get_default_nomenclature_value('TYP_INF_GEO'),
+    id_nomenclature_behavior integer DEFAULT get_default_nomenclature_value('OCC_COMPORTEMENT'),
     reference_biblio character varying(255),
     count_min integer,
     count_max integer,
     cd_nom integer,
+    cd_hab integer,
     nom_cite character varying(1000) NOT NULL,
     meta_v_taxref character varying(50) DEFAULT gn_commons.get_default_parameter('taxref_version',NULL),
     sample_number_proof text,
@@ -279,6 +281,10 @@ ALTER TABLE ONLY synthese
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_cd_nom FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_cd_hab FOREIGN KEY (cd_hab) REFERENCES ref_habitats.habref(cd_hab) ON UPDATE CASCADE;
+
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_nomenclature_geo_object_nature FOREIGN KEY (id_nomenclature_geo_object_nature) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
