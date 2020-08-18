@@ -2,18 +2,8 @@
   <a *ngIf="media.href()" target="_blank" class="link-media float-right" [href]="media.href()"
     ><mat-icon matTooltip="{{ 'Medias.link' | translate }}">link</mat-icon>
   </a>
-  <div class="flex-container">
-    <img
-      class="media-medium media-center"
-      *ngIf="ms.getNomenclature(media.id_nomenclature_media_type)?.label_fr == 'Photo' && media.href()"
-      [src]="media.href()"
-      alt="{{ media.title_fr }}"
-      matTooltip="Cliquer pour agrandir l'image"
-      (click)="openDialog()"
-    />
-  </div>
 
-  <pnx-display-media [media]="media" display="medium"></pnx-display-media>
+  <img-medias [medias]="[media]" index=0 display="medium"></img-medias>
   <p *ngIf="!bValidSizeMax" class="error">
     La taille du fichier ({{round(mediaForm.value.file.size / 1e6, 1)}} Mo)
      est supérieure à la taille maximale autorisée ({{round(sizeMax / 1e3, 1)}} Mo)

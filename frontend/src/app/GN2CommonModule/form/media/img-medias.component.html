@@ -1,0 +1,12 @@
+<div class="flex-container">
+  <img
+    *ngIf="
+      ms.getNomenclature(medias[index].id_nomenclature_media_type)?.label_fr == 'Photo' && medias[index].href()
+    "
+    class="media-medium media-center"
+    [src]="medias[index].href()"
+    alt="{{ medias[index].title_fr }}"
+    matTooltip="Cliquer pour agrandir l'image"
+    (click)="openDialog(index)"
+  />
+</div>

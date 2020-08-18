@@ -27,7 +27,9 @@ export class MediaService {
   idTableLocations = [];
   nomenclatures = null;
 
-  constructor(private _http: HttpClient, private _dataFormService: DataFormService) { }
+  constructor(private _http: HttpClient, private _dataFormService: DataFormService) {
+    this.getNomenclatures().subscribe();
+  }
 
   getNomenclatures(): Observable<any> {
     if (this.nomenclatures) return of(this.nomenclatures)
@@ -121,6 +123,26 @@ export class MediaService {
       const medias = control.value;
       return !this.validMedias(medias) ? { medias: true } : null;
     }
+  }
+
+  href(media) {
+    if(! (media instanceof Media)) media = new Media(media);
+    return media.href();
+  }
+
+  toString(media) {
+    if(! (media instanceof Media)) media = new Media(media);
+    return `${media.title_fr} : ${media.description_fr} (${this.getNomenclature(media.id_nomenclature_media_type).label_fr}, ${media.author})`;
+  }
+
+  toHTML(media) {
+    if(! (media instanceof Media)) media = new Media(media);
+    return `<a target="_blank" href="${media.href()}">${media.title_fr}</a> : ${media.description_fr} (${this.getNomenclature(media.id_nomenclature_media_type).label_fr}, ${media.author})`;
+  }
+
+  typeMedia(media) {
+    if(! (media instanceof Media)) media = new Media(media);
+    return this.getNomenclature(media.id_nomenclature_media_type).label_fr
   }
 
 }

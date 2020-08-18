@@ -6,8 +6,7 @@ import { mediaFormDefinitionsDict } from './media-form-definition';
 import { FormBuilder } from '@angular/forms';
 import { MediaService } from '@geonature_common/service/media.service'
 import { HttpEventType, HttpResponse } from '@angular/common/http';
-import { MatDialog } from "@angular/material";
-import { MediaDialog } from './media-dialog.component';
+
 
 @Component({
   selector: 'pnx-media',
@@ -42,7 +41,6 @@ export class MediaComponent implements OnInit {
   constructor(
     private _formBuilder: FormBuilder,
     public ms: MediaService,
-    public dialog: MatDialog,
   ) { }
 
   ngOnInit() {
@@ -181,13 +179,6 @@ export class MediaComponent implements OnInit {
       }
 
     }
-  }
-
-  openDialog() {
-    const dialogRef = this.dialog.open(MediaDialog, {
-      width: '800px',
-      data: { medias: [this.media], index: 0 },
-    });
   }
 
   round(val, dec) {

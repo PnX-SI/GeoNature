@@ -7,6 +7,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormOccurrenceService } from "../occurrence/occurrence.service";
 import { OcctaxTaxaListService } from "./taxa-list.service";
+import { MediaService } from '@geonature_common/service/media.service'
 
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
 
@@ -22,7 +23,8 @@ export class OcctaxFormTaxaListComponent implements OnInit {
     private translate: TranslateService,
     private occtaxFormService: OcctaxFormService,
     private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
-    public occtaxTaxaListService: OcctaxTaxaListService
+    public occtaxTaxaListService: OcctaxTaxaListService,
+    public ms: MediaService,
   ) {}
 
   ngOnInit() {

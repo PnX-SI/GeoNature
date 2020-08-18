@@ -66,6 +66,7 @@ import { MediaComponent } from '@geonature_common/form/media/media.component';
 import { MediaDialog } from '@geonature_common/form/media/media-dialog.component';
 import { MediasComponent } from '@geonature_common/form/media/medias.component';
 import { MediasTestComponent } from '@geonature_common/form/media/medias-test.component';
+import { ImgMedia } from '@geonature_common/form/media/img-medias.component';
 
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
@@ -156,6 +157,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MediaDialog,
     MediasComponent,
     MediasTestComponent,
+    ImgMedia,
     ConfirmationDialog
   ],
   providers: [
@@ -235,6 +237,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MediasComponent,
     MediaDialog,
     DisplayMediasComponent,
+    ImgMedia,
   ]
 })
 export class GN2CommonModule { }

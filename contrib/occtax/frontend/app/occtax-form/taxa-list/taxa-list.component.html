@@ -440,13 +440,24 @@
                     }}
                   </div>
                 </div>
-
-                <!-- <div>
-                  <div class="label">validation_status</div>
-                  <div class="value"></div>
-                </div> -->
+                <!-- # Medias -->
+                <ng-container *ngIf="counting.medias.length">
+                  <div>{{'Media.Medias' | translate}} ({{counting.medias.length}})</div>
+                  <ng-container *ngFor="let media of counting.medias; index as i">
+                    <div [matTooltip]="ms.toString(media)">
+                      <a                       
+                      [href]="ms.href(media)"
+                      >{{ media.title_fr }}</a> 
+                      <i>
+                        ({{ ms.typeMedia(media) }}, @{{ media.author }})
+                      </i>
+                    </div>
+                    <div>
+                      <img-medias [medias]="counting.medias" [index]=i></img-medias>
+                    </div>
+                  </ng-container>
+                </ng-container>
               </div>
-            <pnx-display-medias [medias]="counting.medias" display="taxa-list"></pnx-display-medias>
 
             </ng-container>
           </mat-tab>
