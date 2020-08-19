@@ -168,40 +168,26 @@ export const DYNAMIC_FORM_DEF = [
   },
   {
     type_widget: 'text',
-    attribut_label: 'Référence bibliographique',
-    attribut_name: 'reference_biblio',
-    required: false
-  },
-  {
-    type_widget: 'text',
     attribut_label: 'Preuve non numérique',
     attribut_name: 'non_digital_proof',
     required: false
   },
   {
-    type_widget: 'observers',
-    attribut_label: "Saisie par",
-    attribut_name: 'id_digitiser',
-    idComponent: '1',
-    required: false,
-    multi_select: true
-  },
-  {
     type_widget: 'text',
-    attribut_label: 'Commentaire (relevé)',
-    attribut_name: 'comment_context',
+    attribut_label: 'UUID Jeu de données',
+    attribut_name: 'unique_dataset_id',
     required: false
   },
   {
     type_widget: 'text',
-    attribut_label: 'Commentaire (taxon)',
-    attribut_name: 'comment_description',
+    attribut_label: 'UUID Cadre d\'acquisition',
+    attribut_name: 'unique_acquisition_framework_id',
     required: false
   },
   {
     type_widget: 'text',
-    attribut_label: 'Déterminateur',
-    attribut_name: 'determiner',
+    attribut_label: 'UUID Observation',
+    attribut_name: 'unique_id_sinp',
     required: false
   }
 ];

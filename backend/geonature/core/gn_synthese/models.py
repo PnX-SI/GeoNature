@@ -208,7 +208,8 @@ class Synthese(DB.Model):
     altitude_max = DB.Column(DB.Unicode)
     the_geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
     the_geom_point = DB.Column(Geometry("GEOMETRY", 4326))
-    the_geom_local = DB.Column(Geometry("GEOMETRY", current_app.config["LOCAL_SRID"]))
+    the_geom_local = DB.Column(
+        Geometry("GEOMETRY", current_app.config["LOCAL_SRID"]))
     date_min = DB.Column(DB.DateTime)
     date_max = DB.Column(DB.DateTime)
     validator = DB.Column(DB.Unicode)
@@ -250,6 +251,22 @@ class DefaultsNomenclaturesValue(DB.Model):
 
 
 @serializable
+class VMTaxonsSyntheseAutocomplete(DB.Model):
+    __tablename__ = "taxons_synthese_autocomplete"
+    __table_args__ = {"schema": "gn_synthese"}
+    cd_nom = DB.Column(DB.Integer, primary_key=True)
+    search_name = DB.Column(DB.Unicode, primary_key=True)
+    cd_ref = DB.Column(DB.Integer)
+    nom_valide = DB.Column(DB.Unicode)
+    lb_nom = DB.Column(DB.Unicode)
+    regne = DB.Column(DB.Unicode)
+    group2_inpn = DB.Column(DB.Unicode)
+
+    def __repr__(self):
+        return "<VMTaxonsSyntheseAutocomplete  %r>" % self.search_name
+
+
+@serializable
 @geoserializable
 class VSyntheseForWebApp(DB.Model):
     __tablename__ = "v_synthese_for_web_app"
@@ -265,8 +282,10 @@ class VSyntheseForWebApp(DB.Model):
     id_source = DB.Column(DB.Integer)
     entity_source_pk_value = DB.Column(DB.Integer)
     id_dataset = DB.Column(DB.Integer)
+    unique_dataset_id = DB.Column(UUID(as_uuid=True))
     dataset_name = DB.Column(DB.Integer)
     id_acquisition_framework = DB.Column(DB.Integer)
+    unique_acquisition_framework_id = DB.Column(UUID(as_uuid=True))
     count_min = DB.Column(DB.Integer)
     count_max = DB.Column(DB.Integer)
     cd_nom = DB.Column(DB.Integer)
@@ -315,7 +334,6 @@ class VSyntheseForWebApp(DB.Model):
     id_nomenclature_blurring = DB.Column(DB.Integer)
     id_nomenclature_source_status = DB.Column(DB.Integer)
     id_nomenclature_valid_status = DB.Column(DB.Integer)
-    reference_biblio = DB.Column(DB.Unicode)
     name_source = DB.Column(DB.Unicode)
     url_source = DB.Column(DB.Unicode)
     st_asgeojson = DB.Column(DB.Unicode)
@@ -418,7 +436,8 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
         secondary=corAreaSynthese,
         primaryjoin=(corAreaSynthese.c.id_synthese == id_synthese),
         secondaryjoin=(corAreaSynthese.c.id_area == LAreas.id_area),
-        foreign_keys=[corAreaSynthese.c.id_synthese, corAreaSynthese.c.id_area],
+        foreign_keys=[corAreaSynthese.c.id_synthese,
+                      corAreaSynthese.c.id_area],
     )
     datasets = DB.relationship(
         "TDatasets",
