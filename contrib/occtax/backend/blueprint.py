@@ -177,7 +177,6 @@ def getOneReleve(id_releve, info_role):
     :rtype: `dict{'releve':<TRelevesOccurrence>, 'cruved': Cruved}` 
     """
     releveCruvedSchema = ReleveCruvedSchema()
-
     releve = DB.session.query(TRelevesOccurrence).get(id_releve)
 
     if not releve:

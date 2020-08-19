@@ -189,18 +189,32 @@
   {{'Releve.Errors.AltitudeError' |translate}}      
 </div>
 
-
-
-
 <!-- TECHNIQUE OBSERVATION -->
 <pnx-nomenclature 
   *ngIf="occtaxConfig.form_fields.obs_technique" 
   label="{{ 'Releve.ObsTechnique' | translate }}" 
   [parentFormControl]="propertiesForm.get('id_nomenclature_obs_technique')"
   codeNomenclatureType="TECHNIQUE_OBS" 
-  [disabled]="propertiesForm.disabled">
+  [disabled]="propertiesForm.disabled"
+  
+  >
 </pnx-nomenclature>
 
+
+<div class="col-xl-6 col-md-7">
+  <pnx-autocomplete 
+    *ngIf="occtaxConfig.form_fields.habitat"
+    apiEndPoint="{{AppConfig.API_ENDPOINT}}/habref/habitats/autocomplete"
+    [searchAsParameter]="false"  
+    [parentFormControl]="habitatForm"
+    queryParamSearch="search_name"
+    keyValue="search_name"
+    [formatter]="formatter"
+    label="Habitat"
+    placeholder="Tapez les premières lettres..."
+  >
+  </pnx-autocomplete>
+</div>
 
 
 
@@ -213,6 +227,19 @@
     [formControl]="propertiesForm.get('comment')">
   </textarea>
 </div>
+<!-- <pnx-autocomplete apiEndPoint="{{appConfig.API_ENDPOINT}}/habref/habitats/autocomplete/list/{{moduleConfig.ID_LIST_HABITAT}}"
+[searchAsParameter]="false"  
+[parentFormControl]="occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].get('habref')"
+queryParamSearch="search_name"
+[othersGetParams]="occHabForm.selectedTypo"
+[formatter]="formatter"
+keyValue="search_name"
+label="Habitat"
+placeholder="Tapez les premières lettres..."
+(onChange)="occHabForm.patchNomCite($event)"
+>
+</pnx-autocomplete> -->
+
 
 <div class="text-center" style="margin-top: 10px;"> 
 
@@ -246,3 +273,6 @@
     </button> 
   </ng-template> -->
 </div>
+
+
+{{releveForm.value |json}}

@@ -60,19 +60,14 @@
           <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 padding-sm">
             <div class="form-group">
               <label>{{ 'MetaData.Datasets' | translate }}:</label>
-              <input 
-                class="form-control" 
-                [value]="releve.dataset?.dataset_name" 
-                disabled>
+                {{releve.dataset?.dataset_name}}
+                
             </div>
           </div>
           <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
             <div class="form-group">
               <label>{{ 'Releve.ObsTechnique' | translate }}:</label>
-              <input 
-                class="form-control" 
-                [value]="getLibelleByID(releve.id_nomenclature_obs_technique)" 
-                disabled>
+                {{getLibelleByID(releve.id_nomenclature_obs_technique)}}
             </div>
           </div>
           <div 
@@ -85,6 +80,11 @@
                 [value]="getLibelleByID(releve.id_nomenclature_grp_typ)" 
                 disabled>
             </div>
+          </div>
+        </div>
+        <div class="row row-sm">
+          <div *ngIf="occtaxConfig.form_fields.habitat">
+            <b>Habitat associé</b> : {{releve.habitat?.lb_hab_fr}} - {{releve.habitat?.lb_code}} 
           </div>
         </div>
 
