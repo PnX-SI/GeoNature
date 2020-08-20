@@ -47,3 +47,4 @@ fiona==1.8.13.post1
 flask_wtf==0.14.2
 lxml==4.2.5
 Flask-Mail==0.9.1
+docutils==0.15.2
