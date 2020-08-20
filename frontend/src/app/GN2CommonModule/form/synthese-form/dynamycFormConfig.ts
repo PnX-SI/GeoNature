@@ -203,5 +203,23 @@ export const DYNAMIC_FORM_DEF = [
     attribut_label: 'Déterminateur',
     attribut_name: 'determiner',
     required: false
+  },
+  {
+    type_widget: 'text',
+    attribut_label: 'UUID Jeu de données',
+    attribut_name: 'unique_dataset_id',
+    required: false
+  },
+  {
+    type_widget: 'text',
+    attribut_label: 'UUID Cadre d\'acquisition',
+    attribut_name: 'unique_acquisition_framework_id',
+    required: false
+  },
+  {
+    type_widget: 'text',
+    attribut_label: 'UUID Observation',
+    attribut_name: 'unique_id_sinp',
+    required: false
   }
 ];
