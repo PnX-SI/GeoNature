@@ -64,6 +64,7 @@ export class OcctaxFormParamService {
       observers: null,
       observers_txt: null,
       id_nomenclature_grp_typ: null,
+      grp_method: null,
     },
     occurrence: {
       id_nomenclature_obs_meth: null,

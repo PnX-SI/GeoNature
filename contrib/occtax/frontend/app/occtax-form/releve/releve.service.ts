@@ -242,6 +242,7 @@ export class OcctaxFormReleveService {
             id_nomenclature_grp_typ:
               this.occtaxParamS.get("releve.id_nomenclature_grp_typ") ||
               data["TYP_GRP"],
+            grp_method: this.occtaxParamS.get("releve.grp_method"),
             id_nomenclature_obs_technique:
               this.occtaxParamS.get("releve.id_nomenclature_obs_technique") ||
               data["TECHNIQUE_OBS"],

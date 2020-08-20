@@ -95,6 +95,7 @@
     "CancelTaxon": "Cancel this taxon",
     "FillGeometryFirst": "Please locate on map",
     "GroupType": "Grouping type",
+    "GroupMethod": "Grouping method",
     "DoesNotExist": "This releve does not exist",
     "StayOnFormInterface": "Stay on form interface",
     "GeoObjectNature": "Geographical object nature",
