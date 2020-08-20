@@ -1,5 +1,5 @@
-APP_PATH/var/log/gn_errors.log {
-    su root root
+{{APP_PATH}}/var/log/gn_errors.log {
+    su {{USER}} {{GROUP}}
     daily
     rotate 8
     size 100M

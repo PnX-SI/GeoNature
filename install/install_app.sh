@@ -112,7 +112,8 @@ fi
 echo "Ajout de l'autocomplétion de la commande GeoNature au virtual env..."
 readonly bin_venv_dir="${BASE_DIR}/backend/venv/bin/"
 readonly activate_file="${bin_venv_dir}/activate"
-readonly src_completion_file="${BASE_DIR}/install/assets/geonature_bash_completion.sh"
+readonly assets_install_dir="${BASE_DIR}/install/assets"
+readonly src_completion_file="${assets_install_dir}/geonature_bash_completion.sh"
 readonly completion_file_name="geonature_completion"
 readonly completion_code="\n# GeoNature command completion\nsource \"\${VIRTUAL_ENV}/bin/${completion_file_name}\""
 if ! grep -q "${completion_code}" "${activate_file}" ; then
@@ -124,6 +125,8 @@ fi
 
 echo "Activation du virtual env..."
 source venv/bin/activate
+
+
 echo "Installation des dépendances Python..."
 pip install --upgrade pip
 pip install -r requirements.txt
@@ -138,48 +141,58 @@ python ${BASE_DIR}/geonature_cmd.py install_command
 echo "Création de la configuration du frontend depuis 'config/geonature_config.toml'..."
 geonature generate_frontend_config --conf-file ${BASE_DIR}/config/geonature_config.toml --build=false
 
-# Lancement de l'application
-echo "Configuration de l'application api backend dans supervisor..."
-DIR=$(readlink -e "${0%/*}")
-sudo -s cp geonature-service.conf /etc/supervisor/conf.d/
-sudo -s sed -i "s%APP_PATH%${DIR}%" /etc/supervisor/conf.d/geonature-service.conf
-sudo -s sed -i "s%ROOT_DIR%${BASE_DIR}%" /etc/supervisor/conf.d/geonature-service.conf
 
+echo "Création du fichier de log des erreurs GeoNature"
+# Cela évite sa création par Supervisor avec des droits root
+# Voir : https://github.com/Supervisor/supervisor/issues/123
+touch "${BASE_DIR}/var/log/gn_errors.log"
+
+
+# Store path to backend directory
+DIR=$(readlink -e "${0%/*}")
+
+echo "Création de la rotation des logs à l'aide de Logrotate"
+sudo cp "${assets_install_dir}/log_rotate" "/etc/logrotate.d/geonature"
+sudo -s sed -i "s%{{APP_PATH}}%${BASE_DIR}%" "/etc/logrotate.d/geonature"
+sudo -s sed -i "s%{{USER}}%${USER:=$(/usr/bin/id -run)}%" "/etc/logrotate.d/geonature"
+sudo -s sed -i "s%{{GROUP}}%${USER}%" "/etc/logrotate.d/geonature"
+sudo logrotate -f "/etc/logrotate.conf"
+
+echo "Configuration de l'application api backend dans Supervisor..."
+sudo -s cp "${assets_install_dir}/geonature-service.conf" "/etc/supervisor/conf.d/"
+sudo -s sed -i "s%{{APP_PATH}}%${DIR}%" "/etc/supervisor/conf.d/geonature-service.conf"
+sudo -s sed -i "s%{{ROOT_DIR}}%${BASE_DIR}%" "/etc/supervisor/conf.d/geonature-service.conf"
+sudo -s sed -i "s%{{USER}}%${USER}%" "/etc/supervisor/conf.d/geonature-service.conf"
 
 echo "Lancement de l'application api backend..."
 sudo -s supervisorctl reread
 sudo -s supervisorctl reload
 
-#création d'un fichier rotation des logs
-sudo cp $DIR/log_rotate /etc/logrotate.d/geonature
-sudo -s sed -i "s%APP_PATH%${BASE_DIR}%" /etc/logrotate.d/geonature
-sudo logrotate -f /etc/logrotate.conf
-
 
 # Frontend installation
-# Node and npm installation
-echo "Installation de node et npm"
+echo "Installation de Node et Npm"
 cd ../frontend
-
 nvm install
 nvm use
 
 echo " ############"
-echo "Installation des paquets npm"
+echo "Installation des paquets Npm"
 npm ci --only=prod
 
-# lien symbolique vers le dossier static du backend (pour le backoffice)
-ln -s ${BASE_DIR}/frontend/node_modules ${BASE_DIR}/backend/static
+
+# Lien symbolique vers le dossier static du backend (pour le backoffice)
+ln -s "${BASE_DIR}/frontend/node_modules" "${BASE_DIR}/backend/static"
+
 
 # Creation du dossier des assets externes
-mkdir src/external_assets
+mkdir "src/external_assets"
+
 
 # Copy the custom components
 echo "Création des fichiers de customisation du frontend..."
 if [ ! -f src/custom/custom.scss ]; then
   cp src/custom/custom.scss.sample src/custom/custom.scss
 fi
-
 if [ ! -f src/custom/components/footer/footer.component.ts ]; then
   cp src/custom/components/footer/footer.component.ts.sample src/custom/components/footer/footer.component.ts
 fi
