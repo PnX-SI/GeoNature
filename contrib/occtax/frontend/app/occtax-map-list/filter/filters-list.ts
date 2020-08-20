@@ -83,13 +83,6 @@ export const FILTERSLIST = [
   },
   {
     type_widget: "nomenclature",
-    attribut_label: "Niveau de diffusion",
-    attribut_name: "id_nomenclature_diffusion_level",
-    code_nomenclature_type: "NIV_PRECIS",
-    required: false,
-  },
-  {
-    type_widget: "nomenclature",
     attribut_label: "Statut source",
     attribut_name: "id_nomenclature_source_status",
     code_nomenclature_type: "STATUT_SOURCE",

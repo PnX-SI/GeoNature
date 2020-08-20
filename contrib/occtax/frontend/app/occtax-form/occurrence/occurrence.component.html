@@ -163,16 +163,6 @@
     </div>
 
     <div 
-      *ngIf="occtaxConfig.form_fields.diffusion_level"
-      class="col-lg-4 col-sm-6">
-      <pnx-nomenclature 
-        label="{{ 'Taxon.DiffusionLevel' | translate }}" 
-        [parentFormControl]="occurrenceForm.get('id_nomenclature_diffusion_level')"
-        codeNomenclatureType="NIV_PRECIS">
-      </pnx-nomenclature>
-    </div>
-
-    <div 
       *ngIf="occtaxConfig.form_fields.blurring"
       class="col-lg-4 col-sm-6">
       <pnx-nomenclature 

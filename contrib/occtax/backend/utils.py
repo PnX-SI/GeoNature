@@ -13,7 +13,6 @@ occ_nomenclatures = [
     "id_nomenclature_bio_status",
     "id_nomenclature_naturalness",
     "id_nomenclature_exist_proof",
-    "id_nomenclature_diffusion_level",
     "id_nomenclature_observation_status",
     "id_nomenclature_blurring",
     "id_nomenclature_determination_method",

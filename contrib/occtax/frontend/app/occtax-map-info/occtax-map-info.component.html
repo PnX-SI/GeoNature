@@ -263,17 +263,6 @@
 
               <div class="row row-sm">
                 <div 
-                  *ngIf="occtaxConfig.form_fields.diffusion_level" 
-                  class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-                  <div class="form-group">
-                    <label>{{ 'Taxon.DiffusionLevel' | translate }}:</label>
-                    <input 
-                      class="form-control" 
-                      [value]="getLibelleByID((displayOccurrence|async).id_nomenclature_diffusion_level)" 
-                      disabled>
-                  </div>
-                </div>
-                <div 
                   *ngIf="occtaxConfig.form_fields.blurring" 
                   class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
                   <div class="form-group">
