@@ -94,6 +94,8 @@ export class OcctaxFormParamDialog implements OnInit {
         observers: null,
         observers_txt: null,
         id_nomenclature_grp_typ: null,
+        grp_method: null
+
       }),
       occurrence: this.fb.group({
         id_nomenclature_obs_meth: null,
@@ -157,9 +159,9 @@ export class OcctaxFormParamDialog implements OnInit {
             //si un unique switch est activé
             return (
               (geometryState ? 1 : 0) +
-                (releveState ? 1 : 0) +
-                (occurrenceState ? 1 : 0) +
-                (countingState ? 1 : 0) ===
+              (releveState ? 1 : 0) +
+              (occurrenceState ? 1 : 0) +
+              (countingState ? 1 : 0) ===
               1
             );
           }

@@ -90,6 +90,7 @@ export class OcctaxFormReleveService {
         ModuleConfig.observers_txt ? Validators.required : null,
       ],
       id_nomenclature_grp_typ: null,
+      grp_method: null,
       id_nomenclature_geo_object_nature: null,
     });
 

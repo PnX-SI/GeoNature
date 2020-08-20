@@ -181,6 +181,7 @@ class Synthese(DB.Model):
     id_dataset = DB.Column(DB.Integer)
     id_nomenclature_geo_object_nature = DB.Column(DB.Integer)
     id_nomenclature_grp_typ = DB.Column(DB.Integer)
+    grp_method = DB.Column(DB.Unicode)
     id_nomenclature_obs_meth = DB.Column(DB.Integer)
     id_nomenclature_obs_technique = DB.Column(DB.Integer)
     id_nomenclature_bio_status = DB.Column(DB.Integer)

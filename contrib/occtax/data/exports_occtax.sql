@@ -40,7 +40,7 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     COALESCE(ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_bio_status), '0'::text::character varying) AS "ocStatBio",
     COALESCE(ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_exist_proof), '0'::text::character varying) AS "preuveOui",
     ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_determination_method, 'fr'::character varying) AS "ocMethDet",
-    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_behavior, 'fr'::character varying) AS "ocMethDet",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_behaviour, 'fr'::character varying) AS "ocMethDet",
     occ.digital_proof AS "preuvNum",
     occ.non_digital_proof AS "preuvNoNum",
     rel.comment AS "obsCtx",

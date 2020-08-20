@@ -19,6 +19,7 @@ interface OCCTAX_FORM_PARAM {
     observers?: Array<any>;
     observers_txt?: string;
     id_nomenclature_grp_typ?: number;
+    grp_method?: string;
   };
   occurrence?: {
     id_nomenclature_obs_meth?: number;

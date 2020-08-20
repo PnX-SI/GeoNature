@@ -144,6 +144,7 @@ id_dataset,
 id_module,
 id_nomenclature_geo_object_nature,
 id_nomenclature_grp_typ,
+grp_method,
 id_nomenclature_obs_meth,
 id_nomenclature_obs_technique,
 id_nomenclature_bio_status,
@@ -158,7 +159,7 @@ id_nomenclature_observation_status,
 id_nomenclature_blurring,
 id_nomenclature_source_status,
 id_nomenclature_info_geo_type,
-id_nomenclature_behavior,
+id_nomenclature_behaviour,
 count_min,
 count_max,
 cd_nom,
@@ -191,9 +192,8 @@ VALUES(
   releve.id_dataset,
   id_module,
   releve.id_nomenclature_geo_object_nature,
-  releve.cd_hab,
-  releve.id_nomenclature_geo_object_nature,
   releve.id_nomenclature_grp_typ,
+  releve.grp_method,
   occurrence.id_nomenclature_obs_meth,
   releve.id_nomenclature_obs_technique,
   occurrence.id_nomenclature_bio_status,
@@ -210,10 +210,11 @@ VALUES(
   id_nomenclature_source_status,
   -- id_nomenclature_info_geo_type: type de rattachement = géoréferencement
   ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO', '1'),
-  occurrence.id_nomenclature_behavior,
+  occurrence.id_nomenclature_behaviour,
   new_count.count_min,
   new_count.count_max,
   occurrence.cd_nom,
+  releve.cd_hab,
   occurrence.nom_cite,
   occurrence.meta_v_taxref,
   occurrence.sample_number_proof,
@@ -299,7 +300,7 @@ CREATE TABLE t_occurrences_occtax (
     id_nomenclature_observation_status integer,
     id_nomenclature_blurring integer,
     id_nomenclature_source_status integer,
-    id_nomenclature_behavior integer,
+    id_nomenclature_behaviour integer,
     determiner character varying(255),
     id_nomenclature_determination_method integer,
     cd_nom integer,
@@ -452,7 +453,7 @@ ALTER TABLE ONLY t_occurrences_occtax
     ADD CONSTRAINT fk_t_occurrences_occtax_determination_method FOREIGN KEY (id_nomenclature_determination_method) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_occurrences_occtax
-    ADD CONSTRAINT fk_t_occurrences_occtax_behavior FOREIGN KEY (id_nomenclature_behavior) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_occurrences_occtax_behavior FOREIGN KEY (id_nomenclature_behaviour) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY cor_counting_occtax
     ADD CONSTRAINT fk_cor_stage_number_id_taxon FOREIGN KEY (id_occurrence_occtax) REFERENCES t_occurrences_occtax(id_occurrence_occtax) ON UPDATE CASCADE ON DELETE CASCADE;
@@ -535,7 +536,7 @@ ALTER TABLE t_occurrences_occtax
   ADD CONSTRAINT check_t_occurrences_occtax_determination_method CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_determination_method,'METH_DETERMIN')) NOT VALID;
 
 ALTER TABLE t_occurrences_occtax
-  ADD CONSTRAINT check_t_occurrences_occtax_behavior CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behavior,'OCC_COMPORTEMENT')) NOT VALID;
+  ADD CONSTRAINT check_t_occurrences_occtax_behavior CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour,'OCC_COMPORTEMENT')) NOT VALID;
 
 
 ALTER TABLE ONLY cor_counting_occtax
@@ -751,7 +752,7 @@ BEGIN
     id_nomenclature_source_status = NEW.id_nomenclature_source_status,
     determiner = NEW.determiner,
     id_nomenclature_determination_method = NEW.id_nomenclature_determination_method,
-    id_nomenclature_behavior = id_nomenclature_behavior,
+    id_nomenclature_behaviour = id_nomenclature_behaviour,
     cd_nom = NEW.cd_nom,
     nom_cite = NEW.nom_cite,
     meta_v_taxref = NEW.meta_v_taxref,

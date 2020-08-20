@@ -45,6 +45,7 @@ export class OcctaxFormOccurrenceService {
       id_nomenclature_bio_status: null,
       id_nomenclature_naturalness: null,
       id_nomenclature_exist_proof: null,
+      id_nomenclature_behaviour: null,
       id_nomenclature_observation_status: null,
       id_nomenclature_blurring: null,
       id_nomenclature_source_status: null,
@@ -201,6 +202,10 @@ export class OcctaxFormOccurrenceService {
               this.occtaxParamS.get(
                 "occurrence.id_nomenclature_source_status"
               ) || DATA["STATUT_SOURCE"],
+            id_nomenclature_behaviour:
+              this.occtaxParamS.get(
+                "occurrence.id_nomenclature_behaviour"
+              ) || DATA["OCC_COMPORTEMENT"],
           };
         })
       );

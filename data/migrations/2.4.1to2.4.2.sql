@@ -299,9 +299,9 @@ ALTER TABLE pr_occtax.t_occurrences_occtax
     --delete sensi
     DROP COLUMN id_nomenclature_diffusion_level,
     -- comportement
-    ADD COLUMN id_nomenclature_behavior integer,
-    ADD CONSTRAINT fk_t_occurrences_occtax_behavior FOREIGN KEY (id_nomenclature_behavior) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
-    ADD CONSTRAINT check_t_occurrences_occtax_behavior CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behavior,'OCC_COMPORTEMENT')) NOT VALID;
+    ADD COLUMN id_nomenclature_behaviour integer,
+    ADD CONSTRAINT fk_t_occurrences_occtax_behavior FOREIGN KEY (id_nomenclature_behaviour) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
+    ADD CONSTRAINT check_t_occurrences_occtax_behavior CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour,'OCC_COMPORTEMENT')) NOT VALID;
     
 INSERT INTO pr_occtax.defaults_nomenclatures_value(mnemonique_type, id_nomenclature)
 VALUES ('OCC_COMPORTEMENT', '0');
@@ -314,13 +314,10 @@ ALTER TABLE gn_synthese.synthese
     ADD COLUMN cd_hab integer,
     ADD CONSTRAINT fk_synthese_cd_hab FOREIGN KEY (cd_hab) REFERENCES ref_habitats.habref(cd_hab) ON UPDATE CASCADE,
     ADD COLUMN grp_method character varying(255),
-    ADD COLUMN id_nomenclature_behavior integer, 
-    ALTER COLUMN id_nomenclature_behavior SET DEFAULT gn_synthese.get_default_nomenclature_value('OCC_COMPORTEMENT'),
-    ADD CONSTRAINT fk_synthese_id_nomenclature_behavior FOREIGN KEY (id_nomenclature_behavior) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
-    ADD CONSTRAINT check_synthese_behavior CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behavior, 'OCC_COMPORTEMENT')) NOT VALID;
-
-
-
+    ADD COLUMN id_nomenclature_behaviour integer, 
+    ALTER COLUMN id_nomenclature_behaviour SET DEFAULT gn_synthese.get_default_nomenclature_value('OCC_COMPORTEMENT'),
+    ADD CONSTRAINT fk_synthese_id_nomenclature_behaviour FOREIGN KEY (id_nomenclature_behaviour) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
+    ADD CONSTRAINT check_synthese_behavior CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour, 'OCC_COMPORTEMENT')) NOT VALID;
 
 
 CREATE OR REPLACE FUNCTION pr_occtax.insert_in_synthese(my_id_counting integer)
@@ -373,6 +370,7 @@ id_dataset,
 id_module,
 id_nomenclature_geo_object_nature,
 id_nomenclature_grp_typ,
+grp_method,
 id_nomenclature_obs_meth,
 id_nomenclature_obs_technique,
 id_nomenclature_bio_status,
@@ -387,7 +385,7 @@ id_nomenclature_observation_status,
 id_nomenclature_blurring,
 id_nomenclature_source_status,
 id_nomenclature_info_geo_type,
-id_nomenclature_behavior,
+id_nomenclature_behaviour,
 count_min,
 count_max,
 cd_nom,
@@ -421,6 +419,7 @@ VALUES(
   id_module,
   releve.id_nomenclature_geo_object_nature,
   releve.id_nomenclature_grp_typ,
+  releve.grp_method,
   occurrence.id_nomenclature_obs_meth,
   releve.id_nomenclature_obs_technique,
   occurrence.id_nomenclature_bio_status,
@@ -437,7 +436,7 @@ VALUES(
   id_nomenclature_source_status,
   -- id_nomenclature_info_geo_type: type de rattachement = géoréferencement
   ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO', '1'),
-  occurrence.id_nomenclature_behavior,
+  occurrence.id_nomenclature_behaviour,
   new_count.count_min,
   new_count.count_max,
   occurrence.cd_nom,
@@ -470,6 +469,7 @@ $BODY$
   COST 100;
 
 
+
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_occ()
   RETURNS trigger AS
 $BODY$
@@ -486,7 +486,7 @@ BEGIN
     id_nomenclature_source_status = NEW.id_nomenclature_source_status,
     determiner = NEW.determiner,
     id_nomenclature_determination_method = NEW.id_nomenclature_determination_method,
-    id_nomenclature_behavior = id_nomenclature_behavior,
+    id_nomenclature_behaviour = id_nomenclature_behaviour,
     cd_nom = NEW.cd_nom,
     nom_cite = NEW.nom_cite,
     meta_v_taxref = NEW.meta_v_taxref,

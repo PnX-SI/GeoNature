@@ -188,7 +188,7 @@ class TRelevesOccurrence(ReleveModel):
     id_dataset = DB.Column(DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"))
     id_digitiser = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
     id_nomenclature_grp_typ = DB.Column(DB.Integer)
-    grp_method = DB.Column = DB.Column(DB.Integer)
+    grp_method = DB.Column(DB.Unicode)
     observers_txt = DB.Column(DB.Unicode)
     date_min = DB.Column(DB.DateTime)
     date_max = DB.Column(DB.DateTime)

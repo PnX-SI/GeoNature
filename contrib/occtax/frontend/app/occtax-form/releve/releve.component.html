@@ -189,6 +189,14 @@
         [disabled]="propertiesForm.disabled">
       </pnx-nomenclature>
     </div>
+    <div *ngIf="occtaxConfig.form_fields.grp_method" class="col-xl-4 col-md-5">
+
+      <small> {{'Releve.GroupMethod' | translate}} </small>
+      <input 
+        type="text" 
+        class="form-control form-control-sm"
+        [formControl]="propertiesForm.get('grp_method')">
+    </div>
     <div class="col-xl-4 col-md-5">
       <pnx-nomenclature 
         *ngIf="occtaxConfig.form_fields.geo_object_nature" 
@@ -287,6 +295,3 @@ placeholder="Tapez les premières lettres..."
     </button> 
   </ng-template> -->
 </div>
-
-
-{{releveForm.value |json}}

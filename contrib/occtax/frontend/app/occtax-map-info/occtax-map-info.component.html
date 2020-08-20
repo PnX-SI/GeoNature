@@ -71,6 +71,11 @@
                 <label>{{ 'Releve.GroupType' | translate }}:</label>
                 {{getLibelleByID(releve.id_nomenclature_grp_typ)}}
             </div>
+            <div 
+              *ngIf="occtaxConfig.form_fields.grp_method && releve.grp_method">
+              <label> {{'Releve.GroupMethod' | translate}}:  </label>
+                {{releve.grp_method}}
+            </div>
           </div>
           <div class="row row-sm">
             <div 

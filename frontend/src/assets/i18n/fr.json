@@ -97,6 +97,7 @@
     "CancelTaxon": "Annuler la saisie du taxon",
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire",
     "GroupType": "Type de regroupement",
+    "GroupMethod": "Méthode de regroupement",
     "DoesNotExist": "Ce relevé n'existe pas",
     "StayOnFormInterface": "Enchainer les relevés sans retourner à l'interface carte/liste",
     "GeoObjectNature": "Nature de l'objet géographique",
@@ -147,6 +148,7 @@
     "DeleteDone": "Taxon supprimé",
     "CreateDone": "Taxon ajouté au relevé",
     "UpdateDone": "Taxon mis à jour",
+    "OccBehaviour": "Comportement",
     "Errors": {
       "ExistProofValidation": "Ce champs doit débuter par 'http://', 'https://', ou 'ftp://'",
       "NoExistProofError": "Si 'preuve d'existence = Oui', un des deux champs de preuve doit être rempli",
