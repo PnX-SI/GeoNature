@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# make nvm available 
+# make nvm available
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
@@ -108,6 +108,20 @@ else
   python3 -m virtualenv venv
 fi
 
+
+echo "Ajout de l'autocomplétion de la commande GeoNature au virtual env..."
+readonly bin_venv_dir="${BASE_DIR}/backend/venv/bin/"
+readonly activate_file="${bin_venv_dir}/activate"
+readonly src_completion_file="${BASE_DIR}/install/assets/geonature_bash_completion.sh"
+readonly completion_file_name="geonature_completion"
+readonly completion_code="\n# GeoNature command completion\nsource \"\${VIRTUAL_ENV}/bin/${completion_file_name}\""
+if ! grep -q "${completion_code}" "${activate_file}" ; then
+    cp "${src_completion_file}" "${bin_venv_dir}/${completion_file_name}"
+    cp "${activate_file}" "${activate_file}.save-$(date +'%F')"
+    echo -e "${completion_code}" >> "${activate_file}"
+fi
+
+
 echo "Activation du virtual env..."
 source venv/bin/activate
 echo "Installation des dépendances Python..."
@@ -145,7 +159,7 @@ sudo logrotate -f /etc/logrotate.conf
 # Frontend installation
 # Node and npm installation
 echo "Installation de node et npm"
-cd ../frontend  
+cd ../frontend
 
 nvm install
 nvm use
@@ -219,6 +233,3 @@ then
   npm rebuild node-sass --force
   npm run build
 fi
-
-
-
