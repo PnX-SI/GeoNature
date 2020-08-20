@@ -18,6 +18,7 @@ const NOMENCLATURES = [
   "SEXE",
   "OBJ_DENBR",
   "TYP_DENBR",
+  "OCC_COMPORTEMENT"
 ];
 
 @Injectable()

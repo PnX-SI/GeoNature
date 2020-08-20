@@ -165,6 +165,7 @@ class VSyntheseDecodeNomenclatures(DB.Model):
     observation_status = DB.Column(DB.Unicode)
     blurring = DB.Column(DB.Unicode)
     source_status = DB.Column(DB.Unicode)
+    occ_behaviour = DB.Column(DB.Unicode)
 
 
 @serializable
@@ -198,6 +199,7 @@ class Synthese(DB.Model):
     id_nomenclature_observation_status = DB.Column(DB.Integer)
     id_nomenclature_blurring = DB.Column(DB.Integer)
     id_nomenclature_source_status = DB.Column(DB.Integer)
+    id_nomenclature_behaviour = DB.Column(DB.Integer)
     count_min = DB.Column(DB.Integer)
     count_max = DB.Column(DB.Integer)
     cd_nom = DB.Column(DB.Integer)
@@ -300,6 +302,7 @@ class VSyntheseForWebApp(DB.Model):
     id_nomenclature_geo_object_nature = DB.Column(DB.Integer)
     id_nomenclature_info_geo_type = DB.Column(DB.Integer)
     id_nomenclature_grp_typ = DB.Column(DB.Integer)
+    grp_method = DB.Column(DB.Unicode)
     id_nomenclature_obs_meth = DB.Column(DB.Integer)
     id_nomenclature_obs_technique = DB.Column(DB.Integer)
     id_nomenclature_bio_status = DB.Column(DB.Integer)
@@ -317,6 +320,7 @@ class VSyntheseForWebApp(DB.Model):
     id_nomenclature_blurring = DB.Column(DB.Integer)
     id_nomenclature_source_status = DB.Column(DB.Integer)
     id_nomenclature_valid_status = DB.Column(DB.Integer)
+    id_nomenclature_behaviour = DB.Column(DB.Integer)
     reference_biblio = DB.Column(DB.Unicode)
     name_source = DB.Column(DB.Unicode)
     url_source = DB.Column(DB.Unicode)

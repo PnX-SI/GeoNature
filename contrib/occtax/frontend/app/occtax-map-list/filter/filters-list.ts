@@ -22,6 +22,13 @@ export const FILTERSLIST = [
   },
   {
     type_widget: "nomenclature",
+    attribut_label: "Comportement",
+    attribut_name: "id_nomenclature_behaviour",
+    code_nomenclature_type: "OCC_COMPORTEMENT",
+    required: false,
+  },
+  {
+    type_widget: "nomenclature",
     attribut_label: "Statut d'observation",
     attribut_name: "id_nomenclature_observation_status",
     code_nomenclature_type: "STATUT_OBS",

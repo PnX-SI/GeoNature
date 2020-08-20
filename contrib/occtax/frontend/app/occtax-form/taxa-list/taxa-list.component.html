@@ -104,6 +104,11 @@
               </div>
 
               <div>
+                <div class="label">{{ 'Taxon.OccBehaviour' | translate }} :</div>
+                <div class="value">{{ occtaxTaxaListService.getLibelleByID(occurrence?.id_nomenclature_behaviour) || "-" }}</div>
+              </div>
+
+              <div>
                 <div class="label">{{ 'Taxon.Naturalness' | translate }} :</div>
                 <div class="value">{{ occtaxTaxaListService.getLibelleByID(occurrence?.id_nomenclature_naturalness) || "-" }}</div>
               </div>

@@ -15,6 +15,20 @@ export const DYNAMIC_FORM_DEF = [
     required: false
   },
   {
+    type_widget: "nomenclature",
+    attribut_label: "Comportement",
+    attribut_name: "id_nomenclature_behaviour",
+    code_nomenclature_type: "OCC_COMPORTEMENT",
+    required: false,
+  },
+  {
+    type_widget: "text",
+    attribut_label: "Méthode de regroupement",
+    attribut_name: "grp_method",
+    code_nomenclature_type: "TYP_GRP",
+    required: false,
+  },
+  {
     type_widget: 'nomenclature',
     attribut_label: 'Type de regroupement',
     attribut_name: 'id_nomenclature_grp_typ',

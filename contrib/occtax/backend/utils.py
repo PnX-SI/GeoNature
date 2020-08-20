@@ -16,6 +16,7 @@ occ_nomenclatures = [
     "id_nomenclature_observation_status",
     "id_nomenclature_blurring",
     "id_nomenclature_determination_method",
+    "id_nomenclature_behaviour",
 ]
 
 releve_nomenclatures = ["id_nomenclature_obs_technique", "id_nomenclature_grp_typ"]

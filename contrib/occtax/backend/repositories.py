@@ -163,7 +163,9 @@ class ReleveRepository:
             return self.filter_query_with_autorization(info_user)
 
 
-def get_query_occtax_filters(args, mappedView, q, from_generic_table=False, obs_txt_column="observers_txt"):
+def get_query_occtax_filters(
+    args, mappedView, q, from_generic_table=False, obs_txt_column="observers_txt"
+):
     if from_generic_table:
         mappedView = mappedView.tableDef.columns
     params = args.to_dict()
@@ -184,8 +186,7 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False, obs_
                 == mappedView.id_releve_occtax,
             )
 
-        q = q.filter(corRoleRelevesOccurrence.id_role.in_(
-            args.getlist("observers")))
+        q = q.filter(corRoleRelevesOccurrence.id_role.in_(args.getlist("observers")))
         params.pop("observers")
 
     if "date_up" in params:
@@ -204,15 +205,13 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False, obs_
             raise GeonatureApiError(message=testT)
         q = q.filter(mappedView.date_min == params.pop("date_eq"))
     if "altitude_max" in params:
-        testT = testDataType(params.get("altitude_max"),
-                             DB.Integer, "altitude_max")
+        testT = testDataType(params.get("altitude_max"), DB.Integer, "altitude_max")
         if testT:
             raise GeonatureApiError(message=testT)
         q = q.filter(mappedView.altitude_max <= params.pop("altitude_max"))
 
     if "altitude_min" in params:
-        testT = testDataType(params.get("altitude_min"),
-                             DB.Integer, "altitude_min")
+        testT = testDataType(params.get("altitude_min"), DB.Integer, "altitude_min")
         if testT:
             raise GeonatureApiError(message=testT)
         q = q.filter(mappedView.altitude_min >= params.pop("altitude_min"))
@@ -224,8 +223,7 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False, obs_
 
     if "observers_txt" in params:
         observers_query = "%{}%".format(params.pop("observers_txt"))
-        q = q.filter(getattr(
-            mappedView, obs_txt_column).ilike(observers_query))
+        q = q.filter(getattr(mappedView, obs_txt_column).ilike(observers_query))
 
     if from_generic_table:
         table_columns = mappedView
@@ -239,8 +237,7 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False, obs_
                 mappedView.id_releve_occtax == TOccurrencesOccurrence.id_releve_occtax,
             )
         q = q.filter(
-            TOccurrencesOccurrence.non_digital_proof == params.pop(
-                "non_digital_proof")
+            TOccurrencesOccurrence.non_digital_proof == params.pop("non_digital_proof")
         )
     if "digital_proof" in params:
         if not is_already_joined(TOccurrencesOccurrence, q):
@@ -253,7 +250,9 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False, obs_
         )
     # Generic Filters
     for param in params:
+        print(table_columns)
         if param in table_columns:
+            print("PASSE LA  ??????")
             col = getattr(table_columns, param)
             testT = testDataType(params[param], col.type, param)
             if testT:
@@ -281,8 +280,7 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False, obs_
             )
 
         for nomenclature in occurrence_filters:
-            col = getattr(
-                TOccurrencesOccurrence.__table__.columns, nomenclature)
+            col = getattr(TOccurrencesOccurrence.__table__.columns, nomenclature)
             q = q.filter(col == params.pop(nomenclature))
 
     if len(counting_filters) > 0:
@@ -302,8 +300,7 @@ def get_query_occtax_filters(args, mappedView, q, from_generic_table=False, obs_
                 == CorCountingOccurrence.id_occurrence_occtax,
             )
         for nomenclature in counting_filters:
-            col = getattr(
-                CorCountingOccurrence.__table__.columns, nomenclature)
+            col = getattr(CorCountingOccurrence.__table__.columns, nomenclature)
             q = q.filter(col == params.pop(nomenclature))
     return q
 
@@ -324,8 +321,7 @@ def get_query_occtax_order(orderby, mappedView, q, from_generic_table=False):
             else:
                 orderCol = getattr(mappedView, "date_min")
         elif (
-            orderby.get("orderby") == "nb_taxons" or orderby.get(
-                "orderby") == "taxons"
+            orderby.get("orderby") == "nb_taxons" or orderby.get("orderby") == "taxons"
         ):
             sub_query = (
                 DB.session.query(
@@ -346,8 +342,7 @@ def get_query_occtax_order(orderby, mappedView, q, from_generic_table=False):
             )
             orderCol = sub_query.c.nb_taxons
         elif orderby.get("orderby") == "dataset":
-            q = q.join(TDatasets, TDatasets.id_dataset ==
-                       TRelevesOccurrence.id_dataset)
+            q = q.join(TDatasets, TDatasets.id_dataset == TRelevesOccurrence.id_dataset)
             orderCol = TDatasets.dataset_name
         elif orderby.get("orderby") == "observateurs":
             q = q.join(
@@ -357,8 +352,7 @@ def get_query_occtax_order(orderby, mappedView, q, from_generic_table=False):
             ).join(User, corRoleRelevesOccurrence.id_role == User.id_role)
             orderCol = User.nom_role
         elif orderby.get("orderby") in mappedView.__table__.columns:
-            orderCol = getattr(mappedView,
-                               orderby["orderby"])
+            orderCol = getattr(mappedView, orderby["orderby"])
 
     if "orderCol" in locals():
         if "order" in orderby:
@@ -366,7 +360,6 @@ def get_query_occtax_order(orderby, mappedView, q, from_generic_table=False):
                 orderCol = orderCol.desc()
         q = q.order_by(orderCol)
     # ajout d'un ordre id desc obligatoire pour éviter des relevés qui se mettent sur plusieurs pages
-    q = q.order_by(getattr(mappedView,
-                           "id_releve_occtax").desc())
+    q = q.order_by(getattr(mappedView, "id_releve_occtax").desc())
 
     return q

@@ -155,6 +155,7 @@ class TOccurrencesOccurrence(DB.Model):
     id_nomenclature_source_status = DB.Column(DB.Integer)
     determiner = DB.Column(DB.Unicode)
     id_nomenclature_determination_method = DB.Column(DB.Integer)
+    id_nomenclature_behaviour = DB.Column(DB.Integer)
     cd_nom = DB.Column(DB.Integer, ForeignKey(Taxref.cd_nom))
     nom_cite = DB.Column(DB.Unicode)
     meta_v_taxref = DB.Column(

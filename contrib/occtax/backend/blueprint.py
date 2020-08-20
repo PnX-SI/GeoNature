@@ -78,18 +78,10 @@ def getReleves(info_role):
     query_without_limit = q
     # Order by
     q = get_query_occtax_order(orderby, TRelevesOccurrence, q)
-    try:
-        data = q.limit(limit).offset(page * limit).all()
-    except Exception as e:
-        DB.session.rollback()
-        raise
+    data = q.limit(limit).offset(page * limit).all()
 
     # Pour obtenir le nombre de résultat de la requete sans le LIMIT
-    try:
-        nb_results_without_limit = query_without_limit.count()
-    except Exception as e:
-        DB.session.rollback()
-        raise
+    nb_results_without_limit = query_without_limit.count()
 
     user = info_role
     user_cruved = get_or_fetch_user_cruved(
