@@ -16,6 +16,7 @@ from pypnusershub.db.models import User
 from pypnusershub.db.tools import InsufficientRightsError
 from utils_flask_sqla.serializers import serializable, SERIALIZERS
 from utils_flask_sqla_geo.serializers import geoserializable, shapeserializable
+from pypn_habref_api.models import Habref
 
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
 from geonature.core.ref_geo.models import LAreas
@@ -408,6 +409,8 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
     unique_id_sinp = DB.Column(UUID(as_uuid=True))
     id_source = DB.Column(DB.Integer)
     id_dataset = DB.Column(DB.Integer)
+    cd_hab = DB.Column(DB.Integer, ForeignKey(Habref.cd_hab))
+    habitat = DB.relationship(Habref, lazy="joined")
     source = DB.relationship(
         "TSources",
         primaryjoin=(TSources.id_source == id_source),

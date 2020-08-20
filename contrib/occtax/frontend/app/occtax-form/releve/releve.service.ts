@@ -79,6 +79,7 @@ export class OcctaxFormReleveService {
       altitude_max: null,
       meta_device_entry: null,
       comment: null,
+      cd_hab: null,
       id_nomenclature_obs_technique: [null, Validators.required],
       observers: [
         null,

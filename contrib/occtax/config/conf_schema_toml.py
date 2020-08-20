@@ -44,6 +44,7 @@ class FormConfig(Schema):
     count_max = fields.Boolean(missing=True)
     display_nom_valide = fields.Boolean(missing=True)
     geo_object_nature = fields.Boolean(missing=True)
+    habitat = fields.Boolean(missing=True)
 
 
 default_map_list_conf = [
