@@ -99,6 +99,7 @@
     "GroupType": "Type de regroupement",
     "DoesNotExist": "Ce relevé n'existe pas",
     "StayOnFormInterface": "Enchainer les relevés sans retourner à l'interface carte/liste",
+    "GeoObjectNature": "Nature de l'objet géographique",
     "Infos": {
       "ReleveAdded": "Relevé ajouté",
       "ReleveModified": "Relevé modifié"

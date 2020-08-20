@@ -9,6 +9,13 @@ export const DYNAMIC_FORM_DEF = [
   },
   {
     type_widget: 'nomenclature',
+    attribut_label: "Nature de l'objet géographique",
+    attribut_name: 'id_nomenclature_geo_object_nature',
+    code_nomenclature_type: 'NAT_OBJ_GEO',
+    required: false
+  },
+  {
+    type_widget: 'nomenclature',
     attribut_label: 'Type de regroupement',
     attribut_name: 'id_nomenclature_grp_typ',
     code_nomenclature_type: 'TYP_GRP',
@@ -180,7 +187,7 @@ export const DYNAMIC_FORM_DEF = [
   },
   {
     type_widget: 'observers',
-    attribut_label: "Saisie par",
+    attribut_label: 'Saisie par',
     attribut_name: 'id_digitiser',
     idComponent: '1',
     required: false,

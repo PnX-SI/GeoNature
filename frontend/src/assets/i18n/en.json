@@ -97,6 +97,8 @@
     "GroupType": "Grouping type",
     "DoesNotExist": "This releve does not exist",
     "StayOnFormInterface": "Stay on form interface",
+    "GeoObjectNature": "Geographical object nature",
+
     "Infos": {
       "ReleveAdded": "Releve added",
       "ReleveModified": "Releve modified"

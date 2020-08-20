@@ -89,6 +89,7 @@ export class OcctaxFormReleveService {
         ModuleConfig.observers_txt ? Validators.required : null,
       ],
       id_nomenclature_grp_typ: null,
+      id_nomenclature_geo_object_nature: null,
     });
 
     this.propertiesForm.patchValue(this.initialValues);
@@ -243,6 +244,10 @@ export class OcctaxFormReleveService {
             id_nomenclature_obs_technique:
               this.occtaxParamS.get("releve.id_nomenclature_obs_technique") ||
               data["TECHNIQUE_OBS"],
+            id_nomenclature_geo_object_nature:
+              this.occtaxParamS.get(
+                "releve.id_nomenclature_geo_object_nature"
+              ) || data["NAT_OBJ_GEO"],
           };
         })
       );

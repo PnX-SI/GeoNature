@@ -202,6 +202,7 @@ class TRelevesOccurrence(ReleveModel):
     altitude_min = DB.Column(DB.Integer)
     altitude_max = DB.Column(DB.Integer)
     id_nomenclature_obs_technique = DB.Column(DB.Integer)
+    id_nomenclature_geo_object_nature = DB.Column(DB.Integer)
     meta_device_entry = DB.Column(DB.Unicode)
     comment = DB.Column(DB.Unicode)
     geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
