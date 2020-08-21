@@ -24,7 +24,13 @@
 - ~~dynamicForm mediaValidator~~
 
 # Backend 
-- bug diapo avec les non img
-- miniatures Pillow
+- ~~bug diapo avec les non img~~
+- ~~miniatures Pillow~~
 - compresser (redimensionner) image source
-- miniatures media url
+-~~ miniatures media url~~
+
+Delete thumbnail on delete media
+
+media test url video html
+insertion video
+youtube etc..
