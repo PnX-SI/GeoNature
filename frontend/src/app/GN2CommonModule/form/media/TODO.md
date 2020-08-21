@@ -1,11 +1,26 @@
-# Affichier medias
-- monitoring
+# Bugs : bug sync!!
+- gestions erreurs toaster
+- 
+# Afficher medias
+- ~~monitoring~~
+ - ~~mettre dans site, visites, observations~~
 - occtax -> fiche
 - synthèse
 - validation
 
+# Remarques formulaire Théo & Camille
+- Fait
+  - remplaclement @ par ''
+  - url -> URL
+  - target blank ok?
+  - Medias.link -> afficher le média
+  - modale
+- TODO
+  - boutton detail? + pré (ou post) remplissage de champs title_fr (taxon)?
+  - clarifier boutton upload
+
 # Autres
-- liens target _blanck
+- ~~liens target _blanck~~
 - dynamicForm mediaValidator
 
 # Backend 
