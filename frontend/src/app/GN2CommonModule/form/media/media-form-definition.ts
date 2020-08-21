@@ -29,7 +29,7 @@ export const mediaFormDefinitionsDict = {
     "required": true,
   },
   "media_url": {
-    "attribut_label": "Url",
+    "attribut_label": "URL",
     "type_widget": "text",
     "hidden": ({value}) => value.bFile != "Renseigner une URL",
     "required": ({value}) => value.bFile == "Renseigner une URL",
