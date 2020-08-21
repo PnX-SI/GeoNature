@@ -2,10 +2,12 @@ import { distinctUntilChanged } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 import { arrayMinLengthValidator, isObjectValidator } from '@geonature/services/validators/validators';
+import { MediaService } from '@geonature_common/service/media.service';
+
 @Injectable()
 export class DynamicFormService {
 
-  constructor() {}
+  constructor(private _mediaService: MediaService) {}
 
   toFormGroup(formsDef: Array<any>) {
     const group: any = {};
@@ -21,7 +23,9 @@ export class DynamicFormService {
     }
 
     const validators = [];
-    if (formDef.type_widget === 'checkbox') {
+    if (formDef.type_widget === 'medias') {
+      validators.push(this._mediaService.mediasValidator());
+    } else if (formDef.type_widget === 'checkbox') {
       value = value || new Array();
       if (formDef.required) {
         validators.push(arrayMinLengthValidator(1));

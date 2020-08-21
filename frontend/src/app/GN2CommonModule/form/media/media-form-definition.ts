@@ -7,7 +7,7 @@ export const mediaFormDefinitionsDict = {
   "description_fr": {
     "attribut_label": "Description",
     "type_widget": "text",
-    "required": true
+    "required": false
   },
   "author": {
     "attribut_label": "Auteur",
