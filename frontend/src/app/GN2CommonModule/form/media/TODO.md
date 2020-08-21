@@ -1,6 +1,6 @@
 # Bugs : bug sync!!
 - gestions erreurs toaster
-- 
+
 # Afficher medias
 - ~~monitoring~~
  - ~~mettre dans site, visites, observations~~
@@ -21,7 +21,7 @@
 
 # Autres
 - ~~liens target _blanck~~
-- dynamicForm mediaValidator
+- ~~dynamicForm mediaValidator~~
 
 # Backend 
 - bug diapo avec les non img
