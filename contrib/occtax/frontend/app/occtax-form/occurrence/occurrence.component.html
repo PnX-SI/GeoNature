@@ -153,22 +153,23 @@
     </div>
 
     <div 
+      *ngIf="occtaxConfig.form_fields.behavior"
+      class="col-lg-4 col-sm-6">
+      <pnx-nomenclature 
+        label="{{ 'Taxon.OccBehaviour' | translate }}" 
+        [parentFormControl]="occurrenceForm.get('id_nomenclature_behaviour')"
+        codeNomenclatureType="OCC_COMPORTEMENT" 
+        [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne" 
+        [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
+      </pnx-nomenclature>
+    </div>
+    <div 
       *ngIf="occtaxConfig.form_fields.source_status"
       class="col-lg-4 col-sm-6">
       <pnx-nomenclature 
         label="{{ 'Taxon.StatusSource' | translate }}" 
         [parentFormControl]="occurrenceForm.get('id_nomenclature_source_status')"
         codeNomenclatureType="STATUT_SOURCE">
-      </pnx-nomenclature>
-    </div>
-
-    <div 
-      *ngIf="occtaxConfig.form_fields.diffusion_level"
-      class="col-lg-4 col-sm-6">
-      <pnx-nomenclature 
-        label="{{ 'Taxon.DiffusionLevel' | translate }}" 
-        [parentFormControl]="occurrenceForm.get('id_nomenclature_diffusion_level')"
-        codeNomenclatureType="NIV_PRECIS">
       </pnx-nomenclature>
     </div>
 

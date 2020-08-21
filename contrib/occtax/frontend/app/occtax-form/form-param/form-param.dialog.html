@@ -178,8 +178,18 @@
       label="{{ 'Releve.GroupType' | translate }}" 
       [parentFormControl]="releveParamForm.get('id_nomenclature_grp_typ')"
       codeNomenclatureType="TYP_GRP">
-    </pnx-nomenclature>
+		</pnx-nomenclature>
 
+		<div 
+			*ngIf="occtaxConfig.form_fields.grp_method" 
+			class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
+			<small> {{'Releve.GroupMethod' | translate}} </small>
+			<input 
+				type="text" 
+				class="form-control form-control-sm"
+				[formControl]="releveParamForm.get('grp_method')">
+		</div>
+	
     <pnx-nomenclature 
 		  *ngIf="occtaxConfig.form_fields.obs_technique" 
 		  label="{{ 'Releve.ObsTechnique' | translate }}" 
@@ -291,16 +301,6 @@
 	        label="{{ 'Taxon.StatusSource' | translate }}" 
 	        [parentFormControl]="occurrenceParamForm.get('id_nomenclature_source_status')"
 	        codeNomenclatureType="STATUT_SOURCE">
-	      </pnx-nomenclature>
-	    </div>
-
-	    <div 
-	      *ngIf="occtaxConfig.form_fields.diffusion_level"
-	      class="col-lg-4 col-sm-6">
-	      <pnx-nomenclature 
-	        label="{{ 'Taxon.DiffusionLevel' | translate }}" 
-	        [parentFormControl]="occurrenceParamForm.get('id_nomenclature_diffusion_level')"
-	        codeNomenclatureType="NIV_PRECIS">
 	      </pnx-nomenclature>
 	    </div>
 

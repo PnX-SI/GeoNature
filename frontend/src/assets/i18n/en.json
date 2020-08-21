@@ -95,8 +95,10 @@
     "CancelTaxon": "Cancel this taxon",
     "FillGeometryFirst": "Please locate on map",
     "GroupType": "Grouping type",
+    "GroupMethod": "Grouping method",
     "DoesNotExist": "This releve does not exist",
     "StayOnFormInterface": "Stay on form interface",
+    "GeoObjectNature": "Geographical object nature",
     "Infos": {
       "ReleveAdded": "Releve added",
       "ReleveModified": "Releve modified"
@@ -144,6 +146,7 @@
     "DeleteDone": "Taxon removed",
     "CreateDone": "Taxon added",
     "UpdateDone": "Taxon modified",
+    "OccBehaviour": "Behaviour",
     "Errors": {
       "ExistProofValidation": "This field must begin with 'http://', 'https://', ou 'ftp://'",
       "NoExistProofError": "If existence proof is 'YES' one of two proof fields must be filled",

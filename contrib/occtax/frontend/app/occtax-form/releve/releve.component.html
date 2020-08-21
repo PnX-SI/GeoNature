@@ -170,25 +170,44 @@
       [geojson]="geojson"> 
     </pnx-areas-intersected-modal>
   </div>
-
-  <div class="col-xl-4 col-md-5">
-    <!-- TYPE REGROUPEMENT -->
-    <pnx-nomenclature 
-      *ngIf="occtaxConfig.form_fields.group_type" 
-      label="{{ 'Releve.GroupType' | translate }}" 
-      [parentFormControl]="propertiesForm.get('id_nomenclature_grp_typ')"
-      codeNomenclatureType="TYP_GRP" 
-      [disabled]="propertiesForm.disabled">
-    </pnx-nomenclature>
+  <div 
+    *ngIf="propertiesForm.hasError('invalidAlt')" 
+    class="error" 
+    style="color:red; font-size: 80%; font-weight: 400;">
+    {{'Releve.Errors.AltitudeError' |translate}}      
   </div>
 </div>
-<div 
-  *ngIf="propertiesForm.hasError('invalidAlt')" 
-  class="error" 
-  style="color:red; font-size: 80%; font-weight: 400;">
-  {{'Releve.Errors.AltitudeError' |translate}}      
-</div>
 
+  <div class="row">
+    <div class="col-xl-4 col-md-5">
+      <!-- TYPE REGROUPEMENT -->
+      <pnx-nomenclature 
+        *ngIf="occtaxConfig.form_fields.group_type" 
+        label="{{ 'Releve.GroupType' | translate }}" 
+        [parentFormControl]="propertiesForm.get('id_nomenclature_grp_typ')"
+        codeNomenclatureType="TYP_GRP" 
+        [disabled]="propertiesForm.disabled">
+      </pnx-nomenclature>
+    </div>
+    <div *ngIf="occtaxConfig.form_fields.grp_method" class="col-xl-4 col-md-5">
+
+      <small> {{'Releve.GroupMethod' | translate}} </small>
+      <input 
+        type="text" 
+        class="form-control form-control-sm"
+        [formControl]="propertiesForm.get('grp_method')">
+    </div>
+    <div class="col-xl-4 col-md-5">
+      <pnx-nomenclature 
+        *ngIf="occtaxConfig.form_fields.geo_object_nature" 
+        label="{{ 'Releve.GeoObjectNature' | translate }}" 
+        [parentFormControl]="propertiesForm.get('id_nomenclature_geo_object_nature')"
+        codeNomenclatureType="NAT_OBJ_GEO" 
+        [disabled]="propertiesForm.disabled">
+      </pnx-nomenclature>
+    </div>
+  
+  </div>
 
 
 
@@ -198,9 +217,26 @@
   label="{{ 'Releve.ObsTechnique' | translate }}" 
   [parentFormControl]="propertiesForm.get('id_nomenclature_obs_technique')"
   codeNomenclatureType="TECHNIQUE_OBS" 
-  [disabled]="propertiesForm.disabled">
+  [disabled]="propertiesForm.disabled"
+  
+  >
 </pnx-nomenclature>
 
+
+<div class="col-xl-6 col-md-7">
+  <pnx-autocomplete 
+    *ngIf="occtaxConfig.form_fields.habitat"
+    apiEndPoint="{{AppConfig.API_ENDPOINT}}/habref/habitats/autocomplete"
+    [searchAsParameter]="false"  
+    [parentFormControl]="habitatForm"
+    queryParamSearch="search_name"
+    keyValue="search_name"
+    [formatter]="formatter"
+    label="Habitat"
+    placeholder="Tapez les premières lettres..."
+  >
+  </pnx-autocomplete>
+</div>
 
 
 
@@ -213,6 +249,19 @@
     [formControl]="propertiesForm.get('comment')">
   </textarea>
 </div>
+<!-- <pnx-autocomplete apiEndPoint="{{appConfig.API_ENDPOINT}}/habref/habitats/autocomplete/list/{{moduleConfig.ID_LIST_HABITAT}}"
+[searchAsParameter]="false"  
+[parentFormControl]="occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].get('habref')"
+queryParamSearch="search_name"
+[othersGetParams]="occHabForm.selectedTypo"
+[formatter]="formatter"
+keyValue="search_name"
+label="Habitat"
+placeholder="Tapez les premières lettres..."
+(onChange)="occHabForm.patchNomCite($event)"
+>
+</pnx-autocomplete> -->
+
 
 <div class="text-center" style="margin-top: 10px;"> 
 

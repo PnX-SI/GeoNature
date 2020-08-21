@@ -45,8 +45,8 @@ export class OcctaxFormOccurrenceService {
       id_nomenclature_bio_status: null,
       id_nomenclature_naturalness: null,
       id_nomenclature_exist_proof: null,
+      id_nomenclature_behaviour: null,
       id_nomenclature_observation_status: null,
-      id_nomenclature_diffusion_level: null,
       id_nomenclature_blurring: null,
       id_nomenclature_source_status: null,
       determiner: [null, Validators.required],
@@ -195,10 +195,6 @@ export class OcctaxFormOccurrenceService {
               this.occtaxParamS.get(
                 "occurrence.id_nomenclature_observation_status"
               ) || DATA["STATUT_OBS"],
-            id_nomenclature_diffusion_level:
-              this.occtaxParamS.get(
-                "occurrence.id_nomenclature_diffusion_level"
-              ) || DATA["NIV_PRECIS"],
             id_nomenclature_blurring:
               this.occtaxParamS.get("occurrence.id_nomenclature_blurring") ||
               DATA["DEE_FLOU"],
@@ -206,6 +202,10 @@ export class OcctaxFormOccurrenceService {
               this.occtaxParamS.get(
                 "occurrence.id_nomenclature_source_status"
               ) || DATA["STATUT_SOURCE"],
+            id_nomenclature_behaviour:
+              this.occtaxParamS.get(
+                "occurrence.id_nomenclature_behaviour"
+              ) || DATA["OCC_COMPORTEMENT"],
           };
         })
       );

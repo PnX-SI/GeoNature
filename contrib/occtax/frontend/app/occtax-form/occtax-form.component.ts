@@ -8,7 +8,6 @@ import {
 import { DOCUMENT } from "@angular/common";
 import { MatDialog, MatDialogConfig } from "@angular/material";
 import { ActivatedRoute, Router } from "@angular/router";
-import { first } from "rxjs/operators";
 import { ModuleConfig } from "../module.config";
 import { OcctaxFormService } from "./occtax-form.service";
 import { MapService } from "@geonature_common/map/map.service";
@@ -57,7 +56,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     private occtaxTaxaListService: OcctaxTaxaListService,
     private _ds: OcctaxDataService
-  ) {}
+  ) { }
 
   ngOnInit() {
     //si modification, récuperation de l'ID du relevé
@@ -102,8 +101,8 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
       (<any>document.querySelector("pnx-occtax-form .tab"))
     )
       ? (<HTMLScriptElement>(
-          (<any>document.querySelector("pnx-occtax-form .tab"))
-        )).offsetHeight
+        (<any>document.querySelector("pnx-occtax-form .tab"))
+      )).offsetHeight
       : 0;
 
     let height = wH - (tbH + nbH + 70);
@@ -184,7 +183,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     if (occ.length === 0) {
       this._ds
         .deleteReleve(this.occtaxFormService.id_releve_occtax.getValue())
-        .subscribe((d) => {});
+        .subscribe((d) => { });
     }
   }
 }

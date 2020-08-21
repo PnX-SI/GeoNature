@@ -8,15 +8,12 @@ from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 from geojson import Feature, FeatureCollection
 from datetime import datetime
 
-from .models import (
-    CorCountingOccurrence, 
-    TOccurrencesOccurrence, 
-    TRelevesOccurrence
-)
 from geonature.core.gn_commons.models import TMedias
+from .models import CorCountingOccurrence, TOccurrencesOccurrence, TRelevesOccurrence
 from geonature.core.gn_meta.schemas import DatasetSchema
 from geonature.core.taxonomie.schemas import TaxrefSchema
 from pypnusershub.db.models import User
+from pypn_habref_api.schemas import HabrefSchema
 
 
 class GeojsonSerializationField(fields.Field):
@@ -24,7 +21,11 @@ class GeojsonSerializationField(fields.Field):
         if value is None:
             return value
         else:
+<<<<<<< HEAD
             if type(value).__name__ == 'WKBElement':
+=======
+            if type(value).__name__ == "WKBElement":
+>>>>>>> origin/occtax-v2
                 feature = Feature(geometry=to_shape(value))
                 return feature.geometry
             else:
@@ -43,9 +44,29 @@ class ObserverSchema(MA.SQLAlchemyAutoSchema):
     class Meta:
         model = User
         load_instance = True
+<<<<<<< HEAD
         exclude = ('_password', '_password_plus', 'active', 'date_insert', 'date_update', 'desc_role', 'email', 'groupe', 'remarques', 'identifiant')
     
     nom_complet = fields.Function(lambda obj: (obj.nom_role if obj.nom_role else "") + (" " + obj.prenom_role if obj.prenom_role else ""))
+=======
+        exclude = (
+            "_password",
+            "_password_plus",
+            "active",
+            "date_insert",
+            "date_update",
+            "desc_role",
+            "email",
+            "groupe",
+            "remarques",
+            "identifiant",
+        )
+
+    nom_complet = fields.Function(
+        lambda obj: (obj.nom_role if obj.nom_role else "")
+        + (" " + obj.prenom_role if obj.prenom_role else "")
+    )
+>>>>>>> origin/occtax-v2
 
     @pre_load
     def make_observer(self, data, **kwargs):
@@ -53,6 +74,7 @@ class ObserverSchema(MA.SQLAlchemyAutoSchema):
             return dict({"id_role": data})
         return data
 
+<<<<<<< HEAD
 
 class MediaSchema(MA.SQLAlchemyAutoSchema):
     class Meta:
@@ -65,11 +87,14 @@ class MediaSchema(MA.SQLAlchemyAutoSchema):
         if data.get('id_media') is None:
             data.pop('id_media', None)
         return data
+=======
+>>>>>>> origin/occtax-v2
 
 class CountingSchema(MA.SQLAlchemyAutoSchema):
     class Meta:
         model = CorCountingOccurrence
         load_instance = True
+<<<<<<< HEAD
     
     medias = MA.Nested(MediaSchema, many=True)
 
@@ -77,6 +102,13 @@ class CountingSchema(MA.SQLAlchemyAutoSchema):
     def make_counting(self, data, **kwargs):
         if data.get('id_counting_occtax') is None:
             data.pop('id_counting_occtax', None)
+=======
+
+    @pre_load
+    def make_counting(self, data, **kwargs):
+        if data.get("id_counting_occtax") is None:
+            data.pop("id_counting_occtax", None)
+>>>>>>> origin/occtax-v2
         return data
 
 
@@ -95,8 +127,13 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
         model = TRelevesOccurrence
         load_instance = True
         include_fk = True
+<<<<<<< HEAD
         exclude = ('geom_local',)
     
+=======
+        exclude = ("geom_local",)
+
+>>>>>>> origin/occtax-v2
     date_min = fields.Date(format="%Y-%m-%d")
     date_max = fields.Date(format="%Y-%m-%d")
     hour_min = fields.Time(format="%H:%M", allow_none=True)
@@ -109,6 +146,7 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
     observers = MA.Nested(ObserverSchema, many=True)
     digitiser = MA.Nested(ObserverSchema, dump_only=True)
     dataset = MA.Nested(DatasetSchema, dump_only=True)
+<<<<<<< HEAD
 
     @pre_load
     def make_releve(self, data, **kwargs):
@@ -135,6 +173,37 @@ class GeojsonReleveSchema(MA.Schema):
         if data.get('properties') is not None:
             data['id'] = data.get('properties').id_releve_occtax
         return data
+=======
+    habitat = MA.Nested(HabrefSchema, dump_only=True)
+
+    @pre_load
+    def make_releve(self, data, **kwargs):
+        if data.get("id_releve_occtax") is None:
+            data.pop("id_releve_occtax", None)
+        return data
+
+
+class GeojsonReleveSchema(MA.Schema):
+    # class Meta:
+    # load_instance = True
+
+    id = fields.Integer()
+    properties = fields.Nested(ReleveSchema(exclude=("geom_4326")))
+    geometry = GeojsonSerializationField()
+
+    @post_load
+    def make_geojsonReleve(self, data, **kwargs):
+        if data.get("geometry") is not None:
+            data.get("properties").geom_4326 = data.get("geometry")
+        return data
+
+    @pre_dump
+    def set_(self, data, **kwargs):
+        if data.get("properties") is not None:
+            data["id"] = data.get("properties").id_releve_occtax
+        return data
+
+>>>>>>> origin/occtax-v2
 
 class CruvedSchema(MA.Schema):
     C = fields.Boolean(default=False, missing=False, required=False)

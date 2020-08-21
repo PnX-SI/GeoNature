@@ -162,7 +162,7 @@ CREATE TABLE synthese (
     id_nomenclature_blurring integer DEFAULT get_default_nomenclature_value('DEE_FLOU'),
     id_nomenclature_source_status integer DEFAULT get_default_nomenclature_value('STATUT_SOURCE'),
     id_nomenclature_info_geo_type integer DEFAULT get_default_nomenclature_value('TYP_INF_GEO'),
-    id_nomenclature_behavior integer DEFAULT get_default_nomenclature_value('OCC_COMPORTEMENT'),
+    id_nomenclature_behaviour integer DEFAULT get_default_nomenclature_value('OCC_COMPORTEMENT'),
     reference_biblio character varying(255),
     count_min integer,
     count_max integer,
@@ -794,7 +794,8 @@ ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_observation_status) A
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_blurring) AS blurring,
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_source_status) AS source_status,
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_info_geo_type) AS info_geo_type,
-ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_determination_method) AS determination_method
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_determination_method) AS determination_method,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_behaviour) AS occ_behaviour
 FROM gn_synthese.synthese s;
 
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
@@ -833,6 +834,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
     s.id_nomenclature_geo_object_nature,
     s.id_nomenclature_info_geo_type,
     s.id_nomenclature_grp_typ,
+    s.grp_method,
     s.id_nomenclature_obs_meth,
     s.id_nomenclature_obs_technique,
     s.id_nomenclature_bio_status,
@@ -850,6 +852,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
     s.id_nomenclature_blurring,
     s.id_nomenclature_source_status,
     s.id_nomenclature_determination_method,
+    s.id_nomenclature_behaviour,
     s.reference_biblio,
     sources.name_source,
     sources.url_source,
@@ -868,7 +871,6 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
  SELECT s.id_synthese AS "idSynthese",
     s.unique_id_sinp AS "permId",
     s.unique_id_sinp_grp AS "permIdGrp",
-    s.grp_type AS "methodeRegroupement",
     s.count_min AS "denbrMin",
     s.count_max AS "denbrMax",
     s.meta_v_taxref AS "vTAXREF",
@@ -893,17 +895,20 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     d.id_acquisition_framework,
     t.cd_nom AS "cdNom",
     t.cd_ref AS "cdRef",
+    s.cd_hab AS "codeHabRef",
     t.nom_valide AS "nomValide",
     s.nom_cite AS "nomCite",
     hab.lb_code AS "codeHab",
     hab.lb_hab_fr AS "nomHab",
+    s.cd_hab AS "cdHab",
     public.ST_x(public.ST_transform(s.the_geom_point, 2154)) AS x_centroid,
     public.ST_y(public.ST_transform(s.the_geom_point, 2154)) AS y_centroid,
     COALESCE(s.meta_update_date, s.meta_create_date) AS lastact,
     public.ST_asgeojson(s.the_geom_4326) AS geojson_4326,
     public.ST_asgeojson(s.the_geom_local) AS geojson_local,
     n1.label_default AS "ObjGeoTyp",
-    n2.label_default AS "methGrp",
+    n2.label_default AS "typGrp",
+    s.grp_method AS "methGrp",
     n3.label_default AS "obsMeth",
     n4.label_default AS "obsTech",
     n5.label_default AS "ocStatutBio",
@@ -920,7 +925,8 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     n16.label_default AS "dEEFlou",
     n17.label_default AS "statSource",
     n18.label_default AS "typInfGeo",
-    n19.label_default AS "ocMethDet"
+    n19.label_default AS "ocMethDet",
+    n20.label_default AS "occComportement"
    FROM gn_synthese.synthese s
      JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
@@ -944,8 +950,8 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
      LEFT JOIN ref_nomenclatures.t_nomenclatures n17 ON s.id_nomenclature_source_status = n17.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n18 ON s.id_nomenclature_info_geo_type = n18.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n19 ON s.id_nomenclature_determination_method = n19.id_nomenclature
-     LEFT JOIN ref_nomenclatures.t_nomenclatures n20 ON s.id_nomenclature_behavior = n20.id_nomenclature
-     LEFT JOIN ref_habitats.habref s ON hab.cd_nom = s.cd_hab
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n20 ON s.id_nomenclature_behaviour = n20.id_nomenclature
+     LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = s.cd_hab;
 
 
 CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS

@@ -299,9 +299,9 @@ ALTER TABLE pr_occtax.t_occurrences_occtax
     --delete sensi
     DROP COLUMN id_nomenclature_diffusion_level,
     -- comportement
-    ADD COLUMN id_nomenclature_behavior integer,
-    ADD CONSTRAINT fk_t_occurrences_occtax_behavior FOREIGN KEY (id_nomenclature_behavior) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
-    ADD CONSTRAINT check_t_occurrences_occtax_behavior CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behavior,'OCC_COMPORTEMENT')) NOT VALID;
+    ADD COLUMN id_nomenclature_behaviour integer,
+    ADD CONSTRAINT fk_t_occurrences_occtax_behavior FOREIGN KEY (id_nomenclature_behaviour) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
+    ADD CONSTRAINT check_t_occurrences_occtax_behavior CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour,'OCC_COMPORTEMENT')) NOT VALID;
     
 INSERT INTO pr_occtax.defaults_nomenclatures_value(mnemonique_type, id_nomenclature)
 VALUES ('OCC_COMPORTEMENT', '0');
@@ -314,13 +314,10 @@ ALTER TABLE gn_synthese.synthese
     ADD COLUMN cd_hab integer,
     ADD CONSTRAINT fk_synthese_cd_hab FOREIGN KEY (cd_hab) REFERENCES ref_habitats.habref(cd_hab) ON UPDATE CASCADE,
     ADD COLUMN grp_method character varying(255),
-    ADD COLUMN id_nomenclature_behavior integer, 
-    ALTER COLUMN id_nomenclature_behavior SET DEFAULT gn_synthese.get_default_nomenclature_value('OCC_COMPORTEMENT'),
-    ADD CONSTRAINT fk_synthese_id_nomenclature_behavior FOREIGN KEY (id_nomenclature_behavior) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
-    ADD CONSTRAINT check_synthese_behavior CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behavior, 'OCC_COMPORTEMENT')) NOT VALID;
-
-
-
+    ADD COLUMN id_nomenclature_behaviour integer, 
+    ALTER COLUMN id_nomenclature_behaviour SET DEFAULT gn_synthese.get_default_nomenclature_value('OCC_COMPORTEMENT'),
+    ADD CONSTRAINT fk_synthese_id_nomenclature_behaviour FOREIGN KEY (id_nomenclature_behaviour) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
+    ADD CONSTRAINT check_synthese_behavior CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour, 'OCC_COMPORTEMENT')) NOT VALID;
 
 
 CREATE OR REPLACE FUNCTION pr_occtax.insert_in_synthese(my_id_counting integer)
@@ -373,6 +370,7 @@ id_dataset,
 id_module,
 id_nomenclature_geo_object_nature,
 id_nomenclature_grp_typ,
+grp_method,
 id_nomenclature_obs_meth,
 id_nomenclature_obs_technique,
 id_nomenclature_bio_status,
@@ -387,7 +385,7 @@ id_nomenclature_observation_status,
 id_nomenclature_blurring,
 id_nomenclature_source_status,
 id_nomenclature_info_geo_type,
-id_nomenclature_behavior,
+id_nomenclature_behaviour,
 count_min,
 count_max,
 cd_nom,
@@ -421,6 +419,7 @@ VALUES(
   id_module,
   releve.id_nomenclature_geo_object_nature,
   releve.id_nomenclature_grp_typ,
+  releve.grp_method,
   occurrence.id_nomenclature_obs_meth,
   releve.id_nomenclature_obs_technique,
   occurrence.id_nomenclature_bio_status,
@@ -437,7 +436,7 @@ VALUES(
   id_nomenclature_source_status,
   -- id_nomenclature_info_geo_type: type de rattachement = géoréferencement
   ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO', '1'),
-  occurrence.id_nomenclature_behavior,
+  occurrence.id_nomenclature_behaviour,
   new_count.count_min,
   new_count.count_max,
   occurrence.cd_nom,
@@ -470,6 +469,7 @@ $BODY$
   COST 100;
 
 
+
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_occ()
   RETURNS trigger AS
 $BODY$
@@ -486,7 +486,7 @@ BEGIN
     id_nomenclature_source_status = NEW.id_nomenclature_source_status,
     determiner = NEW.determiner,
     id_nomenclature_determination_method = NEW.id_nomenclature_determination_method,
-    id_nomenclature_behavior = id_nomenclature_behavior,
+    id_nomenclature_behaviour = id_nomenclature_behaviour,
     cd_nom = NEW.cd_nom,
     nom_cite = NEW.nom_cite,
     meta_v_taxref = NEW.meta_v_taxref,
@@ -543,3 +543,99 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
+
+
+CREATE OR REPLACE VIEW gn_synthese.v_synthese_decode_nomenclatures AS
+SELECT
+s.id_synthese,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_geo_object_nature) AS nat_obj_geo,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_grp_typ) AS grp_typ,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_obs_meth) AS obs_method,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_obs_technique) AS obs_technique,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_bio_status) AS bio_status,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_bio_condition) AS bio_condition,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_naturalness) AS naturalness,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_exist_proof) AS exist_proof ,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_valid_status) AS valid_status,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_diffusion_level) AS diffusion_level,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_life_stage) AS life_stage,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_sex) AS sex,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_obj_count) AS obj_count,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_type_count) AS type_count,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_sensitivity) AS sensitivity,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_observation_status) AS observation_status,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_blurring) AS blurring,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_source_status) AS source_status,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_info_geo_type) AS info_geo_type,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_determination_method) AS determination_method,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_behaviour) AS occ_behaviour
+FROM gn_synthese.synthese s;
+
+DROP view gn_synthese.v_synthese_for_web_app;
+CREATE  VIEW gn_synthese.v_synthese_for_web_app AS
+ SELECT s.id_synthese,
+    s.unique_id_sinp,
+    s.unique_id_sinp_grp,
+    s.id_source,
+    s.entity_source_pk_value,
+    s.count_min,
+    s.count_max,
+    s.nom_cite,
+    s.meta_v_taxref,
+    s.sample_number_proof,
+    s.digital_proof,
+    s.non_digital_proof,
+    s.altitude_min,
+    s.altitude_max,
+    s.the_geom_4326,
+    public.ST_asgeojson(the_geom_4326),
+    s.date_min,
+    s.date_max,
+    s.validator,
+    s.validation_comment,
+    s.observers,
+    s.id_digitiser,
+    s.determiner,
+    s.comment_context,
+    s.comment_description,
+    s.meta_validation_date,
+    s.meta_create_date,
+    s.meta_update_date,
+    s.last_action,
+    d.id_dataset,
+    d.dataset_name,
+    d.id_acquisition_framework,
+    s.id_nomenclature_geo_object_nature,
+    s.id_nomenclature_info_geo_type,
+    s.id_nomenclature_grp_typ,
+    s.grp_method,
+    s.id_nomenclature_obs_meth,
+    s.id_nomenclature_obs_technique,
+    s.id_nomenclature_bio_status,
+    s.id_nomenclature_bio_condition,
+    s.id_nomenclature_naturalness,
+    s.id_nomenclature_exist_proof,
+    s.id_nomenclature_valid_status,
+    s.id_nomenclature_diffusion_level,
+    s.id_nomenclature_life_stage,
+    s.id_nomenclature_sex,
+    s.id_nomenclature_obj_count,
+    s.id_nomenclature_type_count,
+    s.id_nomenclature_sensitivity,
+    s.id_nomenclature_observation_status,
+    s.id_nomenclature_blurring,
+    s.id_nomenclature_source_status,
+    s.id_nomenclature_determination_method,
+    s.id_nomenclature_behaviour,
+    s.reference_biblio,
+    sources.name_source,
+    sources.url_source,
+    t.cd_nom,
+    t.cd_ref,
+    t.nom_valide,
+    t.lb_nom,
+    t.nom_vern
+   FROM gn_synthese.synthese s
+     JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
+     JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
+     JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source;

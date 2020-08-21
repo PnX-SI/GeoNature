@@ -9,11 +9,11 @@ SET search_path = public;
 
 CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS 
  SELECT 
-    rel.unique_id_sinp as "idSINPRegroupement",
-    ref_nomenclatures.get_cd_nomenclature(rel.id_nomenclature_grp_typ) AS "typeRegroupement",
-    rel.grp_type AS "methodeRegroupement",
+    rel.unique_id_sinp_grp as "idSINPRegroupement",
+    ref_nomenclatures.get_cd_nomenclature(rel.id_nomenclature_grp_typ) AS "typGrp",
+    rel.grp_method AS "methGrp",
     ccc.unique_id_sinp_occtax AS "permId",
-    ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_observation_status) AS "statObs",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_observation_status) AS "statObs",
     occ.nom_cite AS "nomCite",
     to_char(rel.date_min, 'DD/MM/YYYY'::text) AS "dateDebut",
     to_char(rel.date_max, 'DD/MM/YYYY'::text) AS "dateFin",
@@ -22,48 +22,43 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     rel.altitude_max AS "altMax",
     rel.altitude_min AS "altMin",
     occ.cd_nom AS "cdNom",
-    taxonomie.find_cdref(occ.cd_nom) AS "cdRef",
+    tax.cd_ref AS "cdRef",
     gn_commons.get_default_parameter('taxref_version'::text, NULL::integer) AS "vTAXREF",
-    'NSP'::text AS "dSPublique",
+    ref_nomenclatures.get_nomenclature_label(d.id_nomenclature_data_origin) AS "dSPublique",
     d.unique_dataset_id AS "jddMetaId",
-    ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_source_status) AS "statSource",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_source_status) AS "statSource",
     ccc.unique_id_sinp_occtax AS "idOrigine",
     d.dataset_name AS "jddCode",
     d.unique_dataset_id AS "jddId",
-    NULL::text AS "refBiblio",
-    ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_obs_meth) AS "obsMeth",
-    ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_bio_condition) AS "ocEtatBio",
-    COALESCE(ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_naturalness), '0'::text::character varying) AS "ocNat",
-    ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_sex) AS "ocSex",
-    ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_life_stage) AS "ocStade",
-    '0'::text AS "ocBiogeo",
-    COALESCE(ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_bio_status), '0'::text::character varying) AS "ocStatBio",
-    COALESCE(ref_nomenclatures.get_cd_nomenclature(occ.id_nomenclature_exist_proof), '0'::text::character varying) AS "preuveOui",
-    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_determination_method, 'fr'::character varying) AS "ocMethDet",
-    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_behavior, 'fr'::character varying) AS "ocMethDet",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_obs_meth) AS "obsMeth",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_bio_condition) AS "ocEtatBio",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_naturalness) AS "ocNat",
+    ref_nomenclatures.get_nomenclature_label(ccc.id_nomenclature_sex) AS "ocSex",
+    ref_nomenclatures.get_nomenclature_label(ccc.id_nomenclature_life_stage) AS "ocStade",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_bio_status) AS "ocStatBio",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_exist_proof) AS "preuveOui",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_determination_method) AS "ocMethDet",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_behaviour) AS "occComportement",
     occ.digital_proof AS "preuvNum",
     occ.non_digital_proof AS "preuvNoNum",
     rel.comment AS "obsCtx",
     occ.comment AS "obsDescr",
     rel.unique_id_sinp_grp AS "permIdGrp",
-    'Relevé'::text AS "methGrp",
-    'OBS'::text AS "typGrp",
     ccc.count_max AS "denbrMax",
     ccc.count_min AS "denbrMin",
-    ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_obj_count) AS "objDenbr",
-    ref_nomenclatures.get_cd_nomenclature(ccc.id_nomenclature_type_count) AS "typDenbr",
+    ref_nomenclatures.get_nomenclature_label(ccc.id_nomenclature_obj_count) AS "objDenbr",
+    ref_nomenclatures.get_nomenclature_label(ccc.id_nomenclature_type_count) AS "typDenbr",
     COALESCE(string_agg(DISTINCT (r.nom_role::text || ' '::text) || r.prenom_role::text, ','::text), rel.observers_txt::text) AS "obsId",
     COALESCE(string_agg(DISTINCT o.nom_organisme::text, ','::text), 'NSP'::text) AS "obsNomOrg",
     COALESCE(occ.determiner, 'Inconnu'::character varying) AS "detId",
-    ref_nomenclatures.get_cd_nomenclature(rel.id_nomenclature_geo_object_nature) AS "natureObjGeo",
-    'NSP'::text AS "detNomOrg",
-    'NSP'::text AS "orgGestDat",
+    ref_nomenclatures.get_nomenclature_label(rel.id_nomenclature_geo_object_nature) AS "natureObjGeo",
     st_astext(rel.geom_4326) AS "WKT",
     'In'::text AS "natObjGeo",
     tax.lb_nom AS "nomScienti",
     tax.nom_vern AS "nomVern",
     hab.lb_code AS "codeHab",
     hab.lb_hab_fr AS "nomHab",
+    hab.cd_hab,
     rel.date_min,
     rel.date_max,
     rel.id_dataset,
@@ -79,7 +74,10 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
      LEFT JOIN pr_occtax.cor_role_releves_occtax cr ON cr.id_releve_occtax = rel.id_releve_occtax
      LEFT JOIN utilisateurs.t_roles r ON r.id_role = cr.id_role
      LEFT JOIN utilisateurs.bib_organismes o ON o.id_organisme = r.id_organisme
-     LEFT JOIN ref_habitats.habref hab ON hab.cd_nom = rel.cd_hab
-   GROUP BY ccc.id_counting_occtax,occ.id_occurrence_occtax,rel.id_releve_occtax,d.id_dataset;
+     LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = rel.cd_hab
+   GROUP BY ccc.id_counting_occtax,occ.id_occurrence_occtax,rel.id_releve_occtax,d.id_dataset 
+   ,tax.cd_ref , tax.lb_nom, tax.nom_vern , hab.cd_hab, hab.lb_code, hab.lb_hab_fr 
+   ;
+
 
 

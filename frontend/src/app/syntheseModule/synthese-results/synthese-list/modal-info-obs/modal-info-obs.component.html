@@ -30,6 +30,9 @@
           <b> Altitude</b> : {{selectedObs?.altitude_min}} m - {{selectedObs?.altitude_max}} m
           <br>
           <b> UUID observation : </b> {{selectedObs?.unique_id_sinp}}
+          <br>
+          <b> Habitat associé</b>: {{selectedObs?.habitat?.lb_hab_fr}} - {{selectedObs?.habitat?.lb_code}}
+          <br>
           <button *ngIf="oneObsSynthese?.url_source" class="btn btn-sm btn-primary" (click)="backToModule(oneObsSynthese?.url_source, oneObsSynthese?.entity_source_pk_value)">
             <i class="fa fa-file-text" aria-hidden="true"></i> <small>Voir l'observation dans le module de saisie
             </small>
@@ -126,6 +129,11 @@
                   </tr>
 
                   <tr>
+                    <td> Comportement </td>
+                    <td> {{selectedObs?.occ_behaviour}} </td>
+                  </tr>
+
+                  <tr>
                     <td> Sexe </td>
                     <td> {{selectedObs?.sex}} </td>
                   </tr>
@@ -189,6 +197,11 @@
                   <tr>
                     <td> Type de regroupement </td>
                     <td> {{selectedObs?.grp_typ}} </td>
+                  </tr>
+
+                  <tr>
+                    <td> Méthode de regroupement </td>
+                    <td> {{selectedObs?.grp_method}} </td>
                   </tr>
 
                   <tr>

@@ -16,6 +16,7 @@ from pypnusershub.db.models import User
 from pypnusershub.db.tools import InsufficientRightsError
 from utils_flask_sqla.serializers import serializable, SERIALIZERS
 from utils_flask_sqla_geo.serializers import geoserializable, shapeserializable
+from pypn_habref_api.models import Habref
 
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
 from geonature.core.ref_geo.models import LAreas
@@ -164,6 +165,7 @@ class VSyntheseDecodeNomenclatures(DB.Model):
     observation_status = DB.Column(DB.Unicode)
     blurring = DB.Column(DB.Unicode)
     source_status = DB.Column(DB.Unicode)
+    occ_behaviour = DB.Column(DB.Unicode)
 
 
 @serializable
@@ -180,6 +182,7 @@ class Synthese(DB.Model):
     id_dataset = DB.Column(DB.Integer)
     id_nomenclature_geo_object_nature = DB.Column(DB.Integer)
     id_nomenclature_grp_typ = DB.Column(DB.Integer)
+    grp_method = DB.Column(DB.Unicode)
     id_nomenclature_obs_meth = DB.Column(DB.Integer)
     id_nomenclature_obs_technique = DB.Column(DB.Integer)
     id_nomenclature_bio_status = DB.Column(DB.Integer)
@@ -196,6 +199,7 @@ class Synthese(DB.Model):
     id_nomenclature_observation_status = DB.Column(DB.Integer)
     id_nomenclature_blurring = DB.Column(DB.Integer)
     id_nomenclature_source_status = DB.Column(DB.Integer)
+    id_nomenclature_behaviour = DB.Column(DB.Integer)
     count_min = DB.Column(DB.Integer)
     count_max = DB.Column(DB.Integer)
     cd_nom = DB.Column(DB.Integer)
@@ -298,6 +302,7 @@ class VSyntheseForWebApp(DB.Model):
     id_nomenclature_geo_object_nature = DB.Column(DB.Integer)
     id_nomenclature_info_geo_type = DB.Column(DB.Integer)
     id_nomenclature_grp_typ = DB.Column(DB.Integer)
+    grp_method = DB.Column(DB.Unicode)
     id_nomenclature_obs_meth = DB.Column(DB.Integer)
     id_nomenclature_obs_technique = DB.Column(DB.Integer)
     id_nomenclature_bio_status = DB.Column(DB.Integer)
@@ -315,6 +320,7 @@ class VSyntheseForWebApp(DB.Model):
     id_nomenclature_blurring = DB.Column(DB.Integer)
     id_nomenclature_source_status = DB.Column(DB.Integer)
     id_nomenclature_valid_status = DB.Column(DB.Integer)
+    id_nomenclature_behaviour = DB.Column(DB.Integer)
     reference_biblio = DB.Column(DB.Unicode)
     name_source = DB.Column(DB.Unicode)
     url_source = DB.Column(DB.Unicode)
@@ -408,6 +414,8 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
     unique_id_sinp = DB.Column(UUID(as_uuid=True))
     id_source = DB.Column(DB.Integer)
     id_dataset = DB.Column(DB.Integer)
+    cd_hab = DB.Column(DB.Integer, ForeignKey(Habref.cd_hab))
+    habitat = DB.relationship(Habref, lazy="joined")
     source = DB.relationship(
         "TSources",
         primaryjoin=(TSources.id_source == id_source),
