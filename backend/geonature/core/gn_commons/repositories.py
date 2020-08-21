@@ -2,14 +2,28 @@ from flask import current_app
 
 from sqlalchemy.exc import IntegrityError
 
+from pypnnomenclature.models import TNomenclatures
+
 from geonature.utils.env import DB
 from geonature.core.gn_commons.models import TMedias, BibTablesLocation
 from geonature.core.gn_commons.file_manager import (
     upload_file, remove_file,
-    rename_file
+    rename_file, removeDisallowedFilenameChars
 )
 
+from geonature.utils.errors import ConfigError, GNModuleInstallError, GeoNatureError, GeonatureApiError
+
+
+import pathlib
+
+from PIL import Image
+import requests
+from io import BytesIO
+import os
+
 import datetime
+
+thumbnail_sizes = [400, 200, 100, 50]
 
 class TMediaRepository():
     '''
@@ -66,6 +80,7 @@ class TMediaRepository():
             self.data['isFile'] = False
             self.media_data['media_path'] = None
             self.media_data['media_url'] = self.data['media_url']
+            self.test_url()
 
         # Si le média avait un fichier associé
         # et qu'il a été remplacé par une url
@@ -81,6 +96,9 @@ class TMediaRepository():
             setattr(self.media, k, self.media_data[k])
 
         self._persist_media_db()
+
+        if self.is_img():
+            self.create_thumbnails()
 
         return self.media
 
@@ -114,6 +132,70 @@ class TMediaRepository():
                     )
                 )
 
+    def absolute_file_path(self, thumbnail_height=None):
+        return os.path.join(current_app.config['BASE_DIR'], self.file_path(thumbnail_height))
+
+
+    def test_header_content_type(self, content_type):
+        media_type = self.media_type()
+        if media_type == 'Photo' and 'image' not in content_type:
+            return False
+
+        if media_type == 'Audio' and 'audio' not in content_type:
+            return False
+
+        return True
+
+    def test_url(self):
+        print('test url', self.data['media_url'])
+        try:
+            res=requests.head(url=self.data['media_url'])
+
+            print(res.status_code, res)
+            if res.status_code != 200:
+                raise GeoNatureError(
+                    'la réponse est différente de 200 ({})'
+                    .format(res.status_code
+                    )
+                )
+
+            print(res.headers['Content-type'])
+            if not self.test_header_content_type(res.headers['Content-type']):
+                raise GeoNatureError(
+                    'le format du liens ({}) ne corespont pas au type de média choisit ({})'
+                    .format(
+                    res.headers['Content-type'],
+                    self.media_type()
+                    )
+                )
+
+        except GeoNatureError as e:
+            raise GeoNatureError(
+                'Il y a un problème avec l url renseignée : {}'
+                .format(str(e))
+            )
+            pass
+
+
+
+
+    def file_path(self, thumbnail_height=None):
+        file_path = None
+        if self.media.media_path:
+            file_path = self.media.media_path
+        else:
+            file_path = os.path.join(
+                current_app.config['UPLOAD_FOLDER'],
+                str(self.media.id_table_location),
+                "{}_{}".format(self.media.id_media, self.media.media_url.split('/')[-1])
+            )
+
+        if(thumbnail_height):
+            file_path = file_path.replace('.', '_thumbnail_{}.'.format(thumbnail_height))
+            file_path = file_path.replace(current_app.config['UPLOAD_FOLDER'], current_app.config['UPLOAD_FOLDER'] + '/thumbnails')
+        return file_path
+
+
     def upload_file(self):
         '''
             Upload des fichiers sur le serveur
@@ -122,12 +204,66 @@ class TMediaRepository():
         filepath = upload_file(
             self.file,
             str(self.media.id_table_location),
-            "{id_media}_{file_name}".format(
+             "{id_media}_{file_name}".format(
                 id_media=self.media.id_media,
                 file_name=self.file.filename
             )
         )
         return filepath
+
+    def is_img(self):
+        return self.media_type() == 'Photo'
+
+    def media_type(self):
+        nomenclature = (
+            DB.session.query(TNomenclatures)
+            .filter(TNomenclatures.id_nomenclature == self.data['id_nomenclature_media_type'])
+            .one()
+        )
+        return nomenclature.label_fr
+
+    def get_image(self):
+        image = None
+        print(self.media.media_path)
+        if self.media.media_path:
+            image = Image.open(self.absolute_file_path())
+
+        if self.media.media_url:
+            response = requests.get(self.media.media_url)
+            image = Image.open(BytesIO(response.content))
+        
+        return image
+
+
+    def has_thumbnails(self):
+        for thumbnail_height in thumbnail_sizes:
+            if not os.path.isfile(self.absolute_file_path(thumbnail_height)):
+                return False
+        return True
+
+    def create_thumbnails(self):
+
+        if self.has_thumbnails():
+            return
+
+        try:
+            image = self.get_image()
+        except Exception as e:
+            if self.data['isFile']:
+                raise GeonatureError('Le fichier fournit ne contient pas une image valide')
+            else:
+                raise GeoNatureError('L URL renseignée ne contient pas une image valide')
+
+
+        for thumbnail_height in thumbnail_sizes:
+
+            width = thumbnail_height / image.size[1] * image.size[0] 
+            image.thumbnail((width, thumbnail_height))
+            pathlib.Path(
+                "/".join(self.absolute_file_path(thumbnail_height).split('/')[:-1])
+            ).mkdir(parents=True, exist_ok=True)
+            print(self.absolute_file_path(thumbnail_height))
+            image.save(self.absolute_file_path(thumbnail_height))
 
     def delete(self):
         # Note si SQLALCHEMY_TRACK_MODIFICATIONS  = true alors suppression du fichier gérée automatiquement

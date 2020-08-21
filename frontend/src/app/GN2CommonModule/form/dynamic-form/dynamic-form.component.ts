@@ -32,6 +32,7 @@ export class DynamicFormComponent implements OnInit {
 
   /** On ne gère ici que les fichiers uniques */
   onFileChange(event) {
+    console.log('onFileChange')
     const files: FileList = event.target.files;
     if (files && files.length === 0) {
       return;
@@ -41,6 +42,7 @@ export class DynamicFormComponent implements OnInit {
     value[this.formDefComp().attribut_name] = file;
     this.form.patchValue(value);
     this.form.patchValue(value);
+    this.form.controls[this.formDefComp().attribut_name].clearValidators();
   }
 
   onCheckChange(event, formControl: FormControl) {

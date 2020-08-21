@@ -23,7 +23,7 @@ export const mediaFormDefinitionsDict = {
   "bFile":{
     "attribut_label": "Import du média",
     "type_widget": 'select',
-    "values": ["Uploader un fichier", "Renseigner une url"],
+    "values": ["Uploader un fichier", "Renseigner une URL"],
     "value": "Uploader un fichier",
     "noNullOption": true,
     "required": true,
@@ -31,8 +31,8 @@ export const mediaFormDefinitionsDict = {
   "media_url": {
     "attribut_label": "Url",
     "type_widget": "text",
-    "hidden": ({value}) => value.bFile != "Renseigner une url",
-    "required": ({value}) => value.bFile == "Renseigner une url",
+    "hidden": ({value}) => value.bFile != "Renseigner une URL",
+    "required": ({value}) => value.bFile == "Renseigner une URL",
   },
   "file": {
     "attribut_label": "Choisir un fichier",

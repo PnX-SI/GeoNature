@@ -34,6 +34,11 @@
   color: orange;
 }
 
+.btn-valid-media {
+  margin-top: 15px;
+  background-color: green;
+}
+
 .float-right {
   float: right;
 }
@@ -54,6 +59,10 @@
   width: 50px;
   border-radius: 25px;
   object-fit: cover;
+}
+
+.media-icon {
+  background-color: lightgrey;
 }
 
 .media-center {

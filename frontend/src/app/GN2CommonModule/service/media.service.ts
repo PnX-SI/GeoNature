@@ -82,7 +82,7 @@ export class MediaService {
   }
 
   deleteMedia(idMedia) {
-    return this._http.delete(`${AppConfig.API_ENDPOINT}/gn_commons/media/${idMedia}`)
+    return this._http.delete(`${AppConfig.API_ENDPOINT}/gn_commons/media/${idMedia}`);
   }
 
   getIdTableLocation(schemaDotTable): Observable<number> {
@@ -125,9 +125,9 @@ export class MediaService {
     }
   }
 
-  href(media) {
+  href(media, thumbnail=null) {
     if(! (media instanceof Media)) media = new Media(media);
-    return media.href();
+    return media.href(thumbnail);
   }
 
   toString(media) {

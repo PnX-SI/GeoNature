@@ -292,6 +292,8 @@ class GnGeneralSchemaConf(Schema):
     URL_USERSHUB = fields.Url(required=False)
     ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, missing={})
     MEDIAS = fields.Nested(MediasConfig, missing={})
+    UPLOAD_FOLDER = fields.String(missing="static/medias")
+    
 
     @validates_schema
     def validate_enable_sign_up(self, data):

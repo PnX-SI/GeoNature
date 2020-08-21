@@ -20,8 +20,25 @@ class Media {
   public uploadPercentDone: number = 0;
   public pendingRequest: Subscription; // pour pouvoir couper l'upload si on supprime le media pendant l'upload
 
+  public sent: boolean = false;
+
   constructor(values = {}) {
-    this.setValues(values)
+    this.setValues(values);
+  }
+
+  hasValue(values) {
+    return ['id_media',
+    'id_table_location',
+    'author',
+    'uuid_attached_row',
+    'unique_id_media',
+    'title_fr',
+    'description_fr',
+    'media_url',
+    'id_nomenclature_media_type',
+    'bFile',
+    'file']
+      .every(key => this[key] === values[key]);
   }
 
   setValues(values: Object) {
@@ -39,18 +56,37 @@ class Media {
     return data
   }
 
-  href(): string {
+
+
+  filePath(thumbnailHeight = null) {
+    let filePath;
+    if (this.media_path) {
+      filePath = this.media_path;
+    } else if (this.media_url) {
+      const v_url = this.media_url.split('/')
+      const fileName = v_url[v_url.length - 1];
+      filePath = `${AppConfig.UPLOAD_FOLDER}/${this.id_table_location}/${this.id_media}_${fileName}`;
+    }
+
+    if (thumbnailHeight && filePath) {
+      filePath = filePath.replace(AppConfig.UPLOAD_FOLDER, `${AppConfig.UPLOAD_FOLDER}/thumbnails`);
+      filePath = filePath.replace('.', `_thumbnail_${thumbnailHeight}.`);
+    }
+
+    return filePath;
+  }
+
+  href(thumbnailHeight = null): string {
+    if (thumbnailHeight) {
+      return `${AppConfig.API_ENDPOINT}/${this.filePath(thumbnailHeight)}`;
+    }
     return this.media_path
       ? `${AppConfig.API_ENDPOINT}/${this.media_path}`
       : this.media_url
   }
 
   valid(): boolean {
-    return !!(this.title_fr && this.description_fr && this.href() && this.id_nomenclature_media_type);
-  }
-
-  readyForUpload(): boolean {
-    return !!(this.title_fr && this.description_fr && !this.bLoading)
+    return !!(this.sent);
   }
 
 }

@@ -11,8 +11,8 @@ import { MediaService } from '@geonature_common/service/media.service'
 export class MediasComponent implements OnInit {
 
 
-//  @Input() medias: Array<Media> = []; /** list of medias */
-//  @Output() mediasChange = new EventEmitter<Array<Media>>();
+  //  @Input() medias: Array<Media> = []; /** list of medias */
+  //  @Output() mediasChange = new EventEmitter<Array<Media>>();
 
   @Input() schemaDotTable: string;
   @Input() sizeMax: number;
@@ -27,10 +27,10 @@ export class MediasComponent implements OnInit {
 
   ngOnInit() {
     this.ms.getNomenclatures()
-    .subscribe(() => {
-      this.bInitialized = true;
-      this.initMedias()
-    });
+      .subscribe(() => {
+        this.bInitialized = true;
+        this.initMedias()
+      });
   };
 
 
@@ -52,6 +52,9 @@ export class MediasComponent implements OnInit {
   }
 
   addMedia() {
+    if (!this.parentFormControl.value) {
+      this.parentFormControl.patchValue([]);
+    }
     this.parentFormControl.value.push(new Media());
     this.parentFormControl.patchValue(this.parentFormControl.value);
   }

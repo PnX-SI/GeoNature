@@ -1,35 +1,39 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation, SimpleChanges, Inject } from '@angular/core';
 import { Media } from './media';
 import { MediaService } from '@geonature_common/service/media.service'
 import { MatDialog } from "@angular/material";
-import {MediaDialog} from './media-dialog.component';
+import { MediaDialog } from './media-dialog.component';
+
+export interface MediaDialogData {
+  medias: Array<Media>;
+  index: number;
+}
+
 @Component({
   selector: 'pnx-display-medias',
   templateUrl: './display-medias.component.html',
   styleUrls: ['./media.scss'],
 })
-export class DisplayMediasComponent implements OnInit {
+export class DisplayMediasComponent {
 
-  public bInitialized:boolean;
+  @Input() medias: Array<Media> = [];
+  @Input() index: number;
+  @Input() display: string;
+  @Input() diaporama: boolean = false;
 
-  @Input() medias: Array<Media> = []; /** list of medias */
-  @Input() display: string = '';
+  public bInitialized = false;
 
   constructor(
-    private _mediaService: MediaService,
+    public ms: MediaService,
     public dialog: MatDialog,
   ) { }
 
   ngOnInit() {
-    this._mediaService.getNomenclatures().subscribe(() => {this.bInitialized = true; this.initMedias() });
-  }
-
-  nomenclature(id_nomenclature) {
-    return this._mediaService.getNomenclature(id_nomenclature)
+    this.initMedias();
+    this.ms.getNomenclatures().subscribe(() => { this.bInitialized = true; });
   }
 
   initMedias() {
-    if (!this.bInitialized) return;
     for (const index in this.medias) {
       if (!(this.medias[index] instanceof Media)) {
         this.medias[index] = new Media(this.medias[index]);
@@ -37,23 +41,19 @@ export class DisplayMediasComponent implements OnInit {
     }
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    for (let propName in changes) {
-      let chng = changes[propName];
-      let cur = JSON.stringify(chng.currentValue);
-      let prev = JSON.stringify(chng.previousValue);
-
-      if (propName === 'medias') {
-        this.initMedias()
-      }
-    }
-  }
-
-  openDialog(index) {
+  openDialog() {
     const dialogRef = this.dialog.open(MediaDialog, {
       width: '800px',
-      data: { medias: this.medias, index },
+      data: { medias: this.medias, index: this.index },
     });
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    for (const propName in changes) {
+
+      if (propName === 'medias') {
+        this.initMedias();
+      }
+    }
+  }
 }

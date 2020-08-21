@@ -16,6 +16,9 @@ from utils_flask_sqla.response import json_resp
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 
+from geonature.utils.errors import ConfigError, GNModuleInstallError, GeoNatureError, GeonatureApiError
+
+
 routes = Blueprint("gn_commons", __name__)
 
 
@@ -108,9 +111,14 @@ def insert_or_update_media(id_media=None):
     else:
         data = request.get_json(silent=True)
 
-    m = TMediaRepository(
-        data=data, file=file, id_media=id_media
-    ).create_or_update_media()
+    try:
+        m = TMediaRepository(
+            data=data, file=file, id_media=id_media
+        ).create_or_update_media()
+
+    except GeoNatureError as e:
+        return str(e), 400
+
 
     TMediumRepository.sync_medias()
 

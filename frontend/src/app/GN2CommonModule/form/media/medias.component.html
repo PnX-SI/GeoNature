@@ -31,12 +31,9 @@
                   <mat-icon *ngIf="media.bLoading" matTooltip="chargement en cours" class="fa-spin"
                     >settings</mat-icon
                   >
-                  <img
-                  class="media-miniature"
-                  *ngIf="ms.getNomenclature(media.id_nomenclature_media_type)?.label_fr == 'Photo' && media.href()"
-                  [src]="media.href()"
-                  alt="{{ media.title_fr }}"
-                />
+
+                  <pnx-display-medias [medias]="[media]" index=0 display="mini"></pnx-display-medias>
+
 
                 <span class="media-title">
                   Titre: {{ media.title_fr }} ({{ ms.getNomenclature(media.id_nomenclature_media_type)?.label_fr

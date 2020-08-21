@@ -433,7 +433,7 @@
                       </i>
                     </div>
                     <div>
-                      <img-medias [medias]="counting.medias" [index]=i></img-medias>
+                      <pnx-display-medias [medias]="counting.medias" [index]=i></pnx-display-medias>
                     </div>
                   </ng-container>
                 </ng-container>
@@ -441,22 +441,6 @@
 
             </ng-container>
           </mat-tab>
-
-          <-- TAB pour afficher les médias -->
-          <!--
-          <mat-tab>
-            <ng-template mat-tab-label>
-              <span
-                [matBadge]="occurrence.medias.length"
-                matBadgeOverlap="false"
-              >
-                {{ "Media.Medias" | translate }}
-              </span>
-            </ng-template>
-            <pnx-display-medias [medias]="occurrence.medias" display="taxa-list">
-            </pnx-display-medias>
-          </mat-tab>
-        -->
         </mat-tab-group> 
       </div>
     </gn-panel>
