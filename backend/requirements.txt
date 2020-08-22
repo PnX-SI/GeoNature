@@ -50,4 +50,4 @@ lxml==4.2.5
 Flask-Mail==0.9.1
 flask-marshmallow==0.12.0
 marshmallow-sqlalchemy==0.23.1
-pillow=7.2.0
+pillow==7.2.0

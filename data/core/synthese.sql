@@ -144,7 +144,7 @@ CREATE TABLE synthese (
     id_dataset integer,
     id_nomenclature_geo_object_nature integer DEFAULT get_default_nomenclature_value('NAT_OBJ_GEO'),
     id_nomenclature_grp_typ integer DEFAULT get_default_nomenclature_value('TYP_GRP'),
-    grp_method character varying(255)
+    grp_method character varying(255),
     id_nomenclature_obs_meth integer DEFAULT get_default_nomenclature_value('METH_OBS'),
     id_nomenclature_obs_technique integer DEFAULT get_default_nomenclature_value('TECHNIQUE_OBS'),
     id_nomenclature_bio_status integer DEFAULT get_default_nomenclature_value('STATUT_BIO'),
