@@ -147,7 +147,7 @@ sudo logrotate -f /etc/logrotate.conf
 echo "Installation de node et npm"
 cd ../frontend  
 
-# nvm install
+nvm install
 nvm use
 
 echo " ############"
