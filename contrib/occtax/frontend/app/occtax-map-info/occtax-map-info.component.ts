@@ -28,6 +28,7 @@ const NOMENCLATURES = [
   "OBJ_DENBR",
   "TYP_DENBR",
   "NAT_OBJ_GEO",
+  "OCC_COMPORTEMENT"
 ];
 
 @Component({
@@ -39,6 +40,7 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
   public occtaxConfig = ModuleConfig;
   public occtaxData: BehaviorSubject<any> = new BehaviorSubject(null);
   nomenclatures: Array<any> = [];
+  public cardHeight: number;
   displayOccurrence: BehaviorSubject<any> = new BehaviorSubject(null);
   private _geojson: any;
 
@@ -82,8 +84,8 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
     private occtaxDataService: OcctaxDataService,
     private _modalService: NgbModal,
     private _commonService: CommonService,
-    private dataFormS: DataFormService
-  ) {}
+    private dataFormS: DataFormService,
+  ) { }
 
   ngOnInit() {
     //si modification, récuperation de l'ID du relevé
@@ -116,6 +118,12 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
         this.geojson = geojson;
         this._ms.loadGeometryReleve(geojson, false);
       });
+    this.cardHeight = this._commonService.calcCardContentHeight(50);
+    if (this._ms.map) {
+      setTimeout(() => {
+        this._ms.map.invalidateSize();
+      }, 10);
+    }
   }
 
   getOcctaxData(id) {
