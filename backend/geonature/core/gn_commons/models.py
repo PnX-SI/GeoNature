@@ -108,10 +108,8 @@ class TMedias(DB.Model):
     meta_update_date = DB.Column(DB.DateTime)
 
     def __before_commit_delete__(self):
-        print('DELETE media', self.media_path)
-        # déclenché sur un DELETE : on supprime le fichier
+ thumbnails        # déclenché sur un DELETE : on supprime le fichier
         if self.media_path and os.path.exists(os.path.join(current_app.config['BASE_DIR'] + '/' + self.media_path)):
-            print('yakk')
             initial_path = self.media_path
             (inv_file_name, inv_file_path) = initial_path[::-1].split('/', 1)
             file_name = inv_file_name[::-1]
@@ -135,7 +133,6 @@ class TMedias(DB.Model):
                 str(self.id_table_location)
             )
         )
-        print('youk', dir_thumbnail)
         for f in os.listdir(dir_thumbnail):
             if f.split('_')[0] == str(self.id_media):
                 abs_path = os.path.join(dir_thumbnail, f)
