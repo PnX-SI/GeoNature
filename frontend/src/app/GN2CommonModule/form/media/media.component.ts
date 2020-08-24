@@ -33,11 +33,13 @@ export class MediaComponent implements OnInit {
   public bInitalized = false;
   // manage form loading TODO in dynamic from
   public mediaFormInitialized;
-  public watchChangeForm: boolean = true;
+  public watchChangeForm = true;
 
   public idTableLocation: number;
 
-  public bValidSizeMax: boolean = true;
+  public bValidSizeMax = true;
+
+  public errorMsg: string;
 
   @Input() schemaDotTable: string;
 
@@ -46,15 +48,17 @@ export class MediaComponent implements OnInit {
 
   @Input() sizeMax: number;
 
-  @Input() uuidAttachedRow: string;
+  @Input() default: Object = {};
 
   @Output() validMediaChange = new EventEmitter<boolean>();
+
+  @Input() switchDetails = false;
 
   constructor(
     private _formBuilder: FormBuilder,
     public ms: MediaService,
     private _commonService: CommonService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.initIdTableLocation(this.schemaDotTable);
@@ -79,13 +83,14 @@ export class MediaComponent implements OnInit {
     return this.mediaFormReadyToSent()
       ? 'Veuillez valider le média en appuyant sur le boutton de validation'
       : this.media.sent
-      ? ''
-      : this.media.bFile == 'Uploader un fichier'
-      ? 'Veuillez compléter le formulaire et renseigner un fichier'
-      : 'Veuillez compléter le formulaire et Renseigner une URL valide';
+        ? ''
+        : this.media.bFile === 'Uploader un fichier'
+          ? 'Veuillez compléter le formulaire et renseigner un fichier'
+          : 'Veuillez compléter le formulaire et Renseigner une URL valide';
   }
 
   mediaFormReadyToSent() {
+    if (!this.mediaForm) { return; }
     return (
       Object.keys(this.mediaForm.controls)
         .filter((key) => key !== 'file')
@@ -98,7 +103,7 @@ export class MediaComponent implements OnInit {
   }
 
   initForm() {
-    if (!this.bInitalized) return;
+    if (!this.bInitalized) { return; }
     console.log('initForm');
     // this.mediaFormInitialized = false;
 
@@ -106,6 +111,10 @@ export class MediaComponent implements OnInit {
       mediaFormDefinitionsDict.file.sizeMax = this.sizeMax;
     }
     mediaFormDefinitionsDict['meta'] = { nomenclatures: this.ms.metaNomenclatures() };
+
+    if (this.switchDetails) {
+      mediaFormDefinitionsDict['details']['hidden'] = false;
+    }
 
     this.mediaFormDefinition = Object.keys(mediaFormDefinitionsDict)
       .filter((key) => key !== 'meta')
@@ -128,9 +137,12 @@ export class MediaComponent implements OnInit {
         this.media.bFile = 'Renseigner une URL';
       }
 
-      this.media.uuid_attached_row = this.media.uuid_attached_row || this.uuidAttachedRow;
-
       this.media.id_table_location = this.media.id_table_location || this.idTableLocation;
+
+      // valeurs par défaut si null
+      for (const key of Object.keys(this.default)) {
+        this.media[key] = this.media[key] || this.default[key];
+      }
 
       // PHOTO par defaut
       this.media.id_nomenclature_media_type =
@@ -180,10 +192,9 @@ export class MediaComponent implements OnInit {
 
           const label_fr = this.ms.getNomenclature(values.id_nomenclature_media_type).label_fr;
           if (
-            ['Vidéo Dailymotion', 'Vidéo Youtube', 'Vidéo Viméo', 'Page web'].includes(label_fr) &&
+            ['Vidéo Dailymotion', 'Vidéo Youtube', 'Vidéo Vimeo', 'Page web'].includes(label_fr) &&
             values.bFile == 'Uploader un fichier'
           ) {
-            console.log('youk')
             this.mediaForm.patchValue({
               bFile: 'Renseigner une URL',
               media_path: null,
@@ -195,7 +206,6 @@ export class MediaComponent implements OnInit {
           }
 
           if (['Vidéo (fichier)'].includes(label_fr) && values.bFile == 'Renseigner une URL') {
-            console.log('yak')
             this.mediaForm.patchValue({
               bFile: 'Uploader un fichier',
               media_url: null,
@@ -245,6 +255,7 @@ export class MediaComponent implements OnInit {
           this.mediaChange.emit(this.media);
           this.media.pendingRequest = null;
           this.media.sent = true;
+          this.errorMsg = ''
         }
       },
       (error) => {
@@ -253,6 +264,7 @@ export class MediaComponent implements OnInit {
           `Erreur avec la requête : ${error && error.error}`
         );
         console.log(error.error);
+        this.errorMsg = error.error;
         this.media.bLoading = false;
         this.media.pendingRequest = null;
       }

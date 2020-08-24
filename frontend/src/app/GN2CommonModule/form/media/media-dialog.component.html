@@ -5,12 +5,14 @@
 >
   <mat-card>
     <mat-card-title
-      ><span *ngIf="medias.length > 1"
-        >{{ curIndex + 1 }}/{{ medias.length }} : </span
-      >
+      ><span *ngIf="medias.length > 1">{{ curIndex + 1 }}/{{ medias.length }} : </span>
       {{ media.title_fr }}</mat-card-title
     >
-    <pnx-display-medias [medias]="medias" [index]="curIndex" display='diaporama'></pnx-display-medias>
+    <pnx-display-medias
+      [medias]="medias"
+      [index]="curIndex"
+      display="diaporama"
+    ></pnx-display-medias>
     <!-- <img *ngIf='ms.isImg(media)' mat-card-image [src]="media.href()" /> -->
     <mat-card-content>
       <a *ngIf="media.href()" target="_blank" class="link-media float-right" [href]="media.href()"
@@ -18,9 +20,7 @@
       </a>
       {{ media.description_fr }}
     </mat-card-content>
-    <mat-card-subtitle>
-      ({{ ms.typeMedia(media) }}, {{ media.author }})
-    </mat-card-subtitle>
+    <mat-card-subtitle> ({{ ms.typeMedia(media) }}, {{ media.author }}) </mat-card-subtitle>
 
     <button
       *ngIf="medias.length > 1"

@@ -25,12 +25,13 @@ export class MediaDialog {
   public media: Media;
   public medias;
   public curIndex;
-  public bDisplay=true;
+  public bDisplay = true;
 
   ngOnInit() {
     this.curIndex = this.data.index;
     this.medias = this.data.medias;
-    this.media=this.medias[this.curIndex];
+    this.media = this.medias[this.curIndex];
+    console.log(this.curIndex, this.media);
   }
 
   onNoClick(): void {

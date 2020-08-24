@@ -24,8 +24,14 @@ export class MediasTestComponent implements OnInit {
       attribut_label: 'Médias',
       type_widget: 'medias',
       schema_dot_table: 'pr_occtax.t_occurrences_occtax',
-      uuid_attached_row: null,
       value: [],
+      default: {
+        uuid_attached_row: null,
+        title_fr: 'Media test',
+        author: 'media testeur',
+        details: false,
+      },
+      switch_details: true,
     },
   ];
 
@@ -33,17 +39,17 @@ export class MediasTestComponent implements OnInit {
     private _route: ActivatedRoute,
     public ms: MediaService,
     private _formBuilder: FormBuilder
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.mediaForm = this._formBuilder.group({});
     this._route.params.subscribe((params) => {
       if (params['uuidAttachedRow']) {
-        this.formDefinitions[0].uuid_attached_row = params['uuidAttachedRow'];
+        this.formDefinitions[0].default.uuid_attached_row = params['uuidAttachedRow'];
         this.ms.getMedias(params['uuidAttachedRow']).subscribe((medias) => {
           this.formDefinitions[0].value = medias;
           this.mediaForm.patchValue(medias || []);
-          this.bInitialized=true;
+          this.bInitialized = true;
         });
 
       }

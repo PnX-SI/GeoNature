@@ -33,19 +33,4 @@
 
 Delete thumbnail on delete media
 
-media test url video html
-insertion video
-youtube etc..
-
-youtube -> transformer en embed + test youtube dans l url + recup id video
-
-accept file fonction de type
-
-upload / url ->  fonction de type
-
 bFile -> boolean + composant boolean checkbox
-
-
-pb file ne change pas le truc à chaque fois
-
-safeurl => reload relou du pdf ps fonction et ça marche

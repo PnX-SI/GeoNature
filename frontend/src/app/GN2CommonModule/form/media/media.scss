@@ -54,7 +54,11 @@
   margin-left: 50px;
 }
 
-.media-miniature {
+.media-diapo-link {
+  cursor: pointer;
+}
+
+.media-mini {
   height: 50px;
   width: 50px;
   border-radius: 25px;
@@ -97,8 +101,9 @@
 
 .media-dialog-arrow {
   position: absolute;
-  top: 50%;
-  opacity: 0.3;
+  bottom: 10%;
+  opacity: 0.4;
+  background-color: white;
 }
 
 .media-dialog-arrow:hover {

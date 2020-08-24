@@ -8,6 +8,7 @@
         || formDefComp().type_widget == 'number'
         || formDefComp().type_widget == 'file'
         || formDefComp().type_widget == 'medias'
+        || formDefComp().type_widget == 'bool_checkbox'
         " [attr.for]="formDefComp().attribut_name">{{formDefComp().attribut_label}}
         <i
         *ngIf="formDefComp().definition"
@@ -17,12 +18,22 @@
       </small>
     <div [ngSwitch]="formDefComp().type_widget">
 
+      <input
+      *ngSwitchCase="'bool_checkbox'"
+      type="checkbox"
+      id="{{formDefComp().attribut_name}}"
+      [name]="formDefComp().attribut_name"
+      [formControl]="form.get(formDefComp().attribut_name)"
+    >
+
+
       <pnx-medias
         *ngSwitchCase="'medias'"
         [schemaDotTable]="formDefComp().schema_dot_table"
         [parentFormControl]="form.get(formDefComp().attribut_name)"
         [sizeMax]="appConfig.MEDIAS.MEDIAS_SIZE_MAX"
-        [uuidAttachedRow]="formDefComp().uuid_attached_row"
+        [default]="formDefComp().default || {}"
+        [switchDetails]="formDefComp().switch_details"
       ></pnx-medias>
 
       <input

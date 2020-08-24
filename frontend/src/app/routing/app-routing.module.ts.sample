@@ -51,7 +51,7 @@ const defaultRoutes: Routes = [
       { path: 'user',data: { module_code: 'user' }, loadChildren: '@geonature/userModule/user.module#UserModule'},
       {% endif %}
 
-      { path: 'test/medias', component: MediasTestComponent},
+      { path: 'test/medias/:uuidAttachedRow', component: MediasTestComponent},
 
       { path: '**',  component: PageNotFoundComponent },
      ] },

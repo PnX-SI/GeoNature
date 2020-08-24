@@ -7,6 +7,7 @@
     La taille du fichier ({{round(mediaForm.value.file.size / 1e6, 1)}} Mo)
      est supérieure à la taille maximale autorisée ({{round(sizeMax / 1e3, 1)}} Mo)
   </p>
+  <p *ngIf='errorMsg' class="error">{{errorMsg}}</p>
   <p>{{message()}}</p>
   <pnx-dynamic-form-generator
     #dynamicForm
@@ -25,4 +26,7 @@
     >
     <mat-icon  matTooltip="{{ 'Media.valid' | translate }}">check</mat-icon>
   </button>
+  <pre>
+    {{mediaForm.value|json}}
+  </pre>
 </div>

@@ -17,9 +17,10 @@ export class MediasComponent implements OnInit {
   @Input() schemaDotTable: string;
   @Input() sizeMax: number;
 
-  @Input() uuidAttachedRow: string;
+  @Input() default: Object = {};
 
   @Input() parentFormControl: FormControl;
+  @Input() switchDetails = false;
 
   public bInitialized: boolean;
 
@@ -31,13 +32,13 @@ export class MediasComponent implements OnInit {
     this.ms.getNomenclatures()
       .subscribe(() => {
         this.bInitialized = true;
-        this.initMedias()
+        this.initMedias();
       });
   };
 
 
   initMedias() {
-    if (!this.bInitialized) return;
+    if (!this.bInitialized) { return; }
     for (const index in this.parentFormControl.value) {
       if (!(this.parentFormControl.value[index] instanceof Media)) {
         this.parentFormControl.value[index] = new Media(this.parentFormControl.value[index]);

@@ -135,6 +135,19 @@ class TMediaRepository():
     def absolute_file_path(self, thumbnail_height=None):
         return os.path.join(current_app.config['BASE_DIR'], self.file_path(thumbnail_height))
 
+    def test_video_link(self):
+        media_type = self.media_type()
+        url = self.data['media_url']
+        if media_type == 'Vidéo Youtube' and 'youtube' not in url:
+            return False
+        
+        if media_type == 'Vidéo Dailymotion' and 'dailymotion' not in url:
+            return False
+
+        if media_type == 'Vidéo Vimeo' and 'vimeo' not in url:
+            return False
+
+        return True
 
     def test_header_content_type(self, content_type):
         media_type = self.media_type()
@@ -142,6 +155,15 @@ class TMediaRepository():
             return False
 
         if media_type == 'Audio' and 'audio' not in content_type:
+            return False
+        
+        if media_type == 'Vidéo (Fichier)' and 'audio' not in content_type:
+            return False
+
+        if media_type == 'PDF' and 'pdf' not in content_type:
+            return False
+
+        if media_type == 'Page web' and 'html' not in content_type:
             return False
 
         return True
@@ -162,16 +184,24 @@ class TMediaRepository():
             print(res.headers['Content-type'])
             if not self.test_header_content_type(res.headers['Content-type']):
                 raise GeoNatureError(
-                    'le format du liens ({}) ne corespont pas au type de média choisit ({})'
+                    'le format du liens ({}) ne corespont pas au type de média choisi ({})'
                     .format(
-                    res.headers['Content-type'],
-                    self.media_type()
+                        res.headers['Content-type'],
+                        self.media_type()
+                    )
+                )
+
+            if not self.test_video_link():
+                raise GeoNatureError(
+                    "l'URL n est pas valide pour le type de média choisi ({})"
+                    .format(
+                        self.media_type()
                     )
                 )
 
         except GeoNatureError as e:
             raise GeoNatureError(
-                'Il y a un problème avec l url renseignée : {}'
+                "Il y a un problème avec l'URL renseignée : {}"
                 .format(str(e))
             )
             pass

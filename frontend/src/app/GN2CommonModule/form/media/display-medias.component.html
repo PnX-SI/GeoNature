@@ -1,75 +1,75 @@
-<ng-container *ngIf="medias[index].id_media && bInitialized">
-  <ng-container *ngIf="ms.typeMedia(medias[index]) === 'PDF'">
-    <button *ngIf="display === 'mini'" mat-mini-fab class="media-icon">
-      <mat-icon>picture_as_pdf</mat-icon>
-    </button>
-    <div class="flex-container" *ngIf="display !== 'mini'">
-      <embed [src]="getSafeUrl(index)" style="width: 100%; height: 500px;" type="application/pdf" />
-    </div>
-  </ng-container>
+<ng-container *ngFor="let media of medias; index as i">
+  <ng-container *ngIf="(!index && (index !== 0)) || i == index">
+    <ng-container *ngIf="media.id_media && bInitialized">
+      <span class="media-mini" *ngIf="display == 'mini'">
+        <ng-container *ngIf="ms.typeMedia(media) === 'Photo'">
+          <img
+            class="media-mini"
+            [src]="media.href(50)"
+            alt="{{ media.title_fr }}"
+            [ngClass]="{ 'media-diapo-link': !!diaporama }"
+            matTooltip="{{ diaporama ? ('Media.diaporama' | translate) : '' }}"
+            (click)="diaporama && openDialog(i)"
+          />
+        </ng-container>
+        <button
+          *ngIf="ms.typeMedia(media) !== 'Photo'"
+          mat-mini-fab
+          class="media-icon"
+          [ngClass]="{ 'media-diapo-link': !!diaporama }"
+          matTooltip="{{ diaporama ? ('Media.diaporama' | translate) : '' }}"
+          (click)="diaporama && openDialog(i)"
+        >
+          <mat-icon>{{ ms.icon(media) }}</mat-icon>
+        </button>
+      </span>
 
-  <ng-container *ngIf="ms.typeMedia(medias[index]) === 'Vidéo Youtube'">
-    <button *ngIf="display === 'mini'" mat-mini-fab class="media-icon">
-      <mat-icon>videocam</mat-icon>
-    </button>
-    <div class="flex-container" *ngIf="display !== 'mini'">
-      <iframe
-        width="560"
-        height="315"
-        [src]="getSafeUrl(index)"
-        allowfullscreen
-      ></iframe>
-    </div>
-  </ng-container>
+      <ng-container *ngIf="display != 'mini'">
+        <div class="flex-container">
+          <ng-container *ngIf="ms.typeMedia(media) === 'PDF'">
+            <embed [src]="media.safeUrl" width="100%" [height]="height" type="application/pdf" />
+          </ng-container>
 
-  <ng-container *ngIf="ms.typeMedia(medias[index]) === 'Vidéo (fichier)'">
-    <button *ngIf="display === 'mini'" mat-mini-fab class="media-icon">
-      <mat-icon>videocam</mat-icon>
-    </button>
-    <div class="flex-container" *ngIf="display !== 'mini'">
-      <video
-        class="media-center"
-        [ngClass]="{ 'media-medium': display === 'medium' }"
-        controls
-        [src]="medias[index].href()"
-      ></video>
-    </div>
-  </ng-container>
+          <ng-container
+            *ngIf="
+              ['Vidéo Youtube', 'Vidéo Dailymotion', 'Vidéo Vimeo'].includes(ms.typeMedia(media))
+            "
+          >
+            <iframe
+              width="100%"
+              [height]="height"
+              [src]="media.safeEmbedUrl"
+              allowfullscreen
+            ></iframe>
+          </ng-container>
 
-  <ng-container *ngIf="ms.typeMedia(medias[index]) === 'Audio'">
-    <button *ngIf="display === 'mini'" mat-mini-fab class="media-icon">
-      <mat-icon>audiotrack</mat-icon>
-    </button>
-    <div class="flex-container" *ngIf="display !== 'mini'">
-      <audio class="media-center" controls [src]="medias[index].href()"></audio>
-    </div>
-  </ng-container>
+          <ng-container *ngIf="ms.typeMedia(media) === 'Vidéo (fichier)'">
+            <video class="media-center" controls [src]="media.href()"></video>
+          </ng-container>
 
-  <ng-container *ngIf="ms.typeMedia(medias[index]) === 'Photo'">
-    <img
-      *ngIf="display === 'mini'"
-      class="media-miniature"
-      [src]="medias[index].href(50)"
-      alt="{{ medias[index].title_fr }}"
-      matTooltip="{{ diaporama ? ('Media.diaporama' | translate) : '' }}"
-      (click)="diaporama && openDialog(index)"
-    />
+          <ng-container *ngIf="ms.typeMedia(media) === 'Audio'">
+            <audio class="media-center" controls [src]="media.href()"></audio>
+          </ng-container>
 
-    <div class="flex-container" *ngIf="display === 'medium'">
-      <img
-        class="media-medium media-center"
-        [src]="medias[index].href(200)"
-        alt="{{ medias[index].title_fr }}"
-        matTooltip="{{ diaporama ? ('Media.diaporama' | translate) : '' }}"
-        (click)="diaporama && openDialog(index)"
-      />
-    </div>
-    <div class="flex-container" *ngIf="display === 'diaporama'">
-      <img
-        class="media-diaporama media-center"
-        [src]="medias[index].href()"
-        alt="{{ medias[index].title_fr }}"
-      />
-    </div>
+          <ng-container *ngIf="ms.typeMedia(media) === 'Photo'">
+            <img
+              *ngIf="display === 'medium'"
+              class="media-center"
+              [src]="media.href(200)"
+              [ngClass]="{ 'media-diapo-link': !!diaporama }"
+              alt="{{ media.title_fr }}"
+              matTooltip="{{ diaporama ? ('Media.diaporama' | translate) : '' }}"
+              (click)="diaporama && openDialog(i)"
+            />
+            <img
+              *ngIf="display === 'diaporama'"
+              class="media-diaporama media-center"
+              [src]="media.href()"
+              alt="{{ media.title_fr }}"
+            />
+          </ng-container>
+        </div>
+      </ng-container>
+    </ng-container>
   </ng-container>
 </ng-container>

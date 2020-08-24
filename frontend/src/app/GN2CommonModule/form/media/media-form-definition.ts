@@ -3,22 +3,27 @@ export const mediaFormDefinitionsDict = {
     attribut_label: 'Titre',
     type_widget: 'text',
     required: true,
+    hidden: ({value}) => !value['details'],
   },
+
   description_fr: {
     attribut_label: 'Description',
     type_widget: 'text',
     required: false,
+    hidden: ({value}) => !value['details'],
   },
   author: {
     attribut_label: 'Auteur',
     type_widget: 'text',
     required: true,
+    hidden: ({value}) => !value['details'],
   },
   id_nomenclature_media_type: {
     attribut_label: 'Type de média',
     type_widget: 'nomenclature',
     required: true,
     code_nomenclature_type: 'TYPE_MEDIA',
+    hidden: ({value}) => !value['details'],
   },
   bFile: {
     attribut_label: 'Import du média',
@@ -28,7 +33,7 @@ export const mediaFormDefinitionsDict = {
     noNullOption: true,
     required: true,
     hidden: ({ value, meta }) => {
-      if (!value.id_nomenclature_media_type) return;
+      if (!value.id_nomenclature_media_type) { return; }
       const label_fr = meta.nomenclatures[value.id_nomenclature_media_type].label_fr;
       return [
         'Vidéo Dailymotion',
@@ -36,7 +41,7 @@ export const mediaFormDefinitionsDict = {
         'Vidéo Viméo',
         'Page web',
         'Vidéo (fichier)',
-      ].includes(label_fr);
+      ].includes(label_fr) || !value.details;
     },
   },
   media_url: {
@@ -92,5 +97,12 @@ export const mediaFormDefinitionsDict = {
     attribut_label: 'ID table location',
     type_widget: 'number',
     hidden: true,
+  },
+  details: {
+    type_widget: 'bool_checkbox',
+    attribut_label: 'Détails',
+    values: [true],
+    value: true,
+    hidden: true
   },
 };

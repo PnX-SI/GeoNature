@@ -52,7 +52,10 @@ export class MediaService {
 
   /** une fois que la nomenclature est chargées */
   getNomenclature(value, fieldName = 'id_nomenclature', nomenclatureType = null) {
-    if (!this.nomenclatures) return null;
+    if (!value) {
+      return {};
+    }
+    if (!this.nomenclatures) return {};
     const res = this.nomenclatures
       .filter((N) => !nomenclatureType || N.mnemonique === nomenclatureType)
       .map((N) => N.values.find((n) => n[fieldName] === value))
@@ -136,26 +139,57 @@ export class MediaService {
   }
 
   href(media, thumbnail = null) {
-    if (!(media instanceof Media)) media = new Media(media);
+    if (!(media instanceof Media)) { media = new Media(media); }
     return media.href(thumbnail);
   }
 
+  embedHref(media) {
+    if (!(media instanceof Media)) { media = new Media(media); }
+    if (['Vidéo Youtube'].includes(this.typeMedia(media))) {
+      const videoId = media.href().split("?").find(s => s.includes('v=')).replace('v=', '');
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+    if (['Vidéo Dailymotion'].includes(this.typeMedia(media))) {
+      const v = media.href().split("/");
+      const videoId = v[v.length - 1].split('?')[0];
+      return `https://www.dailymotion.com/embed/video/${videoId}`;
+    }
+
+    if (['Vidéo Vimeo'].includes(this.typeMedia(media))) {
+      const v = media.href().split("/");
+      const videoId = v[v.length - 1].split('?')[0];
+      return `https://player.vimeo.com/video/${videoId}`;
+    }
+
+    return media.href();
+  }
+
+  icon(media) {
+    if (!(media instanceof Media)) { media = new Media(media); }
+    const typeMedia = this.typeMedia(media);
+    if (typeMedia === 'PDF') { return 'picture_as_pdf'; };
+    if (['Vidéo Dailymotion', 'Vidéo Youtube', 'Vidéo Vimeo', 'Vidéo (fichier)'].includes(typeMedia)) { return 'videocam'; }
+    if (typeMedia === 'Audio') { return 'audiotrack'; }
+    if (typeMedia === 'Photo') { return 'insert_photo'; }
+    if (typeMedia === 'Page web') { return 'web'; }
+  }
+
   toString(media) {
-    if (!(media instanceof Media)) media = new Media(media);
+    if (!(media instanceof Media)) { media = new Media(media); }
     return `${media.title_fr} : ${media.description_fr} (${
       this.getNomenclature(media.id_nomenclature_media_type).label_fr
-    }, ${media.author})`;
+      }, ${media.author})`;
   }
 
   toHTML(media) {
-    if (!(media instanceof Media)) media = new Media(media);
+    if (!(media instanceof Media)) { media = new Media(media); }
     return `<a target="_blank" href="${media.href()}">${media.title_fr}</a> : ${
       media.description_fr
-    } (${this.getNomenclature(media.id_nomenclature_media_type).label_fr}, ${media.author})`;
+      } (${this.getNomenclature(media.id_nomenclature_media_type).label_fr}, ${media.author})`;
   }
 
   typeMedia(media) {
-    if (!(media instanceof Media)) media = new Media(media);
+    if (!(media instanceof Media)) { media = new Media(media); }
     return this.getNomenclature(media.id_nomenclature_media_type).label_fr;
   }
 

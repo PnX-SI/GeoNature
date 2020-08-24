@@ -23,8 +23,9 @@ export class DisplayMediasComponent {
   @Input() medias: Array<Media> = [];
   @Input() index: number;
   @Input() display: string;
-  @Input() diaporama: boolean = false;
+  @Input() diaporama = false;
 
+  public height: string;
   public bInitialized = false;
   public innerHTMLPDF = {};
 
@@ -41,16 +42,22 @@ export class DisplayMediasComponent {
 
   initMedias() {
     for (const index in this.medias) {
-      if (!(this.medias[index] instanceof Media)) {
-        this.medias[index] = new Media(this.medias[index]);
+      if (true) {
+        if (!(this.medias[index] instanceof Media)) {
+          this.medias[index] = new Media(this.medias[index]);
+        }
+        this.medias[index].safeUrl = this.getSafeUrl(index);
+        this.medias[index].safeEmbedUrl = this.getSafeEmbedUrl(index);
       }
     }
+    this.height = this.display === 'medium' ? '200px' : this.display === 'diaporama' ? '600px' : '100%';
   }
 
-  openDialog() {
+  openDialog(index) {
+    console.log(index)
     const dialogRef = this.dialog.open(MediaDialog, {
-      width: '800px',
-      data: { medias: this.medias, index: this.index },
+      width: '1000px',
+      data: { medias: this.medias, index },
     });
   }
 
@@ -64,7 +71,11 @@ export class DisplayMediasComponent {
   }
 
   getSafeUrl(index) {
-    return  this._sanitizer.bypassSecurityTrustResourceUrl(this.medias[index].href());
+    return this._sanitizer.bypassSecurityTrustResourceUrl(this.medias[index].href());
+  }
+
+  getSafeEmbedUrl(index) {
+    return this._sanitizer.bypassSecurityTrustResourceUrl(this.ms.embedHref(this.medias[index]));
   }
 
 }

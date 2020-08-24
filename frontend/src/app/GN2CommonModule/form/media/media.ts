@@ -1,5 +1,6 @@
 import { Subscription } from 'rxjs';
 import { AppConfig } from '@geonature_config/app.config';
+import { SafeResourceUrl } from '@angular/platform-browser';
 
 class Media {
 
@@ -20,6 +21,12 @@ class Media {
   public uploadPercentDone: number = 0;
   public pendingRequest: Subscription; // pour pouvoir couper l'upload si on supprime le media pendant l'upload
 
+
+  public safeUrl: SafeResourceUrl;
+  public safeEmbedUrl: SafeResourceUrl;
+
+
+  public details: boolean;
   public sent: boolean;
 
   constructor(values = {}) {
