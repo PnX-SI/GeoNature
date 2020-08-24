@@ -27,10 +27,9 @@ export const mediaFormDefinitionsDict = {
   },
   bFile: {
     attribut_label: 'Import du média',
-    type_widget: 'select',
+    type_widget: 'bool_radio',
     values: ['Uploader un fichier', 'Renseigner une URL'],
-    value: 'Uploader un fichier',
-    noNullOption: true,
+    value: true,
     required: true,
     hidden: ({ value, meta }) => {
       if (!value.id_nomenclature_media_type) { return; }
@@ -47,14 +46,14 @@ export const mediaFormDefinitionsDict = {
   media_url: {
     attribut_label: 'URL',
     type_widget: 'text',
-    hidden: ({ value }) => value.bFile != 'Renseigner une URL',
-    required: ({ value }) => value.bFile == 'Renseigner une URL',
+    hidden: ({ value }) => value.bFile,
+    required: ({ value }) => !value.bFile,
   },
   file: {
     attribut_label: 'Choisir un fichier',
     type_widget: 'file',
-    hidden: ({ value }) => value.bFile != 'Uploader un fichier',
-    required: ({ value }) => value.bFile == 'Uploader un fichier',
+    hidden: ({ value }) => !value.bFile,
+    required: ({ value }) => value.bFile,
     sizeMax: null,
     meta: null,
     accept: ({ value, meta }) => {

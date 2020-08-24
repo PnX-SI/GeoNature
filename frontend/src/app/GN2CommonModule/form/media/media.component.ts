@@ -84,7 +84,7 @@ export class MediaComponent implements OnInit {
       ? 'Veuillez valider le média en appuyant sur le boutton de validation'
       : this.media.sent
         ? ''
-        : this.media.bFile === 'Uploader un fichier'
+        : this.media.bFile
           ? 'Veuillez compléter le formulaire et renseigner un fichier'
           : 'Veuillez compléter le formulaire et Renseigner une URL valide';
   }
@@ -95,9 +95,9 @@ export class MediaComponent implements OnInit {
       Object.keys(this.mediaForm.controls)
         .filter((key) => key !== 'file')
         .every((key) => this.mediaForm.controls[key].valid) &&
-      ((this.mediaForm.value.bFile === 'Uploader un fichier' &&
+      ((this.mediaForm.value.bFile &&
         (!!this.mediaForm.value.file || this.media.media_path)) ||
-        this.mediaForm.value.bFile === 'Renseigner une URL') &&
+        !this.mediaForm.value.bFile) &&
       !this.media.sent
     );
   }
@@ -134,7 +134,7 @@ export class MediaComponent implements OnInit {
 
     if (this.media) {
       if (this.media.media_url) {
-        this.media.bFile = 'Renseigner une URL';
+        this.media.bFile = false;
       }
 
       this.media.id_table_location = this.media.id_table_location || this.idTableLocation;
@@ -170,7 +170,7 @@ export class MediaComponent implements OnInit {
 
           this.media.setValues(values);
           this.mediaSave.setValues(values);
-          if (values.bFile == 'Renseigner une URL' && (values.media_path || values.file)) {
+          if (!values.bFile && (values.media_path || values.file)) {
             this.mediaForm.patchValue({
               media_path: null,
               file: null,
@@ -181,7 +181,7 @@ export class MediaComponent implements OnInit {
             });
           }
 
-          if (values.bFile === 'Uploader un fichier' && values.media_url) {
+          if (values.bFile && values.media_url) {
             this.mediaForm.patchValue({
               media_url: null,
             });
@@ -193,25 +193,25 @@ export class MediaComponent implements OnInit {
           const label_fr = this.ms.getNomenclature(values.id_nomenclature_media_type).label_fr;
           if (
             ['Vidéo Dailymotion', 'Vidéo Youtube', 'Vidéo Vimeo', 'Page web'].includes(label_fr) &&
-            values.bFile == 'Uploader un fichier'
+            values.bFile
           ) {
             this.mediaForm.patchValue({
-              bFile: 'Renseigner une URL',
+              bFile: false,
               media_path: null,
             });
             this.media.setValues({
-              bFile: 'Renseigner une URL',
+              bFile: false,
               media_path: null,
             });
           }
 
-          if (['Vidéo (fichier)'].includes(label_fr) && values.bFile == 'Renseigner une URL') {
+          if (['Vidéo (fichier)'].includes(label_fr) && !values.bFile) {
             this.mediaForm.patchValue({
-              bFile: 'Uploader un fichier',
+              bFile: true,
               media_url: null,
             });
             this.media.setValues({
-              bFile: 'Uploader un fichier',
+              bFile: true,
               media_url: null,
             });
           }
@@ -230,7 +230,7 @@ export class MediaComponent implements OnInit {
         } else {
           // init forms
           if (this.media.media_url) {
-            this.media.bFile = 'Renseigner une URL';
+            this.media.bFile = false;
           }
           this.watchChangeForm = false;
           this.mediaForm.patchValue(this.media);

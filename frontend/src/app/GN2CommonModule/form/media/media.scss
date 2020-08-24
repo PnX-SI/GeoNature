@@ -97,13 +97,14 @@
 
 .media-dialog {
   position: relative;
+  padding:30px
 }
 
 .media-dialog-arrow {
   position: absolute;
-  bottom: 10%;
+  bottom: 50%;
   opacity: 0.4;
-  background-color: white;
+  background-color: blue;
 }
 
 .media-dialog-arrow:hover {
@@ -111,11 +112,11 @@
 }
 
 .left-arrow {
-  left: 20px;
+  left: -20px;
 }
 
 .right-arrow {
-  right: 20px;
+  right: -20px;
 }
 
 .media-dialog-fade-in {

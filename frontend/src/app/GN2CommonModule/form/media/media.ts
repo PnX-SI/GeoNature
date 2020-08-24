@@ -16,7 +16,7 @@ class Media {
   public id_nomenclature_media_type: number;
   public author: string;
 
-  public bFile: string;
+  public bFile: boolean;
   public bLoading: boolean = false;
   public uploadPercentDone: number = 0;
   public pendingRequest: Subscription; // pour pouvoir couper l'upload si on supprime le media pendant l'upload

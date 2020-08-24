@@ -1180,7 +1180,7 @@ INSERT INTO pr_occtax.defaults_nomenclatures_value (mnemonique_type, id_organism
 ,('TECHNIQUE_OBS',0,0,0, ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'))
 ,('STATUT_SOURCE',0, 0, 0,  ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE', 'Te'))
 ,('NAT_OBJ_GEO',0, 0, 0,  ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO', 'NSP'))
-,('OCC_COMPORTEMENT', ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '0'))
+,('OCC_COMPORTEMENT', 0, 0, 0, ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '0'))
 ;
 
 -- Creation d'une liste 'observateur occtax'

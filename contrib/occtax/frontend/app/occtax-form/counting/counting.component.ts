@@ -23,4 +23,19 @@ export class OcctaxFormCountingComponent{
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService
   ) {}
 
+  defaultsMedia() {
+    const occtaxData = this.fs.occtaxData.getValue();
+    const observers = occtaxData.releve.properties.observers;
+    const date_min = occtaxData.releve.properties.date_min;
+    
+    const occurrence = this.occtaxFormOccurrenceService.occurrence.getValue();
+    const cd_nom = occurrence.cd_nom;
+    return {
+      details: false,
+      author: observers.join(', '),
+      title_fr: `${cd_nom} ${date_min}`
+    }
+
+  }
+
 }

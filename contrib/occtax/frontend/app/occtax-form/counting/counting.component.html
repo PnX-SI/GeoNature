@@ -106,6 +106,8 @@
       schemaDotTable="pr_occtax.t_occurrences_occtax"
       [parentFormControl]="countingForm.controls.medias || []"
       [sizeMax]="appConfig.MEDIAS.MEDIAS_SIZE_MAX"
+      [default]="defaultsMedia()"
+      switchDetails="true"
     ></pnx-medias>
   </div>
   

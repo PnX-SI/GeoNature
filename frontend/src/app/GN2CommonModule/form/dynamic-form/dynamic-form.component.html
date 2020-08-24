@@ -9,6 +9,7 @@
         || formDefComp().type_widget == 'file'
         || formDefComp().type_widget == 'medias'
         || formDefComp().type_widget == 'bool_checkbox'
+        || formDefComp().type_widget == 'bool_radio'
         " [attr.for]="formDefComp().attribut_name">{{formDefComp().attribut_label}}
         <i
         *ngIf="formDefComp().definition"
@@ -17,7 +18,6 @@
         >help</i>
       </small>
     <div [ngSwitch]="formDefComp().type_widget">
-
       <input
       *ngSwitchCase="'bool_checkbox'"
       type="checkbox"
@@ -107,6 +107,24 @@
             </ng-template>
       </div>
 
+
+      <div *ngSwitchCase="'bool_radio'">
+        <div class="custom-control custom-radio" *ngFor="let val of formDefComp().values; index as i">
+            <input
+              type="radio"
+              id="{{formDefComp().attribut_name}}_{{i}}"
+              class="custom-control-input"
+              [name]="formDefComp().attribut_name"
+              [value]="i==0"
+              [formControl]="form.get(formDefComp().attribut_name)">
+            <label
+              class="custom-control-label"
+              for="{{formDefComp().attribut_name}}_{{i}}">
+              <span [innerHTML]="val"></span>
+            </label>
+        </div>
+
+      </div>
 
       <div *ngSwitchCase="'radio'">
         <div *ngFor="let val of formDefComp().values" class="custom-control custom-radio">

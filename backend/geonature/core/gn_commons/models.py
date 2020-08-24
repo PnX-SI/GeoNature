@@ -7,6 +7,10 @@ from sqlalchemy.sql import select, func
 from sqlalchemy.dialects.postgresql import UUID
 from geoalchemy2 import Geometry
 
+import os
+
+from flask import current_app
+
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
 from utils_flask_sqla.serializers import serializable
@@ -104,9 +108,10 @@ class TMedias(DB.Model):
     meta_update_date = DB.Column(DB.DateTime)
 
     def __before_commit_delete__(self):
+        print('DELETE media', self.media_path)
         # déclenché sur un DELETE : on supprime le fichier
-        print(self, 'DELETE', self.media_path)
-        if self.media_path:
+        if self.media_path and os.path.exists(os.path.join(current_app.config['BASE_DIR'] + '/' + self.media_path)):
+            print('yakk')
             initial_path = self.media_path
             (inv_file_name, inv_file_path) = initial_path[::-1].split('/', 1)
             file_name = inv_file_name[::-1]
@@ -120,7 +125,22 @@ class TMedias(DB.Model):
                 )
             except FileNotFoundError:
                 raise Exception('Unable to delete file {}'.format(initial_path))
-
+            
+        # delete thumbnail test sur nom des fichier avec id dans le dossier thumbnail
+        dir_thumbnail = (
+            os.path.join(
+                current_app.config['BASE_DIR'],
+                current_app.config['UPLOAD_FOLDER'],
+                'thumbnails',
+                str(self.id_table_location)
+            )
+        )
+        print('youk', dir_thumbnail)
+        for f in os.listdir(dir_thumbnail):
+            if f.split('_')[0] == str(self.id_media):
+                abs_path = os.path.join(dir_thumbnail, f)
+                print('remove thumbnail {}'.format(abs_path))
+                os.path.exists(abs_path) and os.remove(abs_path)
 
 
 @serializable

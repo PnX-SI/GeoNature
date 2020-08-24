@@ -19,7 +19,7 @@
   - modale
 - TODO
   - boutton detail? + pré (ou post) remplissage de champs title_fr (taxon)?
-  - clarifier boutton upload
+  - ~~clarifier boutton upload~~
 
 # Autres
 - ~~liens target _blanck~~
@@ -33,4 +33,4 @@
 
 Delete thumbnail on delete media
 
-bFile -> boolean + composant boolean checkbox
+~~bFile -> boolean + composant boolean checkbox~~ TO CHECK
