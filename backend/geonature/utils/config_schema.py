@@ -90,7 +90,7 @@ class ServerConfig(Schema):
     LOG_LEVEL = fields.Integer(missing=20)
 
 class MediasConfig(Schema):
-    MEDIAS_SIZE_MAX = fields.Integer(missing=10000)
+    MEDIAS_SIZE_MAX = fields.Integer(missing=50000)
 
 
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend

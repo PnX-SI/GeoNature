@@ -20,7 +20,7 @@ class Media {
   public uploadPercentDone: number = 0;
   public pendingRequest: Subscription; // pour pouvoir couper l'upload si on supprime le media pendant l'upload
 
-  public sent: boolean = false;
+  public sent: boolean;
 
   constructor(values = {}) {
     this.setValues(values);
@@ -45,6 +45,7 @@ class Media {
     for (const key of Object.keys(values)) {
       this[key] = values[key];
     }
+    this.sent = this.sent !== undefined ? this.sent : !!this.id_media;
   }
 
   data() {

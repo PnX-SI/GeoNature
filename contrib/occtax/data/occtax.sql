@@ -261,6 +261,7 @@ CREATE TABLE t_releves_occtax (
     date_max timestamp without time zone DEFAULT now() NOT NULL,
     hour_min time,
     hour_max time,
+    cd_hab integer,
     altitude_min integer,
     altitude_max integer,
     meta_device_entry character varying(20),

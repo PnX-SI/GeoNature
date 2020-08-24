@@ -9,10 +9,10 @@ import requests
 
 from geonature.core.gn_commons.repositories import TMediaRepository, TMediumRepository
 from geonature.core.gn_commons.repositories import get_table_location_id
-from geonature.core.gn_commons.models import TModules, TParameters, TMobileApps
+from geonature.core.gn_commons.models import TModules, TParameters, TMobileApps, TMedias
 from geonature.utils.env import DB, BACKEND_DIR
 from geonature.utils.errors import GeonatureApiError
-from utils_flask_sqla.response import json_resp
+from utils_flask_sqla.response import json_resp, json_resp_accept_empty_list
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 
@@ -59,6 +59,19 @@ def get_modules(info_role):
 def get_module(module_code):
     module = DB.session.query(TModules).filter_by(module_code=module_code).one()
     return module.as_dict()
+
+
+@routes.route("/medias/<string:uuid_attached_row>", methods=["GET"])
+@json_resp_accept_empty_list
+def get_medias(uuid_attached_row):
+    """
+        Retourne des medias
+        .. :quickref: Commons;
+    """
+
+    res = DB.session.query(TMedias).filter(TMedias.uuid_attached_row == uuid_attached_row).all()
+
+    return [r.as_dict() for r in (res or [])]
 
 
 @routes.route("/media/<int:id_media>", methods=["GET"])

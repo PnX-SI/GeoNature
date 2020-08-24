@@ -1,13 +1,17 @@
+import { DomSanitizer } from '@angular/platform-browser';
 import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation, SimpleChanges, Inject } from '@angular/core';
 import { Media } from './media';
 import { MediaService } from '@geonature_common/service/media.service'
 import { MatDialog } from "@angular/material";
 import { MediaDialog } from './media-dialog.component';
 
+
 export interface MediaDialogData {
   medias: Array<Media>;
   index: number;
 }
+
+
 
 @Component({
   selector: 'pnx-display-medias',
@@ -22,10 +26,12 @@ export class DisplayMediasComponent {
   @Input() diaporama: boolean = false;
 
   public bInitialized = false;
+  public innerHTMLPDF = {};
 
   constructor(
     public ms: MediaService,
     public dialog: MatDialog,
+    public _sanitizer: DomSanitizer
   ) { }
 
   ngOnInit() {
@@ -56,4 +62,9 @@ export class DisplayMediasComponent {
       }
     }
   }
+
+  getSafeUrl(index) {
+    return  this._sanitizer.bypassSecurityTrustResourceUrl(this.medias[index].href());
+  }
+
 }

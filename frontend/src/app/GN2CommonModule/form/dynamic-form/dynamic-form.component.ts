@@ -23,7 +23,7 @@ export class DynamicFormComponent implements OnInit {
     const formDefComp: any = {}
     for (const key of Object.keys(this.formDef)) {
       formDefComp[key] = typeof this.formDef[key] === 'function'
-        ? this.formDef[key]({ value: this.form.value })
+        ? this.formDef[key]({ value: this.form.value, meta: this.formDef.meta })
         : this.formDef[key]
     }
     this._dynformService.setControl(this.form.controls[this.formDef.attribut_name], formDefComp)
@@ -42,7 +42,7 @@ export class DynamicFormComponent implements OnInit {
     value[this.formDefComp().attribut_name] = file;
     this.form.patchValue(value);
     this.form.patchValue(value);
-    this.form.controls[this.formDefComp().attribut_name].clearValidators();
+    // this.form.controls[this.formDefComp().attribut_name].clearValidators();
   }
 
   onCheckChange(event, formControl: FormControl) {

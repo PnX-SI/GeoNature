@@ -22,6 +22,7 @@
         [schemaDotTable]="formDefComp().schema_dot_table"
         [parentFormControl]="form.get(formDefComp().attribut_name)"
         [sizeMax]="appConfig.MEDIAS.MEDIAS_SIZE_MAX"
+        [uuidAttachedRow]="formDefComp().uuid_attached_row"
       ></pnx-medias>
 
       <input
@@ -30,6 +31,7 @@
         type="file"
         [id]="formDefComp().attribut_name"
         (change)="onFileChange($event)"
+        [accept]="formDefComp().accept"
       >
 
       <input

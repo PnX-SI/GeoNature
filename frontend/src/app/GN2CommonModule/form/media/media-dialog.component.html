@@ -10,7 +10,8 @@
       >
       {{ media.title_fr }}</mat-card-title
     >
-    <img *ngIf='ms.isImg(media)' mat-card-image [src]="media.href()" />
+    <pnx-display-medias [medias]="medias" [index]="curIndex" display='diaporama'></pnx-display-medias>
+    <!-- <img *ngIf='ms.isImg(media)' mat-card-image [src]="media.href()" /> -->
     <mat-card-content>
       <a *ngIf="media.href()" target="_blank" class="link-media float-right" [href]="media.href()"
         ><mat-icon matTooltip="{{ 'Media.link' | translate }}">link</mat-icon>

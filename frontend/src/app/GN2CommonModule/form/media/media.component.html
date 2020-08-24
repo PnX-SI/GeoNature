@@ -2,7 +2,7 @@
   <a *ngIf="media.href()" target="_blank" class="link-media float-right" [href]="media.href()"
     ><mat-icon matTooltip="{{ 'Media.link' | translate }}">link</mat-icon>
   </a>
-  <pnx-display-medias [medias]="[media]" index=0 display="medium" diaporama=true></pnx-display-medias>
+  <pnx-display-medias *ngIf='media.sent' [medias]="[media]" index=0 display="medium" diaporama=true></pnx-display-medias>
   <p *ngIf="!bValidSizeMax" class="error">
     La taille du fichier ({{round(mediaForm.value.file.size / 1e6, 1)}} Mo)
      est supérieure à la taille maximale autorisée ({{round(sizeMax / 1e3, 1)}} Mo)
@@ -23,9 +23,6 @@
     (click)="validMedia()"
     [disabled]="!mediaFormReadyToSent()"
     >
-    <!-- *ngIf="mediaForm.value.bFile === 'Uploader un fichier'" -->
     <mat-icon  matTooltip="{{ 'Media.valid' | translate }}">check</mat-icon>
   </button>
-  <!-- ready to sent {{mediaFormReadyToSent()}} <br> -->
-  <!-- sent {{media.sent}} <br> -->
 </div>

@@ -1,4 +1,4 @@
-@import '../../../../../../contrib/occtax/frontend/app/occtax-form/taxa-list/taxa-list.component.scss';
+// @import '../../../../../../contrib/occtax/frontend/app/occtax-form/taxa-list/taxa-list.component.scss';
 
 /** Patch dynamic form */
 :host /deep/ .padding-sm {
@@ -62,7 +62,7 @@
 }
 
 .media-icon {
-  background-color: lightgrey;
+  background-color: white;
 }
 
 .media-center {

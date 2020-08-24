@@ -17,6 +17,8 @@ export class MediasComponent implements OnInit {
   @Input() schemaDotTable: string;
   @Input() sizeMax: number;
 
+  @Input() uuidAttachedRow: string;
+
   @Input() parentFormControl: FormControl;
 
   public bInitialized: boolean;

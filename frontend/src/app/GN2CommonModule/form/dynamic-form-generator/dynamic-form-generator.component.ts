@@ -52,7 +52,7 @@ export class GenericFormGeneratorComponent implements OnInit {
   formsDisplayed() {
     const formsDisplayed = this.formsSelected
       .filter(formDef => typeof formDef.hidden == 'function'
-        ? !formDef.hidden({value: this.myFormGroup.value})
+        ? !formDef.hidden({value: this.myFormGroup.value, meta: formDef.meta})
         : !formDef.hidden
       );
     return formsDisplayed;
@@ -61,7 +61,7 @@ export class GenericFormGeneratorComponent implements OnInit {
   formsHidden() {
     const formsHidden = this.formsSelected
       .filter(formDef => typeof formDef.hidden == 'function'
-        ? formDef.hidden({value: this.myFormGroup.value})
+        ? formDef.hidden({value: this.myFormGroup.value, meta: formDef.meta})
           : formDef.hidden
         );
     return formsHidden;

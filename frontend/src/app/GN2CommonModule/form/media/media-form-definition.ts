@@ -1,64 +1,96 @@
 export const mediaFormDefinitionsDict = {
-  "title_fr": {
-    "attribut_label": "Titre",
-    "type_widget": "text",
-    "required": true
+  title_fr: {
+    attribut_label: 'Titre',
+    type_widget: 'text',
+    required: true,
   },
-  "description_fr": {
-    "attribut_label": "Description",
-    "type_widget": "text",
-    "required": false
+  description_fr: {
+    attribut_label: 'Description',
+    type_widget: 'text',
+    required: false,
   },
-  "author": {
-    "attribut_label": "Auteur",
-    "type_widget": "text",
-    "required": true
+  author: {
+    attribut_label: 'Auteur',
+    type_widget: 'text',
+    required: true,
   },
-  "id_nomenclature_media_type": {
-    "attribut_label": "Type de média",
-    "type_widget": "nomenclature",
-    "required": true,
-    "code_nomenclature_type": "TYPE_MEDIA",
+  id_nomenclature_media_type: {
+    attribut_label: 'Type de média',
+    type_widget: 'nomenclature',
+    required: true,
+    code_nomenclature_type: 'TYPE_MEDIA',
   },
-  "bFile":{
-    "attribut_label": "Import du média",
-    "type_widget": 'select',
-    "values": ["Uploader un fichier", "Renseigner une URL"],
-    "value": "Uploader un fichier",
-    "noNullOption": true,
-    "required": true,
+  bFile: {
+    attribut_label: 'Import du média',
+    type_widget: 'select',
+    values: ['Uploader un fichier', 'Renseigner une URL'],
+    value: 'Uploader un fichier',
+    noNullOption: true,
+    required: true,
+    hidden: ({ value, meta }) => {
+      if (!value.id_nomenclature_media_type) return;
+      const label_fr = meta.nomenclatures[value.id_nomenclature_media_type].label_fr;
+      return [
+        'Vidéo Dailymotion',
+        'Vidéo Youtube',
+        'Vidéo Viméo',
+        'Page web',
+        'Vidéo (fichier)',
+      ].includes(label_fr);
+    },
   },
-  "media_url": {
-    "attribut_label": "URL",
-    "type_widget": "text",
-    "hidden": ({value}) => value.bFile != "Renseigner une URL",
-    "required": ({value}) => value.bFile == "Renseigner une URL",
+  media_url: {
+    attribut_label: 'URL',
+    type_widget: 'text',
+    hidden: ({ value }) => value.bFile != 'Renseigner une URL',
+    required: ({ value }) => value.bFile == 'Renseigner une URL',
   },
-  "file": {
-    "attribut_label": "Choisir un fichier",
-    "type_widget": "file",
-    "hidden": ({value}) => value.bFile != "Uploader un fichier",
-    "required": ({value}) => value.bFile == "Uploader un fichier",
-    "sizeMax": 2000
+  file: {
+    attribut_label: 'Choisir un fichier',
+    type_widget: 'file',
+    hidden: ({ value }) => value.bFile != 'Uploader un fichier',
+    required: ({ value }) => value.bFile == 'Uploader un fichier',
+    sizeMax: null,
+    meta: null,
+    accept: ({ value, meta }) => {
+      if (!value.id_nomenclature_media_type) return '*';
+      const label_fr = meta.nomenclatures[value.id_nomenclature_media_type].label_fr;
+      switch (label_fr) {
+        case 'Photo': {
+          return 'image/*';
+        }
+        case 'Vidéo (fichier)': {
+          return 'video/*';
+        }
+        case 'Audio': {
+          return 'audio/*';
+        }
+        case 'PDF': {
+          return '.pdf';
+        }
+        default:
+          return '*';
+      }
+    },
   },
-  "id_media": {
-    "attribut_label": "ID media",
-    "type_widget": "number",
-    "hidden": true
+  id_media: {
+    attribut_label: 'ID media',
+    type_widget: 'number',
+    hidden: true,
   },
-  "uuid_attached_row": {
-    "attribut_label": "uuid_attached_row",
-    "type_widget": "text",
-    "hidden": true
+  uuid_attached_row: {
+    attribut_label: 'uuid_attached_row',
+    type_widget: 'text',
+    hidden: true,
   },
-  "media_path": {
-    "attribut_label": "Path",
-    "type_widget": "text",
-    "hidden": true
+  media_path: {
+    attribut_label: 'Path',
+    type_widget: 'text',
+    hidden: true,
   },
-  "id_table_location": {
-    "attribut_label": "ID table location",
-    "type_widget": "number",
-    "hidden": true
+  id_table_location: {
+    attribut_label: 'ID table location',
+    type_widget: 'number',
+    hidden: true,
   },
-}
+};
