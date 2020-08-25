@@ -269,13 +269,13 @@ placeholder="Tapez les premières lettres..."
     <button 
       mat-flat-button
       color="warn"
-      class="btn btn-danger mr-1"
+      class="uppercase mr-1"
       [routerLink]="['/occtax']">
       Annuler
     </button> 
   <button 
     mat-flat-button
-    color="primary"
+    class="btn-green uppercase"
     matTooltip="Enregistrer le relevé et saisir les taxons"
     [disabled]="releveForm.invalid || occtaxFormReleveService.waiting"
     (click)="submitReleveForm()">
@@ -284,7 +284,7 @@ placeholder="Tapez les premières lettres..."
       diameter="25"
       strokeWidth="2">
     </mat-spinner>
-    Saisir des taxons
+    Enregistrer et saisir des taxons
   </button> 
   </ng-container>
   <!-- <ng-template #modifButton>
@@ -294,7 +294,7 @@ placeholder="Tapez les premières lettres..."
       matTooltip="Modifier le relevé"
       [disabled]="releveForm.invalid || occtaxFormReleveService.waiting || ((occtaxFormService.editionMode|async) && releveForm.pristine)"
       (click)="submitReleveForm()">
-      Modifier
+      Modifier le relevé
     </button> 
   </ng-template> -->
 </div>

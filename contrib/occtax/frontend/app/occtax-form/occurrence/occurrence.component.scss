@@ -3,6 +3,12 @@
   stroke: #fff !important;
 }
 
+.occtax-form-content {
+	overflow-y: auto!important;
+	overflow-x: hidden!important;
+}
+
+
 button .mat-progress-spinner, 
 button .mat-spinner {
   display: inline-block;

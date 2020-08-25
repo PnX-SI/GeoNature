@@ -145,7 +145,7 @@
                 </div>
               </ng-container>
 
-              <div ngIf="ModuleConfig.form_fields.comment_occ">
+              <div *ngIf="ModuleConfig.form_fields.comment_occ">
                 <div class="label">{{ 'Taxon.Comment' | translate }} :</div>
                 <div class="value">{{ occurrence?.comment || "-" }}</div>
               </div>

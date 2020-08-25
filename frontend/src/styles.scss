@@ -15,8 +15,13 @@ mat-sidenav-content {
   background-color: $solitude;
 }
 
-.green {
-  background-color: green!important;
+.btn-green {
+  background-color: #389938!important;
+  color: white!important;
+}
+
+.btn-green:disabled {
+  background-color: #38993850!important;
 }
 
 .mat-toolbar {

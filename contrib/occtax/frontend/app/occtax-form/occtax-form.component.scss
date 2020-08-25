@@ -12,19 +12,30 @@
   padding-top: 5px;
 }
 
+#taxon-tab {
+	padding-bottom: 45px;
+}
+
+
 #saved-obs {
   border-left: solid 1px #0000003b;
-  overflow-x: hidden;
-  overflow-y: auto;
   padding-bottom: 45px;
 }
 
-.btn-releve {
-  position: absolute;
-  left: 75%;
-  margin-top: -35px;
-  z-index: 100;
+#form-container{
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+
 }
+
+#btn-finish {
+  position: absolute;
+  right: 35px;
+  bottom: 50px;
+  z-index:100;
+}
+
 
 #btn-cancel {
   margin-right: 10px;
@@ -54,6 +65,13 @@
 .tab .to-list-btn:hover {
   background-color: #dedede;
   color: #333;
+}
+
+.add-occ {
+  position: absolute;
+  left: 25%;
+  bottom: 50px;
+  z-index:100;
 }
 
 /* Style the buttons that are used to open the tab content */

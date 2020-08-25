@@ -70,9 +70,10 @@
 		<div 
 			*ngIf="currentTab === 'taxons'"
 			class="occtax-form-content" 
-			[ngStyle]="{'max-height.px': cardContentHeight}"
+			id="taxon-tab"
+			[ngStyle]="{'height.px': cardContentHeight}"
 			>
-			<div class="row">
+			<div class="row"id="form-container">
 				<div class="col-md-7">
 					<pnx-occtax-form-occurrence></pnx-occtax-form-occurrence>
 				</div>
@@ -93,27 +94,49 @@
 				</div>
 
 			</div>
-			<div class="btn-releve">
+			<ng-container *ngIf="!(occtaxFormOccurrenceService.occurrence|async); else modifButton">
 				<button 
-					[disabled]="disableCancel"
-					id="btn-cancel"
-					mat-raised-button
-					color="warn"
-					matTooltip="Annuler la saisie"
-					class="uppercase"
-					(click)="leaveTheForm(true)">
-					Annuler
-				</button>
+					mat-flat-button
+					class="btn-green uppercase add-occ"
+					matTooltip="Enregistrer ce taxon"
+					[disabled]="occtaxFormOccurrenceService.form.invalid"
+					(click)="submitOccurrenceForm()">
+					<mat-spinner 
+						*ngIf="occtaxFormOccurrenceService.saveWaiting"
+						diameter="25"
+						strokeWidth="2">
+					</mat-spinner>
+					
+					Enregistrer ce taxon
+					<mat-icon style="vertical-align: middle;" >save</mat-icon>
+				</button> 
+			</ng-container>
+			<ng-template #modifButton>
 				<button 
-					[disabled]="(occtaxTaxaListService.occurrences$ | async)?.length === 0 "
-					mat-raised-button
-					color="primary"
-					class="uppercase green"
-					matTooltip="Valider la saisie"
-					(click)="leaveTheForm(false)">
-					Terminer
+					class="btn-green uppercase add-occ"
+					mat-flat-button
+					matTooltip="Modifier l'occurrence"
+					[disabled]="occtaxFormOccurrenceService.form.invalid"
+					(click)="submitOccurrenceForm()">
+					<mat-spinner 
+						*ngIf="occtaxFormOccurrenceService.saveWaiting"
+						diameter="25"
+						strokeWidth="2">
+					</mat-spinner>
+					Modifier cette observation
+					<mat-icon style="vertical-align: middle;" >save</mat-icon>
 				</button>
-			</div>
+			</ng-template>
+
+			<button 
+				id="btn-finish"
+				[disabled]="(occtaxTaxaListService.occurrences$ | async)?.length === 0 "
+				mat-raised-button
+				color="primary"
+				matTooltip="Valider la saisie"
+				(click)="leaveTheForm(false)">
+				Terminer la saisie
+			</button>
 
 		</div>
 
