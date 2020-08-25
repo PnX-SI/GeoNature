@@ -99,7 +99,7 @@ export const mediaFormDefinitionsDict = {
   },
   details: {
     type_widget: 'bool_checkbox',
-    attribut_label: 'Détails',
+    attribut_label: 'Avancé',
     values: [true],
     value: true,
     hidden: true
