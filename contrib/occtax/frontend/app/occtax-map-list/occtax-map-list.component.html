@@ -4,12 +4,23 @@
     <div class="float-btns">
 
       <ng-container *ngIf="userCruved?.C != '0'">
-        <a [routerLink]="['form']" class="btn btn-success btn-action hard-shadow uppercase"> 
+        <button
+          mat-raised-button
+          color="primary"
+          class="btn-action hard-shadow green uppercase ml-3"
+          [routerLink]="['form']"
+        >
+        {{ 'Releve.AddReleve' | translate }} 
+        <mat-icon>add_circle_outline</mat-icon>
+        </button>
+        <!-- <a [routerLink]="['form']" class="btn btn-success btn-action hard-shadow uppercase"> 
           {{ 'Releve.AddReleve' | translate }} <i class="fa fa-plus-circle" aria-hidden="true"> </i> 
-        </a>
+        </a> -->
       </ng-container>
       <button 
-        class="btn btn-primary btn-action hard-shadow uppercase ml-3"
+        mat-raised-button
+        color="primary"
+        class="btn-action hard-shadow uppercase ml-3"
         data-toggle="collapse"
         data-target="#collapseAvance"
       >
@@ -295,12 +306,13 @@
         <button 
           *ngIf="userCruved?.E != '0'"
           id="download-btn" 
-          class="btn btn-primary box-shadow" 
+          mat-flat-button
+          color="primary"
           (click)="openModalDownload($event, modalDownload)"
         >
-          <i class="fa fa-download" aria-hidden="true">
-          </i>
-          <small> {{ 'DownloadData' | translate }} </small>
+        {{ 'DownloadData' | translate }} 
+
+          <mat-icon>file_download</mat-icon>
         </button>
   
         <!-- MODAL COLUMNS -->

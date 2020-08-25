@@ -26,7 +26,7 @@
 	</p>
 </div>
 
-<div>
+<!-- <div>
 	<mat-slide-toggle 
 		labelPosition="after"
 		[checked]="occtaxFormParamService.geometryState|async"
@@ -34,7 +34,7 @@
 		color="primary">
 		Activer pour la geométrie
 	</mat-slide-toggle>
-</div>
+</div> -->
 <div>
 	<mat-slide-toggle 
 		labelPosition="after"
@@ -69,7 +69,7 @@
 	backgroundColor="primary">
 
 	<!-- GEOSJON -->
-  <mat-tab 
+  <!-- <mat-tab 
   	label="Localisation"
   	[disabled]="!(occtaxFormParamService.geometryState|async)">
 
@@ -90,7 +90,7 @@
 			</ng-template>
 		</div>
 
-  </mat-tab>
+  </mat-tab> -->
 
 	<!-- RELEVE -->
   <mat-tab 
@@ -99,7 +99,8 @@
 
 		<div style="margin-top:10px;">
 			<button 
-				class="btn btn-primary" 
+				mat-flat-button
+				color=primary
 				(click)="releveFormMapper()">
 				Copier les informations du relevé en cours
 			</button>
@@ -215,7 +216,8 @@
 
   	<div style="margin-top:10px;">
 			<button 
-				class="btn btn-primary" 
+				mat-flat-button
+				color=primary
 				(click)="occurrenceFormMapper()">
 				Copier les informations du taxon en cours
 			</button>

@@ -353,7 +353,8 @@
   </ng-container>
   <ng-template #modifButton>
     <button 
-      class="btn btn-primary"
+      mat-flat-button
+      color="primary"
       matTooltip="Modifier l'occurrence"
       [disabled]="occurrenceForm.invalid"
       (click)="submitOccurrenceForm()">

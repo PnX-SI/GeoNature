@@ -23,6 +23,7 @@
   position: absolute;
   left: 75%;
   margin-top: -35px;
+  z-index: 100;
 }
 
 #btn-cancel {
@@ -83,8 +84,8 @@
 
 /* Create an active/current tablink class */
 .tab a.tablinks.active {
-  background-color: #fff;
-  border-bottom: 2px solid #0754c7;
+  background-color: #1d1d1d24;
+  border-bottom: 2px solid #673ab7;
   color: #222;
 }
 

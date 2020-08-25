@@ -1,5 +1,5 @@
 ::ng-deep .gn-panel {
-  margin-left: 60px !important;
+  margin-left: 35px !important;
 }
 
 ::ng-deep ._gn-panel-header {
@@ -7,17 +7,19 @@
 }
 
 .mat-icon-button {
-  width: 26px;
-  height: 26px;
-  line-height: 26px;
-  vertical-align: 1px;
+  width: 18px;
+  height: 18px;
+  line-height: 15px;
+  vertical-align: 10px;
 }
 
 .btn-actions {
   position: absolute;
   padding-top: 8px;
 }
-
+// .icon {
+//   font-size: 55px!important;
+// }
 .btn-edit {
   color: #5343da;
 }
@@ -34,6 +36,7 @@
 
 .list-values > div {
   padding: 1px 7px;
+  font-size:12px;
 }
 
 .list-values > div:nth-child(odd) {
