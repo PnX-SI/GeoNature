@@ -121,3 +121,11 @@ BEGIN
 END;
 $function$
 ;
+
+
+    -- ##########################################
+    -- Contraintes
+    -- ##########################################
+
+ALTER TABLE bib_tables_location
+  ADD CONTRAINT unique_bib_table_location_schema_name_table_name UNIQUE (schema_name, table_name);

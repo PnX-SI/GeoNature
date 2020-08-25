@@ -149,7 +149,8 @@
         [charNumber]="3" [listLength]="20">
       </pnx-taxonomy>
 
-      <pnx-datasets *ngSwitchCase="'dataset'" [label]="formDefComp().attribut_label" [parentFormControl]="form.get(formDefComp().attribut_name)" [multiSelect]="formDefComp().multi_select">
+      <pnx-datasets *ngSwitchCase="'dataset'" [label]="formDef.attribut_label" [parentFormControl]="form.get(formDef.attribut_name)" [multiSelect]="formDef.multi_select"
+       [moduleCode]="formDef.module_code">
       </pnx-datasets>
 
       <pnx-observers *ngSwitchCase="'observers'" [label]="formDefComp().attribut_label" [parentFormControl]="form.get(formDefComp().attribut_name)" [idMenu]="formDefComp().idComponent" [codeList]="formDefComp().code_list">
