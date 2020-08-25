@@ -23,7 +23,7 @@ export class OcctaxFormTaxaListComponent implements OnInit {
     private occtaxFormService: OcctaxFormService,
     private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     public occtaxTaxaListService: OcctaxTaxaListService
-  ) {}
+  ) { }
 
   ngOnInit() {
     combineLatest(
@@ -37,6 +37,8 @@ export class OcctaxFormTaxaListComponent implements OnInit {
             occtaxData && occtaxData.releve.properties.t_occurrences_occtax
         ),
         map(([occtaxData, occurrence]: any) => {
+          console.log('passe icit');
+
           return occtaxData.releve.properties.t_occurrences_occtax
             .filter((occ) => {
               //enlève l'occurrence en cours de modification de la liste affichée
@@ -69,6 +71,7 @@ export class OcctaxFormTaxaListComponent implements OnInit {
   }
 
   editOccurrence(occurrence) {
+    setTimeout(() => { })
     this.occtaxFormOccurrenceService.occurrence.next(occurrence);
   }
 

@@ -19,7 +19,27 @@
               Relevé n°{{id}}
               
               <ng-container *ngIf="releve">
-                <a 
+                <button 
+                  mat-mini-fab
+                  [disabled]="userReleveCruved?.D == false"
+                  matTooltip="Supprimer le relevé {{ id }}" 
+                  color="warn" 
+                  class="float-right" 
+                  (click)="openModalDelete(modalDelete)" 
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+                <button 
+                  mat-mini-fab 
+                  color="primary" 
+                  matTooltip="Editez le relevé {{id}}" 
+                  class="float-right mr-2" 
+                  [disabled]="userReleveCruved?.U == false"
+                  [routerLink]="['/occtax/form', id]"
+                  >
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <!-- <a 
                   *ngIf="userReleveCruved?.U != false"
                   [routerLink]="['/occtax/form', id]"
                   matTooltip="Editez le relevé {{id}}" 
@@ -34,7 +54,7 @@
                   class="btn btn-danger button-rounded float-right"
                   [disabled]="userReleveCruved?.D == false">
                   <i class="fa fa-trash-o  fa-lg" aria-hidden="true"></i>
-                </button>
+                </button> -->
               </ng-container>
             </mat-card-title>
 
