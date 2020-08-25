@@ -151,14 +151,13 @@ ENABLE_UPLOAD_TOOL = true
     naturalness = true
     exist_proof = true
     observation_status = true
-    diffusion_level = false
-    blurring = false
+    blurring = true
     determiner = true
     determination_method = true
     sample_number_proof = true
     digital_proof = true
     non_digital_proof = true
-    source_status = false
+    source_status = true
     comment_occ = true
     life_stage = true
     sex = true
@@ -171,3 +170,6 @@ ENABLE_UPLOAD_TOOL = true
 # ------------- MEDIAS PARAMETER ---------------
 
 ENABLE_MEDIAS = true
+    habitat = true
+    grp_method = true
+    behavior = true

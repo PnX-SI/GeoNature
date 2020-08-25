@@ -8,6 +8,7 @@ import {
 import { DOCUMENT } from "@angular/common";
 import { MatDialog, MatDialogConfig } from "@angular/material";
 import { ActivatedRoute, Router } from "@angular/router";
+import { CommonService } from "@geonature_common/service/common.service"
 import { ModuleConfig } from "../module.config";
 import { OcctaxFormService } from "./occtax-form.service";
 import { MapService } from "@geonature_common/map/map.service";
@@ -55,7 +56,8 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     private occtaxFormReleveService: OcctaxFormReleveService,
     private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     private occtaxTaxaListService: OcctaxTaxaListService,
-    private _ds: OcctaxDataService
+    private _ds: OcctaxDataService,
+    private _commonService: CommonService
   ) { }
 
   ngOnInit() {
@@ -93,11 +95,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
   }
 
   calcCardContentHeight() {
-    let wH = window.innerHeight;
-    let tbH = document.getElementById("app-toolbar")
-      ? document.getElementById("app-toolbar").offsetHeight
-      : 0;
-    let nbH = <HTMLScriptElement>(
+    let minusHeight = <HTMLScriptElement>(
       (<any>document.querySelector("pnx-occtax-form .tab"))
     )
       ? (<HTMLScriptElement>(
@@ -105,8 +103,8 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
       )).offsetHeight
       : 0;
 
-    let height = wH - (tbH + nbH + 70);
-    this.cardContentHeight = height >= 350 ? height : 350;
+    this.cardContentHeight = this._commonService.calcCardContentHeight(minusHeight + 60)
+
     // resize map after resize container
     if (this._mapService.map) {
       setTimeout(() => {
