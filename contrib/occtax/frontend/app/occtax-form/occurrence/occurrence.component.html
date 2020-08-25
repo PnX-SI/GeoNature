@@ -334,7 +334,8 @@
   <ng-container *ngIf="!(occtaxFormOccurrenceService.occurrence|async); else modifButton">
     <button 
       id="add-occ"
-      class="btn btn-primary"
+      mat-flat-button
+      color="primary"
       matTooltip="Enregistrer cette occurrence"
       [disabled]="occurrenceForm.invalid"
       (click)="submitOccurrenceForm()">

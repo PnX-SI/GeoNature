@@ -146,7 +146,7 @@
       </div>
 
       <pnx-taxonomy *ngSwitchCase="'taxonomy'" [label]="formDefComp().attribut_label" [parentFormControl]="form.get(formDefComp().attribut_name)" [idList]="formDefComp().idComponent"
-        [charNumber]="3" [listLength]="20">
+        [charNumber]="3" [listLength]p="20">
       </pnx-taxonomy>
 
       <pnx-datasets *ngSwitchCase="'dataset'" [label]="formDef.attribut_label" [parentFormControl]="form.get(formDef.attribut_name)" [multiSelect]="formDef.multi_select"

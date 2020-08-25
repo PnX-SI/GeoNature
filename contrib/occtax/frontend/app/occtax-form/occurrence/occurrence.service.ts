@@ -9,7 +9,7 @@ import {
   AbstractControl,
 } from "@angular/forms";
 import { BehaviorSubject, Observable, of, combineLatest } from "rxjs";
-import { map, filter, switchMap, tap, pairwise, retry } from "rxjs/operators";
+import { map, filter, switchMap, tap, pairwise, retry, delay } from "rxjs/operators";
 import { CommonService } from "@geonature_common/service/common.service";
 import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormCountingService } from "../counting/counting.service";
@@ -93,7 +93,7 @@ export class OcctaxFormOccurrenceService {
               this.addCountingForm(false); //false => on ne patch pas le form avec les valeurs par defauts
             });
           }
-        })
+        }),
       )
       .subscribe((values) => {
         this.form.patchValue(values);

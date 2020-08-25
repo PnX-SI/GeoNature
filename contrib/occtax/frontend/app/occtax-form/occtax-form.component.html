@@ -97,17 +97,21 @@
 				<button 
 					[disabled]="disableCancel"
 					id="btn-cancel"
+					mat-flat-button
+					color="warn"
 					matTooltip="Annuler la saisie"
-					class="btn btn-danger hard-shadow btn-action uppercase"
+					class="uppercase"
 					(click)="leaveTheForm(true)">
 					Annuler
 				</button>
 				<button 
 					[disabled]="(occtaxTaxaListService.occurrences$ | async)?.length === 0 "
-					class="btn btn-success hard-shadow btn-action uppercase"
+					mat-flat-button
+					color="primary"
+					class="uppercase green"
 					matTooltip="Valider la saisie"
 					(click)="leaveTheForm(false)">
-					Valider
+					Terminer
 				</button>
 			</div>
 

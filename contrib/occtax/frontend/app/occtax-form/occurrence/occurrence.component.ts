@@ -4,10 +4,10 @@ import {
   state,
   style,
   transition,
-  trigger,
+  trigger
 } from "@angular/animations";
 import { FormControl, FormGroup, FormArray, Validators } from "@angular/forms";
-import { map, filter, tap } from "rxjs/operators";
+import { map, filter, tap, delay } from "rxjs/operators";
 import { OcctaxFormService } from "../occtax-form.service";
 import { ModuleConfig } from "../../module.config";
 import { AppConfig } from "@geonature_config/app.config";
@@ -62,7 +62,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     private _coreFormService: FormService,
     private _occtaxTaxaListService: OcctaxTaxaListService,
     public dialog: MatDialog
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.occurrenceForm = this.occtaxFormOccurrenceService.form;
@@ -139,31 +139,42 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe((values: any) => {
-        // check if the taxon is not already in the list
-        const currentTaxaList = this._occtaxTaxaListService.occurrences$.getValue();
-        const alreadyExistingTax = currentTaxaList.find(
-          (tax) => tax.cd_nom === this.taxonForm.value.cd_nom
-        );
-        if (alreadyExistingTax) {
-          const message =
-            "Le taxon saisi est déjà dans la liste des taxon enregistré. Voulez-vous continuez ?";
-          const dialogRef = this.dialog.open(ConfirmationDialog, {
-            width: "auto",
-            position: { top: "5%" },
-            data: { message: message, yesColor: "basic", noColor: "warn" },
-          });
-          dialogRef.afterClosed().subscribe((result) => {
-            if (!result) {
-              this.taxonForm.reset();
-            } else {
-              this.occurrenceForm.get("nom_cite").setValue(values.nom_cite);
-              this.occurrenceForm.get("cd_nom").setValue(values.cd_nom);
-            }
-          });
-        } else {
+        // console.log(this.occtaxFormOccurrenceService.occurrence.getValue());
+        console.log(this._occtaxTaxaListService.occurrences$.getValue());
+
+        const currentOccForm = this.occtaxFormOccurrenceService.occurrence.getValue()
+        // Si édition d'une occurrence, on ne vérifie pas si déjà dans la liste
+        if (currentOccForm && currentOccForm.id_releve_occtax) {
           this.occurrenceForm.get("nom_cite").setValue(values.nom_cite);
           this.occurrenceForm.get("cd_nom").setValue(values.cd_nom);
+        } else {
+          // check si taxon pas déjà dans la liste
+          const currentTaxaList = this._occtaxTaxaListService.occurrences$.getValue();
+          const alreadyExistingTax = currentTaxaList.find(
+            (tax) => tax.cd_nom === this.taxonForm.value.cd_nom
+          );
+          if (alreadyExistingTax) {
+            const message =
+              "Le taxon saisi est déjà dans la liste des taxon enregistré. Voulez-vous continuez ?";
+            const dialogRef = this.dialog.open(ConfirmationDialog, {
+              width: "auto",
+              position: { top: "5%" },
+              data: { message: message, yesColor: "basic", noColor: "warn" },
+            });
+            dialogRef.afterClosed().subscribe((result) => {
+              if (!result) {
+                this.taxonForm.reset();
+              } else {
+                this.occurrenceForm.get("nom_cite").setValue(values.nom_cite);
+                this.occurrenceForm.get("cd_nom").setValue(values.cd_nom);
+              }
+            });
+          } else {
+            this.occurrenceForm.get("nom_cite").setValue(values.nom_cite);
+            this.occurrenceForm.get("cd_nom").setValue(values.cd_nom);
+          }
         }
+
       });
 
     this.occtaxFormOccurrenceService.occurrence
