@@ -67,7 +67,8 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     rel.id_releve_occtax,
     occ.id_occurrence_occtax,
     rel.id_digitiser,
-    rel.geom_4326
+    rel.geom_4326,
+    rel.place_name AS "nomLieu"
    FROM pr_occtax.t_releves_occtax rel
      LEFT JOIN pr_occtax.t_occurrences_occtax occ ON rel.id_releve_occtax = occ.id_releve_occtax
      LEFT JOIN pr_occtax.cor_counting_occtax ccc ON ccc.id_occurrence_occtax = occ.id_occurrence_occtax

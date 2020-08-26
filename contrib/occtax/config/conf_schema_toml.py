@@ -49,7 +49,8 @@ class FormConfig(Schema):
     geo_object_nature = fields.Boolean(missing=False)
     habitat = fields.Boolean(missing=True)
     grp_method = fields.Boolean(missing=False)
-    behavior = fields.Boolean(missing=True)
+    behaviour = fields.Boolean(missing=True)
+    place_name = fields.Boolean(missing=True)
 
 
 default_map_list_conf = [
@@ -126,6 +127,7 @@ default_columns_export = [
     "orgGestDat",
     "WKT",
     "natObjGeo",
+    "nomLieu",
 ]
 
 

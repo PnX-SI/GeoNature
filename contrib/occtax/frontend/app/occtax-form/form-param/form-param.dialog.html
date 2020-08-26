@@ -105,7 +105,13 @@
 				Copier les informations du relevé en cours
 			</button>
 		</div>
-
+	<div *ngIf="occtaxConfig.form_fields.place_name">
+	<small> {{ 'Releve.PlaceName' | translate }} </small>
+	<input 
+		class="form-control form-control-sm" 
+		type="text" 
+		[formControl]="releveParamForm.get('place_name')">
+	</div>
   	<pnx-observers 
       *ngIf="!occtaxConfig.observers_txt; else elseBlock"
       [parentFormControl]="releveParamForm.get('observers')" 

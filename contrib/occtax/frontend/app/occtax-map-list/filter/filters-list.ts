@@ -84,6 +84,12 @@ export const FILTERSLIST = [
   },
   {
     type_widget: "text",
+    attribut_label: "Nom du lieu",
+    attribut_name: "place_name",
+    required: false,
+  },
+  {
+    type_widget: "text",
     attribut_label: "Preuve non numérique",
     attribut_name: "non_digital_proof",
     required: false,

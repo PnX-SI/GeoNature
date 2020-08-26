@@ -9,6 +9,18 @@
   
 </div>
 <div class="row">
+    <div class="col-8">
+        <div *ngIf="occtaxConfig.form_fields.place_name">
+        <small> {{ 'Releve.PlaceName' | translate }} </small>
+        <input 
+          class="form-control form-control-sm" 
+          type="text" 
+          [formControl]="propertiesForm.get('place_name')"
+          [disableControl]="propertiesForm.disabled">
+      </div>
+    </div>
+</div>
+<div class="row">
   <div class="col-xl-8 col-lg-10">
 
     <!-- OBSERVATEURS -->
@@ -276,19 +288,6 @@
     [formControl]="propertiesForm.get('comment')">
   </textarea>
 </div>
-<!-- <pnx-autocomplete apiEndPoint="{{appConfig.API_ENDPOINT}}/habref/habitats/autocomplete/list/{{moduleConfig.ID_LIST_HABITAT}}"
-[searchAsParameter]="false"  
-[parentFormControl]="occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].get('habref')"
-queryParamSearch="search_name"
-[othersGetParams]="occHabForm.selectedTypo"
-[formatter]="formatter"
-keyValue="search_name"
-label="Habitat"
-placeholder="Tapez les premières lettres..."
-(onChange)="occHabForm.patchNomCite($event)"
->
-</pnx-autocomplete> -->
-
 
 <div class="text-center" style="margin-top: 10px;"> 
 
@@ -325,3 +324,5 @@ placeholder="Tapez les premières lettres..."
     </button> 
   </ng-template> -->
 </div>
+
+{{releveForm.value |json}}

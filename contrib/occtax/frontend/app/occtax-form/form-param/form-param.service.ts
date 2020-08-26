@@ -5,6 +5,7 @@ import { ModuleConfig } from "../../module.config";
 interface OCCTAX_FORM_PARAM {
   geometry?: any;
   releve?: {
+    place_name?: string;
     id_dataset?: number;
     id_digitiser?: number;
     date_min?: string;
@@ -51,6 +52,7 @@ export class OcctaxFormParamService {
   parameters: OCCTAX_FORM_PARAM = {
     geometry: null,
     releve: {
+      place_name: null,
       id_dataset: null,
       id_digitiser: null,
       date_min: null,

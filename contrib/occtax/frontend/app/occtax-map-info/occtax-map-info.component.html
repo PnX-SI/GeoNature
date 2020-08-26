@@ -84,6 +84,10 @@
               <div class="label"> &nbsp; et le : </div>
               <div class="value">{{ releve.date_max | date:'dd/MM/yyyy' }} {{releve.hour_max}} </div>
             </div>
+            <div *ngIf="occtaxConfig.form_fields.place_name">
+                <div class="label">  {{ 'Releve.PlaceName' | translate }} :</div>
+                <div class="value">{{ releve.place_name  || "-"}}</div>
+              </div>
             <div *ngIf="occtaxConfig.form_fields.altitude_min">
               <div class="label">  Altitude min :</div>
               <div class="value">{{ releve.altitude_min  || "-"}}</div>

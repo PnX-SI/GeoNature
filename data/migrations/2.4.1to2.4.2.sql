@@ -140,6 +140,9 @@ SELECT  s.id_synthese,
     s.non_digital_proof,
     s.altitude_min,
     s.altitude_max,
+    s.depth_min,
+    s.depth_max,
+    s.place_name,
     s.the_geom_4326,
     s.date_min,
     s.date_max,
@@ -290,7 +293,8 @@ ALTER TABLE pr_occtax.t_releves_occtax
 ADD COLUMN id_nomenclature_geo_object_nature integer,
 ADD COLUMN depth_min integer,
 ADD COLUMN depth_max integer,
-ADD Cdepth_minONSTRAINT check_t_releves_occtax_geo_object_nature CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_geo_object_nature,'NAT_OBJ_GEO')) NOT VALID,
+ADD COLUMN place_name character varying(500),
+ADD CONSTRAINT check_t_releves_occtax_geo_object_nature CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_geo_object_nature,'NAT_OBJ_GEO')) NOT VALID,
 ADD CONSTRAINT check_t_releves_occtax_depth CHECK (depth_max >= depth_min);
 ADD CONSTRAINT fk_t_releves_occtax_id_nomenclature_geo_object_nature FOREIGN KEY (id_nomenclature_geo_object_nature) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
 ADD COLUMN cd_hab integer,
@@ -326,6 +330,7 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
     rel.altitude_max,
     rel.depth_min,
     rel.depth_max,
+    rel.place_name,
     rel.meta_device_entry,
     rel.comment,
     rel.geom_4326,
@@ -343,7 +348,7 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
      LEFT JOIN taxonomie.taxref t ON occ.cd_nom = t.cd_nom
      LEFT JOIN pr_occtax.cor_role_releves_occtax cor_role ON cor_role.id_releve_occtax = rel.id_releve_occtax
      LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
-  GROUP BY rel.id_releve_occtax, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.depth_min, rel.depth_max, rel.meta_device_entry, rel.comment, rel.geom_4326, rel."precision", t.cd_nom, occ.nom_cite, occ.id_occurrence_occtax, t.lb_nom, t.nom_valide, t.nom_complet_html, t.nom_vern;
+  GROUP BY rel.id_releve_occtax, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.depth_min, rel.depth_max, rel.place_name, rel.meta_device_entry, rel.comment, rel.geom_4326, rel."precision", t.cd_nom, occ.nom_cite, occ.id_occurrence_occtax, t.lb_nom, t.nom_valide, t.nom_complet_html, t.nom_vern;
 
 
 
@@ -357,6 +362,7 @@ ALTER TABLE gn_synthese.synthese
     ADD COLUMN id_nomenclature_behaviour integer,
     ADD COLUMN depth_min integer,
     ADD COLUMN depth_max integer,
+    ADD COLUMN place_name character varying(500),
     ALTER COLUMN id_nomenclature_behaviour SET DEFAULT gn_synthese.get_default_nomenclature_value('OCC_COMPORTEMENT'),
     ADD CONSTRAINT fk_synthese_id_nomenclature_behaviour FOREIGN KEY (id_nomenclature_behaviour) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
     ADD CONSTRAINT check_synthese_behaviour CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour, 'OCC_COMPORTEMENT')) NOT VALID,
@@ -446,6 +452,7 @@ altitude_min,
 altitude_max,
 depth_min,
 depth_max,
+place_name,
 the_geom_4326,
 the_geom_point,
 the_geom_local,
@@ -499,6 +506,7 @@ VALUES(
   releve.altitude_max,
   releve.depth_min,
   releve.depth_max,
+  releve.place_name,
   releve.geom_4326,
   ST_CENTROID(releve.geom_4326),
   releve.geom_local,
@@ -582,8 +590,9 @@ BEGIN
       date_max = date_trunc('day',NEW.date_max)+COALESCE(NEW.hour_max,'00:00:00'::time),
       altitude_min = NEW.altitude_min,
       altitude_max = NEW.altitude_max,
-        depth_min = NEW.depth_min,
+      depth_min = NEW.depth_min,
       depth_max = NEW.depth_max,
+      place_name = NEW.place_name,
       the_geom_4326 = NEW.geom_4326,
       the_geom_point = ST_CENTROID(NEW.geom_4326),
       id_nomenclature_geo_object_nature = NEW.id_nomenclature_geo_object_nature,
@@ -642,6 +651,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
     s.altitude_max,
     s.depth_min,
     s.depth_max,
+    s.place_name,
     s.the_geom_4326,
     public.ST_asgeojson(the_geom_4326),
     s.date_min,
