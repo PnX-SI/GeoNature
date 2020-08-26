@@ -23,7 +23,7 @@ export class DynamicFormComponent implements OnInit {
     const formDefComp: any = {}
     for (const key of Object.keys(this.formDef)) {
       formDefComp[key] = typeof this.formDef[key] === 'function'
-        ? this.formDef[key]({ value: this.form.value, meta: this.formDef.meta })
+        ? this.formDef[key]({ value: this.form.value, meta: this.formDef.meta, attribut_name: this.formDef.attribut_name  })
         : this.formDef[key]
     }
     this._dynformService.setControl(this.form.controls[this.formDef.attribut_name], formDefComp)

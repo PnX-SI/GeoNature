@@ -1,29 +1,33 @@
+const hideDetails = ({ name, value, meta }) => {
+  const details = meta.details;
+  return details && details.lenght && !value['displayDetails'] && details.includes(name)
+}
+
 export const mediaFormDefinitionsDict = {
   title_fr: {
     attribut_label: 'Titre',
     type_widget: 'text',
     required: true,
-    hidden: ({value}) => !value['details'],
+    hidden: hideDetails,
   },
-
   description_fr: {
     attribut_label: 'Description',
     type_widget: 'text',
     required: false,
-    hidden: ({value}) => !value['details'],
+    hidden: hideDetails,
   },
   author: {
     attribut_label: 'Auteur',
     type_widget: 'text',
     required: true,
-    hidden: ({value}) => !value['details'],
+    hidden: hideDetails,
   },
   id_nomenclature_media_type: {
     attribut_label: 'Type de média',
     type_widget: 'nomenclature',
     required: true,
     code_nomenclature_type: 'TYPE_MEDIA',
-    hidden: ({value}) => !value['details'],
+    hidden: hideDetails,
   },
   bFile: {
     attribut_label: 'Import du média',
@@ -31,7 +35,7 @@ export const mediaFormDefinitionsDict = {
     values: ['Uploader un fichier', 'Renseigner une URL'],
     value: true,
     required: true,
-    hidden: ({ value, meta }) => {
+    hidden: ({ value, meta, name }) => {
       if (!value.id_nomenclature_media_type) { return; }
       const label_fr = meta.nomenclatures[value.id_nomenclature_media_type].label_fr;
       return [
@@ -40,7 +44,7 @@ export const mediaFormDefinitionsDict = {
         'Vidéo Viméo',
         'Page web',
         'Vidéo (fichier)',
-      ].includes(label_fr) || !value.details;
+      ].includes(label_fr) || hideDetails({ value, meta, name });
     },
   },
   media_url: {
@@ -97,11 +101,11 @@ export const mediaFormDefinitionsDict = {
     type_widget: 'number',
     hidden: true,
   },
-  details: {
+  displayDetails: {
     type_widget: 'bool_checkbox',
     attribut_label: 'Avancé',
-    values: [true],
+    definition: "Afficher plus d'options pour le formulaire",
     value: true,
-    hidden: true
+    hidden: ({ meta }) => meta.details && meta.details.length
   },
 };

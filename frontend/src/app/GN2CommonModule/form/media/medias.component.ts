@@ -20,7 +20,7 @@ export class MediasComponent implements OnInit {
   @Input() default: Object = {};
 
   @Input() parentFormControl: FormControl;
-  @Input() switchDetails = false;
+  @Input() details = [];
 
   public bInitialized: boolean;
 

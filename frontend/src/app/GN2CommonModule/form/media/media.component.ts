@@ -52,7 +52,7 @@ export class MediaComponent implements OnInit {
 
   @Output() validMediaChange = new EventEmitter<boolean>();
 
-  @Input() switchDetails = false;
+  @Input() details = [];
 
   constructor(
     private _formBuilder: FormBuilder,
@@ -110,11 +110,7 @@ export class MediaComponent implements OnInit {
     if (this.sizeMax) {
       mediaFormDefinitionsDict.file.sizeMax = this.sizeMax;
     }
-    mediaFormDefinitionsDict['meta'] = { nomenclatures: this.ms.metaNomenclatures() };
-
-    if (this.switchDetails) {
-      mediaFormDefinitionsDict['details']['hidden'] = false;
-    }
+    mediaFormDefinitionsDict['meta'] = { nomenclatures: this.ms.metaNomenclatures(), details: this.details };
 
     this.mediaFormDefinition = Object.keys(mediaFormDefinitionsDict)
       .filter((key) => key !== 'meta')
