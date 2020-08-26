@@ -109,17 +109,18 @@
 
 
       <div *ngSwitchCase="'bool_radio'">
+        rand {{rand}}
         <div class="custom-control custom-radio" *ngFor="let val of formDefComp().values; index as i">
             <input
               type="radio"
-              id="{{formDefComp().attribut_name}}_{{i}}"
+              id="{{formDefComp().attribut_name}}_{{rand}}_{{i}}"
               class="custom-control-input"
-              [name]="formDefComp().attribut_name"
+              name="{{formDefComp().attribut_name}}_{{rand}}"
               [value]="i==0"
               [formControl]="form.get(formDefComp().attribut_name)">
             <label
               class="custom-control-label"
-              for="{{formDefComp().attribut_name}}_{{i}}">
+              for="{{formDefComp().attribut_name}}_{{rand}}_{{i}}">
               <span [innerHTML]="val"></span>
             </label>
         </div>
@@ -130,15 +131,15 @@
         <div *ngFor="let val of formDefComp().values" class="custom-control custom-radio">
             <input
               type="radio"
-              id="{{formDefComp().attribut_name}}_{{val}}"
+              id="{{formDefComp().attribut_name}}_{{rand}}_{{val}}"
               (click)="onRadioChange(val, form.get(formDefComp().attribut_name))"
               class="custom-control-input"
-              [name]="formDefComp().attribut_name"
+              name="{{formDefComp().attribut_name}}_{{rand}}"
               [value]="val"
               [formControl]="form.get(formDefComp().attribut_name)">
             <label
               class="custom-control-label"
-              for="{{formDefComp().attribut_name}}_{{val}}">
+              for="{{formDefComp().attribut_name}}_{{rand}}_{{val}}">
               <span [innerHTML]="val"></span>
             </label>
         </div>

@@ -95,17 +95,18 @@
   <div id='occurrence-medias' *ngIf="occtaxConfig.ENABLE_MEDIAS" class="col-sm-12">
 
     <h6 style="margin-top: 15px;">
-      <!-- <span [matBadge]="(countingForm.value.medias || []).length" matBadgeOverlap="false">
+      <span [matBadge]="(countingForm.value.medias || []).length" matBadgeOverlap="false" class="color-add-media">
         {{'Media.Medias' |translate}}
-      </span> -->
-      {{'Media.Medias' |translate}} ({{(countingForm.value.medias || []).length}})
+      </span>
     </h6>
     <pnx-medias
       schemaDotTable="pr_occtax.t_occurrences_occtax"
-      [parentFormControl]="countingForm.controls.medias || []"
+      [parentFormControl]="countingForm.controls.medias"
       [sizeMax]="appConfig.MEDIAS.MEDIAS_SIZE_MAX"
       [default]="defaultsMedia()"
-      details="['title_fr', 'description_fr', 'id_nomenclature_media_type', 'author', 'bFile']"
+      [details]="['title_fr', 'description_fr', 'id_nomenclature_media_type', 'author', 'bFile']"
+      [disabled]="!taxref()"
+      disabledTxt="Veuillez choisir un taxon avant de renseigner les médias"
     ></pnx-medias>
   </div>
   

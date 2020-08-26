@@ -10,7 +10,9 @@
         <button mat-icon-button class="btn-clear d-none" (click)="deleteMedia(i)">
           <mat-icon matTooltip="Supprimer ce media">clear</mat-icon>
         </button>
-        <mat-expansion-panel [expanded]="parentFormControl.value.length === i + 1 && !media.id_media">
+        <mat-expansion-panel
+          [expanded]="parentFormControl.value.length === i + 1 && !media.id_media"
+        >
           <mat-expansion-panel-header>
             <mat-panel-title>
               <div style="display: block; width: 100%;">
@@ -32,16 +34,19 @@
                     >settings</mat-icon
                   >
 
-                  <pnx-display-medias [medias]="[media]" index=0 display="mini"></pnx-display-medias>
+                  <pnx-display-medias
+                    [medias]="[media]"
+                    index="0"
+                    display="mini"
+                  ></pnx-display-medias>
 
-
-                <span class="media-title">
-                  Titre: {{ media.title_fr }} ({{ ms.getNomenclature(media.id_nomenclature_media_type)?.label_fr
-                  }}<ng-container *ngIf="media.author"
-                    >, <i>@{{ media.author }}</i></ng-container
-                  >)
-                </span>
-
+                  <span class="media-title">
+                    Titre: {{ media.title_fr }} ({{
+                      ms.getNomenclature(media.id_nomenclature_media_type)?.label_fr
+                    }}<ng-container *ngIf="media.author"
+                      >, <i>@{{ media.author }}</i></ng-container
+                    >)
+                  </span>
                 </div>
                 <div>
                   <mat-progress-bar
@@ -59,31 +64,33 @@
             [schemaDotTable]="schemaDotTable"
             [sizeMax]="sizeMax"
             [default]="default"
-            [details]=details
+            [details]="details"
           >
           </pnx-media>
         </mat-expansion-panel>
         <button
           *ngIf="parentFormControl.value.length === i + 1"
           mat-mini-fab
-          color="primary"
-          class="btn-add-media"
+          class="btn-add-media color-add-media"
           id="add-media-btn"
           (click)="addMedia()"
-          [disabled]="!validOrLoadingMedias()"
+          [disabled]="!validOrLoadingMedias() || disabled"
         >
-          <mat-icon matTooltip="{{ 'Media.add' | translate }}">add</mat-icon>
+          <mat-icon matTooltip="{{ disabled ? disabledTxt : ('Media.add' | translate) }}"
+            >add</mat-icon
+          >
         </button>
       </div>
     </mat-accordion>
     <button
       *ngIf="!(parentFormControl.value && parentFormControl.value.length)"
       mat-mini-fab
-      color="primary"
       id="add-media-btn"
+      class="btn-add-media color-add-media"
       (click)="addMedia()"
+      [disabled]="disabled"
     >
-      <mat-icon matTooltip="{{ 'Media.add' | translate }}">add</mat-icon>
+      <mat-icon matTooltip="{{ disabled ? disabledTxt : ('Media.add' | translate) }}">add</mat-icon>
     </button>
   </div>
 </div>

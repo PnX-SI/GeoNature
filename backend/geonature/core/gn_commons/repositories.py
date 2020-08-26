@@ -157,7 +157,7 @@ class TMediaRepository():
         if media_type == 'Audio' and 'audio' not in content_type:
             return False
         
-        if media_type == 'Vidéo (Fichier)' and 'audio' not in content_type:
+        if media_type == 'Vidéo (Fichier)' and 'video' not in content_type:
             return False
 
         if media_type == 'PDF' and 'pdf' not in content_type:

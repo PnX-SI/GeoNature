@@ -11,8 +11,8 @@ import { OcctaxFormCountingService } from "./counting.service";
   templateUrl: "./counting.component.html",
   styleUrls: ["./counting.component.scss"]
 })
-export class OcctaxFormCountingComponent{
-  
+export class OcctaxFormCountingComponent {
+
   public occtaxConfig = ModuleConfig;
   public appConfig = AppConfig;
 
@@ -21,21 +21,40 @@ export class OcctaxFormCountingComponent{
   constructor(
     public fs: OcctaxFormService,
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService
-  ) {}
+  ) { }
+
+  taxref() {
+    const taxref = this.occtaxFormOccurrenceService.taxref.getValue();
+    return taxref;
+  }
 
   defaultsMedia() {
     const occtaxData = this.fs.occtaxData.getValue();
-    const observers = occtaxData.releve.properties.observers;
-    const date_min = occtaxData.releve.properties.date_min;
-    
-    const occurrence = this.occtaxFormOccurrenceService.occurrence.getValue();
-    const cd_nom = occurrence.cd_nom;
-    return {
-      details: false,
-      author: observers.join(', '),
-      title_fr: `${cd_nom} ${date_min}`
+    const taxref = this.occtaxFormOccurrenceService.taxref.getValue();
+
+    if (!(occtaxData && taxref)) {
+      return {
+        displayDetails: false,
+      }
     }
 
+    const observers = (occtaxData && occtaxData.releve.properties.observers) || [];
+    const author = observers.map(o => o.nom_complet).join(', ');
+
+    const date_min = (occtaxData && occtaxData.releve.properties.date_min) || null;
+
+
+    const cd_nom = String(taxref && taxref.cd_nom) || '';
+    const lb_nom = (taxref && `${taxref.lb_nom}`) || '';
+    const date_txt = date_min ? `${date_min.year}_${date_min.month}_${date_min.day}` : ''
+    const date_txt2 = date_min ? `${date_min.day}/${date_min.month}/${date_min.year}` : ''
+
+    return {
+      displayDetails: false,
+      author: author,
+      title_fr: `${date_txt}__${cd_nom}`,
+      description_fr: `${lb_nom} observé le ${date_txt2}`,
+    }
   }
 
 }

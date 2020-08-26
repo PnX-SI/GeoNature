@@ -18,6 +18,10 @@
   position: absolute;
   bottom: 3px;
   right: 3px;
+}
+
+.color-add-media {
+  color: white;
   background-color: blue;
 }
 
@@ -105,7 +109,7 @@
   position: absolute;
   bottom: 50%;
   opacity: 0.4;
-  background-color: blue;
+  background-color: lightgray;
 }
 
 .media-dialog-arrow:hover {

@@ -22,6 +22,10 @@ export class MediasComponent implements OnInit {
   @Input() parentFormControl: FormControl;
   @Input() details = [];
 
+  @Input() disabled=false;
+  @Input() disabledTxt: string;
+
+
   public bInitialized: boolean;
 
   constructor(

@@ -64,7 +64,6 @@ export class MediaComponent implements OnInit {
     this.initIdTableLocation(this.schemaDotTable);
     this.ms.getNomenclatures().subscribe(() => {
       this.bInitalized = true;
-      console.log('initialized')
       this.initForm();
     });
   }
@@ -104,7 +103,6 @@ export class MediaComponent implements OnInit {
 
   initForm() {
     if (!this.bInitalized) { return; }
-    console.log('initForm');
     // this.mediaFormInitialized = false;
 
     if (this.sizeMax) {
@@ -248,10 +246,10 @@ export class MediaComponent implements OnInit {
           this.media.setValues(event.body);
           this.mediaForm.patchValue({ ...this.media, file: null });
           this.media.bLoading = false;
-          this.mediaChange.emit(this.media);
-          this.media.pendingRequest = null;
           this.media.sent = true;
+          this.media.pendingRequest = null;
           this.errorMsg = ''
+          this.mediaChange.emit(this.media);
         }
       },
       (error) => {
@@ -259,7 +257,6 @@ export class MediaComponent implements OnInit {
           'error',
           `Erreur avec la requête : ${error && error.error}`
         );
-        console.log(error.error);
         this.errorMsg = error.error;
         this.media.bLoading = false;
         this.media.pendingRequest = null;

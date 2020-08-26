@@ -14,6 +14,7 @@ export class DynamicFormComponent implements OnInit {
   @Input() form: FormGroup;
 
   public appConfig = AppConfig;
+  public rand = Math.ceil(Math.random() * 1e10);
 
   constructor(private _dynformService: DynamicFormService) {}
 
