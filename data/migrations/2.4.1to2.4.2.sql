@@ -302,19 +302,19 @@ ALTER TABLE pr_occtax.t_occurrences_occtax
     ADD COLUMN id_nomenclature_behaviour integer,
     ADD CONSTRAINT fk_t_occurrences_occtax_behaviour FOREIGN KEY (id_nomenclature_behaviour) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
     ADD CONSTRAINT check_t_occurrences_occtax_behaviour CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour,'OCC_COMPORTEMENT')) NOT VALID;
-    
+
 INSERT INTO pr_occtax.defaults_nomenclatures_value(mnemonique_type, id_nomenclature)
-VALUES ('OCC_COMPORTEMENT', '0');
+VALUES ('OCC_COMPORTEMENT', ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '0'));
 
 INSERT INTO gn_synthese.defaults_nomenclatures_value(mnemonique_type, id_nomenclature)
-VALUES ('OCC_COMPORTEMENT', '0');
+VALUES ('OCC_COMPORTEMENT', ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '0'));
 
 
-ALTER TABLE gn_synthese.synthese 
+ALTER TABLE gn_synthese.synthese
     ADD COLUMN cd_hab integer,
     ADD CONSTRAINT fk_synthese_cd_hab FOREIGN KEY (cd_hab) REFERENCES ref_habitats.habref(cd_hab) ON UPDATE CASCADE,
     ADD COLUMN grp_method character varying(255),
-    ADD COLUMN id_nomenclature_behaviour integer, 
+    ADD COLUMN id_nomenclature_behaviour integer,
     ALTER COLUMN id_nomenclature_behaviour SET DEFAULT gn_synthese.get_default_nomenclature_value('OCC_COMPORTEMENT'),
     ADD CONSTRAINT fk_synthese_id_nomenclature_behaviour FOREIGN KEY (id_nomenclature_behaviour) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
     ADD CONSTRAINT check_synthese_behaviour CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour, 'OCC_COMPORTEMENT')) NOT VALID;
@@ -528,7 +528,7 @@ BEGIN
       grp_method = NEW.grp_method,
       id_nomenclature_grp_typ = NEW.id_nomenclature_grp_typ,
       date_min = date_trunc('day',NEW.date_min)+COALESCE(NEW.hour_min,'00:00:00'::time),
-      date_max = date_trunc('day',NEW.date_max)+COALESCE(NEW.hour_max,'00:00:00'::time), 
+      date_max = date_trunc('day',NEW.date_max)+COALESCE(NEW.hour_max,'00:00:00'::time),
       altitude_min = NEW.altitude_min,
       altitude_max = NEW.altitude_max,
       the_geom_4326 = NEW.geom_4326,
