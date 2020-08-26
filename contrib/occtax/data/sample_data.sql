@@ -189,7 +189,7 @@ INSERT INTO pr_occtax.t_releves_occtax (
   id_digitiser,
   id_nomenclature_obs_technique,
   id_nomenclature_grp_typ,
-  id_nomenclature_geo_object_nature
+  id_nomenclature_geo_object_nature,
   date_min,
   date_max,
   hour_min,
