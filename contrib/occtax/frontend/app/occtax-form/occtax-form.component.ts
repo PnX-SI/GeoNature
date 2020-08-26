@@ -85,6 +85,12 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     }
   }
 
+  submitOccurrenceForm() {
+    if (this.occtaxFormOccurrenceService.form.valid) {
+      this.occtaxFormOccurrenceService.submitOccurrence();
+    }
+  }
+
   ngAfterViewInit() {
     setTimeout(() => this.calcCardContentHeight(), 500);
   }

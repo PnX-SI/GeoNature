@@ -300,8 +300,8 @@ ALTER TABLE pr_occtax.t_occurrences_occtax
     DROP COLUMN id_nomenclature_diffusion_level,
     -- comportement
     ADD COLUMN id_nomenclature_behaviour integer,
-    ADD CONSTRAINT fk_t_occurrences_occtax_behavior FOREIGN KEY (id_nomenclature_behaviour) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
-    ADD CONSTRAINT check_t_occurrences_occtax_behavior CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour,'OCC_COMPORTEMENT')) NOT VALID;
+    ADD CONSTRAINT fk_t_occurrences_occtax_behaviour FOREIGN KEY (id_nomenclature_behaviour) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
+    ADD CONSTRAINT check_t_occurrences_occtax_behaviour CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour,'OCC_COMPORTEMENT')) NOT VALID;
     
 INSERT INTO pr_occtax.defaults_nomenclatures_value(mnemonique_type, id_nomenclature)
 VALUES ('OCC_COMPORTEMENT', '0');
@@ -317,7 +317,7 @@ ALTER TABLE gn_synthese.synthese
     ADD COLUMN id_nomenclature_behaviour integer, 
     ALTER COLUMN id_nomenclature_behaviour SET DEFAULT gn_synthese.get_default_nomenclature_value('OCC_COMPORTEMENT'),
     ADD CONSTRAINT fk_synthese_id_nomenclature_behaviour FOREIGN KEY (id_nomenclature_behaviour) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
-    ADD CONSTRAINT check_synthese_behavior CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour, 'OCC_COMPORTEMENT')) NOT VALID;
+    ADD CONSTRAINT check_synthese_behaviour CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour, 'OCC_COMPORTEMENT')) NOT VALID;
 
 
 CREATE OR REPLACE FUNCTION pr_occtax.insert_in_synthese(my_id_counting integer)

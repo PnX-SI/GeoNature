@@ -34,14 +34,14 @@
         mat-icon-button 
         class="btn-edit"
         (click)="editOccurrence(occurrence)">
-        <mat-icon matTooltip="Editer le taxon">edit</mat-icon>
+        <mat-icon [inline]="true" matTooltip="Editer le taxon">edit</mat-icon>
       </button>
       <button 
         *ngIf="(occtaxTaxaListService.occurrences$ |async)?.length != 1 || i != 0"
         mat-icon-button 
         class="btn-clear"
         (click)="deleteOccurrence(occurrence)">
-        <mat-icon matTooltip="Supprimer le taxon">clear</mat-icon>
+        <mat-icon [inline]="true" matTooltip="Supprimer le taxon">clear</mat-icon>
       </button>
     </span>
 
@@ -78,79 +78,74 @@
                 <div class="value">{{occurrence?.taxref?.nom_complet}}</div>
               </div>
 
-              <div>
+              <div *ngIf="ModuleConfig.form_fields.determiner">
                 <div class="label">{{ 'Taxon.Determiner' | translate }} :</div>
                 <div class="value">{{ occurrence?.determiner || "-" }}</div>
               </div>
 
-              <div>
+              <div *ngIf="ModuleConfig.form_fields.determination_method">
                 <div class="label">{{ 'Taxon.DeterminationMethod' | translate }} :</div>
                 <div class="value">{{ occtaxTaxaListService.getLibelleByID(occurrence?.id_nomenclature_determination_method) || "-"  }}</div>
               </div>
 
-              <div>
+              <div *ngIf="ModuleConfig.form_fields.observation_status">
                 <div class="label">{{ 'Taxon.ObservationStatus' | translate }} :</div>
                 <div class="value">{{ occtaxTaxaListService.getLibelleByID(occurrence?.id_nomenclature_observation_status) || "-" }}</div>
               </div>
 
-              <div>
+              <div *ngIf="ModuleConfig.form_fields.obs_method">
                 <div class="label">{{ 'Taxon.ObsMethod' | translate }} :</div>
                 <div class="value">{{ occtaxTaxaListService.getLibelleByID(occurrence?.id_nomenclature_obs_meth) || "-" }}</div>
               </div>
 
-              <div>
+              <div *ngIf="ModuleConfig.form_fields.bio_condition">
                 <div class="label">{{ 'Taxon.BiologicalCondition' | translate }} :</div>
                 <div class="value">{{ occtaxTaxaListService.getLibelleByID(occurrence?.id_nomenclature_bio_condition) || "-" }}</div>
               </div>
 
-              <div>
+              <div *ngIf="ModuleConfig.form_fields.behaviour">
                 <div class="label">{{ 'Taxon.OccBehaviour' | translate }} :</div>
                 <div class="value">{{ occtaxTaxaListService.getLibelleByID(occurrence?.id_nomenclature_behaviour) || "-" }}</div>
               </div>
 
-              <div>
+              <div *ngIf="ModuleConfig.form_fields.naturalness">
                 <div class="label">{{ 'Taxon.Naturalness' | translate }} :</div>
                 <div class="value">{{ occtaxTaxaListService.getLibelleByID(occurrence?.id_nomenclature_naturalness) || "-" }}</div>
               </div>
 
-              <div>
+              <div *ngIf="ModuleConfig.form_fields.bio_status">
                 <div class="label">{{ 'Taxon.BiologicalStatus' | translate }} :</div>
                 <div class="value">{{ occtaxTaxaListService.getLibelleByID(occurrence?.id_nomenclature_bio_status) || "-" }}</div>
               </div>
 
-              <div>
+              <div *ngIf="ModuleConfig.form_fields.source_status">
                 <div class="label">{{ 'Taxon.StatusSource' | translate }} :</div>
                 <div class="value">{{ occtaxTaxaListService.getLibelleByID(occurrence?.id_nomenclature_source_status) || "-" }}</div>
               </div>
 
-              <div>
+              <div *ngIf="ModuleConfig.form_fields.blurring">
                 <div class="label">{{ 'Taxon.Blurring' | translate }} :</div>
                 <div class="value">{{ occtaxTaxaListService.getLibelleByID(occurrence?.id_nomenclature_blurring) || "-" }}</div>
               </div>
 
-              <div>
-                <div class="label">sample_number_proof :</div>
-                <div class="value">{{ occurrence?.sample_number_proof || "-"}}</div>
-              </div>
-
-              <div>
+              <div *ngIf="ModuleConfig.form_fields.exist_proof">
                 <div class="label">{{ 'Taxon.ExistProof' | translate }} :</div>
                 <div class="value">{{ occtaxTaxaListService.getLibelleByID(occurrence?.id_nomenclature_exist_proof) || "-" }}</div>
               </div>
 
               <ng-container *ngIf="occtaxTaxaListService.getCdNomenclatureByID(occurrence?.id_nomenclature_exist_proof) === 1">
-                <div>
+                <div *ngIf="ModuleConfig.form_fields.digital_proof">
                   <div class="label">{{ 'Taxon.DigitalProof' | translate }} :</div>
                   <div class="value">{{ occurrence?.digital_proof || "-" }}</div>
                 </div>
 
-                <div>
+                <div *ngIf="ModuleConfig.form_fields.non_digital_proof">
                   <div class="label">{{ 'Taxon.NonDigitalProof' | translate }} :</div>
                   <div class="value">{{ occurrence?.non_digital_proof || "-" }}</div>
                 </div>
               </ng-container>
 
-              <div>
+              <div *ngIf="ModuleConfig.form_fields.comment_occ">
                 <div class="label">{{ 'Taxon.Comment' | translate }} :</div>
                 <div class="value">{{ occurrence?.comment || "-" }}</div>
               </div>
@@ -159,7 +154,7 @@
           </mat-tab>
 
           <-- TAB des information taxref (uniquement si une valeur taxref est fournie) -->
-          <mat-tab label="Taxon" *ngIf="occurrence.taxref">
+          <mat-tab label="Taxonomie" *ngIf="occurrence.taxref">
             <div class="list-values">
               <div>
                 <div class="label">Version Taxref :</div>
@@ -251,7 +246,7 @@
             <ng-container *ngFor="let counting of occurrence.cor_counting_occtax; index as i">
               <h5 class="counting-title">{{ 'Counting.Counting' | translate }} #{{ i + 1 }}</h5>
               <div class="list-values">
-                <div>
+                <div >
                   <div class="label">ID {{ 'Counting.Counting' | translate }} :</div>
                   <div class="value">{{ counting.id_counting_occtax }}</div>
                 </div>
@@ -259,27 +254,27 @@
                   <div class="label">UUID SINP :</div>
                   <div class="value">{{ counting.unique_id_sinp_occtax }}</div>
                 </div>
-                <div>
+                <div *ngIf="ModuleConfig.form_fields.life_stage">
                   <div class="label">{{ 'Counting.LifeStage' | translate }} :</div>
                   <div class="value">{{ occtaxTaxaListService.getLibelleByID(counting.id_nomenclature_life_stage) || "-" }}</div>
                 </div>
-                <div>
+                <div *ngIf="ModuleConfig.form_fields.sex">
                   <div class="label">{{ 'Counting.Sex' | translate }} :</div>
                   <div class="value">{{ occtaxTaxaListService.getLibelleByID(counting.id_nomenclature_sex) || "-" }}</div>
                 </div>
-                <div>
+                <div *ngIf="ModuleConfig.form_fields.count_min">
                   <div class="label">{{ 'Counting.NumberMin' | translate }} :</div>
                   <div class="value">{{ counting.count_min || "-" }}</div>
                 </div>
-                <div>
+                <div *ngIf="ModuleConfig.form_fields.count_max">
                   <div class="label">{{ 'Counting.NumberMax' | translate }} :</div>
                   <div class="value">{{ counting.count_max || "-" }}</div>
                 </div>
-                <div>
+                <div *ngIf="ModuleConfig.form_fields.obj_count">
                   <div class="label">{{ 'Counting.CountingObject' | translate }} :</div>
                   <div class="value">{{ occtaxTaxaListService.getLibelleByID(counting.id_nomenclature_obj_count) || "-" }}</div>
                 </div>
-                <div>
+                <div *ngIf="ModuleConfig.form_fields.type_count">
                   <div class="label">{{ 'Counting.CountingType' | translate }} :</div>
                   <div class="value">{{ occtaxTaxaListService.getLibelleByID(counting.id_nomenclature_type_count) || "-" }}</div>
                 </div>

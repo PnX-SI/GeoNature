@@ -23,7 +23,7 @@ export class OcctaxFormMapComponent implements OnInit, OnDestroy {
     private ms: OcctaxFormMapService,
     private _commonService: CommonService,
     private _occtaxFormService: OcctaxFormService
-  ) {}
+  ) { }
 
   ngOnInit() {
     // overight the leaflet draw object to set options
@@ -67,8 +67,6 @@ export class OcctaxFormMapComponent implements OnInit, OnDestroy {
   }
 
   sendGeoInfo(geojson) {
-    console.log("SEND IT");
-
     this.ms.geometry = geojson;
   }
 

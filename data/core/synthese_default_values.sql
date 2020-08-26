@@ -26,6 +26,6 @@ INSERT INTO defaults_nomenclatures_value (mnemonique_type, id_organism, regne, g
 ,('TECHNIQUE_OBS',0,0,0,ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS','133'))
 ,('STATUT_SOURCE',0,0,0,ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE','NSP'))
 ,('METH_DETERMIN',0,0,0,ref_nomenclatures.get_id_nomenclature('METH_DETERMIN','1'))
-,('OCC_COMPORTEMENT',0,0,0,ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '0'))
+,('OCC_COMPORTEMENT',0,0,0, ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '0'))
 
 ;

@@ -168,4 +168,4 @@ ENABLE_UPLOAD_TOOL = true
     display_nom_valide = true
     habitat = true
     grp_method = true
-    behavior = true
+    behaviour = true

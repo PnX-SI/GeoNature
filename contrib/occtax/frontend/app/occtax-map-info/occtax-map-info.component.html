@@ -167,7 +167,7 @@
                     <div class="label"> {{ 'Taxon.BiologicalCondition' | translate }} : </div>
                     <div class="value"> {{getLibelleByID((displayOccurrence|async).id_nomenclature_bio_condition)}} </div>
                   </div>
-                  <div *ngIf="occtaxConfig.form_fields.behavior">
+                  <div *ngIf="occtaxConfig.form_fields.behaviour">
                     <div class="label"> {{ 'Taxon.OccBehaviour' | translate }} : </div>
                     <div class="value"> {{getLibelleByID((displayOccurrence|async).id_nomenclature_behaviour)}} </div>
                   </div>
