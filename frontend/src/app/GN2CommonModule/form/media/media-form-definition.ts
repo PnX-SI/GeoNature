@@ -1,6 +1,7 @@
-const hideDetails = ({ name, value, meta }) => {
+const hideDetails = ({ value, meta, attribut_name }) => {
   const details = meta.details;
-  return details && details.lenght && !value['displayDetails'] && details.includes(name)
+  const cond = details && details.length && !value['displayDetails'] && details.includes(attribut_name)
+  return cond;
 }
 
 export const mediaFormDefinitionsDict = {
@@ -35,7 +36,7 @@ export const mediaFormDefinitionsDict = {
     values: ['Uploader un fichier', 'Renseigner une URL'],
     value: true,
     required: true,
-    hidden: ({ value, meta, name }) => {
+    hidden: ({ value, meta, attribut_name }) => {
       if (!value.id_nomenclature_media_type) { return; }
       const label_fr = meta.nomenclatures[value.id_nomenclature_media_type].label_fr;
       return [
@@ -44,7 +45,7 @@ export const mediaFormDefinitionsDict = {
         'Vidéo Viméo',
         'Page web',
         'Vidéo (fichier)',
-      ].includes(label_fr) || hideDetails({ value, meta, name });
+      ].includes(label_fr) || hideDetails({ value, meta, attribut_name });
     },
   },
   media_url: {
@@ -106,6 +107,6 @@ export const mediaFormDefinitionsDict = {
     attribut_label: 'Avancé',
     definition: "Afficher plus d'options pour le formulaire",
     value: true,
-    hidden: ({ meta }) => meta.details && meta.details.length
+    hidden: ({ meta }) => !(meta.details && meta.details.length)
   },
 };

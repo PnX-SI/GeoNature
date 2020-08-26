@@ -108,7 +108,7 @@ class TMedias(DB.Model):
     meta_update_date = DB.Column(DB.DateTime)
 
     def __before_commit_delete__(self):
- thumbnails        # déclenché sur un DELETE : on supprime le fichier
+        # déclenché sur un DELETE : on supprime le fichier
         if self.media_path and os.path.exists(os.path.join(current_app.config['BASE_DIR'] + '/' + self.media_path)):
             initial_path = self.media_path
             (inv_file_name, inv_file_path) = initial_path[::-1].split('/', 1)
@@ -123,7 +123,7 @@ class TMedias(DB.Model):
                 )
             except FileNotFoundError:
                 raise Exception('Unable to delete file {}'.format(initial_path))
-            
+
         # delete thumbnail test sur nom des fichier avec id dans le dossier thumbnail
         dir_thumbnail = (
             os.path.join(

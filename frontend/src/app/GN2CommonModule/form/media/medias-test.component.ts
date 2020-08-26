@@ -29,8 +29,9 @@ export class MediasTestComponent implements OnInit {
         uuid_attached_row: null,
         title_fr: 'Media test',
         author: 'media testeur',
+        displayDetails: false,
       },
-      details: ['title_fr', 'description_fr', 'id_nomenclature_media_type', 'author'],
+      details: ['title_fr', 'description_fr', 'id_nomenclature_media_type', 'author', 'bFile'],
       switch_details: true,
     },
   ];
