@@ -282,3 +282,6 @@ END;
 $BODY$
  LANGUAGE plpgsql IMMUTABLE
  COST 100;
+
+-- Add module order column
+ALTER TABLE gn_commons.t_modules ADD order_number int4 NULL;
