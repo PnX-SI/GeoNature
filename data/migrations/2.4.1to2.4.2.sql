@@ -290,8 +290,8 @@ ALTER TABLE pr_occtax.t_releves_occtax
 ADD COLUMN id_nomenclature_geo_object_nature integer,
 ADD COLUMN depth_min integer,
 ADD COLUMN depth_max integer,
-ADD Cdepth_minONSTRAINT check_t_releves_occtax_geo_object_nature CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_geo_object_nature,'NAT_OBJ_GEO')) NOT VALID,
-ADD CONSTRAINT check_t_releves_occtax_depth CHECK (depth_max >= depth_min);
+ADD CONSTRAINT check_t_releves_occtax_geo_object_nature CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_geo_object_nature,'NAT_OBJ_GEO')) NOT VALID,
+ADD CONSTRAINT check_t_releves_occtax_depth CHECK (depth_max >= depth_min),
 ADD CONSTRAINT fk_t_releves_occtax_id_nomenclature_geo_object_nature FOREIGN KEY (id_nomenclature_geo_object_nature) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
 ADD COLUMN cd_hab integer,
 ADD CONSTRAINT fk_t_releves_occtax_cd_hab FOREIGN KEY (cd_hab) REFERENCES ref_habitats.habref(cd_hab) ON UPDATE CASCADE,
