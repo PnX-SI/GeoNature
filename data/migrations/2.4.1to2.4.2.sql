@@ -288,7 +288,10 @@ $BODY$
 
 ALTER TABLE pr_occtax.t_releves_occtax
 ADD COLUMN id_nomenclature_geo_object_nature integer,
-ADD CONSTRAINT check_t_releves_occtax_geo_object_nature CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_geo_object_nature,'NAT_OBJ_GEO')) NOT VALID,
+ADD COLUMN depth_min integer,
+ADD COLUMN depth_max integer,
+ADD Cdepth_minONSTRAINT check_t_releves_occtax_geo_object_nature CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_geo_object_nature,'NAT_OBJ_GEO')) NOT VALID,
+ADD CONSTRAINT check_t_releves_occtax_depth CHECK (depth_max >= depth_min);
 ADD CONSTRAINT fk_t_releves_occtax_id_nomenclature_geo_object_nature FOREIGN KEY (id_nomenclature_geo_object_nature) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
 ADD COLUMN cd_hab integer,
 ADD CONSTRAINT fk_t_releves_occtax_cd_hab FOREIGN KEY (cd_hab) REFERENCES ref_habitats.habref(cd_hab) ON UPDATE CASCADE,
@@ -304,10 +307,47 @@ ALTER TABLE pr_occtax.t_occurrences_occtax
     ADD CONSTRAINT check_t_occurrences_occtax_behaviour CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour,'OCC_COMPORTEMENT')) NOT VALID;
 
 INSERT INTO pr_occtax.defaults_nomenclatures_value(mnemonique_type, id_nomenclature)
-VALUES ('OCC_COMPORTEMENT', ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '0'));
+VALUES 
+('OCC_COMPORTEMENT', ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '0'))
+;
 
 INSERT INTO gn_synthese.defaults_nomenclatures_value(mnemonique_type, id_nomenclature)
-VALUES ('OCC_COMPORTEMENT', ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '0'));
+VALUES ('OCC_COMPORTEMENT', ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '0'))
+;
+
+DROP VIEW pr_occtax.v_releve_occtax;
+CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
+ SELECT rel.id_releve_occtax,
+    rel.id_dataset,
+    rel.id_digitiser,
+    rel.date_min,
+    rel.date_max,
+    rel.altitude_min,
+    rel.altitude_max,
+    rel.depth_min,
+    rel.depth_max,
+    rel.meta_device_entry,
+    rel.comment,
+    rel.geom_4326,
+    rel."precision",
+    occ.id_occurrence_occtax,
+    occ.cd_nom,
+    occ.nom_cite,
+    t.lb_nom,
+    t.nom_valide,
+    t.nom_vern,
+    (((t.nom_complet_html::text || ' '::text) || rel.date_min::date) || '<br/>'::text) || string_agg(DISTINCT(obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text) AS leaflet_popup,
+    COALESCE ( string_agg(DISTINCT(obs.nom_role::text || ' '::text) || obs.prenom_role::text, ', '::text),rel.observers_txt) AS observateurs
+   FROM pr_occtax.t_releves_occtax rel
+     LEFT JOIN pr_occtax.t_occurrences_occtax occ ON rel.id_releve_occtax = occ.id_releve_occtax
+     LEFT JOIN taxonomie.taxref t ON occ.cd_nom = t.cd_nom
+     LEFT JOIN pr_occtax.cor_role_releves_occtax cor_role ON cor_role.id_releve_occtax = rel.id_releve_occtax
+     LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
+  GROUP BY rel.id_releve_occtax, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.depth_min, rel.depth_max, rel.meta_device_entry, rel.comment, rel.geom_4326, rel."precision", t.cd_nom, occ.nom_cite, occ.id_occurrence_occtax, t.lb_nom, t.nom_valide, t.nom_complet_html, t.nom_vern;
+
+
+
+
 
 
 ALTER TABLE gn_synthese.synthese
@@ -315,9 +355,16 @@ ALTER TABLE gn_synthese.synthese
     ADD CONSTRAINT fk_synthese_cd_hab FOREIGN KEY (cd_hab) REFERENCES ref_habitats.habref(cd_hab) ON UPDATE CASCADE,
     ADD COLUMN grp_method character varying(255),
     ADD COLUMN id_nomenclature_behaviour integer,
+    ADD COLUMN depth_min integer,
+    ADD COLUMN depth_max integer,
     ALTER COLUMN id_nomenclature_behaviour SET DEFAULT gn_synthese.get_default_nomenclature_value('OCC_COMPORTEMENT'),
     ADD CONSTRAINT fk_synthese_id_nomenclature_behaviour FOREIGN KEY (id_nomenclature_behaviour) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
-    ADD CONSTRAINT check_synthese_behaviour CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour, 'OCC_COMPORTEMENT')) NOT VALID;
+    ADD CONSTRAINT check_synthese_behaviour CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour, 'OCC_COMPORTEMENT')) NOT VALID,
+    ADD CONSTRAINT check_synthese_depth_max CHECK (depth_max >= depth_min);
+;
+
+
+
 
 
 CREATE OR REPLACE FUNCTION pr_occtax.insert_in_synthese(my_id_counting integer)
@@ -397,6 +444,8 @@ digital_proof,
 non_digital_proof,
 altitude_min,
 altitude_max,
+depth_min,
+depth_max,
 the_geom_4326,
 the_geom_point,
 the_geom_local,
@@ -434,8 +483,8 @@ VALUES(
   occurrence.id_nomenclature_blurring,
   -- status_source récupéré depuis le JDD
   id_nomenclature_source_status,
-  -- id_nomenclature_info_geo_type: type de rattachement = géoréferencement
-  ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO', '1'),
+  -- id_nomenclature_info_geo_type: type de rattachement = non saisissable: valeur par défaut
+  pr_occtax.get_default_nomenclature_value('TYP_INF_GEO'),
   occurrence.id_nomenclature_behaviour,
   new_count.count_min,
   new_count.count_max,
@@ -448,6 +497,8 @@ VALUES(
   occurrence.non_digital_proof,
   releve.altitude_min,
   releve.altitude_max,
+  releve.depth_min,
+  releve.depth_max,
   releve.geom_4326,
   ST_CENTROID(releve.geom_4326),
   releve.geom_local,
@@ -531,6 +582,8 @@ BEGIN
       date_max = date_trunc('day',NEW.date_max)+COALESCE(NEW.hour_max,'00:00:00'::time),
       altitude_min = NEW.altitude_min,
       altitude_max = NEW.altitude_max,
+        depth_min = NEW.depth_min,
+      depth_max = NEW.depth_max,
       the_geom_4326 = NEW.geom_4326,
       the_geom_point = ST_CENTROID(NEW.geom_4326),
       id_nomenclature_geo_object_nature = NEW.id_nomenclature_geo_object_nature,
@@ -572,7 +625,7 @@ ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_behaviour) AS occ_beh
 FROM gn_synthese.synthese s;
 
 DROP view gn_synthese.v_synthese_for_web_app;
-CREATE  VIEW gn_synthese.v_synthese_for_web_app AS
+CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
  SELECT s.id_synthese,
     s.unique_id_sinp,
     s.unique_id_sinp_grp,
@@ -587,6 +640,8 @@ CREATE  VIEW gn_synthese.v_synthese_for_web_app AS
     s.non_digital_proof,
     s.altitude_min,
     s.altitude_max,
+    s.depth_min,
+    s.depth_max,
     s.the_geom_4326,
     public.ST_asgeojson(the_geom_4326),
     s.date_min,

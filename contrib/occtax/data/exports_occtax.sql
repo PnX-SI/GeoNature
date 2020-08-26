@@ -21,6 +21,8 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     rel.hour_max AS "heureFin",
     rel.altitude_max AS "altMax",
     rel.altitude_min AS "altMin",
+    rel.depth_min AS "profMin",
+    rel.depth_max AS "profMax",
     occ.cd_nom AS "cdNom",
     tax.cd_ref AS "cdRef",
     gn_commons.get_default_parameter('taxref_version'::text, NULL::integer) AS "vTAXREF",

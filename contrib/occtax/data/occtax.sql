@@ -171,6 +171,8 @@ digital_proof,
 non_digital_proof,
 altitude_min,
 altitude_max,
+depth_min,
+depth_max,
 the_geom_4326,
 the_geom_point,
 the_geom_local,
@@ -209,7 +211,7 @@ VALUES(
   -- status_source récupéré depuis le JDD
   id_nomenclature_source_status,
   -- id_nomenclature_info_geo_type: type de rattachement = géoréferencement
-  ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO', '1'),
+  pr_occtax.get_default_nomenclature_value('TYP_INF_GEO'),
   occurrence.id_nomenclature_behaviour,
   new_count.count_min,
   new_count.count_max,
@@ -222,6 +224,8 @@ VALUES(
   occurrence.non_digital_proof,
   releve.altitude_min,
   releve.altitude_max,
+  releve.depth_min,
+  releve.depth_max,
   releve.geom_4326,
   ST_CENTROID(releve.geom_4326),
   releve.geom_local,
@@ -264,6 +268,8 @@ CREATE TABLE t_releves_occtax (
     cd_hab integer,
     altitude_min integer,
     altitude_max integer,
+    depth_min integer,
+    depth_max integer,
     meta_device_entry character varying(20),
     comment text,
     geom_local public.geometry(Geometry,MYLOCALSRID),
@@ -494,6 +500,8 @@ ALTER TABLE ONLY defaults_nomenclatures_value
 ALTER TABLE ONLY t_releves_occtax
     ADD CONSTRAINT check_t_releves_occtax_altitude_max CHECK (altitude_max >= altitude_min);
 
+ALTER TABLE ONLY t_releves_occtax
+    ADD CONSTRAINT check_t_releves_occtax_depth CHECK (depth_max >= depth_min);
 ALTER TABLE ONLY t_releves_occtax
     ADD CONSTRAINT check_t_releves_occtax_date_max CHECK (date_max >= date_min);
 
@@ -832,6 +840,8 @@ BEGIN
       date_max = date_trunc('day',NEW.date_max)+COALESCE(NEW.hour_max,'00:00:00'::time), 
       altitude_min = NEW.altitude_min,
       altitude_max = NEW.altitude_max,
+      depth_min = NEW.depth_min,
+      depth_max = NEW.depth_max,
       the_geom_4326 = NEW.geom_4326,
       the_geom_point = ST_CENTROID(NEW.geom_4326),
       id_nomenclature_geo_object_nature = NEW.id_nomenclature_geo_object_nature,
@@ -1081,6 +1091,8 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
     rel.date_max,
     rel.altitude_min,
     rel.altitude_max,
+    rel.depth_min,
+    rel.depth_max,
     rel.meta_device_entry,
     rel.comment,
     rel.geom_4326,
@@ -1098,55 +1110,7 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
      LEFT JOIN taxonomie.taxref t ON occ.cd_nom = t.cd_nom
      LEFT JOIN pr_occtax.cor_role_releves_occtax cor_role ON cor_role.id_releve_occtax = rel.id_releve_occtax
      LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
-  GROUP BY rel.id_releve_occtax, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.meta_device_entry, rel.comment, rel.geom_4326, rel."precision", t.cd_nom, occ.nom_cite, occ.id_occurrence_occtax, t.lb_nom, t.nom_valide, t.nom_complet_html, t.nom_vern;
-
-
--- Vue représentant l'ensemble des relevés du protocole occtax pour la représentation du module carte liste (DEPRECIE)
-CREATE OR REPLACE VIEW pr_occtax.v_releve_list AS 
-WITH 
-    occurrences (id_releve_occtax, taxons, nb_occ) as (
-    SELECT id_releve_occtax, 
-    string_agg(DISTINCT t.nom_valide::text, ', '::text) AS taxons,
-    count(DISTINCT occ.id_occurrence_occtax) AS nb_occ
-    FROM pr_occtax.t_occurrences_occtax occ
-    INNER JOIN taxonomie.taxref t ON occ.cd_nom = t.cd_nom
-    GROUP BY id_releve_occtax
-),
-observateurs (id_releve_occtax, nb_observer, observers_txt) as (
-    SELECT id_releve_occtax, 
-    count(DISTINCT obs.id_role) AS nb_observer,
-    string_agg(DISTINCT CONCAT_WS(' ', NULLIF(obs.nom_role, ''), NULLIF(obs.prenom_role, '')), ', '::text) as observers
-    FROM pr_occtax.cor_role_releves_occtax cor_role
-    INNER JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
-    GROUP BY id_releve_occtax
-)
-
-SELECT rel.id_releve_occtax,
-    rel.id_dataset,
-    rel.id_digitiser,
-    rel.date_min,
-    rel.date_max,
-    rel.altitude_min,
-    rel.altitude_max,
-    rel.meta_device_entry,
-    rel.comment,
-    rel.geom_4326,
-    rel."precision",
-    rel.observers_txt,
-    dataset.dataset_name,
-    taxons,
-    CONCAT_WS('<br/>', 
-    	taxons, 
-    	CASE WHEN rel.date_min::date = rel.date_max::date THEN to_char(rel.date_min, 'DD/MM/YYYY') ELSE CONCAT(to_char(rel.date_min, 'DD/MM/YYYY'), ' - ', to_char(rel.date_max::date, 'DD/MM/YYYY')) END, 
-    	COALESCE(cor_role.observers_txt, rel.observers_txt)
-    ) AS leaflet_popup,
-    COALESCE(cor_role.observers_txt, rel.observers_txt) AS observateurs,
-    nb_occ,
-    nb_observer
-FROM pr_occtax.t_releves_occtax rel
-INNER JOIN gn_meta.t_datasets dataset ON dataset.id_dataset = rel.id_dataset
-LEFT JOIN observateurs cor_role ON cor_role.id_releve_occtax = rel.id_releve_occtax
-LEFT JOIN occurrences occ ON occ.id_releve_occtax = rel.id_releve_occtax;
+  GROUP BY rel.id_releve_occtax, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.depth_min, rel.depth_max, rel.meta_device_entry, rel.comment, rel.geom_4326, rel."precision", t.cd_nom, occ.nom_cite, occ.id_occurrence_occtax, t.lb_nom, t.nom_valide, t.nom_complet_html, t.nom_vern;
 
 
 --------------------

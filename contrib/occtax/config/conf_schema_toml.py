@@ -18,8 +18,11 @@ class FormConfig(Schema):
     hour_max = fields.Boolean(missing=True)
     altitude_min = fields.Boolean(missing=True)
     altitude_max = fields.Boolean(missing=True)
+    depth_min = fields.Boolean(missing=False)
+    depth_max = fields.Boolean(missing=False)
+    altitude_max = fields.Boolean(missing=True)
     obs_technique = fields.Boolean(missing=False)
-    group_type = fields.Boolean(missing=True)
+    group_type = fields.Boolean(missing=False)
     comment_releve = fields.Boolean(missing=True)
     obs_method = fields.Boolean(missing=True)
     bio_condition = fields.Boolean(missing=True)
@@ -43,9 +46,9 @@ class FormConfig(Schema):
     count_min = fields.Boolean(missing=True)
     count_max = fields.Boolean(missing=True)
     display_nom_valide = fields.Boolean(missing=True)
-    geo_object_nature = fields.Boolean(missing=True)
+    geo_object_nature = fields.Boolean(missing=False)
     habitat = fields.Boolean(missing=True)
-    grp_method = fields.Boolean(missing=True)
+    grp_method = fields.Boolean(missing=False)
     behavior = fields.Boolean(missing=True)
 
 
@@ -81,6 +84,8 @@ default_columns_export = [
     "heureFin",
     "altMax",
     "altMin",
+    "profMin",
+    "profMax",
     "cdNom",
     "cdRef",
     "versionTAXREF",

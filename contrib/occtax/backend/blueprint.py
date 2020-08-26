@@ -58,6 +58,12 @@ log = logging.getLogger(__name__)
 @permissions.check_cruved_scope("R", True, module_code="OCCTAX")
 @json_resp
 def getReleves(info_role):
+    """
+    Route for map list web interface
+
+    .. :quickref: Occtax;
+
+    """
 
     releve_repository = ReleveRepository(TRelevesOccurrence)
     q = releve_repository.get_filtered_query(info_role)
@@ -207,6 +213,9 @@ def getOneReleve(id_releve, info_role):
 @permissions.check_cruved_scope("R", True, module_code="OCCTAX")
 @json_resp
 def getViewReleveOccurrence(info_role):
+    """
+    Deprecated
+    """
     releve_repository = ReleveRepository(VReleveOccurrence)
     q = releve_repository.get_filtered_query(info_role)
 

@@ -28,7 +28,9 @@
           <br>
 
           <b> Altitude</b> : {{selectedObs?.altitude_min}} m - {{selectedObs?.altitude_max}} m
-          <br>
+          <div *ngIf="selectedObs?.depth_min || selectedObs?.depth_max">
+              <b> Profondeur</b> : {{selectedObs?.depth_min}} m - {{selectedObs?.depth_min}} m
+          </div>
           <b> UUID observation : </b> {{selectedObs?.unique_id_sinp}}
           <br>
           <b> Habitat associé</b>: {{selectedObs?.habitat?.lb_hab_fr}} - {{selectedObs?.habitat?.lb_code}}

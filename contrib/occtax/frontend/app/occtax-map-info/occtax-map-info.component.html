@@ -92,6 +92,14 @@
               <div class="label">  Altitude max :</div>
               <div class="value">{{ releve.altitude_max  || "-"}}</div>
             </div>
+            <div *ngIf="occtaxConfig.form_fields.depth_min">
+              <div class="label"> {{ 'Releve.MinDepth' | translate }}  :</div>
+              <div class="value">{{ releve.depth_min  || "-"}}</div>
+              </div>
+            <div *ngIf="occtaxConfig.form_fields.depth_max">
+              <div class="label">  {{ 'Releve.MaxDepth' | translate }} :</div>
+              <div class="value">{{ releve.depth_max  || "-"}}</div>
+            </div>
 
             <div *ngIf="occtaxConfig.form_fields.obs_technique">
               <div class="label">  {{ 'Releve.ObsTechnique' | translate }} : </div>
