@@ -1,18 +1,4 @@
     <div class="row">
-      <div 
-        *ngIf="occtaxConfig.form_fields.type_count"
-        class="col-sm-3">
-        <pnx-nomenclature
-          #typeDenombrement
-          label="{{ 'Counting.CountingType' | translate }}"
-          codeNomenclatureType="TYP_DENBR"
-          [parentFormControl]="countingForm.get('id_nomenclature_type_count')"
-          [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne"
-          [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
-        </pnx-nomenclature> 
-      </div>
-    </div>
-    <div class="row">
 
       <div 
         *ngIf="occtaxConfig.form_fields.count_min"
@@ -90,6 +76,18 @@
           [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne"
           [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
         </pnx-nomenclature>
+      </div>
+      <div 
+        *ngIf="occtaxConfig.form_fields.type_count"
+        class="col-sm-3">
+        <pnx-nomenclature
+          #typeDenombrement
+          label="{{ 'Counting.CountingType' | translate }}"
+          codeNomenclatureType="TYP_DENBR"
+          [parentFormControl]="countingForm.get('id_nomenclature_type_count')"
+          [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne"
+          [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
+        </pnx-nomenclature> 
       </div>
 
     </div>

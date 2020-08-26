@@ -18,24 +18,13 @@
   padding: 8px;
 }
 
-// .filter-control {
-//   height: 2.1rem !important;
-// }
-
-// .dynamic-form {
-//   display: flex;
-//   margin-right: 5px;
-//   max-width: 15%;
-// }
-
 #refresh-filter {
   color: red;
+}
+#collapse-settings{
+  padding: 5px 15px;
 }
 
 :host /deep/ #button-input {
   height: 2rem;
 }
-
-// :host /deep/ #dataset-form  {
-//   height: 2.05rem !important;
-// }

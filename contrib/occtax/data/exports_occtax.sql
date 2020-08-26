@@ -53,7 +53,7 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     COALESCE(occ.determiner, 'Inconnu'::character varying) AS "detId",
     ref_nomenclatures.get_nomenclature_label(rel.id_nomenclature_geo_object_nature) AS "natObjGeo",
     st_astext(rel.geom_4326) AS "WKT",
-    'In'::text AS "natObjGeo",
+    -- 'In'::text AS "natObjGeo",
     tax.lb_nom AS "nomScienti",
     tax.nom_vern AS "nomVern",
     hab.lb_code AS "codeHab",

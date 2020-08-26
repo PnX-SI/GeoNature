@@ -155,7 +155,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
           );
           if (alreadyExistingTax) {
             const message =
-              "Le taxon saisi est déjà dans la liste des taxon enregistré. Voulez-vous continuez ?";
+              "Le taxon saisi est déjà dans la liste des taxons enregistrés. Voulez-vous continuer ?";
             const dialogRef = this.dialog.open(ConfirmationDialog, {
               width: "auto",
               position: { top: "5%" },

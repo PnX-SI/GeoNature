@@ -7,8 +7,8 @@
       [idList]="occtaxConfig.id_taxon_list" 
       [charNumber]="3" 
       [listLength]="occtaxConfig.taxon_result_number" 
-      displayAdvancedFilters="true"
-      displayLabel="search_name"
+      [displayAdvancedFilters]="false"
+      displayedLabel="search_name"
       (onChange)="selectAddOcc()">
     </pnx-taxonomy>
     <small 
@@ -153,7 +153,7 @@
     </div>
 
     <div 
-      *ngIf="occtaxConfig.form_fields.behavior"
+      *ngIf="occtaxConfig.form_fields.behaviour"
       class="col-lg-4 col-sm-6">
       <pnx-nomenclature 
         label="{{ 'Taxon.OccBehaviour' | translate }}" 
@@ -331,36 +331,4 @@
         refresh 
     </mat-icon>
   </button>  -->
-  <ng-container *ngIf="!(occtaxFormOccurrenceService.occurrence|async); else modifButton">
-    <button 
-      id="add-occ"
-      mat-flat-button
-      color="primary"
-      matTooltip="Enregistrer cette occurrence"
-      [disabled]="occurrenceForm.invalid"
-      (click)="submitOccurrenceForm()">
-      <mat-spinner 
-        *ngIf="occtaxFormOccurrenceService.saveWaiting"
-        diameter="25"
-        strokeWidth="2">
-      </mat-spinner>
-      
-      Ajouter ce taxon au relevé 
-      <mat-icon style="vertical-align: middle;" > add_circle</mat-icon>
-    </button> 
-  </ng-container>
-  <ng-template #modifButton>
-    <button 
-      class="btn btn-primary"
-      matTooltip="Modifier l'occurrence"
-      [disabled]="occurrenceForm.invalid"
-      (click)="submitOccurrenceForm()">
-      <mat-spinner 
-        *ngIf="occtaxFormOccurrenceService.saveWaiting"
-        diameter="25"
-        strokeWidth="2">
-      </mat-spinner>
-      Modifier cette observation
-    </button> 
-  </ng-template>
 </div>

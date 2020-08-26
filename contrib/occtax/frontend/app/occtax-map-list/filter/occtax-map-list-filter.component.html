@@ -75,11 +75,12 @@
       fill="red"/>
   </svg>
   <button id="search-btn" 
-    class="btn btn-primary" 
+    mat-flat-button
+    color="primary"
     (click)="searchData()"
   >
     {{ 'Search' | translate }}
-    <i class="fa fa-search" aria-hidden="true"></i>
+    <mat-icon>search</mat-icon>
   </button>
 </div>
 

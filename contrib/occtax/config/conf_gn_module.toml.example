@@ -172,4 +172,4 @@ ENABLE_UPLOAD_TOOL = true
 ENABLE_MEDIAS = true
     habitat = true
     grp_method = true
-    behavior = true
+    behaviour = true

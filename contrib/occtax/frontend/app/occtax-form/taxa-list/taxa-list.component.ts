@@ -7,7 +7,11 @@ import { TranslateService } from "@ngx-translate/core";
 import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormOccurrenceService } from "../occurrence/occurrence.service";
 import { OcctaxTaxaListService } from "./taxa-list.service";
+<<<<<<< HEAD
 import { MediaService } from '@geonature_common/service/media.service'
+=======
+import { ModuleConfig } from "../../module.config"
+>>>>>>> origin/occtax-v2
 
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
 
@@ -17,6 +21,7 @@ import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/
   styleUrls: ["./taxa-list.component.scss"],
 })
 export class OcctaxFormTaxaListComponent implements OnInit {
+  public ModuleConfig = ModuleConfig;
   constructor(
     public ngbModal: NgbModal,
     public dialog: MatDialog,
@@ -39,8 +44,6 @@ export class OcctaxFormTaxaListComponent implements OnInit {
             occtaxData && occtaxData.releve.properties.t_occurrences_occtax
         ),
         map(([occtaxData, occurrence]: any) => {
-          console.log('passe icit');
-
           return occtaxData.releve.properties.t_occurrences_occtax
             .filter((occ) => {
               //enlève l'occurrence en cours de modification de la liste affichée

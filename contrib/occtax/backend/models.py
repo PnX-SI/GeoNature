@@ -197,7 +197,9 @@ class TRelevesOccurrence(ReleveModel):
     __tablename__ = "t_releves_occtax"
     __table_args__ = {"schema": "pr_occtax"}
     id_releve_occtax = DB.Column(DB.Integer, primary_key=True)
-    unique_id_sinp_grp = DB.Column(UUID(as_uuid=True))
+    unique_id_sinp_grp = DB.Column(
+        UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
+    )
     id_dataset = DB.Column(DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"))
     id_digitiser = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
     id_nomenclature_grp_typ = DB.Column(DB.Integer)
