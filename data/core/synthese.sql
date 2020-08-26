@@ -175,6 +175,8 @@ CREATE TABLE synthese (
     non_digital_proof text,
     altitude_min integer,
     altitude_max integer,
+    depth_min integer,
+    depth_max integer,
     the_geom_4326 public.geometry(Geometry,4326),
     the_geom_point public.geometry(Point,4326),
     the_geom_local public.geometry(Geometry,MYLOCALSRID),
@@ -389,6 +391,9 @@ ALTER TABLE ONLY synthese
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT check_synthese_altitude_max CHECK (altitude_max >= altitude_min);
+
+ALTER TABLE ONLY synthese
+    ADD CONSTRAINT check_synthese_depth_max CHECK (depth_max >= depth_min);
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT check_synthese_date_max CHECK (date_max >= date_min);
@@ -813,6 +818,8 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
     s.non_digital_proof,
     s.altitude_min,
     s.altitude_max,
+    s.depth_min,
+    s.depth_max,
     s.the_geom_4326,
     public.ST_asgeojson(the_geom_4326),
     s.date_min,
@@ -880,6 +887,8 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     s.non_digital_proof AS "preuvNoNum",
     s.altitude_min AS "altMin",
     s.altitude_max AS "altMax",
+    s.depth_min AS "profMin",
+    s.depth_max AS "profMax",
     public.ST_astext(s.the_geom_4326) AS wkt,
     s.date_min AS "dateDebut",
     s.date_max AS "dateFin",

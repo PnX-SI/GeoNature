@@ -200,6 +200,8 @@ class TRelevesOccurrence(ReleveModel):
     hour_max = DB.Column(DB.DateTime)
     altitude_min = DB.Column(DB.Integer)
     altitude_max = DB.Column(DB.Integer)
+    depth_min = DB.Column(DB.Integer)
+    depth_max = DB.Column(DB.Integer)
     id_nomenclature_obs_technique = DB.Column(DB.Integer)
     id_nomenclature_geo_object_nature = DB.Column(DB.Integer)
     meta_device_entry = DB.Column(DB.Unicode)
@@ -282,44 +284,6 @@ class VReleveOccurrence(ReleveModel):
 
     def get_geofeature(self, recursif=True):
         return self.as_geofeature("geom_4326", "id_occurrence_occtax", recursif)
-
-
-@serializable
-@geoserializable
-class VReleveList(ReleveModel):
-    __tablename__ = "v_releve_list"
-    __table_args__ = {"schema": "pr_occtax"}
-    id_releve_occtax = DB.Column(DB.Integer, primary_key=True)
-    id_dataset = DB.Column(DB.Integer)
-    id_digitiser = DB.Column(DB.Integer)
-    date_min = DB.Column(DB.DateTime)
-    date_max = DB.Column(DB.DateTime)
-    altitude_min = DB.Column(DB.Integer)
-    altitude_max = DB.Column(DB.Integer)
-    meta_device_entry = DB.Column(DB.Unicode)
-    comment = DB.Column(DB.Unicode)
-    geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
-    taxons = DB.Column(DB.Unicode)
-    leaflet_popup = DB.Column(DB.Unicode)
-    observateurs = DB.Column(DB.Unicode)
-    dataset_name = DB.Column(DB.Unicode)
-    observers_txt = DB.Column(DB.Unicode)
-    nb_occ = DB.Column(DB.Integer)
-    nb_observer = DB.Column(DB.Integer)
-    observers = DB.relationship(
-        User,
-        secondary=corRoleRelevesOccurrence.__table__,
-        primaryjoin=(corRoleRelevesOccurrence.id_releve_occtax == id_releve_occtax),
-        secondaryjoin=(corRoleRelevesOccurrence.id_role == User.id_role),
-        foreign_keys=[
-            corRoleRelevesOccurrence.id_releve_occtax,
-            corRoleRelevesOccurrence.id_role,
-        ],
-    )
-
-    def get_geofeature(self, recursif=True):
-
-        return self.as_geofeature("geom_4326", "id_releve_occtax", recursif)
 
 
 @serializable

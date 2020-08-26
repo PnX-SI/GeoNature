@@ -77,6 +77,8 @@ export class OcctaxFormReleveService {
       ],
       altitude_min: null,
       altitude_max: null,
+      depth_min: null,
+      depth_max: null,
       meta_device_entry: null,
       comment: null,
       cd_hab: null,
@@ -108,9 +110,15 @@ export class OcctaxFormReleveService {
         this.propertiesForm.get("hour_min"),
         this.propertiesForm.get("hour_max")
       ),
-      this.coreFormService.altitudeValidator(
+      this.coreFormService.minMaxValidator(
         this.propertiesForm.get("altitude_min"),
-        this.propertiesForm.get("altitude_max")
+        this.propertiesForm.get("altitude_max"),
+        "invalidAlt"
+      ),
+      this.coreFormService.minMaxValidator(
+        this.propertiesForm.get("depth_min"),
+        this.propertiesForm.get("depth_max"),
+        "invalidDepth"
       ),
     ]);
 

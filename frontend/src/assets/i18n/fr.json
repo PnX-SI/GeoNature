@@ -79,6 +79,8 @@
     "HourFormat": "hh:mm",
     "MinAltitude": "Alt min",
     "MaxAltitude": "Alt max",
+    "MinDepth": "Profondeur min",
+    "MaxDepth": "Profondeur max",
     "Municipality": "Commune",
     "Municipalities": "Commune(s)",
     "Dataset": "Jeu de données",
@@ -108,6 +110,7 @@
     "Errors": {
       "DateMaxError": "La date de début ne peut pas être postérieure à la date de fin",
       "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
+      "DepthError": "La profondeur max ne peut être inférieure à la profondeur min",
       "HourMaxError": "L'heure de début ne peut pas être supérieure à l'heure de fin"
     }
   },

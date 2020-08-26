@@ -74,6 +74,8 @@
     "MaxDate": "End date",
     "MinAltitude": "Min altitude",
     "MaxAltitude": "Max altitude",
+    "MinDepth": "Min depth",
+    "MaxDepth": "Max depth",
     "HourMin": "Start hour",
     "HourMax": "End hour",
     "HourFormat": "hh:mm",
@@ -106,6 +108,7 @@
     "Errors": {
       "DateMaxError": "Max date can't be inferior to the min date",
       "AltitudeError": "Altitude max cannot be smaller than altitude min",
+      "DepthError": "Depth min cannot be smaller than depth min",
       "HourMaxError": "End hour can't be inferior to start hour"
     }
   },

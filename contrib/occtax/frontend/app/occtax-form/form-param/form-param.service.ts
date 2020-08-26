@@ -118,7 +118,7 @@ export class OcctaxFormParamService {
     );
   }
 
-  constructor() {}
+  constructor() { }
 
   get(element: string) {
     let keys = element.split(".");
