@@ -22,6 +22,7 @@ import { AppConfig } from "@geonature_config/app.config";
 import { GlobalSubService } from "@geonature/services/global-sub.service";
 import { Subscription } from "rxjs/Subscription";
 import * as moment from "moment";
+import { MediaService } from '@geonature_common/service/media.service';
 
 @Component({
   selector: "pnx-occtax-map-list",
@@ -62,7 +63,8 @@ export class OcctaxMapListComponent
     private _mapService: MapService,
     public ngbModal: NgbModal,
     public globalSub: GlobalSubService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    public mediaService: MediaService,
   ) {}
 
   ngOnInit() {
@@ -240,25 +242,40 @@ export class OcctaxMapListComponent
   }
 
   /**
-   * Retourne un tableau des taxon (nom valide ou nom cité)
+   * Retourne un tableau des taxon (nom valide ou nom cité) et icons pour tooltip
    * Sert aussi à la mise en forme du tooltip
    */
-  displayTaxonsTooltip(row): string[] {
+  displayTaxonsTooltip(row): any[] {
     let tooltip = [];
     if (row.t_occurrences_occtax === undefined) {
-      tooltip.push("Aucun taxon");
+      tooltip.push({taxName: "Aucun taxon"});
     } else {
       for (let i = 0; i < row.t_occurrences_occtax.length; i++) {
         let occ = row.t_occurrences_occtax[i];
-        if (occ.taxref !== undefined) {
-          tooltip.push(occ.taxref.nom_complet);
-        } else {
-          tooltip.push(occ.nom_cite);
-        }
+        
+        const taxName = occ.taxref !== undefined 
+          ? occ.taxref.nom_complet
+          : occ.nom_cite
+
+        const medias = occ.cor_counting_occtax
+        .map(c => c.medias)
+        .flat();
+        const icons = medias
+          .map( media => this.mediaService.tooltip(media))
+          .join(' ');
+
+        tooltip.push({taxName, icons, medias})
       }
     }
+    return tooltip.sort((a, b) => a.taxName < b.taxName ? -1 : 1);
+  }
 
-    return tooltip.sort();
+    /**
+   * Retourne un tableau des taxon (nom valide ou nom cité)
+   */
+
+  displayTaxons(row): string[]{
+    return this.displayTaxonsTooltip(row).map(t => t.taxName);
   }
 
   /**
@@ -298,7 +315,9 @@ export class OcctaxMapListComponent
 
     const divTaxons = this.renderer.createElement("div");
     divTaxons.style.marginTop = "5px";
-    let taxons = this.displayTaxonsTooltip(feature.properties).join("<br>");
+    let taxons = this.displayTaxonsTooltip(feature.properties)
+      .map(taxon => `${taxon['taxName']}<br>${taxon['icons']}`)
+      .join("<br>");
     divTaxons.innerHTML = taxons;
 
     this.renderer.appendChild(leafletPopup, divObservateurs);

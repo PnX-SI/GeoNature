@@ -268,6 +268,29 @@
                       <div class="value"> {{counting?.unique_id_sinp_occtax}} </div>
                     </div>
 
+                    <ng-container *ngFor="let media of counting.medias; index as i">
+                      <div>
+                        <div class="label"> {{ 'Media.Media' | translate }} {{ i + 1 }}/{{ counting.medias.length}} : </div>
+                        <div class="value">                     <a
+                          [href]="ms.href(media)" target=blank
+                          >{{ media.title_fr }}</a> 
+                          <i>
+                            ({{ ms.typeMedia(media) }}, {{ media.author }})
+                          </i>
+                          <span *ngIf="media.description_fr">{{media.description_fr}}</span>
+                        </div>
+                      </div>
+                      <div>
+                        <pnx-display-medias 
+                          [medias]="counting.medias"
+                          [index]=i
+                          display="medium"
+                          diaporama="true"
+                        ></pnx-display-medias>
+                      </div>
+                    </ng-container>
+
+
                     <mat-divider></mat-divider>
                   </div>
                 </mat-tab>

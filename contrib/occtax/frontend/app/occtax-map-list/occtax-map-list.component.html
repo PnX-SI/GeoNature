@@ -96,7 +96,8 @@
               <div><strong>Taxon(s): </strong></div>
               <div style="margin-left: 20px;">
                 <div *ngFor="let taxon of displayTaxonsTooltip(row)">
-                  {{ taxon }}
+                  {{ taxon.taxName }} <br>
+                    <pnx-display-medias [medias]="taxon.medias" [diaporama]="true" display='mini'></pnx-display-medias>
                 </div>
               </div>
             
@@ -243,11 +244,11 @@
                 let-row="row" 
               >
                 <span 
-                  [matTooltip]="displayTaxonsTooltip(row).join('\n')" 
+                  [matTooltip]="displayTaxons(row).join('\n')" 
                   matTooltipPosition="left"
                 >
                   <span>
-                    {{ displayTaxonsTooltip(row).length }}
+                    {{ displayTaxons(row).length }}
                   </span>
                 </span> 
               </ng-template>
@@ -257,11 +258,11 @@
                 let-row="row" 
               >
                 <span 
-                  [matTooltip]="displayTaxonsTooltip(row).join('\n')" 
+                  [matTooltip]="displayTaxons(row).join('\n')" 
                   matTooltipPosition="left"
                 >
                   <span>
-                      <span class='badge badge-dark'> {{row.t_occurrences_occtax?.length || '0' }} </span> {{displayTaxonsTooltip(row)}}
+                      <span class='badge badge-dark'> {{row.t_occurrences_occtax?.length || '0' }} </span> {{displayTaxons(row)}}
                   </span>
                 </span> 
               </ng-template>

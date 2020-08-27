@@ -8,6 +8,7 @@ import { OcctaxDataService } from "../services/occtax-data.service";
 import { ModuleConfig } from "../module.config";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
+import { MediaService } from "@geonature_common/service/media.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 
 const NOMENCLATURES = [
@@ -85,6 +86,7 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
     private _modalService: NgbModal,
     private _commonService: CommonService,
     private dataFormS: DataFormService,
+    public ms: MediaService,
   ) { }
 
   ngOnInit() {
