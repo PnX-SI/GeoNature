@@ -235,7 +235,7 @@ VALUES(
   date_trunc('day',releve.date_max)+COALESCE(releve.hour_max,'00:00:00'::time),
   COALESCE (myobservers.observers_name, releve.observers_txt),
   occurrence.determiner,
-  relevte.id_digitiser,
+  releve.id_digitiser,
   occurrence.id_nomenclature_determination_method,
   releve.comment,
   occurrence.comment,
