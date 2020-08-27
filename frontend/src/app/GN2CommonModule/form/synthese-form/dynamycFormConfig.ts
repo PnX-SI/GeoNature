@@ -25,7 +25,12 @@ export const DYNAMIC_FORM_DEF = [
     type_widget: "text",
     attribut_label: "Méthode de regroupement",
     attribut_name: "grp_method",
-    code_nomenclature_type: "TYP_GRP",
+    required: false,
+  },
+  {
+    type_widget: "text",
+    attribut_label: "Nom du lieu",
+    attribut_name: "place_name",
     required: false,
   },
   {

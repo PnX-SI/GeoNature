@@ -42,7 +42,11 @@ DEFAULT_EXPORT_COLUMNS = [
     "cdRef",
     "nomCite",
     "vTAXREF",
+    "natObjGeo",
     "wkt",
+    "nomLieu",
+    "profMin",
+    "profMax",
     "lastAction",
     "validateur",
 ]

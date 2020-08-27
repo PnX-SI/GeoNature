@@ -79,6 +79,7 @@ export class OcctaxFormReleveService {
       altitude_max: null,
       depth_min: null,
       depth_max: null,
+      place_name: null,
       meta_device_entry: null,
       comment: null,
       cd_hab: null,
