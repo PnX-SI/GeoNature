@@ -788,7 +788,7 @@ def get_color_taxon():
     """
     params = request.args
     limit = int(params.get('limit', 100))
-    page = int(params.get('offset', 0))
+    offset = int(params.get('offset', 0))
     id_areas_type = params.getlist("code_area_type")
     cd_noms = params.getlist("cd_nom")
     id_areas = params.getlist("id_area")
@@ -805,7 +805,8 @@ def get_color_taxon():
         q = q.filter(LAreas.id_area.in_(tuple(id_areas)))
     if len(cd_noms) > 0:
         q = q.filter(VColorAreaTaxon.cd_nom.in_(tuple(cd_noms)))
-    data = q.limit(limit).offset(page * limit).all()
+    data = q.limit(limit).offset(offset).all()
+
     return [d.as_dict() for d in data]
 
 
@@ -820,13 +821,13 @@ def get_taxa_count():
     :returns int: the number of taxa found
     """
     params = request.args
-    
+
     query = DB.session.query(
         func.count(distinct(Synthese.cd_nom))
     ).select_from(
         Synthese
     )
-    
+
     if 'id_dataset' in params:
         query = query.filter(Synthese.id_dataset == params['id_dataset'])
     return query.one()
@@ -838,13 +839,13 @@ def get_observation_count():
     """Get observations found in a given dataset
     """
     params = request.args
-    
+
     query = DB.session.query(
         func.count(Synthese.cd_nom)
     ).select_from(
         Synthese
     )
-    
+
     if 'id_dataset' in params:
         query = query.filter(Synthese.id_dataset == params['id_dataset'])
 
@@ -893,7 +894,7 @@ def get_taxa_distribution():
 
     data = query.group_by(rank).all()
     return [{"count" : d[0], "group": d[1]} for d in data]
-    
+
 
 # @routes.route("/test", methods=["GET"])
 # @json_resp
