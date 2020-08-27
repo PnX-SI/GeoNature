@@ -43,6 +43,11 @@ export class MediasTestComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    // test TODO remove
+    const a = {};
+    const s='a["f"] = a => !!a';
+    eval(s)
+    console.log(a['f'](1));
     this.mediaForm = this._formBuilder.group({});
     this._route.params.subscribe((params) => {
       if (params['uuidAttachedRow']) {
