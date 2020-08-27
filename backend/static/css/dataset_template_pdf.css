@@ -154,6 +154,14 @@ div.titre {
     border-radius: 25px;
 }
 
+.import-block {
+    padding-left: 15px;
+    font-size: 11px;
+    width: 96%;
+    border: 0.75px solid grey;
+    border-radius: 25px;
+}
+
 .information {
     margin-bottom: 20px;
 }
@@ -176,6 +184,12 @@ div.titre {
     height: 30px;
     width: 30px;
 }
+
+.import-state {
+    height: 24px;
+    width: 24px;
+}
+
 
 .ca-initial-info {
     font-size: 10px;

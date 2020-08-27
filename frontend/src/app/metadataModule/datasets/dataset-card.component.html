@@ -116,6 +116,46 @@
 
         </div>
       </div>
+      <div class="card" *ngIf="dataset.imports && dataset.imports.length>0">
+        <div class="card-header">
+          <h5>
+            Liste des sources
+          </h5>
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered tabRecap">
+            <thead class="bold">
+              <tr>
+                  <td class="textCenter">Source</td>
+                  <td class="textCenter">Nombre de données</td>
+                  <td class="textCenter">Importé le</td>
+                  <td class="textCenter">Statut</td>
+                  <td class="textCenter">Rapport</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let import of dataset.imports'>
+                 <td class="textCenter">{{import.import_table}}</td>
+                 <td class="textCenter"> [ {{import.source_count}} ]</td>
+                 <td class="textCenter">{{import.date_create_import | date: 'd/mm/yyyy h:mm a'}}</td>
+                 <td class="textCenter">
+                    <div class="imgStatus">
+                    <img class='imgImportSuccess'*ngIf="import.is_finished" src="./assets/images/tick.png"/>
+                    <img class='importImportFail' *ngIf="!import.is_finished" src="./assets/images/close.png"/>
+                   </div>
+                 </td>
+                 <td>
+                  <div id='imgRapport'>
+                    <img class='imgIcone' src="./assets/images/Rapport_Sensibles.svg" (click)="sensiReport(import.id_import)"/>
+                    <img class='imgIcone' src="./assets/images/Rapport_UUID.svg" (click)="uuidReport(import.id_import)"/>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
     </div>
 
     <div class="col-xs-12 col-sm-12 col-md-8 col-lg-4">

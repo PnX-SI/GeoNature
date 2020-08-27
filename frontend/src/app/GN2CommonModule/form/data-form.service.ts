@@ -441,5 +441,17 @@ export class DataFormService {
     document.body.removeChild(link);
   }
 
+  deleteAf(af_id) {
+    return this._http.delete<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${af_id}`);
+  }
+
+  deleteDs(ds_id) {
+    return this._http.delete<any>(`${AppConfig.API_ENDPOINT}/meta/dataset/${ds_id}`);
+  }
+
+  activateDs(ds_id, active) {
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/meta/activate_dataset/${ds_id}/${active}`, {});
+  }
+
 }
 

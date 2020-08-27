@@ -2,14 +2,14 @@ import json
 import logging
 from pathlib import Path
 
-from flask import Blueprint, current_app, request, render_template, send_from_directory
+from flask import Blueprint, current_app, request, render_template, send_from_directory, copy_current_request_context
 from sqlalchemy import or_
 from sqlalchemy.sql import text, exists, select
 from sqlalchemy.sql.functions import func
 
 
 from geonature.utils.env import DB
-from geonature.core.gn_synthese.models import Synthese
+from geonature.core.gn_synthese.models import Synthese, TSources
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.tools import InsufficientRightsError
@@ -20,6 +20,8 @@ from binascii import a2b_base64
 from geonature.core.gn_meta.models import (
     TDatasets,
     CorDatasetActor,
+    CorDatasetProtocol,
+    CorDatasetTerritory,
     TAcquisitionFramework,
     TAcquisitionFrameworkDetails,
     CorAcquisitionFrameworkActor,
@@ -32,7 +34,8 @@ from geonature.core.gn_meta.repositories import (
     get_af_cruved,
     get_dataset_details_dict,
 )
-from utils_flask_sqla.response import json_resp
+from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_content
+from werkzeug.datastructures import Headers
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from geonature.core.gn_meta import mtd_utils
@@ -43,6 +46,8 @@ import geonature.utils.filemanager as fm
 from binascii import a2b_base64
 
 from flask.wrappers import Response
+
+import threading
 
 routes = Blueprint("gn_meta", __name__)
 
@@ -146,6 +151,7 @@ def get_af_and_ds_metadata(info_role):
         .all()
     )
 
+
     afs_dict = []
     #  get cruved for each AF and prepare dataset
     for af in afs:
@@ -154,6 +160,21 @@ def get_af_and_ds_metadata(info_role):
             user_cruved, af.id_acquisition_framework, ids_afs_user, ids_afs_org,
         )
         af_dict["datasets"] = []
+
+        iCreateur = -1
+        iMaitreOuvrage = -1
+        if af.cor_af_actor:
+            for index, actor in enumerate(af.cor_af_actor):
+                if actor.nomenclature_actor_role.mnemonique == "Maître d'ouvrage":
+                    iMaitreOuvrage = index
+                elif actor.nomenclature_actor_role.mnemonique == "Producteur du jeu de données":
+                    iCreateur = index
+
+
+        #af_dict["nom_createur"] = af.cor_af_actor[iCreateur].role.nom_role if iCreateur!=-1 else "Non renseigné"
+        af_dict["creator_mail"] = af.cor_af_actor[iCreateur].role.email if (iCreateur!=-1 and af.cor_af_actor[iCreateur].role) else ""
+        af_dict["project_owner_name"] = af.cor_af_actor[iMaitreOuvrage].organism.nom_organisme if iMaitreOuvrage!=-1 else "Non renseigné"
+        af_dict["deletable"] = is_af_deletable(af.id_acquisition_framework)
         afs_dict.append(af_dict)
 
     #  get cruved for each ds and push them in the af
@@ -162,6 +183,18 @@ def get_af_and_ds_metadata(info_role):
         dataset_dict["cruved"] = d.get_object_cruved(
             user_cruved, d.id_dataset, ids_dataset_user, ids_dataset_organisms,
         )
+        dataset_dict["deletable"] = is_dataset_deletable(d.id_dataset)
+        dataset_dict["observation_count"] = (
+            DB.session.query(Synthese.cd_nom)
+            .filter(Synthese.id_dataset == d.id_dataset)
+            .count()
+        )
+        iCreateur = -1
+        if d.cor_dataset_actor:
+            for index, actor in enumerate(d.cor_dataset_actor):
+                if actor.nomenclature_actor_role.mnemonique == "Producteur du jeu de données":
+                    iCreateur = index
+        dataset_dict["createur"] = d.cor_dataset_actor[iCreateur].as_dict(True) if iCreateur!=-1 else None
         af_of_dataset = get_af_from_id(d.id_acquisition_framework, afs_dict)
         af_of_dataset["datasets"].append(dataset_dict)
 
@@ -171,6 +204,26 @@ def get_af_and_ds_metadata(info_role):
     if not datasets:
         return afs_resp, 404
     return afs_resp
+
+def is_dataset_deletable(id_dataset):
+    datas = (
+        DB.session.query(Synthese.id_synthese)
+        .filter(Synthese.id_dataset == id_dataset)
+        .all()
+    )
+    if datas:
+        return False
+    return True
+
+def is_af_deletable(id_af):
+    datasets = (
+        DB.session.query(TDatasets.id_dataset)
+        .filter(TDatasets.id_acquisition_framework == id_af)
+        .all()
+    )
+    if datasets:
+        return False
+    return True
 
 
 def get_af_from_id(id_af, af_list):
@@ -261,6 +314,332 @@ def upload_canvas():
         fd = open(filepath, 'wb')
         fd.write(binary_data)
         fd.close()
+    return "OK"
+
+
+@routes.route("/dataset/<int:ds_id>", methods=["DELETE"])
+@permissions.check_cruved_scope("D", True, module_code="METADATA")
+@json_resp
+def delete_dataset(info_role, ds_id):
+    """
+    Delete a dataset
+
+    .. :quickref: Metadata;
+    """
+    if info_role.value_filter == "0":
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" a dataset').format(
+                info_role.id_role, info_role.code_action
+            ),
+            403,
+        )
+    
+    if not is_dataset_deletable(ds_id):
+        raise GeonatureApiError(
+            "La suppression du jeu de données n'est pas possible car des données y sont rattachées dans la Synthèse",
+            500
+        )
+
+    DB.session.query(CorDatasetActor).filter(
+        CorDatasetActor.id_dataset == ds_id
+    ).delete()
+
+    DB.session.query(CorDatasetProtocol).filter(
+        CorDatasetProtocol.id_dataset == ds_id
+    ).delete()
+
+    DB.session.query(CorDatasetTerritory).filter(
+        CorDatasetTerritory.id_dataset == ds_id
+    ).delete()
+    
+    DB.session.query(TDatasets).filter(
+        TDatasets.id_dataset == ds_id
+    ).delete()
+
+    DB.session.commit()
+
+    return "OK"
+
+
+@routes.route("/activate_dataset/<int:ds_id>/<string:active>", methods=["POST"])
+@permissions.check_cruved_scope("U", True, module_code="METADATA")
+@json_resp
+def activate_dataset(info_role, ds_id, active):
+    """
+    Activate or deactivate a dataset
+
+    .. :quickref: Metadata;
+    """
+    if info_role.value_filter == "0":
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" a dataset').format(
+                info_role.id_role, info_role.code_action
+            ),
+            403,
+        )
+
+    DB.session.query(TDatasets).filter(TDatasets.id_dataset == ds_id).update({'active' : active=='true'})
+    DB.session.commit()
+    return "activated" if active else "deactivated"
+
+@routes.route("/uuid_report", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
+def uuid_report(info_role):
+    """
+    get the UUID report of a dataset
+
+    .. :quickref: Metadata;
+    """
+
+    if info_role.value_filter == "0":
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" a dataset').format(
+                info_role.id_role, info_role.code_action
+            ),
+            403,
+        )
+
+    params = request.args
+    ds_id = params.get("ds_id")
+    id_import = params.get("id_import")
+    id_module = params.get("id_module")
+
+    query = DB.session.query(Synthese).select_from(Synthese)
+        
+    if id_module:
+        query = query.filter(Synthese.id_module == id_module)
+
+    if ds_id:
+        query = query.filter(Synthese.id_dataset == ds_id)
+
+    if id_import:
+        query = query.outerjoin(
+            TSources, TSources.id_source == Synthese.id_source
+        ).filter(
+            TSources.name_source == 'Import(id={})'.format(id_import)
+        )
+
+    data = query.all()
+
+    data = [ {
+        "identifiantOrigine": row.entity_source_pk_value,
+        "identifiant_gn": row.id_synthese,
+        "identifiantPermanent (SINP)": row.unique_id_sinp,
+        "nomcite": row.nom_cite,
+        "jourDateDebut": row.date_min,
+        "jourDatefin": row.date_max,
+        "observateurIdentite": row.observers
+    } for row in query.all() ]
+    
+    return to_csv_resp(
+        filename = "filename",
+        data = data,
+        columns = [
+            "identifiantOrigine", "identifiant_gn", "identifiantPermanent (SINP)",
+            "nomcite", "jourDateDebut", "jourDatefin", "observateurIdentite"
+        ]
+    )
+
+
+@routes.route("/sensi_report", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
+def sensi_report(info_role):
+    """
+    get the UUID report of a dataset
+
+    .. :quickref: Metadata;
+    """
+    """
+    get the UUID report of a dataset
+
+    .. :quickref: Metadata;
+    """
+
+    if info_role.value_filter == "0":
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" a dataset').format(
+                info_role.id_role, info_role.code_action
+            ),
+            403,
+        )
+
+    params = request.args
+    ds_id = params.get("ds_id")
+    id_import = params.get("id_import")
+    id_module = params.get("id_module")
+
+    query = DB.session.query(Synthese).select_from(Synthese)
+        
+    if id_module:
+        query = query.filter(Synthese.id_module == id_module)
+
+    if ds_id:
+        query = query.filter(Synthese.id_dataset == ds_id)
+
+    if id_import:
+        query = query.outerjoin(
+            TSources, TSources.id_source == Synthese.id_source
+        ).filter(
+            TSources.name_source == 'Import(id={})'.format(id_import)
+        )
+
+    data = query.all()
+
+    dataset = None
+    createurStr = ""
+    if len(data) > 0:
+        dataset = DB.session.query(TDatasets).filter(TDatasets.id_dataset == data[0].id_dataset).first()
+        iCreateur = -1
+        if dataset.cor_dataset_actor:
+            for index, actor in enumerate(dataset.cor_dataset_actor):
+                if actor.nomenclature_actor_role.mnemonique == "Producteur du jeu de données":
+                    iCreateur = index
+        createur = dataset.cor_dataset_actor[iCreateur] if iCreateur!=-1 else None
+        createurStr = ""
+        if (createur.organism and createur.organism.nom_organisme):
+            createurStr = createur.organism.nom_organisme
+            
+        
+    data = [ {
+        "cdNom": row.cd_nom,
+        "cdRef": "undefined",
+        "codeDepartementCalcule": "undefined",
+        "identifiantOrigine": row.entity_source_pk_value,
+        "identifiantPermanent": row.unique_id_sinp,
+        "sensiAlerte": "undefined",
+        "sensible": "undefined",
+        "sensiDateAttribution": "undefined",
+        "sensiNiveau": "undefined",
+        "sensiReferentiel": "undefined",
+        "sensiVersionReferentiel": "undefined"
+    } for row in query.all() ]
+
+
+    return my_csv_resp(
+        filename = "filename",
+        data = data,
+        columns = [
+            "cdNom", "cdRef", "codeDepartementCalcule", "identifiantOrigine",
+            "identifiantPermanent", "sensiAlerte", "sensible", "sensiDateAttribution",
+            "sensiNiveau", "sensiReferentiel", "sensiVersionReferentiel"
+        ],
+        entete = """"Rapport de sensibilité"
+            "Jeux de données";"{}"
+            "Identifiant interne";"{}"
+            "Identifiant SINP";"{}"
+            "Organisme Fournisseur (organisme de l’utilisateur)";"{}"
+            "Identifiant de la soumission";"{}"
+            "Date de création du rapport";"{}"
+            "Nombre de données sensibles";"{}"
+            "Nombre de données total dans le fichier";"{}"
+
+            """.format(
+                dataset.dataset_name if dataset else "",
+                dataset.id_dataset if dataset else "",
+                dataset.unique_dataset_id if dataset else "",
+                createurStr,
+                "undefined",
+                dt.datetime.now().strftime("%d/%m/%Y %Hh%M"),
+                "undefined",
+                len(data)
+            )
+    )
+
+
+def my_csv_resp(filename, data, columns, entete, separator=";"):
+
+    headers = Headers()
+    headers.add("Content-Type", "text/plain")
+    headers.add(
+        "Content-Disposition", "attachment", filename="export_%s.csv" % filename
+    )
+    out = entete + generate_csv_content(columns, data, separator)
+    return Response(out, headers=headers)
+    
+
+@routes.route("/update_sensitivity", methods=["GET"])
+@permissions.check_cruved_scope("C", True, module_code="METADATA")
+def update_sensitivity(info_role):
+    """
+    Update sensitivity of all datasets
+
+    .. :quickref: Metadata;
+    """
+    if info_role.value_filter == "0":
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" a dataset').format(
+                info_role.id_role, info_role.code_action
+            ),
+            403,
+        )
+
+    params = request.args
+    id_import = params.get("id_import")
+    id_source = params.get("id_source")
+    ds_id = params.get("ds_id")
+    id_module = params.get("id_module")
+    id_synthese = params.get("id_synthese")
+
+    query = DB.session.query(Synthese.id_synthese).select_from(Synthese)
+        
+    if id_source:
+        query = query.filter(Synthese.id_source == id_source)
+        
+    if id_synthese:
+        query = query.filter(Synthese.id_synthese == id_synthese)
+        
+    if id_module:
+        query = query.filter(Synthese.id_module == id_module)
+
+    if ds_id:
+        query = query.filter(Synthese.id_dataset == ds_id)
+
+    if id_import:
+        query = query.outerjoin(
+            TSources, TSources.id_source == Synthese.id_source
+        ).filter(
+            TSources.name_source == 'Import(id={})'.format(id_import)
+        )
+
+    id_syntheses = query.all()
+
+    #id_syntheses = DB.session.query(Synthese.id_synthese).all()
+    id_syntheses = [id[0] for id in id_syntheses]
+
+    if not id_syntheses:
+        return "OK"
+    #id_syntheses = [id for id in np.arange(0, 5000000, 1)]
+
+    if len(id_syntheses) > current_app.config["NB_MAX_DATA_SENSITIVITY_REPORT"] :
+
+        @copy_current_request_context
+        def update_sensitivity_task(id_syntheses):
+            return update_sensitivity_query(id_syntheses)
+
+        a = threading.Thread(
+            name="update_sensitivity_task", target=update_sensitivity_task, kwargs={"id_syntheses": id_syntheses}
+        )
+        a.start()
+
+        return "Processing"
+
+    else:
+        return update_sensitivity_query(id_syntheses)
+
+
+def update_sensitivity_query(id_syntheses):
+
+    queryStr = """
+        UPDATE gn_synthese.synthese SET id_nomenclature_sensitivity = gn_sensitivity.get_id_nomenclature_sensitivity(
+            date_min::date,
+            taxonomie.find_cdref(cd_nom),
+            the_geom_local,
+            ('{"STATUT_BIO": ' || id_nomenclature_bio_status::text || '}')::jsonb)
+            where id_synthese in (""" + str(id_syntheses).strip("[]") + """)
+        ; """
+    
+    DB.engine.execute(queryStr)
+
     return "OK"
 
 
@@ -528,19 +907,10 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
     except IOError:
         acquisition_framework["chart"] = False
 
+    
+
     # Appel de la methode pour generer un pdf
-    pdf_file = fm.generate_pdf('cadre_acquisition_template_pdf.html', acquisition_framework, filename)
-
-    # pprint.pprint(acquisition_framework)
-
-    return Response(
-        pdf_file,
-        mimetype="application/pdf",
-        headers={
-            "Content-disposition": "attachment; filename=" + filename,
-            "Content-type": "application/pdf"
-        }
-    )
+    pdf_file = fm.generate_pdf('acquisition_framework_template_pdf.html', acquisition_framework, filename)
     pdf_file_posix = Path(pdf_file)
     return send_from_directory(
         str(pdf_file_posix.parent),
@@ -670,12 +1040,55 @@ def get_acquisition_framework_details(id_acquisition_framework):
     return None
 
 
+@routes.route("/acquisition_framework/<int:af_id>", methods=["DELETE"])
+@permissions.check_cruved_scope("D", True, module_code="METADATA")
+@json_resp
+def delete_acquisition_framework(info_role, af_id):
+    """
+    Delete an acquisition framework
+    .. :quickref: Metadata;
+    """
+    if info_role.value_filter == "0":
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" an acquisition_framework').format(
+                info_role.id_role, info_role.code_action
+            ),
+            403,
+        )
+
+    if not is_af_deletable(af_id):
+        raise GeonatureApiError(
+            "La suppression du cadre d'acquisition n'est pas possible car des jeux de données y sont rattachées",
+            500
+        )
+
+    DB.session.query(CorAcquisitionFrameworkActor).filter(
+        CorAcquisitionFrameworkActor.id_acquisition_framework == af_id
+    ).delete()
+
+    DB.session.query(CorAcquisitionFrameworkObjectif).filter(
+        CorAcquisitionFrameworkObjectif.id_acquisition_framework == af_id
+    ).delete()
+
+    DB.session.query(CorAcquisitionFrameworkVoletSINP).filter(
+        CorAcquisitionFrameworkVoletSINP.id_acquisition_framework == af_id
+    ).delete()
+    
+    DB.session.query(TAcquisitionFramework).filter(
+        TAcquisitionFramework.id_acquisition_framework == af_id
+    ).delete()
+
+    DB.session.commit()
+
+    return "OK"
+
+
 @routes.route("/acquisition_framework", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="METADATA")
 @json_resp
 def post_acquisition_framework(info_role):
     """
-    Post a dataset
+    Post an acquisition framework
     .. :quickref: Metadata;
     """
     if info_role.value_filter == "0":
