@@ -171,11 +171,12 @@ ENABLE_UPLOAD_TOOL = true
     count_max = true
     display_nom_valide = true
 
-# ------------- MEDIAS PARAMETER ---------------
-
-ENABLE_MEDIAS = true
     habitat = true
     grp_method = false
     behaviour = true
     geo_object_nature = false
     place_name = false
+
+# ------------- MEDIAS PARAMETER ---------------
+
+ENABLE_MEDIAS = true
