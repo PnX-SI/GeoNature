@@ -878,12 +878,12 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
 
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
  SELECT s.id_synthese AS "idSynthese",
+    s.entity_source_pk_value AS "idOrigine",
     s.unique_id_sinp AS "permId",
     s.unique_id_sinp_grp AS "permIdGrp",
     s.grp_method,
     s.count_min AS "denbrMin",
     s.count_max AS "denbrMax",
-    s.meta_v_taxref AS "vTAXREF",
     s.sample_number_proof AS "sampleNumb",
     s.digital_proof AS "preuvNum",
     s.non_digital_proof AS "preuvNoNum",
@@ -892,8 +892,11 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     s.depth_min AS "profMin",
     s.depth_max AS "profMax",
     public.ST_astext(s.the_geom_4326) AS wkt,
-    s.date_min AS "dateDebut",
-    s.date_max AS "dateFin",
+    to_char(s.date_min, 'YYYY-MM-DD') AS "dateDebut",
+    to_char(s.date_max, 'YYYY-MM-DD') AS "dateFin",
+    s.date_max::date AS "dateFin",
+    s.date_min::time AS "heureFin"
+    s.date_max::time AS "heureDebut"
     s.validator AS validateur,
     s.observers AS observer,
     s.id_digitiser AS id_digitiser,
@@ -902,8 +905,8 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     s.comment_description AS "obsDescr",
     s.meta_create_date,
     s.meta_update_date,
-    d.id_dataset AS "jddId",
-    d.dataset_name AS "jddCode",
+    d.dataset_name AS "jddName", -- champs non standard (pas le nom du JDD dans le standard)
+    d.unique_dataset_id AS "idSINPJdd",
     d.id_acquisition_framework,
     t.cd_nom AS "cdNom",
     t.cd_ref AS "cdRef",
@@ -976,7 +979,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS
         )
  SELECT d.dataset_name AS jeu_donnees,
     d.id_dataset AS jdd_id,
-    d.unique_dataset_id AS jdd_uuid,
+    d.unique_dataset_id AS "jddMetaId",
     af.acquisition_framework_name AS cadre_acquisition,
     string_agg(DISTINCT concat(COALESCE(orga.nom_organisme, ((roles.nom_role::text || ' '::text) || roles.prenom_role::text)::character varying), ': ', nomencl.label_default), ' | '::text) AS acteurs,
     count_nb_obs.nb_obs AS nombre_obs

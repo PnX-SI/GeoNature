@@ -314,7 +314,7 @@ CREATE TABLE t_occurrences_occtax (
     determiner character varying(255),
     id_nomenclature_determination_method integer,
     cd_nom integer,
-    nom_cite character varying(255),
+    nom_cite character varying(255) NOT NULL,
     meta_v_taxref character varying(50) DEFAULT 'SELECT gn_commons.get_default_parameter(''taxref_version'')',
     sample_number_proof text,
     digital_proof text,

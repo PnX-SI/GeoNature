@@ -310,7 +310,6 @@ MAIL_ON_ERROR = false
         "cdNom",
         "cdRef",
         "nomCite",
-        "vTAXREF",
         "wkt",
         "lastAction",
         "validateur"

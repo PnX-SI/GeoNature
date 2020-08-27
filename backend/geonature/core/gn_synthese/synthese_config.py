@@ -41,7 +41,6 @@ DEFAULT_EXPORT_COLUMNS = [
     "cdNom",
     "cdRef",
     "nomCite",
-    "vTAXREF",
     "natObjGeo",
     "wkt",
     "nomLieu",

@@ -34,7 +34,6 @@ class FormConfig(Schema):
     blurring = fields.Boolean(missing=False)
     determiner = fields.Boolean(missing=True)
     determination_method = fields.Boolean(missing=True)
-    sample_number_proof = fields.Boolean(missing=True)
     digital_proof = fields.Boolean(missing=True)
     non_digital_proof = fields.Boolean(missing=True)
     source_status = fields.Boolean(missing=False)
