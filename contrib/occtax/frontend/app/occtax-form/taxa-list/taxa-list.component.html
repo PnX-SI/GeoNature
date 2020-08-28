@@ -311,8 +311,8 @@
                 <!-- # Medias -->
                 <ng-container *ngIf="counting.medias.length">
                   <ng-container *ngFor="let media of counting.medias; index as i">
-                  <div [matTooltip]="ms.toString(media)">{{'Media.Media' | translate}} ({{ i+1 }}/{{counting.medias.length}}) :
-                    <a                       
+                  <div>{{'Media.Media' | translate}} ({{ i+1 }}/{{counting.medias.length}}) :
+                    <a
                     [href]="ms.href(media)" target=blank
                     >{{ media.title_fr }}</a> 
                     <i>
@@ -321,7 +321,7 @@
                     <span *ngIf="media.description_fr">{{media.description_fr}}</span>
                   </div>
                       <div>
-                        <pnx-display-medias [medias]="counting.medias" [index]=i display="medium"></pnx-display-medias>
+                        <pnx-display-medias [medias]="counting.medias" [index]=i display="medium" diaporama="true"></pnx-display-medias>
                     </div>
                   </ng-container>
                 </ng-container>

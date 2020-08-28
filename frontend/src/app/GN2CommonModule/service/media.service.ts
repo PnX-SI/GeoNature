@@ -196,4 +196,43 @@ export class MediaService {
   isImg(media) {
     return this.typeMedia(media) === 'Photo';
   }
+
+  tooltip(media) {
+    if (!(media instanceof Media)) { media = new Media(media); }
+    let tooltip = `<a
+    href=${media.href()}
+    title='${this.toString(media)}'
+    target='_blank'
+    style='margin: 0 2px'
+    >`;
+    if (this.typeMedia(media) === 'Photo') {
+      tooltip += `<img style='
+      height: 50px; width: 50px; border-radius: 25px; object-fit: cover;
+      '
+      src='${media.href(50)}' alt='${media.title_fr}' >`;
+    } else {
+      tooltip += `
+      <div style='
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+      border-radius: 25px;
+      background-color: lightgrey;
+      vertical-align: middle;
+      '
+      >
+      <div
+      style="height:24px;"
+      class="material-icons md-24"
+      >
+      ${this.icon(media)}
+      </div>
+      </div>
+      `;
+    }
+    tooltip +='</a>'
+    return tooltip;
+  }
 }

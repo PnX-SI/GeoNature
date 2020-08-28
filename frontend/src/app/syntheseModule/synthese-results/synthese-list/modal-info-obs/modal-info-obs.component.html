@@ -16,6 +16,9 @@
       <div class="padding-sm col-xs-7 col-sm-7 col-md-7 col-lg-7 ">
 
         <span class="font-xs">
+          <div *ngIf="selectedObs?.place_name">
+            <b>Nom du lieu : </b> {{selectedObs?.place_name}}
+          </div>
           <b> Observation de : </b> {{selectedObs?.observers}}
 
           <br>

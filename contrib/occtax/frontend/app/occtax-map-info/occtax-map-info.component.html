@@ -84,6 +84,10 @@
               <div class="label"> &nbsp; et le : </div>
               <div class="value">{{ releve.date_max | date:'dd/MM/yyyy' }} {{releve.hour_max}} </div>
             </div>
+            <div *ngIf="occtaxConfig.form_fields.place_name">
+                <div class="label">  {{ 'Releve.PlaceName' | translate }} :</div>
+                <div class="value">{{ releve.place_name  || "-"}}</div>
+              </div>
             <div *ngIf="occtaxConfig.form_fields.altitude_min">
               <div class="label">  Altitude min :</div>
               <div class="value">{{ releve.altitude_min  || "-"}}</div>
@@ -263,6 +267,29 @@
                       <div class="label"> UUID SINP : </div>
                       <div class="value"> {{counting?.unique_id_sinp_occtax}} </div>
                     </div>
+
+                    <ng-container *ngFor="let media of counting.medias; index as i">
+                      <div>
+                        <div class="label"> {{ 'Media.Media' | translate }} {{ i + 1 }}/{{ counting.medias.length}} : </div>
+                        <div class="value">                     <a
+                          [href]="ms.href(media)" target=blank
+                          >{{ media.title_fr }}</a> 
+                          <i>
+                            ({{ ms.typeMedia(media) }}, {{ media.author }})
+                          </i>
+                          <span *ngIf="media.description_fr">{{media.description_fr}}</span>
+                        </div>
+                      </div>
+                      <div>
+                        <pnx-display-medias 
+                          [medias]="counting.medias"
+                          [index]=i
+                          display="medium"
+                          diaporama="true"
+                        ></pnx-display-medias>
+                      </div>
+                    </ng-container>
+
 
                     <mat-divider></mat-divider>
                   </div>

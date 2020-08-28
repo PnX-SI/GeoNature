@@ -9,11 +9,16 @@
     ></pnx-dynamic-form-generator>
   </div>
 
+  <span *ngFor='let media of mediaForm.value.medias'>
+    <span [innerHTML]='ms.tooltip(media)'></span>
+    {{ms.tooltip(media)}}
+  </span>
+
   <div class="flex-container" >
     <div>
       <pnx-display-medias
         [medias]="mediaForm.value.medias"
-        display="medium"
+        display="mini"
         diaporama="true"
       ></pnx-display-medias>
     </div>

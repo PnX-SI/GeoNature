@@ -425,10 +425,11 @@ def releveHandler(request, *, releve, info_role):
     # Modification de la requete geojson en releve
     json_req = request.get_json()
     json_req["properties"]["geom_4326"] = json_req["geometry"]
-
+    print(json_req)
     # chargement des données POST et merge avec relevé initial
     releve, errors = releveSchema.load(json_req["properties"], instance=releve)
-
+    print(releve.as_dict())
+    # print(releve.place_name)
     if bool(errors):
         raise InsufficientRightsError(
             errors, 422,

@@ -101,6 +101,7 @@
     "DoesNotExist": "This releve does not exist",
     "StayOnFormInterface": "Stay on form interface",
     "GeoObjectNature": "Geographical object nature",
+    "PlaceName": "Place name",
     "Infos": {
       "ReleveAdded": "Releve added",
       "ReleveModified": "Releve modified"

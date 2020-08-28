@@ -173,6 +173,7 @@ altitude_min,
 altitude_max,
 depth_min,
 depth_max,
+place_name,
 the_geom_4326,
 the_geom_point,
 the_geom_local,
@@ -224,6 +225,7 @@ VALUES(
   occurrence.non_digital_proof,
   releve.altitude_min,
   releve.altitude_max,
+  releve.place_name,
   releve.depth_min,
   releve.depth_max,
   releve.geom_4326,
@@ -270,6 +272,7 @@ CREATE TABLE t_releves_occtax (
     altitude_max integer,
     depth_min integer,
     depth_max integer,
+    place_name character varying(500),
     meta_device_entry character varying(20),
     comment text,
     geom_local public.geometry(Geometry,MYLOCALSRID),
@@ -842,6 +845,7 @@ BEGIN
       altitude_max = NEW.altitude_max,
       depth_min = NEW.depth_min,
       depth_max = NEW.depth_max,
+      place_name = NEW.place_name,
       the_geom_4326 = NEW.geom_4326,
       the_geom_point = ST_CENTROID(NEW.geom_4326),
       id_nomenclature_geo_object_nature = NEW.id_nomenclature_geo_object_nature,
@@ -1093,6 +1097,7 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
     rel.altitude_max,
     rel.depth_min,
     rel.depth_max,
+    rel.place_name,
     rel.meta_device_entry,
     rel.comment,
     rel.geom_4326,
@@ -1110,7 +1115,7 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
      LEFT JOIN taxonomie.taxref t ON occ.cd_nom = t.cd_nom
      LEFT JOIN pr_occtax.cor_role_releves_occtax cor_role ON cor_role.id_releve_occtax = rel.id_releve_occtax
      LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
-  GROUP BY rel.id_releve_occtax, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.depth_min, rel.depth_max, rel.meta_device_entry, rel.comment, rel.geom_4326, rel."precision", t.cd_nom, occ.nom_cite, occ.id_occurrence_occtax, t.lb_nom, t.nom_valide, t.nom_complet_html, t.nom_vern;
+  GROUP BY rel.id_releve_occtax, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.depth_min, rel.depth_max, rel.place_name, rel.meta_device_entry, rel.comment, rel.geom_4326, rel."precision", t.cd_nom, occ.nom_cite, occ.id_occurrence_occtax, t.lb_nom, t.nom_valide, t.nom_complet_html, t.nom_vern;
 
 
 --------------------

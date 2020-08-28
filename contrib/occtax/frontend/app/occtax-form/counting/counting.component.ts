@@ -52,7 +52,7 @@ export class OcctaxFormCountingComponent {
     return {
       displayDetails: false,
       author: author,
-      title_fr: `${date_txt}__${cd_nom}`,
+      title_fr: `${date_txt}_${lb_nom.replace(' ', '_')}_${cd_nom}`,
       description_fr: `${lb_nom} observé le ${date_txt2}`,
     }
   }

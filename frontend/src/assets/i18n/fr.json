@@ -103,6 +103,7 @@
     "DoesNotExist": "Ce relevé n'existe pas",
     "StayOnFormInterface": "Enchainer les relevés sans retourner à l'interface carte/liste",
     "GeoObjectNature": "Nature de l'objet géographique",
+    "PlaceName": "Nom du lieu",
     "Infos": {
       "ReleveAdded": "Relevé ajouté",
       "ReleveModified": "Relevé modifié"

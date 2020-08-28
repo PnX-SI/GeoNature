@@ -123,7 +123,8 @@ export_columns =  [
   "detNomOrg",
   "orgGestDat",
   "WKT",
-  "natObjGeo"
+  "natObjGeo",
+  "nomLieu
  ]
 
 # afficher l'outil pour pointer un marker à partir des coordonnées X/Y
@@ -142,6 +143,8 @@ ENABLE_UPLOAD_TOOL = true
     hour_max = true
     altitude_min = true
     altitude_max = true
+    depth_min = true
+    depth_max = true
     obs_technique = false
     group_type = false
     comment_releve = true
@@ -168,10 +171,12 @@ ENABLE_UPLOAD_TOOL = true
     count_max = true
     display_nom_valide = true
 
-# ------------- MEDIAS PARAMETER ---------------
-
-ENABLE_MEDIAS = true
     habitat = true
     grp_method = false
     behaviour = true
     geo_object_nature = false
+    place_name = false
+
+# ------------- MEDIAS PARAMETER ---------------
+
+ENABLE_MEDIAS = true
