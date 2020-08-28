@@ -339,6 +339,35 @@
       </table>
     </mat-tab>
 
+    <mat-tab label="Medias ({{ selectedObs?.medias.length }})" *ngIf="selectedObs?.medias.length">
+      <table class="font-xs table table-striped table-sm">
+        <ng-container *ngFor="let media of selectedObs?.medias; index as i">
+          <tr>
+            <td> Titre </td>
+            <td> <a target="_blank" [href]="mediaService.href(media)">{{media.title_fr}}</a> </td>
+          </tr>
+          <tr *ngIf='media.description_fr'>
+            <td> Description </td>
+            <td> {{ media.description_fr }} </td>
+          </tr>
+          <tr *ngIf='media.author'>
+            <td> Auteur </td>
+            <td> {{ media.author }} </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <pnx-display-medias
+              diaporama=true
+              [medias]="selectedObs?.medias"
+              [index]="i"
+              display="medium"
+              ></pnx-display-medias>
+            </td>
+          </tr>
+        </ng-container>
+      </table>
+    </mat-tab>
+
   </mat-tab-group>
 
 
