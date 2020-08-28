@@ -282,3 +282,7 @@ END;
 $BODY$
  LANGUAGE plpgsql IMMUTABLE
  COST 100;
+                                  
+                                   
+-- Add id_digitizer in dataset table
+ALTER TABLE gn_meta.t_datasets ADD id_digitizer int4 NULL;
