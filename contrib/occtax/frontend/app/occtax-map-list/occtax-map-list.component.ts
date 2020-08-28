@@ -24,6 +24,7 @@ import { Subscription } from "rxjs/Subscription";
 import * as moment from "moment";
 import { MediaService } from '@geonature_common/service/media.service';
 
+
 @Component({
   selector: "pnx-occtax-map-list",
   templateUrl: "occtax-map-list.component.html",

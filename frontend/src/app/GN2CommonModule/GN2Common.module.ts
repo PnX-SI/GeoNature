@@ -72,6 +72,7 @@ import { DisplayMouseOverDirective } from './directive/display-mouse-over.direct
 
 // pipe
 import { ReadablePropertiePipe } from './pipe/readable-propertie.pipe';
+import { SafeHtmlPipe } from './pipe/sanitizer.pipe';
 
 // Service
 import { MapService } from './map/map.service';
@@ -132,6 +133,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     DisableControlDirective,
     DisplayMouseOverDirective,
     ReadablePropertiePipe,
+    SafeHtmlPipe,
     DatasetsComponent,
     MapListGenericFiltersComponent,
     ObserversTextComponent,
@@ -194,6 +196,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     DisableControlDirective,
     DisplayMouseOverDirective,
     ReadablePropertiePipe,
+    SafeHtmlPipe,
     DatasetsComponent,
     ModalDownloadComponent,
     FormsModule,
