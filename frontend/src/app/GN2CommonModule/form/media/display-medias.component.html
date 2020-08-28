@@ -1,5 +1,5 @@
 <ng-container *ngFor="let media of medias; index as i">
-  <ng-container *ngIf="(!index && (index !== 0)) || i == index">
+  <ng-container *ngIf="(!index && index !== 0) || i == index">
     <ng-container *ngIf="media.id_media && bInitialized">
       <span class="media-mini" *ngIf="display == 'mini'">
         <ng-container *ngIf="ms.typeMedia(media) === 'Photo'">
@@ -50,12 +50,11 @@
           <ng-container *ngIf="ms.typeMedia(media) === 'Audio'">
             <audio class="media-center" controls [src]="media.href()"></audio>
           </ng-container>
-
           <ng-container *ngIf="ms.typeMedia(media) === 'Photo'">
             <img
-              *ngIf="display === 'medium'"
+              *ngIf="['medium', 'small'].includes(display)"
               class="media-center"
-              [src]="media.href(200)"
+              [src]="media.href(thumbnailHeight)"
               [ngClass]="{ 'media-diapo-link': !!diaporama }"
               alt="{{ media.title_fr }}"
               matTooltip="{{ diaporama ? ('Media.diaporama' | translate) : '' }}"

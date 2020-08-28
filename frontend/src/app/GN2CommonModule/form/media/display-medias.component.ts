@@ -26,6 +26,7 @@ export class DisplayMediasComponent {
   @Input() diaporama = false;
 
   public height: string;
+  public thumbnailHeight: number;
   public bInitialized = false;
   public innerHTMLPDF = {};
 
@@ -50,7 +51,15 @@ export class DisplayMediasComponent {
         this.medias[index].safeEmbedUrl = this.getSafeEmbedUrl(index);
       }
     }
-    this.height = this.display === 'medium' ? '200px' : this.display === 'diaporama' ? '600px' : '100%';
+
+    const heights = {
+      'mini': 50,
+      'small': 100,
+      'medium': 200,
+    }
+
+    this.height = heights[this.display] ? `${heights[this.display]}px` : '100%';
+    this.thumbnailHeight = heights[this.display] || '200';
   }
 
   openDialog(index) {

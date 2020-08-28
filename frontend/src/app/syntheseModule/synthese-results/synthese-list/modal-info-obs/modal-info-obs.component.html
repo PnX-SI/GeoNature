@@ -98,14 +98,36 @@
                   </tr>
                 </table>
 
-                <h5 class="underlined underlined-sm main-color"> Médias </h5>
-                Médias: {{selectedObs?.medias.length}}
-                <table class="font-xs table table-striped table-sm">
-                  <tr>
-                    <td> Médias </td>
-                    <td> {{selectedObs?.medias.length}} </td>
-                  </tr>
-                </table>
+                <ng-container *ngIf="selectedObs?.medias.length">
+                  <h5 class="underlined underlined-sm main-color"> Médias
+                  </h5>
+                  <table class="font-xs table table-striped table-sm">
+                    <ng-container *ngFor="let media of selectedObs?.medias; index as i">
+                      <tr>
+                        <td> Titre </td>
+                        <td> <a target="_blank" [href]="mediaService.href(media)">{{media.title_fr}}</a> </td>
+                      </tr>
+                      <tr *ngIf='media.description_fr'>
+                        <td> Description </td>
+                        <td> {{ media.description_fr }} </td>
+                      </tr>
+                      <tr *ngIf='media.author'>
+                        <td> Auteur </td>
+                        <td> {{ media.author }} </td>
+                      </tr>
+                      <tr>
+                        <td colspan="2">
+                          <pnx-display-medias
+                          diaporama=true
+                          [medias]="selectedObs?.medias"
+                          [index]="i"
+                          display="small"
+                          ></pnx-display-medias>
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </table>
+                </ng-container>
 
               </div>
               <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">

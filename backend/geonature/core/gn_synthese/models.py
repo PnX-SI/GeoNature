@@ -464,12 +464,12 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
         uselist=True,
     )
 
-    # medias = DB.relationship(
-    #     TMedias,
-    #     primaryjoin=(func.gn_commons.check_entity_uuid_exist( VSyntheseDecodeNomenclatures.source.schema_name + '.' + VSyntheseDecodeNomenclatures.source.table + '.' + VSyntheseDecodeNomenclatures.source., TMedias.uuid_attached_row),
-    #     foreign_keys=[TMedias.uuid_attached_row],
-    # )
-    
+    medias = DB.relationship(
+        TMedias,
+        primaryjoin=(unique_id_sinp == TMedias.uuid_attached_row),
+        foreign_keys=[TMedias.uuid_attached_row],
+    )
+
 
 @serializable
 class VColorAreaTaxon(DB.Model):
