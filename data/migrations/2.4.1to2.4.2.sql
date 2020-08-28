@@ -286,6 +286,7 @@ ALTER TABLE gn_synthese.synthese
     ADD COLUMN depth_max integer,
     ADD COLUMN place_name character varying(500),
     ADD COLUMN precision integer,
+    ADD COLUMN additional_data jsonb,
     ALTER COLUMN id_nomenclature_behaviour SET DEFAULT gn_synthese.get_default_nomenclature_value('OCC_COMPORTEMENT'),
     ADD CONSTRAINT fk_synthese_id_nomenclature_behaviour FOREIGN KEY (id_nomenclature_behaviour) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
     ADD CONSTRAINT check_synthese_behaviour CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour, 'OCC_COMPORTEMENT')) NOT VALID,

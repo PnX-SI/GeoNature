@@ -4,7 +4,7 @@ from flask import current_app
 from sqlalchemy import ForeignKey, or_, Sequence
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import select, func
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, JSONB
 from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
 from geojson import Feature
@@ -224,6 +224,7 @@ class Synthese(DB.Model):
     id_nomenclature_determination_method = DB.Column(DB.Integer)
     comment_context = DB.Column(DB.Unicode)
     comment_description = DB.Column(DB.Unicode)
+    additional_data = DB.Column(JSONB)
     meta_validation_date = DB.Column(DB.DateTime)
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)

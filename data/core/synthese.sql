@@ -192,6 +192,7 @@ CREATE TABLE synthese (
     id_nomenclature_determination_method integer DEFAULT gn_synthese.get_default_nomenclature_value('METH_DETERMIN'),
     comment_context text,
     comment_description text,
+    additional_data jsonb, 
     meta_validation_date timestamp without time zone,
     meta_create_date timestamp without time zone DEFAULT now(),
     meta_update_date timestamp without time zone DEFAULT now(),
