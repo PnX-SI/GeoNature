@@ -159,3 +159,4 @@ class GnModuleSchemaConf(Schema):
     ENABLE_GPS_TOOL = fields.Boolean(missing=True)
     ENABLE_UPLOAD_TOOL = fields.Boolean(missing=True)
     DATE_FORM_WITH_TODAY = fields.Boolean(missing=True)
+    ENABLE_PLACES = fields.Boolean(missing=True)
