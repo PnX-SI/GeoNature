@@ -16,14 +16,14 @@ interface OCCTAX_FORM_PARAM {
     altitude_max?: number;
     meta_device_entry?: string;
     comment?: string;
-    id_nomenclature_obs_technique?: number;
+    id_nomenclature_obs_collect_campanule?: number;
     observers?: Array<any>;
     observers_txt?: string;
     id_nomenclature_grp_typ?: number;
     grp_method?: string;
   };
   occurrence?: {
-    id_nomenclature_obs_meth?: number;
+    id_nomenclature_obs_technique?: number;
     id_nomenclature_bio_condition?: number;
     id_nomenclature_bio_status?: number;
     id_nomenclature_naturalness?: number;
@@ -63,14 +63,14 @@ export class OcctaxFormParamService {
       altitude_max: null,
       meta_device_entry: null,
       comment: null,
-      id_nomenclature_obs_technique: null,
+      id_nomenclature_obs_collect_campanule: null,
       observers: null,
       observers_txt: null,
       id_nomenclature_grp_typ: null,
       grp_method: null,
     },
     occurrence: {
-      id_nomenclature_obs_meth: null,
+      id_nomenclature_obs_technique: null,
       id_nomenclature_bio_condition: null,
       id_nomenclature_bio_status: null,
       id_nomenclature_naturalness: null,

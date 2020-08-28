@@ -84,7 +84,7 @@ def releve_data(client):
             "t_occurrences_occtax": [
                 {
                     "id_nomenclature_naturalness": default_nomenclatures["NATURALITE"],
-                    "id_nomenclature_obs_meth": default_nomenclatures["METH_OBS"],
+                    "id_nomenclature_obs_technique": default_nomenclatures["METH_OBS"],
                     "digital_proof": None,
                     "cor_counting_occtax": [
                         {

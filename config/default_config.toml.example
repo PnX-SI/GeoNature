@@ -289,7 +289,7 @@ MAIL_ON_ERROR = false
         "obsDescr",
         "ObjGeoTyp",
         "methGrp",
-        "obsMeth",
+        "obsTech",
         "ocEtatBio",
         "ocStatBio",
         "ocNat",

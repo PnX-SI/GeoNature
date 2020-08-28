@@ -83,7 +83,7 @@ export class OcctaxFormReleveService {
       meta_device_entry: null,
       comment: null,
       cd_hab: null,
-      id_nomenclature_obs_technique: [null, Validators.required],
+      id_nomenclature_obs_collect_campanule: null,
       observers: [
         null,
         !ModuleConfig.observers_txt ? Validators.required : null,
@@ -254,8 +254,8 @@ export class OcctaxFormReleveService {
               this.occtaxParamS.get("releve.id_nomenclature_grp_typ") ||
               data["TYP_GRP"],
             grp_method: this.occtaxParamS.get("releve.grp_method"),
-            id_nomenclature_obs_technique:
-              this.occtaxParamS.get("releve.id_nomenclature_obs_technique") ||
+            id_nomenclature_obs_collect_campanule:
+              this.occtaxParamS.get("releve.id_nomenclature_obs_collect_campanule") ||
               data["TECHNIQUE_OBS"],
             id_nomenclature_geo_object_nature:
               this.occtaxParamS.get(

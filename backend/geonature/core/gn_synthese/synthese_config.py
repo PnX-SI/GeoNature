@@ -20,7 +20,7 @@ DEFAULT_EXPORT_COLUMNS = [
     "obsDescr",
     "ObjGeoTyp",
     "methGrp",
-    "obsMeth",
+    "obsTech",
     "ocEtatBio",
     "ocStatBio",
     "ocNat",

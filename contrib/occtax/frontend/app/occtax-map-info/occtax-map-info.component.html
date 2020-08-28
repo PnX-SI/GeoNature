@@ -109,9 +109,9 @@
               <div class="value">{{ releve.depth_max  || "-"}}</div>
             </div>
 
-            <div *ngIf="occtaxConfig.form_fields.obs_technique">
-              <div class="label">  {{ 'Releve.ObsTechnique' | translate }} : </div>
-              <div class="value">{{getLibelleByID(releve.id_nomenclature_obs_technique)}}</div>
+            <div *ngIf="occtaxConfig.form_fields.obs_collect">
+              <div class="label">  {{ 'Releve.ObsCollectCampanule' | translate }} : </div>
+              <div class="value">{{getLibelleByID(releve.id_nomenclature_obs_collect_campanule)}}</div>
             </div>
             <div *ngIf="occtaxConfig.form_fields.group_type" >
               <div class="label"> {{ 'Releve.GroupType' | translate }} :</div>
@@ -175,9 +175,9 @@
                     <div class="label"> {{ 'Taxon.ObservationStatus' | translate }} : </div>
                     <div class="value"> {{getLibelleByID((displayOccurrence|async).id_nomenclature_observation_status)}}</div>
                   </div>
-                  <div *ngIf="occtaxConfig.form_fields.obs_method">
-                    <div class="label"> {{ 'Taxon.ObsMethod' | translate }} : </div>
-                    <div class="value"> {{getLibelleByID((displayOccurrence|async).id_nomenclature_obs_meth)}} </div>
+                  <div *ngIf="occtaxConfig.form_fields.obs_tech">
+                    <div class="label"> {{ 'Taxon.ObsTech' | translate }} : </div>
+                    <div class="value"> {{getLibelleByID((displayOccurrence|async).id_nomenclature_obs_technique)}} </div>
                   </div>
                   <div *ngIf="occtaxConfig.form_fields.bio_condition">
                     <div class="label"> {{ 'Taxon.BiologicalCondition' | translate }} : </div>

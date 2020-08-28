@@ -2,7 +2,7 @@ export const FILTERSLIST = [
   {
     type_widget: "nomenclature",
     attribut_label: "Technique d'observation",
-    attribut_name: "id_nomenclature_obs_technique",
+    attribut_name: "id_nomenclature_obs_collect_campanule",
     code_nomenclature_type: "TECHNIQUE_OBS",
     required: false,
   },
@@ -36,8 +36,8 @@ export const FILTERSLIST = [
   },
   {
     type_widget: "nomenclature",
-    attribut_label: "Méthode d'observation",
-    attribut_name: "id_nomenclature_obs_meth",
+    attribut_label: "Technique d'observation",
+    attribut_name: "id_nomenclature_obs_technique",
     code_nomenclature_type: "METH_OBS",
     required: false,
   },

@@ -16,6 +16,10 @@ Notes:
 ajout de champs lié au passage occtax v2: MAJ des vues pas faites dans l'update ?
 A mettre ici
 
+Changement dans les paramètres Occtax :
+Les paramètres d'affichage/masquage des champs du formulaire opèrent les changements suivants:
+``obs_meth`` devient ``osb_tech`` 
+``obs_technique`` devient ``obs_collect``
 
 ::
 

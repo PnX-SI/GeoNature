@@ -7,7 +7,7 @@ SET client_min_messages = warning;
 
 SET search_path = public;
 
-CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS 
+CREATE OR REPLACE VIEW pr_occtax.export_occtax AS 
  SELECT 
     rel.unique_id_sinp_grp as "idSINPRegroupement",
     ref_nomenclatures.get_cd_nomenclature(rel.id_nomenclature_grp_typ) AS "typGrp",
@@ -31,7 +31,8 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_source_status) AS "statSource",
     d.dataset_name AS "jddCode",
     d.unique_dataset_id AS "jddId",
-    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_obs_meth) AS "obsMeth",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_obs_technique) AS "obsTech",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_obs_collect_campanule) AS "techCollect",
     ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_bio_condition) AS "ocEtatBio",
     ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_naturalness) AS "ocNat",
     ref_nomenclatures.get_nomenclature_label(ccc.id_nomenclature_sex) AS "ocSex",

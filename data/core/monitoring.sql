@@ -42,7 +42,7 @@ CREATE TABLE t_base_visits
   id_digitiser integer,
   visit_date_min date NOT NULL,
   visit_date_max date,
-  id_nomenclature_obs_technique integer DEFAULT ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),
+  id_nomenclature_obs_collect_campanule integer DEFAULT ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),
   id_nomenclature_grp_typ integer DEFAULT ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'PASS'),
   comments text,
   uuid_base_visit UUID DEFAULT public.uuid_generate_v4(),
@@ -131,7 +131,7 @@ ALTER TABLE ONLY cor_site_area
   ADD CONSTRAINT fk_cor_site_area_id_area FOREIGN KEY (id_area) REFERENCES ref_geo.l_areas (id_area);
 
 ALTER TABLE ONLY t_base_visits
-    ADD CONSTRAINT fk_t_base_visits_id_nomenclature_obs_technique FOREIGN KEY (id_nomenclature_obs_technique) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_base_visits_id_nomenclature_obs_collect_campanule FOREIGN KEY (id_nomenclature_obs_collect_campanule) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_base_visits
     ADD CONSTRAINT fk_t_base_visits_id_nomenclature_grp_typ FOREIGN KEY (id_nomenclature_grp_typ) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
@@ -152,7 +152,7 @@ ALTER TABLE t_base_sites
   ADD CONSTRAINT check_t_base_sites_type_site CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_type_site,'TYPE_SITE')) NOT VALID;
 
 ALTER TABLE t_base_visits
-  ADD CONSTRAINT check_t_base_visits_id_nomenclature_obs_technique CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_obs_technique,'TECHNIQUE_OBS')) NOT VALID;
+  ADD CONSTRAINT check_t_base_visits_id_nomenclature_obs_collect_campanule CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_obs_collect_campanule,'TECHNIQUE_OBS')) NOT VALID;
 
 ALTER TABLE t_base_visits
   ADD CONSTRAINT check_t_base_visits_id_nomenclature_grp_typ CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_grp_typ,'TYP_GRP')) NOT VALID;

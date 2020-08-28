@@ -145,8 +145,7 @@ CREATE TABLE synthese (
     id_nomenclature_geo_object_nature integer DEFAULT get_default_nomenclature_value('NAT_OBJ_GEO'),
     id_nomenclature_grp_typ integer DEFAULT get_default_nomenclature_value('TYP_GRP'),
     grp_method character varying(255),
-    id_nomenclature_obs_meth integer DEFAULT get_default_nomenclature_value('METH_OBS'),
-    id_nomenclature_obs_technique integer DEFAULT get_default_nomenclature_value('TECHNIQUE_OBS'),
+    id_nomenclature_obs_technique integer DEFAULT get_default_nomenclature_value('METH_OBS'),
     id_nomenclature_bio_status integer DEFAULT get_default_nomenclature_value('STATUT_BIO'),
     id_nomenclature_bio_condition integer DEFAULT get_default_nomenclature_value('ETA_BIO'),
     id_nomenclature_naturalness integer DEFAULT get_default_nomenclature_value('NATURALITE'),
@@ -215,6 +214,9 @@ COMMENT ON COLUMN gn_synthese.synthese.comment_context
 COMMENT ON COLUMN gn_synthese.synthese.comment_description
   IS 'Commentaire de l''occurrence';
 COMMENT ON COLUMN gn_synthese.synthese.id_area_attachment
+  IS 'Id area du rattachement géographique - cas des observation sans géométrie précise';
+COMMENT ON COLUMN gn_synthese.synthese.id_nomenclature_obs_technique
+  IS 'Correspondance champs standard occtax = obsTechnique. En raison d''un changement de nom, le code nomenclature associé reste ''METH_OBS'' ';
   IS 'Id area du rattachement géographique - cas des observation sans géométrie précise';
 
 CREATE SEQUENCE synthese_id_synthese_seq
@@ -296,9 +298,6 @@ ALTER TABLE ONLY synthese
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_nomenclature_id_nomenclature_grp_typ FOREIGN KEY (id_nomenclature_grp_typ) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_id_nomenclature_obs_meth FOREIGN KEY (id_nomenclature_obs_meth) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_nomenclature_obs_technique FOREIGN KEY (id_nomenclature_obs_technique) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
@@ -404,16 +403,13 @@ ALTER TABLE ONLY synthese
     ADD CONSTRAINT check_synthese_count_max CHECK (count_max >= count_min);
 
 ALTER TABLE synthese
-  ADD CONSTRAINT check_synthese_obs_meth CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_obs_meth,'METH_OBS')) NOT VALID;
+  ADD CONSTRAINT check_synthese_obs_meth CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_obs_technique,'METH_OBS')) NOT VALID;
 
 ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_geo_object_nature CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_geo_object_nature,'NAT_OBJ_GEO')) NOT VALID;
 
 ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_typ_grp CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_grp_typ,'TYP_GRP')) NOT VALID;
-
-ALTER TABLE synthese
-  ADD CONSTRAINT check_synthese_obs_technique CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_obs_technique,'TECHNIQUE_OBS')) NOT VALID;
 
 ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_bio_status CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_bio_status,'STATUT_BIO')) NOT VALID;
@@ -784,7 +780,6 @@ SELECT
 s.id_synthese,
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_geo_object_nature) AS nat_obj_geo,
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_grp_typ) AS grp_typ,
-ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_obs_meth) AS obs_method,
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_obs_technique) AS obs_technique,
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_bio_status) AS bio_status,
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_bio_condition) AS bio_condition,
@@ -846,7 +841,6 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
     s.id_nomenclature_info_geo_type,
     s.id_nomenclature_grp_typ,
     s.grp_method,
-    s.id_nomenclature_obs_meth,
     s.id_nomenclature_obs_technique,
     s.id_nomenclature_bio_status,
     s.id_nomenclature_bio_condition,
@@ -926,8 +920,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     n1.label_default AS "natObjGeo",
     n2.label_default AS "typGrp",
     s.grp_method AS "methGrp",
-    n3.label_default AS "obsMeth",
-    n4.label_default AS "obsTech",
+    n3.label_default AS "obsTech",
     n5.label_default AS "ocStatutBio",
     n6.label_default AS "ocEtatBio",
     n7.label_default AS "ocNat",
@@ -950,8 +943,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
      JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source
      LEFT JOIN ref_nomenclatures.t_nomenclatures n1 ON s.id_nomenclature_geo_object_nature = n1.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n2 ON s.id_nomenclature_grp_typ = n2.id_nomenclature
-     LEFT JOIN ref_nomenclatures.t_nomenclatures n3 ON s.id_nomenclature_obs_meth = n3.id_nomenclature
-     LEFT JOIN ref_nomenclatures.t_nomenclatures n4 ON s.id_nomenclature_obs_technique = n4.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n3 ON s.id_nomenclature_obs_technique = n3.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n5 ON s.id_nomenclature_bio_status = n5.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n6 ON s.id_nomenclature_bio_condition = n6.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n7 ON s.id_nomenclature_naturalness = n7.id_nomenclature

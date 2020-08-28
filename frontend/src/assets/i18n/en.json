@@ -91,6 +91,7 @@
     "Delete": "Delete releve",
     "DeleteSuccessfully": "Releve deleted successfully",
     "ObsTechnique": "Observation technic",
+    "ObsCollectCampanule": "Observation collect technique (Campanule)",
     "Validate": "Validate releve",
     "UnValidate": "Unvalidate relev",
     "AddTaxonOnReleve": "Add a taxon to this releve",
@@ -127,7 +128,7 @@
     "Taxons": "Taxons",
     "NomCite": "Mentioned species",
     "TaxonName": "Taxon name",
-    "ObsMethod": "Observation method",
+    "ObsTech": "Observation techique",
     "Advanced": "Advanced",
     "BiologicalCondition": "Biological condition",
     "BiologicalStatus": "Biological status",
@@ -160,7 +161,7 @@
       "CdNomRequiredError": "Taxon required",
       "DeterminerRequiredError": "Determiner required",
       "DeterminationMethodRequiredError": "Determination method required",
-      "ObsMethodRequiredError": "Observation method required",
+      "TechObsRequiredError": "Observation technique required",
       "BiologicalConditionRequiredError": "Biological condition required",
       "CountingRequiredError": "Counting required"
     }
