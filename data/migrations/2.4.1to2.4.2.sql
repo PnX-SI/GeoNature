@@ -295,7 +295,7 @@ ADD COLUMN depth_min integer,
 ADD COLUMN depth_max integer,
 ADD COLUMN place_name character varying(500),
 ADD CONSTRAINT check_t_releves_occtax_geo_object_nature CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_geo_object_nature,'NAT_OBJ_GEO')) NOT VALID,
-ADD CONSTRAINT check_t_releves_occtax_depth CHECK (depth_max >= depth_min);
+ADD CONSTRAINT check_t_releves_occtax_depth CHECK (depth_max >= depth_min),
 ADD CONSTRAINT check_t_releves_occtax_depth CHECK (depth_max >= depth_min),
 ADD CONSTRAINT fk_t_releves_occtax_id_nomenclature_geo_object_nature FOREIGN KEY (id_nomenclature_geo_object_nature) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
 ADD COLUMN cd_hab integer,
@@ -705,3 +705,50 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
      JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
      JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source;
+
+
+CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS
+ WITH count_nb_obs AS (
+         SELECT count(*) AS nb_obs,
+            synthese.id_dataset
+           FROM gn_synthese.synthese
+          GROUP BY synthese.id_dataset
+        )
+ SELECT d.dataset_name AS jeu_donnees,
+    d.id_dataset AS jdd_id,
+    d.unique_dataset_id AS "idSINPJdd",
+    af.acquisition_framework_name AS cadre_acquisition,
+    string_agg(DISTINCT concat(COALESCE(orga.nom_organisme, ((roles.nom_role::text || ' '::text) || roles.prenom_role::text)::character varying), ': ', nomencl.label_default), ' | '::text) AS acteurs,
+    count_nb_obs.nb_obs AS nombre_obs
+   FROM gn_meta.t_datasets d
+     JOIN gn_meta.t_acquisition_frameworks af ON af.id_acquisition_framework = d.id_acquisition_framework
+     JOIN gn_meta.cor_dataset_actor act ON act.id_dataset = d.id_dataset
+     JOIN ref_nomenclatures.t_nomenclatures nomencl ON nomencl.id_nomenclature = act.id_nomenclature_actor_role
+     LEFT JOIN utilisateurs.bib_organismes orga ON orga.id_organisme = act.id_organism
+     LEFT JOIN utilisateurs.t_roles roles ON roles.id_role = act.id_role
+     JOIN count_nb_obs ON count_nb_obs.id_dataset = d.id_dataset
+  GROUP BY d.id_dataset, d.unique_dataset_id, d.dataset_name, af.acquisition_framework_name, count_nb_obs.nb_obs;
+
+
+-- Migration des données de la colonne statubio vers comportement
+  UPDATE pr_occtax.t_occurrences_occtax AS occ
+  SET id_nomenclature_behaviour = sub.new_id_nomenc
+  FROM (
+    SELECT 
+      id_occurrence_occtax,
+    CASE 
+      WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_bio_status) = 'OLD_6' THEN ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '6')
+      WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_bio_status) = 'OLD_7' THEN ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '7')
+      WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_bio_status) = 'OLD_8' THEN ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '8')
+      WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_bio_status) = 'OLD_10' THEN ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '10')
+      WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_bio_status) = 'OLD_11' THEN ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '11')
+      WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_bio_status) = 'OLD12' THEN ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '12')
+
+      END as new_id_nomenc
+    FROM pr_occtax.t_occurrences_occtax
+  ) AS sub
+  WHERE occ.id_occurrence_occtax = sub.id_occurrence_occtax
+;
+
+ALTER TABLE pr_occtax.t_occurrences_occtax 
+ALTER COLUMN nom_cite SET NOT NULL;
