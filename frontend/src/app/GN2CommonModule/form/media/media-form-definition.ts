@@ -46,6 +46,13 @@ export const mediaFormDefinitionsDict = {
     value: true,
     hidden: ({ meta }) => !(meta.details && meta.details.length)
   },
+  id_nomenclature_media_type: {
+    attribut_label: 'Type de média',
+    type_widget: 'nomenclature',
+    required: true,
+    code_nomenclature_type: 'TYPE_MEDIA',
+    hidden: hideDetails,
+  },
   bFile: {
     attribut_label: 'Import du média',
     type_widget: 'bool_radio',
@@ -78,13 +85,6 @@ export const mediaFormDefinitionsDict = {
   author: {
     attribut_label: 'Auteur',
     type_widget: 'text',
-    hidden: hideDetails,
-  },
-  id_nomenclature_media_type: {
-    attribut_label: 'Type de média',
-    type_widget: 'nomenclature',
-    required: true,
-    code_nomenclature_type: 'TYPE_MEDIA',
     hidden: hideDetails,
   },
   id_media: {
