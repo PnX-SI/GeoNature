@@ -136,6 +136,6 @@
   transition-duration: 0.2s;
 }
 
-.media-dialog {
+::ng-deep .cdk-overlay-container {
   z-index: 1111;
 }
