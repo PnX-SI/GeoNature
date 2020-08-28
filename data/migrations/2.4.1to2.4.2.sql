@@ -282,3 +282,67 @@ END;
 $BODY$
  LANGUAGE plpgsql IMMUTABLE
  COST 100;
+                                   
+
+                                   
+-- Mise à jour des nomenclatures "CA_OBJECTIFS" et mise à jour des données en conséquence (standard métadonnées 1.3.10)
+-- Geler les valeurs obsolètes des objectifs du Cadre d'acquisition
+UPDATE ref_nomenclatures.t_nomenclatures
+SET active=false,
+	statut='Gelée'
+WHERE id_nomenclature in (
+	SELECT n.id_nomenclature
+	FROM ref_nomenclatures.t_nomenclatures n
+	JOIN ref_nomenclatures.bib_nomenclatures_types t on t.id_type=n.id_type 
+	WHERE t.mnemonique='CA_OBJECTIFS');
+
+-- Importer les nouvelles valeurs 
+DO $$
+DECLARE
+	my_id_type INTEGER;
+BEGIN
+	my_id_type := (SELECT id_type FROM ref_nomenclatures.bib_nomenclatures_types WHERE mnemonique='CA_OBJECTIFS');
+
+	INSERT INTO ref_nomenclatures.t_nomenclatures (id_type, cd_nomenclature, mnemonique, label_default, definition_default, label_fr, definition_fr, source, statut, id_broader, hierarchy, meta_create_date, meta_update_date, active)
+	VALUES
+		(my_id_type, '8', 'InvCart', 'Inventaires et cartographie', 'L''acquisition des données d''occurrence est réalisée avec la démarche d''avoir des informations sur la présence/absence ou effectif/abondance (dénombrement…) d''un ou de plusieurs objets de biodiversité. Le dispositif de collecte est établi pour avoir une représentation spatiale de la répartition d''un ou de plusieurs objets de biodiversité à des dates ou des périodes prédéfinies.', 'Inventaires et cartographie', 'L''acquisition des données d''occurrence est réalisée avec la démarche d''avoir des informations sur la présence/absence ou effectif/abondance (dénombrement…) d''un ou de plusieurs objets de biodiversité. Le dispositif de collecte est établi pour avoir une représentation spatiale de la répartition d''un ou de plusieurs objets de biodiversité à des dates ou des périodes prédéfinies.', 'SINP', 'Validé', 0, (select lpad(my_id_type::text,3,'0')||'.'||'008'),now(),now(), true),
+		(my_id_type, '9', 'SuivSurv', 'Suivi/surveillance dans le temps', 'L''acquisition des données d''occurrence est réalisée avec un dispositif de collecte comprenant une répétition de l''acquisition au cours du temps. La démarche permet une comparaison d''un état entre différentes périodes pour un ou plusieurs objets de biodiversité. Elle est mise en place en lien avec une thématique prédéterminée (biologie de la conservation, changements globaux, …).', 'Suivi/surveillance dans le temps', 'L''acquisition des données d''occurrence est réalisée avec un dispositif de collecte comprenant une répétition de l''acquisition au cours du temps. La démarche permet une comparaison d''un état entre différentes périodes pour un ou plusieurs objets de biodiversité. Elle est mise en place en lien avec une thématique prédéterminée (biologie de la conservation, changements globaux, …).', 'SINP', 'Validé', 0, (select lpad(my_id_type::text,3,'0')||'.'||'009'),now(),now(), true),
+		(my_id_type, '10', 'Exp/Rech', 'Expérimentation/recherche', 'L''acquisition des données est réalisée avec une démarche d''amélioration de la connaissance scientifique ciblée sur une ou plusieurs questions précises (de la description des patrons de biodiversité à l''expérimentation pour expliquer les processus ou démontrer des relations causales de type ''avant/après'' (effet de la gestion, mécanismes etc.)). L''expérimentation et la recherche de type purement ''observationnelle'' ou ''corrélative'' doivent figurer dans les catégories ''inventaires'' ou ''suivis/surveillance''.' , 'Expérimentation/recherche', 'L''acquisition des données est réalisée avec une démarche d''amélioration de la connaissance scientifique ciblée sur une ou plusieurs questions précises (de la description des patrons de biodiversité à l''expérimentation pour expliquer les processus ou démontrer des relations causales de type ''avant/après'' (effet de la gestion, mécanismes etc.)). L''expérimentation et la recherche de type purement ''observationnelle'' ou ''corrélative'' doivent figurer dans les catégories ''inventaires'' ou ''suivis/surveillance''.' , 'SINP', 'Validé', 0, (select lpad(my_id_type::text,3,'0')||'.'||'010'),now(),now(), true),
+		(my_id_type, '11', 'MultAutr', 'Multiples ou autres', 'L''acquisition des données est réalisée avec une démarche propre faisant intervenir plusieurs démarches préalablement décrites.', 'Multiples ou autres', 'L''acquisition des données est réalisée avec une démarche propre faisant intervenir plusieurs démarches préalablement décrites.', 'SINP', 'Validé', 0, (select lpad(my_id_type::text,3,'0')||'.'||'011'),now(),now(), true);
+
+END $$;
+
+-- Faire correspondre les nouveaux objectifs aux Cadres d'acquisition sur la base des anciennes nomenclatures - Annexe 1 du standard 1.3.10 mtd
+DO $$
+DECLARE 
+	id_ca INTEGER;
+	my_obj_cd int[];
+BEGIN
+	FOR id_ca IN (SELECT DISTINCT id_acquisition_framework FROM gn_meta.cor_acquisition_framework_objectif)
+	LOOP
+		my_obj_cd := (
+			SELECT array_agg(n.cd_nomenclature)::int[]
+			FROM gn_meta.cor_acquisition_framework_objectif cao
+			JOIN ref_nomenclatures.t_nomenclatures n ON cao.id_nomenclature_objectif = n.id_nomenclature 
+			WHERE id_acquisition_framework = id_ca);
+
+		IF my_obj_cd && ARRAY[1, 2, 3, 6] THEN
+			INSERT INTO gn_meta.cor_acquisition_framework_objectif (id_acquisition_framework,id_nomenclature_objectif) 
+			VALUES(id_ca, (SELECT n.id_nomenclature FROM ref_nomenclatures.t_nomenclatures n JOIN ref_nomenclatures.bib_nomenclatures_types t on t.id_type=n.id_type WHERE t.mnemonique='CA_OBJECTIFS' AND n.cd_nomenclature='8'));		
+		END IF;
+		
+		IF my_obj_cd && ARRAY[5] THEN
+			INSERT INTO gn_meta.cor_acquisition_framework_objectif (id_acquisition_framework,id_nomenclature_objectif) 
+			VALUES(id_ca, (SELECT n.id_nomenclature FROM ref_nomenclatures.t_nomenclatures n JOIN ref_nomenclatures.bib_nomenclatures_types t on t.id_type=n.id_type WHERE t.mnemonique='CA_OBJECTIFS' AND n.cd_nomenclature='9'));
+		END IF;
+	
+		IF my_obj_cd && ARRAY[4,7] THEN
+			INSERT INTO gn_meta.cor_acquisition_framework_objectif (id_acquisition_framework,id_nomenclature_objectif) 
+			VALUES(id_ca, (SELECT n.id_nomenclature FROM ref_nomenclatures.t_nomenclatures n JOIN ref_nomenclatures.bib_nomenclatures_types t on t.id_type=n.id_type WHERE t.mnemonique='CA_OBJECTIFS' AND n.cd_nomenclature='11'));
+		END IF;
+	END LOOP;
+END $$;
+
+-- Supprimer les correspondances des Cadres d'Acquisition avec les anciennes nomenclatures des objectifs
+DELETE FROM gn_meta.cor_acquisition_framework_objectif
+WHERE id_nomenclature_objectif IN (SELECT n.id_nomenclature FROM ref_nomenclatures.t_nomenclatures n JOIN ref_nomenclatures.bib_nomenclatures_types t on t.id_type=n.id_type WHERE t.mnemonique='CA_OBJECTIFS' AND n.cd_nomenclature IN ('1','2','3','4','5','6','7'));
