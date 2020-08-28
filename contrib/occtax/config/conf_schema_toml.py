@@ -50,6 +50,7 @@ class FormConfig(Schema):
     grp_method = fields.Boolean(missing=False)
     behaviour = fields.Boolean(missing=True)
     place_name = fields.Boolean(missing=True)
+    precision = fields.Boolean(missing=False)
 
 
 default_map_list_conf = [
@@ -127,6 +128,7 @@ default_columns_export = [
     "WKT",
     "natObjGeo",
     "nomLieu",
+    "precision",
 ]
 
 

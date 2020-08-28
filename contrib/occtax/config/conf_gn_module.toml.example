@@ -175,3 +175,4 @@ ENABLE_UPLOAD_TOOL = true
     behaviour = true
     geo_object_nature = false
     place_name = false
+    precision = false

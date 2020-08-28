@@ -213,7 +213,7 @@ VALUES(
   -- status_source récupéré depuis le JDD
   id_nomenclature_source_status,
   -- id_nomenclature_info_geo_type: type de rattachement = géoréferencement
-  pr_occtax.get_default_nomenclature_value('TYP_INF_GEO'),
+  ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO', '1'),
   occurrence.id_nomenclature_behaviour,
   new_count.count_min,
   new_count.count_max,

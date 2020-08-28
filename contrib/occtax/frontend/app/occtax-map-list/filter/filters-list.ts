@@ -83,6 +83,12 @@ export const FILTERSLIST = [
     required: false,
   },
   {
+    type_widget: "number",
+    attribut_label: "Précision du pointage",
+    attribut_name: "precision",
+    required: false,
+  },
+  {
     type_widget: "text",
     attribut_label: "Nom du lieu",
     attribut_name: "place_name",

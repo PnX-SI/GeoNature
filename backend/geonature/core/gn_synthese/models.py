@@ -211,6 +211,7 @@ class Synthese(DB.Model):
     altitude_max = DB.Column(DB.Integer)
     depth_min = DB.Column(DB.Integer)
     depth_max = DB.Column(DB.Integer)
+    precision = DB.Column(DB.Integer)
     the_geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
     the_geom_point = DB.Column(Geometry("GEOMETRY", 4326))
     the_geom_local = DB.Column(Geometry("GEOMETRY", current_app.config["LOCAL_SRID"]))

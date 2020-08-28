@@ -210,6 +210,7 @@ class TRelevesOccurrence(ReleveModel):
     geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
     geom_local = DB.Column(Geometry("GEOMETRY", current_app.config["LOCAL_SRID"]))
     cd_hab = DB.Column(DB.Integer, ForeignKey(Habref.cd_hab))
+    precision = DB.Column(DB.Integer)
 
     habitat = relationship(Habref, lazy="select")
 

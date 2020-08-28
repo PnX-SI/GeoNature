@@ -87,7 +87,11 @@
             <div *ngIf="occtaxConfig.form_fields.place_name">
                 <div class="label">  {{ 'Releve.PlaceName' | translate }} :</div>
                 <div class="value">{{ releve.place_name  || "-"}}</div>
-              </div>
+            </div>
+            <div *ngIf="occtaxConfig.form_fields.precision">
+              <div class="label">  {{ 'Releve.Precision' | translate }} :</div>
+              <div class="value">{{ releve.precision  || "-"}}</div>
+            </div>
             <div *ngIf="occtaxConfig.form_fields.altitude_min">
               <div class="label">  Altitude min :</div>
               <div class="value">{{ releve.altitude_min  || "-"}}</div>

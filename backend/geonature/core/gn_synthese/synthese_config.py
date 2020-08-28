@@ -48,6 +48,8 @@ DEFAULT_EXPORT_COLUMNS = [
     "profMax",
     "lastAction",
     "validateur",
+    "precision",
+    "nomLieu",
 ]
 
 

@@ -95,6 +95,7 @@ export class OcctaxFormReleveService {
       id_nomenclature_grp_typ: null,
       grp_method: null,
       id_nomenclature_geo_object_nature: null,
+      precision: null
     });
 
     this.propertiesForm.patchValue(this.initialValues);

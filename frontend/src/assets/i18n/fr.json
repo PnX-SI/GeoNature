@@ -104,6 +104,7 @@
     "StayOnFormInterface": "Enchainer les relevés sans retourner à l'interface carte/liste",
     "GeoObjectNature": "Nature de l'objet géographique",
     "PlaceName": "Nom du lieu",
+    "Precision": "Precision",
     "Infos": {
       "ReleveAdded": "Relevé ajouté",
       "ReleveModified": "Relevé modifié"

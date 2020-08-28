@@ -877,7 +877,6 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
      JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source;
 
-
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
  SELECT s.id_synthese AS "idSynthese",
     s.entity_source_pk_value AS "idOrigine",
@@ -897,9 +896,8 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     public.ST_astext(s.the_geom_4326) AS wkt,
     to_char(s.date_min, 'YYYY-MM-DD') AS "dateDebut",
     to_char(s.date_max, 'YYYY-MM-DD') AS "dateFin",
-    s.date_max::date AS "dateFin",
-    s.date_min::time AS "heureFin"
-    s.date_max::time AS "heureDebut"
+    s.date_min::time AS "heureFin",
+    s.date_max::time AS "heureDebut",
     s.validator AS validateur,
     s.observers AS observer,
     s.id_digitiser AS id_digitiser,
@@ -971,6 +969,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
      LEFT JOIN ref_nomenclatures.t_nomenclatures n19 ON s.id_nomenclature_determination_method = n19.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n20 ON s.id_nomenclature_behaviour = n20.id_nomenclature
      LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = s.cd_hab;
+
 
 
 CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS

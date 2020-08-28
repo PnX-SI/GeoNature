@@ -102,6 +102,7 @@
     "StayOnFormInterface": "Stay on form interface",
     "GeoObjectNature": "Geographical object nature",
     "PlaceName": "Place name",
+    "Precision": "Precision",
     "Infos": {
       "ReleveAdded": "Releve added",
       "ReleveModified": "Releve modified"
