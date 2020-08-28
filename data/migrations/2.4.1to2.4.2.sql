@@ -295,7 +295,7 @@ ADD COLUMN depth_min integer,
 ADD COLUMN depth_max integer,
 ADD COLUMN place_name character varying(500),
 ADD CONSTRAINT check_t_releves_occtax_geo_object_nature CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_geo_object_nature,'NAT_OBJ_GEO')) NOT VALID,
-ADD CONSTRAINT check_t_releves_occtax_depth CHECK (depth_max >= depth_min);
+ADD CONSTRAINT check_t_releves_occtax_depth CHECK (depth_max >= depth_min),
 ADD CONSTRAINT check_t_releves_occtax_depth CHECK (depth_max >= depth_min),
 ADD CONSTRAINT fk_t_releves_occtax_id_nomenclature_geo_object_nature FOREIGN KEY (id_nomenclature_geo_object_nature) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
 ADD COLUMN cd_hab integer,
@@ -737,7 +737,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS
     SELECT 
       id_occurrence_occtax,
     CASE 
-      WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_bio_status) = 'OLD_6' OR THEN ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '6')
+      WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_bio_status) = 'OLD_6' THEN ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '6')
       WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_bio_status) = 'OLD_7' THEN ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '7')
       WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_bio_status) = 'OLD_8' THEN ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '8')
       WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_bio_status) = 'OLD_10' THEN ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '10')
