@@ -293,6 +293,7 @@ class TDatasets(CruvedHelper):
     meta_update_date = DB.Column(DB.DateTime)
     active = DB.Column(DB.Boolean, default=True)
     validable = DB.Column(DB.Boolean)
+    id_digitizer = DB.Column(DB.Integer)
 
     modules = DB.relationship("TModules", secondary=cor_module_dataset, lazy="select")
 
