@@ -122,88 +122,6 @@ END;
 $function$
 ;
 
-
-
--- vue validation de gn_commons necessitant le schéma synthese
-CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS
-SELECT  s.id_synthese,
-    s.unique_id_sinp,
-    s.unique_id_sinp_grp,
-    s.id_source,
-    s.entity_source_pk_value,
-    s.count_min,
-    s.count_max,
-    s.nom_cite,
-    s.meta_v_taxref,
-    s.sample_number_proof,
-    s.digital_proof,
-    s.non_digital_proof,
-    s.altitude_min,
-    s.altitude_max,
-    s.depth_min,
-    s.depth_max,
-    s.place_name,
-    s.the_geom_4326,
-    s.date_min,
-    s.date_max,
-    s.validator,
-    s.observers,
-    s.id_digitiser,
-    s.determiner,
-    s.comment_context,
-    s.comment_description,
-    s.meta_validation_date,
-    s.meta_create_date,
-    s.meta_update_date,
-    s.last_action,
-    d.id_dataset,
-    d.dataset_name,
-    d.id_acquisition_framework,
-    s.id_nomenclature_geo_object_nature,
-    s.id_nomenclature_info_geo_type,
-    s.id_nomenclature_grp_typ,
-    s.id_nomenclature_obs_meth,
-    s.id_nomenclature_obs_technique,
-    s.id_nomenclature_bio_status,
-    s.id_nomenclature_bio_condition,
-    s.id_nomenclature_naturalness,
-    s.id_nomenclature_exist_proof,
-    s.id_nomenclature_life_stage,
-    s.id_nomenclature_sex,
-    s.id_nomenclature_obj_count,
-    s.id_nomenclature_type_count,
-    s.id_nomenclature_sensitivity,
-    s.id_nomenclature_observation_status,
-    s.id_nomenclature_blurring,
-    s.id_nomenclature_source_status,
-    s.id_nomenclature_valid_status,
-    s.reference_biblio,
-    t.cd_nom,
-    t.cd_ref,
-    t.nom_valide,
-    t.lb_nom,
-    t.nom_vern,
-    n.mnemonique,
-    n.cd_nomenclature AS cd_nomenclature_validation_status,
-    n.label_default,
-    v.validation_auto,
-    v.validation_date,
-    ST_asgeojson(s.the_geom_4326) as geojson
-   FROM gn_synthese.synthese s
-    JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
-    JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
-    LEFT JOIN ref_nomenclatures.t_nomenclatures n ON n.id_nomenclature = s.id_nomenclature_valid_status
-    LEFT JOIN LATERAL (
-        SELECT v.validation_auto, v.validation_date
-        FROM gn_commons.t_validations v
-        WHERE v.uuid_attached_row = s.unique_id_sinp
-        ORDER BY v.validation_date DESC
-        LIMIT 1
-    ) v ON true
-  WHERE d.validable = true AND NOT s.unique_id_sinp IS NULL;
-
-COMMENT ON VIEW gn_commons.v_synthese_validation_forwebapp  IS 'Vue utilisée pour le module validation. Prend l''id_nomenclature dans la table synthese ainsi que toutes les colonnes de la synthese pour les filtres. On JOIN sur la vue latest_validation pour voir si la validation est auto';
-
 -- correction de fonctions permissions (nom de la vue a changé)
 
 CREATE OR REPLACE FUNCTION does_user_have_scope_permission
@@ -300,7 +218,9 @@ ADD CONSTRAINT check_t_releves_occtax_depth CHECK (depth_max >= depth_min),
 ADD CONSTRAINT fk_t_releves_occtax_id_nomenclature_geo_object_nature FOREIGN KEY (id_nomenclature_geo_object_nature) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
 ADD COLUMN cd_hab integer,
 ADD CONSTRAINT fk_t_releves_occtax_cd_hab FOREIGN KEY (cd_hab) REFERENCES ref_habitats.habref(cd_hab) ON UPDATE CASCADE,
-ADD COLUMN grp_method character varying(255)
+ADD COLUMN grp_method character varying(255),
+ALTER COLUMN precision DROP DEFAULT,
+RENAME COLUMN id_nomenclature_obs_technique TO id_nomenclature_obs_collect_campanule
 ;
 
 ALTER TABLE pr_occtax.t_occurrences_occtax
@@ -309,7 +229,11 @@ ALTER TABLE pr_occtax.t_occurrences_occtax
     -- comportement
     ADD COLUMN id_nomenclature_behaviour integer,
     ADD CONSTRAINT fk_t_occurrences_occtax_behaviour FOREIGN KEY (id_nomenclature_behaviour) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
-    ADD CONSTRAINT check_t_occurrences_occtax_behaviour CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour,'OCC_COMPORTEMENT')) NOT VALID;
+    ADD CONSTRAINT check_t_occurrences_occtax_behaviour CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour,'OCC_COMPORTEMENT')) NOT VALID,
+    RENAME COLUMN id_nomenclature_obs_meth TO id_nomenclature_obs_technique
+    ;
+COMMENT ON COLUMN pr_occtax.t_occurrences_occtax.id_nomenclature_obs_technique
+  IS 'Correspondance champs standard occtax = obsTechnique. En raison d''un changement de nom, le code nomenclature associé reste ''METH_OBS'' ';
 
 INSERT INTO pr_occtax.defaults_nomenclatures_value(mnemonique_type, id_nomenclature)
 VALUES 
@@ -320,7 +244,7 @@ INSERT INTO gn_synthese.defaults_nomenclatures_value(mnemonique_type, id_nomencl
 VALUES ('OCC_COMPORTEMENT', ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '0'))
 ;
 
-DROP VIEW pr_occtax.v_releve_occtax;
+DROP VIEW IF EXISTS pr_occtax.v_releve_occtax;
 CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
  SELECT rel.id_releve_occtax,
     rel.id_dataset,
@@ -353,9 +277,6 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
 
 
 
-
-
-
 ALTER TABLE gn_synthese.synthese
     ADD COLUMN cd_hab integer,
     ADD CONSTRAINT fk_synthese_cd_hab FOREIGN KEY (cd_hab) REFERENCES ref_habitats.habref(cd_hab) ON UPDATE CASCADE,
@@ -364,11 +285,18 @@ ALTER TABLE gn_synthese.synthese
     ADD COLUMN depth_min integer,
     ADD COLUMN depth_max integer,
     ADD COLUMN place_name character varying(500),
+    ADD COLUMN precision integer,
+    ADD COLUMN additional_data jsonb,
     ALTER COLUMN id_nomenclature_behaviour SET DEFAULT gn_synthese.get_default_nomenclature_value('OCC_COMPORTEMENT'),
     ADD CONSTRAINT fk_synthese_id_nomenclature_behaviour FOREIGN KEY (id_nomenclature_behaviour) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
     ADD CONSTRAINT check_synthese_behaviour CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour, 'OCC_COMPORTEMENT')) NOT VALID,
-    ADD CONSTRAINT check_synthese_depth_max CHECK (depth_max >= depth_min);
+    ADD CONSTRAINT check_synthese_depth_max CHECK (depth_max >= depth_min),
+    DROP COLUMN id_nomenclature_obs_technique CASCADE,
+    RENAME id_nomenclature_obs_meth TO id_nomenclature_obs_technique
 ;
+
+COMMENT ON COLUMN gn_synthese.synthese.id_nomenclature_obs_technique
+  IS 'Correspondance champs standard occtax = obsTechnique. En raison d''un changement de nom, le code nomenclature associé reste ''METH_OBS'' ';
 
 
 
@@ -425,7 +353,6 @@ id_module,
 id_nomenclature_geo_object_nature,
 id_nomenclature_grp_typ,
 grp_method,
-id_nomenclature_obs_meth,
 id_nomenclature_obs_technique,
 id_nomenclature_bio_status,
 id_nomenclature_bio_condition,
@@ -454,6 +381,7 @@ altitude_max,
 depth_min,
 depth_max,
 place_name,
+precision,
 the_geom_4326,
 the_geom_point,
 the_geom_local,
@@ -477,8 +405,7 @@ VALUES(
   releve.id_nomenclature_geo_object_nature,
   releve.id_nomenclature_grp_typ,
   releve.grp_method,
-  occurrence.id_nomenclature_obs_meth,
-  releve.id_nomenclature_obs_technique,
+  occurrence.id_nomenclature_obs_technique,
   occurrence.id_nomenclature_bio_status,
   occurrence.id_nomenclature_bio_condition,
   occurrence.id_nomenclature_naturalness,
@@ -491,8 +418,8 @@ VALUES(
   occurrence.id_nomenclature_blurring,
   -- status_source récupéré depuis le JDD
   id_nomenclature_source_status,
-  -- id_nomenclature_info_geo_type: type de rattachement = non saisissable: valeur par défaut
-  pr_occtax.get_default_nomenclature_value('TYP_INF_GEO'),
+  -- id_nomenclature_info_geo_type: type de rattachement = non saisissable: georeferencement
+  ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO', '1'),
   occurrence.id_nomenclature_behaviour,
   new_count.count_min,
   new_count.count_max,
@@ -508,6 +435,7 @@ VALUES(
   releve.depth_min,
   releve.depth_max,
   releve.place_name,
+  releve.precision,
   releve.geom_4326,
   ST_CENTROID(releve.geom_4326),
   releve.geom_local,
@@ -536,7 +464,7 @@ $BODY$
 DECLARE
 BEGIN
   UPDATE gn_synthese.synthese SET
-    id_nomenclature_obs_meth = NEW.id_nomenclature_obs_meth,
+    id_nomenclature_obs_technique = NEW.id_nomenclature_obs_technique,
     id_nomenclature_bio_condition = NEW.id_nomenclature_bio_condition,
     id_nomenclature_bio_status = NEW.id_nomenclature_bio_status,
     id_nomenclature_naturalness = NEW.id_nomenclature_naturalness,
@@ -584,7 +512,6 @@ BEGIN
       id_dataset = NEW.id_dataset,
       observers = myobservers,
       id_digitiser = NEW.id_digitiser,
-      id_nomenclature_obs_technique = NEW.id_nomenclature_obs_technique,
       grp_method = NEW.grp_method,
       id_nomenclature_grp_typ = NEW.id_nomenclature_grp_typ,
       date_min = date_trunc('day',NEW.date_min)+COALESCE(NEW.hour_min,'00:00:00'::time),
@@ -594,6 +521,7 @@ BEGIN
       depth_min = NEW.depth_min,
       depth_max = NEW.depth_max,
       place_name = NEW.place_name,
+      precision = NEW.precision,
       the_geom_4326 = NEW.geom_4326,
       the_geom_point = ST_CENTROID(NEW.geom_4326),
       id_nomenclature_geo_object_nature = NEW.id_nomenclature_geo_object_nature,
@@ -608,12 +536,12 @@ $BODY$
 
 
 
+DROP VIEW IF EXISTS gn_synthese.v_synthese_decode_nomenclatures;
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_decode_nomenclatures AS
 SELECT
 s.id_synthese,
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_geo_object_nature) AS nat_obj_geo,
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_grp_typ) AS grp_typ,
-ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_obs_meth) AS obs_method,
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_obs_technique) AS obs_technique,
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_bio_status) AS bio_status,
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_bio_condition) AS bio_condition,
@@ -634,7 +562,7 @@ ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_determination_method)
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_behaviour) AS occ_behaviour
 FROM gn_synthese.synthese s;
 
-DROP view gn_synthese.v_synthese_for_web_app;
+DROP VIEW IF EXISTS gn_synthese.v_synthese_for_web_app;
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
  SELECT s.id_synthese,
     s.unique_id_sinp,
@@ -653,6 +581,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
     s.depth_min,
     s.depth_max,
     s.place_name,
+    s.precision,
     s.the_geom_4326,
     public.ST_asgeojson(the_geom_4326),
     s.date_min,
@@ -675,7 +604,6 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
     s.id_nomenclature_info_geo_type,
     s.id_nomenclature_grp_typ,
     s.grp_method,
-    s.id_nomenclature_obs_meth,
     s.id_nomenclature_obs_technique,
     s.id_nomenclature_bio_status,
     s.id_nomenclature_bio_condition,
@@ -753,10 +681,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS
 ALTER TABLE pr_occtax.t_occurrences_occtax 
 ALTER COLUMN nom_cite SET NOT NULL;
 
-
-
-
--- vue validation de gn_commons necessitant le schéma synthese
+DROP VIEW IF EXISTS gn_commons.v_synthese_validation_forwebapp;
 CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS
 SELECT  s.id_synthese,
     s.unique_id_sinp,
@@ -775,6 +700,10 @@ SELECT  s.id_synthese,
     s.the_geom_4326,
     s.date_min,
     s.date_max,
+    s.depth_min,
+    s.depth_max,
+    s.place_name,
+    s.precision,
     s.validator,
     s.observers,
     s.id_digitiser,
@@ -791,7 +720,6 @@ SELECT  s.id_synthese,
     s.id_nomenclature_geo_object_nature,
     s.id_nomenclature_info_geo_type,
     s.id_nomenclature_grp_typ,
-    s.id_nomenclature_obs_meth,
     s.id_nomenclature_obs_technique,
     s.id_nomenclature_bio_status,
     s.id_nomenclature_bio_condition,
@@ -807,6 +735,7 @@ SELECT  s.id_synthese,
     s.id_nomenclature_blurring,
     s.id_nomenclature_source_status,
     s.id_nomenclature_valid_status,
+    s.id_nomenclature_behaviour,
     s.reference_biblio,
     t.cd_nom,
     t.cd_ref,
@@ -872,3 +801,171 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
+CREATE OR REPLACE VIEW pr_occtax.export_occtax AS 
+ SELECT 
+    rel.unique_id_sinp_grp as "idSINPRegroupement",
+    ref_nomenclatures.get_cd_nomenclature(rel.id_nomenclature_grp_typ) AS "typGrp",
+    rel.grp_method AS "methGrp",
+    ccc.unique_id_sinp_occtax AS "permId",
+    ccc.id_counting_occtax AS "idOrigine",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_observation_status) AS "statObs",
+    occ.nom_cite AS "nomCite",
+    to_char(rel.date_min, 'YYYY-MM-DD'::text) AS "dateDebut",
+    to_char(rel.date_max, 'YYYY-MM-DD'::text) AS "dateFin",
+    rel.hour_min AS "heureDebut",
+    rel.hour_max AS "heureFin",
+    rel.altitude_max AS "altMax",
+    rel.altitude_min AS "altMin",
+    rel.depth_min AS "profMin",
+    rel.depth_max AS "profMax",
+    occ.cd_nom AS "cdNom",
+    tax.cd_ref AS "cdRef",
+    ref_nomenclatures.get_nomenclature_label(d.id_nomenclature_data_origin) AS "dSPublique",
+    d.unique_dataset_id AS "jddMetaId",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_source_status) AS "statSource",
+    d.dataset_name AS "jddCode",
+    d.unique_dataset_id AS "jddId",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_obs_technique) AS "obsTech",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_obs_collect_campanule) AS "techCollect",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_bio_condition) AS "ocEtatBio",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_naturalness) AS "ocNat",
+    ref_nomenclatures.get_nomenclature_label(ccc.id_nomenclature_sex) AS "ocSex",
+    ref_nomenclatures.get_nomenclature_label(ccc.id_nomenclature_life_stage) AS "ocStade",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_bio_status) AS "ocStatBio",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_exist_proof) AS "preuveOui",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_determination_method) AS "ocMethDet",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_behaviour) AS "occComp",
+    occ.digital_proof AS "preuvNum",
+    occ.non_digital_proof AS "preuvNoNum",
+    rel.comment AS "obsCtx",
+    occ.comment AS "obsDescr",
+    rel.unique_id_sinp_grp AS "permIdGrp",
+    ccc.count_max AS "denbrMax",
+    ccc.count_min AS "denbrMin",
+    ref_nomenclatures.get_nomenclature_label(ccc.id_nomenclature_obj_count) AS "objDenbr",
+    ref_nomenclatures.get_nomenclature_label(ccc.id_nomenclature_type_count) AS "typDenbr",
+    COALESCE(string_agg(DISTINCT (r.nom_role::text || ' '::text) || r.prenom_role::text, ','::text), rel.observers_txt::text) AS "obsId",
+    COALESCE(string_agg(DISTINCT o.nom_organisme::text, ','::text), 'NSP'::text) AS "obsNomOrg",
+    COALESCE(occ.determiner, 'Inconnu'::character varying) AS "detId",
+    ref_nomenclatures.get_nomenclature_label(rel.id_nomenclature_geo_object_nature) AS "natObjGeo",
+    st_astext(rel.geom_4326) AS "WKT",
+    -- 'In'::text AS "natObjGeo",
+    tax.lb_nom AS "nomScienti",
+    tax.nom_vern AS "nomVern",
+    hab.lb_code AS "codeHab",
+    hab.lb_hab_fr AS "nomHab",
+    hab.cd_hab,
+    rel.date_min,
+    rel.date_max,
+    rel.id_dataset,
+    rel.id_releve_occtax,
+    occ.id_occurrence_occtax,
+    rel.id_digitiser,
+    rel.geom_4326,
+    rel.place_name AS "nomLieu",
+    rel.precision
+   FROM pr_occtax.t_releves_occtax rel
+     LEFT JOIN pr_occtax.t_occurrences_occtax occ ON rel.id_releve_occtax = occ.id_releve_occtax
+     LEFT JOIN pr_occtax.cor_counting_occtax ccc ON ccc.id_occurrence_occtax = occ.id_occurrence_occtax
+     LEFT JOIN taxonomie.taxref tax ON tax.cd_nom = occ.cd_nom
+     LEFT JOIN gn_meta.t_datasets d ON d.id_dataset = rel.id_dataset
+     LEFT JOIN pr_occtax.cor_role_releves_occtax cr ON cr.id_releve_occtax = rel.id_releve_occtax
+     LEFT JOIN utilisateurs.t_roles r ON r.id_role = cr.id_role
+     LEFT JOIN utilisateurs.bib_organismes o ON o.id_organisme = r.id_organisme
+     LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = rel.cd_hab
+   GROUP BY ccc.id_counting_occtax,occ.id_occurrence_occtax,rel.id_releve_occtax,d.id_dataset 
+   ,tax.cd_ref , tax.lb_nom, tax.nom_vern , hab.cd_hab, hab.lb_code, hab.lb_hab_fr 
+   ;
+
+
+DROP VIEW IF EXISTS gn_synthese.v_synthese_for_export AS
+CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
+ SELECT s.id_synthese AS "idSynthese",
+    s.entity_source_pk_value AS "idOrigine",
+    s.unique_id_sinp AS "permId",
+    s.unique_id_sinp_grp AS "permIdGrp",
+    s.grp_method,
+    s.count_min AS "denbrMin",
+    s.count_max AS "denbrMax",
+    s.sample_number_proof AS "sampleNumb",
+    s.digital_proof AS "preuvNum",
+    s.non_digital_proof AS "preuvNoNum",
+    s.altitude_min AS "altMin",
+    s.altitude_max AS "altMax",
+    s.depth_min AS "profMin",
+    s.depth_max AS "profMax",
+    s.precision,
+    public.ST_astext(s.the_geom_4326) AS wkt,
+    to_char(s.date_min, 'YYYY-MM-DD') AS "dateDebut",
+    to_char(s.date_max, 'YYYY-MM-DD') AS "dateFin",
+    s.date_min::time AS "heureFin",
+    s.date_max::time AS "heureDebut",
+    s.validator AS validateur,
+    s.observers AS observer,
+    s.id_digitiser AS id_digitiser,
+    s.determiner AS detminer,
+    s.comment_context AS "obsCtx",
+    s.comment_description AS "obsDescr",
+    s.meta_create_date,
+    s.meta_update_date,
+    d.dataset_name AS "jddName", -- champs non standard (pas le nom du JDD dans le standard)
+    d.unique_dataset_id AS "idSINPJdd",
+    d.id_acquisition_framework,
+    t.cd_nom AS "cdNom",
+    t.cd_ref AS "cdRef",
+    s.cd_hab AS "codeHabRef",
+    t.nom_valide AS "nomValide",
+    s.nom_cite AS "nomCite",
+    hab.lb_code AS "codeHab",
+    hab.lb_hab_fr AS "nomHab",
+    s.cd_hab AS "cdHab",
+    public.ST_x(public.ST_transform(s.the_geom_point, 2154)) AS x_centroid,
+    public.ST_y(public.ST_transform(s.the_geom_point, 2154)) AS y_centroid,
+    COALESCE(s.meta_update_date, s.meta_create_date) AS lastact,
+    public.ST_asgeojson(s.the_geom_4326) AS geojson_4326,
+    public.ST_asgeojson(s.the_geom_local) AS geojson_local,
+    s.place_name AS "nomLieu",
+    n1.label_default AS "natObjGeo",
+    n2.label_default AS "typGrp",
+    s.grp_method AS "methGrp",
+    n3.label_default AS "obsTech",
+    n5.label_default AS "ocStatutBio",
+    n6.label_default AS "ocEtatBio",
+    n7.label_default AS "ocNat",
+    n8.label_default AS "preuveOui",
+    n9.label_default AS "difNivPrec",
+    n10.label_default AS "ocStade",
+    n11.label_default AS "ocSex",
+    n12.label_default AS "objDenbr",
+    n13.label_default AS "denbrTyp",
+    n14.label_default AS"sensiNiv",
+    n15.label_default AS "statObs",
+    n16.label_default AS "dEEFlou",
+    n17.label_default AS "statSource",
+    n18.label_default AS "typInfGeo",
+    n19.label_default AS "ocMethDet",
+    n20.label_default AS "occComportement"
+   FROM gn_synthese.synthese s
+     JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
+     JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
+     JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n1 ON s.id_nomenclature_geo_object_nature = n1.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n2 ON s.id_nomenclature_grp_typ = n2.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n3 ON s.id_nomenclature_obs_technique = n3.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n5 ON s.id_nomenclature_bio_status = n5.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n6 ON s.id_nomenclature_bio_condition = n6.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n7 ON s.id_nomenclature_naturalness = n7.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n8 ON s.id_nomenclature_exist_proof = n8.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n9 ON s.id_nomenclature_diffusion_level = n9.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n10 ON s.id_nomenclature_life_stage = n10.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n11 ON s.id_nomenclature_sex = n11.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n12 ON s.id_nomenclature_obj_count = n12.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n13 ON s.id_nomenclature_type_count = n13.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n14 ON s.id_nomenclature_sensitivity = n14.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n15 ON s.id_nomenclature_observation_status = n15.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n16 ON s.id_nomenclature_blurring = n16.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n17 ON s.id_nomenclature_source_status = n17.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n18 ON s.id_nomenclature_info_geo_type = n18.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n19 ON s.id_nomenclature_determination_method = n19.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n20 ON s.id_nomenclature_behaviour = n20.id_nomenclature
+     LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = s.cd_hab;

@@ -21,10 +21,10 @@ class FormConfig(Schema):
     depth_min = fields.Boolean(missing=False)
     depth_max = fields.Boolean(missing=False)
     altitude_max = fields.Boolean(missing=True)
-    obs_technique = fields.Boolean(missing=False)
+    obs_collect = fields.Boolean(missing=False)
     group_type = fields.Boolean(missing=False)
     comment_releve = fields.Boolean(missing=True)
-    obs_method = fields.Boolean(missing=True)
+    obs_tech = fields.Boolean(missing=True)
     bio_condition = fields.Boolean(missing=True)
     bio_status = fields.Boolean(missing=True)
     naturalness = fields.Boolean(missing=True)
@@ -50,6 +50,7 @@ class FormConfig(Schema):
     grp_method = fields.Boolean(missing=False)
     behaviour = fields.Boolean(missing=True)
     place_name = fields.Boolean(missing=True)
+    precision = fields.Boolean(missing=False)
 
 
 default_map_list_conf = [
@@ -99,7 +100,8 @@ default_columns_export = [
     "jddCode",
     "jddId",
     "refBiblio",
-    "obsMeth",
+    "obsTech",
+    "techCollect",
     "ocEtatBio",
     "ocNat",
     "ocSex",
@@ -127,6 +129,7 @@ default_columns_export = [
     "WKT",
     "natObjGeo",
     "nomLieu",
+    "precision",
 ]
 
 
@@ -146,7 +149,7 @@ Vous vous apprêtez à télécharger les données de la <b>recherche courante. <
 class GnModuleSchemaConf(Schema):
     form_fields = fields.Nested(FormConfig, missing=dict())
     observers_txt = fields.Boolean(missing=False)
-    export_view_name = fields.String(missing="export_occtax_sinp")
+    export_view_name = fields.String(missing="export_occtax")
     export_geom_columns_name = fields.String(missing="geom_4326")
     export_id_column_name = fields.String(missing="permId")
     export_srid = fields.Integer(missing=4326)

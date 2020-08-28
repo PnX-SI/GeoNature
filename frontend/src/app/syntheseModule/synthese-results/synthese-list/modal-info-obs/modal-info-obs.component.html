@@ -16,8 +16,13 @@
       <div class="padding-sm col-xs-7 col-sm-7 col-md-7 col-lg-7 ">
 
         <span class="font-xs">
-          <div *ngIf="selectedObs?.place_name">
-            <b>Nom du lieu : </b> {{selectedObs?.place_name}}
+          <div>
+            <span *ngIf="selectedObs?.place_name">
+              <b>Nom du lieu : </b> {{selectedObs?.place_name}}
+            </span>
+            <span *ngIf="selectedObs?.precision"> 
+              <b>Précision du pointage : </b> {{selectedObs?.precision}}
+            </span>
           </div>
           <b> Observation de : </b> {{selectedObs?.observers}}
 
@@ -140,10 +145,6 @@
                   <tr>
                     <td> Technique d'observation </td>
                     <td> {{selectedObs?.obs_technique}} </td>
-                  </tr>
-                  <tr>
-                    <td> Méthode d'observation </td>
-                    <td> {{selectedObs?.obs_method}} </td>
                   </tr>
                   <tr>
                     <td> Etat biologique </td>

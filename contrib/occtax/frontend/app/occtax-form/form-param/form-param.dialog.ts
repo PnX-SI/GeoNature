@@ -98,7 +98,7 @@ export class OcctaxFormParamDialog implements OnInit {
 
       }),
       occurrence: this.fb.group({
-        id_nomenclature_obs_meth: null,
+        id_nomenclature_obs_technique: null,
         id_nomenclature_bio_condition: null,
         id_nomenclature_bio_status: null,
         id_nomenclature_naturalness: null,

@@ -95,6 +95,7 @@
     "Validate": "Valider le relevé",
     "UnValidate": "Invalider le relevé",
     "ObsTechnique": "Technique d'observation",
+    "ObsCollectCampanule": "Technique de collècte du relevé (Campanule)",
     "AddTaxonOnReleve": "Ajouter un taxon sur ce relevé",
     "CancelTaxon": "Annuler la saisie du taxon",
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire",
@@ -104,6 +105,7 @@
     "StayOnFormInterface": "Enchainer les relevés sans retourner à l'interface carte/liste",
     "GeoObjectNature": "Nature de l'objet géographique",
     "PlaceName": "Nom du lieu",
+    "Precision": "Precision",
     "Infos": {
       "ReleveAdded": "Relevé ajouté",
       "ReleveModified": "Relevé modifié"
@@ -128,7 +130,7 @@
     "NomCite": "Nom cité",
     "Taxons": "Taxons",
     "TaxonName": "Nom du taxon",
-    "ObsMethod": "Méthode d'observation",
+    "ObsTech": "Technique d'observation",
     "Advanced": "Avancé",
     "BiologicalCondition": "Etat biologique",
     "BiologicalStatus": "Statut biologique",
@@ -161,7 +163,7 @@
       "CdNomRequiredError": "Veuillez selectionner taxon présent dans le référentiel Taxref",
       "DeterminerRequiredError": "Veuillez indiquer un déterminateur",
       "DeterminationMethodRequiredError": "Veuillez indiquer la méthode de détermination",
-      "ObsMethodRequiredError": "Veuillez indiquer la méthode d'observation",
+      "TechObsRequiredError": "Veuillez indiquer la technique d'observation",
       "BiologicalConditionRequiredError": "Veuillez indiquer l'état biologique",
       "CountingRequiredError": "Veuillez renseigner un dénombrement"
     }

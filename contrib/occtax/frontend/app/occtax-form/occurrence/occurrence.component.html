@@ -93,20 +93,20 @@
     </div>
 
     <div 
-      *ngIf="occtaxConfig.form_fields.obs_method"
+      *ngIf="occtaxConfig.form_fields.obs_tech"
       class="col-lg-4 col-sm-6">
       <pnx-nomenclature 
-        label="{{ 'Taxon.ObsMethod' | translate }}" 
-        [parentFormControl]="occurrenceForm.get('id_nomenclature_obs_meth')"
+        label="{{ 'Taxon.ObsTech' | translate }}" 
+        [parentFormControl]="occurrenceForm.get('id_nomenclature_obs_technique')"
         codeNomenclatureType="METH_OBS" 
         [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne" 
         [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
       </pnx-nomenclature>
       <small 
-        *ngIf="occurrenceForm.get('id_nomenclature_obs_meth').hasError('required') && occurrenceForm.get('id_nomenclature_obs_meth').touched" 
+        *ngIf="occurrenceForm.get('id_nomenclature_obs_technique').hasError('required') && occurrenceForm.get('id_nomenclature_obs_technique').touched" 
         class="error" 
         style="color:red">
-        {{'Taxon.Errors.ObsMethodRequiredError' |translate}}
+        {{'Taxon.Errors.TechObsRequiredError' |translate}}
       </small>
     </div>
 

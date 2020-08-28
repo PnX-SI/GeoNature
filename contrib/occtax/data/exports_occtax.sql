@@ -7,7 +7,7 @@ SET client_min_messages = warning;
 
 SET search_path = public;
 
-CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS 
+CREATE OR REPLACE VIEW pr_occtax.export_occtax AS 
  SELECT 
     rel.unique_id_sinp_grp as "idSINPRegroupement",
     ref_nomenclatures.get_cd_nomenclature(rel.id_nomenclature_grp_typ) AS "typGrp",
@@ -29,10 +29,10 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     ref_nomenclatures.get_nomenclature_label(d.id_nomenclature_data_origin) AS "dSPublique",
     d.unique_dataset_id AS "jddMetaId",
     ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_source_status) AS "statSource",
-    ccc.unique_id_sinp_occtax AS "idOrigine",
     d.dataset_name AS "jddCode",
     d.unique_dataset_id AS "jddId",
-    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_obs_meth) AS "obsMeth",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_obs_technique) AS "obsTech",
+    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_obs_collect_campanule) AS "techCollect",
     ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_bio_condition) AS "ocEtatBio",
     ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_naturalness) AS "ocNat",
     ref_nomenclatures.get_nomenclature_label(ccc.id_nomenclature_sex) AS "ocSex",
@@ -68,7 +68,8 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax_sinp AS
     occ.id_occurrence_occtax,
     rel.id_digitiser,
     rel.geom_4326,
-    rel.place_name AS "nomLieu"
+    rel.place_name AS "nomLieu",
+    rel.precision
    FROM pr_occtax.t_releves_occtax rel
      LEFT JOIN pr_occtax.t_occurrences_occtax occ ON rel.id_releve_occtax = occ.id_releve_occtax
      LEFT JOIN pr_occtax.cor_counting_occtax ccc ON ccc.id_occurrence_occtax = occ.id_occurrence_occtax

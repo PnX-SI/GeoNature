@@ -40,7 +40,7 @@ export class OcctaxFormOccurrenceService {
 
   initForm(): void {
     this.form = this.fb.group({
-      id_nomenclature_obs_meth: [null, Validators.required],
+      id_nomenclature_obs_technique: [null, Validators.required],
       id_nomenclature_bio_condition: [null, Validators.required],
       id_nomenclature_bio_status: null,
       id_nomenclature_naturalness: null,
@@ -178,8 +178,8 @@ export class OcctaxFormOccurrenceService {
             id_nomenclature_naturalness:
               this.occtaxParamS.get("occurrence.id_nomenclature_naturalness") ||
               DATA["NATURALITE"],
-            id_nomenclature_obs_meth:
-              this.occtaxParamS.get("occurrence.id_nomenclature_obs_meth") ||
+            id_nomenclature_obs_technique:
+              this.occtaxParamS.get("occurrence.id_nomenclature_obs_technique") ||
               DATA["METH_OBS"],
             id_nomenclature_bio_status:
               this.occtaxParamS.get("occurrence.id_nomenclature_bio_status") ||

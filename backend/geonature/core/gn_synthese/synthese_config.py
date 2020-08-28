@@ -20,7 +20,7 @@ DEFAULT_EXPORT_COLUMNS = [
     "obsDescr",
     "ObjGeoTyp",
     "methGrp",
-    "obsMeth",
+    "obsTech",
     "ocEtatBio",
     "ocStatBio",
     "ocNat",
@@ -48,6 +48,8 @@ DEFAULT_EXPORT_COLUMNS = [
     "profMax",
     "lastAction",
     "validateur",
+    "precision",
+    "nomLieu",
 ]
 
 

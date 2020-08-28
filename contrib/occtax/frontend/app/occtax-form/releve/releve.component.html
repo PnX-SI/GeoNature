@@ -5,9 +5,20 @@
   (click)="formDisabled()">
 </div>
 
-<div>
-  
+<div class="row">
+  <div 
+    *ngIf="occtaxConfig.form_fields.precision"
+    class="col-xl-4 col-md-6 col-sm-8 col-11">
+    <small>Précision du pointage (m)</small>
+    <input 
+      type="number" 
+      [formControl]="propertiesForm.get('precision')"
+      class="form-control form-control-sm" 
+      placeholder="Précision du pointage"
+    >
+  </div>
 </div>
+
 <div class="row">
     <div class="col-8">
         <div *ngIf="occtaxConfig.form_fields.place_name">
@@ -39,29 +50,34 @@
       </pnx-observers-text>
     </ng-template>
 
-    <!-- DATASET -->
-    <ng-container *ngIf="dataset?.active === false || !isDatasetUser(dataset?.id_dataset); else elseblocDatasetForm">
-      <div class="dataset-inactive">
-        <span style="display: block; font-size: 80%;"> {{ 'MetaData.Datasets' | translate }} </span>
-        <span 
-          class="dataset-block"
-          matTooltip="Le jeu de donnée n'est pas modifiable"> 
-          {{ dataset?.dataset_name}} 
-        </span> 
-      </div>
-    </ng-container>
-    <ng-template #elseblocDatasetForm>
-      <pnx-datasets 
-        label="{{ 'MetaData.Datasets' | translate }}" 
-        [parentFormControl]="propertiesForm.get('id_dataset')"
-        [disabled]="propertiesForm.disabled"
-        (valueLoaded)="userDatasets = $event.value"
-        moduleCode="OCCTAX">
-      </pnx-datasets>
-    </ng-template>
-
   </div>
 </div>
+<div class="row">
+  <div  class="col-xl-4 col-md-6 col-sm-8 col-11">
+      <!-- DATASET -->
+      <ng-container *ngIf="dataset?.active === false || !isDatasetUser(dataset?.id_dataset); else elseblocDatasetForm">
+        <div class="dataset-inactive">
+          <span style="display: block; font-size: 80%;"> {{ 'MetaData.Datasets' | translate }} </span>
+          <span 
+            class="dataset-block"
+            matTooltip="Le jeu de donnée n'est pas modifiable"> 
+            {{ dataset?.dataset_name}} 
+          </span> 
+        </div>
+      </ng-container>
+      <ng-template #elseblocDatasetForm>
+        <pnx-datasets 
+          label="{{ 'MetaData.Datasets' | translate }}" 
+          [parentFormControl]="propertiesForm.get('id_dataset')"
+          [disabled]="propertiesForm.disabled"
+          (valueLoaded)="userDatasets = $event.value"
+          moduleCode="OCCTAX">
+        </pnx-datasets>
+      </ng-template>
+  </div>
+</div>
+
+
 
 <div class="row">
   <div class="col-xl-4 col-md-6 col-sm-8 col-11">
@@ -246,15 +262,16 @@
       </pnx-nomenclature>
     </div>
   
+
   </div>
 
 
 
 <!-- TECHNIQUE OBSERVATION -->
 <pnx-nomenclature 
-  *ngIf="occtaxConfig.form_fields.obs_technique" 
-  label="{{ 'Releve.ObsTechnique' | translate }}" 
-  [parentFormControl]="propertiesForm.get('id_nomenclature_obs_technique')"
+  *ngIf="occtaxConfig.form_fields.obs_collect" 
+  label="{{ 'Releve.ObsCollectCampanule' | translate }}" 
+  [parentFormControl]="propertiesForm.get('id_nomenclature_obs_collect_campanule')"
   codeNomenclatureType="TECHNIQUE_OBS" 
   [disabled]="propertiesForm.disabled"
   

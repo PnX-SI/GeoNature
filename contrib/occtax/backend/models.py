@@ -153,7 +153,7 @@ class TOccurrencesOccurrence(DB.Model):
     id_releve_occtax = DB.Column(
         DB.Integer, ForeignKey("pr_occtax.t_releves_occtax.id_releve_occtax")
     )
-    id_nomenclature_obs_meth = DB.Column(DB.Integer)
+    id_nomenclature_obs_technique = DB.Column(DB.Integer)
     id_nomenclature_bio_condition = DB.Column(DB.Integer)
     id_nomenclature_bio_status = DB.Column(DB.Integer)
     id_nomenclature_naturalness = DB.Column(DB.Integer)
@@ -213,7 +213,7 @@ class TRelevesOccurrence(ReleveModel):
     altitude_max = DB.Column(DB.Integer)
     depth_min = DB.Column(DB.Integer)
     depth_max = DB.Column(DB.Integer)
-    id_nomenclature_obs_technique = DB.Column(DB.Integer)
+    id_nomenclature_obs_collect_campanule = DB.Column(DB.Integer)
     id_nomenclature_geo_object_nature = DB.Column(DB.Integer)
     meta_device_entry = DB.Column(DB.Unicode)
     comment = DB.Column(DB.Unicode)
@@ -221,6 +221,7 @@ class TRelevesOccurrence(ReleveModel):
     geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
     geom_local = DB.Column(Geometry("GEOMETRY", current_app.config["LOCAL_SRID"]))
     cd_hab = DB.Column(DB.Integer, ForeignKey(Habref.cd_hab))
+    precision = DB.Column(DB.Integer)
 
     habitat = relationship(Habref, lazy="select")
 

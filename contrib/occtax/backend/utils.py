@@ -8,7 +8,7 @@ counting_nomenclatures = [
 ]
 
 occ_nomenclatures = [
-    "id_nomenclature_obs_meth",
+    "id_nomenclature_obs_technique",
     "id_nomenclature_bio_condition",
     "id_nomenclature_bio_status",
     "id_nomenclature_naturalness",
@@ -19,7 +19,10 @@ occ_nomenclatures = [
     "id_nomenclature_behaviour",
 ]
 
-releve_nomenclatures = ["id_nomenclature_obs_technique", "id_nomenclature_grp_typ"]
+releve_nomenclatures = [
+    "id_nomenclature_obs_collect_campanule",
+    "id_nomenclature_grp_typ",
+]
 
 
 def get_nomenclature_filters(params):

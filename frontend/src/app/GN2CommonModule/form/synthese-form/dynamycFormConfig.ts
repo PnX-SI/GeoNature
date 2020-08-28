@@ -22,6 +22,12 @@ export const DYNAMIC_FORM_DEF = [
     required: false,
   },
   {
+    type_widget: "number",
+    attribut_label: "Précision du pointage",
+    attribut_name: "precision",
+    required: false,
+  },
+  {
     type_widget: "text",
     attribut_label: "Méthode de regroupement",
     attribut_name: "grp_method",

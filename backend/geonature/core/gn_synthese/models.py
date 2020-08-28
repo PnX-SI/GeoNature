@@ -4,7 +4,7 @@ from flask import current_app
 from sqlalchemy import ForeignKey, or_, Sequence
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import select, func
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, JSONB
 from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
 from geojson import Feature
@@ -149,7 +149,6 @@ class VSyntheseDecodeNomenclatures(DB.Model):
     id_synthese = DB.Column(DB.Integer, primary_key=True)
     nat_obj_geo = DB.Column(DB.Unicode)
     grp_typ = DB.Column(DB.Unicode)
-    obs_method = DB.Column(DB.Unicode)
     obs_technique = DB.Column(DB.Unicode)
     bio_status = DB.Column(DB.Unicode)
     bio_condition = DB.Column(DB.Unicode)
@@ -182,7 +181,6 @@ class Synthese(DB.Model):
     id_dataset = DB.Column(DB.Integer)
     id_nomenclature_grp_typ = DB.Column(DB.Integer)
     grp_method = DB.Column(DB.Unicode)
-    id_nomenclature_obs_meth = DB.Column(DB.Integer)
     id_nomenclature_obs_technique = DB.Column(DB.Integer)
     id_nomenclature_bio_status = DB.Column(DB.Integer)
     id_nomenclature_bio_condition = DB.Column(DB.Integer)
@@ -211,6 +209,7 @@ class Synthese(DB.Model):
     altitude_max = DB.Column(DB.Integer)
     depth_min = DB.Column(DB.Integer)
     depth_max = DB.Column(DB.Integer)
+    precision = DB.Column(DB.Integer)
     the_geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
     the_geom_point = DB.Column(Geometry("GEOMETRY", 4326))
     the_geom_local = DB.Column(Geometry("GEOMETRY", current_app.config["LOCAL_SRID"]))
@@ -225,6 +224,7 @@ class Synthese(DB.Model):
     id_nomenclature_determination_method = DB.Column(DB.Integer)
     comment_context = DB.Column(DB.Unicode)
     comment_description = DB.Column(DB.Unicode)
+    additional_data = DB.Column(JSONB)
     meta_validation_date = DB.Column(DB.DateTime)
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
@@ -308,7 +308,6 @@ class VSyntheseForWebApp(DB.Model):
     id_nomenclature_info_geo_type = DB.Column(DB.Integer)
     id_nomenclature_grp_typ = DB.Column(DB.Integer)
     grp_method = DB.Column(DB.Unicode)
-    id_nomenclature_obs_meth = DB.Column(DB.Integer)
     id_nomenclature_obs_technique = DB.Column(DB.Integer)
     id_nomenclature_bio_status = DB.Column(DB.Integer)
     id_nomenclature_bio_condition = DB.Column(DB.Integer)

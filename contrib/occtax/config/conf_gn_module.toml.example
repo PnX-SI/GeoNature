@@ -98,7 +98,7 @@ export_columns =  [
   "idOrigine",
   "jddId",
   "refBiblio",
-  "obsMeth",
+  "obsTech,
   "ocEtatBio",
   "ocNat",
   "ocSex",
@@ -145,10 +145,10 @@ ENABLE_UPLOAD_TOOL = true
     altitude_max = true
     depth_min = true
     depth_max = true
-    obs_technique = false
+    obs_collect = false
     group_type = false
     comment_releve = true
-    obs_method = true
+    obs_tech = true
     bio_condition = true
     diffusion_level = false
     bio_status = true
@@ -176,6 +176,7 @@ ENABLE_UPLOAD_TOOL = true
     behaviour = true
     geo_object_nature = false
     place_name = false
+    precision = false
 
 # ------------- MEDIAS PARAMETER ---------------
 

@@ -183,7 +183,7 @@ INSERT INTO pr_occtax.t_releves_occtax (
   id_dataset,
   id_digitiser,
   observers_txt,
-  id_nomenclature_obs_technique,
+  id_nomenclature_obs_collect_campanule,
   id_nomenclature_grp_typ,
   date_min,
   date_max,
@@ -223,7 +223,7 @@ SELECT pg_catalog.setval('pr_occtax.t_releves_occtax_id_releve_occtax_seq', (SEL
 INSERT INTO pr_occtax.t_occurrences_occtax  (
     id_occurrence_occtax,
     id_releve_occtax,
-    id_nomenclature_obs_meth,
+    id_nomenclature_obs_technique,
     id_nomenclature_bio_condition,
     id_nomenclature_bio_status,
     id_nomenclature_naturalness,
