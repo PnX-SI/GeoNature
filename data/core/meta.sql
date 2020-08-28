@@ -190,7 +190,8 @@ CREATE TABLE t_datasets (
     active boolean NOT NULL DEFAULT TRUE,
     validable boolean DEFAULT TRUE,
     meta_create_date timestamp without time zone NOT NULL,
-    meta_update_date timestamp without time zone
+    meta_update_date timestamp without time zone,
+    id_digitizer integer
 );
 COMMENT ON TABLE t_datasets IS 'A dataset is a dataset or a survey and each observation is attached to a dataset. A lot allows to qualify datas to which it is attached (producer, owner, manager, gestionnaire, financer, public data yes/no). A dataset can be attached to a program. GeoNature V2 backoffice allows to manage datasets.';
 COMMENT ON COLUMN t_datasets.id_dataset IS 'Internal value for primary and foreign keys.';
