@@ -1,5 +1,5 @@
 <div class="test-medias" *ngIf="bInitialized">
-  <h1>Test Médias {{mediaForm.valid}}</h1>
+  <h1>Test Médias {{ mediaForm.valid }}</h1>
   <div>
     <pnx-dynamic-form-generator
       #dynamicForm
@@ -9,12 +9,11 @@
     ></pnx-dynamic-form-generator>
   </div>
 
-  <span *ngFor='let media of mediaForm.value.medias'>
-    <span [innerHTML]='ms.tooltip(media)'></span>
-    {{ms.tooltip(media)}}
+  <span *ngFor="let media of mediaForm.value.medias">
+    <span [innerHTML]="ms.tooltip(media) | safeHTML"></span>
   </span>
 
-  <div class="flex-container" >
+  <div class="flex-container">
     <div>
       <pnx-display-medias
         [medias]="mediaForm.value.medias"
