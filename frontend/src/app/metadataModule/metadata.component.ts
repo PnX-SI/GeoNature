@@ -50,6 +50,7 @@ export class MetadataComponent implements OnInit {
 
   ngOnInit() {
     this.getAcquisitionFrameworksAndDatasets();
+    this.currentUser = this._authService.getCurrentUser();
   }
 
   //recuperation cadres d'acquisition
