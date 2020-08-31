@@ -1,5 +1,5 @@
 ::ng-deep .gn-panel {
-  margin-left: 35px !important;
+  margin-left: 50px !important;
 }
 
 ::ng-deep ._gn-panel-header {
@@ -13,6 +13,14 @@
   vertical-align: 10px;
 }
 
+#taxalist-container {
+  height: 90%;
+  overflow-y: auto;
+  background-color: #95949833;
+  box-shadow: -10px 5px 22px -2px rgba(0, 0, 0, 0.75);
+  padding-top: 15px;
+}
+
 .btn-actions {
   position: absolute;
   padding-top: 8px;
@@ -22,6 +30,8 @@
 // }
 .btn-edit {
   color: #5343da;
+  margin-right: 5px;
+
 }
 
 .btn-clear {
