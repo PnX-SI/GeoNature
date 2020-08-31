@@ -27,39 +27,47 @@
   
     <div
       *ngFor="let occurrence of occtaxTaxaListService.occurrences$ | async; let i=index"
-      displayMouseOver 
       selector=".btn-actions">
   
-      <span class="btn-actions d-none">
-        <button 
-          mat-icon-button 
-          class="btn-edit"
-          (click)="editOccurrence(occurrence)">
-          <mat-icon matTooltip="Editer le taxon">edit</mat-icon>
-        </button>
-        <button 
-          *ngIf="(occtaxTaxaListService.occurrences$ |async)?.length != 1 || i != 0"
-          mat-icon-button 
-          class="btn-clear"
-          (click)="deleteOccurrence(occurrence)">
-          <mat-icon  matTooltip="Supprimer le taxon">clear</mat-icon>
-        </button>
-      </span>
+
+
   
-      <gn-panel>
-        <div class="gn-panel-header">
+    <mat-accordion [multi]="true">
+
+        <mat-expansion-panel displayMouseOver selector=".btn-actions" >
+          <mat-expansion-panel-header class="right-aligned-header">
+            <mat-panel-title >
+
+            <span 
+              [innerHTML]="taxonTitle(occurrence)" 
+              [matTooltip]="occurrence.taxref?.nom_valide || removeHtml(occurrence.nom_cite)"
+              class="header-title">
+            </span>
+
+            </mat-panel-title>
+            <mat-panel-description>
+              <span class="btn-actions d-none">
+                <button 
+                    mat-icon-button 
+                    class="btn-edit "
+                    (click)="editOccurrence(occurrence)">
+                    <mat-icon style="vertical-align: middle;" matTooltip="Editer le taxon">edit</mat-icon>
+                  </button>
+                  <button 
+                    *ngIf="(occtaxTaxaListService.occurrences$ |async)?.length != 1 || i != 0"
+                    mat-icon-button 
+                    class="btn-clear"
+                    (click)="deleteOccurrence(occurrence)">
+                    <mat-icon style="vertical-align: middle;" matTooltip="Supprimer le taxon">clear</mat-icon>
+                  </button>
+              </span>            </mat-panel-description>
+          </mat-expansion-panel-header>
           
-          <span 
-            [innerHTML]="taxonTitle(occurrence)" 
-            [matTooltip]="occurrence.taxref?.nom_valide || removeHtml(occurrence.nom_cite)"
-            class="header-title">
-          </span>
+
   
           <!-- <ng-container *ngIf="(getStatuts(taxon.statuts)).length">
             <mat-icon class="nb-statut" [matBadge]="(getStatuts(taxon.statuts)).length" [matTooltip]="(getStatuts(taxon.statuts)).length + ' statuts'">star</mat-icon>
           </ng-container> -->
-        </div>
-        <div class="gn-panel-content">
   
           <mat-tab-group>
             <mat-tab label="Occurrence">
@@ -288,10 +296,9 @@
   
             </mat-tab>
           </mat-tab-group>
-  
-        </div>
-      </gn-panel>
-  
+        </mat-expansion-panel>
+    </mat-accordion>
+
     </div>
   </ng-container>
   <ng-template #zeroOccurrenceBlk>

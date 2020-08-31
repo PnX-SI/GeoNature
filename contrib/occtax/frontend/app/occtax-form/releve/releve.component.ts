@@ -5,6 +5,7 @@ import { GeoJSON } from "leaflet";
 import { map, filter } from "rxjs/operators";
 import { ModuleConfig } from "../../module.config";
 import { CommonService } from "@geonature_common/service/common.service";
+import { DataFormService } from "@geonature_common/form/data-form.service";
 import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormReleveService } from "./releve.service";
 import { OcctaxFormMapService } from "../map/map.service";
@@ -28,7 +29,8 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     public occtaxFormService: OcctaxFormService,
     private occtaxFormReleveService: OcctaxFormReleveService,
     private occtaxFormMapService: OcctaxFormMapService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private _dataService: DataFormService
   ) {
     this.occtaxConfig = ModuleConfig;
   }
@@ -36,9 +38,17 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.releveForm = this.occtaxFormReleveService.releveForm;
     this.initHabFormSub();
-    this.occtaxFormMapService.geojson.subscribe(
-      (geojson) => (this.geojson = geojson)
-    );
+    this.occtaxFormMapService.geojson.subscribe(geojson => {
+      this.geojson = geojson;
+      // check if edition
+      if (geojson) {
+        this._dataService.getAltitudes(geojson).subscribe(altitude => {
+          this.releveForm.get('properties').patchValue(altitude)
+
+        })
+      }
+
+    })
 
     this.occtaxFormReleveService.route = this.route;
   } // END INIT

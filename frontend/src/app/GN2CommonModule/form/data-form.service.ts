@@ -207,6 +207,10 @@ export class DataFormService {
     return this._http.post(`${AppConfig.API_ENDPOINT}/geo/areas`, geojson);
   }
 
+  getAltitudes(geojson) {
+    return this._http.post(`${AppConfig.API_ENDPOINT}/geo/altitude`, geojson);
+  }
+
   getFormatedGeoIntersection(geojson, idType?) {
     if (idType) {
       geojson['id_type'] = idType;
