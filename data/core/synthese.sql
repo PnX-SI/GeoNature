@@ -218,6 +218,7 @@ COMMENT ON COLUMN gn_synthese.synthese.id_area_attachment
   IS 'Id area du rattachement géographique - cas des observation sans géométrie précise';
 COMMENT ON COLUMN gn_synthese.synthese.id_nomenclature_obs_technique
   IS 'Correspondance champs standard occtax = obsTechnique. En raison d''un changement de nom, le code nomenclature associé reste ''METH_OBS'' ';
+COMMENT ON COLUMN gn_synthese.synthese.id_area_attachment
   IS 'Id area du rattachement géographique - cas des observation sans géométrie précise';
 
 CREATE SEQUENCE synthese_id_synthese_seq
