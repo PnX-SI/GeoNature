@@ -109,9 +109,9 @@
               <div class="value">{{ releve.depth_max  || "-"}}</div>
             </div>
 
-            <div *ngIf="occtaxConfig.form_fields.obs_collect">
-              <div class="label">  {{ 'Releve.ObsCollectCampanule' | translate }} : </div>
-              <div class="value">{{getLibelleByID(releve.id_nomenclature_obs_collect_campanule)}}</div>
+            <div *ngIf="occtaxConfig.form_fields.tech_collect">
+              <div class="label">  {{ 'Releve.TechCollectCampanule' | translate }} : </div>
+              <div class="value">{{getLibelleByID(releve.id_nomenclature_tech_collect_campanule)}}</div>
             </div>
             <div *ngIf="occtaxConfig.form_fields.group_type" >
               <div class="label"> {{ 'Releve.GroupType' | translate }} :</div>

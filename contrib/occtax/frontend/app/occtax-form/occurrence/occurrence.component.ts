@@ -177,6 +177,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
 
       });
 
+    // set taxon form value from occurrence data observable
     this.occtaxFormOccurrenceService.occurrence
       .pipe(
         tap(() => this.taxonForm.setValue(null)),
@@ -197,6 +198,12 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   get countingControls() {
     return (this.occurrenceForm.get("cor_counting_occtax") as FormArray)
       .controls;
+  }
+
+  submitOccurrenceForm() {
+    if (this.occtaxFormOccurrenceService.form.valid) {
+      this.occtaxFormOccurrenceService.submitOccurrence();
+    }
   }
 
 

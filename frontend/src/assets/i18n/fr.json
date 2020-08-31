@@ -95,7 +95,7 @@
     "Validate": "Valider le relevé",
     "UnValidate": "Invalider le relevé",
     "ObsTechnique": "Technique d'observation",
-    "ObsCollectCampanule": "Technique de collècte du relevé (Campanule)",
+    "TechCollectCampanule": "Technique de collecte du relevé (Campanule)",
     "AddTaxonOnReleve": "Ajouter un taxon sur ce relevé",
     "CancelTaxon": "Annuler la saisie du taxon",
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire",

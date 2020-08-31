@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { FormBuilder, FormGroup, FormControl, Validators } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Observable, Subscription } from "rxjs";
 import { filter, map, switchMap, tap } from "rxjs/operators";
@@ -20,6 +20,7 @@ export class OcctaxFormReleveService {
   public $_autocompleteDate: Subscription = new Subscription();
 
   public propertiesForm: FormGroup;
+  public habitatForm = new FormControl();
   public releve: any;
   public geojson: GeoJSON;
   public releveForm: FormGroup;
@@ -83,7 +84,7 @@ export class OcctaxFormReleveService {
       meta_device_entry: null,
       comment: null,
       cd_hab: null,
-      id_nomenclature_obs_collect_campanule: null,
+      id_nomenclature_tech_collect_campanule: null,
       observers: [
         null,
         !ModuleConfig.observers_txt ? Validators.required : null,
@@ -208,9 +209,18 @@ export class OcctaxFormReleveService {
     return this.occtaxFormService.occtaxData.pipe(
       filter((data) => data && data.releve.properties),
       map((data) => {
-        let releve = data.releve.properties;
+
+        const releve = data.releve.properties;
         releve.date_min = this.formatDate(releve.date_min);
         releve.date_max = this.formatDate(releve.date_max);
+        // set habitat form value from 
+        if (releve.habitat) {
+          const habitatFormValue = releve.habitat;
+          // set search_name properties to the form
+          habitatFormValue['search_name'] = habitatFormValue.lb_code + " - " + habitatFormValue.lb_hab_fr;
+          this.habitatForm.setValue(habitatFormValue)
+        }
+
         return releve;
       })
     );
@@ -254,8 +264,8 @@ export class OcctaxFormReleveService {
               this.occtaxParamS.get("releve.id_nomenclature_grp_typ") ||
               data["TYP_GRP"],
             grp_method: this.occtaxParamS.get("releve.grp_method"),
-            id_nomenclature_obs_collect_campanule:
-              this.occtaxParamS.get("releve.id_nomenclature_obs_collect_campanule") ||
+            id_nomenclature_tech_collect_campanule:
+              this.occtaxParamS.get("releve.id_nomenclature_tech_collect_campanule") ||
               data["TECHNIQUE_OBS"],
             id_nomenclature_geo_object_nature:
               this.occtaxParamS.get(

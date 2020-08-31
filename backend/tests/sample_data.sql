@@ -183,7 +183,7 @@ INSERT INTO pr_occtax.t_releves_occtax (
   id_dataset,
   id_digitiser,
   observers_txt,
-  id_nomenclature_obs_collect_campanule,
+  id_nomenclature_tech_collect_campanule,
   id_nomenclature_grp_typ,
   date_min,
   date_max,

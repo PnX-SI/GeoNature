@@ -2,7 +2,7 @@
   background-color: #fff;
   border: 1px solid #f1f1f1;
   border-radius: 2px;
-  padding: 10px 15px;
+  padding: 0px 15px;
   box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
     0 1px 3px 0 rgba(0, 0, 0, 0.12);
   height: 100%;
@@ -16,23 +16,17 @@
 	padding-bottom: 45px;
 }
 
-
-#saved-obs {
-  border-left: solid 1px #0000003b;
-  padding-bottom: 45px;
-}
-
-#form-container{
-  height: 100%;
+#left-form {
   overflow-y: auto;
-  overflow-x: hidden;
+    margin-right: 5%;
 
 }
+
 
 #btn-finish {
   position: absolute;
-  right: 35px;
-  bottom: 50px;
+  right: 25px;
+  bottom: 20px;
   z-index:100;
 }
 

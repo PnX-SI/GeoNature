@@ -16,7 +16,7 @@ interface OCCTAX_FORM_PARAM {
     altitude_max?: number;
     meta_device_entry?: string;
     comment?: string;
-    id_nomenclature_obs_collect_campanule?: number;
+    id_nomenclature_tech_collect_campanule?: number;
     observers?: Array<any>;
     observers_txt?: string;
     id_nomenclature_grp_typ?: number;
@@ -63,7 +63,7 @@ export class OcctaxFormParamService {
       altitude_max: null,
       meta_device_entry: null,
       comment: null,
-      id_nomenclature_obs_collect_campanule: null,
+      id_nomenclature_tech_collect_campanule: null,
       observers: null,
       observers_txt: null,
       id_nomenclature_grp_typ: null,

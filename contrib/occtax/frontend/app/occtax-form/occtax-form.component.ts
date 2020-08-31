@@ -85,11 +85,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     }
   }
 
-  submitOccurrenceForm() {
-    if (this.occtaxFormOccurrenceService.form.valid) {
-      this.occtaxFormOccurrenceService.submitOccurrence();
-    }
-  }
+
 
   ngAfterViewInit() {
     setTimeout(() => this.calcCardContentHeight(), 500);
@@ -109,7 +105,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
       )).offsetHeight
       : 0;
 
-    this.cardContentHeight = this._commonService.calcCardContentHeight(minusHeight + 60)
+    this.cardContentHeight = this._commonService.calcCardContentHeight(minusHeight + 20)
 
     // resize map after resize container
     if (this._mapService.map) {
