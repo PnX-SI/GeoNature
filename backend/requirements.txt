@@ -33,7 +33,7 @@ itsdangerous==0.24
 jinja2==2.10.1
 lxml==4.2.5
 markupsafe==1.1
-marshmallow==2.15.1
+marshmallow==2.15.6 
 packaging==16.8
 pip==20.2.2 
 psycopg2==2.8.5
