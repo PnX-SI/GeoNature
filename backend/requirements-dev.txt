@@ -12,7 +12,7 @@
 -r requirements.txt
 
 alabaster==0.7.10
-attrs==17.4.0
+attrs==19.3.0
 babel==2.5.3
 backports.shutil-get-terminal-size==1.0.0
 black==19.10b0
@@ -21,7 +21,6 @@ configparser==3.5.0
 cookies==2.2.1
 coverage==4.4.2
 decorator==4.2.1
-docutils==0.14
 enum34==1.1.6
 flake8==3.5.0
 Flask-WeasyPrint==0.6
@@ -34,7 +33,7 @@ ipython==5.5.0
 jinja2==2.10.1
 markupsafe==1.1
 mccabe==0.6.1
-mypy==0.560
+mypy==0.782
 pathlib==1.0.1
 pathlib2==2.3.0
 pbr==3.1.1
@@ -67,7 +66,7 @@ sphinxcontrib-httpdomain==1.7.0
 sphinxcontrib-httpdomain==1.7.0
 sphinxcontrib-websupport==1.0.1
 traitlets==4.3.2
-typed-ast==1.1.0
+typed-ast==1.4.0
 typing==3.6.2
 virtualenv-clone==0.2.6
 virtualenv==15.1.0
