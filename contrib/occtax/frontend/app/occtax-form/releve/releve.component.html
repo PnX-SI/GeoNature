@@ -290,7 +290,7 @@
       *ngIf="occtaxConfig.form_fields.habitat"
       apiEndPoint="{{AppConfig.API_ENDPOINT}}/habref/habitats/autocomplete"
       [searchAsParameter]="false"  
-      [parentFormControl]="habitatForm"
+      [parentFormControl]="occtaxFormReleveService.habitatForm"
       queryParamSearch="search_name"
       keyValue="search_name"
       [formatter]="formatter"

@@ -20,7 +20,6 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   public geojson: GeoJSON;
   public showTime: boolean = false; //gestion de l'affichage des infos complémentaires de temps
   public userDatasets: Array<any>;
-  public habitatForm: FormControl;
   public releveForm: FormGroup;
   public AppConfig = AppConfig;
 
@@ -36,7 +35,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.releveForm = this.occtaxFormReleveService.releveForm;
-    this.initHabForm()
+    this.initHabForm();
     this.occtaxFormMapService.geojson.subscribe(
       (geojson) => (this.geojson = geojson)
     );
@@ -61,9 +60,9 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   }
 
   initHabForm() {
-    this.habitatForm = new FormControl(null);
+    this.occtaxFormReleveService.habitatForm = new FormControl(null);
     // set current cd_hab to the releve form
-    this.habitatForm.valueChanges.pipe(
+    this.occtaxFormReleveService.habitatForm.valueChanges.pipe(
       tap((hab) => console.log(hab)),
       filter((hab) => hab !== null && hab.cd_hab !== undefined),
       map((hab) => hab.cd_hab)
@@ -71,18 +70,6 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
       this.releveForm.get('properties').get('cd_hab').setValue(cd_hab);
     });
 
-    // set habitat form value from 
-    this.occtaxFormReleveService.releveValues
-      .pipe(
-        filter(releve => releve.habitat),
-        map(releve => releve.habitat)
-      ).subscribe(habitat => {
-        const habitatFormValue = habitat;
-        // set search_name properties to the form
-        habitatFormValue['search_name'] = habitat.lb_code + " - " + habitat.lb_hab_fr;
-        this.habitatForm.setValue(habitatFormValue)
-
-      })
   }
 
 

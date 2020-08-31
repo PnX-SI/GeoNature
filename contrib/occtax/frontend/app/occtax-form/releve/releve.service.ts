@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { FormBuilder, FormGroup, FormControl, Validators } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Observable, Subscription } from "rxjs";
 import { filter, map, switchMap, tap } from "rxjs/operators";
@@ -20,6 +20,7 @@ export class OcctaxFormReleveService {
   public $_autocompleteDate: Subscription = new Subscription();
 
   public propertiesForm: FormGroup;
+  public habitatForm: FormControl;
   public releve: any;
   public geojson: GeoJSON;
   public releveForm: FormGroup;
@@ -204,13 +205,24 @@ export class OcctaxFormReleveService {
       });
   }
 
-  public get releveValues(): Observable<any> {
+  private get releveValues(): Observable<any> {
     return this.occtaxFormService.occtaxData.pipe(
       filter((data) => data && data.releve.properties),
       map((data) => {
-        let releve = data.releve.properties;
+        console.log(data);
+
+        const releve = data.releve.properties;
         releve.date_min = this.formatDate(releve.date_min);
         releve.date_max = this.formatDate(releve.date_max);
+        // set habitat form value from 
+        if (releve.habitat) {
+          console.log(releve.habitat);
+          const habitatFormValue = releve.habitat;
+          // set search_name properties to the form
+          habitatFormValue['search_name'] = habitatFormValue.lb_code + " - " + habitatFormValue.lb_hab_fr;
+          this.habitatForm.setValue(habitatFormValue)
+        }
+
         return releve;
       })
     );
