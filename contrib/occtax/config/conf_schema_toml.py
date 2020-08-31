@@ -21,7 +21,7 @@ class FormConfig(Schema):
     depth_min = fields.Boolean(missing=False)
     depth_max = fields.Boolean(missing=False)
     altitude_max = fields.Boolean(missing=True)
-    obs_collect = fields.Boolean(missing=False)
+    tech_collect = fields.Boolean(missing=False)
     group_type = fields.Boolean(missing=False)
     comment_releve = fields.Boolean(missing=True)
     obs_tech = fields.Boolean(missing=True)

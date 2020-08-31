@@ -20,7 +20,7 @@ occ_nomenclatures = [
 ]
 
 releve_nomenclatures = [
-    "id_nomenclature_obs_collect_campanule",
+    "id_nomenclature_tech_collect_campanule",
     "id_nomenclature_grp_typ",
 ]
 

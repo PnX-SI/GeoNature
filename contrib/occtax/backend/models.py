@@ -202,7 +202,7 @@ class TRelevesOccurrence(ReleveModel):
     altitude_max = DB.Column(DB.Integer)
     depth_min = DB.Column(DB.Integer)
     depth_max = DB.Column(DB.Integer)
-    id_nomenclature_obs_collect_campanule = DB.Column(DB.Integer)
+    id_nomenclature_tech_collect_campanule = DB.Column(DB.Integer)
     id_nomenclature_geo_object_nature = DB.Column(DB.Integer)
     meta_device_entry = DB.Column(DB.Unicode)
     comment = DB.Column(DB.Unicode)

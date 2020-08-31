@@ -260,7 +260,7 @@ CREATE TABLE t_releves_occtax (
     id_dataset integer NOT NULL,
     id_digitiser integer,
     observers_txt varchar(500),
-    id_nomenclature_obs_collect_campanule integer NOT NULL,
+    id_nomenclature_tech_collect_campanule integer NOT NULL,
     id_nomenclature_grp_typ integer NOT NULL,
     grp_method varchar(255),
     date_min timestamp without time zone DEFAULT now() NOT NULL,
@@ -284,7 +284,7 @@ CREATE TABLE t_releves_occtax (
     CONSTRAINT enforce_srid_geom_4326 CHECK ((public.st_srid(geom_4326) = 4326)),
     CONSTRAINT enforce_srid_geom_local CHECK ((public.st_srid(geom_local) = MYLOCALSRID))
 );
-COMMENT ON COLUMN t_releves_occtax.id_nomenclature_obs_collect_campanule IS 'Correspondance nomenclature CAMPANULE = technique_obs';
+COMMENT ON COLUMN t_releves_occtax.id_nomenclature_tech_collect_campanule IS 'Correspondance nomenclature CAMPANULE = technique_obs';
 COMMENT ON COLUMN t_releves_occtax.id_nomenclature_grp_typ IS 'Correspondance nomenclature INPN = Type de regroupement';
 
 CREATE SEQUENCE t_releves_occtax_id_releve_occtax_seq
@@ -418,7 +418,7 @@ ALTER TABLE ONLY t_releves_occtax
     ADD CONSTRAINT fk_t_releves_occtax_t_roles FOREIGN KEY (id_digitiser) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_releves_occtax
-    ADD CONSTRAINT fk_t_releves_occtax_obs_technique_campanule FOREIGN KEY (id_nomenclature_obs_collect_campanule) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_releves_occtax_obs_technique_campanule FOREIGN KEY (id_nomenclature_tech_collect_campanule) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_releves_occtax
     ADD CONSTRAINT fk_t_releves_occtax_regroupement_typ FOREIGN KEY (id_nomenclature_grp_typ) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
@@ -512,7 +512,7 @@ ALTER TABLE t_releves_occtax
   ADD CONSTRAINT check_t_releves_occtax_hour_max CHECK (hour_min <= hour_max OR date_min < date_max);
 
 ALTER TABLE t_releves_occtax
-  ADD CONSTRAINT check_t_releves_occtax_obs_technique CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_obs_collect_campanule,'TECHNIQUE_OBS')) NOT VALID;
+  ADD CONSTRAINT check_t_releves_occtax_obs_technique CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_tech_collect_campanule,'TECHNIQUE_OBS')) NOT VALID;
 
 ALTER TABLE t_releves_occtax
   ADD CONSTRAINT check_t_releves_occtax_regroupement_typ CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_grp_typ,'TYP_GRP')) NOT VALID;
@@ -589,7 +589,7 @@ ALTER TABLE ONLY defaults_nomenclatures_value
 
 CREATE INDEX i_t_releves_occtax_id_dataset ON pr_occtax.t_releves_occtax USING btree (id_dataset);
 CREATE INDEX i_t_releves_occtax_geom_4326 ON pr_occtax.t_releves_occtax USING gist (geom_4326);
-CREATE INDEX i_t_releves_occtax_id_nomenclature_obs_collect_campanule ON pr_occtax.t_releves_occtax USING btree (id_nomenclature_obs_collect_campanule);
+CREATE INDEX i_t_releves_occtax_id_nomenclature_tech_collect_campanule ON pr_occtax.t_releves_occtax USING btree (id_nomenclature_tech_collect_campanule);
 CREATE INDEX i_t_releves_occtax_id_nomenclature_grp_typ ON pr_occtax.t_releves_occtax USING btree (id_nomenclature_grp_typ);
 CREATE INDEX i_t_releves_occtax_geom_local ON pr_occtax.t_releves_occtax USING gist (geom_local);
 CREATE INDEX i_t_releves_occtax_date_max ON pr_occtax.t_releves_occtax USING btree (date_max);

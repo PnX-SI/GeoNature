@@ -19,7 +19,7 @@ A mettre ici
 Changement dans les paramètres Occtax :
 Les paramètres d'affichage/masquage des champs du formulaire opèrent les changements suivants:
 ``obs_meth`` devient ``osb_tech`` 
-``obs_technique`` devient ``obs_collect``
+``obs_technique`` devient ``tech_collect``
 
 ::
 

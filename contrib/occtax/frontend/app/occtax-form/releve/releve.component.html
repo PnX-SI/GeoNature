@@ -269,9 +269,9 @@
 
 <!-- TECHNIQUE OBSERVATION -->
 <pnx-nomenclature 
-  *ngIf="occtaxConfig.form_fields.obs_collect" 
+  *ngIf="occtaxConfig.form_fields.tech_collect" 
   label="{{ 'Releve.ObsCollectCampanule' | translate }}" 
-  [parentFormControl]="propertiesForm.get('id_nomenclature_obs_collect_campanule')"
+  [parentFormControl]="propertiesForm.get('id_nomenclature_tech_collect_campanule')"
   codeNomenclatureType="TECHNIQUE_OBS" 
   [disabled]="propertiesForm.disabled"
   

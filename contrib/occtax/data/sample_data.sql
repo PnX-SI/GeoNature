@@ -187,7 +187,7 @@ INSERT INTO pr_occtax.t_releves_occtax (
   id_releve_occtax,
   id_dataset,
   id_digitiser,
-  id_nomenclature_obs_collect_campanule,
+  id_nomenclature_tech_collect_campanule,
   id_nomenclature_grp_typ,
   id_nomenclature_geo_object_nature,
   date_min,
