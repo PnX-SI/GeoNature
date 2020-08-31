@@ -84,7 +84,7 @@
 
       <div>
         <a *ngIf="_cruvedStore.cruved?.METADATA?.cruved.C !== '0'" routerLink="/metadata/af" class="btn btn-primary btn-sm margin-top-sm"> Ajouter un cadre d'acquisition </a>
-        &nbsp;<a *ngIf="_cruvedStore.cruved?.METADATA?.cruved.C !== '0'" routerLink="/metadata/dataset" class="btn btn-primary btn-sm margin-top-sm"> Ajouter un jeu de données </a>
+        &nbsp;<a *ngIf="_cruvedStore.cruved?.METADATA?.cruved.C !== '0' || ds.id_digitizer == currentUser.id_role" routerLink="/metadata/dataset" class="btn btn-primary btn-sm margin-top-sm"> Ajouter un jeu de données </a>
       </div>
     </div>
   </div>
