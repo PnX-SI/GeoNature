@@ -173,6 +173,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
 
       });
 
+    // set taxon form value from occurrence data observable
     this.occtaxFormOccurrenceService.occurrence
       .pipe(
         tap(() => this.taxonForm.setValue(null)),

@@ -642,7 +642,7 @@ def deleteOneOccurence(id_occ):
 
 
 @blueprint.route("/releve/occurrence_counting/<int:id_count>", methods=["DELETE"])
-@permissions.check_cruved_scope("R", module_code="OCCTAX")
+@permissions.check_cruved_scope("D", module_code="OCCTAX")
 @json_resp
 def deleteOneOccurenceCounting(id_count):
     """Delete one counting
