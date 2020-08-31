@@ -196,6 +196,12 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
       .controls;
   }
 
+  submitOccurrenceForm() {
+    if (this.occtaxFormOccurrenceService.form.valid) {
+      this.occtaxFormOccurrenceService.submitOccurrence();
+    }
+  }
+
 
 
   resetOccurrenceForm() {

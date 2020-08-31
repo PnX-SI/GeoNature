@@ -94,38 +94,7 @@
 				</div>
 
 			</div>
-			<ng-container *ngIf="!(occtaxFormOccurrenceService.occurrence|async); else modifButton">
-				<button 
-					mat-flat-button
-					class="btn-green uppercase add-occ"
-					matTooltip="Enregistrer ce taxon"
-					[disabled]="occtaxFormOccurrenceService.form.invalid"
-					(click)="submitOccurrenceForm()">
-					<mat-spinner 
-						*ngIf="occtaxFormOccurrenceService.saveWaiting"
-						diameter="25"
-						strokeWidth="2">
-					</mat-spinner>
-					Enregistrer ce taxon
-					<mat-icon style="vertical-align: middle;" >save</mat-icon>
-				</button> 
-			</ng-container>
-			<ng-template #modifButton>
-				<button 
-					class="btn-green uppercase add-occ"
-					mat-flat-button
-					matTooltip="Modifier et enregistrer ce taxon"
-					[disabled]="occtaxFormOccurrenceService.form.invalid"
-					(click)="submitOccurrenceForm()">
-					<mat-spinner 
-						*ngIf="occtaxFormOccurrenceService.saveWaiting"
-						diameter="25"
-						strokeWidth="2">
-					</mat-spinner>
-					Modifier ce taxon
-					<mat-icon style="vertical-align: middle;" >save</mat-icon>
-				</button>
-			</ng-template>
+
 
 			<button 
 				id="btn-finish"

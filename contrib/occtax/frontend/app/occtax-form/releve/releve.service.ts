@@ -20,7 +20,7 @@ export class OcctaxFormReleveService {
   public $_autocompleteDate: Subscription = new Subscription();
 
   public propertiesForm: FormGroup;
-  public habitatForm: FormControl;
+  public habitatForm = new FormControl();
   public releve: any;
   public geojson: GeoJSON;
   public releveForm: FormGroup;
@@ -209,14 +209,12 @@ export class OcctaxFormReleveService {
     return this.occtaxFormService.occtaxData.pipe(
       filter((data) => data && data.releve.properties),
       map((data) => {
-        console.log(data);
 
         const releve = data.releve.properties;
         releve.date_min = this.formatDate(releve.date_min);
         releve.date_max = this.formatDate(releve.date_max);
         // set habitat form value from 
         if (releve.habitat) {
-          console.log(releve.habitat);
           const habitatFormValue = releve.habitat;
           // set search_name properties to the form
           habitatFormValue['search_name'] = habitatFormValue.lb_code + " - " + habitatFormValue.lb_hab_fr;
