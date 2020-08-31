@@ -8,7 +8,7 @@
 <div class="row">
   <div 
     *ngIf="occtaxConfig.form_fields.precision"
-    class="col-xl-4 col-md-6 col-sm-8 col-11">
+    class="col-8">
     <small>Précision du pointage (m)</small>
     <input 
       type="number" 
@@ -266,34 +266,40 @@
   </div>
 
 
-
+<div class="row">
 <!-- TECHNIQUE OBSERVATION -->
-<pnx-nomenclature 
-  *ngIf="occtaxConfig.form_fields.tech_collect" 
-  label="{{ 'Releve.TechCollectCampanule' | translate }}" 
-  [parentFormControl]="propertiesForm.get('id_nomenclature_tech_collect_campanule')"
-  codeNomenclatureType="TECHNIQUE_OBS" 
-  [disabled]="propertiesForm.disabled"
-  
-  >
-</pnx-nomenclature>
+  <div class="col-6">
+    <pnx-nomenclature 
+    *ngIf="occtaxConfig.form_fields.obs_collect" 
+    label="{{ 'Releve.TechCollectCampanule' | translate }}" 
+    [parentFormControl]="propertiesForm.get('id_nomenclature_tech_collect_campanule')"
+    codeNomenclatureType="TECHNIQUE_OBS" 
+    [disabled]="propertiesForm.disabled"
+    
+    >
+    </pnx-nomenclature>
+  </div>
 
-
-<div class="col-xl-6 col-md-7">
-  <pnx-autocomplete 
-    *ngIf="occtaxConfig.form_fields.habitat"
-    apiEndPoint="{{AppConfig.API_ENDPOINT}}/habref/habitats/autocomplete"
-    [searchAsParameter]="false"  
-    [parentFormControl]="habitatForm"
-    queryParamSearch="search_name"
-    keyValue="search_name"
-    [formatter]="formatter"
-    label="Habitat"
-    placeholder="Tapez les premières lettres..."
-  >
-  </pnx-autocomplete>
 </div>
 
+
+
+<div class="row">
+  <div class="col-6">
+    <pnx-autocomplete 
+      *ngIf="occtaxConfig.form_fields.habitat"
+      apiEndPoint="{{AppConfig.API_ENDPOINT}}/habref/habitats/autocomplete"
+      [searchAsParameter]="false"  
+      [parentFormControl]="habitatForm"
+      queryParamSearch="search_name"
+      keyValue="search_name"
+      [formatter]="formatter"
+      label="Habitat"
+      placeholder="Tapez les premières lettres..."
+    >
+    </pnx-autocomplete>
+  </div>
+</div>
 
 
 

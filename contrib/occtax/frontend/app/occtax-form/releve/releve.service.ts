@@ -204,7 +204,7 @@ export class OcctaxFormReleveService {
       });
   }
 
-  private get releveValues(): Observable<any> {
+  public get releveValues(): Observable<any> {
     return this.occtaxFormService.occtaxData.pipe(
       filter((data) => data && data.releve.properties),
       map((data) => {

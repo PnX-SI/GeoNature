@@ -69,8 +69,22 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
       map((hab) => hab.cd_hab)
     ).subscribe(cd_hab => {
       this.releveForm.get('properties').get('cd_hab').setValue(cd_hab);
-    })
+    });
+
+    // set habitat form value from 
+    this.occtaxFormReleveService.releveValues
+      .pipe(
+        filter(releve => releve.habitat),
+        map(releve => releve.habitat)
+      ).subscribe(habitat => {
+        const habitatFormValue = habitat;
+        // set search_name properties to the form
+        habitatFormValue['search_name'] = habitat.lb_code + " - " + habitat.lb_hab_fr;
+        this.habitatForm.setValue(habitatFormValue)
+
+      })
   }
+
 
   isDatasetUser(id_dataset: number = null): boolean {
     if (id_dataset === null || this.userDatasets === undefined) {
