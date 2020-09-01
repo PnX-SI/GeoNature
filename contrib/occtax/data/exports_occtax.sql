@@ -32,7 +32,7 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax AS
     d.dataset_name AS "jddCode",
     d.unique_dataset_id AS "jddId",
     ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_obs_technique) AS "obsTech",
-    ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_tech_collect_campanule) AS "techCollect",
+    ref_nomenclatures.get_nomenclature_label(rel.id_nomenclature_tech_collect_campanule) AS "techCollect",
     ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_bio_condition) AS "ocEtatBio",
     ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_naturalness) AS "ocNat",
     ref_nomenclatures.get_nomenclature_label(ccc.id_nomenclature_sex) AS "ocSex",
