@@ -20,6 +20,14 @@ mat-sidenav-content {
   color: white!important;
 }
 
+.right-aligned-header > .mat-content {
+  justify-content: space-between!important;
+}
+
+.mat-content > mat-panel-title, .mat-content > mat-panel-description {
+  flex: 0 0 auto !important;
+}
+
 .btn-green:disabled {
   background-color: #38993850!important;
 }
