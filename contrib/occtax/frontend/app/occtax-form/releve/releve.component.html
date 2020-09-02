@@ -92,7 +92,7 @@
     </pnx-date>
   </div>
 
-  <div class="col-xl-3 col-md-5 col-sm-8 col-11" [hidden]="!showTime">
+  <div class="col-xl-3 col-md-5 col-sm-8 col-11" [hidden]="!occtaxFormReleveService.showTime">
     <!-- DATE MAX -->
     <pnx-date 
       *ngIf="occtaxConfig.form_fields.date_max" 
@@ -106,10 +106,10 @@
     <button 
       class="btn btn-sm btn-outline-shadow" 
       [disabled]="propertiesForm.disabled" 
-      (click)="showTime = !showTime">
+      (click)="occtaxFormReleveService.showTime = !occtaxFormReleveService.showTime">
       <i 
         class="fa fa-plus" 
-        [ngClass]="showTime ? 'fa-minus' : 'fa-plus'" 
+        [ngClass]="occtaxFormReleveService.showTime ? 'fa-minus' : 'fa-plus'" 
         aria-expanded="false"></i>
     </button>
   </div>
@@ -121,7 +121,7 @@
   {{'Releve.Errors.DateMaxError' |translate}}      
 </div>
 
-<div class="row" [hidden]="!showTime">
+<div class="row" [hidden]="!occtaxFormReleveService.showTime">
   <div class="col-md-4 col-sm-5 col-6">
 
     <!-- HOUR MIN -->
@@ -139,7 +139,7 @@
     </div>
   </div>
 
-  <div class="col-md-4 col-sm-5 col-6" [hidden]="!showTime">
+  <div class="col-md-4 col-sm-5 col-6" [hidden]="!occtaxFormReleveService.showTime">
     <!-- HOUR MAX -->
     <div 
       *ngIf="occtaxConfig.form_fields.hour_max" 
