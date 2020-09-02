@@ -1,4 +1,4 @@
-<div *ngIf="bInitialized">
+<div *ngIf="bInitialized" class="medias-form">
   <div class="mat-accordeon">
     <mat-accordion>
       <div
@@ -68,7 +68,7 @@
           >
           </pnx-media>
         </mat-expansion-panel>
-        <button
+        <!-- <button
           *ngIf="parentFormControl.value.length === i + 1"
           mat-mini-fab
           class="btn-add-media color-add-media"
@@ -79,16 +79,15 @@
           <mat-icon matTooltip="{{ disabled ? disabledTxt : ('Media.add' | translate) }}"
             >add</mat-icon
           >
-        </button>
+        </button> -->
       </div>
     </mat-accordion>
     <button
-      *ngIf="!(parentFormControl.value && parentFormControl.value.length)"
       mat-mini-fab
       id="add-media-btn"
       class="btn-add-media color-add-media"
       (click)="addMedia()"
-      [disabled]="disabled"
+      [disabled]="!validOrLoadingMedias() || disabled"
     >
       <mat-icon matTooltip="{{ disabled ? disabledTxt : ('Media.add' | translate) }}">add</mat-icon>
     </button>
