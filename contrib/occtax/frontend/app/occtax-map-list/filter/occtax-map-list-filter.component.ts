@@ -1,18 +1,10 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
-import { OcctaxDataService } from "../../services/occtax-data.service";
-import { CommonService } from "@geonature_common/service/common.service";
-import { Router } from "@angular/router";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ModuleConfig } from "../../module.config";
 import { TaxonomyComponent } from "@geonature_common/form/taxonomy/taxonomy.component";
 import { FormGroup, FormBuilder } from "@angular/forms";
-import { GenericFormGeneratorComponent } from "@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { FILTERSLIST } from "./filters-list";
-import { AppConfig } from "@geonature_config/app.config";
-import { GlobalSubService } from "@geonature/services/global-sub.service";
-import { Subscription } from "rxjs/Subscription";
 import { HttpParams } from "@angular/common/http";
 
 @Component({
@@ -35,7 +27,7 @@ export class OcctaxMapListFilterComponent implements OnInit {
     private mapListService: MapListService,
     private _fb: FormBuilder,
     private _dateParser: NgbDateParserFormatter
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.dynamicFormGroup = this._fb.group({
@@ -53,6 +45,7 @@ export class OcctaxMapListFilterComponent implements OnInit {
   }
 
   searchData() {
+    this.mapListService.zoomOnLayer = true;
     this.mapListService.refreshUrlQuery(12);
     const params = [];
     for (let key in this.dynamicFormGroup.value) {

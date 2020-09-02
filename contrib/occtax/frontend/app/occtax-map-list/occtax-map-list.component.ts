@@ -68,6 +68,9 @@ export class OcctaxMapListComponent
   ) { }
 
   ngOnInit() {
+    // set zoom on layer to true
+    // zoom only when search data
+    this.mapListService.zoomOnLayer = true;
     //config
     this.occtaxConfig = ModuleConfig;
     this.idName = "id_releve_occtax";
@@ -101,7 +104,7 @@ export class OcctaxMapListComponent
 
   ngAfterViewInit() {
     setTimeout(() => this.calcCardContentHeight(), 500);
-    if(this._mapService.currentExtend) {
+    if (this._mapService.currentExtend) {
       this._mapService.map.setView(
         this._mapService.currentExtend.center,
         this._mapService.currentExtend.zoom
