@@ -11,7 +11,10 @@ from geonature.core.gn_commons.file_manager import (
     rename_file, removeDisallowedFilenameChars
 )
 
-from geonature.utils.errors import ConfigError, GNModuleInstallError, GeoNatureError, GeonatureApiError
+from geonature.utils.errors import (
+    ConfigError, GNModuleInstallError,
+    GeoNatureError, GeonatureApiError
+)
 
 
 import pathlib
@@ -39,7 +42,7 @@ class TMediaRepository():
 
     def __init__(self, data=None, file=None, id_media=None):
         self.data = data or {}
-    
+
         # filtrer les données du dict qui
         # vont être insérées dans l'objet Model
         self.media_data = {
@@ -140,7 +143,7 @@ class TMediaRepository():
         url = self.data['media_url']
         if media_type == 'Vidéo Youtube' and 'youtube' not in url:
             return False
-        
+
         if media_type == 'Vidéo Dailymotion' and 'dailymotion' not in url:
             return False
 
@@ -156,7 +159,7 @@ class TMediaRepository():
 
         if media_type == 'Audio' and 'audio' not in content_type:
             return False
-        
+
         if media_type == 'Vidéo (Fichier)' and 'video' not in content_type:
             return False
 
@@ -261,7 +264,7 @@ class TMediaRepository():
         if self.media.media_url:
             response = requests.get(self.media.media_url)
             image = Image.open(BytesIO(response.content))
-        
+
         return image
 
 
@@ -280,14 +283,14 @@ class TMediaRepository():
             image = self.get_image()
         except Exception as e:
             if self.data['isFile']:
-                raise GeonatureError('Le fichier fournit ne contient pas une image valide')
+                raise GeoNatureError('Le fichier fournit ne contient pas une image valide')
             else:
                 raise GeoNatureError('L URL renseignée ne contient pas une image valide')
 
 
         for thumbnail_height in thumbnail_sizes:
 
-            width = thumbnail_height / image.size[1] * image.size[0] 
+            width = thumbnail_height / image.size[1] * image.size[0]
             image.thumbnail((width, thumbnail_height))
             pathlib.Path(
                 "/".join(self.absolute_file_path(thumbnail_height).split('/')[:-1])
@@ -327,7 +330,7 @@ class TMediaRepository():
         media = DB.session.query(TMedias).get(id_media)
         return media
 
-    
+
 
 
 class TMediumRepository():
@@ -345,7 +348,7 @@ class TMediumRepository():
             TMedias.uuid_attached_row == entity_uuid
         ).all()
         return medium
-    
+
     def sync_medias():
         '''
             Met à jour les médias
