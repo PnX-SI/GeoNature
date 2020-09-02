@@ -17,6 +17,8 @@ export class MapService {
   public editingMarker = true;
   public leafletDrawFeatureGroup: FeatureGroup;
   public fileLayerFeatureGroup: FeatureGroup;
+  // object {'zoom': int, 'center': {lat:int, lng: 'int}} in order to keep map extend between windows
+  public currentExtend: any;
   // boolean to control if we delete filelyaer layer when leaflet draw start
   public fileLayerEditionMode = false;
   public modalContent: any;

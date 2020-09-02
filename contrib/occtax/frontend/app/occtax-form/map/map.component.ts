@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy, Input } from "@angular/core";
+import { Component, OnInit, AfterViewInit, OnDestroy } from "@angular/core";
 import { filter, map, first } from "rxjs/operators";
 import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
 import { CommonService } from "@geonature_common/service/common.service";
 import { ModuleConfig } from "../../module.config";
+import {MapService} from '@geonature_common/map/map.service';
 import { OcctaxFormMapService } from "./map.service";
 import { OcctaxFormService } from "../occtax-form.service";
 
@@ -10,7 +11,7 @@ import { OcctaxFormService } from "../occtax-form.service";
   selector: "pnx-occtax-form-map",
   templateUrl: "map.component.html",
 })
-export class OcctaxFormMapComponent implements OnInit, OnDestroy {
+export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy {
   public leafletDrawOptions: any;
   public firstFileLayerMessage = true;
   public occtaxConfig = ModuleConfig;
@@ -22,7 +23,8 @@ export class OcctaxFormMapComponent implements OnInit, OnDestroy {
   constructor(
     private ms: OcctaxFormMapService,
     private _commonService: CommonService,
-    private _occtaxFormService: OcctaxFormService
+    private _occtaxFormService: OcctaxFormService,
+    private _mapService: MapService
   ) { }
 
   ngOnInit() {
@@ -56,6 +58,15 @@ export class OcctaxFormMapComponent implements OnInit, OnDestroy {
           this.geometry = geometry;
         }
       });
+  }
+
+  ngAfterViewInit() {
+    if(this._mapService.currentExtend) {
+      this._mapService.map.setView(
+        this._mapService.currentExtend.center,
+        this._mapService.currentExtend.zoom
+      )
+    }
   }
 
   // display help toaster for filelayer
