@@ -24,7 +24,7 @@ export class OcctaxFormReleveService {
   public releve: any;
   public geojson: GeoJSON;
   public releveForm: FormGroup;
-
+  public showTime: boolean = false; //gestion de l'affichage des infos complémentaires de temps
   public waiting: boolean = false;
   public route: ActivatedRoute;
 
@@ -139,6 +139,7 @@ export class OcctaxFormReleveService {
         tap((editionMode: boolean) => {
           // gestion de l'autocomplétion de la date ou non.
           this.$_autocompleteDate.unsubscribe();
+          // autocomplete si mode création ou si mode edition et date_min = date_max
           if (!editionMode) {
             this.$_autocompleteDate = this.coreFormService.autoCompleteDate(
               this.propertiesForm as FormGroup,
@@ -205,14 +206,31 @@ export class OcctaxFormReleveService {
       });
   }
 
+  /** Get occtax data and patch value to the form */
   private get releveValues(): Observable<any> {
     return this.occtaxFormService.occtaxData.pipe(
       filter((data) => data && data.releve.properties),
       map((data) => {
-
         const releve = data.releve.properties;
+
+        // on affiche la date_max si date_min != date_max
+        if (releve.date_min != releve.date_max) {
+          this.showTime = true;
+        }
+        // si les date sont égales, on active l'autocomplete pour garder la correlation
+        else {
+          this.$_autocompleteDate.unsubscribe()
+          this.$_autocompleteDate = this.coreFormService.autoCompleteDate(
+            this.propertiesForm as FormGroup,
+            "date_min",
+            "date_max"
+          );
+        }
+
         releve.date_min = this.formatDate(releve.date_min);
         releve.date_max = this.formatDate(releve.date_max);
+
+
         // set habitat form value from 
         if (releve.habitat) {
           const habitatFormValue = releve.habitat;

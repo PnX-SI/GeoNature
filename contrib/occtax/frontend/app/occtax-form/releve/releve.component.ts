@@ -19,7 +19,6 @@ import { AppConfig } from "@geonature_config/app.config";
 export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   public occtaxConfig: any;
   public geojson: GeoJSON;
-  public showTime: boolean = false; //gestion de l'affichage des infos complémentaires de temps
   public userDatasets: Array<any>;
   public releveForm: FormGroup;
   public AppConfig = AppConfig;
