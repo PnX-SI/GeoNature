@@ -1076,3 +1076,8 @@
     END IF;
    END
  $$ language plpgsql;
+
+
+ -- suppression trigger en double #762
+DROP TRIGGER tri_insert_synthese_cor_role_releves_occtax ON pr_occtax.cor_role_releves_occtax;
+DROP FUNCTION pr_occtax.fct_tri_synthese_insert_cor_role_releve()
