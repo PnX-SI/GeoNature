@@ -6,6 +6,7 @@ import { FormGroup, FormBuilder } from "@angular/forms";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { FILTERSLIST } from "./filters-list";
 import { HttpParams } from "@angular/common/http";
+import { OcctaxMapListService } from "../occtax-map-list.service";
 
 @Component({
   selector: "pnx-occtax-map-list-filter",
@@ -26,20 +27,12 @@ export class OcctaxMapListFilterComponent implements OnInit {
   constructor(
     private mapListService: MapListService,
     private _fb: FormBuilder,
-    private _dateParser: NgbDateParserFormatter
+    private _dateParser: NgbDateParserFormatter,
+    public occtaxMapListService: OcctaxMapListService
   ) { }
 
   ngOnInit() {
-    this.dynamicFormGroup = this._fb.group({
-      cd_nom: null,
-      observers: null,
-      dataset: null,
-      observers_txt: null,
-      id_dataset: null,
-      date_up: null,
-      date_low: null,
-      municipality: null
-    });
+
 
     this.occtaxConfig = ModuleConfig;
   }
@@ -48,16 +41,16 @@ export class OcctaxMapListFilterComponent implements OnInit {
     this.mapListService.zoomOnLayer = true;
     this.mapListService.refreshUrlQuery(12);
     const params = [];
-    for (let key in this.dynamicFormGroup.value) {
-      let value = this.dynamicFormGroup.value[key];
+    for (let key in this.occtaxMapListService.dynamicFormGroup.value) {
+      let value = this.occtaxMapListService.dynamicFormGroup.value[key];
       if (key === "cd_nom" && value) {
-        value = this.dynamicFormGroup.value[key].cd_nom;
+        value = this.occtaxMapListService.dynamicFormGroup.value[key].cd_nom;
         params.push({ param: key, value: value });
       } else if ((key === "date_up" || key === "date_low") && value) {
-        value = this._dateParser.format(this.dynamicFormGroup.value[key]);
+        value = this._dateParser.format(this.occtaxMapListService.dynamicFormGroup.value[key]);
         params.push({ param: key, value: value });
       } else if (key === "observers" && value) {
-        this.dynamicFormGroup.value.observers.forEach(observer => {
+        this.occtaxMapListService.dynamicFormGroup.value.observers.forEach(observer => {
           params.push({ param: "observers", value: observer });
         });
       } else if (value && value !== "") {
@@ -78,7 +71,7 @@ export class OcctaxMapListFilterComponent implements OnInit {
 
   refreshFilters() {
     this.taxonomyComponent.refreshAllInput();
-    this.dynamicFormGroup.reset();
+    this.occtaxMapListService.dynamicFormGroup.reset();
     this.mapListService.refreshUrlQuery(12);
   }
 }
