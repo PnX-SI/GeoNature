@@ -874,28 +874,6 @@ $BODY$
 LANGUAGE plpgsql VOLATILE
 COST 100;
 
--- Trigger insertion cor_role_releve_occtax
-CREATE OR REPLACE FUNCTION fct_tri_synthese_insert_cor_role_releve()
-  RETURNS trigger AS
-$BODY$
-DECLARE
-  uuids_counting uuid[];
-BEGIN
-  -- Récupération des id_counting à partir de l'id_releve
-  SELECT INTO uuids_counting pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer);
-  
-  IF uuids_counting IS NOT NULL THEN
-      -- Insertion dans cor_observer_synthese pour chaque counting
-      INSERT INTO gn_synthese.cor_observer_synthese(id_synthese, id_role) 
-      SELECT id_synthese, NEW.id_role 
-      FROM gn_synthese.synthese 
-      WHERE unique_id_sinp IN(SELECT unnest(uuids_counting));
-  END IF;
-RETURN NULL;
-END;
-$BODY$
-LANGUAGE plpgsql VOLATILE
-COST 100;
 
 
 -- Trigger update cor_role_releve_occtax
@@ -1060,12 +1038,6 @@ CREATE TRIGGER tri_delete_synthese_t_releve_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_delete_releve();
 
-DROP TRIGGER IF EXISTS tri_insert_synthese_cor_role_releves_occtax ON pr_occtax.cor_role_releves_occtax;
-CREATE TRIGGER tri_insert_synthese_cor_role_releves_occtax
-  AFTER INSERT
-  ON pr_occtax.cor_role_releves_occtax
-  FOR EACH ROW
-  EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_insert_cor_role_releve();
 
 DROP TRIGGER IF EXISTS tri_update_synthese_cor_role_releves_occtax ON pr_occtax.cor_role_releves_occtax;
 CREATE TRIGGER tri_update_synthese_cor_role_releves_occtax

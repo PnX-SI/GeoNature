@@ -1,13 +1,6 @@
 export const FILTERSLIST = [
   {
     type_widget: "nomenclature",
-    attribut_label: "Technique d'observation",
-    attribut_name: "id_nomenclature_tech_collect_campanule",
-    code_nomenclature_type: "TECHNIQUE_OBS",
-    required: false,
-  },
-  {
-    type_widget: "nomenclature",
     attribut_label: "Nature de l'objet géographique",
     attribut_name: "id_nomenclature_geo_object_nature",
     code_nomenclature_type: "NAT_OBJ_GEO",

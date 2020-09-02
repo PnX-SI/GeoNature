@@ -11,7 +11,6 @@ import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { MapService } from "@geonature_common/map/map.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
 import { CommonService } from "@geonature_common/service/common.service";
-import { Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { DatatableComponent } from "@swimlane/ngx-datatable/release";
 import { ModuleConfig } from "../module.config";
@@ -69,6 +68,9 @@ export class OcctaxMapListComponent
   ) { }
 
   ngOnInit() {
+    // set zoom on layer to true
+    // zoom only when search data
+    this.mapListService.zoomOnLayer = true;
     //config
     this.occtaxConfig = ModuleConfig;
     this.idName = "id_releve_occtax";
@@ -102,7 +104,15 @@ export class OcctaxMapListComponent
 
   ngAfterViewInit() {
     setTimeout(() => this.calcCardContentHeight(), 500);
+    if (this._mapService.currentExtend) {
+      this._mapService.map.setView(
+        this._mapService.currentExtend.center,
+        this._mapService.currentExtend.zoom
+      )
+    }
   }
+
+
 
   @HostListener("window:resize", ["$event"])
   onResize(event) {
@@ -262,13 +272,11 @@ export class OcctaxMapListComponent
           .map(c => c.medias)
           .flat()
           .filter(m => !!m);
-        const icons = medias.length
-          ? medias
-            .map(media => this.mediaService.tooltip(media))
-            .join(' ')
-          : '';
+        const icons = medias
+          .map(media => this.mediaService.tooltip(media))
+          .join(' ');
 
-        tooltip.push({ taxName, icons, medias })
+        tooltip.push({ taxName, icons, medias });
       }
     }
     return tooltip.sort((a, b) => a.taxName < b.taxName ? -1 : 1);
