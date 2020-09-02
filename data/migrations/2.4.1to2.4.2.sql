@@ -122,7 +122,6 @@ END;
 $function$
 ;
 
-<<<<<<< HEAD
 -- correction de fonctions permissions (nom de la vue a changé)
 
 CREATE OR REPLACE FUNCTION does_user_have_scope_permission
@@ -209,35 +208,41 @@ $BODY$
  -- OCCTAX V2
 
 ALTER TABLE pr_occtax.t_releves_occtax
-ADD COLUMN id_nomenclature_geo_object_nature integer,
-ADD COLUMN depth_min integer,
-ADD COLUMN depth_max integer,
-ADD COLUMN place_name character varying(500),
-ADD CONSTRAINT check_t_releves_occtax_geo_object_nature CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_geo_object_nature,'NAT_OBJ_GEO')) NOT VALID,
-ADD CONSTRAINT check_t_releves_occtax_depth CHECK (depth_max >= depth_min),
-ADD CONSTRAINT check_t_releves_occtax_depth CHECK (depth_max >= depth_min),
-ADD CONSTRAINT fk_t_releves_occtax_id_nomenclature_geo_object_nature FOREIGN KEY (id_nomenclature_geo_object_nature) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
-ADD COLUMN cd_hab integer,
-ADD CONSTRAINT fk_t_releves_occtax_cd_hab FOREIGN KEY (cd_hab) REFERENCES ref_habitats.habref(cd_hab) ON UPDATE CASCADE,
-ADD COLUMN grp_method character varying(255),
-ALTER COLUMN precision DROP DEFAULT,
-RENAME COLUMN id_nomenclature_obs_technique TO id_nomenclature_tech_collect_campanule
+  ADD COLUMN id_nomenclature_geo_object_nature integer,
+  ADD COLUMN depth_min integer,
+  ADD COLUMN depth_max integer,
+  ADD COLUMN place_name character varying(500),
+  ADD CONSTRAINT check_t_releves_occtax_geo_object_nature CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_geo_object_nature,'NAT_OBJ_GEO')) NOT VALID,
+  ADD CONSTRAINT check_t_releves_occtax_depth CHECK (depth_max >= depth_min),
+  ADD CONSTRAINT check_t_releves_occtax_depth CHECK (depth_max >= depth_min),
+  ADD CONSTRAINT fk_t_releves_occtax_id_nomenclature_geo_object_nature FOREIGN KEY (id_nomenclature_geo_object_nature) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
+  ADD COLUMN cd_hab integer,
+  ADD CONSTRAINT fk_t_releves_occtax_cd_hab FOREIGN KEY (cd_hab) REFERENCES ref_habitats.habref(cd_hab) ON UPDATE CASCADE,
+  ADD COLUMN grp_method character varying(255),
+  ALTER COLUMN precision DROP DEFAULT
+;
+
+ALTER TABLE pr_occtax.t_releves_occtax
+  RENAME COLUMN id_nomenclature_obs_technique TO id_nomenclature_tech_collect_campanule
 ;
 
 ALTER TABLE pr_occtax.t_occurrences_occtax
-    --delete sensi
-    DROP COLUMN id_nomenclature_diffusion_level,
-    -- comportement
-    ADD COLUMN id_nomenclature_behaviour integer,
-    ADD CONSTRAINT fk_t_occurrences_occtax_behaviour FOREIGN KEY (id_nomenclature_behaviour) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
-    ADD CONSTRAINT check_t_occurrences_occtax_behaviour CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour,'OCC_COMPORTEMENT')) NOT VALID,
-    RENAME COLUMN id_nomenclature_obs_meth TO id_nomenclature_obs_technique
-    ;
+  --delete sensi
+  DROP COLUMN id_nomenclature_diffusion_level,
+  -- comportement
+  ADD COLUMN id_nomenclature_behaviour integer,
+  ADD CONSTRAINT fk_t_occurrences_occtax_behaviour FOREIGN KEY (id_nomenclature_behaviour) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
+  ADD CONSTRAINT check_t_occurrences_occtax_behaviour CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour,'OCC_COMPORTEMENT')) NOT VALID
+;
+
+ALTER TABLE pr_occtax.t_occurrences_occtax
+  RENAME COLUMN id_nomenclature_obs_meth TO id_nomenclature_obs_technique
+;
 COMMENT ON COLUMN pr_occtax.t_occurrences_occtax.id_nomenclature_obs_technique
   IS 'Correspondance champs standard occtax = obsTechnique. En raison d''un changement de nom, le code nomenclature associé reste ''METH_OBS'' ';
 
 INSERT INTO pr_occtax.defaults_nomenclatures_value(mnemonique_type, id_nomenclature)
-VALUES 
+VALUES
 ('OCC_COMPORTEMENT', ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '0'))
 ;
 
@@ -276,8 +281,6 @@ CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
      LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
   GROUP BY rel.id_releve_occtax, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.depth_min, rel.depth_max, rel.place_name, rel.meta_device_entry, rel.comment, rel.geom_4326, rel."precision", t.cd_nom, occ.nom_cite, occ.id_occurrence_occtax, t.lb_nom, t.nom_valide, t.nom_complet_html, t.nom_vern;
 
-
-
 ALTER TABLE gn_synthese.synthese
     ADD COLUMN cd_hab integer,
     ADD CONSTRAINT fk_synthese_cd_hab FOREIGN KEY (cd_hab) REFERENCES ref_habitats.habref(cd_hab) ON UPDATE CASCADE,
@@ -292,14 +295,14 @@ ALTER TABLE gn_synthese.synthese
     ADD CONSTRAINT fk_synthese_id_nomenclature_behaviour FOREIGN KEY (id_nomenclature_behaviour) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
     ADD CONSTRAINT check_synthese_behaviour CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour, 'OCC_COMPORTEMENT')) NOT VALID,
     ADD CONSTRAINT check_synthese_depth_max CHECK (depth_max >= depth_min),
-    DROP COLUMN id_nomenclature_obs_technique CASCADE,
+    DROP COLUMN id_nomenclature_obs_technique CASCADE
+;
+ALTER TABLE gn_synthese.synthese
     RENAME id_nomenclature_obs_meth TO id_nomenclature_obs_technique
 ;
 
 COMMENT ON COLUMN gn_synthese.synthese.id_nomenclature_obs_technique
   IS 'Correspondance champs standard occtax = obsTechnique. En raison d''un changement de nom, le code nomenclature associé reste ''METH_OBS'' ';
-
-
 
 
 
@@ -663,9 +666,9 @@ CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS
   UPDATE pr_occtax.t_occurrences_occtax AS occ
   SET id_nomenclature_behaviour = sub.new_id_nomenc
   FROM (
-    SELECT 
+    SELECT
       id_occurrence_occtax,
-    CASE 
+    CASE
       WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_bio_status) = 'OLD_6' THEN ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '6')
       WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_bio_status) = 'OLD_7' THEN ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '7')
       WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_bio_status) = 'OLD_8' THEN ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '8')
@@ -679,15 +682,10 @@ CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS
   WHERE occ.id_occurrence_occtax = sub.id_occurrence_occtax
 ;
 
-ALTER TABLE pr_occtax.t_occurrences_occtax 
+ALTER TABLE pr_occtax.t_occurrences_occtax
 ALTER COLUMN nom_cite SET NOT NULL;
 
 DROP VIEW IF EXISTS gn_commons.v_synthese_validation_forwebapp;
-=======
-
-
--- vue validation de gn_commons necessitant le schéma synthese
->>>>>>> develop
 CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS
 SELECT  s.id_synthese,
     s.unique_id_sinp,
@@ -706,13 +704,10 @@ SELECT  s.id_synthese,
     s.the_geom_4326,
     s.date_min,
     s.date_max,
-<<<<<<< HEAD
     s.depth_min,
     s.depth_max,
     s.place_name,
     s.precision,
-=======
->>>>>>> develop
     s.validator,
     s.observers,
     s.id_digitiser,
@@ -729,10 +724,6 @@ SELECT  s.id_synthese,
     s.id_nomenclature_geo_object_nature,
     s.id_nomenclature_info_geo_type,
     s.id_nomenclature_grp_typ,
-<<<<<<< HEAD
-=======
-    s.id_nomenclature_obs_meth,
->>>>>>> develop
     s.id_nomenclature_obs_technique,
     s.id_nomenclature_bio_status,
     s.id_nomenclature_bio_condition,
@@ -748,10 +739,7 @@ SELECT  s.id_synthese,
     s.id_nomenclature_blurring,
     s.id_nomenclature_source_status,
     s.id_nomenclature_valid_status,
-<<<<<<< HEAD
     s.id_nomenclature_behaviour,
-=======
->>>>>>> develop
     s.reference_biblio,
     t.cd_nom,
     t.cd_ref,
@@ -783,7 +771,7 @@ COMMENT ON VIEW gn_commons.v_synthese_validation_forwebapp  IS 'Vue utilisée po
 -- add date on medias
 
 ALTER TABLE gn_commons.t_medias ADD COLUMN meta_create_date timestamp without time zone DEFAULT now();
-ALTER TABLE gn_commons.t_medias ADD COLUMN   meta_update_date timestamp without time zone DEFAULT now();
+ALTER TABLE gn_commons.t_medias ADD COLUMN meta_update_date timestamp without time zone DEFAULT now();
 
 CREATE TRIGGER tri_meta_dates_change_t_medias
   BEFORE INSERT OR UPDATE
@@ -817,8 +805,8 @@ $BODY$
 $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
-CREATE OR REPLACE VIEW pr_occtax.export_occtax AS 
- SELECT 
+CREATE OR REPLACE VIEW pr_occtax.export_occtax AS
+ SELECT
     rel.unique_id_sinp_grp as "idSINPRegroupement",
     ref_nomenclatures.get_cd_nomenclature(rel.id_nomenclature_grp_typ) AS "typGrp",
     rel.grp_method AS "methGrp",
@@ -889,8 +877,8 @@ CREATE OR REPLACE VIEW pr_occtax.export_occtax AS
      LEFT JOIN utilisateurs.t_roles r ON r.id_role = cr.id_role
      LEFT JOIN utilisateurs.bib_organismes o ON o.id_organisme = r.id_organisme
      LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = rel.cd_hab
-   GROUP BY ccc.id_counting_occtax,occ.id_occurrence_occtax,rel.id_releve_occtax,d.id_dataset 
-   ,tax.cd_ref , tax.lb_nom, tax.nom_vern , hab.cd_hab, hab.lb_code, hab.lb_hab_fr 
+   GROUP BY ccc.id_counting_occtax,occ.id_occurrence_occtax,rel.id_releve_occtax,d.id_dataset
+   ,tax.cd_ref , tax.lb_nom, tax.nom_vern , hab.cd_hab, hab.lb_code, hab.lb_hab_fr
    ;
 
 
@@ -1070,3 +1058,9 @@ $BODY$
 -- UNIQUE TABLE LOCATION
 ALTER TABLE gn_commons.bib_tables_location
   ADD CONSTRAINT unique_bib_table_location_schema_name_table_name UNIQUE (schema_name, table_name);
+
+
+-- Monitoring
+
+ALTER TABLE gn_monitoring.t_base_visits
+  RENAME COLUMN id_nomenclature_obs_technique TO id_nomenclature_tech_collect_campanule;
