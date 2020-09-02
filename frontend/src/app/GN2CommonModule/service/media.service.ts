@@ -146,7 +146,14 @@ export class MediaService {
   embedHref(media) {
     if (!(media instanceof Media)) { media = new Media(media); }
     if (['Vidéo Youtube'].includes(this.typeMedia(media))) {
-      const videoId = media.href().split("?").find(s => s.includes('v=')).replace('v=', '');
+      const urlLastPart = media.href().split('/');
+
+      let videoId = urlLastPart.includes('?')
+      ? urlLastPart.inlcudes('v=')
+        ? urlLastPart.split('?').find(s => s.includes('v=')).replace('v=', '')
+        : urlLastPart.split('?')[0]
+      : urlLastPart;
+
       return `https://www.youtube.com/embed/${videoId}`;
     }
     if (['Vidéo Dailymotion'].includes(this.typeMedia(media))) {

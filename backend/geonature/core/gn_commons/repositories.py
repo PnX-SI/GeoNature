@@ -141,7 +141,7 @@ class TMediaRepository():
     def test_video_link(self):
         media_type = self.media_type()
         url = self.data['media_url']
-        if media_type == 'Vidéo Youtube' and 'youtube' not in url:
+        if media_type == 'Vidéo Youtube' and 'youtube' not in url and 'youtu.be' not in url:
             return False
 
         if media_type == 'Vidéo Dailymotion' and 'dailymotion' not in url:
@@ -176,8 +176,10 @@ class TMediaRepository():
         try:
             res=requests.head(url=self.data['media_url'])
 
-            print(res.status_code, res)
-            if res.status_code != 200:
+
+            media_type = self.media_type()
+
+            if not ( (res.status_code == 200) or (res.status_code in [200, 302] and self.media_type() == "Vidéo Youtube")):
                 raise GeoNatureError(
                     'la réponse est différente de 200 ({})'
                     .format(res.status_code
