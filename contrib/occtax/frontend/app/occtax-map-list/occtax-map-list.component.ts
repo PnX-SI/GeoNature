@@ -66,7 +66,7 @@ export class OcctaxMapListComponent
     public globalSub: GlobalSubService,
     private renderer: Renderer2,
     public mediaService: MediaService,
-  ) {}
+  ) { }
 
   ngOnInit() {
     //config
@@ -199,7 +199,7 @@ export class OcctaxMapListComponent
     queryString = queryString.delete("offset");
     const url = `${
       AppConfig.API_ENDPOINT
-    }/occtax/export?${queryString.toString()}&format=${format}`;
+      }/occtax/export?${queryString.toString()}&format=${format}`;
 
     document.location.href = url;
   }
@@ -238,8 +238,8 @@ export class OcctaxMapListComponent
     return element.date_min == element.date_max
       ? moment(element.date_min).format("DD-MM-YYYY")
       : `Du ${moment(element.date_min).format("DD-MM-YYYY")} au ${moment(
-          element.date_max
-        ).format("DD-MM-YYYY")}`;
+        element.date_max
+      ).format("DD-MM-YYYY")}`;
   }
 
   /**
@@ -249,33 +249,36 @@ export class OcctaxMapListComponent
   displayTaxonsTooltip(row): any[] {
     let tooltip = [];
     if (row.t_occurrences_occtax === undefined) {
-      tooltip.push({taxName: "Aucun taxon"});
+      tooltip.push({ taxName: "Aucun taxon" });
     } else {
       for (let i = 0; i < row.t_occurrences_occtax.length; i++) {
         let occ = row.t_occurrences_occtax[i];
-        
-        const taxName = occ.taxref !== undefined 
+
+        const taxName = occ.taxref !== undefined
           ? occ.taxref.nom_complet
-          : occ.nom_cite
+          : occ.nom_cite;
 
         const medias = occ.cor_counting_occtax
-        .map(c => c.medias)
-        .flat();
-        const icons = medias
-          .map( media => this.mediaService.tooltip(media))
-          .join(' ');
+          .map(c => c.medias)
+          .flat()
+          .filter(m => !!m);
+        const icons = medias.length
+          ? medias
+            .map(media => this.mediaService.tooltip(media))
+            .join(' ')
+          : '';
 
-        tooltip.push({taxName, icons, medias})
+        tooltip.push({ taxName, icons, medias })
       }
     }
     return tooltip.sort((a, b) => a.taxName < b.taxName ? -1 : 1);
   }
 
-    /**
-   * Retourne un tableau des taxon (nom valide ou nom cité)
-   */
+  /**
+ * Retourne un tableau des taxon (nom valide ou nom cité)
+ */
 
-  displayTaxons(row): string[]{
+  displayTaxons(row): string[] {
     return this.displayTaxonsTooltip(row).map(t => t.taxName);
   }
 
