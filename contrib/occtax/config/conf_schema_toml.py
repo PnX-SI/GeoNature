@@ -49,7 +49,7 @@ class FormConfig(Schema):
     habitat = fields.Boolean(missing=True)
     grp_method = fields.Boolean(missing=False)
     behaviour = fields.Boolean(missing=True)
-    place_name = fields.Boolean(missing=True)
+    place_name = fields.Boolean(missing=False)
     precision = fields.Boolean(missing=False)
 
 
