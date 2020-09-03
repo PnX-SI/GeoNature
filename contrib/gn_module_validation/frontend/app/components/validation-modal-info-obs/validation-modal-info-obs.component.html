@@ -335,7 +335,7 @@
       </table>
     </mat-tab>
 
-    <mat-tab label="Medias ({{ selectedObs?.medias.length }})" *ngIf="selectedObs?.medias.length">
+    <mat-tab label="Medias ({{ selectedObs?.medias?.length }})" *ngIf="selectedObs?.medias?.length">
       <table class="font-xs table table-striped table-sm">
         <ng-container *ngFor="let media of selectedObs?.medias; index as i">
           <tr>
