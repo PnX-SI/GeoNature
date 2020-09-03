@@ -110,6 +110,9 @@ export class OcctaxMapListComponent
         this._mapService.currentExtend.zoom
       )
     }
+    this._mapService.removeLayerFeatureGroups(
+      [this._mapService.fileLayerFeatureGroup]
+    )
   }
 
 

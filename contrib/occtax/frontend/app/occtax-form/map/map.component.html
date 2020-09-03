@@ -18,7 +18,6 @@
     *ngIf="occtaxConfig.ENABLE_UPLOAD_TOOL"
     [editMode]="true"
     (onLoad)="infoMessageFileLayer()"
-    (onGeomChange)="sendGeoInfo($event)"
     [style]="{'color': 'green'}">
   </pnx-leaflet-filelayer> 
 

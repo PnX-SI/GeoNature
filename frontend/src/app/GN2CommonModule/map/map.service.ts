@@ -7,6 +7,7 @@ import * as L from 'leaflet';
 import 'leaflet.markercluster';
 import { AppConfig } from '@geonature_config/app.config';
 import { CommonService } from '../service/common.service';
+import { Feature } from 'geojson';
 
 @Injectable()
 export class MapService {
@@ -51,7 +52,9 @@ export class MapService {
     color: 'green'
   };
 
-  constructor(private http: HttpClient, private _commonService: CommonService) {}
+  constructor(private http: HttpClient, private _commonService: CommonService) {
+    this.fileLayerFeatureGroup = new L.FeatureGroup();
+  }
 
   setMap(map) {
     this.map = map;
@@ -67,8 +70,8 @@ export class MapService {
   }
 
   initializefileLayerFeatureGroup() {
-    this.fileLayerFeatureGroup = new L.FeatureGroup();
     this.map.addLayer(this.fileLayerFeatureGroup);
+
   }
 
   setGeojsonCoord(geojsonCoord) {
@@ -162,18 +165,18 @@ export class MapService {
             return style
               ? style
               : {
-                  color: '#3388ff',
-                  weight: 3
-                };
+                color: '#3388ff',
+                weight: 3
+              };
           default:
             return style
               ? style
               : {
-                  color: '#3388ff',
-                  fill: true,
-                  fillOpacity: 0.2,
-                  weight: 3
-                };
+                color: '#3388ff',
+                fill: true,
+                fillOpacity: 0.2,
+                weight: 3
+              };
         }
       },
       pointToLayer: (feature, latlng) => {
