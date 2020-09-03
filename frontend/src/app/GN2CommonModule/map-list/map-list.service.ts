@@ -31,6 +31,7 @@ export class MapListService {
   public page = new Page();
   public genericFilterInput = new FormControl();
   public isLoading = false;
+  public zoomOnLayer = false;
   filterableColumns: Array<any>;
   availableColumns: Array<any>;
   displayColumns: Array<any>;
@@ -235,7 +236,7 @@ export class MapListService {
 
     this.selectedStyle.fill =
       this.selectedLayer.feature.geometry.type === 'LineString' ||
-      this.selectedLayer.feature.geometry.type === 'MultiLineString'
+        this.selectedLayer.feature.geometry.type === 'MultiLineString'
         ? false
         : true;
     this.selectedLayer.setStyle(this.selectedStyle);

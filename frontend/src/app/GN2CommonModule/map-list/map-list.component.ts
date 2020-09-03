@@ -20,8 +20,9 @@ export class MapListComponent implements OnInit, AfterViewInit {
   public selectedLayer: any;
   @Input() height: string;
   @Input() idName: string;
+  @Input() zoomOnLayer = true;
 
-  constructor(private _ms: MapService, public mapListService: MapListService) {}
+  constructor(private _ms: MapService, public mapListService: MapListService) { }
 
   ngOnInit() {
     // set the idName in the service

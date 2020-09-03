@@ -11,7 +11,6 @@ import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { MapService } from "@geonature_common/map/map.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
 import { CommonService } from "@geonature_common/service/common.service";
-import { Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { DatatableComponent } from "@swimlane/ngx-datatable/release";
 import { ModuleConfig } from "../module.config";
@@ -66,9 +65,12 @@ export class OcctaxMapListComponent
     public globalSub: GlobalSubService,
     private renderer: Renderer2,
     public mediaService: MediaService,
-  ) {}
+  ) { }
 
   ngOnInit() {
+    // set zoom on layer to true
+    // zoom only when search data
+    this.mapListService.zoomOnLayer = true;
     //config
     this.occtaxConfig = ModuleConfig;
     this.idName = "id_releve_occtax";
@@ -102,7 +104,15 @@ export class OcctaxMapListComponent
 
   ngAfterViewInit() {
     setTimeout(() => this.calcCardContentHeight(), 500);
+    if (this._mapService.currentExtend) {
+      this._mapService.map.setView(
+        this._mapService.currentExtend.center,
+        this._mapService.currentExtend.zoom
+      )
+    }
   }
+
+
 
   @HostListener("window:resize", ["$event"])
   onResize(event) {
@@ -199,7 +209,7 @@ export class OcctaxMapListComponent
     queryString = queryString.delete("offset");
     const url = `${
       AppConfig.API_ENDPOINT
-    }/occtax/export?${queryString.toString()}&format=${format}`;
+      }/occtax/export?${queryString.toString()}&format=${format}`;
 
     document.location.href = url;
   }
@@ -238,8 +248,8 @@ export class OcctaxMapListComponent
     return element.date_min == element.date_max
       ? moment(element.date_min).format("DD-MM-YYYY")
       : `Du ${moment(element.date_min).format("DD-MM-YYYY")} au ${moment(
-          element.date_max
-        ).format("DD-MM-YYYY")}`;
+        element.date_max
+      ).format("DD-MM-YYYY")}`;
   }
 
   /**
@@ -249,33 +259,33 @@ export class OcctaxMapListComponent
   displayTaxonsTooltip(row): any[] {
     let tooltip = [];
     if (row.t_occurrences_occtax === undefined) {
-      tooltip.push({taxName: "Aucun taxon"});
+      tooltip.push({ taxName: "Aucun taxon" });
     } else {
       for (let i = 0; i < row.t_occurrences_occtax.length; i++) {
         let occ = row.t_occurrences_occtax[i];
-        
-        const taxName = occ.taxref !== undefined 
+
+        const taxName = occ.taxref !== undefined
           ? occ.taxref.nom_complet
           : occ.nom_cite
 
         const medias = occ.cor_counting_occtax
-        .map(c => c.medias)
-        .flat();
+          .map(c => c.medias)
+          .flat();
         const icons = medias
-          .map( media => this.mediaService.tooltip(media))
+          .map(media => this.mediaService.tooltip(media))
           .join(' ');
 
-        tooltip.push({taxName, icons, medias})
+        tooltip.push({ taxName, icons, medias })
       }
     }
     return tooltip.sort((a, b) => a.taxName < b.taxName ? -1 : 1);
   }
 
-    /**
-   * Retourne un tableau des taxon (nom valide ou nom cité)
-   */
+  /**
+ * Retourne un tableau des taxon (nom valide ou nom cité)
+ */
 
-  displayTaxons(row): string[]{
+  displayTaxons(row): string[] {
     return this.displayTaxonsTooltip(row).map(t => t.taxName);
   }
 

@@ -74,6 +74,7 @@ export class OcctaxFormParamDialog implements OnInit {
     this.paramsForm = this.fb.group({
       geometry: null,
       releve: this.fb.group({
+        place_name: null,
         id_dataset: null,
         date_min: null,
         date_max: null,
