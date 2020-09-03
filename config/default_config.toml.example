@@ -379,3 +379,8 @@ MAIL_ON_ERROR = false
 [MEDIAS]
     # Taille maximale pour l'upload des médias
     MEDIAS_SIZE_MAX = 10000
+
+# Module métadonnées
+[METADATADA]
+    # Nombre de cadre d'acquisition affiché sur la liste
+    NB_AF_DISPLAYED = 100
