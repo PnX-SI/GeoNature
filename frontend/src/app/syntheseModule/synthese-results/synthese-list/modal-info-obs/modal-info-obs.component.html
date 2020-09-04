@@ -20,7 +20,7 @@
             <span *ngIf="selectedObs?.place_name">
               <b>Nom du lieu : </b> {{selectedObs?.place_name}}
             </span>
-            <span *ngIf="selectedObs?.precision"> 
+            <span *ngIf="selectedObs?.precision">
               <b>Précision du pointage : </b> {{selectedObs?.precision}}
             </span>
           </div>
@@ -103,7 +103,7 @@
                   </tr>
                 </table>
 
-                <ng-container *ngIf="selectedObs?.medias.length">
+                <ng-container *ngIf="selectedObs?.medias?.length">
                   <h5 class="underlined underlined-sm main-color"> Médias
                   </h5>
                   <table class="font-xs table table-striped table-sm">

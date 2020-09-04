@@ -34,7 +34,7 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
   @Input() style;
   @Output() onLoad = new EventEmitter<any>();
   @Output() onGeomChange = new EventEmitter<any>();
-  constructor(public mapService: MapService, private _toasterService: ToastrService) {}
+  constructor(public mapService: MapService, private _toasterService: ToastrService) { }
 
   ngOnInit() {
     this.style = this.style || this.mapService.searchStyle;
@@ -114,7 +114,7 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
                 // sent geojson observable
                 this.mapService.firstLayerFromMap = false;
                 this.onGeomChange.emit((layer as any).feature);
-                //this.mapService.setGeojsonCoord((layer as any).feature);
+                this.mapService.setGeojsonCoord((layer as any).feature);
               });
             }
           },

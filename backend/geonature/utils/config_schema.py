@@ -89,8 +89,13 @@ class UsersHubConfig(Schema):
 class ServerConfig(Schema):
     LOG_LEVEL = fields.Integer(missing=20)
 
+
 class MediasConfig(Schema):
     MEDIAS_SIZE_MAX = fields.Integer(missing=50000)
+
+
+class MetadataConfig(Schema):
+    NB_AF_DISPLAYED = fields.Integer(missing=50, validate=OneOf([10, 25, 50, 100]))
 
 
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
@@ -102,7 +107,7 @@ class GnPySchemaConf(Schema):
         validate=Regexp(
             "^postgresql:\/\/.*:.*@[^:]+:\w+\/\w+$",
             0,
-            "Database uri is invalid ex: postgresql://monuser:monpass@server:port/db_name"
+            "Database uri is invalid ex: postgresql://monuser:monpass@server:port/db_name",
         ),
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = fields.Boolean(missing=True)
@@ -293,7 +298,7 @@ class GnGeneralSchemaConf(Schema):
     ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, missing={})
     MEDIAS = fields.Nested(MediasConfig, missing={})
     UPLOAD_FOLDER = fields.String(missing="static/medias")
-    
+    METADATA = fields.Nested(MetadataConfig, missing={})
 
     @validates_schema
     def validate_enable_sign_up(self, data):
