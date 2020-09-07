@@ -1,0 +1,20 @@
+<ng-template #modalContent let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">Liste de mes lieux</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+      <div class="form-inline">
+        <div class="form-group ">
+          <select [(ngModel)]="place" (ngModelChange)="onSelectPlace($event)" name="donnee"  style="min-width: 200px;">
+            <option *ngFor="let place of places" [ngValue]="place">{{place.properties.place_name}}</option>
+          </select>
+          <div class="modal-footer">
+                <button type="button" class="btn btn-success"  (click)="deletePlace()">Supprimer lieu</button>
+          </div>
+        </div>
+      </div>
+  </div>
+</ng-template>
