@@ -34,3 +34,6 @@ DEFAULT_LANGUAGE='fr'
 
 # Configuration cartographique
 [MAPCONFIG]
+
+# Configuration médias
+[MEDIAS]

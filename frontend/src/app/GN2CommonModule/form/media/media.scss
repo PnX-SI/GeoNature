@@ -1,0 +1,141 @@
+// @import '../../../../../../contrib/occtax/frontend/app/occtax-form/taxa-list/taxa-list.component.scss';
+
+/** Patch dynamic form */
+:host /deep/ .padding-sm {
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+}
+
+.test-medias {
+  margin: 20px;
+}
+
+.blc-expansion-panel {
+  position: relative;
+}
+
+.btn-add-media {
+  position: absolute;
+  bottom: 3px;
+  right: 3px;
+}
+
+.color-add-media {
+  color: white;
+  background-color: blue;
+}
+
+.btn-clear {
+  position: absolute;
+  color: #d40303;
+}
+
+.error {
+  color: #d40303;
+}
+
+.btn-upload,
+.icon-loading {
+  color: orange;
+}
+
+.btn-valid-media {
+  margin-top: 15px;
+  background-color: green;
+}
+
+.float-right {
+  float: right;
+}
+.valid {
+  color: green;
+}
+
+.not-valid {
+  color: orange;
+}
+
+.media-title {
+  margin-left: 50px;
+}
+
+.media-diapo-link {
+  cursor: pointer;
+}
+
+.media-mini {
+  height: 50px;
+  width: 50px;
+  border-radius: 25px;
+  object-fit: cover;
+}
+
+.media-icon {
+  background-color: white;
+}
+
+.media-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.flex-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.media-medium {
+  height: 200px;
+  margin-bottom: 10px;
+  margin-top: 5px;
+}
+
+.mat-expansion-panel {
+  margin-left: 45px !important;
+  margin-right: 50px !important;
+}
+
+.mat-accordeon {
+  position: relative;
+}
+
+.media-dialog {
+  position: relative;
+  padding:30px
+}
+
+.media-dialog-arrow {
+  position: absolute;
+  bottom: 50%;
+  opacity: 0.4;
+  background-color: lightgray;
+}
+
+.media-dialog-arrow:hover {
+  opacity: 0.8;
+}
+
+.left-arrow {
+  left: -20px;
+}
+
+.right-arrow {
+  right: -20px;
+}
+
+.media-dialog-fade-in {
+  opacity: 1;
+  transition-property: opacity;
+  transition-duration: 0.2s;
+}
+
+.media-dialog-fade-out {
+  opacity: 0;
+  transition-property: opacity;
+  transition-duration: 0.2s;
+}
+
+::ng-deep .cdk-overlay-container {
+  z-index: 1111;
+}

@@ -48,6 +48,17 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
 * Se reconnecter en SSH au serveur avec le nouvel utilisateur pour ne pas faire l'installation en ``root``. On ne se connectera plus en ``root``. Si besoin d'éxecuter des commandes avec des droits d'administrateur, on les précède de ``sudo``. Il est d'ailleurs possible renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec root. Voir https://docs.ovh.com/fr/vps/conseils-securisation-vps/ pour plus d'informations sur le sécurisation du serveur.
 
+* Installer python 3.8
+
+  ::
+
+    cd /opt
+    sudo wget https://www.python.org/ftp/python/3.8.3/Python-3.8.3.tgz
+    sudo tar xzf Python-3.8.3.tgz
+    cd Python-3.8.3
+    sudo ./configure --enable-optimizations
+    sudo make install
+
 * Lancez les commandes suivantes pour installer les dépendances de GeoNature (Debian 9) :
 
   ::  

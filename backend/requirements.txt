@@ -12,7 +12,8 @@
 
 https://github.com/PnX-SI/UsersHub-authentification-module/archive/1.4.3.zip
 https://github.com/PnX-SI/Nomenclature-api-module/archive/1.3.3.zip
-https://github.com/PnX-SI/Habref-api-module/archive/0.1.3.zip
+# https://github.com/PnX-SI/Habref-api-module/archive/0.1.3.zip
+https://github.com/PnX-SI/Habref-api-module/archive/develop.zip
 utils-flask-sqlalchemy==0.1.1
 utils-flask-sqlalchemy-geo==0.1.0
 chardet==3.0.4
@@ -29,10 +30,10 @@ idna==2.6
 itsdangerous==0.24
 jinja2==2.10.1
 markupsafe==1.1
-marshmallow==2.15.1
+marshmallow==2.15.2
 packaging==16.8
 pip==20.0.2
-psycopg2==2.7.5
+psycopg2==2.8.5
 pyparsing==2.2.0
 python-dateutil==2.6.1
 requests==2.21.0
@@ -40,11 +41,16 @@ shapely==1.5.16
 six==1.11.0
 sqlalchemy==1.3.3
 toml==0.9.4
-werkzeug==0.15.3
+werkzeug==1.0.1
 xmltodict==0.11.0
 geog==0.0.2
 fiona==1.8.13.post1
-flask_wtf==0.14.2
-lxml==4.2.5
+flask_wtf==0.14.3
+lxml==4.5.1
 Flask-Mail==0.9.1
-docutils==0.15.2
+flask-marshmallow==0.12.0
+Flask-Admin==1.5.6
+marshmallow-sqlalchemy==0.23.1
+pillow==7.2.0
+xcffib==0.10.1
+

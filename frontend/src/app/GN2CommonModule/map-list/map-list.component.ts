@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
 import { MapService } from '../map/map.service';
 import { MapListService } from '../map-list/map-list.service';
-import { GeoJSON, Layer } from 'leaflet';
 
 export interface ColumnActions {
   editColumn: boolean;
@@ -14,16 +13,16 @@ export interface ColumnActions {
 @Component({
   selector: 'pnx-map-list',
   templateUrl: './map-list.component.html',
-  styleUrls: ['./map-list.component.scss'],
-  providers: [MapService]
+  styleUrls: ['./map-list.component.scss']
 })
 export class MapListComponent implements OnInit, AfterViewInit {
   public layerDict: any;
   public selectedLayer: any;
   @Input() height: string;
   @Input() idName: string;
+  @Input() zoomOnLayer = true;
 
-  constructor(private _ms: MapService, public mapListService: MapListService) {}
+  constructor(private _ms: MapService, public mapListService: MapListService) { }
 
   ngOnInit() {
     // set the idName in the service

@@ -1,0 +1,96 @@
+<div *ngIf="bInitialized">
+  <div class="mat-accordeon">
+    <mat-accordion>
+      <div
+        *ngFor="let media of parentFormControl.value; let i = index"
+        class="blc-expansion-panel"
+        selector=".btn-clear"
+        displayMouseOver
+      >
+        <button mat-icon-button class="btn-clear d-none" (click)="deleteMedia(i)">
+          <mat-icon matTooltip="Supprimer ce media">clear</mat-icon>
+        </button>
+        <mat-expansion-panel
+          [expanded]="parentFormControl.value.length === i + 1 && !media.id_media"
+        >
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <div style="display: block; width: 100%;">
+                <div>
+                  <mat-icon
+                    *ngIf="!media.valid() && !media.bLoading"
+                    [matTooltip]="'Veuillez compléter le formulaire.'"
+                    class="not-valid"
+                    >error</mat-icon
+                  >
+                  <mat-icon
+                    *ngIf="media.valid() && !media.bLoading"
+                    matTooltip="Le media est valide"
+                    class="valid"
+                    >check</mat-icon
+                  >
+
+                  <mat-icon *ngIf="media.bLoading" matTooltip="chargement en cours" class="fa-spin"
+                    >settings</mat-icon
+                  >
+
+                  <pnx-display-medias
+                    [medias]="[media]"
+                    index="0"
+                    display="mini"
+                  ></pnx-display-medias>
+
+                  <span class="media-title">
+                    Titre: {{ media.title_fr }} ({{
+                      ms.getNomenclature(media.id_nomenclature_media_type)?.label_fr
+                    }}<ng-container *ngIf="media.author"
+                      >, <i>@{{ media.author }}</i></ng-container
+                    >)
+                  </span>
+                </div>
+                <div>
+                  <mat-progress-bar
+                    *ngIf="media.bLoading"
+                    mode="determinate"
+                    [value]="media.uploadPercentDone"
+                  ></mat-progress-bar>
+                </div>
+              </div>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <pnx-media
+            [(media)]="media"
+            (mediaChange)="onMediaChange()"
+            [schemaDotTable]="schemaDotTable"
+            [sizeMax]="sizeMax"
+            [default]="default"
+            [details]="details"
+          >
+          </pnx-media>
+        </mat-expansion-panel>
+        <button
+          *ngIf="parentFormControl.value.length === i + 1"
+          mat-mini-fab
+          class="btn-add-media color-add-media"
+          id="add-media-btn"
+          (click)="addMedia()"
+          [disabled]="!validOrLoadingMedias() || disabled"
+        >
+          <mat-icon matTooltip="{{ disabled ? disabledTxt : ('Media.add' | translate) }}"
+            >add</mat-icon
+          >
+        </button>
+      </div>
+    </mat-accordion>
+    <button
+      *ngIf="!(parentFormControl.value && parentFormControl.value.length)"
+      mat-mini-fab
+      id="add-media-btn"
+      class="btn-add-media color-add-media"
+      (click)="addMedia()"
+      [disabled]="disabled"
+    >
+      <mat-icon matTooltip="{{ disabled ? disabledTxt : ('Media.add' | translate) }}">add</mat-icon>
+    </button>
+  </div>
+</div>

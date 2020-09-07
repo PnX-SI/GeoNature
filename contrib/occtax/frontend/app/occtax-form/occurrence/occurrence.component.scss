@@ -1,0 +1,47 @@
+::ng-deep .mat-progress-spinner circle, 
+.mat-spinner circle {
+  stroke: #fff !important;
+}
+
+.occtax-form-content {
+	overflow-y: auto!important;
+	overflow-x: hidden!important;
+}
+
+
+button .mat-progress-spinner, 
+button .mat-spinner {
+  display: inline-block;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.form-nom-complet {
+	background-color: #eee;
+}
+
+#add-occ {
+	position: fixed;
+	bottom: 20px;
+	left: 25%;
+}
+
+.blc-expansion-panel {
+	position: relative;
+}
+
+.btn-add-counting {
+	position: absolute;
+	bottom: 3px;
+	right: 3px;
+}
+
+.btn-clear {
+	position: absolute;
+	color: #d40303;
+}
+
+.mat-expansion-panel {
+	margin-left: 45px !important;
+	margin-right: 50px !important;
+}

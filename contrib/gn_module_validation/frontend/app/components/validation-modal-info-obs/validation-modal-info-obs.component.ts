@@ -8,6 +8,7 @@ import { ModuleConfig } from "../../module.config";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
+import { MediaService } from "@geonature_common/service/media.service";
 
 @Component({
   selector: "pnx-validation-modal-info-obs",
@@ -50,7 +51,8 @@ export class ValidationModalInfoObsComponent implements OnInit {
     private _syntheseDataService: SyntheseDataService,
     public activeModal: NgbActiveModal,
     private _fb: FormBuilder,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private mediaService: MediaService,
   ) {
     // form used for changing validation status
     this.statusForm = this._fb.group({

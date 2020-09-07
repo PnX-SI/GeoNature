@@ -1,0 +1,74 @@
+<ng-container *ngFor="let media of medias; index as i">
+  <ng-container *ngIf="(!index && index !== 0) || i == index">
+    <ng-container *ngIf="media.id_media && bInitialized">
+      <span class="media-mini" *ngIf="display == 'mini'">
+        <ng-container *ngIf="ms.typeMedia(media) === 'Photo'">
+          <img
+            class="media-mini"
+            [src]="media.href(50)"
+            alt="{{ media.title_fr }}"
+            [ngClass]="{ 'media-diapo-link': !!diaporama }"
+            matTooltip="{{ diaporama ? ('Media.diaporama' | translate) : '' }}"
+            (click)="diaporama && openDialog(i)"
+          />
+        </ng-container>
+        <button
+          *ngIf="ms.typeMedia(media) !== 'Photo'"
+          mat-mini-fab
+          class="media-icon"
+          [ngClass]="{ 'media-diapo-link': !!diaporama }"
+          matTooltip="{{ diaporama ? ('Media.diaporama' | translate) : '' }}"
+          (click)="diaporama && openDialog(i)"
+        >
+          <mat-icon>{{ ms.icon(media) }}</mat-icon>
+        </button>
+      </span>
+
+      <ng-container *ngIf="display != 'mini'">
+        <div class="flex-container">
+          <ng-container *ngIf="ms.typeMedia(media) === 'PDF'">
+            <embed [src]="media.safeUrl" width="100%" [height]="height" type="application/pdf" />
+          </ng-container>
+
+          <ng-container
+            *ngIf="
+              ['Vidéo Youtube', 'Vidéo Dailymotion', 'Vidéo Vimeo'].includes(ms.typeMedia(media))
+            "
+          >
+            <iframe
+              width="100%"
+              [height]="height"
+              [src]="media.safeEmbedUrl"
+              allowfullscreen
+            ></iframe>
+          </ng-container>
+
+          <ng-container *ngIf="ms.typeMedia(media) === 'Vidéo (fichier)'">
+            <video class="media-center" controls [src]="media.href()"></video>
+          </ng-container>
+
+          <ng-container *ngIf="ms.typeMedia(media) === 'Audio'">
+            <audio class="media-center" controls [src]="media.href()"></audio>
+          </ng-container>
+          <ng-container *ngIf="ms.typeMedia(media) === 'Photo'">
+            <img
+              *ngIf="['medium', 'small'].includes(display)"
+              class="media-center"
+              [src]="media.href(thumbnailHeight)"
+              [ngClass]="{ 'media-diapo-link': !!diaporama }"
+              alt="{{ media.title_fr }}"
+              matTooltip="{{ diaporama ? ('Media.diaporama' | translate) : '' }}"
+              (click)="diaporama && openDialog(i)"
+            />
+            <img
+              *ngIf="display === 'diaporama'"
+              class="media-diaporama media-center"
+              [src]="media.href()"
+              alt="{{ media.title_fr }}"
+            />
+          </ng-container>
+        </div>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</ng-container>

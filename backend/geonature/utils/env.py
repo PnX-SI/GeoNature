@@ -8,6 +8,7 @@ from collections import ChainMap, namedtuple
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm.exc import NoResultFound
+from flask_marshmallow import Marshmallow
 
 from pip._internal.main import main as pip_main
 
@@ -28,6 +29,8 @@ DEFAULT_VIRTUALENV_DIR = BACKEND_DIR / "venv"
 DEFAULT_CONFIG_FILE = ROOT_DIR / "config/geonature_config.toml"
 
 DB = SQLAlchemy()
+
+MA = Marshmallow()
 
 
 GN_MODULE_FILES = (

@@ -2,32 +2,35 @@ import {
   Component,
   OnInit,
   OnDestroy,
+  AfterViewInit,
+  HostListener,
   ViewChild,
-  Renderer2
+  Renderer2,
 } from "@angular/core";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { MapService } from "@geonature_common/map/map.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
 import { CommonService } from "@geonature_common/service/common.service";
-import { Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { DatatableComponent } from "@swimlane/ngx-datatable/release";
 import { ModuleConfig } from "../module.config";
 import { TaxonomyComponent } from "@geonature_common/form/taxonomy/taxonomy.component";
-import { FormGroup, FormBuilder } from "@angular/forms";
+import { FormGroup } from "@angular/forms";
 import { GenericFormGeneratorComponent } from "@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component";
 import { AppConfig } from "@geonature_config/app.config";
 import { GlobalSubService } from "@geonature/services/global-sub.service";
 import { Subscription } from "rxjs/Subscription";
-import { HttpParams } from "@angular/common/http";
 import * as moment from "moment";
+import { MediaService } from '@geonature_common/service/media.service';
+
 
 @Component({
   selector: "pnx-occtax-map-list",
   templateUrl: "occtax-map-list.component.html",
-  styleUrls: ["./occtax-map-list.component.scss"]
+  styleUrls: ["./occtax-map-list.component.scss"],
 })
-export class OcctaxMapListComponent implements OnInit, OnDestroy {
+export class OcctaxMapListComponent
+  implements OnInit, OnDestroy, AfterViewInit {
   public userCruved: any;
   public displayColumns: Array<any>;
   public availableColumns: Array<any>;
@@ -40,6 +43,8 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
   public dynamicFormGroup: FormGroup;
   public formsSelected = [];
   public moduleSub: Subscription;
+  public cardContentHeight: number;
+  public rowPerPage: number;
 
   advandedFilterOpen = false;
   @ViewChild(NgbModal)
@@ -55,13 +60,17 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
     public mapListService: MapListService,
     private _occtaxService: OcctaxDataService,
     private _commonService: CommonService,
-    private _router: Router,
+    private _mapService: MapService,
     public ngbModal: NgbModal,
     public globalSub: GlobalSubService,
-    private renderer: Renderer2
-  ) {}
+    private renderer: Renderer2,
+    public mediaService: MediaService,
+  ) { }
 
   ngOnInit() {
+    // set zoom on layer to true
+    // zoom only when search data
+    this.mapListService.zoomOnLayer = true;
     //config
     this.occtaxConfig = ModuleConfig;
     this.idName = "id_releve_occtax";
@@ -70,8 +79,8 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
     // get user cruved
     this.moduleSub = this.globalSub.currentModuleSub
       // filter undefined or null
-      .filter(mod => mod)
-      .subscribe(mod => {
+      .filter((mod) => mod)
+      .subscribe((mod) => {
         this.userCruved = mod.cruved;
       });
 
@@ -84,12 +93,56 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
     this.mapListService.idName = this.idName;
     // FETCH THE DATA
     this.mapListService.refreshUrlQuery();
+    this.calculateNbRow();
     this.mapListService.getData(
       this.apiEndPoint,
-      [{ param: "limit", value: 12 }],
+      [{ param: "limit", value: this.rowPerPage }],
       this.displayLeafletPopupCallback.bind(this) //afin que le this présent dans displayLeafletPopupCallback soit ce component.
     );
     // end OnInit
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => this.calcCardContentHeight(), 500);
+    if (this._mapService.currentExtend) {
+      this._mapService.map.setView(
+        this._mapService.currentExtend.center,
+        this._mapService.currentExtend.zoom
+      )
+    }
+    this._mapService.removeLayerFeatureGroups(
+      [this._mapService.fileLayerFeatureGroup]
+    )
+  }
+
+
+
+  @HostListener("window:resize", ["$event"])
+  onResize(event) {
+    this.calcCardContentHeight();
+  }
+
+  calculateNbRow() {
+    let wH = window.innerHeight;
+    let listHeight = wH - 64 - 150;
+    this.rowPerPage = Math.round(listHeight / 40);
+  }
+
+  calcCardContentHeight() {
+    let wH = window.innerHeight;
+    let tbH = document.getElementById("app-toolbar")
+      ? document.getElementById("app-toolbar").offsetHeight
+      : 0;
+
+    let height = wH - (tbH + 40);
+
+    this.cardContentHeight = height >= 350 ? height : 350;
+    // resize map after resize container
+    if (this._mapService.map) {
+      setTimeout(() => {
+        this._mapService.map.invalidateSize();
+      }, 10);
+    }
   }
 
   onChangePage(event) {
@@ -98,14 +151,14 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
 
   onDeleteReleve(id) {
     this._occtaxService.deleteReleve(id).subscribe(
-      data => {
+      (data) => {
         this.mapListService.deleteObsFront(id);
         this._commonService.translateToaster(
           "success",
           "Releve.DeleteSuccessfully"
         );
       },
-      error => {
+      (error) => {
         if (error.status === 403) {
           this._commonService.translateToaster("error", "NotAllowed");
         } else {
@@ -136,14 +189,14 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
     const isChecked = this.isChecked(col);
     if (isChecked) {
       this.mapListService.displayColumns = this.mapListService.displayColumns.filter(
-        c => {
+        (c) => {
           return c.prop !== col.prop;
         }
       );
     } else {
       this.mapListService.displayColumns = [
         ...this.mapListService.displayColumns,
-        col
+        col,
       ];
     }
   }
@@ -159,7 +212,7 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
     queryString = queryString.delete("offset");
     const url = `${
       AppConfig.API_ENDPOINT
-    }/occtax/export?${queryString.toString()}&format=${format}`;
+      }/occtax/export?${queryString.toString()}&format=${format}`;
 
     document.location.href = url;
   }
@@ -198,30 +251,45 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
     return element.date_min == element.date_max
       ? moment(element.date_min).format("DD-MM-YYYY")
       : `Du ${moment(element.date_min).format("DD-MM-YYYY")} au ${moment(
-          element.date_max
-        ).format("DD-MM-YYYY")}`;
+        element.date_max
+      ).format("DD-MM-YYYY")}`;
   }
 
   /**
-   * Retourne un tableau des taxon (nom valide ou nom cité)
+   * Retourne un tableau des taxon (nom valide ou nom cité) et icons pour tooltip
    * Sert aussi à la mise en forme du tooltip
    */
-  displayTaxonsTooltip(row): string[] {
+  displayTaxonsTooltip(row): any[] {
     let tooltip = [];
     if (row.t_occurrences_occtax === undefined) {
-      tooltip.push("Aucun taxon");
+      tooltip.push({ taxName: "Aucun taxon" });
     } else {
       for (let i = 0; i < row.t_occurrences_occtax.length; i++) {
         let occ = row.t_occurrences_occtax[i];
-        if (occ.taxref !== undefined) {
-          tooltip.push(occ.taxref.nom_complet);
-        } else {
-          tooltip.push(occ.nom_cite);
-        }
+
+        const taxName = occ.taxref !== undefined
+          ? occ.taxref.nom_complet
+          : occ.nom_cite
+
+        const medias = occ.cor_counting_occtax
+          .map(c => c.medias)
+          .flat();
+        const icons = medias
+          .map(media => this.mediaService.tooltip(media))
+          .join(' ');
+
+        tooltip.push({ taxName, icons, medias })
       }
     }
+    return tooltip.sort((a, b) => a.taxName < b.taxName ? -1 : 1);
+  }
 
-    return tooltip.sort();
+  /**
+ * Retourne un tableau des taxon (nom valide ou nom cité)
+ */
+
+  displayTaxons(row): string[] {
+    return this.displayTaxonsTooltip(row).map(t => t.taxName);
   }
 
   /**
@@ -261,7 +329,9 @@ export class OcctaxMapListComponent implements OnInit, OnDestroy {
 
     const divTaxons = this.renderer.createElement("div");
     divTaxons.style.marginTop = "5px";
-    let taxons = this.displayTaxonsTooltip(feature.properties).join("<br>");
+    let taxons = this.displayTaxonsTooltip(feature.properties)
+      .map(taxon => `${taxon['taxName']}<br>${taxon['icons']}`)
+      .join("<br>");
     divTaxons.innerHTML = taxons;
 
     this.renderer.appendChild(leafletPopup, divObservateurs);

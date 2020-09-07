@@ -1,0 +1,121 @@
+.mat-icon-button {
+  width: 18px;
+  height: 18px;
+  line-height: 15px;
+  vertical-align: 10px;
+}
+
+#taxalist-container {
+  height: 90%;
+  overflow-y: auto;
+  background-color: #95949833;
+  box-shadow: -10px 5px 22px -2px rgba(0, 0, 0, 0.75);
+  padding-top: 15px;
+}
+
+.right-aligned-header > .mat-content {
+  justify-content: space-between!important;
+}
+
+.mat-content > mat-panel-title, .mat-content > mat-panel-description {
+  flex: 0 0 auto !important;
+}
+
+.btn-actions {
+
+  height: 5px;
+}
+
+.mat-accordion .mat-expansion-panel{
+
+  border-radius: 0px!important;
+}
+
+.btn-edit {
+  color: #5343da;
+  margin-right: 5px;
+
+}
+
+.btn-clear {
+  margin-right: 8px;
+  color: #d40303;
+}
+
+.btn-inpn {
+  margin-left: 15px;
+  color: #555;
+}
+
+.list-values > div {
+  padding: 1px 7px;
+  font-size:12px;
+}
+
+.list-values > div:nth-child(odd) {
+  background-color: #eee;
+}
+
+.label {
+  font-weight: bold;
+  display: inline-block;
+  color: #333;
+}
+
+.value {
+  display: inline-block;
+  padding-left: 5px;
+}
+
+.counting-title {
+  padding: 10px 5px 0px;
+  font-weight: bold;
+  color: #7d1bbb;
+  text-decoration: underline;
+  font-size: 1.2em;
+}
+
+.in-progress-panel {
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  -moz-box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
+    0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  -webkit-box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
+    0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 2px;
+  margin-top: 2px;
+  margin-left: 60px !important;
+  align-items: center;
+  padding: 10px 15px;
+  transition: background-color 0.2s ease-out !important;
+}
+
+.in-progress-panel.in_progress {
+  background-color: #9dc1e0;
+  cursor: not-allowed;
+}
+
+.in-progress-panel.error {
+  background-color: #ff4a4a;
+  color: #fff;
+  cursor: pointer;
+}
+
+.in-progress-panel.error .mat-icon {
+  vertical-align: -6px;
+  margin-right: 10px;
+}
+
+::ng-deep .in-progress-panel .mat-progress-spinner circle,
+.in-progress-panel .mat-spinner circle {
+  stroke: #333 !important;
+}
+
+.in-progress-panel .mat-progress-spinner,
+.in-progress-panel .mat-spinner {
+  display: inline-block;
+  margin-right: 10px;
+  vertical-align: middle;
+}

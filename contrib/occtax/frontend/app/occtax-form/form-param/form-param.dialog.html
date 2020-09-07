@@ -1,0 +1,418 @@
+<h4>
+	Paramétrage de la valeur par défaut des champs du formulaire
+	<span class="pull-right">
+		<button 
+			class="close-parameter-w"
+			mat-icon-button
+			matTooltip="Fermer la fenêtre"
+			(click)="dialogRef.close()">
+			<mat-icon >close</mat-icon>
+		</button>
+	</span>
+</h4>
+<div class="help">
+	<div class="display-help" (click)='collapse()'>
+		<ng-container *ngIf="state === 'collapsed'; else hideBlock">
+			Afficher l'aide <mat-icon>arrow_drop_down</mat-icon>
+		</ng-container>
+		<ng-template #hideBlock>
+			Masquer l'aide <mat-icon>arrow_drop_up</mat-icon>
+		</ng-template>
+	</div>
+	<p [@detailExpand]='state'>
+		Cet espace permet de spécifier une valeur de remplacement par défaut pour certains champs du formulaire.<br>
+		Les 3 boutons ci-dessous permettent d'activer ou de désactiver cette fonctionnalité pour les différentes parties du formulaire concernées.<br>
+		Un champ laissé vide n'affectera pas le formulaire qui continuera de prendre la valeur définie par défaut au niveau de GeoNature.
+	</p>
+</div>
+
+<div>
+	<mat-slide-toggle 
+		labelPosition="after"
+		[checked]="occtaxFormParamService.geometryState|async"
+		(change)="occtaxFormParamService.geometryState.next(!occtaxFormParamService.geometryState.getValue())"
+		color="primary">
+		Activer pour la geométrie
+	</mat-slide-toggle>
+</div>
+<div>
+	<mat-slide-toggle 
+		labelPosition="after"
+		[checked]="occtaxFormParamService.releveState|async"
+		(change)="occtaxFormParamService.releveState.next(!occtaxFormParamService.releveState.getValue())"
+		color="primary">
+		Activer pour les informations du relevé
+	</mat-slide-toggle>
+</div>
+<div>
+	<mat-slide-toggle 
+		labelPosition="after"
+		[checked]="occtaxFormParamService.occurrenceState|async"
+		(change)="occtaxFormParamService.occurrenceState.next(!occtaxFormParamService.occurrenceState.getValue())"
+		color="primary">
+		Activer pour les informations du taxon
+	</mat-slide-toggle>
+</div>
+<div>
+	<mat-slide-toggle 
+		labelPosition="after"
+		[checked]="occtaxFormParamService.countingState|async"
+		(change)="occtaxFormParamService.countingState.next(!occtaxFormParamService.countingState.getValue())"
+		color="primary">
+		Activer pour les informations du dénombrement
+	</mat-slide-toggle>
+</div>
+
+<mat-tab-group 
+	*ngIf="occtaxFormParamService.numberOfActive > 0"
+	[(selectedIndex)]="selectedIndex"
+	backgroundColor="primary">
+
+	<!-- GEOSJON -->
+  <mat-tab 
+  	label="Localisation"
+  	[disabled]="!(occtaxFormParamService.geometryState|async)">
+
+  	<div style="display: inline-block; margin-top:10px;">
+			<button 
+				class="btn btn-primary" 
+				(click)="geometryFormMapper()">
+				Copier la localisation du relevé en cours
+			</button>
+		</div>
+
+		<div class="copied-geometry">
+			<ng-container *ngIf="paramsForm.get('geometry').value !== null; else noGeometryBlock">
+				<mat-icon style="color: green">check</mat-icon> Une géométrie est proposée par défaut
+			</ng-container>
+			<ng-template #noGeometryBlock>
+				<mat-icon style="color: red">close</mat-icon>Aucune géométrie n'a été copiée pour le moment
+			</ng-template>
+		</div>
+
+  </mat-tab>
+
+	<!-- RELEVE -->
+  <mat-tab 
+  	[label]="'Releve.Releve' | translate"
+  	[disabled]="!(occtaxFormParamService.releveState|async)">
+
+		<div style="margin-top:10px;">
+			<button 
+				mat-flat-button
+				color=primary
+				(click)="releveFormMapper()">
+				Copier les informations du relevé en cours
+			</button>
+		</div>
+	<div *ngIf="occtaxConfig.form_fields.place_name">
+	<small> {{ 'Releve.PlaceName' | translate }} </small>
+	<input 
+		class="form-control form-control-sm" 
+		type="text" 
+		[formControl]="releveParamForm.get('place_name')">
+	</div>
+  	<pnx-observers 
+      *ngIf="!occtaxConfig.observers_txt; else elseBlock"
+      [parentFormControl]="releveParamForm.get('observers')" 
+      [idMenu]="occtaxConfig.id_observers_list"
+      label="{{ 'Releve.Observers' | translate }}" 
+      [bindAllItem]="true">
+    </pnx-observers>
+    <ng-template #elseBlock>
+      <pnx-observers-text 
+        [parentFormControl]="releveParamForm.get('observers_txt')">
+      </pnx-observers-text>
+    </ng-template>
+
+    <pnx-datasets 
+      label="{{ 'MetaData.Datasets' | translate }}" 
+      [parentFormControl]="releveParamForm.get('id_dataset')"
+      moduleCode="OCCTAX">
+    </pnx-datasets>
+
+    <div class="row">
+    	<div class="col-6">
+		    <pnx-date 
+		      *ngIf="occtaxConfig.form_fields.date_min" 
+		      [isInvalid]="releveParamForm.hasError('invalidDate') || releveParamForm.get('date_min').invalid" 
+		      label="{{ 'Releve.MinDate' | translate }}" 
+		      [defaultToday]="occtaxConfig.DATE_FORM_WITH_TODAY" 
+		      [parentFormControl]="releveParamForm.get('date_min')">
+		    </pnx-date>
+		  </div>
+		  <div class="col-6">
+		    <pnx-date 
+		      *ngIf="occtaxConfig.form_fields.date_max" 
+		      [isInvalid]="releveParamForm.hasError('invalidDate') || releveParamForm.get('date_max').invalid" 
+		      label="{{ 'Releve.MaxDate' | translate }} " 
+		      [parentFormControl]="releveParamForm.get('date_max')">
+		    </pnx-date>
+		  </div>
+		</div>
+
+		<div class="row">
+    	<div class="col-6">
+		    <div 
+		      *ngIf="occtaxConfig.form_fields.hour_min" 
+		      class="form-group">
+		      <small> {{'Releve.HourMin' | translate }} </small>
+		      <input 
+		        [ngClass]="{'is-invalid' : releveParamForm.get('hour_min').invalid || releveParamForm.hasError('invalidHour')}" 
+		        [formControl]="releveParamForm.get('hour_min')"
+		        class="form-control form-control-sm" 
+		        type="text" 
+		        placeholder="{{'Releve.HourFormat' | translate }}">
+		    </div>
+		  </div>
+		  <div class="col-6">
+		    <div 
+		      *ngIf="occtaxConfig.form_fields.hour_max" 
+		      class="form-group">
+		      <small> {{'Releve.HourMax' | translate }} </small>
+		      <input 
+		        [ngClass]="{'is-invalid' : releveParamForm.get('hour_max').invalid || releveParamForm.hasError('invalidHour')}" 
+		        [formControl]="releveParamForm.get('hour_max')"
+		        class="form-control form-control-sm" 
+		        type="text" 
+		        placeholder="{{'Releve.HourFormat' | translate }}">
+		    </div>
+		  </div>
+		</div>
+
+    <pnx-nomenclature 
+      *ngIf="occtaxConfig.form_fields.group_type" 
+      label="{{ 'Releve.GroupType' | translate }}" 
+      [parentFormControl]="releveParamForm.get('id_nomenclature_grp_typ')"
+      codeNomenclatureType="TYP_GRP">
+		</pnx-nomenclature>
+
+		<div 
+			*ngIf="occtaxConfig.form_fields.grp_method" 
+			class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
+			<small> {{'Releve.GroupMethod' | translate}} </small>
+			<input 
+				type="text" 
+				class="form-control form-control-sm"
+				[formControl]="releveParamForm.get('grp_method')">
+		</div>
+	
+    <pnx-nomenclature 
+		  *ngIf="occtaxConfig.form_fields.obs_technique" 
+		  label="{{ 'Releve.ObsTechnique' | translate }}" 
+		  [parentFormControl]="releveParamForm.get('id_nomenclature_obs_technique')"
+		  codeNomenclatureType="TECHNIQUE_OBS">
+		</pnx-nomenclature>
+
+
+		<div *ngIf="occtaxConfig.form_fields.comment_releve">
+		  <small> {{ 'Releve.Comment' | translate }} </small>
+		  <textarea 
+		    class="form-control" 
+		    [formControl]="releveParamForm.get('comment')">
+		  </textarea>
+		</div>
+
+  </mat-tab>
+
+  <!-- OCCTURRENCE -->
+  <mat-tab 
+  	[label]="'Taxon.Observation' | translate"
+  	[disabled]="!(occtaxFormParamService.occurrenceState|async)">
+
+  	<div style="margin-top:10px;">
+			<button 
+				mat-flat-button
+				color=primary
+				(click)="occurrenceFormMapper()">
+				Copier les informations du taxon en cours
+			</button>
+		</div>
+
+  	<div class="row">
+		  <div 
+		    *ngIf="occtaxConfig.form_fields.determiner"
+		    class="col-sm-6">
+		    <small> {{ 'Taxon.Determiner' | translate }} </small>
+		    <input 
+		      class="form-control form-control-sm" 
+		      [formControl]="occurrenceParamForm.get('determiner')" 
+		      type="text">
+		  </div>
+
+		  <div 
+		    *ngIf="occtaxConfig.form_fields.determination_method"
+		    class="col-sm-6">
+		    <pnx-nomenclature 
+		      label="{{ 'Taxon.DeterminationMethod' | translate }}" 
+		      [parentFormControl]="occurrenceParamForm.get('id_nomenclature_determination_method')"
+		      codeNomenclatureType="METH_DETERMIN">
+		    </pnx-nomenclature>
+		  </div>
+		</div>
+
+		<div class="row">
+		  <div 
+	      *ngIf="occtaxConfig.form_fields.observation_status"
+	      class="col-lg-4 col-sm-6">
+	      <pnx-nomenclature 
+	        label="{{ 'Taxon.ObservationStatus' | translate }}" 
+	        [parentFormControl]="occurrenceParamForm.get('id_nomenclature_observation_status')"
+	        codeNomenclatureType="STATUT_OBS">
+	      </pnx-nomenclature>
+	    </div>
+
+	    <div 
+	      *ngIf="occtaxConfig.form_fields.obs_method"
+	      class="col-lg-4 col-sm-6">
+	      <pnx-nomenclature 
+	        label="{{ 'Taxon.ObsTech' | translate }}" 
+	        [parentFormControl]="occurrenceParamForm.get('id_nomenclature_obs_technique')"
+	        codeNomenclatureType="METH_OBS">
+	      </pnx-nomenclature>
+	    </div>
+
+	    <div 
+	      *ngIf="occtaxConfig.form_fields.bio_condition"
+	      class="col-lg-4 col-sm-6">
+	      <pnx-nomenclature 
+	        label="{{ 'Taxon.BiologicalCondition' | translate }}" 
+	        [parentFormControl]="occurrenceParamForm.get('id_nomenclature_bio_condition')"
+	        codeNomenclatureType="ETA_BIO">
+	      </pnx-nomenclature>
+	    </div>
+
+	    <div 
+	      *ngIf="occtaxConfig.form_fields.naturalness"
+	      class="col-lg-4 col-sm-6">
+	      <pnx-nomenclature 
+	        label="{{ 'Taxon.Naturalness' | translate }}" 
+	        [parentFormControl]="occurrenceParamForm.get('id_nomenclature_naturalness')"
+	        codeNomenclatureType="NATURALITE">
+	      </pnx-nomenclature>
+	    </div>
+
+	    <div 
+	      *ngIf="occtaxConfig.form_fields.bio_status"
+	      class="col-lg-4 col-sm-6">
+	      <pnx-nomenclature 
+	        label="{{ 'Taxon.BiologicalStatus' | translate }}" 
+	        [parentFormControl]="occurrenceParamForm.get('id_nomenclature_bio_status')"
+	        codeNomenclatureType="STATUT_BIO">
+	      </pnx-nomenclature>
+	    </div>
+
+	    <div 
+	      *ngIf="occtaxConfig.form_fields.source_status"
+	      class="col-lg-4 col-sm-6">
+	      <pnx-nomenclature 
+	        label="{{ 'Taxon.StatusSource' | translate }}" 
+	        [parentFormControl]="occurrenceParamForm.get('id_nomenclature_source_status')"
+	        codeNomenclatureType="STATUT_SOURCE">
+	      </pnx-nomenclature>
+	    </div>
+
+	    <div 
+	      *ngIf="occtaxConfig.form_fields.blurring"
+	      class="col-lg-4 col-sm-6">
+	      <pnx-nomenclature 
+	        label="{{ 'Taxon.Blurring' | translate }}" 
+	        [parentFormControl]="occurrenceParamForm.get('id_nomenclature_blurring')"
+	        codeNomenclatureType="DEE_FLOU">
+	      </pnx-nomenclature>
+	    </div>
+
+	    <div 
+	      *ngIf="occtaxConfig.form_fields.exist_proof"
+	      class="col-lg-4 col-sm-6"
+	      style="margin-bottom: 1rem;">
+	      <pnx-nomenclature 
+	        label="{{ 'Taxon.ExistProof' | translate }}" 
+	        [parentFormControl]="occurrenceParamForm.get('id_nomenclature_exist_proof')"
+	        codeNomenclatureType="PREUVE_EXIST">
+	      </pnx-nomenclature>
+	    </div>
+	  </div>
+
+    <div 
+	    *ngIf="occtaxConfig.form_fields.comment_occ">
+	    <textarea 
+	      placeholder="{{ 'Taxon.Comment' | translate }}" 
+	      class="form-control" 
+	      [formControl]="occurrenceParamForm.get('comment')"
+	      rows="2" 
+	      id="commentaire">
+	    </textarea>
+	  </div>
+  </mat-tab>
+
+  <!-- DENOMBREMENT -->
+  <mat-tab 
+  	[label]="'Counting.Counting' | translate"
+  	[disabled]="!(occtaxFormParamService.countingState|async)">
+
+  	<div class="row">
+	  	<div 
+	      *ngIf="occtaxConfig.form_fields.life_stage"
+	      class="col-sm-6">
+	      <pnx-nomenclature
+	        label="{{ 'Counting.LifeStage' | translate }}" 
+	        codeNomenclatureType="STADE_VIE" 
+	        [parentFormControl]="countingParamForm.get('id_nomenclature_life_stage')"> 
+	      </pnx-nomenclature>
+	    </div>
+	    <div 
+	      *ngIf="occtaxConfig.form_fields.sex"
+	      class="col-sm-6">
+	      <pnx-nomenclature
+	        label="{{ 'Counting.Sex' | translate }}"
+	        codeNomenclatureType="SEXE" 
+	        [parentFormControl]="countingParamForm.get('id_nomenclature_sex')">
+	      </pnx-nomenclature>
+	    </div>
+
+	    <div 
+	      *ngIf="occtaxConfig.form_fields.count_min"
+	      class="col-sm-6">
+	      <small> {{ 'Counting.NumberMin' | translate }} </small>
+	      <input 
+	        class="form-control form-control-sm" 
+	        type="number" 
+	        min="0"
+	        [formControl]="countingParamForm.get('count_min')">
+	    </div>
+
+	    <div 
+	      *ngIf="occtaxConfig.form_fields.count_max"
+	      class="col-sm-6">
+	      <small> {{ 'Counting.NumberMax' | translate }} </small>
+	      <input 
+	        class="form-control form-control-sm" 
+	        type="number" 
+	        min="0"
+	        [formControl]="countingParamForm.get('count_max')">
+	    </div>
+
+	    <div 
+	      *ngIf="occtaxConfig.form_fields.obj_count"
+	      class="col-sm-6">
+	      <pnx-nomenclature 
+	        label="{{ 'Counting.CountingObject' | translate }}"
+	        codeNomenclatureType="OBJ_DENBR" 
+	        [parentFormControl]="countingParamForm.get('id_nomenclature_obj_count')">
+	      </pnx-nomenclature>
+	    </div>
+	    <div 
+	      *ngIf="occtaxConfig.form_fields.type_count"
+	      class="col-sm-6">
+	      <pnx-nomenclature
+	        #typeDenombrement
+	        label="{{ 'Counting.CountingType' | translate }}"
+	        codeNomenclatureType="TYP_DENBR"
+	        [parentFormControl]="countingParamForm.get('id_nomenclature_type_count')">
+	      </pnx-nomenclature> 
+	    </div>
+	  </div>
+  </mat-tab>
+
+</mat-tab-group>
