@@ -179,7 +179,7 @@ class TMediaRepository():
 
             media_type = self.media_type()
 
-            if not ( (res.status_code == 200) or (res.status_code in [200, 302] and self.media_type() == "Vidéo Youtube")):
+            if not res.status_code in [200, 302, 304]:
                 raise GeoNatureError(
                     'la réponse est différente de 200 ({})'
                     .format(res.status_code
