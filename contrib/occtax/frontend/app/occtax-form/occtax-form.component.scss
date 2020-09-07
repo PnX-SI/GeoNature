@@ -1,0 +1,153 @@
+.occtax-form {
+  background-color: #fff;
+  border: 1px solid #f1f1f1;
+  border-radius: 2px;
+  padding: 0px 15px;
+  box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+    0 1px 3px 0 rgba(0, 0, 0, 0.12);
+  height: 100%;
+}
+
+.occtax-form-content {
+  padding-top: 5px;
+}
+
+#taxon-tab {
+	padding-bottom: 45px;
+}
+
+#left-form {
+  overflow-y: auto;
+    margin-right: 5%;
+
+}
+
+
+#btn-finish {
+  position: absolute;
+  right: 25px;
+  bottom: 20px;
+  z-index:100;
+}
+
+
+#btn-cancel {
+  margin-right: 10px;
+}
+
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+.tab button {
+  outline: none;
+}
+
+.tab .to-list-btn {
+  vertical-align: middle;
+  margin: 0px 20px 0px 10px;
+  background-color: #333;
+  color: #fff;
+}
+
+.tab .to-list-btn:hover {
+  background-color: #dedede;
+  color: #333;
+}
+
+.add-occ {
+  position: absolute;
+  left: 25%;
+  bottom: 50px;
+  z-index:100;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab a.tablinks {
+  background-color: inherit;
+  color: #555;
+  font-size: 17px;
+  display: inline-block;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 60px;
+  transition: 0.2s;
+  text-decoration: none;
+}
+
+.tab a.tablinks > mat-icon {
+  vertical-align: -5px;
+}
+
+/* Change background color of buttons on hover */
+.tab a.tablinks:not(.disabled, .active):hover {
+  // background-color: #ddd;
+  background-color: #efefef;
+  border-bottom: 2px solid #ba81ef;
+  color: #333;
+}
+
+/* Create an active/current tablink class */
+.tab a.tablinks.active {
+  background-color: #1d1d1d24;
+  border-bottom: 2px solid #673ab7;
+  color: #222;
+}
+
+.tab a.tablinks.disabled {
+  cursor: not-allowed;
+  background-color: #f5f5f5;
+  border-bottom: 2px solid #f5f5f5;
+}
+
+.tab .tab-left {
+  margin-right: auto !important;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  width: auto;
+  max-width: 100%;
+}
+
+.tab .tab-right {
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  width: auto;
+  max-width: 100%;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-right: 10px;
+}
+
+.tab .clos-new-rel-btn {
+  margin-right: 20px;
+  margin-left: 10px;
+}
+
+.tab .clos-new-rel-btn:hover {
+  color: #b90000;
+}
+
+.tab .clos-new-rel-btn mat-icon {
+  font-size: 45px;
+  height: 45px;
+  width: 45px;
+  line-height: 40px;
+}
+
+.tab .setting-btn {
+  margin-left: 10px;
+}
+
+.tab .setting-btn mat-icon {
+  font-size: 35px;
+  height: 35px;
+  width: 35px;
+  line-height: 30px;
+}

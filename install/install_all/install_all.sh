@@ -99,25 +99,37 @@ then
 fi
 
 
-sudo apt-get install -y python3
-sudo apt-get install -y python3-dev
-sudo apt-get install -y python3-setuptools
-sudo apt-get install -y python3-pip
 sudo apt-get install -y libpq-dev
+sudo apt-get install -y libffi-dev
 sudo apt-get install -y libgdal-dev
 sudo apt-get install -y python-gdal
 sudo apt-get install -y build-essential
 sudo apt-get install -y python3-wheel
 sudo apt-get install -y python3-cffi
+sudo apt-get install -y libbz2-dev
+
+cd /opt
+sudo wget https://www.python.org/ftp/python/3.7.7/Python-3.7.7.tgz
+sudo tar xzf Python-3.7.7.tgz
+cd Python-3.7.7
+sudo ./configure --enable-optimizations
+sudo make install
+cd 
+
+sudo apt-get install -y python3-dev
+sudo apt-get install -y python3-setuptools
+sudo apt-get install -y python3-pip
+
 # for weasy print (lib python for pdf)
 sudo apt-get install -y libcairo2
 sudo apt-get install -y libpango-1.0-0
 sudo apt-get install -y libpangocairo-1.0-0
 sudo apt-get install -y libgdk-pixbuf2.0-0
 sudo apt-get install -y libffi-dev
+sudo apt-get install -y libxslt-dev
 sudo apt-get install -y shared-mime-info
-python3 -m pip install pip==20.0.2
-pip3 install virtualenv==20.0.1
+sudo python3 -m pip install pip==20.0.2
+/usr/local/bin/python3 -m pip install virtualenv==20.0.1
 # sudo pip install --upgrade pip virtualenv virtualenvwrapper
 
 

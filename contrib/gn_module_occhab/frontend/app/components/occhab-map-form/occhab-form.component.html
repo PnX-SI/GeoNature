@@ -359,11 +359,11 @@
   
           <div class="form-row">
             <div class="col-6 inline">
-                <pnx-autocomplete apiEndPoint="{{appConfig.API_ENDPOINT}}/habref/habitats/autocomplete/list/{{moduleConfig.ID_LIST_HABITAT}}"
+                <pnx-autocomplete apiEndPoint="{{appConfig.API_ENDPOINT}}/habref/habitats/autocomplete"
                   [searchAsParameter]="false"  
                   [parentFormControl]="occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].get('habref')"
                   queryParamSearch="search_name"
-                  [othersGetParams]="occHabForm.selectedTypo"
+                  [othersGetParams]="{cd_type: occHabForm.typoHabControl.value, id_list: moduleConfig.ID_LIST_HABITAT}"
                   [formatter]="formatter"
                   keyValue="search_name"
                   label="Habitat"
@@ -371,6 +371,7 @@
                   (onChange)="occHabForm.patchNomCite($event)"
               >
               </pnx-autocomplete>
+              LA: {{occHabForm.typoHabControl.value}}
               <div class="input-group-append" id="addon">
                 <button class="btn btn-sm btn-outline-shadow" data-toggle="collapse" data-target="#collaspeTypo" aria-expanded="false"
                   aria-controls="collapseExample" matTooltip="Filtrer les habitat proposés à l'autocompletion  par typologie">

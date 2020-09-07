@@ -2,6 +2,40 @@
 CHANGELOG
 =========
 
+2.5.0 (unreleased)
+------------------
+
+**🚀 Nouveautés**
+
+ * Refonte de l'ergonomie d'Occtax 
+ 
+GeoNature n'est plus compatbile avec le version de Python 3.5 (qui ne sera plus maintenu en novembre 2020).
+Suivez la procédure suivante pour passer à Python 3.7
+
+Notes:
+ajout de champs lié au passage occtax v2: MAJ des vues pas faites dans l'update ?
+A mettre ici
+
+Changement dans les paramètres Occtax :
+Les paramètres d'affichage/masquage des champs du formulaire opèrent les changements suivants:
+``obs_meth`` devient ``osb_tech`` 
+``obs_technique`` devient ``tech_collect``
+
+::
+
+    cd /opt
+    sudo apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libxslt-dev libbz2-dev
+    sudo wget https://www.python.org/ftp/python/3.7.2/Python-3.7.2.tgz
+    sudo tar xzf Python-3.7.2.tgz
+    cd Python-3.7.2
+    sudo ./configure --enable-optimizations
+    sudo make install
+    sudo python3 -m pip install pip==20.0.2
+    /usr/local/bin/python3 -m pip install virtualenv==20.0.1
+
+
+Editer la variable python_path du fichier ``settings.ini`` et mettre ``/usr/local/bin/python3``.
+
 2.4.1 (2020-06-25)
 ------------------
 

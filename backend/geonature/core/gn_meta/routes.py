@@ -126,6 +126,7 @@ def get_af_and_ds_metadata(info_role):
             log.error(e)
             with_mtd_error = True
     params = request.args.to_dict()
+    params["orderby"] = "dataset_name"
     datasets = get_datasets_cruved(info_role, params, as_model=True)
     ids_dataset_user = TDatasets.get_user_datasets(info_role, only_user=True)
     ids_dataset_organisms = TDatasets.get_user_datasets(info_role, only_user=False)
@@ -143,6 +144,7 @@ def get_af_and_ds_metadata(info_role):
     afs = (
         DB.session.query(TAcquisitionFramework)
         .filter(TAcquisitionFramework.id_acquisition_framework.in_(list_id_af))
+        .order_by(TAcquisitionFramework.acquisition_framework_name)
         .all()
     )
 
@@ -377,9 +379,7 @@ def get_export_pdf_dataset(id_dataset, info_role):
     pdf_file = fm.generate_pdf("dataset_template_pdf.html", df, filename)
     pdf_file_posix = Path(pdf_file)
     return send_from_directory(
-        str(pdf_file_posix.parent),
-        pdf_file_posix.name,
-        as_attachment=True
+        str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True
     )
 
 
@@ -513,16 +513,13 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
         dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
     )
 
-
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf(
         "acquisition_framework_template_pdf.html", acquisition_framework, filename
     )
     pdf_file_posix = Path(pdf_file)
     return send_from_directory(
-        str(pdf_file_posix.parent),
-        pdf_file_posix.name,
-        as_attachment=True
+        str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True
     )
 
 

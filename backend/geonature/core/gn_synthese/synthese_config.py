@@ -20,7 +20,7 @@ DEFAULT_EXPORT_COLUMNS = [
     "obsDescr",
     "ObjGeoTyp",
     "methGrp",
-    "obsMeth",
+    "obsTech",
     "ocEtatBio",
     "ocStatBio",
     "ocNat",
@@ -41,10 +41,15 @@ DEFAULT_EXPORT_COLUMNS = [
     "cdNom",
     "cdRef",
     "nomCite",
-    "vTAXREF",
+    "natObjGeo",
     "wkt",
+    "nomLieu",
+    "profMin",
+    "profMax",
     "lastAction",
     "validateur",
+    "precision",
+    "nomLieu",
 ]
 
 

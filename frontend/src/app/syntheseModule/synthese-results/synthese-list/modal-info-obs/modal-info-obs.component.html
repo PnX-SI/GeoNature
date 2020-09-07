@@ -16,6 +16,14 @@
       <div class="padding-sm col-xs-7 col-sm-7 col-md-7 col-lg-7 ">
 
         <span class="font-xs">
+          <div>
+            <span *ngIf="selectedObs?.place_name">
+              <b>Nom du lieu : </b> {{selectedObs?.place_name}}
+            </span>
+            <span *ngIf="selectedObs?.precision">
+              <b>Précision du pointage : </b> {{selectedObs?.precision}}
+            </span>
+          </div>
           <b> Observation de : </b> {{selectedObs?.observers}}
 
           <br>
@@ -28,8 +36,13 @@
           <br>
 
           <b> Altitude</b> : {{selectedObs?.altitude_min}} m - {{selectedObs?.altitude_max}} m
-          <br>
+          <div *ngIf="selectedObs?.depth_min || selectedObs?.depth_max">
+              <b> Profondeur</b> : {{selectedObs?.depth_min}} m - {{selectedObs?.depth_min}} m
+          </div>
           <b> UUID observation : </b> {{selectedObs?.unique_id_sinp}}
+          <br>
+          <b> Habitat associé</b>: {{selectedObs?.habitat?.lb_hab_fr}} - {{selectedObs?.habitat?.lb_code}}
+          <br>
           <button *ngIf="oneObsSynthese?.url_source" class="btn btn-sm btn-primary" (click)="backToModule(oneObsSynthese?.url_source, oneObsSynthese?.entity_source_pk_value)">
             <i class="fa fa-file-text" aria-hidden="true"></i> <small>Voir l'observation dans le module de saisie
             </small>
@@ -90,6 +103,37 @@
                   </tr>
                 </table>
 
+                <ng-container *ngIf="selectedObs?.medias?.length">
+                  <h5 class="underlined underlined-sm main-color"> Médias
+                  </h5>
+                  <table class="font-xs table table-striped table-sm">
+                    <ng-container *ngFor="let media of selectedObs?.medias; index as i">
+                      <tr>
+                        <td> Titre </td>
+                        <td> <a target="_blank" [href]="mediaService.href(media)">{{media.title_fr}}</a> </td>
+                      </tr>
+                      <tr *ngIf='media.description_fr'>
+                        <td> Description </td>
+                        <td> {{ media.description_fr }} </td>
+                      </tr>
+                      <tr *ngIf='media.author'>
+                        <td> Auteur </td>
+                        <td> {{ media.author }} </td>
+                      </tr>
+                      <tr>
+                        <td colspan="2">
+                          <pnx-display-medias
+                          diaporama=true
+                          [medias]="selectedObs?.medias"
+                          [index]="i"
+                          display="small"
+                          ></pnx-display-medias>
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </table>
+                </ng-container>
+
               </div>
               <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
                 <h5 class="underlined underlined-sm main-color"> Détail de l'occurrence </h5>
@@ -103,10 +147,6 @@
                     <td> {{selectedObs?.obs_technique}} </td>
                   </tr>
                   <tr>
-                    <td> Méthode d'observation </td>
-                    <td> {{selectedObs?.obs_method}} </td>
-                  </tr>
-                  <tr>
                     <td> Etat biologique </td>
                     <td> {{selectedObs?.bio_condition}} </td>
                   </tr>
@@ -114,6 +154,11 @@
                   <tr>
                     <td> Statut biologique </td>
                     <td> {{selectedObs?.bio_status}} </td>
+                  </tr>
+
+                  <tr>
+                    <td> Comportement </td>
+                    <td> {{selectedObs?.occ_behaviour}} </td>
                   </tr>
 
                   <tr>
@@ -180,6 +225,11 @@
                   <tr>
                     <td> Type de regroupement </td>
                     <td> {{selectedObs?.grp_typ}} </td>
+                  </tr>
+
+                  <tr>
+                    <td> Méthode de regroupement </td>
+                    <td> {{selectedObs?.grp_method}} </td>
                   </tr>
 
                   <tr>

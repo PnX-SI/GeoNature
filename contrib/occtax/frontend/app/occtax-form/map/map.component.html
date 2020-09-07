@@ -1,0 +1,28 @@
+<pnx-map 
+  height="100%" 
+  class="map-card">
+  <pnx-marker 
+    [coordinates]="coordinates" 
+    [zoomLevel]="occtaxConfig.releve_map_zoom_level"
+    (markerChanged)="sendGeoInfo($event)">
+  </pnx-marker>
+
+  <pnx-leaflet-draw 
+    [geojson]="geometry" 
+    [options]="leafletDrawOptions" 
+    [zoomLevel]="occtaxConfig.releve_map_zoom_level"
+    (layerDrawed)="sendGeoInfo($event)">
+  </pnx-leaflet-draw>
+
+  <pnx-leaflet-filelayer
+    *ngIf="occtaxConfig.ENABLE_UPLOAD_TOOL"
+    [editMode]="true"
+    (onLoad)="infoMessageFileLayer()"
+    [style]="{'color': 'green'}">
+  </pnx-leaflet-filelayer> 
+
+  <pnx-gps 
+    *ngIf="occtaxConfig.ENABLE_GPS_TOOL" 
+    (markerChanged)="sendGeoInfo($event)">
+  </pnx-gps>
+</pnx-map>

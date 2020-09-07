@@ -24,6 +24,7 @@ export class GenericFormComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() displayAll: false; // param to display the field 'all' in the list, default at false
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
+  @Output() valueLoaded = new EventEmitter<any>();
   public sub: Subscription;
 
   constructor() {}

@@ -3,6 +3,8 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { AppConfig } from '@geonature_config/app.config';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { MediaService } from '@geonature_common/service/media.service';
+
 
 @Component({
   selector: 'pnx-synthese-modal-info-obs',
@@ -18,7 +20,8 @@ export class ModalInfoObsComponent implements OnInit {
   constructor(
     private _gnDataService: DataFormService,
     private _dataService: SyntheseDataService,
-    public activeModal: NgbActiveModal
+    public activeModal: NgbActiveModal,
+    public mediaService: MediaService
   ) {}
 
   ngOnInit() {

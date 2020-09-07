@@ -270,6 +270,7 @@ def get_one_synthese(id_synthese):
             == SyntheseOneRecord.id_dataset,
         )
     )
+    print(q)
     try:
         data = q.one()
         synthese_as_dict = data[0].as_dict(True)

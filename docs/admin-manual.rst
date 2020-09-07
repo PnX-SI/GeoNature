@@ -1360,7 +1360,6 @@ Enlevez la ligne de la colonne que vous souhaitez désactiver. Les noms de colon
             "cdNom",
             "cdRef",
             "nomCite",
-            "vTAXREF",
             "wkt",
             "lastAction",
             "validateur"

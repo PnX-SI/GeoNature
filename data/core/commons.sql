@@ -67,6 +67,31 @@ $BODY$
 --USAGE
 --SELECT gn_commons.check_entity_value_exist('pr_occtax.t_releves_occtax.id_releve_occtax', 2);
 
+
+CREATE OR REPLACE FUNCTION gn_commons.check_entity_uuid_exist(myentity character varying, myvalue uuid)
+  RETURNS boolean AS
+$BODY$
+--Function that allows to check if a uuid exists in the field of a table type.
+--USAGE : SELECT gn_commons.check_entity_uuid_exist('schema.table.field', uuid);
+  DECLARE
+    entity_array character varying(255)[];
+    r record;
+    _row_ct integer;
+  BEGIN
+
+
+    entity_array = string_to_array(myentity,'.');
+    EXECUTE 'SELECT '||entity_array[3]|| ' FROM '||entity_array[1]||'.'||entity_array[2]||' WHERE '||entity_array[3]||'=''' ||myvalue || '''' INTO r;
+    GET DIAGNOSTICS _row_ct = ROW_COUNT;
+      IF _row_ct > 0 THEN
+        RETURN true;
+      END IF;
+    RETURN false;
+  END;
+$BODY$
+  LANGUAGE plpgsql IMMUTABLE
+  COST 100;
+
 CREATE OR REPLACE FUNCTION get_table_location_id(myschema text, mytable text)
   RETURNS integer AS
 $BODY$
@@ -342,7 +367,9 @@ CREATE TABLE t_medias
   description_it text,
   description_es text,
   description_de text,
-  is_public boolean NOT NULL DEFAULT true
+  is_public boolean NOT NULL DEFAULT true,
+  meta_create_date timestamp without time zone DEFAULT now(),
+  meta_update_date timestamp without time zone DEFAULT now()
 );
 COMMENT ON COLUMN t_medias.id_nomenclature_media_type IS 'Correspondance nomenclature GEONATURE = TYPE_MEDIA (117)';
 
@@ -355,6 +382,12 @@ CREATE SEQUENCE t_medias_id_media_seq
 ALTER SEQUENCE t_medias_id_media_seq OWNED BY t_medias.id_media;
 ALTER TABLE ONLY t_medias ALTER COLUMN id_media SET DEFAULT nextval('t_medias_id_media_seq'::regclass);
 SELECT pg_catalog.setval('t_medias_id_media_seq', 1, false);
+
+CREATE TRIGGER tri_meta_dates_change_t_medias
+  BEFORE INSERT OR UPDATE
+  ON t_medias
+  FOR EACH ROW
+  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
 
 CREATE TABLE t_validations
@@ -528,6 +561,9 @@ ALTER TABLE t_modules
 
 ALTER TABLE t_mobile_apps
     ADD CONSTRAINT unique_t_mobile_apps_app_code UNIQUE (app_code);
+
+ALTER TABLE bib_tables_location
+  ADD CONSTRAINT unique_bib_table_location_schema_name_table_name UNIQUE (schema_name, table_name);
 
 ------------
 --TRIGGERS--

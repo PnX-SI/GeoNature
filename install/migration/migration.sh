@@ -98,7 +98,6 @@ else
   python3 -m virtualenv venv
 fi
 
-
 source venv/bin/activate
 pip install -r requirements.txt
 # installation des dépendances des modules

@@ -435,12 +435,12 @@ fi
 
 # Suppression des fichiers : on ne conserve que les fichiers compressés
 echo "Cleaning files..."
-rm tmp/geonature/*.sql
-rm tmp/usershub/*.sql
-rm -r tmp/taxhub/TAXREF_INPN_v13
-rm tmp/taxhub/*.csv
-rm tmp/taxhub/*.sql
-rm tmp/habref/*.csv
-rm tmp/habref/*.pdf
-rm tmp/habref/*.sql
-rm tmp/nomenclatures/*.sql
+rm -f tmp/geonature/*.sql
+rm -f tmp/usershub/*.sql
+rm -rf tmp/taxhub/TAXREF_INPN_v13
+rm -f tmp/taxhub/*.csv
+rm -f tmp/taxhub/*.sql
+rm -f tmp/habref/*.csv
+rm -f tmp/habref/*.pdf
+rm -f tmp/habref/*.sql
+rm -f tmp/nomenclatures/*.sql

@@ -49,7 +49,7 @@ export class DataFormService {
     );
   }
 
-  getNomenclatures(codesNomenclatureType) {
+  getNomenclatures(codesNomenclatureType: Array<string>) {
     let params: HttpParams = new HttpParams();
     params = params.set('orderby', 'label_default');
     codesNomenclatureType.forEach(code => {
@@ -205,6 +205,10 @@ export class DataFormService {
       geojson['id_type'] = idType;
     }
     return this._http.post(`${AppConfig.API_ENDPOINT}/geo/areas`, geojson);
+  }
+
+  getAltitudes(geojson) {
+    return this._http.post(`${AppConfig.API_ENDPOINT}/geo/altitude`, geojson);
   }
 
   getFormatedGeoIntersection(geojson, idType?) {

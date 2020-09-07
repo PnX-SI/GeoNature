@@ -1,0 +1,53 @@
+textarea {
+  min-height: 75px;
+}
+
+::ng-deep .mat-progress-spinner circle,
+.mat-spinner circle {
+  stroke: #fff !important;
+}
+
+button .mat-progress-spinner,
+button .mat-spinner {
+  display: inline-block;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+// disable overlay
+#overlay,
+#form {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#overlay {
+  z-index: 1000;
+}
+
+.disabled-form {
+  background-color: #00000061;
+  cursor: not-allowed;
+}
+
+.dataset-inactive {
+  margin-top: 5px;
+}
+
+.dataset-inactive .dataset-block {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  display: block;
+  width: 100%;
+  color: #495057;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.2rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  background-color: #ddd;
+  cursor: not-allowed;
+}

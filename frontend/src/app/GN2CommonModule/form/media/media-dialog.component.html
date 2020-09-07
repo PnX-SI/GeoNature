@@ -1,0 +1,45 @@
+<div
+  mat-dialog-content
+  class="media-dialog"
+  [ngClass]="{ 'media-dialog-fade-in': bDisplay, 'media-dialog-fade-out': !bDisplay }"
+>
+  <mat-card>
+    <mat-card-title
+      ><span *ngIf="medias.length > 1">{{ curIndex + 1 }}/{{ medias.length }} : </span>
+      {{ media.title_fr }}</mat-card-title
+    >
+    <pnx-display-medias
+      [medias]="medias"
+      [index]="curIndex"
+      display="diaporama"
+    ></pnx-display-medias>
+    <!-- <img *ngIf='ms.isImg(media)' mat-card-image [src]="media.href()" /> -->
+    <mat-card-content>
+      <a *ngIf="media.href()" target="_blank" class="link-media float-right" [href]="media.href()"
+        ><mat-icon matTooltip="{{ 'Media.link' | translate }}">link</mat-icon>
+      </a>
+      {{ media.description_fr }}
+    </mat-card-content>
+    <mat-card-subtitle> ({{ ms.typeMedia(media) }}, {{ media.author }}) </mat-card-subtitle>
+
+    <button
+      *ngIf="medias.length > 1"
+      mat-mini-fab
+      class="media-dialog-arrow left-arrow"
+      id="media-dialog-left-arrow"
+      (click)="changeMedia(-1)"
+    >
+      <mat-icon matTooltip="{{ 'Media.previous' | translate }}">keyboard_arrow_left</mat-icon>
+    </button>
+
+    <button
+      *ngIf="medias.length > 1"
+      mat-mini-fab
+      class="media-dialog-arrow right-arrow"
+      id="media-dialog-left-arrow"
+      (click)="changeMedia(1)"
+    >
+      <mat-icon matTooltip="{{ 'Media.next' | translate }}">keyboard_arrow_right</mat-icon>
+    </button>
+  </mat-card>
+</div>
