@@ -192,7 +192,7 @@ CREATE TABLE synthese (
     id_nomenclature_determination_method integer DEFAULT gn_synthese.get_default_nomenclature_value('METH_DETERMIN'),
     comment_context text,
     comment_description text,
-    additional_data jsonb, 
+    additional_data jsonb,
     meta_validation_date timestamp without time zone,
     meta_create_date timestamp without time zone DEFAULT now(),
     meta_update_date timestamp without time zone DEFAULT now(),
@@ -624,7 +624,7 @@ $BODY$
 	      s.id_synthese AS id_synthese,
         a.id_area AS id_area
         FROM ref_geo.l_areas a
-        JOIN gn_synthese.synthese s 
+        JOIN gn_synthese.synthese s
         	ON public.ST_INTERSECTS(s.the_geom_local, a.geom)  AND NOT public.ST_TOUCHES(s.the_geom_local,a.geom)
         WHERE s.id_synthese = NEW.id_synthese AND a.enable IS true;
     END IF;
@@ -1084,12 +1084,29 @@ INSERT INTO gn_commons.t_modules (module_code, module_label, module_picto, modul
 
 -- Fonctions import dans la synthese
 
-CREATE OR REPLACE FUNCTION gn_synthese.import_json_row(
-	datain jsonb,
-  datageojson text default NULL -- données géographique sous la forme d'un geojson TODO a voir le paramètre du type text ou json
-)
-RETURNS boolean AS
-$BODY$
+CREATE OR REPLACE FUNCTION gn_synthese.import_json_row_format_insert_data(column_name varchar, data_type varchar, postgis_maj_num_version int)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$
+DECLARE
+	col_srid int;
+BEGIN
+	-- Gestion de postgis 3
+	IF ((postgis_maj_num_version > 2) AND (data_type = 'geometry')) THEN
+		col_srid := (SELECT find_srid('gn_synthese', 'synthese', column_name));
+		RETURN '(st_setsrid(ST_GeomFromGeoJSON(datain->>''' || column_name  || '''), ' || col_srid::text || '))' || COALESCE('::' || data_type, '');
+	ELSE
+		RETURN '(datain->>''' || column_name  || ''')' || COALESCE('::' || data_type, '');
+	END IF;
+
+END;
+$function$
+;
+
+  CREATE OR REPLACE FUNCTION gn_synthese.import_json_row(datain jsonb, datageojson text DEFAULT NULL::text)
+ RETURNS boolean
+ LANGUAGE plpgsql
+AS $function$
   DECLARE
     insert_columns text;
     select_columns text;
@@ -1098,6 +1115,8 @@ $BODY$
     geom geometry;
     geom_data jsonb;
     local_srid int;
+
+   postgis_maj_num_version int;
 BEGIN
 
 
@@ -1110,6 +1129,8 @@ BEGIN
   );
   INSERT INTO tmp_process_import (datain)
   SELECT datain;
+
+  postgis_maj_num_version := (SELECT split_part(version, '.', 1)::int FROM pg_available_extension_versions WHERE name = 'postgis' AND installed = true);
 
   -- Cas ou la geométrie est passé en geojson
   IF NOT datageojson IS NULL THEN
@@ -1142,7 +1163,7 @@ BEGIN
   WITH import_col AS (
     SELECT jsonb_object_keys(datain) AS column_name
   ), synt_col AS (
-      SELECT column_name, column_default, CASE WHEN data_type = 'USER-DEFINED' THEN NULL ELSE data_type END as data_type
+      SELECT column_name, column_default, CASE WHEN data_type = 'USER-DEFINED' THEN udt_name ELSE data_type END as data_type
       FROM information_schema.columns
       WHERE table_schema || '.' || table_name = 'gn_synthese.synthese'
   )
@@ -1150,14 +1171,17 @@ BEGIN
       string_agg(s.column_name, ',')  as insert_columns,
       string_agg(
           CASE
-              WHEN NOT column_default IS NULL THEN 'COALESCE((datain->>''' || i.column_name  || ''')' || COALESCE('::' || data_type, '') || ', ' || column_default || ') as ' || i.column_name
-          ELSE '(datain->>''' || i.column_name  || ''')' || COALESCE('::' || data_type, '')
+              WHEN NOT column_default IS NULL THEN
+              'COALESCE(' || gn_synthese.import_json_row_format_insert_data(i.column_name, data_type::varchar, postgis_maj_num_version) || ', ' || column_default || ') as ' || i.column_name
+          ELSE gn_synthese.import_json_row_format_insert_data(i.column_name, data_type::varchar, postgis_maj_num_version)
           END, ','
       ) as select_columns ,
       string_agg(
-          s.column_name || '=' || CASE
-              WHEN NOT column_default IS NULL THEN 'COALESCE((datain->>''' || i.column_name  || ''')' || COALESCE('::' || data_type, '') || ', ' || column_default || ') '
-          ELSE '(datain->>''' || i.column_name  || ''')' || COALESCE('::' || data_type, '')
+          s.column_name || '=' ||
+          CASE
+            WHEN NOT column_default IS NULL
+            	THEN  'COALESCE(' || gn_synthese.import_json_row_format_insert_data(i.column_name, data_type::varchar, postgis_maj_num_version) || ', ' || column_default || ') '
+  			ELSE gn_synthese.import_json_row_format_insert_data(i.column_name, data_type::varchar, postgis_maj_num_version)
           END
       , ',')
   INTO insert_columns, select_columns, update_columns
@@ -1209,10 +1233,8 @@ BEGIN
 
   RETURN TRUE;
   END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-
+$function$
+;
 
 
 CREATE OR REPLACE FUNCTION gn_synthese.import_row_from_table(
