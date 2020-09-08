@@ -4,7 +4,13 @@
         SELECT count(*)
         FROM information_schema.view_column_usage
         WHERE table_name = 'synthese' AND table_schema = 'gn_synthese' AND column_name = 'id_nomenclature_obs_technique'
-        AND NOT view_schema || '.' || view_name IN ('gn_synthese.v_synthese_for_export', 'pr_occtax.v_releve_occtax', 'gn_synthese.v_synthese_decode_nomenclatures', 'gn_synthese.v_synthese_for_web_app', 'gn_commons.v_synthese_validation_forwebapp', 'gn_synthese.v_synthese_for_export')
+        AND NOT view_schema || '.' || view_name IN (
+            'gn_synthese.v_synthese_for_export',
+            'pr_occtax.v_releve_occtax',
+            'gn_synthese.v_synthese_decode_nomenclatures',
+            'gn_synthese.v_synthese_for_web_app',
+            'gn_commons.v_synthese_validation_forwebapp'
+          )
         ) > 0
     THEN
         RAISE EXCEPTION 'Des vues doivent supprimées puis recrééer avant de relancer le script car elles dépendent de la colonne id_nomenclature_obs_technique ';
@@ -215,6 +221,15 @@
 
 
 
+
+        --- DROP id_nomenclature_obs_technique depend view
+        DROP VIEW IF EXISTS gn_synthese.v_synthese_for_export;
+        DROP VIEW IF EXISTS pr_occtax.v_releve_occtax;
+        DROP VIEW IF EXISTS gn_synthese.v_synthese_decode_nomenclatures;
+        DROP VIEW IF EXISTS gn_synthese.v_synthese_for_web_app;
+        DROP VIEW IF EXISTS gn_commons.v_synthese_validation_forwebapp;
+
+
         -- OCCTAX V2
 
         ALTER TABLE pr_occtax.t_releves_occtax
@@ -232,11 +247,10 @@
         ;
 
         ALTER TABLE pr_occtax.t_releves_occtax
-          ALTER column id_nomenclature_tech_collect_campanule DROP NOT NULL
-        ;
-        ALTER TABLE pr_occtax.t_releves_occtax
           RENAME COLUMN id_nomenclature_obs_technique TO id_nomenclature_tech_collect_campanule;
 
+        ALTER TABLE pr_occtax.t_releves_occtax
+          ALTER column id_nomenclature_tech_collect_campanule DROP NOT NULL;
 
         ALTER TABLE pr_occtax.t_occurrences_occtax
           --delete sensi
@@ -262,7 +276,6 @@
         VALUES ('OCC_COMPORTEMENT', ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '0'))
         ;
 
-        DROP VIEW IF EXISTS pr_occtax.v_releve_occtax;
         CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
         SELECT rel.id_releve_occtax,
             rel.id_dataset,
@@ -307,7 +320,7 @@
             ADD CONSTRAINT fk_synthese_id_nomenclature_behaviour FOREIGN KEY (id_nomenclature_behaviour) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
             ADD CONSTRAINT check_synthese_behaviour CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour, 'OCC_COMPORTEMENT')) NOT VALID,
             ADD CONSTRAINT check_synthese_depth_max CHECK (depth_max >= depth_min),
-            DROP COLUMN id_nomenclature_obs_technique CASCADE
+            DROP COLUMN id_nomenclature_obs_technique
         ;
         ALTER TABLE gn_synthese.synthese
             RENAME id_nomenclature_obs_meth TO id_nomenclature_obs_technique
@@ -551,8 +564,6 @@
           COST 100;
 
 
-
-        DROP VIEW IF EXISTS gn_synthese.v_synthese_decode_nomenclatures;
         CREATE OR REPLACE VIEW gn_synthese.v_synthese_decode_nomenclatures AS
         SELECT
         s.id_synthese,
@@ -578,7 +589,7 @@
         ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_behaviour) AS occ_behaviour
         FROM gn_synthese.synthese s;
 
-        DROP VIEW IF EXISTS gn_synthese.v_synthese_for_web_app;
+
         CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
         SELECT s.id_synthese,
             s.unique_id_sinp,
@@ -697,7 +708,6 @@
         ALTER TABLE pr_occtax.t_occurrences_occtax
         ALTER COLUMN nom_cite SET NOT NULL;
 
-        DROP VIEW IF EXISTS gn_commons.v_synthese_validation_forwebapp;
         CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS
         SELECT  s.id_synthese,
             s.unique_id_sinp,
@@ -894,7 +904,6 @@
           ;
 
 
-        DROP VIEW IF EXISTS gn_synthese.v_synthese_for_export;
         CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
         SELECT s.id_synthese AS "idSynthese",
             s.entity_source_pk_value AS "idOrigine",
@@ -1230,11 +1239,12 @@
           END;
         $function$
         ;
+
+        -- suppression trigger en double #762
+        DROP TRIGGER IF EXISTS tri_insert_synthese_cor_role_releves_occtax ON pr_occtax.cor_role_releves_occtax;
+        DROP FUNCTION IF EXISTS pr_occtax.fct_tri_synthese_insert_cor_role_releve();
+
     END IF;
    END
  $$ language plpgsql;
 
-
- -- suppression trigger en double #762
-DROP TRIGGER tri_insert_synthese_cor_role_releves_occtax ON pr_occtax.cor_role_releves_occtax;
-DROP FUNCTION pr_occtax.fct_tri_synthese_insert_cor_role_releve()
