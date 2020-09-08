@@ -17,9 +17,7 @@ from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
 
 from geonature.utils.env import DB
-from geonature.core.gn_commons.file_manager import (
-    rename_file
-)
+from geonature.core.gn_commons.file_manager import rename_file
 
 # from geonature.core.gn_meta.models import TDatasets
 
@@ -71,7 +69,7 @@ class TModules(DB.Model):
     active_frontend = DB.Column(DB.Boolean)
     active_backend = DB.Column(DB.Boolean)
     module_doc_url = DB.Column(DB.Unicode)
-    order_number = DB.Column(DB.Integer)
+    order_module = DB.Column(DB.Integer)
 
 
 @serializable
@@ -110,34 +108,32 @@ class TMedias(DB.Model):
 
     def __before_commit_delete__(self):
         # déclenché sur un DELETE : on supprime le fichier
-        if self.media_path and os.path.exists(os.path.join(current_app.config['BASE_DIR'] + '/' + self.media_path)):
+        if self.media_path and os.path.exists(
+            os.path.join(current_app.config["BASE_DIR"] + "/" + self.media_path)
+        ):
             initial_path = self.media_path
-            (inv_file_name, inv_file_path) = initial_path[::-1].split('/', 1)
+            (inv_file_name, inv_file_path) = initial_path[::-1].split("/", 1)
             file_name = inv_file_name[::-1]
             file_path = inv_file_path[::-1]
 
             try:
                 self.media_path = rename_file(
-                    self.media_path, "{}/deleted_{}".format(
-                        file_path, file_name
-                    )
+                    self.media_path, "{}/deleted_{}".format(file_path, file_name)
                 )
             except FileNotFoundError:
-                raise Exception('Unable to delete file {}'.format(initial_path))
+                raise Exception("Unable to delete file {}".format(initial_path))
 
         # delete thumbnail test sur nom des fichier avec id dans le dossier thumbnail
-        dir_thumbnail = (
-            os.path.join(
-                current_app.config['BASE_DIR'],
-                current_app.config['UPLOAD_FOLDER'],
-                'thumbnails',
-                str(self.id_table_location)
-            )
+        dir_thumbnail = os.path.join(
+            current_app.config["BASE_DIR"],
+            current_app.config["UPLOAD_FOLDER"],
+            "thumbnails",
+            str(self.id_table_location),
         )
         for f in os.listdir(dir_thumbnail):
-            if f.split('_')[0] == str(self.id_media):
+            if f.split("_")[0] == str(self.id_media):
                 abs_path = os.path.join(dir_thumbnail, f)
-                print('remove thumbnail {}'.format(abs_path))
+                print("remove thumbnail {}".format(abs_path))
                 os.path.exists(abs_path) and os.remove(abs_path)
 
 

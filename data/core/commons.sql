@@ -459,7 +459,8 @@ CREATE TABLE t_modules(
   module_comment text,
   active_frontend boolean NOT NULL,
   active_backend boolean NOT NULL,
-  module_doc_url character varying(255)
+  module_doc_url character varying(255),
+  order_module integer
 );
 COMMENT ON COLUMN t_modules.id_module IS 'PK mais aussi FK vers la table "utilisateurs.t_applications". ATTENTION de ne pas utiliser l''identifiant d''une application existante dans cette table et qui ne serait pas un module de GeoNature';
 COMMENT ON COLUMN t_modules.module_target IS 'Value = NULL ou "blank". On peux ainsi référencer des modules externes et les ouvrir dans un nouvel onglet.';

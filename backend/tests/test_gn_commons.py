@@ -6,16 +6,18 @@
 import os
 import json
 import io
+from pathlib import Path
 
 import pytest
 from flask import url_for
 from sqlalchemy.sql import text
 
-from .bootstrap_test import app, post_json, json_of_response
+from .bootstrap_test import app, post_json, json_of_response, get_token
 
 
 from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.utils.env import BACKEND_DIR, DB
+from geonature.utils.errors import GeoNatureError
 
 
 @pytest.mark.usefixtures("client_class")
@@ -89,8 +91,25 @@ class TestAPIMedias:
 
 @pytest.mark.usefixtures("client_class")
 class TestAPIGNCommons:
+    def _create_config_files(self):
+        path_occtax = Path(BACKEND_DIR / "static/mobile/occtax")
+        path_sync = Path(BACKEND_DIR / "static/mobile/sync")
+        try:
+            os.mkdir(str(path_occtax))
+            os.mkdir(str(path_sync))
+        except FileExistsError:
+            print("Already exist")
+        json_content = """
+            {"la": "la"}
+        """
+        for _f in [path_occtax, path_sync]:
+            with open(str(_f / "settings.json"), "w+") as f:
+                f.write(json_content)
+
     def test_get_t_mobile_apps(self):
+        self._create_config_files()
         #  with app code query string must return a dict
+
         query_string = {"app_code": "OCCTAX"}
         response = self.client.get(
             url_for("gn_commons.get_t_mobile_apps"), query_string=query_string
@@ -104,3 +123,23 @@ class TestAPIGNCommons:
         assert response.status_code == 200
         data = json_of_response(response)
         assert type(data) is list
+
+    def test_order_modules(self):
+        token = get_token(self.client, login="admin", password="admin")
+        self.client.set_cookie("/", "token", token)
+        response = self.client.get(url_for("gn_commons.get_modules"))
+        assert response.status_code == 200
+        data = json_of_response(response)
+        assert type(data) is list
+
+        # test order by number
+        assert data[0]["module_code"] == "SYNTHESE"
+        assert data[1]["module_code"] == "OCCTAX"
+
+        # test order by alphabetic
+        current_module = None
+        for module in data[2 : len(data) - 1]:
+            if current_module:
+                assert current_module < module["module_label"]
+            current_module = module["module_label"]
+
