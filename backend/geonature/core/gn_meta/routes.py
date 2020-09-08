@@ -299,7 +299,9 @@ def post_dataset(info_role):
     dataset.modules = modules_obj
     if dataset.id_dataset:
         DB.session.merge(dataset)
+    # add id_digitiser only on creation
     else:
+        dataset.id_digitizer = info_role.id_role
         DB.session.add(dataset)
     DB.session.commit()
     return dataset.as_dict(True)

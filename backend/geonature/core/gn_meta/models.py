@@ -216,7 +216,11 @@ class CruvedHelper(DB.Model):
         return False
 
     def get_object_cruved(
-        self, user_cruved, id_object: int, ids_object_user: list, ids_object_organism: list
+        self,
+        user_cruved,
+        id_object: int,
+        ids_object_user: list,
+        ids_object_organism: list,
     ):
         """
         Return the user's cruved for a Model instance.
@@ -293,6 +297,7 @@ class TDatasets(CruvedHelper):
     meta_update_date = DB.Column(DB.DateTime)
     active = DB.Column(DB.Boolean, default=True)
     validable = DB.Column(DB.Boolean)
+    id_digitizer = DB.Column(DB.Integer)
 
     modules = DB.relationship("TModules", secondary=cor_module_dataset, lazy="select")
 
@@ -462,6 +467,7 @@ class TAcquisitionFramework(CruvedHelper):
             return q
         return list(set([d.id_acquisition_framework for d in q.all()]))
 
+
 @serializable
 class TDatasetDetails(TDatasets):
     """
@@ -513,11 +519,13 @@ class TDatasetDetails(TDatasets):
         ),
     )
 
+
 @serializable
 class TAcquisitionFrameworkDetails(TAcquisitionFramework):
     """
     Class which extends TAcquisitionFramework with nomenclatures relationships
     """
+
     datasets = DB.relationship(TDatasetDetails, lazy="joined")
     nomenclature_territorial_level = DB.relationship(
         TNomenclatures,
