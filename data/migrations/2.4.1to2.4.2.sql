@@ -1247,6 +1247,18 @@
         -- Add module order column
         ALTER TABLE gn_commons.t_modules ADD module_order integer NULL;
 
+        -- add id_digitizer 
+
+        ALTER TABLE gn_meta.t_datasets
+          ADD COLUMN id_digitizer integer;
+        ALTER TABLE ONLY gn_meta.t_datasets
+          ADD CONSTRAINT fk_t_datasets_id_digitizer FOREIGN KEY (id_digitizer) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
+        
+        ALTER TABLE gn_meta.t_acquisition_frameworks
+          ADD COLUMN id_digitizer integer;
+        ALTER TABLE ONLY gn_meta.t_acquisition_frameworks
+          ADD CONSTRAINT fk_t_acquisition_frameworks_id_digitizer FOREIGN KEY (id_digitizer) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
+
     END IF;
    END
  $$ language plpgsql;
