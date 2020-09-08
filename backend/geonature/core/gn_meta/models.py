@@ -181,6 +181,7 @@ class CruvedHelper(DB.Model):
     def user_is_allowed_to(
         self,
         id_object: int,
+        id_role: int,
         id_object_users_actor: list,
         id_object_organism_actor: list,
         level: str,
@@ -191,6 +192,7 @@ class CruvedHelper(DB.Model):
 
             Params:
                 id_object: identifiant de l'objet duquel on contrôle l'accès à la donnée (id_dataset, id_ca)
+                id_role: identifiant de la personne qui demande la route
                 id_object_users_actor (list): identifiant des objects ou l'utilisateur est lui même acteur
                 id_object_organism_actor (list): identifiants des objects ou l'utilisateur ou son organisme sont acteurs
 
@@ -205,7 +207,7 @@ class CruvedHelper(DB.Model):
             return True
 
         # Si l'utilisateur est propriétaire de la données
-        if id_object in id_object_users_actor:
+        if id_object in id_object_users_actor or self.id_digitizer == id_role:
             return True
 
         # Si l'utilisateur appartient à un organisme
@@ -219,6 +221,7 @@ class CruvedHelper(DB.Model):
         self,
         user_cruved,
         id_object: int,
+        id_role: int,
         ids_object_user: list,
         ids_object_organism: list,
     ):
@@ -228,6 +231,7 @@ class CruvedHelper(DB.Model):
         params:
             - user_cruved: object retourner by cruved_for_user_in_app(user) {'C': '2', 'R':'3' etc...}
             - id_object (int): id de l'objet sur lqurqul on veut vérifier le CRUVED (self.id_dataset/ self.id_ca)
+            - id_role: identifiant de la personne qui demande la route
             - id_object_users_actor (list): identifiant des objects ou l'utilisateur est lui même acteur
             - id_object_organism_actor (list): identifiants des objects ou l'utilisateur ou son organisme sont acteurs    
 

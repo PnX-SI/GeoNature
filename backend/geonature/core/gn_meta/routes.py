@@ -153,7 +153,11 @@ def get_af_and_ds_metadata(info_role):
     for af in afs:
         af_dict = af.as_dict()
         af_dict["cruved"] = af.get_object_cruved(
-            user_cruved, af.id_acquisition_framework, ids_afs_user, ids_afs_org,
+            user_cruved=user_cruved,
+            id_object=af.id_acquisition_framework,
+            id_role=info_role.id_role,
+            ids_object_user=ids_afs_user,
+            ids_object_organism=ids_afs_org,
         )
         af_dict["datasets"] = []
         afs_dict.append(af_dict)
@@ -162,7 +166,11 @@ def get_af_and_ds_metadata(info_role):
     for d in datasets:
         dataset_dict = d.as_dict()
         dataset_dict["cruved"] = d.get_object_cruved(
-            user_cruved, d.id_dataset, ids_dataset_user, ids_dataset_organisms,
+            user_cruved=user_cruved,
+            id_object=d.id_dataset,
+            id_role=info_role.id_role,
+            ids_object_user=ids_dataset_user,
+            ids_object_organism=ids_dataset_organisms,
         )
         af_of_dataset = get_af_from_id(d.id_acquisition_framework, afs_dict)
         af_of_dataset["datasets"].append(dataset_dict)
@@ -549,6 +557,7 @@ def get_acquisition_frameworks_metadata(info_role):
         af_dict["cruved"] = af.get_object_cruved(
             user_cruved=user_cruved,
             id_object=af.id_acquisition_framework,
+            id_role=info_role.id_role,
             ids_object_user=id_afs_user,
             ids_object_organism=id_afs_org,
         )
