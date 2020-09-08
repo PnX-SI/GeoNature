@@ -185,6 +185,7 @@ INSERT INTO pr_occtax.t_releves_occtax (
   observers_txt,
   id_nomenclature_tech_collect_campanule,
   id_nomenclature_grp_typ,
+  id_nomenclature_geo_object_nature,
   date_min,
   date_max,
   hour_min,
@@ -204,6 +205,7 @@ INSERT INTO pr_occtax.t_releves_occtax (
 'test',
 ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),
 ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'OBS'),
+ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO', 'NSP'),
 '2017-01-01',
 '2017-01-01',
 '12:05:02',
@@ -216,8 +218,47 @@ ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'OBS'),
 '0101000020E61000000000000000001A40CDCCCCCCCC6C4640',
 10
 )
-,(2,1,1,NULL,ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'OBS'),'2017-01-08','2017-01-08','20:00:00','23:00:00',1600,1600,'web','Autre exemple test','01010000206A0800002E988D737BCC2D41ECFA38A659805841','0101000020E61000000000000000001A40CDCCCCCCCC6C4640',100)
-,(3,1,2,'Agent test',ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'OBS'),'2017-01-08','2017-01-08','20:00:00','23:00:00',1600,1600,'web','Autre exemple test','01010000206A0800002E988D737BCC2D41ECFA38A659805841','0101000020E61000000000000000001A40CDCCCCCCCC6C4640',100);
+,(
+   2
+  ,1
+  ,1
+  ,NULL
+  ,ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),
+  ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'OBS'),
+  ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO', 'NSP'),
+  '2017-01-08',
+  '2017-01-08',
+  '20:00:00',
+  '23:00:00',
+  1600,
+  1600,
+  'web',
+  'Autre exemple test',
+  '01010000206A0800002E988D737BCC2D41ECFA38A659805841',
+  '0101000020E61000000000000000001A40CDCCCCCCCC6C4640',
+  100
+)
+,
+(
+  3,
+  1,
+  2,
+  'Agent test',
+  ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),
+  ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'OBS'),
+  ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO', 'NSP'),
+  '2017-01-08',
+  '2017-01-08',
+  '20:00:00',
+  '23:00:00',
+  1600,
+  1600,
+  'web',
+  'Autre exemple test',
+  '01010000206A0800002E988D737BCC2D41ECFA38A659805841',
+  '0101000020E61000000000000000001A40CDCCCCCCCC6C4640',
+  100
+);
 SELECT pg_catalog.setval('pr_occtax.t_releves_occtax_id_releve_occtax_seq', (SELECT max(id_releve_occtax)+1 FROM pr_occtax.t_releves_occtax), true);
 
 INSERT INTO pr_occtax.t_occurrences_occtax  (
@@ -269,7 +310,6 @@ VALUES
     ref_nomenclatures.get_id_nomenclature('STATUT_BIO', '1') ,
     ref_nomenclatures.get_id_nomenclature('NATURALITE', '1'),
     ref_nomenclatures.get_id_nomenclature('PREUVE_EXIST', '0'),
-    ref_nomenclatures.get_id_nomenclature('NIV_PRECIS', '0'),
     ref_nomenclatures.get_id_nomenclature('STATUT_OBS', 'Pr'),
     ref_nomenclatures.get_id_nomenclature('DEE_FLOU', 'NON'),
     'Gil D',
@@ -290,7 +330,6 @@ VALUES
     ref_nomenclatures.get_id_nomenclature('STATUT_BIO', '1'),
     ref_nomenclatures.get_id_nomenclature('NATURALITE', '1'),
     ref_nomenclatures.get_id_nomenclature('PREUVE_EXIST', '0'),
-    ref_nomenclatures.get_id_nomenclature('NIV_PRECIS', '0'),
     ref_nomenclatures.get_id_nomenclature('STATUT_OBS', 'Pr'),
     ref_nomenclatures.get_id_nomenclature('DEE_FLOU', 'NON'),
   'Donovan M',
@@ -397,3 +436,14 @@ INSERT INTO gn_synthese.synthese (id_dataset, nom_cite, date_min, date_max, the_
 INSERT INTO gn_commons.t_mobile_apps(app_code, relative_path_apk) VALUES
 ('OCCTAX', 'static/mobile/occtax/my_apk.apk'),
 ('SYNC', 'static/mobile/occtax/my_apk2.apk');
+
+
+-- ajout order number;
+
+UPDATE gn_commons.t_modules 
+SET module_order = 1 
+WHERE module_code = 'SYNTHESE';
+
+UPDATE gn_commons.t_modules 
+SET module_order = 2
+WHERE module_code = 'OCCTAX';

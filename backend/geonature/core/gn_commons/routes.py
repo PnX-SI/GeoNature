@@ -16,7 +16,12 @@ from utils_flask_sqla.response import json_resp, json_resp_accept_empty_list
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 
-from geonature.utils.errors import ConfigError, GNModuleInstallError, GeoNatureError, GeonatureApiError
+from geonature.utils.errors import (
+    ConfigError,
+    GNModuleInstallError,
+    GeoNatureError,
+    GeonatureApiError,
+)
 
 
 routes = Blueprint("gn_commons", __name__)
@@ -35,6 +40,7 @@ def get_modules(info_role):
     q = DB.session.query(TModules)
     if "exclude" in params:
         q = q.filter(TModules.module_code.notin_(params.getlist("exclude")))
+    q = q.order_by(TModules.module_order.asc()).order_by(TModules.module_label.asc())
     modules = q.all()
     allowed_modules = []
     for mod in modules:
@@ -69,7 +75,11 @@ def get_medias(uuid_attached_row):
         .. :quickref: Commons;
     """
 
-    res = DB.session.query(TMedias).filter(TMedias.uuid_attached_row == uuid_attached_row).all()
+    res = (
+        DB.session.query(TMedias)
+        .filter(TMedias.uuid_attached_row == uuid_attached_row)
+        .all()
+    )
 
     return [r.as_dict() for r in (res or [])]
 
@@ -110,11 +120,14 @@ def insert_or_update_media(id_media=None):
         formData = dict(request.form)
         for key in formData:
             data[key] = formData[key]
-            if data[key] in ['null', 'undefined']:
-                data[key]=None
+            if data[key] in ["null", "undefined"]:
+                data[key] = None
             if isinstance(data[key], list):
                 data[key] = data[key][0]
-            if key in ['id_table_location', 'id_nomenclature_media_type', 'id_media'] and data[key] is not None:
+            if (
+                key in ["id_table_location", "id_nomenclature_media_type", "id_media"]
+                and data[key] is not None
+            ):
                 data[key] = int(data[key])
             if data[key] == "true":
                 data[key] = True
@@ -132,7 +145,6 @@ def insert_or_update_media(id_media=None):
     except GeoNatureError as e:
         return str(e), 400
 
-
     TMediumRepository.sync_medias()
 
     return m.as_dict()
@@ -146,7 +158,6 @@ def delete_media(id_media):
 
         .. :quickref: Commons;
     """
-
 
     TMediaRepository(id_media=id_media).delete()
 
@@ -245,11 +256,12 @@ def get_t_mobile_apps():
 
 # Table Location
 
+
 @routes.route("/get_id_table_location/<string:schema_dot_table>", methods=["GET"])
 @json_resp
 # schema_dot_table gn_commons.t_modules
 def api_get_id_table_location(schema_dot_table):
 
-    schema_name = schema_dot_table.split('.')[0]
-    table_name = schema_dot_table.split('.')[1]
+    schema_name = schema_dot_table.split(".")[0]
+    table_name = schema_dot_table.split(".")[1]
     return get_table_location_id(schema_name, table_name)
