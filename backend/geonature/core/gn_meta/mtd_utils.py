@@ -144,6 +144,12 @@ def parse_jdd_xml(xml):
         terrestrial_domain = get_tag_content(jdd, "domaineTerrestre")
         marine_domain = get_tag_content(jdd, "domaineMarin")
         data_type = get_tag_content(jdd, "typeDonnees")
+        attributs_additionnels_node = jdd.find(namespace + "attributsAdditionnels")
+        id_digitizer = None
+
+        for attr in attributs_additionnels_node:
+            if get_tag_content(attr, "nomAttribut") == "ID_CREATEUR":
+                id_digitizer = get_tag_content(attr, "valeurAttribut")
 
         current_jdd = {
             "unique_dataset_id": jdd_uuid,
@@ -154,6 +160,7 @@ def parse_jdd_xml(xml):
             "terrestrial_domain": json.loads(terrestrial_domain),
             "marine_domain": json.loads(marine_domain),
             "id_nomenclature_data_type": data_type,
+            "id_digitizer": id_digitizer,
         }
 
         jdd_list.append(current_jdd)
