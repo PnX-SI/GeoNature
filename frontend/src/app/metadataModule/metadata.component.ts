@@ -4,10 +4,13 @@ import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.serv
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { Router, NavigationExtras } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import {NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
 
 import { DataService } from "../../../../external_modules/import/frontend/app/services/data.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
+import { FormArray } from '@angular/forms';
+
 
 export class MetadataPaginator extends MatPaginatorIntl {
   constructor() {
@@ -40,9 +43,9 @@ export class MetadataPaginator extends MatPaginatorIntl {
 
   ]
 })
-export class MetadataComponent /* extends ImportComponent */ implements OnInit {
+export class MetadataComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
-
+  model: NgbDateStruct;
   datasets = [];
   acquisitionFrameworks = [];
   tempAF = [];
@@ -50,6 +53,8 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
   public empty: boolean = false;
   expandAccordions = false;
   private researchTerm: string = '';
+  public organisms: Array<any>;
+  public roles: Array<any>;
 
   pageSize: number = 10;
   activePage: number = 0;
@@ -70,6 +75,12 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
   ngOnInit() {
     this.getAcquisitionFrameworksAndDatasets();
     this.getImportList();
+    this._dfs.getOrganisms().subscribe(data => {
+      this.organisms = data;
+    });
+    this._dfs.getRoles({'group': false}).subscribe(data => {
+      this.roles = data;
+    });
   }
 
   //recuperation cadres d'acquisition
