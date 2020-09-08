@@ -232,9 +232,11 @@
         ;
 
         ALTER TABLE pr_occtax.t_releves_occtax
-          RENAME COLUMN id_nomenclature_obs_technique TO id_nomenclature_tech_collect_campanule,
           ALTER column id_nomenclature_tech_collect_campanule DROP NOT NULL
         ;
+        ALTER TABLE pr_occtax.t_releves_occtax
+          RENAME COLUMN id_nomenclature_obs_technique TO id_nomenclature_tech_collect_campanule;
+
 
         ALTER TABLE pr_occtax.t_occurrences_occtax
           --delete sensi
