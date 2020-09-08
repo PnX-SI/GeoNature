@@ -181,7 +181,6 @@ class CruvedHelper(DB.Model):
     def user_is_allowed_to(
         self,
         id_object: int,
-        id_role: int,
         id_object_users_actor: list,
         id_object_organism_actor: list,
         level: str,
@@ -207,7 +206,7 @@ class CruvedHelper(DB.Model):
             return True
 
         # Si l'utilisateur est propriétaire de la données
-        if id_object in id_object_users_actor or self.id_digitizer == id_role:
+        if id_object in id_object_users_actor:
             return True
 
         # Si l'utilisateur appartient à un organisme
@@ -221,7 +220,6 @@ class CruvedHelper(DB.Model):
         self,
         user_cruved,
         id_object: int,
-        id_role: int,
         ids_object_user: list,
         ids_object_organism: list,
     ):
@@ -239,7 +237,7 @@ class CruvedHelper(DB.Model):
         """
         return {
             action: self.user_is_allowed_to(
-                id_object, id_role, ids_object_user, ids_object_organism, level
+                id_object, ids_object_user, ids_object_organism, level
             )
             for action, level in user_cruved.items()
         }
@@ -337,21 +335,29 @@ class TDatasets(CruvedHelper):
 
     @staticmethod
     def get_user_datasets(user, only_query=False, only_user=False):
-        """get the dataset(s) where the user is actor (himself or with its organism - only himelsemf id only_use=True)
+        """get the dataset(s) where the user is actor (himself or with its organism - only himelsemf id only_use=True) or digitizer
             param: 
               - user from TRole model
               - only_query: boolean (return the query not the id_datasets allowed if true)
               - only_user: boolean: return only the dataset where user himself is actor (not with its organoism)
 
             return: a list of id_dataset or a query"""
-        q = DB.session.query(CorDatasetActor)
+        q = DB.session.query(TDatasets).outerjoin(
+            CorDatasetActor, CorDatasetActor.id_dataset == TDatasets.id_dataset
+        )
         if user.id_organisme is None or only_user:
-            q = q.filter(CorDatasetActor.id_role == user.id_role)
+            q = q.filter(
+                or_(
+                    CorDatasetActor.id_role == user.id_role,
+                    TDatasets.id_digitizer == user.id_role,
+                )
+            )
         else:
             q = q.filter(
                 or_(
                     CorDatasetActor.id_organism == user.id_organisme,
                     CorDatasetActor.id_role == user.id_role,
+                    TDatasets.id_digitizer == user.id_role,
                 )
             )
         if only_query:
@@ -452,21 +458,31 @@ class TAcquisitionFramework(CruvedHelper):
 
     @staticmethod
     def get_user_af(user, only_query=False, only_user=False):
-        """get the af(s) where the user is actor (himself or with its organism - only himelsemf id only_use=True)
+        """get the af(s) where the user is actor (himself or with its organism - only himelsemf id only_use=True) or digitizer
             param: 
               - user from TRole model
               - only_query: boolean (return the query not the id_datasets allowed if true)
               - only_user: boolean: return only the dataset where user himself is actor (not with its organoism)
 
             return: a list of id_dataset or a query"""
-        q = DB.session.query(CorAcquisitionFrameworkActor)
+        q = DB.session.query(TAcquisitionFramework).outerjoin(
+            CorAcquisitionFrameworkActor,
+            CorAcquisitionFrameworkActor.id_acquisition_framework
+            == TAcquisitionFramework.id_acquisition_framework,
+        )
         if user.id_organisme is None or only_user:
-            q = q.filter(CorAcquisitionFrameworkActor.id_role == user.id_role)
+            q = q.filter(
+                or_(
+                    CorAcquisitionFrameworkActor.id_role == user.id_role,
+                    TAcquisitionFramework.id_digitizer == user.id_role,
+                )
+            )
         else:
             q = q.filter(
                 or_(
                     CorAcquisitionFrameworkActor.id_organism == user.id_organisme,
                     CorAcquisitionFrameworkActor.id_role == user.id_role,
+                    TAcquisitionFramework.id_digitizer == user.id_role,
                 )
             )
         if only_query:
