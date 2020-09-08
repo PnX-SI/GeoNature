@@ -441,9 +441,9 @@ INSERT INTO gn_commons.t_mobile_apps(app_code, relative_path_apk) VALUES
 -- ajout order number;
 
 UPDATE gn_commons.t_modules 
-SET order_module = 1 
+SET module_order = 1 
 WHERE module_code = 'SYNTHESE';
 
 UPDATE gn_commons.t_modules 
-SET order_module = 2
+SET module_order = 2
 WHERE module_code = 'OCCTAX';

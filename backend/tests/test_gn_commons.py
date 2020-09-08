@@ -124,7 +124,7 @@ class TestAPIGNCommons:
         data = json_of_response(response)
         assert type(data) is list
 
-    def test_order_modules(self):
+    def test_module_orders(self):
         token = get_token(self.client, login="admin", password="admin")
         self.client.set_cookie("/", "token", token)
         response = self.client.get(url_for("gn_commons.get_modules"))

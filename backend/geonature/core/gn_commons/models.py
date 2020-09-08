@@ -69,7 +69,7 @@ class TModules(DB.Model):
     active_frontend = DB.Column(DB.Boolean)
     active_backend = DB.Column(DB.Boolean)
     module_doc_url = DB.Column(DB.Unicode)
-    order_module = DB.Column(DB.Integer)
+    module_order = DB.Column(DB.Integer)
 
 
 @serializable
