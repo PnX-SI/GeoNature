@@ -1,6 +1,7 @@
 import pytest
 
 from flask import url_for, current_app
+from sqlalchemy.sql import func
 
 from .bootstrap_test import app, post_json, json_of_response, get_token
 
@@ -35,7 +36,7 @@ class TestGnMeta:
         dataset_list = json_of_response(response)
         assert (
             response.status_code == 200
-            and len(dataset_list["data"]) == 1
+            and len(dataset_list["data"]) == 2
             and dataset_list["data"][0]["id_dataset"] == 2
         )
 
@@ -54,38 +55,38 @@ class TestGnMeta:
             and dataset_list["data"][0]["id_dataset"] == 1
         )
 
-    def test_mtd_interraction(self):
-        from geonature.core.gn_meta.mtd_utils import (
-            post_jdd_from_user,
-            get_jdd_by_user_id,
-            parse_jdd_xml,
-        )
+    # def test_mtd_interraction(self):
+    #     from geonature.core.gn_meta.mtd_utils import (
+    #         post_jdd_from_user,
+    #         get_jdd_by_user_id,
+    #         parse_jdd_xml,
+    #     )
 
-        """
-        Test du web service MTD
-        A partir d'un utilisateur renvoyé par le CAS
-        on insert l'utilisateur 'demo.geonature' et son organisme s'il existe pas
-        puis on poste les CA et JDD renvoyé à le WS MTD
-        """
-        user = {
-            "id_role": 10991,
-            "identifiant": "test.mtd",
-            "nom_role": "test_mtd",
-            "prenom_role": "test_mtd",
-            "id_organisme": 104,
-        }
+    #     """
+    #     Test du web service MTD
+    #     A partir d'un utilisateur renvoyé par le CAS
+    #     on insert l'utilisateur 'demo.geonature' et son organisme s'il existe pas
+    #     puis on poste les CA et JDD renvoyé à le WS MTD
+    #     """
+    #     user = {
+    #         "id_role": 10991,
+    #         "identifiant": "test.mtd",
+    #         "nom_role": "test_mtd",
+    #         "prenom_role": "test_mtd",
+    #         "id_organisme": 104,
+    #     }
 
-        organism = {"id_organisme": 104, "nom_organisme": "test"}
-        resp = users.insert_organism(organism)
-        assert resp.status_code == 200
+    #     organism = {"id_organisme": 104, "nom_organisme": "test"}
+    #     resp = users.insert_organism(organism)
+    #     assert resp.status_code == 200
 
-        resp = users.insert_role(user)
-        # id_role 10 = id_socle 1 in test
-        users.insert_in_cor_role(10, user["id_role"])
-        assert resp.status_code == 200
+    #     resp = users.insert_role(user)
+    #     # id_role 10 = id_socle 1 in test
+    #     users.insert_in_cor_role(10, user["id_role"])
+    #     assert resp.status_code == 200
 
-        jdds = post_jdd_from_user(id_user=10991, id_organism=104)
-        assert len(jdds) >= 1
+    #     jdds = post_jdd_from_user(id_user=10991, id_organism=104)
+    #     assert len(jdds) >= 1
 
     def test_post_and_update_dataset(self):
         token = get_token(self.client, login="admin", password="admin")
@@ -109,12 +110,12 @@ class TestGnMeta:
             "dataset_shortname": "a",
             "id_acquisition_framework": 1,
             "id_dataset": 5,
-            "id_nomenclature_collecting_method": 404,
-            "id_nomenclature_data_origin": 77,
-            "id_nomenclature_data_type": 327,
-            "id_nomenclature_dataset_objectif": 415,
+            "id_nomenclature_collecting_method": 405,
+            "id_nomenclature_data_origin": 78,
+            "id_nomenclature_data_type": 326,
+            "id_nomenclature_dataset_objectif": 417,
             "id_nomenclature_resource_type": 324,
-            "id_nomenclature_source_status": 73,
+            "id_nomenclature_source_status": 77,
             "keywords": None,
             "marine_domain": False,
             "terrestrial_domain": True,
@@ -172,17 +173,17 @@ class TestGnMeta:
             "cor_af_actor": [
                 {
                     "id_cafa": None,
-                    "id_nomenclature_actor_role": 365,
+                    "id_nomenclature_actor_role": 404,
                     "id_organism": 0,
                     "id_role": None,
                 }
             ],
-            "cor_objectifs": [359],
+            "cor_objectifs": [447],
             "cor_volets_sinp": [],
             "ecologic_or_geologic_target": "aaaa",
             "id_acquisition_framework": None,
             "id_nomenclature_financing_type": 392,
-            "id_nomenclature_territorial_level": 352,
+            "id_nomenclature_territorial_level": 361,
             "is_parent": False,
             "keywords": "ttt",
             "target_description": None,

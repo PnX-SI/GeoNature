@@ -234,28 +234,7 @@ def get_dataset_details(info_role, id_dataset):
     :returns: dict<TDatasetDetails>
     """
 
-    dataset = get_dataset_details_dict(id_dataset)
-
-    if info_role.value_filter != "3":
-        try:
-            if info_role.value_filter == "1":
-                actors = [cor["id_role"] for cor in dataset["cor_dataset_actor"]]
-                assert info_role.id_role in actors
-            elif info_role.value_filter == "2":
-                actors = [cor["id_role"] for cor in dataset["cor_dataset_actor"]]
-                organisms = [cor["id_organism"] for cor in dataset["cor_dataset_actor"]]
-                assert (
-                    info_role.id_role in actors or info_role.id_organisme in organisms
-                )
-        except AssertionError:
-            raise InsufficientRightsError(
-                ('User "{}" cannot read this current dataset').format(
-                    info_role.id_role
-                ),
-                403,
-            )
-
-    return dataset
+    return get_dataset_details_dict(id_dataset, info_role)
 
 
 @routes.route("/upload_canvas", methods=["POST"])
@@ -703,6 +682,7 @@ def post_acquisition_framework(info_role):
     if af.id_acquisition_framework:
         DB.session.merge(af)
     else:
+        af.id_digitizer = info_role.id_role
         DB.session.add(af)
     DB.session.commit()
     return af.as_dict()

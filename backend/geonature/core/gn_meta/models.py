@@ -239,7 +239,7 @@ class CruvedHelper(DB.Model):
         """
         return {
             action: self.user_is_allowed_to(
-                id_object, ids_object_user, ids_object_organism, level
+                id_object, id_role, ids_object_user, ids_object_organism, level
             )
             for action, level in user_cruved.items()
         }
