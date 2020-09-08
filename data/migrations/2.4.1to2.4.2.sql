@@ -1236,7 +1236,7 @@
         DROP FUNCTION pr_occtax.fct_tri_synthese_insert_cor_role_releve();
 
         -- Add module order column
-        ALTER TABLE gn_commons.t_modules ADD order_module integer NULL;
+        ALTER TABLE gn_commons.t_modules ADD module_order integer NULL;
 
     END IF;
    END
