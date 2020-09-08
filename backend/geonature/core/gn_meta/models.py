@@ -385,6 +385,8 @@ class TAcquisitionFramework(CruvedHelper):
     ecologic_or_geologic_target = DB.Column(DB.Unicode)
     acquisition_framework_parent_id = DB.Column(DB.Integer)
     is_parent = DB.Column(DB.Boolean)
+    id_digitizer = DB.Column(DB.Integer)
+
     acquisition_framework_start_date = DB.Column(DB.DateTime)
     acquisition_framework_end_date = DB.Column(DB.DateTime)
 
