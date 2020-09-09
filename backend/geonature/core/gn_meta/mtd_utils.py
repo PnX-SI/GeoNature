@@ -195,6 +195,35 @@ def parse_jdd_xml(xml):
     return jdd_list
 
 
+def create_cor_af(actors, new_af):
+    for act in actors:
+        org = (
+            DB.session.query(BibOrganismes)
+            .filter(BibOrganismes.nom_organisme == act["organism"])
+            .one_or_none()
+        )
+
+        org.nom_organisme
+        if not org:
+            org = BibOrganismes(**{"nom_organisme": act["organism"]})
+            DB.session.add(org)
+            DB.session.commit()
+
+        dict_cor_af = {
+            "id_organism": org.id_organisme,
+            "id_nomenclature_actor_role": func.ref_nomenclatures.get_id_nomenclature(
+                "ROLE_ACTEUR", act["actor_role"]
+            ),
+        }
+
+        # if new_af.id_acquisition_framework:
+        #     dict_cor_af["id_acquisition_framework"] = new_af.id_acquisition_framework
+
+        cor_actor = CorAcquisitionFrameworkActor(**dict_cor_af)
+
+        new_af.cor_af_actor.append(cor_actor)
+
+
 def post_acquisition_framework(uuid=None, id_user=None, id_organism=None):
     """ 
         Post an acquisition framwork from MTD XML
@@ -214,14 +243,8 @@ def post_acquisition_framework(uuid=None, id_user=None, id_organism=None):
         id_acquisition_framework = TAcquisitionFramework.get_id(uuid)
         # if the CA already exist in the DB
         if id_acquisition_framework:
-            # check if actor role not already exist for this CA
-            # actor_role = CorAcquisitionFrameworkActor.get_actor(
-            #     id_acquisition_framework=id_acquisition_framework,
-            #     id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
-            #         "ROLE_ACTEUR", "1"
-            #     ),
-            #     id_role=id_user,
-            # )
+            # delete cor_af_actor
+            new_af.id_acquisition_framework = id_acquisition_framework
 
             delete_q = CorAcquisitionFrameworkActor.__table__.delete().where(
                 CorAcquisitionFrameworkActor.id_acquisition_framework
@@ -229,91 +252,12 @@ def post_acquisition_framework(uuid=None, id_user=None, id_organism=None):
             )
             DB.session.execute(delete_q)
             DB.session.commit()
-            for act in actors:
-                org = (
-                    DB.session.query(BibOrganismes)
-                    .filter(BibOrganismes.nom_organisme == act["organism"])
-                    .one_or_none()
-                )
-                print("Orgue")
-                print(org)
-                org.nom_organisme
-                if not org:
-                    print("ADD")
-                    org = BibOrganismes(**{"nom_organisme": act["organism"]})
-                    DB.session.add(org)
-                    DB.session.commit()
-
-                cor_actor = CorAcquisitionFrameworkActor(
-                    **{
-                        "id_acquisition_framework": id_acquisition_framework,
-                        "id_organism": org.id_organisme,
-                        "id_nomenclature_actor_role": func.ref_nomenclatures.get_id_nomenclature(
-                            "ROLE_ACTEUR", act["actor_role"]
-                        ),
-                    }
-                )
-                print(cor_actor)
-                if (
-                    DB.session.query(BibOrganismes).filter_by(
-                        unique_acquisition_framework_id=id_acquisition_framework
-                    )
-                    is not None
-                ):
-                    new_af.cor_af_actor.append(cor_actor)
+            create_cor_af(actors, new_af)
             DB.session.merge(new_af)
-
-            # # if no actor push it
-            # if actor_role is None:
-            #     actor = CorAcquisitionFrameworkActor(
-            #         id_role=id_user,
-            #         id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
-            #             "ROLE_ACTEUR", "1"
-            #         ),
-            #     )
-            #     new_af.cor_af_actor.append(actor)
-
-            # # # check if actor organism not already exist for this CA
-            # actor_organism = None
-            # if id_organism:
-            #     actor_organism = CorAcquisitionFrameworkActor.get_actor(
-            #         id_acquisition_framework=id_acquisition_framework,
-            #         id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
-            #             "ROLE_ACTEUR", "1"
-            #         ),
-            #         id_organism=id_organism,
-            #     )
-            #     if actor_organism is None:
-            #         organism = CorAcquisitionFrameworkActor(
-            #             id_organism=id_organism,
-            #             id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
-            #                 "ROLE_ACTEUR", "1"
-            #             ),
-            #         )
-            #         new_af.cor_af_actor.append(organism)
-
-            # # finnaly merge the CA
-            # new_af.id_acquisition_framework = id_acquisition_framework
-            # DB.session.merge(new_af)
 
         # its a new AF
         else:
-            actor = CorAcquisitionFrameworkActor(
-                id_role=id_user,
-                id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
-                    "ROLE_ACTEUR", "1"
-                ),
-            )
-            new_af.cor_af_actor.append(actor)
-            if id_organism:
-                organism = CorAcquisitionFrameworkActor(
-                    id_organism=id_organism,
-                    id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
-                        "ROLE_ACTEUR", "1"
-                    ),
-                )
-                new_af.cor_af_actor.append(organism)
-
+            create_cor_af(actors, new_af)
             # Add the new CA
             DB.session.add(new_af)
         # try to commit
