@@ -235,6 +235,14 @@ class TMediaRepository():
         '''
             Upload des fichiers sur le serveur
         '''
+
+        # SI c'est une modification =>
+        #       suppression de l'ancien fichier
+        #       suppression des thumbnails
+        if not self.new:
+            self.media.remove_file()
+            self.media.remove_thumbnails()
+
         # @TODO récupérer les exceptions
         filepath = upload_file(
             self.file,
@@ -244,9 +252,6 @@ class TMediaRepository():
                 file_name=self.file.filename
             )
         )
-
-        # If id_media : remove thumnails
-        self.remove_thumbnails()
 
         return filepath
 
@@ -302,26 +307,6 @@ class TMediaRepository():
             if image.mode in ("RGBA", "P"):
                 image = image.convert('RGB')
             image.save(self.absolute_file_path(thumbnail_height), "JPEG")
-
-    def remove_thumbnails(self):
-        if not self.has_thumbnails():
-            return
-
-        thumbnail_dir = os.path.join(
-            current_app.config['BASE_DIR'],
-            current_app.config['UPLOAD_FOLDER'],
-            "thumbnails",
-            str(self.media.id_table_location)
-        )
-
-        # remove file with media_id
-        pattern = "{}_thumbnail_[0-9]+.jpg".format(self.media.id_media)
-        files = [
-            f for f in os.listdir(thumbnail_dir)
-            if re.match(pattern, f)
-        ]
-        for f in files:
-            remove_file(os.path.join(thumbnail_dir, f))
 
     def delete(self):
         # Note si SQLALCHEMY_TRACK_MODIFICATIONS  = true alors suppression du fichier gérée automatiquement
