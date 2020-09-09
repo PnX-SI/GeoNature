@@ -117,6 +117,8 @@ class TMedias(DB.Model):
             self.remove_thumbnails()
 
     def remove_file(self):
+        if not self.media_path:
+            return
         initial_path = self.media_path
         (inv_file_name, inv_file_path) = initial_path[::-1].split("/", 1)
         file_name = inv_file_name[::-1]
