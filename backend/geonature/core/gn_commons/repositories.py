@@ -80,6 +80,13 @@ class TMediaRepository():
         else:
             self.data['isFile'] = False
             self.media_data['media_path'] = None
+            if not (
+                (self.media_data['media_url'] == self.data['media_url'])
+                and
+                self.new
+            ):
+                # le media à changé
+                self.media.remove_thumbnails()
             self.media_data['media_url'] = self.data['media_url']
             self.test_url()
 
