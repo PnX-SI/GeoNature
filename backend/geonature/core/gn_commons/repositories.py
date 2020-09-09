@@ -116,7 +116,7 @@ class TMediaRepository():
             for k in self.media_data:
                 self.media_data[k] = getattr(self.media, k)
         except IntegrityError as exp:
-            # @TODO A revoir avec les nouvelles contrainte
+            # @TODO A revoir avec les nouvelles contraintes
             DB.session.rollback()
             if 'check_entity_field_exist' in exp.args[0]:
                 raise Exception(
@@ -152,6 +152,7 @@ class TMediaRepository():
 
         return True
 
+
     def test_header_content_type(self, content_type):
         media_type = self.media_type()
         if media_type == 'Photo' and 'image' not in content_type:
@@ -171,25 +172,24 @@ class TMediaRepository():
 
         return True
 
+
     def test_url(self):
-        print('test url', self.data['media_url'])
+
         try:
             res=requests.head(url=self.data['media_url'])
 
-
             media_type = self.media_type()
 
-            if not res.status_code in [200, 302, 304]:
+            if not ((res.status_code >= 200) and (res.status_code < 400)):
                 raise GeoNatureError(
                     'la réponse est différente de 200 ({})'
                     .format(res.status_code
                     )
                 )
 
-            print(res.headers['Content-type'])
             if not self.test_header_content_type(res.headers['Content-type']):
                 raise GeoNatureError(
-                    'le format du liens ({}) ne corespont pas au type de média choisi ({})'
+                    "le format du lien ({}) ne correspond pas au type de média choisi ({}). Si le media est de type image essayer de récupérer l'adresse de l'image (clique droit sur l'image : récupérer l'adresse de l'image)"
                     .format(
                         res.headers['Content-type'],
                         self.media_type()
@@ -222,12 +222,20 @@ class TMediaRepository():
             file_path = os.path.join(
                 current_app.config['UPLOAD_FOLDER'],
                 str(self.media.id_table_location),
-                "{}_{}".format(self.media.id_media, self.media.media_url.split('/')[-1])
+                "{}.jpg".format(self.media.id_media)
             )
 
         if(thumbnail_height):
-            file_path = file_path.replace('.', '_thumbnail_{}.'.format(thumbnail_height))
-            file_path = file_path.replace(current_app.config['UPLOAD_FOLDER'], current_app.config['UPLOAD_FOLDER'] + '/thumbnails')
+            file_path = os.path.join(
+                current_app.config['UPLOAD_FOLDER'],
+                'thumbnails',
+                str(self.media.id_table_location),
+                "{}_thumbnail_{}.jpg".format(
+                    self.media.id_media,
+                    thumbnail_height
+                )
+            )
+
         return file_path
 
 
@@ -259,7 +267,7 @@ class TMediaRepository():
 
     def get_image(self):
         image = None
-        print(self.media.media_path)
+
         if self.media.media_path:
             image = Image.open(self.absolute_file_path())
 
@@ -291,14 +299,14 @@ class TMediaRepository():
 
 
         for thumbnail_height in thumbnail_sizes:
-
             width = thumbnail_height / image.size[1] * image.size[0]
             image.thumbnail((width, thumbnail_height))
             pathlib.Path(
                 "/".join(self.absolute_file_path(thumbnail_height).split('/')[:-1])
             ).mkdir(parents=True, exist_ok=True)
-            print(self.absolute_file_path(thumbnail_height))
-            image.save(self.absolute_file_path(thumbnail_height))
+            if image.mode in ("RGBA", "P"):
+                image = image.convert('RGB')
+            image.save(self.absolute_file_path(thumbnail_height), "JPEG")
 
     def delete(self):
         # Note si SQLALCHEMY_TRACK_MODIFICATIONS  = true alors suppression du fichier gérée automatiquement

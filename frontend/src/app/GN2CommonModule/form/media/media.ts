@@ -73,12 +73,11 @@ class Media {
     } else if (this.media_url) {
       const v_url = this.media_url.split('/')
       const fileName = v_url[v_url.length - 1];
-      filePath = `${AppConfig.UPLOAD_FOLDER}/${this.id_table_location}/${this.id_media}_${fileName}`;
+      filePath = `${AppConfig.UPLOAD_FOLDER}/${this.id_table_location}/${this.id_media}`;
     }
 
-    if (thumbnailHeight && filePath) {
-      filePath = filePath.replace(AppConfig.UPLOAD_FOLDER, `${AppConfig.UPLOAD_FOLDER}/thumbnails`);
-      filePath = filePath.replace('.', `_thumbnail_${thumbnailHeight}.`);
+    if (thumbnailHeight) {
+      filePath = `${AppConfig.UPLOAD_FOLDER}/thumbnails/${this.id_table_location}/${this.id_media}_thumbnail_${thumbnailHeight}.jpg`
     }
 
     return filePath;
