@@ -26,8 +26,6 @@ import os
 
 import datetime
 
-thumbnail_sizes = [400, 200, 100, 50]
-
 class TMediaRepository():
     '''
         Reposity permettant de manipuler un objet média
@@ -42,7 +40,7 @@ class TMediaRepository():
 
     def __init__(self, data=None, file=None, id_media=None):
         self.data = data or {}
-
+        self.thumbnail_sizes = current_app.config['MEDIAS']['THUMBNAIL_SIZES']
         # filtrer les données du dict qui
         # vont être insérées dans l'objet Model
         self.media_data = {
@@ -279,7 +277,7 @@ class TMediaRepository():
 
 
     def has_thumbnails(self):
-        for thumbnail_height in thumbnail_sizes:
+        for thumbnail_height in self.thumbnail_sizes:
             if not os.path.isfile(self.absolute_file_path(thumbnail_height)):
                 return False
         return True
@@ -298,7 +296,7 @@ class TMediaRepository():
                 raise GeoNatureError('L URL renseignée ne contient pas une image valide')
 
 
-        for thumbnail_height in thumbnail_sizes:
+        for thumbnail_height in self.thumbnail_sizes:
             width = thumbnail_height / image.size[1] * image.size[0]
             image.thumbnail((width, thumbnail_height))
             pathlib.Path(
