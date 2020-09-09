@@ -1,23 +1,23 @@
 import logging
 import requests
+import json
 
-from flask import Blueprint, request
-from sqlalchemy.sql import distinct, and_
 
 from flask import Blueprint, request, current_app, Response, redirect
+from sqlalchemy.sql import distinct, and_
 
 from geonature.utils.env import DB
+from geonature.core.gn_permissions import decorators as permissions
+from geonature.core.gn_meta.models import CorDatasetActor, TDatasets
+from geonature.core.gn_meta.repositories import get_datasets_cruved
 from geonature.core.users.models import VUserslistForallMenu, BibOrganismes, CorRole, TListes
+from geonature.core.users.register_post_actions import function_dict
 from pypnusershub.db.models import User
 from pypnusershub.db.models_register import TempUser
 from pypnusershub.routes_register import bp as user_api
 from pypnusershub.routes import check_auth
-
 from utils_flask_sqla.response import json_resp
-from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_meta.models import CorDatasetActor, TDatasets
-from geonature.core.gn_meta.repositories import get_datasets_cruved
-from geonature.core.users.register_post_actions import function_dict
+
 
 routes = Blueprint("users", __name__, template_folder="templates")
 log = logging.getLogger()
@@ -277,7 +277,7 @@ def inscription():
     # ajout des valeurs non présentes dans le form
     data["id_application"] = current_app.config["ID_APPLICATION_GEONATURE"]
     data["groupe"] = False
-    data["url_confirmation"] = config["API_ENDPOINT"] + "/users/confirmation"
+    data["confirmation_url"] = config["API_ENDPOINT"] + "/users/after_confirmation"
 
     r = s.post(
         url=config["API_ENDPOINT"] +
@@ -341,6 +341,19 @@ def confirmation():
         return Response(r), r.status_code
 
     return redirect(config["URL_APPLICATION"], code=302)
+
+
+@routes.route("/after_confirmation", methods=["POST"])
+def after_confirmation():
+    data = dict(request.get_json())
+    type_action = "valid_temp_user"
+    after_confirmation = function_dict.get(type_action, None)
+    result = after_confirmation(data)
+    if result != 0 and result['msg'] != "ok":
+        msg = f"Problem in GeoNature API after confirmation {type_action} : {result['msg']}"
+        return json.dumps({'msg': msg}), 500
+    else:
+        return json.dumps(result)
 
 
 @routes.route("/role", methods=["PUT"])
