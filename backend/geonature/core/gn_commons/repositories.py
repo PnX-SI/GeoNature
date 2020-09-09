@@ -23,7 +23,7 @@ from PIL import Image
 import requests
 from io import BytesIO
 import os
-
+import re
 import datetime
 
 class TMediaRepository():
@@ -150,7 +150,6 @@ class TMediaRepository():
 
         return True
 
-
     def test_header_content_type(self, content_type):
         media_type = self.media_type()
         if media_type == 'Photo' and 'image' not in content_type:
@@ -169,7 +168,6 @@ class TMediaRepository():
             return False
 
         return True
-
 
     def test_url(self):
 
@@ -209,9 +207,6 @@ class TMediaRepository():
             )
             pass
 
-
-
-
     def file_path(self, thumbnail_height=None):
         file_path = None
         if self.media.media_path:
@@ -236,7 +231,6 @@ class TMediaRepository():
 
         return file_path
 
-
     def upload_file(self):
         '''
             Upload des fichiers sur le serveur
@@ -250,6 +244,10 @@ class TMediaRepository():
                 file_name=self.file.filename
             )
         )
+
+        # If id_media : remove thumnails
+        self.remove_thumbnails()
+
         return filepath
 
     def is_img(self):
@@ -274,7 +272,6 @@ class TMediaRepository():
             image = Image.open(BytesIO(response.content))
 
         return image
-
 
     def has_thumbnails(self):
         for thumbnail_height in self.thumbnail_sizes:
@@ -306,6 +303,26 @@ class TMediaRepository():
                 image = image.convert('RGB')
             image.save(self.absolute_file_path(thumbnail_height), "JPEG")
 
+    def remove_thumbnails(self):
+        if not self.has_thumbnails():
+            return
+
+        thumbnail_dir = os.path.join(
+            current_app.config['BASE_DIR'],
+            current_app.config['UPLOAD_FOLDER'],
+            "thumbnails",
+            str(self.media.id_table_location)
+        )
+
+        # remove file with media_id
+        pattern = "{}_thumbnail_[0-9]+.jpg".format(self.media.id_media)
+        files = [
+            f for f in os.listdir(thumbnail_dir)
+            if re.match(pattern, f)
+        ]
+        for f in files:
+            remove_file(os.path.join(thumbnail_dir, f))
+
     def delete(self):
         # Note si SQLALCHEMY_TRACK_MODIFICATIONS  = true alors suppression du fichier gérée automatiquement
 
@@ -314,6 +331,7 @@ class TMediaRepository():
         initial_path = self.media.media_path
 
         if self.media.media_path and not current_app.config['SQLALCHEMY_TRACK_MODIFICATIONS']:
+
             try:
                 self.media.__before_commit_delete__()
 
@@ -337,8 +355,6 @@ class TMediaRepository():
         '''
         media = DB.session.query(TMedias).get(id_media)
         return media
-
-
 
 
 class TMediumRepository():
@@ -381,7 +397,7 @@ class TMediumRepository():
 
 
 def get_table_location_id(schema_name, table_name):
-    print(schema_name, table_name)
+
     try:
         location = DB.session.query(BibTablesLocation).filter(
             BibTablesLocation.schema_name == schema_name
