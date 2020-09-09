@@ -1,5 +1,13 @@
-from flask import current_app
 
+
+import os
+import datetime
+import requests
+import pathlib
+
+from PIL import Image
+from io import BytesIO
+from flask import current_app
 from sqlalchemy.exc import IntegrityError
 
 from pypnnomenclature.models import TNomenclatures
@@ -8,23 +16,12 @@ from geonature.utils.env import DB
 from geonature.core.gn_commons.models import TMedias, BibTablesLocation
 from geonature.core.gn_commons.file_manager import (
     upload_file, remove_file,
-    rename_file, removeDisallowedFilenameChars
+    rename_file
 )
-
 from geonature.utils.errors import (
-    ConfigError, GNModuleInstallError,
-    GeoNatureError, GeonatureApiError
+    GeoNatureError
 )
 
-
-import pathlib
-
-from PIL import Image
-import requests
-from io import BytesIO
-import os
-import re
-import datetime
 
 class TMediaRepository():
     '''
@@ -44,7 +41,9 @@ class TMediaRepository():
         # filtrer les données du dict qui
         # vont être insérées dans l'objet Model
         self.media_data = {
-            k: self.data[k] for k in TMedias.__mapper__.c.keys() if k in self.data
+            k: self.data[k]
+            for k in TMedias.__mapper__.c.keys()
+            if k in self.data
         }
         self.file = file
 
@@ -93,7 +92,6 @@ class TMediaRepository():
             remove_file(self.media.media_path)
             self.media.remove_thumbnails()
 
-
         for k in self.media_data:
             setattr(self.media, k, self.media_data[k])
 
@@ -135,12 +133,20 @@ class TMediaRepository():
                 )
 
     def absolute_file_path(self, thumbnail_height=None):
-        return os.path.join(current_app.config['BASE_DIR'], self.file_path(thumbnail_height))
+        return os.path.join(
+            current_app.config['BASE_DIR'],
+            self.file_path(thumbnail_height)
+        )
 
     def test_video_link(self):
         media_type = self.media_type()
         url = self.data['media_url']
-        if media_type == 'Vidéo Youtube' and 'youtube' not in url and 'youtu.be' not in url:
+        if (
+            media_type == 'Vidéo Youtube'
+            and
+            'youtube' not in url
+            and 'youtu.be' not in url
+        ):
             return False
 
         if media_type == 'Vidéo Dailymotion' and 'dailymotion' not in url:
@@ -173,15 +179,12 @@ class TMediaRepository():
     def test_url(self):
 
         try:
-            res=requests.head(url=self.data['media_url'])
-
-            media_type = self.media_type()
+            res = requests.head(url=self.data['media_url'])
 
             if not ((res.status_code >= 200) and (res.status_code < 400)):
                 raise GeoNatureError(
                     'la réponse est différente de 200 ({})'
-                    .format(res.status_code
-                    )
+                    .format(res.status_code)
                 )
 
             if not self.test_header_content_type(res.headers['Content-type']):
@@ -248,7 +251,7 @@ class TMediaRepository():
         filepath = upload_file(
             self.file,
             str(self.media.id_table_location),
-             "{id_media}_{file_name}".format(
+            "{id_media}_{file_name}".format(
                 id_media=self.media.id_media,
                 file_name=self.file.filename
             )
@@ -298,12 +301,13 @@ class TMediaRepository():
             else:
                 raise GeoNatureError('L URL renseignée ne contient pas une image valide')
 
-
         for thumbnail_height in self.thumbnail_sizes:
             width = thumbnail_height / image.size[1] * image.size[0]
             image.thumbnail((width, thumbnail_height))
             pathlib.Path(
-                "/".join(self.absolute_file_path(thumbnail_height).split('/')[:-1])
+                "/".join(
+                    self.absolute_file_path(thumbnail_height).split('/')[:-1]
+                )
             ).mkdir(parents=True, exist_ok=True)
             if image.mode in ("RGBA", "P"):
                 image = image.convert('RGB')
@@ -365,8 +369,6 @@ class TMediumRepository():
               - supprime les médias sans uuid_attached_row plus vieux que 24h
               - supprimes les médias dont l'object attaché n'existe plus TODO
         '''
-
-
         # delete media temp > 24h
         res_medias_temp = (
             DB.session.query(TMedias.id_media)
@@ -376,7 +378,7 @@ class TMediumRepository():
             .all()
         )
 
-        id_medias_temp = [ res.id_media for res in res_medias_temp]
+        id_medias_temp = [res.id_media for res in res_medias_temp]
 
         for id_media in id_medias_temp:
             TMediaRepository(id_media=id_media).delete()
@@ -390,6 +392,6 @@ def get_table_location_id(schema_name, table_name):
         ).filter(
             BibTablesLocation.table_name == table_name
         ).one()
-    except :
+    except:
         return None
     return location.id_table_location
