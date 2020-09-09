@@ -53,6 +53,7 @@ export class MetadataComponent implements OnInit {
   public empty: boolean = false;
   expandAccordions = false;
   private researchTerm: string = '';
+  private selector: string = 'all';
   public organisms: Array<any>;
   public roles: Array<any>;
 
@@ -166,33 +167,47 @@ export class MetadataComponent implements OnInit {
 
   matchAf(af, criteria, value) {
 
-    switch (criteria) {
-      case 'num':
-        if ((af.id_acquisition_framework+' ').toLowerCase().indexOf(value) !== -1)
+    if (this.selector == 'all' || this.selector == 'af') {
+      switch (criteria) {
+        case 'num':
+          if ((af.id_acquisition_framework+' ').toLowerCase().indexOf(value) !== -1)
+            return true;
+          break;
+        case 'title1':
+        case 'title2':
+          if (af.acquisition_framework_name.toLowerCase().indexOf(value) !== -1)
+            return true;
+          break;
+        case 'start_date':
+          // console.log("value : " + value)
+          // console.log(af.acquisition_framework_start_date)
+          if (af.acquisition_framework_start_date.toString() == value)
+            return true;
+          break;
+        case 'organism':
+          if (af.actors.find(actor => actor.id_organism == value))
+            return true;
+          break;
+        case 'role':
+          if (af.actors.find(actor => actor.id_role == value))
+            return true;
+          break;
+        default:
           return true;
-        break;
-      case 'title1':
-      case 'title2':
-        if (af.acquisition_framework_name.toLowerCase().indexOf(value) !== -1)
-          return true;
-        break;
-      case 'start_date':
-        if (af.acquisition_framework_start_date.toLowerCase().indexOf(value) !== -1)
-          return true;
-        break;
-      case 'actor':
-        if (af.creator_mail.toLowerCase().indexOf(value) !== -1
-          || af.project_owner_name.toLowerCase().indexOf(value) !== -1)
-          return true;
-        break;
-      default:
-        return true;
+      }
+      if (this.selector == 'af')
+        return false;
     }
 
     if (af.datasets) {
-      af.datasetsTemp = af.datasets.filter(
-        ds => this.matchDs(ds, criteria, value)
-      );
+      if (this.selector == 'ds' || this.selector == 'all') {
+        af.datasetsTemp = af.datasets.filter(
+          ds => this.matchDs(ds, criteria, value)
+        );
+      } else {
+        af.datasetsTemp = af.datasets;
+      }
+      console.log(af.datasetsTemp)
       return (af.datasetsTemp.length > 0);
     }
 
@@ -208,48 +223,71 @@ export class MetadataComponent implements OnInit {
 
     switch (criteria) {
       case 'num':
-          if ((ds.id_dataset+' ').toLowerCase().indexOf(value) !== -1)
-            return true;
-          break;
-        case 'title1':
-        case 'title2':
-          if (ds.dataset_name.toLowerCase().indexOf(value) !== -1)
-            return true;
-          break;
-        case 'start_date':
-          if (ds.meta_create_date.toLowerCase().indexOf(value) !== -1)
-            return true;
-          break;
-        case 'actor':
-          if (true)
-            return true;
-          break;
-        default:
+        if ((ds.id_dataset+' ').toLowerCase().indexOf(value) !== -1)
           return true;
+        break;
+      case 'title1':
+      case 'title2':
+        if (ds.dataset_name.toLowerCase().indexOf(value) !== -1)
+          return true;
+        break;
+      case 'start_date':
+        console.log("ds : " + ds.meta_create_date.toString().substring(0, 10))
+        if (ds.meta_create_date.toString().substring(0, 10) == value)
+          return true;
+        break;
+      case 'organism':
+        if (ds.actors.find(actor => actor.id_organism == value))
+          return true;
+        break;
+      case 'role':
+        if (ds.actors.find(actor => actor.id_role == value))
+          return true;
+        break;
+      default:
+        return true;
     }
 
     return false;
   }
 
-  updateAdvancedSearch(event, criteria) {
+  updateAdvancedCriteria(event, criteria) {
+    if (criteria != 'start_date')
+      this.searchTerms[criteria] = event.target.value.toLowerCase();
+    else
+      this.searchTerms[criteria] = event.year
+        + '-' + (event.month > 10 ? '' : '0') + event.month
+        + '-' + (event.day > 10 ? '' : '0') + event.day;
+  }
 
-    this.searchTerms[criteria] = event.target.value.toLowerCase();
-    this.researchTerm = event.target.value.toLowerCase();
+  updateSelector(event) {
+    this.selector = event.target.value.toLowerCase();
+  }
+
+  reinitAdvancedCriteria() {
+    this.searchTerms = { };
+  }
+
+  updateAdvancedSearch() {
+
+    console.log("updateAdvancedSearch");
+    console.log(this.searchTerms);
 
     //recherche des cadres d'acquisition qui matchent
     this.tempAF = this.acquisitionFrameworks.filter(af => {
+      af.datasetsTemp = af.datasets;
       //si vide => affiche tout et ferme le panel
-      if (this.researchTerm === '') {
+      if (!Object.values(this.searchTerms).find(term => term != '' && term != 'all')) {
         // 'dé-expand' les accodions pour prendre moins de place
+        console.log("expandAccordions = false;")
         this.expandAccordions = false;
-        //af.datasets.filter(ds=>true);
-        af.datasetsTemp = af.datasets;
         return true;
       } else {
         // expand tout les accordion recherchés pour voir le JDD des CA
+        console.log("expandAccordions = true;")
         this.expandAccordions = true;
 
-        for (let cr of ['num', 'title1', 'title2', 'start_date', 'actor']) {
+        for (let cr of ['num', 'title1', 'title2', 'start_date', 'organism', 'role']) {
           if (this.searchTerms[cr]) {
             if (!this.matchAf(af, cr, this.searchTerms[cr]))
               return false;
@@ -265,6 +303,8 @@ export class MetadataComponent implements OnInit {
   }
 
   openSearchModal(searchModal) {
+    this.reinitAdvancedCriteria();
+    this.updateAdvancedSearch();
     this.modal.open(searchModal);
   }
 
