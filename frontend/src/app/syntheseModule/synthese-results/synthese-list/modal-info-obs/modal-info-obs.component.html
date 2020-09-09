@@ -341,7 +341,7 @@
                   <td> {{row.validation_date | date:'dd-MM-yyyy'}} </td>
                   <td> {{row.validation_label.label_default}} </td>
                   <td> <span *ngIf="row.validator_role; else elseBlock">
-                      {{row.validator_role.prenom_role}} {{row.validator_role.prenom_role}}
+                      {{row.validator_role.prenom_role}} {{row.validator_role.nom_role}}
                       </span>
                     <ng-template #elseBlock> Validation automatique </ng-template>
                   </td>

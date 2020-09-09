@@ -4,7 +4,13 @@
         SELECT count(*)
         FROM information_schema.view_column_usage
         WHERE table_name = 'synthese' AND table_schema = 'gn_synthese' AND column_name = 'id_nomenclature_obs_technique'
-        AND NOT view_schema || '.' || view_name IN ('gn_synthese.v_synthese_for_export', 'pr_occtax.v_releve_occtax', 'gn_synthese.v_synthese_decode_nomenclatures', 'gn_synthese.v_synthese_for_web_app', 'gn_commons.v_synthese_validation_forwebapp', 'gn_synthese.v_synthese_for_export')
+        AND NOT view_schema || '.' || view_name IN (
+            'gn_synthese.v_synthese_for_export',
+            'pr_occtax.v_releve_occtax',
+            'gn_synthese.v_synthese_decode_nomenclatures',
+            'gn_synthese.v_synthese_for_web_app',
+            'gn_commons.v_synthese_validation_forwebapp'
+          )
         ) > 0
     THEN
         RAISE EXCEPTION 'Des vues doivent supprimées puis recrééer avant de relancer le script car elles dépendent de la colonne id_nomenclature_obs_technique ';
@@ -215,6 +221,15 @@
 
 
 
+
+        --- DROP id_nomenclature_obs_technique depend view
+        DROP VIEW IF EXISTS gn_synthese.v_synthese_for_export;
+        DROP VIEW IF EXISTS pr_occtax.v_releve_occtax;
+        DROP VIEW IF EXISTS gn_synthese.v_synthese_decode_nomenclatures;
+        DROP VIEW IF EXISTS gn_synthese.v_synthese_for_web_app;
+        DROP VIEW IF EXISTS gn_commons.v_synthese_validation_forwebapp;
+
+
         -- OCCTAX V2
 
         ALTER TABLE pr_occtax.t_releves_occtax
@@ -232,8 +247,10 @@
         ;
 
         ALTER TABLE pr_occtax.t_releves_occtax
-          RENAME COLUMN id_nomenclature_obs_technique TO id_nomenclature_tech_collect_campanule
-        ;
+          RENAME COLUMN id_nomenclature_obs_technique TO id_nomenclature_tech_collect_campanule;
+
+        ALTER TABLE pr_occtax.t_releves_occtax
+          ALTER column id_nomenclature_tech_collect_campanule DROP NOT NULL;
 
         ALTER TABLE pr_occtax.t_occurrences_occtax
           --delete sensi
@@ -259,7 +276,6 @@
         VALUES ('OCC_COMPORTEMENT', ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '0'))
         ;
 
-        DROP VIEW IF EXISTS pr_occtax.v_releve_occtax;
         CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
         SELECT rel.id_releve_occtax,
             rel.id_dataset,
@@ -304,7 +320,7 @@
             ADD CONSTRAINT fk_synthese_id_nomenclature_behaviour FOREIGN KEY (id_nomenclature_behaviour) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
             ADD CONSTRAINT check_synthese_behaviour CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour, 'OCC_COMPORTEMENT')) NOT VALID,
             ADD CONSTRAINT check_synthese_depth_max CHECK (depth_max >= depth_min),
-            DROP COLUMN id_nomenclature_obs_technique CASCADE
+            DROP COLUMN id_nomenclature_obs_technique
         ;
         ALTER TABLE gn_synthese.synthese
             RENAME id_nomenclature_obs_meth TO id_nomenclature_obs_technique
@@ -548,8 +564,6 @@
           COST 100;
 
 
-
-        DROP VIEW IF EXISTS gn_synthese.v_synthese_decode_nomenclatures;
         CREATE OR REPLACE VIEW gn_synthese.v_synthese_decode_nomenclatures AS
         SELECT
         s.id_synthese,
@@ -575,7 +589,7 @@
         ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_behaviour) AS occ_behaviour
         FROM gn_synthese.synthese s;
 
-        DROP VIEW IF EXISTS gn_synthese.v_synthese_for_web_app;
+
         CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
         SELECT s.id_synthese,
             s.unique_id_sinp,
@@ -694,7 +708,6 @@
         ALTER TABLE pr_occtax.t_occurrences_occtax
         ALTER COLUMN nom_cite SET NOT NULL;
 
-        DROP VIEW IF EXISTS gn_commons.v_synthese_validation_forwebapp;
         CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS
         SELECT  s.id_synthese,
             s.unique_id_sinp,
@@ -891,7 +904,6 @@
           ;
 
 
-        DROP VIEW IF EXISTS gn_synthese.v_synthese_for_export;
         CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
         SELECT s.id_synthese AS "idSynthese",
             s.entity_source_pk_value AS "idOrigine",
@@ -1073,11 +1085,182 @@
 
         ALTER TABLE gn_monitoring.t_base_visits
           RENAME COLUMN id_nomenclature_obs_technique TO id_nomenclature_tech_collect_campanule;
+
+        -- Import dans la synthese : prise en compte de postgis 3
+
+        CREATE OR REPLACE FUNCTION gn_synthese.import_json_row_format_insert_data(column_name varchar, data_type varchar, postgis_maj_num_version int)
+        RETURNS text
+        LANGUAGE plpgsql
+        AS $function$
+        DECLARE
+          col_srid int;
+        BEGIN
+          -- Gestion de postgis 3
+          IF ((postgis_maj_num_version > 2) AND (data_type = 'geometry')) THEN
+            col_srid := (SELECT find_srid('gn_synthese', 'synthese', column_name));
+            RETURN '(st_setsrid(ST_GeomFromGeoJSON(datain->>''' || column_name  || '''), ' || col_srid::text || '))' || COALESCE('::' || data_type, '');
+          ELSE
+            RETURN '(datain->>''' || column_name  || ''')' || COALESCE('::' || data_type, '');
+          END IF;
+
+        END;
+        $function$
+        ;
+
+          CREATE OR REPLACE FUNCTION gn_synthese.import_json_row(datain jsonb, datageojson text DEFAULT NULL::text)
+        RETURNS boolean
+        LANGUAGE plpgsql
+        AS $function$
+          DECLARE
+            insert_columns text;
+            select_columns text;
+            update_columns text;
+
+            geom geometry;
+            geom_data jsonb;
+            local_srid int;
+
+          postgis_maj_num_version int;
+        BEGIN
+
+
+          -- Import des données dans une table temporaire pour faciliter le traitement
+          DROP TABLE IF EXISTS tmp_process_import;
+          CREATE TABLE tmp_process_import (
+              id_synthese int,
+              datain jsonb,
+              action char(1)
+          );
+          INSERT INTO tmp_process_import (datain)
+          SELECT datain;
+
+          postgis_maj_num_version := (SELECT split_part(version, '.', 1)::int FROM pg_available_extension_versions WHERE name = 'postgis' AND installed = true);
+
+          -- Cas ou la geométrie est passé en geojson
+          IF NOT datageojson IS NULL THEN
+            geom := (SELECT ST_setsrid(ST_GeomFromGeoJSON(datageojson), 4326));
+            local_srid := (SELECT parameter_value FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid');
+            geom_data := (
+                SELECT json_build_object(
+                    'the_geom_4326',geom,
+                    'the_geom_point',(SELECT ST_centroid(geom)),
+                    'the_geom_local',(SELECT ST_transform(geom, local_srid))
+                )
+            );
+
+            UPDATE tmp_process_import d
+              SET datain = d.datain || geom_data;
+          END IF;
+
+        -- ############ TEST
+
+          -- colonne unique_id_sinp exists
+          IF EXISTS (
+                SELECT 1 FROM jsonb_object_keys(datain) column_name WHERE column_name =  'unique_id_sinp'
+            ) IS FALSE THEN
+                RAISE NOTICE 'Column unique_id_sinp is mandatory';
+                RETURN FALSE;
+          END IF ;
+
+        -- ############ mapping colonnes
+
+          WITH import_col AS (
+            SELECT jsonb_object_keys(datain) AS column_name
+          ), synt_col AS (
+              SELECT column_name, column_default, CASE WHEN data_type = 'USER-DEFINED' THEN udt_name ELSE data_type END as data_type
+              FROM information_schema.columns
+              WHERE table_schema || '.' || table_name = 'gn_synthese.synthese'
+          )
+          SELECT
+              string_agg(s.column_name, ',')  as insert_columns,
+              string_agg(
+                  CASE
+                      WHEN NOT column_default IS NULL THEN
+                      'COALESCE(' || gn_synthese.import_json_row_format_insert_data(i.column_name, data_type::varchar, postgis_maj_num_version) || ', ' || column_default || ') as ' || i.column_name
+                  ELSE gn_synthese.import_json_row_format_insert_data(i.column_name, data_type::varchar, postgis_maj_num_version)
+                  END, ','
+              ) as select_columns ,
+              string_agg(
+                  s.column_name || '=' ||
+                  CASE
+                    WHEN NOT column_default IS NULL
+                      THEN  'COALESCE(' || gn_synthese.import_json_row_format_insert_data(i.column_name, data_type::varchar, postgis_maj_num_version) || ', ' || column_default || ') '
+                ELSE gn_synthese.import_json_row_format_insert_data(i.column_name, data_type::varchar, postgis_maj_num_version)
+                  END
+              , ',')
+          INTO insert_columns, select_columns, update_columns
+          FROM synt_col s
+          JOIN import_col i
+          ON i.column_name = s.column_name;
+
+          -- ############# IMPORT DATA
+          IF EXISTS (
+              SELECT 1
+              FROM   gn_synthese.synthese
+              WHERE  unique_id_sinp = (datain->>'unique_id_sinp')::uuid
+          ) IS TRUE THEN
+            -- Update
+            EXECUTE ' WITH i_row AS (
+                  UPDATE gn_synthese.synthese s SET ' || update_columns ||
+                  ' FROM  tmp_process_import
+                  WHERE s.unique_id_sinp =  (datain->>''unique_id_sinp'')::uuid
+                  RETURNING s.id_synthese, s.unique_id_sinp
+                  )
+                  UPDATE tmp_process_import d SET id_synthese = i_row.id_synthese
+                  FROM i_row
+                  WHERE unique_id_sinp = i_row.unique_id_sinp
+                  ' ;
+          ELSE
+            -- Insert
+            EXECUTE 'WITH i_row AS (
+                  INSERT INTO gn_synthese.synthese ( ' || insert_columns || ')
+                  SELECT ' || select_columns ||
+                  ' FROM tmp_process_import
+                  RETURNING id_synthese, unique_id_sinp
+                  )
+                  UPDATE tmp_process_import d SET id_synthese = i_row.id_synthese
+                  FROM i_row
+                  WHERE unique_id_sinp = i_row.unique_id_sinp
+                  ' ;
+          END IF;
+
+          -- Import des cor_observers
+          DELETE FROM gn_synthese.cor_observer_synthese
+          USING tmp_process_import
+          WHERE cor_observer_synthese.id_synthese = tmp_process_import.id_synthese;
+
+          IF jsonb_typeof(datain->'ids_observers') = 'array' THEN
+            INSERT INTO gn_synthese.cor_observer_synthese (id_synthese, id_role)
+            SELECT DISTINCT id_synthese, (jsonb_array_elements(t.datain->'ids_observers'))::text::int
+            FROM tmp_process_import t;
+          END IF;
+
+          RETURN TRUE;
+          END;
+        $function$
+        ;
+
+         -- suppression trigger en double #762
+        DROP TRIGGER tri_insert_synthese_cor_role_releves_occtax ON pr_occtax.cor_role_releves_occtax;
+        DROP FUNCTION pr_occtax.fct_tri_synthese_insert_cor_role_releve();
+
+        -- Add module order column
+        ALTER TABLE gn_commons.t_modules ADD module_order integer NULL;
+
+        -- add id_digitizer 
+
+        ALTER TABLE gn_meta.t_datasets
+          ADD COLUMN id_digitizer integer;
+        ALTER TABLE ONLY gn_meta.t_datasets
+          ADD CONSTRAINT fk_t_datasets_id_digitizer FOREIGN KEY (id_digitizer) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
+        
+        ALTER TABLE gn_meta.t_acquisition_frameworks
+          ADD COLUMN id_digitizer integer;
+        ALTER TABLE ONLY gn_meta.t_acquisition_frameworks
+          ADD CONSTRAINT fk_t_acquisition_frameworks_id_digitizer FOREIGN KEY (id_digitizer) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
+
     END IF;
    END
  $$ language plpgsql;
 
 
- -- suppression trigger en double #762
-DROP TRIGGER tri_insert_synthese_cor_role_releves_occtax ON pr_occtax.cor_role_releves_occtax;
-DROP FUNCTION pr_occtax.fct_tri_synthese_insert_cor_role_releve()

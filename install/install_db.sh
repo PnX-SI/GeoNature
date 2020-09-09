@@ -67,26 +67,68 @@ function database_exists () {
 }
 
 function write_log() {
-    echo $1
+    echo -e $1
     echo "" &>> var/log/install_db.log
     echo "" &>> var/log/install_db.log
     echo "--------------------" &>> var/log/install_db.log
-    echo $1 &>> var/log/install_db.log
+    echo -e $1 &>> var/log/install_db.log
     echo "--------------------" &>> var/log/install_db.log
 }
-if database_exists $db_name
-then
-        if $drop_apps_db
-            then
-            echo "Drop database..."
-            sudo -u postgres -s dropdb $db_name
+
+# DESC: Validate we have superuser access as root (via sudo if requested)
+# ARGS: $1 (optional): Set to any value to not attempt root access via sudo
+# OUTS: None
+# SOURCE: https://github.com/ralish/bash-script-template/blob/stable/source.sh
+function check_superuser() {
+    local superuser
+    if [[ ${EUID} -eq 0 ]]; then
+        superuser=true
+    elif [[ -z ${1-} ]]; then
+        if command -v "sudo" > /dev/null 2>&1; then
+            echo 'Sudo: Updating cached credentials ...'
+            if ! sudo -v; then
+                echo "Sudo: Couldn't acquire credentials ..."
+            else
+                local test_euid
+                test_euid="$(sudo -H -- "${BASH}" -c 'printf "%s" "${EUID}"')"
+                if [[ ${test_euid} -eq 0 ]]; then
+                    superuser=true
+                fi
+            fi
         else
-            echo "Database exists but the settings file indicates that we don't have to drop it."
+			echo "Missing dependency: sudo"
         fi
+    fi
+
+    if [[ -z ${superuser-} ]]; then
+        echo 'Unable to acquire superuser credentials.'
+        return 1
+    fi
+
+    echo 'Successfully acquired superuser credentials.'
+    return 0
+}
+
+echo "Asking for superuser righ via sudo..."
+check_superuser
+
+if database_exists "${db_name}"; then
+    if $drop_apps_db; then
+        echo "Close all Postgresql conections on GeoNature DB"
+        query=("SELECT pg_terminate_backend(pg_stat_activity.pid) "
+            "FROM pg_stat_activity "
+            "WHERE pg_stat_activity.datname = '${db_name}' "
+            "AND pid <> pg_backend_pid() ;")
+        sudo -n -u "postgres" -s psql -d "postgres" -c "${query[*]}"
+
+        echo "Drop database..."
+        sudo -n -u "postgres" -s dropdb "${db_name}"
+    else
+        echo "Database exists but the settings file indicates that we don't have to drop it."
+    fi
 fi
 
-if ! database_exists $db_name
-then
+if ! database_exists "${db_name}"; then
     sudo sed -e "s/datestyle =.*$/datestyle = 'ISO, DMY'/g" -i /etc/postgresql/*/main/postgresql.conf
     sudo service postgresql restart
     echo "--------------------" &> var/log/install_db.log
