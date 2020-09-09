@@ -8,7 +8,7 @@ import pathlib
 from PIL import Image
 from io import BytesIO
 from flask import current_app
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, NoResultFound, MultipleResultsFound
 
 from pypnnomenclature.models import TNomenclatures
 
@@ -392,6 +392,14 @@ def get_table_location_id(schema_name, table_name):
         ).filter(
             BibTablesLocation.table_name == table_name
         ).one()
-    except:
+    except NoResultFound:
         return None
+    except MultipleResultsFound:
+        raise GeoNatureError(
+            "get_table_location_id : Table {}.{} à de multiples entrées dans BibTablesLocation"
+            .format(
+                schema_name,
+                table_name
+            )
+        )
     return location.id_table_location
