@@ -45,7 +45,7 @@
                     Titre: {{ media.title_fr }} ({{
                       ms.getNomenclature(media.id_nomenclature_media_type)?.label_fr
                     }}<ng-container *ngIf="media.author"
-                      >, <i>@{{ media.author }}</i></ng-container
+                      >, <i>par {{ media.author }}</i></ng-container
                     >)
                   </span>
                 </div>

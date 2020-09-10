@@ -35,6 +35,7 @@
               ['Vidéo Youtube', 'Vidéo Dailymotion', 'Vidéo Vimeo'].includes(ms.typeMedia(media))
             "
           >
+          {{media.safeEmbedUrl}}
             <iframe
               width="100%"
               [height]="height"
