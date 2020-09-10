@@ -9,7 +9,7 @@ import {NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
 import { DataService } from "../../../../external_modules/import/frontend/app/services/data.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
-import { FormArray } from '@angular/forms';
+import { ModuleConfig } from "../../../../external_modules/occtax/frontend/app/module.config";
 
 
 export class MetadataPaginator extends MatPaginatorIntl {
@@ -50,6 +50,7 @@ export class MetadataComponent implements OnInit {
   acquisitionFrameworks = [];
   tempAF = [];
   public history;
+  public endPoint:string;
   public empty: boolean = false;
   expandAccordions = false;
   private researchTerm: string = '';
@@ -82,7 +83,6 @@ export class MetadataComponent implements OnInit {
       this.roles = data;
     });
   }
-
   //recuperation cadres d'acquisition
   getAcquisitionFrameworksAndDatasets() {
     this._dfs.getAfAndDatasetListMetadata().subscribe(data => {
@@ -96,7 +96,7 @@ export class MetadataComponent implements OnInit {
 
     });
   }
-
+ 
   // recuperer la liste des imports 
   getImportList() {
     this._ds.getImportList().subscribe(
