@@ -789,6 +789,8 @@
 
         COMMENT ON VIEW gn_commons.v_synthese_validation_forwebapp  IS 'Vue utilisée pour le module validation. Prend l''id_nomenclature dans la table synthese ainsi que toutes les colonnes de la synthese pour les filtres. On JOIN sur la vue latest_validation pour voir si la validation est auto';
 
+        --Index sur gn_commons.t_validations
+        CREATE INDEX t_validations_uuid_attached_row_idx ON gn_commons.t_validations USING btree (uuid_attached_row)
 
         -- add date on medias
 

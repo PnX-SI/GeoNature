@@ -400,6 +400,9 @@ CREATE TABLE t_validations
   validation_comment text,
   validation_date timestamp without time zone
 );
+
+CREATE INDEX t_validations_uuid_attached_row_idx ON t_validations USING btree (uuid_attached_row)
+
 --COMMENT ON COLUMN t_validations.unique_id_validation IS 'Un uuid est nécessaire pour tracer l''historique des validations dans "tracked_objects_actions"';
 COMMENT ON COLUMN t_validations.uuid_attached_row IS 'Uuid de l''enregistrement validé';
 COMMENT ON COLUMN t_validations.id_nomenclature_valid_status IS 'Correspondance nomenclature INPN = statut_valid (101)';
