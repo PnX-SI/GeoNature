@@ -12,6 +12,7 @@
         </button>
         <mat-expansion-panel
           [expanded]="parentFormControl.value.length === i + 1 && !media.id_media"
+          (closed)="media.closed=true" (opened)="media.closed=false"
         >
           <mat-expansion-panel-header>
             <mat-panel-title>
@@ -51,7 +52,7 @@
                 </div>
                 <div>
                   <mat-progress-bar
-                    *ngIf="media.bLoading"
+                    *ngIf="media.bLoading && media.closed"
                     mode="determinate"
                     [value]="media.uploadPercentDone"
                   ></mat-progress-bar>

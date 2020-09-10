@@ -19,6 +19,7 @@
     [formsDefinition]="mediaFormDefinition"
   ></pnx-dynamic-form-generator>
 
+
   <button
     mat-mini-fab
     color="primary"
@@ -29,4 +30,11 @@
     >
     <mat-icon  matTooltip="{{ 'Media.valid' | translate }}">check</mat-icon>
   </button>
+
+  <mat-progress-bar
+  *ngIf="media.bLoading"
+  mode="determinate"
+  [value]="media.uploadPercentDone"
+></mat-progress-bar>
+
 </div>
