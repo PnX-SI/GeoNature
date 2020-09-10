@@ -98,7 +98,8 @@ class TMediaRepository():
         if (
                 (not self.new) and
                 (self.data['isFile'] is not True) and
-                (self.media.media_url is not self.data['media_url'])
+                (self.media.media_url is not self.data['media_url']) and
+                self.is_img()
         ):
             self.media.remove_thumbnails()
 
