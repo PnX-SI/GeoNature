@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { Map } from 'leaflet';
+
 import { MapService } from '../map.service';
 import { AppConfig } from '@geonature_config/app.config';
 import { CommonService } from '../../service/common.service';
@@ -8,6 +9,14 @@ import { GeoJSON } from 'togeojson';
 
 import 'leaflet-draw';
 import * as L from 'leaflet';
+
+delete L.Icon.Default.prototype['_getIconUrl'];
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+});
 
 /**
  * Ce composant permet d'activer le `plugin leaflet-draw <https://github.com/Leaflet/Leaflet.draw>`_
