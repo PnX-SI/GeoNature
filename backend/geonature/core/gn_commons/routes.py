@@ -4,7 +4,7 @@
 """
 import json
 
-from flask import Blueprint, request, current_app
+from flask import Blueprint, request, current_app, redirect
 import requests
 
 from geonature.core.gn_commons.repositories import TMediaRepository, TMediumRepository
@@ -165,6 +165,24 @@ def delete_media(id_media):
 
     return {"resp": "media {} deleted".format(id_media)}
 
+
+@routes.route("/media/thumbnails/<int:id_media>/<int:size>", methods=["GET"])
+def get_media_thumb(id_media, size):
+    """
+        Retourne le thumbnail d'un media
+        .. :quickref: Commons;
+    """
+    media_repo = TMediaRepository(id_media=id_media)
+    m = media_repo.media
+    if not m:
+        return {"msg": "Media introuvable"}, 404
+
+    try:
+        url_thumb = media_repo.get_thumbnail_url(size)
+    except GeoNatureError as e:
+        return {"msg": str(e)}, 500
+
+    return redirect(url_thumb)
 
 # Parameters
 

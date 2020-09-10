@@ -7,9 +7,9 @@ import pathlib
 
 from PIL import Image
 from io import BytesIO
-from flask import current_app
-from sqlalchemy.exc import IntegrityError, NoResultFound, MultipleResultsFound
-
+from flask import current_app, url_for
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from pypnnomenclature.models import TNomenclatures
 
 from geonature.utils.env import DB
@@ -90,6 +90,16 @@ class TMediaRepository():
                 (self.media.media_path is not None)
         ):
             remove_file(self.media.media_path)
+            self.media.remove_thumbnails()
+
+
+        # Si le média avait une url
+        # et qu'elle a été modifiée
+        if (
+                (not self.new) and
+                (self.data['isFile'] is not True) and
+                (self.media.media_url is not self.data['media_url'])
+        ):
             self.media.remove_thumbnails()
 
         for k in self.media_data:
@@ -282,36 +292,92 @@ class TMediaRepository():
 
         return image
 
-    def has_thumbnails(self):
-        for thumbnail_height in self.thumbnail_sizes:
-            if not os.path.isfile(self.absolute_file_path(thumbnail_height)):
-                return False
-        return True
-
-    def create_thumbnails(self):
-
-        if self.has_thumbnails():
-            return
+    def get_image_with_exp(self):
+        """
+            Fonction qui tente de récupérer une image
+            et qui lance des exceptions en cas d'erreur
+        """
 
         try:
-            image = self.get_image()
+            return self.get_image()
         except Exception as e:
-            if self.data['isFile']:
+            if self.media.media_path:
                 raise GeoNatureError('Le fichier fournit ne contient pas une image valide')
             else:
                 raise GeoNatureError('L URL renseignée ne contient pas une image valide')
 
+    def has_thumbnails(self):
+        """
+            Test si la liste des thumbnails
+            définis par défaut existe
+        """
         for thumbnail_height in self.thumbnail_sizes:
-            width = thumbnail_height / image.size[1] * image.size[0]
-            image.thumbnail((width, thumbnail_height))
-            pathlib.Path(
-                "/".join(
-                    self.absolute_file_path(thumbnail_height).split('/')[:-1]
-                )
-            ).mkdir(parents=True, exist_ok=True)
-            if image.mode in ("RGBA", "P"):
-                image = image.convert('RGB')
-            image.save(self.absolute_file_path(thumbnail_height), "JPEG")
+            if not self.has_thumbnail(thumbnail_height):
+                return False
+        return True
+
+    def has_thumbnail(self, size):
+        """
+            Test si le thumbnail de taille X existe
+        """
+        if not os.path.isfile(self.absolute_file_path(size)):
+            return False
+        return True
+
+    def create_thumbnails(self):
+        """
+            Creation automatique des thumbnails
+            dont les tailles sont spécifiés dans la config
+        """
+        # Test si les thumbnails existent déjà
+        if self.has_thumbnails():
+            return
+
+        image = self.get_image_with_exp()
+
+        for thumbnail_height in self.thumbnail_sizes:
+            self.create_thumbnail(thumbnail_height, image)
+
+    def create_thumbnail(self, size, image=None):
+        if not image:
+            image = self.get_image_with_exp()
+
+        image_thumb = image.copy()
+        width = size / image.size[1] * image.size[0]
+        image_thumb.thumbnail((width, size))
+        thumb_path = self.absolute_file_path(size)
+        pathlib.Path(
+            "/".join(thumb_path.split('/')[:-1])
+        ).mkdir(parents=True, exist_ok=True)
+
+        if image.mode in ("RGBA", "P"):
+            image_thumb = image_thumb.convert('RGB')
+        image_thumb.save(thumb_path, "JPEG")
+
+        return thumb_path
+
+    def get_thumbnail_url(self, size):
+        """
+            Fonction permettant de récupérer l'url d'un thumbnail
+            Si le thumbnail n'existe pas il est créé à la volé
+        """
+        # Get Thumb path and create if not exists
+        if not self.has_thumbnail(size):
+            thumb_path = self.create_thumbnail(size)
+        else:
+            thumb_path = self.absolute_file_path(size)
+
+        # Get relative path
+        relative_path = os.path.relpath(
+            thumb_path,
+            os.path.join(current_app.config['BASE_DIR'], 'static')
+        )
+        # Get URL
+        thumb_url = url_for(
+            'static',
+            filename=relative_path
+        )
+        return thumb_url
 
     def delete(self):
         # Note si SQLALCHEMY_TRACK_MODIFICATIONS  = true alors suppression du fichier gérée automatiquement
@@ -385,7 +451,6 @@ class TMediumRepository():
 
 
 def get_table_location_id(schema_name, table_name):
-
     try:
         location = DB.session.query(BibTablesLocation).filter(
             BibTablesLocation.schema_name == schema_name

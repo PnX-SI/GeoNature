@@ -77,7 +77,7 @@ class Media {
     }
 
     if (thumbnailHeight) {
-      filePath = `${AppConfig.UPLOAD_FOLDER}/thumbnails/${this.id_table_location}/${this.id_media}_thumbnail_${thumbnailHeight}.jpg`
+      filePath = `gn_commons/media/thumbnails/${this.id_media}/${thumbnailHeight}`;
     }
 
     return filePath;
