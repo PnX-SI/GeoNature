@@ -271,6 +271,10 @@ class MapConfig(Schema):
     ZOOM_ON_CLICK = fields.Integer(missing=18)
 
 
+class Mtd(Schema):
+    ID_PLATEFORM = fields.Integer(missing=None)
+
+
 # class a utiliser pour les paramètres que l'on veut passer au frontend
 class GnGeneralSchemaConf(Schema):
     appName = fields.String(missing="GeoNature2")
@@ -299,6 +303,7 @@ class GnGeneralSchemaConf(Schema):
     MEDIAS = fields.Nested(MediasConfig, missing={})
     UPLOAD_FOLDER = fields.String(missing="static/medias")
     METADATA = fields.Nested(MetadataConfig, missing={})
+    MTD = fields.Nested(Mtd, missing={})
 
     @validates_schema
     def validate_enable_sign_up(self, data):

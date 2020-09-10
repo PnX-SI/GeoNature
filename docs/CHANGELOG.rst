@@ -7,6 +7,8 @@ CHANGELOG
 
 **🚀 Nouveautés**
 
+* Ajout de champs id_digitizer sur les tables t_datasets et t_aquisition_frameworks (#921). Impact sur le CRUVED, un personne peut désormais voir toutes les données qui appartiennent à un JDD qu'elle a créé. Même chose dans le module métadonnées ou on voit tous les CA et JDD ou on est id_digitizer
+
  * Refonte de l'ergonomie d'Occtax 
  
 GeoNature n'est plus compatbile avec le version de Python 3.5 (qui ne sera plus maintenu en novembre 2020).

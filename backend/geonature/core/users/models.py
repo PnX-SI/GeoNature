@@ -1,6 +1,8 @@
 from sqlalchemy import ForeignKey
 from pypnusershub.db.models import User
 from utils_flask_sqla.serializers import serializable
+from sqlalchemy.sql import select, func
+from sqlalchemy.dialects.postgresql import UUID
 
 from geonature.utils.env import DB
 
@@ -21,6 +23,9 @@ class BibOrganismes(DB.Model):
     __tablename__ = "bib_organismes"
     __table_args__ = {"schema": "utilisateurs"}
     id_organisme = DB.Column(DB.Integer, primary_key=True)
+    uuid_organisme = DB.Column(
+        UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
+    )
     nom_organisme = DB.Column(DB.Unicode)
     cp_organisme = DB.Column(DB.Unicode)
     ville_organisme = DB.Column(DB.Unicode)
@@ -80,8 +85,8 @@ class UserRigth:
 
 @serializable
 class TListes(DB.Model):
-    __tablename__ = 't_listes'
-    __table_args__ = {'schema': 'utilisateurs', 'extend_existing': True}
+    __tablename__ = "t_listes"
+    __table_args__ = {"schema": "utilisateurs", "extend_existing": True}
     id_liste = DB.Column(DB.Integer, primary_key=True)
     code_liste = DB.Column(DB.Unicode)
     nom_liste = DB.Column(DB.Unicode)
