@@ -11,6 +11,8 @@ import { CommonService } from "@geonature_common/service/common.service";
 import { AppConfig } from "@geonature_config/app.config";
 import { ModuleConfig } from "../../module.config";
 import { filter } from "rxjs/operators";
+import { L } from "leaflet";
+
 @Component({
   selector: "pnx-occhab-form",
   templateUrl: "occhab-form.component.html",
@@ -37,6 +39,10 @@ export class OccHabFormComponent implements OnInit {
   public currentEditingStation: any;
   // boolean tocheck if the station has at least one hab (control the validity of the form)
   public atLeastOneHab = false;
+  public datasets: Array<any>;
+  public currentStations: any;
+  public stationsgeoJson: L.geoJSON;
+
 
   constructor(
     public occHabForm: OcchabFormService,
@@ -50,6 +56,10 @@ export class OccHabFormComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    // Récupère les datasets compatibles avec OccHab
+    this._gnDataService.getDatasets({ 'module_code': 'OCCHAB' }).subscribe(data => {
+      this.datasets = data.data;
+    })
     this.leafletDrawOptions;
     leafletDrawOption.draw.polyline = false;
     leafletDrawOption.draw.circle = false;
@@ -89,6 +99,33 @@ export class OccHabFormComponent implements OnInit {
           });
       }
     });
+  }
+
+  fetchDatasetStations(datasetId) {
+    this._occHabDataService.getStations(
+      { 'id_dataset': datasetId }
+    ).subscribe(geojsonStations => {
+      this.currentStations = geojsonStations;
+      this.setDatasetOnLayers(datasetId, this.currentStations);
+    })
+  }
+
+  setDatasetOnLayers(datasetId, stations) {
+
+    // const stationsLayerGroup = this._mapService.L.geoJSON(this.geojsonStations$.getValue());
+    if (this.stationsgeoJson) {
+      this._mapService.map.removeLayer(this.stationsgeoJson);
+    }
+
+    this.stationsgeoJson = this._mapService.L.geoJSON(stations, {
+      pointToLayer: (feature, latlng) => {
+        return this._mapService.L.circleMarker(latlng)
+      }
+    });
+
+    //this._mapService.layerControl.addOverlay(stationsLayerGroup, datasetId);
+    this.stationsgeoJson.addTo(this._mapService.map);
+
   }
 
   formIsDisable() {

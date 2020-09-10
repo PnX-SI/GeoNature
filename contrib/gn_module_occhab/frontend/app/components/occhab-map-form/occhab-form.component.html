@@ -51,6 +51,14 @@
     
         </div>
       </div>
+
+      <div class="overLayStations">
+          <p 
+             *ngFor="let dataset of datasets">
+              <input type="radio" name="stations" [id]="dataset.id_dataset" (click)="fetchDatasetStations(dataset.id_dataset)">
+             {{dataset.dataset_name}}
+        </p>
+      </div>
       <!--END  HABITAT ALREADY SAVED -->
     <pnx-map [height]="mapHeight">
         <!-- <pnx-occhab-dataset-map-overlay

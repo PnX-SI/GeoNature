@@ -20,6 +20,16 @@
   overflow-y: auto;
 }
 
+.overLayStations {
+  position: absolute;
+  z-index: 17000;
+  right: 0;
+  top: 25%;
+  background-color: white;
+  padding: 5px;
+}
+
+
 .card-body.small {
   padding: 0px !important;
 }
