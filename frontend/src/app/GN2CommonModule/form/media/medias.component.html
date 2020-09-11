@@ -43,11 +43,10 @@
                   ></pnx-display-medias>
 
                   <span class="media-title">
-                    Titre: {{ media.title_fr }} ({{
-                      ms.getNomenclature(media.id_nomenclature_media_type)?.label_fr
-                    }}<ng-container *ngIf="media.author"
-                      >, <i>par {{ media.author }}</i></ng-container
-                    >)
+                    Titre: {{ media.title_fr }}
+                    <i>
+                      ({{ ms.typeMedia(media) }}<span *ngIf="media.author"> par {{ media.author }})</span>)
+                    </i>
                   </span>
                 </div>
                 <div>
