@@ -493,7 +493,7 @@ def export_observations_web(info_role):
         )
 
 
-@routes.route("/export_metadata", methods=["GET"])
+@routes.route("/export_metadata", methods=["GET", "POST"])
 @permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
 def export_metadata(info_role):
     """Route to export the metadata in CSV
@@ -536,7 +536,7 @@ def export_metadata(info_role):
     )
 
 
-@routes.route("/export_statuts", methods=["GET"])
+@routes.route("/export_statuts", methods=["GET", "POST"])
 @permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
 def export_status(info_role):
     """Route to get all the protection status of a synthese search

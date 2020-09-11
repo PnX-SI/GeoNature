@@ -108,13 +108,18 @@ export class SyntheseDataService {
 
   downloadStatusOrMetadata(url: string, format: string, queryString: HttpParams, filename: string) {
     this.isDownloading = true;
-    const source = this._api.get(`${url}?${queryString.toString()}`, {
-      headers: new HttpHeaders().set('Content-Type', `${FormatMapMime.get(format)}`),
-      observe: 'events',
-      responseType: 'blob',
-      reportProgress: true
-    });
 
+    const source = this._api.post(
+      `${url}`,
+      undefined,
+      {
+        headers: new HttpHeaders().set('Content-Type', `${FormatMapMime.get(format)}`),
+        params: queryString,
+        observe: 'events',
+        responseType: 'blob',
+        reportProgress: true
+      }
+    );
     this.subscribeAndDownload(source, filename, format);
   }
 
