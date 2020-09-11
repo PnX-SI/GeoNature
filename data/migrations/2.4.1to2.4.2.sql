@@ -1279,3 +1279,6 @@
  $$ language plpgsql;
 
 
+-- Ajout index sur t_validations 
+
+CREATE INDEX i_t_validations_uuid_attached_row ON gn_commons.t_validations USING btree (uuid_attached_row);
