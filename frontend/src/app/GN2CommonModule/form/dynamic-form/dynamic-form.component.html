@@ -56,7 +56,7 @@
             (change)="onFileChange($event)"
             >
           <label class="custom-file-label" for="inputGroupFile01">
-            {{form.get(formDefComp().attribut_name).value.name || 'Choisir un fichier' }}
+            {{form.get(formDefComp().attribut_name).value?.name || 'Choisir un fichier' }}
           </label>
         </div>
       </div>
