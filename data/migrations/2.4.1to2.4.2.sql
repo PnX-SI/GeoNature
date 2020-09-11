@@ -1077,6 +1077,21 @@
 
 
         -- UNIQUE TABLE LOCATION
+        -- Nettoyage de la table bib_tables_location avant d'appliquer la contrainte
+        --    !! Fonctionne uniquement si la première occurence est utilisée dans une FK
+        WITH dbl as (
+            SELECT  min(id_table_location), array_agg(id_table_location) as id_s FROM  gn_commons.bib_tables_location
+            GROUP BY table_name
+            HAVING count(*)>1
+        )
+        DELETE FROM  gn_commons.bib_tables_location
+        WHERE id_table_location IN (
+            SELECT  id
+            FROM (SELECT unnest(id_s) as id FROM dbl) a
+            EXCEPT
+            SELECT min FROM dbl
+        );
+
         ALTER TABLE gn_commons.bib_tables_location
           ADD CONSTRAINT unique_bib_table_location_schema_name_table_name UNIQUE (schema_name, table_name);
 
@@ -1247,13 +1262,13 @@
         -- Add module order column
         ALTER TABLE gn_commons.t_modules ADD module_order integer NULL;
 
-        -- add id_digitizer 
+        -- add id_digitizer
 
         ALTER TABLE gn_meta.t_datasets
           ADD COLUMN id_digitizer integer;
         ALTER TABLE ONLY gn_meta.t_datasets
           ADD CONSTRAINT fk_t_datasets_id_digitizer FOREIGN KEY (id_digitizer) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
-        
+
         ALTER TABLE gn_meta.t_acquisition_frameworks
           ADD COLUMN id_digitizer integer;
         ALTER TABLE ONLY gn_meta.t_acquisition_frameworks
