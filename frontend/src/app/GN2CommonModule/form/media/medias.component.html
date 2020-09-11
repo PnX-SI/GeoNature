@@ -12,6 +12,7 @@
         </button>
         <mat-expansion-panel
           [expanded]="parentFormControl.value.length === i + 1 && !media.id_media"
+          (closed)="media.closed=true" (opened)="media.closed=false"
         >
           <mat-expansion-panel-header>
             <mat-panel-title>
@@ -45,13 +46,13 @@
                     Titre: {{ media.title_fr }} ({{
                       ms.getNomenclature(media.id_nomenclature_media_type)?.label_fr
                     }}<ng-container *ngIf="media.author"
-                      >, <i>@{{ media.author }}</i></ng-container
+                      >, <i>par {{ media.author }}</i></ng-container
                     >)
                   </span>
                 </div>
                 <div>
                   <mat-progress-bar
-                    *ngIf="media.bLoading"
+                    *ngIf="media.bLoading && media.closed"
                     mode="determinate"
                     [value]="media.uploadPercentDone"
                   ></mat-progress-bar>

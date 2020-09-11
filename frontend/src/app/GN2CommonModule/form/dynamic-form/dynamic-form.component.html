@@ -52,13 +52,14 @@
             class="custom-file-input"
             id="inputGroupFile01"
             aria-describedby="inputGroupFileAddon01"
-            (change)="onFileChange($event)"
             [accept]="formDefComp().accept"
+            (change)="onFileChange($event)"
             >
-          <label class="custom-file-label" for="inputGroupFile01">Choisir un fichier</label>
+          <label class="custom-file-label" for="inputGroupFile01">
+            {{form.get(formDefComp().attribut_name).value.name || 'Choisir un fichier' }}
+          </label>
         </div>
       </div>
-
       <input
         *ngSwitchCase="'text'"
         class="form-control form-control-sm"
