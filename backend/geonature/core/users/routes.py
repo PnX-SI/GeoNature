@@ -1,23 +1,28 @@
 import logging
 import requests
+import json
 
-from flask import Blueprint, request
-from sqlalchemy.sql import distinct, and_
 
 from flask import Blueprint, request, current_app, Response, redirect
+from sqlalchemy.sql import distinct, and_
 
 from geonature.utils.env import DB
-from geonature.core.users.models import VUserslistForallMenu, BibOrganismes, CorRole, TListes
+from geonature.core.gn_permissions import decorators as permissions
+from geonature.core.gn_meta.models import CorDatasetActor, TDatasets
+from geonature.core.gn_meta.repositories import get_datasets_cruved
+from geonature.core.users.models import (
+    VUserslistForallMenu,
+    BibOrganismes,
+    CorRole,
+    TListes,
+)
+from geonature.core.users.register_post_actions import function_dict
 from pypnusershub.db.models import User
 from pypnusershub.db.models_register import TempUser
 from pypnusershub.routes_register import bp as user_api
 from pypnusershub.routes import check_auth
-
 from utils_flask_sqla.response import json_resp
-from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_meta.models import CorDatasetActor, TDatasets
-from geonature.core.gn_meta.repositories import get_datasets_cruved
-from geonature.core.users.register_post_actions import function_dict
+
 
 routes = Blueprint("users", __name__, template_folder="templates")
 log = logging.getLogger()
@@ -69,9 +74,11 @@ def getRolesByMenuCode(code_liste):
     """
 
     q = DB.session.query(VUserslistForallMenu).join(
-        TListes, and_(TListes.id_liste == VUserslistForallMenu.id_menu,
-                      TListes.code_liste == code_liste
-                      )
+        TListes,
+        and_(
+            TListes.id_liste == VUserslistForallMenu.id_menu,
+            TListes.code_liste == code_liste,
+        ),
     )
 
     parameters = request.args
@@ -217,8 +224,7 @@ def get_organismes():
     q = DB.session.query(BibOrganismes)
     if "orderby" in params:
         try:
-            order_col = getattr(
-                BibOrganismes.__table__.columns, params.pop("orderby"))
+            order_col = getattr(BibOrganismes.__table__.columns, params.pop("orderby"))
             q = q.order_by(order_col)
         except AttributeError:
             log.error("the attribute to order on does not exist")
@@ -237,8 +243,7 @@ def get_organismes_jdd(info_role):
     """
     params = request.args.to_dict()
 
-    datasets = [dataset["id_dataset"]
-                for dataset in get_datasets_cruved(info_role)]
+    datasets = [dataset["id_dataset"] for dataset in get_datasets_cruved(info_role)]
     q = (
         DB.session.query(BibOrganismes)
         .join(
@@ -249,8 +254,7 @@ def get_organismes_jdd(info_role):
     )
     if "orderby" in params:
         try:
-            order_col = getattr(
-                BibOrganismes.__table__.columns, params.pop("orderby"))
+            order_col = getattr(BibOrganismes.__table__.columns, params.pop("orderby"))
             q = q.order_by(order_col)
         except AttributeError:
             log.error("the attribute to order on does not exist")
@@ -277,11 +281,10 @@ def inscription():
     # ajout des valeurs non présentes dans le form
     data["id_application"] = current_app.config["ID_APPLICATION_GEONATURE"]
     data["groupe"] = False
-    data["url_confirmation"] = config["API_ENDPOINT"] + "/users/confirmation"
+    data["confirmation_url"] = config["API_ENDPOINT"] + "/users/after_confirmation"
 
     r = s.post(
-        url=config["API_ENDPOINT"] +
-        "/pypn/register/post_usershub/create_temp_user",
+        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/create_temp_user",
         json=data,
     )
 
@@ -328,12 +331,10 @@ def confirmation():
     if token is None:
         return {"message": "Token introuvable"}, 404
 
-    data = {"token": token,
-            "id_application": config["ID_APPLICATION_GEONATURE"]}
+    data = {"token": token, "id_application": config["ID_APPLICATION_GEONATURE"]}
 
     r = s.post(
-        url=config["API_ENDPOINT"] +
-        "/pypn/register/post_usershub/valid_temp_user",
+        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/valid_temp_user",
         json=data,
     )
 
@@ -341,6 +342,19 @@ def confirmation():
         return Response(r), r.status_code
 
     return redirect(config["URL_APPLICATION"], code=302)
+
+
+@routes.route("/after_confirmation", methods=["POST"])
+def after_confirmation():
+    data = dict(request.get_json())
+    type_action = "valid_temp_user"
+    after_confirmation_fn = function_dict.get(type_action, None)
+    result = after_confirmation_fn(data)
+    if result != 0 and result["msg"] != "ok":
+        msg = f"Problem in GeoNature API after confirmation {type_action} : {result['msg']}"
+        return json.dumps({"msg": msg}), 500
+    else:
+        return json.dumps(result)
 
 
 @routes.route("/role", methods=["PUT"])
@@ -396,7 +410,9 @@ def change_password(id_role):
         Modifie le mot de passe de l'utilisateur connecté et de son ancien mdp 
         Fait appel à l'API UsersHub
     """
-    if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT", False):
+    if not current_app.config["ACCOUNT_MANAGEMENT"].get(
+        "ENABLE_USER_MANAGEMENT", False
+    ):
         return {"message": "Page introuvable"}, 404
 
     user = DB.session.query(User).get(id_role)
@@ -433,8 +449,7 @@ def change_password(id_role):
     ):
         return {"msg": "Erreur serveur"}, 500
     r = s.post(
-        url=config["API_ENDPOINT"] +
-        "/pypn/register/post_usershub/change_password",
+        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/change_password",
         json=data,
     )
 
@@ -461,8 +476,7 @@ def new_password():
         return {"msg": "Erreur serveur"}, 500
 
     r = s.post(
-        url=config["API_ENDPOINT"] +
-        "/pypn/register/post_usershub/change_password",
+        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/change_password",
         json=data,
     )
 

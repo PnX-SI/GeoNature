@@ -153,7 +153,10 @@ def get_af_and_ds_metadata(info_role):
     for af in afs:
         af_dict = af.as_dict()
         af_dict["cruved"] = af.get_object_cruved(
-            user_cruved, af.id_acquisition_framework, ids_afs_user, ids_afs_org,
+            user_cruved=user_cruved,
+            id_object=af.id_acquisition_framework,
+            ids_object_user=ids_afs_user,
+            ids_object_organism=ids_afs_org,
         )
         af_dict["datasets"] = []
         afs_dict.append(af_dict)
@@ -162,7 +165,10 @@ def get_af_and_ds_metadata(info_role):
     for d in datasets:
         dataset_dict = d.as_dict()
         dataset_dict["cruved"] = d.get_object_cruved(
-            user_cruved, d.id_dataset, ids_dataset_user, ids_dataset_organisms,
+            user_cruved=user_cruved,
+            id_object=d.id_dataset,
+            ids_object_user=ids_dataset_user,
+            ids_object_organism=ids_dataset_organisms,
         )
         af_of_dataset = get_af_from_id(d.id_acquisition_framework, afs_dict)
         af_of_dataset["datasets"].append(dataset_dict)
@@ -226,28 +232,7 @@ def get_dataset_details(info_role, id_dataset):
     :returns: dict<TDatasetDetails>
     """
 
-    dataset = get_dataset_details_dict(id_dataset)
-
-    if info_role.value_filter != "3":
-        try:
-            if info_role.value_filter == "1":
-                actors = [cor["id_role"] for cor in dataset["cor_dataset_actor"]]
-                assert info_role.id_role in actors
-            elif info_role.value_filter == "2":
-                actors = [cor["id_role"] for cor in dataset["cor_dataset_actor"]]
-                organisms = [cor["id_organism"] for cor in dataset["cor_dataset_actor"]]
-                assert (
-                    info_role.id_role in actors or info_role.id_organisme in organisms
-                )
-        except AssertionError:
-            raise InsufficientRightsError(
-                ('User "{}" cannot read this current dataset').format(
-                    info_role.id_role
-                ),
-                403,
-            )
-
-    return dataset
+    return get_dataset_details_dict(id_dataset, info_role)
 
 
 @routes.route("/upload_canvas", methods=["POST"])
@@ -299,6 +284,7 @@ def post_dataset(info_role):
     dataset.modules = modules_obj
     if dataset.id_dataset:
         DB.session.merge(dataset)
+    # add id_digitiser only on creation
     else:
         dataset.id_digitizer = info_role.id_role
         DB.session.add(dataset)
@@ -693,6 +679,7 @@ def post_acquisition_framework(info_role):
     if af.id_acquisition_framework:
         DB.session.merge(af)
     else:
+        af.id_digitizer = info_role.id_role
         DB.session.add(af)
     DB.session.commit()
     return af.as_dict()
