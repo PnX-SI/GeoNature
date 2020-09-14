@@ -94,6 +94,7 @@ export class PlacesListComponent extends MarkerComponent implements OnInit, OnDe
     this.mapservice.firstLayerFromMap = false;
     this.layerDrawed.emit(L.geoJSON(this.selectedPlace));
     this.mapService.loadGeometryReleve(this.selectedPlace, true);
+    this.modalService.dismissAll();
   }
 
   deletePlace(){
