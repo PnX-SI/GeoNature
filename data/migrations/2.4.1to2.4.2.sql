@@ -1282,3 +1282,45 @@
 -- Ajout index sur t_validations 
 
 CREATE INDEX i_t_validations_uuid_attached_row ON gn_commons.t_validations USING btree (uuid_attached_row);
+
+
+
+
+-- Mise à jour des nomenclatures "CA_OBJECTIFS" et mise à jour des données en conséquence (standard métadonnées 1.3.10)
+-- Faire correspondre les nouveaux objectifs aux Cadres d'acquisition sur la base des anciennes nomenclatures - Annexe 1 du standard 1.3.10 mtd
+
+DO $$
+DECLARE 
+	af_row record;
+BEGIN
+		FOR af_row IN (SELECT * FROM gn_meta.cor_acquisition_framework_objectif)
+			loop
+			   BEGIN
+			      UPDATE gn_meta.cor_acquisition_framework_objectif AS obj
+			        SET id_nomenclature_objectif = sub.new_id_nomenc
+			        FROM (
+			          SELECT
+			            id_acquisition_framework,
+			            id_nomenclature_objectif,
+			          CASE
+			            WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_objectif) IN ('OLD_1', 'OLD_2', 'OLD_3', 'OLD_6') 
+			              THEN ref_nomenclatures.get_id_nomenclature('CA_OBJECTIFS', '8'),
+			            WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_objectif) IN ('OLD_5') 
+			              THEN ref_nomenclatures.get_id_nomenclature('CA_OBJECTIFS', '8'),
+			           	WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_objectif) IN ('OLD_4', 'OLD_7') 
+			              THEN ref_nomenclatures.get_id_nomenclature('CA_OBJECTIFS', '11'),
+			            END as new_id_nomenc
+			          FROM gn_meta.cor_acquisition_framework_objectif
+			          WHERE id_acquisition_framework = af_row.id_acquisition_framework AND af_row.id_nomenclature_objectif = id_nomenclature_objectif
+			        ) AS sub
+			        WHERE sub.id_acquisition_framework = obj.id_acquisition_framework AND sub.id_nomenclature_objectif = obj.id_nomenclature_objectif
+			       AND ref_nomenclatures.get_cd_nomenclature(sub.id_nomenclature_objectif) IN (
+               'OLD_1', 'OLD_2', 'OLD_3', 'OLD_4','OLD_5','OLD_6','OLD_7') ;
+			       exception WHEN unique_violation THEN
+			         raise notice 'keep looping';
+			       END;
+		END LOOP;
+END $$;
+
+DELETE FROM gn_meta.cor_acquisition_framework_objectif
+WHERE ref_nomenclatures.get_cd_nomenclature(id_nomenclature_objectif) IN ('OLD_1', 'OLD_2', 'OLD_3', 'OLD_4','OLD_5','OLD_6','OLD_7');
