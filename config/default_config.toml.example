@@ -373,6 +373,9 @@ MAIL_ON_ERROR = false
         required = false
 
 [SERVER]
+    # Nivau de log du serveur.
+    # Indiquer la valeur numérique correspondant au niveau suivant;
+    # CRITICAL: 50 ; ERROR: 40 ; WARNING: 30 ; INFO: 20 ; DEBUG: 10 ; NOTSET: 0
     LOG_LEVEL = 20
 
 
