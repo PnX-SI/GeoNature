@@ -440,6 +440,24 @@ export class DataFormService {
     link.click();
     document.body.removeChild(link);
   }
+  
+  
+  //--------------------------------------------------------------------------------------
+  //----------------Geofit additional code data-form.service.ts
+  //liste des lieux
+  getPlaces() {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/places`);
+  }
+
+  // Supprimer lieu
+  deletePlace(idPlace) {
+    return this._http.delete(`${AppConfig.API_ENDPOINT}/gn_commons/place/${idPlace}`);
+  }
+
+  //Ajouter lieu
+  addPlace(place){
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/gn_commons/place`,place);
+  } 
 
 }
 

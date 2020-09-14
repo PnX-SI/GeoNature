@@ -188,3 +188,19 @@ class TMobileApps(DB.Model):
     url_apk = DB.Column(DB.Unicode)
     package = DB.Column(DB.Unicode)
     version_code = DB.Column(DB.Unicode)
+
+
+#######################################################################################
+#----------------Geofit additional code  models.py 
+#######################################################################################   
+@serializable
+@geoserializable
+class TPlaces(DB.Model):
+    __tablename__ = "t_places"
+    __table_args__ = {"schema": "gn_commons"}
+    id_place = DB.Column(DB.Integer, primary_key=True)
+    id_role = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
+    place_name = DB.Column(DB.String)
+    place_geom = DB.Column(Geometry("GEOMETRY", 4326))
+    def get_geofeature(self, recursif=True):
+        return self.as_geofeature("place_geom", "place_name", recursif) 

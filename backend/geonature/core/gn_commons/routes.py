@@ -8,12 +8,15 @@ from flask import Blueprint, request, current_app
 import requests
 
 from geonature.core.gn_commons.repositories import TMediaRepository
-from geonature.core.gn_commons.models import TModules, TParameters, TMobileApps
+from geonature.core.gn_commons.models import TModules, TParameters, TMobileApps, TPlaces
 from geonature.utils.env import DB, BACKEND_DIR
 from geonature.utils.errors import GeonatureApiError
 from utils_flask_sqla.response import json_resp
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
+from shapely.geometry import asShape
+from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
+from geoalchemy2.shape import from_shape
 
 routes = Blueprint("gn_commons", __name__)
 
@@ -205,3 +208,53 @@ def get_t_mobile_apps():
     if len(mobile_apps) == 1:
         return mobile_apps[0]
     return mobile_apps
+
+
+#######################################################################################
+#----------------Geofit additional code  routes.py 
+#######################################################################################
+#######################################################################################
+# recuperer les lieux
+@routes.route("/places", methods=["GET"])
+@permissions.check_cruved_scope("R",True)
+@json_resp
+def get_places(info_role):
+    id_role = info_role.id_role
+    data = DB.session.query(TPlaces).filter(TPlaces.id_role==id_role).all()
+    return [n.as_geofeature('place_geom', 'id_place') for n in data]
+
+#######################################################################################
+# supprimer un lieu
+@routes.route("/place/<int:id_place>", methods=["DELETE"])
+@permissions.check_cruved_scope("D",True)
+@json_resp
+def del_one_place(id_place, info_role):
+    place = DB.session.query(TPlaces).filter(TPlaces.id_place==id_place).one()
+    if info_role.id_role == place.id_role:
+        DB.session.query(TPlaces).filter(TPlaces.id_place==id_place).delete()
+        DB.session.commit()
+        return {"message": "suppression du lieu avec succés"}
+    return {"message": "Vous n'êtes pas l'utilisateur propriétaire de ce lieu"}
+
+
+#######################################################################################
+# ajouter un lieu
+@routes.route("/place", methods=["POST"])
+@permissions.check_cruved_scope("C",True)
+@json_resp
+def add_one_place(info_role):
+    user_id = info_role.id_role
+    
+    data = request.get_json()
+    place_name=data["properties"]['placeName']
+    shape = asShape(data["geometry"])
+    two_dimension_geom = remove_third_dimension(shape)
+    place_geom = from_shape(two_dimension_geom, srid=4326)
+
+    place = TPlaces(id_role = user_id, place_name = place_name, place_geom=place_geom)
+    DB.session.add(place)
+    DB.session.commit()
+
+    return {"message": "Ajout du lieu avec succés"}
+#######################################################################################
+#######################################################################################

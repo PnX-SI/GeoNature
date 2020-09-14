@@ -257,18 +257,18 @@ export class MapService {
   //--------------------------------------------------------------------------------------
 //----------------Geofit additional code map.service.ts
  //liste des lieux
- getPlaces(): Observable<any> {
+ /*getPlaces(): Observable<any> {
   return this.http.get<any>(`${AppConfig.API_ENDPOINT}/occtax/places`);
-}
-
+}*/
+/*
 //Afficher lieu
 drawPlace(place:GeoJSON.Feature){
  L.geoJSON(place).addTo(this.map);
  const geojson = L.geoJSON(place);
  this.map.fitBounds(geojson.getBounds());
 // this.map.setView(geojson.getBounds().getCenter(),12)
-}
-
+}*/
+/*
 // Supprimer lieu
 deletePlace(nom:String): Observable<{}> {
 const url=`${AppConfig.API_ENDPOINT}/occtax/delPlace/${nom}`;
@@ -279,5 +279,5 @@ return this.http.delete(url);
   addPlace(place:GeoJSON.Feature): Observable<any>{
       
     return this.http.post<GeoJSON.Feature>(`${AppConfig.API_ENDPOINT}/occtax/addPlace`,place);
-  } 
+  } */
 }

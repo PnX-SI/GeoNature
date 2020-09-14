@@ -35,8 +35,7 @@ from .models import (
     CorCountingOccurrence,
     VReleveOccurrence,
     corRoleRelevesOccurrence,
-    DefaultNomenclaturesValue,
-    TPlaces,
+    DefaultNomenclaturesValue
 )
 from .repositories import (
     ReleveRepository,
@@ -592,58 +591,3 @@ def export(info_role):
             error=message,
             redirect=current_app.config["URL_APPLICATION"] + "/#/occtax",
         )
-#######################################################################################
-#----------------Geofit additional code  blueprint.py 
-#######################################################################################
-#######################################################################################
-# recuperer les lieux
-@blueprint.route("/places", methods=["GET"])
-@permissions.check_cruved_scope("R",True, module_code="OCCTAX")
-@json_resp
-def getPlaces(info_role):
-    id_role = info_role.id_role
-    data = DB.session.query(TPlaces).filter(TPlaces.id_role==id_role).all()
-    return [n.as_geofeature('place_geom', 'place_name') for n in data]
-
-#######################################################################################
-# supprimer un lieu
-@blueprint.route("/delPlace/<string:nom>", methods=["DELETE"])
-@permissions.check_cruved_scope("D",True, module_code="OCCTAX")
-@json_resp
-def delOnePlace(nom, info_role):
-    user_id = info_role.id_role
-    print(user_id)
-    DB.session.query(TPlaces).filter(TPlaces.id_role==user_id, TPlaces.place_name==nom).delete()
-    DB.session.commit()
-
-    return {"message": "suppression du lieu avec succés"}
-
-#######################################################################################
-# ajouter un lieu
-@blueprint.route("/addPlace", methods=["POST"])
-@permissions.check_cruved_scope("C",True, module_code="OCCTAX")
-@json_resp
-def addOnePlace(info_role):
-    user_id = info_role.id_role
-    
-    #data = dict(request.get_json())
-    
-    #data["properties"]["observers"]
-    
-    data = request.get_json()
-    #print(data.is_json)
-    #print (data)
-    place_name=data['id']
-    shape = asShape(data["geometry"])
-    two_dimension_geom = remove_third_dimension(shape)
-    place_geom = from_shape(two_dimension_geom, srid=4326)
-    place_name=data['id']
-
-
-    place = TPlaces(id_role = user_id, place_name = place_name, place_geom=place_geom)
-    DB.session.add(place)
-    DB.session.commit()
-
-    return {"message": "Ajout du lieu avec succés"}
-#######################################################################################
-#######################################################################################

@@ -7,6 +7,7 @@ import { CommonService } from '../../service/common.service';
 import * as L from 'leaflet';
 import { Subscription } from "rxjs/Subscription";
 import { Map, GeoJSON, Layer, FeatureGroup, Marker, LatLng } from 'leaflet';
+import { DataFormService } from '@geonature_common/form/data-form.service';
 
 
 /**
@@ -26,6 +27,7 @@ export class PlacesComponent extends MarkerComponent implements OnInit {
     public mapService: MapService,
     public modalService: NgbModal,
     public commonService: CommonService,
+    private _dfs: DataFormService,
     private _mapListServive: MapListService,
    
     
@@ -66,9 +68,9 @@ export class PlacesComponent extends MarkerComponent implements OnInit {
 
 
   addPlace(placeName:String) {
-    this.geojson.id=placeName.toString();
+    this.geojson.properties['placeName'] = placeName.toString();
     var geom = this.geojson;
-    this.mapService.addPlace(geom).subscribe();
+    this._dfs.addPlace(geom).subscribe();
     this.modalService.dismissAll();
   }
   

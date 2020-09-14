@@ -8,6 +8,7 @@ import * as L from 'leaflet';
 import { Subscription } from "rxjs/Subscription";
 import { Observable, throwError } from 'rxjs';
 import { Map, GeoJSON, Layer, FeatureGroup, Marker, LatLng } from 'leaflet';
+import { DataFormService } from '@geonature_common/form/data-form.service';
 //import { LieuxComponent } from '../lieux/lieux.component';
 
 
@@ -31,6 +32,7 @@ export class PlacesListComponent extends MarkerComponent implements OnInit, OnDe
   public selectedPlace: GeoJSON.Feature ;
   public delPlaceSub: Subscription;
   public delPlaceRes:string;
+  public place:GeoJSON.Feature;
   
   @Output() layerDrawed = new EventEmitter<GeoJSON>();
 
@@ -38,6 +40,7 @@ export class PlacesListComponent extends MarkerComponent implements OnInit, OnDe
     public mapService: MapService,
     public modalService: NgbModal,
     public commonService: CommonService,
+    private _dfs: DataFormService,
     private _mapListServive: MapListService
     
   ) {
@@ -64,7 +67,7 @@ export class PlacesListComponent extends MarkerComponent implements OnInit, OnDe
     L.DomEvent.disableClickPropagation(document.getElementById('ListPlacesLegend'));
        document.getElementById('ListPlacesLegend').onclick = () => {
 
-     this.listPlacesSub = this.mapService.
+     this.listPlacesSub = this._dfs.
       getPlaces()
       .subscribe(res => {
           this.places = res;
@@ -78,8 +81,8 @@ export class PlacesListComponent extends MarkerComponent implements OnInit, OnDe
     };
   }
 
-  onSelectPlace(place:GeoJSON.Feature){
-    this.selectedPlace=place;
+  loadPlace(){
+    this.selectedPlace=this.place;
 
     //Bien cleaner tous les types de géométrie possible
     if (this.mapservice.marker !== undefined) {
@@ -89,31 +92,25 @@ export class PlacesListComponent extends MarkerComponent implements OnInit, OnDe
     this.mapservice.removeAllLayers(this.map, this.mapService.fileLayerFeatureGroup);
 
     this.mapservice.firstLayerFromMap = false;
-    this.layerDrawed.emit(L.geoJSON(place));
-    this.mapService.loadGeometryReleve(place, true);
-    
-   
+    this.layerDrawed.emit(L.geoJSON(this.selectedPlace));
+    this.mapService.loadGeometryReleve(this.selectedPlace, true);
   }
 
   deletePlace(){
     if(confirm("Êtes-vous sûr de vouloir supprimer ce lieu?")) {
-      
-        this.mapService.deletePlace(this.selectedPlace.id.toString()).subscribe();
-        this.modalService.dismissAll();
-        this.listPlacesSub = this.mapService.
-        getPlaces()
-        .subscribe(res => {
-            this.places = res;
-          },
-          console.error
-        );
-        this.modalService.open(this.modalContent);
+        this._dfs.deletePlace(this.selectedPlace.id).subscribe(res => {
+          this.commonService.translateToaster('success', 'Un lieu a été supprimé');
+          this.listPlacesSub = this._dfs.
+          getPlaces()
+          .subscribe(res => {
+              this.places = res;
+            },
+            console.error
+          );
+        }    
+      );
     }
    }
-
-
-
-   
 
   ngOnDestroy() {
     //alert("ok");
