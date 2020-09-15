@@ -220,8 +220,11 @@ def get_t_mobile_apps():
 @json_resp
 def get_places(info_role):
     id_role = info_role.id_role
-    data = DB.session.query(TPlaces).filter(TPlaces.id_role==id_role).all()
-    return [n.as_geofeature('place_geom', 'id_place') for n in data]
+    lieux_exists = DB.session.query(TPlaces).filter(TPlaces.id_role==id_role).scalar()
+    if lieux_exists :
+        data = DB.session.query(TPlaces).filter(TPlaces.id_role==id_role).all()
+        return [n.as_geofeature('place_geom', 'id_place') for n in data]
+    return [{}]
 
 #######################################################################################
 # supprimer un lieu
@@ -233,8 +236,8 @@ def del_one_place(id_place, info_role):
     if info_role.id_role == place.id_role:
         DB.session.query(TPlaces).filter(TPlaces.id_place==id_place).delete()
         DB.session.commit()
-        return {"message": "suppression du lieu avec succés"}
-    return {"message": "Vous n'êtes pas l'utilisateur propriétaire de ce lieu"}
+        return {"message": "suppression du lieu avec succés", "status" : "success"}
+    return {"message": "Vous n'êtes pas l'utilisateur propriétaire de ce lieu", "status" : "error"}
 
 
 #######################################################################################
@@ -247,6 +250,10 @@ def add_one_place(info_role):
     
     data = request.get_json()
     place_name=data["properties"]['placeName']
+    place_exists = DB.session.query(TPlaces).filter(TPlaces.place_name==place_name, TPlaces.id_role == user_id).scalar()
+    if place_exists:
+        return {"message": "Nom du lieu déjà existant", "status" : "error"}
+
     shape = asShape(data["geometry"])
     two_dimension_geom = remove_third_dimension(shape)
     place_geom = from_shape(two_dimension_geom, srid=4326)
@@ -255,6 +262,6 @@ def add_one_place(info_role):
     DB.session.add(place)
     DB.session.commit()
 
-    return {"message": "Ajout du lieu avec succés"}
+    return {"message": "Ajout du lieu avec succés", "status" : "success"}
 #######################################################################################
 #######################################################################################

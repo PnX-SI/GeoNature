@@ -451,7 +451,7 @@ export class DataFormService {
 
   // Supprimer lieu
   deletePlace(idPlace) {
-    return this._http.delete(`${AppConfig.API_ENDPOINT}/gn_commons/place/${idPlace}`);
+    return this._http.delete<any>(`${AppConfig.API_ENDPOINT}/gn_commons/place/${idPlace}`);
   }
 
   //Ajouter lieu

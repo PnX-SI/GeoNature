@@ -53,8 +53,6 @@ export class PlacesListComponent extends MarkerComponent implements OnInit, OnDe
     
   }
 
-  
-
   setPlacesLegend() {
     // icon
     const placesLegend = this.mapservice.addCustomLegend(
@@ -65,23 +63,31 @@ export class PlacesListComponent extends MarkerComponent implements OnInit, OnDe
     this.map.addControl(new placesLegend());
     document.getElementById('ListPlacesLegend').title = "Liste des lieux";
     L.DomEvent.disableClickPropagation(document.getElementById('ListPlacesLegend'));
-       document.getElementById('ListPlacesLegend').onclick = () => {
+    document.getElementById('ListPlacesLegend').onclick = () => {
 
      this.listPlacesSub = this._dfs.
       getPlaces()
       .subscribe(res => {
-          this.places = res;
+          if(Object.keys(res[0]).length > 0){
+            this.places = res;
+            this.place = this.places[0];
+          }else{
+            this.places = null;
+            this.place = null;
+          }
         },
         console.error
       );
-
-    
       this.modalService.open(this.modalContent);
       
     };
   }
 
   loadPlace(){
+    if(this.place == null){
+      this.commonService.translateToaster('error', 'Aucun lieu sélectionné');
+      return;
+    }
     this.selectedPlace=this.place;
 
     //Bien cleaner tous les types de géométrie possible
@@ -97,14 +103,29 @@ export class PlacesListComponent extends MarkerComponent implements OnInit, OnDe
     this.modalService.dismissAll();
   }
 
+  onSelectPlace(place:GeoJSON.Feature){
+    this.place=place;
+  }
+
   deletePlace(){
+    if(this.place == null){
+      this.commonService.translateToaster('error', 'Aucun lieu sélectionné');
+      return;
+    }
+    this.selectedPlace=this.place;
     if(confirm("Êtes-vous sûr de vouloir supprimer ce lieu?")) {
         this._dfs.deletePlace(this.selectedPlace.id).subscribe(res => {
-          this.commonService.translateToaster('success', 'Un lieu a été supprimé');
-          this.listPlacesSub = this._dfs.
-          getPlaces()
-          .subscribe(res => {
-              this.places = res;
+          this.commonService.translateToaster(res.status, res.message);
+          this.listPlacesSub = this._dfs.getPlaces().subscribe(resu => {
+              if(Object.keys(resu[0]).length > 0){
+                //Dans le cas ou l'on retourne des lieux, on sélectionne le premier de la liste 
+                this.places = resu;
+                this.place = this.places[0];
+              }else{
+                //Dans le cas ou l'on ne retourne pas de lieu, on vide la liste et passe à null le lieu selectionné
+                this.places = null;
+                this.place = null;
+              }
             },
             console.error
           );

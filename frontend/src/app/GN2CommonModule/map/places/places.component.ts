@@ -70,8 +70,12 @@ export class PlacesComponent extends MarkerComponent implements OnInit {
   addPlace(placeName:String) {
     this.geojson.properties['placeName'] = placeName.toString();
     var geom = this.geojson;
-    this._dfs.addPlace(geom).subscribe();
-    this.modalService.dismissAll();
+    this._dfs.addPlace(geom).subscribe(res => {
+      this.commonService.translateToaster(res.status, res.message);
+      if (res.status == "success"){
+        this.modalService.dismissAll();
+      }
+    });
   }
   
 

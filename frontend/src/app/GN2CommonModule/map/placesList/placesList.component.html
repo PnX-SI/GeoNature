@@ -8,7 +8,7 @@
   <div class="modal-body">
       <div class="form-inline">
         <div class="form-group ">
-          <select [(ngModel)]="place" name="donnee"  style="min-width: 200px; margin-right: 50px;">
+          <select [(ngModel)]="place" name="donnee" (ngModelChange)="onSelectPlace($event)" style="min-width: 200px; margin-right: 50px;">
             <option *ngFor="let place of places" [ngValue]="place">{{place.properties.place_name}}</option>
           </select>
                 <button type="button" class="btn btn-danger" (click)="deletePlace()">Supprimer lieu</button>
