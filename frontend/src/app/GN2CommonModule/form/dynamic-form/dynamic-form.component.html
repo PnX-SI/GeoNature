@@ -1,15 +1,17 @@
 <div [style.display]="formDefComp().hidden ? 'none': 'inherit'">
     <small *ngIf="(formDefComp().type_widget == 'checkbox' && formDefComp().values.length > 1)
-        || formDefComp().type_widget == 'text'
-        || formDefComp().type_widget == 'textarea'
-        || formDefComp().type_widget == 'radio'
-        || formDefComp().type_widget == 'select'
-        || formDefComp().type_widget == 'time'
-        || formDefComp().type_widget == 'number'
-        || formDefComp().type_widget == 'file'
-        || formDefComp().type_widget == 'medias'
-        || formDefComp().type_widget == 'bool_checkbox'
-        || formDefComp().type_widget == 'bool_radio'
+        || [
+          'text',
+          'textarea',
+          'radio',
+          'select',
+          'time',
+          'number',
+          'file',
+          'medias',
+          'bool_checkbox',
+          'bool_radio'
+          ].includes(formDefComp().type_widget)
         " [attr.for]="formDefComp().attribut_name">{{formDefComp().attribut_label}}
         <i
         *ngIf="formDefComp().definition"
@@ -160,15 +162,15 @@
 
       </div>
 
-      <pnx-taxonomy *ngSwitchCase="'taxonomy'" [label]="formDefComp().attribut_label" [parentFormControl]="form.get(formDefComp().attribut_name)" [idList]="formDefComp().idComponent"
-        [charNumber]="3" [listLength]p="20">
+      <pnx-taxonomy *ngSwitchCase="'taxonomy'" [label]="formDefComp().attribut_label" [parentFormControl]="form.get(formDefComp().attribut_name)" [idList]="formDefComp().id_list"
+        [charNumber]="3" [listLength]="20">
       </pnx-taxonomy>
 
       <pnx-datasets *ngSwitchCase="'dataset'" [label]="formDef.attribut_label" [parentFormControl]="form.get(formDef.attribut_name)" [multiSelect]="formDef.multi_select"
        [moduleCode]="formDef.module_code">
       </pnx-datasets>
 
-      <pnx-observers *ngSwitchCase="'observers'" [label]="formDefComp().attribut_label" [parentFormControl]="form.get(formDefComp().attribut_name)" [idMenu]="formDefComp().idComponent" [codeList]="formDefComp().code_list">
+      <pnx-observers *ngSwitchCase="'observers'" [label]="formDefComp().attribut_label" [parentFormControl]="form.get(formDefComp().attribut_name)" [idMenu]="formDefComp().id_menu" [codeList]="formDefComp().code_list">
       </pnx-observers>
 
       <pnx-date *ngSwitchCase="'date'" [label]="formDefComp().attribut_label" [parentFormControl]="form.get(formDefComp().attribut_name)">
@@ -197,12 +199,20 @@
       type="number"
       >
 
-      <pnx-geometry-form *ngSwitchCase="'geometry'"
+      <pnx-datalist
+      *ngSwitchCase="'datalist'"
       [parentFormControl]="form.get(formDefComp().attribut_name)"
+      [application]="formDefComp().application"
+      [values]="formDefComp().values"
+      [api]="formDefComp().api"
+      [values]="formDefComp().values"
+      [keyValue]="formDefComp().keyValue || 'value'"
+      [keyLabel]="formDefComp().keyLabel || 'label'"
+      [multiple]="formDefComp().multiple"
+      [dataPath]="formDefComp().data_path"
       [label]="formDefComp().attribut_label"
-      [typeGeometry]="formDefComp().type_geometry"
-      [mapHeight]="formDefComp().mapHeight ? formDefComp().mapHeight : '40vh'"
-    >
-    </pnx-geometry-form>
+      [required]="formDefComp().required"
+      [params]="formDefComp().params"
+      ></pnx-datalist>
     </div>
   </div>
