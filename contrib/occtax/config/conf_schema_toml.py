@@ -175,4 +175,4 @@ class GnModuleSchemaConf(Schema):
     DATE_FORM_WITH_TODAY = fields.Boolean(missing=True)
     DISPLAY_SETTINGS_TOOLS = fields.Boolean(missing=True)
     ENABLE_MEDIAS = fields.Boolean(missing=True)
-    ENABLE_PLACES = fields.Boolean(missing=True)
+    ENABLE_MY_PLACES = fields.Boolean(missing=True)

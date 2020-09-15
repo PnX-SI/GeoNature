@@ -27,12 +27,12 @@
   </pnx-gps>
 
   <pnx-places 
-    *ngIf="occtaxConfig.ENABLE_PLACES" 
+    *ngIf="occtaxConfig.ENABLE_MY_PLACES" 
     (markerChanged)="sendGeoInfo($event)">
   </pnx-places>
 
   <pnx-placesList 
-    *ngIf="occtaxConfig.ENABLE_PLACES" 
+    *ngIf="occtaxConfig.ENABLE_MY_PLACES" 
     (markerChanged)="sendGeoInfo($event)">
   </pnx-placesList>	
 

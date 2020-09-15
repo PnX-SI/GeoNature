@@ -6,17 +6,19 @@
     </button>
   </div>
   <div class="modal-body">
-    <p> Nom du lieu : </p>
     <div class="form-inline">
       <div  class="form-group "  >
-          <input #m  class="form-control col-sm-12 col-md-12" placeholder="Nom du lieu" [(ngModel)]='placeName' type="text"   >
+          <input  
+            class="form-control col-sm-12 col-md-12" 
+            placeholder="Nom du lieu" 
+            [formControl]="placeForm" type="text">
      </div>
      
     </div>
   </div>
   
   <div class="modal-footer">
-    <button type="button" class="btn btn-success"  (click)="addPlace(m.value)" >Enregistrer</button>
+    <button type="button" class="btn btn-success"  (click)="addPlace(placeForm.value)" >Enregistrer</button>
   </div>
 
 </ng-template>

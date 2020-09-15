@@ -132,7 +132,7 @@ ENABLE_GPS_TOOL = true
 # Activer l'outil leaflet filelayer qui permet de charger des fichier GPS, GeoJSON, et KML
 ENABLE_UPLOAD_TOOL = true
 # Activer l'outil "Mes lieux" permettant d'enregistrer et de charger les lieux des utilisateurs
-ENABLE_PLACES = true
+ENABLE_MY_PLACES = true
 
 
 # ------------- FORM PARAMETER ---------------

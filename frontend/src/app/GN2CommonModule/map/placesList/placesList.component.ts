@@ -1,15 +1,13 @@
 import { Component, OnInit, ViewChild, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { MarkerComponent } from '../marker/marker.component';
 import { MapService } from '../map.service';
-import { MapListService } from '../../map-list/map-list.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '../../service/common.service';
 import * as L from 'leaflet';
 import { Subscription } from "rxjs/Subscription";
-import { Observable, throwError } from 'rxjs';
-import { Map, GeoJSON, Layer, FeatureGroup, Marker, LatLng } from 'leaflet';
+import { GeoJSON, } from 'leaflet';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-//import { LieuxComponent } from '../lieux/lieux.component';
+import { timeStamp } from 'console';
 
 
 
@@ -23,17 +21,17 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
   selector: 'pnx-placesList',
   templateUrl: 'placesList.component.html'
 })
-export class PlacesListComponent extends MarkerComponent implements OnInit, OnDestroy {
+export class PlacesListComponent extends MarkerComponent implements OnInit {
   @ViewChild('modalContent') public modalContent: any;
   private geojsonSubscription$: Subscription;
   public geojson: any;
-  public places:any[];
+  public places: any[];
   public listPlacesSub: Subscription;
-  public selectedPlace: GeoJSON.Feature ;
+  public selectedPlace: GeoJSON.Feature;
   public delPlaceSub: Subscription;
-  public delPlaceRes:string;
-  public place:GeoJSON.Feature;
-  
+  public delPlaceRes: string;
+  public place: GeoJSON.Feature;
+
   @Output() layerDrawed = new EventEmitter<GeoJSON>();
 
   constructor(
@@ -41,8 +39,7 @@ export class PlacesListComponent extends MarkerComponent implements OnInit, OnDe
     public modalService: NgbModal,
     public commonService: CommonService,
     private _dfs: DataFormService,
-    private _mapListServive: MapListService
-    
+
   ) {
     super(mapService, commonService);
   }
@@ -50,10 +47,7 @@ export class PlacesListComponent extends MarkerComponent implements OnInit, OnDe
   ngOnInit() {
     this.map = this.mapservice.map;
     this.setPlacesLegend();
-    
   }
-
-  
 
   setPlacesLegend() {
     // icon
@@ -65,24 +59,20 @@ export class PlacesListComponent extends MarkerComponent implements OnInit, OnDe
     this.map.addControl(new placesLegend());
     document.getElementById('ListPlacesLegend').title = "Liste des lieux";
     L.DomEvent.disableClickPropagation(document.getElementById('ListPlacesLegend'));
-       document.getElementById('ListPlacesLegend').onclick = () => {
-
-     this.listPlacesSub = this._dfs.
-      getPlaces()
-      .subscribe(res => {
-          this.places = res;
-        },
-        console.error
-      );
-
-    
+    document.getElementById('ListPlacesLegend').onclick = () => {
+      this.fetchPlaces();
       this.modalService.open(this.modalContent);
-      
+
+
     };
   }
 
-  loadPlace(){
-    this.selectedPlace=this.place;
+  loadPlace() {
+    if (this.place == null) {
+      this.commonService.translateToaster('error', 'Aucun lieu sélectionné');
+      return;
+    }
+    this.selectedPlace = this.place;
 
     //Bien cleaner tous les types de géométrie possible
     if (this.mapservice.marker !== undefined) {
@@ -97,27 +87,39 @@ export class PlacesListComponent extends MarkerComponent implements OnInit, OnDe
     this.modalService.dismissAll();
   }
 
-  deletePlace(){
-    if(confirm("Êtes-vous sûr de vouloir supprimer ce lieu?")) {
-        this._dfs.deletePlace(this.selectedPlace.id).subscribe(res => {
-          this.commonService.translateToaster('success', 'Un lieu a été supprimé');
-          this.listPlacesSub = this._dfs.
-          getPlaces()
-          .subscribe(res => {
-              this.places = res;
-            },
-            console.error
-          );
-        }    
-      );
-    }
-   }
-
-  ngOnDestroy() {
-    //alert("ok");
-    //this.mapService.removeAllLayers(this.map, this.selectedPlace)
+  onSelectPlace(place: GeoJSON.Feature) {
+    this.place = place;
   }
-  
-  
 
+  deletePlace() {
+    if (this.place == null) {
+      this.commonService.translateToaster('error', 'Aucun lieu sélectionné');
+      return;
+    }
+    this.selectedPlace = this.place;
+    if (confirm("Êtes-vous sûr de vouloir supprimer ce lieu?")) {
+      this._dfs.deletePlace(this.selectedPlace.id).subscribe(res => {
+        this.fetchPlaces();
+      });
+    }
+  }
+
+  fetchPlaces() {
+    this._dfs.getPlaces().subscribe((res) => {
+      if (Object.keys(res[0]).length > 0) {
+        this.places = res;
+        this.place = this.places[0];
+      } else {
+        this.places = null;
+        this.place = null;
+      }
+    },
+      (err) => {
+        if (err.status === 404) {
+          this.places = [];
+          this.place = null;
+        }
+      }
+    );
+  }
 }

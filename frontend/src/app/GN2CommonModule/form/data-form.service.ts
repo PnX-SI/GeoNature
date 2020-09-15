@@ -444,8 +444,8 @@ export class DataFormService {
     link.click();
     document.body.removeChild(link);
   }
-  
-  
+
+
   //--------------------------------------------------------------------------------------
   //----------------Geofit additional code data-form.service.ts
   //liste des lieux
@@ -455,13 +455,13 @@ export class DataFormService {
 
   // Supprimer lieu
   deletePlace(idPlace) {
-    return this._http.delete(`${AppConfig.API_ENDPOINT}/gn_commons/place/${idPlace}`);
+    return this._http.delete<any>(`${AppConfig.API_ENDPOINT}/gn_commons/place/${idPlace}`);
   }
 
   //Ajouter lieu
-  addPlace(place){
-    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/gn_commons/place`,place);
-  } 
+  addPlace(place) {
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/gn_commons/place`, place);
+  }
 
 }
 

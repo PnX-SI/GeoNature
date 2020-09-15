@@ -292,12 +292,17 @@ def get_places(info_role):
 @permissions.check_cruved_scope("D", True)
 @json_resp
 def del_one_place(id_place, info_role):
-    place = DB.session.query(TPlaces).filter(TPlaces.id_place == id_place).one()
+    place = DB.session.query(TPlaces).filter(TPlaces.id_place == id_place).one_or_none()
+    if not place:
+        return None
     if info_role.id_role == place.id_role:
         DB.session.query(TPlaces).filter(TPlaces.id_place == id_place).delete()
         DB.session.commit()
-        return {"message": "suppression du lieu avec succés"}
-    return {"message": "Vous n'êtes pas l'utilisateur propriétaire de ce lieu"}
+        return {"message": "suppression du lieu avec succès", "status": "success"}
+    return {
+        "message": "Vous n'êtes pas l'utilisateur propriétaire de ce lieu",
+        "status": "error",
+    }
 
 
 #######################################################################################
@@ -310,6 +315,14 @@ def add_one_place(info_role):
 
     data = request.get_json()
     place_name = data["properties"]["placeName"]
+    place_exists = (
+        DB.session.query(TPlaces)
+        .filter(TPlaces.place_name == place_name, TPlaces.id_role == user_id)
+        .scalar()
+    )
+    if place_exists:
+        return {"message": "Nom du lieu déjà existant", "status": "error"}
+
     shape = asShape(data["geometry"])
     two_dimension_geom = remove_third_dimension(shape)
     place_geom = from_shape(two_dimension_geom, srid=4326)
@@ -318,7 +331,7 @@ def add_one_place(info_role):
     DB.session.add(place)
     DB.session.commit()
 
-    return {"message": "Ajout du lieu avec succés"}
+    return {"message": "Ajout du lieu avec succés", "status": "success"}
 
 
 #######################################################################################
