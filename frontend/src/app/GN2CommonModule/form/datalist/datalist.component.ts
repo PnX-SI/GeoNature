@@ -55,12 +55,12 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
   }
 
   searchChanged(event) {
-    console.log('search changed');
+    this.search = event;
     this.filteredValues = this.getFilteredValues();
   }
 
   getFilteredValues() {
-    return (this.values || []).filter(v => !this.search || this.displayLabel(v).includes(this.search));
+    return (this.values || []).filter(v => !this.search || this.displayLabel(v).toLowerCase().includes(this.search.toLowerCase()));
   }
 
   selectedValues() {
