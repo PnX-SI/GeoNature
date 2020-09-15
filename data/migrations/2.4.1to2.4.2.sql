@@ -1326,7 +1326,10 @@ DELETE FROM gn_meta.cor_acquisition_framework_objectif
 WHERE ref_nomenclatures.get_cd_nomenclature(id_nomenclature_objectif) IN ('OLD_1', 'OLD_2', 'OLD_3', 'OLD_4','OLD_5','OLD_6','OLD_7');
 
 
+-- Ajout d'une contrainte d'unicité sur la table gn_commons.t_parameters sur le duo de champs id_organism, parameter_name
 
+ALTER TABLE gn_commons.t_parameters ADD CONSTRAINT unique_t_parameters_id_organism_parameter_name UNIQUE (id_organism, parameter_name);
+CREATE UNIQUE INDEX i_unique_t_parameters_parameter_name_with_id_organism_null ON gn_commons.t_parameters (parameter_name) WHERE id_organism IS NULL;
 
 
 /*MET 14/09/2020 Table t_places pour la fonctionnalité mes-lieux*/
