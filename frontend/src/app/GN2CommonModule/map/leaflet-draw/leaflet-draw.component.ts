@@ -45,7 +45,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   @Output() layerDrawed = new EventEmitter<GeoJSON>();
   @Output() layerDeleted = new EventEmitter<any>();
 
-  constructor(public mapservice: MapService, private _commonService: CommonService) {}
+  constructor(public mapservice: MapService, private _commonService: CommonService) { }
 
   ngOnInit() {
     this.map = this.mapservice.map;
@@ -108,6 +108,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
         // set firLayerFromMap = false because we just draw a layer
         // the boolean change MUST be before the output fire (emit)
         this.mapservice.firstLayerFromMap = false;
+        this.mapservice.setGeojsonCoord(geojson);
         this.layerDrawed.emit(geojson);
       }
     });
@@ -119,6 +120,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       // set firLayerFromMap = false because we just edit a layer
       // the boolean change MUST be before the output fire (emit)
       this.mapservice.firstLayerFromMap = false;
+      this.mapservice.setGeojsonCoord(geojson);
       this.layerDrawed.emit(geojson);
     });
 
@@ -146,17 +148,6 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     return geojson;
   }
 
-  // else if (geojson.type == 'Polygon' || geojson.type == 'MultiPolygon') {
-  //   const latLng = L.GeoJSON.coordsToLatLngs(
-  //     geojson.coordinates,
-  //     geojson.type === 'Polygon' ? 1 : 2
-  //   );
-  //   this.setStyleEventAndAdd(new L.Polygon(latLng), geojson.properties.id);
-  // } else if (geojson.type == 'LineString' || geojson.type == 'MultiLineString') {
-  //   const latLng = L.GeoJSON.coordsToLatLngs(
-  //     geojson.coordinates,
-  //     geojson.type === 'LineString' ? 0 : 1
-  //   );
 
   loadDrawfromGeoJson(geojson) {
     let layer;

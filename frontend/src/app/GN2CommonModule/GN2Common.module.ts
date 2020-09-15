@@ -66,6 +66,9 @@ import { MediaDialog } from '@geonature_common/form/media/media-dialog.component
 import { MediasComponent } from '@geonature_common/form/media/medias.component';
 import { MediasTestComponent } from '@geonature_common/form/media/medias-test.component';
 
+import { PlacesComponent } from './map/places/places.component';
+import { PlacesListComponent } from './map/placesList/placesList.component';
+
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
 import { DisplayMouseOverDirective } from './directive/display-mouse-over.directive';
@@ -156,7 +159,9 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MediaDialog,
     MediasComponent,
     MediasTestComponent,
-    ConfirmationDialog
+    ConfirmationDialog,
+    PlacesComponent,
+    PlacesListComponent
   ],
   providers: [
     TranslateService,
@@ -236,6 +241,8 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MediasComponent,
     MediaDialog,
     DisplayMediasComponent,
+    PlacesComponent,
+    PlacesListComponent
   ]
 })
 export class GN2CommonModule { }

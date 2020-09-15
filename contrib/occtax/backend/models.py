@@ -309,3 +309,4 @@ class DefaultNomenclaturesValue(DB.Model):
     mnemonique_type = DB.Column(DB.Integer, primary_key=True)
     id_organism = DB.Column(DB.Integer, primary_key=True)
     id_nomenclature = DB.Column(DB.Integer, primary_key=True)
+	

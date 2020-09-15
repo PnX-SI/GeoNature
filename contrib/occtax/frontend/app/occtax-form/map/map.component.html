@@ -25,4 +25,15 @@
     *ngIf="occtaxConfig.ENABLE_GPS_TOOL" 
     (markerChanged)="sendGeoInfo($event)">
   </pnx-gps>
+
+  <pnx-places 
+    *ngIf="occtaxConfig.ENABLE_PLACES" 
+    (markerChanged)="sendGeoInfo($event)">
+  </pnx-places>
+
+  <pnx-placesList 
+    *ngIf="occtaxConfig.ENABLE_PLACES" 
+    (markerChanged)="sendGeoInfo($event)">
+  </pnx-placesList>	
+
 </pnx-map>

@@ -34,7 +34,7 @@ from .models import (
     CorCountingOccurrence,
     VReleveOccurrence,
     corRoleRelevesOccurrence,
-    DefaultNomenclaturesValue,
+    DefaultNomenclaturesValue
 )
 from .repositories import (
     ReleveRepository,
