@@ -1,27 +1,34 @@
 <div [style.display]="formDefComp().hidden ? 'none': 'inherit'">
-    <small *ngIf="(formDefComp().type_widget == 'checkbox' && formDefComp().values.length > 1)
-        || [
-          'text',
-          'textarea',
-          'radio',
-          'select',
-          'time',
-          'number',
-          'file',
-          'medias',
-          'bool_checkbox',
-          'bool_radio'
-          ].includes(formDefComp().type_widget)
-        " [attr.for]="formDefComp().attribut_name">{{formDefComp().attribut_label}}
-        <i
-        *ngIf="formDefComp().definition"
-        class="material-icons small-icon"
-        [matTooltip]="formDefComp().definition"
-        >help</i>
-      </small>
-    <div [ngSwitch]="formDefComp().type_widget">
+
+<div *ngIf="(formDefComp().type_widget == 'checkbox' && formDefComp().values.length > 1)
+  || [
+  'text',
+  'textarea',
+  'radio',
+  'select',
+  'time',
+  'number',
+  'file',
+  'medias',
+  'bool_checkbox',
+  'bool_radio'
+  ].includes(formDefComp().type_widget)
+  " >
+
+  <small [attr.for]="formDefComp().attribut_name">{{formDefComp().attribut_label}}
+    <i
+    *ngIf="formDefComp().definition"
+    class="material-icons small-icon"
+    [matTooltip]="formDefComp().definition"
+    >help</i>
+  </small>
+</div>
+
+  <div [ngSwitch]="formDefComp().type_widget">
+
       <input
       *ngSwitchCase="'bool_checkbox'"
+      class='bool-checkbox'
       type="checkbox"
       id="{{formDefComp().attribut_name}}"
       [name]="formDefComp().attribut_name"
@@ -213,6 +220,7 @@
       [label]="formDefComp().attribut_label"
       [required]="formDefComp().required"
       [params]="formDefComp().params"
+      [definition]="formDefComp().definition"
       ></pnx-datalist>
     </div>
   </div>

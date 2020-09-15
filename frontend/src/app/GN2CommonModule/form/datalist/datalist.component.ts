@@ -29,6 +29,7 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
 
   @Input() multiple: boolean;
   @Input() required: boolean;
+  @Input() definition: boolean; // help
 
   @Input() dataPath: string; // pour atteindre la liste si elle n'est pas à la racine de la réponse de l'api.
   // si on a 'data/liste' on mettra dataPath='data'
@@ -60,7 +61,12 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
   }
 
   getFilteredValues() {
-    return (this.values || []).filter(v => !this.search || this.displayLabel(v).toLowerCase().includes(this.search.toLowerCase()));
+    const values = (this.values || []);
+    return values
+      // filter search
+      .filter(v => !this.search || this.displayLabel(v).toLowerCase().includes(this.search.toLowerCase()))
+      // remove doublons (keyValue)
+      .filter((item, pos, self) => self.findIndex(i => i[this.keyValue] === item[this.keyValue]) === pos);
   }
 
   selectedValues() {
