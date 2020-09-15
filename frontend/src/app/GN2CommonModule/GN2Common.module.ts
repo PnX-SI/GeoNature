@@ -16,7 +16,16 @@ import {
   MatDialogModule,
   MatBadgeModule,
   MatProgressBarModule,
+  MatSlideToggleModule,
+  MatFormFieldModule,
+  MatAutocompleteModule,
+  MatSelectModule,
+  MatInputModule,
+  MatChipsModule
 } from '@angular/material';
+
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -65,6 +74,7 @@ import { MediaComponent } from '@geonature_common/form/media/media.component';
 import { MediaDialog } from '@geonature_common/form/media/media-dialog.component';
 import { MediasComponent } from '@geonature_common/form/media/medias.component';
 import { MediasTestComponent } from '@geonature_common/form/media/medias-test.component';
+import { DatalistComponent } from '@geonature_common/form/datalist/datalist.component';
 
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
@@ -107,13 +117,20 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MatDialogModule,
     MatBadgeModule,
     MatProgressBarModule,
+    MatSlideToggleModule,
+    MatFormFieldModule,
+    MatAutocompleteModule,
+    MatSelectModule,
+    MatInputModule,
+    MatChipsModule,
+    NgxMatSelectSearchModule,
     FormsModule,
     ReactiveFormsModule,
     NgxDatatableModule,
     TranslateModule.forChild(),
     NgbModule.forRoot(),
     AutoCompleteModule,
-    TreeModule
+    TreeModule,
   ],
   declarations: [
     NomenclatureComponent,
@@ -156,7 +173,8 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MediaDialog,
     MediasComponent,
     MediasTestComponent,
-    ConfirmationDialog
+    ConfirmationDialog,
+    DatalistComponent,
   ],
   providers: [
     TranslateService,
@@ -217,6 +235,13 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MatDialogModule,
     MatBadgeModule,
     MatProgressBarModule,
+    MatSlideToggleModule,
+    MatFormFieldModule,
+    MatAutocompleteModule,
+    MatSelectModule,
+    MatInputModule,
+    MatChipsModule,
+    NgxMatSelectSearchModule,
     NgbModule,
     TranslateModule,
     MapListGenericFiltersComponent,
@@ -236,6 +261,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MediasComponent,
     MediaDialog,
     DisplayMediasComponent,
+    DatalistComponent
   ]
 })
 export class GN2CommonModule { }

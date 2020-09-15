@@ -68,7 +68,8 @@
     "togeojson": "^0.16.0",
     "tslib": "^1.10.0",
     "wellknown": "^0.5.0",
-    "zone.js": "^0.8.26"
+    "zone.js": "^0.8.26",
+    "ngx-mat-select-search": "^2.2.0"
   },
   "devDependencies": {
     "@angular/language-service": "7.2.6",
