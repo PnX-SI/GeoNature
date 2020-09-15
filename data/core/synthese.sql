@@ -837,8 +837,10 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
     s.meta_update_date,
     s.last_action,
     d.id_dataset,
+    d.unique_dataset_id,
     d.dataset_name,
     d.id_acquisition_framework,
+    f.unique_acquisition_framework_id,
     s.id_nomenclature_geo_object_nature,
     s.id_nomenclature_info_geo_type,
     s.id_nomenclature_grp_typ,
@@ -871,7 +873,8 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
    FROM gn_synthese.synthese s
      JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
-     JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source;
+     JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source
+     JOIN gn_meta.t_acquisition_frameworks f ON f.id_acquisition_framework = d.id_acquisition_framework;
 
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
  SELECT s.id_synthese AS "idSynthese",
