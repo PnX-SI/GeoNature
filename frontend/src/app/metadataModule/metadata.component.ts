@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { PageEvent, MatPaginator, MatPaginatorIntl } from '@angular/material';
 import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { AuthService } from '@geonature/components/auth/auth.service';
 import { AppConfig } from '@geonature_config/app.config';
 
 export class MetadataPaginator extends MatPaginatorIntl {
@@ -47,17 +46,11 @@ export class MetadataComponent implements OnInit {
   pageSize: number = AppConfig.METADATA.NB_AF_DISPLAYED;
   activePage: number = 0;
   pageSizeOptions: Array<number> = [10, 25, 50, 100];
-  currentUser: any;
 
-  constructor(
-    public _cruvedStore: CruvedStoreService,
-    private _dfs: DataFormService,
-    private _authService: AuthService
-  ) {}
+  constructor(public _cruvedStore: CruvedStoreService, private _dfs: DataFormService) {}
 
   ngOnInit() {
     this.getAcquisitionFrameworksAndDatasets();
-    this.currentUser = this._authService.getCurrentUser();
   }
 
   //recuperation cadres d'acquisition
