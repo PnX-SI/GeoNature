@@ -1,19 +1,20 @@
 <div [style.display]="formDefComp.hidden ? 'none': 'inherit'">
-  <div *ngIf="(formDefComp.type_widget == 'checkbox' && formDefComp.values.length > 1)
-  || [
-  'text',
-  'textarea',
-  'radio',
-  'select',
-  'time',
-  'number',
-  'file',
-  'medias',
-  'bool_radio'
-  ].includes(formDefComp.type_widget)
-  ">
-
-    <small [attr.for]="formDefComp.attribut_name">{{formDefComp.attribut_label}}
+  <div
+    *ngIf="(formDefComp.type_widget == 'checkbox' && formDefComp.values.length > 1)
+      || [
+      'text',
+      'textarea',
+      'radio',
+      'select',
+      'time',
+      'number',
+      'file',
+      'medias',
+      'bool_radio'
+      ].includes(formDefComp.type_widget)"
+  >
+    <small [attr.for]="formDefComp.attribut_name">
+      {{formDefComp.attribut_label}}
     </small>
     <mat-icon
       *ngIf="formDefComp.definition"
@@ -21,7 +22,10 @@
       matTooltipClass="form-tooltip"
       class="small-icon"
       matSuffix
-    >help</mat-icon>
+    >
+      help
+    </mat-icon>
+  </div>
 
   </div>
 
@@ -42,8 +46,9 @@
         matTooltipClass="form-tooltip"
         class="small-icon"
         matSuffix
-      >help</mat-icon>
-
+      >
+        help
+      </mat-icon>
     </ng-container>
 
     <div>
@@ -78,6 +83,7 @@
         </label>
       </div>
     </div>
+
     <input
       *ngSwitchCase="'text'"
       class="form-control form-control-sm"
@@ -85,6 +91,7 @@
       id="{{formDefComp.attribut_name}}_{{rand}}"
       type="text"
     >
+
     <textarea
       *ngSwitchCase="'textarea'"
       class="form-control form-control-sm"
@@ -92,7 +99,7 @@
       id="{{formDefComp.attribut_name}}_{{rand}}"
       type="textarea"
     >
-      </textarea>
+    </textarea>
 
     <select
       *ngSwitchCase="'select'"
@@ -100,14 +107,18 @@
       id="{{formDefComp.attribut_name}}_{{rand}}"
       [formControl]="form.get(formDefComp.attribut_name)"
     >
-      <option
-        [value]="null"
-        *ngIf="!formDefComp.noNullOption"
-      > - </option>
-      <option
-        *ngFor="let val of formDefComp.values"
-        [value]="val"
-      >{{val}}</option>
+        <option
+          [value]="null"
+          *ngIf="!formDefComp.noNullOption"
+        >
+          -
+        </option>
+        <option
+          *ngFor="let val of formDefComp.values"
+          [value]="val"
+        >
+          {{val}}
+        </option>
     </select>
 
     <pnx-nomenclature
@@ -137,8 +148,9 @@
         <label
           class="custom-control-label"
           for="{{formDefComp.attribut_name}}"
-        ><span [innerHTML]="formDefComp.attribut_label">
-          </span></label>
+        >
+          <span [innerHTML]="formDefComp.attribut_label"> </span>
+        </label>
       </div>
       <ng-template #elseBlock>
         <div
@@ -157,11 +169,12 @@
           <label
             [for]="val"
             class="custom-control-label"
-          ><span [innerHTML]="val"></span></label>
+          >
+            <span [innerHTML]="val"></span>
+        </label>
         </div>
       </ng-template>
     </div>
-
 
     <div *ngSwitchCase="'bool_radio'">
       <div
@@ -183,7 +196,6 @@
           <span [innerHTML]="val"></span>
         </label>
       </div>
-
     </div>
 
     <div *ngSwitchCase="'radio'">
@@ -207,7 +219,6 @@
           <span [innerHTML]="val"></span>
         </label>
       </div>
-
     </div>
 
     <pnx-taxonomy
