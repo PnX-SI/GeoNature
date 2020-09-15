@@ -339,7 +339,7 @@ MAIL_ON_ERROR = false
     # Chaque section [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]] correspond à un champ (de type checkbox, select etc...)
     [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]]
         type_widget = "checkbox"
-        attribut_label = "<a target="_blank" href='http://docs.geonature.fr'>J'ai lu et j'accepte la charte</a>"
+        attribut_label = "<a target=\"_blank\" href=\"http://docs.geonature.fr\">J'ai lu et j'accepte la charte</a>"
         attribut_name = "validate_charte"
         values = [true] 
         required = true
@@ -373,6 +373,9 @@ MAIL_ON_ERROR = false
         required = false
 
 [SERVER]
+    # Nivau de log du serveur.
+    # Indiquer la valeur numérique correspondant au niveau suivant;
+    # CRITICAL: 50 ; ERROR: 40 ; WARNING: 30 ; INFO: 20 ; DEBUG: 10 ; NOTSET: 0
     LOG_LEVEL = 20
 
 

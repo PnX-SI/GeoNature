@@ -324,7 +324,9 @@ CREATE SEQUENCE t_parameters_id_parameter_seq
 ALTER SEQUENCE t_parameters_id_parameter_seq OWNED BY t_parameters.id_parameter;
 ALTER TABLE ONLY t_parameters ALTER COLUMN id_parameter SET DEFAULT nextval('t_parameters_id_parameter_seq'::regclass);
 SELECT pg_catalog.setval('t_parameters_id_parameter_seq', 1, false);
-
+ALTER TABLE t_parameters ADD CONSTRAINT unique_t_parameters_id_organism_parameter_name UNIQUE (id_organism, parameter_name);
+-- index spécifique pour la prise en compte des cas ou id_organism est null (cas de figure qui rompt la contrainte d'unicité)
+CREATE UNIQUE INDEX i_unique_t_parameters_parameter_name_with_id_organism_null ON t_parameters (parameter_name) WHERE id_organism IS NULL;
 
 CREATE TABLE bib_tables_location
 (
