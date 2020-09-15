@@ -48,8 +48,10 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
     this.getData();
   }
 
-  onToppingRemoved(event) {
-    console.log(event);
+  onToppingRemoved(val) {
+
+    const value = this.parentFormControl.value;
+    this.parentFormControl.patchValue(value.filter(v => v !== val));
   }
 
   searchChanged(event) {
@@ -121,7 +123,7 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
           }
         );
     } else if (this.values) {
-      this.initValues(this.values)
+      this.initValues(this.values);
     }
   }
 

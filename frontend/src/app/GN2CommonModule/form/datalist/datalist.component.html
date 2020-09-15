@@ -11,7 +11,7 @@
       <mat-select-trigger *ngIf="multiple">
         <mat-chip-list>
           <mat-chip *ngFor="let value of selectedValues()"
-            [removable]="true" (removed)="onToppingRemoved(topping)">
+            [removable]="true" (removed)="onToppingRemoved(value)">
             {{ displayLabelFromValue(value) }}
             <mat-icon matChipRemove>cancel</mat-icon>
           </mat-chip>
