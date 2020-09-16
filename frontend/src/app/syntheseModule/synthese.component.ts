@@ -56,7 +56,10 @@ export class SyntheseComponent implements OnInit {
       },
       error => {
         this.searchService.dataLoaded = true;
-        if (error.status !== 403) {
+        if (error.status === 400) {
+          console.log(error);
+          this._commonService.translateToaster('error', error.statusText + ': Bad UUID format');
+        } else if (error.status !== 403) {
           this._commonService.translateToaster('error', 'ErrorMessage');
         }
       }
