@@ -98,7 +98,9 @@
                     id="identifiant"
                     placeholder="Identifiant"
                     formControlName="identifiant"
-                  >
+                    triggers="focus:blur"
+                    ngbTooltip="Cet identifiant vous sera demandé pour vous authentifier dans GeoNature."
+                  />
                   <small
                     *ngIf="
                       form.get('identifiant').hasError('required') &&
@@ -141,6 +143,8 @@
                     class="form-control"
                     id="password_confirmation"
                     placeholder="Confirmation du mot de passe"
+                    triggers="focus:blur"
+                    ngbTooltip="Répéter le mot de passe précédemment saisi."
                     formControlName="password_confirmation"
                   />
                   <small *ngIf="
