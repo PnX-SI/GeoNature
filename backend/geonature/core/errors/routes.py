@@ -3,7 +3,7 @@ import logging
 from flask import current_app, jsonify, Response
 
 from pypnusershub.db.tools import InsufficientRightsError
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError, DataError
 
 from utils_flask_sqla.response import json_resp
 from utils_flask_sqla.errors import UtilsSqlaError
@@ -29,6 +29,8 @@ def internal_error(error):  # pylint: disable=W0613
 def sqlalchemy_error(error):  # pylint: disable=W0613
     gunicorn_error_logger.error(error)
     DB.session.rollback()
+    if type(error) is DataError:
+        return {"message": "Bad request: " + str(error)}, 400
     return {"message": "internal server error"}, 500
 
 
