@@ -13,6 +13,8 @@ CHANGELOG
 - Attention à https://github.com/PnX-SI/GeoNature/blob/develop/data/migrations/update2.4.1to2.4.2.sql à virer et basculer sur 2.4.1to2.4.2.sql
 - https://github.com/PnX-SI/GeoNature/security
 - Migration data Statut biologique >> Comportement à faire aussi en synthèse, pas que Occtax
+- Revue de style (boutons, ombrages)
+- Order des menus à fournir par défaut ?
 
 **🚀 Nouveautés**
 
@@ -42,8 +44,10 @@ Les paramètres d'affichage/masquage des champs du formulaire opèrent les chang
     sudo python3 -m pip install pip==20.0.2
     /usr/local/bin/python3 -m pip install virtualenv==20.0.1
 
-
 Editer la variable python_path du fichier ``settings.ini`` et mettre ``/usr/local/bin/python3``.
+
+* Update SQL + Update SQL nomenclatures
+* Applicatiosn tierces à installer avant ?
 
 2.4.1 (2020-06-25)
 ------------------
