@@ -1,4 +1,3 @@
-import { distinctUntilChanged } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import {
   FormControl,
@@ -106,8 +105,6 @@ export class DynamicFormService {
     // Dans le html (pour pouvoir avoir required et disable avec une valeur donnée)
     if (formDef.disabled) {
       control.disable();
-    } else {
-      control.enable();
     }
   }
 
@@ -119,7 +116,8 @@ export class DynamicFormService {
   }
 
   addNewControl(formDef, formGroup: FormGroup) {
-    formGroup.addControl(formDef.attribut_name, this.createControl(formDef));
+    let control = this.createControl(formDef);
+    formGroup.addControl(formDef.attribut_name, control);
   }
 
   fileSizeMaxValidator(sizeMax): ValidatorFn {
