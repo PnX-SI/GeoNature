@@ -140,7 +140,7 @@
 
         -- correction de fonctions permissions (nom de la vue a changé)
 
-        CREATE OR REPLACE FUNCTION does_user_have_scope_permission
+        CREATE OR REPLACE FUNCTION gn_permissions.does_user_have_scope_permission
         (
         myuser integer,
         mycodemodule character varying,
@@ -168,7 +168,7 @@
         COST 100;
 
 
-        CREATE OR REPLACE FUNCTION user_max_accessible_data_level_in_module
+        CREATE OR REPLACE FUNCTION gn_permissions.user_max_accessible_data_level_in_module
         (
         myuser integer,
         myactioncode character varying,
@@ -192,7 +192,7 @@
         LANGUAGE plpgsql IMMUTABLE
         COST 100;
 
-        CREATE OR REPLACE FUNCTION cruved_for_user_in_module
+        CREATE OR REPLACE FUNCTION gn_permissions.cruved_for_user_in_module
         (
         myuser integer,
         mymodulecode character varying
