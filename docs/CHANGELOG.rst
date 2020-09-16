@@ -5,6 +5,15 @@ CHANGELOG
 2.5.0 (unreleased)
 ------------------
 
+**TOCHECK**
+
+- https://github.com/PnX-SI/GeoNature/compare/develop...ubuntu20_04
+- https://github.com/PnX-SI/GeoNature/commit/f4700a88b1f7644b2c4a4c7a067105ce93068884#diff-2ed0455f386ab9cd51dceaa8108533f9R223 / Renommer "Lieux". Et renommer tout en myplaces ?
+- https://github.com/PnX-SI/GeoNature/blob/7b2f0af89492d55ab34b4600497247ff86806759/data/migrations/2.4.0to2.4.2.sql#L131 / Manque un S à unique_bib_table_location_schema_name_table_name / tableS / A faire dans migration aussi
+- Attention à https://github.com/PnX-SI/GeoNature/blob/develop/data/migrations/update2.4.1to2.4.2.sql à virer et basculer sur 2.4.1to2.4.2.sql
+- https://github.com/PnX-SI/GeoNature/security
+- Migration data Statut biologique >> Comportement à faire aussi en synthèse, pas que Occtax
+
 **🚀 Nouveautés**
 
  * Refonte de l'ergonomie d'Occtax 

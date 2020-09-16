@@ -122,7 +122,7 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
         });
         // add the layers to the feature groupe
         this.mapService.fileLayerFeatureGroup.addLayer(newLayer);
-
+        this.mapService.setGeojsonCoord(geojsonArray);
         this.onLoad.emit(geojsonArray);
       }
       // remove the previous layer of the map

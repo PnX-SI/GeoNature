@@ -481,6 +481,20 @@ CREATE TABLE t_mobile_apps(
 
 COMMENT ON COLUMN t_mobile_apps.app_code IS 'Code de l''application mobile. Pas de FK vers t_modules car une application mobile ne correspond pas forcement à un module GN';
 
+/*MET 14/09/2020 Table t_places pour la fonctionnalité mes-lieux*/
+CREATE TABLE t_places
+(
+    id_place serial,
+    id_role integer NOT NULL,
+    place_name character varying(100),
+	  place_geom geometry
+);
+
+COMMENT ON COLUMN t_places.id_place IS 'Clé primaire autoincrémente de la table t_places';
+COMMENT ON COLUMN t_places.id_role IS 'Clé étrangère vers la table utilisateurs.t_roles, chaque lieu est associé à un utilisateur';
+COMMENT ON COLUMN t_places.place_name IS 'Nom du lieu';
+COMMENT ON COLUMN t_places.place_geom IS 'Géométrie du lieu';
+
 ---------------
 --PRIMARY KEY--
 ---------------
@@ -505,6 +519,10 @@ ALTER TABLE ONLY t_modules
 
 ALTER TABLE ONLY t_mobile_apps
     ADD CONSTRAINT pk_t_moobile_apps PRIMARY KEY (id_mobile_app);
+    
+/*MET 14/09/2020 Ajout de la clé primaire*/
+ALTER TABLE ONLY t_places
+    ADD CONSTRAINT pk_t_places PRIMARY KEY (id_place);
 
 ----------------
 --FOREIGN KEYS--
@@ -530,6 +548,10 @@ ALTER TABLE ONLY t_history_actions
 
 --ALTER TABLE ONLY t_history_actions
     --ADD CONSTRAINT fk_t_history_actions_t_roles FOREIGN KEY (id_digitiser) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
+    
+/*MET 14/09/2020 Ajout de la clé étrangère*/
+ALTER TABLE ONLY t_places
+  ADD CONSTRAINT fk_t_places_t_roles FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
 ---------------
 --CONSTRAINTS--
@@ -655,5 +677,4 @@ SELECT uuid_attached_row, max(validation_date) as max_date
 FROM gn_commons.t_validations
 GROUP BY uuid_attached_row
 ) last_val
-ON v.uuid_attached_row = last_val.uuid_attached_row AND v.validation_date = last_val.max_date
-
+ON v.uuid_attached_row = last_val.uuid_attached_row AND v.validation_date = last_val.max_date;

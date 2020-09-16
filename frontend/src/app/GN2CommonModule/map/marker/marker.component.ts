@@ -101,7 +101,9 @@ export class MarkerComponent implements OnInit, OnChanges {
     // observable to send geojson
     this.mapservice.firstLayerFromMap = false;
 
-    this.markerChanged.emit(this.markerToGeojson(this.mapservice.marker.getLatLng()));
+    const geojsonMarker = this.markerToGeojson(this.mapservice.marker.getLatLng());
+    this.mapservice.setGeojsonCoord(geojsonMarker);
+    this.markerChanged.emit(geojsonMarker);
   }
 
   markerMoveEvent(marker: Marker) {

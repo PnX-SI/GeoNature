@@ -321,19 +321,19 @@ MAIL_ON_ERROR = false
 # Gestion des demandes d'inscription
 [ACCOUNT_MANAGEMENT]
     # Activer l'affichage du lien vers le formulaire d'inscription
-    ENABLE_SIGN_UP = false
+    ENABLE_SIGN_UP = true
 
     # Activer l'affichage de l'onglet de gestion des demandes de compte utilisateur
     ENABLE_USER_MANAGEMENT = false
 
     # Valider automatiquement la demande de création de compte (=true), sinon nécessite une validation (=false)
-    AUTO_ACCOUNT_CREATION = true
+    AUTO_ACCOUNT_CREATION = false
 
     # Créer automatiquement (=true) un nouveau jeu de données pour chaque compte utilisateur
     AUTO_DATASET_CREATION = true
 
     # Email du validateur si auto_account_creation = false
-    VALIDATOR_EMAIL = "email@validateur.io"
+    VALIDATOR_EMAIL = "theo.lechemia@ecrins-parcnational.fr"
 
     # Configuration de la customisation du formulaire d'inscription
     # Chaque section [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]] correspond à un champ (de type checkbox, select etc...)

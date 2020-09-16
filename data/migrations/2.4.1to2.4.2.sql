@@ -140,7 +140,7 @@
 
         -- correction de fonctions permissions (nom de la vue a changé)
 
-        CREATE OR REPLACE FUNCTION does_user_have_scope_permission
+        CREATE OR REPLACE FUNCTION gn_permissions.does_user_have_scope_permission
         (
         myuser integer,
         mycodemodule character varying,
@@ -168,7 +168,7 @@
         COST 100;
 
 
-        CREATE OR REPLACE FUNCTION user_max_accessible_data_level_in_module
+        CREATE OR REPLACE FUNCTION gn_permissions.user_max_accessible_data_level_in_module
         (
         myuser integer,
         myactioncode character varying,
@@ -192,7 +192,7 @@
         LANGUAGE plpgsql IMMUTABLE
         COST 100;
 
-        CREATE OR REPLACE FUNCTION cruved_for_user_in_module
+        CREATE OR REPLACE FUNCTION gn_permissions.cruved_for_user_in_module
         (
         myuser integer,
         mymodulecode character varying
@@ -1301,7 +1301,7 @@ BEGIN
 			        FROM (
 			          SELECT
 			            id_acquisition_framework,
-			            id_nomenclature_objectif,
+			            id_nomenclature_objectif
 			          CASE
 			            WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_objectif) IN ('OLD_1', 'OLD_2', 'OLD_3', 'OLD_6') 
 			              THEN ref_nomenclatures.get_id_nomenclature('CA_OBJECTIFS', '8'),
@@ -1324,3 +1324,30 @@ END $$;
 
 DELETE FROM gn_meta.cor_acquisition_framework_objectif
 WHERE ref_nomenclatures.get_cd_nomenclature(id_nomenclature_objectif) IN ('OLD_1', 'OLD_2', 'OLD_3', 'OLD_4','OLD_5','OLD_6','OLD_7');
+
+
+-- Ajout d'une contrainte d'unicité sur la table gn_commons.t_parameters sur le duo de champs id_organism, parameter_name
+
+ALTER TABLE gn_commons.t_parameters ADD CONSTRAINT unique_t_parameters_id_organism_parameter_name UNIQUE (id_organism, parameter_name);
+CREATE UNIQUE INDEX i_unique_t_parameters_parameter_name_with_id_organism_null ON gn_commons.t_parameters (parameter_name) WHERE id_organism IS NULL;
+
+
+/*MET 14/09/2020 Table t_places pour la fonctionnalité mes-lieux*/
+CREATE TABLE gn_commons.t_places
+(
+    id_place serial,
+    id_role integer NOT NULL,
+    place_name character varying(100),
+	place_geom geometry
+);
+
+COMMENT ON COLUMN gn_commons.t_places.id_place IS 'Clé primaire autoincrémente de la table t_places';
+COMMENT ON COLUMN gn_commons.t_places.id_role IS 'Clé étrangère vers la table utilisateurs.t_roles, chaque lieu est associé à un utilisateur';
+COMMENT ON COLUMN gn_commons.t_places.place_name IS 'Nom du lieu';
+COMMENT ON COLUMN gn_commons.t_places.place_geom IS 'Géométrie du lieu';
+
+ALTER TABLE ONLY gn_commons.t_places
+    ADD CONSTRAINT pk_t_places PRIMARY KEY (id_place);
+
+ALTER TABLE ONLY gn_commons.t_places
+  ADD CONSTRAINT fk_t_places_t_roles FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE; 

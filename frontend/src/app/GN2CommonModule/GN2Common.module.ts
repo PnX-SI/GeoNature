@@ -75,6 +75,8 @@ import { MediaDialog } from '@geonature_common/form/media/media-dialog.component
 import { MediasComponent } from '@geonature_common/form/media/medias.component';
 import { MediasTestComponent } from '@geonature_common/form/media/medias-test.component';
 import { DatalistComponent } from '@geonature_common/form/datalist/datalist.component';
+import { PlacesComponent } from './map/places/places.component';
+import { PlacesListComponent } from './map/placesList/placesList.component';
 
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
@@ -93,7 +95,7 @@ import { FormService } from './form/form.service';
 import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
-import { MediaService } from '@geonature_common/service/media.service'
+import { MediaService } from '@geonature_common/service/media.service';
 
 // add all rxjs operators
 import 'rxjs/Rx';
@@ -175,6 +177,8 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MediasTestComponent,
     ConfirmationDialog,
     DatalistComponent,
+    PlacesComponent,
+    PlacesListComponent
   ],
   providers: [
     TranslateService,
@@ -261,7 +265,9 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MediasComponent,
     MediaDialog,
     DisplayMediasComponent,
-    DatalistComponent
+    DatalistComponent,
+    PlacesComponent,
+    PlacesListComponent
   ]
 })
 export class GN2CommonModule { }
