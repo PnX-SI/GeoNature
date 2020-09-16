@@ -216,6 +216,14 @@
       </div>
     </div>
 
+    <div
+      *ngSwitchCase="'html'"
+      id="{{formDefComp().attribut_name}}__{{ rand }}"
+      [class]="formDefComp().class"
+      [innerHTML]="formDefComp().html"
+    >
+    </div>
+
     <div>
       <pnx-medias
         *ngSwitchCase="'medias'"
@@ -224,7 +232,8 @@
         [sizeMax]="appConfig.MEDIAS.MEDIAS_SIZE_MAX"
         [default]="formDefComp.default || {}"
         [details]="formDefComp.details"
-      ></pnx-medias>
+      >
+      </pnx-medias>
     </div>
 
     <pnx-nomenclature
