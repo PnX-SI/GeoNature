@@ -9,31 +9,42 @@
   'number',
   'file',
   'medias',
-  'bool_checkbox',
   'bool_radio'
   ].includes(formDefComp().type_widget)
   " >
 
   <small [attr.for]="formDefComp().attribut_name">{{formDefComp().attribut_label}}
-    <i
-    *ngIf="formDefComp().definition"
-    class="material-icons small-icon"
-    [matTooltip]="formDefComp().definition"
-    matTooltipClass="form-tooltip"
-    >help</i>
   </small>
+  <mat-icon
+  *ngIf="formDefComp().definition"
+  [matTooltip]="formDefComp().definition"
+  matTooltipClass="form-tooltip"
+  class="small-icon"
+  matSuffix
+  >help</mat-icon>
+
 </div>
 
   <div [ngSwitch]="formDefComp().type_widget">
 
+    <ng-container *ngSwitchCase="'bool_checkbox'">
       <input
-      *ngSwitchCase="'bool_checkbox'"
-      class='bool-checkbox'
+      class="bool-checkbox"
       type="checkbox"
       id="{{formDefComp().attribut_name}}"
       [name]="formDefComp().attribut_name"
       [formControl]="form.get(formDefComp().attribut_name)"
-    >
+      >
+      <small>{{formDefComp().attribut_label}}</small>
+      <mat-icon
+      *ngIf="formDefComp().definition"
+      [matTooltip]="formDefComp().definition"
+      matTooltipClass="form-tooltip"
+      class="small-icon"
+      matSuffix
+      >help</mat-icon>
+
+    </ng-container>
 
 
       <pnx-medias

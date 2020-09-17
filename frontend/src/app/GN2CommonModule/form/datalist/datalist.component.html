@@ -26,10 +26,18 @@
         {{ displayLabel(value) }}
       </mat-option>
     </mat-select>
+    <!-- <i
+        *ngIf="definition"
+        class="material-icons small-icon"
+        [matTooltip]="definition"
+        matTooltipClass="form-tooltip"
+        matSuffix
+        >help</i> -->
     <mat-icon
     *ngIf="definition"
     [matTooltip]="definition"
     matTooltipClass="form-tooltip"
+    class="small-icon"
     matSuffix
     >help</mat-icon>
   </mat-form-field>
