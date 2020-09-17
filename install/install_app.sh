@@ -101,6 +101,8 @@ then
   sudo rm -rf venv
 fi
 
+pip3 install virtualenv
+
 if [[ $python_path ]]; then
   echo "Installation du virtual env..."
   python3 -m virtualenv -p $python_path venv
@@ -110,7 +112,7 @@ fi
 
 
 echo "Ajout de l'autocomplétion de la commande GeoNature au virtual env..."
-readonly bin_venv_dir="${BASE_DIR}/backend/venv/bin/"
+readonly bin_venv_dir="${BASE_DIR}/backend/venv/bin"
 readonly activate_file="${bin_venv_dir}/activate"
 readonly assets_install_dir="${BASE_DIR}/install/assets"
 readonly src_completion_file="${assets_install_dir}/geonature_bash_completion.sh"

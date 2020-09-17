@@ -44,7 +44,6 @@ pipenv-to-requirements==0.2.2
 pipenv==9.0.3
 pluggy==0.6.0
 prompt-toolkit==1.0.15
-psutil==5.4.3
 ptyprocess==0.5.2
 py==1.5.2
 pycodestyle==2.3.1
@@ -55,6 +54,7 @@ pytest-flask==0.15.1
 pytest-pythonpath==0.7.1
 pytest==3.3.2
 pytz==2017.3
+pylint==2.6.0
 scandir==1.6
 shutilwhich==1.1.0
 simplegeneric==0.8.1
