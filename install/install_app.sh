@@ -101,6 +101,8 @@ then
   sudo rm -rf venv
 fi
 
+pip3 install virtualenv
+
 if [[ $python_path ]]; then
   echo "Installation du virtual env..."
   python3 -m virtualenv -p $python_path venv
