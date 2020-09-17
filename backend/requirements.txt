@@ -10,7 +10,7 @@
 # `Pipfile.lock` and then regenerate `requirements*.txt`.
 ################################################################################
 
-https://github.com/PnX-SI/UsersHub-authentification-module/archive/develop.zip
+https://github.com/PnX-SI/UsersHub-authentification-module/archive/1.4.4.zip
 https://github.com/PnX-SI/Nomenclature-api-module/archive/develop.zip
 https://github.com/PnX-SI/Habref-api-module/archive/develop.zip
 chardet==3.0.4
