@@ -41,6 +41,8 @@ Si vous êtes encore sur Debian 9 (fourni avec Python 3.5), veuillez suivre les 
 Installer pyenv (utilitaire pour installer différentes version de Python)
 
 ::
+    sudo apt-get update 
+    sudo apt-get upgrade
 
     sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev \
     libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
@@ -58,6 +60,13 @@ Installer Python 3.7.9
 
     pyenv install 3.7.9
     pyenv global 3.7.9
+
+Editer ensuite le fichier ``config/settings.ini`` pour change la variable python_path (remplacer <MON_USER> par votre utilisateur linux courant
+NB: faire pareil dans TaxHub et UserHub
+
+::
+
+    /home/<MON_USER>/.pyenv/shims/python3
 
 * Update SQL + Update SQL nomenclatures
 * Applicatiosn tierces à installer avant ?
