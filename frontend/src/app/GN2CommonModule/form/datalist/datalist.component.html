@@ -29,7 +29,9 @@
     <mat-icon
     *ngIf="definition"
     [matTooltip]="definition"
-    matSuffix>help</mat-icon>
+    matTooltipClass="form-tooltip"
+    matSuffix
+    >help</mat-icon>
   </mat-form-field>
 
   <ng-template #loadingBlock>

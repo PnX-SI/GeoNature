@@ -5,3 +5,7 @@
 .bool-checkbox {
   padding-bottom: 5px;
 }
+
+::ng-deep .form-tooltip {
+  font-size: 1em;
+}

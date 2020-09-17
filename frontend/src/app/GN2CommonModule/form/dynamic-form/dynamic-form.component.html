@@ -1,5 +1,4 @@
 <div [style.display]="formDefComp().hidden ? 'none': 'inherit'">
-
 <div *ngIf="(formDefComp().type_widget == 'checkbox' && formDefComp().values.length > 1)
   || [
   'text',
@@ -20,6 +19,7 @@
     *ngIf="formDefComp().definition"
     class="material-icons small-icon"
     [matTooltip]="formDefComp().definition"
+    matTooltipClass="form-tooltip"
     >help</i>
   </small>
 </div>
@@ -221,6 +221,7 @@
       [required]="formDefComp().required"
       [params]="formDefComp().params"
       [definition]="formDefComp().definition"
+      [filters]="formDefComp().filters"
       ></pnx-datalist>
     </div>
   </div>

@@ -1,3 +1,4 @@
+import { filter } from 'rxjs/operators';
 import {
   Component,
   OnInit,
@@ -31,6 +32,9 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
   @Input() required: boolean;
   @Input() definition: boolean; // help
 
+  @Input() filters = {}; // help
+
+
   @Input() dataPath: string; // pour atteindre la liste si elle n'est pas à la racine de la réponse de l'api.
   // si on a 'data/liste' on mettra dataPath='data'
 
@@ -61,12 +65,24 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
   }
 
   getFilteredValues() {
-    const values = (this.values || []);
-    return values
+    let values = (this.values || []);
+
+    values =  values
       // filter search
       .filter(v => !this.search || this.displayLabel(v).toLowerCase().includes(this.search.toLowerCase()))
       // remove doublons (keyValue)
       .filter((item, pos, self) => self.findIndex(i => i[this.keyValue] === item[this.keyValue]) === pos);
+
+      for (const key of Object.keys(this.filters || [])) {
+        const filter_ = this.filters[key];
+        if (filter_.length) {
+          values = filter_
+            .map(f => values.find(v => v[key] === f))
+            .filter(v => !!v);
+        }
+      }
+
+    return values;
   }
 
   selectedValues() {
