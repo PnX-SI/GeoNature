@@ -32,19 +32,32 @@ Les paramètres d'affichage/masquage des champs du formulaire opèrent les chang
 ``obs_meth`` devient ``osb_tech`` 
 ``obs_technique`` devient ``tech_collect``
 
+
+Avant la migration: 
+
+A partir la version 2.5.0 de GeoNature, la version Python 3.5 n'est plus supportée. Seules les version 3.6+ le sont.
+Si vous êtes encore sur Debian 9 (fourni avec Python 3.5), veuillez suivre les instruction suivantes:
+
+Installer pyenv (utilitaire pour installer différentes version de Python)
+
 ::
 
-    cd /opt
-    sudo apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libxslt-dev libbz2-dev
-    sudo wget https://www.python.org/ftp/python/3.7.2/Python-3.7.2.tgz
-    sudo tar xzf Python-3.7.2.tgz
-    cd Python-3.7.2
-    sudo ./configure --enable-optimizations
-    sudo make install
-    sudo python3 -m pip install pip==20.0.2
-    /usr/local/bin/python3 -m pip install virtualenv==20.0.1
+    sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev \
+    libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+    xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
 
-Editer la variable python_path du fichier ``settings.ini`` et mettre ``/usr/local/bin/python3``.
+    curl https://pyenv.run | bash
+
+    export PATH="$HOME/.pyenv/bin:$PATH"
+    eval "$(pyenv init -)"
+    eval "$(pyenv virtualenv-init -)"
+
+Installer Python 3.7.9
+
+::
+
+    pyenv install 3.7.9
+    pyenv global 3.7.9
 
 * Update SQL + Update SQL nomenclatures
 * Applicatiosn tierces à installer avant ?
