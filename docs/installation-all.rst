@@ -6,7 +6,7 @@ Prérequis
 
 - Ressources minimum serveur :
 
-Un serveur Linux (Debian 9 ou 10 ou Ubuntu 16 ou 18 **architecture 64-bits**) disposant d’au moins de 4 Go RAM et de 20 Go d’espace disque.
+Un serveur Linux (Debian 10 ou Ubuntu 18 **architecture 64-bits**) disposant d’au moins de 4 Go RAM et de 20 Go d’espace disque.
 
 Le script global d'installation de GeoNature va aussi se charger d'installer les dépendances nécessaires : 
 
@@ -73,17 +73,6 @@ Pour Debian 10 :
 
         deb http://deb.debian.org/debian buster-updates main contrib non-free
         deb-src http://deb.debian.org/debian buster-updates main contrib non-free
-
-Pour Debian 9 :
-
-::
-
-        deb http://security.debian.org/debian-security stretch/updates main contrib non-free
-        deb-src http://security.debian.org/debian-security stretch/updates main contrib non-free
-        deb http://deb.debian.org/debian/ stretch-updates main contrib non-free
-        deb-src http://deb.debian.org/debian/ stretch-updates main contrib non-free
-        deb http://deb.debian.org/debian stretch main contrib non-free
-        deb-src http://deb.debian.org/debian stretch main contrib non-free
 
 
 * Mettre à jour de la liste des dépôts Linux :
