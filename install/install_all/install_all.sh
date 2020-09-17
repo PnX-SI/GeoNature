@@ -108,13 +108,6 @@ sudo apt-get install -y python3-wheel
 sudo apt-get install -y python3-cffi
 sudo apt-get install -y libbz2-dev
 
-cd /opt
-sudo wget https://www.python.org/ftp/python/3.7.7/Python-3.7.7.tgz
-sudo tar xzf Python-3.7.7.tgz
-cd Python-3.7.7
-sudo ./configure --enable-optimizations
-sudo make install
-cd 
 
 sudo apt-get install -y python3-dev
 sudo apt-get install -y python3-setuptools
