@@ -1,6 +1,7 @@
 """ Helpers to manipulate the execution environment """
 
 import os
+import subprocess
 import sys
 
 from pathlib import Path
@@ -9,8 +10,6 @@ from collections import ChainMap, namedtuple
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm.exc import NoResultFound
 from flask_marshmallow import Marshmallow
-
-from pip._internal.main import main as pip_main
 
 # Define GEONATURE_VERSION before import config_shema module
 # because GEONATURE_VERSION is imported in this module
@@ -145,11 +144,10 @@ def load_config(config_file=None):
 
 
 def import_requirements(req_file):
-    with open(req_file, "r") as requirements:
-        for req in requirements:
-            if pip_main(["install", req]) == 1:
-                raise Exception("Package {} not installed".format(req))
-
+    from geonature.utils.errors import GeoNatureError
+    cmd_return = subprocess.call(['pip', 'install', '-r', req_file])
+    if cmd_return != 0:
+        raise GeoNatureError("Error while installing module backend dependencies")
 
 def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
     """
