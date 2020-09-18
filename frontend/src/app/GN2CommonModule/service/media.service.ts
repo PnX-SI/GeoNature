@@ -182,9 +182,13 @@ export class MediaService {
 
   toString(media) {
     if (!(media instanceof Media)) { media = new Media(media); }
-    return `${media.title_fr} : ${media.description_fr} (${
-      this.getNomenclature(media.id_nomenclature_media_type).label_fr
-      }, ${media.author})`;
+    const description = media.description_fr ? ` : ${media.description_fr}` : '';
+    const details = this.typeMedia(media) || media.author
+      ? `(${
+        this.getNomenclature(media.id_nomenclature_media_type).label_fr
+        }${media.author ? 'par ' + media.author : ''})`
+      : '';
+    return `${media.title_fr} ${description} ${details}`.trim();
   }
 
   toHTML(media) {
