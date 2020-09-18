@@ -583,6 +583,12 @@ CREATE TRIGGER tri_insert_synthese_update_validation_status
   EXECUTE PROCEDURE gn_commons.fct_trg_update_synthese_validation_status();
 
 
+-----------
+--INDEXES--
+-----------
+
+CREATE INDEX i_t_validations_uuid_attached_row ON t_validations USING btree (uuid_attached_row);
+
 ---------
 --DATAS--
 ---------
