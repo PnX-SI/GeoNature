@@ -35,7 +35,7 @@
       [name]="formDefComp().attribut_name"
       [formControl]="form.get(formDefComp().attribut_name)"
       >
-      <small>{{formDefComp().attribut_label}}</small>
+      <span> {{formDefComp().attribut_label}} </span>
       <mat-icon
       *ngIf="formDefComp().definition"
       [matTooltip]="formDefComp().definition"
@@ -117,14 +117,14 @@
             <div class="custom-control custom-checkbox" *ngIf="formDefComp().values.length == 1; else elseBlock">
                 <input
                   type="checkbox"
-                  id="{{formDefComp().attribut_name}}_{{val}}"
+                  id="{{formDefComp().attribut_name}}"
                   class="custom-control-input"
                   [ngClass]="{'is-invalid': form.get(formDefComp().attribut_name).invalid}"
                   [name]="formDefComp().attribut_name"
                   [value]="formDefComp().values[0]"
                   (change)="onCheckChange($event, form.get(formDefComp().attribut_name))"
                 >
-                <label class="custom-control-label" for="{{formDefComp().attribut_name}}_{{val}}"><span [innerHTML]="formDefComp().attribut_label"> </span></label>
+                <label class="custom-control-label" for="{{formDefComp().attribut_name}}"><span [innerHTML]="formDefComp().attribut_label"> </span></label>
               </div>
             <ng-template #elseBlock>
                 <div *ngFor="let val of formDefComp().values; let index=index" class="custom-control custom-checkbox">
