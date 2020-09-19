@@ -17,7 +17,6 @@ import { CommonService } from '../../service/common.service';
   templateUrl: './datalist.component.html'
 })
 export class DatalistComponent extends GenericFormComponent implements OnInit {
-
   formId: string; // Unique form id
 
   @Input() values: Array<any>; // list of choices
@@ -34,6 +33,7 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
 
   @Input() filters = {}; // help
 
+  @Input() default;
 
   @Input() dataPath: string; // pour atteindre la liste si elle n'est pas à la racine de la réponse de l'api.
   // si on a 'data/liste' on mettra dataPath='data'
@@ -41,10 +41,7 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
   search = '';
   filteredValues;
 
-  constructor(
-    private _dfs: DataFormService,
-    private _commonService: CommonService,
-  ) {
+  constructor(private _dfs: DataFormService, private _commonService: CommonService) {
     super();
   }
 
@@ -54,7 +51,6 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
   }
 
   onToppingRemoved(val) {
-
     const value = this.parentFormControl.value;
     this.parentFormControl.patchValue(value.filter(v => v !== val));
   }
@@ -65,22 +61,28 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
   }
 
   getFilteredValues() {
-    let values = (this.values || []);
+    let values = this.values || [];
 
-    values =  values
+    values = values
       // filter search
-      .filter(v => !this.search || this.displayLabel(v).toLowerCase().includes(this.search.toLowerCase()))
+      .filter(
+        v =>
+          !this.search ||
+          this.displayLabel(v)
+            .toLowerCase()
+            .includes(this.search.toLowerCase())
+      )
       // remove doublons (keyValue)
-      .filter((item, pos, self) => self.findIndex(i => i[this.keyValue] === item[this.keyValue]) === pos);
+      .filter(
+        (item, pos, self) => self.findIndex(i => i[this.keyValue] === item[this.keyValue]) === pos
+      );
 
-      for (const key of Object.keys(this.filters || [])) {
-        const filter_ = this.filters[key];
-        if (filter_.length) {
-          values = filter_
-            .map(f => values.find(v => v[key] === f))
-            .filter(v => !!v);
-        }
+    for (const key of Object.keys(this.filters || [])) {
+      const filter_ = this.filters[key];
+      if (filter_.length) {
+        values = filter_.map(f => values.find(v => v[key] === f)).filter(v => !!v);
       }
+    }
 
     return values;
   }
@@ -110,44 +112,60 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
     return this.displayLabel(item);
   }
 
-
   initValues(data) {
-    this.values = data.map(v => typeof v !== 'object' ? { label: v, value: v } : v);
+    this.values = data.map(v => (typeof v !== 'object' ? { label: v, value: v } : v));
     this.filteredValues = this.getFilteredValues();
 
     // si requis
     // et un seul choix
     // et pas de valeur déjà choisie
     // alors on assigne ce choix d'office
-    if (this.required && this.values.length === 1 && !(this.parentFormControl.value && this.parentFormControl.value.length)) {
+
+    if (
+      this.required &&
+      this.filteredValues.length === 1 &&
+      !(this.parentFormControl.value && this.parentFormControl.value.length)
+    ) {
       const val = this.values[0][this.keyValue];
       this.parentFormControl.patchValue(this.multiple ? [val] : val);
+    }
+
+    // valeur par défaut (depuis input value)
+    if (!this.parentFormControl.value && this.default) {
+      console.log('value', this.filteredValues.find);
+      const value = this.multiple ? this.default : [this.default];
+      const res = value.map(val =>
+        typeof val === 'object'
+          ? ( this.filteredValues
+              .find(v => Object.keys(val).every(key => v[key] === val[key])) || {})
+              [this.keyValue]
+          : val
+      );
+      console.log(res);
+      this.parentFormControl.patchValue(this.multiple ? res : res[0]);
     }
   }
 
   getData() {
     if (!this.values && this.api) {
-      this._dfs.getDataList(this.api, this.application, this.params)
-        .subscribe(
-          (data) => {
-            let values = data;
-            if (this.dataPath) {
-              const paths = this.dataPath.split('/');
-              for (const path of paths) {
-                values = values[path];
-              }
+      this._dfs.getDataList(this.api, this.application, this.params).subscribe(
+        data => {
+          let values = data;
+          if (this.dataPath) {
+            const paths = this.dataPath.split('/');
+            for (const path of paths) {
+              values = values[path];
             }
-            this.initValues(values);
-          },
-          (error) => {
-            console.log('error', error);
-            this._commonService.regularToaster('error', error);
           }
-        );
+          this.initValues(values);
+        },
+        error => {
+          console.log('error', error);
+          this._commonService.regularToaster('error', error);
+        }
+      );
     } else if (this.values) {
       this.initValues(this.values);
     }
   }
-
-
 }
