@@ -1178,19 +1178,20 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
 @routes.route('/caSearch',methods=["GET"])
 @json_resp
 def ca_search(id=None,name=None,date=None,organisme=None,role=None):
+
+    id = request.args.get("id")
+    date = request.args.get("date")
+    organisme = request.args.get("organisme")
+    role = request.args.get("role")
     
-    requete=DB.session.query(TAcquisitionFramework.id_acquisition_framework,\
-            TAcquisitionFramework.unique_acquisition_framework_id,\
-            TAcquisitionFramework.acquisition_framework_name,\
-            TAcquisitionFramework.acquisition_framework_start_date, \
-            CorAcquisitionFrameworkActor.id_role, \
-            BibOrganismes.nom_organisme \
-            ) \
+    requete=DB.session.query(TAcquisitionFramework) \
             .join(CorAcquisitionFrameworkActor, TAcquisitionFramework.id_acquisition_framework == CorAcquisitionFrameworkActor.id_acquisition_framework)\
             .join(BibOrganismes, CorAcquisitionFrameworkActor.id_organism == BibOrganismes.id_organisme)
     
+    print("OK1")
             
     if id is not None:
+        print("OK2")
         req = requete.filter(TAcquisitionFramework.id_acquisition_framework==id)
     if name is not None:
         req = requete.filter(TAcquisitionFramework.acquisition_framework_name.like('%'+name+'%'))
@@ -1250,6 +1251,6 @@ def ca_search(id=None,name=None,date=None,organisme=None,role=None):
 
     data = req.all()
               
-    return data
+    return { 'data' : [d.as_dict(True) for d in data]}
 
 

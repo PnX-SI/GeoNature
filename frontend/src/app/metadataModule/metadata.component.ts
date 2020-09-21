@@ -273,33 +273,16 @@ export class MetadataComponent implements OnInit {
     console.log("updateAdvancedSearch");
     console.log(this.searchTerms);
 
-    //recherche des cadres d'acquisition qui matchent
-    this.tempAF = this.acquisitionFrameworks.filter(af => {
-      af.datasetsTemp = af.datasets;
-      //si vide => affiche tout et ferme le panel
-      if (!Object.values(this.searchTerms).find(term => term != '' && term != 'all')) {
-        // 'dé-expand' les accodions pour prendre moins de place
-        console.log("expandAccordions = false;")
-        this.expandAccordions = false;
-        return true;
-      } else {
-        // expand tout les accordion recherchés pour voir le JDD des CA
-        console.log("expandAccordions = true;")
-        this.expandAccordions = true;
 
-        for (let cr of ['num', 'title1', 'title2', 'start_date', 'organism', 'role']) {
-          if (this.searchTerms[cr]) {
-            if (!this.matchAf(af, cr, this.searchTerms[cr]))
-              return false;
-          }
-        }
+    this._dfs.getFilteredMetadata().subscribe(data => {
+      this.tempAF = data.data;
+      /*this.datasets = [];
+      this.tempAF.forEach(af => {
+        af['datasetsTemp'] = af['datasets'];
+        this.datasets = this.datasets.concat(af['datasets']);
+      })*/
 
-        return true;
-      }
     });
-    //retour à la premiere page du tableau pour voir les résultats
-    this.paginator.pageIndex = 0;
-    this.activePage = 0;
   }
 
   openSearchModal(searchModal) {

@@ -108,6 +108,11 @@ export class DataFormService {
     });
   }
 
+  getFilteredMetadata() {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/caSearch?id=1`, {
+    });
+  }
+
 
 
   getImports(id_dataset) {
