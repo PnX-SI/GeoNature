@@ -9,7 +9,6 @@ import {NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
 import { DataService } from "../../../../external_modules/import/frontend/app/services/data.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
-import { FormArray } from '@angular/forms';
 
 
 export class MetadataPaginator extends MatPaginatorIntl {
@@ -86,7 +85,7 @@ export class MetadataComponent implements OnInit {
 
   //recuperation cadres d'acquisition
   getAcquisitionFrameworksAndDatasets() {
-    this._dfs.getAfAndDatasetListMetadata().subscribe(data => {
+    this._dfs.getAfAndDatasetListMetadata({}).subscribe(data => {
       this.acquisitionFrameworks = data.data;
       this.tempAF = this.acquisitionFrameworks;
       this.datasets = [];
@@ -273,14 +272,13 @@ export class MetadataComponent implements OnInit {
     console.log("updateAdvancedSearch");
     console.log(this.searchTerms);
 
-
-    this._dfs.getFilteredMetadata().subscribe(data => {
+    this._dfs.getAfAndDatasetListMetadata(this.searchTerms).subscribe(data => {
       this.tempAF = data.data;
-      /*this.datasets = [];
+      this.datasets = [];
       this.tempAF.forEach(af => {
         af['datasetsTemp'] = af['datasets'];
         this.datasets = this.datasets.concat(af['datasets']);
-      })*/
+      })
 
     });
   }

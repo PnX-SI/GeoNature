@@ -147,12 +147,13 @@ def get_af_and_ds_metadata(info_role):
         d.id_acquisition_framework for d in get_af_cruved(info_role, as_model=True)
     ]
     list_id_af = [d.id_acquisition_framework for d in datasets] + ids_afs_cruved
+
     afs = (
-        DB.session.query(TAcquisitionFramework)
+        filtered_af_query(request.args)
         .filter(TAcquisitionFramework.id_acquisition_framework.in_(list_id_af))
         .all()
     )
-
+    list_id_af = [af.id_acquisition_framework for af in afs]
 
     afs_dict = []
     #  get cruved for each AF and prepare dataset
@@ -183,6 +184,8 @@ def get_af_and_ds_metadata(info_role):
     #  get cruved for each ds and push them in the af
     for d in datasets:
         dataset_dict = d.as_dict()
+        if d.id_acquisition_framework not in list_id_af:
+            continue
         dataset_dict["cruved"] = d.get_object_cruved(
             user_cruved, d.id_dataset, ids_dataset_user, ids_dataset_organisms,
         )
@@ -1175,82 +1178,38 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
     return mtd_utils.post_jdd_from_user(id_user=id_user, id_organism=id_organism)
 
 
-@routes.route('/caSearch',methods=["GET"])
-@json_resp
-def ca_search(id=None,name=None,date=None,organisme=None,role=None):
 
-    id = request.args.get("id")
-    date = request.args.get("date")
-    organisme = request.args.get("organisme")
-    role = request.args.get("role")
+def filtered_af_query(args):
+    
+    num = args.get("num")
+    name = args.get("role")
+    date = args.get("date")
+    organisme = args.get("organisme")
+    role = args.get("role")
     
     requete=DB.session.query(TAcquisitionFramework) \
             .join(CorAcquisitionFrameworkActor, TAcquisitionFramework.id_acquisition_framework == CorAcquisitionFrameworkActor.id_acquisition_framework)\
             .join(BibOrganismes, CorAcquisitionFrameworkActor.id_organism == BibOrganismes.id_organisme)
-    
-    print("OK1")
             
-    if id is not None:
-        print("OK2")
-        req = requete.filter(TAcquisitionFramework.id_acquisition_framework==id)
+    if num is not None:
+        requete = requete.filter(TAcquisitionFramework.id_acquisition_framework==num)
     if name is not None:
-        req = requete.filter(TAcquisitionFramework.acquisition_framework_name.like('%'+name+'%'))
+        requete = requete.filter(TAcquisitionFramework.acquisition_framework_name.like('%'+name+'%'))
     if date is not None:
-        req = requete.filter(TAcquisitionFramework.acquisition_framework_start_date.like('%'+date+'%'))
+        requete = requete.filter(TAcquisitionFramework.acquisition_framework_start_date.like('%'+date+'%'))
     if organisme is not None:
-        req = requete.filter(BibOrganismes.nom_organisme.like('%'+organisme+'%'))
+        requete = requete.filter(BibOrganismes.nom_organisme.like('%'+organisme+'%'))
     if role is not None:
-        req = requete.filter(CorAcquisitionFrameworkActor.id_acquisition_framework.like('%'+role+'%'))
-    if id is not None and name is not None:
-        req = requete.filter(TAcquisitionFramework.id_acquisition_framework==id,\
-                             TAcquisitionFramework.acquisition_framework_name.like('%'+name+'%'))
-    if id is not None and organisme is not None:
-        req = requete.filter(TAcquisitionFramework.id_acquisition_framework==id,\
-                             BibOrganismes.nom_organisme.like('%'+organisme+'%')
-                            )
-    if id is not None and role is not None:
-        req = requete.filter(TAcquisitionFramework.id_acquisition_framework==id,\
-                             CorAcquisitionFrameworkActor.id_acquisition_framework.like('%'+role+'%')
-                            )
-    if name is not None and organisme is not None:
-        req = requete.filter(TAcquisitionFramework.acquisition_framework_name.like('%'+name+'%'),\
-                             BibOrganismes.nom_organisme.like('%'+organisme+'%')
-                            )
-    if name is not None and role is not None:
-        req = requete.filter(TAcquisitionFramework.acquisition_framework_name.like('%'+name+'%'),\
-                             CorAcquisitionFrameworkActor.id_acquisition_framework.like('%'+role+'%')
-                            )
-    if organisme is not None and role is not None:
-        req = requete.filter(BibOrganismes.nom_organisme.like('%'+organisme+'%'),\
-                             CorAcquisitionFrameworkActor.id_acquisition_framework.like('%'+role+'%')
-                            )
-    if id is not None and name is not None and organisme is not None:
-        req = requete.filter(TAcquisitionFramework.id_acquisition_framework == id,\
-                            TAcquisitionFramework.acquisition_framework_name.like('%'+name+'%'),\
-                            BibOrganismes.nom_organisme.like('%'+organisme+'%')
-                            )
-    if id is not None and name is not None and role is not None:
-        req = requete.filter(TAcquisitionFramework.id_acquisition_framework == id,\
-                             TAcquisitionFramework.acquisition_framework_name.like('%'+name+'%'),\
-                             CorAcquisitionFrameworkActor.id_acquisition_framework.like('%'+role+'%')
-                            )
-    if name is not None and organisme is not None and role is not None:
-        req = requete.filter(TAcquisitionFramework.acquisition_framework_name.like('%'+name+'%'),\
-                             BibOrganismes.nom_organisme.like('%'+organisme+'%'),\
-                             CorAcquisitionFrameworkActor.id_acquisition_framework.like('%'+role+'%')
-                            )
+        requete = requete.filter(CorAcquisitionFrameworkActor.id_acquisition_framework.like('%'+role+'%'))
 
-    if id is not None and name is not None and organisme is not None and role is not None:  
-        req = requete.filter(TAcquisitionFramework.id_acquisition_framework == id,\
-                             TAcquisitionFramework.acquisition_framework_name.like('%'+name+'%'),\
-                             BibOrganismes.nom_organisme.like('%'+organisme+'%'),\
-                             CorAcquisitionFrameworkActor.id_acquisition_framework.like('%'+role+'%'))  
-
-    if id is None and name is None and organisme is None and role is None:
-        req = requete
-
-    data = req.all()
-              
-    return { 'data' : [d.as_dict(True) for d in data]}
+    return requete
 
 
+@routes.route('/caSearch',methods=["GET"])
+@json_resp
+def ca_search():
+
+    args = request.args
+    return { 'data' : [d.as_dict(True) for d in filtered_af_query(args).all()]}
+
+    

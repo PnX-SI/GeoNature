@@ -103,17 +103,18 @@ export class DataFormService {
   /**
    * Get dataset list for metadata modules
    */
-  getAfAndDatasetListMetadata() {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/af_datasets_metadata`, {
-    });
+  getAfAndDatasetListMetadata(searchTerms) {
+
+    let queryString = new HttpParams();
+    for (let key in searchTerms) {
+      queryString = queryString.set(key, searchTerms[key])
+    }
+
+    return this._http.get<any>(
+      `${AppConfig.API_ENDPOINT}/meta/af_datasets_metadata`, 
+      { params: queryString }
+    );
   }
-
-  getFilteredMetadata() {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/caSearch?id=1`, {
-    });
-  }
-
-
 
   getImports(id_dataset) {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/import/by_dataset/${id_dataset}`);
