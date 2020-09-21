@@ -3,7 +3,7 @@ Action triggered after register action (create temp user, change password etc...
 """
 import datetime
 
-from flask import render_template, current_app, url_for
+from flask import Markup, render_template, current_app, url_for
 from pypnusershub.db.models import Application, User
 from pypnusershub.db.models_register import TempUser
 from sqlalchemy.sql import func
@@ -144,6 +144,8 @@ def inform_user(user):
     """
     app_name = current_app.config["appName"]
     app_url = current_app.config["URL_APPLICATION"]
+    text_addon = current_app.config["ACCOUNT_MANAGEMENT"]["ADDON_USER_EMAIL"]
+    html_text_addon = Markup(text_addon)
 
     msg_html = render_template(
         "email_confirm_user_validation.html",
@@ -152,6 +154,7 @@ def inform_user(user):
         app_name=app_name,
         app_url=app_url,
         user_login=user["identifiant"],
+        text_addon=html_text_addon,
     )
     subject = f"Confirmation inscription {app_name}"
     send_mail([user["email"]], subject, msg_html)

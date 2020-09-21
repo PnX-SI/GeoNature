@@ -105,7 +105,9 @@ MAIL_ON_ERROR = false
     MAIL_USERNAME = "my_user_name - email address of the sender"
     MAIL_PASSWORD = "my_pass"
     MAIL_DEFAULT_SENDER = "my_email@email.com"
-    MAIL_MAX_EMAILS = <int>
+    # Nombre max d'email que le serveur peut envoyer aucours d'une seule connection
+    # Laisser en commentaire si le serveur n'a pas de limite.
+    # MAIL_MAX_EMAILS = 100
     MAIL_ASCII_ATTACHMENTS = false
     # Email(s) où envoyer les erreurs générées par le backend de GeoNature
     ERROR_MAIL_TO = ["email@email.com", "email2@email.com"]
@@ -323,23 +325,38 @@ MAIL_ON_ERROR = false
     # Activer l'affichage du lien vers le formulaire d'inscription
     ENABLE_SIGN_UP = true
 
-    # Activer l'affichage de l'onglet de gestion des demandes de compte utilisateur
+    # Activer l'affichage de l'onglet de gestion des demandes de compte 
+    # utilisateur
     ENABLE_USER_MANAGEMENT = false
 
-    # Valider automatiquement la demande de création de compte (=true), sinon nécessite une validation (=false)
+    # Valider automatiquement la demande de création de compte (=true), 
+    # sinon nécessite une validation (=false)
     AUTO_ACCOUNT_CREATION = false
 
-    # Créer automatiquement (=true) un nouveau jeu de données pour chaque compte utilisateur
+    # Créer automatiquement (=true) un nouveau jeu de données pour chaque
+    # compte utilisateur
     AUTO_DATASET_CREATION = true
 
     # Email du validateur si auto_account_creation = false
     VALIDATOR_EMAIL = "theo.lechemia@ecrins-parcnational.fr"
 
+    # Texte complémentaire ajouté à la fin des emails envoyés à l'utilisateur.
+    # Utiliser du HTML simple (compatible avec les email) ou du texte.
+    # Mettre une chaine vide pour ne rien ajouter.
+    # Par défaut, chaine vide.
+    ADDON_USER_EMAIL = """<p>
+            Toute l'équipe de GeoNature vous remercie pour votre inscription.
+        </p>"""
+
     # Configuration de la customisation du formulaire d'inscription
-    # Chaque section [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]] correspond à un champ (de type checkbox, select etc...)
+    # Chaque section [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]] correspond à un 
+    # champ (de type checkbox, select etc...)
     [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]]
         type_widget = "checkbox"
-        attribut_label = "<a target=\"_blank\" href=\"http://docs.geonature.fr\">J'ai lu et j'accepte la charte</a>"
+        attribut_label = """
+            <a target="_blank" href="http://docs.geonature.fr">
+                J'ai lu et j'accepte la charte
+            </a>"""
         attribut_name = "validate_charte"
         values = [true] 
         required = true

@@ -6,6 +6,8 @@
     <a href="{{ app_url }}">{{ app_url }}</a>
 </p>
 <p>Pour rappel, votre identifiant de connexion est : {{ user_login }}</p>
-
+{% if text_addon != '' %}
+    {{ text_addon }}
+{% endif%}
 <p>Bien cordialement,</p>
 <p>l'administrateur.</p>
