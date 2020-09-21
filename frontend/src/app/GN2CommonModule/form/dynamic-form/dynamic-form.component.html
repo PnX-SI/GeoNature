@@ -218,7 +218,8 @@
 
     <div
       *ngSwitchCase="'html'"
-      class="{{formDefComp().attribut_name}} {{formDefComp().class}}"
+      id="{{ formDefComp().attribut_name }}_{{ rand }}"
+      class="{{ formDefComp().class }}"
       [innerHTML]="formDefComp().html"
     >
     </div>
