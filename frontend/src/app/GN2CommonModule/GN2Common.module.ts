@@ -16,7 +16,16 @@ import {
   MatDialogModule,
   MatBadgeModule,
   MatProgressBarModule,
+  MatSlideToggleModule,
+  MatFormFieldModule,
+  MatAutocompleteModule,
+  MatSelectModule,
+  MatInputModule,
+  MatChipsModule
 } from '@angular/material';
+
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -65,6 +74,7 @@ import { MediaComponent } from '@geonature_common/form/media/media.component';
 import { MediaDialog } from '@geonature_common/form/media/media-dialog.component';
 import { MediasComponent } from '@geonature_common/form/media/medias.component';
 import { MediasTestComponent } from '@geonature_common/form/media/medias-test.component';
+import { DatalistComponent } from '@geonature_common/form/datalist/datalist.component';
 import { PlacesComponent } from './map/places/places.component';
 import { PlacesListComponent } from './map/placesList/placesList.component';
 
@@ -85,7 +95,7 @@ import { FormService } from './form/form.service';
 import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
-import { MediaService } from '@geonature_common/service/media.service'
+import { MediaService } from '@geonature_common/service/media.service';
 
 // add all rxjs operators
 import 'rxjs/Rx';
@@ -109,13 +119,20 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MatDialogModule,
     MatBadgeModule,
     MatProgressBarModule,
+    MatSlideToggleModule,
+    MatFormFieldModule,
+    MatAutocompleteModule,
+    MatSelectModule,
+    MatInputModule,
+    MatChipsModule,
+    NgxMatSelectSearchModule,
     FormsModule,
     ReactiveFormsModule,
     NgxDatatableModule,
     TranslateModule.forChild(),
     NgbModule.forRoot(),
     AutoCompleteModule,
-    TreeModule
+    TreeModule,
   ],
   declarations: [
     NomenclatureComponent,
@@ -159,6 +176,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MediasComponent,
     MediasTestComponent,
     ConfirmationDialog,
+    DatalistComponent,
     PlacesComponent,
     PlacesListComponent
   ],
@@ -221,6 +239,13 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MatDialogModule,
     MatBadgeModule,
     MatProgressBarModule,
+    MatSlideToggleModule,
+    MatFormFieldModule,
+    MatAutocompleteModule,
+    MatSelectModule,
+    MatInputModule,
+    MatChipsModule,
+    NgxMatSelectSearchModule,
     NgbModule,
     TranslateModule,
     MapListGenericFiltersComponent,
@@ -240,6 +265,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MediasComponent,
     MediaDialog,
     DisplayMediasComponent,
+    DatalistComponent,
     PlacesComponent,
     PlacesListComponent
   ]

@@ -92,6 +92,15 @@ def getRolesByMenuCode(code_liste):
     return [n.as_dict() for n in data]
 
 
+@routes.route("/listes", methods=["GET"])
+@json_resp
+def getListes():
+
+    q = DB.session.query(TListes)
+    lists = q.all()
+    return [l.as_dict() for l in lists]
+
+
 @routes.route("/role/<int:id_role>", methods=["GET"])
 @json_resp
 def get_role(id_role):

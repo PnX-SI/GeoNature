@@ -181,6 +181,7 @@ class TBaseSites(DB.Model):
     modules = DB.relationship(
         "TModules",
         lazy="select",
+        enable_typechecks=False,
         secondary=corSiteModule,
         primaryjoin=(corSiteModule.c.id_base_site == id_base_site),
         secondaryjoin=(corSiteModule.c.id_module == TModules.id_module),

@@ -1,30 +1,50 @@
 <div [style.display]="formDefComp().hidden ? 'none': 'inherit'">
-    <small *ngIf="(formDefComp().type_widget == 'checkbox' && formDefComp().values.length > 1)
-        || formDefComp().type_widget == 'text'
-        || formDefComp().type_widget == 'textarea'
-        || formDefComp().type_widget == 'radio'
-        || formDefComp().type_widget == 'select'
-        || formDefComp().type_widget == 'time'
-        || formDefComp().type_widget == 'number'
-        || formDefComp().type_widget == 'file'
-        || formDefComp().type_widget == 'medias'
-        || formDefComp().type_widget == 'bool_checkbox'
-        || formDefComp().type_widget == 'bool_radio'
-        " [attr.for]="formDefComp().attribut_name">{{formDefComp().attribut_label}}
-        <i
-        *ngIf="formDefComp().definition"
-        class="material-icons small-icon"
-        [matTooltip]="formDefComp().definition"
-        >help</i>
-      </small>
-    <div [ngSwitch]="formDefComp().type_widget">
+<div *ngIf="(formDefComp().type_widget == 'checkbox' && formDefComp().values.length > 1)
+  || [
+  'text',
+  'textarea',
+  'radio',
+  'select',
+  'time',
+  'number',
+  'file',
+  'medias',
+  'bool_radio'
+  ].includes(formDefComp().type_widget)
+  " >
+
+  <small [attr.for]="formDefComp().attribut_name">{{formDefComp().attribut_label}}
+  </small>
+  <mat-icon
+  *ngIf="formDefComp().definition"
+  [matTooltip]="formDefComp().definition"
+  matTooltipClass="form-tooltip"
+  class="small-icon"
+  matSuffix
+  >help</mat-icon>
+
+</div>
+
+  <div [ngSwitch]="formDefComp().type_widget">
+
+    <ng-container *ngSwitchCase="'bool_checkbox'">
       <input
-      *ngSwitchCase="'bool_checkbox'"
+      class="bool-checkbox"
       type="checkbox"
       id="{{formDefComp().attribut_name}}"
       [name]="formDefComp().attribut_name"
       [formControl]="form.get(formDefComp().attribut_name)"
-    >
+      >
+      <span> {{formDefComp().attribut_label}} </span>
+      <mat-icon
+      *ngIf="formDefComp().definition"
+      [matTooltip]="formDefComp().definition"
+      matTooltipClass="form-tooltip"
+      class="small-icon"
+      matSuffix
+      >help</mat-icon>
+
+    </ng-container>
 
 
       <pnx-medias
@@ -97,14 +117,14 @@
             <div class="custom-control custom-checkbox" *ngIf="formDefComp().values.length == 1; else elseBlock">
                 <input
                   type="checkbox"
-                  id="{{formDefComp().attribut_name}}_{{val}}"
+                  id="{{formDefComp().attribut_name}}"
                   class="custom-control-input"
                   [ngClass]="{'is-invalid': form.get(formDefComp().attribut_name).invalid}"
                   [name]="formDefComp().attribut_name"
                   [value]="formDefComp().values[0]"
                   (change)="onCheckChange($event, form.get(formDefComp().attribut_name))"
                 >
-                <label class="custom-control-label" for="{{formDefComp().attribut_name}}_{{val}}"><span [innerHTML]="formDefComp().attribut_label"> </span></label>
+                <label class="custom-control-label" for="{{formDefComp().attribut_name}}"><span [innerHTML]="formDefComp().attribut_label"> </span></label>
               </div>
             <ng-template #elseBlock>
                 <div *ngFor="let val of formDefComp().values; let index=index" class="custom-control custom-checkbox">
@@ -160,15 +180,15 @@
 
       </div>
 
-      <pnx-taxonomy *ngSwitchCase="'taxonomy'" [label]="formDefComp().attribut_label" [parentFormControl]="form.get(formDefComp().attribut_name)" [idList]="formDefComp().idComponent"
-        [charNumber]="3" [listLength]p="20">
+      <pnx-taxonomy *ngSwitchCase="'taxonomy'" [label]="formDefComp().attribut_label" [parentFormControl]="form.get(formDefComp().attribut_name)" [idList]="formDefComp().id_list"
+        [charNumber]="3" [listLength]="20">
       </pnx-taxonomy>
 
       <pnx-datasets *ngSwitchCase="'dataset'" [label]="formDef.attribut_label" [parentFormControl]="form.get(formDef.attribut_name)" [multiSelect]="formDef.multi_select"
        [moduleCode]="formDef.module_code">
       </pnx-datasets>
 
-      <pnx-observers *ngSwitchCase="'observers'" [label]="formDefComp().attribut_label" [parentFormControl]="form.get(formDefComp().attribut_name)" [idMenu]="formDefComp().idComponent" [codeList]="formDefComp().code_list">
+      <pnx-observers *ngSwitchCase="'observers'" [label]="formDefComp().attribut_label" [parentFormControl]="form.get(formDefComp().attribut_name)" [idMenu]="formDefComp().id_menu" [codeList]="formDefComp().code_list">
       </pnx-observers>
 
       <pnx-date *ngSwitchCase="'date'" [label]="formDefComp().attribut_label" [parentFormControl]="form.get(formDefComp().attribut_name)">
@@ -197,12 +217,23 @@
       type="number"
       >
 
-      <pnx-geometry-form *ngSwitchCase="'geometry'"
+      <pnx-datalist
+      *ngSwitchCase="'datalist'"
       [parentFormControl]="form.get(formDefComp().attribut_name)"
+      [application]="formDefComp().application"
+      [values]="formDefComp().values"
+      [api]="formDefComp().api"
+      [values]="formDefComp().values"
+      [keyValue]="formDefComp().keyValue || 'value'"
+      [keyLabel]="formDefComp().keyLabel || 'label'"
+      [multiple]="formDefComp().multiple"
+      [dataPath]="formDefComp().data_path"
       [label]="formDefComp().attribut_label"
-      [typeGeometry]="formDefComp().type_geometry"
-      [mapHeight]="formDefComp().mapHeight ? formDefComp().mapHeight : '40vh'"
-    >
-    </pnx-geometry-form>
+      [required]="formDefComp().required"
+      [params]="formDefComp().params"
+      [definition]="formDefComp().definition"
+      [filters]="formDefComp().filters"
+      [default]="formDefComp().default"
+      ></pnx-datalist>
     </div>
   </div>
