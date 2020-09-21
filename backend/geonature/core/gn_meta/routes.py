@@ -1179,7 +1179,6 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
 @json_resp
 def ca_search(id=None,name=None,date=None,organisme=None,role=None):
     
-    id=3
     requete=DB.session.query(TAcquisitionFramework.id_acquisition_framework,\
             TAcquisitionFramework.unique_acquisition_framework_id,\
             TAcquisitionFramework.acquisition_framework_name,\
@@ -1240,6 +1239,14 @@ def ca_search(id=None,name=None,date=None,organisme=None,role=None):
                              CorAcquisitionFrameworkActor.id_acquisition_framework.like('%'+role+'%')
                             )
 
+    if id is not None and name is not None and organisme is not None and role is not None:  
+        req = requete.filter(TAcquisitionFramework.id_acquisition_framework == id,\
+                             TAcquisitionFramework.acquisition_framework_name.like('%'+name+'%'),\
+                             BibOrganismes.nom_organisme.like('%'+organisme+'%'),\
+                             CorAcquisitionFrameworkActor.id_acquisition_framework.like('%'+role+'%'))  
+
+    if id is None and name is None and organisme is None and role is None:
+        req = requete
 
     data = req.all()
               
