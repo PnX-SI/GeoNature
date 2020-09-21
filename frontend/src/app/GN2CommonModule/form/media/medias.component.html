@@ -1,4 +1,4 @@
-<div *ngIf="bInitialized">
+<div *ngIf="bInitialized" class="medias-form">
   <div class="mat-accordeon">
     <mat-accordion>
       <div
@@ -12,6 +12,7 @@
         </button>
         <mat-expansion-panel
           [expanded]="parentFormControl.value.length === i + 1 && !media.id_media"
+          (closed)="media.closed=true" (opened)="media.closed=false"
         >
           <mat-expansion-panel-header>
             <mat-panel-title>
@@ -35,22 +36,22 @@
                   >
 
                   <pnx-display-medias
+                    *ngIf='media.sent'
                     [medias]="[media]"
                     index="0"
                     display="mini"
                   ></pnx-display-medias>
 
                   <span class="media-title">
-                    Titre: {{ media.title_fr }} ({{
-                      ms.getNomenclature(media.id_nomenclature_media_type)?.label_fr
-                    }}<ng-container *ngIf="media.author"
-                      >, <i>@{{ media.author }}</i></ng-container
-                    >)
+                    Titre: {{ media.title_fr }}
+                    <i>
+                      ({{ ms.typeMedia(media) }}<span *ngIf="media.author"> par {{ media.author }})</span>)
+                    </i>
                   </span>
                 </div>
                 <div>
                   <mat-progress-bar
-                    *ngIf="media.bLoading"
+                    *ngIf="media.bLoading && media.closed"
                     mode="determinate"
                     [value]="media.uploadPercentDone"
                   ></mat-progress-bar>
@@ -68,7 +69,7 @@
           >
           </pnx-media>
         </mat-expansion-panel>
-        <button
+        <!-- <button
           *ngIf="parentFormControl.value.length === i + 1"
           mat-mini-fab
           class="btn-add-media color-add-media"
@@ -79,16 +80,15 @@
           <mat-icon matTooltip="{{ disabled ? disabledTxt : ('Media.add' | translate) }}"
             >add</mat-icon
           >
-        </button>
+        </button> -->
       </div>
     </mat-accordion>
     <button
-      *ngIf="!(parentFormControl.value && parentFormControl.value.length)"
       mat-mini-fab
       id="add-media-btn"
       class="btn-add-media color-add-media"
       (click)="addMedia()"
-      [disabled]="disabled"
+      [disabled]="!validOrLoadingMedias() || disabled"
     >
       <mat-icon matTooltip="{{ disabled ? disabledTxt : ('Media.add' | translate) }}">add</mat-icon>
     </button>

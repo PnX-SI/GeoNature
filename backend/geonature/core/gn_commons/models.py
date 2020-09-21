@@ -111,19 +111,28 @@ class TMedias(DB.Model):
         if self.media_path and os.path.exists(
             os.path.join(current_app.config["BASE_DIR"] + "/" + self.media_path)
         ):
-            initial_path = self.media_path
-            (inv_file_name, inv_file_path) = initial_path[::-1].split("/", 1)
-            file_name = inv_file_name[::-1]
-            file_path = inv_file_path[::-1]
+            # delete file
+            self.remove_file()
+            # delete thumbnail
+            self.remove_thumbnails()
 
-            try:
-                self.media_path = rename_file(
-                    self.media_path, "{}/deleted_{}".format(file_path, file_name)
-                )
-            except FileNotFoundError:
-                raise Exception("Unable to delete file {}".format(initial_path))
+    def remove_file(self):
+        if not self.media_path:
+            return
+        initial_path = self.media_path
+        (inv_file_name, inv_file_path) = initial_path[::-1].split("/", 1)
+        file_name = inv_file_name[::-1]
+        file_path = inv_file_path[::-1]
 
-        # delete thumbnail test sur nom des fichier avec id dans le dossier thumbnail
+        try:
+            self.media_path = rename_file(
+                self.media_path, "{}/deleted_{}".format(file_path, file_name)
+            )
+        except FileNotFoundError:
+            raise Exception("Unable to delete file {}".format(initial_path))
+
+    def remove_thumbnails(self):
+        # delete thumbnail test sur nom des fichiers avec id dans le dossier thumbnail
         dir_thumbnail = os.path.join(
             current_app.config["BASE_DIR"],
             current_app.config["UPLOAD_FOLDER"],
@@ -133,7 +142,6 @@ class TMedias(DB.Model):
         for f in os.listdir(dir_thumbnail):
             if f.split("_")[0] == str(self.id_media):
                 abs_path = os.path.join(dir_thumbnail, f)
-                print("remove thumbnail {}".format(abs_path))
                 os.path.exists(abs_path) and os.remove(abs_path)
 
 

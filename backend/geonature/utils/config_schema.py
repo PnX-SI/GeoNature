@@ -92,6 +92,7 @@ class ServerConfig(Schema):
 
 class MediasConfig(Schema):
     MEDIAS_SIZE_MAX = fields.Integer(missing=50000)
+    THUMBNAIL_SIZES = fields.List(fields.Integer, missing=[200, 50])
 
 
 class MetadataConfig(Schema):

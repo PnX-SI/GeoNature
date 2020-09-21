@@ -146,7 +146,13 @@ export class MediaService {
   embedHref(media) {
     if (!(media instanceof Media)) { media = new Media(media); }
     if (['Vidéo Youtube'].includes(this.typeMedia(media))) {
-      const videoId = media.href().split("?").find(s => s.includes('v=')).replace('v=', '');
+      const v_href = media.href().split('/');
+      const urlLastPart = v_href[v_href.length - 1];
+      const videoId = urlLastPart.includes('?')
+      ? urlLastPart.includes('v=')
+        ? urlLastPart.split('?').find(s => s.includes('v=')).replace('v=', '')
+        : urlLastPart.split('?')[0]
+      : urlLastPart;
       return `https://www.youtube.com/embed/${videoId}`;
     }
     if (['Vidéo Dailymotion'].includes(this.typeMedia(media))) {
@@ -176,9 +182,13 @@ export class MediaService {
 
   toString(media) {
     if (!(media instanceof Media)) { media = new Media(media); }
-    return `${media.title_fr} : ${media.description_fr} (${
-      this.getNomenclature(media.id_nomenclature_media_type).label_fr
-      }, ${media.author})`;
+    const description = media.description_fr ? ` : ${media.description_fr}` : '';
+    const details = this.typeMedia(media) || media.author
+      ? `(${
+        this.getNomenclature(media.id_nomenclature_media_type).label_fr
+        }${media.author ? 'par ' + media.author : ''})`
+      : '';
+    return `${media.title_fr} ${description} ${details}`.trim();
   }
 
   toHTML(media) {
@@ -209,7 +219,7 @@ export class MediaService {
       tooltip += `<img style='
       height: 50px; width: 50px; border-radius: 25px; object-fit: cover;
       '
-      src='${media.href(50)}' alt='${media.title_fr}' >`;
+      src='${media.href(50)}' alt='${media.title_fr}' >`; // TODO PARAMETERS => taille des thumbnails
     } else {
       tooltip += `
       <div style='
