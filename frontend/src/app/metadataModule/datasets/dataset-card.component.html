@@ -128,7 +128,7 @@
               <tr>
                   <td class="textCenter">Source</td>
                   <td class="textCenter">Nombre de données</td>
-                  <td class="textCenter">Importé le</td>
+                  <td class="textCenter">Intégré le</td>
                   <td class="textCenter">Statut</td>
                   <td class="textCenter">Rapport</td>
               </tr>
@@ -136,18 +136,21 @@
             <tbody>
               <tr *ngFor='let import of dataset.imports'>
                  <td class="textCenter">{{import.import_table}}</td>
-                 <td class="textCenter"> [ {{import.source_count}} ]</td>
-                 <td class="textCenter">{{import.date_create_import | date: 'd/mm/yyyy h:mm a'}}</td>
+                 <td class="textCenter"> {{import.source_count}}</td>
+                 <td class="textCenter">{{import.date_create_import | date: 'd/MM/yyyy'}}</td>
                  <td class="textCenter">
                     <div class="imgStatus">
-                    <img class='imgImportSuccess'*ngIf="import.is_finished" src="./assets/images/tick.png"/>
-                    <img class='importImportFail' *ngIf="!import.is_finished" src="./assets/images/close.png"/>
+                    <i style="color: rgb(62, 233, 62);margin-right: 3%;margin-left: 3%;" class="fa fa-check-circle fa-3x imgImportSuccess" aria-hidden="true" *ngIf="import.is_finished"></i>
+                    <i style="color: rgb(248, 67, 67);margin-right: 3%;margin-left: 3%;" class="fa fa-times-circle fa-3x importImportFail" aria-hidden="true" *ngIf="!import.is_finished"></i>
                    </div>
                  </td>
                  <td>
                   <div id='imgRapport'>
-                    <img class='imgIcone' src="./assets/images/Rapport_Sensibles.svg" (click)="sensiReport(import.id_import)"/>
-                    <img class='imgIcone' src="./assets/images/Rapport_UUID.svg" (click)="uuidReport(import.id_import)"/>
+                    <img *ngIf="import.source_count > 0" class='imgIcone' src="./assets/images/Rapport_Sensibles.svg" (click)="sensiReport(import.id_import)" matTooltip="Exporter le rapport sensible" />
+                    <img *ngIf="import.source_count > 0" class='imgIcone' src="./assets/images/Rapport_UUID.svg" (click)="uuidReport(import.id_import)" matTooltip="Exporter le rapport UUID"/>
+
+                    <img *ngIf="import.source_count == 0" class='imgIcone' src="./assets/images/Rapport_Sensibles.svg" style="opacity: 0.3;" matTooltip="Impossible d'exporter rapport sensible" />
+                    <img *ngIf="import.source_count == 0" class='imgIcone' src="./assets/images/Rapport_UUID.svg" style="opacity: 0.3;" matTooltip="Impossible d'exporter le rapport sensible" />
                   </div>
                 </td>
               </tr>

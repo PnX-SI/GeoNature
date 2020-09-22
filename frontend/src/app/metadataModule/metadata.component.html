@@ -8,7 +8,7 @@
       <div class="row">
         <div class="form-group col-sm-7">
           <input class="form-control form-control-sm"
-            type="text" name="" id="" placeholder="Rechercher" (keyup)="updateSearchbar($event)">
+            type="text" name="" id="" placeholder="Rechercher" (keyup)="updateSearchbar($event)" >
         </div>
         <div class="col-sm-3">
           <button class="mat-stroked-button" (click)="openSearchModal(searchModal)"> Recherche avancée </button>
@@ -16,125 +16,69 @@
       </div>
       <div>Liste des cadres d'acquisition et des jeux de données associés</div>
       <br>
-      
-      <mat-accordion displayMode="flat" multi class="mat-table">
-        <div class='mat-elevation-z2'>
-          <section matSort class="mat-header-row">
-            <span class="mat-header-cell" style="margin-right: 8px">
-              Cadres d'acquisition
-            </span>
-          </section>
-          <section matSort class="mat-header-row">
-            <span class="mat-header-cell">
-              ID
-            </span>
-            <span class="mat-header-cell" style="min-width: 480px" >
-              Titre
-            </span>
-            <span class="mat-header-cell">
-              Date de lancement
-            </span>
-            <span class="mat-header-cell">
-              Créateur
-            </span>
-            <span class="mat-header-cell">
-              Maître d'ouvrage
-            </span>
-            <span class="mat-header-cell" style="width: 264px; margin-right: 8px">
-              Actions
-            </span>
-          </section>
-        </div>
-        <ng-container *ngFor="let af of tempAF; let idx = index">
-          <mat-expansion-panel *ngIf="isDisplayed(idx)" [expanded]="expandAccordions">
-            <mat-expansion-panel-header class="mat-row">
-              <span class="mat-cell" [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]">
-                <a [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]">
-                  {{af.id_acquisition_framework}}
-                </a>
-              </span>
-              <span class="mat-cell" style="min-width: 480px">
-                <a [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]">
-                  {{af.acquisition_framework_name}}
-                  <br/>
-                  <span style="color: gray"> {{af.unique_acquisition_framework_id}} </span>
-              </a>
-              </span>
-              <span class="mat-cell">
-                {{af.acquisition_framework_start_date}}
-              </span>
-              <span class="mat-cell">
-                <a href="mailto:{{af.creator_mail}}"> {{af.creator_mail}} </a>
-              </span>
-              <span class="mat-cell">
-                {{af.project_owner_name}}
-              </span>
-              <span class="mat-cell" style="margin-right: 10px; width: 264px">
-                <img src="./assets/images/Editer.svg" [routerLink]="['/metadata/af', af.id_acquisition_framework]">  
-                <img src="./assets/images/Donnees_map.svg" (click)="syntheseAf(af.id_acquisition_framework)" >
-                <img *ngIf="af.deletable" src="./assets/images/Poubelle.svg" (click)="deleteAf(af.id_acquisition_framework)">
-                <img *ngIf="!af.deletable" src="./assets/images/Poubelle_Off.svg" 
-                  matTooltip="La suppression du cadre d'acquisition n'est pas possible car des jeux de données y sont rattachées">
-              </span>
-            </mat-expansion-panel-header>
-            <table class="table" style="margin: 2px">
-              <thead class="bold">
-                  <td class="filling" style="min-width: 100px"> </td>
-                  <td class="mat-header-cell" style="min-width: 100%"> Jeu(x) de données </td>
-                  <td class="filling" style="min-width: 16px"> </td>
-              </thead>
-            </table>
-            <table class="table">
-              <thead class="bold">
-                  <td class="filling" style="width: 100px"> </td>
-                  <td class="mat-header-cell"> Id </td>
-                  <td class="mat-header-cell" style="min-width: 440px"> Nom du JDD </td>
-                  <td class="mat-header-cell"> Date de création </td>
-                  <td class="mat-header-cell"> Nombre de données </td>
-                  <td class="mat-header-cell"> Créateur </td>
-                  <td class="mat-header-cell" style="min-width: 118px"> Rapports </td>
-                  <td class="mat-header-cell" style="width: 264px"> Actions </td>
-                  <td class="filling" style="width: 16px"> </td>
-              </thead>
-              <tbody>
-                <tr *ngFor="let ds of af.datasetsTemp; let last = last">
-                    <td class="filling"> </td>
-                    <td> 
-                      <a [routerLink]="['/metadata/dataset_detail', ds.id_dataset]"> {{ds.id_dataset}} </a>
-                    </td>
-                    <td> 
-                      <a [routerLink]="['/metadata/dataset_detail', ds.id_dataset]">
-                        {{ds.dataset_name}} 
-                        <br/>
-                        <span style="color: gray"> {{ds.unique_dataset_id}} </span>
-                      </a>
-                    </td>
-                    <td> {{ds.meta_create_date}} </td>
-                    <td> {{ds.observation_count}} </td>
-                    <td> {{ ds.createur?.organism?.nom_organisme }} 
-                      <span *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"> - </span> {{ ds.createur?.role?.nom_complet }} </td>
-                    <td style="padding-left: 0px; padding-right: 0px">
-                      <img src="./assets/images/Rapport_Sensibles.svg" (click)="sensiReport(ds.id_dataset)"/>
-                      <img src="./assets/images/Rapport_UUID.svg" (click)="uuidReport(ds.id_dataset)"/>
-                    </td>
-                    <td  style="width: 264px; padding-left: 0px; padding-right: 0px">
-                      <img src="./assets/images/Editer.svg" [routerLink]="['/metadata/dataset', ds.id_dataset]"/>
-                      <img *ngIf="ds.active" src="./assets/images/Actif.svg" (click)="activateDs(ds.id_dataset, false)"/>
-                      <img *ngIf="!ds.active" src="./assets/images/Actif_Off.svg" (click)="activateDs(ds.id_dataset, true)"/>
-                      <img *ngIf="ds.active" src="./assets/images/Import.svg" (click)="importDs(ds.id_dataset)"> 
-                      <img *ngIf="!ds.active" src="./assets/images/Import_Off.svg"> 
-                      <img src="./assets/images/Donnees_map.svg" (click)="syntheseDs(ds.id_dataset)" >
-                      <img *ngIf="ds.deletable" src="./assets/images/Poubelle.svg" (click)="deleteDs(ds.id_dataset)">
-                      <img *ngIf="!ds.deletable" src="./assets/images/Poubelle_Off.svg"
-                        matTooltip="La suppression du jeu de données n'est pas possible car des données y sont rattachées dans la Synthèse">
-                    </td>
-                    <td class="filling"> </td>
-                </tr>
-              </tbody>
-            </table>
 
-          </mat-expansion-panel>
-        </ng-container>
+      <mat-accordion [multi]="true">
+              <div class="tab-title">
+                <div style="width: 5%">ID </div>
+                <div style="min-width: 40%"> Nom</div>
+                <div style="width: 10%"> Date de création</div>
+                <div style="width: 10%"> Créateur</div>
+                <div style="width: 20%"> Acteurs</div>
+                <div style="width: 10%"> Actions</div>
+              </div>
+                <!-- <div class="tab-title">
+                  <span>ID</span>
+                  <span>Nom</span>
+                  <span style="width: 50%">Date de création</span>
+                </div> -->
+                <ng-container *ngFor="let af of tempAF; let idx = index">
+                  <mat-expansion-panel *ngIf="isDisplayed(idx)" [expanded]="expandAccordions">
+                    <mat-expansion-panel-header
+                      collapsedHeight="80px" 
+                      expandedHeight="100px"
+                    >
+                      <mat-panel-title class="af-title">
+                        <div style="width: 5%">{{ af.id_acquisition_framework  }}</div>
+                        <div style="width: 40%"> <a [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]"> {{ af.acquisition_framework_name | uppercase }} </a> 
+                          <br> <small class="muted"> {{ af.unique_acquisition_framework_id  }}  </small>
+                        </div>
+                        <div style="width: 10%">{{af.acquisition_framework_start_date |date:'d/MM/yyyy'}}</div>
+                        <div style="width: 10%">{{af.creator_mail}}</div>
+                        <div style="width: 20%">{{af.project_owner_name}}</div>
+                        <div style="width: 10%; text-align: right"><a style="color: black;" [routerLink]="['/metadata/af', af.id_acquisition_framework]"><mat-icon> create</mat-icon></a></div>
+
+                      </mat-panel-title>
+            
+                    </mat-expansion-panel-header>
+                    <table class="table table-bordered">
+                      <thead class="bold">
+                        <tr>
+                            <td style="width:1%">
+                              Id
+                            </td>
+                            <td>Nom du JDD</td>
+                            <td>Date de création</td>
+                            <td>Nombre de données</td>
+                            <td>Créateurs</td>
+                            <td>Rapport</td>
+                            <td>Actions</td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let ds of af.datasetsTemp; let last = last">
+                            <td> {{ds.id_dataset}}</td>
+                            <td> {{ ds.dataset_name }} </td>
+                            <td> {{ds.meta_create_date |date:'d/MM/yyyy' }}</td>
+                            <td> {{ds.observation_count}} </td>
+                            <td> {{ ds.createur?.organism?.nom_organisme }} </td>
+                            <td> <mat-icon (click)="sensiReport(ds.id_dataset)" matTooltip="Rapport de sensibilité"> do_not_touch</mat-icon>  <mat-icon matTooltip="Rapport d'UUID" (click)="uuidReport(ds.id_dataset)"> format_list_numbered </mat-icon> </td>
+                            <td> <a style="color: black;" [routerLink]="['/metadata/dataset', ds.id_dataset]"><mat-icon> create</mat-icon></a> <mat-icon> done</mat-icon>  <mat-icon> download</mat-icon>  <mat-icon> room</mat-icon> <mat-icon> delete</mat-icon>  </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </mat-expansion-panel>
+                </ng-container>
+
       </mat-accordion>
       <mat-paginator #paginator
                     [length]="tempAF.length"
@@ -151,6 +95,7 @@
   </div>
 </div>
 
+
 <ng-template #searchModal let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h5 class="modal-title" id="exampleModalLabel"> Rechercher </h5>
@@ -158,11 +103,11 @@
   <div class="modal-body" style="align-items: flex-end;">
     <div class="row">
       <div class="col">
-        n° Dossier
+        UID
       </div>
       <div class="col">
         <input class="form-control form-control-sm"
-          type="text" name="" id="" placeholder="n° Dossier" (keyup)="updateAdvancedSearch($event, 'num')">
+          type="text" name="" id="" placeholder="n° Dossier" (keyup)="updateAdvancedCriteria($event, 'num')">
       </div>
     </div>
     <div class="row">
@@ -171,16 +116,7 @@
       </div>
       <div class="col">
         <input class="form-control form-control-sm"
-          type="text" name="" id="" placeholder="Titre / Identifiant" (keyup)="updateAdvancedSearch($event, 'title1')">
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        Titre / Identifiant
-      </div>
-      <div class="col">
-        <input class="form-control form-control-sm"
-          type="text" name="" id="" placeholder="Titre / Identifiant" (keyup)="updateAdvancedSearch($event, 'title2')">
+          type="text" name="" id="" placeholder="Titre / Identifiant" (keyup)="updateAdvancedCriteria($event, 'title1')">
       </div>
     </div>
     <div class="row">
@@ -188,17 +124,57 @@
         Crée le
       </div>
       <div class="col">
-        <input class="form-control form-control-sm"
-          type="text" name="" id="" placeholder="Crée le" (keyup)="updateAdvancedSearch($event, 'start_date')">
+        <!-- <input class="form-control form-control-sm"
+          type="text" name="" id="" placeholder="Crée le" (keyup)="updateAdvancedCriteria($event, 'start_date')"> -->
+          <div class="form-group">
+            <div class="input-group">
+              <input class="form-control" placeholder="yyyy-mm-dd" (ngModelChange) = "updateAdvancedCriteria($event, 'start_date')" 
+                     name="dp" [(ngModel)]="model" ngbDatepicker #d="ngbDatepicker">
+              <div class="input-group-append">
+                <button class="fa fa-calendar fa-2x" style="color: #7197FF;" (click)="d.toggle()" type="button"></button>
+              </div>
+            </div>
+          </div>
       </div>
     </div>
+
+    <div class="row">
+        <div class="col">
+            Organisme
+        </div>
+        <div class="col">
+          <select class="form-control form-control-sm" (change)="updateAdvancedCriteria($event, 'organism')">
+            <option value="" selected>Organisme</option>
+            <option *ngFor="let org of organisms" value="{{org.id_organisme}}" >
+              {{org.nom_organisme}} </option>
+        </select>
+        </div>
+    </div>
+
     <div class="row">
       <div class="col">
-        Organisme / Utilisateur
+          Utilisateur
       </div>
       <div class="col">
-        <input class="form-control form-control-sm"
-          type="text" name="" id="" placeholder="Organisme / Utilisateur" (keyup)="updateAdvancedSearch($event,'actor')">
+        <select class="form-control form-control-sm" (change)="updateAdvancedCriteria($event, 'role')">
+          <option value="" selected>Utilisateur</option>
+          <option *ngFor="let role of roles" value="{{role.id_role}}">
+            {{role.nom_complet}}</option>
+        </select>
+      </div>
+  </div>
+
+
+    <div class="row">
+      <div class="col">
+        Selecteur
+      </div>
+      <div class="col">
+        <select name="selecteur" id="selector" (change)="updateSelector($event)">
+          <option value="all">JDD ou CA</option>
+          <option value="ds">JDD</option>
+          <option value="af">CA</option>
+      </select>
       </div>
     </div>
 
@@ -207,6 +183,7 @@
       <div class="col">
       </div>
       <div class="col">
+        <button class="mat-stroked-button" (click)="updateAdvancedSearch()"> Rechercher </button>
         <button class="mat-stroked-button" (click)="closeSearchModal(searchModal)"> Fermer </button>
       </div>
     </div>

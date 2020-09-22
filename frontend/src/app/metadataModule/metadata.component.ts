@@ -4,10 +4,12 @@ import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.serv
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { Router, NavigationExtras } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import {NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
 
 import { DataService } from "../../../../external_modules/import/frontend/app/services/data.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
+
 
 export class MetadataPaginator extends MatPaginatorIntl {
   constructor() {
@@ -40,9 +42,9 @@ export class MetadataPaginator extends MatPaginatorIntl {
 
   ]
 })
-export class MetadataComponent /* extends ImportComponent */ implements OnInit {
+export class MetadataComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
-
+  model: NgbDateStruct;
   datasets = [];
   acquisitionFrameworks = [];
   tempAF = [];
@@ -50,6 +52,9 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
   public empty: boolean = false;
   expandAccordions = false;
   private researchTerm: string = '';
+  private selector: string = 'all';
+  public organisms: Array<any>;
+  public roles: Array<any>;
 
   pageSize: number = 10;
   activePage: number = 0;
@@ -70,11 +75,17 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
   ngOnInit() {
     this.getAcquisitionFrameworksAndDatasets();
     this.getImportList();
+    this._dfs.getOrganisms().subscribe(data => {
+      this.organisms = data;
+    });
+    this._dfs.getRoles({'group': false}).subscribe(data => {
+      this.roles = data;
+    });
   }
 
   //recuperation cadres d'acquisition
   getAcquisitionFrameworksAndDatasets() {
-    this._dfs.getAfAndDatasetListMetadata().subscribe(data => {
+    this._dfs.getAfAndDatasetListMetadata({}).subscribe(data => {
       this.acquisitionFrameworks = data.data;
       this.tempAF = this.acquisitionFrameworks;
       this.datasets = [];
@@ -155,33 +166,47 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
 
   matchAf(af, criteria, value) {
 
-    switch (criteria) {
-      case 'num':
-        if ((af.id_acquisition_framework+' ').toLowerCase().indexOf(value) !== -1)
+    if (this.selector == 'all' || this.selector == 'af') {
+      switch (criteria) {
+        case 'num':
+          if ((af.id_acquisition_framework+' ').toLowerCase().indexOf(value) !== -1)
+            return true;
+          break;
+        case 'title1':
+        case 'title2':
+          if (af.acquisition_framework_name.toLowerCase().indexOf(value) !== -1)
+            return true;
+          break;
+        case 'start_date':
+          // console.log("value : " + value)
+          // console.log(af.acquisition_framework_start_date)
+          if (af.acquisition_framework_start_date.toString() == value)
+            return true;
+          break;
+        case 'organism':
+          if (af.actors.find(actor => actor.id_organism == value))
+            return true;
+          break;
+        case 'role':
+          if (af.actors.find(actor => actor.id_role == value))
+            return true;
+          break;
+        default:
           return true;
-        break;
-      case 'title1':
-      case 'title2':
-        if (af.acquisition_framework_name.toLowerCase().indexOf(value) !== -1)
-          return true;
-        break;
-      case 'start_date':
-        if (af.acquisition_framework_start_date.toLowerCase().indexOf(value) !== -1)
-          return true;
-        break;
-      case 'actor':
-        if (af.creator_mail.toLowerCase().indexOf(value) !== -1
-          || af.project_owner_name.toLowerCase().indexOf(value) !== -1)
-          return true;
-        break;
-      default:
-        return true;
+      }
+      if (this.selector == 'af')
+        return false;
     }
 
     if (af.datasets) {
-      af.datasetsTemp = af.datasets.filter(
-        ds => this.matchDs(ds, criteria, value)
-      );
+      if (this.selector == 'ds' || this.selector == 'all') {
+        af.datasetsTemp = af.datasets.filter(
+          ds => this.matchDs(ds, criteria, value)
+        );
+      } else {
+        af.datasetsTemp = af.datasets;
+      }
+      console.log(af.datasetsTemp)
       return (af.datasetsTemp.length > 0);
     }
 
@@ -197,63 +222,71 @@ export class MetadataComponent /* extends ImportComponent */ implements OnInit {
 
     switch (criteria) {
       case 'num':
-          if ((ds.id_dataset+' ').toLowerCase().indexOf(value) !== -1)
-            return true;
-          break;
-        case 'title1':
-        case 'title2':
-          if (ds.dataset_name.toLowerCase().indexOf(value) !== -1)
-            return true;
-          break;
-        case 'start_date':
-          if (ds.meta_create_date.toLowerCase().indexOf(value) !== -1)
-            return true;
-          break;
-        case 'actor':
-          if (true)
-            return true;
-          break;
-        default:
+        if ((ds.id_dataset+' ').toLowerCase().indexOf(value) !== -1)
           return true;
+        break;
+      case 'title1':
+      case 'title2':
+        if (ds.dataset_name.toLowerCase().indexOf(value) !== -1)
+          return true;
+        break;
+      case 'start_date':
+        console.log("ds : " + ds.meta_create_date.toString().substring(0, 10))
+        if (ds.meta_create_date.toString().substring(0, 10) == value)
+          return true;
+        break;
+      case 'organism':
+        if (ds.actors.find(actor => actor.id_organism == value))
+          return true;
+        break;
+      case 'role':
+        if (ds.actors.find(actor => actor.id_role == value))
+          return true;
+        break;
+      default:
+        return true;
     }
 
     return false;
   }
 
-  updateAdvancedSearch(event, criteria) {
+  updateAdvancedCriteria(event, criteria) {
+    if (criteria != 'start_date')
+      this.searchTerms[criteria] = event.target.value.toLowerCase();
+    else
+      this.searchTerms[criteria] = event.year
+        + '-' + (event.month > 10 ? '' : '0') + event.month
+        + '-' + (event.day > 10 ? '' : '0') + event.day;
+  }
 
-    this.searchTerms[criteria] = event.target.value.toLowerCase();
-    this.researchTerm = event.target.value.toLowerCase();
+  updateSelector(event) {
+    this.selector = event.target.value.toLowerCase();
+    this.searchTerms['selector'] = this.selector;
+  }
 
-    //recherche des cadres d'acquisition qui matchent
-    this.tempAF = this.acquisitionFrameworks.filter(af => {
-      //si vide => affiche tout et ferme le panel
-      if (this.researchTerm === '') {
-        // 'dé-expand' les accodions pour prendre moins de place
-        this.expandAccordions = false;
-        //af.datasets.filter(ds=>true);
-        af.datasetsTemp = af.datasets;
-        return true;
-      } else {
-        // expand tout les accordion recherchés pour voir le JDD des CA
-        this.expandAccordions = true;
+  reinitAdvancedCriteria() {
+    this.searchTerms = { };
+  }
 
-        for (let cr of ['num', 'title1', 'title2', 'start_date', 'actor']) {
-          if (this.searchTerms[cr]) {
-            if (!this.matchAf(af, cr, this.searchTerms[cr]))
-              return false;
-          }
-        }
+  updateAdvancedSearch() {
 
-        return true;
-      }
+    console.log("updateAdvancedSearch");
+    console.log(this.searchTerms);
+
+    this._dfs.getAfAndDatasetListMetadata(this.searchTerms).subscribe(data => {
+      this.tempAF = data.data;
+      this.datasets = [];
+      this.tempAF.forEach(af => {
+        af['datasetsTemp'] = af['datasets'];
+        this.datasets = this.datasets.concat(af['datasets']);
+      })
+
     });
-    //retour à la premiere page du tableau pour voir les résultats
-    this.paginator.pageIndex = 0;
-    this.activePage = 0;
   }
 
   openSearchModal(searchModal) {
+    this.reinitAdvancedCriteria();
+    this.updateAdvancedSearch();
     this.modal.open(searchModal);
   }
 
