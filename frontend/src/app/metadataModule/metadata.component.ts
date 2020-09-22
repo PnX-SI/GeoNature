@@ -261,6 +261,7 @@ export class MetadataComponent implements OnInit {
 
   updateSelector(event) {
     this.selector = event.target.value.toLowerCase();
+    this.searchTerms['selector'] = this.selector;
   }
 
   reinitAdvancedCriteria() {

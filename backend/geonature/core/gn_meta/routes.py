@@ -133,7 +133,16 @@ def get_af_and_ds_metadata(info_role):
             log.error(e)
             with_mtd_error = True
     params = request.args.to_dict()
+    if 'selector' not in params:
+        params['selector'] = 'all'
     datasets = get_datasets_cruved(info_role, params, as_model=True)
+    print(params)
+    if params['selector']=='ds':
+        datasets = (
+            filtered_ds_query(request.args)
+            .filter(TAcquisitionFramework.id_acquisition_framework.in_([d.id_dataset for d in datasets]))
+            .all()
+        )
     ids_dataset_user = TDatasets.get_user_datasets(info_role, only_user=True)
     ids_dataset_organisms = TDatasets.get_user_datasets(info_role, only_user=False)
     ids_afs_user = TAcquisitionFramework.get_user_af(info_role, only_user=True)
@@ -1180,6 +1189,9 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
 
 
 def filtered_af_query(args):
+
+    if args.get('selector')=='ds':
+        return DB.session.query(TAcquisitionFramework)
     
     num = args.get("num")
     name = args.get("role")
@@ -1213,9 +1225,8 @@ def ca_search():
     return { 'data' : [d.as_dict(True) for d in filtered_af_query(args).all()]}
 
 
-@routes.route('/jdSearch',methods=["GET"])
-@json_resp
-def jdd_search():
+
+def filtered_ds_query(args):
 
     num = request.args.get("num")
     name = request.args.get("name")
@@ -1238,4 +1249,12 @@ def jdd_search():
     if role is not None:
         query = query.filter(CorDatasetActor.id_dataset.like('%'+role+'%'))
 
-    return { 'data' : [d.as_dict(True) for d in query.all()]}
+    return query
+
+
+@routes.route('/jdSearch',methods=["GET"])
+@json_resp
+def jdd_search():
+
+    args = request.args
+    return { 'data' : [d.as_dict(True) for d in filtered_ds_query(args).all()]}
