@@ -49,6 +49,7 @@ export class MetadataComponent implements OnInit {
   acquisitionFrameworks = [];
   tempAF = [];
   public history;
+  public endPoint:string;
   public empty: boolean = false;
   expandAccordions = false;
   private researchTerm: string = '';
@@ -82,7 +83,6 @@ export class MetadataComponent implements OnInit {
       this.roles = data;
     });
   }
-
   //recuperation cadres d'acquisition
   getAcquisitionFrameworksAndDatasets() {
     this._dfs.getAfAndDatasetListMetadata({}).subscribe(data => {
@@ -96,7 +96,7 @@ export class MetadataComponent implements OnInit {
 
     });
   }
-
+ 
   // recuperer la liste des imports 
   getImportList() {
     this._ds.getImportList().subscribe(

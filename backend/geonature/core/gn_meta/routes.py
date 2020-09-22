@@ -176,7 +176,6 @@ def get_af_and_ds_metadata(info_role):
         iCreateur = -1
         iMaitreOuvrage = -1
         if af.cor_af_actor:
-            af_dict["actors"] = [actor.as_dict(True) for actor in af.cor_af_actor]
             for index, actor in enumerate(af.cor_af_actor):
                 if actor.nomenclature_actor_role.mnemonique == "Maître d'ouvrage":
                     iMaitreOuvrage = index
@@ -206,7 +205,6 @@ def get_af_and_ds_metadata(info_role):
         )
         iCreateur = -1
         if d.cor_dataset_actor:
-            dataset_dict["actors"] = [actor.as_dict(True) for actor in d.cor_dataset_actor]
             for index, actor in enumerate(d.cor_dataset_actor):
                 if actor.nomenclature_actor_role.mnemonique == "Producteur du jeu de données":
                     iCreateur = index
