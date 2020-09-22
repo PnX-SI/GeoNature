@@ -8,7 +8,10 @@
       <div class="row">
         <div class="form-group col-sm-7">
           <input class="form-control form-control-sm"
-            type="text" name="" id="" placeholder="Rechercher" (click)="openSearchModal(searchModal)" >
+            type="text" name="" id="" placeholder="Rechercher" (keyup)="updateSearchbar($event)" >
+        </div>
+        <div class="col-sm-3">
+          <button class="mat-stroked-button" (click)="openSearchModal(searchModal)"> Recherche avancée </button>
         </div>
       </div>
       <div>Liste des cadres d'acquisition et des jeux de données associés</div>
@@ -35,15 +38,9 @@
                           <br> <small class="muted"> {{ af.unique_acquisition_framework_id  }}  </small>
                         </div>
                         <div style="width: 10%">{{af.acquisition_framework_start_date |date:'d/MM/yyyy'}}</div>
-                        <div style="width: 10%">{{roles[0].nom_complet}}</div>
-                        <!-- <div style="width: 20%">Orga x : Maitre ouvrage - Personne Y: financeur</div> -->
-                        <div style="width: 20%;" *ngIf="af?.actors" >
-                          <div class="a" *ngFor="let actor of af.actors">
-                            <div>{{ actor?.organism?.nom_organisme }}: {{ actor?.nomenclature_actor_role?.mnemonique}}<span *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"> - </span> {{ actor?.role?.nom_complet }} </div>
-                          </div>
-                          <br/>
-                        </div>
-                        <div style="width: 10%;text-align: center;"><a style="color: black;" [routerLink]="['/metadata/af', af.id_acquisition_framework]"><mat-icon> create</mat-icon></a></div>
+                        <div style="width: 10%">{{af.creator_mail}}</div>
+                        <div style="width: 20%">{{af.project_owner_name}}</div>
+                        <div style="width: 10%; text-align: right"><a style="color: black;" [routerLink]="['/metadata/af', af.id_acquisition_framework]"><mat-icon> create</mat-icon></a></div>
 
                       </mat-panel-title>
             
@@ -76,8 +73,7 @@
                           </td>
                             <td> {{ds.meta_create_date |date:'d/MM/yyyy' }}</td>
                             <td> {{ds.observation_count}} </td>
-                            <td> {{roles[0].nom_complet}}</td>
-                            
+                            <td> {{ ds.createur?.organism?.nom_organisme }} </td>
                             <td> <mat-icon (click)="sensiReport(ds.id_dataset)" matTooltip="Rapport de sensibilité"> do_not_touch</mat-icon>  <mat-icon matTooltip="Rapport d'UUID" (click)="uuidReport(ds.id_dataset)"> format_list_numbered </mat-icon> </td>
                             <td *ngIf="ds.active"><a style="color: black;" [routerLink]="['/metadata/dataset', ds.id_dataset]" matTooltip="Éditer un jeux de donnée"><mat-icon> create</mat-icon></a>
                                <a (click)="activateDs(ds.id_dataset, false)" matTooltip="Jeux de donnée activé"><mat-icon> done</mat-icon></a> 
@@ -123,11 +119,11 @@
   <div class="modal-body" style="align-items: flex-end;">
     <div class="row">
       <div class="col">
-        UIID
+        UID
       </div>
       <div class="col">
         <input class="form-control form-control-sm"
-          type="text" name="" id="" placeholder="n° Dossier" (keyup)="updateAdvancedSearch($event, 'num')">
+          type="text" name="" id="" placeholder="n° Dossier" (keyup)="updateAdvancedCriteria($event, 'num')">
       </div>
     </div>
     <div class="row">
@@ -136,7 +132,7 @@
       </div>
       <div class="col">
         <input class="form-control form-control-sm"
-          type="text" name="" id="" placeholder="Titre / Identifiant" (keyup)="updateAdvancedSearch($event, 'title1')">
+          type="text" name="" id="" placeholder="Titre / Identifiant" (keyup)="updateAdvancedCriteria($event, 'title1')">
       </div>
     </div>
     <div class="row">
@@ -145,10 +141,10 @@
       </div>
       <div class="col">
         <!-- <input class="form-control form-control-sm"
-          type="text" name="" id="" placeholder="Crée le" (keyup)="updateAdvancedSearch($event, 'start_date')"> -->
+          type="text" name="" id="" placeholder="Crée le" (keyup)="updateAdvancedCriteria($event, 'start_date')"> -->
           <div class="form-group">
             <div class="input-group">
-              <input class="form-control" placeholder="yyyy-mm-dd"
+              <input class="form-control" placeholder="yyyy-mm-dd" (ngModelChange) = "updateAdvancedCriteria($event, 'start_date')" 
                      name="dp" [(ngModel)]="model" ngbDatepicker #d="ngbDatepicker">
               <div class="input-group-append">
                 <button class="fa fa-calendar fa-2x" style="color: #7197FF;" (click)="d.toggle()" type="button"></button>
@@ -163,10 +159,10 @@
             Organisme
         </div>
         <div class="col">
-          <select class="form-control form-control-sm">
-            <option value="" disabled selected>Organisme</option>
-          <option *ngFor="let org of organisms" [ngValue]="org.id_organisme" >
-            {{org.nom_organisme}} </option>
+          <select class="form-control form-control-sm" (change)="updateAdvancedCriteria($event, 'organism')">
+            <option value="" selected>Organisme</option>
+            <option *ngFor="let org of organisms" value="{{org.id_organisme}}" >
+              {{org.nom_organisme}} </option>
         </select>
         </div>
     </div>
@@ -176,10 +172,10 @@
           Utilisateur
       </div>
       <div class="col">
-        <select class="form-control form-control-sm">
-          <option value="" disabled selected>Utilisateur</option>
-          <option *ngFor="let role of roles" [ngValue]="role.id_role">
-            {{role.nom_complet}} </option>
+        <select class="form-control form-control-sm" (change)="updateAdvancedCriteria($event, 'role')">
+          <option value="" selected>Utilisateur</option>
+          <option *ngFor="let role of roles" value="{{role.id_role}}">
+            {{role.nom_complet}}</option>
         </select>
       </div>
   </div>
@@ -190,9 +186,10 @@
         Selecteur
       </div>
       <div class="col">
-        <select name="selecteur" id="selector">
-          <option value="jdd">JDD</option>
-          <option value="dog">CA</option>
+        <select name="selecteur" id="selector" (change)="updateSelector($event)">
+          <option value="all">JDD ou CA</option>
+          <option value="ds">JDD</option>
+          <option value="af">CA</option>
       </select>
       </div>
     </div>
@@ -202,7 +199,7 @@
       <div class="col">
       </div>
       <div class="col">
-        <button class="mat-stroked-button"> Rechercher </button>
+        <button class="mat-stroked-button" (click)="updateAdvancedSearch()"> Rechercher </button>
         <button class="mat-stroked-button" (click)="closeSearchModal(searchModal)"> Fermer </button>
       </div>
     </div>
