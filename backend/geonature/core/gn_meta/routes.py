@@ -1187,22 +1187,22 @@ def filtered_af_query(args):
     organisme = args.get("organisme")
     role = args.get("role")
     
-    requete=DB.session.query(TAcquisitionFramework) \
+    query = DB.session.query(TAcquisitionFramework) \
             .join(CorAcquisitionFrameworkActor, TAcquisitionFramework.id_acquisition_framework == CorAcquisitionFrameworkActor.id_acquisition_framework)\
             .join(BibOrganismes, CorAcquisitionFrameworkActor.id_organism == BibOrganismes.id_organisme)
             
     if num is not None:
-        requete = requete.filter(TAcquisitionFramework.id_acquisition_framework==num)
+        query = query.filter(TAcquisitionFramework.id_acquisition_framework==num)
     if name is not None:
-        requete = requete.filter(TAcquisitionFramework.acquisition_framework_name.like('%'+name+'%'))
+        query = query.filter(TAcquisitionFramework.acquisition_framework_name.like('%'+name+'%'))
     if date is not None:
-        requete = requete.filter(TAcquisitionFramework.acquisition_framework_start_date.like('%'+date+'%'))
+        query = query.filter(TAcquisitionFramework.acquisition_framework_start_date.like('%'+date+'%'))
     if organisme is not None:
-        requete = requete.filter(BibOrganismes.nom_organisme.like('%'+organisme+'%'))
+        query = query.filter(BibOrganismes.nom_organisme.like('%'+organisme+'%'))
     if role is not None:
-        requete = requete.filter(CorAcquisitionFrameworkActor.id_acquisition_framework.like('%'+role+'%'))
+        query = query.filter(CorAcquisitionFrameworkActor.id_acquisition_framework.like('%'+role+'%'))
 
-    return requete
+    return query
 
 
 @routes.route('/caSearch',methods=["GET"])
@@ -1212,4 +1212,30 @@ def ca_search():
     args = request.args
     return { 'data' : [d.as_dict(True) for d in filtered_af_query(args).all()]}
 
+
+@routes.route('/jdSearch',methods=["GET"])
+@json_resp
+def jdd_search():
+
+    num = request.args.get("num")
+    name = request.args.get("name")
+    date = request.args.get("date")
+    organisme = request.args.get("organisme")
+    role = request.args.get("role")
     
+    query=DB.session.query(TDatasets) \
+            .join(CorDatasetActor, TDatasets.id_dataset == CorDatasetActor.id_dataset)\
+            .join(BibOrganismes, CorDatasetActor.id_organism == BibOrganismes.id_organisme)
+
+    if num is not None:
+        query = query.filter(TDatasets.id_dataset==num)
+    if name is not None:
+        query = query.filter(TDatasets.dataset_name.like('%'+name+'%'))
+    if date is not None:
+        query = query.filter(TDatasets.meta_create_date.like('%'+date+'%'))
+    if organisme is not None:
+        query = query.filter(BibOrganismes.nom_organisme.like('%'+organisme+'%'))
+    if role is not None:
+        query = query.filter(CorDatasetActor.id_dataset.like('%'+role+'%'))
+
+    return { 'data' : [d.as_dict(True) for d in query.all()]}
