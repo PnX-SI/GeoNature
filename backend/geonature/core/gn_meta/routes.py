@@ -134,7 +134,7 @@ def get_af_and_ds_metadata(info_role):
             with_mtd_error = True
     params = request.args.to_dict()
     if 'selector' not in params:
-        params['selector'] = 'all'
+        params['selector'] = 'none'
     datasets = get_datasets_cruved(info_role, params, as_model=True)
     print(params)
     if params['selector']=='ds':
@@ -154,7 +154,7 @@ def get_af_and_ds_metadata(info_role):
     #  get all af from the JDD filtered with cruved or af where users has rights
     ids_afs_cruved = [
         d.id_acquisition_framework for d in get_af_cruved(info_role, as_model=True)
-    ]
+    ] if params['selector'] == 'none' else []
     list_id_af = [d.id_acquisition_framework for d in datasets] + ids_afs_cruved
 
     afs = (
@@ -176,7 +176,6 @@ def get_af_and_ds_metadata(info_role):
         iCreateur = -1
         iMaitreOuvrage = -1
         if af.cor_af_actor:
-            af_dict["actors"] = [actor.as_dict(True) for actor in af.cor_af_actor]
             for index, actor in enumerate(af.cor_af_actor):
                 if actor.nomenclature_actor_role.mnemonique == "Maître d'ouvrage":
                     iMaitreOuvrage = index
@@ -206,7 +205,6 @@ def get_af_and_ds_metadata(info_role):
         )
         iCreateur = -1
         if d.cor_dataset_actor:
-            dataset_dict["actors"] = [actor.as_dict(True) for actor in d.cor_dataset_actor]
             for index, actor in enumerate(d.cor_dataset_actor):
                 if actor.nomenclature_actor_role.mnemonique == "Producteur du jeu de données":
                     iCreateur = index
@@ -1194,9 +1192,10 @@ def filtered_af_query(args):
         return DB.session.query(TAcquisitionFramework)
     
     num = args.get("num")
-    name = args.get("role")
+    uid = args.get("uid")
+    name = args.get("name")
     date = args.get("date")
-    organisme = args.get("organisme")
+    organisme = args.get("organism")
     role = args.get("role")
     
     query = DB.session.query(TAcquisitionFramework) \
@@ -1205,14 +1204,16 @@ def filtered_af_query(args):
             
     if num is not None:
         query = query.filter(TAcquisitionFramework.id_acquisition_framework==num)
+    if uid is not None:
+        query = query.filter(func.concat(TAcquisitionFramework.unique_acquisition_framework_id, '').like('%'+uid+'%'))
     if name is not None:
         query = query.filter(TAcquisitionFramework.acquisition_framework_name.like('%'+name+'%'))
     if date is not None:
         query = query.filter(TAcquisitionFramework.acquisition_framework_start_date.like('%'+date+'%'))
     if organisme is not None:
-        query = query.filter(BibOrganismes.nom_organisme.like('%'+organisme+'%'))
+        query = query.filter(BibOrganismes.id_organisme==organisme)
     if role is not None:
-        query = query.filter(CorAcquisitionFrameworkActor.id_acquisition_framework.like('%'+role+'%'))
+        query = query.filter(CorAcquisitionFrameworkActor.id_role==role)
 
     return query
 
@@ -1229,9 +1230,10 @@ def ca_search():
 def filtered_ds_query(args):
 
     num = request.args.get("num")
+    uid = args.get("uid")
     name = request.args.get("name")
     date = request.args.get("date")
-    organisme = request.args.get("organisme")
+    organisme = request.args.get("organism")
     role = request.args.get("role")
     
     query=DB.session.query(TDatasets) \
@@ -1240,14 +1242,16 @@ def filtered_ds_query(args):
 
     if num is not None:
         query = query.filter(TDatasets.id_dataset==num)
+    if uid is not None:
+        query = query.filter(func.concat(TDatasets.unique_dataset_id, '').like('%'+uid+'%'))
     if name is not None:
         query = query.filter(TDatasets.dataset_name.like('%'+name+'%'))
     if date is not None:
         query = query.filter(TDatasets.meta_create_date.like('%'+date+'%'))
     if organisme is not None:
-        query = query.filter(BibOrganismes.nom_organisme.like('%'+organisme+'%'))
+        query = query.filter(BibOrganismes.id_organisme==organisme)
     if role is not None:
-        query = query.filter(CorDatasetActor.id_dataset.like('%'+role+'%'))
+        query = query.filter(CorDatasetActor.id_role==role)
 
     return query
 

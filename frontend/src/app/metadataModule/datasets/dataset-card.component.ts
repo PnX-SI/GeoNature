@@ -6,6 +6,7 @@ import { BaseChartDirective } from 'ng2-charts';
 import { AppConfig } from "@geonature_config/app.config";
 import { CommonService } from '@geonature_common/service/common.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
+import { DataService } from "../../../../../external_modules/import/frontend/app/services/data.service";
 
 @Component({
   selector: 'pnx-datasets-card',
@@ -18,6 +19,7 @@ export class DatasetCardComponent implements OnInit {
   public id_dataset: number;
   public dataset: any;
   public nbTaxons: number;
+  public taxs;
   public nbObservations: number;
   public geojsonData: any = null;
 
@@ -73,7 +75,8 @@ export class DatasetCardComponent implements OnInit {
     private _dfs: DataFormService,
     public moduleService: ModuleService,
     private _commonService: CommonService,
-    public _dataService: SyntheseDataService
+    public _dataService: SyntheseDataService,
+    private _ds : DataService,
   ) { }
 
   ngOnInit() {
@@ -86,8 +89,15 @@ export class DatasetCardComponent implements OnInit {
     });
   }
 
+  TaxonsList(){
+    this._ds.getTaxons().subscribe(
+      taxons =>{
+        this.taxs = taxons.items.features;
+      }
+    )
+  }
+  
   getDataset(id) {
-
     this._dfs.getDatasetDetails(id).subscribe(data => {
       this.dataset = data;
       if (this.dataset.modules) {

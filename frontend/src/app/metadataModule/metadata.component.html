@@ -26,18 +26,13 @@
                 <div style="width: 20%"> Acteurs</div>
                 <div style="width: 10%"> Actions</div>
               </div>
-                <!-- <div class="tab-title">
-                  <span>ID</span>
-                  <span>Nom</span>
-                  <span style="width: 50%">Date de création</span>
-                </div> -->
                 <ng-container *ngFor="let af of tempAF; let idx = index">
                   <mat-expansion-panel *ngIf="isDisplayed(idx)" [expanded]="expandAccordions">
                     <mat-expansion-panel-header
                       collapsedHeight="80px" 
                       expandedHeight="100px"
                     >
-                      <mat-panel-title class="af-title">
+                      <mat-panel-title class="af-title" style="margin-top:2.5%;margin-bottom: 1.2%;">
                         <div style="width: 5%">{{ af.id_acquisition_framework  }}</div>
                         <div style="width: 40%"> <a [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]"> {{ af.acquisition_framework_name | uppercase }} </a> 
                           <br> <small class="muted"> {{ af.unique_acquisition_framework_id  }}  </small>
@@ -66,13 +61,34 @@
                       </thead>
                       <tbody>
                         <tr *ngFor="let ds of af.datasetsTemp; let last = last">
-                            <td> {{ds.id_dataset}}</td>
-                            <td> {{ ds.dataset_name }} </td>
+                          <td> 
+                            <a [routerLink]="['/metadata/dataset_detail', ds.id_dataset]"> {{ds.id_dataset}} </a>
+                          </td>
+                          <td> 
+                            <a [routerLink]="['/metadata/dataset_detail', ds.id_dataset]">
+                              {{ds.dataset_name}} 
+                              <br/>
+                              <span style="color: gray"> {{ds.unique_dataset_id}} </span>
+                            </a>
+                          </td>
                             <td> {{ds.meta_create_date |date:'d/MM/yyyy' }}</td>
                             <td> {{ds.observation_count}} </td>
                             <td> {{ ds.createur?.organism?.nom_organisme }} </td>
                             <td> <mat-icon (click)="sensiReport(ds.id_dataset)" matTooltip="Rapport de sensibilité"> do_not_touch</mat-icon>  <mat-icon matTooltip="Rapport d'UUID" (click)="uuidReport(ds.id_dataset)"> format_list_numbered </mat-icon> </td>
-                            <td> <a style="color: black;" [routerLink]="['/metadata/dataset', ds.id_dataset]"><mat-icon> create</mat-icon></a> <mat-icon> done</mat-icon>  <mat-icon> download</mat-icon>  <mat-icon> room</mat-icon> <mat-icon> delete</mat-icon>  </td>
+                            <td *ngIf="ds.active"><a style="color: black;" [routerLink]="['/metadata/dataset', ds.id_dataset]" matTooltip="Éditer un jeux de donnée"><mat-icon> create</mat-icon></a>
+                               <a (click)="activateDs(ds.id_dataset, false)" matTooltip="Jeux de donnée activé"><mat-icon> done</mat-icon></a> 
+                               <a (click)="importDs(ds.id_dataset)" matTooltip="Importé un jeux de donnée"><mat-icon>get_app</mat-icon></a>
+                               <a (click)="syntheseDs(ds.id_dataset)" matTooltip="Afficher le jeux de donnée sur la carte"><mat-icon> room</mat-icon></a>
+                               <a *ngIf="ds.deletable" (click)="deleteDs(ds.id_dataset)" matTooltip="Supprimer un jeux de donnée"><mat-icon> delete</mat-icon></a>
+                               <a *ngIf="!ds.deletable" matTooltip="La suppression du jeu de données n'est pas possible car des données y sont rattachées dans la Synthèse"><mat-icon>delete_outline</mat-icon></a> 
+                            </td>
+                            <td *ngIf="!ds.active"><a style="color: black;" [routerLink]="['/metadata/dataset', ds.id_dataset]" matTooltip="Éditer un jeux de donnée"><mat-icon> create</mat-icon></a>
+                               <a (click)="activateDs(ds.id_dataset, true)" matTooltip="Jeux de donnée désactivé"><mat-icon> clear</mat-icon></a>
+                               <a matTooltip="Impossible d'importé un jeux de donnée"><mat-icon>error</mat-icon></a>
+                               <a (click)="syntheseDs(ds.id_dataset)" matTooltip="Afficher le jeux de donnée sur la carte"><mat-icon> room</mat-icon></a>
+                               <a *ngIf="ds.deletable" (click)="deleteDs(ds.id_dataset)" matTooltip="Supprimer un jeux de donnée"><mat-icon> delete</mat-icon></a>
+                               <a *ngIf="!ds.deletable" matTooltip="La suppression du jeu de données n'est pas possible car des données y sont rattachées dans la Synthèse"><mat-icon>delete_outline</mat-icon></a> 
+                            </td>
                         </tr>
                       </tbody>
                     </table>
@@ -107,7 +123,7 @@
       </div>
       <div class="col">
         <input class="form-control form-control-sm"
-          type="text" name="" id="" placeholder="n° Dossier" (keyup)="updateAdvancedCriteria($event, 'num')">
+          type="text" name="" id="" placeholder="UID" (keyup)="updateAdvancedCriteria($event, 'uid')">
       </div>
     </div>
     <div class="row">
@@ -116,7 +132,7 @@
       </div>
       <div class="col">
         <input class="form-control form-control-sm"
-          type="text" name="" id="" placeholder="Titre / Identifiant" (keyup)="updateAdvancedCriteria($event, 'title1')">
+          type="text" name="" id="" placeholder="Titre / Identifiant" (keyup)="updateAdvancedCriteria($event, 'name')">
       </div>
     </div>
     <div class="row">
@@ -124,17 +140,15 @@
         Crée le
       </div>
       <div class="col">
-        <!-- <input class="form-control form-control-sm"
-          type="text" name="" id="" placeholder="Crée le" (keyup)="updateAdvancedCriteria($event, 'start_date')"> -->
-          <div class="form-group">
-            <div class="input-group">
-              <input class="form-control" placeholder="yyyy-mm-dd" (ngModelChange) = "updateAdvancedCriteria($event, 'start_date')" 
-                     name="dp" [(ngModel)]="model" ngbDatepicker #d="ngbDatepicker">
-              <div class="input-group-append">
-                <button class="fa fa-calendar fa-2x" style="color: #7197FF;" (click)="d.toggle()" type="button"></button>
-              </div>
+        <div class="form-group">
+          <div class="input-group">
+            <input class="form-control" placeholder="yyyy-mm-dd" (ngModelChange) = "updateAdvancedCriteria($event, 'date')" 
+                    name="dp" [(ngModel)]="model" ngbDatepicker #d="ngbDatepicker">
+            <div class="input-group-append">
+              <button class="fa fa-calendar fa-2x" style="color: #7197FF;" (click)="d.toggle()" type="button"></button>
             </div>
           </div>
+        </div>
       </div>
     </div>
 
@@ -171,7 +185,6 @@
       </div>
       <div class="col">
         <select name="selecteur" id="selector" (change)="updateSelector($event)">
-          <option value="all">JDD ou CA</option>
           <option value="ds">JDD</option>
           <option value="af">CA</option>
       </select>
