@@ -34,16 +34,16 @@
                     >
                       <mat-panel-title class="af-title" style="margin-top:2.5%;margin-bottom: 1.2%;">
 
-                        <div class="col-md-1 h-auto">{{ af.id_acquisition_framework  }}</div>
-                        <div class="col-md-3 h-auto mb-3"> <a [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]"> {{ af.acquisition_framework_name | uppercase }} </a> 
+                        <div class="col-md-1">{{ af.id_acquisition_framework  }}</div>
+                        <div class="col-md-3"> <a [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]"> {{ af.acquisition_framework_name | uppercase }} </a> 
                           <br> <small class="muted"> {{ af.unique_acquisition_framework_id  }}  </small>
                         </div>
-                        <div class="col-md-2 h-auto">{{af.acquisition_framework_start_date |date:'d/MM/yyyy'}}</div>
-                        <div class="col-md-2 h-auto">
+                        <div class="col-md-2 ">{{af.acquisition_framework_start_date |date:'d/MM/yyyy'}}</div>
+                        <div class="col-md-2">
                          {{af.actors[0].role.nom_complet}}
                         </div>
                         <section class="col-md-3">
-                          <div *ngFor="let ac of af.actors" class="mb-3 h-auto">
+                          <div *ngFor="let ac of af.actors">
                             {{ac.organism.nom_organisme}} : {{ac.nomenclature_actor_role.definition_default}}<br>
                           </div>
                         </section>
