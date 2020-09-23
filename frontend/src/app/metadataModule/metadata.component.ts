@@ -164,7 +164,7 @@ export class MetadataComponent implements OnInit {
   }
 
   updateAdvancedCriteria(event, criteria) {
-    if (criteria != 'start_date')
+    if (criteria != 'date')
       this.searchTerms[criteria] = event.target.value.toLowerCase();
     else
       this.searchTerms[criteria] = event.year
@@ -200,6 +200,10 @@ export class MetadataComponent implements OnInit {
     this.reinitAdvancedCriteria();
     //this.updateAdvancedSearch();
     this.modal.open(searchModal);
+  }
+
+  openSyntheseNone(syntheseNone) {
+    this.modal.open(syntheseNone);
   }
 
   closeSearchModal(searchModal) {

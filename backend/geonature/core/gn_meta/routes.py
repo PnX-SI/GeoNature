@@ -143,6 +143,8 @@ def get_af_and_ds_metadata(info_role):
             .filter(TAcquisitionFramework.id_acquisition_framework.in_([d.id_dataset for d in datasets]))
             .all()
         )
+        if len(datasets)==0:
+            return {'data': []}
     ids_dataset_user = TDatasets.get_user_datasets(info_role, only_user=True)
     ids_dataset_organisms = TDatasets.get_user_datasets(info_role, only_user=False)
     ids_afs_user = TAcquisitionFramework.get_user_af(info_role, only_user=True)
@@ -1210,7 +1212,7 @@ def filtered_af_query(args):
     if name is not None:
         query = query.filter(TAcquisitionFramework.acquisition_framework_name.like('%'+name+'%'))
     if date is not None:
-        query = query.filter(TAcquisitionFramework.acquisition_framework_start_date.like('%'+date+'%'))
+        query = query.filter(func.concat(TAcquisitionFramework.acquisition_framework_start_date, '').like('%'+date+'%'))
     if organisme is not None:
         query = query.filter(BibOrganismes.id_organisme==organisme)
     if role is not None:
@@ -1248,7 +1250,7 @@ def filtered_ds_query(args):
     if name is not None:
         query = query.filter(TDatasets.dataset_name.like('%'+name+'%'))
     if date is not None:
-        query = query.filter(TDatasets.meta_create_date.like('%'+date+'%'))
+        query = query.filter(func.concat(TDatasets.meta_create_date, '').like('%'+date+'%'))
     if organisme is not None:
         query = query.filter(BibOrganismes.id_organisme==organisme)
     if role is not None:
