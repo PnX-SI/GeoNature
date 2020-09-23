@@ -290,6 +290,10 @@ export class MetadataComponent implements OnInit {
     this.modal.open(searchModal);
   }
 
+  openSyntheseNone(syntheseNone) {
+    this.modal.open(syntheseNone);
+  }
+
   closeSearchModal(searchModal) {
     this.modal.dismissAll(searchModal);
   }
