@@ -52,12 +52,14 @@
         </div>
       </div>
 
-      <div class="overLayStations">
-          <p 
-             *ngFor="let dataset of datasets">
-              <input type="radio" name="stations" [id]="dataset.id_dataset" (click)="fetchDatasetStations(dataset.id_dataset)">
-             {{dataset.dataset_name}}
-        </p>
+      <div class="dropup">
+          <div class="dropup-content">
+              <p *ngFor="let dataset of datasets">
+                  <input type="checkbox" name="stations" [id]="dataset.id_dataset" (click)="fetchDatasetStations(dataset.id_dataset, $event.target)">
+                  {{dataset.dataset_name}}
+              </p>
+          </div>
+          <button class="dropbtn"><i class="fa fa-bars picto" aria-hidden="true"> </i> Datasets</button>
       </div>
       <!--END  HABITAT ALREADY SAVED -->
     <pnx-map [height]="mapHeight">

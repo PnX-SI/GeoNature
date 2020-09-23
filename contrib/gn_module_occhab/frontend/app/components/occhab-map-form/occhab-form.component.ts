@@ -40,7 +40,7 @@ export class OccHabFormComponent implements OnInit {
   // boolean tocheck if the station has at least one hab (control the validity of the form)
   public atLeastOneHab = false;
   public datasets: Array<any>;
-  public currentStations: any;
+  public currentStations: Array<any>;
   public stationsgeoJson: L.geoJSON;
 
 
@@ -64,6 +64,8 @@ export class OccHabFormComponent implements OnInit {
     leafletDrawOption.draw.polyline = false;
     leafletDrawOption.draw.circle = false;
     leafletDrawOption.draw.rectangle = false;
+
+    this.currentStations = [];
 
     this.occHabForm.stationForm = this.occHabForm.initStationForm();
     this.occHabForm.stationForm.controls.geom_4326.valueChanges.subscribe(d => {
@@ -101,12 +103,31 @@ export class OccHabFormComponent implements OnInit {
     });
   }
 
-  fetchDatasetStations(datasetId) {
+  fetchDatasetStations(datasetId, event) {
     this._occHabDataService.getStations(
       { 'id_dataset': datasetId }
     ).subscribe(geojsonStations => {
-      this.currentStations = geojsonStations;
-      this.setDatasetOnLayers(datasetId, this.currentStations);
+        if (event.checked) {
+            // If checkbox checked, we add to related data to the currentStations list
+            this.currentStations.push({IdDB:datasetId, Data:geojsonStations});
+        } else {
+            // If the checkbox is unchecked, we find the related data in the currentStations list and we remove it
+            var indexDataset = this.currentStations.findIndex(dict=>dict.IdDB == datasetId);
+            this.currentStations.splice(indexDataset, 1);
+        }
+
+        // We start a new featureCollection that will contain all the selected features
+        var featureCollection = {
+            type: 'FeatureCollection',
+            features: []
+        };
+        // We add all the features contained in the currentStations list, in the featureCollection
+        this.currentStations.forEach(function(feature) {
+            featureCollection.features.push(feature.Data);
+        });
+
+        // We display the features on the map
+        this.setDatasetOnLayers(datasetId, featureCollection);
     })
   }
 
