@@ -81,7 +81,7 @@
                           </td>
                             <td> {{ds.meta_create_date |date:'d/MM/yyyy' }}</td>
                             <td> {{ds.observation_count}} </td>
-                            <td> {{ ds.createur?.organism?.nom_organisme }} </td>
+                            <td> {{af.actors[0].role.nom_complet}} </td>
                             <td> <mat-icon (click)="sensiReport(ds.id_dataset)" matTooltip="Rapport de sensibilité"> do_not_touch</mat-icon>  <mat-icon matTooltip="Rapport d'UUID" (click)="uuidReport(ds.id_dataset)"> format_list_numbered </mat-icon> </td>
                             <td *ngIf="ds.active"><a style="color: black;" [routerLink]="['/metadata/dataset', ds.id_dataset]" matTooltip="Éditer un jeux de donnée"><mat-icon> create</mat-icon></a>
                                <a (click)="activateDs(ds.id_dataset, false)" matTooltip="Jeux de donnée activé"><mat-icon> done</mat-icon></a> 
