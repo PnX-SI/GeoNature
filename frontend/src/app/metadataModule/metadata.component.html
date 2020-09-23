@@ -29,12 +29,12 @@
                 <ng-container *ngFor="let af of tempAF; let idx = index">
                   <mat-expansion-panel *ngIf="isDisplayed(idx)" [expanded]="expandAccordions">
                     <mat-expansion-panel-header
-                      collapsedHeight="80px" 
-                      expandedHeight="100px"
+                    collapsedHeight="80px" 
+                    expandedHeight="150px"
                     >
                       <mat-panel-title class="af-title" style="margin-top:2.5%;margin-bottom: 1.2%;">
 
-                        <div class="col-md-1">{{ af.id_acquisition_framework  }}</div>
+                        <div class="col-md-1">{{ af.id_acquisition_framework }}</div>
                         <div class="col-md-3"> <a [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]"> {{ af.acquisition_framework_name | uppercase }} </a> 
                           <br> <small class="muted"> {{ af.unique_acquisition_framework_id  }}  </small>
                         </div>
@@ -48,7 +48,7 @@
                           </div>
                         </section>
 
-                        <div class="col-md-1 h-auto"><a style="color: black;" [routerLink]="['/metadata/af', af.id_acquisition_framework]"><mat-icon> create</mat-icon></a></div>
+                        <div class="col-md-1"><a style="color: black;" [routerLink]="['/metadata/af', af.id_acquisition_framework]"><mat-icon> create</mat-icon></a></div>
 
                       </mat-panel-title>
             
@@ -62,13 +62,13 @@
                             <td>Nom du JDD</td>
                             <td>Date de création</td>
                             <td>Nombre de données</td>
-                            <td>Créateurs</td>
+                            <td>Créateur</td>
                             <td>Rapport</td>
                             <td>Actions</td>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr *ngFor="let ds of af.datasetsTemp; let last = last">
+                        <tr *ngFor="let ds of af.datasetsTemp; let last = last;">
                           <td> 
                             <a [routerLink]="['/metadata/dataset_detail', ds.id_dataset]"> {{ds.id_dataset}} </a>
                           </td>
@@ -82,12 +82,13 @@
                             <td> {{ds.meta_create_date |date:'d/MM/yyyy' }}</td>
                             <td> {{ds.observation_count}} </td>
                             <td> {{af.actors[0].role.nom_complet}} </td>
-                            <td> <mat-icon (click)="sensiReport(ds.id_dataset)" matTooltip="Rapport de sensibilité"> do_not_touch</mat-icon>  <mat-icon matTooltip="Rapport d'UUID" (click)="uuidReport(ds.id_dataset)"> format_list_numbered </mat-icon> </td>
+                            <td *ngIf="ds.observation_count >0"> <mat-icon (click)="sensiReport(ds.id_dataset)" matTooltip="Rapport de sensibilité"> do_not_touch</mat-icon>  <mat-icon matTooltip="Rapport d'UUID" (click)="uuidReport(ds.id_dataset)"> format_list_numbered </mat-icon> </td>
+                            <td> <mat-icon matTooltip="Impossible de télécharger le rapport de sensibilité"> do_not_touch</mat-icon>  <mat-icon matTooltip="Impossible de télécharger le rapport d'UUID"> format_list_numbered </mat-icon> </td>
                             <td *ngIf="ds.active"><a style="color: black;" [routerLink]="['/metadata/dataset', ds.id_dataset]" matTooltip="Éditer un jeux de donnée"><mat-icon> create</mat-icon></a>
                                <a (click)="activateDs(ds.id_dataset, false)" matTooltip="Jeux de donnée activé"><mat-icon> done</mat-icon></a> 
                                <a (click)="importDs(ds.id_dataset)" matTooltip="Importé un jeux de donnée"><mat-icon>get_app</mat-icon></a>
-                               <a  *ngIf="ds.observation_count < 100" (click)="syntheseDs(ds.id_dataset)" matTooltip="Afficher le jeux de donnée sur la carte"><mat-icon> room</mat-icon></a>
-                               <a  *ngIf="ds.observation_count > 100" (click)="openSyntheseNone(synthese)" matTooltip="Afficher le jeux de donnée sur la carte"><mat-icon> room</mat-icon></a>
+                               <a *ngIf="ds.observation_count < 100 && ds.observation_count !=0" (click)="syntheseDs(ds.id_dataset)" matTooltip="Afficher le jeux de donnée sur la carte"><mat-icon> room</mat-icon></a>
+                               <a *ngIf="ds.observation_count > 100 || ds.observation_count == 0" (click)="openSyntheseNone(synthese)" matTooltip="Afficher le jeux de donnée sur la carte"><mat-icon> room</mat-icon></a>
                                <a *ngIf="ds.deletable" (click)="deleteDs(ds.id_dataset)" matTooltip="Supprimer un jeux de donnée"><mat-icon> delete</mat-icon></a>
                                <a *ngIf="!ds.deletable" matTooltip="La suppression du jeu de données n'est pas possible car des données y sont rattachées dans la Synthèse"><mat-icon>delete_outline</mat-icon></a> 
                             </td>
@@ -217,13 +218,13 @@
 
 
 <ng-template #synthese let-c="close" let-d="dismiss">
-  <div class="modal-header">
-    <h5 class="modal-title" id="exampleModalLabel">La visualisation des données n'est pas possible.</h5>
+  <div class="modal-header bg-info">
+    <h5 class="modal-title bg-info text-white" id="exampleModalLabel">La visualisation des données n'est pas possible !</h5>
   </div>
   <div class="modal-body" style="align-items: flex-end;">
       <div class="col">
         <span>
-          <h4>Le nombre de données est important.</h4>
+          <h4 style="text-align: justify;">Le nombre de données est égale à zéro ou est trop important.</h4>
         </span>
       </div>
   </div>
@@ -231,8 +232,8 @@
     <div class="row">
       <div class="col">
       </div>
-      <div class="col">
-        <button class="mat-stroked-button" (click)="closeSearchModal(searchModal)"> Fermer </button>
+      <div class="col-md-4 text-center">
+        <button class="btn btn-dark center-block text-white" (click)="closeSearchModal(searchModal)"> Fermer </button>
       </div>
       <br>
     </div>
