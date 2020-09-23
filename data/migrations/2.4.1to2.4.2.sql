@@ -703,6 +703,26 @@
         WHERE occ.id_occurrence_occtax = sub.id_occurrence_occtax
         ;
 
+      UPDATE gn_synthese.synthese AS syn
+        SET id_nomenclature_behaviour = sub.new_id_nomenc
+        FROM (
+          SELECT
+            id_synthese,
+          CASE
+            WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_bio_status) = 'OLD_6' THEN ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '6')
+            WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_bio_status) = 'OLD_7' THEN ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '7')
+            WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_bio_status) = 'OLD_8' THEN ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '8')
+            WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_bio_status) = 'OLD_10' THEN ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '10')
+            WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_bio_status) = 'OLD_11' THEN ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '11')
+            WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_bio_status) = 'OLD_12' THEN ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '12')
+            END as new_id_nomenc
+          FROM gn_synthese.synthese
+          WHERE ref_nomenclatures.get_cd_nomenclature(id_nomenclature_bio_status) IN ('OLD_6', 'OLD_7', 'OLD_8', 'OLD_10', 'OLD_11', 'OLD_12')
+        ) AS sub
+        WHERE syn.id_synthese = sub.id_synthese
+        ;
+
+
         ALTER TABLE pr_occtax.t_occurrences_occtax
         ALTER COLUMN nom_cite SET NOT NULL;
 
@@ -1197,80 +1217,78 @@
         ALTER TABLE ONLY gn_meta.t_acquisition_frameworks
           ADD CONSTRAINT fk_t_acquisition_frameworks_id_digitizer FOREIGN KEY (id_digitizer) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
+
+
+          -- Ajout index sur t_validations 
+
+          CREATE INDEX i_t_validations_uuid_attached_row ON gn_commons.t_validations USING btree (uuid_attached_row);
+ 
+          -- Mise à jour des nomenclatures "CA_OBJECTIFS" et mise à jour des données en conséquence (standard métadonnées 1.3.10)
+          -- Faire correspondre les nouveaux objectifs aux Cadres d'acquisition sur la base des anciennes nomenclatures - Annexe 1 du standard 1.3.10 mtd
+
+          DO $$
+          DECLARE 
+            af_row record;
+          BEGIN
+              FOR af_row IN (SELECT * FROM gn_meta.cor_acquisition_framework_objectif)
+                loop
+                  BEGIN
+                      UPDATE gn_meta.cor_acquisition_framework_objectif AS obj
+                        SET id_nomenclature_objectif = sub.new_id_nomenc
+                        FROM (
+                          SELECT
+                            id_acquisition_framework,
+                            id_nomenclature_objectif,
+                          CASE
+                            WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_objectif) IN ('OLD_1', 'OLD_2', 'OLD_3', 'OLD_6') 
+                              THEN ref_nomenclatures.get_id_nomenclature('CA_OBJECTIFS', '8')
+                            WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_objectif) IN ('OLD_5') 
+                              THEN ref_nomenclatures.get_id_nomenclature('CA_OBJECTIFS', '8')
+                            WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_objectif) IN ('OLD_4', 'OLD_7') 
+                              THEN ref_nomenclatures.get_id_nomenclature('CA_OBJECTIFS', '11')
+                            END as new_id_nomenc
+                          FROM gn_meta.cor_acquisition_framework_objectif
+                          WHERE id_acquisition_framework = af_row.id_acquisition_framework AND af_row.id_nomenclature_objectif = id_nomenclature_objectif
+                        ) AS sub
+                        WHERE sub.id_acquisition_framework = obj.id_acquisition_framework AND sub.id_nomenclature_objectif = obj.id_nomenclature_objectif
+                      AND ref_nomenclatures.get_cd_nomenclature(sub.id_nomenclature_objectif) IN (
+                        'OLD_1', 'OLD_2', 'OLD_3', 'OLD_4','OLD_5','OLD_6','OLD_7') ;
+                      exception WHEN unique_violation THEN
+                        raise notice 'keep looping';
+                      END;
+              END LOOP;
+          END $$;
+
+          DELETE FROM gn_meta.cor_acquisition_framework_objectif
+          WHERE ref_nomenclatures.get_cd_nomenclature(id_nomenclature_objectif) IN ('OLD_1', 'OLD_2', 'OLD_3', 'OLD_4','OLD_5','OLD_6','OLD_7');
+
+
+        -- Ajout d'une contrainte d'unicité sur la table gn_commons.t_parameters sur le duo de champs id_organism, parameter_name
+
+        ALTER TABLE gn_commons.t_parameters ADD CONSTRAINT unique_t_parameters_id_organism_parameter_name UNIQUE (id_organism, parameter_name);
+        CREATE UNIQUE INDEX i_unique_t_parameters_parameter_name_with_id_organism_null ON gn_commons.t_parameters (parameter_name) WHERE id_organism IS NULL;
+
+
+        /*MET 14/09/2020 Table t_places pour la fonctionnalité mes-lieux*/
+        CREATE TABLE gn_commons.t_places
+        (
+            id_place serial,
+            id_role integer NOT NULL,
+            place_name character varying(100),
+          place_geom geometry
+        );
+
+        COMMENT ON COLUMN gn_commons.t_places.id_place IS 'Clé primaire autoincrémente de la table t_places';
+        COMMENT ON COLUMN gn_commons.t_places.id_role IS 'Clé étrangère vers la table utilisateurs.t_roles, chaque lieu est associé à un utilisateur';
+        COMMENT ON COLUMN gn_commons.t_places.place_name IS 'Nom du lieu';
+        COMMENT ON COLUMN gn_commons.t_places.place_geom IS 'Géométrie du lieu';
+
+        ALTER TABLE ONLY gn_commons.t_places
+            ADD CONSTRAINT pk_t_places PRIMARY KEY (id_place);
+
+        ALTER TABLE ONLY gn_commons.t_places
+          ADD CONSTRAINT fk_t_places_t_roles FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE; 
+
     END IF;
    END
  $$ language plpgsql;
-
-
--- Ajout index sur t_validations 
-
-CREATE INDEX i_t_validations_uuid_attached_row ON gn_commons.t_validations USING btree (uuid_attached_row);
-
-
-
-
--- Mise à jour des nomenclatures "CA_OBJECTIFS" et mise à jour des données en conséquence (standard métadonnées 1.3.10)
--- Faire correspondre les nouveaux objectifs aux Cadres d'acquisition sur la base des anciennes nomenclatures - Annexe 1 du standard 1.3.10 mtd
-
-DO $$
-DECLARE 
-	af_row record;
-BEGIN
-		FOR af_row IN (SELECT * FROM gn_meta.cor_acquisition_framework_objectif)
-			loop
-			   BEGIN
-			      UPDATE gn_meta.cor_acquisition_framework_objectif AS obj
-			        SET id_nomenclature_objectif = sub.new_id_nomenc
-			        FROM (
-			          SELECT
-			            id_acquisition_framework,
-			            id_nomenclature_objectif
-			          CASE
-			            WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_objectif) IN ('OLD_1', 'OLD_2', 'OLD_3', 'OLD_6') 
-			              THEN ref_nomenclatures.get_id_nomenclature('CA_OBJECTIFS', '8'),
-			            WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_objectif) IN ('OLD_5') 
-			              THEN ref_nomenclatures.get_id_nomenclature('CA_OBJECTIFS', '8'),
-			           	WHEN ref_nomenclatures.get_cd_nomenclature(id_nomenclature_objectif) IN ('OLD_4', 'OLD_7') 
-			              THEN ref_nomenclatures.get_id_nomenclature('CA_OBJECTIFS', '11'),
-			            END as new_id_nomenc
-			          FROM gn_meta.cor_acquisition_framework_objectif
-			          WHERE id_acquisition_framework = af_row.id_acquisition_framework AND af_row.id_nomenclature_objectif = id_nomenclature_objectif
-			        ) AS sub
-			        WHERE sub.id_acquisition_framework = obj.id_acquisition_framework AND sub.id_nomenclature_objectif = obj.id_nomenclature_objectif
-			       AND ref_nomenclatures.get_cd_nomenclature(sub.id_nomenclature_objectif) IN (
-               'OLD_1', 'OLD_2', 'OLD_3', 'OLD_4','OLD_5','OLD_6','OLD_7') ;
-			       exception WHEN unique_violation THEN
-			         raise notice 'keep looping';
-			       END;
-		END LOOP;
-END $$;
-
-DELETE FROM gn_meta.cor_acquisition_framework_objectif
-WHERE ref_nomenclatures.get_cd_nomenclature(id_nomenclature_objectif) IN ('OLD_1', 'OLD_2', 'OLD_3', 'OLD_4','OLD_5','OLD_6','OLD_7');
-
-
--- Ajout d'une contrainte d'unicité sur la table gn_commons.t_parameters sur le duo de champs id_organism, parameter_name
-
-ALTER TABLE gn_commons.t_parameters ADD CONSTRAINT unique_t_parameters_id_organism_parameter_name UNIQUE (id_organism, parameter_name);
-CREATE UNIQUE INDEX i_unique_t_parameters_parameter_name_with_id_organism_null ON gn_commons.t_parameters (parameter_name) WHERE id_organism IS NULL;
-
-
-/*MET 14/09/2020 Table t_places pour la fonctionnalité mes-lieux*/
-CREATE TABLE gn_commons.t_places
-(
-    id_place serial,
-    id_role integer NOT NULL,
-    place_name character varying(100),
-	place_geom geometry
-);
-
-COMMENT ON COLUMN gn_commons.t_places.id_place IS 'Clé primaire autoincrémente de la table t_places';
-COMMENT ON COLUMN gn_commons.t_places.id_role IS 'Clé étrangère vers la table utilisateurs.t_roles, chaque lieu est associé à un utilisateur';
-COMMENT ON COLUMN gn_commons.t_places.place_name IS 'Nom du lieu';
-COMMENT ON COLUMN gn_commons.t_places.place_geom IS 'Géométrie du lieu';
-
-ALTER TABLE ONLY gn_commons.t_places
-    ADD CONSTRAINT pk_t_places PRIMARY KEY (id_place);
-
-ALTER TABLE ONLY gn_commons.t_places
-  ADD CONSTRAINT fk_t_places_t_roles FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE; 
