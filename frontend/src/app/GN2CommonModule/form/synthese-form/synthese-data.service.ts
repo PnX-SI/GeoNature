@@ -43,6 +43,10 @@ export class SyntheseDataService {
     }
     return queryUrl;
   }
+  
+  getTaxons(){
+    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/occtax/releves`);
+  }
 
   getSyntheseData(params) {
     return this._api.post<any>(`${AppConfig.API_ENDPOINT}/synthese/for_web`,
