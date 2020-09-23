@@ -5,6 +5,9 @@ CHANGELOG
 2.5.0 (unreleased)
 ------------------
 
+Voir https://github.com/PnX-SI/GeoNature/commits/develop?before=65844c28811e8be8ab904909bc50239d75c14a04+385&branch=develop
+Et https://github.com/PnX-SI/GeoNature/compare/develop
+
 **TOCHECK**
 
 - https://github.com/PnX-SI/GeoNature/compare/develop...ubuntu20_04
@@ -18,9 +21,12 @@ CHANGELOG
 
 **🚀 Nouveautés**
 
- * Refonte de l'ergonomie d'Occtax 
+ * Refonte de l'ergonomie du module de saisie Occtax (#758 par @jbrieuclp et @TheoLechemia)
+ * Mise en place de la gestion transversale et générique des médias (#336) et implémentation dans le module Occtax (#620 par @joelclems)
+ * Arrêt du spport de Debian 9 et Ubuntu 16 pour passer à Python version 3.6 et plus
+ * Prise en charge de PostGIS et notamment l'installation de l'extension ``postgis_raster`` (#946)
  
-GeoNature n'est plus compatbile avec le version de Python 3.5 (qui ne sera plus maintenu en novembre 2020).
+GeoNature n'est plus compatbile avec le version de Python 3.5 (qui ne sera plus maintenue en novembre 2020).
 Suivez la procédure suivante pour passer à Python 3.7
 
 Notes:
@@ -61,8 +67,8 @@ Installer Python 3.7.9
     pyenv install 3.7.9
     pyenv global 3.7.9
 
-Editer ensuite le fichier ``config/settings.ini`` pour change la variable python_path (remplacer <MON_USER> par votre utilisateur linux courant
-NB: faire pareil dans TaxHub et UserHub
+Editer ensuite le fichier ``config/settings.ini`` pour changer la variable ``python_path`` (remplacer <MON_USER> par votre utilisateur linux courant
+NB: faire pareil dans TaxHub et UsersHub
 
 ::
 
