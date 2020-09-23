@@ -176,6 +176,7 @@ def get_af_and_ds_metadata(info_role):
         iCreateur = -1
         iMaitreOuvrage = -1
         if af.cor_af_actor:
+            af_dict["actors"] = [actor.as_dict(True) for actor in af.cor_af_actor]
             for index, actor in enumerate(af.cor_af_actor):
                 if actor.nomenclature_actor_role.mnemonique == "Maître d'ouvrage":
                     iMaitreOuvrage = index
@@ -183,7 +184,7 @@ def get_af_and_ds_metadata(info_role):
                     iCreateur = index
 
 
-        #af_dict["nom_createur"] = af.cor_af_actor[iCreateur].role.nom_role if iCreateur!=-1 else "Non renseigné"
+        af_dict["nom_createur"] = af.cor_af_actor[iCreateur].role.nom_role if (iCreateur!=-1 and af.cor_af_actor[iCreateur].role) else ""
         af_dict["creator_mail"] = af.cor_af_actor[iCreateur].role.email if (iCreateur!=-1 and af.cor_af_actor[iCreateur].role) else ""
         af_dict["project_owner_name"] = af.cor_af_actor[iMaitreOuvrage].organism.nom_organisme if iMaitreOuvrage!=-1 else "Non renseigné"
         af_dict["deletable"] = is_af_deletable(af.id_acquisition_framework)
