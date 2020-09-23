@@ -53,7 +53,6 @@ export class MetadataComponent implements OnInit {
   public empty: boolean = false;
   expandAccordions = false;
   private researchTerm: string = '';
-  private selector: string = 'all';
   public organisms: Array<any>;
   public roles: Array<any>;
 
@@ -164,94 +163,8 @@ export class MetadataComponent implements OnInit {
     this.activePage = 0;
   }
 
-  matchAf(af, criteria, value) {
-
-    if (this.selector == 'all' || this.selector == 'af') {
-      switch (criteria) {
-        case 'num':
-          if ((af.id_acquisition_framework+' ').toLowerCase().indexOf(value) !== -1)
-            return true;
-          break;
-        case 'title1':
-        case 'title2':
-          if (af.acquisition_framework_name.toLowerCase().indexOf(value) !== -1)
-            return true;
-          break;
-        case 'start_date':
-          // console.log("value : " + value)
-          // console.log(af.acquisition_framework_start_date)
-          if (af.acquisition_framework_start_date.toString() == value)
-            return true;
-          break;
-        case 'organism':
-          if (af.actors.find(actor => actor.id_organism == value))
-            return true;
-          break;
-        case 'role':
-          if (af.actors.find(actor => actor.id_role == value))
-            return true;
-          break;
-        default:
-          return true;
-      }
-      if (this.selector == 'af')
-        return false;
-    }
-
-    if (af.datasets) {
-      if (this.selector == 'ds' || this.selector == 'all') {
-        af.datasetsTemp = af.datasets.filter(
-          ds => this.matchDs(ds, criteria, value)
-        );
-      } else {
-        af.datasetsTemp = af.datasets;
-      }
-      console.log(af.datasetsTemp)
-      return (af.datasetsTemp.length > 0);
-    }
-
-    return false;
-    
-  }
-
-  matchDs(ds, criteria, value) {
-
-    ((ds.id_dataset+' ').toLowerCase().indexOf(value) !== -1
-                || ds.dataset_name.toLowerCase().indexOf(value) !== -1
-                || ds.meta_create_date.toLowerCase().indexOf(value) !== -1)
-
-    switch (criteria) {
-      case 'num':
-        if ((ds.id_dataset+' ').toLowerCase().indexOf(value) !== -1)
-          return true;
-        break;
-      case 'title1':
-      case 'title2':
-        if (ds.dataset_name.toLowerCase().indexOf(value) !== -1)
-          return true;
-        break;
-      case 'start_date':
-        console.log("ds : " + ds.meta_create_date.toString().substring(0, 10))
-        if (ds.meta_create_date.toString().substring(0, 10) == value)
-          return true;
-        break;
-      case 'organism':
-        if (ds.actors.find(actor => actor.id_organism == value))
-          return true;
-        break;
-      case 'role':
-        if (ds.actors.find(actor => actor.id_role == value))
-          return true;
-        break;
-      default:
-        return true;
-    }
-
-    return false;
-  }
-
   updateAdvancedCriteria(event, criteria) {
-    if (criteria != 'start_date')
+    if (criteria != 'date')
       this.searchTerms[criteria] = event.target.value.toLowerCase();
     else
       this.searchTerms[criteria] = event.year
@@ -260,8 +173,7 @@ export class MetadataComponent implements OnInit {
   }
 
   updateSelector(event) {
-    this.selector = event.target.value.toLowerCase();
-    this.searchTerms['selector'] = this.selector;
+    this.searchTerms['selector'] = event.target.value.toLowerCase();
   }
 
   reinitAdvancedCriteria() {
@@ -270,8 +182,8 @@ export class MetadataComponent implements OnInit {
 
   updateAdvancedSearch() {
 
-    console.log("updateAdvancedSearch");
-    console.log(this.searchTerms);
+    if (!this.searchTerms['selector'])
+      this.searchTerms['selector'] = 'ds'
 
     this._dfs.getAfAndDatasetListMetadata(this.searchTerms).subscribe(data => {
       this.tempAF = data.data;
@@ -280,13 +192,13 @@ export class MetadataComponent implements OnInit {
         af['datasetsTemp'] = af['datasets'];
         this.datasets = this.datasets.concat(af['datasets']);
       })
-
+      this.expandAccordions = (this.searchTerms['selector'] == 'ds');
     });
   }
 
   openSearchModal(searchModal) {
     this.reinitAdvancedCriteria();
-    this.updateAdvancedSearch();
+    //this.updateAdvancedSearch();
     this.modal.open(searchModal);
   }
 
