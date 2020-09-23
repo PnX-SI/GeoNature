@@ -19,12 +19,12 @@
 
       <mat-accordion [multi]="true">
               <div class="tab-title">
-                <div style="width: 5%">ID </div>
-                <div style="min-width: 40%"> Nom</div>
-                <div style="width: 10%"> Date de création</div>
-                <div style="width: 10%"> Créateur</div>
-                <div style="width: 20%"> Acteurs</div>
-                <div style="width: 10%"> Actions</div>
+                <div class="col-md-1">ID </div>
+                <div class="col-md-3"> Nom</div>
+                <div class="col-md-2"> Date de création</div>
+                <div class="col-md-2"> Créateur</div>
+                <div class="col-md-3"> Acteurs</div>
+                <div class="col-md-1"> Actions</div>
               </div>
                 <ng-container *ngFor="let af of tempAF; let idx = index">
                   <mat-expansion-panel *ngIf="isDisplayed(idx)" [expanded]="expandAccordions">
@@ -33,19 +33,22 @@
                       expandedHeight="100px"
                     >
                       <mat-panel-title class="af-title" style="margin-top:2.5%;margin-bottom: 1.2%;">
-                        <div style="width: 5%">{{ af.id_acquisition_framework  }}</div>
-                        <div style="width: 40%"> <a [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]"> {{ af.acquisition_framework_name | uppercase }} </a> 
+
+                        <div class="col-md-1 h-auto">{{ af.id_acquisition_framework  }}</div>
+                        <div class="col-md-3 h-auto mb-3"> <a [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]"> {{ af.acquisition_framework_name | uppercase }} </a> 
                           <br> <small class="muted"> {{ af.unique_acquisition_framework_id  }}  </small>
                         </div>
-                        <div style="width: 10%">{{af.acquisition_framework_start_date |date:'d/MM/yyyy'}}</div>
-                        <div style="width: 10%;">
+                        <div class="col-md-2 h-auto">{{af.acquisition_framework_start_date |date:'d/MM/yyyy'}}</div>
+                        <div class="col-md-2 h-auto">
                          {{af.actors[0].role.nom_complet}}
                         </div>
-                        <ng-container style="width: 20%;"; *ngFor="let ac of af.actors">
-                        {{ac.organism.nom_organisme}} : {{ac.nomenclature_actor_role.definition_default}} <br>
-                        </ng-container>
+                        <section class="col-md-3">
+                          <div *ngFor="let ac of af.actors" class="mb-3 h-auto">
+                            {{ac.organism.nom_organisme}} : {{ac.nomenclature_actor_role.definition_default}}<br>
+                          </div>
+                        </section>
 
-                        <div style="width: 10%; text-align: right"><a style="color: black;" [routerLink]="['/metadata/af', af.id_acquisition_framework]"><mat-icon> create</mat-icon></a></div>
+                        <div class="col-md-1 h-auto"><a style="color: black;" [routerLink]="['/metadata/af', af.id_acquisition_framework]"><mat-icon> create</mat-icon></a></div>
 
                       </mat-panel-title>
             
