@@ -150,6 +150,7 @@ id_nomenclature_bio_status,
 id_nomenclature_bio_condition,
 id_nomenclature_naturalness,
 id_nomenclature_exist_proof,
+id_nomenclature_diffusion_level,
 id_nomenclature_life_stage,
 id_nomenclature_sex,
 id_nomenclature_obj_count,
@@ -202,6 +203,7 @@ VALUES(
   occurrence.id_nomenclature_bio_condition,
   occurrence.id_nomenclature_naturalness,
   occurrence.id_nomenclature_exist_proof,
+  occurrence.id_nomenclature_diffusion_level,
   new_count.id_nomenclature_life_stage,
   new_count.id_nomenclature_sex,
   new_count.id_nomenclature_obj_count,
@@ -307,6 +309,7 @@ CREATE TABLE t_occurrences_occtax (
     id_nomenclature_bio_status integer,
     id_nomenclature_naturalness integer,
     id_nomenclature_exist_proof integer,
+    id_nomenclature_diffusion_level integer,
     id_nomenclature_observation_status integer,
     id_nomenclature_blurring integer,
     id_nomenclature_source_status integer,
@@ -326,6 +329,7 @@ COMMENT ON COLUMN t_occurrences_occtax.id_nomenclature_bio_status IS 'Correspond
 COMMENT ON COLUMN t_occurrences_occtax.id_nomenclature_naturalness IS 'Correspondance nomenclature INPN = naturalite';
 COMMENT ON COLUMN t_occurrences_occtax.id_nomenclature_exist_proof IS 'Correspondance nomenclature INPN = preuve_exist';
 COMMENT ON COLUMN t_occurrences_occtax.id_nomenclature_observation_status IS 'Correspondance nomenclature INPN = statut_obs';
+COMMENT ON COLUMN t_occurrences_occtax.id_nomenclature_diffusion_level IS 'Correspondance nomenclature INPN = niv_precis';
 COMMENT ON COLUMN t_occurrences_occtax.id_nomenclature_blurring IS 'Correspondance nomenclature INPN = dee_flou';
 COMMENT ON COLUMN t_occurrences_occtax.id_nomenclature_determination_method IS 'Correspondance nomenclature GEONATURE = meth_determin';
 COMMENT ON COLUMN t_occurrences_occtax.id_nomenclature_source_status IS 'Correspondance nomenclature INPN = statut_source: id = 19';
@@ -456,6 +460,7 @@ ALTER TABLE ONLY t_occurrences_occtax
 
 ALTER TABLE ONLY t_occurrences_occtax
     ADD CONSTRAINT fk_t_occurrences_occtax_blurring FOREIGN KEY (id_nomenclature_blurring) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
 ALTER TABLE ONLY t_occurrences_occtax
     ADD CONSTRAINT fk_t_occurrences_occtax_source_status FOREIGN KEY (id_nomenclature_source_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
@@ -464,6 +469,9 @@ ALTER TABLE ONLY t_occurrences_occtax
 
 ALTER TABLE ONLY t_occurrences_occtax
     ADD CONSTRAINT fk_t_occurrences_occtax_behaviour FOREIGN KEY (id_nomenclature_behaviour) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY t_occurrences_occtax
+    ADD CONSTRAINT fk_t_occurrences_occtax_diffusion_level FOREIGN KEY (id_nomenclature_diffusion_level) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY cor_counting_occtax
     ADD CONSTRAINT fk_cor_stage_number_id_taxon FOREIGN KEY (id_occurrence_occtax) REFERENCES t_occurrences_occtax(id_occurrence_occtax) ON UPDATE CASCADE ON DELETE CASCADE;
@@ -549,6 +557,9 @@ ALTER TABLE t_occurrences_occtax
 
 ALTER TABLE t_occurrences_occtax
   ADD CONSTRAINT check_t_occurrences_occtax_behaviour CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour,'OCC_COMPORTEMENT')) NOT VALID;
+
+ALTER TABLE t_occurrences_occtax
+  ADD CONSTRAINT check_t_occurrences_occtax_accur_level CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_diffusion_level,'NIV_PRECIS')) NOT VALID;
 
 
 ALTER TABLE ONLY cor_counting_occtax
@@ -759,6 +770,7 @@ BEGIN
     id_nomenclature_bio_status = NEW.id_nomenclature_bio_status,
     id_nomenclature_naturalness = NEW.id_nomenclature_naturalness,
     id_nomenclature_exist_proof = NEW.id_nomenclature_exist_proof,
+    id_nomenclature_diffusion_level = NEW.id_nomenclature_diffusion_level,
     id_nomenclature_observation_status = NEW.id_nomenclature_observation_status,
     id_nomenclature_blurring = NEW.id_nomenclature_blurring,
     id_nomenclature_source_status = NEW.id_nomenclature_source_status,

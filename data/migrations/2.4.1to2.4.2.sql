@@ -253,8 +253,6 @@
           ALTER column id_nomenclature_tech_collect_campanule DROP NOT NULL;
 
         ALTER TABLE pr_occtax.t_occurrences_occtax
-          --delete sensi
-          DROP COLUMN id_nomenclature_diffusion_level,
           -- comportement
           ADD COLUMN id_nomenclature_behaviour integer,
           ADD CONSTRAINT fk_t_occurrences_occtax_behaviour FOREIGN KEY (id_nomenclature_behaviour) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
