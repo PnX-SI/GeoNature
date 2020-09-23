@@ -1,4 +1,4 @@
-limiter nombre de média (PnCal)
-url 255 trop court passer en text
-pb avec les parenthèses dans l'url () %28 %29
-titre -> nom du fichier img et titre unique
+- limiter nombre de média (PnCal)
+- url 255 trop court passer en text
+- pb avec les parenthèses dans l'url () %28 %29
+- titre -> nom du fichier img et titre unique
