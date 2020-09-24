@@ -4,6 +4,7 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
 import { AppConfig } from '@geonature_config/app.config';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { MediaService } from '@geonature_common/service/media.service';
+import { finalize } from 'rxjs/operators';
 
 
 @Component({
@@ -17,19 +18,25 @@ export class ModalInfoObsComponent implements OnInit {
   public selectedObsTaxonDetail;
   public formatedAreas = [];
   public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
+  public isLoading = false;
   constructor(
     private _gnDataService: DataFormService,
     private _dataService: SyntheseDataService,
     public activeModal: NgbActiveModal,
     public mediaService: MediaService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.loadOneSyntheseReleve(this.oneObsSynthese);
   }
 
   loadOneSyntheseReleve(oneObsSynthese) {
-    this._dataService.getOneSyntheseObservation(oneObsSynthese.id).subscribe(data => {
+    this.isLoading = true;
+    this._dataService.getOneSyntheseObservation(oneObsSynthese.id).pipe(
+      finalize(() => {
+        this.isLoading = false;
+      })
+    ).subscribe(data => {
       this.selectedObs = data;
       this.selectedObs['municipalities'] = [];
       this.selectedObs['other_areas'] = [];

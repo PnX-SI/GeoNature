@@ -1,3 +1,6 @@
+<div id="cover-spin" *ngIf="isLoading">
+</div>
+
 <div class="modal-header padding-md-all">
     <h5 style="padding-top:10px; padding-right:10px">
         {{ selectedObsTaxonDetail?.nom_vern }} - {{ selectedObsTaxonDetail?.nom_valide }}
@@ -34,11 +37,14 @@
             <b> Date : </b>{{selectedObs?.date_min}}
           </ng-template>
           <br>
-
-          <b> Altitude</b> : {{selectedObs?.altitude_min}} m - {{selectedObs?.altitude_max}} m
-          <div *ngIf="selectedObs?.depth_min || selectedObs?.depth_max">
-              <b> Profondeur</b> : {{selectedObs?.depth_min}} m - {{selectedObs?.depth_min}} m
-          </div>
+          <span *ngIf="selectedObs?.altitude_min || selectedObs?.altitude_max">
+            <b> Altitude</b> : {{selectedObs?.altitude_min}} m - {{selectedObs?.altitude_max}} m
+            <br>
+          </span>
+          <span *ngIf="selectedObs?.depth_min || selectedObs?.depth_max">
+            <b> Profondeur min </b> : {{selectedObs?.depth_min}} m -  <b> Profondeur max : </b> {{selectedObs?.depth_max}} m
+            <br>
+          </span>
           <b> UUID observation : </b> {{selectedObs?.unique_id_sinp}}
           <br>
           <b> Habitat associé</b>: {{selectedObs?.habitat?.lb_hab_fr}} - {{selectedObs?.habitat?.lb_code}}
