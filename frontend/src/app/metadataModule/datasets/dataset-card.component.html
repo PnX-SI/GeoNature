@@ -144,10 +144,15 @@
                     <i style="color: rgb(248, 67, 67);margin-right: 3%;margin-left: 3%;" class="fa fa-times-circle fa-3x importImportFail" aria-hidden="true" *ngIf="!import.is_finished"></i>
                    </div>
                  </td>
-                <td class="textCenter" *ngIf="import.source_count > 0" ><mat-icon (click)="sensiReport(import.id_dataset)" matTooltip="Rapport de sensibilité"> do_not_touch</mat-icon>  <mat-icon matTooltip="Rapport d'UUID" (click)="uuidReport(import.id_dataset)"> format_list_numbered </mat-icon></td>
-                <td class="textCenter" *ngIf="import.source_count == 0 || !import.is_finished " >
-                  <mat-icon matTooltip="Impossible de télécharger le rapport de sensibilité"> do_not_touch</mat-icon> 
-                  <mat-icon matTooltip="Impossible de télécharger de rapport UUID" > format_list_numbered </mat-icon>
+                <td class="textCenter">
+                  <div *ngIf="import.source_count != 0 && import.is_finished">
+                    <mat-icon (click)="sensiReport(import.id_import)"> do_not_touch</mat-icon> 
+                    <mat-icon (click)="uuidReport(import.id_import)"> format_list_numbered </mat-icon>
+                  </div>
+                  <div *ngIf="import.source_count == 0 || !import.is_finished">
+                    <mat-icon matTooltip="Impossible de télécharger le rapport de sensibilité"> do_not_touch</mat-icon> 
+                    <mat-icon matTooltip="Impossible de télécharger de rapport UUID"> format_list_numbered </mat-icon>
+                  </div>
                 </td>
               </tr>
             </tbody>
