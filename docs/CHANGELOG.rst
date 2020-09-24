@@ -17,6 +17,7 @@ Et https://github.com/PnX-SI/GeoNature/compare/develop
 
 * Refonte de l'ergonomie du module de saisie Occtax (#758 par @jbrieuclp et @TheoLechemia)
 
+   - Enregistrement continu
    - Liste des taxons
    - Saisie au clavier
    - Zoom MapList conservé (#436 et #912)
@@ -33,15 +34,14 @@ Et https://github.com/PnX-SI/GeoNature/compare/develop
 * Ajout d'un champs ``addtional_data`` de type ``jsonb`` dans la table ``gn_synthese.synthese``, en prévision de l'ajout des champs additionnels dans Occtax et Synthèse (#1007)
 * Mise en place de la gestion transversale et générique des médias dans ``gn_commons.t_medias`` et le Dynamic-Form (#336) et implémentation dans le module Occtax (désactivables avec le paramètre ``ENABLE_MEDIAS``) (#620 par @joelclems)
 * Miniatures, contrôles, aperçu... / Affichage dans Synthèse et Validation
-* Mes lieux (``gn_commons.t_places``), implémenté dans le module cartographique d'Occtax (désactivable avec le paramètre ``ENABLE_MY_PLACES``) (# par @metourneau)
+* Mes lieux (``gn_commons.t_places``), implémenté dans le module cartographique d'Occtax (désactivable avec le paramètre ``ENABLE_MY_PLACES``) (#000 par @metourneau)
 * Tri de l'ordre des modules dans le menu latéral par ordre alphabétique par défaut et possibilité de les ordonner avec le nouveau champs ``gn_commons.t_modules.order_menu`` (#787 par @alainlaupinmnhn)
 * Arrêt du support de l'installation packagée sur Debian 9 et Ubuntu 16 pour passer à Python version 3.6 et plus
 * Prise en charge de PostGIS 3 et notamment l'installation de l'extension ``postgis_raster`` (#946 par @jpm-cbna)
-* Amélioration des fonctions ``gn_synthese.import_json_row_format_insert_data`` et ``gn_synthese.import_json_row`` pour prendre en charge la génération des geojson dans PostGIS 3
 
 **Ajouts mineurs**
 
-* Création de compte : Envoi automatique d'un email quand à l'utilisateur quand son compte est validé (#862 et #1035 par @jpm-cbna)
+* Création de compte : Envoi automatique d'un email quand à l'utilisateur quand son compte est validé. Nécessite la version XYZ de UsersHub (#862 et #1035 par @jpm-cbna)
 * Métadonnées : Ajout d'un paramètre permettant de définir le nombre de CA affichés sur la page (100 par défaut)
 * Métadonnées : Tri des CA et JDD par ordre alphabétique
 * Métadonnées : Ajout d'un champs ``id_digitiser`` dans la table des CA et des JDD, utilisé en plus des acteurs pour le CRUVED des JDD (#921)
@@ -55,6 +55,7 @@ Et https://github.com/PnX-SI/GeoNature/compare/develop
 * Ajout de l'autocomplétion des commandes ``geonature`` (#999 par @jpm-cbna)
 * Suppression du fichier ``backend/gunicorn_start.sh.sample``
 * Amélioration du script ``install/migration/migration.sh`` en vérifiant la présence des dossiers optionnels avant de les copier
+* Amélioration des fonctions ``gn_synthese.import_json_row_format_insert_data`` et ``gn_synthese.import_json_row`` pour prendre en charge la génération des geojson dans PostGIS 3
 * Documentation administrateur : Label, pictos et ordre des modules dans le menu latéral
 
 **🐛 Corrections**
@@ -77,6 +78,7 @@ Et https://github.com/PnX-SI/GeoNature/compare/develop
 
 Si vous mettez à jour GeoNature :
 
+* Occtax-mobile version 1.1.0 minimum
 * Attention si vous avez customisé les vues des exports Occtax et Synthèse, elles sont supprimées et recrées par l'update SQL pour s'adapter aux évolutions du standard Occtax. Adaptez le SQL de mise à jour et/ou révisez vos vues customisées
 * Si vous avez des vues qui utilisent des champs qui ont été supprimés ou renommés (dans module Export notamment), le script SQL d'update s'arrêtera et vous indiquera les vues qui bloquent la mise à jour (#1016). A supprimer et recréer après update avec adaptation des champs si besoin.
 * data/migrations/2.4.1to2.5.0.sql / A RENOMMER
