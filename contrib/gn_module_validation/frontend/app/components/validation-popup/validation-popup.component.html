@@ -1,6 +1,14 @@
 <!-- Boutton pour accéder modal validation -->
 <p></p>
-<button type="button" id="validatorButton" class="btn btn-success box-shadow" [disabled]="!isAccess()" (click)="openVerticallyCentered(content)">Attribuer un statut de validation</button>
+<button 
+  type="button" 
+  id="validatorButton" 
+  class="btn-green" 
+  mat-raised-button
+  [disabled]="!isAccess()" 
+  (click)="openVerticallyCentered(content)">
+  Attribuer un statut de validation
+</button>
 
 
 <ng-template #content let-c="close" let-d="dismiss">

@@ -8,11 +8,14 @@ import { finalize } from 'rxjs/operators';
 
 
 @Component({
-  selector: 'pnx-synthese-modal-info-obs',
-  templateUrl: 'modal-info-obs.component.html'
+  selector: 'pnx-synthese-info-obs',
+  templateUrl: 'synthese-info-obs.component.html',
+  styleUrls: ["./synthese-info-obs.component.scss"]
 })
-export class ModalInfoObsComponent implements OnInit {
-  @Input() oneObsSynthese: any;
+export class SyntheseInfoObsComponent implements OnInit {
+  @Input() syntheseObs: any;
+  @Input() header: boolean = false;
+
   public selectObsTaxonInfo;
   public selectedObs;
   public selectedObsTaxonDetail;
@@ -27,12 +30,13 @@ export class ModalInfoObsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.loadOneSyntheseReleve(this.oneObsSynthese);
+    console.log(this.syntheseObs)
+    this.loadOneSyntheseReleve(this.syntheseObs);
   }
 
-  loadOneSyntheseReleve(oneObsSynthese) {
+  loadOneSyntheseReleve(syntheseObs) {
     this.isLoading = true;
-    this._dataService.getOneSyntheseObservation(oneObsSynthese.id).pipe(
+    this._dataService.getOneSyntheseObservation(syntheseObs.id_synthese).pipe(
       finalize(() => {
         this.isLoading = false;
       })
@@ -60,12 +64,12 @@ export class ModalInfoObsComponent implements OnInit {
       //   }/fr_light_l93,fr_light_mer_l93,fr_lit_l93)`;
     });
     this._gnDataService
-      .getTaxonAttributsAndMedia(oneObsSynthese.cd_nom, this.SYNTHESE_CONFIG.ID_ATTRIBUT_TAXHUB)
+      .getTaxonAttributsAndMedia(syntheseObs.cd_nom, this.SYNTHESE_CONFIG.ID_ATTRIBUT_TAXHUB)
       .subscribe(data => {
         this.selectObsTaxonInfo = data;
       });
 
-    this._gnDataService.getTaxonInfo(oneObsSynthese.cd_nom).subscribe(data => {
+    this._gnDataService.getTaxonInfo(syntheseObs.cd_nom).subscribe(data => {
       this.selectedObsTaxonDetail = data;
     });
   }

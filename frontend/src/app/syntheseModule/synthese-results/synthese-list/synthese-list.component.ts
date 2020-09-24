@@ -19,9 +19,8 @@ import { HttpParams } from '@angular/common/http/src/params';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SyntheseModalDownloadComponent } from './modal-download/modal-download.component';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
-import { ModalInfoObsComponent } from './modal-info-obs/modal-info-obs.component';
-import { CruvedStoreService } from '../../../GN2CommonModule/service/cruved-store.service';
-
+import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
+import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component'
 @Component({
   selector: 'pnx-synthese-list',
   templateUrl: 'synthese-list.component.html',
@@ -112,11 +111,14 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   }
 
   openInfoModal(row) {
-    const modalRef = this.ngbModal.open(ModalInfoObsComponent, {
+    row.id_synthee = row.id;
+    const modalRef = this.ngbModal.open(SyntheseInfoObsComponent, {
       size: 'lg',
       windowClass: 'large-modal'
     });
-    modalRef.componentInstance.oneObsSynthese = row;
+    modalRef.componentInstance.syntheseObs = row;
+    modalRef.componentInstance.header = true;
+
   }
 
   openDownloadModal() {

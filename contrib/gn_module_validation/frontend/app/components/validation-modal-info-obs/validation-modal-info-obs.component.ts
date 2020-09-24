@@ -40,7 +40,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
   public validationDate;
   public currentCdNomenclature;
 
-  @Input() oneObsSynthese: any;
+  @Input() syntheseObs: any;
   @Output() modifiedStatus = new EventEmitter();
   @Output() valDate = new EventEmitter();
 
@@ -62,9 +62,9 @@ export class ValidationModalInfoObsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.id_synthese = this.oneObsSynthese.id_synthese;
-    this.loadOneSyntheseReleve(this.oneObsSynthese);
-    this.loadValidationHistory(this.oneObsSynthese.unique_id_sinp);
+    this.id_synthese = this.syntheseObs.id_synthese;
+    this.loadOneSyntheseReleve(this.syntheseObs);
+    this.loadValidationHistory(this.syntheseObs.unique_id_sinp);
 
     // get all id_synthese of the filtered observations:
     this.filteredIds = [];
@@ -129,9 +129,9 @@ export class ValidationModalInfoObsComponent implements OnInit {
     );
   }
 
-  loadOneSyntheseReleve(oneObsSynthese) {
+  loadOneSyntheseReleve(syntheseObs) {
     this._syntheseDataService
-      .getOneSyntheseObservation(oneObsSynthese.id_synthese)
+      .getOneSyntheseObservation(syntheseObs.id_synthese)
       .subscribe(data => {
         this.selectedObs = data;
         this.selectedObs["municipalities"] = [];
@@ -150,14 +150,14 @@ export class ValidationModalInfoObsComponent implements OnInit {
 
     this._gnDataService
       .getTaxonAttributsAndMedia(
-        oneObsSynthese.cd_nom,
+        syntheseObs.cd_nom,
         this.SYNTHESE_CONFIG.ID_ATTRIBUT_TAXHUB
       )
       .subscribe(data => {
         this.selectObsTaxonInfo = data;
       });
 
-    this._gnDataService.getTaxonInfo(oneObsSynthese.cd_nom).subscribe(data => {
+    this._gnDataService.getTaxonInfo(syntheseObs.cd_nom).subscribe(data => {
       this.selectedObsTaxonDetail = data;
     });
   }
@@ -224,7 +224,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
       this.filteredIds.indexOf(this.id_synthese) + 1
     ];
     const syntheseRow = this.mapListService.tableData[this.position]
-    
+
     this.loadOneSyntheseReleve(syntheseRow);
     this.loadValidationHistory(syntheseRow.unique_id_sinp);
     this.isPrevButtonValid = true;
@@ -289,9 +289,9 @@ export class ValidationModalInfoObsComponent implements OnInit {
             "Nouveau statut de validation enregistré"
           );
           this.update_status();
-          this.getValidationDate(this.oneObsSynthese.unique_id_sinp);
-          this.loadOneSyntheseReleve(this.oneObsSynthese);
-          this.loadValidationHistory(this.oneObsSynthese.unique_id_sinp);
+          this.getValidationDate(this.syntheseObs.unique_id_sinp);
+          this.loadOneSyntheseReleve(this.syntheseObs);
+          this.loadValidationHistory(this.syntheseObs.unique_id_sinp);
           // bind statut value with validation-synthese-list component
           this.statusForm.reset();
           resolve("data updated");

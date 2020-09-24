@@ -20,7 +20,6 @@ import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { ValidationModalInfoObsComponent } from "../validation-modal-info-obs/validation-modal-info-obs.component";
 import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthese-form.service";
 import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthese-data.service";
-
 @Component({
   selector: "pnx-validation-synthese-list",
   templateUrl: "validation-synthese-list.component.html",
@@ -29,6 +28,7 @@ import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthe
 export class ValidationSyntheseListComponent
   implements OnInit, OnChanges, AfterContentChecked {
   public VALIDATION_CONFIG = ModuleConfig;
+  public oneSyntheseObs: any;
   selectedObs: Array<number> = []; // list of id_synthese values for selected rows
   selectedIndex: Array<number> = [];
   selectedPages = [];
@@ -261,12 +261,13 @@ export class ValidationSyntheseListComponent
   }
 
   openInfoModal(row) {
+    this.oneSyntheseObs = row;
     const modalRef = this.ngbModal.open(ValidationModalInfoObsComponent, {
       size: "lg",
       windowClass: "large-modal"
     });
 
-    modalRef.componentInstance.oneObsSynthese = row;
+    modalRef.componentInstance.syntheseObs = row;
     modalRef.componentInstance.validationStatus = this.validationStatus;
     modalRef.componentInstance.mapListService = this.mapListService;
     modalRef.componentInstance.modifiedStatus.subscribe(modifiedStatus => {
@@ -290,7 +291,7 @@ export class ValidationSyntheseListComponent
   }
 
   getValidationStatusMnemonique(code) {
-    var statusF = this.validationStatus.filter((st) => st.cd_nomenclature  == code);
+    var statusF = this.validationStatus.filter((st) => st.cd_nomenclature == code);
     if (statusF.length > 0) {
       return statusF[0].mnemonique;
     }

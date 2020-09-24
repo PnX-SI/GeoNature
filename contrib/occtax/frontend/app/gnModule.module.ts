@@ -29,7 +29,7 @@ import { OcctaxFormCountingService } from "./occtax-form/counting/counting.servi
 import { OcctaxTaxaListService } from "./occtax-form/taxa-list/taxa-list.service";
 import { OcctaxFormParamService } from "./occtax-form/form-param/form-param.service";
 
-import { MatSlideToggleModule, MatTabsModule } from "@angular/material";
+import { MatSlideToggleModule } from "@angular/material";
 
 const routes: Routes = [
   { path: "", component: OcctaxMapListComponent },
@@ -54,7 +54,6 @@ const routes: Routes = [
     GN2CommonModule,
     CommonModule,
     MatSlideToggleModule,
-    MatTabsModule,
     NgbModule,
     GNPanelModule,
   ],
@@ -83,4 +82,4 @@ const routes: Routes = [
     OcctaxFormParamService,
   ],
 })
-export class GeonatureModule {}
+export class GeonatureModule { }

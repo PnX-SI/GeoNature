@@ -21,7 +21,8 @@ import {
   MatAutocompleteModule,
   MatSelectModule,
   MatInputModule,
-  MatChipsModule
+  MatChipsModule,
+  MatTabsModule
 } from '@angular/material';
 
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
@@ -133,6 +134,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     NgbModule.forRoot(),
     AutoCompleteModule,
     TreeModule,
+    MatTabsModule
   ],
   declarations: [
     NomenclatureComponent,
@@ -178,7 +180,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     ConfirmationDialog,
     DatalistComponent,
     PlacesComponent,
-    PlacesListComponent
+    PlacesListComponent,
   ],
   providers: [
     TranslateService,
@@ -267,7 +269,8 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     DisplayMediasComponent,
     DatalistComponent,
     PlacesComponent,
-    PlacesListComponent
+    PlacesListComponent,
+    MatTabsModule
   ]
 })
 export class GN2CommonModule { }
