@@ -1,7 +1,7 @@
 <div class="card search-wrapper">
     <fieldset *ngIf="displayValidation">
         <legend> Validation </legend>
-      
+
       <div>
           <small> Statut de validation</small>
           <pnx-multiselect [values]="validationStatus" [parentFormControl]="formService.searchForm.controls.id_nomenclature_valid_status" keyLabel="label_fr"
@@ -96,22 +96,22 @@
       <legend> Qui ?</legend>
 
       <ng-container *ngIf="AppConfig.SYNTHESE.SEARCH_OBSERVER_WITH_LIST; else observersTxtBlock">
-        <pnx-observers 
-          [parentFormControl]="formService.searchForm.get('observers_list')" 
+        <pnx-observers
+          [parentFormControl]="formService.searchForm.get('observers_list')"
           [idMenu]="AppConfig.SYNTHESE.ID_SEARCH_OBSERVER_LIST"
-          [label]="'Releve.Observers' | translate" 
+          [label]="'Releve.Observers' | translate"
           [bindAllItem]="true">
         </pnx-observers>
       </ng-container>
 
       <ng-template #observersTxtBlock>
-        <pnx-observers-text 
-          [label]="'Releve.Observer' | translate" 
+        <pnx-observers-text
+          [label]="'Releve.Observer' | translate"
           [parentFormControl]="formService.searchForm.get('observers')">
         </pnx-observers-text>
       </ng-template>
 
-      
+
       <pnx-multiselect [values]="organisms" [parentFormControl]="formService.searchForm.controls.id_organism" keyLabel="nom_organisme" keyValue="id_organisme"
       [label]="'Form.Organism' | translate" debounceTime="500" [searchBar]="false"
       [disabled]="disabled">
@@ -139,14 +139,24 @@
       <legend> Filtres avancés </legend>
           <small> Ajouter un filtre </small>
           <pnx-dynamic-form-generator [myFormGroup]="formService.searchForm" [formsDefinition]="formService.dynamycFormDef">
-          </pnx-dynamic-form-generator>  
+          </pnx-dynamic-form-generator>
     </fieldset>
 </div>
 
 <div class="search-btn">
-    <button (click)="refreshFilters()" class="btn btn-sm btn-danger box-shadow" matTooltip="{{ 'Form.RefreshFilters' | translate }}">
+    <button
+      id="refresh-btn"
+      mat-raised-button
+      color="warn"
+      (click)="refreshFilters()"
+        matTooltip="{{ 'Form.RefreshFilters' | translate }}">
       <i class="fa fa-refresh" aria-hidden="true"></i>
     </button>
-    <button class="btn btn-sm btn-success box-shadow" (click)="onSubmitForm()">Rechercher</button>
+    <button
+      class="btn-green uppercase"
+      mat-raised-button
+      (click)="onSubmitForm()">
+      Rechercher
+    </button>
   </div>
   <!-- <pre>form value: <br>{{formService.searchForm.value | json}}</pre> -->

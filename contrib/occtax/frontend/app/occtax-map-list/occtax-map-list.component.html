@@ -34,14 +34,14 @@
     </div>
   
     <div class="row">
-      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 padding-sm-occ"
         [ngStyle]="{'min-height.px': cardContentHeight}"
       >
         <!-- MAP -->
         <pnx-map-list [idName]="idName" height="100%">
         </pnx-map-list>
       </div>
-      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 padding-sm-occ"
         [ngStyle]="{'min-height.px': cardContentHeight}">
         <!-- LIST -->
         <!--Table-->
@@ -339,8 +339,21 @@
               mapListService.selectedRow[0][mapListService.idName]}} ?</h5>
           </div>
           <div class="modal-body">
-            <button type="button" class="btn btn-default" (click)="c()"> {{'Cancel' | translate}} </button>
-            <button type="button" class="btn btn-danger" (click)="c(); onDeleteReleve(mapListService.selectedRow[0].id_releve_occtax)">
+            <button 
+              type="button"
+              mat-raised-button
+              class="mr-1 uppercase"
+              (click)="c()"
+            > 
+              {{'Cancel' | translate}} 
+            </button>
+            <button 
+              type="button" 
+              mat-raised-button
+              color="warn"
+              class="uppercase"
+              (click)="c(); onDeleteReleve(mapListService.selectedRow[0].id_releve_occtax)"
+            >
               {{'Delete' | translate }} </button>
           </div>
         </ng-template>
@@ -359,8 +372,13 @@
             </div>
   
             <div class="export-button">
-              <button *ngFor="let format of occtaxConfig.export_available_format" (click)="downloadData(format); c()"
-                [disabled]="mapListService.page.totalElements > occtaxConfig.MAX_EXPORT_NUMBER" type="button" class="btn btn-success format-btn">
+              <button 
+                *ngFor="let format of occtaxConfig.export_available_format" 
+                (click)="downloadData(format); c()"
+                [disabled]="mapListService.page.totalElements > occtaxConfig.MAX_EXPORT_NUMBER" 
+                type="button"
+                mat-raised-button
+                class="btn-green mr-1">
                 Format {{format}}
               </button>
             </div>

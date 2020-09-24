@@ -3,19 +3,24 @@
 <div class="float-btns">
     <button
       id="add-btn"
-      class="btn  btn-success hard-shadow btn-action" 
+      mat-raised-button
+      color="primary"
+      class="btn-green hard-shadow btn-action uppercase" 
       [routerLink]="['form']"
       matTooltip="Ajouter une nouvelle station d'habitat"
     > 
-        AJOUTER
-        <i class="fa fa-plus" aria-hidden="true"></i>    </button>
+        Ajouter
+        <mat-icon>add_circle_outline</mat-icon>    
+    </button>
     <button 
-      class="btn  btn-primary hard-shadow btn-action"
+      class="hard-shadow btn-action uppercase"
+      mat-raised-button
+      color="primary"
       data-toggle="collapse"
       data-target="#collapseFilter"
       matTooltip="Rechercher des habitats "
     >
-      FILTRER
+      Filter
       <i class="fa fa-sliders" aria-hidden="true"></i>
     
     </button>
@@ -33,11 +38,14 @@
     </div>
     <button
       id="download-btn"
-      class="btn btn-primary box-shadow btn-action"
+      mat-raised-button
+      color="primary"
+      class="btn-action uppercase"
       (click)="openModal()"
       >
-      TELECHARGER
-      <i class="fa fa-download" aria-hidden="true"></i>
+      {{ 'Download' | translate }} 
+
+      <mat-icon>file_download</mat-icon>
     </button>
 
     <ngx-datatable 

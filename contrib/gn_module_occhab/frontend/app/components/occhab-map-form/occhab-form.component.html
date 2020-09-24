@@ -305,11 +305,12 @@
     <button 
       id="validateButton"
       type="button" 
-      class="btn btn-success hard-shadow btn-action"
+      mat-raised-button
+      class="btn-green uppercase"
       (click)="postStation()"
       [disabled]="occHabForm.stationForm.invalid || showHabForm || !atLeastOneHab"
     >
-      VALIDER LA STATION
+      Valider la station
     </button>
 
     
@@ -371,7 +372,6 @@
                   (onChange)="occHabForm.patchNomCite($event)"
               >
               </pnx-autocomplete>
-              LA: {{occHabForm.typoHabControl.value}}
               <div class="input-group-append" id="addon">
                 <button class="btn btn-sm btn-outline-shadow" data-toggle="collapse" data-target="#collaspeTypo" aria-expanded="false"
                   aria-controls="collapseExample" matTooltip="Filtrer les habitat proposés à l'autocompletion  par typologie">
@@ -482,14 +482,17 @@
 
           <button 
           type="button" 
-          class="btn btn-primary btn-sm"
+          mat-raised-button
+          color="primary"
+          class="uppercase"
           (click)="validateHabitat();"
           [disabled]="
           occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm]
           && occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].invalid"
           > 
-          <i style="color: rgb(0, 233, 0);" class="fa fa-plus" aria-hidden="true"></i>
           Valider cet habitat
+          <mat-icon>done</mat-icon>
+
         </button>
 
 
