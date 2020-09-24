@@ -419,7 +419,9 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
     id_source = DB.Column(DB.Integer)
     id_dataset = DB.Column(DB.Integer)
     cd_hab = DB.Column(DB.Integer, ForeignKey(Habref.cd_hab))
+
     habitat = DB.relationship(Habref, lazy="joined")
+    
     source = DB.relationship(
         "TSources",
         primaryjoin=(TSources.id_source == id_source),

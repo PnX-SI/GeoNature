@@ -208,7 +208,7 @@ export class DataFormService {
   }
 
   getAltitudes(geojson) {
-    return this._http.post(`${AppConfig.API_ENDPOINT}/geo/altitude`, geojson);
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/geo/altitude`, geojson);
   }
 
   getFormatedGeoIntersection(geojson, idType?) {
@@ -411,7 +411,7 @@ export class DataFormService {
     for (const key of Object.keys(params)) {
       const param = params[key];
       if (Array.isArray(param)) {
-        for ( const p of param) {
+        for (const p of param) {
           queryString = queryString.append(key, p);
         }
       } else {
@@ -422,10 +422,10 @@ export class DataFormService {
     const url = application === 'GeoNature'
       ? `${AppConfig.API_ENDPOINT}/${api}`
       : application === 'TaxHub'
-      ? `${AppConfig.API_TAXHUB}/${api}`
-      : api;
+        ? `${AppConfig.API_TAXHUB}/${api}`
+        : api;
 
-    return this._http.get<any>(url, {params: queryString});
+    return this._http.get<any>(url, { params: queryString });
   }
 
   subscribeAndDownload(
