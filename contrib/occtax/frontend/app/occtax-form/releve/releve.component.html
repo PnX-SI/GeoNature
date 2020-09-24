@@ -316,14 +316,14 @@
 
   <ng-container >
     <button 
-      mat-flat-button
+      mat-raised-button
       color="warn"
       class="uppercase mr-1"
       [routerLink]="['/occtax']">
       Annuler
     </button> 
   <button 
-    mat-flat-button
+    mat-raised-button
     class="btn-green uppercase"
     matTooltip="Enregistrer le relevé et saisir les taxons"
     [disabled]="releveForm.invalid || occtaxFormReleveService.waiting"

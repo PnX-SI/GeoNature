@@ -307,11 +307,12 @@
         <button 
           *ngIf="userCruved?.E != '0'"
           id="download-btn" 
-          mat-flat-button
+          class="uppercase"
+          mat-raised-button
           color="primary"
           (click)="openModalDownload($event, modalDownload)"
         >
-        {{ 'DownloadData' | translate }} 
+        {{ 'Download' | translate }} 
 
           <mat-icon>file_download</mat-icon>
         </button>

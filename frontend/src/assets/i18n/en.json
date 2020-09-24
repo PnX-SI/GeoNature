@@ -26,6 +26,7 @@
   "NotAllowed": "You do not have the rights to perform this action",
   "LoginError": "Login or password incorrect",
   "DownloadData": "Download data",
+  "Download": "Download",
   "Downloading": "Downloading",
   "DownloadOverflow": "The number of items is too big to be downloaded, please modify your request or contact your administrator",
   "AllItems": "all",
@@ -220,6 +221,5 @@
     "type": "Media Type",
     "next": "Go to previous media",
     "previous": "Go to next media"
-
   }
 }
