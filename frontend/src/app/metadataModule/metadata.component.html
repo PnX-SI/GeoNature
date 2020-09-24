@@ -82,8 +82,16 @@
                             <td> {{ds.meta_create_date |date:'d/MM/yyyy' }}</td>
                             <td> {{ds.observation_count}} </td>
                             <td> {{af.actors[0].role.nom_complet}} </td>
-                            <td *ngIf="ds.observation_count >0"> <mat-icon (click)="sensiReport(ds.id_dataset)" matTooltip="Rapport de sensibilité"> do_not_touch</mat-icon>  <mat-icon matTooltip="Rapport d'UUID" (click)="uuidReport(ds.id_dataset)"> format_list_numbered </mat-icon> </td>
-                            <td> <mat-icon matTooltip="Impossible de télécharger le rapport de sensibilité"> do_not_touch</mat-icon>  <mat-icon matTooltip="Impossible de télécharger le rapport d'UUID"> format_list_numbered </mat-icon> </td>
+                            <td> 
+                              <div *ngIf="ds.observation_count > 0">
+                                <mat-icon (click)="sensiReport(ds.id_dataset)" matTooltip="Rapport de sensibilité"> do_not_touch </mat-icon>
+                                <mat-icon (click)="uuidReport(ds.id_dataset)" matTooltip="Rapport d'UUID"> format_list_numbered </mat-icon>
+                              </div>
+                              <div *ngIf="ds.observation_count == 0">
+                                <mat-icon matTooltip="Impossible de télécharger le rapport de sensibilité"> do_not_touch </mat-icon> 
+                                <mat-icon matTooltip="Impossible de télécharger le rapport d'UUID"> format_list_numbered </mat-icon>
+                              </div>
+                            </td>
                             <td *ngIf="ds.active"><a style="color: black;" [routerLink]="['/metadata/dataset', ds.id_dataset]" matTooltip="Éditer un jeux de donnée"><mat-icon> create</mat-icon></a>
                                <a (click)="activateDs(ds.id_dataset, false)" matTooltip="Jeux de donnée activé"><mat-icon> done</mat-icon></a> 
                                <a (click)="importDs(ds.id_dataset)" matTooltip="Importé un jeux de donnée"><mat-icon>get_app</mat-icon></a>
