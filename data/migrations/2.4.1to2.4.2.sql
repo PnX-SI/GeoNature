@@ -1036,7 +1036,7 @@
         );
 
         ALTER TABLE gn_commons.bib_tables_location
-          ADD CONSTRAINT unique_bib_table_location_schema_name_table_name UNIQUE (schema_name, table_name);
+          ADD CONSTRAINT unique_bib_tables_location_schema_name_table_name UNIQUE (schema_name, table_name);
 
 
         -- Monitoring
