@@ -37,15 +37,10 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.releveForm = this.occtaxFormReleveService.releveForm;
     this.initHabFormSub();
+    // in order to pass data to the inserected area component
     this.occtaxFormMapService.geojson.subscribe(geojson => {
       this.geojson = geojson;
       // check if edition
-      if (geojson) {
-        this._dataService.getAltitudes(geojson).subscribe(altitude => {
-          this.releveForm.get('properties').patchValue(altitude)
-
-        })
-      }
 
     })
 

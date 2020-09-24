@@ -164,7 +164,7 @@ def get_municipalities():
 @json_resp
 def get_areas():
     """
-        Return the areas of ref_geo.l_areas without geometry
+        Return the areas of ref_geo.l_areas
         .. :quickref: Ref Geo;
     """
     # change all args in a list of value

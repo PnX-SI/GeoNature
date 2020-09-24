@@ -296,10 +296,10 @@ export class OcctaxFormReleveService {
 
   private getAltitude(geojson) {
     // get to geo info from API
-    this.dataFormService.getGeoInfo(geojson).subscribe((res) => {
+    this.dataFormService.getAltitudes(geojson).subscribe((res) => {
       this.propertiesForm.patchValue({
-        altitude_min: res.altitude.altitude_min,
-        altitude_max: res.altitude.altitude_max,
+        altitude_min: res.altitude_min,
+        altitude_max: res.altitude_max,
       });
     });
   }
