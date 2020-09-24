@@ -34,7 +34,7 @@ from .models import (
     CorCountingOccurrence,
     VReleveOccurrence,
     corRoleRelevesOccurrence,
-    DefaultNomenclaturesValue
+    DefaultNomenclaturesValue,
 )
 from .repositories import (
     ReleveRepository,
@@ -99,14 +99,14 @@ def getReleves(info_role):
         releve_cruved = n.get_releve_cruved(user, user_cruved)
         feature = n.get_geofeature(
             relationships=(
-                't_occurrences_occtax',
-                'cor_counting_occtax',
-                'taxref',
-                'observers',
-                'digitiser',
-                'dataset',
-                'right',
-                'medias'
+                "t_occurrences_occtax",
+                "cor_counting_occtax",
+                "taxref",
+                "observers",
+                "digitiser",
+                "dataset",
+                "right",
+                "medias",
             )
         )
         feature["properties"]["rights"] = releve_cruved
@@ -159,8 +159,7 @@ def getOneCounting(id_counting):
             )
             .join(
                 TRelevesOccurrence,
-                TRelevesOccurrence.id_releve_occtax
-                == TOccurrencesOccurrence.id_releve_occtax,
+                TRelevesOccurrence.id_releve_occtax == TOccurrencesOccurrence.id_releve_occtax,
             )
             .filter(CorCountingOccurrence.id_counting_occtax == id_counting)
             .one()
@@ -183,7 +182,7 @@ def getOneReleve(id_releve, info_role):
     :param id_releve: the id releve from pr_occtax.t_releve_occtax
     :type id_releve: int
     :returns: Return a releve with its attached Cruved
-    :rtype: `dict{'releve':<TRelevesOccurrence>, 'cruved': Cruved}` 
+    :rtype: `dict{'releve':<TRelevesOccurrence>, 'cruved': Cruved}`
     """
     releveCruvedSchema = ReleveCruvedSchema()
     releve = DB.session.query(TRelevesOccurrence).get(id_releve)
@@ -235,9 +234,7 @@ def getViewReleveOccurrence(info_role):
     # Order by
     if "orderby" in parameters:
         if parameters.get("orderby") in VReleveOccurrence.__table__.columns:
-            orderCol = getattr(
-                VReleveOccurrence.__table__.columns, parameters["orderby"]
-            )
+            orderCol = getattr(VReleveOccurrence.__table__.columns, parameters["orderby"])
 
         if "order" in parameters:
             if parameters["order"] == "desc":
@@ -298,8 +295,8 @@ def insertOrUpdateOneReleve(info_role):
                 "t_occurrences_occtax":[{
                     "id_releve_occtax":null,"id_occurrence_occtax":null,"id_nomenclature_obs_technique":41,"id_nomenclature_bio_condition":157,"id_nomenclature_bio_status":29,"id_nomenclature_naturalness":160,"id_nomenclature_exist_proof":81,"id_nomenclature_observation_status":88,"id_nomenclature_blurring":175,"id_nomenclature_source_status":75,"determiner":null,"id_nomenclature_determination_method":445,"cd_nom":67111,"nom_cite":"Ablette =  <i> Alburnus alburnus (Linnaeus, 1758)</i> - [ES - 67111]","meta_v_taxref":null,"sample_number_proof":null,"comment":null,
                 "cor_counting_occtax":[{
-                    "id_counting_occtax":null,"id_nomenclature_life_stage":1,"id_nomenclature_sex":171,"id_nomenclature_obj_count":146,"id_nomenclature_type_count":94,"id_occurrence_occtax":null,"count_min":1,"count_max":1   
-                    }]    
+                    "id_counting_occtax":null,"id_nomenclature_life_stage":1,"id_nomenclature_sex":171,"id_nomenclature_obj_count":146,"id_nomenclature_type_count":94,"id_occurrence_occtax":null,"count_min":1,"count_max":1
+                    }]
                 }]
             }
         }
@@ -425,14 +422,12 @@ def releveHandler(request, *, releve, info_role):
     # Modification de la requete geojson en releve
     json_req = request.get_json()
     json_req["properties"]["geom_4326"] = json_req["geometry"]
-    print(json_req)
     # chargement des données POST et merge avec relevé initial
     releve, errors = releveSchema.load(json_req["properties"], instance=releve)
-    print(releve.as_dict())
-    # print(releve.place_name)
     if bool(errors):
         raise InsufficientRightsError(
-            errors, 422,
+            errors,
+            422,
         )
 
     # set id_digitiser
@@ -442,9 +437,7 @@ def releveHandler(request, *, releve, info_role):
         allowed = releve.user_is_in_dataset_actor(info_role)
         if not allowed:
             raise InsufficientRightsError(
-                "User {} has no right in dataset {}".format(
-                    info_role.id_role, releve.id_dataset
-                ),
+                "User {} has no right in dataset {}".format(info_role.id_role, releve.id_dataset),
                 403,
             )
 
@@ -476,8 +469,8 @@ def createReleve(info_role):
                 "t_occurrences_occtax":[{
                     "id_releve_occtax":null,"id_occurrence_occtax":null,"id_nomenclature_obs_technique":41,"id_nomenclature_bio_condition":157,"id_nomenclature_bio_status":29,"id_nomenclature_naturalness":160,"id_nomenclature_exist_proof":81,"id_nomenclature_observation_status":88,"id_nomenclature_blurring":175,"id_nomenclature_source_status":75,"determiner":null,"id_nomenclature_determination_method":445,"cd_nom":67111,"nom_cite":"Ablette =  <i> Alburnus alburnus (Linnaeus, 1758)</i> - [ES - 67111]","meta_v_taxref":null,"sample_number_proof":null,"comment":null,
                 "cor_counting_occtax":[{
-                    "id_counting_occtax":null,"id_nomenclature_life_stage":1,"id_nomenclature_sex":171,"id_nomenclature_obj_count":146,"id_nomenclature_type_count":94,"id_occurrence_occtax":null,"count_min":1,"count_max":1   
-                    }]    
+                    "id_counting_occtax":null,"id_nomenclature_life_stage":1,"id_nomenclature_sex":171,"id_nomenclature_obj_count":146,"id_nomenclature_type_count":94,"id_occurrence_occtax":null,"count_min":1,"count_max":1
+                    }]
                 }]
             }
         }
@@ -535,7 +528,8 @@ def occurrenceHandler(request, *, occurrence, info_role):
 
     if not releve:
         raise InsufficientRightsError(
-            {"message": "not found"}, 404,
+            {"message": "not found"},
+            404,
         )
 
     # Test des droits d'édition du relevé si modification
@@ -774,9 +768,7 @@ def export(info_role):
             if len(export_columns) > 0
             else [db_col.key for db_col in export_view.db_cols]
         )
-        return to_csv_resp(
-            file_name, [export_view.as_dict(d) for d in data], columns, ";"
-        )
+        return to_csv_resp(file_name, [export_view.as_dict(d) for d in data], columns, ";")
     elif export_format == "geojson":
         results = FeatureCollection(
             [export_view.as_geofeature(d, columns=export_columns) for d in data]
@@ -789,9 +781,7 @@ def export(info_role):
             filemanager.delete_recursively(
                 str(ROOT_DIR / "backend/static/shapefiles"), excluded_files=[".gitkeep"]
             )
-            db_cols = [
-                db_col for db_col in export_view.db_cols if db_col.key in export_columns
-            ]
+            db_cols = [db_col for db_col in export_view.db_cols if db_col.key in export_columns]
             dir_path = str(ROOT_DIR / "backend/static/shapefiles")
             export_view.as_shape(
                 db_cols=db_cols, data=data, dir_path=dir_path, file_name=file_name

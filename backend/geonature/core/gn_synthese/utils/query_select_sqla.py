@@ -329,5 +329,4 @@ class SyntheseQuery:
 
         if self.query_joins is not None:
             self.query = self.query.select_from(self.query_joins)
-        print(self.query)
         return self.query

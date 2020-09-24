@@ -47,9 +47,7 @@ routes = Blueprint("gn_permissions_backoffice", __name__, template_folder="templ
     "cruved_form/module/<int:id_module>/role/<int:id_role>/object/<int:id_object>",
     methods=["GET", "POST"],
 )
-@routes.route(
-    "cruved_form/module/<int:id_module>/role/<int:id_role>", methods=["GET", "POST"]
-)
+@routes.route("cruved_form/module/<int:id_module>/role/<int:id_role>", methods=["GET", "POST"])
 @permissions.check_cruved_scope(
     "R",
     True,
@@ -69,9 +67,7 @@ def permission_form(info_role, id_module, id_role, id_object=None):
     if id_object:
         object_instance = DB.session.query(TObjects).get(id_object)
     else:
-        object_instance = (
-            DB.session.query(TObjects).filter_by(code_object="ALL").first()
-        )
+        object_instance = DB.session.query(TObjects).filter_by(code_object="ALL").first()
 
     user = DB.session.query(User).get(id_role)
     if request.method == "GET":
@@ -113,8 +109,7 @@ def permission_form(info_role, id_module, id_role, id_object=None):
         form = CruvedScopeForm(request.form)
         if form.validate_on_submit():
             actions_id = {
-                action.code_action: action.id_action
-                for action in DB.session.query(TActions).all()
+                action.code_action: action.id_action for action in DB.session.query(TActions).all()
             }
             for code_action, id_action in actions_id.items():
                 privilege = {
@@ -154,9 +149,7 @@ def permission_form(info_role, id_module, id_role, id_object=None):
                     DB.session.add(permission_row)
                 DB.session.commit()
             flash("CRUVED mis à jour pour le role {}".format(user.id_role))
-        return redirect(
-            url_for("gn_permissions_backoffice.user_cruved", id_role=id_role)
-        )
+        return redirect(url_for("gn_permissions_backoffice.user_cruved", id_role=id_role))
 
 
 @routes.route("/users", methods=["GET"])
@@ -181,17 +174,15 @@ def users(info_role):
             CorRoleActionFilterModuleObject,
             CorRoleActionFilterModuleObject.id_role == AppRole.id_role,
         )
-        .filter(
-            AppRole.id_application == current_app.config["ID_APPLICATION_GEONATURE"]
-        )
+        .filter(AppRole.id_application == current_app.config["ID_APPLICATION_GEONATURE"])
         .group_by(AppRole)
         .order_by(AppRole.groupe.desc(), AppRole.nom_role.asc())
     )
     # filter with cruved auth
     if info_role.value_filter == "2":
-        q = q.join(
-            BibOrganismes, BibOrganismes.id_organisme == info_role.id_organisme
-        ).filter(BibOrganismes == info_role.id_organisme)
+        q = q.join(BibOrganismes, BibOrganismes.id_organisme == info_role.id_organisme).filter(
+            BibOrganismes == info_role.id_organisme
+        )
     elif info_role.value_filter == "1":
         q = q.filter(User.id_role == info_role.id_role)
 
@@ -219,9 +210,7 @@ def user_cruved(id_role):
     """
     user = DB.session.query(User).get(id_role).as_dict()
     modules_data = DB.session.query(TModules).all()
-    groupes_data = (
-        DB.session.query(CorRole).filter(CorRole.id_role_utilisateur == id_role).all()
-    )
+    groupes_data = DB.session.query(CorRole).filter(CorRole.id_role_utilisateur == id_role).all()
     actions_label = {}
     for action in DB.session.query(TActions).all():
         actions_label[action.code_action] = action.description_action
@@ -252,11 +241,8 @@ def user_cruved(id_role):
 
         # do not display cruved for module which have objects
 
-        cruved, herited = cruved_scope_for_user_in_module(
-            id_role, module["module_code"]
-        )
+        cruved, herited = cruved_scope_for_user_in_module(id_role, module["module_code"])
         cruved_beautiful = beautifulize_cruved(actions_label, cruved)
-        # print(cruved_beautiful)
         module["module_cruved"] = (cruved_beautiful, herited)
         modules.append(module)
     return render_template(
@@ -362,9 +348,7 @@ def other_permissions_form(id_role, id_filter_type, id_permission=None):
     "/filter_form/id_filter_type/<int:id_filter_type>/id_filter/<int:id_filter>",
     methods=["GET", "POST"],
 )
-@routes.route(
-    "/filter_form/id_filter_type/<int:id_filter_type>", methods=["GET", "POST"]
-)
+@routes.route("/filter_form/id_filter_type/<int:id_filter_type>", methods=["GET", "POST"])
 @permissions.check_cruved_scope(
     "R",
     object_code="PERMISSIONS",
@@ -399,9 +383,7 @@ def filter_form(id_filter_type, id_filter=None):
             flash("Filtre ajouté avec succès")
         DB.session.commit()
         return redirect(
-            url_for(
-                "gn_permissions_backoffice.filter_list", id_filter_type=id_filter_type
-            )
+            url_for("gn_permissions_backoffice.filter_list", id_filter_type=id_filter_type)
         )
     return render_template(
         "filter_form.html", form=form, filter_type=filter_type, id_filter=id_filter
@@ -419,9 +401,7 @@ def filter_list(id_filter_type):
     """
     .. :quickref: View_Permission;
     """
-    filters = DB.session.query(TFilters).filter(
-        TFilters.id_filter_type == id_filter_type
-    )
+    filters = DB.session.query(TFilters).filter(TFilters.id_filter_type == id_filter_type)
     filter_type = DB.session.query(BibFiltersType).get(id_filter_type)
     return render_template("filter_list.html", filters=filters, filter_type=filter_type)
 
@@ -447,4 +427,3 @@ def delete_filter(id_filter):
             id_filter_type=my_filter.id_filter_type,
         )
     )
-

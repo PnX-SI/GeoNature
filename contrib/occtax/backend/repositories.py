@@ -23,20 +23,20 @@ from pypnusershub.db.models import User
 
 class ReleveRepository:
     """
-        Repository: classe permettant l'acces au données
-        d'un modèle de type 'releve'
-        """
+    Repository: classe permettant l'acces au données
+    d'un modèle de type 'releve'
+    """
 
     def __init__(self, model):
         self.model = model
 
     def get_one(self, id_releve, info_user):
-        """ Get one releve model if allowed
+        """Get one releve model if allowed
         params:
          - id_releve: integer
          - info_user: TRole object model
 
-        Return: 
+        Return:
             Tuple(the releve model, the releve as geojson)
         """
         releve = DB.session.query(self.model).get(id_releve)
@@ -52,8 +52,7 @@ class ReleveRepository:
                     validation_status = (
                         DB.session.query(VLatestValidations)
                         .filter(
-                            VLatestValidations.uuid_attached_row
-                            == count["unique_id_sinp_occtax"]
+                            VLatestValidations.uuid_attached_row == count["unique_id_sinp_occtax"]
                         )
                         .one()
                     )
@@ -65,7 +64,7 @@ class ReleveRepository:
         return releve, rel_as_geojson
 
     def update(self, releve, info_user, geom):
-        """ Update the current releve if allowed
+        """Update the current releve if allowed
         params:
         - releve: a Releve object model
         - info_user: Trole object model
@@ -125,9 +124,7 @@ class ReleveRepository:
                 allowed_datasets = TDatasets.get_user_datasets(user)
                 q = q.filter(
                     or_(
-                        self.model.tableDef.columns.id_dataset.in_(
-                            tuple(allowed_datasets)
-                        ),
+                        self.model.tableDef.columns.id_dataset.in_(tuple(allowed_datasets)),
                         corRoleRelevesOccurrence.id_role == user.id_role,
                         self.model.tableDef.columns.id_digitiser == user.id_role,
                     )
@@ -143,8 +140,8 @@ class ReleveRepository:
 
     def get_all(self, info_user):
         """
-            Return all the data from Releve model filtered with
-            the cruved authorization
+        Return all the data from Releve model filtered with
+        the cruved authorization
         """
         q = self.filter_query_with_autorization(info_user)
         data = q.all()
@@ -154,8 +151,8 @@ class ReleveRepository:
 
     def get_filtered_query(self, info_user, from_generic_table=False):
         """
-            Return a query object already filtered with
-            the cruved authorization
+        Return a query object already filtered with
+        the cruved authorization
         """
         if from_generic_table:
             return self.filter_query_generic_table(info_user)
@@ -182,8 +179,7 @@ def get_query_occtax_filters(
         if not is_already_joined(corRoleRelevesOccurrence, q):
             q = q.join(
                 corRoleRelevesOccurrence,
-                corRoleRelevesOccurrence.id_releve_occtax
-                == mappedView.id_releve_occtax,
+                corRoleRelevesOccurrence.id_releve_occtax == mappedView.id_releve_occtax,
             )
 
         q = q.filter(corRoleRelevesOccurrence.id_role.in_(args.getlist("observers")))
@@ -217,9 +213,9 @@ def get_query_occtax_filters(
         q = q.filter(mappedView.altitude_min >= params.pop("altitude_min"))
 
     if "organism" in params:
-        q = q.join(
-            CorDatasetActor, CorDatasetActor.id_dataset == mappedView.id_dataset
-        ).filter(CorDatasetActor.id_actor == int(params.pop("organism")))
+        q = q.join(CorDatasetActor, CorDatasetActor.id_dataset == mappedView.id_dataset).filter(
+            CorDatasetActor.id_actor == int(params.pop("organism"))
+        )
 
     if "observers_txt" in params:
         observers_query = "%{}%".format(params.pop("observers_txt"))
@@ -236,31 +232,24 @@ def get_query_occtax_filters(
                 TOccurrencesOccurrence,
                 mappedView.id_releve_occtax == TOccurrencesOccurrence.id_releve_occtax,
             )
-        q = q.filter(
-            TOccurrencesOccurrence.non_digital_proof == params.pop("non_digital_proof")
-        )
+        q = q.filter(TOccurrencesOccurrence.non_digital_proof == params.pop("non_digital_proof"))
     if "digital_proof" in params:
         if not is_already_joined(TOccurrencesOccurrence, q):
             q = q.join(
                 TOccurrencesOccurrence,
                 mappedView.id_releve_occtax == TOccurrencesOccurrence.id_releve_occtax,
             )
-        q = q.filter(
-            TOccurrencesOccurrence.digital_proof == params.pop("digital_proof")
-        )
+        q = q.filter(TOccurrencesOccurrence.digital_proof == params.pop("digital_proof"))
     # Generic Filters
     for param in params:
         print(table_columns)
         if param in table_columns:
-            print("PASSE LA  ??????")
             col = getattr(table_columns, param)
             testT = testDataType(params[param], col.type, param)
             if testT:
                 raise GeonatureApiError(message=testT)
             q = q.filter(col == params[param])
-    releve_filters, occurrence_filters, counting_filters = get_nomenclature_filters(
-        params
-    )
+    releve_filters, occurrence_filters, counting_filters = get_nomenclature_filters(params)
     if len(releve_filters) > 0:
         # if not from generic table, the FROM clause is already from TRelevesOccurrences
         if from_generic_table:
@@ -307,8 +296,8 @@ def get_query_occtax_filters(
 
 def get_query_occtax_order(orderby, mappedView, q, from_generic_table=False):
     """
-        Permet de d'ordonner sur un champ d'une table
-        Ajout d'elements de tris spécifiques/synthétiques
+    Permet de d'ordonner sur un champ d'une table
+    Ajout d'elements de tris spécifiques/synthétiques
     """
     if from_generic_table:
         mappedView = mappedView.tableDef.columns
@@ -320,9 +309,7 @@ def get_query_occtax_order(orderby, mappedView, q, from_generic_table=False):
                 orderCol = getattr(mappedView, "date_max")
             else:
                 orderCol = getattr(mappedView, "date_min")
-        elif (
-            orderby.get("orderby") == "nb_taxons" or orderby.get("orderby") == "taxons"
-        ):
+        elif orderby.get("orderby") == "nb_taxons" or orderby.get("orderby") == "taxons":
             sub_query = (
                 DB.session.query(
                     TRelevesOccurrence.id_releve_occtax,
@@ -330,8 +317,7 @@ def get_query_occtax_order(orderby, mappedView, q, from_generic_table=False):
                 )
                 .join(
                     TOccurrencesOccurrence,
-                    TOccurrencesOccurrence.id_releve_occtax
-                    == TRelevesOccurrence.id_releve_occtax,
+                    TOccurrencesOccurrence.id_releve_occtax == TRelevesOccurrence.id_releve_occtax,
                 )
                 .group_by(TRelevesOccurrence.id_releve_occtax)
                 .subquery()
@@ -347,8 +333,7 @@ def get_query_occtax_order(orderby, mappedView, q, from_generic_table=False):
         elif orderby.get("orderby") == "observateurs":
             q = q.join(
                 corRoleRelevesOccurrence,
-                corRoleRelevesOccurrence.id_releve_occtax
-                == TRelevesOccurrence.id_releve_occtax,
+                corRoleRelevesOccurrence.id_releve_occtax == TRelevesOccurrence.id_releve_occtax,
             ).join(User, corRoleRelevesOccurrence.id_role == User.id_role)
             orderCol = User.nom_role
         elif orderby.get("orderby") in mappedView.__table__.columns:
