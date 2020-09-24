@@ -790,6 +790,8 @@ Exemple :
     UPDATE gn_commons.t_modules SET module_label = 'Suivis' WHERE module_code = 'MONITORINGS';
     UPDATE gn_commons.t_modules SET module_picto = 'fa-eye' WHERE module_code = 'MONITORINGS';
 
+Depuis la version 2.5.0, il est aussi possible de customiser l'ordre des modules dans le menu, par ordre alphabétique par défaut, en renseignant le champs ``gn_commons.t_modules.module_order``.
+
 Customiser les exports PDF
 """"""""""""""""""""""""""
 
