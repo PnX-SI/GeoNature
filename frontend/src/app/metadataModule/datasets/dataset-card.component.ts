@@ -18,6 +18,7 @@ export class DatasetCardComponent implements OnInit {
   public id_dataset: number;
   public dataset: any;
   public nbTaxons: number;
+  public taxs;
   public nbObservations: number;
   public geojsonData: any = null;
 
@@ -73,7 +74,7 @@ export class DatasetCardComponent implements OnInit {
     private _dfs: DataFormService,
     public moduleService: ModuleService,
     private _commonService: CommonService,
-    public _dataService: SyntheseDataService
+    public _dataService: SyntheseDataService,
   ) { }
 
   ngOnInit() {
@@ -86,8 +87,15 @@ export class DatasetCardComponent implements OnInit {
     });
   }
 
+  TaxonsList(){
+    this._dataService.getTaxons().subscribe(
+      taxons =>{
+        this.taxs = taxons.items.features;
+      }
+    )
+  }
+  
   getDataset(id) {
-
     this._dfs.getDatasetDetails(id).subscribe(data => {
       this.dataset = data;
       if (this.dataset.modules) {

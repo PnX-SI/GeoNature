@@ -2,16 +2,39 @@
   background-color: #f7f7f7 !important;
 }
 
-.mat-expansion-panel-header-title {
-  color: #03738c;
-}
-
-.mat-expansion-panel-header-description {
-}
-
 .mat-paginator {
   margin-top: 5px;
   justify-content: flex-start;
+}
+
+td {
+  vertical-align: top;
+  //padding: 10px;
+  text-align: center;
+}
+
+.tab-title {
+  display: flex;
+  padding-left: 24px;
+  padding-right: 30px;
+  margin-bottom: 10px;
+  width: 100%!important;
+}
+
+.mat-expansion-panel-header-title {
+  width: 100%!important;  
+}
+
+tr, tbody {
+  width: 100%;
+}
+
+
+
+.tab-title > div {
+  //padding: 10px;
+  font-weight: bold;
+  padding-right: 5px;
 }
 
 .bt-edit {
@@ -33,93 +56,15 @@
   font-weight: bold;
 }
 
-
-.mat-accordion .mat-header-row {
-  padding-left: 1.5rem;
-  padding-right: 2rem;
-  border-bottom: none;
+.row {
+  margin: 8px;
 }
 
-.mat-expansion-panel-header.mat-row {
-  border-bottom: none;
-  align-items: stretch;
-}
 
-//copied from https://github.com/angular/material2/blob/master/src/lib/table/table.scss
-$mat-header-row-height: 56px;
-$mat-row-height: 48px;
-$mat-row-horizontal-padding: 24px;
-
-.mat-table {
-  display: block;
-}
-
-.mat-header-row {
-  min-height: $mat-header-row-height;
-}
-
-.mat-row {
-  min-height: $mat-row-height;
-  align-items: stretch;
-  align-self: stretch;
-  align-content: stretch;
-}
-
-.mat-row, .mat-header-row {
-  display: flex;
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
-  align-items: center;
-  padding: 0 $mat-row-horizontal-padding;
-  box-sizing: border-box;
-
-  // Workaround for https://goo.gl/pFmjJD in IE 11. Adds a pseudo
-  // element that will stretch the row the correct height. See:
-  // https://connect.microsoft.com/IE/feedback/details/802625
-  &::after {
-    display: inline-block;
-    min-height: inherit;
-    content: '';
-  }
-}
-
-.mat-cell, .mat-header-cell, td {
-  flex: 1;
-  overflow: hidden;
-  word-wrap: break-word;
-  text-align: center;
-  border: 1px solid #808080;
-  padding-left: 16px;
-  padding-right:16px
-}
-
-.mat-header-cell {
-  background-color: #4080e0;
-  color: #ffffff;
-  font-size: 16px;
-  height: 48px;
-  border: 2px solid #ffffff;
-  border-top: 0px;
-  border-bottom: 0px;
-  padding: 8px
-}
-
-.filling {
-  background-color: #ffffff;
-  color: #ffffff;
-  border: 0px;
-  padding: 0px
-}
-
-img {
-  margin-left: 8px;
-  margin-right: 8px;
-  margin-top: 8px;
-  margin-bottom: 8px;
-  height: 32px;
+.li:hover{
   cursor: pointer;
 }
 
-.row {
-  margin: 8px;
+.mat-icon{
+  cursor: pointer;
 }

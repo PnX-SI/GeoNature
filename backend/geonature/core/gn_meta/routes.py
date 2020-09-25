@@ -6,10 +6,12 @@ from flask import Blueprint, current_app, request, render_template, send_from_di
 from sqlalchemy import or_
 from sqlalchemy.sql import text, exists, select
 from sqlalchemy.sql.functions import func
+from sqlalchemy.sql import text
 
 
 from geonature.utils.env import DB
-from geonature.core.gn_synthese.models import Synthese, TSources
+from geonature.core.gn_synthese.models import Synthese, TSources, CorAreaSynthese, CorSensitivitySynthese
+from geonature.core.ref_geo.models import LAreas
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.tools import InsufficientRightsError
@@ -22,6 +24,7 @@ from geonature.core.gn_meta.models import (
     CorDatasetActor,
     CorDatasetProtocol,
     CorDatasetTerritory,
+    CorModuleDataset,
     TAcquisitionFramework,
     TAcquisitionFrameworkDetails,
     CorAcquisitionFrameworkActor,
@@ -29,6 +32,7 @@ from geonature.core.gn_meta.models import (
     CorAcquisitionFrameworkVoletSINP,
 )
 from geonature.core.gn_commons.models import TModules
+from geonature.core.users.models import BibOrganismes,VUserslistForallMenu
 from geonature.core.gn_meta.repositories import (
     get_datasets_cruved,
     get_af_cruved,
@@ -131,7 +135,18 @@ def get_af_and_ds_metadata(info_role):
             log.error(e)
             with_mtd_error = True
     params = request.args.to_dict()
+    if 'selector' not in params:
+        params['selector'] = 'none'
     datasets = get_datasets_cruved(info_role, params, as_model=True)
+    print(params)
+    if params['selector']=='ds':
+        datasets = (
+            filtered_ds_query(request.args)
+            .filter(TAcquisitionFramework.id_acquisition_framework.in_([d.id_dataset for d in datasets]))
+            .all()
+        )
+        if len(datasets)==0:
+            return {'data': []}
     ids_dataset_user = TDatasets.get_user_datasets(info_role, only_user=True)
     ids_dataset_organisms = TDatasets.get_user_datasets(info_role, only_user=False)
     ids_afs_user = TAcquisitionFramework.get_user_af(info_role, only_user=True)
@@ -143,14 +158,15 @@ def get_af_and_ds_metadata(info_role):
     #  get all af from the JDD filtered with cruved or af where users has rights
     ids_afs_cruved = [
         d.id_acquisition_framework for d in get_af_cruved(info_role, as_model=True)
-    ]
+    ] if params['selector'] == 'none' else []
     list_id_af = [d.id_acquisition_framework for d in datasets] + ids_afs_cruved
+
     afs = (
-        DB.session.query(TAcquisitionFramework)
+        filtered_af_query(request.args)
         .filter(TAcquisitionFramework.id_acquisition_framework.in_(list_id_af))
         .all()
     )
-
+    list_id_af = [af.id_acquisition_framework for af in afs]
 
     afs_dict = []
     #  get cruved for each AF and prepare dataset
@@ -164,6 +180,7 @@ def get_af_and_ds_metadata(info_role):
         iCreateur = -1
         iMaitreOuvrage = -1
         if af.cor_af_actor:
+            af_dict["actors"] = [actor.as_dict(True) for actor in af.cor_af_actor]
             for index, actor in enumerate(af.cor_af_actor):
                 if actor.nomenclature_actor_role.mnemonique == "Maître d'ouvrage":
                     iMaitreOuvrage = index
@@ -171,7 +188,7 @@ def get_af_and_ds_metadata(info_role):
                     iCreateur = index
 
 
-        #af_dict["nom_createur"] = af.cor_af_actor[iCreateur].role.nom_role if iCreateur!=-1 else "Non renseigné"
+        af_dict["nom_createur"] = af.cor_af_actor[iCreateur].role.nom_role if (iCreateur!=-1 and af.cor_af_actor[iCreateur].role) else ""
         af_dict["creator_mail"] = af.cor_af_actor[iCreateur].role.email if (iCreateur!=-1 and af.cor_af_actor[iCreateur].role) else ""
         af_dict["project_owner_name"] = af.cor_af_actor[iMaitreOuvrage].organism.nom_organisme if iMaitreOuvrage!=-1 else "Non renseigné"
         af_dict["deletable"] = is_af_deletable(af.id_acquisition_framework)
@@ -180,6 +197,8 @@ def get_af_and_ds_metadata(info_role):
     #  get cruved for each ds and push them in the af
     for d in datasets:
         dataset_dict = d.as_dict()
+        if d.id_acquisition_framework not in list_id_af:
+            continue
         dataset_dict["cruved"] = d.get_object_cruved(
             user_cruved, d.id_dataset, ids_dataset_user, ids_dataset_organisms,
         )
@@ -352,6 +371,10 @@ def delete_dataset(info_role, ds_id):
         CorDatasetTerritory.id_dataset == ds_id
     ).delete()
     
+    DB.session.query(CorModuleDataset).filter(
+        CorModuleDataset.id_dataset == ds_id
+    ).delete()
+    
     DB.session.query(TDatasets).filter(
         TDatasets.id_dataset == ds_id
     ).delete()
@@ -468,7 +491,26 @@ def sensi_report(info_role):
     id_import = params.get("id_import")
     id_module = params.get("id_module")
 
-    query = DB.session.query(Synthese).select_from(Synthese)
+    query = DB.session.query(
+        Synthese, 
+        func.taxonomie.find_cdref(Synthese.cd_nom).label('cd_ref'),
+        func.array_agg(LAreas.area_name).label('codeDepartementCalcule'),
+        func.ref_nomenclatures.get_cd_nomenclature(Synthese.id_nomenclature_sensitivity).label('cd_sensi'),
+        func.ref_nomenclatures.get_nomenclature_label(Synthese.id_nomenclature_sensitivity, 'fr').label('sensiNiveau'),
+        func.ref_nomenclatures.get_nomenclature_label(Synthese.id_nomenclature_bio_status, 'fr').label('occStatutBiologique'),
+        func.min(CorSensitivitySynthese.meta_update_date).label('sensiDateAttribution'),
+        func.min(CorSensitivitySynthese.sensitivity_comment).label('sensiAlerte')
+    ).select_from(Synthese).outerjoin(
+        CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese
+    ).outerjoin(
+        LAreas, LAreas.id_area == CorAreaSynthese.id_area
+    ).outerjoin(
+        CorSensitivitySynthese, CorSensitivitySynthese.uuid_attached_row == Synthese.unique_id_sinp
+    ).outerjoin(
+        TNomenclatures, TNomenclatures.id_nomenclature == Synthese.id_nomenclature_sensitivity
+    ).filter(
+        LAreas.id_type == func.ref_geo.get_id_area_type('DEP')
+    )
         
     if id_module:
         query = query.filter(Synthese.id_module == id_module)
@@ -483,12 +525,12 @@ def sensi_report(info_role):
             TSources.name_source == 'Import(id={})'.format(id_import)
         )
 
-    data = query.all()
+    data = query.group_by(Synthese.id_synthese).all()
 
     dataset = None
     createurStr = ""
     if len(data) > 0:
-        dataset = DB.session.query(TDatasets).filter(TDatasets.id_dataset == data[0].id_dataset).first()
+        dataset = DB.session.query(TDatasets).filter(TDatasets.id_dataset == data[0].Synthese.id_dataset).first()
         iCreateur = -1
         if dataset.cor_dataset_actor:
             for index, actor in enumerate(dataset.cor_dataset_actor):
@@ -501,27 +543,27 @@ def sensi_report(info_role):
             
         
     data = [ {
-        "cdNom": row.cd_nom,
-        "cdRef": "undefined",
-        "codeDepartementCalcule": "undefined",
-        "identifiantOrigine": row.entity_source_pk_value,
-        "identifiantPermanent": row.unique_id_sinp,
-        "sensiAlerte": "undefined",
-        "sensible": "undefined",
-        "sensiDateAttribution": "undefined",
-        "sensiNiveau": "undefined",
-        "sensiReferentiel": "undefined",
-        "sensiVersionReferentiel": "undefined"
-    } for row in query.all() ]
+        "cdNom": row.Synthese.cd_nom,
+        "cdRef": row.cd_ref,
+        "codeDepartementCalcule": ', '.join(row.codeDepartementCalcule),
+        "identifiantOrigine": row.Synthese.entity_source_pk_value,
+        "occStatutBiologique": row.occStatutBiologique,
+        "identifiantPermanent": row.Synthese.unique_id_sinp,
+        "sensiAlerte": row.sensiAlerte,
+        "sensible": "Oui" if row.cd_sensi!="0" else "Non",
+        "sensiDateAttribution": row.sensiDateAttribution,
+        "sensiNiveau": row.sensiNiveau,
+        "sensiReferentiel": "undefined"
+    } for row in data ]
 
 
     return my_csv_resp(
         filename = "filename",
         data = data,
         columns = [
-            "cdNom", "cdRef", "codeDepartementCalcule", "identifiantOrigine",
+            "cdNom", "cdRef", "codeDepartementCalcule", "identifiantOrigine", "occStatutBiologique",
             "identifiantPermanent", "sensiAlerte", "sensible", "sensiDateAttribution",
-            "sensiNiveau", "sensiReferentiel", "sensiVersionReferentiel"
+            "sensiNiveau", "sensiReferentiel"
         ],
         entete = """"Rapport de sensibilité"
             "Jeux de données";"{}"
@@ -532,6 +574,7 @@ def sensi_report(info_role):
             "Date de création du rapport";"{}"
             "Nombre de données sensibles";"{}"
             "Nombre de données total dans le fichier";"{}"
+            "sensiVersionReferentiel";"{}"
 
             """.format(
                 dataset.dataset_name if dataset else "",
@@ -540,8 +583,9 @@ def sensi_report(info_role):
                 createurStr,
                 "undefined",
                 dt.datetime.now().strftime("%d/%m/%Y %Hh%M"),
-                "undefined",
-                len(data)
+                len(list(filter(lambda row: row["sensible"]=="Oui", data))),
+                len(data),
+                "undefined"
             )
     )
 
@@ -1170,3 +1214,81 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
     """
     return mtd_utils.post_jdd_from_user(id_user=id_user, id_organism=id_organism)
 
+
+
+def filtered_af_query(args):
+
+    if args.get('selector')=='ds':
+        return DB.session.query(TAcquisitionFramework)
+    
+    num = args.get("num")
+    uid = args.get("uid")
+    name = args.get("name")
+    date = args.get("date")
+    organisme = args.get("organism")
+    role = args.get("role")
+    
+    query = DB.session.query(TAcquisitionFramework) \
+            .join(CorAcquisitionFrameworkActor, TAcquisitionFramework.id_acquisition_framework == CorAcquisitionFrameworkActor.id_acquisition_framework)\
+            .join(BibOrganismes, CorAcquisitionFrameworkActor.id_organism == BibOrganismes.id_organisme)
+            
+    if num is not None:
+        query = query.filter(TAcquisitionFramework.id_acquisition_framework==num)
+    if uid is not None:
+        query = query.filter(func.concat(TAcquisitionFramework.unique_acquisition_framework_id, '').like('%'+uid+'%'))
+    if name is not None:
+        query = query.filter(TAcquisitionFramework.acquisition_framework_name.like('%'+name+'%'))
+    if date is not None:
+        query = query.filter(func.concat(TAcquisitionFramework.acquisition_framework_start_date, '').like('%'+date+'%'))
+    if organisme is not None:
+        query = query.filter(BibOrganismes.id_organisme==organisme)
+    if role is not None:
+        query = query.filter(CorAcquisitionFrameworkActor.id_role==role)
+
+    return query
+
+
+@routes.route('/caSearch',methods=["GET"])
+@json_resp
+def ca_search():
+
+    args = request.args
+    return { 'data' : [d.as_dict(True) for d in filtered_af_query(args).all()]}
+
+
+
+def filtered_ds_query(args):
+
+    num = request.args.get("num")
+    uid = args.get("uid")
+    name = request.args.get("name")
+    date = request.args.get("date")
+    organisme = request.args.get("organism")
+    role = request.args.get("role")
+    
+    query=DB.session.query(TDatasets) \
+            .join(CorDatasetActor, TDatasets.id_dataset == CorDatasetActor.id_dataset)\
+            .join(BibOrganismes, CorDatasetActor.id_organism == BibOrganismes.id_organisme)
+
+    if num is not None:
+        query = query.filter(TDatasets.id_dataset==num)
+    if uid is not None:
+        query = query.filter(func.concat(TDatasets.unique_dataset_id, '').like('%'+uid+'%'))
+    if name is not None:
+        query = query.filter(TDatasets.dataset_name.like('%'+name+'%'))
+    if date is not None:
+        query = query.filter(func.concat(TDatasets.meta_create_date, '').like('%'+date+'%'))
+    if organisme is not None:
+        query = query.filter(BibOrganismes.id_organisme==organisme)
+    if role is not None:
+        query = query.filter(CorDatasetActor.id_role==role)
+
+    return query
+
+
+@routes.route('/jdSearch',methods=["GET"])
+@json_resp
+def jdd_search():
+
+    args = request.args
+    return { 'data' : [d.as_dict(True) for d in filtered_ds_query(args).all()]}
