@@ -18,7 +18,6 @@ import { MediaService } from "@geonature_common/service/media.service";
 })
 export class ValidationModalInfoObsComponent implements OnInit {
   public selectObsTaxonInfo;
-  public selectedObs;
   public selectedObsTaxonDetail;
   public validationHistory: any;
   public SYNTHESE_CONFIG = AppConfig.SYNTHESE;

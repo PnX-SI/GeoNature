@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AppConfig } from '../../../conf/app.config';
 import { MapService } from '@geonature_common/map/map.service';
 import { SideNavService } from '../sidenav-items/sidenav-service';
-import { DataService } from '@geonature/syntheseModule/services/data.service';
+import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthese-data.service";
 import { GlobalSubService } from '../../services/global-sub.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ModuleService } from '../../services/module.service';
@@ -11,7 +11,7 @@ import { ModuleService } from '../../services/module.service';
   selector: 'pnx-home-content',
   templateUrl: './home-content.component.html',
   styleUrls: ['./home-content.component.scss'],
-  providers: [MapService, DataService]
+  providers: [MapService, SyntheseDataService]
 })
 export class HomeContentComponent implements OnInit {
   private moduleName: string;
@@ -21,12 +21,12 @@ export class HomeContentComponent implements OnInit {
 
   constructor(
     private _SideNavService: SideNavService,
-    private _syntheseApi: DataService,
+    private _syntheseApi: SyntheseDataService,
     private _globalSub: GlobalSubService,
     private _api: DataFormService,
     private _moduleService: ModuleService,
     private _mapService: MapService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this._SideNavService.sidenav.open();

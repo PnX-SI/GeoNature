@@ -55,8 +55,8 @@
         <br>
         <span *ngIf="selectedObs?.habitat">
           <b> Habitat associé</b>: {{selectedObs?.habitat?.lb_hab_fr}} - {{selectedObs?.habitat?.lb_code}}
+          <br>
         </span>
-        <br>
         <button *ngIf="syntheseObs?.url_source"
           mat-raised-button
           color="primary"
@@ -275,7 +275,7 @@
 
 
       <ng-container *ngIf="selectedObs?.medias?.length">
-        <mat-tab>
+        <mat-tab label="Médias">
         <h5 class="underlined underlined-sm main-color"> Médias
         </h5>
         <table class="font-xs table table-striped table-sm">
@@ -295,10 +295,10 @@
             <tr>
               <td colspan="2">
                 <pnx-display-medias
-                diaporama=true
-                [medias]="selectedObs?.medias"
-                [index]="i"
-                display="small"
+                  diaporama=true
+                  [medias]="selectedObs?.medias"
+                  [index]="i"
+                  display="medium"
                 ></pnx-display-medias>
               </td>
             </tr>
