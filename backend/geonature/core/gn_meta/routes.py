@@ -10,7 +10,8 @@ from sqlalchemy.sql import text
 
 
 from geonature.utils.env import DB
-from geonature.core.gn_synthese.models import Synthese, TSources
+from geonature.core.gn_synthese.models import Synthese, TSources, CorAreaSynthese
+from geonature.core.ref_geo.models import LAreas
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.tools import InsufficientRightsError
@@ -485,7 +486,17 @@ def sensi_report(info_role):
     id_import = params.get("id_import")
     id_module = params.get("id_module")
 
-    query = DB.session.query(Synthese).select_from(Synthese)
+    query = DB.session.query(
+        Synthese, 
+        func.taxonomie.find_cdref(Synthese.cd_nom).label('cd_ref'),
+        func.array_agg(LAreas.area_name).label('codeDepartementCalcule')
+    ).select_from(Synthese).outerjoin(
+        CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese
+    ).outerjoin(
+        LAreas, LAreas.id_area == CorAreaSynthese.id_area
+    ).filter(
+        LAreas.id_type == func.ref_geo.get_id_area_type('DEP')
+    )
         
     if id_module:
         query = query.filter(Synthese.id_module == id_module)
@@ -500,12 +511,12 @@ def sensi_report(info_role):
             TSources.name_source == 'Import(id={})'.format(id_import)
         )
 
-    data = query.all()
+    data = query.group_by(Synthese.id_synthese).all()
 
     dataset = None
     createurStr = ""
     if len(data) > 0:
-        dataset = DB.session.query(TDatasets).filter(TDatasets.id_dataset == data[0].id_dataset).first()
+        dataset = DB.session.query(TDatasets).filter(TDatasets.id_dataset == data[0].Synthese.id_dataset).first()
         iCreateur = -1
         if dataset.cor_dataset_actor:
             for index, actor in enumerate(dataset.cor_dataset_actor):
@@ -518,18 +529,18 @@ def sensi_report(info_role):
             
         
     data = [ {
-        "cdNom": row.cd_nom,
-        "cdRef": "undefined",
-        "codeDepartementCalcule": "undefined",
-        "identifiantOrigine": row.entity_source_pk_value,
-        "identifiantPermanent": row.unique_id_sinp,
+        "cdNom": row.Synthese.cd_nom,
+        "cdRef": row.cd_ref,
+        "codeDepartementCalcule": ', '.join(row.codeDepartementCalcule),
+        "identifiantOrigine": row.Synthese.entity_source_pk_value,
+        "identifiantPermanent": row.Synthese.unique_id_sinp,
         "sensiAlerte": "undefined",
         "sensible": "undefined",
         "sensiDateAttribution": "undefined",
-        "sensiNiveau": "undefined",
+        "sensiNiveau": row.Synthese.id_nomenclature_sensitivity,
         "sensiReferentiel": "undefined",
         "sensiVersionReferentiel": "undefined"
-    } for row in query.all() ]
+    } for row in data ]
 
 
     return my_csv_resp(
