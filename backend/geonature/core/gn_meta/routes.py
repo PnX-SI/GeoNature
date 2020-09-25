@@ -10,7 +10,7 @@ from sqlalchemy.sql import text
 
 
 from geonature.utils.env import DB
-from geonature.core.gn_synthese.models import Synthese, TSources, CorAreaSynthese
+from geonature.core.gn_synthese.models import Synthese, TSources, CorAreaSynthese, CorSensitivitySynthese
 from geonature.core.ref_geo.models import LAreas
 
 from pypnnomenclature.models import TNomenclatures
@@ -489,11 +489,20 @@ def sensi_report(info_role):
     query = DB.session.query(
         Synthese, 
         func.taxonomie.find_cdref(Synthese.cd_nom).label('cd_ref'),
-        func.array_agg(LAreas.area_name).label('codeDepartementCalcule')
+        func.array_agg(LAreas.area_name).label('codeDepartementCalcule'),
+        func.ref_nomenclatures.get_cd_nomenclature(Synthese.id_nomenclature_sensitivity).label('cd_sensi'),
+        func.ref_nomenclatures.get_nomenclature_label(Synthese.id_nomenclature_sensitivity, 'fr').label('sensiNiveau'),
+        func.ref_nomenclatures.get_nomenclature_label(Synthese.id_nomenclature_bio_status, 'fr').label('occStatutBiologique'),
+        func.min(CorSensitivitySynthese.meta_update_date).label('sensiDateAttribution'),
+        func.min(CorSensitivitySynthese.sensitivity_comment).label('sensiAlerte')
     ).select_from(Synthese).outerjoin(
         CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese
     ).outerjoin(
         LAreas, LAreas.id_area == CorAreaSynthese.id_area
+    ).outerjoin(
+        CorSensitivitySynthese, CorSensitivitySynthese.uuid_attached_row == Synthese.unique_id_sinp
+    ).outerjoin(
+        TNomenclatures, TNomenclatures.id_nomenclature == Synthese.id_nomenclature_sensitivity
     ).filter(
         LAreas.id_type == func.ref_geo.get_id_area_type('DEP')
     )
@@ -533,13 +542,13 @@ def sensi_report(info_role):
         "cdRef": row.cd_ref,
         "codeDepartementCalcule": ', '.join(row.codeDepartementCalcule),
         "identifiantOrigine": row.Synthese.entity_source_pk_value,
+        "occStatutBiologique": row.occStatutBiologique,
         "identifiantPermanent": row.Synthese.unique_id_sinp,
-        "sensiAlerte": "undefined",
-        "sensible": "undefined",
-        "sensiDateAttribution": "undefined",
-        "sensiNiveau": row.Synthese.id_nomenclature_sensitivity,
-        "sensiReferentiel": "undefined",
-        "sensiVersionReferentiel": "undefined"
+        "sensiAlerte": row.sensiAlerte,
+        "sensible": "Oui" if row.cd_sensi!="0" else "Non",
+        "sensiDateAttribution": row.sensiDateAttribution,
+        "sensiNiveau": row.sensiNiveau,
+        "sensiReferentiel": "undefined"
     } for row in data ]
 
 
@@ -547,9 +556,9 @@ def sensi_report(info_role):
         filename = "filename",
         data = data,
         columns = [
-            "cdNom", "cdRef", "codeDepartementCalcule", "identifiantOrigine",
+            "cdNom", "cdRef", "codeDepartementCalcule", "identifiantOrigine", "occStatutBiologique",
             "identifiantPermanent", "sensiAlerte", "sensible", "sensiDateAttribution",
-            "sensiNiveau", "sensiReferentiel", "sensiVersionReferentiel"
+            "sensiNiveau", "sensiReferentiel"
         ],
         entete = """"Rapport de sensibilité"
             "Jeux de données";"{}"
@@ -560,6 +569,7 @@ def sensi_report(info_role):
             "Date de création du rapport";"{}"
             "Nombre de données sensibles";"{}"
             "Nombre de données total dans le fichier";"{}"
+            "sensiVersionReferentiel";"{}"
 
             """.format(
                 dataset.dataset_name if dataset else "",
@@ -568,8 +578,9 @@ def sensi_report(info_role):
                 createurStr,
                 "undefined",
                 dt.datetime.now().strftime("%d/%m/%Y %Hh%M"),
-                "undefined",
-                len(data)
+                len(list(filter(lambda row: row["sensible"]=="Oui", data))),
+                len(data),
+                "undefined"
             )
     )
 
