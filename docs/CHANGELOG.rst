@@ -11,16 +11,16 @@ Occtax v2 et médias
 
 * Refonte de l'ergonomie du module de saisie Occtax (#758 par @jbrieuclp et @TheoLechemia)
 
-   - Enregistrement continu
-   - Un onglet Relevé / un onglet taxons
-   - Liste des taxons
-   - Saisie au clavier
-   - Zoom MapList conservé (#436 et #912)
-   - Garder les filtres quand je reviens à la liste des relevés (#772)
-   - Conserver saisie
-   - Fix dates début/fin en update (#977)
-   - Alerte si 2 fois le même taxon sur un même relevé
-   - Fiche info
+  - Enregistrement continu
+  - Un onglet Relevé / un onglet taxons
+  - Liste des taxons
+  - Saisie au clavier
+  - Zoom MapList conservé (#436 et #912)
+  - Garder les filtres quand je reviens à la liste des relevés (#772)
+  - Conserver les infos de saisie précédente entre 2 taxons ou relevés
+  - Fix dates début/fin en update (#977)
+  - Alerte si 2 fois le même taxon sur un même relevé
+  - Fiche info d'un relevé complétée et MAJ
 
 * Standard Occurrences de taxon version 2.0.0 (dans Occtax et Synthèse, répercuté dans Validation) / Comportement / NomLieu / Habitat / Profondeur / Ajout du champs "précision" et suppression de sa valeur par défaut à 100 m / Renommage de "methode d'observation" en "technique d'observation" / Suppression du champs "technique d'observation" actuel de la synthèse, remplacé par le champs "methode d'observation" renommé / Renommage du champs "technique d'observation" actuel d'Occtax en "Technique de collecte Campanule" / Méthode de regroupement / Type de regroupement / Version taxref supprimé ????? (#516)
 * Ajout et mise à jour de quelques nomenclatures 
@@ -29,8 +29,8 @@ Occtax v2 et médias
 * Ajout d'un champs ``addtional_data`` de type ``jsonb`` dans la table ``gn_synthese.synthese``, en prévision de l'ajout des champs additionnels dans Occtax et Synthèse (#1007)
 * Mise en place de la gestion transversale et générique des médias dans ``gn_commons.t_medias`` et le Dynamic-Form (#336) et implémentation dans le module Occtax (désactivables avec le paramètre ``ENABLE_MEDIAS``) (#620 par @joelclems)
 * Miniatures, contrôles, aperçu... / Affichage dans Synthèse et Validation
-* Mes lieux (``gn_commons.t_places``), implémenté dans le module cartographique d'Occtax (désactivable avec le paramètre ``ENABLE_MY_PLACES``) (#000 par @metourneau)
-* Tri de l'ordre des modules dans le menu latéral par ordre alphabétique par défaut et possibilité de les ordonner avec le nouveau champs ``gn_commons.t_modules.order_menu`` (#787 par @alainlaupinmnhn)
+* Mes lieux (``gn_commons.t_places``), implémenté dans le module cartographique d'Occtax (désactivable avec le paramètre ``ENABLE_MY_PLACES``) (#246 par @metourneau)
+* Tri de l'ordre des modules dans le menu latéral par ordre alphabétique par défaut et possibilité de les ordonner avec le nouveau champs ``gn_commons.t_modules.module_order`` (#787 par @alainlaupinmnhn)
 * Arrêt du support de l'installation packagée sur Debian 9 et Ubuntu 16 pour passer à Python version 3.6 et plus
 * Prise en charge de PostGIS 3 et notamment l'installation de l'extension ``postgis_raster`` (#946 par @jpm-cbna)
 
@@ -78,23 +78,15 @@ Si vous mettez à jour GeoNature :
 * Occtax-mobile version 1.1.0 minimum
 * Attention si vous avez customisé les vues des exports Occtax et Synthèse, elles sont supprimées et recrées par l'update SQL pour s'adapter aux évolutions du standard Occtax. Adaptez le SQL de mise à jour et/ou révisez vos vues customisées
 * Si vous avez des vues qui utilisent des champs qui ont été supprimés ou renommés (dans module Export notamment), le script SQL d'update s'arrêtera et vous indiquera les vues qui bloquent la mise à jour (#1016). A supprimer et recréer après update avec adaptation des champs si besoin.
-* data/migrations/2.4.1to2.5.0.sql / A RENOMMER
-* Nomenclatures : ``data/update1.3.3to1.3.4.sql``
+* Exécuter la MAJ de la BDD ``data/migrations/2.4.1to2.5.0.sql``
+* Nomenclatures : exécuter ``data/update1.3.3to1.3.4.sql`` (https://github.com/PnX-SI/Nomenclature-api-module/blob/develop/data/update1.3.3to1.3.4.sql)
+* A partir la version 2.5.0 de GeoNature, la version 3.5 de Python n'est plus supportée. Seules les version 3.6 et + le sont. Si vous êtes encore sur Debian 9 (fourni par défaut avec Python 3.5), veuillez suivre les instructions de mise à jour de Python sur cette version (https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-standalone.rst#python-37-sur-debian-9)
+* Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
+* A noter, changement dans les paramètres Occtax. Les paramètres d'affichage/masquage des champs du formulaire opèrent les changements suivants :
 
-GeoNature n'est plus compatible avec le version de Python 3.5 (qui ne sera plus maintenue en novembre 2020).
-Suivez la procédure suivante pour passer à Python 3.7
+  - ``obs_meth`` devient ``osb_tech`` 
+  - ``obs_technique`` devient ``tech_collect``
 
-Changement dans les paramètres Occtax :
-Les paramètres d'affichage/masquage des champs du formulaire opèrent les changements suivants:
-``obs_meth`` devient ``osb_tech`` 
-``obs_technique`` devient ``tech_collect``
-
-Avant la migration : 
-
-A partir la version 2.5.0 de GeoNature, la version Python 3.5 n'est plus supportée. Seules les version 3.6 et + le sont. Si vous êtes encore sur Debian 9 (fourni par défaut avec Python 3.5), veuillez suivre les instructions de mise à jour de Python sur cette version (https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-standalone.rst#python-37-sur-debian-9)
-
-* Update SQL + Update SQL nomenclatures
-* Applicatiosn tierces à installer avant ?
 
 2.4.1 (2020-06-25)
 ------------------
