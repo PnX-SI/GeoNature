@@ -25,15 +25,15 @@ echo "OK, let's migrate GeoNature version..."
 cp $myrootpath/geonature_old/config/settings.ini config/settings.ini
 cp $myrootpath/geonature_old/config/geonature_config.toml config/geonature_config.toml
 cp -r $myrootpath/geonature_old/frontend/src/custom/* frontend/src/custom/
-if [ ! -d '$myrootpath/geonature_old/backend/static/images' ]
+if [ -d '$myrootpath/geonature_old/backend/static/images' ]
 then
   cp -r $myrootpath/geonature_old/backend/static/images/* backend/static/images
 fi
-if [ ! -d '$myrootpath/geonature_old/backend/static/mobile' ]
+if [ -d '$myrootpath/geonature_old/backend/static/mobile' ]
 then
   cp -r $myrootpath/geonature_old/backend/static/mobile/* backend/static/mobile
 fi
-if [ ! -d '$myrootpath/geonature_old/backend/static/exports' ]
+if [ -d '$myrootpath/geonature_old/backend/static/exports' ]
 then
   cp -r $myrootpath/geonature_old/backend/static/exports/* backend/static/exports
 fi
@@ -71,7 +71,11 @@ if [ ! -d 'backend/static/medias/' ]
 then
   mkdir backend/static/medias
 fi
-cp -r $myrootpath/geonature_old/backend/static/medias/* backend/static/medias
+
+if [ -d '$myrootpath/geonature_old/backend/static/medias' ]
+then
+  cp -r $myrootpath/geonature_old/backend/static/medias/* backend/static/medias
+fi
 
 if [ ! -d 'backend/static/shapefiles/' ]
 then
