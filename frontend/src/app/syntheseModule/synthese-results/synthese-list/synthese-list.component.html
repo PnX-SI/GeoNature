@@ -1,18 +1,18 @@
 <!--Table-->
-<ngx-datatable 
-  (window:resize)="onResize($event)" 
-  #table 
+<ngx-datatable
+  (window:resize)="onResize($event)"
+  #table
   class="material striped margin-top-xs table-size expandable"
-  [rows]="mapListService.tableData" 
-  [columns]="SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND" 
+  [rows]="mapListService.tableData"
+  [columns]="SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND"
   [columnMode]="'force'"
-  [headerHeight]="50" 
-  [footerHeight]="35" 
-  [selected]="mapListService.selectedRow" 
-  [selectionType]="'single'" 
+  [headerHeight]="50"
+  [footerHeight]="35"
+  [selected]="mapListService.selectedRow"
+  [selectionType]="'single'"
   [count]="mapListService.tableData.length"
-  [limit]="rowNumber" 
-  [rowClass]="getRowClass" 
+  [limit]="rowNumber"
+  [rowClass]="getRowClass"
   (select)="mapListService.onRowSelect($event)"
 >
 
@@ -40,9 +40,9 @@
     <span *ngIf="col.prop == 'date_max' || col.prop == 'date_min'; else notDate">
         <ngx-datatable-column
           [comparator]="dateComparator"
-          [maxWidth]="col.max_width" 
-          [name]='col.name' 
-          [prop]='col.prop' 
+          [maxWidth]="col.max_width"
+          [name]='col.name'
+          [prop]='col.prop'
           [sortable]="true">
             <ng-template let-row="row" ngx-datatable-cell-template>
               {{row[col.prop] | date:'dd-MM-yyyy'}}
@@ -61,15 +61,17 @@
 
 
 
-<button 
-  type="button" 
-  class="btn btn-primary btn-sm box-shadow" 
-  id="download-btn" 
+<button
+  type="button"
+  class="uppercase"
+  id="download-btn"
+  mat-raised-button
+  color="primary"
   (click)="openDownloadModal()"
   [disabled]="_cruvedStore.cruved?.SYNTHESE?.cruved?.E == '0'"
-  >
-  <i class="fa fa-download" aria-hidden="true"> </i>
-  Téléchargement
+>
+  {{ 'Download' | translate }}
+  <mat-icon>file_download</mat-icon>
 </button>
 
 

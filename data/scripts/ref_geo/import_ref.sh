@@ -18,13 +18,13 @@ echo " START" &> ref.log
 if [ "$town" = true ];
 then
     echo "create town table"
-    shp2pgsql -d -s 2154 $path_town ref_geo.temp_fr_municipalities | psql -h $db_host -U $user_pg -d $db_name &>> ref.log
+    shp2pgsql -d -s $srid $path_town ref_geo.temp_fr_municipalities | psql -h $db_host -U $user_pg -d $db_name &>> ref.log
     echo "add geojson column"
     psql -h $db_host -U $user_pg -d $db_name -c "
     ALTER table ref_geo.temp_fr_municipalities
     ADD column geojson character varying; 
     UPDATE ref_geo.temp_fr_municipalities
-    SET geojson = public.ST_asgeojson(public.st_transform(st_setsrid(geom, 2154), 4326));
+    SET geojson = public.ST_asgeojson(public.st_transform(geom, 4326));
     "&>> ref.log
     echo "export the table"
     pg_dump --format=plain --no-owner -h $db_host -U $user_pg -d $db_name -t ref_geo.temp_fr_municipalities > /tmp/fr_municipalities.sql
@@ -36,13 +36,13 @@ if [ "$dep" = true ];
 then
     echo "create department table"
     cd `pwd`
-    shp2pgsql -d -s 2154 $path_department ref_geo.temp_fr_departements | psql -h $db_host -U $user_pg -d $db_name &>> ref.log
+    shp2pgsql -d -s $srid $path_department ref_geo.temp_fr_departements | psql -h $db_host -U $user_pg -d $db_name &>> ref.log
     echo "add geojson column"
     psql -h $db_host -U $user_pg -d $db_name -c "
     ALTER table ref_geo.temp_fr_departements
     ADD column geojson character varying; 
     UPDATE ref_geo.temp_fr_departements
-    SET geojson = public.ST_asgeojson(public.st_transform(st_setsrid(geom, 2154), 4326)); 
+    SET geojson = public.ST_asgeojson(public.st_transform(geom, 4326)); 
     "&>> ref.log
     pg_dump --format=plain --no-owner -h $db_host -U $user_pg -d $db_name -t ref_geo.temp_fr_departements > /tmp/fr_departements.sql
     cd /tmp
@@ -53,30 +53,30 @@ if [ "$grid" = true ];
 then
     echo "create grid tables"
     cd `pwd`
-    shp2pgsql -d -s 2154 $path_grid_10 ref_geo.temp_grids_10 | psql -h $db_host -U $user_pg -d $db_name &>> ref.log
+    shp2pgsql -d -s $srid $path_grid_10 ref_geo.temp_grids_10 | psql -h $db_host -U $user_pg -d $db_name &>> ref.log
 
-    shp2pgsql -d -s 2154 $path_grid_5 ref_geo.temp_grids_5 | psql -h $db_host -U $user_pg -d $db_name &>> ref.log
+    shp2pgsql -d -s $srid $path_grid_5 ref_geo.temp_grids_5 | psql -h $db_host -U $user_pg -d $db_name &>> ref.log
 
-    shp2pgsql -d -s 2154  $path_grid_1 ref_geo.temp_grids_1 | psql -h $db_host -U $user_pg -d $db_name &>> ref.log
+    shp2pgsql -d -s $srid  $path_grid_1 ref_geo.temp_grids_1 | psql -h $db_host -U $user_pg -d $db_name &>> ref.log
 
     echo "add geojson column"
     psql -h $db_host -U $user_pg -d $db_name -c "
     ALTER table ref_geo.temp_grids_10
     ADD column geojson character varying; 
     UPDATE ref_geo.temp_grids_10
-    SET geojson = public.ST_asgeojson(public.st_transform(st_setsrid(geom, 2154), 4326)); 
+    SET geojson = public.ST_asgeojson(public.st_transform(geom, 4326)); 
     "&>> ref.log
         psql -h $db_host -U $user_pg -d $db_name -c "
     ALTER table ref_geo.temp_grids_5
     ADD column geojson character varying; 
     UPDATE ref_geo.temp_grids_5
-    SET geojson = public.ST_asgeojson(public.st_transform(st_setsrid(geom, 2154), 4326)); 
+    SET geojson = public.ST_asgeojson(public.st_transform(geom, 4326)); 
     "&>> ref.log
         psql -h $db_host -U $user_pg -d $db_name -c "
     ALTER table ref_geo.temp_grids_1
     ADD column geojson character varying; 
     UPDATE ref_geo.temp_grids_1
-    SET geojson = public.ST_asgeojson(public.st_transform(st_setsrid(geom, 2154), 4326)); 
+    SET geojson = public.ST_asgeojson(public.st_transform(geom, 4326)); 
     "&>> ref.log
     pg_dump \
     --format=plain \

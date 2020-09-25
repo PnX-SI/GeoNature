@@ -9,6 +9,38 @@ export const DYNAMIC_FORM_DEF = [
   },
   {
     type_widget: 'nomenclature',
+    attribut_label: "Nature de l'objet géographique",
+    attribut_name: 'id_nomenclature_geo_object_nature',
+    code_nomenclature_type: 'NAT_OBJ_GEO',
+    required: false
+  },
+  {
+    type_widget: "nomenclature",
+    attribut_label: "Comportement",
+    attribut_name: "id_nomenclature_behaviour",
+    code_nomenclature_type: "OCC_COMPORTEMENT",
+    required: false,
+  },
+  {
+    type_widget: "number",
+    attribut_label: "Précision du pointage",
+    attribut_name: "precision",
+    required: false,
+  },
+  {
+    type_widget: "text",
+    attribut_label: "Méthode de regroupement",
+    attribut_name: "grp_method",
+    required: false,
+  },
+  {
+    type_widget: "text",
+    attribut_label: "Nom du lieu",
+    attribut_name: "place_name",
+    required: false,
+  },
+  {
+    type_widget: 'nomenclature',
     attribut_label: 'Type de regroupement',
     attribut_name: 'id_nomenclature_grp_typ',
     code_nomenclature_type: 'TYP_GRP',
@@ -180,7 +212,7 @@ export const DYNAMIC_FORM_DEF = [
   },
   {
     type_widget: 'observers',
-    attribut_label: "Saisie par",
+    attribut_label: 'Saisie par',
     attribut_name: 'id_digitiser',
     idComponent: '1',
     required: false,

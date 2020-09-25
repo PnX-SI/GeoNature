@@ -214,7 +214,7 @@ def filter_query_all_filters(model, q, filters, user):
         )
         q = q.filter(
             TAcquisitionFramework.id_acquisition_framework.in_(
-                filters.pop("id_acquisition_frameworks")
+                filters.pop("id_acquisition_framework")
             )
         )
 

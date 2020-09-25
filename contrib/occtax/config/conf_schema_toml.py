@@ -18,10 +18,13 @@ class FormConfig(Schema):
     hour_max = fields.Boolean(missing=True)
     altitude_min = fields.Boolean(missing=True)
     altitude_max = fields.Boolean(missing=True)
-    obs_technique = fields.Boolean(missing=False)
+    depth_min = fields.Boolean(missing=False)
+    depth_max = fields.Boolean(missing=False)
+    altitude_max = fields.Boolean(missing=True)
+    tech_collect = fields.Boolean(missing=False)
     group_type = fields.Boolean(missing=False)
     comment_releve = fields.Boolean(missing=True)
-    obs_method = fields.Boolean(missing=True)
+    obs_tech = fields.Boolean(missing=True)
     bio_condition = fields.Boolean(missing=True)
     bio_status = fields.Boolean(missing=True)
     naturalness = fields.Boolean(missing=True)
@@ -31,7 +34,6 @@ class FormConfig(Schema):
     blurring = fields.Boolean(missing=False)
     determiner = fields.Boolean(missing=True)
     determination_method = fields.Boolean(missing=True)
-    sample_number_proof = fields.Boolean(missing=True)
     digital_proof = fields.Boolean(missing=True)
     non_digital_proof = fields.Boolean(missing=True)
     source_status = fields.Boolean(missing=False)
@@ -42,6 +44,13 @@ class FormConfig(Schema):
     type_count = fields.Boolean(missing=True)
     count_min = fields.Boolean(missing=True)
     count_max = fields.Boolean(missing=True)
+    display_nom_valide = fields.Boolean(missing=True)
+    geo_object_nature = fields.Boolean(missing=False)
+    habitat = fields.Boolean(missing=True)
+    grp_method = fields.Boolean(missing=False)
+    behaviour = fields.Boolean(missing=True)
+    place_name = fields.Boolean(missing=False)
+    precision = fields.Boolean(missing=False)
 
 
 default_map_list_conf = [
@@ -76,6 +85,8 @@ default_columns_export = [
     "heureFin",
     "altMax",
     "altMin",
+    "profMin",
+    "profMax",
     "cdNom",
     "cdRef",
     "versionTAXREF",
@@ -89,7 +100,8 @@ default_columns_export = [
     "jddCode",
     "jddId",
     "refBiblio",
-    "obsMeth",
+    "obsTech",
+    "techCollect",
     "ocEtatBio",
     "ocNat",
     "ocSex",
@@ -116,6 +128,8 @@ default_columns_export = [
     "orgGestDat",
     "WKT",
     "natObjGeo",
+    "nomLieu",
+    "precision",
 ]
 
 
@@ -135,7 +149,7 @@ Vous vous apprêtez à télécharger les données de la <b>recherche courante. <
 class GnModuleSchemaConf(Schema):
     form_fields = fields.Nested(FormConfig, missing=dict())
     observers_txt = fields.Boolean(missing=False)
-    export_view_name = fields.String(missing="export_occtax_sinp")
+    export_view_name = fields.String(missing="export_occtax")
     export_geom_columns_name = fields.String(missing="geom_4326")
     export_id_column_name = fields.String(missing="permId")
     export_srid = fields.Integer(missing=4326)
@@ -159,3 +173,6 @@ class GnModuleSchemaConf(Schema):
     ENABLE_GPS_TOOL = fields.Boolean(missing=True)
     ENABLE_UPLOAD_TOOL = fields.Boolean(missing=True)
     DATE_FORM_WITH_TODAY = fields.Boolean(missing=True)
+    DISPLAY_SETTINGS_TOOLS = fields.Boolean(missing=True)
+    ENABLE_MEDIAS = fields.Boolean(missing=True)
+    ENABLE_MY_PLACES = fields.Boolean(missing=True)

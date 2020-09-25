@@ -14,11 +14,14 @@
 ###############################################################################
 
 # Base de données
+
 # URI de connexion à la base Postgresql utilisé par Psycopg2
 SQLALCHEMY_DATABASE_URI = "postgresql://monuser:monpassachanger@localhost:monport/mondbname"
+
 # Active (=true) ou pas (=false) le système de suivi de modification de SQLAlchemy
 # Note : l'API event de SQLAchemy n'étant pas utilisée, la désactivation économise des ressources.
-SQLALCHEMY_TRACK_MODIFICATIONS = false
+# Note : Patch pour suivre la supression des médias et pouvoir supprimer un fichier sur un DELETE de media
+SQLALCHEMY_TRACK_MODIFICATIONS = true
 
 # Application
 
@@ -289,7 +292,7 @@ MAIL_ON_ERROR = false
         "obsDescr",
         "ObjGeoTyp",
         "methGrp",
-        "obsMeth",
+        "obsTech",
         "ocEtatBio",
         "ocStatBio",
         "ocNat",
@@ -310,7 +313,6 @@ MAIL_ON_ERROR = false
         "cdNom",
         "cdRef",
         "nomCite",
-        "vTAXREF",
         "wkt",
         "lastAction",
         "validateur"
@@ -319,25 +321,25 @@ MAIL_ON_ERROR = false
 # Gestion des demandes d'inscription
 [ACCOUNT_MANAGEMENT]
     # Activer l'affichage du lien vers le formulaire d'inscription
-    ENABLE_SIGN_UP = false
+    ENABLE_SIGN_UP = true
 
     # Activer l'affichage de l'onglet de gestion des demandes de compte utilisateur
     ENABLE_USER_MANAGEMENT = false
 
     # Valider automatiquement la demande de création de compte (=true), sinon nécessite une validation (=false)
-    AUTO_ACCOUNT_CREATION = true
+    AUTO_ACCOUNT_CREATION = false
 
     # Créer automatiquement (=true) un nouveau jeu de données pour chaque compte utilisateur
     AUTO_DATASET_CREATION = true
 
     # Email du validateur si auto_account_creation = false
-    VALIDATOR_EMAIL = "email@validateur.io"
+    VALIDATOR_EMAIL = "theo.lechemia@ecrins-parcnational.fr"
 
     # Configuration de la customisation du formulaire d'inscription
     # Chaque section [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]] correspond à un champ (de type checkbox, select etc...)
     [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]]
         type_widget = "checkbox"
-        attribut_label = "<a target="_blank" href='http://docs.geonature.fr'>J'ai lu et j'accepte la charte</a>"
+        attribut_label = "<a target=\"_blank\" href=\"http://docs.geonature.fr\">J'ai lu et j'accepte la charte</a>"
         attribut_name = "validate_charte"
         values = [true] 
         required = true
@@ -371,4 +373,17 @@ MAIL_ON_ERROR = false
         required = false
 
 [SERVER]
+    # Nivau de log du serveur.
+    # Indiquer la valeur numérique correspondant au niveau suivant;
+    # CRITICAL: 50 ; ERROR: 40 ; WARNING: 30 ; INFO: 20 ; DEBUG: 10 ; NOTSET: 0
     LOG_LEVEL = 20
+
+
+[MEDIAS]
+    # Taille maximale pour l'upload des médias
+    MEDIAS_SIZE_MAX = 10000
+
+# Module métadonnées
+[METADATADA]
+    # Nombre de cadre d'acquisition affiché sur la liste
+    NB_AF_DISPLAYED = 100

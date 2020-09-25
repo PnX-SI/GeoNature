@@ -27,7 +27,6 @@ from pypnusershub.db.tools import InsufficientRightsError
 from utils_flask_sqla_geo.generic import GenericTableGeo
 from utils_flask_sqla.generic import testDataType
 
-
 from geonature.utils import filemanager
 from .models import (
     TRelevesOccurrence,
@@ -42,6 +41,7 @@ from .repositories import (
     get_query_occtax_filters,
     get_query_occtax_order,
 )
+from .schemas import OccurrenceSchema, ReleveCruvedSchema, ReleveSchema
 from .utils import get_nomenclature_filters
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, csv_resp, json_resp
 from geonature.utils.errors import GeonatureApiError
@@ -58,6 +58,12 @@ log = logging.getLogger(__name__)
 @permissions.check_cruved_scope("R", True, module_code="OCCTAX")
 @json_resp
 def getReleves(info_role):
+    """
+    Route for map list web interface
+
+    .. :quickref: Occtax;
+
+    """
 
     releve_repository = ReleveRepository(TRelevesOccurrence)
     q = releve_repository.get_filtered_query(info_role)
@@ -75,25 +81,13 @@ def getReleves(info_role):
 
     # Filters
     q = get_query_occtax_filters(parameters, TRelevesOccurrence, q)
-
+    query_without_limit = q
     # Order by
     q = get_query_occtax_order(orderby, TRelevesOccurrence, q)
-    try:
-        data = q.limit(limit).offset(page * limit).all()
-    except Exception as e:
-        DB.session.rollback()
-        raise
+    data = q.limit(limit).offset(page * limit).all()
 
     # Pour obtenir le nombre de résultat de la requete sans le LIMIT
-    try:
-        nbResultsQuery = releve_repository.get_filtered_query(info_role)
-        nbResultsQuery = get_query_occtax_filters(
-            parameters, TRelevesOccurrence, nbResultsQuery
-        )
-        nbResultsWithoutFilter = nbResultsQuery.count()
-    except Exception as e:
-        DB.session.rollback()
-        raise
+    nb_results_without_limit = query_without_limit.count()
 
     user = info_role
     user_cruved = get_or_fetch_user_cruved(
@@ -103,11 +97,22 @@ def getReleves(info_role):
     featureCollection = []
     for n in data:
         releve_cruved = n.get_releve_cruved(user, user_cruved)
-        feature = n.get_geofeature()
+        feature = n.get_geofeature(
+            relationships=(
+                "t_occurrences_occtax",
+                "cor_counting_occtax",
+                "taxref",
+                "observers",
+                "digitiser",
+                "dataset",
+                "right",
+                "medias",
+            )
+        )
         feature["properties"]["rights"] = releve_cruved
         featureCollection.append(feature)
     return {
-        "total": nbResultsWithoutFilter,
+        "total": nb_results_without_limit,
         "total_filtered": len(data),
         "page": page,
         "limit": limit,
@@ -146,8 +151,7 @@ def getOneCounting(id_counting):
     """
     try:
         data = (
-            DB.session.query(CorCountingOccurrence,
-                             TRelevesOccurrence.id_releve_occtax)
+            DB.session.query(CorCountingOccurrence, TRelevesOccurrence.id_releve_occtax)
             .join(
                 TOccurrencesOccurrence,
                 TOccurrencesOccurrence.id_occurrence_occtax
@@ -155,8 +159,7 @@ def getOneCounting(id_counting):
             )
             .join(
                 TRelevesOccurrence,
-                TRelevesOccurrence.id_releve_occtax
-                == TOccurrencesOccurrence.id_releve_occtax,
+                TRelevesOccurrence.id_releve_occtax == TOccurrencesOccurrence.id_releve_occtax,
             )
             .filter(CorCountingOccurrence.id_counting_occtax == id_counting)
             .one()
@@ -170,7 +173,6 @@ def getOneCounting(id_counting):
 
 @blueprint.route("/releve/<int:id_releve>", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="OCCTAX")
-@json_resp
 def getOneReleve(id_releve, info_role):
     """
     Get one releve
@@ -180,24 +182,39 @@ def getOneReleve(id_releve, info_role):
     :param id_releve: the id releve from pr_occtax.t_releve_occtax
     :type id_releve: int
     :returns: Return a releve with its attached Cruved
-    :rtype: `dict{'releve':<TRelevesOccurrence>, 'cruved': Cruved}` 
+    :rtype: `dict{'releve':<TRelevesOccurrence>, 'cruved': Cruved}`
     """
-    releve_repository = ReleveRepository(TRelevesOccurrence)
-    releve_model, releve_geojson = releve_repository.get_one(
-        id_releve, info_role)
+    releveCruvedSchema = ReleveCruvedSchema()
+    releve = DB.session.query(TRelevesOccurrence).get(id_releve)
+
+    if not releve:
+        raise NotFound('The releve "{}" does not exist'.format(id_releve))
+    # check if the user is autorized
+    releve = releve.get_releve_if_allowed(info_role)
+
     user_cruved = get_or_fetch_user_cruved(
         session=session, id_role=info_role.id_role, module_code="OCCTAX"
     )
-    dataset = DB.session.query(TDatasets).get(releve_model.id_dataset)
-    releve_geojson["properties"]["dataset"] = dataset.as_dict()
-    releve_cruved = releve_model.get_releve_cruved(info_role, user_cruved)
-    return {"releve": releve_geojson, "cruved": releve_cruved}
+
+    releve_cruved = {
+        "releve": {
+            "properties": releve,
+            "id": releve.id_releve_occtax,
+            "geometry": releve.geom_4326,
+        },
+        "cruved": releve.get_releve_cruved(info_role, user_cruved),
+    }
+
+    return releveCruvedSchema.dump(releve_cruved)
 
 
 @blueprint.route("/vreleveocctax", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="OCCTAX")
 @json_resp
 def getViewReleveOccurrence(info_role):
+    """
+    Deprecated
+    """
     releve_repository = ReleveRepository(VReleveOccurrence)
     q = releve_repository.get_filtered_query(info_role)
 
@@ -217,9 +234,7 @@ def getViewReleveOccurrence(info_role):
     # Order by
     if "orderby" in parameters:
         if parameters.get("orderby") in VReleveOccurrence.__table__.columns:
-            orderCol = getattr(
-                VReleveOccurrence.__table__.columns, parameters["orderby"]
-            )
+            orderCol = getattr(VReleveOccurrence.__table__.columns, parameters["orderby"])
 
         if "order" in parameters:
             if parameters["order"] == "desc":
@@ -261,6 +276,7 @@ def getViewReleveOccurrence(info_role):
 @json_resp
 def insertOrUpdateOneReleve(info_role):
     """
+    Route utilisée depuis l'appli mobile => depreciée et non utilisée par l'appli web
     Post one Occtax data (Releve + Occurrence + Counting)
 
     .. :quickref: Occtax; Post one Occtax data (Releve + Occurrence + Counting)
@@ -277,10 +293,10 @@ def insertOrUpdateOneReleve(info_role):
                 {
                 "id_releve_occtax":null,"id_dataset":1,"id_digitiser":1,"date_min":"2019-05-09","date_max":"2019-05-09","hour_min":null,"hour_max":null,"altitude_min":null,"altitude_max":null,"meta_device_entry":"web","comment":null,"id_nomenclature_obs_technique":316,"observers":[1],"observers_txt":null,"id_nomenclature_grp_typ":132,
                 "t_occurrences_occtax":[{
-                    "id_releve_occtax":null,"id_occurrence_occtax":null,"id_nomenclature_obs_meth":41,"id_nomenclature_bio_condition":157,"id_nomenclature_bio_status":29,"id_nomenclature_naturalness":160,"id_nomenclature_exist_proof":81,"id_nomenclature_observation_status":88,"id_nomenclature_blurring":175,"id_nomenclature_source_status":75,"determiner":null,"id_nomenclature_determination_method":445,"cd_nom":67111,"nom_cite":"Ablette =  <i> Alburnus alburnus (Linnaeus, 1758)</i> - [ES - 67111]","meta_v_taxref":null,"sample_number_proof":null,"comment":null,
+                    "id_releve_occtax":null,"id_occurrence_occtax":null,"id_nomenclature_obs_technique":41,"id_nomenclature_bio_condition":157,"id_nomenclature_bio_status":29,"id_nomenclature_naturalness":160,"id_nomenclature_exist_proof":81,"id_nomenclature_observation_status":88,"id_nomenclature_blurring":175,"id_nomenclature_source_status":75,"determiner":null,"id_nomenclature_determination_method":445,"cd_nom":67111,"nom_cite":"Ablette =  <i> Alburnus alburnus (Linnaeus, 1758)</i> - [ES - 67111]","meta_v_taxref":null,"sample_number_proof":null,"comment":null,
                 "cor_counting_occtax":[{
-                    "id_counting_occtax":null,"id_nomenclature_life_stage":1,"id_nomenclature_sex":171,"id_nomenclature_obj_count":146,"id_nomenclature_type_count":94,"id_occurrence_occtax":null,"count_min":1,"count_max":1   
-                    }]    
+                    "id_counting_occtax":null,"id_nomenclature_life_stage":1,"id_nomenclature_sex":171,"id_nomenclature_obj_count":146,"id_nomenclature_type_count":94,"id_occurrence_occtax":null,"count_min":1,"count_max":1
+                    }]
                 }]
             }
         }
@@ -311,8 +327,7 @@ def insertOrUpdateOneReleve(info_role):
     releve.geom_4326 = from_shape(two_dimension_geom, srid=4326)
 
     if observersList is not None:
-        observers = DB.session.query(User).filter(
-            User.id_role.in_(observersList)).all()
+        observers = DB.session.query(User).filter(User.id_role.in_(observersList)).all()
         for o in observers:
             releve.observers.append(o)
 
@@ -383,6 +398,205 @@ def insertOrUpdateOneReleve(info_role):
     return releve.get_geofeature()
 
 
+def releveHandler(request, *, releve, info_role):
+
+    # Test des droits d'édition du relevé
+    if releve.id_releve_occtax is not None:
+        user_cruved = get_or_fetch_user_cruved(
+            session=session, id_role=info_role.id_role, module_code="OCCTAX"
+        )
+        # info_role.code_action = update_data_scope
+        user = UserRigth(
+            id_role=info_role.id_role,
+            value_filter=user_cruved["U"],
+            code_action="U",
+            id_organisme=info_role.id_organisme,
+        )
+
+        releve = releve.get_releve_if_allowed(user)
+        # fin test, si ici => c'est ok
+
+    # creation du relevé à partir du POST
+    releveSchema = ReleveSchema()
+
+    # Modification de la requete geojson en releve
+    json_req = request.get_json()
+    json_req["properties"]["geom_4326"] = json_req["geometry"]
+    # chargement des données POST et merge avec relevé initial
+    releve, errors = releveSchema.load(json_req["properties"], instance=releve)
+    if bool(errors):
+        raise InsufficientRightsError(
+            errors,
+            422,
+        )
+
+    # set id_digitiser
+    releve.id_digitiser = info_role.id_role
+    if info_role.value_filter in ("0", "1", "2"):
+        # Check if user can add a releve in the current dataset
+        allowed = releve.user_is_in_dataset_actor(info_role)
+        if not allowed:
+            raise InsufficientRightsError(
+                "User {} has no right in dataset {}".format(info_role.id_role, releve.id_dataset),
+                403,
+            )
+
+    DB.session.add(releve)
+    DB.session.commit()
+    DB.session.flush()
+    return releve
+
+
+@blueprint.route("/only/releve", methods=["POST"])
+@permissions.check_cruved_scope("C", True, module_code="OCCTAX")
+def createReleve(info_role):
+    """
+    Post one Occtax data (Releve + Occurrence + Counting)
+
+    .. :quickref: Occtax; Post one Occtax data (Releve + Occurrence + Counting)
+
+    **Request JSON object:**
+
+    .. sourcecode:: http
+
+        {
+        "geometry":
+            {"type":"Point",
+            "coordinates":[0.9008789062500001,47.14489748555398]},
+            "properties":
+                {
+                "id_releve_occtax":null,"id_dataset":1,"id_digitiser":1,"date_min":"2019-05-09","date_max":"2019-05-09","hour_min":null,"hour_max":null,"altitude_min":null,"altitude_max":null,"meta_device_entry":"web","comment":null,"id_nomenclature_obs_technique":316,"observers":[1],"observers_txt":null,"id_nomenclature_grp_typ":132,
+                "t_occurrences_occtax":[{
+                    "id_releve_occtax":null,"id_occurrence_occtax":null,"id_nomenclature_obs_technique":41,"id_nomenclature_bio_condition":157,"id_nomenclature_bio_status":29,"id_nomenclature_naturalness":160,"id_nomenclature_exist_proof":81,"id_nomenclature_observation_status":88,"id_nomenclature_blurring":175,"id_nomenclature_source_status":75,"determiner":null,"id_nomenclature_determination_method":445,"cd_nom":67111,"nom_cite":"Ablette =  <i> Alburnus alburnus (Linnaeus, 1758)</i> - [ES - 67111]","meta_v_taxref":null,"sample_number_proof":null,"comment":null,
+                "cor_counting_occtax":[{
+                    "id_counting_occtax":null,"id_nomenclature_life_stage":1,"id_nomenclature_sex":171,"id_nomenclature_obj_count":146,"id_nomenclature_type_count":94,"id_occurrence_occtax":null,"count_min":1,"count_max":1
+                    }]
+                }]
+            }
+        }
+
+    :returns: GeoJson<TRelevesOccurrence>
+    """
+    # nouveau releve vide
+    releve = TRelevesOccurrence()
+    releve = (
+        ReleveSchema()
+        .dump(releveHandler(request=request, releve=releve, info_role=info_role))
+        .data
+    )
+
+    return {
+        "geometry": releve.pop("geom_4326", None),
+        "properties": releve,
+        "id": releve["id_releve_occtax"],
+    }
+
+
+@blueprint.route("/only/releve/<int:id_releve>", methods=["POST"])
+@permissions.check_cruved_scope("U", True, module_code="OCCTAX")
+def updateReleve(id_releve, info_role):
+    """
+    Post one Occurrence data (Occurrence + Counting) for add to Releve
+
+    """
+    # get releve by id_releve
+    releve = DB.session.query(TRelevesOccurrence).get(id_releve)
+
+    if not releve:
+        return {"message": "not found"}, 404
+
+    releve = (
+        ReleveSchema()
+        .dump(releveHandler(request=request, releve=releve, info_role=info_role))
+        .data
+    )
+
+    return {
+        "geometry": releve.pop("geom_4326", None),
+        "properties": releve,
+        "id": releve["id_releve_occtax"],
+    }
+
+
+def occurrenceHandler(request, *, occurrence, info_role):
+
+    try:
+        releve = DB.session.query(TRelevesOccurrence).get(occurrence.id_releve_occtax)
+    except Exception as e:
+        DB.session.rollback()
+        raise
+
+    if not releve:
+        raise InsufficientRightsError(
+            {"message": "not found"},
+            404,
+        )
+
+    # Test des droits d'édition du relevé si modification
+    if occurrence.id_occurrence_occtax is not None:
+        user_cruved = get_or_fetch_user_cruved(
+            session=session, id_role=info_role.id_role, module_code="OCCTAX"
+        )
+        # info_role.code_action = update_data_scope
+        info_role = UserRigth(
+            id_role=info_role.id_role,
+            value_filter=user_cruved["U"],
+            code_action="U",
+            id_organisme=info_role.id_organisme,
+        )
+
+    releve = releve.get_releve_if_allowed(info_role)
+    # fin test, si ici => c'est ok
+
+    occurrenceSchema = OccurrenceSchema()
+    occurrence, errors = occurrenceSchema.load(request.get_json(), instance=occurrence)
+
+    if bool(errors):
+        return errors, 422
+
+    DB.session.add(occurrence)
+    DB.session.commit()
+
+    return occurrence
+
+
+@blueprint.route("/releve/<int:id_releve>/occurrence", methods=["POST"])
+@permissions.check_cruved_scope("C", True, module_code="OCCTAX")
+def createOccurrence(id_releve, info_role):
+    """
+    Post one Occurrence data (Occurrence + Counting) for add to Releve
+
+    """
+    # get releve by id_releve
+    occurrence = TOccurrencesOccurrence()
+    occurrence.id_releve_occtax = id_releve
+
+    return OccurrenceSchema().dump(
+        occurrenceHandler(request=request, occurrence=occurrence, info_role=info_role)
+    )
+
+
+@blueprint.route("/occurrence/<int:id_occurrence>", methods=["POST"])
+@permissions.check_cruved_scope("U", True, module_code="OCCTAX")
+def updateOccurrence(id_occurrence, info_role):
+    """
+    Post one Occurrence data (Occurrence + Counting) for add to Releve
+
+    """
+    try:
+        occurrence = DB.session.query(TOccurrencesOccurrence).get(id_occurrence)
+    except Exception as e:
+        DB.session.rollback()
+        raise
+
+    if not occurrence:
+        return {"message": "not found"}, 404
+
+    return OccurrenceSchema().dump(
+        occurrenceHandler(request=request, occurrence=occurrence, info_role=info_role)
+    )
+
+
 @blueprint.route("/releve/<int:id_releve>", methods=["DELETE"])
 @permissions.check_cruved_scope("D", True, module_code="OCCTAX")
 @json_resp
@@ -400,7 +614,7 @@ def deleteOneReleve(id_releve, info_role):
     return {"message": "delete with success"}, 200
 
 
-@blueprint.route("/releve/occurrence/<int:id_occ>", methods=["DELETE"])
+@blueprint.route("/occurrence/<int:id_occ>", methods=["DELETE"])
 @permissions.check_cruved_scope("D", module_code="OCCTAX")
 @json_resp
 def deleteOneOccurence(id_occ):
@@ -433,7 +647,7 @@ def deleteOneOccurence(id_occ):
 
 
 @blueprint.route("/releve/occurrence_counting/<int:id_count>", methods=["DELETE"])
-@permissions.check_cruved_scope("R", module_code="OCCTAX")
+@permissions.check_cruved_scope("D", module_code="OCCTAX")
 @json_resp
 def deleteOneOccurenceCounting(id_count):
     """Delete one counting
@@ -493,8 +707,7 @@ def getDefaultNomenclatures():
         ),
     )
     if len(types) > 0:
-        q = q.filter(
-            DefaultNomenclaturesValue.mnemonique_type.in_(tuple(types)))
+        q = q.filter(DefaultNomenclaturesValue.mnemonique_type.in_(tuple(types)))
     try:
         data = q.all()
     except Exception:
@@ -530,19 +743,17 @@ def export(info_role):
         schemaName="pr_occtax",
         engine=DB.engine,
         geometry_field=export_geom_column,
-        srid=export_srid
+        srid=export_srid,
     )
 
     releve_repository = ReleveRepository(export_view)
-    q = releve_repository.get_filtered_query(
-        info_role, from_generic_table=True)
+    q = releve_repository.get_filtered_query(info_role, from_generic_table=True)
     q = get_query_occtax_filters(
         request.args,
         export_view,
         q,
         from_generic_table=True,
-        obs_txt_column=blueprint.config['export_observer_txt_column']
-
+        obs_txt_column=blueprint.config["export_observer_txt_column"],
     )
 
     data = q.all()
@@ -557,13 +768,10 @@ def export(info_role):
             if len(export_columns) > 0
             else [db_col.key for db_col in export_view.db_cols]
         )
-        return to_csv_resp(
-            file_name, [export_view.as_dict(d) for d in data], columns, ";"
-        )
+        return to_csv_resp(file_name, [export_view.as_dict(d) for d in data], columns, ";")
     elif export_format == "geojson":
         results = FeatureCollection(
-            [export_view.as_geofeature(d, columns=export_columns)
-             for d in data]
+            [export_view.as_geofeature(d, columns=export_columns) for d in data]
         )
         return to_json_resp(
             results, as_file=True, filename=file_name, indent=4, extension="geojson"
@@ -573,9 +781,7 @@ def export(info_role):
             filemanager.delete_recursively(
                 str(ROOT_DIR / "backend/static/shapefiles"), excluded_files=[".gitkeep"]
             )
-            db_cols = [
-                db_col for db_col in export_view.db_cols if db_col.key in export_columns
-            ]
+            db_cols = [db_col for db_col in export_view.db_cols if db_col.key in export_columns]
             dir_path = str(ROOT_DIR / "backend/static/shapefiles")
             export_view.as_shape(
                 db_cols=db_cols, data=data, dir_path=dir_path, file_name=file_name

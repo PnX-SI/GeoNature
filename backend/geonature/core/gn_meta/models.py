@@ -191,6 +191,7 @@ class CruvedHelper(DB.Model):
 
             Params:
                 id_object: identifiant de l'objet duquel on contrôle l'accès à la donnée (id_dataset, id_ca)
+                id_role: identifiant de la personne qui demande la route
                 id_object_users_actor (list): identifiant des objects ou l'utilisateur est lui même acteur
                 id_object_organism_actor (list): identifiants des objects ou l'utilisateur ou son organisme sont acteurs
 
@@ -216,7 +217,11 @@ class CruvedHelper(DB.Model):
         return False
 
     def get_object_cruved(
-        self, user_cruved, id_object: int, ids_object_user: list, ids_object_organism: list
+        self,
+        user_cruved,
+        id_object: int,
+        ids_object_user: list,
+        ids_object_organism: list,
     ):
         """
         Return the user's cruved for a Model instance.
@@ -224,6 +229,7 @@ class CruvedHelper(DB.Model):
         params:
             - user_cruved: object retourner by cruved_for_user_in_app(user) {'C': '2', 'R':'3' etc...}
             - id_object (int): id de l'objet sur lqurqul on veut vérifier le CRUVED (self.id_dataset/ self.id_ca)
+            - id_role: identifiant de la personne qui demande la route
             - id_object_users_actor (list): identifiant des objects ou l'utilisateur est lui même acteur
             - id_object_organism_actor (list): identifiants des objects ou l'utilisateur ou son organisme sont acteurs    
 
@@ -293,6 +299,7 @@ class TDatasets(CruvedHelper):
     meta_update_date = DB.Column(DB.DateTime)
     active = DB.Column(DB.Boolean, default=True)
     validable = DB.Column(DB.Boolean)
+    id_digitizer = DB.Column(DB.Integer)
 
     modules = DB.relationship("TModules", secondary=cor_module_dataset, lazy="select")
 
@@ -328,21 +335,29 @@ class TDatasets(CruvedHelper):
 
     @staticmethod
     def get_user_datasets(user, only_query=False, only_user=False):
-        """get the dataset(s) where the user is actor (himself or with its organism - only himelsemf id only_use=True)
+        """get the dataset(s) where the user is actor (himself or with its organism - only himelsemf id only_use=True) or digitizer
             param: 
               - user from TRole model
               - only_query: boolean (return the query not the id_datasets allowed if true)
               - only_user: boolean: return only the dataset where user himself is actor (not with its organoism)
 
             return: a list of id_dataset or a query"""
-        q = DB.session.query(CorDatasetActor)
+        q = DB.session.query(TDatasets).outerjoin(
+            CorDatasetActor, CorDatasetActor.id_dataset == TDatasets.id_dataset
+        )
         if user.id_organisme is None or only_user:
-            q = q.filter(CorDatasetActor.id_role == user.id_role)
+            q = q.filter(
+                or_(
+                    CorDatasetActor.id_role == user.id_role,
+                    TDatasets.id_digitizer == user.id_role,
+                )
+            )
         else:
             q = q.filter(
                 or_(
                     CorDatasetActor.id_organism == user.id_organisme,
                     CorDatasetActor.id_role == user.id_role,
+                    TDatasets.id_digitizer == user.id_role,
                 )
             )
         if only_query:
@@ -376,6 +391,8 @@ class TAcquisitionFramework(CruvedHelper):
     ecologic_or_geologic_target = DB.Column(DB.Unicode)
     acquisition_framework_parent_id = DB.Column(DB.Integer)
     is_parent = DB.Column(DB.Boolean)
+    id_digitizer = DB.Column(DB.Integer)
+
     acquisition_framework_start_date = DB.Column(DB.DateTime)
     acquisition_framework_end_date = DB.Column(DB.DateTime)
 
@@ -441,26 +458,37 @@ class TAcquisitionFramework(CruvedHelper):
 
     @staticmethod
     def get_user_af(user, only_query=False, only_user=False):
-        """get the af(s) where the user is actor (himself or with its organism - only himelsemf id only_use=True)
+        """get the af(s) where the user is actor (himself or with its organism - only himelsemf id only_use=True) or digitizer
             param: 
               - user from TRole model
               - only_query: boolean (return the query not the id_datasets allowed if true)
               - only_user: boolean: return only the dataset where user himself is actor (not with its organoism)
 
             return: a list of id_dataset or a query"""
-        q = DB.session.query(CorAcquisitionFrameworkActor)
+        q = DB.session.query(TAcquisitionFramework).outerjoin(
+            CorAcquisitionFrameworkActor,
+            CorAcquisitionFrameworkActor.id_acquisition_framework
+            == TAcquisitionFramework.id_acquisition_framework,
+        )
         if user.id_organisme is None or only_user:
-            q = q.filter(CorAcquisitionFrameworkActor.id_role == user.id_role)
+            q = q.filter(
+                or_(
+                    CorAcquisitionFrameworkActor.id_role == user.id_role,
+                    TAcquisitionFramework.id_digitizer == user.id_role,
+                )
+            )
         else:
             q = q.filter(
                 or_(
                     CorAcquisitionFrameworkActor.id_organism == user.id_organisme,
                     CorAcquisitionFrameworkActor.id_role == user.id_role,
+                    TAcquisitionFramework.id_digitizer == user.id_role,
                 )
             )
         if only_query:
             return q
         return list(set([d.id_acquisition_framework for d in q.all()]))
+
 
 @serializable
 class TDatasetDetails(TDatasets):
@@ -513,11 +541,13 @@ class TDatasetDetails(TDatasets):
         ),
     )
 
+
 @serializable
 class TAcquisitionFrameworkDetails(TAcquisitionFramework):
     """
     Class which extends TAcquisitionFramework with nomenclatures relationships
     """
+
     datasets = DB.relationship(TDatasetDetails, lazy="joined")
     nomenclature_territorial_level = DB.relationship(
         TNomenclatures,

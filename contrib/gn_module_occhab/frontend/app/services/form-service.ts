@@ -65,9 +65,10 @@ export class OcchabFormService {
         stationForm.get("date_min"),
         stationForm.get("date_max")
       ),
-      this._formService.altitudeValidator(
+      this._formService.minMaxValidator(
         stationForm.get("altitude_min"),
-        stationForm.get("altitude_max")
+        stationForm.get("altitude_max"),
+        "invalidAlt"
       )
     ]);
 

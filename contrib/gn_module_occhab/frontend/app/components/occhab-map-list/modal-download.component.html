@@ -32,8 +32,14 @@
     <p *ngIf="!tooManyObs">
       <b>NB: </b> Le limite du nombre d'habitat exportables est de {{MODULE_CONFIG.NB_MAX_EXPORT}}
     </p>
-    <button style="margin-left: 5px;" *ngFor="let format of MODULE_CONFIG.EXPORT_FORMAT" class="buttonLoad" (click)="downloadStations(format)"
-      type="button" class="btn btn-success format-btn">
+    <button 
+      *ngFor="let format of MODULE_CONFIG.EXPORT_FORMAT" 
+      style="margin-left: 5px;" 
+      class="buttonLoad" 
+      (click)="downloadStations(format)"
+      type="button" 
+      mat-raised-button
+      class="btn-green">
         Format {{format}}
     </button>
   </div>

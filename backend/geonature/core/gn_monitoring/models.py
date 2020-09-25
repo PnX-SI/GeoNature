@@ -99,7 +99,7 @@ class TBaseVisits(DB.Model):
 
     visit_date_min = DB.Column(DB.DateTime)
     visit_date_max = DB.Column(DB.DateTime)
-    id_nomenclature_obs_technique = DB.Column(DB.Integer)
+    id_nomenclature_tech_collect_campanule = DB.Column(DB.Integer)
     id_nomenclature_grp_typ = DB.Column(DB.Integer)
     comments = DB.Column(DB.DateTime)
     uuid_base_visit = DB.Column(
@@ -181,6 +181,7 @@ class TBaseSites(DB.Model):
     modules = DB.relationship(
         "TModules",
         lazy="select",
+        enable_typechecks=False,
         secondary=corSiteModule,
         primaryjoin=(corSiteModule.c.id_base_site == id_base_site),
         secondaryjoin=(corSiteModule.c.id_module == TModules.id_module),

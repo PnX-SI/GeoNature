@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable ,  of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { DataFormService } from '../data-form.service';
 import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '@geonature_common/service/common.service';
@@ -65,6 +65,8 @@ export class TaxonomyComponent implements OnInit {
   @Input() charNumber: number;
   //**ombre de résultat affiché */
   @Input() listLength = 20;
+  //** Pour changer la valeur affichée */
+  @Input() displayedLabel: string = "nom_valide";
   /** Afficher ou non les filtres par regne et groupe INPN qui controle l'autocomplétion */
   @Input() displayAdvancedFilters = false;
   searchString: any;
@@ -78,7 +80,7 @@ export class TaxonomyComponent implements OnInit {
   @Output() onChange = new EventEmitter<NgbTypeaheadSelectItemEvent>(); // renvoie l'evenement, le taxon est récupérable grâce à e.item
   @Output() onDelete = new EventEmitter<Taxon>();
 
-  constructor(private _dfService: DataFormService, private _commonService: CommonService) {}
+  constructor(private _dfService: DataFormService, private _commonService: CommonService) { }
 
   ngOnInit() {
     // set default to apiEndPoint for retrocompatibility
@@ -112,8 +114,8 @@ export class TaxonomyComponent implements OnInit {
     this.onChange.emit(e);
   }
 
-  formatter(taxon) {
-    return taxon.nom_valide;
+  formatter = (taxon: any) => {
+    return (taxon[this.displayedLabel]).replace(/<[^>]*>/g, ''); //supprime les balises HTML
   }
 
   searchTaxon = (text$: Observable<string>) =>

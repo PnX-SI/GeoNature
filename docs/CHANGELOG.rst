@@ -2,6 +2,134 @@
 CHANGELOG
 =========
 
+2.5.0 (unreleased)
+------------------
+
+Voir https://github.com/PnX-SI/GeoNature/commits/develop?before=65844c28811e8be8ab904909bc50239d75c14a04+385&branch=develop
+Et https://github.com/PnX-SI/GeoNature/compare/develop
+
+**TOCHECK**
+
+- Revue de style (boutons, ombrages)
+- Renommer SQL update en 2.4.1to2.5.0.sql
+
+**🚀 Nouveautés**
+
+* Refonte de l'ergonomie du module de saisie Occtax (#758 par @jbrieuclp et @TheoLechemia)
+
+   - Enregistrement continu
+   - Liste des taxons
+   - Saisie au clavier
+   - Zoom MapList conservé (#436 et #912)
+   - Garder les filtres quand je reviens à la liste des relevés (#772)
+   - Conserver saisie
+   - Fix dates début/fin en update (#977)
+   - Alerte si 2 fois le même taxon sur un même relevé
+   - Fiche info
+
+* Standard Occurrences de taxon version 2.0.0 (dans Occtax et Synthèse, répercuté dans Validation) / Comportement / NomLieu / Habitat / Profondeur / Ajout du champs "précision" et suppression de sa valeur par défaut à 100 m / Renommage de "methode d'observation" en "technique d'observation" / Suppression du champs "technique d'observation" actuel de la synthèse, remplacé par le champs "methode d'observation" renommé / Renommage du champs "technique d'observation" actuel d'Occtax en "Technique de collecte Campanule" / Méthode de regroupement / Type de regroupement / Version taxref supprimé ????? (#516)
+* Ajout et mise à jour de quelques nomenclatures 
+* Ajout d'un document de suivi de l'implémentation du standard Occurrences de taxon dans GeoNature (``docs/implementation_gn_standard_occtax2.0.ods``) (#516)
+* MAJ standard Métadonnées. Mise à jour des nomenclatures "CA_OBJECTIFS" et mise à jour des métadonnées en conséquence (par @DonovanMaillard)
+* Ajout d'un champs ``addtional_data`` de type ``jsonb`` dans la table ``gn_synthese.synthese``, en prévision de l'ajout des champs additionnels dans Occtax et Synthèse (#1007)
+* Mise en place de la gestion transversale et générique des médias dans ``gn_commons.t_medias`` et le Dynamic-Form (#336) et implémentation dans le module Occtax (désactivables avec le paramètre ``ENABLE_MEDIAS``) (#620 par @joelclems)
+* Miniatures, contrôles, aperçu... / Affichage dans Synthèse et Validation
+* Mes lieux (``gn_commons.t_places``), implémenté dans le module cartographique d'Occtax (désactivable avec le paramètre ``ENABLE_MY_PLACES``) (#000 par @metourneau)
+* Tri de l'ordre des modules dans le menu latéral par ordre alphabétique par défaut et possibilité de les ordonner avec le nouveau champs ``gn_commons.t_modules.order_menu`` (#787 par @alainlaupinmnhn)
+* Arrêt du support de l'installation packagée sur Debian 9 et Ubuntu 16 pour passer à Python version 3.6 et plus
+* Prise en charge de PostGIS 3 et notamment l'installation de l'extension ``postgis_raster`` (#946 par @jpm-cbna)
+
+**Ajouts mineurs**
+
+* Création de compte : Envoi automatique d'un email quand à l'utilisateur quand son compte est validé. Nécessite la version XYZ de UsersHub (#862 et #1035 par @jpm-cbna)
+* Métadonnées : Ajout d'un paramètre permettant de définir le nombre de CA affichés sur la page (100 par défaut)
+* Métadonnées : Tri des CA et JDD par ordre alphabétique
+* Métadonnées : Ajout d'un champs ``id_digitiser`` dans la table des CA et des JDD, utilisé en plus des acteurs pour le CRUVED des JDD (#921)
+* Dynamic-Form : Ajout d'un composant "select" prenant une API en entrée (#1029)
+* Dynamic-Form : Ajout de la possibilité d'afficher une définition d'un champs sous forme de tooltip
+* Ajout d'une contrainte d'unicité sur ``schema_name`` et ``table_name`` sur la table ``gn_commons_bib_tables_location_unique`` (#962)
+* Ajout d'une contrainte d'unicité sur ``id_organism`` et ``parameter_name`` dans la table ``gn_commons.t_parameters`` (#988)
+* Ajout de la possibilité de filtrer le composant ``dataset`` du Dynamic-Form par ``module_code`` pour pouvoir choisir parmis les JDD associées à un module (#964)
+* Mise à jour de ``psycopg2`` en version 2.8.5, sqlalchemy en 1.3.19, marshmallow en 2.15.6, virtualenv en 20.0.31 (par @jpm-cbna)
+* Améliorations des scripts ``install/install_db.sh`` et ``install/install_app.sh`` (par @jpm-cbna)
+* Ajout de l'autocomplétion des commandes ``geonature`` (#999 par @jpm-cbna)
+* Suppression du fichier ``backend/gunicorn_start.sh.sample``
+* Amélioration du script ``install/migration/migration.sh`` en vérifiant la présence des dossiers optionnels avant de les copier
+* Amélioration des fonctions ``gn_synthese.import_json_row_format_insert_data`` et ``gn_synthese.import_json_row`` pour prendre en charge la génération des geojson dans PostGIS 3
+* Documentation administrateur : Label, pictos et ordre des modules dans le menu latéral
+
+**🐛 Corrections**
+
+* Module Validation : Affichage des commentaires du relevé et de l'observation (#978 et #854)
+* Module Validation : Ne lister que les observations ayant un UUID et vérification de sa validité (#936)
+* Module Validation : Correction et homogénéisation de l'affichage et du tri des observations par date (#971)
+* Module Validation : Correction de l'affichage du statut de validation après mise à jour dans la liste des observations (#831)
+* Module Validation : Correction de l'affichage du nom du validateur
+* Moduel Validation : Amélioration des performances avec l'ajout d'un index sur le champs ``uuid_attached_row`` de la table ``gn_commons.t_validations`` (#923 par @jbdesbas)
+* Suppression du trigger en double ``tri_insert_synthese_cor_role_releves_occtax`` sur ``pr_occtax.cor_role_releves_occtax`` (#762 par @jbrieuclp)
+* Passage des requêtes d'export de la synthèse en POST plutôt qu'en GET (#883)
+* Correction du traitement du paramètre ``offset`` de la route ``synthese/color_taxon`` utilisé par Occtax-mobile (#994)
+* Correction et complément des scripts de migration de données depuis GINCO v1 (``data/scripts/import_ginco/occtax.sql``)
+* Import des utilisateurs depuis le CAS INPN : Activer les utilisateurs importés par défaut et récupérer leur email
+* Calcul automatique de la sensibilité : Ajout de la récursivité dans la récupération des critères de sensibilité au niveau de la fonction ``gn_sensitivity.get_id_nomenclature_sensitivity`` (#284)
+* Typo sur le terme "Preuve d'existence" (par @RomainBaghi)
+
+**⚠️ Notes de version**
+
+Si vous mettez à jour GeoNature :
+
+* Occtax-mobile version 1.1.0 minimum
+* Attention si vous avez customisé les vues des exports Occtax et Synthèse, elles sont supprimées et recrées par l'update SQL pour s'adapter aux évolutions du standard Occtax. Adaptez le SQL de mise à jour et/ou révisez vos vues customisées
+* Si vous avez des vues qui utilisent des champs qui ont été supprimés ou renommés (dans module Export notamment), le script SQL d'update s'arrêtera et vous indiquera les vues qui bloquent la mise à jour (#1016). A supprimer et recréer après update avec adaptation des champs si besoin.
+* data/migrations/2.4.1to2.5.0.sql / A RENOMMER
+* Nomenclatures : ``data/update1.3.3to1.3.4.sql``
+
+GeoNature n'est plus compatible avec le version de Python 3.5 (qui ne sera plus maintenue en novembre 2020).
+Suivez la procédure suivante pour passer à Python 3.7
+
+Changement dans les paramètres Occtax :
+Les paramètres d'affichage/masquage des champs du formulaire opèrent les changements suivants:
+``obs_meth`` devient ``osb_tech`` 
+``obs_technique`` devient ``tech_collect``
+
+Avant la migration : 
+
+A partir la version 2.5.0 de GeoNature, la version Python 3.5 n'est plus supportée. Seules les version 3.6+ le sont.
+Si vous êtes encore sur Debian 9 (fourni avec Python 3.5), veuillez suivre les instruction suivantes:
+
+Installer pyenv (utilitaire pour installer différentes version de Python)
+
+::
+    sudo apt-get update 
+    sudo apt-get upgrade
+
+    sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev \
+    libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+    xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
+
+    curl https://pyenv.run | bash
+
+    export PATH="$HOME/.pyenv/bin:$PATH"
+    eval "$(pyenv init -)"
+    eval "$(pyenv virtualenv-init -)"
+
+Installer Python 3.7.9
+
+::
+
+    pyenv install 3.7.9
+    pyenv global 3.7.9
+
+Editer ensuite le fichier ``config/settings.ini`` pour changer la variable ``python_path`` (remplacer <MON_USER> par votre utilisateur linux courant
+NB: faire pareil dans TaxHub et UsersHub
+
+::
+
+    /home/<MON_USER>/.pyenv/shims/python3
+
+* Update SQL + Update SQL nomenclatures
+* Applicatiosn tierces à installer avant ?
+
 2.4.1 (2020-06-25)
 ------------------
 
@@ -24,7 +152,7 @@ Si vous mettez à jour GeoNature :
 * Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
 * Exécuter le script SQL de mise à jour de la BDD de GeoNature : https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.0to2.4.1.sql
 * Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
-* Vous pouvez alors lancer le script d'insertion des départements de France métropole dans le réferentiel géographique (optionnel) : https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.0to2.4.1_insert_departments.sh. Vérifier le déroulement de l'import dans le fichier ``var/log/insert_departements.log```
+* Vous pouvez alors lancer le script d'insertion des départements de France métropole dans le réferentiel géographique (optionnel) : https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.0to2.4.1_insert_departments.sh. Vérifier le déroulement de l'import dans le fichier ``var/log/insert_departements.log``
 
 2.4.0 - Fiches de métadonnées (2020-06-22)
 ------------------------------------------
@@ -82,7 +210,7 @@ Si vous mettez à jour GeoNature.
 * Si vous mettez à jour TaxHub, vous pouvez mettre à jour Taxref en version 13. Il est aussi possible de le faire en différé, plus tard
 * Vous pouvez mettre à jour UsersHub en version 2.1.2
 * Exécuter le script SQL de mise à jour des nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.2to1.3.3.sql). 
-* Si vous avez mis à jour Taxref en version, répercutez les évolutions au niveau des nomenclatures avec le script SQL https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update_taxref_v13.sql. Sinon vous devrez l'exécuter plus tard, après avoir mis à jour Taxref en version 13.
+* Si vous avez mis à jour Taxref en version 13, répercutez les évolutions au niveau des nomenclatures avec le script SQL https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update_taxref_v13.sql. Sinon vous devrez l'exécuter plus tard, après avoir mis à jour Taxref en version 13. Après avoir mis à jour Taxref en version 13, pensez à mettre à jour le paramètre ``taxref_version`` dans la table ``gn_commons.t_parameters``.
 * Exécuter le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.3.2to2.4.0.sql)
 * Installer les dépendances de la librairie Python WeasyPrint :
 

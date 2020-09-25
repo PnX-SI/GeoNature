@@ -67,33 +67,93 @@ function database_exists () {
 }
 
 function write_log() {
-    echo $1
+    echo -e $1
     echo "" &>> var/log/install_db.log
     echo "" &>> var/log/install_db.log
     echo "--------------------" &>> var/log/install_db.log
-    echo $1 &>> var/log/install_db.log
+    echo -e $1 &>> var/log/install_db.log
     echo "--------------------" &>> var/log/install_db.log
 }
-if database_exists $db_name
-then
-        if $drop_apps_db
-            then
-            echo "Drop database..."
-            sudo -u postgres -s dropdb $db_name
+
+# DESC: Validate we have superuser access as root (via sudo if requested)
+# ARGS: $1 (optional): Set to any value to not attempt root access via sudo
+# OUTS: None
+# SOURCE: https://github.com/ralish/bash-script-template/blob/stable/source.sh
+function check_superuser() {
+    local superuser
+    if [[ ${EUID} -eq 0 ]]; then
+        superuser=true
+    elif [[ -z ${1-} ]]; then
+        if command -v "sudo" > /dev/null 2>&1; then
+            echo 'Sudo: Updating cached credentials ...'
+            if ! sudo -v; then
+                echo "Sudo: Couldn't acquire credentials ..."
+            else
+                local test_euid
+                test_euid="$(sudo -H -- "${BASH}" -c 'printf "%s" "${EUID}"')"
+                if [[ ${test_euid} -eq 0 ]]; then
+                    superuser=true
+                fi
+            fi
         else
-            echo "Database exists but the settings file indicates that we don't have to drop it."
+			echo "Missing dependency: sudo"
         fi
+    fi
+
+    if [[ -z ${superuser-} ]]; then
+        echo 'Unable to acquire superuser credentials.'
+        return 1
+    fi
+
+    echo 'Successfully acquired superuser credentials.'
+    return 0
+}
+
+echo "Asking for superuser righ via sudo..."
+check_superuser
+
+if database_exists "${db_name}"; then
+    if $drop_apps_db; then
+        echo "Close all Postgresql conections on GeoNature DB"
+        query=("SELECT pg_terminate_backend(pg_stat_activity.pid) "
+            "FROM pg_stat_activity "
+            "WHERE pg_stat_activity.datname = '${db_name}' "
+            "AND pid <> pg_backend_pid() ;")
+        sudo -n -u "postgres" -s psql -d "postgres" -c "${query[*]}"
+
+        echo "Drop database..."
+        sudo -n -u "postgres" -s dropdb "${db_name}"
+    else
+        echo "Database exists but the settings file indicates that we don't have to drop it."
+    fi
 fi
 
-if ! database_exists $db_name
-then
+if ! database_exists "${db_name}"; then
     sudo sed -e "s/datestyle =.*$/datestyle = 'ISO, DMY'/g" -i /etc/postgresql/*/main/postgresql.conf
     sudo service postgresql restart
     echo "--------------------" &> var/log/install_db.log
     write_log "Creating GeoNature database..."
     sudo -n -u postgres -s createdb -O $user_pg $db_name -T template0 -E UTF-8 -l $my_local
-    write_log "Adding PostGIS and other use PostgreSQL extensions"
+
+    write_log "Adding default PostGIS extension"
     sudo -n -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS postgis;" &>> var/log/install_db.log
+
+    write_log "Extracting PostGIS version"
+    postgis_full_version=$(sudo -n -u postgres -s psql -d "${db_name}" -c "SELECT PostGIS_Version();")
+    postgis_short_version=$(echo "${postgis_full_version}" | sed -n 's/^\s*\([0-9]*\.[0-9]*\)\s.*/\1/p')
+    write_log "PostGIS full version:\n ${postgis_full_version}"
+    write_log  "PostGIS short version extract: '${postgis_short_version}'"
+
+    write_log "Adding Raster PostGIS extension if necessary"
+    postgis_required_version="3.0"
+    if [[ "$(printf '%s\n' "${postgis_required_version}" "${postgis_short_version}" | sort -V | head -n1)" = "${postgis_required_version}" ]]; then
+        write_log "PostGIS version greater than or equal to ${postgis_required_version} --> adding Raster extension"
+        sudo -n -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS postgis_raster;" &>> var/log/install_db.log
+    else
+        write_log "PostGIS version lower than ${postgis_required_version} --> do nothing"
+    fi
+
+    write_log "Adding other use PostgreSQL extensions"
     sudo -n -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS hstore;" &>> var/log/install_db.log
     sudo -n -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';" &>> var/log/install_db.log
     sudo -n -u postgres -s psql -d $db_name -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";' &>> var/log/install_db.log
@@ -114,8 +174,7 @@ then
         write_log "Getting and creating USERS schema (utilisateurs).."
         wget https://raw.githubusercontent.com/PnEcrins/UsersHub/$usershub_release/data/usershub.sql -P tmp/usershub
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/usershub/usershub.sql  &>> var/log/install_db.log
-        export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/usershub/usershub_api.sql  &>> var/log/install_db.log
-        
+
         write_log "Insert minimal data (utilisateurs)"
         wget https://raw.githubusercontent.com/PnEcrins/UsersHub/$usershub_release/data/usershub-data.sql -P tmp/usershub
         wget https://raw.githubusercontent.com/PnEcrins/UsersHub/$usershub_release/data/usershub-dataset.sql -P tmp/usershub
@@ -136,7 +195,7 @@ then
 
     # sed to replace /tmp/taxhub to ~/<geonature_dir>/tmp.taxhub
     sed -i 's#'/tmp/taxhub'#'$parentdir/tmp/taxhub'#g' tmp/taxhub/data_inpn_taxhub.sql
-    
+
 
     array=( TAXREF_INPN_v13.zip ESPECES_REGLEMENTEES_v11.zip LR_FRANCE_20160000.zip BDC_STATUTS_13.zip )
     for i in "${array[@]}"
@@ -161,7 +220,7 @@ then
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/taxhub/taxhubdb.sql  &>> var/log/install_db.log
     write_log "Inserting INPN taxonomic data... (This may take a few minutes)"
     sudo -n -u postgres -s psql -d $db_name -f tmp/taxhub/data_inpn_taxhub.sql &>> var/log/install_db.log
-    
+
     write_log "Creating database views utils fonctions..."
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/taxhub/generic_drop_and_restore_deps_views.sql  &>> var/log/install_db.log
 
@@ -187,9 +246,9 @@ then
       echo HABREF_50.zip exists
     fi
     unzip tmp/habref/HABREF_50.zip -d tmp/habref
-    
+
     wget https://raw.githubusercontent.com/PnX-SI/Habref-api-module/$habref_api_release/src/pypn_habref_api/data/habref.sql -P tmp/habref
-    wget https://raw.githubusercontent.com/PnX-SI/Habref-api-module/$habref_api_release/src/pypn_habref_api/data/data_inpn_habref.sql -P tmp/habref 
+    wget https://raw.githubusercontent.com/PnX-SI/Habref-api-module/$habref_api_release/src/pypn_habref_api/data/data_inpn_habref.sql -P tmp/habref
 
     # sed to replace /tmp/taxhub to ~/<geonature_dir>/tmp.taxhub
     sed -i 's#'/tmp/habref'#'$parentdir/tmp/habref'#g' tmp/habref/data_inpn_habref.sql
@@ -305,7 +364,7 @@ then
         then
             write_log "Vectorisation of DEM raster. This may take a few minutes..."
             sudo -n -u postgres -s psql -d $db_name -c "INSERT INTO ref_geo.dem_vector (geom, val) SELECT (ST_DumpAsPolygons(rast)).* FROM ref_geo.dem;" &>> var/log/install_db.log
-            
+
             write_log "Refresh DEM vector spatial index. This may take a few minutes..."
             sudo -n -u postgres -s psql -d $db_name -c "REINDEX INDEX ref_geo.index_dem_vector_geom;" &>> var/log/install_db.log
         fi
@@ -336,7 +395,7 @@ then
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/permissions_data.sql  &>> var/log/install_db.log
 
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/sensitivity.sql  &>> var/log/install_db.log
-    
+
     write_log "Insert 'gn_sensitivity' data"
     echo "--------------------"
     if [ ! -f 'tmp/geonature/referentiel_donnees_sensibles_v13.csv' ]
@@ -357,7 +416,7 @@ then
     then
         write_log "Inserting sample datasets..."
         export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/meta_data.sql  &>> var/log/install_db.log
-        
+
         write_log "Inserting sample dataset of taxons for taxonomic schema..."
 
         wget https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata_taxons_example.sql -P tmp/taxhub
@@ -375,12 +434,12 @@ fi
 
 # Suppression des fichiers : on ne conserve que les fichiers compressés
 echo "Cleaning files..."
-rm tmp/geonature/*.sql
-rm tmp/usershub/*.sql
-rm -r tmp/taxhub/TAXREF_INPN_v13
-rm tmp/taxhub/*.csv
-rm tmp/taxhub/*.sql
-rm tmp/habref/*.csv
-rm tmp/habref/*.pdf
-rm tmp/habref/*.sql
-rm tmp/nomenclatures/*.sql
+rm -f tmp/geonature/*.sql
+rm -f tmp/usershub/*.sql
+rm -rf tmp/taxhub/TAXREF_INPN_v13
+rm -f tmp/taxhub/*.csv
+rm -f tmp/taxhub/*.sql
+rm -f tmp/habref/*.csv
+rm -f tmp/habref/*.pdf
+rm -f tmp/habref/*.sql
+rm -f tmp/nomenclatures/*.sql
