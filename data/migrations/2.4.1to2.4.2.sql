@@ -1202,6 +1202,43 @@
         DROP TRIGGER tri_insert_synthese_cor_role_releves_occtax ON pr_occtax.cor_role_releves_occtax;
         DROP FUNCTION pr_occtax.fct_tri_synthese_insert_cor_role_releve();
 
+        -- correcion insertion dans cor_observer_synthese qui posait problème depuis
+        -- le changement du POST d'occtax (ordre des trigger)
+        CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_insert_counting()
+          RETURNS trigger AS
+        $BODY$
+        DECLARE
+          myobservers integer[];
+          the_id_releve integer;
+        BEGIN
+          -- recupération de l'id_releve_occtax
+        SELECT INTO the_id_releve id_releve_occtax
+        FROM pr_occtax.t_occurrences_occtax occ
+        WHERE occ.id_occurrence_occtax  = new.id_occurrence_occtax;
+
+          -- recupération des observateurs
+          SELECT INTO myobservers array_agg(id_role)
+          FROM pr_occtax.cor_role_releves_occtax
+          WHERE id_releve_occtax = the_id_releve;
+
+
+          -- insertion en synthese du counting + occ + releve
+          PERFORM pr_occtax.insert_in_synthese(NEW.id_counting_occtax::integer);
+        
+          IF myobservers IS NOT NULL THEN
+                INSERT INTO gn_synthese.cor_observer_synthese (id_synthese, id_role) 
+                SELECT 
+                  id_synthese,
+                  unnest(myobservers)
+                FROM gn_synthese.synthese WHERE unique_id_sinp = NEW.unique_id_sinp_occtax;
+            END IF;
+        
+          RETURN NULL;
+        END;
+        $BODY$
+          LANGUAGE plpgsql VOLATILE
+          COST 100;
+
         -- Add module order column
         ALTER TABLE gn_commons.t_modules ADD module_order integer NULL;
 

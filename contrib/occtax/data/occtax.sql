@@ -664,7 +664,8 @@ CREATE unique INDEX i_cor_role_releves_occtax_id_role_id_releve_occtax ON pr_occ
 --   COST 100;
 
 
-CREATE OR REPLACE FUNCTION fct_tri_synthese_insert_counting()
+
+CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_insert_counting()
   RETURNS trigger AS
 $BODY$
 DECLARE
@@ -672,26 +673,33 @@ DECLARE
   the_id_releve integer;
 BEGIN
   -- recupération de l'id_releve_occtax
-  SELECT INTO the_id_releve pr_occtax.id_releve_from_id_counting(NEW.id_counting_occtax::integer);
+ SELECT INTO the_id_releve id_releve_occtax
+ FROM pr_occtax.t_occurrences_occtax occ
+ WHERE occ.id_occurrence_occtax  = new.id_occurrence_occtax;
+
   -- recupération des observateurs
   SELECT INTO myobservers array_agg(id_role)
   FROM pr_occtax.cor_role_releves_occtax
   WHERE id_releve_occtax = the_id_releve;
+
+
   -- insertion en synthese du counting + occ + releve
   PERFORM pr_occtax.insert_in_synthese(NEW.id_counting_occtax::integer);
--- INSERTION DANS COR_ROLE_SYNTHESE
-IF myobservers IS NOT NULL THEN
-      INSERT INTO gn_synthese.cor_observer_synthese (id_synthese, id_role) 
-      SELECT 
-        id_synthese,
-        unnest(myobservers)
-      FROM gn_synthese.synthese WHERE unique_id_sinp = NEW.unique_id_sinp_occtax;
-  END IF;
+ 
+  IF myobservers IS NOT NULL THEN
+        INSERT INTO gn_synthese.cor_observer_synthese (id_synthese, id_role) 
+        SELECT 
+          id_synthese,
+          unnest(myobservers)
+        FROM gn_synthese.synthese WHERE unique_id_sinp = NEW.unique_id_sinp_occtax;
+    END IF;
+ 
   RETURN NULL;
 END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+ 
 
 
 -- DELETE counting
