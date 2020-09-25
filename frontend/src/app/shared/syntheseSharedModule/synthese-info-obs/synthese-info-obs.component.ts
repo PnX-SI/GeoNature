@@ -24,6 +24,8 @@ export class SyntheseInfoObsComponent implements OnInit {
   public formatedAreas = [];
   public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
   public isLoading = false;
+  public email;
+  public mailto: String;
   public validationColor = {
     "0": "#FFFFFF",
     "1": "#8BC34A",
@@ -58,6 +60,16 @@ export class SyntheseInfoObsComponent implements OnInit {
       this.selectedObs['municipalities'] = [];
       this.selectedObs['other_areas'] = [];
       this.selectedObs['actors'] = this.selectedObs['actors'].split('|');
+      const date_min = new Date(this.selectedObs.date_min);
+      this.selectedObs.date_min = date_min.toLocaleDateString("fr-FR");
+      const date_max = new Date(this.selectedObs.date_max);
+      this.selectedObs.date_max = date_max.toLocaleDateString("fr-FR");
+      if (this.selectedObs.cor_observers) {
+        this.email = this.selectedObs.cor_observers
+          .map(el => el.email)
+          .join();
+        this.mailto = String("mailto:" + this.email);
+      }
       const areaDict = {};
       // for each area type we want all the areas: we build an dict of array
       this.selectedObs.areas.forEach(area => {

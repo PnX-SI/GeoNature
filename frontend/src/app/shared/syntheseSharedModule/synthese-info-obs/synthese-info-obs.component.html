@@ -34,6 +34,14 @@
           </span>
         </div>
         <b> Observation de : </b> {{selectedObs?.observers}}
+        <span *ngIf="selectedObs?.cor_observers?.length > 0">
+          (
+          <span *ngFor="let observers of selectedObs?.cor_observers; let i = index">
+            {{ observers.email}} <span *ngIf="i != selectedObs?.cor_observers.length -1">, </span>
+          </span>
+          <button> <a href="{{mailto}}"><i class="fa fa-envelope-o" aria-hidden="true"></i></a> </button>
+        )
+        </span>
 
         <br>
         <span *ngIf="selectedObs?.date_min != selectedObs?.date_max; else elseBlock">
