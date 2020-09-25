@@ -130,8 +130,16 @@ pnx-autocomplete {
   position: absolute;
   z-index: 17000;
   right: 10px;
-  bottom: 10px;
+  //bottom: 10px;
   display: inline-block;
+}
+
+#dropup-datasets {
+  bottom: 10px;
+}
+
+#dropup-areas {
+  bottom: 75px;
 }
 
 .dropup-content {
@@ -144,6 +152,8 @@ pnx-autocomplete {
   padding: 10px;
   min-width: 160px;
   max-width: 300px;
+  max-height: 500px;
+  overflow: auto;
   bottom: 0px;
   z-index: 1;
 }

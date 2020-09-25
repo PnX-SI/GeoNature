@@ -3,7 +3,7 @@ from sqlalchemy.sql import text
 
 from geonature.utils.env import DB
 from utils_flask_sqla.response import json_resp
-from geonature.core.ref_geo.models import BibAreasTypes, LiMunicipalities, LAreas
+from geonature.core.ref_geo.models import BibAreasTypes, LiMunicipalities, LAreas, LAreasGeoJson
 
 routes = Blueprint("ref_geo", __name__)
 
@@ -169,14 +169,17 @@ def get_areas():
     """
     # change all args in a list of value
     params = {key: request.args.getlist(key) for key, value in request.args.items()}
-
-    q = DB.session.query(LAreas).order_by(LAreas.area_name.asc())
+    if params['as_geojson'][0] == "true":
+        model = LAreasGeoJson
+    else:
+        model = LAreas
+    q = DB.session.query(model).order_by(model.area_name.asc())
 
     if "id_type" in params:
-        q = q.filter(LAreas.id_type.in_(params["id_type"]))
+        q = q.filter(model.id_type.in_(params["id_type"]))
 
     if "area_name" in params:
-        q = q.filter(LAreas.area_name.ilike("%{}%".format(params.get("area_name")[0])))
+        q = q.filter(model.area_name.ilike("%{}%".format(params.get("area_name")[0])))
 
     limit = int(params.get("limit")[0]) if params.get("limit") else 100
 
@@ -219,3 +222,21 @@ def get_area_size():
         for r in result:
             return r[0]
     return None
+
+@routes.route("/area_types", methods=["GET"])
+@json_resp
+def get_area_types():
+    """
+        Return the areas of ref_geo.l_areas without geometry
+        .. :quickref: Ref Geo;
+    """
+    # change all args in a list of value
+    params = {key: request.args.getlist(key)
+              for key, value in request.args.items()}
+
+    q = DB.session.query(BibAreasTypes).order_by(BibAreasTypes.type_name.asc())
+
+    limit = int(params.get("limit")[0]) if params.get("limit") else 100
+
+    data = q.limit(limit)
+    return [d.as_dict() for d in data]

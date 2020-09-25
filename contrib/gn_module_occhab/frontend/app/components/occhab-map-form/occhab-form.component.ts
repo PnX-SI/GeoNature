@@ -40,8 +40,13 @@ export class OccHabFormComponent implements OnInit {
   // boolean tocheck if the station has at least one hab (control the validity of the form)
   public atLeastOneHab = false;
   public datasets: Array<any>;
+  public areaTypes: Array<any>;
   public currentStations: Array<any>;
+  public currentLayers: Array<any>;
+  public featuresAreas: any;
+  public featuresStations: any;
   public stationsgeoJson: L.geoJSON;
+  public areasgeoJson: L.geoJSON;
 
 
   constructor(
@@ -60,12 +65,17 @@ export class OccHabFormComponent implements OnInit {
     this._gnDataService.getDatasets({ 'module_code': 'OCCHAB' }).subscribe(data => {
       this.datasets = data.data;
     })
+    this._gnDataService.getAreaTypes().subscribe(data => {
+      this.areaTypes = data;
+    })
+
     this.leafletDrawOptions;
     leafletDrawOption.draw.polyline = false;
     leafletDrawOption.draw.circle = false;
     leafletDrawOption.draw.rectangle = false;
 
     this.currentStations = [];
+      this.currentLayers = [];
 
     this.occHabForm.stationForm = this.occHabForm.initStationForm();
     this.occHabForm.stationForm.controls.geom_4326.valueChanges.subscribe(d => {
@@ -125,28 +135,91 @@ export class OccHabFormComponent implements OnInit {
         this.currentStations.forEach(function(feature) {
             featureCollection.features.push(feature.Data);
         });
+        this.featuresStations = featureCollection;
 
         // We display the features on the map
-        this.setDatasetOnLayers(datasetId, featureCollection);
+        this.setDatasetsOnLayers();
     })
   }
 
-  setDatasetOnLayers(datasetId, stations) {
+  fetchTypesAreas(typeId, event) {
+      this._gnDataService.getAreas([typeId], undefined, 10000, true).subscribe(geojsonAreas => {
+          if (event.checked) {
+              // If checkbox checked, we add to related data to the currentLayers list
+              var layer = [];
+              geojsonAreas.forEach(function (area) {
+                  layer.push(area.geojson_4326);
+              });
+              this.currentLayers.push({IdDB:typeId, Data:layer});
+          } else {
+              // If the checkbox is unchecked, we find the related data in the currentLayers list and we remove it
+              var indexArea = this.currentLayers.findIndex(dict=>dict.IdDB == typeId);
+              this.currentLayers.splice(indexArea, 1);
+          }
+
+        // We start a new featureCollection that will contain all the selected features
+        var featureCollection = {
+            type: 'FeatureCollection',
+            features: []
+        };
+
+        // We add all the features contained in the currentStations list, in the featureCollection
+        this.currentLayers.forEach(function(feature) {
+            console.log(feature);
+            var color = '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6)
+            feature.Data.forEach(function(layer) {
+                featureCollection.features.push({"type": "Feature", "geometry": JSON.parse(layer),
+                    properties: {
+                        name: "Multipolygon",
+                        style: {
+                            color: color,
+                            opacity: 0.4,
+                            fillColor: color,
+                            fillOpacity: 0.1,
+                            smoothFactor: 0.1
+                        }
+                    }
+                });
+            });
+        });
+
+        this.featuresAreas = featureCollection;
+
+        this.setAreasOnLayers();
+      })
+  }
+
+  setAreasOnLayers() {
+      if (this.areasgeoJson) {
+          this._mapService.map.removeLayer(this.areasgeoJson);
+      }
+
+      this.areasgeoJson = this._mapService.L.geoJSON(this.featuresAreas, {
+          pointToLayer: (feature, latlng) => {
+              return this._mapService.L.circleMarker(latlng)
+          },
+          style: function(feature) {
+              return feature.properties.style
+          }
+      });
+
+      this.areasgeoJson.addTo(this._mapService.map);
+  }
+
+  setDatasetsOnLayers() {
 
     // const stationsLayerGroup = this._mapService.L.geoJSON(this.geojsonStations$.getValue());
     if (this.stationsgeoJson) {
       this._mapService.map.removeLayer(this.stationsgeoJson);
     }
 
-    this.stationsgeoJson = this._mapService.L.geoJSON(stations, {
+    this.stationsgeoJson = this._mapService.L.geoJSON(this.featuresStations, {
       pointToLayer: (feature, latlng) => {
         return this._mapService.L.circleMarker(latlng)
       }
     });
 
-    //this._mapService.layerControl.addOverlay(stationsLayerGroup, datasetId);
     this.stationsgeoJson.addTo(this._mapService.map);
-
   }
 
   formIsDisable() {
