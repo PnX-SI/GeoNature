@@ -278,65 +278,6 @@ def get_definitions(info_role):
         )
 
 
-@blueprint.route("/history/<uuid_attached_row>", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="VALIDATION")
-@json_resp
-def get_hist(info_role, uuid_attached_row):
-
-    # Test if uuid_attached_row is uuid
-    if not test_is_uuid(uuid_attached_row):
-        return (
-            'Value error uuid_attached_row is not valid',
-            500,
-        )
-
-    try:
-        data = (
-            DB.session.query(
-                TValidations.id_nomenclature_valid_status,
-                TValidations.validation_date,
-                TValidations.validation_comment,
-                Synthese.validator,
-                TValidations.validation_auto,
-                TNomenclatures.label_default,
-                TNomenclatures.cd_nomenclature,
-            )
-            .join(
-                TNomenclatures,
-                TNomenclatures.id_nomenclature
-                == TValidations.id_nomenclature_valid_status,
-            )
-            .join(Synthese, Synthese.unique_id_sinp == TValidations.uuid_attached_row)
-            .filter(TValidations.uuid_attached_row == uuid_attached_row)
-            .all()
-        )
-
-        history = []
-        for row in data:
-            line = {}
-            line.update(
-                {
-                    "id_status": str(row[0]),
-                    "date": str(row[1]),
-                    "comment": str(row[2]),
-                    "validator": str(row[3]),
-                    "typeValidation": str(row[4]),
-                    "label_default": str(row[5]),
-                    "cd_nomenclature": str(row[6]),
-                }
-            )
-            history.append(line)
-
-        history = sorted(history, key=itemgetter("date"), reverse=True)
-        return history
-
-    except (Exception) as e:
-        log.error(e)
-        return (
-            'INTERNAL SERVER ERROR ("get_hist() error"): contactez l\'administrateur du site',
-            500,
-        )
-
 
 @blueprint.route("/date/<uuid>", methods=["GET"])
 @json_resp

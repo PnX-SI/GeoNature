@@ -10,7 +10,7 @@ import {
 import { GeoJSON } from 'leaflet';
 import { AppConfig } from '@geonature_config/app.config';
 import { isArray } from 'util';
-import { BehaviorSubject ,  Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { CommonService } from '@geonature_common/service/common.service';
 
 export const FormatMapMime = new Map([
@@ -47,6 +47,8 @@ export class DataService {
       params: this.buildQueryUrl(params)
     });
   }
+
+
 
   getSyntheseGeneralStat() {
     return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/general_stats`);

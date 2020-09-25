@@ -24,7 +24,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
   public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
   public APP_CONFIG = AppConfig;
   public filteredIds;
-  public id_synthese;
+  public formatedAreas = [];
   public position;
   public lastFilteredValue;
   public isNextButtonValid: any;
@@ -40,7 +40,8 @@ export class ValidationModalInfoObsComponent implements OnInit {
   public validationDate;
   public currentCdNomenclature;
 
-  @Input() syntheseObs: any;
+  @Input() selectedObs: any;
+  @Input() id_synthese: any;
   @Output() modifiedStatus = new EventEmitter();
   @Output() valDate = new EventEmitter();
 
@@ -52,7 +53,6 @@ export class ValidationModalInfoObsComponent implements OnInit {
     public activeModal: NgbActiveModal,
     private _fb: FormBuilder,
     private _commonService: CommonService,
-    private mediaService: MediaService,
   ) {
     // form used for changing validation status
     this.statusForm = this._fb.group({
@@ -62,9 +62,6 @@ export class ValidationModalInfoObsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.id_synthese = this.syntheseObs.id_synthese;
-    this.loadOneSyntheseReleve(this.syntheseObs);
-    this.loadValidationHistory(this.syntheseObs.unique_id_sinp);
 
     // get all id_synthese of the filtered observations:
     this.filteredIds = [];
@@ -129,9 +126,9 @@ export class ValidationModalInfoObsComponent implements OnInit {
     );
   }
 
-  loadOneSyntheseReleve(syntheseObs) {
+  loadOneSyntheseReleve(idSynthese) {
     this._syntheseDataService
-      .getOneSyntheseObservation(syntheseObs.id_synthese)
+      .getOneSyntheseObservation(idSynthese)
       .subscribe(data => {
         this.selectedObs = data;
         this.selectedObs["municipalities"] = [];
@@ -139,6 +136,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
         const date_min = new Date(this.selectedObs.date_min);
         this.selectedObs.date_min = date_min.toLocaleDateString("fr-FR");
         const date_max = new Date(this.selectedObs.date_max);
+        this.selectedObs['actors'] = this.selectedObs['actors'].split('|');
         this.selectedObs.date_max = date_max.toLocaleDateString("fr-FR");
         if (this.selectedObs.cor_observers) {
           this.email = this.selectedObs.cor_observers
@@ -146,26 +144,44 @@ export class ValidationModalInfoObsComponent implements OnInit {
             .join();
           this.mailto = String("mailto:" + this.email);
         }
+
+        const areaDict = {};
+        // for each area type we want all the areas: we build an dict of array
+        this.selectedObs.areas.forEach(area => {
+          if (!areaDict[area.area_type.type_name]) {
+            areaDict[area.area_type.type_name] = [area];
+          } else {
+            areaDict[area.area_type.type_name].push(area);
+          }
+        });
+        // for angular tempate we need to convert it into a aray
+        for (let key in areaDict) {
+          this.formatedAreas.push({ area_type: key, areas: areaDict[key] });
+        }
+
+        this._gnDataService
+          .getTaxonAttributsAndMedia(
+            data.cd_nom,
+            this.SYNTHESE_CONFIG.ID_ATTRIBUT_TAXHUB
+          )
+          .subscribe(taxAttr => {
+            this.selectObsTaxonInfo = taxAttr;
+          });
+
+        this._gnDataService.getTaxonInfo(data.cd_nom).subscribe(taxInfo => {
+          this.selectedObsTaxonDetail = taxInfo;
+        });
+
       });
 
-    this._gnDataService
-      .getTaxonAttributsAndMedia(
-        syntheseObs.cd_nom,
-        this.SYNTHESE_CONFIG.ID_ATTRIBUT_TAXHUB
-      )
-      .subscribe(data => {
-        this.selectObsTaxonInfo = data;
-      });
 
-    this._gnDataService.getTaxonInfo(syntheseObs.cd_nom).subscribe(data => {
-      this.selectedObsTaxonDetail = data;
-    });
   }
 
   loadValidationHistory(uuid) {
-    this._validatioDataService.getValidationHistory(uuid).subscribe(
+    this._gnDataService.getValidationHistory(uuid).subscribe(
       data => {
         this.validationHistory = data;
+        // tslint:disable-next-line:forin
         for (let row in this.validationHistory) {
           // format date
           const date = new Date(this.validationHistory[row].date);
@@ -180,13 +196,12 @@ export class ValidationModalInfoObsComponent implements OnInit {
           // format validator
           if (this.validationHistory[row].typeValidation == "True") {
             this.validationHistory[row].validator = "Attribution automatique";
-            //this.mapListService.tableData[row]['validation_auto'] = '';
           }
         }
       },
       err => {
         console.log(err);
-        if (err.status == 404) {
+        if (err.status === 404) {
           this._commonService.translateToaster(
             "warning",
             "Aucun historique de validation"
@@ -208,6 +223,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
     );
   }
 
+
   increaseObs() {
     this.showEmail = false;
     // add 1 to find new position
@@ -225,7 +241,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
     ];
     const syntheseRow = this.mapListService.tableData[this.position]
 
-    this.loadOneSyntheseReleve(syntheseRow);
+    this.loadOneSyntheseReleve(syntheseRow.id_synthese);
     this.loadValidationHistory(syntheseRow.unique_id_sinp);
     this.isPrevButtonValid = true;
     this.statusForm.reset();
@@ -249,7 +265,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
     ];
     const syntheseRow = this.mapListService.tableData[this.position]
 
-    this.loadOneSyntheseReleve(syntheseRow);
+    this.loadOneSyntheseReleve(syntheseRow.id_synthese);
     this.loadValidationHistory(syntheseRow.unique_id_sinp);
     this.isNextButtonValid = true;
     this.statusForm.reset();
@@ -289,9 +305,9 @@ export class ValidationModalInfoObsComponent implements OnInit {
             "Nouveau statut de validation enregistré"
           );
           this.update_status();
-          this.getValidationDate(this.syntheseObs.unique_id_sinp);
-          this.loadOneSyntheseReleve(this.syntheseObs);
-          this.loadValidationHistory(this.syntheseObs.unique_id_sinp);
+          this.getValidationDate(this.selectedObs.unique_id_sinp);
+          this.loadOneSyntheseReleve(this.selectedObs);
+          this.loadValidationHistory(this.selectedObs.unique_id_sinp);
           // bind statut value with validation-synthese-list component
           this.statusForm.reset();
           resolve("data updated");

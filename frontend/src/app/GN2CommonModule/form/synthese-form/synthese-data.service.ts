@@ -55,7 +55,7 @@ export class SyntheseDataService {
   }
 
   getOneSyntheseObservation(id_synthese) {
-    return this._api.get<GeoJSON>(`${AppConfig.API_ENDPOINT}/synthese/vsynthese/${id_synthese}`);
+    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/vsynthese/${id_synthese}`);
   }
 
   // validation data

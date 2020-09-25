@@ -53,7 +53,9 @@
         </span>
         <b> UUID observation : </b> {{selectedObs?.unique_id_sinp}}
         <br>
-        <b> Habitat associé</b>: {{selectedObs?.habitat?.lb_hab_fr}} - {{selectedObs?.habitat?.lb_code}}
+        <span *ngIf="selectedObs?.habitat">
+          <b> Habitat associé</b>: {{selectedObs?.habitat?.lb_hab_fr}} - {{selectedObs?.habitat?.lb_code}}
+        </span>
         <br>
         <button *ngIf="syntheseObs?.url_source"
           mat-raised-button
@@ -332,7 +334,7 @@
     </mat-tab>
 
 
-    <mat-tab label="Historique">
+    <mat-tab label="Validation">
       <table class="font-xs table table-striped table-sm">
         <thead>
             <tr>
@@ -344,15 +346,21 @@
           </thead>
 
           <tbody>
-            <tr *ngFor="let row of selectedObs?.validations">
-              <td> {{row.validation_date | date:'dd-MM-yyyy'}} </td>
-              <td> {{row.validation_label.label_default}} </td>
-              <td> <span *ngIf="row.validator_role; else elseBlock">
-                  {{row.validator_role.prenom_role}} {{row.validator_role.nom_role}}
-                  </span>
-                <ng-template #elseBlock> Validation automatique </ng-template>
+            <tr *ngFor="let row of validationHistory">
+              <td width="15%"> {{row.date}} </td>
+              <td width="20%">
+                <span
+                  class="validationCircle"
+                  [ngStyle]="{'background': validationColor[row.cd_nomenclature]}"
+                >
+                  <mat-icon *ngIf="row.typeValidation == 'True'" class="computer">computer</mat-icon>
+                </span>
+                <span class="statusName" class="ml-4">
+                  {{row.label_default}}
+                </span>
               </td>
-              <td> {{row.validation_comment}} </td>
+              <td width="20%"> <span> {{row.validator}} </span> </td>
+              <td> {{row.comment}} </td>
             </tr>
           </tbody>
       </table>

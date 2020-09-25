@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
+import { CommonService } from "@geonature_common/service/common.service";
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { AppConfig } from '@geonature_config/app.config';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -13,30 +14,42 @@ import { finalize } from 'rxjs/operators';
   styleUrls: ["./synthese-info-obs.component.scss"]
 })
 export class SyntheseInfoObsComponent implements OnInit {
-  @Input() syntheseObs: any;
+  @Input() idSynthese: number;
+  @Input() uuidSynthese: any;
+  @Input() selectedObs: any;
   @Input() header: boolean = false;
-
+  @Input() validationHistory: Array<any>;
+  @Input() selectedObsTaxonDetail: any;
   public selectObsTaxonInfo;
-  public selectedObs;
-  public selectedObsTaxonDetail;
   public formatedAreas = [];
   public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
   public isLoading = false;
+  public validationColor = {
+    "0": "#FFFFFF",
+    "1": "#8BC34A",
+    "2": "#CDDC39",
+    "3": "#FF9800",
+    "4": "#FF5722",
+    "5": "#BDBDBD",
+    "6": "#FFFFFF"
+  }
   constructor(
     private _gnDataService: DataFormService,
     private _dataService: SyntheseDataService,
     public activeModal: NgbActiveModal,
-    public mediaService: MediaService
+    public mediaService: MediaService,
+    private _commonService: CommonService,
+
   ) { }
 
   ngOnInit() {
-    console.log(this.syntheseObs)
-    this.loadOneSyntheseReleve(this.syntheseObs);
+    this.loadOneSyntheseReleve(this.idSynthese);
+    this.loadValidationHistory(this.uuidSynthese)
   }
 
-  loadOneSyntheseReleve(syntheseObs) {
+  loadOneSyntheseReleve(idSynthese) {
     this.isLoading = true;
-    this._dataService.getOneSyntheseObservation(syntheseObs.id_synthese).pipe(
+    this._dataService.getOneSyntheseObservation(idSynthese).pipe(
       finalize(() => {
         this.isLoading = false;
       })
@@ -55,23 +68,68 @@ export class SyntheseInfoObsComponent implements OnInit {
         }
       });
       // for angular tempate we need to convert it into a aray
+      // tslint:disable-next-line:forin
       for (let key in areaDict) {
         this.formatedAreas.push({ area_type: key, areas: areaDict[key] });
       }
 
-      // this.inpnMapUrl = `https://inpn.mnhn.fr/cartosvg/couchegeo/repartition/atlas/${
-      //   this.selectedObs['cd_nom']
-      //   }/fr_light_l93,fr_light_mer_l93,fr_lit_l93)`;
-    });
-    this._gnDataService
-      .getTaxonAttributsAndMedia(syntheseObs.cd_nom, this.SYNTHESE_CONFIG.ID_ATTRIBUT_TAXHUB)
-      .subscribe(data => {
-        this.selectObsTaxonInfo = data;
-      });
+      this._gnDataService
+        .getTaxonAttributsAndMedia(data.cd_nom, this.SYNTHESE_CONFIG.ID_ATTRIBUT_TAXHUB)
+        .subscribe(taxAttr => {
+          this.selectObsTaxonInfo = taxAttr;
+        });
 
-    this._gnDataService.getTaxonInfo(syntheseObs.cd_nom).subscribe(data => {
-      this.selectedObsTaxonDetail = data;
+      this._gnDataService.getTaxonInfo(data.cd_nom).subscribe(taxInfo => {
+        this.selectedObsTaxonDetail = taxInfo;
+      });
     });
+
+  }
+
+  loadValidationHistory(uuid) {
+    this._gnDataService.getValidationHistory(uuid).subscribe(
+      data => {
+        this.validationHistory = data;
+        // tslint:disable-next-line:forin
+        for (let row in this.validationHistory) {
+          // format date
+          const date = new Date(this.validationHistory[row].date);
+          this.validationHistory[row].date = date.toLocaleDateString("fr-FR");
+          // format comments
+          if (
+            this.validationHistory[row].comment == "None" ||
+            this.validationHistory[row].comment == "auto = default value"
+          ) {
+            this.validationHistory[row].comment = "";
+          }
+          // format validator
+          if (this.validationHistory[row].typeValidation == "True") {
+            this.validationHistory[row].validator = "Attribution automatique";
+          }
+        }
+      },
+      err => {
+        console.log(err);
+        if (err.status === 404) {
+          this._commonService.translateToaster(
+            "warning",
+            "Aucun historique de validation"
+          );
+        } else if (err.statusText === "Unknown Error") {
+          // show error message if no connexion
+          this._commonService.translateToaster(
+            "error",
+            "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)"
+          );
+        } else {
+          // show error message if other server error
+          this._commonService.translateToaster("error", err.error);
+        }
+      },
+      () => {
+        //console.log(this.statusNames);
+      }
+    );
   }
 
   backToModule(url_source, id_pk_source) {

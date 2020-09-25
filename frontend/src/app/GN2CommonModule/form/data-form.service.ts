@@ -262,6 +262,13 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/geo/areas`, { params: params });
   }
 
+  getValidationHistory(uuid_attached_row) {
+    return this._http.get<any>(
+      `${AppConfig.API_ENDPOINT}/gn_commons/history/${uuid_attached_row}`,
+      {}
+    );
+  }
+
   /**
    *
    * @param params: dict of paramters

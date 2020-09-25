@@ -267,7 +267,8 @@ export class ValidationSyntheseListComponent
       windowClass: "large-modal"
     });
 
-    modalRef.componentInstance.syntheseObs = row;
+    modalRef.componentInstance.id_synthese = row.id_synthese;
+    modalRef.componentInstance.uuidSynthese = row.unique_id_sinp;
     modalRef.componentInstance.validationStatus = this.validationStatus;
     modalRef.componentInstance.mapListService = this.mapListService;
     modalRef.componentInstance.modifiedStatus.subscribe(modifiedStatus => {

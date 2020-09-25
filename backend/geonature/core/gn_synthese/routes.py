@@ -85,6 +85,7 @@ def get_observations_for_web(info_role):
             "dataset_name": r["dataset_name"],
             "observers": r["observers"],
             "url_source": r["url_source"],
+            "unique_id_sinp": r["unique_id_sinp"],
             "entity_source_pk_value": r["entity_source_pk_value"],
         }
         geojson = ast.literal_eval(r["st_asgeojson"])
@@ -143,6 +144,7 @@ def get_observations_for_web(info_role):
                 VSyntheseForWebApp.dataset_name,
                 VSyntheseForWebApp.url_source,
                 VSyntheseForWebApp.entity_source_pk_value,
+                VSyntheseForWebApp.unique_id_sinp,
             ]
         )
         .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
@@ -162,6 +164,7 @@ def get_observations_for_web(info_role):
             "dataset_name": r["dataset_name"],
             "observers": r["observers"],
             "url_source": r["url_source"],
+            "unique_id_sinp": str(r["unique_id_sinp"]),
             "entity_source_pk_value": r["entity_source_pk_value"],
         }
         geojson = ast.literal_eval(r["st_asgeojson"])

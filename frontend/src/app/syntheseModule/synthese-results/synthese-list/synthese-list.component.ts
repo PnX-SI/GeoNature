@@ -111,12 +111,13 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   }
 
   openInfoModal(row) {
-    row.id_synthee = row.id;
+    row.id_synthese = row.id;
     const modalRef = this.ngbModal.open(SyntheseInfoObsComponent, {
       size: 'lg',
       windowClass: 'large-modal'
     });
-    modalRef.componentInstance.syntheseObs = row;
+    modalRef.componentInstance.idSynthese = row.id_synthese;
+    modalRef.componentInstance.uuidSynthese = row.unique_id_sinp;
     modalRef.componentInstance.header = true;
 
   }
