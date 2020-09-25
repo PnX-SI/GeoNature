@@ -2,22 +2,17 @@
 CHANGELOG
 =========
 
-2.5.0 (unreleased)
-------------------
+2.5.0 - Manidae (unreleased)
+----------------------------
 
-Voir https://github.com/PnX-SI/GeoNature/commits/develop?before=65844c28811e8be8ab904909bc50239d75c14a04+385&branch=develop
-Et https://github.com/PnX-SI/GeoNature/compare/develop
-
-**TOCHECK**
-
-- Revue de style (boutons, ombrages)
-- Renommer SQL update en 2.4.1to2.5.0.sql
+Occtax v2 et médias
 
 **🚀 Nouveautés**
 
 * Refonte de l'ergonomie du module de saisie Occtax (#758 par @jbrieuclp et @TheoLechemia)
 
    - Enregistrement continu
+   - Un onglet Relevé / un onglet taxons
    - Liste des taxons
    - Saisie au clavier
    - Zoom MapList conservé (#436 et #912)
@@ -42,6 +37,8 @@ Et https://github.com/PnX-SI/GeoNature/compare/develop
 **Ajouts mineurs**
 
 * Création de compte : Envoi automatique d'un email quand à l'utilisateur quand son compte est validé. Nécessite la version XYZ de UsersHub (#862 et #1035 par @jpm-cbna)
+* Homogénéisation des styles des boutons (#1026)
+* Factorisation du code des fiches infos d'une observation dans les modules Synthèse et Validation (#1053)
 * Métadonnées : Ajout d'un paramètre permettant de définir le nombre de CA affichés sur la page (100 par défaut)
 * Métadonnées : Tri des CA et JDD par ordre alphabétique
 * Métadonnées : Ajout d'un champs ``id_digitiser`` dans la table des CA et des JDD, utilisé en plus des acteurs pour le CRUVED des JDD (#921)
@@ -94,38 +91,7 @@ Les paramètres d'affichage/masquage des champs du formulaire opèrent les chang
 
 Avant la migration : 
 
-A partir la version 2.5.0 de GeoNature, la version Python 3.5 n'est plus supportée. Seules les version 3.6+ le sont.
-Si vous êtes encore sur Debian 9 (fourni avec Python 3.5), veuillez suivre les instruction suivantes:
-
-Installer pyenv (utilitaire pour installer différentes version de Python)
-
-::
-    sudo apt-get update 
-    sudo apt-get upgrade
-
-    sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev \
-    libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
-    xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
-
-    curl https://pyenv.run | bash
-
-    export PATH="$HOME/.pyenv/bin:$PATH"
-    eval "$(pyenv init -)"
-    eval "$(pyenv virtualenv-init -)"
-
-Installer Python 3.7.9
-
-::
-
-    pyenv install 3.7.9
-    pyenv global 3.7.9
-
-Editer ensuite le fichier ``config/settings.ini`` pour changer la variable ``python_path`` (remplacer <MON_USER> par votre utilisateur linux courant
-NB: faire pareil dans TaxHub et UsersHub
-
-::
-
-    /home/<MON_USER>/.pyenv/shims/python3
+A partir la version 2.5.0 de GeoNature, la version Python 3.5 n'est plus supportée. Seules les version 3.6 et + le sont. Si vous êtes encore sur Debian 9 (fourni par défaut avec Python 3.5), veuillez suivre les instructions de mise à jour de Python sur cette version (https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-standalone.rst#python-37-sur-debian-9)
 
 * Update SQL + Update SQL nomenclatures
 * Applicatiosn tierces à installer avant ?
