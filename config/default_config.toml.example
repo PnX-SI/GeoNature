@@ -493,3 +493,8 @@ MAIL_ON_ERROR = false
     MAIL_CONTENT_AF_CLOSED_GREETINGS = ""
     CLOSED_MODAL_LABEL = "Dépôt d'un cadre d'acquisition"
     CLOSED_MODAL_CONTENT = L'action de dépôt est une action irréversible. Il ne sera plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite. Vous ne pourrez pas supprimer votre dépôt. "
+
+[PERMISSION_MANAGEMENT]
+    # Activer (=true) l'affichage du lien vers le formulaire de demande 
+    # de permissions. Par défaut : désactivé (=false).
+    ENABLE_ACCESS_REQUEST = false
