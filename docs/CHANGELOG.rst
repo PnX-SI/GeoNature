@@ -7,36 +7,47 @@ CHANGELOG
 
 Occtax v2 et médias
 
+- Version taxref supprimé ?????
+- Tester ENABLE_MEDIAS et ENABLE_My_PLACES
+
 **🚀 Nouveautés**
 
-* Refonte de l'ergonomie du module de saisie Occtax (#758 par @jbrieuclp et @TheoLechemia)
+* Refonte de l'ergonomie et du fonctionnement du module de saisie Occtax (#758 et #860 par @jbrieuclp et @TheoLechemia)
 
-  - Enregistrement continu
-  - Un onglet Relevé / un onglet taxons
-  - Liste des taxons
-  - Saisie au clavier
-  - Zoom MapList conservé (#436 et #912)
-  - Garder les filtres quand je reviens à la liste des relevés (#772)
-  - Conserver les infos de saisie précédente entre 2 taxons ou relevés
-  - Fix dates début/fin en update (#977)
-  - Alerte si 2 fois le même taxon sur un même relevé
-  - Fiche info d'un relevé complétée et MAJ
+  - Enregistrement continu au fur et à mesure de la saisie d'un relevé
+  - Découpage en 2 ognlets (Un pour le relevé et un onglet pour les taxons)
+  - Amélioration de la liste des taxons saisis sur un relevé (#635 et #682)
+  - Amélioration de la saisie au clavier
+  - Zoom réalisé dans la liste des relevé conservé quand on saisit un nouveau relevé (#436 et #912)
+  - Filtres conservés quand on revient à la liste des relevés (#772)
+  - Possibilité de conserver les informations saisies entre 2 taxons ou relevés
+  - Correction de la mise à jour des dates de début et de fin (#977)
+  - Affichage d'une alerte si on saisit 2 fois le même taxon sur un même relevé
+  - Fiche d'information d'un relevé complétée et mise à jour
 
-* Standard Occurrences de taxon version 2.0.0 (dans Occtax et Synthèse, répercuté dans Validation) / Comportement / NomLieu / Habitat / Profondeur / Ajout du champs "précision" et suppression de sa valeur par défaut à 100 m / Renommage de "methode d'observation" en "technique d'observation" / Suppression du champs "technique d'observation" actuel de la synthèse, remplacé par le champs "methode d'observation" renommé / Renommage du champs "technique d'observation" actuel d'Occtax en "Technique de collecte Campanule" / Méthode de regroupement / Type de regroupement / Version taxref supprimé ????? (#516)
-* Ajout et mise à jour de quelques nomenclatures 
-* Ajout d'un document de suivi de l'implémentation du standard Occurrences de taxon dans GeoNature (``docs/implementation_gn_standard_occtax2.0.ods``) (#516)
-* MAJ standard Métadonnées. Mise à jour des nomenclatures "CA_OBJECTIFS" et mise à jour des métadonnées en conséquence (par @DonovanMaillard)
+* Passage de la version 1.2.1 à la version 2.0.0 du standard Occurrences de taxon (dans les modules Occtax, Synthèse et Validation) (#516)
+
+  - Ajout des champs "Comportement", "NomLieu", "Habitat", "Méthode de regroupement", "Type de regroupement" et "Profondeur"
+  - Ajout du champs "Précision" dans Occtax et suppression de sa valeur par défaut à 100 m
+  - Renommage du champs "Méthode d'observation" en "Technique d'observation"
+  - Suppression du champs "Technique d'observation" actuel de la synthèse
+  - Renommage du champs "Technique d'observation" actuel d'Occtax en "Technique de collecte Campanule"
+  - Ajout et mise à jour de quelques nomenclatures 
+  - Ajout d'un document de suivi de l'implémentation du standard Occurrences de taxon dans GeoNature (``docs/implementation_gn_standard_occtax2.0.ods``) (#516)
+
+* Passage de la version 1.3.9 à la version 1.3.10 du standard de Métadonnées. Mise à jour des nomenclatures "CA_OBJECTIFS" et mise à jour des métadonnées existantes en conséquence (par @DonovanMaillard)
 * Ajout d'un champs ``addtional_data`` de type ``jsonb`` dans la table ``gn_synthese.synthese``, en prévision de l'ajout des champs additionnels dans Occtax et Synthèse (#1007)
-* Mise en place de la gestion transversale et générique des médias dans ``gn_commons.t_medias`` et le Dynamic-Form (#336) et implémentation dans le module Occtax (désactivables avec le paramètre ``ENABLE_MEDIAS``) (#620 par @joelclems)
-* Miniatures, contrôles, aperçu... / Affichage dans Synthèse et Validation
-* Mes lieux (``gn_commons.t_places``), implémenté dans le module cartographique d'Occtax (désactivable avec le paramètre ``ENABLE_MY_PLACES``) (#246 par @metourneau)
+* Mise en place de la gestion transversale et générique des médias (images, audios, vidéos, PDF...) dans ``gn_commons.t_medias`` et le Dynamic-Form (#336) et implémentation dans le module Occtax (désactivables avec le paramètre ``ENABLE_MEDIAS``) (#620 par @joelclems)
+* Mise en place de miniatures et d'aperçus des médias, ainsi que de nombreux contrôles des fichiers et de leurs formats 
+* Affichage des médias dans les fiches d'information des modules de saisie, ainsi que dans les modules Synthèse et Validation
+* Ajout de la fonctionnalité "Mes lieux" (``gn_commons.t_places``), permettant de stocker la géométrie de ieux individuels fréquemment utilisés, implémentée dans le module cartographique d'Occtax (désactivable avec le paramètre ``ENABLE_MY_PLACES``) (#246 par @metourneau)
 * Tri de l'ordre des modules dans le menu latéral par ordre alphabétique par défaut et possibilité de les ordonner avec le nouveau champs ``gn_commons.t_modules.module_order`` (#787 par @alainlaupinmnhn)
 * Arrêt du support de l'installation packagée sur Debian 9 et Ubuntu 16 pour passer à Python version 3.6 et plus
 * Prise en charge de PostGIS 3 et notamment l'installation de l'extension ``postgis_raster`` (#946 par @jpm-cbna)
 
 **Ajouts mineurs**
 
-* Création de compte : Envoi automatique d'un email quand à l'utilisateur quand son compte est validé. Nécessite la version XYZ de UsersHub (#862 et #1035 par @jpm-cbna)
+* Création de compte : Envoi automatique d'un email à l'utilisateur quand son compte est validé. Nécessite la version XYZ de UsersHub (#862 et #1035 par @jpm-cbna)
 * Homogénéisation des styles des boutons (#1026)
 * Factorisation du code des fiches infos d'une observation dans les modules Synthèse et Validation (#1053)
 * Métadonnées : Ajout d'un paramètre permettant de définir le nombre de CA affichés sur la page (100 par défaut)
@@ -48,6 +59,7 @@ Occtax v2 et médias
 * Ajout d'une contrainte d'unicité sur ``id_organism`` et ``parameter_name`` dans la table ``gn_commons.t_parameters`` (#988)
 * Ajout de la possibilité de filtrer le composant ``dataset`` du Dynamic-Form par ``module_code`` pour pouvoir choisir parmis les JDD associées à un module (#964)
 * Mise à jour de ``psycopg2`` en version 2.8.5, sqlalchemy en 1.3.19, marshmallow en 2.15.6, virtualenv en 20.0.31 (par @jpm-cbna)
+* Mises à jour de sécurité diverses
 * Améliorations des scripts ``install/install_db.sh`` et ``install/install_app.sh`` (par @jpm-cbna)
 * Ajout de l'autocomplétion des commandes ``geonature`` (#999 par @jpm-cbna)
 * Suppression du fichier ``backend/gunicorn_start.sh.sample``
@@ -76,13 +88,13 @@ Occtax v2 et médias
 Si vous mettez à jour GeoNature :
 
 * Occtax-mobile version 1.1.0 minimum
-* Attention si vous avez customisé les vues des exports Occtax et Synthèse, elles sont supprimées et recrées par l'update SQL pour s'adapter aux évolutions du standard Occtax. Adaptez le SQL de mise à jour et/ou révisez vos vues customisées
+* Attention si vous avez customisé les vues des exports Occtax et Synthèse, elles sont supprimées et recrées par l'update SQL pour s'adapter aux évolutions du standard Occtax en version 2.0.0. Adaptez le SQL de mise à jour et/ou révisez vos vues customisées après la mise à jour.
 * Si vous avez des vues qui utilisent des champs qui ont été supprimés ou renommés (dans module Export notamment), le script SQL d'update s'arrêtera et vous indiquera les vues qui bloquent la mise à jour (#1016). A supprimer et recréer après update avec adaptation des champs si besoin.
-* Exécuter la MAJ de la BDD ``data/migrations/2.4.1to2.5.0.sql``
 * Nomenclatures : exécuter ``data/update1.3.3to1.3.4.sql`` (https://github.com/PnX-SI/Nomenclature-api-module/blob/develop/data/update1.3.3to1.3.4.sql)
+* Exécuter la MAJ de la BDD ``data/migrations/2.4.1to2.5.0.sql``
 * A partir la version 2.5.0 de GeoNature, la version 3.5 de Python n'est plus supportée. Seules les version 3.6 et + le sont. Si vous êtes encore sur Debian 9 (fourni par défaut avec Python 3.5), veuillez suivre les instructions de mise à jour de Python sur cette version (https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-standalone.rst#python-37-sur-debian-9)
 * Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
-* A noter, changement dans les paramètres Occtax. Les paramètres d'affichage/masquage des champs du formulaire opèrent les changements suivants :
+* A noter, quelques changements dans les paramètres du module Occtax. Les paramètres d'affichage/masquage des champs du formulaire ont évolué ainsi :
 
   - ``obs_meth`` devient ``osb_tech`` 
   - ``obs_technique`` devient ``tech_collect``
