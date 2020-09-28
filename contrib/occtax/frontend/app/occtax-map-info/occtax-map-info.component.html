@@ -212,9 +212,18 @@
                     <div class="value"> {{(displayOccurrence|async).comment || ""}} </div>
                   </div>
   
-  
+
                 </mat-tab>
-                <mat-tab label="Dénombrement"> 
+                <mat-tab> 
+                  <ng-template mat-tab-label>
+                    <span 
+                      [matBadge]="((displayOccurrence|async).cor_counting_occtax || []).length" 
+                      matBadgeOverlap="false">
+                      Dénombrement(s)
+                    </span>
+            
+                  </ng-template>
+
                   <div *ngFor="let counting of (displayOccurrence|async).cor_counting_occtax; let index = index">  
                     <div *ngIf="occtaxConfig.form_fields.life_stage">
                       <div class="label"> {{ 'Counting.LifeStage' | translate }} : </div>
