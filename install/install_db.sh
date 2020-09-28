@@ -336,7 +336,7 @@ if ! database_exists "${db_name}"; then
             echo "tmp/geonature/inpn_grids.zip already exist"
         fi
         unzip tmp/geonature/inpn_grids.zip -d tmp/geonature
-        write_log "Insert grid layers... (This may take a few minutes)"
+        write_log "Insert grid layers... (This may takes a few minutes)"
         sudo -n -u postgres -s psql -d $db_name -f tmp/geonature/inpn_grids.sql &>> var/log/install_db.log
         write_log "Restore $user_pg owner"
         sudo -n -u postgres -s psql -d $db_name -c "ALTER TABLE ref_geo.temp_grids_1 OWNER TO $user_pg;" &>> var/log/install_db.log
@@ -348,7 +348,7 @@ if ! database_exists "${db_name}"; then
 
     if  [ "$install_default_dem" = true ];
     then
-        write_log "Insert default French DEM (IGN 250m BD alti)"
+        write_log "Insert default French DEM (IGN 250m BD alti). (This may takes a few minutes)"
         if [ ! -f 'tmp/geonature/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip' ]
         then
             wget --cache=off http://geonature.fr/data/ign/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -P tmp/geonature

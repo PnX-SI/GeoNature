@@ -8,7 +8,6 @@ import { ModuleConfig } from "../../module.config";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
-import { MediaService } from "@geonature_common/service/media.service";
 
 @Component({
   selector: "pnx-validation-modal-info-obs",
