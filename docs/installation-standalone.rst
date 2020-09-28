@@ -70,7 +70,47 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
     [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
     
-Sur Ubuntu 18, installez la version 10 de postgresql-server-dev ``sudo apt-get install postgresql-server-dev-10``. La version est à adapter sur les autres versions de Debian ou Ubuntu.
+Sur Ubuntu 18, installez la version 10 de postgresql-server-dev avec la commande ``sudo apt-get install postgresql-server-dev-10``. La version est à adapter sur les autres versions de Debian ou Ubuntu.
+
+
+Python 3.7 sur Debian 9
+^^^^^^^^^^^^^^^^^^^^^^^
+
+A partir la version 2.5.0 de GeoNature, la version Python 3.5 n'est plus supportée. Seules les version 3.6+ le sont.
+
+Si vous êtes encore sur Debian 9 (fourni par défaut avec Python 3.5), veuillez suivre les instructions suivantes pour monter la version de Python sur Debian 9 :
+
+Installer ``pyenv`` (utilitaire pour installer différentes versions de Python)
+
+::
+
+    sudo apt-get update 
+    sudo apt-get upgrade
+
+    sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev \
+    libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+    xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
+
+    curl https://pyenv.run | bash
+
+    export PATH="$HOME/.pyenv/bin:$PATH"
+    eval "$(pyenv init -)"
+    eval "$(pyenv virtualenv-init -)"
+
+Installer Python 3.7.9 :
+
+::
+
+    pyenv install 3.7.9
+    pyenv global 3.7.9
+
+Editer ensuite le fichier ``config/settings.ini`` pour changer la variable ``python_path`` (remplacer <MON_USER> par votre utilisateur linux courant. 
+NB : faire pareil dans TaxHub et UsersHub.
+
+::
+
+    /home/<MON_USER>/.pyenv/shims/python3
+
 
 Installation de l'application
 -----------------------------
