@@ -1,7 +1,7 @@
 import { distinctUntilChanged } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
-import { arrayMinLengthValidator, isObjectValidator, fileRequiredValidator } from '@geonature/services/validators/validators';
+import { arrayMinLengthValidator, isObjectValidator } from '@geonature/services/validators/validators';
 import { MediaService } from '@geonature_common/service/media.service';
 
 @Injectable()
