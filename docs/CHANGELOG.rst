@@ -15,12 +15,12 @@ Occtax v2 et médias
 * Refonte de l'ergonomie et du fonctionnement du module de saisie Occtax (#758 et #860 par @jbrieuclp et @TheoLechemia)
 
   - Enregistrement continu au fur et à mesure de la saisie d'un relevé
-  - Découpage en 2 ognlets (Un pour le relevé et un onglet pour les taxons)
+  - Découpage en 2 onglets (Un pour le relevé et un onglet pour les taxons)
   - Amélioration de la liste des taxons saisis sur un relevé (#635 et #682)
   - Amélioration de la saisie au clavier
   - Zoom réalisé dans la liste des relevé conservé quand on saisit un nouveau relevé (#436 et #912)
   - Filtres conservés quand on revient à la liste des relevés (#772)
-  - Possibilité de conserver les informations saisies entre 2 taxons ou relevés
+  - Possibilité de conserver les informations saisies entre 2 taxons ou relevés (#692)
   - Correction de la mise à jour des dates de début et de fin (#977)
   - Affichage d'une alerte si on saisit 2 fois le même taxon sur un même relevé
   - Fiche d'information d'un relevé complétée et mise à jour
