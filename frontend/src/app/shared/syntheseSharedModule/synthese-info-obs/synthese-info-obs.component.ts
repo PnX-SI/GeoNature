@@ -72,13 +72,16 @@ export class SyntheseInfoObsComponent implements OnInit {
       }
       const areaDict = {};
       // for each area type we want all the areas: we build an dict of array
-      this.selectedObs.areas.forEach(area => {
-        if (!areaDict[area.area_type.type_name]) {
-          areaDict[area.area_type.type_name] = [area];
-        } else {
-          areaDict[area.area_type.type_name].push(area);
-        }
-      });
+      if (this.selectedObs.areas) {
+        this.selectedObs.areas.forEach(area => {
+          if (!areaDict[area.area_type.type_name]) {
+            areaDict[area.area_type.type_name] = [area];
+          } else {
+            areaDict[area.area_type.type_name].push(area);
+          }
+        });
+      }
+
       // for angular tempate we need to convert it into a aray
       // tslint:disable-next-line:forin
       for (let key in areaDict) {
