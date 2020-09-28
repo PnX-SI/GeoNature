@@ -44,10 +44,10 @@ Occtax v2 et médias
 * Tri de l'ordre des modules dans le menu latéral par ordre alphabétique par défaut et possibilité de les ordonner avec le nouveau champs ``gn_commons.t_modules.module_order`` (#787 par @alainlaupinmnhn)
 * Arrêt du support de l'installation packagée sur Debian 9 et Ubuntu 16 pour passer à Python version 3.6 et plus
 * Prise en charge de PostGIS 3 et notamment l'installation de l'extension ``postgis_raster`` (#946 par @jpm-cbna)
+* Création de compte : Envoi automatique d'un email à l'utilisateur quand son compte est validé. Nécessite la version XYZ de UsersHub (#862 et #1035 par @jpm-cbna)
 
 **Ajouts mineurs**
 
-* Création de compte : Envoi automatique d'un email à l'utilisateur quand son compte est validé. Nécessite la version XYZ de UsersHub (#862 et #1035 par @jpm-cbna)
 * Homogénéisation des styles des boutons (#1026)
 * Factorisation du code des fiches infos d'une observation dans les modules Synthèse et Validation (#1053)
 * Métadonnées : Ajout d'un paramètre permettant de définir le nombre de CA affichés sur la page (100 par défaut)
