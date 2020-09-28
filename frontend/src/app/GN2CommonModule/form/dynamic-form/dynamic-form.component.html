@@ -53,7 +53,7 @@
         [sizeMax]="appConfig.MEDIAS.MEDIAS_SIZE_MAX"
         [default]="formDefComp.default || {}"
         [details]="formDefComp.details"
-      ></pnx-medias>
+        ></pnx-medias>
 
       <div *ngSwitchCase="'file'" class="input-group">
         <div class="custom-file">
@@ -64,7 +64,7 @@
             aria-describedby="inputGroupFileAddon01"
             [accept]="formDefComp.accept"
             (change)="onFileChange($event)"
-            >
+                  >
           <label class="custom-file-label" for="inputGroupFile01">
             {{form.get(formDefComp.attribut_name).value?.name || 'Choisir un fichier' }}
           </label>
@@ -76,20 +76,21 @@
         [formControl]="form.get(formDefComp.attribut_name)"
         [id]="formDefComp.attribut_name"
         type="text"
-      >
+        >
       <textarea
         *ngSwitchCase="'textarea'"
         class="form-control form-control-sm"
         [formControl]="form.get(formDefComp.attribut_name)"
         [id]="formDefComp.attribut_name"
-        type="textarea">
+          type="textarea">
       </textarea>
 
       <select
         *ngSwitchCase="'select'"
         class="form-control"
         [id]="formDefComp.attribut_name"
-        [formControl]="form.get(formDefComp.attribut_name)">
+        [formControl]="form.get(formDefComp.attribut_name)"
+        >
           <option  [value]="null" *ngIf="!formDefComp.noNullOption"> - </option>
           <option *ngFor="let val of formDefComp.values" [value]="val">{{val}}</option>
       </select>
@@ -101,7 +102,7 @@
         [codeNomenclatureType]="formDefComp.code_nomenclature_type"
         [multiSelect]="formDefComp.multi_select"
         [keyValue]="formDefComp.key_value">
-      </pnx-nomenclature>
+        </pnx-nomenclature>
 
       <div *ngSwitchCase="'checkbox'">
             <div class="custom-control custom-checkbox" *ngIf="formDefComp.values.length == 1; else elseBlock">
@@ -113,7 +114,7 @@
                   [name]="formDefComp.attribut_name"
                   [value]="formDefComp.values[0]"
                   (change)="onCheckChange($event, form.get(formDefComp.attribut_name))"
-                >
+                            >
                 <label class="custom-control-label" for="{{formDefComp.attribut_name}}"><span [innerHTML]="formDefComp.attribut_label"> </span></label>
               </div>
             <ng-template #elseBlock>
@@ -126,7 +127,7 @@
                       [name]="formDefComp.attribut_name"
                       [value]="val"
                       (change)="onCheckChange($event, form.get(formDefComp.attribut_name))"
-                    >
+                                    >
                     <label [for]="val" class="custom-control-label"><span [innerHTML]="val"></span></label>
                 </div>
             </ng-template>
@@ -142,7 +143,7 @@
               name="{{formDefComp.attribut_name}}_{{rand}}"
               [value]="i==0"
               [formControl]="form.get(formDefComp.attribut_name)">
-            <label
+                    <label
               class="custom-control-label"
               for="{{formDefComp.attribut_name}}_{{rand}}_{{i}}">
               <span [innerHTML]="val"></span>
@@ -161,7 +162,7 @@
               name="{{formDefComp.attribut_name}}_{{rand}}"
               [value]="val"
               [formControl]="form.get(formDefComp.attribut_name)">
-            <label
+                    <label
               class="custom-control-label"
               for="{{formDefComp.attribut_name}}_{{rand}}_{{val}}">
               <span [innerHTML]="val"></span>
@@ -170,25 +171,55 @@
 
       </div>
 
-      <pnx-taxonomy *ngSwitchCase="'taxonomy'" [label]="formDefComp.attribut_label" [parentFormControl]="form.get(formDefComp.attribut_name)" [idList]="formDefComp.id_list"
-        [charNumber]="3" [listLength]="20">
+      <pnx-taxonomy
+        *ngSwitchCase="'taxonomy'"
+        [label]="formDefComp.attribut_label"
+        [parentFormControl]="form.get(formDefComp.attribut_name)"
+        [idList]="formDefComp.id_list"
+        [charNumber]="3" [listLength]="20"
+        >
       </pnx-taxonomy>
 
-      <pnx-datasets *ngSwitchCase="'dataset'" [label]="formDef.attribut_label" [parentFormControl]="form.get(formDef.attribut_name)" [multiSelect]="formDef.multi_select"
-       [moduleCode]="formDef.module_code">
+      <pnx-datasets
+        *ngSwitchCase="'dataset'"
+        [label]="formDef.attribut_label"
+        [parentFormControl]="form.get(formDef.attribut_name)"
+        [multiSelect]="formDef.multi_select"
+        [moduleCode]="formDef.module_code">
       </pnx-datasets>
 
-      <pnx-observers *ngSwitchCase="'observers'" [label]="formDefComp.attribut_label" [parentFormControl]="form.get(formDefComp.attribut_name)" [idMenu]="formDefComp.id_menu" [codeList]="formDefComp.code_list">
+      <pnx-observers
+        *ngSwitchCase="'observers'"
+        [label]="formDefComp.attribut_label"
+        [parentFormControl]="form.get(formDefComp.attribut_name)"
+        [idMenu]="formDefComp.id_menu"
+        [codeList]="formDefComp.code_list"
+      >
       </pnx-observers>
 
-      <pnx-date *ngSwitchCase="'date'" [label]="formDefComp.attribut_label" [parentFormControl]="form.get(formDefComp.attribut_name)">
+      <pnx-date
+        *ngSwitchCase="'date'"
+        [label]="formDefComp.attribut_label"
+        [parentFormControl]="form.get(formDefComp.attribut_name)"
+      >
       </pnx-date>
 
-      <pnx-municipalities *ngSwitchCase="'municipalities'" [label]="formDefComp.attribut_label" [parentFormControl]="form.get(formDefComp.attribut_name)">
+      <pnx-municipalities
+        *ngSwitchCase="'municipalities'"
+        [label]="formDefComp.attribut_label"
+        [parentFormControl]="form.get(formDefComp.attribut_name)"
+      >
       </pnx-municipalities>
 
-      <pnx-multiselect *ngSwitchCase="'multiselect'" [values]="formDefComp.values" [parentFormControl]="form.get(formDefComp.attribut_name)" keyLabel="value" keyValue="value"
-      [label]="formDefComp.attribut_label"  [searchBar]="false">
+      <pnx-multiselect
+        *ngSwitchCase="'multiselect'"
+        [values]="formDefComp.values"
+        [parentFormControl]="form.get(formDefComp.attribut_name)"
+        keyLabel="value"
+        keyValue="value"
+        [label]="formDefComp.attribut_label"
+        [searchBar]="false"
+      >
       </pnx-multiselect>
 
       <input

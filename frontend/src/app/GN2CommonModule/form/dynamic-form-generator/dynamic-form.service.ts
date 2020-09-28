@@ -96,8 +96,8 @@ export class DynamicFormService {
     }
     control.setValidators(validators);
 
+    // Dans le html (pour pouvoir avoir required et disable avec une valeur donnée)
     if (formDef.disabled) {
-      console.log('dis', formDef.attribut_name);
       control.disable();
     } else {
       control.enable();
