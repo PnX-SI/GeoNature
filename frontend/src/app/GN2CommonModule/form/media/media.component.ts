@@ -93,19 +93,13 @@ export class MediaComponent implements OnInit {
   }
 
   /**
-   * TODO simplifier
+   * le boutton est accessible si le formulaire est valide
+   * et si media.sent est à false (il y a eu une modification depuis la dernière requête ou il n'y a pas eu de requete)
    */
   mediaFormReadyToSend() {
+
     if (!this.mediaForm) { return; }
-    return (
-      Object.keys(this.mediaForm.controls)
-        .filter((key) => key !== 'file')
-        .every((key) => this.mediaForm.controls[key].valid) &&
-      ((this.mediaForm.value.bFile &&
-        (!!this.mediaForm.value.file || this.media.media_path)) ||
-        !this.mediaForm.value.bFile) &&
-      !this.media.sent
-    );
+    return this.mediaForm.valid && !this.media.sent;
   }
 
   /**

@@ -1,7 +1,7 @@
 import { distinctUntilChanged } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
-import { arrayMinLengthValidator, isObjectValidator } from '@geonature/services/validators/validators';
+import { arrayMinLengthValidator, isObjectValidator, fileRequiredValidator } from '@geonature/services/validators/validators';
 import { MediaService } from '@geonature_common/service/media.service';
 
 @Injectable()
@@ -46,13 +46,21 @@ export class DynamicFormService {
     }
 
     const validators = [];
+
     if (formDef.type_widget === 'medias') {
       validators.push(this._mediaService.mediasValidator());
+
     } else if (formDef.type_widget === 'checkbox') {
       value = value || new Array();
       if (formDef.required) {
         validators.push(arrayMinLengthValidator(1));
       }
+
+    } else if (formDef.type_widget === 'file') {
+      if (formDef.required) {
+        validators.push(isObjectValidator());
+      }
+
     } else {
       if (formDef.required) {
         validators.push(Validators.required);
@@ -87,6 +95,7 @@ export class DynamicFormService {
       }
     }
     control.setValidators(validators);
+
     if (formDef.disabled) {
       console.log('dis', formDef.attribut_name);
       control.disable();
