@@ -28,14 +28,7 @@ export class MediaComponent implements OnInit {
 
   public mediaForm: FormGroup;
 
-  public mediaFormDefinition = [];
-
-  // public mediaFormChange: Subscription = null;
-
-
-  // manage form loading TODO in dynamic from
-  public formInitialized;
-  // public watchChangeForm = true;
+  public mediaFormDefinition = null;
 
   public idTableLocation: number;
 
@@ -64,6 +57,15 @@ export class MediaComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.mediaFormDefinition = this._dynformService
+    .formDefinitionsdictToArray(
+      mediaFormDefinitionsDict,
+      {
+        nomenclatures: this.ms.metaNomenclatures(),
+        details: this.details
+      }
+    );
+
     this.initIdTableLocation(this.schemaDotTable);
     this.ms.getNomenclatures().subscribe(() => {
       this.initForm();
@@ -141,6 +143,7 @@ export class MediaComponent implements OnInit {
   }
 
   onFormChange(value) {
+
     this.media.sent = false;
 
     this.bValidSizeMax =
@@ -198,22 +201,19 @@ export class MediaComponent implements OnInit {
     this.mediaChange.emit(this.media);
   }
 
+  onMediaFormInit(mediaForm) {
+    this.mediaForm = mediaForm;
+    this.initForm();
+  }
+
   /** déclenché quand le formulaire est initialisé */
   initForm() {
-    if (!this.ms.bInitialized && this.formInitialized) { return; }
+
+    if (!(this.ms.bInitialized && this.mediaForm)) { return; }
 
     if (this.sizeMax) {
       mediaFormDefinitionsDict.file.sizeMax = this.sizeMax;
     }
-
-    this.mediaFormDefinition = this._dynformService
-      .formDefinitionsdictToArray(
-        mediaFormDefinitionsDict,
-        {
-          nomenclatures: this.ms.metaNomenclatures(),
-          details: this.details
-        }
-      );
 
     this.setFormInitValue();
 

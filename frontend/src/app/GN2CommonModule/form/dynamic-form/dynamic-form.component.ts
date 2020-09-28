@@ -31,7 +31,7 @@ export class DynamicFormComponent implements OnInit {
   setFormDefComp() {
     this.formDefComp = {};
     for (const key of Object.keys(this.formDef)) {
-      this.formDefComp[key] = this._dynformService.getFormDefValue(this.formDefComp, key, this.form.value);
+      this.formDefComp[key] = this._dynformService.getFormDefValue(this.formDef, key, this.form.value);
     }
 
     // on met à jour les contraintes
@@ -48,7 +48,6 @@ export class DynamicFormComponent implements OnInit {
     const value = {};
     value[this.formDef.attribut_name] = file;
     this.form.patchValue(value);
-    // this.form.patchValue(value); // pq 2 fois
   }
 
   onCheckChange(event, formControl: FormControl) {
@@ -82,7 +81,9 @@ export class DynamicFormComponent implements OnInit {
       // si le composant dynamic-form-generator annonce un update
       // => on recalcule les propriétés
       if (propName === 'update' && this.update === true) {
-        console.log(`up config dyn form ${this.formDef.attribut_name}`);
+        this.setFormDefComp();
+      }
+      if (propName !== 'update') {
         this.setFormDefComp();
       }
     }
