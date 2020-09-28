@@ -25,9 +25,13 @@ import { Media } from '@geonature_common/form/media/media';
 export class MediaService {
   idTableLocations = [];
   nomenclatures = null;
+  bInitialized = false;
 
   constructor(private _http: HttpClient, private _dataFormService: DataFormService) {
-    this.getNomenclatures().subscribe();
+    // initialisation des nomenclatures
+    this.getNomenclatures().subscribe(() => {
+      this.bInitialized = true;
+    });
   }
 
   metaNomenclatures() {

@@ -15,6 +15,7 @@ import { FormBuilder } from '@angular/forms';
 import { MediaService } from '@geonature_common/service/media.service';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { CommonService } from '@geonature_common/service/common.service';
+import { DynamicFormService } from '../dynamic-form-generator/dynamic-form.service';
 
 @Component({
   selector: 'pnx-media',
@@ -22,18 +23,19 @@ import { CommonService } from '@geonature_common/service/common.service';
   styleUrls: ['./media.scss'],
 })
 export class MediaComponent implements OnInit {
-  public mediaSave: Media = new Media();
+
+  // public mediaSave: Media = new Media();
 
   public mediaForm: FormGroup;
 
   public mediaFormDefinition = [];
 
-  public mediaFormChange: Subscription = null;
+  // public mediaFormChange: Subscription = null;
 
-  public bInitalized = false;
+
   // manage form loading TODO in dynamic from
-  public mediaFormInitialized;
-  public watchChangeForm = true;
+  public formInitialized;
+  // public watchChangeForm = true;
 
   public idTableLocation: number;
 
@@ -57,13 +59,13 @@ export class MediaComponent implements OnInit {
   constructor(
     private _formBuilder: FormBuilder,
     public ms: MediaService,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private _dynformService: DynamicFormService,
   ) { }
 
   ngOnInit() {
     this.initIdTableLocation(this.schemaDotTable);
     this.ms.getNomenclatures().subscribe(() => {
-      this.bInitalized = true;
       this.initForm();
     });
   }
@@ -79,7 +81,7 @@ export class MediaComponent implements OnInit {
   }
 
   message() {
-    return this.mediaFormReadyToSent()
+    return this.mediaFormReadyToSend()
       ? 'Veuillez valider le média en appuyant sur le bouton de validation'
       : this.media.sent
         ? ''
@@ -88,7 +90,10 @@ export class MediaComponent implements OnInit {
           : 'Veuillez compléter le formulaire et Renseigner une URL valide';
   }
 
-  mediaFormReadyToSent() {
+  /**
+   * TODO simplifier
+   */
+  mediaFormReadyToSend() {
     if (!this.mediaForm) { return; }
     return (
       Object.keys(this.mediaForm.controls)
@@ -101,141 +106,120 @@ export class MediaComponent implements OnInit {
     );
   }
 
+  /**
+   *
+   */
+  setFormInitValue() {
+    if (!this.media) {
+      return;
+    }
+
+    // si on a une url => bFile = false
+    if (this.media.media_url) {
+      this.media.bFile = false;
+    }
+
+    // id_table_location
+    this.media.id_table_location = this.media.id_table_location || this.idTableLocation;
+
+    // valeurs par défaut si null (depuis l'input default)
+    for (const key of Object.keys(this.default)) {
+      this.media[key] = this.media[key] || this.default[key];
+    }
+
+    // PHOTO par defaut TODO : comment le mettre dans default
+    this.media.id_nomenclature_media_type =
+      this.media.id_nomenclature_media_type ||
+      this.ms.getNomenclature('Photo', 'mnemonique', 'TYPE_MEDIA').id_nomenclature;
+
+    this.mediaForm.patchValue(this.media);
+  }
+
+  setValue(value) {
+    this.media.setValues(value);
+    this.mediaForm.patchValue(value);
+  }
+
+  onFormChange(value) {
+    this.media.sent = false;
+
+    this.bValidSizeMax =
+      !(value.file && this.sizeMax) || value.file.size / 1000 < this.sizeMax;
+
+    this.media.setValues(value);
+
+    // si bFile = false
+    // => media_path et file passent à null
+    if (!value.bFile && (value.media_path || value.file)) {
+      this.setValue({
+        media_path: null,
+        file: null,
+      });
+    }
+
+    // si bFile = true
+    // => media_url = null
+    if (value.bFile && value.media_url) {
+      this.mediaForm.setValue({
+        media_url: null,
+      });
+    }
+
+    // si le type de media implique une url
+    // => media_path et file passent à null
+    const label_fr = this.ms.getNomenclature(value.id_nomenclature_media_type).label_fr;
+    if (
+      ['Vidéo Dailymotion', 'Vidéo Youtube', 'Vidéo Vimeo', 'Page web'].includes(label_fr) &&
+      value.bFile
+    ) {
+      this.setValue({
+        bFile: false,
+        media_path: null,
+      });
+    }
+
+    // si type de media implique un fichier
+    // => bFile = true et media_url = null
+    if (['Vidéo (fichier)'].includes(label_fr) && !value.bFile) {
+      this.mediaForm.setValue({
+        bFile: true,
+        media_url: null,
+      });
+    }
+
+    // si un fichier est sélectionné
+    // => media_path passe à null
+    if (value.file && value.media_path) {
+      this.mediaForm.setValue({
+        media_path: null,
+      });
+    }
+
+    this.mediaChange.emit(this.media);
+  }
+
+  /** déclenché quand le formulaire est initialisé */
   initForm() {
-    if (!this.bInitalized) { return; }
-    // this.mediaFormInitialized = false;
+    if (!this.ms.bInitialized && this.formInitialized) { return; }
 
     if (this.sizeMax) {
       mediaFormDefinitionsDict.file.sizeMax = this.sizeMax;
     }
-    mediaFormDefinitionsDict['meta'] = { nomenclatures: this.ms.metaNomenclatures(), details: this.details };
 
-    this.mediaFormDefinition = Object.keys(mediaFormDefinitionsDict)
-      .filter((key) => key !== 'meta')
-      .map((key) => ({
-        ...mediaFormDefinitionsDict[key],
-        attribut_name: key,
-        meta: mediaFormDefinitionsDict['meta'],
-      }));
-
-    if (this.mediaFormChange) {
-      this.mediaFormChange.unsubscribe();
-    }
-
-    if (!this.mediaForm) {
-      this.mediaForm = this._formBuilder.group({});
-    }
-
-    if (this.media) {
-      if (this.media.media_url) {
-        this.media.bFile = false;
-      }
-
-      this.media.id_table_location = this.media.id_table_location || this.idTableLocation;
-
-      // valeurs par défaut si null
-      for (const key of Object.keys(this.default)) {
-        this.media[key] = this.media[key] || this.default[key];
-      }
-
-      // PHOTO par defaut
-      this.media.id_nomenclature_media_type =
-        this.media.id_nomenclature_media_type ||
-        this.ms.getNomenclature('Photo', 'mnemonique', 'TYPE_MEDIA').id_nomenclature;
-
-      this.mediaForm.patchValue(this.media);
-    }
-
-    this.mediaFormChange = this.mediaForm.valueChanges.subscribe((values) => {
-      if (this.mediaSave.hasValue(values)) {
-        return;
-      }
-      const condForm =
-        Object.keys(this.mediaFormDefinition).length === Object.keys(this.mediaForm.value).length;
-      condForm && this.mediaSave.setValues(values);
-
-      if (condForm && this.watchChangeForm) {
-        if (this.mediaFormInitialized) {
-          this.media.sent = false;
-          this.watchChangeForm = false;
-
-          this.bValidSizeMax =
-            !(values.file && this.sizeMax) || values.file.size / 1000 < this.sizeMax;
-
-          this.media.setValues(values);
-          this.mediaSave.setValues(values);
-          if (!values.bFile && (values.media_path || values.file)) {
-            this.mediaForm.patchValue({
-              media_path: null,
-              file: null,
-            });
-            this.media.setValues({
-              media_path: null,
-              file: null,
-            });
-          }
-
-          if (values.bFile && values.media_url) {
-            this.mediaForm.patchValue({
-              media_url: null,
-            });
-            this.media.setValues({
-              media_url: null,
-            });
-          }
-
-          const label_fr = this.ms.getNomenclature(values.id_nomenclature_media_type).label_fr;
-          if (
-            ['Vidéo Dailymotion', 'Vidéo Youtube', 'Vidéo Vimeo', 'Page web'].includes(label_fr) &&
-            values.bFile
-          ) {
-            this.mediaForm.patchValue({
-              bFile: false,
-              media_path: null,
-            });
-            this.media.setValues({
-              bFile: false,
-              media_path: null,
-            });
-          }
-
-          if (['Vidéo (fichier)'].includes(label_fr) && !values.bFile) {
-            this.mediaForm.patchValue({
-              bFile: true,
-              media_url: null,
-            });
-            this.media.setValues({
-              bFile: true,
-              media_url: null,
-            });
-          }
-
-          if (values.file && values.media_path) {
-            this.mediaForm.patchValue({
-              media_path: null,
-            });
-            this.media.setValues({
-              media_path: null,
-            });
-          }
-
-          this.mediaChange.emit(this.media);
-          this.watchChangeForm = true;
-        } else {
-          // init forms
-          if (this.media.media_url) {
-            this.media.bFile = false;
-          }
-          this.watchChangeForm = false;
-          this.mediaForm.patchValue(this.media);
-          this.mediaFormInitialized = true;
-          this.watchChangeForm = true;
+    this.mediaFormDefinition = this._dynformService
+      .formDefinitionsdictToArray(
+        mediaFormDefinitionsDict,
+        {
+          nomenclatures: this.ms.metaNomenclatures(),
+          details: this.details
         }
-      }
-    });
+      );
+
+    this.setFormInitValue();
+
   }
 
-  validMedia() {
+  postMedia() {
     this.media.bLoading = true;
     this.media.pendingRequest = this.ms.postMedia(this.mediaForm.value.file, this.media).subscribe(
       (event) => {
@@ -248,7 +232,7 @@ export class MediaComponent implements OnInit {
           this.media.bLoading = false;
           this.media.sent = true;
           this.media.pendingRequest = null;
-          this.errorMsg = ''
+          this.errorMsg = '';
           this.mediaChange.emit(this.media);
         }
       },
@@ -265,7 +249,7 @@ export class MediaComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    for (let propName in changes) {
+    for (const propName of Object.keys(changes)) {
       if (['media', 'sizeMax'].includes(propName)) {
         this.initForm();
       }
@@ -276,6 +260,9 @@ export class MediaComponent implements OnInit {
     }
   }
 
+  /**
+   * Pour l'affichage des tailles
+   */
   round(val, dec) {
     const decPow = Math.pow(10, dec);
     return Math.round(val * decPow) / decPow;

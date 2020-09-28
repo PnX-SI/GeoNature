@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges, OnChanges } from '@angular/core';
 import { FormGroup, FormArray, FormControl } from '@angular/forms';
 import { DynamicFormService } from '../dynamic-form-generator/dynamic-form.service';
 import { AppConfig } from '@geonature_config/app.config'
@@ -13,22 +13,29 @@ export class DynamicFormComponent implements OnInit {
   @Input() formDef: any;
   @Input() form: FormGroup;
 
+  @Input() update;
+
+  @Output() change = new EventEmitter<any>();
+
   public appConfig = AppConfig;
   public rand = Math.ceil(Math.random() * 1e10);
 
+  public formDefComp = {};
+
   constructor(private _dynformService: DynamicFormService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.setFormDefComp();
+  }
 
-  formDefComp(): any {
-    const formDefComp: any = {}
+  setFormDefComp() {
+    this.formDefComp = {};
     for (const key of Object.keys(this.formDef)) {
-      formDefComp[key] = typeof this.formDef[key] === 'function'
-        ? this.formDef[key]({ value: this.form.value, meta: this.formDef.meta, attribut_name: this.formDef.attribut_name  })
-        : this.formDef[key]
+      this.formDefComp[key] = this._dynformService.getFormDefValue(this.formDefComp, key, this.form.value);
     }
-    this._dynformService.setControl(this.form.controls[this.formDef.attribut_name], formDefComp)
-    return formDefComp;
+
+    // on met à jour les contraintes
+    this._dynformService.setControl(this.form.controls[this.formDef.attribut_name], this.formDefComp);
   }
 
   /** On ne gère ici que les fichiers uniques */
@@ -39,9 +46,9 @@ export class DynamicFormComponent implements OnInit {
     }
     const file: File = files[0];
     const value = {};
-    value[this.formDefComp().attribut_name] = file;
+    value[this.formDef.attribut_name] = file;
     this.form.patchValue(value);
-    this.form.patchValue(value);
+    // this.form.patchValue(value); // pq 2 fois
   }
 
   onCheckChange(event, formControl: FormControl) {
@@ -68,6 +75,17 @@ export class DynamicFormComponent implements OnInit {
 
   onRadioChange(val, formControl: FormControl) {
     formControl.setValue(val);
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    for (const propName of Object.keys(changes)) {
+      // si le composant dynamic-form-generator annonce un update
+      // => on recalcule les propriétés
+      if (propName === 'update' && this.update === true) {
+        console.log(`up config dyn form ${this.formDef.attribut_name}`);
+        this.setFormDefComp();
+      }
+    }
   }
 
 }
