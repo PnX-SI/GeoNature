@@ -7,9 +7,10 @@ import json
 from flask import Blueprint, request, current_app, redirect
 
 from geonature.core.gn_commons.repositories import TMediaRepository, TMediumRepository
-from geonature.core.gn_commons.repositories import TMediaRepository
+from geonature.core.gn_commons.models import TMedias
 from geonature.utils.env import DB
 from utils_flask_sqla.response import json_resp, json_resp_accept_empty_list
+
 
 from geonature.utils.errors import (
     ConfigError,
