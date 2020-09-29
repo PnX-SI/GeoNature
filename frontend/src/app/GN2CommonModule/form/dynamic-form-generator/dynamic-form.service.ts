@@ -7,7 +7,7 @@ import { MediaService } from '@geonature_common/service/media.service';
 @Injectable()
 export class DynamicFormService {
 
-  constructor(private _mediaService: MediaService) {}
+  constructor(private _mediaService: MediaService) { }
 
   toFormGroup(formsDef: Array<any>) {
     const group: any = {};
@@ -17,8 +17,8 @@ export class DynamicFormService {
     return new FormGroup(group);
   }
 
-  setControl(control:AbstractControl, formDef, value=null) {
-    if(![null, undefined].includes(value)) {
+  setControl(control: AbstractControl, formDef, value = null) {
+    if (![null, undefined].includes(value)) {
       control.setValue(value)
     }
 
@@ -39,16 +39,16 @@ export class DynamicFormService {
       }
 
       // contraintes pour file
-      if(formDef.type_widget === 'file') {
-        if(formDef.sizeMax) {
+      if (formDef.type_widget === 'file') {
+        if (formDef.sizeMax) {
           validators.push(this.fileSizeMaxValidator(formDef.sizeMax));
         }
       }
 
       // contraintes min et max pour "number"
       if (formDef.type_widget === 'number') {
-        const cond_min = typeof formDef.min === 'number' &&  !( (typeof formDef.max === 'number') && formDef.min > formDef.max);
-        const cond_max = typeof formDef.max === 'number' &&  !( (typeof formDef.min === 'number') && formDef.min > formDef.max);
+        const cond_min = typeof formDef.min === 'number' && !((typeof formDef.max === 'number') && formDef.min > formDef.max);
+        const cond_max = typeof formDef.max === 'number' && !((typeof formDef.min === 'number') && formDef.min > formDef.max);
 
         if (cond_min) {
           validators.push(Validators.min(formDef.min));
@@ -64,7 +64,7 @@ export class DynamicFormService {
       }
     }
     control.setValidators(validators);
-    if(formDef.disabled) {
+    if (formDef.disabled) {
       console.log('dis', formDef.attribut_name)
       control.disable();
     } else {
@@ -87,8 +87,8 @@ export class DynamicFormService {
   fileSizeMaxValidator(sizeMax): ValidatorFn {
     return (control: AbstractControl): { [key: string]: boolean } | null => {
       const file = control.value;
-      const valid = !(file && file.size) || (file.size / 1000) > sizeMax;
-      return !valid ? {file: true} : null;
+      const valid = !(file && file.size) || (file.size / 1000) > sizeMax;
+      return !valid ? { file: true } : null;
     }
   }
 

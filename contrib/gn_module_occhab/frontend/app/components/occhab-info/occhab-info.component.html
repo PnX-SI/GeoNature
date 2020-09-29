@@ -14,22 +14,24 @@
           Station n° {{stationContent?.id_station}}
           <button 
             matTooltip="Editez le relevé {{oneStation?.id}}" 
-            type="button" class="btn btn-success button-rounded float-right btn-action box-shadow "
+            mat-mini-fab
+            class="btn-green float-right"
+            type="button" 
             [disabled]="stationContent?.rights.U == false"
             [routerLink]="['/occhab/form', oneStation?.id]"
           >
-          <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true">
-          </i>
+          <mat-icon>edit</mat-icon>
         </button>
         <button 
           matTooltip="Supprimer le relevé {{oneStation?.id}}" 
+          mat-mini-fab
+          color="warn"
           type="button" 
           (click)="openDeleteModal(deleteModal)" 
-          class="btn btn-danger button-rounded float-right btn-action box-shadow "
+          class="float-right mr-1"
           [disabled]="stationContent?.rights.D == false"
         >
-          <i class="fa fa-trash-o  fa-lg" aria-hidden="true">
-          </i>
+          <mat-icon>delete</mat-icon>
         </button>
 
       </h5>
