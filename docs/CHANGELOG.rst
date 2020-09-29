@@ -7,10 +7,6 @@ CHANGELOG
 
 Occtax v2 et médias
 
-- Update SQL / Clarifier avec commentaires et découper la partie DO
-- Tester ENABLE_MEDIAS et ENABLE_My_PLACES, ainsi que DISPLAY_SETTINGS_TOOLS
-- Tester les paramètres d'Occtax (exemple : https://github.com/PnX-SI/GeoNature/blob/develop/contrib/occtax/config/conf_gn_module.toml.example#L20)
-
 **🚀 Nouveautés**
 
 * Refonte de l'ergonomie et du fonctionnement du module de saisie Occtax (#758 et #860 par @jbrieuclp et @TheoLechemia)
@@ -45,7 +41,7 @@ Occtax v2 et médias
 * Tri de l'ordre des modules dans le menu latéral par ordre alphabétique par défaut et possibilité de les ordonner avec le nouveau champs ``gn_commons.t_modules.module_order`` (#787 par @alainlaupinmnhn)
 * Arrêt du support de l'installation packagée sur Debian 9 et Ubuntu 16 pour passer à Python version 3.6 et plus
 * Prise en charge de PostGIS 3 et notamment l'installation de l'extension ``postgis_raster`` (#946 par @jpm-cbna)
-* Création de compte : Envoi automatique d'un email à l'utilisateur quand son compte est validé. Nécessite la version XYZ de UsersHub (#862 et #1035 par @jpm-cbna)
+* Création de compte : Envoi automatique d'un email à l'utilisateur quand son compte est validé. Nécessite la version 2.1.3 de UsersHub (#862 et #1035 par @jpm-cbna)
 
 **Ajouts mineurs**
 
@@ -56,6 +52,7 @@ Occtax v2 et médias
 * Métadonnées : Ajout d'un champs ``id_digitiser`` dans la table des CA et des JDD, utilisé en plus des acteurs pour le CRUVED des JDD (#921)
 * Dynamic-Form : Ajout d'un composant "select" prenant une API en entrée (#1029)
 * Dynamic-Form : Ajout de la possibilité d'afficher une définition d'un champs sous forme de tooltip
+* CAS INPN : Redirection vers la page de connexion de GeoNature quand on se déconnecte
 * Ajout d'une contrainte d'unicité sur ``schema_name`` et ``table_name`` sur la table ``gn_commons_bib_tables_location_unique`` (#962)
 * Ajout d'une contrainte d'unicité sur ``id_organism`` et ``parameter_name`` dans la table ``gn_commons.t_parameters`` (#988)
 * Ajout de la possibilité de filtrer le composant ``dataset`` du Dynamic-Form par ``module_code`` pour pouvoir choisir parmis les JDD associées à un module (#964)
@@ -66,7 +63,7 @@ Occtax v2 et médias
 * Suppression du fichier ``backend/gunicorn_start.sh.sample``
 * Amélioration du script ``install/migration/migration.sh`` en vérifiant la présence des dossiers optionnels avant de les copier
 * Amélioration des fonctions ``gn_synthese.import_json_row_format_insert_data`` et ``gn_synthese.import_json_row`` pour prendre en charge la génération des geojson dans PostGIS 3
-* Documentation administrateur : Label, pictos et ordre des modules dans le menu latéral
+* Documentation administrateur : Précisions sur les labels, pictos et ordres des modules dans le menu de navigation latéral
 
 **🐛 Corrections**
 
@@ -88,17 +85,18 @@ Occtax v2 et médias
 
 Si vous mettez à jour GeoNature :
 
-* Occtax-mobile version 1.1.0 minimum
-* Attention si vous avez customisé les vues des exports Occtax et Synthèse, elles sont supprimées et recrées par l'update SQL pour s'adapter aux évolutions du standard Occtax en version 2.0.0. Révisez éventuellement ces vues après la mise à jour.
+* Nomenclatures : Commencer par exécuter le script SQL de mise à jour du schéma ``ref_nomenclatures`` de la BDD (https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.3to1.3.4.sql)
+* 
 * Jouez le script https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/check_view_2.5.0.sql pour savoir vous avez des vues qui utilisent des champs qui ont été supprimés ou renommés (dans module Export notamment). La requête vous indiquera les vues qui bloquent la mise à jour (#1016), si elle ne renvoie rien, vous pouvez passer à la suite. Dans le cas contraire, adaptez vos vues.
-* Nomenclatures : exécuter ``data/update1.3.3to1.3.4.sql`` (https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.3to1.3.4.sql)
-* Exécuter la MAJ de la BDD https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.1to2.5.0.sql
-* A partir la version 2.5.0 de GeoNature, la version 3.5 de Python n'est plus supportée. Seules les version 3.6 et + le sont. Si vous êtes encore sur Debian 9 (fourni par défaut avec Python 3.5), veuillez suivre les instructions de mise à jour de Python sur cette version (https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-standalone.rst#python-37-sur-debian-9)
+* Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.1to2.5.0.sql). Attention, si vous avez customisé les vues des exports Occtax et Synthèse, elles seront supprimées et recrées automatiquement par le script SQL de mise à jour de la BDD de GeoNature pour s'adapter aux évolutions du standard Occtax en version 2.0.0. Révisez éventuellement ces vues avant et/ou après la mise à jour. Le script SQL de mise à jour vérifiera aussi si vous avez d'autres vues (dans le module Export notamment) qui utilisent le champs ``id_nomenclature_obs_technique`` qui doit être renommé et l'indiquera dès le début de l'exécution du script, en l'arrêtant pour que vous puissiez modifier ou supprimer ces vues bloquant la mise à jour.
+* A partir la version 2.5.0 de GeoNature, la version 3.5 de Python n'est plus supportée. Seules les version 3.6 et + le sont. Si vous êtes encore sur Debian 9 (fourni par défaut avec Python 3.5), veuillez suivre les instructions de mise à jour de Python sur cette version (https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-standalone.rst#python-37-sur-debian-9). Il est cependant plutôt conseillé de passer sur Debian 10 pour rester à jour sur des versions maintenues
 * Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 * A noter, quelques changements dans les paramètres du module Occtax. Les paramètres d'affichage/masquage des champs du formulaire ont évolué ainsi :
 
   - ``obs_meth`` devient ``obs_tech`` 
   - ``obs_technique`` devient ``tech_collect``
+  
+* A noter aussi que cette version de GeoNature est compatible avec la version 1.1.0 minimum d'Occtax-mobile (du fait de la mise du standard Occurrence de taxons)
 
 
 2.4.1 (2020-06-25)
