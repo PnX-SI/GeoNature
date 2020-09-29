@@ -16,6 +16,7 @@ import { OcctaxFormCountingService } from "../counting/counting.service";
 import { OcctaxDataService } from "../../services/occtax-data.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
 import { OcctaxTaxaListService } from "../taxa-list/taxa-list.service";
+import { ModuleConfig } from "../../module.config";
 
 @Injectable()
 export class OcctaxFormOccurrenceService {
@@ -113,12 +114,17 @@ export class OcctaxFormOccurrenceService {
       .subscribe((cd_nomenclature: string) => {
         if (cd_nomenclature == "1") {
           this.form.setValidators(proofRequiredValidator);
-          this.form
-            .get("digital_proof")
-            .setValidators(
-              Validators.pattern("^(http://|https://|ftp://){1}.+$")
-            );
-          this.form.get("non_digital_proof").setValidators([]);
+          if (ModuleConfig.digital_proof_validator) {
+            this.form
+              .get("digital_proof")
+              .setValidators(
+                Validators.pattern("^(http://|https://|ftp://){1}.+$")
+              );
+          } else {
+            this.form.get("non_digital_proof").setValidators([]);
+            this.form.get("digital_proof").setValidators([]);
+          }
+
         } else {
           this.form.setValidators([]);
           this.form.get("digital_proof").setValidators(proofNotNullValidator);
