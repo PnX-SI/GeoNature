@@ -138,14 +138,9 @@ export class MediaComponent implements OnInit {
 
     // Patch pourri pour être sûr d'avoir le bon
     setTimeout(() => {
+      console.log('media sent init', this.sentInit);
       this.media.sent = this.sentInit;
-      // console.log('init media');
-      // emit change programmatically
-      // this.mediaForm.updateValueAndValidity({ onlySelf: false, emitEvent: true });
-      // this.mediaForm.updateValueAndValidity();
     }, 100);
-
-
   }
 
   setValue(value) {
@@ -154,6 +149,7 @@ export class MediaComponent implements OnInit {
   }
 
   onFormChange(value) {
+    console.log('media change')
     this.media.sent = false;
 
     this.bValidSizeMax =
