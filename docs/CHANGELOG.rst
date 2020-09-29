@@ -90,9 +90,9 @@ Si vous mettez à jour GeoNature :
 
 * Occtax-mobile version 1.1.0 minimum
 * Attention si vous avez customisé les vues des exports Occtax et Synthèse, elles sont supprimées et recrées par l'update SQL pour s'adapter aux évolutions du standard Occtax en version 2.0.0. Révisez éventuellement ces vues après la mise à jour.
-* Si vous avez des vues qui utilisent des champs qui ont été supprimés ou renommés (dans module Export notamment), le script SQL d'update s'arrêtera et vous indiquera les vues qui bloquent la mise à jour (#1016). A supprimer et recréer après update avec adaptation des champs si besoin.
-* Nomenclatures : exécuter ``data/update1.3.3to1.3.4.sql`` (https://github.com/PnX-SI/Nomenclature-api-module/blob/develop/data/update1.3.3to1.3.4.sql)
-* Exécuter la MAJ de la BDD ``data/migrations/2.4.1to2.5.0.sql``
+* Jouez le script https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/check_view_2.5.0.sql pour savoir vous avez des vues qui utilisent des champs qui ont été supprimés ou renommés (dans module Export notamment). La requête vous indiquera les vues qui bloquent la mise à jour (#1016), si elle ne renvoie rien, vous pouvez passer à la suite. Dans le cas contraire, adaptez vos vues.
+* Nomenclatures : exécuter ``data/update1.3.3to1.3.4.sql`` (https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.3to1.3.4.sql)
+* Exécuter la MAJ de la BDD https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.1to2.5.0.sql
 * A partir la version 2.5.0 de GeoNature, la version 3.5 de Python n'est plus supportée. Seules les version 3.6 et + le sont. Si vous êtes encore sur Debian 9 (fourni par défaut avec Python 3.5), veuillez suivre les instructions de mise à jour de Python sur cette version (https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-standalone.rst#python-37-sur-debian-9)
 * Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 * A noter, quelques changements dans les paramètres du module Occtax. Les paramètres d'affichage/masquage des champs du formulaire ont évolué ainsi :
