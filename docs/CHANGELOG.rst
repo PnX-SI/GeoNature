@@ -313,7 +313,7 @@ par :
 * Le composant générique FileLayer expose un ``output`` pour récuperer la géométrie sélectionnée (un observable de MapService était utilisé auparavant)
 * Support des markers sur le composant ``leaflet-draw``
 * Possibilité de ne pas activer le composant ``marker`` au lancement lorsque celui-ci est utilisé (input ``defaultEnable``)
-* Ajout d'inputs ``time`` et ``number`` au composant DynamicForm permettant de générer des formulaires dynamiques.
+* Ajout d'inputs ``time``, ``number``, ``medias`` et ``datalist`` au composant DynamicForm permettant de générer des formulaires dynamiques.
 * Améliorations diverses du composant DynamicForm (par @joelclems)
 * Ajout d'un paramètre dans le cas où le serveur se trouve derrière un proxy (``proxy_http`` ou dans ``proxy_https`` dans ``config/settings.ini``)
 * Ajout d'une route permettant de récupérer la liste des rôles d'une liste à partir de son code (par @joelclems)
