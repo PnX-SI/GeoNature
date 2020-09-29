@@ -80,11 +80,18 @@ BDD
   - Zipper le fichier SQL et le mettre sur le serveur http://geonature.fr/data
   - Adapter le script ``install_db.sh`` pour récupérer le nouveau fichier zippé
 
-Pratiques
----------
+Pratiques et règles de developpement
+------------------------------------
+
+Afin de partager des règles communes de développement et faciliter l'intergration de 
+nouveau code, veuillez lire les recommandation et bonnes pratiques recommandées pour contribuer
+au projet GeoNature.
+
+Recommandations générales:
+""""""""""""""""""""""""""
 
 - Ne jamais faire de commit dans la branche ``master`` mais dans la branche
-  ``develop`` ou idéalement dans une branche dédiée à la fonctionnalité
+  ``develop`` ou idéalement dans une branche dédiée à la fonctionnalité (feature branch)
 - Faire des pull request vers la branche ``develop`` regroupant plusieurs
   commits depuis la branche de sa fonctionnalité pour plus de lisibilité,
   éviter les conflits et déclencher les tests automatiques Travis avant
@@ -93,10 +100,74 @@ Pratiques
 - Les messages de commits font référence à ticket ou le ferme (``ref #12``
   ou ``fixes #23``)
 
+
+Backend
+"""""""
+
+- Une fonction ou classe doit contenir une docstring en français. Les doctrings doivent suivre le modèle
+NumPy/SciPy (voir https://numpydoc.readthedocs.io/en/latest/format.html et https://realpython.com/documenting-python-code/#numpyscipy-docstrings-example
+- Les commentaires dans le codes doivent être en anglais (ne pas s'empecher de mettre un commentaire en français sur une partie du code complexe !)
+- Installer les requirements-dev (`pip install -r backend/requirements-dev.txt`) qui contiennent 
+une série d'outils indispensable au développement dans GeoNature.
+- Utiliser *blake* comme formateur de texte et activer l'autoformatage dans son éditeur de texte
+ (Tuto pour VsCode: https://medium.com/@marcobelo/setting-up-python-black-on-visual-studio-code-5318eba4cd00)
+- Utiliser *pylint* comme formatteur de code 
+- Respecter la norme PEP8 (assurée par les deux outils précédents)
+- La longueur maximale pour une ligne de code est 99 caractères. Pour VsCode copier ces lignes 
+le fichier settings.json:
+- Respecter le snake case
+
+::
+
+    "python.formatting.blackArgs": [
+      "--line-length",
+      "99"
+    ]
+- Utiliser des doubles quotes pour les chaines de charactères.
+
+
+BDD 
+"""
+
+- Le noms des tables est préfixé par un "t" pour une table de contenu, de "bib" pour les tables de
+"dictionnaires" et de "cor" pour les tables de correspondances
+- Les schémas du coeur de GeoNature sont préfixés de "gn" 
+- Les schéma des protocoles ou modules GeoNature sont préfixés de "pr"
+- Chaque schéma de BDD dispose de son propre fichier SQL
+- Les scripts SQL sont ordonnées en section dans l'ordre suivant: (voir https://github.com/PnX-SI/GeoNature/blob/master/data/core/synthese.sql)
+  - Fonctions
+  - Tables 
+  - Clés primaires 
+  - Clés étrangères 
+  - Contraintes 
+  - Triggers 
+  - Données nécessaire au fonctionnement du schéma
+- Les scripts de données sont écrit dans des fichiers à part
+- Ne rien écrire dans le schéma public
+- Ne pas répeter le nom des tables dans les noms des colonnes (exception faite des colonnes "id)
+- Utiliser *prettier* comme formateur de texte et activer l'autoformatage dans son éditeur de texte
+(VsCode dispose d'une extension Prettier : https://github.com/prettier/prettier-vscode)
+- Utiliser tslint comme linter
+- La longueur maximale pour une ligne de code est 140 caractères.
+
+HTML 
+""""
+TODO for angular
+
+
+Frontend
+""""""""
+
+- Documenter les fonctions et classes grâce au JSDoc en français (https://jsdoc.app/)
+- Les commentaires dans le codes doivent être en anglais (ne pas s'empecher de mettre un commentaire en français sur une partie du code complexe !)
+- Les messages renvoyés aux utilisateurs sont en français 
+- Installer les outils de devéloppement: `npm install --only=dev`
+
+
 Développer et installer un gn_module
 ------------------------------------
 
-GeoNature a été conçu pour fonctionner en briques modulaires.
+GeoNature a été conçu pour fonctionner en briques modulaires. 
 
 Chaque protocole, répondant à une question scientifique, est amené à avoir
 son propre module GeoNature comportant son modèle de base de données (dans un
