@@ -7,7 +7,6 @@ CHANGELOG
 
 Occtax v2 et médias
 
-- Version taxref supprimé ?????
 - Update SQL / Clarifier avec commentaires et découper la partie DO
 - Tester ENABLE_MEDIAS et ENABLE_My_PLACES, ainsi que DISPLAY_SETTINGS_TOOLS
 - Tester les paramètres d'Occtax (exemple : https://github.com/PnX-SI/GeoNature/blob/develop/contrib/occtax/config/conf_gn_module.toml.example#L20)
@@ -90,7 +89,7 @@ Occtax v2 et médias
 Si vous mettez à jour GeoNature :
 
 * Occtax-mobile version 1.1.0 minimum
-* Attention si vous avez customisé les vues des exports Occtax et Synthèse, elles sont supprimées et recrées par l'update SQL pour s'adapter aux évolutions du standard Occtax en version 2.0.0. Adaptez le SQL de mise à jour et/ou révisez vos vues customisées après la mise à jour.
+* Attention si vous avez customisé les vues des exports Occtax et Synthèse, elles sont supprimées et recrées par l'update SQL pour s'adapter aux évolutions du standard Occtax en version 2.0.0. Révisez éventuellement ces vues après la mise à jour.
 * Si vous avez des vues qui utilisent des champs qui ont été supprimés ou renommés (dans module Export notamment), le script SQL d'update s'arrêtera et vous indiquera les vues qui bloquent la mise à jour (#1016). A supprimer et recréer après update avec adaptation des champs si besoin.
 * Nomenclatures : exécuter ``data/update1.3.3to1.3.4.sql`` (https://github.com/PnX-SI/Nomenclature-api-module/blob/develop/data/update1.3.3to1.3.4.sql)
 * Exécuter la MAJ de la BDD ``data/migrations/2.4.1to2.5.0.sql``
@@ -98,7 +97,7 @@ Si vous mettez à jour GeoNature :
 * Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 * A noter, quelques changements dans les paramètres du module Occtax. Les paramètres d'affichage/masquage des champs du formulaire ont évolué ainsi :
 
-  - ``obs_meth`` devient ``osb_tech`` 
+  - ``obs_meth`` devient ``obs_tech`` 
   - ``obs_technique`` devient ``tech_collect``
 
 
