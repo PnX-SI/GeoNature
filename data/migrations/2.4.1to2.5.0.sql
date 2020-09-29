@@ -1,6 +1,8 @@
-
+-- Mise à jour de la BDD de GeoNature de la version 2.4.1 à 2.5.0
+-- "BEGIN ... COMMIT" inclut l'ensemble des requêtes dans une seule transaction, annulée globalement si une erreur intervient au cours du script
 BEGIN;
-
+  
+  -- Revoir la fonction de calcul de la sensibilité pour y ajouter la récursivité
   CREATE OR REPLACE FUNCTION gn_sensitivity.get_id_nomenclature_sensitivity(my_date_obs date, my_cd_ref integer, my_geom geometry, my_criterias jsonb)
       RETURNS integer
       LANGUAGE plpgsql
@@ -113,7 +115,6 @@ BEGIN;
           niv_precis := niv_precis_null;
         END IF;
 
-
         return niv_precis;
 
   END;
@@ -123,7 +124,7 @@ BEGIN;
     ---- END FUNCTION -----
     ------------------------
 
-  -- correction de fonctions permissions (nom de la vue a changé)
+  -- Correction des fonctions permettant de récupérer les permissions (nom de la vue modifié)
 
   CREATE OR REPLACE FUNCTION gn_permissions.does_user_have_scope_permission
     (
@@ -205,9 +206,8 @@ BEGIN;
   COST 100;
 
 
-
-
-  --- DROP id_nomenclature_obs_technique depend view
+  --- Supprimer les vues utilisant le champs id_nomenclature_obs_technique, renommé dans la 2.5.0
+                                       
   DROP VIEW IF EXISTS gn_synthese.v_synthese_for_export;
   DROP VIEW IF EXISTS pr_occtax.v_releve_occtax;
   DROP VIEW IF EXISTS gn_synthese.v_synthese_decode_nomenclatures;
@@ -215,7 +215,7 @@ BEGIN;
   DROP VIEW IF EXISTS gn_commons.v_synthese_validation_forwebapp;
 
 
-  -- OCCTAX V2
+  -- OCCTAX V2 - Ajouter et modifier les champs du au passage sur la version 2.0 du standard
 
   ALTER TABLE pr_occtax.t_releves_occtax
     ADD COLUMN id_nomenclature_geo_object_nature integer,
@@ -238,7 +238,7 @@ BEGIN;
     ALTER column id_nomenclature_tech_collect_campanule DROP NOT NULL;
 
   ALTER TABLE pr_occtax.t_occurrences_occtax
-    -- comportement
+    -- Ajout de la nomenclature Comportement
     ADD COLUMN id_nomenclature_behaviour integer,
     ADD CONSTRAINT fk_t_occurrences_occtax_behaviour FOREIGN KEY (id_nomenclature_behaviour) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE,
     ADD CONSTRAINT check_t_occurrences_occtax_behaviour CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_behaviour,'OCC_COMPORTEMENT')) NOT VALID
@@ -259,6 +259,7 @@ BEGIN;
   VALUES ('OCC_COMPORTEMENT', ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '0'))
   ;
 
+  -- Recréer la vue d'export d'Occtax suite aux changements de champs des tables d'Occtax
   CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
   SELECT rel.id_releve_occtax,
       rel.id_dataset,
@@ -289,6 +290,7 @@ BEGIN;
       LEFT JOIN utilisateurs.t_roles obs ON cor_role.id_role = obs.id_role
     GROUP BY rel.id_releve_occtax, rel.id_dataset, rel.id_digitiser, rel.date_min, rel.date_max, rel.altitude_min, rel.altitude_max, rel.depth_min, rel.depth_max, rel.place_name, rel.meta_device_entry, rel.comment, rel.geom_4326, rel."precision", t.cd_nom, occ.nom_cite, occ.id_occurrence_occtax, t.lb_nom, t.nom_valide, t.nom_complet_html, t.nom_vern;
 
+  -- SYNTHESE - Ajouter et modifier les champs liés au passage à la version 2.0 du standard Occurrences de taxon
   ALTER TABLE gn_synthese.synthese
       ADD COLUMN cd_hab integer,
       ADD CONSTRAINT fk_synthese_cd_hab FOREIGN KEY (cd_hab) REFERENCES ref_habitats.habref(cd_hab) ON UPDATE CASCADE,
@@ -313,7 +315,7 @@ BEGIN;
     IS 'Correspondance champs standard occtax = obsTechnique. En raison d''un changement de nom, le code nomenclature associé reste ''METH_OBS'' ';
 
 
-
+  -- Adapter les triggers Occtax > Synthèse lié au passage à la version 2.0 du standard Occurrences de taxon
   CREATE OR REPLACE FUNCTION pr_occtax.insert_in_synthese(my_id_counting integer)
     RETURNS integer[] AS
   $BODY$
@@ -342,7 +344,6 @@ BEGIN;
 
   -- Récupération de l'id_module
   SELECT INTO id_module gn_commons.get_id_module_bycode('OCCTAX');
-
 
   -- Récupération du status_source depuis le JDD
   SELECT INTO id_nomenclature_source_status d.id_nomenclature_source_status FROM gn_meta.t_datasets d WHERE id_dataset = releve.id_dataset;
@@ -469,7 +470,7 @@ BEGIN;
     COST 100;
 
 
-
+  -- Revision des fonctions et triggers Occtax > Synthèse
   CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_occ()
     RETURNS trigger AS
   $BODY$
@@ -503,7 +504,7 @@ BEGIN;
     COST 100;
 
 
-
+  -- Revision des fonctions et triggers Occtax > Synthèse
   CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_releve()
     RETURNS trigger AS
   $BODY$
@@ -546,7 +547,7 @@ BEGIN;
     LANGUAGE plpgsql VOLATILE
     COST 100;
 
-
+  -- Revision des vues listant les nomenclatures, suite au passage à la version 2.0 du standard Occurrences de taxon
   CREATE OR REPLACE VIEW gn_synthese.v_synthese_decode_nomenclatures AS
   SELECT
   s.id_synthese,
@@ -572,7 +573,7 @@ BEGIN;
   ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_behaviour) AS occ_behaviour
   FROM gn_synthese.synthese s;
 
-
+  -- Révision des vues de la synthèse
   CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
   SELECT s.id_synthese,
       s.unique_id_sinp,
@@ -643,7 +644,8 @@ BEGIN;
       JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
       JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
       JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source;
-
+  
+  -- Suppression et recréation de la vue d'export des métadonnées dans la Synthèse
   DROP VIEW gn_synthese.v_metadata_for_export;
   CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS
   WITH count_nb_obs AS (
@@ -669,6 +671,7 @@ BEGIN;
 
 
   -- Migration des données de la colonne statubio vers comportement
+  -- Dans Occtax
   UPDATE pr_occtax.t_occurrences_occtax AS occ
   SET id_nomenclature_behaviour = sub.new_id_nomenc
   FROM (
@@ -688,6 +691,7 @@ BEGIN;
   WHERE occ.id_occurrence_occtax = sub.id_occurrence_occtax
   ;
 
+  -- Dans la Synthèse
   UPDATE gn_synthese.synthese AS syn
   SET id_nomenclature_behaviour = sub.new_id_nomenc
   FROM (
@@ -707,10 +711,11 @@ BEGIN;
   WHERE syn.id_synthese = sub.id_synthese
   ;
 
-
+  -- Champs nom_cite obligatoire
   ALTER TABLE pr_occtax.t_occurrences_occtax
   ALTER COLUMN nom_cite SET NOT NULL;
 
+  -- Révision de la vue listant les données dans le module Validation
   CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS
   SELECT  s.id_synthese,
       s.unique_id_sinp,
@@ -793,7 +798,7 @@ BEGIN;
   COMMENT ON VIEW gn_commons.v_synthese_validation_forwebapp  IS 'Vue utilisée pour le module validation. Prend l''id_nomenclature dans la table synthese ainsi que toutes les colonnes de la synthese pour les filtres. On JOIN sur la vue latest_validation pour voir si la validation est auto';
 
 
-  -- add date on medias
+  -- Ajout de champs date dans la table des medias
 
   ALTER TABLE gn_commons.t_medias ADD COLUMN meta_create_date timestamp without time zone DEFAULT now();
   ALTER TABLE gn_commons.t_medias ADD COLUMN meta_update_date timestamp without time zone DEFAULT now();
@@ -804,9 +809,7 @@ BEGIN;
     FOR EACH ROW
     EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
-
-  -- check if uuid in table
-
+  -- Fonction vérifiant un UUID
   CREATE OR REPLACE FUNCTION gn_commons.check_entity_uuid_exist(myentity character varying, myvalue uuid)
     RETURNS boolean AS
   $BODY$
@@ -817,7 +820,6 @@ BEGIN;
       r record;
       _row_ct integer;
     BEGIN
-
 
       entity_array = string_to_array(myentity,'.');
       EXECUTE 'SELECT '||entity_array[3]|| ' FROM '||entity_array[1]||'.'||entity_array[2]||' WHERE '||entity_array[3]||'=''' ||myvalue || '''' INTO r;
@@ -831,8 +833,7 @@ BEGIN;
     LANGUAGE plpgsql IMMUTABLE
     COST 100;
 
-
-
+  -- Révision de la vue des exports Occtax
   CREATE OR REPLACE VIEW pr_occtax.export_occtax AS
   SELECT
       rel.unique_id_sinp_grp as "idSINPRegroupement",
@@ -909,7 +910,7 @@ BEGIN;
     ,tax.cd_ref , tax.lb_nom, tax.nom_vern , hab.cd_hab, hab.lb_code, hab.lb_hab_fr
     ;
 
-
+  -- Révision de la vue des exports de la Synthèse
   CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
   SELECT s.id_synthese AS "idSynthese",
       s.entity_source_pk_value AS "idOrigine",
@@ -1000,12 +1001,10 @@ BEGIN;
       LEFT JOIN ref_nomenclatures.t_nomenclatures n19 ON s.id_nomenclature_determination_method = n19.id_nomenclature
       LEFT JOIN ref_nomenclatures.t_nomenclatures n20 ON s.id_nomenclature_behaviour = n20.id_nomenclature
       LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = s.cd_hab;
-  -- correction de fonctions permissions (nom de la vue a changé)
-
 
 
   -- UNIQUE TABLE LOCATION
-  -- Nettoyage de la table bib_tables_location avant d'appliquer la contrainte
+  -- Nettoyage de la table bib_tables_location avant d'ajouter la contrainte d'unicité
   --    !! Fonctionne uniquement si la première occurence est utilisée dans une FK
   WITH dbl as (
       SELECT  min(id_table_location), array_agg(id_table_location) as id_s FROM  gn_commons.bib_tables_location
@@ -1023,14 +1022,11 @@ BEGIN;
   ALTER TABLE gn_commons.bib_tables_location
     ADD CONSTRAINT unique_bib_tables_location_schema_name_table_name UNIQUE (schema_name, table_name);
 
-
   -- Monitoring
-
   ALTER TABLE gn_monitoring.t_base_visits
     RENAME COLUMN id_nomenclature_obs_technique TO id_nomenclature_tech_collect_campanule;
 
-  -- Import dans la synthese : prise en compte de postgis 3
-
+  -- Fonctions d'import dans la synthese : prise en compte de PostGIS 3
   CREATE OR REPLACE FUNCTION gn_synthese.import_json_row_format_insert_data(column_name varchar, data_type varchar, postgis_maj_num_version int)
   RETURNS text
   LANGUAGE plpgsql
@@ -1178,12 +1174,12 @@ BEGIN;
     $function$
     ;
 
-    -- suppression trigger en double #762
+    -- Suppression d'un trigger en double #762
   DROP TRIGGER tri_insert_synthese_cor_role_releves_occtax ON pr_occtax.cor_role_releves_occtax;
   DROP FUNCTION pr_occtax.fct_tri_synthese_insert_cor_role_releve();
 
-  -- correcion insertion dans cor_observer_synthese qui posait problème depuis
-  -- le changement du POST d'occtax (ordre des trigger)
+  -- Correction de l'insertion dans cor_observer_synthese qui posait problème depuis
+  -- le changement du POST d'Occtax (ordre des triggers)
   CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_insert_counting()
     RETURNS trigger AS
       $BODY$
@@ -1200,7 +1196,6 @@ BEGIN;
         SELECT INTO myobservers array_agg(id_role)
         FROM pr_occtax.cor_role_releves_occtax
         WHERE id_releve_occtax = the_id_releve;
-
 
         -- insertion en synthese du counting + occ + releve
         PERFORM pr_occtax.insert_in_synthese(NEW.id_counting_occtax::integer);
@@ -1219,24 +1214,22 @@ BEGIN;
     LANGUAGE plpgsql VOLATILE
     COST 100;
 
-  -- Add module order column
+  -- Ajout du champs module_order dans t_modules
   ALTER TABLE gn_commons.t_modules ADD module_order integer NULL;
 
-  -- add id_digitizer
-
+  -- Ajout du champs id_digitizer dans t_datasets
   ALTER TABLE gn_meta.t_datasets
     ADD COLUMN id_digitizer integer;
   ALTER TABLE ONLY gn_meta.t_datasets
     ADD CONSTRAINT fk_t_datasets_id_digitizer FOREIGN KEY (id_digitizer) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
+  -- Ajout du champs id_digitizer dans t_acquisition_frameworks
   ALTER TABLE gn_meta.t_acquisition_frameworks
     ADD COLUMN id_digitizer integer;
   ALTER TABLE ONLY gn_meta.t_acquisition_frameworks
     ADD CONSTRAINT fk_t_acquisition_frameworks_id_digitizer FOREIGN KEY (id_digitizer) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
-
-
-    -- Ajout index sur t_validations 
+    -- Ajout d'un index sur t_validations 
 
     CREATE INDEX i_t_validations_uuid_attached_row ON gn_commons.t_validations USING btree (uuid_attached_row);
 
@@ -1281,12 +1274,11 @@ BEGIN;
 
 
   -- Ajout d'une contrainte d'unicité sur la table gn_commons.t_parameters sur le duo de champs id_organism, parameter_name
-
   ALTER TABLE gn_commons.t_parameters ADD CONSTRAINT unique_t_parameters_id_organism_parameter_name UNIQUE (id_organism, parameter_name);
   CREATE UNIQUE INDEX i_unique_t_parameters_parameter_name_with_id_organism_null ON gn_commons.t_parameters (parameter_name) WHERE id_organism IS NULL;
 
 
-  /*MET 14/09/2020 Table t_places pour la fonctionnalité mes-lieux*/
+  /*MET 14/09/2020 Ajout de la table t_places pour la fonctionnalité mes-lieux*/
   CREATE TABLE gn_commons.t_places
   (
       id_place serial,
