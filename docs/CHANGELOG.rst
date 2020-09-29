@@ -8,7 +8,9 @@ CHANGELOG
 Occtax v2 et médias
 
 - Version taxref supprimé ?????
-- Tester ENABLE_MEDIAS et ENABLE_My_PLACES
+- Update SQL / Clarifier avec commentaires et découper la partie DO
+- Tester ENABLE_MEDIAS et ENABLE_My_PLACES, ainsi que DISPLAY_SETTINGS_TOOLS
+- Tester les paramètres d'Occtax (exemple : https://github.com/PnX-SI/GeoNature/blob/develop/contrib/occtax/config/conf_gn_module.toml.example#L20)
 
 **🚀 Nouveautés**
 
@@ -20,7 +22,7 @@ Occtax v2 et médias
   - Amélioration de la saisie au clavier
   - Zoom réalisé dans la liste des relevé conservé quand on saisit un nouveau relevé (#436 et #912)
   - Filtres conservés quand on revient à la liste des relevés (#772)
-  - Possibilité de conserver les informations saisies entre 2 taxons ou relevés (#692)
+  - Possibilité de conserver les informations saisies entre 2 taxons ou relevés, désactivable avec le paramètre ``DISPLAY_SETTINGS_TOOLS`` (#692)
   - Correction de la mise à jour des dates de début et de fin (#977)
   - Affichage d'une alerte si on saisit 2 fois le même taxon sur un même relevé
   - Fiche d'information d'un relevé complétée et mise à jour
