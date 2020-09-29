@@ -36,6 +36,8 @@ export class MediaComponent implements OnInit {
 
   public errorMsg: string;
 
+  public sentInit: boolean;
+
   @Input() schemaDotTable: string;
 
   @Input() media: Media;
@@ -106,6 +108,10 @@ export class MediaComponent implements OnInit {
    *
    */
   setFormInitValue() {
+
+    /** patch pour garder le sent initial (sinon il mis à false par le formChange)*/
+    this.sentInit = this.sentInit || this.media.sent;
+
     if (!this.media) {
       return;
     }
@@ -129,6 +135,9 @@ export class MediaComponent implements OnInit {
       this.ms.getNomenclature('Photo', 'mnemonique', 'TYPE_MEDIA').id_nomenclature;
 
     this.mediaForm.patchValue(this.media);
+
+    this.media.sent = this.sentInit;
+
   }
 
   setValue(value) {
@@ -137,7 +146,6 @@ export class MediaComponent implements OnInit {
   }
 
   onFormChange(value) {
-
     this.media.sent = false;
 
     this.bValidSizeMax =
