@@ -2,7 +2,35 @@
 -- "BEGIN ... COMMIT" inclut l'ensemble des requêtes dans une seule transaction, annulée globalement si une erreur intervient au cours du script
 BEGIN;
   
-  -- Revoir la fonction de calcul de la sensibilité pour y ajouter la récursivité
+    -- Vérification si il existe des vues utilisant le champs "id_nomenclature_obs_technique" qui doit être renommé dans cette migration
+    -- Si des vues sont identifiées, alors elles seront listées et le script les listera
+    -- Il faut donc supprimer ou adapter ces vues pour pouvoir continuer la migration vers la version 2.5.0
+    DO $$
+    DECLARE 
+        views_names varchar(250);
+    BEGIN
+        views_names := ( 
+            SELECT string_agg(concat(view_schema, '.', view_name), chr(10))
+            FROM information_schema.view_column_usage
+            WHERE table_name = 'synthese' AND table_schema = 'gn_synthese' AND column_name = 'id_nomenclature_obs_technique'
+            AND NOT view_schema || '.' || view_name IN (
+                'gn_synthese.v_synthese_for_export',
+                'pr_occtax.v_releve_occtax',
+                'gn_synthese.v_synthese_decode_nomenclatures',
+                'gn_synthese.v_synthese_for_web_app',
+                'gn_commons.v_synthese_validation_forwebapp'
+            )
+        );
+        IF NOT views_names IS NULL 
+        THEN
+            RAISE EXCEPTION 'Des vues doivent être supprimées puis recréées avant de relancer le script car elles utilisent 
+                              la colonne "id_nomenclature_obs_technique" : %', chr(10) || views_names ;
+        END IF;
+        
+    END
+    $$ language plpgsql;
+  
+  -- Révision de la fonction de calcul de la sensibilité pour y ajouter la récursivité
   CREATE OR REPLACE FUNCTION gn_sensitivity.get_id_nomenclature_sensitivity(my_date_obs date, my_cd_ref integer, my_geom geometry, my_criterias jsonb)
       RETURNS integer
       LANGUAGE plpgsql
@@ -259,7 +287,7 @@ BEGIN;
   VALUES ('OCC_COMPORTEMENT', ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '0'))
   ;
 
-  -- Recréer la vue d'export d'Occtax suite aux changements de champs des tables d'Occtax
+  -- Recréer la vue permettant de lister les relevés d'Occtax, suite aux changements de champs des tables d'Occtax
   CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
   SELECT rel.id_releve_occtax,
       rel.id_dataset,
