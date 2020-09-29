@@ -169,7 +169,7 @@ def get_areas():
     """
     # change all args in a list of value
     params = {key: request.args.getlist(key) for key, value in request.args.items()}
-    if params.get('as_geojson')[0] == "true":
+    if params.get('as_geojson') and params.get('as_geojson')[0] == "true":
         model = LAreasGeoJson
     else:
         model = LAreas

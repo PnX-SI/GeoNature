@@ -180,7 +180,7 @@ export class MapComponent implements OnInit {
       if (event.checked) {
         // If checkbox checked, we add to related data to the currentLayers list
         const layer = [];
-        geojsonAreas.forEach(function (area) {
+        geojsonAreas.forEach(area => {
           layer.push(area.geojson_4326);
         });
         this.currentLayers.push({idDB : typeId, data : layer});
@@ -233,7 +233,7 @@ export class MapComponent implements OnInit {
     }
 
     this.areasgeoJson = this.mapService.L.geoJSON(this.featuresAreas, {
-      style: function(feature) {
+      style: feature => {
         return feature.properties.style;
       }
     });
