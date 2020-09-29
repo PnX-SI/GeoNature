@@ -70,6 +70,12 @@ export class GenericFormGeneratorComponent implements OnInit {
     this.myFormGroup.valueChanges.subscribe((values) => {
       this.onFormsChange(values);
     });
+
+    /** patch pourri pour verifier les containtes */
+    // setTimeout(() => {
+    // this.myFormGroup.patchValue({});
+    // this.myFormGroup.updateValueAndValidity();
+    // }, 300);
   }
 
   /**
@@ -80,6 +86,7 @@ export class GenericFormGeneratorComponent implements OnInit {
   }
 
   deepEqual(obj1, obj2) {
+    const $this = this;
     if (!(obj1 || obj2)) {
       return true;
     }
@@ -92,18 +99,14 @@ export class GenericFormGeneratorComponent implements OnInit {
       if (obj1.length !== obj2.length) {
         return false;
       }
-      let cond = false;
-      for (let i = 0; i < obj1.length; i = i + 1) {
-        cond = cond && this.deepEqual(obj1[i], obj2[i]);
-      }
-      return cond;
+      return obj1.every((elem, index) => $this.deepEqual(elem, obj2[index]));
     }
 
     if (typeof obj1 === 'object' && typeof obj2 === 'object') {
       if (Object.keys(obj1).length !== Object.keys(obj2).length) {
         return false;
       }
-      return Object.keys(obj1).every(key => this.deepEqual(obj1[key], obj2[key]));
+      return Object.keys(obj1).every(key => $this.deepEqual(obj1[key], obj2[key]));
     }
 
     return obj1 === obj2;
@@ -120,13 +123,17 @@ export class GenericFormGeneratorComponent implements OnInit {
 
   onFormsChange(newValue) {
     if (this.hasValueChanged(newValue)) {
-
+      console.log('formChange');
       // mise à jour des formulaires affichés / cachés
       this.setForms();
 
       // pour dire aux formulaires qu'il y a un changement;
       this.update = true;
-      setTimeout(() => { this.update = false; }, 100);
+      setTimeout(() => {
+        console.log('up form dyn');
+        this.update = false;
+        this.myFormGroup.updateValueAndValidity({ onlySelf: false, emitEvent: true });
+      }, 500);
       this.change.emit(newValue);
       this.oldValue = { ...newValue };
     }

@@ -109,12 +109,12 @@ export class MediaComponent implements OnInit {
    */
   setFormInitValue() {
 
-    /** patch pour garder le sent initial (sinon il mis à false par le formChange)*/
-    this.sentInit = this.sentInit || this.media.sent;
-
     if (!this.media) {
       return;
     }
+
+    /** patch pour garder le sent initial (sinon il mis à false par le formChange)*/
+    this.sentInit = this.sentInit || this.media.sent;
 
     // si on a une url => bFile = false
     if (this.media.media_url) {
@@ -136,7 +136,15 @@ export class MediaComponent implements OnInit {
 
     this.mediaForm.patchValue(this.media);
 
-    this.media.sent = this.sentInit;
+    // Patch pourri pour être sûr d'avoir le bon
+    setTimeout(() => {
+      this.media.sent = this.sentInit;
+      // console.log('init media');
+      // emit change programmatically
+      // this.mediaForm.updateValueAndValidity({ onlySelf: false, emitEvent: true });
+      // this.mediaForm.updateValueAndValidity();
+    }, 100);
+
 
   }
 
