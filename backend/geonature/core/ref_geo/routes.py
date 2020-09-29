@@ -169,17 +169,18 @@ def get_areas():
     """
     # change all args in a list of value
     params = {key: request.args.getlist(key) for key, value in request.args.items()}
-    if params['as_geojson'][0] == "true":
+    if params.get('as_geojson')[0] == "true":
         model = LAreasGeoJson
     else:
         model = LAreas
     q = DB.session.query(model).order_by(model.area_name.asc())
 
     if "id_type" in params:
-        q = q.filter(model.id_type.in_(params["id_type"]))
+        q = q.filter(model.id_type.in_(params.get("id_type")))
 
     if "area_name" in params:
         q = q.filter(model.area_name.ilike("%{}%".format(params.get("area_name")[0])))
+
 
     limit = int(params.get("limit")[0]) if params.get("limit") else 100
 

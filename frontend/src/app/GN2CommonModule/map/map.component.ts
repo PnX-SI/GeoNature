@@ -6,6 +6,7 @@ import { AppConfig } from '@geonature_config/app.config';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import * as L from 'leaflet';
 import { CommonService } from '../service/common.service';
+import { DataFormService } from '../form/data-form.service';
 
 import 'leaflet-draw';
 import { FormControl } from '@angular/forms';
@@ -68,9 +69,16 @@ export class MapComponent implements OnInit {
   public searchFailed = false;
   public locationControl = new FormControl();
   public map: Map;
+  public dictAreasColors: any;
+  public areaTypes: Array<any>;
+  public currentLayers: Array<any>;
+  public stationsgeoJson: L.geoJSON;
+  public areasgeoJson: L.geoJSON;
+  public featuresAreas: any;
   constructor(
     private mapService: MapService,
     private _commonService: CommonService,
+    private _gnDataService: DataFormService,
     private _http: HttpClient,
     private _nominatim: NominatimService
   ) {
@@ -160,10 +168,81 @@ export class MapComponent implements OnInit {
       }
     })
 
+    this.currentLayers = [];
+    this._gnDataService.getAreaTypes().subscribe(data => {
+      this.areaTypes = data;
+    });
+    this.dictAreasColors = {};
+  }
+
+  fetchTypesAreas(typeId, event) {
+    this._gnDataService.getAreas([typeId], undefined, 10000, true).subscribe(geojsonAreas => {
+      if (event.checked) {
+        // If checkbox checked, we add to related data to the currentLayers list
+        const layer = [];
+        geojsonAreas.forEach(function (area) {
+          layer.push(area.geojson_4326);
+        });
+        this.currentLayers.push({idDB : typeId, data : layer});
+      } else {
+        // If the checkbox is unchecked, we find the related data in the currentLayers list and we remove it
+        const indexArea = this.currentLayers.findIndex(dict => dict.idDB === typeId);
+        this.currentLayers.splice(indexArea, 1);
+      }
+
+      // We start a new featureCollection that will contain all the selected features
+      const featureCollection = {
+        type: 'FeatureCollection',
+        features: []
+      };
+
+      // We add all the features contained in the currentStations list, in the featureCollection
+      this.currentLayers.forEach(feature => {
+        if (feature.idDB in this.dictAreasColors) {
+          const color = this.dictAreasColors[feature.idDB];
+        } else {
+          const color = '#' + (0x1000000 + (Math.random()) * 0xffffff).toString(16).substr(1, 6);
+          this.dictAreasColors[feature.idDB] = color;
+        }
+
+        feature.data.forEach(layer => {
+          featureCollection.features.push({'type' : 'Feature', 'geometry' : JSON.parse(layer),
+            properties: {
+              name: 'Multipolygon',
+              style: {
+                color: color,
+                opacity: 0.4,
+                fillColor: color,
+                fillOpacity: 0.1,
+                smoothFactor: 0.1
+              }
+            }
+          });
+        });
+      });
+
+      this.featuresAreas = featureCollection;
+
+      this.setAreasOnLayers();
+    });
+  }
+
+  setAreasOnLayers() {
+    if (this.areasgeoJson) {
+      this.mapService.map.removeLayer(this.areasgeoJson);
+    }
+
+    this.areasgeoJson = this.mapService.L.geoJSON(this.featuresAreas, {
+      style: function(feature) {
+        return feature.properties.style;
+      }
+    });
+
+    this.areasgeoJson.addTo(this.mapService.map);
   }
 
   /** Retrocompatibility hack to format map config to the expected format:
-   * 
+   *
    {
     name: string,
     url: string,

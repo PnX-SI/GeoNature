@@ -1,12 +1,22 @@
+<div class="dropup" id="dropup-areas">
+  <div class="dropup-content">
+    <p *ngFor="let area_type of areaTypes">
+      <input type="checkbox" name="stations" [id]="area_type.id_type" (change)="fetchTypesAreas(area_type.id_type, $event.target)">
+      {{area_type.type_name}}
+    </p>
+  </div>
+  <button class="dropbtn"><i class="fa fa-bars picto" aria-hidden="true"> </i> Areas</button>
+</div>
+
 <div class="map-container" [ngStyle]="{'height': height}">
 
     <div class="form-row" *ngIf="searchBar">
         <div class="form-group col-md-12">
-          <input 
+          <input
             type="text"
-            class="form-control form-control-sm " 
-            [formControl]="locationControl" 
-            [ngbTypeahead]="search" 
+            class="form-control form-control-sm "
+            [formControl]="locationControl"
+            [ngbTypeahead]="search"
             [resultTemplate]="dropdown"
             (selectItem)="onResultSelected($event)"
             [inputFormatter]="formatter"

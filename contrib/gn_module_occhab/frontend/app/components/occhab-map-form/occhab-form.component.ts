@@ -45,8 +45,6 @@ export class OccHabFormComponent implements OnInit {
   public currentLayers: Array<any>;
   public featuresAreas: any;
   public featuresStations: any;
-  public stationsgeoJson: L.geoJSON;
-  public areasgeoJson: L.geoJSON;
 
 
   constructor(
@@ -64,9 +62,6 @@ export class OccHabFormComponent implements OnInit {
     // Récupère les datasets compatibles avec OccHab
     this._gnDataService.getDatasets({ 'module_code': 'OCCHAB' }).subscribe(data => {
       this.datasets = data.data;
-    })
-    this._gnDataService.getAreaTypes().subscribe(data => {
-      this.areaTypes = data;
     })
 
     this.leafletDrawOptions;
@@ -119,10 +114,10 @@ export class OccHabFormComponent implements OnInit {
     ).subscribe(geojsonStations => {
         if (event.checked) {
             // If checkbox checked, we add to related data to the currentStations list
-            this.currentStations.push({IdDB:datasetId, Data:geojsonStations});
+            this.currentStations.push({idDB:datasetId, data:geojsonStations});
         } else {
             // If the checkbox is unchecked, we find the related data in the currentStations list and we remove it
-            var indexDataset = this.currentStations.findIndex(dict=>dict.IdDB == datasetId);
+            var indexDataset = this.currentStations.findIndex(dict=>dict.idDB == datasetId);
             this.currentStations.splice(indexDataset, 1);
         }
 
@@ -132,8 +127,8 @@ export class OccHabFormComponent implements OnInit {
             features: []
         };
         // We add all the features contained in the currentStations list, in the featureCollection
-        this.currentStations.forEach(function(feature) {
-            featureCollection.features.push(feature.Data);
+        this.currentStations.forEach(feature => {
+            featureCollection.features.push(feature.data);
         });
         this.featuresStations = featureCollection;
 
@@ -142,69 +137,7 @@ export class OccHabFormComponent implements OnInit {
     })
   }
 
-  fetchTypesAreas(typeId, event) {
-      this._gnDataService.getAreas([typeId], undefined, 10000, true).subscribe(geojsonAreas => {
-          if (event.checked) {
-              // If checkbox checked, we add to related data to the currentLayers list
-              var layer = [];
-              geojsonAreas.forEach(function (area) {
-                  layer.push(area.geojson_4326);
-              });
-              this.currentLayers.push({IdDB:typeId, Data:layer});
-          } else {
-              // If the checkbox is unchecked, we find the related data in the currentLayers list and we remove it
-              var indexArea = this.currentLayers.findIndex(dict=>dict.IdDB == typeId);
-              this.currentLayers.splice(indexArea, 1);
-          }
 
-        // We start a new featureCollection that will contain all the selected features
-        var featureCollection = {
-            type: 'FeatureCollection',
-            features: []
-        };
-
-        // We add all the features contained in the currentStations list, in the featureCollection
-        this.currentLayers.forEach(function(feature) {
-            console.log(feature);
-            var color = '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6)
-            feature.Data.forEach(function(layer) {
-                featureCollection.features.push({"type": "Feature", "geometry": JSON.parse(layer),
-                    properties: {
-                        name: "Multipolygon",
-                        style: {
-                            color: color,
-                            opacity: 0.4,
-                            fillColor: color,
-                            fillOpacity: 0.1,
-                            smoothFactor: 0.1
-                        }
-                    }
-                });
-            });
-        });
-
-        this.featuresAreas = featureCollection;
-
-        this.setAreasOnLayers();
-      })
-  }
-
-  setAreasOnLayers() {
-      if (this.areasgeoJson) {
-          this._mapService.map.removeLayer(this.areasgeoJson);
-      }
-
-      this.areasgeoJson = this._mapService.L.geoJSON(this.featuresAreas, {
-          pointToLayer: (feature, latlng) => {
-              return this._mapService.L.circleMarker(latlng)
-          },
-          style: function(feature) {
-              return feature.properties.style
-          }
-      });
-
-      this.areasgeoJson.addTo(this._mapService.map);
-  }
 
   setDatasetsOnLayers() {
 

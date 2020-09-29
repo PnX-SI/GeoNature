@@ -52,15 +52,7 @@
         </div>
       </div>
 
-      <div class="dropup" id="dropup-areas">
-          <div class="dropup-content">
-              <p *ngFor="let area_type of areaTypes">
-                  <input type="checkbox" name="stations" [id]="area_type.id_type" (change)="fetchTypesAreas(area_type.id_type, $event.target)">
-                  {{area_type.type_name}}
-              </p>
-          </div>
-          <button class="dropbtn"><i class="fa fa-bars picto" aria-hidden="true"> </i> Areas</button>
-      </div>
+
 
       <div class="dropup" id="dropup-datasets">
           <div class="dropup-content">

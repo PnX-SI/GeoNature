@@ -248,7 +248,7 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/geo/municipalities`, { params: params });
   }
 
-  getAreas(area_type_list: Array<number>, area_name?, limit?, as_geojson = false) {
+  getAreas(area_type_list: Array<number>, area_name?, limit?, as_geojson: boolean = false) {
     let params: HttpParams = new HttpParams();
 
     area_type_list.forEach(id_type => {
