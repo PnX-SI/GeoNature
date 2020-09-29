@@ -4,18 +4,23 @@
       <h3>CADRE D'ACQUISITION : {{af?.acquisition_framework_name}}</h3>
     </div>
     <div class="c col-xs-6 col-lg-4">
-      <button class="btn btn-secondary" routerLink="/metadata"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
+      <button
+        mat-raised-button
+        class="mr-1"
+        routerLink="/metadata">
+        <mat-icon>chevron_left</mat-icon>
+        Retour
       </button>
-      <button class="btn btn-primary" (click)="getPdf()">Export PDF</button>
+      <button
+        mat-raised-button
+        class="btn-green" (click)="getPdf()">
+        Export PDF
+      <mat-icon>file_download</mat-icon>
+    </button>
     </div>
   </div>
   <br>
-  <!--div-- class=" row">
-    <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
-      <button class="btn btn-secondary" routerLink="/metadata"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
-      </button>
-    </div>
-  </!--div-->
+
   <div class=" row">
     <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
       <div class="card">

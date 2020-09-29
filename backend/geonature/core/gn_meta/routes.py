@@ -306,7 +306,7 @@ def get_export_pdf_dataset(id_dataset, info_role):
             403,
         )
 
-    df = get_dataset_details_dict(id_dataset)
+    df = get_dataset_details_dict(id_dataset, info_role)
 
     if info_role.value_filter != "3":
         try:
