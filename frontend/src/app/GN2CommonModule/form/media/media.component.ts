@@ -5,10 +5,9 @@ import {
   Input,
   Output,
   EventEmitter,
-  ViewEncapsulation,
   SimpleChanges,
 } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { Media } from './media';
 import { mediaFormDefinitionsDict } from './media-form-definition';
 import { FormBuilder } from '@angular/forms';
@@ -30,13 +29,14 @@ export class MediaComponent implements OnInit {
 
   public mediaFormDefinition = null;
 
+  public mediaFormInitialized = false;
+
   public idTableLocation: number;
 
   public bValidSizeMax = true;
 
   public errorMsg: string;
 
-  public sentInit: boolean;
 
   @Input() schemaDotTable: string;
 
@@ -99,7 +99,6 @@ export class MediaComponent implements OnInit {
    * et si media.sent est à false (il y a eu une modification depuis la dernière requête ou il n'y a pas eu de requete)
    */
   mediaFormReadyToSend() {
-
     if (!this.mediaForm) { return; }
     return this.mediaForm.valid && !this.media.sent;
   }
@@ -112,10 +111,6 @@ export class MediaComponent implements OnInit {
     if (!this.media) {
       return;
     }
-
-    /** patch pour garder le sent initial (sinon il mis à false par le formChange)*/
-    this.sentInit = this.sentInit || this.media.sent;
-
     // si on a une url => bFile = false
     if (this.media.media_url) {
       this.media.bFile = false;
@@ -136,11 +131,10 @@ export class MediaComponent implements OnInit {
 
     this.mediaForm.patchValue(this.media);
 
-    // Patch pourri pour être sûr d'avoir le bon
+    // Patch pourri pour être sûr d'avoir le bon media.sent
     setTimeout(() => {
-      console.log('media sent init', this.sentInit);
-      this.media.sent = this.sentInit;
-    }, 100);
+      this.mediaFormInitialized = true;
+    }, 500);
   }
 
   setValue(value) {
@@ -149,8 +143,10 @@ export class MediaComponent implements OnInit {
   }
 
   onFormChange(value) {
-    console.log('media change')
-    this.media.sent = false;
+
+    if(this.mediaFormInitialized) {
+      this.media.sent = false;
+    };
 
     this.bValidSizeMax =
       !(value.file && this.sizeMax) || value.file.size / 1000 < this.sizeMax;
@@ -199,7 +195,7 @@ export class MediaComponent implements OnInit {
     // si un fichier est sélectionné
     // => media_path passe à null
     if (value.file && value.media_path) {
-      this.mediaForm.setValue({
+      this.mediaForm.patchValue({
         media_path: null,
       });
     }

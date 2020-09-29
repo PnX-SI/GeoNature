@@ -9,7 +9,7 @@ export const mediaFormDefinitionsDict = {
     attribut_label: 'Choisir un fichier',
     type_widget: 'file',
     hidden: ({ value }) => !value.bFile,
-    required: ({ value }) => value.bFile,
+    required: ({ value }) => value.bFile && !value.media_path,
     sizeMax: null,
     meta: null,
     accept: ({ value, meta }) => {

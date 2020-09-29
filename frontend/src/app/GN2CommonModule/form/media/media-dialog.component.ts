@@ -31,7 +31,6 @@ export class MediaDialog {
     this.curIndex = this.data.index;
     this.medias = this.data.medias;
     this.media = this.medias[this.curIndex];
-    console.log(this.curIndex, this.media);
   }
 
   onNoClick(): void {

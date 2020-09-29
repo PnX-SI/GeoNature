@@ -63,7 +63,6 @@ export class DisplayMediasComponent {
   }
 
   openDialog(index) {
-    console.log(index)
     const dialogRef = this.dialog.open(MediaDialog, {
       width: '1000px',
       data: { medias: this.medias, index },

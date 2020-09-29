@@ -31,7 +31,7 @@
       <input
       class="bool-checkbox"
       type="checkbox"
-      id="{{formDefComp.attribut_name}}"
+      id="{{formDefComp.attribut_name}}_{{rand}}"
       [name]="formDefComp.attribut_name"
       [formControl]="form.get(formDefComp.attribut_name)"
       >
@@ -46,6 +46,7 @@
 
     </ng-container>
 
+    <div>
       <pnx-medias
         *ngSwitchCase="'medias'"
         [schemaDotTable]="formDefComp.schema_dot_table"
@@ -54,13 +55,14 @@
         [default]="formDefComp.default || {}"
         [details]="formDefComp.details"
         ></pnx-medias>
+    </div>
 
       <div *ngSwitchCase="'file'" class="input-group">
         <div class="custom-file">
           <input
             type="file"
             class="custom-file-input"
-            id="inputGroupFile01"
+            id="inputGroupFile01_{{rand}}"
             aria-describedby="inputGroupFileAddon01"
             [accept]="formDefComp.accept"
             (change)="onFileChange($event)"
@@ -74,21 +76,21 @@
         *ngSwitchCase="'text'"
         class="form-control form-control-sm"
         [formControl]="form.get(formDefComp.attribut_name)"
-        [id]="formDefComp.attribut_name"
+        id="{{formDefComp.attribut_name}}_{{rand}}"
         type="text"
         >
       <textarea
         *ngSwitchCase="'textarea'"
         class="form-control form-control-sm"
         [formControl]="form.get(formDefComp.attribut_name)"
-        [id]="formDefComp.attribut_name"
-          type="textarea">
+        id="{{formDefComp.attribut_name}}_{{rand}}"
+        type="textarea">
       </textarea>
 
       <select
         *ngSwitchCase="'select'"
         class="form-control"
-        [id]="formDefComp.attribut_name"
+        id="{{formDefComp.attribut_name}}_{{rand}}"
         [formControl]="form.get(formDefComp.attribut_name)"
         >
           <option  [value]="null" *ngIf="!formDefComp.noNullOption"> - </option>
@@ -108,7 +110,7 @@
             <div class="custom-control custom-checkbox" *ngIf="formDefComp.values.length == 1; else elseBlock">
                 <input
                   type="checkbox"
-                  id="{{formDefComp.attribut_name}}"
+                  id="{{formDefComp.attribut_name}}_{{rand}}"
                   class="custom-control-input"
                   [ngClass]="{'is-invalid': form.get(formDefComp.attribut_name).invalid}"
                   [name]="formDefComp.attribut_name"
@@ -123,7 +125,7 @@
                       class="custom-control-input"
                       [ngClass]="{'is-invalid': form.get(formDefComp.attribut_name).invalid}"
                       type="checkbox"
-                      [id]="val"
+                      id="{{val}}_{{rand}}"
                       [name]="formDefComp.attribut_name"
                       [value]="val"
                       (change)="onCheckChange($event, form.get(formDefComp.attribut_name))"
@@ -226,7 +228,7 @@
       *ngSwitchCase="'time'"
       class="form-control form-control-sm"
       [formControl]="form.get(formDefComp.attribut_name)"
-      [id]="formDefComp.attribut_name"
+      id="{{formDefComp.attribut_name}}_{{rand}}"
       type="time"
       >
 
@@ -234,7 +236,7 @@
       *ngSwitchCase="'number'"
       class="form-control form-control-sm"
       [formControl]="form.get(formDefComp.attribut_name)"
-      [id]="formDefComp.attribut_name"
+      id="{{formDefComp.attribut_name}}_{{rand}}"
       type="number"
       >
 

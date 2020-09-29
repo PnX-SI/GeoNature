@@ -77,19 +77,18 @@ export class MediasComponent implements OnInit {
 
     // si le media existe déjà en base => route DELETE
     if (media.id_media) {
-      this.ms.deleteMedia(media.id_media).subscribe((response) => {
-        console.log(`delete media ${media.id_media}: ${response}`)
+      this.ms.deleteMedia(media.id_media).subscribe(() => {
+        console.log(`delete media ${media.id_media}`);
       });
     }
     this.parentFormControl.patchValue(this.parentFormControl.value);
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    for (let propName in changes) {
-      let chng = changes[propName];
+    for (const propName of Object.keys(changes)) {
 
       if (propName === 'parentFormControl') {
-        this.initMedias()
+        this.initMedias();
       }
     }
   }
