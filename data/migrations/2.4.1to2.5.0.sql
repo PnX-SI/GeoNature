@@ -287,7 +287,7 @@ BEGIN;
   VALUES ('OCC_COMPORTEMENT', ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '0'))
   ;
 
-  -- Recréer la vue d'export d'Occtax suite aux changements de champs des tables d'Occtax
+  -- Recréer la vue permettant de lister les relevés d'Occtax, suite aux changements de champs des tables d'Occtax
   CREATE OR REPLACE VIEW pr_occtax.v_releve_occtax AS
   SELECT rel.id_releve_occtax,
       rel.id_dataset,
