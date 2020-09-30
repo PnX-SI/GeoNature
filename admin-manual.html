@@ -954,6 +954,7 @@ chmod g+rwx /home/`whoami`/backup
 <span class="k">UPDATE</span> <span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span> <span class="k">SET</span> <span class="n">module_picto</span> <span class="o">=</span> <span class="s1">&#39;fa-eye&#39;</span> <span class="k">WHERE</span> <span class="n">module_code</span> <span class="o">=</span> <span class="s1">&#39;MONITORINGS&#39;</span><span class="p">;</span>
 </pre></div>
 </div>
+<p>Depuis la version 2.5.0, il est aussi possible de customiser l’ordre des modules dans le menu, par ordre alphabétique par défaut, en renseignant le champs <code class="docutils literal"><span class="pre">gn_commons.t_modules.module_order</span></code>.</p>
 </div>
 <div class="section" id="customiser-les-exports-pdf">
 <h3>Customiser les exports PDF<a class="headerlink" href="#customiser-les-exports-pdf" title="Permalink to this headline">¶</a></h3>
@@ -1260,7 +1261,7 @@ Par exemple, pour contraindre la saisie à l’affichage de la carte IGN au 1/25
 <p>Il est possible de définir une autre vue pour avoir des exports personnalisés.
 Pour cela, créer votre vue, et modifier les paramètres suivants :</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Name of the view based export</span>
-<span class="n">export_view_name</span> <span class="o">=</span> <span class="s1">&#39;export_occtax_sinp&#39;</span>
+<span class="n">export_view_name</span> <span class="o">=</span> <span class="s1">&#39;v_export_occtax&#39;</span>
 
 <span class="c1"># Name of the geometry columns of the view</span>
 <span class="n">export_geom_columns_name</span> <span class="o">=</span> <span class="s1">&#39;geom_4326&#39;</span>
@@ -1413,7 +1414,6 @@ Attention : Si des données sont déjà présentes dans la synthèse et que l’
         <span class="s2">&quot;cdNom&quot;</span><span class="p">,</span>
         <span class="s2">&quot;cdRef&quot;</span><span class="p">,</span>
         <span class="s2">&quot;nomCite&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;vTAXREF&quot;</span><span class="p">,</span>
         <span class="s2">&quot;wkt&quot;</span><span class="p">,</span>
         <span class="s2">&quot;lastAction&quot;</span><span class="p">,</span>
         <span class="s2">&quot;validateur&quot;</span>

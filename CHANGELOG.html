@@ -110,6 +110,7 @@
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">CHANGELOG</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#manidae-2020-09-30">2.5.0 - Manidae (2020-09-30)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id1">2.4.1 (2020-06-25)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fiches-de-metadonnees-2020-06-22">2.4.0 - Fiches de métadonnées (2020-06-22)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id2">2.3.2 (2020-02-24)</a></li>
@@ -222,6 +223,98 @@
             
   <div class="section" id="changelog">
 <h1>CHANGELOG<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="manidae-2020-09-30">
+<h2>2.5.0 - Manidae (2020-09-30)<a class="headerlink" href="#manidae-2020-09-30" title="Permalink to this headline">¶</a></h2>
+<p>Occtax v2 et médias</p>
+<p><strong>🚀 Nouveautés</strong></p>
+<ul class="simple">
+<li>Refonte de l’ergonomie et du fonctionnement du module de saisie Occtax (#758 et #860 par &#64;jbrieuclp et &#64;TheoLechemia)<ul>
+<li>Enregistrement continu au fur et à mesure de la saisie d’un relevé</li>
+<li>Découpage en 2 onglets (Un pour le relevé et un onglet pour les taxons)</li>
+<li>Amélioration de la liste des taxons saisis sur un relevé (#635 et #682)</li>
+<li>Amélioration de la saisie au clavier</li>
+<li>Zoom réalisé dans la liste des relevé conservé quand on saisit un nouveau relevé (#436 et #912)</li>
+<li>Filtres conservés quand on revient à la liste des relevés (#772)</li>
+<li>Possibilité de conserver les informations saisies entre 2 taxons ou relevés, désactivable avec le paramètre <code class="docutils literal"><span class="pre">DISPLAY_SETTINGS_TOOLS</span></code> (#692)</li>
+<li>Correction de la mise à jour des dates de début et de fin (#977)</li>
+<li>Affichage d’une alerte si on saisit 2 fois le même taxon sur un même relevé</li>
+<li>Fiche d’information d’un relevé complétée et mise à jour</li>
+</ul>
+</li>
+<li>Passage de la version 1.2.1 à la version 2.0.0 du standard Occurrences de taxon (dans les modules Occtax, Synthèse et Validation) (#516)<ul>
+<li>Ajout des champs “Comportement”, “NomLieu”, “Habitat”, “Méthode de regroupement”, “Type de regroupement” et “Profondeur”</li>
+<li>Ajout du champs “Précision” dans Occtax et suppression de sa valeur par défaut à 100 m</li>
+<li>Renommage du champs “Méthode d’observation” en “Technique d’observation”</li>
+<li>Suppression du champs “Technique d’observation” actuel de la synthèse</li>
+<li>Renommage du champs “Technique d’observation” actuel d’Occtax en “Technique de collecte Campanule”</li>
+<li>Ajout et mise à jour de quelques nomenclatures</li>
+<li>Ajout d’un document de suivi de l’implémentation du standard Occurrences de taxon dans GeoNature (<code class="docutils literal"><span class="pre">docs/implementation_gn_standard_occtax2.0.ods</span></code>) (#516)</li>
+</ul>
+</li>
+<li>Passage de la version 1.3.9 à la version 1.3.10 du standard de Métadonnées. Mise à jour des nomenclatures “CA_OBJECTIFS” et mise à jour des métadonnées existantes en conséquence (par &#64;DonovanMaillard)</li>
+<li>Ajout d’un champs <code class="docutils literal"><span class="pre">addtional_data</span></code> de type <code class="docutils literal"><span class="pre">jsonb</span></code> dans la table <code class="docutils literal"><span class="pre">gn_synthese.synthese</span></code>, en prévision de l’ajout des champs additionnels dans Occtax et Synthèse (#1007)</li>
+<li>Mise en place de la gestion transversale et générique des médias (images, audios, vidéos, PDF…) dans <code class="docutils literal"><span class="pre">gn_commons.t_medias</span></code> et le Dynamic-Form (#336) et implémentation dans le module Occtax (désactivables avec le paramètre <code class="docutils literal"><span class="pre">ENABLE_MEDIAS</span></code>) (#620 par &#64;joelclems)</li>
+<li>Mise en place de miniatures et d’aperçus des médias, ainsi que de nombreux contrôles des fichiers et de leurs formats</li>
+<li>Affichage des médias dans les fiches d’information des modules de saisie, ainsi que dans les modules Synthèse et Validation</li>
+<li>Ajout de la fonctionnalité “Mes lieux” (<code class="docutils literal"><span class="pre">gn_commons.t_places</span></code>), permettant de stocker la géométrie de ieux individuels fréquemment utilisés, implémentée dans le module cartographique d’Occtax (désactivable avec le paramètre <code class="docutils literal"><span class="pre">ENABLE_MY_PLACES</span></code>) (#246 par &#64;metourneau)</li>
+<li>Tri de l’ordre des modules dans le menu latéral par ordre alphabétique par défaut et possibilité de les ordonner avec le nouveau champs <code class="docutils literal"><span class="pre">gn_commons.t_modules.module_order</span></code> (#787 par &#64;alainlaupinmnhn)</li>
+<li>Arrêt du support de l’installation packagée sur Debian 9 et Ubuntu 16 pour passer à Python version 3.6 et plus</li>
+<li>Prise en charge de PostGIS 3 et notamment l’installation de l’extension <code class="docutils literal"><span class="pre">postgis_raster</span></code> (#946 par &#64;jpm-cbna)</li>
+<li>Création de compte : Envoi automatique d’un email à l’utilisateur quand son compte est validé. Nécessite la version 2.1.3 de UsersHub (#862 et #1035 par &#64;jpm-cbna)</li>
+</ul>
+<p><strong>Ajouts mineurs</strong></p>
+<ul class="simple">
+<li>Homogénéisation des styles des boutons (#1026)</li>
+<li>Factorisation du code des fiches infos d’une observation dans les modules Synthèse et Validation (#1053)</li>
+<li>Métadonnées : Ajout d’un paramètre permettant de définir le nombre de CA affichés sur la page (100 par défaut)</li>
+<li>Métadonnées : Tri des CA et JDD par ordre alphabétique</li>
+<li>Métadonnées : Ajout d’un champs <code class="docutils literal"><span class="pre">id_digitiser</span></code> dans la table des CA et des JDD, utilisé en plus des acteurs pour le CRUVED des JDD (#921)</li>
+<li>Dynamic-Form : Ajout d’un composant “select” prenant une API en entrée (#1029)</li>
+<li>Dynamic-Form : Ajout de la possibilité d’afficher une définition d’un champs sous forme de tooltip</li>
+<li>CAS INPN : Redirection vers la page de connexion de GeoNature quand on se déconnecte</li>
+<li>Ajout d’une contrainte d’unicité sur <code class="docutils literal"><span class="pre">schema_name</span></code> et <code class="docutils literal"><span class="pre">table_name</span></code> sur la table <code class="docutils literal"><span class="pre">gn_commons_bib_tables_location_unique</span></code> (#962)</li>
+<li>Ajout d’une contrainte d’unicité sur <code class="docutils literal"><span class="pre">id_organism</span></code> et <code class="docutils literal"><span class="pre">parameter_name</span></code> dans la table <code class="docutils literal"><span class="pre">gn_commons.t_parameters</span></code> (#988)</li>
+<li>Ajout de la possibilité de filtrer le composant <code class="docutils literal"><span class="pre">dataset</span></code> du Dynamic-Form par <code class="docutils literal"><span class="pre">module_code</span></code> pour pouvoir choisir parmis les JDD associées à un module (#964)</li>
+<li>Mise à jour de <code class="docutils literal"><span class="pre">psycopg2</span></code> en version 2.8.5, sqlalchemy en 1.3.19, marshmallow en 2.15.6, virtualenv en 20.0.31 (par &#64;jpm-cbna)</li>
+<li>Mises à jour de sécurité diverses</li>
+<li>Améliorations des scripts <code class="docutils literal"><span class="pre">install/install_db.sh</span></code> et <code class="docutils literal"><span class="pre">install/install_app.sh</span></code> (par &#64;jpm-cbna)</li>
+<li>Ajout de l’autocomplétion des commandes <code class="docutils literal"><span class="pre">geonature</span></code> (#999 par &#64;jpm-cbna)</li>
+<li>Suppression du fichier <code class="docutils literal"><span class="pre">backend/gunicorn_start.sh.sample</span></code></li>
+<li>Amélioration du script <code class="docutils literal"><span class="pre">install/migration/migration.sh</span></code> en vérifiant la présence des dossiers optionnels avant de les copier</li>
+<li>Amélioration des fonctions <code class="docutils literal"><span class="pre">gn_synthese.import_json_row_format_insert_data</span></code> et <code class="docutils literal"><span class="pre">gn_synthese.import_json_row</span></code> pour prendre en charge la génération des geojson dans PostGIS 3</li>
+<li>Documentation administrateur : Précisions sur les labels, pictos et ordres des modules dans le menu de navigation latéral</li>
+</ul>
+<p><strong>🐛 Corrections</strong></p>
+<ul class="simple">
+<li>Module Validation : Affichage des commentaires du relevé et de l’observation (#978 et #854)</li>
+<li>Module Validation : Ne lister que les observations ayant un UUID et vérification de sa validité (#936)</li>
+<li>Module Validation : Correction et homogénéisation de l’affichage et du tri des observations par date (#971)</li>
+<li>Module Validation : Correction de l’affichage du statut de validation après mise à jour dans la liste des observations (#831)</li>
+<li>Module Validation : Correction de l’affichage du nom du validateur</li>
+<li>Moduel Validation : Amélioration des performances avec l’ajout d’un index sur le champs <code class="docutils literal"><span class="pre">uuid_attached_row</span></code> de la table <code class="docutils literal"><span class="pre">gn_commons.t_validations</span></code> (#923 par &#64;jbdesbas)</li>
+<li>Suppression du trigger en double <code class="docutils literal"><span class="pre">tri_insert_synthese_cor_role_releves_occtax</span></code> sur <code class="docutils literal"><span class="pre">pr_occtax.cor_role_releves_occtax</span></code> (#762 par &#64;jbrieuclp)</li>
+<li>Passage des requêtes d’export de la synthèse en POST plutôt qu’en GET (#883)</li>
+<li>Correction du traitement du paramètre <code class="docutils literal"><span class="pre">offset</span></code> de la route <code class="docutils literal"><span class="pre">synthese/color_taxon</span></code> utilisé par Occtax-mobile (#994)</li>
+<li>Correction et complément des scripts de migration de données depuis GINCO v1 (<code class="docutils literal"><span class="pre">data/scripts/import_ginco/occtax.sql</span></code>)</li>
+<li>Import des utilisateurs depuis le CAS INPN : Activer les utilisateurs importés par défaut et récupérer leur email</li>
+<li>Calcul automatique de la sensibilité : Ajout de la récursivité dans la récupération des critères de sensibilité au niveau de la fonction <code class="docutils literal"><span class="pre">gn_sensitivity.get_id_nomenclature_sensitivity</span></code> (#284)</li>
+<li>Typo sur le terme “Preuve d’existence” (par &#64;RomainBaghi)</li>
+</ul>
+<p><strong>⚠️ Notes de version</strong></p>
+<p>Si vous mettez à jour GeoNature :</p>
+<ul class="simple">
+<li>Nomenclatures : Commencer par exécuter le script SQL de mise à jour du schéma <code class="docutils literal"><span class="pre">ref_nomenclatures</span></code> de la BDD (<a class="reference external" href="https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.3to1.3.4.sql">https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.3to1.3.4.sql</a>)</li>
+<li>Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.1to2.5.0.sql">https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.1to2.5.0.sql</a>). Attention, si vous avez customisé les vues des exports Occtax et Synthèse, elles seront supprimées et recrées automatiquement par le script SQL de mise à jour de la BDD de GeoNature pour s’adapter aux évolutions du standard Occtax en version 2.0.0. Révisez éventuellement ces vues avant et/ou après la mise à jour. Le script SQL de mise à jour vérifiera aussi si vous avez d’autres vues (dans le module Export notamment) qui utilisent le champs <code class="docutils literal"><span class="pre">id_nomenclature_obs_technique</span></code> qui doit être renommé et l’indiquera dès le début de l’exécution du script, en l’arrêtant pour que vous puissiez modifier ou supprimer ces vues bloquant la mise à jour.</li>
+<li>A partir la version 2.5.0 de GeoNature, la version 3.5 de Python n’est plus supportée. Seules les version 3.6 et + le sont. Si vous êtes encore sur Debian 9 (fourni par défaut avec Python 3.5), veuillez suivre les instructions de mise à jour de Python sur cette version (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-standalone.rst#python-37-sur-debian-9">https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-standalone.rst#python-37-sur-debian-9</a>). Il est cependant plutôt conseillé de passer sur Debian 10 pour rester à jour sur des versions maintenues</li>
+<li>Suivez la procédure classique de mise à jour de GeoNature (<a class="reference external" href="http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application">http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application</a>)</li>
+<li>A noter, quelques changements dans les paramètres du module Occtax. Les paramètres d’affichage/masquage des champs du formulaire ont évolué ainsi :<ul>
+<li><code class="docutils literal"><span class="pre">obs_meth</span></code> devient <code class="docutils literal"><span class="pre">obs_tech</span></code></li>
+<li><code class="docutils literal"><span class="pre">obs_technique</span></code> devient <code class="docutils literal"><span class="pre">tech_collect</span></code></li>
+</ul>
+</li>
+<li>A noter aussi que cette version de GeoNature est compatible avec la version 1.1.0 minimum d’Occtax-mobile (du fait de la mise du standard Occurrence de taxons)</li>
+</ul>
+</div>
 <div class="section" id="id1">
 <h2>2.4.1 (2020-06-25)<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
@@ -433,7 +526,7 @@
 <li>Le composant générique FileLayer expose un <code class="docutils literal"><span class="pre">output</span></code> pour récuperer la géométrie sélectionnée (un observable de MapService était utilisé auparavant)</li>
 <li>Support des markers sur le composant <code class="docutils literal"><span class="pre">leaflet-draw</span></code></li>
 <li>Possibilité de ne pas activer le composant <code class="docutils literal"><span class="pre">marker</span></code> au lancement lorsque celui-ci est utilisé (input <code class="docutils literal"><span class="pre">defaultEnable</span></code>)</li>
-<li>Ajout d’inputs <code class="docutils literal"><span class="pre">time</span></code> et <code class="docutils literal"><span class="pre">number</span></code> au composant DynamicForm permettant de générer des formulaires dynamiques.</li>
+<li>Ajout d’inputs <code class="docutils literal"><span class="pre">time</span></code>, <code class="docutils literal"><span class="pre">number</span></code>, <code class="docutils literal"><span class="pre">medias</span></code> et <code class="docutils literal"><span class="pre">datalist</span></code> au composant DynamicForm permettant de générer des formulaires dynamiques.</li>
 <li>Améliorations diverses du composant DynamicForm (par &#64;joelclems)</li>
 <li>Ajout d’un paramètre dans le cas où le serveur se trouve derrière un proxy (<code class="docutils literal"><span class="pre">proxy_http</span></code> ou dans <code class="docutils literal"><span class="pre">proxy_https</span></code> dans <code class="docutils literal"><span class="pre">config/settings.ini</span></code>)</li>
 <li>Ajout d’une route permettant de récupérer la liste des rôles d’une liste à partir de son code (par &#64;joelclems)</li>

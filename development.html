@@ -113,7 +113,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#release">Release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bdd">BDD</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pratiques">Pratiques</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pratiques-et-regles-de-developpement">Pratiques et règles de developpement</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#developper-et-installer-un-gn-module">Développer et installer un gn_module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#frontend">Frontend</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#backend">Backend</a><ul>
@@ -284,35 +284,51 @@ métadonnées, intersections géographiques, exports…)</li>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#get--occtax-vreleveocctax">GET /occtax/vreleveocctax</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--users-confirmation">GET /users/confirmation</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#post--users-inscription">POST /users/inscription</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#put--users-role">PUT /users/role</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#post--meta-upload_canvas">POST /meta/upload_canvas</a></td>
 <td>&#160;</td>
 </tr>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#post--occtax-releve-(int-id_releve)-occurrence">POST /occtax/releve/(int:id_releve)/occurrence</a></td>
+<td>&#160;</td>
+</tr>
 <tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#post--occtax-only-releve-(int-id_releve)">POST /occtax/only/releve/(int:id_releve)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--meta-acquisition_frameworks-export_pdf-(id_acquisition_framework)">GET /meta/acquisition_frameworks/export_pdf/(id_acquisition_framework)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#post--pypn-register-post_usershub-(string-type_action)">POST /pypn/register/post_usershub/(string:type_action)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--meta-dataset-export_pdf-(id_dataset)">GET /meta/dataset/export_pdf/(id_dataset)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--validation-date-(uuid)">GET /validation/date/(uuid)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#post--occtax-occurrence-(int-id_occurrence)">POST /occtax/occurrence/(int:id_occurrence)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>Commons</td>
@@ -328,6 +344,14 @@ métadonnées, intersections géographiques, exports…)</li>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#put--gn_commons-media-(int-id_media)">PUT /gn_commons/media/(int:id_media)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#put--gn_commons-media">PUT /gn_commons/media</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#post--gn_commons-media-(int-id_media)">POST /gn_commons/media/(int:id_media)</a></td>
 <td>&#160;</td>
 </tr>
@@ -336,11 +360,11 @@ métadonnées, intersections géographiques, exports…)</li>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#put--gn_commons-media-(int-id_media)">PUT /gn_commons/media/(int:id_media)</a></td>
+<td><a class="reference external" href="#get--gn_commons-media-thumbnails-(int-id_media)-(int-size)">GET /gn_commons/media/thumbnails/(int:id_media)/(int:size)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#put--gn_commons-media">PUT /gn_commons/media</a></td>
+<td><a class="reference external" href="#get--gn_commons-medias-(string-uuid_attached_row)">GET /gn_commons/medias/(string:uuid_attached_row)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
@@ -360,11 +384,11 @@ métadonnées, intersections géographiques, exports…)</li>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>Habref</td>
-<td><a class="reference external" href="#get--habref-typo">GET /habref/typo</a></td>
+<td><a class="reference external" href="#get--habref-habitats-autocomplete">GET /habref/habitats/autocomplete</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#get--habref-habitats-autocomplete-list-(int-id_list)">GET /habref/habitats/autocomplete/list/(int:id_list)</a></td>
+<td><a class="reference external" href="#get--habref-typo">GET /habref/typo</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
@@ -480,11 +504,19 @@ métadonnées, intersections géographiques, exports…)</li>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>Occtax</td>
+<td><a class="reference external" href="#post--occtax-only-releve">POST /occtax/only/releve</a></td>
+<td>Post one Occtax data (Releve + Occurrence + Counting)</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--occtax-defaultNomenclatures">GET /occtax/defaultNomenclatures</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--occtax-occurrences">GET /occtax/occurrences</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#get--occtax-releves">GET /occtax/releves</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
@@ -493,14 +525,14 @@ métadonnées, intersections géographiques, exports…)</li>
 </tr>
 <tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--occtax-export">GET /occtax/export</a></td>
-<td>Export data from pr_occtax.export_occtax_sinp</td>
+<td>Export data from pr_occtax.v_export_occtax</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#delete--occtax-releve-occurrence_counting-(int-id_count)">DELETE /occtax/releve/occurrence_counting/(int:id_count)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#delete--occtax-releve-occurrence-(int-id_occ)">DELETE /occtax/releve/occurrence/(int:id_occ)</a></td>
+<td><a class="reference external" href="#delete--occtax-occurrence-(int-id_occ)">DELETE /occtax/occurrence/(int:id_occ)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
@@ -532,35 +564,43 @@ métadonnées, intersections géographiques, exports…)</li>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#post--geo-altitude">POST /geo/altitude</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#post--geo-areas">POST /geo/areas</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--geo-areas">GET /geo/areas</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#post--geo-info">POST /geo/info</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>Synthese</td>
+<tr class="row-even"><td>Synthese</td>
 <td><a class="reference external" href="#get--synthese-defaultsNomenclatures">GET /synthese/defaultsNomenclatures</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#post--synthese-export_observations">POST /synthese/export_observations</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--synthese-taxons_autocomplete">GET /synthese/taxons_autocomplete</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--synthese-export_metadata">GET /synthese/export_metadata</a></td>
 <td>&#160;</td>
 </tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#post--synthese-export_metadata">POST /synthese/export_metadata</a></td>
+<td>&#160;</td>
+</tr>
 <tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#get--synthese-export_statuts">GET /synthese/export_statuts</a></td>
+<td><a class="reference external" href="#post--synthese-export_statuts">POST /synthese/export_statuts</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
@@ -730,6 +770,62 @@ métadonnées, intersections géographiques, exports…)</li>
 <dd><p>Get all parameters from gn_commons.t_parameters</p>
 </dd></dl>
 
+<dl class="get">
+<dt id="get--habref-habitats-autocomplete">
+<code class="descname">GET </code><code class="descname">/habref/habitats/autocomplete</code><a class="headerlink" href="#get--habref-habitats-autocomplete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all habref items of a list for autocomplete</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Query Parameters:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><ul class="first simple">
+<li><strong>int</strong> (<em>limit</em>) – the id of the habref list</li>
+<li><strong>str</strong> (<em>search_name</em>) – the pattern to filter with</li>
+<li><strong>int</strong> – filter by typology</li>
+<li><strong>int</strong> – number of results, default = 20</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Array&lt;AutoCompleteHabitat&gt;</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="post">
+<dt id="post--occtax-only-releve">
+<code class="descname">POST </code><code class="descname">/occtax/only/releve</code><a class="headerlink" href="#post--occtax-only-releve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Post one Occtax data (Releve + Occurrence + Counting)</p>
+<p><strong>Request JSON object:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span>{
+&quot;geometry&quot;:
+    {&quot;type&quot;:&quot;Point&quot;,
+    &quot;coordinates&quot;:[0.9008789062500001,47.14489748555398]},
+    &quot;properties&quot;:
+        {
+        &quot;id_releve_occtax&quot;:null,&quot;id_dataset&quot;:1,&quot;id_digitiser&quot;:1,&quot;date_min&quot;:&quot;2019-05-09&quot;,&quot;date_max&quot;:&quot;2019-05-09&quot;,&quot;hour_min&quot;:null,&quot;hour_max&quot;:null,&quot;altitude_min&quot;:null,&quot;altitude_max&quot;:null,&quot;meta_device_entry&quot;:&quot;web&quot;,&quot;comment&quot;:null,&quot;id_nomenclature_obs_technique&quot;:316,&quot;observers&quot;:[1],&quot;observers_txt&quot;:null,&quot;id_nomenclature_grp_typ&quot;:132,
+        &quot;t_occurrences_occtax&quot;:[{
+            &quot;id_releve_occtax&quot;:null,&quot;id_occurrence_occtax&quot;:null,&quot;id_nomenclature_obs_technique&quot;:41,&quot;id_nomenclature_bio_condition&quot;:157,&quot;id_nomenclature_bio_status&quot;:29,&quot;id_nomenclature_naturalness&quot;:160,&quot;id_nomenclature_exist_proof&quot;:81,&quot;id_nomenclature_observation_status&quot;:88,&quot;id_nomenclature_blurring&quot;:175,&quot;id_nomenclature_source_status&quot;:75,&quot;determiner&quot;:null,&quot;id_nomenclature_determination_method&quot;:445,&quot;cd_nom&quot;:67111,&quot;nom_cite&quot;:&quot;Ablette =  &lt;i&gt; Alburnus alburnus (Linnaeus, 1758)&lt;/i&gt; - [ES - 67111]&quot;,&quot;meta_v_taxref&quot;:null,&quot;sample_number_proof&quot;:null,&quot;comment&quot;:null,
+        &quot;cor_counting_occtax&quot;:[{
+            &quot;id_counting_occtax&quot;:null,&quot;id_nomenclature_life_stage&quot;:1,&quot;id_nomenclature_sex&quot;:171,&quot;id_nomenclature_obj_count&quot;:146,&quot;id_nomenclature_type_count&quot;:94,&quot;id_occurrence_occtax&quot;:null,&quot;count_min&quot;:1,&quot;count_max&quot;:1
+            }]
+        }]
+    }
+}
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">GeoJson&lt;TRelevesOccurrence&gt;</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="put">
 <dt id="put--users-password-change">
 <code class="descname">PUT </code><code class="descname">/users/password/change</code><a class="headerlink" href="#put--users-password-change" title="Permalink to this definition">¶</a></dt>
@@ -860,18 +956,6 @@ when the user logout we need clear the session to get the new cruved session</p>
 .. :quickref: Commons;</p>
 </dd></dl>
 
-<dl class="post">
-<dt id="post--gn_commons-media-(int-id_media)">
-<code class="descname">POST </code><code class="descname">/gn_commons/media/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_media</em><span class="sig-paren">)</span><a class="headerlink" href="#post--gn_commons-media-(int-id_media)" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="post">
-<dt id="post--gn_commons-media">
-<code class="descname">POST </code><code class="descname">/gn_commons/media</code><a class="headerlink" href="#post--gn_commons-media" title="Permalink to this definition">¶</a></dt>
-<dd><p>Insertion ou mise à jour d’un média
-avec prise en compte des fichiers joints</p>
-</dd></dl>
-
 <dl class="put">
 <dt id="put--gn_commons-media-(int-id_media)">
 <code class="descname">PUT </code><code class="descname">/gn_commons/media/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_media</em><span class="sig-paren">)</span><a class="headerlink" href="#put--gn_commons-media-(int-id_media)" title="Permalink to this definition">¶</a></dt>
@@ -880,6 +964,18 @@ avec prise en compte des fichiers joints</p>
 <dl class="put">
 <dt id="put--gn_commons-media">
 <code class="descname">PUT </code><code class="descname">/gn_commons/media</code><a class="headerlink" href="#put--gn_commons-media" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insertion ou mise à jour d’un média
+avec prise en compte des fichiers joints</p>
+</dd></dl>
+
+<dl class="post">
+<dt id="post--gn_commons-media-(int-id_media)">
+<code class="descname">POST </code><code class="descname">/gn_commons/media/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_media</em><span class="sig-paren">)</span><a class="headerlink" href="#post--gn_commons-media-(int-id_media)" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="post">
+<dt id="post--gn_commons-media">
+<code class="descname">POST </code><code class="descname">/gn_commons/media</code><a class="headerlink" href="#post--gn_commons-media" title="Permalink to this definition">¶</a></dt>
 <dd><p>Insertion ou mise à jour d’un média
 avec prise en compte des fichiers joints</p>
 </dd></dl>
@@ -968,9 +1064,18 @@ The column jdd_id is mandatory in the view gn_synthese.v_metadata_for_export</p>
 <p>POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view</p>
 </dd></dl>
 
-<dl class="get">
-<dt id="get--synthese-export_statuts">
-<code class="descname">GET </code><code class="descname">/synthese/export_statuts</code><a class="headerlink" href="#get--synthese-export_statuts" title="Permalink to this definition">¶</a></dt>
+<dl class="post">
+<dt id="post--synthese-export_metadata">
+<code class="descname">POST </code><code class="descname">/synthese/export_metadata</code><a class="headerlink" href="#post--synthese-export_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route to export the metadata in CSV</p>
+<p>The table synthese is join with gn_synthese.v_metadata_for_export
+The column jdd_id is mandatory in the view gn_synthese.v_metadata_for_export</p>
+<p>POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view</p>
+</dd></dl>
+
+<dl class="post">
+<dt id="post--synthese-export_statuts">
+<code class="descname">POST </code><code class="descname">/synthese/export_statuts</code><a class="headerlink" href="#post--synthese-export_statuts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Route to get all the protection status of a synthese search</p>
 <p>Get the CRUVED from ‘R’ action because we don’t give observations X/Y but only statuts
 and to be constistant with the data displayed in the web interface</p>
@@ -1077,6 +1182,7 @@ view v_synthese_for_export:</p>
     <span class="s2">&quot;dataset_name&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;dataset_name&quot;</span><span class="p">],</span>
     <span class="s2">&quot;observers&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;observers&quot;</span><span class="p">],</span>
     <span class="s2">&quot;url_source&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;url_source&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;unique_id_sinp&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;unique_id_sinp&quot;</span><span class="p">],</span>
     <span class="s2">&quot;entity_source_pk_value&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;entity_source_pk_value&quot;</span><span class="p">],</span>
 <span class="p">}</span>
 <span class="n">geojson</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;st_asgeojson&quot;</span><span class="p">])</span>
@@ -1140,6 +1246,7 @@ view v_synthese_for_export:</p>
     <span class="s2">&quot;dataset_name&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;dataset_name&quot;</span><span class="p">],</span>
     <span class="s2">&quot;observers&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;observers&quot;</span><span class="p">],</span>
     <span class="s2">&quot;url_source&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;url_source&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;unique_id_sinp&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;unique_id_sinp&quot;</span><span class="p">],</span>
     <span class="s2">&quot;entity_source_pk_value&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;entity_source_pk_value&quot;</span><span class="p">],</span>
 <span class="p">}</span>
 <span class="n">geojson</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;st_asgeojson&quot;</span><span class="p">])</span>
@@ -1243,6 +1350,12 @@ when the user logout we need clear the session to get the new cruved session</p>
 </dd></dl>
 
 <dl class="get">
+<dt id="get--occtax-vreleveocctax">
+<code class="descname">GET </code><code class="descname">/occtax/vreleveocctax</code><a class="headerlink" href="#get--occtax-vreleveocctax" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deprecated</p>
+</dd></dl>
+
+<dl class="get">
 <dt id="get--occtax-occurrences">
 <code class="descname">GET </code><code class="descname">/occtax/occurrences</code><a class="headerlink" href="#get--occtax-occurrences" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all Occurrences</p>
@@ -1260,6 +1373,12 @@ when the user logout we need clear the session to get the new cruved session</p>
 <dt id="get--occhab-stations">
 <code class="descname">GET </code><code class="descname">/occhab/stations</code><a class="headerlink" href="#get--occhab-stations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all stations with their hab</p>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--occtax-releves">
+<code class="descname">GET </code><code class="descname">/occtax/releves</code><a class="headerlink" href="#get--occtax-releves" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route for map list web interface</p>
 </dd></dl>
 
 <dl class="post">
@@ -1280,7 +1399,8 @@ when the user logout we need clear the session to get the new cruved session</p>
 <dl class="post">
 <dt id="post--occtax-releve">
 <code class="descname">POST </code><code class="descname">/occtax/releve</code><a class="headerlink" href="#post--occtax-releve" title="Permalink to this definition">¶</a></dt>
-<dd><p>Post one Occtax data (Releve + Occurrence + Counting)</p>
+<dd><p>Route utilisée depuis l’appli mobile =&gt; depreciée et non utilisée par l’appli web
+Post one Occtax data (Releve + Occurrence + Counting)</p>
 <p><strong>Request JSON object:</strong></p>
 <div class="highlight-http"><div class="highlight"><pre><span></span>{
 &quot;geometry&quot;:
@@ -1290,10 +1410,10 @@ when the user logout we need clear the session to get the new cruved session</p>
         {
         &quot;id_releve_occtax&quot;:null,&quot;id_dataset&quot;:1,&quot;id_digitiser&quot;:1,&quot;date_min&quot;:&quot;2019-05-09&quot;,&quot;date_max&quot;:&quot;2019-05-09&quot;,&quot;hour_min&quot;:null,&quot;hour_max&quot;:null,&quot;altitude_min&quot;:null,&quot;altitude_max&quot;:null,&quot;meta_device_entry&quot;:&quot;web&quot;,&quot;comment&quot;:null,&quot;id_nomenclature_obs_technique&quot;:316,&quot;observers&quot;:[1],&quot;observers_txt&quot;:null,&quot;id_nomenclature_grp_typ&quot;:132,
         &quot;t_occurrences_occtax&quot;:[{
-            &quot;id_releve_occtax&quot;:null,&quot;id_occurrence_occtax&quot;:null,&quot;id_nomenclature_obs_meth&quot;:41,&quot;id_nomenclature_bio_condition&quot;:157,&quot;id_nomenclature_bio_status&quot;:29,&quot;id_nomenclature_naturalness&quot;:160,&quot;id_nomenclature_exist_proof&quot;:81,&quot;id_nomenclature_observation_status&quot;:88,&quot;id_nomenclature_blurring&quot;:175,&quot;id_nomenclature_source_status&quot;:75,&quot;determiner&quot;:null,&quot;id_nomenclature_determination_method&quot;:445,&quot;cd_nom&quot;:67111,&quot;nom_cite&quot;:&quot;Ablette =  &lt;i&gt; Alburnus alburnus (Linnaeus, 1758)&lt;/i&gt; - [ES - 67111]&quot;,&quot;meta_v_taxref&quot;:null,&quot;sample_number_proof&quot;:null,&quot;comment&quot;:null,
+            &quot;id_releve_occtax&quot;:null,&quot;id_occurrence_occtax&quot;:null,&quot;id_nomenclature_obs_technique&quot;:41,&quot;id_nomenclature_bio_condition&quot;:157,&quot;id_nomenclature_bio_status&quot;:29,&quot;id_nomenclature_naturalness&quot;:160,&quot;id_nomenclature_exist_proof&quot;:81,&quot;id_nomenclature_observation_status&quot;:88,&quot;id_nomenclature_blurring&quot;:175,&quot;id_nomenclature_source_status&quot;:75,&quot;determiner&quot;:null,&quot;id_nomenclature_determination_method&quot;:445,&quot;cd_nom&quot;:67111,&quot;nom_cite&quot;:&quot;Ablette =  &lt;i&gt; Alburnus alburnus (Linnaeus, 1758)&lt;/i&gt; - [ES - 67111]&quot;,&quot;meta_v_taxref&quot;:null,&quot;sample_number_proof&quot;:null,&quot;comment&quot;:null,
         &quot;cor_counting_occtax&quot;:[{
-            &quot;id_counting_occtax&quot;:null,&quot;id_nomenclature_life_stage&quot;:1,&quot;id_nomenclature_sex&quot;:171,&quot;id_nomenclature_obj_count&quot;:146,&quot;id_nomenclature_type_count&quot;:94,&quot;id_occurrence_occtax&quot;:null,&quot;count_min&quot;:1,&quot;count_max&quot;:1   
-            }]    
+            &quot;id_counting_occtax&quot;:null,&quot;id_nomenclature_life_stage&quot;:1,&quot;id_nomenclature_sex&quot;:171,&quot;id_nomenclature_obj_count&quot;:146,&quot;id_nomenclature_type_count&quot;:94,&quot;id_occurrence_occtax&quot;:null,&quot;count_min&quot;:1,&quot;count_max&quot;:1
+            }]
         }]
     }
 }
@@ -1312,7 +1432,7 @@ when the user logout we need clear the session to get the new cruved session</p>
 <dl class="get">
 <dt id="get--occtax-export">
 <code class="descname">GET </code><code class="descname">/occtax/export</code><a class="headerlink" href="#get--occtax-export" title="Permalink to this definition">¶</a></dt>
-<dd><p>Export data from pr_occtax.export_occtax_sinp view (parameter)</p>
+<dd><p>Export data from pr_occtax.v_export_occtax view (parameter)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1528,6 +1648,12 @@ Add the CRUVED permission for each row (Dataset and AD)</p>
 </dd></dl>
 
 <dl class="post">
+<dt id="post--geo-altitude">
+<code class="descname">POST </code><code class="descname">/geo/altitude</code><a class="headerlink" href="#post--geo-altitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>From a posted geojson get the altitude min/max</p>
+</dd></dl>
+
+<dl class="post">
 <dt id="post--geo-areas">
 <code class="descname">POST </code><code class="descname">/geo/areas</code><a class="headerlink" href="#post--geo-areas" title="Permalink to this definition">¶</a></dt>
 <dd><p>From a posted geojson, the route return all the area intersected
@@ -1538,7 +1664,7 @@ from l_areas
 <dl class="get">
 <dt id="get--geo-areas">
 <code class="descname">GET </code><code class="descname">/geo/areas</code><a class="headerlink" href="#get--geo-areas" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the areas of ref_geo.l_areas without geometry
+<dd><p>Return the areas of ref_geo.l_areas
 .. :quickref: Ref Geo;</p>
 </dd></dl>
 
@@ -1546,8 +1672,7 @@ from l_areas
 <dt id="post--geo-info">
 <code class="descname">POST </code><code class="descname">/geo/info</code><a class="headerlink" href="#post--geo-info" title="Permalink to this definition">¶</a></dt>
 <dd><p>From a posted geojson, the route return the municipalities intersected
-and the altitude min/max
-.. :quickref: Ref Geo;</p>
+and the altitude min/max</p>
 </dd></dl>
 
 <dl class="get">
@@ -1556,9 +1681,9 @@ and the altitude min/max
 <dd><p>Return synthese and t_validations data filtered by form params
 Params must have same synthese fields names</p>
 <dl class="docutils">
-<dt>info_role (User): </dt>
+<dt>info_role (User):</dt>
 <dd>Information about the user asking the route. Auto add with kwargs</dd>
-<dt>truc (int): </dt>
+<dt>truc (int):</dt>
 <dd>essai</dd>
 </dl>
 <dl class="docutils">
@@ -1665,37 +1790,16 @@ Params must have same synthese fields names</p>
 <dd></dd></dl>
 
 <dl class="get">
-<dt id="get--habref-habitats-autocomplete-list-(int-id_list)">
-<code class="descname">GET </code><code class="descname">/habref/habitats/autocomplete/list/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_list</em><span class="sig-paren">)</span><a class="headerlink" href="#get--habref-habitats-autocomplete-list-(int-id_list)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get all habref items of a list for autocomplete</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>id_list</strong> (<em>int</em>) – the id of the habref list</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name" colspan="2">Query Parameters:</th></tr>
-<tr class="field-even field"><td>&#160;</td><td class="field-body"><ul class="first simple">
-<li><strong>str</strong> (<em>search_name</em>) – the pattern to filter with</li>
-<li><strong>int</strong> (<em>limit</em>) – filter by typology</li>
-<li><strong>int</strong> – number of results, default = 20</li>
-</ul>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Array&lt;AutoCompleteHabitat&gt;</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="get">
 <dt id="get--permissions_backoffice-filter_list-id_filter_type-(int-id_filter_type)">
 <code class="descname">GET </code><code class="descname">/permissions_backoffice/filter_list/id_filter_type/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_filter_type</em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-filter_list-id_filter_type-(int-id_filter_type)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="get">
+<dt id="get--gn_commons-media-thumbnails-(int-id_media)-(int-size)">
+<code class="descname">GET </code><code class="descname">/gn_commons/media/thumbnails/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_media</em><span class="sig-paren">)</span><code class="descname">/</code><span class="sig-paren">(</span><em class="property">int: </em><em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#get--gn_commons-media-thumbnails-(int-id_media)-(int-size)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retourne le thumbnail d’un media
+.. :quickref: Commons;</p>
+</dd></dl>
 
 <dl class="delete">
 <dt id="delete--occtax-releve-occurrence_counting-(int-id_count)">
@@ -1712,19 +1816,16 @@ Params must have same synthese fields names</p>
 </table>
 </dd></dl>
 
-<dl class="delete">
-<dt id="delete--occtax-releve-occurrence-(int-id_occ)">
-<code class="descname">DELETE </code><code class="descname">/occtax/releve/occurrence/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_occ</em><span class="sig-paren">)</span><a class="headerlink" href="#delete--occtax-releve-occurrence-(int-id_occ)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Delete one occurrence and associated counting</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name" colspan="2">Params int id_occ:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body">ID of the occurrence to delete</td>
-</tr>
-</tbody>
-</table>
+<dl class="post">
+<dt id="post--occtax-releve-(int-id_releve)-occurrence">
+<code class="descname">POST </code><code class="descname">/occtax/releve/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_releve</em><span class="sig-paren">)</span><code class="descname">/occurrence</code><a class="headerlink" href="#post--occtax-releve-(int-id_releve)-occurrence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Post one Occurrence data (Occurrence + Counting) for add to Releve</p>
+</dd></dl>
+
+<dl class="post">
+<dt id="post--occtax-only-releve-(int-id_releve)">
+<code class="descname">POST </code><code class="descname">/occtax/only/releve/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_releve</em><span class="sig-paren">)</span><a class="headerlink" href="#post--occtax-only-releve-(int-id_releve)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Post one Occurrence data (Occurrence + Counting) for add to Releve</p>
 </dd></dl>
 
 <dl class="get">
@@ -1818,6 +1919,13 @@ Possibilité de filtrer par regne et group2Inpn</p>
 </dd></dl>
 
 <dl class="get">
+<dt id="get--gn_commons-medias-(string-uuid_attached_row)">
+<code class="descname">GET </code><code class="descname">/gn_commons/medias/</code><span class="sig-paren">(</span><em class="property">string: </em><em>uuid_attached_row</em><span class="sig-paren">)</span><a class="headerlink" href="#get--gn_commons-medias-(string-uuid_attached_row)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retourne des medias
+.. :quickref: Commons;</p>
+</dd></dl>
+
+<dl class="get">
 <dt id="get--gn_commons-media-(int-id_media)">
 <code class="descname">GET </code><code class="descname">/gn_commons/media/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_media</em><span class="sig-paren">)</span><a class="headerlink" href="#get--gn_commons-media-(int-id_media)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retourne un media
@@ -1867,6 +1975,27 @@ The route is in post to avoid a too large query string</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Params cd_hab:</th><td class="field-body">a cd_hab</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="post">
+<dt id="post--occtax-occurrence-(int-id_occurrence)">
+<code class="descname">POST </code><code class="descname">/occtax/occurrence/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_occurrence</em><span class="sig-paren">)</span><a class="headerlink" href="#post--occtax-occurrence-(int-id_occurrence)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Post one Occurrence data (Occurrence + Counting) for add to Releve</p>
+</dd></dl>
+
+<dl class="delete">
+<dt id="delete--occtax-occurrence-(int-id_occ)">
+<code class="descname">DELETE </code><code class="descname">/occtax/occurrence/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_occ</em><span class="sig-paren">)</span><a class="headerlink" href="#delete--occtax-occurrence-(int-id_occ)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete one occurrence and associated counting</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Params int id_occ:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">ID of the occurrence to delete</td>
 </tr>
 </tbody>
 </table>
@@ -2260,19 +2389,100 @@ Le fichier en sortie doit s’appeler <code class="docutils literal"><span class
 </li>
 </ul>
 </div>
-<div class="section" id="pratiques">
-<h2>Pratiques<a class="headerlink" href="#pratiques" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="pratiques-et-regles-de-developpement">
+<h2>Pratiques et règles de developpement<a class="headerlink" href="#pratiques-et-regles-de-developpement" title="Permalink to this headline">¶</a></h2>
+<p>Afin de partager des règles communes de développement et faciliter l’intergration de
+nouveau code, veuillez lire les recommandation et bonnes pratiques recommandées pour contribuer
+au projet GeoNature.</p>
 <ul class="simple">
 <li>Ne jamais faire de commit dans la branche <code class="docutils literal"><span class="pre">master</span></code> mais dans la branche
-<code class="docutils literal"><span class="pre">develop</span></code> ou idéalement dans une branche dédiée à la fonctionnalité</li>
-<li>Faire des pull request vers la branche <code class="docutils literal"><span class="pre">develop</span></code> regroupant plusieurs
-commits depuis la branche de sa fonctionnalité pour plus de lisibilité,
-éviter les conflits et déclencher les tests automatiques Travis avant
-d’intégrer la branche <code class="docutils literal"><span class="pre">develop</span></code></li>
+<code class="docutils literal"><span class="pre">develop</span></code> ou idéalement dans une branche dédiée à la fonctionnalité (feature branch)</li>
+<li>Faire des pull request vers la branche <code class="docutils literal"><span class="pre">develop</span></code></li>
 <li>Faire des <code class="docutils literal"><span class="pre">git</span> <span class="pre">pull</span></code> avant chaque développement et avant chaque commit</li>
 <li>Les messages de commits font référence à ticket ou le ferme (<code class="docutils literal"><span class="pre">ref</span> <span class="pre">#12</span></code>
 ou <code class="docutils literal"><span class="pre">fixes</span> <span class="pre">#23</span></code>)</li>
+<li>Les messages des commits sont en anglais (dans le mesure du possible)</li>
 </ul>
+<ul class="simple">
+<li>Une fonction ou classe doit contenir une docstring en français. Les doctrings doivent suivre le modèle</li>
+</ul>
+<p>NumPy/SciPy (voir <a class="reference external" href="https://numpydoc.readthedocs.io/en/latest/format.html">https://numpydoc.readthedocs.io/en/latest/format.html</a> et <a class="reference external" href="https://realpython.com/documenting-python-code/#numpyscipy-docstrings-example">https://realpython.com/documenting-python-code/#numpyscipy-docstrings-example</a>
+- Les commentaires dans le codes doivent être en anglais (ne pas s’empecher de mettre un commentaire en français sur une partie du code complexe !)
+- Installer les requirements-dev (<cite>pip install -r backend/requirements-dev.txt</cite>) qui contiennent
+une série d’outils indispensable au développement dans GeoNature.
+- Utiliser <em>blake</em> comme formateur de texte et activer l’autoformatage dans son éditeur de texte</p>
+<blockquote>
+<div>(Tuto pour VsCode: <a class="reference external" href="https://medium.com/&#64;marcobelo/setting-up-python-black-on-visual-studio-code-5318eba4cd00">https://medium.com/&#64;marcobelo/setting-up-python-black-on-visual-studio-code-5318eba4cd00</a>)</div></blockquote>
+<ul class="simple">
+<li>Utiliser <em>pylint</em> comme formatteur de code</li>
+<li>Respecter la norme PEP8 (assurée par les deux outils précédents)</li>
+<li>La longueur maximale pour une ligne de code est 100 caractères. Pour VsCode copier ces lignes</li>
+</ul>
+<p>le fichier settings.json:
+- Respecter le snake case</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;python.formatting.blackArgs&quot;</span><span class="p">:</span> <span class="p">[</span>
+  <span class="s2">&quot;--line-length&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;100&quot;</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Utiliser des doubles quotes pour les chaines de charactères.</li>
+</ul>
+<ul class="simple">
+<li>Le noms des tables est préfixé par un “t” pour une table de contenu, de “bib” pour les tables de</li>
+</ul>
+<p>“dictionnaires” et de “cor” pour les tables de correspondances
+- Les schémas du coeur de GeoNature sont préfixés de “gn”
+- Les schéma des protocoles ou modules GeoNature sont préfixés de “pr”
+- Chaque schéma de BDD dispose de son propre fichier SQL
+- Les scripts SQL sont ordonnées en section dans l’ordre suivant: (voir <a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/core/synthese.sql">https://github.com/PnX-SI/GeoNature/blob/master/data/core/synthese.sql</a>)</p>
+<blockquote>
+<div><ul class="simple">
+<li>Fonctions</li>
+<li>Tables</li>
+<li>Clés primaires</li>
+<li>Clés étrangères</li>
+<li>Contraintes</li>
+<li>Triggers</li>
+<li>Données nécessaire au fonctionnement du schéma</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li>Les scripts de données sont écrit dans des fichiers à part</li>
+<li>Ne rien écrire dans le schéma public</li>
+<li>Ne pas répeter le nom des tables dans les noms des colonnes (exception faite des colonnes “id)</li>
+</ul>
+<ul class="simple">
+<li>Documenter les fonctions et classes grâce au JSDoc en français (<a class="reference external" href="https://jsdoc.app/">https://jsdoc.app/</a>)</li>
+<li>Les commentaires dans le codes doivent être en anglais (ne pas s’empecher de mettre un commentaire en français sur une partie du code complexe !)</li>
+<li>Les messages renvoyés aux utilisateurs sont en français</li>
+<li>Installer les outils de devéloppement: <cite>npm install –only=dev</cite></li>
+<li>Utiliser <em>prettier</em> comme formateur de texte et activer l’autoformatage dans son éditeur de texte</li>
+</ul>
+<p>(VsCode dispose d’une extension Prettier : <a class="reference external" href="https://github.com/prettier/prettier-vscode">https://github.com/prettier/prettier-vscode</a>)
+- Utiliser tslint comme linter
+- La longueur maximale pour une ligne de code est 100 caractères.
+- Suivre les recommandations définit par le styleguide Angular: <a class="reference external" href="https://angular.io/guide/styleguide">https://angular.io/guide/styleguide</a></p>
+<ul class="simple">
+<li>La longueur maximale pour une ligne de code est 100 caractères.</li>
+<li>Lorsqu’il y a plus d’un attribut sur une balise, revenir à la ligne et aligner les attributs:</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">button</span>
+  <span class="n">mat</span><span class="o">-</span><span class="n">raised</span><span class="o">-</span><span class="n">button</span>
+  <span class="n">color</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span>
+  <span class="n">class</span><span class="o">=</span><span class="s2">&quot;btn-action hard-shadow uppercase ml-3&quot;</span>
+  <span class="n">data</span><span class="o">-</span><span class="n">toggle</span><span class="o">=</span><span class="s2">&quot;collapse&quot;</span>
+  <span class="n">data</span><span class="o">-</span><span class="n">target</span><span class="o">=</span><span class="s2">&quot;#collapseAvance&quot;</span>
+<span class="o">&gt;</span>
+  <span class="n">Filtrer</span>
+<span class="o">&lt;/</span><span class="n">button</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>VsCode fournit un formatter de HTML par défaut (Dans les option de VsCode, tapez “wrap attributes”</li>
+</ul>
+<p>et sélectionner “force-expand-multiline”</p>
 </div>
 <div class="section" id="developper-et-installer-un-gn-module">
 <h2>Développer et installer un gn_module<a class="headerlink" href="#developper-et-installer-un-gn-module" title="Permalink to this headline">¶</a></h2>
@@ -2759,7 +2969,7 @@ est retourné, sinon 0.</li>
 </ul>
 <p>Valeur retournée : tuple</p>
 <p>A l’indice 0 du tuple: &lt;dict{str:str}&gt; ou &lt;dict{str:int}&gt;, boolean)
-{‘C’: ‘1’, ‘R’:‘2’, ‘U’: ‘1’, ‘V’:‘2’, ‘E’:‘3’, ‘D’: ‘3’} ou
+{‘C’: ‘1’, ‘R’:’2’, ‘U’: ‘1’, ‘V’:’2’, ‘E’:’3’, ‘D’: ‘3’} ou
 {‘C’: 2, ‘R’:3, ‘U’: 4, ‘V’:1, ‘E’:2, ‘D’: 2} si <code class="docutils literal"><span class="pre">get_id=True</span></code></p>
 <p>A l’indice 1 du tuple: un booléan spécifiant si le CRUVED est hérité depuis
 un module parent ou non.</p>

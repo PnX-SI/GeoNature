@@ -790,6 +790,8 @@ Exemple :
     UPDATE gn_commons.t_modules SET module_label = 'Suivis' WHERE module_code = 'MONITORINGS';
     UPDATE gn_commons.t_modules SET module_picto = 'fa-eye' WHERE module_code = 'MONITORINGS';
 
+Depuis la version 2.5.0, il est aussi possible de customiser l'ordre des modules dans le menu, par ordre alphabétique par défaut, en renseignant le champs ``gn_commons.t_modules.module_order``.
+
 Customiser les exports PDF
 """"""""""""""""""""""""""
 
@@ -1180,7 +1182,7 @@ Pour cela, créer votre vue, et modifier les paramètres suivants :
 ::
 
     # Name of the view based export
-    export_view_name = 'export_occtax_sinp'
+    export_view_name = 'v_export_occtax'
 
     # Name of the geometry columns of the view
     export_geom_columns_name = 'geom_4326'
@@ -1360,7 +1362,6 @@ Enlevez la ligne de la colonne que vous souhaitez désactiver. Les noms de colon
             "cdNom",
             "cdRef",
             "nomCite",
-            "vTAXREF",
             "wkt",
             "lastAction",
             "validateur"

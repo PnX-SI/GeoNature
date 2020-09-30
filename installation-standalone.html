@@ -100,7 +100,10 @@
 <li class="toctree-l1"><a class="reference internal" href="installation-all.html">INSTALLATION GLOBALE</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">INSTALLATION AUTONOME</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#prerequis">Prérequis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#preparation-du-serveur">Préparation du serveur</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#preparation-du-serveur">Préparation du serveur</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#python-3-7-sur-debian-9">Python 3.7 sur Debian 9</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#installation-de-l-application">Installation de l’application</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#creation-de-la-base-de-donnees">Création de la base de données</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id1">Installation de l’application</a></li>
@@ -234,9 +237,10 @@ Pour une installation packagée voir cette <a class="reference external" href="h
 <ul>
 <li><p class="first">Se reconnecter en SSH au serveur avec le nouvel utilisateur pour ne pas faire l’installation en <code class="docutils literal"><span class="pre">root</span></code>. On ne se connectera plus en <code class="docutils literal"><span class="pre">root</span></code>. Si besoin d’éxecuter des commandes avec des droits d’administrateur, on les précède de <code class="docutils literal"><span class="pre">sudo</span></code>. Il est d’ailleurs possible renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec root. Voir <a class="reference external" href="https://docs.ovh.com/fr/vps/conseils-securisation-vps/">https://docs.ovh.com/fr/vps/conseils-securisation-vps/</a> pour plus d’informations sur le sécurisation du serveur.</p>
 </li>
-<li><p class="first">Lancez les commandes suivantes pour installer les dépendances de GeoNature (Debian 9) :</p>
+<li><p class="first">Lancez les commandes suivantes pour installer les dépendances de GeoNature (Debian 10) :</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">wget</span> <span class="n">git</span>
-<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">postgresql</span> <span class="n">postgis</span> <span class="n">postgresql</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="n">dev</span><span class="o">-</span><span class="mf">9.6</span>
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">postgresql</span> <span class="n">postgis</span> <span class="n">postgresql</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="n">dev</span><span class="o">-</span><span class="mi">11</span>
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">postgis</span><span class="o">-</span><span class="mf">2.5</span> <span class="n">postgis</span> <span class="n">postgresql</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="n">postgis</span><span class="o">-</span><span class="mf">2.5</span>
 <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">python3</span> <span class="n">python3</span><span class="o">-</span><span class="n">dev</span> <span class="n">python3</span><span class="o">-</span><span class="n">setuptools</span> <span class="n">python</span><span class="o">-</span><span class="n">pip</span> <span class="n">libpq</span><span class="o">-</span><span class="n">dev</span> <span class="n">libgdal</span><span class="o">-</span><span class="n">dev</span> <span class="n">python</span><span class="o">-</span><span class="n">gdal</span> <span class="n">build</span><span class="o">-</span><span class="n">essential</span>
 <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">python3</span><span class="o">-</span><span class="n">wheel</span> <span class="n">python3</span><span class="o">-</span><span class="n">cffi</span> <span class="n">libcairo2</span> <span class="n">libpango</span><span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="mi">0</span> <span class="n">libpangocairo</span><span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="mi">0</span> <span class="n">libgdk</span><span class="o">-</span><span class="n">pixbuf2</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="mi">0</span> <span class="n">libffi</span><span class="o">-</span><span class="n">dev</span> <span class="n">shared</span><span class="o">-</span><span class="n">mime</span><span class="o">-</span><span class="n">info</span>
 <span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">pip</span><span class="o">==</span><span class="mf">20.0</span><span class="o">.</span><span class="mi">2</span>
@@ -253,7 +257,37 @@ Pour une installation packagée voir cette <a class="reference external" href="h
 </div>
 </li>
 </ul>
-<p>Sur Ubuntu 18, installez la version 10 de postgresql-server-dev <code class="docutils literal"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">postgresql-server-dev-10</span></code>. La version est à adapter sur les autres versions de Debian ou Ubuntu.</p>
+<p>Sur Ubuntu 18, installez la version 10 de postgresql-server-dev avec la commande <code class="docutils literal"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">postgresql-server-dev-10</span></code>. La version est à adapter sur les autres versions de Debian ou Ubuntu.</p>
+<div class="section" id="python-3-7-sur-debian-9">
+<h3>Python 3.7 sur Debian 9<a class="headerlink" href="#python-3-7-sur-debian-9" title="Permalink to this headline">¶</a></h3>
+<p>A partir la version 2.5.0 de GeoNature, la version Python 3.5 n’est plus supportée. Seules les version 3.6+ le sont.</p>
+<p>Si vous êtes encore sur Debian 9 (fourni par défaut avec Python 3.5), veuillez suivre les instructions suivantes pour monter la version de Python sur Debian 9 :</p>
+<p>Installer <code class="docutils literal"><span class="pre">pyenv</span></code> (utilitaire pour installer différentes versions de Python)</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span>
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">upgrade</span>
+
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">build</span><span class="o">-</span><span class="n">essential</span> <span class="n">libssl</span><span class="o">-</span><span class="n">dev</span> <span class="n">zlib1g</span><span class="o">-</span><span class="n">dev</span> <span class="n">libbz2</span><span class="o">-</span><span class="n">dev</span> \
+<span class="n">libreadline</span><span class="o">-</span><span class="n">dev</span> <span class="n">libsqlite3</span><span class="o">-</span><span class="n">dev</span> <span class="n">wget</span> <span class="n">curl</span> <span class="n">llvm</span> <span class="n">libncurses5</span><span class="o">-</span><span class="n">dev</span> <span class="n">libncursesw5</span><span class="o">-</span><span class="n">dev</span> \
+<span class="n">xz</span><span class="o">-</span><span class="n">utils</span> <span class="n">tk</span><span class="o">-</span><span class="n">dev</span> <span class="n">libffi</span><span class="o">-</span><span class="n">dev</span> <span class="n">liblzma</span><span class="o">-</span><span class="n">dev</span> <span class="n">python</span><span class="o">-</span><span class="n">openssl</span> <span class="n">git</span>
+
+<span class="n">curl</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">pyenv</span><span class="o">.</span><span class="n">run</span> <span class="o">|</span> <span class="n">bash</span>
+
+<span class="n">export</span> <span class="n">PATH</span><span class="o">=</span><span class="s2">&quot;$HOME/.pyenv/bin:$PATH&quot;</span>
+<span class="nb">eval</span> <span class="s2">&quot;$(pyenv init -)&quot;</span>
+<span class="nb">eval</span> <span class="s2">&quot;$(pyenv virtualenv-init -)&quot;</span>
+</pre></div>
+</div>
+<p>Installer Python 3.7.9 :</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pyenv</span> <span class="n">install</span> <span class="mf">3.7</span><span class="o">.</span><span class="mi">9</span>
+<span class="n">pyenv</span> <span class="k">global</span> <span class="mf">3.7</span><span class="o">.</span><span class="mi">9</span>
+</pre></div>
+</div>
+<p>Editer ensuite le fichier <code class="docutils literal"><span class="pre">config/settings.ini</span></code> pour changer la variable <code class="docutils literal"><span class="pre">python_path</span></code> (remplacer &lt;MON_USER&gt; par votre utilisateur linux courant.
+NB : faire pareil dans TaxHub et UsersHub.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">home</span><span class="o">/&lt;</span><span class="n">MON_USER</span><span class="o">&gt;/.</span><span class="n">pyenv</span><span class="o">/</span><span class="n">shims</span><span class="o">/</span><span class="n">python3</span>
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="installation-de-l-application">
 <h2>Installation de l’application<a class="headerlink" href="#installation-de-l-application" title="Permalink to this headline">¶</a></h2>
