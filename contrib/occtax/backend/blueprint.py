@@ -726,9 +726,9 @@ def getDefaultNomenclatures():
     redirect_on_expiration=current_app.config.get("URL_APPLICATION"),
 )
 def export(info_role):
-    """Export data from pr_occtax.export_occtax_sinp view (parameter)
+    """Export data from pr_occtax.v_export_occtax view (parameter)
 
-    .. :quickref: Occtax; Export data from pr_occtax.export_occtax_sinp
+    .. :quickref: Occtax; Export data from pr_occtax.v_export_occtax
 
     :query str format: format of the export ('csv', 'geojson', 'shapefile')
 

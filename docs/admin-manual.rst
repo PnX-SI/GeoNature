@@ -1182,7 +1182,7 @@ Pour cela, créer votre vue, et modifier les paramètres suivants :
 ::
 
     # Name of the view based export
-    export_view_name = 'export_occtax_sinp'
+    export_view_name = 'v_export_occtax'
 
     # Name of the geometry columns of the view
     export_geom_columns_name = 'geom_4326'

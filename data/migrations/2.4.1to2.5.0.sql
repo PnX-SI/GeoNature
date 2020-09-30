@@ -241,10 +241,11 @@ BEGIN;
   DROP VIEW IF EXISTS gn_synthese.v_synthese_decode_nomenclatures;
   DROP VIEW IF EXISTS gn_synthese.v_synthese_for_web_app;
   DROP VIEW IF EXISTS gn_commons.v_synthese_validation_forwebapp;
+  DROP VIEW IF EXISTS pr_occtax.export_occtax_sinp;
+
 
 
   -- OCCTAX V2 - Ajouter et modifier les champs du au passage sur la version 2.0 du standard
-
   ALTER TABLE pr_occtax.t_releves_occtax
     ADD COLUMN id_nomenclature_geo_object_nature integer,
     ADD COLUMN depth_min integer,
@@ -862,7 +863,7 @@ BEGIN;
     COST 100;
 
   -- Révision de la vue des exports Occtax
-  CREATE OR REPLACE VIEW pr_occtax.export_occtax AS
+  CREATE OR REPLACE VIEW pr_occtax.v_export_occtax AS
   SELECT
       rel.unique_id_sinp_grp as "idSINPRegroupement",
       ref_nomenclatures.get_cd_nomenclature(rel.id_nomenclature_grp_typ) AS "typGrp",
