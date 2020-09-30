@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-2.5.0 - Manidae (unreleased)
+2.5.0 - Manidae (2020-09-30)
 ----------------------------
 
 Occtax v2 et médias
@@ -86,8 +86,6 @@ Occtax v2 et médias
 Si vous mettez à jour GeoNature :
 
 * Nomenclatures : Commencer par exécuter le script SQL de mise à jour du schéma ``ref_nomenclatures`` de la BDD (https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.3to1.3.4.sql)
-* 
-* Jouez le script https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/check_view_2.5.0.sql pour savoir vous avez des vues qui utilisent des champs qui ont été supprimés ou renommés (dans module Export notamment). La requête vous indiquera les vues qui bloquent la mise à jour (#1016), si elle ne renvoie rien, vous pouvez passer à la suite. Dans le cas contraire, adaptez vos vues.
 * Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.1to2.5.0.sql). Attention, si vous avez customisé les vues des exports Occtax et Synthèse, elles seront supprimées et recrées automatiquement par le script SQL de mise à jour de la BDD de GeoNature pour s'adapter aux évolutions du standard Occtax en version 2.0.0. Révisez éventuellement ces vues avant et/ou après la mise à jour. Le script SQL de mise à jour vérifiera aussi si vous avez d'autres vues (dans le module Export notamment) qui utilisent le champs ``id_nomenclature_obs_technique`` qui doit être renommé et l'indiquera dès le début de l'exécution du script, en l'arrêtant pour que vous puissiez modifier ou supprimer ces vues bloquant la mise à jour.
 * A partir la version 2.5.0 de GeoNature, la version 3.5 de Python n'est plus supportée. Seules les version 3.6 et + le sont. Si vous êtes encore sur Debian 9 (fourni par défaut avec Python 3.5), veuillez suivre les instructions de mise à jour de Python sur cette version (https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-standalone.rst#python-37-sur-debian-9). Il est cependant plutôt conseillé de passer sur Debian 10 pour rester à jour sur des versions maintenues
 * Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
