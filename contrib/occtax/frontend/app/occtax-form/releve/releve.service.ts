@@ -305,12 +305,17 @@ export class OcctaxFormReleveService {
   }
 
   private formatDate(strDate) {
-    const date = new Date(strDate);
-    return {
-      year: date.getFullYear(),
-      month: date.getMonth() + 1,
-      day: date.getDate(),
-    };
+    // if its an object return it
+    if (typeof strDate === 'object' && strDate !== null) {
+      return strDate
+    } else {
+      const date = new Date(strDate);
+      return {
+        year: date.getFullYear(),
+        month: date.getMonth() + 1,
+        day: date.getDate(),
+      };
+    }
   }
 
   get releveFormValue() {
