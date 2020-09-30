@@ -1,7 +1,11 @@
-
 <div class="modal-header">
   <h4 class="modal-title pull-left">Suppression</h4>
-  <button type="button" class="close pull-right" aria-label="Close" (click)="c()">
+  <button
+    type="button"
+    class="close pull-right"
+    aria-label="Close"
+    (click)="c()"
+  >
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -10,17 +14,17 @@
     Attention vous vous apprêtez à supprimer une station qui comporte
     {{nbHabitats}} habitat(s)
   </p>
-  <button 
+  <button
     mat-raised-button
-    (click)="c()" 
-    class="btn btn-secondary">Annuler</button>
-  <button 
+    (click)="c()"
+    class="btn btn-secondary"
+  >Annuler</button>
+  <button
     mat-raised-button
     color="warn"
     class="mr-1"
-    (click)="deleteStation(modalDelete); c()">
+    (click)="deleteStation(modalDelete); c()"
+  >
     Supprimer
   </button>
 </div>
-
-

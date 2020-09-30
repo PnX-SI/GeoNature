@@ -87,18 +87,16 @@ Afin de partager des règles communes de développement et faciliter l'intergrat
 nouveau code, veuillez lire les recommandation et bonnes pratiques recommandées pour contribuer
 au projet GeoNature.
 
-Recommandations générales:
-""""""""""""""""""""""""""
+Git:
+""""
 
 - Ne jamais faire de commit dans la branche ``master`` mais dans la branche
   ``develop`` ou idéalement dans une branche dédiée à la fonctionnalité (feature branch)
-- Faire des pull request vers la branche ``develop`` regroupant plusieurs
-  commits depuis la branche de sa fonctionnalité pour plus de lisibilité,
-  éviter les conflits et déclencher les tests automatiques Travis avant
-  d'intégrer la branche ``develop``
+- Faire des pull request vers la branche ``develop``
 - Faire des ``git pull`` avant chaque développement et avant chaque commit
 - Les messages de commits font référence à ticket ou le ferme (``ref #12``
   ou ``fixes #23``)
+- Les messages des commits sont en anglais (dans le mesure du possible)
 
 
 Backend
@@ -113,7 +111,7 @@ une série d'outils indispensable au développement dans GeoNature.
  (Tuto pour VsCode: https://medium.com/@marcobelo/setting-up-python-black-on-visual-studio-code-5318eba4cd00)
 - Utiliser *pylint* comme formatteur de code 
 - Respecter la norme PEP8 (assurée par les deux outils précédents)
-- La longueur maximale pour une ligne de code est 99 caractères. Pour VsCode copier ces lignes 
+- La longueur maximale pour une ligne de code est 100 caractères. Pour VsCode copier ces lignes 
 le fichier settings.json:
 - Respecter le snake case
 
@@ -121,7 +119,7 @@ le fichier settings.json:
 
     "python.formatting.blackArgs": [
       "--line-length",
-      "99"
+      "100"
     ]
 - Utiliser des doubles quotes pour les chaines de charactères.
 
@@ -145,23 +143,40 @@ BDD
 - Les scripts de données sont écrit dans des fichiers à part
 - Ne rien écrire dans le schéma public
 - Ne pas répeter le nom des tables dans les noms des colonnes (exception faite des colonnes "id)
-- Utiliser *prettier* comme formateur de texte et activer l'autoformatage dans son éditeur de texte
-(VsCode dispose d'une extension Prettier : https://github.com/prettier/prettier-vscode)
-- Utiliser tslint comme linter
-- La longueur maximale pour une ligne de code est 140 caractères.
 
-HTML 
-""""
-TODO for angular
-
-
-Frontend
-""""""""
+Typescript
+""""""""""
 
 - Documenter les fonctions et classes grâce au JSDoc en français (https://jsdoc.app/)
 - Les commentaires dans le codes doivent être en anglais (ne pas s'empecher de mettre un commentaire en français sur une partie du code complexe !)
 - Les messages renvoyés aux utilisateurs sont en français 
 - Installer les outils de devéloppement: `npm install --only=dev`
+- Utiliser *prettier* comme formateur de texte et activer l'autoformatage dans son éditeur de texte
+(VsCode dispose d'une extension Prettier : https://github.com/prettier/prettier-vscode)
+- Utiliser tslint comme linter
+- La longueur maximale pour une ligne de code est 100 caractères.
+- Suivre les recommandations définit par le styleguide Angular: https://angular.io/guide/styleguide
+
+
+HTML 
+""""
+- La longueur maximale pour une ligne de code est 100 caractères.
+- Lorsqu'il y a plus d'un attribut sur une balise, revenir à la ligne et aligner les attributs:
+
+::
+
+      <button 
+        mat-raised-button
+        color="primary"
+        class="btn-action hard-shadow uppercase ml-3"
+        data-toggle="collapse"
+        data-target="#collapseAvance"
+      >
+        Filtrer
+      </button>
+
+- VsCode fournit un formatter de HTML par défaut (Dans les option de VsCode, tapez "wrap attributes"
+et sélectionner "force-expand-multiline"
 
 
 Développer et installer un gn_module

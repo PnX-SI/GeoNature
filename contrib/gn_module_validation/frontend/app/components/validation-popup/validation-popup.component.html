@@ -1,68 +1,131 @@
 <!-- Boutton pour accéder modal validation -->
 <p></p>
-<button 
-  type="button" 
-  id="validatorButton" 
-  class="btn-green" 
+<button
+  type="button"
+  id="validatorButton"
+  class="btn-green"
   mat-raised-button
-  [disabled]="!isAccess()" 
-  (click)="openVerticallyCentered(content)">
+  [disabled]="!isAccess()"
+  (click)="openVerticallyCentered(content)"
+>
   Attribuer un statut de validation
 </button>
 
 
-<ng-template #content let-c="close" let-d="dismiss">
+<ng-template
+  #content
+  let-c="close"
+  let-d="dismiss"
+>
 
-<!-- Modal Validation Popup-->
+  <!-- Modal Validation Popup-->
 
-      <!-- Modal content-->
+  <!-- Modal content-->
 
-        <form class="modal-content">
-
-
-            <div class="modal-header" style="justify-content: center" >
-                <h4 class="modal-title">Modification du statut de validation</h4>
-                <button type="button" class="close" aria-label="Close" (click)="closeModal()">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-
-            <div class="modal-body" id="bodyModal" style="padding-top:30px;">
-
-              <div> <span id="nbObs">{{this.observations.length}}</span> observation{{plurielObservations}} sélectionnée{{plurielObservations}}  </div>
-              <div *ngIf="nbOffPage !== 0" class="d-flex" ><i id="attention" class="material-icons">warning</i> Attention {{nbOffPage}} observation{{plurielNbOffPage}} non-visible{{plurielNbOffPage}} (hors de la page courante) sélectionnée{{plurielNbOffPage}} </div>
-
-              <br>
-              <fieldset>
-                <legend> Choix du statut </legend>
-
-                <div>
-                    <span *ngFor="let item of validationStatus" id="validButtons">
-  
-                      <label [ngStyle]="{'background-color': VALIDATION_CONFIG.STATUS_INFO[item.cd_nomenclature]?.color}" role="button" class="btn btn-success box-shadow" aria-pressed="true">
-                        <input (click)="setCurrentCdNomenclature(item)" type="radio" [formControl]="statusForm.controls.statut" value="{{item.id_nomenclature}}">
-                        {{item.mnemonique}}</label>
-                    </span>
-                  </div>
-                <br>
-                <div id="def"><pnx-validation-definitions></pnx-validation-definitions></div>
-
-              </fieldset>
+  <form class="modal-content">
 
 
-                <div class="md-form mb-0" style="padding-top:30px;">
-                  <span> Commentaire : </span>
-                  <textarea type="text" rows="1" class="form-control md-textarea" [formControl]="statusForm.controls.comment"> </textarea>
-                </div>
+    <div
+      class="modal-header"
+      style="justify-content: center"
+    >
+      <h4 class="modal-title">Modification du statut de validation</h4>
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        (click)="closeModal()"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
 
-            </div>
-          
-        <!-- Bouton de fermeture de la modal pop-up ou envoi -->
-        <div class="modal-footer" id="choicePopup">
-          <button id="saveButton" (click)="onSubmit(statusForm.value)" data-toggle="modal" #content value="Enregistrer" type="button" [disabled]="!this.statusForm.valid" class="btn btn-sm btn-success box-shadow" data-dismiss="modal" #required>
-            <!--<i class="material-icons">done</i> -->
-            Enregistrer </button>
+    <div
+      class="modal-body"
+      id="bodyModal"
+      style="padding-top:30px;"
+    >
+
+      <div> <span id="nbObs">{{this.observations.length}}</span> observation{{plurielObservations}}
+        sélectionnée{{plurielObservations}} </div>
+      <div
+        *ngIf="nbOffPage !== 0"
+        class="d-flex"
+      ><i
+          id="attention"
+          class="material-icons"
+        >warning</i> Attention {{nbOffPage}} observation{{plurielNbOffPage}}
+        non-visible{{plurielNbOffPage}} (hors de la page courante) sélectionnée{{plurielNbOffPage}}
+      </div>
+
+      <br>
+      <fieldset>
+        <legend> Choix du statut </legend>
+
+        <div>
+          <span
+            *ngFor="let item of validationStatus"
+            id="validButtons"
+          >
+
+            <label
+              [ngStyle]="{'background-color': VALIDATION_CONFIG.STATUS_INFO[item.cd_nomenclature]?.color}"
+              role="button"
+              class="btn btn-success box-shadow"
+              aria-pressed="true"
+            >
+              <input
+                (click)="setCurrentCdNomenclature(item)"
+                type="radio"
+                [formControl]="statusForm.controls.statut"
+                value="{{item.id_nomenclature}}"
+              >
+              {{item.mnemonique}}</label>
+          </span>
         </div>
-      </form>
-      
+        <br>
+        <div id="def">
+          <pnx-validation-definitions></pnx-validation-definitions>
+        </div>
+
+      </fieldset>
+
+
+      <div
+        class="md-form mb-0"
+        style="padding-top:30px;"
+      >
+        <span> Commentaire : </span>
+        <textarea
+          type="text"
+          rows="1"
+          class="form-control md-textarea"
+          [formControl]="statusForm.controls.comment"
+        > </textarea>
+      </div>
+
+    </div>
+
+    <!-- Bouton de fermeture de la modal pop-up ou envoi -->
+    <div
+      class="modal-footer"
+      id="choicePopup"
+    >
+      <button
+        id="saveButton"
+        (click)="onSubmit(statusForm.value)"
+        data-toggle="modal"
+        #content
+        value="Enregistrer"
+        type="button"
+        [disabled]="!this.statusForm.valid"
+        class="btn btn-sm btn-success box-shadow"
+        data-dismiss="modal"
+        #required
+      >
+        <!--<i class="material-icons">done</i> -->
+        Enregistrer </button>
+    </div>
+  </form>
+
 </ng-template>

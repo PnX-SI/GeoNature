@@ -1,159 +1,244 @@
 <div class="container">
-  <button mat-raised-button class="ml-1 mb-1" routerLink="/metadata">
+  <button
+    mat-raised-button
+    class="ml-1 mb-1"
+    routerLink="/metadata"
+  >
     <mat-icon> chevron_left</mat-icon> Retour
   </button>
-    <div class=" row row-0 ">
-        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 padding-sm">
-          <div class="card ">
-            <div class="card-body">
-              <h3>
-                Jeu de données
-              </h3>
+  <div class=" row row-0 ">
+    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 padding-sm">
+      <div class="card ">
+        <div class="card-body">
+          <h3>
+            Jeu de données
+          </h3>
 
 
-              <small>Cadre d'acquisition </small>
-              <div class="input-group">
-                <select
-                  class="form-control form-control-sm"
-                  [formControl]="datasetForm.controls.id_acquisition_framework">
-                  <option *ngFor="let ac of acquisitionFrameworks" [ngValue]="ac.id_acquisition_framework">
-                    {{ac.acquisition_framework_name}}
-                  </option>
-                </select>
-              </div>
+          <small>Cadre d'acquisition </small>
+          <div class="input-group">
+            <select
+              class="form-control form-control-sm"
+              [formControl]="datasetForm.controls.id_acquisition_framework"
+            >
+              <option
+                *ngFor="let ac of acquisitionFrameworks"
+                [ngValue]="ac.id_acquisition_framework"
+              >
+                {{ac.acquisition_framework_name}}
+              </option>
+            </select>
+          </div>
 
-              <small>Nom du JDD </small>
-              <div class="form-group">
-                  <div class="input-group">
-                      <input class="form-control form-control-sm"
-                        type="text" [formControl]="datasetForm.controls.dataset_name">
-                    </div>
-                <small *ngIf="datasetForm.controls.dataset_name.errors?.maxlength" class="error" style="color:red">
-                  Le nom du JDD doit être inférieur ou égal à 150 caractères
-                </small>
-              </div>
+          <small>Nom du JDD </small>
+          <div class="form-group">
+            <div class="input-group">
+              <input
+                class="form-control form-control-sm"
+                type="text"
+                [formControl]="datasetForm.controls.dataset_name"
+              >
+            </div>
+            <small
+              *ngIf="datasetForm.controls.dataset_name.errors?.maxlength"
+              class="error"
+              style="color:red"
+            >
+              Le nom du JDD doit être inférieur ou égal à 150 caractères
+            </small>
+          </div>
 
-              <small>Nom court du JDD </small>
-              <div class="form-group">
-                  <div class="input-group">
-                      <input class="form-control form-control-sm"
-                        type="text" [formControl]="datasetForm.controls.dataset_shortname">
-
-                    </div>
-                <small *ngIf="datasetForm.controls.dataset_shortname.errors?.maxlength" class="error" style="color:red">
-                  Le nom court du JDD doit être inférieur ou égal à 30 caractères
-                </small>
-              </div>
-
-              <small>Description</small>
-              <div class="input-group">
-                <input class="form-control form-control-sm"
-                  type="text" [formControl]="datasetForm.controls.dataset_desc">
-              </div>
-
-              <small>Domaine</small>
-              <div class="form-check" padding-lg>
-                <input [formControl]="datasetForm.controls.terrestrial_domain" class="" type="checkbox" name="domaine" id="terrestre"
-                  value="true">
-                <small class="" for="terrestre">
-                  Domaine terrestre
-                </small>
-              </div>
-              <div class="form-check">
-                <input [formControl]="datasetForm.controls.marine_domain" type="checkbox" name="domaine" id="marin">
-                <small class="" for="marin">
-                  Domaine marin
-                </small>
-              </div>
-
-            <pnx-nomenclature label="Type de données" [parentFormControl]="datasetForm.controls.id_nomenclature_data_type"
-              codeNomenclatureType="DATA_TYP">
-            </pnx-nomenclature>
-
-              <pnx-nomenclature label="Objectif" [parentFormControl]="datasetForm.controls.id_nomenclature_dataset_objectif"
-                codeNomenclatureType="JDD_OBJECTIFS">
-              </pnx-nomenclature>
-
-              <pnx-nomenclature label="Méthode de collecte" [parentFormControl]="datasetForm.controls.id_nomenclature_collecting_method"
-                codeNomenclatureType="METHO_RECUEIL">
-              </pnx-nomenclature>
-
-              <pnx-nomenclature label="Origine des données" [parentFormControl]="datasetForm.controls.id_nomenclature_data_origin"
-                codeNomenclatureType="DS_PUBLIQUE">
-              </pnx-nomenclature>
-
-              <pnx-nomenclature label="Statut source" [parentFormControl]="datasetForm.controls.id_nomenclature_source_status"
-                codeNomenclatureType="STATUT_SOURCE">
-              </pnx-nomenclature>
-
-              <pnx-nomenclature label="Type de ressource" [parentFormControl]="datasetForm.controls.id_nomenclature_resource_type"
-                codeNomenclatureType="RESOURCE_TYP">
-              </pnx-nomenclature>
-              <br>
-              <h5> Spécifique GeoNature </h5>
-
-              <input [formControl]="datasetForm.controls.active" type="checkbox" name="active" id="active" [value]="true">
-              <small class="" for="active">
-                Actif
-              </small>
-
-              <input [formControl]="datasetForm.controls.validable" type="checkbox" name="validable" id="validable" [value]="true">
-              <small class="" for="validable">
-                Validable
-              </small>
-              <br>
-              <pnx-multiselect
-                [values]="moduleService.modules"
-                [parentFormControl]="datasetForm.get('modules')"
-                keyLabel="module_label"
-                keyValue="id_module"
-                label="Module(s) GeoNature associé(s) au jeu de données" [bindAllItem]="true">
-              </pnx-multiselect>
+          <small>Nom court du JDD </small>
+          <div class="form-group">
+            <div class="input-group">
+              <input
+                class="form-control form-control-sm"
+                type="text"
+                [formControl]="datasetForm.controls.dataset_shortname"
+              >
 
             </div>
-
+            <small
+              *ngIf="datasetForm.controls.dataset_shortname.errors?.maxlength"
+              class="error"
+              style="color:red"
+            >
+              Le nom court du JDD doit être inférieur ou égal à 30 caractères
+            </small>
           </div>
-        </div>
 
-        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 padding-sm">
-
-
-          <div class="card">
-
-            <div class="card-body">
-
-              <pnx-metadata-actor [parentFormArray]="cor_dataset_actor_array"> </pnx-metadata-actor>
-              <button
-                  mat-mini-fab
-                  class="float-right"
-                  color="primary"
-                  (click)="addFormArray()">
-                  <mat-icon>add</mat-icon>
-              </button>
-
-            </div>
+          <small>Description</small>
+          <div class="input-group">
+            <input
+              class="form-control form-control-sm"
+              type="text"
+              [formControl]="datasetForm.controls.dataset_desc"
+            >
           </div>
+
+          <small>Domaine</small>
+          <div
+            class="form-check"
+            padding-lg
+          >
+            <input
+              [formControl]="datasetForm.controls.terrestrial_domain"
+              class=""
+              type="checkbox"
+              name="domaine"
+              id="terrestre"
+              value="true"
+            >
+            <small
+              class=""
+              for="terrestre"
+            >
+              Domaine terrestre
+            </small>
+          </div>
+          <div class="form-check">
+            <input
+              [formControl]="datasetForm.controls.marine_domain"
+              type="checkbox"
+              name="domaine"
+              id="marin"
+            >
+            <small
+              class=""
+              for="marin"
+            >
+              Domaine marin
+            </small>
+          </div>
+
+          <pnx-nomenclature
+            label="Type de données"
+            [parentFormControl]="datasetForm.controls.id_nomenclature_data_type"
+            codeNomenclatureType="DATA_TYP"
+          >
+          </pnx-nomenclature>
+
+          <pnx-nomenclature
+            label="Objectif"
+            [parentFormControl]="datasetForm.controls.id_nomenclature_dataset_objectif"
+            codeNomenclatureType="JDD_OBJECTIFS"
+          >
+          </pnx-nomenclature>
+
+          <pnx-nomenclature
+            label="Méthode de collecte"
+            [parentFormControl]="datasetForm.controls.id_nomenclature_collecting_method"
+            codeNomenclatureType="METHO_RECUEIL"
+          >
+          </pnx-nomenclature>
+
+          <pnx-nomenclature
+            label="Origine des données"
+            [parentFormControl]="datasetForm.controls.id_nomenclature_data_origin"
+            codeNomenclatureType="DS_PUBLIQUE"
+          >
+          </pnx-nomenclature>
+
+          <pnx-nomenclature
+            label="Statut source"
+            [parentFormControl]="datasetForm.controls.id_nomenclature_source_status"
+            codeNomenclatureType="STATUT_SOURCE"
+          >
+          </pnx-nomenclature>
+
+          <pnx-nomenclature
+            label="Type de ressource"
+            [parentFormControl]="datasetForm.controls.id_nomenclature_resource_type"
+            codeNomenclatureType="RESOURCE_TYP"
+          >
+          </pnx-nomenclature>
+          <br>
+          <h5> Spécifique GeoNature </h5>
+
+          <input
+            [formControl]="datasetForm.controls.active"
+            type="checkbox"
+            name="active"
+            id="active"
+            [value]="true"
+          >
+          <small
+            class=""
+            for="active"
+          >
+            Actif
+          </small>
+
+          <input
+            [formControl]="datasetForm.controls.validable"
+            type="checkbox"
+            name="validable"
+            id="validable"
+            [value]="true"
+          >
+          <small
+            class=""
+            for="validable"
+          >
+            Validable
+          </small>
+          <br>
+          <pnx-multiselect
+            [values]="moduleService.modules"
+            [parentFormControl]="datasetForm.get('modules')"
+            keyLabel="module_label"
+            keyValue="id_module"
+            label="Module(s) GeoNature associé(s) au jeu de données"
+            [bindAllItem]="true"
+          >
+          </pnx-multiselect>
+
         </div>
 
       </div>
+    </div>
 
-      <div class="mr-1 mt-1">
-        <button
-          mat-raised-button
-          color="warn"
-          routerLink="/metadata">
-          Annuler
-        </button>
-        <button
-          [disabled]="datasetForm.invalid || cor_dataset_actor_array.invalid"
-          class="btn-green ml-1"
-          mat-raised-button
-          (click)="postDataset()">
-          Enregistrer le jeu de données
-        </button>
+    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 padding-sm">
 
+
+      <div class="card">
+
+        <div class="card-body">
+
+          <pnx-metadata-actor [parentFormArray]="cor_dataset_actor_array"> </pnx-metadata-actor>
+          <button
+            mat-mini-fab
+            class="float-right"
+            color="primary"
+            (click)="addFormArray()"
+          >
+            <mat-icon>add</mat-icon>
+          </button>
+
+        </div>
       </div>
+    </div>
+
+  </div>
+
+  <div class="mr-1 mt-1">
+    <button
+      mat-raised-button
+      color="warn"
+      routerLink="/metadata"
+    >
+      Annuler
+    </button>
+    <button
+      [disabled]="datasetForm.invalid || cor_dataset_actor_array.invalid"
+      class="btn-green ml-1"
+      mat-raised-button
+      (click)="postDataset()"
+    >
+      Enregistrer le jeu de données
+    </button>
+
+  </div>
 
 
 </div>
-

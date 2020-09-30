@@ -1,18 +1,34 @@
-<ng-template #content let-c="close" let-d="dismiss">
-    <div class="modal-header">
-      <h5 class="modal-title">{{'Releve.InfoGeo' | translate }} </h5>
-      <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <p *ngFor="let area of areasIntersected">
-        <b> {{area.type_name}}:</b> {{area.areas}}
-      </p>
-    </div>
-  </ng-template>
+<ng-template
+  #content
+  let-c="close"
+  let-d="dismiss"
+>
+  <div class="modal-header">
+    <h5 class="modal-title">{{'Releve.InfoGeo' | translate }} </h5>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="d('Cross click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p *ngFor="let area of areasIntersected">
+      <b> {{area.type_name}}:</b> {{area.areas}}
+    </p>
+  </div>
+</ng-template>
 
-  <button id="info-geo-button" class="btn btn-sm btn-outline-shadow clickable" (click)="openIntesectionModal(content)"
-    matTooltip="{{'Releve.InfoGeo' | translate }} ">
-    <i class="fa fa-globe" aria-hidden="true"></i>
-  </button>
+<button
+  id="info-geo-button"
+  class="btn btn-sm btn-outline-shadow clickable"
+  (click)="openIntesectionModal(content)"
+  matTooltip="{{'Releve.InfoGeo' | translate }} "
+>
+  <i
+    class="fa fa-globe"
+    aria-hidden="true"
+  ></i>
+</button>

@@ -1,12 +1,33 @@
-<button type="button" class="btn btn-primary btn-sm box-shadow" id="download-btn" (click)="openModal(loadContent)">
-  <i class="fa fa-download" aria-hidden="true"> </i>
+<button
+  type="button"
+  class="btn btn-primary btn-sm box-shadow"
+  id="download-btn"
+  (click)="openModal(loadContent)"
+>
+  <i
+    class="fa fa-download"
+    aria-hidden="true"
+  > </i>
   {{labelButton}}
 </button>
 
-<ng-template #loadContent id="modal-download" let-c="close" let-d="dismiss">
+<ng-template
+  #loadContent
+  id="modal-download"
+  let-c="close"
+  let-d="dismiss"
+>
   <div class="modal-header">
-    <h5 class="modal-title" id="modalLabel"> Télécharger les données </h5>
-    <button type="button" class="close" aria-label="Close" (click)=" d('Cross click')">
+    <h5
+      class="modal-title"
+      id="modalLabel"
+    > Télécharger les données </h5>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)=" d('Cross click')"
+    >
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -15,21 +36,43 @@
     <div [innerHTML]="downloadMessage"> </div>
 
     <div class="export-button">
-      <button *ngFor="let format of exportFormat" class="buttonLoad" (click)="loadData(format)" type="button" class="btn btn-success format-btn">
+      <button
+        *ngFor="let format of exportFormat"
+        class="buttonLoad"
+        (click)="loadData(format)"
+        type="button"
+        class="btn btn-success format-btn"
+      >
         Format {{format}}
       </button>
     </div>
 
-    <br/>
-    <div *ngIf="isDownloading" class="telechargement"> {{message}}
+    <br />
+    <div
+      *ngIf="isDownloading"
+      class="telechargement"
+    > {{message}}
       <p>
-        <ngb-progressbar [type]="type" [value]="downloadProgress$ | async" [striped]="true" [animated]="animated"></ngb-progressbar>
+        <ngb-progressbar
+          [type]="type"
+          [value]="downloadProgress$ | async"
+          [striped]="true"
+          [animated]="animated"
+        ></ngb-progressbar>
       </p>
     </div>
 
-    <div *ngIf="endLoad" class="telechargement"> {{message}}
+    <div
+      *ngIf="endLoad"
+      class="telechargement"
+    > {{message}}
       <p>
-        <ngb-progressbar [type]="type" [value]="downloadProgress$ | async" [striped]="false" [animated]="animated"></ngb-progressbar>
+        <ngb-progressbar
+          [type]="type"
+          [value]="downloadProgress$ | async"
+          [striped]="false"
+          [animated]="animated"
+        ></ngb-progressbar>
       </p>
     </div>
 
