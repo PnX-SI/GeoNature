@@ -153,14 +153,14 @@
       <input
         class="bool-checkbox"
         type="checkbox"
-        id="{{ formDefComp().attribut_name }}"
-        [name]="formDefComp().attribut_name"
-        [formControl]="form.get(formDefComp().attribut_name)"
+        id="{{ formDefComp.attribut_name }}"
+        [name]="formDefComp.attribut_name"
+        [formControl]="form.get(formDefComp.attribut_name)"
       >
-      <span> {{formDefComp().attribut_label}} </span>
+      <span> {{formDefComp.attribut_label}} </span>
       <mat-icon
-        *ngIf="formDefComp().definition"
-        [matTooltip]="formDefComp().definition"
+        *ngIf="formDefComp.definition"
+        [matTooltip]="formDefComp.definition"
         matTooltipClass="form-tooltip"
         class="small-icon"
         matSuffix
@@ -216,9 +216,9 @@
 
     <div
       *ngSwitchCase="'html'"
-      id="{{ formDefComp().attribut_name }}_{{ rand }}"
-      class="{{ formDefComp().class }}"
-      [innerHTML]="formDefComp().html"
+      id="{{ formDefComp.attribut_name }}_{{ rand }}"
+      class="{{ formDefComp.class }}"
+      [innerHTML]="formDefComp.html"
     >
     </div>
 
@@ -236,11 +236,11 @@
 
     <pnx-nomenclature
       *ngSwitchCase="'nomenclature'"
-      [label]="formDefComp().attribut_label"
-      [parentFormControl]="form.get(formDefComp().attribut_name)"
-      [codeNomenclatureType]="formDefComp().code_nomenclature_type"
-      [multiSelect]="formDefComp().multi_select"
-      [keyValue]="formDefComp().key_value"
+      [label]="formDefComp.attribut_label"
+      [parentFormControl]="form.get(formDefComp.attribut_name)"
+      [codeNomenclatureType]="formDefComp.code_nomenclature_type"
+      [multiSelect]="formDefComp.multi_select"
+      [keyValue]="formDefComp.key_value"
     >
     </pnx-nomenclature>
 
