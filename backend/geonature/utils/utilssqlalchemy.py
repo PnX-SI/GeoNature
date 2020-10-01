@@ -48,12 +48,12 @@ def testDataType(value, sqlType, paramName):
     if sqlType == DB.Integer or isinstance(sqlType, (DB.Integer)):
         try:
             int(value)
-        except Exception as e:
+        except ValueError:
             return "{0} must be an integer".format(paramName)
     if sqlType == DB.Numeric or isinstance(sqlType, (DB.Numeric)):
         try:
             float(value)
-        except Exception as e:
+        except ValueError:
             return "{0} must be an float (decimal separator .)".format(paramName)
     elif sqlType == DB.DateTime or isinstance(sqlType, (DB.Date, DB.DateTime)):
         try:
@@ -65,7 +65,8 @@ def testDataType(value, sqlType, paramName):
 
 def test_type_and_generate_query(param_name, value, model, q):
     """
-        Generate a query with the filter given, checking the params is the good type of the columns, and formmatting it
+        Generate a query with the filter given, 
+        checking the params is the good type of the columns, and formmatting it
         Params:
             - param_name (str): the name of the column
             - value (any): the value of the filter
@@ -76,13 +77,13 @@ def test_type_and_generate_query(param_name, value, model, q):
     try:
         col = getattr(model, param_name)
     except AttributeError as error:
-        raise GeonatureApiError(str(error))
+        raise GeonatureApiError(str(error)) from AttributeError
     sql_type = col.type
     if sql_type == DB.Integer or isinstance(sql_type, (DB.Integer)):
         try:
             return q.filter(col == int(value))
-        except Exception as e:
-            raise GeonatureApiError("{0} must be an integer".format(param_name))
+        except Exception:
+            raise GeonatureApiError("{0} must be an integer".format(param_name)) from Exception
     if sql_type == DB.Numeric or isinstance(sql_type, (DB.Numeric)):
         try:
             return q.filter(col == float(value))
@@ -128,7 +129,7 @@ SERIALIZERS = {
 class GenericTable:
     """
         Classe permettant de créer à la volée un mapping
-            d'une vue avec la base de données par rétroingénierie
+        d'une vue avec la base de données par rétroingénierie
     """
 
     def __init__(self, tableName, schemaName, geometry_field=None, srid=None):
@@ -141,7 +142,9 @@ class GenericTable:
         try:
             self.tableDef = meta.tables["{}.{}".format(schemaName, tableName)]
         except KeyError:
-            raise KeyError("table {}.{} doesn't exists".format(schemaName, tableName))
+            raise KeyError(
+                "table {}.{} doesn't exists".format(schemaName, tableName)
+            ) from KeyError
 
         # Test geometry field
         if geometry_field:

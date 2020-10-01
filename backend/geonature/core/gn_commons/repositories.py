@@ -12,7 +12,7 @@ from pypnnomenclature.models import TNomenclatures
 
 from geonature.utils.env import DB
 from geonature.core.gn_commons.models import TMedias, BibTablesLocation
-from geonature.core.gn_commons.file_manager import upload_file, remove_file, rename_file, ettruc
+from geonature.core.gn_commons.file_manager import upload_file, remove_file, rename_file
 from geonature.utils.errors import GeoNatureError
 
 
@@ -186,7 +186,6 @@ class TMediaRepository:
 
         except GeoNatureError as e:
             raise GeoNatureError("Il y a un problème avec l'URL renseignée : {}".format(str(e)))
-            pass
 
     def file_path(self, thumbnail_height=None):
         file_path = None
@@ -263,11 +262,15 @@ class TMediaRepository:
 
         try:
             return self.get_image()
-        except Exception as e:
+        except Exception:
             if self.media.media_path:
-                raise GeoNatureError("Le fichier fournit ne contient pas une image valide")
+                raise GeoNatureError(
+                    "Le fichier fournit ne contient pas une image valide"
+                ) from Exception
             else:
-                raise GeoNatureError("L URL renseignée ne contient pas une image valide")
+                raise GeoNatureError(
+                    "L'URL renseignée ne contient pas une image valide"
+                ) from Exception
 
     def has_thumbnails(self):
         """
@@ -373,7 +376,7 @@ class TMediumRepository:
         d'objet média
     """
 
-    def get_medium_for_entity(entity_uuid):
+    def get_medium_for_entity(self, entity_uuid):
         """
             Retourne la liste des médias pour un objet
             en fonction de son uuid
@@ -381,7 +384,7 @@ class TMediumRepository:
         medium = DB.session.query(TMedias).filter(TMedias.uuid_attached_row == entity_uuid).all()
         return medium
 
-    def sync_medias():
+    def sync_medias(self):
         """
             Met à jour les médias
               - supprime les médias sans uuid_attached_row plus vieux que 24h
@@ -417,5 +420,5 @@ def get_table_location_id(schema_name, table_name):
             "get_table_location_id : Table {}.{} à de multiples entrées dans BibTablesLocation".format(
                 schema_name, table_name
             )
-        )
+        ) from MultipleResultsFound
     return location.id_table_location

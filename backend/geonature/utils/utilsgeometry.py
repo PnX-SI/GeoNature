@@ -356,8 +356,8 @@ def remove_third_dimension(geom):
 
         interiors = geom.interiors
         new_interiors = []
-        for int in interiors:
-            new_interiors.append(remove_third_dimension(int))
+        for _int in interiors:
+            new_interiors.append(remove_third_dimension(_int))
 
         return Polygon(new_exterior, new_interiors)
 

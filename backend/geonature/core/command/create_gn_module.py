@@ -41,8 +41,7 @@ from geonature.utils.gn_module_import import (
     frontend_routes_templating,
     MSG_OK,
 )
-from geonature.utils.errors import ConfigError, GNModuleInstallError, GeoNatureError
-from geonature.utils.utilstoml import load_and_validate_toml
+from geonature.utils.errors import GNModuleInstallError, GeoNatureError
 
 
 log = logging.getLogger(__name__)
@@ -76,7 +75,7 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
             module_code = check_manifest(module_path)
             try:
                 # Vérification que le module n'est pas déjà activé
-                mod = DB.session.query(TModules).filter(TModules.module_code == module_code).one()
+                DB.session.query(TModules).filter(TModules.module_code == module_code).one()
 
             except NoResultFound:
                 # Si le module n'est pas déjà dans la table gn_commons.t_modules, on l'installe
@@ -189,10 +188,10 @@ def activate_gn_module(module_code, frontend, backend):
         Active un module gn installé
 
         Exemples:
-
-        - geonature activate_gn_module occtax --frontend=false (Active que le backend du module occtax)
-
-        - geonature activate_gn_module occtax --backend=false (Active que le frontend du module occtax)
+        # Active que le backend du module occtax
+        - geonature activate_gn_module occtax --frontend=false 
+        # Active que le frontend du module occtax)
+        - geonature activate_gn_module occtax --backend=false 
 
     """
     # TODO vérifier que l'utilisateur est root ou du groupe geonature
@@ -209,10 +208,10 @@ def deactivate_gn_module(module_code, frontend, backend):
 
 
         Exemples:
-
-        - geonature deactivate_gn_module occtax --frontend=false (Désactive que le backend du module occtax)
-
-        - geonature deactivate_gn_module occtax --backend=false (Désctive que le frontend du module occtax)
+        # Désactive que le backend du module occtax
+        - geonature deactivate_gn_module occtax --frontend=false 
+        # Désactive que le frontend du module occtax
+        - geonature deactivate_gn_module occtax --backend=false (
 
     """
     # TODO vérifier que l'utilisateur est root ou du groupe geonature

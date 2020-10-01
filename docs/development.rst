@@ -949,57 +949,18 @@ Outils d'aide à la qualité du code
 ----------------------------------
 
 Des outils d'amélioration du code pour les développeurs peuvent être utilisés :
-flake8, pylint, mypy, pytest, coverage.
+flake8, pylint, pytest, coverage.
 
 La documentation peut être générée avec Sphinx.
 
 Les fichiers de configuration de ces outils se trouvent à la racine du projet :
 
-* .flake8
 * .pylint
-* .mypy
-* .pytest
-* .coverage
 
 Un fichier ``.editorconfig`` permettant de définir le comportement de
 votre éditeur de code est également disponible à la racine du projet.
 
-Installation des outils
-"""""""""""""""""""""""
 
-::
-
-        pip3 install --user pipenv
-        pipenv install --dev
-
-Note: si la commande pipenv ne fonctionne pas,
-ajoutez les lignes suivantes à .profile::
-
-        if [ -d "$HOME/.local/bin" ] ; then
-        PATH="$HOME/.local/bin:$PATH"
-        fi
-
-La documentation de ces outils est disponible en ligne :
-
-* http://flake8.pycqa.org/en/latest/
-* https://www.pylint.org/ - Doc : https://pylint.readthedocs.io/en/latest/
-* https://mypy.readthedocs.io/en/latest/
-* https://docs.pytest.org/en/latest/contents.html
-* https://coverage.readthedocs.io/en/coverage-4.4.2/
-* http://www.sphinx-doc.org/en/stable/ -  Doc : http://www.sphinx-doc.org/en/stable/contents.html
-
-Usage
-"""""
-
-Pour installer ces outils, l'environnement de développement doit être
-activé. A minima, pour travailler sur la documentation,
-lancez la commande suivante::
-
-        pip install -r backend/requirements-dev.txt
-
-Pour utiliser ces outils il faut se placer dans le virtualenv::
-
-        pipenv shell
 
 
 Sphinx
@@ -1012,17 +973,6 @@ et modifier les fichiers .rst::
 
         cd docs
         make html
-
-
-Flake8
-""""""
-
-Flake8 inspecte le code et pointe tous les écarts à la norme PEP8.
-Il recherche également toutes les erreurs syntaxiques et stylistiques
-courantes.::
-
-        cd backend
-        flake8
 
 
 Pylint
@@ -1046,11 +996,6 @@ typescript::
         ng lint
 
 
-Mypy
-""""
-
-Mypy vérifie les erreurs de typage.
-Mypy est utilisé pour l'éditeur de texte en tant que linter.
 
 Pytest
 """"""

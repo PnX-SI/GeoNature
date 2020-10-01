@@ -3,22 +3,18 @@ import json
 from flask import Blueprint, request, current_app, redirect
 import requests
 
-from geonature.core.gn_commons.models import TModules, TParameters, TMobileApps, TMedias
+from utils_flask_sqla.response import json_resp
+from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
+
+from geonature.core.gn_commons.models import TModules, TParameters, TMobileApps, TMedias, TPlaces
 from geonature.core.gn_commons.repositories import TMediaRepository
-from geonature.core.gn_commons.models import TModules, TParameters, TMobileApps, TPlaces
 from geonature.core.gn_commons.repositories import get_table_location_id
 from geonature.utils.env import DB, BACKEND_DIR
-from geonature.utils.errors import GeonatureApiError
-from utils_flask_sqla.response import json_resp, json_resp_accept_empty_list
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from shapely.geometry import asShape
-from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 from geoalchemy2.shape import from_shape
-
 from geonature.utils.errors import (
-    ConfigError,
-    GNModuleInstallError,
     GeoNatureError,
     GeonatureApiError,
 )
