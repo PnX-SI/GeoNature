@@ -1,7 +1,16 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation, SimpleChanges, Inject } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  ViewEncapsulation,
+  SimpleChanges,
+  Inject
+} from '@angular/core';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Media } from './media';
-import { MediaService } from '@geonature_common/service/media.service'
+import { MediaService } from '@geonature_common/service/media.service';
 
 export interface MediaDialogData {
   medias: Array<Media>;
@@ -11,16 +20,14 @@ export interface MediaDialogData {
 @Component({
   selector: 'pnx-media-dialog',
   templateUrl: './media-dialog.component.html',
-  styleUrls: ['./media.scss'],
+  styleUrls: ['./media.scss']
 })
 export class MediaDialog {
-
   constructor(
     public ms: MediaService,
     public dialogRef: MatDialogRef<MediaDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: MediaDialogData) { }
-
-
+    @Inject(MAT_DIALOG_DATA) public data: MediaDialogData
+  ) {}
 
   public media: Media;
   public medias;
@@ -38,11 +45,12 @@ export class MediaDialog {
   }
 
   changeMedia(step) {
-    this.bDisplay=false;
+    this.bDisplay = false;
     setTimeout(() => {
-      this.curIndex = ( ( (this.curIndex + step) % this.medias.length) + this.medias.length ) % this.medias.length;
+      this.curIndex =
+        (((this.curIndex + step) % this.medias.length) + this.medias.length) % this.medias.length;
       this.media = this.medias[this.curIndex];
-      this.bDisplay=true;
+      this.bDisplay = true;
     }, 250);
   }
 }

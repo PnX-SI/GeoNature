@@ -4,13 +4,10 @@ import { MapService } from '../map.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '../../service/common.service';
 import * as L from 'leaflet';
-import { Subscription } from "rxjs/Subscription";
-import { GeoJSON, } from 'leaflet';
+import { Subscription } from 'rxjs/Subscription';
+import { GeoJSON } from 'leaflet';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { timeStamp } from 'console';
-
-
-
 
 /**
  * Affiche une modale permettant d'aficher la liste des lieux enregistrés pour l'utilisateur actif, puis affiche le lieux sélectionnés sur la carte.
@@ -38,8 +35,7 @@ export class PlacesListComponent extends MarkerComponent implements OnInit {
     public mapService: MapService,
     public modalService: NgbModal,
     public commonService: CommonService,
-    private _dfs: DataFormService,
-
+    private _dfs: DataFormService
   ) {
     super(mapService, commonService);
   }
@@ -57,13 +53,11 @@ export class PlacesListComponent extends MarkerComponent implements OnInit {
       'url(assets/images/liste.png)'
     );
     this.map.addControl(new placesLegend());
-    document.getElementById('ListPlacesLegend').title = "Liste des lieux";
+    document.getElementById('ListPlacesLegend').title = 'Liste des lieux';
     L.DomEvent.disableClickPropagation(document.getElementById('ListPlacesLegend'));
     document.getElementById('ListPlacesLegend').onclick = () => {
       this.fetchPlaces();
       this.modalService.open(this.modalContent);
-
-
     };
   }
 
@@ -97,7 +91,7 @@ export class PlacesListComponent extends MarkerComponent implements OnInit {
       return;
     }
     this.selectedPlace = this.place;
-    if (confirm("Êtes-vous sûr de vouloir supprimer ce lieu?")) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce lieu?')) {
       this._dfs.deletePlace(this.selectedPlace.id).subscribe(res => {
         this.fetchPlaces();
       });
@@ -105,16 +99,17 @@ export class PlacesListComponent extends MarkerComponent implements OnInit {
   }
 
   fetchPlaces() {
-    this._dfs.getPlaces().subscribe((res) => {
-      if (Object.keys(res[0]).length > 0) {
-        this.places = res;
-        this.place = this.places[0];
-      } else {
-        this.places = null;
-        this.place = null;
-      }
-    },
-      (err) => {
+    this._dfs.getPlaces().subscribe(
+      res => {
+        if (Object.keys(res[0]).length > 0) {
+          this.places = res;
+          this.place = this.places[0];
+        } else {
+          this.places = null;
+          this.place = null;
+        }
+      },
+      err => {
         if (err.status === 404) {
           this.places = [];
           this.place = null;

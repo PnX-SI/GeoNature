@@ -164,7 +164,9 @@ C'est une ressources très fournie en cas de question sur les pratiques de déve
 des services et des composants)
 - On privilegira l'utilisation des reactive forms pour la construction des formulaires (https://angular.io/guide/reactive-forms).
 Ce sont des formulaires piloté par le code, ce qui facilite la lisibilité et le contrôle de ceux-ci.
-
+- Pour l'ensemble des composants cartographiques et des formulaires
+  (taxonomie, nomenclatures...), il est conseillé d'utiliser les composants
+  présents dans le module 'GN2CommonModule'.
  
 HTML 
 """"
@@ -372,14 +374,6 @@ Frontend
 
     <img src="external_assets/<gn_module_validation>/afb.png">
 
-- Installer le linter ``tslint`` dans son éditeur de texte
-  (TODO: définir un style à utiliser)
-
-
-Backend
-*******
-
-- Respecter la norme PEP8
 
 
 Installer un gn_module

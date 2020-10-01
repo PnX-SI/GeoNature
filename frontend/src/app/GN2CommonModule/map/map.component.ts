@@ -30,7 +30,7 @@ const PARAMS = new HttpParams({
 
 @Injectable()
 export class NominatimService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   search(term: string) {
     if (term === '') {
@@ -153,13 +153,12 @@ export class MapComponent implements OnInit {
     //   console.log(e);
     // })
 
-    map.on('moveend', (e) => {
+    map.on('moveend', e => {
       this.mapService.currentExtend = {
-        'center': this.map.getCenter(),
-        'zoom': this.map.getZoom()
-      }
-    })
-
+        center: this.map.getCenter(),
+        zoom: this.map.getZoom()
+      };
+    });
   }
 
   /** Retrocompatibility hack to format map config to the expected format:

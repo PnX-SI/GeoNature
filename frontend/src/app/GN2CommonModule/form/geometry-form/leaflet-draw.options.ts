@@ -6,7 +6,7 @@ export const leafletDrawOptions: any = {
     circlemarker: false,
     rectangle: false,
     marker: false,
-    polygon: false,
+    polygon: false
   },
   edit: {
     remove: false,

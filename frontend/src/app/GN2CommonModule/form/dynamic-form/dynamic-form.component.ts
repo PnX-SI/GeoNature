@@ -1,7 +1,15 @@
-import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges, OnChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  SimpleChanges,
+  OnChanges
+} from '@angular/core';
 import { FormGroup, FormArray, FormControl } from '@angular/forms';
 import { DynamicFormService } from '../dynamic-form-generator/dynamic-form.service';
-import { AppConfig } from '@geonature_config/app.config'
+import { AppConfig } from '@geonature_config/app.config';
 
 @Component({
   selector: 'pnx-dynamic-form',
@@ -9,7 +17,6 @@ import { AppConfig } from '@geonature_config/app.config'
   styleUrls: ['./dynamic-form.component.scss']
 })
 export class DynamicFormComponent implements OnInit {
-
   @Input() formDef: any;
   @Input() form: FormGroup;
 
@@ -31,11 +38,18 @@ export class DynamicFormComponent implements OnInit {
   setFormDefComp() {
     this.formDefComp = {};
     for (const key of Object.keys(this.formDef)) {
-      this.formDefComp[key] = this._dynformService.getFormDefValue(this.formDef, key, this.form.value);
+      this.formDefComp[key] = this._dynformService.getFormDefValue(
+        this.formDef,
+        key,
+        this.form.value
+      );
     }
 
     // on met à jour les contraintes
-    this._dynformService.setControl(this.form.controls[this.formDef.attribut_name], this.formDefComp);
+    this._dynformService.setControl(
+      this.form.controls[this.formDef.attribut_name],
+      this.formDefComp
+    );
   }
 
   /** On ne gère ici que les fichiers uniques */
@@ -88,5 +102,4 @@ export class DynamicFormComponent implements OnInit {
       }
     }
   }
-
 }
