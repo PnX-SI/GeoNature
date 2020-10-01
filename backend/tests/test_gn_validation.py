@@ -9,9 +9,7 @@ class TestValidation:
     def test_get_data(self):
         token = get_token(self.client)
         self.client.set_cookie("/", "token", token)
-        response = self.client.get(
-            url_for("validation.get_synthese_data")
-        )
+        response = self.client.get(url_for("validation.get_synthese_data"))
 
         assert response.status_code == 200
         data = json_of_response(response)
@@ -26,8 +24,8 @@ class TestValidation:
             "cd_nom",
             "unique_id_sinp",
             "meta_update_date",
-            "comment"
+            "comment",
         ]
-        response_key = data["data"]['features'][0]['properties'].keys()
+        response_key = data["data"]["features"][0]["properties"].keys()
         for c in mandatory_columns:
             assert c in response_key

@@ -109,6 +109,7 @@ class TaxrefLR(DB.Model):
     categorie_lr_europe = DB.Column(DB.Unicode)
     categorie_lr_mondiale = DB.Column(DB.Unicode)
 
+
 @serializable
 class VMTaxrefListForautocomplete(DB.Model):
     __tablename__ = "vm_taxref_list_forautocomplete"

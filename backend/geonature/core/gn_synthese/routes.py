@@ -291,7 +291,7 @@ def export_taxon_web(info_role):
     """
 
     taxon_view = GenericTable(
-        tableName="v_synthese_taxon_for_export_view", schemaName="gn_synthese", engine=DB.engine
+        tableName="v_synthese_taxon_for_export_view", schemaName="gn_synthese", engine=DB.engine,
     )
     columns = taxon_view.tableDef.columns
     # Test de conformité de la vue v_synthese_for_export_view
@@ -433,8 +433,7 @@ def export_observations_web(info_role):
                 getattr(r, current_app.config["SYNTHESE"]["EXPORT_GEOJSON_4326_COL"])
             )
             feature = Feature(
-                geometry=geometry,
-                properties=export_view.as_dict(r, columns=columns_to_serialize),
+                geometry=geometry, properties=export_view.as_dict(r, columns=columns_to_serialize),
             )
             features.append(feature)
         results = FeatureCollection(features)
@@ -550,9 +549,7 @@ def export_status(info_role):
     # add join
     synthese_query_class.add_join(Taxref, Taxref.cd_nom, VSyntheseForWebApp.cd_nom)
     synthese_query_class.add_join(
-        TaxrefProtectionEspeces,
-        TaxrefProtectionEspeces.cd_nom,
-        VSyntheseForWebApp.cd_nom,
+        TaxrefProtectionEspeces, TaxrefProtectionEspeces.cd_nom, VSyntheseForWebApp.cd_nom,
     )
     synthese_query_class.add_join(
         TaxrefProtectionArticles,

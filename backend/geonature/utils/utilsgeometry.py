@@ -82,11 +82,7 @@ class FionaShapeService:
             for db_col in db_cols:
                 if not db_col.type.__class__.__name__ == "Geometry":
                     shp_properties.update(
-                        {
-                            db_col.key: FIONA_MAPPING.get(
-                                db_col.type.__class__.__name__.lower()
-                            )
-                        }
+                        {db_col.key: FIONA_MAPPING.get(db_col.type.__class__.__name__.lower())}
                     )
                     cls.columns.append(db_col.key)
 
@@ -108,11 +104,7 @@ class FionaShapeService:
             cls.file_poly, "w", "ESRI Shapefile", cls.polygon_schema, crs=cls.source_crs
         )
         cls.polyline_shape = fiona.open(
-            cls.file_line,
-            "w",
-            "ESRI Shapefile",
-            cls.polyline_schema,
-            crs=cls.source_crs,
+            cls.file_line, "w", "ESRI Shapefile", cls.polyline_schema, crs=cls.source_crs,
         )
 
     @classmethod
@@ -136,9 +128,7 @@ class FionaShapeService:
             cls.write_a_feature(feature, geom_wkt)
         except AssertionError:
             cls.close_files()
-            raise GeonatureApiError(
-                "Cannot create a shapefile record whithout a Geometry"
-            )
+            raise GeonatureApiError("Cannot create a shapefile record whithout a Geometry")
         except Exception as e:
             cls.close_files()
             raise GeonatureApiError(e)
@@ -181,10 +171,7 @@ class FionaShapeService:
                 if geom_geojson["type"] == "Point":
                     cls.point_shape.write(feature)
                     cls.point_feature = True
-                elif (
-                    geom_geojson["type"] == "Polygon"
-                    or geom_geojson["type"] == "MultiPolygon"
-                ):
+                elif geom_geojson["type"] == "Polygon" or geom_geojson["type"] == "MultiPolygon":
                     cls.polygone_shape.write(feature)
                     cls.polygon_feature = True
                 else:
@@ -231,15 +218,12 @@ class FionaShapeService:
         for shape_format in format_to_save:
             final_file_name = cls.dir_path + "/" + shape_format + "_" + cls.file_name
             final_file_name = "{dir_path}/{shape_format}_{file_name}/{shape_format}_{file_name}".format(
-                dir_path=cls.dir_path,
-                shape_format=shape_format,
-                file_name=cls.file_name,
+                dir_path=cls.dir_path, shape_format=shape_format, file_name=cls.file_name,
             )
             extentions = ("dbf", "shx", "shp", "prj")
             for ext in extentions:
                 zp_file.write(
-                    final_file_name + "." + ext,
-                    shape_format + "_" + cls.file_name + "." + ext,
+                    final_file_name + "." + ext, shape_format + "_" + cls.file_name + "." + ext,
                 )
         zp_file.close()
 
@@ -250,9 +234,7 @@ class FionaShapeService:
         cls.polyline_shape.close()
 
 
-def create_shapes_generic(
-    view, srid, db_cols, data, dir_path, file_name, geom_col, geojson_col
-):
+def create_shapes_generic(view, srid, db_cols, data, dir_path, file_name, geom_col, geojson_col):
     FionaShapeService.create_shapes_struct(db_cols, srid, dir_path, file_name)
     FionaShapeService.create_features_generic(view, data, geom_col, geojson_col)
     FionaShapeService.save_and_zip_shapefiles()
@@ -290,9 +272,7 @@ def shapeserializable(cls):
         file_name = file_name or datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
 
         if columns:
-            db_cols = [
-                db_col for db_col in db_col in cls.__mapper__.c if db_col.key in columns
-            ]
+            db_cols = [db_col for db_col in db_col in cls.__mapper__.c if db_col.key in columns]
         else:
             db_cols = cls.__mapper__.c
 
@@ -399,4 +379,3 @@ def remove_third_dimension(geom):
         raise RuntimeError(
             "Currently this type of geometry is not supported: {}".format(type(geom))
         )
-

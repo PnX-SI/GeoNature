@@ -35,4 +35,3 @@ def execute_script(file_name):
     conn.commit()
     cur.close()
     conn.close()
-

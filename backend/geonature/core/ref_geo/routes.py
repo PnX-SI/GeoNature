@@ -33,12 +33,7 @@ def getGeoInfo():
     municipality = []
     for row in result:
         municipality.append(
-            {
-                "id_area": row[0],
-                "id_type": row[1],
-                "area_code": row[2],
-                "area_name": row[3],
-            }
+            {"id_area": row[0], "id_type": row[1], "area_code": row[2], "area_name": row[3],}
         )
 
     sql = text(
@@ -114,20 +109,13 @@ def getAreasIntersection():
     areas = []
     for row in result:
         areas.append(
-            {
-                "id_area": row[0],
-                "id_type": row[1],
-                "area_code": row[2],
-                "area_name": row[3],
-            }
+            {"id_area": row[0], "id_type": row[1], "area_code": row[2], "area_name": row[3],}
         )
 
     bibtypesliste = [a["id_type"] for a in areas]
     try:
         bibareatype = (
-            DB.session.query(BibAreasTypes)
-            .filter(BibAreasTypes.id_type.in_(bibtypesliste))
-            .all()
+            DB.session.query(BibAreasTypes).filter(BibAreasTypes.id_type.in_(bibtypesliste)).all()
         )
     except Exception as e:
         DB.session.rollback()
@@ -152,9 +140,7 @@ def get_municipalities():
     q = DB.session.query(LiMunicipalities).order_by(LiMunicipalities.nom_com.asc())
 
     if "nom_com" in parameters:
-        q = q.filter(
-            LiMunicipalities.nom_com.ilike("{}%".format(parameters.get("nom_com")))
-        )
+        q = q.filter(LiMunicipalities.nom_com.ilike("{}%".format(parameters.get("nom_com"))))
     limit = int(parameters.get("limit")) if parameters.get("limit") else 100
 
     data = q.limit(limit)
@@ -211,9 +197,7 @@ def get_area_size():
     )
 
     result = DB.engine.execute(
-        query,
-        geojson=str(geojson["geometry"]),
-        local_srid=current_app.config["LOCAL_SRID"],
+        query, geojson=str(geojson["geometry"]), local_srid=current_app.config["LOCAL_SRID"],
     )
     area = None
     if result:

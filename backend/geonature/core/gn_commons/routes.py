@@ -24,12 +24,12 @@ from geonature.utils.errors import (
 )
 
 
-
 routes = Blueprint("gn_commons", __name__)
 
 # import routes sub folder
 from .validation.routes import *
 from .medias.routes import *
+
 
 @routes.route("/modules", methods=["GET"])
 @permissions.check_cruved_scope("R", True)
@@ -69,7 +69,6 @@ def get_modules(info_role):
 def get_module(module_code):
     module = DB.session.query(TModules).filter_by(module_code=module_code).one()
     return module.as_dict()
-
 
 
 @routes.route("/list/parameters", methods=["GET"])
@@ -125,9 +124,7 @@ def get_t_mobile_apps():
                     current_app.config["API_ENDPOINT"], one_app["relative_path_apk"]
                 )
                 one_app["url_apk"] = url_apk
-                dir_app = "/".join(
-                    str(BACKEND_DIR / one_app["relative_path_apk"]).split("/")[:-1]
-                )
+                dir_app = "/".join(str(BACKEND_DIR / one_app["relative_path_apk"]).split("/")[:-1])
                 settings_file = "{}/settings.json".format(dir_app)
                 with open(settings_file) as f:
                     one_app["settings"] = json.load(f)
@@ -234,4 +231,3 @@ def add_one_place(info_role):
 
 #######################################################################################
 #######################################################################################
-

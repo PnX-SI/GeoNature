@@ -39,9 +39,7 @@ def get_config():
         vue_name = ["default"]
     filename = "{}.toml".format(
         os.path.abspath(
-            os.path.join(
-                current_app.config["BASE_DIR"], "static", "configs", app_name, *vue_name
-            )
+            os.path.join(current_app.config["BASE_DIR"], "static", "configs", app_name, *vue_name)
         )
     )
     config_file = generate_config(filename)
@@ -119,7 +117,7 @@ def get_generic_view(view_schema, view_name):
             geometry_field=geom,
             filters=parameters,
             limit=limit,
-            offset=page
+            offset=page,
         ).return_query()
     else:
         return GenericQuery(
@@ -128,5 +126,5 @@ def get_generic_view(view_schema, view_name):
             schemaName=view_schema,
             filters=parameters,
             limit=limit,
-            offset=page
+            offset=page,
         ).return_query()

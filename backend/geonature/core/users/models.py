@@ -38,9 +38,7 @@ class CorRole(DB.Model):
     )
     id_role_utilisateur = DB.Column(DB.Integer, primary_key=True)
     role = DB.relationship(
-        User,
-        primaryjoin=(User.id_role == id_role_groupe),
-        foreign_keys=[id_role_groupe],
+        User, primaryjoin=(User.id_role == id_role_groupe), foreign_keys=[id_role_groupe],
     )
 
     def __init__(self, id_group, id_role):
@@ -80,8 +78,8 @@ class UserRigth:
 
 @serializable
 class TListes(DB.Model):
-    __tablename__ = 't_listes'
-    __table_args__ = {'schema': 'utilisateurs', 'extend_existing': True}
+    __tablename__ = "t_listes"
+    __table_args__ = {"schema": "utilisateurs", "extend_existing": True}
     id_liste = DB.Column(DB.Integer, primary_key=True)
     code_liste = DB.Column(DB.Unicode)
     nom_liste = DB.Column(DB.Unicode)

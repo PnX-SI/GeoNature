@@ -137,9 +137,7 @@ def get_af_and_ds_metadata(info_role):
     )[0]
 
     #  get all af from the JDD filtered with cruved or af where users has rights
-    ids_afs_cruved = [
-        d.id_acquisition_framework for d in get_af_cruved(info_role, as_model=True)
-    ]
+    ids_afs_cruved = [d.id_acquisition_framework for d in get_af_cruved(info_role, as_model=True)]
     list_id_af = [d.id_acquisition_framework for d in datasets] + ids_afs_cruved
     afs = (
         DB.session.query(TAcquisitionFramework)
@@ -260,9 +258,7 @@ def post_dataset(info_role):
     """
     if info_role.value_filter == "0":
         raise InsufficientRightsError(
-            ('User "{}" cannot "{}" a dataset').format(
-                info_role.id_role, info_role.code_action
-            ),
+            ('User "{}" cannot "{}" a dataset').format(info_role.id_role, info_role.code_action),
             403,
         )
 
@@ -278,9 +274,7 @@ def post_dataset(info_role):
         dataset.cor_dataset_actor.append(CorDatasetActor(**cor))
 
     # init the relationship as an empty list
-    modules_obj = (
-        DB.session.query(TModules).filter(TModules.id_module.in_(modules)).all()
-    )
+    modules_obj = DB.session.query(TModules).filter(TModules.id_module.in_(modules)).all()
     dataset.modules = modules_obj
     if dataset.id_dataset:
         DB.session.merge(dataset)
@@ -302,8 +296,7 @@ def get_export_pdf_dataset(id_dataset, info_role):
     # Verification des droits
     if info_role.value_filter == "0":
         raise InsufficientRightsError(
-            ('User "{}" cannot "{}" a dataset').format(info_role.id_role, "export"),
-            403,
+            ('User "{}" cannot "{}" a dataset').format(info_role.id_role, "export"), 403,
         )
 
     df = get_dataset_details_dict(id_dataset, info_role)
@@ -316,15 +309,10 @@ def get_export_pdf_dataset(id_dataset, info_role):
             elif info_role.value_filter == "2":
                 actors = [cor["id_role"] for cor in df["cor_dataset_actor"]]
                 organisms = [cor["id_organism"] for cor in df["cor_dataset_actor"]]
-                assert (
-                    info_role.id_role in actors or info_role.id_organisme in organisms
-                )
+                assert info_role.id_role in actors or info_role.id_organisme in organisms
         except AssertionError:
             raise InsufficientRightsError(
-                ('User "{}" cannot read this current dataset').format(
-                    info_role.id_role
-                ),
-                403,
+                ('User "{}" cannot read this current dataset').format(info_role.id_role), 403,
             )
 
     if not df:
@@ -349,9 +337,7 @@ def get_export_pdf_dataset(id_dataset, info_role):
     date = dt.datetime.now().strftime("%d/%m/%Y")
 
     df["footer"] = {
-        "url": current_app.config["URL_APPLICATION"]
-        + "/#/metadata/dataset_detail/"
-        + id_dataset,
+        "url": current_app.config["URL_APPLICATION"] + "/#/metadata/dataset_detail/" + id_dataset,
         "date": date,
     }
 
@@ -364,9 +350,7 @@ def get_export_pdf_dataset(id_dataset, info_role):
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf("dataset_template_pdf.html", df, filename)
     pdf_file_posix = Path(pdf_file)
-    return send_from_directory(
-        str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True
-    )
+    return send_from_directory(str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True)
 
 
 @routes.route("/acquisition_frameworks", methods=["GET"])
@@ -383,9 +367,7 @@ def get_acquisition_frameworks(info_role):
     return get_af_cruved(info_role, params)
 
 
-@routes.route(
-    "/acquisition_frameworks/export_pdf/<id_acquisition_framework>", methods=["GET"]
-)
+@routes.route("/acquisition_frameworks/export_pdf/<id_acquisition_framework>", methods=["GET"])
 @permissions.check_cruved_scope("E", True, module_code="METADATA")
 def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
     """
@@ -395,8 +377,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
     # Verification des droits
     if info_role.value_filter == "0":
         raise InsufficientRightsError(
-            ('User "{}" cannot "{}" a dataset').format(info_role.id_role, "export"),
-            403,
+            ('User "{}" cannot "{}" a dataset').format(info_role.id_role, "export"), 403,
         )
 
     # Recuperation des données
@@ -404,9 +385,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
     acquisition_framework = af.as_dict(True)
 
     q = DB.session.query(TDatasets).distinct()
-    data = q.filter(
-        TDatasets.id_acquisition_framework == id_acquisition_framework
-    ).all()
+    data = q.filter(TDatasets.id_acquisition_framework == id_acquisition_framework).all()
     dataset_ids = [d.id_dataset for d in data]
     acquisition_framework["datasets"] = [d.as_dict(True) for d in data]
 
@@ -418,9 +397,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
         .count()
     )
     nb_observations = (
-        DB.session.query(Synthese.cd_nom)
-        .filter(Synthese.id_dataset.in_(dataset_ids))
-        .count()
+        DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).count()
     )
     nb_habitat = 0
 
@@ -459,16 +436,14 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
             start_date = dt.datetime.strptime(
                 acquisition_framework["acquisition_framework_start_date"], "%Y-%m-%d"
             )
-            acquisition_framework[
-                "acquisition_framework_start_date"
-            ] = start_date.strftime("%d/%m/%Y")
+            acquisition_framework["acquisition_framework_start_date"] = start_date.strftime(
+                "%d/%m/%Y"
+            )
         if acquisition_framework["acquisition_framework_end_date"]:
             end_date = dt.datetime.strptime(
                 acquisition_framework["acquisition_framework_end_date"], "%Y-%m-%d"
             )
-            acquisition_framework["acquisition_framework_end_date"] = end_date.strftime(
-                "%d/%m/%Y"
-            )
+            acquisition_framework["acquisition_framework_end_date"] = end_date.strftime("%d/%m/%Y")
         acquisition_framework["css"] = {
             "logo": "Logo_pdf.png",
             "bandeau": "Bandeau_pdf.png",
@@ -504,9 +479,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
         "acquisition_framework_template_pdf.html", acquisition_framework, filename
     )
     pdf_file_posix = Path(pdf_file)
-    return send_from_directory(
-        str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True
-    )
+    return send_from_directory(str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True)
 
 
 @routes.route("/acquisition_frameworks_metadata", methods=["GET"])
@@ -558,9 +531,7 @@ def get_acquisition_framework(id_acquisition_framework):
     return None
 
 
-@routes.route(
-    "/acquisition_framework_details/<id_acquisition_framework>", methods=["GET"]
-)
+@routes.route("/acquisition_framework_details/<id_acquisition_framework>", methods=["GET"])
 @json_resp
 def get_acquisition_framework_details(id_acquisition_framework):
     """
@@ -576,9 +547,7 @@ def get_acquisition_framework_details(id_acquisition_framework):
         return None
     acquisition_framework = af.as_dict(True)
 
-    datasets = (
-        acquisition_framework["datasets"] if "datasets" in acquisition_framework else []
-    )
+    datasets = acquisition_framework["datasets"] if "datasets" in acquisition_framework else []
     dataset_ids = [d["id_dataset"] for d in datasets]
     geojsonData = (
         DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
@@ -595,9 +564,7 @@ def get_acquisition_framework_details(id_acquisition_framework):
         .count()
     )
     nb_observations = (
-        DB.session.query(Synthese.cd_nom)
-        .filter(Synthese.id_dataset.in_(dataset_ids))
-        .count()
+        DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).count()
     )
     nb_habitat = 0
 
@@ -640,9 +607,7 @@ def post_acquisition_framework(info_role):
     """
     if info_role.value_filter == "0":
         raise InsufficientRightsError(
-            ('User "{}" cannot "{}" a dataset').format(
-                info_role.id_role, info_role.code_action
-            ),
+            ('User "{}" cannot "{}" a dataset').format(info_role.id_role, info_role.code_action),
             403,
         )
     data = dict(request.get_json())
@@ -687,9 +652,7 @@ def post_acquisition_framework(info_role):
 
 def get_cd_nomenclature(id_type, cd_nomenclature):
     query = "SELECT ref_nomenclatures.get_id_nomenclature(:id_type, :cd_n)"
-    result = DB.engine.execute(
-        text(query), id_type=id_type, cd_n=cd_nomenclature
-    ).first()
+    result = DB.engine.execute(text(query), id_type=id_type, cd_n=cd_nomenclature).first()
     value = None
     if len(result) >= 1:
         value = result[0]
@@ -717,4 +680,3 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
     .. :quickref: Metadata;
     """
     return mtd_utils.post_jdd_from_user(id_user=id_user, id_organism=id_organism)
-

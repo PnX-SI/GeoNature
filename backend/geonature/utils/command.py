@@ -35,9 +35,7 @@ MSG_OK = "\033[92mok\033[0m\n"
 
 def start_gunicorn_cmd(uri, worker):
     cmd = "gunicorn server:app -w {gun_worker} -b {gun_uri}"
-    subprocess.call(
-        cmd.format(gun_worker=worker, gun_uri=uri).split(" "), cwd=str(BACKEND_DIR)
-    )
+    subprocess.call(cmd.format(gun_worker=worker, gun_uri=uri).split(" "), cwd=str(BACKEND_DIR))
 
 
 def get_app_for_cmd(config_file=None, with_external_mods=True, with_flask_admin=True):
@@ -45,9 +43,7 @@ def get_app_for_cmd(config_file=None, with_external_mods=True, with_flask_admin=
     try:
         conf = load_config(config_file)
         return get_app(
-            conf,
-            with_external_mods=with_external_mods,
-            with_flask_admin=with_flask_admin,
+            conf, with_external_mods=with_external_mods, with_flask_admin=with_flask_admin,
         )
     except ConfigError as e:
         log.critical(str(e) + "\n")
@@ -65,9 +61,7 @@ def start_geonature_front():
 
 def build_geonature_front(rebuild_sass=False):
     if rebuild_sass:
-        subprocess.call(
-            ["npm", "rebuild", "node-sass", "--force"], cwd=str(ROOT_DIR / "frontend")
-        )
+        subprocess.call(["npm", "rebuild", "node-sass", "--force"], cwd=str(ROOT_DIR / "frontend"))
     subprocess.call(["npm", "run", "build"], cwd=str(ROOT_DIR / "frontend"))
 
 
@@ -93,17 +87,13 @@ def frontend_routes_templating(app=None):
             if (location / "frontend").is_dir():
                 path = url_path.lstrip("/")
                 location = "{}/{}#GeonatureModule".format(location, GN_MODULE_FE_FILE)
-                routes.append(
-                    {"path": path, "location": location, "module_code": module_code}
-                )
+                routes.append({"path": path, "location": location, "module_code": module_code})
 
             # TODO test if two modules with the same name is okay for Angular
 
         route_template = template.render(
             routes=routes,
-            enable_user_management=configs_gn["ACCOUNT_MANAGEMENT"].get(
-                "ENABLE_USER_MANAGEMENT"
-            ),
+            enable_user_management=configs_gn["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT"),
             enable_sign_up=configs_gn["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP"),
         )
 
@@ -129,35 +119,29 @@ def tsconfig_templating():
 def tsconfig_app_templating(app=None):
     if not app:
         app = get_app_for_cmd(with_external_mods=False)
-    log.info('Generating tsconfig.app.json')
+    log.info("Generating tsconfig.app.json")
     from geonature.utils.env import list_frontend_enabled_modules
-    with open(
-        str(ROOT_DIR / 'frontend/src/tsconfig.app.json.sample'),
-        'r'
-    ) as input_file:
+
+    with open(str(ROOT_DIR / "frontend/src/tsconfig.app.json.sample"), "r") as input_file:
         template = Template(input_file.read())
         routes = []
         for url_path, module_code in list_frontend_enabled_modules(app):
             location = Path(GN_EXTERNAL_MODULE / module_code.lower())
 
             # test if module have frontend
-            if (location / 'frontend').is_dir():
-                location = '{}/frontend/app'.format(location)
-                routes.append(
-                    {'location': location}
-                )
+            if (location / "frontend").is_dir():
+                location = "{}/frontend/app".format(location)
+                routes.append({"location": location})
 
             # TODO test if two modules with the same name is okay for Angular
 
         route_template = template.render(routes=routes)
 
-        with open(
-            str(ROOT_DIR / 'frontend/src/tsconfig.app.json'), 'w'
-        ) as output_file:
+        with open(str(ROOT_DIR / "frontend/src/tsconfig.app.json"), "w") as output_file:
             output_file.write(route_template)
 
     log.info("...%s\n", MSG_OK)
-    
+
 
 def create_frontend_config(conf_file):
     log.info("Generating configuration")
