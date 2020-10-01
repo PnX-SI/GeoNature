@@ -155,9 +155,17 @@ Typescript
 (VsCode dispose d'une extension Prettier : https://github.com/prettier/prettier-vscode)
 - Utiliser tslint comme linter
 - La longueur maximale pour une ligne de code est 100 caractères.
+
+Angular
+"""""""
+
 - Suivre les recommandations définit par le styleguide Angular: https://angular.io/guide/styleguide
+C'est une ressources très fournie en cas de question sur les pratiques de développement (principe de séparation des principes, organisation
+des services et des composants)
+- On privilegira l'utilisation des reactive forms pour la construction des formulaires (https://angular.io/guide/reactive-forms).
+Ce sont des formulaires piloté par le code, ce qui facilite la lisibilité et le contrôle de ceux-ci.
 
-
+ 
 HTML 
 """"
 - La longueur maximale pour une ligne de code est 100 caractères.
@@ -177,6 +185,28 @@ HTML
 
 - VsCode fournit un formatter de HTML par défaut (Dans les option de VsCode, tapez "wrap attributes"
 et sélectionner "force-expand-multiline"
+
+Style et ergonomie
+""""""""""""""""""
+
+- Bouttons:
+  On utilise les buttons d'Angular materials (https://material.angular.io/components/button/overview).
+  - mat-raised-button pour les boutons contenant du texte 
+  - mat-fab ou mat-mini-fab pour les boutons d'actions avec seulement une icone 
+- Couleur des boutons:
+  - Action : primary 
+  - Validation: vert (n'existant pas dans material: utiliser la classe `button-success`)
+  - Suppression: warn 
+  - Navigation: basic 
+- Librairie d'icones 
+  - Utiliser la librairie material icons fournie avec le projet : https://material.io/resources/icons/?style=baseline
+   `<mat-icon> add </mat-icon>` 
+- Formulaire 
+  - Nous utilisons pour l'instant le style des formulaires Bootstrap (https://getbootstrap.com/docs/4.0/components/forms/).
+  Une reflexion de migration vers les formulaires materials est en cours.
+- Système de grille et responsive
+  - Utiliser le système de grille de bootstrap pour assurer le responsive design sur l'application.
+  On ne vise pas l'utilisation sur mobile, mais à minima sur ordinateur portable de petite taille.
 
 
 Développer et installer un gn_module
