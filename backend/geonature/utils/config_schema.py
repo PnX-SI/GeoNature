@@ -102,9 +102,16 @@ class AccountManagement(Schema):
     ACCOUNT_FORM = fields.List(fields.Dict(), missing=[])
     ADDON_USER_EMAIL = fields.String(missing="")
 
+
 class PermissionManagement(Schema):
     # Configuration parameters for permissions managment and access request
     ENABLE_ACCESS_REQUEST = fields.Boolean(missing=False)
+    AREA_TYPES = fields.List(fields.Integer(), missing=[25, 26])
+    SENSITIVE_DATA_ACCESS_RULES_LINK = fields.String(missing=None)
+    DEFAULT_ACCESS_DURATION = fields.Integer(missing=None)
+    MAX_ACCESS_DURATION = fields.Integer(missing=365)
+    REQUEST_FORM_TITLE = fields.String(missing=None)
+    REQUEST_FORM = fields.List(fields.Dict(), missing=[])
 
 
 class UsersHubConfig(Schema):
