@@ -233,7 +233,15 @@
       "formTitle": "Demande de permissions d'accès",
       "permissionTitle": "Permissions demandées",
       "sendBtnTooltip": "Envoyer votre demande d'accès.",
-      "cancelBtnTooltip": "Annuler votre demande d'accès."
+      "cancelBtnTooltip": "Annuler votre demande d'accès.",
+      "geoAreaLabel": "Zones géographiques",
+      "geoAreaTooltip": "Dans la zone « Rechercher » saisir les premières lettre d'une zone géographique. La touche « Tab » vous permet d'accéder à la liste des zones trouvées. Sélectionner l'élément qui vous convient dans la liste proposée avec les touches directionnelles et valider votre sélection avec la touche « Entrée ».",
+      "taxaLabel": "Groupes taxonomiques",
+      "taxaTooltip": "Dans la zone « Rechercher » saisir les premières lettre du nom d'un groupe taxonomique supérieur au rang d'espèce. La touche « Tab » vous permet d'accéder à la liste des noms trouvés. Sélectionner l'élément qui vous convient dans la liste proposée avec les touches directionnelles et valider votre sélection avec la touche « Entrée ».",
+      "sensitiveAccessLabel": "Observations sensibles",
+      "sensitiveAccessText" : "Je souhaite accéder aux observations sensibles",
+      "sensitiveAccessRules": "Merci de consulter au préalable les règles d’accès aux données sensibles",
+      "endDateLabel": "Accès jusqu'au"
     }
   }
 }

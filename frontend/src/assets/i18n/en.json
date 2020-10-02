@@ -229,7 +229,15 @@
       "formTitle": "Request access permissions",
       "permissionTitle": "Permissions requested",
       "sendBtnTooltip": "Send your permissions access request.",
-      "cancelBtnTooltip": "Cancel your permissions access request."
+      "cancelBtnTooltip": "Cancel your permissions access request.",
+      "geoAreaLabel": "Geographical areas",
+      "geoAreaTooltip": "In the “Search“ zone, enter the first letters of a geographical zone. The “Tab“ key allows you to access the list of zones found. Select the item that suits you from the list offered with the directional keys and validate your selection with the “Enter” key.",
+      "taxaLabel": "Taxonomic groups",
+      "taxaTooltip": "In the ”Search” zone, enter the first letters of the name of a taxonomic group higher than the species rank. The ”Tab” key allows you to access the list of names found. Select the item that suits you from the list offered with the directional keys and validate your selection with the “Enter” key.",
+      "sensitiveAccessLabel": "Sensitive observations",
+      "sensitiveAccessText" : "I want to access sensitive observations",
+      "sensitiveAccessRules": "Please consult the rules for access to sensitive data beforehand",
+      "endDateLabel": "Access until"
     }
   }
 }
