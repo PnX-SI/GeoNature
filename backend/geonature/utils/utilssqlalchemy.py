@@ -24,14 +24,14 @@ from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsgeometry import create_shapes_generic
 
 
-def test_is_uuid(uuid_string, version=4):
+def test_is_uuid(uuid_string):
     try:
         # Si uuid_string est un code hex valide mais pas un uuid valid,
         # UUID() va quand même le convertir en uuid valide. Pour se prémunir
         # de ce problème, on check la version original (sans les tirets) avec
         # le code hex généré qui doivent être les mêmes.
-        uid = uuid.UUID(uuid_string, version=version)
-        return uid.hex == uuid_string.replace('-', '')
+        uid = uuid.UUID(uuid_string)
+        return uid.hex == uuid_string.replace("-", "")
     except ValueError:
         return False
 
@@ -91,9 +91,7 @@ def test_type_and_generate_query(param_name, value, model, q):
         try:
             return q.filter(col == parser.parse(value))
         except Exception as e:
-            raise GeonatureApiError(
-                "{0} must be an date (yyyy-mm-dd)".format(param_name)
-            )
+            raise GeonatureApiError("{0} must be an date (yyyy-mm-dd)".format(param_name))
 
     if sql_type == DB.Boolean or isinstance(sql_type, DB.Boolean):
         try:
@@ -142,13 +140,8 @@ class GenericTable:
         # Test geometry field
         if geometry_field:
             try:
-                if (
-                    not self.tableDef.columns[geometry_field].type.__class__.__name__
-                    == "Geometry"
-                ):
-                    raise TypeError(
-                        "field {} is not a geometry column".format(geometry_field)
-                    )
+                if not self.tableDef.columns[geometry_field].type.__class__.__name__ == "Geometry":
+                    raise TypeError("field {} is not a geometry column".format(geometry_field))
             except KeyError:
                 raise KeyError("field {} doesn't exists".format(geometry_field))
 
@@ -169,9 +162,7 @@ class GenericTable:
             if not db_col.type.__class__.__name__ == "Geometry":
                 serialize_attr = (
                     name,
-                    serializers.get(
-                        db_col.type.__class__.__name__.lower(), lambda x: x
-                    ),
+                    serializers.get(db_col.type.__class__.__name__.lower(), lambda x: x),
                 )
                 regular_serialize.append(serialize_attr)
 
@@ -192,9 +183,7 @@ class GenericTable:
 
             return Feature(geometry=geometry, properties=self.as_dict(data, columns))
 
-    def as_shape(
-        self, db_cols, geojson_col=None, data=[], dir_path=None, file_name=None
-    ):
+    def as_shape(self, db_cols, geojson_col=None, data=[], dir_path=None, file_name=None):
         """
         Create shapefile for generic table
         Parameters:
@@ -225,14 +214,7 @@ class GenericQuery:
     """
 
     def __init__(
-        self,
-        db_session,
-        tableName,
-        schemaName,
-        geometry_field,
-        filters,
-        limit=100,
-        offset=0,
+        self, db_session, tableName, schemaName, geometry_field, filters, limit=100, offset=0,
     ):
         self.db_session = db_session
         self.tableName = tableName
@@ -395,10 +377,7 @@ def serializable(cls):
         associées à leur sérializer en fonction de leur type
     """
     cls_db_columns = [
-        (
-            db_col.key,
-            SERIALIZERS.get(db_col.type.__class__.__name__.lower(), lambda x: x),
-        )
+        (db_col.key, SERIALIZERS.get(db_col.type.__class__.__name__.lower(), lambda x: x),)
         for db_col in cls.__mapper__.c
         if not db_col.type.__class__.__name__ == "Geometry"
     ]
@@ -463,9 +442,7 @@ def geoserializable(cls):
         Permet de rajouter la fonction as_geofeature à une classe
     """
 
-    def serializegeofn(
-        self, geoCol, idCol, recursif=False, columns=(), relationships=()
-    ):
+    def serializegeofn(self, geoCol, idCol, recursif=False, columns=(), relationships=()):
         """
         Méthode qui renvoie les données de l'objet sous la forme
         d'une Feature geojson
@@ -521,9 +498,7 @@ def json_resp(fn):
 ################################################################################
 # ATTENTION NON MAINTENTU - PREFERER LA MËME FONCTION DU LA LIB utils_flask_sqla
 ################################################################################
-def to_json_resp(
-    res, status=200, filename=None, as_file=False, indent=None, extension="json"
-):
+def to_json_resp(res, status=200, filename=None, as_file=False, indent=None, extension="json"):
     if not res:
         status = 404
         res = {"message": "not found"}
@@ -569,9 +544,7 @@ def to_csv_resp(filename, data, columns, separator=";"):
 
     headers = Headers()
     headers.add("Content-Type", "text/plain")
-    headers.add(
-        "Content-Disposition", "attachment", filename="export_%s.csv" % filename
-    )
+    headers.add("Content-Disposition", "attachment", filename="export_%s.csv" % filename)
     out = generate_csv_content(columns, data, separator)
     return Response(out, headers=headers)
 
