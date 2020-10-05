@@ -152,7 +152,6 @@ ENABLE_MY_PLACES = true
     comment_releve = true
     obs_tech = true
     bio_condition = true
-    diffusion_level = false
     bio_status = true
     naturalness = true
     exist_proof = true
