@@ -426,8 +426,7 @@ def releveHandler(request, *, releve, info_role):
     releve, errors = releveSchema.load(json_req["properties"], instance=releve)
     if bool(errors):
         raise InsufficientRightsError(
-            errors,
-            422,
+            errors, 422,
         )
 
     # set id_digitiser
@@ -528,8 +527,7 @@ def occurrenceHandler(request, *, occurrence, info_role):
 
     if not releve:
         raise InsufficientRightsError(
-            {"message": "not found"},
-            404,
+            {"message": "not found"}, 404,
         )
 
     # Test des droits d'édition du relevé si modification
