@@ -31,7 +31,7 @@ export class AccessRequestComponent implements OnInit {
   ) {
     this.redirectToHome();
     this.dynamicFormCfg = this.config.REQUEST_FORM;
-    this.rulesLink = this.config.SENSITIVE_DATA_ACCESS_RULES_LINK || false;
+    this.rulesLink = this.config.DATA_ACCESS_RULES_LINK || false;
     // TODO: use code instead of id
     this.areaTypes = this.config.AREA_TYPES;
     this.defaultAccessDuration = this.config.DEFAULT_ACCESS_DURATION;
