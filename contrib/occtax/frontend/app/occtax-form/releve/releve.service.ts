@@ -260,6 +260,8 @@ export class OcctaxFormReleveService {
 
   getPreviousReleve(previousReleve) {
     if (previousReleve && !ModuleConfig.ENABLE_SETTINGS_TOOLS) {
+      console.log(previousReleve);
+
       return {
         'id_dataset': previousReleve.properties.id_dataset,
         'observers': previousReleve.properties.observers,
@@ -301,7 +303,7 @@ export class OcctaxFormReleveService {
             comment: this.occtaxParamS.get("releve.comment"),
             observers: this.occtaxParamS.get("releve.observers") ||
               previousReleve.observers ||
-              ModuleConfig.observers_txt ? null : [this.occtaxFormService.currentUser],
+              (ModuleConfig.observers_txt ? null : [this.occtaxFormService.currentUser]),
             observers_txt: this.occtaxParamS.get("releve.observers_txt") || previousReleve.observers_txt,
             id_nomenclature_grp_typ:
               this.occtaxParamS.get("releve.id_nomenclature_grp_typ") ||
@@ -343,8 +345,9 @@ export class OcctaxFormReleveService {
     }
   }
 
-  get releveFormValue() {
-    let value = Object.assign(this.releveForm.value, {});
+  releveFormValue() {
+    let value = JSON.parse(JSON.stringify(this.releveForm.value))
+
     value.properties.date_min = this.dateParser.format(
       value.properties.date_min
     );
@@ -362,13 +365,12 @@ export class OcctaxFormReleveService {
 
   submitReleve() {
     this.waiting = true;
-
     if (this.occtaxFormService.id_releve_occtax.getValue()) {
       //update
       this.occtaxDataService
         .updateReleve(
           this.occtaxFormService.id_releve_occtax.getValue(),
-          this.releveFormValue
+          this.releveFormValue()
         )
         .pipe(tap(() => (this.waiting = false)))
         .subscribe(
@@ -389,10 +391,12 @@ export class OcctaxFormReleveService {
           }
         );
     } else {
-      this.occtaxFormService.previousReleve = Object.assign(this.releveForm.value, {});
+      // console.log(this.releveForm.value);
+
+      this.occtaxFormService.previousReleve = JSON.parse(JSON.stringify(this.releveForm.value));
       //create
       this.occtaxDataService
-        .createReleve(this.releveFormValue)
+        .createReleve(this.releveFormValue())
         .pipe(tap(() => (this.waiting = false)))
         .subscribe(
           (data: any) => {

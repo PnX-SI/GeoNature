@@ -428,7 +428,6 @@ def releveHandler(request, *, releve, info_role):
         raise InsufficientRightsError(
             errors, 422,
         )
-
     # set id_digitiser
     releve.id_digitiser = info_role.id_role
     if info_role.value_filter in ("0", "1", "2"):

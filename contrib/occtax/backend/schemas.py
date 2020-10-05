@@ -61,6 +61,12 @@ class ObserverSchema(MA.SQLAlchemyAutoSchema):
         + (" " + obj.prenom_role if obj.prenom_role else "")
     )
 
+    @pre_load
+    def make_observer(self, data, **kwargs):
+        if isinstance(data, int):
+            return dict({"id_role": data})
+        return data
+
 
 class MediaSchema(MA.SQLAlchemyAutoSchema):
     class Meta:
@@ -116,7 +122,10 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
 
     t_occurrences_occtax = MA.Nested(OccurrenceSchema, many=True)
     observers = MA.Nested(
-        ObserverSchema, many=True, allow_none=current_app.config["OCCTAX"]["observers_txt"],
+        ObserverSchema,
+        many=True,
+        allow_none=current_app.config["OCCTAX"]["observers_txt"],
+        # dump_only=True,
     )
     digitiser = MA.Nested(ObserverSchema, dump_only=True)
     dataset = MA.Nested(DatasetSchema, dump_only=True)
