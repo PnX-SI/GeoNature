@@ -259,7 +259,7 @@ export class OcctaxFormReleveService {
   }
 
   getPreviousReleve(previousReleve) {
-    if (previousReleve && !ModuleConfig.DISPLAY_SETTINGS_TOOLS) {
+    if (previousReleve && !ModuleConfig.ENABLE_SETTINGS_TOOLS) {
       return {
         'id_dataset': previousReleve.properties.id_dataset,
         'observers': previousReleve.properties.observers,

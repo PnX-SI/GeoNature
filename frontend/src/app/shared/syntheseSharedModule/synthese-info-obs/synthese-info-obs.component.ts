@@ -22,7 +22,7 @@ export class SyntheseInfoObsComponent implements OnInit {
   @Input() selectedObsTaxonDetail: any;
   public selectObsTaxonInfo;
   public formatedAreas = [];
-  public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
+  public CONFIG = AppConfig;
   public isLoading = false;
   public email;
   public mailto: String;

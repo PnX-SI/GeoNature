@@ -127,7 +127,7 @@ export class OcctaxFormParamService {
     let temp_value = this.parameters;
     let value = null;
     //vérification de l'activation du paramètre en config occtax
-    if (this.occtaxConfig.DISPLAY_SETTINGS_TOOLS) {
+    if (this.occtaxConfig.ENABLE_SETTINGS_TOOLS) {
       for (let i = 0; i < keys.length; i++) {
         //si les changement de paramètre sont désactivé ou si la clé fournie n'existe pas
         if (temp_value === null || temp_value[keys[i]] === undefined) {
