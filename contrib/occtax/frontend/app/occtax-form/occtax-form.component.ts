@@ -25,11 +25,10 @@ import { OcctaxFormMapService } from "../occtax-form/map/map.service";
   selector: "pnx-occtax-form",
   templateUrl: "./occtax-form.component.html",
   styleUrls: ["./occtax-form.component.scss"],
-  // le composant doit initié les services suivants pour le bon fonctionnemment du formulaire
+  // le composant doit initier les services suivants pour le bon fonctionnemment du formulaire
   // et le rechargemernt des données
   providers: [
     OcctaxTaxaListService,
-    OcctaxFormService,
     OcctaxFormMapService,
     OcctaxFormReleveService,
     OcctaxFormCountingService,
