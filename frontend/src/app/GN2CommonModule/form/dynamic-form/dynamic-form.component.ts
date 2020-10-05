@@ -44,11 +44,13 @@ export class DynamicFormComponent implements OnInit {
       );
     }
 
-    // on met à jour les contraintes
-    this._dynformService.setControl(
-      this.form.controls[this.formDef.attribut_name],
-      this.formDefComp
-    );
+    if (this.form !== undefined) {
+      // on met à jour les contraintes
+      this._dynformService.setControl(
+        this.form.controls[this.formDef.attribut_name],
+        this.formDefComp
+      );
+    }
   }
 
   /** Cette méthode ne gère que les fichiers uniques. */
