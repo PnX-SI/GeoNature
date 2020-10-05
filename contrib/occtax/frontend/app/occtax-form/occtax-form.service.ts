@@ -22,6 +22,7 @@ export class OcctaxFormService {
   public editionMode: BehaviorSubject<boolean> = new BehaviorSubject(false); // boolean to check if its editionMode
   public chainRecording: boolean = false; // boolean to check if chain the recording is activate
   public stayOnFormInterface = new FormControl(false);
+  public previousReleve = null;
 
   constructor(
     private _http: HttpClient,

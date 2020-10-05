@@ -27,6 +27,7 @@ export class OcctaxFormReleveService {
   public showTime: boolean = false; //gestion de l'affichage des infos complémentaires de temps
   public waiting: boolean = false;
   public route: ActivatedRoute;
+  public previousReleve = null;
 
   constructor(
     private router: Router,
@@ -257,27 +258,51 @@ export class OcctaxFormReleveService {
     }
   }
 
+  getPreviousReleve(previousReleve) {
+    if (previousReleve && !ModuleConfig.DISPLAY_SETTINGS_TOOLS) {
+      return {
+        'id_dataset': previousReleve.properties.id_dataset,
+        'observers': previousReleve.properties.observers,
+        'observers_txt': previousReleve.properties.observers_txt,
+        'date_min': this.formatDate(previousReleve.properties.date_min),
+        'date_max': this.formatDate(previousReleve.properties.date_max),
+        'hour_min': previousReleve.properties.hour_min,
+        'hour_max': previousReleve.properties.hour_max,
+      }
+    }
+    return {
+      'id_dataset': null,
+      'observers': null,
+      'observers_txt': null,
+      'date_min': null,
+      'date_max': null,
+      'hour_min': null,
+      'hour_max': null,
+    };
+  }
+
   private get defaultValues(): Observable<any> {
     return this.occtaxFormService
       .getDefaultValues(this.occtaxFormService.currentUser.id_organisme)
       .pipe(
         map((data) => {
+          const previousReleve = this.getPreviousReleve(this.occtaxFormService.previousReleve);
           return {
-            id_dataset: this.occtaxParamS.get("releve.id_dataset"),
-            date_min:
-              this.occtaxParamS.get("releve.date_min") ||
+            id_dataset: this.occtaxParamS.get("releve.id_dataset") || previousReleve.id_dataset,
+            date_min: this.occtaxParamS.get("releve.date_min") ||
+              previousReleve.date_min ||
               this.defaultDateWithToday(),
-            date_max: this.occtaxParamS.get("releve.date_max"),
-            hour_min: this.occtaxParamS.get("releve.hour_min"),
-            hour_max: this.occtaxParamS.get("releve.hour_max"),
+            date_max: this.occtaxParamS.get("releve.date_max") || previousReleve.date_max,
+            hour_min: this.occtaxParamS.get("releve.hour_min") || previousReleve.hour_min,
+            hour_max: this.occtaxParamS.get("releve.hour_max") || previousReleve.hour_max,
             altitude_min: this.occtaxParamS.get("releve.altitude_min"),
             altitude_max: this.occtaxParamS.get("releve.altitude_max"),
             meta_device_entry: "web",
             comment: this.occtaxParamS.get("releve.comment"),
-            observers: this.occtaxParamS.get("releve.observers") || [
-              this.occtaxFormService.currentUser,
-            ],
-            observers_txt: this.occtaxParamS.get("releve.observers_txt"),
+            observers: this.occtaxParamS.get("releve.observers") ||
+              previousReleve.observers ||
+              ModuleConfig.observers_txt ? null : [this.occtaxFormService.currentUser],
+            observers_txt: this.occtaxParamS.get("releve.observers_txt") || previousReleve.observers_txt,
             id_nomenclature_grp_typ:
               this.occtaxParamS.get("releve.id_nomenclature_grp_typ") ||
               data["TYP_GRP"],
@@ -319,16 +344,19 @@ export class OcctaxFormReleveService {
   }
 
   get releveFormValue() {
-    let value = this.releveForm.value;
+    let value = Object.assign(this.releveForm.value, {});
     value.properties.date_min = this.dateParser.format(
       value.properties.date_min
     );
     value.properties.date_max = this.dateParser.format(
       value.properties.date_max
     );
-    value.properties.observers = value.properties.observers.map(
-      (observer) => observer.id_role
-    );
+    if (!ModuleConfig.observers_txt) {
+      value.properties.observers = value.properties.observers.map(
+        (observer) => observer.id_role
+      );
+    }
+
     return value;
   }
 
@@ -361,6 +389,7 @@ export class OcctaxFormReleveService {
           }
         );
     } else {
+      this.occtaxFormService.previousReleve = Object.assign(this.releveForm.value, {});
       //create
       this.occtaxDataService
         .createReleve(this.releveFormValue)

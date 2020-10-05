@@ -129,9 +129,14 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
    */
   leaveTheForm(cancel) {
     this.disableCancel = true;
-    const url = this.occtaxFormService.chainRecording
-      ? ["/occtax/form"]
-      : ["/occtax"];
+    let url;
+    if (this.occtaxFormService.chainRecording) {
+      url = ["/occtax/form"];
+    } else {
+      url = ["/occtax"];
+      this.occtaxFormService.previousReleve = null;
+    }
+
 
     // si le formulair est en cour d'édition
     if (
