@@ -4,10 +4,9 @@ import {
   Input,
   Output,
   EventEmitter,
-  SimpleChanges,
-  OnChanges
+  SimpleChanges
 } from '@angular/core';
-import { FormGroup, FormArray, FormControl } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { DynamicFormService } from '../dynamic-form-generator/dynamic-form.service';
 import { AppConfig } from '@geonature_config/app.config';
 
@@ -45,14 +44,16 @@ export class DynamicFormComponent implements OnInit {
       );
     }
 
-    // on met à jour les contraintes
-    this._dynformService.setControl(
-      this.form.controls[this.formDef.attribut_name],
-      this.formDefComp
-    );
+    if (this.form !== undefined) {
+      // on met à jour les contraintes
+      this._dynformService.setControl(
+        this.form.controls[this.formDef.attribut_name],
+        this.formDefComp
+      );
+    }
   }
 
-  /** On ne gère ici que les fichiers uniques */
+  /** Cette méthode ne gère que les fichiers uniques. */
   onFileChange(event) {
     const files: FileList = event.target.files;
     if (files && files.length === 0) {
@@ -66,22 +67,22 @@ export class DynamicFormComponent implements OnInit {
 
   onCheckChange(event, formControl: FormControl) {
     const currentFormValue = Object.assign([], formControl.value);
-    /* Selected */
+    // Selected
     if (event.target.checked) {
       // Add a new control in the arrayForm
       currentFormValue.push(event.target.value);
-      // patch value to declench validators
+      // Patch value to declench validators
       formControl.patchValue(currentFormValue);
       console.log(event.target.value);
     } else {
-      // find the unselected element
+      // Find the unselected element
       currentFormValue.forEach((val, index) => {
         if (val === event.target.value) {
           // Remove the unselected element from the arrayForm
           currentFormValue.splice(index, 1);
         }
       });
-      // patch value to declench validators
+      // Patch value to declench validators
       formControl.patchValue(currentFormValue);
     }
   }

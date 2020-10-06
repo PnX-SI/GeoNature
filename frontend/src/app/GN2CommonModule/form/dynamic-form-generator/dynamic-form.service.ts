@@ -1,4 +1,3 @@
-import { distinctUntilChanged } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import {
   FormControl,
@@ -23,6 +22,7 @@ export class DynamicFormService {
   }
 
   toFormGroup(formsDef: Array<any>) {
+    // TODO: this method seem not used. Remove it ?
     const group: any = {};
     formsDef.forEach(form => {
       group[form.attribut_name] = this.createControl(form);
@@ -47,6 +47,10 @@ export class DynamicFormService {
   }
 
   setControl(control: AbstractControl, formDef, value = null) {
+    if (formDef.type_widget === 'html') {
+      return;
+    }
+
     if (![null, undefined].includes(value)) {
       control.setValue(value);
     }
@@ -72,14 +76,14 @@ export class DynamicFormService {
         validators.push(Validators.maxLength(formDef.max_length));
       }
 
-      // contraintes pour file
+      // Contraints for "file" input
       if (formDef.type_widget === 'file') {
         if (formDef.sizeMax) {
           validators.push(this.fileSizeMaxValidator(formDef.sizeMax));
         }
       }
 
-      // contraintes min et max pour "number"
+      // Contraints min and max for "number" input
       if (formDef.type_widget === 'number') {
         const cond_min =
           typeof formDef.min === 'number' &&
@@ -106,8 +110,6 @@ export class DynamicFormService {
     // Dans le html (pour pouvoir avoir required et disable avec une valeur donnée)
     if (formDef.disabled) {
       control.disable();
-    } else {
-      control.enable();
     }
   }
 
@@ -119,7 +121,10 @@ export class DynamicFormService {
   }
 
   addNewControl(formDef, formGroup: FormGroup) {
-    formGroup.addControl(formDef.attribut_name, this.createControl(formDef));
+    if (formDef.type_widget !== 'html') {
+      let control = this.createControl(formDef);
+      formGroup.addControl(formDef.attribut_name, control);
+    }
   }
 
   fileSizeMaxValidator(sizeMax): ValidatorFn {

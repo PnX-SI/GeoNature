@@ -4,6 +4,7 @@ Fonctions utilitaires
 import json
 import csv
 import io
+import logging
 from functools import wraps
 import uuid
 
@@ -22,6 +23,8 @@ from geoalchemy2.shape import to_shape
 from geonature.utils.env import DB
 from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsgeometry import create_shapes_generic
+
+log = logging.getLogger()
 
 
 def test_is_uuid(uuid_string, version=4):
@@ -45,12 +48,12 @@ def testDataType(value, sqlType, paramName):
     if sqlType == DB.Integer or isinstance(sqlType, (DB.Integer)):
         try:
             int(value)
-        except Exception as e:
+        except ValueError:
             return "{0} must be an integer".format(paramName)
     if sqlType == DB.Numeric or isinstance(sqlType, (DB.Numeric)):
         try:
             float(value)
-        except Exception as e:
+        except ValueError:
             return "{0} must be an float (decimal separator .)".format(paramName)
     elif sqlType == DB.DateTime or isinstance(sqlType, (DB.Date, DB.DateTime)):
         try:
@@ -62,7 +65,8 @@ def testDataType(value, sqlType, paramName):
 
 def test_type_and_generate_query(param_name, value, model, q):
     """
-        Generate a query with the filter given, checking the params is the good type of the columns, and formmatting it
+        Generate a query with the filter given, 
+        checking the params is the good type of the columns, and formmatting it
         Params:
             - param_name (str): the name of the column
             - value (any): the value of the filter
@@ -73,13 +77,13 @@ def test_type_and_generate_query(param_name, value, model, q):
     try:
         col = getattr(model, param_name)
     except AttributeError as error:
-        raise GeonatureApiError(str(error))
+        raise GeonatureApiError(str(error)) from AttributeError
     sql_type = col.type
     if sql_type == DB.Integer or isinstance(sql_type, (DB.Integer)):
         try:
             return q.filter(col == int(value))
-        except Exception as e:
-            raise GeonatureApiError("{0} must be an integer".format(param_name))
+        except Exception:
+            raise GeonatureApiError("{0} must be an integer".format(param_name)) from Exception
     if sql_type == DB.Numeric or isinstance(sql_type, (DB.Numeric)):
         try:
             return q.filter(col == float(value))
@@ -125,17 +129,22 @@ SERIALIZERS = {
 class GenericTable:
     """
         Classe permettant de créer à la volée un mapping
-            d'une vue avec la base de données par rétroingénierie
+        d'une vue avec la base de données par rétroingénierie
     """
 
     def __init__(self, tableName, schemaName, geometry_field=None, srid=None):
+        log.warning(
+            "WARNING: Utilssqlalchemy will soon be removed from GeoNature.\nPlease use utils_flask_sqla instead\n"
+        )
         meta = MetaData(schema=schemaName, bind=DB.engine)
         meta.reflect(views=True)
 
         try:
             self.tableDef = meta.tables["{}.{}".format(schemaName, tableName)]
         except KeyError:
-            raise KeyError("table {}.{} doesn't exists".format(schemaName, tableName))
+            raise KeyError(
+                "table {}.{} doesn't exists".format(schemaName, tableName)
+            ) from KeyError
 
         # Test geometry field
         if geometry_field:
@@ -216,6 +225,9 @@ class GenericQuery:
     def __init__(
         self, db_session, tableName, schemaName, geometry_field, filters, limit=100, offset=0,
     ):
+        log.warning(
+            "WARNING: Utilssqlalchemy will soon be removed from GeoNature.\nPlease use utils_flask_sqla instead\n"
+        )
         self.db_session = db_session
         self.tableName = tableName
         self.schemaName = schemaName
@@ -371,7 +383,9 @@ def serializable(cls):
         Permet de rajouter la fonction as_dict
         qui est basée sur le mapping SQLAlchemy
     """
-
+    log.warning(
+        "WARNING: Utilssqlalchemy will soon be removed from GeoNature.\nPlease use utils_flask_sqla instead\n"
+    )
     """
         Liste des propriétés sérialisables de la classe
         associées à leur sérializer en fonction de leur type
@@ -441,6 +455,9 @@ def geoserializable(cls):
         Décorateur de classe
         Permet de rajouter la fonction as_geofeature à une classe
     """
+    log.warning(
+        "WARNING: Utilssqlalchemy will soon be removed from GeoNature.\nPlease use utils_flask_sqla instead\n"
+    )
 
     def serializegeofn(self, geoCol, idCol, recursif=False, columns=(), relationships=()):
         """
@@ -483,6 +500,9 @@ def json_resp(fn):
     Décorateur transformant le résultat renvoyé par une vue
     en objet JSON
     """
+    log.warning(
+        "WARNING: Utilssqlalchemy will soon be removed from GeoNature.\nPlease use utils_flask_sqla instead\n"
+    )
 
     @wraps(fn)
     def _json_resp(*args, **kwargs):
@@ -499,6 +519,9 @@ def json_resp(fn):
 # ATTENTION NON MAINTENTU - PREFERER LA MËME FONCTION DU LA LIB utils_flask_sqla
 ################################################################################
 def to_json_resp(res, status=200, filename=None, as_file=False, indent=None, extension="json"):
+    log.warning(
+        "WARNING: Utilssqlalchemy will soon be removed from GeoNature.\nPlease use utils_flask_sqla instead\n"
+    )
     if not res:
         status = 404
         res = {"message": "not found"}
@@ -527,6 +550,9 @@ def csv_resp(fn):
     """
     Décorateur transformant le résultat renvoyé en un fichier csv
     """
+    log.warning(
+        "WARNING: Utilssqlalchemy will soon be removed from GeoNature.\nPlease use utils_flask_sqla instead\n"
+    )
 
     @wraps(fn)
     def _csv_resp(*args, **kwargs):
@@ -541,7 +567,9 @@ def csv_resp(fn):
 # ATTENTION NON MAINTENTU - PREFERER LA MËME FONCTION DU LA LIB utils_flask_sqla
 ################################################################################
 def to_csv_resp(filename, data, columns, separator=";"):
-
+    log.warning(
+        "WARNING: Utilssqlalchemy will soon be removed from GeoNature.\nPlease use utils_flask_sqla instead\n"
+    )
     headers = Headers()
     headers.add("Content-Type", "text/plain")
     headers.add("Content-Disposition", "attachment", filename="export_%s.csv" % filename)
@@ -553,6 +581,9 @@ def to_csv_resp(filename, data, columns, separator=";"):
 # ATTENTION NON MAINTENTU - PREFERER LA MËME FONCTION DU LA LIB utils_flask_sqla
 ################################################################################
 def generate_csv_content(columns, data, separator):
+    log.warning(
+        "WARNING: Utilssqlalchemy will soon be removed from GeoNature.\nPlease use utils_flask_sqla instead\n"
+    )
     fp = io.StringIO()
     writer = csv.DictWriter(
         fp, columns, delimiter=separator, quoting=csv.QUOTE_ALL, extrasaction="ignore"

@@ -1,9 +1,14 @@
+"""
+    Routes for gn_meta 
+"""
+import datetime as dt
 import json
 import logging
+
 from pathlib import Path
+from binascii import a2b_base64
 
 from flask import Blueprint, current_app, request, render_template, send_from_directory
-from sqlalchemy import or_
 from sqlalchemy.sql import text, exists, select
 from sqlalchemy.sql.functions import func
 
@@ -14,7 +19,6 @@ from geonature.core.gn_synthese.models import Synthese
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.tools import InsufficientRightsError
 
-import datetime as dt
 from binascii import a2b_base64
 
 from geonature.core.gn_meta.models import (
@@ -36,13 +40,8 @@ from utils_flask_sqla.response import json_resp
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from geonature.core.gn_meta import mtd_utils
-from geonature.utils.errors import GeonatureApiError
-from geonature.utils.env import BACKEND_DIR
-
 import geonature.utils.filemanager as fm
-from binascii import a2b_base64
 
-from flask.wrappers import Response
 
 routes = Blueprint("gn_meta", __name__)
 
