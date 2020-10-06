@@ -89,7 +89,7 @@ export class SyntheseInfoObsComponent implements OnInit {
       }
 
       this._gnDataService
-        .getTaxonAttributsAndMedia(data.cd_nom, this.SYNTHESE_CONFIG.ID_ATTRIBUT_TAXHUB)
+        .getTaxonAttributsAndMedia(data.cd_nom, AppConfig.SYNTHESE.ID_ATTRIBUT_TAXHUB)
         .subscribe(taxAttr => {
           this.selectObsTaxonInfo = taxAttr;
         });
