@@ -33,13 +33,15 @@
         </div>
 
         <div class="form-group">
-          <div
+          <pnx-taxa
+            [searchBar]="true"
+            [parentFormControl]="this.regularFormGrp.controls['taxa']"
+            [label]="'Permissions.accessRequest.taxaLabel' | translate"
+            rank="GN"
             [matTooltip]="'Permissions.accessRequest.taxaTooltip' | translate"
             matTooltipPosition="above"
           >
-            <small> {{ 'Permissions.accessRequest.taxaLabel' | translate }}</small>
-            <small class="form-text text-muted">Work in progress...</small>
-          </div>
+          </pnx-taxa>
         </div>
 
         <div class="form-group">
