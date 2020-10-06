@@ -519,12 +519,9 @@ def json_resp(fn):
 # ATTENTION NON MAINTENTU - PREFERER LA MËME FONCTION DU LA LIB utils_flask_sqla
 ################################################################################
 def to_json_resp(res, status=200, filename=None, as_file=False, indent=None, extension="json"):
-<<<<<<< HEAD
     log.warning(
         "WARNING: Utilssqlalchemy will soon be removed from GeoNature.\nPlease use utils_flask_sqla instead\n"
     )
-=======
->>>>>>> origin/fix/2.5.0
     if not res:
         status = 404
         res = {"message": "not found"}
