@@ -21,7 +21,7 @@ export class SyntheseInfoObsComponent implements OnInit {
   @Input() selectedObsTaxonDetail: any;
   public selectObsTaxonInfo;
   public formatedAreas = [];
-  public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
+  public CONFIG = AppConfig;
   public isLoading = false;
   public email;
   public mailto: String;
@@ -40,7 +40,7 @@ export class SyntheseInfoObsComponent implements OnInit {
     public activeModal: NgbActiveModal,
     public mediaService: MediaService,
     private _commonService: CommonService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.loadOneSyntheseReleve(this.idSynthese);
@@ -88,7 +88,7 @@ export class SyntheseInfoObsComponent implements OnInit {
         }
 
         this._gnDataService
-          .getTaxonAttributsAndMedia(data.cd_nom, this.SYNTHESE_CONFIG.ID_ATTRIBUT_TAXHUB)
+          .getTaxonAttributsAndMedia(data.cd_nom, AppConfig.SYNTHESE.ID_ATTRIBUT_TAXHUB)
           .subscribe(taxAttr => {
             this.selectObsTaxonInfo = taxAttr;
           });

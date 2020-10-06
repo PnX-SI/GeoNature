@@ -171,6 +171,8 @@ class GnFrontEndConf(Schema):
     DISPLAY_STAT_BLOC = fields.Boolean(missing=True)
     DISPLAY_MAP_LAST_OBS = fields.Boolean(missing=True)
     MULTILINGUAL = fields.Boolean(missing=False)
+    # show email on synthese and validation info obs modal
+    DISPLAY_EMAIL_INFO_OBS = fields.Boolean(missing=True)
 
 
 id_municipality = BddConfig().load({}).data.get("id_area_type_municipality")
@@ -223,6 +225,9 @@ class Synthese(Schema):
     NB_MAX_OBS_EXPORT = fields.Integer(missing=50000)
     # Nombre des "dernières observations" affiché à l'arrive sur la synthese
     NB_LAST_OBS = fields.Integer(missing=100)
+
+    # Display email on synthese and validation info obs modal
+    DISPLAY_EMAIL = fields.Boolean(missing=True)
 
 
 # On met la valeur par défaut de DISCONECT_AFTER_INACTIVITY inferieure à COOKIE_EXPIRATION

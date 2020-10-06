@@ -27,13 +27,13 @@ from geonature.utils.utilsgeometry import create_shapes_generic
 log = logging.getLogger()
 
 
-def test_is_uuid(uuid_string, version=4):
+def test_is_uuid(uuid_string):
     try:
         # Si uuid_string est un code hex valide mais pas un uuid valid,
         # UUID() va quand même le convertir en uuid valide. Pour se prémunir
         # de ce problème, on check la version original (sans les tirets) avec
         # le code hex généré qui doivent être les mêmes.
-        uid = uuid.UUID(uuid_string, version=version)
+        uid = uuid.UUID(uuid_string)
         return uid.hex == uuid_string.replace("-", "")
     except ValueError:
         return False
@@ -519,9 +519,12 @@ def json_resp(fn):
 # ATTENTION NON MAINTENTU - PREFERER LA MËME FONCTION DU LA LIB utils_flask_sqla
 ################################################################################
 def to_json_resp(res, status=200, filename=None, as_file=False, indent=None, extension="json"):
+<<<<<<< HEAD
     log.warning(
         "WARNING: Utilssqlalchemy will soon be removed from GeoNature.\nPlease use utils_flask_sqla instead\n"
     )
+=======
+>>>>>>> origin/fix/2.5.0
     if not res:
         status = 404
         res = {"message": "not found"}

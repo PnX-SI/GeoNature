@@ -2,6 +2,25 @@
 CHANGELOG
 =========
 
+2.5.1 (2020-10-06)
+------------------
+
+**🐛 Corrections**
+
+* Ajout d'un paramètre ``DISPLAY_EMAIL_INFO_OBS`` définissant si les adresses email des observateurs sont affichées ou non dans les fiches info des observations des modules Synthèse et Validation (#1066)
+* Occtax : correction de l'affichage du champs "Technique de collecte Campanule" (#1059)
+* Occtax : correction du fichier d'exemple de configuration ``contrib/occtax/config/conf_gn_module.toml.example`` (#1059)
+* Occtax : paramètre ``DISPLAY_SETTINGS_TOOLS`` renommé ``ENABLE_SETTINGS_TOOLS`` et désactivé par défaut (#1060)
+* Occtax : quand le paramètre ``ENABLE_SETTINGS_TOOLS`` est désactivé, remise en place du fonctionnement de l'outil "Echainer les relevés". Dans ce cas, quand on enchaine les relevés, on conserve le JDD, les observateurs, les dates et heures d'un relevé à l'autre (#1060)
+* Occtax : correction de l'observateur par défaut en mode ``observers_as_txt``
+* Verification des UUID : autoriser toutes les versions (#1063)
+
+**⚠️ Notes de version**
+
+Si vous mettez à jour GeoNature :
+
+* Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
+
 2.5.0 - Manidae (2020-09-30)
 ----------------------------
 

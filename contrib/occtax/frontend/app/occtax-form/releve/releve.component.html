@@ -87,7 +87,6 @@
 </div>
 
 
-
 <div class="row">
   <div class="col-xl-4 col-md-6 col-sm-8 col-11">
     <!-- DATE MIN -->
@@ -320,7 +319,7 @@
   <!-- TECHNIQUE OBSERVATION -->
   <div class="col-6">
     <pnx-nomenclature
-      *ngIf="occtaxConfig.form_fields.obs_collect"
+      *ngIf="occtaxConfig.form_fields.tech_collect"
       label="{{ 'Releve.TechCollectCampanule' | translate }}"
       [parentFormControl]="propertiesForm.get('id_nomenclature_tech_collect_campanule')"
       codeNomenclatureType="TECHNIQUE_OBS"
@@ -378,11 +377,14 @@
     </button>
     <button
       mat-raised-button
-      class="button-success uppercase"
+      <<<<<<<
+      HEAD
+      class="button-success uppercase"=======class="btn-green uppercase"
+    >>>>>>> origin/fix/2.5.0
       matTooltip="Enregistrer le relevé et saisir les taxons"
       [disabled]="releveForm.invalid || occtaxFormReleveService.waiting"
       (click)="submitReleveForm()"
-    >
+      >
       <mat-spinner
         *ngIf="occtaxFormReleveService.waiting"
         diameter="25"

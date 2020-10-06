@@ -25,11 +25,10 @@ import { OcctaxFormMapService } from "../occtax-form/map/map.service";
   selector: "pnx-occtax-form",
   templateUrl: "./occtax-form.component.html",
   styleUrls: ["./occtax-form.component.scss"],
-  // le composant doit initié les services suivants pour le bon fonctionnemment du formulaire
+  // le composant doit initier les services suivants pour le bon fonctionnemment du formulaire
   // et le rechargemernt des données
   providers: [
     OcctaxTaxaListService,
-    OcctaxFormService,
     OcctaxFormMapService,
     OcctaxFormReleveService,
     OcctaxFormCountingService,
@@ -130,9 +129,14 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
    */
   leaveTheForm(cancel) {
     this.disableCancel = true;
-    const url = this.occtaxFormService.chainRecording
-      ? ["/occtax/form"]
-      : ["/occtax"];
+    let url;
+    if (this.occtaxFormService.chainRecording) {
+      url = ["/occtax/form"];
+    } else {
+      url = ["/occtax"];
+      this.occtaxFormService.previousReleve = null;
+    }
+
 
     // si le formulair est en cour d'édition
     if (
