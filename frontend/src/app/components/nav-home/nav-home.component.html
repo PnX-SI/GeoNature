@@ -65,6 +65,13 @@
           >
             {{ 'MyAccount' | translate }}
           </a>
+
+          <a
+            *ngIf="appConfig.PERMISSION_MANAGEMENT.ENABLE_ACCESS_REQUEST"
+            routerLink="/permissions/access-request"
+          >
+            {{ 'Permissions.accessRequest.link' | translate }}
+          </a>
         </mat-menu>
       </ng-container>
 
