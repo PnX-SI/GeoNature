@@ -23,6 +23,7 @@
   "Columns": "Columns",
   "Cancel": "Cancel",
   "Delete": "Delete",
+  "Send": "Send",
   "NotAllowed": "You do not have the rights to perform this action",
   "LoginError": "Login or password incorrect",
   "DownloadData": "Download data",
@@ -221,5 +222,14 @@
     "type": "Media Type",
     "next": "Go to previous media",
     "previous": "Go to next media"
+  },
+  "Permissions": {
+    "accessRequest": {
+      "link": "Permissions request",
+      "formTitle": "Request access permissions",
+      "permissionTitle": "Permissions requested",
+      "sendBtnTooltip": "Send your permissions access request.",
+      "cancelBtnTooltip": "Cancel your permissions access request."
+    }
   }
 }

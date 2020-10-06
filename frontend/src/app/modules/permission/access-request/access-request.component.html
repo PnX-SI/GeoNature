@@ -1,3 +1,38 @@
-<p>
-  permission works!
-</p>
+<div class="card card-page center-in-div">
+  <div class="card-header">
+    <h3 class="underlined main-color">
+      {{ 'Permissions.accessRequest.formTitle' | translate }}
+    </h3>
+  </div>
+
+  <div class="card-body">
+    <h4>{{ 'Permissions.accessRequest.permissionTitle' | translate }}</h4>
+    <mat-divider></mat-divider>
+
+    <!-- Dynamic form -->
+  </div>
+
+  <div class="card-footer d-flex flex-row">
+    <button
+      type="button"
+      mat-raised-button
+      class="mr-auto uppercase"
+      matTooltip="{{ 'Permissions.accessRequest.cancelBtnTooltip' | translate }}"
+      matTooltipPosition="left"
+    >
+      <mat-icon>cancel</mat-icon>
+      {{ 'Cancel' | translate }}
+    </button>
+    <button
+      type="button"
+      mat-raised-button
+      color="primary"
+      class="uppercase"
+      matTooltip="{{ 'Permissions.accessRequest.sendBtnTooltip' | translate }}"
+      matTooltipPosition="left"
+    >
+      <mat-icon>send</mat-icon>
+      {{ 'Send' | translate }}
+    </button>
+  </div>
+</div>

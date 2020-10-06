@@ -23,6 +23,7 @@
   "Columns": "Colonnes",
   "Cancel": "Annuler",
   "Delete": "Supprimer",
+  "Send": "Envoyer",
   "Yes": "Oui",
   "No": "Non",
   "NotAllowed": "Vous n'avez pas les droits pour effectuer cette action",
@@ -225,5 +226,14 @@
     "type": "Type de média",
     "next": "Voir le média suivant",
     "previous": "Voir le média précédent"
+  },
+  "Permissions": {
+    "accessRequest": {
+      "link": "Demander des permissions",
+      "formTitle": "Demande de permissions d'accès",
+      "permissionTitle": "Permissions demandées",
+      "sendBtnTooltip": "Envoyer votre demande d'accès.",
+      "cancelBtnTooltip": "Annuler votre demande d'accès."
+    }
   }
 }
