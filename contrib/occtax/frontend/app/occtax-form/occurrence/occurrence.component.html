@@ -4,7 +4,7 @@
     <pnx-taxonomy 
       label="{{ 'Taxon.NomCite' | translate }}" 
       [parentFormControl]="taxonForm"
-      [idList]="occtaxConfig.id_taxon_list" 
+      [idList]="idTaxonList" 
       [charNumber]="3" 
       [listLength]="occtaxConfig.taxon_result_number" 
       [displayAdvancedFilters]="false"
@@ -34,46 +34,40 @@
   </div>
 </div>
 
-
-
-
 <div class="row">
   <div 
-    *ngIf="occtaxConfig.form_fields.obs_tech"
-    class="col-lg-4 col-sm-6">
+    *ngIf="occtaxConfig.form_fields.determiner"
+    class="col-sm-6">
+    <small> {{ 'Taxon.Determiner' | translate }} </small>
+    <input 
+      class="form-control form-control-sm" 
+      [formControl]="occurrenceForm.get('determiner')" 
+      type="text">
+    <small 
+      *ngIf="occurrenceForm.get('determiner').hasError('required') && occurrenceForm.get('determiner').touched" 
+      class="error" 
+      style="color:red">
+      {{'Taxon.Errors.DeterminerRequiredError' |translate}}
+    </small>
+  </div>
+
+  <div 
+    *ngIf="occtaxConfig.form_fields.determination_method"
+    class="col-sm-6">
     <pnx-nomenclature 
-      label="{{ 'Taxon.ObsTech' | translate }}" 
-      [parentFormControl]="occurrenceForm.get('id_nomenclature_obs_technique')"
-      codeNomenclatureType="METH_OBS" 
+      label="{{ 'Taxon.DeterminationMethod' | translate }}" 
+      [parentFormControl]="occurrenceForm.get('id_nomenclature_determination_method')"
+      codeNomenclatureType="METH_DETERMIN" 
       [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne" 
       [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
     </pnx-nomenclature>
     <small 
-      *ngIf="occurrenceForm.get('id_nomenclature_obs_technique').hasError('required') && occurrenceForm.get('id_nomenclature_obs_technique').touched" 
+      *ngIf="occurrenceForm.get('id_nomenclature_determination_method').hasError('required') && occurrenceForm.get('id_nomenclature_determination_method').touched" 
       class="error" 
       style="color:red">
-      {{'Taxon.Errors.TechObsRequiredError' |translate}}
+      {{'Taxon.Errors.DeterminationMethodRequiredError' |translate}}
     </small>
   </div>
-  <div 
-    *ngIf="occtaxConfig.form_fields.bio_condition"
-    class="col-lg-4 col-sm-6">
-  <pnx-nomenclature 
-    label="{{ 'Taxon.BiologicalCondition' | translate }}" 
-    [parentFormControl]="occurrenceForm.get('id_nomenclature_bio_condition')"
-    codeNomenclatureType="ETA_BIO" 
-    [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne" 
-    [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
-  </pnx-nomenclature>
-  <small 
-    *ngIf="occurrenceForm.get('id_nomenclature_bio_condition').hasError('required') && occurrenceForm.get('id_nomenclature_bio_condition').touched" 
-    class="error" 
-    style="color:red">
-    {{'Taxon.Errors.BiologicalConditionRequiredError' |translate}}
-  </small>
-  </div>
-    
-
 </div>
 
 <div style="margin-top: 10px;">
@@ -89,38 +83,6 @@
 <div [@detailExpand]='advanced'>
   <div class="row">
     <div 
-      *ngIf="occtaxConfig.form_fields.determiner"
-      class="col-lg-4 col-sm-6">
-      <small> {{ 'Taxon.Determiner' | translate }} </small>
-      <input 
-        class="form-control form-control-sm" 
-        [formControl]="occurrenceForm.get('determiner')" 
-        type="text">
-      <small 
-        *ngIf="occurrenceForm.get('determiner').hasError('required') && occurrenceForm.get('determiner').touched" 
-        class="error" 
-        style="color:red">
-        {{'Taxon.Errors.DeterminerRequiredError' |translate}}
-      </small>
-    </div>
-    <div 
-      *ngIf="occtaxConfig.form_fields.determination_method"
-      class="col-lg-4 col-sm-6">
-      <pnx-nomenclature 
-        label="{{ 'Taxon.DeterminationMethod' | translate }}" 
-        [parentFormControl]="occurrenceForm.get('id_nomenclature_determination_method')"
-        codeNomenclatureType="METH_DETERMIN" 
-        [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne" 
-        [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
-      </pnx-nomenclature>
-      <small 
-        *ngIf="occurrenceForm.get('id_nomenclature_determination_method').hasError('required') && occurrenceForm.get('id_nomenclature_determination_method').touched" 
-        class="error" 
-        style="color:red">
-        {{'Taxon.Errors.DeterminationMethodRequiredError' |translate}}
-      </small>
-    </div>
-    <div 
       *ngIf="occtaxConfig.form_fields.observation_status"
       class="col-lg-4 col-sm-6">
       <pnx-nomenclature 
@@ -128,6 +90,42 @@
         [parentFormControl]="occurrenceForm.get('id_nomenclature_observation_status')"
         codeNomenclatureType="STATUT_OBS">
       </pnx-nomenclature>
+    </div>
+
+    <div 
+      *ngIf="occtaxConfig.form_fields.obs_tech"
+      class="col-lg-4 col-sm-6">
+      <pnx-nomenclature 
+        label="{{ 'Taxon.ObsTech' | translate }}" 
+        [parentFormControl]="occurrenceForm.get('id_nomenclature_obs_technique')"
+        codeNomenclatureType="METH_OBS" 
+        [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne" 
+        [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
+      </pnx-nomenclature>
+      <small 
+        *ngIf="occurrenceForm.get('id_nomenclature_obs_technique').hasError('required') && occurrenceForm.get('id_nomenclature_obs_technique').touched" 
+        class="error" 
+        style="color:red">
+        {{'Taxon.Errors.TechObsRequiredError' |translate}}
+      </small>
+    </div>
+
+    <div 
+      *ngIf="occtaxConfig.form_fields.bio_condition"
+      class="col-lg-4 col-sm-6">
+      <pnx-nomenclature 
+        label="{{ 'Taxon.BiologicalCondition' | translate }}" 
+        [parentFormControl]="occurrenceForm.get('id_nomenclature_bio_condition')"
+        codeNomenclatureType="ETA_BIO" 
+        [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne" 
+        [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
+      </pnx-nomenclature>
+      <small 
+        *ngIf="occurrenceForm.get('id_nomenclature_bio_condition').hasError('required') && occurrenceForm.get('id_nomenclature_bio_condition').touched" 
+        class="error" 
+        style="color:red">
+        {{'Taxon.Errors.BiologicalConditionRequiredError' |translate}}
+      </small>
     </div>
 
     <div 
@@ -221,6 +219,7 @@
         {{'Taxon.Errors.ExistProofValidation' |translate}}
       </small>
     </div>
+
     <div 
       *ngIf="occtaxConfig.form_fields.non_digital_proof"
       class="col-lg-4 col-sm-6"
@@ -262,6 +261,8 @@
   </div>
 </div>
 
+<template #dynamiqueContainerOccurence></template>
+
   
 <h5 style="margin-top: 15px;">
   <span [matBadge]="countingControls.length" matBadgeOverlap="false">
@@ -284,23 +285,20 @@
     displayMouseOver 
     selector=".btn-clear">
 
-
+    <!-- On affiche ces boutons que s'il y a plusieurs denombrement afin d'en garder toujours au moins un -->
+    <button 
+      *ngIf="countingControls.length > 1"
+      mat-icon-button 
+      class="btn-clear d-none"
+      (click)="removeCounting(i)">
+      <mat-icon matTooltip="Supprimer ce denombrement">clear</mat-icon>
+    </button>
 
     <mat-expansion-panel [expanded]="countingControls.length === (i+1)">
-      <mat-expansion-panel-header class="right-aligned-header">
+      <mat-expansion-panel-header>
         <mat-panel-title>
           Dénombrement #{{ i + 1 }}
-
         </mat-panel-title>
-        <mat-panel-description
-         *ngIf="countingControls.length > 1"
-         class="btn-clear d-none"
-         (click)="removeCounting(i)"
-         matTooltip="Supprimer ce denombrement"
-         >
-          <mat-icon>clear</mat-icon>
-        </mat-panel-description>
-      
       </mat-expansion-panel-header>
 
       <pnx-occtax-form-counting [form]="formCounting"></pnx-occtax-form-counting>

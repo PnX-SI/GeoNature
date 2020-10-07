@@ -269,17 +269,16 @@ export class OcctaxMapListComponent
 
         const taxName = occ.taxref !== undefined
           ? occ.taxref.nom_complet
-          : occ.nom_cite;
+          : occ.nom_cite
 
         const medias = occ.cor_counting_occtax
           .map(c => c.medias)
-          .flat()
-          .filter(m => !!m);
+          .flat();
         const icons = medias
           .map(media => this.mediaService.tooltip(media))
           .join(' ');
 
-        tooltip.push({ taxName, icons, medias });
+        tooltip.push({ taxName, icons, medias })
       }
     }
     return tooltip.sort((a, b) => a.taxName < b.taxName ? -1 : 1);

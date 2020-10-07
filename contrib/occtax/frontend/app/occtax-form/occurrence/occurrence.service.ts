@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, ComponentRef, ViewContainerRef, ComponentFactory, ComponentFactoryResolver } from "@angular/core";
 import {
   FormBuilder,
   FormGroup,
@@ -16,6 +16,7 @@ import { OcctaxFormCountingService } from "../counting/counting.service";
 import { OcctaxDataService } from "../../services/occtax-data.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
 import { OcctaxTaxaListService } from "../taxa-list/taxa-list.service";
+import { dynamicFormReleveComponent } from "../dynamique-form-releve/dynamic-form-releve.component";
 import { ModuleConfig } from "../../module.config";
 
 @Injectable()
@@ -25,6 +26,11 @@ export class OcctaxFormOccurrenceService {
   public occurrence: BehaviorSubject<any> = new BehaviorSubject(null);
   public existProof_DATA: Array<any> = [];
   public saveWaiting: boolean = false;
+  
+  public dynamicFormGroup: FormGroup;
+  componentRefOccurence: ComponentRef<any>;
+  public dynamicContainerOccurence: ViewContainerRef;
+  public data : any;
 
   constructor(
     private fb: FormBuilder,
@@ -34,6 +40,7 @@ export class OcctaxFormOccurrenceService {
     private occtaxDataService: OcctaxDataService,
     private occtaxParamS: OcctaxFormParamService,
     private occtaxTaxaListService: OcctaxTaxaListService,
+    private _resolver: ComponentFactoryResolver
   ) {
     this.initForm();
     this.setObservables();
@@ -97,6 +104,38 @@ export class OcctaxFormOccurrenceService {
         }),
       )
       .subscribe((values) => {
+        
+        if (this.dynamicFormGroup != undefined){
+          
+          if (values.additional_fields){
+            for (const key of Object.keys(values.additional_fields)){
+              values[key] =  values.additional_fields[key];
+              this.dynamicFormGroup.value[key] = values.additional_fields[key];
+              //console.log(key + "->" + releve.additional_fields[key]);
+              //this.form.value[key] = values.additional_fields[key];
+            }
+          }
+          const formConfig = this.componentRefOccurence.instance.formConfigReleveDataSet;
+          this.dynamicContainerOccurence.clear(); 
+          const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(dynamicFormReleveComponent);
+          this.componentRefOccurence = this.dynamicContainerOccurence.createComponent(factory);
+      
+          this.componentRefOccurence.instance.formConfigReleveDataSet = formConfig;
+          this.componentRefOccurence.instance.formArray = this.dynamicFormGroup;
+        }
+    
+        /*MET Champs additionnel*/
+        /*this.dynamicFormGroup = this.fb.group({});
+        if (values.additional_fields){
+          for (const key of Object.keys(values.additional_fields)){
+            values[key] =  values.additional_fields[key];
+            this.dynamicFormGroup.value[key] = values.additional_fields[key];
+            //console.log(key + "->" + releve.additional_fields[key]);
+            this.form.value[key] = values.additional_fields[key];
+          }
+        }*/
+        //this.componentRefOccurence.instance.formArray = this.dynamicFormGroup;
+
         this.form.patchValue(values);
       });
 
@@ -114,17 +153,12 @@ export class OcctaxFormOccurrenceService {
       .subscribe((cd_nomenclature: string) => {
         if (cd_nomenclature == "1") {
           this.form.setValidators(proofRequiredValidator);
-          if (ModuleConfig.digital_proof_validator) {
-            this.form
-              .get("digital_proof")
-              .setValidators(
-                Validators.pattern("^(http://|https://|ftp://){1}.+$")
-              );
-          } else {
-            this.form.get("non_digital_proof").setValidators([]);
-            this.form.get("digital_proof").setValidators([]);
-          }
-
+          this.form
+            .get("digital_proof")
+            .setValidators(
+              Validators.pattern("^(http://|https://|ftp://){1}.+$")
+            );
+          this.form.get("non_digital_proof").setValidators([]);
         } else {
           this.form.setValidators([]);
           this.form.get("digital_proof").setValidators(proofNotNullValidator);
@@ -162,6 +196,44 @@ export class OcctaxFormOccurrenceService {
         })
       )
       .subscribe((val) => this.form.get("non_digital_proof").setValue(val));
+
+      
+    /* MET Champs additionnel, récupérer le dataset */
+    this.occtaxFormService.editionMode
+      .pipe(
+        switchMap((editionMode: boolean) => {
+          //Le switch permet, selon si édition ou creation, de récuperer les valeur par defaut ou celle de l'API
+          return editionMode ? this.releveValues : [];
+        })
+      )
+      .subscribe((values) => this.data = values)
+      ; //filter((editionMode: boolean) => !editionMode))
+
+  }
+  
+  /** Get occtax data and patch value to the form */
+  private get releveValues(): Observable<any> {
+    return this.occtaxFormService.occtaxData.pipe(
+      filter((data) => data && data.releve.properties),
+      map((data) => {
+        const releve = data.releve.properties;
+
+        /* OCCTAX - CHAMPS ADDITIONNELS DEB */
+        if(this.dynamicContainerOccurence != undefined){
+          this.dynamicContainerOccurence.clear(); 
+          const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(dynamicFormReleveComponent);
+          this.componentRefOccurence = this.dynamicContainerOccurence.createComponent(factory);
+          
+          /*MET Champs additionnel*/
+          this.dynamicFormGroup = this.fb.group({});
+      
+          this.componentRefOccurence.instance.formConfigReleveDataSet = ModuleConfig.add_fields[data.releve.properties.dataset.id_dataset]['taxon'];
+          this.componentRefOccurence.instance.formArray = this.dynamicFormGroup;
+        }
+        /* OCCTAX - CHAMPS ADDITIONNELS FIN */
+        return releve;
+      })
+    );
   }
 
   private get defaultValues(): Observable<any> {
@@ -236,6 +308,8 @@ export class OcctaxFormOccurrenceService {
   }
 
   submitOccurrence() {
+    
+    this.form.value['additional_fields'] = this.componentRefOccurence.instance.formArray.value;
     let id_releve = this.occtaxFormService.id_releve_occtax.getValue();
     let TEMP_ID_OCCURRENCE = this.uuidv4();
 

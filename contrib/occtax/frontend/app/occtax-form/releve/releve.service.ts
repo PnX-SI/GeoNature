@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, ViewContainerRef, ComponentRef, ComponentFactory, ComponentFactoryResolver } from "@angular/core";
 import { FormBuilder, FormGroup, FormControl, Validators } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Observable, Subscription } from "rxjs";
@@ -13,6 +13,7 @@ import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormMapService } from "../map/map.service";
 import { OcctaxDataService } from "../../services/occtax-data.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
+import { dynamicFormReleveComponent } from "../dynamique-form-releve/dynamic-form-releve.component";
 
 @Injectable()
 export class OcctaxFormReleveService {
@@ -27,6 +28,11 @@ export class OcctaxFormReleveService {
   public showTime: boolean = false; //gestion de l'affichage des infos complémentaires de temps
   public waiting: boolean = false;
   public route: ActivatedRoute;
+  
+  public dynamicFormGroup: FormGroup;
+  public currentIdDataset:any;
+  public dynamicContainer: ViewContainerRef;
+  componentRef: ComponentRef<any>;
 
   constructor(
     private router: Router,
@@ -38,7 +44,8 @@ export class OcctaxFormReleveService {
     private occtaxFormService: OcctaxFormService,
     private occtaxFormMapService: OcctaxFormMapService,
     private occtaxDataService: OcctaxDataService,
-    private occtaxParamS: OcctaxFormParamService
+    private occtaxParamS: OcctaxFormParamService,
+    private _resolver: ComponentFactoryResolver
   ) {
     this.initPropertiesForm();
     this.setObservables();
@@ -127,6 +134,21 @@ export class OcctaxFormReleveService {
 
     //on desactive le form, il sera réactivé si la geom est ok
     this.propertiesForm.disable();
+    this.occtaxParamS.parameters.releve.id_dataset = 1;
+  }
+  
+  onDatasetChanged(idDataset) {
+    this.currentIdDataset = idDataset;
+    //this.octaxForm.createComponent();
+    this.dynamicContainer.clear(); 
+    const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(dynamicFormReleveComponent);
+    this.componentRef = this.dynamicContainer.createComponent(factory);
+
+    this.componentRef.instance.formConfigReleveDataSet = ModuleConfig.add_fields[this.currentIdDataset]['releve'];
+    this.componentRef.instance.formArray = this.dynamicFormGroup;
+    /*this.dynamicDatasetForm = this._fb.group({
+      test: null,
+    });*/
   }
 
   /**
@@ -239,6 +261,16 @@ export class OcctaxFormReleveService {
           this.habitatForm.setValue(habitatFormValue)
         }
 
+        /*MET Champs additionnel*/
+        this.dynamicFormGroup = this.fb.group({});
+        if (releve.additional_fields){
+          for (const key of Object.keys(releve.additional_fields)){
+            releve[key] =  releve.additional_fields[key];
+            this.dynamicFormGroup.value[key] = releve.additional_fields[key];
+            //console.log(key + "->" + releve.additional_fields[key]);
+          }
+        }
+
         return releve;
       })
     );
@@ -296,26 +328,21 @@ export class OcctaxFormReleveService {
 
   private getAltitude(geojson) {
     // get to geo info from API
-    this.dataFormService.getAltitudes(geojson).subscribe((res) => {
+    this.dataFormService.getGeoInfo(geojson).subscribe((res) => {
       this.propertiesForm.patchValue({
-        altitude_min: res.altitude_min,
-        altitude_max: res.altitude_max,
+        altitude_min: res.altitude.altitude_min,
+        altitude_max: res.altitude.altitude_max,
       });
     });
   }
 
   private formatDate(strDate) {
-    // if its an object return it
-    if (typeof strDate === 'object' && strDate !== null) {
-      return strDate
-    } else {
-      const date = new Date(strDate);
-      return {
-        year: date.getFullYear(),
-        month: date.getMonth() + 1,
-        day: date.getDate(),
-      };
-    }
+    const date = new Date(strDate);
+    return {
+      year: date.getFullYear(),
+      month: date.getMonth() + 1,
+      day: date.getDate(),
+    };
   }
 
   get releveFormValue() {
@@ -329,11 +356,13 @@ export class OcctaxFormReleveService {
     value.properties.observers = value.properties.observers.map(
       (observer) => observer.id_role
     );
+    //value.champs_addi = this.occtaxFormService.componentRef.instance.formArray.value;
     return value;
   }
 
   submitReleve() {
     this.waiting = true;
+    this.releveForm.value['additional_fields'] = this.componentRef.instance.formArray.value;
 
     if (this.occtaxFormService.id_releve_occtax.getValue()) {
       //update

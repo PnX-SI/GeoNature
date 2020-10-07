@@ -37,9 +37,11 @@ button .mat-spinner {
 }
 
 .btn-clear {
-  color: #d40303;
+	position: absolute;
+	color: #d40303;
 }
 
 .mat-expansion-panel {
+	margin-left: 45px !important;
 	margin-right: 50px !important;
 }

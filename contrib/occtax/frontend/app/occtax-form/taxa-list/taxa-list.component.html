@@ -29,6 +29,9 @@
       *ngFor="let occurrence of occtaxTaxaListService.occurrences$ | async; let i=index"
       selector=".btn-actions">
   
+
+
+  
     <mat-accordion [multi]="true">
 
         <mat-expansion-panel displayMouseOver selector=".btn-actions" >
@@ -46,7 +49,7 @@
               <span class="btn-actions d-none">
                 <button 
                     mat-icon-button 
-                    class="btn-edit"
+                    class="btn-edit "
                     (click)="editOccurrence(occurrence)">
                     <mat-icon style="vertical-align: middle;" matTooltip="Editer le taxon">edit</mat-icon>
                   </button>
@@ -57,8 +60,7 @@
                     (click)="deleteOccurrence(occurrence)">
                     <mat-icon style="vertical-align: middle;" matTooltip="Supprimer le taxon">clear</mat-icon>
                   </button>
-              </span>            
-            </mat-panel-description>
+              </span>            </mat-panel-description>
           </mat-expansion-panel-header>
           
 
@@ -316,10 +318,8 @@
 
     </div>
   </ng-container>
-  <ng-template #zeroOccurrenceBlk >
-    <div id="zero-taxon-container">
-      Aucun taxon pour ce relevé
-    </div>
+  <ng-template #zeroOccurrenceBlk>
+    Aucun taxon pour ce relevé
   </ng-template>
   
 </div>

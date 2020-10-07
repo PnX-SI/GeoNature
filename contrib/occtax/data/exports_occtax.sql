@@ -7,7 +7,7 @@ SET client_min_messages = warning;
 
 SET search_path = public;
 
-CREATE OR REPLACE VIEW pr_occtax.v_export_occtax AS 
+CREATE OR REPLACE VIEW pr_occtax.export_occtax AS 
  SELECT 
     rel.unique_id_sinp_grp as "idSINPRegroupement",
     ref_nomenclatures.get_cd_nomenclature(rel.id_nomenclature_grp_typ) AS "typGrp",

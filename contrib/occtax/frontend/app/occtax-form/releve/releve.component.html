@@ -71,7 +71,8 @@
           [parentFormControl]="propertiesForm.get('id_dataset')"
           [disabled]="propertiesForm.disabled"
           (valueLoaded)="userDatasets = $event.value"
-          moduleCode="OCCTAX">
+          moduleCode="OCCTAX"
+          (onChange)="occtaxFormReleveService.onDatasetChanged($event);">
         </pnx-datasets>
       </ng-template>
   </div>
@@ -312,18 +313,21 @@
   </textarea>
 </div>
 
+<!-- FORMULAIRE DYNAMIQUE -->
+<template #dynamiqueContainer></template>
+
 <div class="text-center" style="margin-top: 10px;"> 
 
   <ng-container >
     <button 
-      mat-raised-button
+      mat-flat-button
       color="warn"
       class="uppercase mr-1"
       [routerLink]="['/occtax']">
       Annuler
     </button> 
   <button 
-    mat-raised-button
+    mat-flat-button
     class="btn-green uppercase"
     matTooltip="Enregistrer le relevé et saisir les taxons"
     [disabled]="releveForm.invalid || occtaxFormReleveService.waiting"

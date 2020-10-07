@@ -16,12 +16,17 @@
   <small [attr.for]="formDefComp.attribut_name">{{formDefComp.attribut_label}}
   </small>
   <mat-icon
-  *ngIf="formDefComp.definition"
+  *ngIf="formDefComp.definition && !formDefComp.link_definition"
   [matTooltip]="formDefComp.definition"
   matTooltipClass="form-tooltip"
   class="small-icon"
   matSuffix
   >help</mat-icon>
+  
+  <!--MET Add fields dans occtax - Ajout d'un bouton lien -->
+  <a *ngIf="formDefComp.link_definition && formDefComp.definition" target="_blank" class="link-media" [href]="formDefComp.link_definition"
+    ><mat-icon [matTooltip]="formDefComp.definition" matTooltipClass="form-tooltip">info</mat-icon>
+  </a>
 
 </div>
 
@@ -258,5 +263,13 @@
       [filters]="formDefComp.filters"
       [default]="formDefComp.default"
       ></pnx-datalist>
+      
+      <div
+        *ngSwitchCase="'html'"
+        id="{{ formDefComp.attribut_name }}_{{ rand }}"
+        class="{{ formDefComp.class }}"
+        [innerHTML]="formDefComp.html | safeHTML"
+      >
+      </div>
     </div>
   </div>

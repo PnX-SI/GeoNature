@@ -34,14 +34,14 @@
     </div>
   
     <div class="row">
-      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 padding-sm-occ"
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
         [ngStyle]="{'min-height.px': cardContentHeight}"
       >
         <!-- MAP -->
         <pnx-map-list [idName]="idName" height="100%">
         </pnx-map-list>
       </div>
-      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 padding-sm-occ"
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
         [ngStyle]="{'min-height.px': cardContentHeight}">
         <!-- LIST -->
         <!--Table-->
@@ -96,8 +96,9 @@
               <div><strong>Taxon(s): </strong></div>
               <div style="margin-left: 20px;">
                 <div *ngFor="let taxon of displayTaxonsTooltip(row)">
-                  {{ taxon.taxName }} <br>                  
+                  {{ taxon.taxName }} <br>
                   <span [innerHTML]="taxon.icons | safeHTML"></span>
+                  <!-- <pnx-display-medias [medias]="taxon.medias" diaporama="true" display='mini'></pnx-display-medias> -->
                 </div>
               </div>
             
@@ -307,12 +308,11 @@
         <button 
           *ngIf="userCruved?.E != '0'"
           id="download-btn" 
-          class="uppercase"
-          mat-raised-button
+          mat-flat-button
           color="primary"
           (click)="openModalDownload($event, modalDownload)"
         >
-        {{ 'Download' | translate }} 
+        {{ 'DownloadData' | translate }} 
 
           <mat-icon>file_download</mat-icon>
         </button>
@@ -339,21 +339,8 @@
               mapListService.selectedRow[0][mapListService.idName]}} ?</h5>
           </div>
           <div class="modal-body">
-            <button 
-              type="button"
-              mat-raised-button
-              class="mr-1 uppercase"
-              (click)="c()"
-            > 
-              {{'Cancel' | translate}} 
-            </button>
-            <button 
-              type="button" 
-              mat-raised-button
-              color="warn"
-              class="uppercase"
-              (click)="c(); onDeleteReleve(mapListService.selectedRow[0].id_releve_occtax)"
-            >
+            <button type="button" class="btn btn-default" (click)="c()"> {{'Cancel' | translate}} </button>
+            <button type="button" class="btn btn-danger" (click)="c(); onDeleteReleve(mapListService.selectedRow[0].id_releve_occtax)">
               {{'Delete' | translate }} </button>
           </div>
         </ng-template>
@@ -372,13 +359,8 @@
             </div>
   
             <div class="export-button">
-              <button 
-                *ngFor="let format of occtaxConfig.export_available_format" 
-                (click)="downloadData(format); c()"
-                [disabled]="mapListService.page.totalElements > occtaxConfig.MAX_EXPORT_NUMBER" 
-                type="button"
-                mat-raised-button
-                class="btn-green mr-1">
+              <button *ngFor="let format of occtaxConfig.export_available_format" (click)="downloadData(format); c()"
+                [disabled]="mapListService.page.totalElements > occtaxConfig.MAX_EXPORT_NUMBER" type="button" class="btn btn-success format-btn">
                 Format {{format}}
               </button>
             </div>

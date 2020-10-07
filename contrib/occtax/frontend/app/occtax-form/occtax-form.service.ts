@@ -1,5 +1,5 @@
-import { Injectable } from "@angular/core";
-import { FormControl } from "@angular/forms";
+import { Injectable, ViewContainerRef, ComponentRef, ComponentFactory, ComponentFactoryResolver } from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
 import { BehaviorSubject } from "rxjs";
 import { filter, tap } from "rxjs/operators";
 
@@ -9,6 +9,8 @@ import { Router } from "@angular/router";
 import { AuthService, User } from "@geonature/components/auth/auth.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
+import { dynamicFormReleveComponent } from "./dynamique-form-releve/dynamic-form-releve.component";
+import { ModuleConfig } from "../module.config";
 
 @Injectable()
 export class OcctaxFormService {
@@ -22,13 +24,21 @@ export class OcctaxFormService {
   public editionMode: BehaviorSubject<boolean> = new BehaviorSubject(false); // boolean to check if its editionMode
   public chainRecording: boolean = false; // boolean to check if chain the recording is activate
   public stayOnFormInterface = new FormControl(false);
+  
+  public dynamicFormGroup: FormGroup;
+  public currentIdDataset:any;
+  public dynamicContainer: ViewContainerRef;
+  public dynamicContainerOccurence: ViewContainerRef;
+  componentRef: ComponentRef<any>;
+  componentRefOccurence: ComponentRef<any>;
 
   constructor(
     private _http: HttpClient,
     private _router: Router,
     private _auth: AuthService,
     private _commonService: CommonService,
-    private _dataS: OcctaxDataService
+    private _dataS: OcctaxDataService,
+    private _resolver: ComponentFactoryResolver
   ) {
     this.currentUser = this._auth.getCurrentUser();
 
@@ -46,6 +56,17 @@ export class OcctaxFormService {
       (data) => {
         this.occtaxData.next(data);
         this.editionMode.next(true);
+
+        /* OCCTAX - CHAMPS ADDITIONNELS DEB */
+        if(this.dynamicContainerOccurence != undefined){
+          this.dynamicContainerOccurence.clear(); 
+          const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(dynamicFormReleveComponent);
+          this.componentRefOccurence = this.dynamicContainerOccurence.createComponent(factory);
+      
+          this.componentRefOccurence.instance.formConfigReleveDataSet = ModuleConfig.add_fields[data.releve.properties.dataset.id_dataset]['taxon'];
+          this.componentRefOccurence.instance.formArray = this.dynamicFormGroup;
+        }
+        /* OCCTAX - CHAMPS ADDITIONNELS FIN */
       },
       (error) => {
         this._commonService.translateToaster("error", "Releve.DoesNotExist");
@@ -128,5 +149,19 @@ export class OcctaxFormService {
     let occtaxData = this.occtaxData.getValue();
     occtaxData.releve = releve;
     this.occtaxData.next(occtaxData);
+  }
+  
+  onDatasetChanged(idDataset) {
+    this.currentIdDataset = idDataset;
+    //this.octaxForm.createComponent();
+    this.dynamicContainer.clear(); 
+    const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(dynamicFormReleveComponent);
+    this.componentRef = this.dynamicContainer.createComponent(factory);
+
+    this.componentRef.instance.formConfigReleveDataSet = ModuleConfig.add_fields[this.currentIdDataset]['releve'];
+    this.componentRef.instance.formArray = this.dynamicFormGroup;
+    /*this.dynamicDatasetForm = this._fb.group({
+      test: null,
+    });*/
   }
 }
