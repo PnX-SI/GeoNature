@@ -26,6 +26,7 @@
   "NotAllowed": "You do not have the rights to perform this action",
   "LoginError": "Login or password incorrect",
   "DownloadData": "Download data",
+  "Download": "Download",
   "Downloading": "Downloading",
   "DownloadOverflow": "The number of items is too big to be downloaded, please modify your request or contact your administrator",
   "AllItems": "all",
@@ -74,6 +75,8 @@
     "MaxDate": "End date",
     "MinAltitude": "Min altitude",
     "MaxAltitude": "Max altitude",
+    "MinDepth": "Min depth",
+    "MaxDepth": "Max depth",
     "HourMin": "Start hour",
     "HourMax": "End hour",
     "HourFormat": "hh:mm",
@@ -89,14 +92,19 @@
     "Delete": "Delete releve",
     "DeleteSuccessfully": "Releve deleted successfully",
     "ObsTechnique": "Observation technic",
+    "TechCollectCampanule": "Observation collect technique (Campanule)",
     "Validate": "Validate releve",
     "UnValidate": "Unvalidate relev",
     "AddTaxonOnReleve": "Add a taxon to this releve",
     "CancelTaxon": "Cancel this taxon",
     "FillGeometryFirst": "Please locate on map",
     "GroupType": "Grouping type",
+    "GroupMethod": "Grouping method",
     "DoesNotExist": "This releve does not exist",
     "StayOnFormInterface": "Stay on form interface",
+    "GeoObjectNature": "Geographical object nature",
+    "PlaceName": "Place name",
+    "Precision": "Precision",
     "Infos": {
       "ReleveAdded": "Releve added",
       "ReleveModified": "Releve modified"
@@ -104,6 +112,7 @@
     "Errors": {
       "DateMaxError": "Max date can't be inferior to the min date",
       "AltitudeError": "Altitude max cannot be smaller than altitude min",
+      "DepthError": "Depth min cannot be smaller than depth min",
       "HourMaxError": "End hour can't be inferior to start hour"
     }
   },
@@ -120,7 +129,7 @@
     "Taxons": "Taxons",
     "NomCite": "Mentioned species",
     "TaxonName": "Taxon name",
-    "ObsMethod": "Observation method",
+    "ObsTech": "Observation techique",
     "Advanced": "Advanced",
     "BiologicalCondition": "Biological condition",
     "BiologicalStatus": "Biological status",
@@ -144,6 +153,7 @@
     "DeleteDone": "Taxon removed",
     "CreateDone": "Taxon added",
     "UpdateDone": "Taxon modified",
+    "OccBehaviour": "Behaviour",
     "Errors": {
       "ExistProofValidation": "This field must begin with 'http://', 'https://', ou 'ftp://'",
       "NoExistProofError": "If existence proof is 'YES' one of two proof fields must be filled",
@@ -152,7 +162,7 @@
       "CdNomRequiredError": "Taxon required",
       "DeterminerRequiredError": "Determiner required",
       "DeterminationMethodRequiredError": "Determination method required",
-      "ObsMethodRequiredError": "Observation method required",
+      "TechObsRequiredError": "Observation technique required",
       "BiologicalConditionRequiredError": "Biological condition required",
       "CountingRequiredError": "Counting required"
     }
@@ -193,5 +203,23 @@
   "ForgotPasswordOrLogin": "Loggin or password forgotten",
   "AutoAccountEmailConfirmation": "An email has been sent to confirm your account",
   "AdminAccountEmailConfirmation": "Your demand has been saved, an administrator will answer to you soon",
-  "PasswordAndLoginRecovery": "An email has been sent to recover your login and password"
+  "PasswordAndLoginRecovery": "An email has been sent to recover your login and password",
+  "Medias": {
+    "Medias": "Medias",
+    "Media": "Media",
+    "add": "Add media",
+    "edit": "Edit media",
+    "valid": "Validate media",
+    "delete": "Delete media",
+    "undo": "Undo changes",
+    "loading": "Loading media",
+    "link": "Link to the media",
+    "diaporama": "Link to the media",
+    "title": "Title",
+    "description": "Description",
+    "author": "Author",
+    "type": "Media Type",
+    "next": "Go to previous media",
+    "previous": "Go to next media"
+  }
 }

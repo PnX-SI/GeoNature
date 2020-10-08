@@ -14,18 +14,17 @@ def getGeoInfo():
     """
     From a posted geojson, the route return the municipalities intersected
     and the altitude min/max
+    
     .. :quickref: Ref Geo;
     """
     data = dict(request.get_json())
     sql = text(
         """SELECT (ref_geo.fct_get_area_intersection(
-        st_setsrid(ST_GeomFromGeoJSON(:geom),4326), :id_area_municipality)).*"""
+        st_setsrid(ST_GeomFromGeoJSON(:geom),4326), :id_type)).*"""
     )
     try:
         result = DB.engine.execute(
-            sql,
-            geom=str(data["geometry"]),
-            id_area_municipality=current_app.config["BDD"]["id_area_type_municipality"],
+            sql, geom=str(data["geometry"]), id_type=data.get("id_type", None),
         )
     except Exception as e:
         DB.session.rollback()
@@ -56,7 +55,34 @@ def getGeoInfo():
     for row in result:
         alt = {"altitude_min": row[0], "altitude_max": row[1]}
 
-    return {"municipality": municipality, "altitude": alt}
+    return {"areas": municipality, "altitude": alt}
+
+
+@routes.route("/altitude", methods=["POST"])
+@json_resp
+def getaltitide():
+    """
+    From a posted geojson get the altitude min/max
+
+    .. :quickref: Ref Geo;
+    """
+    data = dict(request.get_json())
+
+    sql = text(
+        """SELECT (ref_geo.fct_get_altitude_intersection(
+        st_setsrid(ST_GeomFromGeoJSON(:geom),4326))).*
+        """
+    )
+    try:
+        result = DB.engine.execute(sql, geom=str(data["geometry"]))
+    except Exception as e:
+        DB.session.rollback()
+        raise
+    alt = {}
+    for row in result:
+        alt = {"altitude_min": row[0], "altitude_max": row[1]}
+
+    return alt
 
 
 @routes.route("/areas", methods=["POST"])
@@ -80,8 +106,7 @@ def getAreasIntersection():
     )
 
     try:
-        result = DB.engine.execute(
-            sql, geom=str(data["geometry"]), type=id_type)
+        result = DB.engine.execute(sql, geom=str(data["geometry"]), type=id_type)
     except Exception as e:
         DB.session.rollback()
         raise
@@ -110,8 +135,7 @@ def getAreasIntersection():
     data = {}
     for b in bibareatype:
         data[b.id_type] = b.as_dict(columns=("type_name", "type_code"))
-        data[b.id_type]["areas"] = [
-            a for a in areas if a["id_type"] == b.id_type]
+        data[b.id_type]["areas"] = [a for a in areas if a["id_type"] == b.id_type]
 
     return data
 
@@ -125,13 +149,11 @@ def get_municipalities():
     """
     parameters = request.args
 
-    q = DB.session.query(LiMunicipalities).order_by(
-        LiMunicipalities.nom_com.asc())
+    q = DB.session.query(LiMunicipalities).order_by(LiMunicipalities.nom_com.asc())
 
     if "nom_com" in parameters:
         q = q.filter(
-            LiMunicipalities.nom_com.ilike(
-                "{}%".format(parameters.get("nom_com")))
+            LiMunicipalities.nom_com.ilike("{}%".format(parameters.get("nom_com")))
         )
     limit = int(parameters.get("limit")) if parameters.get("limit") else 100
 
@@ -143,12 +165,11 @@ def get_municipalities():
 @json_resp
 def get_areas():
     """
-        Return the areas of ref_geo.l_areas without geometry
+        Return the areas of ref_geo.l_areas
         .. :quickref: Ref Geo;
     """
     # change all args in a list of value
-    params = {key: request.args.getlist(key)
-              for key, value in request.args.items()}
+    params = {key: request.args.getlist(key) for key, value in request.args.items()}
 
     q = DB.session.query(LAreas).order_by(LAreas.area_name.asc())
 
@@ -156,8 +177,7 @@ def get_areas():
         q = q.filter(LAreas.id_type.in_(params["id_type"]))
 
     if "area_name" in params:
-        q = q.filter(LAreas.area_name.ilike(
-            "%{}%".format(params.get("area_name")[0])))
+        q = q.filter(LAreas.area_name.ilike("%{}%".format(params.get("area_name")[0])))
 
     limit = int(params.get("limit")[0]) if params.get("limit") else 100
 
@@ -177,7 +197,8 @@ def get_area_size():
     """
 
     geojson = dict(request.get_json())
-    query = text("""
+    query = text(
+        """
     SELECT
     ST_Area(
         ST_Transform(
@@ -186,12 +207,13 @@ def get_area_size():
             ),:local_srid
         )
     )
-    """)
+    """
+    )
 
     result = DB.engine.execute(
         query,
-        geojson=str(geojson['geometry']),
-        local_srid=current_app.config['LOCAL_SRID']
+        geojson=str(geojson["geometry"]),
+        local_srid=current_app.config["LOCAL_SRID"],
     )
     area = None
     if result:

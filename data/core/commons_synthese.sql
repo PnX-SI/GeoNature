@@ -1,5 +1,7 @@
 
 -- vue validation de gn_commons necessitant le schéma synthese
+
+-- vue validation de gn_commons necessitant le schéma synthese
 CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS
 SELECT  s.id_synthese,
     s.unique_id_sinp,
@@ -18,6 +20,10 @@ SELECT  s.id_synthese,
     s.the_geom_4326,
     s.date_min,
     s.date_max,
+    s.depth_min,
+    s.depth_max,
+    s.place_name,
+    s.precision,
     s.validator,
     s.observers,
     s.id_digitiser,
@@ -34,7 +40,6 @@ SELECT  s.id_synthese,
     s.id_nomenclature_geo_object_nature,
     s.id_nomenclature_info_geo_type,
     s.id_nomenclature_grp_typ,
-    s.id_nomenclature_obs_meth,
     s.id_nomenclature_obs_technique,
     s.id_nomenclature_bio_status,
     s.id_nomenclature_bio_condition,
@@ -50,6 +55,7 @@ SELECT  s.id_synthese,
     s.id_nomenclature_blurring,
     s.id_nomenclature_source_status,
     s.id_nomenclature_valid_status,
+    s.id_nomenclature_behaviour,
     s.reference_biblio,
     t.cd_nom,
     t.cd_ref,
@@ -73,6 +79,6 @@ SELECT  s.id_synthese,
         ORDER BY v.validation_date DESC
         LIMIT 1
     ) v ON true
-  WHERE d.validable = true;
-  
+  WHERE d.validable = true AND NOT s.unique_id_sinp IS NULL;
+
 COMMENT ON VIEW gn_commons.v_synthese_validation_forwebapp  IS 'Vue utilisée pour le module validation. Prend l''id_nomenclature dans la table synthese ainsi que toutes les colonnes de la synthese pour les filtres. On JOIN sur la vue latest_validation pour voir si la validation est auto';

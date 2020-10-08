@@ -3,30 +3,40 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { AppConfig } from '@geonature_config/app.config';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { MediaService } from '@geonature_common/service/media.service';
+import { finalize } from 'rxjs/operators';
+
 
 @Component({
   selector: 'pnx-synthese-modal-info-obs',
   templateUrl: 'modal-info-obs.component.html'
 })
 export class ModalInfoObsComponent implements OnInit {
-  @Input() oneObsSynthese: any;
+  @Input() syntheseObs: any;
   public selectObsTaxonInfo;
   public selectedObs;
   public selectedObsTaxonDetail;
   public formatedAreas = [];
   public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
+  public isLoading = false;
   constructor(
     private _gnDataService: DataFormService,
     private _dataService: SyntheseDataService,
-    public activeModal: NgbActiveModal
-  ) {}
+    public activeModal: NgbActiveModal,
+    public mediaService: MediaService
+  ) { }
 
   ngOnInit() {
-    this.loadOneSyntheseReleve(this.oneObsSynthese);
+    this.loadOneSyntheseReleve(this.syntheseObs);
   }
 
-  loadOneSyntheseReleve(oneObsSynthese) {
-    this._dataService.getOneSyntheseObservation(oneObsSynthese.id).subscribe(data => {
+  loadOneSyntheseReleve(syntheseObs) {
+    this.isLoading = true;
+    this._dataService.getOneSyntheseObservation(syntheseObs.id).pipe(
+      finalize(() => {
+        this.isLoading = false;
+      })
+    ).subscribe(data => {
       this.selectedObs = data;
       this.selectedObs['municipalities'] = [];
       this.selectedObs['other_areas'] = [];
@@ -50,12 +60,12 @@ export class ModalInfoObsComponent implements OnInit {
       //   }/fr_light_l93,fr_light_mer_l93,fr_lit_l93)`;
     });
     this._gnDataService
-      .getTaxonAttributsAndMedia(oneObsSynthese.cd_nom, this.SYNTHESE_CONFIG.ID_ATTRIBUT_TAXHUB)
+      .getTaxonAttributsAndMedia(syntheseObs.cd_nom, this.SYNTHESE_CONFIG.ID_ATTRIBUT_TAXHUB)
       .subscribe(data => {
         this.selectObsTaxonInfo = data;
       });
 
-    this._gnDataService.getTaxonInfo(oneObsSynthese.cd_nom).subscribe(data => {
+    this._gnDataService.getTaxonInfo(syntheseObs.cd_nom).subscribe(data => {
       this.selectedObsTaxonDetail = data;
     });
   }

@@ -90,10 +90,10 @@ export class ValidationComponent implements OnInit {
     );
   }
 
-  formatDate(unformatedDate) {
-    const date = new Date(unformatedDate);
-    return date.toLocaleDateString("fr-FR");
-  }
+  // formatDate(unformatedDate) {
+  //   const date = new Date(unformatedDate);
+  //   return date.toLocaleDateString("fr-FR");
+  // }
 
   customColumns(feature) {
     // function pass to the LoadTableData maplist service function to format date
@@ -103,16 +103,6 @@ export class ValidationComponent implements OnInit {
     }
     if (feature.properties.validation_auto === false) {
       feature.properties.validation_auto = "";
-    }
-    if (feature.properties.date_min) {
-      feature.properties.date_min = this.formatDate(
-        feature.properties.date_min
-      );
-    }
-    if (feature.properties.date_max) {
-      feature.properties.date_max = this.formatDate(
-        feature.properties.date_max
-      );
     }
     return feature;
   }

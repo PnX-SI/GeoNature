@@ -4,7 +4,7 @@ from flask import current_app
 from sqlalchemy import ForeignKey, or_, Sequence
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import select, func
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, JSONB
 from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
 from geojson import Feature
@@ -16,11 +16,12 @@ from pypnusershub.db.models import User
 from pypnusershub.db.tools import InsufficientRightsError
 from utils_flask_sqla.serializers import serializable, SERIALIZERS
 from utils_flask_sqla_geo.serializers import geoserializable, shapeserializable
+from pypn_habref_api.models import Habref
 
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
 from geonature.core.ref_geo.models import LAreas
 from geonature.core.ref_geo.models import LiMunicipalities
-from geonature.core.gn_commons.models import THistoryActions, TValidations
+from geonature.core.gn_commons.models import THistoryActions, TValidations, TMedias
 from geonature.utils.env import DB
 
 
@@ -148,7 +149,6 @@ class VSyntheseDecodeNomenclatures(DB.Model):
     id_synthese = DB.Column(DB.Integer, primary_key=True)
     nat_obj_geo = DB.Column(DB.Unicode)
     grp_typ = DB.Column(DB.Unicode)
-    obs_method = DB.Column(DB.Unicode)
     obs_technique = DB.Column(DB.Unicode)
     bio_status = DB.Column(DB.Unicode)
     bio_condition = DB.Column(DB.Unicode)
@@ -164,6 +164,7 @@ class VSyntheseDecodeNomenclatures(DB.Model):
     observation_status = DB.Column(DB.Unicode)
     blurring = DB.Column(DB.Unicode)
     source_status = DB.Column(DB.Unicode)
+    occ_behaviour = DB.Column(DB.Unicode)
 
 
 @serializable
@@ -178,9 +179,8 @@ class Synthese(DB.Model):
     id_source = DB.Column(DB.Integer)
     entity_source_pk_value = DB.Column(DB.Integer)
     id_dataset = DB.Column(DB.Integer)
-    id_nomenclature_geo_object_nature = DB.Column(DB.Integer)
     id_nomenclature_grp_typ = DB.Column(DB.Integer)
-    id_nomenclature_obs_meth = DB.Column(DB.Integer)
+    grp_method = DB.Column(DB.Unicode)
     id_nomenclature_obs_technique = DB.Column(DB.Integer)
     id_nomenclature_bio_status = DB.Column(DB.Integer)
     id_nomenclature_bio_condition = DB.Column(DB.Integer)
@@ -196,6 +196,7 @@ class Synthese(DB.Model):
     id_nomenclature_observation_status = DB.Column(DB.Integer)
     id_nomenclature_blurring = DB.Column(DB.Integer)
     id_nomenclature_source_status = DB.Column(DB.Integer)
+    id_nomenclature_behaviour = DB.Column(DB.Integer)
     count_min = DB.Column(DB.Integer)
     count_max = DB.Column(DB.Integer)
     cd_nom = DB.Column(DB.Integer)
@@ -204,11 +205,15 @@ class Synthese(DB.Model):
     sample_number_proof = DB.Column(DB.Unicode)
     digital_proof = DB.Column(DB.Unicode)
     non_digital_proof = DB.Column(DB.Unicode)
-    altitude_min = DB.Column(DB.Unicode)
-    altitude_max = DB.Column(DB.Unicode)
+    altitude_min = DB.Column(DB.Integer)
+    altitude_max = DB.Column(DB.Integer)
+    depth_min = DB.Column(DB.Integer)
+    depth_max = DB.Column(DB.Integer)
+    precision = DB.Column(DB.Integer)
     the_geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
     the_geom_point = DB.Column(Geometry("GEOMETRY", 4326))
     the_geom_local = DB.Column(Geometry("GEOMETRY", current_app.config["LOCAL_SRID"]))
+    place_name = DB.Column(DB.Unicode)
     date_min = DB.Column(DB.DateTime)
     date_max = DB.Column(DB.DateTime)
     validator = DB.Column(DB.Unicode)
@@ -219,6 +224,7 @@ class Synthese(DB.Model):
     id_nomenclature_determination_method = DB.Column(DB.Integer)
     comment_context = DB.Column(DB.Unicode)
     comment_description = DB.Column(DB.Unicode)
+    additional_data = DB.Column(JSONB)
     meta_validation_date = DB.Column(DB.DateTime)
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
@@ -279,8 +285,11 @@ class VSyntheseForWebApp(DB.Model):
     sample_number_proof = DB.Column(DB.Unicode)
     digital_proof = DB.Column(DB.Unicode)
     non_digital_proof = DB.Column(DB.Unicode)
-    altitude_min = DB.Column(DB.Unicode)
-    altitude_max = DB.Column(DB.Unicode)
+    altitude_min = DB.Column(DB.Integer)
+    altitude_max = DB.Column(DB.Integer)
+    depth_min = DB.Column(DB.Integer)
+    depth_max = DB.Column(DB.Integer)
+    place_name = DB.Column(DB.Unicode)
     the_geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
     date_min = DB.Column(DB.DateTime)
     date_max = DB.Column(DB.DateTime)
@@ -298,7 +307,7 @@ class VSyntheseForWebApp(DB.Model):
     id_nomenclature_geo_object_nature = DB.Column(DB.Integer)
     id_nomenclature_info_geo_type = DB.Column(DB.Integer)
     id_nomenclature_grp_typ = DB.Column(DB.Integer)
-    id_nomenclature_obs_meth = DB.Column(DB.Integer)
+    grp_method = DB.Column(DB.Unicode)
     id_nomenclature_obs_technique = DB.Column(DB.Integer)
     id_nomenclature_bio_status = DB.Column(DB.Integer)
     id_nomenclature_bio_condition = DB.Column(DB.Integer)
@@ -315,6 +324,7 @@ class VSyntheseForWebApp(DB.Model):
     id_nomenclature_blurring = DB.Column(DB.Integer)
     id_nomenclature_source_status = DB.Column(DB.Integer)
     id_nomenclature_valid_status = DB.Column(DB.Integer)
+    id_nomenclature_behaviour = DB.Column(DB.Integer)
     reference_biblio = DB.Column(DB.Unicode)
     name_source = DB.Column(DB.Unicode)
     url_source = DB.Column(DB.Unicode)
@@ -408,6 +418,10 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
     unique_id_sinp = DB.Column(UUID(as_uuid=True))
     id_source = DB.Column(DB.Integer)
     id_dataset = DB.Column(DB.Integer)
+    cd_hab = DB.Column(DB.Integer, ForeignKey(Habref.cd_hab))
+
+    habitat = DB.relationship(Habref, lazy="joined")
+    
     source = DB.relationship(
         "TSources",
         primaryjoin=(TSources.id_source == id_source),
@@ -443,11 +457,18 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
         primaryjoin=(CorObserverSynthese.id_synthese == id_synthese),
         secondaryjoin=(User.id_role == CorObserverSynthese.id_role),
     )
+
     validations = DB.relationship(
         "TValidations",
         primaryjoin=(TValidations.uuid_attached_row == unique_id_sinp),
         foreign_keys=[unique_id_sinp],
         uselist=True,
+    )
+
+    medias = DB.relationship(
+        TMedias,
+        primaryjoin=(unique_id_sinp == TMedias.uuid_attached_row),
+        foreign_keys=[TMedias.uuid_attached_row],
     )
 
 

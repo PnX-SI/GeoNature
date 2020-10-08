@@ -11,7 +11,7 @@ export class ValidationDataService {
   constructor(
     private _http: HttpClient,
     private _commonService: CommonService
-  ) {}
+  ) { }
 
   buildQueryUrl(params): HttpParams {
     let queryUrl = new HttpParams();
@@ -31,12 +31,7 @@ export class ValidationDataService {
     });
   }
 
-  getValidationHistory(uuid_attached_row) {
-    return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/validation/history/${uuid_attached_row}`,
-      {}
-    );
-  }
+
 
   postStatus(data: any, endpoint: Array<number>) {
     const urlStatus = `${AppConfig.API_ENDPOINT}/validation/${endpoint}`;

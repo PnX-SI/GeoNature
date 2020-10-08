@@ -207,6 +207,10 @@ export class DataFormService {
     return this._http.post(`${AppConfig.API_ENDPOINT}/geo/areas`, geojson);
   }
 
+  getAltitudes(geojson) {
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/geo/altitude`, geojson);
+  }
+
   getFormatedGeoIntersection(geojson, idType?) {
     if (idType) {
       geojson['id_type'] = idType;
@@ -256,6 +260,13 @@ export class DataFormService {
     }
 
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/geo/areas`, { params: params });
+  }
+
+  getValidationHistory(uuid_attached_row) {
+    return this._http.get<any>(
+      `${AppConfig.API_ENDPOINT}/gn_commons/history/${uuid_attached_row}`,
+      {}
+    );
   }
 
   /**
@@ -390,7 +401,7 @@ export class DataFormService {
     let queryString: HttpParams = new HttpParams();
     if (modules_code) {
       modules_code.forEach(mod_code => {
-        queryString = queryString.append('module_code', mod_code);
+        queryString = queryString.set('module_code', mod_code);
       });
     }
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/permissions/cruved`, {
@@ -400,6 +411,28 @@ export class DataFormService {
 
   addOrderBy(httpParam: HttpParams, order_column): HttpParams {
     return httpParam.append('orderby', order_column);
+  }
+
+  getDataList(api: string, application: string, params = {}) {
+    let queryString: HttpParams = new HttpParams();
+    for (const key of Object.keys(params)) {
+      const param = params[key];
+      if (Array.isArray(param)) {
+        for (const p of param) {
+          queryString = queryString.append(key, p);
+        }
+      } else {
+        queryString = queryString.append(key, param);
+      }
+    }
+
+    const url = application === 'GeoNature'
+      ? `${AppConfig.API_ENDPOINT}/${api}`
+      : application === 'TaxHub'
+        ? `${AppConfig.API_TAXHUB}/${api}`
+        : api;
+
+    return this._http.get<any>(url, { params: queryString });
   }
 
   subscribeAndDownload(
@@ -439,6 +472,24 @@ export class DataFormService {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  }
+
+
+  //--------------------------------------------------------------------------------------
+  //----------------Geofit additional code data-form.service.ts
+  //liste des lieux
+  getPlaces() {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/places`);
+  }
+
+  // Supprimer lieu
+  deletePlace(idPlace) {
+    return this._http.delete<any>(`${AppConfig.API_ENDPOINT}/gn_commons/place/${idPlace}`);
+  }
+
+  //Ajouter lieu
+  addPlace(place) {
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/gn_commons/place`, place);
   }
 
 }

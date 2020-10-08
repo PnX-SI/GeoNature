@@ -10,11 +10,17 @@
     Attention vous vous apprêtez à supprimer une station qui comporte
     {{nbHabitats}} habitat(s)
   </p>
-  <button type="button" (click)="c()" class="btn btn-secondary">Annuler</button>
-
-  <button type="button" 
-    (click)="deleteStation(modalDelete); c()"
-    class="btn btn-danger">Supprimer</button>
+  <button 
+    mat-raised-button
+    (click)="c()" 
+    class="btn btn-secondary">Annuler</button>
+  <button 
+    mat-raised-button
+    color="warn"
+    class="mr-1"
+    (click)="deleteStation(modalDelete); c()">
+    Supprimer
+  </button>
 </div>
 
 

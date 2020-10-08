@@ -49,8 +49,12 @@
       codeNomenclatureType="ROLE_ACTEUR">
   </pnx-nomenclature>
 
-  <button *ngIf="i != 0" class="btn btn-sm btn-danger margin-top-sm" (click)="deleteFormArray(i)">
-    <i class="fa fa-trash" aria-hidden="true"></i>
+  <button *ngIf="i != 0"
+    mat-mini-fab
+    color="warn"
+    class="mt-1"
+    (click)="deleteFormArray(i)">
+    <mat-icon>delete</mat-icon>
   </button>
   <hr>
 

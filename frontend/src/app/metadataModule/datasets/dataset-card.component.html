@@ -4,9 +4,20 @@
       <h3>JEU DE DONNÉES : {{dataset.dataset_name}}</h3>
     </div>
     <div class="c col-xs-6 col-lg-4">
-      <button class="btn btn-secondary" routerLink="/metadata"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
+      <button
+        mat-raised-button
+        routerLink="/metadata">
+        <mat-icon>chevron_left</mat-icon>
+        Retour
       </button>
-      <button class="btn btn-primary" (click)="getPdf()">Export PDF</button>
+      <button
+        mat-raised-button
+        class="btn-green ml-1"
+        (click)="getPdf()">
+        Export PDF
+        <mat-icon>file_download</mat-icon>
+
+      </button>
     </div>
   </div>
 
@@ -81,8 +92,8 @@
           <div *ngIf="dataset.cor_dataset_actor">
           <div class="b">Contacts </div>
             <div class="a" *ngFor="let actor of dataset.cor_dataset_actor">
-              <div> {{ actor.nomenclature_actor_role?.mnemonique}} : {{ actor.organism?.nom_organisme }} 
-                <span *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"> - </span> 
+              <div> {{ actor.nomenclature_actor_role?.mnemonique}} : {{ actor.organism?.nom_organisme }}
+                <span *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"> - </span>
                 {{ actor.role?.nom_complet }}
              </div>
             </div>

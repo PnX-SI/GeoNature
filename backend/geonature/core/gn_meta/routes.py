@@ -126,6 +126,7 @@ def get_af_and_ds_metadata(info_role):
             log.error(e)
             with_mtd_error = True
     params = request.args.to_dict()
+    params["orderby"] = "dataset_name"
     datasets = get_datasets_cruved(info_role, params, as_model=True)
     ids_dataset_user = TDatasets.get_user_datasets(info_role, only_user=True)
     ids_dataset_organisms = TDatasets.get_user_datasets(info_role, only_user=False)
@@ -143,6 +144,7 @@ def get_af_and_ds_metadata(info_role):
     afs = (
         DB.session.query(TAcquisitionFramework)
         .filter(TAcquisitionFramework.id_acquisition_framework.in_(list_id_af))
+        .order_by(TAcquisitionFramework.acquisition_framework_name)
         .all()
     )
 
@@ -151,7 +153,10 @@ def get_af_and_ds_metadata(info_role):
     for af in afs:
         af_dict = af.as_dict()
         af_dict["cruved"] = af.get_object_cruved(
-            user_cruved, af.id_acquisition_framework, ids_afs_user, ids_afs_org,
+            user_cruved=user_cruved,
+            id_object=af.id_acquisition_framework,
+            ids_object_user=ids_afs_user,
+            ids_object_organism=ids_afs_org,
         )
         af_dict["datasets"] = []
         afs_dict.append(af_dict)
@@ -160,7 +165,10 @@ def get_af_and_ds_metadata(info_role):
     for d in datasets:
         dataset_dict = d.as_dict()
         dataset_dict["cruved"] = d.get_object_cruved(
-            user_cruved, d.id_dataset, ids_dataset_user, ids_dataset_organisms,
+            user_cruved=user_cruved,
+            id_object=d.id_dataset,
+            ids_object_user=ids_dataset_user,
+            ids_object_organism=ids_dataset_organisms,
         )
         af_of_dataset = get_af_from_id(d.id_acquisition_framework, afs_dict)
         af_of_dataset["datasets"].append(dataset_dict)
@@ -224,28 +232,7 @@ def get_dataset_details(info_role, id_dataset):
     :returns: dict<TDatasetDetails>
     """
 
-    dataset = get_dataset_details_dict(id_dataset)
-
-    if info_role.value_filter != "3":
-        try:
-            if info_role.value_filter == "1":
-                actors = [cor["id_role"] for cor in dataset["cor_dataset_actor"]]
-                assert info_role.id_role in actors
-            elif info_role.value_filter == "2":
-                actors = [cor["id_role"] for cor in dataset["cor_dataset_actor"]]
-                organisms = [cor["id_organism"] for cor in dataset["cor_dataset_actor"]]
-                assert (
-                    info_role.id_role in actors or info_role.id_organisme in organisms
-                )
-        except AssertionError:
-            raise InsufficientRightsError(
-                ('User "{}" cannot read this current dataset').format(
-                    info_role.id_role
-                ),
-                403,
-            )
-
-    return dataset
+    return get_dataset_details_dict(id_dataset, info_role)
 
 
 @routes.route("/upload_canvas", methods=["POST"])
@@ -297,7 +284,9 @@ def post_dataset(info_role):
     dataset.modules = modules_obj
     if dataset.id_dataset:
         DB.session.merge(dataset)
+    # add id_digitiser only on creation
     else:
+        dataset.id_digitizer = info_role.id_role
         DB.session.add(dataset)
     DB.session.commit()
     return dataset.as_dict(True)
@@ -317,7 +306,7 @@ def get_export_pdf_dataset(id_dataset, info_role):
             403,
         )
 
-    df = get_dataset_details_dict(id_dataset)
+    df = get_dataset_details_dict(id_dataset, info_role)
 
     if info_role.value_filter != "3":
         try:
@@ -376,9 +365,7 @@ def get_export_pdf_dataset(id_dataset, info_role):
     pdf_file = fm.generate_pdf("dataset_template_pdf.html", df, filename)
     pdf_file_posix = Path(pdf_file)
     return send_from_directory(
-        str(pdf_file_posix.parent),
-        pdf_file_posix.name,
-        as_attachment=True
+        str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True
     )
 
 
@@ -512,16 +499,13 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
         dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
     )
 
-
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf(
         "acquisition_framework_template_pdf.html", acquisition_framework, filename
     )
     pdf_file_posix = Path(pdf_file)
     return send_from_directory(
-        str(pdf_file_posix.parent),
-        pdf_file_posix.name,
-        as_attachment=True
+        str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True
     )
 
 
@@ -695,6 +679,7 @@ def post_acquisition_framework(info_role):
     if af.id_acquisition_framework:
         DB.session.merge(af)
     else:
+        af.id_digitizer = info_role.id_role
         DB.session.add(af)
     DB.session.commit()
     return af.as_dict()

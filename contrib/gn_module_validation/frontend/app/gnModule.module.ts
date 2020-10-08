@@ -2,9 +2,10 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { GN2CommonModule } from "@geonature_common/GN2Common.module";
 import { Routes, RouterModule } from "@angular/router";
-import { MatTabsModule } from "@angular/material/tabs";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TreeModule } from 'angular-tree-component';
+
+import { SharedSyntheseModule } from '@geonature/shared/syntheseSharedModule/synthese-shared.module'
 
 //components
 import { ValidationComponent } from "./components/validation.component";
@@ -19,6 +20,7 @@ import { DynamicFormService } from "@geonature_common/form/dynamic-form-generato
 import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthese-data.service";
 import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthese-form.service";
 import { TaxonAdvancedStoreService } from "@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service";
+import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component'
 
 // my module routing
 const routes: Routes = [{ path: "", component: ValidationComponent }];
@@ -30,16 +32,16 @@ const routes: Routes = [{ path: "", component: ValidationComponent }];
     ValidationSyntheseCarteComponent,
     ValidationPopupComponent,
     ValidationDefinitionsComponent,
-    ValidationModalInfoObsComponent
+    ValidationModalInfoObsComponent,
   ],
 
   imports: [
     GN2CommonModule,
+    SharedSyntheseModule,
     RouterModule.forChild(routes),
     CommonModule,
-    MatTabsModule,
     NgbModule,
-    TreeModule.forRoot()
+    TreeModule.forRoot(),
   ],
   entryComponents: [ValidationModalInfoObsComponent],
 
@@ -54,4 +56,4 @@ const routes: Routes = [{ path: "", component: ValidationComponent }];
 
   bootstrap: []
 })
-export class GeonatureModule {}
+export class GeonatureModule { }

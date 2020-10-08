@@ -29,6 +29,7 @@
   "LoginError": "Identifiant ou mot de passe incorrect",
   "Downloading": "Téléchargement en cours",
   "DownloadData": "Télécharger les données",
+  "Download": "Télécharger",
   "DownloadOverflow": "Le nombre d'élément est trop important pour être téléchargé, veuillez affiner votre recherche ou contacter votre administrateur",
   "AllItems": "Tous",
   "Map": {
@@ -79,6 +80,8 @@
     "HourFormat": "hh:mm",
     "MinAltitude": "Alt min",
     "MaxAltitude": "Alt max",
+    "MinDepth": "Profondeur min",
+    "MaxDepth": "Profondeur max",
     "Municipality": "Commune",
     "Municipalities": "Commune(s)",
     "Dataset": "Jeu de données",
@@ -93,19 +96,25 @@
     "Validate": "Valider le relevé",
     "UnValidate": "Invalider le relevé",
     "ObsTechnique": "Technique d'observation",
+    "TechCollectCampanule": "Technique de collecte du relevé (Campanule)",
     "AddTaxonOnReleve": "Ajouter un taxon sur ce relevé",
     "CancelTaxon": "Annuler la saisie du taxon",
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire",
     "GroupType": "Type de regroupement",
+    "GroupMethod": "Méthode de regroupement",
     "DoesNotExist": "Ce relevé n'existe pas",
     "StayOnFormInterface": "Enchainer les relevés sans retourner à l'interface carte/liste",
+    "GeoObjectNature": "Nature de l'objet géographique",
+    "PlaceName": "Nom du lieu",
+    "Precision": "Precision",
     "Infos": {
       "ReleveAdded": "Relevé ajouté",
       "ReleveModified": "Relevé modifié"
     },
     "Errors": {
-      "DateMaxError": "La date de début ne peut pas être postérieur à la date de fin",
+      "DateMaxError": "La date de début ne peut pas être postérieure à la date de fin",
       "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
+      "DepthError": "La profondeur max ne peut être inférieure à la profondeur min",
       "HourMaxError": "L'heure de début ne peut pas être supérieure à l'heure de fin"
     }
   },
@@ -122,7 +131,7 @@
     "NomCite": "Nom cité",
     "Taxons": "Taxons",
     "TaxonName": "Nom du taxon",
-    "ObsMethod": "Méthode d'observation",
+    "ObsTech": "Technique d'observation",
     "Advanced": "Avancé",
     "BiologicalCondition": "Etat biologique",
     "BiologicalStatus": "Statut biologique",
@@ -146,6 +155,7 @@
     "DeleteDone": "Taxon supprimé",
     "CreateDone": "Taxon ajouté au relevé",
     "UpdateDone": "Taxon mis à jour",
+    "OccBehaviour": "Comportement",
     "Errors": {
       "ExistProofValidation": "Ce champs doit débuter par 'http://', 'https://', ou 'ftp://'",
       "NoExistProofError": "Si 'preuve d'existence = Oui', un des deux champs de preuve doit être rempli",
@@ -154,7 +164,7 @@
       "CdNomRequiredError": "Veuillez selectionner taxon présent dans le référentiel Taxref",
       "DeterminerRequiredError": "Veuillez indiquer un déterminateur",
       "DeterminationMethodRequiredError": "Veuillez indiquer la méthode de détermination",
-      "ObsMethodRequiredError": "Veuillez indiquer la méthode d'observation",
+      "TechObsRequiredError": "Veuillez indiquer la technique d'observation",
       "BiologicalConditionRequiredError": "Veuillez indiquer l'état biologique",
       "CountingRequiredError": "Veuillez renseigner un dénombrement"
     }
@@ -197,5 +207,23 @@
   "ForgotPasswordOrLogin": "Identifiant ou mot de passe oublié ?",
   "AutoAccountEmailConfirmation": "Un email vient de vous être envoyé pour activer votre compte",
   "AdminAccountEmailConfirmation": "Votre demande de création de compte a bien été prise en compte, elle va être évaluée par un administrateur",
-  "PasswordAndLoginRecovery": "Un email vient de vous être envoyé pour récupérer votre identifiant et/ou renouveler votre mot de passe"
+  "PasswordAndLoginRecovery": "Un email vient de vous être envoyé pour récupérer votre identifiant et/ou renouveler votre mot de passe",
+  "Media": {
+    "Medias": "Médias",
+    "Media": "Média",
+    "add": "Ajouter un Média",
+    "edit": "Editer le média",
+    "valid": "Valider le média",
+    "delete": "Supprimer le média",
+    "undo": "Rétablir le média",
+    "loading": "Chargement du média en cours",
+    "link": "Afficher le media",
+    "diaporama": "Afficher le media",
+    "title": "Titre",
+    "description": "Description",
+    "author": "Auteur",
+    "type": "Type de média",
+    "next": "Voir le média suivant",
+    "previous": "Voir le média précédent"
+  }
 }

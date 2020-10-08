@@ -15,17 +15,16 @@
     <!-- Page Content  -->
     <div class="row row-sm page-content">
 
-
-
       <div class="col-sm-12 col-md-7 padding-sm middle">
-            <button #buttonToggle
+          <button #buttonToggle
             [style.left.px]="marginButton"
             (click)="searchBarHidden = !searchBarHidden"
             data-toggle="collapse" data-target="#sidebar"
             aria-controls="sidebar"
-            type="button" id="sidebarCollapse" class="btn btn-toogle-sidenav box-shadow">
-                <i class="fa" [ngClass]="searchBarHidden ? 'fa-caret-left' : 'fa-caret-right'"></i>
-            </button>
+            type="button" id="sidebarCollapse" class="btn btn-toogle-sidenav box-shadow"
+          >
+              <i class="fa" [ngClass]="searchBarHidden ? 'fa-caret-left' : 'fa-caret-right'"></i>
+          </button>
           <pnx-validation-synthese-list [inputSyntheseData]="_mapListService.tableData" [validationStatus]="validationStatus"></pnx-validation-synthese-list>
 
           <!-- select only observations with awaiting validation status

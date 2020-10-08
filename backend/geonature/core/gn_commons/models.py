@@ -7,12 +7,17 @@ from sqlalchemy.sql import select, func
 from sqlalchemy.dialects.postgresql import UUID
 from geoalchemy2 import Geometry
 
+import os
+
+from flask import current_app
+
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
 
 from geonature.utils.env import DB
+from geonature.core.gn_commons.file_manager import rename_file
 
 # from geonature.core.gn_meta.models import TDatasets
 
@@ -64,6 +69,7 @@ class TModules(DB.Model):
     active_frontend = DB.Column(DB.Boolean)
     active_backend = DB.Column(DB.Boolean)
     module_doc_url = DB.Column(DB.Unicode)
+    module_order = DB.Column(DB.Integer)
 
 
 @serializable
@@ -97,6 +103,46 @@ class TMedias(DB.Model):
     description_es = DB.Column(DB.Unicode)
     description_de = DB.Column(DB.Unicode)
     is_public = DB.Column(DB.Boolean, default=True)
+    meta_create_date = DB.Column(DB.DateTime)
+    meta_update_date = DB.Column(DB.DateTime)
+
+    def __before_commit_delete__(self):
+        # déclenché sur un DELETE : on supprime le fichier
+        if self.media_path and os.path.exists(
+            os.path.join(current_app.config["BASE_DIR"] + "/" + self.media_path)
+        ):
+            # delete file
+            self.remove_file()
+            # delete thumbnail
+            self.remove_thumbnails()
+
+    def remove_file(self):
+        if not self.media_path:
+            return
+        initial_path = self.media_path
+        (inv_file_name, inv_file_path) = initial_path[::-1].split("/", 1)
+        file_name = inv_file_name[::-1]
+        file_path = inv_file_path[::-1]
+
+        try:
+            self.media_path = rename_file(
+                self.media_path, "{}/deleted_{}".format(file_path, file_name)
+            )
+        except FileNotFoundError:
+            raise Exception("Unable to delete file {}".format(initial_path))
+
+    def remove_thumbnails(self):
+        # delete thumbnail test sur nom des fichiers avec id dans le dossier thumbnail
+        dir_thumbnail = os.path.join(
+            current_app.config["BASE_DIR"],
+            current_app.config["UPLOAD_FOLDER"],
+            "thumbnails",
+            str(self.id_table_location),
+        )
+        for f in os.listdir(dir_thumbnail):
+            if f.split("_")[0] == str(self.id_media):
+                abs_path = os.path.join(dir_thumbnail, f)
+                os.path.exists(abs_path) and os.remove(abs_path)
 
 
 @serializable
@@ -188,3 +234,19 @@ class TMobileApps(DB.Model):
     url_apk = DB.Column(DB.Unicode)
     package = DB.Column(DB.Unicode)
     version_code = DB.Column(DB.Unicode)
+
+
+#######################################################################################
+#----------------Geofit additional code  models.py 
+#######################################################################################   
+@serializable
+@geoserializable
+class TPlaces(DB.Model):
+    __tablename__ = "t_places"
+    __table_args__ = {"schema": "gn_commons"}
+    id_place = DB.Column(DB.Integer, primary_key=True)
+    id_role = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
+    place_name = DB.Column(DB.String)
+    place_geom = DB.Column(Geometry("GEOMETRY", 4326))
+    def get_geofeature(self, recursif=True):
+        return self.as_geofeature("place_geom", "place_name", recursif) 

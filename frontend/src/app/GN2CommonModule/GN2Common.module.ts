@@ -14,8 +14,19 @@ import {
   MatProgressSpinnerModule,
   MatButtonModule,
   MatDialogModule,
-  MatBadgeModule
+  MatBadgeModule,
+  MatProgressBarModule,
+  MatSlideToggleModule,
+  MatFormFieldModule,
+  MatAutocompleteModule,
+  MatSelectModule,
+  MatInputModule,
+  MatChipsModule,
+  MatTabsModule
 } from '@angular/material';
+
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -60,6 +71,14 @@ import { AutoCompleteComponent } from '@geonature_common/form/autocomplete/autoc
 import { SyntheseSearchComponent } from '@geonature_common/form/synthese-form/synthese-form.component';
 import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-component';
 import { DumbSelectComponent } from '@geonature_common/form/dumb-select/dumb-select.component';
+import { DisplayMediasComponent } from '@geonature_common/form/media/display-medias.component';
+import { MediaComponent } from '@geonature_common/form/media/media.component';
+import { MediaDialog } from '@geonature_common/form/media/media-dialog.component';
+import { MediasComponent } from '@geonature_common/form/media/medias.component';
+import { MediasTestComponent } from '@geonature_common/form/media/medias-test.component';
+import { DatalistComponent } from '@geonature_common/form/datalist/datalist.component';
+import { PlacesComponent } from './map/places/places.component';
+import { PlacesListComponent } from './map/placesList/placesList.component';
 
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
@@ -67,6 +86,7 @@ import { DisplayMouseOverDirective } from './directive/display-mouse-over.direct
 
 // pipe
 import { ReadablePropertiePipe } from './pipe/readable-propertie.pipe';
+import { SafeHtmlPipe } from './pipe/sanitizer.pipe';
 
 // Service
 import { MapService } from './map/map.service';
@@ -77,6 +97,7 @@ import { FormService } from './form/form.service';
 import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
+import { MediaService } from '@geonature_common/service/media.service';
 
 // add all rxjs operators
 import 'rxjs/Rx';
@@ -99,6 +120,14 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MatButtonModule,
     MatDialogModule,
     MatBadgeModule,
+    MatProgressBarModule,
+    MatSlideToggleModule,
+    MatFormFieldModule,
+    MatAutocompleteModule,
+    MatSelectModule,
+    MatInputModule,
+    MatChipsModule,
+    NgxMatSelectSearchModule,
     FormsModule,
     ReactiveFormsModule,
     NgxDatatableModule,
@@ -106,7 +135,8 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     TranslateModule.forChild(),
     NgbModule.forRoot(),
     AutoCompleteModule,
-    TreeModule
+    TreeModule,
+    MatTabsModule
   ],
   declarations: [
     NomenclatureComponent,
@@ -126,6 +156,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     DisableControlDirective,
     DisplayMouseOverDirective,
     ReadablePropertiePipe,
+    SafeHtmlPipe,
     DatasetsComponent,
     MapListGenericFiltersComponent,
     ObserversTextComponent,
@@ -143,7 +174,15 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     TaxonAdvancedModalComponent,
     DumbSelectComponent,
     GeometryFormComponent,
-    ConfirmationDialog
+    DisplayMediasComponent,
+    MediaComponent,
+    MediaDialog,
+    MediasComponent,
+    MediasTestComponent,
+    ConfirmationDialog,
+    DatalistComponent,
+    PlacesComponent,
+    PlacesListComponent,
   ],
   providers: [
     TranslateService,
@@ -155,11 +194,13 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     DynamicFormService,
     NgbDatePeriodParserFormatter,
     SyntheseDataService,
-    CruvedStoreService
+    CruvedStoreService,
+    MediaService
   ],
   entryComponents: [
     TaxonAdvancedModalComponent,
-    ConfirmationDialog
+    ConfirmationDialog,
+    MediaDialog,
   ],
   exports: [
     MunicipalitiesComponent,
@@ -181,6 +222,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     DisableControlDirective,
     DisplayMouseOverDirective,
     ReadablePropertiePipe,
+    SafeHtmlPipe,
     DatasetsComponent,
     ModalDownloadComponent,
     FormsModule,
@@ -201,6 +243,14 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MatButtonModule,
     MatDialogModule,
     MatBadgeModule,
+    MatProgressBarModule,
+    MatSlideToggleModule,
+    MatFormFieldModule,
+    MatAutocompleteModule,
+    MatSelectModule,
+    MatInputModule,
+    MatChipsModule,
+    NgxMatSelectSearchModule,
     NgbModule,
     TranslateModule,
     MapListGenericFiltersComponent,
@@ -216,7 +266,14 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     TaxonAdvancedModalComponent,
     DumbSelectComponent,
     GeometryFormComponent,
-    ConfirmationDialog
+    ConfirmationDialog,
+    MediasComponent,
+    MediaDialog,
+    DisplayMediasComponent,
+    DatalistComponent,
+    PlacesComponent,
+    PlacesListComponent,
+    MatTabsModule
   ]
 })
 export class GN2CommonModule { }

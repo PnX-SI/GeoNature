@@ -2,7 +2,9 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { AppConfig } from "@geonature_config/app.config";
 
-@Injectable()
+@Injectable({
+  providedIn: "root",
+})
 export class OcctaxDataService {
   constructor(private _api: HttpClient) {}
 
@@ -29,18 +31,29 @@ export class OcctaxDataService {
   }
 
   updateReleve(id_releve, form) {
-    return this._api.post(`${AppConfig.API_ENDPOINT}/occtax/only/releve/${id_releve}`, form);
+    return this._api.post(
+      `${AppConfig.API_ENDPOINT}/occtax/only/releve/${id_releve}`,
+      form
+    );
   }
 
   createOccurrence(id_releve, form) {
-    return this._api.post(`${AppConfig.API_ENDPOINT}/occtax/releve/${id_releve}/occurrence`, form);
+    return this._api.post(
+      `${AppConfig.API_ENDPOINT}/occtax/releve/${id_releve}/occurrence`,
+      form
+    );
   }
 
   updateOccurrence(id_occurrence, form) {
-    return this._api.post(`${AppConfig.API_ENDPOINT}/occtax/occurrence/${id_occurrence}`, form);
+    return this._api.post(
+      `${AppConfig.API_ENDPOINT}/occtax/occurrence/${id_occurrence}`,
+      form
+    );
   }
 
   deleteOccurrence(id) {
-    return this._api.delete(`${AppConfig.API_ENDPOINT}/occtax/occurrence/${id}`);
+    return this._api.delete(
+      `${AppConfig.API_ENDPOINT}/occtax/occurrence/${id}`
+    );
   }
 }

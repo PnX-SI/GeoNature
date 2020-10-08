@@ -47,7 +47,7 @@ export class OccHabFormComponent implements OnInit {
     private _commonService: CommonService,
     private _gnDataService: DataFormService,
     private _mapService: MapService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.leafletDrawOptions;

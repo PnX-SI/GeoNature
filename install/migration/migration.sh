@@ -25,9 +25,18 @@ echo "OK, let's migrate GeoNature version..."
 cp $myrootpath/geonature_old/config/settings.ini config/settings.ini
 cp $myrootpath/geonature_old/config/geonature_config.toml config/geonature_config.toml
 cp -r $myrootpath/geonature_old/frontend/src/custom/* frontend/src/custom/
-cp -r $myrootpath/geonature_old/backend/static/images/* backend/static/images
-cp -r $myrootpath/geonature_old/backend/static/mobile/* backend/static/mobile
-cp -r $myrootpath/geonature_old/backend/static/exports/* backend/static/exports
+if [ -d '$myrootpath/geonature_old/backend/static/images' ]
+then
+  cp -r $myrootpath/geonature_old/backend/static/images/* backend/static/images
+fi
+if [ -d '$myrootpath/geonature_old/backend/static/mobile' ]
+then
+  cp -r $myrootpath/geonature_old/backend/static/mobile/* backend/static/mobile
+fi
+if [ -d '$myrootpath/geonature_old/backend/static/exports' ]
+then
+  cp -r $myrootpath/geonature_old/backend/static/exports/* backend/static/exports
+fi
 cp $myrootpath/geonature_old/frontend/src/favicon.ico frontend/src/favicon.ico
 cp -r $myrootpath/geonature_old/external_modules/* external_modules
 # On supprime le lien symbolique qui pointe vers geonature_old/contrib/occtax et validation
@@ -39,17 +48,15 @@ cp $myrootpath/geonature_old/contrib/occtax/config/conf_gn_module.toml $myrootpa
 cp $myrootpath/geonature_old/contrib/gn_module_validation/config/conf_gn_module.toml $myrootpath/$currentdir/contrib/gn_module_validation/config/conf_gn_module.toml
 cp $myrootpath/geonature_old/contrib/gn_module_occhab/config/conf_gn_module.toml $myrootpath/$currentdir/contrib/gn_module_occhab/config/conf_gn_module.toml
 
-
-# on recrée le lien symbolique sur le nouveau répertoire de GeoNature
+# On recrée le lien symbolique sur le nouveau répertoire de GeoNature
 ln -s $myrootpath/$currentdir/contrib/occtax external_modules/occtax
 ln -s $myrootpath/$currentdir/contrib/gn_module_validation external_modules/validation
 ln -s $myrootpath/$currentdir/contrib/gn_module_occhab external_modules/occhab
 
 cp -r $myrootpath/geonature_old/frontend/src/external_assets/* $myrootpath/$currentdir/frontend/src/external_assets/
 
-# # on recrée le lien symbolique sur le nouveau répertoire geonature
+# # On recrée le lien symbolique sur le nouveau répertoire geonature
 # ln -s $myrootpath/$currentdir/contrib/occtax/frontend/assets $myrootpath/$currentdir/frontend/src/external_assets/occtax
-
 
 mkdir $myrootpath/$currentdir/var
 mkdir $myrootpath/$currentdir/var/log
@@ -64,13 +71,16 @@ if [ ! -d 'backend/static/medias/' ]
 then
   mkdir backend/static/medias
 fi
-cp -r $myrootpath/geonature_old/backend/static/medias/* backend/static/medias
+
+if [ -d '$myrootpath/geonature_old/backend/static/medias' ]
+then
+  cp -r $myrootpath/geonature_old/backend/static/medias/* backend/static/medias
+fi
 
 if [ ! -d 'backend/static/shapefiles/' ]
 then
   mkdir backend/static/shapefiles
 fi
-
 
 cd $myrootpath/$currentdir/frontend
 
@@ -80,9 +90,8 @@ nvm install
 nvm use
 npm ci --only=prod
 
-# lien symbolique vers le dossier static du backend (pour le backoffice)
+# Lien symbolique vers le dossier static du backend (pour le backoffice)
 ln -s $myrootpath/$currentdir/frontend/node_modules $myrootpath/$currentdir/backend/static
-
 
 cd $myrootpath/$currentdir/backend
 
@@ -98,11 +107,10 @@ else
   python3 -m virtualenv venv
 fi
 
-
 source venv/bin/activate
 pip install -r requirements.txt
-# installation des dépendances des modules
-# boucle sur les liens symbolique de external_module
+# Installation des dépendances des modules
+# Boucle sur les liens symboliques de external_modules
 for D in $(find ../external_modules  -type l | xargs readlink) ; do
     # si le lien symbolique exisite
     if [ -e "$D" ] ; then

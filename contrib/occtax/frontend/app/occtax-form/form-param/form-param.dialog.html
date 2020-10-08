@@ -99,12 +99,19 @@
 
 		<div style="margin-top:10px;">
 			<button 
-				class="btn btn-primary" 
+				mat-flat-button
+				color=primary
 				(click)="releveFormMapper()">
 				Copier les informations du relevé en cours
 			</button>
 		</div>
-
+	<div *ngIf="occtaxConfig.form_fields.place_name">
+	<small> {{ 'Releve.PlaceName' | translate }} </small>
+	<input 
+		class="form-control form-control-sm" 
+		type="text" 
+		[formControl]="releveParamForm.get('place_name')">
+	</div>
   	<pnx-observers 
       *ngIf="!occtaxConfig.observers_txt; else elseBlock"
       class="auto"
@@ -182,8 +189,18 @@
       label="{{ 'Releve.GroupType' | translate }}" 
       [parentFormControl]="releveParamForm.get('id_nomenclature_grp_typ')"
       codeNomenclatureType="TYP_GRP">
-    </pnx-nomenclature>
+		</pnx-nomenclature>
 
+		<div 
+			*ngIf="occtaxConfig.form_fields.grp_method" 
+			class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
+			<small> {{'Releve.GroupMethod' | translate}} </small>
+			<input 
+				type="text" 
+				class="form-control form-control-sm"
+				[formControl]="releveParamForm.get('grp_method')">
+		</div>
+	
     <pnx-nomenclature 
 		  *ngIf="occtaxConfig.form_fields.obs_technique" 
 		  class="auto"
@@ -210,7 +227,8 @@
 
   	<div style="margin-top:10px;">
 			<button 
-				class="btn btn-primary" 
+				mat-flat-button
+				color=primary
 				(click)="occurrenceFormMapper()">
 				Copier les informations du taxon en cours
 			</button>
@@ -255,9 +273,9 @@
 	      *ngIf="occtaxConfig.form_fields.obs_method"
 	      class="col-lg-4 col-sm-6">
 	      <pnx-nomenclature 
-	      	class="auto"
-	        label="{{ 'Taxon.ObsMethod' | translate }}" 
-	        [parentFormControl]="occurrenceParamForm.get('id_nomenclature_obs_meth')"
+			class="auto"
+	        label="{{ 'Taxon.ObsTech' | translate }}" 
+	        [parentFormControl]="occurrenceParamForm.get('id_nomenclature_obs_technique')"
 	        codeNomenclatureType="METH_OBS">
 	      </pnx-nomenclature>
 	    </div>
@@ -303,17 +321,6 @@
 	        label="{{ 'Taxon.StatusSource' | translate }}" 
 	        [parentFormControl]="occurrenceParamForm.get('id_nomenclature_source_status')"
 	        codeNomenclatureType="STATUT_SOURCE">
-	      </pnx-nomenclature>
-	    </div>
-
-	    <div 
-	      *ngIf="occtaxConfig.form_fields.diffusion_level"
-	      class="col-lg-4 col-sm-6">
-	      <pnx-nomenclature 
-	      	class="auto"
-	        label="{{ 'Taxon.DiffusionLevel' | translate }}" 
-	        [parentFormControl]="occurrenceParamForm.get('id_nomenclature_diffusion_level')"
-	        codeNomenclatureType="NIV_PRECIS">
 	      </pnx-nomenclature>
 	    </div>
 

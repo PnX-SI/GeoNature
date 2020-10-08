@@ -123,3 +123,18 @@ class VMTaxrefListForautocomplete(DB.Model):
 
     def __repr__(self):
         return "<VMTaxrefListForautocomplete  %r>" % self.search_name
+
+
+@serializable
+class BibListes(DB.Model):
+    __tablename__ = "bib_listes"
+    __table_args__ = {"schema": "taxonomie"}
+    id_liste = DB.Column(DB.Integer, primary_key=True)
+    nom_liste = DB.Column(DB.Unicode)
+    desc_liste = DB.Column(DB.Text)
+    picto = DB.Column(DB.Unicode)
+    regne = DB.Column(DB.Unicode)
+    group2_inpn = DB.Column(DB.Unicode)
+
+    def __repr__(self):
+        return "<BibListes %r>" % self.nom_liste

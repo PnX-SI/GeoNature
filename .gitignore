@@ -21,7 +21,6 @@ backend/static/medias/*
 backend/static/shapefiles/*
 backend/static/node_modules
 backend/static/configs/*
-backend/gunicorn_start.sh
 
 backend/run.py
 

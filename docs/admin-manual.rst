@@ -676,7 +676,7 @@ Pour cela exécuter la commande suivante depuis le répertoire ``frontend``
 
     npm run start -- --host=0.0.0.0 --disable-host-check
 
-L'application est désormais disponible sur une serveur de développement à la même addresse que précédemment, mais sur le port 4200 : http://test.geonature.fr:4200
+L'application est désormais disponible sur un serveur de développement à la même addresse que précédemment, mais sur le port 4200 : http://test.geonature.fr:4200
 
 Ouvrez un nouveau terminal (pour laisser tourner le serveur de développement), puis modifier la variable ``URL_APPLICATION`` dans le fichier ``geonature_config.toml`` en mettant l'adresse ci-dessus et relancer l'application (``sudo supervisorctl restart geonature2``)
 
@@ -735,7 +735,6 @@ De la même manière, il est nécessaire de relancer les commandes suivantes pou
     cd /home/`whoami`/geonature/frontend
     npm run build
     
-    
 Customiser l'aspect esthétique
 """"""""""""""""""""""""""""""
 
@@ -751,7 +750,7 @@ Pour remplacer la couleur de fond du bandeau de navigation par une image, on peu
       url(bandeau_test.jpg)
    }
 
-Dans ce cas, l’image ``bandeau_test.jpg`` doit se trouver dans le répertoire ``>geonature/frontend/src`` .
+Dans ce cas, l’image ``bandeau_test.jpg`` doit se trouver dans le répertoire ``geonature/frontend/src``.
 
 Comme pour la modification des contenus, il est nécessaire de relancer la commande suivante pour que les modifications soient prises en compte :
 
@@ -759,6 +758,39 @@ Comme pour la modification des contenus, il est nécessaire de relancer la comma
 
     cd /home/`whoami`/geonature/frontend
     npm run build
+
+Customiser les noms et pictos des modules
+"""""""""""""""""""""""""""""""""""""""""
+
+Vous pouvez modifier l'intitulé et le pictogramme des modules dans le menu des modules. Pour cela, adaptez le contenu des champs ``module_label`` et ``module_picto`` (avec des icones de la librairie Font Awesome - https://fontawesome.com) dans la table ``gn_commons.t_modules``. 
+
+Exemple :
+
+.. code-block:: SQL
+
+    -- Module Occtax
+    UPDATE gn_commons.t_modules SET module_label = 'Occtax' WHERE module_code = 'OCCTAX';
+    UPDATE gn_commons.t_modules SET module_picto = 'fa-map-marker' WHERE module_code = 'OCCTAX';
+    -- Module Occhab
+    UPDATE gn_commons.t_modules SET module_label = 'Occhab' WHERE module_code = 'OCCHAB';
+    UPDATE gn_commons.t_modules SET module_picto = 'fa-leaf' WHERE module_code = 'OCCHAB';
+    -- Module Import
+    UPDATE gn_commons.t_modules SET module_label = 'Import' WHERE module_code = 'IMPORT';
+    UPDATE gn_commons.t_modules SET module_picto = 'fa-upload' WHERE module_code = 'IMPORT';
+    -- Module Export
+    UPDATE gn_commons.t_modules SET module_label = 'Export' WHERE module_code = 'EXPORTS';
+    UPDATE gn_commons.t_modules SET module_picto = 'fa-download' WHERE module_code = 'EXPORTS';
+    -- Module Dashboard
+    UPDATE gn_commons.t_modules SET module_label = 'Dashboard' WHERE module_code = 'DASHBOARD';
+    UPDATE gn_commons.t_modules SET module_picto = 'fa-bar-chart' WHERE module_code = 'DASHBOARD';
+    -- Module Validation
+    UPDATE gn_commons.t_modules SET module_label = 'Validation' WHERE module_code = 'VALIDATION';
+    UPDATE gn_commons.t_modules SET module_picto = 'fa-check' WHERE module_code = 'VALIDATION';
+    -- Module Monitorings (Suivis)
+    UPDATE gn_commons.t_modules SET module_label = 'Suivis' WHERE module_code = 'MONITORINGS';
+    UPDATE gn_commons.t_modules SET module_picto = 'fa-eye' WHERE module_code = 'MONITORINGS';
+
+Depuis la version 2.5.0, il est aussi possible de customiser l'ordre des modules dans le menu, par ordre alphabétique par défaut, en renseignant le champs ``gn_commons.t_modules.module_order``.
 
 Customiser les exports PDF
 """"""""""""""""""""""""""
@@ -1150,7 +1182,7 @@ Pour cela, créer votre vue, et modifier les paramètres suivants :
 ::
 
     # Name of the view based export
-    export_view_name = 'export_occtax_sinp'
+    export_view_name = 'v_export_occtax'
 
     # Name of the geometry columns of the view
     export_geom_columns_name = 'geom_4326'
@@ -1330,7 +1362,6 @@ Enlevez la ligne de la colonne que vous souhaitez désactiver. Les noms de colon
             "cdNom",
             "cdRef",
             "nomCite",
-            "vTAXREF",
             "wkt",
             "lastAction",
             "validateur"

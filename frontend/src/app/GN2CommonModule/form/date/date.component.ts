@@ -34,7 +34,7 @@ export interface DateStruc {
     '(document:click)': 'onClick($event)'
   },
   templateUrl: 'date.component.html',
-  styleUrls: ["./date.component.scss"],
+  styleUrls: ['./date.component.scss'],
   providers: [{ provide: NgbDateParserFormatter, useClass: NgbDateFRParserFormatter }]
 })
 export class DateComponent implements OnInit, OnDestroy {
