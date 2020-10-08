@@ -101,32 +101,22 @@ class CorRoleActionFilterModuleObject(DB.Model):
         default=select([TObjects.id_object]).where(TObjects.code_object == "ALL"),
     )
 
-    role = DB.relationship(
-        User, primaryjoin=(User.id_role == id_role), foreign_keys=[id_role]
-    )
+    role = DB.relationship(User, primaryjoin=(User.id_role == id_role), foreign_keys=[id_role])
 
     action = DB.relationship(
-        TActions,
-        primaryjoin=(TActions.id_action == id_action),
-        foreign_keys=[id_action],
+        TActions, primaryjoin=(TActions.id_action == id_action), foreign_keys=[id_action],
     )
 
     filter = DB.relationship(
-        TFilters,
-        primaryjoin=(TFilters.id_filter == id_filter),
-        foreign_keys=[id_filter],
+        TFilters, primaryjoin=(TFilters.id_filter == id_filter), foreign_keys=[id_filter],
     )
 
     module = DB.relationship(
-        TModules,
-        primaryjoin=(TModules.id_module == id_module),
-        foreign_keys=[id_module],
+        TModules, primaryjoin=(TModules.id_module == id_module), foreign_keys=[id_module],
     )
 
     object = DB.relationship(
-        TObjects,
-        primaryjoin=(TObjects.id_object == id_object),
-        foreign_keys=[id_object],
+        TObjects, primaryjoin=(TObjects.id_object == id_object), foreign_keys=[id_object],
     )
 
     def is_permission_already_exist(

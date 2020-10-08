@@ -23,7 +23,7 @@ from geonature.utils.command import (
     frontend_routes_templating,
     tsconfig_templating,
     tsconfig_app_templating,
-    update_app_configuration
+    update_app_configuration,
 )
 
 
@@ -133,9 +133,7 @@ def dev_back(host, port, conf_file):
 
 
 @main.command()
-@click.option(
-    "--action", default="restart", type=click.Choice(["start", "stop", "restart"])
-)
+@click.option("--action", default="restart", type=click.Choice(["start", "stop", "restart"]))
 @click.option("--app_name", default="geonature2")
 def supervisor(action, app_name):
     """
@@ -187,23 +185,9 @@ def generate_frontend_tsconfig_app():
 
 
 @main.command()
-@click.option(
-    '--conf-file',
-    required=False,
-    default=DEFAULT_CONFIG_FILE
-)
-@click.option(
-    '--build',
-    type=bool,
-    required=False,
-    default=True
-)
-@click.option(
-    '--prod',
-    type=bool,
-    required=False,
-    default=True
-)
+@click.option("--conf-file", required=False, default=DEFAULT_CONFIG_FILE)
+@click.option("--build", type=bool, required=False, default=True)
+@click.option("--prod", type=bool, required=False, default=True)
 def update_configuration(conf_file, build, prod):
     """
         Regénère la configuration de l'application

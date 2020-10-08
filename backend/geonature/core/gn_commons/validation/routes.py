@@ -11,7 +11,9 @@ from geonature.utils.utilssqlalchemy import test_is_uuid
 
 
 from ..routes import routes
+
 log = logging.getLogger()
+
 
 @routes.route("/history/<uuid_attached_row>", methods=["GET"])
 @permissions.check_cruved_scope("R")
@@ -20,7 +22,7 @@ def get_hist(uuid_attached_row):
     # Test if uuid_attached_row is uuid
     if not test_is_uuid(uuid_attached_row):
         return (
-            'Value error uuid_attached_row is not valid',
+            "Value error uuid_attached_row is not valid",
             500,
         )
 
@@ -37,8 +39,7 @@ def get_hist(uuid_attached_row):
             )
             .join(
                 TNomenclatures,
-                TNomenclatures.id_nomenclature
-                == TValidations.id_nomenclature_valid_status,
+                TNomenclatures.id_nomenclature == TValidations.id_nomenclature_valid_status,
             )
             .join(Synthese, Synthese.unique_id_sinp == TValidations.uuid_attached_row)
             .filter(TValidations.uuid_attached_row == uuid_attached_row)

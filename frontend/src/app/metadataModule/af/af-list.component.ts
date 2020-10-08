@@ -17,7 +17,7 @@ export class AfListComponent implements OnInit {
     private _dfs: DataFormService,
     private _router: Router,
     public cruvedStore: CruvedStoreService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this._dfs.getAcquisitionFrameworks().subscribe(data => {
@@ -30,7 +30,7 @@ export class AfListComponent implements OnInit {
     const val = event.target.value.toLowerCase();
 
     // filter our data
-    this.acquisitionFrameworks = this.temp.filter(function (d) {
+    this.acquisitionFrameworks = this.temp.filter(function(d) {
       return d.acquisition_framework_name.toLowerCase().indexOf(val) !== -1 || !val;
     });
 

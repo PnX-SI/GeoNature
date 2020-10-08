@@ -1,380 +1,410 @@
-<div id="cover-spin" *ngIf="isLoading">
+<div
+  id="cover-spin"
+  *ngIf="isLoading"
+>
 </div>
 
-<div *ngIf="header"
-  class="modal-header padding-md-all">
+<div
+  *ngIf="header"
+  class="modal-header padding-md-all"
+>
   <h5>Information sur l'observation</h5>
   <button
     type="button"
-    class="close" aria-label="Close"
-    (click)="activeModal.dismiss('Cross click')">
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  >
     <span aria-hidden="true">&times;</span>
   </button>
 
 </div>
 
-  <mat-card>
-    <span *ngIf="selectedObsTaxonDetail?.nom_vern">
-      {{ selectedObsTaxonDetail?.nom_vern }} -
-    </span>
-      {{ selectedObsTaxonDetail?.nom_valide }}
+<mat-card>
+  <span *ngIf="selectedObsTaxonDetail?.nom_vern">
+    {{ selectedObsTaxonDetail?.nom_vern }} -
+  </span>
+  {{ selectedObsTaxonDetail?.nom_valide }}
 
-      <a target="_blank " href="https://inpn.mnhn.fr/espece/cd_nom/{{ selectedObsTaxonDetail?.cd_nom }} ">
-        <button mat-stroked-button color="primary"> Fiche INPN du taxon </button>
-      </a>
+  <a
+    target="_blank "
+    href="https://inpn.mnhn.fr/espece/cd_nom/{{ selectedObsTaxonDetail?.cd_nom }} "
+  >
+    <button
+      mat-stroked-button
+      color="primary"
+    > Fiche INPN du taxon </button>
+  </a>
 
-    <mat-card-content>
-      <span class="font-xs">
-        <div>
-          <span *ngIf="selectedObs?.place_name">
-            <b>Nom du lieu : </b> {{selectedObs?.place_name}}
-          </span>
-          <span *ngIf="selectedObs?.precision">
-            <b>Précision du pointage : </b> {{selectedObs?.precision}}
-          </span>
-        </div>
-        <b> Observation de : </b> {{selectedObs?.observers}}
-        <span *ngIf="selectedObs?.cor_observers?.length > 0">
-          (
-          <span *ngFor="let observers of selectedObs?.cor_observers; let i = index">
-            {{ observers.email}} <span *ngIf="i != selectedObs?.cor_observers.length -1">, </span>
-          </span>
-          <button> <a href="{{mailto}}"><i class="fa fa-envelope-o" aria-hidden="true"></i></a> </button>
+  <mat-card-content>
+    <span class="font-xs">
+      <div>
+        <span *ngIf="selectedObs?.place_name">
+          <b>Nom du lieu : </b> {{selectedObs?.place_name}}
+        </span>
+        <span *ngIf="selectedObs?.precision">
+          <b>Précision du pointage : </b> {{selectedObs?.precision}}
+        </span>
+      </div>
+      <b> Observation de : </b> {{selectedObs?.observers}}
+      <span
+        *ngIf="selectedObs?.cor_observers?.length > 0 && CONFIG.FRONTEND.DISPLAY_EMAIL_INFO_OBS">
+        (
+        <span *ngFor="let observers of selectedObs?.cor_observers; let i = index">
+          {{ observers.email}} <span *ngIf="i != selectedObs?.cor_observers.length -1">, </span>
+        </span>
+        <button> <a href="{{mailto}}"><i
+              class="fa fa-envelope-o"
+              aria-hidden="true"
+            ></i></a> </button>
         )
-        </span>
-
-        <br>
-        <span *ngIf="selectedObs?.date_min != selectedObs?.date_max; else elseBlock">
-          <b> Date : </b>{{selectedObs?.date_min}} -> {{selectedObs?.date_max}}
-        </span>
-        <ng-template #elseBlock>
-          <b> Date : </b>{{selectedObs?.date_min}}
-        </ng-template>
-        <br>
-        <span *ngIf="selectedObs?.altitude_min || selectedObs?.altitude_max">
-          <b> Altitude</b> : {{selectedObs?.altitude_min}} m - {{selectedObs?.altitude_max}} m
-          <br>
-        </span>
-        <span *ngIf="selectedObs?.depth_min || selectedObs?.depth_max">
-          <b> Profondeur min </b> : {{selectedObs?.depth_min}} m -  <b> Profondeur max : </b> {{selectedObs?.depth_max}} m
-          <br>
-        </span>
-        <b> UUID observation : </b> {{selectedObs?.unique_id_sinp}}
-        <br>
-        <span *ngIf="selectedObs?.habitat">
-          <b> Habitat associé</b>: {{selectedObs?.habitat?.lb_hab_fr}} - {{selectedObs?.habitat?.lb_code}}
-          <br>
-        </span>
-        <button *ngIf="syntheseObs?.url_source"
-          mat-raised-button
-          color="primary"
-          (click)="backToModule(syntheseObs?.url_source, syntheseObs?.entity_source_pk_value)">
-          Voir l'observation dans le module de saisie
-          <mat-icon>insert_drive_file</mat-icon>
-
-        </button>
       </span>
-    </mat-card-content>
+
+      <br>
+      <span *ngIf="selectedObs?.date_min != selectedObs?.date_max; else elseBlock">
+        <b> Date : </b>{{selectedObs?.date_min}} -> {{selectedObs?.date_max}}
+      </span>
+      <ng-template #elseBlock>
+        <b> Date : </b>{{selectedObs?.date_min}}
+      </ng-template>
+      <br>
+      <span *ngIf="selectedObs?.altitude_min || selectedObs?.altitude_max">
+        <b> Altitude</b> : {{selectedObs?.altitude_min}} m - {{selectedObs?.altitude_max}} m
+        <br>
+      </span>
+      <span *ngIf="selectedObs?.depth_min || selectedObs?.depth_max">
+        <b> Profondeur min </b> : {{selectedObs?.depth_min}} m - <b> Profondeur max : </b>
+        {{selectedObs?.depth_max}} m
+        <br>
+      </span>
+      <b> UUID observation : </b> {{selectedObs?.unique_id_sinp}}
+      <br>
+      <span *ngIf="selectedObs?.habitat">
+        <b> Habitat associé</b>: {{selectedObs?.habitat?.lb_hab_fr}} -
+        {{selectedObs?.habitat?.lb_code}}
+        <br>
+      </span>
+      <button
+        *ngIf="syntheseObs?.url_source"
+        mat-raised-button
+        color="primary"
+        (click)="backToModule(syntheseObs?.url_source, syntheseObs?.entity_source_pk_value)"
+      >
+        Voir l'observation dans le module de saisie
+        <mat-icon>insert_drive_file</mat-icon>
+
+      </button>
+    </span>
+  </mat-card-content>
 
 
-  </mat-card>
+</mat-card>
 
 
-  <mat-tab-group class="my-tab-grp">
-    <mat-tab label="Détail de l'occurrence">
+<mat-tab-group class="my-tab-grp">
+  <mat-tab label="Détail de l'occurrence">
+    <table class="font-xs table table-striped table-sm">
+      <tr>
+        <td> Statut de l'observation </td>
+        <td> {{selectedObs?.observation_status}} </td>
+      </tr>
+      <tr>
+        <td> Technique d'observation </td>
+        <td> {{selectedObs?.obs_technique}} </td>
+      </tr>
+      <tr>
+        <td> Etat biologique </td>
+        <td> {{selectedObs?.bio_condition}} </td>
+      </tr>
+
+      <tr>
+        <td> Statut biologique </td>
+        <td> {{selectedObs?.bio_status}} </td>
+      </tr>
+
+      <tr>
+        <td> Comportement </td>
+        <td> {{selectedObs?.occ_behaviour}} </td>
+      </tr>
+
+      <tr>
+        <td> Sexe </td>
+        <td> {{selectedObs?.sex}} </td>
+      </tr>
+      <tr>
+        <td> Stade de vie </td>
+        <td> {{selectedObs?.life_stage}} </td>
+      </tr>
+      <tr>
+        <td> Denombrement min </td>
+        <td> {{selectedObs?.count_min}} </td>
+      </tr>
+      <tr>
+        <td> Denombrement max </td>
+        <td> {{selectedObs?.count_max}} </td>
+      </tr>
+      <tr>
+        <td> Type de dénombrement </td>
+        <td> {{selectedObs?.type_count}} </td>
+      </tr>
+      <tr>
+        <td> Objet du dénombrement </td>
+        <td> {{selectedObs?.obj_count}} </td>
+      </tr>
+      <tr>
+      <tr>
+        <td> Naturalité </td>
+        <td> {{selectedObs?.naturalness}} </td>
+      </tr>
+
+      <tr>
+        <td> Commentaire relevé </td>
+        <td> {{selectedObs?.comment_context}} </td>
+      </tr>
+      <tr>
+        <td> Commentaire occurrence </td>
+        <td> {{selectedObs?.comment_description}} </td>
+      </tr>
+
+      <tr>
+        <td> Determinateur </td>
+        <td> {{selectedObs?.determiner}} </td>
+      </tr>
+      <tr>
+        <td> Preuve d'existence </td>
+        <td> {{selectedObs?.exist_proof}} </td>
+      </tr>
+      <tr>
+        <td> Preuve numérique </td>
+        <td> {{selectedObs?.digital_proof}} </td>
+      </tr>
+      <tr>
+        <td> Preuve non numérique </td>
+        <td> {{selectedObs?.non_digital_proof}} </td>
+      </tr>
+      <tr>
+        <td> Echantillon de preuve </td>
+        <td> {{selectedObs?.sample_number_proof}} </td>
+      </tr>
+      <tr>
+
+      <tr>
+        <td> Type de regroupement </td>
+        <td> {{selectedObs?.grp_typ}} </td>
+      </tr>
+
+      <tr>
+        <td> Méthode de regroupement </td>
+        <td> {{selectedObs?.grp_method}} </td>
+      </tr>
+
+      <tr>
+        <td> Source de la donnée </td>
+        <td> {{selectedObs?.source_status}} </td>
+      </tr>
+
+      <tr>
+        <td> Statut de validation </td>
+        <td> {{selectedObs?.valid_status}} </td>
+      </tr>
+
+      <tr>
+        <td> Sensibilité </td>
+        <td> {{selectedObs?.sensitivity}} </td>
+      </tr>
+      <tr>
+        <td> Niveau de diffusion </td>
+        <td> {{selectedObs?.diffusion_level}} </td>
+      </tr>
+      <tr>
+        <td> Nature de l'objet géographique </td>
+        <td> {{selectedObs?.nat_obj_geo}} </td>
+      </tr>
+      <tr>
+        <td> Floutage </td>
+        <td> {{selectedObs?.blurring}} </td>
+      </tr>
+      <tr>
+        <td> Identifiant unique SINP </td>
+        <td> {{selectedObs?.unique_id_sinp}} </td>
+      </tr>
+    </table>
+  </mat-tab>
+  <mat-tab label="Métadonnées">
+    <table class="font-xs table table-striped table-sm">
+      <tr>
+        <td> Jeu de données </td>
+        <td> {{selectedObs?.datasets?.dataset_name}} </td>
+      </tr>
+      <tr>
+        <td> Cadre d'acquisition </td>
+        <td> {{selectedObs?.acquisition_framework.acquisition_framework_name}} </td>
+      </tr>
+      <tr>
+        <td>
+          Acteurs
+        </td>
+        <td>
+          <ul>
+            <li *ngFor="let act of selectedObs?.actors">
+              {{act}}
+            </li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td> Module de provenance </td>
+        <td> {{selectedObs?.source.name_source}} </td>
+      </tr>
+    </table>
+  </mat-tab>
+
+  <mat-tab label="Taxonomie">
+    <table class="font-xs table table-striped table-sm">
+
+      <tr>
+        <td>
+          <b>Groupe taxonomique </b>
+        </td>
+        <td> {{ selectedObsTaxonDetail?.classe }} </td>
+      </tr>
+      <tr>
+        <td>
+          <b>Ordre</b>
+        </td>
+        <td> {{ selectedObsTaxonDetail?.ordre }} </td>
+      </tr>
+      <tr>
+        <td>
+          <b> Famille</b>
+        </td>
+        <td> {{ selectedObsTaxonDetail?.famille }} </td>
+      </tr>
+    </table>
+
+    <h5 class="underlined  underlined-sm main-color"> Attribut(s) Taxonomique(s) locaux </h5>
+    <table class="font-xs table table-striped table-sm">
+      <tr
+        class="font-xs"
+        *ngFor="let attr of selectObsTaxonInfo?.attributs"
+      >
+        <td> <b>{{attr.label_attribut}} </b> </td>
+        <td> {{attr.valeur_attribut}} </td>
+      </tr>
+    </table>
+
+
+    <h5 class="underlined underlined-sm main-color"> Réglementation</h5>
+    <table class="font-xs table table-striped table-sm">
+
+      <tr *ngFor="let arrete of selectedObsTaxonDetail?.statuts_protection">
+        <td>
+          <a [href]="arrete.url"> {{arrete.intitule}} </a>
+        </td>
+      </tr>
+    </table>
+  </mat-tab>
+
+
+  <ng-container *ngIf="selectedObs?.medias?.length">
+    <mat-tab label="Médias">
+      <h5 class="underlined underlined-sm main-color"> Médias
+      </h5>
       <table class="font-xs table table-striped table-sm">
-        <tr>
-          <td> Statut de l'observation </td>
-          <td> {{selectedObs?.observation_status}} </td>
-        </tr>
-        <tr>
-          <td> Technique d'observation </td>
-          <td> {{selectedObs?.obs_technique}} </td>
-        </tr>
-        <tr>
-          <td> Etat biologique </td>
-          <td> {{selectedObs?.bio_condition}} </td>
-        </tr>
-
-        <tr>
-          <td> Statut biologique </td>
-          <td> {{selectedObs?.bio_status}} </td>
-        </tr>
-
-        <tr>
-          <td> Comportement </td>
-          <td> {{selectedObs?.occ_behaviour}} </td>
-        </tr>
-
-        <tr>
-          <td> Sexe </td>
-          <td> {{selectedObs?.sex}} </td>
-        </tr>
-        <tr>
-          <td> Stade de vie </td>
-          <td> {{selectedObs?.life_stage}} </td>
-        </tr>
-        <tr>
-          <td> Denombrement min </td>
-          <td> {{selectedObs?.count_min}} </td>
-        </tr>
-        <tr>
-          <td> Denombrement max </td>
-          <td> {{selectedObs?.count_max}} </td>
-        </tr>
-        <tr>
-          <td> Type de dénombrement </td>
-          <td> {{selectedObs?.type_count}} </td>
-        </tr>
-        <tr>
-          <td> Objet du dénombrement </td>
-          <td> {{selectedObs?.obj_count}} </td>
-        </tr>
-        <tr>
-        <tr>
-          <td> Naturalité </td>
-          <td> {{selectedObs?.naturalness}} </td>
-        </tr>
-
-        <tr>
-          <td> Commentaire relevé </td>
-          <td> {{selectedObs?.comment_context}} </td>
-        </tr>
-        <tr>
-          <td> Commentaire occurrence </td>
-          <td> {{selectedObs?.comment_description}} </td>
-        </tr>
-
-        <tr>
-          <td> Determinateur </td>
-          <td> {{selectedObs?.determiner}} </td>
-        </tr>
-        <tr>
-          <td> Preuve d'existence </td>
-          <td> {{selectedObs?.exist_proof}} </td>
-        </tr>
-        <tr>
-          <td> Preuve numérique </td>
-          <td> {{selectedObs?.digital_proof}} </td>
-        </tr>
-        <tr>
-          <td> Preuve non numérique </td>
-          <td> {{selectedObs?.non_digital_proof}} </td>
-        </tr>
-        <tr>
-          <td> Echantillon de preuve </td>
-          <td> {{selectedObs?.sample_number_proof}} </td>
-        </tr>
-        <tr>
-
-        <tr>
-          <td> Type de regroupement </td>
-          <td> {{selectedObs?.grp_typ}} </td>
-        </tr>
-
-        <tr>
-          <td> Méthode de regroupement </td>
-          <td> {{selectedObs?.grp_method}} </td>
-        </tr>
-
-        <tr>
-          <td> Source de la donnée </td>
-          <td> {{selectedObs?.source_status}} </td>
-        </tr>
-
-        <tr>
-          <td> Statut de validation </td>
-          <td> {{selectedObs?.valid_status}} </td>
-        </tr>
-
-        <tr>
-          <td> Sensibilité </td>
-          <td> {{selectedObs?.sensitivity}} </td>
-        </tr>
-        <tr>
-          <td> Niveau de diffusion </td>
-          <td> {{selectedObs?.diffusion_level}} </td>
-        </tr>
-        <tr>
-          <td> Nature de l'objet géographique </td>
-          <td> {{selectedObs?.nat_obj_geo}} </td>
-        </tr>
-        <tr>
-          <td> Floutage </td>
-          <td> {{selectedObs?.blurring}} </td>
-        </tr>
-        <tr>
-          <td> Identifiant unique SINP </td>
-          <td> {{selectedObs?.unique_id_sinp}} </td>
-        </tr>
+        <ng-container *ngFor="let media of selectedObs?.medias; index as i">
+          <tr>
+            <td> Titre </td>
+            <td> <a
+                target="_blank"
+                [href]="mediaService.href(media)"
+              >{{media.title_fr}}</a> </td>
+          </tr>
+          <tr *ngIf='media.description_fr'>
+            <td> Description </td>
+            <td> {{ media.description_fr }} </td>
+          </tr>
+          <tr *ngIf='media.author'>
+            <td> Auteur </td>
+            <td> {{ media.author }} </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <pnx-display-medias
+                diaporama=true
+                [medias]="selectedObs?.medias"
+                [index]="i"
+                display="medium"
+              ></pnx-display-medias>
+            </td>
+          </tr>
+        </ng-container>
       </table>
     </mat-tab>
-    <mat-tab label="Métadonnées">
-      <table class="font-xs table table-striped table-sm">
+  </ng-container>
+
+
+  <mat-tab label="Zonage">
+    <table class="font-xs table table-striped table-sm">
+      <thead>
         <tr>
-          <td> Jeu de données </td>
-          <td> {{selectedObs?.datasets?.dataset_name}} </td>
+          <th class="table_date"> Type de zonage </th>
+          <th class="table_comment"> Zones </th>
         </tr>
-        <tr>
-          <td> Cadre d'acquisition </td>
-          <td> {{selectedObs?.acquisition_framework.acquisition_framework_name}} </td>
-        </tr>
-        <tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let area_type of formatedAreas">
           <td>
-            Acteurs
+            {{ area_type.area_type }}
           </td>
           <td>
-            <ul>
-              <li *ngFor="let act of selectedObs?.actors">
-                {{act}}
-              </li>
-            </ul>
+            <span *ngFor="let area of area_type.areas; let index = index">
+              {{area.area_name}}<span *ngIf="index < area_type.areas.length -1 ">,</span>
+            </span>
+
           </td>
         </tr>
+      </tbody>
+    </table>
+  </mat-tab>
+
+
+  <mat-tab label="Validation">
+    <table class="font-xs table table-striped table-sm">
+      <thead>
         <tr>
-          <td> Module de provenance </td>
-          <td> {{selectedObs?.source.name_source}} </td>
+          <th class="table_date"> Date de validation </th>
+          <th class="table_status"> Statut </th>
+          <th class="table_comment"> Validateur </th>
+          <th class="table_comment"> Commentaire </th>
         </tr>
-      </table>
-    </mat-tab>
+      </thead>
 
-    <mat-tab label="Taxonomie">
-      <table class="font-xs table table-striped table-sm">
-
-        <tr>
-          <td>
-            <b>Groupe taxonomique </b>
+      <tbody>
+        <tr *ngFor="let row of validationHistory">
+          <td width="15%"> {{row.date}} </td>
+          <td width="20%">
+            <span
+              class="validationCircle"
+              [ngStyle]="{'background': validationColor[row.cd_nomenclature]}"
+            >
+              <mat-icon
+                *ngIf="row.typeValidation == 'True'"
+                class="computer"
+              >computer</mat-icon>
+            </span>
+            <span
+              class="statusName"
+              class="ml-4"
+            >
+              {{row.label_default}}
+            </span>
           </td>
-          <td> {{ selectedObsTaxonDetail?.classe }} </td>
+          <td width="20%"> <span> {{row.validator}} </span> </td>
+          <td> {{row.comment}} </td>
         </tr>
-        <tr>
-          <td>
-            <b>Ordre</b>
-          </td>
-          <td> {{ selectedObsTaxonDetail?.ordre }} </td>
-        </tr>
-        <tr>
-          <td>
-            <b> Famille</b>
-          </td>
-          <td> {{ selectedObsTaxonDetail?.famille }} </td>
-        </tr>
-      </table>
-
-      <h5 class="underlined  underlined-sm main-color"> Attribut(s) Taxonomique(s) locaux </h5>
-      <table class="font-xs table table-striped table-sm">
-        <tr class="font-xs" *ngFor="let attr of selectObsTaxonInfo?.attributs">
-          <td> <b>{{attr.label_attribut}} </b> </td>
-          <td> {{attr.valeur_attribut}} </td>
-        </tr>
-      </table>
-
-
-      <h5 class="underlined underlined-sm main-color"> Réglementation</h5>
-      <table class="font-xs table table-striped table-sm">
-
-        <tr *ngFor="let arrete of selectedObsTaxonDetail?.statuts_protection">
-          <td>
-            <a [href]="arrete.url"> {{arrete.intitule}} </a>
-          </td>
-        </tr>
-      </table>
-    </mat-tab>
-
-
-      <ng-container *ngIf="selectedObs?.medias?.length">
-        <mat-tab label="Médias">
-        <h5 class="underlined underlined-sm main-color"> Médias
-        </h5>
-        <table class="font-xs table table-striped table-sm">
-          <ng-container *ngFor="let media of selectedObs?.medias; index as i">
-            <tr>
-              <td> Titre </td>
-              <td> <a target="_blank" [href]="mediaService.href(media)">{{media.title_fr}}</a> </td>
-            </tr>
-            <tr *ngIf='media.description_fr'>
-              <td> Description </td>
-              <td> {{ media.description_fr }} </td>
-            </tr>
-            <tr *ngIf='media.author'>
-              <td> Auteur </td>
-              <td> {{ media.author }} </td>
-            </tr>
-            <tr>
-              <td colspan="2">
-                <pnx-display-medias
-                  diaporama=true
-                  [medias]="selectedObs?.medias"
-                  [index]="i"
-                  display="medium"
-                ></pnx-display-medias>
-              </td>
-            </tr>
-          </ng-container>
-        </table>
-      </mat-tab>
-    </ng-container>
-
-
-    <mat-tab label="Zonage">
-      <table class="font-xs table table-striped table-sm">
-        <thead>
-            <tr>
-              <th class="table_date"> Type de zonage </th>
-              <th class="table_comment"> Zones </th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr *ngFor="let area_type of formatedAreas">
-              <td>
-                {{ area_type.area_type }}
-              </td>
-              <td>
-                  <span *ngFor="let area of area_type.areas; let index = index">
-                      {{area.area_name}}<span *ngIf="index < area_type.areas.length -1 ">,</span>
-                  </span>
-
-              </td>
-            </tr>
-          </tbody>
-      </table>
-    </mat-tab>
-
-
-    <mat-tab label="Validation">
-      <table class="font-xs table table-striped table-sm">
-        <thead>
-            <tr>
-              <th class="table_date"> Date de validation </th>
-              <th class="table_status"> Statut </th>
-              <th class="table_comment"> Validateur </th>
-              <th class="table_comment"> Commentaire </th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr *ngFor="let row of validationHistory">
-              <td width="15%"> {{row.date}} </td>
-              <td width="20%">
-                <span
-                  class="validationCircle"
-                  [ngStyle]="{'background': validationColor[row.cd_nomenclature]}"
-                >
-                  <mat-icon *ngIf="row.typeValidation == 'True'" class="computer">computer</mat-icon>
-                </span>
-                <span class="statusName" class="ml-4">
-                  {{row.label_default}}
-                </span>
-              </td>
-              <td width="20%"> <span> {{row.validator}} </span> </td>
-              <td> {{row.comment}} </td>
-            </tr>
-          </tbody>
-      </table>
-    </mat-tab>
+      </tbody>
+    </table>
+  </mat-tab>
 
   <mat-tab-group>
-
-
-

@@ -34,9 +34,7 @@ def validate_temp_user(data):
 
     if not user:
         return {
-            "msg": "{token}: ce token n'est pas associé à un compte temporaire".format(
-                token=token
-            )
+            "msg": "{token}: ce token n'est pas associé à un compte temporaire".format(token=token)
         }
     user_dict = user.as_dict()
     subject = "Demande de création de compte GeoNature"
@@ -85,15 +83,11 @@ def create_dataset_user(user):
     #  actor = data productor
     af_productor = CorAcquisitionFrameworkActor(
         id_role=user["id_role"],
-        id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
-            "ROLE_ACTEUR", "6"
-        ),
+        id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature("ROLE_ACTEUR", "6"),
     )
     af_contact = CorAcquisitionFrameworkActor(
         id_role=user["id_role"],
-        id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
-            "ROLE_ACTEUR", "1"
-        ),
+        id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature("ROLE_ACTEUR", "1"),
     )
 
     new_af = TAcquisitionFramework(
@@ -113,22 +107,17 @@ def create_dataset_user(user):
     )
     ds_productor = CorDatasetActor(
         id_role=user["id_role"],
-        id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
-            "ROLE_ACTEUR", "6"
-        ),
+        id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature("ROLE_ACTEUR", "6"),
     )
     ds_contact = CorDatasetActor(
         id_role=user["id_role"],
-        id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
-            "ROLE_ACTEUR", "1"
-        ),
+        id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature("ROLE_ACTEUR", "1"),
     )
     # add new JDD: terrestrial and marine = True as default
     new_dataset = TDatasets(
         id_acquisition_framework=new_af.id_acquisition_framework,
         dataset_name=ds_desc_and_name,
-        dataset_shortname=ds_desc_and_name
-        + " - auto-créé via la demande de création de compte",
+        dataset_shortname=ds_desc_and_name + " - auto-créé via la demande de création de compte",
         dataset_desc=ds_desc_and_name,
         marine_domain=True,
         terrestrial_domain=True,
@@ -164,9 +153,7 @@ def send_email_for_recovery(data):
     """
     user = data["role"]
     recipients = current_app.config["MAIL_CONFIG"]["MAIL_USERNAME"]
-    url_password = (
-        current_app.config["URL_APPLICATION"] + "#/new-password?token=" + data["token"]
-    )
+    url_password = current_app.config["URL_APPLICATION"] + "#/new-password?token=" + data["token"]
 
     msg_html = render_template(
         "email_login_and_new_pass.html",
@@ -183,4 +170,3 @@ function_dict = {
     "valid_temp_user": execute_actions_after_validation,
     "create_cor_role_token": send_email_for_recovery,
 }
-

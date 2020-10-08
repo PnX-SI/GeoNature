@@ -33,15 +33,11 @@ class CasFrontend(Schema):
 
 
 class CasSchemaConf(Schema):
-    CAS_URL_VALIDATION = fields.String(
-        missing="https://preprod-inpn.mnhn.fr/auth/serviceValidate"
-    )
+    CAS_URL_VALIDATION = fields.String(missing="https://preprod-inpn.mnhn.fr/auth/serviceValidate")
     CAS_USER_WS = fields.Nested(CasUserSchemaConf, missing=dict())
     USERS_CAN_SEE_ORGANISM_DATA = fields.Boolean(missing=False)
     # Quel modules seront associés au JDD récupérés depuis MTD
-    JDD_MODULE_CODE_ASSOCIATION = fields.List(
-        fields.String, missing=["OCCTAX", "OCCHAB"]
-    )
+    JDD_MODULE_CODE_ASSOCIATION = fields.List(fields.String, missing=["OCCTAX", "OCCHAB"])
 
 
 class BddConfig(Schema):
@@ -121,9 +117,7 @@ class GnPySchemaConf(Schema):
 
     UPLOAD_FOLDER = fields.String(missing="static/medias")
     BASE_DIR = fields.String(
-        missing=os.path.dirname(
-            os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
-        )
+        missing=os.path.dirname(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
     )
     CAS = fields.Nested(CasSchemaConf, missing=dict())
     MAIL_ON_ERROR = fields.Boolean(missing=False)
@@ -177,6 +171,8 @@ class GnFrontEndConf(Schema):
     DISPLAY_STAT_BLOC = fields.Boolean(missing=True)
     DISPLAY_MAP_LAST_OBS = fields.Boolean(missing=True)
     MULTILINGUAL = fields.Boolean(missing=False)
+    # show email on synthese and validation info obs modal
+    DISPLAY_EMAIL_INFO_OBS = fields.Boolean(missing=True)
 
 
 id_municipality = BddConfig().load({}).data.get("id_area_type_municipality")
@@ -190,9 +186,7 @@ class Synthese(Schema):
     # Si on veut afficher des champs personnalisés dans le frontend (paramètre LIST_COLUMNS_FRONTEND) il faut
     # d'abbord s'assurer que ces champs sont bien renvoyé par l'API !
     # Champs disponibles: tous ceux de la vue 'v_synthese_for_web_app
-    COLUMNS_API_SYNTHESE_WEB_APP = fields.List(
-        fields.String, missing=DEFAULT_COLUMNS_API_SYNTHESE
-    )
+    COLUMNS_API_SYNTHESE_WEB_APP = fields.List(fields.String, missing=DEFAULT_COLUMNS_API_SYNTHESE)
     # Colonnes affichées sur la liste des résultats de la sytnthese
     LIST_COLUMNS_FRONTEND = fields.List(fields.Dict, missing=DEFAULT_LIST_COLUMN)
     EXPORT_COLUMNS = fields.List(fields.String(), missing=DEFAULT_EXPORT_COLUMNS)
@@ -205,9 +199,7 @@ class Synthese(Schema):
     EXPORT_GEOJSON_LOCAL_COL = fields.String(missing="geojson_local")
     EXPORT_METADATA_ID_DATASET_COL = fields.String(missing="jdd_id")
     EXPORT_METADATA_ACTOR_COL = fields.String(missing="acteurs")
-    EXPORT_FORMAT = fields.List(
-        fields.String(), missing=["csv", "geojson", "shapefile"]
-    )
+    EXPORT_FORMAT = fields.List(fields.String(), missing=["csv", "geojson", "shapefile"])
     # Nombre de résultat à afficher pour la rechercher autocompleté de taxon
     TAXON_RESULT_NUMBER = fields.Integer(missing=20)
     # Liste des id attributs Taxhub à afficher sur la fiche détaile de la synthese
@@ -234,6 +226,9 @@ class Synthese(Schema):
     # Nombre des "dernières observations" affiché à l'arrive sur la synthese
     NB_LAST_OBS = fields.Integer(missing=100)
 
+    # Display email on synthese and validation info obs modal
+    DISPLAY_EMAIL = fields.Boolean(missing=True)
+
 
 # On met la valeur par défaut de DISCONECT_AFTER_INACTIVITY inferieure à COOKIE_EXPIRATION
 cookie_expiration = GnPySchemaConf().load({}).data.get("COOKIE_EXPIRATION")
@@ -254,10 +249,7 @@ BASEMAP = [
     {
         "name": "GoogleSatellite",
         "layer": "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-        "options": {
-            "subdomains": ["mt0", "mt1", "mt2", "mt3"],
-            "attribution": "© GoogleMap",
-        },
+        "options": {"subdomains": ["mt0", "mt1", "mt2", "mt3"], "attribution": "© GoogleMap",},
     },
 ]
 

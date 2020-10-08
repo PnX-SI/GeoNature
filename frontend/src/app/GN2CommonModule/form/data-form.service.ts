@@ -24,7 +24,7 @@ export const FormatMapMime = new Map([
 @Injectable()
 export class DataFormService {
   private _blob: Blob;
-  constructor(private _http: HttpClient) { }
+  constructor(private _http: HttpClient) {}
 
   getNomenclature(
     codeNomenclatureType: string,
@@ -104,11 +104,8 @@ export class DataFormService {
    * Get dataset list for metadata modules
    */
   getAfAndDatasetListMetadata() {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/af_datasets_metadata`, {
-    });
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/af_datasets_metadata`, {});
   }
-
-
 
   getImports(id_dataset) {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/import/by_dataset/${id_dataset}`);
@@ -300,7 +297,9 @@ export class DataFormService {
     if (orderByName) {
       queryString = this.addOrderBy(queryString, 'acquisition_framework_name');
     }
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks_metadata`, { params: queryString });
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks_metadata`, {
+      params: queryString
+    });
   }
 
   getAcquisitionFramework(id_af) {
@@ -308,7 +307,9 @@ export class DataFormService {
   }
 
   getAcquisitionFrameworkDetails(id_af) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework_details/${id_af}`);
+    return this._http.get<any>(
+      `${AppConfig.API_ENDPOINT}/meta/acquisition_framework_details/${id_af}`
+    );
   }
 
   getOrganisms(orderByName = true) {
@@ -365,7 +366,9 @@ export class DataFormService {
   }
 
   getRepartitionTaxons(id_dataset) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/repartition_taxons_dataset/${id_dataset}`);
+    return this._http.get<any>(
+      `${AppConfig.API_ENDPOINT}/synthese/repartition_taxons_dataset/${id_dataset}`
+    );
   }
 
   uploadCanvas(img: any) {
@@ -375,7 +378,7 @@ export class DataFormService {
     let queryString = new HttpParams();
     queryString = queryString.set('taxa_rank', taxa_rank);
     for (let key in params) {
-      queryString = queryString.set(key, params[key])
+      queryString = queryString.set(key, params[key]);
     }
 
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/taxa_distribution`, {
@@ -426,9 +429,10 @@ export class DataFormService {
       }
     }
 
-    const url = application === 'GeoNature'
-      ? `${AppConfig.API_ENDPOINT}/${api}`
-      : application === 'TaxHub'
+    const url =
+      application === 'GeoNature'
+        ? `${AppConfig.API_ENDPOINT}/${api}`
+        : application === 'TaxHub'
         ? `${AppConfig.API_TAXHUB}/${api}`
         : api;
 
@@ -474,7 +478,6 @@ export class DataFormService {
     document.body.removeChild(link);
   }
 
-
   //--------------------------------------------------------------------------------------
   //----------------Geofit additional code data-form.service.ts
   //liste des lieux
@@ -491,6 +494,4 @@ export class DataFormService {
   addPlace(place) {
     return this._http.post<any>(`${AppConfig.API_ENDPOINT}/gn_commons/place`, place);
   }
-
 }
-

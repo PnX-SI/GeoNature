@@ -82,7 +82,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
       res => {
         this.dataSets = res.data;
         this.savedDatasets = res.data;
-        this.valueLoaded.emit({ value: this.savedDatasets })
+        this.valueLoaded.emit({ value: this.savedDatasets });
         if (res['with_mtd_errors']) {
           this._commonService.translateToaster('error', 'MetaData.JddErrorMTD');
         }

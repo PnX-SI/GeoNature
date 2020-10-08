@@ -236,7 +236,7 @@ export class MapListService {
 
     this.selectedStyle.fill =
       this.selectedLayer.feature.geometry.type === 'LineString' ||
-        this.selectedLayer.feature.geometry.type === 'MultiLineString'
+      this.selectedLayer.feature.geometry.type === 'MultiLineString'
         ? false
         : true;
     this.selectedLayer.setStyle(this.selectedStyle);

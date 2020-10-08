@@ -7,15 +7,12 @@ import os
 import logging
 
 from flask import Blueprint, request, current_app, jsonify
-from geojson import FeatureCollection
 
 from utils_flask_sqla.response import json_resp
-from utils_flask_sqla.generic import GenericQuery, testDataType
-from utils_flask_sqla_geo.generic import GenericQueryGeo
+from utils_flask_sqla.generic import GenericQuery
 
 from geonature.utils.env import DB
 from geonature.core.gn_monitoring.config_manager import generate_config
-from geonature.utils.errors import GeonatureApiError
 
 
 # from pypnusershub import routes as fnauth
@@ -39,9 +36,7 @@ def get_config():
         vue_name = ["default"]
     filename = "{}.toml".format(
         os.path.abspath(
-            os.path.join(
-                current_app.config["BASE_DIR"], "static", "configs", app_name, *vue_name
-            )
+            os.path.join(current_app.config["BASE_DIR"], "static", "configs", app_name, *vue_name)
         )
     )
     config_file = generate_config(filename)
@@ -119,14 +114,13 @@ def get_generic_view(view_schema, view_name):
             geometry_field=geom,
             filters=parameters,
             limit=limit,
-            offset=page
+            offset=page,
         ).return_query()
-    else:
-        return GenericQuery(
-            DB=DB,
-            tableName=view_name,
-            schemaName=view_schema,
-            filters=parameters,
-            limit=limit,
-            offset=page
-        ).return_query()
+    return GenericQuery(
+        DB=DB,
+        tableName=view_name,
+        schemaName=view_schema,
+        filters=parameters,
+        limit=limit,
+        offset=page,
+    ).return_query()

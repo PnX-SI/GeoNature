@@ -1,4 +1,3 @@
-
 from flask import Blueprint, request
 
 from sqlalchemy import or_
@@ -8,7 +7,7 @@ from utils_flask_sqla.response import json_resp
 from geonature.utils import filemanager
 
 
-routes = Blueprint('gn_exports', __name__)
+routes = Blueprint("gn_exports", __name__)
 
 
 # @routes.route('/exportcsv/<int:idView>', methods=['GET'])

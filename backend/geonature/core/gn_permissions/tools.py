@@ -2,8 +2,11 @@ import logging, json
 
 from flask import current_app, redirect, Response
 
-from itsdangerous import (TimedJSONWebSignatureSerializer as Serializer,
-                          SignatureExpired, BadSignature)
+from itsdangerous import (
+    TimedJSONWebSignatureSerializer as Serializer,
+    SignatureExpired,
+    BadSignature,
+)
 
 import sqlalchemy as sa
 from sqlalchemy.sql.expression import func
@@ -11,83 +14,78 @@ from sqlalchemy.sql.expression import func
 
 from pypnusershub.db.tools import (
     InsufficientRightsError,
-    AccessRightsExpiredError, 
-    UnreadableAccessRightsError
-) 
+    AccessRightsExpiredError,
+    UnreadableAccessRightsError,
+)
 
 from geonature.core.gn_permissions.models import VUsersPermissions, TFilters
 from geonature.utils.env import DB
 
 log = logging.getLogger(__name__)
 
+
 def user_from_token(token, secret_key=None):
-    secret_key = secret_key or current_app.config['SECRET_KEY']
+    secret_key = secret_key or current_app.config["SECRET_KEY"]
 
     try:
-        s = Serializer(current_app.config['SECRET_KEY'])
+        s = Serializer(current_app.config["SECRET_KEY"])
         user = s.loads(token)
         return user
-        
+
     except SignatureExpired:
         raise AccessRightsExpiredError("Token expired")
 
     except BadSignature:
-        raise UnreadableAccessRightsError('Token BadSignature', 403)
+        raise UnreadableAccessRightsError("Token BadSignature", 403)
+
 
 def get_user_from_token_and_raise(
-    request,
-    secret_key=None,
-    redirect_on_expiration=None,
-    redirect_on_invalid_token=None
+    request, secret_key=None, redirect_on_expiration=None, redirect_on_invalid_token=None,
 ):
     """
     Deserialize the token
     catch excetpion and return appropriate Response(403, 302 ...)
     """
     try:
-        token = request.cookies['token']
+        token = request.cookies["token"]
         return user_from_token(token, secret_key)
 
     except AccessRightsExpiredError:
         if redirect_on_expiration:
             res = redirect(redirect_on_expiration, code=302)
         else:
-            res = Response('Token Expired', 403)
-        res.set_cookie('token', expires=0)
+            res = Response("Token Expired", 403)
+        res.set_cookie("token", expires=0)
         return res
     except InsufficientRightsError as e:
         log.info(e)
         if redirect_on_expiration:
             res = redirect(redirect_on_expiration, code=302)
         else:
-            res = Response('Forbidden', 403)
+            res = Response("Forbidden", 403)
         return res
     except KeyError as e:
         if redirect_on_expiration:
             return redirect(redirect_on_expiration, code=302)
-        return Response('No token', 403)
+        return Response("No token", 403)
 
     except UnreadableAccessRightsError:
-        log.info('Invalid Token : BadSignature')
+        log.info("Invalid Token : BadSignature")
         # invalid token
         if redirect_on_invalid_token:
             res = redirect(redirect_on_invalid_token, code=302)
         else:
-            res = Response('Token BadSignature', 403)
-        res.set_cookie('token',  expires=0)
+            res = Response("Token BadSignature", 403)
+        res.set_cookie("token", expires=0)
         return res
 
     except Exception as e:
-        trap_all_exceptions = current_app.config.get(
-            'TRAP_ALL_EXCEPTIONS',
-            True
-        )
+        trap_all_exceptions = current_app.config.get("TRAP_ALL_EXCEPTIONS", True)
         if not trap_all_exceptions:
             raise
         log.critical(e)
-        msg = json.dumps({'type': 'Exception', 'msg': repr(e)})
+        msg = json.dumps({"type": "Exception", "msg": repr(e)})
         return Response(msg, 403)
-
 
 
 def get_user_permissions(user, code_action, code_filter_type, module_code=None, code_object=None):
@@ -105,14 +103,12 @@ def get_user_permissions(user, code_action, code_filter_type, module_code=None, 
         Return:
             Array<VUsersPermissions>
     """
-    id_role = user['id_role']
+    id_role = user["id_role"]
 
-    ors = [VUsersPermissions.module_code.ilike('GEONATURE')]
+    ors = [VUsersPermissions.module_code.ilike("GEONATURE")]
 
     q = (
-        VUsersPermissions
-        .query
-        .filter(VUsersPermissions.id_role == id_role)
+        VUsersPermissions.query.filter(VUsersPermissions.id_role == id_role)
         .filter(VUsersPermissions.code_action == code_action)
         .filter(VUsersPermissions.code_filter_type == code_filter_type)
     )
@@ -123,11 +119,11 @@ def get_user_permissions(user, code_action, code_filter_type, module_code=None, 
         object_for_error = code_object
     # else: heritage cruved of the module or from GeoNature
     else:
-        object_for_error = 'GEONATURE'
+        object_for_error = "GEONATURE"
         if module_code:
             ors.append(VUsersPermissions.module_code.ilike(module_code))
             object_for_error = module_code
-        
+
         user_cruved = q.filter(sa.or_(*ors)).all()
 
     try:
@@ -142,10 +138,10 @@ def get_user_permissions(user, code_action, code_filter_type, module_code=None, 
 
 
 def build_cruved_dict(cruved, get_id):
-    '''
+    """
         function utils to build a dict like {'C':'3', 'R':'2'}...
         from Array<VUsersPermissions>
-    '''
+    """
     cruved_dict = {}
     for action_scope in cruved:
         if get_id:
@@ -153,6 +149,7 @@ def build_cruved_dict(cruved, get_id):
         else:
             cruved_dict[action_scope[0]] = action_scope[1]
     return cruved_dict
+
 
 def beautifulize_cruved(actions, cruved):
     """
@@ -166,17 +163,14 @@ def beautifulize_cruved(actions, cruved):
     cruved_beautiful = []
     for key, value in cruved.items():
         temp = {}
-        temp['label'] = actions.get(key)
-        temp['value'] = value
+        temp["label"] = actions.get(key)
+        temp["value"] = value
         cruved_beautiful.append(temp)
     return cruved_beautiful
 
 
 def cruved_scope_for_user_in_module(
-    id_role=None,
-    module_code=None,
-    object_code='ALL',
-    get_id=False
+    id_role=None, module_code=None, object_code="ALL", get_id=False
 ):
     """
     get the user cruved for a module
@@ -191,21 +185,22 @@ def cruved_scope_for_user_in_module(
     - index 0: the cruved as a dict : {'C': 0, 'R': 2 ...}
     - index 1: a boolean which say if its an herited cruved
     """
-    q = DB.session.query(
-        VUsersPermissions.code_action,
-        func.max(VUsersPermissions.value_filter),
-        func.max(VUsersPermissions.id_filter)
-    ).distinct(VUsersPermissions.code_action).filter(
-        VUsersPermissions.id_role == id_role
-    ).filter(
-        VUsersPermissions.code_filter_type == 'SCOPE'
-    ).filter(
-        VUsersPermissions.code_object == object_code
-    ).group_by(VUsersPermissions.code_action)
+    q = (
+        DB.session.query(
+            VUsersPermissions.code_action,
+            func.max(VUsersPermissions.value_filter),
+            func.max(VUsersPermissions.id_filter),
+        )
+        .distinct(VUsersPermissions.code_action)
+        .filter(VUsersPermissions.id_role == id_role)
+        .filter(VUsersPermissions.code_filter_type == "SCOPE")
+        .filter(VUsersPermissions.code_object == object_code)
+        .group_by(VUsersPermissions.code_action)
+    )
 
-    cruved_actions = ['C', 'R', 'U', 'V', 'E', 'D']
+    cruved_actions = ["C", "R", "U", "V", "E", "D"]
     # if object not ALL, no heritage
-    if object_code != 'ALL':
+    if object_code != "ALL":
         object_cruved = q.all()
 
         cruved_dict = build_cruved_dict(object_cruved, get_id)
@@ -214,11 +209,11 @@ def cruved_scope_for_user_in_module(
             if action in cruved_dict:
                 update_cruved[action] = cruved_dict[action]
             else:
-                update_cruved[action] = '0'
+                update_cruved[action] = "0"
         return update_cruved, False
 
     # get max scope cruved for module GEONATURE
-    parent_cruved_data = q.filter(VUsersPermissions.module_code.ilike('GEONATURE')).all()
+    parent_cruved_data = q.filter(VUsersPermissions.module_code.ilike("GEONATURE")).all()
     parent_cruved = {}
     # build a dict like {'C':'0', 'R':'2' ...} if get_id = False or
     # {'C': 1, 'R':3 ...} if get_id = True
@@ -229,16 +224,18 @@ def cruved_scope_for_user_in_module(
     if module_code:
         module_cruved_data = q.filter(VUsersPermissions.module_code.ilike(module_code)).all()
         module_cruved = build_cruved_dict(module_cruved_data, get_id)
-        # for the module 
+        # for the module
         for action_scope in module_cruved_data:
             if get_id:
                 module_cruved[action_scope[0]] = action_scope[2]
             else:
                 module_cruved[action_scope[0]] = action_scope[1]
-        
+
     # get the id for code 0
     if get_id:
-        id_scope_no_data = DB.session.query(TFilters.id_filter).filter(TFilters.value_filter == '0').one()[0]
+        id_scope_no_data = (
+            DB.session.query(TFilters.id_filter).filter(TFilters.value_filter == "0").one()[0]
+        )
     # update cruved with child module if action exist, otherwise take geonature cruved
     update_cruved = {}
     herited = False
@@ -252,30 +249,22 @@ def cruved_scope_for_user_in_module(
             if get_id:
                 update_cruved[action] = id_scope_no_data
             else:
-                update_cruved[action] = '0'
+                update_cruved[action] = "0"
     return update_cruved, herited
 
 
-
-def get_or_fetch_user_cruved(
-    session=None,
-    id_role=None,
-    module_code=None,
-    object_code= 'ALL'
-):
+def get_or_fetch_user_cruved(session=None, id_role=None, module_code=None, object_code="ALL"):
     """
         Check if the cruved is in the session
         if not, get the cruved from the DB with 
         cruved_for_user_in_app()
     """
-    if module_code in session and 'user_cruved' in session[module_code]:
-        return session[module_code]['user_cruved']
+    if module_code in session and "user_cruved" in session[module_code]:
+        return session[module_code]["user_cruved"]
     else:
         user_cruved = cruved_scope_for_user_in_module(
-            id_role=id_role,
-            module_code=module_code,
-            object_code=object_code
+            id_role=id_role, module_code=module_code, object_code=object_code
         )[0]
         session[module_code] = {}
-        session[module_code]['user_cruved'] = user_cruved
+        session[module_code]["user_cruved"] = user_cruved
     return user_cruved

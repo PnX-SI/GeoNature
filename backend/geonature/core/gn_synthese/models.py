@@ -81,9 +81,7 @@ class SyntheseCruved(DB.Model):
             return self
 
         raise InsufficientRightsError(
-            ('User "{}" cannot "{}" this current releve').format(
-                user.id_role, user.code_action
-            ),
+            ('User "{}" cannot "{}" this current releve').format(user.id_role, user.code_action),
             403,
         )
 
@@ -122,9 +120,7 @@ class CorObserverSynthese(DB.Model):
     id_synthese = DB.Column(
         DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True
     )
-    id_role = DB.Column(
-        DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"), primary_key=True
-    )
+    id_role = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"), primary_key=True)
 
 
 corAreaSynthese = DB.Table(
@@ -136,9 +132,7 @@ corAreaSynthese = DB.Table(
         ForeignKey("gn_synthese.cor_area_synthese.id_synthese"),
         primary_key=True,
     ),
-    DB.Column(
-        "id_area", DB.Integer, ForeignKey("ref_geo.t_areas.id_area"), primary_key=True
-    ),
+    DB.Column("id_area", DB.Integer, ForeignKey("ref_geo.t_areas.id_area"), primary_key=True),
 )
 
 
@@ -231,9 +225,7 @@ class Synthese(DB.Model):
     last_action = DB.Column(DB.Unicode)
 
     def get_geofeature(self, recursif=True, columns=None):
-        return self.as_geofeature(
-            "the_geom_4326", "id_synthese", recursif, columns=columns
-        )
+        return self.as_geofeature("the_geom_4326", "id_synthese", recursif, columns=columns)
 
 
 @serializable
@@ -331,9 +323,7 @@ class VSyntheseForWebApp(DB.Model):
     st_asgeojson = DB.Column(DB.Unicode)
 
     def get_geofeature(self, recursif=False, columns=()):
-        return self.as_geofeature(
-            "the_geom_4326", "id_synthese", recursif, columns=columns
-        )
+        return self.as_geofeature("the_geom_4326", "id_synthese", recursif, columns=columns)
 
 
 # Non utilisé - laissé pour exemple d'une sérialisation ordonnée
@@ -362,9 +352,7 @@ def synthese_export_serialization(cls):
                 cls_db_cols_and_serializer.append(
                     (
                         cls_attri.key,
-                        SERIALIZERS.get(
-                            cls_attri.type.__class__.__name__.lower(), lambda x: x
-                        ),
+                        SERIALIZERS.get(cls_attri.type.__class__.__name__.lower(), lambda x: x),
                     )
                 )
             # add in cls.db_cols
@@ -376,9 +364,7 @@ def synthese_export_serialization(cls):
     def serialize_order_fn(self):
         order_dict = OrderedDict()
         for item, _serializer in cls_db_cols_and_serializer:
-            order_dict.update(
-                {EXPORT_COLUMNS.get(item): _serializer(getattr(self, item))}
-            )
+            order_dict.update({EXPORT_COLUMNS.get(item): _serializer(getattr(self, item))})
         return order_dict
 
     def serialize_geofn(self, geoCol, idCol):
@@ -388,9 +374,7 @@ def synthese_export_serialization(cls):
             geometry = {"type": "Point", "coordinates": [0, 0]}
 
         feature = Feature(
-            id=str(getattr(self, idCol)),
-            geometry=geometry,
-            properties=self.as_dict_ordered(),
+            id=str(getattr(self, idCol)), geometry=geometry, properties=self.as_dict_ordered(),
         )
         return feature
 
@@ -421,11 +405,9 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
     cd_hab = DB.Column(DB.Integer, ForeignKey(Habref.cd_hab))
 
     habitat = DB.relationship(Habref, lazy="joined")
-    
+
     source = DB.relationship(
-        "TSources",
-        primaryjoin=(TSources.id_source == id_source),
-        foreign_keys=[id_source],
+        "TSources", primaryjoin=(TSources.id_source == id_source), foreign_keys=[id_source],
     )
     areas = DB.relationship(
         "LAreas",
@@ -435,9 +417,7 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
         foreign_keys=[corAreaSynthese.c.id_synthese, corAreaSynthese.c.id_area],
     )
     datasets = DB.relationship(
-        "TDatasets",
-        primaryjoin=(TDatasets.id_dataset == id_dataset),
-        foreign_keys=[id_dataset],
+        "TDatasets", primaryjoin=(TDatasets.id_dataset == id_dataset), foreign_keys=[id_dataset],
     )
     acquisition_framework = DB.relationship(
         "TAcquisitionFramework",
@@ -445,8 +425,7 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
         secondary=TDatasets.__table__,
         primaryjoin=(TDatasets.id_dataset == id_dataset),
         secondaryjoin=(
-            TDatasets.id_acquisition_framework
-            == TAcquisitionFramework.id_acquisition_framework
+            TDatasets.id_acquisition_framework == TAcquisitionFramework.id_acquisition_framework
         ),
     )
 
@@ -476,12 +455,8 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
 class VColorAreaTaxon(DB.Model):
     __tablename__ = "v_color_taxon_area"
     __table_args__ = {"schema": "gn_synthese"}
-    cd_nom = DB.Column(
-        DB.Integer(), ForeignKey("taxonomie.taxref.cd_nom"), primary_key=True
-    )
-    id_area = DB.Column(
-        DB.Integer(), ForeignKey("ref_geo.l_area.id_area"), primary_key=True
-    )
+    cd_nom = DB.Column(DB.Integer(), ForeignKey("taxonomie.taxref.cd_nom"), primary_key=True)
+    id_area = DB.Column(DB.Integer(), ForeignKey("ref_geo.l_area.id_area"), primary_key=True)
     nb_obs = DB.Column(DB.Integer())
     last_date = DB.Column(DB.DateTime())
     color = DB.Column(DB.Unicode())
