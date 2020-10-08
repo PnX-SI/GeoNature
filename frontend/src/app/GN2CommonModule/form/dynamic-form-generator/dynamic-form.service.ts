@@ -90,6 +90,18 @@ export class DynamicFormService {
         }
       }
 
+      // Constraint pattern for the "text"
+      if (formDef.type_widget === 'text') {
+        if (typeof formDef.pattern == 'string') {
+          try {
+            new RegExp(formDef.pattern);
+            validators.push(Validators.pattern(formDef.pattern));
+          } catch(e) {
+            console.log("invalid regular expression");
+          }
+        }
+      }
+
       if (formDef.type_widget === 'taxonomy' && formDef.required) {
         validators.push(isObjectValidator());
       }

@@ -79,6 +79,7 @@
         id="{{formDefComp.attribut_name}}_{{rand}}"
         type="text"
         >
+      <div *ngIf="formDefComp.type_widget=='text' && form.get(formDefComp.attribut_name).errors?.pattern"><small class="text-danger">{{formDefComp.pattern_message}}</small></div>
       <textarea
         *ngSwitchCase="'textarea'"
         class="form-control form-control-sm"
