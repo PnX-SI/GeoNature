@@ -24,7 +24,7 @@
       matSuffix
     >help</mat-icon>
     
-    <!-- Ajout d'un bouton lien externe -->
+    <!-- fix #1080 : Ajout d'un bouton lien externe -->
     <a *ngIf="formDefComp.link_definition && formDefComp.definition" target="_blank" class="link-media" [href]="formDefComp.link_definition"
       ><mat-icon [matTooltip]="formDefComp.definition" matTooltipClass="form-tooltip">info</mat-icon>
     </a>
