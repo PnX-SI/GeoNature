@@ -39,6 +39,7 @@
       id="{{formDefComp.attribut_name}}_{{rand}}"
       [name]="formDefComp.attribut_name"
       [formControl]="form.get(formDefComp.attribut_name)"
+      [checked]="formDefComp.value"
       >
       <span> {{formDefComp.attribut_label}} </span>
       <mat-icon
@@ -59,6 +60,7 @@
         [sizeMax]="appConfig.MEDIAS.MEDIAS_SIZE_MAX"
         [default]="formDefComp.default || {}"
         [details]="formDefComp.details"
+        [hideDetailsFields]="formDefComp.hide_details_fields"
         ></pnx-medias>
     </div>
 

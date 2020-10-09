@@ -121,7 +121,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
           /*MET Champs additionnel*/
           this.dynamicFormGroup = this.fb.group({});
       
-          this.componentRefOccurence.instance.formConfigReleveDataSet = ModuleConfig.add_fields[data.releve.properties.dataset.id_dataset]['taxon'];
+          this.componentRefOccurence.instance.formConfigReleveDataSet = ModuleConfig.add_fields[data.releve.properties.dataset.id_dataset]['occurrence'];
           this.componentRefOccurence.instance.formArray = this.dynamicFormGroup;
 
           if(ModuleConfig.add_fields[data.releve.properties.dataset.id_dataset]['id_taxon_list']){

@@ -57,8 +57,11 @@ export class dynamicFormReleveComponent {
   ) {}
 
   ngOnInit() {
-    /*this.dynamicFormGroup = this.fb.group({});
-    this.formArray = this.dynamicFormGroup;*/
+    //en création, on créer le dynamique form
+    if(!this.formArray){
+      this.dynamicFormGroup = this.fb.group({});
+      this.formArray = this.dynamicFormGroup;
+    }
     this.formValue = this.formArray.value;
     const objFormChangeSubscription = this.formArray.valueChanges.subscribe(
       () => {

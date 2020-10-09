@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, ComponentRef, ViewContainerRef, ComponentFactory, ComponentFactoryResolver } from "@angular/core";
 import {
   FormBuilder,
   FormGroup,
@@ -11,18 +11,26 @@ import { map, filter, tap } from "rxjs/operators";
 import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
 import { MediaService } from '@geonature_common/service/media.service';
+import { dynamicFormReleveComponent } from "../dynamique-form-releve/dynamic-form-releve.component";
+import { ModuleConfig } from "../../module.config";
 
 @Injectable()
 export class OcctaxFormCountingService {
   // public form: FormGroup;
   counting: any;
   synchroCountSub: Subscription;
+  
+  public dynamicFormGroup: FormGroup;
+  componentRefCounting: ComponentRef<any>;
+  public dynamicContainerCounting: ViewContainerRef;
+  public data : any;
 
   constructor(
     private fb: FormBuilder,
     private occtaxFormService: OcctaxFormService,
     private occtaxParamS: OcctaxFormParamService,
-    private mediaService: MediaService
+    private mediaService: MediaService,
+    private _resolver: ComponentFactoryResolver
   ) {}
 
   createForm(patchWithDefaultValues: boolean = false): FormGroup {
@@ -48,6 +56,19 @@ export class OcctaxFormCountingService {
         )
         .subscribe((count_min) => form.get("count_max").setValue(count_min));
     }
+    /*MET Champs additionnel*/
+    
+    /*
+    if(this.dynamicContainerCounting != undefined){
+      this.dynamicContainerCounting.clear(); 
+      const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(dynamicFormReleveComponent);
+      this.componentRefCounting = this.dynamicContainerCounting.createComponent(factory);
+      
+      this.dynamicFormGroup = this.fb.group({});
+  
+      this.componentRefCounting.instance.formConfigReleveDataSet = ModuleConfig.add_fields[1]['occurrence'];
+      this.componentRefCounting.instance.formArray = this.dynamicFormGroup;
+    }*/
 
     return form;
   }

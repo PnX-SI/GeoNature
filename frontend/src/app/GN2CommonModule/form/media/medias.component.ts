@@ -24,6 +24,7 @@ export class MediasComponent implements OnInit {
 
   @Input() disabled=false;
   @Input() disabledTxt: string;
+  @Input() hideDetailsFields : boolean = false;
 
 
   public bInitialized: boolean;

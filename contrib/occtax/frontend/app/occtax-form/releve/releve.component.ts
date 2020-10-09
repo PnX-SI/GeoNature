@@ -25,6 +25,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   public userDatasets: Array<any>;
   public releveForm: FormGroup;
   public AppConfig = AppConfig;
+  public datasetId : number;
 
   constructor(
     private route: ActivatedRoute,
@@ -35,6 +36,14 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     private _dataService: DataFormService
   ) {
     this.occtaxConfig = ModuleConfig;
+    /*MET Si on passe jdd en paramètre, alors on rempli le champs dataset avec la valeur et on rempli la valeur par défault*/
+    this.route.queryParams.subscribe(params => {
+      let datasetId = params['jdd'];
+      if (datasetId){
+        this.occtaxFormReleveService.datasetId = datasetId
+      }
+      //console.log(jdd); // Print the parameter to the console. 
+    });
   }
 
   ngOnInit() {

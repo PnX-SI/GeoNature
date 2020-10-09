@@ -34,6 +34,8 @@ export class OcctaxFormReleveService {
   public dynamicContainer: ViewContainerRef;
   componentRef: ComponentRef<any>;
 
+  public datasetId : number = null;
+
   constructor(
     private router: Router,
     private fb: FormBuilder,
@@ -67,7 +69,7 @@ export class OcctaxFormReleveService {
   initPropertiesForm(): void {
     //FORM
     this.propertiesForm = this.fb.group({
-      id_dataset: [null, Validators.required],
+      id_dataset: [null, this.datasetId ? Validators.required : null] ,
       id_digitiser: null,
       date_min: [null, Validators.required],
       date_max: [null, Validators.required],
@@ -295,7 +297,7 @@ export class OcctaxFormReleveService {
       .pipe(
         map((data) => {
           return {
-            id_dataset: this.occtaxParamS.get("releve.id_dataset"),
+            id_dataset: this.occtaxParamS.get("releve.id_dataset") || this.datasetId,
             date_min:
               this.occtaxParamS.get("releve.date_min") ||
               this.defaultDateWithToday(),
@@ -356,6 +358,9 @@ export class OcctaxFormReleveService {
     value.properties.observers = value.properties.observers.map(
       (observer) => observer.id_role
     );
+    /*value.properties.id_dataset = value.properties.id_dataset.map(
+      (dataset) => dataset.id_dataset
+    );*/
     //value.champs_addi = this.occtaxFormService.componentRef.instance.formArray.value;
     return value;
   }

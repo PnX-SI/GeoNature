@@ -31,6 +31,7 @@ export class OcctaxFormOccurrenceService {
   componentRefOccurence: ComponentRef<any>;
   public dynamicContainerOccurence: ViewContainerRef;
   public data : any;
+  public idDataset : number;
 
   constructor(
     private fb: FormBuilder,
@@ -104,7 +105,7 @@ export class OcctaxFormOccurrenceService {
         }),
       )
       .subscribe((values) => {
-        
+        /* Permet de mettre les valeurs dans les champs additionnels */
         if (this.dynamicFormGroup != undefined){
           
           if (values.additional_fields){
@@ -227,10 +228,16 @@ export class OcctaxFormOccurrenceService {
           /*MET Champs additionnel*/
           this.dynamicFormGroup = this.fb.group({});
       
-          this.componentRefOccurence.instance.formConfigReleveDataSet = ModuleConfig.add_fields[data.releve.properties.dataset.id_dataset]['taxon'];
+          this.componentRefOccurence.instance.formConfigReleveDataSet = ModuleConfig.add_fields[data.releve.properties.dataset.id_dataset]['occurrence'];
           this.componentRefOccurence.instance.formArray = this.dynamicFormGroup;
         }
+        this.idDataset = data.releve.properties.dataset.id_dataset;
         /* OCCTAX - CHAMPS ADDITIONNELS FIN */
+
+        /* A TESTER MET  */
+        /*foreach (this.form.get("cor_counting_occtax")){
+          //on envoi l'id du dataset
+        }*/
         return releve;
       })
     );

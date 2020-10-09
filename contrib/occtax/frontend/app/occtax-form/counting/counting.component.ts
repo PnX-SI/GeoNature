@@ -1,10 +1,11 @@
-import { Component, Input } from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
+import { Component, Input, ViewContainerRef, ViewChild, ComponentRef, ComponentFactory, ComponentFactoryResolver } from "@angular/core";
+import { FormControl, FormGroup, FormBuilder } from "@angular/forms";
 import { OcctaxFormService } from "../occtax-form.service";
 import { ModuleConfig } from "../../module.config";
 import { AppConfig } from "@geonature_config/app.config";
 import { OcctaxFormOccurrenceService } from "../occurrence/occurrence.service";
 import { OcctaxFormCountingService } from "./counting.service";
+import { dynamicFormReleveComponent } from "../dynamique-form-releve/dynamic-form-releve.component";
 
 @Component({
   selector: "pnx-occtax-form-counting",
@@ -12,16 +13,40 @@ import { OcctaxFormCountingService } from "./counting.service";
   styleUrls: ["./counting.component.scss"]
 })
 export class OcctaxFormCountingComponent {
+  @ViewChild("dynamiqueContainerCounting", { read: ViewContainerRef }) public containerCounting: ViewContainerRef;
 
   public occtaxConfig = ModuleConfig;
   public appConfig = AppConfig;
+  
+  public dynamicFormGroup: FormGroup;
+  public data : any;
+  //public dynamicContainerOccurence: ViewContainerRef;
+  componentRefOccurence: ComponentRef<any>;
 
   @Input('form') countingForm: FormGroup;
 
   constructor(
     public fs: OcctaxFormService,
-    public occtaxFormOccurrenceService: OcctaxFormOccurrenceService
+    public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
+    private occtaxFormCountingService: OcctaxFormCountingService,
+    private _resolver: ComponentFactoryResolver,
+    private fb: FormBuilder,
   ) { }
+
+  ngOnInit() {
+    /* Initialisation du formulaire dynamique */
+    this.occtaxFormOccurrenceService.idDataset;
+    this.occtaxFormCountingService.dynamicContainerCounting = this.containerCounting;
+
+    this.occtaxFormCountingService.dynamicContainerCounting.clear(); 
+    const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(dynamicFormReleveComponent);
+    this.occtaxFormCountingService.componentRefCounting = this.occtaxFormCountingService.dynamicContainerCounting.createComponent(factory);
+    
+    this.dynamicFormGroup = this.fb.group({});
+
+    this.occtaxFormCountingService.componentRefCounting.instance.formConfigReleveDataSet = ModuleConfig.add_fields[1]['counting'];
+    this.occtaxFormCountingService.componentRefCounting.instance.formArray = this.dynamicFormGroup;
+  }
 
   taxref() {
     const taxref = this.occtaxFormOccurrenceService.taxref.getValue();
