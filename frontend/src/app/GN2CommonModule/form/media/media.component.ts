@@ -133,8 +133,8 @@ export class MediaComponent implements OnInit {
       this.ms.getNomenclature('Photo', 'mnemonique', 'TYPE_MEDIA').id_nomenclature;
 
     /* MET Ajout d'un filtre par code nomenclature */
-    if (this.default['code_nomenclature_media_type']){
-      let nomenclatureMediaType = this.ms.getNomenclature(this.default['code_nomenclature_media_type'], 'mnemonique', 'TYPE_MEDIA')
+    if (this.default['mnemonique_nomenclature_media_type']){
+      let nomenclatureMediaType = this.ms.getNomenclature(this.default['mnemonique_nomenclature_media_type'], 'mnemonique', 'TYPE_MEDIA')
       if (nomenclatureMediaType){
         this.media.id_nomenclature_media_type = nomenclatureMediaType.id_nomenclature;
       }
