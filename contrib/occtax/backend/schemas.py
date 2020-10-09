@@ -124,7 +124,7 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
     observers = MA.Nested(
         ObserverSchema,
         many=True,
-        allow_none=current_app.config["OCCTAX"]["observers_txt"],
+        allow_none=current_app.config.get("OCCTAX", {}).get("observers_txt", True),
         # dump_only=True,
     )
     digitiser = MA.Nested(ObserverSchema, dump_only=True)

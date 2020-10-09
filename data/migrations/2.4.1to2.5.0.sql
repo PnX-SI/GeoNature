@@ -1239,9 +1239,9 @@ CREATE OR REPLACE FUNCTION gn_synthese.import_row_from_table(
       -- TODO transtypage en text pour des questions de généricité. A réflechir
       select_sql := 'SELECT row_to_json(c)::jsonb d
           FROM ' || tbl_name || ' c
-          WHERE ' ||  select_col_name|| '::text = ''' || select_col_val || '
+          WHERE ' ||  select_col_name|| '::text = ''' || select_col_val || '''
           LIMIT ' || limit_ || '
-          OFFSET ' || offset_ || '''' ;
+          OFFSET ' || offset_ ;
 
       FOR import_rec IN EXECUTE select_sql LOOP
           PERFORM gn_synthese.import_json_row(import_rec.d);

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+2.5.2 (Unrealeased)
+
+** Corrections **
+
+* Occtax : problème à l'install avec le fichier ``schemas.py``
+* Synthese: correction en sql et dans ``gn_synthese/process.py`` de la fonctionalité ``import_from_table``
+
 2.5.1 (2020-10-06)
 ------------------
 
