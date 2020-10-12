@@ -159,7 +159,7 @@ export class DataFormService {
   getHigherTaxa(rank: string, search?) {
     let params: HttpParams = new HttpParams();
     params = params.set('rank_limit', rank);
-    params = params.set('fields', 'nom_complet_html');
+    params = params.set('fields', 'lb_auteur,nom_complet_html');
 
     let url = `${AppConfig.API_TAXHUB}/taxref/search/lb_nom`
     if (search) {
@@ -167,29 +167,36 @@ export class DataFormService {
     }
 
     return this._http.get<any>(url, { params: params })
-      .map(item => {
-        return this.formatSciname(item);
+      .map(data => {
+        return data.map(item => {
+          return this.formatSciname(item);
+        })
       });
   }
 
   /**
    * Met en gras les noms scientifiques retenus.
    * @param item Objet correspondant au nom scientifique. Doit contenir
-   * les attributs "cd_nom", "cd_ref", "lb_nom" et "nom_complet_html".
+   * les attributs "cd_nom", "cd_ref", "lb_nom", "lb_auteur" et "nom_complet_html".
    */
   formatSciname(item) {
-    const mandatory_fields = ['cd_nom', 'cd_ref', 'lb_nom', 'nom_complet_html'];
-    for (let field in mandatory_fields) {
-      if (item[field] === undefined) {
-        return item;
+    if (item['nom_complet_html'] === undefined && item['lb_nom'] !== undefined) {
+      item.displayName = item['lb_nom'];
+      if (item['lb_auteur']) {
+        item.displayName += ` ${item['lb_auteur']}`;
       }
+      return item;
     }
 
     item.displayName = item['nom_complet_html'];
+    item.displayName = item.displayName.replace(
+      item['lb_auteur'],
+      `<span class="text-muted">${item['lb_auteur']}</span>`
+    );
     if (item['cd_nom'] === item['cd_ref']) {
       if (item.displayName.includes('<i>')) {
-        item.displayName = item.displayName.replace('<i>', '<b><i>');
-        item.displayName = item.displayName.replace('</i>', '</i></b>');
+        item.displayName = item.displayName.replaceAll('<i>', '<b><i>');
+        item.displayName = item.displayName.replaceAll('</i>', '</i></b>');
       } else {
         item.displayName = item.displayName.replace(
           item['lb_nom'],
