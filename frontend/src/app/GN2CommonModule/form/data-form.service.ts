@@ -156,6 +156,50 @@ export class DataFormService {
     return response;
   }
 
+  getHigherTaxa(rank: string, search?) {
+    let params: HttpParams = new HttpParams();
+    params = params.set('rank_limit', rank);
+    params = params.set('fields', 'nom_complet_html');
+
+    let url = `${AppConfig.API_TAXHUB}/taxref/search/lb_nom`
+    if (search) {
+      url = `${url}/${search}`
+    }
+
+    return this._http.get<any>(url, { params: params })
+      .map(item => {
+        return this.formatSciname(item);
+      });
+  }
+
+  /**
+   * Met en gras les noms scientifiques retenus.
+   * @param item Objet correspondant au nom scientifique. Doit contenir
+   * les attributs "cd_nom", "cd_ref", "lb_nom" et "nom_complet_html".
+   */
+  formatSciname(item) {
+    const mandatory_fields = ['cd_nom', 'cd_ref', 'lb_nom', 'nom_complet_html'];
+    for (let field in mandatory_fields) {
+      if (item[field] === undefined) {
+        return item;
+      }
+    }
+
+    item.displayName = item['nom_complet_html'];
+    if (item['cd_nom'] === item['cd_ref']) {
+      if (item.displayName.includes('<i>')) {
+        item.displayName = item.displayName.replace('<i>', '<b><i>');
+        item.displayName = item.displayName.replace('</i>', '</i></b>');
+      } else {
+        item.displayName = item.displayName.replace(
+          item['lb_nom'],
+          `<b>${item['lb_nom']}</b>`
+        );
+      }
+    }
+    return item;
+  }
+
   getRegneAndGroup2Inpn() {
     return this._http.get<any>(`${AppConfig.API_TAXHUB}/taxref/regnewithgroupe2`);
   }
