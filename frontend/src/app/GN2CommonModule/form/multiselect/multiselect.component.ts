@@ -79,6 +79,10 @@ export class MultiSelectComponent implements OnInit, OnChanges {
    * Par défaut, 100 millisecondes.
    */
   @Input() debounceTime: number;
+  /** Indique (=true) que le contenu de la liste doit être conscidéré
+   * comme du HTML sûr.
+   */
+  @Input() isHtml: boolean = false;
   /** Action à exécuter lors d'une recherche. */
   @Output() onSearch = new EventEmitter();
   /** Action à exécuter lors du changement du contenu. */
