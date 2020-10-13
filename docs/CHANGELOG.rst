@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+2.5.2 (2020-10-13)
+------------------
+
+**🐛 Corrections**
+
+* Occtax : correction du problème d'installation du module dans le fichier ``schemas.py``
+* Synthese : correction de la fonctions SQL ``gn_synthese.import_row_from_table`` et répercution dans le fichier ``gn_synthese/process.py``
+
+**⚠️ Notes de version**
+
+Si vous mettez à jour GeoNature :
+
+* Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
+* Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.1to2.5.2.sql).
+
 2.5.1 (2020-10-06)
 ------------------
 

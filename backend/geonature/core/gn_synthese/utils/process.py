@@ -21,11 +21,9 @@ def import_from_table(schema_name, table_name, field_name, value, limit):
 
         nb_data = DB.engine.execute(txt).first()[0]
 
-        print(nb_data)
-
         # request : call of function gn_synthese.import_row_from_table
         i = 0
-        limit = 1
+
         # on procède ici par boucle pour traiter un nombre raisonnable de donnée à la fois
         while limit * i < nb_data:
 
@@ -37,7 +35,6 @@ def import_from_table(schema_name, table_name, field_name, value, limit):
                     {});""".format(
                 field_name, value, schema_name, table_name, limit, i * limit  # offset
             )
-
             DB.engine.execution_options(autocommit=True).execute(txt)
 
             i = i + 1
