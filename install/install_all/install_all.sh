@@ -29,9 +29,9 @@ then
     exit 1
 fi
 
-if [ "$OS_VERSION" != "9" ] && [ "$OS_VERSION" != "10" ] && [ "$OS_VERSION" != "18.04" ] && [ "$OS_VERSION" != "16.04" ]
+if [ "$OS_VERSION" != "10" ] && [ "$OS_VERSION" != "18.04" ]
 then
-    echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour Debian 9/10 et Ubuntu 16.04/18.04\e[0m" >&2
+    echo -e "\e[91m\e[1mLe script d'installation n'est prévu que pour Debian 10 et Ubuntu 18.04\e[0m" >&2
     exit 1
 fi
 
@@ -58,11 +58,11 @@ source ~/.bashrc
 # Installing required environment for GeoNature and TaxHub
 echo "Installation de l'environnement logiciel..."
 
-sudo apt-get -y install ntpdate 
-sudo ntpdate-debian 
-sudo apt-get install -y curl unzip git 
-sudo apt-get install -y apache2 libapache2-mod-wsgi libapache2-mod-perl2 
-sudo apt-get install -y postgresql 
+sudo apt-get -y install ntpdate
+sudo ntpdate-debian
+sudo apt-get install -y curl unzip git
+sudo apt-get install -y apache2 libapache2-mod-wsgi libapache2-mod-perl2
+sudo apt-get install -y postgresql
 sudo apt-get install -y postgresql-contrib
 sudo apt-get install -y wget
 
@@ -74,11 +74,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 
-if [ "$OS_VERSION" == "9" ]
-then
-    sudo apt-get install -y postgresql-server-dev-9.6 
-    sudo apt install -y postgis-2.3 postgis postgresql-9.6-postgis-2.3 
-fi
+
 if [ "$OS_VERSION" == "10" ]
 then
     sudo apt-get install -y postgresql-server-dev-11
@@ -87,37 +83,44 @@ fi
 
 if [ "$OS_VERSION" == "18.04" ]
 then
-    sudo apt-get install -y postgresql-server-dev-10 
-    sudo apt install -y postgis 
+    sudo apt-get install -y postgresql-server-dev-10
+    sudo apt install -y postgis
 fi
 
-if [ "$OS_VERSION" == "16.04" ]
-then
-    sudo apt-get install -y libatlas3-base
-    sudo apt-get install -y postgresql-server-dev-9.5  
-    sudo apt install -y postgis postgis postgresql-9.5-postgis-2.2 
-fi
-sudo sed -e "s/datestyle =.*$/datestyle = 'ISO, DMY'/g" -i /etc/postgresql/*/main/postgresql.conf
-sudo service postgresql restart
-
-sudo apt-get install -y python3 
-sudo apt-get install -y python3-dev 
-sudo apt-get install -y python3-setuptools 
-sudo apt-get install -y python3-pip 
-sudo apt-get install -y libpq-dev 
-sudo apt-get install -y libgdal-dev 
-sudo apt-get install -y python-gdal 
-sudo apt-get install -y build-essential 
-python3 -m pip install pip==20.0.2
-pip3 install virtualenv==20.0.1
-# sudo pip install --upgrade pip virtualenv virtualenvwrapper 
 
 
-sudo apt-get install -y supervisor 
+sudo apt-get install -y libpq-dev
+sudo apt-get install -y libffi-dev
+sudo apt-get install -y libgdal-dev
+sudo apt-get install -y python-gdal
+sudo apt-get install -y build-essential
+sudo apt-get install -y python3-wheel
+sudo apt-get install -y python3-cffi
+sudo apt-get install -y libbz2-dev
+
+
+sudo apt-get install -y python3-dev
+sudo apt-get install -y python3-setuptools
+sudo apt-get install -y python3-pip
+
+# for weasy print (lib python for pdf)
+sudo apt-get install -y libcairo2
+sudo apt-get install -y libpango-1.0-0
+sudo apt-get install -y libpangocairo-1.0-0
+sudo apt-get install -y libgdk-pixbuf2.0-0
+sudo apt-get install -y libffi-dev
+sudo apt-get install -y libxslt-dev
+sudo apt-get install -y shared-mime-info
+sudo python3 -m pip install pip==20.0.2
+/usr/local/bin/python3 -m pip install virtualenv==20.0.1
+# sudo pip install --upgrade pip virtualenv virtualenvwrapper
+
+
+sudo apt-get install -y supervisor
 
 #TODO: test de le virer
 # To make opencv (TaxHub) work on Debian 10
-sudo apt-get install -y libsm6 libxrender1 libfontconfig1 
+sudo apt-get install -y libsm6 libxrender1 libfontconfig1
 
 # Creating PostgreSQL user
 echo "Création de l'utilisateur PostgreSQL..."
@@ -175,7 +178,7 @@ cd install/
 
 # Installation and configuration of GeoNature application
 # lance install_app en le sourcant pour que la commande NVM soit disponible
-[ -s "install_app.sh" ] && \. "install_app.sh" 
+[ -s "install_app.sh" ] && \. "install_app.sh"
 
 cd ../
 
@@ -228,7 +231,6 @@ cd /home/`whoami`/taxhub
 # Setting configuration of TaxHub
 echo "Configuration de l'application TaxHub ..."
 cp settings.ini.sample settings.ini
-sed -i "s/my_local=.*$/my_local=$my_local/g" config/settings.ini
 sed -i "s/drop_apps_db=.*$/drop_apps_db=false/g" settings.ini
 sed -i "s/db_host=.*$/db_host=$pg_host/g" settings.ini
 sed -i "s/db_port=.*$/db_port=$pg_port/g" settings.ini
@@ -290,7 +292,7 @@ if [ "$install_usershub_app" = true ]; then
 
     # Installation of UsersHub application
     # lance install_app en le sourcant pour que la commande NVM soit disponible
-    ./install_app.sh 
+    ./install_app.sh
 
     # Apache configuration of UsersHub
     if [ -f  /etc/apache2/sites-available/usershub.conf ]; then
@@ -310,6 +312,6 @@ sudo apache2ctl restart
 
 
 # fix nvm version
-cd /home/`whoami`/geonature/frontend 
+cd /home/`whoami`/geonature/frontend
 nvm alias default
 echo "L'installation est terminée!"

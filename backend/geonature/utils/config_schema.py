@@ -4,7 +4,13 @@
 
 import os
 
-from marshmallow import Schema, fields, validates_schema, ValidationError, post_load
+from marshmallow import (
+    Schema,
+    fields,
+    validates_schema,
+    ValidationError,
+    post_load,
+)
 from marshmallow.validate import OneOf, Regexp, Email
 from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_EXPORT_COLUMNS,
@@ -22,18 +28,16 @@ class CasUserSchemaConf(Schema):
 
 class CasFrontend(Schema):
     CAS_AUTHENTIFICATION = fields.Boolean(missing="false")
-    CAS_URL_LOGIN = fields.Url(
-        missing="https://preprod-inpn.mnhn.fr/auth/login")
-    CAS_URL_LOGOUT = fields.Url(
-        missing="https://preprod-inpn.mnhn.fr/auth/logout")
+    CAS_URL_LOGIN = fields.Url(missing="https://preprod-inpn.mnhn.fr/auth/login")
+    CAS_URL_LOGOUT = fields.Url(missing="https://preprod-inpn.mnhn.fr/auth/logout")
 
 
 class CasSchemaConf(Schema):
-    CAS_URL_VALIDATION = fields.String(
-        missing="https://preprod-inpn.mnhn.fr/auth/serviceValidate"
-    )
+    CAS_URL_VALIDATION = fields.String(missing="https://preprod-inpn.mnhn.fr/auth/serviceValidate")
     CAS_USER_WS = fields.Nested(CasUserSchemaConf, missing=dict())
     USERS_CAN_SEE_ORGANISM_DATA = fields.Boolean(missing=False)
+    # Quel modules seront associés au JDD récupérés depuis MTD
+    JDD_MODULE_CODE_ASSOCIATION = fields.List(fields.String, missing=["OCCTAX", "OCCHAB"])
 
 
 class BddConfig(Schema):
@@ -81,6 +85,16 @@ class UsersHubConfig(Schema):
 class ServerConfig(Schema):
     LOG_LEVEL = fields.Integer(missing=20)
 
+
+class MediasConfig(Schema):
+    MEDIAS_SIZE_MAX = fields.Integer(missing=50000)
+    THUMBNAIL_SIZES = fields.List(fields.Integer, missing=[200, 50])
+
+
+class MetadataConfig(Schema):
+    NB_AF_DISPLAYED = fields.Integer(missing=50, validate=OneOf([10, 25, 50, 100]))
+
+
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
 
 
@@ -90,11 +104,10 @@ class GnPySchemaConf(Schema):
         validate=Regexp(
             "^postgresql:\/\/.*:.*@[^:]+:\w+\/\w+$",
             0,
-            """Database uri is invalid ex:
-             postgresql://monuser:monpass@server:port/db_name""",
+            "Database uri is invalid ex: postgresql://monuser:monpass@server:port/db_name",
         ),
     )
-    SQLALCHEMY_TRACK_MODIFICATIONS = fields.Boolean(missing=False)
+    SQLALCHEMY_TRACK_MODIFICATIONS = fields.Boolean(missing=True)
     SESSION_TYPE = fields.String(missing="filesystem")
     SECRET_KEY = fields.String(required=True)
     # le cookie expire toute les 7 jours par défaut
@@ -104,9 +117,7 @@ class GnPySchemaConf(Schema):
 
     UPLOAD_FOLDER = fields.String(missing="static/medias")
     BASE_DIR = fields.String(
-        missing=os.path.dirname(
-            os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
-        )
+        missing=os.path.dirname(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
     )
     CAS = fields.Nested(CasSchemaConf, missing=dict())
     MAIL_ON_ERROR = fields.Boolean(missing=False)
@@ -115,6 +126,7 @@ class GnPySchemaConf(Schema):
     ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, missing={})
     USERSHUB = fields.Nested(UsersHubConfig, missing={})
     SERVER = fields.Nested(ServerConfig, missing={})
+    MEDIAS = fields.Nested(MediasConfig, missing={})
 
     @post_load()
     def unwrap_usershub(self, data):
@@ -159,6 +171,8 @@ class GnFrontEndConf(Schema):
     DISPLAY_STAT_BLOC = fields.Boolean(missing=True)
     DISPLAY_MAP_LAST_OBS = fields.Boolean(missing=True)
     MULTILINGUAL = fields.Boolean(missing=False)
+    # show email on synthese and validation info obs modal
+    DISPLAY_EMAIL_INFO_OBS = fields.Boolean(missing=True)
 
 
 id_municipality = BddConfig().load({}).data.get("id_area_type_municipality")
@@ -166,21 +180,16 @@ id_municipality = BddConfig().load({}).data.get("id_area_type_municipality")
 
 class Synthese(Schema):
     AREA_FILTERS = fields.List(
-        fields.Dict, missing=[
-            {"label": "Communes", "id_type": id_municipality}]
+        fields.Dict, missing=[{"label": "Communes", "id_type": id_municipality}]
     )
     # Listes des champs renvoyés par l'API synthese '/synthese'
     # Si on veut afficher des champs personnalisés dans le frontend (paramètre LIST_COLUMNS_FRONTEND) il faut
     # d'abbord s'assurer que ces champs sont bien renvoyé par l'API !
     # Champs disponibles: tous ceux de la vue 'v_synthese_for_web_app
-    COLUMNS_API_SYNTHESE_WEB_APP = fields.List(
-        fields.String, missing=DEFAULT_COLUMNS_API_SYNTHESE
-    )
+    COLUMNS_API_SYNTHESE_WEB_APP = fields.List(fields.String, missing=DEFAULT_COLUMNS_API_SYNTHESE)
     # Colonnes affichées sur la liste des résultats de la sytnthese
-    LIST_COLUMNS_FRONTEND = fields.List(
-        fields.Dict, missing=DEFAULT_LIST_COLUMN)
-    EXPORT_COLUMNS = fields.List(
-        fields.String(), missing=DEFAULT_EXPORT_COLUMNS)
+    LIST_COLUMNS_FRONTEND = fields.List(fields.Dict, missing=DEFAULT_LIST_COLUMN)
+    EXPORT_COLUMNS = fields.List(fields.String(), missing=DEFAULT_EXPORT_COLUMNS)
     # Certaines colonnes sont obligatoires pour effectuer les filtres CRUVED
     EXPORT_ID_SYNTHESE_COL = fields.String(missing="idSynthese")
     EXPORT_ID_DATASET_COL = fields.String(missing="jddId")
@@ -190,9 +199,7 @@ class Synthese(Schema):
     EXPORT_GEOJSON_LOCAL_COL = fields.String(missing="geojson_local")
     EXPORT_METADATA_ID_DATASET_COL = fields.String(missing="jdd_id")
     EXPORT_METADATA_ACTOR_COL = fields.String(missing="acteurs")
-    EXPORT_FORMAT = fields.List(
-        fields.String(), missing=["csv", "geojson", "shapefile"]
-    )
+    EXPORT_FORMAT = fields.List(fields.String(), missing=["csv", "geojson", "shapefile"])
     # Nombre de résultat à afficher pour la rechercher autocompleté de taxon
     TAXON_RESULT_NUMBER = fields.Integer(missing=20)
     # Liste des id attributs Taxhub à afficher sur la fiche détaile de la synthese
@@ -206,6 +213,10 @@ class Synthese(Schema):
     DISPLAY_TAXON_TREE = fields.Boolean(missing=True)
     # rajoute le filtre sur l'observers_txt en ILIKE sur les portée 1 et 2 du CRUVED
     CRUVED_SEARCH_WITH_OBSERVER_AS_TXT = fields.Boolean(missing=False)
+    # Switch the observer form input in free text input (true) or in select input (false)
+    SEARCH_OBSERVER_WITH_LIST = fields.Boolean(missing=False)
+    # id of the observer list -- utilisateurs.t_menus
+    ID_SEARCH_OBSERVER_LIST = fields.Integer(missing=1)
     # Nombre max d'observation à afficher sur la carte
     NB_MAX_OBS_MAP = fields.Integer(missing=50000)
     # clusteriser les layers sur la carte
@@ -214,6 +225,9 @@ class Synthese(Schema):
     NB_MAX_OBS_EXPORT = fields.Integer(missing=50000)
     # Nombre des "dernières observations" affiché à l'arrive sur la synthese
     NB_LAST_OBS = fields.Integer(missing=100)
+
+    # Display email on synthese and validation info obs modal
+    DISPLAY_EMAIL = fields.Boolean(missing=True)
 
 
 # On met la valeur par défaut de DISCONECT_AFTER_INACTIVITY inferieure à COOKIE_EXPIRATION
@@ -224,27 +238,25 @@ cookie_expiration = GnPySchemaConf().load({}).data.get("COOKIE_EXPIRATION")
 BASEMAP = [
     {
         "name": "OpenStreetMap",
-        "layer": "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
-        "attribution": "&copy OpenStreetMap",
+        "url": "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+        "options": {"attribution": "&copy OpenStreetMap",},
     },
     {
         "name": "OpenTopoMap",
-        "layer": "//a.tile.opentopomap.org/{z}/{x}/{y}.png",
-        "attribution": "© OpenTopoMap",
+        "url": "//a.tile.opentopomap.org/{z}/{x}/{y}.png",
+        "options": {"attribution": "© OpenTopoMap",},
     },
     {
         "name": "GoogleSatellite",
         "layer": "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-        "subdomains": ["mt0", "mt1", "mt2", "mt3"],
-        "attribution": "© GoogleMap",
+        "options": {"subdomains": ["mt0", "mt1", "mt2", "mt3"], "attribution": "© GoogleMap",},
     },
 ]
 
 
 class MapConfig(Schema):
-    BASEMAP = fields.List(fields.Dict, missing=BASEMAP)
-    CENTER = fields.List(fields.Float, missing=[
-                         46.52863469527167, 2.43896484375])
+    BASEMAP = fields.List(fields.Dict(), missing=BASEMAP)
+    CENTER = fields.List(fields.Float, missing=[46.52863469527167, 2.43896484375])
     ZOOM_LEVEL = fields.Integer(missing=6)
     ZOOM_LEVEL_RELEVE = fields.Integer(missing=15)
     # zoom appliqué sur la carte lorsque l'on clique sur une liste
@@ -255,10 +267,10 @@ class MapConfig(Schema):
 # class a utiliser pour les paramètres que l'on veut passer au frontend
 class GnGeneralSchemaConf(Schema):
     appName = fields.String(missing="GeoNature2")
+    LOGO_STRUCTURE_FILE = fields.String(missing="logo_structure.png")
     GEONATURE_VERSION = fields.String(missing=GEONATURE_VERSION.strip())
     DEFAULT_LANGUAGE = fields.String(missing="fr")
-    PASS_METHOD = fields.String(
-        missing="hash", validate=OneOf(["hash", "md5"]))
+    PASS_METHOD = fields.String(missing="hash", validate=OneOf(["hash", "md5"]))
     DEBUG = fields.Boolean(missing=False)
     URL_APPLICATION = fields.Url(required=True)
     API_ENDPOINT = fields.Url(required=True)
@@ -277,6 +289,9 @@ class GnGeneralSchemaConf(Schema):
     BDD = fields.Nested(BddConfig, missing=dict())
     URL_USERSHUB = fields.Url(required=False)
     ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, missing={})
+    MEDIAS = fields.Nested(MediasConfig, missing={})
+    UPLOAD_FOLDER = fields.String(missing="static/medias")
+    METADATA = fields.Nested(MetadataConfig, missing={})
 
     @validates_schema
     def validate_enable_sign_up(self, data):

@@ -23,6 +23,7 @@ export class SyntheseFormService {
     this.searchForm = this._fb.group({
       cd_nom: null,
       observers: null,
+      observers_list: null,
       id_organism: null,
       id_dataset: null,
       id_acquisition_framework: null,
@@ -78,7 +79,10 @@ export class SyntheseFormService {
         if (Number.isInteger(parseInt(params[key], 10))) {
           updatedParams[key] = parseInt(params[key], 10);
         }
-      } else if ((key === 'date_min' && params.date_min) || (key === 'date_max' && params.date_max)) {
+      } else if (
+        (key === 'date_min' && params.date_min) ||
+        (key === 'date_max' && params.date_max)
+      ) {
         updatedParams[key] = this._dateParser.format(params[key]);
       } else if (
         (key === 'period_end' && params.period_end) ||
@@ -104,7 +108,6 @@ export class SyntheseFormService {
           updatedParams[key] = params[key];
         }
       }
-
     }
 
     if (this.selectedtaxonFromComponent.length > 0) {

@@ -21,9 +21,11 @@ from geonature.utils.env import DB
 
 def validate_temp_user(data):
     """
-       Send an email after the action of account creation
+       Send an email after the action of account creation.
 
-       :param admin_validation_required: if True an admin will receive an email to validate the account creation else the user himself receive the email
+       :param admin_validation_required: if True an admin will receive an
+       email to validate the account creation else the user himself 
+       receive the email.
        :type admin_validation_required: bool
     """
     token = data.get("token", None)
@@ -32,9 +34,7 @@ def validate_temp_user(data):
 
     if not user:
         return {
-            "msg": "{token}: ce token n'est pas associé à un compte temporaire".format(
-                token=token
-            )
+            "msg": "{token}: ce token n'est pas associé à un compte temporaire".format(token=token)
         }
     user_dict = user.as_dict()
     subject = "Demande de création de compte GeoNature"
@@ -61,9 +61,20 @@ def validate_temp_user(data):
     return {"msg": "ok"}
 
 
+def execute_actions_after_validation(data):
+    try:
+        if current_app.config["ACCOUNT_MANAGEMENT"]["AUTO_DATASET_CREATION"]:
+            create_dataset_user(data)
+        inform_user(data)
+    except Exception as error:
+        return {"msg": ". ".join(error.args)}
+    return {"msg": "ok"}
+
+
 def create_dataset_user(user):
     """
-        After dataset validation, add a personnal AF and JDD so the user can add new user
+        After dataset validation, add a personnal AF and JDD so the user 
+        can add new user.
     """
     af_desc_and_name = "Cadre d'acquisition personnel de {name} {surname}".format(
         name=user["nom_role"], surname=user["prenom_role"]
@@ -72,15 +83,11 @@ def create_dataset_user(user):
     #  actor = data productor
     af_productor = CorAcquisitionFrameworkActor(
         id_role=user["id_role"],
-        id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
-            "ROLE_ACTEUR", "6"
-        ),
+        id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature("ROLE_ACTEUR", "6"),
     )
     af_contact = CorAcquisitionFrameworkActor(
         id_role=user["id_role"],
-        id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
-            "ROLE_ACTEUR", "1"
-        ),
+        id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature("ROLE_ACTEUR", "1"),
     )
 
     new_af = TAcquisitionFramework(
@@ -100,22 +107,17 @@ def create_dataset_user(user):
     )
     ds_productor = CorDatasetActor(
         id_role=user["id_role"],
-        id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
-            "ROLE_ACTEUR", "6"
-        ),
+        id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature("ROLE_ACTEUR", "6"),
     )
     ds_contact = CorDatasetActor(
         id_role=user["id_role"],
-        id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature(
-            "ROLE_ACTEUR", "1"
-        ),
+        id_nomenclature_actor_role=func.ref_nomenclatures.get_id_nomenclature("ROLE_ACTEUR", "1"),
     )
     # add new JDD: terrestrial and marine = True as default
     new_dataset = TDatasets(
         id_acquisition_framework=new_af.id_acquisition_framework,
         dataset_name=ds_desc_and_name,
-        dataset_shortname=ds_desc_and_name
-        + " - auto-créé via la demande de création de compte",
+        dataset_shortname=ds_desc_and_name + " - auto-créé via la demande de création de compte",
         dataset_desc=ds_desc_and_name,
         marine_domain=True,
         terrestrial_domain=True,
@@ -123,18 +125,35 @@ def create_dataset_user(user):
     new_dataset.cor_dataset_actor = [ds_productor, ds_contact]
     DB.session.add(new_dataset)
     DB.session.commit()
-    return {"msg": "ok"}
+
+
+def inform_user(user):
+    """
+    Send an email to inform the user that his account was validate.
+    """
+    app_name = current_app.config["appName"]
+    app_url = current_app.config["URL_APPLICATION"]
+
+    msg_html = render_template(
+        "email_confirm_user_validation.html",
+        user_firstname=user["prenom_role"],
+        user_lastname=user["nom_role"],
+        app_name=app_name,
+        app_url=app_url,
+        user_login=user["identifiant"],
+    )
+    subject = f"Confirmation inscription {app_name}"
+    send_mail([user["email"]], subject, msg_html)
 
 
 def send_email_for_recovery(data):
     """
-    Send an email with the login of the role and the possibility to reset its password
+    Send an email with the login of the role and the possibility to reset
+    its password
     """
     user = data["role"]
     recipients = current_app.config["MAIL_CONFIG"]["MAIL_USERNAME"]
-    url_password = (
-        current_app.config["URL_APPLICATION"] + "#/new-password?token=" + data["token"]
-    )
+    url_password = current_app.config["URL_APPLICATION"] + "#/new-password?token=" + data["token"]
 
     msg_html = render_template(
         "email_login_and_new_pass.html",
@@ -146,15 +165,8 @@ def send_email_for_recovery(data):
     return {"msg": "ok"}
 
 
-if current_app.config["ACCOUNT_MANAGEMENT"]["AUTO_DATASET_CREATION"]:
-    function_dict = {
-        "create_temp_user": validate_temp_user,
-        "valid_temp_user": create_dataset_user,
-        "create_cor_role_token": send_email_for_recovery,
-    }
-else:
-    function_dict = {
-        "create_temp_user": validate_temp_user,
-        "create_cor_role_token": send_email_for_recovery,
-    }
-
+function_dict = {
+    "create_temp_user": validate_temp_user,
+    "valid_temp_user": execute_actions_after_validation,
+    "create_cor_role_token": send_email_for_recovery,
+}

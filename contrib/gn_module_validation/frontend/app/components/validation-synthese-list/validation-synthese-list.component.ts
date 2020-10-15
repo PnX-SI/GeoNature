@@ -20,7 +20,6 @@ import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { ValidationModalInfoObsComponent } from "../validation-modal-info-obs/validation-modal-info-obs.component";
 import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthese-form.service";
 import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthese-data.service";
-
 @Component({
   selector: "pnx-validation-synthese-list",
   templateUrl: "validation-synthese-list.component.html",
@@ -29,6 +28,7 @@ import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthe
 export class ValidationSyntheseListComponent
   implements OnInit, OnChanges, AfterContentChecked {
   public VALIDATION_CONFIG = ModuleConfig;
+  public oneSyntheseObs: any;
   selectedObs: Array<number> = []; // list of id_synthese values for selected rows
   selectedIndex: Array<number> = [];
   selectedPages = [];
@@ -56,7 +56,8 @@ export class ValidationSyntheseListComponent
     public ref: ChangeDetectorRef,
     private _ms: MapService,
     public formService: SyntheseFormService,
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     // get wiewport height to set the number of rows in the tabl
@@ -72,34 +73,42 @@ export class ValidationSyntheseListComponent
   onMapClick() {
     this.mapListService.onMapClik$.subscribe(id => {
       // create list of observation ids having coordinates = to id value
+
+
       const selected_id_coordinates = this.mapListService.layerDict[id].feature
         .geometry.coordinates;
       this.id_same_coordinates = [];
-      for (let obs in this.mapListService.geojsonData.features) {
-        if (
-          JSON.stringify(selected_id_coordinates) ==
-          JSON.stringify(
-            this.mapListService.geojsonData.features[obs].geometry.coordinates
-          )
-        ) {
-          this.id_same_coordinates.push(
-            parseInt(this.mapListService.geojsonData.features[obs].id)
-          );
-        }
-      }
+
+      // for (let obs in this.mapListService.geojsonData.features) {
+      //   console.log(obs);
+
+      //   if (
+      //     JSON.stringify(selected_id_coordinates) ==
+      //     JSON.stringify(
+      //       this.mapListService.geojsonData.features[obs].geometry.coordinates
+      //     )
+      //   ) {
+      //     this.id_same_coordinates.push(
+      //       parseInt(this.mapListService.geojsonData.features[obs].id)
+      //     );
+      //   }
+      // }
 
       // select rows having id_synthese = to one of the id_same_coordinates values
       this.mapListService.selectedRow = [];
-      for (let id of this.id_same_coordinates) {
-        for (let i = 0; i < this.mapListService.tableData.length; i++) {
-          if (this.mapListService.tableData[i]["id_synthese"] === id) {
-            this.mapListService.selectedRow.push(
-              this.mapListService.tableData[i]
-            );
-          }
+      for (let i = 0; i < this.mapListService.tableData.length; i++) {
+        if (this.mapListService.tableData[i]["id_synthese"] === id) {
+          this.mapListService.selectedRow.push(
+            this.mapListService.tableData[i]
+          );
+          break;
         }
+        const page = Math.trunc(i / this.rowNumber);
+
+        this.table.offset = page;
       }
-      this.setSelectedObs();
+
+      //this.setSelectedObs();
     });
   }
 
@@ -115,6 +124,7 @@ export class ValidationSyntheseListComponent
   ngAfterContentChecked() {
     if (this.table && this.table.element.clientWidth !== this._latestWidth) {
       this._latestWidth = this.table.element.clientWidth;
+      this.table.recalculate();
     }
   }
 
@@ -251,12 +261,14 @@ export class ValidationSyntheseListComponent
   }
 
   openInfoModal(row) {
+    this.oneSyntheseObs = row;
     const modalRef = this.ngbModal.open(ValidationModalInfoObsComponent, {
       size: "lg",
       windowClass: "large-modal"
     });
 
-    modalRef.componentInstance.oneObsSynthese = row;
+    modalRef.componentInstance.id_synthese = row.id_synthese;
+    modalRef.componentInstance.uuidSynthese = row.unique_id_sinp;
     modalRef.componentInstance.validationStatus = this.validationStatus;
     modalRef.componentInstance.mapListService = this.mapListService;
     modalRef.componentInstance.modifiedStatus.subscribe(modifiedStatus => {
@@ -277,5 +289,15 @@ export class ValidationSyntheseListComponent
       }
       this.mapListService.selectedRow = [...this.mapListService.selectedRow];
     });
+  }
+
+  getValidationStatusMnemonique(code) {
+    var statusF = this.validationStatus.filter((st) => st.cd_nomenclature == code);
+    if (statusF.length > 0) {
+      return statusF[0].mnemonique;
+    }
+    else {
+      return null;
+    }
   }
 }

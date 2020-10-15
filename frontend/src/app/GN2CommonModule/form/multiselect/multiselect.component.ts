@@ -125,12 +125,12 @@ export class MultiSelectComponent implements OnInit, OnChanges {
         if (this.selectedItems.length === 0) {
           value.forEach(item => {
             if (this.bindAllItem) {
-              this.addItem(item);
+              this.addItem(item, false);
             } else {
               // if not bind all item (the formControl send an integer) we must find in the values array the current item
-              for (let i = 0; i < this.values.length; i++) {
+              for (let i = 0; i < (this.values || []).length; i++) {
                 if (this.values[i][this.keyValue] === item) {
-                  this.addItem(this.values[i]);
+                  this.addItem(this.values[i], false);
                   break;
                 }
               }
@@ -146,11 +146,19 @@ export class MultiSelectComponent implements OnInit, OnChanges {
    * filter the select list to not have doublon
    * @param item : the full item object (not the id)
    */
-  addItem(item) {
+  addItem(item, markDirty = true) {
+    // mark dirty only if its an user action
+    if (markDirty) {
+      this.parentFormControl.markAsDirty();
+    }
+
     // remove element from the items list to avoid doublon
-    this.values = this.values.filter(curItem => {
-      return curItem[this.keyLabel] !== item[this.keyLabel];
-    });
+    if (this.values) {
+      this.values = this.values.filter(curItem => {
+        return curItem[this.keyLabel] !== item[this.keyLabel];
+      });
+    }
+
     if (item === 'all') {
       this.selectedItems = [];
       this._translate.get('AllItems', { value: 'AllItems' }).subscribe(value => {
@@ -181,6 +189,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   }
 
   removeItem($event, item) {
+    this.parentFormControl.markAsDirty();
     // remove element from the items list to avoid doublon
     this.values = this.values.filter(curItem => {
       return curItem[this.keyLabel] !== item[this.keyLabel];

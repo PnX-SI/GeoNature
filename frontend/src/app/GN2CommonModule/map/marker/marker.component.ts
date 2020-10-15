@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { Map, Marker } from 'leaflet';
+import { BehaviorSubject } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { MapService } from '../map.service';
 import { AppConfig } from '@geonature_config/app.config';
 import * as L from 'leaflet';
@@ -18,7 +20,13 @@ import { GeoJson } from 'togeojson';
 export class MarkerComponent implements OnInit, OnChanges {
   public map: Map;
   public previousCoord: Array<any>;
-  @Input() coordinates: Array<any>;
+  private _coordinates: BehaviorSubject<Array<any>> = new BehaviorSubject(null);
+  get coordinates(): Array<any> {
+    return this._coordinates.getValue();
+  }
+  @Input('coordinates') set coordinates(value: Array<any>) {
+    this._coordinates.next(value);
+  }
   @Input() zoomToLocationLevel: number;
   /** Niveau de zoom à partir du quel on peut ajouter un marker sur la carte*/
   @Input() zoomLevel: number;
@@ -41,6 +49,15 @@ export class MarkerComponent implements OnInit, OnChanges {
     this.mapservice.isMarkerEditing$.subscribe(isEditing => {
       this.toggleEditing(isEditing);
     });
+
+    //Observable pour gérer de l'affichage du marker
+    this._coordinates
+      .pipe(filter(coords => this.map !== undefined && coords != null))
+      .subscribe(coords => {
+        this.mapservice.zoomOnMarker(coords, this.zoomToLocationLevel);
+        this.previousCoord = coords;
+        this.generateMarkerAndEvent(coords[0], coords[1]);
+      });
   }
 
   setMarkerLegend() {
@@ -84,7 +101,9 @@ export class MarkerComponent implements OnInit, OnChanges {
     // observable to send geojson
     this.mapservice.firstLayerFromMap = false;
 
-    this.markerChanged.emit(this.markerToGeojson(this.mapservice.marker.getLatLng()));
+    const geojsonMarker = this.markerToGeojson(this.mapservice.marker.getLatLng());
+    this.mapservice.setGeojsonCoord(geojsonMarker);
+    this.markerChanged.emit(geojsonMarker);
   }
 
   markerMoveEvent(marker: Marker) {
@@ -132,11 +151,9 @@ export class MarkerComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes) {
-    if (changes.coordinates && changes.coordinates.currentValue) {
+    if (this.map && changes.coordinates && changes.coordinates.currentValue) {
       const coords = changes.coordinates.currentValue;
-      this.mapservice.zoomOnMarker(coords, this.zoomToLocationLevel);
-      this.previousCoord = coords;
-      this.generateMarkerAndEvent(coords[0], coords[1]);
+      this.coordinates = coords;
     }
   }
 }

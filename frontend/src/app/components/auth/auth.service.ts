@@ -127,7 +127,9 @@ export class AuthService {
   logout() {
     this.deleteAllCookies();
     if (AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
-      document.location.href = AppConfig.CAS_PUBLIC.CAS_URL_LOGOUT;
+      document.location.href = `${AppConfig.CAS_PUBLIC.CAS_URL_LOGOUT}?service=${
+        AppConfig.URL_APPLICATION
+      }`;
     } else {
       this.router.navigate(['/login']);
       // call the logout route to delete the session

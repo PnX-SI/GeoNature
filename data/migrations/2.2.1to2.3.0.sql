@@ -414,34 +414,3 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_taxon_for_export_view AS
 FROM gn_synthese.synthese  s
 JOIN taxonomie.taxref t ON s.cd_nom = t.cd_nom
 JOIN taxonomie.taxref ref ON t.cd_ref = ref.cd_nom;
-
--- ##########################################################
--- Mise à jour de la vue gn_commons.v_meta_actions_on_object
--- ##########################################################
-
-CREATE OR REPLACE VIEW gn_commons.v_meta_actions_on_object AS
-WITH insert_a AS (
-	SELECT
-		id_history_action, id_table_location, uuid_attached_row, operation_type, operation_date, (table_content ->> 'id_digitiser')::int as id_creator
-	FROM gn_commons.t_history_actions
-	WHERE operation_type = 'I'
-),
-delete_a AS (
-	SELECT
-		id_history_action, id_table_location, uuid_attached_row, operation_type, operation_date
-	FROM gn_commons.t_history_actions
-	WHERE operation_type = 'D'
-),
-last_update_a AS (
-	SELECT DISTINCT ON (uuid_attached_row)
-		id_history_action, id_table_location, uuid_attached_row, operation_type, operation_date
-	FROM gn_commons.t_history_actions
-	WHERE operation_type = 'U'
-	ORDER BY uuid_attached_row, operation_date DESC
-)
-SELECT
-	i.id_table_location, i.uuid_attached_row, i.operation_date as meta_create_date, i.id_creator, u.operation_date as meta_update_date,
-	d.operation_date as meta_delete_date
-FROM insert_a i
-LEFT OUTER JOIN last_update_a u ON i.uuid_attached_row = u.uuid_attached_row
-LEFT OUTER JOIN delete_a d ON i.uuid_attached_row = d.uuid_attached_row;

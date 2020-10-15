@@ -11,6 +11,8 @@ DEFAULT_EXPORT_COLUMNS = [
     "observer",
     "altMin",
     "altMax",
+    "profMin",
+    "profMax"
     "denbrMin",
     "denbrMax",
     "EchanPreuv",
@@ -20,10 +22,11 @@ DEFAULT_EXPORT_COLUMNS = [
     "obsDescr",
     "ObjGeoTyp",
     "methGrp",
-    "obsMeth",
+    "obsTech",
     "ocEtatBio",
     "ocStatBio",
     "ocNat",
+    "occComportement",
     "preuveOui",
     "validStat",
     "difNivPrec",
@@ -41,10 +44,15 @@ DEFAULT_EXPORT_COLUMNS = [
     "cdNom",
     "cdRef",
     "nomCite",
-    "vTAXREF",
+    "codeHab",
+    "nomHab",
+    "cdHab",
+    "natObjGeo",
     "wkt",
     "lastAction",
     "validateur",
+    "precision",
+    "nomLieu",
 ]
 
 

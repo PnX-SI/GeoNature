@@ -49,7 +49,7 @@ export class DataFormService {
     );
   }
 
-  getNomenclatures(codesNomenclatureType) {
+  getNomenclatures(codesNomenclatureType: Array<string>) {
     let params: HttpParams = new HttpParams();
     params = params.set('orderby', 'label_default');
     codesNomenclatureType.forEach(code => {
@@ -95,10 +95,20 @@ export class DataFormService {
         }
       }
     }
-
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/datasets`, {
       params: queryString
     });
+  }
+
+  /**
+   * Get dataset list for metadata modules
+   */
+  getAfAndDatasetListMetadata() {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/af_datasets_metadata`, {});
+  }
+
+  getImports(id_dataset) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/import/by_dataset/${id_dataset}`);
   }
 
   getObservers(idMenu) {
@@ -194,6 +204,10 @@ export class DataFormService {
     return this._http.post(`${AppConfig.API_ENDPOINT}/geo/areas`, geojson);
   }
 
+  getAltitudes(geojson) {
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/geo/altitude`, geojson);
+  }
+
   getFormatedGeoIntersection(geojson, idType?) {
     if (idType) {
       geojson['id_type'] = idType;
@@ -245,6 +259,13 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/geo/areas`, { params: params });
   }
 
+  getValidationHistory(uuid_attached_row) {
+    return this._http.get<any>(
+      `${AppConfig.API_ENDPOINT}/gn_commons/history/${uuid_attached_row}`,
+      {}
+    );
+  }
+
   /**
    *
    * @param params: dict of paramters
@@ -268,8 +289,27 @@ export class DataFormService {
     });
   }
 
+  /**
+   * Return all AF with cruved for map-list
+   */
+  getAcquisitionFrameworksMetadata(orderByName = true) {
+    let queryString: HttpParams = new HttpParams();
+    if (orderByName) {
+      queryString = this.addOrderBy(queryString, 'acquisition_framework_name');
+    }
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks_metadata`, {
+      params: queryString
+    });
+  }
+
   getAcquisitionFramework(id_af) {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}`);
+  }
+
+  getAcquisitionFrameworkDetails(id_af) {
+    return this._http.get<any>(
+      `${AppConfig.API_ENDPOINT}/meta/acquisition_framework_details/${id_af}`
+    );
   }
 
   getOrganisms(orderByName = true) {
@@ -314,6 +354,38 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/dataset/${id}`);
   }
 
+  getDatasetDetails(id) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/dataset_details/${id}`);
+  }
+
+  // getTaxaDistribution(id_dataset) {
+  //   return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/dataset_taxa_distribution/${id_dataset}`);
+  // }
+  getGeojsonData(id) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/geojson_data/${id}`);
+  }
+
+  getRepartitionTaxons(id_dataset) {
+    return this._http.get<any>(
+      `${AppConfig.API_ENDPOINT}/synthese/repartition_taxons_dataset/${id_dataset}`
+    );
+  }
+
+  uploadCanvas(img: any) {
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/meta/upload_canvas`, img);
+  }
+  getTaxaDistribution(taxa_rank, params?: ParamsDict) {
+    let queryString = new HttpParams();
+    queryString = queryString.set('taxa_rank', taxa_rank);
+    for (let key in params) {
+      queryString = queryString.set(key, params[key]);
+    }
+
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/taxa_distribution`, {
+      params: queryString
+    });
+  }
+
   getModulesList(exclude: Array<string>) {
     let queryString: HttpParams = new HttpParams();
     exclude.forEach(mod_code => {
@@ -332,7 +404,7 @@ export class DataFormService {
     let queryString: HttpParams = new HttpParams();
     if (modules_code) {
       modules_code.forEach(mod_code => {
-        queryString = queryString.append('module_code', mod_code);
+        queryString = queryString.set('module_code', mod_code);
       });
     }
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/permissions/cruved`, {
@@ -342,6 +414,29 @@ export class DataFormService {
 
   addOrderBy(httpParam: HttpParams, order_column): HttpParams {
     return httpParam.append('orderby', order_column);
+  }
+
+  getDataList(api: string, application: string, params = {}) {
+    let queryString: HttpParams = new HttpParams();
+    for (const key of Object.keys(params)) {
+      const param = params[key];
+      if (Array.isArray(param)) {
+        for (const p of param) {
+          queryString = queryString.append(key, p);
+        }
+      } else {
+        queryString = queryString.append(key, param);
+      }
+    }
+
+    const url =
+      application === 'GeoNature'
+        ? `${AppConfig.API_ENDPOINT}/${api}`
+        : application === 'TaxHub'
+        ? `${AppConfig.API_TAXHUB}/${api}`
+        : api;
+
+    return this._http.get<any>(url, { params: queryString });
   }
 
   subscribeAndDownload(
@@ -381,5 +476,22 @@ export class DataFormService {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  }
+
+  //--------------------------------------------------------------------------------------
+  //----------------Geofit additional code data-form.service.ts
+  //liste des lieux
+  getPlaces() {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/places`);
+  }
+
+  // Supprimer lieu
+  deletePlace(idPlace) {
+    return this._http.delete<any>(`${AppConfig.API_ENDPOINT}/gn_commons/place/${idPlace}`);
+  }
+
+  //Ajouter lieu
+  addPlace(place) {
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/gn_commons/place`, place);
   }
 }

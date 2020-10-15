@@ -21,24 +21,21 @@ describe('DataFormService', () => {
     service = TestBed.get(DataFormService);
   });
 
-  it(
-    'should return an Observable<Array<Taxon>>',
-    async(() => {
-      const dummyTaxon = {
-        id_liste: 1001,
-        search_name: 'Ablette = <i>Alburnus alburnus</i> (Linnaeus, 1758)',
-        nom_valide: 'Alburnus alburnus (Linnaeus, 1758)',
-        group2_inpn: 'Poissons',
-        regne: 'Animalia',
-        lb_nom: 'Alburnus alburnus',
-        cd_nom: 67111
-      };
-      service.searchTaxonomy('ablette', '1001').subscribe(taxons => {
-        expect(taxons.length).toBe(1);
-        expect(taxons[0]).toEqual(dummyTaxon);
-      });
-    })
-  );
+  it('should return an Observable<Array<Taxon>>', async(() => {
+    const dummyTaxon = {
+      id_liste: 1001,
+      search_name: 'Ablette = <i>Alburnus alburnus</i> (Linnaeus, 1758)',
+      nom_valide: 'Alburnus alburnus (Linnaeus, 1758)',
+      group2_inpn: 'Poissons',
+      regne: 'Animalia',
+      lb_nom: 'Alburnus alburnus',
+      cd_nom: 67111
+    };
+    service.searchTaxonomy('ablette', '1001').subscribe(taxons => {
+      expect(taxons.length).toBe(1);
+      expect(taxons[0]).toEqual(dummyTaxon);
+    });
+  }));
 
   // afterEach(() => {
   //   httpMock.verify();

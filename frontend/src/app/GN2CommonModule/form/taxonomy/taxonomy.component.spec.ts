@@ -13,7 +13,6 @@
 // import { TranslateStore,  } from '@ngx-translate/core/src/translate.store';
 // import { NgbTypeaheadConfig } from '@ng-bootstrap/ng-bootstrap/typeahead/typeahead-config';
 
-
 // class FakeToasterService {
 //   constructor() {}
 // }
@@ -29,7 +28,6 @@
 // class FakeNgbTypeahead{
 //   constructor(){}
 // }
-
 
 // describe('TaxonomyComponent', () => {
 //   let component: TaxonomyComponent;

@@ -31,6 +31,7 @@ export class MapListService {
   public page = new Page();
   public genericFilterInput = new FormControl();
   public isLoading = false;
+  public zoomOnLayer = false;
   filterableColumns: Array<any>;
   availableColumns: Array<any>;
   displayColumns: Array<any>;

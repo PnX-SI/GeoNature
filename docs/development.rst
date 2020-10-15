@@ -80,23 +80,141 @@ BDD
   - Zipper le fichier SQL et le mettre sur le serveur http://geonature.fr/data
   - Adapter le script ``install_db.sh`` pour récupérer le nouveau fichier zippé
 
-Pratiques
----------
+Pratiques et règles de developpement
+------------------------------------
+
+Afin de partager des règles communes de développement et faciliter l'intergration de 
+nouveau code, veuillez lire les recommandation et bonnes pratiques recommandées pour contribuer
+au projet GeoNature.
+
+Git:
+""""
 
 - Ne jamais faire de commit dans la branche ``master`` mais dans la branche
-  ``develop`` ou idéalement dans une branche dédiée à la fonctionnalité
-- Faire des pull request vers la branche ``develop`` regroupant plusieurs
-  commits depuis la branche de sa fonctionnalité pour plus de lisibilité,
-  éviter les conflits et déclencher les tests automatiques Travis avant
-  d'intégrer la branche ``develop``
+  ``develop`` ou idéalement dans une branche dédiée à la fonctionnalité (feature branch)
+- Faire des pull request vers la branche ``develop``
 - Faire des ``git pull`` avant chaque développement et avant chaque commit
 - Les messages de commits font référence à ticket ou le ferme (``ref #12``
   ou ``fixes #23``)
+- Les messages des commits sont en anglais (dans le mesure du possible)
+
+
+Backend
+"""""""
+
+- Une fonction ou classe doit contenir une docstring en français. Les doctrings doivent suivre le modèle
+NumPy/SciPy (voir https://numpydoc.readthedocs.io/en/latest/format.html et https://realpython.com/documenting-python-code/#numpyscipy-docstrings-example
+- Les commentaires dans le codes doivent être en anglais (ne pas s'empecher de mettre un commentaire en français sur une partie du code complexe !)
+- Installer les requirements-dev (`pip install -r backend/requirements-dev.txt`) qui contiennent 
+une série d'outils indispensable au développement dans GeoNature.
+- Utiliser *blake* comme formateur de texte et activer l'autoformatage dans son éditeur de texte
+ (Tuto pour VsCode: https://medium.com/@marcobelo/setting-up-python-black-on-visual-studio-code-5318eba4cd00)
+- Utiliser *pylint* comme formatteur de code 
+- Respecter la norme PEP8 (assurée par les deux outils précédents)
+- La longueur maximale pour une ligne de code est 100 caractères. Pour VsCode copier ces lignes 
+le fichier settings.json:
+- Respecter le snake case
+
+::
+
+    "python.formatting.blackArgs": [
+      "--line-length",
+      "100"
+    ]
+- Utiliser des doubles quotes pour les chaines de charactères.
+
+
+BDD 
+"""
+
+- Le noms des tables est préfixé par un "t" pour une table de contenu, de "bib" pour les tables de
+"dictionnaires" et de "cor" pour les tables de correspondances
+- Les schémas du coeur de GeoNature sont préfixés de "gn" 
+- Les schéma des protocoles ou modules GeoNature sont préfixés de "pr"
+- Chaque schéma de BDD dispose de son propre fichier SQL
+- Les scripts SQL sont ordonnées en section dans l'ordre suivant: (voir https://github.com/PnX-SI/GeoNature/blob/master/data/core/synthese.sql)
+  - Fonctions
+  - Tables 
+  - Clés primaires 
+  - Clés étrangères 
+  - Contraintes 
+  - Triggers 
+  - Données nécessaire au fonctionnement du schéma
+- Les scripts de données sont écrit dans des fichiers à part
+- Ne rien écrire dans le schéma public
+- Ne pas répeter le nom des tables dans les noms des colonnes (exception faite des colonnes "id)
+
+Typescript
+""""""""""
+
+- Documenter les fonctions et classes grâce au JSDoc en français (https://jsdoc.app/)
+- Les commentaires dans le codes doivent être en anglais (ne pas s'empecher de mettre un commentaire en français sur une partie du code complexe !)
+- Les messages renvoyés aux utilisateurs sont en français 
+- Installer les outils de devéloppement: `npm install --only=dev`
+- Utiliser *prettier* comme formateur de texte et activer l'autoformatage dans son éditeur de texte
+(VsCode dispose d'une extension Prettier : https://github.com/prettier/prettier-vscode)
+- Utiliser tslint comme linter
+- La longueur maximale pour une ligne de code est 100 caractères.
+
+Angular
+"""""""
+
+- Suivre les recommandations définit par le styleguide Angular: https://angular.io/guide/styleguide
+C'est une ressources très fournie en cas de question sur les pratiques de développement (principe de séparation des principes, organisation
+des services et des composants)
+- On privilegira l'utilisation des reactive forms pour la construction des formulaires (https://angular.io/guide/reactive-forms).
+Ce sont des formulaires piloté par le code, ce qui facilite la lisibilité et le contrôle de ceux-ci.
+- Pour l'ensemble des composants cartographiques et des formulaires
+  (taxonomie, nomenclatures...), il est conseillé d'utiliser les composants
+  présents dans le module 'GN2CommonModule'.
+ 
+HTML 
+""""
+- La longueur maximale pour une ligne de code est 100 caractères.
+- Lorsqu'il y a plus d'un attribut sur une balise, revenir à la ligne et aligner les attributs:
+
+::
+
+      <button 
+        mat-raised-button
+        color="primary"
+        class="btn-action hard-shadow uppercase ml-3"
+        data-toggle="collapse"
+        data-target="#collapseAvance"
+      >
+        Filtrer
+      </button>
+
+- VsCode fournit un formatter de HTML par défaut (Dans les option de VsCode, tapez "wrap attributes"
+et sélectionner "force-expand-multiline"
+
+Style et ergonomie
+""""""""""""""""""
+
+- Bouttons:
+  On utilise les buttons d'Angular materials (https://material.angular.io/components/button/overview).
+  - mat-raised-button pour les boutons contenant du texte 
+  - mat-fab ou mat-mini-fab pour les boutons d'actions avec seulement une icone 
+- Couleur des boutons:
+  - Action : primary 
+  - Validation: vert (n'existant pas dans material: utiliser la classe `button-success`)
+  - Suppression: warn 
+  - Navigation: basic 
+- Librairie d'icones 
+  - Utiliser la librairie material icons fournie avec le projet : https://material.io/resources/icons/?style=baseline
+   `<mat-icon> add </mat-icon>` 
+- Formulaire 
+  - Nous utilisons pour l'instant le style des formulaires Bootstrap (https://getbootstrap.com/docs/4.0/components/forms/).
+  Une reflexion de migration vers les formulaires materials est en cours.
+- Système de grille et responsive
+  - Utiliser le système de grille de bootstrap pour assurer le responsive design sur l'application.
+  On ne vise pas l'utilisation sur mobile, mais à minima sur ordinateur portable de petite taille.
+
 
 Développer et installer un gn_module
 ------------------------------------
 
-GeoNature a été conçu pour fonctionner en briques modulaires.
+GeoNature a été conçu pour fonctionner en briques modulaires. 
 
 Chaque protocole, répondant à une question scientifique, est amené à avoir
 son propre module GeoNature comportant son modèle de base de données (dans un
@@ -256,14 +374,6 @@ Frontend
 
     <img src="external_assets/<gn_module_validation>/afb.png">
 
-- Installer le linter ``tslint`` dans son éditeur de texte
-  (TODO: définir un style à utiliser)
-
-
-Backend
-*******
-
-- Respecter la norme PEP8
 
 
 Installer un gn_module
@@ -839,57 +949,18 @@ Outils d'aide à la qualité du code
 ----------------------------------
 
 Des outils d'amélioration du code pour les développeurs peuvent être utilisés :
-flake8, pylint, mypy, pytest, coverage.
+flake8, pylint, pytest, coverage.
 
 La documentation peut être générée avec Sphinx.
 
 Les fichiers de configuration de ces outils se trouvent à la racine du projet :
 
-* .flake8
 * .pylint
-* .mypy
-* .pytest
-* .coverage
 
 Un fichier ``.editorconfig`` permettant de définir le comportement de
 votre éditeur de code est également disponible à la racine du projet.
 
-Installation des outils
-"""""""""""""""""""""""
 
-::
-
-        pip3 install --user pipenv
-        pipenv install --dev
-
-Note: si la commande pipenv ne fonctionne pas,
-ajoutez les lignes suivantes à .profile::
-
-        if [ -d "$HOME/.local/bin" ] ; then
-        PATH="$HOME/.local/bin:$PATH"
-        fi
-
-La documentation de ces outils est disponible en ligne :
-
-* http://flake8.pycqa.org/en/latest/
-* https://www.pylint.org/ - Doc : https://pylint.readthedocs.io/en/latest/
-* https://mypy.readthedocs.io/en/latest/
-* https://docs.pytest.org/en/latest/contents.html
-* https://coverage.readthedocs.io/en/coverage-4.4.2/
-* http://www.sphinx-doc.org/en/stable/ -  Doc : http://www.sphinx-doc.org/en/stable/contents.html
-
-Usage
-"""""
-
-Pour installer ces outils, l'environnement de développement doit être
-activé. A minima, pour travailler sur la documentation,
-lancez la commande suivante::
-
-        pip install -r backend/requirements-dev.txt
-
-Pour utiliser ces outils il faut se placer dans le virtualenv::
-
-        pipenv shell
 
 
 Sphinx
@@ -902,17 +973,6 @@ et modifier les fichiers .rst::
 
         cd docs
         make html
-
-
-Flake8
-""""""
-
-Flake8 inspecte le code et pointe tous les écarts à la norme PEP8.
-Il recherche également toutes les erreurs syntaxiques et stylistiques
-courantes.::
-
-        cd backend
-        flake8
 
 
 Pylint
@@ -936,11 +996,6 @@ typescript::
         ng lint
 
 
-Mypy
-""""
-
-Mypy vérifie les erreurs de typage.
-Mypy est utilisé pour l'éditeur de texte en tant que linter.
 
 Pytest
 """"""

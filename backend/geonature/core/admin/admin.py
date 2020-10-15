@@ -23,10 +23,7 @@ class MyHomeView(AdminIndexView):
                 if v.category not in already_added_categie:
                     category["module_name"] = v.category
                     category["module_views"].append(
-                        {
-                            "url": current_app.config["API_ENDPOINT"] + v.url,
-                            "name": v.name,
-                        }
+                        {"url": current_app.config["API_ENDPOINT"] + v.url, "name": v.name,}
                     )
                     already_added_categie.append(v.category)
                 else:
@@ -66,9 +63,6 @@ flask_admin.add_view(
 
 flask_admin.add_view(
     TNomenclaturesAdminConfig(
-        TNomenclaturesAdmin,
-        DB.session,
-        name="Items de nomenclatures",
-        category="Nomenclatures",
+        TNomenclaturesAdmin, DB.session, name="Items de nomenclatures", category="Nomenclatures",
     )
 )

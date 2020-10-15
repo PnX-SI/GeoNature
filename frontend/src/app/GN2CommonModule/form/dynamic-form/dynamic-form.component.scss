@@ -1,0 +1,33 @@
+::ng-deep .mat-icon.small-icon,
+::ng-deep .small-icon {
+  font-size: 18px;
+  color: darkgrey;
+}
+
+.bool-checkbox {
+  margin-bottom: 10px;
+  margin-right: 10px;
+}
+
+::ng-deep .form-tooltip {
+  font-size: 1em;
+}
+::ng-deep .mat-form-field .ng-invalid,
+::ng-deep .mat-form-field.ng-invalid {
+  border: 0px !important;
+}
+
+//
+// factorisation patchs présents dans media et monitoring
+//
+
+// eviter les trop grand eccarts verticaux
+
+// :host /deep/ .padding-sm {
+//   padding-right: 0px !important;
+//   padding-left: 0px !important;
+// }
+
+
+// éviter les doubles bandes rouges
+

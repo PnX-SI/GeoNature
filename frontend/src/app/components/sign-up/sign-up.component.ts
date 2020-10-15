@@ -42,7 +42,7 @@ export class SignUpComponent implements OnInit {
       identifiant: ['', Validators.required],
       email: [
         '',
-        [Validators.pattern('^[a-z0-9._-]+@[a-z0-9._-]{2,}.[a-z]{2,4}$'), Validators.required]
+        [Validators.pattern('^[+a-z0-9._-]+@[a-z0-9._-]{2,}.[a-z]{2,4}$'), Validators.required]
       ],
       password: ['', [Validators.required]],
       password_confirmation: ['', [Validators.required]],

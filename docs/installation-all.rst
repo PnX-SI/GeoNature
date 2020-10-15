@@ -6,7 +6,7 @@ Prérequis
 
 - Ressources minimum serveur :
 
-Un serveur Linux (Debian 9 ou 10 ou Ubuntu 16 ou 18 **architecture 64-bits**) disposant d’au moins de 4 Go RAM et de 20 Go d’espace disque.
+Un serveur Linux (Debian 10 ou Ubuntu 18 **architecture 64-bits**) disposant d’au moins de 4 Go RAM et de 20 Go d’espace disque.
 
 Le script global d'installation de GeoNature va aussi se charger d'installer les dépendances nécessaires : 
 
@@ -53,7 +53,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
 * Mettre à jour les sources-list (Debian uniquement) : 
 
-A l'installation de l'OS, les sources-list (liste des sources à partir desquelles sont téléchargés les paquets) ne sont pas toujours correctes.
+A l'installation de l'OS, les sources-list (liste des sources à partir desquelles sont téléchargés les paquets) ne sont pas toujours adaptés. Pour Debian 10, les sources-list par défaut sont compatibles et il n'est donc pas nécessaire de les compléter.
 
 ::
         
@@ -61,24 +61,19 @@ A l'installation de l'OS, les sources-list (liste des sources à partir desquell
 
 Coller la liste des dépôts suivants :
 
-Pour Debian 9 :
+Pour Debian 10 :
 
 ::
 
-        deb http://security.debian.org/debian-security stretch/updates main contrib non-free
-        deb-src http://security.debian.org/debian-security stretch/updates main contrib non-free
-        deb http://deb.debian.org/debian/ stretch-updates main contrib non-free
-        deb-src http://deb.debian.org/debian/ stretch-updates main contrib non-free
-        deb http://deb.debian.org/debian stretch main contrib non-free
-        deb-src http://deb.debian.org/debian stretch main contrib non-free
+        deb http://deb.debian.org/debian buster main contrib non-free
+        deb-src http://deb.debian.org/debian buster main contrib non-free
 
-Pour Debian 8 :
+        deb http://deb.debian.org/debian-security/ buster/updates main contrib non-free
+        deb-src http://deb.debian.org/debian-security/ buster/updates main contrib non-free
 
-::
+        deb http://deb.debian.org/debian buster-updates main contrib non-free
+        deb-src http://deb.debian.org/debian buster-updates main contrib non-free
 
-        deb http://deb.debian.org/debian/ jessie main contrib non-free
-        deb http://security.debian.org/ jessie/updates main contrib non-free
-        deb http://deb.debian.org/debian/ jessie-updates main contrib non-free
 
 * Mettre à jour de la liste des dépôts Linux :
 
@@ -114,7 +109,7 @@ Pour Debian 8 :
 
 * Configuration de la locale du serveur
 
-Certains serveurs sont livrés sans "locale" (langue par défaut). Pour l'installation de GeoNature, il est necessaire de bien configurer la locale. Si la commande ``locale`` renvoie ceci:
+Certains serveurs sont livrés sans "locale" (langue par défaut). Pour l'installation de GeoNature, il est nécessaire de bien configurer la locale. Si la commande ``locale`` renvoie ceci :
 
 ::
 
@@ -134,11 +129,11 @@ Certains serveurs sont livrés sans "locale" (langue par défaut). Pour l'instal
     LC_IDENTIFICATION="fr_FR.UTF-8"
     LC_ALL=fr_FR.UTF-8
 
-vous pouvez alors passer cette étape de configuration des locale.
+Vous pouvez alors passer cette étape de configuration des locales.
 
-Exécuter la commande ``dpkg-reconfigure locales``. Une fenêtre s'affiche dans votre console. Dans la liste déroulante, sélectionnez ``fr_FR.UTF-8 UTF-8`` avec ``Espace``, puis cliquez sur OK. Une 2ème fenêtre s'affiche avec une liste de locale activées (``fr_FR.UTF-8`` doit être présent dans la liste), confirmez votre choix, en cliquant sur OK, puis attendez que la locale s'installe.
+Sinon exécuter la commande ``dpkg-reconfigure locales``. Une fenêtre s'affiche dans votre console. Dans la liste déroulante, sélectionnez ``fr_FR.UTF-8 UTF-8`` avec ``Espace``, puis cliquez sur OK. Une 2ème fenêtre s'affiche avec une liste de locale activées (``fr_FR.UTF-8`` doit être présent dans la liste), confirmez votre choix, en cliquant sur OK, puis attendez que la locale s'installe.
 
-Passer alors sur l'utilisateur ``geonatureadmin``: ``su geonatureadmin`` et executer ensuite ces commandes:
+Passer alors sur l'utilisateur ``geonatureadmin`` avec la commande ``su geonatureadmin`` et exécuter ensuite ces commandes :
 
 ::
 
@@ -147,21 +142,23 @@ Passer alors sur l'utilisateur ``geonatureadmin``: ``su geonatureadmin`` et exec
     export LANG=fr_FR.UTF-8
 
 
-Pour la suite de la documentation et pour l'administration courante de GeoNature, **on n'utilisera plus jamais l'utilisateur** ``root`` (utiliser `geonatureadmin` dans l'exemple de la documentation. ``su geonatureadmin`` pour change d'utilisateur). Si besoin d'exécuter des commandes avec des droits d'administrateur, on les précède de ``sudo``.
+Pour la suite de la documentation et pour l'administration courante de GeoNature, **on n'utilisera plus jamais l'utilisateur** ``root`` (utiliser ``geonatureadmin`` dans l'exemple de la documentation; ``su geonatureadmin`` pour change d'utilisateur). Si besoin d'exécuter des commandes avec des droits d'administrateur, on les précède de ``sudo``.
 
-Il est d'ailleurs possible de renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec ``root``.
+Il est d'ailleurs possible de renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec l'utilisateur ``root``.
 
 Voir https://docs.ovh.com/fr/vps/conseils-securisation-vps/ pour plus d'informations sur le sécurisation du serveur (port SSH, désactiver root, fail2ban, pare-feu, sauvegarde...).
 
 Il est aussi important de configurer l'accès au serveur en HTTPS plutôt qu'en HTTP pour crypter le contenu des échanges entre le navigateur et le serveur (https://docs.ovh.com/fr/hosting/les-certificats-ssl-sur-les-hebergements-web/).
 
-* Récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_). Ces scripts installent les applications GeoNature, TaxHub et UsersHub (en option) ainsi que leurs bases de données (uniquement les schémas du coeur) :
+* Se placer à la racine du ``home`` de l'utilisateur puis récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_). Ces scripts installent les applications GeoNature, TaxHub et UsersHub (en option) ainsi que leurs bases de données (uniquement les schémas du coeur) :
  
 ::
-    
+
+    cd ~
     wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.ini
     wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.sh
-	
+
+*Attention* : l'installation globale fonctionne uniquement si les scripts sont placés à la racine du ``home`` de l'utilisateur courant.	
 	
 * Configurez votre installation en adaptant le fichier ``install_all.ini`` :
  
@@ -245,17 +242,17 @@ Lancez ensuite la commande ``geonature install_gn_module <mon_chemin_absolu_vers
 
 Le premier paramètre est l'emplacement absolu du module sur votre serveur et le deuxième est le chemin derrière lequel on accédera au module dans le navigateur.
 
-Exemple pour un module de validation :
+Exemple pour un module Import :
 
 ::
 
-    geonature install_gn_module /home/gn_module_validation validation
+    geonature install_gn_module /home/gn_module_import import
 
-Le module sera disponible à l'adresse ``http://mon-geonature.fr/geonature/validation``
+Le module sera disponible à l'adresse ``http://mon-geonature.fr/geonature/#/validation``
 
-L'API du module sera disponible à l'adresse ``http://mon-geonature.fr/api/geonature/validation``
+L'API du module sera disponible à l'adresse ``http://mon-geonature.fr/api/import``
 
-Cette commande éxecute les actions suivantes :
+Cette commande exécute les actions suivantes :
 
 - Vérification de la conformité de la structure du module (présence des fichiers et dossiers obligatoires)
 - Intégration du blueprint du module dans l'API de GeoNature

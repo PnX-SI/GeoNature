@@ -32,10 +32,10 @@ MANDATORY_COLUMNS = [
 # CONFIG MAP-LIST
 DEFAULT_LIST_COLUMN = [
     {"prop": "id_nomenclature_valid_status", "name": "", "max_width": 40},
-    {"prop": "nom_vern_or_lb_nom", "name": "Taxon", "max_width": 150},
-    {"prop": "date_min", "name": "Date obs.", "max_width": 100},
-    {"prop": "dataset_name", "name": "Jeu de donnees", "max_width": 200},
-    {"prop": "observers", "name": "Observateur", "max_width": 200},
+    {"prop": "nom_vern_or_lb_nom", "name": "Taxon", "min_width": 250},
+    {"prop": "date_min", "name": "Date obs.", "min_width": 100},
+    {"prop": "dataset_name", "name": "Jeu de donnees", "min_width": 100},
+    {"prop": "observers", "name": "Observateur", "min_width": 100},
 ]
 
 # cd_nomenclature_valid_status used for validation module only use for color style

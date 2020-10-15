@@ -101,8 +101,7 @@ def filter_taxonomy(model, q, filters):
     cd_ref_childs = []
     if "cd_ref_parent" in filters:
         # find all taxon child from cd_ref parent
-        cd_ref_parent_int = list(
-            map(lambda x: int(x), filters.pop("cd_ref_parent")))
+        cd_ref_parent_int = list(map(lambda x: int(x), filters.pop("cd_ref_parent")))
         sql = text(
             """SELECT DISTINCT cd_ref FROM taxonomie.find_all_taxons_children(:id_parent)"""
         )
@@ -125,8 +124,7 @@ def filter_taxonomy(model, q, filters):
         q = q.filter(model.cd_nom.in_(sub_query_synonym))
 
     if "taxonomy_group2_inpn" in filters:
-        q = q.filter(Taxref.group2_inpn.in_(
-            filters.pop("taxonomy_group2_inpn")))
+        q = q.filter(Taxref.group2_inpn.in_(filters.pop("taxonomy_group2_inpn")))
 
     if "taxonomy_id_hab" in filters:
         q = q.filter(Taxref.id_habitat.in_(filters.pop("taxonomy_id_hab")))
@@ -153,8 +151,7 @@ def filter_taxonomy(model, q, filters):
             q = q.join(
                 aliased_cor_taxon_attr[taxhub_id_attr],
                 and_(
-                    aliased_cor_taxon_attr[taxhub_id_attr].id_attribut
-                    == taxhub_id_attr,
+                    aliased_cor_taxon_attr[taxhub_id_attr].id_attribut == taxhub_id_attr,
                     aliased_cor_taxon_attr[taxhub_id_attr].cd_ref
                     == func.taxonomie.find_cdref(model.cd_nom),
                 ),
@@ -184,8 +181,7 @@ def filter_query_all_filters(model, q, filters, user):
     q = filter_query_with_cruved(model, q, user)
 
     if "observers" in filters:
-        q = q.filter(model.observers.ilike(
-            "%" + filters.pop("observers")[0] + "%"))
+        q = q.filter(model.observers.ilike("%" + filters.pop("observers")[0] + "%"))
 
     if "id_organism" in filters:
         id_datasets = (
@@ -201,20 +197,18 @@ def filter_query_all_filters(model, q, filters, user):
 
     if "date_max" in filters:
         # set the date_max at 23h59 because a hour can be set in timestamp
-        date_max = datetime.datetime.strptime(
-            filters.pop("date_max")[0], '%Y-%m-%d')
+        date_max = datetime.datetime.strptime(filters.pop("date_max")[0], "%Y-%m-%d")
         date_max = date_max.replace(hour=23, minute=59, second=59)
         q = q.filter(model.date_max <= date_max)
 
     if "id_acquisition_framework" in filters:
         q = q.join(
             TAcquisitionFramework,
-            model.id_acquisition_framework
-            == TAcquisitionFramework.id_acquisition_framework,
+            model.id_acquisition_framework == TAcquisitionFramework.id_acquisition_framework,
         )
         q = q.filter(
             TAcquisitionFramework.id_acquisition_framework.in_(
-                filters.pop("id_acquisition_frameworks")
+                filters.pop("id_acquisition_framework")
             )
         )
 
@@ -259,9 +253,7 @@ def filter_query_all_filters(model, q, filters, user):
     for colname, value in filters.items():
         if colname.startswith("area"):
             if not join_on_cor_area:
-                q = q.join(
-                    CorAreaSynthese, CorAreaSynthese.id_synthese == model.id_synthese
-                )
+                q = q.join(CorAreaSynthese, CorAreaSynthese.id_synthese == model.id_synthese)
             q = q.filter(CorAreaSynthese.id_area.in_(value))
             join_on_cor_area = True
         else:

@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { Router } from '@angular/router';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
-import { CruvedStoreService } from '../../services/cruved-store.service';
+import { CruvedStoreService } from '../../GN2CommonModule/service/cruved-store.service';
 
 @Component({
   selector: 'pnx-af-list',

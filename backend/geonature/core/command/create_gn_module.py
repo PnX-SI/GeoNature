@@ -19,7 +19,11 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from geonature.utils.env import DB, DEFAULT_CONFIG_FILE
 
-from geonature.utils.command import get_app_for_cmd, build_geonature_front, tsconfig_app_templating
+from geonature.utils.command import (
+    get_app_for_cmd,
+    build_geonature_front,
+    tsconfig_app_templating,
+)
 from geonature.core.command.main import main
 from geonature.utils.gn_module_import import (
     check_gn_module_file,
@@ -37,8 +41,7 @@ from geonature.utils.gn_module_import import (
     frontend_routes_templating,
     MSG_OK,
 )
-from geonature.utils.errors import ConfigError, GNModuleInstallError, GeoNatureError
-from geonature.utils.utilstoml import load_and_validate_toml
+from geonature.utils.errors import GNModuleInstallError, GeoNatureError
 
 
 log = logging.getLogger(__name__)
@@ -72,11 +75,7 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
             module_code = check_manifest(module_path)
             try:
                 # Vérification que le module n'est pas déjà activé
-                mod = (
-                    DB.session.query(TModules)
-                    .filter(TModules.module_code == module_code)
-                    .one()
-                )
+                DB.session.query(TModules).filter(TModules.module_code == module_code).one()
 
             except NoResultFound:
                 # Si le module n'est pas déjà dans la table gn_commons.t_modules, on l'installe
@@ -95,14 +94,10 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                 copy_in_external_mods(module_path, module_code.lower())
 
                 # creation du lien symbolique des assets externes
-                enable_frontend = create_external_assets_symlink(
-                    module_path, module_code.lower()
-                )
+                enable_frontend = create_external_assets_symlink(module_path, module_code.lower())
 
                 # ajout du module dans la table gn_commons.t_modules
-                add_application_db(
-                    app, module_code, url, enable_frontend, enable_backend
-                )
+                add_application_db(app, module_code, url, enable_frontend, enable_backend)
 
                 # Installation du module
                 run_install_gn_module(app, module_path)
@@ -116,17 +111,14 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                     # generation du routing du frontend
                     frontend_routes_templating(app)
                     # generation du fichier de configuration du frontend
-                    create_module_config(
-                        app, module_code.lower(), module_path, build=False
-                    )
+                    create_module_config(app, module_code.lower(), module_path, build=False)
 
                 if build and enable_frontend:
                     # Rebuild the frontend
                     build_geonature_front(rebuild_sass=True)
 
                 # finally restart geonature backend via supervisor
-                subprocess.call(
-                    ["sudo", "supervisorctl", "restart", "geonature2"])
+                subprocess.call(["sudo", "supervisorctl", "restart", "geonature2"])
 
             else:
                 raise GeoNatureError(
@@ -167,8 +159,7 @@ def run_install_gn_module(app, module_path):
         if ex.errno == 8:
             raise GNModuleInstallError(
                 (
-                    "Unable to execute '{}'. One possible reason is "
-                    "the lack of shebang line."
+                    "Unable to execute '{}'. One possible reason is " "the lack of shebang line."
                 ).format(gn_file)
             )
 
@@ -176,8 +167,7 @@ def run_install_gn_module(app, module_path):
             # TODO: try to make it executable
             # TODO: change exception type
             # TODO: make error message
-            raise GNModuleInstallError(
-                "File {} not excecutable".format(str(gn_file)))
+            raise GNModuleInstallError("File {} not excecutable".format(str(gn_file)))
 
     #   APP
     gn_file = Path(module_path) / "install_gn_module.py"
@@ -198,10 +188,10 @@ def activate_gn_module(module_code, frontend, backend):
         Active un module gn installé
 
         Exemples:
-
-        - geonature activate_gn_module occtax --frontend=false (Active que le backend du module occtax)
-
-        - geonature activate_gn_module occtax --backend=false (Active que le frontend du module occtax)
+        # Active que le backend du module occtax
+        - geonature activate_gn_module occtax --frontend=false 
+        # Active que le frontend du module occtax)
+        - geonature activate_gn_module occtax --backend=false 
 
     """
     # TODO vérifier que l'utilisateur est root ou du groupe geonature
@@ -218,10 +208,10 @@ def deactivate_gn_module(module_code, frontend, backend):
 
 
         Exemples:
-
-        - geonature deactivate_gn_module occtax --frontend=false (Désactive que le backend du module occtax)
-
-        - geonature deactivate_gn_module occtax --backend=false (Désctive que le frontend du module occtax)
+        # Désactive que le backend du module occtax
+        - geonature deactivate_gn_module occtax --frontend=false 
+        # Désactive que le frontend du module occtax
+        - geonature deactivate_gn_module occtax --backend=false (
 
     """
     # TODO vérifier que l'utilisateur est root ou du groupe geonature
@@ -247,16 +237,3 @@ def update_module_configuration(module_code, build, prod):
         subprocess.call(["sudo", "supervisorctl", "reload"])
     app = get_app_for_cmd(with_external_mods=False)
     create_module_config(app, module_code.lower(), build=build)
-
-
-@main.command()
-@click.argument('module_path')
-def test(module_path):
-    import json
-    with open(module_path) as f:
-        package_json = json.load(f)
-        dependencies = package_json['dependencies']
-        print(dependencies)
-        for lib, version in dependencies.items():
-            print(lib)
-            print(version)

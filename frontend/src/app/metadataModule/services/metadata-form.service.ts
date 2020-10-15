@@ -2,12 +2,11 @@ import { Injectable } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 
-
 @Injectable()
 export class MetadataFormService {
   public formValid = true;
 
-  constructor(private _fb: FormBuilder, private _toaster: ToastrService) { }
+  constructor(private _fb: FormBuilder, private _toaster: ToastrService) {}
 
   generateCorDatasetActorForm(): FormGroup {
     return this._fb.group({
@@ -31,10 +30,9 @@ export class MetadataFormService {
       this.formValid = false;
       this._toaster.error(
         'Veuillez spécifier un organisme ou une personne pour chaque acteur du JDD',
-        ''/** TODO,
+        '' /** TODO,
         { positionClass: 'toast-top-center' }*/
       );
     }
   }
-
 }

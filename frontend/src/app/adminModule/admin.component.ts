@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppConfig } from '@geonature_config/app.config';
-import { CruvedStoreService } from '../services/cruved-store.service';
+import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.service';
 
 @Component({
   selector: 'pnx-admin',

@@ -23,10 +23,13 @@
   "Columns": "Colonnes",
   "Cancel": "Annuler",
   "Delete": "Supprimer",
+  "Yes": "Oui",
+  "No": "Non",
   "NotAllowed": "Vous n'avez pas les droits pour effectuer cette action",
   "LoginError": "Identifiant ou mot de passe incorrect",
   "Downloading": "Téléchargement en cours",
   "DownloadData": "Télécharger les données",
+  "Download": "Télécharger",
   "DownloadOverflow": "Le nombre d'élément est trop important pour être téléchargé, veuillez affiner votre recherche ou contacter votre administrateur",
   "AllItems": "Tous",
   "Map": {
@@ -77,14 +80,13 @@
     "HourFormat": "hh:mm",
     "MinAltitude": "Alt min",
     "MaxAltitude": "Alt max",
+    "MinDepth": "Profondeur min",
+    "MaxDepth": "Profondeur max",
     "Municipality": "Commune",
     "Municipalities": "Commune(s)",
     "Dataset": "Jeu de données",
     "Comment": "Commentaire",
     "SaveReleve": "Enregistrer le relevé",
-    "DateMaxError": "La date de début ne peut pas être supérieure à la date de fin",
-    "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
-    "HourMaxError": "L'heure de début ne peut pas être supérieure à l'heure de fin",
     "SavedTaxon": "Taxon(s) enregistré(s)",
     "InfoGeo": "Informations géographiques du relevé",
     "Edit": "Editer le relevé",
@@ -94,12 +96,27 @@
     "Validate": "Valider le relevé",
     "UnValidate": "Invalider le relevé",
     "ObsTechnique": "Technique d'observation",
+    "TechCollectCampanule": "Technique de collecte du relevé (Campanule)",
     "AddTaxonOnReleve": "Ajouter un taxon sur ce relevé",
     "CancelTaxon": "Annuler la saisie du taxon",
     "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire",
     "GroupType": "Type de regroupement",
+    "GroupMethod": "Méthode de regroupement",
     "DoesNotExist": "Ce relevé n'existe pas",
-    "StayOnFormInterface": "Enchainer les relevés sans retourner à l'interface carte/liste"
+    "StayOnFormInterface": "Enchainer les relevés sans retourner à l'interface carte/liste",
+    "GeoObjectNature": "Nature de l'objet géographique",
+    "PlaceName": "Nom du lieu",
+    "Precision": "Precision",
+    "Infos": {
+      "ReleveAdded": "Relevé ajouté",
+      "ReleveModified": "Relevé modifié"
+    },
+    "Errors": {
+      "DateMaxError": "La date de début ne peut pas être postérieure à la date de fin",
+      "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
+      "DepthError": "La profondeur max ne peut être inférieure à la profondeur min",
+      "HourMaxError": "L'heure de début ne peut pas être supérieure à l'heure de fin"
+    }
   },
   "Taxon": {
     "ObservedTaxon": "Taxon(s) observé(s)",
@@ -111,9 +128,10 @@
     "Priority": "Prioritaire",
     "Optional": "Facultatif",
     "Taxon": "Taxon",
+    "NomCite": "Nom cité",
     "Taxons": "Taxons",
     "TaxonName": "Nom du taxon",
-    "ObsMethod": "Méthode d'observation",
+    "ObsTech": "Technique d'observation",
     "Advanced": "Avancé",
     "BiologicalCondition": "Etat biologique",
     "BiologicalStatus": "Statut biologique",
@@ -133,10 +151,23 @@
     "Blurring": "Floutage",
     "CurrentlyEditing": "Veuillez enregistrer le taxon en cours d'édition avant d'en éditer un nouveau",
     "NoTaxonFound": "Aucun taxon trouvé pour cette recherche",
-    "ExistProofValidation": "Ce champs doit débuter par 'http://', 'https://', ou 'ftp://'",
-    "NoExistProofError": "Si 'preuve d'existence = Oui', un des deux champs de preuve doit être rempli",
-    "ExistproofError": "Les preuves d'existence ne peuvent être remplies seulement si 'preuve d'existence = Oui'",
-    "StatusSource": "Statut source"
+    "StatusSource": "Statut source",
+    "DeleteDone": "Taxon supprimé",
+    "CreateDone": "Taxon ajouté au relevé",
+    "UpdateDone": "Taxon mis à jour",
+    "OccBehaviour": "Comportement",
+    "Errors": {
+      "ExistProofValidation": "Ce champs doit débuter par 'http://', 'https://', ou 'ftp://'",
+      "NoExistProofError": "Si 'preuve d'existence = Oui', un des deux champs de preuve doit être rempli",
+      "ExistproofError": "Les preuves d'existence ne peuvent être remplies seulement si 'preuve d'existence = Oui'",
+      "NomCiteRequiredError": "Veuillez renseigner un taxon",
+      "CdNomRequiredError": "Veuillez selectionner taxon présent dans le référentiel Taxref",
+      "DeterminerRequiredError": "Veuillez indiquer un déterminateur",
+      "DeterminationMethodRequiredError": "Veuillez indiquer la méthode de détermination",
+      "TechObsRequiredError": "Veuillez indiquer la technique d'observation",
+      "BiologicalConditionRequiredError": "Veuillez indiquer l'état biologique",
+      "CountingRequiredError": "Veuillez renseigner un dénombrement"
+    }
   },
   "Counting": {
     "Counting": "Dénombrement",
@@ -151,7 +182,12 @@
     "CountingType": "Type de dénombrement",
     "Numbers": "Effectif",
     "Total": "Total",
-    "CountError": "Le dénombrement maximum ne peut pas être inférieur au dénombrement minimum"
+    "Errors": {
+      "CountError": "Le dénombrement maximum ne peut pas être inférieur au dénombrement minimum",
+      "LifeStageRequiredError": "Veuillez indiquer le stade de vie",
+      "SexRequiredError": "Veuillez indiquer le sexe",
+      "CountingObjectRequiredError": "Veuillez indiquer le type de dénombrement"
+    }
   },
   "Geo": {
     "Municipalities": "Communes"
@@ -171,5 +207,23 @@
   "ForgotPasswordOrLogin": "Identifiant ou mot de passe oublié ?",
   "AutoAccountEmailConfirmation": "Un email vient de vous être envoyé pour activer votre compte",
   "AdminAccountEmailConfirmation": "Votre demande de création de compte a bien été prise en compte, elle va être évaluée par un administrateur",
-  "PasswordAndLoginRecovery": "Un email vient de vous être envoyé pour récupérer votre identifiant et/ou renouveler votre mot de passe"
+  "PasswordAndLoginRecovery": "Un email vient de vous être envoyé pour récupérer votre identifiant et/ou renouveler votre mot de passe",
+  "Media": {
+    "Medias": "Médias",
+    "Media": "Média",
+    "add": "Ajouter un Média",
+    "edit": "Editer le média",
+    "valid": "Valider le média",
+    "delete": "Supprimer le média",
+    "undo": "Rétablir le média",
+    "loading": "Chargement du média en cours",
+    "link": "Afficher le media",
+    "diaporama": "Afficher le media",
+    "title": "Titre",
+    "description": "Description",
+    "author": "Auteur",
+    "type": "Type de média",
+    "next": "Voir le média suivant",
+    "previous": "Voir le média précédent"
+  }
 }
