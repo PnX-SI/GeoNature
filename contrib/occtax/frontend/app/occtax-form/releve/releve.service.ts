@@ -65,8 +65,7 @@ export class OcctaxFormReleveService {
       let datasetId = params['jdd'];
       if (datasetId){
         this.datasetId = datasetId;
-      }
-      //console.log(jdd); // Print the parameter to the console. 
+      } 
     });
     return {
       id_digitiser: this.occtaxFormService.currentUser.id_role,
@@ -149,7 +148,6 @@ export class OcctaxFormReleveService {
   }
   
   onDatasetChanged(idDataset) {
-    //this.octaxForm.createComponent();
     let hasDynamicForm = false;
     if (ModuleConfig.add_fields[idDataset]){
       if (ModuleConfig.add_fields[idDataset]['releve']){
@@ -177,8 +175,6 @@ export class OcctaxFormReleveService {
         //Mystère du disabled, il faut le mettre 2 fois dans un timeout pour que le formulaire se désactive
         setTimeout(() => this.propertiesForm.disable(), 100);
         setTimeout(() => this.propertiesForm.disable(), 500);
-        //this.occtaxFormService.disabled = true;
-        //this.propertiesForm.disable();
       }
     }else{
       if (this.propertiesForm.get('additional_fields')){
@@ -305,8 +301,6 @@ export class OcctaxFormReleveService {
         if (releve.additional_fields){
           for (const key of Object.keys(releve.additional_fields)){
             releve[key] =  releve.additional_fields[key];
-            //this.dynamicFormGroup.value[key] = releve.additional_fields[key];
-            //console.log(key + "->" + releve.additional_fields[key]);
             this.dynamicFormGroup.addControl(key, new FormControl(releve.additional_fields[key]));
           }
         }
@@ -397,16 +391,11 @@ export class OcctaxFormReleveService {
     value.properties.observers = value.properties.observers.map(
       (observer) => observer.id_role
     );
-    /*value.properties.id_dataset = value.properties.id_dataset.map(
-      (dataset) => dataset.id_dataset
-    );*/
-    //value.champs_addi = this.occtaxFormService.componentRef.instance.formArray.value;
     return value;
   }
 
   submitReleve() {
     this.waiting = true;
-    //this.releveForm.value['additional_fields'] = this.componentRef.instance.formArray.value;
 
     if (this.occtaxFormService.id_releve_occtax.getValue()) {
       //update

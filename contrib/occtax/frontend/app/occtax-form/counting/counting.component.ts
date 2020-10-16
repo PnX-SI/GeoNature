@@ -35,8 +35,9 @@ export class OcctaxFormCountingComponent {
 
   ngOnInit() {
     this.occtaxFormCountingService.dynamicContainerCounting = this.containerCounting;
+    
+    //Ajout du composant dynamique
     if (this.occtaxFormOccurrenceService.idDataset){
-      
       let hasDynamicForm = false;
       if (ModuleConfig.add_fields[this.occtaxFormOccurrenceService.idDataset]){
         if (ModuleConfig.add_fields[this.occtaxFormOccurrenceService.idDataset]['counting']){

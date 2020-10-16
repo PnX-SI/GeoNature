@@ -19,7 +19,7 @@ import { AppConfig } from "@geonature_config/app.config";
 })
 export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   @ViewChild("dynamiqueContainer", { read: ViewContainerRef }) public container: ViewContainerRef;
-  //componentRef: ComponentRef<any>;
+
   public occtaxConfig: any;
   public geojson: GeoJSON;
   public userDatasets: Array<any>;
@@ -36,15 +36,6 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     private _dataService: DataFormService
   ) {
     this.occtaxConfig = ModuleConfig;
-    /*MET Si on passe jdd en paramètre, alors on rempli le champs dataset avec la valeur et on rempli la valeur par défault*/
-    /*this.route.queryParams.subscribe(params => {
-      let datasetId = params['jdd'];
-      if (datasetId){
-        this.occtaxFormReleveService.datasetId = datasetId
-        this.occtaxFormReleveService.releveForm.get("properties").setControl("id_dataset", new FormControl (datasetId, Validators.required ));
-      }
-      //console.log(jdd); // Print the parameter to the console. 
-    });*/
   }
 
   ngOnInit() {

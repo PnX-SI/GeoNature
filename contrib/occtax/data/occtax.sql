@@ -279,6 +279,7 @@ CREATE TABLE t_releves_occtax (
     geom_4326 public.geometry(Geometry,4326),
     id_nomenclature_geo_object_nature integer,
     precision integer,
+    additional_fields jsonb,
     CONSTRAINT enforce_dims_geom_4326 CHECK ((public.st_ndims(geom_4326) = 2)),
     CONSTRAINT enforce_dims_geom_local CHECK ((public.st_ndims(geom_local) = 2)),
     CONSTRAINT enforce_srid_geom_4326 CHECK ((public.st_srid(geom_4326) = 4326)),
@@ -319,7 +320,8 @@ CREATE TABLE t_occurrences_occtax (
     sample_number_proof text,
     digital_proof text,
     non_digital_proof text,
-    comment character varying
+    comment character varying,
+    additional_fields jsonb
 );
 COMMENT ON COLUMN t_occurrences_occtax.id_nomenclature_bio_condition IS 'Correspondance nomenclature INPN = etat_bio';
 COMMENT ON COLUMN t_occurrences_occtax.id_nomenclature_bio_status IS 'Correspondance nomenclature INPN = statut_bio';
@@ -351,7 +353,8 @@ CREATE TABLE cor_counting_occtax (
     id_nomenclature_obj_count integer NOT NULL,
     id_nomenclature_type_count integer,
     count_min integer,
-    count_max integer
+    count_max integer,
+    additional_fields jsonb
 );
 COMMENT ON COLUMN cor_counting_occtax.id_nomenclature_life_stage IS 'Correspondance nomenclature INPN = stade_vie (10)';
 COMMENT ON COLUMN cor_counting_occtax.id_nomenclature_sex IS 'Correspondance nomenclature INPN = sexe (9)';

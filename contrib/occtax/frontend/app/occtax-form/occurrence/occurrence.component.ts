@@ -18,7 +18,6 @@ import { OcctaxTaxaListService } from "../taxa-list/taxa-list.service";
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
 import { MatDialog } from "@angular/material";
 import { Observable } from "rxjs";
-import { dynamicFormReleveComponent } from "../dynamique-form-releve/dynamic-form-releve.component";
 
 
 @Component({
@@ -96,43 +95,10 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
         (display: boolean) => (this.displayProofFromElements = display)
       );
 
-      this.idTaxonList = this.occtaxConfig.id_taxon_list;
-      //this.idTaxonList = 5;
+    this.idTaxonList = this.occtaxConfig.id_taxon_list;
     this.initTaxrefSearch();
-    /*var occtaxData = this.fs.occtaxData.getValue();
-    this.fs.currentIdDataset;*/
     this.occtaxFormOccurrenceService.dynamicContainerOccurence = this.containerOccurence;
   }
-  
-
-  /** Get occtax data and patch value to the form */
-  /*private get releveValues(): Observable<any> {
-    return this.fs.occtaxData.pipe(
-      filter((data) => data && data.releve.properties),
-      map((data) => {
-        const releve = data.releve.properties;
-
-        // OCCTAX - CHAMPS ADDITIONNELS DEB 
-        if(this.dynamicContainerOccurence != undefined){
-          this.dynamicContainerOccurence.clear(); 
-          const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(dynamicFormReleveComponent);
-          this.componentRefOccurence = this.dynamicContainerOccurence.createComponent(factory);
-          
-          //MET Champs additionnel
-          this.dynamicFormGroup = this.fb.group({});
-      
-          this.componentRefOccurence.instance.formConfigReleveDataSet = ModuleConfig.add_fields[data.releve.properties.dataset.id_dataset]['occurrence'];
-          this.componentRefOccurence.instance.formArray = this.dynamicFormGroup;
-
-          if(ModuleConfig.add_fields[data.releve.properties.dataset.id_dataset]['id_taxon_list']){
-            this.idTaxonList = ModuleConfig.add_fields[data.releve.properties.dataset.id_dataset]['id_taxon_list'];
-          }
-        }
-        // OCCTAX - CHAMPS ADDITIONNELS FIN 
-        return releve;
-      })
-    );
-  }*/
 
   ngAfterViewInit() {
     //a chaque reinitialisation du formulaire on place le focus sur la zone de saisie du taxon
@@ -150,19 +116,6 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
       "blur",
       (event) => (this.taxonFormFocus = false)
     );
-
-    /* MET Champs additionnel, récupérer le dataset */
-    /*this.fs.editionMode
-      .pipe(
-        switchMap((editionMode: boolean) => {
-          //Le switch permet, selon si édition ou creation, de récuperer les valeur par defaut ou celle de l'API
-          return editionMode ? this.releveValues : [];
-        })
-      )
-      .subscribe((values) => this.data = values); //filter((editionMode: boolean) => !editionMode))
-*/
-    //console.log(this.data);
-    //const data = this.releveValues;
   }
 
   setExistProofData(data) {
@@ -200,8 +153,6 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe((values: any) => {
-        // console.log(this.occtaxFormOccurrenceService.occurrence.getValue());
-        //console.log(this._occtaxTaxaListService.occurrences$.getValue());
 
         const currentOccForm = this.occtaxFormOccurrenceService.occurrence.getValue()
         // Si édition d'une occurrence, on ne vérifie pas si déjà dans la liste

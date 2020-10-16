@@ -46,52 +46,15 @@ export class OcctaxFormCountingService {
       medias: [[], this.mediaService.mediasValidator()],
     });
 
-    /*if(this.dynamicContainerCounting != undefined){
-      this.dynamicContainerCounting.clear(); 
-      const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(dynamicFormReleveComponent);
-      this.componentRefCounting = this.dynamicContainerCounting.createComponent(factory);
-      
-      this.dynamicFormGroup = this.fb.group({});
-
-      this.componentRefCounting.instance.formConfigReleveDataSet = ModuleConfig.add_fields[1]['counting'];
-      this.componentRefCounting.instance.formArray = this.dynamicFormGroup;
-      
-      form.addControl('additional_fields', this.dynamicFormGroup);
-    }*/
-    /*if (!patchWithDefaultValues){
-      if(this.dynamicContainerCounting != undefined){
-        this.dynamicContainerCounting.clear(); 
-        const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(dynamicFormReleveComponent);
-        this.componentRefCounting = this.dynamicContainerCounting.createComponent(factory);
-        
-        this.dynamicFormGroup = this.fb.group({});
-    
-        this.componentRefCounting.instance.formConfigReleveDataSet = ModuleConfig.add_fields[1]['counting'];
-        this.componentRefCounting.instance.formArray = this.dynamicFormGroup;
-      }
-    }*/
-
+    //Ajout du composant dynamique
     if (this.componentRefCounting){
       //Copy du formGroupDynamique
-
-      //TODO => impossible de récupérer les validators required -> on peut plus valider
-      //const formGroup = new FormGroup({}, this.componentRefCounting.instance.formArray.validator, this.componentRefCounting.instance.formArray.asyncValidator);
       const formGroup = new FormGroup({});
       const controls = this.componentRefCounting.instance.formArray.controls;
       Object.keys(controls).forEach(key => {
-        //formGroup.addControl(key, new FormControl(null, controls[key].validator, controls[key].asyncValidator));
         formGroup.addControl(key, new FormControl(null));
       })
-      //formGroup.reset();
-
-      /*const formGroupDynamique = new FormGroup({});
-      for (let key of Object.keys(this.componentRefCounting.instance.formArray.value)) {
-        const control = this.componentRefCounting.instance.formArray.controls[key];
-        const copyControl = new FormControl({...control.value});
-      }*/
-      //let formGroupDynamique = this.componentRefCounting.instance.formArray;
       form.addControl('additional_fields', formGroup);
-      //formGroup.reset();
     }
 
     form.setValidators([this.countingValidator]);
@@ -99,9 +62,6 @@ export class OcctaxFormCountingService {
     if (patchWithDefaultValues) {
       
       this.defaultValues.subscribe((DATA) => form.patchValue(DATA));
-      /*if(form.get('additional_fields')){
-        form.get('additional_fields').reset();
-      }*/
       form
         .get("count_min")
         .valueChanges.pipe(
@@ -109,19 +69,6 @@ export class OcctaxFormCountingService {
         )
         .subscribe((count_min) => form.get("count_max").setValue(count_min));
     }
-    /*MET Champs additionnel*/
-    
-    /*
-    if(this.dynamicContainerCounting != undefined){
-      this.dynamicContainerCounting.clear(); 
-      const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(dynamicFormReleveComponent);
-      this.componentRefCounting = this.dynamicContainerCounting.createComponent(factory);
-      
-      this.dynamicFormGroup = this.fb.group({});
-  
-      this.componentRefCounting.instance.formConfigReleveDataSet = ModuleConfig.add_fields[1]['occurrence'];
-      this.componentRefCounting.instance.formArray = this.dynamicFormGroup;
-    }*/
 
     return form;
   }
