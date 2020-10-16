@@ -131,6 +131,9 @@ class CorCountingOccurrence(DB.Model):
     count_min = DB.Column(DB.Integer)
     count_max = DB.Column(DB.Integer)
 
+    #additionnal fields dans occtax MET 14/10/2020
+    additional_fields = DB.Column(JSONB)
+
     readonly_fields = [
         "id_counting_occtax",
         "unique_id_sinp_occtax",

@@ -1,8 +1,8 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit, Renderer2, ElementRef, ViewChild } from "@angular/core";
 import { combineLatest } from "rxjs";
 import { filter, map, tap } from "rxjs/operators";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { MatDialog } from "@angular/material";
+import { MatDialog, MatTabChangeEvent  } from "@angular/material";
 import { TranslateService } from "@ngx-translate/core";
 import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormOccurrenceService } from "../occurrence/occurrence.service";
@@ -18,7 +18,11 @@ import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/
   styleUrls: ["./taxa-list.component.scss"],
 })
 export class OcctaxFormTaxaListComponent implements OnInit {
+  @ViewChild('tabOccurence') tabOccurence: ElementRef;
+
   public ModuleConfig = ModuleConfig;
+  public alreadyActivatedCountingTab : Array<any> = [];
+
   constructor(
     public ngbModal: NgbModal,
     public dialog: MatDialog,
@@ -27,7 +31,9 @@ export class OcctaxFormTaxaListComponent implements OnInit {
     private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     public occtaxTaxaListService: OcctaxTaxaListService,
     public ms: MediaService,
-  ) {}
+    private renderer: Renderer2
+  ) {
+  }
 
   ngOnInit() {
     combineLatest(
@@ -69,6 +75,22 @@ export class OcctaxFormTaxaListComponent implements OnInit {
       )
       .subscribe((occurrences) => {
         this.occtaxTaxaListService.occurrences$.next(occurrences);
+        setTimeout(() => {
+          this.occtaxTaxaListService.occurrences$.value.map((occurence) => {
+            let hasDynamicFormOccurence = false;
+            if (ModuleConfig.add_fields[this.occtaxFormOccurrenceService.idDataset]){
+              if (ModuleConfig.add_fields[this.occtaxFormOccurrenceService.idDataset]['occurrence']){
+                hasDynamicFormOccurence = true;
+              }
+            }
+            if(hasDynamicFormOccurence){
+              let containerOccurence = document.getElementById('tabOccurence' + occurence.id_occurrence_occtax);
+              ModuleConfig.add_fields[this.occtaxFormOccurrenceService.idDataset]['occurrence'].map((widget) => {
+                this.createVisualizeElement(containerOccurence, widget, occurence);
+              });
+            }
+          })
+        }, 200);
       });
   }
 
@@ -132,5 +154,112 @@ export class OcctaxFormTaxaListComponent implements OnInit {
 
     this.editOccurrence(occ_in_progress.data);
     this.occtaxTaxaListService.removeOccurrenceInProgress(occ_in_progress.id);
+  }
+
+  //Met Affichage des champs additionnel dans l'onglet Dénombrement. L'élément est chargé seulement lorsque l'on clique dessus => Angular Material
+  tabChanged(tabChangeEvent: MatTabChangeEvent): void {
+    
+    //Petit bidouillage avec le label pour récupérer l'id_occurrence_occtax
+    let infoTab = tabChangeEvent.tab.textLabel.split('#');
+    if(infoTab[0] == 'counting'){
+      this.occtaxTaxaListService.occurrences$.value.map((occurence) => {
+        if(occurence.id_occurrence_occtax == infoTab[1]){
+          //On ne créer pas les composants 2 fois, merci
+          if (this.alreadyActivatedCountingTab[occurence.id_occurrence_occtax]){return}
+          this.alreadyActivatedCountingTab[occurence.id_occurrence_occtax] = true;
+          //Si le counting possède un formDynamique, on se lance dans la créa
+          let hasDynamicFormCounting = false;
+          if (ModuleConfig.add_fields[this.occtaxFormOccurrenceService.idDataset]){
+            if (ModuleConfig.add_fields[this.occtaxFormOccurrenceService.idDataset]['counting']){
+              hasDynamicFormCounting = true;
+            }
+          }
+          if(hasDynamicFormCounting){
+            //Pour chaque counting, on créer les composants associés
+            occurence.cor_counting_occtax.map((counting) => {
+              //On récupère la div mère, en l'occurrence, la div list-values du mat-tab
+              let containerCounting = document.getElementById('tabCounting' + counting.id_counting_occtax);
+              //Pour chaque widget, on ajoute son libelle et sa valeur
+              ModuleConfig.add_fields[this.occtaxFormOccurrenceService.idDataset]['counting'].map((widget) => {
+                this.createVisualizeElement(containerCounting, widget, counting);
+              });
+            });
+          }
+        }
+      })
+    }
+  }
+
+
+  createVisualizeElement(container : HTMLElement, widget, values) {
+    if(values.additional_fields[widget.attribut_name]){
+      //Bien sur petite exception pour le type médias
+      if (widget.type_widget == 'medias'){
+        //pour tous les médias présent par type de widget medias
+        values.additional_fields[widget.attribut_name].forEach((media, i) => {
+          //On duplique la première div pour récupérer le style qui va bien
+          let newDiv = container.firstChild.cloneNode(true);
+          //On réécrit son contenu
+          newDiv.attributes;
+          newDiv.innerHTML = widget.attribut_label + ' (' + (i+1) + '/' + values.additional_fields[widget.attribut_name].length + ') ';
+          
+          //On lui ajoute la balise a
+          let ahref = document.createElement("a");
+          ahref.href = this.ms.href(media);
+          ahref.target = 'blank';
+          ahref.innerHTML = media.title_fr;
+          newDiv.appendChild(ahref);
+
+          //On lui ajoute la balise i
+          let info = document.createElement("i");
+          info.innerHTML = " (" + this.ms.typeMedia(media) + (media.author? ", " + media.author : "") + ") ";
+          newDiv.appendChild(info);
+
+          //On lui ajoute la balise span
+          if(media.description_fr){
+            let span = document.createElement("span");
+            span.innerHTML = media.description_fr;
+            newDiv.appendChild(span);
+          }
+
+          //On lui ajoute la miniature
+          let visuMedia = document.createElement("div");
+          //Il faut récupérer l'attribut ng pour la div afin qu'il utilise bien le css
+          visuMedia.className = "flex-container";
+          if(newDiv.attributes[0]){
+            visuMedia.setAttribute(newDiv.attributes[0].name, '');
+          }
+          switch(this.ms.typeMedia(media)){
+            case 'PDF':
+              visuMedia.innerHTML = "<embed src='" + media.safeUrl + "' width='100%' height='200' type='application/pdf' />";
+              //let visualizer = 
+              break;
+            case 'Vidéo Youtube':
+            case 'Vidéo Dailymotion':
+            case 'Vidéo Vimeo':
+              visuMedia.innerHTML = "<iframe width='100%' height='200' src='" + media.safeEmbedUrl + "' allowfullscreen ></iframe>";
+              break;
+            case 'Vidéo (fichier)':
+              visuMedia.innerHTML = "<video class='media-center' controls src='" + this.ms.href(media) + "'></video>";
+              break;
+            case 'Audio':
+              visuMedia.innerHTML = "<audio class='media-center' controls src='" + this.ms.href(media) + "'></audio>";
+              break;
+            case 'Photo':
+              visuMedia.innerHTML = "<img class='media-center' src='" + this.ms.href(media, 200) + "' alt='" + media.title_fr + "'/>";
+              break;
+          }
+          
+          newDiv.appendChild(visuMedia);
+          container.appendChild(newDiv);
+        })
+      }else{
+        //si ce n'est pas un média, on affiche son libellé (configuration) et sa valeur (bdd)
+        let newDiv = container.firstChild.cloneNode(true);
+        newDiv.getElementsByClassName('label')[0].innerHTML = widget.attribut_label + ' :';
+        newDiv.getElementsByClassName('value')[0].innerHTML = values.additional_fields[widget.attribut_name];
+        container.appendChild(newDiv);
+      }
+    }
   }
 }

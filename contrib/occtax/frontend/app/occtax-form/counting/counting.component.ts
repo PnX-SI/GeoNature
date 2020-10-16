@@ -34,18 +34,33 @@ export class OcctaxFormCountingComponent {
   ) { }
 
   ngOnInit() {
-    /* Initialisation du formulaire dynamique */
-    this.occtaxFormOccurrenceService.idDataset;
     this.occtaxFormCountingService.dynamicContainerCounting = this.containerCounting;
+    if (this.occtaxFormOccurrenceService.idDataset){
+      
+      let hasDynamicForm = false;
+      if (ModuleConfig.add_fields[this.occtaxFormOccurrenceService.idDataset]){
+        if (ModuleConfig.add_fields[this.occtaxFormOccurrenceService.idDataset]['counting']){
+          hasDynamicForm = true;
+        }
+      }
+      if(hasDynamicForm){
+        // Initialisation du formulaire dynamique 
+        this.occtaxFormCountingService.dynamicContainerCounting.clear(); 
+        const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(dynamicFormReleveComponent);
+        this.occtaxFormCountingService.componentRefCounting = this.occtaxFormCountingService.dynamicContainerCounting.createComponent(factory);
+        
+        this.dynamicFormGroup = this.fb.group({});
+        
+        for (const key of Object.keys(this.countingForm.get('additional_fields').value)){
+          this.dynamicFormGroup.value[key] =  this.countingForm.get('additional_fields').value[key];
+        }
 
-    this.occtaxFormCountingService.dynamicContainerCounting.clear(); 
-    const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(dynamicFormReleveComponent);
-    this.occtaxFormCountingService.componentRefCounting = this.occtaxFormCountingService.dynamicContainerCounting.createComponent(factory);
-    
-    this.dynamicFormGroup = this.fb.group({});
-
-    this.occtaxFormCountingService.componentRefCounting.instance.formConfigReleveDataSet = ModuleConfig.add_fields[1]['counting'];
-    this.occtaxFormCountingService.componentRefCounting.instance.formArray = this.dynamicFormGroup;
+        this.occtaxFormCountingService.componentRefCounting.instance.formConfigReleveDataSet = ModuleConfig.add_fields[this.occtaxFormOccurrenceService.idDataset]['counting'];
+        this.occtaxFormCountingService.componentRefCounting.instance.formArray = this.dynamicFormGroup;
+        
+        this.countingForm.setControl('additional_fields', this.dynamicFormGroup); 
+      }
+    }
   }
 
   taxref() {

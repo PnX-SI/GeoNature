@@ -425,7 +425,7 @@ def releveHandler(request, *, releve, info_role):
     # Modification de la requete geojson en releve
     json_req = request.get_json()
     json_req["properties"]["geom_4326"] = json_req["geometry"]
-    json_req["properties"]["additional_fields"] = json_req["additional_fields"]
+    #json_req["properties"]["additional_fields"] = json_req["additional_fields"]
     print(json_req)
     # chargement des données POST et merge avec relevé initial
     releve, errors = releveSchema.load(json_req["properties"], instance=releve)

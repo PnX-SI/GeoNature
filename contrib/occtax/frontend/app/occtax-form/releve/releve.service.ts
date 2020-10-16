@@ -47,7 +47,8 @@ export class OcctaxFormReleveService {
     private occtaxFormMapService: OcctaxFormMapService,
     private occtaxDataService: OcctaxDataService,
     private occtaxParamS: OcctaxFormParamService,
-    private _resolver: ComponentFactoryResolver
+    private _resolver: ComponentFactoryResolver,
+    private _route: ActivatedRoute,
   ) {
     this.initPropertiesForm();
     this.setObservables();
@@ -59,17 +60,26 @@ export class OcctaxFormReleveService {
   }
 
   private get initialValues() {
+    /*MET Si on passe jdd en paramètre, alors on rempli le champs dataset avec la valeur et on rempli la valeur par défault*/
+    this._route.queryParams.subscribe(params => {
+      let datasetId = params['jdd'];
+      if (datasetId){
+        this.datasetId = datasetId;
+      }
+      //console.log(jdd); // Print the parameter to the console. 
+    });
     return {
       id_digitiser: this.occtaxFormService.currentUser.id_role,
       meta_device_entry: "web",
       observers: [this.occtaxFormService.currentUser],
+      id_dataset: this.datasetId
     };
   }
 
   initPropertiesForm(): void {
     //FORM
     this.propertiesForm = this.fb.group({
-      id_dataset: [null, this.datasetId ? Validators.required : null] ,
+      id_dataset: [null, Validators.required] ,
       id_digitiser: null,
       date_min: [null, Validators.required],
       date_max: [null, Validators.required],
@@ -136,21 +146,48 @@ export class OcctaxFormReleveService {
 
     //on desactive le form, il sera réactivé si la geom est ok
     this.propertiesForm.disable();
-    this.occtaxParamS.parameters.releve.id_dataset = 1;
   }
   
   onDatasetChanged(idDataset) {
-    this.currentIdDataset = idDataset;
     //this.octaxForm.createComponent();
-    this.dynamicContainer.clear(); 
-    const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(dynamicFormReleveComponent);
-    this.componentRef = this.dynamicContainer.createComponent(factory);
+    let hasDynamicForm = false;
+    if (ModuleConfig.add_fields[idDataset]){
+      if (ModuleConfig.add_fields[idDataset]['releve']){
+        hasDynamicForm = true;
+      }
+    }
 
-    this.componentRef.instance.formConfigReleveDataSet = ModuleConfig.add_fields[this.currentIdDataset]['releve'];
-    this.componentRef.instance.formArray = this.dynamicFormGroup;
-    /*this.dynamicDatasetForm = this._fb.group({
-      test: null,
-    });*/
+    if (hasDynamicForm){
+      let disableForm = this.propertiesForm.disabled ? true : false;
+      
+      this.dynamicContainer.clear(); 
+      const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(dynamicFormReleveComponent);
+      this.componentRef = this.dynamicContainer.createComponent(factory);
+
+      if(!this.dynamicFormGroup){
+        this.dynamicFormGroup = this.fb.group({});
+      }
+      this.componentRef.instance.formConfigReleveDataSet = ModuleConfig.add_fields[idDataset]['releve'];
+      this.componentRef.instance.formArray = this.dynamicFormGroup;
+      this.propertiesForm.setControl('additional_fields', this.dynamicFormGroup);
+      
+      //dans le cas d'une création avec le jdd passé en paramètre, l'ajout du control dynamique désactive le formulaire
+      //Donc on force la réactivation 
+      if(disableForm){
+        //Mystère du disabled, il faut le mettre 2 fois dans un timeout pour que le formulaire se désactive
+        setTimeout(() => this.propertiesForm.disable(), 100);
+        setTimeout(() => this.propertiesForm.disable(), 500);
+        //this.occtaxFormService.disabled = true;
+        //this.propertiesForm.disable();
+      }
+    }else{
+      if (this.propertiesForm.get('additional_fields')){
+        this.propertiesForm.removeControl('additional_fields')
+      }
+      if ( this.dynamicContainer){
+        this.dynamicContainer.clear(); 
+      }
+    }
   }
 
   /**
@@ -268,10 +305,12 @@ export class OcctaxFormReleveService {
         if (releve.additional_fields){
           for (const key of Object.keys(releve.additional_fields)){
             releve[key] =  releve.additional_fields[key];
-            this.dynamicFormGroup.value[key] = releve.additional_fields[key];
+            //this.dynamicFormGroup.value[key] = releve.additional_fields[key];
             //console.log(key + "->" + releve.additional_fields[key]);
+            this.dynamicFormGroup.addControl(key, new FormControl(releve.additional_fields[key]));
           }
         }
+        this.propertiesForm.setControl('additional_fields', this.dynamicFormGroup);
 
         return releve;
       })
@@ -367,7 +406,7 @@ export class OcctaxFormReleveService {
 
   submitReleve() {
     this.waiting = true;
-    this.releveForm.value['additional_fields'] = this.componentRef.instance.formArray.value;
+    //this.releveForm.value['additional_fields'] = this.componentRef.instance.formArray.value;
 
     if (this.occtaxFormService.id_releve_occtax.getValue()) {
       //update

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, OnDestroy, ViewContainerRef, ViewChild } from "@angular/core";
-import { FormGroup, FormControl } from "@angular/forms";
+import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { GeoJSON } from "leaflet";
 import { map, filter } from "rxjs/operators";
@@ -37,13 +37,14 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   ) {
     this.occtaxConfig = ModuleConfig;
     /*MET Si on passe jdd en paramètre, alors on rempli le champs dataset avec la valeur et on rempli la valeur par défault*/
-    this.route.queryParams.subscribe(params => {
+    /*this.route.queryParams.subscribe(params => {
       let datasetId = params['jdd'];
       if (datasetId){
         this.occtaxFormReleveService.datasetId = datasetId
+        this.occtaxFormReleveService.releveForm.get("properties").setControl("id_dataset", new FormControl (datasetId, Validators.required ));
       }
       //console.log(jdd); // Print the parameter to the console. 
-    });
+    });*/
   }
 
   ngOnInit() {

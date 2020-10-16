@@ -7,6 +7,7 @@ import {
   ValidatorFn,
   ValidationErrors,
   AbstractControl,
+  FormControl
 } from "@angular/forms";
 import { BehaviorSubject, Observable, of, combineLatest } from "rxjs";
 import { map, filter, switchMap, tap, pairwise, retry, delay } from "rxjs/operators";
@@ -106,24 +107,42 @@ export class OcctaxFormOccurrenceService {
       )
       .subscribe((values) => {
         /* Permet de mettre les valeurs dans les champs additionnels */
-        if (this.dynamicFormGroup != undefined){
-          
-          if (values.additional_fields){
-            for (const key of Object.keys(values.additional_fields)){
+        /*if (this.dynamicFormGroup != undefined){
+          //On réinitialise le dynamicFormGroup
+          this.dynamicFormGroup = this.fb.group({});
+          const formConfig = this.componentRefOccurence.instance.formConfigReleveDataSet;*/
+          //if (values.additional_fields){
+            /*for (const key of Object.keys(values.additional_fields)){
               values[key] =  values.additional_fields[key];
               this.dynamicFormGroup.value[key] = values.additional_fields[key];
               //console.log(key + "->" + releve.additional_fields[key]);
               //this.form.value[key] = values.additional_fields[key];
-            }
-          }
-          const formConfig = this.componentRefOccurence.instance.formConfigReleveDataSet;
-          this.dynamicContainerOccurence.clear(); 
+            }*/
+            //this.dynamicFormGroup.setValue(values.additional_fields )
+            /*for (const key of Object.keys(formConfig)){
+              let attribute_key = formConfig[key]["attribut_name"];
+              if(values.additional_fields[attribute_key]){
+                this.dynamicFormGroup.value[attribute_key] = values.additional_fields[attribute_key];
+                this.dynamicFormGroup.setValue(values.additional_fields )
+              }
+              //this.dynamicFormGroup.value[key] = values.additional_fields[key];
+              //console.log(key + "->" + releve.additional_fields[key]);
+              //this.form.value[key] = values.additional_fields[key];
+            }*/
+          //}
+          //const formConfig = this.componentRefOccurence.instance.formConfigReleveDataSet;
+          /*this.dynamicContainerOccurence.clear(); 
           const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(dynamicFormReleveComponent);
           this.componentRefOccurence = this.dynamicContainerOccurence.createComponent(factory);
       
           this.componentRefOccurence.instance.formConfigReleveDataSet = formConfig;
           this.componentRefOccurence.instance.formArray = this.dynamicFormGroup;
-        }
+          this.form.removeControl('additional_fields');
+          this.form.addControl('additional_fields', this.dynamicFormGroup);
+          if (values.additional_fields){
+            this.dynamicFormGroup.setValue(values.additional_fields )
+          }*/
+        //}
     
         /*MET Champs additionnel*/
         /*this.dynamicFormGroup = this.fb.group({});
@@ -136,7 +155,17 @@ export class OcctaxFormOccurrenceService {
           }
         }*/
         //this.componentRefOccurence.instance.formArray = this.dynamicFormGroup;
-
+        //initialiser les valeurs null à des objets vides, sinon ca pétille
+          if(values.additional_fields == null){
+            values.additional_fields = {};
+          }
+        if(values.cor_counting_occtax){
+          for (const key of Object.keys(values.cor_counting_occtax)){
+            if(values.cor_counting_occtax[key].additional_fields == null){
+              values.cor_counting_occtax[key].additional_fields = {};
+            }
+          }
+        }
         this.form.patchValue(values);
       });
 
@@ -220,24 +249,75 @@ export class OcctaxFormOccurrenceService {
         const releve = data.releve.properties;
 
         /* OCCTAX - CHAMPS ADDITIONNELS DEB */
-        if(this.dynamicContainerOccurence != undefined){
-          this.dynamicContainerOccurence.clear(); 
-          const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(dynamicFormReleveComponent);
-          this.componentRefOccurence = this.dynamicContainerOccurence.createComponent(factory);
-          
-          /*MET Champs additionnel*/
-          this.dynamicFormGroup = this.fb.group({});
-      
-          this.componentRefOccurence.instance.formConfigReleveDataSet = ModuleConfig.add_fields[data.releve.properties.dataset.id_dataset]['occurrence'];
-          this.componentRefOccurence.instance.formArray = this.dynamicFormGroup;
-        }
         this.idDataset = data.releve.properties.dataset.id_dataset;
+        let hasDynamicFormOccurence = false;
+        if (ModuleConfig.add_fields[this.idDataset]){
+          if (ModuleConfig.add_fields[this.idDataset]['occurrence']){
+            hasDynamicFormOccurence = true;
+          }
+        }
+        let hasDynamicFormCounting = false;
+        if (ModuleConfig.add_fields[this.idDataset]){
+          if (ModuleConfig.add_fields[this.idDataset]['counting']){
+            hasDynamicFormCounting = true;
+          }
+        }
+        
+        if(hasDynamicFormOccurence){
+          if (this.form.get('additional_fields') == undefined && this.dynamicContainerOccurence){
+          //if(this.dynamicContainerOccurence != undefined){
+            this.dynamicContainerOccurence.clear(); 
+            const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(dynamicFormReleveComponent);
+            this.componentRefOccurence = this.dynamicContainerOccurence.createComponent(factory);
+            
+            /*MET Champs additionnel*/
+            this.dynamicFormGroup = this.fb.group({});
+        
+            this.componentRefOccurence.instance.formConfigReleveDataSet = ModuleConfig.add_fields[this.idDataset]['occurrence'];
+            this.componentRefOccurence.instance.formArray = this.dynamicFormGroup;
+            
+            //on insert le formulaire dynamique au form control
+            //let occurenceFormGroup = this.form.get("cor_counting_occtax").get('0')/*.get(0)*//*.push({expertise : null})*/;
+            this.form.addControl('additional_fields', this.dynamicFormGroup);
+            //this.form.setControl(0, countingsFormArray )
+          }
+        }
+        
+        if(hasDynamicFormCounting){
+          //A l'initialisation du composant, on charge le formulaire dynamique
+          if (this.occtaxFormCountingService.dynamicContainerCounting != undefined){
+            this.occtaxFormCountingService.dynamicContainerCounting.clear(); 
+            const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(dynamicFormReleveComponent);
+            this.occtaxFormCountingService.componentRefCounting = this.occtaxFormCountingService.dynamicContainerCounting.createComponent(factory);
+            
+            /*MET Champs additionnel*/
+            this.dynamicFormGroup = this.fb.group({});
+        
+            this.occtaxFormCountingService.componentRefCounting.instance.formConfigReleveDataSet = ModuleConfig.add_fields[this.idDataset]['counting'];
+            this.occtaxFormCountingService.componentRefCounting.instance.formArray = this.dynamicFormGroup;
+            
+            //on insert le formulaire dynamique au form control
+            let countingsFormGroup = this.form.get("cor_counting_occtax").get('0') as FormGroup;
+            if(countingsFormGroup){
+              countingsFormGroup.setControl('additional_fields', this.dynamicFormGroup);
+              //this.form.get("cor_counting_occtax").setControl('0', countingsFormGroup );
+            }
+          }
+        }
+        //this.form.value.cor_counting_occtax[0].addControl(this.dynamicFormGroup);
+        //let countingFormArray = this.form.get("cor_counting_occtax");
+        //countingFormArray.value[0]['additional_fields'] = this.occtaxFormCountingService.componentRefCounting.instance.formArray;
+        //this.form.value.cor_counting_occtax[0]['additional_fields'] = this.occtaxFormCountingService.componentRefCounting.instance.formArray;
         /* OCCTAX - CHAMPS ADDITIONNELS FIN */
+        //let countingsFormArray = this.form.get("cor_counting_occtax").setControl(0, this.dynamicFormGroup )/*.get(0)*//*.push({expertise : null})*/;
 
         /* A TESTER MET  */
-        /*foreach (this.form.get("cor_counting_occtax")){
+        /*this.occurrence.cor_counting_occtax.forEach((c, i) => {
+          console.log(c)
+        })*/
+        //foreach (this.form.get("cor_counting_occtax")){
           //on envoi l'id du dataset
-        }*/
+        //}
         return releve;
       })
     );
@@ -316,7 +396,12 @@ export class OcctaxFormOccurrenceService {
 
   submitOccurrence() {
     
-    this.form.value['additional_fields'] = this.componentRefOccurence.instance.formArray.value;
+    //this.form.value['additional_fields'] = this.componentRefOccurence.instance.formArray.value;
+    /*if(this.form.get('additional_fields')){
+      this.form.get('additional_fields').value.map((additionalField) => {
+        console.log(additionalField);
+      })
+    }*/
     let id_releve = this.occtaxFormService.id_releve_occtax.getValue();
     let TEMP_ID_OCCURRENCE = this.uuidv4();
 

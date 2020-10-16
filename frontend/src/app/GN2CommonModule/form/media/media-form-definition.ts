@@ -1,14 +1,5 @@
 const hideDetails = ({ value, meta, attribut_name }) => {
   const details = meta.details;
-  /* ajout hideDetailsFields pour cacher des champs */
-  /*let displayDetails = true;
-  if (typeof value['displayDetails'] ==='function'){
-    displayDetails = !meta.hideDetailsFields
-  }else{
-    displayDetails = value['displayDetails']
-  }
-  const cond = details && details.length && !displayDetails && details.includes(attribut_name) */
-  
   const cond = details && details.length && !value['displayDetails'] && details.includes(attribut_name)
   return cond;
 }

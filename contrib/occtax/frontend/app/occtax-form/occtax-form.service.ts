@@ -150,18 +150,4 @@ export class OcctaxFormService {
     occtaxData.releve = releve;
     this.occtaxData.next(occtaxData);
   }
-  
-  onDatasetChanged(idDataset) {
-    this.currentIdDataset = idDataset;
-    //this.octaxForm.createComponent();
-    this.dynamicContainer.clear(); 
-    const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(dynamicFormReleveComponent);
-    this.componentRef = this.dynamicContainer.createComponent(factory);
-
-    this.componentRef.instance.formConfigReleveDataSet = ModuleConfig.add_fields[this.currentIdDataset]['releve'];
-    this.componentRef.instance.formArray = this.dynamicFormGroup;
-    /*this.dynamicDatasetForm = this._fb.group({
-      test: null,
-    });*/
-  }
 }
