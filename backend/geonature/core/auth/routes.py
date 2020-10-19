@@ -43,9 +43,7 @@ def loginCas():
     if "ticket" in params:
         base_url = current_app.config["API_ENDPOINT"] + "/gn_auth/login_cas"
         url_validate = "{url}?ticket={ticket}&service={service}".format(
-            url=config_cas["CAS_URL_VALIDATION"],
-            ticket=params["ticket"],
-            service=base_url,
+            url=config_cas["CAS_URL_VALIDATION"], ticket=params["ticket"], service=base_url,
         )
 
         response = utilsrequests.get(url_validate)
@@ -61,10 +59,7 @@ def loginCas():
             try:
                 response = utilsrequests.get(
                     ws_user_url,
-                    (
-                        config_cas["CAS_USER_WS"]["ID"],
-                        config_cas["CAS_USER_WS"]["PASSWORD"],
-                    ),
+                    (config_cas["CAS_USER_WS"]["ID"], config_cas["CAS_USER_WS"]["PASSWORD"],),
                 )
                 assert response.status_code == 200
             except AssertionError:
@@ -150,9 +145,7 @@ def loginCas():
             response.set_cookie("current_user", str(current_user), expires=cookie_exp)
             return response
         else:
-            gunicorn_error_logger.info(
-                "Erreur d'authentification lié au CAS, voir log du CAS"
-            )
+            gunicorn_error_logger.info("Erreur d'authentification lié au CAS, voir log du CAS")
             log.error("Erreur d'authentification lié au CAS, voir log du CAS")
             return render_template(
                 "cas_login_error.html",
@@ -175,4 +168,3 @@ def logout_cruved():
     for key in copy_session_key:
         session.pop(key)
     return Response("Logout", 200)
-

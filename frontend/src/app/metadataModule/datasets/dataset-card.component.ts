@@ -3,14 +3,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { BaseChartDirective } from 'ng2-charts';
-import { AppConfig } from "@geonature_config/app.config";
+import { AppConfig } from '@geonature_config/app.config';
 
 @Component({
   selector: 'pnx-datasets-card',
   templateUrl: './dataset-card.component.html',
-  styleUrls: ['./dataset-card.scss'],
+  styleUrls: ['./dataset-card.scss']
 })
-
 export class DatasetCardComponent implements OnInit {
   public organisms: Array<any>;
   public id_dataset: number;
@@ -37,10 +36,10 @@ export class DatasetCardComponent implements OnInit {
       position: 'left',
       labels: {
         fontSize: 15,
-        filter: function (legendItem, chartData) {
+        filter: function(legendItem, chartData) {
           return chartData.datasets[0].data[legendItem.index] != 0;
         }
-      },
+      }
     },
     plugins: {
       labels: [
@@ -62,7 +61,7 @@ export class DatasetCardComponent implements OnInit {
         }
       ]
     }
-  }
+  };
 
   public spinner = true;
 
@@ -70,7 +69,7 @@ export class DatasetCardComponent implements OnInit {
     private _route: ActivatedRoute,
     private _dfs: DataFormService,
     public moduleService: ModuleService
-  ) { }
+  ) {}
 
   ngOnInit() {
     // get the id from the route
@@ -83,43 +82,34 @@ export class DatasetCardComponent implements OnInit {
   }
 
   getDataset(id) {
-
     this._dfs.getDatasetDetails(id).subscribe(data => {
       this.dataset = data;
       if (this.dataset.modules) {
-        this.dataset.modules = this.dataset.modules.map(e => e.module_code).join(", ");
+        this.dataset.modules = this.dataset.modules.map(e => e.module_code).join(', ');
       }
       if ('bbox' in data) {
-        this.geojsonData = data['bbox']
+        this.geojsonData = data['bbox'];
       }
     });
-    this._dfs.getTaxaDistribution('group2_inpn', { 'id_dataset': id }).subscribe(data => {
-
-      this.pieChartData = []
-      this.pieChartLabels = []
+    this._dfs.getTaxaDistribution('group2_inpn', { id_dataset: id }).subscribe(data => {
+      this.pieChartData = [];
+      this.pieChartLabels = [];
       for (let row of data) {
-        this.pieChartData.push(row["count"]);
-        this.pieChartLabels.push(row["group"]);
+        this.pieChartData.push(row['count']);
+        this.pieChartLabels.push(row['group']);
       }
       // in order to have chart instance
       setTimeout(() => {
         this.chart.chart.update();
-
-      }, 1000)
+      }, 1000);
     });
-
   }
 
   getPdf() {
-
     const url = `${AppConfig.API_ENDPOINT}/meta/dataset/export_pdf/${this.id_dataset}`;
-    const dataUrl = this.chart ? this.chart.ctx.canvas.toDataURL("image/png") : "";
-    this._dfs.uploadCanvas(dataUrl).subscribe(
-      data => {
-        window.open(url);
-      }
-    );
-
+    const dataUrl = this.chart ? this.chart.ctx.canvas.toDataURL('image/png') : '';
+    this._dfs.uploadCanvas(dataUrl).subscribe(data => {
+      window.open(url);
+    });
   }
-
 }

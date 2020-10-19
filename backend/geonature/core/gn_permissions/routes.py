@@ -94,4 +94,3 @@ def logout():
     for key in copy_session_key:
         session.pop(key)
     return Response("Logout", 200)
-

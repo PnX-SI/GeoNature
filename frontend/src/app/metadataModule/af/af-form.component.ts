@@ -33,7 +33,7 @@ export class AfFormComponent implements OnInit {
     private _router: Router,
     private _toaster: ToastrService,
     private _dateParser: NgbDateParserFormatter
-  ) { }
+  ) {}
 
   ngOnInit() {
     this._route.params.subscribe(params => {
@@ -151,7 +151,9 @@ export class AfFormComponent implements OnInit {
   }
 
   getPdf() {
-    const url = `${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks/export_pdf/${this.af.id_acquisition_framework}`;
+    const url = `${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks/export_pdf/${
+      this.af.id_acquisition_framework
+    }`;
     window.open(url);
   }
 }

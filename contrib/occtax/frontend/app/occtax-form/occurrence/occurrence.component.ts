@@ -153,7 +153,6 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe((values: any) => {
-
         const currentOccForm = this.occtaxFormOccurrenceService.occurrence.getValue()
         // Si édition d'une occurrence, on ne vérifie pas si déjà dans la liste
         if (currentOccForm && currentOccForm.id_releve_occtax) {

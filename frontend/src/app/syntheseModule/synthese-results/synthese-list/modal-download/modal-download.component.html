@@ -1,24 +1,44 @@
 <div class="modal-header">
-  <h5 class="modal-title" id="modalLabel"> Téléchargement </h5>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+  <h5
+    class="modal-title"
+    id="modalLabel"
+  > Téléchargement </h5>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  >
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
 <div class="modal-body">
   <div *ngIf="tooManyObs">
 
-    <div class="alert alert-danger" role="alert">
-      <b> Attention ! </b> Votre requête comporte un nombre trop important d'observations pour que celles-ci soient affichées sur la
+    <div
+      class="alert alert-danger"
+      role="alert"
+    >
+      <b> Attention ! </b> Votre requête comporte un nombre trop important d'observations pour que
+      celles-ci soient affichées sur la
       carte.
     </div>
 
-    <div class="alert alert-warning" role="alert">
-      Vous pouvez néamoins exporter les données, dans une limite de <b> {{syntheseConfig.NB_MAX_OBS_EXPORT}} </b>
+    <div
+      class="alert alert-warning"
+      role="alert"
+    >
+      Vous pouvez néamoins exporter les données, dans une limite de <b>
+        {{syntheseConfig.NB_MAX_OBS_EXPORT}} </b>
       observations en cliquant sur les liens ci-dessous
     </div>
 
-    <div class="alert alert-warning" role="alert">
-      En fermant cette fenêtre vous pouvez visualiser <b> seulement</b> les {{syntheseConfig.NB_MAX_OBS_MAP}} dernières
+    <div
+      class="alert alert-warning"
+      role="alert"
+    >
+      En fermant cette fenêtre vous pouvez visualiser <b> seulement</b> les
+      {{syntheseConfig.NB_MAX_OBS_MAP}} dernières
       observations
       correspondant à votre requête. <br>
     </div>
@@ -32,7 +52,9 @@
       *ngFor="let format of syntheseConfig.EXPORT_FORMAT"
       mat-raised-button
       (click)="downloadObservations(format)"
-      type="button" class="buttonLoad btn-green format-btn">
+      type="button"
+      class="buttonLoad button-success format-btn"
+    >
       Format {{format}}
     </button>
   </div>
@@ -42,12 +64,13 @@
     <button
       [disabled]="_dataService.isDownloading"
       mat-raised-button
-      class="btn-green"
-      (click)="downloadTaxons('csv', 'synthese_taxons')">
+      class="button-success"
+      (click)="downloadTaxons('csv', 'synthese_taxons')"
+    >
       {{ 'Taxons' | translate }}
       <mat-icon>reorder</mat-icon>
 
-   </button>
+    </button>
   </div>
 
   <h5 class="underlined second-color"> Télécharger les statuts</h5>
@@ -55,10 +78,11 @@
     <button
       [disabled]="_dataService.isDownloading"
       mat-raised-button
-      class="btn-green"
-      (click)="downloadStatusOrMetadata('synthese/export_statuts', 'synthese_statuts')">
-       Statuts
-       <mat-icon>reorder</mat-icon>
+      class="button-success"
+      (click)="downloadStatusOrMetadata('synthese/export_statuts', 'synthese_statuts')"
+    >
+      Statuts
+      <mat-icon>reorder</mat-icon>
 
     </button>
   </div>
@@ -68,19 +92,29 @@
     <button
       [disabled]="_dataService.isDownloading"
       mat-raised-button
-      class="btn-green"
-      (click)="downloadStatusOrMetadata('synthese/export_metadata', 'synthese_metadata')">
-       Métadonnées
+      class="button-success"
+      (click)="downloadStatusOrMetadata('synthese/export_metadata', 'synthese_metadata')"
+    >
+      Métadonnées
       <mat-icon>reorder</mat-icon>
 
     </button>
   </div>
 
 
-  <div *ngIf="_dataService.isDownloading" class="telechargement card" style="margin-top: 30px;">
-    <div class="card-body text-{{bstype}}" >
+  <div
+    *ngIf="_dataService.isDownloading"
+    class="telechargement card"
+    style="margin-top: 30px;"
+  >
+    <div class="card-body text-{{bstype}}">
       {{'Downloading' | translate }}
-      <img  src="assets/images/Spinner.gif" alt="Chargement..." height="40" width="40">
+      <img
+        src="assets/images/Spinner.gif"
+        alt="Chargement..."
+        height="40"
+        width="40"
+      >
     </div>
   </div>
 </div>

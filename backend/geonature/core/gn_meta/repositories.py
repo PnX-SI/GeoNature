@@ -73,8 +73,7 @@ def get_datasets_cruved(info_role, params=dict(), as_model=False):
             )
         else:
             q = q.filter(
-                TDatasets.id_acquisition_framework
-                == int(request.args["id_acquisition_framework"])
+                TDatasets.id_acquisition_framework == int(request.args["id_acquisition_framework"])
             )
 
         params.pop("id_acquisition_framework")
@@ -121,9 +120,7 @@ def get_dataset_details_dict(id_dataset, session_role):
         .count()
     )
     dataset["observation_count"] = (
-        DB.session.query(Synthese.cd_nom)
-        .filter(Synthese.id_dataset == id_dataset)
-        .count()
+        DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset == id_dataset).count()
     )
     geojsonData = (
         DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
@@ -157,18 +154,14 @@ def get_af_cruved(info_role, params=None, as_model=False):
         )
 
         if info_role.value_filter == "2" and info_role.id_organisme is not None:
-            or_filter.append(
-                CorAcquisitionFrameworkActor.id_organism == info_role.id_organisme
-            )
+            or_filter.append(CorAcquisitionFrameworkActor.id_organism == info_role.id_organisme)
         q = q.filter(or_(*or_filter))
 
     if params:
         params = params.to_dict()
         if "orderby" in params:
             try:
-                order_col = getattr(
-                    TAcquisitionFramework.__table__.columns, params.pop("orderby")
-                )
+                order_col = getattr(TAcquisitionFramework.__table__.columns, params.pop("orderby"))
                 q = q.order_by(order_col)
             except AttributeError:
                 log.error("the attribute to order on does not exist")

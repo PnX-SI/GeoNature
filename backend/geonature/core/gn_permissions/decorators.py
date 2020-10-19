@@ -83,8 +83,7 @@ def check_cruved_scope(
                 kwargs["info_role"] = user_with_highter_perm
             # if no perm or perm = 0 -> raise 403
             if user_with_highter_perm is None or (
-                user_with_highter_perm is not None
-                and user_with_highter_perm.value_filter == "0"
+                user_with_highter_perm is not None and user_with_highter_perm.value_filter == "0"
             ):
                 raise InsufficientRightsError(
                     ('User "{}" cannot "{}" in {}').format(

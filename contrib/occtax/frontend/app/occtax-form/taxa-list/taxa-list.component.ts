@@ -198,9 +198,8 @@ export class OcctaxFormTaxaListComponent implements OnInit {
         //pour tous les médias présent par type de widget medias
         values.additional_fields[widget.attribut_name].forEach((media, i) => {
           //On duplique la première div pour récupérer le style qui va bien
-          let newDiv = container.firstChild.cloneNode(true);
+          let newDiv = container.firstChild.cloneNode(true) as HTMLElement;
           //On réécrit son contenu
-          newDiv.attributes;
           newDiv.innerHTML = widget.attribut_label + ' (' + (i+1) + '/' + values.additional_fields[widget.attribut_name].length + ') ';
           
           //On lui ajoute la balise a
@@ -255,7 +254,7 @@ export class OcctaxFormTaxaListComponent implements OnInit {
         })
       }else{
         //si ce n'est pas un média, on affiche son libellé (configuration) et sa valeur (bdd)
-        let newDiv = container.firstChild.cloneNode(true);
+        let newDiv = container.firstChild.cloneNode(true)  as HTMLElement;
         newDiv.getElementsByClassName('label')[0].innerHTML = widget.attribut_label + ' :';
         newDiv.getElementsByClassName('value')[0].innerHTML = values.additional_fields[widget.attribut_name];
         container.appendChild(newDiv);

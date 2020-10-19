@@ -1,17 +1,34 @@
 <div>
-  <a *ngIf="media.href()" target="_blank" class="link-media float-right" [href]="media.href()"
-    ><mat-icon matTooltip="{{ 'Media.link' | translate }}">link</mat-icon>
+  <a
+    *ngIf="media.href()"
+    target="_blank"
+    class="link-media float-right"
+    [href]="media.href()"
+  >
+    <mat-icon matTooltip="{{ 'Media.link' | translate }}">link</mat-icon>
   </a>
   <div>
-    <pnx-display-medias *ngIf='media.sent' [medias]="[media]" index=0 display="medium" diaporama=true></pnx-display-medias>
+    <pnx-display-medias
+      *ngIf='media.sent'
+      [medias]="[media]"
+      index=0
+      display="medium"
+      diaporama=true
+    ></pnx-display-medias>
   </div>
 
-  <p *ngIf="!bValidSizeMax" class="error">
+  <p
+    *ngIf="!bValidSizeMax"
+    class="error"
+  >
     La taille du fichier ({{round(mediaForm.value.file.size / 1e6, 1)}} Mo)
-     est supérieure à la taille maximale autorisée ({{round(sizeMax / 1e3, 1)}} Mo)
+    est supérieure à la taille maximale autorisée ({{round(sizeMax / 1e3, 1)}} Mo)
   </p>
 
-  <p *ngIf='errorMsg' class="error">{{errorMsg}}</p>
+  <p
+    *ngIf='errorMsg'
+    class="error"
+  >{{errorMsg}}</p>
 
   <p>{{message()}}</p>
 
@@ -32,14 +49,14 @@
     class="btn-valid-media"
     (click)="postMedia()"
     [disabled]="!mediaFormReadyToSend()"
-    >
-    <mat-icon  matTooltip="{{ 'Media.valid' | translate }}">check</mat-icon>
+  >
+    <mat-icon matTooltip="{{ 'Media.valid' | translate }}">check</mat-icon>
   </button>
 
   <mat-progress-bar
-  *ngIf="media.bLoading"
-  mode="determinate"
-  [value]="media.uploadPercentDone"
-></mat-progress-bar>
+    *ngIf="media.bLoading"
+    mode="determinate"
+    [value]="media.uploadPercentDone"
+  ></mat-progress-bar>
 
 </div>

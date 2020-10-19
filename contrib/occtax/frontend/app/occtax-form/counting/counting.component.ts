@@ -52,8 +52,10 @@ export class OcctaxFormCountingComponent {
         
         this.dynamicFormGroup = this.fb.group({});
         
-        for (const key of Object.keys(this.countingForm.get('additional_fields').value)){
-          this.dynamicFormGroup.value[key] =  this.countingForm.get('additional_fields').value[key];
+        if(this.countingForm.get('additional_fields')){
+          for (const key of Object.keys(this.countingForm.get('additional_fields').value)){
+            this.dynamicFormGroup.addControl(key, new FormControl(this.countingForm.get('additional_fields').value[key]));
+          }
         }
 
         this.occtaxFormCountingService.componentRefCounting.instance.formConfigReleveDataSet = ModuleConfig.add_fields[this.occtaxFormOccurrenceService.idDataset]['counting'];

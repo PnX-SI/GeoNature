@@ -30,7 +30,6 @@ class FormConfig(Schema):
     naturalness = fields.Boolean(missing=True)
     exist_proof = fields.Boolean(missing=True)
     observation_status = fields.Boolean(missing=True)
-    diffusion_level = fields.Boolean(missing=False)
     blurring = fields.Boolean(missing=False)
     determiner = fields.Boolean(missing=True)
     determination_method = fields.Boolean(missing=True)
@@ -154,9 +153,7 @@ class GnModuleSchemaConf(Schema):
     export_id_column_name = fields.String(missing="permId")
     export_srid = fields.Integer(missing=4326)
     export_observer_txt_column = fields.String(missing="obsId")
-    export_available_format = fields.List(
-        fields.String(), missing=available_export_format
-    )
+    export_available_format = fields.List(fields.String(), missing=available_export_format)
     export_columns = fields.List(fields.String(), missing=default_columns_export)
     export_message = fields.String(missing=export_message)
     list_messages = fields.Dict(missing=list_messages)
@@ -166,13 +163,11 @@ class GnModuleSchemaConf(Schema):
     taxon_result_number = fields.Integer(missing=20)
     id_observers_list = fields.Integer(missing=1)
     default_maplist_columns = fields.List(fields.Dict(), missing=default_map_list_conf)
-    available_maplist_column = fields.List(
-        fields.Dict(), missing=available_maplist_column
-    )
+    available_maplist_column = fields.List(fields.Dict(), missing=available_maplist_column)
     MAX_EXPORT_NUMBER = fields.Integer(missing=50000)
     ENABLE_GPS_TOOL = fields.Boolean(missing=True)
     ENABLE_UPLOAD_TOOL = fields.Boolean(missing=True)
     DATE_FORM_WITH_TODAY = fields.Boolean(missing=True)
-    DISPLAY_SETTINGS_TOOLS = fields.Boolean(missing=True)
+    ENABLE_SETTINGS_TOOLS = fields.Boolean(missing=False)
     ENABLE_MEDIAS = fields.Boolean(missing=True)
     ENABLE_MY_PLACES = fields.Boolean(missing=True)

@@ -31,6 +31,7 @@ export class OcctaxFormService {
   public dynamicContainerOccurence: ViewContainerRef;
   componentRef: ComponentRef<any>;
   componentRefOccurence: ComponentRef<any>;
+  public previousReleve = null;
 
   constructor(
     private _http: HttpClient,

@@ -1,16 +1,22 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation, SimpleChanges } from '@angular/core';
-import { FormControl } from "@angular/forms";
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  ViewEncapsulation,
+  SimpleChanges
+} from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { Media } from './media';
-import { MediaService } from '@geonature_common/service/media.service'
+import { MediaService } from '@geonature_common/service/media.service';
 
 @Component({
   selector: 'pnx-medias',
   templateUrl: './medias.component.html',
-  styleUrls: ['./media.scss'],
+  styleUrls: ['./media.scss']
 })
 export class MediasComponent implements OnInit {
-
-
   //  @Input() medias: Array<Media> = []; /** list of medias */
   //  @Output() mediasChange = new EventEmitter<Array<Media>>();
 
@@ -22,28 +28,25 @@ export class MediasComponent implements OnInit {
   @Input() parentFormControl: FormControl;
   @Input() details = [];
 
-  @Input() disabled=false;
+  @Input() disabled = false;
   @Input() disabledTxt: string;
   @Input() hideDetailsFields : boolean = false;
 
-
   public bInitialized: boolean;
 
-  constructor(
-    public ms: MediaService
-  ) { }
+  constructor(public ms: MediaService) {}
 
   ngOnInit() {
-    this.ms.getNomenclatures()
-      .subscribe(() => {
-        this.bInitialized = true;
-        this.initMedias();
-      });
-  };
-
+    this.ms.getNomenclatures().subscribe(() => {
+      this.bInitialized = true;
+      this.initMedias();
+    });
+  }
 
   initMedias() {
-    if (!this.bInitialized) { return; }
+    if (!this.bInitialized) {
+      return;
+    }
     for (const index in this.parentFormControl.value) {
       if (!(this.parentFormControl.value[index] instanceof Media)) {
         this.parentFormControl.value[index] = new Media(this.parentFormControl.value[index]);
@@ -72,7 +75,7 @@ export class MediasComponent implements OnInit {
 
     // si l upload est en cours
     if (media.pendingRequest) {
-      media.pendingRequest.unsubscribe()
+      media.pendingRequest.unsubscribe();
       media.pendingRequest = null;
     }
 
@@ -87,11 +90,9 @@ export class MediasComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
     for (const propName of Object.keys(changes)) {
-
       if (propName === 'parentFormControl') {
         this.initMedias();
       }
     }
   }
-
 }

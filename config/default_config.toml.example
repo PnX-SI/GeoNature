@@ -371,6 +371,19 @@ MAIL_ON_ERROR = false
         attribut_name = "id_nomenclature_typ_grp"
         code_nomenclature_type = "TYP_GRP"
         required = false
+    [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]]
+        # Le HTML fournit est inséré dans une balise DIV
+        type_widget = "html"
+        # Nom utilisé pour définir la partie fixe de l'attribut "id" de la balise DIV
+        attribut_name = "conditions"
+        # Classes CSS ajoutées à l'attribut "class" de la balise DIV
+        class = "alert alert-primary"
+        # Contenu HTML à insérer dans la balise DIV
+        html = """
+            <p>Merci pour votre demande d’inscription. Après 
+            <strong>validation de l’administrateur</strong>, vous 
+            pourrez accéder aux observations publiques avec leur 
+            précision de géolocalisation maximale.</p>"""
 
 [SERVER]
     # Nivau de log du serveur.

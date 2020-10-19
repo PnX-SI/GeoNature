@@ -1,25 +1,30 @@
 import { DomSanitizer } from '@angular/platform-browser';
-import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation, SimpleChanges, Inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  ViewEncapsulation,
+  SimpleChanges,
+  Inject
+} from '@angular/core';
 import { Media } from './media';
-import { MediaService } from '@geonature_common/service/media.service'
-import { MatDialog } from "@angular/material";
+import { MediaService } from '@geonature_common/service/media.service';
+import { MatDialog } from '@angular/material';
 import { MediaDialog } from './media-dialog.component';
-
 
 export interface MediaDialogData {
   medias: Array<Media>;
   index: number;
 }
 
-
-
 @Component({
   selector: 'pnx-display-medias',
   templateUrl: './display-medias.component.html',
-  styleUrls: ['./media.scss'],
+  styleUrls: ['./media.scss']
 })
 export class DisplayMediasComponent {
-
   @Input() medias: Array<Media> = [];
   @Input() index: number;
   @Input() display: string;
@@ -30,15 +35,13 @@ export class DisplayMediasComponent {
   public bInitialized = false;
   public innerHTMLPDF = {};
 
-  constructor(
-    public ms: MediaService,
-    public dialog: MatDialog,
-    public _sanitizer: DomSanitizer
-  ) { }
+  constructor(public ms: MediaService, public dialog: MatDialog, public _sanitizer: DomSanitizer) {}
 
   ngOnInit() {
     this.initMedias();
-    this.ms.getNomenclatures().subscribe(() => { this.bInitialized = true; });
+    this.ms.getNomenclatures().subscribe(() => {
+      this.bInitialized = true;
+    });
   }
 
   initMedias() {
@@ -53,10 +56,10 @@ export class DisplayMediasComponent {
     }
 
     const heights = {
-      'mini': 50,
-      'small': 100,
-      'medium': 200,
-    }
+      mini: 50,
+      small: 100,
+      medium: 200
+    };
 
     this.height = heights[this.display] ? `${heights[this.display]}px` : '100%';
     this.thumbnailHeight = heights[this.display] || '200';
@@ -65,13 +68,12 @@ export class DisplayMediasComponent {
   openDialog(index) {
     const dialogRef = this.dialog.open(MediaDialog, {
       width: '1000px',
-      data: { medias: this.medias, index },
+      data: { medias: this.medias, index }
     });
   }
 
   ngOnChanges(changes: SimpleChanges) {
     for (const propName in changes) {
-
       if (propName === 'medias') {
         this.initMedias();
       }
@@ -85,5 +87,4 @@ export class DisplayMediasComponent {
   getSafeEmbedUrl(index) {
     return this._sanitizer.bypassSecurityTrustResourceUrl(this.ms.embedHref(this.medias[index]));
   }
-
 }

@@ -21,6 +21,7 @@ from geonature.utils.errors import (
 
 from ..routes import routes
 
+
 @routes.route("/medias/<string:uuid_attached_row>", methods=["GET"])
 @json_resp_accept_empty_list
 def get_medias(uuid_attached_row):
@@ -29,11 +30,7 @@ def get_medias(uuid_attached_row):
         .. :quickref: Commons;
     """
 
-    res = (
-        DB.session.query(TMedias)
-        .filter(TMedias.uuid_attached_row == uuid_attached_row)
-        .all()
-    )
+    res = DB.session.query(TMedias).filter(TMedias.uuid_attached_row == uuid_attached_row).all()
 
     return [r.as_dict() for r in (res or [])]
 
@@ -92,9 +89,7 @@ def insert_or_update_media(id_media=None):
         data = request.get_json(silent=True)
 
     try:
-        m = TMediaRepository(
-            data=data, file=file, id_media=id_media
-        ).create_or_update_media()
+        m = TMediaRepository(data=data, file=file, id_media=id_media).create_or_update_media()
 
     except GeoNatureError as e:
         return str(e), 400

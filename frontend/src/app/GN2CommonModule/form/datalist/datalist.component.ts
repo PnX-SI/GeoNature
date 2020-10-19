@@ -136,9 +136,8 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
       const value = this.multiple ? this.default : [this.default];
       const res = value.map(val =>
         typeof val === 'object'
-          ? ( this.filteredValues
-              .find(v => Object.keys(val).every(key => v[key] === val[key])) || {})
-              [this.keyValue]
+          ? (this.filteredValues.find(v => Object.keys(val).every(key => v[key] === val[key])) ||
+              {})[this.keyValue]
           : val
       );
       console.log(res);

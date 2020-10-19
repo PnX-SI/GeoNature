@@ -1,4 +1,4 @@
-import {Directive, ElementRef, Input, Renderer2 } from '@angular/core';
+import { Directive, ElementRef, Input, Renderer2 } from '@angular/core';
 
 @Directive({
   selector: '[displayMouseOver]',
@@ -8,12 +8,12 @@ import {Directive, ElementRef, Input, Renderer2 } from '@angular/core';
   }
 })
 export class DisplayMouseOverDirective {
-	private _defaultColor = null;
+  private _defaultColor = null;
   private _defaultSelector = '.btn';
   private el: HTMLElement;
 
-  constructor(el: ElementRef, private renderer: Renderer2) { 
-  	this.el = el.nativeElement; 
+  constructor(el: ElementRef, private renderer: Renderer2) {
+    this.el = el.nativeElement;
   }
 
   @Input('highlightColor') _highlightColor: string;
@@ -27,19 +27,19 @@ export class DisplayMouseOverDirective {
     return this._selector || this._defaultSelector;
   }
 
-  onMouseEnter() { 
+  onMouseEnter() {
     this._defaultColor = this.el.style.backgroundColor;
-  	let els = this.el.querySelectorAll(this.selector);
+    let els = this.el.querySelectorAll(this.selector);
 
-    for (var i=0; i < els.length; i++) {
-    		els[i].classList.remove('d-none');
+    for (var i = 0; i < els.length; i++) {
+      els[i].classList.remove('d-none');
     }
     this.el.style.backgroundColor = this.highlightColor;
   }
-  onMouseLeave() { 
-  	let els = this.el.querySelectorAll(this.selector);
-    for (var i=0; i < els.length; i++) {
-        els[i].classList.add('d-none');
+  onMouseLeave() {
+    let els = this.el.querySelectorAll(this.selector);
+    for (var i = 0; i < els.length; i++) {
+      els[i].classList.add('d-none');
     }
     this.el.style.backgroundColor = this._defaultColor;
   }
