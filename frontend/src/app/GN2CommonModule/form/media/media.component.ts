@@ -75,10 +75,10 @@ export class MediaComponent implements OnInit {
   }
 
   message() {
-    return this.mediaFormReadyToSend()
-      ? 'Veuillez valider le média en appuyant sur le bouton de validation'
-      : this.media.sent
+    return this.media.sent
       ? ''
+      : this.mediaFormReadyToSend()
+      ? 'Veuillez valider le média en appuyant sur le bouton de validation'
       : this.media.bFile
       ? 'Veuillez compléter le formulaire et renseigner un fichier'
       : 'Veuillez compléter le formulaire et Renseigner une URL valide';

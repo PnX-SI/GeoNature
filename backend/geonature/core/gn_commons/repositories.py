@@ -163,6 +163,9 @@ class TMediaRepository:
     def test_url(self):
 
         try:
+            if not self.data["media_url"]:
+                return
+
             res = requests.head(url=self.data["media_url"])
 
             if not ((res.status_code >= 200) and (res.status_code < 400)):
@@ -384,12 +387,14 @@ class TMediumRepository:
         medium = DB.session.query(TMedias).filter(TMedias.uuid_attached_row == entity_uuid).all()
         return medium
 
-    def sync_medias(self):
+    @staticmethod
+    def sync_medias():
         """
             Met à jour les médias
               - supprime les médias sans uuid_attached_row plus vieux que 24h
-              - supprimes les médias dont l'object attaché n'existe plus TODO
+              - supprime les médias dont l'object attaché n'existe plus
         """
+
         # delete media temp > 24h
         res_medias_temp = (
             DB.session.query(TMedias.id_media)
@@ -404,6 +409,43 @@ class TMediumRepository:
         for id_media in id_medias_temp:
             TMediaRepository(id_media=id_media).delete()
 
+        # SYNCRONISATION media - fichiers
+
+        # liste des id des medias fichiers
+        liste_fichiers = []
+        search_path = pathlib.Path(current_app.config["BASE_DIR"],current_app.config["UPLOAD_FOLDER"])
+        for (repertoire, sous_repertoires, fichiers) in os.walk(search_path):
+            for f in fichiers:
+                id_media = f.split('_')[0]
+                try:
+                    id_media = int(id_media)
+                    f_data = {
+                        'id_media': id_media,
+                        'path': pathlib.Path(repertoire, f)
+                    }
+                    liste_fichiers.append(f_data)
+                except ValueError:
+                    pass
+
+
+        # liste des media fichier supprimés en base
+        ids_media_file = [x['id_media'] for x in liste_fichiers]
+        ids_media_file = list(dict.fromkeys(ids_media_file))
+
+        # suppression des fichiers dont le media n'existe plpus en base
+        ids_media_base = DB.session.query(TMedias.id_media).filter(TMedias.id_media.in_(ids_media_file)).all()
+        ids_media_base = [x[0] for x in ids_media_base]
+
+        ids_media_to_delete = [x for x in ids_media_file if x not in ids_media_base]
+
+        for f_data in liste_fichiers:
+            if f_data['id_media'] not in ids_media_to_delete:
+                continue
+
+            if 'thumbnail' in str(f_data['path']):
+                print(f_data['path'])
+                os.remove(f_data['path'])
+            remove_file(f_data['path'])
 
 def get_table_location_id(schema_name, table_name):
     try:

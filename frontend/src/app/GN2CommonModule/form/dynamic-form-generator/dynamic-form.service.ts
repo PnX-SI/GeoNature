@@ -47,6 +47,7 @@ export class DynamicFormService {
   }
 
   setControl(control: AbstractControl, formDef, value = null) {
+
     if (formDef.type_widget === 'html') {
       return;
     }
@@ -99,6 +100,9 @@ export class DynamicFormService {
         if (cond_max) {
           validators.push(Validators.max(formDef.max));
         }
+        if(formDef.attribut_name == 'file') {
+          console.log(validators)
+        }
       }
 
       // Constraint pattern for the "text"
@@ -117,12 +121,15 @@ export class DynamicFormService {
         validators.push(isObjectValidator());
       }
     }
+
     control.setValidators(validators);
 
-    // Dans le html (pour pouvoir avoir required et disable avec une valeur donnée)
     if (formDef.disabled) {
       control.disable();
     }
+
+    control.updateValueAndValidity();
+
   }
 
   createControl(formDef): AbstractControl {

@@ -28,7 +28,7 @@ export class DynamicFormComponent implements OnInit {
 
   public formDefComp = {};
 
-  constructor(private _dynformService: DynamicFormService) {}
+  constructor(private _dynformService: DynamicFormService) { }
 
   ngOnInit() {
     this.setFormDefComp();
