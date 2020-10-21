@@ -26,6 +26,7 @@
             [parentFormControl]="this.regularFormGrp.controls['areas']"
             [label]="'Permissions.accessRequest.geoAreaLabel' | translate"
             [idTypes]="areaTypes"
+            [bindAllItem]="true"
             [matTooltip]="'Permissions.accessRequest.geoAreaTooltip' | translate"
             matTooltipPosition="above"
           >
@@ -37,6 +38,7 @@
             [parentFormControl]="this.regularFormGrp.controls['taxa']"
             [label]="'Permissions.accessRequest.taxaLabel' | translate"
             rank="GN"
+            [bindAllItem]="true"
             [matTooltip]="'Permissions.accessRequest.taxaTooltip' | translate"
             matTooltipPosition="above"
           >
@@ -103,6 +105,7 @@
       class="mr-auto uppercase"
       matTooltip="{{ 'Permissions.accessRequest.cancelBtnTooltip' | translate }}"
       matTooltipPosition="left"
+      routerLink="/"
     >
       <mat-icon>cancel</mat-icon>
       {{ 'Cancel' | translate }}
@@ -119,6 +122,7 @@
         !dynamicFormGrp.valid ||
         disableSubmit
       "
+      (click)="send()"
     >
       <mat-icon>send</mat-icon>
       {{ 'Send' | translate }}

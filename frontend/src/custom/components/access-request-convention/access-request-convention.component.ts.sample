@@ -1,0 +1,11 @@
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'pnx-access-request-convention',
+  templateUrl: 'access-request-convention.component.html'
+})
+export class AccessRequestConventionComponent implements OnInit {
+  constructor() { }
+
+  ngOnInit() { }
+}

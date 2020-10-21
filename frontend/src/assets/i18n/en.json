@@ -24,6 +24,7 @@
   "Cancel": "Cancel",
   "Delete": "Delete",
   "Send": "Send",
+  "Validate": "Validate",
   "NotAllowed": "You do not have the rights to perform this action",
   "LoginError": "Login or password incorrect",
   "DownloadData": "Download data",
@@ -237,7 +238,11 @@
       "sensitiveAccessLabel": "Sensitive observations",
       "sensitiveAccessText" : "I want to access sensitive observations",
       "sensitiveAccessRules": "Please consult the rules for access to sensitive data beforehand",
-      "endDateLabel": "Access until"
+      "endDateLabel": "Access until",
+      "responseOk": "Your request has been taken into account. It will be evaluated by an administrator.",
+      "responseError": "An error occurred while taking your request into account.",
+      "conventionTitle": "Convention",
+      "conventionCanceled": "The acceptance of the convention has just been canceled."
     }
   }
 }
