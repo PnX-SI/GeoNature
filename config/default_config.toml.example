@@ -497,7 +497,7 @@ MAIL_ON_ERROR = false
 [PERMISSION_MANAGEMENT]
     # Activer (=true) l'affichage du lien vers le formulaire de demande 
     # de permissions. Par défaut : désactivé (=false).
-    ENABLE_ACCESS_REQUEST = false
+    ENABLE_ACCESS_REQUEST = true
     # Lien vers les règles d'accès aux observations sensibles/privées 
     # propres à cette instance de GeoNature.
     # Ce lien est ajouté au formulaire de demande d'accès.
@@ -517,10 +517,26 @@ MAIL_ON_ERROR = false
     # le jour courrant et ce nombre de jours dans le futur.
     # Par défaut, la demande d'accès maximum est de 1 ans.
     MAX_ACCESS_DURATION = 365
+    # Email du validateur des permissions d'accès.
+    # Possibilité d'indiquer plusieurs emails en les séparant par des virgules.
+    VALIDATOR_EMAIL = "Carl LINNAEUS <c.linnaeus@linnaeus.se>"
+
+    # Activer la validation de la convention suite à une demande d'accès.
+    # Par défaut: désactivé (=false).
+    ENABLE_CONVENTION = true
+    # Titre de la fenêtre modale affichant la convention.
+    # Par défaut: "Convention".
+    CONVENTION_TITLE = "Convention « Droit d'accès ponctuel aux données géoconfidentielles »"
+    # Libellé du bouton permettant d'accepter la convention.
+    # Par défaut: "Valider".
+    CONVENTION_VALIDATE = "J'accepte les termes de la convention « droit d'accès »."
+
     # Titre de la section personnalisable du formulaire de demande d'accès
     REQUEST_FORM_TITLE = "Motivations de la demande"
     # Définition de la section personnalisable du formulaire de demande 
     # de permission d'accès.
+    # Si PERMISSION_MANAGEMENT.REQUEST_FORM ne contient rien la partie 
+    # personnalisable du formulaire ne s'affiche pas.
     [[PERMISSION_MANAGEMENT.REQUEST_FORM]]
         type_widget = "html"
         attribut_name = "motivation-intro"
