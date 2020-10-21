@@ -882,19 +882,21 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     s.count_min AS "denbrMin",
     s.count_max AS "denbrMax",
     s.sample_number_proof AS "sampleNumb",
-    s.digital_proof AS "preuvNum",
+    s.digital_proof AS "uRLPreuv",
     s.non_digital_proof AS "preuvNoNum",
     s.altitude_min AS "altMin",
     s.altitude_max AS "altMax",
     s.depth_min AS "profMin",
     s.depth_max AS "profMax",
     s.precision,
-    public.ST_astext(s.the_geom_4326) AS wkt,
+    public.ST_astext(s.the_geom_4326) AS "geometrie",
     to_char(s.date_min, 'YYYY-MM-DD') AS "dateDebut",
     to_char(s.date_max, 'YYYY-MM-DD') AS "dateFin",
     s.date_min::time AS "heureFin",
     s.date_max::time AS "heureDebut",
     s.validator AS validateur,
+    n21.label_default AS "nivVal",
+    s.meta_validation_date as "dateCtrl",
     s.observers AS observer,
     s.id_digitiser AS id_digitiser,
     s.determiner AS detminer,
@@ -923,7 +925,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     n2.label_default AS "typGrp",
     s.grp_method AS "methGrp",
     n3.label_default AS "obsTech",
-    n5.label_default AS "ocStatutBio",
+    n5.label_default AS "ocStatBio",
     n6.label_default AS "ocEtatBio",
     n7.label_default AS "ocNat",
     n8.label_default AS "preuveOui",
@@ -938,7 +940,8 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     n17.label_default AS "statSource",
     n18.label_default AS "typInfGeo",
     n19.label_default AS "ocMethDet",
-    n20.label_default AS "occComportement"
+    n20.label_default AS "occComport",
+    s.reference_biblio AS "refBiblio"
    FROM gn_synthese.synthese s
      JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
@@ -962,6 +965,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
      LEFT JOIN ref_nomenclatures.t_nomenclatures n18 ON s.id_nomenclature_info_geo_type = n18.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n19 ON s.id_nomenclature_determination_method = n19.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n20 ON s.id_nomenclature_behaviour = n20.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n21 ON s.id_nomenclature_valid_status = n21.id_nomenclature
      LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = s.cd_hab;
 
 
