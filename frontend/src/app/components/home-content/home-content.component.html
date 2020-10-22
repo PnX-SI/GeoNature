@@ -11,11 +11,7 @@
           <div class="no-padding">
             <em class="fa fa-xl fa-search color-blue"></em>
             <div class="large">
-              <i
-                class="fa fa-spinner fa-spin text-muted"
-                *ngIf="!generalStat"
-                aria-hidden="true"
-              ></i>
+              <mat-spinner *ngIf="!generalStat" diameter="20"></mat-spinner>
               {{generalStat?.nb_data}}
             </div>
             <div class="text-muted">Observations</div>
@@ -28,11 +24,8 @@
           <div class="no-padding">
             <em class="fa fa-xl fa fa-leaf color-orange"></em>
             <div class="large">
-              <i
-                class="fa fa-spinner fa-spin text-muted"
-                *ngIf="!generalStat"
-                aria-hidden="true"
-              ></i>
+              <mat-spinner *ngIf="!generalStat" diameter="20"></mat-spinner>
+
               {{generalStat?.nb_species}}
             </div>
             <div class="text-muted">Taxons</div>
@@ -44,11 +37,9 @@
           <div class="no-padding">
             <em class="fa fa-xl fa-users color-teal"></em>
             <div class="large">
-              <i
-                class="fa fa-spinner fa-spin text-muted"
-                *ngIf="!generalStat; else hasStat"
-                aria-hidden="true"
-              ></i>
+
+              <mat-spinner *ngIf="!generalStat; else hasStat" diameter="20"></mat-spinner>
+
               <ng-template #hasStat>~{{generalStat?.nb_observers}}</ng-template>
             </div>
             <div class="text-muted">Observateurs</div>
@@ -60,11 +51,8 @@
           <div class="no-padding">
             <em class="fa fa-xl fa fa-book color-red"></em>
             <div class="large">
-              <i
-                class="fa fa-spinner fa-spin text-muted"
-                *ngIf="!generalStat"
-                aria-hidden="true"
-              ></i>
+              <mat-spinner *ngIf="!generalStat" diameter="20"></mat-spinner>
+
               {{generalStat?.nb_dataset}}
             </div>
             <div class="text-muted">Jeux de données</div>
