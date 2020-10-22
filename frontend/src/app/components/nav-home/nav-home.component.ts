@@ -33,14 +33,14 @@ export class NavHomeComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.appConfig = AppConfig;
-    // subscribe to router event
+    // Subscribe to router event
     this.subscription = this.activatedRoute.queryParams.subscribe((param: any) => {
       const locale = param['locale'];
       if (locale !== undefined) {
         this.translate.use(locale);
       }
     });
-    // subscribe to currentModuleSub event to set the current module name in the navbar
+    // Subscribe to currentModuleSub event to set the current module name in the navbar
     this._globalSub.currentModuleSub.subscribe(module => {
       if (module) {
         this.moduleName = module.module_label;
@@ -51,12 +51,13 @@ export class NavHomeComponent implements OnInit, OnDestroy {
         this.moduleName = 'Accueil';
       }
     });
-    // init the sidenav instance in sidebar service
+    // Init the sidenav instance in sidebar service
     this._sideNavService.setSideNav(this.sidenav);
 
-    // put the user name in navbar
+    // Put the user name in navbar
     this.currentUser = this._authService.getCurrentUser();
   }
+
   changeLanguage(lang) {
     this.translate.use(lang);
   }
@@ -68,6 +69,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
   backPage() {
     this._location.back();
   }
+
   forwardPage() {
     this._location.forward();
   }
