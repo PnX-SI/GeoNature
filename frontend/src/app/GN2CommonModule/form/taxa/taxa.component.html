@@ -1,0 +1,13 @@
+<pnx-multiselect
+  [values]="taxa"
+  [parentFormControl]="parentFormControl"
+  keyLabel="displayName"
+  keyValue="cd_nom"
+  [isHtml]="true"
+  [label]="label"
+  debounceTime="500"
+  (onSearch)="refreshTaxaList($event)"
+  [searchBar]="true"
+  [bindAllItem]="bindAllItem"
+>
+</pnx-multiselect>
