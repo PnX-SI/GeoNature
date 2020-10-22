@@ -110,7 +110,7 @@ class PermissionManagement(Schema):
     DATA_ACCESS_RULES_LINK = fields.String(missing=None)
     DEFAULT_ACCESS_DURATION = fields.Integer(missing=None)
     MAX_ACCESS_DURATION = fields.Integer(missing=365)
-    VALIDATOR_EMAIL = fields.String(missing=None)
+    VALIDATOR_EMAIL = EmailStrOrListOfEmailStrField(missing=None)
     REQUEST_FORM_TITLE = fields.String(missing=None)
     REQUEST_FORM = fields.List(fields.Dict(), missing=[])
     ENABLE_CONVENTION = fields.Boolean(missing=False)
