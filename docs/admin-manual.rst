@@ -906,7 +906,7 @@ Renseigner les paramètres suivants dans le fichier de configuration (``geonatur
         ADMIN_APPLICATION_LOGIN = "login_admin_usershub"
         ADMIN_APPLICATION_PASSWORD = "password_admin_usershub
 
-Les fonctionnalités de création de compte nécessitent l'envoi d'emails pour vérifier l'identité des demandeurs de compte. Il est donc nécessaire d'avoir un serveur SMTP capable d'envoyer des emails. Renseigner la rubrique ``MAIL_CONFIG`` de la configuration :
+Les fonctionnalités de création de compte nécessitent l'envoi d'emails pour vérifier l'identité des demandeurs de compte. Il est donc nécessaire d'avoir un serveur SMTP capable d'envoyer des emails. Renseigner la rubrique ``MAIL_CONFIG`` de la configuration. La description détaillées des paramètres de configuration d'envoie des emails est disponible dans `la documentation de Flask-Mail <https://flask-mail.readthedocs.io/en/latest/#configuring-flask-mail>`_. Exemple :
 
 ::
 
@@ -946,6 +946,18 @@ Deux modes sont alors disponibles. Soit l'utilisateur est automatiquement accept
 
 L'utilisateur qui demande la création de compte est automatiquement mis dans un "groupe" UsersHub (par défaut, il s'agit du groupe "En poste"). Ce groupe est paramétrable depuis la table ``utilisateurs.cor_role_app_profil``. (La ligne où ``is_default_group_for_app = true`` sera utilisée comme groupe par défaut pour GeoNature). Il n'est pas en paramètre de GeoNature pusqu'il serait falsifiable via l'API. ⚠️ **Attention**, si vous effectuez une migration depuis une version de GeoNature < 2.2.0, aucun groupe par défaut n'est défini, vous devez définir à la main le groupe par défaut pour l'application GeoNature dans la table ``utilisateurs.cor_role_app_profil``.
 
+Dans le mode "création de compte validé par administrateur", lorsque l'inscription est validée par un administrateur, un email est envoyé à l'utilisateur pour lui indiquer la confirmation de son inscription.
+Il est possible de personnaliser le texte de la partie finale de cet email située juste avant la signature à l'aide du paramètre ``ADDON_USER_EMAIL`` (toujours à ajouter à la rubrique ``[ACCOUNT_MANAGEMENT]``).
+Vous pouvez utiliser des balises HTML compatibles avec les emails pour ce texte.
+
+::
+
+    [ACCOUNT_MANAGEMENT]
+        ADDON_USER_EMAIL = """<p>
+            Toute l'équipe de GeoNature vous remercie pour votre inscription.
+          </p>"""
+
+
 Il est également possible de créer automatiquement un jeu de données et un cadre d'acquisition "personnel" à l'utilisateur afin qu'il puisse saisir des données dès sa création de compte via le paramètre ``AUTO_DATASET_CREATION``. Par la suite l'administrateur pourra rattacher l'utilisateur à des JDD et CA via son organisme.
 
 ::
@@ -965,14 +977,17 @@ Le formulaire de création de compte est par défaut assez minimaliste (nom, pr�
 
 Il est possible d'ajouter des champs au formulaire grâce à un générateur controlé par la configuration. Plusieurs type de champs peuvent être ajoutés (text, textarea, number, select, checkbox mais aussi taxonomy, nomenclature etc...).
 
-L'exemple ci-dessous permet de créer un champs de type "checkbox" obligatoire, avec un lien vers un document (une charte par exemple) et un champ de type "select", non obligatoire. (voir le fichier ``geonature_config.toml.example`` pour un exemple plus exhaustif).
+L'exemple ci-dessous permet de créer un champs de type "checkbox" obligatoire, avec un lien vers un document (une charte par exemple) et un champ de type "select", non obligatoire. (voir le fichier ``config/geonature_config.toml.example`` pour un exemple plus exhaustif).
 
 ::
 
         [ACCOUNT_MANAGEMENT]
         [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]]
             type_widget = "checkbox"
-            attribut_label = "<a target='_blank' href='http://docs.geonature.fr'>J'ai lu et j'accepte la charte</a>"
+            attribut_label = """
+              <a target="_blank" href="http://docs.geonature.fr">
+                J'ai lu et j'accepte la charte
+              </a>"""
             attribut_name = "validate_charte"
             values = [true] 
             required = true
