@@ -15,7 +15,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     s.altitude_max AS "altMax",
     s.depth_min AS "profMin",
     s.depth_max AS "profMax",
-    s.precision,
+    s.precision as "precisGeo",
     public.ST_astext(s.the_geom_4326) AS "geometrie",
     to_char(s.date_min, 'YYYY-MM-DD') AS "dateDebut",
     to_char(s.date_max, 'YYYY-MM-DD') AS "dateFin",
@@ -24,6 +24,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     s.validator AS validateur,
     n21.label_default AS "nivVal",
     s.meta_validation_date as "dateCtrl",
+    s.validation_comment AS "validCom",
     s.observers AS observer,
     s.id_digitiser AS id_digitiser,
     s.determiner AS detminer,
@@ -94,4 +95,5 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
      LEFT JOIN ref_nomenclatures.t_nomenclatures n20 ON s.id_nomenclature_behaviour = n20.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n21 ON s.id_nomenclature_valid_status = n21.id_nomenclature
      LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = s.cd_hab;
+
 
