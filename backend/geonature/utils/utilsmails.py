@@ -35,9 +35,6 @@ def send_mail(recipients, subject, msg_html):
     void
         L'email est envoyé. Aucun retour.
     """
-    # Import here to permit use of other functions in config schema.
-    from server import MAIL
-
     if not MAIL:
         raise Exception("No configuration for email")
 
@@ -94,6 +91,7 @@ def split_name_address(email):
     Parameters
     ----------
     email : str
+        Chaine contenant un email avec ou sans libellé.
 
     Returns
     -------
