@@ -18,7 +18,7 @@
     > {{item[keyLabel]}}
       <div
         (click)="removeItem($event, item)"
-        class="fa fa-times clickable remove-button"
+        class="fa fa-times clickable remove-button" *ngIf="!disabled"
       > </div>
     </span>
 
