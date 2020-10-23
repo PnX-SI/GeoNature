@@ -5,15 +5,12 @@ Démarrage de l'application
 import logging
 
 from flask import Flask
-from flask_mail import Mail, Message
+from flask_mail import Message
 from flask_cors import CORS
 from sqlalchemy import exc as sa_exc
 from flask_sqlalchemy import before_models_committed
 
-from geonature.utils.env import DB, MA, list_and_import_gn_modules
-
-
-MAIL = Mail()
+from geonature.utils.env import MAIL, DB, MA, list_and_import_gn_modules
 
 def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
     # Make sure app is a singleton

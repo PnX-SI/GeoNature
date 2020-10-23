@@ -109,8 +109,16 @@ MAIL_ON_ERROR = false
     # Laisser en commentaire si le serveur n'a pas de limite.
     # MAIL_MAX_EMAILS = 100
     MAIL_ASCII_ATTACHMENTS = false
-    # Email(s) où envoyer les erreurs générées par le backend de GeoNature
-    ERROR_MAIL_TO = ["email@email.com", "email2@email.com"]
+    # Email(s) où envoyer les erreurs générées par le backend de GeoNature.
+    # Deux syntaxes alternatives sont autorisées pour ce paramètre :
+    # - une chaine contenant un ou plusieurs emails séparés par des 
+    #   virgules (exemple ci-dessous).
+    # - une liste de chaine contenant un email.
+    # Un email encadré par des chevrons (<>) peut être précédé par un
+    # libellé qui sera utilisé lors de l'envoi.
+    # Les espaces présents en début et fin de chaine ainsi qu'avant et 
+    # après les virgules sont ignorés.
+    ERROR_MAIL_TO = ["Prénom NOM <email@email.com>", "email2@email.com"]
 
 # CAS authentification (Optionnel, remplace l'authentification locale via UsersHub)
 [CAS_PUBLIC]
@@ -197,9 +205,6 @@ MAIL_ON_ERROR = false
     name = "google"
     url = "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
     subdomains = ["mt0", "mt1", "mt2", "mt3"]
-
-
-
 
 # Configuration du module Synthese
 [SYNTHESE]
@@ -378,8 +383,19 @@ MAIL_ON_ERROR = false
     # compte utilisateur
     AUTO_DATASET_CREATION = true
 
-    # Email du validateur si auto_account_creation = false
-    VALIDATOR_EMAIL = "theo.lechemia@ecrins-parcnational.fr"
+    # Email du validateur si auto_account_creation = false.
+    # Deux syntaxes alternatives sont autorisées pour ce paramètre :
+    # - une chaine contenant un ou plusieurs emails séparés par des 
+    #   virgules (exemple ci-dessous).
+    # - une liste de chaine contenant un email.
+    # Un email encadré par des chevrons (<>) peut être précédé par un
+    # libellé qui sera utilisé lors de l'envoi.
+    # Les espaces présents en début et fin de chaine ainsi qu'avant et 
+    # après les virgules sont ignorés.
+    VALIDATOR_EMAIL = """
+        Théo LECHEMIA <theo.lechemia@ecrins-parcnational.fr>,
+        Carl von LINNÉ <c.linnaeus@linnaeus.se>
+        """
 
     # Texte complémentaire ajouté à la fin des emails envoyés à l'utilisateur.
     # Utiliser du HTML simple (compatible avec les email) ou du texte.

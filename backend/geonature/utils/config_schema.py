@@ -40,6 +40,7 @@ class EmailStrOrListOfEmailStrField(fields.Field):
             email = recipient[1] if isinstance(recipient, tuple) else recipient
             # Validate email with Marshmallow
             validator = Email()
+            validator(email)
 
 
 class CasUserSchemaConf(Schema):
