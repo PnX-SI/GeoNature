@@ -88,7 +88,9 @@ def get_user_from_token_and_raise(
         return Response(msg, 403)
 
 
-def get_user_permissions(user, code_action, code_filter_type, module_code=None, code_object=None):
+def get_user_permissions(
+    user, code_filter_type, code_action=None, module_code=None, code_object=None
+):
     """
         Get all the permissions of a user for an action, a module (or an object) and a filter_type
         Users permissions could be multiples because of user's group. The view mapped by VUsersPermissions does not take the
@@ -96,36 +98,24 @@ def get_user_permissions(user, code_action, code_filter_type, module_code=None, 
         
         Parameters:
             user(dict)
-            code_action(str): <C,R,U,V,E,D>
             code_filter_type(str): <SCOPE, GEOGRAPHIC ...>
+            code_action(str): <C,R,U,V,E,D> or None if all actions wanted
             module_code(str): 'GEONATURE', 'OCCTAX'
             code_object(str): 'PERMISSIONS', 'DATASET' (table gn_permissions.t_oject)
         Return:
             Array<VUsersPermissions>
     """
-    id_role = user["id_role"]
-
-    ors = [VUsersPermissions.module_code.ilike("GEONATURE")]
-
-    q = (
-        VUsersPermissions.query.filter(VUsersPermissions.id_role == id_role)
-        .filter(VUsersPermissions.code_action == code_action)
-        .filter(VUsersPermissions.code_filter_type == code_filter_type)
+    user_cruved = query_user_perm(
+        id_role=user["id_role"],
+        code_filter_type=code_filter_type,
+        code_action=code_action,
+        object_code=code_object,
     )
-    # if code_object we take only autorization of this object
-    # no heritage from GeoNature
+    object_for_error = None
     if code_object:
-        user_cruved = q.filter(VUsersPermissions.code_object == code_object).all()
         object_for_error = code_object
-    # else: heritage cruved of the module or from GeoNature
-    else:
-        object_for_error = "GEONATURE"
-        if module_code:
-            ors.append(VUsersPermissions.module_code.ilike(module_code))
-            object_for_error = module_code
-
-        user_cruved = q.filter(sa.or_(*ors)).all()
-
+    if module_code:
+        object_for_error = f"{object_for_error} , {module_code}"
     try:
         assert len(user_cruved) > 0
         return user_cruved
@@ -151,6 +141,25 @@ def build_cruved_dict(cruved, get_id):
     return cruved_dict
 
 
+def query_user_perm(
+    id_role, code_filter_type, code_action=None, module_code=None, object_code=None
+):
+
+    ors = [VUsersPermissions.module_code.ilike("GEONATURE")]
+
+    q = VUsersPermissions.query.filter(VUsersPermissions.id_role == id_role).filter(
+        VUsersPermissions.code_filter_type == code_filter_type
+    )
+    if code_action:
+        q = q.filter(VUsersPermissions.code_action == code_action)
+
+    if object_code:
+        ors.append(VUsersPermissions.code_object == object_code)
+    if module_code:
+        ors.append(VUsersPermissions.module_code.ilike(module_code))
+    return q.filter(sa.or_(*ors)).all()
+
+
 def beautifulize_cruved(actions, cruved):
     """
     Build more readable the cruved dict with the actions label
@@ -170,7 +179,7 @@ def beautifulize_cruved(actions, cruved):
 
 
 def cruved_scope_for_user_in_module(
-    id_role=None, module_code=None, object_code="ALL", get_id=False
+    id_role=None, module_code=None, object_code=None, get_id=False
 ):
     """
     get the user cruved for a module
@@ -185,72 +194,84 @@ def cruved_scope_for_user_in_module(
     - index 0: the cruved as a dict : {'C': 0, 'R': 2 ...}
     - index 1: a boolean which say if its an herited cruved
     """
-    q = (
-        DB.session.query(
-            VUsersPermissions.code_action,
-            func.max(VUsersPermissions.value_filter),
-            func.max(VUsersPermissions.id_filter),
-        )
-        .distinct(VUsersPermissions.code_action)
-        .filter(VUsersPermissions.id_role == id_role)
-        .filter(VUsersPermissions.code_filter_type == "SCOPE")
-        .filter(VUsersPermissions.code_object == object_code)
-        .group_by(VUsersPermissions.code_action)
+    print("##################")
+    user_perm = query_user_perm(
+        id_role=id_role, code_filter_type="SCOPE", module_code=module_code, object_code=object_code
     )
-
-    cruved_actions = ["C", "R", "U", "V", "E", "D"]
-    # if object not ALL, no heritage
-    if object_code != "ALL":
-        object_cruved = q.all()
-
-        cruved_dict = build_cruved_dict(object_cruved, get_id)
-        update_cruved = {}
-        for action in cruved_actions:
-            if action in cruved_dict:
-                update_cruved[action] = cruved_dict[action]
-            else:
-                update_cruved[action] = "0"
-        return update_cruved, False
-
-    # get max scope cruved for module GEONATURE
-    parent_cruved_data = q.filter(VUsersPermissions.module_code.ilike("GEONATURE")).all()
-    parent_cruved = {}
-    # build a dict like {'C':'0', 'R':'2' ...} if get_id = False or
-    # {'C': 1, 'R':3 ...} if get_id = True
-    parent_cruved = build_cruved_dict(parent_cruved_data, get_id)
-
-    # get max scope cruved for module passed in parameter
-    module_cruved = {}
-    if module_code:
-        module_cruved_data = q.filter(VUsersPermissions.module_code.ilike(module_code)).all()
-        module_cruved = build_cruved_dict(module_cruved_data, get_id)
-        # for the module
-        for action_scope in module_cruved_data:
-            if get_id:
-                module_cruved[action_scope[0]] = action_scope[2]
-            else:
-                module_cruved[action_scope[0]] = action_scope[1]
-
-    # get the id for code 0
+    # order permissions by ACTION
+    perm_by_actions = {}
+    for perm in user_perm:
+        if perm.code_action in perm_by_actions:
+            perm_by_actions[perm.code_action].append(perm)
+        else:
+            perm_by_actions[perm.code_action] = [perm]
     if get_id:
         id_scope_no_data = (
             DB.session.query(TFilters.id_filter).filter(TFilters.value_filter == "0").one()[0]
         )
-    # update cruved with child module if action exist, otherwise take geonature cruved
-    update_cruved = {}
-    herited = False
+    herited_perm = {}
+    for action, perm in perm_by_actions.items():
+        herited_perm[action] = build_herited_user_cruved(perm, module_code=module_code)
+
+    cruved_actions = ["C", "R", "U", "V", "E", "D"]
+
+    herited_cruved = {}
+    # TODO: is herited ?
     for action in cruved_actions:
-        if action in module_cruved:
-            update_cruved[action] = module_cruved[action]
-        elif action in parent_cruved:
-            update_cruved[action] = parent_cruved[action]
-            herited = True
+        if action in herited_perm:
+            if get_id:
+                herited_cruved[action] = herited_perm[action].id_filter
+            else:
+                herited_cruved[action] = herited_perm[action].value_filter
         else:
             if get_id:
-                update_cruved[action] = id_scope_no_data
+                herited_cruved[action] = id_scope_no_data
             else:
-                update_cruved[action] = "0"
-    return update_cruved, herited
+                herited_cruved[action] = "0"
+    return herited_cruved, False
+
+    # user_cruved = build_herited_user_cruved(user_perm)
+
+    # if object not ALL, no heritage
+    # if object_code != "ALL":
+    #     object_cruved = q.all()
+
+    #     cruved_dict = build_cruved_dict(object_cruved, get_id)
+    #     update_cruved = {}
+    #     for action in cruved_actions:
+    #         if action in cruved_dict:
+    #             update_cruved[action] = cruved_dict[action]
+    #         else:
+    #             update_cruved[action] = "0"
+    #     return update_cruved, False
+
+    # get max scope cruved for module GEONATURE
+    # parent_cruved_data = q.filter(VUsersPermissions.module_code.ilike("GEONATURE")).all()
+    # parent_cruved = {}
+    # build a dict like {'C':'0', 'R':'2' ...} if get_id = False or
+    # {'C': 1, 'R':3 ...} if get_id = True
+
+    # parent_cruved = build_cruved_dict(parent_cruved_data, get_id)
+
+    # get max scope cruved for module passed in parameter
+    # user_cruved = {}
+    # if module_code:
+    #     ors.append(VUsersPermissions.module_code.ilike(module_code))
+    # module_cruved_data = q.filter(VUsersPermissions.module_code.ilike(module_code)).all()
+    # module_cruved = build_cruved_dict(module_cruved_data, get_id)
+    # for the module
+
+    herited = False
+    # for action_scope in cruved_data:
+    #     if action_scope[3] != module_code or action_scope[4] != object_code:
+    #         herited = True
+    #     if get_id:
+    #         user_cruved[action_scope[0]] = action_scope[2]
+    #     else:
+    #         user_cruved[action_scope[0]] = action_scope[1]
+    # # get the id for code 0
+
+    return herited_cruved, herited
 
 
 def get_or_fetch_user_cruved(session=None, id_role=None, module_code=None, object_code="ALL"):
@@ -268,3 +289,57 @@ def get_or_fetch_user_cruved(session=None, id_role=None, module_code=None, objec
         session[module_code] = {}
         session[module_code]["user_cruved"] = user_cruved
     return user_cruved
+
+
+def build_herited_user_cruved(user_permissions, module_code):
+    """
+    Parameters:
+        - user_permissions(list<VUsersPermissions>)
+        - module_code(str)
+    Return:
+        VUsersPermissions
+
+    """
+    # loop on user permissions
+    # return the module permission if exist
+    # otherwise return GEONATURE permission
+    object_permissions = []
+    module_permissions = []
+    geonature_permission = []
+    # filter the GeoNature perm and the module perm in two
+    # arrays to make heritage
+    for user_permission in user_permissions:
+        if user_permission.code_object != "ALL":
+            object_permissions.append(user_permission)
+        elif user_permission.module_code == module_code:
+            module_permissions.append(user_permission)
+        else:
+            geonature_permission.append(user_permission)
+
+    # take the max of the different permissions
+    if len(object_permissions) > 0:
+        return get_max_perm(object_permissions)
+    elif len(object_permissions) == 0 and len(module_permissions) > 0:
+        return get_max_perm(module_permissions)
+    # if no module permission take the max of GN perm
+    elif len(module_permissions) == 0:
+        return get_max_perm(geonature_permission)
+    # if at least one module perm: take the max of module perms
+    else:
+        return get_max_perm(module_permissions)
+
+
+def get_max_perm(perm_list):
+    """
+        Return the max filter_code from a list of VUsersPermissions instance
+        get_user_permissions return a list of VUsersPermissions from its group or himself
+    """
+    user_with_highter_perm = perm_list[0]
+    max_code = user_with_highter_perm.value_filter
+    i = 1
+    while i < len(perm_list):
+        if int(perm_list[i].value_filter) >= int(max_code):
+            max_code = perm_list[i].value_filter
+            user_with_highter_perm = perm_list[i]
+        i = i + 1
+    return user_with_highter_perm
