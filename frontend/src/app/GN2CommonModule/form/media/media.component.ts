@@ -42,6 +42,9 @@ export class MediaComponent implements OnInit {
 
   @Input() details = [];
 
+  /* fix #1083 Cacher les champs présents dans details */
+  @Input() hideDetailsFields : boolean = false;
+
   constructor(
     private _formBuilder: FormBuilder,
     public ms: MediaService,
@@ -54,7 +57,8 @@ export class MediaComponent implements OnInit {
       mediaFormDefinitionsDict,
       {
         nomenclatures: this.ms.metaNomenclatures(),
-        details: this.details
+        details: this.details,
+        hideDetailsFields: this.hideDetailsFields
       }
     );
 
