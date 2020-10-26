@@ -130,7 +130,7 @@ AS $function$
 -- par exemple, s'il existe des paramètres pour les "Animalia" des paramètres pour le renard, 
 -- les paramètres du renard surcoucheront les paramètres Animalia pour cette espèce
   DECLARE 
-   my_cd_ref integer := t.cd_ref FROM taxonomie.taxref t WHERE t.cd_nom=mycdnom;
+   my_cd_ref integer := t.cd_ref FROM taxonomie.taxref t WHERE t.cd_nom=my_cd_nom;
   BEGIN
   	RETURN QUERY
   		WITH all_parameters AS (
