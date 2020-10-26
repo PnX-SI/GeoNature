@@ -100,7 +100,7 @@ VALUES (
 -------------
 
 -- Fonctions dédiées à la comparaison des données avec leur profil d'espèce dans gn_profiles
-CREATE OR REPLACE FUNCTION gn_profiles.get_parameters(mycdnom integer)
+CREATE OR REPLACE FUNCTION gn_profiles.get_parameters(my_cd_nom integer)
  RETURNS TABLE (cd_ref integer, spatial_precision integer, temporal_precision_days integer, active_life_stage boolean, distance smallint)
  LANGUAGE plpgsql
  IMMUTABLE
@@ -108,13 +108,13 @@ AS $function$
 -- fonction permettant de récupérer les paramètres les plus adaptés (définis au plus proche du taxon) pour calculer le profil d'un taxon donné
 -- par exemple, s'il existe des paramètres pour les "Animalia" des paramètres pour le renard, les paramètres du renard surcoucheront les paramètres Animalia pour cette espèce
   DECLARE 
-   my_cd_ref integer := t.cd_ref FROM taxonomie.taxref t WHERE t.cd_nom=mycdnom;
+   my_cd_ref integer := t.cd_ref FROM taxonomie.taxref t WHERE t.cd_nom=my_cd_nom;
   BEGIN
   	RETURN QUERY
   		WITH all_parameters AS (
-  			SELECT param.cd_ref, param.spatial_precision, param.temporal_precision_days, param.active_life_stage, parents.distance 
+  			SELECT my_cd_ref, param.spatial_precision, param.temporal_precision_days, param.active_life_stage, parents.distance 
   			FROM gn_profiles.cor_taxons_profiles_parameters param
-			JOIN taxonomie.find_all_taxons_parents(my_cd_ref) parents ON parents.cd_nom=param.cd_ref)
+			JOIN taxonomie.find_all_taxons_parents(my_cd_ref) parents ON parents.cd_nom=param.cd_nom)
 		SELECT * FROM all_parameters all_param WHERE all_param.distance=(SELECT min(all_param2.distance) FROM all_parameters all_param2)
 			;
   END;
