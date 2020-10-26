@@ -7,13 +7,13 @@ CREATE SCHEMA gn_profiles;
 --TABLES--
 ----------
 
-CREATE TABLE gn_profiles.t_profiles_parameters(
-	id_profile_parameter serial NOT NULL,
+CREATE TABLE gn_profiles.t_parameters(
+	id_parameter serial NOT NULL,
 	id_organism int4 NULL,
-	profiles_parameter_name varchar(100) NOT NULL,
-	profiles_parameter_desc text NULL,
-	profiles_parameter_value text NOT NULL,
-	profiles_parameter_extra_value varchar(255) NULL
+	name varchar(100) NOT NULL,
+	desc text NULL,
+	value text NOT NULL,
+	extra_value varchar(255) NULL
 );
 
 
@@ -35,9 +35,11 @@ CREATE TABLE gn_profiles.t_altitude_ranges(
 ---------------
 --PRIMARY KEY--
 ---------------
-ALTER TABLE ONLY gn_profiles.t_profiles_parameters ADD CONSTRAINT pk_profiles_parameters PRIMARY KEY (id_profile_parameter);
+ALTER TABLE ONLY gn_profiles.t_profiles_parameters 
+ADD CONSTRAINT pk_profiles_parameters PRIMARY KEY (id_profile_parameter);
 
-ALTER TABLE ONLY gn_profiles.t_profiles_parameters ADD CONSTRAINT fk_t_profiles_parameters_bib_organismes FOREIGN KEY (id_organism) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
+ALTER TABLE ONLY gn_profiles.t_profiles_parameters 
+ADD CONSTRAINT fk_t_profiles_parameters_bib_organismes FOREIGN KEY (id_organism) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY gn_profiles.cor_taxons_profiles_parameters ADD CONSTRAINT pk_taxons_profiles_parameters PRIMARY KEY (cd_ref);
 
