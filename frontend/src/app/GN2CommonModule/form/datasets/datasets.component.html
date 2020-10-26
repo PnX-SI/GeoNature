@@ -26,11 +26,11 @@
     >
       <option
         *ngIf="displayAll"
-        [ngValue]="null"
+        [value]="null"
       > Tous </option>
       <option
         *ngFor="let dataSet of dataSets"
-        [ngValue]="dataSet.id_dataset"
+        [value]="dataSet.id_dataset"
       >{{ dataSet.dataset_name }}</option>
     </select>
   </div>

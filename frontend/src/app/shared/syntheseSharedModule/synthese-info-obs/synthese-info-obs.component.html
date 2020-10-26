@@ -228,6 +228,10 @@
         <td> Identifiant unique SINP </td>
         <td> {{selectedObs?.unique_id_sinp}} </td>
       </tr>
+      <tr *ngFor="let data of selectedObs?.additional_data | keyvalue:sortingFunction">
+        <td> {{data.key}} </td>
+        <td> {{data.value}} </td>
+      </tr>
     </table>
   </mat-tab>
   <mat-tab label="Métadonnées">

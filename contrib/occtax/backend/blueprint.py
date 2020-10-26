@@ -50,6 +50,11 @@ from geonature.core.gn_meta.models import TDatasets, CorDatasetActor
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
 
+import os
+from shutil import copyfile
+from io import BytesIO
+import zipfile
+
 blueprint = Blueprint("pr_occtax", __name__)
 log = logging.getLogger(__name__)
 
@@ -426,11 +431,9 @@ def releveHandler(request, *, releve, info_role):
     json_req = request.get_json()
     json_req["properties"]["geom_4326"] = json_req["geometry"]
     #json_req["properties"]["additional_fields"] = json_req["additional_fields"]
-    print(json_req)
+    #print(json_req)
     # chargement des données POST et merge avec relevé initial
     releve, errors = releveSchema.load(json_req["properties"], instance=releve)
-    print(releve.as_dict())
-    # print(releve.place_name)
     if bool(errors):
         raise InsufficientRightsError(
             errors, 422,
@@ -736,7 +739,7 @@ def export(info_role):
 
     .. :quickref: Occtax; Export data from pr_occtax.export_occtax_sinp
 
-    :query str format: format of the export ('csv', 'geojson', 'shapefile')
+    :query str format: format of the export ('csv', 'geojson', 'shapefile', 'medias')
 
     """
     export_view_name = blueprint.config["export_view_name"]
@@ -784,6 +787,58 @@ def export(info_role):
         return to_json_resp(
             results, as_file=True, filename=file_name, indent=4, extension="geojson"
         )
+    #MET 21/10/2020 Ajout d'un export medias
+    elif export_format == "medias":
+        try:
+            releve_repository_for_media = ReleveRepository(TRelevesOccurrence)
+            q = releve_repository_for_media.get_filtered_query(info_role)
+
+            parameters = request.args
+
+            # Filters
+            q = get_query_occtax_filters(parameters, TRelevesOccurrence, q)
+            data = q.all()
+
+            user = info_role
+            user_cruved = get_or_fetch_user_cruved(
+                session=session, id_role=info_role.id_role, module_code="OCCTAX"
+            )
+            
+            #on crée le dossier s'il n'existe pas
+            dir_path = str(ROOT_DIR / "backend/static/medias/exports")
+            if not os.path.exists(dir_path):
+                os.makedirs(dir_path)
+            #on le clean
+            filemanager.delete_recursively(dir_path)
+            featureCollection = []
+            
+            zip_path = dir_path + "/" + file_name + ".zip"
+            zp_file = zipfile.ZipFile(zip_path, mode="w")
+            for n in data:
+                releve_cruved = n.get_releve_cruved(user, user_cruved)
+                feature = n.get_geofeature(
+                    relationships=(
+                        't_occurrences_occtax',
+                        'cor_counting_occtax',
+                        'medias'
+                    )
+                )
+                if 'properties' in feature:
+                    if 't_occurrences_occtax' in feature['properties']:
+                        for occurence in feature['properties']['t_occurrences_occtax']:
+                            for counting in occurence['cor_counting_occtax']:
+                                if 'medias' in counting:
+                                    for media in counting['medias']:
+                                        if media['media_path'] is not None:
+                                            file_path = str(ROOT_DIR / "backend/" ) + "/" +  media['media_path']
+                                            if os.path.exists(file_path):
+                                                zp_file.write(file_path, os.path.basename(file_path))
+                                            #copyfile( file_path, dir_path + "/" + os.path.basename(file_path))
+                                            #featureCollection.append(file_path)
+            zp_file.close()
+            return send_from_directory(dir_path, file_name + ".zip", as_attachment=True)
+        except GeonatureApiError as e:
+            message = str(e)
     else:
         try:
             filemanager.delete_recursively(
@@ -793,6 +848,7 @@ def export(info_role):
                 db_col for db_col in export_view.db_cols if db_col.key in export_columns
             ]
             dir_path = str(ROOT_DIR / "backend/static/shapefiles")
+            
             export_view.as_shape(
                 db_cols=db_cols, data=data, dir_path=dir_path, file_name=file_name
             )
@@ -807,3 +863,78 @@ def export(info_role):
             error=message,
             redirect=current_app.config["URL_APPLICATION"] + "/#/occtax",
         )
+
+
+@blueprint.route("/test", methods=["GET"])
+@permissions.check_cruved_scope(
+    "E",
+    True,
+    module_code="OCCTAX",
+    redirect_on_expiration=current_app.config.get("URL_APPLICATION"),
+)
+def test(info_role):
+    """
+    Deprecated
+    """
+
+    file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
+    file_name = filemanager.removeDisallowedFilenameChars(file_name)
+
+    releve_repository = ReleveRepository(TRelevesOccurrence)
+    q = releve_repository.get_filtered_query(info_role)
+
+    parameters = request.args
+
+    # Filters
+    q = get_query_occtax_filters(parameters, TRelevesOccurrence, q)
+    data = q.all()
+
+    user = info_role
+    user_cruved = get_or_fetch_user_cruved(
+        session=session, id_role=info_role.id_role, module_code="OCCTAX"
+    )
+    
+    #on crée le dossier s'il n'existe pas
+    dir_path = str(ROOT_DIR / "backend/static/medias/exports")
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
+    #on le clean
+    filemanager.delete_recursively(
+        str(ROOT_DIR / "backend/static/medias/exports")
+    )
+    featureCollection = []
+    zip_path = dir_path + "/" + file_name + ".zip"
+    zp_file = zipfile.ZipFile(zip_path, mode="w")
+
+    for n in data:
+        releve_cruved = n.get_releve_cruved(user, user_cruved)
+        feature = n.get_geofeature(
+            relationships=(
+                't_occurrences_occtax',
+                'cor_counting_occtax',
+                'medias'
+            )
+        )
+        if 'properties' in feature:
+            if 't_occurrences_occtax' in feature['properties']:
+                for occurence in feature['properties']['t_occurrences_occtax']:
+                    for counting in occurence['cor_counting_occtax']:
+                        if 'medias' in counting:
+                            for media in counting['medias']:
+                                if media['media_path'] is not None:
+                                    file_path = str(ROOT_DIR / "backend/" ) + "/" +  media['media_path']
+                                    if os.path.exists(file_path):
+                                        zp_file.write(file_path, os.path.basename(file_path))
+                                        #copyfile( file_path, dir_path + "/" + os.path.basename(file_path))
+                                    #featureCollection.append(file_path)
+                                    
+                                    #return {"items": media,}
+        #    if feature['properties']['t_occurrences_occtax']:
+        #        for occurence in feature['properties']['t_occurrences_occtax'] :
+        #            featureCollection.append(occurence)
+        #featureCollection.append(feature)
+    zp_file.close()
+    return send_from_directory(dir_path, file_name + ".zip", as_attachment=True)
+    #return {
+    #    "medias": featureCollection,
+    #}

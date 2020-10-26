@@ -150,8 +150,9 @@ export class OcctaxFormReleveService {
   
   onDatasetChanged(idDataset) {
     let hasDynamicForm = false;
-    if (ModuleConfig.add_fields[idDataset]){
-      if (ModuleConfig.add_fields[idDataset]['releve']){
+    let dynamiqueFormDataset = this.occtaxFormService.getAddDynamiqueFields(idDataset);
+    if (dynamiqueFormDataset){
+      if (dynamiqueFormDataset['RELEVE']){
         hasDynamicForm = true;
       }
     }
@@ -166,7 +167,7 @@ export class OcctaxFormReleveService {
       if(!this.dynamicFormGroup){
         this.dynamicFormGroup = this.fb.group({});
       }
-      this.componentRef.instance.formConfigReleveDataSet = ModuleConfig.add_fields[idDataset]['releve'];
+      this.componentRef.instance.formConfigReleveDataSet = dynamiqueFormDataset['RELEVE'];
       this.componentRef.instance.formArray = this.dynamicFormGroup;
       this.propertiesForm.setControl('additional_fields', this.dynamicFormGroup);
       
@@ -271,23 +272,29 @@ export class OcctaxFormReleveService {
       map((data) => {
         const releve = data.releve.properties;
 
-        // on affiche la date_max si date_min != date_max
-        if (releve.date_min != releve.date_max) {
-          this.showTime = true;
-        }
-        // si les date sont égales, on active l'autocomplete pour garder la correlation
-        else {
-          this.$_autocompleteDate.unsubscribe()
-          this.$_autocompleteDate = this.coreFormService.autoCompleteDate(
-            this.propertiesForm as FormGroup,
-            "date_min",
-            "date_max"
-          );
-        }
+        //Parfois il passe 2 fois ici, et la seconde fois la date est déja formattée en objet, si c'est le cas, on saute
+        if(typeof releve.date_min !== 'object'){
+          // on affiche la date_max si date_min != date_max
+          if (releve.date_min != releve.date_max) {
+            this.showTime = true;
+          }
+          // si les date sont égales, on active l'autocomplete pour garder la correlation
+          else {
+            this.$_autocompleteDate.unsubscribe()
+            this.$_autocompleteDate = this.coreFormService.autoCompleteDate(
+              this.propertiesForm as FormGroup,
+              "date_min",
+              "date_max"
+            );
+          }
 
-        releve.date_min = this.formatDate(releve.date_min);
-        releve.date_max = this.formatDate(releve.date_max);
-
+          releve.date_min = this.formatDate(releve.date_min);
+          releve.date_max = this.formatDate(releve.date_max);
+        }else{
+          if (releve.date_min.year != releve.date_max.year || releve.date_min.month != releve.date_max.month || releve.date_min.day != releve.date_max.day) {
+            this.showTime = true;
+          }
+        }
 
         // set habitat form value from 
         if (releve.habitat) {
@@ -357,7 +364,7 @@ export class OcctaxFormReleveService {
         map((data) => {
           const previousReleve = this.getPreviousReleve(this.occtaxFormService.previousReleve);
           return {
-            id_dataset: this.occtaxParamS.get("releve.id_dataset") || this.datasetId || previousReleve.id_dataset,
+            id_dataset: this.occtaxParamS.get("releve.id_dataset") || previousReleve.id_dataset || this.datasetId,
             date_min: this.occtaxParamS.get("releve.date_min") ||
               previousReleve.date_min ||
               this.defaultDateWithToday(),

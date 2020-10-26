@@ -6,6 +6,7 @@ import { AppConfig } from '@geonature_config/app.config';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { MediaService } from '@geonature_common/service/media.service';
 import { finalize } from 'rxjs/operators';
+import { BREAKPOINT } from '@angular/flex-layout';
 
 @Component({
   selector: 'pnx-synthese-info-obs',
@@ -19,12 +20,13 @@ export class SyntheseInfoObsComponent implements OnInit {
   @Input() header: boolean = false;
   @Input() validationHistory: Array<any>;
   @Input() selectedObsTaxonDetail: any;
+  @Input() mailto: String;
   public selectObsTaxonInfo;
   public formatedAreas = [];
   public CONFIG = AppConfig;
   public isLoading = false;
   public email;
-  public mailto: String;
+  //public mailto: String;
   public validationColor = {
     '0': '#FFFFFF',
     '1': '#8BC34A',
@@ -65,10 +67,6 @@ export class SyntheseInfoObsComponent implements OnInit {
         this.selectedObs.date_min = date_min.toLocaleDateString('fr-FR');
         const date_max = new Date(this.selectedObs.date_max);
         this.selectedObs.date_max = date_max.toLocaleDateString('fr-FR');
-        if (this.selectedObs.cor_observers) {
-          this.email = this.selectedObs.cor_observers.map(el => el.email).join();
-          this.mailto = String('mailto:' + this.email);
-        }
         const areaDict = {};
         // for each area type we want all the areas: we build an dict of array
         if (this.selectedObs.areas) {
@@ -95,6 +93,20 @@ export class SyntheseInfoObsComponent implements OnInit {
 
         this._gnDataService.getTaxonInfo(data.cd_nom).subscribe(taxInfo => {
           this.selectedObsTaxonDetail = taxInfo;
+
+          /*Envoie de mail ici quand tout est chargé */
+          if (this.selectedObs.cor_observers) {
+            this.email = this.selectedObs.cor_observers.map(el => el.email).join();
+            this.mailto = String('mailto:' + this.email + "?");
+            //1er passage pour la validation, après on passe par ModalInfoObsComponent
+            if (this.CONFIG.FRONTEND.DISPLAY_EMAIL_INFO_SUJET != ""){
+              this.mailto += "subject=" + this.CONFIG.FRONTEND.DISPLAY_EMAIL_INFO_SUJET + "&";
+            }
+            if (this.CONFIG.FRONTEND.DISPLAY_EMAIL_INFO_CONTENT != "" && this.CONFIG.FRONTEND.DISPLAY_EMAIL_DISPLAY_INFO.length > 0){
+              this.mailto += "body=" + this.CONFIG.FRONTEND.DISPLAY_EMAIL_INFO_CONTENT ;
+              this.mailto += this.contentInfoObservationForMail();
+            }
+          }
         });
       });
   }
@@ -144,5 +156,71 @@ export class SyntheseInfoObsComponent implements OnInit {
 
   backToModule(url_source, id_pk_source) {
     window.open(url_source + '/' + id_pk_source, '_blank');
+  }
+
+  //TODO rendre global, additionnal fields
+  sortingFunction = (a, b) => {
+    return a.key > b.key ? -1 : 1;
+  }
+
+  //En fonction des paramètres passés dans la config CONFIG.FRONTEND.DISPLAY_EMAIL_DISPLAY_INFO,
+  //On affichera les informations de l'observation. Pour le moment fait pour 'NOM_VERN', 'DATE', 'COMMUNES', 'MEDIAS'
+  public contentInfoObservationForMail(){
+    if(this.CONFIG.FRONTEND.DISPLAY_EMAIL_DISPLAY_INFO.length == 0){
+      return;
+    }
+    let content : string = "\n";
+    this.CONFIG.FRONTEND.DISPLAY_EMAIL_DISPLAY_INFO.map((keyToDisplay) => {
+      switch(keyToDisplay){
+        case 'NOM_VERN':
+          if(this.selectedObsTaxonDetail.nom_vern){
+            content += this.selectedObsTaxonDetail.nom_vern + " - ";
+          }
+          content += this.selectedObsTaxonDetail.nom_valide;
+          break;
+          
+        case 'DATE':
+          if(this.selectedObsTaxonDetail.nom_vern){
+            content += "\nDate : ";
+            if(this.selectedObs.date_min != this.selectedObs.date_max){
+              content += this.selectedObs.date_min + " -> " + this.selectedObs.date_max;
+            }else{
+              content += this.selectedObs.date_min;
+            }
+          }
+          break;
+          
+        case 'COMMUNES':
+          this.formatedAreas.map((area) => {
+            if(area.area_type == 'Communes'){
+              content += "\nCommunes : ";
+              area.areas.map((commune) => {
+                content += commune.area_name  + ", ";
+              });
+              content = content.substring(0, content.length - 2);
+            }
+          })
+          break;
+          
+        case 'MEDIAS':
+          content += "\nMedias : ";
+          if(this.selectedObs.medias.length == 0){
+            content += "Aucun media";
+          }
+          this.selectedObs.medias.map((media) => {
+            content += "\n\tTitre : " + media.title_fr;
+            content += "\n\tLien vers le media : " + this.mediaService.href(media);
+            if(media.description_fr){
+              content += "\n\tDescription : " + media.description_fr;
+            }
+            if(media.author){
+              content += "\n\tAuteur : " + media.author;
+            }
+            content += "\n";
+          })
+          break;
+      };
+    })
+    return encodeURI(content);
   }
 }

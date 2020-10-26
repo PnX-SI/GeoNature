@@ -32,6 +32,7 @@ export class OcctaxFormService {
   componentRef: ComponentRef<any>;
   componentRefOccurence: ComponentRef<any>;
   public previousReleve = null;
+  public formDatasetFields: any;
 
   constructor(
     private _http: HttpClient,
@@ -59,14 +60,15 @@ export class OcctaxFormService {
         this.editionMode.next(true);
 
         /* OCCTAX - CHAMPS ADDITIONNELS DEB */
-        if(this.dynamicContainerOccurence != undefined){
+        /*if(this.dynamicContainerOccurence != undefined){
+          let dynamiqueFormDataset = this.getAddDynamiqueFields(data.releve.properties.dataset.id_dataset);
           this.dynamicContainerOccurence.clear(); 
           const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(dynamicFormReleveComponent);
           this.componentRefOccurence = this.dynamicContainerOccurence.createComponent(factory);
       
-          this.componentRefOccurence.instance.formConfigReleveDataSet = ModuleConfig.add_fields[data.releve.properties.dataset.id_dataset]['taxon'];
+          this.componentRefOccurence.instance.formConfigReleveDataSet = dynamiqueFormDataset['taxon'];
           this.componentRefOccurence.instance.formArray = this.dynamicFormGroup;
-        }
+        }*/
         /* OCCTAX - CHAMPS ADDITIONNELS FIN */
       },
       (error) => {
@@ -150,5 +152,19 @@ export class OcctaxFormService {
     let occtaxData = this.occtaxData.getValue();
     occtaxData.releve = releve;
     this.occtaxData.next(occtaxData);
+  }
+
+  getAddDynamiqueFields(idDataset){
+    if(ModuleConfig.ADD_FIELDS){
+      if(ModuleConfig.ADD_FIELDS.FORMFIELDS){
+        ModuleConfig.ADD_FIELDS.FORMFIELDS.map((formFields) => {
+          if(formFields.DATASET == idDataset){
+            this.formDatasetFields = formFields;
+          }
+        })
+        return this.formDatasetFields;
+      }
+    }
+    return [];
   }
 }

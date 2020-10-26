@@ -138,7 +138,11 @@
               <div class="value"> {{releve.comment || "-"}}  </div>
             </div> 
 
-            
+            <!--Champs additionnels-->
+            <div *ngFor="let data of releve?.additional_fields | keyvalue:sortingFunction">
+              <div class="label"> {{data.key}} : </div>
+              <div class="value"> {{data.value}} </div>
+            </div>
   
             <p id="info-geo">
               <pnx-areas-intersected-modal 
@@ -227,7 +231,12 @@
                     <div class="label"> {{ 'Taxon.Comment' | translate }} : </div>
                     <div class="value"> {{(displayOccurrence|async).comment || ""}} </div>
                   </div>
-  
+    
+                  <!--Champs additionnels-->
+                  <div *ngFor="let data of (displayOccurrence|async)?.additional_fields | keyvalue:sortingFunction">
+                    <div class="label"> {{data.key}} : </div>
+                    <div class="value"> {{data.value}} </div>
+                  </div>
   
                 </mat-tab>
                 <mat-tab label="Dénombrement"> 
@@ -270,6 +279,12 @@
                     <div>
                       <div class="label"> UUID SINP : </div>
                       <div class="value"> {{counting?.unique_id_sinp_occtax}} </div>
+                    </div>
+    
+                    <!--Champs additionnels-->
+                    <div *ngFor="let data of counting?.additional_fields | keyvalue:sortingFunction">
+                      <div class="label"> {{data.key}} : </div>
+                      <div class="value"> {{data.value}} </div>
                     </div>
 
                     <ng-container *ngFor="let media of counting.medias; index as i">

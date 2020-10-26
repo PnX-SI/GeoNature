@@ -193,4 +193,8 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
       }
     );
   }
+  //TODO rendre global, additionnal fields
+  sortingFunction = (a, b) => {
+    return a.key > b.key ? -1 : 1;
+  }
 }

@@ -384,7 +384,7 @@ class TMediumRepository:
         medium = DB.session.query(TMedias).filter(TMedias.uuid_attached_row == entity_uuid).all()
         return medium
 
-    def sync_medias(self):
+    def sync_medias():
         """
             Met à jour les médias
               - supprime les médias sans uuid_attached_row plus vieux que 24h

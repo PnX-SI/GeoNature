@@ -129,10 +129,20 @@ default_columns_export = [
     "natObjGeo",
     "nomLieu",
     "precision",
+ 	"expertise",
+	"structureParticipante",
+	"catPaysagere",
+	"descMilieuAquatique",
+	"numDerogation",
+	"prelevAdn",
+	"lieuStockageAdn",
+	"titreMedias",
+	"descriptionMedias",
+	"URLMedias"
 ]
 
 
-available_export_format = ["csv", "geojson", "shapefile"]
+available_export_format = ["csv", "geojson", "shapefile", "medias"]
 
 list_messages = {
     "emptyMessage": "Aucune donnée à afficher",
@@ -145,6 +155,25 @@ Vous vous apprêtez à télécharger les données de la <b>recherche courante. <
 """
 
 
+
+class DatasetFieldsConfiguration(Schema):
+    # config liée au formulaire dynamique OCCTAX par dataset
+    DATASET = fields.Integer()
+    ID_TAXON_LIST = fields.Integer(missing=100)
+    RELEVE = fields.List(fields.Dict(), missing=[])
+    OCCURRENCE = fields.List(fields.Dict(), missing=[])
+    COUNTING = fields.List(fields.Dict(), missing=[])
+
+
+class DatasetConfiguration(Schema):
+    # config liée au formulaire dynamique OCCTAX par dataset
+    FORMFIELDS = fields.List(fields.Nested(DatasetFieldsConfiguration), missing=[])
+    #DATASET = fields.Integer()
+    #id_taxon_list = fields.Integer(missing=100)
+    #releve = fields.List(fields.Dict(), missing=[])
+    #occurence = fields.List(fields.Dict(), missing=[])
+    #counting = fields.List(fields.Dict(), missing=[])
+    
 class GnModuleSchemaConf(Schema):
     form_fields = fields.Nested(FormConfig, missing=dict())
     observers_txt = fields.Boolean(missing=False)
@@ -171,3 +200,6 @@ class GnModuleSchemaConf(Schema):
     ENABLE_SETTINGS_TOOLS = fields.Boolean(missing=False)
     ENABLE_MEDIAS = fields.Boolean(missing=True)
     ENABLE_MY_PLACES = fields.Boolean(missing=True)
+    ADD_FIELDS = fields.Nested(DatasetConfiguration, missing={"FORMFIELDS": []})
+    #add_fields = fields.List(fields.Nested(DatasetConfiguration, missing={}))
+

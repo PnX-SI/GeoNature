@@ -37,10 +37,11 @@ export class OcctaxFormCountingComponent {
     this.occtaxFormCountingService.dynamicContainerCounting = this.containerCounting;
     
     //Ajout du composant dynamique
+    let dynamiqueFormDataset = this.fs.getAddDynamiqueFields(this.occtaxFormOccurrenceService.idDataset);
     if (this.occtaxFormOccurrenceService.idDataset){
       let hasDynamicForm = false;
-      if (ModuleConfig.add_fields[this.occtaxFormOccurrenceService.idDataset]){
-        if (ModuleConfig.add_fields[this.occtaxFormOccurrenceService.idDataset]['counting']){
+      if (dynamiqueFormDataset){
+        if (dynamiqueFormDataset['COUNTING']){
           hasDynamicForm = true;
         }
       }
@@ -58,7 +59,7 @@ export class OcctaxFormCountingComponent {
           }
         }
 
-        this.occtaxFormCountingService.componentRefCounting.instance.formConfigReleveDataSet = ModuleConfig.add_fields[this.occtaxFormOccurrenceService.idDataset]['counting'];
+        this.occtaxFormCountingService.componentRefCounting.instance.formConfigReleveDataSet = dynamiqueFormDataset['COUNTING'];
         this.occtaxFormCountingService.componentRefCounting.instance.formArray = this.dynamicFormGroup;
         
         this.countingForm.setControl('additional_fields', this.dynamicFormGroup); 

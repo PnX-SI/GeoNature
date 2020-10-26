@@ -200,16 +200,17 @@ export class OcctaxFormOccurrenceService {
         const releve = data.releve.properties;
 
         /* OCCTAX - CHAMPS ADDITIONNELS DEB */
+        let dynamiqueFormDataset = this.occtaxFormService.getAddDynamiqueFields(this.idDataset);
         this.idDataset = data.releve.properties.dataset.id_dataset;
         let hasDynamicFormOccurence = false;
-        if (ModuleConfig.add_fields[this.idDataset]){
-          if (ModuleConfig.add_fields[this.idDataset]['occurrence']){
+        if (dynamiqueFormDataset){
+          if (dynamiqueFormDataset['OCCURRENCE']){
             hasDynamicFormOccurence = true;
           }
         }
         let hasDynamicFormCounting = false;
-        if (ModuleConfig.add_fields[this.idDataset]){
-          if (ModuleConfig.add_fields[this.idDataset]['counting']){
+        if (dynamiqueFormDataset){
+          if (dynamiqueFormDataset['COUNTING']){
             hasDynamicFormCounting = true;
           }
         }
@@ -223,7 +224,7 @@ export class OcctaxFormOccurrenceService {
             //Ajout du composant dynamique
             this.dynamicFormGroup = this.fb.group({});
         
-            this.componentRefOccurence.instance.formConfigReleveDataSet = ModuleConfig.add_fields[this.idDataset]['occurrence'];
+            this.componentRefOccurence.instance.formConfigReleveDataSet = dynamiqueFormDataset['OCCURRENCE'];
             this.componentRefOccurence.instance.formArray = this.dynamicFormGroup;
             
             //on insert le formulaire dynamique au form control
@@ -241,7 +242,7 @@ export class OcctaxFormOccurrenceService {
             /*MET Champs additionnel*/
             this.dynamicFormGroup = this.fb.group({});
         
-            this.occtaxFormCountingService.componentRefCounting.instance.formConfigReleveDataSet = ModuleConfig.add_fields[this.idDataset]['counting'];
+            this.occtaxFormCountingService.componentRefCounting.instance.formConfigReleveDataSet = dynamiqueFormDataset['COUNTING'];
             this.occtaxFormCountingService.componentRefCounting.instance.formArray = this.dynamicFormGroup;
             
             //on insert le formulaire dynamique au form control
@@ -328,7 +329,24 @@ export class OcctaxFormOccurrenceService {
   }
 
   submitOccurrence() {
-    
+    //Champs additionnel de type media, On  l'enregistre dans les medias pour plus de maintenabilité et le gérer comme tout type de média
+    this.form.value.cor_counting_occtax.map(counting => {
+      if(counting.additional_fields){
+        let dynamiqueFormDataset = this.occtaxFormService.getAddDynamiqueFields(this.idDataset);
+        dynamiqueFormDataset['COUNTING'].map((widget) => {
+          if(widget.type_widget == 'medias'){
+            if (counting.additional_fields[widget.attribut_name]){
+              counting.additional_fields[widget.attribut_name].forEach((media, i) => {
+                counting.additional_fields[widget.attribut_name] = null;
+                counting.medias.push(media);
+              });
+            }
+            delete counting.additional_fields[widget.attribut_name];
+          }
+        });
+      }
+    })
+
     let id_releve = this.occtaxFormService.id_releve_occtax.getValue();
     let TEMP_ID_OCCURRENCE = this.uuidv4();
 

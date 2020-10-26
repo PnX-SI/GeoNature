@@ -223,7 +223,7 @@
       *ngSwitchCase="'html'"
       id="{{ formDefComp.attribut_name }}_{{ rand }}"
       class="{{ formDefComp.class }}"
-      [innerHTML]="formDefComp.html"
+      [innerHTML]="formDefComp.html | safeHTML"
     >
     </div>
 
