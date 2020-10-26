@@ -83,7 +83,7 @@ class TBaseVisits(DB.Model):
     visit_date_max = DB.Column(DB.DateTime)
     id_nomenclature_tech_collect_campanule = DB.Column(DB.Integer)
     id_nomenclature_grp_typ = DB.Column(DB.Integer)
-    comments = DB.Column(DB.DateTime)
+    comments = DB.Column(DB.Unicode)
     uuid_base_visit = DB.Column(UUID(as_uuid=True), default=select([func.uuid_generate_v4()]))
 
     meta_create_date = DB.Column(DB.DateTime)

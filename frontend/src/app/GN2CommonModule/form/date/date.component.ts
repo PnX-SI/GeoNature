@@ -18,15 +18,15 @@ export interface DateStruc {
   year: number;
 }
 /**
- * Ce composant permet de créer un input de type "datepicker". 
+ * Ce composant permet de créer un input de type "datepicker".
  * Créé à parti de https://github.com/ng-bootstrap/ng-bootstrap
- * Retourne objet date: 
+ * Retourne objet date:
  * ```
  * {
     "year": 2018,
     "month": 3,
       "day": 9
- }```  
+ }```
  */
 @Component({
   selector: 'pnx-date',
@@ -44,18 +44,23 @@ export class DateComponent implements OnInit, OnDestroy {
   @Input() disabled: boolean;
   @Input() parentFormControl: FormControl;
   @Input() defaultToday = false;
+  @Input() minDate = {year: 1735, month: 1, day: 1};
+  @Input() maxDate;
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
   dynamicId;
   public changeSub: Subscription;
   public today: DateStruc;
-  constructor(myElement: ElementRef, private _dateParser: NgbDateParserFormatter) {
+
+  constructor(
+    myElement: ElementRef,
+    private _dateParser: NgbDateParserFormatter
+  ) {
     this.elementRef = myElement;
+    this.initializeDates();
   }
 
   ngOnInit() {
-    const today = new Date();
-    this.today = { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate() };
     if (this.defaultToday) {
       this.parentFormControl.setValue(this.today);
     }
@@ -67,6 +72,14 @@ export class DateComponent implements OnInit, OnDestroy {
         this.onDelete.emit(null);
       }
     });
+  }
+
+  private initializeDates() {
+    const today = new Date();
+    this.today = { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate() };
+    if (!this.maxDate) {
+      this.maxDate = this.today;
+    }
   }
 
   openDatepicker(id) {

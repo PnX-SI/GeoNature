@@ -60,6 +60,7 @@
       [formControl]="form.get(formDefComp.attribut_name)"
       id="{{formDefComp.attribut_name}}_{{rand}}"
       type="textarea"
+      rows="{{formDefComp.rows}}"
     >
     </textarea>
 
@@ -317,5 +318,7 @@
       [filters]="formDefComp.filters"
       [default]="formDefComp.default"
     ></pnx-datalist>
+
+    <small class="form-text text-muted">{{formDefComp.help}}</small>
   </div>
 </div>

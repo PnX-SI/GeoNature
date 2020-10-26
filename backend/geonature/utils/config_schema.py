@@ -67,13 +67,14 @@ class MailConfig(Schema):
 
 
 class AccountManagement(Schema):
-    # config liée à l'incription
+    # Config for sign-up
     ENABLE_SIGN_UP = fields.Boolean(missing=False)
     ENABLE_USER_MANAGEMENT = fields.Boolean(missing=False)
     AUTO_ACCOUNT_CREATION = fields.Boolean(missing=True)
     AUTO_DATASET_CREATION = fields.Boolean(missing=True)
     VALIDATOR_EMAIL = fields.Email()
     ACCOUNT_FORM = fields.List(fields.Dict(), missing=[])
+    ADDON_USER_EMAIL = fields.String(missing="")
 
 
 class UsersHubConfig(Schema):
