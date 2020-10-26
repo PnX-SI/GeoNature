@@ -28,9 +28,7 @@ class TestAPIMedias:
         assert response.status_code == 200
 
     def _save_media(self, config):
-        sql = text(
-            """SELECT ref_nomenclatures.get_id_nomenclature('TYPE_MEDIA', '2')"""
-        )
+        sql = text("""SELECT ref_nomenclatures.get_id_nomenclature('TYPE_MEDIA', '2')""")
         result = DB.engine.execute(sql)
         for r in result:
             id_nomenclature_media = r[0]
@@ -53,9 +51,7 @@ class TestAPIMedias:
 
         media_data = json_of_response(response)
 
-        if not os.path.isfile(
-            os.path.join(config["BASE_DIR"], media_data["media_path"])
-        ):
+        if not os.path.isfile(os.path.join(config["BASE_DIR"], media_data["media_path"])):
             assert False
 
         return media_data
@@ -142,4 +138,3 @@ class TestAPIGNCommons:
             if current_module:
                 assert current_module < module["module_label"]
             current_module = module["module_label"]
-

@@ -122,9 +122,7 @@ class TestGnMeta:
             "validable": True,
             "modules": [1],
         }
-        response = post_json(
-            self.client, url_for("gn_meta.post_dataset"), json_dict=one_dataset
-        )
+        response = post_json(self.client, url_for("gn_meta.post_dataset"), json_dict=one_dataset)
         dataset = json_of_response(response)
         assert len(dataset["modules"]) == 1
         assert response.status_code == 200
@@ -143,12 +141,7 @@ class TestGnMeta:
             cor.pop("nomenclature_actor_role")
         # ajout d'un acteur
         fetched_dataset["cor_dataset_actor"].append(
-            {
-                "id_cda": None,
-                "id_nomenclature_actor_role": 369,
-                "id_organism": 1,
-                "id_role": None,
-            }
+            {"id_cda": None, "id_nomenclature_actor_role": 369, "id_organism": 1, "id_role": None,}
         )
         # modification du nom
         fetched_dataset["dataset_name"] = "new_name"
@@ -194,4 +187,3 @@ class TestGnMeta:
             self.client, url_for("gn_meta.post_acquisition_framework"), json_dict=one_ca
         )
         assert response.status_code == 200
-

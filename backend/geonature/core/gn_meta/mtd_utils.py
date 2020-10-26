@@ -91,9 +91,7 @@ def parse_acquisition_framwork_xml(xml):
     ca_uuid = get_tag_content(ca, "identifiantCadre")
     ca_name = get_tag_content(ca, "libelle")
     ca_desc = get_tag_content(ca, "description", default_value="")
-    ca_start_date = get_tag_content(
-        ca, "dateLancement", default_value=datetime.datetime.now()
-    )
+    ca_start_date = get_tag_content(ca, "dateLancement", default_value=datetime.datetime.now())
     ca_end_date = get_tag_content(ca, "dateCloture")
 
     return {
@@ -118,9 +116,7 @@ def get_jdd_by_user_id(id_user):
         assert r.status_code == 200
     except AssertionError:
         raise GeonatureApiError(
-            message="Error with the MTD Web Service (JDD), status_code: {}".format(
-                r.status_code
-            )
+            message="Error with the MTD Web Service (JDD), status_code: {}".format(r.status_code)
         )
     return r.content
 
@@ -264,9 +260,7 @@ def add_dataset_module(dataset_obj):
         dataset_obj.modules.extend(
             DB.session.query(TModules)
             .filter(
-                TModules.module_code.in_(
-                    current_app.config["CAS"]["JDD_MODULE_CODE_ASSOCIATION"]
-                )
+                TModules.module_code.in_(current_app.config["CAS"]["JDD_MODULE_CODE_ASSOCIATION"])
             )
             .all()
         )
@@ -293,9 +287,7 @@ def post_jdd_from_user(id_user=None, id_organism=None):
                     "id_acquisition_framework"
                 ]
             # get the id from the uuid
-            ds["id_acquisition_framework"] = posted_af_uuid.get(
-                ds["uuid_acquisition_framework"]
-            )
+            ds["id_acquisition_framework"] = posted_af_uuid.get(ds["uuid_acquisition_framework"])
 
             ds.pop("uuid_acquisition_framework")
             # get the id of the dataset to check if exists
@@ -387,4 +379,3 @@ def post_jdd_from_user(id_user=None, id_organism=None):
 
         return [d.as_dict() for d in dataset_list_model]
     return {"message": "Not found"}, 404
-

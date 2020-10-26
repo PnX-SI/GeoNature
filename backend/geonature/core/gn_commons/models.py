@@ -37,16 +37,10 @@ class BibTablesLocation(DB.Model):
 cor_module_dataset = DB.Table(
     "cor_module_dataset",
     DB.Column(
-        "id_module",
-        DB.Integer,
-        ForeignKey("gn_commons.t_modules.id_module"),
-        primary_key=True,
+        "id_module", DB.Integer, ForeignKey("gn_commons.t_modules.id_module"), primary_key=True,
     ),
     DB.Column(
-        "id_dataset",
-        DB.Integer,
-        ForeignKey("gn_meta.t_datasets.id_dataset"),
-        primary_key=True,
+        "id_dataset", DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"), primary_key=True,
     ),
     schema="gn_commons",
 )
@@ -85,9 +79,7 @@ class TMedias(DB.Model):
     id_table_location = DB.Column(
         DB.Integer, ForeignKey("gn_commons.bib_tables_location.id_table_location")
     )
-    unique_id_media = DB.Column(
-        UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
-    )
+    unique_id_media = DB.Column(UUID(as_uuid=True), default=select([func.uuid_generate_v4()]))
     uuid_attached_row = DB.Column(UUID(as_uuid=True))
     title_fr = DB.Column(DB.Unicode)
     title_en = DB.Column(DB.Unicode)
@@ -150,9 +142,7 @@ class TParameters(DB.Model):
     __tablename__ = "t_parameters"
     __table_args__ = {"schema": "gn_commons"}
     id_parameter = DB.Column(DB.Integer, primary_key=True)
-    id_organism = DB.Column(
-        DB.Integer, ForeignKey("utilisateurs.bib_organismes.id_organisme")
-    )
+    id_organism = DB.Column(DB.Integer, ForeignKey("utilisateurs.bib_organismes.id_organisme"))
     parameter_name = DB.Column(DB.Unicode)
     parameter_desc = DB.Column(DB.Unicode)
     parameter_value = DB.Column(DB.Unicode)
@@ -237,8 +227,8 @@ class TMobileApps(DB.Model):
 
 
 #######################################################################################
-#----------------Geofit additional code  models.py 
-#######################################################################################   
+# ----------------Geofit additional code  models.py
+#######################################################################################
 @serializable
 @geoserializable
 class TPlaces(DB.Model):
@@ -248,5 +238,6 @@ class TPlaces(DB.Model):
     id_role = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
     place_name = DB.Column(DB.String)
     place_geom = DB.Column(Geometry("GEOMETRY", 4326))
+
     def get_geofeature(self, recursif=True):
-        return self.as_geofeature("place_geom", "place_name", recursif) 
+        return self.as_geofeature("place_geom", "place_name", recursif)

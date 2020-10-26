@@ -46,9 +46,7 @@ def get_token(client, login="admin", password="admin"):
         "password": password,
         "id_application": current_app.config["ID_APPLICATION_GEONATURE"],
     }
-    response = client.post(
-        url_for("auth.login"), data=json.dumps(data), headers=headers
-    )
+    response = client.post(url_for("auth.login"), data=json.dumps(data), headers=headers)
     try:
         token = Cookie.from_string(response.headers["Set-Cookie"])
         return token.value
@@ -62,10 +60,7 @@ def releve_data(client):
     response = client.get(url_for("pr_occtax.getDefaultNomenclatures"))
     default_nomenclatures = json_of_response(response)
     data = {
-        "geometry": {
-            "type": "Point",
-            "coordinates": [3.428936004638672, 44.276611357355904],
-        },
+        "geometry": {"type": "Point", "coordinates": [3.428936004638672, 44.276611357355904],},
         "properties": {
             "id_dataset": 1,
             "id_digitiser": 1,
@@ -94,12 +89,8 @@ def releve_data(client):
                             "count_max": 1,
                             "id_nomenclature_sex": default_nomenclatures["SEXE"],
                             "id_validator": None,
-                            "id_nomenclature_type_count": default_nomenclatures[
-                                "TYP_DENBR"
-                            ],
-                            "id_nomenclature_obj_count": default_nomenclatures[
-                                "OBJ_DENBR"
-                            ],
+                            "id_nomenclature_type_count": default_nomenclatures["TYP_DENBR"],
+                            "id_nomenclature_obj_count": default_nomenclatures["OBJ_DENBR"],
                         }
                     ],
                     "nom_cite": "Ablette = Alburnus alburnus (Linnaeus, 1758)",
@@ -108,16 +99,10 @@ def releve_data(client):
                     "id_nomenclature_bio_status": default_nomenclatures["STATUT_BIO"],
                     "id_nomenclature_bio_condition": default_nomenclatures["ETA_BIO"],
                     "comment": None,
-                    "id_nomenclature_observation_status": default_nomenclatures[
-                        "STATUT_OBS"
-                    ],
-                    "id_nomenclature_determination_method": default_nomenclatures[
-                        "METH_DETERMIN"
-                    ],
+                    "id_nomenclature_observation_status": default_nomenclatures["STATUT_OBS"],
+                    "id_nomenclature_determination_method": default_nomenclatures["METH_DETERMIN"],
                     "non_digital_proof": None,
-                    "id_nomenclature_exist_proof": default_nomenclatures[
-                        "PREUVE_EXIST"
-                    ],
+                    "id_nomenclature_exist_proof": default_nomenclatures["PREUVE_EXIST"],
                     "cd_nom": 67111,
                     "sample_number_proof": None,
                     "determiner": None,

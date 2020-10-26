@@ -8,7 +8,6 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
   selector: 'pnx-metadata-actor',
   templateUrl: 'actors.component.html'
 })
-
 export class ActorComponent implements OnInit {
   @Input() parentFormArray: FormArray;
   public organisms: Observable<Array<any>>;
@@ -38,5 +37,4 @@ export class ActorComponent implements OnInit {
                             map(data => data)
                           );
   }
-
 }

@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 
 @Injectable()
 export class FormService {
-  constructor() { }
+  constructor() {}
 
   dateValidator(dateMinControl: AbstractControl, dateMaxControl: AbstractControl): ValidatorFn {
     return (formGroup: FormGroup): { [key: string]: boolean } => {
@@ -28,11 +28,15 @@ export class FormService {
 
   /**
    * Check that controlMin is < to controlMax
-   * @param minControl 
-   * @param maxControl 
+   * @param minControl
+   * @param maxControl
    * @param validatorKeyName: name of the validator
    */
-  minMaxValidator(minControl: AbstractControl, maxControl: AbstractControl, validatorKeyName: string): ValidatorFn {
+  minMaxValidator(
+    minControl: AbstractControl,
+    maxControl: AbstractControl,
+    validatorKeyName: string
+  ): ValidatorFn {
     return (formGroup: FormGroup): { [key: string]: boolean } => {
       const altMin = minControl.value;
       const altMax = maxControl.value;
@@ -61,8 +65,8 @@ export class FormService {
       );
       return invalidHour
         ? {
-          invalidHour: true
-        }
+            invalidHour: true
+          }
         : null;
     };
   }

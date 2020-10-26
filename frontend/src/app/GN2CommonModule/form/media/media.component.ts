@@ -1,12 +1,5 @@
 import { Observable, Subscription } from 'rxjs';
-import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Media } from './media';
 import { mediaFormDefinitionsDict } from './media-form-definition';
@@ -19,10 +12,9 @@ import { DynamicFormService } from '../dynamic-form-generator/dynamic-form.servi
 @Component({
   selector: 'pnx-media',
   templateUrl: './media.component.html',
-  styleUrls: ['./media.scss'],
+  styleUrls: ['./media.scss']
 })
 export class MediaComponent implements OnInit {
-
   // public mediaSave: Media = new Media();
 
   public mediaForm: FormGroup;
@@ -36,7 +28,6 @@ export class MediaComponent implements OnInit {
   public bValidSizeMax = true;
 
   public errorMsg: string;
-
 
   @Input() schemaDotTable: string;
 
@@ -55,12 +46,11 @@ export class MediaComponent implements OnInit {
     private _formBuilder: FormBuilder,
     public ms: MediaService,
     private _commonService: CommonService,
-    private _dynformService: DynamicFormService,
-  ) { }
+    private _dynformService: DynamicFormService
+  ) {}
 
   ngOnInit() {
-    this.mediaFormDefinition = this._dynformService
-    .formDefinitionsdictToArray(
+    this.mediaFormDefinition = this._dynformService.formDefinitionsdictToArray(
       mediaFormDefinitionsDict,
       {
         nomenclatures: this.ms.metaNomenclatures(),
@@ -78,20 +68,20 @@ export class MediaComponent implements OnInit {
     if (!this.schemaDotTable) {
       return;
     }
-    this.ms.getIdTableLocation(schemaDotTable).subscribe((idTableLocation) => {
+    this.ms.getIdTableLocation(schemaDotTable).subscribe(idTableLocation => {
       this.idTableLocation = idTableLocation;
       this.initForm();
     });
   }
 
   message() {
-    return this.mediaFormReadyToSend()
+    return this.media.sent
+      ? ''
+      : this.mediaFormReadyToSend()
       ? 'Veuillez valider le média en appuyant sur le bouton de validation'
-      : this.media.sent
-        ? ''
-        : this.media.bFile
-          ? 'Veuillez compléter le formulaire et renseigner un fichier'
-          : 'Veuillez compléter le formulaire et Renseigner une URL valide';
+      : this.media.bFile
+      ? 'Veuillez compléter le formulaire et renseigner un fichier'
+      : 'Veuillez compléter le formulaire et Renseigner une URL valide';
   }
 
   /**
@@ -99,7 +89,9 @@ export class MediaComponent implements OnInit {
    * et si media.sent est à false (il y a eu une modification depuis la dernière requête ou il n'y a pas eu de requete)
    */
   mediaFormReadyToSend() {
-    if (!this.mediaForm) { return; }
+    if (!this.mediaForm) {
+      return;
+    }
     return this.mediaForm.valid && !this.media.sent;
   }
 
@@ -107,7 +99,6 @@ export class MediaComponent implements OnInit {
    *
    */
   setFormInitValue() {
-
     if (!this.media) {
       return;
     }
@@ -143,13 +134,11 @@ export class MediaComponent implements OnInit {
   }
 
   onFormChange(value) {
-
-    if(this.mediaFormInitialized) {
+    if (this.mediaFormInitialized) {
       this.media.sent = false;
-    };
+    }
 
-    this.bValidSizeMax =
-      !(value.file && this.sizeMax) || value.file.size / 1000 < this.sizeMax;
+    this.bValidSizeMax = !(value.file && this.sizeMax) || value.file.size / 1000 < this.sizeMax;
 
     this.media.setValues(value);
 
@@ -158,7 +147,7 @@ export class MediaComponent implements OnInit {
     if (!value.bFile && (value.media_path || value.file)) {
       this.setValue({
         media_path: null,
-        file: null,
+        file: null
       });
     }
 
@@ -166,7 +155,7 @@ export class MediaComponent implements OnInit {
     // => media_url = null
     if (value.bFile && value.media_url) {
       this.mediaForm.setValue({
-        media_url: null,
+        media_url: null
       });
     }
 
@@ -179,7 +168,7 @@ export class MediaComponent implements OnInit {
     ) {
       this.setValue({
         bFile: false,
-        media_path: null,
+        media_path: null
       });
     }
 
@@ -188,7 +177,7 @@ export class MediaComponent implements OnInit {
     if (['Vidéo (fichier)'].includes(label_fr) && !value.bFile) {
       this.mediaForm.setValue({
         bFile: true,
-        media_url: null,
+        media_url: null
       });
     }
 
@@ -196,7 +185,7 @@ export class MediaComponent implements OnInit {
     // => media_path passe à null
     if (value.file && value.media_path) {
       this.mediaForm.patchValue({
-        media_path: null,
+        media_path: null
       });
     }
 
@@ -210,21 +199,21 @@ export class MediaComponent implements OnInit {
 
   /** déclenché quand le formulaire est initialisé */
   initForm() {
-
-    if (!(this.ms.bInitialized && this.mediaForm)) { return; }
+    if (!(this.ms.bInitialized && this.mediaForm)) {
+      return;
+    }
 
     if (this.sizeMax) {
       mediaFormDefinitionsDict.file.sizeMax = this.sizeMax;
     }
 
     this.setFormInitValue();
-
   }
 
   postMedia() {
     this.media.bLoading = true;
     this.media.pendingRequest = this.ms.postMedia(this.mediaForm.value.file, this.media).subscribe(
-      (event) => {
+      event => {
         if (event.type === HttpEventType.UploadProgress) {
           this.media.uploadPercentDone = Math.round((100 * event.loaded) / event.total);
           // this.mediaChange.emit(this.media);
@@ -238,7 +227,7 @@ export class MediaComponent implements OnInit {
           this.mediaChange.emit(this.media);
         }
       },
-      (error) => {
+      error => {
         this._commonService.regularToaster(
           'error',
           `Erreur avec la requête : ${error && error.error}`

@@ -38,17 +38,14 @@ class TestApiModulePrOcctax:
         assert response.status_code == 200
         json_data = json_of_response(response)
         assert len(json_data["items"]["features"]) == 1
-        assert (
-            json_data["items"]["features"][0]["properties"]["observers_txt"] == "test"
-        )
+        assert json_data["items"]["features"][0]["properties"]["observers_txt"] == "test"
 
     def test_insert_update_delete_releves(self, releve_data):
         token = get_token(self.client)
         self.client.set_cookie("/", "token", token)
 
         response = post_json(
-            self.client, url_for(
-                "pr_occtax.insertOrUpdateOneReleve"), releve_data
+            self.client, url_for("pr_occtax.insertOrUpdateOneReleve"), releve_data
         )
 
         assert response.status_code == 200
@@ -76,8 +73,7 @@ class TestApiModulePrOcctax:
             update_data["properties"]["t_occurrences_occtax"].append(temp)
 
         response = post_json(
-            self.client, url_for(
-                "pr_occtax.insertOrUpdateOneReleve"), update_data
+            self.client, url_for("pr_occtax.insertOrUpdateOneReleve"), update_data
         )
 
         assert response.status_code == 200
@@ -97,10 +93,7 @@ class TestApiModulePrOcctax:
 
         assert "releve" in resp_data_update
         # check that the 3 occurrences are heres
-        assert (
-            len(resp_data_update["releve"]["properties"]
-                ["t_occurrences_occtax"]) == 3
-        )
+        assert len(resp_data_update["releve"]["properties"]["t_occurrences_occtax"]) == 3
         response = self.client.delete(
             url_for(
                 "pr_occtax.deleteOneReleve",
@@ -131,18 +124,14 @@ class TestApiModulePrOcctax:
         # CSV
         csv_query_string = base_query_string.copy()
         csv_query_string["format"] = "csv"
-        response = self.client.get(
-            url_for("pr_occtax.export"), query_string=csv_query_string
-        )
+        response = self.client.get(url_for("pr_occtax.export"), query_string=csv_query_string)
 
         assert response.status_code == 200
 
         # # geojson
         geojson_query_string = base_query_string.copy()
         geojson_query_string["format"] = "geojson"
-        response = self.client.get(
-            url_for("pr_occtax.export"), query_string=geojson_query_string
-        )
+        response = self.client.get(url_for("pr_occtax.export"), query_string=geojson_query_string)
         assert response.status_code == 200
         data = json_of_response(response)
 
@@ -150,9 +139,7 @@ class TestApiModulePrOcctax:
         # shapefile
         shape_query_string = base_query_string.copy()
         shape_query_string["format"] = "shapefile"
-        response = self.client.get(
-            url_for("pr_occtax.export"), query_string=shape_query_string
-        )
+        response = self.client.get(url_for("pr_occtax.export"), query_string=shape_query_string)
         assert response.status_code == 200
 
     # ## Test des droits ####
@@ -163,8 +150,7 @@ class TestApiModulePrOcctax:
         token = get_token(self.client)
         self.client.set_cookie("/", "token", token)
 
-        response = self.client.get(
-            url_for("pr_occtax.getOneReleve", id_releve=1))
+        response = self.client.get(url_for("pr_occtax.getOneReleve", id_releve=1))
         assert response.status_code == 200
 
     def test_user_cannot_delete_releve(self):
@@ -176,6 +162,4 @@ class TestApiModulePrOcctax:
         self.client.set_cookie("/", "token", token)
 
         with pytest.raises(InsufficientRightsError):
-            response = self.client.get(
-                url_for("pr_occtax.deleteOneReleve", id_releve=1)
-            )
+            response = self.client.get(url_for("pr_occtax.deleteOneReleve", id_releve=1))

@@ -4,14 +4,12 @@ import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class CommonService {
-
-  constructor(private toastrService: ToastrService, private translate: TranslateService) { }
+  constructor(private toastrService: ToastrService, private translate: TranslateService) {}
 
   translateToaster(messageType: string, messageValue: string): void {
-    this.translate.get(messageValue, { value: messageValue })
-      .subscribe(res =>
-        this.toastrService[messageType](res, '')
-      );
+    this.translate
+      .get(messageValue, { value: messageValue })
+      .subscribe(res => this.toastrService[messageType](res, ''));
   }
 
   regularToaster(messageType: string, messageValue: string): void {
@@ -23,8 +21,8 @@ export class CommonService {
    */
   calcCardContentHeight(minusHeight?) {
     const windowHeight = window.innerHeight;
-    const tbH = document.getElementById("app-toolbar")
-      ? document.getElementById("app-toolbar").offsetHeight
+    const tbH = document.getElementById('app-toolbar')
+      ? document.getElementById('app-toolbar').offsetHeight
       : 0;
     const height = windowHeight - tbH - (minusHeight || 0);
     return height >= 350 ? height : 350;

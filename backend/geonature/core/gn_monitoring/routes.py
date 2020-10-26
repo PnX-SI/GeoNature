@@ -29,32 +29,21 @@ def get_list_sites():
     parameters = request.args
 
     if parameters.get("name_app"):
-        q = q.filter(
-            TBaseSites.applications.any(
-                nom_application=parameters.get("name_app"))
-        )
+        q = q.filter(TBaseSites.applications.any(nom_application=parameters.get("name_app")))
 
     if parameters.get("id_app"):
-        q = q.filter(
-            TBaseSites.applications.any(
-                id_application=parameters.get("id_app"))
-        )
+        q = q.filter(TBaseSites.applications.any(id_application=parameters.get("id_app")))
 
     if parameters.get("id_base_site"):
         q = q.filter(TBaseSites.id_base_site == parameters.get("id_base_site"))
 
     if parameters.get("base_site_name"):
         q = q.filter(
-            TBaseSites.base_site_name.ilike(
-                "%{}%".format(parameters.get("base_site_name"))
-            )
+            TBaseSites.base_site_name.ilike("%{}%".format(parameters.get("base_site_name")))
         )
 
     data = q.all()
-    return [
-        {"id_base_site": n.id_base_site, "base_site_name": n.base_site_name}
-        for n in data
-    ]
+    return [{"id_base_site": n.id_base_site, "base_site_name": n.base_site_name} for n in data]
 
 
 @routes.route("/siteslist/<int:id_site>", methods=["GET"])

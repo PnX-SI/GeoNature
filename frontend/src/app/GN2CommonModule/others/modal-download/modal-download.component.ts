@@ -83,7 +83,7 @@ export class ModalDownloadComponent implements OnInit {
         switch (event.type) {
           case HttpEventType.DownloadProgress:
             if (event.hasOwnProperty('total')) {
-              const percentage = Math.round(100 / event.total * event.loaded);
+              const percentage = Math.round((100 / event.total) * event.loaded);
               this.downloadProgress$.next(percentage);
             } else {
               const kb = (event.loaded / 1024).toFixed(2);

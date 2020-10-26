@@ -20,7 +20,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { SyntheseModalDownloadComponent } from './modal-download/modal-download.component';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
-import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component'
+import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 @Component({
   selector: 'pnx-synthese-list',
   templateUrl: 'synthese-list.component.html',
@@ -50,7 +50,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     public sanitizer: DomSanitizer,
     public ref: ChangeDetectorRef,
     public _cruvedStore: CruvedStoreService
-  ) { }
+  ) {}
 
   ngOnInit() {
     // get wiewport height to set the number of rows in the tabl
@@ -119,7 +119,6 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     modalRef.componentInstance.idSynthese = row.id_synthese;
     modalRef.componentInstance.uuidSynthese = row.unique_id_sinp;
     modalRef.componentInstance.header = true;
-
   }
 
   openDownloadModal() {

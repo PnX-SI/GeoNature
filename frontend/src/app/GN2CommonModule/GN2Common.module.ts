@@ -182,7 +182,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     ConfirmationDialog,
     DatalistComponent,
     PlacesComponent,
-    PlacesListComponent,
+    PlacesListComponent
   ],
   providers: [
     TranslateService,
@@ -197,11 +197,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     CruvedStoreService,
     MediaService
   ],
-  entryComponents: [
-    TaxonAdvancedModalComponent,
-    ConfirmationDialog,
-    MediaDialog,
-  ],
+  entryComponents: [TaxonAdvancedModalComponent, ConfirmationDialog, MediaDialog],
   exports: [
     MunicipalitiesComponent,
     DynamicFormComponent,
@@ -276,4 +272,4 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MatTabsModule
   ]
 })
-export class GN2CommonModule { }
+export class GN2CommonModule {}

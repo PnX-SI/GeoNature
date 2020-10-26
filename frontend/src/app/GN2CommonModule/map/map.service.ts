@@ -71,7 +71,6 @@ export class MapService {
 
   initializefileLayerFeatureGroup() {
     this.map.addLayer(this.fileLayerFeatureGroup);
-
   }
 
   setGeojsonCoord(geojsonCoord) {
@@ -165,18 +164,18 @@ export class MapService {
             return style
               ? style
               : {
-                color: '#3388ff',
-                weight: 3
-              };
+                  color: '#3388ff',
+                  weight: 3
+                };
           default:
             return style
               ? style
               : {
-                color: '#3388ff',
-                fill: true,
-                fillOpacity: 0.2,
-                weight: 3
-              };
+                  color: '#3388ff',
+                  fill: true,
+                  fillOpacity: 0.2,
+                  weight: 3
+                };
         }
       },
       pointToLayer: (feature, latlng) => {
@@ -258,14 +257,14 @@ export class MapService {
       this.setGeojsonCoord(geojson);
     }
   }
-  
+
   //--------------------------------------------------------------------------------------
-//----------------Geofit additional code map.service.ts
- //liste des lieux
- /*getPlaces(): Observable<any> {
+  //----------------Geofit additional code map.service.ts
+  //liste des lieux
+  /*getPlaces(): Observable<any> {
   return this.http.get<any>(`${AppConfig.API_ENDPOINT}/occtax/places`);
 }*/
-/*
+  /*
 //Afficher lieu
 drawPlace(place:GeoJSON.Feature){
  L.geoJSON(place).addTo(this.map);
@@ -273,7 +272,7 @@ drawPlace(place:GeoJSON.Feature){
  this.map.fitBounds(geojson.getBounds());
 // this.map.setView(geojson.getBounds().getCenter(),12)
 }*/
-/*
+  /*
 // Supprimer lieu
 deletePlace(nom:String): Observable<{}> {
 const url=`${AppConfig.API_ENDPOINT}/occtax/delPlace/${nom}`;

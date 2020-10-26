@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {animate, state, style, transition, trigger} from '@angular/animations';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'gn-panel',
@@ -7,20 +7,21 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
   styleUrls: ['./gn-panel.component.scss'],
   animations: [
     trigger('detailExpand', [
-      state('collapsed', style({height: '0px', minHeight: '0', margin: '-1px', overflow: 'hidden', padding: '0'})),
-      state('expanded', style({height: '*'})),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ],
+      state(
+        'collapsed',
+        style({ height: '0px', minHeight: '0', margin: '-1px', overflow: 'hidden', padding: '0' })
+      ),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
+    ])
+  ]
 })
 export class GNPanelComponent {
+  state: string = 'collapsed';
 
-	state: string = 'collapsed';
+  constructor() {}
 
-  constructor() { }
-
-  animateMe(){
-    this.state = (this.state === 'collapsed' ? 'expanded' : 'collapsed');
+  animateMe() {
+    this.state = this.state === 'collapsed' ? 'expanded' : 'collapsed';
   }
-
 }

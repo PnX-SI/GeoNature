@@ -1,6 +1,6 @@
-'''
+"""
 GeoNature core utils
-'''
+"""
 
 from pypnusershub.db.tools import InsufficientRightsError
 from geonature.core.gn_meta.models import TDatasets
@@ -20,6 +20,7 @@ class ReleveCruvedAutorization(DB.Model):
         - id_dataset
         A définir en tant que "synonymes" si les attributs sont différents
     """
+
     __abstract__ = True
 
     def user_is_observer_or_digitiser(self, user):
@@ -69,9 +70,7 @@ class ReleveCruvedAutorization(DB.Model):
             return self
 
         raise InsufficientRightsError(
-            ('User "{}" cannot "{}" this current releve').format(
-                user.id_role, user.code_action
-            ),
+            ('User "{}" cannot "{}" this current releve').format(user.id_role, user.code_action),
             403,
         )
 
@@ -84,6 +83,5 @@ class ReleveCruvedAutorization(DB.Model):
             - user_cruved: object return by cruved_for_user_in_app(user)
         """
         return {
-            action: self.user_is_allowed_to(user, level)
-            for action, level in user_cruved.items()
+            action: self.user_is_allowed_to(user, level) for action, level in user_cruved.items()
         }

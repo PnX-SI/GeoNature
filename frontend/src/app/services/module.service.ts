@@ -13,14 +13,17 @@ export class ModuleService {
   }
 
   get modules(): Array<any> {
-    return this.$module.getValue()
+    return this.$module.getValue();
   }
 
   fetchModules() {
     this._api.getModulesList([]).subscribe(data => {
       this.$module.next(data);
       this.displayedModules = data.filter(mod => {
-        return (mod.module_code.toLowerCase() !== 'geonature') && (mod.active_frontend || mod.module_external_url);
+        return (
+          mod.module_code.toLowerCase() !== 'geonature' &&
+          (mod.active_frontend || mod.module_external_url)
+        );
       });
       this.setModulesLocalStorage(data);
     });
@@ -31,7 +34,7 @@ export class ModuleService {
   }
 
   getModules() {
-    return localStorage.getItem('modules')
+    return localStorage.getItem('modules');
   }
 
   /**

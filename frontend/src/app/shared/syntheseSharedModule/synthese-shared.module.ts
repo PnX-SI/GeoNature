@@ -9,6 +9,6 @@ import { SyntheseInfoObsComponent } from './synthese-info-obs/synthese-info-obs.
   imports: [CommonModule, GN2CommonModule],
   exports: [SyntheseInfoObsComponent],
   declarations: [SyntheseInfoObsComponent],
-  providers: [],
+  providers: []
 })
-export class SharedSyntheseModule { }
+export class SharedSyntheseModule {}

@@ -66,7 +66,7 @@ export class TaxonomyComponent implements OnInit {
   //**ombre de résultat affiché */
   @Input() listLength = 20;
   //** Pour changer la valeur affichée */
-  @Input() displayedLabel: string = "nom_valide";
+  @Input() displayedLabel: string = 'nom_valide';
   /** Afficher ou non les filtres par regne et groupe INPN qui controle l'autocomplétion */
   @Input() displayAdvancedFilters = false;
   searchString: any;
@@ -80,7 +80,7 @@ export class TaxonomyComponent implements OnInit {
   @Output() onChange = new EventEmitter<NgbTypeaheadSelectItemEvent>(); // renvoie l'evenement, le taxon est récupérable grâce à e.item
   @Output() onDelete = new EventEmitter<Taxon>();
 
-  constructor(private _dfService: DataFormService, private _commonService: CommonService) { }
+  constructor(private _dfService: DataFormService, private _commonService: CommonService) {}
 
   ngOnInit() {
     // set default to apiEndPoint for retrocompatibility
@@ -115,8 +115,8 @@ export class TaxonomyComponent implements OnInit {
   }
 
   formatter = (taxon: any) => {
-    return (taxon[this.displayedLabel]).replace(/<[^>]*>/g, ''); //supprime les balises HTML
-  }
+    return taxon[this.displayedLabel].replace(/<[^>]*>/g, ''); //supprime les balises HTML
+  };
 
   searchTaxon = (text$: Observable<string>) =>
     text$

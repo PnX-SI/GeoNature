@@ -6,7 +6,7 @@ my_local=fr_FR.UTF-8
 # URL Configuration
 ###################
 
-# URL of the server must end with /
+# My host URL or IP, starting with http and with / at the end
 my_url=http://url.com/
 
 
