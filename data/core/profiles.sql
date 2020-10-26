@@ -17,7 +17,7 @@ CREATE TABLE gn_profiles.t_parameters(
 );
 
 
-CREATE TABLE gn_profiles.cor_taxons_profiles_parameters(
+CREATE TABLE gn_profiles.cor_taxons_parameters(
 	cd_ref integer,
 	spatial_precision integer,
 	temporal_precision_days integer, 
@@ -27,19 +27,18 @@ CREATE TABLE gn_profiles.cor_taxons_profiles_parameters(
 
 CREATE TABLE gn_profiles.t_altitude_ranges(
 	id_altitude_range serial,
-	label_range character varying(50),
-	alt_min_range integer,
-	alt_max_range integer
+	label character varying(50),
+	alt_min integer,
+	alt_max integer
 );
 
 ---------------
 --PRIMARY KEY--
 ---------------
-ALTER TABLE ONLY gn_profiles.t_profiles_parameters 
-ADD CONSTRAINT pk_profiles_parameters PRIMARY KEY (id_profile_parameter);
+ALTER TABLE ONLY gn_profiles.t_parameters 
+	ADD CONSTRAINT pk_profiles_parameters PRIMARY KEY (id_profile_parameter);
 
-ALTER TABLE ONLY gn_profiles.t_profiles_parameters 
-ADD CONSTRAINT fk_t_profiles_parameters_bib_organismes FOREIGN KEY (id_organism) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
+ALTER TABLE ONLY gn_profiles.t_parameters ADD CONSTRAINT fk_t_parameters_bib_organismes FOREIGN KEY (id_organism) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY gn_profiles.cor_taxons_profiles_parameters ADD CONSTRAINT pk_taxons_profiles_parameters PRIMARY KEY (cd_ref);
 
@@ -74,7 +73,7 @@ VALUES
 ('Etages alpins et nivaux',2001,4811);
 
 -- Ajout d'un nouveau paramètre à GeoNature pour définir le niveau de validation des données à utiliser dans le calcul des profils
-INSERT INTO gn_profiles.t_profiles_parameters(id_organism, profiles_parameter_name, profiles_parameter_desc, profiles_parameter_value)
+INSERT INTO gn_profiles.t_parameters(id_organism, profiles_parameter_name, profiles_parameter_desc, profiles_parameter_value)
 SELECT 
 	0, 
 	'id_valid_status_for_profiles', 
@@ -87,7 +86,7 @@ AND n.cd_nomenclature IN ('1','2') -- Commenter pour considérer l'ensemble des 
 
 
 -- Ajout d'un paramètre permettant de définir à partir de combien de données une phénologie est jugée valide/fiable
-INSERT INTO gn_profiles.t_profiles_parameters(id_organism, profiles_parameter_name, profiles_parameter_desc, profiles_parameter_value)
+INSERT INTO gn_profiles.t_parameters(id_organism, profiles_parameter_name, profiles_parameter_desc, profiles_parameter_value)
 VALUES ( 
 	0, 
 	'min_occurrence_check_profile_phenology', 
@@ -101,7 +100,7 @@ VALUES (
 -------------
 
 -- Fonctions dédiées à la comparaison des données avec leur profil d'espèce dans gn_profiles
-CREATE OR REPLACE FUNCTION gn_profiles.get_profiles_parameters(mycdnom integer)
+CREATE OR REPLACE FUNCTION gn_profiles.get_parameters(mycdnom integer)
  RETURNS TABLE (cd_ref integer, spatial_precision integer, temporal_precision_days integer, active_life_stage boolean, distance smallint)
  LANGUAGE plpgsql
  IMMUTABLE
@@ -169,7 +168,7 @@ AS $function$
 			FROM gn_synthese.synthese s
 			LEFT JOIN taxonomie.taxref t ON s.cd_nom=t.cd_nom
 			LEFT JOIN gn_profiles.t_altitude_ranges tar ON s.altitude_min <= tar.alt_max_range AND s.altitude_max >= tar.alt_min_range
-			CROSS JOIN gn_profiles.get_profiles_parameters(s.cd_nom) p
+			CROSS JOIN gn_profiles.get_parameters(s.cd_nom) p
 			WHERE s.id_synthese=myidsynthese
 				AND p.temporal_precision_days IS NOT NULL 
 				AND p.spatial_precision  IS NOT NULL
@@ -185,7 +184,7 @@ AS $function$
 	AND (ctp.id_nomenclature_life_stage=myphenology.id_nomenclature_life_stage OR (ctp.id_nomenclature_life_stage IS NULL AND myphenology.id_nomenclature_life_stage IS NULL))
 	AND ctp.id_altitude_range=myphenology.id_altitude_range);
 
-	IF valid_count>=(SELECT profiles_parameter_value::integer FROM gn_profiles.t_profiles_parameters WHERE profiles_parameter_name='min_occurrence_check_profile_phenology')
+	IF valid_count>=(SELECT profiles_parameter_value::integer FROM gn_profiles.t_parameters WHERE profiles_parameter_name='min_occurrence_check_profile_phenology')
 	THEN 
 		RETURN true;
 	ELSE 
@@ -246,9 +245,9 @@ SELECT DISTINCT
 	count(s.*) AS count_valid_data
 FROM gn_synthese.synthese s
 LEFT JOIN taxonomie.taxref t ON s.cd_nom=t.cd_nom
-CROSS JOIN gn_profiles.get_profiles_parameters(s.cd_nom) p
+CROSS JOIN gn_profiles.get_parameters(s.cd_nom) p
 WHERE p.spatial_precision IS NOT NULL AND ST_MaxDistance(ST_centroid(s.the_geom_local), s.the_geom_local)<p.spatial_precision 
-AND s.id_nomenclature_valid_status IN (SELECT regexp_split_to_table(profiles_parameter_value, ',')::integer FROM gn_profiles.t_profiles_parameters WHERE profiles_parameter_name='id_valid_status_for_profiles')
+AND s.id_nomenclature_valid_status IN (SELECT regexp_split_to_table(profiles_parameter_value, ',')::integer FROM gn_profiles.t_parameters WHERE profiles_parameter_name='id_valid_status_for_profiles')
 GROUP BY t.cd_ref;
 
 
@@ -265,13 +264,13 @@ SELECT DISTINCT
 FROM gn_synthese.synthese s
 LEFT JOIN taxonomie.taxref t ON s.cd_nom=t.cd_nom
 LEFT JOIN gn_profiles.t_altitude_ranges tar ON s.altitude_min <= tar.alt_max_range AND s.altitude_max >= tar.alt_min_range
-CROSS JOIN gn_profiles.get_profiles_parameters(s.cd_nom) p
+CROSS JOIN gn_profiles.get_parameters(s.cd_nom) p
 WHERE p.temporal_precision_days IS NOT NULL 
 	AND p.spatial_precision  IS NOT NULL
 	AND p.active_life_stage IS NOT NULL
 	AND DATE_part('day', s.date_max-s.date_min)<p.temporal_precision_days
     AND ST_MaxDistance(ST_centroid(s.the_geom_local), s.the_geom_local)<p.spatial_precision 
-    AND s.id_nomenclature_valid_status IN (SELECT regexp_split_to_table(profiles_parameter_value, ',')::integer FROM gn_profiles.t_profiles_parameters WHERE profiles_parameter_name='id_valid_status_for_profiles')
+    AND s.id_nomenclature_valid_status IN (SELECT regexp_split_to_table(profiles_parameter_value, ',')::integer FROM gn_profiles.t_parameters WHERE profiles_parameter_name='id_valid_status_for_profiles')
     AND s.altitude_min IS NOT NULL
     AND s.altitude_max IS NOT NULL
 GROUP BY t.cd_ref, period, CASE WHEN p.active_life_stage=true THEN s.id_nomenclature_life_stage ELSE NULL END ,id_altitude_range;
