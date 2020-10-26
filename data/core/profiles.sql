@@ -15,7 +15,7 @@ CREATE TABLE gn_profiles.t_profiles_parameters(
 	profiles_parameter_value text NOT NULL,
 	profiles_parameter_extra_value varchar(255) NULL
 );
-
+print('test_foireux')
 
 CREATE TABLE gn_profiles.cor_taxons_profiles_parameters(
 	cd_ref integer,
