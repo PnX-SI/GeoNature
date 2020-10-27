@@ -16,6 +16,9 @@ class VmCorTaxonPhenology(DB.Model):
     id_altitude_range = DB.Column(DB.Integer)
     count_valid_data = DB.Column(DB.Integer)
 
+    class PrimaryKey:
+        unique_together(("cd_ref","period","id_nomenclature_life_stage","id_altitude_range"),)
+
 @serializable
 @geoserializable
 class VmValidProfiles(DB.Model):
