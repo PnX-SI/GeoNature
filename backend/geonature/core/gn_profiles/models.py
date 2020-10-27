@@ -27,7 +27,7 @@ class VmValidProfiles(DB.Model):
     __table_args__ = {"schema": "gn_profiles"}
     cd_ref = DB.Column(DB.Integer, primary_key=True)
     valid_distribution = DB.Column(Geometry("GEOMETRY", current_app.config["LOCAL_SRID"]))
-    altitude_min = DB.Column(DB.Integer)
+    altitude_min = DB.Column(DB.Integer) 
     altitude_max = DB.Column(DB.Integer)
     first_valid_data = DB.Column(DB.DateTime)
     last_valid_data = DB.Column(DB.DateTime)
@@ -38,7 +38,7 @@ class VConsistancyData(DB.Model):
     __tablename__ = "v_consistancy_data"
     __table_args__ = {"schema": "gn_profiles"}
     id_synthese = DB.Column(DB.Integer, primary_key=True)
-    id_sinp = unique_id_sinp = DB.Column(UUID(as_uuid=True))
+    id_sinp = DB.Column(UUID(as_uuid=True))
     cd_ref = DB.Column(DB.Integer)
     valid_name = DB.Column(DB.Unicode)
     valid_distribution = DB.Column(DB.Boolean)
