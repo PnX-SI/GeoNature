@@ -25,6 +25,7 @@ export class SyntheseInfoObsComponent implements OnInit {
   public isLoading = false;
   public email;
   public mailto: String;
+  public profile: any;
   public validationColor = {
     '0': '#FFFFFF',
     '1': '#8BC34A',
@@ -45,6 +46,9 @@ export class SyntheseInfoObsComponent implements OnInit {
   ngOnInit() {
     this.loadOneSyntheseReleve(this.idSynthese);
     this.loadValidationHistory(this.uuidSynthese);
+    this._gnDataService.getProfile(60577).subscribe(profil => {
+      this.profile = profil;
+    });
   }
 
   loadOneSyntheseReleve(idSynthese) {
