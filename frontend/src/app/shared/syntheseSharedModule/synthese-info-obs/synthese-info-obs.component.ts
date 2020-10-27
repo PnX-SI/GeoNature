@@ -204,20 +204,24 @@ export class SyntheseInfoObsComponent implements OnInit {
           
         case 'MEDIAS':
           content += "\nMedias : ";
-          if(this.selectedObs.medias.length == 0){
+          if(!this.selectedObs.medias){
             content += "Aucun media";
+          }else{
+            if(this.selectedObs.medias.length == 0){
+              content += "Aucun media";
+            }
+            this.selectedObs.medias.map((media) => {
+              content += "\n\tTitre : " + media.title_fr;
+              content += "\n\tLien vers le media : " + this.mediaService.href(media);
+              if(media.description_fr){
+                content += "\n\tDescription : " + media.description_fr;
+              }
+              if(media.author){
+                content += "\n\tAuteur : " + media.author;
+              }
+              content += "\n";
+            })
           }
-          this.selectedObs.medias.map((media) => {
-            content += "\n\tTitre : " + media.title_fr;
-            content += "\n\tLien vers le media : " + this.mediaService.href(media);
-            if(media.description_fr){
-              content += "\n\tDescription : " + media.description_fr;
-            }
-            if(media.author){
-              content += "\n\tAuteur : " + media.author;
-            }
-            content += "\n";
-          })
           break;
       };
     })
