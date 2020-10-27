@@ -5,9 +5,7 @@ from geojson import Feature
 from sqlalchemy.sql import func
 from utils_flask_sqla.response import json_resp
 
-from geonature.core.gn_profiles.models import VmCorTaxonPhenology
-from geonature.core.gn_profiles.models import VmValidProfiles
-from geonature.core.gn_profiles.models import VConsistancyData
+from geonature.core.gn_profiles.models import VmCorTaxonPhenology, VmValidProfiles, VConsistancyData
 
 from geonature.utils.env import DB
 
@@ -67,3 +65,14 @@ def get_consistancy_data(id_synthese):
     if data:
         return data.as_dict()
     return None
+def get_cor_taxon_phenology(cd_ref):
+    q = DB.session.query(VmCorTaxonPhenology)
+    data = q.get(cd_ref)
+    return data.as_dict()
+
+# @routes.route("/profiles/<cd_ref>", methods=["GET"])
+# @json_resp
+# def get_profile(cd_ref):
+#     q = DB.session.query(VmValidProfiles)
+#     data = q.get(cd_ref)
+#     return data.as_dict()
