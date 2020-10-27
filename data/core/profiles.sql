@@ -366,7 +366,7 @@ CASE WHEN p.active_life_stage=true THEN s.id_nomenclature_life_stage ELSE NULL E
 id_altitude_range;
 
 
-CREATE VIEW gn_profiles.v_checks_consistancy_data_profiles AS
+CREATE VIEW gn_profiles.v_consistancy_data AS
 SELECT 
 	s.id_synthese AS id_synthese,
 	s.unique_id_sinp AS id_sinp,
