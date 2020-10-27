@@ -30,6 +30,7 @@ export class SyntheseInfoObsComponent implements OnInit {
 
   public APP_CONFIG = AppConfig;
 
+  public profile: any;
   public validationColor = {
     '0': '#FFFFFF',
     '1': '#8BC34A',
@@ -56,6 +57,10 @@ export class SyntheseInfoObsComponent implements OnInit {
     if (changes.idSynthese && changes.idSynthese.currentValue && !changes.idSynthese.firstChange) {
       this.loadOneSyntheseReleve(this.idSynthese);
     }
+    this.loadValidationHistory(this.uuidSynthese);
+    this._gnDataService.getProfile(60577).subscribe(profil => {
+      this.profile = profil;
+    });
   }
 
   loadOneSyntheseReleve(idSynthese) {

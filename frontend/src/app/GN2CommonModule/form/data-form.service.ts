@@ -479,7 +479,7 @@ export class DataFormService {
 
   getCruved(modules_code?: Array<string>) {
     let queryString: HttpParams = new HttpParams();
-    if (modules_code) {
+    if (modules_code) {t_parameters
       modules_code.forEach(mod_code => {
         queryString = queryString.set('module_code', mod_code);
       });
@@ -615,5 +615,8 @@ export class DataFormService {
 
   }
 
+  getProfile(cdRef) {
+    return this._http.get(`${AppConfig.API_ENDPOINT}/gn_profiles/valid_profile/${cdRef}`)
+  }
 }
 
