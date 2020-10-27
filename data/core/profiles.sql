@@ -11,7 +11,7 @@ CREATE TABLE gn_profiles.t_parameters(
 	id_parameter serial NOT NULL,
 	id_organism int4 NULL,
 	name varchar(100) NOT NULL,
-	desc text NULL,
+	"desc" text NULL,
 	value text NOT NULL,
 	extra_value varchar(255) NULL
 );
@@ -36,14 +36,14 @@ CREATE TABLE gn_profiles.t_altitude_ranges(
 --PRIMARY KEY--
 ---------------
 ALTER TABLE ONLY gn_profiles.t_parameters 
-	ADD CONSTRAINT pk_profiles_parameters PRIMARY KEY (id_profile_parameter);
+	ADD CONSTRAINT pk_parameters PRIMARY KEY (id_parameter);
 
 ALTER TABLE ONLY gn_profiles.t_parameters 
 	ADD CONSTRAINT fk_t_parameters_bib_organismes FOREIGN KEY (id_organism) 
 	REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE;
 
-ALTER TABLE ONLY gn_profiles.cor_taxons_profiles_parameters 
-	ADD CONSTRAINT pk_taxons_profiles_parameters PRIMARY KEY (cd_ref);
+ALTER TABLE ONLY gn_profiles.cor_taxons_parameters 
+	ADD CONSTRAINT pk_taxons_parameters PRIMARY KEY (cd_nom);
 
 ALTER TABLE ONLY gn_profiles.t_altitude_ranges 
 	ADD CONSTRAINT pk_altitude_range PRIMARY KEY (id_altitude_range);
@@ -74,7 +74,7 @@ FROM taxonomie.taxref t
 WHERE id_rang='KD';
 
 
-INSERT INTO gn_profiles.t_altitude_ranges(label, alt_min, alt_min)
+INSERT INTO gn_profiles.t_altitude_ranges(label, alt_min, alt_max)
 VALUES
 ('Etages planitiaires et collinéens',0,700),
 ('Etages montagnards et subalpins',701,2000),
@@ -83,7 +83,7 @@ VALUES
 -- Ajout d'un nouveau paramètre à GeoNature pour définir le niveau de validation des données à 
 -- utiliser dans le calcul des profils
 INSERT INTO gn_profiles.t_parameters(
-	id_organism, profiles_parameter_name, profiles_parameter_desc, profiles_parameter_value
+	id_organism, name, "desc", value
 )
 SELECT 
 	0, 
@@ -101,7 +101,7 @@ AND n.cd_nomenclature IN ('1','2') -- Commenter pour considérer l'ensemble des 
 
 -- Ajout d'un paramètre permettant de définir à partir de combien de données une phénologie est jugée valide/fiable
 INSERT INTO gn_profiles.t_parameters(
-	id_organism, profiles_parameter_name, profiles_parameter_desc, profiles_parameter_value
+	id_organism, name, "desc", value
 )
 VALUES ( 
 	0, 
@@ -230,9 +230,9 @@ AS $function$
 	AND ctp.id_altitude_range=myphenology.id_altitude_range);
 
 	IF valid_count>=(
-		SELECT profiles_parameter_value::integer 
+		SELECT value::integer 
 		FROM gn_profiles.t_parameters 
-		WHERE profiles_parameter_name='min_occurrence_check_profile_phenology'
+		WHERE name='min_occurrence_check_profile_phenology'
 	)
 	THEN 
 		RETURN true;
@@ -294,7 +294,7 @@ AS $function$
 -- que sa localisation est totalement incluse dans l'aire d'occurrences valide définie par le 
 -- profil du taxon en question
   DECLARE 
-  	score integer
+  	score integer;
     BEGIN 
      	SELECT INTO score gn_profiles.check_profile_distribution(myidsynthese)::int + 
 		 gn_profiles.check_profile_phenology(myidsynthese)::int + 
@@ -322,9 +322,9 @@ CROSS JOIN gn_profiles.get_parameters(s.cd_nom) p
 WHERE p.spatial_precision IS NOT NULL AND 
 	ST_MaxDistance(ST_centroid(s.the_geom_local), s.the_geom_local)<p.spatial_precision 
 AND s.id_nomenclature_valid_status IN (
-	SELECT regexp_split_to_table(profiles_parameter_value, ',')::integer 
+	SELECT regexp_split_to_table(value, ',')::integer 
 	FROM gn_profiles.t_parameters 
-	WHERE profiles_parameter_name='id_valid_status_for_profiles'
+	WHERE name='id_valid_status_for_profiles'
 	)
 GROUP BY t.cd_ref;
 
@@ -354,9 +354,9 @@ WHERE p.temporal_precision_days IS NOT NULL
 	AND DATE_part('day', s.date_max-s.date_min)<p.temporal_precision_days
     AND ST_MaxDistance(ST_centroid(s.the_geom_local), s.the_geom_local)<p.spatial_precision 
     AND s.id_nomenclature_valid_status IN (
-		SELECT regexp_split_to_table(profiles_parameter_value, ',')::integer 
+		SELECT regexp_split_to_table(value, ',')::integer 
 		FROM gn_profiles.t_parameters 
-		WHERE profiles_parameter_name='id_valid_status_for_profiles'
+		WHERE name='id_valid_status_for_profiles'
 	)
     AND s.altitude_min IS NOT NULL
     AND s.altitude_max IS NOT NULL
