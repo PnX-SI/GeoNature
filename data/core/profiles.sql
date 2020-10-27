@@ -370,7 +370,7 @@ SELECT
 	s.id_synthese AS id_synthese,
 	s.unique_id_sinp AS id_sinp,
 	t.cd_ref AS cd_ref,
-	t.lb_nom AS nom_taxon,
+	t.lb_nom AS valid_name,
 	gn_profiles.check_profile_distribution(id_synthese) AS valid_distribution, 
 	gn_profiles.check_profile_phenology(id_synthese) AS valid_phenology, 
 	gn_profiles.check_profile_altitudes(id_synthese) AS valid_altitude,
