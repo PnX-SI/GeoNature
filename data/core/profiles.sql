@@ -206,7 +206,7 @@ AS $function$
 			FROM gn_synthese.synthese s
 			LEFT JOIN taxonomie.taxref t ON s.cd_nom=t.cd_nom
 			LEFT JOIN gn_profiles.t_altitude_ranges tar 
-				ON s.altitude_min <= tar.alt_min AND s.altitude_max >= tar.alt_min
+				ON s.altitude_min <= tar.alt_max AND s.altitude_max >= tar.alt_min
 			CROSS JOIN gn_profiles.get_parameters(s.cd_nom) p
 			WHERE s.id_synthese=myidsynthese
 				AND p.temporal_precision_days IS NOT NULL 
@@ -345,7 +345,7 @@ SELECT DISTINCT
 	count(s.*) AS count_valid_data 
 FROM gn_synthese.synthese s
 LEFT JOIN taxonomie.taxref t ON s.cd_nom=t.cd_nom
-LEFT JOIN gn_profiles.t_altitude_ranges tar ON s.altitude_min <= tar.alt_min AND 
+LEFT JOIN gn_profiles.t_altitude_ranges tar ON s.altitude_min <= tar.alt_max AND 
 	s.altitude_max >= tar.alt_min
 CROSS JOIN gn_profiles.get_parameters(s.cd_nom) p
 WHERE p.temporal_precision_days IS NOT NULL 
