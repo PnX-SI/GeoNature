@@ -1,5 +1,6 @@
 from flask import current_app
 from geoalchemy2 import Geometry
+from sqlalchemy.dialects.postgresql import UUID
 
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
@@ -17,7 +18,7 @@ class VmCorTaxonPhenology(DB.Model):
     count_valid_data = DB.Column(DB.Integer)
 
     class PrimaryKey:
-        unique_together(("cd_ref","period","id_nomenclature_life_stage","id_altitude_range"),)
+        unique_together = (("cd_ref","period","id_nomenclature_life_stage","id_altitude_range"),)
 
 @serializable
 @geoserializable
