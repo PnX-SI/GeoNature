@@ -140,6 +140,17 @@ def create_app(with_external_mods=True, with_flask_admin=True):
         app.register_blueprint(routes, url_prefix="/gn_monitoring")
 
         # Errors
+        from geonature.core.gn_commons.routes import routes
+
+        app.register_blueprint(routes, url_prefix="/gn_commons")
+
+        from geonature.core.gn_profiles.routes import routes
+
+        app.register_blueprint(routes, url_prefix="/gn_profiles")
+
+    
+
+        # errors
         from geonature.core.errors import routes
 
         CORS(app, supports_credentials=True)
