@@ -7,6 +7,7 @@ from utils_flask_sqla_geo.serializers import geoserializable
 
 from geonature.utils.env import DB
 
+
 @serializable
 class VmCorTaxonPhenology(DB.Model):
     __tablename__ = "vm_cor_taxon_phenology"
@@ -18,7 +19,10 @@ class VmCorTaxonPhenology(DB.Model):
     count_valid_data = DB.Column(DB.Integer)
 
     class PrimaryKey:
-        unique_together = (("cd_ref","period","id_nomenclature_life_stage","id_altitude_range"),)
+        unique_together = (
+            ("cd_ref", "period", "id_nomenclature_life_stage", "id_altitude_range"),
+        )
+
 
 @serializable
 @geoserializable
@@ -32,6 +36,7 @@ class VmValidProfiles(DB.Model):
     first_valid_data = DB.Column(DB.DateTime)
     last_valid_data = DB.Column(DB.DateTime)
     count_valid_data = DB.Column(DB.Integer)
+
 
 @serializable
 class VConsistancyData(DB.Model):
