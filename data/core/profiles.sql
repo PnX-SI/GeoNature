@@ -23,14 +23,6 @@ CREATE TABLE gn_profiles.cor_taxons_parameters(
 	active_life_stage boolean DEFAULT false
 );
 
-
-CREATE TABLE gn_profiles.t_altitude_ranges(
-	id_altitude_range serial,
-	label character varying(50),
-	alt_min integer,
-	alt_max integer
-);
-
 ---------------
 --PRIMARY KEY--
 ---------------
@@ -44,9 +36,6 @@ ALTER TABLE ONLY gn_profiles.t_parameters
 ALTER TABLE ONLY gn_profiles.cor_taxons_parameters 
 	ADD CONSTRAINT pk_taxons_parameters PRIMARY KEY (cd_nom);
 
-ALTER TABLE ONLY gn_profiles.t_altitude_ranges 
-	ADD CONSTRAINT pk_altitude_range PRIMARY KEY (id_altitude_range);
-
 -----------------
 -- FOREIGN KEY --
 -----------------
@@ -54,7 +43,6 @@ ALTER TABLE ONLY gn_profiles.t_altitude_ranges
 ALTER TABLE ONLY gn_profiles.cor_taxons_parameters 
 	ADD CONSTRAINT fk_cor_taxons_parameters_cd_nom FOREIGN KEY (cd_nom) 
 	REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
-
 
 ------------------
 -- DEFAULT DATA --
@@ -71,15 +59,8 @@ SELECT
 FROM taxonomie.taxref t
 WHERE id_rang='KD';
 
-
-INSERT INTO gn_profiles.t_altitude_ranges(label, alt_min, alt_max)
-VALUES
-('Etages planitiaires et collinéens',0,700),
-('Etages montagnards et subalpins',701,2000),
-('Etages alpins et nivaux',2001,4811);
-
--- Ajout d'un nouveau paramètre à GeoNature pour définir le niveau de validation des données à 
--- utiliser dans le calcul des profils
+-- Ajout d'un paramètre pour définir le niveau de validatation requis pour que les données alimentent
+-- le calcul des profils
 INSERT INTO gn_profiles.t_parameters(
 	id_organism, name, "desc", value
 )
@@ -97,19 +78,18 @@ AND n.cd_nomenclature IN ('1','2') -- Commenter pour considérer l'ensemble des 
 ; 
 
 
--- Ajout d'un paramètre permettant de définir à partir de combien de données une phénologie est 
--- jugée valide/fiable
+-- Ajout d'un paramètre pour définir le pourcentage de données à conserver dans le calcul des profils 
+-- afin d'exclure les données aux altitudes extrêmes
 INSERT INTO gn_profiles.t_parameters(
 	id_organism, name, "desc", value
 )
 VALUES ( 
 	0, 
-	'min_occurrence_check_profile_phenology', 
-	'Nombre minimal d''occurrences requis dans les profils d''espèces pour considérer une 
-	période phénologique comme valide',
-	1
+	'proportion_kept_data', 
+	'Pourcentage de données à conserver dans le calcul des profils afin d''exclure les données aux 
+	altitudes extrêmes',
+	95
 );
-
 
 -------------
 --FUNCTIONS--
@@ -187,11 +167,9 @@ AS $function$
 --correspond bien à la phénologie valide définie par le profil du taxon en question
 --La fonction renvoie 'false' pour les données trop imprécises (durée d'observation supérieure à 
 -- la précision temporelle définie dans les paramètres des profils).
-  DECLARE 
-   valid_count integer;
   BEGIN
-  	valid_count:= 
-  		(WITH myphenology AS (
+  	IF EXISTS(
+		WITH myphenology AS (
   			SELECT DISTINCT
 				t.cd_ref AS cd_ref,
 				unnest(
@@ -202,11 +180,10 @@ AS $function$
 					WHEN p.active_life_stage=true THEN s.id_nomenclature_life_stage
 					ELSE NULL
 					END AS id_nomenclature_life_stage,
-				tar.id_altitude_range AS id_altitude_range
+				s.altitude_min,
+				s.altitude_max
 			FROM gn_synthese.synthese s
 			LEFT JOIN taxonomie.taxref t ON s.cd_nom=t.cd_nom
-			LEFT JOIN gn_profiles.t_altitude_ranges tar 
-				ON s.altitude_min <= tar.alt_max AND s.altitude_max >= tar.alt_min
 			CROSS JOIN gn_profiles.get_parameters(s.cd_nom) p
 			WHERE s.id_synthese=my_id_synthese
 				AND p.temporal_precision_days IS NOT NULL 
@@ -218,26 +195,22 @@ AS $function$
 			CASE 
 				WHEN p.active_life_stage=true THEN s.id_nomenclature_life_stage 
 				ELSE NULL 
-			END
-			,id_altitude_range)
-
-	SELECT max(ctp.count_valid_data)
-	FROM gn_profiles.vm_cor_taxon_phenology ctp, myphenology
-	WHERE ctp.cd_ref=myphenology.cd_ref
-	AND ctp.period=myphenology.period
-	AND (ctp.id_nomenclature_life_stage=myphenology.id_nomenclature_life_stage 
-	OR (ctp.id_nomenclature_life_stage IS NULL AND myphenology.id_nomenclature_life_stage IS NULL))
-	AND ctp.id_altitude_range=myphenology.id_altitude_range);
-
-	IF valid_count>=(
-		SELECT value::integer 
-		FROM gn_profiles.t_parameters 
-		WHERE name='min_occurrence_check_profile_phenology'
-	)
-	THEN 
-		RETURN true;
-	ELSE 
-		RETURN false;
+			END,
+			altitude_min,
+			altitude_max)
+		SELECT * 
+		FROM myphenology mp, gn_profiles.vm_cor_taxon_phenology ctp
+		WHERE ctp.cd_ref=mp.cd_ref
+		AND mp.period=ctp.period
+		AND mp.altitude_min >= ctp.calculated_altitude_min
+		AND mp.altitude_max <= ctp.calculated_altitude_max
+		AND (ctp.id_nomenclature_life_stage=mp.id_nomenclature_life_stage 
+		OR (ctp.id_nomenclature_life_stage IS NULL AND mp.id_nomenclature_life_stage IS NULL))
+		)
+	THEN
+   	  RETURN true;
+    ELSE
+      RETURN false;
     END IF;
   END;
 $function$
@@ -328,8 +301,8 @@ AND s.id_nomenclature_valid_status IN (
 	)
 GROUP BY t.cd_ref;
 
-
 CREATE MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology AS 
+WITH classified_data AS (
 SELECT DISTINCT
 	t.cd_ref AS cd_ref,
 	unnest(
@@ -341,12 +314,13 @@ SELECT DISTINCT
 			THEN s.id_nomenclature_life_stage
 		ELSE NULL
 		END AS id_nomenclature_life_stage,
-	tar.id_altitude_range AS id_altitude_range,
-	count(s.*) AS count_valid_data 
+	count(s.*) AS count_valid_data,
+	min(s.altitude_min) as extreme_altitude_min,
+	array_agg(s.altitude_min order by s.altitude_min ASC) as my_alt_min,
+	max(s.altitude_max) as extreme_altitude_max,
+	array_agg(s.altitude_max order by s.altitude_max DESC) as my_alt_max
 FROM gn_synthese.synthese s
 LEFT JOIN taxonomie.taxref t ON s.cd_nom=t.cd_nom
-LEFT JOIN gn_profiles.t_altitude_ranges tar ON s.altitude_min <= tar.alt_max AND 
-	s.altitude_max >= tar.alt_min
 CROSS JOIN gn_profiles.get_parameters(s.cd_nom) p
 WHERE p.temporal_precision_days IS NOT NULL 
 	AND p.spatial_precision  IS NOT NULL
@@ -360,9 +334,23 @@ WHERE p.temporal_precision_days IS NOT NULL
 	)
     AND s.altitude_min IS NOT NULL
     AND s.altitude_max IS NOT NULL
-GROUP BY t.cd_ref, period, 
-CASE WHEN p.active_life_stage=true THEN s.id_nomenclature_life_stage ELSE NULL END,
-id_altitude_range;
+GROUP BY t.cd_ref, period, CASE WHEN p.active_life_stage=true THEN s.id_nomenclature_life_stage 
+	ELSE NULL end)
+SELECT 
+cd_ref,
+period,
+id_nomenclature_life_stage,
+count_valid_data,
+extreme_altitude_min,
+my_alt_min[round(count_valid_data*(SELECT ((1-value::integer/100::float)/2)
+									FROM gn_profiles.t_parameters 
+									WHERE name='proportion_kept_data'))+1] as calculated_altitude_min,
+extreme_altitude_max,
+my_alt_max[round(count_valid_data*(SELECT ((1-value::integer/100::float)/2)
+									FROM gn_profiles.t_parameters 
+									WHERE name='proportion_kept_data'))+1] as calculated_altitude_max
+from classified_data
+;
 
 
 CREATE VIEW gn_profiles.v_consistancy_data AS
