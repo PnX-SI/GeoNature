@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
+import { MapService } from '@geonature_common/map/map.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { AppConfig } from '@geonature_config/app.config';
@@ -10,7 +11,8 @@ import { finalize } from 'rxjs/operators';
 @Component({
   selector: 'pnx-synthese-info-obs',
   templateUrl: 'synthese-info-obs.component.html',
-  styleUrls: ['./synthese-info-obs.component.scss']
+  styleUrls: ['./synthese-info-obs.component.scss'],
+  providers: [MapService]
 })
 export class SyntheseInfoObsComponent implements OnInit {
   @Input() idSynthese: number;
@@ -45,25 +47,21 @@ export class SyntheseInfoObsComponent implements OnInit {
     private _dataService: SyntheseDataService,
     public activeModal: NgbActiveModal,
     public mediaService: MediaService,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private _mapService: MapService
   ) { }
 
   ngOnInit() {
-    this.loadOneSyntheseReleve(this.idSynthese);
-  }
-
-  ngOnChanges(changes) {
-    // load releve only after first init
-    if (changes.idSynthese && changes.idSynthese.currentValue && !changes.idSynthese.firstChange) {
-      this.loadOneSyntheseReleve(this.idSynthese);
-    }
+    this.loadAllInfo(this.idSynthese);
     this.loadValidationHistory(this.uuidSynthese);
-    this._gnDataService.getProfile(60577).subscribe(profil => {
-      this.profile = profil;
-    });
   }
 
-  loadOneSyntheseReleve(idSynthese) {
+
+  changeMapSize() {
+    this._mapService.map.invalidateSize();
+  }
+
+  loadAllInfo(idSynthese) {
     this.isLoading = true;
     this._dataService
       .getOneSyntheseObservation(idSynthese)
@@ -115,6 +113,11 @@ export class SyntheseInfoObsComponent implements OnInit {
             this.mailto = this.formatMailContent(this.email);
             
           }
+
+          this._gnDataService.getProfile(taxInfo.cd_ref).subscribe(profile => {
+            this.profile = profile;
+          });
+
         });
       });
   }
