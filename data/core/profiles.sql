@@ -203,7 +203,7 @@ AS $function$
 		WHERE ctp.cd_ref=mp.cd_ref
 		AND mp.period=ctp.period
 		AND mp.altitude_min >= ctp.calculated_altitude_min
-		AND mp.altitude_max <= ctp.calcultated_altitude_max
+		AND mp.altitude_max <= ctp.calculated_altitude_max
 		AND (ctp.id_nomenclature_life_stage=mp.id_nomenclature_life_stage 
 		OR (ctp.id_nomenclature_life_stage IS NULL AND mp.id_nomenclature_life_stage IS NULL))
 		)
@@ -348,7 +348,7 @@ my_alt_min[round(count_valid_data*(SELECT ((1-value::integer/100::float)/2)
 extreme_altitude_max,
 my_alt_max[round(count_valid_data*(SELECT ((1-value::integer/100::float)/2)
 									FROM gn_profiles.t_parameters 
-									WHERE name='proportion_kept_data'))+1] as calcultated_altitude_max
+									WHERE name='proportion_kept_data'))+1] as calculated_altitude_max
 from classified_data
 ;
 
