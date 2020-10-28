@@ -30,7 +30,7 @@ const PARAMS = new HttpParams({
 
 @Injectable()
 export class NominatimService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   search(term: string) {
     if (term === '') {
@@ -61,6 +61,9 @@ export class MapComponent implements OnInit {
   @Input() zoom: number = AppConfig.MAPCONFIG.ZOOM_LEVEL;
   /** Hauteur de la carte (obligatoire) */
   @Input() height: string;
+
+  /*@Input() mapContainer: string = 'map';*/
+
   /** Activer la barre de recherche */
   @Input() searchBar: boolean = true;
   searchLocation: string;
@@ -112,7 +115,7 @@ export class MapComponent implements OnInit {
       center = L.latLng(AppConfig.MAPCONFIG.CENTER[0], AppConfig.MAPCONFIG.CENTER[1]);
     }
 
-    const map = L.map('map', {
+    const map = L.map('map'/*this.mapContainer*/, {
       zoomControl: false,
       center: center,
       zoom: this.zoom,
