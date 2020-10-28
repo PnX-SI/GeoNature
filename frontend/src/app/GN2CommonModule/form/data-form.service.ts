@@ -24,7 +24,7 @@ export const FormatMapMime = new Map([
 @Injectable()
 export class DataFormService {
   private _blob: Blob;
-  constructor(private _http: HttpClient) {}
+  constructor(private _http: HttpClient) { }
 
   getNomenclature(
     codeNomenclatureType: string,
@@ -484,8 +484,8 @@ export class DataFormService {
       application === 'GeoNature'
         ? `${AppConfig.API_ENDPOINT}/${api}`
         : application === 'TaxHub'
-        ? `${AppConfig.API_TAXHUB}/${api}`
-        : api;
+          ? `${AppConfig.API_TAXHUB}/${api}`
+          : api;
 
     return this._http.get<any>(url, { params: queryString });
   }
@@ -544,5 +544,9 @@ export class DataFormService {
   //Ajouter lieu
   addPlace(place) {
     return this._http.post<any>(`${AppConfig.API_ENDPOINT}/gn_commons/place`, place);
+  }
+
+  getProfile(cdRef) {
+    return this._http.get(`${AppConfig.API_ENDPOINT}/gn_profiles/valid_profile/${cdRef}`)
   }
 }
