@@ -14,9 +14,15 @@ routes = Blueprint("gn_profiles", __name__)
 @routes.route("/cor_taxon_phenology/<cd_ref>", methods=["GET"])
 @json_resp
 def get_phenology(cd_ref):
-    data = DB.session.query(VmCorTaxonPhenology).get(cd_ref)
+    query = DB.session.query(VmCorTaxonPhenology).filter(VmCorTaxonPhenology.cd_ref==cd_ref)
+    print(query)
+    data=query.all()
     if data:
-        return data.as_dict()
+        # result=[]
+        # for row in data :
+        #     result.append(row.as_dict())
+        # return result
+        return [row.as_dict() for row in data]
     return None
 
 

@@ -342,13 +342,21 @@ period,
 id_nomenclature_life_stage,
 count_valid_data,
 extreme_altitude_min,
-my_alt_min[round(count_valid_data*(SELECT ((1-value::integer/100::float)/2)
+CASE WHEN (count_valid_data*(SELECT ((1-value::integer/100::float)/2)
 									FROM gn_profiles.t_parameters 
-									WHERE name='proportion_kept_data'))+1] as calculated_altitude_min,
+									WHERE name='proportion_kept_data'))<0.5 THEN NULL
+	ELSE my_alt_min[round(count_valid_data*(SELECT ((1-value::integer/100::float)/2)
+									FROM gn_profiles.t_parameters 
+									WHERE name='proportion_kept_data'))] 
+	END as calculated_altitude_min,
 extreme_altitude_max,
-my_alt_max[round(count_valid_data*(SELECT ((1-value::integer/100::float)/2)
+CASE WHEN (count_valid_data*(SELECT ((1-value::integer/100::float)/2)
 									FROM gn_profiles.t_parameters 
-									WHERE name='proportion_kept_data'))+1] as calculated_altitude_max
+									WHERE name='proportion_kept_data'))<0.5 THEN NULL
+	ELSE my_alt_max[round(count_valid_data*(SELECT ((1-value::integer/100::float)/2)
+									FROM gn_profiles.t_parameters 
+									WHERE name='proportion_kept_data'))] 
+	END as calculated_altitude_max
 from classified_data
 ;
 
