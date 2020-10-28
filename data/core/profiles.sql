@@ -15,7 +15,6 @@ CREATE TABLE gn_profiles.t_parameters(
 	value text NOT NULL,
 	extra_value varchar(255) NULL
 );
-print('test_foireux')
 
 CREATE TABLE gn_profiles.cor_taxons_parameters(
 	cd_nom integer,
@@ -311,7 +310,7 @@ $function$
 CREATE MATERIALIZED VIEW gn_profiles.vm_valid_profiles AS
 SELECT DISTINCT
 	t.cd_ref AS cd_ref,
-	st_union(st_buffer(s.the_geom_local, COALESCE(p.spatial_precision, 1))) AS valid_distribution,
+	st_union(st_buffer(s.the_geom_4326, COALESCE(p.spatial_precision, 1))) AS valid_distribution,
 	min(s.altitude_min) AS altitude_min,
 	max(s.altitude_max) AS altitude_max,
 	min(s.date_min) AS first_valid_data,
