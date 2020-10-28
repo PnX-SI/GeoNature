@@ -155,6 +155,7 @@ export class OcctaxFormService {
   }
 
   getAddDynamiqueFields(idDataset){
+    this.formDatasetFields = [];
     if(ModuleConfig.ADD_FIELDS){
       if(ModuleConfig.ADD_FIELDS.FORMFIELDS){
         ModuleConfig.ADD_FIELDS.FORMFIELDS.map((formFields) => {
@@ -162,9 +163,8 @@ export class OcctaxFormService {
             this.formDatasetFields = formFields;
           }
         })
-        return this.formDatasetFields;
       }
     }
-    return [];
+    return this.formDatasetFields;
   }
 }
