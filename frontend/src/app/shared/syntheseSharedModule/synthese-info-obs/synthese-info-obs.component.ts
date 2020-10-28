@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, ViewChild, OnInit, Input } from '@angular/core';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { MapService } from '@geonature_common/map/map.service';
 import { CommonService } from '@geonature_common/service/common.service';
@@ -7,6 +7,9 @@ import { AppConfig } from '@geonature_config/app.config';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { MediaService } from '@geonature_common/service/media.service';
 import { finalize } from 'rxjs/operators';
+
+
+import { MapComponent } from '@geonature_common/map/map.component'
 
 @Component({
   selector: 'pnx-synthese-info-obs',
@@ -215,6 +218,33 @@ export class SyntheseInfoObsComponent implements OnInit {
       err => {
         console.log(err);
         if (err.status === 500) {
+          // show error message if other server error
+          this._commonService.translateToaster('error', err.error);
+        }
+      },
+      () => {
+        //console.log(this.statusNames);
+      }
+    );
+  }
+
+  loadProfile(cdRef) {
+    this._gnDataService.getProfile(cdRef).subscribe(
+      data => {
+        this.profile = data;
+
+      },
+      err => {
+        console.log(err);
+        if (err.status === 404) {
+          this._commonService.translateToaster('warning', 'Aucun profile');
+        } else if (err.statusText === 'Unknown Error') {
+          // show error message if no connexion
+          this._commonService.translateToaster(
+            'error',
+            'ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)'
+          );
+        } else {
           // show error message if other server error
           this._commonService.translateToaster('error', err.error);
         }

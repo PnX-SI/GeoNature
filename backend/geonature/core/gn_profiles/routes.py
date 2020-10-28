@@ -70,9 +70,11 @@ def get_cor_taxon_phenology(cd_ref):
     data = q.get(cd_ref)
     return data.as_dict()
 
-# @routes.route("/profiles/<cd_ref>", methods=["GET"])
-# @json_resp
-# def get_profile(cd_ref):
-#     q = DB.session.query(VmValidProfiles)
-#     data = q.get(cd_ref)
-#     return data.as_dict()
+
+@routes.route("/profiles/<cd_ref>", methods=["GET"])
+@json_resp
+def get_profile(cd_ref):
+    data = DB.session.query(VmValidProfiles).get(cd_ref)
+    if data:
+        return data.get_geofeature()
+    return None

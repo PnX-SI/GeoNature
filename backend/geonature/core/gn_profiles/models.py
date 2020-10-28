@@ -44,6 +44,9 @@ class VmValidProfiles(DB.Model):
     last_valid_data = DB.Column(DB.DateTime)
     count_valid_data = DB.Column(DB.Integer)
 
+    def get_geofeature(self, recursif=False, columns=()):
+        return self.as_geofeature("valid_distribution", "cd_ref", recursif, columns=columns)
+
 
 @serializable
 class VConsistancyData(DB.Model):
