@@ -1,20 +1,9 @@
-<div
-  id="cover-spin"
-  *ngIf="isLoading"
->
+<div id="cover-spin" *ngIf="isLoading">
 </div>
 
-<div
-  *ngIf="header"
-  class="modal-header padding-md-all"
->
+<div *ngIf="header" class="modal-header padding-md-all">
   <h5>Information sur l'observation</h5>
-  <button
-    type="button"
-    class="close"
-    aria-label="Close"
-    (click)="activeModal.dismiss('Cross click')"
-  >
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
   </button>
 
@@ -26,14 +15,8 @@
   </span>
   {{ selectedObsTaxonDetail?.nom_valide }}
 
-  <a
-    target="_blank "
-    href="https://inpn.mnhn.fr/espece/cd_nom/{{ selectedObsTaxonDetail?.cd_nom }} "
-  >
-    <button
-      mat-stroked-button
-      color="primary"
-    > Fiche INPN du taxon </button>
+  <a target="_blank " href="https://inpn.mnhn.fr/espece/cd_nom/{{ selectedObsTaxonDetail?.cd_nom }} ">
+    <button mat-stroked-button color="primary"> Fiche INPN du taxon </button>
   </a>
 
   <mat-card-content>
@@ -47,16 +30,12 @@
         </span>
       </div>
       <b> Observation de : </b> {{selectedObs?.observers}}
-      <span
-        *ngIf="selectedObs?.cor_observers?.length > 0 && CONFIG.FRONTEND.DISPLAY_EMAIL_INFO_OBS">
+      <span *ngIf="selectedObs?.cor_observers?.length > 0 && CONFIG.FRONTEND.DISPLAY_EMAIL_INFO_OBS">
         (
         <span *ngFor="let observers of selectedObs?.cor_observers; let i = index">
           {{ observers.email}} <span *ngIf="i != selectedObs?.cor_observers.length -1">, </span>
         </span>
-        <button> <a href="{{mailto}}"><i
-              class="fa fa-envelope-o"
-              aria-hidden="true"
-            ></i></a> </button>
+        <button> <a href="{{mailto}}"><i class="fa fa-envelope-o" aria-hidden="true"></i></a> </button>
         )
       </span>
 
@@ -84,12 +63,8 @@
         {{selectedObs?.habitat?.lb_code}}
         <br>
       </span>
-      <button
-        *ngIf="syntheseObs?.url_source"
-        mat-raised-button
-        color="primary"
-        (click)="backToModule(syntheseObs?.url_source, syntheseObs?.entity_source_pk_value)"
-      >
+      <button *ngIf="syntheseObs?.url_source" mat-raised-button color="primary"
+        (click)="backToModule(syntheseObs?.url_source, syntheseObs?.entity_source_pk_value)">
         Voir l'observation dans le module de saisie
         <mat-icon>insert_drive_file</mat-icon>
 
@@ -284,10 +259,7 @@
 
     <h5 class="underlined  underlined-sm main-color"> Attribut(s) Taxonomique(s) locaux </h5>
     <table class="font-xs table table-striped table-sm">
-      <tr
-        class="font-xs"
-        *ngFor="let attr of selectObsTaxonInfo?.attributs"
-      >
+      <tr class="font-xs" *ngFor="let attr of selectObsTaxonInfo?.attributs">
         <td> <b>{{attr.label_attribut}} </b> </td>
         <td> {{attr.valeur_attribut}} </td>
       </tr>
@@ -314,10 +286,7 @@
         <ng-container *ngFor="let media of selectedObs?.medias; index as i">
           <tr>
             <td> Titre </td>
-            <td> <a
-                target="_blank"
-                [href]="mediaService.href(media)"
-              >{{media.title_fr}}</a> </td>
+            <td> <a target="_blank" [href]="mediaService.href(media)">{{media.title_fr}}</a> </td>
           </tr>
           <tr *ngIf='media.description_fr'>
             <td> Description </td>
@@ -329,12 +298,8 @@
           </tr>
           <tr>
             <td colspan="2">
-              <pnx-display-medias
-                diaporama=true
-                [medias]="selectedObs?.medias"
-                [index]="i"
-                display="medium"
-              ></pnx-display-medias>
+              <pnx-display-medias diaporama=true [medias]="selectedObs?.medias" [index]="i" display="medium">
+              </pnx-display-medias>
             </td>
           </tr>
         </ng-container>
@@ -369,7 +334,7 @@
   </mat-tab>
 
 
-  <mat-tab label="Validation">
+  <mat-tab label="Validation" (click)="changeMapSize()">
     <table class="font-xs table table-striped table-sm">
       <thead>
         <tr>
@@ -384,19 +349,10 @@
         <tr *ngFor="let row of validationHistory">
           <td width="15%"> {{row.date}} </td>
           <td width="20%">
-            <span
-              class="validationCircle"
-              [ngStyle]="{'background': validationColor[row.cd_nomenclature]}"
-            >
-              <mat-icon
-                *ngIf="row.typeValidation == 'True'"
-                class="computer"
-              >computer</mat-icon>
+            <span class="validationCircle" [ngStyle]="{'background': validationColor[row.cd_nomenclature]}">
+              <mat-icon *ngIf="row.typeValidation == 'True'" class="computer">computer</mat-icon>
             </span>
-            <span
-              class="statusName"
-              class="ml-4"
-            >
+            <span class="statusName" class="ml-4">
               {{row.label_default}}
             </span>
           </td>
@@ -404,13 +360,14 @@
           <td> {{row.comment}} </td>
         </tr>
       </tbody>
-    </table> 
+    </table>
 
     <h3> Profil </h3>
 
-    <p>
-      <pnx-map height="80vh"> </pnx-map>
-    </p>
+    <h5>Aire de répartition des observations valides</h5>
+    <pnx-map height="40vh">
+      <pnx-geojson [geojson]="profile"> </pnx-geojson>
+    </pnx-map>
   </mat-tab>
 
   <mat-tab-group>
