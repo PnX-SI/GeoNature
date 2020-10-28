@@ -547,6 +547,6 @@ export class DataFormService {
   }
 
   getProfile(cdRef) {
-    return this._http.get(`${AppConfig.API_ENDPOINT}/gn_profiles/valid_profile/${cdRef}`)
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_profiles/valid_profile/${cdRef}`)
   }
 }
