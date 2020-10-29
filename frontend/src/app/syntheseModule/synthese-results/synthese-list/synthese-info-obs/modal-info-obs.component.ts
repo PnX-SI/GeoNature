@@ -23,7 +23,7 @@ export class ModalInfoObsComponent implements OnInit {
     private _dataService: SyntheseDataService,
     public activeModal: NgbActiveModal,
     public mediaService: MediaService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.loadOneSyntheseReleve(this.syntheseObs);

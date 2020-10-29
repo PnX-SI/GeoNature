@@ -19,6 +19,9 @@ import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/
 import { MatDialog } from "@angular/material";
 
 
+import { OcctaxDataService } from "../../services/occtax-data.service";
+import { CommonService } from '@geonature_common/service/common.service';
+
 @Component({
   selector: "pnx-occtax-form-occurrence",
   templateUrl: "./occurrence.component.html",
@@ -58,10 +61,12 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
 
   constructor(
     public fs: OcctaxFormService,
+    private occtaxDataService: OcctaxDataService,
     private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     private _coreFormService: FormService,
     private _occtaxTaxaListService: OcctaxTaxaListService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private _commonService: CommonService
   ) { }
 
   ngOnInit() {
@@ -227,14 +232,59 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   }
 
   /** A la selection d'un taxon, focus sur le bouton ajouter */
-  selectAddOcc() {
+  selectAddOcc(taxon) {
+    console.log(taxon);
+
     setTimeout(() => {
       document.getElementById("add-occ").focus();
+      this.createControlePostBody();
     }, 50);
   }
 
   collapse() {
     this.advanced = this.advanced === "collapsed" ? "expanded" : "collapsed";
+  }
+
+  createControlePostBody() {
+    console.log(this.fs.occtaxData.getValue())
+    let PostBody = {
+      cd_nom: 92,
+      date_min: this.fs.occtaxData.getValue().releve.date_min/*,
+      date_max: this.fs.occtaxData.get("date_max"),
+      altitude_min: this.fs.occtaxData.get("altitude_min"),
+      altitude_max: this.fs.occtaxData.get("altitude_max"),
+      geom: this.fs.occtaxData.get("geometry")*/
+    }
+    console.log(PostBody)
+
+
+    /*this.occtaxDataService.controlOccurence(inputData).subscribe(
+      data => {
+        this._commonService.translateToaster('warning', JSON.stringify(data));
+
+      },
+      err => {
+
+
+
+        console.log(err);
+        if (err.status === 404) {
+          this._commonService.translateToaster('warning', 'Aucun profile');
+        } else if (err.statusText === 'Unknown Error') {
+          // show error message if no connexion
+          this._commonService.translateToaster(
+            'error',
+            'ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)'
+          );
+        } else {
+          // show error message if other server error
+          this._commonService.translateToaster('error', err.error);
+        }
+      },
+      () => {
+        //console.log(this.statusNames);
+      }
+    );*/
   }
 
 }

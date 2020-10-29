@@ -367,6 +367,18 @@
 
     <h3> Profil </h3>
 
+    <table class="font-xs table table-striped table-sm">
+      <tr>
+        <td> Altitude </td>
+        <td> {{profile.properties.altitude_min}} - {{profile.properties.altitude_max}}</td>
+      </tr>
+      <tr>
+        <td> Période d'observations </td>
+        <td> {{profile.properties.first_valid_data | date:'dd/MM/yyyy'}} -
+          {{profile.properties.last_valid_data | date:'dd/MM/yyyy'}}</td>
+      </tr>
+    </table>
+
     <h5>Aire de répartition des observations valides</h5>
     <pnx-map height="40vh">
       <pnx-geojson [geojson]="selectedGeom" [style]="{color: 'red'}"></pnx-geojson>
