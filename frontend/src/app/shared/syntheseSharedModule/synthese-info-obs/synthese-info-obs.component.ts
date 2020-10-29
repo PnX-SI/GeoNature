@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, AfterViewInit } from '@angular/core';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { MapService } from '@geonature_common/map/map.service';
 import { CommonService } from '@geonature_common/service/common.service';
@@ -7,6 +7,7 @@ import { AppConfig } from '@geonature_config/app.config';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { MediaService } from '@geonature_common/service/media.service';
 import { finalize } from 'rxjs/operators';
+import { BaseChartDirective } from "ng2-charts";
 
 
 import { MapComponent } from '@geonature_common/map/map.component'
@@ -17,13 +18,29 @@ import { MapComponent } from '@geonature_common/map/map.component'
   styleUrls: ['./synthese-info-obs.component.scss'],
   providers: [MapService]
 })
-export class SyntheseInfoObsComponent implements OnInit {
+export class SyntheseInfoObsComponent implements OnInit, AfterViewInit {
   @Input() idSynthese: number;
   @Input() uuidSynthese: any;
   @Input() selectedObs: any;
   @Input() header: boolean = false;
   @Input() validationHistory: Array<any>;
   @Input() selectedObsTaxonDetail: any;
+  @ViewChild("myChart") myChart: BaseChartDirective;
+  public selectedGeom;
+  public chartType = 'line';
+  public chartData = {
+    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    datasets: [
+      {
+        label: "My First dataset",
+        data: [65, 59, 80, 81, 56, 55, 40]
+      }
+    ]
+  };
+  public options = {
+    responsive: true,
+    maintainAspectRatio: false
+  };
   public selectObsTaxonInfo;
   public formatedAreas = [];
   public CONFIG = AppConfig;
@@ -54,9 +71,16 @@ export class SyntheseInfoObsComponent implements OnInit {
     this.loadValidationHistory(this.uuidSynthese);
   }
 
+  ngAfterViewInit() {
+    this.myChart.chart.update();
+  }
+
 
   changeMapSize() {
-    this._mapService.map.invalidateSize();
+    setTimeout(() => {
+      this._mapService.map.invalidateSize();
+    }, 500);
+
   }
 
   loadAllInfo(idSynthese) {
@@ -69,7 +93,8 @@ export class SyntheseInfoObsComponent implements OnInit {
         })
       )
       .subscribe(data => {
-        this.selectedObs = data;
+        this.selectedObs = data["properties"];
+        this.selectedGeom = data;
         this.selectedObs['municipalities'] = [];
         this.selectedObs['other_areas'] = [];
         this.selectedObs['actors'] = this.selectedObs['actors'].split('|');
@@ -100,12 +125,12 @@ export class SyntheseInfoObsComponent implements OnInit {
         }
 
         this._gnDataService
-          .getTaxonAttributsAndMedia(data.cd_nom, AppConfig.SYNTHESE.ID_ATTRIBUT_TAXHUB)
+          .getTaxonAttributsAndMedia(this.selectedObs.cd_nom, AppConfig.SYNTHESE.ID_ATTRIBUT_TAXHUB)
           .subscribe(taxAttr => {
             this.selectObsTaxonInfo = taxAttr;
           });
 
-        this._gnDataService.getTaxonInfo(data.cd_nom).subscribe(taxInfo => {
+        this._gnDataService.getTaxonInfo(this.selectedObs.cd_nom).subscribe(taxInfo => {
           this.selectedObsTaxonDetail = taxInfo;
 
           this._gnDataService.getProfile(taxInfo.cd_ref).subscribe(profile => {
