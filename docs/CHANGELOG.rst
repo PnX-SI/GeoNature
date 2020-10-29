@@ -9,6 +9,8 @@ TODO: changer la config des colonnes d'export de la synthese suite aux ajouts
 Manque le champs statut biogeographique
 Revoir la vue synthese
 
+* Ajout d'un champs json ``additional_data`` dans la table ``l_areas`` (#1111)
+
 2.5.2 (2020-10-13)
 ------------------
 
