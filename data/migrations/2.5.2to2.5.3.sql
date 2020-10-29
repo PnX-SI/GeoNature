@@ -100,5 +100,5 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
 -----------
 --ref_geo--
 -----------                                  
-ALTER TABLE ref_geo.l_areas ADD attributs jsonb NULL;
+ALTER TABLE ref_geo.l_areas ADD additional_data jsonb NULL;
 
