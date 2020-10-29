@@ -10,6 +10,9 @@
 </div>
 
 <mat-card>
+
+  <chart #myChart [type]="chartType" [data]="charData" [options]="options"></chart>
+
   <span *ngIf="selectedObsTaxonDetail?.nom_vern">
     {{ selectedObsTaxonDetail?.nom_vern }} -
   </span>
@@ -369,6 +372,7 @@
       <pnx-geojson [geojson]="selectedGeom" [style]="{color: 'red'}"></pnx-geojson>
       <pnx-geojson [geojson]="profile"></pnx-geojson>
     </pnx-map>
+
   </mat-tab>
 
   <mat-tab-group>

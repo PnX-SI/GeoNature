@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, AfterViewInit } from '@angular/core';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { MapService } from '@geonature_common/map/map.service';
 import { CommonService } from '@geonature_common/service/common.service';
@@ -7,6 +7,7 @@ import { AppConfig } from '@geonature_config/app.config';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { MediaService } from '@geonature_common/service/media.service';
 import { finalize } from 'rxjs/operators';
+import { BaseChartDirective } from "ng2-charts";
 
 @Component({
   selector: 'pnx-synthese-info-obs',
@@ -14,14 +15,29 @@ import { finalize } from 'rxjs/operators';
   styleUrls: ['./synthese-info-obs.component.scss'],
   providers: [MapService]
 })
-export class SyntheseInfoObsComponent implements OnInit {
+export class SyntheseInfoObsComponent implements OnInit, AfterViewInit {
   @Input() idSynthese: number;
   @Input() uuidSynthese: any;
   @Input() selectedObs: any;
   @Input() header: boolean = false;
   @Input() validationHistory: Array<any>;
   @Input() selectedObsTaxonDetail: any;
+  @ViewChild("myChart") myChart: BaseChartDirective;
   public selectedGeom;
+  public chartType = 'line';
+  public chartData = {
+    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    datasets: [
+      {
+        label: "My First dataset",
+        data: [65, 59, 80, 81, 56, 55, 40]
+      }
+    ]
+  };
+  public options = {
+    responsive: true,
+    maintainAspectRatio: false
+  };
   public selectObsTaxonInfo;
   public formatedAreas = [];
   public CONFIG = AppConfig;
@@ -50,6 +66,10 @@ export class SyntheseInfoObsComponent implements OnInit {
   ngOnInit() {
     this.loadAllInfo(this.idSynthese);
     this.loadValidationHistory(this.uuidSynthese);
+  }
+
+  ngAfterViewInit() {
+    this.myChart.chart.update();
   }
 
 
