@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild, OnChanges, Injectable } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, Injectable } from '@angular/core';
 import { MapService } from './map.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Map, LatLngExpression } from 'leaflet';
@@ -16,7 +16,8 @@ import {
   distinctUntilChanged,
   tap,
   switchMap,
-  map
+  map,
+  timeout
 } from 'rxjs/operators';
 
 const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search';
@@ -44,7 +45,7 @@ export class NominatimService {
 /**
  * Ce composant affiche une carte Leaflet ainsi qu'un outil de recherche de lieux dits et d'adresses (basé sur l'API OpenStreetMap).
  * @example
- * <pnx-map [center]="center" [zoom]="zoom"> </pnx-map>`
+ * <pnx-map height="80vh" [center]="center" [zoom]="zoom" > </pnx-map>`
  */
 @Component({
   selector: 'pnx-map',
@@ -66,6 +67,8 @@ export class MapComponent implements OnInit {
 
   /** Activer la barre de recherche */
   @Input() searchBar: boolean = true;
+
+  @ViewChild('mapDiv') mapContainer;
   searchLocation: string;
   public searching = false;
   public searchFailed = false;
@@ -75,7 +78,7 @@ export class MapComponent implements OnInit {
     private mapService: MapService,
     private _commonService: CommonService,
     private _http: HttpClient,
-    private _nominatim: NominatimService
+    private _nominatim: NominatimService,
   ) {
     this.searchLocation = '';
   }
@@ -83,6 +86,7 @@ export class MapComponent implements OnInit {
   ngOnInit() {
     this.initialize();
   }
+
 
   search = (text$: Observable<string>) =>
     text$.pipe(
@@ -115,7 +119,9 @@ export class MapComponent implements OnInit {
       center = L.latLng(AppConfig.MAPCONFIG.CENTER[0], AppConfig.MAPCONFIG.CENTER[1]);
     }
 
-    const map = L.map('map'/*this.mapContainer*/, {
+
+
+    const map = L.map(this.mapContainer.nativeElement, {
       zoomControl: false,
       center: center,
       zoom: this.zoom,
@@ -152,9 +158,6 @@ export class MapComponent implements OnInit {
     this.mapService.setMap(map);
     this.mapService.initializeLeafletDrawFeatureGroup();
 
-    // (this.map as any).zoomend(e => {
-    //   console.log(e);
-    // })
 
     map.on('moveend', e => {
       this.mapService.currentExtend = {
@@ -162,6 +165,11 @@ export class MapComponent implements OnInit {
         zoom: this.map.getZoom()
       };
     });
+
+    setTimeout(() => {
+      this.map.invalidateSize();
+    }, 50);
+
   }
 
   /** Retrocompatibility hack to format map config to the expected format:

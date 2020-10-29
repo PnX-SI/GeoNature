@@ -7,18 +7,29 @@ from utils_flask_sqla_geo.serializers import geoserializable
 
 from geonature.utils.env import DB
 
+
 @serializable
 class VmCorTaxonPhenology(DB.Model):
     __tablename__ = "vm_cor_taxon_phenology"
     __table_args__ = {"schema": "gn_profiles"}
     cd_ref = DB.Column(DB.Integer, primary_key=True)
-    period = DB.Column(DB.Integer)
-    id_nomenclature_life_stage = DB.Column(DB.Integer)
-    id_altitude_range = DB.Column(DB.Integer)
+    period = DB.Column(DB.Integer, primary_key=True)
+    id_nomenclature_life_stage = DB.Column(DB.Integer, primary_key=True)
     count_valid_data = DB.Column(DB.Integer)
+    extreme_altitude_min = DB.Column(DB.Integer)
+    calculated_altitude_min = DB.Column(DB.Integer)
+    extreme_altitude_max = DB.Column(DB.Integer)
+    calculated_altitude_max = DB.Column(DB.Integer)
 
-    class PrimaryKey:
-        unique_together = (("cd_ref","period","id_nomenclature_life_stage","id_altitude_range"),)
+    # class Meta:
+    #     unique_together = (
+    #         (
+    #         "cd_ref",
+    #         "period",
+    #         "id_nomenclature_life_stage"
+    #         ),
+    #     )
+
 
 @serializable
 @geoserializable
@@ -27,7 +38,7 @@ class VmValidProfiles(DB.Model):
     __table_args__ = {"schema": "gn_profiles"}
     cd_ref = DB.Column(DB.Integer, primary_key=True)
     valid_distribution = DB.Column(Geometry("GEOMETRY", current_app.config["LOCAL_SRID"]))
-    altitude_min = DB.Column(DB.Integer) 
+    altitude_min = DB.Column(DB.Integer)
     altitude_max = DB.Column(DB.Integer)
     first_valid_data = DB.Column(DB.DateTime)
     last_valid_data = DB.Column(DB.DateTime)

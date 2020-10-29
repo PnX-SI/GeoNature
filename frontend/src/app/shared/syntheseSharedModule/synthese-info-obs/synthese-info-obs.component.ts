@@ -1,5 +1,6 @@
 import { Component, ViewChild, OnInit, Input } from '@angular/core';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
+import { MapService } from '@geonature_common/map/map.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { AppConfig } from '@geonature_config/app.config';
@@ -13,7 +14,8 @@ import { MapComponent } from '@geonature_common/map/map.component'
 @Component({
   selector: 'pnx-synthese-info-obs',
   templateUrl: 'synthese-info-obs.component.html',
-  styleUrls: ['./synthese-info-obs.component.scss']
+  styleUrls: ['./synthese-info-obs.component.scss'],
+  providers: [MapService]
 })
 export class SyntheseInfoObsComponent implements OnInit {
   @Input() idSynthese: number;
@@ -21,7 +23,6 @@ export class SyntheseInfoObsComponent implements OnInit {
   @Input() selectedObs: any;
   @Input() header: boolean = false;
   @Input() validationHistory: Array<any>;
-  @Input() profile: any;
   @Input() selectedObsTaxonDetail: any;
   public selectObsTaxonInfo;
   public formatedAreas = [];
@@ -29,6 +30,7 @@ export class SyntheseInfoObsComponent implements OnInit {
   public isLoading = false;
   public email;
   public mailto: String;
+  public profile: any;
   public validationColor = {
     '0': '#FFFFFF',
     '1': '#8BC34A',
@@ -43,15 +45,21 @@ export class SyntheseInfoObsComponent implements OnInit {
     private _dataService: SyntheseDataService,
     public activeModal: NgbActiveModal,
     public mediaService: MediaService,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private _mapService: MapService
   ) { }
 
   ngOnInit() {
-    this.loadOneSyntheseReleve(this.idSynthese);
+    this.loadAllInfo(this.idSynthese);
     this.loadValidationHistory(this.uuidSynthese);
   }
 
-  loadOneSyntheseReleve(idSynthese) {
+
+  changeMapSize() {
+    this._mapService.map.invalidateSize();
+  }
+
+  loadAllInfo(idSynthese) {
     this.isLoading = true;
     this._dataService
       .getOneSyntheseObservation(idSynthese)
@@ -100,7 +108,10 @@ export class SyntheseInfoObsComponent implements OnInit {
         this._gnDataService.getTaxonInfo(data.cd_nom).subscribe(taxInfo => {
           this.selectedObsTaxonDetail = taxInfo;
 
-          this.loadProfile(this.selectedObsTaxonDetail.cd_ref)
+          this._gnDataService.getProfile(taxInfo.cd_ref).subscribe(profile => {
+            this.profile = profile;
+          });
+
         });
       });
   }
@@ -148,7 +159,7 @@ export class SyntheseInfoObsComponent implements OnInit {
     );
   }
 
-  loadProfile(cdRef) {
+  /*loadProfile(cdRef) {
     this._gnDataService.getProfile(cdRef).subscribe(
       data => {
         this.profile = data;
@@ -173,7 +184,7 @@ export class SyntheseInfoObsComponent implements OnInit {
         //console.log(this.statusNames);
       }
     );
-  }
+  }*/
 
   backToModule(url_source, id_pk_source) {
     window.open(url_source + '/' + id_pk_source, '_blank');

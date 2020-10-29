@@ -334,7 +334,7 @@
   </mat-tab>
 
 
-  <mat-tab label="Validation">
+  <mat-tab label="Validation" (click)="changeMapSize()">
     <table class="font-xs table table-striped table-sm">
       <thead>
         <tr>
@@ -361,7 +361,8 @@
         </tr>
       </tbody>
     </table>
-    PROFILE
+
+    <h3> Profil </h3>
 
     <table class="font-xs table table-striped table-sm">
       <tr>
@@ -375,8 +376,10 @@
       </tr>
     </table>
 
-    <!--<pnx-map mapContainer="profileMap" height="50vh"> </pnx-map>-->
-
+    <h5>Aire de répartition des observations valides</h5>
+    <pnx-map height="40vh">
+      <pnx-geojson [geojson]="profile"> </pnx-geojson>
+    </pnx-map>
   </mat-tab>
 
   <mat-tab-group>

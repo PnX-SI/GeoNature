@@ -317,13 +317,6 @@ export class DataFormService {
     );
   }
 
-  getProfile(cdRef) {
-    return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/gn_profiles/valid_profile/${cdRef}`,
-      {}
-    );
-  }
-
   /**
    *
    * @param params: dict of paramters
@@ -551,5 +544,9 @@ export class DataFormService {
   //Ajouter lieu
   addPlace(place) {
     return this._http.post<any>(`${AppConfig.API_ENDPOINT}/gn_commons/place`, place);
+  }
+
+  getProfile(cdRef) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_profiles/valid_profile/${cdRef}`)
   }
 }
