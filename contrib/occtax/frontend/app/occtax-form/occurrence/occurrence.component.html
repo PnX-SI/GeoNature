@@ -60,6 +60,7 @@
     *ngIf="occtaxConfig.form_fields.bio_condition"
     class="col-lg-4 col-sm-6">
   <pnx-nomenclature 
+    class="auto"
     label="{{ 'Taxon.BiologicalCondition' | translate }}" 
     [parentFormControl]="occurrenceForm.get('id_nomenclature_bio_condition')"
     codeNomenclatureType="ETA_BIO" 
