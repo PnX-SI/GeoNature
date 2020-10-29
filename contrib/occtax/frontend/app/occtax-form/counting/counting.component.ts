@@ -62,7 +62,7 @@ export class OcctaxFormCountingComponent {
     }
   }
 
-  controlOccurenceEvent() {
+  /*controlOccurenceEvent() {
     let inputData = {
       //cd_nom: this.occtaxFormOccurrenceService.form.get("cd_nom").value,
       cd_nom: 92,
@@ -101,6 +101,6 @@ export class OcctaxFormCountingComponent {
         //console.log(this.statusNames);
       }
     );
-  }
+  }*/
 
 }
