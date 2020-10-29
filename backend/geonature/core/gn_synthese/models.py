@@ -27,12 +27,12 @@ from geonature.utils.env import DB
 
 class SyntheseCruved(DB.Model):
     """
-        Abstract class to add method
-        to control the data access according
-        to the user rights
+    Abstract class to add method
+    to control the data access according
+    to the user rights
 
-        Currently not used, the cruved on data is managed
-        by the module himself when the user is redirect to the source module
+    Currently not used, the cruved on data is managed
+    by the module himself when the user is redirect to the source module
     """
 
     __abstract__ = True
@@ -48,8 +48,8 @@ class SyntheseCruved(DB.Model):
 
     def user_is_allowed_to(self, user, level, user_datasets):
         """
-            Function to know if a user can do action
-            on a data
+        Function to know if a user can do action
+        on a data
         """
         # Si l'utilisateur n'a pas de droit d'accès aux données
 
@@ -73,9 +73,9 @@ class SyntheseCruved(DB.Model):
 
     def get_observation_if_allowed(self, user, user_datasets):
         """
-            Return the observation if the user is allowed
-            params:
-                user: object from TRole
+        Return the observation if the user is allowed
+        params:
+            user: object from TRole
         """
         if self.user_is_allowed_to(user, user.value_filter, user_datasets):
             return self
@@ -374,7 +374,9 @@ def synthese_export_serialization(cls):
             geometry = {"type": "Point", "coordinates": [0, 0]}
 
         feature = Feature(
-            id=str(getattr(self, idCol)), geometry=geometry, properties=self.as_dict_ordered(),
+            id=str(getattr(self, idCol)),
+            geometry=geometry,
+            properties=self.as_dict_ordered(),
         )
         return feature
 
@@ -407,7 +409,9 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
     habitat = DB.relationship(Habref, lazy="joined")
 
     source = DB.relationship(
-        "TSources", primaryjoin=(TSources.id_source == id_source), foreign_keys=[id_source],
+        "TSources",
+        primaryjoin=(TSources.id_source == id_source),
+        foreign_keys=[id_source],
     )
     areas = DB.relationship(
         "LAreas",
@@ -417,7 +421,9 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
         foreign_keys=[corAreaSynthese.c.id_synthese, corAreaSynthese.c.id_area],
     )
     datasets = DB.relationship(
-        "TDatasets", primaryjoin=(TDatasets.id_dataset == id_dataset), foreign_keys=[id_dataset],
+        "TDatasets",
+        primaryjoin=(TDatasets.id_dataset == id_dataset),
+        foreign_keys=[id_dataset],
     )
     acquisition_framework = DB.relationship(
         "TAcquisitionFramework",
