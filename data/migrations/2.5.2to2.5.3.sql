@@ -96,4 +96,9 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
      LEFT JOIN ref_nomenclatures.t_nomenclatures n21 ON s.id_nomenclature_valid_status = n21.id_nomenclature
      LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = s.cd_hab;
 
+                                    
+-----------
+--ref_geo--
+-----------                                  
+ALTER TABLE ref_geo.l_areas ADD attributs jsonb NULL;
 
