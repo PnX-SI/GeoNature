@@ -7,7 +7,7 @@
     <pnx-taxonomy
       label="{{ 'Taxon.NomCite' | translate }}"
       [parentFormControl]="taxonForm"
-      [idList]="idTaxonList" 
+      [idList]="occtaxFormOccurrenceService.idTaxonList" 
       [charNumber]="3" 
       [listLength]="occtaxConfig.taxon_result_number" 
       [displayAdvancedFilters]="false"
@@ -342,34 +342,26 @@
     selector=".btn-clear"
   >
 
-    <!-- On affiche ces boutons que s'il y a plusieurs denombrement afin d'en garder toujours au moins un -->
-    <button 
-      *ngIf="countingControls.length > 1"
-      mat-icon-button 
-      class="btn-clear d-none"
-      (click)="removeCounting(i)">
-      <mat-icon matTooltip="Supprimer ce denombrement">clear</mat-icon>
-    </button>
+  <mat-expansion-panel [expanded]="countingControls.length === (i+1)">
+    <mat-expansion-panel-header class="right-aligned-header">
+      <mat-panel-title>
+        Dénombrement #{{ i + 1 }}
 
-    <mat-expansion-panel [expanded]="countingControls.length === (i+1)">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Dénombrement #{{ i + 1 }}
-        </mat-panel-title>
-        <mat-panel-description
-          *ngIf="countingControls.length > 1"
-          class="btn-clear d-none"
-          (click)="removeCounting(i)"
-          matTooltip="Supprimer ce denombrement"
-        >
-          <mat-icon>clear</mat-icon>
-        </mat-panel-description>
+      </mat-panel-title>
+      <mat-panel-description
+       *ngIf="countingControls.length > 1"
+       class="btn-clear d-none"
+       (click)="removeCounting(i)"
+       matTooltip="Supprimer ce denombrement"
+       >
+        <mat-icon>clear</mat-icon>
+      </mat-panel-description>
+    
+    </mat-expansion-panel-header>
 
-      </mat-expansion-panel-header>
+    <pnx-occtax-form-counting [form]="formCounting"></pnx-occtax-form-counting>
 
-      <pnx-occtax-form-counting [form]="formCounting"></pnx-occtax-form-counting>
-
-    </mat-expansion-panel>
+  </mat-expansion-panel>
 
     <button
       *ngIf="i == countingControls.length - 1"

@@ -7,7 +7,11 @@ ALTER TABLE pr_occtax.t_occurrences_occtax
 	
 ALTER TABLE pr_occtax.cor_counting_occtax
     ADD COLUMN additional_fields jsonb;
-    
+
+INSERT INTO gn_commons.t_parameters(
+	id_organism, parameter_name, parameter_desc, parameter_value)
+	VALUES ( 0, 'url_api', 'URL de l''api', 'http://91.206.199.122/geonature/api/');
+
 CREATE OR REPLACE FUNCTION pr_occtax.insert_in_synthese(my_id_counting integer)
     RETURNS integer[]
     LANGUAGE 'plpgsql'

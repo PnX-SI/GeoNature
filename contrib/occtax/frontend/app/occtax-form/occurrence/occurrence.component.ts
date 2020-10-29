@@ -64,7 +64,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   public dynamicContainerOccurence: ViewContainerRef;
   componentRefOccurence: ComponentRef<any>;
 
-  public idTaxonList: number;
+  //public idTaxonList: number;
 
   constructor(
     public fs: OcctaxFormService,
@@ -94,10 +94,11 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
       .subscribe(
         (display: boolean) => (this.displayProofFromElements = display)
       );
-
-    this.idTaxonList = this.occtaxConfig.id_taxon_list;
+        
     this.initTaxrefSearch();
     this.occtaxFormOccurrenceService.dynamicContainerOccurence = this.containerOccurence;
+
+    this.occtaxFormOccurrenceService.idTaxonList = this.occtaxConfig.id_taxon_list;
   }
 
   ngAfterViewInit() {
@@ -116,6 +117,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
       "blur",
       (event) => (this.taxonFormFocus = false)
     );
+    this.occtaxFormOccurrenceService.idTaxonList = 100;
   }
 
   setExistProofData(data) {

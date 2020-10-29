@@ -198,13 +198,13 @@ ENABLE_MEDIAS = true
             attribut_name = "expertise"
             values = ["Débutant", "Expérimenté", "Chevronné"]
         [[ADD_FIELDS.FORMFIELDS.RELEVE]]
-            required = "false"
+            required = false
             type_widget = "select"
             attribut_label = "Catégories paysagères"
             attribut_name = "cat_paysagere"
             values = [ "Eaux continentales","Eaux maritimes","Zones urbanisées","Zones industrielles ou commerciales et réseaux de communication","Prairies","Mines, décharges et chantiers","Espaces verts artificialisés, non agricoles","Terres arables","Forêts","Cultures permanentes","Zones agricoles hétérogènes","Milieux à végétation arbustive et/ou herbacée","Espaces ouverts, sans ou avec peu de végétation","Zones humides intérieures","Zones humides maritimes"]
         [[ADD_FIELDS.FORMFIELDS.RELEVE]]
-            required = "false"
+            required = false
             type_widget = "select"
             attribut_label = "Description du milieu aquatique"
             attribut_name = "desc_milieu_aquatique"

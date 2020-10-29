@@ -34,6 +34,8 @@ export class OcctaxFormOccurrenceService {
   public data : any;
   public idDataset : number;
 
+  public idTaxonList: number;
+
   constructor(
     private fb: FormBuilder,
     private commonService: CommonService,
@@ -200,8 +202,8 @@ export class OcctaxFormOccurrenceService {
         const releve = data.releve.properties;
 
         /* OCCTAX - CHAMPS ADDITIONNELS DEB */
-        let dynamiqueFormDataset = this.occtaxFormService.getAddDynamiqueFields(this.idDataset);
         this.idDataset = data.releve.properties.dataset.id_dataset;
+        let dynamiqueFormDataset = this.occtaxFormService.getAddDynamiqueFields(this.idDataset);
         let hasDynamicFormOccurence = false;
         if (dynamiqueFormDataset){
           if (dynamiqueFormDataset['OCCURRENCE']){
@@ -212,6 +214,11 @@ export class OcctaxFormOccurrenceService {
         if (dynamiqueFormDataset){
           if (dynamiqueFormDataset['COUNTING']){
             hasDynamicFormCounting = true;
+          }
+        }
+        if(dynamiqueFormDataset){
+          if(dynamiqueFormDataset['ID_TAXON_LIST']){
+            this.idTaxonList = dynamiqueFormDataset['ID_TAXON_LIST'];
           }
         }
         
