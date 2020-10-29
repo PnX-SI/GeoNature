@@ -43,7 +43,9 @@ def get_app_for_cmd(config_file=None, with_external_mods=True, with_flask_admin=
     try:
         conf = load_config(config_file)
         return get_app(
-            conf, with_external_mods=with_external_mods, with_flask_admin=with_flask_admin,
+            conf,
+            with_external_mods=with_external_mods,
+            with_flask_admin=with_flask_admin,
         )
     except ConfigError as e:
         log.critical("%s \n" % e)

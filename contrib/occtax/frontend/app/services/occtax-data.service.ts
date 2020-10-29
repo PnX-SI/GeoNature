@@ -6,7 +6,7 @@ import { AppConfig } from "@geonature_config/app.config";
   providedIn: "root",
 })
 export class OcctaxDataService {
-  constructor(private _api: HttpClient) {}
+  constructor(private _api: HttpClient) { }
 
   getOneReleve(id) {
     return this._api.get<any>(`${AppConfig.API_ENDPOINT}/occtax/releve/${id}`);
@@ -54,6 +54,13 @@ export class OcctaxDataService {
   deleteOccurrence(id) {
     return this._api.delete(
       `${AppConfig.API_ENDPOINT}/occtax/occurrence/${id}`
+    );
+  }
+
+  controlOccurence(data) {
+    return this._api.post(
+      `${AppConfig.API_ENDPOINT}/gn_profiles/get_observation_score`,
+      data
     );
   }
 }

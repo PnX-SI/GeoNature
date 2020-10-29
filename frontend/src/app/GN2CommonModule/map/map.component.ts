@@ -62,6 +62,9 @@ export class MapComponent implements OnInit {
   @Input() zoom: number = AppConfig.MAPCONFIG.ZOOM_LEVEL;
   /** Hauteur de la carte (obligatoire) */
   @Input() height: string;
+
+  /*@Input() mapContainer: string = 'map';*/
+
   /** Activer la barre de recherche */
   @Input() searchBar: boolean = true;
 
