@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+2.5.2 (unreleased)
+------------------
+
+TODO: changer la config des colonnes d'export de la synthese suite aux ajouts
+Manque le champs statut biogeographique
+Revoir la vue synthese
+
 2.5.2 (2020-10-13)
 ------------------
 

@@ -13,6 +13,7 @@ export class SideNavService {
   public modules: Array<any>;
   public home_page;
   public exportModule;
+
   constructor() {
     this.opened = false;
   }

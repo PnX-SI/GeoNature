@@ -31,6 +31,9 @@ export class MediasComponent implements OnInit {
   @Input() disabled = false;
   @Input() disabledTxt: string;
 
+  /* fix #1083 Cacher les champs présents dans details */
+  @Input() hideDetailsFields : boolean = false;
+
   public bInitialized: boolean;
 
   constructor(public ms: MediaService) {}

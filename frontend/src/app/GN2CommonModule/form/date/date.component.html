@@ -9,8 +9,8 @@
     #d1="ngbDatepicker"
     [formControl]="parentFormControl"
     [disableControl]="disabled"
-    [maxDate]="today"
-    [minDate]="{year: 1735, month: 1, day: 1}"
+    [maxDate]="maxDate"
+    [minDate]="minDate"
     (click)="d1.toggle(); openDatepicker(d1)"
   >
   <div class="input-group-append">

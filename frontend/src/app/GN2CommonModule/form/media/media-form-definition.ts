@@ -45,7 +45,7 @@ export const mediaFormDefinitionsDict = {
     attribut_label: 'Avancé',
     definition: "Afficher plus d'options pour le formulaire",
     value: true,
-    hidden: ({ meta }) => !(meta.details && meta.details.length)
+    hidden: ({ meta }) => !(meta.details && meta.details.length) || meta.hideDetailsFields
   },
   id_nomenclature_media_type: {
     attribut_label: 'Type de média',

@@ -42,6 +42,9 @@ export class MediaComponent implements OnInit {
 
   @Input() details = [];
 
+  /* fix #1083 Cacher les champs présents dans details */
+  @Input() hideDetailsFields : boolean = false;
+
   constructor(
     private _formBuilder: FormBuilder,
     public ms: MediaService,
@@ -54,7 +57,8 @@ export class MediaComponent implements OnInit {
       mediaFormDefinitionsDict,
       {
         nomenclatures: this.ms.metaNomenclatures(),
-        details: this.details
+        details: this.details,
+        hideDetailsFields: this.hideDetailsFields
       }
     );
 
@@ -119,6 +123,14 @@ export class MediaComponent implements OnInit {
     this.media.id_nomenclature_media_type =
       this.media.id_nomenclature_media_type ||
       this.ms.getNomenclature('Photo', 'mnemonique', 'TYPE_MEDIA').id_nomenclature;
+
+    /* Fix #1078 Ajout d'un filtre par code nomenclature */
+    if (this.default['mnemonique_nomenclature_media_type']){
+      let nomenclatureMediaType = this.ms.getNomenclature(this.default['mnemonique_nomenclature_media_type'], 'mnemonique', 'TYPE_MEDIA')
+      if (nomenclatureMediaType){
+        this.media.id_nomenclature_media_type = nomenclatureMediaType.id_nomenclature;
+      }
+    }
 
     this.mediaForm.patchValue(this.media);
 

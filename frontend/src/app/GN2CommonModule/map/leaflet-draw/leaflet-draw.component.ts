@@ -184,11 +184,6 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
         this.map.setView(layer.getLatLng(), 15);
       }
     }
-    if (geojson.type === 'Point') {
-      const latLng = L.GeoJSON.coordsToLatLng(geojson.coordinates);
-      layer = L.circleMarker(latLng);
-      this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
-    }
 
     if (layer.getBounds) {
       this.mapservice.map.fitBounds(layer.getBounds());
