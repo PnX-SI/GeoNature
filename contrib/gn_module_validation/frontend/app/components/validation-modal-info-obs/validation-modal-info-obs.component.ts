@@ -147,17 +147,27 @@ export class ValidationModalInfoObsComponent implements OnInit {
         }*/
 
         const areaDict = {};
-        // for each area type we want all the areas: we build an dict of array
-        this.selectedObs.areas.forEach(area => {
-          if (!areaDict[area.area_type.type_name]) {
-            areaDict[area.area_type.type_name] = [area];
-          } else {
-            areaDict[area.area_type.type_name].push(area);
-          }
-        });
+        //Si la géométrie est hors du périmètre, ca plante car areas est undefined
+          //Passage du formatedAreas en paramètre de pnx-synthese-info-obs, sinon ca marche moins bien
+        if(this.selectedObs.areas){
+          // for each area type we want all the areas: we build an dict of array
+          this.selectedObs.areas.forEach(area => {
+            if (!areaDict[area.area_type.type_name]) {
+              areaDict[area.area_type.type_name] = [area];
+            } else {
+              areaDict[area.area_type.type_name].push(area);
+            }
+          });
+        }
         // for angular tempate we need to convert it into a aray
+        //premièrement on l'initialise
+        this.formatedAreas = [];
         for (let key in areaDict) {
-          this.formatedAreas.push({ area_type: key, areas: areaDict[key] });
+          if(areaDict[key][0].area_type.type_code){
+            this.formatedAreas.push({ type_code : areaDict[key][0].area_type.type_code, area_type: key, areas: areaDict[key] });
+          }else{
+            this.formatedAreas.push({ area_type: key, areas: areaDict[key] });
+          }
         }
 
         this._gnDataService
@@ -420,8 +430,8 @@ export class ValidationModalInfoObsComponent implements OnInit {
           
         case 'COMMUNES':
           this.formatedAreas.map((area) => {
-            if(area.area_type == 'Communes'){
-              content += "\nCommunes : ";
+            if(area.type_code == 'COM'){
+              content += "\nCommune(s) : ";
               area.areas.map((commune) => {
                 content += commune.area_name  + ", ";
               });

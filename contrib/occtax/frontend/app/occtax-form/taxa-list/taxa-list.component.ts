@@ -77,6 +77,12 @@ export class OcctaxFormTaxaListComponent implements OnInit {
         this.occtaxTaxaListService.occurrences$.next(occurrences);
         setTimeout(() => {
           this.occtaxTaxaListService.occurrences$.value.map((occurence) => {
+            //Réinitialiser le contenu des champs additionnel
+            let containerOccurence = document.getElementById('tabOccurence' + occurence.id_occurrence_occtax);
+            while(containerOccurence.getElementsByClassName('additional_field').length > 0) {
+              containerOccurence.getElementsByClassName('additional_field')[0].remove();
+            }
+            //Ajoute le contenu
             let dynamiqueFormDataset = this.occtaxFormService.getAddDynamiqueFields(this.occtaxFormOccurrenceService.idDataset);
             let hasDynamicFormOccurence = false;
             if (dynamiqueFormDataset){
@@ -85,9 +91,8 @@ export class OcctaxFormTaxaListComponent implements OnInit {
               }
             }
             if(hasDynamicFormOccurence){
-              let containerOccurence = document.getElementById('tabOccurence' + occurence.id_occurrence_occtax);
               dynamiqueFormDataset['OCCURRENCE'].map((widget) => {
-                this.createVisualizeElement(containerOccurence, widget, occurence);
+                this.ms.createVisualizeElement(containerOccurence, widget, occurence);
               });
             }
           })
@@ -183,7 +188,7 @@ export class OcctaxFormTaxaListComponent implements OnInit {
               let containerCounting = document.getElementById('tabCounting' + counting.id_counting_occtax);
               //Pour chaque widget, on ajoute son libelle et sa valeur
               dynamiqueFormDataset['COUNTING'].map((widget) => {
-                this.createVisualizeElement(containerCounting, widget, counting);
+                this.ms.createVisualizeElement(containerCounting, widget, counting);
               });
             });
           }
@@ -193,7 +198,7 @@ export class OcctaxFormTaxaListComponent implements OnInit {
   }
 
 
-  createVisualizeElement(container : HTMLElement, widget, values) {
+  /*createVisualizeElement(container : HTMLElement, widget, values) {
     if(!container){
       return;
     }
@@ -266,5 +271,5 @@ export class OcctaxFormTaxaListComponent implements OnInit {
         container.appendChild(newDiv);
       }
     }
-  }
+  }*/
 }

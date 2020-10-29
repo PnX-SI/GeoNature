@@ -177,7 +177,7 @@ class DatasetConfiguration(Schema):
 class GnModuleSchemaConf(Schema):
     form_fields = fields.Nested(FormConfig, missing=dict())
     observers_txt = fields.Boolean(missing=False)
-    export_view_name = fields.String(missing="export_occtax")
+    export_view_name = fields.String(missing="v_export_occtax ")
     export_geom_columns_name = fields.String(missing="geom_4326")
     export_id_column_name = fields.String(missing="permId")
     export_srid = fields.Integer(missing=4326)

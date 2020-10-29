@@ -21,8 +21,8 @@ export class SyntheseInfoObsComponent implements OnInit {
   @Input() validationHistory: Array<any>;
   @Input() selectedObsTaxonDetail: any;
   @Input() mailto: String;
+  @Input() formatedAreas = [];
   public selectObsTaxonInfo;
-  public formatedAreas = [];
   public CONFIG = AppConfig;
   public isLoading = false;
   public email;
@@ -68,21 +68,29 @@ export class SyntheseInfoObsComponent implements OnInit {
         const date_max = new Date(this.selectedObs.date_max);
         this.selectedObs.date_max = date_max.toLocaleDateString('fr-FR');
         const areaDict = {};
-        // for each area type we want all the areas: we build an dict of array
-        if (this.selectedObs.areas) {
-          this.selectedObs.areas.forEach(area => {
-            if (!areaDict[area.area_type.type_name]) {
-              areaDict[area.area_type.type_name] = [area];
-            } else {
-              areaDict[area.area_type.type_name].push(area);
-            }
-          });
+        //Si la géométrie est hors du périmètre, ca plante car areas est undefined
+        if(this.selectedObs.areas){
+          // for each area type we want all the areas: we build an dict of array
+          if (this.selectedObs.areas) {
+            this.selectedObs.areas.forEach(area => {
+              if (!areaDict[area.area_type.type_name]) {
+                areaDict[area.area_type.type_name] = [area];
+              } else {
+                areaDict[area.area_type.type_name].push(area);
+              }
+            });
+          }
         }
 
         // for angular tempate we need to convert it into a aray
         // tslint:disable-next-line:forin
         for (let key in areaDict) {
-          this.formatedAreas.push({ area_type: key, areas: areaDict[key] });
+          //Ajout du type code
+          if(areaDict[key][0].area_type.type_code){
+            this.formatedAreas.push({ type_code : areaDict[key][0].area_type.type_code, area_type: key, areas: areaDict[key] });
+          }else{
+            this.formatedAreas.push({ area_type: key, areas: areaDict[key] });
+          }
         }
 
         this._gnDataService
@@ -192,7 +200,7 @@ export class SyntheseInfoObsComponent implements OnInit {
           
         case 'COMMUNES':
           this.formatedAreas.map((area) => {
-            if(area.area_type == 'Communes'){
+            if(area.type_code == 'COM'){
               content += "\nCommunes : ";
               area.areas.map((commune) => {
                 content += commune.area_name  + ", ";

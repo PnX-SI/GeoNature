@@ -152,11 +152,11 @@ MAIL_ON_ERROR = false
     # Passe le frontend en mode multilingue (non implémenté pour l'instant)
     MULTILINGUAL = false
 
-    # Ajoute du contenu au mail validation / synthèse
-    DISPLAY_EMAIL_INFO_SUJET = "Titre du mail"
-    DISPLAY_EMAIL_INFO_CONTENT = "Message général du mail"
+    # Ajoute du contenu à l'email validation / synthèse
+    DISPLAY_EMAIL_INFO_SUJET = "Titre de l'email"
+    DISPLAY_EMAIL_INFO_CONTENT = "Message général de l'email"
 
-    #Information de l'observation à mettre dans le mail 
+    #Information de l'observation à mettre dans l'email 
     DISPLAY_EMAIL_DISPLAY_INFO = ['NOM_VERN', 'DATE', 'COMMUNES', 'MEDIAS']
 
 # Configuration de l'affichage des cartes dans GeoNature
