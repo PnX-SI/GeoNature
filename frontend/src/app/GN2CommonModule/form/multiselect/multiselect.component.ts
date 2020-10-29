@@ -54,6 +54,10 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   @Input() disabled: boolean;
   // label displayed above the input
   @Input() label: any;
+  // palceholder displayed in the input
+  @Input() placeholder: string;
+  // class displayed in the input
+  @Input() class: string = "auto";
   /**
    * Booléan qui permet de passer tout l'objet au formControl,
    * et pas seulement une propriété de l'objet renvoyé par l'API.

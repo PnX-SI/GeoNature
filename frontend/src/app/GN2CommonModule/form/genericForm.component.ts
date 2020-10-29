@@ -20,7 +20,7 @@ import { Subscription } from 'rxjs';
 export class GenericFormComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
   @Input() parentFormControl: FormControl;
   @Input() label: string;
-  @Input() class: string; 
+  @Input() class: string = "auto"; 
   @Input() disabled: boolean = false;
   @Input() debounceTime: number;
   @Input() multiSelect: boolean = false;
