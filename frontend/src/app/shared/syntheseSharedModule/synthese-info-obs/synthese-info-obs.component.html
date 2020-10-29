@@ -377,7 +377,8 @@
 
     <h5>Aire de répartition des observations valides</h5>
     <pnx-map height="40vh">
-      <pnx-geojson [geojson]="profile"> </pnx-geojson>
+      <pnx-geojson [geojson]="selectedGeom" [style]="{color: 'red'}"></pnx-geojson>
+      <pnx-geojson [geojson]="profile"></pnx-geojson>
     </pnx-map>
     PROFILE
 

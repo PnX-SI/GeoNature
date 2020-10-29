@@ -56,12 +56,14 @@ export class SyntheseInfoObsComponent implements OnInit {
 
   ngOnInit() {
     this.loadAllInfo(this.idSynthese);
-    this.loadValidationHistory(this.uuidSynthese);
   }
 
 
   changeMapSize() {
-    this._mapService.map.invalidateSize();
+    setTimeout(() => {
+      this._mapService.map.invalidateSize();
+    }, 500);
+    
   }
 
   loadAllInfo(idSynthese) {
@@ -74,7 +76,8 @@ export class SyntheseInfoObsComponent implements OnInit {
         })
       )
       .subscribe(data => {
-        this.selectedObs = data;
+        this.selectedObs = data["properties"];
+        this.selectedGeom = data;
         this.selectedObs['municipalities'] = [];
         this.selectedObs['other_areas'] = [];
         this.selectedObs['actors'] = this.selectedObs['actors'].split('|');
@@ -103,7 +106,7 @@ export class SyntheseInfoObsComponent implements OnInit {
         }
 
         this._gnDataService
-          .getTaxonAttributsAndMedia(data.cd_nom, AppConfig.SYNTHESE.ID_ATTRIBUT_TAXHUB)
+          .getTaxonAttributsAndMedia(this.selectedObs.cd_nom, AppConfig.SYNTHESE.ID_ATTRIBUT_TAXHUB)
           .subscribe(taxAttr => {
             this.selectObsTaxonInfo = taxAttr;
           });

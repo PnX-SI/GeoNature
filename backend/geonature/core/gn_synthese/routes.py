@@ -10,6 +10,8 @@ from flask import Blueprint, request, current_app, send_from_directory, render_t
 from sqlalchemy import distinct, func, desc, select, text
 from sqlalchemy.orm import exc
 from geojson import FeatureCollection, Feature
+from geoalchemy2.shape import to_shape
+from shapely import wkt
 
 from utils_flask_sqla.generic import serializeQuery, GenericTable
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
