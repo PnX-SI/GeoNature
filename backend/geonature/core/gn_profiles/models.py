@@ -13,15 +13,22 @@ class VmCorTaxonPhenology(DB.Model):
     __tablename__ = "vm_cor_taxon_phenology"
     __table_args__ = {"schema": "gn_profiles"}
     cd_ref = DB.Column(DB.Integer, primary_key=True)
-    period = DB.Column(DB.Integer)
-    id_nomenclature_life_stage = DB.Column(DB.Integer)
-    id_altitude_range = DB.Column(DB.Integer)
+    period = DB.Column(DB.Integer, primary_key=True)
+    id_nomenclature_life_stage = DB.Column(DB.Integer, primary_key=True)
     count_valid_data = DB.Column(DB.Integer)
+    extreme_altitude_min = DB.Column(DB.Integer)
+    calculated_altitude_min = DB.Column(DB.Integer)
+    extreme_altitude_max = DB.Column(DB.Integer)
+    calculated_altitude_max = DB.Column(DB.Integer)
 
-    class PrimaryKey:
-        unique_together = (
-            ("cd_ref", "period", "id_nomenclature_life_stage", "id_altitude_range"),
-        )
+    # class Meta:
+    #     unique_together = (
+    #         (
+    #         "cd_ref", 
+    #         "period", 
+    #         "id_nomenclature_life_stage"
+    #         ),
+    #     )
 
 
 @serializable
