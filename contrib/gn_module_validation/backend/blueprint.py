@@ -22,6 +22,8 @@ from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_commons.schemas import TValidationSchema
 
 from werkzeug.exceptions import BadRequest
+from geonature.core.gn_commons.models import TValidations
+from geonature.core.gn_profiles.models import VConsistancyData
 
 from .models import VSyntheseValidation
 
@@ -120,6 +122,7 @@ def get_synthese_data(info_role):
     nb_total = 0
     geojson_features = []
     properties = {}
+    # TODO : add join on VConsistency data
     for r in result:    
         properties = {k: serializer[k](r[k]) for k in serializer.keys()}
         properties["nom_vern_or_lb_nom"] = (

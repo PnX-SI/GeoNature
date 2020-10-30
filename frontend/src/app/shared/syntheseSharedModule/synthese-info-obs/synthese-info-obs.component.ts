@@ -7,7 +7,7 @@ import { AppConfig } from '@geonature_config/app.config';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { MediaService } from '@geonature_common/service/media.service';
 import { finalize } from 'rxjs/operators';
-import { Color, BaseChartDirective, Label } from "ng2-charts";
+import { Color, BaseChartDirective } from "ng2-charts";
 import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 
 
