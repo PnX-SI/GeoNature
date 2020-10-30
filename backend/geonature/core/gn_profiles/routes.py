@@ -2,7 +2,7 @@ import json
 
 from flask import Blueprint, request
 from geojson import Feature
-from sqlalchemy.sql import func
+from sqlalchemy.sql import func, text
 from utils_flask_sqla.response import json_resp
 
 from geonature.core.gn_profiles.models import VmCorTaxonPhenology
@@ -20,7 +20,28 @@ routes = Blueprint("gn_profiles", __name__)
 @routes.route("/cor_taxon_phenology/<cd_ref>", methods=["GET"])
 @json_resp
 def get_phenology(cd_ref):
+    filters=request.args
+    # parameter=DB.session.query(func.gn_profiles.get_parameters(cd_ref)).one_or_none()
+
     query = DB.session.query(VmCorTaxonPhenology).filter(VmCorTaxonPhenology.cd_ref == cd_ref)
+    if "id_nomenclature_life_stage" in filters:
+        dbquery=text("SELECT active_life_stage FROM gn_profiles.get_parameters(:cd_ref)")
+        parameter=DB.engine.execute(dbquery,cd_ref=cd_ref).fetchone()
+        if parameter :
+            if parameter[0] == False :
+                query = query.filter(
+                    VmCorTaxonPhenology.id_nomenclature_life_stage == None
+                )
+            else :
+                if filters['id_nomenclature_life_stage'].strip() == 'null':
+                    query = query.filter(
+                        VmCorTaxonPhenology.id_nomenclature_life_stage == None
+                    )
+                else :
+                    query = query.filter(
+                        VmCorTaxonPhenology.id_nomenclature_life_stage == filters["id_nomenclature_life_stage"]
+                    )
+
     print(query)
     data = query.all()
     if data:
