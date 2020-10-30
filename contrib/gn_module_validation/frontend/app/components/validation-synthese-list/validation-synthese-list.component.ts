@@ -1,3 +1,4 @@
+import { AppConfig } from "@geonature_config/app.config";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 import {
   Component,
@@ -29,6 +30,7 @@ export class ValidationSyntheseListComponent
   implements OnInit, OnChanges, AfterContentChecked {
   public VALIDATION_CONFIG = ModuleConfig;
   public oneSyntheseObs: any;
+  public appConfig: any;
   selectedObs: Array<number> = []; // list of id_synthese values for selected rows
   selectedIndex: Array<number> = [];
   selectedPages = [];
@@ -61,6 +63,9 @@ export class ValidationSyntheseListComponent
   }
 
   ngOnInit() {
+    // get app config
+    this.appConfig = AppConfig;
+
     // get wiewport height to set the number of rows in the tabl
     const h = document.documentElement.clientHeight;
     this.rowNumber = Math.trunc(h / 37);
