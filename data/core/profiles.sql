@@ -364,7 +364,7 @@ CASE WHEN (count_valid_data*(SELECT ((1-value::integer/100::float)/2)
 from classified_data
 ;
 
-CREATE UNIQUE INDEX ON gn_profiles.vm_cor_taxon_phenology (cd_ref, period);
+CREATE UNIQUE INDEX ON gn_profiles.vm_cor_taxon_phenology (cd_ref, period, id_nomenclature_life_stage);
 
 CREATE VIEW gn_profiles.v_consistancy_data AS
 SELECT 
