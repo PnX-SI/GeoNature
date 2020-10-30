@@ -7,10 +7,13 @@ import { AppConfig } from '@geonature_config/app.config';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { MediaService } from '@geonature_common/service/media.service';
 import { finalize } from 'rxjs/operators';
-import { BaseChartDirective } from "ng2-charts";
+import { Color, BaseChartDirective, Label } from "ng2-charts";
+import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
+
 
 
 import { MapComponent } from '@geonature_common/map/map.component'
+import { TriStateCheckbox } from 'primeng/primeng';
 
 @Component({
   selector: 'pnx-synthese-info-obs',
@@ -27,22 +30,81 @@ export class SyntheseInfoObsComponent implements OnInit, AfterViewInit {
   public selectedObs: any;
   public validationHistory: Array<any>;
   public selectedObsTaxonDetail: any;
-  @ViewChild("myChart") myChart: BaseChartDirective;
+  @ViewChild(BaseChartDirective) myChart: BaseChartDirective;
   public selectedGeom;
   public chartType = 'line';
-  public chartData = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
-    datasets: [
-      {
-        label: "My First dataset",
-        data: [65, 59, 80, 81, 56, 55, 40]
-      }
-    ]
-  };
-  public options = {
-    responsive: true,
-    maintainAspectRatio: false
-  };
+
+
+  public results: ChartDataSets[] = [
+    { data: [], label: 'Altitude minimale extrême' },
+    { data: [], label: 'Altitude minimale valide' },
+    { data: [], label: 'Altitude maximale extrême' },
+    { data: [], label: 'Altitude maximale valide' }
+  ]
+
+  public lineChartLabels: Label[] = [];
+
+  // public lineChartOptions: (ChartOptions & { annotation: any }) = {
+  //   responsive: true,
+  //   scales: {
+  //     // We use this empty structure as a placeholder for dynamic theming.
+  //     xAxes: [{}],
+  //     yAxes: [
+  //       {
+  //         id: 'y-axis-0',
+  //         position: 'left',
+  //       }
+  //     ]
+  //   },
+  //   annotation: {
+  //     annotations: [
+  //       {
+  //         type: 'line',
+  //         mode: 'vertical',
+  //         scaleID: 'x-axis-0',
+  //         value: 'March',
+  //         borderColor: 'orange',
+  //         borderWidth: 2,
+  //         label: {
+  //           enabled: true,
+  //           fontColor: 'orange',
+  //           content: 'LineAnno'
+  //         }
+  //       },
+  //     ],
+  //   },
+  // };
+
+  public lineChartColors: Color[] = [
+    { // grey
+      backgroundColor: 'rgba(148,159,177,0.2)',
+      borderColor: 'rgba(148,159,177,1)',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    },
+    { // dark grey
+      backgroundColor: 'rgba(77,83,96,0.2)',
+      borderColor: 'rgba(77,83,96,1)',
+      pointBackgroundColor: 'rgba(77,83,96,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(77,83,96,1)'
+    },
+    { // red
+      backgroundColor: null,
+      borderColor: 'red',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    }
+  ];
+  public lineChartLegend = true;
+  public lineChartType: ChartType = 'line';
+  @ViewChild(BaseChartDirective) chart: BaseChartDirective;
+
   public selectObsTaxonInfo;
   public formatedAreas = [];
   public CONFIG = AppConfig;
@@ -53,6 +115,7 @@ export class SyntheseInfoObsComponent implements OnInit, AfterViewInit {
   public APP_CONFIG = AppConfig;
 
   public profile: any;
+  public phenology: any[];
   public validationColor = {
     '0': '#FFFFFF',
     '1': '#8BC34A',
@@ -76,7 +139,7 @@ export class SyntheseInfoObsComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.myChart.chart.update();
+    //this.chart.chart.update();
   }
 
 
@@ -145,6 +208,23 @@ export class SyntheseInfoObsComponent implements OnInit, AfterViewInit {
             this.profile = profile;
           });
 
+          this._gnDataService.getPhenology(taxInfo.cd_ref, this.selectedObs.id_nomenclature_life_stage).subscribe(phenology => {
+            this.phenology = phenology;
+            for (let i = 0; i <= phenology.length - 1; i++) {
+              console.log(this.phenology[i])
+              this.results[0].data.push(this.phenology[i].extreme_altitude_min)
+              this.results[1].data.push(this.phenology[i].calculated_altitude_min)
+              this.results[2].data.push(this.phenology[i].extreme_altitude_max)
+              this.results[3].data.push(this.phenology[i].calculated_altitude_max)
+              this.lineChartLabels.push(this.phenology[i].period)
+            }
+            this.myChart.chart.update();
+            // [
+            // { data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' },
+            // { data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B' },
+            // { data: [180, 480, 770, 90, 1000, 270, 400], label: 'Series C', yAxisID: 'y-axis-1' }
+            // ]
+          });
         });
       });
   }

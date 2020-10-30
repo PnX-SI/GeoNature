@@ -625,5 +625,13 @@ export class DataFormService {
   getProfile(cdRef) {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_profiles/valid_profile/${cdRef}`)
   }
+
+  getPhenology(cdRef, idNomenclatureLifeStage?) {
+    return this._http.get<any>(
+      `${AppConfig.API_ENDPOINT}/gn_profiles/cor_taxon_phenology/
+      ${cdRef}?id_nomenclature_life_stage=
+      ${idNomenclatureLifeStage}`
+    )
+  }
 }
 
