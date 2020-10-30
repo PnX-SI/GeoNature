@@ -17,6 +17,7 @@ from geonature.core.gn_synthese.models import Synthese
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_commons.models import TValidations
+from geonature.core.gn_profiles.models import VConsistancyData
 
 from .models import VSyntheseValidation
 
@@ -61,6 +62,7 @@ def get_synthese_data(info_role):
     else:
         result_limit = blueprint.config["NB_MAX_OBS_MAP"]
 
+    join = VSyntheseValidation.__table__.join(VConsistancyData, VSyntheseValidation.id_synthese == VConsistancyData.id_synthese)
     query = (
         select(
             [
@@ -83,15 +85,18 @@ def get_synthese_data(info_role):
                 VSyntheseValidation.altitude_max,
                 VSyntheseValidation.unique_id_sinp,
                 VSyntheseValidation.meta_update_date,
+                VConsistancyData.score
             ]
         )
+        # .select_from(join)
         .where(VSyntheseValidation.the_geom_4326.isnot(None))
         .order_by(VSyntheseValidation.date_min.desc())
     )
     validation_query_class = SyntheseQuery(VSyntheseValidation, query, filters)
     validation_query_class.filter_query_all_filters(info_role)
     result = DB.engine.execute(
-        validation_query_class.query.limit(result_limit))
+        validation_query_class.query.limit(result_limit)
+    )
 
     nb_total = 0
 
@@ -117,6 +122,7 @@ def get_synthese_data(info_role):
             "cd_nom": r["cd_nom"],
             "unique_id_sinp": str(r["unique_id_sinp"]),
             "meta_update_date": str(r["meta_update_date"]),
+            "score": r["score"]
         }
         geojson = ast.literal_eval(r["geojson"])
         geojson["properties"] = properties
