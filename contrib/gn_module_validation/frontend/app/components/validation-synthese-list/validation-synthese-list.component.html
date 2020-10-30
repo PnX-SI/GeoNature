@@ -127,12 +127,12 @@
     </ng-template>
   </ngx-datatable-column>
 
-  <ngx-datatable-column maxWidth="60">
+  <ngx-datatable-column minWidth="20" *ngIf="appConfig.FRONTEND.DISPLAY_PROFILES">
     <ng-template
       let-column="column"
       ngx-datatable-header-template
-    >
-      <span>Score</span>
+    > 
+    <span>Cohérence</span>
     </ng-template>
     <ng-template
       let-row="row"

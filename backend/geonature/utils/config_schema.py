@@ -132,8 +132,8 @@ class GnPySchemaConf(Schema):
     @post_load()
     def unwrap_usershub(self, data):
         """
-            On met la section [USERSHUB] à la racine de la conf
-            pour compatibilité et simplicité ave le sous-module d'authentif
+        On met la section [USERSHUB] à la racine de la conf
+        pour compatibilité et simplicité ave le sous-module d'authentif
         """
         for key, value in data["USERSHUB"].items():
             data[key] = value
@@ -172,6 +172,7 @@ class GnFrontEndConf(Schema):
     DISPLAY_STAT_BLOC = fields.Boolean(missing=True)
     DISPLAY_MAP_LAST_OBS = fields.Boolean(missing=True)
     MULTILINGUAL = fields.Boolean(missing=False)
+    DISPLAY_PROFILES = fields.Boolean(missing=True)
     # show email on synthese and validation info obs modal
     DISPLAY_EMAIL_INFO_OBS = fields.Boolean(missing=True)
 
@@ -240,17 +241,24 @@ BASEMAP = [
     {
         "name": "OpenStreetMap",
         "url": "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
-        "options": {"attribution": "&copy OpenStreetMap",},
+        "options": {
+            "attribution": "&copy OpenStreetMap",
+        },
     },
     {
         "name": "OpenTopoMap",
         "url": "//a.tile.opentopomap.org/{z}/{x}/{y}.png",
-        "options": {"attribution": "© OpenTopoMap",},
+        "options": {
+            "attribution": "© OpenTopoMap",
+        },
     },
     {
         "name": "GoogleSatellite",
         "layer": "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-        "options": {"subdomains": ["mt0", "mt1", "mt2", "mt3"], "attribution": "© GoogleMap",},
+        "options": {
+            "subdomains": ["mt0", "mt1", "mt2", "mt3"],
+            "attribution": "© GoogleMap",
+        },
     },
 ]
 
