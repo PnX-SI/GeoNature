@@ -260,7 +260,6 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     var date_max = releve.properties.date_max.year + '-' + releve.properties.date_max.month + '-' + releve.properties.date_max.day
 
     var postData = {
-      cd_nom: taxon.item.cd_nom,
       date_min: date_min,
       date_max: date_max,
       altitude_min: releve.properties.altitude_min,
@@ -268,9 +267,9 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
       geom: releve.geometry
     }
 
-    console.log(postData)
+    console.log(taxon)
 
-    this.occtaxDataService.controlOccurence(postData).subscribe(
+    this.occtaxDataService.controlOccurence(taxon.item.cd_ref, postData).subscribe(
       data => {
         this._commonService.translateToaster('warning', JSON.stringify(data));
 
