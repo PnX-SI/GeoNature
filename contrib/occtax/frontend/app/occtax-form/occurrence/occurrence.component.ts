@@ -56,7 +56,6 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   private advanced: string = "collapsed";
   public countingStep: number = 0;
 
-
   public displayProofFromElements: boolean = false;
 
   constructor(
@@ -233,11 +232,10 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
 
   /** A la selection d'un taxon, focus sur le bouton ajouter */
   selectAddOcc(taxon) {
-    console.log(taxon);
 
     setTimeout(() => {
       document.getElementById("add-occ").focus();
-      this.createControlePostBody();
+      this.createControlePostBody(taxon);
     }, 50);
   }
 
@@ -245,20 +243,24 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     this.advanced = this.advanced === "collapsed" ? "expanded" : "collapsed";
   }
 
-  createControlePostBody() {
-    console.log(this.fs.occtaxData.getValue())
-    let PostBody = {
-      cd_nom: 92,
-      date_min: this.fs.occtaxData.getValue().releve.date_min/*,
-      date_max: this.fs.occtaxData.get("date_max"),
-      altitude_min: this.fs.occtaxData.get("altitude_min"),
-      altitude_max: this.fs.occtaxData.get("altitude_max"),
-      geom: this.fs.occtaxData.get("geometry")*/
+  createControlePostBody(taxon) {
+
+    var releve = this.fs.occtaxData.getValue().releve
+    var date_min = releve.properties.date_min.year + '-' + releve.properties.date_min.month + '-' + releve.properties.date_min.day
+    var date_max = releve.properties.date_max.year + '-' + releve.properties.date_max.month + '-' + releve.properties.date_max.day
+
+    var postData = {
+      cd_nom: taxon.item.cd_nom,
+      date_min: date_min,
+      date_max: date_max,
+      altitude_min: releve.properties.altitude_min,
+      altitude_max: releve.properties.altitude_max,
+      geom: releve.geometry
     }
-    console.log(PostBody)
 
+    console.log(postData)
 
-    /*this.occtaxDataService.controlOccurence(inputData).subscribe(
+    this.occtaxDataService.controlOccurence(postData).subscribe(
       data => {
         this._commonService.translateToaster('warning', JSON.stringify(data));
 
@@ -284,7 +286,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
       () => {
         //console.log(this.statusNames);
       }
-    );*/
+    );
   }
 
 }
