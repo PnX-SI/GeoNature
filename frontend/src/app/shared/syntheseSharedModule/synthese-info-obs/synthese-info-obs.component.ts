@@ -10,11 +10,6 @@ import { finalize } from 'rxjs/operators';
 import { Color, BaseChartDirective, Label } from "ng2-charts";
 import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 
-
-
-import { MapComponent } from '@geonature_common/map/map.component'
-import { TriStateCheckbox } from 'primeng/primeng';
-
 @Component({
   selector: 'pnx-synthese-info-obs',
   templateUrl: 'synthese-info-obs.component.html',

@@ -57,10 +57,10 @@ export class OcctaxDataService {
     );
   }
 
-  controlOccurence(data) {
+  controlOccurence(cd_ref, postData) {
     return this._api.post(
-      `${AppConfig.API_ENDPOINT}/gn_profiles/get_observation_score`,
-      data
+      `${AppConfig.API_ENDPOINT}/gn_profiles/get_observation_score/${cd_ref}`,
+      postData
     );
   }
 }

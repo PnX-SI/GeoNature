@@ -1,6 +1,9 @@
 import json
+import datetime
+import math
 
 from flask import Blueprint, request
+from geoalchemy2.shape import to_shape
 from geojson import Feature
 from sqlalchemy.sql import func, text
 from utils_flask_sqla.response import json_resp
@@ -93,73 +96,88 @@ def get_consistancy_data(id_synthese):
     return None
 
 
-@routes.route("/get_observation_score", methods=["POST"])
+@routes.route("/get_observation_score/<cd_ref>", methods=["POST"])
 @json_resp
-def get_observation_score():
-    """ TODO : A Adapter lors de la prochaine version de la table vm_cor_taxon_phenologie """
+def get_observation_score(cd_ref):
+    filters = request.get_json()
+    print(filters)
 
-    filters = request.form
-
-    q = DB.session.query(VmValidProfiles)
-
+    # Récupération du profil du cd_ref
     result = {}
+    profile = (
+        DB.session.query(VmValidProfiles).filter(VmValidProfiles.cd_ref == cd_ref).one_or_none()
+    )
+    if not profile:
+        return None
 
-    """ Contrôle de la localisation """
+    # Récupération du paramètre "période" attribué au taxon
+    sql = text("""select temporal_precision_days from gn_profiles.get_parameters(:cd_ref)""")
+    temporal_precision_days = (
+        DB.engine.execute(sql, cd_ref=cd_ref).fetchone().temporal_precision_days
+    )
+
+    # Calcul de la période correspondant à la date
+    if "date_min" in filters and "date_max" in filters:
+        date_min = datetime.datetime.strptime(filters["date_min"], "%Y-%m-%d")
+        date_max = datetime.datetime.strptime(filters["date_max"], "%Y-%m-%d")
+        # Calcul du numéro du jour pour les dates min et max
+        doy_min = date_min.timetuple().tm_yday
+        doy_max = date_max.timetuple().tm_yday
+        # Si la précision temporelle de la donnée est suffisante, on calcule ses périodes phénologiques
+        if doy_max - doy_min < temporal_precision_days:
+            """ 2- Détermination de la période correspondant à date_min"""
+            min_periode = math.ceil(doy_min / temporal_precision_days)
+            """ 3- Détermination de la période correspondant à date_max"""
+            max_periode = math.ceil(doy_max / temporal_precision_days)
+
+    # Récupération des altitudes
+    if "altitude_min" in filters and "altitude_max" in filters:
+        altitude_min = filters["altitude_min"]
+        altitude_max = filters["altitude_max"]
+
+    # Check de la répartition
     if "geom" in filters:
-        q = q.filter(
-            func.ST_Transform(VmValidProfiles.valid_distribution, 4326).ST_Intersects(
-                func.ST_SetSRID(func.ST_GeomFromGeoJSON(filters["geom"]), 4326)
+        check_geom = DB.session.query(
+            func.ST_Contains(
+                func.ST_Transform(profile.valid_distribution, 4326),
+                func.ST_SetSRID(func.ST_GeomFromGeoJSON(json.dumps(filters["geom"])), 4326),
             )
-        )
-        if q.count() > 0:
-            result["controle_geom"] = {
-                "code_result": 1,
-                "Commentaire": "Le taxon a déjà été observé dans ce secteur",
-            }
-        else:
+        ).one_or_none()
+
+        if check_geom[0] is False:
             result["controle_geom"] = {
                 "code_result": 0,
-                "Commentaire": "Le taxon n'a jamais été observé dans ce secteur",
+                "Commentaire": f"Il existe {profile.count_valid_data} données valides pour ce taxon, mais celui-ci n'a jamais été observé dans cette zone.",
             }
-    """ Contrôle de la localisation """
 
-    """ Contrôle des dates """
-    if "date_min" in filters:
-        q = q.filter(VmValidProfiles.first_valid_data < filters["date_min"])
+        else:
+            result["controle_geom"] = {
+                "code_result": 1,
+                "Commentaire": "Répartition validée",
+            }
 
-    if "date_max" in filters:
-        q = q.filter(VmValidProfiles.last_valid_data > filters["date_max"])
+    """ Controle date et altitude """
+    q_pheno = DB.session.query(VmCorTaxonPhenology.id_nomenclature_life_stage).distinct()
+    q_pheno = q_pheno.filter(VmCorTaxonPhenology.cd_ref == cd_ref)
+    q_pheno = q_pheno.filter(VmCorTaxonPhenology.period.between(min_periode, max_periode))
+    q_pheno = q_pheno.filter(VmCorTaxonPhenology.calculated_altitude_min <= altitude_min)
+    q_pheno = q_pheno.filter(VmCorTaxonPhenology.calculated_altitude_max >= altitude_max)
 
-    if q.count() > 0:
-        result["controle_date"] = {
+    if q_pheno.count() > 0:
+        """Construction de la liste des stade de vie potentielle"""
+        l_lifestage = []
+        for row in q_pheno.all():
+            l_lifestage.append(row.id_nomenclature_life_stage)
+
+        result["result"] = {
             "code_result": 1,
-            "Commentaire": "Dans ce secteur, le taxon a déjà été observé à cette période",
+            "Commentaire": "Le taxon a déjà été observé à cette période et à cette altitude",
+            "l_ids_lifestage": l_lifestage,
         }
     else:
-        result["controle_date"] = {
+        result["result"] = {
             "code_result": 0,
-            "Commentaire": "Dans ce secteur, le taxon n'a jamais été observé à cette période",
+            "Commentaire": "Le taxon n'a jamais été observé à cette période ou à cette altitude ou trop peu de données valides permettent de s'assurer de la conformité de cette observation",
         }
-    """ FIN Contrôle des dates """
 
-    """ Contrôle de l'altitude """
-    if "altitude_min" in filters:
-        q = q.filter(VmValidProfiles.altitude_min < filters["altitude_min"])
-
-    if "altitude_max" in filters:
-        q = q.filter(VmValidProfiles.altitude_max > filters["altitude_max"])
-
-    if q.count() > 0:
-        result["controle_altitude"] = {
-            "code_result": 1,
-            "Commentaire": "Dans ce secteur et à cette période, le taxon a déjà été observé à cette altitude",
-        }
-    else:
-        result["controle_altitude"] = {
-            "code_result": 0,
-            "Commentaire": "Dans ce secteur et à cette période, le taxon n'a jamais été observé à cette altitude",
-        }
-    """ FIN Contrôle l'altitude """
-
-    """ TODO : Contrôler le stade de vie """
     return result
