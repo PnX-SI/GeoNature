@@ -88,7 +88,7 @@ def get_synthese_data(info_role):
                 VConsistancyData.score
             ]
         )
-        # .select_from(join)
+        .select_from(join)
         .where(VSyntheseValidation.the_geom_4326.isnot(None))
         .order_by(VSyntheseValidation.date_min.desc())
     )
