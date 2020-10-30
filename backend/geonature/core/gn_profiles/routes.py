@@ -1,6 +1,7 @@
 import json
 
 from flask import Blueprint, request
+from geoalchemy2.shape import to_shape
 from geojson import Feature
 from sqlalchemy.sql import func
 from utils_flask_sqla.response import json_resp
@@ -72,39 +73,38 @@ def get_consistancy_data(id_synthese):
     return None
 
 
-@routes.route("/get_observation_score", methods=["POST"])
+@routes.route("/get_observation_score/<cd_ref>", methods=["POST"])
 @json_resp
-def get_observation_score():
+def get_observation_score(cd_ref):
     """ TODO : A Adapter lors de la prochaine version de la table vm_cor_taxon_phenologie """
 
     filters = request.form
 
-    q = DB.session.query(VmValidProfiles)
+    profile = (
+        DB.session.query(VmValidProfiles).filter(VmValidProfiles.cd_ref == cd_ref).one_or_none()
+    )
 
     result = {}
 
     """ Contrôle de la localisation """
     if "geom" in filters:
-        q = q.filter(
-            func.ST_Transform(VmValidProfiles.valid_distribution, 4326).ST_Intersects(
-                func.ST_SetSRID(func.ST_GeomFromGeoJSON(filters["geom"]), 4326)
+        check_geom = DB.session.query(
+            func.ST_Contains(
+                func.ST_Transform(profile.valid_distribution, 4326),
+                func.ST_SetSRID(func.ST_GeomFromGeoJSON(filters["geom"]), 4326),
             )
-        )
-        if q.count() > 0:
-            result["controle_geom"] = {
-                "code_result": 1,
-                "Commentaire": "Le taxon a déjà été observé dans ce secteur",
-            }
-        else:
+        ).one_or_none()
+
+        if check_geom is None:
             result["controle_geom"] = {
                 "code_result": 0,
-                "Commentaire": "Le taxon n'a jamais été observé dans ce secteur",
+                "Commentaire": "Il existe données valides pour ce taxon, mais il n'a jamais été observé dans cette zone.",
             }
     """ Contrôle de la localisation """
 
     """ Contrôle des dates """
     if "date_min" in filters:
-        q = q.filter(VmValidProfiles.first_valid_data < filters["date_min"])
+        q = q.filter(VmValidProfiles.first_valid_data < filters["date_min"]).one_or_none()
 
     if "date_max" in filters:
         q = q.filter(VmValidProfiles.last_valid_data > filters["date_max"])
@@ -123,10 +123,10 @@ def get_observation_score():
 
     """ Contrôle de l'altitude """
     if "altitude_min" in filters:
-        q = q.filter(VmValidProfiles.altitude_min < filters["altitude_min"])
+        q = q.filter(VmValidProfiles.altitude_min < filters["altitude_min"]).one_or_none()
 
     if "altitude_max" in filters:
-        q = q.filter(VmValidProfiles.altitude_max > filters["altitude_max"])
+        q = q.filter(VmValidProfiles.altitude_max > filters["altitude_max"]).one_or_none()
 
     if q.count() > 0:
         result["controle_altitude"] = {
