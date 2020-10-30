@@ -557,4 +557,12 @@ export class DataFormService {
       ${idNomenclatureLifeStage}`
     )
   }
+
+  /* A partir d'un id synthese, retourne si l'observation match avec les différents
+   critère d'un profil
+  */
+  getProfileConsistancyData(idSynthese) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_profiles/consistancy_data/${idSynthese}`)
+
+  }
 }

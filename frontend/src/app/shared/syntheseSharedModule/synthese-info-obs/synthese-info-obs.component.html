@@ -21,23 +21,6 @@
 </div>
 <mat-card>
 
-  <!-- <chart
-    #myChart
-    [type]="chartType"
-    [data]="charData"
-    [options]="options"
-  ></chart> -->
-  {{results|json}}
-  <canvas
-    baseChart
-    width="200"
-    height="200"
-    [datasets]="results"
-    [labels]="lineChartLabels"
-    [colors]="lineChartColors"
-    [legend]="lineChartLegend"
-    [chartType]="lineChartType"
-  ></canvas>
 
   <span *ngIf="selectedObsTaxonDetail?.nom_vern">
     {{ selectedObsTaxonDetail?.nom_vern }} -
@@ -428,29 +411,94 @@
       </tbody>
     </table>
 
-    <h3> Profil </h3>
+    <div class="row row-sm">
+      <div
+        *ngIf="APP_CONFIG.FRONTEND.DISPLAY_PROFILES"
+        class="col-5 padding-sm"
+      >
+        <h3> Profil du taxon</h3>
 
-    <table class="font-xs table table-striped table-sm">
-      <tr>
-        <td> Altitude </td>
-        <td> {{profile?.properties?.altitude_min}} - {{profile?.properties?.altitude_max}}</td>
-      </tr>
-      <tr>
-        <td> Période d'observations </td>
-        <td> {{profile?.properties?.first_valid_data | date:'dd/MM/yyyy'}} -
-          {{profile?.properties?.last_valid_data | date:'dd/MM/yyyy'}}</td>
-      </tr>
-    </table>
+        <table class="font-xs table table-striped table-sm">
+          <tr>
+            <td> Altitude minimale valide </td>
+            <td> {{profile?.properties?.altitude_min}} </td>
+          </tr>
+          <tr>
+            <td> Altitude maximale valide </td>
+            <td> {{profile?.properties?.altitude_max}}</td>
+          </tr>
 
-    <h5>Aire de répartition des observations valides</h5>
-    <pnx-map height="40vh">
-      <pnx-geojson
-        [geojson]="selectedGeom"
-        [style]="{color: 'red'}"
-      ></pnx-geojson>
-      <pnx-geojson [geojson]="profile"></pnx-geojson>
-    </pnx-map>
-    {{phenology|json}}
+          <tr>
+            <td> Première observation valide </td>
+            <td> {{profile?.properties?.first_valid_data | date:'dd/MM/yyyy'}} </td>
+          </tr>
+          <tr>
+            <td> Dernière observation valide </td>
+            <td>{{profile?.properties?.last_valid_data | date:'dd/MM/yyyy'}}</td>
+          </tr>
+        </table>
+        <!-- <canvas
+        baseChart
+        width="200"
+        height="200"
+        [datasets]="results"
+        [labels]="lineChartLabels"
+        [colors]="lineChartColors"
+        [legend]="lineChartLegend"
+        [chartType]="lineChartType"
+      ></canvas> -->
+        <h3> Cohérence de la donnée </h3>
+
+        <table class="table table-sm font-xs table-striped">
+          <tr>
+            <td>Dans l'aire d'observation valide </td>
+            <td *ngIf='profileDataChecks?.valid_distribution'>
+              <mat-icon class="success"> check </mat-icon>
+            </td>
+            <td *ngIf='!profileDataChecks?.valid_distribution'>
+              <mat-icon class="error"> close </mat-icon>
+            </td>
+          </tr>
+          <tr>
+            <td>Cohérence phénologique </td>
+            <td *ngIf='profileDataChecks?.valid_phenology'>
+              <mat-icon class="success"> check </mat-icon>
+            </td>
+            <td *ngIf='!profileDataChecks?.valid_phenology'>
+              <mat-icon class="error"> close </mat-icon>
+            </td>
+          </tr>
+          <tr>
+            <td> Dans la fourchette altitudinale valide</td>
+            <td *ngIf='profileDataChecks?.valid_altitude'>
+              <mat-icon class="success"> check </mat-icon>
+            </td>
+            <td *ngIf='!profileDataChecks?.valid_altitude'>
+              <mat-icon class="error"> close </mat-icon>
+            </td>
+          </tr>
+          <tr>
+            <td> Score</td>
+            <td> {{profileDataChecks?.score}} </td>
+          </tr>
+        </table>
+      </div>
+      <div class="col-7 padding-sm">
+        <h5>Aire de répartition des observations valides</h5>
+        <pnx-map height="40vh">
+          <pnx-geojson
+            [geojson]="selectedGeom"
+            [style]="{color: 'red'}"
+          ></pnx-geojson>
+          <pnx-geojson
+            [geojson]="profile"
+            [zoomOnFirstTime]="true"
+          ></pnx-geojson>
+        </pnx-map>
+      </div>
+    </div>
+
+
 
   </mat-tab>
 
