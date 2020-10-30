@@ -26,6 +26,7 @@ CREATE TABLE gn_profiles.cor_taxons_parameters(
 ---------------
 --PRIMARY KEY--
 ---------------
+
 ALTER TABLE ONLY gn_profiles.t_parameters 
 	ADD CONSTRAINT pk_parameters PRIMARY KEY (id_parameter);
 
@@ -280,6 +281,7 @@ $function$
 ----------------------------------
 -- VIEWS AND MATERIALIZED VIEWS --
 ----------------------------------
+
 CREATE MATERIALIZED VIEW gn_profiles.vm_valid_profiles AS
 SELECT DISTINCT
 	t.cd_ref AS cd_ref,
@@ -300,6 +302,8 @@ AND s.id_nomenclature_valid_status IN (
 	WHERE name='id_valid_status_for_profiles'
 	)
 GROUP BY t.cd_ref;
+
+CREATE UNIQUE INDEX ON gn_profiles.vm_valid_profiles (cd_ref);
 
 CREATE MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology AS 
 WITH classified_data AS (
@@ -360,6 +364,7 @@ CASE WHEN (count_valid_data*(SELECT ((1-value::integer/100::float)/2)
 from classified_data
 ;
 
+CREATE UNIQUE INDEX ON gn_profiles.vm_cor_taxon_phenology (cd_ref, period);
 
 CREATE VIEW gn_profiles.v_consistancy_data AS
 SELECT 
@@ -388,6 +393,16 @@ SELECT
 FROM gn_profiles.cor_taxons_parameters p
 LEFT JOIN taxonomie.taxref t ON p.cd_nom=t.cd_nom;
 
+
+-- Rafraichissement des vues matérialisées des profils
+-- USAGE : SELECT gn_profiles.refresh_profiles()
+CREATE OR REPLACE FUNCTION gn_profiles.refresh_profiles()
+RETURNS VOID AS $$
+BEGIN
+  REFRESH MATERIALIZED VIEW CONCURRENTLY gn_profiles.vm_valid_profiles;
+  REFRESH MATERIALIZED VIEW CONCURRENTLY gn_profiles.vm_cor_taxon_phenology;
+END
+$$ LANGUAGE plpgsql;
 
 -----------
 -- INDEX --
