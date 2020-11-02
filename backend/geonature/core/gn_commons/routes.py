@@ -44,6 +44,7 @@ def get_modules(info_role):
     modules = q.all()
     allowed_modules = []
     for mod in modules:
+
         app_cruved = cruved_scope_for_user_in_module(
             id_role=info_role.id_role, module_code=mod.module_code
         )[0]

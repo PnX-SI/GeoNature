@@ -228,7 +228,7 @@ def user_cruved(id_role):
                 module_code=module["module_code"],
                 object_code=_object.code_object,
             )
-            object_as_dict["cruved"] = beautifulize_cruved(actions_label, object_cruved)
+            object_as_dict["cruved"] = (beautifulize_cruved(actions_label, object_cruved), herited)
             module_objects_as_dict.append(object_as_dict)
 
         module["module_objects"] = module_objects_as_dict

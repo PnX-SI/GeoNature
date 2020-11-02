@@ -13,7 +13,7 @@ from geonature.core.gn_permissions.tools import (
     get_user_permissions,
     get_user_from_token_and_raise,
     get_max_perm,
-    build_herited_user_cruved,
+    UserCruved,
 )
 
 
@@ -55,8 +55,8 @@ def check_cruved_scope(
             user_permissions = get_user_permissions(
                 user, "SCOPE", action, module_code, object_code
             )
-
-            user_with_highter_perm = build_herited_user_cruved(user_permissions, module_code)
+            user_cruved_obj = UserCruved()
+            user_with_highter_perm = user_cruved_obj.build_herited_user_cruved(user_permissions, module_code, object_code)
 
             # if get_role = True : set info_role as kwargs
             if get_role:
@@ -64,15 +64,12 @@ def check_cruved_scope(
             # if no perm or perm = 0 -> raise 403
             if user_with_highter_perm is None or (
                 user_with_highter_perm is not None and user_with_highter_perm.value_filter == "0"
-            ):
-                raise InsufficientRightsError(
-                    ('User "{}" cannot "{}" in {}').format(
-                        user_with_highter_perm.id_role,
-                        user_with_highter_perm.code_action,
-                        user_with_highter_perm.module_code,
-                    ),
-                    403,
-                )
+            ):  
+                if object_code:
+                    message = f"""User {user_with_highter_perm.id_role} cannot "{user_with_highter_perm.code_action}" {object_code}"""
+                else:
+                    message = f"""User {user_with_highter_perm.id_role}" cannot "{user_with_highter_perm.code_action}" in {user_with_highter_perm.module_code}"""
+                raise InsufficientRightsError(message, 403)
             g.user = user_with_highter_perm
             return fn(*args, **kwargs)
 
