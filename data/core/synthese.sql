@@ -725,6 +725,7 @@ $$;
 --VIEWS--
 ---------
 
+-- Vue de l'arbre taxonomique des taxons présents dans la Synthèse (jusqu'à la famille)
 CREATE OR REPLACE VIEW gn_synthese.v_tree_taxons_synthese AS
  WITH cd_famille AS (
          SELECT t_1.cd_ref,
@@ -783,7 +784,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_tree_taxons_synthese AS
 COMMENT ON VIEW gn_synthese.v_tree_taxons_synthese IS 'Vue destinée à l''arbre taxonomique de la synthese. S''arrête  à la famille pour des questions de performances';
 
 
-
+-- Vue décodant les nomenclatures
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_decode_nomenclatures AS
 SELECT
 s.id_synthese,
@@ -810,6 +811,7 @@ ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_behaviour) AS occ_beh
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_biogeo_status) AS occ_stat_biogeo
 FROM gn_synthese.synthese s;
 
+-- Vue listant les observations de la synthèse pour l'application WEB
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
  SELECT s.id_synthese,
     s.unique_id_sinp,
@@ -881,77 +883,85 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
      JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source;
 
+-- Vue listant les observations pour l'export de la Synthèse
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
- SELECT s.id_synthese AS "idSynthese",
-    s.entity_source_pk_value AS "idOrigine",
-    s.unique_id_sinp AS "permId",
-    s.unique_id_sinp_grp AS "permIdGrp",
-    s.grp_method,
-    s.count_min AS "denbrMin",
-    s.count_max AS "denbrMax",
-    s.sample_number_proof AS "sampleNumb",
-    s.digital_proof AS "uRLPreuv",
-    s.non_digital_proof AS "preuvNoNum",
-    s.altitude_min AS "altMin",
-    s.altitude_max AS "altMax",
-    s.depth_min AS "profMin",
-    s.depth_max AS "profMax",
-    s.precision as "precisGeo",
-    public.ST_astext(s.the_geom_4326) AS "geometrie",
-    to_char(s.date_min, 'YYYY-MM-DD') AS "dateDebut",
-    to_char(s.date_max, 'YYYY-MM-DD') AS "dateFin",
-    s.date_min::time AS "heureFin",
-    s.date_max::time AS "heureDebut",
-    s.validator AS validateur,
-    n21.label_default AS "nivVal",
-    s.meta_validation_date as "dateCtrl",
-    s.validation_comment AS "validCom",
-    s.observers AS observer,
-    s.id_digitiser AS id_digitiser,
-    s.determiner AS detminer,
-    s.comment_context AS "obsCtx",
-    s.comment_description AS "obsDescr",
-    s.meta_create_date,
-    s.meta_update_date,
-    d.dataset_name AS "jddName", -- champs non standard (pas le nom du JDD dans le standard)
-    d.unique_dataset_id AS "idSINPJdd",
-    d.id_acquisition_framework,
-    t.cd_nom AS "cdNom",
-    t.cd_ref AS "cdRef",
-    s.cd_hab AS "codeHabRef",
-    t.nom_valide AS "nomValide",
-    s.nom_cite AS "nomCite",
-    hab.lb_code AS "codeHab",
-    hab.lb_hab_fr AS "nomHab",
-    s.cd_hab AS "cdHab",
-    public.ST_x(public.ST_transform(s.the_geom_point, 2154)) AS x_centroid,
+ SELECT s.id_synthese AS "ID_synthese",
+    s.entity_source_pk_value AS "ID_source",
+    s.unique_id_sinp AS "UUID_perm_SINP",
+    to_char(s.date_min, 'YYYY-MM-DD') AS "Date_debut",
+    to_char(s.date_max, 'YYYY-MM-DD') AS "Date_fin",
+    s.date_min::time AS "Heure_debut",
+    s.date_max::time AS "Heure_fin",
+    t.cd_nom AS "CD_nom",
+    t.cd_ref AS "CD_ref",
+    t.nom_valide AS "Nom_valide",
+    s.nom_cite AS "Nom_cite",
+    t.regne AS "Regne",
+    t.group1_inpn AS "Group1_INPN",
+    t.group2_inpn AS "Group2_INPN",
+    t.classe AS "Classe",
+    t.ordre AS "Ordre",
+    t.famille AS "Famille",
+    t.id_rang AS "Rang_taxo",
+    s.count_min AS "Nombre_min",
+    s.count_max AS "Nombre_max",
+    s.altitude_min AS "Altitude_min",
+    s.altitude_max AS "Altitude_max",
+    s.depth_min AS "Profondeur_min",
+    s.depth_max AS "Profondeur_max",
+    s.observers AS "Observateurs",
+    s.id_digitiser AS "id_digitiser",
+    s.determiner AS "Determinateur",
+    s.comment_context AS "Comment_releve",
+    s.comment_description AS "Comment_occurrence",
+    s.validator AS "Validateur",
+    n21.label_default AS "Niveau_validation",
+    s.meta_validation_date as "Date_validation",
+    s.validation_comment AS "Comment_validation",
+    s.meta_create_date AS "Date_creation",
+    s.meta_update_date AS "Date_modification",
+--  s.sample_number_proof AS "Numero_preuve",
+    s.digital_proof AS "Preuve_numerique_URL",
+    s.non_digital_proof AS "Preuve_non_numerique",
+    d.dataset_name AS "JDD_nom", -- champs non standard (pas le nom du JDD dans le standard)
+    d.unique_dataset_id AS "JDD_UUID",
+    d.id_dataset AS "JDD_ID",
+    d.id_acquisition_framework AS "CA_ID",
+    s.cd_hab AS "CD_HabRef",
+    hab.lb_code AS "CD_habitat",
+    hab.lb_hab_fr AS "Nom_habitat",
+    s.precision as "Precision_geographique",
+    public.ST_astext(s.the_geom_4326) AS "Geometrie_WKT", -- WKT_4326 ??
+    public.ST_x(public.ST_transform(s.the_geom_point, 2154)) AS x_centroid, -- X_centroid_4326 ?
     public.ST_y(public.ST_transform(s.the_geom_point, 2154)) AS y_centroid,
-    COALESCE(s.meta_update_date, s.meta_create_date) AS lastact,
+    COALESCE(s.meta_update_date, s.meta_create_date) AS "Derniere_action",
     public.ST_asgeojson(s.the_geom_4326) AS geojson_4326,
-    public.ST_asgeojson(s.the_geom_local) AS geojson_local,
-    s.place_name AS "nomLieu",
-    n1.label_default AS "natObjGeo",
-    n2.label_default AS "typGrp",
-    s.grp_method AS "methGrp",
-    n3.label_default AS "obsTech",
-    n5.label_default AS "ocStatBio",
-    n6.label_default AS "ocEtatBio",
-    n22.label_default AS "ocBiogeo",
-    n7.label_default AS "ocNat",
-    n8.label_default AS "preuveOui",
-    n9.label_default AS "difNivPrec",
-    n10.label_default AS "ocStade",
-    n11.label_default AS "ocSex",
-    n12.label_default AS "objDenbr",
-    n13.label_default AS "denbrTyp",
-    n14.label_default AS"sensiNiv",
-    n15.label_default AS "statObs",
-    n16.label_default AS "dEEFlou",
-    n17.label_default AS "statSource",
-    n18.label_default AS "typInfGeo",
-    n19.label_default AS "ocMethDet",
-    n20.label_default AS "occComport",
-    s.reference_biblio AS "refBiblio"
+    public.ST_asgeojson(s.the_geom_local) AS geojson_local, -- Utile ?
+    s.place_name AS "Nom_lieu",
+    n1.label_default AS "Nature_objet_geo",
+    n2.label_default AS "Type_regroupement",
+    s.grp_method AS "Methode_regroupement",
+    s.unique_id_sinp_grp AS "UUID_perm_GRP_SINP",
+    s.grp_method AS "methGrp", -- Doublon
+    n3.label_default AS "Technique_observation",
+    n5.label_default AS "Statut_biologique",
+    n6.label_default AS "Etat_biologique",
+    n22.label_default AS "Statut_biogeographique",
+    n7.label_default AS "Naturalite",
+    n8.label_default AS "Preuve_existante",
+    n9.label_default AS "Niveau_precision_diffusion",
+    n10.label_default AS "Stade_vie",
+    n11.label_default AS "Sexe",
+    n12.label_default AS "Objet_denombrement",
+    n13.label_default AS "Type_denombrement",
+    n14.label_default AS"Niveau_sensibilite",
+    n15.label_default AS "Statut_observation",
+    n16.label_default AS "Floutage_DEE",
+    n17.label_default AS "Statut_source",
+    n18.label_default AS "Type_info_geo",
+    n19.label_default AS "Methode_determination",
+    n20.label_default AS "Comportement",
+    s.reference_biblio AS "Reference_biblio"
    FROM gn_synthese.synthese s
      JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
@@ -980,7 +990,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
      LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = s.cd_hab;
 
 
-
+-- Vue d'export des métadonnées
 CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS
  WITH count_nb_obs AS (
          SELECT count(*) AS nb_obs,
@@ -990,8 +1000,9 @@ CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS
         )
  SELECT d.dataset_name AS jeu_donnees,
     d.id_dataset AS jdd_id,
-    d.unique_dataset_id AS "jddMetaId",
+    d.unique_dataset_id AS jdd_uuid,
     af.acquisition_framework_name AS cadre_acquisition,
+    af.unique_acquisition_framework_id AS ca_uuid,
     string_agg(DISTINCT concat(COALESCE(orga.nom_organisme, ((roles.nom_role::text || ' '::text) || roles.prenom_role::text)::character varying), ': ', nomencl.label_default), ' | '::text) AS acteurs,
     count_nb_obs.nb_obs AS nombre_obs
    FROM gn_meta.t_datasets d
@@ -1004,7 +1015,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS
   GROUP BY d.id_dataset, d.unique_dataset_id, d.dataset_name, af.acquisition_framework_name, count_nb_obs.nb_obs;
 
 
--- vue couleur taxon
+-- Vue des couleurs des taxons par unité géographique
 CREATE OR REPLACE VIEW gn_synthese.v_color_taxon_area AS
 SELECT cd_nom, id_area, nb_obs, last_date,
  CASE
@@ -1147,7 +1158,7 @@ BEGIN
 
   postgis_maj_num_version := (SELECT split_part(version, '.', 1)::int FROM pg_available_extension_versions WHERE name = 'postgis' AND installed = true);
 
-  -- Cas ou la geométrie est passé en geojson
+  -- Cas ou la geométrie est passée en geojson
   IF NOT datageojson IS NULL THEN
     geom := (SELECT ST_setsrid(ST_GeomFromGeoJSON(datageojson), 4326));
     local_srid := (SELECT parameter_value FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid');
@@ -1252,7 +1263,7 @@ $function$
 ;
 
     -- Import dans la synthese, ajout de limit et offset 
-    -- pour pouvoir boucler et traiter des quantités raisonables de données
+    -- pour pouvoir boucler et traiter des quantités raisonnables de données
 CREATE OR REPLACE FUNCTION gn_synthese.import_row_from_table(
     select_col_name character varying,
     select_col_val character varying,
