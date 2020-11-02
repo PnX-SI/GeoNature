@@ -27,6 +27,7 @@ DEFAULT_EXPORT_COLUMNS = [
     "obsTech",
     "ocEtatBio",
     "ocStatBio",
+    "ocBiogeo",
     "ocNat",
     "occComport",
     "preuveOui",

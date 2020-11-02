@@ -1,3 +1,20 @@
+INSERT INTO gn_synthese.defaults_nomenclatures_value (mnemonique_type, id_organism, regne, group2_inpn, id_nomenclature) VALUES
+('STAT_BIOGEO',0,0,0, ref_nomenclatures.get_id_nomenclature('STAT_BIOGEO', '1'))
+;
+
+ALTER TABLE gn_synthese.synthese 
+ADD COLUMN id_nomenclature_biogeo_status integer DEFAULT gn_synthese.get_default_nomenclature_value('STAT_BIOGEO');
+
+ALTER TABLE ONLY gn_synthese.synthese
+    ADD CONSTRAINT fk_synthese_id_nomenclature_biogeo_status 
+    FOREIGN KEY (id_nomenclature_biogeo_status) 
+    REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE gn_synthese.synthese
+  ADD CONSTRAINT check_synthese_biogeo_status CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_biogeo_status,'STAT_BIOGEO')) NOT VALID;
+
+
+
 DROP VIEW gn_synthese.v_synthese_for_export;
 
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
@@ -55,6 +72,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     n3.label_default AS "obsTech",
     n5.label_default AS "ocStatBio",
     n6.label_default AS "ocEtatBio",
+    n22.label_default AS "ocBiogeo",
     n7.label_default AS "ocNat",
     n8.label_default AS "preuveOui",
     n9.label_default AS "difNivPrec",
@@ -94,6 +112,8 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
      LEFT JOIN ref_nomenclatures.t_nomenclatures n19 ON s.id_nomenclature_determination_method = n19.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n20 ON s.id_nomenclature_behaviour = n20.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n21 ON s.id_nomenclature_valid_status = n21.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n22 ON s.id_nomenclature_biogeo_status = n22.id_nomenclature
      LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = s.cd_hab;
+
 
 
