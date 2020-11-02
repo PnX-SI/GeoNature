@@ -866,6 +866,7 @@ BEGIN
       depth_max = NEW.depth_max,
       place_name = NEW.place_name,
       precision = NEW.precision,
+      the_geom_local = NEW.geom_local,
       the_geom_4326 = NEW.geom_4326,
       the_geom_point = ST_CENTROID(NEW.geom_4326),
       id_nomenclature_geo_object_nature = NEW.id_nomenclature_geo_object_nature,

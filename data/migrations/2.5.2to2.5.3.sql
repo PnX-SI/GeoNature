@@ -142,3 +142,45 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
 
 
 
+CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_releve()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+  myobservers text;
+BEGIN
+  --calcul de l'observateur. On privilégie le ou les observateur(s) de cor_role_releves_occtax
+  --Récupération et formatage des observateurs
+  SELECT INTO myobservers array_to_string(array_agg(rol.nom_role || ' ' || rol.prenom_role), ', ')
+  FROM pr_occtax.cor_role_releves_occtax cor
+  JOIN utilisateurs.t_roles rol ON rol.id_role = cor.id_role
+  WHERE cor.id_releve_occtax = NEW.id_releve_occtax;
+  IF myobservers IS NULL THEN
+    myobservers = NEW.observers_txt;
+  END IF;
+  --mise à jour en synthese des informations correspondant au relevé uniquement
+  UPDATE gn_synthese.synthese SET
+      id_dataset = NEW.id_dataset,
+      observers = myobservers,
+      id_digitiser = NEW.id_digitiser,
+      grp_method = NEW.grp_method,
+      id_nomenclature_grp_typ = NEW.id_nomenclature_grp_typ,
+      date_min = date_trunc('day',NEW.date_min)+COALESCE(NEW.hour_min,'00:00:00'::time),
+      date_max = date_trunc('day',NEW.date_max)+COALESCE(NEW.hour_max,'00:00:00'::time), 
+      altitude_min = NEW.altitude_min,
+      altitude_max = NEW.altitude_max,
+      depth_min = NEW.depth_min,
+      depth_max = NEW.depth_max,
+      place_name = NEW.place_name,
+      precision = NEW.precision,
+      the_geom_local = NEW.geom_local,
+      the_geom_4326 = NEW.geom_4326,
+      the_geom_point = ST_CENTROID(NEW.geom_4326),
+      id_nomenclature_geo_object_nature = NEW.id_nomenclature_geo_object_nature,
+      last_action = 'U',
+      comment_context = NEW.comment
+  WHERE unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer)));
+  RETURN NULL;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
