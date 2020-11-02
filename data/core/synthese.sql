@@ -806,7 +806,8 @@ ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_blurring) AS blurring
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_source_status) AS source_status,
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_info_geo_type) AS info_geo_type,
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_determination_method) AS determination_method,
-ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_behaviour) AS occ_behaviour
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_behaviour) AS occ_behaviour,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_biogeo_status) AS occ_stat_biogeo
 FROM gn_synthese.synthese s;
 
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
