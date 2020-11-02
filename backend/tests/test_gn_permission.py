@@ -64,8 +64,8 @@ class TestGnPermissionsTools:
 
     def test_get_user_permissions(self):
         """
-                Test get_user_permissions
-            """
+            Test get_user_permissions
+        """
         user_ok = {"id_role": 1, "nom_role": "Administrateur"}
         perms = get_user_permissions(user_ok, code_action="C", code_filter_type="SCOPE")
         assert isinstance(perms, list)
@@ -82,12 +82,13 @@ class TestGnPermissionsTools:
         max_perm = get_max_perm(perms)
         assert max_perm.value_filter == "3"
 
-        # with code_object
+        # with code_object -> heritage
         perms = get_user_permissions(
             user_ok, code_action="C", code_filter_type="SCOPE", code_object="PERMISSIONS",
         )
         assert isinstance(perms, list)
         assert get_max_perm(perms).value_filter == "3"
+
 
     def test_cruved_scope_for_user_in_module(self):
         # get cruved for geonature
@@ -146,22 +147,6 @@ class TestGnPermissionsView:
         )
         assert response.status_code == 200
 
-    def test_get_cruved_scope_form_not_allowed(self):
-        """
-            Test get user cruved form page
-        """
-        # with user agent
-        token = get_token(self.client, login="agent", password="admin")
-        self.client.set_cookie("/", "token", token)
-        with pytest.raises(InsufficientRightsError):
-            response = self.client.get(
-                url_for(
-                    "gn_permissions_backoffice.permission_form",
-                    id_role=1,
-                    id_module=0,
-                    id_object=None,
-                )
-            )
 
     def test_post_cruved_scope_form(self):
         """

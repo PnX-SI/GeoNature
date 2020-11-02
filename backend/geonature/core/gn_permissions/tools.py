@@ -186,9 +186,7 @@ def get_user_permissions(
         return user_cruved
     except AssertionError:
         raise InsufficientRightsError(
-            'User "{}" cannot "{}" in module/app/object "{}"'.format(
-                id_role, code_action, object_for_error
-            )
+            f"User {user['id_role']} cannot '{code_action}' in module/app/object {object_for_error}"
         )
 
 def get_max_perm(perm_list):
