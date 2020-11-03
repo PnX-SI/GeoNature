@@ -58,7 +58,8 @@
                 <div class="col-md-2 ">{{af.acquisition_framework_start_date |date:'d/MM/yyyy'}}
                 </div>
                 <div class="col-md-2">
-                  {{af.actors[0].role.nom_complet}}
+                  TODO
+                  <!-- {{af.actors[0].role.nom_complet}} -->
                 </div>
                 <section class="col-md-3">
                   <div *ngFor="let ac of af.actors">
@@ -106,7 +107,8 @@
                   </td>
                   <td> {{ds.meta_create_date |date:'d/MM/yyyy' }}</td>
                   <td> {{ds.observation_count}} </td>
-                  <td> {{af.actors[0].role.nom_complet}} </td>
+                  <td> TODO
+                    <!-- {{af.actors[0].role.nom_complet}}  -->
                   <td>
                     <div *ngIf="ds.observation_count > 0">
                       <mat-icon
@@ -364,7 +366,7 @@
             *ngFor="let role of roles"
             value="{{role.id_role}}"
           >
-            {{role.nom_complet}}</option>
+            {{role?.nom_complet}}</option>
         </select>
       </div>
     </div>

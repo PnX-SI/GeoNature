@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { BaseChartDirective } from 'ng2-charts';
-import { AppConfig } from '@geonature_config/app.config';
 import { AppConfig } from "@geonature_config/app.config";
 import { CommonService } from '@geonature_common/service/common.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
