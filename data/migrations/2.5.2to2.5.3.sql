@@ -226,3 +226,8 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+
+
+UPDATE gn_synthese.synthese 
+SET the_geom_local = ST_transform(the_geom_4326, gn_commons.get_default_parameter('local_srid')::integer)
+WHERE id_source = (SELECT id_source FROM gn_synthese.t_sources WHERE name_source ilike 'Occtax');

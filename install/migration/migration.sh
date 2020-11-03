@@ -60,6 +60,8 @@ cp -r $myrootpath/geonature_old/frontend/src/external_assets/* $myrootpath/$curr
 
 mkdir $myrootpath/$currentdir/var
 mkdir $myrootpath/$currentdir/var/log
+cp $myrootpath/geonature_old/var/log/gn_errors.log $myrootpath/$currentdir/var/log/
+
 
 # Création du répertoitre static et rapatriement des médias
 if [ ! -d 'backend/static/' ]
