@@ -893,10 +893,10 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
           GROUP BY d_1.id_dataset
         )
  SELECT s.id_synthese AS id_synthese,
-    s.entity_source_pk_value AS id_source,
+    s.entity_source_pk_value AS id_origine,
     s.unique_id_sinp AS uuid_perm_sinp,
-    to_char(s.date_min, 'YYYY-MM-DD') AS date_debut,
-    to_char(s.date_max, 'YYYY-MM-DD') AS date_fin,
+    s.date_min AS date_debut,
+    s.date_max AS date_fin,
     s.date_min::time AS heure_debut,
     s.date_max::time AS heure_fin,
     t.cd_nom AS cd_nom,
