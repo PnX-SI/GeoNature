@@ -27,6 +27,9 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
   @Input() application: string; // 'GeoNature', 'TaxHub' for api's; null for raw url
   @Input() params: boolean; // parametres get pour la requete { orderby: truc } => api?orderby=truc
 
+
+  @Input() autocomplete: boolean;
+  @Input() limit = 100;
   @Input() multiple: boolean;
   @Input() required: boolean;
   @Input() definition: boolean; // help
@@ -58,6 +61,9 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
   searchChanged(event) {
     this.search = event;
     this.filteredValues = this.getFilteredValues();
+    if(this.autocomplete) {
+      this.getData();
+    }
   }
 
   getFilteredValues() {

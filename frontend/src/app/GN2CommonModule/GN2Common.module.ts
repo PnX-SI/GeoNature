@@ -75,6 +75,7 @@ import { MediaComponent } from '@geonature_common/form/media/media.component';
 import { MediaDialog } from '@geonature_common/form/media/media-dialog.component';
 import { MediasComponent } from '@geonature_common/form/media/medias.component';
 import { MediasTestComponent } from '@geonature_common/form/media/medias-test.component';
+import { FormTestComponent } from '@geonature_common/form/test/form-test.component';
 import { DatalistComponent } from '@geonature_common/form/datalist/datalist.component';
 import { PlacesComponent } from './map/places/places.component';
 import { PlacesListComponent } from './map/placesList/placesList.component';
@@ -178,6 +179,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     MediaDialog,
     MediasComponent,
     MediasTestComponent,
+    FormTestComponent,
     ConfirmationDialog,
     DatalistComponent,
     PlacesComponent,
