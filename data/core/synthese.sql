@@ -882,16 +882,6 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
 
 -- Vue listant les observations pour l'export de la Synthèse
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
- WITH jdd_acteurs AS (
-         SELECT d_1.id_dataset,
-            string_agg(DISTINCT concat(COALESCE(orga.nom_organisme, ((roles.nom_role::text || ' '::text) || roles.prenom_role::text)::character varying), ' (', nomencl.label_default, ')'), ' | '::text) AS acteurs
-           FROM gn_meta.t_datasets d_1
-             JOIN gn_meta.cor_dataset_actor act ON act.id_dataset = d_1.id_dataset
-             JOIN ref_nomenclatures.t_nomenclatures nomencl ON nomencl.id_nomenclature = act.id_nomenclature_actor_role
-             LEFT JOIN utilisateurs.bib_organismes orga ON orga.id_organisme = act.id_organism
-             LEFT JOIN utilisateurs.t_roles roles ON roles.id_role = act.id_role
-          GROUP BY d_1.id_dataset
-        )
  SELECT s.id_synthese AS id_synthese,
     s.entity_source_pk_value AS id_origine,
     s.unique_id_sinp AS uuid_perm_sinp,
@@ -932,7 +922,6 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     d.dataset_name AS jdd_nom,
     d.unique_dataset_id AS jdd_uuid,
     d.id_dataset AS jdd_id, -- Utile pour le CRUVED
-    jdd_acteurs.acteurs AS jdd_acteurs,
     af.acquisition_framework_name AS ca_nom,
     af.unique_acquisition_framework_id AS ca_uuid,
     d.id_acquisition_framework AS ca_id,
@@ -975,7 +964,6 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
      JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
      JOIN gn_meta.t_acquisition_frameworks af ON d.id_acquisition_framework = af.id_acquisition_framework
-     JOIN jdd_acteurs ON jdd_acteurs.id_dataset = s.id_dataset
      LEFT OUTER JOIN (
         SELECT id_synthese, string_agg(DISTINCT area_name, ', ') AS communes
         FROM gn_synthese.cor_area_synthese sa
