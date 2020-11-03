@@ -44,9 +44,8 @@ DROP VIEW gn_synthese.v_synthese_for_export;
 
 -- Refonte de la vue listant les observations pour l'export de la Synthèse
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
- SELECT s.id_synthese AS id_synthese,
-    s.entity_source_pk_value AS id_origine,
-    s.unique_id_sinp AS uuid_perm_sinp,
+ SELECT 
+
     s.date_min::date AS date_debut,
     s.date_max::date AS date_fin,
     s.date_min::time AS heure_debut,
@@ -54,6 +53,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     t.cd_nom AS cd_nom,
     t.cd_ref AS cd_ref,
     t.nom_valide AS nom_valide,
+    t.nom_vern as nom_vernaculaire,
     s.nom_cite AS nom_cite,
     t.regne AS regne,
     t.group1_inpn AS group1_inpn,
@@ -71,14 +71,19 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     s.observers AS observateurs,
     s.id_digitiser AS id_digitiser, -- Utile pour le CRUVED
     s.determiner AS determinateur,
+    communes AS communes,
+    public.ST_astext(s.the_geom_4326) AS geometrie_wkt_4326,
+    public.ST_x(s.the_geom_point) AS x_centroid_4326,
+    public.ST_y(s.the_geom_point) AS y_centroid_4326,
+    public.ST_asgeojson(s.the_geom_4326) AS geojson_4326,-- Utile pour la génération de l'export en SHP
+    public.ST_asgeojson(s.the_geom_local) AS geojson_local,-- Utile pour la génération de l'export en SHP
+    s.place_name AS nom_lieu,
     s.comment_context AS comment_releve,
     s.comment_description AS comment_occurrence,
     s.validator AS validateur,
     n21.label_default AS niveau_validation,
     s.meta_validation_date as date_validation,
     s.validation_comment AS comment_validation,
-    s.meta_create_date AS date_creation,
-    s.meta_update_date AS date_modification,
     s.digital_proof AS preuve_numerique_url,
     s.non_digital_proof AS preuve_non_numerique,
     d.dataset_name AS jdd_nom,
@@ -91,18 +96,9 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     hab.lb_code AS cd_habitat,
     hab.lb_hab_fr AS nom_habitat,
     s.precision as precision_geographique,
-    communes AS communes,
-    public.ST_astext(s.the_geom_4326) AS geometrie_wkt_4326,
-    public.ST_x(s.the_geom_point) AS x_centroid_4326,
-    public.ST_y(s.the_geom_point) AS y_centroid_4326,
-    COALESCE(s.meta_update_date, s.meta_create_date) AS derniere_action,
-    public.ST_asgeojson(s.the_geom_4326) AS geojson_4326,-- Utile pour la génération de l'export en SHP
-    public.ST_asgeojson(s.the_geom_local) AS geojson_local,-- Utile pour la génération de l'export en SHP
-    s.place_name AS nom_lieu,
     n1.label_default AS nature_objet_geo,
     n2.label_default AS type_regroupement,
     s.grp_method AS methode_regroupement,
-    s.unique_id_sinp_grp AS uuid_perm_grp_sinp,
     n3.label_default AS technique_observation,
     n5.label_default AS biologique_statut,
     n6.label_default AS etat_biologique,
@@ -121,7 +117,15 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     n18.label_default AS type_info_geo,
     n19.label_default AS methode_determination,
     n20.label_default AS comportement,
-    s.reference_biblio AS reference_biblio
+    s.reference_biblio AS reference_biblio,
+    s.id_synthese AS id_synthese,
+    s.entity_source_pk_value AS id_origine,
+    s.unique_id_sinp AS uuid_perm_sinp,
+    s.unique_id_sinp_grp AS uuid_perm_grp_sinp,
+    s.meta_create_date AS date_creation,
+    s.meta_update_date AS date_modification,
+    COALESCE(s.meta_update_date, s.meta_create_date) AS derniere_action
+
    FROM gn_synthese.synthese s
      JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
@@ -156,6 +160,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
      LEFT JOIN ref_nomenclatures.t_nomenclatures n22 ON s.id_nomenclature_biogeo_status = n22.id_nomenclature
      LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = s.cd_hab;
 
+
 DROP VIEW gn_synthese.v_metadata_for_export;
 
 -- Amélioration vue d'export des métadonnées
@@ -171,7 +176,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS
     d.unique_dataset_id AS jdd_uuid,
     af.acquisition_framework_name AS cadre_acquisition,
     af.unique_acquisition_framework_id AS ca_uuid,
-    string_agg(DISTINCT concat(COALESCE(orga.nom_organisme, ((roles.nom_role::text || ' '::text) || roles.prenom_role::text)::character varying), ': ', nomencl.label_default), ' | '::text) AS acteurs,
+    string_agg(DISTINCT concat(COALESCE(orga.nom_organisme, ((roles.nom_role::text || ' '::text) || roles.prenom_role::text)::character varying), ' (', nomencl.label_default,')'), ', '::text) AS acteurs,
     count_nb_obs.nb_obs AS nombre_obs
    FROM gn_meta.t_datasets d
      JOIN gn_meta.t_acquisition_frameworks af ON af.id_acquisition_framework = d.id_acquisition_framework
@@ -180,9 +185,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS
      LEFT JOIN utilisateurs.bib_organismes orga ON orga.id_organisme = act.id_organism
      LEFT JOIN utilisateurs.t_roles roles ON roles.id_role = act.id_role
      JOIN count_nb_obs ON count_nb_obs.id_dataset = d.id_dataset
-  GROUP BY d.id_dataset, d.unique_dataset_id, d.dataset_name, af.acquisition_framework_name, count_nb_obs.nb_obs;
-
-
+  GROUP BY d.id_dataset, d.unique_dataset_id, d.dataset_name, af.acquisition_framework_name, count_nb_obs.nb_obs, ca_uuid;
 
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_releve()
   RETURNS trigger AS
