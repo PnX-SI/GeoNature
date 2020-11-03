@@ -47,8 +47,8 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
  SELECT s.id_synthese AS id_synthese,
     s.entity_source_pk_value AS id_origine,
     s.unique_id_sinp AS uuid_perm_sinp,
-    s.date_min AS date_debut,
-    s.date_max AS date_fin,
+    s.date_min::date AS date_debut,
+    s.date_max::date AS date_fin,
     s.date_min::time AS heure_debut,
     s.date_max::time AS heure_fin,
     t.cd_nom AS cd_nom,
@@ -64,10 +64,10 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     t.id_rang AS rang_taxo,
     s.count_min AS nombre_min,
     s.count_max AS nombre_max,
-    s.altitude_min AS altitude_min,
-    s.altitude_max AS altitude_max,
-    s.depth_min AS profondeur_min,
-    s.depth_max AS profondeur_max,
+    s.altitude_min AS alti_min,
+    s.altitude_max AS alti_max,
+    s.depth_min AS prof_min,
+    s.depth_max AS prof_max,
     s.observers AS observateurs,
     s.id_digitiser AS id_digitiser, -- Utile pour le CRUVED
     s.determiner AS determinateur,
@@ -155,7 +155,6 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
      LEFT JOIN ref_nomenclatures.t_nomenclatures n21 ON s.id_nomenclature_valid_status = n21.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n22 ON s.id_nomenclature_biogeo_status = n22.id_nomenclature
      LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = s.cd_hab;
-
 
 DROP VIEW gn_synthese.v_metadata_for_export;
 
