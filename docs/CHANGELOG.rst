@@ -6,10 +6,37 @@ CHANGELOG
 ------------------
 
 
-- Héritage du CRUVED au niveau des objets (#1028)
-TODO: changer la config des colonnes d'export de la synthese suite aux ajouts
-Manque le champs statut biogeographique
-Revoir la vue synthese
+**🚀 Nouveautés**
+
+* Ajout d'un paramètre pour ajouter un message personnalisé à la fin des emails (inscriptions, exports... - PR: #1051 @jpm-cbna)
+* Ajout d'une alerte de dépreciation sur les fonctions utils-sqlalchemy situé dans GeoNature
+* Ajout d'un type "HTML" dans les formulaire dynamiques permettant d'ajouter des messages au fil d'un formulaire (PR: #1070 @jpm-cbna)
+* Ajout de la possibilité d'ajouter un texte d'aide sur les formulaires dynamiques
+* Ajout de spinner sur les statistiques de la page d'accueil (PR: #1088 @jpm-cbna)
+* Revue des exports de la synthèse (plus complet et champs plus lisibles)
+* Ajout d'un composant d'autocomplete multiselect `pnx-taxa` permettant de rechercher des taxons dans tous l'arbre taxonomique et de limiter la recherche à un rang
+* Mise en place de l'héritage du CRUVED au niveau des objets des modules (#1028)
+* Possibilité d'ajouter plusieurs carte sur la même page à l'aide du composant `pnx-map`
+
+**🐛 Corrections**
+
+* Occtax : correction du problème d'installation du module dans le fichier ``schemas.py``
+* Correction du nom du validateur sur la liste dans le module validation (PR: #1092 @lpofredc)
+* Synthese : correction de la fonctions SQL ``gn_synthese.import_row_from_table`` et répercution dans le fichier ``gn_synthese/process.py``
+* Ajout du champs `id_nomenclature_biogeo_status` dans la synthese (correspondance standard : statut biogéographique). 
+  La base est remplie avec la valeur par défault de la table gn_synthese.default_nomenclature_value (valeur = non renseignée)
+* Correction du trigger d'update d'occtax vers la synthese (champs geom_local absent - #1117)
+
+
+**⚠️ Notes de version**
+
+Désormais les objets des modules (par exemple les objets 'Permissions' et 'Nomenclatures' du module 'ADMIN')
+héritent automatiquements des permissions définit au niveau du module parent et à défaut au niveau de GeoNature.
+Il s'agit d'une évolution de mise en cohérence puisque les modules héritaients déja des permissions de GeoNature, 
+mais pas les objets.
+Si vous avez définit des permissions particulières aux niveaux des objets, vérifier leur cohérences avec le nouveau fonctionnement.
+NB: si vous aviez mis des droits R=0 pour un groupe aux module 'ADMIN', les utilisateurs de se groupes ne pourront pas accéder aux 
+sous modules 'permissions' et 'nomenclatures'
 
 2.5.2 (2020-10-13)
 ------------------
