@@ -11,10 +11,10 @@ SET search_path = gn_synthese, public, pg_catalog;
 
 SET default_with_oids = false;
 
-
 -------------
 --FUNCTIONS--
 -------------
+
 CREATE OR REPLACE FUNCTION get_default_nomenclature_value(myidtype character varying, myidorganism integer DEFAULT 0, myregne character varying(20) DEFAULT '0', mygroup2inpn character varying(255) DEFAULT '0')
 RETURNS integer
 IMMUTABLE
@@ -81,7 +81,6 @@ $BODY$
   COST 100;
 
 
-
 CREATE OR REPLACE FUNCTION gn_synthese.calcul_cor_area_taxon(my_id_area integer, my_cd_nom integer) RETURNS void
     LANGUAGE plpgsql
     AS $$
@@ -123,6 +122,7 @@ $$;
 ------------------------
 --TABLES AND SEQUENCES--
 ------------------------
+
 CREATE TABLE t_sources (
     id_source serial NOT NULL,
     name_source character varying(255) NOT NULL,
@@ -220,7 +220,7 @@ COMMENT ON COLUMN gn_synthese.synthese.id_area_attachment
 COMMENT ON COLUMN gn_synthese.synthese.id_nomenclature_obs_technique
   IS 'Correspondance champs standard occtax = obsTechnique. En raison d''un changement de nom, le code nomenclature associé reste ''METH_OBS'' ';
 COMMENT ON COLUMN gn_synthese.synthese.id_area_attachment
-  IS 'Id area du rattachement géographique - cas des observation sans géométrie précise';
+  IS 'Id area du rattachement géographique - cas des observations sans géométrie précise';
 
 CREATE SEQUENCE synthese_id_synthese_seq
     START WITH 1
@@ -276,10 +276,10 @@ ALTER TABLE ONLY cor_observer_synthese ADD CONSTRAINT pk_cor_observer_synthese P
 ALTER TABLE cor_area_taxon
   ADD CONSTRAINT pk_cor_area_taxon PRIMARY KEY (id_area, cd_nom);
 
-
 ---------------
 --FOREIGN KEY--
 ---------------
+
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_dataset FOREIGN KEY (id_dataset) REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE;
 
@@ -294,7 +294,6 @@ ALTER TABLE ONLY synthese
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_cd_hab FOREIGN KEY (cd_hab) REFERENCES ref_habitats.habref(cd_hab) ON UPDATE CASCADE;
-
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_nomenclature_geo_object_nature FOREIGN KEY (id_nomenclature_geo_object_nature) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
@@ -359,11 +358,8 @@ ALTER TABLE ONLY synthese
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_area_attachment FOREIGN KEY (id_area_attachment) REFERENCES ref_geo.l_areas (id_area) ON UPDATE CASCADE;
 
-
-
 ALTER TABLE ONLY cor_area_synthese
     ADD CONSTRAINT fk_cor_area_synthese_id_synthese FOREIGN KEY (id_synthese) REFERENCES synthese(id_synthese) ON UPDATE CASCADE ON DELETE CASCADE;
-
 
 ALTER TABLE ONLY cor_area_synthese
     ADD CONSTRAINT fk_cor_area_synthese_id_area FOREIGN KEY (id_area) REFERENCES ref_geo.l_areas(id_area) ON UPDATE CASCADE;
@@ -389,9 +385,9 @@ ALTER TABLE cor_area_taxon
       REFERENCES ref_geo.l_areas (id_area) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE NO ACTION;
 
---------------
---CONSTRAINS--
---------------
+---------------
+--CONSTRAINTS--
+---------------
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT unique_id_sinp_unique UNIQUE (unique_id_sinp);
@@ -475,11 +471,10 @@ ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT check_gn_synthese_defaults_nomenclatures_value_isregne CHECK (taxonomie.check_is_regne(regne::text) OR regne::text = '0'::text) NOT VALID;
 
 
-
-
 ----------------------
 --MATERIALIZED VIEWS--
 ----------------------
+
 --DROP MATERIALIZED VIEW gn_vm_min_max_for_taxons;
 CREATE MATERIALIZED VIEW vm_min_max_for_taxons AS
 WITH
@@ -517,10 +512,10 @@ LEFT JOIN dat ON dat.cd_ref = loc.cd_ref
 ORDER BY loc.cd_ref;
 
 
-
 -----------
 --INDEXES--
 -----------
+
 CREATE INDEX i_synthese_t_sources ON synthese USING btree (id_source);
 
 CREATE INDEX i_synthese_cd_nom ON synthese USING btree (cd_nom);
@@ -542,12 +537,14 @@ CREATE INDEX i_synthese_the_geom_4326 ON synthese USING gist (the_geom_4326);
 CREATE INDEX i_synthese_the_geom_point ON synthese USING gist (the_geom_point);
 
 CREATE UNIQUE INDEX i_unique_cd_ref_vm_min_max_for_taxons ON gn_synthese.vm_min_max_for_taxons USING btree (cd_ref);
+
 --REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.vm_min_max_for_taxons;
 
 
 -------------
 --FUNCTIONS--
 -------------
+
 CREATE OR REPLACE FUNCTION gn_synthese.fct_calculate_min_max_for_taxon(mycdnom integer)
   RETURNS TABLE(cd_ref int, nbobs bigint,  daymin int, daymax int, altitudemin int, altitudemax int, bbox4326 geometry) AS
 $BODY$
@@ -625,7 +622,7 @@ $BODY$
 	DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = NEW.id_synthese;
   END IF;
 
-  -- intersection avec toutes les areas et écriture dans cor_area_synthese
+  -- Intersection avec toutes les areas et écriture dans cor_area_synthese
     IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND geom_change )) THEN
       INSERT INTO gn_synthese.cor_area_synthese SELECT
 	      s.id_synthese AS id_synthese,
@@ -885,87 +882,107 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
 
 -- Vue listant les observations pour l'export de la Synthèse
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
- SELECT s.id_synthese AS "ID_synthese",
-    s.entity_source_pk_value AS "ID_source",
-    s.unique_id_sinp AS "UUID_perm_SINP",
-    to_char(s.date_min, 'YYYY-MM-DD') AS "Date_debut",
-    to_char(s.date_max, 'YYYY-MM-DD') AS "Date_fin",
-    s.date_min::time AS "Heure_debut",
-    s.date_max::time AS "Heure_fin",
-    t.cd_nom AS "CD_nom",
-    t.cd_ref AS "CD_ref",
-    t.nom_valide AS "Nom_valide",
-    s.nom_cite AS "Nom_cite",
-    t.regne AS "Regne",
-    t.group1_inpn AS "Group1_INPN",
-    t.group2_inpn AS "Group2_INPN",
-    t.classe AS "Classe",
-    t.ordre AS "Ordre",
-    t.famille AS "Famille",
-    t.id_rang AS "Rang_taxo",
-    s.count_min AS "Nombre_min",
-    s.count_max AS "Nombre_max",
-    s.altitude_min AS "Altitude_min",
-    s.altitude_max AS "Altitude_max",
-    s.depth_min AS "Profondeur_min",
-    s.depth_max AS "Profondeur_max",
-    s.observers AS "Observateurs",
-    s.id_digitiser AS "id_digitiser",
-    s.determiner AS "Determinateur",
-    s.comment_context AS "Comment_releve",
-    s.comment_description AS "Comment_occurrence",
-    s.validator AS "Validateur",
-    n21.label_default AS "Niveau_validation",
-    s.meta_validation_date as "Date_validation",
-    s.validation_comment AS "Comment_validation",
-    s.meta_create_date AS "Date_creation",
-    s.meta_update_date AS "Date_modification",
---  s.sample_number_proof AS "Numero_preuve",
-    s.digital_proof AS "Preuve_numerique_URL",
-    s.non_digital_proof AS "Preuve_non_numerique",
-    d.dataset_name AS "JDD_nom", -- champs non standard (pas le nom du JDD dans le standard)
-    d.unique_dataset_id AS "JDD_UUID",
-    d.id_dataset AS "JDD_ID",
-    d.id_acquisition_framework AS "CA_ID",
-    s.cd_hab AS "CD_HabRef",
-    hab.lb_code AS "CD_habitat",
-    hab.lb_hab_fr AS "Nom_habitat",
-    s.precision as "Precision_geographique",
-    public.ST_astext(s.the_geom_4326) AS "Geometrie_WKT", -- WKT_4326 ??
-    public.ST_x(public.ST_transform(s.the_geom_point, 2154)) AS x_centroid, -- X_centroid_4326 ?
-    public.ST_y(public.ST_transform(s.the_geom_point, 2154)) AS y_centroid,
-    COALESCE(s.meta_update_date, s.meta_create_date) AS "Derniere_action",
-    public.ST_asgeojson(s.the_geom_4326) AS geojson_4326,
-    public.ST_asgeojson(s.the_geom_local) AS geojson_local, -- Utile ?
-    s.place_name AS "Nom_lieu",
-    n1.label_default AS "Nature_objet_geo",
-    n2.label_default AS "Type_regroupement",
-    s.grp_method AS "Methode_regroupement",
-    s.unique_id_sinp_grp AS "UUID_perm_GRP_SINP",
-    s.grp_method AS "methGrp", -- Doublon
-    n3.label_default AS "Technique_observation",
-    n5.label_default AS "Statut_biologique",
-    n6.label_default AS "Etat_biologique",
-    n22.label_default AS "Statut_biogeographique",
-    n7.label_default AS "Naturalite",
-    n8.label_default AS "Preuve_existante",
-    n9.label_default AS "Niveau_precision_diffusion",
-    n10.label_default AS "Stade_vie",
-    n11.label_default AS "Sexe",
-    n12.label_default AS "Objet_denombrement",
-    n13.label_default AS "Type_denombrement",
-    n14.label_default AS"Niveau_sensibilite",
-    n15.label_default AS "Statut_observation",
-    n16.label_default AS "Floutage_DEE",
-    n17.label_default AS "Statut_source",
-    n18.label_default AS "Type_info_geo",
-    n19.label_default AS "Methode_determination",
-    n20.label_default AS "Comportement",
-    s.reference_biblio AS "Reference_biblio"
+ WITH jdd_acteurs AS (
+         SELECT d_1.id_dataset,
+            string_agg(DISTINCT concat(COALESCE(orga.nom_organisme, ((roles.nom_role::text || ' '::text) || roles.prenom_role::text)::character varying), ' (', nomencl.label_default, ')'), ' | '::text) AS acteurs
+           FROM gn_meta.t_datasets d_1
+             JOIN gn_meta.cor_dataset_actor act ON act.id_dataset = d_1.id_dataset
+             JOIN ref_nomenclatures.t_nomenclatures nomencl ON nomencl.id_nomenclature = act.id_nomenclature_actor_role
+             LEFT JOIN utilisateurs.bib_organismes orga ON orga.id_organisme = act.id_organism
+             LEFT JOIN utilisateurs.t_roles roles ON roles.id_role = act.id_role
+          GROUP BY d_1.id_dataset
+        )
+ SELECT s.id_synthese AS id_synthese,
+    s.entity_source_pk_value AS id_source,
+    s.unique_id_sinp AS uuid_perm_sinp,
+    to_char(s.date_min, 'YYYY-MM-DD') AS date_debut,
+    to_char(s.date_max, 'YYYY-MM-DD') AS date_fin,
+    s.date_min::time AS heure_debut,
+    s.date_max::time AS heure_fin,
+    t.cd_nom AS cd_nom,
+    t.cd_ref AS cd_ref,
+    t.nom_valide AS nom_valide,
+    s.nom_cite AS nom_cite,
+    t.regne AS regne,
+    t.group1_inpn AS group1_inpn,
+    t.group2_inpn AS group2_inpn,
+    t.classe AS classe,
+    t.ordre AS ordre,
+    t.famille AS famille,
+    t.id_rang AS rang_taxo,
+    s.count_min AS nombre_min,
+    s.count_max AS nombre_max,
+    s.altitude_min AS altitude_min,
+    s.altitude_max AS altitude_max,
+    s.depth_min AS profondeur_min,
+    s.depth_max AS profondeur_max,
+    s.observers AS observateurs,
+    s.id_digitiser AS id_digitiser, -- Utile pour le CRUVED
+    s.determiner AS determinateur,
+    s.comment_context AS comment_releve,
+    s.comment_description AS comment_occurrence,
+    s.validator AS validateur,
+    n21.label_default AS niveau_validation,
+    s.meta_validation_date as date_validation,
+    s.validation_comment AS comment_validation,
+    s.meta_create_date AS date_creation,
+    s.meta_update_date AS date_modification,
+    s.digital_proof AS preuve_numerique_url,
+    s.non_digital_proof AS preuve_non_numerique,
+    d.dataset_name AS jdd_nom,
+    d.unique_dataset_id AS jdd_uuid,
+    d.id_dataset AS jdd_id, -- Utile pour le CRUVED
+    jdd_acteurs.acteurs AS jdd_acteurs,
+    af.acquisition_framework_name AS ca_nom,
+    af.unique_acquisition_framework_id AS ca_uuid,
+    d.id_acquisition_framework AS ca_id,
+    s.cd_hab AS cd_habref,
+    hab.lb_code AS cd_habitat,
+    hab.lb_hab_fr AS nom_habitat,
+    s.precision as precision_geographique,
+    communes AS communes,
+    public.ST_astext(s.the_geom_4326) AS geometrie_wkt_4326,
+    public.ST_x(s.the_geom_point) AS x_centroid_4326,
+    public.ST_y(s.the_geom_point) AS y_centroid_4326,
+    COALESCE(s.meta_update_date, s.meta_create_date) AS derniere_action,
+    public.ST_asgeojson(s.the_geom_4326) AS geojson_4326,-- Utile pour la génération de l'export en SHP
+    public.ST_asgeojson(s.the_geom_local) AS geojson_local,-- Utile pour la génération de l'export en SHP
+    s.place_name AS nom_lieu,
+    n1.label_default AS nature_objet_geo,
+    n2.label_default AS type_regroupement,
+    s.grp_method AS methode_regroupement,
+    s.unique_id_sinp_grp AS uuid_perm_grp_sinp,
+    n3.label_default AS technique_observation,
+    n5.label_default AS statut_biologique,
+    n6.label_default AS etat_biologique,
+    n22.label_default AS statut_biogeographique,
+    n7.label_default AS naturalite,
+    n8.label_default AS preuve_existante,
+    n9.label_default AS niveau_precision_diffusion,
+    n10.label_default AS stade_vie,
+    n11.label_default AS sexe,
+    n12.label_default AS objet_denombrement,
+    n13.label_default AS type_denombrement,
+    n14.label_default AS niveau_sensibilite,
+    n15.label_default AS statut_observation,
+    n16.label_default AS floutage_dee,
+    n17.label_default AS statut_source,
+    n18.label_default AS type_info_geo,
+    n19.label_default AS methode_determination,
+    n20.label_default AS comportement,
+    s.reference_biblio AS reference_biblio
    FROM gn_synthese.synthese s
      JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
-     JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source
+     JOIN gn_meta.t_acquisition_frameworks af ON d.id_acquisition_framework = af.id_acquisition_framework
+     JOIN jdd_acteurs ON jdd_acteurs.id_dataset = s.id_dataset
+     LEFT OUTER JOIN (
+        SELECT id_synthese, string_agg(DISTINCT area_name, ', ') AS communes
+        FROM gn_synthese.cor_area_synthese sa
+        LEFT OUTER JOIN ref_geo.l_areas a_1 ON sa.id_area = a_1.id_area
+        JOIN ref_geo.bib_areas_types ta ON ta.id_type = a_1.id_type AND ta.type_code ='COM'
+        GROUP BY id_synthese 
+     ) sa ON sa.id_synthese = s.id_synthese
      LEFT JOIN ref_nomenclatures.t_nomenclatures n1 ON s.id_nomenclature_geo_object_nature = n1.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n2 ON s.id_nomenclature_grp_typ = n2.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n3 ON s.id_nomenclature_obs_technique = n3.id_nomenclature
@@ -1048,6 +1065,7 @@ JOIN taxonomie.taxref ref ON t.cd_ref = ref.cd_nom;
 ------------
 --TRIGGERS--
 ------------
+
 CREATE TRIGGER tri_meta_dates_change_synthese
   BEFORE INSERT OR UPDATE
   ON synthese
