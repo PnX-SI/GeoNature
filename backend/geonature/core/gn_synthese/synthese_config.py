@@ -70,7 +70,7 @@ DEFAULT_EXPORT_COLUMNS = [
     "objet_denombrement",
     "type_denombrement",
     "niveau_sensibilite",
-    "statut_observation,
+    "statut_observation",
     "floutage_dee",
     "statut_source",
     "type_info_geo",
