@@ -32,8 +32,9 @@ class TestAPIMedias:
         result = DB.engine.execute(sql)
         for r in result:
             id_nomenclature_media = r[0]
+        file_name = Path(BACKEND_DIR, 'tests/test.jpg')
         data = {
-            "file": (io.BytesIO(b"my file contents"), "hello world.txt"),
+            "file": (open(file_name, 'rb'), "hello world.txt"),
             "isFile": True,
             "id_nomenclature_media_type": id_nomenclature_media,
             "id_table_location": 1,
@@ -42,12 +43,13 @@ class TestAPIMedias:
         }
 
         response = self.client.post(
-            url_for("gn_commons.insert_or_update_media",),
+            url_for("gn_commons.insert_or_update_media"),
             data=data,
             content_type="multipart/form-data",
         )
 
         assert response.status_code == 200
+
 
         media_data = json_of_response(response)
 
