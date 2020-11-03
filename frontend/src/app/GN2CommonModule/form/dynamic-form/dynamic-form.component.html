@@ -1,6 +1,5 @@
 <div [style.display]="formDefComp.hidden ? 'none': 'inherit'">
-  <div
-    *ngIf="(formDefComp.type_widget == 'checkbox' && formDefComp.values.length > 1)
+  <div *ngIf="(formDefComp.type_widget == 'checkbox' && formDefComp.values.length > 1)
       || [
       'text',
       'textarea',
@@ -11,8 +10,7 @@
       'file',
       'medias',
       'bool_radio'
-      ].includes(formDefComp.type_widget)"
-  >
+      ].includes(formDefComp.type_widget)">
     <small [attr.for]="formDefComp.attribut_name">
       {{formDefComp.attribut_label}}
     </small>
@@ -36,7 +34,9 @@
       id="{{formDefComp.attribut_name}}_{{rand}}"
       type="text"
     >
-    <div *ngIf="formDefComp.type_widget=='text' && form.get(formDefComp.attribut_name).errors?.pattern"><small class="text-danger">{{formDefComp.pattern_message}}</small></div>
+    <div
+      *ngIf="formDefComp.type_widget=='text' && form.get(formDefComp.attribut_name).errors?.pattern"
+    ><small class="text-danger">{{formDefComp.pattern_message}}</small></div>
 
     <input
       *ngSwitchCase="'time'"
@@ -70,18 +70,18 @@
       id="{{formDefComp.attribut_name}}_{{rand}}"
       [formControl]="form.get(formDefComp.attribut_name)"
     >
-        <option
-          [value]="null"
-          *ngIf="!formDefComp.noNullOption"
-        >
-          -
-        </option>
-        <option
-          *ngFor="let val of formDefComp.values"
-          [value]="val"
-        >
-          {{val}}
-        </option>
+      <option
+        [value]="null"
+        *ngIf="!formDefComp.noNullOption"
+      >
+        -
+      </option>
+      <option
+        *ngFor="let val of formDefComp.values"
+        [value]="val"
+      >
+        {{val}}
+      </option>
     </select>
 
     <div
@@ -122,7 +122,7 @@
         >
         <label
           class="custom-control-label"
-          for="{{formDefComp.attribut_name}}"
+          for="{{formDefComp.attribut_name}}_{{rand}}"
         >
           <span [innerHTML]="formDefComp.attribut_label"> </span>
         </label>
@@ -142,11 +142,11 @@
             (change)="onCheckChange($event, form.get(formDefComp.attribut_name))"
           >
           <label
-            [for]="val"
+            for="{{val}}_{{rand}}"
             class="custom-control-label"
           >
             <span [innerHTML]="val"></span>
-        </label>
+          </label>
         </div>
       </ng-template>
     </div>
@@ -181,7 +181,7 @@
           id="{{formDefComp.attribut_name}}_{{rand}}_{{val}}"
           (click)="onRadioChange(val, form.get(formDefComp.attribut_name))"
           class="custom-control-input"
-          name="{{formDefComp.attribut_name}}_{{rand}}"
+          name="{{formDefComp.attribut_name}}_{{rand}}_{{val}}"
           [value]="val"
           [formControl]="form.get(formDefComp.attribut_name)"
         >
@@ -203,7 +203,7 @@
           type="radio"
           id="{{formDefComp.attribut_name}}_{{rand}}_{{i}}"
           class="custom-control-input"
-          name="{{formDefComp.attribut_name}}_{{rand}}"
+          name="{{formDefComp.attribut_name}}_{{rand}}_{{i}}"
           [value]="i==0"
           [formControl]="form.get(formDefComp.attribut_name)"
         >
