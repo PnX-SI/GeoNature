@@ -133,8 +133,8 @@ class TestAPIGNCommons:
         assert data[1]["module_code"] == "OCCTAX"
 
         # test order by alphabetic
-        current_module = None
+        previous_module = None
         for module in data[2 : len(data) - 1]:
-            if current_module:
-                assert current_module < module["module_label"]
-            current_module = module["module_label"]
+            if previous_module:
+                assert previous_module < module["module_label"].upper()
+            previous_module = module["module_label"].upper()

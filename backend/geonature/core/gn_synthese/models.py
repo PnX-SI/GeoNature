@@ -159,6 +159,7 @@ class VSyntheseDecodeNomenclatures(DB.Model):
     blurring = DB.Column(DB.Unicode)
     source_status = DB.Column(DB.Unicode)
     occ_behaviour = DB.Column(DB.Unicode)
+    occ_stat_biogeo = DB.Column(DB.Unicode)
 
 
 @serializable

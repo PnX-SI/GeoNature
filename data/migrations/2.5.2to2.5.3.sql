@@ -1,3 +1,45 @@
+INSERT INTO gn_synthese.defaults_nomenclatures_value (mnemonique_type, id_organism, regne, group2_inpn, id_nomenclature) VALUES
+('STAT_BIOGEO',0,0,0, ref_nomenclatures.get_id_nomenclature('STAT_BIOGEO', '1'))
+;
+
+ALTER TABLE gn_synthese.synthese 
+ADD COLUMN id_nomenclature_biogeo_status integer DEFAULT gn_synthese.get_default_nomenclature_value('STAT_BIOGEO');
+
+ALTER TABLE ONLY gn_synthese.synthese
+    ADD CONSTRAINT fk_synthese_id_nomenclature_biogeo_status 
+    FOREIGN KEY (id_nomenclature_biogeo_status) 
+    REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+
+ALTER TABLE gn_synthese.synthese
+  ADD CONSTRAINT check_synthese_biogeo_status CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_biogeo_status,'STAT_BIOGEO')) NOT VALID;
+
+DROP VIEW gn_synthese.v_synthese_decode_nomenclatures;
+CREATE OR REPLACE VIEW gn_synthese.v_synthese_decode_nomenclatures AS
+SELECT
+s.id_synthese,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_geo_object_nature) AS nat_obj_geo,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_grp_typ) AS grp_typ,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_obs_technique) AS obs_technique,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_bio_status) AS bio_status,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_bio_condition) AS bio_condition,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_naturalness) AS naturalness,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_exist_proof) AS exist_proof ,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_valid_status) AS valid_status,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_diffusion_level) AS diffusion_level,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_life_stage) AS life_stage,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_sex) AS sex,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_obj_count) AS obj_count,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_type_count) AS type_count,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_sensitivity) AS sensitivity,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_observation_status) AS observation_status,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_blurring) AS blurring,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_source_status) AS source_status,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_info_geo_type) AS info_geo_type,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_determination_method) AS determination_method,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_behaviour) AS occ_behaviour,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_biogeo_status) AS occ_stat_biogeo
+FROM gn_synthese.synthese s;
+
 DROP VIEW gn_synthese.v_synthese_for_export;
 
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
@@ -55,6 +97,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     n3.label_default AS "obsTech",
     n5.label_default AS "ocStatBio",
     n6.label_default AS "ocEtatBio",
+    n22.label_default AS "ocBiogeo",
     n7.label_default AS "ocNat",
     n8.label_default AS "preuveOui",
     n9.label_default AS "difNivPrec",
@@ -94,6 +137,55 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
      LEFT JOIN ref_nomenclatures.t_nomenclatures n19 ON s.id_nomenclature_determination_method = n19.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n20 ON s.id_nomenclature_behaviour = n20.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n21 ON s.id_nomenclature_valid_status = n21.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n22 ON s.id_nomenclature_biogeo_status = n22.id_nomenclature
      LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = s.cd_hab;
 
 
+
+CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_releve()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+  myobservers text;
+BEGIN
+  --calcul de l'observateur. On privilégie le ou les observateur(s) de cor_role_releves_occtax
+  --Récupération et formatage des observateurs
+  SELECT INTO myobservers array_to_string(array_agg(rol.nom_role || ' ' || rol.prenom_role), ', ')
+  FROM pr_occtax.cor_role_releves_occtax cor
+  JOIN utilisateurs.t_roles rol ON rol.id_role = cor.id_role
+  WHERE cor.id_releve_occtax = NEW.id_releve_occtax;
+  IF myobservers IS NULL THEN
+    myobservers = NEW.observers_txt;
+  END IF;
+  --mise à jour en synthese des informations correspondant au relevé uniquement
+  UPDATE gn_synthese.synthese SET
+      id_dataset = NEW.id_dataset,
+      observers = myobservers,
+      id_digitiser = NEW.id_digitiser,
+      grp_method = NEW.grp_method,
+      id_nomenclature_grp_typ = NEW.id_nomenclature_grp_typ,
+      date_min = date_trunc('day',NEW.date_min)+COALESCE(NEW.hour_min,'00:00:00'::time),
+      date_max = date_trunc('day',NEW.date_max)+COALESCE(NEW.hour_max,'00:00:00'::time), 
+      altitude_min = NEW.altitude_min,
+      altitude_max = NEW.altitude_max,
+      depth_min = NEW.depth_min,
+      depth_max = NEW.depth_max,
+      place_name = NEW.place_name,
+      precision = NEW.precision,
+      the_geom_local = NEW.geom_local,
+      the_geom_4326 = NEW.geom_4326,
+      the_geom_point = ST_CENTROID(NEW.geom_4326),
+      id_nomenclature_geo_object_nature = NEW.id_nomenclature_geo_object_nature,
+      last_action = 'U',
+      comment_context = NEW.comment
+  WHERE unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer)));
+  RETURN NULL;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+
+UPDATE gn_synthese.synthese 
+SET the_geom_local = ST_transform(the_geom_4326, gn_commons.get_default_parameter('local_srid')::integer)
+WHERE id_source = (SELECT id_source FROM gn_synthese.t_sources WHERE name_source ilike 'Occtax');

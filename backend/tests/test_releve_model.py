@@ -29,7 +29,6 @@ valide_occ_tax_releve = {
     "meta_device_entry": "web",
     "comment": "test",
     "geom_4326": "test",
-    "taxons": "ablette, lynx",
     "leaflet_popup": "test",
     "observateurs": "admin",
     "observers": [],

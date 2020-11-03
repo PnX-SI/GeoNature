@@ -81,6 +81,14 @@ export const DYNAMIC_FORM_DEF = [
   },
   {
     type_widget: 'nomenclature',
+    attribut_label: 'Statut biogéographique',
+    attribut_name: 'id_nomenclature_biogeo_status',
+    code_nomenclature_type: 'STAT_BIOGEO',
+    required: false,
+    multi_select: true
+  },
+  {
+    type_widget: 'nomenclature',
     attribut_label: 'Naturalité',
     attribut_name: 'id_nomenclature_naturalness',
     code_nomenclature_type: 'NATURALITE',

@@ -130,7 +130,7 @@ class TestSynthese:
         token = get_token(self.client)
         self.client.set_cookie("/", "token", token)
 
-        response = self.client.get(url_for("gn_synthese.export_status"))
+        response = self.client.post(url_for("gn_synthese.export_status"))
 
         assert response.status_code == 200
 

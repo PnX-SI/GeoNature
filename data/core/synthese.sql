@@ -162,6 +162,7 @@ CREATE TABLE synthese (
     id_nomenclature_source_status integer DEFAULT get_default_nomenclature_value('STATUT_SOURCE'),
     id_nomenclature_info_geo_type integer DEFAULT get_default_nomenclature_value('TYP_INF_GEO'),
     id_nomenclature_behaviour integer DEFAULT get_default_nomenclature_value('OCC_COMPORTEMENT'),
+    id_nomenclature_biogeo_status integer DEFAULT get_default_nomenclature_value('STAT_BIOGEO'),
     reference_biblio character varying(255),
     count_min integer,
     count_max integer,
@@ -350,6 +351,9 @@ ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_nomenclature_determination_method FOREIGN KEY (id_nomenclature_determination_method) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_nomenclature_biogeo_status FOREIGN KEY (id_nomenclature_biogeo_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature_biogeo_status) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_digitiser FOREIGN KEY (id_digitiser) REFERENCES utilisateurs.t_roles (id_role) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
@@ -454,6 +458,9 @@ ALTER TABLE synthese
 
 ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_source_status CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_source_status,'STATUT_SOURCE')) NOT VALID;
+
+ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_source_status CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_biogeo_status,'STAT_BIOGEO')) NOT VALID;
 
 ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_info_geo_type_id_area_attachment CHECK (NOT (ref_nomenclatures.get_cd_nomenclature(id_nomenclature_info_geo_type) = '2'  AND id_area_attachment IS NULL )) NOT VALID;
@@ -799,7 +806,8 @@ ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_blurring) AS blurring
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_source_status) AS source_status,
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_info_geo_type) AS info_geo_type,
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_determination_method) AS determination_method,
-ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_behaviour) AS occ_behaviour
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_behaviour) AS occ_behaviour,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_biogeo_status) AS occ_stat_biogeo
 FROM gn_synthese.synthese s;
 
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
@@ -928,6 +936,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     n3.label_default AS "obsTech",
     n5.label_default AS "ocStatBio",
     n6.label_default AS "ocEtatBio",
+    n22.label_default AS "ocBiogeo",
     n7.label_default AS "ocNat",
     n8.label_default AS "preuveOui",
     n9.label_default AS "difNivPrec",
@@ -967,6 +976,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
      LEFT JOIN ref_nomenclatures.t_nomenclatures n19 ON s.id_nomenclature_determination_method = n19.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n20 ON s.id_nomenclature_behaviour = n20.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n21 ON s.id_nomenclature_valid_status = n21.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n22 ON s.id_nomenclature_biogeo_status = n22.id_nomenclature
      LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = s.cd_hab;
 
 

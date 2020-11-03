@@ -5,6 +5,8 @@ CHANGELOG
 2.5.2 (unreleased)
 ------------------
 
+
+- Héritage du CRUVED au niveau des objets (#1028)
 TODO: changer la config des colonnes d'export de la synthese suite aux ajouts
 Manque le champs statut biogeographique
 Revoir la vue synthese
