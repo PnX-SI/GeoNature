@@ -194,7 +194,10 @@
       </div>
     </div>
     <div class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
-      <div class="card">
+      <div
+        *ngIf="af?.stats?.nb_data > 0"
+        class="card"
+      >
         <div class="card-header">
           <h5>
             Zone géographique
@@ -216,7 +219,10 @@
           </div>
         </div>
       </div>
-      <div class="card ">
+      <div
+        *ngIf="this.pieChartLabels.length > 0 && af?.stats?.nb_data > 0"
+        class="card"
+      >
         <div class="card-header">
           <h5>
             Réparition des espèces
@@ -240,15 +246,18 @@
           </div>
         </div>
       </div>
-      <div class="card ">
+      <div
+        *ngIf="af?.stats?.nb_data > 0"
+        class="card"
+      >
         <div class="card-header">
           <h5>
             Jeux de données associés
           </h5>
         </div>
         <div
-          *ngIf="af?.stats?.nb_data > 0"
           class="card-body"
+          *ngIf="af?.stats?.nb_data > 0"
         >
           <table>
             <tr *ngFor="let dataset of af?.datasets">

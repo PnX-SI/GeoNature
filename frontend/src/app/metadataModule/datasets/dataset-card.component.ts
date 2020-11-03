@@ -4,6 +4,9 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { BaseChartDirective } from 'ng2-charts';
 import { AppConfig } from '@geonature_config/app.config';
+import { AppConfig } from "@geonature_config/app.config";
+import { CommonService } from '@geonature_common/service/common.service';
+import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 
 @Component({
   selector: 'pnx-datasets-card',
@@ -15,6 +18,7 @@ export class DatasetCardComponent implements OnInit {
   public id_dataset: number;
   public dataset: any;
   public nbTaxons: number;
+  public taxs;
   public nbObservations: number;
   public geojsonData: any = null;
 
@@ -36,7 +40,7 @@ export class DatasetCardComponent implements OnInit {
       position: 'left',
       labels: {
         fontSize: 15,
-        filter: function(legendItem, chartData) {
+        filter: function (legendItem, chartData) {
           return chartData.datasets[0].data[legendItem.index] != 0;
         }
       }
@@ -68,8 +72,10 @@ export class DatasetCardComponent implements OnInit {
   constructor(
     private _route: ActivatedRoute,
     private _dfs: DataFormService,
-    public moduleService: ModuleService
-  ) {}
+    public moduleService: ModuleService,
+    private _commonService: CommonService,
+    public _dataService: SyntheseDataService,
+  ) { }
 
   ngOnInit() {
     // get the id from the route
@@ -79,6 +85,14 @@ export class DatasetCardComponent implements OnInit {
         this.getDataset(this.id_dataset);
       }
     });
+  }
+
+  TaxonsList() {
+    this._dataService.getTaxons().subscribe(
+      taxons => {
+        this.taxs = taxons.items.features;
+      }
+    )
   }
 
   getDataset(id) {
@@ -112,4 +126,23 @@ export class DatasetCardComponent implements OnInit {
       window.open(url);
     });
   }
+
+  uuidReport(id_import) {
+    console.log("OK");
+    const imp = this.dataset.imports.find(imp => imp.id_import == id_import);
+    this._dataService.downloadUuidReport(
+      `UUID_Import-${id_import}_JDD-${imp.id_dataset}`,
+      { id_import: id_import }
+    );
+  }
+
+  sensiReport(id_import) {
+    console.log("OK");
+    const imp = this.dataset.imports.find(imp => imp.id_import == id_import);
+    this._dataService.downloadSensiReport(
+      `Sensibilite_Import-${id_import}_JDD-${imp.id_dataset}`,
+      { id_import: id_import }
+    );
+  }
+
 }

@@ -159,10 +159,106 @@
 
         </div>
       </div>
+      <div
+        class="card"
+        *ngIf="dataset.imports && dataset.imports.length>0"
+      >
+        <div class="card-header">
+          <h5>
+            Liste des sources
+          </h5>
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered tabRecap">
+            <thead class="bold">
+              <tr>
+                <td class="textCenter">Source</td>
+                <td class="textCenter">Nombre de données</td>
+                <td class="textCenter">Intégré le</td>
+                <td class="textCenter">Statut</td>
+                <td class="textCenter">Rapport</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let import of dataset.imports'>
+                <td class="textCenter">{{import.import_table}}</td>
+                <td class="textCenter"> {{import.source_count}}</td>
+                <td class="textCenter">{{import.date_create_import | date: 'd/MM/yyyy'}}</td>
+                <td class="textCenter">
+                  <div class="imgStatus">
+                    <i
+                      style="color: rgb(62, 233, 62);margin-right: 3%;margin-left: 3%;"
+                      class="fa fa-check-circle fa-3x imgImportSuccess"
+                      aria-hidden="true"
+                      *ngIf="import.is_finished"
+                    ></i>
+                    <i
+                      style="color: rgb(248, 67, 67);margin-right: 3%;margin-left: 3%;"
+                      class="fa fa-times-circle fa-3x importImportFail"
+                      aria-hidden="true"
+                      *ngIf="!import.is_finished"
+                    ></i>
+                  </div>
+                </td>
+                <td class="textCenter">
+                  <div *ngIf="import.source_count != 0 && import.is_finished">
+                    <mat-icon (click)="sensiReport(import.id_import)"> do_not_touch</mat-icon>
+                    <mat-icon (click)="uuidReport(import.id_import)"> format_list_numbered
+                    </mat-icon>
+                  </div>
+                  <div *ngIf="import.source_count == 0 || !import.is_finished">
+                    <mat-icon matTooltip="Impossible de télécharger le rapport de sensibilité">
+                      do_not_touch</mat-icon>
+                    <mat-icon matTooltip="Impossible de télécharger de rapport UUID">
+                      format_list_numbered </mat-icon>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr *ngFor='let taxons of taxs'>
+                <td
+                  class="textCenter"
+                  *ngIf="taxons.properties.id_dataset=== dataset.id_dataset"
+                >{{taxons.properties.t_occurrences_occtax[0].taxref.nom_complet}}</td>
+                <td
+                  class="textCenter"
+                  *ngIf="taxons.properties.id_dataset=== dataset.id_dataset"
+                >{{taxons.properties.t_occurrences_occtax[0].cor_counting_occtax[0].count_max}}</td>
+                <td
+                  class="textCenter"
+                  *ngIf="taxons.properties.id_dataset=== dataset.id_dataset"
+                >{{taxons.properties.date_max |date: 'd/MM/yyyy'}}</td>
+                <td
+                  class="textCenter"
+                  *ngIf="taxons.properties.id_dataset=== dataset.id_dataset"
+                ></td>
+                <td
+                  class="textCenter"
+                  *ngIf="taxons.properties.id_dataset=== dataset.id_dataset"
+                >
+                  <mat-icon
+                    (click)="sensiReport(taxons.properties.id_dataset)"
+                    matTooltip="Rapport de sensibilité"
+                  > do_not_touch</mat-icon>
+                  <mat-icon
+                    matTooltip="Rapport d'UUID"
+                    (click)="uuidReport(taxons.properties.id_dataset)"
+                  > format_list_numbered </mat-icon>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
     <div class="col-xs-12 col-sm-12 col-md-8 col-lg-4">
-      <div class="card ">
+      <div
+        *ngIf="this.geojsonData"
+        class="card"
+      >
+        <!-- changer la valeur du ngif quand la carte sera prete -->
         <div class="card-header">
           <h5>Périmètre géographique</h5>
         </div>
@@ -183,7 +279,10 @@
           </pnx-map>
         </div>
       </div>
-      <div class="card ">
+      <div
+        *ngIf="dataset.taxa_count"
+        class="card"
+      >
         <div class="card-header">
           <h5>Répartition des espèces</h5>
         </div>

@@ -16,94 +16,205 @@
             (keyup)="updateSearchbar($event)"
           >
         </div>
+        <div class="col-sm-3">
+          <button
+            class="mat-stroked-button"
+            (click)="openSearchModal(searchModal)"
+          > Recherche avancée </button>
+        </div>
       </div>
       <div>Liste des cadres d'acquisition et des jeux de données associés</div>
       <br>
+
       <mat-accordion [multi]="true">
+        <div class="tab-title">
+          <div class="col-md-1">ID </div>
+          <div class="col-md-3"> Nom</div>
+          <div class="col-md-2"> Date de création</div>
+          <div class="col-md-2"> Créateur</div>
+          <div class="col-md-3"> Acteurs</div>
+          <div class="col-md-1"> Actions</div>
+        </div>
         <ng-container *ngFor="let af of tempAF; let idx = index">
           <mat-expansion-panel
             *ngIf="isDisplayed(idx)"
             [expanded]="expandAccordions"
           >
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                <button
-                  [disabled]="af.cruved.U == false"
-                  class="bt-edit btn-ghost btn-no-padding purple"
-                  title="Editer le cadre d'acquisition"
-                  [routerLink]="['/metadata/af', af.id_acquisition_framework]"
-                >
-                  <i
-                    class="fa fa-pencil-square"
-                    aria-hidden="true"
-                  ></i>
-                </button>
-                <button
-                  [disabled]="af.cruved.R == false"
-                  class="bt-edit btn-ghost btn-no-padding purple"
-                  title="Visualiser le cadre d'acquisition"
-                  [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]"
-                >
-                  <i
-                    class="fa fa-info-circle"
-                    aria-hidden="true"
-                  ></i>
-                </button>
-                {{af.id_acquisition_framework}}: {{ af.acquisition_framework_name | uppercase }}
-              </mat-panel-title>
-              <mat-panel-description
-                *ngIf="af.acquisition_framework_name != af.acquisition_framework_desc"
+            <mat-expansion-panel-header
+              collapsedHeight="80px"
+              expandedHeight="150px"
+            >
+              <mat-panel-title
+                class="af-title"
+                style="margin-top:2.5%;margin-bottom: 1.2%;"
               >
-                {{ af.acquisition_framework_desc }}
-              </mat-panel-description>
+
+                <div class="col-md-1">{{ af.id_acquisition_framework }}</div>
+                <div class="col-md-3"> <a
+                    [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]"
+                  > {{ af.acquisition_framework_name | uppercase }} </a>
+                  <br> <small class="muted"> {{ af.unique_acquisition_framework_id  }} </small>
+                </div>
+                <div class="col-md-2 ">{{af.acquisition_framework_start_date |date:'d/MM/yyyy'}}
+                </div>
+                <div class="col-md-2">
+                  {{af.actors[0].role.nom_complet}}
+                </div>
+                <section class="col-md-3">
+                  <div *ngFor="let ac of af.actors">
+                    {{ac.organism.nom_organisme}} :
+                    {{ac.nomenclature_actor_role.definition_default}}<br>
+                  </div>
+                </section>
+
+                <div class="col-md-1"><a
+                    style="color: black;"
+                    [routerLink]="['/metadata/af', af.id_acquisition_framework]"
+                  >
+                    <mat-icon> create</mat-icon>
+                  </a></div>
+
+              </mat-panel-title>
+
             </mat-expansion-panel-header>
             <table class="table table-bordered">
               <thead class="bold">
                 <tr>
-                  <td style="width:10%"> #</td>
-                  <!-- <td style="width:1%"></td> -->
                   <td style="width:1%">
                     Id
                   </td>
                   <td>Nom du JDD</td>
+                  <td>Date de création</td>
+                  <td>Nombre de données</td>
+                  <td>Créateur</td>
+                  <td>Rapport</td>
+                  <td>Actions</td>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let ds of af.datasetsTemp; let last = last">
+                <tr *ngFor="let ds of af.datasetsTemp; let last = last;">
                   <td>
-                    <div class="btn-group">
-                      <button
-                        [disabled]="ds.cruved.U == false"
-                        class="bt-edit btn-ghost btn-no-padding purple"
-                        title="Editer le jeu de données"
-                        [routerLink]="['/metadata/dataset', ds.id_dataset]"
-                      >
-                        <i
-                          class="fa fa-pencil-square"
-                          aria-hidden="true"
-                        ></i>
-                      </button>
-                      <button
-                        [disabled]="ds.cruved.R == false"
-                        class="bt-edit btn-ghost btn-no-padding purple"
-                        title="Fiche du jeu de données"
-                        [routerLink]="['/metadata/dataset_detail', ds.id_dataset]"
-                      >
-                        <i
-                          class="fa fa-info-circle"
-                          aria-hidden="true"
-                        ></i>
-                      </button>
-                    </div>
-
+                    <a [routerLink]="['/metadata/dataset_detail', ds.id_dataset]"> {{ds.id_dataset}}
+                    </a>
                   </td>
-                  <td> {{ds.id_dataset}}</td>
-                  <td> {{ ds.dataset_name }} </td>
+                  <td>
+                    <a [routerLink]="['/metadata/dataset_detail', ds.id_dataset]">
+                      {{ds.dataset_name}}
+                      <br />
+                      <span style="color: gray"> {{ds.unique_dataset_id}} </span>
+                    </a>
+                  </td>
+                  <td> {{ds.meta_create_date |date:'d/MM/yyyy' }}</td>
+                  <td> {{ds.observation_count}} </td>
+                  <td> {{af.actors[0].role.nom_complet}} </td>
+                  <td>
+                    <div *ngIf="ds.observation_count > 0">
+                      <mat-icon
+                        (click)="sensiReport(ds.id_dataset)"
+                        matTooltip="Rapport de sensibilité"
+                      > do_not_touch </mat-icon>
+                      <mat-icon
+                        (click)="uuidReport(ds.id_dataset)"
+                        matTooltip="Rapport d'UUID"
+                      > format_list_numbered </mat-icon>
+                    </div>
+                    <div *ngIf="ds.observation_count == 0">
+                      <mat-icon matTooltip="Impossible de télécharger le rapport de sensibilité">
+                        do_not_touch </mat-icon>
+                      <mat-icon matTooltip="Impossible de télécharger le rapport d'UUID">
+                        format_list_numbered </mat-icon>
+                    </div>
+                  </td>
+                  <td *ngIf="ds.active"><a
+                      style="color: black;"
+                      [routerLink]="['/metadata/dataset', ds.id_dataset]"
+                      matTooltip="Éditer un jeux de donnée"
+                    >
+                      <mat-icon> create</mat-icon>
+                    </a>
+                    <a
+                      (click)="activateDs(ds.id_dataset, false)"
+                      matTooltip="Jeux de donnée activé"
+                    >
+                      <mat-icon> done</mat-icon>
+                    </a>
+                    <a
+                      (click)="importDs(ds.id_dataset)"
+                      matTooltip="Importé un jeux de donnée"
+                    >
+                      <mat-icon>get_app</mat-icon>
+                    </a>
+                    <a
+                      *ngIf="ds.observation_count < 100 && ds.observation_count !=0"
+                      (click)="syntheseDs(ds.id_dataset)"
+                      matTooltip="Afficher le jeux de donnée sur la carte"
+                    >
+                      <mat-icon> room</mat-icon>
+                    </a>
+                    <a
+                      *ngIf="ds.observation_count > 100 || ds.observation_count == 0"
+                      (click)="openSyntheseNone(synthese)"
+                      matTooltip="Afficher le jeux de donnée sur la carte"
+                    >
+                      <mat-icon> room</mat-icon>
+                    </a>
+                    <a
+                      *ngIf="ds.deletable"
+                      (click)="deleteDs(ds.id_dataset)"
+                      matTooltip="Supprimer un jeux de donnée"
+                    >
+                      <mat-icon> delete</mat-icon>
+                    </a>
+                    <a
+                      *ngIf="!ds.deletable"
+                      matTooltip="La suppression du jeu de données n'est pas possible car des données y sont rattachées dans la Synthèse"
+                    >
+                      <mat-icon>delete_outline</mat-icon>
+                    </a>
+                  </td>
+                  <td *ngIf="!ds.active"><a
+                      style="color: black;"
+                      [routerLink]="['/metadata/dataset', ds.id_dataset]"
+                      matTooltip="Éditer un jeux de donnée"
+                    >
+                      <mat-icon> create</mat-icon>
+                    </a>
+                    <a
+                      (click)="activateDs(ds.id_dataset, true)"
+                      matTooltip="Jeux de donnée désactivé"
+                    >
+                      <mat-icon> clear</mat-icon>
+                    </a>
+                    <a matTooltip="Impossible d'importé un jeux de donnée">
+                      <mat-icon>error</mat-icon>
+                    </a>
+                    <a
+                      *ngIf="ds.observation_count > 100"
+                      (click)="openSyntheseNone(synthese)"
+                      matTooltip="Impossible d'afficher les jdd sur la carte"
+                    >
+                      <mat-icon> room</mat-icon>
+                    </a>
+                    <a
+                      *ngIf="ds.deletable"
+                      (click)="deleteDs(ds.id_dataset)"
+                      matTooltip="Supprimer un jeux de donnée"
+                    >
+                      <mat-icon> delete</mat-icon>
+                    </a>
+                    <a
+                      *ngIf="!ds.deletable"
+                      matTooltip="La suppression du jeu de données n'est pas possible car des données y sont rattachées dans la Synthèse"
+                    >
+                      <mat-icon>delete_outline</mat-icon>
+                    </a>
+                  </td>
                 </tr>
               </tbody>
             </table>
           </mat-expansion-panel>
         </ng-container>
+
       </mat-accordion>
       <mat-paginator
         #paginator
@@ -138,3 +249,198 @@
     </div>
   </div>
 </div>
+
+
+<ng-template
+  #searchModal
+  let-c="close"
+  let-d="dismiss"
+>
+  <div class="modal-header">
+    <h5
+      class="modal-title"
+      id="exampleModalLabel"
+    > Rechercher </h5>
+  </div>
+  <div
+    class="modal-body"
+    style="align-items: flex-end;"
+  >
+    <div class="row">
+      <div class="col">
+        UID
+      </div>
+      <div class="col">
+        <input
+          class="form-control form-control-sm"
+          type="text"
+          name=""
+          id=""
+          placeholder="UID"
+          (keyup)="updateAdvancedCriteria($event, 'uid')"
+        >
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        Titre / Identifiant
+      </div>
+      <div class="col">
+        <input
+          class="form-control form-control-sm"
+          type="text"
+          name=""
+          id=""
+          placeholder="Titre / Identifiant"
+          (keyup)="updateAdvancedCriteria($event, 'name')"
+        >
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        Crée le
+      </div>
+      <div class="col">
+        <div class="form-group">
+          <div class="input-group">
+            <input
+              class="form-control"
+              placeholder="yyyy-mm-dd"
+              (ngModelChange)="updateAdvancedCriteria($event, 'date')"
+              name="dp"
+              [(ngModel)]="model"
+              ngbDatepicker
+              #d="ngbDatepicker"
+            >
+            <div class="input-group-append">
+              <button
+                class="fa fa-calendar fa-2x"
+                style="color: #7197FF;"
+                (click)="d.toggle()"
+                type="button"
+              ></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        Organisme
+      </div>
+      <div class="col">
+        <select
+          class="form-control form-control-sm"
+          (change)="updateAdvancedCriteria($event, 'organism')"
+        >
+          <option
+            value=""
+            selected
+          >Organisme</option>
+          <option
+            *ngFor="let org of organisms"
+            value="{{org.id_organisme}}"
+          >
+            {{org.nom_organisme}} </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        Utilisateur
+      </div>
+      <div class="col">
+        <select
+          class="form-control form-control-sm"
+          (change)="updateAdvancedCriteria($event, 'role')"
+        >
+          <option
+            value=""
+            selected
+          >Utilisateur</option>
+          <option
+            *ngFor="let role of roles"
+            value="{{role.id_role}}"
+          >
+            {{role.nom_complet}}</option>
+        </select>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col">
+        Selecteur
+      </div>
+      <div class="col">
+        <select
+          name="selecteur"
+          id="selector"
+          (change)="updateSelector($event)"
+        >
+          <option value="ds">JDD</option>
+          <option value="af">CA</option>
+        </select>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col">
+      </div>
+      <div class="col">
+        <button
+          class="mat-stroked-button"
+          (click)="updateAdvancedSearch()"
+        > Rechercher </button>
+        <button
+          class="mat-stroked-button"
+          (click)="closeSearchModal(searchModal)"
+        > Fermer </button>
+      </div>
+    </div>
+
+  </div>
+</ng-template>
+
+
+
+
+<ng-template
+  #synthese
+  let-c="close"
+  let-d="dismiss"
+>
+  <div class="modal-header bg-info">
+    <h5
+      class="modal-title bg-info text-white"
+      id="exampleModalLabel"
+    >La visualisation des données n'est pas possible !</h5>
+  </div>
+  <div
+    class="modal-body"
+    style="align-items: flex-end;"
+  >
+    <div class="col">
+      <span>
+        <h4 style="text-align: justify;">Le nombre de données est égale à zéro ou est trop
+          important.</h4>
+      </span>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+    </div>
+    <div class="col-md-4 text-center">
+      <button
+        class="btn btn-dark center-block text-white"
+        (click)="closeSearchModal(searchModal)"
+      > Fermer </button>
+    </div>
+    <br>
+  </div>
+
+</ng-template>

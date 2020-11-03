@@ -7,6 +7,7 @@ import { MapService } from '@geonature_common/map/map.service';
 import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-component';
 import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'pnx-synthese-search',
@@ -20,6 +21,7 @@ export class SyntheseSearchComponent implements OnInit {
   public areaFilters: Array<any>;
   public taxonApiEndPoint = `${AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
   public validationStatus: Array<any>;
+  private params: any;
   @Input() displayValidation = false;
   @Output() searchClicked = new EventEmitter();
   constructor(
@@ -28,8 +30,13 @@ export class SyntheseSearchComponent implements OnInit {
     public ngbModal: NgbModal,
     public mapService: MapService,
     private _storeService: TaxonAdvancedStoreService,
-    private _api: DataFormService
-  ) {}
+    private _api: DataFormService,
+    private route: ActivatedRoute
+  ) {
+    this.route.queryParams.subscribe(params => {
+      this.params = params;
+  });
+  }
 
   ngOnInit() {
     // get organisms:
@@ -52,6 +59,28 @@ export class SyntheseSearchComponent implements OnInit {
         this.validationStatus = data[0].values;
       });
     }
+
+    //let params = {'id_acquisition_framework': [2]}
+
+    //this.params = {'id_acquisition_framework': 2}
+
+
+    if (this.params) {
+      console.log("this.params");
+      console.log(this.params);
+      console.log(this.params.id_acquisition_framework);
+
+      if (this.params.id_acquisition_framework)
+      this.formService.searchForm.controls.id_acquisition_framework.setValue([+this.params.id_acquisition_framework])
+    
+      if (this.params.id_dataset)
+        this.formService.searchForm.controls.id_dataset.setValue([+this.params.id_dataset])
+
+      this.onSubmitForm();
+    }
+
+    
+
   }
 
   onSubmitForm() {
@@ -59,6 +88,9 @@ export class SyntheseSearchComponent implements OnInit {
     this.formService.searchForm.markAsDirty();
     const updatedParams = this.formService.formatParams();
     this.searchClicked.emit(updatedParams);
+    console.log("updatedParams");
+    console.log(updatedParams);
+    console.log(updatedParams['id_acquisition_framework']);
   }
 
   refreshFilters() {

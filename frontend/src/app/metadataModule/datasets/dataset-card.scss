@@ -56,3 +56,31 @@ div.c {
 	background-color: transparent;
 	border-bottom: 1px solid #edf2f9
 }
+
+#imgRapport{
+	text-align:center;
+  }
+  
+  .imgIcone{
+	display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+	height: 40px; 
+	padding: 2%;
+	cursor: pointer;
+  }
+  
+
+  .imgStatus{
+	margin-left: auto;
+	margin-right: auto;
+	width: 50%;
+}
+
+.textCenter{
+	text-align: center;
+}
+
+.mat-icon{
+	cursor: pointer;
+}

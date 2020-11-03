@@ -6,7 +6,8 @@ from sqlalchemy.orm import joinedload
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql.functions import func
 
-from flask import request
+from flask import request, current_app
+import requests
 
 from geonature.utils.env import DB
 from utils_flask_sqla.serializers import serializable
@@ -129,6 +130,13 @@ def get_dataset_details_dict(id_dataset, session_role):
     )
     if geojsonData:
         dataset["bbox"] = json.loads(geojsonData)
+    imports = requests.get(
+        current_app.config["API_ENDPOINT"] + "/import/by_dataset/" + id_dataset,
+        headers={'Cookie': request.headers.get('Cookie')} #recuperation du token
+    )
+    imports = json.loads(imports.content.decode('utf8').replace("'", '"'))
+    if imports:
+        dataset["imports"] = imports
     return dataset
 
 
