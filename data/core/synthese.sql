@@ -883,7 +883,6 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
 -- Vue listant les observations pour l'export de la Synthèse
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
  SELECT 
-
     s.date_min::date AS date_debut,
     s.date_max::date AS date_fin,
     s.date_min::time AS heure_debut,
@@ -963,15 +962,14 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     s.meta_create_date AS date_creation,
     s.meta_update_date AS date_modification,
     COALESCE(s.meta_update_date, s.meta_create_date) AS derniere_action
-
    FROM gn_synthese.synthese s
      JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
      JOIN gn_meta.t_acquisition_frameworks af ON d.id_acquisition_framework = af.id_acquisition_framework
      LEFT OUTER JOIN (
         SELECT id_synthese, string_agg(DISTINCT area_name, ', ') AS communes
-        FROM gn_synthese.cor_area_synthese sa
-        LEFT OUTER JOIN ref_geo.l_areas a_1 ON sa.id_area = a_1.id_area
+        FROM gn_synthese.cor_area_synthese cas
+        LEFT OUTER JOIN ref_geo.l_areas a_1 ON cas.id_area = a_1.id_area
         JOIN ref_geo.bib_areas_types ta ON ta.id_type = a_1.id_type AND ta.type_code ='COM'
         GROUP BY id_synthese 
      ) sa ON sa.id_synthese = s.id_synthese
@@ -1021,7 +1019,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS
      LEFT JOIN utilisateurs.bib_organismes orga ON orga.id_organisme = act.id_organism
      LEFT JOIN utilisateurs.t_roles roles ON roles.id_role = act.id_role
      JOIN count_nb_obs ON count_nb_obs.id_dataset = d.id_dataset
-  GROUP BY d.id_dataset, d.unique_dataset_id, d.dataset_name, af.acquisition_framework_name, count_nb_obs.nb_obs, ca_uuid;
+  GROUP BY d.id_dataset, d.unique_dataset_id, d.dataset_name, af.acquisition_framework_name, af.unique_acquisition_framework_id, count_nb_obs.nb_obs;
 
 -- Vue des couleurs des taxons par unité géographique
 CREATE OR REPLACE VIEW gn_synthese.v_color_taxon_area AS
