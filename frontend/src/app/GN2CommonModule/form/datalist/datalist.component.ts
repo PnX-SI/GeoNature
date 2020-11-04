@@ -149,6 +149,10 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
       console.log(res);
       this.parentFormControl.patchValue(this.multiple ? res : res[0]);
     }
+
+    // patch
+    console.log('gloub', this.parentFormControl.parent)
+    this.parentFormControl.markAsTouched();
   }
 
   getData() {

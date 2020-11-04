@@ -266,6 +266,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     ConfirmationDialog,
     MediasComponent,
     MediaDialog,
+    FormTestComponent,
     DisplayMediasComponent,
     DatalistComponent,
     PlacesComponent,
