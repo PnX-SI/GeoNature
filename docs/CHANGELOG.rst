@@ -38,6 +38,9 @@ Si vous avez définit des permissions particulières aux niveaux des objets, vé
 NB: si vous aviez mis des droits R=0 pour un groupe aux module 'ADMIN', les utilisateurs de se groupes ne pourront pas accéder aux 
 sous modules 'permissions' et 'nomenclatures'
 
+* Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.2to2.5.3.sql). Attention, si vous avez customisé les vues des exports Occtax et Synthèse, elles seront supprimées et recrées automatiquement par le script SQL de mise à jour de la BDD de GeoNature pour s'adapter aux évolutions du standard Occtax en version 2.0.0. Révisez éventuellement ces vues avant et/ou après la mise à jour. Le script SQL de mise à jour vérifiera aussi si vous avez d'autres vues (dans le module Export notamment) qui utilisent le champs ``id_nomenclature_obs_technique`` qui doit être renommé et l'indiquera dès le début de l'exécution du script, en l'arrêtant pour que vous puissiez modifier ou supprimer ces vues bloquant la mise à jour.
+* Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
+
 2.5.2 (2020-10-13)
 ------------------
 
