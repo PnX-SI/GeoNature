@@ -30,6 +30,11 @@ class ReleveRepository:
     def __init__(self, model):
         self.model = model
 
+    #Ajout de colonne dynamique
+    def input(self,row,col,val):
+        self.dat[row] = {col:val}
+        pass
+
     def get_one(self, id_releve, info_user):
         """ Get one releve model if allowed
         params:

@@ -746,6 +746,7 @@ def export(info_role):
     export_geom_column = blueprint.config["export_geom_columns_name"]
     export_columns = blueprint.config["export_columns"]
     export_srid = blueprint.config["export_srid"]
+    export_col_name_additional_data = blueprint.config["export_col_name_additional_data"]
 
     export_view = GenericTableGeo(
         tableName=export_view_name,
@@ -770,6 +771,17 @@ def export(info_role):
     file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
     file_name = filemanager.removeDisallowedFilenameChars(file_name)
 
+    #Ajout des colonnes additionnels
+    col_names = []
+    for row in data:
+        dict_row = export_view.as_dict(row)
+        if export_col_name_additional_data in dict_row:
+            additional_data = dict_row[export_col_name_additional_data]
+            if additional_data:
+                for col_name in additional_data:
+                    if col_name not in col_names:
+                        col_names.append(col_name)
+
     export_format = request.args["format"] if "format" in request.args else "geojson"
     if export_format == "csv":
         columns = (
@@ -777,9 +789,29 @@ def export(info_role):
             if len(export_columns) > 0
             else [db_col.key for db_col in export_view.db_cols]
         )
+        #On ajoute les colonnes additionnels aux colonnes de l'export
+        columns = columns + col_names
+        data_add_field = []
+        
+        for row in data:
+            additional_data = export_view.as_dict(row)[export_col_name_additional_data]
+            tab_value = {}
+            for col_name in col_names:
+                if additional_data:
+                    if col_name in additional_data:
+                        tab_value[col_name] = additional_data[col_name]
+                    else:
+                        tab_value[col_name] = ""
+                else:
+                    tab_value[col_name] = ""
+            row_test = {**export_view.as_dict(row), **tab_value}
+            data_add_field.append(row_test)
         return to_csv_resp(
-            file_name, [export_view.as_dict(d) for d in data], columns, ";"
+            file_name, [d for d in data_add_field], columns, ";"
         )
+        #return to_csv_resp(
+        #    file_name, [export_view.as_dict(d) for d in data], columns, ";"
+        #)
     elif export_format == "geojson":
         results = FeatureCollection(
             [export_view.as_geofeature(d, columns=export_columns) for d in data]
@@ -877,64 +909,94 @@ def test(info_role):
     Deprecated
     """
 
+    export_view_name = blueprint.config["export_view_name"]
+    export_geom_column = blueprint.config["export_geom_columns_name"]
+    export_columns = blueprint.config["export_columns"]
+    export_srid = blueprint.config["export_srid"]
+    export_col_name_additional_data = blueprint.config["export_col_name_additional_data"]
+    #export_col_name_additional_data = "additional_data"
+
+    #sql = "select distinct col_name from (SELECT jsonb_object_keys(" + export_col_name_additional_data + ") as col_name from pr_occtax." + export_view_name + ") as temp"
+    #result = DB.engine.execute(sql)
+    col_names = []
+    #for row in result:
+    #    col_names.append(row[0])
+
+    #return ', '.join(col_names)
+    #return to_json_resp(col_names)
+
+    export_view = GenericTableGeo(
+        tableName=export_view_name,
+        schemaName="pr_occtax",
+        engine=DB.engine,
+        geometry_field=export_geom_column,
+        srid=export_srid,
+    )
+
+    releve_repository = ReleveRepository(export_view)
+    q = releve_repository.get_filtered_query(info_role, from_generic_table=True)
+    q = get_query_occtax_filters(
+        request.args,
+        export_view,
+        q,
+        from_generic_table=True,
+        obs_txt_column=blueprint.config["export_observer_txt_column"],
+    )
+
     file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
     file_name = filemanager.removeDisallowedFilenameChars(file_name)
 
-    releve_repository = ReleveRepository(TRelevesOccurrence)
-    q = releve_repository.get_filtered_query(info_role)
-
-    parameters = request.args
-
-    # Filters
-    q = get_query_occtax_filters(parameters, TRelevesOccurrence, q)
     data = q.all()
+    #export_view.input(1, 'A', 'cat')
+    #for n in data:
+    #    if export_col_name_additional_data in n:
+    return to_json_resp(export_view.get_serialized_columns)
+    for row in data:
+        additional_data = export_view.as_dict(row)[export_col_name_additional_data]
+        return to_json_resp(export_view.as_dict(row))
+        if additional_data:
+            for col_name in additional_data:
+                if col_name not in col_names:
+                    col_names.append(col_name)
 
-    user = info_role
-    user_cruved = get_or_fetch_user_cruved(
-        session=session, id_role=info_role.id_role, module_code="OCCTAX"
-    )
-    
-    #on crée le dossier s'il n'existe pas
-    dir_path = str(ROOT_DIR / "backend/static/medias/exports")
-    if not os.path.exists(dir_path):
-        os.makedirs(dir_path)
-    #on le clean
-    filemanager.delete_recursively(
-        str(ROOT_DIR / "backend/static/medias/exports")
-    )
-    featureCollection = []
-    zip_path = dir_path + "/" + file_name + ".zip"
-    zp_file = zipfile.ZipFile(zip_path, mode="w")
 
-    for n in data:
-        releve_cruved = n.get_releve_cruved(user, user_cruved)
-        feature = n.get_geofeature(
-            relationships=(
-                't_occurrences_occtax',
-                'cor_counting_occtax',
-                'medias'
-            )
+    #columns = (
+    #        export_columns
+    #        if len(export_columns) > 0
+    #        else [db_col.key for db_col in export_view.db_cols]
+    #    )
+    columns = export_columns + col_names
+    data_add_field = []
+    for row in data:
+        #index = columns.index("additional_data")
+        return to_json_resp(export_view.as_dict(row)[export_geom_column])
+        additional_data = export_view.as_dict(row)[export_col_name_additional_data]
+        tab_value = {}
+        for col_name in col_names:
+            if additional_data:
+                if col_name in additional_data:
+                    tab_value[col_name] = additional_data[col_name]
+                else:
+                    tab_value[col_name] = ""
+            else:
+                tab_value[col_name] = ""
+        row_test = {**export_view.as_dict(row), **tab_value}
+        data_add_field.append(row_test)
+        #if len(col_names) > 0:
+            #if additional_data:
+            #    return additional_data["structure_participante"]
+        #return to_json_resp(row[1])
+        #return to_json_resp(row_test)
+    #return to_json_resp(data_add_field)
+    #return to_csv_resp(
+    #        file_name, [d for d in data_add_field], columns, ";"
+    #    )
+    #return to_json_resp(data_add_field)
+    results = FeatureCollection(
+            [export_view.as_geofeature(d, columns=export_columns) for d in data_add_field]
         )
-        if 'properties' in feature:
-            if 't_occurrences_occtax' in feature['properties']:
-                for occurence in feature['properties']['t_occurrences_occtax']:
-                    for counting in occurence['cor_counting_occtax']:
-                        if 'medias' in counting:
-                            for media in counting['medias']:
-                                if media['media_path'] is not None:
-                                    file_path = str(ROOT_DIR / "backend/" ) + "/" +  media['media_path']
-                                    if os.path.exists(file_path):
-                                        zp_file.write(file_path, os.path.basename(file_path))
-                                        #copyfile( file_path, dir_path + "/" + os.path.basename(file_path))
-                                    #featureCollection.append(file_path)
-                                    
-                                    #return {"items": media,}
-        #    if feature['properties']['t_occurrences_occtax']:
-        #        for occurence in feature['properties']['t_occurrences_occtax'] :
-        #            featureCollection.append(occurence)
-        #featureCollection.append(feature)
-    zp_file.close()
-    return send_from_directory(dir_path, file_name + ".zip", as_attachment=True)
-    #return {
-    #    "medias": featureCollection,
-    #}
+
+    #    if export_col_name_additional_data in n:
+    #       return to_json_resp(n[export_col_name_additional_data])
+    
+    return to_json_resp(results)

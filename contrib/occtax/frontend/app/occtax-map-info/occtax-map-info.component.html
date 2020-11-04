@@ -139,10 +139,20 @@
             </div> 
 
             <!--Champs additionnels-->
-            <div *ngFor="let data of releve?.additional_fields | keyvalue:sortingFunction">
-              <div class="label"> {{data.key}} : </div>
-              <div class="value"> {{data.value}} </div>
-            </div>
+            <ng-container *ngFor="let dynamiqueField of dynamiqueFormDataset.RELEVE ">
+              <div *ngIf="['text','textarea','radio','select','time','date','number','bool_radio','nomenclature'].includes(dynamiqueField.type_widget)">
+                <div class="label"> {{dynamiqueField.attribut_label}} : </div>
+                <div class="value" *ngIf="['text','textarea','radio','select','time','number','bool_radio'].includes(dynamiqueField.type_widget)"> 
+                  {{releve?.additional_fields[dynamiqueField.attribut_name]}}
+                </div>
+                <div class="value" *ngIf="dynamiqueField.type_widget == 'nomenclature'"> 
+                  {{getLibelleByID(releve?.additional_fields[dynamiqueField.attribut_name])}}
+                </div>
+                <div class="value" *ngIf="dynamiqueField.type_widget == 'date'"> 
+                  {{releve?.additional_fields[dynamiqueField.attribut_name]?.day}}/{{releve?.additional_fields[dynamiqueField.attribut_name]?.month}}/{{releve?.additional_fields[dynamiqueField.attribut_name]?.year}}
+                </div>
+              </div>
+            </ng-container>
   
             <p id="info-geo">
               <pnx-areas-intersected-modal 
@@ -233,10 +243,20 @@
                   </div>
     
                   <!--Champs additionnels-->
-                  <div *ngFor="let data of (displayOccurrence|async)?.additional_fields | keyvalue:sortingFunction">
-                    <div class="label"> {{data.key}} : </div>
-                    <div class="value"> {{data.value}} </div>
-                  </div>
+                  <ng-container *ngFor="let dynamiqueField of dynamiqueFormDataset.OCCURRENCE ">
+                    <div *ngIf="['text','textarea','radio','select','time','date','number','bool_radio','nomenclature'].includes(dynamiqueField.type_widget)">
+                      <div class="label"> {{dynamiqueField.attribut_label}} : </div>
+                      <div class="value" *ngIf="['text','textarea','radio','select','time','number','bool_radio'].includes(dynamiqueField.type_widget)"> 
+                        {{(displayOccurrence|async)?.additional_fields[dynamiqueField.attribut_name]}}
+                      </div>
+                      <div class="value" *ngIf="dynamiqueField.type_widget == 'nomenclature'"> 
+                        {{getLibelleByID((displayOccurrence|async)?.additional_fields[dynamiqueField.attribut_name])}}
+                      </div>
+                      <div class="value" *ngIf="dynamiqueField.type_widget == 'date'"> 
+                        {{(displayOccurrence|async)?.additional_fields[dynamiqueField.attribut_name]?.day}}/{{(displayOccurrence|async)?.additional_fields[dynamiqueField.attribut_name]?.month}}/{{(displayOccurrence|async)?.additional_fields[dynamiqueField.attribut_name]?.year}}
+                      </div>
+                    </div>
+                  </ng-container>
   
                 </mat-tab>
                 <mat-tab label="Dénombrement"> 
@@ -282,10 +302,20 @@
                     </div>
     
                     <!--Champs additionnels-->
-                    <div *ngFor="let data of counting?.additional_fields | keyvalue:sortingFunction">
-                      <div class="label"> {{data.key}} : </div>
-                      <div class="value"> {{data.value}} </div>
-                    </div>
+                    <ng-container *ngFor="let dynamiqueField of dynamiqueFormDataset.COUNTING ">
+                      <div *ngIf="['text','textarea','radio','select','time','date','number','bool_radio','nomenclature'].includes(dynamiqueField.type_widget)">
+                        <div class="label"> {{dynamiqueField.attribut_label}} : </div>
+                        <div class="value" *ngIf="['text','textarea','radio','select','time','number','bool_radio'].includes(dynamiqueField.type_widget)"> 
+                          {{counting?.additional_fields[dynamiqueField.attribut_name]}}
+                        </div>
+                        <div class="value" *ngIf="dynamiqueField.type_widget == 'nomenclature'"> 
+                          {{getLibelleByID(counting?.additional_fields[dynamiqueField.attribut_name])}}
+                        </div>
+                        <div class="value" *ngIf="dynamiqueField.type_widget == 'date'"> 
+                          {{counting?.additional_fields[dynamiqueField.attribut_name]?.day}}/{{counting?.additional_fields[dynamiqueField.attribut_name]?.month}}/{{counting?.additional_fields[dynamiqueField.attribut_name]?.year}}
+                        </div>
+                      </div>
+                    </ng-container>
 
                     <ng-container *ngFor="let media of counting.medias; index as i">
                       <div>

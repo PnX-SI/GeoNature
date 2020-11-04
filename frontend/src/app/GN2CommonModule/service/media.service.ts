@@ -6,6 +6,9 @@ import { Observable, of, Subject } from '@librairies/rxjs';
 import { map, filter, switchMap, tap, pairwise, retry } from 'rxjs/operators';
 import { AppConfig } from '@geonature_config/app.config';
 import { Media } from '@geonature_common/form/media/media';
+import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
+
+const _NOMENCLATURES = ['TYPE_MEDIA'];
 /**
  *
  *  Ce service référence les méthodes pour la gestion des medias
@@ -23,11 +26,16 @@ import { Media } from '@geonature_common/form/media/media';
  */
 @Injectable()
 export class MediaService {
+  
   idTableLocations = [];
   nomenclatures = null;
   bInitialized = false;
 
-  constructor(private _http: HttpClient, private _dataFormService: DataFormService) {
+  constructor(
+    private _http: HttpClient, 
+    private _dataFormService: DataFormService,
+    private dateParser: NgbDateParserFormatter,
+    ) {
     // initialisation des nomenclatures
     this.getNomenclatures().subscribe(() => {
       this.bInitialized = true;
@@ -46,7 +54,7 @@ export class MediaService {
 
   getNomenclatures(): Observable<any> {
     if (this.nomenclatures) return of(this.nomenclatures);
-    return this._dataFormService.getNomenclatures(['TYPE_MEDIA']).pipe(
+    return this._dataFormService.getNomenclatures(_NOMENCLATURES).pipe(
       switchMap(nomenclatures => {
         this.nomenclatures = nomenclatures;
         return of(nomenclatures);
@@ -349,15 +357,56 @@ export class MediaService {
           container.appendChild(newDiv);
         })
       }else{
-        //si ce n'est pas un média, on affiche son libellé (configuration) et sa valeur (bdd)
+        //à condition qu'il est un label (donc pas les types html)
         let newDiv = container.firstChild.cloneNode(true)  as HTMLElement;
+        switch(widget.type_widget){
+          case 'html':
+            //on affiche rien
+            break;
+          case 'date':
+            newDiv.getElementsByClassName('label')[0].innerHTML = widget.attribut_label + ' :';
+            if(typeof values.additional_fields[widget.attribut_name] == "object"){
+              newDiv.getElementsByClassName('value')[0].innerHTML = this.dateParser.format(
+                values.additional_fields[widget.attribut_name]
+              );
+            }else{
+              newDiv.getElementsByClassName('value')[0].innerHTML = values.additional_fields[widget.attribut_name];
+            }
+            newDiv.className ='additional_field';
+            container.appendChild(newDiv);
+            break;
+          /*case 'nomenclature':
+            this._dataFormService.getNomenclatures([widget.code_nomenclature_type]).subscribe(
+              (nomenclature) => {
+                newDiv.getElementsByClassName('label')[0].innerHTML = widget.attribut_label + ' :';
+                const res = nomenclature
+                  .map(N => N.values.find(n => n['id_nomenclature'] === values.additional_fields[widget.attribut_name]))
+                  .filter(n => n);
+                if(res && res.length == 1){
+                  newDiv.getElementsByClassName('value')[0].innerHTML = res[0].label_fr;
+                }else{
+                  newDiv.getElementsByClassName('value')[0].innerHTML = " - ";
+                }
+                newDiv.className ='additional_field';
+                container.appendChild(newDiv);
+              }
+            );
+            break;*/
+          default:
+            newDiv.getElementsByClassName('label')[0].innerHTML = widget.attribut_label + ' :';
+            newDiv.getElementsByClassName('value')[0].innerHTML = values.additional_fields[widget.attribut_name];
+            newDiv.className ='additional_field';
+            container.appendChild(newDiv);
+            break;
+        }
+        //si ce n'est pas un média, on affiche son libellé (configuration) et sa valeur (bdd)
+        /*let newDiv = container.firstChild.cloneNode(true)  as HTMLElement;
         newDiv.getElementsByClassName('label')[0].innerHTML = widget.attribut_label + ' :';
         newDiv.getElementsByClassName('value')[0].innerHTML = values.additional_fields[widget.attribut_name];
         newDiv.className ='additional_field';
-        container.appendChild(newDiv);
+        container.appendChild(newDiv);*/
       }
     }else{
-      //à condition qu'il est un label (donc pas les types html)
       if (widget.attribut_label){
         let newDiv = container.firstChild.cloneNode(true)  as HTMLElement;
         newDiv.getElementsByClassName('label')[0].innerHTML = widget.attribut_label + ' :';

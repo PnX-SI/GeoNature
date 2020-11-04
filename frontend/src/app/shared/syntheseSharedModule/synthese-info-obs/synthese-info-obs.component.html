@@ -230,7 +230,8 @@
       </tr>
       <tr *ngFor="let data of selectedObs?.additional_data | keyvalue:sortingFunction">
         <td> {{data.key}} </td>
-        <td> {{data.value}} </td>
+        <td *ngIf="data.value?.day"> {{data.value.day}} </td>
+        <td *ngIf="!data.value?.day"> {{data.value}} </td>
       </tr>
     </table>
   </mat-tab>

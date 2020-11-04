@@ -10,6 +10,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
 import { MediaService } from "@geonature_common/service/media.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
+import { OcctaxFormService } from "../occtax-form/occtax-form.service";
 
 const NOMENCLATURES = [
   "TECHNIQUE_OBS",
@@ -44,6 +45,7 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
   public cardHeight: number;
   displayOccurrence: BehaviorSubject<any> = new BehaviorSubject(null);
   private _geojson: any;
+  public dynamiqueFormDataset: Array<any> = [];
 
   get releve() {
     return this.occtaxData.getValue()
@@ -87,6 +89,7 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
     private _commonService: CommonService,
     private dataFormS: DataFormService,
     public ms: MediaService,
+    private OcctaxFormService: OcctaxFormService
   ) { }
 
   ngOnInit() {
@@ -104,7 +107,8 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
         .subscribe((id_releve) => this.getOcctaxData(id_releve));
     }
 
-    this.getNomenclatures();
+    //On charge les nomenclatures après avoir récupéré celle présente dans le formulaire dynamique
+    //this.getNomenclatures();
   }
 
   ngAfterViewInit() {
@@ -136,6 +140,34 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
           let releve = data.releve;
           releve.properties.date_min = new Date(releve.properties.date_min);
           releve.properties.date_max = new Date(releve.properties.date_max);
+          /*Ajout de champs additionnels*/
+          this.dynamiqueFormDataset = this.OcctaxFormService.getAddDynamiqueFields(releve.properties.id_dataset);
+          if(this.dynamiqueFormDataset['RELEVE']){
+            this.dynamiqueFormDataset['RELEVE'].map((widget) => {
+              if(widget.type_widget == "nomenclature"){
+                NOMENCLATURES.push(widget.code_nomenclature_type);
+              }
+              if(widget.type_widget == "date"){
+                //NOMENCLATURES.push(widget.code_nomenclature_type);
+              }
+            })
+          }
+          if(this.dynamiqueFormDataset['OCCURENCE']){
+            this.dynamiqueFormDataset['OCCURENCE'].map((widget) => {
+              if(widget.type_widget == "nomenclature"){
+                NOMENCLATURES.push(widget.code_nomenclature_type);
+              }
+            })
+          }
+          if(this.dynamiqueFormDataset['COUNTING']){
+            this.dynamiqueFormDataset['COUNTING'].map((widget) => {
+              if(widget.type_widget == "nomenclature"){
+                NOMENCLATURES.push(widget.code_nomenclature_type);
+              }
+            })
+          }
+          this.getNomenclatures();
+          
           return releve;
         })
       )

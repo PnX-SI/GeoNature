@@ -34,6 +34,8 @@ export class OcctaxFormService {
   public previousReleve = null;
   public formDatasetFields: any;
 
+  public nomenclatureAdditionnel: any = [];
+
   constructor(
     private _http: HttpClient,
     private _router: Router,
@@ -166,5 +168,14 @@ export class OcctaxFormService {
       }
     }
     return this.formDatasetFields;
+  }
+
+  formatDate(strDate) {
+    const date = new Date(strDate);
+    return {
+      year: date.getFullYear(),
+      month: date.getMonth() + 1,
+      day: date.getDate(),
+    };
   }
 }

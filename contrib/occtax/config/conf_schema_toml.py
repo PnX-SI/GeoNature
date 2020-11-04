@@ -129,16 +129,10 @@ default_columns_export = [
     "natObjGeo",
     "nomLieu",
     "precision",
- 	"expertise",
-	"structureParticipante",
-	"catPaysagere",
-	"descMilieuAquatique",
-	"numDerogation",
-	"prelevAdn",
-	"lieuStockageAdn",
 	"titreMedias",
 	"descriptionMedias",
-	"URLMedias"
+	"URLMedias",
+    "additional_data"
 ]
 
 
@@ -154,6 +148,7 @@ export_message = """
 Vous vous apprêtez à télécharger les données de la <b>recherche courante. </b> </p>
 """
 
+default_export_col_name_additional_data = "additional_data"
 
 
 class DatasetFieldsConfiguration(Schema):
@@ -168,16 +163,11 @@ class DatasetFieldsConfiguration(Schema):
 class DatasetConfiguration(Schema):
     # config liée au formulaire dynamique OCCTAX par dataset
     FORMFIELDS = fields.List(fields.Nested(DatasetFieldsConfiguration), missing=[])
-    #DATASET = fields.Integer()
-    #id_taxon_list = fields.Integer(missing=100)
-    #releve = fields.List(fields.Dict(), missing=[])
-    #occurence = fields.List(fields.Dict(), missing=[])
-    #counting = fields.List(fields.Dict(), missing=[])
     
 class GnModuleSchemaConf(Schema):
     form_fields = fields.Nested(FormConfig, missing=dict())
     observers_txt = fields.Boolean(missing=False)
-    export_view_name = fields.String(missing="v_export_occtax ")
+    export_view_name = fields.String(missing="v_export_occtax")
     export_geom_columns_name = fields.String(missing="geom_4326")
     export_id_column_name = fields.String(missing="permId")
     export_srid = fields.Integer(missing=4326)
@@ -201,5 +191,5 @@ class GnModuleSchemaConf(Schema):
     ENABLE_MEDIAS = fields.Boolean(missing=True)
     ENABLE_MY_PLACES = fields.Boolean(missing=True)
     ADD_FIELDS = fields.Nested(DatasetConfiguration, missing={"FORMFIELDS": []})
-    #add_fields = fields.List(fields.Nested(DatasetConfiguration, missing={}))
+    export_col_name_additional_data = fields.String(missing=default_export_col_name_additional_data)
 

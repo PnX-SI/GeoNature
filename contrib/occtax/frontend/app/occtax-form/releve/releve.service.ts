@@ -171,6 +171,28 @@ export class OcctaxFormReleveService {
       this.componentRef.instance.formArray = this.dynamicFormGroup;
       this.propertiesForm.setControl('additional_fields', this.dynamicFormGroup);
       
+      //On charge les nomenclatures additionnels
+      let NOMENCLATURES = [];
+      dynamiqueFormDataset['RELEVE'].map((widget) => {
+        if(widget.type_widget == 'nomenclature'){
+          NOMENCLATURES.push(widget.code_nomenclature_type);
+        }
+      })
+
+      this.dataFormService.getNomenclatures(NOMENCLATURES)
+      .pipe(
+        map((data) => {
+          let values = [];
+          for (let i = 0; i < data.length; i++) {
+            data[i].values.forEach((element) => {
+              element['nomenclature_mnemonique'] = data[i]['mnemonique'];
+              values[element.id_nomenclature] = element;
+            });
+          }
+          return values;
+        })
+      )
+      .subscribe((nomenclatures) => (this.occtaxFormService.nomenclatureAdditionnel = nomenclatures));
       //dans le cas d'une création avec le jdd passé en paramètre, l'ajout du control dynamique désactive le formulaire
       //Donc on force la réactivation 
       if(disableForm){
@@ -288,8 +310,8 @@ export class OcctaxFormReleveService {
             );
           }
 
-          releve.date_min = this.formatDate(releve.date_min);
-          releve.date_max = this.formatDate(releve.date_max);
+          releve.date_min = this.occtaxFormService.formatDate(releve.date_min);
+          releve.date_max = this.occtaxFormService.formatDate(releve.date_max);
         }else{
           if (releve.date_min.year != releve.date_max.year || releve.date_min.month != releve.date_max.month || releve.date_min.day != releve.date_max.day) {
             this.showTime = true;
@@ -305,14 +327,53 @@ export class OcctaxFormReleveService {
         }
 
         /*MET Champs additionnel*/
-        this.dynamicFormGroup = this.fb.group({});
-        if (releve.additional_fields){
-          for (const key of Object.keys(releve.additional_fields)){
-            releve[key] =  releve.additional_fields[key];
-            this.dynamicFormGroup.addControl(key, new FormControl(releve.additional_fields[key]));
+        let dynamiqueFormDataset = this.occtaxFormService.getAddDynamiqueFields(releve.id_dataset);
+        if (dynamiqueFormDataset){
+          if (dynamiqueFormDataset['RELEVE']){
+            this.dynamicFormGroup = this.fb.group({});
+            dynamiqueFormDataset['RELEVE'].map((widget) => {
+              //Formattage des dates
+              if(widget.type_widget == 'date'){
+                //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
+                if(typeof releve.additional_fields[widget.attribut_name] !== 'object'){
+                  releve.additional_fields[widget.attribut_name] = this.occtaxFormService.formatDate(releve.additional_fields[widget.attribut_name]);
+                }
+              }
+              //Formattage des nomenclatures
+              if(widget.type_widget == 'nomenclature'){
+                this.dataFormService.getNomenclatures([widget.code_nomenclature_type])
+                  .pipe(
+                    map((data) => {
+                      let values = [];
+                      for (let i = 0; i < data.length; i++) {
+                        data[i].values.forEach((element) => {
+                          element['nomenclature_mnemonique'] = data[i]['mnemonique'];
+                          values[element.id_nomenclature] = element;
+                        });
+                      }
+                      return values;
+                    })
+                  )
+                  .subscribe((nomenclatures) => {
+                    const res = nomenclatures.filter((item) => item !== undefined)
+                    .find(n => (n['label_fr'] === releve.additional_fields[widget.attribut_name]));
+                    if(res){
+                      releve.additional_fields[widget.attribut_name] = res.id_nomenclature;
+                    }else{
+                      releve.additional_fields[widget.attribut_name] = "";
+                    }
+                    releve[widget.attribut_name] =  releve.additional_fields[widget.attribut_name];
+                    this.dynamicFormGroup.setControl(widget.attribut_name, new FormControl(releve.additional_fields[widget.attribut_name]));
+                    //this.propertiesForm.setControl('additional_fields', this.dynamicFormGroup);
+                  });
+                }
+                releve[widget.attribut_name] =  releve.additional_fields[widget.attribut_name];
+                this.dynamicFormGroup.addControl(widget.attribut_name, new FormControl(releve.additional_fields[widget.attribut_name]));
+                
+            })
+            this.propertiesForm.setControl('additional_fields', this.dynamicFormGroup);
           }
         }
-        this.propertiesForm.setControl('additional_fields', this.dynamicFormGroup);
 
         return releve;
       })
@@ -340,8 +401,8 @@ export class OcctaxFormReleveService {
         'id_dataset': previousReleve.properties.id_dataset,
         'observers': previousReleve.properties.observers,
         'observers_txt': previousReleve.properties.observers_txt,
-        'date_min': this.formatDate(previousReleve.properties.date_min),
-        'date_max': this.formatDate(previousReleve.properties.date_max),
+        'date_min': this.occtaxFormService.formatDate(previousReleve.properties.date_min),
+        'date_max': this.occtaxFormService.formatDate(previousReleve.properties.date_max),
         'hour_min': previousReleve.properties.hour_min,
         'hour_max': previousReleve.properties.hour_max,
       }
@@ -405,15 +466,6 @@ export class OcctaxFormReleveService {
     });
   }
 
-  private formatDate(strDate) {
-    const date = new Date(strDate);
-    return {
-      year: date.getFullYear(),
-      month: date.getMonth() + 1,
-      day: date.getDate(),
-    };
-  }
-
   releveFormValue() {
     let value = JSON.parse(JSON.stringify(this.releveForm.value))
 
@@ -427,6 +479,29 @@ export class OcctaxFormReleveService {
       value.properties.observers = value.properties.observers.map(
         (observer) => observer.id_role
       );
+    }
+
+    /* Champs additionnels - formatter les dates et les nomenclatures */
+    let dynamiqueFormDataset = this.occtaxFormService.getAddDynamiqueFields(value.properties.id_dataset);
+    if (dynamiqueFormDataset){
+      if (dynamiqueFormDataset['RELEVE']){
+        dynamiqueFormDataset['RELEVE'].map((widget) => {
+          if(widget.type_widget == 'date'){
+            value.properties.additional_fields[widget.attribut_name] = this.dateParser.format(
+              value.properties.additional_fields[widget.attribut_name]
+            );
+          }
+          if(widget.type_widget == 'nomenclature'){
+            const res = this.occtaxFormService.nomenclatureAdditionnel.filter((item) => item !== undefined)
+            .find(n => n['id_nomenclature'] === value.properties.additional_fields[widget.attribut_name]);
+            if(res){
+              value.properties.additional_fields[widget.attribut_name] = res.label_fr;
+            }else{
+              value.properties.additional_fields[widget.attribut_name] = "";
+            }
+          }
+        })
+      }
     }
 
     return value;

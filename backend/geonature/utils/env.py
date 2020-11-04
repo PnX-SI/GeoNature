@@ -11,6 +11,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm.exc import NoResultFound
 from flask_marshmallow import Marshmallow
 
+from flask import current_app
+
 # Define GEONATURE_VERSION before import config_shema module
 # because GEONATURE_VERSION is imported in this module
 ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent
@@ -137,6 +139,7 @@ def load_config(config_file=None):
         str(get_config_file_path(config_file)), GnGeneralSchemaConf
     )
 
+
     return ChainMap({}, configs_py, configs_gn)
 
 
@@ -154,7 +157,16 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
         register the configuration and import the module programaticly
     """
     with app.app_context():
-        from geonature.core.gn_commons.models import TModules
+        from geonature.core.gn_commons.models import TModules, TParameters
+        #AJOUT DE L'URL DE L'API EN BDD
+        parameter_url_api = DB.session.query(TParameters).filter(TParameters.parameter_name == "url_api").one_or_none()
+        if not parameter_url_api:
+            #DB.session.delete(parameter_url_api)
+            #DB.session.commit()
+            parameter_url_api = TParameters(parameter_name="url_api", parameter_desc="url de l'api geonature", parameter_value=current_app.config["API_ENDPOINT"])
+            DB.session.add(parameter_url_api)
+            DB.session.commit()
+
 
         modules = DB.session.query(TModules).filter(TModules.active_backend == True)
         module_info = {}
