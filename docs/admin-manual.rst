@@ -1331,7 +1331,7 @@ Dans tous les exports, l'ordre et le nom des colonnes sont basés sur la vue ser
 
 Les exports (CSV, GeoJson, Shapefile) sont basés sur la vue ``gn_synthese.v_synthese_for_export``.
         
-Il est possible de masquer des champs présents dans les exports. Pour cela éditez la variable ``EXPORT_COLUMNS``.
+Il est possible de ne pas intégrer certains champs présents dans cette vue d'export. Pour cela modifier le paramètre ``EXPORT_COLUMNS``.
      
 Enlevez la ligne de la colonne que vous souhaitez désactiver. Les noms de colonne de plus de 10 caractères seront tronqués dans le fichier shapefile.
 
@@ -1339,47 +1339,81 @@ Enlevez la ligne de la colonne que vous souhaitez désactiver. Les noms de colon
 
     [SYNTHESE]
         EXPORT_COLUMNS   = [
-            "idSynthese",
-            "permId",
-            "permIdGrp",
-            "dateDebut",
-            "dateFin",
-            "observer",
-            "altMin",
-            "altMax",
-            "denbrMin",
-            "denbrMax",
-            "EchanPreuv",
-            "PreuvNum",
-            "PreuvNoNum",
-            "obsCtx",
-            "obsDescr",
-            "ObjGeoTyp",
-            "methGrp",
-            "obsMeth",
-            "ocEtatBio",
-            "ocStatBio",
-            "ocNat",
-            "preuveOui",
-            "validStat",
-            "difNivPrec",
-            "ocStade",
-            "ocSex",
-            "objDenbr",
-            "denbrTyp",
-            "sensiNiv",
-            "statObs",
-            "dEEFlou",
-            "statSource",
-            "typInfGeo",
-            "methDeterm",
-            "jddCode",
-            "cdNom",
-            "cdRef",
-            "nomCite",
-            "wkt",
-            "lastAction",
-            "validateur"
+          "date_debut",
+          "date_fin",
+          "heure_debut",
+          "heure_fin",
+          "cd_nom",
+          "cd_ref",
+          "nom_valide",
+          "nom_vernaculaire",
+          "nom_cite",
+          "regne",
+          "group1_inpn",
+          "group2_inpn",
+          "classe",
+          "ordre",
+          "famille",
+          "rang_taxo",
+          "nombre_min",
+          "nombre_max",
+          "alti_min",
+          "alti_max",
+          "prof_min",
+          "prof_max",
+          "observateurs",
+          "determinateur",
+          "communes",
+          "x_centroid_4326",
+          "y_centroid_4326",
+          "geometrie_wkt_4326",
+          "nom_lieu",
+          "comment_releve",
+          "comment_occurrence",
+          "validateur",
+          "niveau_validation",
+          "date_validation",
+          "comment_validation",
+          "preuve_numerique_url",
+          "preuve_non_numerique",
+          "jdd_nom",
+          "jdd_uuid",
+          "jdd_id",
+          "ca_nom",
+          "ca_uuid",
+          "ca_id",
+          "cd_habref",
+          "cd_habitat",
+          "nom_habitat",
+          "precision_geographique",
+          "nature_objet_geo",
+          "type_regroupement",
+          "methode_regroupement",
+          "technique_observation",
+          "biologique_statut",
+          "etat_biologique",
+          "biogeographique_statut",
+          "naturalite",
+          "preuve_existante",
+          "niveau_precision_diffusion",
+          "stade_vie",
+          "sexe",
+          "objet_denombrement",
+          "type_denombrement",
+          "niveau_sensibilite",
+          "statut_observation",
+          "floutage_dee",
+          "statut_source",
+          "type_info_geo",
+          "methode_determination",
+          "comportement",
+          "reference_biblio",
+          "id_synthese",
+          "id_origine",
+          "uuid_perm_sinp",
+          "uuid_perm_grp_sinp",
+          "date_creation",
+          "date_modification"
         ]
 
 :Note:
@@ -1394,16 +1428,16 @@ La vue doit OBLIGATOIREMENT contenir les champs :
 
 - geojson_4326
 - geojson_local
-- idSynthese,
-- jddId (l'ID du jeu de données)
+- id_synthese,
+- jdd_id (l'ID du jeu de données)
 - id_digitiser
-- observer
+- observateurs
 
 Ces champs doivent impérativement être présents dans la vue, mais ne seront pas nécessairement dans le fichier d'export si ils ne figurent pas dans la variable ``EXPORT_COLUMNS``. De manière générale, préférez rajouter des champs plutôt que d'en enlever !
 
-Le nom de ces champs peuvent cependant être modifié. Dans ce cas, modifiez le fichier ``geonature_config.toml``, section ``SYNTHESE`` parmis les variables suivantes (``EXPORT_ID_SYNTHESE_COL, EXPORT_ID_DATASET_COL, EXPORT_ID_DIGITISER_COL, EXPORT_OBSERVERS_COL, EXPORT_GEOJSON_4326_COL, EXPORT_GEOJSON_LOCAL_COL``).
+Le nom de ces champs peut cependant être modifié. Dans ce cas, modifiez le fichier ``geonature_config.toml``, section ``SYNTHESE`` parmis les variables suivantes (``EXPORT_ID_SYNTHESE_COL, EXPORT_ID_DATASET_COL, EXPORT_ID_DIGITISER_COL, EXPORT_OBSERVERS_COL, EXPORT_GEOJSON_4326_COL, EXPORT_GEOJSON_LOCAL_COL``).
 
-NB: Lorsqu'on effectue une recherche dans la synthèse, on interroge la vue ``gn_synthese.v_synthese_for_web_app``. L'interface web passe ensuite une liste d'``id_synthese`` à la vue ``gn_synthese.v_synthese_for_export``correspondant à la recherche précedemment effectuée (ce qui permet à cette seconde vue d'être totalement modifiable).
+NB : Lorsqu'on effectue une recherche dans la synthèse, on interroge la vue ``gn_synthese.v_synthese_for_web_app``. L'interface web passe ensuite une liste d'``id_synthese`` à la vue ``gn_synthese.v_synthese_for_export`` correspondant à la recherche précedemment effectuée (ce qui permet à cette seconde vue d'être totalement modifiable).
 
 La vue ``gn_synthese.v_synthese_for_web_app`` est taillée pour l'interface web, il ne faut donc PAS la modifier. 
 
