@@ -14,7 +14,7 @@ CHANGELOG
 * Ajout d'un widget de type "HTML" dans les formulaires dynamiques, permettant d'ajouter des informations dans un formulaire (#1043 et #1068 par @jpm-cbna)
 * Ajout de la possibilité d'ajouter un texte d'aide sur les champs des formulaires dynamiques (#1065 par @jpm-cbna)
 * Ajout de la possibilité de définir un min et un max au composant commun ``date`` (#1069 par @jpm-cbna)
-* Ajout de la possibilité de définir le nombre de lignes du composant commun ``textarea`` (1067 par @jpm-cbna)
+* Ajout de la possibilité de définir le nombre de lignes du composant commun ``textarea`` (#1067 par @jpm-cbna)
 * Ajout de la possibilité de contrôler par une expression régulière le contenu d'un champs de type ``text`` des formulaires dynamiques (#1073 par @FlorentRICHARD44)
 * Ajout de la possibilité de masquer certains champs du composant ``media`` (#1072, #1078 et #1083 par @metourneau)
 * Ajout de spinner sur les statistiques de la page d'accueil (#1086 par @jpm-cbna)
