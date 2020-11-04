@@ -20,7 +20,7 @@ digital_proof_validator = true
 DATE_FORM_WITH_TODAY = true
 
 # Displays the possibility for the user to indicate a default value for the different fields of the form
-ENABLE_SETTINGS_TOOLS = true
+ENABLE_SETTINGS_TOOLS = false
 
 # -------- MAPLIST PARAMETER ------------
 
