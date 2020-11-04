@@ -24,11 +24,9 @@ CHANGELOG
 
 **🐛 Corrections**
 
-* Occtax : correction du problème d'installation du module dans le fichier ``schemas.py``
 * Correction de l'affichage des noms des validateurs sur la liste dans le module validation (#1091 par @lpofredc)
 * Corrections mineures de l'export des observations de la Synthèse (#1108)
 * Synthèse : Correction du masquage de la recherche par arbre taxonomique (#1057 par @jpm-cbna)
-* Synthese : correction de la fonctions SQL ``gn_synthese.import_row_from_table`` et répercussion dans le fichier ``gn_synthese/process.py``
 * Ajout du champs ``id_nomenclature_biogeo_status`` dans la Synthese (correspondance standard : statut biogéographique). La BDD est remplie avec la valeur par défaut de la table ``gn_synthese.default_nomenclature_value`` (valeur = non renseignée)
 * Accueil : Correction de l'affichage du nom du module (#1087)
 * Correction du trigger de mise à jour d'Occtax vers la Synthèse (champs ``the_geom_local`` non mis à jour) (#1117 par @jbrieuclp)
@@ -51,14 +49,14 @@ CHANGELOG
 **🐛 Corrections**
 
 * Occtax : correction du problème d'installation du module dans le fichier ``schemas.py``
-* Synthese : correction de la fonctions SQL ``gn_synthese.import_row_from_table`` et répercution dans le fichier ``gn_synthese/process.py``
+* Synthese : correction de la fonctions SQL ``gn_synthese.import_row_from_table`` et répercussion dans le fichier ``gn_synthese/process.py``
 
 **⚠️ Notes de version**
 
 Si vous mettez à jour GeoNature :
 
 * Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
-* Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.1to2.5.2.sql).
+* Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.1to2.5.2.sql)
 
 2.5.1 (2020-10-06)
 ------------------
