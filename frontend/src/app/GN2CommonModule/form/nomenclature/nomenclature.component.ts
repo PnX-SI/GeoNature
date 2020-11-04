@@ -10,7 +10,7 @@ import {
   EventEmitter
 } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { DataFormService } from '../data-form.service';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
@@ -130,8 +130,13 @@ export class NomenclatureComponent extends GenericFormComponent
                       .pipe(
                         map(data => {
                           this._currentCdNomenclature = data.values;
-                        this.labelsLoaded.emit(data.values);
+                          this.labelsLoaded.emit(data.values);
                           return data.values;
+                        }),
+                        tap(() => {
+                          if (this.multiSelect && Array.isArray(this.parentFormControl.value)) {
+                            this.parentFormControl.setValue(this.parentFormControl.value.map(val=>val.id_nomenclature));
+                          }
                         })
                       );
   }
