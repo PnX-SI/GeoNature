@@ -140,9 +140,9 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
               {})[this.keyValue]
           : val
       );
-      console.log(res);
       this.parentFormControl.patchValue(this.multiple ? res : res[0]);
     }
+    this.parentFormControl.markAsTouched();
   }
 
   getData() {
