@@ -15,15 +15,15 @@ CHANGELOG
 * Mise en place de l'héritage du CRUVED au niveau des objets des modules (#1028)
 * Révision de l'export des observations de la Synthèse (noms plus lisibles, ajout des communes et d'informations taxonomiques, complément des champs existants (#755)
 * Ajout d'un paramètre permettant d'ajouter un message personnalisé à la fin des emails (inscriptions, exports...) (#1050 par @jpm-cbna)
-* Ajout d'une alerte de dépreciation sur les fonctions ``utils-sqlalchemy`` présentes dans GeoNature
+* Ajout d'une alerte de dépréciation sur les fonctions ``utils-sqlalchemy`` présentes dans GeoNature
 * Ajout d'un widget de type "HTML" dans les formulaires dynamiques, permettant d'ajouter des informations dans un formulaire (#1043 et #1068 par @jpm-cbna)
 * Ajout de la possibilité d'ajouter un texte d'aide sur les champs des formulaires dynamiques (#1065 par @jpm-cbna)
 * Ajout de la possibilité de définir un min et un max au composant commun ``date`` (#1069 par @jpm-cbna)
 * Ajout de la possibilité de définir le nombre de lignes du composant commun ``textarea`` (#1067 par @jpm-cbna)
 * Ajout de la possibilité de contrôler par une expression régulière le contenu d'un champs de type ``text`` des formulaires dynamiques (#1073 par @FlorentRICHARD44)
 * Ajout de la possibilité de masquer certains champs du composant ``media`` (#1072, #1078 et #1083 par @metourneau)
-* Ajout de spinner sur les statistiques de la page d'accueil (#1086 par @jpm-cbna)
-* Ajout d'un composant d'autocomplete multiselect ``pnx-taxa`` permettant de rechercher des taxons dans tous l'arbre taxonomique et de limiter la recherche à un rang
+* Ajout d'un spinner sur les statistiques de la page d'accueil (#1086 par @jpm-cbna)
+* Ajout d'un composant d'autocomplete multiselect ``pnx-taxa`` permettant de rechercher des taxons dans tout l'arbre taxonomique et de limiter la recherche à un rang
 * Possibilité d'ajouter plusieurs cartes sur la même page à l'aide du composant ``pnx-map``
 * Homogénéisation du style du code et documentation des pratiques de développement
 
@@ -39,11 +39,11 @@ CHANGELOG
 * Correction de l'affichage en double des markers dans Leaflet.draw (#1095 par @FlorentRICHARD44)
 * Synthèse : Correction des filtres avancés par technique d'observation et méthode de détermination (#1110 par @jbrieuclp)
 * Recréation du fichier de configuration à chaque installation (#1074 par @etot)
-* Annulation de l'insertion du module lorsqu'une erreur est lévée à l'installation d'un module
+* Annulation de l'insertion du module lorsqu'une erreur est levée à l'installation d'un module
 
 **⚠️ Notes de version**
 
-* Désormais les objets des modules (par exemple les objets 'Permissions' et 'Nomenclatures' du module 'ADMIN') héritent automatiquement des permissions définies au niveau du module parent et à défaut au niveau de GeoNature  (#1028). Il s'agit d'une évolution de mise en cohérence puisque les modules héritaient déja des permissions de GeoNature, mais pas leurs objets. Si vous avez défini des permissions particulières aux niveaux des objets, vérifier leur cohérence avec le nouveau fonctionnement. NB : si vous aviez mis des droits R=0 pour un groupe au module 'ADMIN', les utilisateurs de ce groupe ne pourront pas accéder aux sous-modules 'permissions' et 'nomenclatures'.
+* Désormais les objets des modules (par exemple les objets 'Permissions' et 'Nomenclatures' du module 'ADMIN') héritent automatiquement des permissions définies au niveau du module parent et à défaut au niveau de GeoNature  (#1028). Il s'agit d'une évolution de mise en cohérence puisque les modules héritaient déjà des permissions de GeoNature, mais pas leurs objets. Si vous avez défini des permissions particulières aux niveaux des objets, vérifier leur cohérence avec le nouveau fonctionnement. NB : si vous aviez mis des droits R=0 pour un groupe au module 'ADMIN', les utilisateurs de ce groupe ne pourront pas accéder aux sous-modules 'permissions' et 'nomenclatures'.
 * Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.2to2.5.3.sql). Attention, si vous avez customisé les vues des exports Occtax et Synthèse, elles seront supprimées et recrées automatiquement par le script SQL de mise à jour de la BDD de GeoNature pour intégrer leurs évolutions réalisées dans cette nouvelle version. Révisez éventuellement ces vues avant et/ou après la mise à jour.
 * Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application).
 * Vérifiez que la valeur du paramètre ``taxref_version`` dans la table ``gn_commons.t_parameters`` correspond bien à votre version actuelle de Taxref (11.0 ou 13.0).
