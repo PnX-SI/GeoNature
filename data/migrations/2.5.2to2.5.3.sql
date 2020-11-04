@@ -1,3 +1,4 @@
+-- Ajout champs "Statut biogéographique" dans la Synthèse
 INSERT INTO gn_synthese.defaults_nomenclatures_value (mnemonique_type, id_organism, regne, group2_inpn, id_nomenclature) VALUES
 ('STAT_BIOGEO',0,0,0, ref_nomenclatures.get_id_nomenclature('STAT_BIOGEO', '1'))
 ;
@@ -13,6 +14,7 @@ ALTER TABLE ONLY gn_synthese.synthese
 ALTER TABLE gn_synthese.synthese
   ADD CONSTRAINT check_synthese_biogeo_status CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_biogeo_status,'STAT_BIOGEO')) NOT VALID;
 
+-- Ajout de la nomenclature "Statut biogéographique" dans la vue décodant les nomenclatures
 DROP VIEW gn_synthese.v_synthese_decode_nomenclatures;
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_decode_nomenclatures AS
 SELECT
@@ -40,12 +42,10 @@ ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_behaviour) AS occ_beh
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_biogeo_status) AS occ_stat_biogeo
 FROM gn_synthese.synthese s;
 
-DROP VIEW gn_synthese.v_synthese_for_export;
-
 -- Refonte de la vue listant les observations pour l'export de la Synthèse
+DROP VIEW gn_synthese.v_synthese_for_export;
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
  SELECT 
-
     s.date_min::date AS date_debut,
     s.date_max::date AS date_fin,
     s.date_min::time AS heure_debut,
@@ -125,15 +125,14 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     s.meta_create_date AS date_creation,
     s.meta_update_date AS date_modification,
     COALESCE(s.meta_update_date, s.meta_create_date) AS derniere_action
-
    FROM gn_synthese.synthese s
      JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
      JOIN gn_meta.t_acquisition_frameworks af ON d.id_acquisition_framework = af.id_acquisition_framework
      LEFT OUTER JOIN (
         SELECT id_synthese, string_agg(DISTINCT area_name, ', ') AS communes
-        FROM gn_synthese.cor_area_synthese sa
-        LEFT OUTER JOIN ref_geo.l_areas a_1 ON sa.id_area = a_1.id_area
+        FROM gn_synthese.cor_area_synthese cas
+        LEFT OUTER JOIN ref_geo.l_areas a_1 ON cas.id_area = a_1.id_area
         JOIN ref_geo.bib_areas_types ta ON ta.id_type = a_1.id_type AND ta.type_code ='COM'
         GROUP BY id_synthese 
      ) sa ON sa.id_synthese = s.id_synthese
@@ -160,10 +159,8 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
      LEFT JOIN ref_nomenclatures.t_nomenclatures n22 ON s.id_nomenclature_biogeo_status = n22.id_nomenclature
      LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = s.cd_hab;
 
-
-DROP VIEW gn_synthese.v_metadata_for_export;
-
 -- Amélioration vue d'export des métadonnées
+DROP VIEW gn_synthese.v_metadata_for_export;
 CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS
  WITH count_nb_obs AS (
          SELECT count(*) AS nb_obs,
@@ -185,8 +182,9 @@ CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS
      LEFT JOIN utilisateurs.bib_organismes orga ON orga.id_organisme = act.id_organism
      LEFT JOIN utilisateurs.t_roles roles ON roles.id_role = act.id_role
      JOIN count_nb_obs ON count_nb_obs.id_dataset = d.id_dataset
-  GROUP BY d.id_dataset, d.unique_dataset_id, d.dataset_name, af.acquisition_framework_name, count_nb_obs.nb_obs, ca_uuid;
+  GROUP BY d.id_dataset, d.unique_dataset_id, d.dataset_name, af.acquisition_framework_name, af.unique_acquisition_framework_id, count_nb_obs.nb_obs;
 
+-- Correction du trigger de mise à jour de Occtax vers Synthèse (#1117)
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_releve()
   RETURNS trigger AS
 $BODY$
@@ -230,7 +228,8 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
-
+-- Mise à jour du champs the_geom_local de la Synthèse pour les observations venant d'Occtax 
+-- Par sécurité si ils ont été modifiés (#1117)
 UPDATE gn_synthese.synthese 
 SET the_geom_local = ST_transform(the_geom_4326, gn_commons.get_default_parameter('local_srid')::integer)
 WHERE id_source = (SELECT id_source FROM gn_synthese.t_sources WHERE name_source ilike 'Occtax');
