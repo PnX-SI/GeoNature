@@ -72,30 +72,29 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit {
       params['module_code'] = this.moduleCode;
     }
 
-    this.dataSets = this._dfs
-                          .getDatasets(params)
-                          .pipe(
-                            map(
-                              res => {
-                                if (res['with_mtd_errors']) {
-                                  this._commonService.translateToaster('error', 'MetaData.JddErrorMTD');
-                                }
-                                const c = new Intl.Collator();
-                                return res.data.sort((a,b)=> c.compare(a.dataset_name, b.dataset_name));
-                              },
-                              error => {
-                                if (error.status === 500) {
-                                  this._commonService.translateToaster('error', 'MetaData.JddError');
-                                } else if (error.status === 404) {
-                                  if (AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
-                                    this._commonService.translateToaster('warning', 'MetaData.NoJDDMTD');
-                                  } else {
-                                    this._commonService.translateToaster('warning', 'MetaData.NoJDD');
-                                  }
-                                }
-                              }
-                            ),
-                            tap(datasets=>this.valueLoaded.emit({ value: datasets }))
-                          );
+    this.dataSets = this._dfs.getDatasets(params)
+      .pipe(
+        map(
+          res => {
+            if (res['with_mtd_errors']) {
+              this._commonService.translateToaster('error', 'MetaData.JddErrorMTD');
+            }
+            const c = new Intl.Collator();
+            return res.data.sort((a,b)=> c.compare(a.dataset_name, b.dataset_name));
+          },
+          error => {
+            if (error.status === 500) {
+              this._commonService.translateToaster('error', 'MetaData.JddError');
+            } else if (error.status === 404) {
+              if (AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
+                this._commonService.translateToaster('warning', 'MetaData.NoJDDMTD');
+              } else {
+                this._commonService.translateToaster('warning', 'MetaData.NoJDD');
+              }
+            }
+          }
+        ),
+        tap(datasets=>this.valueLoaded.emit({ value: datasets }))
+      );
   }
 }

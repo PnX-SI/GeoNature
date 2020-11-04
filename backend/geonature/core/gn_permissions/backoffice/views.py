@@ -81,11 +81,7 @@ def permission_form(info_role, id_module, id_role, id_object=None):
         # get the real cruved of user to set a warning
         real_cruved = (
             DB.session.query(CorRoleActionFilterModuleObject)
-            .filter_by(
-                id_module=id_module,
-                id_role=id_role,
-                id_object=object_instance.id_object,
-            )
+            .filter_by(id_module=id_module, id_role=id_role, id_object=object_instance.id_object,)
             .all()
         )
         if len(real_cruved) == 0 and not module.module_code == "ADMIN":
@@ -124,12 +120,10 @@ def permission_form(info_role, id_module, id_role, id_object=None):
                     DB.session.query(CorRoleActionFilterModuleObject)
                     .filter_by(**privilege)
                     .join(
-                        TFilters,
-                        TFilters.id_filter == CorRoleActionFilterModuleObject.id_filter,
+                        TFilters, TFilters.id_filter == CorRoleActionFilterModuleObject.id_filter,
                     )
                     .join(
-                        BibFiltersType,
-                        BibFiltersType.id_filter_type == TFilters.id_filter_type,
+                        BibFiltersType, BibFiltersType.id_filter_type == TFilters.id_filter_type,
                     )
                     .filter(BibFiltersType.code_filter_type == "SCOPE")
                     .first()
@@ -234,7 +228,7 @@ def user_cruved(id_role):
                 module_code=module["module_code"],
                 object_code=_object.code_object,
             )
-            object_as_dict["cruved"] = beautifulize_cruved(actions_label, object_cruved)
+            object_as_dict["cruved"] = (beautifulize_cruved(actions_label, object_cruved), herited)
             module_objects_as_dict.append(object_as_dict)
 
         module["module_objects"] = module_objects_as_dict
@@ -310,10 +304,7 @@ def other_permissions_form(id_role, id_filter_type, id_permission=None):
     if id_permission:
         perm = DB.session.query(CorRoleActionFilterModuleObject).get(id_permission)
         form = OtherPermissionsForm(
-            id_filter_type,
-            action=perm.id_action,
-            filter=perm.id_filter,
-            module=perm.id_module,
+            id_filter_type, action=perm.id_action, filter=perm.id_filter, module=perm.id_module,
         )
     else:
         form = OtherPermissionsForm(id_filter_type)
@@ -422,8 +413,5 @@ def delete_filter(id_filter):
     DB.session.commit()
     flash("Filtre supprimé avec succès")
     return redirect(
-        url_for(
-            "gn_permissions_backoffice.filter_list",
-            id_filter_type=my_filter.id_filter_type,
-        )
+        url_for("gn_permissions_backoffice.filter_list", id_filter_type=my_filter.id_filter_type,)
     )

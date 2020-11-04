@@ -64,8 +64,8 @@ class TestGnPermissionsTools:
 
     def test_get_user_permissions(self):
         """
-                Test get_user_permissions
-            """
+            Test get_user_permissions
+        """
         user_ok = {"id_role": 1, "nom_role": "Administrateur"}
         perms = get_user_permissions(user_ok, code_action="C", code_filter_type="SCOPE")
         assert isinstance(perms, list)
@@ -74,9 +74,7 @@ class TestGnPermissionsTools:
         fake_user = {"id_role": 220, "nom_role": "Administrateur"}
 
         with pytest.raises(InsufficientRightsError):
-            perms = get_user_permissions(
-                fake_user, code_action="C", code_filter_type="SCOPE"
-            )
+            perms = get_user_permissions(fake_user, code_action="C", code_filter_type="SCOPE")
         # with module code
         perms = get_user_permissions(
             user_ok, code_action="C", code_filter_type="SCOPE", module_code="ADMIN"
@@ -84,21 +82,17 @@ class TestGnPermissionsTools:
         max_perm = get_max_perm(perms)
         assert max_perm.value_filter == "3"
 
-        # with code_object
+        # with code_object -> heritage
         perms = get_user_permissions(
-            user_ok,
-            code_action="C",
-            code_filter_type="SCOPE",
-            code_object="PERMISSIONS",
+            user_ok, code_action="C", code_filter_type="SCOPE", code_object="PERMISSIONS",
         )
         assert isinstance(perms, list)
         assert get_max_perm(perms).value_filter == "3"
 
+
     def test_cruved_scope_for_user_in_module(self):
         # get cruved for geonature
-        cruved, herited = cruved_scope_for_user_in_module(
-            id_role=9, module_code="GEONATURE"
-        )
+        cruved, herited = cruved_scope_for_user_in_module(id_role=9, module_code="GEONATURE")
         assert herited == False
         assert cruved == {"C": "3", "R": "3", "U": "3", "V": "3", "E": "3", "D": "3"}
 
@@ -130,9 +124,7 @@ class TestGnPermissionsView:
         """
         token = get_token(self.client)
         self.client.set_cookie("/", "token", token)
-        response = self.client.get(
-            url_for("gn_permissions_backoffice.user_cruved", id_role=1)
-        )
+        response = self.client.get(url_for("gn_permissions_backoffice.user_cruved", id_role=1))
         assert response.status_code == 200
         assert b"CRUVED de l'utilisateur Admin" in response.data
         # check if there is a button to edit
@@ -155,22 +147,6 @@ class TestGnPermissionsView:
         )
         assert response.status_code == 200
 
-    def test_get_cruved_scope_form_not_allowed(self):
-        """
-            Test get user cruved form page
-        """
-        # with user agent
-        token = get_token(self.client, login="agent", password="admin")
-        self.client.set_cookie("/", "token", token)
-        with pytest.raises(InsufficientRightsError):
-            response = self.client.get(
-                url_for(
-                    "gn_permissions_backoffice.permission_form",
-                    id_role=1,
-                    id_module=0,
-                    id_object=None,
-                )
-            )
 
     def test_post_cruved_scope_form(self):
         """
@@ -195,10 +171,7 @@ class TestGnPermissionsView:
         permissions = (
             DB.session.query(VUsersPermissions)
             .filter_by(
-                id_role=15,
-                module_code="GEONATURE",
-                code_object="ALL",
-                code_filter_type="SCOPE",
+                id_role=15, module_code="GEONATURE", code_object="ALL", code_filter_type="SCOPE",
             )
             .all()
         )
@@ -219,9 +192,7 @@ class TestGnPermissionsView:
         """
         token = get_token(self.client)
         self.client.set_cookie("/", "token", token)
-        response = self.client.get(
-            url_for("gn_permissions_backoffice.user_cruved", id_role=1)
-        )
+        response = self.client.get(url_for("gn_permissions_backoffice.user_cruved", id_role=1))
         assert response.status_code == 200
         assert b"CRUVED de l'utilisateur Administrateur" in response.data
 
@@ -247,9 +218,7 @@ class TestGnPermissionsView:
 
         response = self.client.post(
             url_for(
-                "gn_permissions_backoffice.other_permissions_form",
-                id_role=1,
-                id_filter_type=4,
+                "gn_permissions_backoffice.other_permissions_form", id_role=1, id_filter_type=4,
             ),
             data=valid_data,
         )
@@ -273,9 +242,7 @@ class TestGnPermissionsView:
 
         response = self.client.post(
             url_for(
-                "gn_permissions_backoffice.other_permissions_form",
-                id_role=1,
-                id_filter_type=4,
+                "gn_permissions_backoffice.other_permissions_form", id_role=1, id_filter_type=4,
             ),
             data=wrong_data,
         )
@@ -329,8 +296,7 @@ class TestGnPermissionsView:
         self.client.set_cookie("/", "token", token)
 
         response = self.client.post(
-            url_for("gn_permissions_backoffice.filter_form", id_filter_type=4),
-            data=data,
+            url_for("gn_permissions_backoffice.filter_form", id_filter_type=4), data=data,
         )
 
         assert response.status_code == 302
@@ -407,4 +373,3 @@ class TestGnPermissionsView:
             url_for("gn_permissions_backoffice.delete_filter", id_filter=500)
         )
         assert response.status_code == 302
-

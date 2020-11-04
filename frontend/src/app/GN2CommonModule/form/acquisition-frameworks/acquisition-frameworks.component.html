@@ -1,14 +1,23 @@
 <small> {{label }} </small>
-<ng-select [ngClass]="class"
-    [items]="acquisitionFrameworks | async"
-    bindLabel="acquisition_framework_name"
-    bindValue="id_acquisition_framework"
-    [placeholder]="label"
-    [multiple]="multiSelect"
-    [clearable]="clearable"
-    [virtualScroll]="true"
-    [formControl]="parentFormControl">
-  <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
-        <div matTooltip="{{item.acquisition_framework_name}}"><span class="pre-wrap">{{item.acquisition_framework_name}}</span></div>
-    </ng-template>
+<ng-select 
+  [ngClass]="class"
+  [items]="acquisitionFrameworks | async"
+  bindLabel="acquisition_framework_name"
+  bindValue="id_acquisition_framework"
+  [placeholder]="label"
+  [multiple]="multiSelect"
+  [clearable]="clearable"
+  [virtualScroll]="true"
+  [formControl]="parentFormControl"
+>
+  <ng-template 
+    ng-option-tmp 
+    let-item="item" 
+    let-index="index" 
+    let-search="searchTerm"
+  >
+    <div matTooltip="{{item.acquisition_framework_name}}">
+      <span class="pre-wrap">{{item.acquisition_framework_name}}</span>
+    </div>
+  </ng-template>
 </ng-select>

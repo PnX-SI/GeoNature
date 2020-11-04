@@ -27,5 +27,5 @@ INSERT INTO defaults_nomenclatures_value (mnemonique_type, id_organism, regne, g
 ,('STATUT_SOURCE',0,0,0,ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE','NSP'))
 ,('METH_DETERMIN',0,0,0,ref_nomenclatures.get_id_nomenclature('METH_DETERMIN','1'))
 ,('OCC_COMPORTEMENT',0,0,0, ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '0'))
-
+,('STAT_BIOGEO',0,0,0, ref_nomenclatures.get_id_nomenclature('STAT_BIOGEO', '1'))
 ;

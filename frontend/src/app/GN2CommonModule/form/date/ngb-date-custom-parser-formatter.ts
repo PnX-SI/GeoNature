@@ -21,11 +21,11 @@ function toInteger(value: any): number {
 }
 
 /**
-*  Format un objet NgbDateStruc au format FR dd/mm/aaaa
-*  return string
-*
-*  ex usage : intégrer {provide: NgbDateParserFormatter, useClass: NgbDateFRParserFormatter} dans providers: [] d'un Component
-**/
+ *  Format un objet NgbDateStruc au format FR dd/mm/aaaa
+ *  return string
+ *
+ *  ex usage : intégrer {provide: NgbDateParserFormatter, useClass: NgbDateFRParserFormatter} dans providers: [] d'un Component
+ **/
 @Injectable()
 export class NgbDateFRParserFormatter extends NgbDateParserFormatter {
   parse(value: string): DateStruc {

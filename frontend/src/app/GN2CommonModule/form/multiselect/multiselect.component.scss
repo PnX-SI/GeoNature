@@ -4,7 +4,7 @@ li {
 }
 
 ul {
-  padding-left: 0px;
+  padding-left: 0;
 }
 
 .full-width {
@@ -19,6 +19,10 @@ ul {
   margin-top: 2px;
   margin-left: 3px;
   margin-bottom: 2px;
+}
+
+.input-value .remove-button {
+  padding: 0.2rem 0.2rem 0.2rem 0.3rem;
 }
 
 .single-value {
@@ -58,8 +62,8 @@ ul {
 }
 
 .select-data {
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
 }
 
 #search-input {
@@ -80,7 +84,7 @@ ul {
 }
 
 ul {
-  margin-bottom: 0px;
+  margin-bottom: 0;
   padding: 5px;
 }
 

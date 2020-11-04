@@ -8,35 +8,23 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
   selector: 'pnx-metadata-actor',
   templateUrl: 'actors.component.html'
 })
-
 export class ActorComponent implements OnInit {
   @Input() parentFormArray: FormArray;
   public organisms: Observable<Array<any>>;
   public roles: Observable<Array<any>>;
-  constructor(private _dfs: DataFormService) { }
+  constructor(private _dfs: DataFormService) {}
 
   ngOnInit() {
-    this.getOrganisms();
-    this.getRoles();
+    this.organisms = this._dfs.getOrganisms()
+      .pipe(
+        map(data => data)
+      );
+    this.roles = this._dfs.getRoles({'group': false})
+      .pipe(
+        map(data => data)
+      );
   }
   deleteFormArray(i) {
     this.parentFormArray.removeAt(i);
   }
-
-  getOrganisms(){
-    this.organisms = this._dfs
-                          .getOrganisms()
-                          .pipe(
-                            map(data => data)
-                          );
-  }
-
-  getRoles(){
-    this.roles = this._dfs
-                          .getRoles({'group': false})
-                          .pipe(
-                            map(data => data)
-                          );
-  }
-
 }

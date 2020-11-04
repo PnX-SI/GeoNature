@@ -125,7 +125,6 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
         ObserverSchema,
         many=True,
         allow_none=current_app.config.get("OCCTAX", {}).get("observers_txt", True),
-        # dump_only=True,
     )
     digitiser = MA.Nested(ObserverSchema, dump_only=True)
     dataset = MA.Nested(DatasetSchema, dump_only=True)

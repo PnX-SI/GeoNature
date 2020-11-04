@@ -15,7 +15,7 @@ delete L.Icon.Default.prototype['_getIconUrl'];
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
   iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
 });
 
 /**
@@ -54,7 +54,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   @Output() layerDrawed = new EventEmitter<GeoJSON>();
   @Output() layerDeleted = new EventEmitter<any>();
 
-  constructor(public mapservice: MapService, private _commonService: CommonService) { }
+  constructor(public mapservice: MapService, private _commonService: CommonService) {}
 
   ngOnInit() {
     this.map = this.mapservice.map;
@@ -157,7 +157,6 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     return geojson;
   }
 
-
   loadDrawfromGeoJson(geojson) {
     let layer;
     if (geojson.type === 'LineString' || geojson.type === 'MultiLineString') {
@@ -184,11 +183,6 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       if (this.bZoomOnPoint) {
         this.map.setView(layer.getLatLng(), 15);
       }
-    }
-    if (geojson.type === 'Point') {
-      const latLng = L.GeoJSON.coordsToLatLng(geojson.coordinates);
-      layer = L.circleMarker(latLng);
-      this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
     }
 
     if (layer.getBounds) {
@@ -227,7 +221,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       return;
     }
     this.mapservice.leafletDrawFeatureGroup.addTo(this.map);
-    this.drawControl._toolbars.draw.setOptions(this.options.draw)
+    this.drawControl._toolbars.draw.setOptions(this.options.draw);
     this.drawControl.addTo(this.map);
   }
 

@@ -17,7 +17,6 @@ import { leafletDrawOptions } from './leaflet-draw.options';
   encapsulation: ViewEncapsulation.None
 })
 export class GeometryFormComponent implements OnInit {
-
   public geojson;
   public leafletDrawOptions = leafletDrawOptions;
   // Disable the input: default to false
@@ -32,7 +31,6 @@ export class GeometryFormComponent implements OnInit {
 
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
-
 
   constructor() {}
 
@@ -61,7 +59,6 @@ export class GeometryFormComponent implements OnInit {
         this.leafletDrawOptions.draw.circlemarker = true;
         break;
       }
-
     }
 
     // init geometry from parentFormControl
@@ -73,11 +70,10 @@ export class GeometryFormComponent implements OnInit {
     this.parentFormControl.valueChanges.subscribe(geometry => {
       this.setGeojson(geometry);
     });
-
   }
 
   setGeojson(geometry) {
-    this.geojson = {'geometry': geometry};
+    this.geojson = { geometry: geometry };
   }
 
   // suivi composant => formControl
@@ -85,5 +81,4 @@ export class GeometryFormComponent implements OnInit {
     this.geojson = geojson;
     this.parentFormControl.setValue(geojson.geometry);
   }
-
 }

@@ -12,6 +12,7 @@ import sys
 from pathlib import Path
 from packaging import version
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import IntegrityError
 
 from geonature.utils.config_schema import GnGeneralSchemaConf, ManifestSchemaProdConf
 from geonature.utils import utilstoml
@@ -47,8 +48,8 @@ def check_gn_module_file(module_path):
 
 def check_manifest(module_path):
     """
-        Verification de la version de geonature par rapport au manifest
-        Retourne le code du module en majuscule
+    Verification de la version de geonature par rapport au manifest
+    Retourne le code du module en majuscule
     """
     log.info("checking manifest")
     configs_py = utilstoml.load_and_validate_toml(
@@ -56,19 +57,16 @@ def check_manifest(module_path):
     )
 
     gn_v = version.parse(GEONATURE_VERSION)
-    if gn_v < version.parse(
-        configs_py["min_geonature_version"]
-    ) and gn_v > version.parse(configs_py["max_geonature_version"]):
+    if gn_v < version.parse(configs_py["min_geonature_version"]) and gn_v > version.parse(
+        configs_py["max_geonature_version"]
+    ):
         raise GeoNatureError(
-            "Geonature version {} is imcompatible with module".format(
-                GEONATURE_VERSION)
+            "Geonature version {} is imcompatible with module".format(GEONATURE_VERSION)
         )
     for e_gn_v in configs_py["exclude_geonature_versions"]:
         if gn_v == version.parse(e_gn_v):
             raise GeoNatureError(
-                "Geonature version {} is imcompatible with module".format(
-                    GEONATURE_VERSION
-                )
+                "Geonature version {} is imcompatible with module".format(GEONATURE_VERSION)
             )
     log.info("...%s\n", MSG_OK)
     return configs_py["module_code"].upper()
@@ -76,16 +74,14 @@ def check_manifest(module_path):
 
 def copy_in_external_mods(module_path, module_code):
     """
-        Cree un lien symbolique du module dans GN_EXTERNAL_MODULE
+    Cree un lien symbolique du module dans GN_EXTERNAL_MODULE
     """
     # Suppression du lien symbolique s'il existe déja
     if (GN_EXTERNAL_MODULE / module_code).is_dir():
         cmd = "rm {}/{}".format(GN_EXTERNAL_MODULE.resolve(), module_code)
         subprocess.call(cmd.split(" "))
     # creation du lien symbolique
-    cmd = "ln -s {} {}/{}".format(
-        module_path, GN_EXTERNAL_MODULE.resolve(), module_code
-    )
+    cmd = "ln -s {} {}/{}".format(module_path, GN_EXTERNAL_MODULE.resolve(), module_code)
     try:
         assert subprocess.call(cmd.split(" ")) == 0
     except AssertionError as e:
@@ -94,15 +90,13 @@ def copy_in_external_mods(module_path, module_code):
 
 def gn_module_register_config(module_code):
     """
-        Création du fichier de configuration et
-        enregistrement des variables du module dans
-        le fichier conf_gn_module.toml du module
+    Création du fichier de configuration et
+    enregistrement des variables du module dans
+    le fichier conf_gn_module.toml du module
 
     """
     log.info("Register module")
-    conf_gn_module_path = str(
-        GN_EXTERNAL_MODULE / module_code / "config/conf_gn_module.toml"
-    )
+    conf_gn_module_path = str(GN_EXTERNAL_MODULE / module_code / "config/conf_gn_module.toml")
     # creation du fichier s'il n'existe pas
     config_file = open(conf_gn_module_path, "w+")
 
@@ -137,9 +131,7 @@ def gn_module_activate(module_code, activ_front, activ_back):
     # TODO gestion des erreurs
     if not (GN_EXTERNAL_MODULE / module_code).is_dir():
         raise GeoNatureError(
-            "Module {} is not activated (Not in external_module directory)".format(
-                module_code
-            )
+            "Module {} is not activated (Not in external_module directory)".format(module_code)
         )
     else:
         app = get_app_for_cmd(DEFAULT_CONFIG_FILE)
@@ -200,9 +192,9 @@ def gn_module_deactivate(module_code, activ_front, activ_back):
 
 def check_codefile_validity(module_path, module_code):
     """
-        Vérification que les fichiers nécessaires
-            au bon fonctionnement du module soient bien présents
-            et avec la bonne signature
+    Vérification que les fichiers nécessaires
+        au bon fonctionnement du module soient bien présents
+        et avec la bonne signature
     """
     log.info("Checking file conformity")
     # Installation
@@ -285,8 +277,8 @@ def check_codefile_validity(module_path, module_code):
 
 def create_external_assets_symlink(module_path, module_code):
     """
-        Create a symlink for the module assets
-        return True if module have a frontend. False otherwise
+    Create a symlink for the module assets
+    return True if module have a frontend. False otherwise
     """
     module_assets_dir = os.path.join(module_path, "frontend/assets")
 
@@ -302,10 +294,13 @@ def create_external_assets_symlink(module_path, module_code):
     try:
         if not os.path.isdir(geonature_asset_symlink):
             log.info("Create a symlink for assets \n")
-            assert subprocess.call(
-                ["ln", "-s", module_assets_dir, module_code],
-                cwd=str(ROOT_DIR / "frontend/src/external_assets"),
-            ) == 0
+            assert (
+                subprocess.call(
+                    ["ln", "-s", module_assets_dir, module_code],
+                    cwd=str(ROOT_DIR / "frontend/src/external_assets"),
+                )
+                == 0
+            )
         else:
             log.info("symlink already exist \n")
 
@@ -320,24 +315,29 @@ def install_frontend_dependencies(module_path):
     """
     Install module frontend dependencies in the GN node_modules directory
     """
-    log.info('Installing JS dependencies...')
-    frontend_module_path = Path(module_path) / 'frontend'
-    if (frontend_module_path / 'package.json').is_file():
+    log.info("Installing JS dependencies...")
+    frontend_module_path = Path(module_path) / "frontend"
+    if (frontend_module_path / "package.json").is_file():
         try:
             # To avoid Maximum call stack size exceeded on npm install - clear cache...
-            assert subprocess.call(
-                ['/bin/bash', '-i', '-c', 'nvm use'],
-                cwd=str(ROOT_DIR / "frontend")
-            ) == 0
-            assert subprocess.call(
-                ['npm', 'install', str(frontend_module_path), '--no-save'],
-                cwd=str(ROOT_DIR / "frontend")
-            ) == 0
+            assert (
+                subprocess.call(
+                    ["/bin/bash", "-i", "-c", "nvm use"], cwd=str(ROOT_DIR / "frontend")
+                )
+                == 0
+            )
+            assert (
+                subprocess.call(
+                    ["npm", "install", str(frontend_module_path), "--no-save"],
+                    cwd=str(ROOT_DIR / "frontend"),
+                )
+                == 0
+            )
         except Exception as ex:
-            log.info('Error while installing JS dependencies')
+            log.info("Error while installing JS dependencies")
             raise GeoNatureError(ex)
     else:
-        log.info('No package.json - skip js packages installation')
+        log.info("No package.json - skip js packages installation")
     log.info("...%s\n", MSG_OK)
 
 
@@ -346,6 +346,7 @@ def add_application_db(app, module_code, url, enable_frontend, enable_backend):
     from geonature.core.users.models import TApplications
     from geonature.core.gn_commons.models import TModules
 
+    new_module = True
     app_conf = load_config(DEFAULT_CONFIG_FILE)
     id_application_geonature = app_conf["ID_APPLICATION_GEONATURE"]
     # remove / at the end and at the beginning
@@ -358,11 +359,7 @@ def add_application_db(app, module_code, url, enable_frontend, enable_backend):
     with app.app_context():
         # try to write in gn_commons.t_module if not exist
         try:
-            module = (
-                DB.session.query(TModules)
-                .filter(TModules.module_code == module_code)
-                .one()
-            )
+            module = DB.session.query(TModules).filter(TModules.module_code == module_code).one()
         except NoResultFound:
             new_module = TModules(
                 module_code=module_code,
@@ -376,60 +373,75 @@ def add_application_db(app, module_code, url, enable_frontend, enable_backend):
             DB.session.add(new_module)
             DB.session.commit()
         else:
+            new_module = False
             log.info("the module is already in t_module, reactivate it")
             module.active = True
             DB.session.merge(module)
             DB.session.commit()
 
     log.info("...%s\n", MSG_OK)
+    return new_module
+
+
+def remove_application_db(app, module_code):
+    """
+    Fonction permettant de supprimer un module de la table TModules
+    Utilisé lorsqu'une erreur est lancée lors de l'installation d'un module
+    """
+
+    log.info("Remove the module in gn_commons.t_modules ... \n")
+    from geonature.core.gn_commons.models import TModules
+
+    with app.app_context():
+        # try to write in gn_commons.t_module if not exist
+        try:
+            DB.session.query(TModules).filter(TModules.module_code == module_code).delete()
+            DB.session.commit()
+        except NoResultFound:
+            log.info("Module not found")
+        except IntegrityError as exp:
+            log.error("Deletion error %s", exp)
+        except Exception as exp:
+            log.error("Error %s", exp)
+
+    log.info("...%s\n", MSG_OK)
 
 
 def create_module_config(app, module_code, mod_path=None, build=True):
     """
-        Create the frontend config
+    Create the frontend config
     """
     from geonature.core.gn_commons.models import TModules
 
     with app.app_context():
         if not mod_path:
             # get the symlink location to write the config file
-            mod_path = os.readlink(
-                str(GN_EXTERNAL_MODULE / module_code.lower()))
+            mod_path = os.readlink(str(GN_EXTERNAL_MODULE / module_code.lower()))
 
         # fetch the module in the DB from its name
         module_object = (
-            DB.session.query(TModules)
-            .filter(TModules.module_code == module_code.upper())
-            .one()
+            DB.session.query(TModules).filter(TModules.module_code == module_code.upper()).one()
         )
 
         # import du module dans le sys.path
         module_parent_dir = str(Path(mod_path).parent)
-        module_schema_conf = "{}.config.conf_schema_toml".format(
-            Path(mod_path).name
-        )  # noqa
+        module_schema_conf = "{}.config.conf_schema_toml".format(Path(mod_path).name)  # noqa
         sys.path.insert(0, module_parent_dir)
         module = __import__(module_schema_conf, globals=globals())
-        front_module_conf_file = os.path.join(
-            mod_path, "config/conf_gn_module.toml"
-        )  # noqa
+        front_module_conf_file = os.path.join(mod_path, "config/conf_gn_module.toml")  # noqa
         config_module = utilstoml.load_and_validate_toml(
             front_module_conf_file, module.config.conf_schema_toml.GnModuleSchemaConf
         )
         # set id_module and module_code
         config_module["ID_MODULE"] = module_object.id_module
         config_module["MODULE_CODE"] = module_object.module_code
-        config_module["MODULE_URL"] = module_object.module_path.replace(
-            " ", "")
+        config_module["MODULE_URL"] = module_object.module_path.replace(" ", "")
 
-        frontend_config_path = os.path.join(
-            mod_path, "frontend/app/module.config.ts"
-        )  # noqa
+        frontend_config_path = os.path.join(mod_path, "frontend/app/module.config.ts")  # noqa
         try:
             with open(str(ROOT_DIR / frontend_config_path), "w") as outputfile:
                 outputfile.write("export const ModuleConfig = ")
-                json.dump(config_module, outputfile,
-                          indent=True, sort_keys=True)
+                json.dump(config_module, outputfile, indent=True, sort_keys=True)
         except FileNotFoundError:
             log.info("No frontend config file")
         if build:

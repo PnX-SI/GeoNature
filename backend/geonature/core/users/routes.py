@@ -52,9 +52,7 @@ def getRolesByMenuId(id_menu):
     parameters = request.args
     if parameters.get("nom_complet"):
         q = q.filter(
-            VUserslistForallMenu.nom_complet.ilike(
-                "{}%".format(parameters.get("nom_complet"))
-            )
+            VUserslistForallMenu.nom_complet.ilike("{}%".format(parameters.get("nom_complet")))
         )
     data = q.order_by(VUserslistForallMenu.nom_complet.asc()).all()
     return [n.as_dict() for n in data]
@@ -75,18 +73,13 @@ def getRolesByMenuCode(code_liste):
 
     q = DB.session.query(VUserslistForallMenu).join(
         TListes,
-        and_(
-            TListes.id_liste == VUserslistForallMenu.id_menu,
-            TListes.code_liste == code_liste,
-        ),
+        and_(TListes.id_liste == VUserslistForallMenu.id_menu, TListes.code_liste == code_liste,),
     )
 
     parameters = request.args
     if parameters.get("nom_complet"):
         q = q.filter(
-            VUserslistForallMenu.nom_complet.ilike(
-                "{}%".format(parameters.get("nom_complet"))
-            )
+            VUserslistForallMenu.nom_complet.ilike("{}%".format(parameters.get("nom_complet")))
         )
     data = q.order_by(VUserslistForallMenu.nom_complet.asc()).all()
     return [n.as_dict() for n in data]
@@ -255,9 +248,7 @@ def get_organismes_jdd(info_role):
     datasets = [dataset["id_dataset"] for dataset in get_datasets_cruved(info_role)]
     q = (
         DB.session.query(BibOrganismes)
-        .join(
-            CorDatasetActor, BibOrganismes.id_organisme == CorDatasetActor.id_organism
-        )
+        .join(CorDatasetActor, BibOrganismes.id_organisme == CorDatasetActor.id_organism)
         .filter(CorDatasetActor.id_dataset.in_(datasets))
         .distinct()
     )
@@ -293,8 +284,7 @@ def inscription():
     data["confirmation_url"] = config["API_ENDPOINT"] + "/users/after_confirmation"
 
     r = s.post(
-        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/create_temp_user",
-        json=data,
+        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/create_temp_user", json=data,
     )
 
     return Response(r), r.status_code
@@ -309,16 +299,13 @@ def login_recovery():
         Work only if 'ENABLE_SIGN_UP' is set to True	
     """
     # test des droits
-    if not current_app.config.get("ACCOUNT_MANAGEMENT").get(
-        "ENABLE_USER_MANAGEMENT", False
-    ):
+    if not current_app.config.get("ACCOUNT_MANAGEMENT").get("ENABLE_USER_MANAGEMENT", False):
         return {"msg": "Page introuvable"}, 404
 
     data = request.get_json()
 
     r = s.post(
-        url=config["API_ENDPOINT"]
-        + "/pypn/register/post_usershub/create_cor_role_token",
+        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/create_cor_role_token",
         json=data,
     )
 
@@ -343,8 +330,7 @@ def confirmation():
     data = {"token": token, "id_application": config["ID_APPLICATION_GEONATURE"]}
 
     r = s.post(
-        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/valid_temp_user",
-        json=data,
+        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/valid_temp_user", json=data,
     )
 
     if r.status_code != 200:
@@ -373,9 +359,7 @@ def update_role(info_role):
     """
         Modifie le role de l'utilisateur du token en cours
     """
-    if not current_app.config["ACCOUNT_MANAGEMENT"].get(
-        "ENABLE_USER_MANAGEMENT", False
-    ):
+    if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT", False):
         return {"message": "Page introuvable"}, 404
     data = dict(request.get_json())
 
@@ -419,9 +403,7 @@ def change_password(id_role):
         Modifie le mot de passe de l'utilisateur connecté et de son ancien mdp 
         Fait appel à l'API UsersHub
     """
-    if not current_app.config["ACCOUNT_MANAGEMENT"].get(
-        "ENABLE_USER_MANAGEMENT", False
-    ):
+    if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT", False):
         return {"message": "Page introuvable"}, 404
 
     user = DB.session.query(User).get(id_role)
@@ -441,8 +423,7 @@ def change_password(id_role):
         # recuperation du token usershub API
         # send request to get the token (enable_post_action = False to NOT sent email)
         resp = s.post(
-            url=config["API_ENDPOINT"]
-            + "/pypn/register/post_usershub/create_cor_role_token",
+            url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/create_cor_role_token",
             json={"email": user.email, "enable_post_action": False},
         )
         if resp.status_code != 200:
@@ -458,8 +439,7 @@ def change_password(id_role):
     ):
         return {"msg": "Erreur serveur"}, 500
     r = s.post(
-        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/change_password",
-        json=data,
+        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/change_password", json=data,
     )
 
     if r.status_code != 200:
@@ -475,9 +455,7 @@ def new_password():
     Modifie le mdp d'un utilisateur apres que celui-ci ai demander un renouvelement
     Necessite un token envoyer par mail a l'utilisateur
     """
-    if not current_app.config["ACCOUNT_MANAGEMENT"].get(
-        "ENABLE_USER_MANAGEMENT", False
-    ):
+    if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT", False):
         return {"message": "Page introuvable"}, 404
 
     data = dict(request.get_json())
@@ -485,8 +463,7 @@ def new_password():
         return {"msg": "Erreur serveur"}, 500
 
     r = s.post(
-        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/change_password",
-        json=data,
+        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/change_password", json=data,
     )
 
     if r.status_code != 200:

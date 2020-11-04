@@ -45,9 +45,7 @@ export class SyntheseDataService {
   }
 
   getSyntheseData(params) {
-    return this._api.post<any>(`${AppConfig.API_ENDPOINT}/synthese/for_web`,
-      params
-    );
+    return this._api.post<any>(`${AppConfig.API_ENDPOINT}/synthese/for_web`, params);
   }
 
   getSyntheseGeneralStat() {
@@ -101,7 +99,8 @@ export class SyntheseDataService {
         observe: 'events',
         responseType: 'blob',
         reportProgress: true
-      });
+      }
+    );
 
     this.subscribeAndDownload(source, filename, format);
   }
@@ -109,16 +108,12 @@ export class SyntheseDataService {
   downloadStatusOrMetadata(url: string, format: string, postParams: any, filename: string) {
     this.isDownloading = true;
 
-    const source = this._api.post(
-      `${url}`,
-      postParams,
-      {
-        headers: new HttpHeaders().set('Content-Type', `${FormatMapMime.get(format)}`),
-        observe: 'events',
-        responseType: 'blob',
-        reportProgress: true
-      }
-    );
+    const source = this._api.post(`${url}`, postParams, {
+      headers: new HttpHeaders().set('Content-Type', `${FormatMapMime.get(format)}`),
+      observe: 'events',
+      responseType: 'blob',
+      reportProgress: true
+    });
     this.subscribeAndDownload(source, filename, format);
   }
 

@@ -5,13 +5,15 @@ from utils_flask_sqla.response import json_resp
 
 from geonature.core.gn_commons.models import TValidations
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import test_is_uuid
+from pypnusershub.db.models import User
 
 
 from ..routes import routes
+
 log = logging.getLogger()
+
 
 @routes.route("/history/<uuid_attached_row>", methods=["GET"])
 @permissions.check_cruved_scope("R")
@@ -20,7 +22,7 @@ def get_hist(uuid_attached_row):
     # Test if uuid_attached_row is uuid
     if not test_is_uuid(uuid_attached_row):
         return (
-            'Value error uuid_attached_row is not valid',
+            "Value error uuid_attached_row is not valid",
             500,
         )
 
@@ -30,17 +32,16 @@ def get_hist(uuid_attached_row):
                 TValidations.id_nomenclature_valid_status,
                 TValidations.validation_date,
                 TValidations.validation_comment,
-                Synthese.validator,
+                User.nom_role+' '+User.prenom_role,
                 TValidations.validation_auto,
                 TNomenclatures.label_default,
                 TNomenclatures.cd_nomenclature,
             )
             .join(
                 TNomenclatures,
-                TNomenclatures.id_nomenclature
-                == TValidations.id_nomenclature_valid_status,
+                TNomenclatures.id_nomenclature == TValidations.id_nomenclature_valid_status,
             )
-            .join(Synthese, Synthese.unique_id_sinp == TValidations.uuid_attached_row)
+            .join(User, User.id_role == TValidations.id_validator)
             .filter(TValidations.uuid_attached_row == uuid_attached_row)
             .order_by(TValidations.validation_date)
             .all()

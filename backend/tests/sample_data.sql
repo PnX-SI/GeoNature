@@ -92,27 +92,13 @@ VALUES
     (7, 4, 1, 1, 1),
     (7, 5, 1, 1, 1),
     (7, 6, 1, 1, 1),
-    -- Groupe en admin a tous les droits sur l'admin
+    -- Groupe admin a tous les droits sur l'admin
     (9, 1, 4, 1, 1),
     (9, 2, 4, 1, 1),
     (9, 3, 4, 1, 1),
     (9, 4, 4, 1, 1),
     (9, 5, 4, 1, 1),
     (9, 6, 4, 1, 1),
-    -- Groupe ADMIN peut gérer les permissions depuis le backoffice
-    (9, 1, 4, 1, 2),
-    (9, 2, 4, 1, 2),
-    (9, 3, 4, 1, 2),
-    (9, 4, 4, 1, 2),
-    (9, 5, 4, 1, 2),
-    (9, 6, 4, 1, 2),
-    -- Groupe ADMIN peut gérer les nomenclatures depuis le backoffice
-    (9, 1, 4, 1, 3),
-    (9, 2, 4, 1, 3),
-    (9, 3, 4, 1, 3),
-    (9, 4, 4, 1, 3),
-    (9, 5, 4, 1, 3),
-    (9, 6, 4, 1, 3),
     -- partenaire peut lire sur geonature
     (3, 2, 2, 0, 1),
     -- test_cruved_r2 a un R de 2 sur geonature - synthese par héritage
@@ -138,9 +124,9 @@ INSERT INTO gn_meta.cor_acquisition_framework_voletsinp (id_acquisition_framewor
 (1,ref_nomenclatures.get_id_nomenclature('VOLET_SINP', '1'))
 ;
 
-INSERT INTO gn_meta.cor_acquisition_framework_objectif (id_acquisition_framework, id_nomenclature_objectif) VALUES
-(1,ref_nomenclatures.get_id_nomenclature('CA_OBJECTIFS', '3'))
-;
+-- INSERT INTO gn_meta.cor_acquisition_framework_objectif (id_acquisition_framework, id_nomenclature_objectif) VALUES
+-- (1,ref_nomenclatures.get_id_nomenclature('CA_OBJECTIFS', '3'))
+-- ;
 
 INSERT INTO gn_meta.cor_acquisition_framework_actor (id_cafa, id_acquisition_framework, id_role, id_organism, id_nomenclature_actor_role) VALUES
 (1, 1, NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))

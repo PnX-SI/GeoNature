@@ -1,14 +1,22 @@
 <small> {{label }} </small>
-<ng-select [ngClass]="class"
-    [items]="values"
-    [bindLabel]="keyLabel"
-    [bindValue]="keyValue"
-    [placeholder]="placeholder"
-    [multiple]="multiSelect"
-    [clearable]="clearable"
-    [virtualScroll]="true"
-    [formControl]="parentFormControl">
-  <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
-        <div matTooltip="{{item[keyLabel]}}"><span class="pre-wrap">{{item[keyLabel]}}</span></div>
-    </ng-template>
+<ng-select 
+  [ngClass]="class"
+  [items]="values"
+  [bindLabel]="keyLabel"
+  [bindValue]="keyValue"
+  [placeholder]="placeholder"
+  [multiple]="multiSelect"
+  [clearable]="clearable"
+  [virtualScroll]="true"
+  [formControl]="parentFormControl">
+  <ng-template 
+    ng-option-tmp 
+    let-item="item" 
+    let-index="index" 
+    let-search="searchTerm"
+  >
+    <div matTooltip="{{item[keyLabel]}}">
+      <span class="pre-wrap">{{item[keyLabel]}}</span>
+    </div>
+  </ng-template>
 </ng-select>

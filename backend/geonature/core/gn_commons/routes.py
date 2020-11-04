@@ -3,26 +3,21 @@ import json
 from flask import Blueprint, request, current_app, redirect
 import requests
 
-from geonature.core.gn_commons.models import TModules, TParameters, TMobileApps, TMedias
+from utils_flask_sqla.response import json_resp
+from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
+
+from geonature.core.gn_commons.models import TModules, TParameters, TMobileApps, TMedias, TPlaces
 from geonature.core.gn_commons.repositories import TMediaRepository
-from geonature.core.gn_commons.models import TModules, TParameters, TMobileApps, TPlaces
 from geonature.core.gn_commons.repositories import get_table_location_id
 from geonature.utils.env import DB, BACKEND_DIR
-from geonature.utils.errors import GeonatureApiError
-from utils_flask_sqla.response import json_resp, json_resp_accept_empty_list
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from shapely.geometry import asShape
-from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 from geoalchemy2.shape import from_shape
-
 from geonature.utils.errors import (
-    ConfigError,
-    GNModuleInstallError,
     GeoNatureError,
     GeonatureApiError,
 )
-
 
 
 routes = Blueprint("gn_commons", __name__)
@@ -30,6 +25,7 @@ routes = Blueprint("gn_commons", __name__)
 # import routes sub folder
 from .validation.routes import *
 from .medias.routes import *
+
 
 @routes.route("/modules", methods=["GET"])
 @permissions.check_cruved_scope("R", True)
@@ -48,6 +44,7 @@ def get_modules(info_role):
     modules = q.all()
     allowed_modules = []
     for mod in modules:
+        print(mod.module_code)
         app_cruved = cruved_scope_for_user_in_module(
             id_role=info_role.id_role, module_code=mod.module_code
         )[0]
@@ -69,7 +66,6 @@ def get_modules(info_role):
 def get_module(module_code):
     module = DB.session.query(TModules).filter_by(module_code=module_code).one()
     return module.as_dict()
-
 
 
 @routes.route("/list/parameters", methods=["GET"])
@@ -125,9 +121,7 @@ def get_t_mobile_apps():
                     current_app.config["API_ENDPOINT"], one_app["relative_path_apk"]
                 )
                 one_app["url_apk"] = url_apk
-                dir_app = "/".join(
-                    str(BACKEND_DIR / one_app["relative_path_apk"]).split("/")[:-1]
-                )
+                dir_app = "/".join(str(BACKEND_DIR / one_app["relative_path_apk"]).split("/")[:-1])
                 settings_file = "{}/settings.json".format(dir_app)
                 with open(settings_file) as f:
                     one_app["settings"] = json.load(f)
@@ -234,4 +228,3 @@ def add_one_place(info_role):
 
 #######################################################################################
 #######################################################################################
-

@@ -1,17 +1,38 @@
 <mat-sidenav-container class="sidenav-container">
 
-  <mat-sidenav class="appnav" id="app-sidenav" #sidenav mode="side" [opened]="_sideNavService.opened">
+  <mat-sidenav
+    class="appnav"
+    id="app-sidenav"
+    #sidenav
+    mode="side"
+    [opened]="_sideNavService.opened"
+  >
     <pnx-sidenav-items></pnx-sidenav-items>
   </mat-sidenav>
 
 
   <mat-sidenav-content>
-    <mat-toolbar id="app-toolbar" class="row">
-      <button class="menu-button toolbar-button mat-elevation-z0" id="btn-toolbar" mat-mini-fab (click)="closeSideBar()">
-        <mat-icon class="menu-icon" aria-label="Ouvrir le menu">menu</mat-icon>
+    <mat-toolbar
+      id="app-toolbar"
+      class="row"
+    >
+      <button
+        class="menu-button toolbar-button mat-elevation-z0"
+        id="btn-toolbar"
+        mat-mini-fab
+        (click)="closeSideBar()"
+      >
+        <mat-icon
+          class="menu-icon"
+          aria-label="Ouvrir le menu"
+        >menu</mat-icon>
       </button>
       <span id="module-name"> {{moduleName}}</span>
-      <img id="logo-structure" src="custom/images/{{appConfig.LOGO_STRUCTURE_FILE}}" alt="">
+      <img
+        id="logo-structure"
+        src="custom/images/{{appConfig.LOGO_STRUCTURE_FILE}}"
+        alt=""
+      >
       <span class="toolbar-spacer"></span>
       <div>
 
@@ -20,61 +41,96 @@
         <h3> {{appConfig.appName}}</h3>
       </span>
       <span class="toolbar-spacer"></span>
-      <ng-container *ngIf="!appConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION && appConfig.ACCOUNT_MANAGEMENT.ENABLE_USER_MANAGEMENT ; else noUserManagement">
-        <button 
-          mat-raised-button 
+      <ng-container
+        *ngIf="!appConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION && appConfig.ACCOUNT_MANAGEMENT.ENABLE_USER_MANAGEMENT ; else noUserManagement"
+      >
+        <button
+          mat-raised-button
           class="toolbar-button toolbar-rigth"
-          matTooltip="Ouvrir le menu" 
-          data-toggle="dropdown" 
-          aria-haspopup="true" 
+          matTooltip="Ouvrir le menu"
+          data-toggle="dropdown"
+          aria-haspopup="true"
           aria-expanded="false"
         >
-          <mat-icon > person </mat-icon>
+          <mat-icon> person </mat-icon>
           {{currentUser?.user_login}}
         </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" routerLink="/user">
+        <div
+          class="dropdown-menu"
+          aria-labelledby="dropdownMenuButton"
+        >
+          <a
+            class="dropdown-item"
+            routerLink="/user"
+          >
             {{ 'MyAccount' | translate }}
           </a>
         </div>
       </ng-container>
       <ng-template #noUserManagement>
-        <span style="font-size:15px" class="toolbar-rigth"> {{currentUser?.user_login}} </span>
+        <span
+          style="font-size:15px"
+          class="toolbar-rigth"
+        > {{currentUser?.user_login}} </span>
       </ng-template>
 
-      <div *ngIf="appConfig.FRONTEND.MULTILINGUAL" class="dropdown">
-        <mat-icon class="clickable toolbar-rigth" matTooltip="{{ 'Language' | translate }}" id="dropdownMenuButton"
-          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">language</mat-icon>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" (click)="changeLanguage('en')" href="#">{{ 'Languages.English' | translate }}</a>
-          <a class="dropdown-item" (click)="changeLanguage('fr')" href="#">{{ 'Languages.French' | translate }}</a>
-          <a class="dropdown-item" (click)="changeLanguage('cn')" href="#">{{ 'Languages.Chinese' | translate }}</a>
+      <div
+        *ngIf="appConfig.FRONTEND.MULTILINGUAL"
+        class="dropdown"
+      >
+        <mat-icon
+          class="clickable toolbar-rigth"
+          matTooltip="{{ 'Language' | translate }}"
+          id="dropdownMenuButton"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >language</mat-icon>
+        <div
+          class="dropdown-menu"
+          aria-labelledby="dropdownMenuButton"
+        >
+          <a
+            class="dropdown-item"
+            (click)="changeLanguage('en')"
+            href="#"
+          >{{ 'Languages.English' | translate }}</a>
+          <a
+            class="dropdown-item"
+            (click)="changeLanguage('fr')"
+            href="#"
+          >{{ 'Languages.French' | translate }}</a>
+          <a
+            class="dropdown-item"
+            (click)="changeLanguage('cn')"
+            href="#"
+          >{{ 'Languages.Chinese' | translate }}</a>
         </div>
       </div>
-      <button 
+      <button
         mat-button
-        matTooltip="Documentation">
-      <a 
-        [href]="currentDocUrl" 
-        target="_blank"> 
-          <mat-icon 
+        matTooltip="Documentation"
+      >
+        <a
+          [href]="currentDocUrl"
+          target="_blank"
+        >
+          <mat-icon
             id="documentation_link"
-            class="clickable toolbar-rigth" 
-            >
-              library_books
-        </mat-icon>
-      </a> 
+            class="clickable toolbar-rigth"
+          >
+            library_books
+          </mat-icon>
+        </a>
       </button>
 
-      <button 
+      <button
         mat-button
         matTooltip="{{ 'LogOut' | translate }}"
-        (click)="_authService.logout()" 
-        >
-        <mat-icon 
-          class="clickable toolbar-rigth" 
-          >
-            exit_to_app
+        (click)="_authService.logout()"
+      >
+        <mat-icon class="clickable toolbar-rigth">
+          exit_to_app
         </mat-icon>
       </button>
 

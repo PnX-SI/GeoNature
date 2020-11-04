@@ -19,8 +19,7 @@ export class SyntheseModalDownloadComponent {
     public _dataService: SyntheseDataService,
     private _fs: SyntheseFormService,
     private _storeService: SyntheseStoreService
-  ) { }
-
+  ) {}
 
   downloadObservations(format) {
     this._dataService.downloadObservations(this._storeService.idSyntheseList, format);

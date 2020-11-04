@@ -79,6 +79,7 @@ import { MediasTestComponent } from '@geonature_common/form/media/medias-test.co
 import { DatalistComponent } from '@geonature_common/form/datalist/datalist.component';
 import { PlacesComponent } from './map/places/places.component';
 import { PlacesListComponent } from './map/placesList/placesList.component';
+import { TaxaComponent } from '@geonature_common/form/taxa/taxa.component';
 
 // directive
 import { DisableControlDirective } from './form/disable-control.directive';
@@ -183,6 +184,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     DatalistComponent,
     PlacesComponent,
     PlacesListComponent,
+    TaxaComponent,
   ],
   providers: [
     TranslateService,
@@ -197,11 +199,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     CruvedStoreService,
     MediaService
   ],
-  entryComponents: [
-    TaxonAdvancedModalComponent,
-    ConfirmationDialog,
-    MediaDialog,
-  ],
+  entryComponents: [TaxonAdvancedModalComponent, ConfirmationDialog, MediaDialog],
   exports: [
     MunicipalitiesComponent,
     DynamicFormComponent,
@@ -273,7 +271,8 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     DatalistComponent,
     PlacesComponent,
     PlacesListComponent,
-    MatTabsModule
+    MatTabsModule,
+    TaxaComponent
   ]
 })
-export class GN2CommonModule { }
+export class GN2CommonModule {}
