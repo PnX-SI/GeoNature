@@ -2,6 +2,11 @@
 CHANGELOG
 =========
 
+2.5.4 (unreleased)
+------------------
+
+**🐛 Corrections**
+
 2.5.3 (2020-11-04)
 ------------------
 
@@ -31,10 +36,10 @@ CHANGELOG
 * Accueil : Correction de l'affichage du nom du module (#1087)
 * Correction du trigger de mise à jour d'Occtax vers la Synthèse (champs ``the_geom_local`` non mis à jour) (#1117 par @jbrieuclp)
 * Correction du paramètre stockant la version de Taxref, passé à 13.0 pour les nouvelles installations (#1097 par @RomainBaghi)
-* Correction de l'affichage en double des markers dans Leaflet.draw (1095 par @FlorentRICHARD44)
+* Correction de l'affichage en double des markers dans Leaflet.draw (#1095 par @FlorentRICHARD44)
 * Synthèse : Correction des filtres avancés par technique d'observation et méthode de détermination (#1110 par @jbrieuclp)
 * Recréation du fichier de configuration à chaque installation (#1074 par @etot)
-* Annulation de l'insertion du module lorsqu une erreur est lévée à l'installation d'un module
+* Annulation de l'insertion du module lorsqu'une erreur est lévée à l'installation d'un module
 
 **⚠️ Notes de version**
 
