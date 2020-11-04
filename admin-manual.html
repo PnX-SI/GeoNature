@@ -954,6 +954,7 @@ chmod g+rwx /home/`whoami`/backup
 <span class="k">UPDATE</span> <span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span> <span class="k">SET</span> <span class="n">module_picto</span> <span class="o">=</span> <span class="s1">&#39;fa-eye&#39;</span> <span class="k">WHERE</span> <span class="n">module_code</span> <span class="o">=</span> <span class="s1">&#39;MONITORINGS&#39;</span><span class="p">;</span>
 </pre></div>
 </div>
+<p>Depuis la version 2.5.0, il est aussi possible de customiser l’ordre des modules dans le menu, par ordre alphabétique par défaut, en renseignant le champs <code class="docutils literal"><span class="pre">gn_commons.t_modules.module_order</span></code>.</p>
 </div>
 <div class="section" id="customiser-les-exports-pdf">
 <h3>Customiser les exports PDF<a class="headerlink" href="#customiser-les-exports-pdf" title="Permalink to this headline">¶</a></h3>
@@ -1049,7 +1050,7 @@ Renseigner les paramètres suivants dans le fichier de configuration (<code clas
     <span class="n">ADMIN_APPLICATION_PASSWORD</span> <span class="o">=</span> <span class="s2">&quot;password_admin_usershub</span>
 </pre></div>
 </div>
-<p>Les fonctionnalités de création de compte nécessitent l’envoi d’emails pour vérifier l’identité des demandeurs de compte. Il est donc nécessaire d’avoir un serveur SMTP capable d’envoyer des emails. Renseigner la rubrique <code class="docutils literal"><span class="pre">MAIL_CONFIG</span></code> de la configuration :</p>
+<p>Les fonctionnalités de création de compte nécessitent l’envoi d’emails pour vérifier l’identité des demandeurs de compte. Il est donc nécessaire d’avoir un serveur SMTP capable d’envoyer des emails. Renseigner la rubrique <code class="docutils literal"><span class="pre">MAIL_CONFIG</span></code> de la configuration. La description détaillées des paramètres de configuration d’envoie des emails est disponible dans <a class="reference external" href="https://flask-mail.readthedocs.io/en/latest/#configuring-flask-mail">la documentation de Flask-Mail</a>. Exemple :</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">MAIL_CONFIG</span><span class="p">]</span>
     <span class="n">MAIL_SERVER</span> <span class="o">=</span> <span class="s1">&#39;mail.espaces-naturels.fr&#39;</span>
     <span class="n">MAIL_PORT</span> <span class="o">=</span> <span class="mi">465</span>
@@ -1081,6 +1082,15 @@ Renseigner les paramètres suivants dans le fichier de configuration (<code clas
 </pre></div>
 </div>
 <p>L’utilisateur qui demande la création de compte est automatiquement mis dans un “groupe” UsersHub (par défaut, il s’agit du groupe “En poste”). Ce groupe est paramétrable depuis la table <code class="docutils literal"><span class="pre">utilisateurs.cor_role_app_profil</span></code>. (La ligne où <code class="docutils literal"><span class="pre">is_default_group_for_app</span> <span class="pre">=</span> <span class="pre">true</span></code> sera utilisée comme groupe par défaut pour GeoNature). Il n’est pas en paramètre de GeoNature pusqu’il serait falsifiable via l’API. ⚠️ <strong>Attention</strong>, si vous effectuez une migration depuis une version de GeoNature &lt; 2.2.0, aucun groupe par défaut n’est défini, vous devez définir à la main le groupe par défaut pour l’application GeoNature dans la table <code class="docutils literal"><span class="pre">utilisateurs.cor_role_app_profil</span></code>.</p>
+<p>Dans le mode “création de compte validé par administrateur”, lorsque l’inscription est validée par un administrateur, un email est envoyé à l’utilisateur pour lui indiquer la confirmation de son inscription.
+Il est possible de personnaliser le texte de la partie finale de cet email située juste avant la signature à l’aide du paramètre <code class="docutils literal"><span class="pre">ADDON_USER_EMAIL</span></code> (toujours à ajouter à la rubrique&nbsp;<code class="docutils literal"><span class="pre">[ACCOUNT_MANAGEMENT]</span></code>).
+Vous pouvez utiliser des balises HTML compatibles avec les emails pour ce texte.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">ACCOUNT_MANAGEMENT</span><span class="p">]</span>
+    <span class="n">ADDON_USER_EMAIL</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;&lt;p&gt;</span>
+<span class="s2">        Toute l&#39;équipe de GeoNature vous remercie pour votre inscription.</span>
+<span class="s2">      &lt;/p&gt;&quot;&quot;&quot;</span>
+</pre></div>
+</div>
 <p>Il est également possible de créer automatiquement un jeu de données et un cadre d’acquisition “personnel” à l’utilisateur afin qu’il puisse saisir des données dès sa création de compte via le paramètre <code class="docutils literal"><span class="pre">AUTO_DATASET_CREATION</span></code>. Par la suite l’administrateur pourra rattacher l’utilisateur à des JDD et CA via son organisme.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">ACCOUNT_MANAGEMENT</span><span class="p">]</span>
     <span class="n">AUTO_ACCOUNT_CREATION</span> <span class="o">=</span> <span class="n">true</span>
@@ -1094,11 +1104,14 @@ Renseigner les paramètres suivants dans le fichier de configuration (<code clas
 <p>Le formulaire de création de compte est par défaut assez minimaliste (nom, prénom, email, mot de passe, organisme, remarque).</p>
 <p><em>NB</em> l’organisme est demandé à l’utilisateur à titre “informatif”, c’est à l’administrateur de rattacher individuellement l’utilisateur à son organisme, et éventuellement de le créer, s’il n’existe pas.</p>
 <p>Il est possible d’ajouter des champs au formulaire grâce à un générateur controlé par la configuration. Plusieurs type de champs peuvent être ajoutés (text, textarea, number, select, checkbox mais aussi taxonomy, nomenclature etc…).</p>
-<p>L’exemple ci-dessous permet de créer un champs de type “checkbox” obligatoire, avec un lien vers un document (une charte par exemple) et un champ de type “select”, non obligatoire. (voir le fichier <code class="docutils literal"><span class="pre">geonature_config.toml.example</span></code> pour un exemple plus exhaustif).</p>
+<p>L’exemple ci-dessous permet de créer un champs de type “checkbox” obligatoire, avec un lien vers un document (une charte par exemple) et un champ de type “select”, non obligatoire. (voir le fichier <code class="docutils literal"><span class="pre">config/geonature_config.toml.example</span></code> pour un exemple plus exhaustif).</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">ACCOUNT_MANAGEMENT</span><span class="p">]</span>
 <span class="p">[[</span><span class="n">ACCOUNT_MANAGEMENT</span><span class="o">.</span><span class="n">ACCOUNT_FORM</span><span class="p">]]</span>
     <span class="n">type_widget</span> <span class="o">=</span> <span class="s2">&quot;checkbox&quot;</span>
-    <span class="n">attribut_label</span> <span class="o">=</span> <span class="s2">&quot;&lt;a target=&#39;_blank&#39; href=&#39;http://docs.geonature.fr&#39;&gt;J&#39;ai lu et j&#39;accepte la charte&lt;/a&gt;&quot;</span>
+    <span class="n">attribut_label</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">      &lt;a target=&quot;_blank&quot; href=&quot;http://docs.geonature.fr&quot;&gt;</span>
+<span class="s2">        J&#39;ai lu et j&#39;accepte la charte</span>
+<span class="s2">      &lt;/a&gt;&quot;&quot;&quot;</span>
     <span class="n">attribut_name</span> <span class="o">=</span> <span class="s2">&quot;validate_charte&quot;</span>
     <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">true</span><span class="p">]</span>
     <span class="n">required</span> <span class="o">=</span> <span class="n">true</span>
@@ -1260,7 +1273,7 @@ Par exemple, pour contraindre la saisie à l’affichage de la carte IGN au 1/25
 <p>Il est possible de définir une autre vue pour avoir des exports personnalisés.
 Pour cela, créer votre vue, et modifier les paramètres suivants :</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Name of the view based export</span>
-<span class="n">export_view_name</span> <span class="o">=</span> <span class="s1">&#39;export_occtax_sinp&#39;</span>
+<span class="n">export_view_name</span> <span class="o">=</span> <span class="s1">&#39;v_export_occtax&#39;</span>
 
 <span class="c1"># Name of the geometry columns of the view</span>
 <span class="n">export_geom_columns_name</span> <span class="o">=</span> <span class="s1">&#39;geom_4326&#39;</span>
@@ -1371,52 +1384,85 @@ Attention : Si des données sont déjà présentes dans la synthèse et que l’
 <p>Dans tous les exports, l’ordre et le nom des colonnes sont basés sur la vue servant l’export. Il est possible de les modifier en éditant le SQL des vues en respectant bien les consignes ci-dessous.</p>
 <p><strong>Export des observations</strong></p>
 <p>Les exports (CSV, GeoJson, Shapefile) sont basés sur la vue <code class="docutils literal"><span class="pre">gn_synthese.v_synthese_for_export</span></code>.</p>
-<p>Il est possible de masquer des champs présents dans les exports. Pour cela éditez la variable <code class="docutils literal"><span class="pre">EXPORT_COLUMNS</span></code>.</p>
+<p>Il est possible de ne pas intégrer certains champs présents dans cette vue d’export. Pour cela modifier le paramètre <code class="docutils literal"><span class="pre">EXPORT_COLUMNS</span></code>.</p>
 <p>Enlevez la ligne de la colonne que vous souhaitez désactiver. Les noms de colonne de plus de 10 caractères seront tronqués dans le fichier shapefile.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">SYNTHESE</span><span class="p">]</span>
     <span class="n">EXPORT_COLUMNS</span>   <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;idSynthese&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;permId&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;permIdGrp&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;dateDebut&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;dateFin&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;observer&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;altMin&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;altMax&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;denbrMin&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;denbrMax&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;EchanPreuv&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;PreuvNum&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;PreuvNoNum&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;obsCtx&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;obsDescr&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;ObjGeoTyp&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;methGrp&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;obsMeth&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;ocEtatBio&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;ocStatBio&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;ocNat&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;preuveOui&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;validStat&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;difNivPrec&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;ocStade&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;ocSex&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;objDenbr&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;denbrTyp&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;sensiNiv&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;statObs&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;dEEFlou&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;statSource&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;typInfGeo&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;methDeterm&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;jddCode&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;cdNom&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;cdRef&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;nomCite&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;vTAXREF&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;wkt&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;lastAction&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;validateur&quot;</span>
+      <span class="s2">&quot;date_debut&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;date_fin&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;heure_debut&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;heure_fin&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;cd_nom&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;cd_ref&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;nom_valide&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;nom_vernaculaire&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;nom_cite&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;regne&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;group1_inpn&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;group2_inpn&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;classe&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;ordre&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;famille&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;rang_taxo&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;nombre_min&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;nombre_max&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;alti_min&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;alti_max&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;prof_min&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;prof_max&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;observateurs&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;determinateur&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;communes&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;x_centroid_4326&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;y_centroid_4326&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;geometrie_wkt_4326&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;nom_lieu&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;comment_releve&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;comment_occurrence&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;validateur&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;niveau_validation&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;date_validation&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;comment_validation&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;preuve_numerique_url&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;preuve_non_numerique&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;jdd_nom&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;jdd_uuid&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;jdd_id&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;ca_nom&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;ca_uuid&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;ca_id&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;cd_habref&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;cd_habitat&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;nom_habitat&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;precision_geographique&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;nature_objet_geo&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;type_regroupement&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;methode_regroupement&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;technique_observation&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;biologique_statut&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;etat_biologique&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;biogeographique_statut&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;naturalite&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;preuve_existante&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;niveau_precision_diffusion&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;stade_vie&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;sexe&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;objet_denombrement&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;type_denombrement&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;niveau_sensibilite&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;statut_observation&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;floutage_dee&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;statut_source&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;type_info_geo&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;methode_determination&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;comportement&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;reference_biblio&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;id_synthese&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;id_origine&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uuid_perm_sinp&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;uuid_perm_grp_sinp&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;date_creation&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;date_modification&quot;</span>
     <span class="p">]</span>
 </pre></div>
 </div>
@@ -1434,14 +1480,14 @@ Attention : Si des données sont déjà présentes dans la synthèse et que l’
 <ul class="simple">
 <li>geojson_4326</li>
 <li>geojson_local</li>
-<li>idSynthese,</li>
-<li>jddId (l’ID du jeu de données)</li>
+<li>id_synthese,</li>
+<li>jdd_id (l’ID du jeu de données)</li>
 <li>id_digitiser</li>
-<li>observer</li>
+<li>observateurs</li>
 </ul>
 <p>Ces champs doivent impérativement être présents dans la vue, mais ne seront pas nécessairement dans le fichier d’export si ils ne figurent pas dans la variable <code class="docutils literal"><span class="pre">EXPORT_COLUMNS</span></code>. De manière générale, préférez rajouter des champs plutôt que d’en enlever !</p>
-<p>Le nom de ces champs peuvent cependant être modifié. Dans ce cas, modifiez le fichier <code class="docutils literal"><span class="pre">geonature_config.toml</span></code>, section <code class="docutils literal"><span class="pre">SYNTHESE</span></code> parmis les variables suivantes (<code class="docutils literal"><span class="pre">EXPORT_ID_SYNTHESE_COL,</span> <span class="pre">EXPORT_ID_DATASET_COL,</span> <span class="pre">EXPORT_ID_DIGITISER_COL,</span> <span class="pre">EXPORT_OBSERVERS_COL,</span> <span class="pre">EXPORT_GEOJSON_4326_COL,</span> <span class="pre">EXPORT_GEOJSON_LOCAL_COL</span></code>).</p>
-<p>NB: Lorsqu’on effectue une recherche dans la synthèse, on interroge la vue <code class="docutils literal"><span class="pre">gn_synthese.v_synthese_for_web_app</span></code>. L’interface web passe ensuite une liste d’<code class="docutils literal"><span class="pre">id_synthese</span></code> à la vue <a href="#id5"><span class="problematic" id="id6">``</span></a>gn_synthese.v_synthese_for_export``correspondant à la recherche précedemment effectuée (ce qui permet à cette seconde vue d’être totalement modifiable).</p>
+<p>Le nom de ces champs peut cependant être modifié. Dans ce cas, modifiez le fichier <code class="docutils literal"><span class="pre">geonature_config.toml</span></code>, section <code class="docutils literal"><span class="pre">SYNTHESE</span></code> parmis les variables suivantes (<code class="docutils literal"><span class="pre">EXPORT_ID_SYNTHESE_COL,</span> <span class="pre">EXPORT_ID_DATASET_COL,</span> <span class="pre">EXPORT_ID_DIGITISER_COL,</span> <span class="pre">EXPORT_OBSERVERS_COL,</span> <span class="pre">EXPORT_GEOJSON_4326_COL,</span> <span class="pre">EXPORT_GEOJSON_LOCAL_COL</span></code>).</p>
+<p>NB : Lorsqu’on effectue une recherche dans la synthèse, on interroge la vue <code class="docutils literal"><span class="pre">gn_synthese.v_synthese_for_web_app</span></code>. L’interface web passe ensuite une liste d’<code class="docutils literal"><span class="pre">id_synthese</span></code> à la vue <code class="docutils literal"><span class="pre">gn_synthese.v_synthese_for_export</span></code> correspondant à la recherche précedemment effectuée (ce qui permet à cette seconde vue d’être totalement modifiable).</p>
 <p>La vue <code class="docutils literal"><span class="pre">gn_synthese.v_synthese_for_web_app</span></code> est taillée pour l’interface web, il ne faut donc PAS la modifier.</p>
 <p><strong>Export des métadonnées</strong></p>
 <p>En plus des observations brutes, il est possible d’effectuer un export des métadonnées associées aux observations. L’export est au format CSV et est construit à partir de la table <code class="docutils literal"><span class="pre">gn_synthese.v_metadata_for_export</span></code>. Vous pouvez modifier le SQL de création de cette vue pour customiser votre export (niveau SQL avancé).</p>

@@ -113,29 +113,52 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#release">Release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bdd">BDD</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pratiques">Pratiques</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#developper-et-installer-un-gn-module">Développer et installer un gn_module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#frontend">Frontend</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#backend">Backend</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#installer-un-gn-module">Installer un gn_module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pratiques-et-regles-de-developpement">Pratiques et règles de developpement</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#git">Git</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#backend">Backend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">BDD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#typescript">Typescript</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#angular">Angular</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#html">HTML</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#style-et-ergonomie">Style et ergonomie</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#developper-et-installer-un-gn-module">Développer et installer un gn_module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#developper-un-gn-module">Développer un gn_module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#bonnes-pratiques-frontend">Bonnes pratiques Frontend</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#installer-un-gn-module">Installer un gn_module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#developpement-backend">Développement Backend</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#session-sqlalchemy">Session sqlalchemy</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#serialisation-des-modeles">Serialisation des modèles</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#export-des-donnees">Export des données</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#utilisation-de-la-configuration">Utilisation de la configuration</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#authentification-avec-pypnusershub">Authentification avec pypnusershub</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#demarrage-du-serveur-de-dev-backend">Démarrage du serveur de dev backend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#base-de-donnees">Base de données</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#session-sqlalchemy">Session sqlalchemy</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#verification-des-droits-des-utilisateurs">Vérification des droits des utilisateurs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#serialisation-des-modeles">Serialisation des modèles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#export-des-donnees">Export des données</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#utilisation-de-la-configuration">Utilisation de la configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#authentification-avec-pypnusershub">Authentification avec pypnusershub</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#verification-des-droits-des-utilisateurs">Vérification des droits des utilisateurs</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#developpement-frontend">Développement Frontend</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#les-composants-generiques"><strong>Les composants génériques</strong></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#outils-d-aide-a-la-qualite-du-code">Outils d’aide à la qualité du code</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#developpement-frontend">Développement Frontend</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bonnes-pratiques">Bonnes pratiques</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#les-composants-generiques">Les composants génériques</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#outils-d-aide-a-la-qualite-du-code">Outils d’aide à la qualité du code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sphinx">Sphinx</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pylint">Pylint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tslint">tslint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pytest">Pytest</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#coverage">Coverage</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="versions-compatibility.html">COMPATIBILITE</a></li>
@@ -214,12 +237,12 @@
 <h2>Général<a class="headerlink" href="#general" title="Permalink to this headline">¶</a></h2>
 <p>GeoNature a été développé par Gil Deluermoz depuis 2010 avec PHP/Symfony/ExtJS.</p>
 <p>En 2017, les parcs nationaux français ont décidé de refondre GeoNature
-complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular 4.</p>
+complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.</p>
 <p>Mainteneurs :</p>
 <ul class="simple">
 <li>Gil DELUERMOZ (PnEcrins) : Base de données / SQL / Installation / Mise à jour</li>
 <li>Amandine SAHL (PnCevennes) : Backend / Python Flask / API</li>
-<li>Theo LECHEMIA (PnEcrins) : Frontend / Angular 4</li>
+<li>Theo LECHEMIA (PnEcrins) : Frontend / Angular</li>
 <li>Camille MONCHICOURT (PnEcrins) : Documentation / Gestion du projet</li>
 </ul>
 <img alt="http://geonature.fr/docs/img/developpement/geonature-techno.png" src="http://geonature.fr/docs/img/developpement/geonature-techno.png" />
@@ -230,10 +253,8 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular 
 <ul class="simple">
 <li>l’API de TaxHub (recherche taxon, règne et groupe d’un taxon…)</li>
 <li>l’API du sous-module Nomenclatures (typologies et listes déroulantes)</li>
-<li>l’API du sous-module d’authentification de UsersHub (login/logout,
-récupération du CRUVED d’un utilisateur)</li>
-<li>l’API de GeoNature (get, post, update des données des différents modules,
-métadonnées, intersections géographiques, exports…)</li>
+<li>l’API du sous-module d’authentification de UsersHub (login/logout, récupération du CRUVED d’un utilisateur)</li>
+<li>l’API de GeoNature (get, post, update des données des différents modules, métadonnées, intersections géographiques, exports…)</li>
 </ul>
 <img alt="https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/api_services.png" src="https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/api_services.png" />
 <div class="section" id="liste-des-routes">
@@ -268,19 +289,27 @@ métadonnées, intersections géographiques, exports…)</li>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#get--validation-definitions">GET /validation/definitions</a></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--synthese-observation_count">GET /synthese/observation_count</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--synthese-taxa_distribution">GET /synthese/taxa_distribution</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--synthese-taxa_count">GET /synthese/taxa_count</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#get--occtax-vreleveocctax">GET /occtax/vreleveocctax</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#get--import-bibFields">GET /import/bibFields</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#post--import-mapping">POST /import/mapping</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
@@ -300,186 +329,250 @@ métadonnées, intersections géographiques, exports…)</li>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#get--import">GET /import</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#post--import-data_checker-(import_id)-field_mapping-(int-id_field_mapping)-content_mapping-(int-id_content_mapping)">POST /import/data_checker/(import_id)/field_mapping/(int:id_field_mapping)/content_mapping/(int:id_content_mapping)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#get--import-data_checker-(import_id)-field_mapping-(int-id_field_mapping)-content_mapping-(int-id_content_mapping)">GET /import/data_checker/(import_id)/field_mapping/(int:id_field_mapping)/content_mapping/(int:id_content_mapping)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#post--import-getNomencInfo-(int-id_import)-field_mapping-(int-id_field_mapping)">POST /import/getNomencInfo/(int:id_import)/field_mapping/(int:id_field_mapping)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#get--import-getNomencInfo-(int-id_import)-field_mapping-(int-id_field_mapping)">GET /import/getNomencInfo/(int:id_import)/field_mapping/(int:id_field_mapping)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#post--occtax-releve-(int-id_releve)-occurrence">POST /occtax/releve/(int:id_releve)/occurrence</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#post--occtax-only-releve-(int-id_releve)">POST /occtax/only/releve/(int:id_releve)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--meta-acquisition_frameworks-export_pdf-(id_acquisition_framework)">GET /meta/acquisition_frameworks/export_pdf/(id_acquisition_framework)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#post--pypn-register-post_usershub-(string-type_action)">POST /pypn/register/post_usershub/(string:type_action)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--meta-dataset-export_pdf-(id_dataset)">GET /meta/dataset/export_pdf/(id_dataset)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#get--validation-date-(uuid)">GET /validation/date/(uuid)</a></td>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#post--import-create_or_update_field_mapping-(int-id_mapping)">POST /import/create_or_update_field_mapping/(int:id_mapping)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>Commons</td>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#post--import-update_content_mapping-(int-id_mapping)">POST /import/update_content_mapping/(int:id_mapping)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#get--import-update_content_mapping-(int-id_mapping)">GET /import/update_content_mapping/(int:id_mapping)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#get--import-content_mappings-(id_mapping)">GET /import/content_mappings/(id_mapping)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#get--import-columns_import-(int-id_import)">GET /import/columns_import/(int:id_import)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#get--import-field_mappings-(id_mapping)">GET /import/field_mappings/(id_mapping)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#post--occtax-occurrence-(int-id_occurrence)">POST /occtax/occurrence/(int:id_occurrence)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#post--import-importData-(import_id)">POST /import/importData/(import_id)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#get--import-importData-(import_id)">GET /import/importData/(import_id)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#post--import-get_errors-(import_id)">POST /import/get_errors/(import_id)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#get--import-get_errors-(import_id)">GET /import/get_errors/(import_id)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#get--import-mappings-(mapping_type)">GET /import/mappings/(mapping_type)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#delete--import-mapping-(int-id_mapping)">DELETE /import/mapping/(int:id_mapping)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>Commons</td>
 <td><a class="reference external" href="#get--gn_commons-list-parameters">GET /gn_commons/list/parameters</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--gn_commons-t_mobile_apps">GET /gn_commons/t_mobile_apps</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--gn_commons-modules">GET /gn_commons/modules</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#post--gn_commons-media-(int-id_media)">POST /gn_commons/media/(int:id_media)</a></td>
-<td>&#160;</td>
-</tr>
 <tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#post--gn_commons-media">POST /gn_commons/media</a></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#put--gn_commons-media-(int-id_media)">PUT /gn_commons/media/(int:id_media)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#put--gn_commons-media">PUT /gn_commons/media</a></td>
 <td>&#160;</td>
 </tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#post--gn_commons-media-(int-id_media)">POST /gn_commons/media/(int:id_media)</a></td>
+<td>&#160;</td>
+</tr>
 <tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#post--gn_commons-media">POST /gn_commons/media</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#get--gn_commons-media-thumbnails-(int-id_media)-(int-size)">GET /gn_commons/media/thumbnails/(int:id_media)/(int:size)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#get--gn_commons-medias-(string-uuid_attached_row)">GET /gn_commons/medias/(string:uuid_attached_row)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--gn_commons-media-(int-id_media)">GET /gn_commons/media/(int:id_media)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#delete--gn_commons-media-(int-id_media)">DELETE /gn_commons/media/(int:id_media)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>Generic</td>
+<tr class="row-even"><td>Generic</td>
 <td><a class="reference external" href="#get--config">GET /config</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--genericview-(view_schema)-(view_name)">GET /genericview/(view_schema)/(view_name)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>Habref</td>
+<tr class="row-even"><td>Habref</td>
+<td><a class="reference external" href="#get--habref-habitats-autocomplete">GET /habref/habitats/autocomplete</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--habref-typo">GET /habref/typo</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#get--habref-habitats-autocomplete-list-(int-id_list)">GET /habref/habitats/autocomplete/list/(int:id_list)</a></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--habref-correspondance-(int-cd_hab)">GET /habref/correspondance/(int:cd_hab)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--habref-habitat-(int-cd_hab)">GET /habref/habitat/(int:cd_hab)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--habref-search-(field)-(ilike)">GET /habref/search/(field)/(ilike)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>Metadata</td>
+<tr class="row-odd"><td>Metadata</td>
 <td><a class="reference external" href="#get--meta-acquisition_frameworks_metadata">GET /meta/acquisition_frameworks_metadata</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--meta-acquisition_frameworks">GET /meta/acquisition_frameworks</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#post--meta-acquisition_framework">POST /meta/acquisition_framework</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--meta-af_datasets_metadata">GET /meta/af_datasets_metadata</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--meta-datasets">GET /meta/datasets</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#post--meta-dataset">POST /meta/dataset</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--meta-acquisition_framework_details-(id_acquisition_framework)">GET /meta/acquisition_framework_details/(id_acquisition_framework)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#post--meta-aquisition_framework_mtd-(uuid_af)">POST /meta/aquisition_framework_mtd/(uuid_af)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--meta-acquisition_framework-(id_acquisition_framework)">GET /meta/acquisition_framework/(id_acquisition_framework)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--meta-dataset_details-(id_dataset)">GET /meta/dataset_details/(id_dataset)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#post--meta-dataset_mtd-(id_user)-(id_organism)">POST /meta/dataset_mtd/(id_user)/(id_organism)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#post--meta-dataset_mtd-(id_user)">POST /meta/dataset_mtd/(id_user)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--meta-dataset-(id_dataset)">GET /meta/dataset/(id_dataset)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>Monitoring</td>
+<tr class="row-even"><td>Monitoring</td>
 <td><a class="reference external" href="#get--gn_monitoring-siteslist">GET /gn_monitoring/siteslist</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--gn_monitoring-siteslist-(int-id_site)">GET /gn_monitoring/siteslist/(int:id_site)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--gn_monitoring-siteareas-(int-id_site)">GET /gn_monitoring/siteareas/(int:id_site)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>Nomenclatures</td>
+<tr class="row-odd"><td>Nomenclatures</td>
 <td><a class="reference external" href="#get--nomenclatures-nomenclatures">GET /nomenclatures/nomenclatures</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--nomenclatures-nomenclature-(int-id_type)">GET /nomenclatures/nomenclature/(int:id_type)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--nomenclatures-nomenclature-(string-code_type)">GET /nomenclatures/nomenclature/(string:code_type)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>OccHab</td>
-<td><a class="reference external" href="#post--occhab-station">POST /occhab/station</a></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td>Occhab</td>
-<td><a class="reference external" href="#get--occhab-defaultNomenclatures">GET /occhab/defaultNomenclatures</a></td>
-<td>&#160;</td>
+<tr class="row-even"><td>Occtax</td>
+<td><a class="reference external" href="#post--occtax-only-releve">POST /occtax/only/releve</a></td>
+<td>Post one Occtax data (Releve + Occurrence + Counting)</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#get--occhab-stations">GET /occhab/stations</a></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#post--occhab-export_stations-(export_format)">POST /occhab/export_stations/(export_format)</a></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#get--occhab-station-(int-id_station)">GET /occhab/station/(int:id_station)</a></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#delete--occhab-station-(int-id_station)">DELETE /occhab/station/(int:id_station)</a></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td>Occtax</td>
 <td><a class="reference external" href="#get--occtax-defaultNomenclatures">GET /occtax/defaultNomenclatures</a></td>
 <td>&#160;</td>
 </tr>
@@ -488,47 +581,55 @@ métadonnées, intersections géographiques, exports…)</li>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#get--occtax-releves">GET /occtax/releves</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#post--occtax-releve">POST /occtax/releve</a></td>
 <td>Post one Occtax data (Releve + Occurrence + Counting)</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#get--occtax-export">GET /occtax/export</a></td>
-<td>Export data from pr_occtax.export_occtax_sinp</td>
-</tr>
 <tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#get--occtax-export">GET /occtax/export</a></td>
+<td>Export data from pr_occtax.v_export_occtax</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#delete--occtax-releve-occurrence_counting-(int-id_count)">DELETE /occtax/releve/occurrence_counting/(int:id_count)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#delete--occtax-releve-occurrence-(int-id_occ)">DELETE /occtax/releve/occurrence/(int:id_occ)</a></td>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#delete--occtax-occurrence-(int-id_occ)">DELETE /occtax/occurrence/(int:id_occ)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--occtax-counting-(int-id_counting)">GET /occtax/counting/(int:id_counting)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--occtax-releve-(int-id_releve)">GET /occtax/releve/(int:id_releve)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#delete--occtax-releve-(int-id_releve)">DELETE /occtax/releve/(int:id_releve)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>Permissions</td>
+<tr class="row-odd"><td>Permissions</td>
 <td><a class="reference external" href="#get--permissions-logout_cruved">GET /permissions/logout_cruved</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--permissions-cruved">GET /permissions/cruved</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>Ref Geo</td>
+<tr class="row-odd"><td>Ref Geo</td>
 <td><a class="reference external" href="#get--geo-municipalities">GET /geo/municipalities</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#post--geo-area_size">POST /geo/area_size</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#post--geo-altitude">POST /geo/altitude</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
@@ -556,55 +657,55 @@ métadonnées, intersections géographiques, exports…)</li>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#post--synthese-export_metadata">POST /synthese/export_metadata</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--synthese-export_metadata">GET /synthese/export_metadata</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#get--synthese-export_statuts">GET /synthese/export_statuts</a></td>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#post--synthese-export_statuts">POST /synthese/export_statuts</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#post--synthese-export_taxons">POST /synthese/export_taxons</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--synthese-general_stats">GET /synthese/general_stats</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--synthese-taxons_tree">GET /synthese/taxons_tree</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--synthese-color_taxon">GET /synthese/color_taxon</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#get--synthese-for_web">GET /synthese/for_web</a></td>
-<td>Get filtered observations</td>
-</tr>
 <tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#post--synthese-for_web">POST /synthese/for_web</a></td>
-<td>&#160;</td>
+<td>Get filtered observations</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#get--synthese-for_web">GET /synthese/for_web</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--synthese-sources">GET /synthese/sources</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--synthese">GET /synthese</a></td>
 <td>Deprecated</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--synthese-vsynthese-(id_synthese)">GET /synthese/vsynthese/(id_synthese)</a></td>
 <td>Get one synthese</td>
 </tr>
-<tr class="row-odd"><td>User</td>
+<tr class="row-even"><td>User</td>
 <td><a class="reference external" href="#get--gn_auth-logout_cruved">GET /gn_auth/logout_cruved</a></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#get--gn_auth-login_cas">GET /gn_auth/login_cas</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
@@ -612,55 +713,47 @@ métadonnées, intersections géographiques, exports…)</li>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#get--gn_auth-login_cas">GET /gn_auth/login_cas</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--users-organisms_dataset_actor">GET /users/organisms_dataset_actor</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--users-organisms">GET /users/organisms</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#post--users-cor_role">POST /users/cor_role</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#post--users-organism">POST /users/organism</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--users-roles">GET /users/roles</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#post--users-role">POST /users/role</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--users-menu_from_code-(string-code_liste)">GET /users/menu_from_code/(string:code_liste)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--users-menu-(int-id_menu)">GET /users/menu/(int:id_menu)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--users-role-(int-id_role)">GET /users/role/(int:id_role)</a></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td>Validation</td>
-<td><a class="reference external" href="#get--validation">GET /validation</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>View_Permission</td>
 <td><a class="reference external" href="#get--permissions_backoffice-users">GET /permissions_backoffice/users</a></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#get--permissions_backoffice-other_permissions_form-id_permission-(int-id_permission)-user-(int-id_role)-filter_type-(int-id_filter_type)">GET /permissions_backoffice/other_permissions_form/id_permission/(int:id_permission)/user/(int:id_role)/filter_type/(int:id_filter_type)</a></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#get--permissions_backoffice-other_permissions_form-user-(int-id_role)-filter_type-(int-id_filter_type)">GET /permissions_backoffice/other_permissions_form/user/(int:id_role)/filter_type/(int:id_filter_type)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
@@ -672,11 +765,11 @@ métadonnées, intersections géographiques, exports…)</li>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)-object-(int-id_object)">GET /permissions_backoffice/cruved_form/module/(int:id_module)/role/(int:id_role)/object/(int:id_object)</a></td>
+<td><a class="reference external" href="#get--permissions_backoffice-other_permissions_form-id_permission-(int-id_permission)-user-(int-id_role)-filter_type-(int-id_filter_type)">GET /permissions_backoffice/other_permissions_form/id_permission/(int:id_permission)/user/(int:id_role)/filter_type/(int:id_filter_type)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)">GET /permissions_backoffice/cruved_form/module/(int:id_module)/role/(int:id_role)</a></td>
+<td><a class="reference external" href="#get--permissions_backoffice-other_permissions_form-user-(int-id_role)-filter_type-(int-id_filter_type)">GET /permissions_backoffice/other_permissions_form/user/(int:id_role)/filter_type/(int:id_filter_type)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
@@ -688,11 +781,11 @@ métadonnées, intersections géographiques, exports…)</li>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)-id_filter-(int-id_filter)">GET /permissions_backoffice/filter_form/id_filter_type/(int:id_filter_type)/id_filter/(int:id_filter)</a></td>
+<td><a class="reference external" href="#get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)-object-(int-id_object)">GET /permissions_backoffice/cruved_form/module/(int:id_module)/role/(int:id_role)/object/(int:id_object)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)">GET /permissions_backoffice/filter_form/id_filter_type/(int:id_filter_type)</a></td>
+<td><a class="reference external" href="#get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)">GET /permissions_backoffice/cruved_form/module/(int:id_module)/role/(int:id_role)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
@@ -701,6 +794,14 @@ métadonnées, intersections géographiques, exports…)</li>
 </tr>
 <tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#post--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)">POST /permissions_backoffice/filter_form/id_filter_type/(int:id_filter_type)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)-id_filter-(int-id_filter)">GET /permissions_backoffice/filter_form/id_filter_type/(int:id_filter_type)/id_filter/(int:id_filter)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)">GET /permissions_backoffice/filter_form/id_filter_type/(int:id_filter_type)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
@@ -728,6 +829,62 @@ métadonnées, intersections géographiques, exports…)</li>
 <dt id="get--gn_commons-list-parameters">
 <code class="descname">GET </code><code class="descname">/gn_commons/list/parameters</code><a class="headerlink" href="#get--gn_commons-list-parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all parameters from gn_commons.t_parameters</p>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--habref-habitats-autocomplete">
+<code class="descname">GET </code><code class="descname">/habref/habitats/autocomplete</code><a class="headerlink" href="#get--habref-habitats-autocomplete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all habref items of a list for autocomplete</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Query Parameters:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><ul class="first simple">
+<li><strong>int</strong> (<em>limit</em>) – the id of the habref list</li>
+<li><strong>str</strong> (<em>search_name</em>) – the pattern to filter with</li>
+<li><strong>int</strong> – filter by typology</li>
+<li><strong>int</strong> – number of results, default = 20</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Array&lt;AutoCompleteHabitat&gt;</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="post">
+<dt id="post--occtax-only-releve">
+<code class="descname">POST </code><code class="descname">/occtax/only/releve</code><a class="headerlink" href="#post--occtax-only-releve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Post one Occtax data (Releve + Occurrence + Counting)</p>
+<p><strong>Request JSON object:</strong></p>
+<div class="highlight-http"><div class="highlight"><pre><span></span>{
+&quot;geometry&quot;:
+    {&quot;type&quot;:&quot;Point&quot;,
+    &quot;coordinates&quot;:[0.9008789062500001,47.14489748555398]},
+    &quot;properties&quot;:
+        {
+        &quot;id_releve_occtax&quot;:null,&quot;id_dataset&quot;:1,&quot;id_digitiser&quot;:1,&quot;date_min&quot;:&quot;2019-05-09&quot;,&quot;date_max&quot;:&quot;2019-05-09&quot;,&quot;hour_min&quot;:null,&quot;hour_max&quot;:null,&quot;altitude_min&quot;:null,&quot;altitude_max&quot;:null,&quot;meta_device_entry&quot;:&quot;web&quot;,&quot;comment&quot;:null,&quot;id_nomenclature_obs_technique&quot;:316,&quot;observers&quot;:[1],&quot;observers_txt&quot;:null,&quot;id_nomenclature_grp_typ&quot;:132,
+        &quot;t_occurrences_occtax&quot;:[{
+            &quot;id_releve_occtax&quot;:null,&quot;id_occurrence_occtax&quot;:null,&quot;id_nomenclature_obs_technique&quot;:41,&quot;id_nomenclature_bio_condition&quot;:157,&quot;id_nomenclature_bio_status&quot;:29,&quot;id_nomenclature_naturalness&quot;:160,&quot;id_nomenclature_exist_proof&quot;:81,&quot;id_nomenclature_observation_status&quot;:88,&quot;id_nomenclature_blurring&quot;:175,&quot;id_nomenclature_source_status&quot;:75,&quot;determiner&quot;:null,&quot;id_nomenclature_determination_method&quot;:445,&quot;cd_nom&quot;:67111,&quot;nom_cite&quot;:&quot;Ablette =  &lt;i&gt; Alburnus alburnus (Linnaeus, 1758)&lt;/i&gt; - [ES - 67111]&quot;,&quot;meta_v_taxref&quot;:null,&quot;sample_number_proof&quot;:null,&quot;comment&quot;:null,
+        &quot;cor_counting_occtax&quot;:[{
+            &quot;id_counting_occtax&quot;:null,&quot;id_nomenclature_life_stage&quot;:1,&quot;id_nomenclature_sex&quot;:171,&quot;id_nomenclature_obj_count&quot;:146,&quot;id_nomenclature_type_count&quot;:94,&quot;id_occurrence_occtax&quot;:null,&quot;count_min&quot;:1,&quot;count_max&quot;:1
+            }]
+        }]
+    }
+}
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">GeoJson&lt;TRelevesOccurrence&gt;</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="put">
@@ -848,28 +1005,10 @@ when the user logout we need clear the session to get the new cruved session</p>
 </dd></dl>
 
 <dl class="get">
-<dt id="get--validation-definitions">
-<code class="descname">GET </code><code class="descname">/validation/definitions</code><a class="headerlink" href="#get--validation-definitions" title="Permalink to this definition">¶</a></dt>
-<dd><p>return validation status definitions stored in t_nomenclatures</p>
-</dd></dl>
-
-<dl class="get">
 <dt id="get--gn_commons-modules">
 <code class="descname">GET </code><code class="descname">/gn_commons/modules</code><a class="headerlink" href="#get--gn_commons-modules" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the allowed modules of user from its cruved
 .. :quickref: Commons;</p>
-</dd></dl>
-
-<dl class="post">
-<dt id="post--gn_commons-media-(int-id_media)">
-<code class="descname">POST </code><code class="descname">/gn_commons/media/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_media</em><span class="sig-paren">)</span><a class="headerlink" href="#post--gn_commons-media-(int-id_media)" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="post">
-<dt id="post--gn_commons-media">
-<code class="descname">POST </code><code class="descname">/gn_commons/media</code><a class="headerlink" href="#post--gn_commons-media" title="Permalink to this definition">¶</a></dt>
-<dd><p>Insertion ou mise à jour d’un média
-avec prise en compte des fichiers joints</p>
 </dd></dl>
 
 <dl class="put">
@@ -880,6 +1019,18 @@ avec prise en compte des fichiers joints</p>
 <dl class="put">
 <dt id="put--gn_commons-media">
 <code class="descname">PUT </code><code class="descname">/gn_commons/media</code><a class="headerlink" href="#put--gn_commons-media" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insertion ou mise à jour d’un média
+avec prise en compte des fichiers joints</p>
+</dd></dl>
+
+<dl class="post">
+<dt id="post--gn_commons-media-(int-id_media)">
+<code class="descname">POST </code><code class="descname">/gn_commons/media/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_media</em><span class="sig-paren">)</span><a class="headerlink" href="#post--gn_commons-media-(int-id_media)" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="post">
+<dt id="post--gn_commons-media">
+<code class="descname">POST </code><code class="descname">/gn_commons/media</code><a class="headerlink" href="#post--gn_commons-media" title="Permalink to this definition">¶</a></dt>
 <dd><p>Insertion ou mise à jour d’un média
 avec prise en compte des fichiers joints</p>
 </dd></dl>
@@ -959,6 +1110,15 @@ Some columns are mandatory: id_synthese, geojson and geojson_local to generate t
 and grouped by a certain taxa rank</p>
 </dd></dl>
 
+<dl class="post">
+<dt id="post--synthese-export_metadata">
+<code class="descname">POST </code><code class="descname">/synthese/export_metadata</code><a class="headerlink" href="#post--synthese-export_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route to export the metadata in CSV</p>
+<p>The table synthese is join with gn_synthese.v_metadata_for_export
+The column jdd_id is mandatory in the view gn_synthese.v_metadata_for_export</p>
+<p>POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view</p>
+</dd></dl>
+
 <dl class="get">
 <dt id="get--synthese-export_metadata">
 <code class="descname">GET </code><code class="descname">/synthese/export_metadata</code><a class="headerlink" href="#get--synthese-export_metadata" title="Permalink to this definition">¶</a></dt>
@@ -968,9 +1128,9 @@ The column jdd_id is mandatory in the view gn_synthese.v_metadata_for_export</p>
 <p>POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view</p>
 </dd></dl>
 
-<dl class="get">
-<dt id="get--synthese-export_statuts">
-<code class="descname">GET </code><code class="descname">/synthese/export_statuts</code><a class="headerlink" href="#get--synthese-export_statuts" title="Permalink to this definition">¶</a></dt>
+<dl class="post">
+<dt id="post--synthese-export_statuts">
+<code class="descname">POST </code><code class="descname">/synthese/export_statuts</code><a class="headerlink" href="#post--synthese-export_statuts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Route to get all the protection status of a synthese search</p>
 <p>Get the CRUVED from ‘R’ action because we don’t give observations X/Y but only statuts
 and to be constistant with the data displayed in the web interface</p>
@@ -1062,9 +1222,9 @@ Some columns are mandatory: cd_ref</p>
 </table>
 </dd></dl>
 
-<dl class="get">
-<dt id="get--synthese-for_web">
-<code class="descname">GET </code><code class="descname">/synthese/for_web</code><a class="headerlink" href="#get--synthese-for_web" title="Permalink to this definition">¶</a></dt>
+<dl class="post">
+<dt id="post--synthese-for_web">
+<code class="descname">POST </code><code class="descname">/synthese/for_web</code><a class="headerlink" href="#post--synthese-for_web" title="Permalink to this definition">¶</a></dt>
 <dd><p>Optimized route to serve data for the frontend with all filters.</p>
 <p>Query filtered by any filter, returning all the fields of the
 view v_synthese_for_export:</p>
@@ -1077,6 +1237,7 @@ view v_synthese_for_export:</p>
     <span class="s2">&quot;dataset_name&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;dataset_name&quot;</span><span class="p">],</span>
     <span class="s2">&quot;observers&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;observers&quot;</span><span class="p">],</span>
     <span class="s2">&quot;url_source&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;url_source&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;unique_id_sinp&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;unique_id_sinp&quot;</span><span class="p">],</span>
     <span class="s2">&quot;entity_source_pk_value&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;entity_source_pk_value&quot;</span><span class="p">],</span>
 <span class="p">}</span>
 <span class="n">geojson</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;st_asgeojson&quot;</span><span class="p">])</span>
@@ -1125,9 +1286,9 @@ view v_synthese_for_export:</p>
 </table>
 </dd></dl>
 
-<dl class="post">
-<dt id="post--synthese-for_web">
-<code class="descname">POST </code><code class="descname">/synthese/for_web</code><a class="headerlink" href="#post--synthese-for_web" title="Permalink to this definition">¶</a></dt>
+<dl class="get">
+<dt id="get--synthese-for_web">
+<code class="descname">GET </code><code class="descname">/synthese/for_web</code><a class="headerlink" href="#get--synthese-for_web" title="Permalink to this definition">¶</a></dt>
 <dd><p>Optimized route to serve data for the frontend with all filters.</p>
 <p>Query filtered by any filter, returning all the fields of the
 view v_synthese_for_export:</p>
@@ -1140,6 +1301,7 @@ view v_synthese_for_export:</p>
     <span class="s2">&quot;dataset_name&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;dataset_name&quot;</span><span class="p">],</span>
     <span class="s2">&quot;observers&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;observers&quot;</span><span class="p">],</span>
     <span class="s2">&quot;url_source&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;url_source&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;unique_id_sinp&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;unique_id_sinp&quot;</span><span class="p">],</span>
     <span class="s2">&quot;entity_source_pk_value&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;entity_source_pk_value&quot;</span><span class="p">],</span>
 <span class="p">}</span>
 <span class="n">geojson</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;st_asgeojson&quot;</span><span class="p">])</span>
@@ -1202,15 +1364,15 @@ To avoid multiples server call, we store the cruved in the session
 when the user logout we need clear the session to get the new cruved session</p>
 </dd></dl>
 
-<dl class="get">
-<dt id="get--gn_auth-login_cas">
-<code class="descname">GET </code><code class="descname">/gn_auth/login_cas</code><a class="headerlink" href="#get--gn_auth-login_cas" title="Permalink to this definition">¶</a></dt>
-<dd><p>Login route with the INPN CAS</p>
-</dd></dl>
-
 <dl class="post">
 <dt id="post--gn_auth-login_cas">
 <code class="descname">POST </code><code class="descname">/gn_auth/login_cas</code><a class="headerlink" href="#post--gn_auth-login_cas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Login route with the INPN CAS</p>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--gn_auth-login_cas">
+<code class="descname">GET </code><code class="descname">/gn_auth/login_cas</code><a class="headerlink" href="#get--gn_auth-login_cas" title="Permalink to this definition">¶</a></dt>
 <dd><p>Login route with the INPN CAS</p>
 </dd></dl>
 
@@ -1229,17 +1391,9 @@ when the user logout we need clear the session to get the new cruved session</p>
 </dd></dl>
 
 <dl class="get">
-<dt id="get--occhab-defaultNomenclatures">
-<code class="descname">GET </code><code class="descname">/occhab/defaultNomenclatures</code><a class="headerlink" href="#get--occhab-defaultNomenclatures" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get default nomenclatures define in occhab module</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">dict: {‘MODULE_CODE’: ‘ID_NOMENCLATURE’}</td>
-</tr>
-</tbody>
-</table>
+<dt id="get--occtax-vreleveocctax">
+<code class="descname">GET </code><code class="descname">/occtax/vreleveocctax</code><a class="headerlink" href="#get--occtax-vreleveocctax" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deprecated</p>
 </dd></dl>
 
 <dl class="get">
@@ -1257,30 +1411,29 @@ when the user logout we need clear the session to get the new cruved session</p>
 </dd></dl>
 
 <dl class="get">
-<dt id="get--occhab-stations">
-<code class="descname">GET </code><code class="descname">/occhab/stations</code><a class="headerlink" href="#get--occhab-stations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get all stations with their hab</p>
+<dt id="get--import-bibFields">
+<code class="descname">GET </code><code class="descname">/import/bibFields</code><a class="headerlink" href="#get--import-bibFields" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all synthese fields
+Use in field mapping steps</p>
 </dd></dl>
 
 <dl class="post">
-<dt id="post--occhab-station">
-<code class="descname">POST </code><code class="descname">/occhab/station</code><a class="headerlink" href="#post--occhab-station" title="Permalink to this definition">¶</a></dt>
-<dd><p>Post one occhab station (station + habitats)</p>
-<p>Post one occhab station (station + habitats)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">GeoJson&lt;TStationsOcchab&gt;</td>
-</tr>
-</tbody>
-</table>
+<dt id="post--import-mapping">
+<code class="descname">POST </code><code class="descname">/import/mapping</code><a class="headerlink" href="#post--import-mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Post a new mapping (value or content)</p>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--occtax-releves">
+<code class="descname">GET </code><code class="descname">/occtax/releves</code><a class="headerlink" href="#get--occtax-releves" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route for map list web interface</p>
 </dd></dl>
 
 <dl class="post">
 <dt id="post--occtax-releve">
 <code class="descname">POST </code><code class="descname">/occtax/releve</code><a class="headerlink" href="#post--occtax-releve" title="Permalink to this definition">¶</a></dt>
-<dd><p>Post one Occtax data (Releve + Occurrence + Counting)</p>
+<dd><p>Route utilisée depuis l’appli mobile =&gt; depreciée et non utilisée par l’appli web
+Post one Occtax data (Releve + Occurrence + Counting)</p>
 <p><strong>Request JSON object:</strong></p>
 <div class="highlight-http"><div class="highlight"><pre><span></span>{
 &quot;geometry&quot;:
@@ -1290,10 +1443,10 @@ when the user logout we need clear the session to get the new cruved session</p>
         {
         &quot;id_releve_occtax&quot;:null,&quot;id_dataset&quot;:1,&quot;id_digitiser&quot;:1,&quot;date_min&quot;:&quot;2019-05-09&quot;,&quot;date_max&quot;:&quot;2019-05-09&quot;,&quot;hour_min&quot;:null,&quot;hour_max&quot;:null,&quot;altitude_min&quot;:null,&quot;altitude_max&quot;:null,&quot;meta_device_entry&quot;:&quot;web&quot;,&quot;comment&quot;:null,&quot;id_nomenclature_obs_technique&quot;:316,&quot;observers&quot;:[1],&quot;observers_txt&quot;:null,&quot;id_nomenclature_grp_typ&quot;:132,
         &quot;t_occurrences_occtax&quot;:[{
-            &quot;id_releve_occtax&quot;:null,&quot;id_occurrence_occtax&quot;:null,&quot;id_nomenclature_obs_meth&quot;:41,&quot;id_nomenclature_bio_condition&quot;:157,&quot;id_nomenclature_bio_status&quot;:29,&quot;id_nomenclature_naturalness&quot;:160,&quot;id_nomenclature_exist_proof&quot;:81,&quot;id_nomenclature_observation_status&quot;:88,&quot;id_nomenclature_blurring&quot;:175,&quot;id_nomenclature_source_status&quot;:75,&quot;determiner&quot;:null,&quot;id_nomenclature_determination_method&quot;:445,&quot;cd_nom&quot;:67111,&quot;nom_cite&quot;:&quot;Ablette =  &lt;i&gt; Alburnus alburnus (Linnaeus, 1758)&lt;/i&gt; - [ES - 67111]&quot;,&quot;meta_v_taxref&quot;:null,&quot;sample_number_proof&quot;:null,&quot;comment&quot;:null,
+            &quot;id_releve_occtax&quot;:null,&quot;id_occurrence_occtax&quot;:null,&quot;id_nomenclature_obs_technique&quot;:41,&quot;id_nomenclature_bio_condition&quot;:157,&quot;id_nomenclature_bio_status&quot;:29,&quot;id_nomenclature_naturalness&quot;:160,&quot;id_nomenclature_exist_proof&quot;:81,&quot;id_nomenclature_observation_status&quot;:88,&quot;id_nomenclature_blurring&quot;:175,&quot;id_nomenclature_source_status&quot;:75,&quot;determiner&quot;:null,&quot;id_nomenclature_determination_method&quot;:445,&quot;cd_nom&quot;:67111,&quot;nom_cite&quot;:&quot;Ablette =  &lt;i&gt; Alburnus alburnus (Linnaeus, 1758)&lt;/i&gt; - [ES - 67111]&quot;,&quot;meta_v_taxref&quot;:null,&quot;sample_number_proof&quot;:null,&quot;comment&quot;:null,
         &quot;cor_counting_occtax&quot;:[{
-            &quot;id_counting_occtax&quot;:null,&quot;id_nomenclature_life_stage&quot;:1,&quot;id_nomenclature_sex&quot;:171,&quot;id_nomenclature_obj_count&quot;:146,&quot;id_nomenclature_type_count&quot;:94,&quot;id_occurrence_occtax&quot;:null,&quot;count_min&quot;:1,&quot;count_max&quot;:1   
-            }]    
+            &quot;id_counting_occtax&quot;:null,&quot;id_nomenclature_life_stage&quot;:1,&quot;id_nomenclature_sex&quot;:171,&quot;id_nomenclature_obj_count&quot;:146,&quot;id_nomenclature_type_count&quot;:94,&quot;id_occurrence_occtax&quot;:null,&quot;count_min&quot;:1,&quot;count_max&quot;:1
+            }]
         }]
     }
 }
@@ -1312,7 +1465,7 @@ when the user logout we need clear the session to get the new cruved session</p>
 <dl class="get">
 <dt id="get--occtax-export">
 <code class="descname">GET </code><code class="descname">/occtax/export</code><a class="headerlink" href="#get--occtax-export" title="Permalink to this definition">¶</a></dt>
-<dd><p>Export data from pr_occtax.export_occtax_sinp view (parameter)</p>
+<dd><p>Export data from pr_occtax.v_export_occtax view (parameter)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1528,6 +1681,12 @@ Add the CRUVED permission for each row (Dataset and AD)</p>
 </dd></dl>
 
 <dl class="post">
+<dt id="post--geo-altitude">
+<code class="descname">POST </code><code class="descname">/geo/altitude</code><a class="headerlink" href="#post--geo-altitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>From a posted geojson get the altitude min/max</p>
+</dd></dl>
+
+<dl class="post">
 <dt id="post--geo-areas">
 <code class="descname">POST </code><code class="descname">/geo/areas</code><a class="headerlink" href="#post--geo-areas" title="Permalink to this definition">¶</a></dt>
 <dd><p>From a posted geojson, the route return all the area intersected
@@ -1538,7 +1697,7 @@ from l_areas
 <dl class="get">
 <dt id="get--geo-areas">
 <code class="descname">GET </code><code class="descname">/geo/areas</code><a class="headerlink" href="#get--geo-areas" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the areas of ref_geo.l_areas without geometry
+<dd><p>Return the areas of ref_geo.l_areas
 .. :quickref: Ref Geo;</p>
 </dd></dl>
 
@@ -1546,25 +1705,7 @@ from l_areas
 <dt id="post--geo-info">
 <code class="descname">POST </code><code class="descname">/geo/info</code><a class="headerlink" href="#post--geo-info" title="Permalink to this definition">¶</a></dt>
 <dd><p>From a posted geojson, the route return the municipalities intersected
-and the altitude min/max
-.. :quickref: Ref Geo;</p>
-</dd></dl>
-
-<dl class="get">
-<dt id="get--validation">
-<code class="descname">GET </code><code class="descname">/validation</code><a class="headerlink" href="#get--validation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return synthese and t_validations data filtered by form params
-Params must have same synthese fields names</p>
-<dl class="docutils">
-<dt>info_role (User): </dt>
-<dd>Information about the user asking the route. Auto add with kwargs</dd>
-<dt>truc (int): </dt>
-<dd>essai</dd>
-</dl>
-<dl class="docutils">
-<dt>dict</dt>
-<dd>test</dd>
-</dl>
+and the altitude min/max</p>
 </dd></dl>
 
 <dl class="get">
@@ -1601,15 +1742,9 @@ Params must have same synthese fields names</p>
 </dd></dl>
 
 <dl class="get">
-<dt id="get--permissions_backoffice-other_permissions_form-id_permission-(int-id_permission)-user-(int-id_role)-filter_type-(int-id_filter_type)">
-<code class="descname">GET </code><code class="descname">/permissions_backoffice/other_permissions_form/id_permission/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_permission</em><span class="sig-paren">)</span><code class="descname">/user/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_role</em><span class="sig-paren">)</span><code class="descname">/filter_type/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_filter_type</em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-other_permissions_form-id_permission-(int-id_permission)-user-(int-id_role)-filter_type-(int-id_filter_type)" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="get">
-<dt id="get--permissions_backoffice-other_permissions_form-user-(int-id_role)-filter_type-(int-id_filter_type)">
-<code class="descname">GET </code><code class="descname">/permissions_backoffice/other_permissions_form/user/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_role</em><span class="sig-paren">)</span><code class="descname">/filter_type/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_filter_type</em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-other_permissions_form-user-(int-id_role)-filter_type-(int-id_filter_type)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Form to define permisisons for a user expect SCOPE permissions
-.. :quickref: View_Permission;</p>
+<dt id="get--import">
+<code class="descname">GET </code><code class="descname">/import</code><a class="headerlink" href="#get--import" title="Permalink to this definition">¶</a></dt>
+<dd><p>return import list</p>
 </dd></dl>
 
 <dl class="post">
@@ -1625,14 +1760,16 @@ Params must have same synthese fields names</p>
 </dd></dl>
 
 <dl class="get">
-<dt id="get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)-object-(int-id_object)">
-<code class="descname">GET </code><code class="descname">/permissions_backoffice/cruved_form/module/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_module</em><span class="sig-paren">)</span><code class="descname">/role/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_role</em><span class="sig-paren">)</span><code class="descname">/object/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_object</em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)-object-(int-id_object)" title="Permalink to this definition">¶</a></dt>
+<dt id="get--permissions_backoffice-other_permissions_form-id_permission-(int-id_permission)-user-(int-id_role)-filter_type-(int-id_filter_type)">
+<code class="descname">GET </code><code class="descname">/permissions_backoffice/other_permissions_form/id_permission/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_permission</em><span class="sig-paren">)</span><code class="descname">/user/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_role</em><span class="sig-paren">)</span><code class="descname">/filter_type/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_filter_type</em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-other_permissions_form-id_permission-(int-id_permission)-user-(int-id_role)-filter_type-(int-id_filter_type)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="get">
-<dt id="get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)">
-<code class="descname">GET </code><code class="descname">/permissions_backoffice/cruved_form/module/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_module</em><span class="sig-paren">)</span><code class="descname">/role/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_role</em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="get--permissions_backoffice-other_permissions_form-user-(int-id_role)-filter_type-(int-id_filter_type)">
+<code class="descname">GET </code><code class="descname">/permissions_backoffice/other_permissions_form/user/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_role</em><span class="sig-paren">)</span><code class="descname">/filter_type/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_filter_type</em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-other_permissions_form-user-(int-id_role)-filter_type-(int-id_filter_type)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Form to define permisisons for a user expect SCOPE permissions
+.. :quickref: View_Permission;</p>
+</dd></dl>
 
 <dl class="post">
 <dt id="post--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)-object-(int-id_object)">
@@ -1645,13 +1782,13 @@ Params must have same synthese fields names</p>
 <dd></dd></dl>
 
 <dl class="get">
-<dt id="get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)-id_filter-(int-id_filter)">
-<code class="descname">GET </code><code class="descname">/permissions_backoffice/filter_form/id_filter_type/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_filter_type</em><span class="sig-paren">)</span><code class="descname">/id_filter/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_filter</em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)-id_filter-(int-id_filter)" title="Permalink to this definition">¶</a></dt>
+<dt id="get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)-object-(int-id_object)">
+<code class="descname">GET </code><code class="descname">/permissions_backoffice/cruved_form/module/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_module</em><span class="sig-paren">)</span><code class="descname">/role/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_role</em><span class="sig-paren">)</span><code class="descname">/object/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_object</em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)-object-(int-id_object)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="get">
-<dt id="get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)">
-<code class="descname">GET </code><code class="descname">/permissions_backoffice/filter_form/id_filter_type/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_filter_type</em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)" title="Permalink to this definition">¶</a></dt>
+<dt id="get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)">
+<code class="descname">GET </code><code class="descname">/permissions_backoffice/cruved_form/module/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_module</em><span class="sig-paren">)</span><code class="descname">/role/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_role</em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="post">
@@ -1665,37 +1802,52 @@ Params must have same synthese fields names</p>
 <dd></dd></dl>
 
 <dl class="get">
-<dt id="get--habref-habitats-autocomplete-list-(int-id_list)">
-<code class="descname">GET </code><code class="descname">/habref/habitats/autocomplete/list/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_list</em><span class="sig-paren">)</span><a class="headerlink" href="#get--habref-habitats-autocomplete-list-(int-id_list)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get all habref items of a list for autocomplete</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>id_list</strong> (<em>int</em>) – the id of the habref list</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name" colspan="2">Query Parameters:</th></tr>
-<tr class="field-even field"><td>&#160;</td><td class="field-body"><ul class="first simple">
-<li><strong>str</strong> (<em>search_name</em>) – the pattern to filter with</li>
-<li><strong>int</strong> (<em>limit</em>) – filter by typology</li>
-<li><strong>int</strong> – number of results, default = 20</li>
-</ul>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Array&lt;AutoCompleteHabitat&gt;</p>
-</td>
-</tr>
-</tbody>
-</table>
+<dt id="get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)-id_filter-(int-id_filter)">
+<code class="descname">GET </code><code class="descname">/permissions_backoffice/filter_form/id_filter_type/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_filter_type</em><span class="sig-paren">)</span><code class="descname">/id_filter/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_filter</em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)-id_filter-(int-id_filter)" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="get">
+<dt id="get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)">
+<code class="descname">GET </code><code class="descname">/permissions_backoffice/filter_form/id_filter_type/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_filter_type</em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="post">
+<dt id="post--import-data_checker-(import_id)-field_mapping-(int-id_field_mapping)-content_mapping-(int-id_content_mapping)">
+<code class="descname">POST </code><code class="descname">/import/data_checker/</code><span class="sig-paren">(</span><em>import_id</em><span class="sig-paren">)</span><code class="descname">/field_mapping/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_field_mapping</em><span class="sig-paren">)</span><code class="descname">/content_mapping/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_content_mapping</em><span class="sig-paren">)</span><a class="headerlink" href="#post--import-data_checker-(import_id)-field_mapping-(int-id_field_mapping)-content_mapping-(int-id_content_mapping)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check and transform the data for field and content mapping</p>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--import-data_checker-(import_id)-field_mapping-(int-id_field_mapping)-content_mapping-(int-id_content_mapping)">
+<code class="descname">GET </code><code class="descname">/import/data_checker/</code><span class="sig-paren">(</span><em>import_id</em><span class="sig-paren">)</span><code class="descname">/field_mapping/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_field_mapping</em><span class="sig-paren">)</span><code class="descname">/content_mapping/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_content_mapping</em><span class="sig-paren">)</span><a class="headerlink" href="#get--import-data_checker-(import_id)-field_mapping-(int-id_field_mapping)-content_mapping-(int-id_content_mapping)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check and transform the data for field and content mapping</p>
 </dd></dl>
 
 <dl class="get">
 <dt id="get--permissions_backoffice-filter_list-id_filter_type-(int-id_filter_type)">
 <code class="descname">GET </code><code class="descname">/permissions_backoffice/filter_list/id_filter_type/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_filter_type</em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-filter_list-id_filter_type-(int-id_filter_type)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="get">
+<dt id="get--gn_commons-media-thumbnails-(int-id_media)-(int-size)">
+<code class="descname">GET </code><code class="descname">/gn_commons/media/thumbnails/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_media</em><span class="sig-paren">)</span><code class="descname">/</code><span class="sig-paren">(</span><em class="property">int: </em><em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#get--gn_commons-media-thumbnails-(int-id_media)-(int-size)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retourne le thumbnail d’un media
+.. :quickref: Commons;</p>
+</dd></dl>
+
+<dl class="post">
+<dt id="post--import-getNomencInfo-(int-id_import)-field_mapping-(int-id_field_mapping)">
+<code class="descname">POST </code><code class="descname">/import/getNomencInfo/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_import</em><span class="sig-paren">)</span><code class="descname">/field_mapping/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_field_mapping</em><span class="sig-paren">)</span><a class="headerlink" href="#post--import-getNomencInfo-(int-id_import)-field_mapping-(int-id_field_mapping)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all nomenclature info for a mapping
+Use for the value mapping step</p>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--import-getNomencInfo-(int-id_import)-field_mapping-(int-id_field_mapping)">
+<code class="descname">GET </code><code class="descname">/import/getNomencInfo/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_import</em><span class="sig-paren">)</span><code class="descname">/field_mapping/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_field_mapping</em><span class="sig-paren">)</span><a class="headerlink" href="#get--import-getNomencInfo-(int-id_import)-field_mapping-(int-id_field_mapping)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all nomenclature info for a mapping
+Use for the value mapping step</p>
+</dd></dl>
 
 <dl class="delete">
 <dt id="delete--occtax-releve-occurrence_counting-(int-id_count)">
@@ -1712,19 +1864,16 @@ Params must have same synthese fields names</p>
 </table>
 </dd></dl>
 
-<dl class="delete">
-<dt id="delete--occtax-releve-occurrence-(int-id_occ)">
-<code class="descname">DELETE </code><code class="descname">/occtax/releve/occurrence/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_occ</em><span class="sig-paren">)</span><a class="headerlink" href="#delete--occtax-releve-occurrence-(int-id_occ)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Delete one occurrence and associated counting</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name" colspan="2">Params int id_occ:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body">ID of the occurrence to delete</td>
-</tr>
-</tbody>
-</table>
+<dl class="post">
+<dt id="post--occtax-releve-(int-id_releve)-occurrence">
+<code class="descname">POST </code><code class="descname">/occtax/releve/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_releve</em><span class="sig-paren">)</span><code class="descname">/occurrence</code><a class="headerlink" href="#post--occtax-releve-(int-id_releve)-occurrence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Post one Occurrence data (Occurrence + Counting) for add to Releve</p>
+</dd></dl>
+
+<dl class="post">
+<dt id="post--occtax-only-releve-(int-id_releve)">
+<code class="descname">POST </code><code class="descname">/occtax/only/releve/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_releve</em><span class="sig-paren">)</span><a class="headerlink" href="#post--occtax-only-releve-(int-id_releve)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Post one Occurrence data (Occurrence + Counting) for add to Releve</p>
 </dd></dl>
 
 <dl class="get">
@@ -1818,6 +1967,13 @@ Possibilité de filtrer par regne et group2Inpn</p>
 </dd></dl>
 
 <dl class="get">
+<dt id="get--gn_commons-medias-(string-uuid_attached_row)">
+<code class="descname">GET </code><code class="descname">/gn_commons/medias/</code><span class="sig-paren">(</span><em class="property">string: </em><em>uuid_attached_row</em><span class="sig-paren">)</span><a class="headerlink" href="#get--gn_commons-medias-(string-uuid_attached_row)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retourne des medias
+.. :quickref: Commons;</p>
+</dd></dl>
+
+<dl class="get">
 <dt id="get--gn_commons-media-(int-id_media)">
 <code class="descname">GET </code><code class="descname">/gn_commons/media/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_media</em><span class="sig-paren">)</span><a class="headerlink" href="#get--gn_commons-media-(int-id_media)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retourne un media
@@ -1828,13 +1984,6 @@ Possibilité de filtrer par regne et group2Inpn</p>
 <dt id="delete--gn_commons-media-(int-id_media)">
 <code class="descname">DELETE </code><code class="descname">/gn_commons/media/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_media</em><span class="sig-paren">)</span><a class="headerlink" href="#delete--gn_commons-media-(int-id_media)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Suppression d’un media</p>
-</dd></dl>
-
-<dl class="get">
-<dt id="get--validation-date-(uuid)">
-<code class="descname">GET </code><code class="descname">/validation/date/</code><span class="sig-paren">(</span><em>uuid</em><span class="sig-paren">)</span><a class="headerlink" href="#get--validation-date-(uuid)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retourne la date de validation
-pour l’observation uuid</p>
 </dd></dl>
 
 <dl class="get">
@@ -1852,10 +2001,27 @@ pour l’observation uuid</p>
 </dd></dl>
 
 <dl class="post">
-<dt id="post--occhab-export_stations-(export_format)">
-<code class="descname">POST </code><code class="descname">/occhab/export_stations/</code><span class="sig-paren">(</span><em>export_format</em><span class="sig-paren">)</span><a class="headerlink" href="#post--occhab-export_stations-(export_format)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Download all stations
-The route is in post to avoid a too large query string</p>
+<dt id="post--import-create_or_update_field_mapping-(int-id_mapping)">
+<code class="descname">POST </code><code class="descname">/import/create_or_update_field_mapping/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_mapping</em><span class="sig-paren">)</span><a class="headerlink" href="#post--import-create_or_update_field_mapping-(int-id_mapping)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create or update a field_mapping</p>
+</dd></dl>
+
+<dl class="post">
+<dt id="post--import-update_content_mapping-(int-id_mapping)">
+<code class="descname">POST </code><code class="descname">/import/update_content_mapping/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_mapping</em><span class="sig-paren">)</span><a class="headerlink" href="#post--import-update_content_mapping-(int-id_mapping)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update a content mapping (table TMappingsValues)</p>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--import-update_content_mapping-(int-id_mapping)">
+<code class="descname">GET </code><code class="descname">/import/update_content_mapping/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_mapping</em><span class="sig-paren">)</span><a class="headerlink" href="#get--import-update_content_mapping-(int-id_mapping)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update a content mapping (table TMappingsValues)</p>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--import-content_mappings-(id_mapping)">
+<code class="descname">GET </code><code class="descname">/import/content_mappings/</code><span class="sig-paren">(</span><em>id_mapping</em><span class="sig-paren">)</span><a class="headerlink" href="#get--import-content_mappings-(id_mapping)" title="Permalink to this definition">¶</a></dt>
+<dd><p>load source and target contents from an id_mapping</p>
 </dd></dl>
 
 <dl class="get">
@@ -1870,6 +2036,65 @@ The route is in post to avoid a too large query string</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--import-columns_import-(int-id_import)">
+<code class="descname">GET </code><code class="descname">/import/columns_import/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_import</em><span class="sig-paren">)</span><a class="headerlink" href="#get--import-columns_import-(int-id_import)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all the columns of the file of an import</p>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--import-field_mappings-(id_mapping)">
+<code class="descname">GET </code><code class="descname">/import/field_mappings/</code><span class="sig-paren">(</span><em>id_mapping</em><span class="sig-paren">)</span><a class="headerlink" href="#get--import-field_mappings-(id_mapping)" title="Permalink to this definition">¶</a></dt>
+<dd><p>load source and target fields from an id_mapping</p>
+</dd></dl>
+
+<dl class="post">
+<dt id="post--occtax-occurrence-(int-id_occurrence)">
+<code class="descname">POST </code><code class="descname">/occtax/occurrence/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_occurrence</em><span class="sig-paren">)</span><a class="headerlink" href="#post--occtax-occurrence-(int-id_occurrence)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Post one Occurrence data (Occurrence + Counting) for add to Releve</p>
+</dd></dl>
+
+<dl class="delete">
+<dt id="delete--occtax-occurrence-(int-id_occ)">
+<code class="descname">DELETE </code><code class="descname">/occtax/occurrence/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_occ</em><span class="sig-paren">)</span><a class="headerlink" href="#delete--occtax-occurrence-(int-id_occ)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete one occurrence and associated counting</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Params int id_occ:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">ID of the occurrence to delete</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="post">
+<dt id="post--import-importData-(import_id)">
+<code class="descname">POST </code><code class="descname">/import/importData/</code><span class="sig-paren">(</span><em>import_id</em><span class="sig-paren">)</span><a class="headerlink" href="#post--import-importData-(import_id)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run import data in synthese
+The route must return an import object with its mapping (use in frontend)</p>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--import-importData-(import_id)">
+<code class="descname">GET </code><code class="descname">/import/importData/</code><span class="sig-paren">(</span><em>import_id</em><span class="sig-paren">)</span><a class="headerlink" href="#get--import-importData-(import_id)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run import data in synthese
+The route must return an import object with its mapping (use in frontend)</p>
+</dd></dl>
+
+<dl class="post">
+<dt id="post--import-get_errors-(import_id)">
+<code class="descname">POST </code><code class="descname">/import/get_errors/</code><span class="sig-paren">(</span><em>import_id</em><span class="sig-paren">)</span><a class="headerlink" href="#post--import-get_errors-(import_id)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export invalid data in CSV</p>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--import-get_errors-(import_id)">
+<code class="descname">GET </code><code class="descname">/import/get_errors/</code><span class="sig-paren">(</span><em>import_id</em><span class="sig-paren">)</span><a class="headerlink" href="#get--import-get_errors-(import_id)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export invalid data in CSV</p>
 </dd></dl>
 
 <dl class="get">
@@ -1896,6 +2121,12 @@ The route is in post to avoid a too large query string</p>
 </dd></dl>
 
 <dl class="get">
+<dt id="get--import-mappings-(mapping_type)">
+<code class="descname">GET </code><code class="descname">/import/mappings/</code><span class="sig-paren">(</span><em>mapping_type</em><span class="sig-paren">)</span><a class="headerlink" href="#get--import-mappings-(mapping_type)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load mapping names in frontend (select)</p>
+</dd></dl>
+
+<dl class="get">
 <dt id="get--habref-habitat-(int-cd_hab)">
 <code class="descname">GET </code><code class="descname">/habref/habitat/</code><span class="sig-paren">(</span><em class="property">int: </em><em>cd_hab</em><span class="sig-paren">)</span><a class="headerlink" href="#get--habref-habitat-(int-cd_hab)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get one habitat with its correspondances</p>
@@ -1909,31 +2140,13 @@ The route is in post to avoid a too large query string</p>
 </table>
 </dd></dl>
 
-<dl class="get">
-<dt id="get--occhab-station-(int-id_station)">
-<code class="descname">GET </code><code class="descname">/occhab/station/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_station</em><span class="sig-paren">)</span><a class="headerlink" href="#get--occhab-station-(int-id_station)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return one station</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>id_station</strong> (<em>int</em>) – the id_station</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return:</th><td class="field-body"><p class="first last">a dict representing one station with its habitats</p>
-</td>
-</tr>
-</tbody>
-</table>
-<p>:rtype dict&lt;TStationsOcchab&gt;</p>
-</dd></dl>
-
 <dl class="delete">
-<dt id="delete--occhab-station-(int-id_station)">
-<code class="descname">DELETE </code><code class="descname">/occhab/station/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_station</em><span class="sig-paren">)</span><a class="headerlink" href="#delete--occhab-station-(int-id_station)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Delete a station with its habitat and its observers</p>
+<dt id="delete--import-mapping-(int-id_mapping)">
+<code class="descname">DELETE </code><code class="descname">/import/mapping/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_mapping</em><span class="sig-paren">)</span><a class="headerlink" href="#delete--import-mapping-(int-id_mapping)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a mappping
+In order to delete temporary mapping (which are automaticaly created) we don’t check ‘Delete’ rights
+on ‘mapping’ object.
+Any user which is user of a mapping can delete it with this route</p>
 </dd></dl>
 
 <dl class="get">
@@ -2227,52 +2440,157 @@ alors filtre nom_col &lt;= val</dd>
 <h2>Release<a class="headerlink" href="#release" title="Permalink to this headline">¶</a></h2>
 <p>Pour sortir une nouvelle version de GeoNature :</p>
 <ul class="simple">
-<li>Faites les éventuelles Releases des dépendances (UsersHub,
-TaxHub, UsersHub-authentification-module, Nomenclature-api-module,
-GeoNature-atlas)</li>
-<li>Mettez à jour la version de GeoNature et éventuellement des dépendances
-dans <code class="docutils literal"><span class="pre">install/install_all/install_all.ini</span></code>, <code class="docutils literal"><span class="pre">config/settings.ini.sample</span></code>,
-<code class="docutils literal"><span class="pre">backend/requirements.txt</span></code></li>
-<li>Compléter le fichier <code class="docutils literal"><span class="pre">docs/CHANGELOG.rst</span></code> (en comparant les branches <a class="reference external" href="https://github.com/PnX-SI/GeoNature/compare/develop">https://github.com/PnX-SI/GeoNature/compare/develop</a>) et dater la version à sortir</li>
+<li>Faites les éventuelles Releases des dépendances (UsersHub, TaxHub, UsersHub-authentification-module, Nomenclature-api-module, GeoNature-atlas)</li>
+<li>Mettez à jour la version de GeoNature et éventuellement des dépendances dans <code class="docutils literal"><span class="pre">install/install_all/install_all.ini</span></code>, <code class="docutils literal"><span class="pre">config/settings.ini.sample</span></code>, <code class="docutils literal"><span class="pre">backend/requirements.txt</span></code></li>
+<li>Complétez le fichier <code class="docutils literal"><span class="pre">docs/CHANGELOG.rst</span></code> (en comparant les branches <a class="reference external" href="https://github.com/PnX-SI/GeoNature/compare/develop">https://github.com/PnX-SI/GeoNature/compare/develop</a>) et dater la version à sortir</li>
 <li>Mettez à jour le fichier <code class="docutils literal"><span class="pre">VERSION</span></code></li>
-<li>Remplir le tableau de compatibilité des dépendances
-(<code class="docutils literal"><span class="pre">docs/versions-compatibility.rst</span></code>)</li>
+<li>Remplissez le tableau de compatibilité des dépendances (<code class="docutils literal"><span class="pre">docs/versions-compatibility.rst</span></code>)</li>
 <li>Mergez la branche <code class="docutils literal"><span class="pre">develop</span></code> dans la branche <code class="docutils literal"><span class="pre">master</span></code></li>
-<li>Faites la release (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/releases">https://github.com/PnX-SI/GeoNature/releases</a>) en la
-taguant <code class="docutils literal"><span class="pre">X.Y.Z</span></code> (sans <code class="docutils literal"><span class="pre">v</span></code> devant) et en copiant le contenu du Changelog</li>
-<li>Dans la branche <code class="docutils literal"><span class="pre">develop</span></code>, modifiez le fichier <code class="docutils literal"><span class="pre">VERSION</span></code> en
-<code class="docutils literal"><span class="pre">X.Y.Z.dev0</span></code> et pareil dans le fichier <code class="docutils literal"><span class="pre">docs/CHANGELOG.rst</span></code></li>
+<li>Faites la release (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/releases">https://github.com/PnX-SI/GeoNature/releases</a>) en la taguant <code class="docutils literal"><span class="pre">X.Y.Z</span></code> (sans <code class="docutils literal"><span class="pre">v</span></code> devant) et en copiant le contenu du Changelog</li>
+<li>Dans la branche <code class="docutils literal"><span class="pre">develop</span></code>, modifiez le fichier <code class="docutils literal"><span class="pre">VERSION</span></code> en <code class="docutils literal"><span class="pre">X.Y.Z.dev0</span></code> et pareil dans le fichier <code class="docutils literal"><span class="pre">docs/CHANGELOG.rst</span></code></li>
 </ul>
 </div>
 <div class="section" id="bdd">
 <h2>BDD<a class="headerlink" href="#bdd" title="Permalink to this headline">¶</a></h2>
+<p>Mettre à jour le <code class="docutils literal"><span class="pre">ref_geo</span></code> à partir des données IGN scan express :</p>
 <ul class="simple">
-<li>Mettre à jour le <code class="docutils literal"><span class="pre">ref_geo</span></code> à partir des données IGN scan express :<ul>
-<li>Télécharger le dernier millesime: <a class="reference external" href="http://professionnels.ign.fr/adminexpress">http://professionnels.ign.fr/adminexpress</a></li>
-<li>Intégrer le fichier Shape dans la BDD grâce à QGIS dans une table
-nommée <code class="docutils literal"><span class="pre">ref_geo.temp_fr_municipalities</span></code></li>
-<li>Générer le SQL de création de la table :
-<code class="docutils literal"><span class="pre">pg_dump</span> <span class="pre">--table=ref_geo.temp_fr_municipalities</span> <span class="pre">--column-inserts</span> <span class="pre">-U</span> <span class="pre">&lt;MON_USER&gt;</span> <span class="pre">-h</span> <span class="pre">&lt;MON_HOST&gt;</span> <span class="pre">-d</span> <span class="pre">&lt;MA_BASE&gt;</span> <span class="pre">&gt;</span> <span class="pre">fr_municipalities.sql</span></code>.
-Le fichier en sortie doit s’appeler <code class="docutils literal"><span class="pre">fr_municipalities.sql</span></code></li>
+<li>Télécharger le dernier millesime : <a class="reference external" href="http://professionnels.ign.fr/adminexpress">http://professionnels.ign.fr/adminexpress</a></li>
+<li>Intégrer le fichier Shape dans la BDD grâce à QGIS dans une table nommée <code class="docutils literal"><span class="pre">ref_geo.temp_fr_municipalities</span></code></li>
+<li>Générer le SQL de création de la table : <code class="docutils literal"><span class="pre">pg_dump</span> <span class="pre">--table=ref_geo.temp_fr_municipalities</span> <span class="pre">--column-inserts</span> <span class="pre">-U</span> <span class="pre">&lt;MON_USER&gt;</span> <span class="pre">-h</span> <span class="pre">&lt;MON_HOST&gt;</span> <span class="pre">-d</span> <span class="pre">&lt;MA_BASE&gt;</span> <span class="pre">&gt;</span> <span class="pre">fr_municipalities.sql</span></code>. Le fichier en sortie doit s’appeler <code class="docutils literal"><span class="pre">fr_municipalities.sql</span></code></li>
 <li>Zipper le fichier SQL et le mettre sur le serveur <a class="reference external" href="http://geonature.fr/data">http://geonature.fr/data</a></li>
 <li>Adapter le script <code class="docutils literal"><span class="pre">install_db.sh</span></code> pour récupérer le nouveau fichier zippé</li>
+</ul>
+</div>
+<div class="section" id="pratiques-et-regles-de-developpement">
+<h2>Pratiques et règles de developpement<a class="headerlink" href="#pratiques-et-regles-de-developpement" title="Permalink to this headline">¶</a></h2>
+<p>Afin de partager des règles communes de développement et faciliter l’intégration de
+nouveau code, veuillez lire les recommandations et bonnes pratiques recommandées pour contribuer
+au projet GeoNature.</p>
+<div class="section" id="git">
+<h3>Git<a class="headerlink" href="#git" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Ne jamais faire de commit dans la branche <code class="docutils literal"><span class="pre">master</span></code> mais dans la branche <code class="docutils literal"><span class="pre">develop</span></code> ou idéalement dans une branche dédiée à la fonctionnalité (feature branch)</li>
+<li>Faire des pull request vers la branche <code class="docutils literal"><span class="pre">develop</span></code></li>
+<li>Faire des <code class="docutils literal"><span class="pre">git</span> <span class="pre">pull</span></code> avant chaque développement et avant chaque commit</li>
+<li>Les messages de commits font référence à un ticket ou le ferment (<code class="docutils literal"><span class="pre">ref</span> <span class="pre">#12</span></code> ou <code class="docutils literal"><span class="pre">fixes</span> <span class="pre">#23</span></code>)</li>
+<li>Les messages des commits sont en anglais (dans la mesure du possible)</li>
+</ul>
+</div>
+<div class="section" id="backend">
+<h3>Backend<a class="headerlink" href="#backend" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Une fonction ou classe doit contenir une docstring en français. Les doctrings doivent suivre le modèle NumPy/SciPy (voir <a class="reference external" href="https://numpydoc.readthedocs.io/en/latest/format.html">https://numpydoc.readthedocs.io/en/latest/format.html</a> et <a class="reference external" href="https://realpython.com/documenting-python-code/#numpyscipy-docstrings-example">https://realpython.com/documenting-python-code/#numpyscipy-docstrings-example</a>)</li>
+<li>Les commentaires dans le codes doivent être en anglais (ne pas s’empêcher de mettre un commentaire en français sur une partie du code complexe !)</li>
+<li>Installer les requirements-dev (<code class="docutils literal"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-r</span> <span class="pre">backend/requirements-dev.txt</span></code>) qui contiennent une série d’outils indispensables au développement dans GeoNature.</li>
+<li>Utiliser <em>blake</em> comme formateur de texte et activer l’auto-formatage dans son éditeur de texte (Tuto pour VsCode : <a class="reference external" href="https://medium.com/&#64;marcobelo/setting-up-python-black-on-visual-studio-code-5318eba4cd00">https://medium.com/&#64;marcobelo/setting-up-python-black-on-visual-studio-code-5318eba4cd00</a>)</li>
+<li>Utiliser <em>pylint</em> comme formatteur de code</li>
+<li>Respecter la norme PEP8 (assurée par les deux outils précédents)</li>
+<li>La longueur maximale pour une ligne de code est 100 caractères. Pour VsCode copier ces lignes le fichier <code class="docutils literal"><span class="pre">settings.json</span></code> :</li>
+<li>Respecter le snake case</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;python.formatting.blackArgs&quot;</span><span class="p">:</span> <span class="p">[</span>
+  <span class="s2">&quot;--line-length&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;100&quot;</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Utiliser des doubles quotes pour les chaines de charactères.</li>
+</ul>
+</div>
+<div class="section" id="id1">
+<h3>BDD<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Le noms des tables est préfixé par un “t” pour une table de contenu, de “bib” pour les tables de “dictionnaires” et de “cor” pour les tables de correspondance</li>
+<li>Les schémas du coeur de GeoNature sont préfixés de “gn”</li>
+<li>Les schémas des protocoles ou modules GeoNature sont préfixés de “pr”</li>
+<li>Chaque schéma de BDD dispose de son propre fichier SQL</li>
+<li>Les scripts SQL sont ordonnés en section dans l’ordre suivant : (voir <a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/core/synthese.sql">https://github.com/PnX-SI/GeoNature/blob/master/data/core/synthese.sql</a>)<ul>
+<li>Fonctions</li>
+<li>Tables</li>
+<li>Clés primaires</li>
+<li>Clés étrangères</li>
+<li>Contraintes</li>
+<li>Triggers</li>
+<li>Données nécessaires au fonctionnement du schéma</li>
+</ul>
+</li>
+<li>Les scripts de données sont écrits dans des fichiers à part</li>
+<li>Ne rien écrire dans le schéma <code class="docutils literal"><span class="pre">public</span></code></li>
+<li>Ne pas répeter le nom des tables dans les noms des colonnes (exception faite des colonnes “id)</li>
+</ul>
+</div>
+<div class="section" id="typescript">
+<h3>Typescript<a class="headerlink" href="#typescript" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Documenter les fonctions et classes grâce au JSDoc en français (<a class="reference external" href="https://jsdoc.app/">https://jsdoc.app/</a>)</li>
+<li>Les commentaires dans le codes doivent être en anglais (ne pas s’empecher de mettre un commentaire en français sur une partie du code complexe !)</li>
+<li>Les messages renvoyés aux utilisateurs sont en français</li>
+<li>Installer les outils de devéloppement: <cite>npm install –only=dev</cite></li>
+<li>Utiliser <em>prettier</em> comme formateur de texte et activer l’autoformatage dans son éditeur de texte (VsCode dispose d’une extension Prettier : <a class="reference external" href="https://github.com/prettier/prettier-vscode">https://github.com/prettier/prettier-vscode</a>)</li>
+<li>Utiliser tslint comme linter</li>
+<li>La longueur maximale pour une ligne de code est 100 caractères.</li>
+</ul>
+</div>
+<div class="section" id="angular">
+<h3>Angular<a class="headerlink" href="#angular" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Suivre les recommandations définies par le styleguide Angular: <a class="reference external" href="https://angular.io/guide/styleguide">https://angular.io/guide/styleguide</a>. C’est une ressources très fournie en cas de question sur les pratiques de développement (principe de séparation des principes, organisation des services et des composants)</li>
+<li>On privilegira l’utilisation des reactive forms pour la construction des formulaires (<a class="reference external" href="https://angular.io/guide/reactive-forms">https://angular.io/guide/reactive-forms</a>). Ce sont des formulaires piloté par le code, ce qui facilite la lisibilité et le contrôle de ceux-ci.</li>
+<li>Pour l’ensemble des composants cartographiques et des formulaires (taxonomie, nomenclatures…), il est conseillé d’utiliser les composants présents dans le module ‘GN2CommonModule’.</li>
+</ul>
+</div>
+<div class="section" id="html">
+<h3>HTML<a class="headerlink" href="#html" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>La longueur maximale pour une ligne de code est 100 caractères.</li>
+<li>Lorsqu’il y a plus d’un attribut sur une balise, revenir à la ligne et aligner les attributs :</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">button</span>
+  <span class="n">mat</span><span class="o">-</span><span class="n">raised</span><span class="o">-</span><span class="n">button</span>
+  <span class="n">color</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span>
+  <span class="n">class</span><span class="o">=</span><span class="s2">&quot;btn-action hard-shadow uppercase ml-3&quot;</span>
+  <span class="n">data</span><span class="o">-</span><span class="n">toggle</span><span class="o">=</span><span class="s2">&quot;collapse&quot;</span>
+  <span class="n">data</span><span class="o">-</span><span class="n">target</span><span class="o">=</span><span class="s2">&quot;#collapseAvance&quot;</span>
+<span class="o">&gt;</span>
+  <span class="n">Filtrer</span>
+<span class="o">&lt;/</span><span class="n">button</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>VsCode fournit un formatteur de HTML par défaut (Dans les options de VsCode, tapez “wrap attributes” et sélectionner “force-expand-multiline”)</li>
+</ul>
+</div>
+<div class="section" id="style-et-ergonomie">
+<h3>Style et ergonomie<a class="headerlink" href="#style-et-ergonomie" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Boutons :
+On utilise les boutons d’Angular materials (<a class="reference external" href="https://material.angular.io/components/button/overview">https://material.angular.io/components/button/overview</a>).<ul>
+<li>mat-raised-button pour les boutons contenant du texte</li>
+<li>mat-fab ou mat-mini-fab pour les boutons d’actions avec seulement une icone</li>
+</ul>
+</li>
+<li>Couleur des boutons :<ul>
+<li>Action : primary</li>
+<li>Validation: vert (n’existant pas dans material: utiliser la classe <cite>button-success</cite>)</li>
+<li>Suppression: warn</li>
+<li>Navigation: basic</li>
+</ul>
+</li>
+<li>Librairie d’icones :<ul>
+<li>Utiliser la librairie material icons fournie avec le projet : <a class="reference external" href="https://material.io/resources/icons/?style=baseline">https://material.io/resources/icons/?style=baseline</a> (<code class="docutils literal"><span class="pre">&lt;mat-icon&gt;</span> <span class="pre">add</span> <span class="pre">&lt;/mat-icon&gt;</span></code>)</li>
+</ul>
+</li>
+<li>Formulaire :<ul>
+<li>Nous utilisons pour l’instant le style des formulaires Bootstrap (<a class="reference external" href="https://getbootstrap.com/docs/4.0/components/forms/">https://getbootstrap.com/docs/4.0/components/forms/</a>). Une reflexion de migration vers les formulaires materials est en cours.</li>
+</ul>
+</li>
+<li>Système de grille et responsive :<ul>
+<li>Utiliser le système de grille de bootstrap pour assurer le responsive design sur l’application. On ne vise pas l’utilisation sur mobile, mais à minima sur ordinateur portable de petite taille.</li>
 </ul>
 </li>
 </ul>
 </div>
-<div class="section" id="pratiques">
-<h2>Pratiques<a class="headerlink" href="#pratiques" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li>Ne jamais faire de commit dans la branche <code class="docutils literal"><span class="pre">master</span></code> mais dans la branche
-<code class="docutils literal"><span class="pre">develop</span></code> ou idéalement dans une branche dédiée à la fonctionnalité</li>
-<li>Faire des pull request vers la branche <code class="docutils literal"><span class="pre">develop</span></code> regroupant plusieurs
-commits depuis la branche de sa fonctionnalité pour plus de lisibilité,
-éviter les conflits et déclencher les tests automatiques Travis avant
-d’intégrer la branche <code class="docutils literal"><span class="pre">develop</span></code></li>
-<li>Faire des <code class="docutils literal"><span class="pre">git</span> <span class="pre">pull</span></code> avant chaque développement et avant chaque commit</li>
-<li>Les messages de commits font référence à ticket ou le ferme (<code class="docutils literal"><span class="pre">ref</span> <span class="pre">#12</span></code>
-ou <code class="docutils literal"><span class="pre">fixes</span> <span class="pre">#23</span></code>)</li>
-</ul>
 </div>
 <div class="section" id="developper-et-installer-un-gn-module">
 <h2>Développer et installer un gn_module<a class="headerlink" href="#developper-et-installer-un-gn-module" title="Permalink to this headline">¶</a></h2>
@@ -2294,6 +2612,8 @@ rubrique ‘Documentation API Backend’_.</p>
 composants Angular réutilisables
 (<a class="reference external" href="http://pnx-si.github.io/GeoNature/frontend/modules/GN2CommonModule.html">http://pnx-si.github.io/GeoNature/frontend/modules/GN2CommonModule.html</a>),
 pour l’affichage des cartes, des formulaires etc…</p>
+<div class="section" id="developper-un-gn-module">
+<h3>Développer un gn_module<a class="headerlink" href="#developper-un-gn-module" title="Permalink to this headline">¶</a></h3>
 <p>Avant de développer un gn_module, assurez-vous d’avoir GeoNature bien
 installé sur votre machine
 (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-standalone.rst">voir doc</a>).</p>
@@ -2307,67 +2627,38 @@ ou alors de copier/coller le contenu du dépôt dans un nouveau.</p>
 coeur de GeoNature à savoir :</p>
 <ul class="simple">
 <li>Le backend est développé en Python grâce au framework Flask.</li>
-<li>Le frontend est développé grâce au framework Angular
-(voir la version actuelle du coeur)</li>
+<li>Le frontend est développé grâce au framework Angular (voir la version actuelle du coeur)</li>
 </ul>
 <p>GeoNature prévoit cependant l’intégration de module “externe” dont le
 frontend serait développé dans d’autres technologies. La gestion de
 l’intégration du module est à la charge du développeur.</p>
 <ul class="simple">
-<li>Le module se placera dans un dossier à part du dossier “GeoNature” et
-portera le suffixe “gn_module”
-Exemple : <em>gn_module_validation</em></li>
+<li>Le module se placera dans un dossier à part du dossier “GeoNature” et portera le suffixe “gn_module”. Exemple : <em>gn_module_validation</em></li>
 <li>La racine du module comportera les fichiers suivants :<ul>
-<li><code class="docutils literal"><span class="pre">install_app.sh</span></code> : script bash d’installation des librairies python
-ou npm necessaires au module</li>
+<li><code class="docutils literal"><span class="pre">install_app.sh</span></code> : script bash d’installation des librairies python ou npm necessaires au module</li>
 <li><code class="docutils literal"><span class="pre">install_env.sh</span></code> : script bash d’installation des paquets Linux</li>
 <li><code class="docutils literal"><span class="pre">requirements.txt</span></code> : liste des librairies python necessaires au module</li>
-<li><code class="docutils literal"><span class="pre">manifest.toml</span></code> : fichier de description du module (nom, version du
-module, version de GeoNature compatible)</li>
-<li><code class="docutils literal"><span class="pre">conf_gn_module.toml</span></code> : fichier de configuration de l’application
-(livré en version sample)</li>
-<li><code class="docutils literal"><span class="pre">conf_schema_toml.py</span></code> : schéma ‘marshmallow’
-(<a class="reference external" href="https://marshmallow.readthedocs.io/en/latest/">https://marshmallow.readthedocs.io/en/latest/</a>) du fichier de configuration
-(permet de s’assurer la conformité des paramètres renseignés par
-l’utilisateur). Ce fichier doit contenir une classe <code class="docutils literal"><span class="pre">GnModuleSchemaConf</span></code>
-dans laquelle toutes les configurations sont synchronisées.</li>
-<li><code class="docutils literal"><span class="pre">install_gn_module.py</span></code> : script python lançant les commandes relatives à
-l’installation du module (Base de données, …). Ce fichier doit
-comprendre une fonction <code class="docutils literal"><span class="pre">gnmodule_install_app(gn_db,</span> <span class="pre">gn_app)</span></code> qui est
-utilisée pour installer le module
-(Voir l’<a class="reference external" href="https://github.com/PnX-SI/gn_module_cmr/blob/master/install_gn_module.py">exemple du module CMR</a>)</li>
+<li><code class="docutils literal"><span class="pre">manifest.toml</span></code> : fichier de description du module (nom, version du module, version de GeoNature compatible)</li>
+<li><code class="docutils literal"><span class="pre">conf_gn_module.toml</span></code> : fichier de configuration de l’application (livré en version sample)</li>
+<li><code class="docutils literal"><span class="pre">conf_schema_toml.py</span></code> : schéma ‘marshmallow’ (<a class="reference external" href="https://marshmallow.readthedocs.io/en/latest/">https://marshmallow.readthedocs.io/en/latest/</a>) du fichier de configuration (permet de s’assurer la conformité des paramètres renseignés par l’utilisateur). Ce fichier doit contenir une classe <code class="docutils literal"><span class="pre">GnModuleSchemaConf</span></code> dans laquelle toutes les configurations sont synchronisées.</li>
+<li><code class="docutils literal"><span class="pre">install_gn_module.py</span></code> : script python lançant les commandes relatives à ‘installation du module (Base de données, …). Ce fichier doit comprendre une fonction <code class="docutils literal"><span class="pre">gnmodule_install_app(gn_db,</span> <span class="pre">gn_app)</span></code> qui est utilisée pour installer le module (Voir l’<a class="reference external" href="https://github.com/PnX-SI/gn_module_cmr/blob/master/install_gn_module.py">exemple du module CMR</a>)</li>
 </ul>
 </li>
 <li>La racine du module comportera les dossiers suivants :<ul>
-<li><code class="docutils literal"><span class="pre">backend</span></code> : dossier comportant l’API du module utilisant
-un blueprint Flask</li>
-<li>Le fichier <code class="docutils literal"><span class="pre">blueprint.py</span></code> comprend les routes du module (ou instancie
-les nouveaux blueprints du module)</li>
-<li>Le fichier <code class="docutils literal"><span class="pre">models.py</span></code> comprend les modèles SQLAlchemy des tables
-du module.</li>
-<li><code class="docutils literal"><span class="pre">frontend</span></code> : le dossier <code class="docutils literal"><span class="pre">app</span></code> comprend les fichiers typescript
-du module, et le dossier <code class="docutils literal"><span class="pre">assets</span></code> l’ensemble des médias (images, son).<ul>
-<li>Le dossier <code class="docutils literal"><span class="pre">app</span></code> doit comprendre le “module Angular racine”, celui-ci
-doit impérativement s’appeler <code class="docutils literal"><span class="pre">gnModule.module.ts</span></code></li>
-<li>Le dossier <code class="docutils literal"><span class="pre">app</span></code> doit contenir un fichier <code class="docutils literal"><span class="pre">module.config.ts</span></code>.
-Ce fichier est automatiquement synchronisé avec le fichier de
-configuration du module
-<code class="docutils literal"><span class="pre">&lt;GEONATURE_DIRECTORY&gt;/external_modules/&lt;nom_module&gt;/conf_gn_module.toml</span></code>
-grâce à la commande
-<code class="docutils literal"><span class="pre">geonature</span> <span class="pre">update_module_configuration</span> <span class="pre">&lt;nom_module&gt;</span></code>.
-C’est à partir de ce fichier que toutes les configuration doivent
-pointer.</li>
-<li>A la racine du dossier <code class="docutils literal"><span class="pre">frontend</span></code>, on retrouve également un fichier
-<code class="docutils literal"><span class="pre">package.json</span></code> qui décrit l’ensemble des librairies JS necessaires
-au module.</li>
+<li><code class="docutils literal"><span class="pre">backend</span></code> : dossier comportant l’API du module utilisant un blueprint Flask</li>
+<li>Le fichier <code class="docutils literal"><span class="pre">blueprint.py</span></code> comprend les routes du module (ou instancie les nouveaux blueprints du module)</li>
+<li>Le fichier <code class="docutils literal"><span class="pre">models.py</span></code> comprend les modèles SQLAlchemy des tables du module.</li>
+<li><code class="docutils literal"><span class="pre">frontend</span></code> : le dossier <code class="docutils literal"><span class="pre">app</span></code> comprend les fichiers typescript du module, et le dossier <code class="docutils literal"><span class="pre">assets</span></code> l’ensemble des médias (images, son).<ul>
+<li>Le dossier <code class="docutils literal"><span class="pre">app</span></code> doit comprendre le “module Angular racine”, celui-ci doit impérativement s’appeler <code class="docutils literal"><span class="pre">gnModule.module.ts</span></code></li>
+<li>Le dossier <code class="docutils literal"><span class="pre">app</span></code> doit contenir un fichier <code class="docutils literal"><span class="pre">module.config.ts</span></code>. Ce fichier est automatiquement synchronisé avec le fichier de configuration du module <cite>&lt;GEONATURE_DIRECTORY&gt;/external_modules/&lt;nom_module&gt;/conf_gn_module.toml`</cite> grâce à la commande <code class="docutils literal"><span class="pre">geonature</span> <span class="pre">update_module_configuration</span> <span class="pre">&lt;nom_module&gt;</span></code>. C’est à partir de ce fichier que toutes les configuration doivent pointer.</li>
+<li>A la racine du dossier <code class="docutils literal"><span class="pre">frontend</span></code>, on retrouve également un fichier <code class="docutils literal"><span class="pre">package.json</span></code> qui décrit l’ensemble des librairies JS necessaires au module.</li>
 </ul>
 </li>
 <li><code class="docutils literal"><span class="pre">data</span></code> : ce dossier comprenant les scripts SQL d’installation du module</li>
 </ul>
 </li>
 </ul>
-<p>Le module est ensuite installable à la manière d’un plugin grâce à la commande
-<code class="docutils literal"><span class="pre">geonature</span> <span class="pre">install_gn_module</span></code> de la manière suivante:</p>
+<p>Le module est ensuite installable à la manière d’un plugin grâce à la commande <code class="docutils literal"><span class="pre">geonature</span> <span class="pre">install_gn_module</span></code> de la manière suivante :</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># se placer dans le répertoire backend de GeoNature</span>
 <span class="n">cd</span> <span class="o">&lt;</span><span class="n">GEONATURE_DIRECTORY</span><span class="o">&gt;/</span><span class="n">backend</span>
 <span class="c1"># activer le virtualenv python</span>
@@ -2377,28 +2668,18 @@ au module.</li>
 <span class="c1"># example geonature install_gn_module /home/moi/gn_module_validation /validation</span>
 </pre></div>
 </div>
-<div class="section" id="frontend">
-<h3>Frontend<a class="headerlink" href="#frontend" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="bonnes-pratiques-frontend">
+<h4>Bonnes pratiques Frontend<a class="headerlink" href="#bonnes-pratiques-frontend" title="Permalink to this headline">¶</a></h4>
 <ul>
-<li><p class="first">Pour l’ensemble des composants cartographiques et des formulaires
-(taxonomie, nomenclatures…), il est conseillé d’utiliser les composants
-présents dans le module ‘GN2CommonModule’.</p>
+<li><p class="first">Pour l’ensemble des composants cartographiques et des formulaires (taxonomie, nomenclatures…), il est conseillé d’utiliser les composants présents dans le module ‘GN2CommonModule’.</p>
 <p>Importez ce module dans le module racine de la manière suivante</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="p">{</span> <span class="n">GN2CommonModule</span> <span class="p">}</span> <span class="kn">from</span> <span class="s1">&#39;@geonature_common/GN2Common.module&#39;</span><span class="p">;</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first">Les librairies JS seront installées dans le dossier <code class="docutils literal"><span class="pre">node_modules</span></code>
-de GeoNature. (Il n’est pas nécessaire de
-réinstaller toutes les librairies déjà présentes dans GeoNature
-(Angular, Leaflet, ChartJS …). Le <code class="docutils literal"><span class="pre">package.json</span></code> de GeoNature liste
-l’ensemble des librairies déjà installées et réutilisable dans le module.</p>
+<li><p class="first">Les librairies JS seront installées dans le dossier <code class="docutils literal"><span class="pre">node_modules</span></code> de GeoNature. (Il n’est pas nécessaire de réinstaller toutes les librairies déjà présentes dans GeoNature (Angular, Leaflet, ChartJS …). Le <code class="docutils literal"><span class="pre">package.json</span></code> de GeoNature liste l’ensemble des librairies déjà installées et réutilisable dans le module.</p>
 </li>
-<li><p class="first">Les fichiers d’assets sont à ranger dans le dossier <code class="docutils literal"><span class="pre">assets</span></code> du frontend.
-Angular-cli impose cependant que tous les assets soient dans le répertoire
-mère de l’application (celui de GeoNature). Un lien symbolique est créé
-à l’installation du module pour faire entre le dossier d’assets du module
-et celui de Geonature.</p>
+<li><p class="first">Les fichiers d’assets sont à ranger dans le dossier <code class="docutils literal"><span class="pre">assets</span></code> du frontend. Angular-cli impose cependant que tous les assets soient dans le répertoire mère de l’application (celui de GeoNature). Un lien symbolique est créé à l’installation du module pour faire entre le dossier d’assets du module et celui de Geonature.</p>
 </li>
 <li><p class="first">Utiliser node_modules présent dans GeoNature</p>
 <p>Pour utiliser des librairies déjà installées dans GeoNature,
@@ -2406,7 +2687,7 @@ utilisez la syntaxe suivante</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="p">{</span> <span class="n">TreeModule</span> <span class="p">}</span> <span class="kn">from</span> <span class="s2">&quot;@librairies/angular-tree-component&quot;</span><span class="p">;</span>
 </pre></div>
 </div>
-<p>L’alias <cite>&#64;librairies</cite> pointe en effet vers le repertoire des node_modules
+<p>L’alias <code class="docutils literal"><span class="pre">&#64;librairies</span></code> pointe en effet vers le repertoire des node_modules
 de GeoNature</p>
 <p>Pour les utiliser à l’interieur du module, utiliser la syntaxe suivante</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">img</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;external_assets/&lt;MY_MODULE_CODE&gt;/afb.png&quot;</span><span class="o">&gt;</span>
@@ -2417,18 +2698,11 @@ de GeoNature</p>
 </pre></div>
 </div>
 </li>
-<li><p class="first">Installer le linter <code class="docutils literal"><span class="pre">tslint</span></code> dans son éditeur de texte
-(TODO: définir un style à utiliser)</p>
-</li>
 </ul>
 </div>
-<div class="section" id="backend">
-<h3>Backend<a class="headerlink" href="#backend" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>Respecter la norme PEP8</li>
-</ul>
+</div>
 <div class="section" id="installer-un-gn-module">
-<h4>Installer un gn_module<a class="headerlink" href="#installer-un-gn-module" title="Permalink to this headline">¶</a></h4>
+<h3>Installer un gn_module<a class="headerlink" href="#installer-un-gn-module" title="Permalink to this headline">¶</a></h3>
 <p>Renseignez l’éventuel fichier <code class="docutils literal"><span class="pre">config/settings.ini</span></code> du module.</p>
 <p>Pour installer un module, rendez vous dans le dossier <code class="docutils literal"><span class="pre">backend</span></code> de GeoNature.</p>
 <p>Activer ensuite le virtualenv pour rendre disponible les commandes GeoNature</p>
@@ -2445,15 +2719,14 @@ le 2ème le chemin derrière lequel on retrouvera les routes de l’API du modul
 ‘<a class="reference external" href="http://mon-geonature.fr/api/geonature/validation">http://mon-geonature.fr/api/geonature/validation</a>’</p>
 <p>Cette commande exécute les actions suivantes :</p>
 <ul class="simple">
-<li>Vérification de la conformité de la structure du module (présence des
-fichiers et dossiers obligatoires)</li>
+<li>Vérification de la conformité de la structure du module (présence des fichiers et dossiers obligatoires)</li>
 <li>Intégration du blueprint du module dans l’API de GeoNature</li>
 <li>Vérification de la conformité des paramètres utilisateurs</li>
 <li>Génération du routing Angular pour le frontend</li>
 <li>Re-build du frontend pour une mise en production</li>
 </ul>
-<p>Complétez l’éventuelle configuration du module
-(<code class="docutils literal"><span class="pre">config/conf_gn_module.toml</span></code>) à partir des paramètres présents dans
+<p>Complétez l’éventuelle configuration du module (<code class="docutils literal"><span class="pre">config/conf_gn_module.toml</span></code>)
+à partir des paramètres présents dans
 <code class="docutils literal"><span class="pre">config/conf_gn_module.toml.example</span></code> dont vous pouvez surcoucher les
 valeurs par défaut. Puis relancez la mise à jour de la configuration
 (depuis le répertoire <code class="docutils literal"><span class="pre">geonature/backend</span></code> et une fois dans le venv
@@ -2461,14 +2734,18 @@ valeurs par défaut. Puis relancez la mise à jour de la configuration
 <code class="docutils literal"><span class="pre">geonature</span> <span class="pre">update_module_configuration</span> <span class="pre">nom_du_module</span></code>)</p>
 </div>
 </div>
-</div>
 <div class="section" id="developpement-backend">
 <h2>Développement Backend<a class="headerlink" href="#developpement-backend" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="demarrage-du-serveur-de-dev-backend">
+<h3>Démarrage du serveur de dev backend<a class="headerlink" href="#demarrage-du-serveur-de-dev-backend" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default"><div class="highlight"><pre><span></span>(venv)...$ geonature dev_back
 </pre></div>
 </div>
+</div>
+<div class="section" id="base-de-donnees">
+<h3>Base de données<a class="headerlink" href="#base-de-donnees" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="session-sqlalchemy">
-<h3>Session sqlalchemy<a class="headerlink" href="#session-sqlalchemy" title="Permalink to this headline">¶</a></h3>
+<h4>Session sqlalchemy<a class="headerlink" href="#session-sqlalchemy" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li><code class="docutils literal"><span class="pre">geonature.utils.env.DB</span></code></li>
 </ul>
@@ -2478,8 +2755,10 @@ valeurs par défaut. Puis relancez la mise à jour de la configuration
 <span class="n">result</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">MyModel</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+</div>
 <div class="section" id="serialisation-des-modeles">
-<h4>Serialisation des modèles<a class="headerlink" href="#serialisation-des-modeles" title="Permalink to this headline">¶</a></h4>
+<h3>Serialisation des modèles<a class="headerlink" href="#serialisation-des-modeles" title="Permalink to this headline">¶</a></h3>
 <p>La sérialisation des modèles SQLAlchemy s’appuie sur deux librairies maison externalisée. Voir la doc plus complète: <a class="reference external" href="https://github.com/PnX-SI/Utils-Flask-SQLAlchemy">https://github.com/PnX-SI/Utils-Flask-SQLAlchemy</a></p>
 <ul>
 <li><p class="first"><code class="docutils literal"><span class="pre">utils_flask_sqla.serializers.serializable</span></code></p>
@@ -2524,11 +2803,9 @@ retourne un dictionnaire serialisable sous forme de Feature geojson.</p>
 <li><p class="first"><code class="docutils literal"><span class="pre">utils_flask_sqla_geo.serializers.shapeserializable</span></code></p>
 <p>Décorateur pour les modèles SQLA :</p>
 <ul class="simple">
-<li>Ajoute une méthode <code class="docutils literal"><span class="pre">as_list</span></code> qui retourne l’objet sous forme de tableau</li>
+<li>Ajoute une méthode <code class="docutils literal"><span class="pre">as_list</span></code> qui retourne l’objet sous forme de tableau (utilisé pour créer des shapefiles)</li>
+<li>Ajoute une méthode de classe <code class="docutils literal"><span class="pre">to_shape</span></code> qui crée des shapefiles à partir des données passées en paramètre</li>
 </ul>
-<p>(utilisé pour créer des shapefiles)
-- Ajoute une méthode de classe <code class="docutils literal"><span class="pre">to_shape</span></code> qui crée des shapefiles à partir
-des données passées en paramètre</p>
 <p>Fichier définition modèle</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="k">import</span> <span class="n">DB</span>
 <span class="kn">from</span> <span class="nn">utils_flask_sqla_geo.serializers</span> <span class="k">import</span> <span class="n">shapeserializable</span>
@@ -2608,11 +2885,11 @@ données).</p>
 </ul>
 </div>
 <div class="section" id="export-des-donnees">
-<h4>Export des données<a class="headerlink" href="#export-des-donnees" title="Permalink to this headline">¶</a></h4>
+<h3>Export des données<a class="headerlink" href="#export-des-donnees" title="Permalink to this headline">¶</a></h3>
 <p>TODO</p>
 </div>
 <div class="section" id="utilisation-de-la-configuration">
-<h4>Utilisation de la configuration<a class="headerlink" href="#utilisation-de-la-configuration" title="Permalink to this headline">¶</a></h4>
+<h3>Utilisation de la configuration<a class="headerlink" href="#utilisation-de-la-configuration" title="Permalink to this headline">¶</a></h3>
 <p>La configuration globale de l’application est controlée par le fichier
 <code class="docutils literal"><span class="pre">config/geonature_config.toml</span></code> qui contient un nombre limité de paramètres.
 De nombreux paramètres sont néammoins passés à l’application via un schéma
@@ -2655,11 +2932,9 @@ il faut utiliser la méthode suivante</p>
 </div>
 </div>
 <div class="section" id="authentification-avec-pypnusershub">
-<h4>Authentification avec pypnusershub<a class="headerlink" href="#authentification-avec-pypnusershub" title="Permalink to this headline">¶</a></h4>
-</div>
-</div>
+<h3>Authentification avec pypnusershub<a class="headerlink" href="#authentification-avec-pypnusershub" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="verification-des-droits-des-utilisateurs">
-<h3>Vérification des droits des utilisateurs<a class="headerlink" href="#verification-des-droits-des-utilisateurs" title="Permalink to this headline">¶</a></h3>
+<h4>Vérification des droits des utilisateurs<a class="headerlink" href="#verification-des-droits-des-utilisateurs" title="Permalink to this headline">¶</a></h4>
 <ul>
 <li><p class="first"><code class="docutils literal"><span class="pre">pypnusershub.routes.check_auth</span></code></p>
 <p>Décorateur pour les routes : vérifie les droits de l’utilisateur et le
@@ -2759,7 +3034,7 @@ est retourné, sinon 0.</li>
 </ul>
 <p>Valeur retournée : tuple</p>
 <p>A l’indice 0 du tuple: &lt;dict{str:str}&gt; ou &lt;dict{str:int}&gt;, boolean)
-{‘C’: ‘1’, ‘R’:‘2’, ‘U’: ‘1’, ‘V’:‘2’, ‘E’:‘3’, ‘D’: ‘3’} ou
+{‘C’: ‘1’, ‘R’:’2’, ‘U’: ‘1’, ‘V’:’2’, ‘E’:’3’, ‘D’: ‘3’} ou
 {‘C’: 2, ‘R’:3, ‘U’: 4, ‘V’:1, ‘E’:2, ‘D’: 2} si <code class="docutils literal"><span class="pre">get_id=True</span></code></p>
 <p>A l’indice 1 du tuple: un booléan spécifiant si le CRUVED est hérité depuis
 un module parent ou non.</p>
@@ -2778,18 +3053,18 @@ un module parent ou non.</p>
 </ul>
 </div>
 </div>
+</div>
 <div class="section" id="developpement-frontend">
 <h2>Développement Frontend<a class="headerlink" href="#developpement-frontend" title="Permalink to this headline">¶</a></h2>
-<p><strong>Bonnes pratiques</strong> :</p>
-<blockquote>
-<div><ul class="simple">
+<div class="section" id="bonnes-pratiques">
+<h3>Bonnes pratiques<a class="headerlink" href="#bonnes-pratiques" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
 <li>Chaque gn_module de GeoNature doit être un module Angular indépendant <a class="reference external" href="https://angular.io/guide/ngmodule">https://angular.io/guide/ngmodule</a>.</li>
 <li>Ce gn_module peut s’appuyer sur une série de composants génériques intégrés dans le module GN2CommonModule et décrit ci-dessous</li>
 </ul>
-</div></blockquote>
 </div>
 <div class="section" id="les-composants-generiques">
-<h2><strong>Les composants génériques</strong><a class="headerlink" href="#les-composants-generiques" title="Permalink to this headline">¶</a></h2>
+<h3>Les composants génériques<a class="headerlink" href="#les-composants-generiques" title="Permalink to this headline">¶</a></h3>
 <p>Un ensemble de composants décrits ci-dessous sont intégrés dans le coeur de GeoNature et permettent aux développeurs de simplifier la mise en place de formulaires ou de bloc cartographiques.</p>
 <p>Voir la <a class="reference external" href="http://pnx-si.github.io/GeoNature/frontend/modules/GN2CommonModule.html">DOCUMENTATION COMPLETE</a> sur les composants génériques.</p>
 <p>NB: mes composants de type “formulaire” (balise <cite>input</cite> ou <cite>select</cite>) partagent une logique commune et ont des <code class="docutils literal"><span class="pre">Inputs</span></code> et des <code class="docutils literal"><span class="pre">Outputs</span></code> communs décrit ci dessous. (voir <a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/app/GN2CommonModule/form/genericForm.component.ts">https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/app/GN2CommonModule/form/genericForm.component.ts</a>).</p>
@@ -2799,46 +3074,24 @@ un module parent ou non.</p>
 une logique commune et ont des <code class="docutils literal"><span class="pre">Inputs</span></code> et des <code class="docutils literal"><span class="pre">Outputs</span></code> communs décrit
 ci dessous.
 (voir <a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/app/GN2CommonModule/form/genericForm.component.ts">https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/app/GN2CommonModule/form/genericForm.component.ts</a>).</p>
+<ul>
+<li><p class="first">Inputs</p>
 <ul class="simple">
-<li><dl class="first docutils">
-<dt>Inputs</dt>
-<dd><ul class="first last">
-<li>L’input <code class="docutils literal"><span class="pre">parentFormControl</span></code> de type <code class="docutils literal"><span class="pre">FormControl</span></code>
-(<a class="reference external" href="https://angular.io/api/forms/FormControl">https://angular.io/api/forms/FormControl</a>) permet de contrôler la
-logique et les valeurs du formulaire depuis l’extérieur du
-composant. Cet input est <strong>obligatoire</strong> pour le fonctionnement
-du composant.</li>
-<li>L’input <code class="docutils literal"><span class="pre">label</span></code> (string) permet d’afficher un label au dessus
-de l’input.</li>
-<li>L’input <code class="docutils literal"><span class="pre">displayAll</span></code> (boolean, défaut = false) permet d’ajouter
-un item ‘tous’ sur les inputs de type select (Exemple: pour
-selectionner tous les jeux de données de la liste)</li>
-<li>L’input <code class="docutils literal"><span class="pre">multiSelect</span></code> (boolean, défaut = false) permet de passer
-les composants de type select en “multiselect” (sélection multiple
-sur une liste déroulante). Le parentFormControl devient par
-conséquent un tableau</li>
-<li>L’input <code class="docutils literal"><span class="pre">searchBar</span></code> (boolean, défaut = false) permet de rajouter
-une barre de recherche sur les composants multiselect</li>
-<li>L’input <code class="docutils literal"><span class="pre">disabled</span></code> (boolean) permet de rendre le composant
-non-saisissable</li>
-<li>L’input <code class="docutils literal"><span class="pre">debounceTime</span></code> définit une durée en ms après laquelle
-les évenements <code class="docutils literal"><span class="pre">onChange</span></code> et <code class="docutils literal"><span class="pre">onDelete</span></code> sont déclenchés suite
-à un changement d’un formulaire. (Par défault à 0)</li>
+<li>L’input <code class="docutils literal"><span class="pre">parentFormControl</span></code> de type <code class="docutils literal"><span class="pre">FormControl</span></code> (<a class="reference external" href="https://angular.io/api/forms/FormControl">https://angular.io/api/forms/FormControl</a>) permet de contrôler la logique et les valeurs du formulaire depuis l’extérieur du composant. Cet input est <strong>obligatoire</strong> pour le fonctionnement du composant.</li>
+<li>L’input <code class="docutils literal"><span class="pre">label</span></code> (string) permet d’afficher un label au dessus de l’input.</li>
+<li>L’input <code class="docutils literal"><span class="pre">displayAll</span></code> (boolean, défaut = false) permet d’ajouter un item ‘tous’ sur les inputs de type select (Exemple : pour sélectionner tous les jeux de données de la liste)</li>
+<li>L’input <code class="docutils literal"><span class="pre">multiSelect</span></code> (boolean, défaut = false) permet de passer les composants de type select en “multiselect” (sélection multiple sur une liste déroulante). Le parentFormControl devient par conséquent un tableau</li>
+<li>L’input <code class="docutils literal"><span class="pre">searchBar</span></code> (boolean, défaut = false) permet de rajouter une barre de recherche sur les composants multiselect</li>
+<li>L’input <code class="docutils literal"><span class="pre">disabled</span></code> (boolean) permet de rendre le composant non-saisissable</li>
+<li>L’input <code class="docutils literal"><span class="pre">debounceTime</span></code> définit une durée en ms après laquelle les évenements <code class="docutils literal"><span class="pre">onChange</span></code> et <code class="docutils literal"><span class="pre">onDelete</span></code> sont déclenchés suite à un changement d’un formulaire. (Par défault à 0)</li>
 </ul>
-</dd>
-</dl>
 </li>
-<li><dl class="first docutils">
-<dt>Outputs</dt>
-<dd>Plusieurs <code class="docutils literal"><span class="pre">Output</span></code> communs à ses composants permettent d’émettre des
-événements liés aux formulaires.<ul class="last">
-<li><code class="docutils literal"><span class="pre">onChange</span></code> : événement émit à chaque fois qu’un changement est
-effectué sur le composant. Renvoie la valeur fraiche de l’input.</li>
-<li><code class="docutils literal"><span class="pre">onDelete</span></code> : événement émit chaque fois que le champ du formulaire
-est supprimé. Renvoie un évenement vide.</li>
+<li><p class="first">Outputs</p>
+<p>Plusieurs <code class="docutils literal"><span class="pre">Output</span></code> communs à ses composants permettent d’émettre des événements liés aux formulaires.</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">onChange</span></code> : événement émit à chaque fois qu’un changement est effectué sur le composant. Renvoie la valeur fraiche de l’input.</li>
+<li><code class="docutils literal"><span class="pre">onDelete</span></code> : événement émit chaque fois que le champ du formulaire est supprimé. Renvoie un évenement vide.</li>
 </ul>
-</dd>
-</dl>
 </li>
 </ul>
 <p>Ces composants peuvent être considérés comme des “dump components” ou
@@ -2848,21 +3101,23 @@ au composant parent qui l’accueil
 <p>Un ensemble de composant permattant de simplifier l’affichage des cartographies
 leaflet sont disponible. Notamment un composant “map-list” permettant de
 connecter une carte avec une liste d’objet décrit en détail ci dessous.</p>
-<ul>
-<li><dl class="first docutils">
-<dt><strong>MapListComponent</strong></dt>
-<dd><p class="first">Le composant MapList fournit une carte pouvant être synchronisé
+<ul class="simple">
+<li><strong>MapListComponent</strong></li>
+</ul>
+<p>Le composant MapList fournit une carte pouvant être synchronisé
 avec une liste. La liste, pouvant être spécifique à chaque module,
 elle n’est pas intégré dans le composant et est laissé à la
 responsabilité du développeur. Le service <code class="docutils literal"><span class="pre">MapListService</span></code> offre
 cependant des fonctions permettant facilement de synchroniser
 les deux éléments.</p>
-<p>Fonctionnalité et comportement offert par le le composant et le
+<p>Fonctionnalité et comportement offert par le composant et le
 service :</p>
-<ul>
-<li><dl class="first docutils">
-<dt>Charger les données</dt>
-<dd><p class="first">Le service expose la fonction <code class="docutils literal"><span class="pre">getData(apiEndPoint,</span> <span class="pre">params?)</span></code>
+<blockquote>
+<div><ul class="simple">
+<li>Charger les données</li>
+</ul>
+<blockquote>
+<div><p>Le service expose la fonction <code class="docutils literal"><span class="pre">getData(apiEndPoint,</span> <span class="pre">params?)</span></code>
 permettant de charger les données pour la carte et la liste.
 Cette fonction doit être utilisée dans le composant qui utilise
 le composant <code class="docutils literal"><span class="pre">MapListComponent</span></code>. Elle se charge de faire
@@ -2872,12 +3127,14 @@ disponibles au service.</p>
 (facultatif). Il permet de filtrer les données sur n’importe
 quelle propriété du GeoJson, et également de gérer
 la pagination.</p>
-<p>Exemple: afficher les 10 premiers relevés du cd_nom 212 :</p>
-<p><code class="docutils literal"><span class="pre">mapListService.getData('occtax/releve',</span>
-<span class="pre">[{'param':</span> <span class="pre">'limit',</span> <span class="pre">'value':</span> <span class="pre">10'},</span>
-<span class="pre">{'param':</span> <span class="pre">'cd_nom',</span> <span class="pre">'value':</span> <span class="pre">212'}])</span></code></p>
+<p>Exemple : afficher les 10 premiers relevés du cd_nom 212 :</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mapListService</span><span class="o">.</span><span class="n">getData</span><span class="p">(</span><span class="s1">&#39;occtax/releve&#39;</span><span class="p">,</span>
+<span class="p">[{</span><span class="s1">&#39;param&#39;</span><span class="p">:</span> <span class="s1">&#39;limit&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="s1">&#39;},</span>
+<span class="p">{</span><span class="s1">&#39;param&#39;</span><span class="p">:</span> <span class="s1">&#39;cd_nom&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mi">212</span><span class="s1">&#39;}])</span>
+</pre></div>
+</div>
 <p><a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/occtax/occtax-map-list/occtax-map-list.component.ts#L84/">Exemple dans le module OccTax</a></p>
-<p>L’API doit necessairement renvoyer un objet comportant un
+<p>L’API doit nécessairement renvoyer un objet comportant un
 GeoJson. La structure du l’objet doit être la suivante :</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="s1">&#39;total&#39;</span><span class="p">:</span> <span class="n">nombre</span> <span class="n">d</span><span class="s1">&#39;élément total,</span>
 <span class="s1">&#39;total_filtered&#39;</span><span class="p">:</span> <span class="n">nombre</span> <span class="n">d</span><span class="s1">&#39;élément filtré,</span>
@@ -2886,37 +3143,35 @@ GeoJson. La structure du l’objet doit être la suivante :</p>
 <span class="s1">&#39;items&#39;</span><span class="p">:</span> <span class="n">le</span> <span class="n">GeoJson</span>
 </pre></div>
 </div>
-<p class="last">Pour un liste simple sans pagination, seule la propriété ‘items’
+<p>Pour une liste simple sans pagination, seule la propriété ‘items’
 est obligatoire.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>Rafraichir les données</dt>
-<dd><p class="first">La fonction <code class="docutils literal"><span class="pre">refreshData(apiEndPoint,</span> <span class="pre">method,</span> <span class="pre">params?)</span></code> permet de raffrachir les données en fonction de filtres personnalisés.
+<ul class="simple">
+<li>Rafraîchir les données</li>
+</ul>
+<p>La fonction <code class="docutils literal"><span class="pre">refreshData(apiEndPoint,</span> <span class="pre">method,</span> <span class="pre">params?)</span></code> permet de raffrachir les données en fonction de filtres personnalisés.
 Les paramètres <code class="docutils literal"><span class="pre">apiEndPoint</span></code>&nbsp;et <code class="docutils literal"><span class="pre">params</span></code> sont les mêmes que pour la fonction <code class="docutils literal"><span class="pre">getData</span></code>. Le paramètre <code class="docutils literal"><span class="pre">method</span></code> permet lui de chosir si on ajoute - <code class="docutils literal"><span class="pre">append</span></code>- , ou si on initialise (ou remplace) -<code class="docutils literal"><span class="pre">set</span></code>- un filtre.</p>
 <p>Exemple 1 : Pour filtrer sur l’observateur 1, puis ajouter un filtre sur l’observateur 2.</p>
-<p><code class="docutils literal"><span class="pre">mapListService.refreshData('occtax/relevé',</span> <span class="pre">'append,</span> <span class="pre">[{'param':</span> <span class="pre">'observers',</span> <span class="pre">'value':</span> <span class="pre">1'}])</span></code></p>
+<blockquote>
+<div><blockquote>
+<div><p><code class="docutils literal"><span class="pre">mapListService.refreshData('occtax/relevé',</span> <span class="pre">'append,</span> <span class="pre">[{'param':</span> <span class="pre">'observers',</span> <span class="pre">'value':</span> <span class="pre">1'}])</span></code></p>
 <p>puis</p>
 <p><code class="docutils literal"><span class="pre">refreshData('occtax/relevé',</span> <span class="pre">'append,</span> <span class="pre">[{'param':</span> <span class="pre">'observers',</span> <span class="pre">'value':</span> <span class="pre">2'}])</span></code></p>
 <p>Exemple 2: pour filtrer sur le cd_nom 212, supprimer ce filtre et filtrer sur  le cd_nom 214</p>
 <p><code class="docutils literal"><span class="pre">mapListService.refreshData('occtax/relevé',</span> <span class="pre">'set,</span> <span class="pre">[{'param':</span> <span class="pre">'cd_nom',</span> <span class="pre">'value':</span> <span class="pre">1'}])</span></code></p>
 <p>puis</p>
-<p class="last"><code class="docutils literal"><span class="pre">mapListService.refreshData('occtax/relevé',</span> <span class="pre">'set,</span> <span class="pre">[{'param':</span> <span class="pre">'cd_nom',</span> <span class="pre">'value':</span> <span class="pre">2'}])</span></code></p>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>Gestion des évenements:</dt>
-<dd><ul class="first last simple">
+<p><code class="docutils literal"><span class="pre">mapListService.refreshData('occtax/relevé',</span> <span class="pre">'set,</span> <span class="pre">[{'param':</span> <span class="pre">'cd_nom',</span> <span class="pre">'value':</span> <span class="pre">2'}])</span></code></p>
+</div></blockquote>
+<ul>
+<li><p class="first">Gestion des évenements :</p>
+<blockquote>
+<div><ul class="simple">
 <li>Au clic sur un marker de la carte, le service <code class="docutils literal"><span class="pre">MapListService</span></code> expose la propriété <code class="docutils literal"><span class="pre">selectedRow</span></code> qui est un tableau contenant l’id du marker sélectionné. Il est ainsi possible de surligner l’élément séléctionné dans le liste.</li>
 <li>Au clic sur une ligne du tableau, utiliser la fonction <code class="docutils literal"><span class="pre">MapListService.onRowSelected(id)</span></code> (id étant l’id utilisé dans le GeoJson) qui permet de zoomer sur le point séléctionner et de changer la couleur de celui-ci.</li>
 </ul>
-</dd>
-</dl>
+</div></blockquote>
 </li>
 </ul>
-<p>La service contient également deux propriétés publiques <code class="docutils literal"><span class="pre">geoJsonData</span></code> (le geojson renvoyé par l’API) et <code class="docutils literal"><span class="pre">tableData</span></code> &nbsp;(le tableau de features du Geojson) qui sont respectivement passées à la carte et à la liste. Ces deux propriétés sont utilisables pour intéragir (ajouter, supprimer) avec les données de la carte et de la liste.</p>
+<p>La service contient également deux propriétés publiques <code class="docutils literal"><span class="pre">geoJsonData</span></code> (le geojson renvoyé par l’API) et <code class="docutils literal"><span class="pre">tableData</span></code> (le tableau de features du Geojson) qui sont respectivement passées à la carte et à la liste. Ces deux propriétés sont utilisables pour intéragir (ajouter, supprimer) avec les données de la carte et de la liste.</p>
 <p><strong>Selector</strong>: <code class="docutils literal"><span class="pre">pnx-map-list</span></code></p>
 <p><strong>Inputs</strong>:</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -2927,14 +3182,14 @@ Les paramètres <code class="docutils literal"><span class="pre">apiEndPoint</sp
 <p>Type: <code class="docutils literal"><span class="pre">string</span></code></p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name"><code class="docutils literal"><span class="pre">height</span></code>:</th><td class="field-body"><p class="first">Taille de l’affichage de la carte leaflet</p>
+<tr class="field-even field"><th class="field-name"><code class="docutils literal"><span class="pre">height</span></code>:</th><td class="field-body"><p class="first">Taille de l’affichage de la carte Leaflet</p>
 <p class="last">Type: <code class="docutils literal"><span class="pre">string</span></code></p>
 </td>
 </tr>
 </tbody>
 </table>
-<p>Exemple d’utilisation avec une liste simple:</p>
-<div class="last highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">pnx</span><span class="o">-</span><span class="nb">map</span><span class="o">-</span><span class="nb">list</span>
+<p>Exemple d’utilisation avec une liste simple :</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">pnx</span><span class="o">-</span><span class="nb">map</span><span class="o">-</span><span class="nb">list</span>
         <span class="n">idName</span><span class="o">=</span><span class="s2">&quot;id_releve_occtax&quot;</span>
         <span class="n">height</span><span class="o">=</span><span class="s2">&quot;80vh&quot;</span><span class="o">&gt;</span>
 <span class="o">&lt;/</span><span class="n">pnx</span><span class="o">-</span><span class="nb">map</span><span class="o">-</span><span class="nb">list</span><span class="o">&gt;</span>
@@ -2947,56 +3202,24 @@ Les paramètres <code class="docutils literal"><span class="pre">apiEndPoint</sp
 <span class="o">&lt;/</span><span class="n">table</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-</dd>
-</dl>
-</li>
-</ul>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</div>
 </div>
 <div class="section" id="outils-d-aide-a-la-qualite-du-code">
 <h2>Outils d’aide à la qualité du code<a class="headerlink" href="#outils-d-aide-a-la-qualite-du-code" title="Permalink to this headline">¶</a></h2>
 <p>Des outils d’amélioration du code pour les développeurs peuvent être utilisés :
-flake8, pylint, mypy, pytest, coverage.</p>
+flake8, pylint, pytest, coverage.</p>
 <p>La documentation peut être générée avec Sphinx.</p>
 <p>Les fichiers de configuration de ces outils se trouvent à la racine du projet :</p>
 <ul class="simple">
-<li>.flake8</li>
 <li>.pylint</li>
-<li>.mypy</li>
-<li>.pytest</li>
-<li>.coverage</li>
 </ul>
 <p>Un fichier <code class="docutils literal"><span class="pre">.editorconfig</span></code> permettant de définir le comportement de
 votre éditeur de code est également disponible à la racine du projet.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span> <span class="n">pipenv</span>
-<span class="n">pipenv</span> <span class="n">install</span> <span class="o">--</span><span class="n">dev</span>
-</pre></div>
-</div>
-<p>Note: si la commande pipenv ne fonctionne pas,
-ajoutez les lignes suivantes à .profile:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">[</span> <span class="o">-</span><span class="n">d</span> <span class="s2">&quot;$HOME/.local/bin&quot;</span> <span class="p">]</span> <span class="p">;</span> <span class="n">then</span>
-<span class="n">PATH</span><span class="o">=</span><span class="s2">&quot;$HOME/.local/bin:$PATH&quot;</span>
-<span class="n">fi</span>
-</pre></div>
-</div>
-<p>La documentation de ces outils est disponible en ligne :</p>
-<ul class="simple">
-<li><a class="reference external" href="http://flake8.pycqa.org/en/latest/">http://flake8.pycqa.org/en/latest/</a></li>
-<li><a class="reference external" href="https://www.pylint.org/">https://www.pylint.org/</a> - Doc : <a class="reference external" href="https://pylint.readthedocs.io/en/latest/">https://pylint.readthedocs.io/en/latest/</a></li>
-<li><a class="reference external" href="https://mypy.readthedocs.io/en/latest/">https://mypy.readthedocs.io/en/latest/</a></li>
-<li><a class="reference external" href="https://docs.pytest.org/en/latest/contents.html">https://docs.pytest.org/en/latest/contents.html</a></li>
-<li><a class="reference external" href="https://coverage.readthedocs.io/en/coverage-4.4.2/">https://coverage.readthedocs.io/en/coverage-4.4.2/</a></li>
-<li><a class="reference external" href="http://www.sphinx-doc.org/en/stable/">http://www.sphinx-doc.org/en/stable/</a> -  Doc : <a class="reference external" href="http://www.sphinx-doc.org/en/stable/contents.html">http://www.sphinx-doc.org/en/stable/contents.html</a></li>
-</ul>
-<p>Pour installer ces outils, l’environnement de développement doit être
-activé. A minima, pour travailler sur la documentation,
-lancez la commande suivante:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">backend</span><span class="o">/</span><span class="n">requirements</span><span class="o">-</span><span class="n">dev</span><span class="o">.</span><span class="n">txt</span>
-</pre></div>
-</div>
-<p>Pour utiliser ces outils il faut se placer dans le virtualenv:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pipenv</span> <span class="n">shell</span>
-</pre></div>
-</div>
+<div class="section" id="sphinx">
+<h3>Sphinx<a class="headerlink" href="#sphinx" title="Permalink to this headline">¶</a></h3>
 <p>Sphinx est un générateur de documentation.</p>
 <p>Pour générer la documentation HTML, se placer dans le répertoire <code class="docutils literal"><span class="pre">docs</span></code>
 et modifier les fichiers .rst:</p>
@@ -3004,13 +3227,9 @@ et modifier les fichiers .rst:</p>
 <span class="n">make</span> <span class="n">html</span>
 </pre></div>
 </div>
-<p>Flake8 inspecte le code et pointe tous les écarts à la norme PEP8.
-Il recherche également toutes les erreurs syntaxiques et stylistiques
-courantes.:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">backend</span>
-<span class="n">flake8</span>
-</pre></div>
 </div>
+<div class="section" id="pylint">
+<h3>Pylint<a class="headerlink" href="#pylint" title="Permalink to this headline">¶</a></h3>
 <p>Pylint fait la même chose que Flake8 mais il est plus complet, plus
 configurable mais aussi plus exigeant.</p>
 <p>Pour inspecter le répertoire <code class="docutils literal"><span class="pre">geonature</span></code>:</p>
@@ -3018,28 +3237,36 @@ configurable mais aussi plus exigeant.</p>
 <span class="n">pylint</span> <span class="n">geonature</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="tslint">
+<h3>tslint<a class="headerlink" href="#tslint" title="Permalink to this headline">¶</a></h3>
 <p>tslint fait la même chose que pylint mais pour la partie frontend en
 typescript:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">frontend</span>
 <span class="n">ng</span> <span class="n">lint</span>
 </pre></div>
 </div>
-<p>Mypy vérifie les erreurs de typage.
-Mypy est utilisé pour l’éditeur de texte en tant que linter.</p>
+</div>
+<div class="section" id="pytest">
+<h3>Pytest<a class="headerlink" href="#pytest" title="Permalink to this headline">¶</a></h3>
 <p>Pytest permet de mettre en place des tests fonctionnels et automatisés
 du code Python.</p>
-<p>Les fichiers de test sont dans le répertoire <code class="docutils literal"><span class="pre">backend/tests</span></code>:</p>
+<p>Les fichiers de test sont dans le répertoire <code class="docutils literal"><span class="pre">backend/tests</span></code></p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">backend</span>
 <span class="n">pytest</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="coverage">
+<h3>Coverage<a class="headerlink" href="#coverage" title="Permalink to this headline">¶</a></h3>
 <p>Coverage permet de donner une indication concernant la couverture du code
-par les tests.:</p>
+par les tests.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">backend</span>
 <span class="n">pytest</span> <span class="o">--</span><span class="n">cov</span><span class="o">=</span><span class="n">geonature</span> <span class="o">--</span><span class="n">cov</span><span class="o">-</span><span class="n">report</span><span class="o">=</span><span class="n">html</span>
 </pre></div>
 </div>
 <p>Ceci génénère un rapport html disponible dans  <code class="docutils literal"><span class="pre">backend/htmlcov/index.html</span></code>.</p>
+</div>
 </div>
 </div>
 

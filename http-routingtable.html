@@ -187,17 +187,16 @@
    <a href="#cap-/gn_commons"><strong>/gn_commons</strong></a> | 
    <a href="#cap-/gn_monitoring"><strong>/gn_monitoring</strong></a> | 
    <a href="#cap-/habref"><strong>/habref</strong></a> | 
+   <a href="#cap-/import"><strong>/import</strong></a> | 
    <a href="#cap-/meta"><strong>/meta</strong></a> | 
    <a href="#cap-/nomenclatures/nomenclature"><strong>/nomenclatures/nomenclature</strong></a> | 
    <a href="#cap-/nomenclatures/nomenclatures"><strong>/nomenclatures/nomenclatures</strong></a> | 
-   <a href="#cap-/occhab"><strong>/occhab</strong></a> | 
    <a href="#cap-/occtax"><strong>/occtax</strong></a> | 
    <a href="#cap-/permissions"><strong>/permissions</strong></a> | 
    <a href="#cap-/permissions_backoffice"><strong>/permissions_backoffice</strong></a> | 
    <a href="#cap-/pypn"><strong>/pypn</strong></a> | 
    <a href="#cap-/synthese"><strong>/synthese</strong></a> | 
-   <a href="#cap-/users"><strong>/users</strong></a> | 
-   <a href="#cap-/validation"><strong>/validation</strong></a>
+   <a href="#cap-/users"><strong>/users</strong></a>
    </div>
 
    <table class="indextable modindextable">
@@ -229,6 +228,11 @@
        <td></td>
        <td>
        <a href="development.html#get--geo-municipalities"><code class="xref">GET /geo/municipalities</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--geo-altitude"><code class="xref">POST /geo/altitude</code></a></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>
@@ -275,6 +279,16 @@
        <td></td>
        <td>
        <a href="development.html#get--gn_commons-media-(int-id_media)"><code class="xref">GET /gn_commons/media/(int:id_media)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--gn_commons-media-thumbnails-(int-id_media)-(int-size)"><code class="xref">GET /gn_commons/media/thumbnails/(int:id_media)/(int:size)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--gn_commons-medias-(string-uuid_attached_row)"><code class="xref">GET /gn_commons/medias/(string:uuid_attached_row)</code></a></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>
@@ -345,7 +359,7 @@
      <tr>
        <td></td>
        <td>
-       <a href="development.html#get--habref-habitats-autocomplete-list-(int-id_list)"><code class="xref">GET /habref/habitats/autocomplete/list/(int:id_list)</code></a></td><td>
+       <a href="development.html#get--habref-habitats-autocomplete"><code class="xref">GET /habref/habitats/autocomplete</code></a></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>
@@ -356,6 +370,104 @@
        <td></td>
        <td>
        <a href="development.html#get--habref-typo"><code class="xref">GET /habref/typo</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/import"><td></td><td>
+       <strong>/import</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--import"><code class="xref">GET /import</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--import-bibFields"><code class="xref">GET /import/bibFields</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--import-columns_import-(int-id_import)"><code class="xref">GET /import/columns_import/(int:id_import)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--import-content_mappings-(id_mapping)"><code class="xref">GET /import/content_mappings/(id_mapping)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--import-data_checker-(import_id)-field_mapping-(int-id_field_mapping)-content_mapping-(int-id_content_mapping)"><code class="xref">GET /import/data_checker/(import_id)/field_mapping/(int:id_field_mapping)/content_mapping/(int:id_content_mapping)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--import-field_mappings-(id_mapping)"><code class="xref">GET /import/field_mappings/(id_mapping)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--import-getNomencInfo-(int-id_import)-field_mapping-(int-id_field_mapping)"><code class="xref">GET /import/getNomencInfo/(int:id_import)/field_mapping/(int:id_field_mapping)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--import-get_errors-(import_id)"><code class="xref">GET /import/get_errors/(import_id)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--import-importData-(import_id)"><code class="xref">GET /import/importData/(import_id)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--import-mappings-(mapping_type)"><code class="xref">GET /import/mappings/(mapping_type)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--import-update_content_mapping-(int-id_mapping)"><code class="xref">GET /import/update_content_mapping/(int:id_mapping)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--import-create_or_update_field_mapping-(int-id_mapping)"><code class="xref">POST /import/create_or_update_field_mapping/(int:id_mapping)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--import-data_checker-(import_id)-field_mapping-(int-id_field_mapping)-content_mapping-(int-id_content_mapping)"><code class="xref">POST /import/data_checker/(import_id)/field_mapping/(int:id_field_mapping)/content_mapping/(int:id_content_mapping)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--import-getNomencInfo-(int-id_import)-field_mapping-(int-id_field_mapping)"><code class="xref">POST /import/getNomencInfo/(int:id_import)/field_mapping/(int:id_field_mapping)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--import-get_errors-(import_id)"><code class="xref">POST /import/get_errors/(import_id)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--import-importData-(import_id)"><code class="xref">POST /import/importData/(import_id)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--import-mapping"><code class="xref">POST /import/mapping</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--import-update_content_mapping-(int-id_mapping)"><code class="xref">POST /import/update_content_mapping/(int:id_mapping)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#delete--import-mapping-(int-id_mapping)"><code class="xref">DELETE /import/mapping/(int:id_mapping)</code></a></td><td>
        <em></em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-/meta"><td></td><td>
@@ -462,39 +574,6 @@
        <a href="development.html#get--nomenclatures-nomenclatures"><code class="xref">GET /nomenclatures/nomenclatures</code></a></td><td>
        <em></em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-/occhab"><td></td><td>
-       <strong>/occhab</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--occhab-defaultNomenclatures"><code class="xref">GET /occhab/defaultNomenclatures</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--occhab-station-(int-id_station)"><code class="xref">GET /occhab/station/(int:id_station)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--occhab-stations"><code class="xref">GET /occhab/stations</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#post--occhab-export_stations-(export_format)"><code class="xref">POST /occhab/export_stations/(export_format)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#post--occhab-station"><code class="xref">POST /occhab/station</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#delete--occhab-station-(int-id_station)"><code class="xref">DELETE /occhab/station/(int:id_station)</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-/occtax"><td></td><td>
        <strong>/occtax</strong></td><td></td></tr>
      <tr>
@@ -525,17 +604,47 @@
      <tr>
        <td></td>
        <td>
+       <a href="development.html#get--occtax-releves"><code class="xref">GET /occtax/releves</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--occtax-vreleveocctax"><code class="xref">GET /occtax/vreleveocctax</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--occtax-occurrence-(int-id_occurrence)"><code class="xref">POST /occtax/occurrence/(int:id_occurrence)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--occtax-only-releve"><code class="xref">POST /occtax/only/releve</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--occtax-only-releve-(int-id_releve)"><code class="xref">POST /occtax/only/releve/(int:id_releve)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
        <a href="development.html#post--occtax-releve"><code class="xref">POST /occtax/releve</code></a></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>
        <td>
-       <a href="development.html#delete--occtax-releve-(int-id_releve)"><code class="xref">DELETE /occtax/releve/(int:id_releve)</code></a></td><td>
+       <a href="development.html#post--occtax-releve-(int-id_releve)-occurrence"><code class="xref">POST /occtax/releve/(int:id_releve)/occurrence</code></a></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>
        <td>
-       <a href="development.html#delete--occtax-releve-occurrence-(int-id_occ)"><code class="xref">DELETE /occtax/releve/occurrence/(int:id_occ)</code></a></td><td>
+       <a href="development.html#delete--occtax-occurrence-(int-id_occ)"><code class="xref">DELETE /occtax/occurrence/(int:id_occ)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#delete--occtax-releve-(int-id_releve)"><code class="xref">DELETE /occtax/releve/(int:id_releve)</code></a></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>
@@ -682,11 +791,6 @@
      <tr>
        <td></td>
        <td>
-       <a href="development.html#get--synthese-export_statuts"><code class="xref">GET /synthese/export_statuts</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
        <a href="development.html#get--synthese-for_web"><code class="xref">GET /synthese/for_web</code></a></td><td>
        <em></em></td></tr>
      <tr>
@@ -732,7 +836,17 @@
      <tr>
        <td></td>
        <td>
+       <a href="development.html#post--synthese-export_metadata"><code class="xref">POST /synthese/export_metadata</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
        <a href="development.html#post--synthese-export_observations"><code class="xref">POST /synthese/export_observations</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--synthese-export_statuts"><code class="xref">POST /synthese/export_statuts</code></a></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>
@@ -821,24 +935,6 @@
        <td></td>
        <td>
        <a href="development.html#put--users-role"><code class="xref">PUT /users/role</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-/validation"><td></td><td>
-       <strong>/validation</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--validation"><code class="xref">GET /validation</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--validation-date-(uuid)"><code class="xref">GET /validation/date/(uuid)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--validation-definitions"><code class="xref">GET /validation/definitions</code></a></td><td>
        <em></em></td></tr>
    </table>
 
