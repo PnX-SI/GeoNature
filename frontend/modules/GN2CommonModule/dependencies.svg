@@ -28,13 +28,13 @@
 <title>cluster_GN2CommonModule_imports</title>
 <polygon fill="none" stroke="black" points="9433,-78 9433,-130 13997,-130 13997,-78 9433,-78"/>
 </g>
-<g id="clust49" class="cluster">
-<title>cluster_GN2CommonModule_exports</title>
-<polygon fill="none" stroke="black" points="1625,-208 1625,-260 13039,-260 13039,-208 1625,-208"/>
-</g>
 <g id="clust2" class="cluster">
 <title>cluster_GN2CommonModule_declarations</title>
 <polygon fill="none" stroke="black" points="2018,-78 2018,-130 9425,-130 9425,-78 2018,-78"/>
+</g>
+<g id="clust49" class="cluster">
+<title>cluster_GN2CommonModule_exports</title>
+<polygon fill="none" stroke="black" points="1625,-208 1625,-260 13039,-260 13039,-208 1625,-208"/>
 </g>
 <g id="clust51" class="cluster">
 <title>cluster_GN2CommonModule_providers</title>
