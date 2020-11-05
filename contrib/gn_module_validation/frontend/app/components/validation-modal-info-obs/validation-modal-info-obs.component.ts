@@ -8,7 +8,7 @@ import { ModuleConfig } from "../../module.config";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
-import { MediaService } from '@geonature_common/service/media.service';
+import { MediaService } from "@geonature_common/service/media.service";
 
 @Component({
   selector: "pnx-validation-modal-info-obs",
@@ -137,7 +137,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
         const date_min = new Date(this.selectedObs.date_min);
         this.selectedObs.date_min = date_min.toLocaleDateString("fr-FR");
         const date_max = new Date(this.selectedObs.date_max);
-        this.selectedObs['actors'] = this.selectedObs['actors'].split('|');
+        this.selectedObs["actors"] = this.selectedObs["actors"].split('|');
         this.selectedObs.date_max = date_max.toLocaleDateString("fr-FR");
         /*if (this.selectedObs.cor_observers) {
           this.email = this.selectedObs.cor_observers
@@ -185,7 +185,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
             /*Envoie de mail ici quand tout est chargé */
             if (this.selectedObs.cor_observers) {
               this.email = this.selectedObs.cor_observers.map(el => el.email).join();
-              this.mailto = String('mailto:' + this.email + "?");
+              this.mailto = String("mailto:" + this.email + "?");
               //1er passage pour la validation, après on passe par ModalInfoObsComponent
               if (this.APP_CONFIG.FRONTEND.DISPLAY_EMAIL_INFO_SUJET != ""){
                 this.mailto += "subject=" + this.APP_CONFIG.FRONTEND.DISPLAY_EMAIL_INFO_SUJET + "&";
@@ -410,14 +410,14 @@ export class ValidationModalInfoObsComponent implements OnInit {
     let content : string = "\n";
     this.APP_CONFIG.FRONTEND.DISPLAY_EMAIL_DISPLAY_INFO.map((keyToDisplay) => {
       switch(keyToDisplay){
-        case 'NOM_VERN':
+        case "NOM_VERN":
           if(this.selectedObsTaxonDetail.nom_vern){
             content += this.selectedObsTaxonDetail.nom_vern + " - ";
           }
           content += this.selectedObsTaxonDetail.nom_valide;
           break;
           
-        case 'DATE':
+        case "DATE":
           if(this.selectedObsTaxonDetail.nom_vern){
             content += "\nDate : ";
             if(this.selectedObs.date_min != this.selectedObs.date_max){
@@ -428,9 +428,9 @@ export class ValidationModalInfoObsComponent implements OnInit {
           }
           break;
           
-        case 'COMMUNES':
+        case "COMMUNES":
           this.formatedAreas.map((area) => {
-            if(area.type_code == 'COM'){
+            if(area.type_code == "COM"){
               content += "\nCommune(s) : ";
               area.areas.map((commune) => {
                 content += commune.area_name  + ", ";
@@ -440,7 +440,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
           })
           break;
           
-        case 'MEDIAS':
+        case "MEDIAS":
           content += "\nMedias : ";
           if(!this.selectedObs.medias){
             content += "Aucun media";

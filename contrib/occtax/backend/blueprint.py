@@ -104,14 +104,14 @@ def getReleves(info_role):
         releve_cruved = n.get_releve_cruved(user, user_cruved)
         feature = n.get_geofeature(
             relationships=(
-                't_occurrences_occtax',
-                'cor_counting_occtax',
-                'taxref',
-                'observers',
-                'digitiser',
-                'dataset',
-                'right',
-                'medias'
+                "t_occurrences_occtax",
+                "cor_counting_occtax",
+                "taxref",
+                "observers",
+                "digitiser",
+                "dataset",
+                "right",
+                "medias"
             )
         )
         feature["properties"]["rights"] = releve_cruved
@@ -850,23 +850,21 @@ def export(info_role):
                 releve_cruved = n.get_releve_cruved(user, user_cruved)
                 feature = n.get_geofeature(
                     relationships=(
-                        't_occurrences_occtax',
-                        'cor_counting_occtax',
-                        'medias'
+                        "t_occurrences_occtax",
+                        "cor_counting_occtax",
+                        "medias"
                     )
                 )
-                if 'properties' in feature:
-                    if 't_occurrences_occtax' in feature['properties']:
-                        for occurence in feature['properties']['t_occurrences_occtax']:
-                            for counting in occurence['cor_counting_occtax']:
-                                if 'medias' in counting:
-                                    for media in counting['medias']:
-                                        if media['media_path'] is not None:
-                                            file_path = str(ROOT_DIR / "backend/" ) + "/" +  media['media_path']
+                if "properties" in feature:
+                    if "t_occurrences_occtax" in feature["properties"]:
+                        for occurence in feature["properties"]["t_occurrences_occtax"]:
+                            for counting in occurence["cor_counting_occtax"]:
+                                if "medias" in counting:
+                                    for media in counting["medias"]:
+                                        if media["media_path"] is not None:
+                                            file_path = str(ROOT_DIR / "backend/" ) + "/" +  media["media_path"]
                                             if os.path.exists(file_path):
                                                 zp_file.write(file_path, os.path.basename(file_path))
-                                            #copyfile( file_path, dir_path + "/" + os.path.basename(file_path))
-                                            #featureCollection.append(file_path)
             zp_file.close()
             return send_from_directory(dir_path, file_name + ".zip", as_attachment=True)
         except GeonatureApiError as e:

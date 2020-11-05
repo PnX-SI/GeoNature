@@ -60,18 +60,6 @@ export class OcctaxFormService {
       (data) => {
         this.occtaxData.next(data);
         this.editionMode.next(true);
-
-        /* OCCTAX - CHAMPS ADDITIONNELS DEB */
-        /*if(this.dynamicContainerOccurence != undefined){
-          let dynamiqueFormDataset = this.getAddDynamiqueFields(data.releve.properties.dataset.id_dataset);
-          this.dynamicContainerOccurence.clear(); 
-          const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(dynamicFormReleveComponent);
-          this.componentRefOccurence = this.dynamicContainerOccurence.createComponent(factory);
-      
-          this.componentRefOccurence.instance.formConfigReleveDataSet = dynamiqueFormDataset['taxon'];
-          this.componentRefOccurence.instance.formArray = this.dynamicFormGroup;
-        }*/
-        /* OCCTAX - CHAMPS ADDITIONNELS FIN */
       },
       (error) => {
         this._commonService.translateToaster("error", "Releve.DoesNotExist");

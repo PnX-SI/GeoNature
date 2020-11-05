@@ -210,25 +210,25 @@ export class OcctaxFormOccurrenceService {
         let dynamiqueFormDataset = this.occtaxFormService.getAddDynamiqueFields(this.idDataset);
         let hasDynamicFormOccurence = false;
         if (dynamiqueFormDataset){
-          if (dynamiqueFormDataset['OCCURRENCE']){
+          if (dynamiqueFormDataset["OCCURRENCE"]){
             hasDynamicFormOccurence = true;
           }
         }
         let hasDynamicFormCounting = false;
         if (dynamiqueFormDataset){
-          if (dynamiqueFormDataset['COUNTING']){
+          if (dynamiqueFormDataset["COUNTING"]){
             hasDynamicFormCounting = true;
           }
         }
         if(dynamiqueFormDataset){
-          if(dynamiqueFormDataset['ID_TAXON_LIST']){
-            this.idTaxonList = dynamiqueFormDataset['ID_TAXON_LIST'];
+          if(dynamiqueFormDataset["ID_TAXON_LIST"]){
+            this.idTaxonList = dynamiqueFormDataset["ID_TAXON_LIST"];
           }
         }
         
         let NOMENCLATURES = [];
         if(hasDynamicFormOccurence){
-          if (this.form.get('additional_fields') == undefined && this.dynamicContainerOccurence){
+          if (this.form.get("additional_fields") == undefined && this.dynamicContainerOccurence){
             this.dynamicContainerOccurence.clear(); 
             const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(dynamicFormReleveComponent);
             this.componentRefOccurence = this.dynamicContainerOccurence.createComponent(factory);
@@ -236,24 +236,24 @@ export class OcctaxFormOccurrenceService {
             //Ajout du composant dynamique
             this.dynamicFormGroup = this.fb.group({});
         
-            this.componentRefOccurence.instance.formConfigReleveDataSet = dynamiqueFormDataset['OCCURRENCE'];
+            this.componentRefOccurence.instance.formConfigReleveDataSet = dynamiqueFormDataset["OCCURRENCE"];
             this.componentRefOccurence.instance.formArray = this.dynamicFormGroup;
             
             //on insert le formulaire dynamique au form control
-            this.form.addControl('additional_fields', this.dynamicFormGroup);
+            this.form.addControl("additional_fields", this.dynamicFormGroup);
           }
           
-          dynamiqueFormDataset['OCCURRENCE'].map((widget) => {
-            if(widget.type_widget == 'date'){
+          dynamiqueFormDataset["OCCURRENCE"].map((widget) => {
+            if(widget.type_widget == "date"){
               releve.t_occurrences_occtax.map((occurrence) => {
                 //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
-                if(typeof occurrence.additional_fields[widget.attribut_name] !== 'object'){
+                if(typeof occurrence.additional_fields[widget.attribut_name] !== "object"){
                   occurrence.additional_fields[widget.attribut_name] = this.occtaxFormService.formatDate(occurrence.additional_fields[widget.attribut_name]);
                 }
               })
             }
             //Formattage des nomenclatures
-            if(widget.type_widget == 'nomenclature'){
+            if(widget.type_widget == "nomenclature"){
               //Charger les nomenclatures dynamiques dans un tableau
               NOMENCLATURES.push(widget.code_nomenclature_type);
               //mise en forme des nomenclatures
@@ -264,7 +264,7 @@ export class OcctaxFormOccurrenceService {
                       let values = [];
                       for (let i = 0; i < data.length; i++) {
                         data[i].values.forEach((element) => {
-                          element['nomenclature_mnemonique'] = data[i]['mnemonique'];
+                          element["nomenclature_mnemonique"] = data[i]["mnemonique"];
                           values[element.id_nomenclature] = element;
                         });
                       }
@@ -273,7 +273,7 @@ export class OcctaxFormOccurrenceService {
                   )
                   .subscribe((nomenclatures) => {
                     const res = nomenclatures.filter((item) => item !== undefined)
-                    .find(n => (n['label_fr'] === occurrence.additional_fields[widget.attribut_name]));
+                    .find(n => (n["label_fr"] === occurrence.additional_fields[widget.attribut_name]));
                     if(res){
                       occurrence.additional_fields[widget.attribut_name] = res.id_nomenclature;
                     }else{
@@ -295,28 +295,28 @@ export class OcctaxFormOccurrenceService {
             /*MET Champs additionnel*/
             this.dynamicFormGroup = this.fb.group({});
         
-            this.occtaxFormCountingService.componentRefCounting.instance.formConfigReleveDataSet = dynamiqueFormDataset['COUNTING'];
+            this.occtaxFormCountingService.componentRefCounting.instance.formConfigReleveDataSet = dynamiqueFormDataset["COUNTING"];
             this.occtaxFormCountingService.componentRefCounting.instance.formArray = this.dynamicFormGroup;
             
             //on insert le formulaire dynamique au form control
-            let countingsFormGroup = this.form.get("cor_counting_occtax").get('0') as FormGroup;
+            let countingsFormGroup = this.form.get("cor_counting_occtax").get("0") as FormGroup;
             if(countingsFormGroup){
-              countingsFormGroup.setControl('additional_fields', this.dynamicFormGroup);
+              countingsFormGroup.setControl("additional_fields", this.dynamicFormGroup);
             }
             
-            dynamiqueFormDataset['COUNTING'].map((widget) => {
-              if(widget.type_widget == 'date'){
+            dynamiqueFormDataset["COUNTING"].map((widget) => {
+              if(widget.type_widget == "date"){
                 releve.t_occurrences_occtax.map((occurrence) => {
                   occurrence.cor_counting_occtax.map((counting) => {
                     //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
-                    if(typeof counting.additional_fields[widget.attribut_name] !== 'object'){
+                    if(typeof counting.additional_fields[widget.attribut_name] !== "object"){
                       counting.additional_fields[widget.attribut_name] = this.occtaxFormService.formatDate(counting.additional_fields[widget.attribut_name]);
                     }
                   })
                 })
               }
               //Formattage des nomenclatures
-              if(widget.type_widget == 'nomenclature'){
+              if(widget.type_widget == "nomenclature"){
                 //Charger les nomenclatures dynamiques dans un tableau
                 NOMENCLATURES.push(widget.code_nomenclature_type);
                 //mise en forme des nomenclatures
@@ -328,7 +328,7 @@ export class OcctaxFormOccurrenceService {
                           let values = [];
                           for (let i = 0; i < data.length; i++) {
                             data[i].values.forEach((element) => {
-                              element['nomenclature_mnemonique'] = data[i]['mnemonique'];
+                              element["nomenclature_mnemonique"] = data[i]["mnemonique"];
                               values[element.id_nomenclature] = element;
                             });
                           }
@@ -337,7 +337,7 @@ export class OcctaxFormOccurrenceService {
                       )
                       .subscribe((nomenclatures) => {
                         const res = nomenclatures.filter((item) => item !== undefined)
-                        .find(n => (n['label_fr'] === counting.additional_fields[widget.attribut_name]));
+                        .find(n => (n["label_fr"] === counting.additional_fields[widget.attribut_name]));
                         if(res){
                           counting.additional_fields[widget.attribut_name] = res.id_nomenclature;
                         }else{
@@ -359,7 +359,7 @@ export class OcctaxFormOccurrenceService {
               let values = [];
               for (let i = 0; i < data.length; i++) {
                 data[i].values.forEach((element) => {
-                  element['nomenclature_mnemonique'] = data[i]['mnemonique'];
+                  element["nomenclature_mnemonique"] = data[i]["mnemonique"];
                   values[element.id_nomenclature] = element;
                 });
               }
@@ -530,16 +530,16 @@ export class OcctaxFormOccurrenceService {
     this.form.value
     let dynamiqueFormDataset = this.occtaxFormService.getAddDynamiqueFields(this.idDataset);
     if (dynamiqueFormDataset){
-      if (dynamiqueFormDataset['OCCURRENCE']){
-        dynamiqueFormDataset['OCCURRENCE'].map((widget) => {
-          if(widget.type_widget == 'date'){
+      if (dynamiqueFormDataset["OCCURRENCE"]){
+        dynamiqueFormDataset["OCCURRENCE"].map((widget) => {
+          if(widget.type_widget == "date"){
             this.form.value.additional_fields[widget.attribut_name] = this.dateParser.format(
               this.form.value.additional_fields[widget.attribut_name]
             );
           }
-          if(widget.type_widget == 'nomenclature'){
+          if(widget.type_widget == "nomenclature"){
             const res = this.occtaxFormService.nomenclatureAdditionnel.filter((item) => item !== undefined)
-            .find(n => n['id_nomenclature'] === this.form.value.additional_fields[widget.attribut_name]);
+            .find(n => n["id_nomenclature"] === this.form.value.additional_fields[widget.attribut_name]);
             if(res){
               this.form.value.additional_fields[widget.attribut_name] = res.label_fr;
             }else{
@@ -549,19 +549,19 @@ export class OcctaxFormOccurrenceService {
         })
       }
 
-      if (dynamiqueFormDataset['COUNTING']){
-        dynamiqueFormDataset['COUNTING'].map((widget) => {
-          if(widget.type_widget == 'date'){
+      if (dynamiqueFormDataset["COUNTING"]){
+        dynamiqueFormDataset["COUNTING"].map((widget) => {
+          if(widget.type_widget == "date"){
             this.form.value.cor_counting_occtax.map(counting => {
               counting.additional_fields[widget.attribut_name] = this.dateParser.format(
                 counting.additional_fields[widget.attribut_name]
               );
             })
           }
-          if(widget.type_widget == 'nomenclature'){
+          if(widget.type_widget == "nomenclature"){
             this.form.value.cor_counting_occtax.map(counting => {
               const res = this.occtaxFormService.nomenclatureAdditionnel.filter((item) => item !== undefined)
-              .find(n => n['id_nomenclature'] === counting.additional_fields[widget.attribut_name]);
+              .find(n => n["id_nomenclature"] === counting.additional_fields[widget.attribut_name]);
               if(res){
                 counting.additional_fields[widget.attribut_name] = res.label_fr;
               }else{
@@ -569,7 +569,7 @@ export class OcctaxFormOccurrenceService {
               }
             })
           }
-          if(widget.type_widget == 'medias'){
+          if(widget.type_widget == "medias"){
             //Pour le moment, ce n'est pas possible d'ajouter des médias dans le formulaire dynmique
             //Champs additionnel de type media, On  l'enregistre dans les medias pour plus de maintenabilité et le gérer comme tout type de média
             this.form.value.cor_counting_occtax.map(counting => {

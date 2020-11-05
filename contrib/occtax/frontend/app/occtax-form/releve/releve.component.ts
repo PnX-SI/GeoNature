@@ -46,7 +46,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
       // check if edition
       if (geojson) {
         this._dataService.getAltitudes(geojson).subscribe(altitude => {
-          this.releveForm.get('properties').patchValue(altitude)
+          this.releveForm.get("properties").patchValue(altitude)
         })
       }
     })
@@ -78,7 +78,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
       filter((hab) => hab !== null && hab.cd_hab !== undefined),
       map((hab) => hab.cd_hab)
     ).subscribe(cd_hab => {
-      this.releveForm.get('properties').get('cd_hab').setValue(cd_hab);
+      this.releveForm.get("properties").get("cd_hab").setValue(cd_hab);
     });
 
   }

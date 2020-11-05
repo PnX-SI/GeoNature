@@ -157,7 +157,7 @@ MAIL_ON_ERROR = false
     DISPLAY_EMAIL_INFO_CONTENT = "Message général de l'email"
 
     #Information de l'observation à mettre dans l'email 
-    DISPLAY_EMAIL_DISPLAY_INFO = ['NOM_VERN', 'DATE', 'COMMUNES', 'MEDIAS']
+    DISPLAY_EMAIL_DISPLAY_INFO = ["NOM_VERN", "DATE", "COMMUNES", "MEDIAS"]
 
 # Configuration de l'affichage des cartes dans GeoNature
 [MAPCONFIG]

@@ -7,7 +7,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormOccurrenceService } from "../occurrence/occurrence.service";
 import { OcctaxTaxaListService } from "./taxa-list.service";
-import { MediaService } from '@geonature_common/service/media.service'
+import { MediaService } from "@geonature_common/service/media.service"
 import { ModuleConfig } from "../../module.config"
 
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
@@ -18,7 +18,7 @@ import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/
   styleUrls: ["./taxa-list.component.scss"],
 })
 export class OcctaxFormTaxaListComponent implements OnInit {
-  @ViewChild('tabOccurence') tabOccurence: ElementRef;
+  @ViewChild("tabOccurence") tabOccurence: ElementRef;
 
   public ModuleConfig = ModuleConfig;
   public alreadyActivatedCountingTab : Array<any> = [];
@@ -78,22 +78,22 @@ export class OcctaxFormTaxaListComponent implements OnInit {
       setTimeout(() => {
         this.occtaxTaxaListService.occurrences$.value.map((occurrence) => {
           //Réinitialiser le contenu des champs additionnel
-          let containerOccurrence = document.getElementById('tabOccurence' + occurrence.id_occurrence_occtax);
+          let containerOccurrence = document.getElementById("tabOccurence" + occurrence.id_occurrence_occtax);
           if(containerOccurrence){
-            while(containerOccurrence.getElementsByClassName('additional_field').length > 0) {
-              containerOccurrence.getElementsByClassName('additional_field')[0].remove();
+            while(containerOccurrence.getElementsByClassName("additional_field").length > 0) {
+              containerOccurrence.getElementsByClassName("additional_field")[0].remove();
             }
           }
           //Ajoute le contenu
           let dynamiqueFormDataset = this.occtaxFormService.getAddDynamiqueFields(this.occtaxFormOccurrenceService.idDataset);
           let hasDynamicFormOccurence = false;
           if (dynamiqueFormDataset){
-            if (dynamiqueFormDataset['OCCURRENCE']){
+            if (dynamiqueFormDataset["OCCURRENCE"]){
               hasDynamicFormOccurence = true;
             }
           }
           if(hasDynamicFormOccurence){
-            dynamiqueFormDataset['OCCURRENCE'].map((widget) => {
+            dynamiqueFormDataset["OCCURRENCE"].map((widget) => {
               this.ms.createVisualizeElement(containerOccurrence, widget, occurrence);
             });
           }
@@ -170,8 +170,8 @@ export class OcctaxFormTaxaListComponent implements OnInit {
   tabChanged(tabChangeEvent: MatTabChangeEvent): void {
     
     //Petit bidouillage avec le label pour récupérer l'id_occurrence_occtax
-    let infoTab = tabChangeEvent.tab.textLabel.split('#');
-    if(infoTab[0] == 'counting'){
+    let infoTab = tabChangeEvent.tab.textLabel.split("#");
+    if(infoTab[0] == "counting"){
       this.occtaxTaxaListService.occurrences$.value.map((occurrence) => {
         if(occurrence.id_occurrence_occtax == infoTab[1]){
           //On ne créer pas les composants 2 fois, merci
@@ -181,7 +181,7 @@ export class OcctaxFormTaxaListComponent implements OnInit {
           let hasDynamicFormCounting = false;
           let dynamiqueFormDataset = this.occtaxFormService.getAddDynamiqueFields(this.occtaxFormOccurrenceService.idDataset);
           if (dynamiqueFormDataset){
-            if (dynamiqueFormDataset['COUNTING']){
+            if (dynamiqueFormDataset["COUNTING"]){
               hasDynamicFormCounting = true;
             }
           }
@@ -189,9 +189,9 @@ export class OcctaxFormTaxaListComponent implements OnInit {
             //Pour chaque counting, on créer les composants associés
             occurrence.cor_counting_occtax.map((counting) => {
               //On récupère la div mère, en l'occurrence, la div list-values du mat-tab
-              let containerCounting = document.getElementById('tabCounting' + counting.id_counting_occtax);
+              let containerCounting = document.getElementById("tabCounting" + counting.id_counting_occtax);
               //Pour chaque widget, on ajoute son libelle et sa valeur
-              dynamiqueFormDataset['COUNTING'].map((widget) => {
+              dynamiqueFormDataset["COUNTING"].map((widget) => {
                 this.ms.createVisualizeElement(containerCounting, widget, counting);
               });
             });

@@ -142,8 +142,8 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
           releve.properties.date_max = new Date(releve.properties.date_max);
           /*Ajout de champs additionnels*/
           this.dynamiqueFormDataset = this.OcctaxFormService.getAddDynamiqueFields(releve.properties.id_dataset);
-          if(this.dynamiqueFormDataset['RELEVE']){
-            this.dynamiqueFormDataset['RELEVE'].map((widget) => {
+          if(this.dynamiqueFormDataset["RELEVE"]){
+            this.dynamiqueFormDataset["RELEVE"].map((widget) => {
               if(widget.type_widget == "nomenclature"){
                 NOMENCLATURES.push(widget.code_nomenclature_type);
               }
@@ -152,15 +152,15 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
               }
             })
           }
-          if(this.dynamiqueFormDataset['OCCURENCE']){
-            this.dynamiqueFormDataset['OCCURENCE'].map((widget) => {
+          if(this.dynamiqueFormDataset["OCCURENCE"]){
+            this.dynamiqueFormDataset["OCCURENCE"].map((widget) => {
               if(widget.type_widget == "nomenclature"){
                 NOMENCLATURES.push(widget.code_nomenclature_type);
               }
             })
           }
-          if(this.dynamiqueFormDataset['COUNTING']){
-            this.dynamiqueFormDataset['COUNTING'].map((widget) => {
+          if(this.dynamiqueFormDataset["COUNTING"]){
+            this.dynamiqueFormDataset["COUNTING"].map((widget) => {
               if(widget.type_widget == "nomenclature"){
                 NOMENCLATURES.push(widget.code_nomenclature_type);
               }

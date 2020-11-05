@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { AbstractControl, ValidatorFn } from '@angular/forms';
-import { FormGroup, FormControl } from '@angular/forms/src/model';
-import { Subscription } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { AbstractControl, ValidatorFn } from "@angular/forms";
+import { FormGroup, FormControl } from "@angular/forms/src/model";
+import { Subscription } from "rxjs";
 
 @Injectable()
 export class FormService {
@@ -86,8 +86,8 @@ export class FormService {
       return true;
       // if hour min et hour max => check validity
     } else if (dateMin && dateMax && hourMin && hourMax) {
-      const formatedHourMin = hourMin.split(':').map(h => parseInt(h));
-      const formatedHourMax = hourMax.split(':').map(h => parseInt(h));
+      const formatedHourMin = hourMin.split(":").map(h => parseInt(h));
+      const formatedHourMax = hourMax.split(":").map(h => parseInt(h));
       const formatedDateMin = new Date(dateMin.year, dateMin.month, dateMin.day);
       const formatedDateMax = new Date(dateMax.year, dateMax.month, dateMax.day);
       if (dateMin && dateMax) {
@@ -124,15 +124,15 @@ export class FormService {
 
   autoCompleteDate(
     formControl,
-    dateMinControlName = 'date_min',
-    dateMaxControlName = 'date_max'
+    dateMinControlName = "date_min",
+    dateMaxControlName = "date_max"
   ): Subscription {
     // date max autocomplete
     const dateMinControl: FormControl = formControl.get(dateMinControlName);
     const subscription = dateMinControl.valueChanges.subscribe(newvalue => {
       // Get mindate and maxdate value before mindate change
-      let oldmindate = formControl.value['date_min'];
-      let oldmaxdate = formControl.value['date_max'];
+      let oldmindate = formControl.value["date_min"];
+      let oldmaxdate = formControl.value["date_max"];
 
       // Compare the dates before the change of the datemin.
       // If datemin and datemax were equal, maintain this equality

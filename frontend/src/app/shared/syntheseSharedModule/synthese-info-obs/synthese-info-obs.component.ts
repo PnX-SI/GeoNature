@@ -1,17 +1,17 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
-import { CommonService } from '@geonature_common/service/common.service';
-import { DataFormService } from '@geonature_common/form/data-form.service';
-import { AppConfig } from '@geonature_config/app.config';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { MediaService } from '@geonature_common/service/media.service';
-import { finalize } from 'rxjs/operators';
-import { BREAKPOINT } from '@angular/flex-layout';
+import { Component, OnInit, Input } from "@angular/core";
+import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthese-data.service";
+import { CommonService } from "@geonature_common/service/common.service";
+import { DataFormService } from "@geonature_common/form/data-form.service";
+import { AppConfig } from "@geonature_config/app.config";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { MediaService } from "@geonature_common/service/media.service";
+import { finalize } from "rxjs/operators";
+import { BREAKPOINT } from "@angular/flex-layout";
 
 @Component({
-  selector: 'pnx-synthese-info-obs',
-  templateUrl: 'synthese-info-obs.component.html',
-  styleUrls: ['./synthese-info-obs.component.scss']
+  selector: "pnx-synthese-info-obs",
+  templateUrl: "synthese-info-obs.component.html",
+  styleUrls: ["./synthese-info-obs.component.scss"]
 })
 export class SyntheseInfoObsComponent implements OnInit {
   @Input() idSynthese: number;
@@ -28,13 +28,13 @@ export class SyntheseInfoObsComponent implements OnInit {
   public email;
   //public mailto: String;
   public validationColor = {
-    '0': '#FFFFFF',
-    '1': '#8BC34A',
-    '2': '#CDDC39',
-    '3': '#FF9800',
-    '4': '#FF5722',
-    '5': '#BDBDBD',
-    '6': '#FFFFFF'
+    "0": "#FFFFFF",
+    "1": "#8BC34A",
+    "2": "#CDDC39",
+    "3": "#FF9800",
+    "4": "#FF5722",
+    "5": "#BDBDBD",
+    "6": "#FFFFFF"
   };
   constructor(
     private _gnDataService: DataFormService,
@@ -60,13 +60,13 @@ export class SyntheseInfoObsComponent implements OnInit {
       )
       .subscribe(data => {
         this.selectedObs = data;
-        this.selectedObs['municipalities'] = [];
-        this.selectedObs['other_areas'] = [];
-        this.selectedObs['actors'] = this.selectedObs['actors'].split('|');
+        this.selectedObs["municipalities"] = [];
+        this.selectedObs["other_areas"] = [];
+        this.selectedObs["actors"] = this.selectedObs["actors"].split("|");
         const date_min = new Date(this.selectedObs.date_min);
-        this.selectedObs.date_min = date_min.toLocaleDateString('fr-FR');
+        this.selectedObs.date_min = date_min.toLocaleDateString("fr-FR");
         const date_max = new Date(this.selectedObs.date_max);
-        this.selectedObs.date_max = date_max.toLocaleDateString('fr-FR');
+        this.selectedObs.date_max = date_max.toLocaleDateString("fr-FR");
         const areaDict = {};
         //Si la géométrie est hors du périmètre, ca plante car areas est undefined
         if(this.selectedObs.areas){
@@ -105,7 +105,7 @@ export class SyntheseInfoObsComponent implements OnInit {
           /*Envoie de mail ici quand tout est chargé */
           if (this.selectedObs.cor_observers) {
             this.email = this.selectedObs.cor_observers.map(el => el.email).join();
-            this.mailto = String('mailto:' + this.email + "?");
+            this.mailto = String("mailto:" + this.email + "?");
             //1er passage pour la validation, après on passe par ModalInfoObsComponent
             if (this.CONFIG.FRONTEND.DISPLAY_EMAIL_INFO_SUJET != ""){
               this.mailto += "subject=" + this.CONFIG.FRONTEND.DISPLAY_EMAIL_INFO_SUJET + "&";
@@ -127,33 +127,33 @@ export class SyntheseInfoObsComponent implements OnInit {
         for (let row in this.validationHistory) {
           // format date
           const date = new Date(this.validationHistory[row].date);
-          this.validationHistory[row].date = date.toLocaleDateString('fr-FR');
+          this.validationHistory[row].date = date.toLocaleDateString("fr-FR");
           // format comments
           if (
-            this.validationHistory[row].comment == 'None' ||
-            this.validationHistory[row].comment == 'auto = default value'
+            this.validationHistory[row].comment == "None" ||
+            this.validationHistory[row].comment == "auto = default value"
           ) {
-            this.validationHistory[row].comment = '';
+            this.validationHistory[row].comment = "";
           }
           // format validator
-          if (this.validationHistory[row].typeValidation == 'True') {
-            this.validationHistory[row].validator = 'Attribution automatique';
+          if (this.validationHistory[row].typeValidation == "True") {
+            this.validationHistory[row].validator = "Attribution automatique";
           }
         }
       },
       err => {
         console.log(err);
         if (err.status === 404) {
-          this._commonService.translateToaster('warning', 'Aucun historique de validation');
-        } else if (err.statusText === 'Unknown Error') {
+          this._commonService.translateToaster("warning", "Aucun historique de validation");
+        } else if (err.statusText === "Unknown Error") {
           // show error message if no connexion
           this._commonService.translateToaster(
-            'error',
-            'ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)'
+            "error",
+            "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)"
           );
         } else {
           // show error message if other server error
-          this._commonService.translateToaster('error', err.error);
+          this._commonService.translateToaster("error", err.error);
         }
       },
       () => {
@@ -163,7 +163,7 @@ export class SyntheseInfoObsComponent implements OnInit {
   }
 
   backToModule(url_source, id_pk_source) {
-    window.open(url_source + '/' + id_pk_source, '_blank');
+    window.open(url_source + "/" + id_pk_source, "_blank");
   }
 
   //TODO rendre global, additionnal fields
@@ -172,7 +172,7 @@ export class SyntheseInfoObsComponent implements OnInit {
   }
 
   //En fonction des paramètres passés dans la config CONFIG.FRONTEND.DISPLAY_EMAIL_DISPLAY_INFO,
-  //On affichera les informations de l'observation. Pour le moment fait pour 'NOM_VERN', 'DATE', 'COMMUNES', 'MEDIAS'
+  //On affichera les informations de l'observation. Pour le moment fait pour "NOM_VERN", "DATE", "COMMUNES", "MEDIAS"
   public contentInfoObservationForMail(){
     if(this.CONFIG.FRONTEND.DISPLAY_EMAIL_DISPLAY_INFO.length == 0){
       return;
@@ -180,14 +180,14 @@ export class SyntheseInfoObsComponent implements OnInit {
     let content : string = "\n";
     this.CONFIG.FRONTEND.DISPLAY_EMAIL_DISPLAY_INFO.map((keyToDisplay) => {
       switch(keyToDisplay){
-        case 'NOM_VERN':
+        case "NOM_VERN":
           if(this.selectedObsTaxonDetail.nom_vern){
             content += this.selectedObsTaxonDetail.nom_vern + " - ";
           }
           content += this.selectedObsTaxonDetail.nom_valide;
           break;
           
-        case 'DATE':
+        case "DATE":
           if(this.selectedObsTaxonDetail.nom_vern){
             content += "\nDate : ";
             if(this.selectedObs.date_min != this.selectedObs.date_max){
@@ -198,9 +198,9 @@ export class SyntheseInfoObsComponent implements OnInit {
           }
           break;
           
-        case 'COMMUNES':
+        case "COMMUNES":
           this.formatedAreas.map((area) => {
-            if(area.type_code == 'COM'){
+            if(area.type_code == "COM"){
               content += "\nCommunes : ";
               area.areas.map((commune) => {
                 content += commune.area_name  + ", ";
@@ -210,7 +210,7 @@ export class SyntheseInfoObsComponent implements OnInit {
           })
           break;
           
-        case 'MEDIAS':
+        case "MEDIAS":
           content += "\nMedias : ";
           if(!this.selectedObs.medias){
             content += "Aucun media";
