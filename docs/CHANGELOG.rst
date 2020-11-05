@@ -152,7 +152,7 @@ Occtax v2 et médias
 * Module Validation : Correction et homogénéisation de l'affichage et du tri des observations par date (#971)
 * Module Validation : Correction de l'affichage du statut de validation après mise à jour dans la liste des observations (#831)
 * Module Validation : Correction de l'affichage du nom du validateur
-* Moduel Validation : Amélioration des performances avec l'ajout d'un index sur le champs ``uuid_attached_row`` de la table ``gn_commons.t_validations`` (#923 par @jbdesbas)
+* Module Validation : Amélioration des performances avec l'ajout d'un index sur le champs ``uuid_attached_row`` de la table ``gn_commons.t_validations`` (#923 par @jbdesbas)
 * Suppression du trigger en double ``tri_insert_synthese_cor_role_releves_occtax`` sur ``pr_occtax.cor_role_releves_occtax`` (#762 par @jbrieuclp)
 * Passage des requêtes d'export de la synthèse en POST plutôt qu'en GET (#883)
 * Correction du traitement du paramètre ``offset`` de la route ``synthese/color_taxon`` utilisé par Occtax-mobile (#994)
@@ -167,7 +167,7 @@ Si vous mettez à jour GeoNature :
 
 * Nomenclatures : Commencer par exécuter le script SQL de mise à jour du schéma ``ref_nomenclatures`` de la BDD (https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.3to1.3.4.sql)
 * Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.1to2.5.0.sql). Attention, si vous avez customisé les vues des exports Occtax et Synthèse, elles seront supprimées et recrées automatiquement par le script SQL de mise à jour de la BDD de GeoNature pour s'adapter aux évolutions du standard Occtax en version 2.0.0. Révisez éventuellement ces vues avant et/ou après la mise à jour. Le script SQL de mise à jour vérifiera aussi si vous avez d'autres vues (dans le module Export notamment) qui utilisent le champs ``id_nomenclature_obs_technique`` qui doit être renommé et l'indiquera dès le début de l'exécution du script, en l'arrêtant pour que vous puissiez modifier ou supprimer ces vues bloquant la mise à jour.
-* A partir la version 2.5.0 de GeoNature, la version 3.5 de Python n'est plus supportée. Seules les version 3.6 et + le sont. Si vous êtes encore sur Debian 9 (fourni par défaut avec Python 3.5), veuillez suivre les instructions de mise à jour de Python sur cette version (https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-standalone.rst#python-37-sur-debian-9). Il est cependant plutôt conseillé de passer sur Debian 10 pour rester à jour sur des versions maintenues
+* A partir la version 2.5.0 de GeoNature, la version 3.5 de Python n'est plus supportée. Seules les versions 3.6 et + le sont. Si vous êtes encore sur Debian 9 (fourni par défaut avec Python 3.5), veuillez suivre les instructions de mise à jour de Python sur cette version (https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-standalone.rst#python-37-sur-debian-9). Il est cependant plutôt conseillé de passer sur Debian 10 pour rester à jour sur des versions maintenues
 * Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 * A noter, quelques changements dans les paramètres du module Occtax. Les paramètres d'affichage/masquage des champs du formulaire ont évolué ainsi :
 
