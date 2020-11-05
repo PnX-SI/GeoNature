@@ -1,0 +1,28 @@
+<div class="container-fluid">
+
+  <pnx-breadcrumbs [previousRoutes]="permissionService.getBreadcrumbsRoot()"></pnx-breadcrumbs>
+
+  <div class="card">
+    <div class="card-header d-flex align-items-center p-1">
+      <div>
+        <mat-icon class="header-icon" fontSet="fa" fontIcon="fa-shield"></mat-icon>
+      </div>
+      <div>
+        <h3 class="h4">{{ role?.name || '&nbsp;' }}</h3>
+        <h4 class="h5">Détail demande de permissions</h4>
+      </div>
+    </div>
+
+    <div *ngIf="role ; else loadingTpl" class="card-body">
+      <p>Access request form</p>
+    </div>
+  </div>
+</div>
+
+<!-- Templates -->
+<ng-template #loadingTpl>
+  <div class="card-body d-flex justify-content-center align-items-center flex-column">
+    <mat-spinner></mat-spinner>
+    <p>Chargement en cours...</p>
+  </div>
+</ng-template>

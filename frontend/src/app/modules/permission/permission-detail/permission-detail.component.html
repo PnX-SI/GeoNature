@@ -1,0 +1,59 @@
+<div class="container-fluid">
+
+  <pnx-breadcrumbs [previousRoutes]="permissionService.getBreadcrumbsRoot()"></pnx-breadcrumbs>
+
+  <div class="card">
+    <div class="card-header d-flex align-items-center p-1">
+      <div>
+        <mat-icon class="header-icon">account_circle</mat-icon>
+      </div>
+      <div>
+        <h3 class="h4">{{ role?.name || '&nbsp;' }}</h3>
+        <h4 class="h5">Permissions relatives aux modules</h4>
+      </div>
+    </div>
+
+    <div *ngIf="role ; else loadingTpl" class="card-body">
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Personal data
+            </mat-panel-title>
+            <mat-panel-description>
+              Type your name and age
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <mat-form-field>
+            <input matInput placeholder="First name">
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput placeholder="Age">
+          </mat-form-field>
+        </mat-expansion-panel>
+        <mat-expansion-panel (opened)="panelOpenState = true"
+                             (closed)="panelOpenState = false">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Self aware panel
+            </mat-panel-title>
+            <mat-panel-description>
+              Currently I am {{panelOpenState ? 'open' : 'closed'}}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <p>I'm visible because I am open</p>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+</div>
+
+<!-- Templates -->
+<ng-template #loadingTpl>
+  <div class="card-body d-flex justify-content-center align-items-center flex-column">
+    <mat-spinner></mat-spinner>
+    <p>Chargement en cours...</p>
+  </div>
+</ng-template>

@@ -1,0 +1,87 @@
+<div class="container-fluid">
+
+  <pnx-breadcrumbs [previousRoutes]="permissionService.getBreadcrumbsRoot()"></pnx-breadcrumbs>
+
+  <div class="card">
+    <div class="card-header d-flex align-items-center p-1">
+      <div>
+        <mat-icon class="header-icon">admin_panel_settings</mat-icon>
+      </div>
+      <h3>
+        Permissions des utilisateurs et groupes
+      </h3>
+    </div>
+
+    <div class="card-body">
+      <div class="row">
+        <div class="form-group col-sm-6">
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <mat-icon [inline]="true">filter_alt</mat-icon>
+              </span>
+            </div>
+            <input
+              class="form-control form-control-sm"
+              type="text"
+              placeholder="Filtrer les utilisateurs et groupes..."
+              (keyup)="updateFilter($event)"
+            >
+          </div>
+        </div>
+      </div>
+
+      <ngx-datatable
+        class="material striped"
+        [columns]="columns"
+        [rows]="rows"
+        [columnMode]="'flex'"
+        [loadingIndicator]="loadingIndicator"
+        [reorderable]="reorderable"
+        [swapColumns]="swapColumns"
+        [headerHeight]="50"
+        [footerHeight]="50"
+        [rowHeight]="'auto'"
+        [limit]="5"
+        [targetMarkerTemplate]="targetMarkerTemplate"
+      >
+        <ng-template #colHeaderTpl let-column="column" let-sort="sortFn">
+          <span class="datatable-header-cell-wrapper">
+            <span
+              class="datatable-header-cell-label draggable"
+              [matTooltip]="column.tooltip"
+              matTooltipPosition="above"
+              (click)="sort()"
+            >
+              {{ column.name }}
+            </span>
+          </span>
+          <span class="sort-btn"></span>
+        </ng-template>
+
+        <ng-template #typeCellTpl let-value="value">
+          {{ value == 'USER' ? 'Utilisateur' : 'Groupe' }}
+        </ng-template>
+
+        <ng-template #actionsCellTpl let-value="value" let-row="row">
+          <button
+            mat-icon-button
+            matRipple
+            matTooltip="Visualiser les permissions"
+            routerLink="/permissions/roles/{{ row.id }}"
+          >
+            <mat-icon>description</mat-icon>
+          </button>
+        </ng-template>
+
+        <!-- Reorderable columns templates -->
+        <ng-template #targetMarkerTemplate let-class="class">
+          <div [ngClass]="class">
+            <div class="icon datatable-icon-down"></div>
+            <div class="icon datatable-icon-up"></div>
+          </div>
+        </ng-template>
+      </ngx-datatable>
+    </div>
+  </div>
+</div>

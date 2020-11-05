@@ -1,0 +1,55 @@
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="col-xs-12 col-sm-12">
+      <pnx-breadcrumbs [previousRoutes]="permissionService.getBreadcrumbsRoot()"></pnx-breadcrumbs>
+    </div>
+  </div>
+
+  <div class="card card-page">
+    <div class="card-header d-flex align-items-center p-1">
+      <div>
+        <mat-icon class="header-icon">admin_panel_settings</mat-icon>
+      </div>
+      <h3 class="main-color">
+        Demande de permissions d'accès
+      </h3>
+    </div>
+
+
+    <mat-tab-group>
+      <mat-tab label="En attentes">
+        <div class="card-body">
+          <div class="row">
+            <div class="form-group col-sm-7">
+              <input
+                class="form-control form-control-sm"
+                type="text"
+                name=""
+                id=""
+                placeholder="Rechercher"
+                (keyup)="updateSearchbar($event)"
+              >
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+      <mat-tab label="Traitées">
+        <div class="card-body">
+          <div class="row">
+            <div class="form-group col-sm-7">
+              <input
+                class="form-control form-control-sm"
+                type="text"
+                name=""
+                id=""
+                placeholder="Rechercher"
+                (keyup)="updateSearchbar($event)"
+              >
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>
