@@ -15,7 +15,8 @@ from flask import (
     session,
     current_app,
     url_for,
-    redirect
+    redirect,
+    jsonify
 )
 from utils_flask_sqla.response import json_resp
 from pypnusershub.db.models import User
@@ -540,3 +541,143 @@ def render_refused_request_tpl(user, refuse_reason=None):
 def get_validators():
     validators = current_app.config["PERMISSION_MANAGEMENT"]["VALIDATOR_EMAIL"]
     return validators.strip()
+
+
+@routes.route("/modules", methods=["GET"])
+def get_all_modules():
+    """
+    Retourne tous les modules.
+
+    .. :quickref: Permissions;
+
+    :returns: un tableau de dictionnaire contenant les infos des modules.
+    """
+    q = DB.session.query(TModules)
+    modules = []
+    for module in q.all():
+        module = format_keys_to_camel_case(module.as_dict())
+        modules.append(module)
+    return jsonify(modules), 200
+
+
+@routes.route("/actions", methods=["GET"])
+def get_all_actions():
+    """
+    Retourne toutes les actions.
+
+    .. :quickref: Permissions;
+
+    :returns: un tableau de dictionnaire contenant les infos des actions.
+    """
+    q = DB.session.query(TActions)
+    actions = []
+    for action in q.all():
+        action = format_keys_to_camel_case(action.as_dict())
+        actions.append(action)
+    return jsonify(actions), 200
+
+@routes.route("/filters", methods=["GET"])
+def get_all_filters():
+    """
+    Retourne tous les types de filtres.
+
+    .. :quickref: Permissions;
+
+    :returns: un tableau de dictionnaire contenant les infos des filtres.
+    """
+    q = DB.session.query(BibFiltersType)
+    filters = []
+    for pfilter in q.all():
+        pfilter = format_keys_to_camel_case(pfilter.as_dict())
+        filters.append(pfilter)
+    return jsonify(filters), 200
+
+@routes.route("/objects", methods=["GET"])
+def get_all_objects():
+    """
+    Retourne toutes les objets.
+
+    .. :quickref: Permissions;
+
+    :returns: un tableau de dictionnaire contenant les infos des objets.
+    """
+    q = DB.session.query(TObjects)
+    objects = []
+    for obj in q.all():
+        obj = format_keys_to_camel_case(obj.as_dict())
+        objects.append(obj)
+    return jsonify(objects), 200
+
+def format_keys_to_camel_case(d):
+    return dict((format_to_camel_case(k), v) for k, v in d.items())
+
+def format_to_camel_case(snake_str):
+    components = snake_str.split('_')
+    return components[0] + ''.join(x.title() for x in components[1:])
+
+def get_roles_permissions():
+    return [
+        { 'id': 1, 'name': 'Jean-Pascal MILCENT', 'type': 'USER', 'permissionsNbr': 5, 'permissions': [
+            {'module': 'SYNTHESE', 'action': 'R', 'object': 'PRIVATE_OBSERVATION', 'filter_type': 'PRECISION', 'filter_value': 'precise'},
+            {'module': 'SYNTHESE', 'action': 'R', 'object': 'PRIVATE_OBSERVATION', 'filter_type': 'GEOGRAPHIC', 'filter_value': '3896,18628'},
+            {'module': 'SYNTHESE', 'action': 'E', 'object': 'PRIVATE_OBSERVATION', 'filter_type': 'PRECISION', 'filter_value': 'precise'},
+            {'module': 'SYNTHESE', 'action': 'E', 'object': 'PRIVATE_OBSERVATION', 'filter_type': 'GEOGRAPHIC', 'filter_value': '3896,18628'},
+        ]},
+        { 'id': 2, 'name': 'Martin DUPOND', 'type': 'USER', 'permissionsNbr': 3 },
+        { 'id': 3, 'name': 'Observateurs', 'type': 'GROUP', 'permissionsNbr': 6 },
+        { 'id': 4, 'name': 'Zazi SWAROSKI', 'type': 'USER', 'permissionsNbr': 15 },
+        { 'id': 5, 'name': 'Utilisateurs de GeoNature', 'type': 'GROUP', 'permissionsNbr': 8 },
+        { 'id': 6, 'name': 'Administrateurs de GeoNature', 'type': 'GROUP', 'permissionsNbr': 25 },
+        { 'id': 7, 'name': 'Raphaël LEPEINTRE', 'type': 'USER', 'permissionsNbr': 5 },
+        { 'id': 8, 'name': 'Robert BAYLE', 'type': 'USER', 'permissionsNbr': 3 },
+        { 'id': 9, 'name': 'Jean-Baptiste GIBELIN', 'type': 'USER', 'permissionsNbr': 6 },
+        { 'id': 10, 'name': 'Louise NADAL', 'type': 'USER', 'permissionsNbr': 15 },
+        { 'id': 11, 'name': 'Anne POLZE', 'type': 'USER', 'permissionsNbr': 8 },
+        { 'id': 12, 'name': 'Scipion BAYLE', 'type': 'USER', 'permissionsNbr': 25 },
+        { 'id': 13, 'name': 'Hélène TOURRE', 'type': 'USER', 'permissionsNbr': 5 },
+        { 'id': 14, 'name': 'Étienne POMMEL', 'type': 'USER', 'permissionsNbr': 3 },
+        { 'id': 15, 'name': 'Jeanne DOMERGUE', 'type': 'USER', 'permissionsNbr': 6 },
+        { 'id': 16, 'name': 'Jacques DALVERNY', 'type': 'USER', 'permissionsNbr': 15 },
+        { 'id': 17, 'name': 'Marie FABRE', 'type': 'USER', 'permissionsNbr': 8 },
+        { 'id': 18, 'name': 'Pierre FONTANIEU', 'type': 'USER', 'permissionsNbr': 25 },
+    ]
+
+
+@routes.route("/roles", methods=["GET"])
+def get_permissions_for_all_roles():
+    """
+    Retourne tous les rôles avec leur nombre de permissions.
+
+    .. :quickref: Permissions;
+
+    :returns: un tableau de dictionnaire contenant les infos du rôle et son nombre de permissions.
+    """
+    roles_permissions = get_roles_permissions()
+    return jsonify(roles_permissions), 200
+
+
+@routes.route("/roles/<int:id_role>", methods=["GET"])
+def get_permissions_by_role_id(id_role):
+    """
+    Retourne un rôle avec son nombre de permissions.
+
+    .. :quickref: Permissions;
+
+    :returns: un dictionnaire avec les infos du rôle et son nombre de permissions.
+    """
+    roles_permissions = get_roles_permissions()
+
+    response = False
+    for role in roles_permissions:
+        if role['id'] == id_role:
+            response = role
+            break
+
+    if not response:
+        response = {
+            "message": f"Id de rôle introuvable : {id_role} .",
+            "status": "error"
+        }
+        return response, 404
+    else:
+        return response, 200
