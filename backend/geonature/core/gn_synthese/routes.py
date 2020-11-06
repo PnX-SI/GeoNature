@@ -19,6 +19,7 @@ from utils_flask_sqla_geo.generic import GenericTableGeo
 from geonature.utils import filemanager
 from geonature.utils.env import DB, ROOT_DIR
 from geonature.utils.errors import GeonatureApiError
+from geonature.utils.utilsgeometrytools import export_as_geo_file
 
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_meta.repositories import get_datasets_cruved
@@ -291,7 +292,9 @@ def export_taxon_web(info_role):
     """
 
     taxon_view = GenericTable(
-        tableName="v_synthese_taxon_for_export_view", schemaName="gn_synthese", engine=DB.engine,
+        tableName="v_synthese_taxon_for_export_view",
+        schemaName="gn_synthese",
+        engine=DB.engine,
     )
     columns = taxon_view.tableDef.columns
     # Test de conformité de la vue v_synthese_for_export_view
@@ -368,12 +371,16 @@ def export_observations_web(info_role):
 
     POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
 
-    :query str export_format: str<'csv', 'geojson', 'shapefiles'>
+    :query str export_format: str<'csv', 'geojson', 'shapefiles', 'gpkg'>
 
     """
     params = request.args
+    export_format = params.get("export_format", "csv")
+    # Test export_format
+    if not export_format in current_app.config["SYNTHESE"]["EXPORT_FORMAT"]:
+        raise GeonatureApiError("Unsupported format")
+
     # set default to csv
-    export_format = "csv"
     export_view = GenericTableGeo(
         tableName="v_synthese_for_export",
         schemaName="gn_synthese",
@@ -381,8 +388,6 @@ def export_observations_web(info_role):
         geometry_field=None,
         srid=current_app.config["LOCAL_SRID"],
     )
-    if "export_format" in params:
-        export_format = params["export_format"]
 
     # get list of id synthese from POST
     id_list = request.get_json()
@@ -433,27 +438,23 @@ def export_observations_web(info_role):
                 getattr(r, current_app.config["SYNTHESE"]["EXPORT_GEOJSON_4326_COL"])
             )
             feature = Feature(
-                geometry=geometry, properties=export_view.as_dict(r, columns=columns_to_serialize),
+                geometry=geometry,
+                properties=export_view.as_dict(r, columns=columns_to_serialize),
             )
             features.append(feature)
         results = FeatureCollection(features)
         return to_json_resp(results, as_file=True, filename=file_name, indent=4)
     else:
         try:
-            filemanager.delete_recursively(
-                str(ROOT_DIR / "backend/static/shapefiles"), excluded_files=[".gitkeep"]
-            )
-
-            dir_path = str(ROOT_DIR / "backend/static/shapefiles")
-
-            export_view.as_shape(
+            dir_name, file_name = export_as_geo_file(
+                export_format=export_format,
+                export_view=export_view,
                 db_cols=db_cols_for_shape,
-                data=results,
                 geojson_col=current_app.config["SYNTHESE"]["EXPORT_GEOJSON_LOCAL_COL"],
-                dir_path=dir_path,
+                data=results,
                 file_name=file_name,
             )
-            return send_from_directory(dir_path, file_name + ".zip", as_attachment=True)
+            return send_from_directory(dir_name, file_name, as_attachment=True)
 
         except GeonatureApiError as e:
             message = str(e)
@@ -549,7 +550,9 @@ def export_status(info_role):
     # add join
     synthese_query_class.add_join(Taxref, Taxref.cd_nom, VSyntheseForWebApp.cd_nom)
     synthese_query_class.add_join(
-        TaxrefProtectionEspeces, TaxrefProtectionEspeces.cd_nom, VSyntheseForWebApp.cd_nom,
+        TaxrefProtectionEspeces,
+        TaxrefProtectionEspeces.cd_nom,
+        VSyntheseForWebApp.cd_nom,
     )
     synthese_query_class.add_join(
         TaxrefProtectionArticles,
