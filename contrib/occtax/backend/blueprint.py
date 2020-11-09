@@ -799,17 +799,6 @@ def export(info_role):
             )
             return send_from_directory(dir_name, file_name, as_attachment=True)
 
-            # filemanager.delete_recursively(
-            #     str(ROOT_DIR / "backend/static/shapefiles"), excluded_files=[".gitkeep"]
-            # )
-            # db_cols = [db_col for db_col in export_view.db_cols if db_col.key in export_columns]
-            # dir_path = str(ROOT_DIR / "backend/static/shapefiles")
-            # export_view.as_shape(
-            #     db_cols=db_cols, data=data, dir_path=dir_path, file_name=file_name
-            # )
-
-            # return send_from_directory(dir_path, file_name + ".zip", as_attachment=True)
-
         except GeonatureApiError as e:
             message = str(e)
 
