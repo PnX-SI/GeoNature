@@ -47,4 +47,4 @@ const routes: Routes = [
   ],
   providers: [DataService]
 })
-export class MetadataModule {}
+export class MetadataModule { }

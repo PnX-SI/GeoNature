@@ -18,7 +18,8 @@
         </div>
         <div class="col-sm-3">
           <button
-            class="mat-stroked-button"
+            mat-raised-button
+            color="primary"
             (click)="openSearchModal(searchModal)"
           > Recherche avancée </button>
         </div>
@@ -148,16 +149,8 @@
                       <mat-icon>backup</mat-icon>
                     </a>
                     <a
-                      *ngIf="ds.observation_count < 100 && ds.observation_count !=0"
-                      (click)="syntheseDs(ds.id_dataset)"
-                      matTooltip="Afficher le jeux de donnée sur la carte"
-                    >
-                      <mat-icon> room</mat-icon>
-                    </a>
-                    <a
-                      *ngIf="ds.observation_count > 100 || ds.observation_count == 0"
-                      (click)="openSyntheseNone(synthese)"
-                      matTooltip="Afficher le jeux de donnée sur la carte"
+                      (click)="syntheseDs(ds.id_dataset, ds.observation_count, syntheseNoneModal)"
+                      matTooltip="Afficher les données dans la Synthèse"
                     >
                       <mat-icon> room</mat-icon>
                     </a>
@@ -187,13 +180,6 @@
                       matTooltip="Jeux de donnée désactivé"
                     >
                       <mat-icon> clear</mat-icon>
-                    </a>
-                    <a
-                      *ngIf="ds.observation_count > 100"
-                      (click)="openSyntheseNone(synthese)"
-                      matTooltip="Impossible d'afficher les jdd sur la carte"
-                    >
-                      <mat-icon> room</mat-icon>
                     </a>
                     <a
                       *ngIf="ds.deletable"
@@ -266,141 +252,78 @@
     class="modal-body"
     style="align-items: flex-end;"
   >
-    <div class="row">
-      <div class="col">
-        UID
-      </div>
-      <div class="col">
-        <input
-          class="form-control form-control-sm"
-          type="text"
-          name=""
-          id=""
-          placeholder="UID"
-          (keyup)="updateAdvancedCriteria($event, 'uid')"
-        >
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        Titre / Identifiant
-      </div>
-      <div class="col">
-        <input
-          class="form-control form-control-sm"
-          type="text"
-          name=""
-          id=""
-          placeholder="Titre / Identifiant"
-          (keyup)="updateAdvancedCriteria($event, 'name')"
-        >
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        Crée le
-      </div>
-      <div class="col">
-        <div class="form-group">
-          <div class="input-group">
-            <input
-              class="form-control"
-              placeholder="yyyy-mm-dd"
-              (ngModelChange)="updateAdvancedCriteria($event, 'date')"
-              name="dp"
-              [(ngModel)]="model"
-              ngbDatepicker
-              #d="ngbDatepicker"
-            >
-            <div class="input-group-append">
-              <button
-                class="fa fa-calendar fa-2x"
-                style="color: #7197FF;"
-                (click)="d.toggle()"
-                type="button"
-              ></button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col">
-        Organisme
-      </div>
-      <div class="col">
+      <label>  Rechercher sur:</label>
         <select
+          name="selecteur"
+          id="selector"
+          class="form-control"
+        >
+          <option value="ds">Jeu de données</option>
+          <option value="af">Cadre d'acquisition</option>
+        </select>
+      <label>UUID</label>
+        <input
+        [formControl]="searchFormService.form.get('uuid')"
           class="form-control form-control-sm"
-          (change)="updateAdvancedCriteria($event, 'organism')"
+          type="text"
+        >
+        <label>Titre / Identifiant</label>
+        
+        <input
+          [formControl]="searchFormService.form.get('name')"
+          class="form-control form-control-sm"
+        >
+
+      <pnx-date [parentFormControl]="searchFormService.form.get('date')" label="Créé le"></pnx-date>
+        <label>Acteur (organisme)</label>
+        
+        <select
+          [formControl]="searchFormService.form.get('organism')"
+
+          class="form-control form-control"
         >
           <option
             value=""
             selected
-          >Organisme</option>
+          >--</option>
           <option
             *ngFor="let org of organisms"
             value="{{org.id_organisme}}"
           >
             {{org.nom_organisme}} </option>
         </select>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col">
-        Utilisateur
-      </div>
-      <div class="col">
+        <label> Acteur (personne)</label>
+        
         <select
-          class="form-control form-control-sm"
-          (change)="updateAdvancedCriteria($event, 'role')"
+          class="form-control form-control"
+          [formControl]="searchFormService.form.get('person')"
         >
           <option
             value=""
             selected
-          >Utilisateur</option>
+          > --</option>
           <option
             *ngFor="let role of roles"
             value="{{role.id_role}}"
           >
             {{role?.nom_complet}}</option>
         </select>
-      </div>
-    </div>
 
-
-    <div class="row">
-      <div class="col">
-        Selecteur
-      </div>
-      <div class="col">
-        <select
-          name="selecteur"
-          id="selector"
-          (change)="updateSelector($event)"
-        >
-          <option value="ds">JDD</option>
-          <option value="af">CA</option>
-        </select>
-      </div>
-    </div>
-
-
-    <div class="row">
-      <div class="col">
-      </div>
-      <div class="col">
-        <button
-          class="mat-stroked-button"
-          (click)="updateAdvancedSearch()"
+        <div class="mt-2">
+          <button
+          mat-raised-button
+          class="button-success uppercase mr-2"
+          (click)="advancedSearch(); c()"
         > Rechercher </button>
         <button
-          class="mat-stroked-button"
-          (click)="closeSearchModal(searchModal)"
-        > Fermer </button>
-      </div>
-    </div>
+          mat-raised-button
+          color="warn"
+          class="uppercase"
+          (click)="c()"
+        > 
+          Fermer 
+        </button>
+        </div>
 
   </div>
 </ng-template>
@@ -409,13 +332,13 @@
 
 
 <ng-template
-  #synthese
+  #syntheseNoneModal
   let-c="close"
   let-d="dismiss"
 >
-  <div class="modal-header bg-info">
+  <div class="modal-header bg-danger">
     <h5
-      class="modal-title bg-info text-white"
+      class="modal-title text-white"
       id="exampleModalLabel"
     >La visualisation des données n'est pas possible !</h5>
   </div>
@@ -425,8 +348,7 @@
   >
     <div class="col">
       <span>
-        <h4 style="text-align: justify;">Le nombre de données est égale à zéro ou est trop
-          important.</h4>
+        <h4 style="text-align: justify;">Le nombre de données est égale à zéro</h4>
       </span>
     </div>
   </div>
@@ -436,8 +358,9 @@
     </div>
     <div class="col-md-4 text-center">
       <button
-        class="btn btn-dark center-block text-white"
-        (click)="closeSearchModal(searchModal)"
+        mat-raised-button
+        color="primary"
+        (click)="c()"
       > Fermer </button>
     </div>
     <br>

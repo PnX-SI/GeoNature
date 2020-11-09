@@ -10,7 +10,7 @@ import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { DataService } from "../../../../external_modules/import/frontend/app/services/data.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
-
+import { MetadataSearchFormService } from "./services/metadata-search-form.service"
 
 export class MetadataPaginator extends MatPaginatorIntl {
   constructor() {
@@ -38,7 +38,8 @@ export class MetadataPaginator extends MatPaginatorIntl {
     {
       provide: MatPaginatorIntl,
       useClass: MetadataPaginator
-    }
+    },
+    MetadataSearchFormService
 
   ]
 })
@@ -68,6 +69,7 @@ export class MetadataComponent implements OnInit {
     private _router: Router,
     private modal: NgbModal,
     public _ds: DataService,
+    public searchFormService: MetadataSearchFormService,
     private _commonService: CommonService,
     private _syntheseDataService: SyntheseDataService
   ) { }
@@ -180,34 +182,33 @@ export class MetadataComponent implements OnInit {
     this.searchTerms = {};
   }
 
-  updateAdvancedSearch() {
+  advancedSearch() {
 
-    if (!this.searchTerms['selector'])
-      this.searchTerms['selector'] = 'ds'
+    const formValue = this.searchFormService.formatFormValue(
+      Object.assign({}, this.searchFormService.form.value)
+    );
 
-    this._dfs.getAfAndDatasetListMetadata(this.searchTerms).subscribe(data => {
+
+    this._dfs.getAfAndDatasetListMetadata(formValue).subscribe(data => {
       this.tempAF = data.data;
       this.datasets = [];
       this.tempAF.forEach(af => {
         af['datasetsTemp'] = af['datasets'];
         this.datasets = this.datasets.concat(af['datasets']);
       })
-      this.expandAccordions = (this.searchTerms['selector'] == 'ds');
+      this.expandAccordions = (this.searchFormService.form.value.selector == 'ds');
     });
   }
 
   openSearchModal(searchModal) {
-    this.reinitAdvancedCriteria();
-    //this.updateAdvancedSearch();
+    this.searchFormService.resetForm();
     this.modal.open(searchModal);
   }
 
-  openSyntheseNone(syntheseNone) {
-    this.modal.open(syntheseNone);
-  }
 
-  closeSearchModal(searchModal) {
-    this.modal.dismissAll(searchModal);
+
+  closeSearchModal() {
+    this.modal.dismissAll();
   }
 
   isDisplayed(idx: number) {
@@ -256,13 +257,18 @@ export class MetadataComponent implements OnInit {
     );
   }
 
-  syntheseDs(ds_id) {
-    let navigationExtras: NavigationExtras = {
-      queryParams: {
-        "id_dataset": ds_id
-      }
-    };
-    this._router.navigate(['/synthese'], navigationExtras);
+  syntheseDs(ds_id, data_number, syntheseNoneModal) {
+    if (data_number == 0) {
+      this.modal.open(syntheseNoneModal);
+    } else {
+      let navigationExtras: NavigationExtras = {
+        queryParams: {
+          "id_dataset": ds_id
+        }
+      };
+      this._router.navigate(['/synthese'], navigationExtras);
+    }
+
   }
 
   importDs(ds_id) {
