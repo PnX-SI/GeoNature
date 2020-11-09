@@ -215,8 +215,8 @@ def export_all_habitats(
         tableName="v_export_sinp",
         schemaName="pr_occhab",
         engine=DB.engine,
-        geometry_field=None,
-        srid=4326,  # current_app.config["LOCAL_SRID"] ne peut pas fonctionner car l'export en gejson utilise la colonne geom_4326
+        geometry_field="geom_local",
+        srid=current_app.config["LOCAL_SRID"],
     )
 
     file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
@@ -256,7 +256,7 @@ def export_all_habitats(
                 export_format=export_format,
                 export_view=export_view,
                 db_cols=db_cols_for_shape,
-                geojson_col="geojson",
+                geojson_col=None,
                 data=results,
                 file_name=file_name,
             )
