@@ -22,6 +22,13 @@
             color="primary"
             (click)="openSearchModal(searchModal)"
           > Recherche avancée </button>
+          <button
+            mat-raised-button
+            color="accent"
+            class="ml-2"
+            matTooltip="Raffraichir la recherche"
+            (click)="refreshFilters(searchModal)"
+          > <mat-icon style="vertical-align: middle;">refresh</mat-icon> </button>
         </div>
       </div>
       <div>Liste des cadres d'acquisition et des jeux de données associés</div>
@@ -59,8 +66,7 @@
                 <div class="col-md-2 ">{{af.acquisition_framework_start_date |date:'d/MM/yyyy'}}
                 </div>
                 <div class="col-md-2">
-                  TODO
-                  <!-- {{af.actors[0].role.nom_complet}} -->
+                  {{af.creator?.nom_complet}}
                 </div>
                 <section class="col-md-3">
                   <div *ngFor="let ac of af.actors">
@@ -108,9 +114,7 @@
                   </td>
                   <td> {{ds.meta_create_date |date:'d/MM/yyyy' }}</td>
                   <td> {{ds.observation_count}} </td>
-                  <td> TODO
-                    <!-- {{af.actors[0].role.nom_complet}}  -->
-                  <td>
+                  <td>{{ds.creator?.nom_complet}}<td>
                     <div *ngIf="ds.observation_count > 0">
                       <mat-icon
                         (click)="sensiReport(ds.id_dataset)"
@@ -254,6 +258,7 @@
   >
       <label>  Rechercher sur:</label>
         <select
+        [formControl]="searchFormService.form.get('selector')"
           name="selecteur"
           id="selector"
           class="form-control"
@@ -274,7 +279,7 @@
           class="form-control form-control-sm"
         >
 
-      <pnx-date [parentFormControl]="searchFormService.form.get('date')" label="Créé le"></pnx-date>
+      <pnx-date [parentFormControl]="searchFormService.form.get('date')" label="Date de création"></pnx-date>
         <label>Acteur (organisme)</label>
         
         <select

@@ -174,6 +174,11 @@ export class MetadataComponent implements OnInit {
         + '-' + (event.day > 10 ? '' : '0') + event.day;
   }
 
+  refreshFilters() {
+    this.searchFormService.resetForm();
+    this.advancedSearch();
+  }
+
   updateSelector(event) {
     this.searchTerms['selector'] = event.target.value.toLowerCase();
   }

@@ -10,7 +10,7 @@ export class MetadataSearchFormService {
     constructor(private _fb: FormBuilder, public dateParser: NgbDateParserFormatter) {
 
         this.form = this._fb.group({
-            'selector': "ds",
+            'selector': 'ds',
             'uuid': null,
             'name': null,
             'date': null,
@@ -21,7 +21,6 @@ export class MetadataSearchFormService {
 
     formatFormValue(formValue) {
         const formatedForm = {}
-        formValue['date'] = this.dateParser.format(formValue['date']);
         Object.keys(formValue).forEach(key => {
             if (key == 'date' && formValue['date']) {
                 formatedForm['date'] = this.dateParser.format(formValue['date'])
@@ -34,7 +33,6 @@ export class MetadataSearchFormService {
 
     resetForm() {
         this.form.reset();
-        this.form.patchValue({ 'selector': 'ds' })
     }
 
 }
