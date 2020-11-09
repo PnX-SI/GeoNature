@@ -29,7 +29,11 @@ tr, tbody {
   width: 100%;
 }
 
-
+mat-expansion-panel {
+  mat-expansion-panel-header {
+    height: auto!important; 
+  }
+}
 
 .tab-title > div {
   //padding: 10px;
@@ -66,4 +70,9 @@ tr, tbody {
 
 .mat-icon{
   cursor: pointer;
+  font-size:30px
+}
+
+a .mat-icon {
+  margin-left: 8px;;
 }

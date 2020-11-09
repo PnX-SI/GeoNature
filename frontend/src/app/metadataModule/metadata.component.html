@@ -41,8 +41,8 @@
             [expanded]="expandAccordions"
           >
             <mat-expansion-panel-header
-              collapsedHeight="80px"
-              expandedHeight="150px"
+              collapsedHeight="*"
+              expandedHeight="*"
             >
               <mat-panel-title
                 class="af-title"
@@ -63,8 +63,8 @@
                 </div>
                 <section class="col-md-3">
                   <div *ngFor="let ac of af.actors">
-                    {{ac.organism.nom_organisme}} :
-                    {{ac.nomenclature_actor_role.definition_default}}<br>
+                    <b> {{ac.organism.nom_organisme }} : </b> 
+                    <small> {{ac.nomenclature_actor_role.label_fr }}</small> <br>
                   </div>
                 </section>
 
@@ -116,6 +116,7 @@
                         matTooltip="Rapport de sensibilité"
                       > do_not_touch </mat-icon>
                       <mat-icon
+                        class="ml-2"
                         (click)="uuidReport(ds.id_dataset)"
                         matTooltip="Rapport d'UUID"
                       > format_list_numbered </mat-icon>
@@ -142,9 +143,9 @@
                     </a>
                     <a
                       (click)="importDs(ds.id_dataset)"
-                      matTooltip="Importé un jeux de donnée"
+                      matTooltip="Importer dans ce jeu de donnée"
                     >
-                      <mat-icon>get_app</mat-icon>
+                      <mat-icon>backup</mat-icon>
                     </a>
                     <a
                       *ngIf="ds.observation_count < 100 && ds.observation_count !=0"
@@ -171,13 +172,13 @@
                       *ngIf="!ds.deletable"
                       matTooltip="La suppression du jeu de données n'est pas possible car des données y sont rattachées dans la Synthèse"
                     >
-                      <mat-icon>delete_outline</mat-icon>
+                      <mat-icon disabled>delete_outline</mat-icon>
                     </a>
                   </td>
                   <td *ngIf="!ds.active"><a
                       style="color: black;"
                       [routerLink]="['/metadata/dataset', ds.id_dataset]"
-                      matTooltip="Éditer un jeux de donnée"
+                      matTooltip="Éditer un jeu de donnée"
                     >
                       <mat-icon> create</mat-icon>
                     </a>
@@ -186,9 +187,6 @@
                       matTooltip="Jeux de donnée désactivé"
                     >
                       <mat-icon> clear</mat-icon>
-                    </a>
-                    <a matTooltip="Impossible d'importé un jeux de donnée">
-                      <mat-icon>error</mat-icon>
                     </a>
                     <a
                       *ngIf="ds.observation_count > 100"
@@ -200,7 +198,7 @@
                     <a
                       *ngIf="ds.deletable"
                       (click)="deleteDs(ds.id_dataset)"
-                      matTooltip="Supprimer un jeux de donnée"
+                      matTooltip="Supprimer le jeu de données"
                     >
                       <mat-icon> delete</mat-icon>
                     </a>

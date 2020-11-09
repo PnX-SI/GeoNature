@@ -241,9 +241,12 @@ export class MetadataComponent implements OnInit {
   }
 
   deleteDs(ds_id) {
-    this._dfs.deleteDs(ds_id).subscribe(
-      res => this.getAcquisitionFrameworksAndDatasets()
-    );
+    if (window.confirm('Etes-vous sûr de vouloir supprimer ce jeu de données ?')) {
+      this._dfs.deleteDs(ds_id).subscribe(
+        res => this.getAcquisitionFrameworksAndDatasets()
+      );
+    }
+
   }
 
   activateDs(ds_id, active) {
@@ -274,9 +277,9 @@ export class MetadataComponent implements OnInit {
 
   uuidReport(ds_id) {
     const ds = this.datasets.find(ds => ds.id_dataset == ds_id);
-    this._dataService.downloadUuidReport(
+    this._syntheseDataService.downloadUuidReport(
       `UUID_JDD-${ds.id_dataset}_${ds.unique_dataset_id}`,
-      { ds_id: ds_id }
+      { id_dataset: ds_id }
     );
   }
 
@@ -284,7 +287,7 @@ export class MetadataComponent implements OnInit {
     const ds = this.datasets.find(ds => ds.id_dataset == ds_id);
     this._syntheseDataService.downloadSensiReport(
       `Sensibilite_JDD-${ds.id_dataset}_${ds.unique_dataset_id}`,
-      { ds_id: ds_id }
+      { id_dataset: ds_id }
     );
   }
 
