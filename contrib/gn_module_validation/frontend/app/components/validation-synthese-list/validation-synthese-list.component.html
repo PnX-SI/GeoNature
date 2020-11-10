@@ -1,86 +1,52 @@
-<ngx-datatable
-  (window:resize)="onResize($event)"
-  #table
+<ngx-datatable (window:resize)="onResize($event)" #table
   class="material striped margin-top-xs table-size expandable"
   [rows]="mapListService.tableData"
-  [columns]="VALIDATION_CONFIG.LIST_COLUMNS_FRONTEND"
-  [columnMode]="'force'"
-  [headerHeight]="50"
-  [footerHeight]="35"
-  [selected]="mapListService.selectedRow"
-  [selectionType]="'multiClick'"
-  [count]="mapListService.tableData.length"
-  [limit]="rowNumber"
-  [rowClass]="getRowClass"
-  (select)="mapListService.onRowSelect($event)"
-  (activate)="onActivate($event, modal)"
->
+  [columns]="VALIDATION_CONFIG.LIST_COLUMNS_FRONTEND" [columnMode]="'force'"
+  [headerHeight]="50" [footerHeight]="35"
+  [selected]="mapListService.selectedRow" [selectionType]="'multiClick'"
+  [count]="mapListService.tableData.length" [limit]="rowNumber"
+  [rowClass]="getRowClass" (select)="mapListService.onRowSelect($event)"
+  (activate)="onActivate($event, modal)">
 
   <ngx-datatable-row-detail rowHeight="100">
   </ngx-datatable-row-detail>
 
 
-  <ngx-datatable-column
-    [checkboxable]="true"
-    [maxWidth]="10"
-  >
+  <ngx-datatable-column [checkboxable]="true" [maxWidth]="10">
 
     <ng-template ngx-datatable-header-template>
       <label class="datatable-checkbox">
-        <input
-          type="checkbox"
-          (click)="toggleSelection($event)"
-          matTooltip="Sélectionner/déselectionner tout"
-        >
+        <input type="checkbox" (click)="toggleSelection($event)"
+          matTooltip="Sélectionner/déselectionner tout">
       </label>
     </ng-template>
 
   </ngx-datatable-column>
 
   <ngx-datatable-column maxWidth="5">
-    <ng-template
-      let-column="column"
-      ngx-datatable-header-template
-    >
+    <ng-template let-column="column" ngx-datatable-header-template>
       <span></span>
     </ng-template>
 
-    <ng-template
-      let-row="row"
-      ngx-datatable-cell-template
-    >
+    <ng-template let-row="row" ngx-datatable-cell-template>
       <div class="modified_data">
         <span *ngIf="row.meta_update_date > row.validation_date">
           <i class="material-icons">warning</i>
         </span>
-        <span
-          [ngStyle]="{'background': 'white'}"
+        <span [ngStyle]="{'background': 'white'}"
           *ngIf="row.meta_update_date > row.validation_date"
-          class="modif_data"
-        >{{modif_text}}</span>
+          class="modif_data">{{modif_text}}</span>
       </div>
     </ng-template>
   </ngx-datatable-column>
   <ngx-datatable-column maxWidth="60">
-    <ng-template
-      let-column="column"
-      ngx-datatable-header-template
-    >
+    <ng-template let-column="column" ngx-datatable-header-template>
       <span>Détails</span>
     </ng-template>
-    <ng-template
-      let-row="row"
-      ngx-datatable-cell-template
-    >
-      <button
-        #ValidationModalInfoObs
-        id="details"
-        type="button"
-        (click)="openInfoModal(row)"
-        class="btn btn-info fa fa-info-circle"
-        title="details"
-        [disabled]="row.unique_id_sinp == 'None'"
-      >
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <button #ValidationModalInfoObs id="details" type="button"
+        (click)="openInfoModal(row)" class="btn btn-info fa fa-info-circle"
+        title="details" [disabled]="row.unique_id_sinp == 'None'">
       </button>
     </ng-template>
   </ngx-datatable-column>
@@ -88,72 +54,47 @@
 
   <ngx-datatable-column
     *ngFor="let col of VALIDATION_CONFIG.LIST_COLUMNS_FRONTEND"
-    name="{{col.name}}"
-    prop="{{col.prop}}"
-    maxWidth="{{col.max_width||10000}}"
-    minWidth="{{col.min_width||10}}"
-  >
-    <ng-template
-      *ngIf="[
+    name="{{col.name}}" prop="{{col.prop}}" maxWidth="{{col.max_width||10000}}"
+    minWidth="{{col.min_width||10}}">
+    <ng-template *ngIf="[
             'date_min', 'date_max',
             'meta_validation_date', 'meta_create_date', 'meta_update_date',
             'validation_date'
-          ].includes(col.prop)"
-      let-row="row"
-      ngx-datatable-cell-template
-    >
+          ].includes(col.prop)" let-row="row" ngx-datatable-cell-template>
       {{row[col.prop] | date:'dd-MM-yyyy'}}
     </ng-template>
-    <ng-template
-      *ngIf="col.prop === 'id_nomenclature_valid_status'"
-      let-row="row"
-      ngx-datatable-cell-template
-    >
+    <ng-template *ngIf="col.prop === 'id_nomenclature_valid_status'"
+      let-row="row" ngx-datatable-cell-template>
       <div class="statusContent">
-        <span
-          class="validationCircle"
-          [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.cd_nomenclature_validation_status]?.color}"
-        >
+        <span class="validationCircle"
+          [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.cd_nomenclature_validation_status]?.color}">
           <i class="material-icons">{{row.validation_auto}}</i></span>
         <div
           [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.cd_nomenclature_validation_status]?.color}"
-          class="statusName"
-        >
+          class="statusName">
           <span>{{getValidationStatusMnemonique(row.cd_nomenclature_validation_status)}}</span><span
-            *ngIf="row.validation_auto"
-          > (automatique)</span>
+            *ngIf="row.validation_auto"> (automatique)</span>
         </div>
       </div>
     </ng-template>
   </ngx-datatable-column>
 
-  <ngx-datatable-column minWidth="20" *ngIf="appConfig.FRONTEND.DISPLAY_PROFILES">
-    <ng-template
-      let-column="column"
-      ngx-datatable-header-template
-    > 
-    <span>Cohérence</span>
+  <ngx-datatable-column minWidth="20"
+    *ngIf="appConfig.FRONTEND.DISPLAY_PROFILES">
+    <ng-template let-column="column" ngx-datatable-header-template>
+      <span>Cohérence</span>
     </ng-template>
-    <ng-template
-      let-row="row"
-      ngx-datatable-cell-template
-    >
+    <ng-template let-row="row" ngx-datatable-cell-template>
       <div [ngSwitch]="row.score">
-        <mat-icon
-          *ngSwitchCase="'0'"
-          class="error"
-          matTooltip="Aucune information de l'observation ne concorde avec le profil du taxon"
-        > close </mat-icon>
-        <mat-icon
-          *ngSwitchCase="'3'"
-          class="success"
-          matTooltip="Toutes les informations de l'observation concordent avec le profil du taxon"
-        > check </mat-icon>
-        <mat-icon
-          *ngSwitchDefault
-          class="warning"
-          matTooltip="Toutes les informations de l'observation ne concordent pas avec le profil du taxon"
-        > warning </mat-icon>
+        <mat-icon *ngSwitchCase="'0'" class="error"
+          matTooltip="Aucune information de l'observation ne concorde avec le profil du taxon">
+          pan_tool </mat-icon>
+        <mat-icon *ngSwitchCase="'3'" class="success"
+          matTooltip="Toutes les informations de l'observation concordent avec le profil du taxon">
+          thumb_up </mat-icon>
+        <mat-icon *ngSwitchDefault class="warning"
+          matTooltip="Toutes les informations de l'observation ne concordent pas avec le profil du taxon">
+          thumb_down </mat-icon>
       </div>
 
     </ng-template>
@@ -163,30 +104,19 @@
 
 
   <ngx-datatable-footer>
-    <ng-template
-      ngx-datatable-footer-template
-      let-rowCount="rowCount"
-      let-pageSize="pageSize"
-      let-selectedCount="selectedCount"
-      ,
-      let-curPage="curPage"
-      ,
-      let-offset="offset"
-    >
+    <ng-template ngx-datatable-footer-template let-rowCount="rowCount"
+      let-pageSize="pageSize" let-selectedCount="selectedCount" ,
+      let-curPage="curPage" , let-offset="offset">
 
 
-      <datatable-pager
-        [pagerLeftArrowIcon]="'datatable-icon-left'"
+      <datatable-pager [pagerLeftArrowIcon]="'datatable-icon-left'"
         [pagerRightArrowIcon]="'datatable-icon-right'"
         [pagerPreviousIcon]="'datatable-icon-prev'"
-        [pagerNextIcon]="'datatable-icon-skip'"
-        [page]="curPage"
-        [size]="pageSize"
-        [count]="rowCount"
+        [pagerNextIcon]="'datatable-icon-skip'" [page]="curPage"
+        [size]="pageSize" [count]="rowCount"
         [hidden]="!((rowCount / pageSize) > 0)"
         (change)="handlePageChange($event)"
-        (change)="table.onFooterPage($event)"
-      >
+        (change)="table.onFooterPage($event)">
         >
       </datatable-pager>
 
@@ -196,13 +126,8 @@
 
 </ngx-datatable>
 
-<pnx-validation-popup
-  [selectedPages]="selectedPages"
-  [currentPage]="npage"
-  [nbTotalObservation]="nbTotalObservation"
-  [observations]="selectedObs"
-  [validationStatus]="validationStatus"
-  (valStatus)="onStatusChange($event)"
-  (valDate)="onValidationDateChange($event)"
->
+<pnx-validation-popup [selectedPages]="selectedPages" [currentPage]="npage"
+  [nbTotalObservation]="nbTotalObservation" [observations]="selectedObs"
+  [validationStatus]="validationStatus" (valStatus)="onStatusChange($event)"
+  (valDate)="onValidationDateChange($event)">
 </pnx-validation-popup>
