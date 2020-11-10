@@ -21,7 +21,7 @@ from sqlalchemy.sql import text, exists, select
 from sqlalchemy.sql.functions import func
 
 
-from geonature.utils.env import DB
+from geonature.utils.env import DB, BACKEND_DIR
 from geonature.core.gn_synthese.models import (
     Synthese,
     TSources,
