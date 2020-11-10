@@ -15,6 +15,8 @@ CREATE TABLE gn_profiles.t_parameters(
 	value text NOT NULL,
 	extra_value varchar(255) NULL
 );
+COMMENT ON TABLE gn_profiles.t_parameters 
+	IS 'Define global parameters for profiles calculation';
 
 CREATE TABLE gn_profiles.cor_taxons_parameters(
 	cd_nom integer,
@@ -22,6 +24,8 @@ CREATE TABLE gn_profiles.cor_taxons_parameters(
 	temporal_precision_days integer, 
 	active_life_stage boolean DEFAULT false
 );
+COMMENT ON TABLE gn_profiles.cor_taxons_parameters 
+	IS 'Define taxa-dependant parameters for profiles calculation';
 
 ---------------
 --PRIMARY KEY--
@@ -301,7 +305,10 @@ AND s.id_nomenclature_valid_status IN (
 	FROM gn_profiles.t_parameters 
 	WHERE name='id_valid_status_for_profiles'
 	)
-GROUP BY t.cd_ref;
+GROUP BY t.cd_ref
+WITH DATA;
+COMMENT ON MATERIALIZED VIEW gn_profiles.vm_valid_profiles 
+	IS 'View containing unique valid information per taxon : first/last obs, distribution, extreme altitudes';
 
 CREATE UNIQUE INDEX ON gn_profiles.vm_valid_profiles (cd_ref);
 
@@ -361,8 +368,11 @@ CASE WHEN (count_valid_data*(SELECT ((1-value::integer/100::float)/2)
 									FROM gn_profiles.t_parameters 
 									WHERE name='proportion_kept_data'))] 
 	END as calculated_altitude_max
-from classified_data
+FROM classified_data
+WITH DATA
 ;
+COMMENT ON MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology 
+	IS 'View containing phenological combinations and corresponding valid data for each taxa';
 
 CREATE UNIQUE INDEX ON gn_profiles.vm_cor_taxon_phenology (cd_ref, period, id_nomenclature_life_stage);
 
@@ -380,7 +390,8 @@ SELECT
 FROM gn_synthese.synthese s
 LEFT JOIN ref_nomenclatures.t_nomenclatures n ON s.id_nomenclature_valid_status = n.id_nomenclature
 LEFT JOIN taxonomie.taxref t ON s.cd_nom=t.cd_nom;
-
+COMMENT ON VIEW gn_profiles.v_consistancy_data
+	IS 'View containing consistancy checks and score for each synthese data';
 
 CREATE VIEW gn_profiles.v_decode_profiles_parameters AS
 SELECT
@@ -392,12 +403,14 @@ SELECT
 	p.active_life_stage
 FROM gn_profiles.cor_taxons_parameters p
 LEFT JOIN taxonomie.taxref t ON p.cd_nom=t.cd_nom;
+COMMENT ON VIEW gn_profiles.v_decode_profiles_parameters
+	IS 'View containing rules applied for each decoded taxa';
 
 
--- Rafraichissement des vues matérialisées des profils
--- USAGE : SELECT gn_profiles.refresh_profiles()
 CREATE OR REPLACE FUNCTION gn_profiles.refresh_profiles()
 RETURNS VOID AS $$
+-- Rafraichissement des vues matérialisées des profils
+-- USAGE : SELECT gn_profiles.refresh_profiles()
 BEGIN
   REFRESH MATERIALIZED VIEW CONCURRENTLY gn_profiles.vm_valid_profiles;
   REFRESH MATERIALIZED VIEW CONCURRENTLY gn_profiles.vm_cor_taxon_phenology;
