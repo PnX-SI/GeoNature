@@ -53,9 +53,11 @@
         <span *ngIf="row.meta_update_date > row.validation_date">
           <i class="material-icons">warning</i>
         </span>
-        <span [ngStyle]="{'background': 'white'}"
+        <span
+          [ngStyle]="{'background': 'white'}"
           *ngIf="row.meta_update_date > row.validation_date"
-          class="modif_data">{{modif_text}}</span>
+          class="modif_data"
+        >{{modif_text}}</span>
       </div>
     </ng-template>
   </ngx-datatable-column>
