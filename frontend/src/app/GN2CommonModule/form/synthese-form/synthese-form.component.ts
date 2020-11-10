@@ -7,7 +7,7 @@ import { MapService } from '@geonature_common/map/map.service';
 import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-component';
 import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import {ActivatedRoute} from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: 'pnx-synthese-search',
@@ -35,7 +35,7 @@ export class SyntheseSearchComponent implements OnInit {
   ) {
     this.route.queryParams.subscribe(params => {
       this.params = params;
-  });
+    });
   }
 
   ngOnInit() {
@@ -60,26 +60,16 @@ export class SyntheseSearchComponent implements OnInit {
       });
     }
 
-    //let params = {'id_acquisition_framework': [2]}
-
-    //this.params = {'id_acquisition_framework': 2}
-
-
     if (this.params) {
-      console.log("this.params");
-      console.log(this.params);
-      console.log(this.params.id_acquisition_framework);
+      if (this.params.id_acquisition_framework) {
+        this.formService.searchForm.controls.id_acquisition_framework.setValue([+this.params.id_acquisition_framework])
+      }
 
-      if (this.params.id_acquisition_framework)
-      this.formService.searchForm.controls.id_acquisition_framework.setValue([+this.params.id_acquisition_framework])
-    
-      if (this.params.id_dataset)
+      if (this.params.id_dataset) {
         this.formService.searchForm.controls.id_dataset.setValue([+this.params.id_dataset])
-
-      this.onSubmitForm();
+      }
+      this.formService.searchForm.markAsDirty();
     }
-
-    
 
   }
 
@@ -88,9 +78,6 @@ export class SyntheseSearchComponent implements OnInit {
     this.formService.searchForm.markAsDirty();
     const updatedParams = this.formService.formatParams();
     this.searchClicked.emit(updatedParams);
-    console.log("updatedParams");
-    console.log(updatedParams);
-    console.log(updatedParams['id_acquisition_framework']);
   }
 
   refreshFilters() {
