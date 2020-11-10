@@ -12,8 +12,7 @@ CREATE TABLE gn_profiles.t_parameters(
 	id_organism int4 NULL,
 	name varchar(100) NOT NULL,
 	"desc" text NULL,
-	value text NOT NULL,
-	extra_value varchar(255) NULL
+	value text NOT NULL
 );
 COMMENT ON TABLE gn_profiles.t_parameters 
 	IS 'Define global parameters for profiles calculation';
@@ -25,7 +24,8 @@ CREATE TABLE gn_profiles.cor_taxons_parameters(
 	active_life_stage boolean DEFAULT false
 );
 COMMENT ON TABLE gn_profiles.cor_taxons_parameters 
-	IS 'Define taxa-dependant parameters for profiles calculation, with a recursive application on children taxa';
+	IS 'Define taxa-dependant parameters for profiles calculation, with a 
+	recursive application on children taxa';
 
 ---------------
 --PRIMARY KEY--
@@ -308,7 +308,8 @@ AND s.id_nomenclature_valid_status IN (
 GROUP BY t.cd_ref
 WITH DATA;
 COMMENT ON MATERIALIZED VIEW gn_profiles.vm_valid_profiles 
-	IS 'View containing unique valid information per taxon : first/last obs, distribution, extreme altitudes';
+	IS 'View containing unique valid information per taxon : first/last obs, 
+	distribution, extreme altitudes';
 
 CREATE UNIQUE INDEX ON gn_profiles.vm_valid_profiles (cd_ref);
 
