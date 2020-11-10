@@ -25,7 +25,7 @@ CREATE TABLE gn_profiles.cor_taxons_parameters(
 	active_life_stage boolean DEFAULT false
 );
 COMMENT ON TABLE gn_profiles.cor_taxons_parameters 
-	IS 'Define taxa-dependant parameters for profiles calculation';
+	IS 'Define taxa-dependant parameters for profiles calculation, with a recursive application on children taxa';
 
 ---------------
 --PRIMARY KEY--
@@ -92,7 +92,7 @@ VALUES (
 	0, 
 	'proportion_kept_data', 
 	'Pourcentage de données à conserver dans le calcul des profils afin d''exclure les données aux 
-	altitudes extrêmes',
+	altitudes extrêmes. Ce paramètre doit être supérieur à 50 pour que la phénologie soit calculée.',
 	95
 );
 
@@ -353,20 +353,30 @@ period,
 id_nomenclature_life_stage,
 count_valid_data,
 extreme_altitude_min,
-CASE WHEN (count_valid_data*(SELECT ((1-value::integer/100::float)/2)
+CASE WHEN (count_valid_data*(SELECT (1-value::integer/100::float)
 									FROM gn_profiles.t_parameters 
-									WHERE name='proportion_kept_data'))<0.5 THEN NULL
+									WHERE name='proportion_kept_data'))
+		  >=(count_valid_data*(SELECT (value::integer/100::float)
+									FROM gn_profiles.t_parameters 
+									WHERE name='proportion_kept_data'))THEN NULL
+		-- Case when "Removed data" more than kept data, not enough data to calculate alt_min
 	ELSE my_alt_min[round(count_valid_data*(SELECT ((1-value::integer/100::float)/2)
 									FROM gn_profiles.t_parameters 
 									WHERE name='proportion_kept_data'))] 
+		-- Else, calculated alt_min removing X firsts data depending on the parameter
 	END as calculated_altitude_min,
 extreme_altitude_max,
-CASE WHEN (count_valid_data*(SELECT ((1-value::integer/100::float)/2)
+CASE WHEN (count_valid_data*(SELECT (1-value::integer/100::float)
 									FROM gn_profiles.t_parameters 
-									WHERE name='proportion_kept_data'))<0.5 THEN NULL
+									WHERE name='proportion_kept_data'))
+		  >=(count_valid_data*(SELECT (value::integer/100::float)
+									FROM gn_profiles.t_parameters 
+									WHERE name='proportion_kept_data'))THEN NULL
+		-- Case when "Removed data" more than kept data, not enough data to calculate alt_min
 	ELSE my_alt_max[round(count_valid_data*(SELECT ((1-value::integer/100::float)/2)
 									FROM gn_profiles.t_parameters 
 									WHERE name='proportion_kept_data'))] 
+		-- Else, calculated alt_min removing X firsts data depending on the parameter
 	END as calculated_altitude_max
 FROM classified_data
 WITH DATA
