@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 
 
 @Injectable()
 export class MetadataSearchFormService {
-    public form: FormGroup
+    public form: FormGroup;
+    public rapidSearchControl: FormControl;
     constructor(private _fb: FormBuilder, public dateParser: NgbDateParserFormatter) {
 
         this.form = this._fb.group({
@@ -16,6 +17,7 @@ export class MetadataSearchFormService {
             'organism': null,
             'person': null
         })
+        this.rapidSearchControl = new FormControl();
     }
 
     formatFormValue(formValue) {

@@ -347,22 +347,6 @@ def delete_dataset(info_role, ds_id):
     return "OK"
 
 
-@routes.route("/activate_dataset/<int:ds_id>/<string:active>", methods=["POST"])
-@permissions.check_cruved_scope("U", True, module_code="METADATA")
-@json_resp
-def activate_dataset(info_role, ds_id, active):
-    """
-    Activate or deactivate a dataset
-
-    .. :quickref: Metadata;
-    """
-    DB.session.query(TDatasets).filter(TDatasets.id_dataset == ds_id).update(
-        {"active": active == "true"}
-    )
-    DB.session.commit()
-    return "activated" if active else "deactivated"
-
-
 @routes.route("/uuid_report", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="METADATA")
 def uuid_report(info_role):

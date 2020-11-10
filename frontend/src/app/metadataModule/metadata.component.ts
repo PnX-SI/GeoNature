@@ -11,6 +11,7 @@ import { DataService } from "../../../../external_modules/import/frontend/app/se
 import { CommonService } from "@geonature_common/service/common.service";
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { MetadataSearchFormService } from "./services/metadata-search-form.service"
+import { distinctUntilChanged, debounceTime, filter } from 'rxjs/operators';
 
 export class MetadataPaginator extends MatPaginatorIntl {
   constructor() {
@@ -83,6 +84,15 @@ export class MetadataComponent implements OnInit {
     this._dfs.getRoles({ 'group': false }).subscribe(data => {
       this.roles = data;
     });
+
+    // rapid search event
+    this.searchFormService.rapidSearchControl.valueChanges.pipe(
+      debounceTime(200),
+      distinctUntilChanged()
+    ).subscribe(value => {
+      this.updateSearchbar(value)
+    })
+
   }
   //recuperation cadres d'acquisition
   getAcquisitionFrameworksAndDatasets() {
@@ -124,7 +134,7 @@ export class MetadataComponent implements OnInit {
    *	Filtre les éléments CA et JDD selon la valeur de la barre de recherche
    **/
   updateSearchbar(event) {
-    this.researchTerm = event.target.value.toLowerCase();
+    this.researchTerm = event;
 
     //recherche des cadres d'acquisition qui matchent
     this.tempAF = this.acquisitionFrameworks.filter(af => {
@@ -141,8 +151,7 @@ export class MetadataComponent implements OnInit {
         if ((af.id_acquisition_framework + ' ').toLowerCase().indexOf(this.researchTerm) !== -1
           || af.acquisition_framework_name.toLowerCase().indexOf(this.researchTerm) !== -1
           || af.acquisition_framework_start_date.toLowerCase().indexOf(this.researchTerm) !== -1
-          || af.creator_mail.toLowerCase().indexOf(this.researchTerm) !== -1
-          || af.project_owner_name.toLowerCase().indexOf(this.researchTerm) !== -1) {
+        ) {
           //si un cadre matche on affiche tout ses JDD
           af.datasetsTemp = af.datasets;
           return true;
@@ -175,7 +184,7 @@ export class MetadataComponent implements OnInit {
   }
 
   refreshFilters() {
-    this.searchFormService.resetForm();
+    this.searchFormService.form.reset();
     this.advancedSearch();
   }
 
@@ -207,6 +216,7 @@ export class MetadataComponent implements OnInit {
 
   openSearchModal(searchModal) {
     this.searchFormService.resetForm();
+
     this.modal.open(searchModal);
   }
 
@@ -253,13 +263,6 @@ export class MetadataComponent implements OnInit {
       );
     }
 
-  }
-
-  activateDs(ds_id, active) {
-    console.log("activateDs(" + ds_id + ")");
-    this._dfs.activateDs(ds_id, active).subscribe(
-      res => this.getAcquisitionFrameworksAndDatasets()
-    );
   }
 
   syntheseDs(ds_id, data_number, syntheseNoneModal) {

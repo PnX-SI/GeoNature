@@ -560,11 +560,5 @@ export class DataFormService {
     return this._http.delete<any>(`${AppConfig.API_ENDPOINT}/meta/dataset/${ds_id}`);
   }
 
-  activateDs(ds_id, active) {
-    return this._http.post<any>(
-      `${AppConfig.API_ENDPOINT}/meta/activate_dataset/${ds_id}/${active}`, {}
-    );
-  }
-
 }
 
