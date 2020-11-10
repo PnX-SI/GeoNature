@@ -62,8 +62,8 @@
     </ng-template>
   </ngx-datatable-column>
   <ngx-datatable-column maxWidth="60">
-    <ng-template 
-      let-column="column" 
+    <ng-template
+      let-column="column"
       ngx-datatable-header-template
     >
       <span>Détails</span>
@@ -102,8 +102,8 @@
             'meta_update_date',
             'validation_date'
           ].includes(col.prop)"
-      let-row="row" 
-       ngx-datatable-cell-template
+      let-row="row"
+      ngx-datatable-cell-template
     >
       {{row[col.prop] | date:'dd-MM-yyyy'}}
     </ng-template>
