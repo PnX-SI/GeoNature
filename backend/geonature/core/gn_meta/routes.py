@@ -17,10 +17,8 @@ from flask import (
     copy_current_request_context,
     Response,
 )
-from sqlalchemy import or_
 from sqlalchemy.sql import text, exists, select
 from sqlalchemy.sql.functions import func
-from sqlalchemy.sql import text
 
 
 from geonature.utils.env import DB
@@ -50,11 +48,13 @@ from geonature.core.gn_meta.models import (
     CorAcquisitionFrameworkVoletSINP,
 )
 from geonature.core.gn_commons.models import TModules
-from geonature.core.users.models import BibOrganismes, VUserslistForallMenu
+from geonature.core.users.models import VUserslistForallMenu
 from geonature.core.gn_meta.repositories import (
     get_datasets_cruved,
     get_af_cruved,
     get_dataset_details_dict,
+    filtered_af_query,
+    filtered_ds_query,
 )
 from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_content
 from werkzeug.datastructures import Headers
@@ -151,19 +151,10 @@ def get_af_and_ds_metadata(info_role):
     params["orderby"] = "dataset_name"
     if "selector" not in params:
         params["selector"] = None
-    datasets = get_datasets_cruved(info_role, params, as_model=True)
-    if params["selector"] == "ds":
-        datasets = (
-            filtered_ds_query(request.args)
-            .filter(
-                TAcquisitionFramework.id_acquisition_framework.in_(
-                    [d.id_dataset for d in datasets]
-                )
-            )
-            .all()
-        )
-        if len(datasets) == 0:
-            return {"data": []}
+    datasets = filtered_ds_query(info_role, params).distinct().all()
+
+    if len(datasets) == 0:
+        return {"data": []}
     ids_dataset_user = TDatasets.get_user_datasets(info_role, only_user=True)
     ids_dataset_organisms = TDatasets.get_user_datasets(info_role, only_user=False)
     ids_afs_user = TAcquisitionFramework.get_user_af(info_role, only_user=True)
@@ -191,7 +182,16 @@ def get_af_and_ds_metadata(info_role):
     afs_dict = []
     #  get cruved for each AF and prepare dataset
     for af in afs:
-        af_dict = af.as_dict()
+        af_dict = af.as_dict(
+            True,
+            relationships=[
+                "creator",
+                "cor_af_actor",
+                "nomenclature_actor_role",
+                "organism",
+                "role",
+            ],
+        )
         af_dict["cruved"] = af.get_object_cruved(
             user_cruved=user_cruved,
             id_object=af.id_acquisition_framework,
@@ -199,40 +199,12 @@ def get_af_and_ds_metadata(info_role):
             ids_object_organism=ids_afs_org,
         )
         af_dict["datasets"] = []
-
-        iCreateur = -1
-        iMaitreOuvrage = -1
-        if af.cor_af_actor:
-            af_dict["actors"] = [actor.as_dict(True) for actor in af.cor_af_actor]
-            for index, actor in enumerate(af.cor_af_actor):
-                # cd_nomenclature 3 = Maître d'ouvrage
-                if actor.nomenclature_actor_role.cd_nomenclature == "3":
-                    iMaitreOuvrage = index
-                # cd_nomenclature 6 = Producteur
-                elif actor.nomenclature_actor_role.mnemonique == "6":
-                    iCreateur = index
-
-        af_dict["nom_createur"] = (
-            af.cor_af_actor[iCreateur].role.nom_role
-            if (iCreateur != -1 and af.cor_af_actor[iCreateur].role)
-            else ""
-        )
-        af_dict["creator_mail"] = (
-            af.cor_af_actor[iCreateur].role.email
-            if (iCreateur != -1 and af.cor_af_actor[iCreateur].role)
-            else ""
-        )
-        af_dict["project_owner_name"] = (
-            af.cor_af_actor[iMaitreOuvrage].organism.nom_organisme
-            if iMaitreOuvrage != -1
-            else "Non renseigné"
-        )
         af_dict["deletable"] = is_af_deletable(af.id_acquisition_framework)
         afs_dict.append(af_dict)
 
     #  get cruved for each ds and push them in the af
     for d in datasets:
-        dataset_dict = d.as_dict()
+        dataset_dict = d.as_dict(recursif=True, relationships=["creator"])
         if d.id_acquisition_framework not in list_id_af:
             continue
         dataset_dict["cruved"] = d.get_object_cruved(
@@ -244,14 +216,6 @@ def get_af_and_ds_metadata(info_role):
         dataset_dict["deletable"] = is_dataset_deletable(d.id_dataset)
         dataset_dict["observation_count"] = (
             DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset == d.id_dataset).count()
-        )
-        iCreateur = -1
-        if d.cor_dataset_actor:
-            for index, actor in enumerate(d.cor_dataset_actor):
-                if actor.nomenclature_actor_role.mnemonique == "Producteur du jeu de données":
-                    iCreateur = index
-        dataset_dict["createur"] = (
-            d.cor_dataset_actor[iCreateur].as_dict(True) if iCreateur != -1 else None
         )
         af_of_dataset = get_af_from_id(d.id_acquisition_framework, afs_dict)
         af_of_dataset["datasets"].append(dataset_dict)
@@ -687,12 +651,6 @@ def post_dataset(info_role):
 
     .. :quickref: Metadata;
     """
-    if info_role.value_filter == "0":
-        raise InsufficientRightsError(
-            ('User "{}" cannot "{}" a dataset').format(info_role.id_role, info_role.code_action),
-            403,
-        )
-
     data = dict(request.get_json())
     cor_dataset_actor = data.pop("cor_dataset_actor")
     modules = data.pop("modules")
@@ -1170,93 +1128,12 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
     return mtd_utils.post_jdd_from_user(id_user=id_user, id_organism=id_organism)
 
 
-def filtered_af_query(args):
-
-    if args.get("selector") == "ds":
-        return DB.session.query(TAcquisitionFramework)
-
-    num = args.get("num")
-    uid = args.get("uid")
-    name = args.get("name")
-    date = args.get("date")
-    organisme = args.get("organism")
-    role = args.get("role")
-
-    query = (
-        DB.session.query(TAcquisitionFramework)
-        .join(
-            CorAcquisitionFrameworkActor,
-            TAcquisitionFramework.id_acquisition_framework
-            == CorAcquisitionFrameworkActor.id_acquisition_framework,
-        )
-        .join(
-            BibOrganismes, CorAcquisitionFrameworkActor.id_organism == BibOrganismes.id_organisme
-        )
-    )
-
-    if num is not None:
-        query = query.filter(TAcquisitionFramework.id_acquisition_framework == num)
-    if uid is not None:
-        query = query.filter(
-            func.concat(TAcquisitionFramework.unique_acquisition_framework_id, "").like(
-                "%" + uid + "%"
-            )
-        )
-    if name is not None:
-        query = query.filter(
-            TAcquisitionFramework.acquisition_framework_name.like("%" + name + "%")
-        )
-    if date is not None:
-        query = query.filter(
-            func.concat(TAcquisitionFramework.acquisition_framework_start_date, "").like(
-                "%" + date + "%"
-            )
-        )
-    if organisme is not None:
-        query = query.filter(BibOrganismes.id_organisme == organisme)
-    if role is not None:
-        query = query.filter(CorAcquisitionFrameworkActor.id_role == role)
-
-    return query
-
-
 @routes.route("/caSearch", methods=["GET"])
 @json_resp
 def ca_search():
 
     args = request.args
     return {"data": [d.as_dict(True) for d in filtered_af_query(args).all()]}
-
-
-def filtered_ds_query(args):
-
-    num = request.args.get("num")
-    uid = args.get("uid")
-    name = request.args.get("name")
-    date = request.args.get("date")
-    organisme = request.args.get("organism")
-    role = request.args.get("role")
-
-    query = (
-        DB.session.query(TDatasets)
-        .join(CorDatasetActor, TDatasets.id_dataset == CorDatasetActor.id_dataset)
-        .join(BibOrganismes, CorDatasetActor.id_organism == BibOrganismes.id_organisme)
-    )
-
-    if num is not None:
-        query = query.filter(TDatasets.id_dataset == num)
-    if uid is not None:
-        query = query.filter(func.concat(TDatasets.unique_dataset_id, "").like("%" + uid + "%"))
-    if name is not None:
-        query = query.filter(TDatasets.dataset_name.like("%" + name + "%"))
-    if date is not None:
-        query = query.filter(func.concat(TDatasets.meta_create_date, "").like("%" + date + "%"))
-    if organisme is not None:
-        query = query.filter(BibOrganismes.id_organisme == organisme)
-    if role is not None:
-        query = query.filter(CorDatasetActor.id_role == role)
-
-    return query
 
 
 @routes.route("/jdSearch", methods=["GET"])

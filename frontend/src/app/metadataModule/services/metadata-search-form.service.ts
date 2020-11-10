@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { keyValuesToMap } from '@angular/flex-layout/extended/typings/style/style-transforms';
 
 
 @Injectable()
@@ -33,6 +32,7 @@ export class MetadataSearchFormService {
 
     resetForm() {
         this.form.reset();
+        this.form.patchValue({ 'selector': 'ds' })
     }
 
 }

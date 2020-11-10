@@ -163,9 +163,11 @@ def filtered_af_query(args):
             TAcquisitionFramework.id_acquisition_framework
             == CorAcquisitionFrameworkActor.id_acquisition_framework,
         )
-        .join(
+        .outerjoin(
             BibOrganismes, CorAcquisitionFrameworkActor.id_organism == BibOrganismes.id_organisme
         )
+        .options(joinedload("cor_af_actor"))
+        .options(joinedload("creator"))
     )
 
     if num is not None:

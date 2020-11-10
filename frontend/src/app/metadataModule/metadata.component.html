@@ -5,6 +5,27 @@
     </div>
 
     <div class="card-body">
+      <div class="row ml-4 mb-4">
+        <button
+          *ngIf="_cruvedStore.cruved?.METADATA?.cruved.C !== '0'"
+          routerLink="/metadata/af"
+          class="uppercase mr-1"
+          mat-raised-button
+          color="primary"
+        >
+          Ajouter un cadre d'acquisition
+          &nbsp;
+        </button>
+        <button
+          *ngIf="_cruvedStore.cruved?.METADATA?.cruved.C !== '0'"
+          routerLink="/metadata/dataset"
+          class="uppercase"
+          mat-raised-button
+          color="primary"
+        >
+          Ajouter un jeu de données
+        </button>
+      </div>
       <div class="row">
         <div class="form-group col-sm-7">
           <input
@@ -69,9 +90,16 @@
                   {{af.creator?.nom_complet}}
                 </div>
                 <section class="col-md-3">
-                  <div *ngFor="let ac of af.actors">
-                    <b> {{ac.organism.nom_organisme }} : </b> 
-                    <small> {{ac.nomenclature_actor_role.label_fr }}</small> <br>
+                  <div *ngFor="let ac of af.cor_af_actor">
+                    <span *ngIf="ac.organism">
+                      <b> {{ac.organism?.nom_organisme }} : </b> 
+                      <small> {{ac.nomenclature_actor_role.label_fr }}</small> <br>
+                    </span>
+                    <span *ngIf="ac.role">
+                      <b>  {{ac.role?.nom_complet }} : </b> 
+                        <small> {{ac.nomenclature_actor_role.label_fr }}</small> <br>
+                    </span>
+
                   </div>
                 </section>
 
@@ -215,27 +243,7 @@
       >
       </mat-paginator>
 
-      <div>
-        <button
-          *ngIf="_cruvedStore.cruved?.METADATA?.cruved.C !== '0'"
-          routerLink="/metadata/af"
-          class="uppercase mr-1"
-          mat-raised-button
-          color="primary"
-        >
-          Ajouter un cadre d'acquisition
-          &nbsp;
-        </button>
-        <button
-          *ngIf="_cruvedStore.cruved?.METADATA?.cruved.C !== '0'"
-          routerLink="/metadata/dataset"
-          class="uppercase"
-          mat-raised-button
-          color="primary"
-        >
-          Ajouter un jeu de données
-        </button>
-      </div>
+
     </div>
   </div>
 </div>
