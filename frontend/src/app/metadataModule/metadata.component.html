@@ -101,7 +101,9 @@
                   </div>
                 </section>
 
-                <div class="col-md-1"><a
+                <div class="col-md-1">
+                  <a
+                    *ngIf="af.cruved.U"
                     style="color: black;"
                     [routerLink]="['/metadata/af', af.id_acquisition_framework]"
                   >
@@ -159,7 +161,8 @@
                         format_list_numbered </mat-icon>
                     </div>
                   </td>
-                  <td *ngIf="ds.active"><a
+                  <td>
+                    <a *ngIf="ds.cruved.U"
                       style="color: black;"
                       [routerLink]="['/metadata/dataset', ds.id_dataset]"
                       matTooltip="Éditer un jeux de donnée"
@@ -179,44 +182,17 @@
                       <mat-icon> room</mat-icon>
                     </a>
                     <a
-                      *ngIf="ds.deletable"
+                      *ngIf="ds.cruved.D && ds.deletable"
                       (click)="deleteDs(ds.id_dataset)"
                       matTooltip="Supprimer le jeu de donnée"
                     >
                       <mat-icon> delete</mat-icon>
                     </a>
                     <a
-                      *ngIf="!ds.deletable"
+                      *ngIf="ds.cruved.D && !ds.deletable "
                       matTooltip="La suppression du jeu de données n'est pas possible car des données y sont rattachées dans la Synthèse"
                     >
                       <mat-icon disabled>delete_outline</mat-icon>
-                    </a>
-                  </td>
-                  <td *ngIf="!ds.active"><a
-                      style="color: black;"
-                      [routerLink]="['/metadata/dataset', ds.id_dataset]"
-                      matTooltip="Éditer un jeu de donnée"
-                    >
-                      <mat-icon> create</mat-icon>
-                    </a>
-                    <a
-                      (click)="activateDs(ds.id_dataset, true)"
-                      matTooltip="Jeux de donnée désactivé"
-                    >
-                      <mat-icon> clear</mat-icon>
-                    </a>
-                    <a
-                      *ngIf="ds.deletable"
-                      (click)="deleteDs(ds.id_dataset)"
-                      matTooltip="Supprimer le jeu de données"
-                    >
-                      <mat-icon> delete</mat-icon>
-                    </a>
-                    <a
-                      *ngIf="!ds.deletable"
-                      matTooltip="La suppression du jeu de données n'est pas possible car des données y sont rattachées dans la Synthèse"
-                    >
-                      <mat-icon>delete_outline</mat-icon>
                     </a>
                   </td>
                 </tr>
