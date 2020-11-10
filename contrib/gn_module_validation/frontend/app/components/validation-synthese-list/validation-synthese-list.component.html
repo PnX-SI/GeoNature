@@ -148,25 +148,35 @@
         <mat-icon
           *ngSwitchCase="'0'"
           class="error"
-          matTooltip="Aucune information de l'observation ne concorde avec le profil du taxon"
+          triggers="mouseenter:mouseleave"
+          [ngbPopover]="popContent"
+          [popoverTitle]="popTitle"
+          container="body"
+          placement="left"
         > pan_tool </mat-icon>
         <mat-icon
           *ngSwitchCase="'3'"
           class="success"
-          matTooltip="Toutes les informations de l'observation concordent avec le profil du taxon"
+          triggers="mouseenter:mouseleave"
+          [ngbPopover]="popContent"
+          [popoverTitle]="popTitle"
+          container="body"
+          placement="left"
         > thumb_up </mat-icon>
         <mat-icon
           *ngSwitchDefault
           class="warning"
-          matTooltip="Toutes les informations de l'observation ne concordent pas avec le profil du taxon"
+          triggers="mouseenter:mouseleave"
+          [ngbPopover]="popContent"
+          [popoverTitle]="popTitle"
+          container="body"
+          placement="left"
         > thumb_down </mat-icon>
       </div>
 
     </ng-template>
   </ngx-datatable-column>
-
-
-
+  
 
   <ngx-datatable-footer>
     <ng-template
@@ -210,3 +220,48 @@
   (valDate)="onValidationDateChange($event)"
 >
 </pnx-validation-popup>
+
+<ng-template #popTitle>Cohérence par rapport au profil</ng-template>
+<ng-template #popContent>
+  <table class="table table-sm font-xs table-striped">
+    <tr>
+      <td>Répartition </td>
+      <td *ngIf='row?.valid_distribution'>
+        <mat-icon
+          class="success"
+        > check </mat-icon>
+      </td>
+      <td *ngIf='!row?.valid_distribution'>
+        <mat-icon
+          class="error"
+        > close </mat-icon>
+      </td>
+    </tr>
+    <tr>
+      <td>Phénologie </td>
+      <td *ngIf='row?.valid_phenology'>
+        <mat-icon
+          class="success"
+        > check </mat-icon>
+      </td>
+      <td *ngIf='!row?.valid_phenology'>
+        <mat-icon
+          class="error"
+        > close </mat-icon>
+      </td>
+    </tr>
+    <tr>
+      <td> Altitudes</td>
+      <td *ngIf='row?.valid_altitude'>
+        <mat-icon
+          class="success"
+        > check </mat-icon>
+      </td>
+      <td *ngIf='!row?.valid_altitude'>
+        <mat-icon
+          class="error"
+        > close </mat-icon>
+      </td>
+    </tr>
+    </table>
+</ng-template>
