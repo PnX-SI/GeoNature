@@ -126,24 +126,28 @@
         </div>
         <div class="card-body">
           <div class="b">Identification </div>
-          <div class="a"> Instance SNIP du cadre d'acquisition :
+          <div class="a"> <b> Nom :</b>  
+            {{af?.acquisition_framework_name}}</div>
+          <div class="a"> <b> Identifiant SINP du cadre d'acquisition : </b> 
             {{af?.unique_acquisition_framework_id}}</div>
-          <div class="a"> Libellé du cadre d'acquisition : {{af?.acquisition_framework_name}}</div>
+          <div class="a"> <b> Identifiant GeoNature du cadre d'acquisition :</b> 
+            {{af?.id_acquisition_framework}}</div>
+
+
           <br />
 
           <div class="b">Description </div>
-          <div class="a"> Cadre de réfèrence : {{af?.acquisition_framework_name}}</div>
-          <div class="a"> Est un méta-cadre : {{af?.is_parent ? 'Oui' : 'Non'}}</div>
+          <div class="a"> <b>Est un méta-cadre : </b>  {{af?.is_parent ? 'Oui' : 'Non'}}</div>
           <div
             class="a"
-            *ngIf="af?.is_parent"
+            *ngIf="!af?.is_parent"
           > Identifiant du méta-cadre : {{af?.acquisition_framework_parent_id}}</div>
           <br />
 
           <div class="b">Dates </div>
-          <div class="a"> Date de lancement du cadre d'acquisition :
+          <div class="a"> <b>Date de lancement du cadre d'acquisition : </b> 
             {{af?.acquisition_framework_start_date}}</div>
-          <div class="a"> Date de clôture du cadre d'acquisition :
+          <div class="a"> <b> Date de clôture du cadre d'acquisition :</b> 
             {{af?.acquisition_framework_end_date}}</div>
           <br />
 
@@ -158,15 +162,14 @@
 
           <div>
             <div class="b">Territoires concernés </div>
-            <div class="a"> Etendue territoriale : {{af?.id_nomenclature_territorial_level}}</div>
-            <!-- <div class="a"> Territoires : ??</div>
-            <div class="a"> Précision géographique : ??</div> -->
+            <div class="a"> <b>  Etendue territoriale : </b>{{af?.id_nomenclature_territorial_level}}</div>
+
             <br />
           </div>
 
           <div *ngIf="af?.target_description">
             <div class="b">Cible taxonomique </div>
-            <div class="a"> Description : {{af?.target_description}}</div>
+            <div class="a"> <b> Description : </b> {{af?.target_description}}</div>
             <br />
           </div>
 
@@ -176,7 +179,7 @@
               class="a"
               *ngFor="let actor of af?.cor_af_actor"
             >
-              <div> {{ actor?.nomenclature_actor_role?.mnemonique}} :
+              <div> <b>{{ actor?.nomenclature_actor_role?.mnemonique}} : </b> 
                 {{ actor?.organism?.nom_organisme }} <span
                   *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"
                 > - </span> {{ actor?.role?.nom_complet }} </div>
