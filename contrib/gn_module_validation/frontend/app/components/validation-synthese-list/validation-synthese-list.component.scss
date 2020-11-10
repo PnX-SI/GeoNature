@@ -40,7 +40,12 @@
 }
 
 .material-icons {
-  padding-top: 3px;
+  padding-bottom: 3px;  
+}
+
+.mat-icon {
+  vertical-align: top;
+  margin-top: -5px;
 }
 
 .statusContent {
