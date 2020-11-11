@@ -286,15 +286,21 @@ $function$
 -- VIEWS AND MATERIALIZED VIEWS --
 ----------------------------------
 
-CREATE MATERIALIZED VIEW gn_profiles.vm_valid_profiles AS
-SELECT DISTINCT
-	t.cd_ref AS cd_ref,
-	st_union(st_buffer(s.the_geom_local, COALESCE(p.spatial_precision, 1))) AS valid_distribution,
-	min(s.altitude_min) AS altitude_min,
-	max(s.altitude_max) AS altitude_max,
-	min(s.date_min) AS first_valid_data,
-	max(s.date_max) AS last_valid_data,
-	count(s.*) AS count_valid_data
+CREATE VIEW gn_profiles.v_synthese_for_profiles AS
+SELECT 
+	s.id_synthese,
+	s.cd_nom,
+	s.nom_cite,
+	t.cd_ref,
+	t.nom_valide,
+	s.date_min, 
+	s.date_max,
+	s.the_geom_local,
+	s.the_geom_4326,
+	s.altitude_min,
+	s.altitude_max,
+	s.id_nomenclature_life_stage,
+	s.id_nomenclature_valid_status
 FROM gn_synthese.synthese s
 LEFT JOIN taxonomie.taxref t ON s.cd_nom=t.cd_nom
 CROSS JOIN gn_profiles.get_parameters(s.cd_nom) p
@@ -305,48 +311,62 @@ AND s.id_nomenclature_valid_status IN (
 	FROM gn_profiles.t_parameters 
 	WHERE name='id_valid_status_for_profiles'
 	)
-GROUP BY t.cd_ref
-WITH DATA;
+;
+COMMENT ON VIEW gn_profiles.v_synthese_for_profiles 
+	IS 'View containing synthese data feeding profiles calculation. 
+	cd_ref, date_min, date_max, the_geom_local, altitude_min, altitude_max and 
+	id_nomenclature_life_stage fields are mandatory. 
+	WHERE clauses have to apply your t_parameters filters (valid_status)'
+;
+
+CREATE MATERIALIZED VIEW gn_profiles.vm_valid_profiles AS
+SELECT DISTINCT
+	vsfp.cd_ref AS cd_ref,
+	st_union(st_buffer(vsfp.the_geom_local, COALESCE(p.spatial_precision, 1))) AS valid_distribution,
+	min(vsfp.altitude_min) AS altitude_min,
+	max(vsfp.altitude_max) AS altitude_max,
+	min(vsfp.date_min) AS first_valid_data,
+	max(vsfp.date_max) AS last_valid_data,
+	count(vsfp.*) AS count_valid_data
+FROM gn_profiles.v_synthese_for_profiles vsfp
+CROSS JOIN gn_profiles.get_parameters(vsfp.cd_nom) p
+GROUP BY vsfp.cd_ref
+WITH DATA
+;
 COMMENT ON MATERIALIZED VIEW gn_profiles.vm_valid_profiles 
 	IS 'View containing unique valid information per taxon : first/last obs, 
-	distribution, extreme altitudes';
+	distribution, extreme altitudes'
+;
 
 CREATE UNIQUE INDEX ON gn_profiles.vm_valid_profiles (cd_ref);
 
 CREATE MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology AS 
 WITH classified_data AS (
 SELECT DISTINCT
-	t.cd_ref AS cd_ref,
+	vsfp.cd_ref AS cd_ref,
 	unnest(
-		ARRAY[ceiling(EXTRACT(DOY FROM s.date_min)/p.temporal_precision_days)::integer, 
-		ceiling(EXTRACT(DOY FROM s.date_max)/p.temporal_precision_days)::integer]
+		ARRAY[ceiling(EXTRACT(DOY FROM vsfp.date_min)/p.temporal_precision_days)::integer, 
+		ceiling(EXTRACT(DOY FROM vsfp.date_max)/p.temporal_precision_days)::integer]
 	) AS period,
 	CASE 
 		WHEN p.active_life_stage=true 
-			THEN s.id_nomenclature_life_stage
+			THEN vsfp.id_nomenclature_life_stage
 		ELSE NULL
 		END AS id_nomenclature_life_stage,
-	count(s.*) AS count_valid_data,
-	min(s.altitude_min) as extreme_altitude_min,
-	array_agg(s.altitude_min order by s.altitude_min ASC) as my_alt_min,
-	max(s.altitude_max) as extreme_altitude_max,
-	array_agg(s.altitude_max order by s.altitude_max DESC) as my_alt_max
-FROM gn_synthese.synthese s
-LEFT JOIN taxonomie.taxref t ON s.cd_nom=t.cd_nom
-CROSS JOIN gn_profiles.get_parameters(s.cd_nom) p
+	count(vsfp.*) AS count_valid_data,
+	min(vsfp.altitude_min) as extreme_altitude_min,
+	array_agg(vsfp.altitude_min order by vsfp.altitude_min ASC) as my_alt_min,
+	max(vsfp.altitude_max) as extreme_altitude_max,
+	array_agg(vsfp.altitude_max order by vsfp.altitude_max DESC) as my_alt_max
+FROM gn_profiles.v_synthese_for_profiles vsfp
+CROSS JOIN gn_profiles.get_parameters(vsfp.cd_nom) p
 WHERE p.temporal_precision_days IS NOT NULL 
 	AND p.spatial_precision  IS NOT NULL
 	AND p.active_life_stage IS NOT NULL
-	AND DATE_part('day', s.date_max-s.date_min)<p.temporal_precision_days
-    AND ST_MaxDistance(ST_centroid(s.the_geom_local), s.the_geom_local)<p.spatial_precision 
-    AND s.id_nomenclature_valid_status IN (
-		SELECT regexp_split_to_table(value, ',')::integer 
-		FROM gn_profiles.t_parameters 
-		WHERE name='id_valid_status_for_profiles'
-	)
-    AND s.altitude_min IS NOT NULL
-    AND s.altitude_max IS NOT NULL
-GROUP BY t.cd_ref, period, CASE WHEN p.active_life_stage=true THEN s.id_nomenclature_life_stage 
+	AND DATE_part('day', vsfp.date_max-vsfp.date_min)<p.temporal_precision_days
+    AND vsfp.altitude_min IS NOT NULL
+    AND vsfp.altitude_max IS NOT NULL
+GROUP BY vsfp.cd_ref, period, CASE WHEN p.active_life_stage=true THEN vsfp.id_nomenclature_life_stage 
 	ELSE NULL end)
 SELECT 
 cd_ref,
