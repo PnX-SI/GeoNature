@@ -183,7 +183,7 @@ Plusieurs fonctions permettent de vérifier si une donnée de la synthèse est c
 
 **Configuration et paramétrage**
 
-Paramètres de calcul des profils :
+*Paramètres de calcul des profils* :
 
 Le calcul des profils de taxons repose sur plusieurs variables, paramétrables soit pour tout le mécanisme, soit pour des taxons donnés.
 
@@ -212,7 +212,7 @@ Par défaut, une précision spatiale de 2000m et une précision spatiale de 10j 
 A terme, d'autres variables pourront compléter ces profils : habitats (habref) ou comportement (nidification, reproduction, migration...) notamment.
 
 
-Configuration - Activer/désactiver les profils :
+*Configuration - Activer/désactiver les profils* :
 
 Il est possible de désaciver l'ensemble des fonctionnalités liées aux profils dans l'interface, en utilisant le paramètre suivant dans le fichier ``geonature/config/geonature_config.toml``
 
@@ -242,13 +242,13 @@ Afin que des données exceptionnelles, bien que valides, ne soient pas considér
 - Aucune altitude fiable n'est calculée s'il y a davantage de données exclues que de données conservées
 - Le paramètre ``proportion_kept_data`` doit donc être compris entre 51 et 100% : en dessous de 50%, le nombre de données supprimées est supérieur au nombre de données conservées, aucune altitude fiable ne sera calculée. Si le paramètre est à 100%, les altitudes fiables seront identiques aux altitudes extrêmes observées pour la période (et le stade) donnés
 
-Il faut donc (1/[1-``proportion_kept_data/100``])+1 données pour que des altitudes fiables soient calculées, soit : 
+Il faut donc (1/[1- ``proportion_kept_data`` /100])+1 données pour que des altitudes fiables soient calculées, soit : 
 
-- 101 données minimum par période/stade si ``proportion_kept_data``=99
-- 51 données minimum par période/stade si ``proportion_kept_data``=98
-- 21 données minimum par période/stade si ``proportion_kept_data``=95
-- 11 données minimum par période/stade si ``proportion_kept_data``=90
-- 3 données minimum par période/stade si ``proportion_kept_data``=50
+- 101 données minimum par période/stade si ``proportion_kept_data`` =99
+- 51 données minimum par période/stade si ``proportion_kept_data`` =98
+- 21 données minimum par période/stade si ``proportion_kept_data`` =95
+- 11 données minimum par période/stade si ``proportion_kept_data`` =90
+- 3 données minimum par période/stade si ``proportion_kept_data`` =50
 
 
 Fonctions
