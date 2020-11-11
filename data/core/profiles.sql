@@ -82,6 +82,18 @@ WHERE n.id_type=(
 AND n.cd_nomenclature IN ('1','2') -- Commenter pour considérer l'ensemble des données;
 ; 
 
+-- Ajout d'un paramètre pour définir le niveau de validatation requis pour que les données alimentent
+-- le calcul des profils
+INSERT INTO gn_profiles.t_parameters(
+	id_organism, name, "desc", value
+)
+VALUES ( 
+	0, 
+	'id_rang_for_profiles', 
+	'Liste des id_rang du taxref pour lesquels les profils doivent être calculés. A renseigner sous forme de liste id1,id2,id3.',
+	'GN,ES,SSES'
+)
+;
 
 -- Ajout d'un paramètre pour définir le pourcentage de données à conserver dans le calcul des profils 
 -- afin d'exclure les données aux altitudes extrêmes
@@ -286,13 +298,14 @@ $function$
 -- VIEWS AND MATERIALIZED VIEWS --
 ----------------------------------
 
-CREATE VIEW gn_profiles.v_synthese_for_profiles AS
+CREATE OR REPLACE VIEW gn_profiles.v_synthese_for_profiles AS
 SELECT 
 	s.id_synthese,
 	s.cd_nom,
 	s.nom_cite,
 	t.cd_ref,
 	t.nom_valide,
+	t.id_rang,
 	s.date_min, 
 	s.date_max,
 	s.the_geom_local,
@@ -310,6 +323,11 @@ AND s.id_nomenclature_valid_status IN (
 	SELECT regexp_split_to_table(value, ',')::integer 
 	FROM gn_profiles.t_parameters 
 	WHERE name='id_valid_status_for_profiles'
+	)
+AND t.id_rang IN (
+	SELECT regexp_split_to_table(value, ',')
+	FROM gn_profiles.t_parameters 
+	WHERE name='id_rang_for_profiles'
 	)
 ;
 COMMENT ON VIEW gn_profiles.v_synthese_for_profiles 
