@@ -145,33 +145,36 @@
       ngx-datatable-cell-template
     >
       <div [ngSwitch]="row.score">
-        <mat-icon
+        <mat-chip
           *ngSwitchCase="'0'"
-          class="error"
+          class="chip-alert"
           triggers="mouseenter:mouseleave"
           [ngbPopover]="popContent"
           [popoverTitle]="popTitle"
           container="body"
           placement="left"
-        > pan_tool </mat-icon>
-        <mat-icon
+          > {{row.score}}/3 
+        </mat-chip>
+        <mat-chip
           *ngSwitchCase="'3'"
-          class="success"
+          class="chip-success"
           triggers="mouseenter:mouseleave"
           [ngbPopover]="popContent"
           [popoverTitle]="popTitle"
           container="body"
           placement="left"
-        > thumb_up </mat-icon>
-        <mat-icon
+          > {{row.score}}/3 
+        </mat-chip>
+        <mat-chip
           *ngSwitchDefault
-          class="warning"
+          class= "chip-warning"
           triggers="mouseenter:mouseleave"
           [ngbPopover]="popContent"
           [popoverTitle]="popTitle"
           container="body"
           placement="left"
-        > thumb_down </mat-icon>
+          > {{row.score}}/3 
+        </mat-chip>
       </div>
 
     </ng-template>
@@ -224,27 +227,27 @@
 <ng-template #popTitle>Cohérence par rapport au profil</ng-template>
 <ng-template #popContent>
   <table class="table table-sm font-xs table-striped">
-    <tr>
-      <td>Répartition </td>
-      <td *ngIf='row?.valid_distribution'>
-        <mat-icon
-          class="success"
-        > check </mat-icon>
-      </td>
-      <td *ngIf='!row?.valid_distribution'>
-        <mat-icon
-          class="error"
-        > close </mat-icon>
-      </td>
-    </tr>
+      <tr>
+        <td>Répartition </td>
+        <td *ngIf="row.valid_distribution">
+          <mat-icon
+            class="success"
+          > check </mat-icon>
+        </td>
+        <td *ngIf="!row.valid_distribution">
+          <mat-icon
+            class="error"
+          > close </mat-icon>
+        </td>
+      </tr>
     <tr>
       <td>Phénologie </td>
-      <td *ngIf='row?.valid_phenology'>
+      <td *ngIf="row.valid_phenology">
         <mat-icon
           class="success"
         > check </mat-icon>
       </td>
-      <td *ngIf='!row?.valid_phenology'>
+      <td *ngIf="!row.valid_phenology">
         <mat-icon
           class="error"
         > close </mat-icon>
@@ -252,16 +255,16 @@
     </tr>
     <tr>
       <td> Altitudes</td>
-      <td *ngIf='row?.valid_altitude'>
+      <td *ngIf="row.valid_altitude">
         <mat-icon
           class="success"
         > check </mat-icon>
       </td>
-      <td *ngIf='!row?.valid_altitude'>
+      <td *ngIf="!row.valid_altitude">
         <mat-icon
           class="error"
         > close </mat-icon>
       </td>
     </tr>
-    </table>
+  </table>
 </ng-template>
