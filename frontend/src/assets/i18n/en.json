@@ -242,7 +242,9 @@
       "responseOk": "Your request has been taken into account. It will be evaluated by an administrator.",
       "responseError": "An error occurred while taking your request into account.",
       "conventionTitle": "Convention",
-      "conventionCanceled": "The acceptance of the convention has just been canceled."
+      "conventionCanceled": "The acceptance of the convention has just been canceled.",
+      "accepted": "Accepted",
+      "refused": "Refused"
     }
   }
 }

@@ -246,7 +246,9 @@
       "responseOk": "Votre demande a bien été prise en compte. Elle va être évaluée par un administrateur.",
       "responseError": "Une erreur est survenue lors de la prise en compte de votre demande.",
       "conventionTitle": "Convention",
-      "conventionCanceled": "L'acceptation de la convention vient d'être annulé."
+      "conventionCanceled": "L'acceptation de la convention vient d'être annulé.",
+      "accepted": "Acceptée",
+      "refused": "Refusée"
     }
   }
 }
