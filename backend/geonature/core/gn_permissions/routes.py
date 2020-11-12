@@ -6,6 +6,7 @@ from copy import copy
 import datetime
 import json
 import locale
+import random
 
 from flask import (
     Blueprint,
@@ -196,25 +197,31 @@ def format_end_access_date(data, date_format="%Y-%m-%d"):
         formated_end_date = date.strftime(date_format)
     return formated_end_date
 
+
 def format_additional_data(data):
     raw_data = data.copy()
     raw_data.pop("additional_data", None)
     data["additional_data"]["originalRawData"] = raw_data
     return data["additional_data"]
 
+
 def build_value_filter_from_list(data):
     unduplicated_data = []
     [unduplicated_data.append(x) for x in data if x not in unduplicated_data]
     return ",".join(map(str, unduplicated_data))
 
+
 def get_geographic_permission():
     return get_fresh_permission(filter_type_code="GEOGRAPHIC")
+
 
 def get_taxonomic_permission():
     return get_fresh_permission(filter_type_code="TAXONOMIC")
 
+
 def get_sensitivity_permission():
     return get_fresh_permission(filter_type_code="SENSITIVITY", object_code="SENSITIVE_OBSERVATION")
+
 
 def get_fresh_permission(
     filter_type_code,
@@ -237,12 +244,14 @@ def get_fresh_permission(
         id_filter_type=permission_filter_type.id_filter_type,
     )
 
+
 def send_email_after_access_request(data, user_id, request_token):
     recipients = current_app.config["PERMISSION_MANAGEMENT"]["VALIDATOR_EMAIL"]
     app_name = current_app.config["appName"]
     subject = f"Demande de permissions d'accès {app_name}"
     msg_html = render_request_approval_tpl(user_id, data, request_token)
     send_mail(recipients, subject, msg_html)
+
 
 def render_request_approval_tpl(user_id, data, request_token):
     template = "email_admin_request_approval.html"
@@ -489,6 +498,7 @@ def get_request_by_token(token):
     print(f"In get_request_by_token(): {data}")
     return data
 
+
 def get_filter(id_filter_type, value_filter):
     try:
         permission_filter = (DB
@@ -500,6 +510,7 @@ def get_filter(id_filter_type, value_filter):
     except NoResultFound:
         return False
     return permission_filter
+
 
 def send_email_after_managing_request(action, user_id, data=None, refuse_reason=None):
     user = get_user_infos(user_id)
@@ -576,6 +587,7 @@ def get_all_actions():
         actions.append(action)
     return jsonify(actions), 200
 
+
 @routes.route("/filters", methods=["GET"])
 def get_all_filters():
     """
@@ -591,6 +603,7 @@ def get_all_filters():
         pfilter = format_keys_to_camel_case(pfilter.as_dict())
         filters.append(pfilter)
     return jsonify(filters), 200
+
 
 @routes.route("/objects", methods=["GET"])
 def get_all_objects():
@@ -608,12 +621,116 @@ def get_all_objects():
         objects.append(obj)
     return jsonify(objects), 200
 
+
 def format_keys_to_camel_case(d):
-    return dict((format_to_camel_case(k), v) for k, v in d.items())
+    if isinstance(d, list):
+        output = []
+        for item in d:
+            output.append(format_keys_to_camel_case(item))
+        return output
+    elif isinstance(d, dict) :
+        return dict((format_to_camel_case(k), v) for k, v in d.items())
+    else:
+        raise TypeError('formating to camel case accept only dict or list of dict')
+
 
 def format_to_camel_case(snake_str):
     components = snake_str.split('_')
     return components[0] + ''.join(x.title() for x in components[1:])
+
+
+def get_requests():
+    return [
+        { 
+            'token': '64750cf4-b14c-4793-bfd4-fcdc4defc7fe', 
+            'user_name': 'Jean-Pascal MILCENT', 'organism_name': 'CBNA', 
+            'end_access_date': '2021-01-12', 
+            'permissions': {'sensitive': True, 'geographic': [27369, 27366, 9861], 'taxonomic': [187494]},
+            'state': 'pending',
+        },
+        { 
+            'token': 'fbd59621-cb02-4e44-8461-15b67b3ae76d', 
+            'user_name': 'Martin DUPOND', 'organism_name': 'PNE', 
+            'end_access_date': '2021-01-24', 
+            'permissions': {'sensitive': False, 'geographic': [28512, 3974, 28528], 'taxonomic': [699191]},
+            'state': 'pending',
+        },
+        { 
+            'token': '6fc958d8-de23-4b2d-b162-fc334b64f61d', 
+            'user_name': 'Zazi SWAROSKI', 'organism_name': 'CEN-PACA', 
+            'end_access_date': '2021-02-02', 
+            'permissions': {'sensitive': True, 'geographic': [34513, 10167, 7940], 'taxonomic': [185214]},
+            'state': 'pending',
+        },
+        {
+            'token': '477e51b4-17fd-42e6-85a0-0f3805a05c63', 
+            'user_name': 'Robert BAYLE', 'organism_name': 'CBNA', 
+            'end_access_date': '2021-03-22',
+            'permissions': {'sensitive': False, 'geographic': [26574, 8312, 27440], 'taxonomic': [187415]},
+            'state': 'pending',
+        },
+    ]
+
+
+@routes.route("/requests", methods=["GET"])
+def get_permissions_requests():
+    """
+    Retourne toutes les demandes de permissions avec des info sur 
+    l'utilisateur ayant fait la demande.
+
+    .. :quickref: Permissions;
+    
+    Params:
+    :param state: filtre permetant de récupérer seulement les requêtes
+    acceptées (accepted), refusées (refused), refusées et acceptées 
+    (processed) ou en attentes (pending).
+    :type state: 'accepted', 'refused', 'processed', 'pending'
+
+    :returns: un tableau de dictionnaire contenant les infos des demandes
+    de permissions.
+    """
+    params = request.args.to_dict()
+    requests = get_requests()
+    if "state" in params:
+        for rqt in requests:
+            if params["state"] == "processed":
+                rqt["state"] = random.choice(["accepted", "refused"])
+            elif params["state"] == "accepted":
+                rqt["state"] = "accepted"
+            elif params["state"] == "refused":
+                rqt["state"] = "refused"
+
+    requests = format_keys_to_camel_case(requests)
+    return jsonify(requests), 200
+
+
+@routes.route("/requests/<token>", methods=["GET"])
+def get_permissions_requests_by_token(token):
+    """
+    Retourne le détail d'une demande.
+
+    .. :quickref: Permissions;
+
+    :returns: un dictionnaire avec les infos d'une demande de permission.
+    """
+    requests = get_requests()
+
+    response = False
+    for request in requests:
+        if request['token'] == token:
+            response = request
+            break
+
+    if not response:
+        response = {
+            "message": f"Token de demande introuvable : {token} .",
+            "status": "error"
+        }
+        return response, 404
+    else:
+        response = format_keys_to_camel_case(response)
+        return response, 200
+
 
 def get_roles_permissions():
     return [
