@@ -32,8 +32,17 @@
   margin-right: .75rem;
 }
 
-/* Tabs */
-a[mat-tab-link]:hover {
-  text-decoration: none;
-  color: rgba($color: #000000, $alpha: 0.87);
+/* Row */
+
+/deep/ .row-refused {
+  background-color: #F9E5EA;
+  border: 1px;
+}
+/deep/ .row-accepted {
+  background-color: #E4F6DF;
+  border: 1px solid #dddddd;
+}
+
+/deep/ .datatable-body-row {
+  border-bottom: 1px solid #dddddd;
 }

@@ -3,7 +3,7 @@ import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { AppConfig } from '@geonature_config/app.config';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { PermissionService } from '../permission.service';
-import { IRole } from '../permission.interface'
+import { GnRolePermission } from '../permission.interface'
 
 interface DatatableColumn {
   prop: string;
@@ -40,10 +40,10 @@ export class PermissionListComponent implements OnInit {
     { prop: 'id', name: '#', flexGrow: 1, tooltip: 'Identifiant du rôle.', headerClass: 'table-primary'},
     { prop: 'name', name: 'Nom', flexGrow: 3, tooltip: "Prénom et nom de l'utilisateur ou intitulé du groupe.", headerClass: 'table-primary'},
     { prop: 'type', name: 'Type', flexGrow: 2, tooltip: 'Type de rôle : groupe ou utilisateur.', headerClass: 'table-primary'},
-    { prop: 'permissionsNbr', name: 'Permissions #', flexGrow: 1, tooltip: 'Nombre de permissions attribuées.', headerClass: 'table-primary'},
+    { prop: 'permissionsNbr', name: 'Nbre permissions', flexGrow: 1, tooltip: 'Nombre de permissions attribuées.', headerClass: 'table-primary'},
     { prop: 'actions', name: 'Actions', flexGrow: 1, sortable: false, headerClass: 'table-primary'},
   ];
-  rows: IRole[] = [];
+  rows: GnRolePermission[] = [];
   filteredData = [];
 
   constructor(
@@ -57,6 +57,10 @@ export class PermissionListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.prepareColumns();
+  }
+
+  private prepareColumns() {
     this.columns.forEach(col => {
       col.headerTemplate = this.colHeaderTpl;
       if (col.prop === 'type') {

@@ -1,20 +1,20 @@
 <div class="container-fluid">
 
-  <pnx-breadcrumbs [previousRoutes]="permissionService.getBreadcrumbsRoot()"></pnx-breadcrumbs>
+  <gn-breadcrumbs [previousRoutes]="permissionService.getBreadcrumbsRoot()"></gn-breadcrumbs>
 
   <div class="card">
     <div class="card-header d-flex align-items-center p-1">
       <div>
-        <mat-icon class="header-icon" fontSet="fa" fontIcon="fa-shield"></mat-icon>
+        <mat-icon class="header-icon">check_circle</mat-icon>
       </div>
       <div>
-        <h3 class="h4">{{ role?.name || '&nbsp;' }}</h3>
+        <h3 *ngIf="request" class="h4">{{ request.userName }} ({{ request.organismName }})</h3>
         <h4 class="h5">Détail demande de permissions</h4>
       </div>
     </div>
 
-    <div *ngIf="role ; else loadingTpl" class="card-body">
-      <p>Access request form</p>
+    <div *ngIf="request ; else loadingTpl" class="card-body">
+      <p>Afficher ici les infos détailées de la demande avec les champs personnalisables.</p>
     </div>
   </div>
 </div>

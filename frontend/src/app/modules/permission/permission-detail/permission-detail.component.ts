@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { AppConfig } from '@geonature_config/app.config';
 import { PermissionService } from '../permission.service';
-import { IRole } from '../permission.interface'
+import { GnRolePermission } from '../permission.interface'
 
 @Component({
   selector: 'pnx-permission-detail',
@@ -13,7 +13,7 @@ import { IRole } from '../permission.interface'
 export class PermissionDetailComponent implements OnInit {
 
   idRole: number;
-  role: IRole;
+  role: GnRolePermission;
 
   constructor(
     public activatedRoute: ActivatedRoute,
@@ -21,9 +21,23 @@ export class PermissionDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.idRole = this.activatedRoute.snapshot.params["idRole"];
+    this.extractRouteParams();
     this.permissionService.getRoleById(this.idRole).subscribe(data => {
       this.role = data;
     });
+  }
+
+  private extractRouteParams() {
+    const urlParams = this.activatedRoute.snapshot.paramMap;
+    console.log('Params:', urlParams)
+    this.idRole = urlParams.get('idRole') as unknown as number;
+    if (urlParams.has('name') && urlParams.has('type')) {
+      console.log('IN')
+      this.role = {
+        'id': this.idRole,
+        'name': urlParams.get('name'),
+        'type': urlParams.get('type') as 'USER' | 'GROUP',
+      };
+    }
   }
 }

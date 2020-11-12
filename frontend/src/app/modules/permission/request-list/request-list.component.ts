@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 
-import { AppConfig } from '@geonature_config/app.config';
+import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { PermissionService } from '../permission.service';
 
 @Component({
@@ -9,6 +9,18 @@ import { PermissionService } from '../permission.service';
   styleUrls: ['./request-list.component.scss'],
 })
 export class RequestListComponent implements OnInit {
+
+  loadingIndicator = true;
+  reorderable = true;
+  swapColumns = false;
+
+  links = [
+    {label: 'En attentes', path: '/permissions/requests/pending', icon: 'pending'},
+    {label: 'Traitées', path: '/permissions/requests/processed', icon: 'check_circle'},
+  ];
+
+  @ViewChild(DatatableComponent)
+  pendingDatatable: DatatableComponent;
 
   constructor(
     public permissionService: PermissionService,

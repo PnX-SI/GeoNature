@@ -1,6 +1,6 @@
 <div class="container-fluid">
 
-  <pnx-breadcrumbs [previousRoutes]="permissionService.getBreadcrumbsRoot()"></pnx-breadcrumbs>
+  <gn-breadcrumbs [previousRoutes]="permissionService.getBreadcrumbsRoot()"></gn-breadcrumbs>
 
   <div class="card">
     <div class="card-header d-flex align-items-center p-1">
@@ -68,7 +68,7 @@
             mat-icon-button
             matRipple
             matTooltip="Visualiser les permissions"
-            routerLink="/permissions/roles/{{ row.id }}"
+            [routerLink]="['/permissions/roles/', row.id, { name: row.name, type: row.type }]"
           >
             <mat-icon>description</mat-icon>
           </button>

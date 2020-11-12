@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { AppConfig } from '@geonature_config/app.config';
-import { IRole } from './permission.interface'
+import { GnRolePermission, GnPermissionRequest } from './permission.interface'
 
 
 @Injectable()
@@ -34,13 +34,33 @@ export class PermissionService {
     return this.http.post<any>(url, data);
   }
 
-  getAllRoles(): Observable<IRole[]> {
+  getAllRoles(): Observable<GnRolePermission[]> {
     const url = `${AppConfig.API_ENDPOINT}/permissions/roles`;
-    return this.http.get<IRole[]>(url);
+    return this.http.get<GnRolePermission[]>(url).pipe(delay(3000));
   }
 
-  getRoleById(id: number): Observable<IRole> {
+  getRoleById(id: number): Observable<GnRolePermission> {
     const url = `${AppConfig.API_ENDPOINT}/permissions/roles/${id}`;
-    return this.http.get<IRole>(url).pipe(delay(3000));
+    return this.http.get<GnRolePermission>(url).pipe(delay(3000));
+  }
+
+  getAllProcessedRequests(): Observable<GnPermissionRequest[]> {
+    const params = new HttpParams().set('state', 'processed');
+    return this.getAllRequests(params)
+  }
+
+  getAllPendingRequests(): Observable<GnPermissionRequest[]> {
+    const params = new HttpParams().set('state', 'prending');
+    return this.getAllRequests(params)
+  }
+
+  private getAllRequests(params: HttpParams): Observable<GnPermissionRequest[]> {
+    const url = `${AppConfig.API_ENDPOINT}/permissions/requests`;
+    return this.http.get<GnPermissionRequest[]>(url, {params: params});
+  }
+
+  getRequestByToken(token: string): Observable<GnPermissionRequest> {
+    const url = `${AppConfig.API_ENDPOINT}/permissions/requests/${token}`;
+    return this.http.get<GnPermissionRequest>(url);
   }
 }
