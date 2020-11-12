@@ -91,7 +91,7 @@ export class AccessRequestComponent implements OnInit {
     this.regularFormGrp = this.formBuilder.group({
       areas: ['', Validators.required],
       taxa: [''],
-      sensitive_access: [''],
+      sensitive_access: [],
       end_access_date: [this.defaultEndAccess],
     });
   }

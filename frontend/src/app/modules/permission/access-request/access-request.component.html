@@ -1,131 +1,131 @@
-<div class="card card-page center-in-div">
-  <div class="card-header">
-    <h3 class="underlined main-color">
-      {{ 'Permissions.accessRequest.formTitle' | translate }}
-    </h3>
-  </div>
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <h3>{{ 'Permissions.accessRequest.formTitle' | translate }}</h3>
+    </div>
 
-  <div class="card-body">
-    <form [formGroup]="regularFormGrp">
-      <fieldset>
+    <div class="card-body">
+      <form [formGroup]="regularFormGrp">
+        <fieldset>
 
-        <legend>
-         <h4>{{ 'Permissions.accessRequest.permissionTitle' | translate }}</h4>
-        </legend>
+          <legend>
+          <h4>{{ 'Permissions.accessRequest.permissionTitle' | translate }}</h4>
+          </legend>
 
-        <small class="form-text text-muted">
-          Veuillez indiquer ci-dessous les zones géographiques pour lesquelles
-          vous souhaitez accéder aux données à leur précision maximale.
-          Merci de préciser également les groupes taxonomiques concernés
-          et le calendrier de votre étude.
-        </small>
+          <small class="form-text text-muted">
+            Veuillez indiquer ci-dessous les zones géographiques pour lesquelles
+            vous souhaitez accéder aux données à leur précision maximale.
+            Merci de préciser également les groupes taxonomiques concernés
+            et le calendrier de votre étude.
+          </small>
 
-        <div class="form-group">
-          <pnx-areas
-            [searchBar]="true"
-            [parentFormControl]="this.regularFormGrp.controls['areas']"
-            [label]="'Permissions.accessRequest.geoAreaLabel' | translate"
-            [idTypes]="areaTypes"
-            [bindAllItem]="true"
-            [matTooltip]="'Permissions.accessRequest.geoAreaTooltip' | translate"
-            matTooltipPosition="above"
-          >
-          </pnx-areas>
-        </div>
-
-        <div class="form-group">
-          <pnx-taxa
-            [parentFormControl]="this.regularFormGrp.controls['taxa']"
-            [label]="'Permissions.accessRequest.taxaLabel' | translate"
-            rank="GN"
-            [bindAllItem]="true"
-            [matTooltip]="'Permissions.accessRequest.taxaTooltip' | translate"
-            matTooltipPosition="above"
-          >
-          </pnx-taxa>
-        </div>
-
-        <div class="form-group">
-          <div class="custom-control custom-checkbox">
-            <!--<label for="sensitive_access">
-              {{ 'Permissions.accessRequest.sensitiveAccessLabel' | translate }}
-            </label>-->
-            <input
-              type="checkbox"
-              id="sensitive_access"
-              class="custom-control-input"
-              formControlName="sensitive_access"
-            />
-            <label for="sensitive_access" class="custom-control-label">
-              <small>
-                {{ 'Permissions.accessRequest.sensitiveAccessText' | translate }}
-                <span *ngIf="rulesLink">
-                  (<a
-                    href="{{ rulesLink }}"
-                    target="_blank"
-                  >{{ 'Permissions.accessRequest.sensitiveAccessRules' | translate}}</a>)
-                </span>
-              </small>
-            </label>
+          <div class="form-group">
+            <pnx-areas
+              [searchBar]="true"
+              [parentFormControl]="this.regularFormGrp.controls['areas']"
+              [label]="'Permissions.accessRequest.geoAreaLabel' | translate"
+              [idTypes]="areaTypes"
+              [bindAllItem]="true"
+              [matTooltip]="'Permissions.accessRequest.geoAreaTooltip' | translate"
+              matTooltipPosition="above"
+            >
+            </pnx-areas>
           </div>
-        </div>
 
-        <div class="form-group">
-          <pnx-date
-            label="{{ 'Permissions.accessRequest.endDateLabel' | translate }}"
-            [parentFormControl]="this.regularFormGrp.controls['end_access_date']"
-            [minDate]="datePickerMin"
-            [maxDate]="datePickerMax"
+          <div class="form-group">
+            <pnx-taxa
+              [parentFormControl]="this.regularFormGrp.controls['taxa']"
+              [label]="'Permissions.accessRequest.taxaLabel' | translate"
+              rank="GN"
+              [bindAllItem]="true"
+              [matTooltip]="'Permissions.accessRequest.taxaTooltip' | translate"
+              matTooltipPosition="above"
+            >
+            </pnx-taxa>
+          </div>
+
+          <div class="form-group">
+            <div class="custom-control custom-checkbox">
+              <!--<label for="sensitive_access">
+                {{ 'Permissions.accessRequest.sensitiveAccessLabel' | translate }}
+              </label>-->
+              <input
+                type="checkbox"
+                id="sensitive_access"
+                class="custom-control-input"
+                formControlName="sensitive_access"
+              />
+              <label for="sensitive_access" class="custom-control-label">
+                <small>
+                  {{ 'Permissions.accessRequest.sensitiveAccessText' | translate }}
+                  <span *ngIf="rulesLink">
+                    (<a
+                      href="{{ rulesLink }}"
+                      target="_blank"
+                    >{{ 'Permissions.accessRequest.sensitiveAccessRules' | translate}}</a>)
+                  </span>
+                </small>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <pnx-date
+              label="{{ 'Permissions.accessRequest.endDateLabel' | translate }}"
+              [parentFormControl]="this.regularFormGrp.controls['end_access_date']"
+              [minDate]="datePickerMin"
+              [maxDate]="datePickerMax"
+            >
+            </pnx-date>
+          </div>
+
+        </fieldset>
+
+        <hr class="dynamic-form-separator" />
+
+        <fieldset *ngIf="config.REQUEST_FORM">
+          <legend>
+            <h4>{{ config.REQUEST_FORM_TITLE }}</h4>
+          </legend>
+          <pnx-dynamic-form-generator
+            [autoGenerated]="true"
+            [myFormGroup]="dynamicFormGrp"
+            [formsDefinition]="dynamicFormCfg"
           >
-          </pnx-date>
-        </div>
+          </pnx-dynamic-form-generator>
+        </fieldset>
+      </form>
+    </div>
 
-      </fieldset>
-
-      <hr class="dynamic-form-separator" />
-
-      <fieldset *ngIf="config.REQUEST_FORM">
-        <legend>
-          <h4>{{ config.REQUEST_FORM_TITLE }}</h4>
-        </legend>
-        <pnx-dynamic-form-generator
-          [autoGenerated]="true"
-          [myFormGroup]="dynamicFormGrp"
-          [formsDefinition]="dynamicFormCfg"
-        >
-        </pnx-dynamic-form-generator>
-      </fieldset>
-    </form>
-  </div>
-
-  <div class="card-footer d-flex flex-row">
-    <button
-      type="button"
-      mat-raised-button
-      class="mr-auto uppercase"
-      matTooltip="{{ 'Permissions.accessRequest.cancelBtnTooltip' | translate }}"
-      matTooltipPosition="left"
-      routerLink="/"
-    >
-      <mat-icon>cancel</mat-icon>
-      {{ 'Cancel' | translate }}
-    </button>
-    <button
-      type="button"
-      mat-raised-button
-      color="primary"
-      class="uppercase"
-      matTooltip="{{ 'Permissions.accessRequest.sendBtnTooltip' | translate }}"
-      matTooltipPosition="left"
-      [disabled]="
-        !regularFormGrp.valid ||
-        !dynamicFormGrp.valid ||
-        disableSubmit
-      "
-      (click)="send()"
-    >
-      <mat-icon>send</mat-icon>
-      {{ 'Send' | translate }}
-    </button>
+    <div class="card-footer d-flex flex-row">
+      <button
+        type="button"
+        mat-raised-button
+        class="mr-auto uppercase"
+        matTooltip="{{ 'Permissions.accessRequest.cancelBtnTooltip' | translate }}"
+        matTooltipPosition="left"
+        routerLink="/"
+      >
+        <mat-icon>cancel</mat-icon>
+        {{ 'Cancel' | translate }}
+      </button>
+      <button
+        type="button"
+        mat-raised-button
+        color="primary"
+        class="uppercase"
+        matTooltip="{{ 'Permissions.accessRequest.sendBtnTooltip' | translate }}"
+        matTooltipPosition="left"
+        [disabled]="
+          !regularFormGrp.valid ||
+          !dynamicFormGrp.valid ||
+          disableSubmit
+        "
+        (click)="send()"
+      >
+        <mat-icon>send</mat-icon>
+        {{ 'Send' | translate }}
+      </button>
+    </div>
   </div>
 </div>
