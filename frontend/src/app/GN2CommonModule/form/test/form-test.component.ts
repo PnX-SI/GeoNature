@@ -19,17 +19,23 @@ export class FormTestComponent implements OnInit {
 
   public formDefinitions = [
      {
+        "multiple": true,
         "attribut_name": "cd_nom",
         "autocomplete": true,
         "type_widget": "datalist",
-        "attribut_label": "Taxon",
-        "keyValue": "cd_nom",
-        "keyLabel": "lb_nom",
-        "multiple": false,
-        "api": "taxref/allnamebylist/100",
-        "application": "TaxHub",
+        "attribut_label": "Commune",
+        "keyValue": "id_area",
+        "keyLabel": "nom_com+insee_com",
+        "keySearch": "nom_com",
+        "keyTitle": "insee_com",
+        "api": "geo/municipalities",
+        "application": "GeoNature",
         "required": true,
-        "type_util": "taxonomy"
+        "params": {
+          "limit": 10,
+        },
+        "type_util": "taxonomy",
+        "value": [ 12352, 17784 ]
       }
   ];
 
@@ -41,10 +47,6 @@ export class FormTestComponent implements OnInit {
 
   ngOnInit() {
     // test TODO remove
-    const a = {};
-    const s = 'a["f"] = a => !!a';
-    eval(s);
-    console.log(a['f'](1));
     this.testForm = this._formBuilder.group({});
   }
 }

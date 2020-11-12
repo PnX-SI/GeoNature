@@ -143,6 +143,11 @@ def get_municipalities():
         q = q.filter(LiMunicipalities.nom_com.ilike("{}%".format(parameters.get("nom_com"))))
     limit = int(parameters.get("limit")) if parameters.get("limit") else 100
 
+    ids_areas =request.args.getlist('id_area')
+    if ids_areas:
+        ids_areas = [int(ids_area) for ids_area in ids_areas]
+        q = q.filter(LiMunicipalities.id_area.in_(ids_areas))
+
     data = q.limit(limit)
     return [d.as_dict() for d in data]
 

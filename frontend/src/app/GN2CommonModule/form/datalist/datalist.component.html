@@ -32,6 +32,7 @@
       <mat-option
         *ngFor="let value of filteredValues"
         [value]="value[keyValue]"
+        [title]="keyTitle ? value[keyTitle] : null"
       >
         {{ displayLabel(value) }}
       </mat-option>

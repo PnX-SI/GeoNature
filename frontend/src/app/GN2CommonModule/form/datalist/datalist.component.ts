@@ -1,4 +1,3 @@
-import { filter } from 'rxjs/operators';
 import {
   Component,
   OnInit,
@@ -11,6 +10,8 @@ import {
 import { DataFormService } from '../data-form.service';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 import { CommonService } from '../../service/common.service';
+import { of } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 
 @Component({
   selector: 'pnx-datalist',
@@ -22,6 +23,8 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
   @Input() values: Array<any>; // list of choices
   @Input() keyLabel = 'label'; // field name for value
   @Input() keyValue = 'value'; // field name for label
+  @Input() keySearch;// get parameter for autocomplete
+  @Input() keyTitle;// get parameter for autocomplete
 
   @Input() api: string; // api from 'GeoNature', 'TaxHub' or url to foreign app
   @Input() application: string; // 'GeoNature', 'TaxHub' for api's; null for raw url
@@ -29,7 +32,6 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
 
 
   @Input() autocomplete: boolean;
-  @Input() limit = 100;
   @Input() multiple: boolean;
   @Input() required: boolean;
   @Input() definition: boolean; // help
@@ -60,9 +62,11 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
 
   searchChanged(event) {
     this.search = event;
-    this.filteredValues = this.getFilteredValues();
     if(this.autocomplete) {
-      this.getData();
+      this.params[this.keySearch || this.keyLabel] = this.search
+      this.getData(true);
+    } else {
+      this.filteredValues = this.getFilteredValues();
     }
   }
 
@@ -71,9 +75,11 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
 
     values = values
       // filter search
+      // pas quand on est en autocomplete (filtrage sur le serveur)
       .filter(
         v =>
           !this.search ||
+          this.autocomplete ||
           this.displayLabel(v)
             .toLowerCase()
             .includes(this.search.toLowerCase())
@@ -83,6 +89,7 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
         (item, pos, self) => self.findIndex(i => i[this.keyValue] === item[this.keyValue]) === pos
       );
 
+    // apply options filters
     for (const key of Object.keys(this.filters || [])) {
       const filter_ = this.filters[key];
       if (filter_.length) {
@@ -103,9 +110,16 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
 
   displayLabel(value) {
     let label = '';
-    for (const key of this.keyLabel.split(',')) {
-      label = label || value[key.trim()];
+    if(this.keyLabel.includes(',')) {
+      for (const key of this.keyLabel.split(',')) {
+        label = label || value[key.trim()];
+      }
+    } else if(this.keyLabel.includes('+')) {
+      for (const key of this.keyLabel.split('+')) {
+        label = (label + ' ' + value[key.trim()]).trim();
+      }
     }
+
     return label;
   }
 
@@ -119,9 +133,19 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
   }
 
   initValues(data) {
-    this.values = data.map(v => (typeof v !== 'object' ? { label: v, value: v } : v));
-    this.filteredValues = this.getFilteredValues();
+    let valuesToKeep = []
+    if( this.autocomplete && this.values && this.parentFormControl.value ){
+      const value = this.selectedValues()
+      valuesToKeep = this.values.filter(v => value.includes(v[this.keyValue]));
+    }
 
+    this.values = data.map(v => (typeof v !== 'object' ? { label: v, value: v } : v));
+
+    this.insertOnTopofArray(this.values, valuesToKeep);
+
+    const filteredValues = this.getFilteredValues();
+
+    this.filteredValues = filteredValues;
     // si requis
     // et un seul choix
     // et pas de valeur déjà choisie
@@ -138,7 +162,6 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
 
     // valeur par défaut (depuis input value)
     if (!this.parentFormControl.value && this.default) {
-      console.log('value', this.filteredValues.find);
       const value = this.multiple ? this.default : [this.default];
       const res = value.map(val =>
         typeof val === 'object'
@@ -151,8 +174,38 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
     this.parentFormControl.markAsTouched();
   }
 
-  getData() {
-    if (!this.values && this.api) {
+  condSelectedInValues(values) {
+    if (!this.autocomplete) {
+      return
+    }
+    let vals = this.selectedValues();
+    return vals.every(v => values.find(vv => vv[this.keyValue] == v[this.keyValue]))
+  }
+
+  insertOnTopofArray(values, valuesToInsert) {
+    for(const v of valuesToInsert) {
+      let index=values.findIndex(vv => v[this.keyValue] == vv[this.keyValue]);
+      if(index != -1) {
+        values.splice(index, 1);
+      }
+      values.unshift(v)
+    }
+    return values;
+  }
+
+  getInitValues(values) {
+    const params = {};
+    params[this.keyValue] = this.selectedValues()
+    return this._dfs.getDataList(this.api, this.application, params).pipe(
+      mergeMap(valuesToInsert => {
+        this.insertOnTopofArray(values, valuesToInsert)
+        return of(values);
+      })
+    );
+  }
+
+  getData(forceReload=false) {
+    if (!this.values || forceReload && this.api) {
       this._dfs.getDataList(this.api, this.application, this.params).subscribe(
         data => {
           let values = data;
@@ -162,11 +215,21 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
               values = values[path];
             }
           }
-          this.initValues(values);
+          if(this.condSelectedInValues(values)) {
+            this.getInitValues(values).subscribe(
+             values2 => {
+               this.initValues(values2)
+              }
+            )
+          } else {
+            this.initValues(values);
+          }
         },
         error => {
-          console.log('error', error);
-          this._commonService.regularToaster('error', error);
+          // c'est souvent pour un tableau vide ???
+          this.initValues([]);
+          // console.log('error', error);
+          // this._commonService.regularToaster('error', error);
         }
       );
     } else if (this.values) {
