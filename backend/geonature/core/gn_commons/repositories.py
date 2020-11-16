@@ -6,6 +6,7 @@ import pathlib
 from PIL import Image
 from io import BytesIO
 from flask import current_app, url_for
+from sqlalchemy import and_
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from pypnnomenclature.models import TNomenclatures
@@ -399,7 +400,10 @@ class TMediumRepository:
         res_medias_temp = (
             DB.session.query(TMedias.id_media)
             .filter(
-                TMedias.meta_update_date < (datetime.datetime.now() - datetime.timedelta(hours=24))
+                and_(
+                    TMedias.meta_update_date < (datetime.datetime.now() - datetime.timedelta(hours=24)),
+                    TMedias.uuid_attached_row == None
+                )
             )
             .all()
         )
@@ -443,7 +447,6 @@ class TMediumRepository:
                 continue
 
             if 'thumbnail' in str(f_data['path']):
-                print(f_data['path'])
                 os.remove(f_data['path'])
             remove_file(f_data['path'])
 
