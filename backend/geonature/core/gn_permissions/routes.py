@@ -190,9 +190,9 @@ def format_end_access_date(data, date_format="%Y-%m-%d"):
     formated_end_date = None
     end_date = data["end_access_date"]
     if (end_date):
-        # TODO : see how to define locale globaly
+        # TODO : see how to define locale globaly => bug with python 3.7?
         print(f"Current locale: {locale.getlocale(locale.LC_TIME)}")
-        #locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
+        locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
         date = datetime.date(end_date["year"], end_date["month"], end_date["day"])
         formated_end_date = date.strftime(date_format)
     return formated_end_date
@@ -276,7 +276,7 @@ def render_request_approval_tpl(user_id, data, request_token):
         additional_fields=format_additional_fields(data),
         approval_url=approval_url,
         refusal_url=refusal_url,
-        app_url = current_app.config["URL_APPLICATION"],
+        app_url = current_app.config["URL_APPLICATION"] + "/#/permissions/requests/pending",
     )
 
 
@@ -551,6 +551,8 @@ def render_refused_request_tpl(user, refuse_reason=None):
 
 def get_validators():
     validators = current_app.config["PERMISSION_MANAGEMENT"]["VALIDATOR_EMAIL"]
+    if isinstance(validators, list):
+       validators = ", ".join(validators)
     return validators.strip()
 
 
