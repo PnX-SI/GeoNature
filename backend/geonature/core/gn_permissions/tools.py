@@ -342,7 +342,6 @@ def get_or_fetch_user_cruved(session=None, id_role=None, module_code=None, objec
         cruved_for_user_in_app()
     """
     if module_code in session and "user_cruved" in session[module_code]:
-        print("PASSE LA ???")
         return session[module_code]["user_cruved"]
     else:
         user_cruved = cruved_scope_for_user_in_module(

@@ -5,18 +5,27 @@ CHANGELOG
 2.5.4 (unreleased)
 ------------------
 
+https://github.com/PnX-SI/GeoNature/compare/develop
+
+**🚀 Nouveautés**
+
+* Ajout d'un service pour pouvoir récupérer les informations sur l'utilisateur connecté
+
 **🐛 Corrections**
 
-* Correction d'un bug majeur sur les médias qui les supprimaient au bout de 24h
-* Scripts ``sql`` et `sh`` de restauration des medias dans data/medias 
+* Corrections des permissions sur les fiches info des relevés dans Occtax avec la désactivation du bouton de modification du relevé quand l'utilisateur n'en a pas
+* Correction des médias qui sont actuellement tous supprimés après 24h et non pas seulement ceux orphelins (#1148)
 
 **⚠️ Notes de version**
 
-* Pour récuperer les medias depuis la table ``gn_commons.t_history_actions``:
+* Si vous aviez associé des médias (à des observations dans Occtax ou autre), vous pouvez les retrouver dans la table d'historisation des actions : 
+  * ``SELECT * FROM gn_commons.t_history_actions WHERE table_content->'id_media' IS NOT NULL AND operation_type = 'D'``
+* Pour récuperer les medias depuis la table ``gn_commons.t_history_actions`` vous pouvez:
   * executer le script ``SQL`` ``data/medias/restore_medias.sql``
     * qui va recréer les médias en base
   * exécuter le script `BASH`` ``data/medias/restore_medias.sh``
     * qui va changer le nom des fichiers supprimés et supprimer le préffixe par ``deleted_``
+
 
 2.5.3 (2020-11-04)
 ------------------
