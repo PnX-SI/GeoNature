@@ -13,8 +13,8 @@ https://github.com/PnX-SI/GeoNature/compare/develop
 
 **🐛 Corrections**
 
-* Correction des médias (#1148)
-* Corrections des permissions sur les fiches info des relevés dans Occtax (avec print à virer - https://github.com/PnX-SI/GeoNature/commit/04b281ed2415461cca06c49ad9d267a79978f952)
+* Correction des médias qui sont actuellement tous supprimés après 24h et non pas seulement ceux orphelins (#1148)
+* Corrections des permissions sur les fiches info des relevés dans Occtax avec la désactivation du bouton de modification du relevé quand l'utilisateur n'en a pas
 
 **⚠️ Notes de version**
 
