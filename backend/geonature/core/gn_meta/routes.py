@@ -110,7 +110,10 @@ def get_datasets(info_role):
             log.error(e)
             with_mtd_error = True
     params = request.args.to_dict()
-    datasets = get_datasets_cruved(info_role, params)
+    recursif = params.get('recursif', True)
+    if recursif == 'false':
+        recursif = False
+    datasets = get_datasets_cruved(info_role, params, recursif=recursif)
     datasets_resp = {"data": datasets}
     if with_mtd_error:
         datasets_resp["with_mtd_errors"] = True
