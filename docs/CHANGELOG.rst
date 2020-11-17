@@ -5,7 +5,20 @@ CHANGELOG
 2.5.4 (unreleased)
 ------------------
 
+https://github.com/PnX-SI/GeoNature/compare/develop
+
+**🚀 Nouveautés**
+
+* Ajout d'un service pour pouvoir récupérer les informations sur l'utilisateur connecté
+
 **🐛 Corrections**
+
+* Correction des médias (#1148)
+* Corrections des permissions sur les fiches info des relevés dans Occtax (avec print à virer - https://github.com/PnX-SI/GeoNature/commit/04b281ed2415461cca06c49ad9d267a79978f952)
+
+**⚠️ Notes de version**
+
+* Si vous aviez associé des médias (à des observations dans Occtax ou autre), vous pouvez les retrouver dans la table d'historisation des actions : ``SELECT * FROM gn_commons.t_history_actions WHERE table_content->'id_media' IS NOT NULL AND operation_type = 'D'``
 
 2.5.3 (2020-11-04)
 ------------------
