@@ -62,7 +62,7 @@ def get_datasets_cruved(info_role, params=dict(), as_model=False, recursif=False
     q = DB.session.query(TDatasets).distinct()
     if lazyloaded:
         for rel in lazyloaded:
-            q = q.options(joinedload("creator"))
+            q = q.options(joinedload(rel))
 
     # filter with modules
     if "module_code" in params:
