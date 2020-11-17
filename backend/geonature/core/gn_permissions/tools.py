@@ -88,9 +88,9 @@ def get_user_from_token_and_raise(
         return Response(msg, 403)
 
 
-class UserCruved():
+class UserCruved:
     def __init__(self,):
-        self.is_herited = False 
+        self.is_herited = False
 
     def build_herited_user_cruved(self, user_permissions, module_code, object_code):
         """
@@ -127,10 +127,9 @@ class UserCruved():
             return get_max_perm(module_permissions)
         # if no module permission take the max of GN perm
         elif len(module_permissions) == 0:
-            if module_code != 'GEONATURE':
+            if module_code != "GEONATURE":
                 self.is_herited = True
             return get_max_perm(geonature_permission)
-
 
 
 def query_user_perm(
@@ -152,6 +151,7 @@ def query_user_perm(
     else:
         q = q.filter(VUsersPermissions.code_object == "ALL")
     return q.filter(sa.or_(*ors)).all()
+
 
 def get_user_permissions(
     user, code_filter_type, code_action=None, module_code=None, code_object=None
@@ -189,6 +189,7 @@ def get_user_permissions(
             f"User {user['id_role']} cannot '{code_action}' in module/app/object {object_for_error}"
         )
 
+
 def get_max_perm(perm_list):
     """
         Return the max filter_code from a list of VUsersPermissions instance
@@ -217,9 +218,6 @@ def build_cruved_dict(cruved, get_id):
         else:
             cruved_dict[action_scope[0]] = action_scope[1]
     return cruved_dict
-
-
-
 
 
 def beautifulize_cruved(actions, cruved):
@@ -275,7 +273,9 @@ def cruved_scope_for_user_in_module(
     herited_perm = {}
 
     for action, perm in perm_by_actions.items():
-        herited_perm[action] = user_cruved.build_herited_user_cruved(perm, module_code=module_code, object_code=object_code)
+        herited_perm[action] = user_cruved.build_herited_user_cruved(
+            perm, module_code=module_code, object_code=object_code
+        )
     cruved_actions = ["C", "R", "U", "V", "E", "D"]
 
     herited_cruved = {}
@@ -335,7 +335,7 @@ def cruved_scope_for_user_in_module(
     return herited_cruved, herited
 
 
-def get_or_fetch_user_cruved(session=None, id_role=None, module_code=None, object_code="ALL"):
+def get_or_fetch_user_cruved(session=None, id_role=None, module_code=None, object_code=None):
     """
         Check if the cruved is in the session
         if not, get the cruved from the DB with 
@@ -350,8 +350,4 @@ def get_or_fetch_user_cruved(session=None, id_role=None, module_code=None, objec
         session[module_code] = {}
         session[module_code]["user_cruved"] = user_cruved
     return user_cruved
-
-
-
-
 
