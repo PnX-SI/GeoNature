@@ -169,7 +169,8 @@
                     >
                       <mat-icon> create</mat-icon>
                     </a>
-                    <a
+                    <a 
+                      *ngIf="ds.active"
                       (click)="importDs(ds.id_dataset)"
                       matTooltip="Importer dans ce jeu de donnée"
                     >
