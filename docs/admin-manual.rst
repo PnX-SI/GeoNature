@@ -177,7 +177,7 @@ Pour enregistrer et quitter : ``Ctrl + O``, ``ENTER`` puis ``Ctrl + X``.
 
 **Usage**
 
-Pour chaque taxon (cd_ref) disposant de données dans la Synthèse de l'instance, un profil est généré. Il comporte l'aire d'occurrence, les limites altitudinales et les combinaisons phénologiques jugées cohérentes sur la base des données disponibles.
+Pour chaque taxon (cd_ref) disposant de données dans la vue ``gn_profiles.v_synthese_for_profiles`` (vue filtrée basée sur la synthèse de l'instance), un profil est généré. Il comporte l'aire d'occurrence, les limites altitudinales et les combinaisons phénologiques jugées cohérentes sur la base des données disponibles.
 
 Ces profils sont déclinés sur : 
 
@@ -205,8 +205,12 @@ Le calcul des profils de taxons repose sur plusieurs variables, paramétrables s
 
 Les paramètres généraux dans la table ``gn_profiles.t_parameters`` :
 
-- Le paramètre ``id_valid_status_for_profils`` : permet de lister les ``id_nomenclatures`` des statuts de validation à prendre en compte pour les calculs des profils. Par exemple, en ne listant que les identifiants des nomenclatures "Certain -très probable" et "Probable", seules ces données valides seront prises en compte lors du calcul des profils (comportement par défaut). En listant tous les identifiants des nomenclatures des statuts de validation, l'ensemble des données alimenteront les profils de taxons.
+- Le paramètre ``id_valid_status_for_profiles`` : permet de lister les ``id_nomenclatures`` des statuts de validation à prendre en compte pour les calculs des profils. Par exemple, en ne listant que les identifiants des nomenclatures "Certain -très probable" et "Probable", seules ces données valides seront prises en compte lors du calcul des profils (comportement par défaut). En listant tous les identifiants des nomenclatures des statuts de validation, l'ensemble des données alimenteront les profils de taxons.
+- Le paramètre ``id_rang_for_profiles`` : permet de lister les ``id_rang`` du taxref à prendre en compte pour les calculs des profils. Par défaut, les profils ne sont calculés que pour les cd_ref correspondant à des Genres, Espèces et Sous-espèces.
 - Le paramètre ``proportion_kept_data`` définit le pourcentage de données à conserver lors du calcul des altitudes valides (``gn_profiles.vm_cor_taxon_phenology``), en retirant ainsi les extrêmes. Ce paramètre, définit à 95% par défaut, doit être compris entre 51 et 100% (voir détails ci-après).
+
+Les deux premiers paramètres permettent de filtrer les données dans la vue ``gn_profiles.v_synthese_for_profiles``. Cette vue comporte les données de la synthèse qui répondent aux paramètres et qui alimenteront les profiles de taxons. Les clauses WHERE de cette vue peuvent être adaptées pour filtrer les données sur davantage de critères et répondre aux besoins plus spécifiques, mais sa structure doit rester inchangée. 
+
 
 Les paramètres définis par taxon le sont dans la table ``gn_profiles.cor_taxons_profiles_parameters`` :
 
@@ -265,7 +269,7 @@ Il faut donc (1/[1- ``proportion_kept_data`` /100])+1 données pour que des alti
 - 51 données minimum par période/stade si ``proportion_kept_data`` =98
 - 21 données minimum par période/stade si ``proportion_kept_data`` =95
 - 11 données minimum par période/stade si ``proportion_kept_data`` =90
-- 3 données minimum par période/stade si ``proportion_kept_data`` =50
+- 3 données minimum par période/stade si ``proportion_kept_data`` =51
 
 
 Fonctions
