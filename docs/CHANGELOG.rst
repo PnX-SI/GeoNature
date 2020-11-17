@@ -7,6 +7,17 @@ CHANGELOG
 
 **🐛 Corrections**
 
+* Correction d'un bug majeur sur les médias qui les supprimaient au bout de 24h
+* Scripts ``sql`` et `sh`` de restauration des medias dans data/medias 
+
+**⚠️ Notes de version**
+
+* Pour récuperer les medias depuis la table ``gn_commons.t_history_actions``:
+  * executer le script ``SQL`` ``data/medias/restore_medias.sql``
+    * qui va recréer les médias en base
+  * exécuter le script `BASH`` ``data/medias/restore_medias.sh``
+    * qui va changer le nom des fichiers supprimés et supprimer le préffixe par ``deleted_``
+
 2.5.3 (2020-11-04)
 ------------------
 
