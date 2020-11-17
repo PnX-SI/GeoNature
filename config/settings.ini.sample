@@ -1,6 +1,4 @@
-## Fichier de configuration utilisée uniquement lors de l'installation initiale de GeoNature
-# Toute modification de ce fichier après l'installation n'aura pas d'effet
-# Sauf si une nouvelle installation de GeoNature est relancée sur la version existante
+## Fichier de configuration utilisé lors de l'installation de GeoNature
 
 # Langue du serveur
 # valeur possible : fr_FR.UTF-8, en_US.utf8 
