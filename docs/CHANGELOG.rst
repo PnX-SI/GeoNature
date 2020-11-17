@@ -17,7 +17,7 @@ CHANGELOG
 
 **⚠️ Notes de version**
 
-* Si vous aviez associé des médias à des observations dans Occtax ou autre, vous pouvez les retrouver dans la table d'historisation des actions (``SELECT * FROM gn_commons.t_history_actions WHERE table_content->'id_media' IS NOT NULL AND operation_type = 'D'``)
+* Si vous aviez associé des médias à des observations dans Occtax ou autre et qu'ils ont été supprimés, vous pouvez les retrouver dans la table d'historisation des actions (``SELECT * FROM gn_commons.t_history_actions WHERE table_content->'id_media' IS NOT NULL AND operation_type = 'D'``)
 * Pour restaurer les médias supprimés depuis la table ``gn_commons.t_history_actions`` vous pouvez :
 
   * exécuter le script SQL ``data/medias/restore_medias.sql`` qui va recréer les médias supprimés dans la table ``gn_commons.t_medias``
