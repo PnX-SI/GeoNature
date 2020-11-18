@@ -121,14 +121,34 @@
         Copier les informations du relevé en cours
       </button>
     </div>
-    <div *ngIf="occtaxConfig.form_fields.place_name">
-      <small> {{ 'Releve.PlaceName' | translate }} </small>
-      <input
-        class="form-control form-control-sm"
-        type="text"
-        [formControl]="releveParamForm.get('place_name')"
+
+    <div class="row">
+      <div
+        *ngIf="occtaxConfig.form_fields.precision"
+        class="col-4"
       >
+        <small>Précision du pointage (m)</small>
+        <input
+          type="number"
+          class="form-control form-control-sm"
+          placeholder="Précision du pointage"
+          [formControl]="releveParamForm.get('precision')"
+        >
+      </div>
+
+      <div 
+        *ngIf="occtaxConfig.form_fields.place_name"
+        class="col-4"
+      >
+        <small> {{ 'Releve.PlaceName' | translate }} </small>
+        <input
+          class="form-control form-control-sm"
+          type="text"
+          [formControl]="releveParamForm.get('place_name')"
+        >
+      </div>
     </div>
+
     <pnx-observers
       *ngIf="!occtaxConfig.observers_txt; else elseBlock"
       [parentFormControl]="releveParamForm.get('observers')"
@@ -204,30 +224,102 @@
       </div>
     </div>
 
-    <pnx-nomenclature
-      *ngIf="occtaxConfig.form_fields.group_type"
-      label="{{ 'Releve.GroupType' | translate }}"
-      [parentFormControl]="releveParamForm.get('id_nomenclature_grp_typ')"
-      codeNomenclatureType="TYP_GRP"
-    >
-    </pnx-nomenclature>
-
-    <div
-      *ngIf="occtaxConfig.form_fields.grp_method"
-      class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm"
-    >
-      <small> {{'Releve.GroupMethod' | translate}} </small>
-      <input
-        type="text"
-        class="form-control form-control-sm"
-        [formControl]="releveParamForm.get('grp_method')"
+    <div class="row">
+      <div
+        *ngIf="occtaxConfig.form_fields.altitude_min"
+        class="col-6"
       >
+        <small> {{ 'Releve.MinAltitude' | translate }} </small>
+        <input
+          class="form-control form-control-sm"
+          type="number"
+          [formControl]="releveParamForm.get('altitude_min')"
+        >
+      </div>
+
+      <!-- ALTITUDE MAX -->
+      <div
+        *ngIf="occtaxConfig.form_fields.altitude_max"
+        class="col-6"
+      >
+        <small> {{ 'Releve.MaxAltitude' | translate }} </small>
+        <input
+          class="form-control form-control-sm"
+          type="number"
+          [formControl]="releveParamForm.get('altitude_max')"
+        >
+      </div>
+    </div>
+
+    <div class="row">
+      <div 
+        *ngIf="occtaxConfig.form_fields.depth_min"
+        class="col-6"
+      >
+        <small> {{ 'Releve.MinDepth' | translate }} </small>
+        <input
+          class="form-control form-control-sm"
+          type="number"
+          [formControl]="releveParamForm.get('depth_min')"
+        >
+      </div>
+
+      <div 
+        *ngIf="occtaxConfig.form_fields.depth_min"
+        class="col-6"
+      >
+        <small> {{ 'Releve.MaxDepth' | translate }} </small>
+        <input
+          class="form-control form-control-sm"
+          type="number"
+          [formControl]="releveParamForm.get('depth_max')"
+        >
+      </div>
+
+    </div>
+
+    <div class="row">
+      <div
+        *ngIf="occtaxConfig.form_fields.group_type"
+        class="col-4"
+      >
+        <pnx-nomenclature
+          label="{{ 'Releve.GroupType' | translate }}"
+          [parentFormControl]="releveParamForm.get('id_nomenclature_grp_typ')"
+          codeNomenclatureType="TYP_GRP"
+        >
+        </pnx-nomenclature>
+      </div>
+
+      <div
+        *ngIf="occtaxConfig.form_fields.grp_method"
+        class="col-4"
+      >
+        <small> {{'Releve.GroupMethod' | translate}} </small>
+        <input
+          type="text"
+          class="form-control form-control-sm"
+          [formControl]="releveParamForm.get('grp_method')"
+        >
+      </div>
+
+      <div 
+        *ngIf="occtaxConfig.form_fields.geo_object_nature"
+        class="col-4"
+      >
+        <pnx-nomenclature
+          label="{{ 'Releve.GeoObjectNature' | translate }}"
+          [parentFormControl]="releveParamForm.get('id_nomenclature_geo_object_nature')"
+          codeNomenclatureType="NAT_OBJ_GEO"
+        >
+        </pnx-nomenclature>
+      </div>
     </div>
 
     <pnx-nomenclature
-      *ngIf="occtaxConfig.form_fields.obs_technique"
-      label="{{ 'Releve.ObsTechnique' | translate }}"
-      [parentFormControl]="releveParamForm.get('id_nomenclature_obs_technique')"
+      *ngIf="occtaxConfig.form_fields.tech_collect"
+      label="{{ 'Releve.TechCollectCampanule' | translate }}"
+      [parentFormControl]="releveParamForm.get('id_nomenclature_tech_collect_campanule')"
       codeNomenclatureType="TECHNIQUE_OBS"
     >
     </pnx-nomenclature>
@@ -348,6 +440,18 @@
       </div>
 
       <div
+        *ngIf="occtaxConfig.form_fields.behaviour"
+        class="col-lg-4 col-sm-6"
+      >
+        <pnx-nomenclature
+          label="{{ 'Taxon.OccBehaviour' | translate }}"
+          [parentFormControl]="occurrenceParamForm.get('id_nomenclature_behaviour')"
+          codeNomenclatureType="OCC_COMPORTEMENT"
+        >
+        </pnx-nomenclature>
+      </div>
+
+      <div
         *ngIf="occtaxConfig.form_fields.source_status"
         class="col-lg-4 col-sm-6"
       >
@@ -370,7 +474,9 @@
         >
         </pnx-nomenclature>
       </div>
+    </div>
 
+    <div class="row">
       <div
         *ngIf="occtaxConfig.form_fields.exist_proof"
         class="col-lg-4 col-sm-6"
@@ -382,6 +488,33 @@
           codeNomenclatureType="PREUVE_EXIST"
         >
         </pnx-nomenclature>
+      </div>
+
+      <div
+        *ngIf="occtaxConfig.form_fields.digital_proof"
+        class="col-lg-4 col-sm-6"
+      >
+        <div class="form-group">
+          <small> {{ 'Taxon.DigitalProof' | translate }} </small>
+          <input
+            class="form-control form-control-sm"
+            [formControl]="occurrenceParamForm.get('digital_proof')"
+            type="text"
+          >
+        </div>
+      </div>
+      <div
+        *ngIf="occtaxConfig.form_fields.non_digital_proof"
+        class="col-lg-4 col-sm-6"
+      >
+        <div class="form-group">
+          <small> {{ 'Taxon.NonDigitalProof' | translate }} </small>
+          <input
+            class="form-control form-control-sm"
+            [formControl]="occurrenceParamForm.get('non_digital_proof')"
+            type="text"
+          >
+        </div>
       </div>
     </div>
 

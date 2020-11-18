@@ -9,7 +9,7 @@ import {
 import { MatDialogRef } from "@angular/material";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { combineLatest } from "rxjs";
-import { filter, map } from "rxjs/operators";
+import { filter, map, pairwise } from "rxjs/operators";
 import { ModuleConfig } from "../../module.config";
 import { OcctaxFormMapService } from "../map/map.service";
 import { OcctaxFormReleveService } from "../releve/releve.service";
@@ -45,6 +45,9 @@ export class OcctaxFormParamDialog implements OnInit {
   public paramsForm: FormGroup;
   public selectedIndex: number = null;
   public state: string = "collapsed";
+
+  public displayProofFromElements: boolean = false;
+  public existProof_DATA: Array<any> = [];
 
   get geometryParamForm() {
     return this.paramsForm.get("geometry");
@@ -90,13 +93,18 @@ export class OcctaxFormParamDialog implements OnInit {
             "^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$"
           ),
         ],
+        altitude_min: null,
+        altitude_max: null,
+        depth_min: null,
+        depth_max: null,
         comment: null,
-        id_nomenclature_obs_technique: null,
+        id_nomenclature_tech_collect_campanule: null,
         observers: null,
         observers_txt: null,
         id_nomenclature_grp_typ: null,
-        grp_method: null
-
+        grp_method: null,
+        id_nomenclature_geo_object_nature: null,
+        precision: null
       }),
       occurrence: this.fb.group({
         id_nomenclature_obs_technique: null,
@@ -104,12 +112,15 @@ export class OcctaxFormParamDialog implements OnInit {
         id_nomenclature_bio_status: null,
         id_nomenclature_naturalness: null,
         id_nomenclature_exist_proof: null,
+        id_nomenclature_behaviour: null,
         id_nomenclature_observation_status: null,
         id_nomenclature_blurring: null,
         id_nomenclature_source_status: null,
         determiner: null,
         id_nomenclature_determination_method: null,
         sample_number_proof: null,
+        digital_proof: null,
+        non_digital_proof: null,
         comment: null,
       }),
       counting: this.fb.group({
@@ -145,6 +156,7 @@ export class OcctaxFormParamDialog implements OnInit {
         ? this.paramsForm.get("counting").enable()
         : this.paramsForm.get("counting").disable();
     });
+
 
     //On observe les cases cochées pour savoir quel onglet affiché
     //Uniquement si un seul switch est activé
