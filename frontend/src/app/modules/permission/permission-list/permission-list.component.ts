@@ -17,7 +17,7 @@ interface DatatableColumn {
 }
 
 @Component({
-  selector: 'pnx-permission-list',
+  selector: 'gn-permission-list',
   templateUrl: './permission-list.component.html',
   styleUrls: ['./permission-list.component.scss'],
 })

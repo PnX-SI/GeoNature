@@ -14,7 +14,7 @@ export interface AccessRequest {
 }
 
 @Component({
-  selector: 'pnx-access-request-convention',
+  selector: 'gn-access-request-convention',
   templateUrl: 'access-request-convention.component.html',
   styleUrls: ['./access-request-convention.component.scss']
 })

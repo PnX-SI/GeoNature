@@ -4,7 +4,7 @@ import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { PermissionService } from '../permission.service';
 
 @Component({
-  selector: 'pnx-permission-request-list',
+  selector: 'gn-permission-request-list',
   templateUrl: './request-list.component.html',
   styleUrls: ['./request-list.component.scss'],
 })

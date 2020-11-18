@@ -13,7 +13,7 @@ import { ConventiondModalContent } from '../convention-modal/convention-modal.co
 
 
 @Component({
-  selector: 'pnx-access-request',
+  selector: 'gn-access-request',
   templateUrl: './access-request.component.html',
   styleUrls: ['./access-request.component.scss']
 })

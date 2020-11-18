@@ -9,7 +9,7 @@ import { PermissionService } from '../../permission.service';
 
 
 @Component({
-  selector: 'pnx-pending-permission-request-list',
+  selector: 'gn-pending-permission-request-list',
   templateUrl: './pending-request-list.component.html',
   styleUrls: ['./pending-request-list.component.scss'],
 })

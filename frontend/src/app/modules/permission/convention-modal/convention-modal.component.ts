@@ -4,7 +4,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AppConfig } from '@geonature_config/app.config';
 
 @Component({
-  selector: 'pnx-convention-modal',
+  selector: 'gn-convention-modal',
   templateUrl: './convention-modal.component.html'
 })
 export class ConventiondModalContent implements OnInit {

@@ -6,7 +6,7 @@ import { GnPermissionRequest } from '../permission.interface';
 import { PermissionService } from '../permission.service';
 
 @Component({
-  selector: 'pnx-permission-request-detail',
+  selector: 'gn-permission-request-detail',
   templateUrl: './request-detail.component.html',
   styleUrls: ['./request-detail.component.scss']
 })
