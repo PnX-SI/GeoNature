@@ -86,16 +86,10 @@ export class DatasetCardComponent implements OnInit {
     });
   }
 
-  TaxonsList() {
-    this._dataService.getTaxons().subscribe(
-      taxons => {
-        this.taxs = taxons.items.features;
-      }
-    )
-  }
 
   getDataset(id) {
     this._dfs.getDatasetDetails(id).subscribe(data => {
+      console.log(data)
       this.dataset = data;
       if (this.dataset.modules) {
         this.dataset.modules = this.dataset.modules.map(e => e.module_code).join(', ');

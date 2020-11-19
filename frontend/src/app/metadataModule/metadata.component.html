@@ -1,7 +1,7 @@
 <div class="container-fluid">
   <div class="card card-page">
     <div class="card-header">
-      <h3 class="underlined main-color"> Catalogue des jeux de données </h3>
+      <h3 class="main-color"> Catalogue des jeux de données </h3>
     </div>
 
     <div class="card-body">
@@ -47,7 +47,9 @@
             class="ml-2"
             matTooltip="Raffraichir la recherche"
             (click)="refreshFilters(searchModal)"
-          > <mat-icon style="vertical-align: middle;">refresh</mat-icon> </button>
+          >
+            <mat-icon style="vertical-align: middle;">refresh</mat-icon>
+          </button>
         </div>
       </div>
       <div>Liste des cadres d'acquisition et des jeux de données associés</div>
@@ -90,12 +92,12 @@
                 <section class="col-md-3">
                   <div *ngFor="let ac of af.cor_af_actor">
                     <span *ngIf="ac.organism">
-                      <b> {{ac.organism?.nom_organisme }} : </b> 
+                      <b> {{ac.organism?.nom_organisme }} : </b>
                       <small> {{ac.nomenclature_actor_role.label_fr }}</small> <br>
                     </span>
                     <span *ngIf="ac.role">
-                      <b>  {{ac.role?.nom_complet }} : </b> 
-                        <small> {{ac.nomenclature_actor_role.label_fr }}</small> <br>
+                      <b> {{ac.role?.nom_complet }} : </b>
+                      <small> {{ac.nomenclature_actor_role.label_fr }}</small> <br>
                     </span>
 
                   </div>
@@ -142,7 +144,8 @@
                   </td>
                   <td> {{ds.meta_create_date |date:'d/MM/yyyy' }}</td>
                   <td> {{ds.observation_count}} </td>
-                  <td>{{ds.creator?.nom_complet}}<td>
+                  <td>{{ds.creator?.nom_complet}}
+                  <td>
                     <div *ngIf="ds.observation_count > 0">
                       <mat-icon
                         (click)="sensiReport(ds.id_dataset)"
@@ -162,14 +165,15 @@
                     </div>
                   </td>
                   <td>
-                    <a *ngIf="ds.cruved.U"
+                    <a
+                      *ngIf="ds.cruved.U"
                       style="color: black;"
                       [routerLink]="['/metadata/dataset', ds.id_dataset]"
                       matTooltip="Éditer un jeux de donnée"
                     >
                       <mat-icon> create</mat-icon>
                     </a>
-                    <a 
+                    <a
                       *ngIf="ds.active"
                       (click)="importDs(ds.id_dataset)"
                       matTooltip="Importer dans ce jeu de donnée"
@@ -233,79 +237,81 @@
     class="modal-body"
     style="align-items: flex-end;"
   >
-      <label>  Rechercher sur:</label>
-        <select
-        [formControl]="searchFormService.form.get('selector')"
-          name="selecteur"
-          id="selector"
-          class="form-control"
-        >
-          <option value="ds">Jeu de données</option>
-          <option value="af">Cadre d'acquisition</option>
-        </select>
-      <label>UUID</label>
-        <input
-        [formControl]="searchFormService.form.get('uuid')"
-          class="form-control form-control-sm"
-          type="text"
-        >
-        <label>Titre / Identifiant</label>
-        
-        <input
-          [formControl]="searchFormService.form.get('name')"
-          class="form-control form-control-sm"
-        >
+    <label> Rechercher sur:</label>
+    <select
+      [formControl]="searchFormService.form.get('selector')"
+      name="selecteur"
+      id="selector"
+      class="form-control"
+    >
+      <option value="ds">Jeu de données</option>
+      <option value="af">Cadre d'acquisition</option>
+    </select>
+    <label>UUID</label>
+    <input
+      [formControl]="searchFormService.form.get('uuid')"
+      class="form-control form-control-sm"
+      type="text"
+    >
+    <label>Titre / Identifiant</label>
 
-      <pnx-date [parentFormControl]="searchFormService.form.get('date')" label="Date de création"></pnx-date>
-        <label>Acteur (organisme)</label>
-        
-        <select
-          [formControl]="searchFormService.form.get('organism')"
+    <input
+      [formControl]="searchFormService.form.get('name')"
+      class="form-control form-control-sm"
+    >
 
-          class="form-control form-control"
-        >
-          <option
-            value=""
-            selected
-          >--</option>
-          <option
-            *ngFor="let org of organisms"
-            value="{{org.id_organisme}}"
-          >
-            {{org.nom_organisme}} </option>
-        </select>
-        <label> Acteur (personne)</label>
-        
-        <select
-          class="form-control form-control"
-          [formControl]="searchFormService.form.get('person')"
-        >
-          <option
-            value=""
-            selected
-          > --</option>
-          <option
-            *ngFor="let role of roles"
-            value="{{role.id_role}}"
-          >
-            {{role?.nom_complet}}</option>
-        </select>
+    <pnx-date
+      [parentFormControl]="searchFormService.form.get('date')"
+      label="Date de création"
+    ></pnx-date>
+    <label>Acteur (organisme)</label>
 
-        <div class="mt-2">
-          <button
-          mat-raised-button
-          class="button-success uppercase mr-2"
-          (click)="advancedSearch(); c()"
-        > Rechercher </button>
-        <button
-          mat-raised-button
-          color="warn"
-          class="uppercase"
-          (click)="c()"
-        > 
-          Fermer 
-        </button>
-        </div>
+    <select
+      [formControl]="searchFormService.form.get('organism')"
+      class="form-control form-control"
+    >
+      <option
+        value=""
+        selected
+      >--</option>
+      <option
+        *ngFor="let org of organisms"
+        value="{{org.id_organisme}}"
+      >
+        {{org.nom_organisme}} </option>
+    </select>
+    <label> Acteur (personne)</label>
+
+    <select
+      class="form-control form-control"
+      [formControl]="searchFormService.form.get('person')"
+    >
+      <option
+        value=""
+        selected
+      > --</option>
+      <option
+        *ngFor="let role of roles"
+        value="{{role.id_role}}"
+      >
+        {{role?.nom_complet}}</option>
+    </select>
+
+    <div class="mt-2">
+      <button
+        mat-raised-button
+        class="button-success uppercase mr-2"
+        (click)="advancedSearch(); c()"
+      > Rechercher </button>
+      <button
+        mat-raised-button
+        color="warn"
+        class="uppercase"
+        (click)="c()"
+      >
+        Fermer
+      </button>
+    </div>
 
   </div>
 </ng-template>

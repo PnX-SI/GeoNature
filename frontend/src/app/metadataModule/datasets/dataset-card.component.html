@@ -79,9 +79,11 @@
 
           <div class="b">Identification</div>
           <div class="a"> <b>Nom : </b> Nom : {{dataset.dataset_name}}</div>
-          <div class="a"> <b> Identifiant SINP du jeu de données :</b> {{dataset.unique_dataset_id}}</div>
-          <div class="a"> <b> Identifiant GeoNature du jeu de données :</b> {{dataset.id_dataset}}</div>
-          <div class="a"> <b> Libellé court :</b>  {{dataset.dataset_shortname}}</div>
+          <div class="a"> <b> Identifiant SINP du jeu de données :</b> {{dataset.unique_dataset_id}}
+          </div>
+          <div class="a"> <b> Identifiant GeoNature du jeu de données :</b> {{dataset.id_dataset}}
+          </div>
+          <div class="a"> <b> Libellé court :</b> {{dataset.dataset_shortname}}</div>
           <div class="a"> <b> Description : </b> {{dataset.dataset_desc}}</div>
           <br />
 
@@ -95,9 +97,9 @@
 
           <div class="b">Territoires</div>
           <div class="a">
-            <b> Couverture du territoire terrestre :</b> 
+            <b> Couverture du territoire terrestre :</b>
             {{dataset.terrestrial_domain ? "oui" : "non"}} </div>
-          <div class="a"> 
+          <div class="a">
             <b>Couverture du territoire marin : </b>
             {{dataset.marine_domain ? "oui" : "non"}}
           </div>
@@ -105,17 +107,18 @@
 
           <div class="b">Cadre de référence</div>
           <div class="a">
-            <b> Titre du cadre d'acquisition :</b> 
+            <b> Titre du cadre d'acquisition :</b>
             {{dataset.acquisition_framework.acquisition_framework_name}} </div>
-          <div class="a"> 
-            <b> Identifiant du cadre d'acquisition :</b> 
+          <div class="a">
+            <b> Identifiant du cadre d'acquisition :</b>
             {{dataset.acquisition_framework.unique_acquisition_framework_id }} </div>
           <br />
 
 
           <div class="b">Processus de collecte</div>
-          <div class="a"> <b>Libellé :  </b> {{dataset.collecting_method.label_default}} </div>
-          <div class="a"> <b> Description :</b>  {{dataset.collecting_method.definition_default}} </div>
+          <div class="a"> <b>Libellé : </b> {{dataset.collecting_method.label_default}} </div>
+          <div class="a"> <b> Description :</b> {{dataset.collecting_method.definition_default}}
+          </div>
 
           <br />
 
@@ -125,8 +128,8 @@
               class="a"
               *ngFor="let actor of dataset.cor_dataset_actor"
             >
-              <div>  
-                <b>{{ actor.nomenclature_actor_role?.mnemonique}} : </b> 
+              <div>
+                <b>{{ actor.nomenclature_actor_role?.mnemonique}} : </b>
                 {{ actor.organism?.nom_organisme }}
                 <span *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"> - </span>
                 {{ actor.role?.nom_complet }}
@@ -137,12 +140,13 @@
 
           <div class="b"> Créateur</div>
 
-          <div class="a"> <b> Créateur du jeu de données :</b> {{dataset.creator?.nom_complet}} </div>
-          <br/>
+          <div class="a"> <b> Créateur du jeu de données :</b> {{dataset.creator?.nom_complet}}
+          </div>
+          <br />
 
           <div class="b">Attribut additionnels</div>
-          <div class="a"><b> Actif :</b>  {{dataset.active ? 'Oui' : 'Non'}} </div>
-          <div class="a"> <b>Validable :</b>  {{dataset.validable ? 'Oui' : 'Non'}} </div>
+          <div class="a"><b> Actif :</b> {{dataset.active ? 'Oui' : 'Non'}} </div>
+          <div class="a"> <b>Validable :</b> {{dataset.validable ? 'Oui' : 'Non'}} </div>
 
           <br />
 
@@ -167,7 +171,7 @@
       >
         <div class="card-header">
           <h5>
-            Liste des sources
+            Liste des imports
           </h5>
         </div>
         <div class="card-body">
@@ -188,24 +192,30 @@
                 <td class="textCenter">{{import.date_create_import | date: 'd/MM/yyyy'}}</td>
                 <td class="textCenter">
                   <div class="imgStatus">
-                    <i
-                      style="color: rgb(62, 233, 62);margin-right: 3%;margin-left: 3%;"
-                      class="fa fa-check-circle fa-3x imgImportSuccess"
-                      aria-hidden="true"
+                    <mat-icon
+                      class="success"
+                      matTooltip="Terminé"
                       *ngIf="import.is_finished"
-                    ></i>
-                    <i
-                      style="color: rgb(248, 67, 67);margin-right: 3%;margin-left: 3%;"
-                      class="fa fa-times-circle fa-3x importImportFail"
-                      aria-hidden="true"
+                    > done</mat-icon>
+
+                    <mat-icon
                       *ngIf="!import.is_finished"
-                    ></i>
+                      matTooltip="Non terminé"
+                      class="color-orange"
+                    > close</mat-icon>
+
                   </div>
                 </td>
                 <td class="textCenter">
                   <div *ngIf="import.source_count != 0 && import.is_finished">
-                    <mat-icon (click)="sensiReport(import.id_import)"> do_not_touch</mat-icon>
-                    <mat-icon (click)="uuidReport(import.id_import)"> format_list_numbered
+                    <mat-icon
+                      (click)="sensiReport(import.id_import)"
+                      matTooltip="Télécharger le rapport de sensibilité"
+                    > do_not_touch</mat-icon>
+                    <mat-icon
+                      (click)="uuidReport(import.id_import)"
+                      matTooltip="Télécharger le rapport d'UUID"
+                    > format_list_numbered
                     </mat-icon>
                   </div>
                   <div *ngIf="import.source_count == 0 || !import.is_finished">
