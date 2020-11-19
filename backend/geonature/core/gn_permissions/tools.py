@@ -174,6 +174,7 @@ def get_user_permissions(
         id_role=user["id_role"],
         code_filter_type=code_filter_type,
         code_action=code_action,
+        module_code=module_code,
         object_code=code_object,
     )
     object_for_error = None
@@ -342,7 +343,6 @@ def get_or_fetch_user_cruved(session=None, id_role=None, module_code=None, objec
         cruved_for_user_in_app()
     """
     if module_code in session and "user_cruved" in session[module_code]:
-        print("PASSE LA ???")
         return session[module_code]["user_cruved"]
     else:
         user_cruved = cruved_scope_for_user_in_module(

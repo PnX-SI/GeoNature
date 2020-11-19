@@ -2,10 +2,33 @@
 CHANGELOG
 =========
 
-2.5.4 (unreleased)
+2.5.5 (unreleased)
 ------------------
 
 **🐛 Corrections**
+
+* 
+
+2.5.4 (2020-11-17)
+------------------
+
+**🚀 Nouveautés**
+
+* Ajout de scripts ``sql`` et ``sh`` de restauration des medias dans ``data/medias`` (#1148)
+* Ajout d'un service pour pouvoir récupérer les informations sur l'utilisateur connecté
+
+**🐛 Corrections**
+
+* Correction des médias qui sont actuellement tous supprimés automatiquement après 24h, et non pas seulement ceux orphelins (#1148)
+* Correction des permissions sur les fiches info des relevés dans Occtax avec la désactivation du bouton de modification du relevé quand l'utilisateur n'en a pas les droits
+
+**⚠️ Notes de version**
+
+* Si vous aviez associé des médias à des observations dans Occtax ou autre et qu'ils ont été supprimés, vous pouvez les retrouver dans la table d'historisation des actions (``SELECT * FROM gn_commons.t_history_actions WHERE table_content->'id_media' IS NOT NULL AND operation_type = 'D'``)
+* Pour restaurer les médias supprimés depuis la table ``gn_commons.t_history_actions`` vous pouvez :
+
+  * exécuter le script SQL ``data/medias/restore_medias.sql`` qui va recréer les médias supprimés dans la table ``gn_commons.t_medias``
+  * exécuter le script BASH ``data/medias/restore_medias.sh`` (``bash /home/`whoami`/geonature/data/medias/restore_medias.sh`` en ``sudo`` si besoin) qui va renommer des fichiers supprimés en supprimant le préfixe ``deleted_``
 
 2.5.3 (2020-11-04)
 ------------------
