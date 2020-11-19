@@ -16,6 +16,7 @@ CHANGELOG
 * Correction d'un bug de récupération du CRUVED sur les modules (#1146)
 * Correction des validateur sur les preuves d'existence (#1134)
 * Correction de la récupération des dossiers dans ``backend/static`` dans le script ``migrate.sh``
+* Correction de l'affichage de l'utilisateur dans la navbar lorsqu'on est connecté via le CAS INPN
 
 2.5.4 (2020-11-17)
 ------------------
