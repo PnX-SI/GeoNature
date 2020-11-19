@@ -13,6 +13,11 @@ class TestApiUsersMenu:
 
     def test_menu_exists(self):
         resp = self.client.get(url_for("users.getRolesByMenuId", id_menu=1))
+        data = json_of_response(resp)
+        user = data[0]
+        mandatory_attr = ["id_role", "nom_role", "prenom_role"]
+        for attr in mandatory_attr:
+            assert attr in user
         assert resp.status_code == 200
 
     def test_menu_notexists(self):
