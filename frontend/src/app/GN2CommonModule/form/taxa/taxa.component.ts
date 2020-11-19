@@ -59,6 +59,8 @@ export class TaxaComponent implements OnInit {
    * la valeur par défaut.
    */
   @Input() debounceTime: number;
+  /** Désactive le composant. */
+  @Input() disabled: boolean = false;
 
   /** @ignore */
   constructor(

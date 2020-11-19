@@ -44,6 +44,7 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
   public cardHeight: number;
   displayOccurrence: BehaviorSubject<any> = new BehaviorSubject(null);
   private _geojson: any;
+  public userReleveCruved: any;
 
   get releve() {
     return this.occtaxData.getValue()
@@ -101,7 +102,9 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
       this.occtaxDataService
         .getOneCounting(Number(id_counting))
         .pipe(map((data) => data["id_releve"]))
-        .subscribe((id_releve) => this.getOcctaxData(id_releve));
+        .subscribe((id_releve) => {
+          this.getOcctaxData(id_releve)
+        });
     }
 
     this.getNomenclatures();
@@ -133,6 +136,7 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
       .getOneReleve(id)
       .pipe(
         map((data) => {
+          this.userReleveCruved = data.cruved;
           let releve = data.releve;
           releve.properties.date_min = new Date(releve.properties.date_min);
           releve.properties.date_max = new Date(releve.properties.date_max);
