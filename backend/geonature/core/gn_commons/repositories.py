@@ -410,6 +410,9 @@ class TMediumRepository:
 
         id_medias_temp = [res.id_media for res in res_medias_temp]
 
+        if (id_medias_temp):
+            print('sync media remove temp media with ids : ', id_medias_temp)
+
         for id_media in id_medias_temp:
             TMediaRepository(id_media=id_media).delete()
 
@@ -442,13 +445,18 @@ class TMediumRepository:
 
         ids_media_to_delete = [x for x in ids_media_file if x not in ids_media_base]
 
+        if (ids_media_to_delete):
+            print('sync media remove unassociated medias with ids : ', ids_media_to_delete)
+
         for f_data in liste_fichiers:
             if f_data['id_media'] not in ids_media_to_delete:
                 continue
-
             if 'thumbnail' in str(f_data['path']):
                 os.remove(f_data['path'])
-            remove_file(f_data['path'])
+            else:
+                deleted_paths = str(f_data['path']).split('/')
+                deleted_paths[-1] = 'deleted_' + deleted_paths[-1]
+                rename_file(f_data['path'], "/".join(deleted_paths))
 
 def get_table_location_id(schema_name, table_name):
     try:
