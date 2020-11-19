@@ -2,12 +2,20 @@
 CHANGELOG
 =========
 
-2.5.5 (unreleased)
+2.5.5 (2020-11-19)
 ------------------
+
+**🚀 Nouveautés**
+
+* Ajout d'un composant fil d'ariane (#1143)
+* Ajout de la possiblité de désactiver les composants ``pnx-taxa`` et ``pnx-areas`` (#1142)
+* Ajout de tests sur les routes pour assurer la compatibilité avec les applications mobiles
 
 **🐛 Corrections**
 
-* 
+* Correction d'un bug de récupération du CRUVED sur les modules (#1146)
+* Correction des validateur sur les preuves d'existence (#1134)
+* Correction de la récupération des dossiers dans ``backend/static`` dans le script ``migrate.sh``
 
 2.5.4 (2020-11-17)
 ------------------

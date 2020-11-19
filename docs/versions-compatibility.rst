@@ -1,7 +1,24 @@
 COMPATIBILITE
 =============
 
-Compatibilité des versions de GeoNature
+Versions fournies et testées des dépendances
+
+GeoNature 2.5.5
+---------------
+
++------------------------+-----------+
+| Application / Module   | Version   |
++========================+===========+
+| TaxHub                 | 1.7.3     | 
++------------------------+-----------+ 
+| UsersHub               | 2.1.3     | 
++------------------------+-----------+
+| Nomenclature-Api       | 1.3.4     | 
++------------------------+-----------+ 
+| Authentification-Api   | 1.4.4     | 
++------------------------+-----------+ 
+| Habref-Api             | 0.1.4     | 
++------------------------+-----------+ 
 
 GeoNature 2.5.4
 ---------------
