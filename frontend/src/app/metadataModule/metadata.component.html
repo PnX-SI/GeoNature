@@ -186,11 +186,16 @@
 
                     <button 
                       mat-icon-button
-                      [disabled]="!ds.active || ds.observation_count == 0"
+                      [disabled]="ds.observation_count == 0"
                       (click)="syntheseDs(ds.id_dataset, ds.observation_count, syntheseNoneModal)"
                       matTooltip="Afficher les données dans la Synthèse"
                     >
+                    <span *ngIf="ds.observation_count == 0" matTooltip="Le jeu de données ne comporte aucune observation"> 
                       <mat-icon> room </mat-icon>
+                    </span>
+                    <span *ngIf="ds.observation_count >0"> 
+                      <mat-icon> room </mat-icon>
+                    </span>
                     </button>
                     <button 
                       mat-icon-button

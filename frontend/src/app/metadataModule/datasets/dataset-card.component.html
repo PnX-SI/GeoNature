@@ -350,12 +350,26 @@
       >
         <!-- changer la valeur du ngif quand la carte sera prete -->
         <div class="card-header">
-          <h5>Périmètre géographique</h5>
+          <h5>
+            Périmètre géographique
+            <button 
+              mat-raised-button
+              class="ml-2"
+              color="primary"
+              (click)="syntheseDs(dataset.id_dataset)"
+              matTooltip="Afficher les données"
+            >
+              Voir les données
+            <mat-icon> room </mat-icon>
+          </button>
+          </h5>
+
         </div>
         <div
           *ngIf="this.geojsonData"
           class="card-body"
         >
+
           <!-- changer la valeur du ngif quand la carte sera prete -->
           <pnx-map
             height="40vh"

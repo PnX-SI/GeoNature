@@ -170,4 +170,13 @@ export class DatasetCardComponent implements OnInit {
     this._router.navigate(['/import/process/step/1'], navigationExtras);
   }
 
+  syntheseDs(idDataset) {
+    let navigationExtras: NavigationExtras = {
+      queryParams: {
+        "id_dataset": idDataset
+      }
+    };
+    this._router.navigate(['/synthese'], navigationExtras);
+  }
+
 }
