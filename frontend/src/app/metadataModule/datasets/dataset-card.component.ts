@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { BaseChartDirective } from 'ng2-charts';
@@ -158,6 +158,16 @@ export class DatasetCardComponent implements OnInit {
         this._router.navigate(['metadata'])
       });
     }
+  }
+
+  importDs(idDataset) {
+    let navigationExtras: NavigationExtras = {
+      queryParams: {
+        "datasetId": idDataset,
+        "resetStepper": true
+      }
+    };
+    this._router.navigate(['/import/process/step/1'], navigationExtras);
   }
 
 }

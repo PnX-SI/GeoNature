@@ -85,41 +85,55 @@
         <div class="card-body">
           <button
             mat-raised-button
-            class="button-success ml-2 mb-2"
-            (click)="getPdf()"
+            color="primary"
+            class="mr-1 mb-2"
+              matTooltip="Export PDF"
+              (click)="getPdf()"
           >
             Export PDF
             <mat-icon>file_download</mat-icon>
-    
           </button>
-          <div *ngIf="dataset?.observation_count > 0">
-            <button 
-              mat-raised-button 
-              color="primary"
-              class="ml-2 mb-2"
-            >
-              Rapport de sensibilité
-              <mat-icon
-                (click)="sensiReport(dataset.id_dataset)"
-                matTooltip="Rapport de sensibilité"
-              > do_not_touch 
-              </mat-icon>
-            </button>
-            <button 
-              mat-raised-button 
-              color="primary"
-              class="ml-2 mb-2"
-            >
-              Rapport d'UUID
-              <mat-icon
-                class="ml-2"
-                (click)="uuidReport(dataset.id_dataset)"
-                matTooltip="Rapport d'UUID"
-              > format_list_numbered 
+          <button 
+            [disabled]="dataset?.observation_count == 0"
+            mat-raised-button 
+            color="primary"
+            matTooltip="Rapport de sensibilité"
+            class="mb-2 mr-1"
+          >
+            Rapport de sensibilité
+            <mat-icon
+              (click)="sensiReport(dataset.id_dataset)"
+            > do_not_touch 
             </mat-icon>
-            </button>
+          </button>
+          <button
+            [disabled]="dataset?.observation_count == 0"
+            mat-raised-button 
+            color="primary"
+            matTooltip="Rapport d'UUID"
+            class="mb-2"
+          >
+            Rapport d'UUID
+            <mat-icon
+              (click)="uuidReport(dataset?.id_dataset)"
+              
+            > format_list_numbered 
+          </mat-icon>
+          </button>
 
-          </div>
+          <button
+            [disabled]="!dataset?.active"
+            mat-raised-button 
+            color="primary"
+            (click)="importDs(dataset?.id_dataset)"
+            matTooltip="Importer dans ce jeu de données"
+
+          >
+            Importer des données
+            <mat-icon
+            > publish 
+            </mat-icon>
+          </button>
 
           <div *ngIf="dataset?.observation_count == 0">
             <mat-icon matTooltip="Impossible de télécharger le rapport de sensibilité">
