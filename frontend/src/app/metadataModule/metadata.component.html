@@ -58,9 +58,9 @@
       <mat-accordion [multi]="true">
         <div class="tab-title">
           <div class="col-md-1">ID </div>
-          <div class="col-md-3"> Nom</div>
+          <div class="col-md-2"> Nom</div>
           <div class="col-md-2"> Date de création</div>
-          <div class="col-md-4"> Acteurs</div>
+          <div class="col-md-5"> Acteurs</div>
           <div class="col-md-1"> Actions</div>
         </div>
         <ng-container *ngFor="let af of tempAF; let idx = index">
@@ -78,7 +78,7 @@
               >
 
                 <div class="col-md-1">{{ af.id_acquisition_framework }}</div>
-                <div class="col-md-3"> 
+                <div class="col-md-2"> 
                   <a
                     [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]"
                   > {{ af.acquisition_framework_name }} 
@@ -87,7 +87,7 @@
                 </div>
                 <div class="col-md-2 ">{{af.acquisition_framework_start_date |date:'d/MM/yyyy'}}
                 </div>
-                <section class="col-md-4">
+                <section class="col-md-5">
                   <span *ngIf="af.creator"> <b> {{af.creator?.nom_complet}} : </b> créateur </span>
                   
                   <div *ngFor="let ac of af.cor_af_actor">
