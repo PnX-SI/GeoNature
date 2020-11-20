@@ -3,7 +3,7 @@
   class="container-fluid mt-4"
 >
   <div class="row">
-    <div class="col-xs-12 col-sm-6 col-lg-8">
+    <div class="col-8">
       <button
         mat-raised-button
         routerLink="/metadata"
@@ -12,6 +12,10 @@
         <mat-icon>chevron_left</mat-icon>
         Retour
       </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-8">
       <div class="card">
         <div class="card-body">
           <h5 class="text-muted">Jeu de données</h5>
@@ -34,48 +38,6 @@
             </button>
           </h4>
 
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div
-    *ngIf="dataset.taxa_count"
-    class="row"
-  >
-    <div class="col-4">
-      <div class="card">
-        <div class="card-body">
-          <div class="row">
-            <div class="col">
-              <h5>Taxons</h5> {{dataset?.taxa_count}}
-            </div>
-            <div
-              class="col-auto"
-              width="60"
-            ><img
-                src="./assets/images/Taxon_icon.svg"
-                width="60"
-              ></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-4">
-      <div class="card">
-        <div class="card-body">
-          <div class="row">
-            <div class="col">
-              <h5>Observations</h5> {{dataset?.observation_count}}
-            </div>
-            <div
-              class="col-auto"
-              width="60"
-            ><img
-                src="./assets/images/Donnee_icon.svg"
-                width="64"
-              ></div>
-          </div>
         </div>
       </div>
     </div>
@@ -143,6 +105,49 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <div
+    *ngIf="dataset.taxa_count"
+    class="row"
+  >
+    <div class="col-4">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col">
+              <h5>Taxons</h5> {{dataset?.taxa_count}}
+            </div>
+            <div
+              class="col-auto"
+              width="60"
+            ><img
+                src="./assets/images/Taxon_icon.svg"
+                width="60"
+              ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col">
+              <h5>Observations</h5> {{dataset?.observation_count}}
+            </div>
+            <div
+              class="col-auto"
+              width="60"
+            ><img
+                src="./assets/images/Donnee_icon.svg"
+                width="64"
+              ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
   </div>
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 ">

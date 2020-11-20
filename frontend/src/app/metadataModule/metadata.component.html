@@ -88,15 +88,16 @@
                 <div class="col-md-2 ">{{af.acquisition_framework_start_date |date:'d/MM/yyyy'}}
                 </div>
                 <section class="col-md-4">
-                  <b>Créateur : </b>  {{af.creator?.nom_complet}}
+                  <span *ngIf="af.creator"> <b> {{af.creator?.nom_complet}} : </b> créateur </span>
+                  
                   <div *ngFor="let ac of af.cor_af_actor">
                     <span *ngIf="ac.organism">
                       <b> {{ac.organism?.nom_organisme }} : </b>
-                      <small> {{ac.nomenclature_actor_role.label_fr }}</small> <br>
+                      {{ac.nomenclature_actor_role.label_fr }} <br>
                     </span>
                     <span *ngIf="ac.role">
                       <b> {{ac.role?.nom_complet }} : </b>
-                      <small> {{ac.nomenclature_actor_role.label_fr }}</small> <br>
+                     {{ac.nomenclature_actor_role.label_fr }} <br>
                     </span>
 
                   </div>
@@ -158,15 +159,16 @@
                     </a>
                   </td>
                   <td> {{ds.meta_create_date |date:'d/MM/yyyy' }}</td>
-                  <td>
-                    <div style="text-align: left;" *ngFor="let ac of ds.cor_dataset_actor">
+                  <td style="text-align: left;">
+                    <span *ngIf="ds.creator"> <b> {{ds.creator?.nom_complet}} : </b> créateur  </span>
+                    <div *ngFor="let ac of ds.cor_dataset_actor">
                       <span *ngIf="ac.organism">
                         <b> {{ac.organism?.nom_organisme }} : </b>
-                        <small> {{ac.nomenclature_actor_role.label_fr }}</small> <br>
+                       {{ac.nomenclature_actor_role.label_fr }} <br>
                       </span>
                       <span *ngIf="ac.role">
                         <b> {{ac.role?.nom_complet }} : </b>
-                        <small> {{ac.nomenclature_actor_role.label_fr }}</small> <br>
+                         {{ac.nomenclature_actor_role.label_fr }} <br>
                       </span>
   
                     </div>  
