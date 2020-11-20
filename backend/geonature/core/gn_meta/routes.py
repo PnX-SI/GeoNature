@@ -925,14 +925,16 @@ def get_acquisition_framework(id_acquisition_framework):
     :param type: int
     """
     af = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
+
     if af:
         return af.as_dict(True)
     return None
 
 
 @routes.route("/acquisition_framework_details/<id_acquisition_framework>", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
 @json_resp
-def get_acquisition_framework_details(id_acquisition_framework):
+def get_acquisition_framework_details(info_role, id_acquisition_framework):
     """
     Get one AF
 
@@ -990,10 +992,19 @@ def get_acquisition_framework_details(id_acquisition_framework):
         "nb_observations": nb_observations,
         "nb_habitats": nb_habitat,
     }
+    ids_afs_user = TAcquisitionFramework.get_user_af(info_role, only_user=True)
+    ids_afs_org = TAcquisitionFramework.get_user_af(info_role, only_user=False)
+    user_cruved = cruved_scope_for_user_in_module(
+        id_role=info_role.id_role, module_code="METADATA",
+    )[0]
+    acquisition_framework["cruved"] = af.get_object_cruved(
+        user_cruved=user_cruved,
+        id_object=af.id_acquisition_framework,
+        ids_object_user=ids_afs_user,
+        ids_object_organism=ids_afs_org,
+    )
 
-    if acquisition_framework:
-        return acquisition_framework
-    return None
+    return acquisition_framework
 
 
 @routes.route("/acquisition_framework/<int:af_id>", methods=["DELETE"])

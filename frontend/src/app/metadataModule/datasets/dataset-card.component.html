@@ -14,26 +14,25 @@
       </button>
       <div class="card">
         <div class="card-body">
-          <h3>JEU DE DONNÉES : {{dataset?.dataset_name}}
-
+          <h5 class="text-muted">Jeu de données</h5>
+          <h4>{{dataset?.dataset_name}}
             <button 
-              [disabled]="!dataset.cruved.E"
+              [disabled]="!dataset?.cruved.U"
               [routerLink]="['/metadata/dataset', dataset.id_dataset]" 
               mat-mini-fab color="primary" 
+              matToolTip="Editer le jeu de données"
               class="mr-2">
                 <mat-icon>create</mat-icon>
-              
             </button>
-    
             <button 
               mat-mini-fab color="warn"
               [disabled]="dataset?.observation_count > 0 || !dataset.cruved.D"
               (click)="deleteDataset(id_dataset)"
+              matToolTip="Supprimer le jeu de données"
               >
               <mat-icon>delete</mat-icon>
-    
             </button>
-          </h3>
+          </h4>
 
         </div>
       </div>
