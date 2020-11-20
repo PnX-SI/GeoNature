@@ -79,10 +79,12 @@
               >
 
                 <div class="col-md-1">{{ af.id_acquisition_framework }}</div>
-                <div class="col-md-3"> <a
+                <div class="col-md-3"> 
+                  <a
                     [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]"
-                  > {{ af.acquisition_framework_name | uppercase }} </a>
-                  <br> <small class="muted"> {{ af.unique_acquisition_framework_id  }} </small>
+                  > {{ af.acquisition_framework_name }} 
+                  <br> <small style="color: gray"> {{ af.unique_acquisition_framework_id  }} </small>
+                </a>
                 </div>
                 <div class="col-md-2 ">{{af.acquisition_framework_start_date |date:'d/MM/yyyy'}}
                 </div>
@@ -104,13 +106,23 @@
                 </section>
 
                 <div class="col-md-1">
-                  <a
-                    *ngIf="af.cruved.U"
-                    style="color: black;"
+                  <button 
+                    mat-icon-button
+                    [disabled]="!af.cruved.U"
+                    matTooltip="Editer ce cadre d'acquisition"
                     [routerLink]="['/metadata/af', af.id_acquisition_framework]"
                   >
                     <mat-icon> create</mat-icon>
-                  </a>
+                  </button>
+                  <button 
+                    mat-icon-button
+                    [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]"
+                    matTooltip="Voir la fiche du cadre d'acquisition"
+                    style="color: black;"
+                  >
+                    <mat-icon> info</mat-icon>
+                  </button>
+                  
                 </div>
 
               </mat-panel-title>
@@ -125,61 +137,67 @@
                   <td>Nom du JDD</td>
                   <td>Date de création</td>
                   <td>Nombre de données</td>
-                  <td>Créateur</td>
                   <td>Actions</td>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let ds of af.datasetsTemp; let last = last;">
                   <td>
-                    <a [routerLink]="['/metadata/dataset_detail', ds.id_dataset]"> {{ds.id_dataset}}
-                    </a>
+                    {{ds.id_dataset}}
                   </td>
                   <td>
                     <a [routerLink]="['/metadata/dataset_detail', ds.id_dataset]">
                       {{ds.dataset_name}}
-                      <br />
-                      <span style="color: gray"> {{ds.unique_dataset_id}} </span>
+                      <br /> 
+                      <small style="color: gray"> {{ds.unique_dataset_id}} </small>
                     </a>
                   </td>
                   <td> {{ds.meta_create_date |date:'d/MM/yyyy' }}</td>
                   <td> {{ds.observation_count}} </td>
-                  <td>{{ds.creator?.nom_complet}}
+                  <!-- <td>{{ds.creator?.nom_complet}} </td> -->
                   <td>
-                    <a
-                      *ngIf="ds.cruved.U"
-                      style="color: black;"
+                    <button 
+                      mat-icon-button
+                      [disabled]="!ds.cruved.E"
                       [routerLink]="['/metadata/dataset', ds.id_dataset]"
-                      matTooltip="Éditer un jeux de donnée"
+                      matTooltip="Editer le jeu de données"
                     >
                       <mat-icon> create</mat-icon>
-                    </a>
-                    <a
-                      *ngIf="ds.active"
+                    </button>
+
+                    <button 
+                      mat-icon-button
+                      [routerLink]="['/metadata/dataset_detail', ds.id_dataset]"
+                      matTooltip="Voir la fiche du jeu de données"
+                    >
+                      <mat-icon> info </mat-icon>
+                    </button>
+                    <button 
+                      mat-icon-button
+                      [disabled]="!ds.active"
                       (click)="importDs(ds.id_dataset)"
                       matTooltip="Importer dans ce jeu de donnée"
                     >
-                      <mat-icon>backup</mat-icon>
-                    </a>
-                    <a
+                      <mat-icon> upload </mat-icon>
+                    </button>
+
+                    <button 
+                      mat-icon-button
+                      [disabled]="!ds.active || ds.observation_count == 0"
                       (click)="syntheseDs(ds.id_dataset, ds.observation_count, syntheseNoneModal)"
                       matTooltip="Afficher les données dans la Synthèse"
                     >
-                      <mat-icon> room</mat-icon>
-                    </a>
-                    <a
-                      *ngIf="ds.cruved.D && ds.deletable"
-                      (click)="deleteDs(ds.id_dataset)"
-                      matTooltip="Supprimer le jeu de donnée"
+                      <mat-icon> room </mat-icon>
+                    </button>
+
+                    <button 
+                      mat-icon-button
+                      [disabled]="!ds.cruved.D || !ds.deletable"
+                      (click)="syntheseDs(ds.id_dataset, ds.observation_count, syntheseNoneModal)"
+                      matTooltip="Supprimer le jeu de données"
                     >
-                      <mat-icon> delete</mat-icon>
-                    </a>
-                    <a
-                      *ngIf="ds.cruved.D && !ds.deletable "
-                      matTooltip="La suppression du jeu de données n'est pas possible car des données y sont rattachées dans la Synthèse"
-                    >
-                      <mat-icon disabled>delete_outline</mat-icon>
-                    </a>
+                      <mat-icon> delete </mat-icon>
+                    </button>
                   </td>
                 </tr>
               </tbody>
