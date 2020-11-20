@@ -22,7 +22,7 @@
           <h4>{{af?.acquisition_framework_name}}
             <button 
               [disabled]="!af?.cruved?.U"
-              [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]" 
+              [routerLink]="['/metadata/af_detail', af?.id_acquisition_framework]" 
               mat-mini-fab color="primary" 
               matTooltip="Editer le cadre d'acquisition"
               class="mr-2">
