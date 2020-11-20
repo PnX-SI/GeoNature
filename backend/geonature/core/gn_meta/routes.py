@@ -110,8 +110,8 @@ def get_datasets(info_role):
             log.error(e)
             with_mtd_error = True
     params = request.args.to_dict()
-    recursif = params.get('recursif', True)
-    if recursif == 'false':
+    recursif = params.get("recursif", True)
+    if recursif == "false":
         recursif = False
     datasets = get_datasets_cruved(info_role, params, recursif=recursif)
     datasets_resp = {"data": datasets}
@@ -207,7 +207,16 @@ def get_af_and_ds_metadata(info_role):
 
     #  get cruved for each ds and push them in the af
     for d in datasets:
-        dataset_dict = d.as_dict(recursif=True, relationships=["creator"])
+        dataset_dict = d.as_dict(
+            recursif=True,
+            relationships=[
+                "creator",
+                "cor_dataset_actor",
+                "nomenclature_actor_role",
+                "organism",
+                "role",
+            ],
+        )
         if d.id_acquisition_framework not in list_id_af:
             continue
         dataset_dict["cruved"] = d.get_object_cruved(

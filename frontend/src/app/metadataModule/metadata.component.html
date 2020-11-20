@@ -60,8 +60,7 @@
           <div class="col-md-1">ID </div>
           <div class="col-md-3"> Nom</div>
           <div class="col-md-2"> Date de création</div>
-          <div class="col-md-2"> Créateur</div>
-          <div class="col-md-3"> Acteurs</div>
+          <div class="col-md-4"> Acteurs</div>
           <div class="col-md-1"> Actions</div>
         </div>
         <ng-container *ngFor="let af of tempAF; let idx = index">
@@ -88,10 +87,8 @@
                 </div>
                 <div class="col-md-2 ">{{af.acquisition_framework_start_date |date:'d/MM/yyyy'}}
                 </div>
-                <div class="col-md-2">
-                  {{af.creator?.nom_complet}}
-                </div>
-                <section class="col-md-3">
+                <section class="col-md-4">
+                  <b>Créateur : </b>  {{af.creator?.nom_complet}}
                   <div *ngFor="let ac of af.cor_af_actor">
                     <span *ngIf="ac.organism">
                       <b> {{ac.organism?.nom_organisme }} : </b>
@@ -108,20 +105,21 @@
                 <div class="col-md-1">
                   <button 
                     mat-icon-button
-                    [disabled]="!af.cruved.U"
-                    matTooltip="Editer ce cadre d'acquisition"
-                    [routerLink]="['/metadata/af', af.id_acquisition_framework]"
-                  >
-                    <mat-icon> create</mat-icon>
-                  </button>
-                  <button 
-                    mat-icon-button
                     [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]"
                     matTooltip="Voir la fiche du cadre d'acquisition"
                     style="color: black;"
                   >
                     <mat-icon> info</mat-icon>
                   </button>
+                  <button 
+                    mat-icon-button
+                    [disabled]="!af.cruved.U"
+                    matTooltip="Editer ce cadre d'acquisition"
+                    [routerLink]="['/metadata/af', af.id_acquisition_framework]"
+                  >
+                    <mat-icon> create</mat-icon>
+                  </button>
+
                   
                 </div>
 
@@ -136,6 +134,7 @@
                   </td>
                   <td>Nom du JDD</td>
                   <td>Date de création</td>
+                  <td>Acteurs</td>
                   <td>Nombre de données</td>
                   <td>Actions</td>
                 </tr>
@@ -153,18 +152,22 @@
                     </a>
                   </td>
                   <td> {{ds.meta_create_date |date:'d/MM/yyyy' }}</td>
+                  <td>
+                    <div style="text-align: left;" *ngFor="let ac of ds.cor_dataset_actor">
+                      <span *ngIf="ac.organism">
+                        <b> {{ac.organism?.nom_organisme }} : </b>
+                        <small> {{ac.nomenclature_actor_role.label_fr }}</small> <br>
+                      </span>
+                      <span *ngIf="ac.role">
+                        <b> {{ac.role?.nom_complet }} : </b>
+                        <small> {{ac.nomenclature_actor_role.label_fr }}</small> <br>
+                      </span>
+  
+                    </div>  
+                  </td>
                   <td> {{ds.observation_count}} </td>
                   <!-- <td>{{ds.creator?.nom_complet}} </td> -->
                   <td>
-                    <button 
-                      mat-icon-button
-                      [disabled]="!ds.cruved.E"
-                      [routerLink]="['/metadata/dataset', ds.id_dataset]"
-                      matTooltip="Editer le jeu de données"
-                    >
-                      <mat-icon> create</mat-icon>
-                    </button>
-
                     <button 
                       mat-icon-button
                       [routerLink]="['/metadata/dataset_detail', ds.id_dataset]"
@@ -189,7 +192,14 @@
                     >
                       <mat-icon> room </mat-icon>
                     </button>
-
+                    <button 
+                      mat-icon-button
+                      [disabled]="!ds.cruved.E"
+                      [routerLink]="['/metadata/dataset', ds.id_dataset]"
+                      matTooltip="Editer le jeu de données"
+                    >
+                      <mat-icon> create</mat-icon>
+                    </button>
                     <button 
                       mat-icon-button
                       [disabled]="!ds.cruved.D || !ds.deletable"

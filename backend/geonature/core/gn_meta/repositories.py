@@ -125,6 +125,7 @@ def filtered_ds_query(info_role, args):
         .outerjoin(CorDatasetActor, CorDatasetActor.id_dataset == TDatasets.id_dataset)
         .outerjoin(BibOrganismes, BibOrganismes.id_organisme == CorDatasetActor.id_organism)
         .options(joinedload("creator"))
+        .options(joinedload("cor_dataset_actor"))
     )
 
     query = cruved_filter(query, TDatasets, info_role)
