@@ -145,10 +145,16 @@
                     {{ds.id_dataset}}
                   </td>
                   <td>
+                    <span class="float-left"> 
+                      <mat-icon *ngIf="ds.active" matTooltip="Le jeu de données est actif" class="success"> toggle_on </mat-icon>
+                      <mat-icon *ngIf="!ds.active" matTooltip="Le jeu de données est inactif" color="warn"> toggle_off </mat-icon>
+                    </span>
                     <a [routerLink]="['/metadata/dataset_detail', ds.id_dataset]">
                       {{ds.dataset_name}}
+
                       <br /> 
                       <small style="color: gray"> {{ds.unique_dataset_id}} </small>
+
                     </a>
                   </td>
                   <td> {{ds.meta_create_date |date:'d/MM/yyyy' }}</td>
@@ -190,12 +196,8 @@
                       (click)="syntheseDs(ds.id_dataset, ds.observation_count, syntheseNoneModal)"
                       matTooltip="Afficher les données dans la Synthèse"
                     >
-                    <span *ngIf="ds.observation_count == 0" matTooltip="Le jeu de données ne comporte aucune observation"> 
-                      <mat-icon> room </mat-icon>
-                    </span>
-                    <span *ngIf="ds.observation_count >0"> 
-                      <mat-icon> room </mat-icon>
-                    </span>
+                      <mat-icon *ngIf="ds.observation_count == 0" matTooltip="Le jeu de données ne comporte aucune observation"> room </mat-icon>
+                      <mat-icon *ngIf="ds.observation_count >0"> room </mat-icon>
                     </button>
                     <button 
                       mat-icon-button
