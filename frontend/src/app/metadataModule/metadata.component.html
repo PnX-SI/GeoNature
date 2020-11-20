@@ -110,7 +110,8 @@
                     [routerLink]="['/metadata/af', af.id_acquisition_framework]"
                   >
                     <mat-icon> create</mat-icon>
-                  </a></div>
+                  </a>
+                </div>
 
               </mat-panel-title>
 
@@ -125,7 +126,6 @@
                   <td>Date de création</td>
                   <td>Nombre de données</td>
                   <td>Créateur</td>
-                  <td>Rapport</td>
                   <td>Actions</td>
                 </tr>
               </thead>
@@ -145,25 +145,6 @@
                   <td> {{ds.meta_create_date |date:'d/MM/yyyy' }}</td>
                   <td> {{ds.observation_count}} </td>
                   <td>{{ds.creator?.nom_complet}}
-                  <td>
-                    <div *ngIf="ds.observation_count > 0">
-                      <mat-icon
-                        (click)="sensiReport(ds.id_dataset)"
-                        matTooltip="Rapport de sensibilité"
-                      > do_not_touch </mat-icon>
-                      <mat-icon
-                        class="ml-2"
-                        (click)="uuidReport(ds.id_dataset)"
-                        matTooltip="Rapport d'UUID"
-                      > format_list_numbered </mat-icon>
-                    </div>
-                    <div *ngIf="ds.observation_count == 0">
-                      <mat-icon matTooltip="Impossible de télécharger le rapport de sensibilité">
-                        do_not_touch </mat-icon>
-                      <mat-icon matTooltip="Impossible de télécharger le rapport d'UUID">
-                        format_list_numbered </mat-icon>
-                    </div>
-                  </td>
                   <td>
                     <a
                       *ngIf="ds.cruved.U"

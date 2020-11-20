@@ -74,6 +74,7 @@ export class DatasetCardComponent implements OnInit {
     public moduleService: ModuleService,
     private _commonService: CommonService,
     public _dataService: SyntheseDataService,
+    private _router: Router
   ) { }
 
   ngOnInit() {
@@ -112,6 +113,20 @@ export class DatasetCardComponent implements OnInit {
     });
   }
 
+  uuidReport(ds_id) {
+    this._dataService.downloadUuidReport(
+      `UUID_JDD-${ds_id}_${this.dataset.unique_dataset_id}`,
+      { id_dataset: ds_id }
+    );
+  }
+
+  sensiReport(ds_id) {
+    this._dataService.downloadSensiReport(
+      `Sensibilite_JDD-${ds_id}_${this.dataset.unique_dataset_id}`,
+      { id_dataset: ds_id }
+    );
+  }
+
   getPdf() {
     const url = `${AppConfig.API_ENDPOINT}/meta/dataset/export_pdf/${this.id_dataset}`;
     const dataUrl = this.chart ? this.chart.ctx.canvas.toDataURL('image/png') : '';
@@ -120,8 +135,7 @@ export class DatasetCardComponent implements OnInit {
     });
   }
 
-  uuidReport(id_import) {
-    console.log("OK");
+  uuidReportImport(id_import) {
     const imp = this.dataset.imports.find(imp => imp.id_import == id_import);
     this._dataService.downloadUuidReport(
       `UUID_Import-${id_import}_JDD-${imp.id_dataset}`,
@@ -129,13 +143,21 @@ export class DatasetCardComponent implements OnInit {
     );
   }
 
-  sensiReport(id_import) {
+  sensiReportImport(id_import) {
     console.log("OK");
     const imp = this.dataset.imports.find(imp => imp.id_import == id_import);
     this._dataService.downloadSensiReport(
       `Sensibilite_Import-${id_import}_JDD-${imp.id_dataset}`,
       { id_import: id_import }
     );
+  }
+
+  deleteDataset(idDataset) {
+    if (window.confirm('Etes-vous sûr de vouloir supprimer ce jeu de données ?')) {
+      this._dfs.deleteDs(idDataset).subscribe(d => {
+        this._router.navigate(['metadata'])
+      });
+    }
   }
 
 }

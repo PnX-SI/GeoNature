@@ -4,25 +4,39 @@
 >
   <div class="row">
     <div class="col-xs-12 col-sm-6 col-lg-8">
-      <h3>JEU DE DONNÉES : {{dataset.dataset_name}}</h3>
-    </div>
-    <div class="c col-xs-6 col-lg-4">
       <button
         mat-raised-button
         routerLink="/metadata"
-      >
+        class="mb-2"
+        >
         <mat-icon>chevron_left</mat-icon>
         Retour
       </button>
-      <button
-        mat-raised-button
-        class="button-success ml-1"
-        (click)="getPdf()"
-      >
-        Export PDF
-        <mat-icon>file_download</mat-icon>
+      <div class="card">
+        <div class="card-body">
+          <h3>JEU DE DONNÉES : {{dataset?.dataset_name}}
 
-      </button>
+            <button 
+              [disabled]="!dataset.cruved.E"
+              [routerLink]="['/metadata/dataset', dataset.id_dataset]" 
+              mat-mini-fab color="primary" 
+              class="mr-2">
+                <mat-icon>create</mat-icon>
+              
+            </button>
+    
+            <button 
+              mat-mini-fab color="warn"
+              [disabled]="dataset?.observation_count > 0 || !dataset.cruved.D"
+              (click)="deleteDataset(id_dataset)"
+              >
+              <mat-icon>delete</mat-icon>
+    
+            </button>
+          </h3>
+
+        </div>
+      </div>
     </div>
   </div>
 
@@ -30,12 +44,12 @@
     *ngIf="dataset.taxa_count"
     class="row"
   >
-    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 ">
+    <div class="col-4">
       <div class="card">
         <div class="card-body">
           <div class="row">
             <div class="col">
-              <h5>Taxons</h5> {{dataset.taxa_count}}
+              <h5>Taxons</h5> {{dataset?.taxa_count}}
             </div>
             <div
               class="col-auto"
@@ -48,12 +62,12 @@
         </div>
       </div>
     </div>
-    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+    <div class="col-4">
       <div class="card">
         <div class="card-body">
           <div class="row">
             <div class="col">
-              <h5>Observations</h5> {{dataset.observation_count}}
+              <h5>Observations</h5> {{dataset?.observation_count}}
             </div>
             <div
               class="col-auto"
@@ -62,6 +76,56 @@
                 src="./assets/images/Donnee_icon.svg"
                 width="64"
               ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="card">
+        <div class="card-body">
+          <button
+            mat-raised-button
+            class="button-success ml-2 mb-2"
+            (click)="getPdf()"
+          >
+            Export PDF
+            <mat-icon>file_download</mat-icon>
+    
+          </button>
+          <div *ngIf="dataset?.observation_count > 0">
+            <button 
+              mat-raised-button 
+              color="primary"
+              class="ml-2 mb-2"
+            >
+              Rapport de sensibilité
+              <mat-icon
+                (click)="sensiReport(dataset.id_dataset)"
+                matTooltip="Rapport de sensibilité"
+              > do_not_touch 
+              </mat-icon>
+            </button>
+            <button 
+              mat-raised-button 
+              color="primary"
+              class="ml-2 mb-2"
+            >
+              Rapport d'UUID
+              <mat-icon
+                class="ml-2"
+                (click)="uuidReport(dataset.id_dataset)"
+                matTooltip="Rapport d'UUID"
+              > format_list_numbered 
+            </mat-icon>
+            </button>
+
+          </div>
+
+          <div *ngIf="dataset?.observation_count == 0">
+            <mat-icon matTooltip="Impossible de télécharger le rapport de sensibilité">
+              do_not_touch </mat-icon>
+            <mat-icon matTooltip="Impossible de télécharger le rapport d'UUID">
+              format_list_numbered </mat-icon>
           </div>
         </div>
       </div>
@@ -78,7 +142,7 @@
         <div class="card-body">
 
           <div class="b">Identification</div>
-          <div class="a"> <b>Nom : </b> Nom : {{dataset.dataset_name}}</div>
+          <div class="a"> <b>Nom : </b> {{dataset.dataset_name}}</div>
           <div class="a"> <b> Identifiant SINP du jeu de données :</b> {{dataset.unique_dataset_id}}
           </div>
           <div class="a"> <b> Identifiant GeoNature du jeu de données :</b> {{dataset.id_dataset}}
@@ -209,11 +273,11 @@
                 <td class="textCenter">
                   <div *ngIf="import.source_count != 0 && import.is_finished">
                     <mat-icon
-                      (click)="sensiReport(import.id_import)"
+                      (click)="sensiReportImport(import.id_import)"
                       matTooltip="Télécharger le rapport de sensibilité"
                     > do_not_touch</mat-icon>
                     <mat-icon
-                      (click)="uuidReport(import.id_import)"
+                      (click)="uuidReportImport(import.id_import)"
                       matTooltip="Télécharger le rapport d'UUID"
                     > format_list_numbered
                     </mat-icon>
@@ -227,7 +291,7 @@
                 </td>
               </tr>
             </tbody>
-            <tbody>
+            <!-- <tbody>
               <tr *ngFor='let taxons of taxs'>
                 <td
                   class="textCenter"
@@ -259,7 +323,7 @@
                   > format_list_numbered </mat-icon>
                 </td>
               </tr>
-            </tbody>
+            </tbody> -->
           </table>
         </div>
       </div>
