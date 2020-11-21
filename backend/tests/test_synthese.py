@@ -160,4 +160,9 @@ class TestSynthese:
 
     def test_color_taxon(self):
         response = self.client.get(url_for("gn_synthese.get_color_taxon"))
+        data = json_of_response(response)
+        one_line = data[0]
+        mandatory_columns = ["cd_nom", "id_area", "color", "nb_obs", "last_date"]
+        for attr in mandatory_columns:
+            assert attr in one_line
         assert response.status_code == 200

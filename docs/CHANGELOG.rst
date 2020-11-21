@@ -2,14 +2,84 @@
 CHANGELOG
 =========
 
-2.5.2 (unreleased)
+2.5.5 (2020-11-19)
 ------------------
 
+**🚀 Nouveautés**
 
-- Héritage du CRUVED au niveau des objets (#1028)
-TODO: changer la config des colonnes d'export de la synthese suite aux ajouts
-Manque le champs statut biogeographique
-Revoir la vue synthese
+* Ajout d'un composant fil d'ariane (#1143)
+* Ajout de la possiblité de désactiver les composants ``pnx-taxa`` et ``pnx-areas`` (#1142)
+* Ajout de tests sur les routes pour assurer la compatibilité avec les applications mobiles
+
+**🐛 Corrections**
+
+* Correction d'un bug de récupération du CRUVED sur les modules (#1146)
+* Correction des validateurs sur les preuves d'existence (#1134)
+* Correction de la récupération des dossiers dans ``backend/static`` dans le script ``migrate.sh``
+* Correction de l'affichage de l'utilisateur dans la navbar lorsqu'on est connecté via le CAS INPN
+
+2.5.4 (2020-11-17)
+------------------
+
+**🚀 Nouveautés**
+
+* Ajout de scripts ``sql`` et ``sh`` de restauration des medias dans ``data/medias`` (#1148)
+* Ajout d'un service pour pouvoir récupérer les informations sur l'utilisateur connecté
+
+**🐛 Corrections**
+
+* Correction des médias qui sont actuellement tous supprimés automatiquement après 24h, et non pas seulement ceux orphelins (#1148)
+* Correction des permissions sur les fiches info des relevés dans Occtax avec la désactivation du bouton de modification du relevé quand l'utilisateur n'en a pas les droits
+
+**⚠️ Notes de version**
+
+* Si vous aviez associé des médias à des observations dans Occtax ou autre et qu'ils ont été supprimés, vous pouvez les retrouver dans la table d'historisation des actions (``SELECT * FROM gn_commons.t_history_actions WHERE table_content->'id_media' IS NOT NULL AND operation_type = 'D'``)
+* Pour restaurer les médias supprimés depuis la table ``gn_commons.t_history_actions`` vous pouvez :
+
+  * exécuter le script SQL ``data/medias/restore_medias.sql`` qui va recréer les médias supprimés dans la table ``gn_commons.t_medias``
+  * exécuter le script BASH ``data/medias/restore_medias.sh`` (``bash /home/`whoami`/geonature/data/medias/restore_medias.sh`` en ``sudo`` si besoin) qui va renommer des fichiers supprimés en supprimant le préfixe ``deleted_``
+
+2.5.3 (2020-11-04)
+------------------
+
+**🚀 Nouveautés**
+
+* Mise en place de l'héritage du CRUVED au niveau des objets des modules (#1028)
+* Révision de l'export des observations de la Synthèse (noms plus lisibles, ajout des communes et d'informations taxonomiques, complément des champs existants (#755)
+* Ajout d'un paramètre permettant d'ajouter un message personnalisé à la fin des emails (inscriptions, exports...) (#1050 par @jpm-cbna)
+* Ajout d'une alerte de dépréciation sur les fonctions ``utils-sqlalchemy`` présentes dans GeoNature
+* Ajout d'un widget de type "HTML" dans les formulaires dynamiques, permettant d'ajouter des informations dans un formulaire (#1043 et #1068 par @jpm-cbna)
+* Ajout de la possibilité d'ajouter un texte d'aide sur les champs des formulaires dynamiques (#1065 par @jpm-cbna)
+* Ajout de la possibilité de définir un min et un max au composant commun ``date`` (#1069 par @jpm-cbna)
+* Ajout de la possibilité de définir le nombre de lignes du composant commun ``textarea`` (#1067 par @jpm-cbna)
+* Ajout de la possibilité de contrôler par une expression régulière le contenu d'un champs de type ``text`` des formulaires dynamiques (#1073 par @FlorentRICHARD44)
+* Ajout de la possibilité de masquer certains champs du composant ``media`` (#1072, #1078 et #1083 par @metourneau)
+* Ajout d'un spinner sur les statistiques de la page d'accueil (#1086 par @jpm-cbna)
+* Ajout d'un composant d'autocomplete multiselect ``pnx-taxa`` permettant de rechercher des taxons dans tout l'arbre taxonomique et de limiter la recherche à un rang
+* Possibilité d'ajouter plusieurs cartes sur la même page à l'aide du composant ``pnx-map``
+* Homogénéisation du style du code et documentation des pratiques de développement
+
+**🐛 Corrections**
+
+* Correction de l'affichage des noms des validateurs sur la liste dans le module validation (#1091 par @lpofredc)
+* Corrections mineures de l'export des observations de la Synthèse (#1108)
+* Synthèse : Correction du masquage de la recherche par arbre taxonomique (#1057 par @jpm-cbna)
+* Ajout du champs ``id_nomenclature_biogeo_status`` dans la Synthese (correspondance standard : statut biogéographique). La BDD est remplie avec la valeur par défaut de la table ``gn_synthese.default_nomenclature_value`` (valeur = non renseignée)
+* Accueil : Correction de l'affichage du nom du module (#1087)
+* Correction du trigger de mise à jour d'Occtax vers la Synthèse (champs ``the_geom_local`` non mis à jour) (#1117 par @jbrieuclp)
+* Correction du paramètre stockant la version de Taxref, passé à 13.0 pour les nouvelles installations (#1097 par @RomainBaghi)
+* Correction de l'affichage en double des markers dans Leaflet.draw (#1095 par @FlorentRICHARD44)
+* Synthèse : Correction des filtres avancés par technique d'observation et méthode de détermination (#1110 par @jbrieuclp)
+* Recréation du fichier de configuration à chaque installation (#1074 par @etot)
+* Annulation de l'insertion du module lorsqu'une erreur est levée à l'installation d'un module
+
+**⚠️ Notes de version**
+
+* Désormais les objets des modules (par exemple les objets 'Permissions' et 'Nomenclatures' du module 'ADMIN') héritent automatiquement des permissions définies au niveau du module parent et à défaut au niveau de GeoNature  (#1028). Il s'agit d'une évolution de mise en cohérence puisque les modules héritaient déjà des permissions de GeoNature, mais pas leurs objets. Si vous avez défini des permissions particulières aux niveaux des objets, vérifier leur cohérence avec le nouveau fonctionnement. NB : si vous aviez mis des droits R=0 pour un groupe au module 'ADMIN', les utilisateurs de ce groupe ne pourront pas accéder aux sous-modules 'permissions' et 'nomenclatures'.
+* Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.2to2.5.3.sql). Attention, si vous avez customisé les vues des exports Occtax et Synthèse, elles seront supprimées et recrées automatiquement par le script SQL de mise à jour de la BDD de GeoNature pour intégrer leurs évolutions réalisées dans cette nouvelle version. Révisez éventuellement ces vues avant et/ou après la mise à jour.
+* Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application).
+* Les noms de colonnes de l'export de la Synthèse ont été entièrement revus dans la vue fournie par défaut (``gn_synthese.v_synthese_for_export``). Si vous aviez surcouché le paramètre ``EXPORT_COLUMNS`` dans le fichier ``config/geonature_config.toml``, vérifiez les noms des colonnes.
+* Vérifiez que la valeur du paramètre ``taxref_version`` dans la table ``gn_commons.t_parameters`` correspond bien à votre version actuelle de Taxref (11.0 ou 13.0).
 
 2.5.2 (2020-10-13)
 ------------------
@@ -17,14 +87,14 @@ Revoir la vue synthese
 **🐛 Corrections**
 
 * Occtax : correction du problème d'installation du module dans le fichier ``schemas.py``
-* Synthese : correction de la fonctions SQL ``gn_synthese.import_row_from_table`` et répercution dans le fichier ``gn_synthese/process.py``
+* Synthese : correction de la fonctions SQL ``gn_synthese.import_row_from_table`` et répercussion dans le fichier ``gn_synthese/process.py``
 
 **⚠️ Notes de version**
 
 Si vous mettez à jour GeoNature :
 
 * Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
-* Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.1to2.5.2.sql).
+* Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.1to2.5.2.sql)
 
 2.5.1 (2020-10-06)
 ------------------
@@ -115,7 +185,7 @@ Occtax v2 et médias
 * Module Validation : Correction et homogénéisation de l'affichage et du tri des observations par date (#971)
 * Module Validation : Correction de l'affichage du statut de validation après mise à jour dans la liste des observations (#831)
 * Module Validation : Correction de l'affichage du nom du validateur
-* Moduel Validation : Amélioration des performances avec l'ajout d'un index sur le champs ``uuid_attached_row`` de la table ``gn_commons.t_validations`` (#923 par @jbdesbas)
+* Module Validation : Amélioration des performances avec l'ajout d'un index sur le champs ``uuid_attached_row`` de la table ``gn_commons.t_validations`` (#923 par @jbdesbas)
 * Suppression du trigger en double ``tri_insert_synthese_cor_role_releves_occtax`` sur ``pr_occtax.cor_role_releves_occtax`` (#762 par @jbrieuclp)
 * Passage des requêtes d'export de la synthèse en POST plutôt qu'en GET (#883)
 * Correction du traitement du paramètre ``offset`` de la route ``synthese/color_taxon`` utilisé par Occtax-mobile (#994)
@@ -130,7 +200,8 @@ Si vous mettez à jour GeoNature :
 
 * Nomenclatures : Commencer par exécuter le script SQL de mise à jour du schéma ``ref_nomenclatures`` de la BDD (https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.3to1.3.4.sql)
 * Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.1to2.5.0.sql). Attention, si vous avez customisé les vues des exports Occtax et Synthèse, elles seront supprimées et recrées automatiquement par le script SQL de mise à jour de la BDD de GeoNature pour s'adapter aux évolutions du standard Occtax en version 2.0.0. Révisez éventuellement ces vues avant et/ou après la mise à jour. Le script SQL de mise à jour vérifiera aussi si vous avez d'autres vues (dans le module Export notamment) qui utilisent le champs ``id_nomenclature_obs_technique`` qui doit être renommé et l'indiquera dès le début de l'exécution du script, en l'arrêtant pour que vous puissiez modifier ou supprimer ces vues bloquant la mise à jour.
-* A partir la version 2.5.0 de GeoNature, la version 3.5 de Python n'est plus supportée. Seules les version 3.6 et + le sont. Si vous êtes encore sur Debian 9 (fourni par défaut avec Python 3.5), veuillez suivre les instructions de mise à jour de Python sur cette version (https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-standalone.rst#python-37-sur-debian-9). Il est cependant plutôt conseillé de passer sur Debian 10 pour rester à jour sur des versions maintenues
+* Les colonnes de l'export de la Synthèse ont été partiellement revus dans la vue fournie par défaut (``gn_synthese.v_synthese_for_export``). Si vous aviez surcouché le paramètre ``EXPORT_COLUMNS`` dans le fichier ``config/geonature_config.toml``, vérifiez les noms des colonnes.
+* A partir la version 2.5.0 de GeoNature, la version 3.5 de Python n'est plus supportée. Seules les versions 3.6 et + le sont. Si vous êtes encore sur Debian 9 (fourni par défaut avec Python 3.5), veuillez suivre les instructions de mise à jour de Python sur cette version (https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-standalone.rst#python-37-sur-debian-9). Il est cependant plutôt conseillé de passer sur Debian 10 pour rester à jour sur des versions maintenues
 * Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 * A noter, quelques changements dans les paramètres du module Occtax. Les paramètres d'affichage/masquage des champs du formulaire ont évolué ainsi :
 
@@ -302,7 +373,7 @@ par :
     sudo apt-get update
     sudo apt-get install python3-pip
     sudo pip3 install virtualenv==20.0.1
-* Rajoutez la ligne ``gun_timeout=30`` au fichier ``config/settings.ini``. Il s'agit du temps maximal (en seconde) autorisé pour chaque requête. A augmenter, si vous avez déjà rencontré des problèmes de timeout.
+* Rajoutez la ligne ``gun_timeout=30`` au fichier ``config/settings.ini`` puis rechargez supervisor (``sudo supervisorctl reload``). Il s'agit du temps maximal (en seconde) autorisé pour chaque requête. A augmenter, si vous avez déjà rencontré des problèmes de timeout.
 * Depuis le répertoire ``frontend``, lancez la commande ``nvm install``
 
 2.3.0 - Occhab de Noël (2019-12-27)
@@ -404,6 +475,7 @@ Vérifier que la migration s'est bien déroulée dans le fichier ``var/log/2.2.1
     cd /home/`whoami`/geonature/backend
     source venv/bin/activate
     geonature install_gn_module /home/`whoami`/geonature/contrib/gn_module_occhab /occhab
+    deactivate
 
 * Lors de la migration (``/data/migrations/2.2.1to2.3.0.sql``), tous les JDD actifs sont associés par défaut au module Occtax (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.2.1to2.3.0.sql#L17-L22). A chacun d'adapter si besoin, en en retirant certains. Pour utiliser le module Occhab, vous devez y associer au moins un JDD.
 

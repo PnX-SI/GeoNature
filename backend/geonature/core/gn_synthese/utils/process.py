@@ -6,16 +6,16 @@ from geonature.utils.env import DB
 from geonature.utils.errors import GeonatureApiError
 
 
-def import_from_table(schema_name, table_name, field_name, value, limit):
+def import_from_table(schema_name, table_name, field_name, value, limit=50):
     """
-        insert and/or update data in table gn_synthese.synthese
-        from table <schema_name>.<table_name>
-        for all rows satisfying the condition : <field_name> = <value>
+    insert and/or update data in table gn_synthese.synthese
+    from table <schema_name>.<table_name>
+    for all rows satisfying the condition : <field_name> = <value>
     """
     try:
 
         # TODO get nb
-        txt = """SELECT COUNT(*) FROM {}.{} WHERE {} = {}""".format(
+        txt = """SELECT COUNT(*) FROM {}.{} WHERE {}::varchar = '{}'""".format(
             schema_name, table_name, field_name, value
         )
 
