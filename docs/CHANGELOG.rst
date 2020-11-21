@@ -373,7 +373,7 @@ par :
     sudo apt-get update
     sudo apt-get install python3-pip
     sudo pip3 install virtualenv==20.0.1
-* Rajoutez la ligne ``gun_timeout=30`` au fichier ``config/settings.ini``. Il s'agit du temps maximal (en seconde) autorisé pour chaque requête. A augmenter, si vous avez déjà rencontré des problèmes de timeout.
+* Rajoutez la ligne ``gun_timeout=30`` au fichier ``config/settings.ini`` puis rechargez supervisor (``sudo supervisorctl reload``). Il s'agit du temps maximal (en seconde) autorisé pour chaque requête. A augmenter, si vous avez déjà rencontré des problèmes de timeout.
 * Depuis le répertoire ``frontend``, lancez la commande ``nvm install``
 
 2.3.0 - Occhab de Noël (2019-12-27)
