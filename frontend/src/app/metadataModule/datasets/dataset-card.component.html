@@ -48,7 +48,7 @@
             mat-raised-button
             color="primary"
             class="mr-1 mb-2"
-              matTooltip="Export PDF"
+              matTooltip="Télécharger la fiche PDF"
               (click)="getPdf()"
           >
             Export PDF
@@ -58,7 +58,7 @@
             [disabled]="dataset?.observation_count == 0"
             mat-raised-button 
             color="primary"
-            matTooltip="Rapport de sensibilité"
+            matTooltip="Télécharger le rapport de sensibilité"
             class="mb-2 mr-1"
           >
             Rapport de sensibilité
@@ -71,7 +71,7 @@
             [disabled]="dataset?.observation_count == 0"
             mat-raised-button 
             color="primary"
-            matTooltip="Rapport d'UUID"
+            matTooltip="Télécharger le rapport d'UUID"
             class="mb-2 mr-1"
           >
             Rapport d'UUID
@@ -361,9 +361,9 @@
               class="ml-2"
               color="primary"
               (click)="syntheseDs(dataset.id_dataset)"
-              matTooltip="Afficher les données"
+              matTooltip="Afficher les données dans la Synthèse"
             >
-              Voir les données
+              Afficher les données
             <mat-icon> room </mat-icon>
           </button>
           </h5>
@@ -414,7 +414,7 @@
       </div>
       <div class="card ">
         <div class="card-header">
-          <h5>Cadre d'acquisition initial</h5>
+          <h5>Cadre d'acquisition</h5>
         </div>
         <div class="card-body">
           <div class="row">
