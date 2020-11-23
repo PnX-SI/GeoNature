@@ -3,26 +3,107 @@
   class="container-fluid mt-4"
 >
   <div class="row">
-    <div class="col-xs-12 col-sm-6 col-lg-8">
-      <h3>JEU DE DONNÉES : {{dataset.dataset_name}}</h3>
-    </div>
-    <div class="c col-xs-6 col-lg-4">
+    <div class="col-8">
       <button
         mat-raised-button
         routerLink="/metadata"
-      >
+        class="mb-2"
+        >
         <mat-icon>chevron_left</mat-icon>
         Retour
       </button>
-      <button
-        mat-raised-button
-        class="button-success ml-1"
-        (click)="getPdf()"
-      >
-        Export PDF
-        <mat-icon>file_download</mat-icon>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-8">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="text-muted">Jeu de données</h5>
+          <h4>{{dataset?.dataset_name}}
+            <button 
+              [disabled]="!dataset?.cruved.U"
+              [routerLink]="['/metadata/dataset', dataset.id_dataset]" 
+              mat-mini-fab color="primary" 
+              matToolTip="Editer le jeu de données"
+              class="mr-2">
+                <mat-icon>create</mat-icon>
+            </button>
+            <button 
+              mat-mini-fab color="warn"
+              [disabled]="dataset?.observation_count > 0 || !dataset.cruved.D"
+              (click)="deleteDataset(id_dataset)"
+              matToolTip="Supprimer le jeu de données"
+              >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </h4>
 
-      </button>
+        </div>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="card">
+        <div class="card-body">
+          <button
+            mat-raised-button
+            color="primary"
+            class="mr-1 mb-2"
+              matTooltip="Télécharger la fiche PDF"
+              (click)="getPdf()"
+          >
+            Export PDF
+            <mat-icon>file_download</mat-icon>
+          </button>
+          <button 
+            [disabled]="dataset?.observation_count == 0"
+            mat-raised-button 
+            color="primary"
+            matTooltip="Télécharger le rapport de sensibilité"
+            class="mb-2 mr-1"
+          >
+            Rapport de sensibilité
+            <mat-icon
+              (click)="sensiReport(dataset.id_dataset)"
+            > do_not_touch 
+            </mat-icon>
+          </button>
+          <button
+            [disabled]="dataset?.observation_count == 0"
+            mat-raised-button 
+            color="primary"
+            matTooltip="Télécharger le rapport d'UUID"
+            class="mb-2 mr-1"
+          >
+            Rapport d'UUID
+            <mat-icon
+              (click)="uuidReport(dataset?.id_dataset)"
+              
+            > format_list_numbered 
+          </mat-icon>
+          </button>
+
+          <button
+            [disabled]="!dataset?.active"
+            mat-raised-button 
+            color="primary"
+            (click)="importDs(dataset?.id_dataset)"
+            matTooltip="Importer dans ce jeu de données"
+
+          >
+            Importer des données
+            <mat-icon
+            > publish 
+            </mat-icon>
+          </button>
+
+          <div *ngIf="dataset?.observation_count == 0">
+            <mat-icon matTooltip="Impossible de télécharger le rapport de sensibilité">
+              do_not_touch </mat-icon>
+            <mat-icon matTooltip="Impossible de télécharger le rapport d'UUID">
+              format_list_numbered </mat-icon>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -30,12 +111,12 @@
     *ngIf="dataset.taxa_count"
     class="row"
   >
-    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 ">
+    <div class="col-4">
       <div class="card">
         <div class="card-body">
           <div class="row">
             <div class="col">
-              <h5>Taxons</h5> {{dataset.taxa_count}}
+              <h5>Taxons</h5> {{dataset?.taxa_count}}
             </div>
             <div
               class="col-auto"
@@ -48,12 +129,12 @@
         </div>
       </div>
     </div>
-    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+    <div class="col-4">
       <div class="card">
         <div class="card-body">
           <div class="row">
             <div class="col">
-              <h5>Observations</h5> {{dataset.observation_count}}
+              <h5>Observations</h5> {{dataset?.observation_count}}
             </div>
             <div
               class="col-auto"
@@ -66,6 +147,7 @@
         </div>
       </div>
     </div>
+    
   </div>
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 ">
@@ -78,7 +160,7 @@
         <div class="card-body">
 
           <div class="b">Identification</div>
-          <div class="a"> <b>Nom : </b> Nom : {{dataset.dataset_name}}</div>
+          <div class="a"> <b>Nom : </b> {{dataset.dataset_name}}</div>
           <div class="a"> <b> Identifiant SINP du jeu de données :</b> {{dataset.unique_dataset_id}}
           </div>
           <div class="a"> <b> Identifiant GeoNature du jeu de données :</b> {{dataset.id_dataset}}
@@ -209,11 +291,11 @@
                 <td class="textCenter">
                   <div *ngIf="import.source_count != 0 && import.is_finished">
                     <mat-icon
-                      (click)="sensiReport(import.id_import)"
+                      (click)="sensiReportImport(import.id_import)"
                       matTooltip="Télécharger le rapport de sensibilité"
                     > do_not_touch</mat-icon>
                     <mat-icon
-                      (click)="uuidReport(import.id_import)"
+                      (click)="uuidReportImport(import.id_import)"
                       matTooltip="Télécharger le rapport d'UUID"
                     > format_list_numbered
                     </mat-icon>
@@ -227,7 +309,7 @@
                 </td>
               </tr>
             </tbody>
-            <tbody>
+            <!-- <tbody>
               <tr *ngFor='let taxons of taxs'>
                 <td
                   class="textCenter"
@@ -259,7 +341,7 @@
                   > format_list_numbered </mat-icon>
                 </td>
               </tr>
-            </tbody>
+            </tbody> -->
           </table>
         </div>
       </div>
@@ -272,12 +354,26 @@
       >
         <!-- changer la valeur du ngif quand la carte sera prete -->
         <div class="card-header">
-          <h5>Périmètre géographique</h5>
+          <h5>
+            Périmètre géographique
+            <button 
+              mat-raised-button
+              class="ml-2"
+              color="primary"
+              (click)="syntheseDs(dataset.id_dataset)"
+              matTooltip="Afficher les données dans la Synthèse"
+            >
+              Afficher les données
+            <mat-icon> room </mat-icon>
+          </button>
+          </h5>
+
         </div>
         <div
           *ngIf="this.geojsonData"
           class="card-body"
         >
+
           <!-- changer la valeur du ngif quand la carte sera prete -->
           <pnx-map
             height="40vh"
@@ -318,7 +414,7 @@
       </div>
       <div class="card ">
         <div class="card-header">
-          <h5>Cadre d'acquisition initial</h5>
+          <h5>Cadre d'acquisition</h5>
         </div>
         <div class="card-body">
           <div class="row">

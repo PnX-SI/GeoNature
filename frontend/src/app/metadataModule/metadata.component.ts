@@ -289,20 +289,6 @@ export class MetadataComponent implements OnInit {
     this._router.navigate(['/import/process/step/1'], navigationExtras);
   }
 
-  uuidReport(ds_id) {
-    const ds = this.datasets.find(ds => ds.id_dataset == ds_id);
-    this._syntheseDataService.downloadUuidReport(
-      `UUID_JDD-${ds.id_dataset}_${ds.unique_dataset_id}`,
-      { id_dataset: ds_id }
-    );
-  }
 
-  sensiReport(ds_id) {
-    const ds = this.datasets.find(ds => ds.id_dataset == ds_id);
-    this._syntheseDataService.downloadSensiReport(
-      `Sensibilite_JDD-${ds.id_dataset}_${ds.unique_dataset_id}`,
-      { id_dataset: ds_id }
-    );
-  }
 
 }

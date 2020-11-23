@@ -10,12 +10,14 @@ from sqlalchemy.sql.expression import cast
 from flask import request, current_app
 import requests
 
-from geonature.utils.env import DB
 from pypnusershub.db.models import User
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla.generic import test_type_and_generate_query, testDataType
 
+from geonature.utils.env import DB
 from geonature.utils.errors import GeonatureApiError
+from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
+
 
 from geonature.core.gn_meta.models import (
     TDatasets,
@@ -123,6 +125,7 @@ def filtered_ds_query(info_role, args):
         .outerjoin(CorDatasetActor, CorDatasetActor.id_dataset == TDatasets.id_dataset)
         .outerjoin(BibOrganismes, BibOrganismes.id_organisme == CorDatasetActor.id_organism)
         .options(joinedload("creator"))
+        .options(joinedload("cor_dataset_actor"))
     )
 
     query = cruved_filter(query, TDatasets, info_role)
@@ -228,6 +231,17 @@ def get_dataset_details_dict(id_dataset, session_role):
     imports = json.loads(imports.content.decode("utf8").replace("'", '"'))
     if imports:
         dataset["imports"] = imports
+
+    user_cruved = cruved_scope_for_user_in_module(
+        id_role=session_role.id_role, module_code="METADATA",
+    )[0]
+    cruved = data.get_object_cruved(
+        user_cruved=user_cruved,
+        id_object=data.id_dataset,
+        ids_object_user=TDatasets.get_user_datasets(session_role, only_user=True),
+        ids_object_organism=TDatasets.get_user_datasets(session_role, only_user=False),
+    )
+    dataset["cruved"] = cruved
     return dataset
 
 

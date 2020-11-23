@@ -1,33 +1,59 @@
 <div class="container-fluid mt-4 ">
   <div class="row">
-    <div class="col-xs-12 col-sm-6 col-lg-8">
-      <h3>CADRE D'ACQUISITION : {{af?.acquisition_framework_name}}</h3>
-    </div>
-    <div class="c col-xs-6 col-lg-4">
+    <div class="col-5">
       <button
         mat-raised-button
-        class="mr-1"
         routerLink="/metadata"
-      >
+        class="mb-2"
+        >
         <mat-icon>chevron_left</mat-icon>
         Retour
       </button>
-      <button
-        mat-raised-button
-        class="button-success"
-        (click)="getPdf()"
-      >
-        Export PDF
-        <mat-icon>file_download</mat-icon>
-      </button>
+    </div>
+
+  </div>
+  <div class="row">
+    
+    <div class="col-8">
+
+      <div class="card">
+        <div class="card-body">
+          <h5 class="text-muted"> Cadre d'acquisition</h5>
+          <h4>{{af?.acquisition_framework_name}}
+            <button 
+              [disabled]="!af?.cruved?.U"
+              [routerLink]="['/metadata/af_detail', af?.id_acquisition_framework]" 
+              mat-mini-fab color="primary" 
+              matTooltip="Editer le cadre d'acquisition"
+              class="mr-2">
+                <mat-icon>create</mat-icon>
+              
+            </button>
+          </h4>
+
+        </div>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="card">
+        <div class="card-body">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="getPdf()"
+          >
+            Export PDF
+            <mat-icon>file_download</mat-icon>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
-  <br>
 
   <div class=" row">
-    <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
+    <div class="col-3">
       <div class="card">
-        <div class="card-header">
+        <div class="card-body">
           <div class="row">
             <div class="col">
               <h5>Jeux de données</h5>
@@ -47,10 +73,10 @@
     </div>
     <div
       *ngIf="af?.stats?.nb_taxons > 0"
-      class="col-xs-6 col-sm-3 col-md-3 col-lg-3"
+      class="col-3"
     >
       <div class="card">
-        <div class="card-header">
+        <div class="card-body">
           <div class="row">
             <div class="col">
               <h5>Taxons</h5>
@@ -70,10 +96,10 @@
     </div>
     <div
       *ngIf="af?.stats?.nb_habitats > 0"
-      class="col-xs-6 col-sm-3 col-md-3 col-lg-3 "
+      class="col-3"
     >
       <div class="card">
-        <div class="card-header">
+        <div class="card-body">
           <div class="row">
             <div class="col">
               <h5>Habitats</h5>
@@ -93,10 +119,10 @@
     </div>
     <div
       *ngIf="af?.stats?.nb_observations > 0 && af?.stats?.nb_taxons > 0"
-      class="col-xs-6 col-sm-3 col-md-3 col-lg-3"
+      class="col-3"
     >
       <div class="card">
-        <div class="card-header">
+        <div class="card-body">
           <div class="row">
             <div class="col">
               <h5>Observations</h5>

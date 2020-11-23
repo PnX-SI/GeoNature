@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { BaseChartDirective } from 'ng2-charts';
@@ -74,6 +74,7 @@ export class DatasetCardComponent implements OnInit {
     public moduleService: ModuleService,
     private _commonService: CommonService,
     public _dataService: SyntheseDataService,
+    private _router: Router
   ) { }
 
   ngOnInit() {
@@ -112,6 +113,20 @@ export class DatasetCardComponent implements OnInit {
     });
   }
 
+  uuidReport(ds_id) {
+    this._dataService.downloadUuidReport(
+      `UUID_JDD-${ds_id}_${this.dataset.unique_dataset_id}`,
+      { id_dataset: ds_id }
+    );
+  }
+
+  sensiReport(ds_id) {
+    this._dataService.downloadSensiReport(
+      `Sensibilite_JDD-${ds_id}_${this.dataset.unique_dataset_id}`,
+      { id_dataset: ds_id }
+    );
+  }
+
   getPdf() {
     const url = `${AppConfig.API_ENDPOINT}/meta/dataset/export_pdf/${this.id_dataset}`;
     const dataUrl = this.chart ? this.chart.ctx.canvas.toDataURL('image/png') : '';
@@ -120,8 +135,7 @@ export class DatasetCardComponent implements OnInit {
     });
   }
 
-  uuidReport(id_import) {
-    console.log("OK");
+  uuidReportImport(id_import) {
     const imp = this.dataset.imports.find(imp => imp.id_import == id_import);
     this._dataService.downloadUuidReport(
       `UUID_Import-${id_import}_JDD-${imp.id_dataset}`,
@@ -129,13 +143,40 @@ export class DatasetCardComponent implements OnInit {
     );
   }
 
-  sensiReport(id_import) {
+  sensiReportImport(id_import) {
     console.log("OK");
     const imp = this.dataset.imports.find(imp => imp.id_import == id_import);
     this._dataService.downloadSensiReport(
       `Sensibilite_Import-${id_import}_JDD-${imp.id_dataset}`,
       { id_import: id_import }
     );
+  }
+
+  deleteDataset(idDataset) {
+    if (window.confirm('Etes-vous sûr de vouloir supprimer ce jeu de données ?')) {
+      this._dfs.deleteDs(idDataset).subscribe(d => {
+        this._router.navigate(['metadata'])
+      });
+    }
+  }
+
+  importDs(idDataset) {
+    let navigationExtras: NavigationExtras = {
+      queryParams: {
+        "datasetId": idDataset,
+        "resetStepper": true
+      }
+    };
+    this._router.navigate(['/import/process/step/1'], navigationExtras);
+  }
+
+  syntheseDs(idDataset) {
+    let navigationExtras: NavigationExtras = {
+      queryParams: {
+        "id_dataset": idDataset
+      }
+    };
+    this._router.navigate(['/synthese'], navigationExtras);
   }
 
 }
