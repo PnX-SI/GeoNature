@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+2.5.6 (unreleased)
+------------------
+
+**🐛 Corrections**
+
+* 
+
 2.5.5 (2020-11-19)
 ------------------
 
@@ -78,6 +85,7 @@ CHANGELOG
 * Désormais les objets des modules (par exemple les objets 'Permissions' et 'Nomenclatures' du module 'ADMIN') héritent automatiquement des permissions définies au niveau du module parent et à défaut au niveau de GeoNature  (#1028). Il s'agit d'une évolution de mise en cohérence puisque les modules héritaient déjà des permissions de GeoNature, mais pas leurs objets. Si vous avez défini des permissions particulières aux niveaux des objets, vérifier leur cohérence avec le nouveau fonctionnement. NB : si vous aviez mis des droits R=0 pour un groupe au module 'ADMIN', les utilisateurs de ce groupe ne pourront pas accéder aux sous-modules 'permissions' et 'nomenclatures'.
 * Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.2to2.5.3.sql). Attention, si vous avez customisé les vues des exports Occtax et Synthèse, elles seront supprimées et recrées automatiquement par le script SQL de mise à jour de la BDD de GeoNature pour intégrer leurs évolutions réalisées dans cette nouvelle version. Révisez éventuellement ces vues avant et/ou après la mise à jour.
 * Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application).
+* Les noms de colonnes de l'export de la Synthèse ont été entièrement revus dans la vue fournie par défaut (``gn_synthese.v_synthese_for_export``). Si vous aviez surcouché le paramètre ``EXPORT_COLUMNS`` dans le fichier ``config/geonature_config.toml``, vérifiez les noms des colonnes.
 * Vérifiez que la valeur du paramètre ``taxref_version`` dans la table ``gn_commons.t_parameters`` correspond bien à votre version actuelle de Taxref (11.0 ou 13.0).
 
 2.5.2 (2020-10-13)
@@ -199,6 +207,7 @@ Si vous mettez à jour GeoNature :
 
 * Nomenclatures : Commencer par exécuter le script SQL de mise à jour du schéma ``ref_nomenclatures`` de la BDD (https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.3to1.3.4.sql)
 * Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.4.1to2.5.0.sql). Attention, si vous avez customisé les vues des exports Occtax et Synthèse, elles seront supprimées et recrées automatiquement par le script SQL de mise à jour de la BDD de GeoNature pour s'adapter aux évolutions du standard Occtax en version 2.0.0. Révisez éventuellement ces vues avant et/ou après la mise à jour. Le script SQL de mise à jour vérifiera aussi si vous avez d'autres vues (dans le module Export notamment) qui utilisent le champs ``id_nomenclature_obs_technique`` qui doit être renommé et l'indiquera dès le début de l'exécution du script, en l'arrêtant pour que vous puissiez modifier ou supprimer ces vues bloquant la mise à jour.
+* Les colonnes de l'export de la Synthèse ont été partiellement revus dans la vue fournie par défaut (``gn_synthese.v_synthese_for_export``). Si vous aviez surcouché le paramètre ``EXPORT_COLUMNS`` dans le fichier ``config/geonature_config.toml``, vérifiez les noms des colonnes.
 * A partir la version 2.5.0 de GeoNature, la version 3.5 de Python n'est plus supportée. Seules les versions 3.6 et + le sont. Si vous êtes encore sur Debian 9 (fourni par défaut avec Python 3.5), veuillez suivre les instructions de mise à jour de Python sur cette version (https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-standalone.rst#python-37-sur-debian-9). Il est cependant plutôt conseillé de passer sur Debian 10 pour rester à jour sur des versions maintenues
 * Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 * A noter, quelques changements dans les paramètres du module Occtax. Les paramètres d'affichage/masquage des champs du formulaire ont évolué ainsi :
@@ -371,7 +380,7 @@ par :
     sudo apt-get update
     sudo apt-get install python3-pip
     sudo pip3 install virtualenv==20.0.1
-* Rajoutez la ligne ``gun_timeout=30`` au fichier ``config/settings.ini``. Il s'agit du temps maximal (en seconde) autorisé pour chaque requête. A augmenter, si vous avez déjà rencontré des problèmes de timeout.
+* Rajoutez la ligne ``gun_timeout=30`` au fichier ``config/settings.ini`` puis rechargez supervisor (``sudo supervisorctl reload``). Il s'agit du temps maximal (en seconde) autorisé pour chaque requête. A augmenter, si vous avez déjà rencontré des problèmes de timeout.
 * Depuis le répertoire ``frontend``, lancez la commande ``nvm install``
 
 2.3.0 - Occhab de Noël (2019-12-27)
@@ -473,6 +482,7 @@ Vérifier que la migration s'est bien déroulée dans le fichier ``var/log/2.2.1
     cd /home/`whoami`/geonature/backend
     source venv/bin/activate
     geonature install_gn_module /home/`whoami`/geonature/contrib/gn_module_occhab /occhab
+    deactivate
 
 * Lors de la migration (``/data/migrations/2.2.1to2.3.0.sql``), tous les JDD actifs sont associés par défaut au module Occtax (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.2.1to2.3.0.sql#L17-L22). A chacun d'adapter si besoin, en en retirant certains. Pour utiliser le module Occhab, vous devez y associer au moins un JDD.
 
