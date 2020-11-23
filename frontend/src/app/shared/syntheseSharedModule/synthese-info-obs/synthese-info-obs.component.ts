@@ -43,8 +43,18 @@ export class SyntheseInfoObsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.loadOneSyntheseReleve(this.idSynthese);
-    this.loadValidationHistory(this.uuidSynthese);
+    // Move to ngOnChanges
+    // this.loadOneSyntheseReleve(this.idSynthese);
+    // this.loadValidationHistory(this.uuidSynthese);
+  }
+
+  ngOnChanges(changes) {
+    if (changes.idSynthese && changes.idSynthese.currentValue) {
+      this.loadOneSyntheseReleve(this.idSynthese);
+    }
+    if (changes.uuidSynthese && changes.uuidSynthese.currentValue) {
+      this.loadValidationHistory(this.uuidSynthese);
+    }
   }
 
   loadOneSyntheseReleve(idSynthese) {
