@@ -78,18 +78,18 @@
               >
 
                 <div class="col-md-1">{{ af.id_acquisition_framework }}</div>
-                <div class="col-md-2"> 
-                  <a
-                    [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]"
-                  > {{ af.acquisition_framework_name }} 
-                  <br> <small style="color: gray"> {{ af.unique_acquisition_framework_id  }} </small>
-                </a>
+                <div class="col-md-2">
+                  <a [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]">
+                    {{ af.acquisition_framework_name }}
+                    <br> <small style="color: gray"> {{ af.unique_acquisition_framework_id  }}
+                    </small>
+                  </a>
                 </div>
                 <div class="col-md-2 ">{{af.acquisition_framework_start_date |date:'d/MM/yyyy'}}
                 </div>
                 <section class="col-md-5">
                   <span *ngIf="af.creator"> <b> {{af.creator?.nom_complet}} : </b> créateur </span>
-                  
+
                   <div *ngFor="let ac of af.cor_af_actor">
                     <span *ngIf="ac.organism">
                       <b> {{ac.organism?.nom_organisme }} : </b>
@@ -97,14 +97,14 @@
                     </span>
                     <span *ngIf="ac.role">
                       <b> {{ac.role?.nom_complet }} : </b>
-                     {{ac.nomenclature_actor_role.label_fr }} <br>
+                      {{ac.nomenclature_actor_role.label_fr }} <br>
                     </span>
 
                   </div>
                 </section>
 
                 <div class="col-md-1">
-                  <button 
+                  <button
                     mat-icon-button
                     [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]"
                     matTooltip="Voir la fiche du cadre d'acquisition"
@@ -112,7 +112,7 @@
                   >
                     <mat-icon> info</mat-icon>
                   </button>
-                  <button 
+                  <button
                     mat-icon-button
                     [disabled]="!af.cruved.U"
                     matTooltip="Editer ce cadre d'acquisition"
@@ -121,7 +121,7 @@
                     <mat-icon> create</mat-icon>
                   </button>
 
-                  
+
                 </div>
 
               </mat-panel-title>
@@ -146,62 +146,82 @@
                     {{ds.id_dataset}}
                   </td>
                   <td>
-                    <span class="float-left"> 
-                      <mat-icon *ngIf="ds.active" matTooltip="Le jeu de données est actif" class="success"> toggle_on </mat-icon>
-                      <mat-icon *ngIf="!ds.active" matTooltip="Le jeu de données est inactif" color="warn"> toggle_off </mat-icon>
+                    <span class="float-left">
+                      <mat-icon
+                        *ngIf="ds.active"
+                        matTooltip="Le jeu de données est actif"
+                        class="success"
+                      > toggle_on </mat-icon>
+                      <mat-icon
+                        *ngIf="!ds.active"
+                        matTooltip="Le jeu de données est inactif"
+                        color="warn"
+                      > toggle_off </mat-icon>
                     </span>
                     <a [routerLink]="['/metadata/dataset_detail', ds.id_dataset]">
                       {{ds.dataset_name}}
 
-                      <br /> 
+                      <br />
                       <small style="color: gray"> {{ds.unique_dataset_id}} </small>
 
                     </a>
                   </td>
                   <td> {{ds.meta_create_date |date:'d/MM/yyyy' }}</td>
                   <td style="text-align: left;">
-                    <span *ngIf="ds.creator"> <b> {{ds.creator?.nom_complet}} : </b> créateur  </span>
+                    <span *ngIf="ds.creator"> <b> {{ds.creator?.nom_complet}} : </b> créateur
+                    </span>
                     <div *ngFor="let ac of ds.cor_dataset_actor">
                       <span *ngIf="ac.organism">
                         <b> {{ac.organism?.nom_organisme }} : </b>
-                       {{ac.nomenclature_actor_role.label_fr }} <br>
+                        {{ac.nomenclature_actor_role.label_fr }} <br>
                       </span>
                       <span *ngIf="ac.role">
                         <b> {{ac.role?.nom_complet }} : </b>
-                         {{ac.nomenclature_actor_role.label_fr }} <br>
+                        {{ac.nomenclature_actor_role.label_fr }} <br>
                       </span>
-  
-                    </div>  
+
+                    </div>
                   </td>
                   <td> {{ds.observation_count}} </td>
                   <!-- <td>{{ds.creator?.nom_complet}} </td> -->
                   <td>
-                    <button 
+                    <button
                       mat-icon-button
                       [routerLink]="['/metadata/dataset_detail', ds.id_dataset]"
                       matTooltip="Voir la fiche du jeu de données"
                     >
                       <mat-icon> info </mat-icon>
                     </button>
-                    <button 
+                    <button
                       mat-icon-button
                       [disabled]="!ds.active"
                       (click)="importDs(ds.id_dataset)"
                       matTooltip="Importer dans ce jeu de donnée"
                     >
-                      <mat-icon> upload </mat-icon>
+                      <mat-icon
+                        *ngIf="!ds.active; else elseImport"
+                        matTooltip="Le jeu de données ne comporte aucune donnée"
+                      > upload </mat-icon>
+                      <ng-template #elseImport>
+                        <mat-icon> upload </mat-icon>
+                      </ng-template>
                     </button>
 
-                    <button 
+                    <button
                       mat-icon-button
                       [disabled]="ds.observation_count == 0"
                       (click)="syntheseDs(ds.id_dataset, ds.observation_count, syntheseNoneModal)"
                       matTooltip="Afficher les données dans la Synthèse"
                     >
-                      <mat-icon *ngIf="ds.observation_count == 0" matTooltip="Le jeu de données ne comporte aucune observation"> room </mat-icon>
-                      <mat-icon *ngIf="ds.observation_count >0"> room </mat-icon>
+                      <mat-icon
+                        *ngIf="ds.observation_count == 0; else elseSynthese;"
+                        matTooltip="Le jeu de données ne comporte aucune donnée"
+                      > room </mat-icon>
+                      <ng-template #elseSynthese>
+                        <mat-icon *ngIf="ds.observation_count >0"> room </mat-icon>
+                      </ng-template>
                     </button>
-                    <button 
+                    <button
                       mat-icon-button
                       [disabled]="!ds.cruved.E"
                       [routerLink]="['/metadata/dataset', ds.id_dataset]"
@@ -209,13 +229,20 @@
                     >
                       <mat-icon> create</mat-icon>
                     </button>
-                    <button 
+                    <button
                       mat-icon-button
                       [disabled]="!ds.cruved.D || !ds.deletable"
                       (click)="syntheseDs(ds.id_dataset, ds.observation_count, syntheseNoneModal)"
                       matTooltip="Supprimer le jeu de données"
                     >
-                      <mat-icon> delete </mat-icon>
+                      <mat-icon
+                        *ngIf="!ds.deletable; else elseblock"
+                        matTooltip="Le jeu de données contient des données et ne peux pas être supprimé"
+                      > delete </mat-icon>
+                      <ng-template #elseblock>
+                        <mat-icon> delete </mat-icon>
+                      </ng-template>
+
                     </button>
                   </td>
                 </tr>

@@ -26,16 +26,22 @@
               [disabled]="dataset?.observation_count > 0 || !dataset.cruved.D"
               (click)="deleteDataset(id_dataset)"
               class="float-right"
-              matToolTip="Supprimer le jeu de données"
+              matTooltip="Supprimer le jeu de données"
             >
-              <mat-icon>delete</mat-icon>
+              <mat-icon
+                *ngIf="dataset?.observation_count > 0; else elseblock"
+                matTooltip="Le jeu de données contient des données et ne peux pas être supprimé"
+              > delete </mat-icon>
+              <ng-template #elseblock>
+                <mat-icon> delete </mat-icon>
+              </ng-template>
             </button>
             <button
               [disabled]="!dataset?.cruved.U"
               [routerLink]="['/metadata/dataset', dataset.id_dataset]"
               mat-mini-fab
               color="primary"
-              matToolTip="Editer le jeu de données"
+              matTooltip="Editer le jeu de données"
               class="mr-2 float-right"
             >
               <mat-icon>create</mat-icon>
@@ -51,6 +57,7 @@
         <div class="card-body">
           <button
             mat-raised-button
+            [disabled]="!dataset.cruved.E"
             color="primary"
             class="mr-1 mb-2"
             matTooltip="Télécharger la fiche PDF"
@@ -59,49 +66,55 @@
             Export PDF
             <mat-icon>file_download</mat-icon>
           </button>
-          <button
-            [disabled]="dataset?.observation_count == 0"
-            mat-raised-button
-            color="primary"
-            matTooltip="Télécharger le rapport de sensibilité"
-            class="mb-2 mr-1"
-            (click)="sensiReport(dataset.id_dataset)"
+          <span
+            [matTooltip]="dataset?.observation_count > 0 ? 'Télécharger le rapport sensibilité' : 'Le jeu de données ne comporte aucune donnée'"
           >
-            Rapport de sensibilité
-            <mat-icon> do_not_touch
-            </mat-icon>
-          </button>
-          <button
-            [disabled]="dataset?.observation_count == 0"
-            mat-raised-button
-            color="primary"
-            matTooltip="Télécharger le rapport d'UUID"
-            class="mb-2 mr-1"
-            (click)="uuidReport(dataset?.id_dataset)"
-          >
-            Rapport d'UUID
-            <mat-icon> format_list_numbered
-            </mat-icon>
-          </button>
+            <button
+              [disabled]="!dataset.cruved.E || dataset?.observation_count == 0"
+              mat-raised-button
+              color="primary"
+              matTooltip="Télécharger le rapport de sensibilité"
+              class="mb-2 mr-1"
+              (click)="sensiReport(dataset.id_dataset)"
+            >
+              Rapport de sensibilité
+              <mat-icon> do_not_touch
+              </mat-icon>
+            </button>
+          </span>
 
-          <button
-            [disabled]="!dataset?.active"
-            mat-raised-button
-            color="primary"
-            (click)="importDs(dataset?.id_dataset)"
-            matTooltip="Importer dans ce jeu de données"
+          <span
+            [matTooltip]="dataset?.observation_count > 0 ? 'Télécharger le rapport d\'UUID' : 'Le jeu de données ne comporte aucune donnée'"
           >
-            Importer des données
-            <mat-icon> publish
-            </mat-icon>
-          </button>
+            <button
+              [disabled]="!dataset.cruved.E || dataset?.observation_count == 0"
+              mat-raised-button
+              color="primary"
+              class="mb-2 mr-1"
+              (click)="uuidReport(dataset?.id_dataset)"
+            >
+              Rapport d'UUID
+              <mat-icon> format_list_numbered
+              </mat-icon>
+            </button>
+          </span>
 
-          <div *ngIf="dataset?.observation_count == 0">
-            <mat-icon matTooltip="Impossible de télécharger le rapport de sensibilité">
-              do_not_touch </mat-icon>
-            <mat-icon matTooltip="Impossible de télécharger le rapport d'UUID">
-              format_list_numbered </mat-icon>
-          </div>
+
+          <span
+            [matTooltip]="dataset?.active ?  'Importer dans ce jeu de données': 'Le jeu de données est inactif'"
+          >
+            <button
+              [disabled]="!dataset?.active"
+              mat-raised-button
+              color="primary"
+              (click)="importDs(dataset?.id_dataset)"
+            >
+              Importer des données
+              <mat-icon> publish
+              </mat-icon>
+            </button>
+          </span>
+
         </div>
       </div>
     </div>
