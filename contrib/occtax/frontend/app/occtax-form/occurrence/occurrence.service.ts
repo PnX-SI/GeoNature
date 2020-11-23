@@ -37,6 +37,7 @@ export class OcctaxFormOccurrenceService {
   public idDataset : number;
 
   public idTaxonList: number;
+  public formFieldsStatus: any;
 
   constructor(
     private fb: FormBuilder,
@@ -225,6 +226,8 @@ export class OcctaxFormOccurrenceService {
             this.idTaxonList = dynamiqueFormDataset["ID_TAXON_LIST"];
           }
         }
+        
+        this.formFieldsStatus.bio_status = true;
         
         let NOMENCLATURES = [];
         if(hasDynamicFormOccurence){

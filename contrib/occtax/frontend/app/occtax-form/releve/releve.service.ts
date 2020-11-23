@@ -425,7 +425,7 @@ export class OcctaxFormReleveService {
         map((data) => {
           const previousReleve = this.getPreviousReleve(this.occtaxFormService.previousReleve);
           return {
-            id_dataset: this.occtaxParamS.get("releve.id_dataset") || previousReleve.id_dataset || this.datasetId,
+            id_dataset: this.datasetId || this.occtaxParamS.get("releve.id_dataset") || previousReleve.id_dataset,
             date_min: this.occtaxParamS.get("releve.date_min") ||
               previousReleve.date_min ||
               this.defaultDateWithToday(),

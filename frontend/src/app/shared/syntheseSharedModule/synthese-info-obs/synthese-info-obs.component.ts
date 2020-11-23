@@ -82,6 +82,14 @@ export class SyntheseInfoObsComponent implements OnInit {
           }
         }
 
+        //si le l'email est envoyé depuis la validation, on ne le modifie pas
+        if(!this.mailto){
+          if (this.selectedObs.cor_observers) {
+            this.email = this.selectedObs.cor_observers.map(el => el.email).join();
+            this.mailto = String('mailto:' + this.email);
+          }
+        }
+
         // for angular tempate we need to convert it into a aray
         // tslint:disable-next-line:forin
         for (let key in areaDict) {
@@ -101,20 +109,6 @@ export class SyntheseInfoObsComponent implements OnInit {
 
         this._gnDataService.getTaxonInfo(data.cd_nom).subscribe(taxInfo => {
           this.selectedObsTaxonDetail = taxInfo;
-
-          /*Envoie de mail ici quand tout est chargé */
-          if (this.selectedObs.cor_observers) {
-            this.email = this.selectedObs.cor_observers.map(el => el.email).join();
-            this.mailto = String("mailto:" + this.email + "?");
-            //1er passage pour la validation, après on passe par ModalInfoObsComponent
-            if (this.CONFIG.FRONTEND.DISPLAY_EMAIL_INFO_SUJET != ""){
-              this.mailto += "subject=" + this.CONFIG.FRONTEND.DISPLAY_EMAIL_INFO_SUJET + "&";
-            }
-            if (this.CONFIG.FRONTEND.DISPLAY_EMAIL_INFO_CONTENT != "" && this.CONFIG.FRONTEND.DISPLAY_EMAIL_DISPLAY_INFO.length > 0){
-              this.mailto += "body=" + this.CONFIG.FRONTEND.DISPLAY_EMAIL_INFO_CONTENT ;
-              this.mailto += this.contentInfoObservationForMail();
-            }
-          }
         });
       });
   }

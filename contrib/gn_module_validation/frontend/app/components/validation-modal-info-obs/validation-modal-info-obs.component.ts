@@ -91,6 +91,8 @@ export class ValidationModalInfoObsComponent implements OnInit {
 
     this.edit = false;
     this.showEmail = false;
+    //MET Load informations releve on initialisation to send to synthese-info-obs.component.html
+    this.loadOneSyntheseReleve(this.id_synthese);
   }
 
   setCurrentCdNomenclature(item) {
@@ -139,12 +141,6 @@ export class ValidationModalInfoObsComponent implements OnInit {
         const date_max = new Date(this.selectedObs.date_max);
         this.selectedObs["actors"] = this.selectedObs["actors"].split('|');
         this.selectedObs.date_max = date_max.toLocaleDateString("fr-FR");
-        /*if (this.selectedObs.cor_observers) {
-          this.email = this.selectedObs.cor_observers
-            .map(el => el.email)
-            .join();
-          this.mailto = String("mailto:" + this.email);
-        }*/
 
         const areaDict = {};
         //Si la géométrie est hors du périmètre, ca plante car areas est undefined
@@ -181,9 +177,67 @@ export class ValidationModalInfoObsComponent implements OnInit {
 
         this._gnDataService.getTaxonInfo(data.cd_nom).subscribe(taxInfo => {
           this.selectedObsTaxonDetail = taxInfo;
+          
+          if (this.selectedObs.cor_observers) {
+            this.mailto = null;
+            this.email = this.selectedObs.cor_observers
+              .map(el => el.email)
+              .join();
 
+            if (this.email.length > 0 ) {
+              let d = { ...this.selectedObsTaxonDetail, ...this.selectedObs};
+              if (this.selectedObs.source.url_source) {
+                d['data_link'] = "Lien vers l'observation : " + [
+                  this.APP_CONFIG.URL_APPLICATION,
+                  this.selectedObs.source.url_source,
+                  this.selectedObs.entity_source_pk_value
+                ].join("/");
+              }
+              else {
+                d['data_link'] = "";
+              }
+              
+              let contentCommunes = "";
+              this.formatedAreas.map((area) => {
+                if(area.type_code == "COM"){
+                  area.areas.map((commune) => {
+                    contentCommunes += commune.area_name  + ", ";
+                  });
+                  contentCommunes = contentCommunes.substring(0, contentCommunes.length - 2);
+                }
+              })
+              d["communes"] = contentCommunes;
+              
+              let contentMedias = "";
+              if(!this.selectedObs.medias){
+                contentMedias = "Aucun media";
+              }else{
+                if(this.selectedObs.medias.length == 0){
+                  contentMedias = "Aucun media";
+                }
+                this.selectedObs.medias.map((media) => {
+                  contentMedias += "\n\tTitre : " + media.title_fr;
+                  contentMedias += "\n\tLien vers le media : " + this.mediaService.href(media);
+                  if(media.description_fr){
+                    contentMedias += "\n\tDescription : " + media.description_fr;
+                  }
+                  if(media.author){
+                    contentMedias += "\n\tAuteur : " + media.author;
+                  }
+                  contentMedias += "\n";
+                })
+              }
+              d["medias"] = contentMedias;
+
+              const mail_subject = eval('`' + this.VALIDATION_CONFIG.MAIL_SUBJECT + '`');
+              const mail_body = eval('`' + this.VALIDATION_CONFIG.MAIL_BODY + '`');
+              let mailto = encodeURI("mailto:" + this.email + "?subject=" + mail_subject+ "&body=" + mail_body)
+              mailto = mailto.replace(/,/g, '%2c');
+              this.mailto = mailto;
+            }
+          }
             /*Envoie de mail ici quand tout est chargé */
-            if (this.selectedObs.cor_observers) {
+            /*if (this.selectedObs.cor_observers) {
               this.email = this.selectedObs.cor_observers.map(el => el.email).join();
               this.mailto = String("mailto:" + this.email + "?");
               //1er passage pour la validation, après on passe par ModalInfoObsComponent
@@ -194,7 +248,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
                 this.mailto += "body=" + this.APP_CONFIG.FRONTEND.DISPLAY_EMAIL_INFO_CONTENT ;
                 this.mailto += this.contentInfoObservationForMail();
               }
-            }
+            }*/
         });
       });
 

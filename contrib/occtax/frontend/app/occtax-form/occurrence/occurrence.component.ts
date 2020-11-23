@@ -99,6 +99,8 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     this.occtaxFormOccurrenceService.dynamicContainerOccurence = this.containerOccurence;
 
     this.occtaxFormOccurrenceService.idTaxonList = this.occtaxConfig.id_taxon_list;
+    //MET MAYBE TODO => ADD PARAM TO OCCTAX FIELDS FROM DATASET
+    //this.occtaxFormOccurrenceService.formFieldsStatus = this.occtaxConfig.form_fields;
   }
 
   ngAfterViewInit() {
