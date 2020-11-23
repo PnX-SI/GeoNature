@@ -63,7 +63,7 @@ export class SyntheseComponent implements OnInit {
         }
       }
     );
-    if (this.firstLoad) {
+    if (this.firstLoad && 'limit' in formParams) {
       //toaster
       this._toasterService.info(
         `Les ${AppConfig.SYNTHESE.NB_LAST_OBS} dernières observations de la synthèse`,
