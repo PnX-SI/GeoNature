@@ -470,8 +470,6 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
         dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
     )
 
-    return render_template("acquisition_framework_template_pdf.html", data=acquisition_framework)
-
 
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf(
