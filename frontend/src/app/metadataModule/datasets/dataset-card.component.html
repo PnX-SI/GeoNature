@@ -8,7 +8,7 @@
         mat-raised-button
         routerLink="/metadata"
         class="mb-2"
-        >
+      >
         <mat-icon>chevron_left</mat-icon>
         Retour
       </button>
@@ -20,22 +20,27 @@
         <div class="card-body">
           <h5 class="text-muted">Jeu de données</h5>
           <h4>{{dataset?.dataset_name}}
-            <button 
-              [disabled]="!dataset?.cruved.U"
-              [routerLink]="['/metadata/dataset', dataset.id_dataset]" 
-              mat-mini-fab color="primary" 
-              matToolTip="Editer le jeu de données"
-              class="mr-2">
-                <mat-icon>create</mat-icon>
-            </button>
-            <button 
-              mat-mini-fab color="warn"
+            <button
+              mat-mini-fab
+              color="warn"
               [disabled]="dataset?.observation_count > 0 || !dataset.cruved.D"
               (click)="deleteDataset(id_dataset)"
+              class="float-right"
               matToolTip="Supprimer le jeu de données"
-              >
+            >
               <mat-icon>delete</mat-icon>
             </button>
+            <button
+              [disabled]="!dataset?.cruved.U"
+              [routerLink]="['/metadata/dataset', dataset.id_dataset]"
+              mat-mini-fab
+              color="primary"
+              matToolTip="Editer le jeu de données"
+              class="mr-2 float-right"
+            >
+              <mat-icon>create</mat-icon>
+            </button>
+
           </h4>
 
         </div>
@@ -48,51 +53,46 @@
             mat-raised-button
             color="primary"
             class="mr-1 mb-2"
-              matTooltip="Télécharger la fiche PDF"
-              (click)="getPdf()"
+            matTooltip="Télécharger la fiche PDF"
+            (click)="getPdf()"
           >
             Export PDF
             <mat-icon>file_download</mat-icon>
           </button>
-          <button 
+          <button
             [disabled]="dataset?.observation_count == 0"
-            mat-raised-button 
+            mat-raised-button
             color="primary"
             matTooltip="Télécharger le rapport de sensibilité"
             class="mb-2 mr-1"
+            (click)="sensiReport(dataset.id_dataset)"
           >
             Rapport de sensibilité
-            <mat-icon
-              (click)="sensiReport(dataset.id_dataset)"
-            > do_not_touch 
+            <mat-icon> do_not_touch
             </mat-icon>
           </button>
           <button
             [disabled]="dataset?.observation_count == 0"
-            mat-raised-button 
+            mat-raised-button
             color="primary"
             matTooltip="Télécharger le rapport d'UUID"
             class="mb-2 mr-1"
+            (click)="uuidReport(dataset?.id_dataset)"
           >
             Rapport d'UUID
-            <mat-icon
-              (click)="uuidReport(dataset?.id_dataset)"
-              
-            > format_list_numbered 
-          </mat-icon>
+            <mat-icon> format_list_numbered
+            </mat-icon>
           </button>
 
           <button
             [disabled]="!dataset?.active"
-            mat-raised-button 
+            mat-raised-button
             color="primary"
             (click)="importDs(dataset?.id_dataset)"
             matTooltip="Importer dans ce jeu de données"
-
           >
             Importer des données
-            <mat-icon
-            > publish 
+            <mat-icon> publish
             </mat-icon>
           </button>
 
@@ -147,7 +147,7 @@
         </div>
       </div>
     </div>
-    
+
   </div>
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 ">
@@ -356,7 +356,7 @@
         <div class="card-header">
           <h5>
             Périmètre géographique
-            <button 
+            <button
               mat-raised-button
               class="ml-2"
               color="primary"
@@ -364,8 +364,8 @@
               matTooltip="Afficher les données dans la Synthèse"
             >
               Afficher les données
-            <mat-icon> room </mat-icon>
-          </button>
+              <mat-icon> room </mat-icon>
+            </button>
           </h5>
 
         </div>
