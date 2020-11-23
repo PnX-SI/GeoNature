@@ -8,7 +8,7 @@ from flask import Blueprint, request
 from geojson import FeatureCollection
 
 from utils_flask_sqla.response import json_resp
-from utils_flask_sqla_geo.serializers import sqla_query_to_geojson
+from utils_flask_sqla_geo.serializers import query_as_geojson
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
 
@@ -90,7 +90,7 @@ def get_synthese_data(info_role):
 
     # TODO le transférer dans sqla-geo
     # Génération d'une requête sql générant un geojson valide
-    geojson_features = sqla_query_to_geojson(
+    geojson_features = query_as_geojson(
         session=DB.session,
         query=validation_query_class.query.limit(
             result_limit
