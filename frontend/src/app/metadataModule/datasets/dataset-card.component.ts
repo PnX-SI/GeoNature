@@ -36,7 +36,7 @@ export class DatasetCardComponent implements OnInit {
       position: 'left',
       labels: {
         fontSize: 15,
-        filter: function(legendItem, chartData) {
+        filter: function (legendItem, chartData) {
           return chartData.datasets[0].data[legendItem.index] != 0;
         }
       }
@@ -69,7 +69,7 @@ export class DatasetCardComponent implements OnInit {
     private _route: ActivatedRoute,
     private _dfs: DataFormService,
     public moduleService: ModuleService
-  ) {}
+  ) { }
 
   ngOnInit() {
     // get the id from the route
@@ -109,6 +109,8 @@ export class DatasetCardComponent implements OnInit {
     const url = `${AppConfig.API_ENDPOINT}/meta/dataset/export_pdf/${this.id_dataset}`;
     const dataUrl = this.chart ? this.chart.ctx.canvas.toDataURL('image/png') : '';
     this._dfs.uploadCanvas(dataUrl).subscribe(data => {
+      console.log(url);
+
       window.open(url);
     });
   }

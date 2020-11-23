@@ -13,7 +13,7 @@ from sqlalchemy.sql import text, exists, select
 from sqlalchemy.sql.functions import func
 
 
-from geonature.utils.env import DB
+from geonature.utils.env import DB, BACKEND_DIR
 from geonature.core.gn_synthese.models import Synthese
 
 from pypnnomenclature.models import TNomenclatures
@@ -291,13 +291,6 @@ def get_export_pdf_dataset(id_dataset, info_role):
     """
     Get a PDF export of one dataset
     """
-
-    # Verification des droits
-    if info_role.value_filter == "0":
-        raise InsufficientRightsError(
-            ('User "{}" cannot "{}" a dataset').format(info_role.id_role, "export"), 403,
-        )
-
     df = get_dataset_details_dict(id_dataset, info_role)
 
     if info_role.value_filter != "3":
@@ -332,6 +325,7 @@ def get_export_pdf_dataset(id_dataset, info_role):
         "bandeau": "Bandeau_pdf.png",
         "entite": "sinp",
     }
+    df["title"] = current_app.config["METADATA"]["DS_PDF_TITLE"]
 
     date = dt.datetime.now().strftime("%d/%m/%Y")
 
@@ -349,6 +343,8 @@ def get_export_pdf_dataset(id_dataset, info_role):
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf("dataset_template_pdf.html", df, filename)
     pdf_file_posix = Path(pdf_file)
+    print(pdf_file)
+
     return send_from_directory(str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True)
 
 
@@ -448,6 +444,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
             "bandeau": "Bandeau_pdf.png",
             "entite": "sinp",
         }
+        acquisition_framework["title"] = current_app.config["METADATA"]["AF_PDF_TITLE"]
         date = dt.datetime.now().strftime("%d/%m/%Y")
         acquisition_framework["footer"] = {
             "url": current_app.config["URL_APPLICATION"]
@@ -472,6 +469,9 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
         acquisition_framework["acquisition_framework_name"][0:31].replace(" ", "_"),
         dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
     )
+
+    return render_template("acquisition_framework_template_pdf.html", data=acquisition_framework)
+
 
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf(

@@ -94,6 +94,8 @@ class MediasConfig(Schema):
 
 class MetadataConfig(Schema):
     NB_AF_DISPLAYED = fields.Integer(missing=50, validate=OneOf([10, 25, 50, 100]))
+    AF_PDF_TITLE = fields.String(missing="")
+    DS_PDF_TITLE = fields.String(missing="")
 
 
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
