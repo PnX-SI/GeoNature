@@ -39,7 +39,7 @@ import { IntroductionComponent } from '../custom/components/introduction/introdu
 // Service
 import { AuthService } from './components/auth/auth.service';
 import { CookieService } from 'ng2-cookies';
-import { ChartsModule } from "ng2-charts/ng2-charts";
+import { ChartsModule } from 'ng2-charts/ng2-charts';
 import {
   AuthGuard,
   ModuleGuardService,
@@ -56,6 +56,7 @@ import { GlobalSubService } from './services/global-sub.service';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
+import { UserDataService } from "./userModule/services/user-data.service";
 
 @NgModule({
   imports: [
@@ -105,6 +106,7 @@ export function createTranslateLoader(http: HttpClient) {
     UserManagementGuard,
     SideNavService,
     CruvedStoreService,
+    UserDataService,
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

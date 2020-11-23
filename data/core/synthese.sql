@@ -11,10 +11,10 @@ SET search_path = gn_synthese, public, pg_catalog;
 
 SET default_with_oids = false;
 
-
 -------------
 --FUNCTIONS--
 -------------
+
 CREATE OR REPLACE FUNCTION get_default_nomenclature_value(myidtype character varying, myidorganism integer DEFAULT 0, myregne character varying(20) DEFAULT '0', mygroup2inpn character varying(255) DEFAULT '0')
 RETURNS integer
 IMMUTABLE
@@ -81,7 +81,6 @@ $BODY$
   COST 100;
 
 
-
 CREATE OR REPLACE FUNCTION gn_synthese.calcul_cor_area_taxon(my_id_area integer, my_cd_nom integer) RETURNS void
     LANGUAGE plpgsql
     AS $$
@@ -123,6 +122,7 @@ $$;
 ------------------------
 --TABLES AND SEQUENCES--
 ------------------------
+
 CREATE TABLE t_sources (
     id_source serial NOT NULL,
     name_source character varying(255) NOT NULL,
@@ -144,8 +144,8 @@ CREATE TABLE synthese (
     id_dataset integer,
     id_nomenclature_geo_object_nature integer DEFAULT get_default_nomenclature_value('NAT_OBJ_GEO'),
     id_nomenclature_grp_typ integer DEFAULT get_default_nomenclature_value('TYP_GRP'),
-    id_nomenclature_obs_meth integer DEFAULT get_default_nomenclature_value('METH_OBS'),
-    id_nomenclature_obs_technique integer DEFAULT get_default_nomenclature_value('TECHNIQUE_OBS'),
+    grp_method character varying(255),
+    id_nomenclature_obs_technique integer DEFAULT get_default_nomenclature_value('METH_OBS'),
     id_nomenclature_bio_status integer DEFAULT get_default_nomenclature_value('STATUT_BIO'),
     id_nomenclature_bio_condition integer DEFAULT get_default_nomenclature_value('ETA_BIO'),
     id_nomenclature_naturalness integer DEFAULT get_default_nomenclature_value('NATURALITE'),
@@ -161,10 +161,13 @@ CREATE TABLE synthese (
     id_nomenclature_blurring integer DEFAULT get_default_nomenclature_value('DEE_FLOU'),
     id_nomenclature_source_status integer DEFAULT get_default_nomenclature_value('STATUT_SOURCE'),
     id_nomenclature_info_geo_type integer DEFAULT get_default_nomenclature_value('TYP_INF_GEO'),
+    id_nomenclature_behaviour integer DEFAULT get_default_nomenclature_value('OCC_COMPORTEMENT'),
+    id_nomenclature_biogeo_status integer DEFAULT get_default_nomenclature_value('STAT_BIOGEO'),
     reference_biblio character varying(255),
     count_min integer,
     count_max integer,
     cd_nom integer,
+    cd_hab integer,
     nom_cite character varying(1000) NOT NULL,
     meta_v_taxref character varying(50) DEFAULT gn_commons.get_default_parameter('taxref_version',NULL),
     sample_number_proof text,
@@ -172,9 +175,13 @@ CREATE TABLE synthese (
     non_digital_proof text,
     altitude_min integer,
     altitude_max integer,
+    depth_min integer,
+    depth_max integer,
+    place_name character varying(500),
     the_geom_4326 public.geometry(Geometry,4326),
     the_geom_point public.geometry(Point,4326),
     the_geom_local public.geometry(Geometry,MYLOCALSRID),
+    precision integer,
     id_area_attachment integer,
     date_min timestamp without time zone NOT NULL,
     date_max timestamp without time zone NOT NULL,
@@ -186,6 +193,7 @@ CREATE TABLE synthese (
     id_nomenclature_determination_method integer DEFAULT gn_synthese.get_default_nomenclature_value('METH_DETERMIN'),
     comment_context text,
     comment_description text,
+    additional_data jsonb,
     meta_validation_date timestamp without time zone,
     meta_create_date timestamp without time zone DEFAULT now(),
     meta_update_date timestamp without time zone DEFAULT now(),
@@ -209,6 +217,10 @@ COMMENT ON COLUMN gn_synthese.synthese.comment_description
   IS 'Commentaire de l''occurrence';
 COMMENT ON COLUMN gn_synthese.synthese.id_area_attachment
   IS 'Id area du rattachement géographique - cas des observation sans géométrie précise';
+COMMENT ON COLUMN gn_synthese.synthese.id_nomenclature_obs_technique
+  IS 'Correspondance champs standard occtax = obsTechnique. En raison d''un changement de nom, le code nomenclature associé reste ''METH_OBS'' ';
+COMMENT ON COLUMN gn_synthese.synthese.id_area_attachment
+  IS 'Id area du rattachement géographique - cas des observations sans géométrie précise';
 
 CREATE SEQUENCE synthese_id_synthese_seq
     START WITH 1
@@ -264,10 +276,10 @@ ALTER TABLE ONLY cor_observer_synthese ADD CONSTRAINT pk_cor_observer_synthese P
 ALTER TABLE cor_area_taxon
   ADD CONSTRAINT pk_cor_area_taxon PRIMARY KEY (id_area, cd_nom);
 
-
 ---------------
 --FOREIGN KEY--
 ---------------
+
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_dataset FOREIGN KEY (id_dataset) REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE;
 
@@ -281,13 +293,13 @@ ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_cd_nom FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_cd_hab FOREIGN KEY (cd_hab) REFERENCES ref_habitats.habref(cd_hab) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_nomenclature_geo_object_nature FOREIGN KEY (id_nomenclature_geo_object_nature) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_nomenclature_id_nomenclature_grp_typ FOREIGN KEY (id_nomenclature_grp_typ) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_id_nomenclature_obs_meth FOREIGN KEY (id_nomenclature_obs_meth) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_nomenclature_obs_technique FOREIGN KEY (id_nomenclature_obs_technique) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
@@ -338,16 +350,16 @@ ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_nomenclature_determination_method FOREIGN KEY (id_nomenclature_determination_method) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
+    ADD CONSTRAINT fk_synthese_id_nomenclature_biogeo_status FOREIGN KEY (id_nomenclature_biogeo_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature_biogeo_status) ON UPDATE CASCADE;
+
+ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_digitiser FOREIGN KEY (id_digitiser) REFERENCES utilisateurs.t_roles (id_role) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_area_attachment FOREIGN KEY (id_area_attachment) REFERENCES ref_geo.l_areas (id_area) ON UPDATE CASCADE;
 
-
-
 ALTER TABLE ONLY cor_area_synthese
     ADD CONSTRAINT fk_cor_area_synthese_id_synthese FOREIGN KEY (id_synthese) REFERENCES synthese(id_synthese) ON UPDATE CASCADE ON DELETE CASCADE;
-
 
 ALTER TABLE ONLY cor_area_synthese
     ADD CONSTRAINT fk_cor_area_synthese_id_area FOREIGN KEY (id_area) REFERENCES ref_geo.l_areas(id_area) ON UPDATE CASCADE;
@@ -373,9 +385,9 @@ ALTER TABLE cor_area_taxon
       REFERENCES ref_geo.l_areas (id_area) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE NO ACTION;
 
---------------
---CONSTRAINS--
---------------
+---------------
+--CONSTRAINTS--
+---------------
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT unique_id_sinp_unique UNIQUE (unique_id_sinp);
@@ -384,22 +396,22 @@ ALTER TABLE ONLY synthese
     ADD CONSTRAINT check_synthese_altitude_max CHECK (altitude_max >= altitude_min);
 
 ALTER TABLE ONLY synthese
+    ADD CONSTRAINT check_synthese_depth_max CHECK (depth_max >= depth_min);
+
+ALTER TABLE ONLY synthese
     ADD CONSTRAINT check_synthese_date_max CHECK (date_max >= date_min);
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT check_synthese_count_max CHECK (count_max >= count_min);
 
 ALTER TABLE synthese
-  ADD CONSTRAINT check_synthese_obs_meth CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_obs_meth,'METH_OBS')) NOT VALID;
+  ADD CONSTRAINT check_synthese_obs_meth CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_obs_technique,'METH_OBS')) NOT VALID;
 
 ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_geo_object_nature CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_geo_object_nature,'NAT_OBJ_GEO')) NOT VALID;
 
 ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_typ_grp CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_grp_typ,'TYP_GRP')) NOT VALID;
-
-ALTER TABLE synthese
-  ADD CONSTRAINT check_synthese_obs_technique CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_obs_technique,'TECHNIQUE_OBS')) NOT VALID;
 
 ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_bio_status CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_bio_status,'STATUT_BIO')) NOT VALID;
@@ -444,6 +456,9 @@ ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_source_status CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_source_status,'STATUT_SOURCE')) NOT VALID;
 
 ALTER TABLE synthese
+  ADD CONSTRAINT check_synthese_source_status CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_biogeo_status,'STAT_BIOGEO')) NOT VALID;
+
+ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_info_geo_type_id_area_attachment CHECK (NOT (ref_nomenclatures.get_cd_nomenclature(id_nomenclature_info_geo_type) = '2'  AND id_area_attachment IS NULL )) NOT VALID;
 
 ALTER TABLE ONLY defaults_nomenclatures_value
@@ -456,11 +471,10 @@ ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT check_gn_synthese_defaults_nomenclatures_value_isregne CHECK (taxonomie.check_is_regne(regne::text) OR regne::text = '0'::text) NOT VALID;
 
 
-
-
 ----------------------
 --MATERIALIZED VIEWS--
 ----------------------
+
 --DROP MATERIALIZED VIEW gn_vm_min_max_for_taxons;
 CREATE MATERIALIZED VIEW vm_min_max_for_taxons AS
 WITH
@@ -498,10 +512,10 @@ LEFT JOIN dat ON dat.cd_ref = loc.cd_ref
 ORDER BY loc.cd_ref;
 
 
-
 -----------
 --INDEXES--
 -----------
+
 CREATE INDEX i_synthese_t_sources ON synthese USING btree (id_source);
 
 CREATE INDEX i_synthese_cd_nom ON synthese USING btree (cd_nom);
@@ -523,12 +537,14 @@ CREATE INDEX i_synthese_the_geom_4326 ON synthese USING gist (the_geom_4326);
 CREATE INDEX i_synthese_the_geom_point ON synthese USING gist (the_geom_point);
 
 CREATE UNIQUE INDEX i_unique_cd_ref_vm_min_max_for_taxons ON gn_synthese.vm_min_max_for_taxons USING btree (cd_ref);
+
 --REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.vm_min_max_for_taxons;
 
 
 -------------
 --FUNCTIONS--
 -------------
+
 CREATE OR REPLACE FUNCTION gn_synthese.fct_calculate_min_max_for_taxon(mycdnom integer)
   RETURNS TABLE(cd_ref int, nbobs bigint,  daymin int, daymax int, altitudemin int, altitudemax int, bbox4326 geometry) AS
 $BODY$
@@ -606,13 +622,13 @@ $BODY$
 	DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = NEW.id_synthese;
   END IF;
 
-  -- intersection avec toutes les areas et écriture dans cor_area_synthese
+  -- Intersection avec toutes les areas et écriture dans cor_area_synthese
     IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND geom_change )) THEN
       INSERT INTO gn_synthese.cor_area_synthese SELECT
 	      s.id_synthese AS id_synthese,
         a.id_area AS id_area
         FROM ref_geo.l_areas a
-        JOIN gn_synthese.synthese s 
+        JOIN gn_synthese.synthese s
         	ON public.ST_INTERSECTS(s.the_geom_local, a.geom)  AND NOT public.ST_TOUCHES(s.the_geom_local,a.geom)
         WHERE s.id_synthese = NEW.id_synthese AND a.enable IS true;
     END IF;
@@ -706,6 +722,7 @@ $$;
 --VIEWS--
 ---------
 
+-- Vue de l'arbre taxonomique des taxons présents dans la Synthèse (jusqu'à la famille)
 CREATE OR REPLACE VIEW gn_synthese.v_tree_taxons_synthese AS
  WITH cd_famille AS (
          SELECT t_1.cd_ref,
@@ -764,13 +781,12 @@ CREATE OR REPLACE VIEW gn_synthese.v_tree_taxons_synthese AS
 COMMENT ON VIEW gn_synthese.v_tree_taxons_synthese IS 'Vue destinée à l''arbre taxonomique de la synthese. S''arrête  à la famille pour des questions de performances';
 
 
-
+-- Vue décodant les nomenclatures
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_decode_nomenclatures AS
 SELECT
 s.id_synthese,
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_geo_object_nature) AS nat_obj_geo,
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_grp_typ) AS grp_typ,
-ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_obs_meth) AS obs_method,
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_obs_technique) AS obs_technique,
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_bio_status) AS bio_status,
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_bio_condition) AS bio_condition,
@@ -787,9 +803,12 @@ ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_observation_status) A
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_blurring) AS blurring,
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_source_status) AS source_status,
 ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_info_geo_type) AS info_geo_type,
-ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_determination_method) AS determination_method
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_determination_method) AS determination_method,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_behaviour) AS occ_behaviour,
+ref_nomenclatures.get_nomenclature_label(s.id_nomenclature_biogeo_status) AS occ_stat_biogeo
 FROM gn_synthese.synthese s;
 
+-- Vue listant les observations de la synthèse pour l'application WEB
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
  SELECT s.id_synthese,
     s.unique_id_sinp,
@@ -805,6 +824,10 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
     s.non_digital_proof,
     s.altitude_min,
     s.altitude_max,
+    s.depth_min,
+    s.depth_max,
+    s.place_name,
+    s.precision,
     s.the_geom_4326,
     public.ST_asgeojson(the_geom_4326),
     s.date_min,
@@ -826,7 +849,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
     s.id_nomenclature_geo_object_nature,
     s.id_nomenclature_info_geo_type,
     s.id_nomenclature_grp_typ,
-    s.id_nomenclature_obs_meth,
+    s.grp_method,
     s.id_nomenclature_obs_technique,
     s.id_nomenclature_bio_status,
     s.id_nomenclature_bio_condition,
@@ -843,6 +866,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
     s.id_nomenclature_blurring,
     s.id_nomenclature_source_status,
     s.id_nomenclature_determination_method,
+    s.id_nomenclature_behaviour,
     s.reference_biblio,
     sources.name_source,
     sources.url_source,
@@ -856,69 +880,102 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
      JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source;
 
-
+-- Vue listant les observations pour l'export de la Synthèse
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
- SELECT s.id_synthese AS "idSynthese",
-    s.unique_id_sinp AS "permId",
-    s.unique_id_sinp_grp AS "permIdGrp",
-    s.count_min AS "denbrMin",
-    s.count_max AS "denbrMax",
-    s.meta_v_taxref AS "vTAXREF",
-    s.sample_number_proof AS "sampleNumb",
-    s.digital_proof AS "preuvNum",
-    s.non_digital_proof AS "preuvNoNum",
-    s.altitude_min AS "altMin",
-    s.altitude_max AS "altMax",
-    public.ST_astext(s.the_geom_4326) AS wkt,
-    s.date_min AS "dateDebut",
-    s.date_max AS "dateFin",
+ SELECT 
+    s.date_min::date AS date_debut,
+    s.date_max::date AS date_fin,
+    s.date_min::time AS heure_debut,
+    s.date_max::time AS heure_fin,
+    t.cd_nom AS cd_nom,
+    t.cd_ref AS cd_ref,
+    t.nom_valide AS nom_valide,
+    t.nom_vern as nom_vernaculaire,
+    s.nom_cite AS nom_cite,
+    t.regne AS regne,
+    t.group1_inpn AS group1_inpn,
+    t.group2_inpn AS group2_inpn,
+    t.classe AS classe,
+    t.ordre AS ordre,
+    t.famille AS famille,
+    t.id_rang AS rang_taxo,
+    s.count_min AS nombre_min,
+    s.count_max AS nombre_max,
+    s.altitude_min AS alti_min,
+    s.altitude_max AS alti_max,
+    s.depth_min AS prof_min,
+    s.depth_max AS prof_max,
+    s.observers AS observateurs,
+    s.id_digitiser AS id_digitiser, -- Utile pour le CRUVED
+    s.determiner AS determinateur,
+    communes AS communes,
+    public.ST_astext(s.the_geom_4326) AS geometrie_wkt_4326,
+    public.ST_x(s.the_geom_point) AS x_centroid_4326,
+    public.ST_y(s.the_geom_point) AS y_centroid_4326,
+    public.ST_asgeojson(s.the_geom_4326) AS geojson_4326,-- Utile pour la génération de l'export en SHP
+    public.ST_asgeojson(s.the_geom_local) AS geojson_local,-- Utile pour la génération de l'export en SHP
+    s.place_name AS nom_lieu,
+    s.comment_context AS comment_releve,
+    s.comment_description AS comment_occurrence,
     s.validator AS validateur,
-    s.observers AS observer,
-    s.id_digitiser AS id_digitiser,
-    s.determiner AS detminer,
-    s.comment_context AS "obsCtx",
-    s.comment_description AS "obsDescr",
-    s.meta_create_date,
-    s.meta_update_date,
-    d.id_dataset AS "jddId",
-    d.dataset_name AS "jddCode",
-    d.id_acquisition_framework,
-    t.cd_nom AS "cdNom",
-    t.cd_ref AS "cdRef",
-    t.nom_valide AS "nomValide",
-    s.nom_cite AS "nomCite",
-    public.ST_x(public.ST_transform(s.the_geom_point, 2154)) AS x_centroid,
-    public.ST_y(public.ST_transform(s.the_geom_point, 2154)) AS y_centroid,
-    COALESCE(s.meta_update_date, s.meta_create_date) AS lastact,
-    public.ST_asgeojson(s.the_geom_4326) AS geojson_4326,
-    public.ST_asgeojson(s.the_geom_local) AS geojson_local,
-    n1.label_default AS "ObjGeoTyp",
-    n2.label_default AS "methGrp",
-    n3.label_default AS "obsMeth",
-    n4.label_default AS "obsTech",
-    n5.label_default AS "ocStatutBio",
-    n6.label_default AS "ocEtatBio",
-    n7.label_default AS "ocNat",
-    n8.label_default AS "preuveOui",
-    n9.label_default AS "difNivPrec",
-    n10.label_default AS "ocStade",
-    n11.label_default AS "ocSex",
-    n12.label_default AS "objDenbr",
-    n13.label_default AS "denbrTyp",
-    n14.label_default AS"sensiNiv",
-    n15.label_default AS "statObs",
-    n16.label_default AS "dEEFlou",
-    n17.label_default AS "statSource",
-    n18.label_default AS "typInfGeo",
-    n19.label_default AS "ocMethDet"
+    n21.label_default AS niveau_validation,
+    s.meta_validation_date as date_validation,
+    s.validation_comment AS comment_validation,
+    s.digital_proof AS preuve_numerique_url,
+    s.non_digital_proof AS preuve_non_numerique,
+    d.dataset_name AS jdd_nom,
+    d.unique_dataset_id AS jdd_uuid,
+    d.id_dataset AS jdd_id, -- Utile pour le CRUVED
+    af.acquisition_framework_name AS ca_nom,
+    af.unique_acquisition_framework_id AS ca_uuid,
+    d.id_acquisition_framework AS ca_id,
+    s.cd_hab AS cd_habref,
+    hab.lb_code AS cd_habitat,
+    hab.lb_hab_fr AS nom_habitat,
+    s.precision as precision_geographique,
+    n1.label_default AS nature_objet_geo,
+    n2.label_default AS type_regroupement,
+    s.grp_method AS methode_regroupement,
+    n3.label_default AS technique_observation,
+    n5.label_default AS biologique_statut,
+    n6.label_default AS etat_biologique,
+    n22.label_default AS biogeographique_statut,
+    n7.label_default AS naturalite,
+    n8.label_default AS preuve_existante,
+    n9.label_default AS niveau_precision_diffusion,
+    n10.label_default AS stade_vie,
+    n11.label_default AS sexe,
+    n12.label_default AS objet_denombrement,
+    n13.label_default AS type_denombrement,
+    n14.label_default AS niveau_sensibilite,
+    n15.label_default AS statut_observation,
+    n16.label_default AS floutage_dee,
+    n17.label_default AS statut_source,
+    n18.label_default AS type_info_geo,
+    n19.label_default AS methode_determination,
+    n20.label_default AS comportement,
+    s.reference_biblio AS reference_biblio,
+    s.id_synthese AS id_synthese,
+    s.entity_source_pk_value AS id_origine,
+    s.unique_id_sinp AS uuid_perm_sinp,
+    s.unique_id_sinp_grp AS uuid_perm_grp_sinp,
+    s.meta_create_date AS date_creation,
+    s.meta_update_date AS date_modification,
+    COALESCE(s.meta_update_date, s.meta_create_date) AS derniere_action
    FROM gn_synthese.synthese s
      JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
      JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset
-     JOIN gn_synthese.t_sources sources ON sources.id_source = s.id_source
+     JOIN gn_meta.t_acquisition_frameworks af ON d.id_acquisition_framework = af.id_acquisition_framework
+     LEFT OUTER JOIN (
+        SELECT id_synthese, string_agg(DISTINCT area_name, ', ') AS communes
+        FROM gn_synthese.cor_area_synthese cas
+        LEFT OUTER JOIN ref_geo.l_areas a_1 ON cas.id_area = a_1.id_area
+        JOIN ref_geo.bib_areas_types ta ON ta.id_type = a_1.id_type AND ta.type_code ='COM'
+        GROUP BY id_synthese 
+     ) sa ON sa.id_synthese = s.id_synthese
      LEFT JOIN ref_nomenclatures.t_nomenclatures n1 ON s.id_nomenclature_geo_object_nature = n1.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n2 ON s.id_nomenclature_grp_typ = n2.id_nomenclature
-     LEFT JOIN ref_nomenclatures.t_nomenclatures n3 ON s.id_nomenclature_obs_meth = n3.id_nomenclature
-     LEFT JOIN ref_nomenclatures.t_nomenclatures n4 ON s.id_nomenclature_obs_technique = n4.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n3 ON s.id_nomenclature_obs_technique = n3.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n5 ON s.id_nomenclature_bio_status = n5.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n6 ON s.id_nomenclature_bio_condition = n6.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n7 ON s.id_nomenclature_naturalness = n7.id_nomenclature
@@ -933,9 +990,14 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
      LEFT JOIN ref_nomenclatures.t_nomenclatures n16 ON s.id_nomenclature_blurring = n16.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n17 ON s.id_nomenclature_source_status = n17.id_nomenclature
      LEFT JOIN ref_nomenclatures.t_nomenclatures n18 ON s.id_nomenclature_info_geo_type = n18.id_nomenclature
-     LEFT JOIN ref_nomenclatures.t_nomenclatures n19 ON s.id_nomenclature_determination_method = n19.id_nomenclature;
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n19 ON s.id_nomenclature_determination_method = n19.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n20 ON s.id_nomenclature_behaviour = n20.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n21 ON s.id_nomenclature_valid_status = n21.id_nomenclature
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n22 ON s.id_nomenclature_biogeo_status = n22.id_nomenclature
+     LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = s.cd_hab;
 
 
+-- Vue d'export des métadonnées
 CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS
  WITH count_nb_obs AS (
          SELECT count(*) AS nb_obs,
@@ -947,7 +1009,8 @@ CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS
     d.id_dataset AS jdd_id,
     d.unique_dataset_id AS jdd_uuid,
     af.acquisition_framework_name AS cadre_acquisition,
-    string_agg(DISTINCT concat(COALESCE(orga.nom_organisme, ((roles.nom_role::text || ' '::text) || roles.prenom_role::text)::character varying), ': ', nomencl.label_default), ' | '::text) AS acteurs,
+    af.unique_acquisition_framework_id AS ca_uuid,
+    string_agg(DISTINCT concat(COALESCE(orga.nom_organisme, ((roles.nom_role::text || ' '::text) || roles.prenom_role::text)::character varying), ' (', nomencl.label_default,')'), ', '::text) AS acteurs,
     count_nb_obs.nb_obs AS nombre_obs
    FROM gn_meta.t_datasets d
      JOIN gn_meta.t_acquisition_frameworks af ON af.id_acquisition_framework = d.id_acquisition_framework
@@ -956,10 +1019,9 @@ CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS
      LEFT JOIN utilisateurs.bib_organismes orga ON orga.id_organisme = act.id_organism
      LEFT JOIN utilisateurs.t_roles roles ON roles.id_role = act.id_role
      JOIN count_nb_obs ON count_nb_obs.id_dataset = d.id_dataset
-  GROUP BY d.id_dataset, d.unique_dataset_id, d.dataset_name, af.acquisition_framework_name, count_nb_obs.nb_obs;
+  GROUP BY d.id_dataset, d.unique_dataset_id, d.dataset_name, af.acquisition_framework_name, af.unique_acquisition_framework_id, count_nb_obs.nb_obs;
 
-
--- vue couleur taxon
+-- Vue des couleurs des taxons par unité géographique
 CREATE OR REPLACE VIEW gn_synthese.v_color_taxon_area AS
 SELECT cd_nom, id_area, nb_obs, last_date,
  CASE
@@ -992,6 +1054,7 @@ JOIN taxonomie.taxref ref ON t.cd_ref = ref.cd_nom;
 ------------
 --TRIGGERS--
 ------------
+
 CREATE TRIGGER tri_meta_dates_change_synthese
   BEFORE INSERT OR UPDATE
   ON synthese
@@ -1054,12 +1117,29 @@ INSERT INTO gn_commons.t_modules (module_code, module_label, module_picto, modul
 
 -- Fonctions import dans la synthese
 
-CREATE OR REPLACE FUNCTION gn_synthese.import_json_row(
-	datain jsonb,
-  datageojson text default NULL -- données géographique sous la forme d'un geojson TODO a voir le paramètre du type text ou json
-)
-RETURNS boolean AS
-$BODY$
+CREATE OR REPLACE FUNCTION gn_synthese.import_json_row_format_insert_data(column_name varchar, data_type varchar, postgis_maj_num_version int)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$
+DECLARE
+	col_srid int;
+BEGIN
+	-- Gestion de postgis 3
+	IF ((postgis_maj_num_version > 2) AND (data_type = 'geometry')) THEN
+		col_srid := (SELECT find_srid('gn_synthese', 'synthese', column_name));
+		RETURN '(st_setsrid(ST_GeomFromGeoJSON(datain->>''' || column_name  || '''), ' || col_srid::text || '))' || COALESCE('::' || data_type, '');
+	ELSE
+		RETURN '(datain->>''' || column_name  || ''')' || COALESCE('::' || data_type, '');
+	END IF;
+
+END;
+$function$
+;
+
+  CREATE OR REPLACE FUNCTION gn_synthese.import_json_row(datain jsonb, datageojson text DEFAULT NULL::text)
+ RETURNS boolean
+ LANGUAGE plpgsql
+AS $function$
   DECLARE
     insert_columns text;
     select_columns text;
@@ -1068,6 +1148,8 @@ $BODY$
     geom geometry;
     geom_data jsonb;
     local_srid int;
+
+   postgis_maj_num_version int;
 BEGIN
 
 
@@ -1081,7 +1163,9 @@ BEGIN
   INSERT INTO tmp_process_import (datain)
   SELECT datain;
 
-  -- Cas ou la geométrie est passé en geojson
+  postgis_maj_num_version := (SELECT split_part(version, '.', 1)::int FROM pg_available_extension_versions WHERE name = 'postgis' AND installed = true);
+
+  -- Cas ou la geométrie est passée en geojson
   IF NOT datageojson IS NULL THEN
     geom := (SELECT ST_setsrid(ST_GeomFromGeoJSON(datageojson), 4326));
     local_srid := (SELECT parameter_value FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid');
@@ -1112,7 +1196,7 @@ BEGIN
   WITH import_col AS (
     SELECT jsonb_object_keys(datain) AS column_name
   ), synt_col AS (
-      SELECT column_name, column_default, CASE WHEN data_type = 'USER-DEFINED' THEN NULL ELSE data_type END as data_type
+      SELECT column_name, column_default, CASE WHEN data_type = 'USER-DEFINED' THEN udt_name ELSE data_type END as data_type
       FROM information_schema.columns
       WHERE table_schema || '.' || table_name = 'gn_synthese.synthese'
   )
@@ -1120,14 +1204,17 @@ BEGIN
       string_agg(s.column_name, ',')  as insert_columns,
       string_agg(
           CASE
-              WHEN NOT column_default IS NULL THEN 'COALESCE((datain->>''' || i.column_name  || ''')' || COALESCE('::' || data_type, '') || ', ' || column_default || ') as ' || i.column_name
-          ELSE '(datain->>''' || i.column_name  || ''')' || COALESCE('::' || data_type, '')
+              WHEN NOT column_default IS NULL THEN
+              'COALESCE(' || gn_synthese.import_json_row_format_insert_data(i.column_name, data_type::varchar, postgis_maj_num_version) || ', ' || column_default || ') as ' || i.column_name
+          ELSE gn_synthese.import_json_row_format_insert_data(i.column_name, data_type::varchar, postgis_maj_num_version)
           END, ','
       ) as select_columns ,
       string_agg(
-          s.column_name || '=' || CASE
-              WHEN NOT column_default IS NULL THEN 'COALESCE((datain->>''' || i.column_name  || ''')' || COALESCE('::' || data_type, '') || ', ' || column_default || ') '
-          ELSE '(datain->>''' || i.column_name  || ''')' || COALESCE('::' || data_type, '')
+          s.column_name || '=' ||
+          CASE
+            WHEN NOT column_default IS NULL
+            	THEN  'COALESCE(' || gn_synthese.import_json_row_format_insert_data(i.column_name, data_type::varchar, postgis_maj_num_version) || ', ' || column_default || ') '
+  			ELSE gn_synthese.import_json_row_format_insert_data(i.column_name, data_type::varchar, postgis_maj_num_version)
           END
       , ',')
   INTO insert_columns, select_columns, update_columns
@@ -1179,51 +1266,54 @@ BEGIN
 
   RETURN TRUE;
   END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
+$function$
+;
 
-
-
+    -- Import dans la synthese, ajout de limit et offset 
+    -- pour pouvoir boucler et traiter des quantités raisonnables de données
 CREATE OR REPLACE FUNCTION gn_synthese.import_row_from_table(
     select_col_name character varying,
     select_col_val character varying,
-    tbl_name character varying)
+    tbl_name character varying,
+    limit_ integer,
+    offset_ integer)
   RETURNS boolean AS
-$BODY$
-DECLARE
-  select_sql text;
-  import_rec record;
-BEGIN
+  $BODY$
+  DECLARE
+    select_sql text;
+    import_rec record;
+  BEGIN
 
-  --test que la table/vue existe bien
-  --42P01 	undefined_table
-  IF EXISTS (
-      SELECT 1 FROM information_schema.tables t  WHERE t.table_schema ||'.'|| t.table_name = tbl_name
-  ) IS FALSE THEN
-      RAISE 'Undefined table: %', tbl_name USING ERRCODE = '42P01';
-	END IF ;
+    --test que la table/vue existe bien
+    --42P01 	undefined_table
+    IF EXISTS (
+        SELECT 1 FROM information_schema.tables t  WHERE t.table_schema ||'.'|| t.table_name = tbl_name
+    ) IS FALSE THEN
+        RAISE 'Undefined table: %', tbl_name USING ERRCODE = '42P01';
+    END IF ;
 
-  --test que la colonne existe bien
-  --42703 	undefined_column
-  IF EXISTS (
-      SELECT * FROM information_schema.columns  t  WHERE  t.table_schema ||'.'|| t.table_name = tbl_name AND column_name = select_col_name
-  ) IS FALSE THEN
-      RAISE 'Undefined column: %', select_col_name USING ERRCODE = '42703';
-	END IF ;
+    --test que la colonne existe bien
+    --42703 	undefined_column
+    IF EXISTS (
+        SELECT * FROM information_schema.columns  t  WHERE  t.table_schema ||'.'|| t.table_name = tbl_name AND column_name = select_col_name
+    ) IS FALSE THEN
+        RAISE 'Undefined column: %', select_col_name USING ERRCODE = '42703';
+    END IF ;
 
 
-    -- TODO transtypage en text pour des questions de généricité. A réflechir
-    select_sql := 'SELECT row_to_json(c)::jsonb d
-        FROM ' || tbl_name || ' c
-        WHERE ' ||  select_col_name|| '::text = ''' || select_col_val || '''' ;
+      -- TODO transtypage en text pour des questions de généricité. A réflechir
+      select_sql := 'SELECT row_to_json(c)::jsonb d
+          FROM ' || tbl_name || ' c
+          WHERE ' ||  select_col_name|| '::text = ''' || select_col_val || '''
+          LIMIT ' || limit_ || '
+          OFFSET ' || offset_;
 
-    FOR import_rec IN EXECUTE select_sql LOOP
-        PERFORM gn_synthese.import_json_row(import_rec.d);
-    END LOOP;
+      FOR import_rec IN EXECUTE select_sql LOOP
+          PERFORM gn_synthese.import_json_row(import_rec.d);
+      END LOOP;
 
-  RETURN TRUE;
-  END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
+    RETURN TRUE;
+    END;
+  $BODY$
+    LANGUAGE plpgsql VOLATILE
+    COST 100;

@@ -36,9 +36,7 @@ class TestApiRegister:
             - Vérification du JDD créé
         """
         # inscription
-        response = post_json(
-            self.client, url_for("users.inscription"), self.__class__.user_form
-        )
+        response = post_json(self.client, url_for("users.inscription"), self.__class__.user_form)
         resp_json = json_of_response(response)
         assert response.status_code == 200
 
@@ -67,9 +65,7 @@ class TestApiRegister:
         assert af_actor is not None
 
     def test_inscirption_same_id(self):
-        response = post_json(
-            self.client, url_for("users.inscription"), self.__class__.user_form
-        )
+        response = post_json(self.client, url_for("users.inscription"), self.__class__.user_form)
         resp_json = json_of_response(response)
         assert response.status_code == 400
 
@@ -101,11 +97,8 @@ class TestApiRegister:
         }
 
         self.client.put(
-            url_for("users.new_password"),
-            data=json.dumps(data),
-            content_type="application/json",
+            url_for("users.new_password"), data=json.dumps(data), content_type="application/json",
         )
         assert response.status_code == 200
 
         # todo: test sur le changement de mdp en mode connecté ne fonctionne pas...
-

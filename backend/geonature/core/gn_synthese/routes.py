@@ -6,10 +6,7 @@ import time
 
 from collections import OrderedDict
 
-from flask import (
-    Blueprint, request, current_app,
-    send_from_directory, render_template
-)
+from flask import Blueprint, request, current_app, send_from_directory, render_template
 from sqlalchemy import distinct, func, desc, select, text
 from sqlalchemy.orm import exc
 from geojson import FeatureCollection, Feature
@@ -32,14 +29,14 @@ from geonature.core.gn_synthese.models import (
     DefaultsNomenclaturesValue,
     SyntheseOneRecord,
     VSyntheseForWebApp,
-    VColorAreaTaxon
+    VColorAreaTaxon,
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from geonature.core.taxonomie.models import (
     Taxref,
     TaxrefProtectionArticles,
     TaxrefProtectionEspeces,
-    VMTaxrefListForautocomplete
+    VMTaxrefListForautocomplete,
 )
 from geonature.core.ref_geo.models import LAreas, BibAreasTypes
 from geonature.core.gn_synthese.utils import query as synthese_query
@@ -88,6 +85,7 @@ def get_observations_for_web(info_role):
             "dataset_name": r["dataset_name"],
             "observers": r["observers"],
             "url_source": r["url_source"],
+            "unique_id_sinp": r["unique_id_sinp"],
             "entity_source_pk_value": r["entity_source_pk_value"],
         }
         geojson = ast.literal_eval(r["st_asgeojson"])
@@ -120,9 +118,7 @@ def get_observations_for_web(info_role):
         #  decode byte to str - compat python 3.5
         filters = json.loads(request.data.decode("utf-8"))
     else:
-        filters = {
-            key: request.args.getlist(key) for key, value in request.args.items()
-        }
+        filters = {key: request.args.getlist(key) for key, value in request.args.items()}
 
     # Passage de l'ensemble des filtres
     #   en array pour des questions de compatibilité
@@ -148,6 +144,7 @@ def get_observations_for_web(info_role):
                 VSyntheseForWebApp.dataset_name,
                 VSyntheseForWebApp.url_source,
                 VSyntheseForWebApp.entity_source_pk_value,
+                VSyntheseForWebApp.unique_id_sinp,
             ]
         )
         .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
@@ -167,6 +164,7 @@ def get_observations_for_web(info_role):
             "dataset_name": r["dataset_name"],
             "observers": r["observers"],
             "url_source": r["url_source"],
+            "unique_id_sinp": str(r["unique_id_sinp"]),
             "entity_source_pk_value": r["entity_source_pk_value"],
         }
         geojson = ast.literal_eval(r["st_asgeojson"])
@@ -197,8 +195,7 @@ def get_synthese(info_role):
     :returns dict[dict, int, bool]: See description above
     """
     # change all args in a list of value
-    filters = {key: request.args.getlist(key)
-               for key, value in request.args.items()}
+    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
     if "limit" in filters:
         result_limit = filters.pop("limit")[0]
     else:
@@ -206,16 +203,11 @@ def get_synthese(info_role):
 
     q = DB.session.query(VSyntheseForWebApp)
 
-    q = synthese_query.filter_query_all_filters(
-        VSyntheseForWebApp, q, filters, info_role
-    )
+    q = synthese_query.filter_query_all_filters(VSyntheseForWebApp, q, filters, info_role)
     q = q.order_by(VSyntheseForWebApp.date_min.desc())
 
     data = q.limit(result_limit)
-    columns = (
-        current_app.config["SYNTHESE"]["COLUMNS_API_SYNTHESE_WEB_APP"]
-        + MANDATORY_COLUMNS
-    )
+    columns = current_app.config["SYNTHESE"]["COLUMNS_API_SYNTHESE_WEB_APP"] + MANDATORY_COLUMNS
     features = []
     for d in data:
         feature = d.get_geofeature(columns=columns)
@@ -225,8 +217,7 @@ def get_synthese(info_role):
         features.append(feature)
     return {
         "data": FeatureCollection(features),
-        "nb_obs_limited": len(features)
-        == current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"],
+        "nb_obs_limited": len(features) == current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"],
         "nb_total": len(features),
     }
 
@@ -248,9 +239,7 @@ def get_one_synthese(id_synthese):
     :>jsonarr array synthese_as_dict: One synthese with geojson key, see above
     """
     metadata_view = GenericTable(
-        tableName="v_metadata_for_export",
-        schemaName="gn_synthese",
-        engine=DB.engine
+        tableName="v_metadata_for_export", schemaName="gn_synthese", engine=DB.engine
     )
     q = (
         DB.session.query(
@@ -302,9 +291,7 @@ def export_taxon_web(info_role):
     """
 
     taxon_view = GenericTable(
-        tableName="v_synthese_taxon_for_export_view",
-        schemaName="gn_synthese",
-        engine=DB.engine
+        tableName="v_synthese_taxon_for_export_view", schemaName="gn_synthese", engine=DB.engine,
     )
     columns = taxon_view.tableDef.columns
     # Test de conformité de la vue v_synthese_for_export_view
@@ -312,30 +299,34 @@ def export_taxon_web(info_role):
         assert hasattr(taxon_view.tableDef.columns, "cd_ref")
 
     except AssertionError as e:
-        return {"msg": """
+        return (
+            {
+                "msg": """
                         View v_synthese_taxon_for_export_view
                         must have a cd_ref column \n
                         trace: {}
-                        """.format(str(e))
-                }, 500
+                        """.format(
+                    str(e)
+                )
+            },
+            500,
+        )
 
     id_list = request.get_json()
 
     # check R and E CRUVED to know if we filter with cruved
-    cruved = cruved_scope_for_user_in_module(
-        info_role.id_role, module_code="SYNTHESE"
-    )[0]
+    cruved = cruved_scope_for_user_in_module(info_role.id_role, module_code="SYNTHESE")[0]
 
-    subq = DB.session.query(
-        VSyntheseForWebApp.cd_ref,
-        func.count(distinct(
-            VSyntheseForWebApp.id_synthese
-        )).label("nb_obs"),
-        func.min(VSyntheseForWebApp.date_min).label("date_min"),
-        func.max(VSyntheseForWebApp.date_max).label("date_max")
-    ).filter(
-        VSyntheseForWebApp.id_synthese.in_(id_list)
-    ).group_by(VSyntheseForWebApp.cd_ref)
+    subq = (
+        DB.session.query(
+            VSyntheseForWebApp.cd_ref,
+            func.count(distinct(VSyntheseForWebApp.id_synthese)).label("nb_obs"),
+            func.min(VSyntheseForWebApp.date_min).label("date_min"),
+            func.max(VSyntheseForWebApp.date_max).label("date_max"),
+        )
+        .filter(VSyntheseForWebApp.id_synthese.in_(id_list))
+        .group_by(VSyntheseForWebApp.cd_ref)
+    )
 
     if cruved["R"] > cruved["E"]:
         # filter on cruved specifying the column
@@ -353,22 +344,15 @@ def export_taxon_web(info_role):
         )
     subq = subq.subquery()
 
-    q = DB.session.query(
-        *columns,
-        subq.c.nb_obs,
-        subq.c.date_min,
-        subq.c.date_max
-    ).join(
-        subq,
-        subq.c.cd_ref == columns.cd_ref
+    q = DB.session.query(*columns, subq.c.nb_obs, subq.c.date_min, subq.c.date_max).join(
+        subq, subq.c.cd_ref == columns.cd_ref
     )
 
     return to_csv_resp(
         datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S"),
         data=serializeQuery(q.all(), q.column_descriptions),
         separator=";",
-        columns=[db_col.key for db_col in columns] +
-        ["nb_obs", "date_min", "date_max"]
+        columns=[db_col.key for db_col in columns] + ["nb_obs", "date_min", "date_max"],
     )
 
 
@@ -412,14 +396,12 @@ def export_observations_web(info_role):
             columns_to_serialize.append(db_col.key)
 
     q = DB.session.query(export_view.tableDef).filter(
-        export_view.tableDef.columns[
-            current_app.config["SYNTHESE"]["EXPORT_ID_SYNTHESE_COL"]
-        ].in_(id_list)
+        export_view.tableDef.columns[current_app.config["SYNTHESE"]["EXPORT_ID_SYNTHESE_COL"]].in_(
+            id_list
+        )
     )
     # check R and E CRUVED to know if we filter with cruved
-    cruved = cruved_scope_for_user_in_module(info_role.id_role, module_code="SYNTHESE")[
-        0
-    ]
+    cruved = cruved_scope_for_user_in_module(info_role.id_role, module_code="SYNTHESE")[0]
     if cruved["R"] > cruved["E"]:
         # filter on cruved specifying the column
         # id_dataset, id_synthese, id_digitiser and observer in the v_synthese_for_export_view
@@ -430,9 +412,7 @@ def export_observations_web(info_role):
             id_synthese_column=current_app.config["SYNTHESE"]["EXPORT_ID_SYNTHESE_COL"],
             id_dataset_column=current_app.config["SYNTHESE"]["EXPORT_ID_DATASET_COL"],
             observers_column=current_app.config["SYNTHESE"]["EXPORT_OBSERVERS_COL"],
-            id_digitiser_column=current_app.config["SYNTHESE"][
-                "EXPORT_ID_DIGITISER_COL"
-            ],
+            id_digitiser_column=current_app.config["SYNTHESE"]["EXPORT_ID_DIGITISER_COL"],
             with_generic_table=True,
         )
     results = q.limit(current_app.config["SYNTHESE"]["NB_MAX_OBS_EXPORT"])
@@ -443,24 +423,17 @@ def export_observations_web(info_role):
     # columns = [db_col.key for db_col in export_view.db_cols]
 
     if export_format == "csv":
-        formated_data = [
-            export_view.as_dict(d, columns=columns_to_serialize) for d in results
-        ]
-        return to_csv_resp(
-            file_name, formated_data, separator=";", columns=columns_to_serialize
-        )
+        formated_data = [export_view.as_dict(d, columns=columns_to_serialize) for d in results]
+        return to_csv_resp(file_name, formated_data, separator=";", columns=columns_to_serialize)
 
     elif export_format == "geojson":
         features = []
         for r in results:
             geometry = ast.literal_eval(
-                getattr(
-                    r, current_app.config["SYNTHESE"]["EXPORT_GEOJSON_4326_COL"])
+                getattr(r, current_app.config["SYNTHESE"]["EXPORT_GEOJSON_4326_COL"])
             )
             feature = Feature(
-                geometry=geometry,
-                properties=export_view.as_dict(
-                    r, columns=columns_to_serialize),
+                geometry=geometry, properties=export_view.as_dict(r, columns=columns_to_serialize),
             )
             features.append(feature)
         results = FeatureCollection(features)
@@ -492,7 +465,7 @@ def export_observations_web(info_role):
         )
 
 
-@routes.route("/export_metadata", methods=["GET"])
+@routes.route("/export_metadata", methods=["GET", "POST"])
 @permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
 def export_metadata(info_role):
     """Route to export the metadata in CSV
@@ -504,17 +477,18 @@ def export_metadata(info_role):
 
     POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
     """
-    filters = {key: request.args.getlist(key)
-               for key, value in request.args.items()}
+    if request.json:
+        filters = request.json
+    elif request.data:
+        #  decode byte to str - compat python 3.5
+        filters = json.loads(request.data.decode("utf-8"))
+    else:
+        filters = {key: request.args.getlist(key) for key, value in request.args.items()}
 
     metadata_view = GenericTable(
-        tableName="v_metadata_for_export",
-        schemaName="gn_synthese",
-        engine=DB.engine
+        tableName="v_metadata_for_export", schemaName="gn_synthese", engine=DB.engine
     )
-    q = DB.session.query(
-        distinct(VSyntheseForWebApp.id_dataset), metadata_view.tableDef
-    ).join(
+    q = DB.session.query(distinct(VSyntheseForWebApp.id_dataset), metadata_view.tableDef).join(
         metadata_view.tableDef,
         getattr(
             metadata_view.tableDef.columns,
@@ -523,9 +497,7 @@ def export_metadata(info_role):
         == VSyntheseForWebApp.id_dataset,
     )
 
-    q = synthese_query.filter_query_all_filters(
-        VSyntheseForWebApp, q, filters, info_role
-    )
+    q = synthese_query.filter_query_all_filters(VSyntheseForWebApp, q, filters, info_role)
 
     return to_csv_resp(
         datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S"),
@@ -535,7 +507,7 @@ def export_metadata(info_role):
     )
 
 
-@routes.route("/export_statuts", methods=["GET"])
+@routes.route("/export_statuts", methods=["POST"])
 @permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
 def export_status(info_role):
     """Route to get all the protection status of a synthese search
@@ -548,8 +520,13 @@ def export_status(info_role):
     Parameters:
         - HTTP-GET: the same that the /synthese endpoint (all the filter in web app)
     """
-    filters = {key: request.args.getlist(key)
-               for key, value in request.args.items()}
+    if request.json:
+        filters = request.json
+    elif request.data:
+        #  decode byte to str - compat python 3.5
+        filters = json.loads(request.data.decode("utf-8"))
+    else:
+        filters = {key: request.args.getlist(key) for key, value in request.args.items()}
 
     # initalize the select object
     q = select(
@@ -570,19 +547,15 @@ def export_status(info_role):
     synthese_query_class = SyntheseQuery(VSyntheseForWebApp, q, filters)
 
     # add join
+    synthese_query_class.add_join(Taxref, Taxref.cd_nom, VSyntheseForWebApp.cd_nom)
     synthese_query_class.add_join(
-        Taxref, Taxref.cd_nom, VSyntheseForWebApp.cd_nom)
-    synthese_query_class.add_join(
-        TaxrefProtectionEspeces,
-        TaxrefProtectionEspeces.cd_nom,
-        VSyntheseForWebApp.cd_nom,
+        TaxrefProtectionEspeces, TaxrefProtectionEspeces.cd_nom, VSyntheseForWebApp.cd_nom,
     )
     synthese_query_class.add_join(
         TaxrefProtectionArticles,
         TaxrefProtectionArticles.cd_protection,
         TaxrefProtectionEspeces.cd_protection,
     )
-
     # filter with all get params
     q = synthese_query_class.filter_query_all_filters(info_role)
 
@@ -670,9 +643,7 @@ def get_taxon_tree():
     .. :quickref: Synthese;
     """
     taxon_tree_table = GenericTable(
-        tableName="v_tree_taxons_synthese",
-        schemaName="gn_synthese",
-        engine=DB.engine
+        tableName="v_tree_taxons_synthese", schemaName="gn_synthese", engine=DB.engine
     )
     data = DB.session.query(taxon_tree_table.tableDef).all()
     return [taxon_tree_table.as_dict(d) for d in data]
@@ -692,16 +663,18 @@ def get_autocomplete_taxons_synthese():
     :query str group2_inpn : filter with INPN group 2
     """
     search_name = request.args.get("search_name", "")
-    q = DB.session.query(
-        VMTaxrefListForautocomplete,
-        func.similarity(VMTaxrefListForautocomplete.search_name, search_name).label(
-            "idx_trgm"
-        ),
-    ).distinct().join(Synthese, Synthese.cd_nom == VMTaxrefListForautocomplete.cd_nom)
-    search_name = search_name.replace(" ", "%")
-    q = q.filter(
-        VMTaxrefListForautocomplete.search_name.ilike("%" + search_name + "%")
+    q = (
+        DB.session.query(
+            VMTaxrefListForautocomplete,
+            func.similarity(VMTaxrefListForautocomplete.search_name, search_name).label(
+                "idx_trgm"
+            ),
+        )
+        .distinct()
+        .join(Synthese, Synthese.cd_nom == VMTaxrefListForautocomplete.cd_nom)
     )
+    search_name = search_name.replace(" ", "%")
+    q = q.filter(VMTaxrefListForautocomplete.search_name.ilike("%" + search_name + "%"))
     regne = request.args.get("regne")
     if regne:
         q = q.filter(VMTaxrefListForautocomplete.regne == regne)
@@ -710,10 +683,7 @@ def get_autocomplete_taxons_synthese():
     if group2_inpn:
         q = q.filter(VMTaxrefListForautocomplete.group2_inpn == group2_inpn)
 
-    q = q.order_by(
-        desc(VMTaxrefListForautocomplete.cd_nom ==
-             VMTaxrefListForautocomplete.cd_ref)
-    )
+    q = q.order_by(desc(VMTaxrefListForautocomplete.cd_nom == VMTaxrefListForautocomplete.cd_ref))
     limit = request.args.get("limit", 20)
     data = q.order_by(desc("idx_trgm")).limit(20).all()
     return [d[0].as_dict() for d in data]
@@ -761,8 +731,7 @@ def getDefaultsNomenclatures():
         ),
     )
     if len(types) > 0:
-        q = q.filter(
-            DefaultsNomenclaturesValue.mnemonique_type.in_(tuple(types)))
+        q = q.filter(DefaultsNomenclaturesValue.mnemonique_type.in_(tuple(types)))
     try:
         data = q.all()
     except Exception:
@@ -787,8 +756,8 @@ def get_color_taxon():
     :returns: Array<dict<VColorAreaTaxon>>
     """
     params = request.args
-    limit = int(params.get('limit', 100))
-    page = int(params.get('offset', 0))
+    limit = int(params.get("limit", 100))
+    offset = int(params.get("offset", 0))
     id_areas_type = params.getlist("code_area_type")
     cd_noms = params.getlist("cd_nom")
     id_areas = params.getlist("id_area")
@@ -805,7 +774,8 @@ def get_color_taxon():
         q = q.filter(LAreas.id_area.in_(tuple(id_areas)))
     if len(cd_noms) > 0:
         q = q.filter(VColorAreaTaxon.cd_nom.in_(tuple(cd_noms)))
-    data = q.limit(limit).offset(page * limit).all()
+    data = q.limit(limit).offset(offset).all()
+
     return [d.as_dict() for d in data]
 
 
@@ -820,33 +790,24 @@ def get_taxa_count():
     :returns int: the number of taxa found
     """
     params = request.args
-    
-    query = DB.session.query(
-        func.count(distinct(Synthese.cd_nom))
-    ).select_from(
-        Synthese
-    )
-    
-    if 'id_dataset' in params:
-        query = query.filter(Synthese.id_dataset == params['id_dataset'])
+
+    query = DB.session.query(func.count(distinct(Synthese.cd_nom))).select_from(Synthese)
+
+    if "id_dataset" in params:
+        query = query.filter(Synthese.id_dataset == params["id_dataset"])
     return query.one()
 
 
 @routes.route("/observation_count", methods=["GET"])
 @json_resp
 def get_observation_count():
-    """Get observations found in a given dataset
-    """
+    """Get observations found in a given dataset"""
     params = request.args
-    
-    query = DB.session.query(
-        func.count(Synthese.cd_nom)
-    ).select_from(
-        Synthese
-    )
-    
-    if 'id_dataset' in params:
-        query = query.filter(Synthese.id_dataset == params['id_dataset'])
+
+    query = DB.session.query(func.count(Synthese.cd_nom)).select_from(Synthese)
+
+    if "id_dataset" in params:
+        query = query.filter(Synthese.id_dataset == params["id_dataset"])
 
     return query.one()
 
@@ -870,30 +831,23 @@ def get_taxa_distribution():
 
     Taxref.group2_inpn
 
-    query = DB.session.query(
-            func.count(distinct(Synthese.cd_nom)),
-            rank
-        ).select_from(
-            Synthese
-        ).outerjoin(
-            Taxref, Taxref.cd_nom == Synthese.cd_nom
-        )
+    query = (
+        DB.session.query(func.count(distinct(Synthese.cd_nom)), rank)
+        .select_from(Synthese)
+        .outerjoin(Taxref, Taxref.cd_nom == Synthese.cd_nom)
+    )
 
     if id_dataset:
-        query = query.filter(
-            Synthese.id_dataset == id_dataset
-        )
+        query = query.filter(Synthese.id_dataset == id_dataset)
 
     elif id_af:
-        query = query.outerjoin(
-            TDatasets, TDatasets.id_dataset == Synthese.id_dataset
-        ).filter(
+        query = query.outerjoin(TDatasets, TDatasets.id_dataset == Synthese.id_dataset).filter(
             TDatasets.id_acquisition_framework == id_af
         )
 
     data = query.group_by(rank).all()
-    return [{"count" : d[0], "group": d[1]} for d in data]
-    
+    return [{"count": d[0], "group": d[1]} for d in data]
+
 
 # @routes.route("/test", methods=["GET"])
 # @json_resp

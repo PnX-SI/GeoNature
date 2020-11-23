@@ -790,10 +790,13 @@ Exemple :
     UPDATE gn_commons.t_modules SET module_label = 'Suivis' WHERE module_code = 'MONITORINGS';
     UPDATE gn_commons.t_modules SET module_picto = 'fa-eye' WHERE module_code = 'MONITORINGS';
 
+Depuis la version 2.5.0, il est aussi possible de customiser l'ordre des modules dans le menu, par ordre alphabétique par défaut, en renseignant le champs ``gn_commons.t_modules.module_order``.
+
 Customiser les exports PDF
 """"""""""""""""""""""""""
 
-Vous pouvez modifier le bandeau et le logo fournis par défaut dans les exports PDF en modifiant les images ``Bandeau_pdf.png`` et ``Logo_pdf.png`` dans ``backend/static/images``. Les fichiers CSS des exports PDF sont dans ``backend/static/css``.
+Vous pouvez modifier le bandeau et le logo fournis par défaut dans les exports PDF en modifiant les images ``Bandeau_pdf.png`` et ``Logo_pdf.png`` dans ``backend/static/images``. 
+Le style des fichiers est également customisable grâce au fichier "backend/geonature/static/css/custom.css". La classe ``main-color`` permet notamment de changer la couleur des séparateurs (orange par défaut).
 
 Intégrer des données
 --------------------
@@ -904,7 +907,7 @@ Renseigner les paramètres suivants dans le fichier de configuration (``geonatur
         ADMIN_APPLICATION_LOGIN = "login_admin_usershub"
         ADMIN_APPLICATION_PASSWORD = "password_admin_usershub
 
-Les fonctionnalités de création de compte nécessitent l'envoi d'emails pour vérifier l'identité des demandeurs de compte. Il est donc nécessaire d'avoir un serveur SMTP capable d'envoyer des emails. Renseigner la rubrique ``MAIL_CONFIG`` de la configuration :
+Les fonctionnalités de création de compte nécessitent l'envoi d'emails pour vérifier l'identité des demandeurs de compte. Il est donc nécessaire d'avoir un serveur SMTP capable d'envoyer des emails. Renseigner la rubrique ``MAIL_CONFIG`` de la configuration. La description détaillées des paramètres de configuration d'envoie des emails est disponible dans `la documentation de Flask-Mail <https://flask-mail.readthedocs.io/en/latest/#configuring-flask-mail>`_. Exemple :
 
 ::
 
@@ -944,6 +947,18 @@ Deux modes sont alors disponibles. Soit l'utilisateur est automatiquement accept
 
 L'utilisateur qui demande la création de compte est automatiquement mis dans un "groupe" UsersHub (par défaut, il s'agit du groupe "En poste"). Ce groupe est paramétrable depuis la table ``utilisateurs.cor_role_app_profil``. (La ligne où ``is_default_group_for_app = true`` sera utilisée comme groupe par défaut pour GeoNature). Il n'est pas en paramètre de GeoNature pusqu'il serait falsifiable via l'API. ⚠️ **Attention**, si vous effectuez une migration depuis une version de GeoNature < 2.2.0, aucun groupe par défaut n'est défini, vous devez définir à la main le groupe par défaut pour l'application GeoNature dans la table ``utilisateurs.cor_role_app_profil``.
 
+Dans le mode "création de compte validé par administrateur", lorsque l'inscription est validée par un administrateur, un email est envoyé à l'utilisateur pour lui indiquer la confirmation de son inscription.
+Il est possible de personnaliser le texte de la partie finale de cet email située juste avant la signature à l'aide du paramètre ``ADDON_USER_EMAIL`` (toujours à ajouter à la rubrique ``[ACCOUNT_MANAGEMENT]``).
+Vous pouvez utiliser des balises HTML compatibles avec les emails pour ce texte.
+
+::
+
+    [ACCOUNT_MANAGEMENT]
+        ADDON_USER_EMAIL = """<p>
+            Toute l'équipe de GeoNature vous remercie pour votre inscription.
+          </p>"""
+
+
 Il est également possible de créer automatiquement un jeu de données et un cadre d'acquisition "personnel" à l'utilisateur afin qu'il puisse saisir des données dès sa création de compte via le paramètre ``AUTO_DATASET_CREATION``. Par la suite l'administrateur pourra rattacher l'utilisateur à des JDD et CA via son organisme.
 
 ::
@@ -963,14 +978,17 @@ Le formulaire de création de compte est par défaut assez minimaliste (nom, pr�
 
 Il est possible d'ajouter des champs au formulaire grâce à un générateur controlé par la configuration. Plusieurs type de champs peuvent être ajoutés (text, textarea, number, select, checkbox mais aussi taxonomy, nomenclature etc...).
 
-L'exemple ci-dessous permet de créer un champs de type "checkbox" obligatoire, avec un lien vers un document (une charte par exemple) et un champ de type "select", non obligatoire. (voir le fichier ``geonature_config.toml.example`` pour un exemple plus exhaustif).
+L'exemple ci-dessous permet de créer un champs de type "checkbox" obligatoire, avec un lien vers un document (une charte par exemple) et un champ de type "select", non obligatoire. (voir le fichier ``config/geonature_config.toml.example`` pour un exemple plus exhaustif).
 
 ::
 
         [ACCOUNT_MANAGEMENT]
         [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]]
             type_widget = "checkbox"
-            attribut_label = "<a target='_blank' href='http://docs.geonature.fr'>J'ai lu et j'accepte la charte</a>"
+            attribut_label = """
+              <a target="_blank" href="http://docs.geonature.fr">
+                J'ai lu et j'accepte la charte
+              </a>"""
             attribut_name = "validate_charte"
             values = [true] 
             required = true
@@ -1180,7 +1198,7 @@ Pour cela, créer votre vue, et modifier les paramètres suivants :
 ::
 
     # Name of the view based export
-    export_view_name = 'export_occtax_sinp'
+    export_view_name = 'v_export_occtax'
 
     # Name of the geometry columns of the view
     export_geom_columns_name = 'geom_4326'
@@ -1314,7 +1332,7 @@ Dans tous les exports, l'ordre et le nom des colonnes sont basés sur la vue ser
 
 Les exports (CSV, GeoJson, Shapefile) sont basés sur la vue ``gn_synthese.v_synthese_for_export``.
         
-Il est possible de masquer des champs présents dans les exports. Pour cela éditez la variable ``EXPORT_COLUMNS``.
+Il est possible de ne pas intégrer certains champs présents dans cette vue d'export. Pour cela modifier le paramètre ``EXPORT_COLUMNS``.
      
 Enlevez la ligne de la colonne que vous souhaitez désactiver. Les noms de colonne de plus de 10 caractères seront tronqués dans le fichier shapefile.
 
@@ -1322,48 +1340,81 @@ Enlevez la ligne de la colonne que vous souhaitez désactiver. Les noms de colon
 
     [SYNTHESE]
         EXPORT_COLUMNS   = [
-            "idSynthese",
-            "permId",
-            "permIdGrp",
-            "dateDebut",
-            "dateFin",
-            "observer",
-            "altMin",
-            "altMax",
-            "denbrMin",
-            "denbrMax",
-            "EchanPreuv",
-            "PreuvNum",
-            "PreuvNoNum",
-            "obsCtx",
-            "obsDescr",
-            "ObjGeoTyp",
-            "methGrp",
-            "obsMeth",
-            "ocEtatBio",
-            "ocStatBio",
-            "ocNat",
-            "preuveOui",
-            "validStat",
-            "difNivPrec",
-            "ocStade",
-            "ocSex",
-            "objDenbr",
-            "denbrTyp",
-            "sensiNiv",
-            "statObs",
-            "dEEFlou",
-            "statSource",
-            "typInfGeo",
-            "methDeterm",
-            "jddCode",
-            "cdNom",
-            "cdRef",
-            "nomCite",
-            "vTAXREF",
-            "wkt",
-            "lastAction",
-            "validateur"
+          "date_debut",
+          "date_fin",
+          "heure_debut",
+          "heure_fin",
+          "cd_nom",
+          "cd_ref",
+          "nom_valide",
+          "nom_vernaculaire",
+          "nom_cite",
+          "regne",
+          "group1_inpn",
+          "group2_inpn",
+          "classe",
+          "ordre",
+          "famille",
+          "rang_taxo",
+          "nombre_min",
+          "nombre_max",
+          "alti_min",
+          "alti_max",
+          "prof_min",
+          "prof_max",
+          "observateurs",
+          "determinateur",
+          "communes",
+          "x_centroid_4326",
+          "y_centroid_4326",
+          "geometrie_wkt_4326",
+          "nom_lieu",
+          "comment_releve",
+          "comment_occurrence",
+          "validateur",
+          "niveau_validation",
+          "date_validation",
+          "comment_validation",
+          "preuve_numerique_url",
+          "preuve_non_numerique",
+          "jdd_nom",
+          "jdd_uuid",
+          "jdd_id",
+          "ca_nom",
+          "ca_uuid",
+          "ca_id",
+          "cd_habref",
+          "cd_habitat",
+          "nom_habitat",
+          "precision_geographique",
+          "nature_objet_geo",
+          "type_regroupement",
+          "methode_regroupement",
+          "technique_observation",
+          "biologique_statut",
+          "etat_biologique",
+          "biogeographique_statut",
+          "naturalite",
+          "preuve_existante",
+          "niveau_precision_diffusion",
+          "stade_vie",
+          "sexe",
+          "objet_denombrement",
+          "type_denombrement",
+          "niveau_sensibilite",
+          "statut_observation",
+          "floutage_dee",
+          "statut_source",
+          "type_info_geo",
+          "methode_determination",
+          "comportement",
+          "reference_biblio",
+          "id_synthese",
+          "id_origine",
+          "uuid_perm_sinp",
+          "uuid_perm_grp_sinp",
+          "date_creation",
+          "date_modification"
         ]
 
 :Note:
@@ -1378,16 +1429,16 @@ La vue doit OBLIGATOIREMENT contenir les champs :
 
 - geojson_4326
 - geojson_local
-- idSynthese,
-- jddId (l'ID du jeu de données)
+- id_synthese,
+- jdd_id (l'ID du jeu de données)
 - id_digitiser
-- observer
+- observateurs
 
 Ces champs doivent impérativement être présents dans la vue, mais ne seront pas nécessairement dans le fichier d'export si ils ne figurent pas dans la variable ``EXPORT_COLUMNS``. De manière générale, préférez rajouter des champs plutôt que d'en enlever !
 
-Le nom de ces champs peuvent cependant être modifié. Dans ce cas, modifiez le fichier ``geonature_config.toml``, section ``SYNTHESE`` parmis les variables suivantes (``EXPORT_ID_SYNTHESE_COL, EXPORT_ID_DATASET_COL, EXPORT_ID_DIGITISER_COL, EXPORT_OBSERVERS_COL, EXPORT_GEOJSON_4326_COL, EXPORT_GEOJSON_LOCAL_COL``).
+Le nom de ces champs peut cependant être modifié. Dans ce cas, modifiez le fichier ``geonature_config.toml``, section ``SYNTHESE`` parmis les variables suivantes (``EXPORT_ID_SYNTHESE_COL, EXPORT_ID_DATASET_COL, EXPORT_ID_DIGITISER_COL, EXPORT_OBSERVERS_COL, EXPORT_GEOJSON_4326_COL, EXPORT_GEOJSON_LOCAL_COL``).
 
-NB: Lorsqu'on effectue une recherche dans la synthèse, on interroge la vue ``gn_synthese.v_synthese_for_web_app``. L'interface web passe ensuite une liste d'``id_synthese`` à la vue ``gn_synthese.v_synthese_for_export``correspondant à la recherche précedemment effectuée (ce qui permet à cette seconde vue d'être totalement modifiable).
+NB : Lorsqu'on effectue une recherche dans la synthèse, on interroge la vue ``gn_synthese.v_synthese_for_web_app``. L'interface web passe ensuite une liste d'``id_synthese`` à la vue ``gn_synthese.v_synthese_for_export`` correspondant à la recherche précedemment effectuée (ce qui permet à cette seconde vue d'être totalement modifiable).
 
 La vue ``gn_synthese.v_synthese_for_web_app`` est taillée pour l'interface web, il ne faut donc PAS la modifier. 
 

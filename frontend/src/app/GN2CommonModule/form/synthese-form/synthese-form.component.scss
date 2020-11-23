@@ -20,6 +20,10 @@ legend {
   font-size: inherit;
 }
 
+#refresh-btn {
+  margin-right: 5px;
+}
+
 :host /deep/ .dynamic-form-wrapper {
   display: flex;
 }

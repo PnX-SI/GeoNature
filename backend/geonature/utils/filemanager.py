@@ -27,8 +27,7 @@ def remove_file(filepath, absolute_path=False):
 
 def rename_file(old_chemin, old_title, new_title):
     new_chemin = old_chemin.replace(
-        removeDisallowedFilenameChars(old_title),
-        removeDisallowedFilenameChars(new_title),
+        removeDisallowedFilenameChars(old_title), removeDisallowedFilenameChars(new_title),
     )
     os.rename(
         os.path.join(current_app.config["BASE_DIR"], old_chemin),
@@ -72,9 +71,7 @@ def delete_recursively(path_folder, period=1, excluded_files=[]):
 
         try:
             now = datetime.datetime.now()
-            creation_date = datetime.datetime.utcfromtimestamp(
-                os.path.getctime(file_path)
-            )
+            creation_date = datetime.datetime.utcfromtimestamp(os.path.getctime(file_path))
             is_older_than_period = (now - creation_date).days >= period
             if is_older_than_period:
                 if os.path.isfile(file_path) and not the_file in excluded_files:
@@ -86,7 +83,8 @@ def delete_recursively(path_folder, period=1, excluded_files=[]):
 
 
 def generate_pdf(template, data, filename):
-    delete_recursively(str(BACKEND_DIR) + "/static/pdf/")
+    #delete_recursively(str(BACKEND_DIR) + "/static/pdf/")
+    print(filename)
     template_rendered = render_template(template, data=data)
     html_file = HTML(string=template_rendered, base_url=__file__, encoding="utf-8")
     file_abs_path = str(BACKEND_DIR) + "/static/pdf/" + filename

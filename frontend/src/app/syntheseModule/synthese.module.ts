@@ -11,20 +11,27 @@ import { MapService } from '@geonature_common/map/map.service';
 import { TreeModule } from 'angular-tree-component';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
 import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service';
+import { SharedSyntheseModule } from '@geonature/shared/syntheseSharedModule/synthese-shared.module';
+import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
-import { ModalInfoObsComponent } from './synthese-results/synthese-list/modal-info-obs/modal-info-obs.component';
+
 const routes: Routes = [{ path: '', component: SyntheseComponent }];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes), GN2CommonModule, CommonModule, TreeModule.forRoot()],
+  imports: [
+    RouterModule.forChild(routes),
+    GN2CommonModule,
+    SharedSyntheseModule,
+    CommonModule,
+    TreeModule.forRoot()
+  ],
   declarations: [
     SyntheseComponent,
     SyntheseListComponent,
     SyntheseCarteComponent,
-    SyntheseModalDownloadComponent,
-    ModalInfoObsComponent
+    SyntheseModalDownloadComponent
   ],
-  entryComponents: [SyntheseModalDownloadComponent, ModalInfoObsComponent],
+  entryComponents: [SyntheseInfoObsComponent, SyntheseModalDownloadComponent],
   providers: [
     MapService,
     DynamicFormService,

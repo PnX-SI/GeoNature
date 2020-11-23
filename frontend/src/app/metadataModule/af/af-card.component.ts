@@ -7,7 +7,7 @@ import { AppConfig } from '@geonature_config/app.config';
 @Component({
   selector: 'pnx-af-card',
   templateUrl: './af-card.component.html',
-  styleUrls: ['./af-card.component.scss'],
+  styleUrls: ['./af-card.component.scss']
 })
 export class AfCardComponent implements OnInit {
   public id_af: number;
@@ -30,10 +30,10 @@ export class AfCardComponent implements OnInit {
       position: 'left',
       labels: {
         fontSize: 15,
-        filter: function (legendItem, chartData) {
+        filter: function(legendItem, chartData) {
           return chartData.datasets[0].data[legendItem.index] != 0;
         }
-      },
+      }
     },
     plugins: {
       labels: [
@@ -55,14 +55,11 @@ export class AfCardComponent implements OnInit {
         }
       ]
     }
-  }
+  };
 
   public spinner = true;
 
-  constructor(
-    private _dfs: DataFormService,
-    private _route: ActivatedRoute
-  ) { }
+  constructor(private _dfs: DataFormService, private _route: ActivatedRoute) {}
   ngOnInit() {
     this._route.params.subscribe(params => {
       this.id_af = params['id'];
@@ -83,32 +80,33 @@ export class AfCardComponent implements OnInit {
         this.af.acquisition_framework_end_date = end_date.toLocaleDateString();
       }
       if (this.af.datasets) {
-        this._dfs.getTaxaDistribution('group2_inpn', { 'id_af': this.af.id_acquisition_framework }).subscribe(data2 => {
-          this.pieChartData.length = 0;
-          this.pieChartLabels.length = 0;
-          this.pieChartData = [];
-          this.pieChartLabels = [];
-          for (let row of data2) {
-            this.pieChartData.push(row["count"]);
-            this.pieChartLabels.push(row["group"]);
-          }
-          this.spinner = false;
-          setTimeout(() => {
-            this.chart.chart.update();
-
-          }, 1000)
-        });
+        this._dfs
+          .getTaxaDistribution('group2_inpn', { id_af: this.af.id_acquisition_framework })
+          .subscribe(data2 => {
+            this.pieChartData.length = 0;
+            this.pieChartLabels.length = 0;
+            this.pieChartData = [];
+            this.pieChartLabels = [];
+            for (let row of data2) {
+              this.pieChartData.push(row['count']);
+              this.pieChartLabels.push(row['group']);
+            }
+            this.spinner = false;
+            setTimeout(() => {
+              this.chart.chart.update();
+            }, 1000);
+          });
       }
-    })
+    });
   }
 
   getPdf() {
-    const url = `${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks/export_pdf/${this.af.id_acquisition_framework}`;
+    const url = `${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks/export_pdf/${
+      this.af.id_acquisition_framework
+    }`;
     const chart_img = this.chart ? this.chart.ctx.canvas.toDataURL('image/png') : '';
-    this._dfs.uploadCanvas(chart_img).subscribe(
-      data => {
-        window.open(url);
-      }
-    );
+    this._dfs.uploadCanvas(chart_img).subscribe(data => {
+      window.open(url);
+    });
   }
 }

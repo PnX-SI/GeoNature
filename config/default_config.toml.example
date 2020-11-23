@@ -14,11 +14,14 @@
 ###############################################################################
 
 # Base de données
+
 # URI de connexion à la base Postgresql utilisé par Psycopg2
 SQLALCHEMY_DATABASE_URI = "postgresql://monuser:monpassachanger@localhost:monport/mondbname"
+
 # Active (=true) ou pas (=false) le système de suivi de modification de SQLAlchemy
 # Note : l'API event de SQLAchemy n'étant pas utilisée, la désactivation économise des ressources.
-SQLALCHEMY_TRACK_MODIFICATIONS = false
+# Note : Patch pour suivre la supression des médias et pouvoir supprimer un fichier sur un DELETE de media
+SQLALCHEMY_TRACK_MODIFICATIONS = true
 
 # Application
 
@@ -102,7 +105,9 @@ MAIL_ON_ERROR = false
     MAIL_USERNAME = "my_user_name - email address of the sender"
     MAIL_PASSWORD = "my_pass"
     MAIL_DEFAULT_SENDER = "my_email@email.com"
-    MAIL_MAX_EMAILS = <int>
+    # Nombre max d'email que le serveur peut envoyer aucours d'une seule connection
+    # Laisser en commentaire si le serveur n'a pas de limite.
+    # MAIL_MAX_EMAILS = 100
     MAIL_ASCII_ATTACHMENTS = false
     # Email(s) où envoyer les erreurs générées par le backend de GeoNature
     ERROR_MAIL_TO = ["email@email.com", "email2@email.com"]
@@ -258,10 +263,10 @@ MAIL_ON_ERROR = false
     NB_MAX_OBS_EXPORT = 50000
 
     # Noms des colonnes obligatoires de la vue ``gn_synthese.v_synthese_for_export``
-    EXPORT_ID_SYNTHESE_COL = "idSynthese"
-    EXPORT_ID_DATASET_COL = "jddId"
+    EXPORT_ID_SYNTHESE_COL = "id_synthese"
+    EXPORT_ID_DATASET_COL = "jdd_id"
     EXPORT_ID_DIGITISER_COL = "id_digitiser"
-    EXPORT_OBSERVERS_COL = "observer"
+    EXPORT_OBSERVERS_COL = "observateur"
     EXPORT_GEOJSON_4326_COL = "geojson_4326"
     EXPORT_GEOJSON_LOCAL_COL = "geojson_local"
 
@@ -272,72 +277,120 @@ MAIL_ON_ERROR = false
     # Champs à afficher dans l'export 
     # Voir les noms des champs de la ``vue gn_synthese.v_synthese_for_export``
     EXPORT_COLUMNS   = [
-        "idSynthese",
-        "permId",
-        "permIdGrp",
-        "dateDebut",
-        "dateFin",
-        "observer",
-        "altMin",
-        "altMax",
-        "denbrMin",
-        "denbrMax",
-        "EchanPreuv",
-        "PreuvNum",
-        "PreuvNoNum",
-        "obsCtx",
-        "obsDescr",
-        "ObjGeoTyp",
-        "methGrp",
-        "obsMeth",
-        "ocEtatBio",
-        "ocStatBio",
-        "ocNat",
-        "preuveOui",
-        "validStat",
-        "difNivPrec",
-        "ocStade",
-        "ocSex",
-        "objDenbr",
-        "denbrTyp",
-        "sensiNiv",
-        "statObs",
-        "dEEFlou",
-        "statSource",
-        "typInfGeo",
-        "methDeterm",
-        "jddCode",
-        "cdNom",
-        "cdRef",
-        "nomCite",
-        "vTAXREF",
-        "wkt",
-        "lastAction",
-        "validateur"
+        "date_debut",
+        "date_fin",
+        "heure_debut",
+        "heure_fin",
+        "cd_nom",
+        "cd_ref",
+        "nom_valide",
+        "nom_vernaculaire",
+        "nom_cite",
+        "regne",
+        "group1_inpn",
+        "group2_inpn",
+        "classe",
+        "ordre",
+        "famille",
+        "rang_taxo",
+        "nombre_min",
+        "nombre_max",
+        "alti_min",
+        "alti_max",
+        "prof_min",
+        "prof_max",
+        "observateurs",
+        "determinateur",
+        "communes",
+        "x_centroid_4326",
+        "y_centroid_4326",
+        "geometrie_wkt_4326",
+        "nom_lieu",
+        "comment_releve",
+        "comment_occurrence",
+        "validateur",
+        "niveau_validation",
+        "date_validation",
+        "comment_validation",
+        "preuve_numerique_url",
+        "preuve_non_numerique",
+        "jdd_nom",
+        "jdd_uuid",
+        "jdd_id",
+        "ca_nom",
+        "ca_uuid",
+        "ca_id",
+        "cd_habref",
+        "cd_habitat",
+        "nom_habitat",
+        "precision_geographique",
+        "nature_objet_geo",
+        "type_regroupement",
+        "methode_regroupement",
+        "technique_observation",
+        "biologique_statut",
+        "etat_biologique",
+        "biogeographique_statut",
+        "naturalite",
+        "preuve_existante",
+        "niveau_precision_diffusion",
+        "stade_vie",
+        "sexe",
+        "objet_denombrement",
+        "type_denombrement",
+        "niveau_sensibilite",
+        "statut_observation",
+        "floutage_dee",
+        "statut_source",
+        "type_info_geo",
+        "methode_determination",
+        "comportement",
+        "reference_biblio",
+        "id_synthese",
+        "id_origine",
+        "uuid_perm_sinp",
+        "uuid_perm_grp_sinp",
+        "date_creation",
+        "date_modification"
     ]
 
 # Gestion des demandes d'inscription
 [ACCOUNT_MANAGEMENT]
     # Activer l'affichage du lien vers le formulaire d'inscription
-    ENABLE_SIGN_UP = false
+    ENABLE_SIGN_UP = true
 
-    # Activer l'affichage de l'onglet de gestion des demandes de compte utilisateur
+    # Activer l'affichage de l'onglet de gestion des demandes de compte 
+    # utilisateur
     ENABLE_USER_MANAGEMENT = false
 
-    # Valider automatiquement la demande de création de compte (=true), sinon nécessite une validation (=false)
-    AUTO_ACCOUNT_CREATION = true
+    # Valider automatiquement la demande de création de compte (=true), 
+    # sinon nécessite une validation (=false)
+    AUTO_ACCOUNT_CREATION = false
 
-    # Créer automatiquement (=true) un nouveau jeu de données pour chaque compte utilisateur
+    # Créer automatiquement (=true) un nouveau jeu de données pour chaque
+    # compte utilisateur
     AUTO_DATASET_CREATION = true
 
     # Email du validateur si auto_account_creation = false
-    VALIDATOR_EMAIL = "email@validateur.io"
+    VALIDATOR_EMAIL = "theo.lechemia@ecrins-parcnational.fr"
+
+    # Texte complémentaire ajouté à la fin des emails envoyés à l'utilisateur.
+    # Utiliser du HTML simple (compatible avec les email) ou du texte.
+    # Mettre une chaine vide pour ne rien ajouter.
+    # Par défaut, chaine vide.
+    ADDON_USER_EMAIL = """<p>
+            Toute l'équipe de GeoNature vous remercie pour votre inscription.
+        </p>"""
 
     # Configuration de la customisation du formulaire d'inscription
-    # Chaque section [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]] correspond à un champ (de type checkbox, select etc...)
+    # Chaque section [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]] correspond à un 
+    # champ (de type checkbox, select etc...)
     [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]]
         type_widget = "checkbox"
-        attribut_label = "<a target="_blank" href='http://docs.geonature.fr'>J'ai lu et j'accepte la charte</a>"
+        attribut_label = """
+            <a target="_blank" href="http://docs.geonature.fr">
+                J'ai lu et j'accepte la charte
+            </a>"""
         attribut_name = "validate_charte"
         values = [true] 
         required = true
@@ -369,6 +422,32 @@ MAIL_ON_ERROR = false
         attribut_name = "id_nomenclature_typ_grp"
         code_nomenclature_type = "TYP_GRP"
         required = false
+    [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]]
+        # Le HTML fournit est inséré dans une balise DIV
+        type_widget = "html"
+        # Nom utilisé pour définir la partie fixe de l'attribut "id" de la balise DIV
+        attribut_name = "conditions"
+        # Classes CSS ajoutées à l'attribut "class" de la balise DIV
+        class = "alert alert-primary"
+        # Contenu HTML à insérer dans la balise DIV
+        html = """
+            <p>Merci pour votre demande d’inscription. Après 
+            <strong>validation de l’administrateur</strong>, vous 
+            pourrez accéder aux observations publiques avec leur 
+            précision de géolocalisation maximale.</p>"""
 
 [SERVER]
+    # Nivau de log du serveur.
+    # Indiquer la valeur numérique correspondant au niveau suivant;
+    # CRITICAL: 50 ; ERROR: 40 ; WARNING: 30 ; INFO: 20 ; DEBUG: 10 ; NOTSET: 0
     LOG_LEVEL = 20
+
+
+[MEDIAS]
+    # Taille maximale pour l'upload des médias
+    MEDIAS_SIZE_MAX = 10000
+
+# Module métadonnées
+[METADATADA]
+    # Nombre de cadre d'acquisition affiché sur la liste
+    NB_AF_DISPLAYED = 100

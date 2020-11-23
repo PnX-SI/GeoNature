@@ -16,8 +16,7 @@ class TestSynthese:
         assert response.status_code == 200
 
     def test_get_defaut_nomenclature(self):
-        response = self.client.get(
-            url_for("gn_synthese.getDefaultsNomenclatures"))
+        response = self.client.get(url_for("gn_synthese.getDefaultsNomenclatures"))
         assert response.status_code == 200
 
     def test_get_synthese_data(self):
@@ -45,18 +44,14 @@ class TestSynthese:
         assert response.status_code == 200
 
         # test geometry filters
-        key_municipality = "area_" + str(
-            current_app.config["BDD"]["id_area_type_municipality"]
-        )
+        key_municipality = "area_" + str(current_app.config["BDD"]["id_area_type_municipality"])
         query_string = {
             "geoIntersection": """
                 POLYGON ((5.580368041992188 43.42100882994726, 5.580368041992188 45.30580259943578, 8.12919616699219 45.30580259943578, 8.12919616699219 43.42100882994726, 5.580368041992188 43.42100882994726))
                 """,
             key_municipality: 28290,
         }
-        response = self.client.get(
-            url_for("gn_synthese.get_synthese"), query_string=query_string
-        )
+        response = self.client.get(url_for("gn_synthese.get_synthese"), query_string=query_string)
         data = json_of_response(response)
         assert len(data["data"]) >= 2
 
@@ -66,9 +61,7 @@ class TestSynthese:
             "radius": "83883.94104436478",
         }
 
-        response = self.client.get(
-            url_for("gn_synthese.get_synthese"), query_string=query_string
-        )
+        response = self.client.get(url_for("gn_synthese.get_synthese"), query_string=query_string)
         data = json_of_response(response)
         assert len(data["data"]) >= 2
 
@@ -83,8 +76,7 @@ class TestSynthese:
         token = get_token(self.client, login="partenaire", password="admin")
         self.client.set_cookie("/", "token", token)
 
-        response = self.client.get(
-            url_for("gn_synthese.get_observations_for_web"))
+        response = self.client.get(url_for("gn_synthese.get_observations_for_web"))
         data = json_of_response(response)
 
         assert len(data["data"]["features"]) == 0
@@ -94,11 +86,9 @@ class TestSynthese:
         """
             Test avec un cruved R2 qui join sur cor_synthese_observers
         """
-        token = get_token(
-            self.client, login="test_cruved_r2", password="admin")
+        token = get_token(self.client, login="test_cruved_r2", password="admin")
         self.client.set_cookie("/", "token", token)
-        response = self.client.get(
-            url_for("gn_synthese.get_observations_for_web"))
+        response = self.client.get(url_for("gn_synthese.get_observations_for_web"))
         data = json_of_response(response)
 
         # le résultat doit être supérieur ou égal à 2
@@ -140,7 +130,7 @@ class TestSynthese:
         token = get_token(self.client)
         self.client.set_cookie("/", "token", token)
 
-        response = self.client.get(url_for("gn_synthese.export_status"))
+        response = self.client.post(url_for("gn_synthese.export_status"))
 
         assert response.status_code == 200
 
@@ -164,16 +154,15 @@ class TestSynthese:
         token = get_token(self.client)
         self.client.set_cookie("/", "token", token)
 
-        response = self.client.get(
-            url_for("gn_synthese.get_one_synthese", id_synthese=2)
-        )
+        response = self.client.get(url_for("gn_synthese.get_one_synthese", id_synthese=2))
 
         assert response.status_code == 200
 
     def test_color_taxon(self):
-        response = self.client.get(
-            url_for(
-                "gn_synthese.get_color_taxon"
-            )
-        )
+        response = self.client.get(url_for("gn_synthese.get_color_taxon"))
+        data = json_of_response(response)
+        one_line = data[0]
+        mandatory_columns = ["cd_nom", "id_area", "color", "nb_obs", "last_date"]
+        for attr in mandatory_columns:
+            assert attr in one_line
         assert response.status_code == 200

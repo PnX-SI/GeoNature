@@ -1,385 +1,308 @@
-<div class="row row-sm">
-  <div class="col-sm-12 col-md-5 padding-sm map-container">
-    <pnx-map 
-      class="map-card" 
-      height="92vh"> 
-    </pnx-map>
-  </div>
-  <div class="col-sm-12 col-md-7 padding-sm form-container">
-    <div class="card">
-      <div class="card-header">
-        <h4> Relevé
-
-          <button 
-            matTooltip="Editez le relevé {{id}}" 
-            type="button" 
-            (click)="fs.onEditReleve(id)" 
-            class="btn btn-success button-rounded float-right"
-            [disabled]="userReleveCruved?.U == false">
-            <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>
-          </button>
-
-          <button 
-            matTooltip="Supprimer le relevé {{id}}" 
-            type="button" 
-            (click)="openModalDelete(modalDelete)" 
-            class="btn btn-danger button-rounded float-right"
-            [disabled]="userReleveCruved?.D == false">
-            <i class="fa fa-trash-o  fa-lg" aria-hidden="true"></i>
-          </button>
-
-        </h4>
-      </div>
-
-      <div class="card-body releve">
-        <p>
-          <b> Relevé numéro </b>: {{releve?.id}}
-          <b> Observateur(s) </b>:
-          <span *ngIf="occtaxConfig.observers_txt">
-            {{releve?.properties.observers_txt}}
-          </span>
-          <span *ngIf="!occtaxConfig.observers_txt">
-            {{observers}}
-          </span>
-        </p>
-        <p>
-          <b> Entre le </b>: {{dateMin}}
-          <b> et le </b>: {{dateMax}} 
-        </p>
-        <p>
-          <b> Altitude min </b>: {{releve?.properties.altitude_min }}
-          <b> Altitude max </b>: {{releve?.properties.altitude_max }} 
-        </p>
-
-        <div class="row row-sm">
-          <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 padding-sm">
-              <div 
-                *ngIf="currentReleve?.releve?.properties?.dataset.active == false; else elseblocDataset"
-                class="dataset-inactive" 
-              >
-                <b> {{ 'MetaData.Datasets' | translate }}: </b> 
-                <small>
-                  {{currentReleve?.releve?.properties?.dataset?.dataset_name}}
-                </small> 
-              </div>
-              <ng-template #elseblocDataset>
-                <pnx-datasets 
-                  label="{{ 'MetaData.Datasets' | translate }}" 
-                  moduleCode="OCCTAX"
-                  [parentFormControl]="releveForm.controls.properties.controls.id_dataset"
-                  [disabled]="fs.disabled"
-                >
-                </pnx-datasets>
-              </ng-template>
-          </div>
-          <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
-            <pnx-nomenclature 
-              label="{{ 'Releve.ObsTechnique' | translate }}" 
-              [parentFormControl]="releveForm.get('properties').get('id_nomenclature_obs_technique')"
-              codeNomenclatureType="TECHNIQUE_OBS" 
-              [disabled]=disabled>
-            </pnx-nomenclature>
-          </div>
-          <div 
-            *ngIf="occtaxConfig.form_fields.group_type" 
-            class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm">
-            <pnx-nomenclature 
-              label="{{ 'Releve.GroupType' | translate }}" 
-              [parentFormControl]="releveForm.get('properties').get('id_nomenclature_grp_typ')"
-              codeNomenclatureType="TYP_GRP" 
-              [disabled]="disabled">
-            </pnx-nomenclature>
-          </div>
-        </div>
-
-
-        <p id="info-geo">
-          <pnx-areas-intersected-modal 
-            [geojson]="releve">
-          </pnx-areas-intersected-modal>
-        </p>
-
-        <label> {{ 'Taxon.ObservedTaxon' | translate }} </label>
-        <div class="row row-sm">
-          <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
-              <table class="table table-hover ">
-                <tr 
-                  *ngFor="let occ of releve?.properties.t_occurrences_occtax; let i = index"
-                  [ngClass]="{'table-success': i == selectedIndex}" 
-                  (click)="selectOccurrence(occ, i)">
-                  <td class="selected-taxon">{{(occ.taxref?.nom_vern!==null) ? occ.taxref?.nom_vern+' - ' : ''}}{{occ.taxref?.nom_complet}}</td>
-                  <td>
-                    <i class="fa fa-eye clickable" aria-hidden="true"></i>
-                  </td>
-                </tr>
-              </table>
-          </div>
-        </div>
-      </div>
-
-      <div 
-        class="card info-occurrence"
-        [hidden]="!selectedOccurrence">
-        <label class="card-header">
-          <b> Détails&nbsp;:&nbsp;</b> {{selectedOccurrence?.taxon?.nom_valide}} 
-        </label>
-        <div class="card-body">
-          <ul class="nav nav-tabs" role="tablist">
-            <li class="nav-item">
-              <a 
-                class="nav-link active" 
-                data-toggle="tab" 
-                href="#occurrence" 
-                role="tab">
-                Info observation
-              </a>
-            </li>
-            <li class="nav-item">
-              <a 
-                class="nav-link" 
-                data-toggle="tab" 
-                href="#counting" 
-                role="tab">
-                Dénombrement
-              </a>
-            </li>
-          </ul>
-          <div class="tab-content">
-            <div class="tab-pane active" id="occurrence" role="tabpanel">
-              <div class="row row-sm">
-                <div 
-                  *ngIf="occtaxConfig.form_fields.observation_status" 
-                  class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-                  <pnx-nomenclature 
-                    label="{{ 'Taxon.ObservationStatus' | translate }}" 
-                    [parentFormControl]="occurrenceForm.get('id_nomenclature_observation_status')"
-                    codeNomenclatureType="STATUT_OBS" 
-                    [disabled]="disabled">
-                  </pnx-nomenclature>
-                </div>
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-                  <pnx-nomenclature 
-                    label="{{ 'Taxon.ObsMethod' | translate }}" 
-                    [parentFormControl]="occurrenceForm.get('id_nomenclature_obs_meth')"
-                    codeNomenclatureType="METH_OBS" 
-                    [disabled]="disabled">
-                  </pnx-nomenclature>
-                </div>
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-                  <pnx-nomenclature 
-                    label="{{ 'Taxon.BiologicalCondition' | translate }}" 
-                    [parentFormControl]="occurrenceForm.get('id_nomenclature_bio_condition')"
-                    codeNomenclatureType="ETA_BIO" 
-                    [disabled]="disabled">
-                  </pnx-nomenclature>
-                </div>
-              </div>
-
-
-              <div class="row row-sm">
-                <div 
-                  *ngIf="occtaxConfig.form_fields.determination_method" 
-                  class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-                  <pnx-nomenclature 
-                    label="{{ 'Taxon.DeterminationMethod' | translate }}" 
-                    [parentFormControl]="occurrenceForm.get('id_nomenclature_determination_method')"
-                    codeNomenclatureType="METH_DETERMIN" 
-                    [disabled]="disabled">
-                  </pnx-nomenclature>
-                </div>
-                <div 
-                  *ngIf="occtaxConfig.form_fields.bio_status" 
-                  class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-                  <pnx-nomenclature 
-                    label="{{ 'Taxon.BiologicalStatus' | translate }}" 
-                    [parentFormControl]="occurrenceForm.get('id_nomenclature_bio_status')"
-                    codeNomenclatureType="STATUT_BIO" 
-                    [disabled]="disabled">
-                  </pnx-nomenclature>
-                </div>
-                <div 
-                  *ngIf="occtaxConfig.form_fields.naturalness" 
-                  class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-                  <pnx-nomenclature 
-                    label="{{ 'Taxon.Naturalness' | translate }}" 
-                    [parentFormControl]="occurrenceForm.get('id_nomenclature_naturalness')"
-                    codeNomenclatureType="NATURALITE" 
-                    [disabled]="disabled">
-                  </pnx-nomenclature>
-                </div>
-              </div>
-
-
-              <div class="row row-sm">
-                <div 
-                  *ngIf="occtaxConfig.form_fields.exist_proof" 
-                  class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-                  <pnx-nomenclature 
-                    label="{{ 'Taxon.ExistProof' | translate }}" 
-                    [parentFormControl]="occurrenceForm.get('id_nomenclature_exist_proof')"
-                    codeNomenclatureType="PREUVE_EXIST" 
-                    [disabled]="disabled">
-                  </pnx-nomenclature>
-                </div>
-                <div 
-                  *ngIf="occtaxConfig.form_fields.digital_proof" 
-                  class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-                  <small> {{ 'Taxon.DigitalProof' | translate }} </small>
-                  <div class="input-group">
-                    <input 
-                      [disableControl]="disabled" 
-                      class="form-control form-control-sm" 
-                      [formControl]="occurrenceForm.get('digital_proof')"
-                      type="text">
-                  </div>
-                </div>
-                <div 
-                  *ngIf="occtaxConfig.form_fields.non_digital_proof" 
-                  class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-                  <small> {{ 'Taxon.NonDigitalProof' | translate }} </small>
-                  <div class="input-group">
-                    <input 
-                      [disableControl]="disabled" 
-                      class="form-control form-control-sm" 
-                      [formControl]="occurrenceForm.get('non_digital_proof')"
-                      type="text">
-                  </div>
-                </div>
-              </div>
-
-              <div class="row row-sm">
-                <div 
-                  *ngIf="occtaxConfig.form_fields.diffusion_level" 
-                  class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-                  <pnx-nomenclature 
-                    label="{{ 'Taxon.DiffusionLevel' | translate }}" 
-                    [parentFormControl]="occurrenceForm.get('id_nomenclature_diffusion_level')"
-                    codeNomenclatureType="NIV_PRECIS" 
-                    [disabled]="disabled">
-                  </pnx-nomenclature>
-                </div>
-                <div 
-                  *ngIf="occtaxConfig.form_fields.blurring" 
-                  class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-                  <pnx-nomenclature 
-                    label="{{ 'Taxon.Blurring' | translate }}" 
-                    [parentFormControl]="occurrenceForm.get('id_nomenclature_blurring')"
-                    codeNomenclatureType="DEE_FLOU" 
-                    [disabled]="disabled">
-                  </pnx-nomenclature>
-                </div>
-                <div 
-                  *ngIf="occtaxConfig.form_fields.source_status" 
-                  class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm">
-                  <pnx-nomenclature 
-                    label="{{ 'Taxon.StatusSource' | translate }}" 
-                    [parentFormControl]="occurrenceForm.get('id_nomenclature_source_status')"
-                    codeNomenclatureType="STATUT_SOURCE" 
-                    [disabled]="disabled">
-                  </pnx-nomenclature>
-                </div>
-              </div>
-              <div class="row row-0" id="row-commentaire">
-                <div 
-                  *ngIf="occtaxConfig.form_fields.comment" 
-                  class="col-xs-12 col-sm-12 col-md-12 col-lg-6 padding-sm">
-                  <div class="input-group">
-                    <input 
-                      [disableControl]="disabled" 
-                      placeholder="{{ 'Taxon.Comment' | translate }}" 
-                      class="form-control"
-                      [formControl]="occurrenceForm.get('comment')" 
-                      type="text">
-                  </div>
-                </div>
-              </div>
-
-
-
-
-            </div>
-
-            <div class="tab-pane" id="counting" role="tabpanel">
-              <div *ngFor="let counting of selectedOccurrence?.cor_counting_occtax; let index = index">
-                <div class="row row-sm">
-                  <div 
-                    *ngIf="occtaxConfig.form_fields.life_stage" 
-                    class="col-xs-12 col-sm-12 col-md-12 col-lg-4 padding-sm col-counting">
-                    <pnx-nomenclature 
-                      label="{{ 'Counting.LifeStage' | translate }}" 
-                      [parentFormControl]="countingFormArray.controls[index].get('id_nomenclature_life_stage')"
-                      codeNomenclatureType="STADE_VIE" 
-                      [disabled]="disabled">
-                    </pnx-nomenclature>
-                  </div>
-                  <div 
-                    *ngIf="occtaxConfig.form_fields.sex" 
-                    class="col-xs-12 col-sm-12 col-md-12 col-lg-3 padding-sm col-counting">
-                    <pnx-nomenclature 
-                      label="{{ 'Counting.Sex' | translate }}" 
-                      [parentFormControl]="countingFormArray.controls[index].get('id_nomenclature_sex')"
-                      codeNomenclatureType="SEXE" 
-                      [disabled]="disabled">
-                    </pnx-nomenclature>
-                  </div>
-                  <div 
-                    *ngIf="occtaxConfig.form_fields.obj_count" 
-                    class="col-xs-12 col-sm-12 col-md-12 col-lg-5 padding-sm col-counting">
-                    <pnx-nomenclature 
-                      label="{{ 'Counting.CountingObject' | translate }}" 
-                      [parentFormControl]="countingFormArray.controls[index].get('id_nomenclature_obj_count')"
-                      codeNomenclatureType="OBJ_DENBR" 
-                      [disabled]="disabled">
-                    </pnx-nomenclature>
-                  </div>
-
-                </div>
-                <div class="form-group row row-sm">
-                  <div 
-                    *ngIf="occtaxConfig.form_fields.type_count" 
-                    class="col-xs-12 col-sm-12 col-md-12 col-lg-5 padding-sm col-counting">
-                    <pnx-nomenclature 
-                      #typeDenombrement 
-                      label="{{ 'Counting.CountingType' | translate }}"
-                      codeNomenclatureType="TYP_DENBR" 
-                      [parentFormControl]="countingFormArray.controls[index].controls.id_nomenclature_type_count"
-                      [disabled]="disabled">
-                    </pnx-nomenclature>
-                  </div>
-                  <div 
-                    *ngIf="occtaxConfig.form_fields.count_min" 
-                    class="col-xs-12 col-sm-12 col-md-12 col-lg-3 padding-sm col-counting">
-                    <div class="form-group">
-                      <small> {{ 'Counting.NumberMin' | translate }} </small>
-                      <input 
-                        type="number" 
-                        class="form-control form-control-sm" 
-                        [disableControl]="disabled"
-                        [formControl]="countingFormArray.controls[index].controls.count_min">
-                    </div>
-                  </div>
-                  <div 
-                    *ngIf="occtaxConfig.form_fields.count_max" 
-                    class="col-xs-12 col-sm-12 col-md-12 col-lg-3 padding-sm col-counting">
-                    <div class="form-group">
-                      <small> {{ 'Counting.NumberMax' | translate }} </small>
-                      <input 
-                        type="number" 
-                        class="form-control form-control-sm" 
-                        [formControl]="countingFormArray.controls[index].controls.count_max"
-                        [disableControl]="disabled">
-                    </div>
-                  </div>
-                  <b>{{'Counting.ValidationStatus' | translate}}&nbsp;:&nbsp;</b>  {{counting?.validation_status?.mnemonique}}
-
-                </div>
-                <hr>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+<div class="container-fluid">
+  <div 
+    class="occtax-info"
+   
+  >
+  <div class="row">
+    <div
+      class="col-sm-12 col-md-5 map-container" [ngStyle]="{'min-height.px': cardHeight}">
+      <pnx-map 
+        class="map-card" 
+        height="100%"> 
+      </pnx-map>
     </div>
+    <div class="col-sm-12 col-md-7 form-container" [ngStyle]="{'max-height.px': cardHeight}">
+      <div>
+        <ng-container *ngIf="releve; else waitingBlock">
+            <mat-card-title>
+              Relevé n°{{id}}
+              
+              <ng-container *ngIf="releve">
+                <button 
+                  mat-mini-fab
+                  [disabled]="userReleveCruved?.D == false"
+                  matTooltip="Supprimer le relevé {{ id }}" 
+                  color="warn" 
+                  class="float-right" 
+                  (click)="openModalDelete(modalDelete)" 
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+                <button 
+                  mat-mini-fab 
+                  color="primary" 
+                  matTooltip="Editez le relevé {{id}}" 
+                  class="float-right mr-2" 
+                  [disabled]="userReleveCruved?.U == false"
+                  [routerLink]="['/occtax/form', id]"
+                  >
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </ng-container>
+            </mat-card-title>
+
+
+            <mat-card-subtitle>  {{releve.dataset?.dataset_name}}</mat-card-subtitle>
+
+  
+        
+          <div class="releve list-values">
+            <div>
+              <div class="label">Observateur(s) : </div>
+              <div class="value">
+                <span *ngIf="occtaxConfig.observers_txt">
+                  {{releve.observers_txt}}
+                </span>
+                <span *ngIf="!occtaxConfig.observers_txt">
+                  <ng-container *ngFor="let observer of releve.observers; let i = index">
+                    <ng-container *ngIf="i !== 0">, </ng-container>{{ observer.nom_complet }}
+                  </ng-container>
+                </span>
+              </div>
+            </div>
+  
+            <div>
+              <div class="label"> Entre le :</div>
+              <div class="value">{{ releve.date_min | date:'dd/MM/yyyy' }} {{releve.hour_min}} </div>
+              <div class="label"> &nbsp; et le : </div>
+              <div class="value">{{ releve.date_max | date:'dd/MM/yyyy' }} {{releve.hour_max}} </div>
+            </div>
+            <div *ngIf="occtaxConfig.form_fields.place_name">
+                <div class="label">  {{ 'Releve.PlaceName' | translate }} :</div>
+                <div class="value">{{ releve.place_name  || "-"}}</div>
+            </div>
+            <div *ngIf="occtaxConfig.form_fields.precision">
+              <div class="label">  {{ 'Releve.Precision' | translate }} :</div>
+              <div class="value">{{ releve.precision  || "-"}}</div>
+            </div>
+            <div *ngIf="occtaxConfig.form_fields.altitude_min">
+              <div class="label">  Altitude min :</div>
+              <div class="value">{{ releve.altitude_min  || "-"}}</div>
+            </div>
+            <div *ngIf="occtaxConfig.form_fields.altitude_max">
+              <div class="label">  Altitude max :</div>
+              <div class="value">{{ releve.altitude_max  || "-"}}</div>
+            </div>
+            <div *ngIf="occtaxConfig.form_fields.depth_min">
+              <div class="label"> {{ 'Releve.MinDepth' | translate }}  :</div>
+              <div class="value">{{ releve.depth_min  || "-"}}</div>
+              </div>
+            <div *ngIf="occtaxConfig.form_fields.depth_max">
+              <div class="label">  {{ 'Releve.MaxDepth' | translate }} :</div>
+              <div class="value">{{ releve.depth_max  || "-"}}</div>
+            </div>
+
+            <div *ngIf="occtaxConfig.form_fields.tech_collect">
+              <div class="label">  {{ 'Releve.TechCollectCampanule' | translate }} : </div>
+              <div class="value">{{getLibelleByID(releve.id_nomenclature_tech_collect_campanule)}}</div>
+            </div>
+            <div *ngIf="occtaxConfig.form_fields.group_type" >
+              <div class="label"> {{ 'Releve.GroupType' | translate }} :</div>
+              <div class="value"> {{getLibelleByID(releve.id_nomenclature_grp_typ)}}</div>
+            </div>
+            <div *ngIf="occtaxConfig.form_fields.grp_method">
+              <div class="label"> {{'Releve.GroupMethod' | translate}} : </div>
+              <div class="value"> {{releve.grp_method || "-" }}</div>
+            </div>
+            <div>
+              <div class="label"> UUID regroupement: </div>
+              <div class="value">  {{releve.unique_id_sinp_grp}}  </div>
+            </div> 
+            <div *ngIf="occtaxConfig.form_fields.geo_object_nature">
+              <div class="label"> {{ 'Releve.GeoObjectNature' | translate }} : </div>
+              <div class="value"> {{getLibelleByID(releve.id_nomenclature_geo_object_nature)}}</div>
+            </div>
+            <div *ngIf="occtaxConfig.form_fields.habitat">
+              <div class="label"> Habitat associé : </div>
+              <div class="value"> {{releve.habitat?.lb_hab_fr}} - {{releve.habitat?.lb_code}}</div>
+            </div>
+            <div *ngIf="occtaxConfig.form_fields.comment_releve">
+              <div class="label"> Commentaire : </div>
+              <div class="value"> {{releve.comment || "-"}}  </div>
+            </div> 
+
+            
+  
+            <p id="info-geo">
+              <pnx-areas-intersected-modal 
+                [geojson]="geojson">
+              </pnx-areas-intersected-modal>
+            </p>
+
+            <label> {{ 'Taxon.ObservedTaxon' | translate }} </label>
+            <div class="row ">
+              <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                  <table class="table table-hover">
+                    <tr 
+                      *ngFor="let occ of occurrences; let i = index"
+                      [ngClass]="{'table-success': occ.id_occurrence_occtax == (displayOccurrence |async)?.id_occurrence_occtax}" 
+                      (click)="displayOccurrence.next(occ)">
+                      <td class="selected-taxon">{{(occ.taxref?.nom_vern!==null) ? occ.taxref?.nom_vern+' - ' : ''}}{{occ.taxref?.nom_complet}}</td>
+                      <td>
+                        <i class="fa fa-eye clickable" aria-hidden="true"></i>
+                      </td>
+                    </tr>
+                  </table>
+              </div>
+            </div>
+          </div>
+  
+          <div 
+            *ngIf="displayOccurrence|async"
+            class="info-occurrence">
+            <mat-card-title>Détails </mat-card-title>  
+            <mat-card-subtitle>{{(displayOccurrence|async).taxref.nom_valide }}   </mat-card-subtitle>  
+              <mat-tab-group>
+                <mat-tab label="Caractérisation de l'occurrence">
+                  <div *ngIf="occtaxConfig.form_fields.observation_status">
+                    <div class="label"> {{ 'Taxon.ObservationStatus' | translate }} : </div>
+                    <div class="value"> {{getLibelleByID((displayOccurrence|async).id_nomenclature_observation_status)}}</div>
+                  </div>
+                  <div *ngIf="occtaxConfig.form_fields.obs_tech">
+                    <div class="label"> {{ 'Taxon.ObsTech' | translate }} : </div>
+                    <div class="value"> {{getLibelleByID((displayOccurrence|async).id_nomenclature_obs_technique)}} </div>
+                  </div>
+                  <div *ngIf="occtaxConfig.form_fields.bio_condition">
+                    <div class="label"> {{ 'Taxon.BiologicalCondition' | translate }} : </div>
+                    <div class="value"> {{getLibelleByID((displayOccurrence|async).id_nomenclature_bio_condition)}} </div>
+                  </div>
+                  <div *ngIf="occtaxConfig.form_fields.behaviour">
+                    <div class="label"> {{ 'Taxon.OccBehaviour' | translate }} : </div>
+                    <div class="value"> {{getLibelleByID((displayOccurrence|async).id_nomenclature_behaviour)}} </div>
+                  </div>
+                  <div *ngIf="occtaxConfig.form_fields.bio_status">
+                    <div class="label"> {{ 'Taxon.BiologicalStatus' | translate }} : </div>
+                    <div class="value"> {{getLibelleByID((displayOccurrence|async).id_nomenclature_bio_status)}} </div>
+                  </div>
+                  <div *ngIf="occtaxConfig.form_fields.determination_method">
+                    <div class="label"> {{ 'Taxon.DeterminationMethod' | translate }} : </div>
+                    <div class="value"> {{getLibelleByID((displayOccurrence|async).id_nomenclature_determination_method)}} </div>
+                  </div>
+                  <div *ngIf="occtaxConfig.form_fields.determiner">
+                    <div class="label"> {{ 'Taxon.Determiner' | translate }} : </div>
+                    <div class="value"> {{(displayOccurrence|async).determiner || ""}} </div>
+                  </div>
+                  <div>
+                    <div class="label"> Nom cité: </div>
+                    <div class="value"> {{(displayOccurrence|async).nom_cite || ""}} </div>
+                  </div>
+                  <div *ngIf="occtaxConfig.form_fields.exist_proof">
+                    <div class="label"> {{ 'Taxon.ExistProof' | translate }} : </div>
+                    <div class="value"> {{getLibelleByID((displayOccurrence|async).id_nomenclature_exist_proof)}} </div>
+                  </div>
+                  <div *ngIf="occtaxConfig.form_fields.digital_proof" >
+                    <div class="label"> {{ 'Taxon.DigitalProof' | translate }} : </div>
+                    <div class="value"> {{(displayOccurrence|async).digital_proof || "-" }} </div>
+                  </div>
+                  <div *ngIf="occtaxConfig.form_fields.non_digital_proof" >
+                    <div class="label"> {{ 'Taxon.NonDigitalProof' | translate }} : </div>
+                    <div class="value"> {{(displayOccurrence|async).non_digital_proof || "-"}} </div>
+                  </div>
+                  <div *ngIf="occtaxConfig.form_fields.blurring">
+                    <div class="label"> {{ 'Taxon.Blurring' | translate }} : </div>
+                    <div class="value"> {{getLibelleByID((displayOccurrence|async).id_nomenclature_blurring)}} </div>
+                  </div>
+                  <div *ngIf="occtaxConfig.form_fields.source_status">
+                    <div class="label"> {{ 'Taxon.StatusSource' | translate }} : </div>
+                    <div class="value"> {{getLibelleByID((displayOccurrence|async).id_nomenclature_source_status)}} </div>
+                  </div>
+                  <div *ngIf="occtaxConfig.form_fields.comment_occ">
+                    <div class="label"> {{ 'Taxon.Comment' | translate }} : </div>
+                    <div class="value"> {{(displayOccurrence|async).comment || ""}} </div>
+                  </div>
+  
+
+                </mat-tab>
+                <mat-tab> 
+                  <ng-template mat-tab-label>
+                    <span 
+                      [matBadge]="((displayOccurrence|async).cor_counting_occtax || []).length" 
+                      matBadgeOverlap="false">
+                      Dénombrement(s)
+                    </span>
+            
+                  </ng-template>
+
+                  <div *ngFor="let counting of (displayOccurrence|async).cor_counting_occtax; let index = index">  
+                    <div *ngIf="occtaxConfig.form_fields.life_stage">
+                      <div class="label"> {{ 'Counting.LifeStage' | translate }} : </div>
+                      <div class="value"> {{getLibelleByID(counting.id_nomenclature_life_stage)}} </div>
+                    </div>
+  
+                    <div *ngIf="occtaxConfig.form_fields.sex">
+                      <div class="label"> {{ 'Counting.Sex' | translate }} : </div>
+                      <div class="value"> {{getLibelleByID(counting.id_nomenclature_sex)}} </div>
+                    </div>
+  
+                    <div *ngIf="occtaxConfig.form_fields.obj_count">
+                      <div class="label"> {{ 'Counting.CountingObject' | translate }} : </div>
+                      <div class="value"> {{getLibelleByID(counting.id_nomenclature_obj_count)}} </div>
+                    </div>
+  
+                    <div *ngIf="occtaxConfig.form_fields.type_count">
+                      <div class="label"> {{ 'Counting.CountingType' | translate }} : </div>
+                      <div class="value"> {{getLibelleByID(counting.id_nomenclature_type_count)}} </div>
+                    </div>
+  
+                    <div *ngIf="occtaxConfig.form_fields.count_min">
+                      <div class="label"> {{ 'Counting.NumberMin' | translate }} : </div>
+                      <div class="value"> {{counting.count_min || "-"}} </div>
+                    </div>
+  
+                    <div *ngIf="occtaxConfig.form_fields.count_max">
+                      <div class="label"> {{ 'Counting.NumberMax' | translate }} : </div>
+                      <div class="value"> {{counting.count_max || "-"}} </div>
+                    </div>
+  
+                    <div>
+                      <div class="label"> {{ 'Counting.ValidationStatus' | translate }} : </div>
+                      <div class="value"> {{counting?.validation_status?.mnemonique || "-"}} </div>
+                    </div>
+
+                    <div>
+                      <div class="label"> UUID SINP : </div>
+                      <div class="value"> {{counting?.unique_id_sinp_occtax}} </div>
+                    </div>
+
+                    <ng-container *ngFor="let media of counting.medias; index as i">
+                      <div>
+                        <div class="label"> {{ 'Media.Media' | translate }} {{ i + 1 }}/{{ counting.medias.length}} : </div>
+                        <div class="value">                     <a
+                          [href]="ms.href(media)" target=blank
+                          >{{ media.title_fr }}</a> 
+                          <i>
+                            ({{ ms.typeMedia(media) }}, {{ media.author }})
+                          </i>
+                          <span *ngIf="media.description_fr">{{media.description_fr}}</span>
+                        </div>
+                      </div>
+                      <div>
+                        <pnx-display-medias 
+                          [medias]="counting.medias"
+                          [index]=i
+                          display="medium"
+                          diaporama="true"
+                        ></pnx-display-medias>
+                      </div>
+                    </ng-container>
+
+
+                    <mat-divider></mat-divider>
+                  </div>
+                </mat-tab>
+              </mat-tab-group>
+  
+          </div>
+        </ng-container>
+      </div>
+        <ng-template #waitingBlock>Chargement des données en cours</ng-template>
+    </div>
+  </div>
+
+    
+  </div>
+</div>
+
 
 
     <ng-template 
@@ -400,7 +323,7 @@
       <div class="modal-body">
         <p>
           Attention vous vous apprêtez à supprimer un releve qui comporte
-          {{releve?.properties.t_occurrences_occtax.length}} occurrence(s) de taxon(s) et {{nbCounting}}
+          {{ occurrences.length }} occurrence(s) de taxon(s) et {{ nbCounting }}
           dénombrement(s).
         </p>
         <button 

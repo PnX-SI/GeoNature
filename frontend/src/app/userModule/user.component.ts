@@ -3,8 +3,8 @@ import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { AppConfig } from '@geonature_config/app.config';
 import { AuthService, User } from '@geonature/components/auth/auth.service';
-import { Role, RoleFormService} from './services/form.service';
-import { UserDataService} from './services/user-data.service';
+import { Role, RoleFormService } from './services/form.service';
+import { UserDataService } from './services/user-data.service';
 
 @Component({
   selector: 'pnx-user',
@@ -12,13 +12,12 @@ import { UserDataService} from './services/user-data.service';
   styleUrls: ['./user.component.scss']
 })
 export class UserComponent implements OnInit {
-
-	form: FormGroup;
+  form: FormGroup;
 
   constructor(
-  	private authService: AuthService,
-  	private roleFormService: RoleFormService,
-  	private userService: UserDataService
+    private authService: AuthService,
+    private roleFormService: RoleFormService,
+    private userService: UserDataService
   ) {}
 
   ngOnInit() {
@@ -30,19 +29,17 @@ export class UserComponent implements OnInit {
   }
 
   getForm(role: number): FormGroup {
-	  return this.roleFormService.getForm(role);
-	}
+    return this.roleFormService.getForm(role);
+  }
 
-	save() {
-		if (this.form.valid) {
-			this.userService.putRole(this.form.value)
-            .subscribe(res => this.form.disable());
-		}
-	}
+  save() {
+    if (this.form.valid) {
+      this.userService.putRole(this.form.value).subscribe(res => this.form.disable());
+    }
+  }
 
   cancel() {
     this.initForm();
     this.form.disable();
   }
-
 }

@@ -13,12 +13,17 @@ export function similarValidator(pass: string, passConfirm: string): ValidatorFn
 
 export function arrayMinLengthValidator(arrayLenght): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } => {
+    if (!control.value) {
+      return { arrayMinLengthError: true };
+    }
     return control.value.length >= arrayLenght ? null : { arrayMinLengthError: true };
   };
 }
 
 export function isObjectValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } => {
-    return (typeof control.value === 'object' && control.value != null) ? null : { isObjectError: true };
+    return typeof control.value === 'object' && control.value != null
+      ? null
+      : { isObjectError: true };
   };
 }

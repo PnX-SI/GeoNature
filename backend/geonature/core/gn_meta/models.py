@@ -51,13 +51,10 @@ class CorAcquisitionFrameworkActor(DB.Model):
     __table_args__ = {"schema": "gn_meta"}
     id_cafa = DB.Column(DB.Integer, primary_key=True)
     id_acquisition_framework = DB.Column(
-        DB.Integer,
-        ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
+        DB.Integer, ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
     )
     id_role = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
-    id_organism = DB.Column(
-        DB.Integer, ForeignKey("utilisateurs.bib_organismes.id_organisme")
-    )
+    id_organism = DB.Column(DB.Integer, ForeignKey("utilisateurs.bib_organismes.id_organisme"))
     id_nomenclature_actor_role = DB.Column(
         DB.Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
@@ -65,22 +62,16 @@ class CorAcquisitionFrameworkActor(DB.Model):
     )
 
     nomenclature_actor_role = DB.relationship(
-        TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_actor_role),
+        TNomenclatures, primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_actor_role),
     )
 
-    role = DB.relationship(
-        User, primaryjoin=(User.id_role == id_role), foreign_keys=[id_role]
-    )
+    role = DB.relationship(User, primaryjoin=(User.id_role == id_role), foreign_keys=[id_role])
 
     organism = relationship("BibOrganismes", foreign_keys=[id_organism])
 
     @staticmethod
     def get_actor(
-        id_acquisition_framework,
-        id_nomenclature_actor_role,
-        id_role=None,
-        id_organism=None,
+        id_acquisition_framework, id_nomenclature_actor_role, id_role=None, id_organism=None,
     ):
         """
             Get CorAcquisitionFrameworkActor from id_dataset, id_actor, and id_role or id_organism.
@@ -118,13 +109,9 @@ class CorDatasetActor(DB.Model):
     id_cda = DB.Column(DB.Integer, primary_key=True)
     id_dataset = DB.Column(DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"))
     id_role = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
-    id_organism = DB.Column(
-        DB.Integer, ForeignKey("utilisateurs.bib_organismes.id_organisme")
-    )
+    id_organism = DB.Column(DB.Integer, ForeignKey("utilisateurs.bib_organismes.id_organisme"))
 
-    role = DB.relationship(
-        User, primaryjoin=(User.id_role == id_role), foreign_keys=[id_role]
-    )
+    role = DB.relationship(User, primaryjoin=(User.id_role == id_role), foreign_keys=[id_role])
     organism = relationship("BibOrganismes", foreign_keys=[id_organism])
 
     id_nomenclature_actor_role = DB.Column(
@@ -133,14 +120,11 @@ class CorDatasetActor(DB.Model):
         default=TNomenclatures.get_default_nomenclature("ROLE_ACTEUR"),
     )
     nomenclature_actor_role = DB.relationship(
-        TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_actor_role),
+        TNomenclatures, primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_actor_role),
     )
 
     @staticmethod
-    def get_actor(
-        id_dataset, id_nomenclature_actor_role, id_role=None, id_organism=None
-    ):
+    def get_actor(id_dataset, id_nomenclature_actor_role, id_role=None, id_organism=None):
         """
             Get CorDatasetActor from id_dataset, id_actor, and id_role or id_organism.
             if no object return None
@@ -191,6 +175,7 @@ class CruvedHelper(DB.Model):
 
             Params:
                 id_object: identifiant de l'objet duquel on contrôle l'accès à la donnée (id_dataset, id_ca)
+                id_role: identifiant de la personne qui demande la route
                 id_object_users_actor (list): identifiant des objects ou l'utilisateur est lui même acteur
                 id_object_organism_actor (list): identifiants des objects ou l'utilisateur ou son organisme sont acteurs
 
@@ -216,7 +201,7 @@ class CruvedHelper(DB.Model):
         return False
 
     def get_object_cruved(
-        self, user_cruved, id_object: int, ids_object_user: list, ids_object_organism: list
+        self, user_cruved, id_object: int, ids_object_user: list, ids_object_organism: list,
     ):
         """
         Return the user's cruved for a Model instance.
@@ -224,15 +209,14 @@ class CruvedHelper(DB.Model):
         params:
             - user_cruved: object retourner by cruved_for_user_in_app(user) {'C': '2', 'R':'3' etc...}
             - id_object (int): id de l'objet sur lqurqul on veut vérifier le CRUVED (self.id_dataset/ self.id_ca)
+            - id_role: identifiant de la personne qui demande la route
             - id_object_users_actor (list): identifiant des objects ou l'utilisateur est lui même acteur
             - id_object_organism_actor (list): identifiants des objects ou l'utilisateur ou son organisme sont acteurs    
 
         Return: dict {'C': True, 'R': False ...}
         """
         return {
-            action: self.user_is_allowed_to(
-                id_object, ids_object_user, ids_object_organism, level
-            )
+            action: self.user_is_allowed_to(id_object, ids_object_user, ids_object_organism, level)
             for action, level in user_cruved.items()
         }
 
@@ -242,12 +226,9 @@ class TDatasets(CruvedHelper):
     __tablename__ = "t_datasets"
     __table_args__ = {"schema": "gn_meta"}
     id_dataset = DB.Column(DB.Integer, primary_key=True)
-    unique_dataset_id = DB.Column(
-        UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
-    )
+    unique_dataset_id = DB.Column(UUID(as_uuid=True), default=select([func.uuid_generate_v4()]))
     id_acquisition_framework = DB.Column(
-        DB.Integer,
-        ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
+        DB.Integer, ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
     )
     dataset_name = DB.Column(DB.Unicode)
     dataset_shortname = DB.Column(DB.Unicode)
@@ -293,15 +274,14 @@ class TDatasets(CruvedHelper):
     meta_update_date = DB.Column(DB.DateTime)
     active = DB.Column(DB.Boolean, default=True)
     validable = DB.Column(DB.Boolean)
+    id_digitizer = DB.Column(DB.Integer)
 
     modules = DB.relationship("TModules", secondary=cor_module_dataset, lazy="select")
 
     # HACK: the relationship is not well defined for many to many relationship
     # because CorDatasetActor could be an User or an Organisme object...
     cor_dataset_actor = relationship(
-        CorDatasetActor,
-        lazy="select",
-        cascade="save-update, merge, delete, delete-orphan",
+        CorDatasetActor, lazy="select", cascade="save-update, merge, delete, delete-orphan",
     )
 
     @staticmethod
@@ -328,21 +308,29 @@ class TDatasets(CruvedHelper):
 
     @staticmethod
     def get_user_datasets(user, only_query=False, only_user=False):
-        """get the dataset(s) where the user is actor (himself or with its organism - only himelsemf id only_use=True)
+        """get the dataset(s) where the user is actor (himself or with its organism - only himelsemf id only_use=True) or digitizer
             param: 
               - user from TRole model
               - only_query: boolean (return the query not the id_datasets allowed if true)
               - only_user: boolean: return only the dataset where user himself is actor (not with its organoism)
 
             return: a list of id_dataset or a query"""
-        q = DB.session.query(CorDatasetActor)
+        q = DB.session.query(TDatasets).outerjoin(
+            CorDatasetActor, CorDatasetActor.id_dataset == TDatasets.id_dataset
+        )
         if user.id_organisme is None or only_user:
-            q = q.filter(CorDatasetActor.id_role == user.id_role)
+            q = q.filter(
+                or_(
+                    CorDatasetActor.id_role == user.id_role,
+                    TDatasets.id_digitizer == user.id_role,
+                )
+            )
         else:
             q = q.filter(
                 or_(
                     CorDatasetActor.id_organism == user.id_organisme,
                     CorDatasetActor.id_role == user.id_role,
+                    TDatasets.id_digitizer == user.id_role,
                 )
             )
         if only_query:
@@ -376,6 +364,8 @@ class TAcquisitionFramework(CruvedHelper):
     ecologic_or_geologic_target = DB.Column(DB.Unicode)
     acquisition_framework_parent_id = DB.Column(DB.Integer)
     is_parent = DB.Column(DB.Boolean)
+    id_digitizer = DB.Column(DB.Integer)
+
     acquisition_framework_start_date = DB.Column(DB.DateTime)
     acquisition_framework_end_date = DB.Column(DB.DateTime)
 
@@ -392,8 +382,7 @@ class TAcquisitionFramework(CruvedHelper):
         TNomenclatures,
         secondary=CorAcquisitionFrameworkObjectif.__table__,
         primaryjoin=(
-            CorAcquisitionFrameworkObjectif.id_acquisition_framework
-            == id_acquisition_framework
+            CorAcquisitionFrameworkObjectif.id_acquisition_framework == id_acquisition_framework
         ),
         secondaryjoin=(
             CorAcquisitionFrameworkObjectif.id_nomenclature_objectif
@@ -410,8 +399,7 @@ class TAcquisitionFramework(CruvedHelper):
         TNomenclatures,
         secondary=CorAcquisitionFrameworkVoletSINP.__table__,
         primaryjoin=(
-            CorAcquisitionFrameworkVoletSINP.id_acquisition_framework
-            == id_acquisition_framework
+            CorAcquisitionFrameworkVoletSINP.id_acquisition_framework == id_acquisition_framework
         ),
         secondaryjoin=(
             CorAcquisitionFrameworkVoletSINP.id_nomenclature_voletsinp
@@ -441,26 +429,37 @@ class TAcquisitionFramework(CruvedHelper):
 
     @staticmethod
     def get_user_af(user, only_query=False, only_user=False):
-        """get the af(s) where the user is actor (himself or with its organism - only himelsemf id only_use=True)
+        """get the af(s) where the user is actor (himself or with its organism - only himelsemf id only_use=True) or digitizer
             param: 
               - user from TRole model
               - only_query: boolean (return the query not the id_datasets allowed if true)
               - only_user: boolean: return only the dataset where user himself is actor (not with its organoism)
 
             return: a list of id_dataset or a query"""
-        q = DB.session.query(CorAcquisitionFrameworkActor)
+        q = DB.session.query(TAcquisitionFramework).outerjoin(
+            CorAcquisitionFrameworkActor,
+            CorAcquisitionFrameworkActor.id_acquisition_framework
+            == TAcquisitionFramework.id_acquisition_framework,
+        )
         if user.id_organisme is None or only_user:
-            q = q.filter(CorAcquisitionFrameworkActor.id_role == user.id_role)
+            q = q.filter(
+                or_(
+                    CorAcquisitionFrameworkActor.id_role == user.id_role,
+                    TAcquisitionFramework.id_digitizer == user.id_role,
+                )
+            )
         else:
             q = q.filter(
                 or_(
                     CorAcquisitionFrameworkActor.id_organism == user.id_organisme,
                     CorAcquisitionFrameworkActor.id_role == user.id_role,
+                    TAcquisitionFramework.id_digitizer == user.id_role,
                 )
             )
         if only_query:
             return q
         return list(set([d.id_acquisition_framework for d in q.all()]))
+
 
 @serializable
 class TDatasetDetails(TDatasets):
@@ -470,54 +469,44 @@ class TDatasetDetails(TDatasets):
 
     data_type = DB.relationship(
         TNomenclatures,
-        primaryjoin=(
-            TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_data_type
-        ),
+        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_data_type),
     )
     dataset_objectif = DB.relationship(
         TNomenclatures,
-        primaryjoin=(
-            TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_dataset_objectif
-        ),
+        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_dataset_objectif),
     )
     collecting_method = DB.relationship(
         TNomenclatures,
         primaryjoin=(
-            TNomenclatures.id_nomenclature
-            == TDatasets.id_nomenclature_collecting_method
+            TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_collecting_method
         ),
     )
     data_origin = DB.relationship(
         TNomenclatures,
-        primaryjoin=(
-            TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_data_origin
-        ),
+        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_data_origin),
     )
     source_status = DB.relationship(
         TNomenclatures,
-        primaryjoin=(
-            TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_source_status
-        ),
+        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_source_status),
     )
     resource_type = DB.relationship(
         TNomenclatures,
-        primaryjoin=(
-            TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_resource_type
-        ),
+        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_resource_type),
     )
     acquisition_framework = DB.relationship(
         TAcquisitionFramework,
         primaryjoin=(
-            TAcquisitionFramework.id_acquisition_framework
-            == TDatasets.id_acquisition_framework
+            TAcquisitionFramework.id_acquisition_framework == TDatasets.id_acquisition_framework
         ),
     )
+
 
 @serializable
 class TAcquisitionFrameworkDetails(TAcquisitionFramework):
     """
     Class which extends TAcquisitionFramework with nomenclatures relationships
     """
+
     datasets = DB.relationship(TDatasetDetails, lazy="joined")
     nomenclature_territorial_level = DB.relationship(
         TNomenclatures,
@@ -530,8 +519,6 @@ class TAcquisitionFrameworkDetails(TAcquisitionFramework):
     nomenclature_financing_type = DB.relationship(
         TNomenclatures,
         primaryjoin=(
-            TNomenclatures.id_nomenclature
-            == TAcquisitionFramework.id_nomenclature_financing_type
+            TNomenclatures.id_nomenclature == TAcquisitionFramework.id_nomenclature_financing_type
         ),
     )
-

@@ -19,9 +19,8 @@ import { HttpParams } from '@angular/common/http/src/params';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SyntheseModalDownloadComponent } from './modal-download/modal-download.component';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
-import { ModalInfoObsComponent } from './modal-info-obs/modal-info-obs.component';
-import { CruvedStoreService } from '../../../GN2CommonModule/service/cruved-store.service';
-
+import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
+import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 @Component({
   selector: 'pnx-synthese-list',
   templateUrl: 'synthese-list.component.html',
@@ -51,7 +50,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     public sanitizer: DomSanitizer,
     public ref: ChangeDetectorRef,
     public _cruvedStore: CruvedStoreService
-  ) { }
+  ) {}
 
   ngOnInit() {
     // get wiewport height to set the number of rows in the tabl
@@ -112,24 +111,20 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   }
 
   openInfoModal(row) {
-    const modalRef = this.ngbModal.open(ModalInfoObsComponent, {
+    row.id_synthese = row.id;
+    const modalRef = this.ngbModal.open(SyntheseInfoObsComponent, {
       size: 'lg',
       windowClass: 'large-modal'
     });
-    modalRef.componentInstance.oneObsSynthese = row;
+    modalRef.componentInstance.idSynthese = row.id_synthese;
+    modalRef.componentInstance.uuidSynthese = row.unique_id_sinp;
+    modalRef.componentInstance.header = true;
   }
 
   openDownloadModal() {
-    const modalRef = this.ngbModal.open(SyntheseModalDownloadComponent, {
+    this.ngbModal.open(SyntheseModalDownloadComponent, {
       size: 'lg'
     });
-
-    let queryString = this.getQueryString();
-    // if the search form has not been touched, download the last 100 obs
-    if (this._fs.searchForm.pristine) {
-      queryString = queryString.set('limit', AppConfig.SYNTHESE.NB_LAST_OBS.toString());
-    }
-    modalRef.componentInstance.queryString = queryString;
   }
 
   getRowClass() {

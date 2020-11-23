@@ -34,7 +34,7 @@ export class DatasetFormComponent implements OnInit {
     private _dfs: DataFormService,
     private _formService: MetadataFormService,
     public moduleService: ModuleService
-  ) { }
+  ) {}
 
   ngOnInit() {
     // get the id from the route
@@ -137,5 +137,4 @@ export class DatasetFormComponent implements OnInit {
       );
     }
   }
-
 }

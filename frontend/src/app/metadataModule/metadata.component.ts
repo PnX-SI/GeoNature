@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { PageEvent, MatPaginator, MatPaginatorIntl } from '@angular/material';
 import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
+import { AppConfig } from '@geonature_config/app.config';
 
 export class MetadataPaginator extends MatPaginatorIntl {
   constructor() {
@@ -42,11 +43,11 @@ export class MetadataComponent implements OnInit {
   expandAccordions = false;
   private researchTerm: string = '';
 
-  pageSize: number = 10;
+  pageSize: number = AppConfig.METADATA.NB_AF_DISPLAYED;
   activePage: number = 0;
   pageSizeOptions: Array<number> = [10, 25, 50, 100];
 
-  constructor(public _cruvedStore: CruvedStoreService, private _dfs: DataFormService) { }
+  constructor(public _cruvedStore: CruvedStoreService, private _dfs: DataFormService) {}
 
   ngOnInit() {
     this.getAcquisitionFrameworksAndDatasets();
@@ -60,8 +61,7 @@ export class MetadataComponent implements OnInit {
       //this.getDatasets();
       this.acquisitionFrameworks.forEach(af => {
         af['datasetsTemp'] = af['datasets'];
-      })
-
+      });
     });
   }
 

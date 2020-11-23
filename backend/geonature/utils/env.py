@@ -1,6 +1,7 @@
 """ Helpers to manipulate the execution environment """
 
 import os
+import subprocess
 import sys
 
 from pathlib import Path
@@ -8,8 +9,7 @@ from collections import ChainMap, namedtuple
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm.exc import NoResultFound
-
-from pip._internal.main import main as pip_main
+from flask_marshmallow import Marshmallow
 
 # Define GEONATURE_VERSION before import config_shema module
 # because GEONATURE_VERSION is imported in this module
@@ -29,6 +29,8 @@ DEFAULT_CONFIG_FILE = ROOT_DIR / "config/geonature_config.toml"
 
 DB = SQLAlchemy()
 
+MA = Marshmallow()
+
 
 GN_MODULE_FILES = (
     "manifest.toml",
@@ -43,7 +45,7 @@ GN_MODULE_FE_FILE = "frontend/app/gnModule.module"
 
 def in_virtualenv():
     """ Return if we are in a virtualenv """
-    return 'VIRTUAL_ENV' in os.environ
+    return "VIRTUAL_ENV" in os.environ
 
 
 def virtualenv_status():
@@ -64,8 +66,7 @@ def venv_path(*children):
         If additional arguments are passed, they are concatenated to the path.
     """
     if not in_virtualenv():
-        raise EnvironmentError(
-            "This function can only be called in a virtualenv")
+        raise EnvironmentError("This function can only be called in a virtualenv")
     path = sys.exec_prefix
     return Path(os.path.join(path, *children))
 
@@ -129,9 +130,7 @@ def get_config_file_path(config_file=None):
 def load_config(config_file=None):
     """ Load the geonature configuration from a given file """
     # load and validate configuration
-    configs_py = load_and_validate_toml(
-        str(get_config_file_path(config_file)), GnPySchemaConf
-    )
+    configs_py = load_and_validate_toml(str(get_config_file_path(config_file)), GnPySchemaConf)
 
     # Settings also exported to backend
     configs_gn = load_and_validate_toml(
@@ -142,10 +141,11 @@ def load_config(config_file=None):
 
 
 def import_requirements(req_file):
-    with open(req_file, "r") as requirements:
-        for req in requirements:
-            if pip_main(["install", req]) == 1:
-                raise Exception("Package {} not installed".format(req))
+    from geonature.utils.errors import GeoNatureError
+
+    cmd_return = subprocess.call(["pip", "install", "-r", req_file])
+    if cmd_return != 0:
+        raise GeoNatureError("Error while installing module backend dependencies")
 
 
 def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
@@ -156,8 +156,7 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
     with app.app_context():
         from geonature.core.gn_commons.models import TModules
 
-        modules = DB.session.query(TModules).filter(
-            TModules.active_backend == True)
+        modules = DB.session.query(TModules).filter(TModules.active_backend == True)
         module_info = {}
         enabled_modules_name = []
         for mod in modules:
@@ -184,16 +183,12 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
                 # import du module dans le sys.path
                 module_path = Path(GN_EXTERNAL_MODULE / module_code.lower())
                 module_parent_dir = str(module_path.parent)
-                module_import_name = "{}.config.conf_schema_toml".format(
-                    module_path.name
-                )
+                module_import_name = "{}.config.conf_schema_toml".format(module_path.name)
                 sys.path.insert(0, module_parent_dir)
                 module = __import__(module_import_name)
                 # get and validate the module config
 
-                class GnModuleSchemaProdConf(
-                    module.config.conf_schema_toml.GnModuleSchemaConf
-                ):
+                class GnModuleSchemaProdConf(module.config.conf_schema_toml.GnModuleSchemaConf):
                     pass
 
                 conf_module = load_and_validate_toml(
@@ -201,16 +196,13 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
                 )
 
                 # add id_module and url_path to the module config
-                update_module_config = dict(
-                    conf_module, **module_info.get(module_code))
+                update_module_config = dict(conf_module, **module_info.get(module_code))
                 # register the module conf in the app config
                 app.config[module_code] = update_module_config
 
                 # import the blueprint
-                python_module_name = "{}.backend.blueprint".format(
-                    module_path.name)
-                module_blueprint = __import__(
-                    python_module_name, globals=globals())
+                python_module_name = "{}.backend.blueprint".format(module_path.name)
+                module_blueprint = __import__(python_module_name, globals=globals())
                 # register the confif in bluprint.config
                 module.backend.blueprint.blueprint.config = update_module_config
                 sys.path.pop(0)
@@ -226,9 +218,6 @@ def list_frontend_enabled_modules(app, mod_path=GN_EXTERNAL_MODULE):
     from geonature.core.gn_commons.models import TModules
 
     with app.app_context():
-        enabled_modules = (
-            DB.session.query(TModules).filter(
-                TModules.active_frontend == True).all()
-        )
+        enabled_modules = DB.session.query(TModules).filter(TModules.active_frontend == True).all()
         for mod in enabled_modules:
             yield mod.module_path.replace(" ", ""), mod.module_code

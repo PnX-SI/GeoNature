@@ -33,15 +33,11 @@ class CasFrontend(Schema):
 
 
 class CasSchemaConf(Schema):
-    CAS_URL_VALIDATION = fields.String(
-        missing="https://preprod-inpn.mnhn.fr/auth/serviceValidate"
-    )
+    CAS_URL_VALIDATION = fields.String(missing="https://preprod-inpn.mnhn.fr/auth/serviceValidate")
     CAS_USER_WS = fields.Nested(CasUserSchemaConf, missing=dict())
     USERS_CAN_SEE_ORGANISM_DATA = fields.Boolean(missing=False)
     # Quel modules seront associés au JDD récupérés depuis MTD
-    JDD_MODULE_CODE_ASSOCIATION = fields.List(
-        fields.String, missing=["OCCTAX", "OCCHAB"]
-    )
+    JDD_MODULE_CODE_ASSOCIATION = fields.List(fields.String, missing=["OCCTAX", "OCCHAB"])
 
 
 class BddConfig(Schema):
@@ -71,13 +67,14 @@ class MailConfig(Schema):
 
 
 class AccountManagement(Schema):
-    # config liée à l'incription
+    # Config for sign-up
     ENABLE_SIGN_UP = fields.Boolean(missing=False)
     ENABLE_USER_MANAGEMENT = fields.Boolean(missing=False)
     AUTO_ACCOUNT_CREATION = fields.Boolean(missing=True)
     AUTO_DATASET_CREATION = fields.Boolean(missing=True)
     VALIDATOR_EMAIL = fields.Email()
     ACCOUNT_FORM = fields.List(fields.Dict(), missing=[])
+    ADDON_USER_EMAIL = fields.String(missing="")
 
 
 class UsersHubConfig(Schema):
@@ -90,6 +87,17 @@ class ServerConfig(Schema):
     LOG_LEVEL = fields.Integer(missing=20)
 
 
+class MediasConfig(Schema):
+    MEDIAS_SIZE_MAX = fields.Integer(missing=50000)
+    THUMBNAIL_SIZES = fields.List(fields.Integer, missing=[200, 50])
+
+
+class MetadataConfig(Schema):
+    NB_AF_DISPLAYED = fields.Integer(missing=50, validate=OneOf([10, 25, 50, 100]))
+    AF_PDF_TITLE = fields.String(missing="")
+    DS_PDF_TITLE = fields.String(missing="")
+
+
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
 
 
@@ -99,11 +107,10 @@ class GnPySchemaConf(Schema):
         validate=Regexp(
             "^postgresql:\/\/.*:.*@[^:]+:\w+\/\w+$",
             0,
-            """Database uri is invalid ex:
-             postgresql://monuser:monpass@server:port/db_name""",
+            "Database uri is invalid ex: postgresql://monuser:monpass@server:port/db_name",
         ),
     )
-    SQLALCHEMY_TRACK_MODIFICATIONS = fields.Boolean(missing=False)
+    SQLALCHEMY_TRACK_MODIFICATIONS = fields.Boolean(missing=True)
     SESSION_TYPE = fields.String(missing="filesystem")
     SECRET_KEY = fields.String(required=True)
     # le cookie expire toute les 7 jours par défaut
@@ -113,9 +120,7 @@ class GnPySchemaConf(Schema):
 
     UPLOAD_FOLDER = fields.String(missing="static/medias")
     BASE_DIR = fields.String(
-        missing=os.path.dirname(
-            os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
-        )
+        missing=os.path.dirname(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
     )
     CAS = fields.Nested(CasSchemaConf, missing=dict())
     MAIL_ON_ERROR = fields.Boolean(missing=False)
@@ -124,6 +129,7 @@ class GnPySchemaConf(Schema):
     ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, missing={})
     USERSHUB = fields.Nested(UsersHubConfig, missing={})
     SERVER = fields.Nested(ServerConfig, missing={})
+    MEDIAS = fields.Nested(MediasConfig, missing={})
 
     @post_load()
     def unwrap_usershub(self, data):
@@ -168,6 +174,8 @@ class GnFrontEndConf(Schema):
     DISPLAY_STAT_BLOC = fields.Boolean(missing=True)
     DISPLAY_MAP_LAST_OBS = fields.Boolean(missing=True)
     MULTILINGUAL = fields.Boolean(missing=False)
+    # show email on synthese and validation info obs modal
+    DISPLAY_EMAIL_INFO_OBS = fields.Boolean(missing=True)
 
 
 id_municipality = BddConfig().load({}).data.get("id_area_type_municipality")
@@ -181,24 +189,20 @@ class Synthese(Schema):
     # Si on veut afficher des champs personnalisés dans le frontend (paramètre LIST_COLUMNS_FRONTEND) il faut
     # d'abbord s'assurer que ces champs sont bien renvoyé par l'API !
     # Champs disponibles: tous ceux de la vue 'v_synthese_for_web_app
-    COLUMNS_API_SYNTHESE_WEB_APP = fields.List(
-        fields.String, missing=DEFAULT_COLUMNS_API_SYNTHESE
-    )
+    COLUMNS_API_SYNTHESE_WEB_APP = fields.List(fields.String, missing=DEFAULT_COLUMNS_API_SYNTHESE)
     # Colonnes affichées sur la liste des résultats de la sytnthese
     LIST_COLUMNS_FRONTEND = fields.List(fields.Dict, missing=DEFAULT_LIST_COLUMN)
     EXPORT_COLUMNS = fields.List(fields.String(), missing=DEFAULT_EXPORT_COLUMNS)
     # Certaines colonnes sont obligatoires pour effectuer les filtres CRUVED
-    EXPORT_ID_SYNTHESE_COL = fields.String(missing="idSynthese")
-    EXPORT_ID_DATASET_COL = fields.String(missing="jddId")
+    EXPORT_ID_SYNTHESE_COL = fields.String(missing="id_synthese")
+    EXPORT_ID_DATASET_COL = fields.String(missing="jdd_id")
     EXPORT_ID_DIGITISER_COL = fields.String(missing="id_digitiser")
-    EXPORT_OBSERVERS_COL = fields.String(missing="observer")
+    EXPORT_OBSERVERS_COL = fields.String(missing="observateurs")
     EXPORT_GEOJSON_4326_COL = fields.String(missing="geojson_4326")
     EXPORT_GEOJSON_LOCAL_COL = fields.String(missing="geojson_local")
     EXPORT_METADATA_ID_DATASET_COL = fields.String(missing="jdd_id")
     EXPORT_METADATA_ACTOR_COL = fields.String(missing="acteurs")
-    EXPORT_FORMAT = fields.List(
-        fields.String(), missing=["csv", "geojson", "shapefile"]
-    )
+    EXPORT_FORMAT = fields.List(fields.String(), missing=["csv", "geojson", "shapefile"])
     # Nombre de résultat à afficher pour la rechercher autocompleté de taxon
     TAXON_RESULT_NUMBER = fields.Integer(missing=20)
     # Liste des id attributs Taxhub à afficher sur la fiche détaile de la synthese
@@ -225,6 +229,9 @@ class Synthese(Schema):
     # Nombre des "dernières observations" affiché à l'arrive sur la synthese
     NB_LAST_OBS = fields.Integer(missing=100)
 
+    # Display email on synthese and validation info obs modal
+    DISPLAY_EMAIL = fields.Boolean(missing=True)
+
 
 # On met la valeur par défaut de DISCONECT_AFTER_INACTIVITY inferieure à COOKIE_EXPIRATION
 cookie_expiration = GnPySchemaConf().load({}).data.get("COOKIE_EXPIRATION")
@@ -245,10 +252,7 @@ BASEMAP = [
     {
         "name": "GoogleSatellite",
         "layer": "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-        "options": {
-            "subdomains": ["mt0", "mt1", "mt2", "mt3"],
-            "attribution": "© GoogleMap",
-        },
+        "options": {"subdomains": ["mt0", "mt1", "mt2", "mt3"], "attribution": "© GoogleMap",},
     },
 ]
 
@@ -288,6 +292,9 @@ class GnGeneralSchemaConf(Schema):
     BDD = fields.Nested(BddConfig, missing=dict())
     URL_USERSHUB = fields.Url(required=False)
     ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, missing={})
+    MEDIAS = fields.Nested(MediasConfig, missing={})
+    UPLOAD_FOLDER = fields.String(missing="static/medias")
+    METADATA = fields.Nested(MetadataConfig, missing={})
 
     @validates_schema
     def validate_enable_sign_up(self, data):

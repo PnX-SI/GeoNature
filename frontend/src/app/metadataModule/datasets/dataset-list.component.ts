@@ -22,7 +22,7 @@ export class DatasetListComponent implements OnInit {
     private _dfs: DataFormService,
     private _router: Router,
     public cruvedStore: CruvedStoreService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this._dfs.getDatasets().subscribe(results => {
@@ -40,7 +40,7 @@ export class DatasetListComponent implements OnInit {
     const val = event.target.value.toLowerCase();
 
     // filter our data
-    this.datasets = this.temp.filter(function (d) {
+    this.datasets = this.temp.filter(function(d) {
       return d.dataset_name.toLowerCase().indexOf(val) !== -1 || !val;
     });
 

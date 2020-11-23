@@ -9,7 +9,7 @@ SET client_min_messages = warning;
 CREATE SCHEMA gn_commons;
 
 
-SET search_path = gn_commons, pg_catalog;
+SET search_path = gn_commons, pg_catalog, public;
 SET default_with_oids = false;
 
 
@@ -66,6 +66,31 @@ $BODY$
   COST 100;
 --USAGE
 --SELECT gn_commons.check_entity_value_exist('pr_occtax.t_releves_occtax.id_releve_occtax', 2);
+
+
+CREATE OR REPLACE FUNCTION gn_commons.check_entity_uuid_exist(myentity character varying, myvalue uuid)
+  RETURNS boolean AS
+$BODY$
+--Function that allows to check if a uuid exists in the field of a table type.
+--USAGE : SELECT gn_commons.check_entity_uuid_exist('schema.table.field', uuid);
+  DECLARE
+    entity_array character varying(255)[];
+    r record;
+    _row_ct integer;
+  BEGIN
+
+
+    entity_array = string_to_array(myentity,'.');
+    EXECUTE 'SELECT '||entity_array[3]|| ' FROM '||entity_array[1]||'.'||entity_array[2]||' WHERE '||entity_array[3]||'=''' ||myvalue || '''' INTO r;
+    GET DIAGNOSTICS _row_ct = ROW_COUNT;
+      IF _row_ct > 0 THEN
+        RETURN true;
+      END IF;
+    RETURN false;
+  END;
+$BODY$
+  LANGUAGE plpgsql IMMUTABLE
+  COST 100;
 
 CREATE OR REPLACE FUNCTION get_table_location_id(myschema text, mytable text)
   RETURNS integer AS
@@ -299,7 +324,9 @@ CREATE SEQUENCE t_parameters_id_parameter_seq
 ALTER SEQUENCE t_parameters_id_parameter_seq OWNED BY t_parameters.id_parameter;
 ALTER TABLE ONLY t_parameters ALTER COLUMN id_parameter SET DEFAULT nextval('t_parameters_id_parameter_seq'::regclass);
 SELECT pg_catalog.setval('t_parameters_id_parameter_seq', 1, false);
-
+ALTER TABLE t_parameters ADD CONSTRAINT unique_t_parameters_id_organism_parameter_name UNIQUE (id_organism, parameter_name);
+-- index spécifique pour la prise en compte des cas ou id_organism est null (cas de figure qui rompt la contrainte d'unicité)
+CREATE UNIQUE INDEX i_unique_t_parameters_parameter_name_with_id_organism_null ON t_parameters (parameter_name) WHERE id_organism IS NULL;
 
 CREATE TABLE bib_tables_location
 (
@@ -342,7 +369,9 @@ CREATE TABLE t_medias
   description_it text,
   description_es text,
   description_de text,
-  is_public boolean NOT NULL DEFAULT true
+  is_public boolean NOT NULL DEFAULT true,
+  meta_create_date timestamp without time zone DEFAULT now(),
+  meta_update_date timestamp without time zone DEFAULT now()
 );
 COMMENT ON COLUMN t_medias.id_nomenclature_media_type IS 'Correspondance nomenclature GEONATURE = TYPE_MEDIA (117)';
 
@@ -355,6 +384,12 @@ CREATE SEQUENCE t_medias_id_media_seq
 ALTER SEQUENCE t_medias_id_media_seq OWNED BY t_medias.id_media;
 ALTER TABLE ONLY t_medias ALTER COLUMN id_media SET DEFAULT nextval('t_medias_id_media_seq'::regclass);
 SELECT pg_catalog.setval('t_medias_id_media_seq', 1, false);
+
+CREATE TRIGGER tri_meta_dates_change_t_medias
+  BEFORE INSERT OR UPDATE
+  ON t_medias
+  FOR EACH ROW
+  EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
 
 CREATE TABLE t_validations
@@ -426,7 +461,8 @@ CREATE TABLE t_modules(
   module_comment text,
   active_frontend boolean NOT NULL,
   active_backend boolean NOT NULL,
-  module_doc_url character varying(255)
+  module_doc_url character varying(255),
+  module_order integer
 );
 COMMENT ON COLUMN t_modules.id_module IS 'PK mais aussi FK vers la table "utilisateurs.t_applications". ATTENTION de ne pas utiliser l''identifiant d''une application existante dans cette table et qui ne serait pas un module de GeoNature';
 COMMENT ON COLUMN t_modules.module_target IS 'Value = NULL ou "blank". On peux ainsi référencer des modules externes et les ouvrir dans un nouvel onglet.';
@@ -444,6 +480,20 @@ CREATE TABLE t_mobile_apps(
 );
 
 COMMENT ON COLUMN t_mobile_apps.app_code IS 'Code de l''application mobile. Pas de FK vers t_modules car une application mobile ne correspond pas forcement à un module GN';
+
+/*MET 14/09/2020 Table t_places pour la fonctionnalité mes-lieux*/
+CREATE TABLE t_places
+(
+    id_place serial,
+    id_role integer NOT NULL,
+    place_name character varying(100),
+	  place_geom geometry
+);
+
+COMMENT ON COLUMN t_places.id_place IS 'Clé primaire autoincrémente de la table t_places';
+COMMENT ON COLUMN t_places.id_role IS 'Clé étrangère vers la table utilisateurs.t_roles, chaque lieu est associé à un utilisateur';
+COMMENT ON COLUMN t_places.place_name IS 'Nom du lieu';
+COMMENT ON COLUMN t_places.place_geom IS 'Géométrie du lieu';
 
 ---------------
 --PRIMARY KEY--
@@ -469,6 +519,10 @@ ALTER TABLE ONLY t_modules
 
 ALTER TABLE ONLY t_mobile_apps
     ADD CONSTRAINT pk_t_moobile_apps PRIMARY KEY (id_mobile_app);
+    
+/*MET 14/09/2020 Ajout de la clé primaire*/
+ALTER TABLE ONLY t_places
+    ADD CONSTRAINT pk_t_places PRIMARY KEY (id_place);
 
 ----------------
 --FOREIGN KEYS--
@@ -494,6 +548,10 @@ ALTER TABLE ONLY t_history_actions
 
 --ALTER TABLE ONLY t_history_actions
     --ADD CONSTRAINT fk_t_history_actions_t_roles FOREIGN KEY (id_digitiser) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
+    
+/*MET 14/09/2020 Ajout de la clé étrangère*/
+ALTER TABLE ONLY t_places
+  ADD CONSTRAINT fk_t_places_t_roles FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
 ---------------
 --CONSTRAINTS--
@@ -529,6 +587,9 @@ ALTER TABLE t_modules
 ALTER TABLE t_mobile_apps
     ADD CONSTRAINT unique_t_mobile_apps_app_code UNIQUE (app_code);
 
+ALTER TABLE bib_tables_location
+  ADD CONSTRAINT unique_bib_tables_location_schema_name_table_name UNIQUE (schema_name, table_name);
+
 ------------
 --TRIGGERS--
 ------------
@@ -546,6 +607,12 @@ CREATE TRIGGER tri_insert_synthese_update_validation_status
   EXECUTE PROCEDURE gn_commons.fct_trg_update_synthese_validation_status();
 
 
+-----------
+--INDEXES--
+-----------
+
+CREATE INDEX i_t_validations_uuid_attached_row ON t_validations USING btree (uuid_attached_row);
+
 ---------
 --DATAS--
 ---------
@@ -556,7 +623,7 @@ INSERT INTO bib_tables_location (table_desc, schema_name, table_name, pk_field, 
 ;
 
 INSERT INTO t_parameters (id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value) VALUES
-(0,'taxref_version','Version du référentiel taxonomique','Taxref V11.0',NULL)
+(0,'taxref_version','Version du référentiel taxonomique','Taxref V13.0',NULL)
 ,(0,'local_srid','Valeur du SRID local', MYLOCALSRID,NULL)
 ,(0,'annee_ref_commune', 'Année du référentiel géographique des communes utilisé', '2017', NULL)
 ;
@@ -610,5 +677,4 @@ SELECT uuid_attached_row, max(validation_date) as max_date
 FROM gn_commons.t_validations
 GROUP BY uuid_attached_row
 ) last_val
-ON v.uuid_attached_row = last_val.uuid_attached_row AND v.validation_date = last_val.max_date
-
+ON v.uuid_attached_row = last_val.uuid_attached_row AND v.validation_date = last_val.max_date;

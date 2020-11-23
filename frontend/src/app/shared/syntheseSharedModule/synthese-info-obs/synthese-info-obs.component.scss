@@ -1,0 +1,26 @@
+.my-tab-grp {
+  padding: 0px 15px!important;
+
+}
+
+.computer {
+  font-size: 13px;
+  padding-top: 3px;
+  padding-right:5px
+}
+
+
+.validationCircle {
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  padding: 0px;
+  //background: #00ff00;
+  color: "black";
+  border: 1px solid black;
+  text-align: center;
+  font: 15px Arial, sans-serif;
+  position: absolute;
+  //left:0%;
+  transform: translateX(0%);
+}
