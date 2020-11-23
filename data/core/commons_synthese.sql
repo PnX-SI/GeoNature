@@ -67,7 +67,8 @@ SELECT  s.id_synthese,
     n.label_default,
     v.validation_auto,
     v.validation_date,
-    ST_asgeojson(s.the_geom_4326) as geojson
+    ST_asgeojson(s.the_geom_4326) as geojson,
+    COALESCE(t.nom_vern, t.lb_nom) as nom_vern_or_lb_nom
    FROM gn_synthese.synthese s
     JOIN taxonomie.taxref t ON t.cd_nom = s.cd_nom
     JOIN gn_meta.t_datasets d ON d.id_dataset = s.id_dataset

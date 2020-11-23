@@ -8,6 +8,7 @@ import { ModuleConfig } from "../../module.config";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
+import { MediaService } from "@geonature_common/service/media.service";
 
 @Component({
   selector: "pnx-validation-modal-info-obs",
@@ -51,6 +52,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
     public activeModal: NgbActiveModal,
     private _fb: FormBuilder,
     private _commonService: CommonService,
+    public mediaService: MediaService,
   ) {
     // form used for changing validation status
     this.statusForm = this._fb.group({
@@ -88,6 +90,8 @@ export class ValidationModalInfoObsComponent implements OnInit {
 
     this.edit = false;
     this.showEmail = false;
+    //MET Load informations releve on initialisation to send to synthese-info-obs.component.html
+    this.loadOneSyntheseReleve(this.id_synthese);
   }
 
   setCurrentCdNomenclature(item) {
@@ -134,27 +138,31 @@ export class ValidationModalInfoObsComponent implements OnInit {
         const date_min = new Date(this.selectedObs.date_min);
         this.selectedObs.date_min = date_min.toLocaleDateString("fr-FR");
         const date_max = new Date(this.selectedObs.date_max);
-        this.selectedObs['actors'] = this.selectedObs['actors'].split('|');
+        this.selectedObs["actors"] = this.selectedObs["actors"].split('|');
         this.selectedObs.date_max = date_max.toLocaleDateString("fr-FR");
-        if (this.selectedObs.cor_observers) {
-          this.email = this.selectedObs.cor_observers
-            .map(el => el.email)
-            .join();
-          this.mailto = String("mailto:" + this.email);
-        }
 
         const areaDict = {};
-        // for each area type we want all the areas: we build an dict of array
-        this.selectedObs.areas.forEach(area => {
-          if (!areaDict[area.area_type.type_name]) {
-            areaDict[area.area_type.type_name] = [area];
-          } else {
-            areaDict[area.area_type.type_name].push(area);
-          }
-        });
+        //Si la géométrie est hors du périmètre, ca plante car areas est undefined
+        //Passage du formatedAreas en paramètre de pnx-synthese-info-obs, sinon ca marche moins bien
+        if(this.selectedObs.areas){
+          // for each area type we want all the areas: we build an dict of array
+          this.selectedObs.areas.forEach(area => {
+            if (!areaDict[area.area_type.type_name]) {
+              areaDict[area.area_type.type_name] = [area];
+            } else {
+              areaDict[area.area_type.type_name].push(area);
+            }
+          });
+        }
         // for angular tempate we need to convert it into a aray
+        //premièrement on l'initialise
+        this.formatedAreas = [];
         for (let key in areaDict) {
-          this.formatedAreas.push({ area_type: key, areas: areaDict[key] });
+          if(areaDict[key][0].area_type.type_code){
+            this.formatedAreas.push({ type_code : areaDict[key][0].area_type.type_code, area_type: key, areas: areaDict[key] });
+          }else{
+            this.formatedAreas.push({ area_type: key, areas: areaDict[key] });
+          }
         }
 
         this._gnDataService
@@ -168,8 +176,66 @@ export class ValidationModalInfoObsComponent implements OnInit {
 
         this._gnDataService.getTaxonInfo(data.cd_nom).subscribe(taxInfo => {
           this.selectedObsTaxonDetail = taxInfo;
-        });
+          /* EMAIL */
+          if (this.selectedObs.cor_observers) {
+            this.mailto = null;
+            this.email = this.selectedObs.cor_observers
+              .map(el => el.email)
+              .join();
 
+            if (this.email.length > 0 ) {
+              let d = { ...this.selectedObsTaxonDetail, ...this.selectedObs};
+              if (this.selectedObs.source.url_source) {
+                d['data_link'] = "Lien vers l'observation : " + [
+                  this.APP_CONFIG.URL_APPLICATION,
+                  this.selectedObs.source.url_source,
+                  this.selectedObs.entity_source_pk_value
+                ].join("/");
+              }
+              else {
+                d['data_link'] = "";
+              }
+
+              let contentCommunes = "";
+              this.formatedAreas.map((area) => {
+                if(area.type_code == "COM"){
+                  area.areas.map((commune) => {
+                    contentCommunes += commune.area_name  + ", ";
+                  });
+                  contentCommunes = contentCommunes.substring(0, contentCommunes.length - 2);
+                }
+              })
+              d["communes"] = contentCommunes;
+
+              let contentMedias = "";
+              if(!this.selectedObs.medias){
+                contentMedias = "Aucun media";
+              }else{
+                if(this.selectedObs.medias.length == 0){
+                  contentMedias = "Aucun media";
+                }
+                this.selectedObs.medias.map((media) => {
+                  contentMedias += "\n\tTitre : " + media.title_fr;
+                  contentMedias += "\n\tLien vers le media : " + this.mediaService.href(media);
+                  if(media.description_fr){
+                    contentMedias += "\n\tDescription : " + media.description_fr;
+                  }
+                  if(media.author){
+                    contentMedias += "\n\tAuteur : " + media.author;
+                  }
+                  contentMedias += "\n";
+                })
+              }
+              d["medias"] = contentMedias;
+
+              const mail_subject = eval('`' + this.VALIDATION_CONFIG.MAIL_SUBJECT + '`');
+              const mail_body = eval('`' + this.VALIDATION_CONFIG.MAIL_BODY + '`');
+              let mailto = encodeURI("mailto:" + this.email + "?subject=" + mail_subject+ "&body=" + mail_body)
+              mailto = mailto.replace(/,/g, '%2c');
+              this.mailto = mailto;
+            }
+          }
+        });
       });
 
 

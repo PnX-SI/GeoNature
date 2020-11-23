@@ -19,12 +19,12 @@ export class SyntheseInfoObsComponent implements OnInit {
   @Input() header: boolean = false;
   @Input() validationHistory: Array<any>;
   @Input() selectedObsTaxonDetail: any;
+  @Input() mailto: String;
+  @Input() formatedAreas = [];
   public selectObsTaxonInfo;
-  public formatedAreas = [];
   public CONFIG = AppConfig;
   public isLoading = false;
   public email;
-  public mailto: String;
   public validationColor = {
     '0': '#FFFFFF',
     '1': '#8BC34A',
@@ -65,9 +65,12 @@ export class SyntheseInfoObsComponent implements OnInit {
         this.selectedObs.date_min = date_min.toLocaleDateString('fr-FR');
         const date_max = new Date(this.selectedObs.date_max);
         this.selectedObs.date_max = date_max.toLocaleDateString('fr-FR');
-        if (this.selectedObs.cor_observers) {
-          this.email = this.selectedObs.cor_observers.map(el => el.email).join();
-          this.mailto = String('mailto:' + this.email);
+        //si le l'email est envoyé depuis la validation, on ne le modifie pas
+        if(!this.mailto && this.CONFIG.FRONTEND.DISPLAY_EMAIL_INFO_OBS){
+          if (this.selectedObs.cor_observers) {
+            this.email = this.selectedObs.cor_observers.map(el => el.email).join();
+            this.mailto = String('mailto:' + this.email);
+          }
         }
         const areaDict = {};
         // for each area type we want all the areas: we build an dict of array
