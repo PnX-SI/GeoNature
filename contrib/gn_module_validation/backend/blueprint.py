@@ -1,14 +1,13 @@
-
 import ast
 import logging
 import datetime
 from operator import itemgetter
-from sqlalchemy import select, func, literal_column
+from sqlalchemy import select
 from flask import Blueprint, request
 from geojson import FeatureCollection
 
 from utils_flask_sqla.response import json_resp
-from utils_flask_sqla_geo.serializers import query_as_geojson
+from utils_flask_sqla.serializers import SERIALIZERS
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
 
@@ -23,7 +22,6 @@ from .models import VSyntheseValidation
 
 blueprint = Blueprint("validation", __name__)
 log = logging.getLogger()
-
 
 
 @blueprint.route("", methods=["GET"])
@@ -52,8 +50,7 @@ def get_synthese_data(info_role):
 
     """
 
-    filters = {key: request.args.getlist(key)
-               for key, value in request.args.items()}
+    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
     for key, value in filters.items():
         if "," in value[0] and key != "geoIntersection":
             filters[key] = value[0].split(",")
@@ -72,9 +69,14 @@ def get_synthese_data(info_role):
     )
 
     select_columns = []
+    serializer = {}
     for c in columns:
         try:
-            select_columns.append(getattr(VSyntheseValidation, c))
+            att = getattr(VSyntheseValidation, c)
+            select_columns.append(att)
+            serializer[c] = SERIALIZERS.get(
+                att.type.__class__.__name__.lower(), lambda x: x
+            )
         except AttributeError as error:
             log.warning("Validation : colonne {} inexistante".format(c))
 
@@ -87,29 +89,27 @@ def get_synthese_data(info_role):
     )
     validation_query_class = SyntheseQuery(VSyntheseValidation, query, filters)
     validation_query_class.filter_query_all_filters(info_role)
+    result = DB.engine.execute(validation_query_class.query.limit(result_limit))
 
-    # TODO le transférer dans sqla-geo
-    # Génération d'une requête sql générant un geojson valide
-    geojson_features = query_as_geojson(
-        session=DB.session,
-        query=validation_query_class.query.limit(
-            result_limit
-        ),
-        id_col="id_synthese",
-        geom_col="geojson",
-        geom_srid=4326,
-        is_geojson=True,
-        keep_id_col=True
-    )
-    # TODO nb_total pas vraiment traité
+    # TODO nb_total factice
     nb_total = 0
+    geojson_features = []
+    properties = {}
+    for r in result:
+        properties = {k: serializer[k](r[k]) for k in serializer.keys()}
+        properties["nom_vern_or_lb_nom"] = (
+            r["nom_vern"] if r["nom_vern"] else r["lb_nom"]
+        )
+        geojson = ast.literal_eval(r["geojson"])
+        geojson["properties"] = properties
+        geojson["id"] = r["id_synthese"]
+        geojson_features.append(geojson)
 
     return {
-        "data": geojson_features,
+        "data": FeatureCollection(geojson_features),
         "nb_obs_limited": nb_total == blueprint.config["NB_MAX_OBS_MAP"],
         "nb_total": nb_total,
     }
-
 
 
 @blueprint.route("/statusNames", methods=["GET"])
@@ -205,7 +205,7 @@ def post_status(info_role, id_synthese):
 @json_resp
 def get_definitions(info_role):
     """
-        return validation status definitions stored in t_nomenclatures
+    return validation status definitions stored in t_nomenclatures
     """
     try:
         definitions = []
@@ -255,19 +255,18 @@ def get_definitions(info_role):
         )
 
 
-
 @blueprint.route("/date/<uuid>", methods=["GET"])
 @json_resp
 def get_validation_date(uuid):
     """
-        Retourne la date de validation
-        pour l'observation uuid
+    Retourne la date de validation
+    pour l'observation uuid
     """
 
     # Test if uuid_attached_row is uuid
     if not test_is_uuid(uuid):
         return (
-            'Value error uuid is not valid',
+            "Value error uuid is not valid",
             500,
         )
 
