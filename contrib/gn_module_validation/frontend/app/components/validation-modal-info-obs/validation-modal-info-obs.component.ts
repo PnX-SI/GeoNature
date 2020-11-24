@@ -24,12 +24,12 @@ export class ValidationModalInfoObsComponent implements OnInit {
   public filteredIds;
   public formatedAreas = []; // TO DEL
   public position;
-  public lastFilteredValue;
+  public lastFilteredValue; // TO DEL non utilisé
   public isNextButtonValid: any;
   public isPrevButtonValid: any;
   public VALIDATION_CONFIG = ModuleConfig;
   public statusForm: FormGroup;
-  public edit;
+  public edit; // Toujours à false ?
   public validationStatus;
   public MapListService;
   public email; // TO DEL
@@ -46,9 +46,9 @@ export class ValidationModalInfoObsComponent implements OnInit {
 
   constructor(
     public mapListService: MapListService,
-    private _gnDataService: DataFormService,
+    private _gnDataService: DataFormService, // TO DEL
     private _validatioDataService: ValidationDataService,
-    private _syntheseDataService: SyntheseDataService,
+    private _syntheseDataService: SyntheseDataService, // TO DEL
     public activeModal: NgbActiveModal,
     private _fb: FormBuilder,
     private _commonService: CommonService,
@@ -70,22 +70,8 @@ export class ValidationModalInfoObsComponent implements OnInit {
     this.isNextButtonValid = true;
     this.isPrevButtonValid = true;
 
-    // disable nextButton if last observation selected
-    if (
-      this.filteredIds.indexOf(this.id_synthese) ==
-      this.filteredIds.length - 1
-    ) {
-      this.isNextButtonValid = false;
-    } else {
-      this.isNextButtonValid = true;
-    }
-
-    // disable previousButton if first observation selected
-    if (this.filteredIds.indexOf(this.id_synthese) == 0) {
-      this.isPrevButtonValid = false;
-    } else {
-      this.isPrevButtonValid = true;
-    }
+    // disable nextButton or previousButton if first last observation selected
+    this.activateNextPrevButton(this.filteredIds.indexOf(this.id_synthese));
 
     this.edit = false;
     this.showEmail = false;
@@ -126,16 +112,12 @@ export class ValidationModalInfoObsComponent implements OnInit {
   }
 
 
-  increaseObs() {
+  changeObsIndex(increment: bigint) {
     this.showEmail = false;
     // add 1 to find new position
-    this.position = this.filteredIds.indexOf(this.id_synthese) + 1;
+    this.position = this.filteredIds.indexOf(this.id_synthese) + increment;
     // disable next button if last observation
-    if (this.position == this.filteredIds.length - 1) {
-      this.isNextButtonValid = false;
-    } else {
-      this.isNextButtonValid = true;
-    }
+    this.activateNextPrevButton(this.position);
 
     // array value (=id_synthese) of the new position
     this.id_synthese = this.filteredIds[
@@ -143,30 +125,6 @@ export class ValidationModalInfoObsComponent implements OnInit {
     ];
     const syntheseRow = this.mapListService.tableData[this.position];
     this.uuidSynthese = syntheseRow.unique_id_sinp;
-    this.isPrevButtonValid = true;
-    this.statusForm.reset();
-    this.edit = false;
-  }
-
-  decreaseObs() {
-    this.showEmail = false;
-    // substract 1 to find new position
-    this.position = this.filteredIds.indexOf(this.id_synthese) - 1;
-    // disable previous button if first observation
-    if (this.position == 0) {
-      this.isPrevButtonValid = false;
-    } else {
-      this.isPrevButtonValid = true;
-    }
-
-    // array value (=id_synthese) of the new position
-    this.id_synthese = this.filteredIds[
-      this.filteredIds.indexOf(this.id_synthese) - 1
-    ];
-    const syntheseRow = this.mapListService.tableData[this.position]
-    this.uuidSynthese = syntheseRow.unique_id_sinp;
-
-    this.isNextButtonValid = true;
     this.statusForm.reset();
     this.edit = false;
   }
@@ -272,5 +230,21 @@ export class ValidationModalInfoObsComponent implements OnInit {
         this.valDate.emit(this.validationDate);
       }
     );
+  }
+
+  activateNextPrevButton(position) {
+    // disable nextButton if last observation selected
+    if (position == this.filteredIds.length - 1) {
+      this.isNextButtonValid = false;
+    } else {
+      this.isNextButtonValid = true;
+    }
+
+    // disable previousButton if first observation selected
+    if (position == 0) {
+      this.isPrevButtonValid = false;
+    } else {
+      this.isPrevButtonValid = true;
+    }
   }
 }

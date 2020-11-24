@@ -76,11 +76,11 @@
 <div class="modal-footer">
 
   <div id="navigButtons">
-    <button [disabled]="!isPrevButtonValid" class="btn btn-sm" (click)="decreaseObs()">
+    <button [disabled]="!isPrevButtonValid" class="btn btn-sm" (click)="changeObsIndex(-1)">
       <i class="material-icons">navigate_before</i>
     </button>
 
-    <button [disabled]="!isNextButtonValid" class="btn btn-sm" (click)="increaseObs()">
+    <button [disabled]="!isNextButtonValid" class="btn btn-sm" (click)="changeObsIndex(1)">
       <i class="material-icons">navigate_next</i>
     </button>
   </div>
