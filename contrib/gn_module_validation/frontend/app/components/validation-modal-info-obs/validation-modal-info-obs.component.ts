@@ -17,12 +17,12 @@ import { CommonService } from "@geonature_common/service/common.service";
 })
 export class ValidationModalInfoObsComponent implements OnInit {
   public selectObsTaxonInfo;
-  public selectedObsTaxonDetail;
-  public validationHistory: any;
-  public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
-  public APP_CONFIG = AppConfig;
+  public selectedObsTaxonDetail; // TO DEL
+  public validationHistory: any; // TO DEL
+  public SYNTHESE_CONFIG = AppConfig.SYNTHESE; // TO DEL
+  public APP_CONFIG = AppConfig; //TO DEL
   public filteredIds;
-  public formatedAreas = [];
+  public formatedAreas = []; // TO DEL
   public position;
   public lastFilteredValue;
   public isNextButtonValid: any;
@@ -32,13 +32,13 @@ export class ValidationModalInfoObsComponent implements OnInit {
   public edit;
   public validationStatus;
   public MapListService;
-  public email;
-  public mailto: String;
-  public showEmail;
+  public email; // TO DEL
+  public mailto: String; // TO DEL
+  public showEmail; // ??? A VOIR
   public validationDate;
   public currentCdNomenclature;
 
-  @Input() selectedObs: any;
+  @Input() selectedObs: any; // TO DEL
   @Input() id_synthese: any;
   @Input() uuidSynthese: any;
   @Output() modifiedStatus = new EventEmitter();
@@ -125,122 +125,6 @@ export class ValidationModalInfoObsComponent implements OnInit {
     );
   }
 
-  loadOneSyntheseReleve(idSynthese) {
-    this._syntheseDataService
-      .getOneSyntheseObservation(idSynthese)
-      .subscribe(data => {
-        this.selectedObs = data;
-        this.selectedObs["municipalities"] = [];
-        this.selectedObs["other_areas"] = [];
-        const date_min = new Date(this.selectedObs.date_min);
-        this.selectedObs.date_min = date_min.toLocaleDateString("fr-FR");
-        const date_max = new Date(this.selectedObs.date_max);
-        this.selectedObs['actors'] = this.selectedObs['actors'].split('|');
-        this.selectedObs.date_max = date_max.toLocaleDateString("fr-FR");
-        if (this.selectedObs.cor_observers) {
-          this.mailto = null;
-          this.email = this.selectedObs.cor_observers
-            .map(el => el.email)
-            .join();
-
-          if (this.email.length > 0) {
-            let d = { ...this.selectedObsTaxonDetail, ...this.selectedObs };
-            if (this.selectedObs.source.url_source) {
-              d['data_link'] = "Lien vers l'observation : " + [
-                this.APP_CONFIG.URL_APPLICATION,
-                this.selectedObs.source.url_source,
-                this.selectedObs.entity_source_pk_value
-              ].join("/");
-            }
-            else {
-              d['data_link'] = "";
-            }
-            const mail_subject = eval('`' + ModuleConfig.MAIL_SUBJECT + '`');
-            const mail_body = eval('`' + ModuleConfig.MAIL_BODY + '`');
-            let mailto = encodeURI("mailto:" + this.email + "?subject=" + mail_subject + "&body=" + mail_body)
-            mailto = mailto.replace(/,/g, '%2c');
-            this.mailto = mailto;
-          }
-        }
-
-        const areaDict = {};
-        // for each area type we want all the areas: we build an dict of array
-        this.selectedObs.areas.forEach(area => {
-          if (!areaDict[area.area_type.type_name]) {
-            areaDict[area.area_type.type_name] = [area];
-          } else {
-            areaDict[area.area_type.type_name].push(area);
-          }
-        });
-        // for angular tempate we need to convert it into a aray
-        for (let key in areaDict) {
-          this.formatedAreas.push({ area_type: key, areas: areaDict[key] });
-        }
-
-        this._gnDataService
-          .getTaxonAttributsAndMedia(
-            data.cd_nom,
-            this.SYNTHESE_CONFIG.ID_ATTRIBUT_TAXHUB
-          )
-          .subscribe(taxAttr => {
-            this.selectObsTaxonInfo = taxAttr;
-          });
-
-        this._gnDataService.getTaxonInfo(data.cd_nom).subscribe(taxInfo => {
-          this.selectedObsTaxonDetail = taxInfo;
-        });
-
-      });
-
-
-  }
-
-  loadValidationHistory(uuid) {
-    this._gnDataService.getValidationHistory(uuid).subscribe(
-      data => {
-        this.validationHistory = data;
-        // tslint:disable-next-line:forin
-        for (let row in this.validationHistory) {
-          // format date
-          const date = new Date(this.validationHistory[row].date);
-          this.validationHistory[row].date = date.toLocaleDateString("fr-FR");
-          // format comments
-          if (
-            this.validationHistory[row].comment == "None" ||
-            this.validationHistory[row].comment == "auto = default value"
-          ) {
-            this.validationHistory[row].comment = "";
-          }
-          // format validator
-          if (this.validationHistory[row].typeValidation == "True") {
-            this.validationHistory[row].validator = "Attribution automatique";
-          }
-        }
-      },
-      err => {
-        console.log(err);
-        if (err.status === 404) {
-          this._commonService.translateToaster(
-            "warning",
-            "Aucun historique de validation"
-          );
-        } else if (err.statusText === "Unknown Error") {
-          // show error message if no connexion
-          this._commonService.translateToaster(
-            "error",
-            "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)"
-          );
-        } else {
-          // show error message if other server error
-          this._commonService.translateToaster("error", err.error);
-        }
-      },
-      () => {
-        //console.log(this.statusNames);
-      }
-    );
-  }
-
 
   increaseObs() {
     this.showEmail = false;
@@ -259,8 +143,6 @@ export class ValidationModalInfoObsComponent implements OnInit {
     ];
     const syntheseRow = this.mapListService.tableData[this.position];
     this.uuidSynthese = syntheseRow.unique_id_sinp;
-    // this.loadOneSyntheseReleve(syntheseRow.id_synthese);
-    // this.loadValidationHistory(syntheseRow.unique_id_sinp);
     this.isPrevButtonValid = true;
     this.statusForm.reset();
     this.edit = false;
@@ -289,13 +171,13 @@ export class ValidationModalInfoObsComponent implements OnInit {
     this.edit = false;
   }
 
-  isEmail() {
+  isEmail() { // TO DEL ??
     this.showEmail = true;
     return this.showEmail;
   }
 
   closeModal() {
-    this.showEmail = false;
+    this.showEmail = false; // TO DEL ??
     this.activeModal.close();
   }
 
@@ -322,9 +204,8 @@ export class ValidationModalInfoObsComponent implements OnInit {
             "Nouveau statut de validation enregistré"
           );
           this.update_status();
-          this.getValidationDate(this.selectedObs.unique_id_sinp);
-          this.loadOneSyntheseReleve(this.selectedObs);
-          this.loadValidationHistory(this.selectedObs.unique_id_sinp);
+          this.getValidationDate(this.uuidSynthese);
+
           // bind statut value with validation-synthese-list component
           this.statusForm.reset();
           resolve("data updated");
