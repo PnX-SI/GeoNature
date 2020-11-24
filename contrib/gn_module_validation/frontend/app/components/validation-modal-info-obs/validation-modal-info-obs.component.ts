@@ -40,6 +40,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
 
   @Input() selectedObs: any;
   @Input() id_synthese: any;
+  @Input() uuidSynthese: any;
   @Output() modifiedStatus = new EventEmitter();
   @Output() valDate = new EventEmitter();
 
@@ -256,8 +257,8 @@ export class ValidationModalInfoObsComponent implements OnInit {
     this.id_synthese = this.filteredIds[
       this.filteredIds.indexOf(this.id_synthese) + 1
     ];
-    const syntheseRow = this.mapListService.tableData[this.position]
-
+    const syntheseRow = this.mapListService.tableData[this.position];
+    this.uuidSynthese = syntheseRow.unique_id_sinp;
     // this.loadOneSyntheseReleve(syntheseRow.id_synthese);
     // this.loadValidationHistory(syntheseRow.unique_id_sinp);
     this.isPrevButtonValid = true;
@@ -281,6 +282,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
       this.filteredIds.indexOf(this.id_synthese) - 1
     ];
     const syntheseRow = this.mapListService.tableData[this.position]
+    this.uuidSynthese = syntheseRow.unique_id_sinp;
 
     this.isNextButtonValid = true;
     this.statusForm.reset();

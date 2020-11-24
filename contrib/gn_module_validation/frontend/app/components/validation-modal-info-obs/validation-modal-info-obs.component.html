@@ -58,9 +58,16 @@
     </button>
   </span>
   <br>
-
-  <pnx-synthese-info-obs [selectedObs]="selectedObs" [idSynthese]="id_synthese" [uuidSynthese]="uuidSynthese"
-    [validationHistory]="validationHistory" [selectedObsTaxonDetail]="selectedObsTaxonDetail">
+<!--
+  [uuidSynthese]="uuidSynthese"
+  [validationHistory]="validationHistory"  -->
+  <pnx-synthese-info-obs
+    [selectedObs]="selectedObs"
+    [idSynthese]="id_synthese"
+    [selectedObsTaxonDetail]="selectedObsTaxonDetail"
+    [mailCustomSubject]="VALIDATION_CONFIG.MAIL_SUBJECT"
+    [mailCustomBody]="VALIDATION_CONFIG.MAIL_BODY"
+    >
   </pnx-synthese-info-obs>
 
 </div>

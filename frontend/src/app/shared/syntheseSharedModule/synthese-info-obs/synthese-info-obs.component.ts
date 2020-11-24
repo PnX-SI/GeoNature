@@ -14,11 +14,13 @@ import { finalize } from 'rxjs/operators';
 })
 export class SyntheseInfoObsComponent implements OnInit {
   @Input() idSynthese: number;
-  @Input() uuidSynthese: any;
-  @Input() selectedObs: any;
+  @Input() selectedObs: any;  // Utile?
   @Input() header: boolean = false;
-  @Input() validationHistory: Array<any>;
-  @Input() selectedObsTaxonDetail: any;
+  @Input() validationHistory: Array<any>;  // Utile?
+  @Input() selectedObsTaxonDetail: any; // Utile?
+  @Input() mailCustomSubject: String;
+  @Input() mailCustomBody: String;
+
   public selectObsTaxonInfo;
   public formatedAreas = [];
   public CONFIG = AppConfig;
@@ -52,9 +54,6 @@ export class SyntheseInfoObsComponent implements OnInit {
     if (changes.idSynthese && changes.idSynthese.currentValue) {
       this.loadOneSyntheseReleve(this.idSynthese);
     }
-    if (changes.uuidSynthese && changes.uuidSynthese.currentValue) {
-      this.loadValidationHistory(this.uuidSynthese);
-    }
   }
 
   loadOneSyntheseReleve(idSynthese) {
@@ -75,10 +74,7 @@ export class SyntheseInfoObsComponent implements OnInit {
         this.selectedObs.date_min = date_min.toLocaleDateString('fr-FR');
         const date_max = new Date(this.selectedObs.date_max);
         this.selectedObs.date_max = date_max.toLocaleDateString('fr-FR');
-        if (this.selectedObs.cor_observers) {
-          this.email = this.selectedObs.cor_observers.map(el => el.email).join();
-          this.mailto = String('mailto:' + this.email);
-        }
+
         const areaDict = {};
         // for each area type we want all the areas: we build an dict of array
         if (this.selectedObs.areas) {
@@ -103,8 +99,19 @@ export class SyntheseInfoObsComponent implements OnInit {
             this.selectObsTaxonInfo = taxAttr;
           });
 
+        this.loadValidationHistory(this.selectedObs['unique_id_sinp']);
         this._gnDataService.getTaxonInfo(data.cd_nom).subscribe(taxInfo => {
           this.selectedObsTaxonDetail = taxInfo;
+          let d = { ...this.selectedObsTaxonDetail, ...this.selectedObs };
+          if (this.selectedObs.cor_observers) {
+            this.email = this.selectedObs.cor_observers.map(el => el.email).join();
+            this.mailto = String('mailto:' + this.email);
+            const mail_subject = eval('`' + this.mailCustomSubject + '`');
+            const mail_body = eval('`' + this.mailCustomBody + '`');
+            let mailto = encodeURI("mailto:" + this.email + "?subject=" + mail_subject + "&body=" + mail_body);
+            mailto = mailto.replace(/,/g, '%2c');
+            this.mailto = mailto;
+          }
         });
       });
   }
