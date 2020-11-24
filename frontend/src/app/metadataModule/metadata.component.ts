@@ -3,6 +3,15 @@ import { PageEvent, MatPaginator, MatPaginatorIntl } from '@angular/material';
 import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { AppConfig } from '@geonature_config/app.config';
+import { Router, NavigationExtras } from "@angular/router";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+
+import { DataService } from "../../../../external_modules/import/frontend/app/services/data.service";
+import { CommonService } from "@geonature_common/service/common.service";
+import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
+import { MetadataSearchFormService } from "./services/metadata-search-form.service"
+import { distinctUntilChanged, debounceTime, filter } from 'rxjs/operators';
 
 export class MetadataPaginator extends MatPaginatorIntl {
   constructor() {
@@ -22,7 +31,6 @@ export class MetadataPaginator extends MatPaginatorIntl {
     };
   }
 }
-
 @Component({
   selector: 'pnx-metadata',
   templateUrl: './metadata.component.html',
@@ -31,45 +39,102 @@ export class MetadataPaginator extends MatPaginatorIntl {
     {
       provide: MatPaginatorIntl,
       useClass: MetadataPaginator
-    }
+    },
+    MetadataSearchFormService
+
   ]
 })
 export class MetadataComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
-
+  model: NgbDateStruct;
   datasets = [];
   acquisitionFrameworks = [];
   tempAF = [];
+  public history;
+  public endPoint: string;
+  public empty: boolean = false;
   expandAccordions = false;
   private researchTerm: string = '';
+  public organisms: Array<any>;
+  public roles: Array<any>;
 
   pageSize: number = AppConfig.METADATA.NB_AF_DISPLAYED;
   activePage: number = 0;
   pageSizeOptions: Array<number> = [10, 25, 50, 100];
 
-  constructor(public _cruvedStore: CruvedStoreService, private _dfs: DataFormService) {}
+  searchTerms: any = {};
+
+  constructor(
+    public _cruvedStore: CruvedStoreService,
+    private _dfs: DataFormService,
+    private _router: Router,
+    private modal: NgbModal,
+    public _ds: DataService,
+    public searchFormService: MetadataSearchFormService,
+    private _commonService: CommonService,
+    private _syntheseDataService: SyntheseDataService
+  ) { }
 
   ngOnInit() {
     this.getAcquisitionFrameworksAndDatasets();
-  }
+    this.getImportList();
+    this._dfs.getOrganisms().subscribe(data => {
+      this.organisms = data;
+    });
+    this._dfs.getRoles({ 'group': false }).subscribe(data => {
+      this.roles = data;
+    });
 
+    // rapid search event
+    this.searchFormService.rapidSearchControl.valueChanges.pipe(
+      debounceTime(200),
+      distinctUntilChanged()
+    ).subscribe(value => {
+      this.updateSearchbar(value)
+    })
+
+  }
   //recuperation cadres d'acquisition
   getAcquisitionFrameworksAndDatasets() {
-    this._dfs.getAfAndDatasetListMetadata().subscribe(data => {
+    this._dfs.getAfAndDatasetListMetadata({}).subscribe(data => {
       this.acquisitionFrameworks = data.data;
       this.tempAF = this.acquisitionFrameworks;
-      //this.getDatasets();
+      this.datasets = [];
       this.acquisitionFrameworks.forEach(af => {
         af['datasetsTemp'] = af['datasets'];
-      });
+        this.datasets = this.datasets.concat(af['datasets']);
+      })
+
     });
+  }
+
+  // recuperer la liste des imports
+  getImportList() {
+    this._ds.getImportList().subscribe(
+      res => {
+        this.history = res.history;
+        this.empty = res.empty;
+      },
+      error => {
+        if (error.statusText === "Unknown Error") {
+          // show error message if no connexion
+          this._commonService.regularToaster(
+            "error",
+            "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connexion)"
+          );
+        } else {
+          // show error message if other server error
+          this._commonService.regularToaster("error", error.error.message);
+        }
+      }
+    );
   }
 
   /**
    *	Filtre les éléments CA et JDD selon la valeur de la barre de recherche
    **/
   updateSearchbar(event) {
-    this.researchTerm = event.target.value.toLowerCase();
+    this.researchTerm = event;
 
     //recherche des cadres d'acquisition qui matchent
     this.tempAF = this.acquisitionFrameworks.filter(af => {
@@ -83,7 +148,10 @@ export class MetadataComponent implements OnInit {
       } else {
         // expand tout les accordion recherchés pour voir le JDD des CA
         this.expandAccordions = true;
-        if (af.acquisition_framework_name.toLowerCase().indexOf(this.researchTerm) !== -1) {
+        if ((af.id_acquisition_framework + ' ').toLowerCase().indexOf(this.researchTerm) !== -1
+          || af.acquisition_framework_name.toLowerCase().indexOf(this.researchTerm) !== -1
+          || af.acquisition_framework_start_date.toLowerCase().indexOf(this.researchTerm) !== -1
+        ) {
           //si un cadre matche on affiche tout ses JDD
           af.datasetsTemp = af.datasets;
           return true;
@@ -92,7 +160,9 @@ export class MetadataComponent implements OnInit {
         //Sinon on on filtre les JDD qui matchent eventuellement.
         if (af.datasets) {
           af.datasetsTemp = af.datasets.filter(
-            ds => ds.dataset_name.toLowerCase().indexOf(this.researchTerm) !== -1
+            ds => ((ds.id_dataset + ' ').toLowerCase().indexOf(this.researchTerm) !== -1
+              || ds.dataset_name.toLowerCase().indexOf(this.researchTerm) !== -1
+              || ds.meta_create_date.toLowerCase().indexOf(this.researchTerm) !== -1)
           );
           return af.datasetsTemp.length;
         }
@@ -102,6 +172,58 @@ export class MetadataComponent implements OnInit {
     //retour à la premiere page du tableau pour voir les résultats
     this.paginator.pageIndex = 0;
     this.activePage = 0;
+  }
+
+  updateAdvancedCriteria(event, criteria) {
+    if (criteria != 'date')
+      this.searchTerms[criteria] = event.target.value.toLowerCase();
+    else
+      this.searchTerms[criteria] = event.year
+        + '-' + (event.month > 10 ? '' : '0') + event.month
+        + '-' + (event.day > 10 ? '' : '0') + event.day;
+  }
+
+  refreshFilters() {
+    this.searchFormService.form.reset();
+    this.advancedSearch();
+  }
+
+  updateSelector(event) {
+    this.searchTerms['selector'] = event.target.value.toLowerCase();
+  }
+
+  reinitAdvancedCriteria() {
+    this.searchTerms = {};
+  }
+
+  advancedSearch() {
+
+    const formValue = this.searchFormService.formatFormValue(
+      Object.assign({}, this.searchFormService.form.value)
+    );
+
+
+    this._dfs.getAfAndDatasetListMetadata(formValue).subscribe(data => {
+      this.tempAF = data.data;
+      this.datasets = [];
+      this.tempAF.forEach(af => {
+        af['datasetsTemp'] = af['datasets'];
+        this.datasets = this.datasets.concat(af['datasets']);
+      })
+      this.expandAccordions = (this.searchFormService.form.value.selector == 'ds');
+    });
+  }
+
+  openSearchModal(searchModal) {
+    this.searchFormService.resetForm();
+
+    this.modal.open(searchModal);
+  }
+
+
+
+  closeSearchModal() {
+    this.modal.dismissAll();
   }
 
   isDisplayed(idx: number) {
@@ -118,4 +240,55 @@ export class MetadataComponent implements OnInit {
     this.pageSize = event.pageSize;
     this.activePage = event.pageIndex;
   }
+
+  deleteAf(af_id) {
+    this._dfs.deleteAf(af_id).subscribe(
+      res => this.getAcquisitionFrameworksAndDatasets()
+    );
+  }
+
+  syntheseAf(af_id) {
+    let navigationExtras: NavigationExtras = {
+      queryParams: {
+        "id_acquisition_framework": af_id
+      }
+    };
+    this._router.navigate(['/synthese'], navigationExtras);
+  }
+
+  deleteDs(ds_id) {
+    if (window.confirm('Etes-vous sûr de vouloir supprimer ce jeu de données ?')) {
+      this._dfs.deleteDs(ds_id).subscribe(
+        res => this.getAcquisitionFrameworksAndDatasets()
+      );
+    }
+
+  }
+
+  syntheseDs(ds_id, data_number, syntheseNoneModal) {
+    if (data_number == 0) {
+      this.modal.open(syntheseNoneModal);
+    } else {
+      let navigationExtras: NavigationExtras = {
+        queryParams: {
+          "id_dataset": ds_id
+        }
+      };
+      this._router.navigate(['/synthese'], navigationExtras);
+    }
+
+  }
+
+  importDs(ds_id) {
+    let navigationExtras: NavigationExtras = {
+      queryParams: {
+        "datasetId": ds_id,
+        "resetStepper": true
+      }
+    };
+    this._router.navigate(['/import/process/step/1'], navigationExtras);
+  }
+
+
+
 }

@@ -172,6 +172,7 @@ class Synthese(DB.Model):
     unique_id_sinp = DB.Column(UUID(as_uuid=True))
     unique_id_sinp_grp = DB.Column(UUID(as_uuid=True))
     id_source = DB.Column(DB.Integer)
+    id_module = DB.Column(DB.Integer)
     entity_source_pk_value = DB.Column(DB.Integer)
     id_dataset = DB.Column(DB.Integer)
     id_nomenclature_grp_typ = DB.Column(DB.Integer)
@@ -235,6 +236,17 @@ class CorAreaSynthese(DB.Model):
     __table_args__ = {"schema": "gn_synthese"}
     id_synthese = DB.Column(DB.Integer, primary_key=True)
     id_area = DB.Column(DB.Integer)
+
+
+@serializable
+class CorSensitivitySynthese(DB.Model):
+    __tablename__ = "cor_sensitivity_synthese"
+    __table_args__ = {"schema": "gn_sensitivity"}
+    uuid_attached_row = DB.Column(UUID(as_uuid=True), primary_key=True)
+    id_nomenclature_sensitivity = DB.Column(DB.Integer, primary_key=True)
+    sensitivity_comment = DB.Column(DB.Text)
+    meta_create_date = DB.Column(DB.DateTime)
+    meta_update_date = DB.Column(DB.DateTime)
 
 
 @serializable

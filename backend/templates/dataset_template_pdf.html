@@ -185,49 +185,82 @@
                 </div>
 
                 {% if data.keywords: %}
-                <div class="information">
+                <<<<<<<
+                    HEAD
+                    <div
+                    class="information"
+                >
                     <p class="info-titre">Mots-clés</p>
                     <p class="info-contenu">
                         {{ data.keywords }}
                     </p>
-                </div>
-                {% endif %}
-
-                {% endif %}
-
             </div>
-            <div class="right-block">
-                <div class="repartition">
-                    <p class="repartition-especes">Répartition des espèces</p>
+            {% endif %}
+
+            {% endif %}
+
+        </div>
+        <div class="right-block">
+            <div class="repartition">
+                <p class="repartition-especes">Répartition des espèces</p>
+                <img
+                    class="taxons"
+                    src="../../static/images/taxa.png"
+                    alt="Pas d'espèces à afficher."
+                >
+            </div>
+            =======
+            <div class="information">
+                <p class="info-titre">Mots-clés</p>
+                <p class="info-contenu">
+                    {{ data.keywords }}
+                </p>
+            </div>
+            {% endif %}
+            {% endif %}
+
+        </div>
+        <div class="right-block">
+            <!-- <div class="zone">
+                <p class="zone-geographique">Zone géographique</p>
+                <div class="map"></div>
+            </div> -->
+            <!-- A modifier lorsque la carte sera prete -->
+
+            {% if data['chart']: %}
+            <div class="repartition">
+                <p class="repartition-especes">Répartition des espèces</p>
+                <img
+                    class="taxons"
+                    src="../../static/images/taxa.png"
+                    alt="Pas d'espèces à afficher."
+                >
+            </div>
+            {% endif %}
+            >>>>>>> origin/ouidou-develop
+
+            <div class="ca">
+                <hr class="ligne-titre main-color">
+                <p class="ca-initial">Cadre d'acquisition initial</p>
+
+                <div class="ca-initial-details">
                     <img
-                        class="taxons"
-                        src="../../static/images/taxa.png"
-                        alt="Pas d'espèces à afficher."
+                        class="logo-ca-initial"
+                        src="../../static/images/Taxon_icon_vert.svg"
+                        alt="taxon-vert-icon"
                     >
-                </div>
-
-                <div class="ca">
-                    <hr class="ligne-titre main-color">
-                    <p class="ca-initial">Cadre d'acquisition initial</p>
-
-                    <div class="ca-initial-details">
-                        <img
-                            class="logo-ca-initial"
-                            src="../../static/images/Taxon_icon_vert.svg"
-                            alt="taxon-vert-icon"
-                        >
-                        <p class="ca-initial-info">
-                            {% if data.acquisition_framework.unique_acquisition_framework_id: %}
-                            {{ data.acquisition_framework.unique_acquisition_framework_id }}
-                            {% endif %}
-                            <br>
-                            {% if data.acquisition_framework.acquisition_framework_name: %}
-                            {{ data.acquisition_framework.acquisition_framework_name }}
-                            {% endif %}
-                        </p>
-                    </div>
+                    <p class="ca-initial-info">
+                        {% if data.acquisition_framework.unique_acquisition_framework_id: %}
+                        {{ data.acquisition_framework.unique_acquisition_framework_id }}
+                        {% endif %}
+                        <br>
+                        {% if data.acquisition_framework.acquisition_framework_name: %}
+                        {{ data.acquisition_framework.acquisition_framework_name }}
+                        {% endif %}
+                    </p>
                 </div>
             </div>
+        </div>
 
         </div>
 
@@ -277,6 +310,49 @@
                     </p>
                 </div>
                 {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+
+        {% if data.imports and data.imports[0]: %}
+        <br />
+        <div
+            class="description"
+            style="transform: translateY(40px);"
+        >
+            <div class="import-block">
+                <p class="fiche-descriptive">Liste des imports</p>
+                <br />
+                <table style="width:100%">
+                    <tr>
+                        <th>Source</th>
+                        <th>Nb. de données</th>
+                        <th>Intégré le</th>
+                        <th>Statut</th>
+                    </tr>
+                    {% for import in data.imports -%}
+                    <tr>
+                        <td>{{ import.import_table[:40] if import.import_table }}</td>
+                        <td>{{ import.source_count }}</td>
+                        <td>{{ import.date_create_import[:10] if import.date_create_import}}</td>
+                        <td>{% if import.is_finished: %}
+                            <img
+                                class="import-state"
+                                src="../../static/images/tick.png"
+                                alt="tick-icon"
+                            >
+                            {% else %}
+                            <img
+                                class="import-state"
+                                src="../../static/images/close.png"
+                                alt="close-icon"
+                            >
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {%- endfor %}
+                </table>
             </div>
         </div>
         {% endif %}

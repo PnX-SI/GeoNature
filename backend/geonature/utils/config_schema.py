@@ -295,6 +295,7 @@ class GnGeneralSchemaConf(Schema):
     MEDIAS = fields.Nested(MediasConfig, missing={})
     UPLOAD_FOLDER = fields.String(missing="static/medias")
     METADATA = fields.Nested(MetadataConfig, missing={})
+    NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(missing=1000000)
 
     @validates_schema
     def validate_enable_sign_up(self, data):
