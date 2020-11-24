@@ -21,12 +21,12 @@
         <div class="header">
             <img
                 class="bandeau"
-                src="../../static/images/{{ data.css['bandeau'] }}"
+                src="{{url_for('static', filename="images/Bandeau_pdf.png")}}"
                 alt="Bandeau"
             >
             <img
                 class="logo"
-                src="../../static/images/{{ data.css['logo'] }}"
+                src="{{url_for('static', filename="images/logo_structure.jpg")}}"
                 alt="Logo"
             >
         </div>
