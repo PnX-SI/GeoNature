@@ -27,7 +27,9 @@ MANDATORY_COLUMNS = [
     "mnemonique",
     "label_default",
     "unique_id_sinp",
-    "geojson"
+    "geojson",
+    "nom_vern",
+    "lb_nom"
 
 ]
 
