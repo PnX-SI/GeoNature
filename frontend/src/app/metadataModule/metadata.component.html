@@ -196,14 +196,13 @@
                       mat-icon-button
                       [disabled]="!ds.active"
                       (click)="importDs(ds.id_dataset)"
-                      matTooltip="Importer dans ce jeu de donnée"
                     >
                       <mat-icon
                         *ngIf="!ds.active; else elseImport"
-                        matTooltip="Le jeu de données ne comporte aucune donnée"
+                        matTooltip="Le jeu de donnée est inactif"
                       > upload </mat-icon>
                       <ng-template #elseImport>
-                        <mat-icon> upload </mat-icon>
+                        <mat-icon matTooltip="Importer dans ce jeu de donnée"> upload </mat-icon>
                       </ng-template>
                     </button>
 
@@ -218,7 +217,8 @@
                         matTooltip="Le jeu de données ne comporte aucune donnée"
                       > room </mat-icon>
                       <ng-template #elseSynthese>
-                        <mat-icon *ngIf="ds.observation_count >0"> room </mat-icon>
+                        <mat-icon matTooltip="Afficher les données dans la Synthèse"> room
+                        </mat-icon>
                       </ng-template>
                     </button>
                     <button
@@ -233,14 +233,13 @@
                       mat-icon-button
                       [disabled]="!ds.cruved.D || !ds.deletable"
                       (click)="syntheseDs(ds.id_dataset, ds.observation_count, syntheseNoneModal)"
-                      matTooltip="Supprimer le jeu de données"
                     >
                       <mat-icon
                         *ngIf="!ds.deletable; else elseblock"
                         matTooltip="Le jeu de données contient des données et ne peut pas être supprimé"
                       > delete </mat-icon>
                       <ng-template #elseblock>
-                        <mat-icon> delete </mat-icon>
+                        <mat-icon matTooltip="Supprimer le jeu de données"> delete </mat-icon>
                       </ng-template>
 
                     </button>
@@ -359,44 +358,4 @@
     </div>
 
   </div>
-</ng-template>
-
-
-
-
-<ng-template
-  #syntheseNoneModal
-  let-c="close"
-  let-d="dismiss"
->
-  <div class="modal-header bg-danger">
-    <h5
-      class="modal-title text-white"
-      id="exampleModalLabel"
-    >La visualisation des données n'est pas possible !</h5>
-  </div>
-  <div
-    class="modal-body"
-    style="align-items: flex-end;"
-  >
-    <div class="col">
-      <span>
-        <h4 style="text-align: justify;">Le nombre de données est égale à zéro</h4>
-      </span>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col">
-    </div>
-    <div class="col-md-4 text-center">
-      <button
-        mat-raised-button
-        color="primary"
-        (click)="c()"
-      > Fermer </button>
-    </div>
-    <br>
-  </div>
-
 </ng-template>
