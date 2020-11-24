@@ -27,6 +27,9 @@ export class SyntheseInfoObsComponent implements OnInit {
   public isLoading = false;
   public email;
   public mailto: String;
+
+  public APP_CONFIG = AppConfig;
+
   public validationColor = {
     '0': '#FFFFFF',
     '1': '#8BC34A',
@@ -45,9 +48,6 @@ export class SyntheseInfoObsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // Move to ngOnChanges
-    // this.loadOneSyntheseReleve(this.idSynthese);
-    // this.loadValidationHistory(this.uuidSynthese);
   }
 
   ngOnChanges(changes) {
@@ -102,18 +102,68 @@ export class SyntheseInfoObsComponent implements OnInit {
         this.loadValidationHistory(this.selectedObs['unique_id_sinp']);
         this._gnDataService.getTaxonInfo(data.cd_nom).subscribe(taxInfo => {
           this.selectedObsTaxonDetail = taxInfo;
-          let d = { ...this.selectedObsTaxonDetail, ...this.selectedObs };
           if (this.selectedObs.cor_observers) {
             this.email = this.selectedObs.cor_observers.map(el => el.email).join();
-            this.mailto = String('mailto:' + this.email);
-            const mail_subject = eval('`' + this.mailCustomSubject + '`');
-            const mail_body = eval('`' + this.mailCustomBody + '`');
-            let mailto = encodeURI("mailto:" + this.email + "?subject=" + mail_subject + "&body=" + mail_body);
-            mailto = mailto.replace(/,/g, '%2c');
-            this.mailto = mailto;
+            this.mailto = this.formatMailContent(this.email);
           }
         });
       });
+  }
+
+  formatMailContent(email) {
+    let mailto = String('mailto:' + email);
+    // Mise en forme des données
+    let d = { ...this.selectedObsTaxonDetail, ...this.selectedObs };
+
+    if (this.selectedObs.source.url_source) {
+      d['data_link'] = "Lien vers l'observation : " + [
+        this.APP_CONFIG.URL_APPLICATION,
+        this.selectedObs.source.url_source,
+        this.selectedObs.entity_source_pk_value
+      ].join("/");
+    }
+    else {
+      d['data_link'] = "";
+    }
+
+    d["communes"] = this.selectedObs.areas.filter(
+      area => area.area_type.type_code == 'COM'
+    ).map(
+       area => area.area_name
+    ).join(', ');
+
+    let contentMedias = "";
+    if (!this.selectedObs.medias){
+      contentMedias = "Aucun media";
+    }
+    else {
+      if (this.selectedObs.medias.length == 0){
+        contentMedias = "Aucun media";
+      }
+      this.selectedObs.medias.map((media) => {
+        contentMedias += "\n\tTitre : " + media.title_fr;
+        contentMedias += "\n\tLien vers le media : " + this.mediaService.href(media);
+        if (media.description_fr){
+          contentMedias += "\n\tDescription : " + media.description_fr;
+        }
+        if (media.author){
+          contentMedias += "\n\tAuteur : " + media.author;
+        }
+        contentMedias += "\n";
+      })
+    }
+    d["medias"] = contentMedias;
+
+    // Construction du mail
+    if (this.mailCustomSubject !== undefined) {
+      mailto += "?subject=" + eval('`' + this.mailCustomSubject + '`');
+    }
+    if (this.mailCustomBody !== undefined) {
+      mailto += "&body=" + eval('`' + this.mailCustomBody + '`');
+    }
+    mailto = encodeURI(mailto);
+    mailto = mailto.replace(/,/g, '%2c');
+    return mailto
   }
 
   loadValidationHistory(uuid) {
