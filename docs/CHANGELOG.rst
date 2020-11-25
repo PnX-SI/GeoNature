@@ -5,9 +5,24 @@ CHANGELOG
 2.5.6 (unreleased)
 ------------------
 
+**🚀 Nouveautés**
+
+* Métadonnées : Refonte de la liste des CA et JDD avec l'ajout d'informations et d'actions, ainsi qu'une recherche avancée (#889)
+* Métadonnées : Révision des fiches info des CA et JDD avec l'ajout d'actions, du tableau des imports et du téléchargement des rapports d'UUID et de sensibilité (#889)
+* Métadonnées : Possibilité d'importer directement dans un JDD depuis le module Métadonnées (#889)
+* Synthèse : Possibilité d'ouvrir le module avec un JDD préselectionné (``<URL_GeoNature>/#/synthese?id_dataset=2``) et ajout d'un lien direct depuis le module Métadonnées (#889)
+* Possibilité de customiser le logo principal (GeoNature par défaut) dans ``frontend/src/custom/images/``
+
+
 **🐛 Corrections**
 
-* 
+* Synthèse : function import_row_from_table test sur LOWER(tbl_name) 
+
+
+**⚠️ Notes de version**
+
+* Si vous aviez fait des customisations (logo, PDF export...) alors XXXXXX
+* Revoir http://docs.geonature.fr/admin-manual.html#integrer-son-logo ?
 
 2.5.5 (2020-11-19)
 ------------------
