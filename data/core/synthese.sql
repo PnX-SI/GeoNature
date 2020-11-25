@@ -561,19 +561,6 @@ LANGUAGE plpgsql VOLATILE
 COST 100;
 
 
--- A CREUSER : CAUSE A SYNTAXE ERROR
-
-CREATE OR REPLACE FUNCTION fct_tri_refresh_vm_min_max_for_taxons()
-  RETURNS trigger AS
-$BODY$
-BEGIN
-      EXECUTE 'REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.vm_min_max_for_taxons;';
-      RETURN NULL;
-END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-
 
 ----------------------
 --FUNCTIONS TRIGGERS--
@@ -717,6 +704,49 @@ BEGIN
 END;
 $$;
 
+-- trigger on insert - ON EACH PROCEDURE
+CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_calculate_sensitivity_on_each_statement() RETURNS TRIGGER
+  LANGUAGE plpgsql
+  AS $$ 
+    BEGIN
+    INSERT INTO gn_sensitivity.cor_sensitivity_synthese(uuid_attached_row, id_nomenclature_sensitivity, meta_create_date)
+    SELECT 
+      updated_table.uuid_perm_sinp, 
+      gn_sensitivity.get_id_nomenclature_sensitivity(
+        updated_table.date_min, 
+        taxonomie.find_cdref(updated_table.cd_nom), 
+        updated_table.geom_local,
+         ('{"STATUT_BIO": ' || updated_table.id_nomenclature_bio_status::text || '}')::jsonb
+      ),
+      NOW()
+      FROM NEW as updated_table
+      ;
+    RETURN NULL;
+    END;
+  $$;
+
+CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_calculate_sensitivity_on_each_row() RETURNS TRIGGER
+  LANGUAGE plpgsql
+  AS $$ 
+  DECLARE calculated_id_sensi integer;
+    BEGIN
+      SELECT gn_sensitivity.get_id_nomenclature_sensitivity(
+          NEW.date_min, 
+          taxonomie.find_cdref(NEW.cd_nom), 
+          updated_table.geom_local,
+          ('{"STATUT_BIO": ' || NEW.id_nomenclature_bio_status::text || '}')::jsonb
+        )
+      INTO calculated_id_sensi;
+      IF NOT EXISTS (
+        SELECT * FROM cor_sensitivity_synthese cor
+        WHERE cor.uuid_attached_row = NEW.unique_id_sinp AND calculated_id_sensi = cor.id_nomenclature_sensitivity
+      ) THEN
+        INSERT INTO gn_sensitivity.cor_sensitivity_synthese(uuid_attached_row, id_nomenclature_sensitivity, meta_create_date)
+        VALUES (NEW.d_table.uuid_perm_sinp, calculated_id_sensi, NOW());
+      END IF;
+      RETURN NULL;
+    END;
+  $$;  
 
 ---------
 --VIEWS--
@@ -1073,12 +1103,6 @@ CREATE TRIGGER trg_maj_synthese_observers_txt
   FOR EACH ROW
   EXECUTE PROCEDURE gn_synthese.fct_tri_maj_observers_txt();
 
--- A RAJOUTER QUAND LA FONCTION TRIGGER SERA FONCTIONELLE
--- CREATE TRIGGER tri_refresh_vm_min_max_for_taxons
---   AFTER INSERT OR UPDATE OR DELETE
---   ON synthese
---   FOR EACH ROW
---   EXECUTE PROCEDURE fct_tri_refresh_vm_min_max_for_taxons();
 
 CREATE TRIGGER tri_insert_cor_area_synthese
   AFTER INSERT OR UPDATE OF the_geom_local
@@ -1106,6 +1130,18 @@ CREATE TRIGGER tri_update_cor_area_taxon_update_cd_nom
   ON gn_synthese.synthese
   FOR EACH ROW
   EXECUTE PROCEDURE gn_synthese.fct_tri_update_cd_nom();
+
+CREATE TRIGGER tri_insert_calculate_sensitivity
+ AFTER INSERT ON gn_synthese.synthese
+  REFERENCING NEW TABLE AS NEW
+  FOR EACH STATEMENT
+  EXECUTE PROCEDURE gn_synthese.fct_tri_calculate_sensitivity_on_each_statement();
+  
+CREATE TRIGGER tri_update_calculate_sensitivity
+ AFTER UPDATE OF cd_nom, geom_local, date_min, id_nomenclature_bio_status ON gn_synthese.synthese
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_synthese.fct_tri_calculate_sensitivity_on_each_statement_on_each_row();
+
 
 --------
 --DATA--

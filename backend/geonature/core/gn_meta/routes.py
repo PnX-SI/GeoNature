@@ -733,7 +733,6 @@ def get_export_pdf_dataset(id_dataset, info_role):
     except IOError:
         df["chart"] = False
 
-    # return render_template("dataset_template_pdf.html", data=df)
 
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf("dataset_template_pdf.html", df, filename)
