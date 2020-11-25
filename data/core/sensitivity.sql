@@ -248,6 +248,29 @@ END;
 $function$
 ;
 
+CREATE OR REPLACE FUNCTION gn_sensitivity.calculate_cd_diffusion_level(
+  cd_nomenclature_diffusion_level integer, cd_nomenclature_sensitivity integer
+)
+ RETURNS integer
+ LANGUAGE plpgsql
+ IMMUTABLE
+AS $function$
+BEGIN
+  IF cd_nomenclature_diffusion_level IS NOT NULL 
+    THEN RETURN cd_nomenclature_diffusion_level;
+  ELSE 
+    RETURN 
+    CASE 
+      WHEN cd_nomenclature_sensitivity = "0" THEN "5"
+      WHEN cd_nomenclature_sensitivity = "1" THEN "3"
+      WHEN cd_nomenclature_sensitivity = "2" THEN "2"
+      WHEN cd_nomenclature_sensitivity = "3" THEN "3"
+      WHEN cd_nomenclature_sensitivity = "4" THEN "4"
+    END;
+  END IF;
+END;
+$function$
+
 
 -- Table permettant de stocker la sensibilité d'une donnée issue de la synthèse
 CREATE TABLE gn_sensitivity.cor_sensitivity_synthese  (

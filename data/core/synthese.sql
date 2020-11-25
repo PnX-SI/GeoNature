@@ -704,46 +704,57 @@ BEGIN
 END;
 $$;
 
--- trigger on insert - ON EACH PROCEDURE
-CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_calculate_sensitivity_on_each_statement() RETURNS TRIGGER
+-- trigger on insert/update - ON EACH PROCEDURE
+CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement() RETURNS TRIGGER
   LANGUAGE plpgsql
   AS $$ 
+  -- Calculate sensitivity and diffusion level on insert in synthese
     BEGIN
-    INSERT INTO gn_sensitivity.cor_sensitivity_synthese(uuid_attached_row, id_nomenclature_sensitivity, meta_create_date)
-    SELECT 
-      updated_table.uuid_perm_sinp, 
-      gn_sensitivity.get_id_nomenclature_sensitivity(
-        updated_table.date_min, 
-        taxonomie.find_cdref(updated_table.cd_nom), 
-        updated_table.geom_local,
-         ('{"STATUT_BIO": ' || updated_table.id_nomenclature_bio_status::text || '}')::jsonb
-      ),
-      NOW()
-      FROM NEW as updated_table
-      ;
+    WITH cte AS (
+        SELECT 
+        gn_sensitivity.get_id_nomenclature_sensitivity(
+          updated_rows.date_min::date, 
+          taxonomie.find_cdref(updated_rows.cd_nom), 
+          updated_rows.the_geom_local,
+          ('{"STATUT_BIO": ' || updated_rows.id_nomenclature_bio_status::text || '}')::jsonb
+        ) AS id_nomenclature_sensitivity,
+        id_synthese,
+        t_diff.cd_nomenclature as cd_nomenclature_diffusion_level
+      FROM NEW AS updated_rows
+      LEFT JOIN ref_nomenclatures.t_nomenclatures t_diff ON t_diff.id_nomenclature = updated_rows.id_nomenclature_diffusion_level
+
+    )
+    UPDATE gn_synthese.synthese AS s
+    SET 
+      id_nomenclature_sensitivity = c.id_nomenclature_sensitivity,
+      id_nomenclature_diffusion_level = ref_nomenclatures.get_id_nomenclature(
+        'NIV_PRECIS',
+        gn_sensitivity.calculate_cd_diffusion_level(c.cd_nomenclature_diffusion_level, t_sensi.cd_nomenclature)
+        
+      )
+    FROM calculated_sensi AS c
+    LEFT JOIN ref_nomenclatures.t_nomenclatures t_sensi ON t_sensi.id_nomenclature = c.id_nomenclature_sensitivity
+    WHERE c.id_synthese = s.id_synthese
+  ;
     RETURN NULL;
     END;
   $$;
 
-CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_calculate_sensitivity_on_each_row() RETURNS TRIGGER
+ CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_row() RETURNS TRIGGER
   LANGUAGE plpgsql
   AS $$ 
-  DECLARE calculated_id_sensi integer;
+  -- Calculate sensitivity and diffusion level on update in synthese
     BEGIN
-      SELECT gn_sensitivity.get_id_nomenclature_sensitivity(
-          NEW.date_min, 
-          taxonomie.find_cdref(NEW.cd_nom), 
-          updated_table.geom_local,
-          ('{"STATUT_BIO": ' || NEW.id_nomenclature_bio_status::text || '}')::jsonb
-        )
-      INTO calculated_id_sensi;
-      IF NOT EXISTS (
-        SELECT * FROM cor_sensitivity_synthese cor
-        WHERE cor.uuid_attached_row = NEW.unique_id_sinp AND calculated_id_sensi = cor.id_nomenclature_sensitivity
-      ) THEN
-        INSERT INTO gn_sensitivity.cor_sensitivity_synthese(uuid_attached_row, id_nomenclature_sensitivity, meta_create_date)
-        VALUES (NEW.d_table.uuid_perm_sinp, calculated_id_sensi, NOW());
-      END IF;
+      UPDATE gn_synthese.synthese 
+      SET id_nomenclature_diffusion_level = (
+        SELECT ref_nomenclatures.get_id_nomenclature(
+            'NIV_PRECIS',
+            gn_sensitivity.calculate_cd_diffusion_level(
+              ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_diffusion_level),
+              ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_sensitivity)
+          )
+      	)
+      );
       RETURN NULL;
     END;
   $$;  
@@ -1135,12 +1146,12 @@ CREATE TRIGGER tri_insert_calculate_sensitivity
  AFTER INSERT ON gn_synthese.synthese
   REFERENCING NEW TABLE AS NEW
   FOR EACH STATEMENT
-  EXECUTE PROCEDURE gn_synthese.fct_tri_calculate_sensitivity_on_each_statement();
+  EXECUTE PROCEDURE gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement();
   
 CREATE TRIGGER tri_update_calculate_sensitivity
- AFTER UPDATE OF cd_nom, geom_local, date_min, id_nomenclature_bio_status ON gn_synthese.synthese
+ AFTER UPDATE OF id_nomenclature_sensitivity ON gn_synthese.synthese
   FOR EACH ROW
-  EXECUTE PROCEDURE gn_synthese.fct_tri_calculate_sensitivity_on_each_statement_on_each_row();
+  EXECUTE PROCEDURE gn_synthese.fct_tri_cal_sensi_diff_level_on_each_row();
 
 
 --------
