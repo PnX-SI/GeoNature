@@ -13,9 +13,11 @@ CHANGELOG
 * Synthèse : Possibilité d'ouvrir le module avec un JDD préselectionné (``<URL_GeoNature>/#/synthese?id_dataset=2``) et ajout d'un lien direct depuis le module Métadonnées (#889)
 * Possibilité de customiser le logo principal (GeoNature par défaut) dans ``frontend/src/custom/images/``
 
+
 **🐛 Corrections**
 
-* 
+* Synthèse : function import_row_from_table test sur LOWER(tbl_name) 
+
 
 **⚠️ Notes de version**
 
