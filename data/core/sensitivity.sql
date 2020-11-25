@@ -249,24 +249,23 @@ $function$
 ;
 
 CREATE OR REPLACE FUNCTION gn_sensitivity.calculate_cd_diffusion_level(
-  cd_nomenclature_diffusion_level integer, cd_nomenclature_sensitivity integer
+  cd_nomenclature_diffusion_level character varying, cd_nomenclature_sensitivity character varying
 )
- RETURNS integer
+ RETURNS character varying
  LANGUAGE plpgsql
- IMMUTABLE
 AS $function$
 BEGIN
-  IF cd_nomenclature_diffusion_level IS NOT NULL 
-    THEN RETURN cd_nomenclature_diffusion_level;
-  ELSE 
-    RETURN 
+  IF cd_nomenclature_diffusion_level IS NULL 
+    THEN RETURN
     CASE 
-      WHEN cd_nomenclature_sensitivity = "0" THEN "5"
-      WHEN cd_nomenclature_sensitivity = "1" THEN "3"
-      WHEN cd_nomenclature_sensitivity = "2" THEN "2"
-      WHEN cd_nomenclature_sensitivity = "3" THEN "3"
-      WHEN cd_nomenclature_sensitivity = "4" THEN "4"
+      WHEN cd_nomenclature_sensitivity = '0' THEN '5'
+      WHEN cd_nomenclature_sensitivity = '1' THEN '3'
+      WHEN cd_nomenclature_sensitivity = '2' THEN '2'
+      WHEN cd_nomenclature_sensitivity = '3' THEN '3'
+      WHEN cd_nomenclature_sensitivity = '4' THEN '4'
     END;
+  ELSE 
+    RETURN cd_nomenclature_diffusion_level;
   END IF;
 END;
 $function$

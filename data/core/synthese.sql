@@ -732,7 +732,7 @@ CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_stat
         gn_sensitivity.calculate_cd_diffusion_level(c.cd_nomenclature_diffusion_level, t_sensi.cd_nomenclature)
         
       )
-    FROM calculated_sensi AS c
+    FROM cte AS c
     LEFT JOIN ref_nomenclatures.t_nomenclatures t_sensi ON t_sensi.id_nomenclature = c.id_nomenclature_sensitivity
     WHERE c.id_synthese = s.id_synthese
   ;
@@ -744,17 +744,30 @@ CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_stat
   LANGUAGE plpgsql
   AS $$ 
   -- Calculate sensitivity and diffusion level on update in synthese
+  DECLARE calculated_id_sensi integer;
     BEGIN
+        SELECT 
+        gn_sensitivity.get_id_nomenclature_sensitivity(
+          NEW.date_min::date, 
+          taxonomie.find_cdref(NEW.cd_nom), 
+          NEW.the_geom_local,
+          ('{"STATUT_BIO": ' || NEW.id_nomenclature_bio_status::text || '}')::jsonb
+        ) INTO calculated_id_sensi;
       UPDATE gn_synthese.synthese 
-      SET id_nomenclature_diffusion_level = (
+      SET 
+      id_nomenclature_sensitivity = calculated_id_sensi,
+      -- TODO: est-ce qu'on remet à jour le niveau de diffusion lors d'une MAJ de la sensi ?
+      id_nomenclature_diffusion_level = (
         SELECT ref_nomenclatures.get_id_nomenclature(
             'NIV_PRECIS',
             gn_sensitivity.calculate_cd_diffusion_level(
-              ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_diffusion_level),
-              ref_nomenclatures.get_cd_nomenclature(NEW.id_nomenclature_sensitivity)
+              ref_nomenclatures.get_cd_nomenclature(OLD.id_nomenclature_diffusion_level),
+              ref_nomenclatures.get_cd_nomenclature(calculated_id_sensi)
           )
       	)
-      );
+      )
+      WHERE id_synthese = OLD.id_synthese
+      ;
       RETURN NULL;
     END;
   $$;  
@@ -1149,7 +1162,7 @@ CREATE TRIGGER tri_insert_calculate_sensitivity
   EXECUTE PROCEDURE gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement();
   
 CREATE TRIGGER tri_update_calculate_sensitivity
- AFTER UPDATE OF id_nomenclature_sensitivity ON gn_synthese.synthese
+ AFTER UPDATE OF date_min, date_max, cd_nom, the_geom_local, id_nomenclature_bio_status ON gn_synthese.synthese
   FOR EACH ROW
   EXECUTE PROCEDURE gn_synthese.fct_tri_cal_sensi_diff_level_on_each_row();
 
