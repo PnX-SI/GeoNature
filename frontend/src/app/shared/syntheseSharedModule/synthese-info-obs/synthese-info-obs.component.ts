@@ -14,13 +14,13 @@ import { finalize } from 'rxjs/operators';
 })
 export class SyntheseInfoObsComponent implements OnInit {
   @Input() idSynthese: number;
-  @Input() selectedObs: any;  // Utile?
   @Input() header: boolean = false;
-  @Input() validationHistory: Array<any>;  // Utile?
-  @Input() selectedObsTaxonDetail: any; // Utile?
   @Input() mailCustomSubject: String;
   @Input() mailCustomBody: String;
 
+  public selectedObs: any;
+  public validationHistory: Array<any>;
+  public selectedObsTaxonDetail: any;
   public selectObsTaxonInfo;
   public formatedAreas = [];
   public CONFIG = AppConfig;
@@ -48,10 +48,12 @@ export class SyntheseInfoObsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.loadOneSyntheseReleve(this.idSynthese);
   }
 
   ngOnChanges(changes) {
-    if (changes.idSynthese && changes.idSynthese.currentValue) {
+    // load releve only after first init
+    if (changes.idSynthese && changes.idSynthese.currentValue && !changes.idSynthese.firstChange) {
       this.loadOneSyntheseReleve(this.idSynthese);
     }
   }
@@ -113,7 +115,9 @@ export class SyntheseInfoObsComponent implements OnInit {
   formatMailContent(email) {
     let mailto = String('mailto:' + email);
     if (this.mailCustomSubject || this.mailCustomBody) {
-       // Mise en forme des données
+      console.log(this.mailCustomSubject);
+
+      // Mise en forme des données
       let d = { ...this.selectedObsTaxonDetail, ...this.selectedObs };
 
       if (this.selectedObs.source.url_source) {
@@ -134,20 +138,20 @@ export class SyntheseInfoObsComponent implements OnInit {
       ).join(', ');
 
       let contentMedias = "";
-      if (!this.selectedObs.medias){
+      if (!this.selectedObs.medias) {
         contentMedias = "Aucun media";
       }
       else {
-        if (this.selectedObs.medias.length == 0){
+        if (this.selectedObs.medias.length == 0) {
           contentMedias = "Aucun media";
         }
         this.selectedObs.medias.map((media) => {
           contentMedias += "\n\tTitre : " + media.title_fr;
           contentMedias += "\n\tLien vers le media : " + this.mediaService.href(media);
-          if (media.description_fr){
+          if (media.description_fr) {
             contentMedias += "\n\tDescription : " + media.description_fr;
           }
-          if (media.author){
+          if (media.author) {
             contentMedias += "\n\tAuteur : " + media.author;
           }
           contentMedias += "\n";
