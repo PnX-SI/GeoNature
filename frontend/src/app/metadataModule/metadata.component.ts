@@ -75,7 +75,6 @@ export class MetadataComponent implements OnInit {
 
   ngOnInit() {
     this.getAcquisitionFrameworksAndDatasets();
-    this.getImportList();
     this._dfs.getOrganisms().subscribe(data => {
       this.organisms = data;
     });
