@@ -7,7 +7,6 @@ import { Router, NavigationExtras } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
-import { DataService } from "../../../../external_modules/import/frontend/app/services/data.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { MetadataSearchFormService } from "./services/metadata-search-form.service"
@@ -69,7 +68,6 @@ export class MetadataComponent implements OnInit {
     private _dfs: DataFormService,
     private _router: Router,
     private modal: NgbModal,
-    public _ds: DataService,
     public searchFormService: MetadataSearchFormService,
     private _commonService: CommonService,
     private _syntheseDataService: SyntheseDataService
@@ -108,27 +106,6 @@ export class MetadataComponent implements OnInit {
     });
   }
 
-  // recuperer la liste des imports
-  getImportList() {
-    this._ds.getImportList().subscribe(
-      res => {
-        this.history = res.history;
-        this.empty = res.empty;
-      },
-      error => {
-        if (error.statusText === "Unknown Error") {
-          // show error message if no connexion
-          this._commonService.regularToaster(
-            "error",
-            "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connexion)"
-          );
-        } else {
-          // show error message if other server error
-          this._commonService.regularToaster("error", error.error.message);
-        }
-      }
-    );
-  }
 
   /**
    *	Filtre les éléments CA et JDD selon la valeur de la barre de recherche
