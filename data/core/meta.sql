@@ -101,7 +101,8 @@ CREATE TABLE t_acquisition_frameworks (
     acquisition_framework_start_date date NOT NULL,
     acquisition_framework_end_date date,
     meta_create_date timestamp without time zone NOT NULL,
-    meta_update_date timestamp without time zone
+    meta_update_date timestamp without time zone,
+    initial_closing_date timestamp
 );
 COMMENT ON TABLE t_acquisition_frameworks IS 'Define a acquisition framework that embed datasets. Implement 1.3.8 SINP metadata standard';
 COMMENT ON COLUMN t_acquisition_frameworks.id_acquisition_framework IS 'Internal value for primary and foreign keys';
