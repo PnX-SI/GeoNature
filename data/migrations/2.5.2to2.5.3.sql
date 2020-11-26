@@ -227,7 +227,6 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
->>>>>>> upstream/develop
 
 -- Mise à jour du champs the_geom_local de la Synthèse pour les observations venant d'Occtax 
 -- Par sécurité si ils ont été modifiés (#1117)
