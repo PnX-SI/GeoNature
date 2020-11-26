@@ -16,6 +16,7 @@ CHANGELOG
 **🐛 Corrections**
 
 * Synthèse : fonction ``import_row_from_table``: test sur LOWER(tbl_name) 
+* Synthèse : changement de type pour ``refence_biblio`` (varchar(255) -> text)
 
 **⚠️ Notes de version**
 
