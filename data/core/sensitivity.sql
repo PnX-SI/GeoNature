@@ -288,7 +288,7 @@ CREATE TABLE gn_sensitivity.cor_sensitivity_synthese  (
         CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_sensitivity, 'SENSIBILITE'::character varying)) NOT VALID
 );
 
--- Trigger function executed by a ON EACH STATEMENT triger
+--Trigger function executed by a ON EACH STATEMENT triger
 CREATE OR REPLACE FUNCTION gn_sensitivity.fct_tri_maj_id_sensitivity_synthese()
   RETURNS trigger AS
 $BODY$
