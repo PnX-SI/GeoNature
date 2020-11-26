@@ -163,7 +163,7 @@ CREATE TABLE synthese (
     id_nomenclature_info_geo_type integer DEFAULT get_default_nomenclature_value('TYP_INF_GEO'),
     id_nomenclature_behaviour integer DEFAULT get_default_nomenclature_value('OCC_COMPORTEMENT'),
     id_nomenclature_biogeo_status integer DEFAULT get_default_nomenclature_value('STAT_BIOGEO'),
-    reference_biblio character varying(255),
+    reference_biblio text,
     count_min integer,
     count_max integer,
     cd_nom integer,
