@@ -15,7 +15,26 @@ class TestGnMeta:
         Api to get all datasets
         """
         # token = get_token(self.client)
-        response = self.client.get(url_for("gn_meta.get_datasets_list"))
+        token = get_token(self.client, login="admin", password="admin")
+        self.client.set_cookie("/", "token", token)
+
+        response = self.client.get(url_for("gn_meta.get_datasets"))
+
+        # check fields for mobile
+        data = json_of_response(response)
+        ds = data["data"][0]
+        mandatory_attr = [
+            "id_dataset",
+            "dataset_name",
+            "dataset_desc",
+            "active",
+            "meta_create_date",
+            "modules",
+        ]
+        for attr in mandatory_attr:
+            assert attr in ds
+        module = ds["modules"][0]
+        assert "module_path" in module
         assert response.status_code == 200
 
     def test_one_dataset(self):
@@ -34,11 +53,7 @@ class TestGnMeta:
         self.client.set_cookie("/", "token", token)
         response = self.client.get(url_for("gn_meta.get_datasets"))
         dataset_list = json_of_response(response)
-        assert (
-            response.status_code == 200
-            and len(dataset_list["data"]) == 2
-            and dataset_list["data"][0]["id_dataset"] == 2
-        )
+        assert response.status_code == 200 and len(dataset_list["data"]) == 2
 
     def test_dataset_cruved_1(self):
         """
@@ -100,7 +115,7 @@ class TestGnMeta:
             "cor_dataset_actor": [
                 {
                     "id_cda": None,
-                    "id_nomenclature_actor_role": 369,
+                    "id_nomenclature_actor_role": 358,
                     "id_organism": 0,
                     "id_role": None,
                 }
@@ -111,11 +126,10 @@ class TestGnMeta:
             "id_acquisition_framework": 1,
             "id_dataset": 5,
             "id_nomenclature_collecting_method": 405,
-            "id_nomenclature_data_origin": 78,
-            "id_nomenclature_data_type": 326,
-            "id_nomenclature_dataset_objectif": 417,
-            "id_nomenclature_resource_type": 324,
-            "id_nomenclature_source_status": 77,
+            "id_nomenclature_data_type": 323,
+            "id_nomenclature_dataset_objectif": 407,
+            "id_nomenclature_resource_type": 320,
+            "id_nomenclature_source_status": 73,
             "keywords": None,
             "marine_domain": False,
             "terrestrial_domain": True,
@@ -141,7 +155,7 @@ class TestGnMeta:
             cor.pop("nomenclature_actor_role")
         # ajout d'un acteur
         fetched_dataset["cor_dataset_actor"].append(
-            {"id_cda": None, "id_nomenclature_actor_role": 369, "id_organism": 1, "id_role": None,}
+            {"id_cda": None, "id_nomenclature_actor_role": 358, "id_organism": 1, "id_role": None,}
         )
         # modification du nom
         fetched_dataset["dataset_name"] = "new_name"
@@ -166,17 +180,17 @@ class TestGnMeta:
             "cor_af_actor": [
                 {
                     "id_cafa": None,
-                    "id_nomenclature_actor_role": 404,
+                    "id_nomenclature_actor_role": 358,
                     "id_organism": 0,
                     "id_role": None,
                 }
             ],
-            "cor_objectifs": [447],
+            "cor_objectifs": [515],
             "cor_volets_sinp": [],
             "ecologic_or_geologic_target": "aaaa",
             "id_acquisition_framework": None,
-            "id_nomenclature_financing_type": 392,
-            "id_nomenclature_territorial_level": 361,
+            "id_nomenclature_financing_type": 382,
+            "id_nomenclature_territorial_level": 355,
             "is_parent": False,
             "keywords": "ttt",
             "target_description": None,

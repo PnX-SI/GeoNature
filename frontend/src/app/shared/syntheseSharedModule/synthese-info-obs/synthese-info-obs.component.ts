@@ -123,15 +123,7 @@ export class SyntheseInfoObsComponent implements OnInit {
       },
       err => {
         console.log(err);
-        if (err.status === 404) {
-          this._commonService.translateToaster('warning', 'Aucun historique de validation');
-        } else if (err.statusText === 'Unknown Error') {
-          // show error message if no connexion
-          this._commonService.translateToaster(
-            'error',
-            'ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)'
-          );
-        } else {
+        if (err.status === 500) {
           // show error message if other server error
           this._commonService.translateToaster('error', err.error);
         }

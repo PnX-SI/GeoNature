@@ -154,6 +154,38 @@ class CorDatasetActor(DB.Model):
             return None
 
 
+@serializable
+class CorDatasetProtocol(DB.Model):
+    __tablename__ = "cor_dataset_protocol"
+    __table_args__ = {"schema": "gn_meta"}
+    id_cdp = DB.Column(DB.Integer, primary_key=True)
+    id_dataset = DB.Column(DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"))
+    id_protocol = DB.Column(DB.Integer, ForeignKey("gn_meta.sinp_datatype_protocols.id_protocol"))
+
+
+@serializable
+class CorDatasetTerritory(DB.Model):
+    __tablename__ = "cor_dataset_territory"
+    __table_args__ = {"schema": "gn_meta"}
+    id_cdt = DB.Column(DB.Integer, primary_key=True)
+    id_dataset = DB.Column(DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"))
+    id_protocol = DB.Column(
+        DB.Integer, ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature")
+    )
+
+
+@serializable
+class CorModuleDataset(DB.Model):
+    __tablename__ = "cor_module_dataset"
+    __table_args__ = {"schema": "gn_commons", "extend_existing": True}
+    id_module = DB.Column(
+        DB.Integer, ForeignKey("gn_commons.t_modules.id_module"), primary_key=True
+    )
+    id_dataset = DB.Column(
+        DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"), primary_key=True
+    )
+
+
 class CruvedHelper(DB.Model):
     """
     Classe abstraite permettant d'ajouter des méthodes de
@@ -274,8 +306,9 @@ class TDatasets(CruvedHelper):
     meta_update_date = DB.Column(DB.DateTime)
     active = DB.Column(DB.Boolean, default=True)
     validable = DB.Column(DB.Boolean)
-    id_digitizer = DB.Column(DB.Integer)
+    id_digitizer = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
 
+    creator = DB.relationship("User", lazy="select")
     modules = DB.relationship("TModules", secondary=cor_module_dataset, lazy="select")
 
     # HACK: the relationship is not well defined for many to many relationship
@@ -364,7 +397,7 @@ class TAcquisitionFramework(CruvedHelper):
     ecologic_or_geologic_target = DB.Column(DB.Unicode)
     acquisition_framework_parent_id = DB.Column(DB.Integer)
     is_parent = DB.Column(DB.Boolean)
-    id_digitizer = DB.Column(DB.Integer)
+    id_digitizer = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
 
     acquisition_framework_start_date = DB.Column(DB.DateTime)
     acquisition_framework_end_date = DB.Column(DB.DateTime)
@@ -372,6 +405,7 @@ class TAcquisitionFramework(CruvedHelper):
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
 
+    creator = DB.relationship("User", lazy="select")
     cor_af_actor = relationship(
         CorAcquisitionFrameworkActor,
         lazy="select",

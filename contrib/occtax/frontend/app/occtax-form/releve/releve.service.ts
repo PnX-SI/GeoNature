@@ -260,8 +260,6 @@ export class OcctaxFormReleveService {
 
   getPreviousReleve(previousReleve) {
     if (previousReleve && !ModuleConfig.ENABLE_SETTINGS_TOOLS) {
-      console.log(previousReleve);
-
       return {
         'id_dataset': previousReleve.properties.id_dataset,
         'observers': previousReleve.properties.observers,
@@ -391,7 +389,6 @@ export class OcctaxFormReleveService {
           }
         );
     } else {
-      // console.log(this.releveForm.value);
 
       this.occtaxFormService.previousReleve = JSON.parse(JSON.stringify(this.releveForm.value));
       //create

@@ -1,245 +1,305 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <meta charset="utf-8" />
-    <title>Cadre acquisition</title>
-    <link rel="stylesheet" type="text/css" href="../../static/css/acquisition_framework_template_pdf.css">
-</head>
+    <head>
+        <meta charset="utf-8" />
+        <title>Cadre acquisition</title>
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="{{url_for('static', filename="css/metadata_pdf.css")}}"
+        >
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="{{url_for('static', filename="css/custom.css")}}"
+        >
+    </head>
 
-<body>
-    {% if data.css: %}
-    <div class="header">
-        <img class="bandeau" src="../../static/images/{{ data.css['bandeau'] }}" alt="Bandeau">
-        <img class="logo" src="../../static/images/{{ data.css['logo'] }}" alt="Logo">
-    </div>
-    {% endif %}
-    <div class="titre">
-        <label class="label-titre">Cadre d'acquisition des données</label>
-        <br>
-        <label class="label-titre">
-            {% if data['acquisition_framework_name']: %}
-                 {{ data['acquisition_framework_name'] }}
-            {% endif %}
-        </label>
-        <hr class="ligne-titre ligne" {% if data.css: %} id="ligne-titre-{{data.css['entite']}}" {% else %}
-            id="ligne-titre-defaut" {% endif %}>
-            
-    </div>
-    <div class="etiquettes">
-        <div class="etiquette" {% if data.css: %} id="jeux-donnees-{{data.css['entite']}}" {% else %}
-            id="jeux-donnees-defaut" {% endif %}>
-            <div class="etiquette-haut">
-                <img class="logo-etiquette" src="../../static/images/JDD_icon.svg" alt="jdd-icon">
-                <p class="titre-etiquette">Jeux de données</p>
-            </div>
-            <div class="etiquette-bas">
-                <p class="stat-etiquette">
-                    {% if data.stats: %}
+    <body>
+        {% if data.css: %}
+        <div class="header">
+            <img
+                class="bandeau"
+                src="{{url_for('static', filename="images/Bandeau_pdf.png")}}"
+                alt="Bandeau"
+            >
+            <img
+                class="logo"
+                src="{{url_for('static', filename="images/logo_structure.jpg")}}"
+                alt="Logo"
+            >
+        </div>
+        {% endif %}
+        <div class="titre">
+            <h5> {{data.title}} </h5>
+            <label class="label-titre">Cadre d'acquisition des données</label>
+            <br>
+            <label class="label-titre">
+                {% if data['acquisition_framework_name']: %}
+                {{ data['acquisition_framework_name'] }}
+                {% endif %}
+            </label>
+            <div class="ligne-titre ligne main-color"></div>
+
+        </div>
+        <div class="etiquettes-ca">
+            <div
+                class="etiquette"
+                {% if data.css: %}
+                id="jeux-donnees-{{data.css['entite']}}"
+                {% else %}
+                id="jeux-donnees-defaut"
+                {% endif %}
+            >
+                <div class="etiquette-haut">
+                    <img
+                        class="logo-etiquette"
+                        src="{{url_for('static', filename='images/JDD_icon.svg')}}"
+                        alt="jdd-icon"
+                    >
+                    <p class="titre-etiquette">Jeux de données</p>
+                </div>
+                <div class="etiquette-bas">
+                    <p class="stat-etiquette">
+                        {% if data.stats: %}
                         {{ data.stats["nb_data"]}}
-                    {% endif %}
-                </p>
+                        {% endif %}
+                    </p>
+                </div>
             </div>
-        </div>
-        <div class="etiquette" {% if data.css: %} id="nombre-taxons-{{data.css['entite']}}" {% else %}
-            id="nombre-taxons-defaut" {% endif %}>
-            <div class="etiquette-haut">
-                <img class="logo-etiquette" src="../../static/images/Taxon_icon.svg"
-                    alt="taxon-icon">
-                <p class="titre-etiquette">Nombre de taxons</p>
-            </div>
-            <div class="etiquette-bas">
-                <p class="stat-etiquette">
-                    {% if data.stats: %}
+            <div class="etiquette">
+                <div class="etiquette-haut">
+                    <img
+                        class="logo-etiquette"
+                        src="{{url_for('static', filename='images/Taxon_icon.svg')}}"
+                        alt="taxon-icon"
+                    >
+                    <p class="titre-etiquette">Nombre de taxons</p>
+                </div>
+                <div class="etiquette-bas">
+                    <p class="stat-etiquette">
+                        {% if data.stats: %}
                         {{ data.stats["nb_taxons"]}}
-                    {% endif %}
-                </p>
+                        {% endif %}
+                    </p>
+                </div>
             </div>
-        </div>
-        <div class="etiquette" {% if data.css: %} id="nombre-habitats-{{data.css['entite']}}" {% else %}
-            id="nombre-habitats-defaut" {% endif %}>
-            <div class="etiquette-haut">
-                <img class="logo-etiquette" src="../../static/images/Habitat_icon.svg"
-                    alt="habitat-icon">
-                <p class="titre-etiquette">Nombre d'habitats</p>
-            </div>
-            <div class="etiquette-bas">
-                <p class="stat-etiquette">
-                    {% if data.stats: %}
+            <div class="etiquette">
+                <div class="etiquette-haut">
+                    <img
+                        class="logo-etiquette"
+                        src="{{url_for('static', filename='images/Habitat_icon.svg')}}"
+                        alt="habitat-icon"
+                    >
+                    <p class="titre-etiquette">Nombre d'habitats</p>
+                </div>
+                <div class="etiquette-bas">
+                    <p class="stat-etiquette">
+                        {% if data.stats: %}
                         {{ data.stats["nb_habitats"]}}
-                    {% endif %}
-                </p>
+                        {% endif %}
+                    </p>
+                </div>
             </div>
-        </div>
-        <div class="etiquette" {% if data.css: %} id="nombre-donnees-{{data.css['entite']}}" {% else %}
-            id="nombre-donnees-defaut" {% endif %}>
-            <div class="etiquette-haut">
-                <img class="logo-etiquette" src="../../static/images/Donnee_icon.svg"
-                    alt="donnee-icon">
-                <p class="titre-etiquette">Nombre d'observations</p>
-            </div>
-            <div class="etiquette-bas">
-                <p class="stat-etiquette">
-                    {% if data.stats: %}
+            <div class="etiquette">
+                <div class="etiquette-haut">
+                    <img
+                        class="logo-etiquette"
+                        src="{{url_for('static', filename='images/Donnee_icon.svg')}}"
+                        alt="donnee-icon"
+                    >
+                    <p class="titre-etiquette">Nombre d'observations</p>
+                </div>
+                <div class="etiquette-bas">
+                    <p class="stat-etiquette">
+                        {% if data.stats: %}
                         {{ data.stats["nb_observations"]}}
-                    {% endif %}
-                </p>
+                        {% endif %}
+                    </p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="description">
-        <div class="left-block">
-            <p class="fiche-descriptive">Cadre d'acquisition</p>
-            <div class="information">
-                <p class="info-titre">Identification</p>
-                <p class="info-contenu">
-                    {% if data['unique_acquisition_framework_id']: %}
-                        Instance SNIP du cadre d'acquisition : {{ data['unique_acquisition_framework_id'] }}
-                    {% endif %}
-                    <br>
-                    {% if data['acquisition_framework_name']: %}
+        <div class="description">
+            <div class="left-block">
+                <p class="fiche-descriptive">Cadre d'acquisition</p>
+                <div class="information">
+                    <p class="info-titre">Identification</p>
+                    <p class="info-contenu">
+                        {% if data['unique_acquisition_framework_id']: %}
+                        Instance SNIP du cadre d'acquisition :
+                        {{ data['unique_acquisition_framework_id'] }}
+                        {% endif %}
+                        <br>
+                        {% if data['acquisition_framework_name']: %}
                         Libellé du cadre d'acquisition : {{ data['acquisition_framework_name'] }}
-                    {% endif %}
-                    <br>
-                    {% if data['acquisition_framework_desc']: %}
+                        {% endif %}
+                        <br>
+                        {% if data['acquisition_framework_desc']: %}
                         Description : {{ data['acquisition_framework_desc'] }}
-                    {% endif %}
-                </p>
-            </div>
-            
+                        {% endif %}
+                    </p>
+                </div>
+
                 <div class="information">
                     <p class="info-titre">Cadre de référence</p>
                     <p class="info-contenu">
-                        Est un méta-cadre : {% if data['is_parent']==True: %} Oui {% else %}  Non {% endif %} 
+                        Est un méta-cadre : {% if data['is_parent']==True: %} Oui {% else %} Non
+                        {% endif %}
                         <br>
                         {% if data['is_parent']==True: %}
-                            Identifiant du méta-cadre : {{ data['acquisition_framework_parent_id'] }}
-                        {% endif %}                        
+                        Identifiant du méta-cadre : {{ data['acquisition_framework_parent_id'] }}
+                        {% endif %}
                     </p>
                 </div>
-            
 
-            <div class="information">
-                <p class="info-titre">Dates</p>
-                <p class="info-contenu">
-                    {% if data['acquisition_framework_start_date']: %}
-                        Date de lancement du cadre d'acquisition : {{ data['acquisition_framework_start_date'] }}
-                    {% endif %}
-                    <br>
-                    {% if data['acquisition_framework_end_date']: %}
-                        Date de clôture du cadre d'acquisition : {{ data['acquisition_framework_end_date'] }}
-                    {% endif %}
-                </p>
-            </div>
 
-            <div class="information">
-                <p class="info-titre">Territoires concernés</p>
-                <p class="info-contenu">
-                    {% if data['id_nomenclature_territorial_level']: %}
+                <div class="information">
+                    <p class="info-titre">Dates</p>
+                    <p class="info-contenu">
+                        {% if data['acquisition_framework_start_date']: %}
+                        Date de lancement du cadre d'acquisition :
+                        {{ data['acquisition_framework_start_date'] }}
+                        {% endif %}
+                        <br>
+                        {% if data['acquisition_framework_end_date']: %}
+                        Date de clôture du cadre d'acquisition :
+                        {{ data['acquisition_framework_end_date'] }}
+                        {% endif %}
+                    </p>
+                </div>
+
+                <div class="information">
+                    <p class="info-titre">Territoires concernés</p>
+                    <p class="info-contenu">
+                        {% if data['id_nomenclature_territorial_level']: %}
                         Etendue territoriale : {{ data['id_nomenclature_territorial_level'] }}
-                    {% endif %}
-                    <!-- <br>
+                        {% endif %}
+                        <!-- <br>
                         Territoires : ??
                     <br>
                         Précision géographique : ?? -->
-                </p>
-            </div>
+                    </p>
+                </div>
 
-            {% if data.cor_objectifs: %}
-            <div class="information">
-                <p class="info-titre">Objectifs</p>
-                <p class="info-contenu">  
+                {% if data.cor_objectifs: %}
+                <div class="information">
+                    <p class="info-titre">Objectifs</p>
+                    <p class="info-contenu">
                         {% for obj in data.cor_objectifs -%}
-                            {% if loop.nextitem: %}
-                                {{ obj['mnemonique'] }},
-                            {% else %}
-                                {{ obj['mnemonique'] }}
-                            {% endif %}
+                        {% if loop.nextitem: %}
+                        {{ obj['mnemonique'] }},
+                        {% else %}
+                        {{ obj['mnemonique'] }}
+                        {% endif %}
                         {%- endfor %}
-                </p>
-            </div>
-            {% endif %}
+                    </p>
+                </div>
+                {% endif %}
 
-            
 
-            <div class="information">
-                <p class="info-titre">Cible taxonomique</p>
-                <p class="info-contenu">
-                    {% if data['target_description']: %}
+
+                <div class="information">
+                    <p class="info-titre">Cible taxonomique</p>
+                    <p class="info-contenu">
+                        {% if data['target_description']: %}
                         {{ data['target_description'] }}
-                    {% endif %}
-                </p>
-            </div>
+                        {% endif %}
+                    </p>
+                </div>
 
-            {% if data.cor_af_actor: %}
-            <div class="information">
-                <p class="info-titre">Acteurs</p>
-                <p class="info-contenu">
-                        {% for act in data.cor_af_actor -%} 
-                            {% if act.nomenclature_actor_role: %}
-                                {{ act.nomenclature_actor_role['mnemonique'] }} :
-                            {% endif %}
-                            {% if act.organism: %}
-                                {{ act.organism['nom_organisme'] }}
-                            {% endif %}
-                            {% if act.organism and act.role: %}
-                                -
-                            {% endif %}
-                            {% if act.role: %}
-                                {{ act.role['nom_complet'] }}
-                            {% endif %} 
-                            <br>
+                {% if data.cor_af_actor: %}
+                <div class="information">
+                    <p class="info-titre">Acteurs</p>
+                    <p class="info-contenu">
+                        {% for act in data.cor_af_actor -%}
+                        {% if act.nomenclature_actor_role: %}
+                        {{ act.nomenclature_actor_role['mnemonique'] }} :
+                        {% endif %}
+                        {% if act.organism: %}
+                        {{ act.organism['nom_organisme'] }}
+                        {% endif %}
+                        {% if act.organism and act.role: %}
+                        -
+                        {% endif %}
+                        {% if act.role: %}
+                        {{ act.role['nom_complet'] }}
+                        {% endif %}
+                        <br>
                         {%- endfor %}
-                </p>
-            </div>
-            {% endif %}
+                    </p>
+                </div>
+                {% endif %}
 
-            {% if data['keywords']: %}
-            <div class="information">
-                <p class="info-titre">Mots-clés</p>
-                <p class="info-contenu">
+                {% if data['keywords']: %}
+                <div class="information">
+                    <p class="info-titre">Mots-clés</p>
+                    <p class="info-contenu">
                         {{ data['keywords'] }}
-                </p>
-            </div>
-            {% endif %}
+                    </p>
+                </div>
+                {% endif %}
 
-        </div>
-        <div class="right-block">
-            <div class="repartition">
-                <p class="repartition-especes">Répartition des espèces</p>
-                <img class="taxons" src="../../static/images/taxa.png" alt="Pas d'espèces à afficher.">
             </div>
+            <div class="right-block">
 
-            <div class="jdd">
-                <hr class="ligne-jeux-donnees ligne" {% if data.css: %} id="ligne-jeux-donnees-{{data.css['entite']}}"
-                {% else %} id="ligne-jeux-donnees-defaut" {% endif %}>
-                <p class="liste-jdd">Liste des jeux de données associés au cadre</p>
+                <!-- <div class="zone">
+                <p class="zone-geographique">Zone géographique</p>
+            </div> -->
+                <!-- A modifier lorsque la carte sera prete -->
+
+                {% if data['chart']: %}
+                <div class="repartition">
+                    <p class="repartition-especes">Répartition des espèces</p>
+                    <img
+                        class="taxons"
+                        src="../../static/images/taxa.png"
+                        alt="Pas d'espèces à afficher."
+                    >
+                </div>
+                {% endif %}
+
                 {% if data.datasets: %}
+                <div class="jdd">
+                    <hr
+                        class="ligne-jeux-donnees ligne"
+                        {% if data.css: %}
+                        id="ligne-jeux-donnees-{{data.css['entite']}}"
+                        {% else %}
+                        id="ligne-jeux-donnees-defaut"
+                        {% endif %}
+                    >
+                    <p class="liste-jdd">Liste des jeux de données associés au cadre</p>
                     {% for dataset in data.datasets -%}
-                        <div class="jdd-details">
-                            <img class="logo-jdd" src="../../static/images/Taxon_icon_vert.svg" alt="taxon-vert-icon">
-                            <p class="jdd-info">
-                                {% if dataset['unique_dataset_id']: %}
-                                    {{ dataset['unique_dataset_id'] }}
-                                {% endif %}
-                                <br>
-                                {% if dataset['dataset_name']: %}
-                                    {{ dataset['dataset_name'] }}
-                                {% endif %}
-                            </p>
-                        </div>
+                    <div class="jdd-details">
+                        <img
+                            class="logo-jdd"
+                            src="{{url_for('static', filename='images/Taxon_icon_vert.svg')}}"
+                            alt="taxon-vert-icon"
+                        >
+                        <p class="jdd-info">
+                            {% if dataset['unique_dataset_id']: %}
+                            {{ dataset['unique_dataset_id'] }}
+                            {% endif %}
+                            <br>
+                            {% if dataset['dataset_name']: %}
+                            {{ dataset['dataset_name'] }}
+                            {% endif %}
+                        </p>
+                    </div>
                     {%- endfor %}
+                </div>
                 {% endif %}
             </div>
-        </div>
-        
-    </div>
 
-    <div class="footer">
-        <a target="_blank" href="{{data.footer['url']}}">{{data.footer['url']}}</a>
-        <span>{{data.footer['date']}}</span>
-    </div>
-</body>
+            <div class="footer">
+                <a
+                    target="_blank"
+                    href="{{data.footer['url']}}"
+                >{{data.footer['url']}}</a>
+                <span>{{data.footer['date']}}</span>
+            </div>
+    </body>
 
 </html>

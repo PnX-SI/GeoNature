@@ -159,6 +159,7 @@ class VSyntheseDecodeNomenclatures(DB.Model):
     blurring = DB.Column(DB.Unicode)
     source_status = DB.Column(DB.Unicode)
     occ_behaviour = DB.Column(DB.Unicode)
+    occ_stat_biogeo = DB.Column(DB.Unicode)
 
 
 @serializable
@@ -171,6 +172,7 @@ class Synthese(DB.Model):
     unique_id_sinp = DB.Column(UUID(as_uuid=True))
     unique_id_sinp_grp = DB.Column(UUID(as_uuid=True))
     id_source = DB.Column(DB.Integer)
+    id_module = DB.Column(DB.Integer)
     entity_source_pk_value = DB.Column(DB.Integer)
     id_dataset = DB.Column(DB.Integer)
     id_nomenclature_grp_typ = DB.Column(DB.Integer)
@@ -237,6 +239,17 @@ class CorAreaSynthese(DB.Model):
 
 
 @serializable
+class CorSensitivitySynthese(DB.Model):
+    __tablename__ = "cor_sensitivity_synthese"
+    __table_args__ = {"schema": "gn_sensitivity"}
+    uuid_attached_row = DB.Column(UUID(as_uuid=True), primary_key=True)
+    id_nomenclature_sensitivity = DB.Column(DB.Integer, primary_key=True)
+    sensitivity_comment = DB.Column(DB.Text)
+    meta_create_date = DB.Column(DB.DateTime)
+    meta_update_date = DB.Column(DB.DateTime)
+
+
+@serializable
 class DefaultsNomenclaturesValue(DB.Model):
     __tablename__ = "defaults_nomenclatures_value"
     __table_args__ = {"schema": "gn_synthese"}
@@ -282,6 +295,7 @@ class VSyntheseForWebApp(DB.Model):
     depth_min = DB.Column(DB.Integer)
     depth_max = DB.Column(DB.Integer)
     place_name = DB.Column(DB.Unicode)
+    precision = DB.Column(DB.Integer)
     the_geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
     date_min = DB.Column(DB.DateTime)
     date_max = DB.Column(DB.DateTime)
@@ -315,7 +329,7 @@ class VSyntheseForWebApp(DB.Model):
     id_nomenclature_observation_status = DB.Column(DB.Integer)
     id_nomenclature_blurring = DB.Column(DB.Integer)
     id_nomenclature_source_status = DB.Column(DB.Integer)
-    id_nomenclature_valid_status = DB.Column(DB.Integer)
+    id_nomenclature_determination_method = DB.Column(DB.Integer)
     id_nomenclature_behaviour = DB.Column(DB.Integer)
     reference_biblio = DB.Column(DB.Unicode)
     name_source = DB.Column(DB.Unicode)

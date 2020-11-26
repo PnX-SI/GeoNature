@@ -12,6 +12,8 @@ from pypnusershub.db.tools import InsufficientRightsError
 from geonature.core.gn_permissions.tools import (
     get_user_permissions,
     get_user_from_token_and_raise,
+    get_max_perm,
+    UserCruved,
 )
 
 
@@ -51,48 +53,23 @@ def check_cruved_scope(
                 return user
             user_with_highter_perm = None
             user_permissions = get_user_permissions(
-                user, action, "SCOPE", module_code, object_code
+                user, "SCOPE", action, module_code, object_code
             )
+            user_cruved_obj = UserCruved()
+            user_with_highter_perm = user_cruved_obj.build_herited_user_cruved(user_permissions, module_code, object_code)
 
-            # if object_code no heritage
-            if object_code:
-                user_with_highter_perm = get_max_perm(user_permissions)
-            else:
-                # else
-                # loop on user permissions
-                # return the module permission if exist
-                # otherwise return GEONATURE permission
-                module_permissions = []
-                geonature_permission = []
-                # filter the GeoNature perm and the module perm in two
-                # arrays to make heritage
-                for user_permission in user_permissions:
-                    if user_permission.module_code == module_code:
-                        module_permissions.append(user_permission)
-                    else:
-                        geonature_permission.append(user_permission)
-                # take the max of the different permissions
-                # if no module permission take the max of GN perm
-                if len(module_permissions) == 0:
-                    user_with_highter_perm = get_max_perm(geonature_permission)
-                # if at least one module perm: take the max of module perms
-                else:
-                    user_with_highter_perm = get_max_perm(module_permissions)
             # if get_role = True : set info_role as kwargs
             if get_role:
                 kwargs["info_role"] = user_with_highter_perm
             # if no perm or perm = 0 -> raise 403
             if user_with_highter_perm is None or (
                 user_with_highter_perm is not None and user_with_highter_perm.value_filter == "0"
-            ):
-                raise InsufficientRightsError(
-                    ('User "{}" cannot "{}" in {}').format(
-                        user_with_highter_perm.id_role,
-                        user_with_highter_perm.code_action,
-                        user_with_highter_perm.module_code,
-                    ),
-                    403,
-                )
+            ):  
+                if object_code:
+                    message = f"""User {user_with_highter_perm.id_role} cannot "{user_with_highter_perm.code_action}" {object_code}"""
+                else:
+                    message = f"""User {user_with_highter_perm.id_role}" cannot "{user_with_highter_perm.code_action}" in {user_with_highter_perm.module_code}"""
+                raise InsufficientRightsError(message, 403)
             g.user = user_with_highter_perm
             return fn(*args, **kwargs)
 
@@ -100,18 +77,3 @@ def check_cruved_scope(
 
     return _check_cruved_scope
 
-
-def get_max_perm(perm_list):
-    """
-        Return the max filter_code from a list of VUsersPermissions instance
-        get_user_permissions return a list of VUsersPermissions from its group or himself
-    """
-    user_with_highter_perm = perm_list[0]
-    max_code = user_with_highter_perm.value_filter
-    i = 1
-    while i < len(perm_list):
-        if int(perm_list[i].value_filter) >= int(max_code):
-            max_code = perm_list[i].value_filter
-            user_with_highter_perm = perm_list[i]
-        i = i + 1
-    return user_with_highter_perm

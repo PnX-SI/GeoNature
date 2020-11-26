@@ -1,14 +1,6 @@
 export const DYNAMIC_FORM_DEF = [
   {
     type_widget: 'nomenclature',
-    attribut_label: "Technique d'observation",
-    attribut_name: 'id_nomenclature_obs_technique',
-    code_nomenclature_type: 'TECHNIQUE_OBS',
-    required: false,
-    multi_select: true
-  },
-  {
-    type_widget: 'nomenclature',
     attribut_label: "Nature de l'objet géographique",
     attribut_name: 'id_nomenclature_geo_object_nature',
     code_nomenclature_type: 'NAT_OBJ_GEO',
@@ -57,8 +49,8 @@ export const DYNAMIC_FORM_DEF = [
   },
   {
     type_widget: 'nomenclature',
-    attribut_label: "Méthode d'observation",
-    attribut_name: 'id_nomenclature_obs_meth',
+    attribut_label: "Technique d'observation",
+    attribut_name: 'id_nomenclature_obs_technique',
     code_nomenclature_type: 'METH_OBS',
     required: false,
     multi_select: true
@@ -76,6 +68,14 @@ export const DYNAMIC_FORM_DEF = [
     attribut_label: 'Statut biologique',
     attribut_name: 'id_nomenclature_bio_status',
     code_nomenclature_type: 'STATUT_BIO',
+    required: false,
+    multi_select: true
+  },
+  {
+    type_widget: 'nomenclature',
+    attribut_label: 'Statut biogéographique',
+    attribut_name: 'id_nomenclature_biogeo_status',
+    code_nomenclature_type: 'STAT_BIOGEO',
     required: false,
     multi_select: true
   },

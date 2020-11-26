@@ -12,6 +12,7 @@ import sys
 from pathlib import Path
 from packaging import version
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import IntegrityError
 
 from geonature.utils.config_schema import GnGeneralSchemaConf, ManifestSchemaProdConf
 from geonature.utils import utilstoml
@@ -47,8 +48,8 @@ def check_gn_module_file(module_path):
 
 def check_manifest(module_path):
     """
-        Verification de la version de geonature par rapport au manifest
-        Retourne le code du module en majuscule
+    Verification de la version de geonature par rapport au manifest
+    Retourne le code du module en majuscule
     """
     log.info("checking manifest")
     configs_py = utilstoml.load_and_validate_toml(
@@ -73,7 +74,7 @@ def check_manifest(module_path):
 
 def copy_in_external_mods(module_path, module_code):
     """
-        Cree un lien symbolique du module dans GN_EXTERNAL_MODULE
+    Cree un lien symbolique du module dans GN_EXTERNAL_MODULE
     """
     # Suppression du lien symbolique s'il existe déja
     if (GN_EXTERNAL_MODULE / module_code).is_dir():
@@ -89,9 +90,9 @@ def copy_in_external_mods(module_path, module_code):
 
 def gn_module_register_config(module_code):
     """
-        Création du fichier de configuration et
-        enregistrement des variables du module dans
-        le fichier conf_gn_module.toml du module
+    Création du fichier de configuration et
+    enregistrement des variables du module dans
+    le fichier conf_gn_module.toml du module
 
     """
     log.info("Register module")
@@ -191,9 +192,9 @@ def gn_module_deactivate(module_code, activ_front, activ_back):
 
 def check_codefile_validity(module_path, module_code):
     """
-        Vérification que les fichiers nécessaires
-            au bon fonctionnement du module soient bien présents
-            et avec la bonne signature
+    Vérification que les fichiers nécessaires
+        au bon fonctionnement du module soient bien présents
+        et avec la bonne signature
     """
     log.info("Checking file conformity")
     # Installation
@@ -276,8 +277,8 @@ def check_codefile_validity(module_path, module_code):
 
 def create_external_assets_symlink(module_path, module_code):
     """
-        Create a symlink for the module assets
-        return True if module have a frontend. False otherwise
+    Create a symlink for the module assets
+    return True if module have a frontend. False otherwise
     """
     module_assets_dir = os.path.join(module_path, "frontend/assets")
 
@@ -345,6 +346,7 @@ def add_application_db(app, module_code, url, enable_frontend, enable_backend):
     from geonature.core.users.models import TApplications
     from geonature.core.gn_commons.models import TModules
 
+    new_module = True
     app_conf = load_config(DEFAULT_CONFIG_FILE)
     id_application_geonature = app_conf["ID_APPLICATION_GEONATURE"]
     # remove / at the end and at the beginning
@@ -371,17 +373,43 @@ def add_application_db(app, module_code, url, enable_frontend, enable_backend):
             DB.session.add(new_module)
             DB.session.commit()
         else:
+            new_module = False
             log.info("the module is already in t_module, reactivate it")
             module.active = True
             DB.session.merge(module)
             DB.session.commit()
 
     log.info("...%s\n", MSG_OK)
+    return new_module
+
+
+def remove_application_db(app, module_code):
+    """
+    Fonction permettant de supprimer un module de la table TModules
+    Utilisé lorsqu'une erreur est lancée lors de l'installation d'un module
+    """
+
+    log.info("Remove the module in gn_commons.t_modules ... \n")
+    from geonature.core.gn_commons.models import TModules
+
+    with app.app_context():
+        # try to write in gn_commons.t_module if not exist
+        try:
+            DB.session.query(TModules).filter(TModules.module_code == module_code).delete()
+            DB.session.commit()
+        except NoResultFound:
+            log.info("Module not found")
+        except IntegrityError as exp:
+            log.error("Deletion error %s", exp)
+        except Exception as exp:
+            log.error("Error %s", exp)
+
+    log.info("...%s\n", MSG_OK)
 
 
 def create_module_config(app, module_code, mod_path=None, build=True):
     """
-        Create the frontend config
+    Create the frontend config
     """
     from geonature.core.gn_commons.models import TModules
 

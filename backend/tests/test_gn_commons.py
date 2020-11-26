@@ -23,8 +23,9 @@ from geonature.utils.errors import GeoNatureError
 @pytest.mark.usefixtures("client_class")
 class TestAPIMedias:
     def _get_media(self, id_media):
-        response = self.client.get(url_for("gn_commons.get_media", id_media=id_media))
 
+        response = self.client.get('/gn_commons/media/' + str(id_media))
+    
         assert response.status_code == 200
 
     def _save_media(self, config):
@@ -32,8 +33,9 @@ class TestAPIMedias:
         result = DB.engine.execute(sql)
         for r in result:
             id_nomenclature_media = r[0]
+        file_name = Path(BACKEND_DIR, 'tests/test.jpg')
         data = {
-            "file": (io.BytesIO(b"my file contents"), "hello world.txt"),
+            "file": (open(file_name, 'rb'), "hello world.txt"),
             "isFile": True,
             "id_nomenclature_media_type": id_nomenclature_media,
             "id_table_location": 1,
@@ -42,7 +44,7 @@ class TestAPIMedias:
         }
 
         response = self.client.post(
-            url_for("gn_commons.insert_or_update_media",),
+            '/gn_commons/media',
             data=data,
             content_type="multipart/form-data",
         )
@@ -61,14 +63,14 @@ class TestAPIMedias:
         data["url"] = "http://codebasicshub.com/uploads/lang/py_pandas.png"
         response = post_json(
             self.client,
-            url_for("gn_commons.insert_or_update_media", id_media=data["id_media"]),
+            '/gn_commons/media/' + str(data["id_media"]),
             data,
         )
         assert response.status_code == 200
 
     def _delete_media(self, id_media):
         response = self.client.delete(
-            url_for("gn_commons.insert_or_update_media", id_media=id_media),
+        '/gn_commons/media/' + str(id_media),
         )
         # response = requests.delete(
         #     '{}/gn_commons/media/{}'.format(
@@ -105,25 +107,26 @@ class TestAPIGNCommons:
     def test_get_t_mobile_apps(self):
         self._create_config_files()
         #  with app code query string must return a dict
-
+        url = url_for("gn_commons.get_t_mobile_apps")
         query_string = {"app_code": "OCCTAX"}
         response = self.client.get(
-            url_for("gn_commons.get_t_mobile_apps"), query_string=query_string
+            url, query_string=query_string
         )
         assert response.status_code == 200
         data = json_of_response(response)
         assert type(data) is dict
 
         # with to app_code must return an array
-        response = self.client.get(url_for("gn_commons.get_t_mobile_apps"))
+        response = self.client.get(url)
         assert response.status_code == 200
         data = json_of_response(response)
         assert type(data) is list
 
     def test_module_orders(self):
+        url = url_for("gn_commons.get_modules")
         token = get_token(self.client, login="admin", password="admin")
         self.client.set_cookie("/", "token", token)
-        response = self.client.get(url_for("gn_commons.get_modules"))
+        response = self.client.get(url)
         assert response.status_code == 200
         data = json_of_response(response)
         assert type(data) is list
@@ -133,8 +136,8 @@ class TestAPIGNCommons:
         assert data[1]["module_code"] == "OCCTAX"
 
         # test order by alphabetic
-        current_module = None
+        previous_module = None
         for module in data[2 : len(data) - 1]:
-            if current_module:
-                assert current_module < module["module_label"]
-            current_module = module["module_label"]
+            if previous_module:
+                assert previous_module < module["module_label"].upper()
+            previous_module = module["module_label"].upper()
