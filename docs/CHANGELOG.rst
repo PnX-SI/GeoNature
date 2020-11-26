@@ -16,7 +16,7 @@ CHANGELOG
 
 **🐛 Corrections**
 
-* Synthèse : function import_row_from_table test sur LOWER(tbl_name) 
+* Synthèse : fonction ``import_row_from_table``: test sur LOWER(tbl_name) 
 
 
 **⚠️ Notes de version**
