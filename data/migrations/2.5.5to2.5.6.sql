@@ -4,6 +4,7 @@ ALTER TABLE gn_synthese.synthese
 ALTER TABLE ONLY gn_synthese.synthese
     ADD CONSTRAINT fk_synthese_id_nomenclature_biogeo_status FOREIGN KEY (id_nomenclature_biogeo_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
+ALTER TABLE gn_synthese.synthese ALTER COLUMN reference_biblio TYPE TEXT; 
 
 CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_calculate_sensitivity() RETURNS TRIGGER
   LANGUAGE plpgsql
