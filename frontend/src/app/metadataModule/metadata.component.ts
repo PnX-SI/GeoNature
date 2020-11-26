@@ -63,6 +63,7 @@ export class MetadataComponent implements OnInit {
   pageSizeOptions: Array<number> = [10, 25, 50, 100];
 
   searchTerms: any = {};
+  afModalId: number;
 
   constructor(
     public _cruvedStore: CruvedStoreService,
@@ -220,8 +221,6 @@ export class MetadataComponent implements OnInit {
     this.modal.open(searchModal);
   }
 
-
-
   closeSearchModal() {
     this.modal.dismissAll();
   }
@@ -254,6 +253,19 @@ export class MetadataComponent implements OnInit {
       }
     };
     this._router.navigate(['/synthese'], navigationExtras);
+  }
+
+  openPublishModalAf(e, af_id, publishModal) {
+    this.afModalId = af_id;
+    this.modal.open(publishModal);
+    e.stopPropagation();
+  }
+
+  publishAf() {
+    this._dfs.publishAf(this.afModalId).subscribe(
+      res => this.getAcquisitionFrameworksAndDatasets()
+    );
+    this.modal.dismissAll();
   }
 
   deleteDs(ds_id) {

@@ -137,4 +137,12 @@ export class DatasetFormComponent implements OnInit {
       );
     }
   }
+
+  filterAfNotClosed() {
+    if (this.acquisitionFrameworks == null) {
+      return [];
+    } else {
+      return this.acquisitionFrameworks.filter(af => af.is_closed === false);
+    }
+  }
 }

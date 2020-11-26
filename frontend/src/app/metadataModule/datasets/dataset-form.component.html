@@ -22,7 +22,7 @@
               [formControl]="datasetForm.controls.id_acquisition_framework"
             >
               <option
-                *ngFor="let ac of acquisitionFrameworks"
+                *ngFor="let ac of filterAfNotClosed()"
                 [ngValue]="ac.id_acquisition_framework"
               >
                 {{ac.acquisition_framework_name}}

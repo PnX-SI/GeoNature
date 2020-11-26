@@ -103,7 +103,7 @@
                   </div>
                 </section>
 
-                <div class="col-md-1">
+                <div class="col-md-2">
                   <button
                     mat-icon-button
                     [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]"
@@ -121,6 +121,21 @@
                     <mat-icon> create</mat-icon>
                   </button>
 
+                  <button
+                    mat-icon-button
+                    [disabled]="!af.cruved.V || af.is_closed"
+                    (click)="openPublishModalAf($event, af.id_acquisition_framework, publishModal)"
+                  >
+                    <mat-icon
+                      *ngIf="af.is_closed; else elsePublish"
+                      matTooltip="Le cadre d'acquisition est déjà publié et ne peut l'être à nouveau"
+                    > save_alt </mat-icon>
+                    <ng-template #elsePublish>
+                      <mat-icon
+                        matTooltip="Publier le cadre d'acquisition"
+                      > save_alt </mat-icon>
+                    </ng-template>
+                  </button>
 
                 </div>
 
@@ -395,6 +410,52 @@
         color="primary"
         (click)="c()"
       > Fermer </button>
+    </div>
+    <br>
+  </div>
+
+</ng-template>
+
+<ng-template
+  #publishModal
+  let-c="close"
+  let-d="dismiss"
+>
+  <div class="modal-header bg-danger">
+    <h5
+      class="modal-title text-white"
+      id="publishModalLabel"
+    >Dépôt légal des données de biodiversité</h5>
+  </div>
+
+  <div
+    class="modal-body"
+    style="align-items: flex-end;"
+  >
+    <div class="col">
+      <span>
+        <p style="text-align: justify;">L'action de dépôt légal est une action irréversible.</p>
+        <p>Il ne sera plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite.</p>
+        <p>Vous ne pourrez pas supprimer votre dépôt.</p>
+      </span>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+    </div>
+    <div class="col-md-6 text-center">
+      <button
+        mat-raised-button
+        color="warn"
+        class="mr-1"
+        (click)="c()"
+      > Annuler </button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="publishAf()"
+      > Confirmer </button>
     </div>
     <br>
   </div>

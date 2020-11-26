@@ -17,7 +17,7 @@ from flask import (
     copy_current_request_context,
     Response,
 )
-from sqlalchemy.sql import text, exists, select
+from sqlalchemy.sql import text, exists, select, update
 from sqlalchemy.sql.functions import func
 
 
@@ -32,6 +32,7 @@ from geonature.core.ref_geo.models import LAreas
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.tools import InsufficientRightsError
+from pypnusershub.db.models import User
 
 from binascii import a2b_base64
 
@@ -62,6 +63,7 @@ from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from geonature.core.gn_meta import mtd_utils
 import geonature.utils.filemanager as fm
+import geonature.utils.utilsmails as mail
 
 
 import threading
@@ -1102,6 +1104,66 @@ def post_acquisition_framework(info_role):
     DB.session.commit()
     return af.as_dict()
 
+def publish_acquisition_framework_mail(af, info_role):
+    """
+    Method for sending a mail during the publication process
+    .. :quickref: Metadata;
+    """
+    mail_subject = "[DEPOBIO] Publication du cadre d'acquisition {0} pour le dossier [n°TPS]"
+    mail_subject = mail_subject.format(str(af.unique_acquisition_framework_id))
+
+    mail_text = """Bonjour,<br>
+<br>
+Le cadre d'acquisition {0} dont l’identifiant est {1} que vous nous avez transmis dans le cadre du dossier [n°TPS] a été
+publié sur la plateforme de dépôt légal des données brutes de biodiversité et transmis à la plateforme nationale du
+SINP qui va procéder à son intégration dans l’INPN.<br>
+<br>
+Vous trouverez le certificat de dépôt du cadre d'acquisition à cette adresse qui doit être reportée dans la procédure
+Demarches-simplifiees.fr :<br>
+[URL_JDD_PDF]<br>ide
+Toutes les informations concernant le cadre d'acquisition déposé sont disponibles à cette adresse :<br>
+[URL_JDD]<br>
+<br>
+Bien cordialement,<br>
+Téléservice DEPOBIO"""
+    mail_text = mail_text.format(af.acquisition_framework_name, str(af.unique_acquisition_framework_id))
+
+    mail_recipients = []
+    current_user_email = DB.session.query(User.email).filter(User.id_role == info_role.id_role).first()[0]
+    digitizer_email = DB.session.query(User.email).filter(User.id_role == af.id_digitizer).first()[0]
+
+    mail_recipients.append(current_user_email)
+    if current_user_email != digitizer_email:
+        mail_recipients.append(digitizer_email)
+
+    mail.send_mail(mail_recipients, mail_subject, mail_text)
+
+@routes.route("/acquisition_framework/publish/<int:af_id>", methods=["GET"])
+@permissions.check_cruved_scope("E", True, module_code="METADATA")
+@json_resp
+def publish_acquisition_framework(info_role, af_id):
+    """
+    Publish an acquisition framework
+    .. :quickref: Metadata;
+    """
+    if info_role.value_filter == "0":
+        raise InsufficientRightsError(
+            ('User "{}" cannot "{}" an acquisition_framework').format(
+                info_role.id_role, info_role.code_action
+            ),
+            403,
+        )
+
+    # After publishing an AF, we set it as closed and all its DS as inactive
+    TDatasets.query.filter_by(id_acquisition_framework=af_id).update(dict(active=False))
+    TAcquisitionFramework.query.filter_by(id_acquisition_framework=af_id).update(dict(is_closed=True))
+
+    af = DB.session.query(TAcquisitionFramework).filter(TAcquisitionFramework.id_acquisition_framework==af_id).first()
+    publish_acquisition_framework_mail(af, info_role)
+
+    DB.session.commit()
+
+    return "OK"
 
 def get_cd_nomenclature(id_type, cd_nomenclature):
     query = "SELECT ref_nomenclatures.get_id_nomenclature(:id_type, :cd_n)"

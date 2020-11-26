@@ -555,6 +555,10 @@ export class DataFormService {
     return this._http.delete<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${af_id}`);
   }
 
+  publishAf(af_id) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework/publish/${af_id}`);
+  }
+
   deleteDs(ds_id) {
     return this._http.delete<any>(`${AppConfig.API_ENDPOINT}/meta/dataset/${ds_id}`);
   }
