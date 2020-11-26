@@ -141,6 +141,10 @@ div.titre {
   font-weight: bold;
 }
 
+.fiche-descriptive table {
+  font-size: 10px;
+}
+
 .ca-initial {
   text-align: center;
   margin: 3px auto 5px;
@@ -229,6 +233,10 @@ div.titre {
 .logo-jdd {
   height: 30px;
   width: 30px;
+}
+
+.import-block {
+  font-size:10px
 }
 
 .jdd-info {
