@@ -21,6 +21,7 @@ CHANGELOG
 **⚠️ Notes de version**
 
 * Si vous aviez fait des customisations (logo, PDF export...) alors XXXXXX
+* Si des vues utilisent la colonne ``gn_synthese.synthese.refence_biblio`` (par exemple ``v_synthese_for_web_app`` et ``gn_commons.v_synthese_validation_forwebapp``), celles-ci doivent être supprimées (DROP) et recrées
 * Revoir http://docs.geonature.fr/admin-manual.html#integrer-son-logo ?
 
 2.5.5 (2020-11-19)
