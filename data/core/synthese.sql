@@ -593,32 +593,20 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
-CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese()
+CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese_on_each_statement()
   RETURNS trigger AS
 $BODY$
   DECLARE
-  id_area_loop integer;
-  geom_change boolean;
   BEGIN
-  geom_change = false;
-  IF(TG_OP = 'UPDATE') THEN
-	SELECT INTO geom_change NOT public.ST_EQUALS(OLD.the_geom_local, NEW.the_geom_local);
-  END IF;
-
-  IF (geom_change) THEN
-	DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = NEW.id_synthese;
-  END IF;
-
   -- Intersection avec toutes les areas et écriture dans cor_area_synthese
-    IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND geom_change )) THEN
-      INSERT INTO gn_synthese.cor_area_synthese SELECT
-	      s.id_synthese AS id_synthese,
-        a.id_area AS id_area
-        FROM ref_geo.l_areas a
-        JOIN gn_synthese.synthese s
-        	ON public.ST_INTERSECTS(s.the_geom_local, a.geom)  AND NOT public.ST_TOUCHES(s.the_geom_local,a.geom)
-        WHERE s.id_synthese = NEW.id_synthese AND a.enable IS true;
-    END IF;
+      INSERT INTO gn_synthese.cor_area_synthese 
+        SELECT
+          updated_rows.id_synthese AS id_synthese,
+          a.id_area AS id_area
+        FROM gn_synthese.synthese as updated_rows
+        JOIN ref_geo.l_areas a
+          ON public.ST_INTERSECTS(updated_rows.the_geom_local, a.geom)  
+        WHERE a.enable IS TRUE AND (ST_GeometryType(updated_rows.the_geom_local) = 'ST_Point' OR NOT public.ST_TOUCHES(updated_rows.the_geom_local,a.geom));
   RETURN NULL;
   END;
   $BODY$
@@ -635,9 +623,15 @@ BEGIN
   -- on supprime cor_area_taxon et recree à chaque fois
     -- cela evite de regarder dans cor_area_taxon s'il y a deja une ligne, de faire un + 1  ou -1 sur nb_obs etc...
     IF (TG_OP = 'INSERT') THEN
-      DELETE FROM gn_synthese.cor_area_taxon WHERE cd_nom = the_cd_nom AND id_area IN (NEW.id_area);
+      DELETE FROM gn_synthese.cor_area_taxon cor
+      USING NEW as new_rows
+      JOIN gn_synthese.synthese s ON s.id_synthese = new_rows.id_synthese
+      WHERE cor.cd_nom = s.cd_nom AND cor.id_area = new_rows.id_area
     ELSE
-      DELETE FROM gn_synthese.cor_area_taxon WHERE cd_nom = the_cd_nom AND id_area IN (NEW.id_area, OLD.id_area);
+      DELETE FROM gn_synthese.cor_area_taxon cor
+      USING NEW as new_rows
+      JOIN gn_synthese.synthese s ON s.id_synthese = new_rows.id_synthese
+      WHERE cor.cd_nom = s.cd_nom AND cor.id_area = new_rows.id_area OR cor.id_area IN (SELECT id_area FROM OLD)
     END IF;
     -- puis on réinsert
     -- on récupère la dernière date de l'obs dans l'aire concernée depuis cor_area_synthese et synthese
@@ -645,7 +639,8 @@ BEGIN
     SELECT id_area, s.cd_nom,  max(s.date_min) AS last_date, count(s.id_synthese) AS nb_obs
     FROM gn_synthese.cor_area_synthese cor
     JOIN gn_synthese.synthese s ON s.id_synthese = cor.id_synthese
-    WHERE s.cd_nom = the_cd_nom AND id_area = NEW.id_area
+    JOIN NEW as new_rows ON new_rows.id_synthese = s.id_synthese
+    WHERE s.cd_nom = new_rows.id_synthese AND id_area = new_rows.id_area
     GROUP BY id_area, s.cd_nom;
     RETURN NULL;
 END;
@@ -1128,11 +1123,11 @@ CREATE TRIGGER trg_maj_synthese_observers_txt
   EXECUTE PROCEDURE gn_synthese.fct_tri_maj_observers_txt();
 
 
-CREATE TRIGGER tri_insert_cor_area_synthese
-  AFTER INSERT OR UPDATE OF the_geom_local
-  ON gn_synthese.synthese
-  FOR EACH ROW
-  EXECUTE PROCEDURE gn_synthese.fct_trig_insert_in_cor_area_synthese();
+ CREATE TRIGGER tri_insert_cor_area_synthese
+  AFTER insert ON gn_synthese.synthese
+  REFERENCING NEW TABLE AS NEW
+  FOR EACH STATEMENT
+  EXECUTE PROCEDURE gn_synthese.fct_trig_insert_in_cor_area_synthese_on_each_statement();
 
 -- trigger insertion ou update sur cor_area_syntese - déclenché après insert ou update sur cor_area_synthese
 CREATE TRIGGER tri_maj_cor_area_taxon
