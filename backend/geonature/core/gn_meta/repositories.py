@@ -38,7 +38,7 @@ def cruved_filter(q, model, info_role):
             getattr(model, "id_digitizer") == info_role.id_role,
             CorDatasetActor.id_role == info_role.id_role,
         ]
-        if not CorDatasetActor in [mapper.class_ for mapper in query._join_entities]:
+        if not CorDatasetActor in [mapper.class_ for mapper in q._join_entities]:
             q = q.outerjoin(
                 CorDatasetActor, CorDatasetActor.id_dataset == getattr(model, "id_dataset")
             )
