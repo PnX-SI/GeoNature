@@ -133,12 +133,14 @@ export class DynamicFormService {
   }
 
   addNewControl(formDef, formGroup: FormGroup) {
+    //Mise en fonction des valeurs des dynamic-form ex: "hidden: "({value}) => value.monChamps != 'maValeur'""
     for (const keyParam of Object.keys(formDef)) {
       const func = this.toFunction(formDef[keyParam])
       if(func) {
         formDef[keyParam] = func;  
       }
     }
+    
     if (formDef.type_widget !== 'html') {
       let control = this.createControl(formDef);
       formGroup.addControl(formDef.attribut_name, control);
