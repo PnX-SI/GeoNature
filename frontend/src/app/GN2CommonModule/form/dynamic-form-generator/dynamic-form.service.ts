@@ -140,7 +140,7 @@ export class DynamicFormService {
         formDef[keyParam] = func;  
       }
     }
-    
+
     if (formDef.type_widget !== 'html') {
       let control = this.createControl(formDef);
       formGroup.addControl(formDef.attribut_name, control);
@@ -172,7 +172,9 @@ export class DynamicFormService {
    * 
    * @param s chaine de caractere
    */
-  toFunction(s) {
+  toFunction(s_in) {
+    //En cas de tableau de fonction, on les joint (utile pour fonction complexe)
+    let s = Array.isArray(s_in) ? s_in.join("\n") : s_in;
     if(! (typeof(s) == 'string')) {
       return
     }
