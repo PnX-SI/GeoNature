@@ -227,7 +227,7 @@ export class OcctaxFormOccurrenceService {
           }
         }
         
-        this.formFieldsStatus.bio_status = true;
+        //this.formFieldsStatus.bio_status = true;
         
         let NOMENCLATURES = [];
         if(hasDynamicFormOccurence){
