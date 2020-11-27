@@ -133,6 +133,12 @@ export class DynamicFormService {
   }
 
   addNewControl(formDef, formGroup: FormGroup) {
+    for (const keyParam of Object.keys(formDef)) {
+      const func = this.toFunction(formDef[keyParam])
+      if(func) {
+        formDef[keyParam] = func;  
+      }
+    }
     if (formDef.type_widget !== 'html') {
       let control = this.createControl(formDef);
       formGroup.addControl(formDef.attribut_name, control);
@@ -156,4 +162,34 @@ export class DynamicFormService {
 
     return formDefinitions;
   }
+  
+
+  /**
+   * Converti s en function js
+   *  
+   * 
+   * @param s chaine de caractere
+   */
+  toFunction(s) {
+    if(! (typeof(s) == 'string')) {
+      return
+    }
+
+    const tests = [ '(', ')', '{', '}', '=>']
+
+    if (!tests.every(test => s.includes(test))) {
+      return 
+    }
+
+    let func;
+
+    try {
+      func = eval(s);
+    } catch(error) {
+      console.error(`Erreur dans la définition de la fonction ${error}`);
+    }
+
+    return func;
+
+  } 
 }

@@ -145,9 +145,6 @@ export class OcctaxFormService {
   }
 
   getAddDynamiqueFields(idDataset){
-
-
-
     this.formDatasetFields = [];
     if(ModuleConfig.ADD_FIELDS){
       if(ModuleConfig.ADD_FIELDS.FORMFIELDS){
@@ -158,22 +155,6 @@ export class OcctaxFormService {
         })
       }
     }
-    
-    // gerer quand les paramètres ont un fonction comme valeur
-
-    for (const keyGroup of Object.keys(this.formDatasetFields)) {
-      const groupDef = this.formDatasetFields[keyGroup];
-      for (const keyDef of Object.keys(groupDef)) {
-        const formDef = groupDef[keyDef];
-        for (const keyParam of Object.keys(formDef)) {
-          const func = this.toFunction(formDef[keyParam])
-          if(func) {
-            formDef[keyParam] = func;  
-          }
-        }
-      }
-    }
-
     return this.formDatasetFields;
   }
 
@@ -185,33 +166,4 @@ export class OcctaxFormService {
       day: date.getDate(),
     };
   }
-
-  /**
-   * Converti s en function js
-   *  
-   * 
-   * @param s chaine de caractere
-   */
-  toFunction(s) {
-    if(! (typeof(s) == 'string')) {
-      return
-    }
-
-    const tests = [ '(', ')', '{', '}', '=>']
-
-    if (!tests.every(test => s.includes(test))) {
-      return 
-    }
-
-    let func;
-
-    try {
-      func = eval(s);
-    } catch(error) {
-      console.error(`Erreur dans la définition de la fonction ${error}`);
-    }
-
-    return func;
-
-  } 
 }
