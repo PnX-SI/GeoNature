@@ -1,8 +1,8 @@
 ###############################################################################
 # Liste complète des paramètres et de leurs valeurs par défaut
 # 
-# UTILISATION : piochez des paramètres dans ce fichier et intégrez les au
-#     fichier 'config/geonature_config.toml'.
+# UTILISATION : piochez les paramètres que vous souhaitez surcoucher dans ce 
+#     fichier et intégrez les au fichier 'config/geonature_config.toml'.
 #
 # ATTENTION : Les paramètres qui ne sont pas dans une section (entre crochets) 
 #     doivent être au début du fichier !
