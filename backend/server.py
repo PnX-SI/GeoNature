@@ -114,6 +114,10 @@ def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
 
         app.register_blueprint(routes, url_prefix="/synthese")
 
+        from geonature.core.gn_synthese.exchanges.api import routes
+
+        app.register_blueprint(routes, url_prefix="/exchanges")
+
         from geonature.core.gn_meta.routes import routes
 
         app.register_blueprint(routes, url_prefix="/meta")
