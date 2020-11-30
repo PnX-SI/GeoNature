@@ -17,28 +17,18 @@ import { CommonService } from "@geonature_common/service/common.service";
 })
 export class ValidationModalInfoObsComponent implements OnInit {
   public selectObsTaxonInfo;
-  public selectedObsTaxonDetail; // TO DEL
-  public validationHistory: any; // TO DEL
-  public SYNTHESE_CONFIG = AppConfig.SYNTHESE; // TO DEL
-  public APP_CONFIG = AppConfig; //TO DEL
   public filteredIds;
-  public formatedAreas = []; // TO DEL
   public position;
-  public lastFilteredValue; // TO DEL non utilisé
   public isNextButtonValid: any;
   public isPrevButtonValid: any;
   public VALIDATION_CONFIG = ModuleConfig;
   public statusForm: FormGroup;
-  public edit; // Toujours à false ?
+  public edit = false;
   public validationStatus;
   public MapListService;
-  public email; // TO DEL
-  public mailto: String; // TO DEL
-  public showEmail; // ??? A VOIR
   public validationDate;
   public currentCdNomenclature;
 
-  @Input() selectedObs: any; // TO DEL
   @Input() id_synthese: any;
   @Input() uuidSynthese: any;
   @Output() modifiedStatus = new EventEmitter();
@@ -46,9 +36,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
 
   constructor(
     public mapListService: MapListService,
-    private _gnDataService: DataFormService, // TO DEL
     private _validatioDataService: ValidationDataService,
-    private _syntheseDataService: SyntheseDataService, // TO DEL
     public activeModal: NgbActiveModal,
     private _fb: FormBuilder,
     private _commonService: CommonService,
@@ -72,9 +60,6 @@ export class ValidationModalInfoObsComponent implements OnInit {
 
     // disable nextButton or previousButton if first last observation selected
     this.activateNextPrevButton(this.filteredIds.indexOf(this.id_synthese));
-
-    this.edit = false;
-    this.showEmail = false;
   }
 
   setCurrentCdNomenclature(item) {
@@ -113,7 +98,6 @@ export class ValidationModalInfoObsComponent implements OnInit {
 
 
   changeObsIndex(increment: bigint) {
-    this.showEmail = false;
     // add 1 to find new position
     this.position = this.filteredIds.indexOf(this.id_synthese) + increment;
     // disable next button if last observation
@@ -129,13 +113,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
     this.edit = false;
   }
 
-  isEmail() { // TO DEL ??
-    this.showEmail = true;
-    return this.showEmail;
-  }
-
   closeModal() {
-    this.showEmail = false; // TO DEL ??
     this.activeModal.close();
   }
 
