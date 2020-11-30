@@ -45,7 +45,11 @@ CREATE TRIGGER tri_maj_id_sensitivity_synthese
 -- synthese 
 
 ALTER TABLE gn_synthese.synthese
+DROP CONSTRAINT IF EXISTS check_synthese_biogeo_status;
+ALTER TABLE gn_synthese.synthese
   ADD CONSTRAINT check_synthese_biogeo_status CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_biogeo_status,'STAT_BIOGEO')) NOT VALID;
+ALTER TABLE ONLY gn_synthese.synthese
+DROP CONSTRAINT IF EXISTS fk_synthese_id_nomenclature_biogeo_status;
 
 ALTER TABLE ONLY gn_synthese.synthese
     ADD CONSTRAINT fk_synthese_id_nomenclature_biogeo_status FOREIGN KEY (id_nomenclature_biogeo_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;

@@ -268,7 +268,7 @@ BEGIN
     RETURN cd_nomenclature_diffusion_level;
   END IF;
 END;
-$function$
+$function$;
 
 
 -- Table permettant de stocker la sensibilité d'une donnée issue de la synthèse
