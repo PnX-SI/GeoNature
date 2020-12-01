@@ -50,8 +50,8 @@ export class OcctaxFormOccurrenceService {
       id_nomenclature_observation_status: null,
       id_nomenclature_blurring: null,
       id_nomenclature_source_status: null,
-      determiner: [null, Validators.required],
-      id_nomenclature_determination_method: [null, Validators.required],
+      determiner: null,
+      id_nomenclature_determination_method: null,
       nom_cite: [null, Validators.required],
       cd_nom: [null, Validators.required],
       meta_v_taxref: null,
@@ -118,7 +118,7 @@ export class OcctaxFormOccurrenceService {
             .get("digital_proof")
             .setValidators(
               ModuleConfig.digital_proof_validator ?
-                Validators.pattern("^(http://|https://|ftp://){1}.+$") : 
+                Validators.pattern("^(http://|https://|ftp://){1}.+$") :
                 []
             );
           this.form.get("non_digital_proof").setValidators([]);
