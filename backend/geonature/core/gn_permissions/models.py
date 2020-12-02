@@ -1,7 +1,7 @@
 """
 Modèles du schema gn_permissions
 """
-
+import enum
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.sql import select
@@ -94,13 +94,20 @@ class CorRoleActionFilterModuleObject(DB.Model):
     id_permission = DB.Column(DB.Integer, primary_key=True)
     id_role = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
     id_action = DB.Column(DB.Integer, ForeignKey("gn_permissions.t_actions.id_action"))
-    id_filter = DB.Column(DB.Integer, ForeignKey("gn_permissions.t_filters.id_filter"))
+    id_filter = DB.Column(DB.Integer, ForeignKey("gn_permissions.t_filters.id_filter"))# TODO: remove this line
     id_module = DB.Column(DB.Integer, ForeignKey("gn_commons.t_modules.id_module"))
     id_object = DB.Column(
         DB.Integer,
         ForeignKey("gn_permissions.t_objects.id_object"),
         default=select([TObjects.id_object]).where(TObjects.code_object == "ALL"),
     )
+    gathering = DB.Column(UUID(as_uuid=True), server_default="uuid_generate_v4()")
+    end_date = DB.Column(DB.DateTime)
+    id_filter_type = DB.Column(
+        DB.Integer,
+        ForeignKey("gn_permissions.bib_filters_type.id_filter_type"),
+    )
+    value_filter = DB.Column(DB.Unicode)
 
     role = DB.relationship(
         User,
@@ -128,25 +135,14 @@ class CorRoleActionFilterModuleObject(DB.Model):
         primaryjoin=(TObjects.id_object == id_object),
         foreign_keys=[id_object],
     )
+    cor_filter = DB.relationship(
+        BibFiltersType,
+        primaryjoin=(BibFiltersType.id_filter_type == id_filter_type),
+        foreign_keys=[id_filter_type],
+    )
 
-    def is_permission_already_exist(
-        self, id_role, id_action, id_module, id_filter_type, value_filter, id_object=1
-    ):
-        """ Retourne la première permission trouvée pour un utilisateur,
-            une action, un module et un type de filtre.
-
-            Parameters
-            ----------
-            id_role : int
-                Identifiant de l'utilisateur (=role)
-            id_action : int
-                Identifiant de l'action.
-            id_module : int
-                Identifiant du module.
-            id_filter_type : int
-                Identifiant du type de filtre.
-            id_object : int, optional
-                Identifiant de l'objet.
+    def is_permission_already_exist(self):
+        """ Retourne la première permission trouvée correspondant à l'objet courant.
 
             Returns
             -------
@@ -154,17 +150,20 @@ class CorRoleActionFilterModuleObject(DB.Model):
                 Un objet CorRoleActionFilterModuleObject s'il existe ou sinon None.
         """
         privilege = {
-            "id_role": id_role,
-            "id_action": id_action,
-            "id_module": id_module,
-            "id_object": id_object,
+            "id_role": self.id_role,
+            "id_action": self.id_action,
+            "id_module": self.id_module,
+            "id_object": self.id_object,
+            "end_date": self.end_date,
+            "id_filter_type": self.id_filter_type,
+            "value_filter": self.value_filter,
         }
         return (
             DB.session.query(CorRoleActionFilterModuleObject)
             .filter_by(**privilege)
             .join(TFilters, TFilters.id_filter == CorRoleActionFilterModuleObject.id_filter)
-            .filter(TFilters.id_filter_type == id_filter_type)
-            .filter(TFilters.value_filter == value_filter)
+            .filter(TFilters.id_filter_type == self.id_filter_type)
+            .filter(TFilters.value_filter == self.value_filter)
             .first()
         )
 
@@ -178,54 +177,10 @@ class CorObjectModule(DB.Model):
     id_module = DB.Column(DB.Integer)
 
 
-@serializable
-class CorRequestsPermissions(DB.Model):
-    __tablename__ = "cor_requests_permissions"
-    __table_args__ = {"schema": "gn_permissions"}
-    id_request_permission = DB.Column(DB.Integer, primary_key=True)
-    id_request = DB.Column(
-        DB.Integer,
-        ForeignKey("gn_permissions.t_requests.id_request"),
-    )
-    id_module = DB.Column(
-        DB.Integer,
-        ForeignKey("gn_commons.t_modules.id_module"),
-    )
-    id_action = DB.Column(
-        DB.Integer,
-        ForeignKey("gn_permissions.t_actions.id_action"),
-    )
-    id_object = DB.Column(
-        DB.Integer,
-        ForeignKey("gn_permissions.t_objects.id_object"),
-    )
-    id_filter_type = DB.Column(
-        DB.Integer,
-        ForeignKey("gn_permissions.bib_filters_type.id_filter_type"),
-    )
-    value_filter = DB.Column(DB.Unicode)
-
-    cor_module = DB.relationship(
-        TModules,
-        primaryjoin=(TModules.id_module == id_module),
-        foreign_keys=[id_module],
-    )
-    cor_action = DB.relationship(
-        TActions,
-        primaryjoin=(TActions.id_action == id_action),
-        foreign_keys=[id_action],
-    )
-    cor_object = DB.relationship(
-        TObjects,
-        primaryjoin=(TObjects.id_object == id_object),
-        foreign_keys=[id_object],
-    )
-    cor_filter = DB.relationship(
-        BibFiltersType,
-        primaryjoin=(BibFiltersType.id_filter_type == id_filter_type),
-        foreign_keys=[id_filter_type],
-    )
-
+class RequestStates(str, enum.Enum):
+    pending: str = "pending"
+    refused: str = "refused"
+    accepted: str = "accepted"
 
 @serializable
 class TRequests(DB.Model):
@@ -235,18 +190,16 @@ class TRequests(DB.Model):
     id_role = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
     token = DB.Column(UUID(as_uuid=True), server_default="uuid_generate_v4()")
     end_date = DB.Column(DB.DateTime)
-    accepted = DB.Column(DB.Boolean)
-    accepted_date = DB.Column(DB.DateTime)
+    processed_state = DB.Column(DB.Enum(RequestStates))
+    processed_date = DB.Column(DB.DateTime)
+    processed_by = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
+    refusal_reason = DB.Column(DB.Unicode(length=1000))
+    geographic_filter = DB.Column(DB.Unicode)
+    taxonomic_filter = DB.Column(DB.Unicode)
+    sensitive_access = DB.Column(DB.Boolean, default=False)
     additional_data = DB.Column(JSONB)
     meta_create_date = DB.Column(DB.DateTime, default="now()")
     meta_update_date = DB.Column(DB.DateTime, default="now()")
-
-    cor_permissions = DB.relationship(
-        CorRequestsPermissions,
-        lazy="joined",
-        primaryjoin=(CorRequestsPermissions.id_request == id_request),
-        foreign_keys=[CorRequestsPermissions.id_request],
-    )
 
     cor_role = DB.relationship(
         User,

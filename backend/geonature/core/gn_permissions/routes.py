@@ -6,6 +6,7 @@ from copy import copy
 import datetime
 import json
 import locale
+import logging
 import random
 
 from flask import (
@@ -19,28 +20,33 @@ from flask import (
     redirect,
     jsonify
 )
+from sqlalchemy import or_
+from sqlalchemy.orm import (aliased, noload)
+from sqlalchemy.orm.exc import NoResultFound
 from utils_flask_sqla.response import json_resp
 from pypnusershub.db.models import User
-from sqlalchemy.orm.exc import NoResultFound
 
-from geonature.utils.env import DB
-from geonature.utils.utilsmails import send_mail
 from geonature.core.gn_commons.models import TModules
 from geonature.core.ref_geo.models import LAreas, BibAreasTypes
 from geonature.core.taxonomie.models import Taxref
+from geonature.core.users.models import BibOrganismes
+from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.models import (
     BibFiltersType,
     CorObjectModule,
-    CorRequestsPermissions,
     CorRoleActionFilterModuleObject,
     TActions,
     TFilters,
     TObjects,
     TRequests,
+    RequestStates,
 )
-from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
+from geonature.utils.env import DB
+from geonature.utils.utilsmails import send_mail
 
+
+log = logging.getLogger(__name__)
 
 routes = Blueprint("gn_permissions", __name__, template_folder="templates")
 
@@ -142,30 +148,21 @@ def post_access_request(info_role):
 
     # Transform received data
     data = dict(request.get_json())
+    end_access_date = format_end_access_date(data["end_access_date"])
+    geographic_filter = build_value_filter_from_list(unduplicate_values(data["areas"]))
+    taxonomic_filter = build_value_filter_from_list(unduplicate_values(data["taxa"]))
     user_id = info_role.id_role
 
     # Prepare TRequests
     trequest = TRequests(**{
         "id_role": user_id,
-        "end_date": format_end_access_date(data),
-        "additional_data": format_additional_data(data),
+        "end_date": end_access_date,
+        "processed_state": RequestStates.pending,
+        "additional_data": data["additional_data"],
+        "geographic_filter": geographic_filter,
+        "taxonomic_filter": taxonomic_filter,
+        "sensitive_access": data["sensitive_access"],
     })
-
-    # Prepare permissions link to TRequests
-    if (len(data["areas"]) > 0):
-        permission = get_geographic_permission()
-        permission.value_filter = build_value_filter_from_list(data["areas"])
-        trequest.cor_permissions.append(permission)
-
-    if (len(data["taxa"]) > 0):
-        permission = get_taxonomic_permission()
-        permission.value_filter = build_value_filter_from_list(data["taxa"])
-        trequest.cor_permissions.append(permission)
-
-    if (data["sensitive_access"] is True):
-        permission = get_sensitivity_permission()
-        permission.value_filter = "true"
-        trequest.cor_permissions.append(permission)
 
     # Write request_data in database
     DB.session.add(trequest)
@@ -186,9 +183,8 @@ def post_access_request(info_role):
     return response, 200
 
 
-def format_end_access_date(data, date_format="%Y-%m-%d"):
+def format_end_access_date(end_date, date_format="%Y-%m-%d"):
     formated_end_date = None
-    end_date = data["end_access_date"]
     if (end_date):
         # TODO : see how to define locale globaly => bug with python 3.7?
         print(f"Current locale: {locale.getlocale(locale.LC_TIME)}")
@@ -198,51 +194,10 @@ def format_end_access_date(data, date_format="%Y-%m-%d"):
     return formated_end_date
 
 
-def format_additional_data(data):
-    raw_data = data.copy()
-    raw_data.pop("additional_data", None)
-    data["additional_data"]["originalRawData"] = raw_data
-    return data["additional_data"]
-
-
-def build_value_filter_from_list(data):
+def unduplicate_values(data: list) -> list:
     unduplicated_data = []
     [unduplicated_data.append(x) for x in data if x not in unduplicated_data]
-    return ",".join(map(str, unduplicated_data))
-
-
-def get_geographic_permission():
-    return get_fresh_permission(filter_type_code="GEOGRAPHIC")
-
-
-def get_taxonomic_permission():
-    return get_fresh_permission(filter_type_code="TAXONOMIC")
-
-
-def get_sensitivity_permission():
-    return get_fresh_permission(filter_type_code="SENSITIVITY", object_code="SENSITIVE_OBSERVATION")
-
-
-def get_fresh_permission(
-    filter_type_code,
-    module_code="SYNTHESE",
-    action_code="R",
-    object_code="PRIVATE_OBSERVATION"
-):
-    permission_module = DB.session.query(TModules).filter(TModules.module_code == module_code).one()
-    permission_action = DB.session.query(TActions).filter(TActions.code_action == action_code).one()
-    permission_object = DB.session.query(TObjects).filter(TObjects.code_object == object_code).one()
-    permission_filter_type = (DB.session
-        .query(BibFiltersType)
-        .filter(BibFiltersType.code_filter_type == filter_type_code)
-        .one()
-    )
-    return CorRequestsPermissions(
-        id_module=permission_module.id_module,
-        id_action=permission_action.id_action,
-        id_object=permission_object.id_object,
-        id_filter_type=permission_filter_type.id_filter_type,
-    )
+    return unduplicated_data
 
 
 def send_email_after_access_request(data, user_id, request_token):
@@ -268,12 +223,12 @@ def render_request_approval_tpl(user_id, data, request_token):
     return render_template(
         template,
         app_name=current_app.config["appName"],
-        end_date=format_end_access_date(data, date_format="%x"),
+        end_date=format_end_access_date(data["end_access_date"], date_format="%x"),
         user=get_user_infos(user_id),
-        geographic_filter_values=format_geographic_filter_values(data),
-        taxonomic_filter_values=format_taxonomic_filter_values(data),
+        geographic_filter_values=format_geographic_filter_values(data["areas"]),
+        taxonomic_filter_values=format_taxonomic_filter_values(data["taxa"]),
         sensitive_permission=data["sensitive_access"],
-        additional_fields=format_additional_fields(data),
+        additional_fields=format_additional_fields(data["additional_data"]),
         approval_url=approval_url,
         refusal_url=refusal_url,
         app_url = current_app.config["URL_APPLICATION"] + "/#/permissions/requests/pending",
@@ -287,15 +242,13 @@ def get_user_infos(user_id):
         .first()
         .as_dict()
     )
-    print(user)
     return user
 
 
-def format_geographic_filter_values(data):
+def format_geographic_filter_values(areas: [int]):
     formated_geo = []
-    if len(data["areas"]) > 0:
-        for area in get_areas_infos(data["areas"]):
-            print(f"Area: {area}")
+    if len(areas) > 0:
+        for area in get_areas_infos(areas):
             name = area["area_name"]
             code = area["area_code"]
             if area["type_code"] == "DEP":
@@ -306,7 +259,7 @@ def format_geographic_filter_values(data):
     return formated_geo
 
 
-def get_areas_infos(area_ids):
+def get_areas_infos(area_ids: [int]):
     data = (DB
         .session.query(
             LAreas.area_name,
@@ -320,17 +273,17 @@ def get_areas_infos(area_ids):
     return [row._asdict() for row in data]
 
 
-def format_taxonomic_filter_values(data):
+def format_taxonomic_filter_values(taxa: [int]):
     formated_taxonomic = []
-    if len(data["taxa"]) > 0:
-        for taxon in get_taxons_infos(data["taxa"]):
+    if len(taxa) > 0:
+        for taxon in get_taxons_infos(taxa):
             name = taxon["nom_complet_html"]
             code = taxon["cd_nom"]
             formated_taxonomic.append(f"{name} [{code}]")
     return formated_taxonomic
 
 
-def get_taxons_infos(taxon_ids):
+def get_taxons_infos(taxon_ids: [int]):
     data = (DB
         .session.query(Taxref)
         .filter(Taxref.cd_nom.in_(tuple(taxon_ids)))
@@ -340,29 +293,40 @@ def get_taxons_infos(taxon_ids):
 
 
 def format_additional_fields(data):
-    if data["additional_data"] is None:
+    if data is None:
         return []
 
-    attr_labels = build_dynamic_request_form_labels()
-    attr_labels_keys = attr_labels.keys()
+    attr_infos = build_dynamic_request_form_infos()
+    attr_keys = attr_infos.keys()
     formated_fields = []
-    for key, value in (data.get("additional_data") or {}).items():
-        if key in attr_labels_keys:
-            formated_fields.append({
+    for key, value in (data or {}).items():
+        if key in attr_keys:
+            cfg = {
                 "key": key,
-                "label": attr_labels.get(key),
+                "label": attr_infos.get(key)["label"],
                 "value": value,
-            })
+            }
+            for attr_infos_key, attr_infos_value in attr_infos.get(key).items():
+                cfg[attr_infos_key] = attr_infos_value
+            formated_fields.append(cfg)
     return formated_fields
 
 
-def build_dynamic_request_form_labels():
-    attr_labels = {}
+def build_dynamic_request_form_infos():
+    attr_infos = {}
     form_cfg = current_app.config["PERMISSION_MANAGEMENT"]["REQUEST_FORM"]
     for cfg in form_cfg:
-        if all(key in cfg for key in ("attribut_name", "attribut_label")):
-            attr_labels[cfg["attribut_name"]] = cfg["attribut_label"]
-    return attr_labels
+        if all(key in cfg for key in ("type_widget", "attribut_name", "attribut_label")):
+            attr_infos[cfg["attribut_name"]] = {
+                "type": cfg["type_widget"],
+                "label": cfg["attribut_label"],
+            }
+        if "icon" in cfg:
+            attr_infos[cfg["attribut_name"]]["icon"] = cfg["icon"]
+        if "icon_set" in cfg:
+            attr_infos[cfg["attribut_name"]]["iconSet"] = cfg["icon_set"]
+
+    return attr_infos
 
 
 @routes.route("/access_requests/<token>/<action>", methods=["GET"])
@@ -385,7 +349,7 @@ def manage_access_request_by_link(token, action):
     # Check "action" URL parameter values
     accepted_actions = ["approve", "refuse"]
     if action not in accepted_actions:
-        accepted_values_msg = f"Valeurs acceptées : {accepted_actions.join(', ')}."
+        accepted_values_msg = f"Valeurs acceptées : {', '.join(accepted_actions)}."
         response = {
             "message": f"Type d'action '{action}' inconnu. {accepted_values_msg}",
             "status": "error"
@@ -410,76 +374,36 @@ def manage_access_request_by_link(token, action):
         return response, 404
 
     # Check if access request was not already approved or refused
-    if request["accepted_date"]:
-        date = request['accepted_date']
-        status = 'acceptée' if request['accepted'] else 'refusée'
+    if request["processed_date"]:
+        date = request["processed_date"]
+        status = "acceptée" if request["processed_state"] == RequestStates.accepted else "refusée"
         msg = f"Demande de permission déjà {status} le {date}.",
         response = {"message": msg, "status": "error"}
         return response, 400
 
     # Update access request
-    accepted = (True if action == "approve" else False)
+    request["processed_state"] = (
+        RequestStates.accepted if action == "approve" else RequestStates.refused
+    )
+    request["processed_date"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     result = (DB.session
         .query(TRequests)
         .filter(TRequests.token == token)
         .update({
-            TRequests.accepted: accepted,
-            TRequests.accepted_date: datetime.datetime.now().date().strftime("%Y-%m-%d %H:%M:%S"),
+            TRequests.processed_state: request["processed_state"],
+            TRequests.processed_date: request["processed_date"],
         })
     )
 
-    # Copy asked permissions to authorized permissions table if request approve
-    result = (DB.session
-        .query(BibFiltersType.label_filter_type, CorRequestsPermissions)
-        .join(TRequests, CorRequestsPermissions.id_request == TRequests.id_request)
-        .join(BibFiltersType, CorRequestsPermissions.id_filter_type == BibFiltersType.id_filter_type)
-        .filter(TRequests.token == token)
-        .all()
-    )
-    data = [row._asdict() for row in result]
-
-    for d in data:
-        rp = d["CorRequestsPermissions"].as_dict()
-        permission = CorRoleActionFilterModuleObject(**{
-            "id_role": request["id_role"],
-            "id_action": rp["id_action"],
-            #"id_filter_type": rp["id_filter_type"], # For next gn_permissions version
-            "id_module": rp["id_module"],
-            "id_object": rp["id_object"],
-            #"value_filter": rp["value_filter"], # For next gn_permissions version
-        })
-
-        if not permission.is_permission_already_exist(
-            id_role=request["id_role"],
-            id_action=rp["id_action"],
-            id_module=rp["id_module"],
-            id_filter_type=rp["id_filter_type"],
-            value_filter=rp["value_filter"],
-            id_object=rp["id_object"],
-        ):
-            permission_filter = get_filter(
-                id_filter_type=rp["id_filter_type"],
-                value_filter=rp["value_filter"]
-            )
-            if not permission_filter:
-                permission_filter = TFilters(
-                    label_filter=f"{d['label_filter_type']} : {rp['value_filter']}",
-                    id_filter_type=rp["id_filter_type"],
-                    value_filter=rp["value_filter"],
-                )
-            permission.filter.append(permission_filter)
-
-            DB.session.add(permission)
+    # Add asked permissions to authorized permissions table if request approve
+    if action == "approve":
+        add_permissions(request)
 
     # Commit DB session
     DB.session.commit()
 
     # Send email to user
-    send_email_after_managing_request(
-        action,
-        user_id=request["id_role"],
-        data=request["additional_data"]["originalRawData"],
-    )
+    send_email_after_managing_request(request)
 
     # Redirect to GeoNature app home page
     return redirect(current_app.config["URL_APPLICATION"], code=302)
@@ -499,6 +423,117 @@ def get_request_by_token(token):
     return data
 
 
+def add_permissions(request):
+    new_permissions = []
+    if (request["geographic_filter"]):
+        permissions = get_geographic_permissions()
+        for perm in permissions:
+            perm.id_role = request["id_role"]
+            perm.gathering = request["token"]
+            perm.end_date = request["end_date"]
+            perm.value_filter = build_value_filter_from_list(request["geographic_filter"])
+            new_permissions.append(perm)
+
+    if (request["taxonomic_filter"]):
+        permissions = get_geographic_permissions()
+        for perm in permissions:
+            perm.id_role = request["id_role"]
+            perm.gathering = request["token"]
+            perm.end_date = request["end_date"]
+            perm.value_filter = build_value_filter_from_list(request["taxonomic_filter"])
+            new_permissions.append(perm)
+
+    if (request["sensitive_access"] is True):
+        permissions = get_sensitivity_permissions()
+        for perm in permissions:
+            perm.id_role = request["id_role"]
+            perm.gathering = request["token"]
+            perm.end_date = request["end_date"]
+            perm.value_filter = "exact"
+            new_permissions.append(perm)
+
+    for permission in new_permissions:
+        if not permission.is_permission_already_exist():
+            permission_filter = get_filter(
+                id_filter_type=permission.id_filter_type,
+                value_filter=permission.value_filter,
+            )
+            if not permission_filter:
+                filter_type_label = get_filter_type_label(permission.id_filter_type)
+                permission_filter = TFilters(
+                    label_filter=f"{filter_type_label} : {permission.value_filter}",
+                    id_filter_type=permission.id_filter_type,
+                    value_filter=permission.value_filter,
+                )
+            permission.filter.append(permission_filter)
+
+            DB.session.add(permission)
+
+
+def build_value_filter_from_list(data: list):
+    unduplicated_data = unduplicate_values(data)
+    return ",".join(map(str, unduplicated_data))
+
+def split_value_filter(data: str):
+    values = data.split(',')
+    unduplicated_data = unduplicate_values(values)
+    return unduplicated_data
+
+
+def get_geographic_permissions():
+    permissions = []
+    for new_perm in get_default_permission_to_set():
+        new_perm["filter_type_code"] = "GEOGRAPHIC"
+        fresh_perm = get_fresh_permission(**new_perm)
+        permissions.append(fresh_perm)
+    return permissions
+
+
+def get_taxonomic_permissions():
+    permissions = []
+    for new_perm in get_default_permission_to_set():
+        new_perm["filter_type_code"] = "TAXONOMIC"
+        fresh_perm = get_fresh_permission(**new_perm)
+        permissions.append(fresh_perm)
+    return permissions
+
+
+def get_sensitivity_permissions():
+    permissions = []
+    for new_perm in get_default_permission_to_set():
+        new_perm["filter_type_code"] = "PRECISION"
+        new_perm["object_code"] = "SENSITIVE_OBSERVATION"
+        fresh_perm = get_fresh_permission(**new_perm)
+        permissions.append(fresh_perm)
+    return permissions
+
+
+def get_default_permission_to_set():
+    return [
+        {"module_code": "SYNTHESE", "action_code": "R", "object_code": "PRIVATE_OBSERVATION", },
+        {"module_code": "SYNTHESE", "action_code": "E", "object_code": "PRIVATE_OBSERVATION", },
+        {"module_code": "VALIDATION", "action_code": "R", "object_code": "PRIVATE_OBSERVATION", },
+    ]
+
+
+def get_fresh_permission(filter_type_code, module_code, action_code, object_code):
+    permission_module = DB.session.query(TModules).filter(TModules.module_code == module_code).one()
+    permission_action = DB.session.query(TActions).filter(TActions.code_action == action_code).one()
+    permission_object = DB.session.query(TObjects).filter(TObjects.code_object == object_code).one()
+    permission_filter_type = (DB.session
+        .query(BibFiltersType)
+        .filter(BibFiltersType.code_filter_type == filter_type_code)
+        .one()
+    )
+    return CorRoleActionFilterModuleObject(
+        id_module=permission_module.id_module,
+        id_action=permission_action.id_action,
+        id_object=permission_object.id_object,
+        id_filter=0,# TODO: remove this line !
+        id_filter_type=permission_filter_type.id_filter_type,
+    )
+
+
 def get_filter(id_filter_type, value_filter):
     try:
         permission_filter = (DB
@@ -512,39 +547,82 @@ def get_filter(id_filter_type, value_filter):
     return permission_filter
 
 
-def send_email_after_managing_request(action, user_id, data=None, refuse_reason=None):
-    user = get_user_infos(user_id)
-    recipient = user['email']
+def get_filter_type_label(id_filter_type):
+    try:
+        label = (DB
+            .session.query(BibFiltersType.label_filter_type)
+            .filter(BibFiltersType.id_filter_type == id_filter_type)
+            .one()[0]
+        )
+    except NoResultFound:
+        return False
+    return label
+
+
+def remove_permissions(request):
+    try:
+        (DB.session
+            .query(CorRoleActionFilterModuleObject)
+            .filter(CorRoleActionFilterModuleObject.gathering == request.token)
+            .delete()
+        )
+    except NoResultFound:
+        log.info("No permissions found. No permissions to remove.")
+    except IntegrityError as exp:
+        log.error("Permissions deletion error %s", exp)
+    except Exception as exp:
+        log.error("Error %s", exp)
+
+
+def send_email_after_managing_request(request):
+    user = get_user_infos(request["id_role"])
+    recipient = user["email"]
     app_name = current_app.config["appName"]
-    if action == "approve":
+    if request["processed_state"] == RequestStates.accepted:
         subject = f"Acceptation de demande de permissions d'accès {app_name}"
-        msg_html = render_approved_request_tpl(user, data)
+        msg_html = render_accepted_request_tpl(user, request)
+    elif request["processed_state"] == RequestStates.pending:
+        subject = f"Mise en attente de la demande de permissions d'accès {app_name}"
+        msg_html = render_pending_request_tpl(user, request)
     else:
         subject = f"Refus de demande de permissions d'accès {app_name}"
-        msg_html = render_refused_request_tpl(user, refuse_reason)
+        msg_html = render_refused_request_tpl(user, request)
     send_mail(recipient, subject, msg_html)
 
 
-def render_approved_request_tpl(user, data):
+def render_accepted_request_tpl(user, request):
+    areas = split_value_filter(request["geographic_filter"])
+    taxa = split_value_filter(request["taxonomic_filter"])
+    date = datetime.datetime.strptime(request["end_date"], "%Y-%m-%d")
+    end_date = date.strftime("%x")
     return render_template(
-        "email_user_request_approved.html",
+        "email_user_request_accepted.html",
         app_name=current_app.config["appName"],
         user=user,
-        sensitive_permission=data["sensitive_access"],
-        geographic_filter_values=format_geographic_filter_values(data),
-        taxonomic_filter_values=format_taxonomic_filter_values(data),
-        end_date=format_end_access_date(data, date_format="%x"),
+        sensitive_permission=request["sensitive_access"],
+        geographic_filter_values=format_geographic_filter_values(areas),
+        taxonomic_filter_values=format_taxonomic_filter_values(taxa),
+        end_date=end_date,
         app_url=current_app.config["URL_APPLICATION"],
         validators=get_validators(),
     )
 
 
-def render_refused_request_tpl(user, refuse_reason=None):
+def render_pending_request_tpl(user, request):
+    return render_template(
+        "email_user_request_pending.html",
+        app_name=current_app.config["appName"],
+        user=user,
+        validators=get_validators(),
+    )
+
+
+def render_refused_request_tpl(user, request):
     return render_template(
         "email_user_request_refused.html",
         app_name=current_app.config["appName"],
         user=user,
-        refuse_reason=refuse_reason,
+        refusal_reason=request["refusal_reason"],
         validators=get_validators(),
     )
 
@@ -555,7 +633,7 @@ def get_validators():
        validators = ", ".join(validators)
     return validators.strip()
 
-
+# TODO: Delete if not used !
 @routes.route("/modules", methods=["GET"])
 def get_all_modules():
     """
@@ -572,7 +650,7 @@ def get_all_modules():
         modules.append(module)
     return jsonify(modules), 200
 
-
+# TODO: Delete if not used !
 @routes.route("/actions", methods=["GET"])
 def get_all_actions():
     """
@@ -589,7 +667,7 @@ def get_all_actions():
         actions.append(action)
     return jsonify(actions), 200
 
-
+# TODO: Delete if not used !
 @routes.route("/filters", methods=["GET"])
 def get_all_filters():
     """
@@ -606,7 +684,7 @@ def get_all_filters():
         filters.append(pfilter)
     return jsonify(filters), 200
 
-
+# TODO: Delete if not used !
 @routes.route("/objects", methods=["GET"])
 def get_all_objects():
     """
@@ -640,41 +718,24 @@ def format_to_camel_case(snake_str):
     components = snake_str.split('_')
     return components[0] + ''.join(x.title() for x in components[1:])
 
+def format_keys_to_snake_case(d):
+    if isinstance(d, list):
+        output = []
+        for item in d:
+            output.append(format_keys_to_snake_case(item))
+        return output
+    elif isinstance(d, dict) :
+        return dict((format_to_snake_case(k), v) for k, v in d.items())
+    else:
+        raise TypeError('formating to snake case accept only dict or list of dict')
 
-def get_requests():
-    return [
-        { 
-            'token': '64750cf4-b14c-4793-bfd4-fcdc4defc7fe', 
-            'user_name': 'Jean-Pascal MILCENT', 'organism_name': 'CBNA', 
-            'end_access_date': '2021-01-12', 
-            'permissions': {'sensitive': True, 'geographic': [27369, 27366, 9861], 'taxonomic': [187494]},
-            'state': 'pending',
-        },
-        { 
-            'token': 'fbd59621-cb02-4e44-8461-15b67b3ae76d', 
-            'user_name': 'Martin DUPOND', 'organism_name': 'PNE', 
-            'end_access_date': '2021-01-24', 
-            'permissions': {'sensitive': False, 'geographic': [28512, 3974, 28528], 'taxonomic': [699191]},
-            'state': 'pending',
-        },
-        { 
-            'token': '6fc958d8-de23-4b2d-b162-fc334b64f61d', 
-            'user_name': 'Zazi SWAROSKI', 'organism_name': 'CEN-PACA', 
-            'end_access_date': '2021-02-02', 
-            'permissions': {'sensitive': True, 'geographic': [34513, 10167, 7940], 'taxonomic': [185214]},
-            'state': 'pending',
-        },
-        {
-            'token': '477e51b4-17fd-42e6-85a0-0f3805a05c63', 
-            'user_name': 'Robert BAYLE', 'organism_name': 'CBNA', 
-            'end_access_date': '2021-03-22',
-            'permissions': {'sensitive': False, 'geographic': [26574, 8312, 27440], 'taxonomic': [187415]},
-            'state': 'pending',
-        },
-    ]
+def format_to_snake_case(camel_str): 
+    return ''.join(['_'+char.lower() if char.isupper()  
+        else char for char in camel_str]).lstrip('_') 
 
 
 @routes.route("/requests", methods=["GET"])
+#@json_resp
 def get_permissions_requests():
     """
     Retourne toutes les demandes de permissions avec des info sur 
@@ -691,17 +752,58 @@ def get_permissions_requests():
     :returns: un tableau de dictionnaire contenant les infos des demandes
     de permissions.
     """
+    # Get params
     params = request.args.to_dict()
-    requests = get_requests()
-    if "state" in params:
-        for rqt in requests:
-            if params["state"] == "processed":
-                rqt["state"] = random.choice(["accepted", "refused"])
-            elif params["state"] == "accepted":
-                rqt["state"] = "accepted"
-            elif params["state"] == "refused":
-                rqt["state"] = "refused"
+    
+    # Check if permissions management is enable
+    if not current_app.config["PERMISSION_MANAGEMENT"]["ENABLE_ACCESS_REQUEST"]:
+        response = {
+            "message": "Demande de permissions d'accès non activé sur cette instance de Geonature.",
+            "status": "warning"
+        }
+        return response, 403
 
+    # Check "state" values validity
+    state_accepted_values = ["accepted", "refused", "processed", "pending"]
+    if "state" in params and params["state"] not in state_accepted_values:
+        msg = (
+            f"Valeur « {params['state']} » du paramère « state » inconnue. "
+            + f"Valeurs acceptées : {', '.join(state_accepted_values)}"
+        )
+        response = {
+            "message": msg,
+            "status": "warning"
+        }
+        return response, 400
+
+    # Get requests
+    UserAsker = aliased(User)
+    UserValidator = aliased(User)
+    query = (
+        DB.session.query(TRequests, UserAsker, BibOrganismes, UserValidator)
+            .join(UserAsker, UserAsker.id_role == TRequests.id_role)
+            .join(BibOrganismes, BibOrganismes.id_organisme == UserAsker.id_organisme)
+            .join(UserValidator, UserValidator.id_role == TRequests.processed_by, isouter=True)
+            .order_by(TRequests.meta_create_date)
+    )
+    
+    if "state" in params:
+        if params["state"] == "processed":
+            query = query.filter(
+                or_(
+                    TRequests.processed_state == RequestStates.accepted, 
+                    TRequests.processed_state == RequestStates.refused, 
+                )
+            )
+        else:
+            query = query.filter(TRequests.processed_state == RequestStates(params["state"]))
+    results = query.all()
+
+    requests = []
+    for result in results:
+        access_request = formatAccessRequest(*result)
+        requests.append(access_request)
+        
     requests = format_keys_to_camel_case(requests)
     return jsonify(requests), 200
 
@@ -715,23 +817,160 @@ def get_permissions_requests_by_token(token):
 
     :returns: un dictionnaire avec les infos d'une demande de permission.
     """
-    requests = get_requests()
+    # Check if permissions management is enable
+    if not current_app.config["PERMISSION_MANAGEMENT"]["ENABLE_ACCESS_REQUEST"]:
+        response = {
+            "message": "Demande de permissions d'accès non activé sur cette instance de Geonature.",
+            "status": "warning"
+        }
+        return response, 403
 
-    response = False
-    for request in requests:
-        if request['token'] == token:
-            response = request
-            break
+    UserAsker = aliased(User)
+    UserValidator = aliased(User)
+    query = (
+        DB.session.query(TRequests, UserAsker, BibOrganismes, UserValidator)
+            .join(UserAsker, UserAsker.id_role == TRequests.id_role)
+            .join(BibOrganismes, BibOrganismes.id_organisme == UserAsker.id_organisme)
+            .join(UserValidator, UserValidator.id_role == TRequests.processed_by, isouter=True)
+            .filter(TRequests.token == token)
+    )
+    results = query.first()
 
-    if not response:
+    if not results:
         response = {
             "message": f"Token de demande introuvable : {token} .",
             "status": "error"
         }
         return response, 404
+    
+    response = formatAccessRequest(*results)
+    response = format_keys_to_camel_case(response)
+    return response, 200
+
+
+@routes.route("/requests/<token>", methods=["PATCH"])
+@permissions.check_cruved_scope(action='U', get_role=True)
+@json_resp
+def patch_permissions_request_by_token(info_role, token):
+    """
+    Modifier partiellement une demande d'accès.
+
+    Utilisé pour accepter ou refuser une demande en modifiant son état.
+
+    .. :quickref: Permissions;
+
+    :returns: un dictionnaire avec les infos de la demande modifiée.
+    """
+    # Check if permissions management is enable
+    if not current_app.config["PERMISSION_MANAGEMENT"]["ENABLE_ACCESS_REQUEST"]:
+        response = {
+            "message": "Demande de permissions d'accès non activé sur cette instance de Geonature.",
+            "status": "warning"
+        }
+        return response, 403
+
+    # Transform received data
+    role = get_user_infos(info_role.id_role)
+    data = format_keys_to_snake_case(dict(request.get_json()))
+    refusal_reason = data.get("refusal_reason", None)
+    if RequestStates(data.get("processed_state")) != RequestStates.refused:
+        refusal_reason = None
+
+    # Load TRequest
+    trequest = DB.session.query(TRequests).filter(TRequests.token == token).first()
+    if not trequest:
+        response = {
+            "message": f"Token de demande introuvable : {token} .",
+            "status": "error"
+        }
+        return response, 404
+
+    # Prepare TRequests
+    trequest.processed_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    trequest.processed_by = role.get("id_role")
+    trequest.processed_state = RequestStates(data.get("processed_state"))
+    trequest.refusal_reason = refusal_reason
+
+    # Update TRequest
+    DB.session.merge(trequest)
+
+    # Update Permissions according to access request state
+    if trequest.processed_state == RequestStates.accepted:
+        add_permissions(trequest.as_dict())
     else:
-        response = format_keys_to_camel_case(response)
-        return response, 200
+        remove_permissions(trequest)
+
+    # Commit update in DB
+    DB.session.commit()
+    DB.session.flush()
+
+    # Send email to user
+    send_email_after_managing_request(trequest.as_dict())
+
+    # Get updated TRequests
+    UserAsker = aliased(User)
+    UserValidator = aliased(User)
+    results = (
+        DB.session.query(TRequests, UserAsker, BibOrganismes, UserValidator)
+            .join(UserAsker, UserAsker.id_role == TRequests.id_role)
+            .join(BibOrganismes, BibOrganismes.id_organisme == UserAsker.id_organisme)
+            .join(UserValidator, UserValidator.id_role == TRequests.processed_by, isouter=True)
+            .filter(TRequests.token == token)
+            .first()
+    )
+
+    # Prepare response
+    access_request = formatAccessRequest(*results)
+    response = format_keys_to_camel_case(access_request)
+    return response, 200
+
+
+def formatAccessRequest(request, asker, asker_organism, validator):
+    taxa = split_value_filter(request.taxonomic_filter)
+    areas = split_value_filter(request.geographic_filter)
+    sensitive = request.sensitive_access
+    access_request = {
+        "token": request.token,
+        "user_name": f"{asker.prenom_role} {asker.nom_role}",
+        "organism_name": asker_organism.nom_organisme,
+        "geographic_filters": areas,
+        "geographic_filters_labels": format_geographic_filter_values(areas),
+        "taxonomic_filters": taxa,
+        "taxonomic_filters_labels": format_taxonomic_filter_values(taxa),
+        "sensitive_access": sensitive,
+        "end_access_date": request.end_date.strftime("%Y-%m-%d"),
+        "processed_state": request.processed_state,
+        "processed_date": request.processed_date,
+        "processed_by": request.processed_by,
+        "refusal_reason": request.refusal_reason,
+        "additional_data": format_additional_fields(request.additional_data),
+        "meta_create_date": request.meta_create_date.strftime("%Y-%m-%d %H:%M:%S"),
+        "meta_update_date": request.meta_update_date.strftime("%Y-%m-%d %H:%M:%S"),
+    }
+    if request.processed_date:
+        access_request["processed_date"] = request.processed_date.strftime("%Y-%m-%d %H:%M:%S")
+    if request.processed_by:
+        access_request["processed_by"] = f"{validator.prenom_role} {validator.nom_role}"
+    return access_request
+
+
+# TODO: Delete this route if not used !
+@routes.route("/requests/<token>", methods=["PUT"])
+@permissions.check_cruved_scope(action='U', get_role=True)
+@json_resp
+def update_permissions_requests_by_token(token):
+    """
+    Modifier une demande d'accès.
+
+    .. :quickref: Permissions;
+
+    :returns: un dictionnaire avec les infos de la demande modifiée.
+    """
+    response = {
+            "message": f"Update permission request is not implemented yet !",
+            "status": "error"
+        }
+    return response, 501
 
 
 def get_roles_permissions():
