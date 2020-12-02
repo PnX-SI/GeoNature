@@ -233,6 +233,7 @@
       "link": "Demander des permissions",
       "formTitle": "Demande de permissions d'accès",
       "permissionTitle": "Permissions demandées",
+      "regularFormIntro": "Veuillez indiquer ci-dessous les zones géographiques pour lesquelles vous souhaitez accéder aux données à leur précision maximale. Merci de préciser également les groupes taxonomiques concernés et le calendrier de votre étude.",
       "sendBtnTooltip": "Envoyer votre demande d'accès.",
       "cancelBtnTooltip": "Annuler votre demande d'accès.",
       "geoAreaLabel": "Zones géographiques",
@@ -248,7 +249,18 @@
       "conventionTitle": "Convention",
       "conventionCanceled": "L'acceptation de la convention vient d'être annulé.",
       "accepted": "Acceptée",
-      "refused": "Refusée"
+      "refused": "Refusée",
+      "acceptOk": "Acceptation de la demande prise en compte",
+      "acceptKo": "Une erreur est survenue lors de l'acceptation de la demande : {{errorMsg}}",
+      "refusalOk": "Refus de la demande prise en compte",
+      "refusalKo": "Une erreur est survenue lors du refus de la demande : {{errorMsg}}",
+      "pendingOk": "Mise en attente de la demande réalisée",
+      "pendingKo": "Une erreur est survenue lors de la mise en attente de la demande : {{errorMsg}}"
     }
+  },
+  "Datatable": {
+    "emptyMessage": "Aucune donnée à afficher.",
+    "totalMessage": "total",
+    "selectedMessage": "selectionnés"
   }
 }

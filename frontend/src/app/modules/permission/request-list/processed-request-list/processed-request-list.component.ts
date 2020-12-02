@@ -4,7 +4,7 @@ import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 
-import { PermissionRequestDatatableColumn, GnPermissionRequest } from '../../permission.interface';
+import { IPermissionRequestDatatableColumn, IPermissionRequest } from '../../permission.interface';
 import { PermissionService } from '../../permission.service';
 
 
@@ -28,8 +28,12 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
   colHeaderTpl: TemplateRef<any>;
   @ViewChild('tokenCellTpl')
   tokenCellTpl: TemplateRef<any>;
-  @ViewChild('permissionCellTpl')
-  permissionCellTpl: TemplateRef<any>;
+  @ViewChild('geographicCellTpl')
+  geographicCellTpl: TemplateRef<any>;
+  @ViewChild('taxonomicCellTpl')
+  taxonomicCellTpl: TemplateRef<any>;
+  @ViewChild('sensitiveCellTpl')
+  sensitiveCellTpl: TemplateRef<any>;
   @ViewChild('endAccessDateCellTpl')
   endAccessDateCellTpl: TemplateRef<any>;
   @ViewChild('stateCellTpl')
@@ -37,7 +41,7 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
   @ViewChild('actionsCellTpl')
   actionsCellTpl: TemplateRef<any>;
 
-  columns: Array<PermissionRequestDatatableColumn> = [
+  columns: Array<IPermissionRequestDatatableColumn> = [
     {
       prop: 'token',
       name: '#',
@@ -48,7 +52,7 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
       prop: 'userName',
       name: 'Utilisateur',
       tooltip: "Prénom et nom de l'utilisateur ayant réalisé la demande.",
-      flexGrow: 3,
+      flexGrow: 2,
       searchable: true,
     },
     {
@@ -59,10 +63,22 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
       searchable: true,
     },
     {
-      prop: 'permissions',
-      name: 'Permissions',
-      tooltip: 'Permissions demandées avec leurs éventuels filtres.',
-      flexGrow: 2,
+      prop: 'geographicFiltersLabels',
+      name: 'Zones géo.',
+      tooltip: 'Nombre de zones géographiques concernées par la demande.',
+      flexGrow: 1,
+    },
+    {
+      prop: 'taxonomicFiltersLabels',
+      name: 'Grp. taxo.',
+      tooltip: 'Nombre de groupes taxonomiques concernés par la demande.',
+      flexGrow: 1,
+    },
+    {
+      prop: 'sensitiveAccess',
+      name: 'Sensible',
+      tooltip: "La demande concerne-t-elle l'accès aux données sensibles.",
+      flexGrow: 1,
     },
     {
       prop: 'endAccessDate',
@@ -72,7 +88,7 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
       searchable: true,
     },
     {
-      prop: 'state',
+      prop: 'processedState',
       name: 'État',
       tooltip: "État de la demande : acceptée ou refusée.",
       flexGrow: 1,
@@ -86,7 +102,7 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
     },
   ];
   searchableColumnsNames: string;
-  rows: GnPermissionRequest[] = [];
+  rows: IPermissionRequest[] = [];
   filteredData = [];
 
   constructor(
@@ -107,6 +123,7 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
     this.prepareColumns();
     this.formatSearchableColumn();
     this.getI18nLocale();
+    this.defineDatatableMessages();
   }
 
   ngOnDestroy() {
@@ -123,11 +140,15 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
       // Set specific config
       if (col.prop === 'token') {
         col.cellTemplate = this.tokenCellTpl;
-      } else if (col.prop === 'permissions') {
-        col.cellTemplate = this.permissionCellTpl;
+      } else if (col.prop === 'geographicFiltersLabels') {
+        col.cellTemplate = this.geographicCellTpl;
+      } else if (col.prop === 'taxonomicFiltersLabels') {
+        col.cellTemplate = this.taxonomicCellTpl;
+      } else if (col.prop === 'sensitiveAccess') {
+        col.cellTemplate = this.sensitiveCellTpl;
       } else if (col.prop === 'endAccessDate') {
         col.cellTemplate = this.endAccessDateCellTpl;
-      } else if (col.prop === 'state') {
+      } else if (col.prop === 'processedState') {
         col.cellTemplate = this.stateCellTpl;
       } else if (col.prop === 'actions') {
         col.cellTemplate = this.actionsCellTpl;
@@ -152,6 +173,15 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
       .takeUntil(this.destroy$)
       .subscribe((langChangeEvent: LangChangeEvent) => {
         this.locale = langChangeEvent.lang;
+        this.defineDatatableMessages();
+      });
+  }
+
+  private defineDatatableMessages() {
+    // Define default messages for datatable
+    this.translateService.get('Datatable')
+      .subscribe((translatedTxts: string[]) => {
+        this.datatable.messages = translatedTxts;
       });
   }
 
@@ -190,8 +220,8 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
 
   getRowClass(row) {
     return {
-      'row-refused': row.state === 'refused',
-      'row-accepted': row.state === 'accepted',
+      'row-refused': row.processedState === 'refused',
+      'row-accepted': row.processedState === 'accepted',
     };
   }
 }

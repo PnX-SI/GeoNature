@@ -1,11 +1,16 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material';
 
 import { DatatableComponent, ColumnMode } from '@swimlane/ngx-datatable';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
-import { PermissionRequestDatatableColumn, GnPermissionRequest } from '../../permission.interface';
+import { AcceptRequestDialog } from '../../shared/accept-request-dialog/accept-request-dialog.component';
+import { CommonService } from '@geonature_common/service/common.service';
+import { IPermissionRequest, IPermissionRequestDatatableColumn, } from '../../permission.interface';
 import { PermissionService } from '../../permission.service';
+import { RefusalRequestDialog } from '../../shared/refusal-request-dialog/refusal-request-dialog.component';
 
 
 @Component({
@@ -28,14 +33,18 @@ export class PendingRequestListComponent implements OnInit, OnDestroy, AfterView
   colHeaderTpl: TemplateRef<any>;
   @ViewChild('tokenCellTpl')
   tokenCellTpl: TemplateRef<any>;
-  @ViewChild('permissionCellTpl')
-  permissionCellTpl: TemplateRef<any>;
+  @ViewChild('geographicCellTpl')
+  geographicCellTpl: TemplateRef<any>;
+  @ViewChild('taxonomicCellTpl')
+  taxonomicCellTpl: TemplateRef<any>;
+  @ViewChild('sensitiveCellTpl')
+  sensitiveCellTpl: TemplateRef<any>;
   @ViewChild('endAccessDateCellTpl')
   endAccessDateCellTpl: TemplateRef<any>;
   @ViewChild('actionsCellTpl')
   actionsCellTpl: TemplateRef<any>;
 
-  columns: Array<PermissionRequestDatatableColumn> = [
+  columns: Array<IPermissionRequestDatatableColumn> = [
     {
       prop: 'token',
       name: '#',
@@ -46,7 +55,7 @@ export class PendingRequestListComponent implements OnInit, OnDestroy, AfterView
       prop: 'userName',
       name: 'Utilisateur',
       tooltip: "Prénom et nom de l'utilisateur ayant réalisé la demande.",
-      flexGrow: 3,
+      flexGrow: 2,
       searchable: true,
     },
     {
@@ -57,10 +66,22 @@ export class PendingRequestListComponent implements OnInit, OnDestroy, AfterView
       searchable: true,
     },
     {
-      prop: 'permissions',
-      name: 'Permissions',
-      tooltip: 'Permissions demandées avec leurs éventuels filtres.',
-      flexGrow: 3,
+      prop: 'geographicFiltersLabels',
+      name: 'Zones géo.',
+      tooltip: 'Nombre de zones géographiques concernées par la demande.',
+      flexGrow: 1,
+    },
+    {
+      prop: 'taxonomicFiltersLabels',
+      name: 'Grp. taxo.',
+      tooltip: 'Nombre de groupes taxonomiques concernés par la demande.',
+      flexGrow: 1,
+    },
+    {
+      prop: 'sensitiveAccess',
+      name: 'Sensible',
+      tooltip: "La demande concerne-t-elle l'accès aux données sensibles.",
+      flexGrow: 1,
     },
     {
       prop: 'endAccessDate',
@@ -78,37 +99,50 @@ export class PendingRequestListComponent implements OnInit, OnDestroy, AfterView
     },
   ];
   searchableColumnsNames: string;
-  rows: GnPermissionRequest[] = [];
+  rows: IPermissionRequest[] = [];
   filteredData = [];
 
   constructor(
     private translateService: TranslateService,
     public permissionService: PermissionService,
+    public dialog: MatDialog,
+    private toasterService: ToastrService,
+    private commonService: CommonService
   ) {
     this.locale = translateService.currentLang;
-
-    this.permissionService.getAllPendingRequests().subscribe(data => {
-      this.loadingIndicator = false;
-      this.rows = data;
-      this.filteredData = [...data];
-    });
+    this.loadRequests();
   }
 
   ngOnInit(): void {
     this.prepareColumns();
     this.formatSearchableColumn();
     this.getI18nLocale();
+    this.defineDatatableMessages();
   }
 
   ngAfterViewInit(): void {
     // Workaround to resize column with columnMode="'flex'".
     // See : https://github.com/swimlane/ngx-datatable/issues/919
     this.datatable.columnMode = ColumnMode.force;
+
+    // Define default messages for datatable
+    this.translateService.get('Datatable')
+      .subscribe((translatedTxts: string[]) => {
+        this.datatable.messages = translatedTxts;
+      });
   }
 
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
+  }
+
+  private loadRequests() {
+    this.permissionService.getAllPendingRequests().subscribe(data => {
+      this.loadingIndicator = false;
+      this.rows = data;
+      this.filteredData = [...data];
+    });
   }
 
   private prepareColumns() {
@@ -120,8 +154,12 @@ export class PendingRequestListComponent implements OnInit, OnDestroy, AfterView
       // Set specific config
       if (col.prop === 'token') {
         col.cellTemplate = this.tokenCellTpl;
-      } else if (col.prop === 'permissions') {
-        col.cellTemplate = this.permissionCellTpl;
+      } else if (col.prop === 'geographicFiltersLabels') {
+        col.cellTemplate = this.geographicCellTpl;
+      } else if (col.prop === 'taxonomicFiltersLabels') {
+        col.cellTemplate = this.taxonomicCellTpl;
+      } else if (col.prop === 'sensitiveAccess') {
+        col.cellTemplate = this.sensitiveCellTpl;
       } else if (col.prop === 'endAccessDate') {
         col.cellTemplate = this.endAccessDateCellTpl;
       } else if (col.prop === 'actions') {
@@ -147,7 +185,15 @@ export class PendingRequestListComponent implements OnInit, OnDestroy, AfterView
       .takeUntil(this.destroy$)
       .subscribe((langChangeEvent: LangChangeEvent) => {
         this.locale = langChangeEvent.lang;
-        console.log(this.locale)
+        this.defineDatatableMessages();
+      });
+  }
+
+  private defineDatatableMessages() {
+    // Define default messages for datatable
+    this.translateService.get('Datatable')
+      .subscribe((translatedTxts: string[]) => {
+        this.datatable.messages = translatedTxts;
       });
   }
 
@@ -182,5 +228,56 @@ export class PendingRequestListComponent implements OnInit, OnDestroy, AfterView
       }
     });
     return searchable;
+  }
+
+  openAcceptDialog(data: IPermissionRequest): void {
+    const dialogRef = this.dialog.open(AcceptRequestDialog, {
+      data: data
+    });
+
+    dialogRef.afterClosed().subscribe(request_token => {
+      if (request_token) {
+        this.permissionService.acceptRequest(request_token).subscribe(
+          () => {
+            this.loadRequests();
+            this.commonService.translateToaster('info', 'Permissions.accessRequest.acceptOk');
+          },
+          error => {
+            const msg = (error.error && error.error.msg) ? error.error.msg : error.message;
+            this.translateService
+              .get('Permissions.accessRequest.acceptKo', {errorMsg: msg})
+              .subscribe((translatedTxt: string) => {
+                this.toasterService.error(translatedTxt);
+              });
+          }
+        );
+      }
+    });
+  }
+
+  openRefusalDialog(request: IPermissionRequest): void {
+    const dialogRef = this.dialog.open(RefusalRequestDialog, {
+      data: request
+    });
+
+    dialogRef.afterClosed().subscribe(request => {
+      if (request) {
+        console.log(request)
+        this.permissionService.refuseRequest(request).subscribe(
+          () => {
+            this.loadRequests();
+            this.commonService.translateToaster('info', 'Permissions.accessRequest.refusalOk');
+          },
+          error => {
+            const msg = (error.error && error.error.msg) ? error.error.msg : error.message;
+            this.translateService
+              .get('Permissions.accessRequest.refusalKo', {errorMsg: msg})
+              .subscribe((translatedTxt: string) => {
+                this.toasterService.error(translatedTxt);
+              });
+          }
+        );
+      }
+    });
   }
 }

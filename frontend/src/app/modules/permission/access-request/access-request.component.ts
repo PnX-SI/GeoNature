@@ -203,7 +203,7 @@ export class AccessRequestComponent implements OnInit {
     this.permissionService
     .sendAccessRequest(accessRequestData)
     .subscribe(
-      result => {
+      () => {
         this.commonService.translateToaster('info', 'Permissions.accessRequest.responseOk');
         this.router.navigate(['/']);
       },

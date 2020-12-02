@@ -52,12 +52,21 @@
     <span [matTooltip]="value"> {{ value | slice:0:5 }}...</span>
   </ng-template>
 
-  <ng-template #permissionCellTpl let-value="value">
-    <mat-list dense>
-      <mat-list-item> Observation sensible {{ value.sensitive ? 'OUI' : 'NON' }} </mat-list-item>
-      <mat-list-item> Zones géographiques : {{ value.geographic }}</mat-list-item>
-      <mat-list-item> Groupes taxonomiques : {{ value.taxonomic }}</mat-list-item>
-    </mat-list>
+  <ng-template #geographicCellTpl let-value="value">
+      <span class="d-inline-block w-100 h-100" [matTooltip]="value?.join(',\n')">
+        {{ value?.length }}
+      </span>
+  </ng-template>
+
+  <ng-template #taxonomicCellTpl let-value="value">
+    <span class="d-inline-block w-100 h-100" [matTooltip]="value?.join(',\n') | stripHTML">
+      {{ value?.length }}
+    </span>
+  </ng-template>
+
+  <ng-template #sensitiveCellTpl let-value="value">
+    <strong *ngIf="value; else unsensitive" class="text-danger">OUI</strong>
+    <ng-template #unsensitive>NON</ng-template>
   </ng-template>
 
   <ng-template #endAccessDateCellTpl let-value="value">
@@ -82,6 +91,7 @@
         color="primary"
         matRipple
         matTooltip="Valider la demande."
+        (click)="openAcceptDialog(row)"
       >
         <mat-icon>how_to_reg</mat-icon>
       </button>
@@ -91,6 +101,7 @@
         color="warn"
         matRipple
         matTooltip="Refuser la demande."
+        (click)="openRefusalDialog(row)"
       >
         <mat-icon>block</mat-icon>
       </button>

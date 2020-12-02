@@ -229,6 +229,7 @@
       "link": "Permissions request",
       "formTitle": "Request access permissions",
       "permissionTitle": "Permissions requested",
+      "regularFormIntro": "Please indicate below the geographic areas for which you want to access the data to its maximum precision. Please also specify the taxonomic groups concerned and the timetable for your study.",
       "sendBtnTooltip": "Send your permissions access request.",
       "cancelBtnTooltip": "Cancel your permissions access request.",
       "geoAreaLabel": "Geographical areas",
@@ -244,7 +245,18 @@
       "conventionTitle": "Convention",
       "conventionCanceled": "The acceptance of the convention has just been canceled.",
       "accepted": "Accepted",
-      "refused": "Refused"
+      "refused": "Refused",
+      "acceptOk": "Acceptance of the request taken into account",
+      "acceptKo": "An error occurred while accepting the request: {{error}}",
+      "refusalOk": "Refusal of the request taken into account",
+      "refusalKo": "An error occurred while denying the request: {{error}}",
+      "pendinglOk": "Request put on hold",
+      "pendingKo": "An error occurred while putting on hold the request: {{error}}"
     }
+  },
+  "Datatable": {
+    "emptyMessage": "No data to display.",
+    "totalMessage": "total",
+    "selectedMessage": "selected"
   }
 }

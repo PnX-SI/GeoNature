@@ -36,12 +36,12 @@
 >
   <ng-template #colHeaderTpl let-column="column" let-sort="sortFn">
     <span
-      class="datatable-header-cell-wrapper"
+      class="datatable-header-cell-wrapper d-inline-block w-100 h-100"
       [matTooltip]="column.tooltip"
       matTooltipPosition="above"
     >
       <span
-        class="datatable-header-cell-label draggable"
+        class="datatable-header-cell-label draggable d-inline-block w-100 h-100"
         (click)="sort()"
       >
         {{ column.name }}
@@ -54,12 +54,21 @@
     <span [matTooltip]="value"> {{ value | slice:0:5 }}...</span>
   </ng-template>
 
-  <ng-template #permissionCellTpl let-value="value">
-    <mat-list dense>
-      <mat-list-item> Observation sensible {{ value.sensitive ? 'OUI' : 'NON' }} </mat-list-item>
-      <mat-list-item> Zones géographiques : {{ value.geographic }}</mat-list-item>
-      <mat-list-item> Groupes taxonomiques : {{ value.taxonomic }}</mat-list-item>
-    </mat-list>
+  <ng-template #geographicCellTpl let-value="value">
+    <span class="d-inline-block w-100 h-100" [matTooltip]="value?.join(',\n')">
+      {{ value?.length }}
+    </span>
+  </ng-template>
+
+  <ng-template #taxonomicCellTpl let-value="value">
+    <span class="d-inline-block w-100 h-100" [matTooltip]="value?.join(',\n') | stripHTML">
+      {{ value?.length }}
+    </span>
+  </ng-template>
+
+  <ng-template #sensitiveCellTpl let-value="value">
+    <strong *ngIf="value; else unsensitive" class="text-danger">OUI</strong>
+    <ng-template #unsensitive>NON</ng-template>
   </ng-template>
 
   <ng-template #endAccessDateCellTpl let-value="value">

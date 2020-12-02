@@ -1,13 +1,6 @@
 import { TemplateRef } from '@angular/core';
 
-export interface GnRolePermission {
-  id: number;
-  name: string;
-  type: 'USER'|'GROUP';
-  permissionsNbr?: number;
-}
-
-export interface PermissionRequestDatatableColumn {
+export interface IPermissionRequestDatatableColumn {
   prop: string;
   name: string;
   flexGrow: number;
@@ -20,17 +13,40 @@ export interface PermissionRequestDatatableColumn {
   headerTemplate?: TemplateRef<any>;
 }
 
-export interface GnPermissionRequest {
+export interface IPermissionRequest {
   token: string;
   userName: string;
   organismName: string;
-  endAccessDate?: string;// TODO: use DateTime
-  permissions?: GnPermissionRequestConstraint;
-  state?: string;
+  geographicFilters?: number[];
+  geographicFiltersLabels?: string[];
+  taxonomicFilters?: number[];
+  taxonomicFiltersLabels?: string[];
+  sensitiveAccess?: boolean;
+  endAccessDate?: string;// TODO: use Date
+  processedState?: string;
+  processedDate?: string;// TODO: use DateTime
+  processedBy?: IRolePermission;
+  refusalReason?: string;
+  additionalData?: IAdditionalData[];
+  metaCreateDate?: string;
+  metaUpdateDate?: string;
 }
 
-export interface GnPermissionRequestConstraint {
+export interface IAdditionalData {
+  key: string;
+  label?: string;
+  value: any;
+}
+
+export interface IPermissionRequestConstraint {
   sensitive: boolean;
   geographic: number[];
   taxonomic?: number[];
+}
+
+export interface IRolePermission {
+  id: number;
+  name: string;
+  type: 'USER'|'GROUP';
+  permissionsNbr?: number;
 }

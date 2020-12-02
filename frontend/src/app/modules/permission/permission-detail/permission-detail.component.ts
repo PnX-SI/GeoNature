@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { AppConfig } from '@geonature_config/app.config';
 import { PermissionService } from '../permission.service';
-import { GnRolePermission } from '../permission.interface'
+import { IRolePermission } from '../permission.interface'
 
 @Component({
   selector: 'gn-permission-detail',
@@ -13,7 +13,7 @@ import { GnRolePermission } from '../permission.interface'
 export class PermissionDetailComponent implements OnInit {
 
   idRole: number;
-  role: GnRolePermission;
+  role: IRolePermission;
 
   constructor(
     public activatedRoute: ActivatedRoute,

@@ -3,7 +3,7 @@ import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { AppConfig } from '@geonature_config/app.config';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { PermissionService } from '../permission.service';
-import { GnRolePermission } from '../permission.interface'
+import { IRolePermission } from '../permission.interface'
 
 interface DatatableColumn {
   prop: string;
@@ -43,7 +43,7 @@ export class PermissionListComponent implements OnInit {
     { prop: 'permissionsNbr', name: 'Nbre permissions', flexGrow: 1, tooltip: 'Nombre de permissions attribuées.', headerClass: 'table-primary'},
     { prop: 'actions', name: 'Actions', flexGrow: 1, sortable: false, headerClass: 'table-primary'},
   ];
-  rows: GnRolePermission[] = [];
+  rows: IRolePermission[] = [];
   filteredData = [];
 
   constructor(
