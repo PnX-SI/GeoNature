@@ -67,8 +67,11 @@
           </a>
 
           <a
+            mat-menu-item
             *ngIf="appConfig.PERMISSION_MANAGEMENT.ENABLE_ACCESS_REQUEST"
-            routerLink="/permissions/access-request"
+            matTooltip="Accéder au formulaire de demande de permissions d'accès"
+            matTooltipPosition="before"
+            routerLink="/permissions/requests/add"
           >
             {{ 'Permissions.accessRequest.link' | translate }}
           </a>
