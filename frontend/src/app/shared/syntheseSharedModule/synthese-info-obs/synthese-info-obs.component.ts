@@ -115,7 +115,6 @@ export class SyntheseInfoObsComponent implements OnInit {
   formatMailContent(email) {
     let mailto = String('mailto:' + email);
     if (this.mailCustomSubject || this.mailCustomBody) {
-      console.log(this.mailCustomSubject);
 
       // Mise en forme des données
       let d = { ...this.selectedObsTaxonDetail, ...this.selectedObs };
