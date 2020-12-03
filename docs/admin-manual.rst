@@ -11,7 +11,7 @@ GeoNature possède une architecture modulaire et s'appuie sur plusieurs "service
 - Un sous-module Flask (https://github.com/PnX-SI/Nomenclature-api-module/) a été créé pour une gestion centralisée des nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module/), il pilote le schéma ``ref_nomenclature``.
 - ``ref_geo`` est le schéma de base de données qui gère le référentiel géographique. Il est utilisé pour gérer les zonages, les communes, le MNT, le calcul automatique d'altitude et les intersections spatiales.
 
-GeoNature a également une séparation claire entre le backend (API: intéraction avec la base de données) et le frontend (interface utilisateur). Le backend peut être considéré comme un "service" dont se sert le frontend pour récupérer ou poster des données. 
+GeoNature a également une séparation claire entre le backend (API: intéraction avec la base de données) et le frontend (interface utilisateur). Le backend peut être considéré comme un "service" dont se sert le frontend pour récupérer ou poster des données.
 NB : Le backend et le frontend se lancent séparément dans GeoNature.
 
 .. image :: http://geonature.fr/docs/img/admin-manual/design-geonature.png
@@ -25,7 +25,7 @@ La base de données a notamment été refondue pour s'appuyer au maximum sur des
 
 La base de données a également été traduite en Anglais et supporte désormais le multilangue.
 
-Les préfixes des schémas de BDD sont désormais standardisés : ``ref_`` concerne les référentiels externes, ``gn_`` concerne les schémas du coeur de GeoNature et ``pr_`` les schémas des protocoles. 
+Les préfixes des schémas de BDD sont désormais standardisés : ``ref_`` concerne les référentiels externes, ``gn_`` concerne les schémas du coeur de GeoNature et ``pr_`` les schémas des protocoles.
 
 Autres standards :
 
@@ -33,7 +33,7 @@ Autres standards :
 - Pas de nom de table dans les noms de champs
 - Nom de schema éventuellement dans nom de table
 
-Schéma simplifié de la BDD : 
+Schéma simplifié de la BDD :
 
 .. image :: http://geonature.fr/docs/img/admin-manual/GN-schema-BDD.jpg
 
@@ -44,11 +44,11 @@ Schéma simplifié de la BDD :
 
 Depuis la version 2.0.0-rc.4, il faut noter que les droits (CRUVED) ont été retirés du schéma ``utilisateurs`` (``ref_users``) de UsersHub pour l'intégrer dans GeoNature dans un schéma ``gn_permissions``, à ajouter en rose.
 
-Modèle simplifié de la BDD (2017-12-15) : 
+Modèle simplifié de la BDD (2017-12-15) :
 
 .. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2017-12-15-GN2-MCD-simplifie.jpg
 
-Dernière version complète de la base de données (GeoNature 2.1 / 2019-08) : 
+Dernière version complète de la base de données (GeoNature 2.1 / 2019-08) :
 
 .. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2019-08-GN2-1-MCD.png
 
@@ -59,7 +59,7 @@ Gestion des droits
 
 Les comptes des utilisateurs, leur mot de passe, email, groupes et leur accès à l'application GeoNature est géré de manière centralisée dans UsersHub. Pour qu'un rôle (utilisateur ou groupe) ait accès à GeoNature, il faut lui attribuer un profil de "Lecteur" dans l'application GeoNature, grâce à l'application UsersHub.
 
-La gestion des droits (permissions) des rôles, spécifique à GeoNature, est ensuite gérée dans un schéma (``gn_permissions``) et un module de GeoNature dédié. Dans la version 1 de GeoNature, il était possible d'attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour étendre les possibilités d'attribution de droits et les rendre plus génériques. 
+La gestion des droits (permissions) des rôles, spécifique à GeoNature, est ensuite gérée dans un schéma (``gn_permissions``) et un module de GeoNature dédié. Dans la version 1 de GeoNature, il était possible d'attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour étendre les possibilités d'attribution de droits et les rendre plus génériques.
 
 La gestion des droits dans GeoNature, comme dans beaucoup d'applications, est liée à des actions (Create / Read / Update / Delete aka CRUD). Pour les besoins  métiers de l'application nous avons rajouté deux actions : "Valider" et "Exporter", ce qui donne le CRUVED : Create / Read / Update / Validate / Export / Delete.
 
@@ -67,7 +67,7 @@ Sur ces actions, on va pouvoir appliquer des filtres de manière générique.
 
 Le filtre le plus courant est celui de la "portée". On autorise des actions à un utilisateur sur une portée : "Ses données", "Les données de son organisme", "Toutes les données".
 
-Exemple : 
+Exemple :
 
 - Utilisateur 1 peut effectuer l'action "DELETE" sur la portée "SES DONNEES"
 - Utilisateur Admin peut effectuer l'action "UPDATE" sur la portée "TOUTES LES DONNEES"
@@ -81,7 +81,7 @@ Exemple :
 
 Enfin ces permissions vont pouvoir s'attribuer à l'ensemble de l'application GeoNature et/ou à un module.
 
-On a donc le quatriptique : Un utilisateur / Une action / Un filtre / Un module 
+On a donc le quatriptique : Un utilisateur / Une action / Un filtre / Un module
 
 Pour l'instant les filtres de type groupe taxonomique, précisions et géographique existent dans la base de données mais ne sont pas implémentés au niveau de l'application GeoNature, donc ils n'ont aucun effet.
 
@@ -98,7 +98,7 @@ Récapitulatif :
 
 .. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/schema_cruved.png
 
-A noter que toutes les actions et toutes les portées n'ont pas été implémentées dans tous les modules. Elles le sont en fonction des besoins de chaque module. 
+A noter que toutes les actions et toutes les portées n'ont pas été implémentées dans tous les modules. Elles le sont en fonction des besoins de chaque module.
 
 TODO : Lister les permissions implémentées dans chaque module.
 
@@ -107,7 +107,7 @@ Nomenclatures
 
 - Toutes les valeurs des listes déroulantes sont gérées dans une table générique ``ref_nomenclatures.t_nomenclatures``
 - Elles s'appuient sur les nomenclatures du SINP (http://standards-sinp.mnhn.fr/nomenclature/) qui peuvent être désactivées ou completées
-- Chaque nomenclature est associée à un type, et une vue par type de nomenclature a été ajoutée pour simplifier leur usage 
+- Chaque nomenclature est associée à un type, et une vue par type de nomenclature a été ajoutée pour simplifier leur usage
 - Ces nomenclatures sont gérées dans un sous-module pour pouvoir les réutiliser (ainsi que leur mécanisme) dans d'autres applications : https://github.com/PnX-SI/Nomenclature-api-module/
 - Les identifiants des nomenclatures et des types de nomenclature sont des serials (entiers auto-incrémentés) et ne sont pas prédéfinis lors de l'installation, ni utilisées en dur dans le code des applications. En effet, les nomenclatures peuvent varier en fonction des structures. On utilise le ``cd_nomenclature`` et le ``mnémonique`` du type de nomenclature pour retrouver dynamiquement l'``id_nomenclature`` d'une nomenclature. C'est cependant cet identifiant qu'on stocke au niveau des données pour garantir l'intégrité référentielle
 - Chaque nomenclature peut être associée à un règne ou un group2inpn (``ref_nomenclatures.cor_taxref_nomenclature``) pour proposer des nomenclatures correspondants à un taxon
@@ -157,7 +157,7 @@ La base de données contient de nombreuses fonctions.
 
   ref_geo.fct_get_altitude_intersection(IN mygeom geometry)
   -- Fonction qui retourne l'altitude min et max de la géométrie passée en paramètre
-  
+
 .. code:: sql
 
   ref_geo.fct_get_area_intersection(
@@ -207,7 +207,7 @@ La base de données contient de nombreuses fonctions.
 
 .. code:: sql
 
-  check_nomenclature_type_by_cd_nomenclature(mycdnomenclature character varying , mytype character varying) 
+  check_nomenclature_type_by_cd_nomenclature(mycdnomenclature character varying , mytype character varying)
   --Function that checks if an id_nomenclature matches with wanted nomenclature type (use mnemonique type)
 
 .. code:: sql
@@ -257,7 +257,7 @@ TODO : A compléter...
 Tables transversales
 """"""""""""""""""""
 
-GeoNature contient aussi des tables de stockage transversales qui peuvent être utilisées par tous les modules. C'est le cas pour la validation, la sensibilité, l'historisation des modifications et les médias. 
+GeoNature contient aussi des tables de stockage transversales qui peuvent être utilisées par tous les modules. C'est le cas pour la validation, la sensibilité, l'historisation des modifications et les médias.
 
 Cela permet de ne pas avoir à mettre en place des tables et mécanismes dans chaque module, mais de s'appuyer sur un stockage, des fonctions et développements factorisés, centralisés et partagés.
 
@@ -273,7 +273,7 @@ Voir ceux mis en place de Occtax vers Synthèse.
 Cheminement d'une donnée Occtax :
 
 1. Formulaire Occtax
-2. Ecriture dans la table ``cor_counting_occtax`` et génération d'un nouvel UUID 
+2. Ecriture dans la table ``cor_counting_occtax`` et génération d'un nouvel UUID
 3. Trigger d'écriture dans la table verticale ``t_validations`` à partir de la valeur par défaut de la nomenclature de validation (``gn_common.ref_nomenclatures.defaults_nomenclatures_value``)
 4. Trigger d'écriture d'Occtax vers la synthèse (on ne maitrise pas l'ordre de ces 2 triggers qui sont lancés en même temps)
 5. Trigger de rapatriement du dernier statut de validation de la table verticale vers la synthèse.
@@ -291,7 +291,7 @@ Table contenant l’ensemble des données.
 Respecte le standard Occurrence de taxon du SINP.
 
 * tri_meta_dates_change_synthese
-   
+
   - BEFORE INSERT OR UPDATE
   - Mise à jour des champs ``meta_create_date`` et ``meta_update_date``
 
@@ -300,7 +300,7 @@ Respecte le standard Occurrence de taxon du SINP.
   - AFTER INSERT OR UPDATE OF the_geom_local
   - Mise à jour de la table ``cor_area_synthese``
   - Actions :
-  
+
     1. Si update : suppression des enregistrements de la table ``gn_synthese.cor_area_synthese`` avec l'id_synthese concerné
     2. Insertion des id_areas intersectant la géométrie de la synthèse dans ``gn_synthese.cor_area_synthese``. *Prise en compte de toutes les aires qu’elles soient ou non actives. Manque enable = true*
 
@@ -309,18 +309,18 @@ Respecte le standard Occurrence de taxon du SINP.
   - BEFORE DELETE
   - Mise à jour des tables ``cor_area_taxon`` et ``cor_area_synthese``
   - Actions :
-    
+
     1. Récupération de l’ensemble des aires intersectant la donnée de synthèse
     2. Suppression des enregistrement de ``cor_area_taxon`` avec le cd_nom et les aires concernés
     3. Insertion dans ``cor_area_taxon`` recalculant les max, nb_obs et couleur pour chaque aire pour l’ensemble des données avec les aires concernées et le cd_nom concerné ne correspondant pas à la donnée supprimée
     4. Suppression des enregistrements de ``gn_synthese.cor_area_synthese``
-    
+
 * tri_update_cor_area_taxon_update_cd_nom
 
   - AFTER UPDATE OF cd_nom
   - Mise à jour de la table cor_area_taxon
   - Actions :
-  
+
     1. Récupération de l’ensemble des aires intersectant la donnée de synthèse
     2. Recalcul ``cor_area_taxon`` pour l’ancien cd_nom via fonction ``gn_synthese.delete_and_insert_area_taxon``
     3. Recalcul ``cor_area_taxon`` pour le nouveau cd_nom via fonction ``gn_synthese.delete_and_insert_area_taxon``
@@ -335,7 +335,7 @@ Table contenant l’ensemble des id_areas intersectant les enregistrements de la
   - AFTER INSERT OR UPDATE
   - Mise à jour des données de cor_area_taxon
   - Actions :
-  
+
     1. Récupération du cd_nom en lien avec l’enregistrement ``cor_area_synthese``
     2. Suppression des données de ``cor_area_taxon`` avec le ``cd_nom`` et ``id_area`` concernés
     3. Insertion des données dans ``cor_area_taxon`` en lien avec le ``cd_nom`` et ``id_area``
@@ -347,19 +347,19 @@ Table contenant l’ensemble des id_areas intersectant les enregistrements de la
   - AFTER INSERT OR UPDATE OR DELETE
   - Mise à jour du champ ``observers`` de la table ``synthese``
   - Actions :
-  
+
     1. Construction de la valeur textuelle des observateurs
     2. Mise à jour du champ observer de l’enregistrement de la table ``synthese``
-    
+
 **FONCTIONS**
 
 * delete_and_insert_area_taxon
 
   - Fonction qui met à jour la table ``cor_area_taxon`` en fonction d’un ``cd_nom`` et d'une liste d'``id area``
   - Actions :
-  
+
     1. Suppression des enregistrement de la table ``cor_area_taxon`` avec le ``cd_nom`` et les ``id_area`` concernés
-    2. Insertion des données dans ``cor_area_taxon`` 
+    2. Insertion des données dans ``cor_area_taxon``
 
 * color_taxon
 
@@ -384,7 +384,7 @@ Plus d'infos sur le développement d'un module : https://github.com/PnX-SI/GeoNa
 Configuration
 -------------
 
-Pour configurer GeoNature, actuellement il y a : 
+Pour configurer GeoNature, actuellement il y a :
 
 - Une configuration pour l'installation : ``config/settings.ini``
 - Une configuration globale de l'application : ``<GEONATURE_DIRECTORY>/config/geonature_config.toml`` (générée lors de l'installation de GeoNature)
@@ -404,7 +404,7 @@ Il est possible de le compléter en surcouchant les paramètres présents dans l
 
 A chaque modification du fichier global de configuration (``<GEONATURE_DIRECTORY>/config/geonature_config.toml``), il faut regénérer le fichier de configuration du frontend.
 
-Ainsi après chaque modification des fichiers de configuration globale, placez-vous dans le backend de GeoNature (``/home/monuser/GeoNature/backend``) et lancez les commandes : 
+Ainsi après chaque modification des fichiers de configuration globale, placez-vous dans le backend de GeoNature (``/home/monuser/GeoNature/backend``) et lancez les commandes :
 
 .. code-block:: console
 
@@ -443,7 +443,7 @@ Les logs de TaxHub sont dans le répertoire ``/var/log/taxhub``:
 
 - Logs de l'API de TaxHub : ``taxhub-errors.log``
 
-Commandes GeoNature 
+Commandes GeoNature
 """""""""""""""""""
 
 GeoNature est fourni avec une série de commandes pour administrer l'application.
@@ -463,7 +463,7 @@ Voici la liste des commandes disponibles (aussi disponibles en tapant la command
 - dev_back : Lance le backend en mode développement
 - dev_front : Lance le frontend en mode développement
 - generate_frontend_module_route : Génère ou regénère le fichier de routing du frontend en incluant les gn_module installés (Fait automatiquement lors de l'installation d'un module)
-- install_gn_module : Installe un gn_module 
+- install_gn_module : Installe un gn_module
 - start_gunicorn : Lance l'API du backend avec gunicorn
 - supervisor : Exécute les commandes supervisor (``supervisor stop <service>``, ``supervisor reload``)
 - update_configuration : Met à jour la configuration du cœur de l'application. A exécuter suite à une modification du fichier ``geonature_config.toml``
@@ -498,7 +498,7 @@ et 4 fois la ligne suivante pour TaxHub :
 .. code-block:: console
 
     root      27103 10.0  0.3 546188 63328 ?        Sl   17:35   0:00 /home/theo/workspace/GN2/TaxHub/venv/bin/python3.5 /home/theo/workspace/GN2/TaxHub/venv/bin/gunicorn server:app --access-logfile /var/log/taxhub/taxhub-access.log --error-log /var/log/taxhub/taxhub-errors.log --pid=taxhub.pid -w 4 -b 0.0.0.0:5000 -n taxhub
-    
+
 Chaque ligne correspond à un worker Gunicorn.
 
 Si ces lignes n'apparaissent pas, cela signifie qu'une des deux API n'a pas été lancée ou a connu un problème à son lancement. Voir les logs des API pour plus d'informations.
@@ -511,7 +511,7 @@ Supervision des services
 
   - Exemple de route locale pour tester l'API GeoNature : http://127.0.0.1:8000/occtax/defaultNomenclatures qui ne doit pas renvoyer de 404. URL absolue : https://urlgeonature/api/occtax/defaultNomenclatures
   - Exemple de route locale pour tester l'API TaxHub : http://127.0.0.1:5000/api/taxref/regnewithgroupe2 qui ne doit pas renvoyer de 404. URL absolue : https://urltaxhub/api/taxref/regnewithgroupe2
-    
+
 - Vérifier que les fichiers de logs de TaxHub et GeoNature ne sont pas trop volumineux pour la capacité du serveur
 - Vérifier que les services nécessaires au fonctionnement de l'application tournent bien (Apache, PostgreSQL)
 
@@ -548,16 +548,16 @@ A la fin de l'opération de maintenance, effectuer la manipulation inverse :
 
 .. code-block:: console
 
-    sudo a2dissite geonature_maintenance     
+    sudo a2dissite geonature_maintenance
     sudo a2ensite geonature
     sudo apachectl restart
-    
+
 Attention : ne pas stopper le backend (des opérations en BDD en cours pourraient être corrompues)
 
 - Redémarrage de PostgreSQL
 
-  Si vous effectuez des manipulations de PostgreSQL qui nécessitent un redémarrage du SGBD (``sudo service postgresql restart``), il faut impérativement lancer un redémarrage des API GeoNature et TaxHub pour que celles-ci continuent de fonctionner. Pour cela, lancez la commande ``sudo supervisorctl reload``. 
-  
+  Si vous effectuez des manipulations de PostgreSQL qui nécessitent un redémarrage du SGBD (``sudo service postgresql restart``), il faut impérativement lancer un redémarrage des API GeoNature et TaxHub pour que celles-ci continuent de fonctionner. Pour cela, lancez la commande ``sudo supervisorctl reload``.
+
   **NB**: Ne pas faire ces manipulations sans avertir les utilisateurs d'une perturbation temporaire des applications.
 
 Sauvegarde et restauration
@@ -597,7 +597,7 @@ Opération à faire régulièrement grâce à une tâche cron.
 
     cd /home/`whoami`/geonature/config
     tar -zcvf /home/`whoami`/backup/`date +%Y%m%d%H%M`-geonature_config.tar.gz ./
-    
+
 Opération à faire à chaque modification d'un paramètre de configuration.
 
 * Sauvegarde des fichiers de customisation :
@@ -631,11 +631,11 @@ Restauration
         sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';"
         sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
         sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
-        
+
   - Restaurer la BDD à partir du backup
 
     .. code-block:: console
-    
+
         sudo su postgres
         pg_restore -d geonature2db <MY_BACKUP_DIRECTORY_PATH>/201803150917-geonaturedb.backup
 
@@ -648,14 +648,14 @@ Restauration
         sudo rm <GEONATURE_DIRECTORY>/config/*
         cd <GEONATURE_DIRECTORY>/config
         sudo tar -zxvf <MY_BACKUP_DIRECTORY>/201803150953-geonature_config.tar.gz
-        
+
         cd /home/<MY_USER>/geonature/frontend/src/custom
         rm -r <MY_USER>/geonature/frontend/src/custom/*
         tar -zxvf <MY_BACKUP_DIRECTORY>/201803150953-geonature_custom.tar.gz
-        
+
         rm /home/<MY_USER>/geonature/external_modules/*
         cd <GEONATURE_DIRECTORY>/external_modules
-        tar -zxvf <MY_BACKUP_DIRECTORY>/201803151036-external_modules.tar.gz 
+        tar -zxvf <MY_BACKUP_DIRECTORY>/201803151036-external_modules.tar.gz
 
 * Relancer l'application :
 
@@ -714,7 +714,7 @@ Customiser le contenu
 
 Le texte d'introduction et le titre de la page d'Accueil de GeoNature peuvent être modifiés à tout moment, sans réinstallation de l'application. Il en est de même pour le bouton d’accès à la synthèse.
 
-Il suffit pour cela de mettre à jour le fichier ``introduction.component.html``, situé dans le répertoire ``geonature/frontend/src/custom/components/introduction``. 
+Il suffit pour cela de mettre à jour le fichier ``introduction.component.html``, situé dans le répertoire ``geonature/frontend/src/custom/components/introduction``.
 
 Afin que ces modifications soient prises en compte dans l'interface, il est nécessaire de relancer les commandes suivantes :
 
@@ -734,11 +734,11 @@ De la même manière, il est nécessaire de relancer les commandes suivantes pou
 
     cd /home/`whoami`/geonature/frontend
     npm run build
-    
+
 Customiser l'aspect esthétique
 """"""""""""""""""""""""""""""
 
-Les couleurs de textes, couleurs de fonds, forme des boutons etc peuvent être adaptées en renseignant le fichier ``custom.scss``, situé dans le répertoire ``geonature/frontend/src/custom``. 
+Les couleurs de textes, couleurs de fonds, forme des boutons etc peuvent être adaptées en renseignant le fichier ``custom.scss``, situé dans le répertoire ``geonature/frontend/src/custom``.
 
 Pour remplacer la couleur de fond du bandeau de navigation par une image, on peut par exemple apporter la modification suivante :
 
@@ -762,7 +762,7 @@ Comme pour la modification des contenus, il est nécessaire de relancer la comma
 Customiser les noms et pictos des modules
 """""""""""""""""""""""""""""""""""""""""
 
-Vous pouvez modifier l'intitulé et le pictogramme des modules dans le menu des modules. Pour cela, adaptez le contenu des champs ``module_label`` et ``module_picto`` (avec des icones de la librairie Font Awesome - https://fontawesome.com) dans la table ``gn_commons.t_modules``. 
+Vous pouvez modifier l'intitulé et le pictogramme des modules dans le menu des modules. Pour cela, adaptez le contenu des champs ``module_label`` et ``module_picto`` (avec des icones de la librairie Font Awesome - https://fontawesome.com) dans la table ``gn_commons.t_modules``.
 
 Exemple :
 
@@ -795,7 +795,7 @@ Depuis la version 2.5.0, il est aussi possible de customiser l'ordre des modules
 Customiser les exports PDF
 """"""""""""""""""""""""""
 
-Vous pouvez modifier le bandeau et le logo fournis par défaut dans les exports PDF en modifiant les images ``Bandeau_pdf.png`` et ``Logo_pdf.png`` dans ``backend/static/images``. 
+Vous pouvez modifier le bandeau et le logo fournis par défaut dans les exports PDF en modifiant les images ``Bandeau_pdf.png`` et ``Logo_pdf.png`` dans ``backend/static/images``.
 Le style des fichiers est également customisable grâce au fichier "backend/geonature/static/css/custom.css". La classe ``main-color`` permet notamment de changer la couleur des séparateurs (orange par défaut).
 
 Intégrer des données
@@ -806,7 +806,7 @@ Référentiel géographique
 
 GeoNature est fourni avec des données géographiques de base sur la métropôle (MNT national à 250m et communes de métropôle).
 
-**1.** Si vous souhaitez modifier le MNT pour mettre celui de votre territoire : 
+**1.** Si vous souhaitez modifier le MNT pour mettre celui de votre territoire :
 
 * Videz le contenu des tables ``ref_geo.dem`` et éventuellement ``ref_geo.dem_vector``
 * Uploadez le(s) fichier(s) du MNT sur le serveur
@@ -823,7 +823,7 @@ Suppression du MNT par défaut (adapter le nom de la base de données : MYDBNAME
     sudo -n -u postgres -s psql -d MYDBNAME -c "TRUNCATE TABLE ref_geo.dem;"
     sudo -n -u postgres -s psql -d MYDBNAME -c "TRUNCATE TABLE ref_geo.dem_vector;"
 
-Placer votre propre fichier MNT (ou vos différents fichiers "dalles") dans le répertoire ``/tmp/geonature`` (adapter le nom du fichier et son chemin ainsi que les paramètres en majuscule). 
+Placer votre propre fichier MNT (ou vos différents fichiers "dalles") dans le répertoire ``/tmp/geonature`` (adapter le nom du fichier et son chemin ainsi que les paramètres en majuscule).
 
 Pour utiliser celui proposé par défaut :
 
@@ -854,7 +854,7 @@ Si vous souhaitez vectoriser le raster MNT pour de meilleures performances lors 
 
 Si ``ref_geo.dem_vector`` est remplie, cette table est utilisée pour le calcul de l'altitude à la place de la table ``ref_geo.dem``
 
-**2.** Si vous souhaitez modifier ou ajouter des zonages administratifs, réglementaires ou naturels : 
+**2.** Si vous souhaitez modifier ou ajouter des zonages administratifs, réglementaires ou naturels :
 
 * Vérifiez que leur type existe dans la table ``ref_geo.bib_areas_types``, sinon ajoutez-les
 * Ajoutez vos zonages dans la table ``ref_geo.l_areas`` en faisant bien référence à un ``id_type`` de ``ref_geo.bib_areas_types``. Vous pouvez faire cela en SQL ou en faisant des copier/coller de vos zonages directement dans QGIS
@@ -863,9 +863,9 @@ Si ``ref_geo.dem_vector`` est remplie, cette table est utilisée pour le calcul 
 Données externes
 """"""""""""""""
 
-Il peut s'agir de données partenaires, de données historiques ou de données saisies dans d'autres outils. 
+Il peut s'agir de données partenaires, de données historiques ou de données saisies dans d'autres outils.
 
-2 possibilités s'offrent à vous : 
+2 possibilités s'offrent à vous :
 
 * Créer un schéma dédié aux données pour les intégrer de manière complète et en extraire les DEE dans la Synthèse
 * N'intégrer que les DEE dans la Synthèse
@@ -894,7 +894,7 @@ Création de compte
 Configuration de la création de compte
 """"""""""""""""""""""""""""""""""""""
 
-Depuis la version 2.1.0, UsersHub propose une API de création de compte utilisateur. Une interface a été ajoutée à GeoNature pour permettre aux futurs utilisateurs de faire des demandes de création de compte depuis la page d'authentification de GeoNature. Ce mode est activable/désactivable depuis la configuration globale de GeoNature. 
+Depuis la version 2.1.0, UsersHub propose une API de création de compte utilisateur. Une interface a été ajoutée à GeoNature pour permettre aux futurs utilisateurs de faire des demandes de création de compte depuis la page d'authentification de GeoNature. Ce mode est activable/désactivable depuis la configuration globale de GeoNature.
 
 Pour des raisons de sécurité, l'API de création de compte est réservée aux utilisateurs "admin" grâce à un token secret. GeoNature a donc besoin de se connecter en tant qu'administrateur à UsersHub pour éxecuter les requêtes d'administration de compte.
 Renseigner les paramètres suivants dans le fichier de configuration (``geonature_config.toml``). L'utilisateur doit avoir des droits 6 dans UsersHub
@@ -990,7 +990,7 @@ L'exemple ci-dessous permet de créer un champs de type "checkbox" obligatoire, 
                 J'ai lu et j'accepte la charte
               </a>"""
             attribut_name = "validate_charte"
-            values = [true] 
+            values = [true]
             required = true
 
         [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]]
@@ -1106,11 +1106,11 @@ Le module est fourni avec une liste restreinte de taxons (8 seulement). C'est à
 
 Le paramètre ``id_taxon_list = 100`` correspond à un ID de liste de la table ``taxonomie.bib_listes`` (L'ID 100 correspond à la liste "Saisie Occtax"). Vous pouvez changer ce paramètre avec l'ID de liste que vous souhaitez, ou bien garder cet ID et changer le contenu de cette liste.
 
-Voici les requêtes SQL pour remplir la liste 100 avec tous les taxons de Taxref à partir du rang ``genre`` : 
+Voici les requêtes SQL pour remplir la liste 100 avec tous les taxons de Taxref à partir du rang ``genre`` :
 
 Il faut d'abord remplir la table ``taxonomie.bib_noms`` (table des taxons de sa structure), puis remplir la liste 100, avec l'ensemble des taxons de ``bib_noms`` :
 
-.. code-block:: sql 
+.. code-block:: sql
 
     DELETE FROM taxonomie.cor_nom_liste;
     DELETE FROM taxonomie.bib_noms;
@@ -1249,8 +1249,8 @@ Pour l'installer, lancer les commande suivante:
 Base de données
 """""""""""""""
 
-Le module s'appuie sur deux schémas.: 
-``ref_habitats``:  Le réferentiel habitat du MNHN 
+Le module s'appuie sur deux schémas.:
+``ref_habitats``:  Le réferentiel habitat du MNHN
 ``pr_occhab``: le schéma qui contient les données d'occurrence d'habitat, basé sur standard du MNHN
 
 Configuration
@@ -1267,7 +1267,7 @@ Formulaire
 
 ``ID_LIST_HABITAT = 1``
 
-- Le formulaire permet de saisir des observateur basés sur le referentiel utilisateurs ( ``false``) ou de les saisir en texte libre (``true``). 
+- Le formulaire permet de saisir des observateur basés sur le referentiel utilisateurs ( ``false``) ou de les saisir en texte libre (``true``).
 
 ``OBSERVER_AS_TXT = false``
 
@@ -1309,7 +1309,7 @@ L'ensemble des paramètres de configuration du module se trouve dans le fichier 
 
 **1.** Modifier les filtres géographiques disponibles par défaut dans l'interface de recherche.
 
-Editer la variable ``AREA_FILTERS`` en y ajoutant le label et l'ID du type d'entité géographique que vous souhaitez rajouter. Voir table ``ref_geo.bib_areas_types``. Dans l'exemple on ajoute le type ZNIEFF1 (``id_type = 3``). Attention, dans ce cas les entités géographiques correspondantes au type 3, doivent également être présentes dans la table ``ref_geo.l_areas``. 
+Editer la variable ``AREA_FILTERS`` en y ajoutant le label et l'ID du type d'entité géographique que vous souhaitez rajouter. Voir table ``ref_geo.bib_areas_types``. Dans l'exemple on ajoute le type ZNIEFF1 (``id_type = 3``). Attention, dans ce cas les entités géographiques correspondantes au type 3, doivent également être présentes dans la table ``ref_geo.l_areas``.
 Attention : Si des données sont déjà présentes dans la synthèse et que l'on ajoute de nouvelles entités géographiques à ``ref_geo.l_areas``, il faut également recalculer les valeurs de la table ``gn_synthese.cor_area_synthese`` qui assure la correspondance entre les données de la synthèse et les entités géographiques.
 
 ::
@@ -1326,14 +1326,14 @@ Il est aussi possible de passer plusieurs ``id_types`` regroupés dans un même 
 
 **2.** Configurer les champs des exports
 
-Dans tous les exports, l'ordre et le nom des colonnes sont basés sur la vue servant l'export. Il est possible de les modifier en éditant le SQL des vues en respectant bien les consignes ci-dessous. 
+Dans tous les exports, l'ordre et le nom des colonnes sont basés sur la vue servant l'export. Il est possible de les modifier en éditant le SQL des vues en respectant bien les consignes ci-dessous.
 
 **Export des observations**
 
 Les exports (CSV, GeoJson, Shapefile) sont basés sur la vue ``gn_synthese.v_synthese_for_export``.
-        
+
 Il est possible de ne pas intégrer certains champs présents dans cette vue d'export. Pour cela modifier le paramètre ``EXPORT_COLUMNS``.
-     
+
 Enlevez la ligne de la colonne que vous souhaitez désactiver. Les noms de colonne de plus de 10 caractères seront tronqués dans le fichier shapefile.
 
 ::
@@ -1422,9 +1422,9 @@ Enlevez la ligne de la colonne que vous souhaitez désactiver. Les noms de colon
     L'entête ``[SYNTHESE]`` au dessus ``EXPORT_COLUMNS`` indique simplement que cette variable appartient au bloc de configuration de la synthese. Ne pas rajouter l'entête à chaque paramètre de la synthese mais une seule fois au dessus de toutes les variables de configuration du module.
 
 Il est également possible de personnaliser ses exports en éditant le SQL de la vue ``gn_synthese.v_synthese_for_export`` (niveau SQL et administration GeoNature avancé).
-        
+
 Attention, certains champs sont cependant obligatoires pour assurer la réalisation des fichiers d'export (csv, geojson et shapefile) et des filtres CRUVED.
-        
+
 La vue doit OBLIGATOIREMENT contenir les champs :
 
 - geojson_4326
@@ -1440,19 +1440,19 @@ Le nom de ces champs peut cependant être modifié. Dans ce cas, modifiez le fic
 
 NB : Lorsqu'on effectue une recherche dans la synthèse, on interroge la vue ``gn_synthese.v_synthese_for_web_app``. L'interface web passe ensuite une liste d'``id_synthese`` à la vue ``gn_synthese.v_synthese_for_export`` correspondant à la recherche précedemment effectuée (ce qui permet à cette seconde vue d'être totalement modifiable).
 
-La vue ``gn_synthese.v_synthese_for_web_app`` est taillée pour l'interface web, il ne faut donc PAS la modifier. 
+La vue ``gn_synthese.v_synthese_for_web_app`` est taillée pour l'interface web, il ne faut donc PAS la modifier.
 
 **Export des métadonnées**
 
 En plus des observations brutes, il est possible d'effectuer un export des métadonnées associées aux observations. L'export est au format CSV et est construit à partir de la table ``gn_synthese.v_metadata_for_export``. Vous pouvez modifier le SQL de création de cette vue pour customiser votre export (niveau SQL avancé).
 
-Deux champs sont cependant obligatoire dans la vue : 
+Deux champs sont cependant obligatoire dans la vue :
 
-- ``jdd_id`` (qui corespond à l'id du JDD de la table ``gn_meta.t_datasets``). Le nom de ce champs est modifiable. Si vous le modifiez, éditez la variable ``EXPORT_METADATA_ID_DATASET_COL``. 
+- ``jdd_id`` (qui corespond à l'id du JDD de la table ``gn_meta.t_datasets``). Le nom de ce champs est modifiable. Si vous le modifiez, éditez la variable ``EXPORT_METADATA_ID_DATASET_COL``.
 - ``acteurs``:  Le nom de ce champs est modifiable. Si vous le modifiez, éditez la variable ``EXPORT_METADATA_ACTOR_COL``
 
 **Export des statuts taxonomiques (réglementations)**
-        
+
 Cet export n'est pas basé sur une vue, il n'est donc pas possible de l'adapter.
 
 **3.** Configurer les seuils du nombre de données pour la recherche et les exports
@@ -1471,7 +1471,7 @@ Le mode cluster activé par défaut peut être désactivé via le paramètre ``E
         # Nombre max d'observation dans les exports
         NB_MAX_OBS_EXPORT = 40000
 
-**4.** Désactiver des filtres génériques 
+**4.** Désactiver des filtres génériques
 
 L'interface de recherche de la synthèse permet de filtrer sur l'ensemble des nomenclatures de la table ``gn_synthese``, il est cependant possible de désactiver les filtres de certains champs.
 
@@ -1499,3 +1499,63 @@ La vue ``gn_commons.v_latest_validation`` permet de récupérer le dernier statu
 NB : une donnée non présente dans la SYNTHESE, ne remontera pas dans l'interface du module VALIDATION. Cependant rien n'empêche un administrateur avancé d'utiliser la table de validation et son mécanisme pour des données qui ne seraient pas en SYNTHESE (du moment que les données disposent d'un UUID).
 
 Au niveau de l'interface, le formulaire de recherche est commun avec le module SYNTHESE. Les paramètres de configuration du formulaire sont donc également partagés et administrables depuis le fichier ``geonature_config.toml``, rubrique SYNTHESE.
+
+
+Configuration
+""""""""""""""
+
+Le parametrage du module VALIDATION se fait depuis le fichier ``/home/`whoami`/geonature/contrib/gn_module_validation/config/conf_gn_module.toml``
+Après toute modification de la configuration d'un module, il faut regénérer le fichier de configuration du frontend comme expliqué ici : `Configuration d'un gn_module`_
+
+
+Liste des champs visibles
+*************************
+ La configuration des champs de la liste se fait via deux paramètres:
+- ``COLUMNS_API_VALIDATION_WEB_APP``
+Liste des colonnes qui seront récupérées en plus des colonnes obligatoires. Les colonnes disponibles correspondent à celles présentent dans la vue ``v_synthese_validation_forwebapp``
+
+::
+
+    "id_nomenclature_valid_status"
+    "id_synthese"
+    "entity_source_pk_value"
+    "validation_auto"
+    "cd_nom"
+    "meta_update_date"
+    "cd_nomenclature_validation_status"
+    "mnemonique"
+    "label_default"
+    "unique_id_sinp"
+    "geojson"
+    "nom_vern"
+    "lb_nom"
+    "nom_vern_or_lb_nom"
+
+- ``LIST_COLUMNS_FRONTEND``
+Gestion de l'affichage des colonnes de la liste
+
+::
+
+    [[LIST_COLUMNS_FRONTEND]]
+    prop = "observers" # Nom de la propriété en base
+    name = "Observateurs" # Titre de la colonne
+    min_width = 100 # Taille minimale de la colonne
+    max_width = 100 # Taille maximale de la colonne
+
+
+
+Mail
+****
+
+Il est possible de personnaliser le message du mail envoyé aux observateurs.
+Pour ce faire il faut modifier les  paramètres ``MAIL_BODY`` et ``MAIL_SUBJECT``
+
+Pour afficher dans le mail des données relatives à l'observation ou au taxon il faut respecter la syntaxe suivante:
+``${ d.NOM_PROPRIETE }``
+
+Liste des propriétés disponibles :
+  - communes : liste des communes
+  - medias : Titre, auteur et lien vers le média associée
+  - data_link : lien vers l'observation dans son module de saisie
+  - tous les champs de la synthèse (acquisition_framework, altitude_max, altitude_min, bio_status, blurring, cd_hab, cd_nom, comment_context, comment_description, date_min, depth_max, depth_min, determiner, diffusion_level, digital_proof, entity_source_pk_value, exist_proof, grp_method, grp_typ, last_action, life_stage, meta_create_date, meta_update_date, meta_v_taxref, meta_validation_date, nat_obj_geo, naturalness, nom_cite, non_digital_proof, obj_count, obs_technique, observation_status, observers, occ_behaviour, occ_stat_biogeo, place_name, precision, sample_number_proof, sensitivity, sex, source, type_count, unique_id_sinp, unique_id_sinp_grp, valid_status, validation_comment)
+  - tous les champs du taxon (cd_nom, cd_ref, cd_sup, cd_taxsup, regne, ordre, classe, famille, group1_inpn, group2_inpn, id_rang, nom_complet, nom_habitat, nom_rang, nom_statut, nom_valide, nom_vern)
