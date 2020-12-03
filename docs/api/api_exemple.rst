@@ -9,7 +9,6 @@
             "coordinates": [6.5, 44.85]
         },
         "properties": {	
-            "id_synthese":	2
             "unique_id_sinp":	"41a9a536-7722-4dd7-8c9f-88ab26951eb0"
             "unique_id_sinp_grp":	"51f18a99-cfc8-4353-b750-ff2dd51c4fba"
             "id_source":	1
@@ -43,7 +42,6 @@
             "meta_validation_date":	null
             "meta_create_date":	"2020-11-30 18:55:09.710499"
             "meta_update_date":	"2020-11-30 18:55:09.710499"
-            "last_action":	"I"
             "cd_hab":	null
             "cd_nomenclature_geo_object_nature":	"NSP"
             "cd_nomenclature_grp_typ":	"OBS"
