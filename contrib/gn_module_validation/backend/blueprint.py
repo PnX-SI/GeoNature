@@ -67,7 +67,6 @@ def get_synthese_data(info_role):
         blueprint.config["COLUMNS_API_VALIDATION_WEB_APP"]
         + blueprint.config["MANDATORY_COLUMNS"]
     )
-
     select_columns = []
     serializer = {}
     for c in columns:
@@ -91,6 +90,7 @@ def get_synthese_data(info_role):
     validation_query_class.filter_query_all_filters(info_role)
     result = DB.engine.execute(validation_query_class.query.limit(result_limit))
 
+    print(query)
     # TODO nb_total factice
     nb_total = 0
     geojson_features = []
