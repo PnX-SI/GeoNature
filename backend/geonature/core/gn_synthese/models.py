@@ -2,7 +2,7 @@ from collections import OrderedDict
 
 from flask import current_app
 from sqlalchemy import ForeignKey, or_, Sequence
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, column_property
 from sqlalchemy.sql import select, func
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from geoalchemy2 import Geometry
@@ -323,6 +323,11 @@ class VSyntheseForWebApp(DB.Model):
     name_source = DB.Column(DB.Unicode)
     url_source = DB.Column(DB.Unicode)
     st_asgeojson = DB.Column(DB.Unicode)
+
+    has_medias = column_property(
+        select([func.count()>0]).\
+            where(TMedias.uuid_attached_row==unique_id_sinp)
+    )
 
     def get_geofeature(self, recursif=False, columns=()):
         return self.as_geofeature("the_geom_4326", "id_synthese", recursif, columns=columns)

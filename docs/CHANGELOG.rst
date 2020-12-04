@@ -2,6 +2,8 @@
 CHANGELOG
 =========
 
+* Synthese : ajout d'un filtre avancé ``Possède médias``
+
 2.5.5 (2020-11-19)
 ------------------
 
