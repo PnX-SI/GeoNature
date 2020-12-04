@@ -63,7 +63,8 @@ export class MetadataComponent implements OnInit {
   pageSizeOptions: Array<number> = [10, 25, 50, 100];
 
   searchTerms: any = {};
-  afModalId: number;
+  afPublishModalId: number;
+  afPublishModalLabel: string;
 
   constructor(
     public _cruvedStore: CruvedStoreService,
@@ -85,6 +86,7 @@ export class MetadataComponent implements OnInit {
     this._dfs.getRoles({ 'group': false }).subscribe(data => {
       this.roles = data;
     });
+    this.afPublishModalLabel = AppConfig.METADATA.PUBLISH_MODAL_LABEL;
 
     // rapid search event
     this.searchFormService.rapidSearchControl.valueChanges.pipe(
@@ -256,13 +258,13 @@ export class MetadataComponent implements OnInit {
   }
 
   openPublishModalAf(e, af_id, publishModal) {
-    this.afModalId = af_id;
-    this.modal.open(publishModal);
+    this.afPublishModalId = af_id;
+    this.modal.open(publishModal, { size: 'lg' });
     e.stopPropagation();
   }
 
   publishAf() {
-    this._dfs.publishAf(this.afModalId).subscribe(
+    this._dfs.publishAf(this.afPublishModalId).subscribe(
       res => this.getAcquisitionFrameworksAndDatasets()
     );
     this.modal.dismissAll();

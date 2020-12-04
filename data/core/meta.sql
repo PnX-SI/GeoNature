@@ -96,7 +96,7 @@ CREATE TABLE t_acquisition_frameworks (
     ecologic_or_geologic_target text,
     acquisition_framework_parent_id integer,
     is_parent boolean,
-    is_closed boolean DEFAULT false,
+    opened boolean DEFAULT true,
     id_digitizer integer,
     acquisition_framework_start_date date NOT NULL,
     acquisition_framework_end_date date,

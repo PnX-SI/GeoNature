@@ -15,7 +15,11 @@
     </div>
     {% endif %}
     <div class="titre">
-        <label class="label-titre">Cadre d'acquisition des données</label>
+        <label class="label-titre">
+            {% if data['pdf_title']: %}
+                {{ data['pdf_title'] }}
+            {% endif %}
+        </label>
         <br>
         <label class="label-titre">
             {% if data['acquisition_framework_name']: %}
@@ -95,7 +99,7 @@
                 <p class="info-titre">Identification</p>
                 <p class="info-contenu">
                     {% if data['unique_acquisition_framework_id']: %}
-                        Instance SNIP du cadre d'acquisition : {{ data['unique_acquisition_framework_id'] }}
+                        Instance SINP du cadre d'acquisition : {{ data['unique_acquisition_framework_id'] }}
                     {% endif %}
                     <br>
                     {% if data['acquisition_framework_name']: %}

@@ -8,6 +8,8 @@ import logging
 from pathlib import Path
 from binascii import a2b_base64
 
+from lxml import etree as ET
+
 from flask import (
     Blueprint,
     current_app,
@@ -22,6 +24,7 @@ from sqlalchemy.sql.functions import func
 
 
 from geonature.utils.env import DB, BACKEND_DIR
+from geonature.utils.config_schema import MetadataConfig
 from geonature.core.gn_synthese.models import (
     Synthese,
     TSources,
@@ -763,7 +766,7 @@ def get_acquisition_frameworks(info_role):
 
 @routes.route("/acquisition_frameworks/export_pdf/<id_acquisition_framework>", methods=["GET"])
 @permissions.check_cruved_scope("E", True, module_code="METADATA")
-def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
+def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role, certificate=False):
     """
     Get a PDF export of one acquisition
     """
@@ -843,6 +846,10 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
             "bandeau": "Bandeau_pdf.png",
             "entite": "sinp",
         }
+        if certificate and af.initial_closing_date:
+            acquisition_framework["pdf_title"] = "Certificat de dépôt du " + MetadataConfig.AF_PDF_TITLE.lower()
+        else:
+            acquisition_framework["pdf_title"] = MetadataConfig.AF_PDF_TITLE
         date = dt.datetime.now().strftime("%d/%m/%Y")
         acquisition_framework["footer"] = {
             "url": current_app.config["URL_APPLICATION"]
@@ -861,12 +868,19 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
             ),
             404,
         )
-
-    filename = "{}_{}_{}.pdf".format(
-        id_acquisition_framework,
-        acquisition_framework["acquisition_framework_name"][0:31].replace(" ", "_"),
-        dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
-    )
+    # For a deposit certificate, we name the file according to the initial_closing_date. With the actual time for the export PDF
+    if certificate and af.initial_closing_date:
+        filename = "{}_{}_{}.pdf".format(
+            id_acquisition_framework,
+            acquisition_framework["acquisition_framework_name"][0:31].replace(" ", "_"),
+            dt.datetime.strptime(acquisition_framework["initial_closing_date"], '%Y-%m-%d %H:%M:%S.%f').strftime("%d%m%Y_%H%M%S"),
+        )
+    else:
+        filename = "{}_{}_{}.pdf".format(
+            id_acquisition_framework,
+            acquisition_framework["acquisition_framework_name"][0:31].replace(" ", "_"),
+            dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
+        )
 
     try:
         f = open(str(BACKEND_DIR) + "/static/images/taxa.png")
@@ -881,6 +895,15 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
     )
     pdf_file_posix = Path(pdf_file)
     return send_from_directory(str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True)
+
+
+@routes.route("/acquisition_frameworks/deposit_certificate/<id_acquisition_framework>", methods=["GET"])
+@permissions.check_cruved_scope("E", True, module_code="METADATA")
+def get_deposit_certificate_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
+    """
+    Returns a PDF deposit certificate for one acquisition framework
+    """
+    return get_export_pdf_acquisition_frameworks(id_acquisition_framework, certificate=True)
 
 
 @routes.route("/acquisition_frameworks_metadata", methods=["GET"])
@@ -1109,25 +1132,39 @@ def publish_acquisition_framework_mail(af, info_role):
     Method for sending a mail during the publication process
     .. :quickref: Metadata;
     """
-    mail_subject = "[DEPOBIO] Publication du cadre d'acquisition {0} pour le dossier [n°TPS]"
-    mail_subject = mail_subject.format(str(af.unique_acquisition_framework_id))
 
-    mail_text = """Bonjour,<br>
-<br>
-Le cadre d'acquisition {0} dont l’identifiant est {1} que vous nous avez transmis dans le cadre du dossier [n°TPS] a été
-publié sur la plateforme de dépôt légal des données brutes de biodiversité et transmis à la plateforme nationale du
-SINP qui va procéder à son intégration dans l’INPN.<br>
-<br>
-Vous trouverez le certificat de dépôt du cadre d'acquisition à cette adresse qui doit être reportée dans la procédure
-Demarches-simplifiees.fr :<br>
-[URL_JDD_PDF]<br>ide
-Toutes les informations concernant le cadre d'acquisition déposé sont disponibles à cette adresse :<br>
-[URL_JDD]<br>
-<br>
-Bien cordialement,<br>
-Téléservice DEPOBIO"""
-    mail_text = mail_text.format(af.acquisition_framework_name, str(af.unique_acquisition_framework_id))
+    # Parsing the AF XML from MTD to get the idTPS parameter
+    af_xml = mtd_utils.get_acquisition_framework(str(af.unique_acquisition_framework_id).upper())
+    xml_parser = ET.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
+    namespace = current_app.config["XML_NAMESPACE"]
+    root = ET.fromstring(af_xml, parser=xml_parser)
+    ca = root.find(".//" + namespace + "CadreAcquisition")
+    ca_idtps = mtd_utils.get_tag_content(ca, "idTPS")
+    # Adapt the texts according to the presence/absence of the idTPS in the CA XML
+    if ca_idtps:
+        subject_idtps = " pour le dossier " + ca_idtps
+        message_idtps = " dans le cadre du dossier " + ca_idtps + " "
+    else :
+        subject_idtps = ""
+        message_idtps = " "
 
+    # Generate the links for the AF's deposite certificate and DEPOBIO redirection
+    pdf_url = current_app.config["API_ENDPOINT"] + "/meta/acquisition_frameworks/deposit_certificate/" + str(af.id_acquisition_framework)
+    depobio_url = MetadataConfig.URL_DEPOBIO_DOWNLOAD + str(af.unique_acquisition_framework_id).upper() + "/fichier.pdf"
+
+    # Mail subject
+    mail_subject = "[DEPOBIO] Dépôt du cadre d'acquisition {0}{1}"
+    mail_subject = mail_subject.format(str(af.unique_acquisition_framework_id).upper(), subject_idtps)
+
+    # Mail content
+    mail_text = MetadataConfig.MAIL_AF_PUBLISHED
+    mail_text = mail_text.format(
+        af.acquisition_framework_name,
+        str(af.unique_acquisition_framework_id).upper(),
+        message_idtps,
+        pdf_url, depobio_url)
+
+    # Mail recipients : if the publisher is the the AF digitizer, we send a mail to both of them
     mail_recipients = []
     current_user_email = DB.session.query(User.email).filter(User.id_role == info_role.id_role).first()[0]
     digitizer_email = DB.session.query(User.email).filter(User.id_role == af.id_digitizer).first()[0]
@@ -1136,7 +1173,9 @@ Téléservice DEPOBIO"""
     if current_user_email != digitizer_email:
         mail_recipients.append(digitizer_email)
 
+    # Mail sent
     mail.send_mail(mail_recipients, mail_subject, mail_text)
+
 
 @routes.route("/acquisition_framework/publish/<int:af_id>", methods=["GET"])
 @permissions.check_cruved_scope("E", True, module_code="METADATA")
@@ -1146,24 +1185,23 @@ def publish_acquisition_framework(info_role, af_id):
     Publish an acquisition framework
     .. :quickref: Metadata;
     """
-    if info_role.value_filter == "0":
-        raise InsufficientRightsError(
-            ('User "{}" cannot "{}" an acquisition_framework').format(
-                info_role.id_role, info_role.code_action
-            ),
-            403,
-        )
 
     # After publishing an AF, we set it as closed and all its DS as inactive
     TDatasets.query.filter_by(id_acquisition_framework=af_id).update(dict(active=False))
-    TAcquisitionFramework.query.filter_by(id_acquisition_framework=af_id).update(dict(is_closed=True))
+    TAcquisitionFramework.query.filter_by(id_acquisition_framework=af_id).update(dict(opened=False))
 
-    af = DB.session.query(TAcquisitionFramework).filter(TAcquisitionFramework.id_acquisition_framework==af_id).first()
+    # If the AF if closed for the first time, we set it an initial_closing_date as the actual time
+    af = DB.session.query(TAcquisitionFramework).get(af_id)
+    if (af.initial_closing_date is None):
+        TAcquisitionFramework.query.filter_by(id_acquisition_framework=af_id).update(dict(initial_closing_date=dt.datetime.now()))
+        af = DB.session.query(TAcquisitionFramework).get(af_id)
+    # We send a mail to notify the AF publication
     publish_acquisition_framework_mail(af, info_role)
 
     DB.session.commit()
 
-    return "OK"
+    return af.as_dict()
+
 
 def get_cd_nomenclature(id_type, cd_nomenclature):
     query = "SELECT ref_nomenclatures.get_id_nomenclature(:id_type, :cd_n)"

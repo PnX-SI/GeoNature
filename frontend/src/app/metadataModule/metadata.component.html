@@ -123,17 +123,17 @@
 
                   <button
                     mat-icon-button
-                    [disabled]="!af.cruved.V || af.is_closed"
+                    [disabled]="!af.cruved.E || !af.opened"
                     (click)="openPublishModalAf($event, af.id_acquisition_framework, publishModal)"
                   >
                     <mat-icon
-                      *ngIf="af.is_closed; else elsePublish"
+                      *ngIf="af.opened==false; else elsePublish"
                       matTooltip="Le cadre d'acquisition est déjà publié et ne peut l'être à nouveau"
-                    > save_alt </mat-icon>
+                    > gavel </mat-icon>
                     <ng-template #elsePublish>
                       <mat-icon
                         matTooltip="Publier le cadre d'acquisition"
-                      > save_alt </mat-icon>
+                      > gavel </mat-icon>
                     </ng-template>
                   </button>
 
@@ -421,11 +421,11 @@
   let-c="close"
   let-d="dismiss"
 >
-  <div class="modal-header bg-danger">
+  <div class="modal-header">
     <h5
-      class="modal-title text-white"
+      class="modal-title"
       id="publishModalLabel"
-    >Dépôt légal des données de biodiversité</h5>
+    >{{ afPublishModalLabel }}</h5>
   </div>
 
   <div
@@ -434,20 +434,20 @@
   >
     <div class="col">
       <span>
-        <p style="text-align: justify;">L'action de dépôt légal est une action irréversible.</p>
-        <p>Il ne sera plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite.</p>
-        <p>Vous ne pourrez pas supprimer votre dépôt.</p>
+        <p style="text-align: justify;">L'action de dépôt légal est une action irréversible.
+          Il ne sera plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite.
+          Vous ne pourrez pas supprimer votre dépôt.</p>
       </span>
     </div>
   </div>
 
-  <div class="row">
+  <div class="modal-footer">
     <div class="col">
     </div>
-    <div class="col-md-6 text-center">
+    <div mat-dialog-actions align="end">
       <button
         mat-raised-button
-        color="warn"
+        cdkFocusInitial
         class="mr-1"
         (click)="c()"
       > Annuler </button>

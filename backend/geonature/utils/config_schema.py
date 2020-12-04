@@ -94,6 +94,24 @@ class MediasConfig(Schema):
 
 class MetadataConfig(Schema):
     NB_AF_DISPLAYED = fields.Integer(missing=50, validate=OneOf([10, 25, 50, 100]))
+    AF_PDF_TITLE = "Cadre d'acquisition des données"
+    DS_PDF_TITLE = fields.String(missing="")
+    PUBLISH_MODAL_LABEL = fields.String(missing="Dépôt légal des données de biodiversité")
+    URL_DEPOBIO_DOWNLOAD = "https://depot-legal-biodiversite.naturefrance.fr/versement/dlb-download/"
+    MAIL_AF_PUBLISHED = """Bonjour,<br>
+<br>
+Le cadre d'acquisition {0} dont l’identifiant est {1} que vous nous avez transmis {2} a été
+publié sur la plateforme de dépôt légal des données brutes de biodiversité et transmis à la plateforme nationale du
+SINP qui va procéder à son intégration dans l’INPN.<br>
+<br>
+Vous trouverez le certificat de dépôt du cadre d'acquisition à cette adresse qui doit être reportée dans la procédure
+Demarches-simplifiees.fr :<br>
+{3}<br>
+Toutes les informations concernant le cadre d'acquisition déposé sont disponibles à cette adresse :<br>
+{4}<br>
+<br>
+Bien cordialement,<br>
+Téléservice DEPOBIO"""
 
 
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
