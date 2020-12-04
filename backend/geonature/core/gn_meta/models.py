@@ -397,7 +397,7 @@ class TAcquisitionFramework(CruvedHelper):
     ecologic_or_geologic_target = DB.Column(DB.Unicode)
     acquisition_framework_parent_id = DB.Column(DB.Integer)
     is_parent = DB.Column(DB.Boolean)
-    opened = DB.Column(DB.Boolean)
+    opened = DB.Column(DB.Boolean, default=True)
     id_digitizer = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
 
     acquisition_framework_start_date = DB.Column(DB.DateTime)

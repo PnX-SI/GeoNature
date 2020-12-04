@@ -1138,8 +1138,11 @@ def publish_acquisition_framework_mail(af, info_role):
     xml_parser = ET.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
     namespace = current_app.config["XML_NAMESPACE"]
     root = ET.fromstring(af_xml, parser=xml_parser)
-    ca = root.find(".//" + namespace + "CadreAcquisition")
-    ca_idtps = mtd_utils.get_tag_content(ca, "idTPS")
+    try:
+        ca = root.find(".//" + namespace + "CadreAcquisition")
+        ca_idtps = mtd_utils.get_tag_content(ca, "idTPS")
+    except AttributeError:
+        ca_idtps = ""
     # Adapt the texts according to the presence/absence of the idTPS in the CA XML
     if ca_idtps:
         subject_idtps = " pour le dossier " + ca_idtps
@@ -1148,21 +1151,26 @@ def publish_acquisition_framework_mail(af, info_role):
         subject_idtps = ""
         message_idtps = " "
 
-    # Generate the links for the AF's deposite certificate and DEPOBIO redirection
+    # Generate the links for the AF's deposite certificate and framework download
     pdf_url = current_app.config["API_ENDPOINT"] + "/meta/acquisition_frameworks/deposit_certificate/" + str(af.id_acquisition_framework)
-    depobio_url = MetadataConfig.URL_DEPOBIO_DOWNLOAD + str(af.unique_acquisition_framework_id).upper() + "/fichier.pdf"
+    af_url = MetadataConfig.URL_FRAMEWORK_DOWNLOAD + str(af.unique_acquisition_framework_id).upper() + "/fichier.pdf"
 
     # Mail subject
-    mail_subject = "[DEPOBIO] Dépôt du cadre d'acquisition {0}{1}"
-    mail_subject = mail_subject.format(str(af.unique_acquisition_framework_id).upper(), subject_idtps)
+    mail_subject = MetadataConfig.MAIL_SUBJECT_AF_PUBLISHED
+    if mail_subject:
+        mail_subject = mail_subject.format(
+            UUID_CA = str(af.unique_acquisition_framework_id).upper(),
+            ID_TPS = subject_idtps)
 
     # Mail content
-    mail_text = MetadataConfig.MAIL_AF_PUBLISHED
-    mail_text = mail_text.format(
-        af.acquisition_framework_name,
-        str(af.unique_acquisition_framework_id).upper(),
-        message_idtps,
-        pdf_url, depobio_url)
+    mail_text = MetadataConfig.MAIL_CONTENT_AF_PUBLISHED
+    if mail_text:
+        mail_text = mail_text.format(
+            NAME_CA = af.acquisition_framework_name,
+            UUID_CA = str(af.unique_acquisition_framework_id).upper(),
+            ID_TPS = message_idtps,
+            URL_PDF = pdf_url,
+            URL_CA = af_url)
 
     # Mail recipients : if the publisher is the the AF digitizer, we send a mail to both of them
     mail_recipients = []
@@ -1174,7 +1182,8 @@ def publish_acquisition_framework_mail(af, info_role):
         mail_recipients.append(digitizer_email)
 
     # Mail sent
-    mail.send_mail(mail_recipients, mail_subject, mail_text)
+    if mail_subject and mail_text and mail_recipients:
+        mail.send_mail(mail_recipients, mail_subject, mail_text)
 
 
 @routes.route("/acquisition_framework/publish/<int:af_id>", methods=["GET"])

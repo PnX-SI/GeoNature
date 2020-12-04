@@ -97,18 +97,19 @@ class MetadataConfig(Schema):
     AF_PDF_TITLE = "Cadre d'acquisition des données"
     DS_PDF_TITLE = fields.String(missing="")
     PUBLISH_MODAL_LABEL = fields.String(missing="Dépôt légal des données de biodiversité")
-    URL_DEPOBIO_DOWNLOAD = "https://depot-legal-biodiversite.naturefrance.fr/versement/dlb-download/"
-    MAIL_AF_PUBLISHED = """Bonjour,<br>
+    URL_FRAMEWORK_DOWNLOAD = "https://depot-legal-biodiversite.naturefrance.fr/versement/dlb-download/"
+    MAIL_SUBJECT_AF_PUBLISHED = "[DEPOBIO] Dépôt du cadre d'acquisition {UUID_CA}{ID_TPS}"
+    MAIL_CONTENT_AF_PUBLISHED = """Bonjour,<br>
 <br>
-Le cadre d'acquisition {0} dont l’identifiant est {1} que vous nous avez transmis {2} a été
+Le cadre d'acquisition {NAME_CA} dont l’identifiant est {UUID_CA} que vous nous avez transmis {ID_TPS} a été
 publié sur la plateforme de dépôt légal des données brutes de biodiversité et transmis à la plateforme nationale du
 SINP qui va procéder à son intégration dans l’INPN.<br>
 <br>
 Vous trouverez le certificat de dépôt du cadre d'acquisition à cette adresse qui doit être reportée dans la procédure
 Demarches-simplifiees.fr :<br>
-{3}<br>
+{URL_PDF}<br>
 Toutes les informations concernant le cadre d'acquisition déposé sont disponibles à cette adresse :<br>
-{4}<br>
+{URL_CA}<br>
 <br>
 Bien cordialement,<br>
 Téléservice DEPOBIO"""
