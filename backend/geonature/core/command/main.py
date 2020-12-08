@@ -144,8 +144,8 @@ def dev_back(host, port, conf_file):
 
         - geonature dev_back --port=8080 --port=0.0.0.0
     """
-    app = get_app_for_cmd(conf_file)
-    app.run(host=host, port=int(port), debug=True)
+    app = get_app_for_cmd(conf_file, config_override={'DEBUG': True})
+    app.run(host=host, port=int(port))
 
 
 @main.command()

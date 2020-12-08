@@ -38,10 +38,12 @@ def start_gunicorn_cmd(uri, worker):
     subprocess.call(cmd.format(gun_worker=worker, gun_uri=uri).split(" "), cwd=str(BACKEND_DIR))
 
 
-def get_app_for_cmd(config_file=None, with_external_mods=True, with_flask_admin=True):
+def get_app_for_cmd(config_file=None, with_external_mods=True, with_flask_admin=True, config_override=None):
     """ Return the flask app object, logging error instead of raising them"""
     try:
         conf = load_config(config_file)
+        if config_override:
+            conf.update(config_override)
         return get_app(
             conf, with_external_mods=with_external_mods, with_flask_admin=with_flask_admin,
         )
