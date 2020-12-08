@@ -41,7 +41,7 @@ pexpect==4.3.1
 pickleshare==0.7.4
 pipenv-to-requirements==0.2.2
 pipenv==9.0.3
-pluggy==0.12.0
+pluggy==0.13.1
 prompt-toolkit==1.0.15
 ptyprocess==0.5.2
 py==1.8.2
