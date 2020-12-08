@@ -6,6 +6,7 @@ import sys
 
 from pathlib import Path
 from collections import ChainMap, namedtuple
+import pkg_resources
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm.exc import NoResultFound
@@ -19,8 +20,11 @@ MAIL = Mail()
 # Define GEONATURE_VERSION before import config_shema module
 # because GEONATURE_VERSION is imported in this module
 ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent
-with open(str((ROOT_DIR / "VERSION"))) as v:
-    GEONATURE_VERSION = v.read()
+try:
+    GEONATURE_VERSION = pkg_resources.require("geonature")[0].version
+except pkg_resources.DistributionNotFound:
+    with open(str((ROOT_DIR / "VERSION"))) as v:
+        GEONATURE_VERSION = v.read()
 from geonature.utils.config_schema import (
     GnGeneralSchemaConf,
     GnPySchemaConf,
@@ -29,7 +33,6 @@ from geonature.utils.config_schema import (
 from geonature.utils.utilstoml import load_and_validate_toml
 
 BACKEND_DIR = ROOT_DIR / "backend"
-DEFAULT_VIRTUALENV_DIR = BACKEND_DIR / "venv"
 DEFAULT_CONFIG_FILE = ROOT_DIR / "config/geonature_config.toml"
 
 os.environ['FLASK_SQLALCHEMY_DB'] = 'geonature.utils.env.DB'
@@ -45,79 +48,6 @@ GN_MODULE_FILES = (
 
 GN_EXTERNAL_MODULE = ROOT_DIR / "external_modules"
 GN_MODULE_FE_FILE = "frontend/app/gnModule.module"
-
-
-def in_virtualenv():
-    """ Return if we are in a virtualenv """
-    return "VIRTUAL_ENV" in os.environ
-
-
-def virtualenv_status():
-    """ Return if we are in a virtualenv or not, and if it's allowed """
-    VirtualenvStatus = namedtuple(  # pytlint: disable=C0101
-        "VirtualenvStatus", "in_venv no_venv_allowed"
-    )
-
-    return VirtualenvStatus(
-        in_virtualenv(),  # Are we in a venv ?
-        os.environ.get("GEONATURE_NO_VIRTUALENV"),  # By pass venv check ?
-    )
-
-
-def venv_path(*children):
-    """ Return the path to the current virtualenv
-
-        If additional arguments are passed, they are concatenated to the path.
-    """
-    if not in_virtualenv():
-        raise EnvironmentError("This function can only be called in a virtualenv")
-    path = sys.exec_prefix
-    return Path(os.path.join(path, *children))
-
-
-def venv_site_packages():
-    """ Return the path to the virtualenv site-packages dir """
-
-    venv = venv_path()
-    for path in sys.path:
-        if path.startswith(str(venv)) and path.endswith("site-packages"):
-            return Path(path)
-
-
-def add_geonature_pth_file():
-    """ Return the path to the virtualenv site-packages dir
-
-        Returns a tuple (path, bool), where path is the Path object to
-        the .pth file and bool is wether or not the line was added.
-    """
-    path = venv_site_packages() / "geonature.pth"
-    try:
-        if path.is_file():
-            return path, True
-
-        with path.open("a") as f:
-            f.write(str(BACKEND_DIR) + "\n")
-    except OSError:
-        return path, False
-
-    return path, True
-
-
-def install_geonature_command():
-    """ Install an alias of geonature_cmd.py in the virtualenv bin dir """
-    add_geonature_pth_file()
-    python_executable = venv_path("bin", "python")
-
-    cmd_path = venv_path("bin", "geonature")
-    with cmd_path.open("w") as f:
-        f.writelines(
-            [
-                "#!{}\n".format(python_executable),
-                "import geonature.core.command\n",
-                "geonature.core.command.main()\n",
-            ]
-        )
-    cmd_path.chmod(0o777)
 
 
 def get_config_file_path(config_file=None):
