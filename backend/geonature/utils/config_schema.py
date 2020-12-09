@@ -94,7 +94,7 @@ class MediasConfig(Schema):
 
 class MetadataConfig(Schema):
     NB_AF_DISPLAYED = fields.Integer(missing=50, validate=OneOf([10, 25, 50, 100]))
-    ENABLE_PUBLICATION = fields.Boolean(missing=True)
+    ENABLE_DEPOSIT = fields.Boolean(missing=True)
     AF_PDF_TITLE = fields.String(missing="")
     DS_PDF_TITLE = fields.String(missing="")
     URL_FRAMEWORK_DOWNLOAD = fields.String(missing="")

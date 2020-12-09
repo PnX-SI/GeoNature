@@ -121,7 +121,7 @@
                     <mat-icon> create</mat-icon>
                   </button>
                   <button
-                    *ngIf="APP_CONFIG.METADATA?.ENABLE_PUBLICATION"
+                    *ngIf="APP_CONFIG.METADATA?.ENABLE_DEPOSIT"
                     mat-icon-button
                     [disabled]="!af.cruved.E || !af.opened"
                     (click)="openPublishModalAf($event, af.id_acquisition_framework, publishModal)"
