@@ -1159,7 +1159,7 @@ def publish_acquisition_framework_mail(af, info_role):
     mail_content = ""
     mail_content_base = """Bonjour,<br>
     <br>
-    Le cadre d'acquisition {} dont l’identifiant est {} que vous nous avez transmis a été publié"""
+    Le cadre d'acquisition {} dont l’identifiant est {} que vous nous avez transmis a été déposé"""
     mail_content_id_tps = " dans le cadre du dossier {}"
     mail_content_additions = current_app.config["METADATA"]["MAIL_CONTENT_AF_PUBLISHED_ADDITION"]
     mail_content_pdf = current_app.config['METADATA']["MAIL_CONTENT_AF_PUBLISHED_PDF"]
