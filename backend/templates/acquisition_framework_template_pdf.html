@@ -26,7 +26,7 @@
                  {{ data['acquisition_framework_name'] }}
             {% endif %}
         </label>
-        {% if data['initial_closing_date'] %}
+        {% if data['certificate'] %}
             <br>
             <label class="label-titre">
                 Date de dépôt : {{ data['initial_closing_date'].strftime('%d-%m-%Y %H:%M') }}

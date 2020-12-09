@@ -874,6 +874,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
         )
     # For a deposit certificate, we name the file according to the initial_closing_date. With the actual time for the export PDF
     if certificate and af.initial_closing_date:
+        acquisition_framework['certificate'] = True
         acquisition_framework['initial_closing_date'] = dt.datetime.strptime(
             acquisition_framework['initial_closing_date'],
             '%Y-%m-%d %H:%M:%S.%f')
