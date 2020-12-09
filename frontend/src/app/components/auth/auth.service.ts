@@ -5,7 +5,6 @@ import { HttpClient } from '@angular/common/http';
 import { AppConfig } from '../../../conf/app.config';
 import { CookieService } from 'ng2-cookies';
 import 'rxjs/add/operator/delay';
-import { exception } from 'console';
 
 export interface User {
   user_login: string;
@@ -130,6 +129,7 @@ export class AuthService {
 
   logout() {
     this.deleteAllCookies();
+    localStorage.clear();
     if (AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
       document.location.href = `${AppConfig.CAS_PUBLIC.CAS_URL_LOGOUT}?service=${
         AppConfig.URL_APPLICATION
