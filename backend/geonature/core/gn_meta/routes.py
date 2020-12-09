@@ -887,12 +887,13 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
             dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
         )
 
-    try:
-        f = open(str(BACKEND_DIR) + "/static/images/taxa.png")
-        f.close()
-        acquisition_framework["chart"] = True
-    except IOError:
-        acquisition_framework["chart"] = False
+
+    # try:
+    #     f = open(str(BACKEND_DIR) + "/static/images/taxa.png")
+    #     f.close()
+    #     acquisition_framework["chart"] = True
+    # except IOError:
+    #     acquisition_framework["chart"] = False
 
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf(
