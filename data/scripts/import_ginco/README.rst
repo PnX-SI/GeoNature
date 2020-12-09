@@ -10,7 +10,7 @@ Ce dossier comprend plusieurs scripts permettant d'effectuer la migration des do
 
 * ``restore_ginco_db.sh`` : Ce script restaure une BDD GINCO à partir d'un DUMP SQL, puis créé un Foreign Data Wrapper (FDW) entre la base restaurée et la base GeoNature cible. Un nouveau schéma ``ginco_migration`` est créé, comportant les tables des schémas ``website`` et ``raw_data`` de la base GINCO source.
 * Ginco est actuellement en version Taxref 12. GeoNature ne s'installe lui qu'avec la version 11 ou 13 du référentiel. Le script ``import_taxref/import_new_taxref_version.sh`` permet d'importer Taxref en version 12. Il doit être exécuté sur un GeoNature vierge de toute donnée pour ne pas créer de conflit d'integrité.
-* ``insert_data.sh`` : Ce script vient lire dans le FDW précedemment créé pour insérer les données dans la synthèse de GeoNature.
+* ``insert_data.sh`` : Ce script vient lire dans le FDW précedemment créé pour insérer les données dans la synthèse de GeoNature. Remplacer la variable <NOM_TABLE> du fichier ``synthese.sql`` par le nom de la table comprenant les données d'occurrence de taxon de Ginco.
 * ``import_mtd.sh`` : Script contenant un script python permettant de récupérer les cadres d'acquisition et les informations détaillées de chaque JDD présents dans la base GINCO à partir du web-service MTD.
 * ``find_conflicts.sql`` Script permettant de remonter les erreurs d'intégrité des données sources (voir plus bas)
 

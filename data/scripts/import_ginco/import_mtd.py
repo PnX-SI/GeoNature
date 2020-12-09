@@ -355,7 +355,7 @@ def insert_update_t_acquisition_frameworks(CURRENT_AF_ROOT, action, cur_af_uuid)
 		) RETURNING id_acquisition_framework;
 		""".format(
 			identifiantCadre=identifiantCadre,
-			libelle=libelle,
+			libelle=libelle[0:254],
 			description=description,
 			id_niveauTerritorial=id_niveauTerritorial,
 			precisionGeographique=precisionGeographique,
