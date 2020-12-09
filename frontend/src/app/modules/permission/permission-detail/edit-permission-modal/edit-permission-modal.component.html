@@ -1,0 +1,174 @@
+<div class="modal-header">
+  <h1 class="modal-title" mat-dialog-title>
+    <ng-container *ngIf="(editionMode|async); else addModeTitleTpl">
+      <mat-icon inline="true">edit</mat-icon>
+      {{ 'Permissions.titles.update' | translate }}
+    </ng-container>
+    <ng-template #addModeTitleTpl>
+      <mat-icon inline="true">add_box</mat-icon>
+      {{ 'Permissions.titles.add' | translate }}
+    </ng-template>
+  </h1>
+
+  <button type="button" class="close" aria-label="Close" mat-dialog-close>
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div mat-dialog-content>
+  <form [formGroup]="formGroup">
+    <mat-horizontal-stepper linear labelPosition="bottom" #stepper>
+      <mat-step formGroupName="modules">
+        <ng-template matStepLabel>{{ 'Permissions.module.stepLabel' | translate }}</ng-template>
+
+        <div class="modal-body">
+          <mat-form-field>
+            <mat-label>{{ 'Permissions.module.label' | translate }}</mat-label>
+            <mat-select formControlName="module" cdkFocusInitial>
+              <mat-option *ngFor="let module of modules" [value]="module.id">
+                {{ module.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="modal-footer">
+          <button mat-stroked-button matStepperNext type="button">
+            {{ 'Permissions.next' | translate }}
+          </button>
+        </div>
+      </mat-step>
+
+      <mat-step formGroupName="actionsObjects">
+        <ng-template matStepLabel>{{ 'Permissions.actionObject.stepLabel' | translate }}</ng-template>
+
+        <div class="modal-body">
+          <mat-form-field>
+            <mat-label>{{ 'Permissions.actionObject.label' | translate }}</mat-label>
+            <mat-select formControlName="actionObject">
+              <mat-option *ngFor="let actionObj of actionsOjects" [value]="actionObj">
+                {{ actionObj.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="modal-footer d-flex justify-content-between">
+          <button mat-stroked-button matStepperPrevious type="button">
+            {{ 'Permissions.previous' | translate }}
+          </button>
+          <button mat-stroked-button matStepperNext type="button">
+            {{ 'Permissions.next' | translate }}
+          </button>
+        </div>
+      </mat-step>
+
+      <mat-step formGroupName="filters">
+        <ng-template matStepLabel>{{ 'Permissions.filter.stepLabel' | translate }}</ng-template>
+
+        <div class="modal-body" *ngFor="let filter of filters">
+          <div class="form-group" *ngIf="filter.filterTypeCode == 'GEOGRAPHIC'">
+            <pnx-areas
+              [searchBar]="true"
+              [parentFormControl]="this.formGroup.controls['filters.geographic']"
+              [label]="'Permissions.filters.types.GEOGRAPHIC' | translate"
+              [idTypes]="geographicFilterTypes"
+              [bindAllItem]="true"
+              [matTooltip]="'Permissions.filters.tooltips.GEOGRAPHIC' | translate"
+              matTooltipPosition="above"
+            >
+            </pnx-areas>
+          </div>
+
+          <div class="form-group" *ngIf="filter.filterTypeCode == 'TAXONOMIC'">
+            <pnx-taxa
+              [parentFormControl]="this.formGroup.controls['fiters.taxonomic']"
+              [label]="'Permissions.filters.types.TAXONOMIC' | translate"
+              [rank]="taxonomicFilterRank"
+              [bindAllItem]="true"
+              [matTooltip]="'Permissions.filters.tooltips.TAXONOMIC' | translate"
+              matTooltipPosition="above"
+            >
+            </pnx-taxa>
+          </div>
+
+          <div class="form-group" *ngIf="filter.filterTypeCode == 'PRECISION'">
+              <mat-form-field [matTooltip]="'Permissions.filters.tooltips.PRECISION' | translate">
+                <mat-label>{{ 'Permissions.filters.types.PRECISION' | translate }}</mat-label>
+                <mat-select formControlName="precision">
+                  <mat-option
+                    *ngFor="let filterVal of filtersValues.PRECISION"
+                    [value]="filterVal.value"
+                  >
+                    {{ filterVal.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+          </div>
+
+          <div class="form-group" *ngIf="filter.filterTypeCode == 'SCOPE'">
+            <mat-form-field [matTooltip]="'Permissions.filters.tooltips.SCOPE' | translate">
+              <mat-label>{{ 'Permissions.filters.types.SCOPE' | translate }}</mat-label>
+              <mat-select formControlName="scope">
+                <mat-option
+                  *ngFor="let filterVal of filtersValues.SCOPE"
+                  [value]="filterVal.value"
+                >
+                  {{ filterVal.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="modal-footer d-flex justify-content-between">
+          <button mat-stroked-button matStepperPrevious type="button">
+            {{ 'Permissions.previous' | translate }}
+          </button>
+          <button mat-stroked-button matStepperNext type="button">
+            {{ 'Permissions.next' | translate }}
+          </button>
+        </div>
+      </mat-step>
+
+      <mat-step formGroupName="validating">
+        <ng-template matStepLabel>{{ 'Permissions.validating.stepLabel' | translate }}</ng-template>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <pnx-date
+              label="{{ 'Permissions.validating.endDateLabel' | translate }}"
+              [parentFormControl]="this.formGroup.controls.validating.controls.endDate"
+              [minDate]="datePickerMin"
+              [maxDate]="datePickerMax"
+            >
+            </pnx-date>
+          </div>
+        </div>
+
+        <div class="modal-footer d-flex justify-content-between">
+          <button mat-stroked-button matStepperPrevious type="button">
+            {{ 'Permissions.previous' | translate }}
+          </button>
+          <button mat-stroked-button color="warn" (click)="stepper.reset()">
+            {{ 'Permissions.reset' | translate }}
+          </button>
+
+          <button
+            mat-raised-button
+            class="uppercase"
+            color="primary"
+            [disabled]="
+              !formGroup.valid ||
+              !formGroup.valid ||
+              disableSubmit
+            "
+          >
+            {{ 'Validate' | translate }}
+          </button>
+        </div>
+      </mat-step>
+
+    </mat-horizontal-stepper>
+  </form>
+</div>

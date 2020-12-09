@@ -252,6 +252,56 @@
       "refusalKo": "An error occurred while denying the request: {{error}}",
       "pendinglOk": "Request put on hold",
       "pendingKo": "An error occurred while putting on hold the request: {{error}}"
+    },
+    "filters": {
+      "types": {
+        "SCOPE": "Property",
+        "GEOGRAPHIC": "Geographic",
+        "TAXONOMIC": "Taxonomic",
+        "PRECISION": "Precision"
+      },
+      "tooltips": {
+        "SCOPE": "Permissions limited by the type of data membership.",
+        "GEOGRAPHIC": "Permissions limited by geographic areas.",
+        "TAXONOMIC": "Permissions limited by taxa.",
+        "PRECISION": "Activates (= fuzzy) or deactivates (= exact) the blurring of data (sensitive or private)."
+      },
+      "values": {
+        "SCOPE": {
+          "0": "None",
+          "1": "Mine",
+          "2": "To my organization",
+          "3": "To everybody"
+        },
+        "PRECISION": {
+          "exact": "Exact",
+          "fuzzy": "Fuzzy"
+        }
+      }
+    },
+    "deleteOk": "Deleting of the permission taken into account",
+    "deleteKo": "An error occurred while deleting the permission : {{errorMsg}}",
+    "titles": {
+      "update": "Editing a permission",
+      "add": "Adding a permission"
+    },
+    "previous": "Previous",
+    "next": "Next",
+    "reset": "Reset",
+    "module": {
+      "label":"Modules",
+      "stepLabel": "Choose a module"
+    },
+    "actionObject": {
+      "label": "Permissions",
+      "stepLabel": "Choose a permission"
+    },
+    "filter": {
+      "stepLabel": "Add filters"
+    },
+    "validating": {
+      "stepLabel": "Validating",
+      "endDateLabel": "End date of permission"
     }
   },
   "Datatable": {

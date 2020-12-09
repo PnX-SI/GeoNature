@@ -13,6 +13,7 @@ export interface IPermissionRequestDatatableColumn {
   headerTemplate?: TemplateRef<any>;
 }
 
+// PERMISSIONS REQUESTS
 export interface IPermissionRequest {
   token: string;
   userName: string;
@@ -33,20 +34,53 @@ export interface IPermissionRequest {
 }
 
 export interface IAdditionalData {
+  type: string;
   key: string;
-  label?: string;
   value: any;
+  label?: string;
+  icon?: string;
+  iconSet?: string;
 }
 
-export interface IPermissionRequestConstraint {
-  sensitive: boolean;
-  geographic: number[];
-  taxonomic?: number[];
-}
-
+// PERMISSIONS ROLE
 export interface IRolePermission {
   id: number;
-  name: string;
-  type: 'USER'|'GROUP';
+  userName: string;
+  organismName?: string;
+  type: 'USER' | 'GROUP';
   permissionsNbr?: number;
+  permissions?: Record<string, IPermission[]>;// Not use in list to decrease bandwidth consumption.
+}
+
+export interface IPermission {
+  name: string;
+  code: string;
+  module: string;
+  end_date: string;// TODO: use Date
+  //filters: Record<string, IPermissionFilter[]>;
+  filters: IPermissionFilter[];
+}
+
+export interface IPermissionFilter {
+  type: string;
+  value: any;
+  label?: string | string[];
+}
+
+// MODULES
+export interface IModule {
+  id: number;
+  code: string;
+  label: string;
+  picto?: string;
+  desc?: string;
+  group?: string;
+  path?: string;
+  externalUrl?: string;
+  target?: string;
+  comment?: string;
+  activatedFrontend: boolean;
+  activatedBackend: boolean;
+  docUrl?: URL;
+  order?: number;
 }

@@ -9,34 +9,144 @@
         <mat-icon *ngSwitchDefault class="header-icon">account_circle</mat-icon>
       </div>
       <div>
-        <h3 class="h4">{{ role?.name || '&nbsp;' }}</h3>
+        <h3 class="h4">{{ role?.userName || '&nbsp;' }}</h3>
         <h4 class="h5">Permissions relatives aux modules</h4>
+      </div>
+      <div class="flex-grow-1 text-right mr-5">
+        <button
+          class="mat-elevation-z2 mx-1"
+          mat-raised-button
+          color="primary"
+          matRipple
+          (click)="openAddModal()"
+        >
+          <mat-icon>add_circle</mat-icon>
+          Ajouter une permission
+        </button>
       </div>
     </div>
 
     <div *ngIf="role ; else loadingTpl" class="card-body">
-      <mat-accordion>
-        <mat-expansion-panel>
+      <mat-accordion *ngIf="modules?.length ; else noPermissionTpl">
+        <mat-expansion-panel
+          *ngFor="let module of modules"
+        >
           <mat-expansion-panel-header>
             <mat-panel-title>
-              Synthese
+              <span class="mr-2">
+                <mat-icon *ngIf="!module.picto" inline="true">extension</mat-icon>
+                <mat-icon
+                  *ngIf="module.picto && module.picto.startsWith('fa-')"
+                  inline="true"
+                  fontSet="fa"
+                  [fontIcon]="module.picto"
+                ></mat-icon>
+                <mat-icon
+                  *ngIf="module.picto && !module.picto.startsWith('fa-')"
+                  inline="true"
+                >
+                  {{ module.picto }}
+                </mat-icon>
+              </span>
+
+              <h5>
+                {{module.label}}
+              </h5>
             </mat-panel-title>
             <mat-panel-description>
-              Permissions du module Synthese.
+              <p>
+                <strong>{{ role.permissions[module.code].length }}</strong>
+                permission pour le module {{module.label}}.
+              </p>
             </mat-panel-description>
           </mat-expansion-panel-header>
 
-          <p>Afficher ici un tableau des permissions du module Synthese.</p>
-        </mat-expansion-panel>
-
-        <mat-expansion-panel (opened)="panelOpenState = true"
-                             (closed)="panelOpenState = false">
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Validation
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <p>Afficher ici un tableau des permissions du module Synthese.</p>
+          <div class="table-responsive-md">
+            <table class="table table-bordered table-hover mt-2">
+              <thead class="thead-dark">
+                <th
+                  matTooltip="Nom de la permission (Action CRUVED + objet)"
+                  scope="col"
+                >
+                  Nom
+                </th>
+                <th
+                  matTooltip="Liste des filtres s'appliquant à cette permission"
+                  scope="col"
+                >
+                  Filtre(s)
+                </th>
+                <th class="text-center" scope="col">
+                  Date de fin
+                </th>
+                <th class="text-right" scope="col">
+                  Actions
+                </th>
+              </thead>
+              <tbody>
+                <tr *ngFor="let permission of role.permissions[module.code]">
+                  <th class="align-middle" scope="row">
+                    {{ permission.name }}
+                  </th>
+                  <td class="align-middle">
+                    <table class="table table-borderless table-sm mb-0">
+                      <tr *ngFor="let filter of permission.filters">
+                        <th class="p-1 text-right" style="width: 110px;" scope="row">
+                          {{ "Permissions.filters.types." + filter.type | translate }} :
+                        </th>
+                        <td *ngIf="!filter.label" class="p-1 text-left ">
+                          {{
+                            "Permissions.filters.values." + filter.type + "." + filter.value
+                            | translate
+                          }}
+                        </td>
+                        <td *ngIf="filter.label" class="p-1 text-left ">
+                          <mat-chip-list>
+                            <mat-chip *ngFor="let label of filter.label">
+                              {{ label | stripHTML }}
+                            </mat-chip>
+                          </mat-chip-list>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                  <td
+                    class="align-middle text-center"
+                    [matTooltip]="!permission.end_date ? 'La permission est permanente' : null"
+                  >
+                    <ng-template *ngIf="permission.end_date ; else permanent">
+                      {{ permission.end_date }}
+                    </ng-template>
+                    <ng-template #permanent>Aucune</ng-template>
+                  </td>
+                  <td class="align-middle">
+                    <div class="d-flex justify-content-end flex-wrap">
+                      <button
+                        class="mat-elevation-z1 mx-1"
+                        mat-icon-button
+                        color="primary"
+                        matRipple
+                        matTooltip="Éditer la permission."
+                        (click)="openAddModal(permission)"
+                      >
+                        <mat-icon>create</mat-icon>
+                      </button>
+                      <button
+                        class="mat-elevation-z1 mx-1"
+                        mat-icon-button
+                        color="warn"
+                        matRipple
+                        matTooltip="Supprimer la permission."
+                        (click)="openDeleteDialog(permission)"
+                      >
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </mat-expansion-panel>
       </mat-accordion>
     </div>
@@ -48,5 +158,20 @@
   <div class="card-body d-flex justify-content-center align-items-center flex-column">
     <mat-spinner></mat-spinner>
     <p>Chargement en cours...</p>
+  </div>
+</ng-template>
+<ng-template #noPermissionTpl>
+  <div class="
+    card-body
+    d-flex justify-content-center align-items-center flex-column
+  ">
+    <div class="
+      d-flex flex-row
+      border border-light rounded p-3
+      bg-info text-white
+    ">
+      <mat-icon class="mr-3">info</mat-icon>
+      <p class="m-0">Aucune permission trouvé...</p>
+    </div>
   </div>
 </ng-template>

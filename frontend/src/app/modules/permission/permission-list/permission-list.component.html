@@ -26,13 +26,16 @@
               type="text"
               placeholder="Filtrer les utilisateurs et groupes..."
               (keyup)="updateFilter($event)"
+              matTooltip="Filtre disponible sur les colonnes : {{searchableColumnsNames}}.
+                Pour la colonne Type, utiliser les mot-clés USER (=utilisateur) ou GROUP (=groupe).
+                Le filtre est insensible à la casse."
             >
           </div>
         </div>
       </div>
 
       <ngx-datatable
-        class="material striped"
+        class="material"
         [columns]="columns"
         [rows]="rows"
         [columnMode]="'flex'"
@@ -44,6 +47,7 @@
         [rowHeight]="'auto'"
         [limit]="5"
         [targetMarkerTemplate]="targetMarkerTemplate"
+        [rowClass]="getRowClass"
       >
         <ng-template #colHeaderTpl let-column="column" let-sort="sortFn">
           <span class="datatable-header-cell-wrapper">
@@ -63,15 +67,21 @@
           {{ value == 'USER' ? 'Utilisateur' : 'Groupe' }}
         </ng-template>
 
+        <ng-template #organismCellTpl let-value="value">
+          {{ !value ? '-' : value }}
+        </ng-template>
+
         <ng-template #actionsCellTpl let-value="value" let-row="row">
-          <button
-            mat-icon-button
-            matRipple
-            matTooltip="Visualiser les permissions"
-            [routerLink]="['/permissions/roles/', row.id, { name: row.name, type: row.type }]"
-          >
-            <mat-icon>description</mat-icon>
-          </button>
+          <div class="d-flex justify-content-end flex-wrap">
+            <button
+              mat-icon-button
+              matRipple
+              matTooltip="Visualiser les permissions"
+              [routerLink]="['/permissions/roles/', row.id, { name: row.userName, type: row.type }]"
+            >
+              <mat-icon>description</mat-icon>
+            </button>
+          </div>
         </ng-template>
 
         <!-- Reorderable columns templates -->

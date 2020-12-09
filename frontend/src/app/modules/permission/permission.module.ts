@@ -19,6 +19,8 @@ import { RequestListComponent } from './request-list/request-list.component'
 
 // Dialog
 import { AcceptRequestDialog } from './shared/accept-request-dialog/accept-request-dialog.component';
+import { DeletePermissionDialog } from './permission-detail/delete-permission-dialog/delete-permission-dialog.component';
+import { EditPermissionModal } from './permission-detail/edit-permission-modal/edit-permission-modal.component';
 import { PendingRequestDialog } from './shared/pending-request-dialog/pending-request-dialog.component';
 import { RefusalRequestDialog } from './shared/refusal-request-dialog/refusal-request-dialog.component';
 
@@ -37,6 +39,8 @@ import { routes } from './permissions.routes'
     AccessRequestComponent,
     AccessRequestConventionComponent,
     ConventiondModalContent,
+    DeletePermissionDialog,
+    EditPermissionModal,
     PendingRequestDialog,
     PendingRequestListComponent,
     PermissionDetailComponent,
@@ -48,11 +52,13 @@ import { routes } from './permissions.routes'
     RequestListComponent,
   ],
   providers: [
-    PermissionService,
+    PermissionService
   ],
   entryComponents: [
     AcceptRequestDialog,
     ConventiondModalContent,
+    DeletePermissionDialog,
+    EditPermissionModal,
     PendingRequestDialog,
     RefusalRequestDialog,
   ],

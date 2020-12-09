@@ -4,7 +4,7 @@ import { delay } from 'rxjs/operators';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { APP_CONFIG_TOKEN } from '@geonature_config/app.config';
-import { IRolePermission, IPermissionRequest } from './permission.interface'
+import { IRolePermission, IPermissionRequest, IModule } from './permission.interface'
 
 
 @Injectable()
@@ -39,12 +39,27 @@ export class PermissionService {
 
   getAllRoles(): Observable<IRolePermission[]> {
     const url = `${this.cfg.API_ENDPOINT}/permissions/roles`;
-    return this.http.get<IRolePermission[]>(url).pipe(delay(3000));
+    return this.http.get<IRolePermission[]>(url);
   }
 
   getRoleById(id: number): Observable<IRolePermission> {
     const url = `${this.cfg.API_ENDPOINT}/permissions/roles/${id}`;
-    return this.http.get<IRolePermission>(url).pipe(delay(3000));
+    return this.http.get<IRolePermission>(url);
+  }
+
+  deletePermission(gathering: string): Observable<boolean> {
+    const url = `${this.cfg.API_ENDPOINT}/permissions/${gathering}`;
+    return this.http.delete<boolean>(url);
+  }
+
+  getModules(codes: string[] = []): Observable<IModule[]> {
+    const url = `${this.cfg.API_ENDPOINT}/permissions/modules`;
+    console.log('Codes:', codes)
+    let params = null;
+    if (codes.length > 0) {
+      params = new HttpParams().set('codes', codes.join(','));
+    }
+    return this.http.get<IModule[]>(url, {params: params});
   }
 
   getAllProcessedRequests(): Observable<IPermissionRequest[]> {

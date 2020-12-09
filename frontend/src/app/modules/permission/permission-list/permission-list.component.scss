@@ -1,4 +1,13 @@
-/* Class for reorder column icons */
+/* Header */
+.header-icon {
+  display: block;
+  font-size: 3rem;
+  width: 3rem;
+  height: 3rem;
+  margin-right: .75rem;
+}
+
+/* Datable: class for reorder column icons */
 .icon {
   position: absolute;
 }
@@ -12,7 +21,7 @@
   left: -13px;
 }
 
-/* Fix loading indicator width */
+/* Datable : fix loading indicator width */
 ::ng-deep {
   .progress-linear {
     position: relative !important;
@@ -23,11 +32,15 @@
   }
 }
 
-/* Header */
-.header-icon {
-  display: block;
-  font-size: 3rem;
-  width: 3rem;
-  height: 3rem;
-  margin-right: .75rem;
+/* Datable: row*/
+::ng-deep .row-group {
+  background-color: rgba(152, 196, 231, .3);
+  border: 1px;
+}
+::ng-deep .row-user {
+  //background-color: rgba(255, 201, 123, .2);
+
+}
+::ng-deep .datatable-row-wrapper {
+  border-bottom: 1px solid #dddddd;
 }

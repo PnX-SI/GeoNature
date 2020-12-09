@@ -256,6 +256,56 @@
       "refusalKo": "Une erreur est survenue lors du refus de la demande : {{errorMsg}}",
       "pendingOk": "Mise en attente de la demande réalisée",
       "pendingKo": "Une erreur est survenue lors de la mise en attente de la demande : {{errorMsg}}"
+    },
+    "filters": {
+      "types": {
+        "SCOPE": "Appartenance",
+        "GEOGRAPHIC": "Géographique",
+        "TAXONOMIC": "Taxonomique",
+        "PRECISION": "Précision"
+      },
+      "tooltips": {
+        "SCOPE": "Permissions limitées par le type d''appartenances des données.",
+        "GEOGRAPHIC": "Permissions limitées par zones géographiques.",
+        "TAXONOMIC": "Permissions limitées par des taxons.",
+        "PRECISION": "Active (=floutée) ou désactive (=exacte) le floutage des données (sensibles ou privées)."
+      },
+      "values": {
+        "SCOPE": {
+          "0": "de personne",
+          "1": "à moi",
+          "2": "de mon organisme",
+          "3": "de tout le monde"
+        },
+        "PRECISION": {
+          "exact": "Exacte",
+          "fuzzy": "Floutée"
+        }
+      }
+    },
+    "deleteOk": "Suppression de la permission prise en compte",
+    "deleteKo": "Une erreur est survenue lors de la suppression de la permission : {{errorMsg}}",
+    "titles": {
+      "update": "Édtion d'une permission",
+      "add": "Ajout d'une permission"
+    },
+    "previous": "Précédent",
+    "next": "Suivant",
+    "reset": "Réinitialiser",
+    "module": {
+      "label": "Modules",
+      "stepLabel": "Choisissez un module"
+    },
+    "actionObject": {
+      "label": "Permissions",
+      "stepLabel": "Choisissez une permission"
+    },
+    "filter": {
+      "stepLabel": "Ajouter des filtres"
+    },
+    "validating": {
+      "stepLabel": "Validation",
+      "endDateLabel": "Date de fin de permission"
     }
   },
   "Datatable": {
