@@ -27,7 +27,7 @@ On considère ici un un format de type ``GEOJSON``.
   ...
 
 
-* Un exemple complet est donné `danss cet exemple <./api_exemple.rst>`_
+* Un exemple complet est donné `dans cet exemple <./api_exemple.rst>`_
 
 * Données de type nomenclature
 
@@ -50,22 +50,30 @@ Les routes
 
 * Synthese :
 
-  * ``GET/DELETE`` : récupère/supprime une ligne de la synthèse au format d'échange
+  * ``GET`` : récupère une ligne de la synthèse au format d'échange
     
     * ``/exchanges/synthese/<int:id_synthese>``: à partir de la clé primaire ``id_synthese``
     * ``/exchanges/synthese/<string:unique_id_sinp>`` : à partir de l'uuid
     * ``/exchanges/synthese/<int:id_source>/<int:entity_source_pk_value>`` : à partir du couple ``(id_source, entity_source_pk_value)``
 
-  * ``POST/PATCH`` : pour mettre une nouvelle donnée, modifier une donnée existante
+  * ``DELETE`` : supprime une ligne de la synthèse au format d'échange
+    
+    * ``/exchanges/synthese/<int:id_source>/<int:entity_source_pk_value>`` : à partir du couple ``(id_source, entity_source_pk_value)``
+
+  * ``POST`` : pour mettre une nouvelle donnée, modifier une donnée existante
     
     * ``/exchanges/synthese/``: 
       
       * les données ``post_data`` doivent être au format d'échange
-      * possibilité d'identifier une ligne de la synthèse à partir de (en ordre de priorité):
-         
-          * ``id_synthese``
-          * ``unique_id_sinp``
-          * ``(id_source, entity_source_pk_value)``
+
+  * `` PATCH``
+
+    * ``/exchanges/synthese/<int:id_synthese>``: à partir de la clé primaire ``id_synthese``
+    * ``/exchanges/synthese/<string:unique_id_sinp>`` : à partir de l'uuid
+    * ``/exchanges/synthese/<int:id_source>/<int:entity_source_pk_value>`` : à partir du couple ``(id_source, entity_source_pk_value)``
+
+      * les données ``post_data`` doivent être au format d'échange
+
 
 * Source : 
   

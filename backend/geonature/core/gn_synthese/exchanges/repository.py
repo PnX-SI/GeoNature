@@ -1,3 +1,4 @@
+import uuid
 from .models import Synthese, TSources
 
 from geonature.utils.env import DB
@@ -21,6 +22,7 @@ def request_synthese(id_synthese=None, unique_id_sinp=None, id_source=None, enti
             'id_source': id_source,
             'entity_source_pk_value': str(entity_source_pk_value)
         }
+
 
     return  (
         DB.session.query(Synthese)
@@ -49,7 +51,7 @@ def get_synthese(id_synthese=None, unique_id_sinp=None, id_source=None, entity_s
     return req_synthese.one() if req_synthese else Synthese()
 
 
-def create_or_update_synthese(synthese_data):
+def create_or_update_synthese(synthese_data, id_synthese=None, unique_id_sinp=None, id_source=None, entity_source_pk_value=None):
     '''
         post or patch synthese for exchange
     '''
@@ -61,35 +63,42 @@ def create_or_update_synthese(synthese_data):
         for key in ['id_synthese', 'unique_id_sinp', 'id_source', 'entity_source_pk_value']
     }
 
-    try: 
-        synthese = get_synthese(**synthese_data_for_get)
-    except Exception as e:
-        synthese = Synthese()
+    if id_synthese or unique_id_sinp or ( id_source and entity_source_pk_value ):
+        synthese = get_synthese(id_synthese, unique_id_sinp, id_source, entity_source_pk_value)
 
-    if not synthese.id_synthese:
+    else:
+
+        synthese = Synthese()
         DB.session.add(synthese)
+
     # synthese from dict -> marshmallow
-    synthese.from_geofeature(synthese_data, recursif=True, col_geom_name='the_geom_4326')
+    if 'geometry' in synthese_data:
+        synthese.from_geofeature(synthese_data, recursif=True, col_geom_name='the_geom_4326')
+    else:
+        synthese.from_dict(synthese_data['properties'], True)
+    
+    # on attribut un uuid dans le cas d'un post sans uuid 
+    if (not synthese.id_synthese) and (not synthese.unique_id_sinp):
+        synthese.unique_id_sinp = uuid.uuid4()
 
     DB.session.commit()
 
     return synthese
 
 
-def delete_synthese(id_synthese=None, unique_id_sinp=None, id_source=None, entity_source_pk_value=None):
+def delete_synthese(id_synthese=None):
     '''
         delete synthese
     '''
 
-    synthese = request_synthese(id_synthese, unique_id_sinp, id_synthese, entity_source_pk_value)
+    synthese = request_synthese(id_synthese)
 
     if not synthese:
         return 0
 
     res = synthese.delete()
     DB.session.commit()
-
-    return res 
+    return res
 
 
 def get_source(id_source):

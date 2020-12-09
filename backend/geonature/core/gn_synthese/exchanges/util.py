@@ -112,12 +112,16 @@ def process_nomenclatures(data, cd_to_id):
         var_in = field_name_in + var_preffix
         var_out = field_name_out + var_preffix
 
-        value_in = data.get(var_in)
-        del data[var_in]
+        if var_in not in data:
+            continue
 
+        value_in = data.get(var_in)
+
+        del data[var_in]
         if not value_in:
             data[var_out] = None
             continue
+
 
         value_out = get_nomenclature(code_type, value_in, field_name_in).get(field_name_out)
         
@@ -138,7 +142,7 @@ def process_nomenclatures(data, cd_to_id):
         data[var_out] = value_out
 
 
-def process_from_post_data(data):
+def process_from_post_data(data, is_post):
     '''
         process data
             - convert nomenclature cd_nomenclature to id_nomenclature
@@ -154,22 +158,26 @@ def process_from_post_data(data):
 
     process_nomenclatures(properties, True)
 
-    check_model(TSources, properties, 'id_source', 2)
+    check_model(TSources, properties, 'id_source', 2, is_post)
 
-    check_model(TDatasets, properties, 'id_dataset', 3)
+    check_model(TDatasets, properties, 'id_dataset', 3, is_post)
 
     return data_out
 
 
-def check_model(TModel, data, field_name, exception_code):
+def check_model(TModel, data, field_name, exception_code, is_post):
     '''
         verifie si la source existe bien
 
         i.e il existe un element de TModel tel que TModel.<field_name> = data[<field_name>]
 
         si non on lève l'exception 
+
+        is_post: on ne teste que si défini
     '''
 
+    if (not field_name in data) and (not is_post):
+        return 
 
     value = data.get(field_name)
     if not value:

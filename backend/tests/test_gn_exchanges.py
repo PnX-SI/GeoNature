@@ -23,6 +23,7 @@
 from geonature.core.gn_synthese.exchanges.models import Synthese
 
 import os
+
 import json
 import io
 from pathlib import Path
@@ -74,14 +75,8 @@ class TestAPIExchanges:
         response_data = json_of_response(response)
         assert(self._data_synthese['properties']['id_synthese'] == response_data['properties']['id_synthese'])
 
-    def _post_synthese(self):
-
-        url_synthese = '/exchanges/synthese/'
-        id_synthese = self._data_synthese['properties']['id_synthese']
-        for key in ['id_synthese', 'unique_id_sinp']:
-            del self._data_synthese['properties'][key]
-
-        max_of_source_plus_one = (
+    def get_max_entity_source_pk_value(self):
+        return  (
             DB.session.query(
                 cast(Synthese.entity_source_pk_value, DB.Integer) + 1
                 )
@@ -93,7 +88,16 @@ class TestAPIExchanges:
             .first()[0]
         )
 
-        self._data_synthese['properties']['entity_source_pk_value'] = str(max_of_source_plus_one)
+    def _post_synthese(self):
+
+        url_synthese = '/exchanges/synthese/'
+        id_synthese = self._data_synthese['properties']['id_synthese']
+        for key in ['id_synthese', 'unique_id_sinp']:
+            del self._data_synthese['properties'][key]
+
+        
+
+        self._data_synthese['properties']['entity_source_pk_value'] = str(self.get_max_entity_source_pk_value())
         response = post_json(
             self.client,
             url_synthese,
@@ -102,29 +106,20 @@ class TestAPIExchanges:
         assert(response.status_code == 200)
         self._data_synthese = json_of_response(response)
         assert(self._data_synthese['properties']['id_synthese'] != id_synthese)
-        
+        assert(self._data_synthese['properties']['unique_id_sinp'] is not None)
+
     def _patch_synthese(self):
 
-
-        url_synthese = '/exchanges/synthese/'
+        id_synthese = self._data_synthese['properties']['id_synthese']
+        url_id_synthese = '/exchanges/synthese/{}'.format(id_synthese)
+        url_uuid = '/exchanges/synthese/{}'.format(self._data_synthese['properties']['unique_id_sinp'])
+        url_source = '/exchanges/synthese/{}/{}'.format(self._data_synthese['properties']['id_source'], self._data_synthese['properties']['entity_source_pk_value'])
         
-        id_synthese = self._data_synthese['properties']['id_synthese']
-        for key in ['id_synthese', 'unique_id_sinp']:
-            del self._data_synthese['properties'][key]
-        response = self.client.patch(
-            url_synthese,
-            data=json.dumps(self._data_synthese),
-            content_type="application/json",
-        )
-        assert(response.status_code == 200)
-        self._data_synthese = json_of_response(response)
-        assert(self._data_synthese['properties']['id_synthese'] == id_synthese)
+        # for key in ['id_synthese', 'unique_id_sinp']:
+        #     del self._data_synthese['properties'][key]
 
-        id_synthese = self._data_synthese['properties']['id_synthese']
-        for key in ['id_synthese']:
-            del self._data_synthese['properties'][key]
         response = self.client.patch(
-            url_synthese,
+            url_id_synthese,
             data=json.dumps(self._data_synthese),
             content_type="application/json",
         )
@@ -134,20 +129,33 @@ class TestAPIExchanges:
 
         id_synthese = self._data_synthese['properties']['id_synthese']
         response = self.client.patch(
-            url_synthese,
-            data=json.dumps(self._data_synthese),
+            url_uuid,
+            data=json.dumps({'properties': {'count_max':100}}),
+            content_type="application/json",
+        )
+        assert(response.status_code == 200)
+        self._data_synthese = json_of_response(response)
+        assert(self._data_synthese['properties']['count_max'] == 100)
+        assert(self._data_synthese['properties']['id_synthese'] == id_synthese)
+
+        id_synthese = self._data_synthese['properties']['id_synthese']
+        response = self.client.patch(
+            url_source,
+            data=json.dumps({'properties': {'count_max':10}}),
             content_type="application/json",
         )
         assert(response.status_code == 200)
         self._data_synthese = json_of_response(response)
         assert(self._data_synthese['properties']['id_synthese'] == id_synthese)
+        assert(self._data_synthese['properties']['count_max'] == 10)
 
 
     def _delete_synthese(self):
         id_synthese = self._data_synthese['properties']['id_synthese']
         url_synthese = '/exchanges/synthese/{}'.format(self._data_synthese['properties']['id_synthese'])
+        url_source = '/exchanges/synthese/{}/{}'.format(self._data_synthese['properties']['id_source'], self._data_synthese['properties']['entity_source_pk_value'])
         response = self.client.delete(
-            url_synthese
+            url_source
         )
         assert(response.status_code == 200)
         response = self.client.get(
@@ -160,37 +168,42 @@ class TestAPIExchanges:
     def _errors_synthese(self):
         # erreur pour les patch selon plusieurs config
         url_synthese = '/exchanges/synthese/'
+        url_source = '/exchanges/synthese/{}/{}'.format(self._data_synthese['properties']['id_source'], self._data_synthese['properties']['entity_source_pk_value'])
 
         # cd_nomenclature mal renseigné
         data_synthese = self.data_synthese()
         data_synthese['properties']['cd_nomenclature_geo_object_nature'] = "Ceci n'est pas un cd_nomenclature"
         response = self.client.patch(
-            url_synthese,
+            url_source,
             data=json.dumps(data_synthese),
             content_type="application/json",
         )
-        assert(response != 200)
+        assert(response.status_code != 200)
         code = json_of_response(response).get('code')
         assert(code == 1)
 
 
         # source n'existe pas
-        # cd_nomenclature mal renseigné
         data_synthese = self.data_synthese()
         del data_synthese['properties']['id_source']
-        response = self.client.patch(
+        del data_synthese['properties']['id_synthese']
+        del data_synthese['properties']['unique_id_sinp']
+        response = self.client.post(
             url_synthese,
             data=json.dumps(data_synthese),
             content_type="application/json",
         )
-        assert(response != 200)
+        assert(response.status_code != 200)
         code = json_of_response(response).get('code')
         assert(code == 2)
 
         # jdd n'existe pas
         data_synthese = self.data_synthese()
         del data_synthese['properties']['id_dataset']
-        response = self.client.patch(
+        del data_synthese['properties']['id_synthese']
+        del data_synthese['properties']['unique_id_sinp']
+
+        response = self.client.post(
             url_synthese,
             data=json.dumps(data_synthese),
             content_type="application/json",
@@ -248,6 +261,7 @@ class TestAPIExchanges:
         # POST synthese
         data_synthese['properties']['id_source'] = source['id_source']
         data_synthese['properties']['id_dataset'] = dataset['id_dataset']
+        data_synthese['properties']['entity_source_pk_value'] = str(self.get_max_entity_source_pk_value())
         url_synthese = '/exchanges/synthese/'
         response = post_json(
             self.client,
@@ -258,10 +272,13 @@ class TestAPIExchanges:
         self._data_synthese = json_of_response(response)
         
         # DELETE synthese
-        url_synthese = url_synthese + str(self._data_synthese['properties']['id_synthese'])
-        response = self.client.delete(url_synthese)
+        url_source = '/exchanges/synthese/{}/{}'.format(
+            self._data_synthese['properties']['id_source'],
+            self._data_synthese['properties']['entity_source_pk_value'])
+        print(url_source)
+        response = self.client.delete(url_source)
         assert(response.status_code == 200)
-        response = self.client.get(url_synthese)
+        response = self.client.get(url_source)
         assert(response.status_code != 200)
 
         # DELETE jdd
@@ -282,7 +299,7 @@ class TestAPIExchanges:
             pass
 
         # DELETE source
-        url_source = url_source + str(source['id_source'])
+        url_source = '/exchanges/source/' + str(source['id_source'])
         response = self.client.delete(url_source)
         assert(response.status_code == 200)
         response = self.client.get(url_source)
