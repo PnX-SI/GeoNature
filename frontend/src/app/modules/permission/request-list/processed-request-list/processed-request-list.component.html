@@ -12,8 +12,9 @@
         placeholder="Filtrer les demandes..."
         (keyup)="updateFilter($event)"
         matTooltip="Filtre disponible sur les colonnes : {{searchableColumnsNames}}.
-          Pour les dates utiliser le format : AAAA-MM-JJ.
-          Pour la colonne État utilisé les mot-clés ACCEPTED (=acceptée) ou REFUSED (=refusée)."
+          Pour les dates, utiliser le format : AAAA-MM-JJ.
+          Pour la colonne État, utiliser les mot-clés ACCEPTED (=acceptée) ou REFUSED (=refusée).
+          Le filtre est insensible à la casse."
       >
     </div>
   </div>

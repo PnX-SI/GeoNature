@@ -35,9 +35,7 @@ export class RequestDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.extractRouteParams();
-    this.permissionService.getRequestByToken(this.token).subscribe(data => {
-      this.request = data;
-    });
+    this.loadRequest();
   }
 
   private extractRouteParams() {
@@ -51,6 +49,12 @@ export class RequestDetailComponent implements OnInit {
         'organismName': urlParams.get('organism'),
       };
     }
+  }
+
+  private loadRequest() {
+    this.permissionService.getRequestByToken(this.token).subscribe(data => {
+      this.request = data;
+    });
   }
 
   openAcceptDialog(request: IPermissionRequest): void {
