@@ -118,25 +118,25 @@ class TestAPIExchanges:
         # for key in ['id_synthese', 'unique_id_sinp']:
         #     del self._data_synthese['properties'][key]
 
-        response = self.client.patch(
-            url_id_synthese,
-            data=json.dumps(self._data_synthese),
-            content_type="application/json",
-        )
-        assert(response.status_code == 200)
-        self._data_synthese = json_of_response(response)
-        assert(self._data_synthese['properties']['id_synthese'] == id_synthese)
+        # response = self.client.patch(
+        #     url_id_synthese,
+        #     data=json.dumps(self._data_synthese),
+        #     content_type="application/json",
+        # )
+        # assert(response.status_code == 200)
+        # self._data_synthese = json_of_response(response)
+        # assert(self._data_synthese['properties']['id_synthese'] == id_synthese)
 
-        id_synthese = self._data_synthese['properties']['id_synthese']
-        response = self.client.patch(
-            url_uuid,
-            data=json.dumps({'properties': {'count_max':100}}),
-            content_type="application/json",
-        )
-        assert(response.status_code == 200)
-        self._data_synthese = json_of_response(response)
-        assert(self._data_synthese['properties']['count_max'] == 100)
-        assert(self._data_synthese['properties']['id_synthese'] == id_synthese)
+        # id_synthese = self._data_synthese['properties']['id_synthese']
+        # response = self.client.patch(
+        #     url_uuid,
+        #     data=json.dumps({'properties': {'count_max':100}}),
+        #     content_type="application/json",
+        # )
+        # assert(response.status_code == 200)
+        # self._data_synthese = json_of_response(response)
+        # assert(self._data_synthese['properties']['count_max'] == 100)
+        # assert(self._data_synthese['properties']['id_synthese'] == id_synthese)
 
         id_synthese = self._data_synthese['properties']['id_synthese']
         response = self.client.patch(
@@ -275,7 +275,6 @@ class TestAPIExchanges:
         url_source = '/exchanges/synthese/{}/{}'.format(
             self._data_synthese['properties']['id_source'],
             self._data_synthese['properties']['entity_source_pk_value'])
-        print(url_source)
         response = self.client.delete(url_source)
         assert(response.status_code == 200)
         response = self.client.get(url_source)

@@ -102,8 +102,8 @@ def post_exchanges_synthese():
     return patch_or_post_exchange_synthese(True)
 
 
-@routes.route("/synthese/<int:id_synthese>", methods=["PATCH", 'PUT'], defaults={'unique_id_sinp':None, 'id_source':None, 'entity_source_pk_value':None})
-@routes.route("/synthese/<string:unique_id_sinp>", methods=["PATCH", 'PUT'], defaults={'id_synthese':None, 'id_source':None, 'entity_source_pk_value':None})
+# @routes.route("/synthese/<int:id_synthese>", methods=["PATCH", 'PUT'], defaults={'unique_id_sinp':None, 'id_source':None, 'entity_source_pk_value':None})
+# @routes.route("/synthese/<string:unique_id_sinp>", methods=["PATCH", 'PUT'], defaults={'id_synthese':None, 'id_source':None, 'entity_source_pk_value':None})
 @routes.route("/synthese/<int:id_source>/<int:entity_source_pk_value>", methods=["PATCH", 'PUT'], defaults={'id_synthese':None, 'unique_id_sinp':None})
 @permissions.check_cruved_scope("U", module_code="SYNTHESE")
 @json_resp
@@ -134,6 +134,9 @@ def delete_exchanges_synthese(id_synthese, unique_id_sinp, id_source, entity_sou
         delete_synthese(synthese.id_synthese)
     except ApiSyntheseException as e:
         return e.as_dict(), 500
+    except Exception as e:
+        return str(e), 500
+
 
     return id_synthese
 
