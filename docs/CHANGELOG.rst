@@ -9,9 +9,11 @@ CHANGELOG
 
 * Métadonnées : Refonte de la liste des CA et JDD avec l'ajout d'informations et d'actions, ainsi qu'une recherche avancée (#889)
 * Métadonnées : Révision des fiches info des CA et JDD avec l'ajout d'actions, du tableau des imports et du téléchargement des rapports d'UUID et de sensibilité (#889)
+* Métadonnées: Ajout de la fonctionnalité de "dépot" au niveau du CA (qui ferme tous les JDD enfants). Désactivable via le paramètre (``ENABLE_PUBLICATION``) (@alainlaupinmnhn)
 * Métadonnées : Possibilité d'importer directement dans un JDD depuis le module Métadonnées (#889)
 * Synthèse : Possibilité d'ouvrir le module avec un JDD préselectionné (``<URL_GeoNature>/#/synthese?id_dataset=2``) et ajout d'un lien direct depuis le module Métadonnées (#889)
 * Possibilité de customiser le logo principal (GeoNature par défaut) dans ``frontend/src/custom/images/``
+
 
 **🐛 Corrections**
 
