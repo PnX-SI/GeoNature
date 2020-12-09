@@ -2,12 +2,13 @@
 Routes of the gn_permissions blueprint
 """
 
-from copy import copy
+import copy
 import datetime
 import json
 import locale
 import logging
 import random
+import uuid
 
 from flask import (
     Blueprint,
@@ -20,9 +21,8 @@ from flask import (
     redirect,
     jsonify
 )
-from sqlalchemy import or_
-from sqlalchemy.orm import (aliased, noload)
-from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy import (and_, distinct, func, or_)
+from sqlalchemy.orm import (aliased, noload, exc)
 from utils_flask_sqla.response import json_resp
 from pypnusershub.db.models import User
 
@@ -33,6 +33,7 @@ from geonature.core.users.models import BibOrganismes
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.models import (
     BibFiltersType,
+    CorModuleActionObjectFilter,
     CorObjectModule,
     CorRoleActionFilterModuleObject,
     TActions,
@@ -123,7 +124,7 @@ def logout():
     To avoid multiples server call, we store the cruved in the session
     when the user logout we need clear the session to get the new cruved session
     """
-    copy_session_key = copy(session)
+    copy_session_key = copy.copy(session)
     for key in copy_session_key:
         session.pop(key)
     return Response("Logout", 200)
@@ -397,7 +398,7 @@ def manage_access_request_by_link(token, action):
 
     # Add asked permissions to authorized permissions table if request approve
     if action == "approve":
-        add_permissions(request)
+        add_permission(request)
 
     # Commit DB session
     DB.session.commit()
@@ -417,41 +418,24 @@ def get_request_by_token(token):
             .one()
             .as_dict()
         )
-    except NoResultFound:
+    except exc.NoResultFound:
         return False
     print(f"In get_request_by_token(): {data}")
     return data
 
 
-def add_permissions(request):
-    new_permissions = []
-    if (request["geographic_filter"]):
-        permissions = get_geographic_permissions()
-        for perm in permissions:
-            perm.id_role = request["id_role"]
-            perm.gathering = request["token"]
-            perm.end_date = request["end_date"]
-            perm.value_filter = build_value_filter_from_list(request["geographic_filter"])
-            new_permissions.append(perm)
+def add_permission(request):
+    # Build default permissions for access request
+    default_permissions = get_access_request_default_permissions(request)
+    
+    # Add gathering for each permission
+    for perm in default_permissions:
+        perm["gathering"] = uuid.uuid4()
 
-    if (request["taxonomic_filter"]):
-        permissions = get_geographic_permissions()
-        for perm in permissions:
-            perm.id_role = request["id_role"]
-            perm.gathering = request["token"]
-            perm.end_date = request["end_date"]
-            perm.value_filter = build_value_filter_from_list(request["taxonomic_filter"])
-            new_permissions.append(perm)
+    # Get new permission with filters added
+    new_permissions = get_permissions_with_filters(request, default_permissions)
 
-    if (request["sensitive_access"] is True):
-        permissions = get_sensitivity_permissions()
-        for perm in permissions:
-            perm.id_role = request["id_role"]
-            perm.gathering = request["token"]
-            perm.end_date = request["end_date"]
-            perm.value_filter = "exact"
-            new_permissions.append(perm)
-
+    # Persists permissions in database
     for permission in new_permissions:
         if not permission.is_permission_already_exist():
             permission_filter = get_filter(
@@ -470,9 +454,70 @@ def add_permissions(request):
             DB.session.add(permission)
 
 
-def build_value_filter_from_list(data: list):
-    unduplicated_data = unduplicate_values(data)
-    return ",".join(map(str, unduplicated_data))
+def get_access_request_default_permissions(request):
+    default_permissions = [
+        {
+            "module_code": "SYNTHESE", 
+            "action_code": "R", 
+            "object_code": "PRIVATE_OBSERVATION",
+        },
+        {
+            "module_code": "SYNTHESE", 
+            "action_code": "E", 
+            "object_code": "PRIVATE_OBSERVATION",
+        },
+        {
+            "module_code": "VALIDATION", 
+            "action_code": "R", 
+            "object_code": "PRIVATE_OBSERVATION",
+        },
+    ]
+    
+    # Add new permissions for sensitive observations
+    if (request["sensitive_access"] is True):
+        default_sensitive_permissions = copy.deepcopy(default_permissions)
+        for permission in default_sensitive_permissions:
+            permission["object_code"] = "SENSITIVE_OBSERVATION" 
+        print(default_sensitive_permissions)
+        default_permissions.extend(default_sensitive_permissions)
+        print(default_permissions)
+    
+    return default_permissions
+
+
+
+def get_permissions_with_filters(request, default_permissions):
+    permissions_with_filters = []
+
+    # Add filters to each permission
+    if (request["geographic_filter"]):
+        areas = split_value_filter(request["geographic_filter"])
+        permissions = get_geographic_permissions(default_permissions)
+        for perm in permissions:
+            perm.id_role = request["id_role"]
+            perm.end_date = request["end_date"]
+            perm.value_filter = build_value_filter_from_list(areas)
+            permissions_with_filters.append(perm)
+
+    if (request["taxonomic_filter"]):
+        taxa = split_value_filter(request["taxonomic_filter"])
+        permissions = get_taxonomic_permissions(default_permissions)
+        for perm in permissions:
+            perm.id_role = request["id_role"]
+            perm.end_date = request["end_date"]
+            perm.value_filter = build_value_filter_from_list(taxa)
+            permissions_with_filters.append(perm)
+
+    # Precision filter
+    permissions = get_precision_permissions(default_permissions)
+    for perm in permissions:
+        perm.id_role = request["id_role"]
+        perm.end_date = request["end_date"]
+        perm.value_filter = "exact"
+        permissions_with_filters.append(perm)
+    
+    return permissions_with_filters
+
 
 def split_value_filter(data: str):
     values = data.split(',')
@@ -480,43 +525,34 @@ def split_value_filter(data: str):
     return unduplicated_data
 
 
-def get_geographic_permissions():
+def get_geographic_permissions(default_permissions):
     permissions = []
-    for new_perm in get_default_permission_to_set():
+    for new_perm in default_permissions:
         new_perm["filter_type_code"] = "GEOGRAPHIC"
         fresh_perm = get_fresh_permission(**new_perm)
         permissions.append(fresh_perm)
     return permissions
 
 
-def get_taxonomic_permissions():
+def get_taxonomic_permissions(default_permissions):
     permissions = []
-    for new_perm in get_default_permission_to_set():
+    for new_perm in default_permissions:
         new_perm["filter_type_code"] = "TAXONOMIC"
         fresh_perm = get_fresh_permission(**new_perm)
         permissions.append(fresh_perm)
     return permissions
 
 
-def get_sensitivity_permissions():
+def get_precision_permissions(default_permissions):
     permissions = []
-    for new_perm in get_default_permission_to_set():
+    for new_perm in default_permissions:
         new_perm["filter_type_code"] = "PRECISION"
-        new_perm["object_code"] = "SENSITIVE_OBSERVATION"
         fresh_perm = get_fresh_permission(**new_perm)
         permissions.append(fresh_perm)
     return permissions
 
 
-def get_default_permission_to_set():
-    return [
-        {"module_code": "SYNTHESE", "action_code": "R", "object_code": "PRIVATE_OBSERVATION", },
-        {"module_code": "SYNTHESE", "action_code": "E", "object_code": "PRIVATE_OBSERVATION", },
-        {"module_code": "VALIDATION", "action_code": "R", "object_code": "PRIVATE_OBSERVATION", },
-    ]
-
-
-def get_fresh_permission(filter_type_code, module_code, action_code, object_code):
+def get_fresh_permission(filter_type_code, module_code, action_code, object_code, gathering=None):
     permission_module = DB.session.query(TModules).filter(TModules.module_code == module_code).one()
     permission_action = DB.session.query(TActions).filter(TActions.code_action == action_code).one()
     permission_object = DB.session.query(TObjects).filter(TObjects.code_object == object_code).one()
@@ -525,13 +561,26 @@ def get_fresh_permission(filter_type_code, module_code, action_code, object_code
         .filter(BibFiltersType.code_filter_type == filter_type_code)
         .one()
     )
-    return CorRoleActionFilterModuleObject(
+    
+    # Prepare fresh permission
+    permission = CorRoleActionFilterModuleObject(
         id_module=permission_module.id_module,
         id_action=permission_action.id_action,
         id_object=permission_object.id_object,
         id_filter=0,# TODO: remove this line !
         id_filter_type=permission_filter_type.id_filter_type,
     )
+    
+    # Add gathering only if defined
+    if gathering:
+        permission.gathering = gathering
+
+    return permission
+
+
+def build_value_filter_from_list(data: list):
+    unduplicated_data = unduplicate_values(data)
+    return ",".join(map(str, unduplicated_data))
 
 
 def get_filter(id_filter_type, value_filter):
@@ -542,7 +591,7 @@ def get_filter(id_filter_type, value_filter):
             .filter(TFilters.value_filter == value_filter)
             .one()
         )
-    except NoResultFound:
+    except exc.NoResultFound:
         return False
     return permission_filter
 
@@ -554,24 +603,9 @@ def get_filter_type_label(id_filter_type):
             .filter(BibFiltersType.id_filter_type == id_filter_type)
             .one()[0]
         )
-    except NoResultFound:
+    except exc.NoResultFound:
         return False
     return label
-
-
-def remove_permissions(request):
-    try:
-        (DB.session
-            .query(CorRoleActionFilterModuleObject)
-            .filter(CorRoleActionFilterModuleObject.gathering == request.token)
-            .delete()
-        )
-    except NoResultFound:
-        log.info("No permissions found. No permissions to remove.")
-    except IntegrityError as exp:
-        log.error("Permissions deletion error %s", exp)
-    except Exception as exp:
-        log.error("Error %s", exp)
 
 
 def send_email_after_managing_request(request):
@@ -633,6 +667,7 @@ def get_validators():
        validators = ", ".join(validators)
     return validators.strip()
 
+
 # TODO: Delete if not used !
 @routes.route("/modules", methods=["GET"])
 def get_all_modules():
@@ -641,14 +676,27 @@ def get_all_modules():
 
     .. :quickref: Permissions;
 
+    Params:
+    :param codes: filtre permetant de récupérer seulement les modules
+    pour un ou plusieurs codes données séparés par des virgules.
+
     :returns: un tableau de dictionnaire contenant les infos des modules.
     """
-    q = DB.session.query(TModules)
+    # Get params
+    params = request.args.to_dict()
+
+    query = DB.session.query(TModules)
+    if "codes" in params:
+        codes = params["codes"].split(',')
+        query = query.filter(TModules.module_code.in_(codes))
+
     modules = []
-    for module in q.all():
-        module = format_keys_to_camel_case(module.as_dict())
-        modules.append(module)
-    return jsonify(modules), 200
+    for mdl in query.all():
+        modules.append(mdl.as_dict())
+
+    output = prepare_output(modules, remove_in_key="module")
+    return jsonify(output), 200
+
 
 # TODO: Delete if not used !
 @routes.route("/actions", methods=["GET"])
@@ -662,10 +710,12 @@ def get_all_actions():
     """
     q = DB.session.query(TActions)
     actions = []
-    for action in q.all():
-        action = format_keys_to_camel_case(action.as_dict())
-        actions.append(action)
-    return jsonify(actions), 200
+    for act in q.all():
+        actions.append(act.as_dict())
+
+    output = prepare_output(actions, remove_in_key="action")
+    return jsonify(output), 200
+
 
 # TODO: Delete if not used !
 @routes.route("/filters", methods=["GET"])
@@ -679,10 +729,12 @@ def get_all_filters():
     """
     q = DB.session.query(BibFiltersType)
     filters = []
-    for pfilter in q.all():
-        pfilter = format_keys_to_camel_case(pfilter.as_dict())
-        filters.append(pfilter)
-    return jsonify(filters), 200
+    for fit in q.all():
+        filters.append(fit.as_dict())
+    
+    output = prepare_output(filters, remove_in_key="filter_type")
+    return jsonify(output), 200
+
 
 # TODO: Delete if not used !
 @routes.route("/objects", methods=["GET"])
@@ -697,41 +749,10 @@ def get_all_objects():
     q = DB.session.query(TObjects)
     objects = []
     for obj in q.all():
-        obj = format_keys_to_camel_case(obj.as_dict())
-        objects.append(obj)
-    return jsonify(objects), 200
+        objects.append(obj.as_dict())
 
-
-def format_keys_to_camel_case(d):
-    if isinstance(d, list):
-        output = []
-        for item in d:
-            output.append(format_keys_to_camel_case(item))
-        return output
-    elif isinstance(d, dict) :
-        return dict((format_to_camel_case(k), v) for k, v in d.items())
-    else:
-        raise TypeError('formating to camel case accept only dict or list of dict')
-
-
-def format_to_camel_case(snake_str):
-    components = snake_str.split('_')
-    return components[0] + ''.join(x.title() for x in components[1:])
-
-def format_keys_to_snake_case(d):
-    if isinstance(d, list):
-        output = []
-        for item in d:
-            output.append(format_keys_to_snake_case(item))
-        return output
-    elif isinstance(d, dict) :
-        return dict((format_to_snake_case(k), v) for k, v in d.items())
-    else:
-        raise TypeError('formating to snake case accept only dict or list of dict')
-
-def format_to_snake_case(camel_str): 
-    return ''.join(['_'+char.lower() if char.isupper()  
-        else char for char in camel_str]).lstrip('_') 
+    output = prepare_output(objects, remove_in_key="object")
+    return jsonify(output), 200
 
 
 @routes.route("/requests", methods=["GET"])
@@ -804,8 +825,8 @@ def get_permissions_requests():
         access_request = formatAccessRequest(*result)
         requests.append(access_request)
         
-    requests = format_keys_to_camel_case(requests)
-    return jsonify(requests), 200
+    output = prepare_output(requests)
+    return jsonify(output), 200
 
 
 @routes.route("/requests/<token>", methods=["GET"])
@@ -844,7 +865,7 @@ def get_permissions_requests_by_token(token):
         return response, 404
     
     response = formatAccessRequest(*results)
-    response = format_keys_to_camel_case(response)
+    response = prepare_output(response)
     return response, 200
 
 
@@ -871,7 +892,7 @@ def patch_permissions_request_by_token(info_role, token):
 
     # Transform received data
     role = get_user_infos(info_role.id_role)
-    data = format_keys_to_snake_case(dict(request.get_json()))
+    data = prepare_input(dict(request.get_json()))
     refusal_reason = data.get("refusal_reason", None)
     if RequestStates(data.get("processed_state")) != RequestStates.refused:
         refusal_reason = None
@@ -896,9 +917,9 @@ def patch_permissions_request_by_token(info_role, token):
 
     # Update Permissions according to access request state
     if trequest.processed_state == RequestStates.accepted:
-        add_permissions(trequest.as_dict())
+        add_permission(trequest.as_dict())
     else:
-        remove_permissions(trequest)
+        remove_permission_by_request(trequest.as_dict())
 
     # Commit update in DB
     DB.session.commit()
@@ -921,8 +942,39 @@ def patch_permissions_request_by_token(info_role, token):
 
     # Prepare response
     access_request = formatAccessRequest(*results)
-    response = format_keys_to_camel_case(access_request)
+    response = prepare_output(access_request)
     return response, 200
+
+
+def remove_permission_by_request(request):
+    # Get permissions to delete from this access request
+    default_permissions = get_access_request_default_permissions(request)
+    permissions_to_delete = get_permissions_with_filters(request, default_permissions)
+
+    # Remove permissions in database
+    # TODO: maybe better to use an "id_access_request" in table "CorRoleActionFilterModuleObject"
+    try:
+        for permission in permissions_to_delete:
+            conditions = [
+                CorRoleActionFilterModuleObject.id_role == permission.id_role,
+                CorRoleActionFilterModuleObject.id_module == permission.id_module,
+                CorRoleActionFilterModuleObject.id_action == permission.id_action,
+                CorRoleActionFilterModuleObject.id_object == permission.id_object,
+                CorRoleActionFilterModuleObject.id_filter_type == permission.id_filter_type,
+                CorRoleActionFilterModuleObject.value_filter == permission.value_filter,
+                CorRoleActionFilterModuleObject.end_date == permission.end_date,
+            ]
+            query = (
+                DB.session
+                .query(CorRoleActionFilterModuleObject)
+                .filter(and_(*conditions))
+            )
+            result = query.first()
+            DB.session.delete(result)
+    except exc.NoResultFound:
+        log.info("No permissions found. No permissions to remove.")
+    except Exception as exp:
+        log.error("Permissions deletion error: %s", exp)
 
 
 def formatAccessRequest(request, asker, asker_organism, validator):
@@ -931,7 +983,7 @@ def formatAccessRequest(request, asker, asker_organism, validator):
     sensitive = request.sensitive_access
     access_request = {
         "token": request.token,
-        "user_name": f"{asker.prenom_role} {asker.nom_role}",
+        "user_name": formatRoleName(asker),
         "organism_name": asker_organism.nom_organisme,
         "geographic_filters": areas,
         "geographic_filters_labels": format_geographic_filter_values(areas),
@@ -973,69 +1025,418 @@ def update_permissions_requests_by_token(token):
     return response, 501
 
 
-def get_roles_permissions():
-    return [
-        { 'id': 1, 'name': 'Jean-Pascal MILCENT', 'type': 'USER', 'permissionsNbr': 5, 'permissions': [
-            {'module': 'SYNTHESE', 'action': 'R', 'object': 'PRIVATE_OBSERVATION', 'filter_type': 'PRECISION', 'filter_value': 'precise'},
-            {'module': 'SYNTHESE', 'action': 'R', 'object': 'PRIVATE_OBSERVATION', 'filter_type': 'GEOGRAPHIC', 'filter_value': '3896,18628'},
-            {'module': 'SYNTHESE', 'action': 'E', 'object': 'PRIVATE_OBSERVATION', 'filter_type': 'PRECISION', 'filter_value': 'precise'},
-            {'module': 'SYNTHESE', 'action': 'E', 'object': 'PRIVATE_OBSERVATION', 'filter_type': 'GEOGRAPHIC', 'filter_value': '3896,18628'},
-        ]},
-        { 'id': 2, 'name': 'Martin DUPOND', 'type': 'USER', 'permissionsNbr': 3 },
-        { 'id': 3, 'name': 'Observateurs', 'type': 'GROUP', 'permissionsNbr': 6 },
-        { 'id': 4, 'name': 'Zazi SWAROSKI', 'type': 'USER', 'permissionsNbr': 15 },
-        { 'id': 5, 'name': 'Utilisateurs de GeoNature', 'type': 'GROUP', 'permissionsNbr': 8 },
-        { 'id': 6, 'name': 'Administrateurs de GeoNature', 'type': 'GROUP', 'permissionsNbr': 25 },
-        { 'id': 7, 'name': 'Raphaël LEPEINTRE', 'type': 'USER', 'permissionsNbr': 5 },
-        { 'id': 8, 'name': 'Robert BAYLE', 'type': 'USER', 'permissionsNbr': 3 },
-        { 'id': 9, 'name': 'Jean-Baptiste GIBELIN', 'type': 'USER', 'permissionsNbr': 6 },
-        { 'id': 10, 'name': 'Louise NADAL', 'type': 'USER', 'permissionsNbr': 15 },
-        { 'id': 11, 'name': 'Anne POLZE', 'type': 'USER', 'permissionsNbr': 8 },
-        { 'id': 12, 'name': 'Scipion BAYLE', 'type': 'USER', 'permissionsNbr': 25 },
-        { 'id': 13, 'name': 'Hélène TOURRE', 'type': 'USER', 'permissionsNbr': 5 },
-        { 'id': 14, 'name': 'Étienne POMMEL', 'type': 'USER', 'permissionsNbr': 3 },
-        { 'id': 15, 'name': 'Jeanne DOMERGUE', 'type': 'USER', 'permissionsNbr': 6 },
-        { 'id': 16, 'name': 'Jacques DALVERNY', 'type': 'USER', 'permissionsNbr': 15 },
-        { 'id': 17, 'name': 'Marie FABRE', 'type': 'USER', 'permissionsNbr': 8 },
-        { 'id': 18, 'name': 'Pierre FONTANIEU', 'type': 'USER', 'permissionsNbr': 25 },
-    ]
-
-
 @routes.route("/roles", methods=["GET"])
+@json_resp
 def get_permissions_for_all_roles():
     """
-    Retourne tous les rôles avec leur nombre de permissions.
+    Retourne tous les rôles avec leurs permissions.
 
     .. :quickref: Permissions;
 
-    :returns: un tableau de dictionnaire contenant les infos du rôle et son nombre de permissions.
+    :returns: un tableau de dictionnaire contenant les infos du rôle et 
+    ses permissions.
     """
-    roles_permissions = get_roles_permissions()
-    return jsonify(roles_permissions), 200
+    # Get params
+    params = request.args.to_dict()
+
+    # Get roles with permissions
+    query = (
+        DB.session.query(
+                User, 
+                BibOrganismes, 
+                func.count(distinct(CorRoleActionFilterModuleObject.gathering))
+            )
+            #.select_from(CorRoleActionFilterModuleObject)
+            .outerjoin(CorRoleActionFilterModuleObject, CorRoleActionFilterModuleObject.id_role == User.id_role)
+            .outerjoin(BibOrganismes, BibOrganismes.id_organisme == User.id_organisme)
+            .group_by(
+                User.id_role,
+                BibOrganismes.id_organisme
+            )
+            .order_by(User.groupe.desc(), User.prenom_role, User.nom_role)
+    )
+    print("-"*72)
+    print(query)
+    results = query.all()
+    
+    roles = []
+    for result in results:
+        (user, organism, permissions_number) = result
+        role = formatRole(user, organism)
+        role["permissions_nbr"] = permissions_number
+        roles.append(role)
+    
+    # Send response
+    output = prepare_output(roles)
+    return output, 200
+    
+
+def formatRole(user, organism):
+    return {
+        "id": user.id_role,
+        "user_name": formatRoleName(user),
+        "organism_name": (organism.nom_organisme if organism else None),
+        "type": "GROUP" if user.groupe == True else "USER",
+    }
+
+
+def formatRoleName(role):
+    name_parts = []
+    if role.prenom_role:
+        name_parts.append(role.prenom_role)
+    if role.nom_role:
+        name_parts.append(role.nom_role)
+    return " ".join(name_parts)
 
 
 @routes.route("/roles/<int:id_role>", methods=["GET"])
+@json_resp
 def get_permissions_by_role_id(id_role):
     """
-    Retourne un rôle avec son nombre de permissions.
+    Retourne un rôle avec ses permissions.
 
     .. :quickref: Permissions;
 
-    :returns: un dictionnaire avec les infos du rôle et son nombre de permissions.
+    :returns: un dictionnaire avec les infos du rôle et ses permissions.
     """
-    roles_permissions = get_roles_permissions()
+    # Get role infos
+    query = (
+        DB.session.query(User, BibOrganismes)
+            #.select_from(CorRoleActionFilterModuleObject)
+            #.join(User, User.id_role == CorRoleActionFilterModuleObject.id_role)
+            .outerjoin(BibOrganismes, BibOrganismes.id_organisme == User.id_organisme)
+            .filter(User.id_role == id_role)
+    )
+    result = query.first()
 
-    response = False
-    for role in roles_permissions:
-        if role['id'] == id_role:
-            response = role
-            break
-
-    if not response:
+    # Prepare role infos
+    if not result:
         response = {
             "message": f"Id de rôle introuvable : {id_role} .",
             "status": "error"
         }
         return response, 404
+    
+    (user, organism) = result
+    role = formatRole(user, organism)
+
+    # Get permissions
+    query = (
+        DB.session.query(
+            CorRoleActionFilterModuleObject.id_role,
+            CorModuleActionObjectFilter.label,
+            CorModuleActionObjectFilter.code,
+            TModules.module_code,
+            CorRoleActionFilterModuleObject.end_date,
+            CorRoleActionFilterModuleObject.gathering,
+            BibFiltersType.code_filter_type,
+            CorRoleActionFilterModuleObject.value_filter
+        )
+        .join(User, User.id_role == CorRoleActionFilterModuleObject.id_role)
+        .join(CorModuleActionObjectFilter, and_(
+            CorModuleActionObjectFilter.id_module == CorRoleActionFilterModuleObject.id_module,
+            CorModuleActionObjectFilter.id_action == CorRoleActionFilterModuleObject.id_action,
+            CorModuleActionObjectFilter.id_object == CorRoleActionFilterModuleObject.id_object,
+            CorModuleActionObjectFilter.id_filter_type == CorRoleActionFilterModuleObject.id_filter_type,
+        ))
+        .join(TModules, TModules.id_module == CorRoleActionFilterModuleObject.id_module)
+        .join(BibFiltersType, BibFiltersType.id_filter_type == CorRoleActionFilterModuleObject.id_filter_type)
+        .filter(User.id_role == id_role)
+    )
+    results = query.all()
+
+    # Prepare permissions
+    permissions = {}
+    for result in results:
+        (
+            id_role, label, code, module, end_date, gathering, 
+            filter_type, filter_value
+        ) = result
+        
+        # Initialize new module entry
+        if module not in permissions.keys():
+            permissions[module] = {}
+
+        # Build filter labels if necessary
+        labels = None
+        if filter_type == 'GEOGRAPHIC':
+            filter_value = split_value_filter(filter_value)
+            labels = format_geographic_filter_values(filter_value)
+        if filter_type == 'TAXONOMIC':
+            filter_value = split_value_filter(filter_value)
+            labels = format_taxonomic_filter_values(filter_value)
+
+        # Create new permission or only add an additionnal filter
+        gathering = str(gathering)
+        if gathering not in permissions[module].keys():
+            permissions[module][gathering] = {
+                "name": label,
+                "code": code,
+                "gathering": gathering,
+                "module": module,
+                "end_date": end_date,
+                "filters": [{
+                    "type": filter_type,
+                    "value": filter_value,
+                    "label": labels,
+                }],
+            }
+        else:
+            new_filter = {
+                "type": filter_type,
+                "value": filter_value,
+                "label": labels,
+            }
+            permissions[module][gathering]["filters"].append(new_filter)
+
+    # Add permissions list to role (remove "gathering from output")
+    for module_name in permissions:
+        permissions[module_name] = list(permissions[module_name].values())
+    role["permissions"] = permissions
+
+    # Send response
+    output = prepare_output(role)
+    return output, 200
+
+
+@routes.route("/<gathering>", methods=["DELETE"])
+@json_resp
+def delete_permission_by_gathering(gathering):
+    """
+    Supprime une permissions par son hash de groupement.
+
+    Notes : il est plus simple de supprimer une permission et tous les 
+    filtres qui lui son associé à l'aide du hash de regroupement plutôt 
+    que par une liste d'identifiant.
+
+    .. :quickref: Permissions;
+
+    :returns: code http 204 et un corps de réponse vide si tout est OK.
+    """
+    print("-" * 72)
+    print("In delete permission by gathering")
+    # Delete permission
+    try:
+        result = (
+            DB.session
+            .query(CorRoleActionFilterModuleObject)
+            .filter(CorRoleActionFilterModuleObject.gathering == gathering)
+            .delete()
+        )
+        print(f"Delete result: {result}")
+        DB.session.commit()
+        DB.session.flush()
+    except exc.NoResultFound:
+        print("NoResultFound exception raised !")
+        log.info(f"No permissions found for gathering {gathering}")
+        response = {
+            "message": f"Aucune permission trouvé pour le groupement : {gathering} .",
+            "status": "error"
+        }
+        return response, 404
+    except Exception as exp:
+        log.error("Error %s", exp)
+        response = {
+            "message": f"Une exception est survenue durant la suppression : {exp} .",
+            "status": "error"
+        }
+        return response, 500
+    
+    print(f"Before return 204 !")
+    return "", 204
+
+
+@routes.route("/availables/actions-objects", methods=["GET"])
+@json_resp
+def get_availables_actions_objects():
+    """
+    Retourne tous les ensembles action-object disponibles.
+
+    .. :quickref: Permissions;
+
+    Params:
+    :param module: filtre permetant de récupérer seulement les ensembles
+    action-object disponibles pour un module donné.
+
+    :returns: un dictionnaire contenant en clé le code des modules et en
+    valeur un tableau des ensembles action-object possibles.
+    """
+    # Extract params
+    params = request.args.to_dict()
+
+    # Build query
+    query = (DB.session
+        .query(
+            CorModuleActionObjectFilter.label,
+            TActions.code_action,
+            TObjects.code_object,
+            TModules.module_code,
+        )
+        .distinct()
+        .join(
+            TModules, 
+            TModules.id_module == CorModuleActionObjectFilter.id_module
+        )
+        .join(
+            TActions, 
+            TActions.id_action == CorModuleActionObjectFilter.id_action
+        )
+        .join(
+            TObjects, 
+            TObjects.id_object == CorModuleActionObjectFilter.id_object
+        )
+        .order_by(
+            CorModuleActionObjectFilter.id_action,
+            CorModuleActionObjectFilter.id_object,
+        )
+    )
+    
+    # Manage parameters
+    if "module" in params:
+        query = query.filter(TModules.module_code == params["module"])
+
+    # Build output
+    availables = {}
+    for result in query.all():
+        (label, action_code, object_code, module_code) = result
+        
+        if module_code not in availables.keys():
+            availables[module_code] = []
+        
+        availables[module_code].append({
+            "action_code": action_code,
+            "object_code": object_code,
+            "label": label,
+        })
+
+    output = prepare_output(availables)
+    return output, 200
+
+
+@routes.route("/availables/actions-objects-filters", methods=["GET"])
+@json_resp
+def get_availables_actions_objects_filters():
+    """
+    Retourne tous les ensembles action-object-filter disponibles.
+
+    .. :quickref: Permissions;
+
+    Params:
+    :param module: filtre permetant de récupérer seulement les permissions
+        disponibles pour un module donné.
+    :param action: filtre permetant de récupérer seulement les permissions
+        disponibles pour une action (CRUVED) donnée.
+    :param object: filtre permetant de récupérer seulement les permissions
+        disponibles pour un objet donné.
+
+    :returns: un dictionnaire contenant en clé le code des modules et en
+    valeur un tableau des ensembles action-object-filter possibles.
+    """
+    # Extract params
+    params = request.args.to_dict()
+
+    # Build query
+    query = (DB.session
+        .query(
+            TActions.code_action,
+            TObjects.code_object,
+            BibFiltersType.code_filter_type,
+            CorModuleActionObjectFilter.code,
+            CorModuleActionObjectFilter.description,
+            TModules.module_code,
+        )
+        .distinct()
+        .join(
+            TModules, 
+            TModules.id_module == CorModuleActionObjectFilter.id_module
+        )
+        .join(
+            TActions, 
+            TActions.id_action == CorModuleActionObjectFilter.id_action
+        )
+        .join(
+            TObjects, 
+            TObjects.id_object == CorModuleActionObjectFilter.id_object
+        )
+        .join(
+            BibFiltersType, 
+            BibFiltersType.id_filter_type == CorModuleActionObjectFilter.id_filter_type
+        )
+        .order_by(
+            CorModuleActionObjectFilter.id_action,
+            CorModuleActionObjectFilter.id_object,
+            CorModuleActionObjectFilter.id_filter_type,
+        )
+    )
+    
+    # Manage parameters
+    if "module" in params:
+        query = query.filter(TModules.module_code == params["module"])
+    if "action" in params:
+        query = query.filter(TActions.code_action == params["action"])
+    if "object" in params:
+        query = query.filter(TObjects.code_object == params["object"])
+
+    # Build output
+    availables = {}
+    for result in query.all():
+        (action_code, object_code, filter_type_code, code, description, module_code) = result
+        
+        if module_code not in availables.keys():
+            availables[module_code] = []
+        
+        availables[module_code].append({
+            "action_code": action_code,
+            "object_code": object_code,
+            "filter_type_code": filter_type_code,
+            "code": code,
+            "description": description,
+        })
+    
+    output = prepare_output(availables)
+    return output, 200
+
+# -----------------------------------------------------------------------
+# UTILS functions
+# TODO: move this functions in other file (?)
+def prepare_output(d, remove_in_key=None):
+    if isinstance(d, list):
+        output = []
+        for item in d:
+            output.append(prepare_output(item, remove_in_key))
+        return output
+    elif isinstance(d, dict) :
+        new = {}
+        for k, v in d.items():
+            # Remove None and empty values
+            if v != None and v != "":
+                # Remove substring in key
+                if remove_in_key:
+                    k = k.replace(remove_in_key, '').strip('_')
+                # Value processing recursively
+                new[format_to_camel_case(k)] = prepare_output(v, remove_in_key)
+        return new
     else:
-        return response, 200
+        return d
+
+
+def format_to_camel_case(snake_str):
+    components = snake_str.split('_')
+    return components[0] + ''.join(x.title() for x in components[1:])
+
+
+def prepare_input(d):
+    if isinstance(d, list):
+        output = []
+        for item in d:
+            output.append(prepare_input(item))
+        return output
+    elif isinstance(d, dict) :
+        return dict((format_to_snake_case(k), v) for k, v in d.items())
+    else:
+        return d
+
+
+def format_to_snake_case(camel_str): 
+    return ''.join(['_'+char.lower() if char.isupper()  
+        else char for char in camel_str]).lstrip('_') 

@@ -57,6 +57,25 @@ class BibFiltersType(DB.Model):
     label_filter_type = DB.Column(DB.Unicode)
     description_filter_type = DB.Column(DB.Unicode)
 
+class FilterValueFormats(str, enum.Enum):
+    string: str = "str"
+    integer: str = "int"
+    boolean: str = "bool"
+    geometry: str = "geom"
+    csvint: str = "csv-int"
+
+
+@serializable
+class BibFiltersValues(DB.Model):
+    __tablename__ = "bib_filters_values"
+    __table_args__ = {"schema": "gn_permissions"}
+    id_filter_value = DB.Column(DB.Integer, primary_key=True)
+    id_filter_type = DB.Column(DB.Integer)
+    value_format = DB.Column(DB.Enum(FilterValueFormats))
+    code_filter_type = DB.Column(DB.Unicode)
+    label = DB.Column(DB.Unicode)
+    description = DB.Column(DB.Unicode)
+
 
 @serializable
 class TFilters(DB.Model):
@@ -205,4 +224,51 @@ class TRequests(DB.Model):
         User,
         primaryjoin=(User.id_role == id_role),
         foreign_keys=[id_role],
+    )
+
+@serializable
+class CorModuleActionObjectFilter(DB.Model):
+    __tablename__ = "cor_module_action_object_filter"
+    __table_args__ = {"schema": "gn_permissions"}
+    id_permission_available = DB.Column(DB.Integer, primary_key=True)
+    id_module = DB.Column(
+        DB.Integer, 
+        ForeignKey("gn_commons.t_modules.id_module"),
+    )
+    id_action = DB.Column(
+        DB.Integer, 
+        ForeignKey("gn_permissions.t_actions.id_action"),
+    )
+    id_object = DB.Column(
+        DB.Integer,
+        ForeignKey("gn_permissions.t_objects.id_object"),
+        default=select([TObjects.id_object]).where(TObjects.code_object == "ALL"),
+    )
+    id_filter_type = DB.Column(
+        DB.Integer,
+        ForeignKey("gn_permissions.bib_filters_type.id_filter_type"),
+    )
+    code = DB.Column(DB.Unicode)
+    label = DB.Column(DB.Unicode)
+    description = DB.Column(DB.Unicode)
+
+    cor_module = DB.relationship(
+        TModules,
+        primaryjoin=(TModules.id_module == id_module),
+        foreign_keys=[id_module],
+    )
+    cor_action = DB.relationship(
+        TActions,
+        primaryjoin=(TActions.id_action == id_action),
+        foreign_keys=[id_action],
+    )
+    cor_object = DB.relationship(
+        TObjects,
+        primaryjoin=(TObjects.id_object == id_object),
+        foreign_keys=[id_object],
+    )
+    cor_filter = DB.relationship(
+        BibFiltersType,
+        primaryjoin=(BibFiltersType.id_filter_type == id_filter_type),
+        foreign_keys=[id_filter_type],
     )
