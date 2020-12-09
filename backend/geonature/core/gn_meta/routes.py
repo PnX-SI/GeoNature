@@ -24,7 +24,6 @@ from sqlalchemy.sql.functions import func
 
 
 from geonature.utils.env import DB, BACKEND_DIR
-from geonature.utils.config_schema import MetadataConfig
 from geonature.core.gn_synthese.models import (
     Synthese,
     TSources,
@@ -766,7 +765,7 @@ def get_acquisition_frameworks(info_role):
 
 @routes.route("/acquisition_frameworks/export_pdf/<id_acquisition_framework>", methods=["GET"])
 @permissions.check_cruved_scope("E", True, module_code="METADATA")
-def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role, certificate=False):
+def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
     """
     Get a PDF export of one acquisition
     """
@@ -776,6 +775,11 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role, c
         raise InsufficientRightsError(
             ('User "{}" cannot "{}" a dataset').format(info_role.id_role, "export"), 403,
         )
+
+    if request.args.get("certificate"):
+        certificate = True
+    else:
+        certificate = False
 
     # Recuperation des données
     af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
@@ -847,9 +851,9 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role, c
             "entite": "sinp",
         }
         if certificate and af.initial_closing_date:
-            acquisition_framework["pdf_title"] = "Certificat de dépôt du " + MetadataConfig.AF_PDF_TITLE.lower()
+            acquisition_framework["pdf_title"] = "Certificat de dépôt du " + current_app.config['METADATA']["AF_PDF_TITLE"].lower()
         else:
-            acquisition_framework["pdf_title"] = MetadataConfig.AF_PDF_TITLE
+            acquisition_framework["pdf_title"] = current_app.config['METADATA']["AF_PDF_TITLE"]
         date = dt.datetime.now().strftime("%d/%m/%Y")
         acquisition_framework["footer"] = {
             "url": current_app.config["URL_APPLICATION"]
@@ -870,11 +874,15 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role, c
         )
     # For a deposit certificate, we name the file according to the initial_closing_date. With the actual time for the export PDF
     if certificate and af.initial_closing_date:
+        acquisition_framework['initial_closing_date'] = dt.datetime.strptime(
+            acquisition_framework['initial_closing_date'],
+            '%Y-%m-%d %H:%M:%S.%f')
         filename = "{}_{}_{}.pdf".format(
             id_acquisition_framework,
             acquisition_framework["acquisition_framework_name"][0:31].replace(" ", "_"),
-            dt.datetime.strptime(acquisition_framework["initial_closing_date"], '%Y-%m-%d %H:%M:%S.%f').strftime("%d%m%Y_%H%M%S"),
+            acquisition_framework["initial_closing_date"].strftime("%d%m%Y_%H%M%S")
         )
+        acquisition_framework["initial_closing_date"].strftime("%d%m%Y_%H%M")
     else:
         filename = "{}_{}_{}.pdf".format(
             id_acquisition_framework,
@@ -895,15 +903,6 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role, c
     )
     pdf_file_posix = Path(pdf_file)
     return send_from_directory(str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True)
-
-
-@routes.route("/acquisition_frameworks/deposit_certificate/<id_acquisition_framework>", methods=["GET"])
-@permissions.check_cruved_scope("E", True, module_code="METADATA")
-def get_deposit_certificate_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
-    """
-    Returns a PDF deposit certificate for one acquisition framework
-    """
-    return get_export_pdf_acquisition_frameworks(id_acquisition_framework, certificate=True)
 
 
 @routes.route("/acquisition_frameworks_metadata", methods=["GET"])
@@ -1143,34 +1142,51 @@ def publish_acquisition_framework_mail(af, info_role):
         ca_idtps = mtd_utils.get_tag_content(ca, "idTPS")
     except AttributeError:
         ca_idtps = ""
-    # Adapt the texts according to the presence/absence of the idTPS in the CA XML
-    if ca_idtps:
-        subject_idtps = " pour le dossier " + ca_idtps
-        message_idtps = " dans le cadre du dossier " + ca_idtps + " "
-    else :
-        subject_idtps = ""
-        message_idtps = " "
 
     # Generate the links for the AF's deposite certificate and framework download
-    pdf_url = current_app.config["API_ENDPOINT"] + "/meta/acquisition_frameworks/deposit_certificate/" + str(af.id_acquisition_framework)
-    af_url = MetadataConfig.URL_FRAMEWORK_DOWNLOAD + str(af.unique_acquisition_framework_id).upper() + "/fichier.pdf"
+    pdf_url = current_app.config["API_ENDPOINT"] + "/meta/acquisition_frameworks/export_pdf/" + str(af.id_acquisition_framework) + "?certificate=True"
+    af_url = current_app.config["METADATA"]["URL_FRAMEWORK_DOWNLOAD"] + str(af.unique_acquisition_framework_id).upper() + "/fichier.pdf"
 
     # Mail subject
-    mail_subject = MetadataConfig.MAIL_SUBJECT_AF_PUBLISHED
-    if mail_subject:
-        mail_subject = mail_subject.format(
-            UUID_CA = str(af.unique_acquisition_framework_id).upper(),
-            ID_TPS = subject_idtps)
+    mail_subject = "Dépôt du cadre d'acquisition " + str(af.unique_acquisition_framework_id).upper()
+    mail_subject_base = current_app.config["METADATA"]["MAIL_SUBJECT_AF_PUBLISHED_BASE"]
+    if mail_subject_base:
+        mail_subject = mail_subject_base + " " + mail_subject
+    if ca_idtps:
+        mail_subject = mail_subject + " pour le dossier {}".format(ca_idtps)
 
     # Mail content
-    mail_text = MetadataConfig.MAIL_CONTENT_AF_PUBLISHED
-    if mail_text:
-        mail_text = mail_text.format(
-            NAME_CA = af.acquisition_framework_name,
-            UUID_CA = str(af.unique_acquisition_framework_id).upper(),
-            ID_TPS = message_idtps,
-            URL_PDF = pdf_url,
-            URL_CA = af_url)
+    mail_content = ""
+    mail_content_base = """Bonjour,<br>
+    <br>
+    Le cadre d'acquisition {} dont l’identifiant est {} que vous nous avez transmis a été publié"""
+    mail_content_id_tps = " dans le cadre du dossier {}"
+    mail_content_additions = current_app.config["METADATA"]["MAIL_CONTENT_AF_PUBLISHED_ADDITION"]
+    mail_content_pdf = current_app.config['METADATA']["MAIL_CONTENT_AF_PUBLISHED_PDF"]
+    mail_content_url = current_app.config['METADATA']["MAIL_CONTENT_AF_PUBLISHED_URL"]
+    mail_content_greetings = current_app.config['METADATA']["MAIL_CONTENT_AF_PUBLISHED_GREETINGS"]
+
+    if mail_content_base:
+        mail_content = mail_content_base.format(
+            af.acquisition_framework_name,
+            str(af.unique_acquisition_framework_id).upper())
+
+    if mail_content_id_tps and ca_idtps:
+        mail_content = mail_content + mail_content_id_tps.format(ca_idtps)
+
+    if mail_content_additions:
+        mail_content = mail_content + mail_content_additions
+    else:
+        mail_content = mail_content + ".<br>"
+
+    if mail_content_pdf:
+        mail_content = mail_content + mail_content_pdf.format(pdf_url) + pdf_url + "<br>"
+
+    if mail_content_url:
+        mail_content = mail_content + mail_content_url.format(af_url) + af_url + "<br>"
+
+    if mail_content_greetings:
+        mail_content = mail_content + mail_content_greetings
 
     # Mail recipients : if the publisher is the the AF digitizer, we send a mail to both of them
     mail_recipients = []
@@ -1182,8 +1198,8 @@ def publish_acquisition_framework_mail(af, info_role):
         mail_recipients.append(digitizer_email)
 
     # Mail sent
-    if mail_subject and mail_text and mail_recipients:
-        mail.send_mail(mail_recipients, mail_subject, mail_text)
+    if mail_subject and mail_content and mail_recipients:
+        mail.send_mail(mail_recipients, mail_subject, mail_content)
 
 
 @routes.route("/acquisition_framework/publish/<int:af_id>", methods=["GET"])

@@ -65,6 +65,7 @@ export class MetadataComponent implements OnInit {
   searchTerms: any = {};
   afPublishModalId: number;
   afPublishModalLabel: string;
+  afPublishModalContent: string;
 
   constructor(
     public _cruvedStore: CruvedStoreService,
@@ -87,6 +88,7 @@ export class MetadataComponent implements OnInit {
       this.roles = data;
     });
     this.afPublishModalLabel = AppConfig.METADATA.PUBLISH_MODAL_LABEL;
+    this.afPublishModalContent = AppConfig.METADATA.PUBLISH_MODAL_CONTENT;
 
     // rapid search event
     this.searchFormService.rapidSearchControl.valueChanges.pipe(

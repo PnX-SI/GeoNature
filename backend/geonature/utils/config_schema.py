@@ -94,25 +94,18 @@ class MediasConfig(Schema):
 
 class MetadataConfig(Schema):
     NB_AF_DISPLAYED = fields.Integer(missing=50, validate=OneOf([10, 25, 50, 100]))
-    AF_PDF_TITLE = "Cadre d'acquisition des données"
+    AF_PDF_TITLE = fields.String(missing="")
     DS_PDF_TITLE = fields.String(missing="")
+    URL_FRAMEWORK_DOWNLOAD = fields.String(missing="")
+    MAIL_SUBJECT_AF_PUBLISHED_BASE = fields.String(missing="")
+    MAIL_CONTENT_AF_PUBLISHED_ADDITION = fields.String(missing="")
+    MAIL_CONTENT_AF_PUBLISHED_PDF = fields.String(missing="")
+    MAIL_CONTENT_AF_PUBLISHED_URL = fields.String(missing="")
+    MAIL_CONTENT_AF_PUBLISHED_GREETINGS = fields.String(missing="")
     PUBLISH_MODAL_LABEL = fields.String(missing="Dépôt légal des données de biodiversité")
-    URL_FRAMEWORK_DOWNLOAD = "https://depot-legal-biodiversite.naturefrance.fr/versement/dlb-download/"
-    MAIL_SUBJECT_AF_PUBLISHED = "[DEPOBIO] Dépôt du cadre d'acquisition {UUID_CA}{ID_TPS}"
-    MAIL_CONTENT_AF_PUBLISHED = """Bonjour,<br>
-<br>
-Le cadre d'acquisition {NAME_CA} dont l’identifiant est {UUID_CA} que vous nous avez transmis {ID_TPS} a été
-publié sur la plateforme de dépôt légal des données brutes de biodiversité et transmis à la plateforme nationale du
-SINP qui va procéder à son intégration dans l’INPN.<br>
-<br>
-Vous trouverez le certificat de dépôt du cadre d'acquisition à cette adresse qui doit être reportée dans la procédure
-Demarches-simplifiees.fr :<br>
-{URL_PDF}<br>
-Toutes les informations concernant le cadre d'acquisition déposé sont disponibles à cette adresse :<br>
-{URL_CA}<br>
-<br>
-Bien cordialement,<br>
-Téléservice DEPOBIO"""
+    PUBLISH_MODAL_CONTENT = fields.String(missing="""L'action de dépôt légal est une action irréversible. Il ne sera
+    plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite. Vous ne pourrez pas supprimer
+    votre dépôt.""")
 
 
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
@@ -142,6 +135,7 @@ class GnPySchemaConf(Schema):
     CAS = fields.Nested(CasSchemaConf, missing=dict())
     MAIL_ON_ERROR = fields.Boolean(missing=False)
     MAIL_CONFIG = fields.Nested(MailConfig, missing=None)
+    METADATA = fields.Nested(MetadataConfig, missing=dict())
     ADMIN_APPLICATION_LOGIN = fields.String()
     ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, missing={})
     USERSHUB = fields.Nested(UsersHubConfig, missing={})

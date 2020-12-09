@@ -128,11 +128,11 @@
                   >
                     <mat-icon
                       *ngIf="af.opened==false; else elsePublish"
-                      matTooltip="Le cadre d'acquisition est déjà publié et ne peut l'être à nouveau"
+                      matTooltip="Le cadre d'acquisition a déjà été déposé"
                     > gavel </mat-icon>
                     <ng-template #elsePublish>
                       <mat-icon
-                        matTooltip="Publier le cadre d'acquisition"
+                        matTooltip="Déposer le cadre d'acquisition"
                       > gavel </mat-icon>
                     </ng-template>
                   </button>
@@ -434,9 +434,7 @@
   >
     <div class="col">
       <span>
-        <p style="text-align: justify;">L'action de dépôt légal est une action irréversible.
-          Il ne sera plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite.
-          Vous ne pourrez pas supprimer votre dépôt.</p>
+        <p style="text-align: justify;">{{ afPublishModalContent }}</p>
       </span>
     </div>
   </div>
