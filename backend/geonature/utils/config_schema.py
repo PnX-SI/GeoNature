@@ -94,8 +94,19 @@ class MediasConfig(Schema):
 
 class MetadataConfig(Schema):
     NB_AF_DISPLAYED = fields.Integer(missing=50, validate=OneOf([10, 25, 50, 100]))
+    ENABLE_PUBLICATION = fields.Boolean(missing=True)
     AF_PDF_TITLE = fields.String(missing="")
     DS_PDF_TITLE = fields.String(missing="")
+    URL_FRAMEWORK_DOWNLOAD = fields.String(missing="")
+    MAIL_SUBJECT_AF_PUBLISHED_BASE = fields.String(missing="")
+    MAIL_CONTENT_AF_PUBLISHED_ADDITION = fields.String(missing="")
+    MAIL_CONTENT_AF_PUBLISHED_PDF = fields.String(missing="")
+    MAIL_CONTENT_AF_PUBLISHED_URL = fields.String(missing="")
+    MAIL_CONTENT_AF_PUBLISHED_GREETINGS = fields.String(missing="")
+    PUBLISH_MODAL_LABEL = fields.String(missing="Dépôt d'un cadre d'acquisition")
+    PUBLISH_MODAL_CONTENT = fields.String(missing="""L'action de dépôt est une action irréversible. Il ne sera
+    plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite. Vous ne pourrez pas supprimer
+    votre dépôt.""")
 
 
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
@@ -125,6 +136,7 @@ class GnPySchemaConf(Schema):
     CAS = fields.Nested(CasSchemaConf, missing=dict())
     MAIL_ON_ERROR = fields.Boolean(missing=False)
     MAIL_CONFIG = fields.Nested(MailConfig, missing=None)
+    METADATA = fields.Nested(MetadataConfig, missing=dict())
     ADMIN_APPLICATION_LOGIN = fields.String()
     ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, missing={})
     USERSHUB = fields.Nested(UsersHubConfig, missing={})

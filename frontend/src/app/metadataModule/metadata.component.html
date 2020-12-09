@@ -103,7 +103,7 @@
                   </div>
                 </section>
 
-                <div class="col-md-1">
+                <div class="col-md-2">
                   <button
                     mat-icon-button
                     [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]"
@@ -120,7 +120,22 @@
                   >
                     <mat-icon> create</mat-icon>
                   </button>
-
+                  <button
+                    *ngIf="APP_CONFIG.METADATA?.ENABLE_PUBLICATION"
+                    mat-icon-button
+                    [disabled]="!af.cruved.E || !af.opened"
+                    (click)="openPublishModalAf($event, af.id_acquisition_framework, publishModal)"
+                  >
+                    <mat-icon
+                      *ngIf="af.opened==false; else elsePublish"
+                      matTooltip="Le cadre d'acquisition a déjà été déposé"
+                    > gavel </mat-icon>
+                    <ng-template #elsePublish>
+                      <mat-icon
+                        matTooltip="Déposer le cadre d'acquisition"
+                      > gavel </mat-icon>
+                    </ng-template>
+                  </button>
 
                 </div>
 
@@ -358,4 +373,49 @@
     </div>
 
   </div>
+</ng-template>
+
+
+<ng-template
+  #publishModal
+  let-c="close"
+  let-d="dismiss"
+>
+  <div class="modal-header">
+    <h5
+      class="modal-title"
+      id="publishModalLabel"
+    >{{ afPublishModalLabel }}</h5>
+  </div>
+
+  <div
+    class="modal-body"
+    style="align-items: flex-end;"
+  >
+    <div class="col">
+      <span>
+        <p style="text-align: justify;">{{ afPublishModalContent }}</p>
+      </span>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <div class="col">
+    </div>
+    <div mat-dialog-actions align="end">
+      <button
+        mat-raised-button
+        cdkFocusInitial
+        class="mr-1"
+        (click)="c()"
+      > Annuler </button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="publishAf()"
+      > Confirmer </button>
+    </div>
+    <br>
+  </div>
+
 </ng-template>

@@ -451,3 +451,16 @@ MAIL_ON_ERROR = false
 [METADATADA]
     # Nombre de cadre d'acquisition affiché sur la liste
     NB_AF_DISPLAYED = 100
+    # activer la fonctionalité de dépot/publication
+    ENABLE_PUBLICATION = true
+
+    AF_PDF_TITLE = ""
+    DS_PDF_TITLE = ""
+    URL_FRAMEWORK_DOWNLOAD = ""
+    MAIL_SUBJECT_AF_PUBLISHED_BASE = ""
+    MAIL_CONTENT_AF_PUBLISHED_ADDITION = ""
+    MAIL_CONTENT_AF_PUBLISHED_PDF = ""
+    MAIL_CONTENT_AF_PUBLISHED_URL = ""
+    MAIL_CONTENT_AF_PUBLISHED_GREETINGS = ""
+    PUBLISH_MODAL_LABEL = "Dépôt d'un cadre d'acquisition"
+    PUBLISH_MODAL_CONTENT = L'action de dépôt est une action irréversible. Il ne sera plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite. Vous ne pourrez pas supprimer votre dépôt. "
