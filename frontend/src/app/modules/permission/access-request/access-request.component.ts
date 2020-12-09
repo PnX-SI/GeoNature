@@ -22,6 +22,7 @@ export class AccessRequestComponent implements OnInit {
   public disableSubmit = false;
   public regularFormGrp: FormGroup;
   public dynamicFormGrp: FormGroup;
+  // TODO: use config token with Dependency Injection !
   public config = AppConfig.PERMISSION_MANAGEMENT;
   public dynamicFormCfg;
   public rulesLink;
