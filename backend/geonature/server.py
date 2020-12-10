@@ -3,6 +3,7 @@ Démarrage de l'application
 """
 
 import logging
+from importlib import import_module
 
 from flask import Flask
 from flask_mail import Mail, Message
@@ -14,6 +15,36 @@ from geonature.utils.env import DB, MA, list_and_import_gn_modules
 
 
 MAIL = Mail()
+
+
+def get_enabled_blueprints(app, with_external_mods):
+    '''
+        Génère une liste de tuple (blueprint, /url_prefix)
+        Le premier élément est soit directement un blueprint, soit
+        une chaine de texte indiquant où trouver le blueprint à importer.
+    '''
+    yield from [
+        ("pypnusershub.routes.routes", "/auth"),
+        ("pypn_habref_api.routes.routes", "/habref"),
+        ("pypnusershub.routes_register.bp", "/pypn/register"),
+        ("pypnnomenclature.routes.routes", "/nomenclatures"),
+        ("geonature.core.gn_permissions.routes.routes", "/permissions"),
+        ("geonature.core.gn_permissions.backoffice.views.routes", "/permissions_backoffice"),
+        ("geonature.core.users.routes.routes", "/users"),
+        ("geonature.core.gn_synthese.routes.routes", "/synthese"),
+        ("geonature.core.gn_meta.routes.routes", "/meta"),
+        ("geonature.core.ref_geo.routes.routes", "/geo"),
+        ("geonature.core.gn_exports.routes.routes", "/exports"),
+        ("geonature.core.auth.routes.routes", "/gn_auth"),
+        ("geonature.core.gn_monitoring.routes.routes", "/gn_monitoring"),
+        ("geonature.core.gn_commons.routes.routes", "/gn_commons"),
+    ]
+    if app.config['DEBUG'] or True:
+        yield ("geonature.core.routes.routes", "")
+    # Loading third-party modules
+    if with_external_mods:
+        for conf, manifest, module in list_and_import_gn_modules(app):
+            yield (module.backend.blueprint.blueprint, conf["MODULE_URL"])
 
 
 def create_app(config, with_external_mods=True, with_flask_admin=True):
@@ -55,73 +86,13 @@ def create_app(config, with_external_mods=True, with_flask_admin=True):
         # DB.create_all()
 
         if with_flask_admin:
-            # from geonature.core.admin import flask_admin
-            from geonature.core.admin.admin import flask_admin
+            import geonature.core.admin
 
-        from pypnusershub.routes import routes
+        for blueprint, url_prefix in get_enabled_blueprints(app, with_external_mods):
+            if type(blueprint) == str:
+                module_name, blueprint_name = blueprint.rsplit('.', 1)
+                module = import_module(module_name)
+                blueprint = getattr(module, blueprint_name)
+            app.register_blueprint(blueprint, url_prefix=url_prefix)
 
-        app.register_blueprint(routes, url_prefix="/auth")
-
-        from pypn_habref_api.routes import routes
-
-        app.register_blueprint(routes, url_prefix="/habref")
-
-        from pypnusershub import routes_register
-
-        app.register_blueprint(routes_register.bp, url_prefix="/pypn/register")
-
-        from pypnnomenclature.routes import routes
-
-        app.register_blueprint(routes, url_prefix="/nomenclatures")
-
-        from geonature.core.gn_permissions.routes import routes
-
-        app.register_blueprint(routes, url_prefix="/permissions")
-
-        from geonature.core.gn_permissions.backoffice.views import routes
-
-        app.register_blueprint(routes, url_prefix="/permissions_backoffice")
-
-        from geonature.core.routes import routes
-
-        app.register_blueprint(routes, url_prefix="")
-
-        from geonature.core.users.routes import routes
-
-        app.register_blueprint(routes, url_prefix="/users")
-
-        from geonature.core.gn_synthese.routes import routes
-
-        app.register_blueprint(routes, url_prefix="/synthese")
-
-        from geonature.core.gn_meta.routes import routes
-
-        app.register_blueprint(routes, url_prefix="/meta")
-
-        from geonature.core.ref_geo.routes import routes
-
-        app.register_blueprint(routes, url_prefix="/geo")
-
-        from geonature.core.gn_exports.routes import routes
-
-        app.register_blueprint(routes, url_prefix="/exports")
-
-        from geonature.core.auth.routes import routes
-
-        app.register_blueprint(routes, url_prefix="/gn_auth")
-
-        from geonature.core.gn_monitoring.routes import routes
-
-        app.register_blueprint(routes, url_prefix="/gn_monitoring")
-
-        from geonature.core.gn_commons.routes import routes
-
-        app.register_blueprint(routes, url_prefix="/gn_commons")
-
-        # Loading third-party modules
-        if with_external_mods:
-            for conf, manifest, module in list_and_import_gn_modules(app):
-                app.register_blueprint(
-                    module.backend.blueprint.blueprint, url_prefix=conf["MODULE_URL"]
-                )
     return app
