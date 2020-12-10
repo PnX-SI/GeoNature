@@ -16,34 +16,7 @@ from geonature.utils.env import DB, MA, list_and_import_gn_modules
 MAIL = Mail()
 
 
-class ReverseProxied(object):
-    def __init__(self, app, script_name=None, scheme=None, server=None):
-        self.app = app
-        self.script_name = script_name
-        self.scheme = scheme
-        self.server = server
-
-    def __call__(self, environ, start_response):
-        script_name = environ.get("HTTP_X_SCRIPT_NAME", "") or self.script_name
-        if script_name:
-            environ["SCRIPT_NAME"] = script_name
-            path_info = environ["PATH_INFO"]
-            if path_info.startswith(script_name):
-                environ["PATH_INFO"] = path_info[len(script_name) :]
-        scheme = environ.get("HTTP_X_SCHEME", "") or self.scheme
-        if scheme:
-            environ["wsgi.url_scheme"] = scheme
-        server = environ.get("HTTP_X_FORWARDED_SERVER", "") or self.server
-        if server:
-            environ["HTTP_HOST"] = server
-        return self.app(environ, start_response)
-
-
-def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
-    # Make sure app is a singleton
-    if _app is not None:
-        return _app
-
+def create_app(config, with_external_mods=True, with_flask_admin=True):
     app = Flask(__name__)
     app.config.update(config)
 
@@ -60,6 +33,14 @@ def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
     # Bind app to MA
     MA.init_app(app)
 
+    # Bind app to MAIL
+    if app.config["MAIL_CONFIG"]:
+        app.config.update(app.config["MAIL_CONFIG"])
+        MAIL.init_app(app)
+
+    # Enable CORS protection
+    CORS(app, supports_credentials=True)
+
     # Pass parameters to the usershub authenfication sub-module, DONT CHANGE THIS
     app.config["DB"] = DB
     # Pass parameters to the submodules
@@ -70,7 +51,6 @@ def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
     with app.app_context():
         if app.config["MAIL_ON_ERROR"] and app.config["MAIL_CONFIG"]:
             from geonature.utils.logs import mail_handler
-
             logging.getLogger().addHandler(mail_handler)
         # DB.create_all()
 
@@ -138,20 +118,6 @@ def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
 
         app.register_blueprint(routes, url_prefix="/gn_commons")
 
-        # Errors
-        from geonature.core.errors import routes
-
-        app.wsgi_app = ReverseProxied(app.wsgi_app, script_name=config["API_ENDPOINT"])
-
-        CORS(app, supports_credentials=True)
-
-        # Emails configuration
-        if app.config["MAIL_CONFIG"]:
-            conf = app.config.copy()
-            conf.update(app.config["MAIL_CONFIG"])
-            app.config = conf
-            MAIL.init_app(app)
-
         app.config['TEMPLATES_AUTO_RELOAD'] = True
 
         # Loading third-party modules
@@ -160,5 +126,4 @@ def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
                 app.register_blueprint(
                     module.backend.blueprint.blueprint, url_prefix=conf["MODULE_URL"]
                 )
-        _app = app
     return app
