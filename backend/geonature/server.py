@@ -118,8 +118,6 @@ def create_app(config, with_external_mods=True, with_flask_admin=True):
 
         app.register_blueprint(routes, url_prefix="/gn_commons")
 
-        app.config['TEMPLATES_AUTO_RELOAD'] = True
-
         # Loading third-party modules
         if with_external_mods:
             for conf, manifest, module in list_and_import_gn_modules(app):
