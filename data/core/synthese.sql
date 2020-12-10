@@ -645,15 +645,9 @@ BEGIN
   -- on supprime cor_area_taxon et recree à chaque fois
     -- cela evite de regarder dans cor_area_taxon s'il y a deja une ligne, de faire un + 1  ou -1 sur nb_obs etc...
     IF (TG_OP = 'INSERT') THEN
-      DELETE FROM gn_synthese.cor_area_taxon cor
-      USING NEW as new_rows
-      JOIN gn_synthese.synthese s ON s.id_synthese = new_rows.id_synthese
-      WHERE cor.cd_nom = s.cd_nom AND cor.id_area = new_rows.id_area
+      DELETE FROM gn_synthese.cor_area_taxon WHERE cd_nom = the_cd_nom AND id_area IN (NEW.id_area);
     ELSE
-      DELETE FROM gn_synthese.cor_area_taxon cor
-      USING NEW as new_rows
-      JOIN gn_synthese.synthese s ON s.id_synthese = new_rows.id_synthese
-      WHERE cor.cd_nom = s.cd_nom AND cor.id_area = new_rows.id_area OR cor.id_area IN (SELECT id_area FROM OLD)
+      DELETE FROM gn_synthese.cor_area_taxon WHERE cd_nom = the_cd_nom AND id_area IN (NEW.id_area, OLD.id_area);
     END IF;
     -- puis on réinsert
     -- on récupère la dernière date de l'obs dans l'aire concernée depuis cor_area_synthese et synthese
@@ -661,8 +655,7 @@ BEGIN
     SELECT id_area, s.cd_nom,  max(s.date_min) AS last_date, count(s.id_synthese) AS nb_obs
     FROM gn_synthese.cor_area_synthese cor
     JOIN gn_synthese.synthese s ON s.id_synthese = cor.id_synthese
-    JOIN NEW as new_rows ON new_rows.id_synthese = s.id_synthese
-    WHERE s.cd_nom = new_rows.id_synthese AND id_area = new_rows.id_area
+    WHERE s.cd_nom = the_cd_nom AND id_area = NEW.id_area
     GROUP BY id_area, s.cd_nom;
     RETURN NULL;
 END;
