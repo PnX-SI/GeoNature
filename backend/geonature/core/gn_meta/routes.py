@@ -765,17 +765,11 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
     """
     Get a PDF export of one acquisition
     """
-
     # Verification des droits
     if info_role.value_filter == "0":
         raise InsufficientRightsError(
             ('User "{}" cannot "{}" a dataset').format(info_role.id_role, "export"), 403,
         )
-
-    if request.args.get("certificate"):
-        certificate = True
-    else:
-        certificate = False
 
     # Recuperation des données
     af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
@@ -846,10 +840,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
             "bandeau": "Bandeau_pdf.png",
             "entite": "sinp",
         }
-        if certificate and af.initial_closing_date:
-            acquisition_framework["pdf_title"] = "Certificat de dépôt du " + current_app.config['METADATA']["AF_PDF_TITLE"].lower()
-        else:
-            acquisition_framework["pdf_title"] = current_app.config['METADATA']["AF_PDF_TITLE"]
+        acquisition_framework["pdf_title"] = current_app.config['METADATA']["AF_PDF_TITLE"]
         date = dt.datetime.now().strftime("%d/%m/%Y")
         acquisition_framework["footer"] = {
             "url": current_app.config["URL_APPLICATION"]
@@ -868,18 +859,15 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
             ),
             404,
         )
-    # For a deposit certificate, we name the file according to the initial_closing_date. With the actual time for the export PDF
-    if certificate and af.initial_closing_date:
-        acquisition_framework['certificate'] = True
-        acquisition_framework['initial_closing_date'] = dt.datetime.strptime(
-            acquisition_framework['initial_closing_date'],
-            '%Y-%m-%d %H:%M:%S.%f')
+    if af.initial_closing_date:
+        acquisition_framework['initial_closing_date'] = af.initial_closing_date.strftime('%d-%m-%Y %H:%M')
         filename = "{}_{}_{}.pdf".format(
             id_acquisition_framework,
             acquisition_framework["acquisition_framework_name"][0:31].replace(" ", "_"),
-            acquisition_framework["initial_closing_date"].strftime("%d%m%Y_%H%M%S")
+            af.initial_closing_date.strftime("%d%m%Y_%H%M%S")
         )
-        acquisition_framework["initial_closing_date"].strftime("%d%m%Y_%H%M")
+        acquisition_framework["closed_title"] = current_app.config["METADATA"]["CLOSED_AF_TITLE"]
+
     else:
         filename = "{}_{}_{}.pdf".format(
             id_acquisition_framework,
@@ -1141,7 +1129,7 @@ def publish_acquisition_framework_mail(af, info_role):
         ca_idtps = ""
 
     # Generate the links for the AF's deposite certificate and framework download
-    pdf_url = current_app.config["API_ENDPOINT"] + "/meta/acquisition_frameworks/export_pdf/" + str(af.id_acquisition_framework) + "?certificate=True"
+    pdf_url = current_app.config["API_ENDPOINT"] + "/meta/acquisition_frameworks/export_pdf/" + str(af.id_acquisition_framework)
     af_url = current_app.config["METADATA"]["URL_FRAMEWORK_DOWNLOAD"] + str(af.unique_acquisition_framework_id).upper() + "/fichier.pdf"
 
     # Mail subject

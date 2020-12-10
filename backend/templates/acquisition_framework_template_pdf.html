@@ -33,6 +33,10 @@
         {% endif %}
         <div class="titre">
             <label class="label-titre">
+                {% if data['initial_closing_date'] %}
+                {{data['closed_title']}}
+                <br>
+                {% endif %}
                 {% if data['pdf_title']: %}
                     {{ data['pdf_title'] }}
                 {% endif %}
@@ -43,11 +47,11 @@
                      {{ data['acquisition_framework_name'] }}
                 {% endif %}
             </label>
-            {% if data['certificate'] %}
+            {% if data['initial_closing_date'] %}
                 <br>
-                <label class="label-titre">
-                    Date de dépôt : {{ data['initial_closing_date'].strftime('%d-%m-%Y %H:%M') }}
-                </label>
+                <span class="label-closing-date">
+                    Date de dépôt : {{ data['initial_closing_date'] }}
+                </span>
             {% endif %}
             <div class="ligne-titre ligne main-color"></div>
                 
