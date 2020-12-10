@@ -42,6 +42,7 @@ def get_app_for_cmd(config_file=None, with_external_mods=True, with_flask_admin=
     """ Return the flask app object, logging error instead of raising them"""
     try:
         conf = load_config(config_file)
+        conf.update({'DEBUG': True})
         return create_app(
             conf, with_external_mods=with_external_mods, with_flask_admin=with_flask_admin,
         )
