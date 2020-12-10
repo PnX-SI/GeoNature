@@ -19,7 +19,7 @@ def send_mail(recipients, subject, msg_html):
         **Returns:**
         .. void
     """
-    if not MAIL:
+    if not current_app.config["MAIL_CONFIG"]:
         raise Exception("No configuration for email")
 
     with MAIL.connect() as conn:
