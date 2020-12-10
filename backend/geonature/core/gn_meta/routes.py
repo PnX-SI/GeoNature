@@ -63,7 +63,7 @@ from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_conte
 from werkzeug.datastructures import Headers
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
-from geonature.core.gn_meta import mtd_utils
+from geonature.core.gn_meta.mtd import mtd_utils
 import geonature.utils.filemanager as fm
 import geonature.utils.utilsmails as mail
 
