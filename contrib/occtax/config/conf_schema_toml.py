@@ -158,6 +158,7 @@ class DatasetFieldsConfiguration(Schema):
     RELEVE = fields.List(fields.Dict(), missing=[])
     OCCURRENCE = fields.List(fields.Dict(), missing=[])
     COUNTING = fields.List(fields.Dict(), missing=[])
+    EXPORT_FIELDS = fields.List(fields.String(), missing=[])
 
 
 class DatasetConfiguration(Schema):

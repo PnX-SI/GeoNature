@@ -773,14 +773,24 @@ def export(info_role):
 
     #Ajout des colonnes additionnels
     col_names = []
-    for row in data:
-        dict_row = export_view.as_dict(row)
-        if export_col_name_additional_data in dict_row:
-            additional_data = dict_row[export_col_name_additional_data]
-            if additional_data:
-                for col_name in additional_data:
-                    if col_name not in col_names:
-                        col_names.append(col_name)
+    
+    if "id_dataset" in request.args:
+        configDataset = getDatasetConfig(request.args['id_dataset'])
+        if "EXPORT_FIELDS" in configDataset:
+            col_names = configDataset["EXPORT_FIELDS"]
+        if not col_names:
+            col_names = getDefaultExportFields(configDataset)
+
+            
+    if not col_names:
+        for row in data:
+            dict_row = export_view.as_dict(row)
+            if export_col_name_additional_data in dict_row:
+                additional_data = dict_row[export_col_name_additional_data]
+                if additional_data:
+                    for col_name in additional_data:
+                        if col_name not in col_names:
+                            col_names.append(col_name)
 
     export_format = request.args["format"] if "format" in request.args else "geojson"
     if export_format == "csv":
@@ -906,95 +916,37 @@ def test(info_role):
     """
     Deprecated
     """
-
-    export_view_name = blueprint.config["export_view_name"]
-    export_geom_column = blueprint.config["export_geom_columns_name"]
-    export_columns = blueprint.config["export_columns"]
-    export_srid = blueprint.config["export_srid"]
-    export_col_name_additional_data = blueprint.config["export_col_name_additional_data"]
-    #export_col_name_additional_data = "additional_data"
-
-    #sql = "select distinct col_name from (SELECT jsonb_object_keys(" + export_col_name_additional_data + ") as col_name from pr_occtax." + export_view_name + ") as temp"
-    #result = DB.engine.execute(sql)
-    col_names = []
-    #for row in result:
-    #    col_names.append(row[0])
-
-    #return ', '.join(col_names)
-    #return to_json_resp(col_names)
-
-    export_view = GenericTableGeo(
-        tableName=export_view_name,
-        schemaName="pr_occtax",
-        engine=DB.engine,
-        geometry_field=export_geom_column,
-        srid=export_srid,
-    )
-
-    releve_repository = ReleveRepository(export_view)
-    q = releve_repository.get_filtered_query(info_role, from_generic_table=True)
-    q = get_query_occtax_filters(
-        request.args,
-        export_view,
-        q,
-        from_generic_table=True,
-        obs_txt_column=blueprint.config["export_observer_txt_column"],
-    )
-
-    file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
-    file_name = filemanager.removeDisallowedFilenameChars(file_name)
-
-    data = q.all()
-    #export_view.input(1, 'A', 'cat')
-    #for n in data:
-    #    if export_col_name_additional_data in n:
-    return to_json_resp(export_view.get_serialized_columns)
-    for row in data:
-        additional_data = export_view.as_dict(row)[export_col_name_additional_data]
-        return to_json_resp(export_view.as_dict(row))
-        if additional_data:
-            for col_name in additional_data:
-                if col_name not in col_names:
-                    col_names.append(col_name)
-
-
-    #columns = (
-    #        export_columns
-    #        if len(export_columns) > 0
-    #        else [db_col.key for db_col in export_view.db_cols]
-    #    )
-    columns = export_columns + col_names
-    data_add_field = []
-    for row in data:
-        #index = columns.index("additional_data")
-        return to_json_resp(export_view.as_dict(row)[export_geom_column])
-        additional_data = export_view.as_dict(row)[export_col_name_additional_data]
-        tab_value = {}
-        for col_name in col_names:
-            if additional_data:
-                if col_name in additional_data:
-                    tab_value[col_name] = additional_data[col_name]
-                else:
-                    tab_value[col_name] = ""
-            else:
-                tab_value[col_name] = ""
-        row_test = {**export_view.as_dict(row), **tab_value}
-        data_add_field.append(row_test)
-        #if len(col_names) > 0:
-            #if additional_data:
-            #    return additional_data["structure_participante"]
-        #return to_json_resp(row[1])
-        #return to_json_resp(row_test)
-    #return to_json_resp(data_add_field)
-    #return to_csv_resp(
-    #        file_name, [d for d in data_add_field], columns, ";"
-    #    )
-    #return to_json_resp(data_add_field)
-    results = FeatureCollection(
-            [export_view.as_geofeature(d, columns=export_columns) for d in data_add_field]
-        )
-
-    #    if export_col_name_additional_data in n:
-    #       return to_json_resp(n[export_col_name_additional_data])
     
-    return to_json_resp(results)
+    return to_json_resp("test")
+
+#Fonction renvoyant la configuration du module OCCTAX en fonction du jeux de données 
+def getDatasetConfig(id_dataset):
+    if id_dataset.isnumeric():
+        add_fields = blueprint.config["ADD_FIELDS"]
+        if "FORMFIELDS" in add_fields:
+            for formFields in add_fields["FORMFIELDS"]:
+                #return formFields
+                if int(formFields["DATASET"]) == int(id_dataset):
+                    return formFields
+    return []
+
+#Fonction renvoyant la liste des colonnes en fonction de la configuration du jeux de données
+def getDefaultExportFields(formFields):
+    col_names = []
+    if "RELEVE" in formFields:
+        for widget in formFields["RELEVE"]:
+            if "type_widget" in widget and "attribut_name" in widget:
+                if widget["type_widget"] != "html":
+                    col_names.append(widget["attribut_name"])
+    if "OCCURRENCE" in formFields:
+        for widget in formFields["OCCURRENCE"]:
+            if "type_widget" in widget and "attribut_name" in widget:
+                if widget["type_widget"] != "html":
+                    col_names.append(widget["attribut_name"])
+    if "COUNTING" in formFields:
+        for widget in formFields["COUNTING"]:
+            if "type_widget" in widget and "attribut_name" in widget:
+                if widget["type_widget"] != "html":
+                    col_names.append(widget["attribut_name"])
+
+    return col_names

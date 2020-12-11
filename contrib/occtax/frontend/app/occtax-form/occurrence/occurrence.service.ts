@@ -258,7 +258,9 @@ export class OcctaxFormOccurrenceService {
             //Formattage des nomenclatures
             if(widget.type_widget == "nomenclature"){
               //Charger les nomenclatures dynamiques dans un tableau
-              NOMENCLATURES.push(widget.code_nomenclature_type);
+              if (!NOMENCLATURES[widget.code_nomenclature_type]){
+                NOMENCLATURES.push(widget.code_nomenclature_type);
+              }
               //mise en forme des nomenclatures
               releve.t_occurrences_occtax.map((occurrence) => {
                 this.dataFormService.getNomenclatures([widget.code_nomenclature_type])
@@ -312,8 +314,11 @@ export class OcctaxFormOccurrenceService {
                 releve.t_occurrences_occtax.map((occurrence) => {
                   occurrence.cor_counting_occtax.map((counting) => {
                     //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
-                    if(typeof counting.additional_fields[widget.attribut_name] !== "object"){
+                    if(typeof counting.additional_fields[widget.attribut_name] !== "object" && counting.additional_fields[widget.attribut_name] !== ""){
                       counting.additional_fields[widget.attribut_name] = this.occtaxFormService.formatDate(counting.additional_fields[widget.attribut_name]);
+                    }
+                    if ( counting.additional_fields[widget.attribut_name] == ""){
+                      counting.additional_fields[widget.attribut_name] = null;
                     }
                   })
                 })
@@ -321,7 +326,9 @@ export class OcctaxFormOccurrenceService {
               //Formattage des nomenclatures
               if(widget.type_widget == "nomenclature"){
                 //Charger les nomenclatures dynamiques dans un tableau
-                NOMENCLATURES.push(widget.code_nomenclature_type);
+                if (!NOMENCLATURES[widget.code_nomenclature_type]){
+                  NOMENCLATURES.push(widget.code_nomenclature_type);
+                }
                 //mise en forme des nomenclatures
                 releve.t_occurrences_occtax.map((occurrence) => {
                   occurrence.cor_counting_occtax.map((counting) => {
