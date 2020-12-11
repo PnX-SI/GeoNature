@@ -1198,20 +1198,24 @@ def publish_acquisition_framework(info_role, af_id):
     .. :quickref: Metadata;
     """
 
-    # After publishing an AF, we set it as closed and all its DS as inactive
-    TDatasets.query.filter_by(id_acquisition_framework=af_id).update(dict(active=False))
-    TAcquisitionFramework.query.filter_by(id_acquisition_framework=af_id).update(dict(opened=False))
+    # The AF must contain DS to be published
+    ds = TDatasets.query.filter_by(id_acquisition_framework=af_id).all()
+    if ds:
+        # After publishing an AF, we set it as closed and all its DS as inactive
+        TDatasets.query.filter_by(id_acquisition_framework=af_id).update(dict(active=False))
+        TAcquisitionFramework.query.filter_by(id_acquisition_framework=af_id).update(dict(opened=False))
 
-    # If the AF if closed for the first time, we set it an initial_closing_date as the actual time
-    af = DB.session.query(TAcquisitionFramework).get(af_id)
-    if (af.initial_closing_date is None):
-        TAcquisitionFramework.query.filter_by(id_acquisition_framework=af_id).update(dict(initial_closing_date=dt.datetime.now()))
+        # If the AF if closed for the first time, we set it an initial_closing_date as the actual time
         af = DB.session.query(TAcquisitionFramework).get(af_id)
-    # We send a mail to notify the AF publication
-    publish_acquisition_framework_mail(af, info_role)
+        if (af.initial_closing_date is None):
+            TAcquisitionFramework.query.filter_by(id_acquisition_framework=af_id).update(dict(initial_closing_date=dt.datetime.now()))
+            af = DB.session.query(TAcquisitionFramework).get(af_id)
+        # We send a mail to notify the AF publication
+        publish_acquisition_framework_mail(af, info_role)
 
-    DB.session.commit()
-
+        DB.session.commit()
+    else:
+        af = DB.session.query(TAcquisitionFramework).get(af_id)
     return af.as_dict()
 
 
