@@ -392,8 +392,8 @@ ALTER TABLE cor_area_taxon
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT unique_id_sinp_unique UNIQUE (unique_id_sinp);
 
-ALTER TABLE ONLY synthese
-    ADD CONSTRAINT unique_id_source_entity_source_pk_value UNIQUE (id_source, entity_source_pk_value);
+-- ALTER TABLE ONLY synthese
+--     ADD CONSTRAINT unique_id_source_entity_source_pk_value UNIQUE (id_source, entity_source_pk_value);
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT check_synthese_altitude_max CHECK (altitude_max >= altitude_min);
