@@ -1,5 +1,6 @@
 import logging
-
+import json
+from copy import copy
 from flask import current_app
 
 from sqlalchemy.exc import SQLAlchemyError
@@ -47,27 +48,34 @@ def create_cor_object_actors(actors, new_object):
         id_person = None
         id_organism = None
 
-        # If the name of the contact Person was provided in the XML file, we try to link him to the t_role table
-        if act["name"]:
-            # We first check if the Person's nom_role exists in the t_role table
+        # If the email of the contact Person was provided in the XML file, we try to link him to the t_role table
+        if act["email"]:
+            # We first check if the Person's email exists in the t_role table
             person = (
                 DB.session.query(User)
-                .filter(User.nom_role == act["name"])
-                .one_or_none()
+                .filter(User.email == act["email"])
+                .first()
             )
             # If not, we create it as a new Person in the t_role table and get his ID back
             if not person:
+                if act["uuid_organism"]:
+                    org = (
+                        DB.session.query(BibOrganismes)
+                        .filter(BibOrganismes.uuid_organisme == act["uuid_organism"])
+                        .first()
+                    )
                 person = {
                     "id_role": None,
-                    "nom_role": act["name"]
+                    "nom_role": act["name"],
+                    "email": act["email"],
                 }
-                users.insert_role(person)
-                person = (
-                    DB.session.query(User)
-                    .filter(User.nom_role == act["name"])
-                    .one_or_none()
-                )
-            id_person = person.id_role
+                if org:
+                    person['id_organisme'] = org.id_organisme
+                resp = users.insert_role(person)
+                try:
+                    id_person = json.loads(resp.data.decode('utf-8'))['id_role']
+            else:
+                id_person = person.id_role
 
         # If the informations about the Organism is provided, we try to link it to the bib_organismes table
         if act["uuid_organism"] or act["organism"]:
@@ -77,13 +85,13 @@ def create_cor_object_actors(actors, new_object):
                 org = (
                     DB.session.query(BibOrganismes)
                     .filter(BibOrganismes.uuid_organisme == act["uuid_organism"])
-                    .one_or_none()
+                    .first()
                 )
             else:
                 org = (
                     DB.session.query(BibOrganismes)
                     .filter(BibOrganismes.nom_organisme == act["organism"])
-                    .one_or_none()
+                    .first()
                 )
             # If no Organism was corresponding in the bib_organismes table, we add it
             if not org:
@@ -168,21 +176,13 @@ def post_acquisition_framework(uuid=None, id_user=None, id_organism=None):
     return {"message": "Not found"}, 404
 
 
-def add_dataset_module(dataset, id_module):
-    if id_module is not None:
-        dataset.modules.extend(
-            DB.session.query(TModules)
-            .filter(
-                TModules.id_module == id_module
-            ).all()
-        )
-    else:
-        dataset.modules.extend(
-            DB.session.query(TModules)
-            .filter(
-                TModules.module_code.in_(current_app.config["CAS"]["JDD_MODULE_CODE_ASSOCIATION"])
-            ).all()
-        )
+def add_dataset_module(dataset):
+    dataset.modules.extend(
+        DB.session.query(TModules)
+        .filter(
+            TModules.module_code.in_(current_app.config["CAS"]["JDD_MODULE_CODE_ASSOCIATION"])
+        ).all()
+    )
 
 
 def post_jdd_from_user(id_user=None, id_organism=None):
@@ -214,19 +214,17 @@ def post_jdd_from_user(id_user=None, id_organism=None):
             id_dataset = TDatasets.get_id(ds["unique_dataset_id"])
             ds["id_dataset"] = id_dataset
             # search nomenclature
-            for key, value in ds.items():
+            ds_copy = copy(ds)
+            for key, value in ds_copy.items():
                 if key.startswith("id_nomenclature"):
-                    ds[key] = func.ref_nomenclatures.get_id_nomenclature(
-                        NOMENCLATURE_MAPPING.get(key), value
-                    )
-
-            # Statut Donnees Source
-            id_nomenclature_data_origin = func.ref_nomenclatures.get_id_nomenclature("DS_PUBLIQUE", ds["code_statut_donnees_source"])
-            ds.pop("code_statut_donnees_source")
-            ds["id_nomenclature_data_origin"] = id_nomenclature_data_origin
-
+                    if value is not None:
+                        ds[key] = func.ref_nomenclatures.get_id_nomenclature(
+                            NOMENCLATURE_MAPPING.get(key), value
+                        )
+                    else:
+                        ds.pop(key)
+            
             #  set validable = true
-            id_module = ds.pop("id_module")
             ds["validable"] = True
             ds["active"] = True
             dataset = TDatasets(**ds)
@@ -243,14 +241,14 @@ def post_jdd_from_user(id_user=None, id_organism=None):
 
                 # create the correlation links
                 create_cor_object_actors(actors, dataset)
-                add_dataset_module(dataset, id_module)
+                add_dataset_module(dataset)
                 DB.session.merge(dataset)
 
             # its a new DS
             else:
                 # create the correlation links
                 create_cor_object_actors(actors, dataset)
-                add_dataset_module(dataset, id_module)
+                add_dataset_module(dataset)
                 # Add the new DS
                 DB.session.add(dataset)
             # try to commit

@@ -26,8 +26,6 @@ def get_tag_content(parent, tag_name, default_value=None):
             return tag.text
     return default_value
 
-    return tag.text if tag is not None else default_value
-
 
 def parse_actors_xml(actors):
     """
@@ -44,6 +42,7 @@ def parse_actors_xml(actors):
             actor_role = get_tag_content(actor_node, "roleActeur")
             uuid_organism = get_tag_content(actor_node, "idOrganisme")
             organism = get_tag_content(actor_node, "organisme")
+            email = get_tag_content(actor_node, "mail")
 
             actor_list.append(
                 {
@@ -51,6 +50,7 @@ def parse_actors_xml(actors):
                     "uuid_organism": uuid_organism,
                     "organism": organism,
                     "actor_role": actor_role,
+                    "email": email
                 }
             )
 
@@ -118,10 +118,10 @@ def parse_jdd_xml(xml):
         jdd_uuid = get_tag_content(jdd, "identifiantJdd")
         ca_uuid = get_tag_content(jdd, "identifiantCadre")
         dataset_name = get_tag_content(jdd, "libelle")
-        dataset_shortname = get_tag_content(jdd, "libelleCourt")
+        dataset_shortname = get_tag_content(jdd, "libelleCourt", default_value="")
         dataset_desc = get_tag_content(jdd, "description", default_value="")
-        terrestrial_domain = get_tag_content(jdd, "domaineTerrestre")
-        marine_domain = get_tag_content(jdd, "domaineMarin")
+        terrestrial_domain = get_tag_content(jdd, "domaineTerrestre", default_value=False)
+        marine_domain = get_tag_content(jdd, "domaineMarin", default_value=False)
         data_type = get_tag_content(jdd, "typeDonnees")
         collect_data_type = get_tag_content(jdd, "typeDonneesCollectees")
         attributs_additionnels_node = jdd.find(namespace + "attributsAdditionnels")
@@ -170,9 +170,8 @@ def parse_jdd_xml(xml):
             "terrestrial_domain": json.loads(terrestrial_domain),
             "marine_domain": json.loads(marine_domain),
             "id_nomenclature_data_type": data_type,
-            "id_module": collect_data_type,
             "id_digitizer": id_digitizer,
-            "code_statut_donnees_source": code_statut_donnees_source,
+            "id_nomenclature_data_origin": code_statut_donnees_source,
             "actors": all_actors,
         }
 
