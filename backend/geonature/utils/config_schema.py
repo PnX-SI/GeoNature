@@ -103,13 +103,13 @@ class MetadataConfig(Schema):
     AF_PDF_TITLE = fields.String(missing="Cadre d'acquisition: ")
     DS_PDF_TITLE = fields.String(missing="")
     URL_FRAMEWORK_DOWNLOAD = fields.String(missing="")
-    MAIL_SUBJECT_AF_PUBLISHED_BASE = fields.String(missing="")
-    MAIL_CONTENT_AF_PUBLISHED_ADDITION = fields.String(missing="")
-    MAIL_CONTENT_AF_PUBLISHED_PDF = fields.String(missing="")
-    MAIL_CONTENT_AF_PUBLISHED_URL = fields.String(missing="")
-    MAIL_CONTENT_AF_PUBLISHED_GREETINGS = fields.String(missing="")
-    PUBLISH_MODAL_LABEL = fields.String(missing="Fermer un cadre d'acquisition")
-    PUBLISH_MODAL_CONTENT = fields.String(missing="""L'action de fermeture est irréversible. Il ne sera
+    MAIL_SUBJECT_AF_CLOSED_BASE = fields.String(missing="")
+    MAIL_CONTENT_AF_CLOSED_ADDITION = fields.String(missing="")
+    MAIL_CONTENT_AF_CLOSED_PDF = fields.String(missing="")
+    MAIL_CONTENT_AF_CLOSED_URL = fields.String(missing="")
+    MAIL_CONTENT_AF_CLOSED_GREETINGS = fields.String(missing="")
+    CLOSED_MODAL_LABEL = fields.String(missing="Fermer un cadre d'acquisition")
+    CLOSED_MODAL_CONTENT = fields.String(missing="""L'action de fermeture est irréversible. Il ne sera
     plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite.""")
 
 

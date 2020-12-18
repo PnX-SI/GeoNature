@@ -85,8 +85,8 @@ export class MetadataComponent implements OnInit {
     this._dfs.getRoles({ 'group': false }).subscribe(data => {
       this.roles = data;
     });
-    this.afPublishModalLabel = AppConfig.METADATA.PUBLISH_MODAL_LABEL;
-    this.afPublishModalContent = AppConfig.METADATA.PUBLISH_MODAL_CONTENT;
+    this.afPublishModalLabel = AppConfig.METADATA.CLOSED_MODAL_LABEL;
+    this.afPublishModalContent = AppConfig.METADATA.CLOSED_MODAL_CONTENT;
 
     // rapid search event
     this.searchFormService.rapidSearchControl.valueChanges.pipe(
