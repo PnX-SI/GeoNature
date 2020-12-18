@@ -2,8 +2,13 @@
 CHANGELOG
 =========
 
-2.5.6 (unreleased)
-------------------
+2.6.0 - Saxifraga (unreleased)
+------------------------------
+
+**TODO**
+
+- Review and include PR https://github.com/PnX-SI/GeoNature/pull/1160
+- Review and include PR 
 
 **🚀 Nouveautés**
 
@@ -11,8 +16,10 @@ CHANGELOG
 * Métadonnées : Refonte de la liste des CA et JDD avec l'ajout d'informations et d'actions, ainsi qu'une recherche avancée (#889)
 * Métadonnées : Révision des fiches info des CA et JDD avec l'ajout d'actions, du tableau des imports et du téléchargement des rapports d'UUID et de sensibilité (#889)
 * Métadonnées: Ajout de la fonctionnalité de fermeture (dépot) au niveau du CA (qui ferme tous les JDD du CA). Désactivée par défaut via le paramètre ``ENABLE_CLOSE_AF`` (#889 par @alainlaupinmnhn)
-* Métadonnées : Possibilité d'importer directement dans un JDD depuis le module Métadonnées (#889)
+* Métadonnées : Possibilité d'importer directement dans un JDD depuis le module Métadonnées, désactivé par défaut (#889)
 * Synthèse : Possibilité d'ouvrir le module avec un JDD préselectionné (``<URL_GeoNature>/#/synthese?id_dataset=2``) et ajout d'un lien direct depuis le module Métadonnées (#889)
+* Exports au format SHP remplacés par défaut par le format GeoPackage (GPKG) plus simple, plus léger, plus performant et unique. Les exports SHP restent activables dans la configuration des modules (#898)
+* ???? Validation : Préremplir l'email à l'observateur avec des informations paramétrables sur l'occurrence (date, nom du taxon, commune, médias) (#981)
 * Possibilité de customiser le logo principal (GeoNature par défaut) dans ``frontend/src/custom/images/``
 * Ajout d'un champs json ``additional_data`` dans la table ``l_areas`` (#1111)
 * Amélioration des possibilités de customisation des PDF des fiches de métadonnées
@@ -29,11 +36,13 @@ CHANGELOG
 * Occtax : Correction de l'erreur de chargement de l'observateur lors de la modification d'un relevé (#1177)
 * Occtax : Suppression de l'obligation de remplir les champs "Déterminateur" et "Méthode de détermination"
 * Métadonnées : Suppression du graphique de répartition des espèces dans les exports PDF car il était partiellement fonctionnel
-* Synthèse : fonction ``import_row_from_table``: test sur LOWER(tbl_name)
+* Synthèse : fonction ``import_row_from_table`` : test sur ``LOWER(tbl_name)``
+* Script d'installation globale : prise en compte du paramètre ``install_grid_layer`` permettant d'intégrer ou non les mailles dans le ``ref_geo`` lors de l'installation initiale (#1133)
 
 **⚠️ Notes de version**
 
 * https://github.com/PnX-SI/GeoNature/blob/develop/data/migrations/2.5.5to2.5.6.sql
+* Update sensibilité données exiqtantes dans Synthèse (ainsi que diffusion_level si non surcouché)
 * Si vous aviez fait des customisations (logo, PDF export...) alors XXXXXX
 * Revoir http://docs.geonature.fr/admin-manual.html#integrer-son-logo ?
 
