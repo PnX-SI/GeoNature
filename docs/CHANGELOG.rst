@@ -14,10 +14,12 @@ CHANGELOG
 * Métadonnées : Possibilité d'importer directement dans un JDD depuis le module Métadonnées (#889)
 * Synthèse : Possibilité d'ouvrir le module avec un JDD préselectionné (``<URL_GeoNature>/#/synthese?id_dataset=2``) et ajout d'un lien direct depuis le module Métadonnées (#889)
 * Possibilité de customiser le logo principal (GeoNature par défaut) dans ``frontend/src/custom/images/``
+* Ajout d'un champs json ``additional_data`` dans la table ``l_areas`` (#1111)
 * Amélioration des possibilités de customisation des PDF des fiches de métadonnées
 * Complément des scripts de migration des données depuis GINCO (``data/scripts/import_ginco/``)
 * Barre de navigation : Mention plus générique et générale des auteurs
 * Connexion à MTD: possibilité de filtrer les JDD par instance (ne récupérer que les JDD de sa région par ex: paramètre ``ID_INSTANCE_FILTER``)
+
 
 **🐛 Corrections**
 
@@ -113,6 +115,7 @@ CHANGELOG
 * Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application).
 * Les noms de colonnes de l'export de la Synthèse ont été entièrement revus dans la vue fournie par défaut (``gn_synthese.v_synthese_for_export``). Si vous aviez surcouché le paramètre ``EXPORT_COLUMNS`` dans le fichier ``config/geonature_config.toml``, vérifiez les noms des colonnes.
 * Vérifiez que la valeur du paramètre ``taxref_version`` dans la table ``gn_commons.t_parameters`` correspond bien à votre version actuelle de Taxref (11.0 ou 13.0).
+
 
 2.5.2 (2020-10-13)
 ------------------
