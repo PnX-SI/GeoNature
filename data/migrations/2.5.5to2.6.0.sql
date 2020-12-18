@@ -140,10 +140,14 @@ CREATE TRIGGER tri_update_calculate_sensitivity
   FOR EACH ROW
   EXECUTE PROCEDURE gn_synthese.fct_tri_cal_sensi_diff_level_on_each_row();
  
- -- Fin schema sensitivity 
+-- TODO : Update la sensibilité de toutes les données existantes de la synthèse après avoir désactivé les triggers de MAJ de date 
+-- pour pas remettre à zéro les dates de mises à jour des observations
+-- Update diffusion_level de synthèse quand non renseigné pour pas écraser les valeurs surcouchées
+
+-- Fin schema sensitivity 
  
- -- Refactor cor_area triggers
- CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese_on_each_statement()
+-- Refactor cor_area triggers
+CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese_on_each_statement()
   RETURNS trigger AS
 $BODY$
   DECLARE
