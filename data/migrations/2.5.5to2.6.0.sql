@@ -254,4 +254,4 @@ ALTER TABLE gn_meta.t_acquisition_frameworks ADD opened bool NULL DEFAULT true;
 ALTER TABLE gn_meta.t_acquisition_frameworks ADD initial_closing_date timestamp NULL;
 
 -- Add a json filed in l_areas for additional data
-ALTER TABLE ref_geo.l_areas ADD attributs jsonb NULL;
+ALTER TABLE ref_geo.l_areas ADD additional_data jsonb NULL;
