@@ -126,6 +126,13 @@ MAIL_ON_ERROR = false
     ID = "mon_id"
     PASSWORD = "mon_pass"
 
+# Connexion avec le WS MTD
+[MTD]
+    # Modules auxquels les JDD sont automatiquement associés
+    JDD_MODULE_CODE_ASSOCIATION = ["OCCTAX", "OCCHAB"]
+    # Filter les JDD par id_instance
+    ID_INSTANCE_FILTER = null
+
 [BDD]
     id_area_type_municipality = 25
     ID_USER_SOCLE_1 = 8
@@ -452,15 +459,15 @@ MAIL_ON_ERROR = false
     # Nombre de cadre d'acquisition affiché sur la liste
     NB_AF_DISPLAYED = 100
     # activer la fonctionalité de dépot/publication
-    ENABLE_CLOSE_AF = true
+    ENABLE_CLOSE_AF = false
 
     AF_PDF_TITLE = ""
     DS_PDF_TITLE = ""
     URL_FRAMEWORK_DOWNLOAD = ""
-    MAIL_SUBJECT_AF_PUBLISHED_BASE = ""
-    MAIL_CONTENT_AF_PUBLISHED_ADDITION = ""
-    MAIL_CONTENT_AF_PUBLISHED_PDF = ""
-    MAIL_CONTENT_AF_PUBLISHED_URL = ""
-    MAIL_CONTENT_AF_PUBLISHED_GREETINGS = ""
-    PUBLISH_MODAL_LABEL = "Dépôt d'un cadre d'acquisition"
-    PUBLISH_MODAL_CONTENT = L'action de dépôt est une action irréversible. Il ne sera plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite. Vous ne pourrez pas supprimer votre dépôt. "
+    MAIL_SUBJECT_AF_CLOSED_BASE = ""
+    MAIL_CONTENT_AF_CLOSED_ADDITION = ""
+    MAIL_CONTENT_AF_CLOSED_PDF = ""
+    MAIL_CONTENT_AF_CLOSED_URL = ""
+    MAIL_CONTENT_AF_CLOSED_GREETINGS = ""
+    CLOSED_MODAL_LABEL = "Dépôt d'un cadre d'acquisition"
+    CLOSED_MODAL_CONTENT = L'action de dépôt est une action irréversible. Il ne sera plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite. Vous ne pourrez pas supprimer votre dépôt. "

@@ -1134,7 +1134,7 @@ def publish_acquisition_framework_mail(af, info_role):
 
     # Mail subject
     mail_subject = "Dépôt du cadre d'acquisition " + str(af.unique_acquisition_framework_id).upper()
-    mail_subject_base = current_app.config["METADATA"]["MAIL_SUBJECT_AF_PUBLISHED_BASE"]
+    mail_subject_base = current_app.config["METADATA"]["MAIL_SUBJECT_AF_CLOSED_BASE"]
     if mail_subject_base:
         mail_subject = mail_subject_base + " " + mail_subject
     if ca_idtps:
@@ -1146,10 +1146,10 @@ def publish_acquisition_framework_mail(af, info_role):
     <br>
     Le cadre d'acquisition {} dont l’identifiant est {} que vous nous avez transmis a été déposé"""
     mail_content_id_tps = " dans le cadre du dossier {}"
-    mail_content_additions = current_app.config["METADATA"]["MAIL_CONTENT_AF_PUBLISHED_ADDITION"]
-    mail_content_pdf = current_app.config['METADATA']["MAIL_CONTENT_AF_PUBLISHED_PDF"]
-    mail_content_url = current_app.config['METADATA']["MAIL_CONTENT_AF_PUBLISHED_URL"]
-    mail_content_greetings = current_app.config['METADATA']["MAIL_CONTENT_AF_PUBLISHED_GREETINGS"]
+    mail_content_additions = current_app.config["METADATA"]["MAIL_CONTENT_AF_CLOSED_ADDITION"]
+    mail_content_pdf = current_app.config['METADATA']["MAIL_CONTENT_AF_CLOSED_PDF"]
+    mail_content_url = current_app.config['METADATA']["MAIL_CONTENT_AF_CLOSED_URL"]
+    mail_content_greetings = current_app.config['METADATA']["MAIL_CONTENT_AF_CLOSED_GREETINGS"]
 
     if mail_content_base:
         mail_content = mail_content_base.format(
