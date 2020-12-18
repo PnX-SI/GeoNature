@@ -50,7 +50,7 @@ import { ModuleService } from './services/module.service';
 import { CruvedStoreService } from './GN2CommonModule/service/cruved-store.service';
 import { SideNavService } from './components/sidenav-items/sidenav-service';
 
-import { MyCustomInterceptor } from './services/http.interceptor';
+import { MyCustomInterceptor, ContentTypeInterceptor } from './services/http.interceptor';
 import { GlobalSubService } from './services/global-sub.service';
 
 export function createTranslateLoader(http: HttpClient) {
@@ -107,7 +107,8 @@ import { UserDataService } from "./userModule/services/user-data.service";
     SideNavService,
     CruvedStoreService,
     UserDataService,
-    { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ContentTypeInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

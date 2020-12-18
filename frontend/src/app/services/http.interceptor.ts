@@ -61,3 +61,17 @@ export class MyCustomInterceptor implements HttpInterceptor {
     return hostname;
   }
 }
+
+
+/* Cet intercepteur a pour rôle d’ajouter un header Content-Type: application/json.
+ * Ceci permet à l’API d’ajuster sa réponse (réponse 403 vs redirection login par exemple).
+ */
+@Injectable()
+export class ContentTypeInterceptor implements HttpInterceptor {
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const modifiedReq = req.clone({
+      headers: req.headers.set('Content-Type', 'application/json')
+    })
+    return next.handle(modifiedReq);
+  }
+}
