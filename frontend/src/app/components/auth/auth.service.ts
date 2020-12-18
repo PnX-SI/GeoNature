@@ -5,7 +5,6 @@ import { HttpClient } from '@angular/common/http';
 import { AppConfig } from '../../../conf/app.config';
 import { CookieService } from 'ng2-cookies';
 import 'rxjs/add/operator/delay';
-import { exception } from 'console';
 
 export interface User {
   user_login: string;
@@ -130,6 +129,7 @@ export class AuthService {
 
   logout() {
     this.deleteAllCookies();
+    localStorage.clear();
     if (AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
       document.location.href = `${AppConfig.CAS_PUBLIC.CAS_URL_LOGOUT}?service=${
         AppConfig.URL_APPLICATION
@@ -139,9 +139,13 @@ export class AuthService {
       // call the logout route to delete the session
       // TODO: in case of different cruved user in DEPOBIO context must run this routes
       // but actually make bug the INPN CAS deconnexion
-      this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_auth/logout_cruved`).subscribe(() => { });
+      this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_auth/logout_cruved`).subscribe(() => {
+
+        location.reload();
+
+      });
       // refresh the page to refresh all the shared service to avoid cruved conflict
-      location.reload();
+
     }
   }
 

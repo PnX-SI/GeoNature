@@ -32,16 +32,29 @@
         </div>
         {% endif %}
         <div class="titre">
-            <h5> {{data.title}} </h5>
-            <label class="label-titre">Cadre d'acquisition des données</label>
+            <label class="label-titre">
+                {% if data['initial_closing_date'] %}
+                {{data['closed_title']}}
+                <br>
+                {% endif %}
+                {% if data['pdf_title']: %}
+                    {{ data['pdf_title'] }}
+                {% endif %}
+            </label>
             <br>
             <label class="label-titre">
                 {% if data['acquisition_framework_name']: %}
-                {{ data['acquisition_framework_name'] }}
+                     {{ data['acquisition_framework_name'] }}
                 {% endif %}
             </label>
+            {% if data['initial_closing_date'] %}
+                <br>
+                <span class="label-closing-date">
+                    Date de dépôt : {{ data['initial_closing_date'] }}
+                </span>
+            {% endif %}
             <div class="ligne-titre ligne main-color"></div>
-
+                
         </div>
         <div class="etiquettes-ca">
             <div

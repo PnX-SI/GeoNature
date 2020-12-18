@@ -7,19 +7,33 @@ CHANGELOG
 
 **🚀 Nouveautés**
 
+* Sensibilité : Ajout d'un trigger sur la synthèse déclenchant automatiquement le calcul de la sensibilité des occurrences (#871)
 * Métadonnées : Refonte de la liste des CA et JDD avec l'ajout d'informations et d'actions, ainsi qu'une recherche avancée (#889)
 * Métadonnées : Révision des fiches info des CA et JDD avec l'ajout d'actions, du tableau des imports et du téléchargement des rapports d'UUID et de sensibilité (#889)
+* Métadonnées: Ajout de la fonctionnalité de fermeture (dépot) au niveau du CA (qui ferme tous les JDD du CA). Désactivée par défaut via le paramètre ``ENABLE_CLOSE_AF`` (#889 par @alainlaupinmnhn)
 * Métadonnées : Possibilité d'importer directement dans un JDD depuis le module Métadonnées (#889)
 * Synthèse : Possibilité d'ouvrir le module avec un JDD préselectionné (``<URL_GeoNature>/#/synthese?id_dataset=2``) et ajout d'un lien direct depuis le module Métadonnées (#889)
 * Possibilité de customiser le logo principal (GeoNature par défaut) dans ``frontend/src/custom/images/``
 * Ajout d'un champs json ``additional_data`` dans la table ``l_areas`` (#1111)
+* Amélioration des possibilités de customisation des PDF des fiches de métadonnées
+* Complément des scripts de migration des données depuis GINCO (``data/scripts/import_ginco/``)
+* Barre de navigation : Mention plus générique et générale des auteurs
+* Connexion à MTD: possibilité de filtrer les JDD par instance (ne récupérer que les JDD de sa région par ex: paramètre ``ID_INSTANCE_FILTER``)
+
 
 **🐛 Corrections**
 
-* Synthèse : fonction ``import_row_from_table``: test sur LOWER(tbl_name) 
+* Meilleur nettoyage des sessions enregistrées dans le navigateur (#1178)
+* Synthèse : Retour du bouton pour revenir à l'observation dans son module d'origine (Occtax par exemple) depuis la fiche info d'une observation (#1147)
+* Synthèse : Suppression du message "Aucun historique de validation" quand une observation n'a pas encore de validation (#1147)
+* Occtax : Correction de l'erreur de chargement de l'observateur lors de la modification d'un relevé (#1177)
+* Occtax : Suppression de l'obligation de remplir les champs "Déterminateur" et "Méthode de détermination"
+* Métadonnées : Suppression du graphique de répartition des espèces dans les exports PDF car il était partiellement fonctionnel
+* Synthèse : fonction ``import_row_from_table``: test sur LOWER(tbl_name)
 
 **⚠️ Notes de version**
 
+* https://github.com/PnX-SI/GeoNature/blob/develop/data/migrations/2.5.5to2.5.6.sql
 * Si vous aviez fait des customisations (logo, PDF export...) alors XXXXXX
 * Revoir http://docs.geonature.fr/admin-manual.html#integrer-son-logo ?
 

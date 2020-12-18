@@ -32,6 +32,10 @@ a {
   transform: translateY(-50%);
 }
 
+.label-closing-date {
+  font-size: 15px;
+}
+
 .taxons {
   display: block;
   margin-left: auto;

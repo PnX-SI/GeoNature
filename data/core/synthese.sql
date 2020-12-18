@@ -350,7 +350,7 @@ ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_nomenclature_determination_method FOREIGN KEY (id_nomenclature_determination_method) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_id_nomenclature_biogeo_status FOREIGN KEY (id_nomenclature_biogeo_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature_biogeo_status) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_synthese_id_nomenclature_biogeo_status FOREIGN KEY (id_nomenclature_biogeo_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_digitiser FOREIGN KEY (id_digitiser) REFERENCES utilisateurs.t_roles (id_role) ON UPDATE CASCADE;
@@ -593,32 +593,42 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
-CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese()
+CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese_on_each_statement()
   RETURNS trigger AS
 $BODY$
   DECLARE
-  id_area_loop integer;
+  BEGIN
+  -- Intersection avec toutes les areas et écriture dans cor_area_synthese
+      INSERT INTO gn_synthese.cor_area_synthese 
+        SELECT
+          updated_rows.id_synthese AS id_synthese,
+          a.id_area AS id_area
+        FROM NEW as updated_rows
+        JOIN ref_geo.l_areas a
+          ON public.ST_INTERSECTS(updated_rows.the_geom_local, a.geom)  
+        WHERE a.enable IS TRUE AND (ST_GeometryType(updated_rows.the_geom_local) = 'ST_Point' OR NOT public.ST_TOUCHES(updated_rows.the_geom_local,a.geom));
+  RETURN NULL;
+  END;
+  $BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_update_in_cor_area_synthese()
+  RETURNS trigger AS
+$BODY$
+  DECLARE
   geom_change boolean;
   BEGIN
-  geom_change = false;
-  IF(TG_OP = 'UPDATE') THEN
-	SELECT INTO geom_change NOT public.ST_EQUALS(OLD.the_geom_local, NEW.the_geom_local);
-  END IF;
-
-  IF (geom_change) THEN
 	DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = NEW.id_synthese;
-  END IF;
 
   -- Intersection avec toutes les areas et écriture dans cor_area_synthese
-    IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND geom_change )) THEN
-      INSERT INTO gn_synthese.cor_area_synthese SELECT
-	      s.id_synthese AS id_synthese,
-        a.id_area AS id_area
-        FROM ref_geo.l_areas a
-        JOIN gn_synthese.synthese s
-        	ON public.ST_INTERSECTS(s.the_geom_local, a.geom)  AND NOT public.ST_TOUCHES(s.the_geom_local,a.geom)
-        WHERE s.id_synthese = NEW.id_synthese AND a.enable IS true;
-    END IF;
+    INSERT INTO gn_synthese.cor_area_synthese SELECT
+      s.id_synthese AS id_synthese,
+      a.id_area AS id_area
+      FROM ref_geo.l_areas a
+      JOIN gn_synthese.synthese s
+        ON public.ST_INTERSECTS(s.the_geom_local, a.geom)
+      WHERE a.enable IS TRUE AND s.id_synthese = NEW.id_synthese AND (ST_GeometryType(updated_rows.the_geom_local) = 'ST_Point' OR NOT public.ST_TOUCHES(updated_rows.the_geom_local,a.geom));
   RETURN NULL;
   END;
   $BODY$
@@ -722,14 +732,16 @@ CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_stat
         t_diff.cd_nomenclature as cd_nomenclature_diffusion_level
       FROM NEW AS updated_rows
       LEFT JOIN ref_nomenclatures.t_nomenclatures t_diff ON t_diff.id_nomenclature = updated_rows.id_nomenclature_diffusion_level
-
     )
     UPDATE gn_synthese.synthese AS s
     SET 
       id_nomenclature_sensitivity = c.id_nomenclature_sensitivity,
       id_nomenclature_diffusion_level = ref_nomenclatures.get_id_nomenclature(
         'NIV_PRECIS',
-        gn_sensitivity.calculate_cd_diffusion_level(c.cd_nomenclature_diffusion_level, t_sensi.cd_nomenclature)
+        gn_sensitivity.calculate_cd_diffusion_level(
+          c.cd_nomenclature_diffusion_level, 
+          t_sensi.cd_nomenclature
+        )
         
       )
     FROM cte AS c
@@ -1128,11 +1140,16 @@ CREATE TRIGGER trg_maj_synthese_observers_txt
   EXECUTE PROCEDURE gn_synthese.fct_tri_maj_observers_txt();
 
 
-CREATE TRIGGER tri_insert_cor_area_synthese
-  AFTER INSERT OR UPDATE OF the_geom_local
-  ON gn_synthese.synthese
+ CREATE TRIGGER tri_insert_cor_area_synthese
+  AFTER insert ON gn_synthese.synthese
+  REFERENCING NEW TABLE AS NEW
+  FOR EACH STATEMENT
+  EXECUTE PROCEDURE gn_synthese.fct_trig_insert_in_cor_area_synthese_on_each_statement();
+
+ CREATE TRIGGER tri_update_cor_area_synthese
+  AFTER UPDATE OF the_geom_local, the_geom_4326 ON gn_synthese.synthese
   FOR EACH ROW
-  EXECUTE PROCEDURE gn_synthese.fct_trig_insert_in_cor_area_synthese();
+  EXECUTE PROCEDURE gn_synthese.fct_trig_update_in_cor_area_synthese();
 
 -- trigger insertion ou update sur cor_area_syntese - déclenché après insert ou update sur cor_area_synthese
 CREATE TRIGGER tri_maj_cor_area_taxon
