@@ -1214,10 +1214,10 @@ def publish_acquisition_framework(info_role, af_id):
     # After publishing an AF, we set it as closed and all its DS as inactive
     for dataset in datasets:
         dataset.active=False
-    TAcquisitionFramework.query.filter_by(id_acquisition_framework=af_id).update(dict(opened=False))
 
     # If the AF if closed for the first time, we set it an initial_closing_date as the actual time
     af = DB.session.query(TAcquisitionFramework).get(af_id)
+    af.opened=False
     if (af.initial_closing_date is None):
         af.initial_closing_date=dt.datetime.now()
     # We send a mail to notify the AF publication
