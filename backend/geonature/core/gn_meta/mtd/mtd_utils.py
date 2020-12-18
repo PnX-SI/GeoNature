@@ -225,7 +225,6 @@ def post_jdd_from_user(id_user=None, id_organism=None):
             
             #  set validable = true
             ds["validable"] = True
-            ds["active"] = True
             dataset = TDatasets(**ds)
             # if the dataset already exist
             if id_dataset:
@@ -245,6 +244,8 @@ def post_jdd_from_user(id_user=None, id_organism=None):
 
             # its a new DS
             else:
+                # set the dataset as activ
+                dataset.active = True
                 # create the correlation links
                 create_cor_object_actors(actors, dataset)
                 add_dataset_module(dataset)
