@@ -72,8 +72,7 @@ def create_cor_object_actors(actors, new_object):
                 if org:
                     person['id_organisme'] = org.id_organisme
                 resp = users.insert_role(person)
-                try:
-                    id_person = json.loads(resp.data.decode('utf-8'))['id_role']
+                id_person = json.loads(resp.data.decode('utf-8'))['id_role']
             else:
                 id_person = person.id_role
 
