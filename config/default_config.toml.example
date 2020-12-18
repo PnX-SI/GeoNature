@@ -126,6 +126,13 @@ MAIL_ON_ERROR = false
     ID = "mon_id"
     PASSWORD = "mon_pass"
 
+# Connexion avec le WS MTD
+[MTD]
+    # Modules auxquels les JDD sont automatiquement associés
+    JDD_MODULE_CODE_ASSOCIATION = ["OCCTAX", "OCCHAB"]
+    # Filter les JDD par id_instance
+    ID_INSTANCE_FILTER = null
+
 [BDD]
     id_area_type_municipality = 25
     ID_USER_SOCLE_1 = 8

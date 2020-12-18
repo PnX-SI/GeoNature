@@ -17,6 +17,7 @@ CHANGELOG
 * Amélioration des possibilités de customisation des PDF des fiches de métadonnées
 * Complément des scripts de migration des données depuis GINCO (``data/scripts/import_ginco/``)
 * Barre de navigation : Mention plus générique et générale des auteurs
+* Connexion à MTD: possibilité de filtrer les JDD par instance (ne récupérer que les JDD de sa région par ex: paramètre ``ID_INSTANCE_FILTER``)
 
 **🐛 Corrections**
 

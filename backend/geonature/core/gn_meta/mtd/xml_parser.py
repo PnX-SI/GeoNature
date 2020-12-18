@@ -176,7 +176,7 @@ def parse_jdd_xml(xml):
         }
         # filter with id_instance
         if current_app.config['MTD']['ID_INSTANCE_FILTER']:
-            if id_instance == current_app.config['MTD']['ID_INSTANCE_FILTER']:
+            if id_instance and id_instance == str(current_app.config['MTD']['ID_INSTANCE_FILTER']):
                 jdd_list.append(current_jdd)
         else:
             jdd_list.append(current_jdd)
