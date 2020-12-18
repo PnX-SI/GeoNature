@@ -1,4 +1,10 @@
--- sensitivity schema
+-- Update script from GeoNature 2.5.5 to 2.6.0
+
+----------------------------
+-- SENSITIVITY schema update
+----------------------------
+
+-- Update trigger function
  CREATE OR REPLACE FUNCTION gn_sensitivity.fct_tri_maj_id_sensitivity_synthese()
   RETURNS trigger AS
 $BODY$
@@ -13,7 +19,7 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
--- Trigger function executed by a ON EACH STATEMENT triger
+-- Trigger function executed by a ON EACH STATEMENT trigger
 CREATE OR REPLACE FUNCTION gn_sensitivity.fct_tri_delete_id_sensitivity_synthese()
   RETURNS trigger AS
 $BODY$
@@ -42,8 +48,7 @@ CREATE TRIGGER tri_maj_id_sensitivity_synthese
   FOR EACH STATEMENT
   EXECUTE PROCEDURE gn_sensitivity.fct_tri_maj_id_sensitivity_synthese();
 
--- synthese 
-
+-- Synthese - Ajout contrainte sur nomenclature STAT_BIOGEO
 ALTER TABLE gn_synthese.synthese
 DROP CONSTRAINT IF EXISTS check_synthese_biogeo_status;
 ALTER TABLE gn_synthese.synthese
@@ -134,9 +139,10 @@ CREATE TRIGGER tri_update_calculate_sensitivity
  AFTER UPDATE OF date_min, date_max, cd_nom, the_geom_local, id_nomenclature_bio_status ON gn_synthese.synthese
   FOR EACH ROW
   EXECUTE PROCEDURE gn_synthese.fct_tri_cal_sensi_diff_level_on_each_row();
-  
  
- -- refactor cor_area triggers
+ -- Fin schema sensitivity 
+ 
+ -- Refactor cor_area triggers
  CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese_on_each_statement()
   RETURNS trigger AS
 $BODY$
@@ -193,7 +199,7 @@ FOR EACH ROW
 EXECUTE PROCEDURE gn_synthese.fct_trig_update_in_cor_area_synthese();
 
 
- 
+-- Update import in synthese function
 CREATE OR REPLACE FUNCTION gn_synthese.import_row_from_table(
         select_col_name character varying,
         select_col_val character varying,
@@ -243,7 +249,9 @@ AS $BODY$
     $BODY$;
 
 
-
--- Add a field to define if the AF has been published or not --
+-- Add a field to define if the AF is opened or not --
 ALTER TABLE gn_meta.t_acquisition_frameworks ADD opened bool NULL DEFAULT true;
 ALTER TABLE gn_meta.t_acquisition_frameworks ADD initial_closing_date timestamp NULL;
+
+-- Add a json filed in l_areas for additional data
+ALTER TABLE ref_geo.l_areas ADD attributs jsonb NULL;
