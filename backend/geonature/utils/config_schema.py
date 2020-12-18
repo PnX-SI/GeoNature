@@ -150,8 +150,8 @@ class GnPySchemaConf(Schema):
     @post_load()
     def unwrap_usershub(self, data):
         """
-            On met la section [USERSHUB] à la racine de la conf
-            pour compatibilité et simplicité ave le sous-module d'authentif
+        On met la section [USERSHUB] à la racine de la conf
+        pour compatibilité et simplicité ave le sous-module d'authentif
         """
         for key, value in data["USERSHUB"].items():
             data[key] = value
@@ -218,7 +218,8 @@ class Synthese(Schema):
     EXPORT_GEOJSON_LOCAL_COL = fields.String(missing="geojson_local")
     EXPORT_METADATA_ID_DATASET_COL = fields.String(missing="jdd_id")
     EXPORT_METADATA_ACTOR_COL = fields.String(missing="acteurs")
-    EXPORT_FORMAT = fields.List(fields.String(), missing=["csv", "geojson", "shapefile"])
+    # Formats d'export disponibles ["csv", "geojson", "shapefile", "gpkg"]
+    EXPORT_FORMAT = fields.List(fields.String(), missing=["csv", "geojson", "gpkg"])
     # Nombre de résultat à afficher pour la rechercher autocompleté de taxon
     TAXON_RESULT_NUMBER = fields.Integer(missing=20)
     # Liste des id attributs Taxhub à afficher sur la fiche détaile de la synthese
@@ -258,17 +259,24 @@ BASEMAP = [
     {
         "name": "OpenStreetMap",
         "url": "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
-        "options": {"attribution": "&copy OpenStreetMap",},
+        "options": {
+            "attribution": "&copy OpenStreetMap",
+        },
     },
     {
         "name": "OpenTopoMap",
         "url": "//a.tile.opentopomap.org/{z}/{x}/{y}.png",
-        "options": {"attribution": "© OpenTopoMap",},
+        "options": {
+            "attribution": "© OpenTopoMap",
+        },
     },
     {
         "name": "GoogleSatellite",
         "layer": "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-        "options": {"subdomains": ["mt0", "mt1", "mt2", "mt3"], "attribution": "© GoogleMap",},
+        "options": {
+            "subdomains": ["mt0", "mt1", "mt2", "mt3"],
+            "attribution": "© GoogleMap",
+        },
     },
 ]
 
