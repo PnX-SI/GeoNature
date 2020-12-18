@@ -179,7 +179,7 @@ def add_dataset_module(dataset):
     dataset.modules.extend(
         DB.session.query(TModules)
         .filter(
-            TModules.module_code.in_(current_app.config["CAS"]["JDD_MODULE_CODE_ASSOCIATION"])
+            TModules.module_code.in_(current_app.config["MTD"]["JDD_MODULE_CODE_ASSOCIATION"])
         ).all()
     )
 

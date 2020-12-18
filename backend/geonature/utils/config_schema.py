@@ -37,7 +37,11 @@ class CasSchemaConf(Schema):
     CAS_USER_WS = fields.Nested(CasUserSchemaConf, missing=dict())
     USERS_CAN_SEE_ORGANISM_DATA = fields.Boolean(missing=False)
     # Quel modules seront associés au JDD récupérés depuis MTD
+
+class MTDSchemaConf(Schema):
     JDD_MODULE_CODE_ASSOCIATION = fields.List(fields.String, missing=["OCCTAX", "OCCHAB"])
+    ID_INSTANCE_FILTER = fields.Integer(missing=None)
+
 
 
 class BddConfig(Schema):
@@ -307,6 +311,7 @@ class GnGeneralSchemaConf(Schema):
     MEDIAS = fields.Nested(MediasConfig, missing={})
     UPLOAD_FOLDER = fields.String(missing="static/medias")
     METADATA = fields.Nested(MetadataConfig, missing={})
+    MTD = fields.Nested(MTDSchemaConf, missing={})
     NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(missing=1000000)
 
     @validates_schema

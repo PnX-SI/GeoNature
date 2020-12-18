@@ -128,14 +128,14 @@ def parse_jdd_xml(xml):
 
         # We extract the ID of the user to assign it the JDD as an id_digitizer
         id_digitizer = None
-        id_platform = None
+        id_instance = None
         code_statut_donnees_source = None
         for attr in attributs_additionnels_node:
             if get_tag_content(attr, "nomAttribut") == "ID_CREATEUR":
                 id_digitizer = get_tag_content(attr, "valeurAttribut")
 
-            if get_tag_content(attr, "nomAttribut") == "ID_PLATEFORME":
-                id_platform = get_tag_content(attr, "valeurAttribut")
+            if get_tag_content(attr, "nomAttribut") == "ID_INSTANCE":
+                id_instance = get_tag_content(attr, "valeurAttribut")
 
             if get_tag_content(attr, "nomAttribut") == "CODE_STATUT_DONNEES_SOURCE":
                 code_statut_donnees_source = get_tag_content(attr, "valeurAttribut")
@@ -174,8 +174,11 @@ def parse_jdd_xml(xml):
             "id_nomenclature_data_origin": code_statut_donnees_source,
             "actors": all_actors,
         }
-
-        required_platform_id = None  # Dummy value to test
-        if not required_platform_id or id_platform == required_platform_id:
+        # filter with id_instance
+        if current_app.config['MTD']['ID_INSTANCE_FILTER']:
+            if id_instance == current_app.config['MTD']['ID_INSTANCE_FILTER']:
+                jdd_list.append(current_jdd)
+        else:
             jdd_list.append(current_jdd)
+
     return jdd_list
