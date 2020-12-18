@@ -1,254 +1,340 @@
 <!DOCTYPE html>
 <html>
 
-<head>
+  <head>
     <meta charset="utf-8" />
     <title>Jeu de données</title>
-    <link rel="stylesheet" type="text/css" href="../../static/css/dataset_template_pdf.css">
-</head>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{url_for('static', filename='css/metadata_pdf.css')}}"
+    >
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="../../static/css/custom.css"
+    >
+  </head>
 
-<body>
-    {% if data.css: %}
+  <body>
     <div class="header">
-        <img class="bandeau" src="../../static/images/{{ data.css['bandeau'] }}" alt="Bandeau">
-        <img class="logo" src="../../static/images/{{ data.css['logo'] }}" alt="Logo">
+      <img
+        class="bandeau"
+        src="{{url_for('static', filename='images/Bandeau_pdf.png')}}"
+        alt="Bandeau"
+      >
+      <img
+        class="logo"
+        src="{{url_for('static', filename='images/logo_structure.jpg')}}"
+        alt="Logo"
+      >
     </div>
-    {% endif %}
     <div class="titre">
-        <label class="label-titre">Jeu de données</label>
-        <br>
-        <label class="label-titre">
-            {% if data.dataset_name: %}
-                {{ data.dataset_name }}
-            {% endif %}
-        </label>
-        <hr class="ligne-titre ligne" {% if data.css: %} id="ligne-titre-{{data.css['entite']}}" {% else %}
-            id="ligne-titre-defaut" {% endif %}>
+      <h5> {{data.title}} </h5>
+      <label class="label-titre">Jeu de données</label>
+      <br>
+      <label class="label-titre">
+        {% if data.dataset_name: %}
+        {{ data.dataset_name }}
+        {% endif %}
+      </label>
+      <div class="ligne-titre ligne main-color"></div>
     </div>
     {% if data.taxa_count: %}
-        <div class="etiquettes">
-            <div class="etiquette" {% if data.css: %} id="nombre-taxons-{{data.css['entite']}}" {% else %}
-                id="nombre-taxons-defaut" {% endif %}>
-                <div class="etiquette-haut">
-                    <img class="logo-etiquette" src="../../static/images/Taxon_icon.svg"
-                        alt="taxon-icon">
-                    <div class="etiquette-bas">
-                        <small>Taxons</small>
-                        </br>
-                        {% if data.taxa_count: %}
-                            {{ data.taxa_count }}
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-            <div class="etiquette" {% if data.css: %} id="nombre-donnees-{{data.css['entite']}}" {% else %}
-                id="nombre-donnees-defaut" {% endif %}>
-                <div class="etiquette-haut">
-                    <img class="logo-etiquette" src="../../static/images/Donnee_icon.svg"
-                        alt="donnee-icon">
-                    <div class="etiquette-bas">
-                        <small>Données</small>
-                        </br>
-                        {% if data.observation_count: %}
-                            {{ data.observation_count }}
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
+    <div class="etiquettes">
+      <div class="etiquette">
+        <div class="etiquette-haut">
+          <img
+            class="logo-etiquette"
+            src="{{url_for('static', filename='images/Taxon_icon.svg')}}"
+            alt="taxon-icon"
+          >
+          <div class="etiquette-bas">
+            <small>Taxons</small>
+            </br>
+            {% if data.taxa_count: %}
+            {{ data.taxa_count }}
+            {% endif %}
+          </div>
         </div>
+      </div>
+      <div class="etiquette">
+        <div class="etiquette-haut">
+          <img
+            class="logo-etiquette"
+            src="{{url_for('static', filename='images/Donnee_icon.svg')}}"
+            alt="donnee-icon"
+          >
+          <div class="etiquette-bas">
+            <small>Données</small>
+            </br>
+            {% if data.observation_count: %}
+            {{ data.observation_count }}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
     {% endif %}
 
     <div class="description">
-        <div class="left-block">
-            <p class="fiche-descriptive">Fiche descriptive</p>
-            <div class="information">
-                <p class="info-titre">Identification</p>
-                <p class="info-contenu">
-                    Indentifiant SINP :
-                    <br>
-                    {% if data.unique_dataset_id: %}
-                        {{ data.unique_dataset_id }}
-                    {% endif %}
-                    <br>
-                    Instance :
-                    {% if data.dataset_name: %}
-                        {{ data.dataset_name }}
-                    {% endif %}
-                    <br>
-                    Nom court :
-                    {% if data.dataset_shortname: %}
-                        {{ data.dataset_shortname }}
-                    {% endif %}
-                    <br>
-                    Description :
-                    {% if data.dataset_desc: %}
-                        {{ data.dataset_desc }}
-                    {% endif %}
-                    <br>
-                    Type de données :
-                    {% if data.data_type.label_default: %}
-                        {{ data.data_type.label_default }}
-                    {% endif %}
-                </p>
-            </div>
-
-            <div class="information">
-                <p class="info-titre">Objectifs</p>
-                <p class="info-contenu">
-                    {% if data.dataset_objectif.label_default: %}
-                        {{ data.dataset_objectif.label_default }}
-                    {% endif %}
-                </p>
-            </div>
-
-            <div class="information">
-                <p class="info-titre">Territoires</p>
-                <p class="info-contenu">
-                    {% if data.terrestrial_domain: %}
-                        Domaine continental
-                    {% endif %}
-                    <br>
-                    {% if data.marine_domain: %}
-                        Domaine marin
-                    {% endif %}
-                </p>
-            </div>
-
-            <div class="information">
-                <p class="info-titre">Cadre de référence</p>
-                <p class="info-contenu">
-                    {% if data.acquisition_framework.acquisition_framework_name: %}
-                        {{ data.acquisition_framework.acquisition_framework_name }}
-                    {% endif %}
-                    <br>
-                    {% if data.acquisition_framework.unique_acquisition_framework_id: %}
-                        {{ data.acquisition_framework.unique_acquisition_framework_id }}
-                    {% endif %}
-                </p>
-            </div>
-
-            <div class="information">
-                <p class="info-titre">Processus de collecte</p>
-                <p class="info-contenu">
-                    {% if data.collecting_method.label_default: %}
-                        {{ data.collecting_method.label_default }}
-                    {% endif %}
-                </p>
-            </div>
-
-            {% if not (data.cor_dataset_actor and data.cor_dataset_actor[5]) : %}
-                <div class="information">
-                    <p class="info-titre">Contacts</p>
-                    <p class="info-contenu">
-                        {% if data.cor_dataset_actor: %}
-                            {% for actor in data.cor_dataset_actor -%}
-                                {% if actor.nomenclature_actor_role: %}
-                                    {{ actor.nomenclature_actor_role.mnemonique }} :
-                                {% endif %}
-                                {% if actor.role: %}
-                                    {{ actor.role.nom_role }} {{ actor.role.prenom_role }}
-                                    <br>
-                                {% endif %}
-                                {% if actor.organism and actor.organism.nom_organisme: %}
-                                    {{ actor.organism.nom_organisme }}
-                                    <br>
-                                {% endif %}
-                                {% if actor.role and actor.role.email: %}
-                                    {{ actor.role.email }}
-                                    <br>
-                                {% endif %}
-                                <br>
-                            {%- endfor %}
-                        {% endif %}
-                    </p>
-                </div>
-
-                {% if data.keywords: %}
-                    <div class="information">
-                        <p class="info-titre">Mots-clés</p>
-                        <p class="info-contenu">
-                            {{ data.keywords }}
-                        </p>
-                    </div>
-                {% endif %}
-                
+      <div class="left-block">
+        <p class="fiche-descriptive">Fiche descriptive</p>
+        <div class="information">
+          <p class="info-titre">Identification</p>
+          <p class="info-contenu">
+            Indentifiant SINP :
+            <br>
+            {% if data.unique_dataset_id: %}
+            {{ data.unique_dataset_id }}
             {% endif %}
-            
+            <br>
+            Nom :
+            {% if data.dataset_name: %}
+            {{ data.dataset_name }}
+            {% endif %}
+            <br>
+            Nom court :
+            {% if data.dataset_shortname: %}
+            {{ data.dataset_shortname }}
+            {% endif %}
+            <br>
+            Description :
+            {% if data.dataset_desc: %}
+            {{ data.dataset_desc }}
+            {% endif %}
+            <br>
+            Type de données :
+            {% if data.data_type.label_default: %}
+            {{ data.data_type.label_default }}
+            {% endif %}
+          </p>
         </div>
-        <div class="right-block">
-                <div class="repartition">
-                <p class="repartition-especes">Répartition des espèces</p>
-                <img class="taxons" src="../../static/images/taxa.png" alt="Pas d'espèces à afficher.">
-            </div>
 
-            <div class="ca">
-                <hr class="ligne-ca-initial ligne" {% if data.css: %} id="ligne-ca-initial-{{data.css['entite']}}"
-                {% else %} id="ligne-ca-initial-defaut" {% endif %}>
-                <p class="ca-initial">Cadre d'acquisition initial</p>
-
-                <div class="ca-initial-details">
-                    <img class="logo-ca-initial" src="../../static/images/Taxon_icon_vert.svg" alt="taxon-vert-icon">
-                    <p class="ca-initial-info">
-                        {% if data.acquisition_framework.unique_acquisition_framework_id: %}
-                            {{ data.acquisition_framework.unique_acquisition_framework_id }}
-                        {% endif %}
-                        <br>
-                        {% if data.acquisition_framework.acquisition_framework_name: %}
-                            {{ data.acquisition_framework.acquisition_framework_name }}
-                        {% endif %}
-                    </p>
-                </div>
-            </div>
+        <div class="information">
+          <p class="info-titre">Objectifs</p>
+          <p class="info-contenu">
+            {% if data.dataset_objectif.label_default: %}
+            {{ data.dataset_objectif.label_default }}
+            {% endif %}
+          </p>
         </div>
-        
+
+        <div class="information">
+          <p class="info-titre">Territoires</p>
+          <p class="info-contenu">
+            {% if data.terrestrial_domain: %}
+            Domaine continental
+            {% endif %}
+            <br>
+            {% if data.marine_domain: %}
+            Domaine marin
+            {% endif %}
+          </p>
+        </div>
+
+        <div class="information">
+          <p class="info-titre">Cadre de référence</p>
+          <p class="info-contenu">
+            {% if data.acquisition_framework.acquisition_framework_name: %}
+            {{ data.acquisition_framework.acquisition_framework_name }}
+            {% endif %}
+            <br>
+            {% if data.acquisition_framework.unique_acquisition_framework_id: %}
+            {{ data.acquisition_framework.unique_acquisition_framework_id }}
+            {% endif %}
+          </p>
+        </div>
+
+        <div class="information">
+          <p class="info-titre">Processus de collecte</p>
+          <p class="info-contenu">
+            {% if data.collecting_method.label_default: %}
+            {{ data.collecting_method.label_default }}
+            {% endif %}
+          </p>
+        </div>
+
+        {% if not (data.cor_dataset_actor and data.cor_dataset_actor[5]) : %}
+        <div class="information">
+          <p class="info-titre">Contacts</p>
+          <p class="info-contenu">
+            {% if data.cor_dataset_actor: %}
+            {% for actor in data.cor_dataset_actor -%}
+            {% if actor.nomenclature_actor_role: %}
+            {{ actor.nomenclature_actor_role.mnemonique }} :
+            {% endif %}
+            {% if actor.role: %}
+            {{ actor.role.nom_role }} {{ actor.role.prenom_role }}
+            <br>
+            {% endif %}
+            {% if actor.organism and actor.organism.nom_organisme: %}
+            {{ actor.organism.nom_organisme }}
+            <br>
+            {% endif %}
+            {% if actor.role and actor.role.email: %}
+            {{ actor.role.email }}
+            <br>
+            {% endif %}
+            <br>
+            {%- endfor %}
+            {% endif %}
+          </p>
+        </div>
+
+        {% if data.keywords: %}
+        <div class="information">
+          <p class="info-titre">Mots-clés</p>
+          <p class="info-contenu">
+            {{ data.keywords }}
+          </p>
+        </div>
+        {% endif %}
+
+      </div>
+
+      {% endif %}
+
+
+      <div
+        class="right-block"
+        style="display:grid"
+      >
+        <!-- <div class="zone">
+                    <p class="zone-geographique">Zone géographique</p>
+                    <div class="map"></div>
+                </div> -->
+        <!-- A modifier lorsque la carte sera prete -->
+
+        {% if data['chart']: %}
+        <div class="repartition">
+          <p class="repartition-especes">Répartition des espèces</p>
+          <img
+            class="taxons"
+            src="{{url_for('static', filename='images/taxa.png')}}"
+            alt="Pas d'espèces à afficher."
+          >
+        </div>
+        {% endif %}
+
+        <div class="ca">
+          <hr class="ligne-titre main-color">
+          <p class="ca-initial">Cadre d'acquisition</p>
+
+          <div class="ca-initial-details">
+            <img
+              class="logo-ca-initial"
+              src="{{url_for('static', filename='images/Taxon_icon_vert.svg')}}"
+              alt="taxon-vert-icon"
+            >
+            <p class="ca-initial-info">
+              {% if data.acquisition_framework.unique_acquisition_framework_id: %}
+              {{ data.acquisition_framework.unique_acquisition_framework_id }}
+              {% endif %}
+              <br>
+              {% if data.acquisition_framework.acquisition_framework_name: %}
+              {{ data.acquisition_framework.acquisition_framework_name }}
+              {% endif %}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
     </div>
 
     <div class="footer">
-        <a href="{{data.footer['url']}}">{{data.footer['url']}}</a>
-        <span>{{data.footer['date']}}</span>
+      <a href="{{data.footer['url']}}">{{data.footer['url']}}</a>
+      <span>{{data.footer['date']}}</span>
     </div>
 
     {% if data.cor_dataset_actor and data.cor_dataset_actor[5] : %}
-        <br/>
-        <div class="description" style="transform: translateY(40px);">
-            <div class="left-block">
-                <div class="information">
-                    <p class="info-titre">Contacts</p>
-                    <p class="info-contenu">
-                        {% if data.cor_dataset_actor: %}
-                            {% for actor in data.cor_dataset_actor -%}
-                                {% if actor.nomenclature_actor_role: %}
-                                    {{ actor.nomenclature_actor_role.mnemonique }} :
-                                {% endif %}
-                                {% if actor.role: %}
-                                    {{ actor.role.nom_role }} {{ actor.role.prenom_role }}
-                                    <br>
-                                {% endif %}
-                                {% if actor.organism and actor.organism.nom_organisme: %}
-                                    {{ actor.organism.nom_organisme }}
-                                    <br>
-                                {% endif %}
-                                {% if actor.role and actor.role.email: %}
-                                    {{ actor.role.email }}
-                                    <br>
-                                {% endif %}
-                                <br>
-                            {%- endfor %}
-                        {% endif %}
-                    </p>
-                </div>
-
-                {% if data.keywords: %}
-                    <div class="information">
-                        <p class="info-titre">Mots-clés</p>
-                        <p class="info-contenu">
-                            {{ data.keywords }}
-                        </p>
-                    </div>
-                {% endif %}
-            </div>
+    <br />
+    <div
+      class="description"
+      style="transform: translateY(40px);"
+    >
+      <div class="left-block">
+        <div class="information">
+          <p class="info-titre">Contacts</p>
+          <p class="info-contenu">
+            {% if data.cor_dataset_actor: %}
+            {% for actor in data.cor_dataset_actor -%}
+            {% if actor.nomenclature_actor_role: %}
+            {{ actor.nomenclature_actor_role.mnemonique }} :
+            {% endif %}
+            {% if actor.role: %}
+            {{ actor.role.nom_role }} {{ actor.role.prenom_role }}
+            <br>
+            {% endif %}
+            {% if actor.organism and actor.organism.nom_organisme: %}
+            {{ actor.organism.nom_organisme }}
+            <br>
+            {% endif %}
+            {% if actor.role and actor.role.email: %}
+            {{ actor.role.email }}
+            <br>
+            {% endif %}
+            <br>
+            {%- endfor %}
+            {% endif %}
+          </p>
         </div>
+
+        {% if data.keywords: %}
+        <div class="information">
+          <p class="info-titre">Mots-clés</p>
+          <p class="info-contenu">
+            {{ data.keywords }}
+          </p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
     {% endif %}
-</body>
+
+
+    {% if data.imports and data.imports[0]: %}
+    <br />
+    <div
+      class="description"
+      style="transform: translateY(40px);"
+    >
+      <div class="import-block">
+        <p class="fiche-descriptive">Liste des imports</p>
+        <br />
+        <table style="width:100%">
+          <tr>
+            <th>Source</th>
+            <th>Nb. de données</th>
+            <th>Intégré le</th>
+            <th>Statut</th>
+          </tr>
+          {% for import in data.imports -%}
+          <tr>
+            <td>{{ import.import_table[:40] if import.import_table }}</td>
+            <td>{{ import.source_count }}</td>
+            <td>{{ import.date_create_import[:10] if import.date_create_import}}</td>
+            <td>{% if import.is_finished: %}
+              <img
+                class="import-state"
+                src="{{url_for('static', filename='images/tick.png')}}"
+                alt="tick-icon"
+              >
+              {% else %}
+              <img
+                class="import-state"
+                src="../../static/images/close.png"
+                src="{{url_for('static', filename='images/close.png')}}"
+                alt="close-icon"
+              >
+              {% endif %}
+            </td>
+          </tr>
+          {%- endfor %}
+        </table>
+      </div>
+    </div>
+    {% endif %}
+  </body>
 
 </html>

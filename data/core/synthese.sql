@@ -350,7 +350,7 @@ ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_nomenclature_determination_method FOREIGN KEY (id_nomenclature_determination_method) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
-    ADD CONSTRAINT fk_synthese_id_nomenclature_biogeo_status FOREIGN KEY (id_nomenclature_biogeo_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature_biogeo_status) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_synthese_id_nomenclature_biogeo_status FOREIGN KEY (id_nomenclature_biogeo_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT fk_synthese_id_digitiser FOREIGN KEY (id_digitiser) REFERENCES utilisateurs.t_roles (id_role) ON UPDATE CASCADE;
@@ -456,7 +456,7 @@ ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_source_status CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_source_status,'STATUT_SOURCE')) NOT VALID;
 
 ALTER TABLE synthese
-  ADD CONSTRAINT check_synthese_source_status CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_biogeo_status,'STAT_BIOGEO')) NOT VALID;
+  ADD CONSTRAINT check_synthese_biogeo_status CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_biogeo_status,'STAT_BIOGEO')) NOT VALID;
 
 ALTER TABLE synthese
   ADD CONSTRAINT check_synthese_info_geo_type_id_area_attachment CHECK (NOT (ref_nomenclatures.get_cd_nomenclature(id_nomenclature_info_geo_type) = '2'  AND id_area_attachment IS NULL )) NOT VALID;
@@ -561,19 +561,6 @@ LANGUAGE plpgsql VOLATILE
 COST 100;
 
 
--- A CREUSER : CAUSE A SYNTAXE ERROR
-
-CREATE OR REPLACE FUNCTION fct_tri_refresh_vm_min_max_for_taxons()
-  RETURNS trigger AS
-$BODY$
-BEGIN
-      EXECUTE 'REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.vm_min_max_for_taxons;';
-      RETURN NULL;
-END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-
 
 ----------------------
 --FUNCTIONS TRIGGERS--
@@ -606,32 +593,42 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 
-CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese()
+CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese_on_each_statement()
   RETURNS trigger AS
 $BODY$
   DECLARE
-  id_area_loop integer;
+  BEGIN
+  -- Intersection avec toutes les areas et écriture dans cor_area_synthese
+      INSERT INTO gn_synthese.cor_area_synthese 
+        SELECT
+          updated_rows.id_synthese AS id_synthese,
+          a.id_area AS id_area
+        FROM NEW as updated_rows
+        JOIN ref_geo.l_areas a
+          ON public.ST_INTERSECTS(updated_rows.the_geom_local, a.geom)  
+        WHERE a.enable IS TRUE AND (ST_GeometryType(updated_rows.the_geom_local) = 'ST_Point' OR NOT public.ST_TOUCHES(updated_rows.the_geom_local,a.geom));
+  RETURN NULL;
+  END;
+  $BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_update_in_cor_area_synthese()
+  RETURNS trigger AS
+$BODY$
+  DECLARE
   geom_change boolean;
   BEGIN
-  geom_change = false;
-  IF(TG_OP = 'UPDATE') THEN
-	SELECT INTO geom_change NOT public.ST_EQUALS(OLD.the_geom_local, NEW.the_geom_local);
-  END IF;
-
-  IF (geom_change) THEN
 	DELETE FROM gn_synthese.cor_area_synthese WHERE id_synthese = NEW.id_synthese;
-  END IF;
 
   -- Intersection avec toutes les areas et écriture dans cor_area_synthese
-    IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND geom_change )) THEN
-      INSERT INTO gn_synthese.cor_area_synthese SELECT
-	      s.id_synthese AS id_synthese,
-        a.id_area AS id_area
-        FROM ref_geo.l_areas a
-        JOIN gn_synthese.synthese s
-        	ON public.ST_INTERSECTS(s.the_geom_local, a.geom)  AND NOT public.ST_TOUCHES(s.the_geom_local,a.geom)
-        WHERE s.id_synthese = NEW.id_synthese AND a.enable IS true;
-    END IF;
+    INSERT INTO gn_synthese.cor_area_synthese SELECT
+      s.id_synthese AS id_synthese,
+      a.id_area AS id_area
+      FROM ref_geo.l_areas a
+      JOIN gn_synthese.synthese s
+        ON public.ST_INTERSECTS(s.the_geom_local, a.geom)
+      WHERE a.enable IS TRUE AND s.id_synthese = NEW.id_synthese AND (ST_GeometryType(updated_rows.the_geom_local) = 'ST_Point' OR NOT public.ST_TOUCHES(updated_rows.the_geom_local,a.geom));
   RETURN NULL;
   END;
   $BODY$
@@ -717,6 +714,75 @@ BEGIN
 END;
 $$;
 
+-- trigger on insert/update - ON EACH PROCEDURE
+CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement() RETURNS TRIGGER
+  LANGUAGE plpgsql
+  AS $$ 
+  -- Calculate sensitivity and diffusion level on insert in synthese
+    BEGIN
+    WITH cte AS (
+        SELECT 
+        gn_sensitivity.get_id_nomenclature_sensitivity(
+          updated_rows.date_min::date, 
+          taxonomie.find_cdref(updated_rows.cd_nom), 
+          updated_rows.the_geom_local,
+          ('{"STATUT_BIO": ' || updated_rows.id_nomenclature_bio_status::text || '}')::jsonb
+        ) AS id_nomenclature_sensitivity,
+        id_synthese,
+        t_diff.cd_nomenclature as cd_nomenclature_diffusion_level
+      FROM NEW AS updated_rows
+      LEFT JOIN ref_nomenclatures.t_nomenclatures t_diff ON t_diff.id_nomenclature = updated_rows.id_nomenclature_diffusion_level
+    )
+    UPDATE gn_synthese.synthese AS s
+    SET 
+      id_nomenclature_sensitivity = c.id_nomenclature_sensitivity,
+      id_nomenclature_diffusion_level = ref_nomenclatures.get_id_nomenclature(
+        'NIV_PRECIS',
+        gn_sensitivity.calculate_cd_diffusion_level(
+          c.cd_nomenclature_diffusion_level, 
+          t_sensi.cd_nomenclature
+        )
+        
+      )
+    FROM cte AS c
+    LEFT JOIN ref_nomenclatures.t_nomenclatures t_sensi ON t_sensi.id_nomenclature = c.id_nomenclature_sensitivity
+    WHERE c.id_synthese = s.id_synthese
+  ;
+    RETURN NULL;
+    END;
+  $$;
+
+ CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_row() RETURNS TRIGGER
+  LANGUAGE plpgsql
+  AS $$ 
+  -- Calculate sensitivity and diffusion level on update in synthese
+  DECLARE calculated_id_sensi integer;
+    BEGIN
+        SELECT 
+        gn_sensitivity.get_id_nomenclature_sensitivity(
+          NEW.date_min::date, 
+          taxonomie.find_cdref(NEW.cd_nom), 
+          NEW.the_geom_local,
+          ('{"STATUT_BIO": ' || NEW.id_nomenclature_bio_status::text || '}')::jsonb
+        ) INTO calculated_id_sensi;
+      UPDATE gn_synthese.synthese 
+      SET 
+      id_nomenclature_sensitivity = calculated_id_sensi,
+      -- TODO: est-ce qu'on remet à jour le niveau de diffusion lors d'une MAJ de la sensi ?
+      id_nomenclature_diffusion_level = (
+        SELECT ref_nomenclatures.get_id_nomenclature(
+            'NIV_PRECIS',
+            gn_sensitivity.calculate_cd_diffusion_level(
+              ref_nomenclatures.get_cd_nomenclature(OLD.id_nomenclature_diffusion_level),
+              ref_nomenclatures.get_cd_nomenclature(calculated_id_sensi)
+          )
+      	)
+      )
+      WHERE id_synthese = OLD.id_synthese
+      ;
+      RETURN NULL;
+    END;
+  $$;  
 
 ---------
 --VIEWS--
@@ -1073,18 +1139,17 @@ CREATE TRIGGER trg_maj_synthese_observers_txt
   FOR EACH ROW
   EXECUTE PROCEDURE gn_synthese.fct_tri_maj_observers_txt();
 
--- A RAJOUTER QUAND LA FONCTION TRIGGER SERA FONCTIONELLE
--- CREATE TRIGGER tri_refresh_vm_min_max_for_taxons
---   AFTER INSERT OR UPDATE OR DELETE
---   ON synthese
---   FOR EACH ROW
---   EXECUTE PROCEDURE fct_tri_refresh_vm_min_max_for_taxons();
 
-CREATE TRIGGER tri_insert_cor_area_synthese
-  AFTER INSERT OR UPDATE OF the_geom_local
-  ON gn_synthese.synthese
+ CREATE TRIGGER tri_insert_cor_area_synthese
+  AFTER insert ON gn_synthese.synthese
+  REFERENCING NEW TABLE AS NEW
+  FOR EACH STATEMENT
+  EXECUTE PROCEDURE gn_synthese.fct_trig_insert_in_cor_area_synthese_on_each_statement();
+
+ CREATE TRIGGER tri_update_cor_area_synthese
+  AFTER UPDATE OF the_geom_local, the_geom_4326 ON gn_synthese.synthese
   FOR EACH ROW
-  EXECUTE PROCEDURE gn_synthese.fct_trig_insert_in_cor_area_synthese();
+  EXECUTE PROCEDURE gn_synthese.fct_trig_update_in_cor_area_synthese();
 
 -- trigger insertion ou update sur cor_area_syntese - déclenché après insert ou update sur cor_area_synthese
 CREATE TRIGGER tri_maj_cor_area_taxon
@@ -1106,6 +1171,18 @@ CREATE TRIGGER tri_update_cor_area_taxon_update_cd_nom
   ON gn_synthese.synthese
   FOR EACH ROW
   EXECUTE PROCEDURE gn_synthese.fct_tri_update_cd_nom();
+
+CREATE TRIGGER tri_insert_calculate_sensitivity
+ AFTER INSERT ON gn_synthese.synthese
+  REFERENCING NEW TABLE AS NEW
+  FOR EACH STATEMENT
+  EXECUTE PROCEDURE gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement();
+  
+CREATE TRIGGER tri_update_calculate_sensitivity
+ AFTER UPDATE OF date_min, date_max, cd_nom, the_geom_local, id_nomenclature_bio_status ON gn_synthese.synthese
+  FOR EACH ROW
+  EXECUTE PROCEDURE gn_synthese.fct_tri_cal_sensi_diff_level_on_each_row();
+
 
 --------
 --DATA--
@@ -1272,48 +1349,49 @@ $function$
     -- Import dans la synthese, ajout de limit et offset 
     -- pour pouvoir boucler et traiter des quantités raisonnables de données
 CREATE OR REPLACE FUNCTION gn_synthese.import_row_from_table(
-    select_col_name character varying,
-    select_col_val character varying,
-    tbl_name character varying,
-    limit_ integer,
-    offset_ integer)
-  RETURNS boolean AS
-  $BODY$
-  DECLARE
-    select_sql text;
-    import_rec record;
-  BEGIN
+        select_col_name character varying,
+        select_col_val character varying,
+        tbl_name character varying,
+        limit_ integer,
+        offset_ integer)
+    RETURNS boolean
+    LANGUAGE 'plpgsql'
 
-    --test que la table/vue existe bien
-    --42P01 	undefined_table
-    IF EXISTS (
-        SELECT 1 FROM information_schema.tables t  WHERE t.table_schema ||'.'|| t.table_name = tbl_name
-    ) IS FALSE THEN
-        RAISE 'Undefined table: %', tbl_name USING ERRCODE = '42P01';
-    END IF ;
+    COST 100
+    VOLATILE
+AS $BODY$
+    DECLARE
+      select_sql text;
+      import_rec record;
+    BEGIN
 
-    --test que la colonne existe bien
-    --42703 	undefined_column
-    IF EXISTS (
-        SELECT * FROM information_schema.columns  t  WHERE  t.table_schema ||'.'|| t.table_name = tbl_name AND column_name = select_col_name
-    ) IS FALSE THEN
-        RAISE 'Undefined column: %', select_col_name USING ERRCODE = '42703';
-    END IF ;
+      --test que la table/vue existe bien
+      --42P01         undefined_table
+      IF EXISTS (
+          SELECT 1 FROM information_schema.tables t  WHERE t.table_schema ||'.'|| t.table_name = LOWER(tbl_name)
+      ) IS FALSE THEN
+          RAISE 'Undefined table: %', tbl_name USING ERRCODE = '42P01';
+      END IF ;
 
+      --test que la colonne existe bien
+      --42703         undefined_column
+      IF EXISTS (
+          SELECT * FROM information_schema.columns  t  WHERE  t.table_schema ||'.'|| t.table_name = LOWER(tbl_name) AND column_name = select_col_name
+      ) IS FALSE THEN
+          RAISE 'Undefined column: %', select_col_name USING ERRCODE = '42703';
+      END IF ;
 
-      -- TODO transtypage en text pour des questions de généricité. A réflechir
-      select_sql := 'SELECT row_to_json(c)::jsonb d
-          FROM ' || tbl_name || ' c
-          WHERE ' ||  select_col_name|| '::text = ''' || select_col_val || '''
-          LIMIT ' || limit_ || '
-          OFFSET ' || offset_;
+        -- TODO transtypage en text pour des questions de généricité. A réflechir
+        select_sql := 'SELECT row_to_json(c)::jsonb d
+            FROM ' || LOWER(tbl_name) || ' c
+            WHERE ' ||  select_col_name|| '::text = ''' || select_col_val || '''
+            LIMIT ' || limit_ || '
+            OFFSET ' || offset_ ;
 
-      FOR import_rec IN EXECUTE select_sql LOOP
-          PERFORM gn_synthese.import_json_row(import_rec.d);
-      END LOOP;
+        FOR import_rec IN EXECUTE select_sql LOOP
+            PERFORM gn_synthese.import_json_row(import_rec.d);
+        END LOOP;
 
-    RETURN TRUE;
-    END;
-  $BODY$
-    LANGUAGE plpgsql VOLATILE
-    COST 100;
+      RETURN TRUE;
+      END;
+    $BODY$;

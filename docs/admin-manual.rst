@@ -795,7 +795,8 @@ Depuis la version 2.5.0, il est aussi possible de customiser l'ordre des modules
 Customiser les exports PDF
 """"""""""""""""""""""""""
 
-Vous pouvez modifier le bandeau et le logo fournis par défaut dans les exports PDF en modifiant les images ``Bandeau_pdf.png`` et ``Logo_pdf.png`` dans ``backend/static/images``. Les fichiers CSS des exports PDF sont dans ``backend/static/css``.
+Vous pouvez modifier le bandeau et le logo fournis par défaut dans les exports PDF en modifiant les images ``Bandeau_pdf.png`` et ``Logo_pdf.png`` dans ``backend/static/images``. 
+Le style des fichiers est également customisable grâce au fichier "backend/geonature/static/css/custom.css". La classe ``main-color`` permet notamment de changer la couleur des séparateurs (orange par défaut).
 
 Intégrer des données
 --------------------

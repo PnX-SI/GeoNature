@@ -3,26 +3,120 @@
   class="container-fluid mt-4"
 >
   <div class="row">
-    <div class="col-xs-12 col-sm-6 col-lg-8">
-      <h3>JEU DE DONNÉES : {{dataset.dataset_name}}</h3>
-    </div>
-    <div class="c col-xs-6 col-lg-4">
+    <div class="col-8">
       <button
         mat-raised-button
         routerLink="/metadata"
+        class="mb-2"
       >
         <mat-icon>chevron_left</mat-icon>
         Retour
       </button>
-      <button
-        mat-raised-button
-        class="button-success ml-1"
-        (click)="getPdf()"
-      >
-        Export PDF
-        <mat-icon>file_download</mat-icon>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-8">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="text-muted">Jeu de données</h5>
+          <h4>{{dataset?.dataset_name}}
+            <button
+              mat-mini-fab
+              color="warn"
+              [disabled]="dataset?.observation_count > 0 || !dataset.cruved.D"
+              (click)="deleteDataset(id_dataset)"
+              class="float-right"
+              matTooltip="Supprimer le jeu de données"
+            >
+              <mat-icon
+                *ngIf="dataset?.observation_count > 0; else elseblock"
+                matTooltip="Le jeu de données contient des données et ne peut pas être supprimé"
+              > delete </mat-icon>
+              <ng-template #elseblock>
+                <mat-icon> delete </mat-icon>
+              </ng-template>
+            </button>
+            <button
+              [disabled]="!dataset?.cruved.U"
+              [routerLink]="['/metadata/dataset', dataset.id_dataset]"
+              mat-mini-fab
+              color="primary"
+              matTooltip="Editer le jeu de données"
+              class="mr-2 float-right"
+            >
+              <mat-icon>create</mat-icon>
+            </button>
 
-      </button>
+          </h4>
+
+        </div>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="card">
+        <div class="card-body">
+          <button
+            mat-raised-button
+            [disabled]="!dataset.cruved.E"
+            color="primary"
+            class="mr-1 mb-2"
+            matTooltip="Télécharger la fiche PDF"
+            (click)="getPdf()"
+          >
+            Export PDF
+            <mat-icon>file_download</mat-icon>
+          </button>
+          <span
+            [matTooltip]="dataset?.observation_count > 0 ? 'Télécharger le rapport sensibilité' : 'Le jeu de données ne comporte aucune donnée'"
+          >
+            <button
+              [disabled]="!dataset.cruved.E || dataset?.observation_count == 0"
+              mat-raised-button
+              color="primary"
+              matTooltip="Télécharger le rapport de sensibilité"
+              class="mb-2 mr-1"
+              (click)="sensiReport(dataset.id_dataset)"
+            >
+              Rapport de sensibilité
+              <mat-icon> do_not_touch
+              </mat-icon>
+            </button>
+          </span>
+
+          <span
+            [matTooltip]="dataset?.observation_count > 0 ? 'Télécharger le rapport d\'UUID' : 'Le jeu de données ne comporte aucune donnée'"
+          >
+            <button
+              [disabled]="!dataset.cruved.E || dataset?.observation_count == 0"
+              mat-raised-button
+              color="primary"
+              class="mb-2 mr-1"
+              (click)="uuidReport(dataset?.id_dataset)"
+            >
+              Rapport d'UUID
+              <mat-icon> format_list_numbered
+              </mat-icon>
+            </button>
+          </span>
+
+
+          <span
+            [matTooltip]="dataset?.active ?  'Importer dans ce jeu de données': 'Le jeu de données est inactif'"
+          >
+            <button
+              [disabled]="!dataset?.active"
+              mat-raised-button
+              color="primary"
+              (click)="importDs(dataset?.id_dataset)"
+            >
+              Importer des données
+              <mat-icon> publish
+              </mat-icon>
+            </button>
+          </span>
+
+        </div>
+      </div>
     </div>
   </div>
 
@@ -30,12 +124,12 @@
     *ngIf="dataset.taxa_count"
     class="row"
   >
-    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 ">
+    <div class="col-4">
       <div class="card">
         <div class="card-body">
           <div class="row">
             <div class="col">
-              <h5>Taxons</h5> {{dataset.taxa_count}}
+              <h5>Taxons</h5> {{dataset?.taxa_count}}
             </div>
             <div
               class="col-auto"
@@ -48,12 +142,12 @@
         </div>
       </div>
     </div>
-    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+    <div class="col-4">
       <div class="card">
         <div class="card-body">
           <div class="row">
             <div class="col">
-              <h5>Observations</h5> {{dataset.observation_count}}
+              <h5>Observations</h5> {{dataset?.observation_count}}
             </div>
             <div
               class="col-auto"
@@ -66,6 +160,7 @@
         </div>
       </div>
     </div>
+
   </div>
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 ">
@@ -78,10 +173,13 @@
         <div class="card-body">
 
           <div class="b">Identification</div>
-          <div class="a"> Instance : {{dataset.dataset_name}}</div>
-          <div class="a"> Identifiant SINP du jeu de données : {{dataset.unique_dataset_id}}</div>
-          <div class="a"> Libellé court : {{dataset.dataset_shortname}}</div>
-          <div class="a"> Description : {{dataset.dataset_desc}}</div>
+          <div class="a"> <b>Nom : </b> {{dataset.dataset_name}}</div>
+          <div class="a"> <b> Identifiant SINP du jeu de données :</b> {{dataset.unique_dataset_id}}
+          </div>
+          <div class="a"> <b> Identifiant GeoNature du jeu de données :</b> {{dataset.id_dataset}}
+          </div>
+          <div class="a"> <b> Libellé court :</b> {{dataset.dataset_shortname}}</div>
+          <div class="a"> <b> Description : </b> {{dataset.dataset_desc}}</div>
           <br />
 
           <div class="b">Type de données</div>
@@ -93,27 +191,29 @@
           <br />
 
           <div class="b">Territoires</div>
-          <div class="a"> Couverture du territoire terrestre :
+          <div class="a">
+            <b> Couverture du territoire terrestre :</b>
             {{dataset.terrestrial_domain ? "oui" : "non"}} </div>
-          <div class="a"> Couverture du territoire marin : {{dataset.marine_domain ? "oui" : "non"}}
+          <div class="a">
+            <b>Couverture du territoire marin : </b>
+            {{dataset.marine_domain ? "oui" : "non"}}
           </div>
           <br />
 
           <div class="b">Cadre de référence</div>
-          <div class="a"> Titre du cadre d'acquisition :
+          <div class="a">
+            <b> Titre du cadre d'acquisition :</b>
             {{dataset.acquisition_framework.acquisition_framework_name}} </div>
-          <div class="a"> Identifiant du cadre d'acquisition :
+          <div class="a">
+            <b> Identifiant du cadre d'acquisition :</b>
             {{dataset.acquisition_framework.unique_acquisition_framework_id }} </div>
           <br />
 
 
           <div class="b">Processus de collecte</div>
-          <div class="a"> Libellé : {{dataset.collecting_method.label_default}} </div>
-          <div class="a"> Description : {{dataset.collecting_method.definition_default}} </div>
-          <!--div class="a"> Url : ??? </div-->
-          <!--div class="a"> Type de protocole : ??? </div-->
-          <!--div class="a"> Précisions : ??? </div-->
-          <div class="a"> Code : {{dataset.collecting_method.cd_nomenclature}} </div>
+          <div class="a"> <b>Libellé : </b> {{dataset.collecting_method.label_default}} </div>
+          <div class="a"> <b> Description :</b> {{dataset.collecting_method.definition_default}}
+          </div>
 
           <br />
 
@@ -123,27 +223,28 @@
               class="a"
               *ngFor="let actor of dataset.cor_dataset_actor"
             >
-              <div> {{ actor.nomenclature_actor_role?.mnemonique}} :
+              <div>
+                <b>{{ actor.nomenclature_actor_role?.mnemonique}} : </b>
                 {{ actor.organism?.nom_organisme }}
                 <span *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"> - </span>
                 {{ actor.role?.nom_complet }}
               </div>
             </div>
           </div>
+          <br />
 
+          <div class="b"> Créateur</div>
+
+          <div class="a"> <b> Créateur du jeu de données :</b> {{dataset.creator?.nom_complet}}
+          </div>
           <br />
 
           <div class="b">Attribut additionnels</div>
-          <div class="a">Actif : {{dataset.active ? 'Oui' : 'Non'}} </div>
-          <div class="a">Validable : {{dataset.validable ? 'Oui' : 'Non'}} </div>
+          <div class="a"><b> Actif :</b> {{dataset.active ? 'Oui' : 'Non'}} </div>
+          <div class="a"> <b>Validable :</b> {{dataset.validable ? 'Oui' : 'Non'}} </div>
 
           <br />
 
-          <!--div class="a">Origine des données : {{dataset.data_origin.label_default}} </div>
-          <div class="a">Statut source : {{dataset.source_status.label_default}} </div>
-          <div class="a">Type de ressource : {{dataset.resource_type.label_default}} </div>
-
-          <br/-->
 
           <div *ngIf="dataset.modules">
             <div class="b">Module(s) GeoNature associé(s) au jeu de données :</div>
@@ -159,17 +260,133 @@
 
         </div>
       </div>
+      <div
+        class="card"
+        *ngIf="dataset.imports && dataset.imports.length>0"
+      >
+        <div class="card-header">
+          <h5>
+            Liste des imports
+          </h5>
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered tabRecap">
+            <thead class="bold">
+              <tr>
+                <td class="textCenter">Source</td>
+                <td class="textCenter">Nombre de données</td>
+                <td class="textCenter">Intégré le</td>
+                <td class="textCenter">Statut</td>
+                <td class="textCenter">Rapport</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let import of dataset.imports'>
+                <td class="textCenter">{{import.import_table}}</td>
+                <td class="textCenter"> {{import.source_count}}</td>
+                <td class="textCenter">{{import.date_create_import | date: 'd/MM/yyyy'}}</td>
+                <td class="textCenter">
+                  <div class="imgStatus">
+                    <mat-icon
+                      class="success"
+                      matTooltip="Terminé"
+                      *ngIf="import.is_finished"
+                    > done</mat-icon>
+
+                    <mat-icon
+                      *ngIf="!import.is_finished"
+                      matTooltip="Non terminé"
+                      class="color-orange"
+                    > close</mat-icon>
+
+                  </div>
+                </td>
+                <td class="textCenter">
+                  <div *ngIf="import.source_count != 0 && import.is_finished">
+                    <mat-icon
+                      (click)="sensiReportImport(import.id_import)"
+                      matTooltip="Télécharger le rapport de sensibilité"
+                    > do_not_touch</mat-icon>
+                    <mat-icon
+                      (click)="uuidReportImport(import.id_import)"
+                      matTooltip="Télécharger le rapport d'UUID"
+                    > format_list_numbered
+                    </mat-icon>
+                  </div>
+                  <div *ngIf="import.source_count == 0 || !import.is_finished">
+                    <mat-icon matTooltip="Impossible de télécharger le rapport de sensibilité">
+                      do_not_touch</mat-icon>
+                    <mat-icon matTooltip="Impossible de télécharger de rapport UUID">
+                      format_list_numbered </mat-icon>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+            <!-- <tbody>
+              <tr *ngFor='let taxons of taxs'>
+                <td
+                  class="textCenter"
+                  *ngIf="taxons.properties.id_dataset=== dataset.id_dataset"
+                >{{taxons.properties.t_occurrences_occtax[0].taxref.nom_complet}}</td>
+                <td
+                  class="textCenter"
+                  *ngIf="taxons.properties.id_dataset=== dataset.id_dataset"
+                >{{taxons.properties.t_occurrences_occtax[0].cor_counting_occtax[0].count_max}}</td>
+                <td
+                  class="textCenter"
+                  *ngIf="taxons.properties.id_dataset=== dataset.id_dataset"
+                >{{taxons.properties.date_max |date: 'd/MM/yyyy'}}</td>
+                <td
+                  class="textCenter"
+                  *ngIf="taxons.properties.id_dataset=== dataset.id_dataset"
+                ></td>
+                <td
+                  class="textCenter"
+                  *ngIf="taxons.properties.id_dataset=== dataset.id_dataset"
+                >
+                  <mat-icon
+                    (click)="sensiReport(taxons.properties.id_dataset)"
+                    matTooltip="Rapport de sensibilité"
+                  > do_not_touch</mat-icon>
+                  <mat-icon
+                    matTooltip="Rapport d'UUID"
+                    (click)="uuidReport(taxons.properties.id_dataset)"
+                  > format_list_numbered </mat-icon>
+                </td>
+              </tr>
+            </tbody> -->
+          </table>
+        </div>
+      </div>
     </div>
 
     <div class="col-xs-12 col-sm-12 col-md-8 col-lg-4">
-      <div class="card ">
+      <div
+        *ngIf="this.geojsonData"
+        class="card"
+      >
+        <!-- changer la valeur du ngif quand la carte sera prete -->
         <div class="card-header">
-          <h5>Périmètre géographique</h5>
+          <h5>
+            Périmètre géographique
+            <button
+              mat-raised-button
+              class="ml-2"
+              color="primary"
+              (click)="syntheseDs(dataset.id_dataset)"
+              matTooltip="Afficher les données dans la Synthèse"
+            >
+              Afficher les données
+              <mat-icon> room </mat-icon>
+            </button>
+          </h5>
+
         </div>
         <div
           *ngIf="this.geojsonData"
           class="card-body"
         >
+
           <!-- changer la valeur du ngif quand la carte sera prete -->
           <pnx-map
             height="40vh"
@@ -183,7 +400,10 @@
           </pnx-map>
         </div>
       </div>
-      <div class="card ">
+      <div
+        *ngIf="dataset.taxa_count"
+        class="card"
+      >
         <div class="card-header">
           <h5>Répartition des espèces</h5>
         </div>
@@ -207,7 +427,7 @@
       </div>
       <div class="card ">
         <div class="card-header">
-          <h5>Cadre d'acquisition initial</h5>
+          <h5>Cadre d'acquisition</h5>
         </div>
         <div class="card-body">
           <div class="row">
