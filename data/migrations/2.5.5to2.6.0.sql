@@ -279,5 +279,37 @@ AS $BODY$
 ALTER TABLE gn_meta.t_acquisition_frameworks ADD opened bool NULL DEFAULT true;
 ALTER TABLE gn_meta.t_acquisition_frameworks ADD initial_closing_date timestamp NULL;
 
--- Add a json filed in l_areas for additional data
+-- Add a json field in l_areas for additional data
 ALTER TABLE ref_geo.l_areas ADD additional_data jsonb NULL;
+
+
+
+-- Update VIEW export OCCHAB
+DROP VIEW IF EXISTS pr_occhab.v_export_sinp;
+CREATE VIEW pr_occhab.v_export_sinp AS
+SELECT 
+s.id_station,
+s.id_dataset,
+s.id_digitiser,
+s.unique_id_sinp_station as "identifiantStaSINP",
+ds.unique_dataset_id as "metadonneeId",
+nom1.cd_nomenclature as "dSPublique",
+to_char(s.date_min, 'DD/MM/YYYY'::text)as "dateDebut",
+to_char(s.date_max, 'DD/MM/YYYY'::text)as "dateFin",
+s.observers_txt as "observateur",
+nom2.cd_nomenclature as "methodeCalculSurface",
+public.st_astext(s.geom_4326) as "geometry", -- Pourquoi rajouter st_astext?
+public.st_asgeojson(s.geom_4326) as geojson,
+s.geom_local,
+nom3.cd_nomenclature as "natureObjetGeo",
+h.unique_id_sinp_hab as "identifiantHabSINP",
+h.nom_cite as "nomCite",
+h.cd_hab as "cdHab",
+h.technical_precision as "precisionTechnique"
+FROM pr_occhab.t_stations as s
+JOIN pr_occhab.t_habitats h on h.id_station = s.id_station
+JOIN gn_meta.t_datasets ds on ds.id_dataset = s.id_dataset
+LEFT join ref_nomenclatures.t_nomenclatures nom1 on nom1.id_nomenclature = ds.id_nomenclature_data_origin
+LEFT join ref_nomenclatures.t_nomenclatures nom2 on nom2.id_nomenclature = s.id_nomenclature_area_surface_calculation
+LEFT join ref_nomenclatures.t_nomenclatures nom3 on nom3.id_nomenclature = s.id_nomenclature_geographic_object
+LEFT join ref_nomenclatures.t_nomenclatures nom4 on nom4.id_nomenclature = h.id_nomenclature_collection_technique;
