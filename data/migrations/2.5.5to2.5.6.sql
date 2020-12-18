@@ -27,6 +27,28 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+
+CREATE OR REPLACE FUNCTION gn_sensitivity.calculate_cd_diffusion_level(
+  cd_nomenclature_diffusion_level character varying, cd_nomenclature_sensitivity character varying
+)
+ RETURNS character varying
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+  IF cd_nomenclature_diffusion_level IS NULL 
+    THEN RETURN
+    CASE 
+      WHEN cd_nomenclature_sensitivity = '0' THEN '5'
+      WHEN cd_nomenclature_sensitivity = '1' THEN '3'
+      WHEN cd_nomenclature_sensitivity = '2' THEN '2'
+      WHEN cd_nomenclature_sensitivity = '3' THEN '3'
+      WHEN cd_nomenclature_sensitivity = '4' THEN '4'
+    END;
+  ELSE 
+    RETURN cd_nomenclature_diffusion_level;
+  END IF;
+END;
+$function$;
  
 
  CREATE TRIGGER tri_insert_id_sensitivity_synthese
