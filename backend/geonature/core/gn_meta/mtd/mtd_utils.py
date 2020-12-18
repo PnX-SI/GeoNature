@@ -43,38 +43,40 @@ def create_cor_object_actors(actors, new_object):
             new_object : JDD or AF
     """
     for act in actors:
-        person = None
+        # person = None
+        # id_person = None
         org = None
-        id_person = None
         id_organism = None
 
+        # For the moment wo do not match the user with the actor provided by the XML -> only the organism
+        
         # If the email of the contact Person was provided in the XML file, we try to link him to the t_role table
-        if act["email"]:
-            # We first check if the Person's email exists in the t_role table
-            person = (
-                DB.session.query(User)
-                .filter(User.email == act["email"])
-                .first()
-            )
-            # If not, we create it as a new Person in the t_role table and get his ID back
-            if not person:
-                if act["uuid_organism"]:
-                    org = (
-                        DB.session.query(BibOrganismes)
-                        .filter(BibOrganismes.uuid_organisme == act["uuid_organism"])
-                        .first()
-                    )
-                person = {
-                    "id_role": None,
-                    "nom_role": act["name"],
-                    "email": act["email"],
-                }
-                if org:
-                    person['id_organisme'] = org.id_organisme
-                resp = users.insert_role(person)
-                id_person = json.loads(resp.data.decode('utf-8'))['id_role']
-            else:
-                id_person = person.id_role
+        # if act["email"]:
+        #     # We first check if the Person's email exists in the t_role table
+        #     person = (
+        #         DB.session.query(User)
+        #         .filter(User.email == act["email"])
+        #         .first()
+        #     )
+        #     # If not, we create it as a new Person in the t_role table and get his ID back
+        #     if not person:
+        #         if act["uuid_organism"]:
+        #             org = (
+        #                 DB.session.query(BibOrganismes)
+        #                 .filter(BibOrganismes.uuid_organisme == act["uuid_organism"])
+        #                 .first()
+        #             )
+        #         person = {
+        #             "id_role": None,
+        #             "nom_role": act["name"],
+        #             "email": act["email"],
+        #         }
+        #         if org:
+        #             person['id_organisme'] = org.id_organisme
+        #         resp = users.insert_role(person)
+        #         id_person = json.loads(resp.data.decode('utf-8'))['id_role']
+        #     else:
+        #         id_person = person.id_role
 
         # If the informations about the Organism is provided, we try to link it to the bib_organismes table
         if act["uuid_organism"] or act["organism"]:
@@ -106,9 +108,8 @@ def create_cor_object_actors(actors, new_object):
 
         # With at least the Person or the Organism was provided for the actor in the XML file,
         # we build the data for the correlation
-        if id_person or id_organism:
+        if id_organism:
             dict_cor = {
-                "id_role": id_person,
                 "id_organism": id_organism,
                 "id_nomenclature_actor_role": func.ref_nomenclatures.get_id_nomenclature(
                     "ROLE_ACTEUR", act["actor_role"]
@@ -188,7 +189,6 @@ def post_jdd_from_user(id_user=None, id_organism=None):
     """ Post a jdd from the mtd XML"""
     xml_jdd = None
     xml_jdd = get_jdd_by_user_id(id_user)
-    dataset_list_model = []
     if xml_jdd:
         dataset_list = parse_jdd_xml(xml_jdd)
         posted_af_uuid = {}
