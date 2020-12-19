@@ -9,6 +9,8 @@ CHANGELOG
 
 - Review and include PR https://github.com/PnX-SI/GeoNature/pull/1160
 - Review and include PR 
+- Bug des observateurs par défaut et de la modification des dates en mode édition
+- Attention PG 9 ne passe plus à cause des triggers ON EACH STATEMENT !!!
 
 **🚀 Nouveautés**
 
