@@ -7,10 +7,9 @@ CHANGELOG
 
 **TODO**
 
-- Review and include PR https://github.com/PnX-SI/GeoNature/pull/1160
-- Review and include PR 
+- Review and include some PR 
 - Bug des observateurs par défaut et de la modification des dates en mode édition
-- Attention PG 9 ne passe plus à cause des triggers ON EACH STATEMENT !!!
+- Attention PG 9 ne passe plus à cause des triggers ON EACH STATEMENT !!! Voir https://github.com/PnX-SI/GeoNature/issues/997#issuecomment-748636052
 
 **🚀 Nouveautés**
 
@@ -21,7 +20,7 @@ CHANGELOG
 * Métadonnées : Possibilité d'importer directement dans un JDD depuis le module Métadonnées, désactivé par défaut (#889)
 * Synthèse : Possibilité d'ouvrir le module avec un JDD préselectionné (``<URL_GeoNature>/#/synthese?id_dataset=2``) et ajout d'un lien direct depuis le module Métadonnées (#889)
 * Exports au format SHP remplacés par défaut par le format GeoPackage (GPKG) plus simple, plus léger, plus performant et unique. Les exports SHP restent activables dans la configuration des modules (#898)
-* ???? Validation : Préremplir l'email à l'observateur avec des informations paramétrables sur l'occurrence (date, nom du taxon, commune, médias) (#981)
+* Validation : Préremplir l'email à l'observateur avec des informations paramétrables sur l'occurrence (date, nom du taxon, commune, médias) (#981)
 * Possibilité de customiser le logo principal (GeoNature par défaut) dans ``frontend/src/custom/images/``
 * Ajout d'un champs json ``additional_data`` dans la table ``l_areas`` (#1111)
 * Amélioration des possibilités de customisation des PDF des fiches de métadonnées
