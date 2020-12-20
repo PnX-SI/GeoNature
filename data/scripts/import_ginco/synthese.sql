@@ -97,7 +97,7 @@ CREATE MATERIALIZED VIEW ginco_migration.vm_data_model_source AS
     m.taxomodif,
     m.taxoalerte,
     m.user_login
-   FROM ginco_migration.model_592e825dab701_observation m
+   FROM ginco_migration.<NOM_TABLE> m
    -- on ne prend que les JDD non supprimé car la table gn_meta.t_datasets ne comprend que les JDD non supprimé
    join gn_meta.t_datasets d on d.unique_dataset_id = m.jddmetadonneedeeid::uuid
     where m.geometrie is not null

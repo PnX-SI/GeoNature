@@ -45,6 +45,8 @@ from .schemas import OccurrenceSchema, ReleveCruvedSchema, ReleveSchema
 from .utils import get_nomenclature_filters
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, csv_resp, json_resp
 from geonature.utils.errors import GeonatureApiError
+from geonature.utils.utilsgeometrytools import export_as_geo_file
+
 from geonature.core.users.models import UserRigth
 from geonature.core.gn_meta.models import TDatasets, CorDatasetActor
 from geonature.core.gn_permissions import decorators as permissions
@@ -159,7 +161,8 @@ def getOneCounting(id_counting):
             )
             .join(
                 TRelevesOccurrence,
-                TRelevesOccurrence.id_releve_occtax == TOccurrencesOccurrence.id_releve_occtax,
+                TRelevesOccurrence.id_releve_occtax
+                == TOccurrencesOccurrence.id_releve_occtax,
             )
             .filter(CorCountingOccurrence.id_counting_occtax == id_counting)
             .one()
@@ -234,7 +237,9 @@ def getViewReleveOccurrence(info_role):
     # Order by
     if "orderby" in parameters:
         if parameters.get("orderby") in VReleveOccurrence.__table__.columns:
-            orderCol = getattr(VReleveOccurrence.__table__.columns, parameters["orderby"])
+            orderCol = getattr(
+                VReleveOccurrence.__table__.columns, parameters["orderby"]
+            )
 
         if "order" in parameters:
             if parameters["order"] == "desc":
@@ -426,7 +431,8 @@ def releveHandler(request, *, releve, info_role):
     releve, errors = releveSchema.load(json_req["properties"], instance=releve)
     if bool(errors):
         raise InsufficientRightsError(
-            errors, 422,
+            errors,
+            422,
         )
     # set id_digitiser
     releve.id_digitiser = info_role.id_role
@@ -435,7 +441,9 @@ def releveHandler(request, *, releve, info_role):
         allowed = releve.user_is_in_dataset_actor(info_role)
         if not allowed:
             raise InsufficientRightsError(
-                "User {} has no right in dataset {}".format(info_role.id_role, releve.id_dataset),
+                "User {} has no right in dataset {}".format(
+                    info_role.id_role, releve.id_dataset
+                ),
                 403,
             )
 
@@ -526,7 +534,8 @@ def occurrenceHandler(request, *, occurrence, info_role):
 
     if not releve:
         raise InsufficientRightsError(
-            {"message": "not found"}, 404,
+            {"message": "not found"},
+            404,
         )
 
     # Test des droits d'édition du relevé si modification
@@ -765,7 +774,9 @@ def export(info_role):
             if len(export_columns) > 0
             else [db_col.key for db_col in export_view.db_cols]
         )
-        return to_csv_resp(file_name, [export_view.as_dict(d) for d in data], columns, ";")
+        return to_csv_resp(
+            file_name, [export_view.as_dict(d) for d in data], columns, ";"
+        )
     elif export_format == "geojson":
         results = FeatureCollection(
             [export_view.as_geofeature(d, columns=export_columns) for d in data]
@@ -775,16 +786,18 @@ def export(info_role):
         )
     else:
         try:
-            filemanager.delete_recursively(
-                str(ROOT_DIR / "backend/static/shapefiles"), excluded_files=[".gitkeep"]
+            db_cols = [
+                db_col for db_col in export_view.db_cols if db_col.key in export_columns
+            ]
+            dir_name, file_name = export_as_geo_file(
+                export_format=export_format,
+                export_view=export_view,
+                db_cols=db_cols,
+                geojson_col=None,
+                data=data,
+                file_name=file_name,
             )
-            db_cols = [db_col for db_col in export_view.db_cols if db_col.key in export_columns]
-            dir_path = str(ROOT_DIR / "backend/static/shapefiles")
-            export_view.as_shape(
-                db_cols=db_cols, data=data, dir_path=dir_path, file_name=file_name
-            )
-
-            return send_from_directory(dir_path, file_name + ".zip", as_attachment=True)
+            return send_from_directory(dir_name, file_name, as_attachment=True)
 
         except GeonatureApiError as e:
             message = str(e)

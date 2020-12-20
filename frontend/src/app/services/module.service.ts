@@ -9,15 +9,19 @@ export class ModuleService {
   public displayedModules: Array<any>;
   private $module: BehaviorSubject<Array<any>> = new BehaviorSubject(null);
   constructor(private _api: DataFormService) {
+    console.log('init');
+    
     this.fetchModules();
   }
 
-  get modules(): Array<any> {
-    return this.$module.getValue();
+  get modules(): Array<any> {        
+    const modules = this.$module.getValue()
+    this.setModulesLocalStorage(modules)
+    return modules;
   }
 
   fetchModules() {
-    this._api.getModulesList([]).subscribe(data => {
+    this._api.getModulesList([]).subscribe(data => {      
       this.$module.next(data);
       this.displayedModules = data.filter(mod => {
         return (

@@ -38,7 +38,7 @@ def cruved_filter(q, model, info_role):
             getattr(model, "id_digitizer") == info_role.id_role,
             CorDatasetActor.id_role == info_role.id_role,
         ]
-        if not CorDatasetActor in [mapper.class_ for mapper in query._join_entities]:
+        if not CorDatasetActor in [mapper.class_ for mapper in q._join_entities]:
             q = q.outerjoin(
                 CorDatasetActor, CorDatasetActor.id_dataset == getattr(model, "id_dataset")
             )
@@ -135,7 +135,7 @@ def filtered_ds_query(info_role, args):
     if num is not None:
         query = query.filter(TDatasets.id_dataset == num)
     if uuid is not None:
-        query = query.filter(cast(TDatasets.unique_dataset_id, String).ilike(f"%{uuid}%"))
+        query = query.filter(cast(TDatasets.unique_dataset_id, String).ilike(f"%{uuid.strip()}%"))
     if name is not None:
         query = query.filter(TDatasets.dataset_name.ilike(f"%{name}%"))
     if date is not None:
@@ -177,7 +177,7 @@ def filtered_af_query(args):
         query = query.filter(TAcquisitionFramework.id_acquisition_framework == num)
     if uuid is not None:
         query = query.filter(
-            cast(TAcquisitionFramework.unique_acquisition_framework_id, String).ilike(f"%{uuid}%")
+            cast(TAcquisitionFramework.unique_acquisition_framework_id, String).ilike(f"%{uuid.strip()}%")
         )
     if name is not None:
         query = query.filter(TAcquisitionFramework.acquisition_framework_name.ilike("%{name}%"))
@@ -189,7 +189,6 @@ def filtered_af_query(args):
         query = query.filter(BibOrganismes.id_organisme == organisme)
     if role is not None:
         query = query.filter(CorAcquisitionFrameworkActor.id_role == role)
-
     return query
 
 

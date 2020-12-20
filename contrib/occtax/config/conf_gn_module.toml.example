@@ -69,8 +69,8 @@ export_observer_txt_column = 'obsId'
 # SRID for the shapefile
 export_srid = 4326
 
-# Export available format (Only csv, geojson and shapefile is possible)
-export_available_format = ['csv', 'geojson', 'shapefile']
+# Export available format (Only csv, geojson and shapefile and 'gpkg' is possible)
+export_available_format = ['csv', 'geojson', 'gpkg']
 
 # Custom message to display in the export modal
 export_message = "<p> <b> Attention: </b> </br>  Vous vous apprêtez à télécharger les données de la <b>recherche courante. </b> </p>"

@@ -54,7 +54,6 @@ export class OcctaxFormReleveService {
     return {
       id_digitiser: this.occtaxFormService.currentUser.id_role,
       meta_device_entry: "web",
-      observers: [this.occtaxFormService.currentUser],
     };
   }
 
@@ -99,7 +98,7 @@ export class OcctaxFormReleveService {
       id_nomenclature_geo_object_nature: null,
       precision: null
     });
-
+  
     this.propertiesForm.patchValue(this.initialValues);
 
     // VALIDATORS
@@ -150,11 +149,23 @@ export class OcctaxFormReleveService {
           }
         }),
         switchMap((editionMode: boolean) => {
+          console.log(editionMode);
+          
           //Le switch permet, selon si édition ou creation, de récuperer les valeur par defaut ou celle de l'API
           return editionMode ? this.releveValues : this.defaultValues;
         })
       )
-      .subscribe((values) => this.propertiesForm.patchValue(values)); //filter((editionMode: boolean) => !editionMode))
+      .subscribe((values) => {
+        
+        
+        this.propertiesForm.patchValue(values)
+        if(!this.occtaxFormService.editionMode) {
+          this.propertiesForm.patchValue({'observers': [this.occtaxFormService.currentUser]})
+
+        }
+
+      
+      }); //filter((editionMode: boolean) => !editionMode))
 
     //Observation de la geometry pour récupere les info d'altitudes
     this.occtaxFormMapService.geojson
@@ -258,7 +269,7 @@ export class OcctaxFormReleveService {
     }
   }
 
-  getPreviousReleve(previousReleve) {
+  getPreviousReleve(previousReleve) {    
     if (previousReleve && !ModuleConfig.ENABLE_SETTINGS_TOOLS) {
       return {
         'id_dataset': previousReleve.properties.id_dataset,
@@ -300,8 +311,7 @@ export class OcctaxFormReleveService {
             meta_device_entry: "web",
             comment: this.occtaxParamS.get("releve.comment"),
             observers: this.occtaxParamS.get("releve.observers") ||
-              previousReleve.observers ||
-              (ModuleConfig.observers_txt ? null : [this.occtaxFormService.currentUser]),
+              previousReleve.observers,
             observers_txt: this.occtaxParamS.get("releve.observers_txt") || previousReleve.observers_txt,
             id_nomenclature_grp_typ:
               this.occtaxParamS.get("releve.id_nomenclature_grp_typ") ||
@@ -361,6 +371,12 @@ export class OcctaxFormReleveService {
     return value;
   }
 
+  setCurrentUser() {
+    console.log(this.occtaxFormService.editionMode);
+    
+    this.occtaxFormService.editionMode ? null: [this.occtaxFormService.currentUser]
+  }
+
   submitReleve() {
     this.waiting = true;
     if (this.occtaxFormService.id_releve_occtax.getValue()) {
@@ -389,8 +405,9 @@ export class OcctaxFormReleveService {
           }
         );
     } else {
-
-      this.occtaxFormService.previousReleve = JSON.parse(JSON.stringify(this.releveForm.value));
+      if(this.occtaxFormService.chainRecording) {
+        this.occtaxFormService.previousReleve = JSON.parse(JSON.stringify(this.releveForm.value));
+      }
       //create
       this.occtaxDataService
         .createReleve(this.releveFormValue())
