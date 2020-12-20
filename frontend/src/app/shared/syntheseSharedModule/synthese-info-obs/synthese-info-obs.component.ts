@@ -14,17 +14,22 @@ import { finalize } from 'rxjs/operators';
 })
 export class SyntheseInfoObsComponent implements OnInit {
   @Input() idSynthese: number;
-  @Input() uuidSynthese: any;
-  @Input() selectedObs: any;
   @Input() header: boolean = false;
-  @Input() validationHistory: Array<any>;
-  @Input() selectedObsTaxonDetail: any;
+  @Input() mailCustomSubject: String;
+  @Input() mailCustomBody: String;
+
+  public selectedObs: any;
+  public validationHistory: Array<any>;
+  public selectedObsTaxonDetail: any;
   public selectObsTaxonInfo;
   public formatedAreas = [];
   public CONFIG = AppConfig;
   public isLoading = false;
   public email;
   public mailto: String;
+
+  public APP_CONFIG = AppConfig;
+
   public validationColor = {
     '0': '#FFFFFF',
     '1': '#8BC34A',
@@ -44,7 +49,13 @@ export class SyntheseInfoObsComponent implements OnInit {
 
   ngOnInit() {
     this.loadOneSyntheseReleve(this.idSynthese);
-    this.loadValidationHistory(this.uuidSynthese);
+  }
+
+  ngOnChanges(changes) {
+    // load releve only after first init
+    if (changes.idSynthese && changes.idSynthese.currentValue && !changes.idSynthese.firstChange) {
+      this.loadOneSyntheseReleve(this.idSynthese);
+    }
   }
 
   loadOneSyntheseReleve(idSynthese) {
@@ -65,10 +76,7 @@ export class SyntheseInfoObsComponent implements OnInit {
         this.selectedObs.date_min = date_min.toLocaleDateString('fr-FR');
         const date_max = new Date(this.selectedObs.date_max);
         this.selectedObs.date_max = date_max.toLocaleDateString('fr-FR');
-        if (this.selectedObs.cor_observers) {
-          this.email = this.selectedObs.cor_observers.map(el => el.email).join();
-          this.mailto = String('mailto:' + this.email);
-        }
+
         const areaDict = {};
         // for each area type we want all the areas: we build an dict of array
         if (this.selectedObs.areas) {
@@ -93,10 +101,83 @@ export class SyntheseInfoObsComponent implements OnInit {
             this.selectObsTaxonInfo = taxAttr;
           });
 
+        this.loadValidationHistory(this.selectedObs['unique_id_sinp']);
         this._gnDataService.getTaxonInfo(data.cd_nom).subscribe(taxInfo => {
           this.selectedObsTaxonDetail = taxInfo;
+          if (this.selectedObs.cor_observers) {
+            this.email = this.selectedObs.cor_observers.map(el => el.email).join();
+            this.mailto = this.formatMailContent(this.email);
+          }
         });
       });
+  }
+
+  formatMailContent(email) {
+    let mailto = String('mailto:' + email);
+    if (this.mailCustomSubject || this.mailCustomBody) {
+
+      // Mise en forme des données
+      let d = { ...this.selectedObsTaxonDetail, ...this.selectedObs };
+
+      if (this.selectedObs.source.url_source) {
+        d['data_link'] = "Lien vers l'observation : " + [
+          this.APP_CONFIG.URL_APPLICATION,
+          this.selectedObs.source.url_source,
+          this.selectedObs.entity_source_pk_value
+        ].join("/");
+      }
+      else {
+        d['data_link'] = "";
+      }
+
+      d["communes"] = this.selectedObs.areas.filter(
+        area => area.area_type.type_code == 'COM'
+      ).map(
+        area => area.area_name
+      ).join(', ');
+
+      let contentMedias = "";
+      if (!this.selectedObs.medias) {
+        contentMedias = "Aucun media";
+      }
+      else {
+        if (this.selectedObs.medias.length == 0) {
+          contentMedias = "Aucun media";
+        }
+        this.selectedObs.medias.map((media) => {
+          contentMedias += "\n\tTitre : " + media.title_fr;
+          contentMedias += "\n\tLien vers le media : " + this.mediaService.href(media);
+          if (media.description_fr) {
+            contentMedias += "\n\tDescription : " + media.description_fr;
+          }
+          if (media.author) {
+            contentMedias += "\n\tAuteur : " + media.author;
+          }
+          contentMedias += "\n";
+        })
+      }
+      d["medias"] = contentMedias;
+
+      // Construction du mail
+      if (this.mailCustomSubject !== undefined) {
+        try {
+          mailto += "?subject=" + eval('`' + this.mailCustomSubject + '`');
+        } catch (error) {
+          console.log('ERROR : unable to eval mail subject');
+        }
+      }
+      if (this.mailCustomBody !== undefined) {
+        try {
+          mailto += '&body=' + eval('`' + this.mailCustomBody + '`');
+        } catch (error) {
+          console.log('ERROR : unable to eval mail body');
+        }
+      }
+      mailto = encodeURI(mailto);
+      mailto = mailto.replace(/,/g, '%2c');
+    }
+
+    return mailto;
   }
 
   loadValidationHistory(uuid) {
