@@ -3,7 +3,7 @@ from urllib.parse import urlparse
 
 from flask import current_app, jsonify, Response, request, json, redirect
 from werkzeug.exceptions import Unauthorized, HTTPException
-from werkzeug import url_encode
+from werkzeug.urls import url_encode
 
 from pypnusershub.db.tools import InsufficientRightsError
 from sqlalchemy.exc import SQLAlchemyError
