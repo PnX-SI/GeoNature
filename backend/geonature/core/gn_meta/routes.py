@@ -1198,15 +1198,28 @@ def publish_acquisition_framework(info_role, af_id):
     .. :quickref: Metadata;
     """
 
+    # The AF must contain DS to be published
+    datasets = TDatasets.query.filter_by(id_acquisition_framework=af_id).all()
+
+    if not datasets:
+        return (
+            render_template(
+                "error.html",
+                error="Le cadre doit contenir des jeux de données",
+                redirect=current_app.config["URL_APPLICATION"] + "/#/metadata",
+            ),
+            404,
+        )
+
     # After publishing an AF, we set it as closed and all its DS as inactive
-    TDatasets.query.filter_by(id_acquisition_framework=af_id).update(dict(active=False))
-    TAcquisitionFramework.query.filter_by(id_acquisition_framework=af_id).update(dict(opened=False))
+    for dataset in datasets:
+        dataset.active=False
 
     # If the AF if closed for the first time, we set it an initial_closing_date as the actual time
     af = DB.session.query(TAcquisitionFramework).get(af_id)
+    af.opened=False
     if (af.initial_closing_date is None):
-        TAcquisitionFramework.query.filter_by(id_acquisition_framework=af_id).update(dict(initial_closing_date=dt.datetime.now()))
-        af = DB.session.query(TAcquisitionFramework).get(af_id)
+        af.initial_closing_date=dt.datetime.now()
     # We send a mail to notify the AF publication
     publish_acquisition_framework_mail(af, info_role)
 
