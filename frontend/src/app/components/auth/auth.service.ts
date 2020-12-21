@@ -1,4 +1,4 @@
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -22,7 +22,7 @@ export class AuthService {
   token: string;
   loginError: boolean;
   public isLoading = false;
-  constructor(private router: Router, private _http: HttpClient, private _cookie: CookieService) { }
+  constructor(private router: Router, private route: ActivatedRoute, private _http: HttpClient, private _cookie: CookieService) { }
 
   setCurrentUser(user) {
     localStorage.setItem('current_user', JSON.stringify(user));
@@ -89,7 +89,15 @@ export class AuthService {
           };
           this.setCurrentUser(userForFront);
           this.loginError = false;
-          this.router.navigate(['']);
+          let next_url = '';
+          this.route.queryParams.subscribe(params => {
+              next_url = params['next'];
+          });
+          if (next_url) {
+              window.location.href = next_url;
+          } else {
+              this.router.navigate(['']);
+          }
         },
         // error callback
         () => {
