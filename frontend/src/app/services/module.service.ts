@@ -48,7 +48,7 @@ export class ModuleService {
   getModule(module_code: string) {
     const modules = localStorage.getItem('modules');
     let searchModule = null;
-    if (modules) {
+    if (modules && JSON.parse(modules)) {
       JSON.parse(modules).forEach(mod => {
         if (mod.module_code.toLowerCase() === module_code.toLowerCase()) {
           searchModule = mod;
