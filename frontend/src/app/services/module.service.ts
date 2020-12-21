@@ -9,8 +9,6 @@ export class ModuleService {
   public displayedModules: Array<any>;
   private $module: BehaviorSubject<Array<any>> = new BehaviorSubject(null);
   constructor(private _api: DataFormService) {
-    console.log('init');
-    
     this.fetchModules();
   }
 
