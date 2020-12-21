@@ -5,22 +5,25 @@ CHANGELOG
 2.6.0 - Saxifraga (unreleased)
 ------------------------------
 
+Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimum (qui n'est pas fourni par défaut avec Debian 9) pour les triggers déclenchés "on each statement", plus performants.
+
 **TODO**
 
 - Review and include some PR : https://github.com/PnX-SI/GeoNature/pulls
 - Bug des observateurs par défaut et de la modification des dates en mode édition
-- Attention PG 9 ne passe plus à cause des triggers ON EACH STATEMENT !!! Voir https://github.com/PnX-SI/GeoNature/issues/997#issuecomment-748636052 / Imposer Debian 10 ?
-- Update SQL - Je ferai un deuxième SQL à part dédié à cela - Calculer la sensibilité de toutes les données existantes dans la synthèse, mais ne pas écraser les niveaux de diffusion existants, supérieurs au niveau de diffusion calculé automatiquement. Voir https://github.com/PnX-SI/GeoNature/issues/284#issuecomment-680029203
-- Finir le tableau des JDD (https://github.com/PnX-SI/GeoNature/issues/889#issuecomment-742655014), je n'ai pas vu passer les commits
+- Update SQL - J'ai un deuxième SQL à part dédié à cela - Calculer la sensibilité de toutes les données existantes dans la synthèse, mais ne pas écraser les niveaux de diffusion existants, supérieurs au niveau de diffusion calculé automatiquement. A relire, ajuster : data/migrations/2.5.5to2.6.0-update-sensitivity.sql
+- Finir le tableau des JDD (https://github.com/PnX-SI/GeoNature/issues/889#issuecomment-742655014), je n'ai pas vu passer les commits liés aux 2 derniers points cochés (Dépôt sur V du CRUVED et paramètre du bouton Import depuis JDD)
 - https://github.com/PnX-SI/GeoNature/issues/922#issuecomment-690033212 indique une vérification à faire ?
-- Sensibilité (https://github.com/PnX-SI/GeoNature/compare/develop...sensitivity) - Mettre plutôt le CSV sur geonature.fr/data
+- Merger la branche Sensibilité (https://github.com/PnX-SI/GeoNature/compare/develop...sensitivity) ?
+- Supprimer le fichier https://github.com/PnX-SI/GeoNature/blob/develop/data/scripts/sensi/sensibles_to_inpn_20201218.csv car c'est celui sur geonature.fr/data qui est utilisé ?
+- data/migrations/insert_reg.sh à déplacer dans data/scripts/ref_geo/ ?
 
 **🚀 Nouveautés**
 
-* Sensibilité : Ajout d'un trigger sur la synthèse déclenchant automatiquement le calcul de la sensibilité des occurrences (#871)
+* Sensibilité : Ajout d'un trigger sur la synthèse déclenchant automatiquement le calcul de la sensibilité des observations et calculant ensuite leur niveau de diffusion (si celui-ci est NULL) en fonction de la sensibilité (#871)
 * Métadonnées : Refonte de la liste des CA et JDD avec l'ajout d'informations et d'actions, ainsi qu'une recherche avancée (#889)
 * Métadonnées : Révision des fiches info des CA et JDD avec l'ajout d'actions, du tableau des imports et du téléchargement des rapports d'UUID et de sensibilité (#889)
-* Métadonnées: Ajout de la fonctionnalité de fermeture (dépot) au niveau du CA (qui ferme tous les JDD du CA). Désactivée par défaut via le paramètre ``ENABLE_CLOSE_AF`` (#889 par @alainlaupinmnhn)
+* Métadonnées: Ajout de la fonctionnalité de fermeture (dépot) au niveau du CA (qui ferme tous les JDD du CA), seulement si le CA a au moins un JDD. Désactivée par défaut via le paramètre ``ENABLE_CLOSE_AF`` (#889 par @alainlaupinmnhn)
 * Métadonnées : Possibilité d'envoyer un email automatique au créateur et à l'utilisateur d'un CA quand celui-ci est fermé (#889)
 * Métadonnées : Possibilité d'ajouter un titre spécifique aux exports PDF des CA quand ceux-ci sont fermés, par exemple pour en faire un certificat (#889)
 * Métadonnées : Possibilité d'importer directement dans un JDD actif depuis le module Métadonnées, désactivé par défaut (#889)
@@ -34,10 +37,12 @@ CHANGELOG
 * Ajout d'un champs json ``additional_data`` dans la table ``l_areas`` (#1111)
 * Complément des scripts de migration des données depuis GINCO (``data/scripts/import_ginco/``)
 * Barre de navigation : Mention plus générique et générale des auteurs
+* Redirection vers el formulaire d'authentification si on tente d'accéder à une page directement sans être authentifié et sans passer par le frontend (#1193 par @bouttier)
 * Connexion à MTD : possibilité de filtrer les JDD par instance, avec le paramètre ``ID_INSTANCE_FILTER``, par exemple pour ne récupérer que les JDD de sa région (#1195)
 * Connexion à MTD : récupération du créateur et des acteurs (#922, #1008 et #1196)
 * Connexion à MTD : récupération du nouveau champs ``statutDonneesSource`` pour indiquer si le JDD est d'origine publique ou privée
-
+* Création d'un script pour DEPOBIO, permettant de remplacer les règles de sensibilité nationales et régionales, par les règles départementales (``data/scripts/sensi/import_sensi_depobio.sh``)
+* Création d'un script permettant d'importer les régions dans le référentiel géographique (``data/migrations/insert_reg.sh``)
 
 **🐛 Corrections**
 
@@ -55,7 +60,7 @@ CHANGELOG
 **⚠️ Notes de version**
 
 * https://github.com/PnX-SI/GeoNature/blob/develop/data/migrations/2.5.5to2.6.0.sql
-* Update sensibilité données exiqtantes dans Synthèse (ainsi que diffusion_level si non surcouché)
+* Calcul de la sensibilité des données exitantes dans la Synthèse (ainsi que de leur niveau de diffusion si celui-ci n'a pas été renseigné par ailleurs) : data/migrations/2.5.5to2.6.0-update-sensitivity.sql
 * Si vous aviez fait des customisations (logo, PDF export...) alors XXXXXX
 * Revoir http://docs.geonature.fr/admin-manual.html#integrer-son-logo ?
 
