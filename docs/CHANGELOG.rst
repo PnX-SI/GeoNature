@@ -17,6 +17,7 @@ Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimu
 - Merger la branche Sensibilité (https://github.com/PnX-SI/GeoNature/compare/develop...sensitivity) ?
 - Supprimer le fichier https://github.com/PnX-SI/GeoNature/blob/develop/data/scripts/sensi/sensibles_to_inpn_20201218.csv car c'est celui sur geonature.fr/data qui est utilisé ?
 - data/migrations/insert_reg.sh à déplacer dans data/scripts/ref_geo/ ?
+- Import initial depuis GINCO-DEPOBIO 1 : Mettre tous les JDD importés en inactif. Et les CA en fermés ?
 
 **🚀 Nouveautés**
 
