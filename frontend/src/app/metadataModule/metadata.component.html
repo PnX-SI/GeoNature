@@ -85,7 +85,7 @@
                     </small>
                   </a>
                 </div>
-                <div class="col-md-2 ">{{af.acquisition_framework_start_date |date:'d/MM/yyyy'}}
+                <div class="col-md-2 ">{{af.meta_create_date |date:'d/MM/yyyy'}}
                 </div>
                 <section class="col-md-5">
                   <span *ngIf="af.creator"> <b> {{af.creator?.nom_complet}} : </b> créateur </span>
@@ -244,7 +244,7 @@
                     </button>
                     <button
                       mat-icon-button
-                      [disabled]="!ds.cruved.E"
+                      [disabled]="!ds.cruved.U"
                       [routerLink]="['/metadata/dataset', ds.id_dataset]"
                       matTooltip="Editer le jeu de données"
                     >
