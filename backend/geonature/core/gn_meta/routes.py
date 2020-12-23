@@ -448,13 +448,12 @@ def sensi_report(info_role):
                 "cd_sensi"
             ),
             func.ref_nomenclatures.get_nomenclature_label(
-                Synthese.id_nomenclature_sensitivity, "fr"
-            ).label("sensiNiveau"),
-            func.ref_nomenclatures.get_nomenclature_label(
                 Synthese.id_nomenclature_bio_status, "fr"
             ).label("occStatutBiologique"),
             func.min(CorSensitivitySynthese.meta_update_date).label("sensiDateAttribution"),
             func.min(CorSensitivitySynthese.sensitivity_comment).label("sensiAlerte"),
+            TNomenclatures.cd_nomenclature,
+            TNomenclatures.label_fr
         )
         .select_from(Synthese)
         .outerjoin(CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese)
@@ -480,7 +479,7 @@ def sensi_report(info_role):
             TSources.name_source == "Import(id={})".format(id_import)
         )
 
-    data = query.group_by(Synthese.id_synthese).all()
+    data = query.group_by(Synthese.id_synthese, TNomenclatures.cd_nomenclature, TNomenclatures.label_fr).all()
 
     dataset = None
     str_productor = ""
@@ -512,11 +511,13 @@ def sensi_report(info_role):
             "sensiAlerte": row.sensiAlerte,
             "sensible": "Oui" if row.cd_sensi != "0" else "Non",
             "sensiDateAttribution": row.sensiDateAttribution,
-            "sensiNiveau": row.sensiNiveau,
+            "sensiNiveau": f"{row.cd_nomenclature} = {row.label_fr}" ,
         }
         for row in data
     ]
-
+    sensi_version = DB.session.query(func.gn_commons.get_default_parameter('ref_sensi_version')).one_or_none()
+    if sensi_version:
+        sensi_version = sensi_version[0]
     # set an header only if the rapport is on a dataset
     if ds_id:
         header = f""""Rapport de sensibilité"
@@ -524,11 +525,10 @@ def sensi_report(info_role):
             "Identifiant interne";"{dataset.id_dataset}"
             "Identifiant SINP";"{dataset.unique_dataset_id}"
             "Organisme/personne fournisseur";"{str_productor}"
-            "Identifiant de la soumission";"undefined"
             "Date de création du rapport";"{dt.datetime.now().strftime("%d/%m/%Y %Hh%M")}"
             "Nombre de données sensibles";"{len(list(filter(lambda row: row["sensible"] == "Oui", data)))}"
             "Nombre de données total dans le fichier";"{len(data)}"
-            "sensiVersionReferentiel";"undefined"
+            "sensiVersionReferentiel";"{sensi_version}"
             """
 
     return my_csv_resp(
