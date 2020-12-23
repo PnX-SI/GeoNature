@@ -70,8 +70,9 @@ def parse_acquisition_framwork_xml(xml):
     ca_uuid = get_tag_content(ca, "identifiantCadre")
     ca_name = get_tag_content(ca, "libelle")
     ca_desc = get_tag_content(ca, "description", default_value="")
-    ca_start_date = get_tag_content(ca, "dateLancement", default_value=datetime.datetime.now())
-    ca_end_date = get_tag_content(ca, "dateCloture")
+    date_info = ca.find(namespace + "ReferenceTemporelle")
+    ca_start_date = get_tag_content(date_info, "dateLancement", default_value=datetime.datetime.now())
+    ca_end_date = get_tag_content(date_info, "dateCloture")
     ca_id_digitizer = None
     attributs_additionnels_node = ca.find(namespace + "attributsAdditionnels")
 
@@ -124,7 +125,10 @@ def parse_jdd_xml(xml):
         marine_domain = get_tag_content(jdd, "domaineMarin", default_value=False)
         data_type = get_tag_content(jdd, "typeDonnees")
         collect_data_type = get_tag_content(jdd, "typeDonneesCollectees")
+        create_date = get_tag_content(jdd, "dateCreation", default_value=datetime.datetime.now())
+        update_date = get_tag_content(jdd, "dateRevision")
         attributs_additionnels_node = jdd.find(namespace + "attributsAdditionnels")
+
 
         # We extract the ID of the user to assign it the JDD as an id_digitizer
         id_digitizer = None
@@ -173,7 +177,10 @@ def parse_jdd_xml(xml):
             "id_digitizer": id_digitizer,
             "id_nomenclature_data_origin": code_statut_donnees_source,
             "actors": all_actors,
+            "meta_create_date" : create_date,
+            "meta_update_date": update_date
         }
+
         # filter with id_instance
         if current_app.config['MTD']['ID_INSTANCE_FILTER']:
             if id_instance and id_instance == str(current_app.config['MTD']['ID_INSTANCE_FILTER']):
