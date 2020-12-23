@@ -108,7 +108,6 @@ import { UserDataService } from "./userModule/services/user-data.service";
     CruvedStoreService,
     UserDataService,
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ContentTypeInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })
