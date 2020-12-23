@@ -180,7 +180,7 @@ def filtered_af_query(args):
             cast(TAcquisitionFramework.unique_acquisition_framework_id, String).ilike(f"%{uuid.strip()}%")
         )
     if name is not None:
-        query = query.filter(TAcquisitionFramework.acquisition_framework_name.ilike("%{name}%"))
+        query = query.filter(TAcquisitionFramework.acquisition_framework_name.ilike(f"%{name}%"))
     if date is not None:
         query = query.filter(
             cast(TAcquisitionFramework.acquisition_framework_start_date, Date) == f"%{date}%"
