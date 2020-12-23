@@ -133,6 +133,7 @@ export class MetadataComponent implements OnInit {
         if ((af.id_acquisition_framework + ' ').toLowerCase().indexOf(this.researchTerm) !== -1
           || af.acquisition_framework_name.toLowerCase().indexOf(this.researchTerm) !== -1
           || af.acquisition_framework_start_date.toLowerCase().indexOf(this.researchTerm) !== -1
+          || af.unique_acquisition_framework_id.toLowerCase().indexOf(this.researchTerm) !== -1
         ) {
           //si un cadre matche on affiche tout ses JDD
           af.datasetsTemp = af.datasets;
@@ -144,6 +145,7 @@ export class MetadataComponent implements OnInit {
           af.datasetsTemp = af.datasets.filter(
             ds => ((ds.id_dataset + ' ').toLowerCase().indexOf(this.researchTerm) !== -1
               || ds.dataset_name.toLowerCase().indexOf(this.researchTerm) !== -1
+              || ds.unique_dataset_id.toLowerCase().indexOf(this.researchTerm) !== -1
               || ds.meta_create_date.toLowerCase().indexOf(this.researchTerm) !== -1)
           );
           return af.datasetsTemp.length;
