@@ -251,7 +251,7 @@ def get_one_synthese(id_synthese):
             ),
         )
         .filter(SyntheseOneRecord.id_synthese == id_synthese)
-        .join(
+        .outerjoin(
             metadata_view.tableDef,
             getattr(
                 metadata_view.tableDef.columns,
