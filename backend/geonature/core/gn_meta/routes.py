@@ -1125,7 +1125,6 @@ def publish_acquisition_framework_mail(af, info_role):
 
     # Generate the links for the AF's deposite certificate and framework download
     pdf_url = current_app.config["API_ENDPOINT"] + "/meta/acquisition_frameworks/export_pdf/" + str(af.id_acquisition_framework)
-    af_url = current_app.config["METADATA"]["URL_FRAMEWORK_DOWNLOAD"] + str(af.unique_acquisition_framework_id).upper() + "/fichier.pdf"
 
     # Mail subject
     mail_subject = "Dépôt du cadre d'acquisition " + str(af.unique_acquisition_framework_id).upper()
@@ -1136,23 +1135,18 @@ def publish_acquisition_framework_mail(af, info_role):
         mail_subject = mail_subject + " pour le dossier {}".format(ca_idtps)
 
     # Mail content
-    mail_content = ""
-    mail_content_base = """Bonjour,<br>
+    mail_content = f"""Bonjour,<br>
     <br>
-    Le cadre d'acquisition {} dont l’identifiant est {} que vous nous avez transmis a été déposé"""
-    mail_content_id_tps = " dans le cadre du dossier {}"
+    Le cadre d'acquisition <i> "{af.acquisition_framework_name}" </i> dont l’identifiant est
+    "{str(af.unique_acquisition_framework_id).upper()}" que vous nous avez transmis a été déposé"""
+    
+
     mail_content_additions = current_app.config["METADATA"]["MAIL_CONTENT_AF_CLOSED_ADDITION"]
     mail_content_pdf = current_app.config['METADATA']["MAIL_CONTENT_AF_CLOSED_PDF"]
-    mail_content_url = current_app.config['METADATA']["MAIL_CONTENT_AF_CLOSED_URL"]
     mail_content_greetings = current_app.config['METADATA']["MAIL_CONTENT_AF_CLOSED_GREETINGS"]
 
-    if mail_content_base:
-        mail_content = mail_content_base.format(
-            af.acquisition_framework_name,
-            str(af.unique_acquisition_framework_id).upper())
-
-    if mail_content_id_tps and ca_idtps:
-        mail_content = mail_content + mail_content_id_tps.format(ca_idtps)
+    if ca_idtps:
+        mail_content = mail_content + f"dans le cadre du dossier {ca_idtps}"
 
     if mail_content_additions:
         mail_content = mail_content + mail_content_additions
@@ -1161,9 +1155,6 @@ def publish_acquisition_framework_mail(af, info_role):
 
     if mail_content_pdf:
         mail_content = mail_content + mail_content_pdf.format(pdf_url) + pdf_url + "<br>"
-
-    if mail_content_url:
-        mail_content = mail_content + mail_content_url.format(af_url) + af_url + "<br>"
 
     if mail_content_greetings:
         mail_content = mail_content + mail_content_greetings
