@@ -57,10 +57,11 @@ def get_user_from_token_and_raise(
     except AccessRightsExpiredError:
         raise Unauthorized(description='Token expired.')
     except UnreadableAccessRightsError:
-        response = Unauthorized(description='Token corrupted.').get_response()
+        e = Unauthorized(description='Token corrupted.')
+        response = e.get_response()
         response.set_cookie("token", expires=0)
-        raise Unauthorized(response=response)
-    except InsufficientRightsError as e:
+        raise Unauthorized(response=response, description=e.get_description())
+    except InsufficientRightsError:
         raise Forbidden
     except Exception as e:
         trap_all_exceptions = current_app.config.get("TRAP_ALL_EXCEPTIONS", True)
