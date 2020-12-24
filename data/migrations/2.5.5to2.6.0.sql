@@ -393,3 +393,7 @@ SELECT  s.id_synthese,
   WHERE d.validable = true AND NOT s.unique_id_sinp IS NULL;
 
 COMMENT ON VIEW gn_commons.v_synthese_validation_forwebapp  IS 'Vue utilisée pour le module validation. Prend l''id_nomenclature dans la table synthese ainsi que toutes les colonnes de la synthese pour les filtres. On JOIN sur la vue latest_validation pour voir si la validation est auto';
+
+-- Ajoute une contrainte NON NULL sur le champ unique_id_sinp de la synthese
+
+ALTER TABLE gn_synthese.synthese ALTER COLUMN unique_id_sinp SET NOT NULL;

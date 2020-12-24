@@ -136,7 +136,7 @@ CREATE TABLE t_sources (
 
 CREATE TABLE synthese (
     id_synthese integer NOT NULL,
-    unique_id_sinp uuid,
+    unique_id_sinp uuid NOT NULL,
     unique_id_sinp_grp uuid,
     id_source integer,
     id_module integer,
