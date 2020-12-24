@@ -425,3 +425,6 @@ CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS
 INSERT INTO gn_commons.t_parameters
 (id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value)
 VALUES(0, 'ref_sensi_version', 'Version du referenciel de sensibilité', 'Referentiel de sensibilite taxref v13 2020', '');
+
+
+---- AFTER 2.5.6.rc.2

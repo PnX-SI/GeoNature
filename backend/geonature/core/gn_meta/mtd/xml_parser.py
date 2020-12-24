@@ -71,8 +71,8 @@ def parse_acquisition_framwork_xml(xml):
     ca_name = get_tag_content(ca, "libelle")
     ca_desc = get_tag_content(ca, "description", default_value="")
     date_info = ca.find(namespace + "ReferenceTemporelle")
-    ca_create_date = ca.find(namespace + "dateCreationMtd", default_value=datetime.datetime.now())
-    ca_update_date = ca.find(namespace + "dateMiseAJourMtd")
+    ca_create_date = get_tag_content(ca, "dateCreationMtd", default_value=datetime.datetime.now())
+    ca_update_date = get_tag_content(ca, "dateMiseAJourMtd")
     ca_start_date = get_tag_content(date_info, "dateLancement", default_value=datetime.datetime.now())
     ca_end_date = get_tag_content(date_info, "dateCloture")
     ca_id_digitizer = None
@@ -102,7 +102,7 @@ def parse_acquisition_framwork_xml(xml):
         "acquisition_framework_desc": ca_desc,
         "acquisition_framework_start_date": ca_start_date,
         "acquisition_framework_end_date": ca_end_date,
-        "meta_create_date": ca_start_date,
+        "meta_create_date": ca_create_date,
         "meta_update_date": ca_update_date,
         "id_digitizer": ca_id_digitizer,
         "actors": all_actors,
