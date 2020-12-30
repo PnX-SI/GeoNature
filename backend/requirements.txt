@@ -50,4 +50,5 @@ toml==0.10.1
 utils-flask-sqlalchemy-geo==0.1.3
 utils-flask-sqlalchemy==0.1.4
 werkzeug==1.0.1
+WTForms-SQLAlchemy==0.2
 xmltodict==0.11.0
