@@ -23,7 +23,10 @@ def send_mail(recipients, subject, msg_html):
         raise Exception("No configuration for email")
 
     with MAIL.connect() as conn:
-        msg = Message(subject, sender=current_app.config["MAIL_USERNAME"], recipients=recipients)
+        mail_sender = current_app.config.get('MAIL_DEFAULT_SENDER') 
+        if not mail_sender:
+            mail_sender = current_app.config["MAIL_USERNAME"]
+        msg = Message(subject, sender=mail_sender, recipients=recipients)
 
         msg.html = msg_html
 
