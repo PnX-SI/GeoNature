@@ -345,7 +345,7 @@ class TDatasets(CruvedHelper):
             param: 
               - user from TRole model
               - only_query: boolean (return the query not the id_datasets allowed if true)
-              - only_user: boolean: return only the dataset where user himself is actor (not with its organoism)
+              - only_user: boolean: return only the dataset where user himself is actor (not with its organism)
 
             return: a list of id_dataset or a query"""
         q = DB.session.query(TDatasets).outerjoin(
