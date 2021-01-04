@@ -59,6 +59,13 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
     Installation d'un module gn
     """
     try:
+
+        # Indique si l'utilisateur est en train de
+        #   réaliser une installation du module
+        #   et non pas une mise à jour
+        # Permet qu'en cas d'erreur à l'installation de supprimer
+        #       les traces d'installation de ce module
+        fresh_install = False
         # Vérification que le chemin module path soit correct
         if not Path(module_path).is_dir():
             raise GeoNatureError("dir {} doesn't exists".format(module_path))
@@ -78,7 +85,6 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
             try:
                 # Vérification que le module n'est pas déjà activé
                 DB.session.query(TModules).filter(TModules.module_code == module_code).one()
-                fresh_install = False
             except NoResultFound:
                 try:
                     # Si le module n'est pas déjà dans la table gn_commons.t_modules, on l'installe
