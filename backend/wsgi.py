@@ -4,6 +4,7 @@
 
 import warnings
 from sqlalchemy import exc as sa_exc
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from geonature.utils.env import load_config, get_config_file_path
 from server import get_app
@@ -16,3 +17,4 @@ config = load_config(config_path)
 with warnings.catch_warnings():
     warnings.simplefilter("ignore", category=sa_exc.SAWarning)
     app = get_app(config)
+    app.wsgi_app = ProxyFix(app.wsgi_app)
