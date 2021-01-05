@@ -4,6 +4,7 @@
 	Use the inpn webservice to get corresponding xml files. Works with datasets and acquisition frameworks, not yet with parents acquisition frameworks (to do)
 '''
 import os
+import datetime
 import xml.etree.ElementTree as ET
 
 import requests
@@ -73,14 +74,13 @@ def get_single_data(node, path, tag):
 	#path = ds_bbox & tags = ['borneNord','borneSud','borneEst','borneOuest']
 	#path = ds_contact_pf & tags = ['mail','nomPrenom','roleActeur','organisme','idOrganisme']
 	try:
-		data = node.find(path + tag, namespaces=xml_namespaces).text.replace("'","\'\'").replace("’",'\'\'').replace('"','').replace('\u202f'," ")
+		data = node.find(path + tag, namespaces=xml_namespaces).text
 		if data != None:
-			return(str('\''+data+'\''))
+			return data
 		else :
-			return(str('\'\''))
+			return ''
 	except Exception as e:
-
-		return(str('\'\''))
+		return ''
 
 def get_tuple_data(node, path, tag):
 	#path = af_main & tags = ['motCle','objectifCadre','voletSINP','territoire']
@@ -89,13 +89,13 @@ def get_tuple_data(node, path, tag):
 	try:
 		datas = CURRENT_XML.findall(path+tag, namespaces=xml_namespaces)
 		if datas == []:
-			return(str('\'\''))
+			return ''
 		else:
 			for row in datas:
-				data.append(str('\''+row.text.replace("'","\'\'").replace("’",'\'\'').replace('"','').replace('\u202f'," ")+'\''))
+				data.append(str(row.text))
 			return(data)
 	except Exception as e:
-		return(str('\'\''))
+		return ''
 
 def get_inner_data(object, iter, tag):
 	# Object = af_publications, iter = cur_publi, tags = ['referencePublication','URLPublication']
@@ -103,13 +103,13 @@ def get_inner_data(object, iter, tag):
 	# Object = ds_pointscontacts, iter = point_contact, 
 	# Object = af_othersactors, iter = other_actor, tags = ['nomPrenom', 'mail', 'roleActeur', 'organisme', 'idOrganisme']
 	try :
-		cur_data=object[iter].find('ca:'+tag, xml_namespaces).text.replace("'","\'\'").replace("’",'\'\'').replace('"','').replace('\u202f'," ")
+		cur_data=object[iter].find('ca:'+tag, xml_namespaces).text
 		if cur_data!='':
-			return('\''+cur_data+'\'')
+			return cur_data
 		else :
-			return(str("''"))
+			return ''
 	except Exception as e:
-		return(str("''"))
+		return ''
 
 
 '''
@@ -134,20 +134,25 @@ def insert_update_t_acquisition_frameworks(CURRENT_AF_ROOT, action, cur_af_uuid)
 	description=get_single_data(CURRENT_AF_ROOT,  af_main,'description')
 
 	# dateLancement : DEFAULT='01/01/1800'
-	if get_single_data(CURRENT_AF_ROOT, af_temp_ref,'dateLancement')=='\'\'':
-		dateLancement='(SELECT \'01/01/1800\'::timestamp without time zone)'
+	if get_single_data(CURRENT_AF_ROOT, af_temp_ref,'dateLancement')=='':
+		dateLancement= datetime.datetime.now()
 	else:
-		dateLancement=get_single_data(CURRENT_AF_ROOT, af_temp_ref,'dateLancement')+'::timestamp without time zone'
+		dateLancement=get_single_data(CURRENT_AF_ROOT, af_temp_ref,'dateLancement')
 	# dateCreationMtd
-	if get_single_data(CURRENT_AF_ROOT, af_main,'dateCreationMtd')=='\'\'':
-		dateCreationMtd='NULL'
+	if get_single_data(CURRENT_AF_ROOT, af_main,'dateCreationMtd')=='':
+		dateCreationMtd = datetime.datetime.now()
 	else:
-		dateCreationMtd=get_single_data(CURRENT_AF_ROOT, af_main,'dateCreationMtd')+'::timestamp without time zone'	
+		dateCreationMtd=get_single_data(CURRENT_AF_ROOT, af_main,'dateCreationMtd')
 	# dateMiseAJourMtd
-	if get_single_data(CURRENT_AF_ROOT, af_main,'dateMiseAJourMtd')=='\'\'':
-		dateMiseAJourMtd='NULL'
+	if get_single_data(CURRENT_AF_ROOT, af_main,'dateMiseAJourMtd')=='':
+		dateMiseAJourMtd= datetime.datetime.now()
 	else:
-		dateMiseAJourMtd=get_single_data(CURRENT_AF_ROOT, af_main,'dateMiseAJourMtd')+'::timestamp without time zone'
+		dateMiseAJourMtd=get_single_data(CURRENT_AF_ROOT, af_main,'dateMiseAJourMtd')
+	# dateCloture
+	if get_single_data(CURRENT_AF_ROOT, af_temp_ref,'dateCloture')=='':
+		dateCloture= datetime.datetime.now()
+	else:
+		dateCloture=get_single_data(CURRENT_AF_ROOT, af_temp_ref,'dateCloture')
 	# Write and run query
 	if action=='create':
 		cur_query = """
@@ -156,56 +161,59 @@ def insert_update_t_acquisition_frameworks(CURRENT_AF_ROOT, action, cur_af_uuid)
 			acquisition_framework_name, 
 			acquisition_framework_desc, 
 			acquisition_framework_start_date, 
+			acquisition_framework_end_date, 
 			meta_create_date, 
 			meta_update_date,
 			opened
 		)
 		VALUES (
-		'{identifiantCadre}', 
-		{libelle},
-		{description}, 
-		{dateLancement}, 
-		{dateCloture},
-		{dateCreationMtd}, 
-		{dateMiseAJourMtd},
-		{opened}
+		%s , 
+		%s ,
+		%s , 
+		%s , 
+		%s ,
+		%s , 
+		%s ,
+        %s
 		) RETURNING id_acquisition_framework;
-		""".format(
-			identifiantCadre=identifiantCadre,
-			libelle=libelle[0:254],
-			description=description,
-			dateLancement=dateLancement,
-			dateCloture=dateCloture,
-			dateCreationMtd=dateCreationMtd,
-			dateMiseAJourMtd=dateMiseAJourMtd,
-			opened='false'
-
-		)
+		"""
 		result = 'New acquisition framework created...'
+		cursor.execute(cur_query, (
+			identifiantCadre,
+			libelle[0:254],
+			description,
+			dateLancement,
+			dateCloture,
+			dateCreationMtd,
+			dateMiseAJourMtd,
+            False
+		))
 	elif action=='update':
 		cur_query="""
 			UPDATE gn_meta.t_acquisition_frameworks SET 
-				acquisition_framework_name={libelle}, 
-				acquisition_framework_desc={description}, 
-				acquisition_framework_start_date={dateLancement}, 
-				acquisition_framework_end_date={dateCloture},
-				meta_create_date={dateCreationMtd}, 
-				meta_update_date={dateMiseAJourMtd},
-				opened={opened}
-				WHERE unique_acquisition_framework_id='{cur_af_uuid}'
+				acquisition_framework_name= %s, 
+				acquisition_framework_desc= %s, 
+				acquisition_framework_start_date= %s, 
+				acquisition_framework_end_date= %s,
+				meta_create_date= %s, 
+				meta_update_date= %s,
+				opened= %s
+				WHERE unique_acquisition_framework_id= %s
 				RETURNING id_acquisition_framework;
-		""".format(
-			libelle=libelle[0:254],
-			description=description,
-			dateLancement=dateLancement,
-			dateCloture=dateCloture,
-			dateCreationMtd=dateCreationMtd,
-			dateMiseAJourMtd=dateMiseAJourMtd,
-			opened="false"
-			cur_af_uuid=cur_af_uuid
-		)
+		"""
 		result = ('Existing acquisition framework updated...')
-	cursor.execute(cur_query)
+		cursor.execute(cur_query, (
+				identifiantCadre,
+				libelle[0:254],
+				description,
+				dateLancement,
+				dateCloture,
+				dateCreationMtd,
+				dateMiseAJourMtd,
+				False,
+				cur_af_uuid
+
+		))
 	r = cursor.fetchone()
 	created_or_returned_id = None
 	if r:
@@ -239,7 +247,7 @@ def insert_CA(cur_af_uuid):
 		action='create'
 	# Get and parse corresponding XML File
 	# remove ''
-	cur_af_uuid = cur_af_uuid.upper()[1:-1]
+	cur_af_uuid = cur_af_uuid.upper()
 	af_URL = "https://inpn.mnhn.fr/mtd/cadre/export/xml/GetRecordById?id={}".format(cur_af_uuid)
 	request = requests.get(af_URL)
 	if request.status_code == 200:
@@ -253,7 +261,9 @@ def insert_CA(cur_af_uuid):
 		if DELETE_XML_FILE_AFTER_IMPORT=='True':
 			os.remove('{}.xml'.format(cur_af_uuid))
 		return af_id
-	return None
+	else:
+		print('CA NOT FOUND: '+ cur_af_uuid)
+		return None
 
 
 # Parse and import data in GeoNature database
@@ -263,9 +273,14 @@ def insert_CA(cur_af_uuid):
 '''
 # Getting uuid list of JDD to import 
 
+q = "SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE acquisition_framework_name ILIKE 'CA provisoire - import Ginco -> GeoNature'"
+cursor.execute(q)
+old_id_af = cursor.fetchone()[0]
 
-cursor.execute('SELECT DISTINCT \"'+CHAMP_ID_JDD+'\" FROM '+TABLE_DONNEES_INPN)
+
+cursor.execute('SELECT unique_dataset_id FROM gn_meta.t_datasets WHERE id_acquisition_framework ='+str(old_id_af))
 ds_uuid_list=cursor.fetchall()
+
 
 for ds_iter in range(len(ds_uuid_list)):
 	cur_ds_uuid = ds_uuid_list[ds_iter][0]
@@ -277,21 +292,24 @@ for ds_iter in range(len(ds_uuid_list)):
 	ds_URL = "https://inpn.mnhn.fr/mtd/cadre/jdd/export/xml/GetRecordById?id={}".format(cur_ds_uuid.upper())
 	req = requests.get(ds_URL)
 	if req.status_code == 200:
+		print(cur_ds_uuid + " found")
 		open('{}.xml'.format(cur_ds_uuid), 'wb').write(requests.get(ds_URL).content)
 		CURRENT_DS_ROOT = ET.parse('{}.xml'.format(cur_ds_uuid)).getroot()
 		# insertion des CA
 		current_af_uuid = get_single_data(CURRENT_DS_ROOT, ds_main,'identifiantCadre')
 		current_id_ca = insert_CA(current_af_uuid)
-		# Feed t_datasets
-		query_update_ds = f"""
-		UPDATE gn_meta.t_datasets
-		SET id_acquisition_framework = {current_id_ca}
-		WHERE unique_dataset_id = {cur_ds_uuid}
-		"""
-		cursor.execute(query_update_ds)
-		conn.commit()
-		if DELETE_XML_FILE_AFTER_IMPORT=='True':
-			os.remove('{}.xml'.format(cur_ds_uuid))
+		if current_id_ca:
+			# Feed t_datasets
+			query_update_ds = f"""
+			UPDATE gn_meta.t_datasets
+			SET id_acquisition_framework = {current_id_ca}
+			WHERE unique_dataset_id = '{cur_ds_uuid}'
+			"""
+			cursor.execute(query_update_ds)
+			conn.commit()
+			print("UPDATE JDD")
+			if DELETE_XML_FILE_AFTER_IMPORT=='True':
+				os.remove('{}.xml'.format(cur_ds_uuid))
 	else:
 		print(f"{cur_ds_uuid} not found")
 
