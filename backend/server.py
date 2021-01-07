@@ -15,7 +15,6 @@ from geonature.utils.env import DB, MA, list_and_import_gn_modules
 
 MAIL = Mail()
 
-
 def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
     # Make sure app is a singleton
     if _app is not None:
