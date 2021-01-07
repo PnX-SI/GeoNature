@@ -388,7 +388,8 @@ def insertOrUpdateOneReleve(info_role):
         releve.id_digitiser = info_role.id_role
         if info_role.value_filter in ("0", "1", "2"):
             # Check if user can add a releve in the current dataset
-            allowed = releve.user_is_in_dataset_actor(info_role)
+            only_user = info_role.value_filter == "1"
+            allowed = releve.user_is_in_dataset_actor(info_role, only_user=only_user)
             if not allowed:
                 raise InsufficientRightsError(
                     "User {} has no right in dataset {}".format(
@@ -438,7 +439,8 @@ def releveHandler(request, *, releve, info_role):
     releve.id_digitiser = info_role.id_role
     if info_role.value_filter in ("0", "1", "2"):
         # Check if user can add a releve in the current dataset
-        allowed = releve.user_is_in_dataset_actor(info_role)
+        only_user = info_role.value_filter == "1"
+        allowed = releve.user_is_in_dataset_actor(info_role, only_user=only_user)
         if not allowed:
             raise InsufficientRightsError(
                 "User {} has no right in dataset {}".format(

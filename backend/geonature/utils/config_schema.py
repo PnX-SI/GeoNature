@@ -102,7 +102,6 @@ class MetadataConfig(Schema):
     CLOSED_AF_TITLE = fields.String(missing="")
     AF_PDF_TITLE = fields.String(missing="Cadre d'acquisition: ")
     DS_PDF_TITLE = fields.String(missing="")
-    URL_FRAMEWORK_DOWNLOAD = fields.String(missing="")
     MAIL_SUBJECT_AF_CLOSED_BASE = fields.String(missing="")
     MAIL_CONTENT_AF_CLOSED_ADDITION = fields.String(missing="")
     MAIL_CONTENT_AF_CLOSED_PDF = fields.String(missing="")

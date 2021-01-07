@@ -1080,8 +1080,8 @@ CREATE OR REPLACE VIEW gn_synthese.v_metadata_for_export AS
     count_nb_obs.nb_obs AS nombre_obs
    FROM gn_meta.t_datasets d
      JOIN gn_meta.t_acquisition_frameworks af ON af.id_acquisition_framework = d.id_acquisition_framework
-     JOIN gn_meta.cor_dataset_actor act ON act.id_dataset = d.id_dataset
-     JOIN ref_nomenclatures.t_nomenclatures nomencl ON nomencl.id_nomenclature = act.id_nomenclature_actor_role
+     LEFT JOIN gn_meta.cor_dataset_actor act ON act.id_dataset = d.id_dataset
+     LEFT JOIN ref_nomenclatures.t_nomenclatures nomencl ON nomencl.id_nomenclature = act.id_nomenclature_actor_role
      LEFT JOIN utilisateurs.bib_organismes orga ON orga.id_organisme = act.id_organism
      LEFT JOIN utilisateurs.t_roles roles ON roles.id_role = act.id_role
      JOIN count_nb_obs ON count_nb_obs.id_dataset = d.id_dataset

@@ -52,6 +52,7 @@ Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimu
 * Synthèse : Amélioration du trigger calculant les zonages d'une observation en ne faisant un ``ST_Touches()`` seulement si l'observation n'est pas un point et en le passant ``on each statement`` (#716)
 * Synthèse : Retour du bouton pour revenir à l'observation dans son module d'origine (Occtax par exemple) depuis la fiche info d'une observation (#1147)
 * Synthèse : Suppression du message "Aucun historique de validation" quand une observation n'a pas encore de validation (#1147)
+* Synthèse : Correction du CRUVED sur le R = 1 (ajout des JDD de l'utilisateur)
 * Occtax : Correction de l'erreur de chargement de l'observateur lors de la modification d'un relevé (#1177)
 * Occtax : Suppression de l'obligation de remplir les champs "Déterminateur" et "Méthode de détermination"
 * Métadonnées : Suppression du graphique de répartition des espèces dans les exports PDF car il était partiellement fonctionnel

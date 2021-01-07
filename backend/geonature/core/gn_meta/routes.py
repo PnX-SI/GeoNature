@@ -448,13 +448,12 @@ def sensi_report(info_role):
                 "cd_sensi"
             ),
             func.ref_nomenclatures.get_nomenclature_label(
-                Synthese.id_nomenclature_sensitivity, "fr"
-            ).label("sensiNiveau"),
-            func.ref_nomenclatures.get_nomenclature_label(
                 Synthese.id_nomenclature_bio_status, "fr"
             ).label("occStatutBiologique"),
             func.min(CorSensitivitySynthese.meta_update_date).label("sensiDateAttribution"),
             func.min(CorSensitivitySynthese.sensitivity_comment).label("sensiAlerte"),
+            TNomenclatures.cd_nomenclature,
+            TNomenclatures.label_fr
         )
         .select_from(Synthese)
         .outerjoin(CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese)
@@ -480,7 +479,7 @@ def sensi_report(info_role):
             TSources.name_source == "Import(id={})".format(id_import)
         )
 
-    data = query.group_by(Synthese.id_synthese).all()
+    data = query.group_by(Synthese.id_synthese, TNomenclatures.cd_nomenclature, TNomenclatures.label_fr).all()
 
     dataset = None
     str_productor = ""
@@ -512,11 +511,13 @@ def sensi_report(info_role):
             "sensiAlerte": row.sensiAlerte,
             "sensible": "Oui" if row.cd_sensi != "0" else "Non",
             "sensiDateAttribution": row.sensiDateAttribution,
-            "sensiNiveau": row.sensiNiveau,
+            "sensiNiveau": f"{row.cd_nomenclature} = {row.label_fr}" ,
         }
         for row in data
     ]
-
+    sensi_version = DB.session.query(func.gn_commons.get_default_parameter('ref_sensi_version')).one_or_none()
+    if sensi_version:
+        sensi_version = sensi_version[0]
     # set an header only if the rapport is on a dataset
     if ds_id:
         header = f""""Rapport de sensibilité"
@@ -524,11 +525,10 @@ def sensi_report(info_role):
             "Identifiant interne";"{dataset.id_dataset}"
             "Identifiant SINP";"{dataset.unique_dataset_id}"
             "Organisme/personne fournisseur";"{str_productor}"
-            "Identifiant de la soumission";"undefined"
             "Date de création du rapport";"{dt.datetime.now().strftime("%d/%m/%Y %Hh%M")}"
             "Nombre de données sensibles";"{len(list(filter(lambda row: row["sensible"] == "Oui", data)))}"
             "Nombre de données total dans le fichier";"{len(data)}"
-            "sensiVersionReferentiel";"undefined"
+            "sensiVersionReferentiel";"{sensi_version}"
             """
 
     return my_csv_resp(
@@ -685,16 +685,16 @@ def get_export_pdf_dataset(id_dataset, info_role):
 
     if info_role.value_filter != "3":
         try:
+            user_actor = [cor["id_role"] for cor in df["cor_dataset_actor"] if cor["id_role"]]
+            user_actor.append(df.get('id_digitizer'))
             if info_role.value_filter == "1":
-                actors = [cor["id_role"] for cor in df["cor_dataset_actor"]]
-                assert info_role.id_role in actors
+                assert info_role.id_role in user_actor
             elif info_role.value_filter == "2":
-                actors = [cor["id_role"] for cor in df["cor_dataset_actor"]]
-                organisms = [cor["id_organism"] for cor in df["cor_dataset_actor"]]
-                assert info_role.id_role in actors or info_role.id_organisme in organisms
+                organisms = [cor["id_organism"] for cor in df["cor_dataset_actor"] if cor["id_organism"]]
+                assert info_role.id_role in user_actor or info_role.id_organisme in organisms
         except AssertionError:
             raise InsufficientRightsError(
-                ('User "{}" cannot read this current dataset').format(info_role.id_role), 403,
+                ('User "{}" cannot export this current dataset').format(info_role.id_role), 403,
             )
 
     if not df:
@@ -765,11 +765,6 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
     """
     Get a PDF export of one acquisition
     """
-    # Verification des droits
-    if info_role.value_filter == "0":
-        raise InsufficientRightsError(
-            ('User "{}" cannot "{}" a dataset').format(info_role.id_role, "export"), 403,
-        )
 
     # Recuperation des données
     af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
@@ -1130,7 +1125,6 @@ def publish_acquisition_framework_mail(af, info_role):
 
     # Generate the links for the AF's deposite certificate and framework download
     pdf_url = current_app.config["API_ENDPOINT"] + "/meta/acquisition_frameworks/export_pdf/" + str(af.id_acquisition_framework)
-    af_url = current_app.config["METADATA"]["URL_FRAMEWORK_DOWNLOAD"] + str(af.unique_acquisition_framework_id).upper() + "/fichier.pdf"
 
     # Mail subject
     mail_subject = "Dépôt du cadre d'acquisition " + str(af.unique_acquisition_framework_id).upper()
@@ -1141,23 +1135,18 @@ def publish_acquisition_framework_mail(af, info_role):
         mail_subject = mail_subject + " pour le dossier {}".format(ca_idtps)
 
     # Mail content
-    mail_content = ""
-    mail_content_base = """Bonjour,<br>
+    mail_content = f"""Bonjour,<br>
     <br>
-    Le cadre d'acquisition {} dont l’identifiant est {} que vous nous avez transmis a été déposé"""
-    mail_content_id_tps = " dans le cadre du dossier {}"
+    Le cadre d'acquisition <i> "{af.acquisition_framework_name}" </i> dont l’identifiant est
+    "{str(af.unique_acquisition_framework_id).upper()}" que vous nous avez transmis a été déposé"""
+    
+
     mail_content_additions = current_app.config["METADATA"]["MAIL_CONTENT_AF_CLOSED_ADDITION"]
     mail_content_pdf = current_app.config['METADATA']["MAIL_CONTENT_AF_CLOSED_PDF"]
-    mail_content_url = current_app.config['METADATA']["MAIL_CONTENT_AF_CLOSED_URL"]
     mail_content_greetings = current_app.config['METADATA']["MAIL_CONTENT_AF_CLOSED_GREETINGS"]
 
-    if mail_content_base:
-        mail_content = mail_content_base.format(
-            af.acquisition_framework_name,
-            str(af.unique_acquisition_framework_id).upper())
-
-    if mail_content_id_tps and ca_idtps:
-        mail_content = mail_content + mail_content_id_tps.format(ca_idtps)
+    if ca_idtps:
+        mail_content = mail_content + f"dans le cadre du dossier {ca_idtps}"
 
     if mail_content_additions:
         mail_content = mail_content + mail_content_additions
@@ -1166,9 +1155,6 @@ def publish_acquisition_framework_mail(af, info_role):
 
     if mail_content_pdf:
         mail_content = mail_content + mail_content_pdf.format(pdf_url) + pdf_url + "<br>"
-
-    if mail_content_url:
-        mail_content = mail_content + mail_content_url.format(af_url) + af_url + "<br>"
 
     if mail_content_greetings:
         mail_content = mail_content + mail_content_greetings

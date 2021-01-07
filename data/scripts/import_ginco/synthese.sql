@@ -137,8 +137,8 @@ WHERE mnemonique_type = 'STATUT_VALID';
 
 
 -- suppresion des contraintes, on tentera de les remettre plus tard...
-ALTER TABLE gn_synthese.synthese DROP CONSTRAINT check_synthese_date_max;
-ALTER TABLE gn_synthese.synthese DROP CONSTRAINT check_synthese_count_max;
+ALTER TABLE gn_synthese.synthese DROP CONSTRAINT IF EXISTS check_synthese_date_max;
+ALTER TABLE gn_synthese.synthese DROP CONSTRAINT IF EXISTS check_synthese_count_max;
 
 INSERT INTO gn_synthese.synthese (
 unique_id_sinp,
