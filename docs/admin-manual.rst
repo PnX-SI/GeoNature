@@ -59,7 +59,8 @@ Gestion des droits
 
 Les comptes des utilisateurs, leur mot de passe, email, groupes et leur accès à l'application GeoNature est géré de manière centralisée dans UsersHub. Pour qu'un rôle (utilisateur ou groupe) ait accès à GeoNature, il faut lui attribuer un profil de "Lecteur" dans l'application GeoNature, grâce à l'application UsersHub.
 
-La gestion des droits (permissions) des rôles, spécifique à GeoNature, est ensuite gérée dans un schéma (``gn_permissions``) et un module de GeoNature dédié. Dans la version 1 de GeoNature, il était possible d'attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour étendre les possibilités d'attribution de droits et les rendre plus génériques.
+La gestion des droits (permissions) des rôles, spécifique à GeoNature, est ensuite gérée dans un schéma (``gn_permissions``) et un module de GeoNature dédié. Les permissions des groupes et utilisateurs peuvent en effet être administrées dans le module "Admin / Administration des permissions" de GeoNature.
+Dans la version 1 de GeoNature, il était possible d'attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour étendre les possibilités d'attribution de droits et les rendre plus génériques.
 
 La gestion des droits dans GeoNature, comme dans beaucoup d'applications, est liée à des actions (Create / Read / Update / Delete aka CRUD). Pour les besoins  métiers de l'application nous avons rajouté deux actions : "Valider" et "Exporter", ce qui donne le CRUVED : Create / Read / Update / Validate / Export / Delete.
 
@@ -95,7 +96,6 @@ Récapitulatif :
 - Les permissions attribuées à un module surchargent les permission attribuées sur l'ensemble de l'application par un mécanisme d'héritage. Par défaut et en l'absence de permissions, tous les modules héritent des permissions de GeoNature. Attention cependant aux utilisateurs appartenant à plusieurs groupes. Si un CRUVED est définit pour un module à un seul de ses groupes, c'est ce CRUVED qui sera pris en compte. En effet, le mécanisme d'héritage ne fonctionne plus lorsqu'on surcouche implicitement le CRUVED d'un module pour un groupe.
 - Si un utilisateur n'a aucune action possible sur un module, alors il ne lui sera pas affiché et il ne pourra pas y accéder
 - Il est aussi possible de ne pas utiliser UsersHub pour gérer les utilisateurs et de connecter GeoNature à un CAS (voir configuration). Actuellement ce paramétrage est fonctionnel en se connectant au CAS de l'INPN (MNHN)
-- Les permissions des groupes et utilisateurs peuvent être administrées dans le module Admin de GeoNature
 
 .. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/schema_cruved.png
 
