@@ -41,7 +41,7 @@ config = load_config(config_path)
 with warnings.catch_warnings():
     warnings.simplefilter("ignore", category=sa_exc.SAWarning)
     app = get_app(config)
-    app.wsgi = ReverseProxied(
-        app, 
+    app.wsgi_app = ReverseProxied(
+        app.wsgi_app, 
         script_name=urlparse(app.config["API_ENDPOINT"]).path
     )
