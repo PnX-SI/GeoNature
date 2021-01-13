@@ -140,7 +140,7 @@ SELECT
   t10.id_nomenclature,
   t11.id_nomenclature,
   t12.id_nomenclature,
-  ref_nomenclatures.get_nomenclature_id('TYP_INF_GEO', '2'),
+  ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO', '2'),
   m.denombrementmin,
   m.denombrementmax,
   tax.cd_nom,
@@ -157,18 +157,19 @@ SELECT
   m.commentaire,
   'I'
 FROM ginco_migration.vm_data_model_source_ratt as m
-left JOIN ref_nomenclatures.t_nomenclatures t1 ON t1.cd_nomenclature = m.natureobjetgeo AND t1.id_type = 3
-left JOIN ref_nomenclatures.t_nomenclatures t2 ON t2.cd_nomenclature = m.obsmethode AND t2.id_type = 14
-left JOIN ref_nomenclatures.t_nomenclatures t3 ON t3.cd_nomenclature = m.occstatutbiologique AND t3.id_type = 13
-left JOIN ref_nomenclatures.t_nomenclatures t4 ON t4.cd_nomenclature = m.occetatbiologique AND t4.id_type = 7
-left JOIN ref_nomenclatures.t_nomenclatures t5 ON t5.cd_nomenclature = m.occnaturalite AND t5.id_type = 8
-left JOIN ref_nomenclatures.t_nomenclatures t6 ON t6.cd_nomenclature = m.diffusionniveauprecision AND t6.id_type = 5
-left JOIN ref_nomenclatures.t_nomenclatures t7 ON t7.cd_nomenclature = m.occstadedevie AND t7.id_type = 10
-left JOIN ref_nomenclatures.t_nomenclatures t8 ON t8.cd_nomenclature = m.occsexe AND t8.id_type = 9
-left JOIN ref_nomenclatures.t_nomenclatures t9 ON t9.cd_nomenclature = m.objetdenombrement AND t9.id_type = 6
-left JOIN ref_nomenclatures.t_nomenclatures t10 ON t10.cd_nomenclature = m.statutobservation AND t10.id_type = 18
-left JOIN ref_nomenclatures.t_nomenclatures t11 ON t11.cd_nomenclature = m.deefloutage AND t11.id_type = 4
-left JOIN ref_nomenclatures.t_nomenclatures t12 ON t12.cd_nomenclature = m.statutobservation AND t12.id_type = 19
+left JOIN ref_nomenclatures.t_nomenclatures t1 ON t1.cd_nomenclature = m.natureobjetgeo AND t1.id_type = ref_nomenclatures.get_id_nomenclature_type('NAT_OBJ_GEO')
+left JOIN ref_nomenclatures.t_nomenclatures t2 ON t2.cd_nomenclature = m.obsmethode AND t2.id_type = ref_nomenclatures.get_id_nomenclature_type('METH_OBS')
+left JOIN ref_nomenclatures.t_nomenclatures t3 ON t3.cd_nomenclature = m.occstatutbiologique AND t3.id_type = ref_nomenclatures.get_id_nomenclature_type('STATUT_BIO')
+left JOIN ref_nomenclatures.t_nomenclatures t4 ON t4.cd_nomenclature = m.occetatbiologique AND t4.id_type = ref_nomenclatures.get_id_nomenclature_type('ETA_BIO')
+left JOIN ref_nomenclatures.t_nomenclatures t5 ON t5.cd_nomenclature = m.occnaturalite AND t5.id_type = ref_nomenclatures.get_id_nomenclature_type('NATURALITE')
+left JOIN ref_nomenclatures.t_nomenclatures t6 ON t6.cd_nomenclature = m.diffusionniveauprecision AND t6.id_type = ref_nomenclatures.get_id_nomenclature_type('NIV_PRECIS')
+left JOIN ref_nomenclatures.t_nomenclatures t7 ON t7.cd_nomenclature = m.occstadedevie AND t7.id_type = ref_nomenclatures.get_id_nomenclature_type('STADE_VIE')
+left JOIN ref_nomenclatures.t_nomenclatures t8 ON t8.cd_nomenclature = m.occsexe AND t8.id_type = ref_nomenclatures.get_id_nomenclature_type('SEXE')
+left JOIN ref_nomenclatures.t_nomenclatures t9 ON t9.cd_nomenclature = m.objetdenombrement AND t9.id_type = ref_nomenclatures.get_id_nomenclature_type('OBJ_DENBR')
+left JOIN ref_nomenclatures.t_nomenclatures t10 ON t10.cd_nomenclature = m.statutobservation AND t10.id_type = ref_nomenclatures.get_id_nomenclature_type('STATUT_OBS')
+left JOIN ref_nomenclatures.t_nomenclatures t11 ON t11.cd_nomenclature = m.deefloutage AND t11.id_type = ref_nomenclatures.get_id_nomenclature_type('DEE_FLOU')
+left JOIN ref_nomenclatures.t_nomenclatures t12 ON t12.cd_nomenclature = m.statutsource AND t12.id_type = ref_nomenclatures.get_id_nomenclature_type('STATUT_SOURCE') 
+left JOIN ref_nomenclatures.t_nomenclatures t13 ON t13.cd_nomenclature = m.typeinfogeoen AND t13.id_type = ref_nomenclatures.get_id_nomenclature_type('TYP_INF_GEO') 
 JOIN taxonomie.taxref tax ON tax.cd_nom = m.cdnom::integer
 JOIN ref_geo.l_areas areas ON areas.area_code = CASE WHEN (codecommune[1]  is not null and codecommune[2]  is  null) THEN codecommune[1]
                                        WHEN (codemaille[1]  is not null and codemaille[2]  is  null) THEN codemaille[1]

@@ -424,3 +424,6 @@ VALUES(0, 'ref_sensi_version', 'Version du referenciel de sensibilité', 'Refere
 
 
 ---- AFTER 2.5.6.rc.2
+
+ALTER TABLE gn_synthese.synthese
+  DROP CONSTRAINT check_synthese_info_geo_type_id_area_attachment;

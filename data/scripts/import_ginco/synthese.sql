@@ -101,14 +101,6 @@ CREATE MATERIALIZED VIEW ginco_migration.vm_data_model_source AS
    -- on ne prend que les JDD non supprimé car la table gn_meta.t_datasets ne comprend que les JDD non supprimé
    join gn_meta.t_datasets d on d.unique_dataset_id = m.jddmetadonneedeeid::uuid
     where m.geometrie is not null
-    and 
-    m.jddmetadonneedeeid not IN ( 
-      select f.value_string
-      from ginco_migration.jdd j
-      join ginco_migration.jdd_field f on f.jdd_id = j.id
-      where j.status = 'deleted' 
-      and f."key" = 'metadataId'
-     )
    ;
 
 
